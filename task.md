@@ -20,6 +20,6 @@
     - ✅ Pred 2 ケース（末尾(0,0)／親なし）〔translate_oper_pred〕
     - 🚨 bad ケース（文脈剥がし BADCTX ＋ コア、行0上昇）
   - 🚨 整礎性（NF = translate(ST_PS) 上で ≺ 整礎）
-    - 🚨 添字単調性（M[n] の行1値 ⊆ M の行1値）〔oper_snd_subset〕
+    - ✅ 添字単調性（M[n] の行1値 ⊆ M の行1値、δ₁=0）〔oper_snd_subset / subs_translate_oper〕
     - 🚨 最大添字 n の階層化帰納（n=0 で PrSS CNF 帰着）
   - ✅ 停止性への還元（条件付：減少＋整礎 ⟹ 停止）〔step_terminates_cond / no_infinite_expansion_cond〕

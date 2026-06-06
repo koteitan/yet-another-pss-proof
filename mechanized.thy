@@ -165,6 +165,79 @@ next
   from A B show ?case by auto
 qed
 
+text \<open>The row index \<open>i\<^sub>1\<close> is at most 1, so the row-1 increment \<open>\<delta>\<^sub>1\<close> is always 0.\<close>
+
+lemma idx1_le1: "idx1 M j \<le> 1"
+  by (simp add: idx1_def)
+
+text \<open>One expansion step never introduces a new row-1 value: the bad part is
+  copied with row 1 preserved (\<open>\<delta>\<^sub>1 = 0\<close>) and the last pair is dropped.  Hence
+  the (finite) set of subscripts is non-increasing under expansion — the
+  invariant behind the max-subscript stratification of well-foundedness.\<close>
+
+lemma oper_snd_subset: "snd ` set (M[n]) \<subseteq> snd ` set M"
+proof (cases "Lng M - 1 = 0")
+  case True
+  thus ?thesis by (simp add: oper_def)
+next
+  case L: False
+  show ?thesis
+  proof (cases "entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0")
+    case True
+    thus ?thesis using L by (auto simp: oper_def Let_def Pred_def dest!: in_set_butlastD)
+  next
+    case nz: False
+    show ?thesis
+    proof (cases "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)")
+      case False
+      thus ?thesis using L nz
+        by (auto simp: oper_def Let_def Pred_def dest!: in_set_butlastD)
+    next
+      case hp: True
+      let ?i1 = "idx1 M (Lng M - 1)"
+      let ?j0 = "parent M ?i1 (Lng M - 1)"
+      let ?d0 = "if 0 < ?i1 then entry M 0 (Lng M - 1) - entry M 0 ?j0 else (0::nat)"
+      have d1z: "\<not> 1 < ?i1" using idx1_le1 by (simp add: not_less)
+      have unfold: "M[n] = take ?j0 M
+          @ concat (map (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * ?d0, entry M 1 j))
+                              [?j0..<Lng M - 1]) [0..<n])"
+        using L nz hp d1z by (auto simp: oper_def Let_def)
+      show ?thesis
+      proof
+        fix s assume "s \<in> snd ` set (M[n])"
+        then obtain q where q: "q \<in> set (M[n])" and s: "s = snd q" by auto
+        have "q \<in> set (take ?j0 M)
+            \<or> q \<in> set (concat (map (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * ?d0, entry M 1 j))
+                                       [?j0..<Lng M - 1]) [0..<n]))"
+          using q by (simp add: unfold)
+        then show "s \<in> snd ` set M"
+        proof
+          assume "q \<in> set (take ?j0 M)"
+          then have "q \<in> set M" using in_set_takeD by fast
+          thus ?thesis using s by blast
+        next
+          assume "q \<in> set (concat (map (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * ?d0, entry M 1 j))
+                                       [?j0..<Lng M - 1]) [0..<n]))"
+          then obtain j where j: "j \<in> {?j0..<Lng M - 1}" and qeq: "snd q = entry M 1 j"
+            by auto
+          from j have "j < Lng M" by auto
+          then have "M ! j \<in> set M" by simp
+          moreover have "snd q = snd (M ! j)" using qeq by (simp add: entry_def)
+          ultimately show ?thesis using s by (auto simp: image_iff)
+        qed
+      qed
+    qed
+  qed
+qed
+
+
+text \<open>Consequently the subscripts of the translated expansion are bounded by
+  the row-1 values already present in \<open>M\<close>: expansion never raises the maximum
+  subscript.\<close>
+
+lemma subs_translate_oper: "subs (translate (M[n])) \<subseteq> snd ` set M"
+  using subs_translate[of "M[n]"] oper_snd_subset[of M n] by blast
+
 
 section \<open>Appending a pair strictly increases the measure\<close>
 
