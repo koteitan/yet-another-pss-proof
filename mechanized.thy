@@ -220,4 +220,33 @@ lemma translate_butlast_decrease:
   using translate_snoc_increase[of "butlast C" "last C"]
   by (simp add: snoc_eq_iff_butlast)
 
+
+section \<open>The expansion step strictly decreases the measure: \<open>Pred\<close> branches\<close>
+
+text \<open>In the two degenerate branches of \<open>M[n]\<close> (last pair \<open>(0,0)\<close>, or no unique
+  parent in row \<open>i\<^sub>1\<close>) the step drops the last pair, so the measure decreases
+  by @{thm translate_butlast_decrease}.  The remaining (bad) branch is the
+  genuine core, handled separately.\<close>
+
+lemma translate_oper_pred:
+  assumes L: "1 < Lng M"
+    and br: "(entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)
+             \<or> \<not> hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+  shows "translate (M[n]) <o translate M"
+proof -
+  from L have j1: "Lng M - 1 \<noteq> 0" by simp
+  have "M[n] = Pred M"
+    using br
+  proof
+    assume "entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0"
+    thus ?thesis using j1 by (simp add: oper_def Let_def)
+  next
+    assume "\<not> hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+    thus ?thesis using j1 by (auto simp: oper_def Let_def)
+  qed
+  moreover have "Pred M = butlast M" using L by (simp add: Pred_def)
+  moreover have "M \<noteq> []" using L by auto
+  ultimately show ?thesis using translate_butlast_decrease by simp
+qed
+
 end
