@@ -8,16 +8,14 @@ text \<open>
   keyword and cannot be a theory name.)
 
   Termination — no infinite expansion chain on the standard form
-  \<open>ST_PS\<close> — is reduced rigorously to two facts about the \<open>p_a(b)+c\<close>
-  measure \<open>translate\<close>:
-    \<^item> \<open>dec\<close>: each expansion step strictly decreases \<open>translate\<close> (the genuine
-      bad-branch case of @{thm [source] translate_oper_pred}'s sibling, still
-      open; the Pred branches are done);
+  \<open>ST_PS\<close> — is reduced to two facts about the \<open>p_a(b)+c\<close> measure \<open>translate\<close>:
+    \<^item> \<open>dec\<close>: each expansion step strictly decreases \<open>translate\<close> — \<^bold>\<open>DONE\<close>,
+      @{thm [source] m_step_decreases};
     \<^item> \<open>wfimg\<close>: the subscript-first order \<open><o\<close> is well-founded on the image
-      \<open>translate ` ST_PS\<close> (the Buchholz-level core, still open).
+      \<open>NF = translate ` ST_PS\<close> — the Buchholz-level core, still open.
 
-  Both are stated as explicit hypotheses of @{text step_terminates_cond}: the
-  theorem is the architecture, the hypotheses are exactly what remains.
+  @{text step_terminates} discharges \<open>dec\<close> from @{thm [source] m_step_decreases},
+  so termination now hinges on \<open>wfimg\<close> alone.
 \<close>
 
 abbreviation NF :: "ord set" where
@@ -77,6 +75,26 @@ proof
   from wf have "\<not> (\<exists>f. \<forall>i. (f (Suc i), f i) \<in> ?R)"
     by (simp add: wf_iff_no_infinite_down_chain)
   with chain show False by blast
+qed
+
+
+text \<open>Discharging \<open>dec\<close> by the proved decrease lemma, termination of the pair
+  sequence system reduces to well-foundedness of \<open><o\<close> on \<open>NF\<close> alone.\<close>
+
+theorem step_terminates:
+  assumes wfimg: "wf {(v,u). v <o u \<and> u \<in> NF \<and> v \<in> NF}"
+  shows "wf {(T,M). M \<in> ST_PS \<and> step M T}"
+proof (rule step_terminates_cond[OF _ wfimg])
+  fix M and n :: nat assume "M \<in> ST_PS" "1 < Lng M" "1 \<le> n"
+  thus "translate (M[n]) <o translate M" using m_step_decreases by blast
+qed
+
+corollary no_infinite_expansion:
+  assumes wfimg: "wf {(v,u). v <o u \<and> u \<in> NF \<and> v \<in> NF}"
+  shows "\<not> (\<exists>S. (\<forall>i. S i \<in> ST_PS) \<and> (\<forall>i. step (S i) (S (Suc i))))"
+proof (rule no_infinite_expansion_cond[OF _ wfimg])
+  fix M and n :: nat assume "M \<in> ST_PS" "1 < Lng M" "1 \<le> n"
+  thus "translate (M[n]) <o translate M" using m_step_decreases by blast
 qed
 
 end

@@ -24,7 +24,9 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
-  - 🚨 整礎性（NF = translate(ST_PS) 上で ≺ 整礎）
+  - 🚨 整礎性 wfimg（NF = translate(ST_PS) 上で ≺ 整礎）★残る唯一の未証明
     - ✅ 添字単調性（M[n] の行1値 ⊆ M の行1値、δ₁=0）〔oper_snd_subset / subs_translate_oper〕
     - 🚨 最大添字 n の階層化帰納（n=0 で PrSS CNF 帰着）
-  - ✅ 停止性への還元（条件付：減少＋整礎 ⟹ 停止）〔step_terminates_cond / no_infinite_expansion_cond〕
+  - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion〕
+    - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
+    - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
