@@ -141,6 +141,29 @@ termination
 lemma lead_translate: "lead (translate M) = (case M of [] \<Rightarrow> 0 | p # _ \<Rightarrow> snd p)"
   by (cases M) auto
 
+subsection \<open>Row-0 monotonicity of the parent relation\<close>
+
+text \<open>Along a row-0 ancestry the row-0 value strictly / weakly increases.  This
+  underlies the single-tree shape of the bad part (its root has the least
+  row-0).\<close>
+
+lemma nextrel0_entry0_less: "nextrel0 M j0 j1 \<Longrightarrow> entry M 0 j0 < entry M 0 j1"
+  by (simp add: nextrel0_def)
+
+lemma le0_entry0_mono:
+  assumes "le0 M j0 j1" shows "entry M 0 j0 \<le> entry M 0 j1"
+proof -
+  from assms have "(nextrel0 M)\<^sup>*\<^sup>* j0 j1" by (simp add: le0_def)
+  thus ?thesis
+  proof (induction rule: rtranclp_induct)
+    case base thus ?case by simp
+  next
+    case (step y z)
+    from step.hyps(2) have "entry M 0 y < entry M 0 z" by (rule nextrel0_entry0_less)
+    with step.IH show ?case by simp
+  qed
+qed
+
 text \<open>If every pair after the head lies strictly above it in row 0, the whole
   list reads as one tree: a single principal term with empty tail.\<close>
 
