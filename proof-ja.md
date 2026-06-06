@@ -237,13 +237,16 @@ $\prec$ の整礎性を示せる（各レベルが下位レベルの整礎順序
 
 ---
 
-## 6. 停止性の組み立て（未了）
+## 6. 停止性の組み立て（Isabelle ✓, `step_terminates`）
 
-減少（§4）と NF 上の整礎性（§5）が揃えば、PrSS と同様に
+減少（§4, `m_step_decreases`, 証明済み）と NF 上の整礎性（§5, `wfimg`, 未了）から、
 
-$$ \{(T,M)\mid \mathrm{step}\,M\,T\}\ \subseteq\ \mathrm{translate}^{-1}(\prec) $$
+$$ \{(T,M)\mid M\in\mathrm{ST_{PS}}\wedge \mathrm{step}\,M\,T\}\ \subseteq\ \mathrm{translate}^{-1}\!\bigl(\prec|_{\mathrm{NF}}\bigr) $$
 
-の右辺が整礎（整礎関係の逆像）ゆえ `step` は整礎、すなわち無限展開列は存在しない。
+（`step` は `ST_PS` 内に閉じる `step_in_ST_PS`、各ステップで減少）。右辺は整礎関係の逆像
+（`wf_inv_image`）ゆえ整礎、`wf_subset` で `step` も整礎。すなわち
+**`wfimg` さえ示せれば、無限展開列は存在しない（停止性）**。減少は既に discharge 済みで、
+`step_terminates` / `no_infinite_expansion` は `wfimg` のみを仮定する。
 
 ---
 
@@ -258,13 +261,15 @@ $$ \{(T,M)\mid \mathrm{step}\,M\,T\}\ \subseteq\ \mathrm{translate}^{-1}(\prec) 
 | $\mathrm{translate}$ | `translate` | ✓ |
 | task の例 | 各 sanity 補題 | ✓ |
 | 項の添字集合, 添字の出所 | `subs` / `subs_translate` | ✓ |
-| 末尾追加で増大 | `translate_snoc_increase` | ✓ |
-| 末尾削除で減少 | `translate_butlast_decrease` | ✓ |
-| 減少（Pred 2 ケース） | `translate_oper_pred` | ✓ |
-| 減少（bad ケース）`m_step_decreases` | — | 未了 |
-| 正規形 NF | — | 未了 |
-| NF 上の整礎性 | — | 未了 |
-| 停止性定理 | — | 未了 |
+| 添字単調性（M[n]の添字 ⊆ Mの行1） | `oper_snd_subset` | ✓ |
+| 末尾追加で増大 / 削除で減少 | `translate_snoc_increase` / `translate_butlast_decrease` | ✓ |
+| 先頭添字支配 | `lead` / `olt_P_of_lead_lt` | ✓ |
+| 文脈合同 BADCTX | `translate_ctx_cong` | ✓ |
+| 単一木 / 区間補題 | `translate_single_tree` / `le0_interval_gt` | ✓ |
+| bad コア i1=0 / i1=1 | `core_i0` / `core_i1` | ✓ |
+| 減少（Pred / bad / 総合） | `translate_oper_pred` / `translate_oper_bad` / **`m_step_decreases`** | ✓ |
+| 停止性（wfimg ⟹ 停止） | **`step_terminates`** / `no_infinite_expansion` | ✓ |
+| NF 上の整礎性 wfimg | — | **未了（残る唯一）** |
 
 ---
 
