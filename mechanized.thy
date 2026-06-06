@@ -165,4 +165,59 @@ next
   from A B show ?case by auto
 qed
 
+
+section \<open>Appending a pair strictly increases the measure\<close>
+
+text \<open>The analogue of PrSS \<open>omap_snoc_increase\<close>: extending a pair sequence on
+  the right strictly increases its translation.  Hence dropping the last pair
+  strictly decreases it, which covers the two \<open>Pred\<close> branches of \<open>M[n]\<close>.\<close>
+
+lemma translate_snoc_increase: "translate C <o translate (C @ [m])"
+proof (induction C rule: translate.induct)
+  case 1
+  show ?case by simp
+next
+  case (2 p rest)
+  let ?P = "\<lambda>q. fst p < fst q"
+  show ?case
+  proof (cases "\<forall>x\<in>set rest. ?P x")
+    case allp: True
+    \<comment> \<open>the whole \<open>rest\<close> is below \<open>p\<close>: it is one block; the new pair extends it or starts a sibling\<close>
+    have tw: "takeWhile ?P rest = rest" using allp by (simp add: takeWhile_eq_all_conv)
+    have dw: "dropWhile ?P rest = []" using allp by (simp add: dropWhile_eq_Nil_conv)
+    show ?thesis
+    proof (cases "?P m")
+      case True
+      have tw': "takeWhile ?P (rest @ [m]) = rest @ [m]"
+        using allp True by (simp add: takeWhile_eq_all_conv)
+      have dw': "dropWhile ?P (rest @ [m]) = []"
+        using allp True by (simp add: dropWhile_eq_Nil_conv)
+      have key: "translate rest <o translate (rest @ [m])" using 2(1) tw by simp
+      show ?thesis using key by (simp add: tw dw tw' dw')
+    next
+      case False
+      have tw': "takeWhile ?P (rest @ [m]) = rest"
+        using allp False by (simp add: takeWhile_append2)
+      have dw': "dropWhile ?P (rest @ [m]) = [m]"
+        using allp False by (simp add: dropWhile_append2)
+      show ?thesis by (simp add: tw dw tw' dw')
+    qed
+  next
+    case False
+    then obtain x where x: "x \<in> set rest" and nP: "\<not> ?P x" by blast
+    have tw': "takeWhile ?P (rest @ [m]) = takeWhile ?P rest"
+      using x nP by (simp add: takeWhile_append1)
+    have dw': "dropWhile ?P (rest @ [m]) = dropWhile ?P rest @ [m]"
+      using x nP by (simp add: dropWhile_append1)
+    have key: "translate (dropWhile ?P rest) <o translate (dropWhile ?P rest @ [m])"
+      using 2(2) by simp
+    show ?thesis using key by (simp add: tw' dw')
+  qed
+qed
+
+lemma translate_butlast_decrease:
+  "C \<noteq> [] \<Longrightarrow> translate (butlast C) <o translate C"
+  using translate_snoc_increase[of "butlast C" "last C"]
+  by (simp add: snoc_eq_iff_butlast)
+
 end
