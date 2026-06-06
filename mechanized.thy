@@ -518,6 +518,54 @@ lemma translate_butlast_decrease:
   by (simp add: snoc_eq_iff_butlast)
 
 
+subsection \<open>Abstract bad-step cores\<close>
+
+text \<open>Core for \<open>i\<^sub>1 = 0\<close> (exact copies).  A tree rooted at \<open>(v\<^sub>0,w\<^sub>0)\<close> with body
+  \<open>R\<close> (all above \<open>v\<^sub>0\<close>), followed by any block \<open>T\<close> that re-opens at or below \<open>v\<^sub>0\<close>
+  (the next exact copy's root), is strictly below the same tree with the body
+  extended by one more descendant \<open>lp\<close> (the dropped last pair).  The leading
+  argument is \<open>R\<close> on the left but grows to \<open>R @ [lp]\<close> on the right; the number of
+  trailing copies (in \<open>T\<close>) is irrelevant.\<close>
+
+lemma core_i0:
+  assumes R: "\<forall>x\<in>set R. v0 < fst x"
+    and vl: "v0 < fst lp"
+    and Thd: "T = [] \<or> \<not> v0 < fst (hd T)"
+  shows "translate (((v0,w0) # R) @ T) <o translate (((v0,w0) # R) @ [lp])"
+proof -
+  let ?P = "\<lambda>q. v0 < fst q"
+  have twT: "takeWhile ?P (R @ T) = R"
+  proof (cases T)
+    case Nil thus ?thesis using R by (simp add: takeWhile_eq_all_conv)
+  next
+    case (Cons t ts)
+    with Thd have "\<not> ?P t" by simp
+    hence "takeWhile ?P T = []" using Cons by simp
+    thus ?thesis using R by (simp add: takeWhile_append2)
+  qed
+  have dwT: "dropWhile ?P (R @ T) = T"
+  proof (cases T)
+    case Nil thus ?thesis using R by (simp add: dropWhile_eq_Nil_conv)
+  next
+    case (Cons t ts)
+    with Thd have "\<not> ?P t" by simp
+    hence "dropWhile ?P T = T" using Cons by simp
+    thus ?thesis using R by (simp add: dropWhile_append2)
+  qed
+  have lhs: "translate (((v0,w0) # R) @ T) = P w0 (translate R) (translate T)"
+    by (simp only: append_Cons fst_conv snd_conv translate.simps(2) twT dwT)
+  have rhs: "translate (((v0,w0) # R) @ [lp]) = P w0 (translate (R @ [lp])) Z"
+  proof -
+    have all: "\<forall>x\<in>set (R @ [lp]). fst (v0,w0) < fst x" using R vl by auto
+    have "translate ((v0,w0) # (R @ [lp])) = P (snd (v0,w0)) (translate (R @ [lp])) Z"
+      by (rule translate_single_tree[OF all])
+    thus ?thesis by simp
+  qed
+  have "translate R <o translate (R @ [lp])" by (rule translate_snoc_increase)
+  thus ?thesis using lhs rhs by (simp add: olt_P_b)
+qed
+
+
 section \<open>The expansion step strictly decreases the measure: \<open>Pred\<close> branches\<close>
 
 text \<open>In the two degenerate branches of \<open>M[n]\<close> (last pair \<open>(0,0)\<close>, or no unique
