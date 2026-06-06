@@ -14,18 +14,16 @@
   - ✅ 変換 translate（森オーダー写像、添字=行1）
     - ✅ 定義＋task 例の sanity〔translate〕
     - ✅ 添字の出所（添字は元の行1値のみ）〔subs / subs_translate〕
-  - 🚨 減少補題（translate(M[n]) ≺ translate M）
+  - ✅ 減少補題（translate(M[n]) ≺ translate M、標準形不要の一般形）〔m_step_decreases〕
     - ✅ 末尾追加で増大〔translate_snoc_increase〕
     - ✅ 末尾削除で減少〔translate_butlast_decrease〕
     - ✅ Pred 2 ケース（末尾(0,0)／親なし）〔translate_oper_pred〕
     - ✅ 先頭添字支配（lead が小さければ ≺）〔lead / olt_P_of_lead_lt〕
-    - 🚨 bad ケース（i1 で2分割）
-      - ✅ 文脈合同 BADCTX（G 帰納）〔translate_ctx_cong〕
-      - ✅ 単一木補題〔translate_single_tree〕
-      - ✅ 単一木の局所性〔le0_interval_gt（j0<k≤j1 で行0>v0）〕
-      - ✅ 抽象コア i1=0（正確複製）〔core_i0：olt_P_b+snoc〕
-      - ✅ 抽象コア i1=1（上昇単一木）〔core_i1：単一木+BADCTX+lead 支配〕
-      - 🚨 oper bad 分岐 → core_i0/core_i1 の接続（take/concat/map/upt の bookkeeping）
+    - ✅ bad ケース〔translate_oper_bad〕
+      - ✅ 文脈合同 BADCTX（G 帰納、根最小条件）〔translate_ctx_cong〕
+      - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
+      - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
+      - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
   - 🚨 整礎性（NF = translate(ST_PS) 上で ≺ 整礎）
     - ✅ 添字単調性（M[n] の行1値 ⊆ M の行1値、δ₁=0）〔oper_snd_subset / subs_translate_oper〕
     - 🚨 最大添字 n の階層化帰納（n=0 で PrSS CNF 帰着）
