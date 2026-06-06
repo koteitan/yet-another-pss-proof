@@ -251,8 +251,8 @@ lemma translate_ctx_cong:
   assumes base: "translate Z1 <o translate Z2"
     and ne1: "Z1 \<noteq> []" and ne2: "Z2 \<noteq> []"
     and root: "fst (hd Z1) = fst (hd Z2)"
-    and r1: "\<forall>x\<in>set (tl Z1). fst (hd Z1) < fst x"
-    and r2: "\<forall>x\<in>set (tl Z2). fst (hd Z2) < fst x"
+    and r1: "\<forall>x\<in>set (tl Z1). fst (hd Z1) \<le> fst x"
+    and r2: "\<forall>x\<in>set (tl Z2). fst (hd Z2) \<le> fst x"
   shows "translate (G @ Z1) <o translate (G @ Z2)"
 proof (induction G rule: length_induct)
   case (1 G)

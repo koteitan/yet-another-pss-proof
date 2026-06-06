@@ -173,11 +173,28 @@ $i_1=1$ の機構：
    $$ \mathrm{translate}(Z_1)\prec\mathrm{translate}(Z_2)\ \Longrightarrow\ \mathrm{translate}(G\oplus Z_1)\prec\mathrm{translate}(G\oplus Z_2) $$
    （$Z_1,Z_2$ が同じ先頭 $M_{j_0}$ をもち、残りの行0 $>v_0$ のとき）。各 $G$-ステップで
    `takeWhile`/`dropWhile` の切れ目が $Z_1,Z_2$ で一致するため、比較が一段内側へ伝播する。
-3. **コア＝添字優先支配。** よって $A_n\prec A_M$ を示せばよい。共通スパインを下ると、
-   最深部で $A_M$ 側は末尾対 $\mathit{last}$ の項（添字 $w=M_{1,j_1}$）、$A_n$ 側はコピーの
-   項（先頭添字 $w_0=M_{1,j_0}$）。$i_1{=}1$ の `nextrel1` より $w_0<w$ なので
-   `olt_P_of_lead_lt`（**先頭添字が小さければ $\prec$**）で閉じる。行0上昇 $k\delta_0$ は
-   引数の森を深くするだけで先頭添字を変えないため、$n$ や上昇量に依らず一様に成立する。
+3. **コア＝添字優先支配。** $A_n=\mathrm{translate}(\mathrm{tl}\,\text{copies})$,
+   $A_M=\mathrm{translate}(\mathrm{tl}(B\oplus(\mathit{last})))$。
+   $\mathrm{tl\,copies}=\mathrm{tl}\,B_0\oplus(B_1\oplus\cdots)$,
+   $\mathrm{tl}(B\oplus(\mathit{last}))=\mathrm{tl}\,B_0\oplus[\mathit{last}]$。共通の
+   $\mathrm{tl}\,B_0$ に再び `BADCTX` を適用すると、$B_1\oplus\cdots$ の根の行0は
+   $v_0{+}\delta_0=M_{0,j_1}=\mathit{last}$ の行0と一致（同根）、かつ $B_1\oplus\cdots$ の
+   先頭添字は $w_0=M_{1,j_0}$、$\mathit{last}$ の添字は $w=M_{1,j_1}$ で
+   `nextrel1` より $w_0<w$。よって `olt_P_of_lead_lt` で $B_1\oplus\cdots\prec[\mathit{last}]$、
+   `BADCTX` で $A_n\prec A_M$。$n$・上昇量に依らず一様。
+
+**コアは両 $i_1$ とも既存補題のみで閉じる（PrSS `omap_core` の移植は不要）。**
+
+- $i_1=0$: $\mathrm{translate}(\text{copies})=\mathrm{translate}(B^n)
+  =P\,w_0\,(\mathrm{translate}(\mathrm{tl}\,B))\,(\cdots)$,
+  $\mathrm{translate}(B\oplus(\mathit{last}))=P\,w_0\,(\mathrm{translate}(\mathrm{tl}\,B\oplus[\mathit{last}]))\,Z$。
+  引数 $\mathrm{tl}\,B\prec\mathrm{tl}\,B\oplus[\mathit{last}]$（`translate_snoc_increase`）より
+  `olt_P_b` で $\prec$。コピー数 $n$ は末尾 $c$ に入り効かない。
+- $i_1=1$: 上記 1–3（単一木＋`BADCTX`＋`olt_P_of_lead_lt`）。
+- いずれも `translate_ctx_cong`（根が最小という弱条件版、$i_1{=}0$ の兄弟コピーにも適用可）で
+  良部 $G=\mathrm{take}\,j_0\,M$ を通して $\mathrm{translate}(M[n])\prec\mathrm{translate}(M)$ に持ち上げる。
+
+残りは `oper` の具体構造（`take`/`concat`/`map`/`upt`）と上記抽象補題の接続（機械的）。
 
 ---
 
