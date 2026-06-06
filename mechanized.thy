@@ -32,6 +32,21 @@ fun olt :: "ord \<Rightarrow> ord \<Rightarrow> bool" (infix "<o" 50) where
 abbreviation ole :: "ord \<Rightarrow> ord \<Rightarrow> bool" (infix "\<le>o" 50) where
   "x \<le>o y \<equiv> (x <o y \<or> x = y)"
 
+text \<open>Leading subscript of a term (the subscript of its first principal term).\<close>
+
+fun lead :: "ord \<Rightarrow> nat" where
+  "lead Z = 0"
+| "lead (P a _ _) = a"
+
+text \<open>Subscript-first domination: a term whose leading subscript is below \<open>w\<close>
+  (or which is \<open>Z\<close>) is strictly below \<^emph>\<open>any\<close> principal term \<open>p\<^bsub>w\<^esub>(b)+c\<close>.  This
+  is the mechanism behind the bad-step decrease: the ascending copies all have
+  leading subscript \<open>= row-1 of the bad root\<close>, which is strictly below the
+  row-1 of the dropped last pair.\<close>
+
+lemma olt_P_of_lead_lt: "t = Z \<or> lead t < w \<Longrightarrow> t <o P w b c"
+  by (cases t) auto
+
 lemma olt_irrefl: "\<not> x <o x"
   by (induction x) auto
 
@@ -114,6 +129,9 @@ termination
   by (relation "measure length")
      (auto simp: le_imp_less_Suc length_takeWhile_le
             intro: le_less_trans[OF length_dropWhile_le])
+
+lemma lead_translate: "lead (translate M) = (case M of [] \<Rightarrow> 0 | p # _ \<Rightarrow> snd p)"
+  by (cases M) auto
 
 subsection \<open>Sanity checks (the examples of the task description)\<close>
 
