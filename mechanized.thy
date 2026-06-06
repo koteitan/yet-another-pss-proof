@@ -164,6 +164,65 @@ proof -
   qed
 qed
 
+text \<open>Indices increase along the row-0 Next relation.\<close>
+
+lemma nextrel0_index_less: "nextrel0 M a b \<Longrightarrow> a < b"
+  by (simp add: nextrel0_def)
+
+lemma nextrel0_rtrancl_index_le: "(nextrel0 M)\<^sup>*\<^sup>* a b \<Longrightarrow> a \<le> b"
+  by (induction rule: rtranclp_induct) (auto dest: nextrel0_index_less)
+
+text \<open>Key interval lemma: along a row-0 ancestry \<open>j\<^sub>0 \<le>\<^sub>M j\<^sub>1\<close>, \<^emph>\<open>every\<close> index in
+  \<open>(j\<^sub>0, j\<^sub>1]\<close> (not only the chain points) has row-0 strictly above \<open>j\<^sub>0\<close>: the
+  valleys between chain points are \<open>\<ge>\<close> the next chain point by \<open>nextrel0\<close>.  This
+  makes the bad part a single tree rooted at \<open>j\<^sub>0\<close> (its least row-0).\<close>
+
+lemma le0_interval_gt:
+  assumes "(nextrel0 M)\<^sup>*\<^sup>* j0 j1"
+  shows "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+  using assms
+proof (induction rule: rtranclp_induct)
+  case base
+  show ?case by simp
+next
+  case (step y z)
+  have yz: "entry M 0 y < entry M 0 z" using step.hyps(2) by (simp add: nextrel0_def)
+  have j0y: "j0 \<le> y" using step.hyps(1) by (rule nextrel0_rtrancl_index_le)
+  have j0le: "entry M 0 j0 \<le> entry M 0 y"
+  proof (cases "j0 < y")
+    case True
+    hence "entry M 0 j0 < entry M 0 y" using step.IH by blast
+    thus ?thesis by simp
+  next
+    case False
+    with j0y have "j0 = y" by simp
+    thus ?thesis by simp
+  qed
+  show ?case
+  proof (intro allI impI, elim conjE)
+    fix k assume k1: "j0 < k" and k2: "k \<le> z"
+    show "entry M 0 j0 < entry M 0 k"
+    proof (cases "k \<le> y")
+      case True
+      thus ?thesis using k1 step.IH by blast
+    next
+      case False
+      hence yk: "y < k" by simp
+      show ?thesis
+      proof (cases "k = z")
+        case True
+        thus ?thesis using j0le yz by simp
+      next
+        case False
+        with k2 yk have mid: "y < k \<and> k < z" by simp
+        hence "entry M 0 z \<le> entry M 0 k"
+          using step.hyps(2) by (simp add: nextrel0_def)
+        thus ?thesis using j0le yz by simp
+      qed
+    qed
+  qed
+qed
+
 text \<open>If every pair after the head lies strictly above it in row 0, the whole
   list reads as one tree: a single principal term with empty tail.\<close>
 
