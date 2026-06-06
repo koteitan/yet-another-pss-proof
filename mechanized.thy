@@ -339,6 +339,17 @@ proof (induction G rule: length_induct)
   qed
 qed
 
+text \<open>A suffix as an index map (helper for the bad-step list bookkeeping).\<close>
+
+lemma drop_eq_map_nth: "drop a xs = map (\<lambda>i. xs ! i) [a..<length xs]"
+proof (rule nth_equalityI)
+  show "length (drop a xs) = length (map (\<lambda>i. xs ! i) [a..<length xs])" by simp
+next
+  fix i assume "i < length (drop a xs)"
+  thus "drop a xs ! i = map (\<lambda>i. xs ! i) [a..<length xs] ! i"
+    by (auto simp: nth_drop)
+qed
+
 subsection \<open>Sanity checks (the examples of the task description)\<close>
 
 lemma "translate [(0,0)] = P 0 Z Z"
@@ -398,6 +409,26 @@ text \<open>One expansion step never introduces a new row-1 value: the bad part 
   copied with row 1 preserved (\<open>\<delta>\<^sub>1 = 0\<close>) and the last pair is dropped.  Hence
   the (finite) set of subscripts is non-increasing under expansion — the
   invariant behind the max-subscript stratification of well-foundedness.\<close>
+
+text \<open>The bad branch of \<open>M[n]\<close>, unfolded (\<open>\<delta>\<^sub>1 = 0\<close> since \<open>idx1 \<le> 1\<close>).\<close>
+
+lemma oper_bad_unfold:
+  assumes "Lng M - 1 \<noteq> 0"
+    and "\<not> (entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)"
+    and "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+  shows "M[n] =
+    take (parent M (idx1 M (Lng M - 1)) (Lng M - 1)) M
+    @ concat (map (\<lambda>k. map (\<lambda>j.
+          (entry M 0 j + k * (if 0 < idx1 M (Lng M - 1)
+              then entry M 0 (Lng M - 1)
+                   - entry M 0 (parent M (idx1 M (Lng M - 1)) (Lng M - 1))
+              else 0),
+           entry M 1 j))
+        [parent M (idx1 M (Lng M - 1)) (Lng M - 1)..<Lng M - 1]) [0..<n])"
+proof -
+  have d1z: "\<not> 1 < idx1 M (Lng M - 1)" using idx1_le1 by (simp add: not_less)
+  show ?thesis using assms d1z by (auto simp: oper_def Let_def)
+qed
 
 lemma oper_snd_subset: "snd ` set (M[n]) \<subseteq> snd ` set M"
 proof (cases "Lng M - 1 = 0")
@@ -573,13 +604,12 @@ text \<open>Core for \<open>i\<^sub>1 = 1\<close> (ascending copies).  The copy-
 lemma core_i1:
   assumes R: "\<forall>x\<in>set R. v0 < fst x"
     and CP: "C \<noteq> []"
-    and Cmin: "\<forall>x\<in>set (tl C). fst (hd C) < fst x"
+    and Cge: "\<forall>x\<in>set (tl C). fst (hd C) \<le> fst x"
     and Croot: "fst (hd C) = fst lp"
     and lpv: "v0 < fst lp"
     and lead_lt: "snd (hd C) < snd lp"
   shows "translate (((v0,w0) # R) @ C) <o translate (((v0,w0) # R) @ [lp])"
 proof -
-  \<comment> \<open>\<open>C\<close> is a single tree; its translation is dominated by \<open>p\<^bsub>snd lp\<^esub>(0)\<close>\<close>
   have allC: "\<forall>x\<in>set C. v0 < fst x"
   proof
     fix x assume "x \<in> set C"
@@ -588,15 +618,16 @@ proof -
     proof cases
       case 1 thus ?thesis using Croot lpv by simp
     next
-      case 2 thus ?thesis using Cmin Croot lpv by fastforce
+      case 2 thus ?thesis using Cge Croot lpv by fastforce
     qed
   qed
-  have tC: "translate C = P (snd (hd C)) (translate (tl C)) Z"
-    using translate_single_tree[OF Cmin] CP by simp
+  \<comment> \<open>subscript-first domination: \<open>C\<close> leads with subscript \<open>snd (hd C) < snd lp\<close>\<close>
+  have leadC: "lead (translate C) = snd (hd C)"
+    using CP by (cases C) (auto simp: lead_translate)
   have "translate C <o translate [lp]"
   proof -
-    have "translate C <o P (snd lp) Z Z"
-      using tC lead_lt by (simp add: olt_P_of_lead_lt)
+    have "translate C = Z \<or> lead (translate C) < snd lp" using leadC lead_lt by simp
+    hence "translate C <o P (snd lp) Z Z" by (rule olt_P_of_lead_lt)
     thus ?thesis by simp
   qed
   \<comment> \<open>propagate through the common body \<open>R\<close>, then through the root \<open>(v\<^sub>0,w\<^sub>0)\<close>\<close>
@@ -606,7 +637,7 @@ proof -
     show "C \<noteq> []" by fact
     show "[lp] \<noteq> []" by simp
     show "fst (hd C) = fst (hd [lp])" using Croot by simp
-    show "\<forall>x\<in>set (tl C). fst (hd C) \<le> fst x" using Cmin by auto
+    show "\<forall>x\<in>set (tl C). fst (hd C) \<le> fst x" by fact
     show "\<forall>x\<in>set (tl [lp]). fst (hd [lp]) \<le> fst x" by simp
   qed
   have allRC: "\<forall>x\<in>set (R @ C). fst (v0,w0) < fst x" using R allC by auto
