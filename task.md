@@ -22,9 +22,10 @@
     - 🚨 bad ケース（i1 で2分割）
       - ✅ 文脈合同 BADCTX（G 帰納）〔translate_ctx_cong〕
       - ✅ 単一木補題〔translate_single_tree〕
-      - 🚨 i1=1（δ0>0, 入れ子単一木）: コア copies≺B@[last]（スパイン→lead 支配）
-      - 🚨 i1=0（δ0=0, 正確複製=PrSS兄弟）: PrSS omap_core 流の核
-      - 🚨 親子関係補題（le0⟹行0単調 等）＋ oper bad 分岐との接続
+      - ✅ 単一木の局所性〔le0_interval_gt（j0<k≤j1 で行0>v0）〕
+      - ✅ 抽象コア i1=0（正確複製）〔core_i0：olt_P_b+snoc〕
+      - ✅ 抽象コア i1=1（上昇単一木）〔core_i1：単一木+BADCTX+lead 支配〕
+      - 🚨 oper bad 分岐 → core_i0/core_i1 の接続（take/concat/map/upt の bookkeeping）
   - 🚨 整礎性（NF = translate(ST_PS) 上で ≺ 整礎）
     - ✅ 添字単調性（M[n] の行1値 ⊆ M の行1値、δ₁=0）〔oper_snd_subset / subs_translate_oper〕
     - 🚨 最大添字 n の階層化帰納（n=0 で PrSS CNF 帰着）

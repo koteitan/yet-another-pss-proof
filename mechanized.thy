@@ -565,6 +565,59 @@ proof -
   thus ?thesis using lhs rhs by (simp add: olt_P_b)
 qed
 
+text \<open>Core for \<open>i\<^sub>1 = 1\<close> (ascending copies).  The copy-rest \<open>C\<close> is itself a
+  single tree rooted at the same row-0 as the dropped last pair \<open>lp\<close> but with a
+  strictly smaller subscript; so \<open>C \<prec> [lp]\<close> by subscript-first domination, and
+  the common bodies \<open>(v\<^sub>0,w\<^sub>0) # R\<close> / \<open>R\<close> propagate it via BADCTX.\<close>
+
+lemma core_i1:
+  assumes R: "\<forall>x\<in>set R. v0 < fst x"
+    and CP: "C \<noteq> []"
+    and Cmin: "\<forall>x\<in>set (tl C). fst (hd C) < fst x"
+    and Croot: "fst (hd C) = fst lp"
+    and lpv: "v0 < fst lp"
+    and lead_lt: "snd (hd C) < snd lp"
+  shows "translate (((v0,w0) # R) @ C) <o translate (((v0,w0) # R) @ [lp])"
+proof -
+  \<comment> \<open>\<open>C\<close> is a single tree; its translation is dominated by \<open>p\<^bsub>snd lp\<^esub>(0)\<close>\<close>
+  have allC: "\<forall>x\<in>set C. v0 < fst x"
+  proof
+    fix x assume "x \<in> set C"
+    then consider "x = hd C" | "x \<in> set (tl C)" using CP by (cases C) auto
+    thus "v0 < fst x"
+    proof cases
+      case 1 thus ?thesis using Croot lpv by simp
+    next
+      case 2 thus ?thesis using Cmin Croot lpv by fastforce
+    qed
+  qed
+  have tC: "translate C = P (snd (hd C)) (translate (tl C)) Z"
+    using translate_single_tree[OF Cmin] CP by simp
+  have "translate C <o translate [lp]"
+  proof -
+    have "translate C <o P (snd lp) Z Z"
+      using tC lead_lt by (simp add: olt_P_of_lead_lt)
+    thus ?thesis by simp
+  qed
+  \<comment> \<open>propagate through the common body \<open>R\<close>, then through the root \<open>(v\<^sub>0,w\<^sub>0)\<close>\<close>
+  have inner: "translate (R @ C) <o translate (R @ [lp])"
+  proof (rule translate_ctx_cong)
+    show "translate C <o translate [lp]" by fact
+    show "C \<noteq> []" by fact
+    show "[lp] \<noteq> []" by simp
+    show "fst (hd C) = fst (hd [lp])" using Croot by simp
+    show "\<forall>x\<in>set (tl C). fst (hd C) \<le> fst x" using Cmin by auto
+    show "\<forall>x\<in>set (tl [lp]). fst (hd [lp]) \<le> fst x" by simp
+  qed
+  have allRC: "\<forall>x\<in>set (R @ C). fst (v0,w0) < fst x" using R allC by auto
+  have allRlp: "\<forall>x\<in>set (R @ [lp]). fst (v0,w0) < fst x" using R lpv by auto
+  have lhs: "translate (((v0,w0) # R) @ C) = P w0 (translate (R @ C)) Z"
+    using translate_single_tree[OF allRC] by simp
+  have rhs: "translate (((v0,w0) # R) @ [lp]) = P w0 (translate (R @ [lp])) Z"
+    using translate_single_tree[OF allRlp] by simp
+  show ?thesis using inner lhs rhs by (simp add: olt_P_b)
+qed
+
 
 section \<open>The expansion step strictly decreases the measure: \<open>Pred\<close> branches\<close>
 
