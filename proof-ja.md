@@ -130,9 +130,33 @@ $$ \mathrm{translate}(M)=p_0(p_1(0)),\qquad \mathrm{translate}(M[2])=p_0(p_0(p_0
 両者 $p_0(\cdot)$ なので引数 $p_1(0)$ vs $p_0(p_0(0))$ の比較に帰着し、添字
 $1>0$ より $p_0(p_0(0))\prec p_1(0)$、よって減少。引数優先だと逆に増大する。
 
-> **減少補題（未了, `m_step_decreases`）。** $M\in\mathrm{ST_{PS}}$, $\mathrm{Lng}\,M>1$,
+> **減少補題（`m_step_decreases`）。** $M\in\mathrm{ST_{PS}}$, $\mathrm{Lng}\,M>1$,
 > $n\ge1 \Rightarrow \mathrm{translate}(M[n])\prec\mathrm{translate}(M)$。
-> PrSS の `omap_core`/`omap_BADCTX` を、添字付き・行0上昇コピーの場合へ拡張する。
+
+**Pred 2 ケース（Isabelle ✓, `translate_oper_pred`）。** 末尾対が $(0,0)$、または
+行 $i_1$ に一意の親が無いとき $M[n]=\mathrm{Pred}\,M=\mathrm{butlast}\,M$ なので、
+**末尾追加で測度が真に増大**する補題
+
+$$ \mathrm{translate}\,C \prec \mathrm{translate}\,(C\mathbin{@}[m])\qquad(\text{任意の対 }m,\ \text{`translate\_snoc\_increase`, Isabelle ✓}) $$
+
+の対偶 `translate_butlast_decrease`（末尾削除で減少）から従う。
+`translate_snoc_increase` は `translate` の再帰に沿う帰納で、`takeWhile`/`dropWhile`
+の末尾追加補題を用いて証明する（PrSS `omap_snoc_increase` 相当）。
+
+**bad ケース（未了, 本丸）。** $j_1=\mathrm{Lng}\,M-1$, 親 $j_0$, 良部
+$G=\mathrm{take}\,j_0\,M$, 悪部 $B=(M_j)_{j=j_0}^{j_1-1}$, 末尾 $\mathit{last}=M_{j_1}$
+とすると $M=G\oplus B\oplus(\mathit{last})$, $M[n]=G\oplus\bigoplus_{k=0}^{n-1}B_k$,
+$B_k=((M_{0,j}+k\delta_0,\,M_{1,j}))_{j=j_0}^{j_1-1}$。示すべきは
+
+$$ \mathrm{translate}\Bigl(G\oplus\bigoplus_{k} B_k\Bigr)\ \prec\ \mathrm{translate}\bigl(G\oplus B\oplus(\mathit{last})\bigr). $$
+
+- **文脈剥がし（`BADCTX`）**: $G$ の長さに関する帰納で $G=[]$（コア）に帰着。
+- **コア（`omap_core` 相当）**: 末尾対 $\mathit{last}$ は（$\mathit{last}$ の行0が
+  悪部の根 $M_{j_0}$ 以下なので）悪部の根の部分木に取り込まれ、**大きい先頭主要項**を
+  作る。一方 $n$ 個のコピー $B_k$ の先頭主要項は**添字優先で真に小さい**（コピーの行0
+  上昇 $k\delta_0$ は引数の森を深くするが添字＝行1は不変で、末尾取り込みが作る項に
+  添字優先で負ける）。これが PrSS の「多数の小さい項 $\prec$ ひとつの大きい項」に対応。
+  行0上昇という新要素がコア比較を PrSS より複雑にする。
 
 ---
 
@@ -195,9 +219,13 @@ $$ \{(T,M)\mid \mathrm{step}\,M\,T\}\ \subseteq\ \mathrm{translate}^{-1}(\prec) 
 | 線形性 | `olt_irrefl`/`olt_trans`/`olt_total` | ✓ |
 | $\mathrm{translate}$ | `translate` | ✓ |
 | task の例 | 各 sanity 補題 | ✓ |
+| 項の添字集合, 添字の出所 | `subs` / `subs_translate` | ✓ |
+| 末尾追加で増大 | `translate_snoc_increase` | ✓ |
+| 末尾削除で減少 | `translate_butlast_decrease` | ✓ |
+| 減少（Pred 2 ケース） | `translate_oper_pred` | ✓ |
+| 減少（bad ケース）`m_step_decreases` | — | 未了 |
 | 正規形 NF | — | 未了 |
 | NF 上の整礎性 | — | 未了 |
-| 減少補題 `m_step_decreases` | — | 未了 |
 | 停止性定理 | — | 未了 |
 
 ---
