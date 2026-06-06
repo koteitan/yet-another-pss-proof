@@ -18,7 +18,12 @@
     - ✅ 末尾追加で増大〔translate_snoc_increase〕
     - ✅ 末尾削除で減少〔translate_butlast_decrease〕
     - ✅ Pred 2 ケース（末尾(0,0)／親なし）〔translate_oper_pred〕
-    - 🚨 bad ケース（文脈剥がし BADCTX ＋ コア、行0上昇）
+    - ✅ 先頭添字支配（lead が小さければ ≺）〔lead / olt_P_of_lead_lt〕
+    - 🚨 bad ケース
+      - ✅ 文脈合同 BADCTX（G 帰納）〔translate_ctx_cong〕
+      - 🚨 単一木性（B@[last]・コピーが根 M_{j0} の単一木）
+      - 🚨 コア（copies ≺ B@[last]、スパイン下降→lead 支配）
+      - 🚨 oper の bad 分岐との接続（parent/δ0）
   - 🚨 整礎性（NF = translate(ST_PS) 上で ≺ 整礎）
     - ✅ 添字単調性（M[n] の行1値 ⊆ M の行1値、δ₁=0）〔oper_snd_subset / subs_translate_oper〕
     - 🚨 最大添字 n の階層化帰納（n=0 で PrSS CNF 帰着）

@@ -107,6 +107,14 @@ lemma ole_olt_trans: "x \<le>o y \<Longrightarrow> y <o z \<Longrightarrow> x <o
 lemma olt_ole_trans: "x <o y \<Longrightarrow> y \<le>o z \<Longrightarrow> x <o z"
   using olt_trans by blast
 
+text \<open>Strict monotonicity of a principal term in its argument / its tail.\<close>
+
+lemma olt_P_b: "b1 <o b2 \<Longrightarrow> P a b1 c1 <o P a b2 c2"
+  by simp
+
+lemma olt_P_c: "c1 <o c2 \<Longrightarrow> P a b c1 <o P a b c2"
+  by simp
+
 
 section \<open>The translation \<open>translate : pairseq \<Rightarrow> ord\<close>\<close>
 
@@ -132,6 +140,108 @@ termination
 
 lemma lead_translate: "lead (translate M) = (case M of [] \<Rightarrow> 0 | p # _ \<Rightarrow> snd p)"
   by (cases M) auto
+
+subsection \<open>Context congruence (BADCTX)\<close>
+
+text \<open>If two tails \<open>Z\<^sub>1, Z\<^sub>2\<close> share the same first pair's row-0 value and all
+  their other pairs lie strictly above it (so each is a single tree once read),
+  then a common good part \<open>G\<close> preserves a strict decrease between them.  This is
+  the context-peeling step of the bad-branch decrease: by induction on \<open>G\<close>, each
+  good pair either closes the comparison inside its own subtree or passes it on
+  one level deeper, until \<open>G\<close> is consumed and the comparison is exactly the one
+  on \<open>Z\<^sub>1, Z\<^sub>2\<close>.\<close>
+
+lemma translate_ctx_cong:
+  assumes base: "translate Z1 <o translate Z2"
+    and ne1: "Z1 \<noteq> []" and ne2: "Z2 \<noteq> []"
+    and root: "fst (hd Z1) = fst (hd Z2)"
+    and r1: "\<forall>x\<in>set (tl Z1). fst (hd Z1) < fst x"
+    and r2: "\<forall>x\<in>set (tl Z2). fst (hd Z2) < fst x"
+  shows "translate (G @ Z1) <o translate (G @ Z2)"
+proof (induction G rule: length_induct)
+  case (1 G)
+  show ?case
+  proof (cases G)
+    case Nil
+    then show ?thesis using base by simp
+  next
+    case (Cons g G')
+    let ?Pg = "\<lambda>q. fst g < fst q"
+    \<comment> \<open>row-0 of the shared root\<close>
+    have hd2: "fst (hd Z2) = fst (hd Z1)" using root by simp
+    show ?thesis
+    proof (cases "\<forall>x\<in>set G'. ?Pg x")
+      case allG: True
+      show ?thesis
+      proof (cases "?Pg (hd Z1)")
+        case True
+        \<comment> \<open>case (b): the whole tail nests under \<open>g\<close>; pass to \<open>G'\<close>\<close>
+        have aZ1: "\<forall>x\<in>set Z1. ?Pg x" using True r1 ne1 by (cases Z1) auto
+        have aZ2: "\<forall>x\<in>set Z2. ?Pg x" using True hd2 r2 ne2 by (cases Z2) auto
+        have all1: "\<forall>x\<in>set (G' @ Z1). ?Pg x" using allG aZ1 by auto
+        have all2: "\<forall>x\<in>set (G' @ Z2). ?Pg x" using allG aZ2 by auto
+        have tw1: "takeWhile ?Pg (G' @ Z1) = G' @ Z1"
+          using all1 by (simp add: takeWhile_eq_all_conv)
+        have dw1: "dropWhile ?Pg (G' @ Z1) = []"
+          using all1 by (simp add: dropWhile_eq_Nil_conv)
+        have tw2: "takeWhile ?Pg (G' @ Z2) = G' @ Z2"
+          using all2 by (simp add: takeWhile_eq_all_conv)
+        have dw2: "dropWhile ?Pg (G' @ Z2) = []"
+          using all2 by (simp add: dropWhile_eq_Nil_conv)
+        have e1: "translate (G @ Z1) = P (snd g) (translate (G' @ Z1)) Z"
+          by (simp only: Cons append_Cons translate.simps(2) tw1 dw1 translate.simps(1))
+        have e2: "translate (G @ Z2) = P (snd g) (translate (G' @ Z2)) Z"
+          by (simp only: Cons append_Cons translate.simps(2) tw2 dw2 translate.simps(1))
+        have "translate (G' @ Z1) <o translate (G' @ Z2)"
+          using "1.IH" Cons by simp
+        then show ?thesis using e1 e2 by (simp add: olt_P_b)
+      next
+        case False
+        \<comment> \<open>case (c): the tail is a sibling after \<open>g\<close>'s subtree; use the base case\<close>
+        have twZ1: "takeWhile ?Pg Z1 = []" using False ne1 by (cases Z1) auto
+        have dwZ1: "dropWhile ?Pg Z1 = Z1" using False ne1 by (cases Z1) auto
+        have twZ2: "takeWhile ?Pg Z2 = []" using False hd2 ne2 by (cases Z2) auto
+        have dwZ2: "dropWhile ?Pg Z2 = Z2" using False hd2 ne2 by (cases Z2) auto
+        have tw1: "takeWhile ?Pg (G' @ Z1) = G'"
+          using allG twZ1 by (simp add: takeWhile_append2)
+        have dw1: "dropWhile ?Pg (G' @ Z1) = Z1"
+          using allG dwZ1 by (simp add: dropWhile_append2)
+        have tw2: "takeWhile ?Pg (G' @ Z2) = G'"
+          using allG twZ2 by (simp add: takeWhile_append2)
+        have dw2: "dropWhile ?Pg (G' @ Z2) = Z2"
+          using allG dwZ2 by (simp add: dropWhile_append2)
+        have e1: "translate (G @ Z1) = P (snd g) (translate G') (translate Z1)"
+          by (simp only: Cons append_Cons translate.simps(2) tw1 dw1)
+        have e2: "translate (G @ Z2) = P (snd g) (translate G') (translate Z2)"
+          by (simp only: Cons append_Cons translate.simps(2) tw2 dw2)
+        show ?thesis using e1 e2 base by (simp add: olt_P_c)
+      qed
+    next
+      case False
+      \<comment> \<open>case (a): \<open>G'\<close> already drops to/below \<open>g\<close>; recurse on the shorter tail of \<open>G'\<close>\<close>
+      then obtain x where x: "x \<in> set G'" and nx: "\<not> ?Pg x" by blast
+      have tw1: "takeWhile ?Pg (G' @ Z1) = takeWhile ?Pg G'"
+        using x nx by (simp add: takeWhile_append1)
+      have dw1: "dropWhile ?Pg (G' @ Z1) = dropWhile ?Pg G' @ Z1"
+        using x nx by (simp add: dropWhile_append1)
+      have tw2: "takeWhile ?Pg (G' @ Z2) = takeWhile ?Pg G'"
+        using x nx by (simp add: takeWhile_append1)
+      have dw2: "dropWhile ?Pg (G' @ Z2) = dropWhile ?Pg G' @ Z2"
+        using x nx by (simp add: dropWhile_append1)
+      have e1: "translate (G @ Z1)
+          = P (snd g) (translate (takeWhile ?Pg G')) (translate (dropWhile ?Pg G' @ Z1))"
+        by (simp only: Cons append_Cons translate.simps(2) tw1 dw1)
+      have e2: "translate (G @ Z2)
+          = P (snd g) (translate (takeWhile ?Pg G')) (translate (dropWhile ?Pg G' @ Z2))"
+        by (simp only: Cons append_Cons translate.simps(2) tw2 dw2)
+      have "length (dropWhile ?Pg G') < length G"
+        using Cons by (simp add: le_imp_less_Suc length_dropWhile_le)
+      then have "translate (dropWhile ?Pg G' @ Z1) <o translate (dropWhile ?Pg G' @ Z2)"
+        using "1.IH" by blast
+      then show ?thesis using e1 e2 by (simp add: olt_P_c)
+    qed
+  qed
+qed
 
 subsection \<open>Sanity checks (the examples of the task description)\<close>
 

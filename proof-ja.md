@@ -150,13 +150,24 @@ $B_k=((M_{0,j}+k\delta_0,\,M_{1,j}))_{j=j_0}^{j_1-1}$。示すべきは
 
 $$ \mathrm{translate}\Bigl(G\oplus\bigoplus_{k} B_k\Bigr)\ \prec\ \mathrm{translate}\bigl(G\oplus B\oplus(\mathit{last})\bigr). $$
 
-- **文脈剥がし（`BADCTX`）**: $G$ の長さに関する帰納で $G=[]$（コア）に帰着。
-- **コア（`omap_core` 相当）**: 末尾対 $\mathit{last}$ は（$\mathit{last}$ の行0が
-  悪部の根 $M_{j_0}$ 以下なので）悪部の根の部分木に取り込まれ、**大きい先頭主要項**を
-  作る。一方 $n$ 個のコピー $B_k$ の先頭主要項は**添字優先で真に小さい**（コピーの行0
-  上昇 $k\delta_0$ は引数の森を深くするが添字＝行1は不変で、末尾取り込みが作る項に
-  添字優先で負ける）。これが PrSS の「多数の小さい項 $\prec$ ひとつの大きい項」に対応。
-  行0上昇という新要素がコア比較を PrSS より複雑にする。
+機構（洗練版・$n$ の帰納は不要）：
+
+1. **単一木性。** 悪部の根 $M_{j_0}$ の行0を $v_0$ とすると、$j_0$ は $j_1$ の行0
+   先祖（$i_1{=}1$ では `nextrel1` が `le0` を要求）ゆえ $j_0<j\le j_1$ の全要素は
+   行0 $>v_0$。コピーの行0上昇 $k\delta_0\ge0$ も $v_0$ を下げない。よって
+   $B\oplus(\mathit{last})$ もコピー列も**先頭 $M_{j_0}$ を根とする単一の木**であり、
+   $$ \mathrm{translate}(B\oplus(\mathit{last}))=P\,w_0\,A_M\,Z,\qquad
+      \mathrm{translate}(\textstyle\bigoplus_k B_k)=P\,w_0\,A_n\,Z, $$
+   ここで $w_0=M_{1,j_0}$（共通の先頭添字）。
+2. **文脈合同（`BADCTX`）。** $G$ の長さに関する帰納で
+   $$ \mathrm{translate}(Z_1)\prec\mathrm{translate}(Z_2)\ \Longrightarrow\ \mathrm{translate}(G\oplus Z_1)\prec\mathrm{translate}(G\oplus Z_2) $$
+   （$Z_1,Z_2$ が同じ先頭 $M_{j_0}$ をもち、残りの行0 $>v_0$ のとき）。各 $G$-ステップで
+   `takeWhile`/`dropWhile` の切れ目が $Z_1,Z_2$ で一致するため、比較が一段内側へ伝播する。
+3. **コア＝添字優先支配。** よって $A_n\prec A_M$ を示せばよい。共通スパインを下ると、
+   最深部で $A_M$ 側は末尾対 $\mathit{last}$ の項（添字 $w=M_{1,j_1}$）、$A_n$ 側はコピーの
+   項（先頭添字 $w_0=M_{1,j_0}$）。$i_1{=}1$ の `nextrel1` より $w_0<w$ なので
+   `olt_P_of_lead_lt`（**先頭添字が小さければ $\prec$**）で閉じる。行0上昇 $k\delta_0$ は
+   引数の森を深くするだけで先頭添字を変えないため、$n$ や上昇量に依らず一様に成立する。
 
 ---
 
