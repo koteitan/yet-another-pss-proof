@@ -19,11 +19,12 @@
     - ✅ 末尾削除で減少〔translate_butlast_decrease〕
     - ✅ Pred 2 ケース（末尾(0,0)／親なし）〔translate_oper_pred〕
     - ✅ 先頭添字支配（lead が小さければ ≺）〔lead / olt_P_of_lead_lt〕
-    - 🚨 bad ケース
+    - 🚨 bad ケース（i1 で2分割）
       - ✅ 文脈合同 BADCTX（G 帰納）〔translate_ctx_cong〕
-      - 🚨 単一木性（B@[last]・コピーが根 M_{j0} の単一木）
-      - 🚨 コア（copies ≺ B@[last]、スパイン下降→lead 支配）
-      - 🚨 oper の bad 分岐との接続（parent/δ0）
+      - ✅ 単一木補題〔translate_single_tree〕
+      - 🚨 i1=1（δ0>0, 入れ子単一木）: コア copies≺B@[last]（スパイン→lead 支配）
+      - 🚨 i1=0（δ0=0, 正確複製=PrSS兄弟）: PrSS omap_core 流の核
+      - 🚨 親子関係補題（le0⟹行0単調 等）＋ oper bad 分岐との接続
   - 🚨 整礎性（NF = translate(ST_PS) 上で ≺ 整礎）
     - ✅ 添字単調性（M[n] の行1値 ⊆ M の行1値、δ₁=0）〔oper_snd_subset / subs_translate_oper〕
     - 🚨 最大添字 n の階層化帰納（n=0 で PrSS CNF 帰着）

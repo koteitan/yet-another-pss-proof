@@ -141,6 +141,20 @@ termination
 lemma lead_translate: "lead (translate M) = (case M of [] \<Rightarrow> 0 | p # _ \<Rightarrow> snd p)"
   by (cases M) auto
 
+text \<open>If every pair after the head lies strictly above it in row 0, the whole
+  list reads as one tree: a single principal term with empty tail.\<close>
+
+lemma translate_single_tree:
+  assumes "\<forall>x\<in>set R. fst p < fst x"
+  shows "translate (p # R) = P (snd p) (translate R) Z"
+proof -
+  have tw: "takeWhile (\<lambda>q. fst p < fst q) R = R"
+    using assms by (simp add: takeWhile_eq_all_conv)
+  have dw: "dropWhile (\<lambda>q. fst p < fst q) R = []"
+    using assms by (simp add: dropWhile_eq_Nil_conv)
+  show ?thesis by (simp only: translate.simps(2) tw dw translate.simps(1))
+qed
+
 subsection \<open>Context congruence (BADCTX)\<close>
 
 text \<open>If two tails \<open>Z\<^sub>1, Z\<^sub>2\<close> share the same first pair's row-0 value and all
