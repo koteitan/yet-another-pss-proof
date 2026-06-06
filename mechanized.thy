@@ -136,4 +136,33 @@ text \<open>\<open>(0,0)(1,1)(2,2)(3,3) = p\<^sub>0(p\<^sub>1(p\<^sub>2(p\<^sub>
 lemma "translate [(0,0),(1,1),(2,2),(3,3)] = P 0 (P 1 (P 2 (P 3 Z Z) Z) Z) Z"
   by simp
 
+
+section \<open>Subscripts and their monotonicity under expansion\<close>
+
+text \<open>The set of subscripts occurring in a notation term.\<close>
+
+fun subs :: "ord \<Rightarrow> nat set" where
+  "subs Z = {}"
+| "subs (P a b c) = insert a (subs b \<union> subs c)"
+
+text \<open>Every subscript of \<open>translate M\<close> is a row-1 value of \<open>M\<close>: the subscripts
+  are exactly the \<open>y\<close>-components used, never invented.\<close>
+
+lemma subs_translate: "subs (translate M) \<subseteq> snd ` set M"
+proof (induction M rule: translate.induct)
+  case 1
+  show ?case by simp
+next
+  case (2 p rest)
+  let ?tw = "takeWhile (\<lambda>q. fst p < fst q) rest"
+  let ?dw = "dropWhile (\<lambda>q. fst p < fst q) rest"
+  have tw: "set ?tw \<subseteq> set rest" by (auto dest: set_takeWhileD)
+  have dw: "set ?dw \<subseteq> set rest" by (metis dropWhile_eq_drop set_drop_subset)
+  have A: "subs (translate ?tw) \<subseteq> snd ` set rest"
+    by (rule subset_trans[OF 2(1) image_mono[OF tw]])
+  have B: "subs (translate ?dw) \<subseteq> snd ` set rest"
+    by (rule subset_trans[OF 2(2) image_mono[OF dw]])
+  from A B show ?case by auto
+qed
+
 end
