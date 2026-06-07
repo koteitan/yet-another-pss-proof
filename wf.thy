@@ -884,6 +884,35 @@ proof -
 qed
 
 
+subsection \<open>Cantor normal form: siblings are non-increasing\<close>
+
+text \<open>The within-level order is not well-founded on \<open>nfinv\<close> terms alone (e.g.
+  \<open>p\<^bsub>0\<^esub>(0) + p\<^bsub>0\<^esub>(p\<^bsub>0\<^esub>(0))\<close> has increasing siblings yet satisfies \<open>nfinv\<close>); the
+  genuine standard forms additionally have \<^emph>\<open>non-increasing\<close> sibling sums (CNF).\<close>
+
+fun cnf :: "three \<Rightarrow> bool" where
+  "cnf Z = True"
+| "cnf (P a b Z) = cnf b"
+| "cnf (P a b (P e f g)) = (cnf b \<and> \<not> (P a b Z <o P e f Z) \<and> cnf (P e f g))"
+
+lemma cnf_translate_diagSeq_aux: "cnf (translate (diagSeq u (u + n)))"
+proof (induction n arbitrary: u)
+  case 0
+  have e: "diagSeq (Suc u) u = []" by (simp add: diagSeq_def)
+  show ?case using translate_diagSeq[of u u] e by simp
+next
+  case (Suc n)
+  have e: "translate (diagSeq u (u + Suc n))
+           = P u (translate (diagSeq (Suc u) (u + Suc n))) Z"
+    using translate_diagSeq[of u "u + Suc n"] by simp
+  have shift: "diagSeq (Suc u) (u + Suc n) = diagSeq (Suc u) (Suc u + n)" by simp
+  show ?case using e shift Suc.IH[of "Suc u"] by simp
+qed
+
+lemma cnf_diag: "cnf (translate (diagSeq 0 v))"
+  using cnf_translate_diagSeq_aux[of 0 v] by simp
+
+
 subsection \<open>Reduction of well-foundedness to within-maxsub-level\<close>
 
 text \<open>Since \<open><o\<close>-descent on \<open>NF\<close> is subscript-monotone (@{thm [source] maxsub_mono_NF'}),
