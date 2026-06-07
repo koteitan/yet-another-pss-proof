@@ -298,6 +298,19 @@ lemma olt_Zero_iff: "Zero <\<^sub>o x \<longleftrightarrow> x \<noteq> Zero"
 lemma olt_ZeroI: "x \<noteq> Zero \<Longrightarrow> Zero <\<^sub>o x"
   by (simp add: olt_Zero_iff)
 
+text \<open>Each critical subterm is strictly below the collapse (it is its own witness).\<close>
+
+lemma Kn_lt_Th:
+  assumes "\<gamma> \<in> Kn n a" shows "\<gamma> <\<^sub>o Th n a"
+proof (cases \<gamma>)
+  case (Om p) thus ?thesis using assms by auto
+next
+  case (Th p e) thus ?thesis using assms by auto
+next
+  case (Su xs)
+  with assms Kn_isH[OF assms] show ?thesis by simp
+qed
+
 subsection \<open>Cardinality is monotone on principal terms\<close>
 
 text \<open>For principal (\<open>\<Omega>\<close>/\<open>\<vartheta>\<close>) terms, \<open>a <\<^sub>o b \<Longrightarrow> FC a \<le> FC b\<close>.  This lets the
