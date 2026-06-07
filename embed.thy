@@ -150,4 +150,13 @@ proof -
   show "wf Rnf" by (rule wf_subset[OF wfT sub])
 qed
 
+text \<open>End-to-end: PSS termination follows from the single embedding obligation
+  \<open>op\<close> (order-preservation on \<open>NF\<close>), with the well-foundedness core @{thm [source]
+  masterF} as the only other (internal) gap.\<close>
+
+theorem step_terminates_via_embed:
+  assumes op: "\<And>w x. w \<in> NF \<Longrightarrow> x \<in> NF \<Longrightarrow> w <o x \<Longrightarrow> embed w <\<^sub>o embed x"
+  shows "wf {(T, M). M \<in> ST_PS \<and> step M T}"
+  by (rule step_terminates[OF wf_Rnf_via_embed[OF op]])
+
 end
