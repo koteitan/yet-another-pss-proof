@@ -495,3 +495,15 @@ end-to-end チェーン（`embed.step_terminates_via_embed`）構築・全コミ
   2. **`op`**（embed 順序保存, NF 上 `w≺x⟹embed w<\<^sub>o embed x`）。NF 不変条件（CNF/bfb/maxsub）依存。
 - 道具（全証明済）: shift 順序自己同型 / acc 不変 / gnd/norm/wdt / Mn/AccB/Acc（ground 階層, p<n 用に
   subscript 版へ要再設計）/ omfree_embed / bag_mono_wF。
+
+### ★ 到達点 (2026-06-08 続き): 停止性 = 3義務に集約（実 sorry 2 ＋ op 仮定）
+PSS 停止性 ⟸ **(1) `olt_trans`**（wo:384, 推移律＝Towsner Lemma 2.1 順序メタ）
+＋ **(2) `L_ThF[p<n]`**（buchholz:434, Buchholz ϑ 崩壊核）＋ **(3) `op`**（embed の NF 順序保存）。
+- **順序メタ理論を整備**: `olt_asym`（非対称性）/`olt_irrefl` を完全証明（`olt_trans` 依存）。
+  asym は「より小さい 2-cycle 抽出＋size-IH」で 8/9 ケース＋Th/Th の subscript 排他・domination を
+  直接証明、XA∧YA（双方が相手の臨界部分項に支配）のみ `olt_ole_trans` 経由で trans に帰着。
+- `olt_trans` の証明計画: size 帰納＋ c の形で分岐。c=Om は IH（小さい三つ組）＋multiset で可（分析済）、
+  c=Su は multiset bookkeeping、c=Th（K 条件）が最難。これが残る順序メタ唯一の sorry。
+- 反例検証（`tools/ot_order.py`）: maxsub は general omfree で非単調（382件, NF でのみ単調）、
+  width も非単調、p<n は ≤d/domination に非帰着（967件）＝崩壊核は近道なし確定。
+- 参考: PrSS（姉妹, 完成済）は ε_0＝`hord=H multiset` の accp/multp 構成。PSS の崩壊は別物（ε_0 超）。
