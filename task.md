@@ -29,8 +29,12 @@
     - ✅ 順序核: ≺ は spine の slex を refine、不変条件下で maxsub 単調〔olt_imp_slex / climb_mono / maxsub_mono_cond〕
     - ✅ spine 再定式化: spine(translate M)=map snd(incpref M)、maxsub=行1最大〔spine_translate_eq / maxsub_translate / maxsub_eq_climb_iff〕
     - ✅ NF 不変条件 nfinv を全 ST_PS で証明（対角基底＋oper保存 butlast@copies、コピー解析不要）〔nfinv_ST_PS / nfinv_diag / nfinv_butlast / nfinv_append / oper_eq_butlast_append / incpref 各補題〕
-    - ✅ **maxsub 単調性 on NF**（w≺x ⟹ maxsub w ≤ maxsub x、降下で最大添字非増加）〔maxsub_mono_NF〕
-    - 🚨 同一 maxsub レベル内の整礎性（maxsub 階層化帰納の段＝ψ崩壊の本丸）★残る本質的核
+    - ✅ **maxsub 単調性 on NF**（w≺x ⟹ maxsub w ≤ maxsub x、降下で最大添字非増加）〔maxsub_mono_NF / maxsub_mono_NF'〕
+    - ✅ wfimg → within-level wf への還元（maxsub 減少部を wf_union_compatible で処理）〔wf_Rnf_from_within_level〕
+    - ✅ CNF 不変条件（兄弟非増加）の述語＋対角ケース〔cnf / cnf_diag〕（全 NF で cnf 成立を経験確認 952/952）
+    - 🚨 同一 maxsub レベル内の整礎性 ★残る唯一の本質的核（＝Buchholz ψ崩壊整礎性）
+      - 🚨 CNF の oper 保存〔cnf_ST_PS〕（コピー構造解析、減少補題 bad 規模）
+      - 🚨 崩壊マルチセット整礎性（NF項=添字0のCNF和 ⟹ ≺=引数の multiset 拡大、wfp_multp＋根添字レベル入れ子帰納。memo.md 参照）
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
