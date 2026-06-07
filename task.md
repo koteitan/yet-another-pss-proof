@@ -44,7 +44,8 @@
       - ✅ **shift＝順序自己同型 `shift_olt`** ＋ `shift_wfo`/`acc_shift`/`acc_shift_pR`〔wo/buchholz, ground 正規化の基盤〕
       - ✅ distinguished-set 定義 Mn/AccB/Acc（ground 階層）＋単調性＋generic `Awf`/`wf_on_Awf`〔buchholz〕
       - ✅ **致命バグ修正**: `Om int` で全体 `wf pR` は偽（`Om 0>Om(-1)>…` 無限降下）。embed 像は **Om-free**（`omfree_embed`）＝可算。WF 対象を **Om-free 項** に制限〔`omfree`/`oltRwF`/`pRF`〕
-      - 🚨 **`masterF`**（= Buchholz WO 核, 真の sorry）: 全 Om-free wfo 項が `oltRwF`-acc。構造帰納＋Su は bag 還元＋Th は §3.7 distinguished-set（Lemma 3.10/3.11, Ω scaffold＋norm/shift）。★残る本丸ただ一つ
+      - ✅ **`masterF`（証明済）**: 全 Om-free wfo 項が `oltRwF`-acc。構造帰納（Om は omfree で消滅／Su は `bag_mono_wF`+`acc_of_bag_elemsF`／Th は `L_ThF`）
+      - 🚨 **`L_ThF`（domination/p=n/Su 証明済, 残 `p<n` 1ケースのみ ＝唯一の sorry）**: `omfree d⟹wfo d⟹d∈acc⟹Th n d∈acc`。`p<n` 交差添字 = 真の Buchholz ϑ 崩壊核（Ω scaffold＋制御集合）★
       - ✅ `wf_oltRwF`（masterF から）〔buchholz〕
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
       - ✅ embed/eprincs/collapse＋像の well-formed〔wfo_embed〕＋**Om-free〔omfree_embed〕**（int 化済: `Th (int a) ...`）
