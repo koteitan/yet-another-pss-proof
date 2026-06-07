@@ -388,3 +388,33 @@ Towsner §3.2 を全文精読（`/tmp/tow.txt` 抽出, Def 3.1–3.7 / Lemma 3.8
   sum→multiset 還元（wflevel）を poly 順序で再具体化。ただし **accinfra（汎用 acc）と
   還元の設計パターンは流用可**、`three`/translate/decrease/wf.thy 還元は無傷。
 - 結論: **(b) が (a) を複雑性で支配**（poly=単一ϑ+shift < 絶対=添字ϑ+int+shift）。
+
+## (★ユーザー決定 2026-06-08) (a) 絶対系のまま §3 を「書き換え転写」で実行
+
+footnote 8（絶対系でも shift 不可避）を伝えた上で、ユーザーは **(a) 絶対系を維持し §3 の
+完全証明を絶対系へ書き換えながら転写**する方針を選択。これを実行する。
+
+### L_Th（崩壊閉包）scratch 検証で p<s ギャップを正確に切り出し（`git/scratch_lth.thy`, ROOT外）
+`d∈acc oltRw ⟹ Th s d∈acc oltRw` を d の acc 帰納で試行。骨格（`induction set: Wellfounded.acc`,
+`1.hyps`=d∈acc, `1.IH`=IH, `pred_acc`=acc_downward）で **easy ケースが全通過**＝検証済:
+- Om 前者 / Th 第一選言（臨界支配）: `dom_acc`（γ∈Kn s d は `Kn_le_self`+`acc_downward` で acc, q≤oγ で downward）。
+- Th 第二選言 p=s（e<o d）: `(e,d)∈oltRw` ＋ 主 IH。
+**残 `sorry` は Su 前者 と Th 第二選言 p<s の2つのみ**。
+
+### p<s が本丸（shift 不可避を確定）
+`Th p e <o Th s d`（p<s, ∀γ∈Kn p e. γ<o Th s d）の引数 e は：部分項でなく size/FC とも大きく
+（反例 e=`Th100(Om9)`, FC9, vs a=`Th6(Om6)` FC0）、**size/FC/構造のいずれの測度でも e の acc を
+供給不能**。Towsner Lemma 3.10 も `ϑ(α^{≤0}_{-1})` と明示 shift を使用。⟹ **絶対転写でも明示 shift 必須。**
+Python 移植（`work/ot_order.py`）で確認: 可算項（FCset 空）上 `olt` は**線形整礎**（size≤4,idx≤4 で
+incomparable=0, cycle=0）。最小元は最深ネスト `Th0(Th1(Th2(Om2)))`。
+
+### 確定設計
+1. **datatype を `Om int`/`Th int` 化**（shift が束縛部分項で負添字を生む例
+   `Su[Om3, Th0(Om0)]` を ground=3 で下げ→`Th(-3)(Om(-3))` ⟹ int 必須）。`wo.thy` の順序補題群を
+   int で再確立。FC は -∞ 対応（empty=countable を 0 と区別）。
+2. **shift（Def 3.3 絶対版）/ ground G（Def 3.6）/ 正規化 α\*（Def 3.6）** を定義。
+3. **M_n/Acc_n を ground 階層**（Def 3.7 絶対版, `buchholz.thy` 全面書換）。`Mlev`(FC-max) は破棄。
+4. **Lemma 3.8（和閉, shift付）/3.10（ϑ 閉, p<s を shift で解消）/3.11（ϑ で ground 降下）/3.12（構造帰納）**
+   を絶対系へ転写 → `wf pR`。
+5. 還元（`wflevel: wf_oltRw_of_wf_pR`, `accinfra`）と `embed`（int 化）を接続。
+継続用: scratch_lth.thy の easy ケース骨格はそのまま int 版 L_Th に流用可（p<s だけ shift で差替）。
