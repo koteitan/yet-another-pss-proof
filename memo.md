@@ -545,3 +545,17 @@ c=Su[a=Su] の witness 論法（∀v∈as. v<o z, z∈zs ⟹ witness z）で **z
   IH から要素 irrefl/asym が使える）。既証明の c=Om/c=Su[a-principal]/c=Th はそのまま combined に移植可。
   (B) c=Su[a=Su] だけ別途、要素 irrefl を size-IH で局所証明して埋める。
 - 現状の order メタ理論: c=Su[a=Su] 以外すべて証明済（＝Th/Th/Th 含む本質部分は完了）。
+
+### ★ 確定 (2026-06-08): order メタ理論は単純 size 帰納では閉じない（Towsner Lemma 2.1 本体）
+`olt_irrefl` も自立しない: Th-first-disjunct（`Th m a ≤o γ`, γ∈Kn m a）の γ=Th r h サブケースで
+δ∈Kn r h について `Th m a≤oδ<oγ<o Th m a` の cycle が出て trans/asym が要る（Om サブケースのみ
+自己比較 `Om r<o Om r=False` で自立）。∴ irrefl⟷asym⟷trans の 3-way 相互依存。
+さらに **combined induction でも単純 size measure では不足**: irrefl(w=Th m a) が
+`asym(γ,w)=trans(γ,w,γ)+irrefl(γ)` を要し、`trans(γ,w,γ)` の measure=2·size γ+size w が
+irrefl(w) の budget（〜2 size w）を超え得る（size γ>size w/2 のとき）。
+⟹ Towsner Lemma 2.1（Key Lemma 圏）は **careful な measure 設計**（部分項深さ等の別測度 or
+Towsner の Dn,γ・!nγ 構成）が要る研究レベル。c=Su[a=Su] はこれに blocked。
+
+**∴ 残3義務はいずれも substantial**: olt_trans[c=Su[a=Su]]（=order メタ理論完成, careful measure）、
+L_ThF[p<n]（Buchholz ϑ 崩壊 WO, 制御集合）、op（NF↔ot 順序保存）。
+それ以外（end-to-end 還元・shift 自己同型・masterF・olt_trans の主要部・omfree 等）は全証明済・緑。
