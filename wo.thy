@@ -69,6 +69,54 @@ fun Kn :: "nat \<Rightarrow> ot \<Rightarrow> ot set" where
 lemma finite_Kn [simp]: "finite (Kn n a)"
   by (induction a) auto
 
+text \<open>The cardinalities of a critical subterm \<open>\<gamma> \<in> Kn n a\<close> are exactly the
+  cardinalities of \<open>a\<close> below \<open>n\<close>; hence \<open>FC \<gamma> \<le> FC (\<vartheta>\<^sub>n a)\<close>.\<close>
+
+lemma FCset_Kn: "\<gamma> \<in> Kn n a \<Longrightarrow> FCset \<gamma> \<subseteq> {k \<in> FCset a. k < n}"
+proof (induction a arbitrary: \<gamma>)
+  case (Om m) thus ?case by (auto split: if_splits)
+next
+  case (Th p e)
+  show ?case
+  proof (cases "n < p")
+    case True
+    with Th.prems have "\<gamma> \<in> Kn n e" by simp
+    with Th.IH have "FCset \<gamma> \<subseteq> {k \<in> FCset e. k < n}" by simp
+    thus ?thesis using True by auto
+  next
+    case False
+    with Th.prems have "\<gamma> = Th p e" by simp
+    thus ?thesis using False by auto
+  qed
+next
+  case (Su xs)
+  then obtain x where x: "x \<in> set xs" "\<gamma> \<in> Kn n x" by auto
+  with Su.IH have hsub: "FCset \<gamma> \<subseteq> {k \<in> FCset x. k < n}" by simp
+  show ?case
+  proof
+    fix xa assume "xa \<in> FCset \<gamma>"
+    with hsub have "xa \<in> FCset x" "xa < n" by auto
+    with x(1) show "xa \<in> {k \<in> FCset (Su xs). k < n}" by auto
+  qed
+qed
+
+lemma FC_Kn: "\<gamma> \<in> Kn n a \<Longrightarrow> FC \<gamma> \<le> FC (Th n a)"
+proof -
+  assume "\<gamma> \<in> Kn n a"
+  hence sub: "FCset \<gamma> \<subseteq> {k \<in> FCset a. k < n}" by (rule FCset_Kn)
+  show ?thesis
+  proof (cases "FCset \<gamma> = {}")
+    case True thus ?thesis by (simp add: FC_def)
+  next
+    case False
+    have ne3: "FCset (Th n a) \<noteq> {}" using sub False by auto
+    have subTh: "FCset \<gamma> \<subseteq> FCset (Th n a)" using sub by simp
+    have "Max (FCset \<gamma>) \<le> Max (FCset (Th n a))"
+      by (rule Max_mono[OF subTh False]) simp
+    thus ?thesis using False ne3 by (auto simp: FC_def)
+  qed
+qed
+
 text \<open>A list element is strictly smaller than its sum (for termination below).\<close>
 
 lemma size_lt_Su: "x \<in> set xs \<Longrightarrow> size x < size (Su xs)"
