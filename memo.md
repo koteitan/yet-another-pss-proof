@@ -418,3 +418,25 @@ incomparable=0, cycle=0）。最小元は最深ネスト `Th0(Th1(Th2(Om2)))`。
    を絶対系へ転写 → `wf pR`。
 5. 還元（`wflevel: wf_oltRw_of_wf_pR`, `accinfra`）と `embed`（int 化）を接続。
 継続用: scratch_lth.thy の easy ケース骨格はそのまま int 版 L_Th に流用可（p<s だけ shift で差替）。
+
+### 進捗 (2026-06-08 続き, すべて緑・コミット済)
+- **int 化完了**: `ot=Om int|Th int ot|Su`。`wo`/`wflevel`/`embed` 緑。旧 FC 階層補題
+  （FC_Th_le/FC_Kn/FC_mono_pr）は int で破綻（FC ∅=0 と負値）するので削除。`buchholz` はスタブ。
+- **shift（Towsner Def 3.3 global 版）完成**: `shift k`＝全 Om/Th 添字に +k。
+  `shift_shift/0/inv/inj/isH/eq/eqTh/eqOm/FCset/Kn` ＋ **`shift_olt`（順序自己同型, sorry無し）**
+  証明済（Su/Su case は `image_mset_diff_if_inj`、Th/Th は展開形 eq 補題で解決）。
+  ⟹ **`acc oltRw` は shift 不変**（shift は自己同型＝降下列を降下列に写す）。
+
+### shift だけでは p<s は閉じない（要 M_n 階層, 確認済）
+`Th p e <o Th s d`(p<s) で shift(s-p)(Th p e)=Th s(shift(s-p)e) は subject の引数 d より
+大きくなりうる（反例: shift1(Th100(Om9))=Th101(Om10) は Om6 より上）＝acc-IH on d で拾えない。
+∴ shift 不変だけでは不足。**Towsner §3.7 の distinguished-set（M_n/Acc_n）が必須**。
+
+### 確定設計：width 階層（絶対系 §3.7, nat 添字維持）
+Towsner は top を 0 に正規化（α*=α^{≥0}_{-FC}）し ground で階層化。絶対系（shift は完全自己同型）では:
+- **正規化** `norm a = shift (- FC a) a`（FCset≠∅ のとき top→0; countable は不変）。`acc` は shift 不変なので `a∈acc ⟺ norm a∈acc`。
+- **width** `w(a) = FC a - G a`（FCset≠∅）/ countable は別扱い。Towsner の n＝-G(α*)＝width。**ℕ に収まる**。
+- **M_n** = {正規化済（FC=0 or countable）, width ≤ n, 臨界部分項の正規化が ⋃_{i<n}Acc_i}。`Acc_n`=M_n の acc 部分。
+- Thm 3.12 は**構造帰納**（Su/Th/Om を closure 補題 3.8/3.10 で閉じる）。L_Th(3.10) の p<s は
+  正規化＋width-IH で引数を下位 width に落として処理。
+次段: `wo.thy` に `G`(ground, Min FCset)・`norm`・width を定義 → `buchholz.thy` に M_n/Acc_n と 3.8/3.10/3.11/3.12。

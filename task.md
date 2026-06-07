@@ -29,20 +29,21 @@
   - 🚨 整礎性 wfimg（NF = translate(ST_PS) 上で ≺ 整礎）★残る未証明
     - ✅ wfimg → 対角 accessibility への還元（oper側は減少補題で無料）〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS / oper_eq_self_short〕
     - ✅ 補助: maxsub 単調性 on NF・within-level 還元（旧ルート、現在は Towsner ルートで直接 wf を狙う）〔wf.thy: maxsub_mono_NF / wf_Rnf_from_within_level / nfinv_ST_PS / spine_translate_eq 等〕
-    - 🚨 **Towsner distinguished-set WF 核**〔wo.thy〕（NF⊄Buchholz OT 判明→別 datatype `ot` で整礎順序を組み NF を埋め込む）
-      - ✅🏺 記法 `ot`(Om/Th/Su)・FC・critical subterms Kn・Kn_size〔wo.thy〕（多相系: `Ω(J)` de Bruijn＋単一 `ϑ` に作り直し）
-      - ✅🏺 K 条件付き真の整礎順序 `<\<^sub>o`（Towsner Def 2.3）を function+termination で定義〔olt / ole〕（多相系: Def 3.5 に作り直し）
-      - ✅🏺 Zero 最小性・和順序 ⊆ multiset 拡大〔not_olt_Zero / olt_Zero_iff / olt_Su_imp_mult〕（順序定義依存→作り直し。和⊆multiset の骨格は流用可）
-      - ✅ **汎用 acc 基盤**〔accinfra.thy: acc_imp_acc_trancl / acc_pullback / acc_mult_of_elems（要素ごと multiset 整礎）〕（記法非依存→**そのまま再利用**）
-      - ✅🏺 **和への還元**〔wflevel.thy: wfo_Kn / bag_mono_w / acc_of_bag_elems / princ_acc_lift / **wf_oltRw_of_wf_pR**〕＝ `wf pR ⟹ wf oltRw`（順序依存→作り直し。構造はそのまま移植可）
-      - 🚨✨ **`wf pR`**（well-formed principal 順序 = Om/Th 上の整礎性）★残る本丸＝古典 Buchholz WF（**多相系へ移植すれば §3.2 Lemma 3.8–3.12 をほぼ直接移植で閉じる**）
-        - ✅🏺 FC 階層化補題群〔Kn_isH / FCset_Kn / FC_Kn / FCset_Th_eq_Kn / FC_Th_le / **FC_mono_pr** / Kn_lt_Th〕（多相系 FC/G で再証明）
-        - ✅ **distinguished-set 構築**〔buchholz.thy: Mlev / Awf / AccBelow / 単調性 / wf_on_Awf〕
-        - ✅ **PC（前者閉包）⟸ Ifull**＋**(II) Acc_n⊆acc pR**＋**`wf_pR_of_Ifull` / `wf_oltRw_of_Ifull`**〔buchholz.thy〕＝WF核は単一補題 `Ifull` に帰着
-        - 🚨✨ **`Ifull`**（=Towsner Thm 3.12: 全 wfo principal a が a∈Acc(FC a)）★残る唯一の穴。Part1(a∈Mlev: 臨界部分項 FC<N が AccBelow に, 下位帰納で可)＋**Part2(within-level acc(R|M))**。Part2 は同添字 `ϑ_n e <o ϑ_n d` の引数鎖 d>e>… の整礎性を要し、引数は FC≥N（高位）＝**Towsner の ground 正規化（α*）が必要**。絶対系でも ground 装置の移植が要る＝(a) でも多相系装置の絶対版が必要と判明。
+    - 🚨 **distinguished-set WF 核**〔wo.thy/buchholz.thy〕（§3.2 を絶対系 `ot` に「書き換え転写」: ユーザー決定 2026-06-08）
+      - ✅ 記法 `ot`(Om int/Th int/Su)・FCset・FC・critical subterms Kn・Kn_size〔wo.thy〕（**int 化済**: shift に負添字が要る）
+      - ✅ K 条件付き整礎順序 `<\<^sub>o`（Towsner Def 2.3）function+termination〔olt / ole〕
+      - ✅ Zero 最小性・Kn 単調補題群〔not_olt_Zero / olt_Zero_iff / Kn_lt_Th / Kn_mono_le / KnTh / Kn_le_self / olt_Th_of_le_Kn〕
+      - ✅ **shift（Towsner Def 3.3 global）＝順序自己同型**〔wo.thy: shift / shift_shift/0/inv/inj/isH/eq/eqTh/eqOm/FCset/Kn / **shift_olt**〕＝正規化の基盤
+      - ✅ **汎用 acc 基盤**〔accinfra.thy〕（記法非依存・再利用）
+      - ✅ **和→principal 還元**〔wflevel.thy: wfo_Kn / bag_mono_w / acc_of_bag_elems / princ_acc_lift / **wf_oltRw_of_wf_pR** / wf_oltRw_of_principals〕＝ `wf pR ⟹ wf oltRw`（int で緑）
+      - 🚨 **`wf pR`**（well-formed principal 整礎）★残る本丸＝古典 Buchholz WF。§3.2 を絶対系へ width 階層で転写中。
+        - 🚨 ground `G`(=Min FCset)・正規化 `norm`(=shift(-FC), top→0)・width `w`(=FC-G)〔wo.thy, 次段〕
+        - 🚨 width 階層 M_n/Acc_n（§3.7 絶対版）〔buchholz.thy 再構築中, 旧 FC-max `Mlev` は破棄〕
+        - 🚨 Lemma 3.8（和閉）/ 3.10（ϑ閉, p<s は norm+width-IH）/ 3.11（ϑ で ground 降下）/ 3.12（構造帰納）→ `wf pR`
+        - 参考: L_Th easy ケース骨格は `scratch_lth.thy`（ROOT外）で検証済（Om/first-disj/p=s 通過, 残 Su・p<s）
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
-      - ✅🏺 embed/eprincs/collapse（単一 principal は Su 化しない）＋像の well-formed〔wfo_embed〕（多相系: `P a b c ↦ ϑ(Ω#…)` へ作り直し）
-      - 🚨🏺 NF 上で `w ≺ x ⟹ embed w <\<^sub>o embed x`（NF でのみ素朴 lex=真順序。off-NF は bad chain で不成立を確認）→ `wf Rnf`（多相 `ot`・de Bruijn 向けに作り直し）
+      - ✅ embed/eprincs/collapse＋像の well-formed〔wfo_embed〕（int 化済: `Th (int a) ...`）
+      - 🚨 NF 上で `w ≺ x ⟹ embed w <\<^sub>o embed x`（NF でのみ素朴 lex=真順序）→ `wf Rnf`〔wf_Rnf_via_embed で接続〕
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
