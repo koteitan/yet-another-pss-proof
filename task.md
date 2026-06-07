@@ -37,7 +37,9 @@
       - ✅🏺 **和への還元**〔wflevel.thy: wfo_Kn / bag_mono_w / acc_of_bag_elems / princ_acc_lift / **wf_oltRw_of_wf_pR**〕＝ `wf pR ⟹ wf oltRw`（順序依存→作り直し。構造はそのまま移植可）
       - 🚨✨ **`wf pR`**（well-formed principal 順序 = Om/Th 上の整礎性）★残る本丸＝古典 Buchholz WF（**多相系へ移植すれば §3.2 Lemma 3.8–3.12 をほぼ直接移植で閉じる**）
         - ✅🏺 FC 階層化補題群〔Kn_isH / FCset_Kn / FC_Kn / FCset_Th_eq_Kn / FC_Th_le / **FC_mono_pr** / Kn_lt_Th〕（多相系 FC/G で再証明）
-        - 🚨✨ 入れ子帰納（崩壊補題 L_Th）：絶対系では構造帰納＋引数 acc 帰納＋述語 size 帰納＋添字/FC（同FC・異添字 p<n・同FC の `Om N` が壁）。**多相系では §3.2 の Acc_n/M_n 直接移植に置換され閉じる**
+        - ✅ **distinguished-set 構築**〔buchholz.thy: Mlev / Awf / AccBelow / 単調性 / wf_on_Awf〕
+        - ✅ **PC（前者閉包）⟸ Ifull**＋**(II) Acc_n⊆acc pR**＋**`wf_pR_of_Ifull` / `wf_oltRw_of_Ifull`**〔buchholz.thy〕＝WF核は単一補題 `Ifull` に帰着
+        - 🚨✨ **`Ifull`**（=Towsner Thm 3.12: 全 wfo principal a が a∈Acc(FC a)）★残る唯一の穴。Part1(a∈Mlev: 臨界部分項 FC<N が AccBelow に, 下位帰納で可)＋**Part2(within-level acc(R|M))**。Part2 は同添字 `ϑ_n e <o ϑ_n d` の引数鎖 d>e>… の整礎性を要し、引数は FC≥N（高位）＝**Towsner の ground 正規化（α*）が必要**。絶対系でも ground 装置の移植が要る＝(a) でも多相系装置の絶対版が必要と判明。
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
       - ✅🏺 embed/eprincs/collapse（単一 principal は Su 化しない）＋像の well-formed〔wfo_embed〕（多相系: `P a b c ↦ ϑ(Ω#…)` へ作り直し）
       - 🚨🏺 NF 上で `w ≺ x ⟹ embed w <\<^sub>o embed x`（NF でのみ素朴 lex=真順序。off-NF は bad chain で不成立を確認）→ `wf Rnf`（多相 `ot`・de Bruijn 向けに作り直し）
