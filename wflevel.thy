@@ -41,4 +41,31 @@ lemma wfpart_acc:
   "a \<in> wfpart S \<Longrightarrow> a \<in> Wellfounded.acc {(x,y). x <\<^sub>o y \<and> x \<in> S \<and> y \<in> S}"
   by (simp add: wfpart_def)
 
+text \<open>The order restricted to \<^term>\<open>wfpart S\<close> is well-founded.\<close>
+
+lemma wf_on_wfpart:
+  "wf {(x,y). x <\<^sub>o y \<and> x \<in> wfpart S \<and> y \<in> wfpart S}"
+proof -
+  have sub: "{(x,y). x <\<^sub>o y \<and> x \<in> wfpart S \<and> y \<in> wfpart S}
+             \<subseteq> {(x,y). x <\<^sub>o y \<and> x \<in> S \<and> y \<in> S}"
+    by (auto simp: wfpart_def)
+  have "\<And>x. x \<in> Wellfounded.acc {(x,y). x <\<^sub>o y \<and> x \<in> wfpart S \<and> y \<in> wfpart S}"
+  proof -
+    fix x
+    show "x \<in> Wellfounded.acc {(x,y). x <\<^sub>o y \<and> x \<in> wfpart S \<and> y \<in> wfpart S}"
+    proof (cases "x \<in> wfpart S")
+      case True
+      hence "x \<in> Wellfounded.acc {(x,y). x <\<^sub>o y \<and> x \<in> S \<and> y \<in> S}" by (rule wfpart_acc)
+      thus ?thesis using acc_subset[OF sub] by (rule rev_subsetD)
+    next
+      case False
+      hence "\<And>y. (y, x) \<in> {(x,y). x <\<^sub>o y \<and> x \<in> wfpart S \<and> y \<in> wfpart S}
+              \<Longrightarrow> y \<in> Wellfounded.acc {(x,y). x <\<^sub>o y \<and> x \<in> wfpart S \<and> y \<in> wfpart S}"
+        by auto
+      thus ?thesis by (rule accI)
+    qed
+  qed
+  thus ?thesis by (subst wf_iff_acc) blast
+qed
+
 end
