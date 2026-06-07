@@ -32,7 +32,10 @@
       - ✅ K 条件付き真の整礎順序 `<\<^sub>o`（Towsner Def 2.3）を function+termination で定義〔olt / ole〕
       - ✅ Zero 最小性・和順序 ⊆ multiset 拡大〔not_olt_Zero / olt_Zero_iff / olt_Su_imp_mult〕
       - ✅ **assembly**: `wf principalR ⟹ wf {(a,b). a<\<^sub>o b ∧ wfo a ∧ wfo b}`〔wfo / bag / bag_mono / wf_olt_of_principal〕
-      - 🚨 **`wf principalR`**（Om/Th 上の整礎性）★残る本丸＝Towsner Lemma 3.10–3.12（ϑ 崩壊、Acc_n/M_n 入れ子帰納。M_n の absolute 再構成）
+      - 🚨 **`wf principalR`**（Om/Th 上の整礎性）★残る本丸＝Towsner Lemma 3.10–3.12
+        - ✅ FC 階層化補題群〔Kn_isH / FCset_Kn / FC_Kn / FCset_Th_eq_Kn / FC_Th_le / **FC_mono_pr** / Kn_lt_Th〕
+        - ✅ accessible 部分の wf〔wflevel.thy: wfpart / wf_on_wfpart / accUpto / accUpto_mono〕
+        - 🚨 M_n 階層（cardinality-component ベースで要再構成）＋ ϑ崩壊閉包の三重入れ子帰納（cardinality→subscript→argument）→ M_n⊆Acc_n → wf
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
       - ✅ embed/eprincs/collapse（単一 principal は Su 化しない）＋像の well-formed〔wfo_embed〕
       - 🚨 NF 上で `w ≺ x ⟹ embed w <\<^sub>o embed x`（NF でのみ素朴 lex=真順序。off-NF は bad chain で不成立を確認）→ `wf Rnf`
