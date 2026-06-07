@@ -1,5 +1,5 @@
 theory embed
-  imports wf wo wflevel
+  imports wf wo wflevel buchholz
 begin
 
 section \<open>Embedding the PSS notation into the well-foundedness core\<close>
@@ -125,30 +125,27 @@ qed simp
 lemma omfree_embed: "omfree (embed t)"
   unfolding embed_def by (rule omfree_collapse) (use omfree_eprincs in auto)
 
-section \<open>Wiring: the two remaining obligations imply \<open>wf Rnf\<close>\<close>
+section \<open>Wiring: the remaining obligations imply \<open>wf Rnf\<close>\<close>
 
-text \<open>Everything is now reduced to exactly two deep facts:
-  \<^enum> \<^prop>\<open>wf oltRw\<close> \<dash> well-foundedness of \<open><\<^sub>o\<close> on the well-formed terms.  By
-    @{thm [source] wf_oltRw_of_principals} this in turn reduces to accessibility
-    of the principal (\<open>\<Omega>\<close>/\<open>\<vartheta>\<close>) terms (Buchholz / Towsner Lemmas 3.10\<dash>3.12); and
-  \<^enum> order-preservation of \<^const>\<open>embed\<close> on \<open>NF\<close>: the naive subscript order \<open><o\<close>
-    coincides with the true collapsing order \<open><\<^sub>o\<close> on standard forms.
-  Together they discharge \<^prop>\<open>wf Rnf\<close>, hence PSS termination.\<close>
+text \<open>Well-foundedness on the \<open>\<Omega>\<close>-free terms (\<^const>\<open>oltRwF\<close>, @{thm [source] wf_oltRwF},
+  reduced to the single core @{thm [source] masterF}) plus order-preservation of
+  \<^const>\<open>embed\<close> on \<open>NF\<close> discharge \<^prop>\<open>wf Rnf\<close>, hence PSS termination.  The image
+  of \<^const>\<open>embed\<close> is well-formed (@{thm [source] wfo_embed}) and \<open>\<Omega>\<close>-free
+  (@{thm [source] omfree_embed}), so it lands inside \<^const>\<open>oltRwF\<close>.\<close>
 
 theorem wf_Rnf_via_embed:
-  assumes wfp: "wf oltRw"
-    and op: "\<And>w x. w \<in> NF \<Longrightarrow> x \<in> NF \<Longrightarrow> w <o x \<Longrightarrow> embed w <\<^sub>o embed x"
+  assumes op: "\<And>w x. w \<in> NF \<Longrightarrow> x \<in> NF \<Longrightarrow> w <o x \<Longrightarrow> embed w <\<^sub>o embed x"
   shows "wf Rnf"
 proof -
-  let ?T = "{(a,b). a <\<^sub>o b \<and> wfo a \<and> wfo b}"
-  have wfT: "wf (inv_image ?T embed)"
-    by (rule wf_inv_image[OF wfp])
-  have sub: "Rnf \<subseteq> inv_image ?T embed"
+  have wfT: "wf (inv_image oltRwF embed)"
+    by (rule wf_inv_image[OF wf_oltRwF])
+  have sub: "Rnf \<subseteq> inv_image oltRwF embed"
   proof (rule subsetI)
     fix p assume "p \<in> Rnf"
     then obtain v u where p: "p = (v, u)" and "v <o u" "u \<in> NF" "v \<in> NF" by auto
     have "embed v <\<^sub>o embed u" using op[OF \<open>v \<in> NF\<close> \<open>u \<in> NF\<close> \<open>v <o u\<close>] .
-    thus "p \<in> inv_image ?T embed" using p wfo_embed by (simp add: inv_image_def)
+    thus "p \<in> inv_image oltRwF embed"
+      using p wfo_embed omfree_embed by (simp add: inv_image_def)
   qed
   show "wf Rnf" by (rule wf_subset[OF wfT sub])
 qed

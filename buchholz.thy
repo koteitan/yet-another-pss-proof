@@ -240,27 +240,28 @@ abbreviation oltRwF :: "(ot \<times> ot) set" where
 abbreviation pRF :: "(ot \<times> ot) set" where
   "pRF \<equiv> {(a,b). a <\<^sub>o b \<and> isH a \<and> isH b \<and> wfo a \<and> wfo b \<and> omfree a \<and> omfree b}"
 
-text \<open>\<^bold>\<open>The well-foundedness core (sorry):\<close> every \<open>\<Omega>\<close>-free well-formed principal is
-  \<open>pRF\<close>-accessible.  This is the absolute transcription of Buchholz/Towsner Thm 3.12
-  (structural induction populating the distinguished sets \<^const>\<open>Acc\<close> via the closure
-  Lemmas 3.10/3.11, with \<open>\<Omega>\<^bsub>n\<^esub>\<close> as cardinal scaffolding).  It is the single remaining
-  hard obligation.\<close>
+text \<open>\<^bold>\<open>The well-foundedness core (sorry):\<close> every \<open>\<Omega>\<close>-free well-formed term is
+  \<open>oltRwF\<close>-accessible.  This is the absolute transcription of Buchholz/Towsner
+  Thm 3.12: structural induction, with the \<^const>\<open>Su\<close> case reduced to principals by
+  the bag/multiset argument and the principal (\<^const>\<open>Th\<close>) case closed by the
+  distinguished-set Lemmas 3.10/3.11 (using \<open>\<Omega>\<^bsub>n\<^esub>\<close> as cardinal scaffolding and
+  \<^const>\<open>norm\<close>/\<^const>\<open>shift\<close> for ground-normalization).  It is the single remaining
+  hard obligation; the whole termination theorem is now reduced to it.\<close>
 
-lemma masterF: "omfree a \<Longrightarrow> wfo a \<Longrightarrow> isH a \<Longrightarrow> a \<in> Wellfounded.acc pRF"
+lemma masterF: "omfree a \<Longrightarrow> wfo a \<Longrightarrow> a \<in> Wellfounded.acc oltRwF"
   sorry
 
-subsection \<open>Assembly: \<open>wf pRF\<close> and \<open>wf oltRwF\<close> (on the \<open>\<Omega>\<close>-free terms)\<close>
+subsection \<open>Assembly: \<open>wf oltRwF\<close> (well-foundedness on the \<open>\<Omega>\<close>-free terms)\<close>
 
-theorem wf_pRF: "wf pRF"
+theorem wf_oltRwF: "wf oltRwF"
 proof (subst wf_iff_acc, intro allI)
   fix b
-  show "b \<in> Wellfounded.acc pRF"
-  proof (cases "wfo b \<and> isH b \<and> omfree b")
-    case True
-    thus ?thesis by (intro masterF) auto
+  show "b \<in> Wellfounded.acc oltRwF"
+  proof (cases "wfo b \<and> omfree b")
+    case True thus ?thesis by (intro masterF) auto
   next
     case False
-    have "\<And>y. (y, b) \<in> pRF \<Longrightarrow> y \<in> Wellfounded.acc pRF" using False by auto
+    have "\<And>y. (y, b) \<in> oltRwF \<Longrightarrow> y \<in> Wellfounded.acc oltRwF" using False by auto
     thus ?thesis by (rule accI)
   qed
 qed
