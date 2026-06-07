@@ -194,22 +194,18 @@ proof -
   qed
 qed
 
-subsection \<open>Sum reduction: principals accessible \<open>\<Longrightarrow>\<close> all accessible\<close>
+subsection \<open>Sum reduction: a term is accessible once its summands are\<close>
 
-text \<open>If every well-formed principal term is \<open>oltRw\<close>-accessible, then so is every
-  well-formed term.\<close>
+text \<open>If all elements of \<^term>\<open>bag a\<close> (the principal summands of \<open>a\<close>) are
+  \<open>oltRw\<close>-accessible, then \<open>a\<close> is accessible.\<close>
 
-theorem acc_oltRw_of_principals:
-  assumes P: "\<And>p. wfo p \<Longrightarrow> isH p \<Longrightarrow> p \<in> Wellfounded.acc oltRw"
-    and a: "wfo a"
+theorem acc_of_bag_elems:
+  assumes a: "wfo a"
+    and elems: "\<And>x. x \<in># bag a \<Longrightarrow> x \<in> Wellfounded.acc oltRw"
   shows "a \<in> Wellfounded.acc oltRw"
 proof -
   have bagacc: "bag a \<in> Wellfounded.acc (mult oltRw)"
-  proof (rule acc_mult_of_elems)
-    fix x assume "x \<in># bag a"
-    with bag_elem_wfo[OF a] have "wfo x" "isH x" by auto
-    thus "x \<in> Wellfounded.acc oltRw" by (rule P)
-  qed
+    by (rule acc_mult_of_elems) (rule elems)
   show "a \<in> Wellfounded.acc oltRw"
   proof (rule acc_pullback[where R = oltRw and S = "mult oltRw" and f = bag])
     fix p q assume "(p, q) \<in> oltRw"
@@ -219,7 +215,74 @@ proof -
   qed
 qed
 
-text \<open>Consequently, \<^prop>\<open>wf oltRw\<close> follows from accessibility of the principals.\<close>
+text \<open>In particular, if every well-formed principal term is accessible, so is
+  every well-formed term.\<close>
+
+corollary acc_oltRw_of_principals:
+  assumes P: "\<And>p. wfo p \<Longrightarrow> isH p \<Longrightarrow> p \<in> Wellfounded.acc oltRw"
+    and a: "wfo a"
+  shows "a \<in> Wellfounded.acc oltRw"
+proof (rule acc_of_bag_elems[OF a])
+  fix x assume "x \<in># bag a"
+  with bag_elem_wfo[OF a] have "wfo x" "isH x" by auto
+  thus "x \<in> Wellfounded.acc oltRw" by (rule P)
+qed
+
+subsection \<open>The principal order \<open>pR\<close>, and lifting its accessibility to \<open>oltRw\<close>\<close>
+
+text \<open>\<open>pR\<close> is \<open><\<^sub>o\<close> restricted to well-formed \<^emph>\<open>principal\<close> (\<open>\<Omega>\<close>/\<open>\<vartheta>\<close>) terms.  Its
+  edges are principal-to-principal; sums occur only inside the order conditions.
+  This is the remaining Buchholz core: \<^prop>\<open>wf pR\<close>.\<close>
+
+abbreviation pR :: "(ot \<times> ot) set" where
+  "pR \<equiv> {(a, b). a <\<^sub>o b \<and> isH a \<and> isH b \<and> wfo a \<and> wfo b}"
+
+text \<open>Accessibility in the principal order lifts to accessibility in the full
+  order on well-formed terms: a principal's non-principal (\<^const>\<open>Su\<close>)
+  predecessors split into principal summands, each a \<open>pR\<close>-predecessor.\<close>
+
+lemma princ_acc_lift:
+  assumes "p \<in> Wellfounded.acc pR"
+  shows "wfo p \<longrightarrow> isH p \<longrightarrow> p \<in> Wellfounded.acc oltRw"
+  using assms
+proof (induction set: Wellfounded.acc)
+  case (1 p)
+  show ?case
+  proof (intro impI)
+    assume wp: "wfo p" and hp: "isH p"
+    show "p \<in> Wellfounded.acc oltRw"
+    proof (rule accI)
+      fix r assume r: "(r, p) \<in> oltRw"
+      hence rp: "r <\<^sub>o p" and wr: "wfo r" by auto
+      show "r \<in> Wellfounded.acc oltRw"
+      proof (cases "isH r")
+        case True
+        hence "(r, p) \<in> pR" using rp wr wp hp by auto
+        thus ?thesis using 1 wr True by blast
+      next
+        case False
+        \<comment> \<open>\<open>r\<close> is a sum; show it accessible from its principal summands.\<close>
+        obtain ys where ys: "r = Su ys" using False by (cases r) auto
+        have summ: "\<And>z. z \<in> set ys \<Longrightarrow> z <\<^sub>o p"
+          using rp ys hp by (cases p) auto
+        show ?thesis
+        proof (rule acc_of_bag_elems)
+          show "wfo r" by (rule wr)
+          fix x assume "x \<in># bag r"
+          hence x: "x \<in> set ys" using ys by simp
+          hence wx: "wfo x" and hx: "isH x" using wr ys by auto
+          have "x <\<^sub>o p" using x by (rule summ)
+          hence "(x, p) \<in> pR" using wx hx wp hp by auto
+          thus "x \<in> Wellfounded.acc oltRw" using 1 wx hx by blast
+        qed
+      qed
+    qed
+  qed
+qed
+
+subsection \<open>Reductions to the Buchholz core\<close>
+
+text \<open>\<^prop>\<open>wf oltRw\<close> from accessibility of the principals.\<close>
 
 theorem wf_oltRw_of_principals:
   assumes "\<And>p. wfo p \<Longrightarrow> isH p \<Longrightarrow> p \<in> Wellfounded.acc oltRw"
@@ -234,6 +297,18 @@ proof (subst wf_iff_acc, intro allI)
     have "\<And>y. (y, a) \<in> oltRw \<Longrightarrow> y \<in> Wellfounded.acc oltRw" using False by auto
     thus ?thesis by (rule accI)
   qed
+qed
+
+text \<open>Hence \<^prop>\<open>wf oltRw\<close> follows from \<^prop>\<open>wf pR\<close> (the Buchholz core).\<close>
+
+theorem wf_oltRw_of_wf_pR:
+  assumes "wf pR"
+  shows "wf oltRw"
+proof (rule wf_oltRw_of_principals)
+  fix p assume "wfo p" "isH p"
+  have "p \<in> Wellfounded.acc pR" using assms unfolding wf_iff_acc by blast
+  with \<open>wfo p\<close> \<open>isH p\<close> show "p \<in> Wellfounded.acc oltRw"
+    using princ_acc_lift by blast
 qed
 
 end
