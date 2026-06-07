@@ -199,4 +199,33 @@ lemma olt_Zero_iff: "Zero <\<^sub>o x \<longleftrightarrow> x \<noteq> Zero"
 lemma olt_ZeroI: "x \<noteq> Zero \<Longrightarrow> Zero <\<^sub>o x"
   by (simp add: olt_Zero_iff)
 
+subsection \<open>Sums compare by the multiset extension\<close>
+
+abbreviation oltR :: "(ot \<times> ot) set" where
+  "oltR \<equiv> {(a,b). a <\<^sub>o b}"
+
+text \<open>Towsner's one-step sum order (Def 2.3, first clause) is contained in the
+  Dershowitz\<dash>Manna multiset extension of \<open><\<^sub>o\<close>.  Hence (via @{thm [source]
+  wf_mult}) well-foundedness on summands lifts to well-foundedness on sums,
+  without first establishing linearity.\<close>
+
+lemma olt_Su_imp_mult:
+  assumes "Su xs <\<^sub>o Su ys"
+  shows "(mset xs, mset ys) \<in> mult oltR"
+proof -
+  from assms obtain b where b: "b \<in># mset ys - mset xs"
+      and dom: "\<forall>a \<in># mset xs - mset ys. a <\<^sub>o b" by auto
+  let ?I = "mset xs \<inter># mset ys"
+  have x: "mset xs = ?I + (mset xs - mset ys)"
+    by (simp add: multiset_eq_iff min_def)
+  have y: "mset ys = ?I + (mset ys - mset xs)"
+    by (simp add: multiset_eq_iff min_def)
+  have ne: "mset ys - mset xs \<noteq> {#}" using b by auto
+  have step: "\<forall>k \<in># mset xs - mset ys. \<exists>j \<in># mset ys - mset xs. (k, j) \<in> oltR"
+    using dom b by auto
+  have "(?I + (mset xs - mset ys), ?I + (mset ys - mset xs)) \<in> mult oltR"
+    by (rule one_step_implies_mult[OF ne step])
+  thus ?thesis using x y by simp
+qed
+
 end
