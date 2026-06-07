@@ -38,6 +38,9 @@ lemma cmax_Cons [simp]: "cmax (x # xs) = max x (cmax xs)" by (simp add: cmax_def
 lemma cmax_ge: "z \<in> set xs \<Longrightarrow> z \<le> cmax xs"
   by (induction xs) auto
 
+lemma cmax_le: "(\<forall>x \<in> set xs. x \<le> b) \<Longrightarrow> cmax xs \<le> b"
+  by (induction xs) auto
+
 subsection \<open>The order \<open><o\<close> refines the spine lexicographic order\<close>
 
 text \<open>\<open>slex xs ys\<close>: lexicographic \<open>\<le>\<close> on subscript lists, with the empty list (a
@@ -325,6 +328,27 @@ next
   qed
 qed
 
+lemma incpref_append_full:
+  "incpref ys = ys \<Longrightarrow> \<exists>ws. incpref (ys @ zs) = ys @ ws"
+proof (induction ys rule: incpref.induct)
+  case 1
+  show ?case by simp
+next
+  case (2 p)
+  have "\<exists>ws. incpref (p # zs) = p # ws"
+    by (cases zs) auto
+  thus ?case by simp
+next
+  case (3 p q rest)
+  have pq: "fst p < fst q" using "3.prems" by (cases "fst p < fst q") auto
+  have ihcond: "incpref (q # rest) = q # rest" using "3.prems" pq by simp
+  from "3.IH"[OF pq ihcond] obtain ws where
+    ws: "incpref ((q # rest) @ zs) = (q # rest) @ ws" by blast
+  have "incpref ((p # q # rest) @ zs) = p # incpref ((q # rest) @ zs)" using pq by simp
+  also have "\<dots> = (p # q # rest) @ ws" using ws by simp
+  finally show ?case by blast
+qed
+
 lemma incpref_butlast:
   "incpref (butlast M) = (if incpref M = M then butlast M else incpref M)"
 proof (cases "M = []")
@@ -421,6 +445,137 @@ lemma maxsub_eq_climb_iff:
   "maxsub (translate M) = climb (translate M)
      \<longleftrightarrow> cmax (map snd M) = cmax (map snd (incpref M))"
   by (simp add: maxsub_translate spine_translate_eq)
+
+
+subsection \<open>The pair-sequence normal-form invariant and its closure\<close>
+
+definition nfinv :: "pairseq \<Rightarrow> bool" where
+  "nfinv M \<longleftrightarrow> cmax (map snd M) = cmax (map snd (incpref M))
+                \<and> inv2 (map snd (incpref M))"
+
+lemma cmax_mem: "xs \<noteq> [] \<Longrightarrow> cmax xs \<in> set xs"
+proof (induction xs)
+  case Nil thus ?case by simp
+next
+  case (Cons x xs)
+  show ?case
+  proof (cases "cmax xs \<le> x")
+    case True hence "cmax (x # xs) = x" by simp
+    thus ?thesis by simp
+  next
+    case False
+    hence "cmax (x # xs) = cmax xs" by simp
+    moreover have "xs \<noteq> []" using False by auto
+    ultimately show ?thesis using Cons.IH by simp
+  qed
+qed
+
+lemma cmax_butlast_le: "cmax (butlast xs) \<le> cmax xs"
+proof (rule cmax_le)
+  show "\<forall>x\<in>set (butlast xs). x \<le> cmax xs"
+    using cmax_ge in_set_butlastD by fast
+qed
+
+lemma inv2_butlast:
+  assumes inv: "inv2 xs" and ne: "butlast xs \<noteq> []"
+  shows "inv2 (butlast xs)"
+proof -
+  let ?r = "cmax (butlast xs)"
+  have rR: "?r \<le> cmax xs" by (rule cmax_butlast_le)
+  have key: "?r < length (butlast xs)"
+  proof (rule ccontr)
+    assume "\<not> ?r < length (butlast xs)"
+    then have le: "length (butlast xs) \<le> ?r" by simp
+    have "?r \<in> set (butlast xs)" using ne by (rule cmax_mem)
+    then obtain j where j: "j < length (butlast xs)" and xj: "butlast xs ! j = ?r"
+      by (metis in_set_conv_nth)
+    have "j < ?r" using j le by simp
+    hence "j \<le> cmax xs" using rR by simp
+    hence "xs ! j = j" using inv unfolding inv2_def by auto
+    moreover have "xs ! j = ?r" using xj j by (simp add: nth_butlast)
+    ultimately show False using \<open>j < ?r\<close> by simp
+  qed
+  show ?thesis
+  proof (unfold inv2_def, intro allI impI conjI)
+    fix i assume "i \<le> ?r"
+    then have ir: "i \<le> cmax xs" using rR by simp
+    show "i < length (butlast xs)" using \<open>i \<le> ?r\<close> key by simp
+    have "xs ! i = i" using ir inv unfolding inv2_def by auto
+    moreover have "butlast xs ! i = xs ! i"
+      using \<open>i \<le> ?r\<close> key by (simp add: nth_butlast)
+    ultimately show "butlast xs ! i = i" by simp
+  qed
+qed
+
+text \<open>The key closure: appending a block whose row-1 values already occur in
+  \<open>ys\<close> preserves \<open>nfinv\<close>.\<close>
+
+lemma nfinv_append:
+  assumes inv: "nfinv ys" and sub: "snd ` set R \<subseteq> snd ` set ys"
+  shows "nfinv (ys @ R)"
+proof -
+  have cmaxR: "cmax (map snd R) \<le> cmax (map snd ys)"
+  proof (rule cmax_le, rule ballI)
+    fix x assume "x \<in> set (map snd R)"
+    then have "x \<in> snd ` set R" by simp
+    then have "x \<in> snd ` set ys" using sub by blast
+    then have "x \<in> set (map snd ys)" by simp
+    thus "x \<le> cmax (map snd ys)" by (rule cmax_ge)
+  qed
+  have cmax_all: "cmax (map snd (ys @ R)) = cmax (map snd ys)"
+    using cmaxR by (simp add: cmax_append)
+  from inv have A: "cmax (map snd ys) = cmax (map snd (incpref ys))"
+    and B: "inv2 (map snd (incpref ys))" by (auto simp: nfinv_def)
+  show ?thesis
+  proof (cases "incpref ys = ys")
+    case False
+    have ip: "incpref (ys @ R) = incpref ys" by (rule incpref_append_stop[OF False])
+    show ?thesis using A B cmax_all ip by (simp add: nfinv_def)
+  next
+    case True
+    obtain ws where ws: "incpref (ys @ R) = ys @ ws"
+      using incpref_append_full[OF True] by blast
+    \<comment> \<open>\<open>ws\<close> is a prefix of \<open>R\<close>, so its row-1 values are bounded\<close>
+    have wsR: "snd ` set ws \<subseteq> snd ` set ys"
+    proof -
+      have "ys @ ws = incpref (ys @ R)" using ws by simp
+      then obtain zs where "ys @ ws @ zs = ys @ R"
+        using incpref_append by (metis append.assoc)
+      hence "ws @ zs = R" by simp
+      hence "set ws \<subseteq> set R" by (metis Un_iff set_append subsetI)
+      thus ?thesis using sub by auto
+    qed
+    have cmws: "cmax (map snd ws) \<le> cmax (map snd ys)"
+    proof (rule cmax_le, rule ballI)
+      fix x assume "x \<in> set (map snd ws)"
+      then have "x \<in> snd ` set ws" by simp
+      then have "x \<in> snd ` set ys" using wsR by blast
+      then have "x \<in> set (map snd ys)" by simp
+      thus "x \<le> cmax (map snd ys)" by (rule cmax_ge)
+    qed
+    have climb_all: "cmax (map snd (incpref (ys @ R))) = cmax (map snd ys)"
+      using ws cmws by (simp add: cmax_append)
+    \<comment> \<open>invariant on \<open>map snd ys @ map snd ws\<close>\<close>
+    have invys: "inv2 (map snd ys)" using B True by simp
+    have Bys: "inv2 (map snd ys)" using B True by simp
+    have "inv2 (map snd (ys @ ws))"
+    proof (unfold inv2_def, intro allI impI conjI)
+      fix i assume "i \<le> cmax (map snd (ys @ ws))"
+      then have ic: "i \<le> cmax (map snd ys)" using cmws by (simp add: cmax_append)
+      have ilen: "i < length ys" using Bys ic unfolding inv2_def by auto
+      show "i < length (map snd (ys @ ws))" using ilen by simp
+      have b: "snd (ys ! i) = i"
+      proof -
+        from Bys ic have "map snd ys ! i = i" unfolding inv2_def by blast
+        with ilen show ?thesis by (metis nth_map)
+      qed
+      have "map snd (ys @ ws) ! i = snd (ys ! i)"
+        using ilen by (simp add: nth_append)
+      thus "map snd (ys @ ws) ! i = i" using b by simp
+    qed
+    thus ?thesis using ws cmax_all climb_all by (simp add: nfinv_def)
+  qed
+qed
 
 
 subsection \<open>The bad-case expansion as \<open>butlast M\<close> followed by ascending copies\<close>
@@ -535,9 +690,6 @@ proof -
     using allgt by (simp add: dropWhile_eq_Nil_conv)
   show ?thesis by (simp add: rest tw dw)
 qed
-
-lemma cmax_le: "(\<forall>x \<in> set xs. x \<le> b) \<Longrightarrow> cmax xs \<le> b"
-  by (induction xs) auto
 
 lemma spine_translate_diagSeq_aux:
   "spine (translate (diagSeq u (u + n))) = [u..<Suc (u + n)]"
