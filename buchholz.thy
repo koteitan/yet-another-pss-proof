@@ -51,4 +51,47 @@ next
   thus "shift k a \<in> Wellfounded.acc oltRw" by (rule acc_shift_aux)
 qed
 
+subsection \<open>Generic accessible part of a set under \<open><\<^sub>o\<close>\<close>
+
+text \<open>\<open>Awf S\<close> is the \<open><\<^sub>o\<close>-accessible part of \<open>S\<close> (relative to the order restricted
+  to \<open>S\<close>).  Independent of any particular stratification; reused for the
+  distinguished sets below.\<close>
+
+definition Awf :: "ot set \<Rightarrow> ot set" where
+  "Awf S = S \<inter> Wellfounded.acc {(x, y). x <\<^sub>o y \<and> x \<in> S \<and> y \<in> S}"
+
+lemma Awf_subset: "Awf S \<subseteq> S"
+  by (auto simp: Awf_def)
+
+lemma Awf_acc:
+  "a \<in> Awf S \<Longrightarrow> a \<in> Wellfounded.acc {(x, y). x <\<^sub>o y \<and> x \<in> S \<and> y \<in> S}"
+  by (simp add: Awf_def)
+
+text \<open>The order restricted to \<^term>\<open>Awf S\<close> is well-founded.\<close>
+
+lemma wf_on_Awf:
+  "wf {(x, y). x <\<^sub>o y \<and> x \<in> Awf S \<and> y \<in> Awf S}"
+proof -
+  have sub: "{(x, y). x <\<^sub>o y \<and> x \<in> Awf S \<and> y \<in> Awf S}
+             \<subseteq> {(x, y). x <\<^sub>o y \<and> x \<in> S \<and> y \<in> S}"
+    by (auto simp: Awf_def)
+  have "\<And>x. x \<in> Wellfounded.acc {(x, y). x <\<^sub>o y \<and> x \<in> Awf S \<and> y \<in> Awf S}"
+  proof -
+    fix x
+    show "x \<in> Wellfounded.acc {(x, y). x <\<^sub>o y \<and> x \<in> Awf S \<and> y \<in> Awf S}"
+    proof (cases "x \<in> Awf S")
+      case True
+      hence "x \<in> Wellfounded.acc {(x, y). x <\<^sub>o y \<and> x \<in> S \<and> y \<in> S}" by (rule Awf_acc)
+      thus ?thesis using acc_subset[OF sub] by (rule rev_subsetD)
+    next
+      case False
+      hence "\<And>y. (y, x) \<in> {(x, y). x <\<^sub>o y \<and> x \<in> Awf S \<and> y \<in> Awf S}
+              \<Longrightarrow> y \<in> Wellfounded.acc {(x, y). x <\<^sub>o y \<and> x \<in> Awf S \<and> y \<in> Awf S}"
+        by auto
+      thus ?thesis by (rule accI)
+    qed
+  qed
+  thus ?thesis by (subst wf_iff_acc) blast
+qed
+
 end
