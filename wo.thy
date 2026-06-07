@@ -228,4 +228,187 @@ proof -
   thus ?thesis using x y by simp
 qed
 
+subsection \<open>Reducing well-foundedness of \<open><\<^sub>o\<close> to the principal terms\<close>
+
+text \<open>A well-formed term: sums contain only principal summands and are never a
+  singleton (Towsner's \<open>n \<noteq> 1\<close> condition).  The PSS embedding lands here.\<close>
+
+fun wfo :: "ot \<Rightarrow> bool" where
+  "wfo (Om n) = True"
+| "wfo (Th n a) = wfo a"
+| "wfo (Su xs) = (length xs \<noteq> 1 \<and> (\<forall>x \<in> set xs. isH x \<and> wfo x))"
+
+text \<open>The multiset of principal summands of a term.\<close>
+
+fun bag :: "ot \<Rightarrow> ot multiset" where
+  "bag (Om n) = {# Om n #}"
+| "bag (Th n a) = {# Th n a #}"
+| "bag (Su xs) = mset xs"
+
+abbreviation principalR :: "(ot \<times> ot) set" where
+  "principalR \<equiv> {(a,b). a <\<^sub>o b \<and> isH a \<and> isH b}"
+
+lemma mult_single_dom: "\<forall>k \<in># K. (k, j) \<in> r \<Longrightarrow> (K, {# j #}) \<in> mult r"
+  using one_step_implies_mult[of "{# j #}" K r "{#}"] by simp
+
+lemma mult_add: "N \<noteq> {#} \<Longrightarrow> (M, M + N) \<in> mult r"
+  using one_step_implies_mult[of N "{#}" r M] by simp
+
+lemma mult_dom_set:
+  assumes "j \<in># J" "(a, j) \<in> r" shows "({# a #}, J) \<in> mult r"
+proof -
+  have "J \<noteq> {#}" using assms(1) by auto
+  moreover have "\<forall>k \<in># {# a #}. \<exists>j' \<in># J. (k, j') \<in> r" using assms by auto
+  ultimately show ?thesis using one_step_implies_mult[of J "{# a #}" r "{#}"] by simp
+qed
+
+text \<open>The \<open>bag\<close> map sends \<open><\<^sub>o\<close> on well-formed terms into the multiset extension
+  of the principal order.\<close>
+
+lemma bag_mono:
+  assumes "wfo a" "wfo b" "a <\<^sub>o b"
+  shows "(bag a, bag b) \<in> mult principalR"
+  using assms
+proof (cases a)
+  case a_Su: (Su xs)
+  show ?thesis
+  proof (cases b)
+    case b_Su: (Su ys)
+    \<comment> \<open>sum vs sum: reuse the one-step construction with principal witnesses\<close>
+    from \<open>a <\<^sub>o b\<close> a_Su b_Su obtain c
+      where c: "c \<in># mset ys - mset xs"
+        and dom: "\<forall>z \<in># mset xs - mset ys. z <\<^sub>o c" by auto
+    let ?I = "mset xs \<inter># mset ys"
+    have x: "mset xs = ?I + (mset xs - mset ys)" by (simp add: multiset_eq_iff min_def)
+    have y: "mset ys = ?I + (mset ys - mset xs)" by (simp add: multiset_eq_iff min_def)
+    have ne: "mset ys - mset xs \<noteq> {#}" using c by auto
+    have "\<forall>k \<in># mset xs - mset ys. \<exists>j \<in># mset ys - mset xs. (k, j) \<in> principalR"
+    proof
+      fix k assume k: "k \<in># mset xs - mset ys"
+      hence "k \<in> set xs" by (meson in_diffD set_mset_mset in_multiset_in_set)
+      with a_Su \<open>wfo a\<close> have "isH k" by auto
+      moreover have "c \<in> set ys" using c by (meson in_diffD set_mset_mset in_multiset_in_set)
+      with b_Su \<open>wfo b\<close> have "isH c" by auto
+      moreover have "k <\<^sub>o c" using dom k by auto
+      ultimately show "\<exists>j \<in># mset ys - mset xs. (k, j) \<in> principalR" using c by auto
+    qed
+    hence "(?I + (mset xs - mset ys), ?I + (mset ys - mset xs)) \<in> mult principalR"
+      by (rule one_step_implies_mult[OF ne])
+    thus ?thesis using a_Su b_Su x y by simp
+  next
+    case b_Om: (Om n)
+    have "\<forall>k \<in># mset xs. (k, Om n) \<in> principalR"
+      using a_Su b_Om \<open>a <\<^sub>o b\<close> \<open>wfo a\<close> by auto
+    hence "(mset xs, {# Om n #}) \<in> mult principalR" by (rule mult_single_dom)
+    thus ?thesis using a_Su b_Om by simp
+  next
+    case b_Th: (Th n d)
+    have "\<forall>k \<in># mset xs. (k, Th n d) \<in> principalR"
+      using a_Su b_Th \<open>a <\<^sub>o b\<close> \<open>wfo a\<close> by auto
+    hence "(mset xs, {# Th n d #}) \<in> mult principalR" by (rule mult_single_dom)
+    thus ?thesis using a_Su b_Th by simp
+  qed
+next
+  case a_pr: (Om m)
+  show ?thesis
+  proof (cases b)
+    case (Su ys)
+    \<comment> \<open>principal vs sum: a \<le> some summand y\<close>
+    from \<open>a <\<^sub>o b\<close> a_pr Su obtain y where y: "y \<in> set ys" and le: "a <\<^sub>o y \<or> a = y"
+      using a_pr by auto
+    show ?thesis
+    proof (cases "a <\<^sub>o y")
+      case True
+      have hy: "isH y" using y Su \<open>wfo b\<close> by auto
+      have "y \<in># mset ys" using y by simp
+      moreover have "(a, y) \<in> principalR" using True hy a_pr by auto
+      ultimately have "({# a #}, mset ys) \<in> mult principalR" by (rule mult_dom_set)
+      thus ?thesis using a_pr Su by simp
+    next
+      case False
+      with le have ay: "a = y" by simp
+      have ain: "a \<in># mset ys" using y ay by simp
+      have eq: "mset ys = {# a #} + (mset ys - {# a #})"
+        using ain by (metis insert_DiffM add_mset_add_single add.commute)
+      have "ys \<noteq> []" using y by auto
+      hence "1 \<le> length ys" by (simp add: Suc_le_eq)
+      moreover have "length ys \<noteq> 1" using Su \<open>wfo b\<close> by simp
+      ultimately have "2 \<le> length ys" by linarith
+      hence "1 \<le> size (mset ys - {# a #})" using ain by (simp add: size_Diff_singleton)
+      hence ne: "mset ys - {# a #} \<noteq> {#}" by auto
+      have "({# a #}, mset ys) \<in> mult principalR"
+        using mult_add[of "mset ys - {# a #}" "{# a #}" principalR, OF ne] eq by simp
+      thus ?thesis using a_pr Su by simp
+    qed
+  next
+    case (Om n)
+    hence "(a, b) \<in> principalR" using a_pr \<open>a <\<^sub>o b\<close> by auto
+    hence "({# a #}, {# b #}) \<in> mult principalR" using mult_single_dom[of "{# a #}" b] by simp
+    thus ?thesis using a_pr Om by simp
+  next
+    case (Th n d)
+    hence "(a, b) \<in> principalR" using a_pr \<open>a <\<^sub>o b\<close> by auto
+    hence "({# a #}, {# b #}) \<in> mult principalR" using mult_single_dom[of "{# a #}" b] by simp
+    thus ?thesis using a_pr Th by simp
+  qed
+next
+  case a_pr: (Th m e)
+  show ?thesis
+  proof (cases b)
+    case (Su ys)
+    from \<open>a <\<^sub>o b\<close> a_pr Su obtain y where y: "y \<in> set ys" and le: "a <\<^sub>o y \<or> a = y"
+      using a_pr by auto
+    show ?thesis
+    proof (cases "a <\<^sub>o y")
+      case True
+      have hy: "isH y" using y Su \<open>wfo b\<close> by auto
+      have "y \<in># mset ys" using y by simp
+      moreover have "(a, y) \<in> principalR" using True hy a_pr by auto
+      ultimately have "({# a #}, mset ys) \<in> mult principalR" by (rule mult_dom_set)
+      thus ?thesis using a_pr Su by simp
+    next
+      case False
+      with le have ay: "a = y" by simp
+      have ain: "a \<in># mset ys" using y ay by simp
+      have eq: "mset ys = {# a #} + (mset ys - {# a #})"
+        using ain by (metis insert_DiffM add_mset_add_single add.commute)
+      have "ys \<noteq> []" using y by auto
+      hence "1 \<le> length ys" by (simp add: Suc_le_eq)
+      moreover have "length ys \<noteq> 1" using Su \<open>wfo b\<close> by simp
+      ultimately have "2 \<le> length ys" by linarith
+      hence "1 \<le> size (mset ys - {# a #})" using ain by (simp add: size_Diff_singleton)
+      hence ne: "mset ys - {# a #} \<noteq> {#}" by auto
+      have "({# a #}, mset ys) \<in> mult principalR"
+        using mult_add[of "mset ys - {# a #}" "{# a #}" principalR, OF ne] eq by simp
+      thus ?thesis using a_pr Su by simp
+    qed
+  next
+    case (Om n)
+    hence "(a, b) \<in> principalR" using a_pr \<open>a <\<^sub>o b\<close> by auto
+    hence "({# a #}, {# b #}) \<in> mult principalR" using mult_single_dom[of "{# a #}" b] by simp
+    thus ?thesis using a_pr Om by simp
+  next
+    case (Th n d)
+    hence "(a, b) \<in> principalR" using a_pr \<open>a <\<^sub>o b\<close> by auto
+    hence "({# a #}, {# b #}) \<in> mult principalR" using mult_single_dom[of "{# a #}" b] by simp
+    thus ?thesis using a_pr Th by simp
+  qed
+qed
+
+text \<open>Hence well-foundedness on principal terms lifts to all well-formed terms.\<close>
+
+theorem wf_olt_of_principal:
+  assumes "wf principalR"
+  shows "wf {(a,b). a <\<^sub>o b \<and> wfo a \<and> wfo b}"
+proof (rule wf_subset)
+  show "wf (inv_image (mult principalR) bag)"
+    by (rule wf_inv_image[OF wf_mult[OF assms]])
+  show "{(a,b). a <\<^sub>o b \<and> wfo a \<and> wfo b} \<subseteq> inv_image (mult principalR) bag"
+  proof (rule subsetI, clarify)
+    fix a b assume "a <\<^sub>o b" "wfo a" "wfo b"
+    thus "(a, b) \<in> inv_image (mult principalR) bag"
+      using bag_mono[OF \<open>wfo a\<close> \<open>wfo b\<close> \<open>a <\<^sub>o b\<close>] by (simp add: inv_image_def)
+  qed
+qed
+
 end
