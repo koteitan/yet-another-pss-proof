@@ -23,5 +23,6 @@ session YAPSS = HOL +
     proofs
     wf
     wo
+    accinfra
     wflevel
     embed
