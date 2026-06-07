@@ -571,7 +571,77 @@ proof (induction "size a + size b + size c" arbitrary: a b c rule: less_induct)
     qed
   next
     case c_Su: (Su zs)
-    show ?thesis sorry
+    show ?thesis
+    proof (cases "isH a")
+      case True
+      \<comment> \<open>principal \<open>a\<close>: find \<open>z \<in> zs\<close> with \<open>a \<le>\<^sub>o z\<close>\<close>
+      have "\<exists>z\<in>set zs. a \<le>\<^sub>o z"
+      proof (cases "isH b")
+        case bH: True
+        \<comment> \<open>\<open>b\<close> principal: \<open>b \<le>\<^sub>o z\<close> for some \<open>z\<in>zs\<close>; then \<open>a <\<^sub>o z\<close>\<close>
+        from bc c_Su bH obtain z where z: "z \<in> set zs" "b \<le>\<^sub>o z"
+          by (cases b) auto
+        have "a <\<^sub>o z"
+        proof (cases "b = z")
+          case True thus ?thesis using ab by simp
+        next
+          case False
+          have "size a + size b + size z < size a + size b + size c"
+            using c_Su size_lt_Su[OF z(1)] by simp
+          moreover have "b <\<^sub>o z" using z(2) False by simp
+          ultimately show ?thesis using ab IH by blast
+        qed
+        thus ?thesis using z(1) by auto
+      next
+        case bSu: False
+        then obtain bs where bbs: "b = Su bs" by (cases b) auto
+        from ab True bbs obtain y where y: "y \<in> set bs" "a \<le>\<^sub>o y"
+          by (cases a) auto
+        \<comment> \<open>\<open>y\<close> is a summand of \<open>b\<close>; locate a \<open>z\<in>zs\<close> dominating it\<close>
+        have "\<exists>z\<in>set zs. y \<le>\<^sub>o z"
+        proof (cases "y \<in># mset zs")
+          case True thus ?thesis by (auto simp: in_multiset_in_set)
+        next
+          case False
+          have "count (mset zs) y = 0" using False by (simp add: not_in_iff)
+          moreover have "0 < count (mset bs) y"
+            using y(1) by (simp add: count_greater_zero_iff in_multiset_in_set)
+          ultimately have "count (mset zs) y < count (mset bs) y" by linarith
+          hence ybz: "y \<in># mset bs - mset zs" by (simp add: in_diff_count)
+          from bc[unfolded bbs c_Su] obtain w where w: "w \<in># mset zs - mset bs"
+              and wdom: "\<forall>u \<in># mset bs - mset zs. u <\<^sub>o w" by auto
+          have "y <\<^sub>o w" using wdom ybz by simp
+          moreover have "w \<in> set zs" using w by (meson in_diffD in_multiset_in_set)
+          ultimately show ?thesis by auto
+        qed
+        then obtain z where z: "z \<in> set zs" "y \<le>\<^sub>o z" by auto
+        have "a \<le>\<^sub>o z"
+        proof (cases "y = z")
+          case True thus ?thesis using y(2) by simp
+        next
+          case yz: False
+          hence yzlt: "y <\<^sub>o z" using z(2) by simp
+          show ?thesis
+          proof (cases "a = y")
+            case True thus ?thesis using yzlt by auto
+          next
+            case False
+            have "size y < size b" using bbs size_lt_Su[OF y(1)] by simp
+            moreover have "size z < size c" using c_Su size_lt_Su[OF z(1)] by simp
+            ultimately have "size a + size y + size z < size a + size b + size c" by simp
+            moreover have "a <\<^sub>o y" using y(2) False by simp
+            ultimately have "a <\<^sub>o z" using yzlt IH by blast
+            thus ?thesis by simp
+          qed
+        qed
+        thus ?thesis using z(1) by auto
+      qed
+      thus ?thesis using True c_Su by (cases a) auto
+    next
+      case False
+      \<comment> \<open>\<open>a = Su as\<close>: multiset transitivity\<close>
+      show ?thesis sorry
+    qed
   next
     case c_Th: (Th n d)
     show ?thesis sorry
