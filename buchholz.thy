@@ -19,4 +19,36 @@ text \<open>
   accessibility infrastructure (\<^theory>\<open>YAPSS.accinfra\<close>) are unaffected and reused.
 \<close>
 
+subsection \<open>The shift is an automorphism of the order on well-formed terms\<close>
+
+text \<open>Since \<^const>\<open>shift\<close> preserves both \<open><\<^sub>o\<close> (@{thm [source] shift_olt}) and
+  \<^const>\<open>wfo\<close> (@{thm [source] shift_wfo}), it is an automorphism of \<^const>\<open>oltRw\<close>;
+  hence accessibility is invariant under shifting.  This is what makes the
+  ground-normalization legitimate.\<close>
+
+lemma shift_oltRw [simp]: "((shift k a, shift k b) \<in> oltRw) = ((a, b) \<in> oltRw)"
+  by simp
+
+lemma acc_shift_aux: "a \<in> Wellfounded.acc oltRw \<Longrightarrow> shift k a \<in> Wellfounded.acc oltRw"
+proof (induction set: Wellfounded.acc)
+  case (1 a)
+  show ?case
+  proof (rule accI)
+    fix y assume y: "(y, shift k a) \<in> oltRw"
+    have "(shift k (shift (- k) y), shift k a) \<in> oltRw" using y by simp
+    hence "(shift (- k) y, a) \<in> oltRw" by (simp only: shift_oltRw)
+    hence "shift k (shift (- k) y) \<in> Wellfounded.acc oltRw" using "1.IH" by blast
+    thus "y \<in> Wellfounded.acc oltRw" by simp
+  qed
+qed
+
+lemma acc_shift [simp]: "(shift k a \<in> Wellfounded.acc oltRw) = (a \<in> Wellfounded.acc oltRw)"
+proof
+  assume "shift k a \<in> Wellfounded.acc oltRw"
+  from acc_shift_aux[OF this, of "- k"] show "a \<in> Wellfounded.acc oltRw" by simp
+next
+  assume "a \<in> Wellfounded.acc oltRw"
+  thus "shift k a \<in> Wellfounded.acc oltRw" by (rule acc_shift_aux)
+qed
+
 end
