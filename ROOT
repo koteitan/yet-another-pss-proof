@@ -23,3 +23,4 @@ session YAPSS = HOL +
     proofs
     wf
     wo
+    embed
