@@ -323,3 +323,23 @@ wf_pR_of_Ifull/wf_oltRw_of_Ifull すべて緑。
 - 崩壊補題 Lcoll（LOW(n)＋d∈acc＋acc-on-d で Th n d∈acc。p<n の FC=N は subscript 帰納）。
 注: ground 正規化(α*)は不要と判明（引数は述語の部分項なので構造帰納で acc 供給できる）。
 de Bruijn も不要。絶対系で素直に書ける見込み。残るは推移律＋三重入れ子の配線。
+
+## (Kn/Mlev) 2026-06-07 推移律回避＋Mlev 定義のズレ発見
+
+**推移律不要を確認・実装（wo.thy, 緑・コミット f88fbe3）**:
+- `olt_Th_of_le_Kn`（isH γ, δ∈Kn q b, γ≤o δ ⟹ γ<o Th q b：<o の臨界部分項節が witness）。
+- `Kn_mono_le`（γ∈Kn n a, n≤r ⟹ ∃δ∈Kn r a. γ≤o δ）：a の構造帰納＋第一選言のみ。**一般推移律不要**。
+- `KnTh`（γ∈Kn n a, n≤r ⟹ γ<o Th r a）、`Kn_le_self`（γ∈Kn n d ⟹ γ≤o d）。
+⟹ 崩壊補題の臨界支配は `Kn_le_self`＋`acc_downward[d∈acc]` で出る（推移律不要）。
+
+**Ifull Part2（within-level WF）の残課題と Mlev 定義バグ**:
+- buchholz の `Mlev N prev` の条件は `∀p γ. γ∈Kn p a⟶FC γ<N⟶γ∈prev`（a の Kn）。
+  しかし順序 `q <o Th s d` が使う臨界部分項は **`Kn s d`（引数 d の subscript=s での Kn）**。
+  `Kn s (Th s d)={Th s d}` であって `Kn s d` ではない＝**Mlev の条件が順序の臨界部分項を捕えていない**。
+  → Mlev を `ocrit a`（a=Th s d なら `Kn s d`, それ以外 ∅）ベースに直す必要。
+- within-level（FC=N）の前者分解（a=Th s d, s>N）：
+  - 臨界支配 r≤γ (γ∈Kn s d=ocrit a): FC γ≤N。FC<N→AccBelow（Mlev条件）。FC=N→γ<o a・size 小→size 帰納（要 γ∈Mlev N＝「臨界の臨界⊆ a の AccBelow 条件」補題）。
+  - m=s（Th s e, e<o d）: **d∈acc が要る＝構造帰納（d は部分項）でしか出ない**。FC/subscript 帰納では引数 FC≥N が拾えない。
+  - p<s（Th p e, FC=N）: subscript 帰納（p∈(N,s)、底 p=N+1 の p'<p 前者は FC<N→LOW）。
+  → **三重帰納（FC 外 → subscript 中 → 引数 acc=構造帰納で d 供給）**＋直した Mlev。m=s の d∈acc を
+    構造帰納から供給する配線が肝。次段で Mlev を ocrit ベースに直し、Mlev_acc_pR を実装する。
