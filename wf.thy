@@ -792,4 +792,86 @@ proof (unfold inv2_def, intro allI impI conjI)
   finally show "spine (translate (diagSeq 0 v)) ! i = i" .
 qed
 
+
+subsection \<open>The NF invariant holds on all standard forms\<close>
+
+text \<open>Unifying the three \<open>oper\<close> branches (for \<open>Lng M > 1\<close>): the expansion is
+  always \<open>butlast M\<close> followed by a block whose row-1 values already occur in
+  \<open>butlast M\<close>.\<close>
+
+lemma oper_eq_butlast_append:
+  assumes L: "1 < Lng M" and n1: "1 \<le> n"
+  shows "\<exists>R. M[n] = butlast M @ R \<and> snd ` set R \<subseteq> snd ` set (butlast M)"
+proof (cases "entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0")
+  case True
+  have "M[n] = butlast M" using True L by (simp add: oper_def Let_def Pred_def)
+  thus ?thesis by auto
+next
+  case nz: False
+  show ?thesis
+  proof (cases "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)")
+    case False
+    have "M[n] = butlast M" using L nz False by (simp add: oper_def Let_def Pred_def)
+    thus ?thesis by auto
+  next
+    case hp: True
+    have "Lng M - 1 \<noteq> 0" using L by simp
+    thus ?thesis using oper_bad_eq_butlast_append[OF _ nz hp n1] by blast
+  qed
+qed
+
+lemma nfinv_diag: "nfinv (diagSeq 0 v)"
+proof -
+  have e1: "map snd (incpref (diagSeq 0 v)) = [0..<Suc v]"
+    using spine_translate_eq[of "diagSeq 0 v"] spine_diagSeq0[of v] by simp
+  have e2: "map snd (diagSeq 0 v) = [0..<Suc v]"
+    by (simp add: diagSeq_def comp_def)
+  have "inv2 (map snd (incpref (diagSeq 0 v)))"
+    using inv2_spine_diagSeq0[of v] spine_translate_eq[of "diagSeq 0 v"] by simp
+  moreover have "cmax (map snd (diagSeq 0 v)) = cmax (map snd (incpref (diagSeq 0 v)))"
+    using e1 e2 by simp
+  ultimately show ?thesis by (simp add: nfinv_def)
+qed
+
+lemma nfinv_ST_PS: "M \<in> ST_PS \<Longrightarrow> nfinv M"
+proof (induction M rule: ST_PS.induct)
+  case (diag v)
+  show ?case by (rule nfinv_diag)
+next
+  case (oper M n)
+  show ?case
+  proof (cases "1 < Lng M")
+    case False
+    hence "M[n] = M" by (simp add: oper_eq_self_short)
+    thus ?thesis using oper.IH by simp
+  next
+    case True
+    obtain R where R: "M[n] = butlast M @ R"
+      and Rsub: "snd ` set R \<subseteq> snd ` set (butlast M)"
+      using oper_eq_butlast_append[OF True oper.hyps(2)] by blast
+    have bne: "butlast M \<noteq> []"
+      using True by (metis length_butlast length_greater_0_conv zero_less_diff)
+    have "nfinv (butlast M)" using nfinv_butlast[OF oper.IH bne] .
+    hence "nfinv (butlast M @ R)" using Rsub by (rule nfinv_append)
+    thus ?thesis using R by simp
+  qed
+qed
+
+
+subsection \<open>Subscript-monotonicity of descent on \<open>NF = translate ` ST_PS\<close>\<close>
+
+theorem maxsub_mono_NF:
+  assumes "Mw \<in> ST_PS" and "Mx \<in> ST_PS" and "translate Mw <o translate Mx"
+  shows "maxsub (translate Mw) \<le> maxsub (translate Mx)"
+proof (rule maxsub_mono_cond[OF assms(3)])
+  show "maxsub (translate Mw) = climb (translate Mw)"
+    using nfinv_ST_PS[OF assms(1)] by (simp add: maxsub_eq_climb_iff nfinv_def)
+  show "maxsub (translate Mx) = climb (translate Mx)"
+    using nfinv_ST_PS[OF assms(2)] by (simp add: maxsub_eq_climb_iff nfinv_def)
+  show "inv2 (spine (translate Mw))"
+    using nfinv_ST_PS[OF assms(1)] by (simp add: nfinv_def spine_translate_eq)
+  show "inv2 (spine (translate Mx))"
+    using nfinv_ST_PS[OF assms(2)] by (simp add: nfinv_def spine_translate_eq)
+qed
+
 end
