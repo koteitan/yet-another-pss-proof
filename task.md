@@ -8,7 +8,7 @@
 ## 進捗ツリー
 - 🚨 定理（標準形ペア数列システムの停止性）〔proofs.thy〕
   - ✅ §5 定式化〔def.thy: 親子関係 nextrel0/1・基本列 oper=M[n]・標準形 ST_PS・step〕
-  - ✅ オーダー記法 $p_a(b)+c$〔mechanized.thy〕
+  - ✅ 三分木記法 $p_a(b)+c$〔mechanized.thy〕
     - ✅ datatype three = Z | P nat three three（順序を先取りしない命名）
     - ✅ 添字優先順序と線形性〔olt / olt_irrefl・olt_trans・olt_total〕
   - ✅ 変換 translate（森オーダー写像、添字=行1）

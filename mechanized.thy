@@ -2,20 +2,20 @@ theory mechanized
   imports def
 begin
 
-section \<open>The ordinal notation \<open>p_a(b)+c\<close>\<close>
+section \<open>The ternary-tree notation \<open>p_a(b)+c\<close>\<close>
 
 text \<open>
-  \<^term>\<open>P a b c\<close> denotes \<open>p\<^bsub>a\<^esub>(b) + c\<close>: a principal term \<open>p\<^bsub>a\<^esub>(b)\<close> with
-  natural-number subscript \<open>a\<close> (the row-1 value of a pair) and argument \<open>b\<close>
-  (the sub-forest), followed by the rest of the sum \<open>c\<close>.  \<^term>\<open>Z\<close> denotes \<open>0\<close>.
-  This generalises the PrSS notation \<open>E a b = \<omega>\<^bsup>a\<^esup> + b\<close>: the single exponent
-  \<open>\<omega>\<^bsup>a\<^esup>\<close> is replaced by the subscripted \<open>p\<^bsub>a\<^esub>(b)\<close>.
+  The type \<open>three\<close> is a tree whose nodes carry one natural number and two
+  subtrees; it is named after that structure, not after any order (linearity of
+  \<open><o\<close> is proved below, not presupposed).  \<open>P a b c\<close> denotes \<open>p\<^bsub>a\<^esub>(b) + c\<close>:
+  a principal term \<open>p\<^bsub>a\<^esub>(b)\<close> with natural-number subscript \<open>a\<close> (the row-1 value of
+  a pair) and argument \<open>b\<close> (the sub-forest), followed by the rest of the sum \<open>c\<close>.
+  \<^term>\<open>Z\<close> denotes \<open>0\<close>.  This generalises the PrSS notation \<open>E a b = \<omega>\<^bsup>a\<^esup> + b\<close>:
+  the single exponent \<open>\<omega>\<^bsup>a\<^esup>\<close> is replaced by the subscripted \<open>p\<^bsub>a\<^esub>(b)\<close>.
 
   The order \<open><o\<close> is the lexicographic order on principal terms with the
-  subscript taken first (subscript-first): this is the unique direction under
-  which the expansion step strictly decreases the translate (empirically
-  verified, 4002/4002 steps; argument-first fails).  Termination targets the
-  Buchholz ordinal \<open>\<psi>\<^sub>0(\<psi>\<^sub>\<omega>(0))\<close>, matching natural-number subscripts.
+  subscript taken first (subscript-first).  Under this direction the expansion
+  step strictly decreases the translate (see \<open>m_step_decreases\<close> below).
 \<close>
 
 datatype three = Z | P nat three three
