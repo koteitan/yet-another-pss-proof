@@ -520,3 +520,13 @@ size 帰納（size a+size b+size c）で c の形で分岐。**証明済**:
 - 学んだ tactic パターン（次段用）: `from X[unfolded eq1 eq2] obtain`（case 代入後の olt 展開）,
   multiset は count+linarith+in_diff_count を明示, IH は `using sz xy yz IH by blast` で明示適用,
   `≤o` の等式ケースは `by auto`/明示。`bc` 等を simp で代入させず `[unfolded]` を使う。
+
+### olt_trans 続報 (2026-06-08): c=Th 全証明、残 c=Su[a=Su] のみ
+- **c=Th 完全証明**（a=Om/a=Su は IH(小成分), **a=Th＝ϑ/ϑ/ϑ core は totality 不要**で
+  `olt_Th_of_le_Kn`（支配→Th未満）＋IH＋subscript の arith／q=p=n のとき IH(e,f,d) で e<o d）。
+  ＝Towsner Key Lemma の最難部が片付いた。
+- **残 olt_trans sorry は c=Su[a=Su] ただ1つ**（Su as<o Su bs<o Su zs ⟹ Su as<o Su zs ＝
+  one-step multiset 順序の推移）。各 t∈as-zs は w1 か w2 に支配されるが、単一 witness∈zs-as へ
+  まとめるのに w1,w2 比較（totality）か多重度の場合分け（fiddly）が要る。`olt_Su_imp_mult` 有り。
+  選択肢: (i) `olt_total` を別途証明し mult 同値経由, (ii) 直接 witness 論法。次段。
+- ∴ **実 sorry は計3つ**: olt_trans[c=Su[a=Su]], L_ThF[p<n], ＋ op 仮定。
