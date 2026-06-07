@@ -530,3 +530,7 @@ size 帰納（size a+size b+size c）で c の形で分岐。**証明済**:
   まとめるのに w1,w2 比較（totality）か多重度の場合分け（fiddly）が要る。`olt_Su_imp_mult` 有り。
   選択肢: (i) `olt_total` を別途証明し mult 同値経由, (ii) 直接 witness 論法。次段。
 - ∴ **実 sorry は計3つ**: olt_trans[c=Su[a=Su]], L_ThF[p<n], ＋ op 仮定。
+- **c=Su[a=Su] は真と実証**（`work/ot_order.py`: 735130 連鎖で clause1 非推移の反例 0）。
+  要素全順序が無くても（ot は Su のリスト順序 artifact で非全順序）one-step multiset clause は推移的。
+  ∴ totality 不要の直接 witness 論法が存在するはず（w1/w2 の多重度場合分けが fiddly）。
+  あるいは `olt_Su_imp_mult`＋mult 推移（要素 trans は size-IH で可）＋converse。後段で詰める。
