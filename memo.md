@@ -153,7 +153,32 @@ Towsner §2 非poly OT_Ωω を `ot` datatype に移植（`W`=ω^ は省略, 埋
 - **順序 `olt`（infix `<\<^sub>o`, Towsner Def 2.3）を `function`+`termination`(size measure) で定義**。
   K 条件付き＝真の wf 順序（素朴 lex の `olt`@mechanized とは別物）。`ole`(`\<le>\<^sub>o`)。
 - 基本: `not_olt_Zero`, `olt_Zero_iff`, `olt_ZeroI`(Zero が最小)。
-次の段取り: (1) 順序性質: 線形性(Lemma 2.1)/推移律/`FC α<FC β ⟹ α<β`。
+### 順序メタ理論の設計（重要・継続用）
+- **観察: 単純な構造帰納／単一引数帰納は効かない**。`olt` の `Th m a <\<^sub>o γ` 再帰は
+  host `Th m a` を固定したまま γ を `Kn` の中へ深く潜らせ、しかも δ∈Kn p c は Kn m a に
+  入らない（Kn は非推移的: p≤m で `{Th p c}` を採り c へ潜らない）。ゆえに irreflexivity
+  すら単独では帰納できず、**サイズ同時帰納**か下記の WF 直接論法が要る。
+- **WF の分解（線形性不要ルート, 採用）**:
+  - Towsner 和順序（Def 2.3 第1項: 共通部分を除き、残りβ達の1つが残りα達全てを支配）は
+    **principal 上 `<\<^sub>o` の Dershowitz–Manna multiset 拡大 `mult` の部分関係**。
+    （|Y|>1 でも他のβ'を空へ置換する mult1 を挟めば mult に入る。）
+  - ゆえに `wf_mult`（HOL-Library.Multiset, R wf ⟹ mult R wf）＋ `wf_subset` で
+    **principal (Om/Th) 上 WF ⟹ 和 (Su) 上 WF**。線形性を経由しない。
+  - 注: Su は `ot list` だが順序は `mset xs` 経由なので、和順序⊆`mult` を mset で示す。
+- **残る本丸 = principal 上の WF**:
+  - `Om n` 同士は `m<n`(nat) で自明 wf。
+  - `Th n a`（崩壊）の accessibility が核 = Towsner Lemma 3.10/3.11。level (= FC/添字)
+    の入れ子帰納。`α ∈ acc ⟹ ϑ_n α ∈ acc`、`ϑ_n α の正規化が下位 level の acc`。
+  - **全 `ot` 項が wf**（Towsner Thm 3.12, 崩壊 ϑ により bad chain が阻止される）。
+    ゆえに部分集合不要で `wf {(a,b). a <\<^sub>o b}` を目標にできる。埋め込み像⊆ot で transfer。
+- 段取り改: (i) `princ_lt`(principal限定の<)を別出し or 直接, (ii) 和順序⊆mult を証明し
+  sum-WF を principal-WF へ還元, (iii) principal-WF を Isabelle `accp`/`acc` で level 帰納
+  (Towsner 3.8-3.12 を absolute 版に翻訳), (iv) `wf (olt 全体)`, (v) 埋め込み順序保存。
+- 設計判断: 論文の完備な WF 証明は **poly 版(§3.2, de Bruijn shift 付)**。私の `ot` は
+  absolute(Om n)。absolute 版 WF は §3.2 を翻訳（shift 不要で簡素化されるはず）。
+  M_n の正確な absolute 定義の再構成に注意（要検証）。risk があれば poly 版faithful移植に切替。
+
+旧・次の段取り: (1) 順序性質: 線形性(Lemma 2.1)/推移律/`FC α<FC β ⟹ α<β`。
 (2) `Acc_n`/`M_n`(Def 3.7), Lemma 3.8(和で閉)–3.10(ϑで閉)–3.11(崩壊で cardinality 降下)
 –Thm 3.12(全項 accessible=wf)。(3) 埋め込み `three`→`ot`（`P a b c ↦ Su(Th a · # tail)`),
 NF 上で `olt_three = <\<^sub>o` を示し `wf Rnf`。
