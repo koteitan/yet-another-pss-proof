@@ -417,7 +417,166 @@ text \<open>\<^bold>\<open>Transitivity (sorry):\<close> the Key-Lemma-level ord
   order meta-theory.\<close>
 
 lemma olt_trans: "a <\<^sub>o b \<Longrightarrow> b <\<^sub>o c \<Longrightarrow> a <\<^sub>o c"
-  sorry
+proof (induction "size a + size b + size c" arbitrary: a b c rule: less_induct)
+  case less
+  have ab: "a <\<^sub>o b" and bc: "b <\<^sub>o c" using less.prems by auto
+  have IH: "x <\<^sub>o z" if "size x + size y + size z < size a + size b + size c"
+                          "x <\<^sub>o y" "y <\<^sub>o z" for x y z
+    using less.hyps that by blast
+  show "a <\<^sub>o c"
+  proof (cases c)
+    case c_Om: (Om n)
+    show ?thesis
+    proof (cases a)
+      case a_Om: (Om q)
+      \<comment> \<open>conclusion \<open>Om q <\<^sub>o Om n\<close>, i.e. \<open>q < n\<close>\<close>
+      show ?thesis
+      proof (cases b)
+        case (Om p)
+        thus ?thesis using ab bc a_Om c_Om by simp
+      next
+        case (Th p f)
+        from ab a_Om Th obtain g where g: "g \<in> Kn p f" "Om q \<le>\<^sub>o g" by auto
+        have gn: "g <\<^sub>o Om n" using bc Th c_Om g(1) by simp
+        show ?thesis
+        proof (cases "Om q = g")
+          case True thus ?thesis using gn a_Om c_Om by simp
+        next
+          case False
+          have "size (Om q) + size g + size (Om n) < size a + size b + size c"
+            using a_Om Th c_Om Kn_size[OF g(1)] by simp
+          moreover have "Om q <\<^sub>o g" using g(2) False by simp
+          ultimately have "Om q <\<^sub>o Om n" using gn IH by blast
+          thus ?thesis using a_Om c_Om by simp
+        qed
+      next
+        case (Su bs)
+        from ab a_Om Su obtain z where z: "z \<in> set bs" "Om q \<le>\<^sub>o z" by auto
+        have zn: "z <\<^sub>o Om n" using bc Su c_Om z(1) by simp
+        show ?thesis
+        proof (cases "Om q = z")
+          case True thus ?thesis using zn a_Om c_Om by simp
+        next
+          case False
+          have "size (Om q) + size z + size (Om n) < size a + size b + size c"
+            using a_Om Su c_Om size_lt_Su[OF z(1)] by simp
+          moreover have "Om q <\<^sub>o z" using z(2) False by simp
+          ultimately have "Om q <\<^sub>o Om n" using zn IH by blast
+          thus ?thesis using a_Om c_Om by simp
+        qed
+      qed
+    next
+      case a_Th: (Th q e)
+      \<comment> \<open>goal is exactly \<open>Th q e <\<^sub>o Om n\<close> = \<open>\<forall>\<gamma>\<in>Kn q e. \<gamma> <\<^sub>o Om n\<close>\<close>
+      have "Th q e <\<^sub>o Om n"
+      proof (cases b)
+        case (Om p)
+        have "Th q e <\<^sub>o Om p" using ab a_Th Om by simp
+        moreover have "p \<le> n" using bc Om c_Om by simp
+        ultimately show ?thesis by (rule olt_Om_mono)
+      next
+        case (Th p f)
+        from ab a_Th Th
+        consider (dom) "\<exists>\<delta>\<in>Kn p f. Th q e \<le>\<^sub>o \<delta>"
+          | (lower) "\<forall>\<gamma>\<in>Kn q e. \<gamma> <\<^sub>o Th p f" by auto
+        thus ?thesis
+        proof cases
+          case dom
+          then obtain \<delta> where d: "\<delta> \<in> Kn p f" "Th q e \<le>\<^sub>o \<delta>" by auto
+          have dn: "\<delta> <\<^sub>o Om n" using bc Th c_Om d(1) by simp
+          show ?thesis
+          proof (cases "Th q e = \<delta>")
+            case True thus ?thesis using dn by simp
+          next
+            case False
+            have sz: "size (Th q e) + size \<delta> + size (Om n) < size a + size b + size c"
+              using a_Th Th c_Om Kn_size[OF d(1)] by simp
+            have "Th q e <\<^sub>o \<delta>" using d(2) False by simp
+            thus ?thesis using sz dn IH by blast
+          qed
+        next
+          case lower
+          have "\<forall>\<gamma>\<in>Kn q e. \<gamma> <\<^sub>o Om n"
+          proof
+            fix \<gamma> assume g: "\<gamma> \<in> Kn q e"
+            have "size \<gamma> + size (Th p f) + size (Om n) < size a + size b + size c"
+              using a_Th Th c_Om Kn_size[OF g] by simp
+            moreover have "\<gamma> <\<^sub>o Th p f" using lower g by simp
+            moreover have "Th p f <\<^sub>o Om n" using bc Th c_Om by simp
+            ultimately show "\<gamma> <\<^sub>o Om n" using IH by blast
+          qed
+          thus ?thesis using a_Th by simp
+        qed
+      next
+        case (Su bs)
+        from ab a_Th Su obtain z where z: "z \<in> set bs" "Th q e \<le>\<^sub>o z" by auto
+        have zn: "z <\<^sub>o Om n" using bc Su c_Om z(1) by simp
+        show ?thesis
+        proof (cases "Th q e = z")
+          case True thus ?thesis using zn by simp
+        next
+          case False
+          have sz: "size (Th q e) + size z + size (Om n) < size a + size b + size c"
+            using a_Th Su c_Om size_lt_Su[OF z(1)] by simp
+          have "Th q e <\<^sub>o z" using z(2) False by simp
+          thus ?thesis using sz zn IH by blast
+        qed
+      qed
+      thus ?thesis using a_Th c_Om by simp
+    next
+      case a_Su: (Su as)
+      have "\<forall>v\<in>set as. v <\<^sub>o Om n"
+      proof
+        fix v assume v: "v \<in> set as"
+        have szv: "size v < size a" using a_Su size_lt_Su[OF v] by simp
+        show "v <\<^sub>o Om n"
+        proof (cases b)
+          case (Om p)
+          have "v <\<^sub>o Om p" using ab a_Su Om v by simp
+          moreover have "p \<le> n" using bc Om c_Om by simp
+          ultimately show ?thesis by (rule olt_Om_mono)
+        next
+          case (Th p f)
+          have "v <\<^sub>o Th p f" using ab a_Su Th v by simp
+          moreover have "Th p f <\<^sub>o Om n" using bc Th c_Om by simp
+          moreover have "size v + size (Th p f) + size (Om n) < size a + size b + size c"
+            using Th c_Om szv by simp
+          ultimately show ?thesis using IH by blast
+        next
+          case (Su bs)
+          show ?thesis
+          proof (cases "v \<in># mset as - mset bs")
+            case True
+            from ab a_Su Su obtain w where w: "w \<in># mset bs - mset as"
+              and wdom: "\<forall>u \<in># mset as - mset bs. u <\<^sub>o w" by auto
+            have vw: "v <\<^sub>o w" using wdom True by simp
+            have "w \<in> set bs" using w by (meson in_diffD in_multiset_in_set)
+            hence wn: "w <\<^sub>o Om n" using bc Su c_Om by simp
+            have "size v + size w + size (Om n) < size a + size b + size c"
+              using a_Su Su c_Om szv size_lt_Su[OF \<open>w \<in> set bs\<close>] by simp
+            thus ?thesis using vw wn IH by blast
+          next
+            case False
+            have "0 < count (mset as) v" using v by (simp add: count_greater_zero_iff)
+            moreover have "\<not> count (mset bs) v < count (mset as) v"
+              using False by (simp add: in_diff_count)
+            ultimately have "0 < count (mset bs) v" by linarith
+            hence vbs: "v \<in> set bs" by (simp add: count_greater_zero_iff in_multiset_in_set)
+            have "Su bs <\<^sub>o Om n" using bc Su c_Om by simp
+            thus ?thesis using vbs by simp
+          qed
+        qed
+      qed
+      thus ?thesis using a_Su c_Om by simp
+    qed
+  next
+    case c_Su: (Su zs)
+    show ?thesis sorry
+  next
+    case c_Th: (Th n d)
+    show ?thesis sorry
+  qed
+qed
 
 lemma olt_ole_trans: "a <\<^sub>o b \<Longrightarrow> b \<le>\<^sub>o c \<Longrightarrow> a <\<^sub>o c"
   using olt_trans by blast
