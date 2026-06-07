@@ -303,6 +303,28 @@ next
   qed
 qed
 
+lemma incpref_append_stop:
+  "incpref ys \<noteq> ys \<Longrightarrow> incpref (ys @ zs) = incpref ys"
+proof (induction ys rule: incpref.induct)
+  case 1 thus ?case by simp
+next
+  case (2 p) thus ?case by simp
+next
+  case (3 p q rest)
+  show ?case
+  proof (cases "fst p < fst q")
+    case False thus ?thesis by simp
+  next
+    case True
+    then have ne: "incpref (q # rest) \<noteq> q # rest" using "3.prems" by simp
+    have "incpref ((p # q # rest) @ zs) = p # incpref ((q # rest) @ zs)"
+      using True by simp
+    also have "\<dots> = p # incpref (q # rest)" using "3.IH"[OF True ne] by simp
+    also have "\<dots> = incpref (p # q # rest)" using True by simp
+    finally show ?thesis .
+  qed
+qed
+
 lemma incpref_butlast:
   "incpref (butlast M) = (if incpref M = M then butlast M else incpref M)"
 proof (cases "M = []")
