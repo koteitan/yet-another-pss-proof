@@ -477,3 +477,21 @@ FCset(embed t)={} ＝ **embed 像は全て可算項（FCset={}）**。
   （可算 principal の Su は可算）。distinguished-set（Acc_n/M_n）は Om 上界を内部で使い可算項の acc を構築。
 - shift（負添字）は正規化の proof-internal 道具のまま（最終主張には負添字項は出ない）。
 - 注: `wf_Rnf_via_embed`（embed.thy）は `wf oltRw` 仮定 → 可算版 `wf oltRw_cbl` に差替が要る。
+
+### ★ 到達点 (2026-06-08): 停止性 = L_ThF[p<n] ＋ op の2点に集約（他は全証明済）
+end-to-end チェーン（`embed.step_terminates_via_embed`）構築・全コミット済:
+`step_terminates_via_embed` ⟸ `wf_Rnf_via_embed[op]` ⟸ `wf_oltRwF` ⟸ `masterF` ⟸ `L_ThF`。
+- **`masterF`（証明済）**: omfree wfo 項 → acc oltRwF。構造帰納（Om は omfree で消滅／Su は
+  `bag_mono_wF`+`acc_of_bag_elemsF`／Th は `L_ThF`）。
+- **`L_ThF`（domination/p=n/Su 証明済, 残 p<n のみ）**: `omfree d⟹wfo d⟹d∈acc oltRwF⟹Th n d∈acc oltRwF`。
+  acc 帰納 on d。前者 r（omfree なので Om 無し）: dom（γ∈Kn n d 支配, `Kn_le_self`+downward）✓／
+  p=n（e<o d, 主 IH）✓／Su（`acc_of_bag_elemsF`+summands を pacc）✓／**p<n が唯一の sorry**。
+- **残 2 義務**:
+  1. **`L_ThF` の `p<n` ケース** = `Th p e <o Th n d`（p<n, ∀γ∈Kn p e. γ<o Th n d, 全 omfree）で
+     `Th p e∈acc oltRwF`。＝ **真の Buchholz ϑ 崩壊 WO**。引数 e は acc 供給源が無く（impredicative）、
+     subscript 階層＋Ω scaffold＋制御集合（Buchholz C_n(α)/Towsner 正規化）が要る研究核。
+     注: omfree 項は FCset={} で ground/width 退化 ⟹ 既存の ground 階層 Mn/Acc は**そのままでは効かない**。
+     subscript（p）で階層化し Ω_p を上界とする版が要る（or Buchholz 1986 の C 集合）。
+  2. **`op`**（embed 順序保存, NF 上 `w≺x⟹embed w<\<^sub>o embed x`）。NF 不変条件（CNF/bfb/maxsub）依存。
+- 道具（全証明済）: shift 順序自己同型 / acc 不変 / gnd/norm/wdt / Mn/AccB/Acc（ground 階層, p<n 用に
+  subscript 版へ要再設計）/ omfree_embed / bag_mono_wF。
