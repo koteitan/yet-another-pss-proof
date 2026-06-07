@@ -311,6 +311,91 @@ next
   with assms Kn_isH[OF assms] show ?thesis by simp
 qed
 
+text \<open>A principal dominated by a critical subterm of \<open>Th q b\<close> is below \<open>Th q b\<close>
+  (the critical-subterm clause of the ordering provides the witness; no
+  transitivity needed).\<close>
+
+lemma olt_Th_of_le_Kn:
+  assumes "isH \<gamma>" "\<delta> \<in> Kn q b" "\<gamma> \<le>\<^sub>o \<delta>"
+  shows "\<gamma> <\<^sub>o Th q b"
+  using assms by (cases \<gamma>) auto
+
+text \<open>Critical subterms only coarsen as the level rises: a level-\<open>n\<close> critical
+  subterm is dominated by a level-\<open>r\<close> one (for \<open>n \<le> r\<close>).  Proved directly by
+  recursion on the host term, using @{thm [source] olt_Th_of_le_Kn} \<dash> crucially
+  \<^emph>\<open>without\<close> general transitivity of \<open><\<^sub>o\<close>.\<close>
+
+lemma Kn_mono_le:
+  "\<gamma> \<in> Kn n a \<Longrightarrow> n \<le> r \<Longrightarrow> \<exists>\<delta> \<in> Kn r a. \<gamma> \<le>\<^sub>o \<delta>"
+proof (induction a arbitrary: \<gamma> n r)
+  case (Om m) thus ?case by (auto split: if_splits)
+next
+  case (Th q b)
+  show ?case
+  proof (cases "n < q")
+    case True
+    with Th.prems have gb: "\<gamma> \<in> Kn n b" by simp
+    show ?thesis
+    proof (cases "r < q")
+      case True
+      with gb Th.IH[OF gb \<open>n \<le> r\<close>] show ?thesis by simp
+    next
+      case False
+      hence kr: "Kn r (Th q b) = {Th q b}" by simp
+      from Th.IH[OF gb, of q] \<open>n < q\<close>
+      obtain \<delta> where d: "\<delta> \<in> Kn q b" "\<gamma> \<le>\<^sub>o \<delta>" by auto
+      have "isH \<gamma>" using gb by (rule Kn_isH)
+      hence "\<gamma> <\<^sub>o Th q b" using olt_Th_of_le_Kn[OF _ d] by simp
+      thus ?thesis using kr by auto
+    qed
+  next
+    case False
+    with Th.prems have "\<gamma> = Th q b" by simp
+    moreover from False \<open>n \<le> r\<close> have "Kn r (Th q b) = {Th q b}" by simp
+    ultimately show ?thesis by auto
+  qed
+next
+  case (Su xs)
+  then obtain x where x: "x \<in> set xs" "\<gamma> \<in> Kn n x" by auto
+  from Su.IH[OF x(1) x(2) \<open>n \<le> r\<close>] obtain \<delta> where "\<delta> \<in> Kn r x" "\<gamma> \<le>\<^sub>o \<delta>" by auto
+  thus ?case using x(1) by auto
+qed
+
+text \<open>Hence a level-\<open>n\<close> critical subterm is below \<open>Th r a\<close> for any \<open>r \<ge> n\<close>.\<close>
+
+lemma KnTh:
+  assumes "\<gamma> \<in> Kn n a" "n \<le> r" shows "\<gamma> <\<^sub>o Th r a"
+proof -
+  from Kn_mono_le[OF assms] obtain \<delta> where "\<delta> \<in> Kn r a" "\<gamma> \<le>\<^sub>o \<delta>" by auto
+  thus ?thesis using olt_Th_of_le_Kn[OF Kn_isH[OF assms(1)]] by simp
+qed
+
+text \<open>Every critical subterm is \<open>\<le>\<^sub>o\<close> its host (again without transitivity).\<close>
+
+lemma Kn_le_self: "\<gamma> \<in> Kn n d \<Longrightarrow> \<gamma> \<le>\<^sub>o d"
+proof (induction d arbitrary: \<gamma> n)
+  case (Om m) thus ?case by (auto split: if_splits)
+next
+  case (Th q b)
+  show ?case
+  proof (cases "n < q")
+    case True
+    with Th.prems have "\<gamma> \<in> Kn n b" by simp
+    hence "\<gamma> <\<^sub>o Th q b" using KnTh[of \<gamma> n b q] True by simp
+    thus ?thesis by simp
+  next
+    case False
+    with Th.prems have "\<gamma> = Th q b" by simp
+    thus ?thesis by simp
+  qed
+next
+  case (Su xs)
+  then obtain x where x: "x \<in> set xs" "\<gamma> \<in> Kn n x" by auto
+  from Su.IH[OF x(1) x(2)] have "\<gamma> \<le>\<^sub>o x" .
+  moreover have "isH \<gamma>" using x(2) by (rule Kn_isH)
+  ultimately show ?case using x(1) by (cases \<gamma>) auto
+qed
+
 subsection \<open>Cardinality is monotone on principal terms\<close>
 
 text \<open>For principal (\<open>\<Omega>\<close>/\<open>\<vartheta>\<close>) terms, \<open>a <\<^sub>o b \<Longrightarrow> FC a \<le> FC b\<close>.  This lets the
