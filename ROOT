@@ -21,3 +21,4 @@ session YAPSS = HOL +
     def
     mechanized
     proofs
+    wf

@@ -47,6 +47,29 @@
   `good` では成り立たない（例 $p_0(p_0(p_1(p_2(0))))$ は good だが NF 外で maxsub を
   上げる）。→ maxsub 単調は NF 固有の性質で、単純な局所構文条件からは出ない。
 
+## NF のスパイン構造（経験的、(diagacc) への鍵）
+
+最左 b-スパインを `spine(P a b c)=a # spine(b)`, `spine(Z)=[]` とする。NF 項について
+（`leftspine.py` / `inv2.py`, 違反 0）：
+
+- (INV1) `maxsub(t) = max(spine(t))`：全添字（兄弟 c 側も含む）は最左スパインの最大以下。
+- (INV2) `spine(t)` は `0,1,2,…,maxsub(t)` で始まる（最初の maxsub+1 項が `[0..maxsub]`）。
+- 系：`a_i ≤ i`（根 0＋bfb の +1 以下から）。
+
+**これらから maxsub 単調性が従う**：NF の `w ≺ x` は添字優先＝スパイン優先なので、
+スパイン添字が最初に食い違う深さで勝敗が決まる。両スパインは `0,1,2,…` で始まるので、
+初期登りが短い（maxsub が小さい）方がその深さで小さい添字をもち ≺ 側になる。ゆえに
+`w ≺ x ⟹ maxsub(w) ≤ maxsub(x)`（兄弟 c 側は maxsub に効かない＝INV1 ゆえ、スパインで決まる）。
+
+→ これで **maxsub による階層化帰納** が成立：`R_NF` 降下で maxsub 非増加。残るは
+**同一 maxsub レベル内の整礎性**（Buchholz の「レベル n はレベル n-1 から構成」の段）。
+
+形式化の段取り：
+1. `spine`/`maxsub` を定義し、INV1・INV2 を `M∈ST_PS ⟹ translate M` で証明
+   （ST_PS 帰納：対角は自明、oper の copy-with-ascension がスパイン構造を保つ）。
+2. INV1・INV2 から maxsub 単調性（構文的補題）。
+3. maxsub の strong induction で `wf R_NF`。同一レベル内の二次測度が要（本丸の残り）。
+
 ## (diagacc) 証明の方針候補
 
 - **(A)** Buchholz ψ_ω 流の正規形述語＋整礎性をフル形式化し、`translate(NF)` を
