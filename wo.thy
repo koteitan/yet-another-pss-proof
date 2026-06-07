@@ -506,6 +506,14 @@ fun wfo :: "ot \<Rightarrow> bool" where
 | "wfo (Th n a) = wfo a"
 | "wfo (Su xs) = (length xs \<noteq> 1 \<and> (\<forall>x \<in> set xs. isH x \<and> wfo x))"
 
+lemma shift_wfo [simp]: "wfo (shift k a) = wfo a"
+proof (induction a)
+  case (Su xs)
+  have "(\<forall>x\<in>set (map (shift k) xs). isH x \<and> wfo x) = (\<forall>x\<in>set xs. isH x \<and> wfo x)"
+    using Su.IH by auto
+  thus ?case by simp
+qed auto
+
 text \<open>The multiset of principal summands of a term.\<close>
 
 fun bag :: "ot \<Rightarrow> ot multiset" where
