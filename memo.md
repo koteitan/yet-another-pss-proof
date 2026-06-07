@@ -178,6 +178,48 @@ Towsner §2 非poly OT_Ωω を `ot` datatype に移植（`W`=ω^ は省略, 埋
   absolute(Om n)。absolute 版 WF は §3.2 を翻訳（shift 不要で簡素化されるはず）。
   M_n の正確な absolute 定義の再構成に注意（要検証）。risk があれば poly 版faithful移植に切替。
 
+### 実装済（wo.thy, 緑・コミット済 2026-06-07 続き）
+- `oltR ≡ {(a,b). a <\<^sub>o b}`。
+- **`olt_Su_imp_mult`**: `Su xs <\<^sub>o Su ys ⟹ (mset xs, mset ys) ∈ mult oltR`
+  （`one_step_implies_mult` 使用。和順序⊆multiset 拡大）。
+- `embed.thy`: `princs`/`embed`（`P a b c ↦ Su(Th a (embed b) # princs c)`）, `embed_Z`,
+  `embed_P`, `princs_P`, `princs_all_Th`, `isH_princs`。
+
+### 実装済（wo.thy, 緑・コミット 2026-06-07 さらに続き）
+- **assembly 完成 ✅**: `wfo`(well-formed), `bag`(principal 和の multiset), `principalR`
+  (`{(a,b). a<\<^sub>o b ∧ isH a ∧ isH b}`), `mult_single_dom`, `mult_add`, `mult_dom_set`,
+  **`bag_mono`**(`wfo a⟹wfo b⟹a<\<^sub>o b⟹(bag a,bag b)∈mult principalR`),
+  **`wf_olt_of_principal`**(`wf principalR ⟹ wf {(a,b). a<\<^sub>o b ∧ wfo a ∧ wfo b}`)。
+  → **残る WF 義務は `wf principalR`（Om/Th 上）ただ一つに crisp 還元済み**。
+  注意（ハマり）: `<\<^sub>o` 上の `auto`/巨大 `metis` は発散（kill 要）。明示 `rule`/`linarith`/
+  小さい metis で書く。`{#a#}+X` vs `add_mset a X`, `Suc 0≤length` は `Suc_le_eq` 必要。
+
+### 次セッションの段取り（最重要・本丸 = `wf principalR`）
+**(B') `wf principalR`**: Om/Th 上の `<\<^sub>o` 整礎性。`Om n` は `m<n` で自明。`Th n a` の崩壊が核
+  （Towsner 3.10/3.11, level=FC 入れ子帰納, `Acc_n`/`M_n` Def 3.7 を absolute 化）。
+  Isabelle `acc`/`accp` で「全 principal が acc」を level 帰納で示す。M_n 定義の再構成に注意
+  （Thm 3.12 全項被覆が非空虚性の検証）。
+**(C) 埋め込み順序保存**（既出, 下記）。
+
+（参考・旧）assembly の元計画:
+**(A) assembly: `wf principalR ⟹ wf oltR`（well-formed 上）** — 機械的、先にやると本丸が crisp 化:
+  - `wfo`(well-formed): `Su` の元は principal かつ長さ≠1、再帰。埋め込み像は `wfo`。
+  - `bag`: `Su xs↦mset xs`, principal `p↦{#p#}`。
+  - `principalR ≡ {(a,b). a<\<^sub>o b ∧ isH a ∧ isH b}`。
+  - `bag_mono`: `wfo a ⟹ wfo b ⟹ a<\<^sub>o b ⟹ (bag a, bag b) ∈ mult principalR`
+    （4 ケース: Su/Su は `olt_Su_imp_mult`＋元が principal; Su/princ, princ/Su, princ/princ は
+     `one_step_implies_mult` で構成）。
+  - ⟹ `wf principalR ⟹ wf {(a,b). a<\<^sub>o b ∧ wfo a ∧ wfo b}`（`wf_mult`＋`wf_inv_image` bag）。
+**(B) 本丸 principal WF**（Towsner 3.7–3.12, absolute 版に翻訳, 要慎重）:
+  - `Om n` 同士は `m<n` で wf。
+  - `Th n a`: `Acc_n`/`M_n` 階層（Def 3.7 を absolute 化）。level=FC で入れ子帰納。
+    Lemma 3.8(和閉)/3.9(ω^閉=不要, W 無し)/3.10(ϑ 閉)/3.11(崩壊で level 降下)/Thm 3.12(全項 acc)。
+  - **危険**: absolute M_n 定義の再構成（poly §3.2 は de Bruijn shift 付き完備証明）。
+    M_n を小さく取りすぎると Acc 空虚→補題 vacuous。**Thm 3.12（全項被覆）が非空虚性の検証**。
+    risk 高ければ poly 版 faithful 移植（shift 機械化）へ切替。
+**(C) 埋め込み順序保存**: NF 上で `olt_three w x ⟹ embed w <\<^sub>o embed x`（NF で素朴 lex=真順序）。
+  ⟹ `wf Rnf`（embed の inv_image）。`wf_Rnf_from_within_level`/`wf_Rnf_from_diag` と接続。
+
 旧・次の段取り: (1) 順序性質: 線形性(Lemma 2.1)/推移律/`FC α<FC β ⟹ α<β`。
 (2) `Acc_n`/`M_n`(Def 3.7), Lemma 3.8(和で閉)–3.10(ϑで閉)–3.11(崩壊で cardinality 降下)
 –Thm 3.12(全項 accessible=wf)。(3) 埋め込み `three`→`ot`（`P a b c ↦ Su(Th a · # tail)`),
