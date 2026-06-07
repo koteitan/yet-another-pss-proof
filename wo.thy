@@ -186,4 +186,17 @@ qed
 abbreviation ole :: "ot \<Rightarrow> ot \<Rightarrow> bool" (infix "\<le>\<^sub>o" 50) where
   "x \<le>\<^sub>o y \<equiv> (x <\<^sub>o y \<or> x = y)"
 
+subsection \<open>Basic order facts\<close>
+
+text \<open>\<open>Zero\<close> (the empty sum) is the least term, and nothing is below it.\<close>
+
+lemma not_olt_Zero [simp]: "\<not> (x <\<^sub>o Zero)"
+  by (cases x) auto
+
+lemma olt_Zero_iff: "Zero <\<^sub>o x \<longleftrightarrow> x \<noteq> Zero"
+  by (cases x) (auto simp: ex_in_conv)
+
+lemma olt_ZeroI: "x \<noteq> Zero \<Longrightarrow> Zero <\<^sub>o x"
+  by (simp add: olt_Zero_iff)
+
 end
