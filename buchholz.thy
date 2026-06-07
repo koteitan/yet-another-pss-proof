@@ -94,4 +94,88 @@ proof -
   thus ?thesis by (subst wf_iff_acc) blast
 qed
 
+subsection \<open>The ground-stratified distinguished sets (Towsner Def 3.7, absolute)\<close>
+
+text \<open>A term is \<^emph>\<open>normalized\<close> when its top cardinal sits at \<open>0\<close> (or it is countable,
+  \<open>FCset = {}\<close>).  \<^const>\<open>norm\<close> maps any term to a normalized one (order-equivalently
+  for accessibility, by @{thm [source] acc_shift}).  \<open>Klt a\<close> is the set of critical
+  subterms strictly below \<open>\<Omega>\<^bsub>0\<^esub>\<close> (Towsner \<open>K\<^bsup><0\<^esup>\<close>).\<close>
+
+definition normd :: "ot \<Rightarrow> bool" where
+  "normd a \<longleftrightarrow> (FCset a = {} \<or> FC a = 0)"
+
+definition Klt :: "ot \<Rightarrow> ot set" where
+  "Klt a = {\<gamma>. \<gamma> \<in> Kn 0 a \<and> \<gamma> <\<^sub>o Om 0}"
+
+text \<open>\<open>Mn n prev\<close>: normalized well-formed principals of \<^emph>\<open>width\<close> \<open>\<le> n\<close> (ground
+  \<open>\<ge> -n\<close>) whose below-\<open>\<Omega>\<^bsub>0\<^esub>\<close> critical subterms normalize into the lower levels
+  \<open>prev\<close>.  \<open>Acc n\<close> is its \<open><\<^sub>o\<close>-accessible part.\<close>
+
+definition Mn :: "nat \<Rightarrow> ot set \<Rightarrow> ot set" where
+  "Mn n prev = {a. isH a \<and> wfo a \<and> normd a \<and> nat (- gnd a) \<le> n
+                   \<and> (\<forall>\<gamma> \<in> Klt a. norm \<gamma> \<in> prev)}"
+
+fun AccB :: "nat \<Rightarrow> ot set" where
+  "AccB 0 = {}"
+| "AccB (Suc n) = AccB n \<union> Awf (Mn n (AccB n))"
+
+abbreviation Acc :: "nat \<Rightarrow> ot set" where
+  "Acc n \<equiv> Awf (Mn n (AccB n))"
+
+subsection \<open>Monotonicity of the level family\<close>
+
+lemma Mn_mono_prev: "prev \<subseteq> prev' \<Longrightarrow> Mn n prev \<subseteq> Mn n prev'"
+  by (auto simp: Mn_def)
+
+lemma AccB_Suc: "AccB n \<subseteq> AccB (Suc n)"
+  by auto
+
+lemma AccB_mono: "m \<le> n \<Longrightarrow> AccB m \<subseteq> AccB n"
+proof (induction n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  show ?case
+  proof (cases "m = Suc n")
+    case True thus ?thesis by simp
+  next
+    case False
+    with Suc.prems have "m \<le> n" by simp
+    with Suc.IH have "AccB m \<subseteq> AccB n" .
+    thus ?thesis using AccB_Suc by blast
+  qed
+qed
+
+lemma Acc_subset_Mn: "Acc n \<subseteq> Mn n (AccB n)"
+  by (rule Awf_subset)
+
+lemma Mn_wfo: "a \<in> Mn n prev \<Longrightarrow> wfo a" by (simp add: Mn_def)
+lemma Mn_isH: "a \<in> Mn n prev \<Longrightarrow> isH a" by (simp add: Mn_def)
+lemma Mn_normd: "a \<in> Mn n prev \<Longrightarrow> normd a" by (simp add: Mn_def)
+
+lemma AccB_props: "a \<in> AccB n \<Longrightarrow> wfo a \<and> isH a"
+proof (induction n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  from Suc.prems have "a \<in> AccB n \<or> a \<in> Acc n" by auto
+  thus ?case
+  proof
+    assume "a \<in> AccB n" thus ?thesis by (rule Suc.IH)
+  next
+    assume "a \<in> Acc n"
+    hence "a \<in> Mn n (AccB n)" using Acc_subset_Mn by blast
+    thus ?thesis using Mn_wfo Mn_isH by blast
+  qed
+qed
+
+lemma Acc_subset_AccB: "m < n \<Longrightarrow> Acc m \<subseteq> AccB n"
+proof -
+  assume "m < n"
+  hence "Suc m \<le> n" by simp
+  have "Acc m \<subseteq> AccB (Suc m)" by auto
+  also have "AccB (Suc m) \<subseteq> AccB n" using \<open>Suc m \<le> n\<close> by (rule AccB_mono)
+  finally show ?thesis .
+qed
+
 end
