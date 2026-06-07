@@ -534,3 +534,14 @@ size 帰納（size a+size b+size c）で c の形で分岐。**証明済**:
   要素全順序が無くても（ot は Su のリスト順序 artifact で非全順序）one-step multiset clause は推移的。
   ∴ totality 不要の直接 witness 論法が存在するはず（w1/w2 の多重度場合分けが fiddly）。
   あるいは `olt_Su_imp_mult`＋mult 推移（要素 trans は size-IH で可）＋converse。後段で詰める。
+
+### ★ c=Su[a=Su] は order メタ理論の相互依存（combined induction 要）と判明
+c=Su[a=Su] の witness 論法（∀v∈as. v<o z, z∈zs ⟹ witness z）で **z∉as** が要るが、それは
+`olt_irrefl`（z<o z 排除）に帰着。`olt_irrefl`⟸`olt_asym`⟸`olt_trans`（今証明中）＝**循環**。
+∴ 分離アプローチ（olt_trans を先に、olt_asym を後で）では c=Su[a=Su] が閉じない。
+**正しくは asym+trans（+irrefl）を単一 size 帰納で同時証明**（Towsner Lemma 2.1 / 標準の
+順序メタ理論手法）。c=Om/c=Su[a-principal]/c=Th は IH(trans) のみで irrefl 不要だったので分離で証明できた。
+- 次段の選択肢: (A) `olt_trans`＋`olt_asym` を1つの combined lemma に統合し同時帰納（c=Su[a=Su] で
+  IH から要素 irrefl/asym が使える）。既証明の c=Om/c=Su[a-principal]/c=Th はそのまま combined に移植可。
+  (B) c=Su[a=Su] だけ別途、要素 irrefl を size-IH で局所証明して埋める。
+- 現状の order メタ理論: c=Su[a=Su] 以外すべて証明済（＝Th/Th/Th 含む本質部分は完了）。
