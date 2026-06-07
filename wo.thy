@@ -40,6 +40,15 @@ fun isH :: "ot \<Rightarrow> bool" where
 | "isH (Th _ _) = True"
 | "isH (Su _) = False"
 
+text \<open>\<open>\<Omega>\<close>-free terms (no \<^const>\<open>Om\<close> anywhere): the PSS embedding lands here, and the
+  well-foundedness target is restricted to these (the \<open>\<Omega>\<^bsub>n\<^esub>\<close> are only proof
+  scaffolding, and the full \<^typ>\<open>int\<close>-level order is ill-founded via \<open>\<Omega>\<^bsub>-k\<^esub>\<close>).\<close>
+
+fun omfree :: "ot \<Rightarrow> bool" where
+  "omfree (Om _) = False"
+| "omfree (Th _ a) = omfree a"
+| "omfree (Su xs) = (\<forall>x \<in> set xs. omfree x)"
+
 subsection \<open>Formal cardinalities (Towsner Def 2.4)\<close>
 
 text \<open>\<open>FCset a\<close> is the set of cardinal levels occurring free in \<open>a\<close>;

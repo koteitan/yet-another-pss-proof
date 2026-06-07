@@ -88,6 +88,43 @@ qed simp
 lemma wfo_embed: "wfo (embed t)"
   unfolding embed_def by (rule wfo_collapse) (use eprincs_props in auto)
 
+text \<open>The embedding never produces an \<open>\<Omega>\<close>: every image term is \<^const>\<open>omfree\<close>.  This is
+  why the well-foundedness target may be (and must be) restricted to the \<open>\<Omega>\<close>-free
+  terms \<dash> the full \<^typ>\<open>int\<close>-level order is ill-founded via \<open>\<Omega>\<^bsub>-k\<^esub>\<close>.\<close>
+
+lemma omfree_collapse:
+  assumes "\<forall>x \<in> set xs. omfree x" shows "omfree (collapse xs)"
+proof (cases xs)
+  case Nil thus ?thesis by simp
+next
+  case (Cons x ys)
+  show ?thesis
+  proof (cases ys)
+    case Nil thus ?thesis using Cons assms by simp
+  next
+    case (Cons y zs) thus ?thesis using \<open>xs = x # ys\<close> assms by auto
+  qed
+qed
+
+lemma omfree_eprincs: "x \<in> set (eprincs t) \<Longrightarrow> omfree x"
+proof (induction t arbitrary: x)
+  case (P a b c)
+  from P.prems consider "x = Th (int a) (embed b)" | "x \<in> set (eprincs c)"
+    by (auto simp: embed_def)
+  thus ?case
+  proof cases
+    case 1
+    have "omfree (embed b)" unfolding embed_def
+      by (rule omfree_collapse) (use P.IH(1) in auto)
+    thus ?thesis using 1 by simp
+  next
+    case 2 show ?thesis by (rule P.IH(2)[OF 2])
+  qed
+qed simp
+
+lemma omfree_embed: "omfree (embed t)"
+  unfolding embed_def by (rule omfree_collapse) (use omfree_eprincs in auto)
+
 section \<open>Wiring: the two remaining obligations imply \<open>wf Rnf\<close>\<close>
 
 text \<open>Everything is now reduced to exactly two deep facts:

@@ -231,11 +231,6 @@ text \<open>\<^bold>\<open>Correction (2026-06-08).\<close>  With \<^typ>\<open>
   proof).  Hence the real target is well-foundedness restricted to the \<open>\<Omega>\<close>-free
   terms, which excludes the descending \<open>\<Omega>\<^bsub>-k\<^esub>\<close> chain and is genuinely well-founded.\<close>
 
-fun omfree :: "ot \<Rightarrow> bool" where
-  "omfree (Om _) = False"
-| "omfree (Th _ a) = omfree a"
-| "omfree (Su xs) = (\<forall>x \<in> set xs. omfree x)"
-
 lemma omfree_FCset [simp]: "omfree a \<Longrightarrow> FCset a = {}"
   by (induction a) auto
 
