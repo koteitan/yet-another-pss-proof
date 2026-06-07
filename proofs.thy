@@ -37,7 +37,9 @@ text \<open>
   diagonal tower \<open>translate (diagSeq u v) = p\<^bsub>u\<^esub>(p\<^bsub>u+1\<^esub>(\<dots>p\<^bsub>v\<^esub>(0)))\<close> is
   \<open>Rnf\<close>-accessible.  This isolates the genuine Buchholz-level (\<open>\<psi>\<close>-collapsing)
   content to the diagonals, discharging the whole expansion side via the
-  already-proven decrease lemma.
+  already-proven decrease lemma.  Since the base diagonals all start at \<open>(0,0)\<close>
+  (@{thm [source] ST_PS.diag}), the residual obligation is a \<^emph>\<open>single\<close> family of
+  towers \<open>D(v) = translate (diagSeq 0 v) = p\<^bsub>0\<^esub>(p\<^bsub>1\<^esub>(\<dots>p\<^bsub>v\<^esub>(0)))\<close>.
 \<close>
 
 lemma oper_eq_self_short:
@@ -49,12 +51,12 @@ proof -
 qed
 
 lemma acc_Rnf_of_ST_PS:
-  assumes diagacc: "\<And>u v. u \<le> v \<Longrightarrow> translate (diagSeq u v) \<in> Wellfounded.acc Rnf"
+  assumes diagacc: "\<And>v. translate (diagSeq 0 v) \<in> Wellfounded.acc Rnf"
     and "M \<in> ST_PS"
   shows "translate M \<in> Wellfounded.acc Rnf"
   using \<open>M \<in> ST_PS\<close>
 proof (induction M rule: ST_PS.induct)
-  case (diag u v)
+  case (diag v)
   thus ?case using diagacc by simp
 next
   case (oper M n)
@@ -77,7 +79,7 @@ next
 qed
 
 theorem wf_Rnf_from_diag:
-  assumes diagacc: "\<And>u v. u \<le> v \<Longrightarrow> translate (diagSeq u v) \<in> Wellfounded.acc Rnf"
+  assumes diagacc: "\<And>v. translate (diagSeq 0 v) \<in> Wellfounded.acc Rnf"
   shows "wf Rnf"
 proof -
   have "x \<in> Wellfounded.acc Rnf" for x
@@ -179,12 +181,12 @@ text \<open>Termination phrased against the residual diagonal-accessibility obli
   turns \<open>wfimg\<close> into the single hypothesis \<open>diagacc\<close>.\<close>
 
 theorem step_terminates_from_diag:
-  assumes diagacc: "\<And>u v. u \<le> v \<Longrightarrow> translate (diagSeq u v) \<in> Wellfounded.acc Rnf"
+  assumes diagacc: "\<And>v. translate (diagSeq 0 v) \<in> Wellfounded.acc Rnf"
   shows "wf {(T,M). M \<in> ST_PS \<and> step M T}"
   by (rule step_terminates[OF wf_Rnf_from_diag[OF diagacc]])
 
 corollary no_infinite_expansion_from_diag:
-  assumes diagacc: "\<And>u v. u \<le> v \<Longrightarrow> translate (diagSeq u v) \<in> Wellfounded.acc Rnf"
+  assumes diagacc: "\<And>v. translate (diagSeq 0 v) \<in> Wellfounded.acc Rnf"
   shows "\<not> (\<exists>S. (\<forall>i. S i \<in> ST_PS) \<and> (\<forall>i. step (S i) (S (Suc i))))"
   by (rule no_infinite_expansion[OF wf_Rnf_from_diag[OF diagacc]])
 

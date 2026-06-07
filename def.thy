@@ -99,10 +99,16 @@ text \<open>\<open>diagSeq a b\<close>: the diagonal segment \<open>((j,j))\<^bs
 definition diagSeq :: "nat \<Rightarrow> nat \<Rightarrow> pairseq" where
   "diagSeq a b = map (\<lambda>j. (j, j)) [a..<Suc b]"
 
-text \<open>\<open>ST\<^sub>PS\<close> (標準形): the least set closed under diagonals and \<open>M \<mapsto> M[n]\<close> (\<open>n \<ge> 1\<close>).\<close>
+text \<open>\<open>ST\<^sub>PS\<close> (標準形): the least set of \<^emph>\<open>standard forms\<close>, i.e. pair sequences
+  reachable from the initial diagonal \<open>(0,0)(1,1)\<dots>(v,v) = diagSeq 0 v\<close> by the
+  expansion \<open>M \<mapsto> M[n]\<close> (\<open>n \<ge> 1\<close>).  The base diagonals start at \<open>(0,0)\<close> (the
+  genuine initial state of a PSS computation); every standard form therefore
+  begins with \<open>(0,0)\<close>.  (Using \<open>diagSeq u v\<close> with \<open>u > 0\<close> as a base would admit
+  spurious sequences starting at \<open>(u,u)\<close> that are not reachable and break the
+  normal-form invariants — CNF sums, subscript-monotone descent.)\<close>
 
 inductive_set ST_PS :: "pairseq set" where
-  diag: "u \<le> v \<Longrightarrow> diagSeq u v \<in> ST_PS"
+  diag: "diagSeq 0 v \<in> ST_PS"
 | oper: "\<lbrakk>M \<in> ST_PS; 1 \<le> n\<rbrakk> \<Longrightarrow> (M::pairseq)[n] \<in> ST_PS"
 
 text \<open>One expansion step of the system: \<open>M \<rightarrow> M[n]\<close> for some copy count \<open>n \<ge> 1\<close>,
