@@ -420,6 +420,55 @@ proof (induction a b rule: olt.induct)
     by (auto simp: image_mset_diff_if_inj[OF shift_inj, symmetric] set_image_mset)
 qed (auto simp: shift_Kn)
 
+subsection \<open>Ground, normalization, and width (Towsner Def 3.6)\<close>
+
+text \<open>The \<^emph>\<open>ground\<close> \<open>G(a)\<close> is the lowest cardinal level occurring free; the
+  \<^emph>\<open>width\<close> is the spread of levels.  \<open>norm a\<close> normalizes by pushing the top level
+  to \<open>0\<close> (via the order-automorphism \<^const>\<open>shift\<close>), so the width becomes \<open>- gnd\<close>.
+  (For countable terms, \<open>FCset = {}\<close>; we keep these as a separate base case.)\<close>
+
+definition gnd :: "ot \<Rightarrow> int" where
+  "gnd a = (if FCset a = {} then 0 else Min (FCset a))"
+
+definition wdt :: "ot \<Rightarrow> int" where
+  "wdt a = FC a - gnd a"
+
+definition norm :: "ot \<Rightarrow> ot" where
+  "norm a = shift (- FC a) a"
+
+lemma FC_shift: "FCset a \<noteq> {} \<Longrightarrow> FC (shift k a) = FC a + k"
+proof -
+  assume ne: "FCset a \<noteq> {}"
+  have "FC (shift k a) = Max ((\<lambda>m. m + k) ` FCset a)"
+    using ne by (simp add: FC_def shift_FCset)
+  also have "\<dots> = Max (FCset a) + k"
+    using ne by (subst mono_Max_commute) (auto simp: mono_def)
+  finally show ?thesis using ne by (simp add: FC_def)
+qed
+
+lemma gnd_shift: "FCset a \<noteq> {} \<Longrightarrow> gnd (shift k a) = gnd a + k"
+proof -
+  assume ne: "FCset a \<noteq> {}"
+  have "gnd (shift k a) = Min ((\<lambda>m. m + k) ` FCset a)"
+    using ne by (simp add: gnd_def shift_FCset)
+  also have "\<dots> = Min (FCset a) + k"
+    using ne by (subst mono_Min_commute) (auto simp: mono_def)
+  finally show ?thesis using ne by (simp add: gnd_def)
+qed
+
+lemma wdt_nonneg: "FCset a \<noteq> {} \<Longrightarrow> 0 \<le> wdt a"
+  unfolding wdt_def FC_def gnd_def by simp
+
+lemma wdt_shift [simp]: "wdt (shift k a) = wdt a"
+proof (cases "FCset a = {}")
+  case True thus ?thesis by (simp add: wdt_def FC_def gnd_def shift_FCset)
+next
+  case False thus ?thesis by (simp add: wdt_def FC_shift gnd_shift)
+qed
+
+lemma FC_norm: "FCset a \<noteq> {} \<Longrightarrow> FC (norm a) = 0"
+  by (simp add: norm_def FC_shift)
+
 abbreviation oltR :: "(ot \<times> ot) set" where
   "oltR \<equiv> {(a,b). a <\<^sub>o b}"
 
