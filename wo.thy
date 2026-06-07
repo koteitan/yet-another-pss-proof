@@ -100,6 +100,29 @@ next
   qed
 qed
 
+lemma FCset_Th_eq_Kn: "FCset (Th n a) = (\<Union>\<gamma> \<in> Kn n a. FCset \<gamma>)"
+proof (induction a)
+  case (Om m) thus ?case by auto
+next
+  case (Th p e)
+  show ?case
+  proof (cases "n < p")
+    case True
+    have "FCset (Th n (Th p e)) = {k \<in> FCset e. k < n}" using True by auto
+    also have "\<dots> = (\<Union>\<gamma>\<in>Kn n e. FCset \<gamma>)" using Th.IH by simp
+    also have "\<dots> = (\<Union>\<gamma>\<in>Kn n (Th p e). FCset \<gamma>)" using True by simp
+    finally show ?thesis .
+  next
+    case False
+    have "FCset (Th n (Th p e)) = {k \<in> FCset e. k < p}" using False by auto
+    also have "\<dots> = FCset (Th p e)" by simp
+    also have "\<dots> = (\<Union>\<gamma>\<in>Kn n (Th p e). FCset \<gamma>)" using False by simp
+    finally show ?thesis .
+  qed
+next
+  case (Su xs) thus ?case by auto
+qed
+
 lemma FC_Kn: "\<gamma> \<in> Kn n a \<Longrightarrow> FC \<gamma> \<le> FC (Th n a)"
 proof -
   assume "\<gamma> \<in> Kn n a"
