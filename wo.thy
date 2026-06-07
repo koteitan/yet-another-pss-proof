@@ -724,8 +724,122 @@ proof (induction "size a + size b + size c" arbitrary: a b c rule: less_induct)
       thus ?thesis using a_Om c_Th by simp
     next
       case a_Th: (Th q e)
-      \<comment> \<open>the genuine \<open>\<vartheta>/\<vartheta>/\<vartheta>\<close> transitivity core\<close>
-      show ?thesis sorry
+      \<comment> \<open>the \<open>\<vartheta>/\<vartheta>/\<vartheta>\<close> transitivity core; uses @{thm [source] olt_Th_of_le_Kn} for
+        domination and the IH on \<open>(e,f,d)\<close> for the subscript argument\<close>
+      have isHa: "isH (Th q e)" by simp
+      have "Th q e <\<^sub>o Th n d"
+      proof (cases b)
+        case (Om p)
+        from bc Om c_Th obtain g where g: "g \<in> Kn n d" "Om p \<le>\<^sub>o g" by auto
+        have "Th q e <\<^sub>o g"
+        proof (cases "Om p = g")
+          case True thus ?thesis using ab a_Th Om by simp
+        next
+          case False
+          have "size (Th q e) + size (Om p) + size g < size a + size b + size c"
+            using a_Th Om c_Th Kn_size[OF g(1)] by simp
+          moreover have "Th q e <\<^sub>o Om p" using ab a_Th Om by simp
+          moreover have "Om p <\<^sub>o g" using g(2) False by simp
+          ultimately show ?thesis using IH by blast
+        qed
+        thus ?thesis using olt_Th_of_le_Kn[OF isHa g(1)] by simp
+      next
+        case (Su bs)
+        from ab a_Th Su obtain y where y: "y \<in> set bs" "Th q e \<le>\<^sub>o y" by auto
+        have yn: "y <\<^sub>o Th n d" using bc Su c_Th y(1) by simp
+        show ?thesis
+        proof (cases "Th q e = y")
+          case True thus ?thesis using yn by simp
+        next
+          case False
+          have "size (Th q e) + size y + size (Th n d) < size a + size b + size c"
+            using a_Th Su c_Th size_lt_Su[OF y(1)] by simp
+          moreover have "Th q e <\<^sub>o y" using y(2) False by simp
+          ultimately show ?thesis using yn IH by blast
+        qed
+      next
+        case (Th p f)
+        from bc[unfolded Th c_Th]
+        consider (bfst) "\<exists>g\<in>Kn n d. Th p f \<le>\<^sub>o g"
+          | (bsnd) "(\<forall>\<delta>\<in>Kn p f. \<delta> <\<^sub>o Th n d) \<and> (p < n \<or> (p = n \<and> f <\<^sub>o d))" by auto
+        thus ?thesis
+        proof cases
+          case bfst
+          then obtain g where g: "g \<in> Kn n d" "Th p f \<le>\<^sub>o g" by auto
+          have "Th q e <\<^sub>o g"
+          proof (cases "Th p f = g")
+            case True
+            have "size (Th q e) + size (Th p f) + size g < size a + size b + size c"
+              using a_Th Th c_Th Kn_size[OF g(1)] by simp
+            moreover have "Th q e <\<^sub>o Th p f" using ab a_Th Th by simp
+            ultimately show ?thesis using True by simp
+          next
+            case False
+            have "size (Th q e) + size (Th p f) + size g < size a + size b + size c"
+              using a_Th Th c_Th Kn_size[OF g(1)] by simp
+            moreover have "Th q e <\<^sub>o Th p f" using ab a_Th Th by simp
+            moreover have "Th p f <\<^sub>o g" using g(2) False by simp
+            ultimately show ?thesis using IH by blast
+          qed
+          thus ?thesis using olt_Th_of_le_Kn[OF isHa g(1)] by simp
+        next
+          case bsnd
+          hence ball_pf: "\<forall>\<delta>\<in>Kn p f. \<delta> <\<^sub>o Th n d" and sub_pn: "p < n \<or> (p = n \<and> f <\<^sub>o d)"
+            by auto
+          from ab[unfolded a_Th Th]
+          consider (afst) "\<exists>\<delta>\<in>Kn p f. Th q e \<le>\<^sub>o \<delta>"
+            | (asnd) "(\<forall>\<gamma>\<in>Kn q e. \<gamma> <\<^sub>o Th p f) \<and> (q < p \<or> (q = p \<and> e <\<^sub>o f))" by auto
+          thus ?thesis
+          proof cases
+            case afst
+            then obtain dd where dd: "dd \<in> Kn p f" "Th q e \<le>\<^sub>o dd" by auto
+            have dn: "dd <\<^sub>o Th n d" using ball_pf dd(1) by simp
+            show ?thesis
+            proof (cases "Th q e = dd")
+              case True thus ?thesis using dn by simp
+            next
+              case False
+              have "size (Th q e) + size dd + size (Th n d) < size a + size b + size c"
+                using a_Th Th c_Th Kn_size[OF dd(1)] by simp
+              moreover have "Th q e <\<^sub>o dd" using dd(2) False by simp
+              ultimately show ?thesis using dn IH by blast
+            qed
+          next
+            case asnd
+            hence ball_qe: "\<forall>\<gamma>\<in>Kn q e. \<gamma> <\<^sub>o Th p f"
+              and sub_qp: "q < p \<or> (q = p \<and> e <\<^sub>o f)" by auto
+            have c1: "\<forall>\<gamma>\<in>Kn q e. \<gamma> <\<^sub>o Th n d"
+            proof
+              fix \<gamma> assume gqe: "\<gamma> \<in> Kn q e"
+              have "size \<gamma> + size (Th p f) + size (Th n d) < size a + size b + size c"
+                using a_Th Th c_Th Kn_size[OF gqe] by simp
+              moreover have "\<gamma> <\<^sub>o Th p f" using ball_qe gqe by simp
+              moreover have "Th p f <\<^sub>o Th n d" using bc Th c_Th by simp
+              ultimately show "\<gamma> <\<^sub>o Th n d" using IH by blast
+            qed
+            have c2: "q < n \<or> (q = n \<and> e <\<^sub>o d)"
+            proof (cases "q < p")
+              case True thus ?thesis using sub_pn by auto
+            next
+              case False
+              hence qp: "q = p" "e <\<^sub>o f" using sub_qp by auto
+              show ?thesis
+              proof (cases "p < n")
+                case True thus ?thesis using qp by simp
+              next
+                case False
+                hence pn: "p = n" "f <\<^sub>o d" using sub_pn by auto
+                have "size e + size f + size d < size a + size b + size c"
+                  using a_Th Th c_Th by simp
+                hence "e <\<^sub>o d" using qp(2) pn(2) IH by blast
+                thus ?thesis using qp(1) pn(1) by simp
+              qed
+            qed
+            show ?thesis using c1 c2 by simp
+          qed
+        qed
+      qed
+      thus ?thesis using a_Th c_Th by simp
     next
       case a_Su: (Su as)
       have "\<forall>v\<in>set as. v <\<^sub>o Th n d"
