@@ -8,7 +8,11 @@
   - 背景: Towsner §2（絶対系）には WF 証明が無く、§3.2 の WF は polymorphic 系専用。絶対系では `Om n` が「足場ではなく本物の大元」のため構造帰納の底が無く、Acc_n/M_n レベル構築（数百行）が要る。多相系なら §3.2 がほぼ直接移植でき `wf pR` が閉じる。
 
 ## 進捗ツリー
-- 🚨 定理（標準形ペア数列システムの停止性）〔proofs.thy〕
+> **現状サマリ (2026-06-08)**: 停止性は **end-to-end で 2 義務に還元・コミット済**
+> （`embed.step_terminates_via_embed`）: PSS 停止性 ⟸ **(1) `masterF`**（Om-free 項の
+> Buchholz WO 核, 真の sorry）＋ **(2) `op`**（embed の NF 上順序保存, 仮定）。
+> 基盤（shift 順序自己同型・acc 不変・ground/norm/width・omfree・distinguished-set 定義）は全て証明済。
+- 🚨 定理（標準形ペア数列システムの停止性）〔proofs.thy / embed.thy〕
   - ✅ §5 定式化〔def.thy: 親子関係 nextrel0/1・基本列 oper=M[n]・標準形 ST_PS・step〕
   - ✅ 三分木記法 $p_a(b)+c$〔mechanized.thy〕
     - ✅ datatype three = Z | P nat three three（順序を先取りしない命名）
@@ -45,7 +49,8 @@
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
       - ✅ embed/eprincs/collapse＋像の well-formed〔wfo_embed〕＋**Om-free〔omfree_embed〕**（int 化済: `Th (int a) ...`）
       - ✅ **`wf_Rnf_via_embed`**: `wf Rnf` ⟸ `op`（NF 上 `w≺x ⟹ embed w<\<^sub>o embed x`）のみ（wf_oltRwF＋omfree_embed で配線済、偽の wf oltRw 仮定は除去）
+      - ✅ **`step_terminates_via_embed`**: PSS 停止性 ⟸ `op` （end-to-end, masterF が唯一の内部 gap）
       - 🚨 **`op`**（NF 上順序保存, 残 2 義務の一つ）
-  - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag〕
+  - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
