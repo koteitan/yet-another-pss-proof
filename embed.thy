@@ -88,4 +88,31 @@ qed simp
 lemma wfo_embed: "wfo (embed t)"
   unfolding embed_def by (rule wfo_collapse) (use eprincs_props in auto)
 
+section \<open>Wiring: the two remaining obligations imply \<open>wf Rnf\<close>\<close>
+
+text \<open>Everything is now reduced to exactly two deep facts:
+  \<^enum> \<^prop>\<open>wf principalR\<close> \<dash> well-foundedness of \<open><\<^sub>o\<close> on the principal (\<open>\<Omega>\<close>/\<open>\<vartheta>\<close>)
+    terms (Towsner's collapsing core, Lemmas 3.10\<dash>3.12); and
+  \<^enum> order-preservation of \<^const>\<open>embed\<close> on \<open>NF\<close>: the naive subscript order \<open><o\<close>
+    coincides with the true collapsing order \<open><\<^sub>o\<close> on standard forms.
+  Together they discharge \<^prop>\<open>wf Rnf\<close>, hence PSS termination.\<close>
+
+theorem wf_Rnf_via_embed:
+  assumes wfp: "wf principalR"
+    and op: "\<And>w x. w \<in> NF \<Longrightarrow> x \<in> NF \<Longrightarrow> w <o x \<Longrightarrow> embed w <\<^sub>o embed x"
+  shows "wf Rnf"
+proof -
+  let ?T = "{(a,b). a <\<^sub>o b \<and> wfo a \<and> wfo b}"
+  have wfT: "wf (inv_image ?T embed)"
+    by (rule wf_inv_image[OF wf_olt_of_principal[OF wfp]])
+  have sub: "Rnf \<subseteq> inv_image ?T embed"
+  proof (rule subsetI)
+    fix p assume "p \<in> Rnf"
+    then obtain v u where p: "p = (v, u)" and "v <o u" "u \<in> NF" "v \<in> NF" by auto
+    have "embed v <\<^sub>o embed u" using op[OF \<open>v \<in> NF\<close> \<open>u \<in> NF\<close> \<open>v <o u\<close>] .
+    thus "p \<in> inv_image ?T embed" using p wfo_embed by (simp add: inv_image_def)
+  qed
+  show "wf Rnf" by (rule wf_subset[OF wfT sub])
+qed
+
 end
