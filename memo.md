@@ -297,3 +297,29 @@ NF 上で `olt_three = <\<^sub>o` を示し `wf Rnf`。
 - 和因子（述語が Su）: `acc_of_bag_elems` で principal 述語に帰着済み（princ_acc_lift 内で実証）。
 
 次: Acc_n/M_n を FC 層化で構築し L_Th を入れ子帰納で証明 → `wf pR`。並行で embed 順序保存。
+
+## (Ifull) 2026-06-07 WF核を単一補題 Ifull に還元（buchholz.thy）
+
+`wf pR`/`wf oltRw`/`wf Rnf` は **Ifull**（∀wfo principal a. a∈Acc(FC a)）に完全還元・コミット済。
+buchholz.thy: Mlev/Awf/AccBelow 構築・PC（前者閉包）⟸Ifull・(II) Acc_n⊆acc pR・
+wf_pR_of_Ifull/wf_oltRw_of_Ifull すべて緑。
+
+**Ifull の中身（=Towsner Thm 3.12, 絶対系）**: FC で強帰納。レベル N で
+- Part1: a∈Mlev N (AccBelow N) — 臨界部分項 FC<N が AccBelow に（下位帰納で可）。
+- Part2: a∈acc(R|M) = **within-level（特に FC=0=ground）の崩壊 WF**。これが本丸。
+
+**Part2 の前者分解（principal a=Th n d, N=FC a, n>N）**:
+- 臨界支配 q≤δ (δ∈Kn n d): δ は d の部分項で size 小 → 構造(size)帰納で acc、acc_downward。
+- m=n（Th n e, e<o d）: 引数 acc 帰納（d∈acc は d が部分項＝構造帰納で供給）。
+- p<n（Th p e）: FC(Th p e)≤N。**FC<N なら LOW、FC=N（同レベル）なら subscript 帰納**。
+  例: `Th1(Th5(Om9)) <o Th2(Om0)`（両 FC=0, p=1<2, 引数 Th5(Om9) は部分項でなく size 大）。
+  引数 e は述語の部分項なので、述語を size 帰納すれば e∈acc は出る＝subscript→arg-acc 入れ子。
+- 和: 和因子は principal 前者 → 上記＋acc_of_bag_elems。
+⟹ **三重入れ子（FC→subscript→argument acc）＋構造(size)帰納で引数供給**。
+
+**Ifull に要る基盤補題（未証明・次段）**:
+- `olt_trans`（<o 推移律）: 和の連鎖・臨界支配で必須。Towsner Lemma 2.1 圏。大きい。
+- `Kn_le_self`（δ∈Kn n d ⟹ δ≤o d）か、代替に size 帰納で臨界部分項 acc。
+- 崩壊補題 Lcoll（LOW(n)＋d∈acc＋acc-on-d で Th n d∈acc。p<n の FC=N は subscript 帰納）。
+注: ground 正規化(α*)は不要と判明（引数は述語の部分項なので構造帰納で acc 供給できる）。
+de Bruijn も不要。絶対系で素直に書ける見込み。残るは推移律＋三重入れ子の配線。
