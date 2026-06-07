@@ -2,9 +2,9 @@
 
 # ペア数列システムの停止性（`p_a(b)+c` アプローチ）
 
-**ペア数列システム (Pair Sequence System, PSS) は Bashicu 氏が考案した**。
-その停止性は **P進大好きbot 氏が証明した**（Buchholz の ψ を用いる）が、
-**本証明はそれとは無関係な独立のオリジナル証明である**（同氏の手法・補題には依拠しない）。
+ペア数列システム (Pair Sequence System, PSS) は Bashicu 氏が考案した。
+その停止性は P進大好きbot 氏が証明した。
+本論文では P 進大好きbot 氏の証明と別のアプローチにてペア数列システムの停止性の証明を試みる。
 
 本証明はペア数列を独自の三分木記法 `p_a(b)+c` へ変換 (`translate`) し、
 その記法上の整礎な順序 `≺` に関して**展開の各ステップで測度が真に減少する**こと
@@ -269,5 +269,5 @@ $$ \{(T,M)\mid M\in\mathrm{ST_{PS}}\wedge \mathrm{step}\,M\,T\}\ \subseteq\ \mat
 ## 出典・引用 (Reference)
 - W. Buchholz, "[A new system of proof-theoretic ordinal functions](https://www.sciencedirect.com/science/article/pii/0168007286900527)", Annals of Pure and Applied Logic, Volume 32, 1986, pp. 195–207.
 - Bashicu, "[BASIC 言語による巨大数のまとめ](https://googology.fandom.com/ja/wiki/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%83%96%E3%83%AD%E3%82%B0:BashicuHyudora/BASIC%E8%A8%80%E8%AA%9E%E3%81%AB%E3%82%88%E3%82%8B%E5%B7%A8%E5%A4%A7%E6%95%B0%E3%81%AE%E3%81%BE%E3%81%A8%E3%82%81?oldid=15603&useskin=oasis)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) ユーザーブログ, 2015.8.21.（ペア数列システムの考案）
-- koteitan, "[Purely mathematical definition of BMS](https://googology.fandom.com/wiki/User_blog:Koteitan/Purely_mathematical_definition_of_BMS)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) ユーザーブログ.（定義の参照）
 - P進大好きbot. "[ペア数列の停止性](https://googology.fandom.com/ja/wiki/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%83%96%E3%83%AD%E3%82%B0:P%E9%80%B2%E5%A4%A7%E5%A5%BD%E3%81%8Dbot/%E3%83%9A%E3%82%A2%E6%95%B0%E5%88%97%E3%81%AE%E5%81%9C%E6%AD%A2%E6%80%A7)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) ユーザーブログ, 2018.11.11.（停止性の証明。本証明とは無関係な別証明）
+- koteitan, "[Purely mathematical definition of BMS](https://googology.fandom.com/wiki/User_blog:Koteitan/Purely_mathematical_definition_of_BMS)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) ユーザーブログ.（定義の参照）
