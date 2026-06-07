@@ -70,6 +70,23 @@
 2. INV1・INV2 から maxsub 単調性（構文的補題）。
 3. maxsub の strong induction で `wf R_NF`。同一レベル内の二次測度が要（本丸の残り）。
 
+### 形式化の進捗（wf.thy, すべてビルド緑・コミット済）
+- **順序核 (Stage 2 相当)**: `olt_imp_slex`（`w≺x ⟹ slex(spine w)(spine x)`、`≺` がスパイン lex を refine）、`climb_mono`、`maxsub_mono_cond`（不変条件下で maxsub 単調）。
+- **スパイン再定式化**: `spine_translate_eq`: `spine(translate M)=map snd(incpref M)`、`incpref`＝行0狭義増加の最長接頭辞。`maxsub_translate`: `maxsub(translate M)=cmax(map snd M)`。`maxsub_eq_climb_iff`。
+- これで NF 不変条件は純ペア数列命題に帰着:
+  - (A) `cmax(map snd M)=cmax(map snd(incpref M))`、(B) `inv2(map snd(incpref M))`。
+- 対角基底ケース: `spine_diagSeq0`/`climb_diagSeq0`/`inv2_spine_diagSeq0`。incpref 基本補題: `incpref_append`/`incpref_fst_sorted`。
+- **残り Stage 1**: `M∈ST_PS ⟹ (A)∧(B)`（oper 保存。butlast/bad ケースの incpref 解析）。
+
+### Stage 3（同一 maxsub レベル内整礎性）が迂回不可であることの確認
+- `≺` は spine の slex を refine するが、**slex は有界アルファベット上の列でも整礎でない**
+  （例 `[1]≻[0,1]≻[0,0,1]≻…`＝bad chain `x_n` の spine）。
+- inv2 は bad spine の一部（`[1]`,`[0,0,1]` は inv2 違反）を排除するが、レベル n 内では
+  spine は `[0,1,…,n]@tail`（tail は `{0..n}` 上任意）で、**tail 上の slex はやはり非整礎**。
+- ゆえに同一レベル整礎性は spine-lex では出ず、`≺` が見る**部分木構造＋NF 制約**の再帰
+  （＝Buchholz 崩壊の段）に本質的に依存する。maxsub 単調＝stratification は降下の
+  maxsub 非増加までしか与えず、レベル内は崩壊整礎性が要る。ここが研究レベルの最重量部。
+
 ## (diagacc) 証明の方針候補
 
 - **(A)** Buchholz ψ_ω 流の正規形述語＋整礎性をフル形式化し、`translate(NF)` を
