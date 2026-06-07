@@ -644,7 +644,141 @@ proof (induction "size a + size b + size c" arbitrary: a b c rule: less_induct)
     qed
   next
     case c_Th: (Th n d)
-    show ?thesis sorry
+    show ?thesis
+    proof (cases a)
+      case a_Om: (Om q)
+      \<comment> \<open>goal \<open>Om q <\<^sub>o Th n d\<close> = \<open>\<exists>\<gamma>\<in>Kn n d. Om q \<le>\<^sub>o \<gamma>\<close>\<close>
+      have "\<exists>\<gamma>\<in>Kn n d. Om q \<le>\<^sub>o \<gamma>"
+      proof (cases b)
+        case (Om p)
+        from bc Om c_Th obtain g where g: "g \<in> Kn n d" "Om p \<le>\<^sub>o g" by auto
+        have "Om q <\<^sub>o Om p" using ab a_Om Om by simp
+        have "Om q <\<^sub>o g"
+        proof (cases "Om p = g")
+          case True thus ?thesis using \<open>Om q <\<^sub>o Om p\<close> by simp
+        next
+          case False
+          have "size (Om q) + size (Om p) + size g < size a + size b + size c"
+            using a_Om Om c_Th Kn_size[OF g(1)] by simp
+          moreover have "Om p <\<^sub>o g" using g(2) False by simp
+          ultimately show ?thesis using \<open>Om q <\<^sub>o Om p\<close> IH by blast
+        qed
+        thus ?thesis using g(1) by auto
+      next
+        case (Th p f)
+        from ab a_Om Th obtain dlt where dl: "dlt \<in> Kn p f" "Om q \<le>\<^sub>o dlt" by auto
+        from bc[unfolded Th c_Th]
+        consider (fst) "\<exists>g\<in>Kn n d. Th p f \<le>\<^sub>o g"
+          | (snd) "\<forall>\<delta>\<in>Kn p f. \<delta> <\<^sub>o Th n d" by auto
+        thus ?thesis
+        proof cases
+          case fst
+          then obtain g where g: "g \<in> Kn n d" "Th p f \<le>\<^sub>o g" by auto
+          have "Om q <\<^sub>o g"
+          proof (cases "Th p f = g")
+            case True
+            have "size (Om q) + size (Th p f) + size g < size a + size b + size c"
+              using a_Om Th c_Th Kn_size[OF g(1)] by simp
+            moreover have "Om q <\<^sub>o Th p f" using ab a_Om Th by simp
+            ultimately show ?thesis using True by simp
+          next
+            case False
+            have "size (Om q) + size (Th p f) + size g < size a + size b + size c"
+              using a_Om Th c_Th Kn_size[OF g(1)] by simp
+            moreover have "Om q <\<^sub>o Th p f" using ab a_Om Th by simp
+            moreover have "Th p f <\<^sub>o g" using g(2) False by simp
+            ultimately show ?thesis using IH by blast
+          qed
+          thus ?thesis using g(1) by auto
+        next
+          case snd
+          have dn: "dlt <\<^sub>o Th n d" using snd dl(1) by simp
+          have "Om q <\<^sub>o Th n d"
+          proof (cases "Om q = dlt")
+            case True thus ?thesis using dn by simp
+          next
+            case False
+            have "size (Om q) + size dlt + size (Th n d) < size a + size b + size c"
+              using a_Om Th c_Th Kn_size[OF dl(1)] by simp
+            moreover have "Om q <\<^sub>o dlt" using dl(2) False by simp
+            ultimately show ?thesis using dn IH by blast
+          qed
+          thus ?thesis using a_Om c_Th by simp
+        qed
+      next
+        case (Su bs)
+        from ab a_Om Su obtain y where y: "y \<in> set bs" "Om q \<le>\<^sub>o y" by auto
+        have yn: "y <\<^sub>o Th n d" using bc Su c_Th y(1) by simp
+        have "Om q <\<^sub>o Th n d"
+        proof (cases "Om q = y")
+          case True thus ?thesis using yn by simp
+        next
+          case False
+          have "size (Om q) + size y + size (Th n d) < size a + size b + size c"
+            using a_Om Su c_Th size_lt_Su[OF y(1)] by simp
+          moreover have "Om q <\<^sub>o y" using y(2) False by simp
+          ultimately show ?thesis using yn IH by blast
+        qed
+        thus ?thesis using a_Om c_Th by simp
+      qed
+      thus ?thesis using a_Om c_Th by simp
+    next
+      case a_Th: (Th q e)
+      \<comment> \<open>the genuine \<open>\<vartheta>/\<vartheta>/\<vartheta>\<close> transitivity core\<close>
+      show ?thesis sorry
+    next
+      case a_Su: (Su as)
+      have "\<forall>v\<in>set as. v <\<^sub>o Th n d"
+      proof
+        fix v assume v: "v \<in> set as"
+        have szv: "size v < size a" using a_Su size_lt_Su[OF v] by simp
+        show "v <\<^sub>o Th n d"
+        proof (cases b)
+          case (Om p)
+          have "v <\<^sub>o Om p" using ab a_Su Om v by simp
+          moreover have "Om p <\<^sub>o Th n d" using bc Om c_Th by simp
+          moreover have "size v + size (Om p) + size (Th n d) < size a + size b + size c"
+            using Om c_Th szv by simp
+          ultimately show ?thesis using IH by blast
+        next
+          case (Th p f)
+          have "v <\<^sub>o Th p f" using ab a_Su Th v by simp
+          moreover have "Th p f <\<^sub>o Th n d" using bc Th c_Th by simp
+          moreover have "size v + size (Th p f) + size (Th n d) < size a + size b + size c"
+            using Th c_Th szv by simp
+          ultimately show ?thesis using IH by blast
+        next
+          case (Su bs)
+          show ?thesis
+          proof (cases "v \<in># mset as - mset bs")
+            case True
+            from ab a_Su Su obtain w where w: "w \<in># mset bs - mset as"
+              and wdom: "\<forall>u \<in># mset as - mset bs. u <\<^sub>o w" by auto
+            have vw: "v <\<^sub>o w" using wdom True by simp
+            have wbs: "w \<in> set bs" using w by (meson in_diffD in_multiset_in_set)
+            have wn: "w <\<^sub>o Th n d" using bc Su c_Th wbs by simp
+            have "size v + size w + size (Th n d) < size a + size b + size c"
+              using a_Su Su c_Th szv size_lt_Su[OF wbs] by simp
+            thus ?thesis using vw wn IH by blast
+          next
+            case False
+            have "count (mset bs) v = 0 \<Longrightarrow> False"
+            proof -
+              assume "count (mset bs) v = 0"
+              moreover have "0 < count (mset as) v"
+                using v by (simp add: count_greater_zero_iff in_multiset_in_set)
+              ultimately have "count (mset bs) v < count (mset as) v" by linarith
+              hence "v \<in># mset as - mset bs" by (simp add: in_diff_count)
+              thus False using False by simp
+            qed
+            hence "0 < count (mset bs) v" by auto
+            hence "v \<in> set bs" by (simp add: count_greater_zero_iff in_multiset_in_set)
+            thus ?thesis using bc Su c_Th by simp
+          qed
+        qed
+      qed
+      thus ?thesis using a_Su c_Th by simp
+    qed
   qed
 qed
 
