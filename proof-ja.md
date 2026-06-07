@@ -2,8 +2,11 @@
 
 # ペア数列システムの停止性（`p_a(b)+c` アプローチ）
 
-P進大好きbot 氏のペア数列システム (Pair Sequence System, PSS) の停止性を、
-ペア数列を独自のオーダー記法 `p_a(b)+c` へ変換 (`translate`) し、
+**ペア数列システム (Pair Sequence System, PSS) は Bashicu 氏が考案した**。
+その停止性は **P進大好きbot 氏が証明した**（Buchholz の ψ を用いる）が、
+**本証明はそれとは無関係な独立のオリジナル証明である**（同氏の手法・補題には依拠しない）。
+
+本証明はペア数列を独自のオーダー記法 `p_a(b)+c` へ変換 (`translate`) し、
 その記法上の整礎な順序 `≺` に関して**展開の各ステップで測度が真に減少する**こと
 を示して証明する。これは原始数列システム (PrSS) の停止証明
 （[`prss-proof`](https://github.com/koteitan/prss-proof)）の戦略
@@ -293,5 +296,6 @@ $$ \{(T,M)\mid M\in\mathrm{ST_{PS}}\wedge \mathrm{step}\,M\,T\}\ \subseteq\ \mat
 
 ---
 
-出典：Koteitan「[Purely mathematical definition of BMS](https://googology.fandom.com/wiki/User_blog:Koteitan/Purely_mathematical_definition_of_BMS)」巨大数研究 Wiki；
-P進大好きbot「ペア数列の停止性」巨大数研究 Wiki。
+クレジット：ペア数列システムの考案は Bashicu 氏。その停止性の証明は
+P進大好きbot 氏「ペア数列の停止性」巨大数研究 Wiki（本証明とは無関係な別証明）。
+定義の参照：Koteitan「[Purely mathematical definition of BMS](https://googology.fandom.com/wiki/User_blog:Koteitan/Purely_mathematical_definition_of_BMS)」巨大数研究 Wiki。
