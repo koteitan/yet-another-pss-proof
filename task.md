@@ -24,17 +24,18 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
-  - 🚨 整礎性 wfimg（NF = translate(ST_PS) 上で ≺ 整礎）★残る未証明〔wf.thy〕
+  - 🚨 整礎性 wfimg（NF = translate(ST_PS) 上で ≺ 整礎）★残る未証明
     - ✅ wfimg → 対角 accessibility への還元（oper側は減少補題で無料）〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS / oper_eq_self_short〕
-    - ✅ 順序核: ≺ は spine の slex を refine、不変条件下で maxsub 単調〔olt_imp_slex / climb_mono / maxsub_mono_cond〕
-    - ✅ spine 再定式化: spine(translate M)=map snd(incpref M)、maxsub=行1最大〔spine_translate_eq / maxsub_translate / maxsub_eq_climb_iff〕
-    - ✅ NF 不変条件 nfinv を全 ST_PS で証明（対角基底＋oper保存 butlast@copies、コピー解析不要）〔nfinv_ST_PS / nfinv_diag / nfinv_butlast / nfinv_append / oper_eq_butlast_append / incpref 各補題〕
-    - ✅ **maxsub 単調性 on NF**（w≺x ⟹ maxsub w ≤ maxsub x、降下で最大添字非増加）〔maxsub_mono_NF / maxsub_mono_NF'〕
-    - ✅ wfimg → within-level wf への還元（maxsub 減少部を wf_union_compatible で処理）〔wf_Rnf_from_within_level〕
-    - ✅ CNF 不変条件（兄弟非増加）の述語＋対角ケース〔cnf / cnf_diag〕（全 NF で cnf 成立を経験確認 952/952）
-    - 🚨 同一 maxsub レベル内の整礎性 ★残る唯一の本質的核（＝Buchholz ψ崩壊整礎性）
-      - 🚨 CNF の oper 保存〔cnf_ST_PS〕（コピー構造解析、減少補題 bad 規模）
-      - 🚨 崩壊マルチセット整礎性（NF項=添字0のCNF和 ⟹ ≺=引数の multiset 拡大、wfp_multp＋根添字レベル入れ子帰納。memo.md 参照）
+    - ✅ 補助: maxsub 単調性 on NF・within-level 還元（旧ルート、現在は Towsner ルートで直接 wf を狙う）〔wf.thy: maxsub_mono_NF / wf_Rnf_from_within_level / nfinv_ST_PS / spine_translate_eq 等〕
+    - 🚨 **Towsner distinguished-set WF 核**〔wo.thy〕（NF⊄Buchholz OT 判明→別 datatype `ot` で整礎順序を組み NF を埋め込む）
+      - ✅ 記法 `ot`(Om/Th/Su)・FC・critical subterms Kn・Kn_size〔wo.thy〕
+      - ✅ K 条件付き真の整礎順序 `<\<^sub>o`（Towsner Def 2.3）を function+termination で定義〔olt / ole〕
+      - ✅ Zero 最小性・和順序 ⊆ multiset 拡大〔not_olt_Zero / olt_Zero_iff / olt_Su_imp_mult〕
+      - ✅ **assembly**: `wf principalR ⟹ wf {(a,b). a<\<^sub>o b ∧ wfo a ∧ wfo b}`〔wfo / bag / bag_mono / wf_olt_of_principal〕
+      - 🚨 **`wf principalR`**（Om/Th 上の整礎性）★残る本丸＝Towsner Lemma 3.10–3.12（ϑ 崩壊、Acc_n/M_n 入れ子帰納。M_n の absolute 再構成）
+    - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
+      - ✅ embed/eprincs/collapse（単一 principal は Su 化しない）＋像の well-formed〔wfo_embed〕
+      - 🚨 NF 上で `w ≺ x ⟹ embed w <\<^sub>o embed x`（NF でのみ素朴 lex=真順序。off-NF は bad chain で不成立を確認）→ `wf Rnf`
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
