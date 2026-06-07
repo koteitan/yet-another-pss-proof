@@ -207,6 +207,63 @@ proof -
   thus ?thesis by (simp add: takeWhile_takeWhile)
 qed
 
+lemma incpref_append: "\<exists>ys. incpref M @ ys = M"
+proof (induction M rule: incpref.induct)
+  case 1 show ?case by simp
+next
+  case (2 p) show ?case by simp
+next
+  case (3 p q rest)
+  show ?case
+  proof (cases "fst p < fst q")
+    case True
+    from "3.IH"[OF True] obtain ys where "incpref (q # rest) @ ys = q # rest" by blast
+    hence "(p # incpref (q # rest)) @ ys = p # q # rest" by simp
+    thus ?thesis using True by auto
+  next
+    case False
+    thus ?thesis by auto
+  qed
+qed
+
+lemma incpref_fst_sorted: "sorted_wrt (\<lambda>x y. fst x < fst y) (incpref M)"
+proof (induction M rule: incpref.induct)
+  case 1 show ?case by simp
+next
+  case (2 p) show ?case by simp
+next
+  case (3 p q rest)
+  show ?case
+  proof (cases "fst p < fst q")
+    case True
+    have IHsorted: "sorted_wrt (\<lambda>x y. fst x < fst y) (incpref (q # rest))"
+      using "3.IH"[OF True] .
+    have hd: "incpref (q # rest) = q # tl (incpref (q # rest))"
+      by (cases rest) auto
+    \<comment> \<open>every element of \<open>incpref (q # rest)\<close> has row 0 \<ge> fst q\<close>
+    have ge: "\<forall>z \<in> set (incpref (q # rest)). fst q \<le> fst z"
+    proof
+      fix z assume "z \<in> set (incpref (q # rest))"
+      then consider "z = q" | "z \<in> set (tl (incpref (q # rest)))"
+        using hd by (metis set_ConsD)
+      thus "fst q \<le> fst z"
+      proof cases
+        case 1 thus ?thesis by simp
+      next
+        case 2
+        from IHsorted hd have "\<forall>z \<in> set (tl (incpref (q # rest))). fst q < fst z"
+          by (metis sorted_wrt.simps(2))
+        with 2 show ?thesis by auto
+      qed
+    qed
+    have "\<forall>z \<in> set (incpref (q # rest)). fst p < fst z" using ge True by fastforce
+    thus ?thesis using True IHsorted by simp
+  next
+    case False
+    thus ?thesis by simp
+  qed
+qed
+
 lemma spine_translate_eq: "spine (translate M) = map snd (incpref M)"
 proof (induction M rule: incpref.induct)
   case 1
