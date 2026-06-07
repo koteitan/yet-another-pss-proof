@@ -36,14 +36,16 @@
       - ✅ **shift（Towsner Def 3.3 global）＝順序自己同型**〔wo.thy: shift / shift_shift/0/inv/inj/isH/eq/eqTh/eqOm/FCset/Kn / **shift_olt**〕＝正規化の基盤
       - ✅ **汎用 acc 基盤**〔accinfra.thy〕（記法非依存・再利用）
       - ✅ **和→principal 還元**〔wflevel.thy: wfo_Kn / bag_mono_w / acc_of_bag_elems / princ_acc_lift / **wf_oltRw_of_wf_pR** / wf_oltRw_of_principals〕＝ `wf pR ⟹ wf oltRw`（int で緑）
-      - 🚨 **`wf pR`**（well-formed principal 整礎）★残る本丸＝古典 Buchholz WF。§3.2 を絶対系へ width 階層で転写中。
-        - 🚨 ground `G`(=Min FCset)・正規化 `norm`(=shift(-FC), top→0)・width `w`(=FC-G)〔wo.thy, 次段〕
-        - 🚨 width 階層 M_n/Acc_n（§3.7 絶対版）〔buchholz.thy 再構築中, 旧 FC-max `Mlev` は破棄〕
-        - 🚨 Lemma 3.8（和閉）/ 3.10（ϑ閉, p<s は norm+width-IH）/ 3.11（ϑ で ground 降下）/ 3.12（構造帰納）→ `wf pR`
-        - 参考: L_Th easy ケース骨格は `scratch_lth.thy`（ROOT外）で検証済（Om/first-disj/p=s 通過, 残 Su・p<s）
+      - ✅ ground `gnd`(=Min FCset)・正規化 `norm`(=shift(-FC), top→0)・width `wdt`(=FC-gnd)〔wo.thy, +FC_shift/gnd_shift/wdt_shift/FC_norm〕
+      - ✅ **shift＝順序自己同型 `shift_olt`** ＋ `shift_wfo`/`acc_shift`/`acc_shift_pR`〔wo/buchholz, ground 正規化の基盤〕
+      - ✅ distinguished-set 定義 Mn/AccB/Acc（ground 階層）＋単調性＋generic `Awf`/`wf_on_Awf`〔buchholz〕
+      - ✅ **致命バグ修正**: `Om int` で全体 `wf pR` は偽（`Om 0>Om(-1)>…` 無限降下）。embed 像は **Om-free**（`omfree_embed`）＝可算。WF 対象を **Om-free 項** に制限〔`omfree`/`oltRwF`/`pRF`〕
+      - 🚨 **`masterF`**（= Buchholz WO 核, 真の sorry）: 全 Om-free wfo 項が `oltRwF`-acc。構造帰納＋Su は bag 還元＋Th は §3.7 distinguished-set（Lemma 3.10/3.11, Ω scaffold＋norm/shift）。★残る本丸ただ一つ
+      - ✅ `wf_oltRwF`（masterF から）〔buchholz〕
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
-      - ✅ embed/eprincs/collapse＋像の well-formed〔wfo_embed〕（int 化済: `Th (int a) ...`）
-      - 🚨 NF 上で `w ≺ x ⟹ embed w <\<^sub>o embed x`（NF でのみ素朴 lex=真順序）→ `wf Rnf`〔wf_Rnf_via_embed で接続〕
+      - ✅ embed/eprincs/collapse＋像の well-formed〔wfo_embed〕＋**Om-free〔omfree_embed〕**（int 化済: `Th (int a) ...`）
+      - ✅ **`wf_Rnf_via_embed`**: `wf Rnf` ⟸ `op`（NF 上 `w≺x ⟹ embed w<\<^sub>o embed x`）のみ（wf_oltRwF＋omfree_embed で配線済、偽の wf oltRw 仮定は除去）
+      - 🚨 **`op`**（NF 上順序保存, 残 2 義務の一つ）
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
