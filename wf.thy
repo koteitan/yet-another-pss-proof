@@ -578,6 +578,44 @@ proof -
 qed
 
 
+lemma nfinv_butlast:
+  assumes inv: "nfinv M" and ne: "butlast M \<noteq> []"
+  shows "nfinv (butlast M)"
+proof -
+  from inv have A: "cmax (map snd M) = cmax (map snd (incpref M))"
+    and B: "inv2 (map snd (incpref M))" by (auto simp: nfinv_def)
+  show ?thesis
+  proof (cases "incpref M = M")
+    case True
+    have ip: "incpref (butlast M) = butlast M" using incpref_butlast True by simp
+    have "inv2 (map snd (butlast M))"
+    proof -
+      have "inv2 (map snd M)" using B True by simp
+      moreover have "butlast (map snd M) \<noteq> []" using ne by (simp add: map_butlast[symmetric])
+      ultimately have "inv2 (butlast (map snd M))" by (rule inv2_butlast)
+      thus ?thesis by (simp add: map_butlast)
+    qed
+    thus ?thesis using ip by (simp add: nfinv_def)
+  next
+    case False
+    have ip: "incpref (butlast M) = incpref M" using incpref_butlast False by simp
+    obtain ys where ysM: "incpref M @ ys = M" using incpref_append by blast
+    have ysne: "ys \<noteq> []" using ysM False by auto
+    have preb: "butlast M = incpref M @ butlast ys"
+      using ysM ysne by (metis butlast_append)
+    have subset: "set (map snd (incpref M)) \<subseteq> set (map snd (butlast M))"
+      using preb by auto
+    \<comment> \<open>\<open>(A)\<close> for \<open>butlast M\<close>\<close>
+    have le1: "cmax (map snd (incpref M)) \<le> cmax (map snd (butlast M))"
+      using subset cmax_ge by (intro cmax_le) blast
+    have le2: "cmax (map snd (butlast M)) \<le> cmax (map snd M)"
+      by (simp add: map_butlast cmax_butlast_le)
+    have "cmax (map snd (butlast M)) = cmax (map snd (incpref M))"
+      using le1 le2 A by simp
+    thus ?thesis using ip B by (simp add: nfinv_def)
+  qed
+qed
+
 subsection \<open>The bad-case expansion as \<open>butlast M\<close> followed by ascending copies\<close>
 
 lemma take_split_map_nth:
