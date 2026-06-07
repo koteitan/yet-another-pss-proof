@@ -220,42 +220,54 @@ lemma wfo_norm [simp]: "wfo (norm a) = wfo a"
 lemma isH_norm [simp]: "isH (norm a) = isH a"
   by (simp add: norm_def)
 
-subsection \<open>The master accessibility statement (Towsner Thm 3.12, absolute form)\<close>
+subsection \<open>The actual well-foundedness target: the \<open>\<Omega>\<close>-free terms\<close>
 
-text \<open>\<^bold>\<open>The well-foundedness core (sorry):\<close> every normalized well-formed principal
-  is \<^const>\<open>pR\<close>-accessible.  This is the absolute transcription of Towsner Thm 3.12
-  (structural induction populating \<^const>\<open>Acc\<close> via the closure Lemmas 3.10/3.11),
-  together with the lifting of within-level accessibility to global \<^const>\<open>pR\<close>.
-  It is the single remaining hard obligation; everything else is discharged.
-  Design facts validated in \<^file>\<open>../work/ot_order.py\<close>: among \<^emph>\<open>normalized\<close> terms,
-  \<^const>\<open>wdt\<close> (width) is \<open><\<^sub>o\<close>-monotone (0 violations), giving a clean within-level
-  predecessor closure.\<close>
+text \<open>\<^bold>\<open>Correction (2026-06-08).\<close>  With \<^typ>\<open>int\<close> levels the \<^emph>\<open>full\<close> order is
+  \<^emph>\<open>not\<close> well-founded: \<open>\<Omega>\<^bsub>0\<^esub> >\<^sub>o \<Omega>\<^bsub>-1\<^esub> >\<^sub>o \<Omega>\<^bsub>-2\<^esub> >\<^sub>o \<dots>\<close> descends forever (Towsner
+  \<section>3.2 opening).  So \<open>wf pR\<close> / \<open>wf oltRw\<close> on \<^emph>\<open>all\<close> terms are \<^bold>\<open>false\<close>.
 
-lemma master2: "normd a \<Longrightarrow> wfo a \<Longrightarrow> isH a \<Longrightarrow> a \<in> Wellfounded.acc pR"
+  The PSS embedding \<^const>\<open>embed\<close> however produces only \<^const>\<open>Th\<close>/\<^const>\<open>Su\<close> terms \<dash>
+  \<^emph>\<open>no \<open>\<Omega>\<close> at all\<close> (the \<open>\<Omega>\<^bsub>n\<^esub>\<close> are merely scaffolding inside the well-foundedness
+  proof).  Hence the real target is well-foundedness restricted to the \<open>\<Omega>\<close>-free
+  terms, which excludes the descending \<open>\<Omega>\<^bsub>-k\<^esub>\<close> chain and is genuinely well-founded.\<close>
+
+fun omfree :: "ot \<Rightarrow> bool" where
+  "omfree (Om _) = False"
+| "omfree (Th _ a) = omfree a"
+| "omfree (Su xs) = (\<forall>x \<in> set xs. omfree x)"
+
+lemma omfree_FCset [simp]: "omfree a \<Longrightarrow> FCset a = {}"
+  by (induction a) auto
+
+abbreviation oltRwF :: "(ot \<times> ot) set" where
+  "oltRwF \<equiv> {(a,b). a <\<^sub>o b \<and> wfo a \<and> wfo b \<and> omfree a \<and> omfree b}"
+
+abbreviation pRF :: "(ot \<times> ot) set" where
+  "pRF \<equiv> {(a,b). a <\<^sub>o b \<and> isH a \<and> isH b \<and> wfo a \<and> wfo b \<and> omfree a \<and> omfree b}"
+
+text \<open>\<^bold>\<open>The well-foundedness core (sorry):\<close> every \<open>\<Omega>\<close>-free well-formed principal is
+  \<open>pRF\<close>-accessible.  This is the absolute transcription of Buchholz/Towsner Thm 3.12
+  (structural induction populating the distinguished sets \<^const>\<open>Acc\<close> via the closure
+  Lemmas 3.10/3.11, with \<open>\<Omega>\<^bsub>n\<^esub>\<close> as cardinal scaffolding).  It is the single remaining
+  hard obligation.\<close>
+
+lemma masterF: "omfree a \<Longrightarrow> wfo a \<Longrightarrow> isH a \<Longrightarrow> a \<in> Wellfounded.acc pRF"
   sorry
 
-subsection \<open>Assembly: \<open>wf pR\<close> and \<open>wf oltRw\<close>\<close>
+subsection \<open>Assembly: \<open>wf pRF\<close> and \<open>wf oltRwF\<close> (on the \<open>\<Omega>\<close>-free terms)\<close>
 
-theorem wf_pR: "wf pR"
+theorem wf_pRF: "wf pRF"
 proof (subst wf_iff_acc, intro allI)
   fix b
-  show "b \<in> Wellfounded.acc pR"
-  proof (cases "wfo b \<and> isH b")
+  show "b \<in> Wellfounded.acc pRF"
+  proof (cases "wfo b \<and> isH b \<and> omfree b")
     case True
-    hence wb: "wfo b" and hb: "isH b" by auto
-    have "norm b \<in> Wellfounded.acc pR"
-      by (rule master2[OF normd_norm]) (use wb hb in simp_all)
-    moreover have "norm b = shift (- FC b) b" by (simp add: norm_def)
-    ultimately have "shift (- FC b) b \<in> Wellfounded.acc pR" by simp
-    thus "b \<in> Wellfounded.acc pR" by (simp only: acc_shift_pR)
+    thus ?thesis by (intro masterF) auto
   next
     case False
-    have "\<And>y. (y, b) \<in> pR \<Longrightarrow> y \<in> Wellfounded.acc pR" using False by auto
+    have "\<And>y. (y, b) \<in> pRF \<Longrightarrow> y \<in> Wellfounded.acc pRF" using False by auto
     thus ?thesis by (rule accI)
   qed
 qed
-
-corollary wf_oltRw: "wf oltRw"
-  by (rule wf_oltRw_of_wf_pR[OF wf_pR])
 
 end
