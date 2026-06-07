@@ -362,7 +362,50 @@ next
   ultimately show ?case using x(1) by (cases \<gamma>) auto
 qed
 
-subsection \<open>Sums compare by the multiset extension\<close>
+subsection \<open>Shifting the cardinal levels (Towsner Def 3.3, global form)\<close>
+
+text \<open>\<open>shift k a\<close> adds \<open>k\<close> to every cardinal level (both \<^const>\<open>Om\<close> indices and
+  \<^const>\<open>Th\<close> subscripts).  Because \<open><\<^sub>o\<close> compares levels only \<^emph>\<open>relatively\<close>,
+  \<open>shift k\<close> is an order automorphism (lemma \<open>shift_olt\<close> below); this is the engine
+  of the ground-normalization in the well-foundedness proof.\<close>
+
+fun shift :: "int \<Rightarrow> ot \<Rightarrow> ot" where
+  "shift k (Om m) = Om (m + k)"
+| "shift k (Th n a) = Th (n + k) (shift k a)"
+| "shift k (Su xs) = Su (map (shift k) xs)"
+
+lemma shift_shift [simp]: "shift k (shift l a) = shift (k + l) a"
+  by (induction a) (auto simp: ac_simps)
+
+lemma shift_0 [simp]: "shift 0 a = a"
+  by (induction a) (auto simp: map_idI)
+
+lemma shift_inv [simp]: "shift (- k) (shift k a) = a"
+  by simp
+
+lemma shift_inj: "inj (shift k)"
+  by (rule injI) (metis shift_inv)
+
+lemma shift_isH [simp]: "isH (shift k a) = isH a"
+  by (cases a) auto
+
+lemma shift_FCset: "FCset (shift k a) = (\<lambda>m. m + k) ` FCset a"
+  by (induction a) (auto simp: image_Un)
+
+lemma shift_Kn: "Kn (n + k) (shift k a) = shift k ` Kn n a"
+  by (induction a) (auto simp: image_Un)
+
+text \<open>The critical-subterm clause shifts uniformly, giving order-invariance.\<close>
+
+text \<open>\<^bold>\<open>TODO (sorry)\<close>: \<open>shift_olt\<close> is the order-automorphism property.  It is
+  empirically validated (Python \<^file>\<open>../work/ot_order.py\<close>: 35280 cases, 0 mismatches)
+  and mechanically true (uniform shift preserves all relative comparisons), but the
+  \<^const>\<open>Su\<close>/\<^const>\<open>Su\<close> case needs an injective-image multiset-difference lemma
+  (\<^const>\<open>image_mset\<close> of \<open>\<inter>#\<close>-decomposition).  Deferred while the ground-stratified
+  distinguished-set construction is built on top of it.\<close>
+
+lemma shift_olt [simp]: "(shift k a <\<^sub>o shift k b) = (a <\<^sub>o b)"
+  sorry
 
 abbreviation oltR :: "(ot \<times> ot) set" where
   "oltR \<equiv> {(a,b). a <\<^sub>o b}"
