@@ -397,15 +397,28 @@ lemma shift_Kn: "Kn (n + k) (shift k a) = shift k ` Kn n a"
 
 text \<open>The critical-subterm clause shifts uniformly, giving order-invariance.\<close>
 
-text \<open>\<^bold>\<open>TODO (sorry)\<close>: \<open>shift_olt\<close> is the order-automorphism property.  It is
-  empirically validated (Python \<^file>\<open>../work/ot_order.py\<close>: 35280 cases, 0 mismatches)
-  and mechanically true (uniform shift preserves all relative comparisons), but the
-  \<^const>\<open>Su\<close>/\<^const>\<open>Su\<close> case needs an injective-image multiset-difference lemma
-  (\<^const>\<open>image_mset\<close> of \<open>\<inter>#\<close>-decomposition).  Deferred while the ground-stratified
-  distinguished-set construction is built on top of it.\<close>
+lemma shift_eq [simp]: "(shift k a = shift k b) = (a = b)"
+  using shift_inj by (auto dest: injD)
+
+text \<open>Expanded-form equalities, so the principal-head equations close after
+  \<open>shift.simps\<close> has unfolded the outermost \<^const>\<open>Th\<close>/\<^const>\<open>Om\<close>.\<close>
+
+lemma shift_eqTh [simp]: "(Th (m + k) (shift k a) = shift k g) = (Th m a = g)"
+  using shift_eq[of k "Th m a" g] by simp
+
+lemma shift_eqOm [simp]: "(Om (m + k) = shift k g) = (Om m = g)"
+  using shift_eq[of k "Om m" g] by simp
+
+text \<open>\<open>shift k\<close> is an order automorphism: comparisons depend only on the relative
+  cardinal positions, all moved uniformly by \<open>k\<close>.  (Validated in Python
+  \<^file>\<open>../work/ot_order.py\<close>: 35280 cases, 0 mismatches.)\<close>
 
 lemma shift_olt [simp]: "(shift k a <\<^sub>o shift k b) = (a <\<^sub>o b)"
-  sorry
+proof (induction a b rule: olt.induct)
+  case (1 xs ys)                 \<comment> \<open>Su / Su\<close>
+  show ?case using 1
+    by (auto simp: image_mset_diff_if_inj[OF shift_inj, symmetric] set_image_mset)
+qed (auto simp: shift_Kn)
 
 abbreviation oltR :: "(ot \<times> ot) set" where
   "oltR \<equiv> {(a,b). a <\<^sub>o b}"
