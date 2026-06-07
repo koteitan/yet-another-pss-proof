@@ -178,4 +178,84 @@ proof -
   finally show ?thesis .
 qed
 
+subsection \<open>The shift is also an automorphism of the principal order \<open>pR\<close>\<close>
+
+lemma shift_pR [simp]: "((shift k a, shift k b) \<in> pR) = ((a, b) \<in> pR)"
+  by simp
+
+lemma acc_shift_pR_aux: "a \<in> Wellfounded.acc pR \<Longrightarrow> shift k a \<in> Wellfounded.acc pR"
+proof (induction set: Wellfounded.acc)
+  case (1 a)
+  show ?case
+  proof (rule accI)
+    fix y assume y: "(y, shift k a) \<in> pR"
+    have "(shift k (shift (- k) y), shift k a) \<in> pR" using y by simp
+    hence "(shift (- k) y, a) \<in> pR" by (simp only: shift_pR)
+    hence "shift k (shift (- k) y) \<in> Wellfounded.acc pR" using "1.IH" by blast
+    thus "y \<in> Wellfounded.acc pR" by simp
+  qed
+qed
+
+lemma acc_shift_pR [simp]: "(shift k a \<in> Wellfounded.acc pR) = (a \<in> Wellfounded.acc pR)"
+proof
+  assume "shift k a \<in> Wellfounded.acc pR"
+  from acc_shift_pR_aux[OF this, of "- k"] show "a \<in> Wellfounded.acc pR" by simp
+next
+  assume "a \<in> Wellfounded.acc pR"
+  thus "shift k a \<in> Wellfounded.acc pR" by (rule acc_shift_pR_aux)
+qed
+
+subsection \<open>Normalization lands in the normalized terms\<close>
+
+lemma normd_norm [simp]: "normd (norm a)"
+proof (cases "FCset a = {}")
+  case True thus ?thesis by (simp add: normd_def norm_def FC_def)
+next
+  case False thus ?thesis by (simp add: normd_def FC_norm)
+qed
+
+lemma wfo_norm [simp]: "wfo (norm a) = wfo a"
+  by (simp add: norm_def)
+
+lemma isH_norm [simp]: "isH (norm a) = isH a"
+  by (simp add: norm_def)
+
+subsection \<open>The master accessibility statement (Towsner Thm 3.12, absolute form)\<close>
+
+text \<open>\<^bold>\<open>The well-foundedness core (sorry):\<close> every normalized well-formed principal
+  is \<^const>\<open>pR\<close>-accessible.  This is the absolute transcription of Towsner Thm 3.12
+  (structural induction populating \<^const>\<open>Acc\<close> via the closure Lemmas 3.10/3.11),
+  together with the lifting of within-level accessibility to global \<^const>\<open>pR\<close>.
+  It is the single remaining hard obligation; everything else is discharged.
+  Design facts validated in \<^file>\<open>../work/ot_order.py\<close>: among \<^emph>\<open>normalized\<close> terms,
+  \<^const>\<open>wdt\<close> (width) is \<open><\<^sub>o\<close>-monotone (0 violations), giving a clean within-level
+  predecessor closure.\<close>
+
+lemma master2: "normd a \<Longrightarrow> wfo a \<Longrightarrow> isH a \<Longrightarrow> a \<in> Wellfounded.acc pR"
+  sorry
+
+subsection \<open>Assembly: \<open>wf pR\<close> and \<open>wf oltRw\<close>\<close>
+
+theorem wf_pR: "wf pR"
+proof (subst wf_iff_acc, intro allI)
+  fix b
+  show "b \<in> Wellfounded.acc pR"
+  proof (cases "wfo b \<and> isH b")
+    case True
+    hence wb: "wfo b" and hb: "isH b" by auto
+    have "norm b \<in> Wellfounded.acc pR"
+      by (rule master2[OF normd_norm]) (use wb hb in simp_all)
+    moreover have "norm b = shift (- FC b) b" by (simp add: norm_def)
+    ultimately have "shift (- FC b) b \<in> Wellfounded.acc pR" by simp
+    thus "b \<in> Wellfounded.acc pR" by (simp only: acc_shift_pR)
+  next
+    case False
+    have "\<And>y. (y, b) \<in> pR \<Longrightarrow> y \<in> Wellfounded.acc pR" using False by auto
+    thus ?thesis by (rule accI)
+  qed
+qed
+
+corollary wf_oltRw: "wf oltRw"
+  by (rule wf_oltRw_of_wf_pR[OF wf_pR])
+
 end
