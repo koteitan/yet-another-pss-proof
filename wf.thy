@@ -423,6 +423,90 @@ lemma maxsub_eq_climb_iff:
   by (simp add: maxsub_translate spine_translate_eq)
 
 
+subsection \<open>The bad-case expansion as \<open>butlast M\<close> followed by ascending copies\<close>
+
+lemma take_split_map_nth:
+  assumes "j0 \<le> m" and "m \<le> length xs"
+  shows "take j0 xs @ map (\<lambda>j. xs ! j) [j0..<m] = take m xs"
+proof -
+  have "take (m - j0) (drop j0 xs) = map (\<lambda>i. xs ! i) [j0..<m]"
+  proof -
+    have "drop j0 xs = map (\<lambda>i. xs ! i) [j0..<length xs]" by (rule drop_eq_map_nth)
+    hence "take (m - j0) (drop j0 xs) = map (\<lambda>i. xs ! i) (take (m - j0) [j0..<length xs])"
+      by (simp add: take_map)
+    also have "take (m - j0) [j0..<length xs] = [j0..<m]"
+      using assms by (simp add: take_upt)
+    finally show ?thesis .
+  qed
+  moreover have "take m xs = take j0 xs @ take (m - j0) (drop j0 xs)"
+    using assms by (metis le_add_diff_inverse take_add)
+  ultimately show ?thesis by simp
+qed
+
+lemma nextR_less: "nextR M i j0 j1 \<Longrightarrow> j0 < j1"
+  by (auto simp: nextR_def nextrel0_def nextrel1_def split: if_splits)
+
+lemma parent_less:
+  assumes "hasParent M i j1" shows "parent M i j1 < j1"
+proof -
+  from assms have "nextR M i (parent M i j1) j1"
+    by (metis hasParent_def parent_def theI')
+  thus ?thesis by (rule nextR_less)
+qed
+
+text \<open>In the bad case the \<open>k = 0\<close> copy reproduces the dropped suffix, so the
+  expansion is \<open>butlast M\<close> followed by the (\<open>k \<ge> 1\<close>) ascending copies; the copies
+  only repeat row-1 values already present in \<open>butlast M\<close>.\<close>
+
+lemma oper_bad_eq_butlast_append:
+  assumes L: "Lng M - 1 \<noteq> 0"
+    and nz: "\<not> (entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)"
+    and hp: "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+    and n1: "1 \<le> n"
+  shows "\<exists>R. M[n] = butlast M @ R \<and> snd ` set R \<subseteq> snd ` set (butlast M)"
+proof -
+  let ?i1 = "idx1 M (Lng M - 1)"
+  let ?j0 = "parent M ?i1 (Lng M - 1)"
+  let ?d0 = "if 0 < ?i1 then entry M 0 (Lng M - 1) - entry M 0 ?j0 else (0::nat)"
+  let ?cp = "\<lambda>k. map (\<lambda>j. (entry M 0 j + k * ?d0, entry M 1 j)) [?j0..<Lng M - 1]"
+  have unfold: "M[n] = take ?j0 M @ concat (map ?cp [0..<n])"
+    using oper_bad_unfold[OF L nz hp] by simp
+  have j0lt: "?j0 < Lng M - 1" using parent_less[OF hp] .
+  have blt: "butlast M = take (Lng M - 1) M" by (simp add: butlast_conv_take)
+  \<comment> \<open>the \<open>k = 0\<close> copy is the dropped suffix \<open>M\<^bsub>?j0\<^esub> \<dots> M\<^bsub>Lng M - 2\<^esub>\<close>\<close>
+  have cp0: "?cp 0 = map (\<lambda>j. M ! j) [?j0..<Lng M - 1]"
+    by (simp add: entry_def)
+  have but: "take ?j0 M @ ?cp 0 = butlast M"
+  proof -
+    have "take ?j0 M @ ?cp 0 = take ?j0 M @ map (\<lambda>j. M ! j) [?j0..<Lng M - 1]"
+      using cp0 by simp
+    also have "\<dots> = take (Lng M - 1) M"
+      using take_split_map_nth[of ?j0 "Lng M - 1" M] j0lt by simp
+    finally show ?thesis using blt by simp
+  qed
+  have nsplit: "M[n] = butlast M @ concat (map ?cp [Suc 0..<n])"
+  proof -
+    have "[0..<n] = 0 # [Suc 0..<n]" using n1 by (simp add: upt_conv_Cons)
+    hence "concat (map ?cp [0..<n]) = ?cp 0 @ concat (map ?cp [Suc 0..<n])" by simp
+    thus ?thesis using unfold but by simp
+  qed
+  let ?R = "concat (map ?cp [Suc 0..<n])"
+  have "snd ` set ?R \<subseteq> snd ` set (butlast M)"
+  proof
+    fix s assume "s \<in> snd ` set ?R"
+    then obtain j where j: "j \<in> {?j0..<Lng M - 1}" and sj: "s = entry M 1 j" by auto
+    from j have jlt: "j < Lng M - 1" by simp
+    have "j < length (take (Lng M - 1) M)" using jlt by simp
+    then have "take (Lng M - 1) M ! j \<in> set (take (Lng M - 1) M)" by (rule nth_mem)
+    moreover have "take (Lng M - 1) M ! j = M ! j" using jlt by simp
+    ultimately have "M ! j \<in> set (butlast M)" using blt by simp
+    moreover have "s = snd (M ! j)" using sj by (simp add: entry_def)
+    ultimately show "s \<in> snd ` set (butlast M)" by (auto simp: image_iff)
+  qed
+  with nsplit show ?thesis by blast
+qed
+
+
 subsection \<open>The NF invariants for the diagonal towers (base case)\<close>
 
 lemma diagSeq_Cons:
