@@ -23,4 +23,5 @@ session YAPSS = HOL +
     proofs
     wf
     wo
+    wflevel
     embed
