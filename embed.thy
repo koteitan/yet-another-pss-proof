@@ -1,5 +1,5 @@
 theory embed
-  imports wf wo
+  imports wf wo wflevel
 begin
 
 section \<open>Embedding the PSS notation into the well-foundedness core\<close>
@@ -91,20 +91,21 @@ lemma wfo_embed: "wfo (embed t)"
 section \<open>Wiring: the two remaining obligations imply \<open>wf Rnf\<close>\<close>
 
 text \<open>Everything is now reduced to exactly two deep facts:
-  \<^enum> \<^prop>\<open>wf principalR\<close> \<dash> well-foundedness of \<open><\<^sub>o\<close> on the principal (\<open>\<Omega>\<close>/\<open>\<vartheta>\<close>)
-    terms (Towsner's collapsing core, Lemmas 3.10\<dash>3.12); and
+  \<^enum> \<^prop>\<open>wf oltRw\<close> \<dash> well-foundedness of \<open><\<^sub>o\<close> on the well-formed terms.  By
+    @{thm [source] wf_oltRw_of_principals} this in turn reduces to accessibility
+    of the principal (\<open>\<Omega>\<close>/\<open>\<vartheta>\<close>) terms (Buchholz / Towsner Lemmas 3.10\<dash>3.12); and
   \<^enum> order-preservation of \<^const>\<open>embed\<close> on \<open>NF\<close>: the naive subscript order \<open><o\<close>
     coincides with the true collapsing order \<open><\<^sub>o\<close> on standard forms.
   Together they discharge \<^prop>\<open>wf Rnf\<close>, hence PSS termination.\<close>
 
 theorem wf_Rnf_via_embed:
-  assumes wfp: "wf principalR"
+  assumes wfp: "wf oltRw"
     and op: "\<And>w x. w \<in> NF \<Longrightarrow> x \<in> NF \<Longrightarrow> w <o x \<Longrightarrow> embed w <\<^sub>o embed x"
   shows "wf Rnf"
 proof -
   let ?T = "{(a,b). a <\<^sub>o b \<and> wfo a \<and> wfo b}"
   have wfT: "wf (inv_image ?T embed)"
-    by (rule wf_inv_image[OF wf_olt_of_principal[OF wfp]])
+    by (rule wf_inv_image[OF wfp])
   have sub: "Rnf \<subseteq> inv_image ?T embed"
   proof (rule subsetI)
     fix p assume "p \<in> Rnf"
