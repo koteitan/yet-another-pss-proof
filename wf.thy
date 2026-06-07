@@ -264,6 +264,81 @@ next
   qed
 qed
 
+lemma incpref_snoc:
+  "incpref (ys @ [x]) =
+     (if incpref ys = ys \<and> (ys = [] \<or> fst (last ys) < fst x) then ys @ [x] else incpref ys)"
+proof (induction ys rule: incpref.induct)
+  case 1 thus ?case by simp
+next
+  case (2 p) thus ?case by auto
+next
+  case (3 p q rest)
+  show ?case
+  proof (cases "fst p < fst q")
+    case False thus ?thesis by simp
+  next
+    case True
+    have e: "incpref ((p # q # rest) @ [x]) = p # incpref ((q # rest) @ [x])"
+      using True by simp
+    have ih: "incpref ((q # rest) @ [x])
+              = (if incpref (q # rest) = q # rest \<and> fst (last (q # rest)) < fst x
+                 then (q # rest) @ [x] else incpref (q # rest))"
+      using "3.IH"[OF True] by simp
+    show ?thesis
+    proof (cases "incpref (q # rest) = q # rest \<and> fst (last (q # rest)) < fst x")
+      case True
+      then have "incpref ((p # q # rest) @ [x]) = p # (q # rest) @ [x]"
+        using e ih by simp
+      moreover have "incpref (p # q # rest) = p # q # rest"
+        using \<open>fst p < fst q\<close> True by simp
+      ultimately show ?thesis using \<open>fst p < fst q\<close> True by simp
+    next
+      case False
+      then have "incpref ((p # q # rest) @ [x]) = p # incpref (q # rest)"
+        using e ih by simp
+      moreover have "\<not> (incpref (p # q # rest) = p # q # rest \<and> fst (last (p # q # rest)) < fst x)"
+        using \<open>fst p < fst q\<close> False by auto
+      ultimately show ?thesis using \<open>fst p < fst q\<close> by simp
+    qed
+  qed
+qed
+
+lemma incpref_butlast:
+  "incpref (butlast M) = (if incpref M = M then butlast M else incpref M)"
+proof (cases "M = []")
+  case True thus ?thesis by simp
+next
+  case False
+  then have M: "M = butlast M @ [last M]" by simp
+  let ?ys = "butlast M"
+  let ?c = "incpref ?ys = ?ys \<and> (?ys = [] \<or> fst (last ?ys) < fst (last M))"
+  have eqM: "incpref M = incpref (?ys @ [last M])" by (metis M)
+  have snoc: "incpref (?ys @ [last M]) = (if ?c then ?ys @ [last M] else incpref ?ys)"
+    by (rule incpref_snoc)
+  show ?thesis
+  proof (cases ?c)
+    case True
+    have "incpref M = ?ys @ [last M]" using eqM snoc True by simp
+    hence "incpref M = M" using M by simp
+    moreover have "incpref ?ys = ?ys" using True by simp
+    ultimately show ?thesis by simp
+  next
+    case False
+    have eq: "incpref M = incpref ?ys" using eqM snoc False by simp
+    have "incpref M \<noteq> M"
+    proof
+      assume "incpref M = M"
+      with eq have "incpref ?ys = M" by simp
+      hence "length M = length (incpref ?ys)" by simp
+      also have "\<dots> \<le> length ?ys"
+        using incpref_append[of ?ys] by (metis le_add1 length_append)
+      also have "\<dots> < length M" using M by (metis length_append_singleton lessI)
+      finally show False by simp
+    qed
+    with eq show ?thesis by simp
+  qed
+qed
+
 lemma spine_translate_eq: "spine (translate M) = map snd (incpref M)"
 proof (induction M rule: incpref.induct)
   case 1
