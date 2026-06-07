@@ -371,6 +371,42 @@ next
   ultimately show ?case using x(1) by (cases \<gamma>) auto
 qed
 
+subsection \<open>Monotonicity in an \<open>\<Omega>\<close> upper bound\<close>
+
+text \<open>Raising the cardinal of an \<open>\<Omega>\<close> upper bound preserves \<open><\<^sub>o\<close> below it.
+  A clean structural induction on the smaller term (no transitivity needed).\<close>
+
+lemma olt_Om_mono: "a <\<^sub>o Om p \<Longrightarrow> p \<le> q \<Longrightarrow> a <\<^sub>o Om q"
+proof (induction "size a" arbitrary: a rule: less_induct)
+  case less
+  have IH: "a' <\<^sub>o Om q" if "size a' < size a" "a' <\<^sub>o Om p" for a'
+    using less.hyps that less.prems(2) by blast
+  show ?case
+  proof (cases a)
+    case (Om r) thus ?thesis using less.prems by simp
+  next
+    case (Th r e)
+    have "\<forall>\<gamma>\<in>Kn r e. \<gamma> <\<^sub>o Om q"
+    proof
+      fix \<gamma> assume g: "\<gamma> \<in> Kn r e"
+      have "size \<gamma> < size a" using Th Kn_size[OF g] by simp
+      moreover have "\<gamma> <\<^sub>o Om p" using less.prems(1) Th g by simp
+      ultimately show "\<gamma> <\<^sub>o Om q" by (rule IH)
+    qed
+    thus ?thesis using Th by simp
+  next
+    case (Su xs)
+    have "\<forall>v\<in>set xs. v <\<^sub>o Om q"
+    proof
+      fix v assume v: "v \<in> set xs"
+      have "size v < size a" using Su size_lt_Su[OF v] by simp
+      moreover have "v <\<^sub>o Om p" using less.prems(1) Su v by simp
+      ultimately show "v <\<^sub>o Om q" by (rule IH)
+    qed
+    thus ?thesis using Su by simp
+  qed
+qed
+
 subsection \<open>Transitivity of the ordering (order meta-theory, Towsner Lemma 2.1)\<close>
 
 text \<open>\<^bold>\<open>Transitivity (sorry):\<close> the Key-Lemma-level order meta-theory.  A genuine
