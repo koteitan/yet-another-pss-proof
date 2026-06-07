@@ -25,4 +25,5 @@ session YAPSS = HOL +
     wo
     accinfra
     wflevel
+    buchholz
     embed
