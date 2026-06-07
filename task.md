@@ -31,11 +31,11 @@
       - ✅ 記法 `ot`(Om/Th/Su)・FC・critical subterms Kn・Kn_size〔wo.thy〕
       - ✅ K 条件付き真の整礎順序 `<\<^sub>o`（Towsner Def 2.3）を function+termination で定義〔olt / ole〕
       - ✅ Zero 最小性・和順序 ⊆ multiset 拡大〔not_olt_Zero / olt_Zero_iff / olt_Su_imp_mult〕
-      - ✅ **assembly**: `wf principalR ⟹ wf {(a,b). a<\<^sub>o b ∧ wfo a ∧ wfo b}`〔wfo / bag / bag_mono / wf_olt_of_principal〕
-      - 🚨 **`wf principalR`**（Om/Th 上の整礎性）★残る本丸＝Towsner Lemma 3.10–3.12
+      - ✅ **汎用 acc 基盤**〔accinfra.thy: acc_imp_acc_trancl / acc_pullback / acc_mult_of_elems（要素ごと multiset 整礎）〕
+      - ✅ **和への還元**〔wflevel.thy: wfo_Kn / bag_mono_w / acc_of_bag_elems / princ_acc_lift / **wf_oltRw_of_wf_pR**〕＝ `wf pR ⟹ wf oltRw`（和は multiset で自動処理）
+      - 🚨 **`wf pR`**（well-formed principal 順序 = Om/Th 上の整礎性）★残る本丸＝古典 Buchholz WF（Towsner §2 には WF 証明なし・§3.2 は polymorphic 専用→絶対系で直接書く）
         - ✅ FC 階層化補題群〔Kn_isH / FCset_Kn / FC_Kn / FCset_Th_eq_Kn / FC_Th_le / **FC_mono_pr** / Kn_lt_Th〕
-        - ✅ accessible 部分の wf〔wflevel.thy: wfpart / wf_on_wfpart / accUpto / accUpto_mono〕
-        - 🚨 M_n 階層（cardinality-component ベースで要再構成）＋ ϑ崩壊閉包の三重入れ子帰納（cardinality→subscript→argument）→ M_n⊆Acc_n → wf
+        - 🚨 入れ子帰納（崩壊補題 L_Th）：構造帰納(master,引数 d∈acc を供給)＋引数 acc 帰納(同添字 e<\<^sub>o d)＋述語 size 帰納(臨界部分項)＋添字/FC（異添字 p<n・同FC の Om N 述語）。同FC・異添字の壁が核心。
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
       - ✅ embed/eprincs/collapse（単一 principal は Su 化しない）＋像の well-formed〔wfo_embed〕
       - 🚨 NF 上で `w ≺ x ⟹ embed w <\<^sub>o embed x`（NF でのみ素朴 lex=真順序。off-NF は bad chain で不成立を確認）→ `wf Rnf`

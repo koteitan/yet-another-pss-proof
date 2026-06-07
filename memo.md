@@ -264,3 +264,36 @@ NF 上で `olt_three = <\<^sub>o` を示し `wf Rnf`。
   `reach_badchain.py`（x_n 到達可能性）, `validate.py`（parse/translate/cmp）。
 - 注意：自前 `\<le>o`/`<o` に対する calc の `also`（推移律解決）は巨大項で発散。
   `also` を使わず明示 `have`＋`simp` で連鎖すること。
+
+## (wfpR) 2026-06-07 WF核を `wf pR` まで還元（accinfra / wflevel 改）
+
+**到達点（すべて緑・コミット済）**:
+- `accinfra.thy`: 汎用 acc 基盤。`acc_imp_acc_trancl`（acc は trancl で不変）,
+  `acc_pullback`（単調写像で acc 引き戻し）, `acc_mult_of_elems`（要素が acc なら
+  multiset も `mult` で acc＝`all_accessible` の要素版）。
+- `wflevel.thy`: 和への還元。`oltRw≡{(a,b).a<o b∧wfo a∧wfo b}`。
+  `wfo_Kn`（wfo の臨界部分項は wfo）, `bag_mono_w`（`<o` on wfo → `mult oltRw`）,
+  `acc_of_bag_elems`（bag 要素が acc なら本体も acc）, `princ_acc_lift`
+  （`acc pR ⟹ acc oltRw`: principal の Su 述語は principal 和因子に分解＝各々 pR 述語）,
+  `wf_oltRw_of_wf_pR`: **`wf pR ⟹ wf oltRw`**。`pR≡{(a,b).a<o b∧isH a∧isH b∧wfo a∧wfo b}`。
+- `embed.thy`: `wf_Rnf_via_embed` は `wf oltRw` を仮定（`wf_olt_of_principal` 廃止）。
+
+**残る本丸＝`wf pR`**（well-formed principal 上の `<o` 整礎性）＝古典 Buchholz WF。
+重要発見: Towsner §2（本記法）には WF 証明が無い。§3.2 の WF は polymorphic 系
+（de Bruijn / ground 正規化）専用。絶対系（Om n は n で上方整礎なので ground 正規化不要）
+では直接 Buchholz 流で書く必要。
+
+**`wf pR` の難所（精密分析）**: master を構造帰納にすると Th n d の引数 d∈acc は
+部分項として得られる（Towsner Thm 3.12）。崩壊補題 L_Th（d∈acc⟹Th n d∈acc）の中で:
+- 臨界部分項支配（Om m≤δ, Th≤δ; δ∈Kn n d）: δ は d の部分項→size 小→master の
+  size-IH(HS) で acc。✓（`acc_downward`+`wfo_Kn`）
+- 同添字 e<o d（p=n）: `(e,d)∈oltRw`, d∈acc → `acc_downward` で e∈acc → 引数 acc 帰納。✓筋
+- 述語の臨界部分項 γ∈Kn p e: size γ<size(述語) → 述語 size 帰納(HS_q)で acc。✓筋
+- **異添字 p<n かつ FC=FC(Th n d)（同 level）**: e は Th n d の部分項でも d の下でもなく、
+  e∈acc の供給源が無い。FC<level なら LOW で済むが FC=level の Th p e(p<n) と Om N が壁。
+  → 純 size / 純 FC / (FC,size) いずれも反例（同FC述語が size 増大しうる）。
+  Towsner は M_n（level集合）で臨界部分項 acc を robust に供給＋引数 acc 帰納で解決。
+  絶対系移植には Acc_n/M_n（FC で層化、ground 臨界部分項条件）の構築が要。次段。
+- 和因子（述語が Su）: `acc_of_bag_elems` で principal 述語に帰着済み（princ_acc_lift 内で実証）。
+
+次: Acc_n/M_n を FC 層化で構築し L_Th を入れ子帰納で証明 → `wf pR`。並行で embed 順序保存。
