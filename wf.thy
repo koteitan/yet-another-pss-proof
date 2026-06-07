@@ -241,6 +241,34 @@ next
 qed
 
 
+subsection \<open>The maximal subscript is the maximal row-1 value\<close>
+
+lemma cmax_append: "cmax (xs @ ys) = max (cmax xs) (cmax ys)"
+  by (induction xs) auto
+
+lemma maxsub_translate: "maxsub (translate M) = cmax (map snd M)"
+proof (induction M rule: translate.induct)
+  case 1
+  show ?case by simp
+next
+  case (2 p rest)
+  have key: "cmax (map snd rest)
+        = max (cmax (map snd (takeWhile (\<lambda>q. fst p < fst q) rest)))
+              (cmax (map snd (dropWhile (\<lambda>q. fst p < fst q) rest)))"
+    by (metis cmax_append map_append takeWhile_dropWhile_id)
+  show ?case using 2 key by simp
+qed
+
+text \<open>So the maximal-subscript invariant \<open>maxsub = climb\<close> is the pair-sequence
+  statement \<open>cmax (map snd M) = cmax (map snd (incpref M))\<close>: the maximal row-1
+  value of \<open>M\<close> is attained already within its strictly-increasing-row-0 prefix.\<close>
+
+lemma maxsub_eq_climb_iff:
+  "maxsub (translate M) = climb (translate M)
+     \<longleftrightarrow> cmax (map snd M) = cmax (map snd (incpref M))"
+  by (simp add: maxsub_translate spine_translate_eq)
+
+
 subsection \<open>The NF invariants for the diagonal towers (base case)\<close>
 
 lemma diagSeq_Cons:
