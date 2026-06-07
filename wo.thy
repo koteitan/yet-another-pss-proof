@@ -123,6 +123,31 @@ next
   case (Su xs) thus ?case by auto
 qed
 
+lemma FC_nonempty: "FCset t \<noteq> {} \<Longrightarrow> FC t = Max (FCset t)"
+  by (simp add: FC_def)
+
+text \<open>If every critical subterm of \<open>\<vartheta>\<^sub>n a\<close> has \<open>FC \<le> B\<close>, then so does \<open>\<vartheta>\<^sub>n a\<close>.\<close>
+
+lemma FC_Th_le:
+  assumes "\<forall>\<gamma> \<in> Kn n a. FC \<gamma> \<le> B" shows "FC (Th n a) \<le> B"
+proof (cases "FCset (Th n a) = {}")
+  case True thus ?thesis by (simp add: FC_def)
+next
+  case False
+  have bound: "\<forall>k \<in> FCset (Th n a). k \<le> B"
+  proof
+    fix k assume k: "k \<in> FCset (Th n a)"
+    hence "k \<in> (\<Union>\<gamma> \<in> Kn n a. FCset \<gamma>)" unfolding FCset_Th_eq_Kn[symmetric] .
+    then obtain \<gamma> where g: "\<gamma> \<in> Kn n a" "k \<in> FCset \<gamma>" by auto
+    have "k \<le> Max (FCset \<gamma>)" by (rule Max_ge[OF finite_FCset g(2)])
+    moreover have "FCset \<gamma> \<noteq> {}" using g(2) by auto
+    ultimately have "k \<le> FC \<gamma>" by (simp add: FC_def)
+    thus "k \<le> B" using assms g(1) by fastforce
+  qed
+  have "Max (FCset (Th n a)) \<le> B" using bound False by (simp add: Max.bounded_iff)
+  thus ?thesis using FC_nonempty[OF False] by simp
+qed
+
 lemma FC_Kn: "\<gamma> \<in> Kn n a \<Longrightarrow> FC \<gamma> \<le> FC (Th n a)"
 proof -
   assume "\<gamma> \<in> Kn n a"
