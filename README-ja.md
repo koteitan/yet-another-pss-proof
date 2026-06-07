@@ -1,12 +1,12 @@
 # yet-another-pss-proof
 
-ペア数列システム (Pair Sequence System, PSS) の停止性の、オリジナルの停止証明と
-その Isabelle/HOL による形式証明。
+ペア数列システム (Pair Sequence System, PSS) の停止性の証明とその Isabelle/HOL による形式証明。
 
-**経緯と本証明の位置づけ。** ペア数列システムは **Bashicu 氏** が考案した。
-その停止性は **P進大好きbot 氏** が証明した
+## 経緯と本証明の位置づけ
+**ペア数列システム** (PSS) は Bashicu 氏が考案した。
+その停止性は P進大好きbot 氏が証明した
 （[`pss-original-paper.html`](../pss-original-paper.html)、Buchholz の ψ を用いる）。
-**本リポジトリの証明は、独立に構成したオリジナルの停止証明である。**
+本リポジトリの証明は、また別のアプローチによる PSS 停止証明である。
 
 本証明はペア数列を **`p_a(b)+c` という独自の三分木記法** へ変換し、
 `(a,b,c)` の3次元超限帰納法で素直に停止性を導く。これは原始数列システム
