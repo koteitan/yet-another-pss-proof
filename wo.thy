@@ -69,6 +69,9 @@ fun Kn :: "nat \<Rightarrow> ot \<Rightarrow> ot set" where
 lemma finite_Kn [simp]: "finite (Kn n a)"
   by (induction a) auto
 
+lemma Kn_isH: "\<gamma> \<in> Kn n a \<Longrightarrow> isH \<gamma>"
+  by (induction a) (auto split: if_splits)
+
 text \<open>The cardinalities of a critical subterm \<open>\<gamma> \<in> Kn n a\<close> are exactly the
   cardinalities of \<open>a\<close> below \<open>n\<close>; hence \<open>FC \<gamma> \<le> FC (\<vartheta>\<^sub>n a)\<close>.\<close>
 
@@ -294,6 +297,89 @@ lemma olt_Zero_iff: "Zero <\<^sub>o x \<longleftrightarrow> x \<noteq> Zero"
 
 lemma olt_ZeroI: "x \<noteq> Zero \<Longrightarrow> Zero <\<^sub>o x"
   by (simp add: olt_Zero_iff)
+
+subsection \<open>Cardinality is monotone on principal terms\<close>
+
+text \<open>For principal (\<open>\<Omega>\<close>/\<open>\<vartheta>\<close>) terms, \<open>a <\<^sub>o b \<Longrightarrow> FC a \<le> FC b\<close>.  This lets the
+  accessibility proof stratify principals by cardinality \<^const>\<open>FC\<close>.\<close>
+
+lemma FC_mono_pr:
+  "isH a \<Longrightarrow> isH b \<Longrightarrow> a <\<^sub>o b \<Longrightarrow> FC a \<le> FC b"
+proof (induction "size a + size b" arbitrary: a b rule: less_induct)
+  case less
+  note IH = less.hyps
+  consider (OO) m n where "a = Om m" "b = Om n"
+    | (OT) m n d where "a = Om m" "b = Th n d"
+    | (TO) m c n where "a = Th m c" "b = Om n"
+    | (TT) m c n d where "a = Th m c" "b = Th n d"
+    using less.prems(1,2) by (cases a; cases b) auto
+  then show ?case
+  proof cases
+    case (OO m n)
+    have "m < n" using less.prems(3) OO by simp
+    thus ?thesis using OO by (simp add: FC_def)
+  next
+    case (OT m n d)
+    from less.prems(3) OT obtain g where g: "g \<in> Kn n d" "Om m \<le>\<^sub>o g" by auto
+    have hg: "isH g" using g(1) by (rule Kn_isH)
+    have sz: "size (Om m) + size g < size a + size b"
+      using OT Kn_size[OF g(1)] by simp
+    have "FC (Om m) \<le> FC g"
+    proof (cases "Om m = g")
+      case True thus ?thesis by simp
+    next
+      case False
+      with g(2) have "Om m <\<^sub>o g" by simp
+      thus ?thesis using IH[OF sz _ hg] by simp
+    qed
+    also have "FC g \<le> FC (Th n d)" by (rule FC_Kn[OF g(1)])
+    finally show ?thesis using OT by simp
+  next
+    case (TO m c n)
+    have "\<forall>g \<in> Kn m c. FC g \<le> FC (Om n)"
+    proof
+      fix g assume gg: "g \<in> Kn m c"
+      have lt: "g <\<^sub>o Om n" using less.prems(3) TO gg by simp
+      have "size g + size (Om n) < size a + size b"
+        using TO Kn_size[OF gg] by simp
+      thus "FC g \<le> FC (Om n)" using IH Kn_isH[OF gg] lt by simp
+    qed
+    hence "FC (Th m c) \<le> FC (Om n)" by (rule FC_Th_le)
+    thus ?thesis using TO by simp
+  next
+    case (TT m c n d)
+    show ?thesis
+    proof (cases "\<exists>g \<in> Kn n d. Th m c \<le>\<^sub>o g")
+      case True
+      then obtain g where g: "g \<in> Kn n d" "Th m c \<le>\<^sub>o g" by auto
+      have sz: "size (Th m c) + size g < size a + size b"
+        using TT Kn_size[OF g(1)] by simp
+      have "FC (Th m c) \<le> FC g"
+      proof (cases "Th m c = g")
+        case True thus ?thesis by simp
+      next
+        case False
+        with g(2) have "Th m c <\<^sub>o g" by simp
+        thus ?thesis using IH[OF sz] Kn_isH[OF g(1)] by simp
+      qed
+      also have "FC g \<le> FC (Th n d)" by (rule FC_Kn[OF g(1)])
+      finally show ?thesis using TT by simp
+    next
+      case False
+      have all: "\<forall>g \<in> Kn m c. g <\<^sub>o Th n d"
+        using less.prems(3) TT False by simp
+      have "\<forall>g \<in> Kn m c. FC g \<le> FC (Th n d)"
+      proof
+        fix g assume gg: "g \<in> Kn m c"
+        have "size g + size (Th n d) < size a + size b"
+          using TT Kn_size[OF gg] by simp
+        thus "FC g \<le> FC (Th n d)" using IH Kn_isH[OF gg] all gg by simp
+      qed
+      hence "FC (Th m c) \<le> FC (Th n d)" by (rule FC_Th_le)
+      thus ?thesis using TT by simp
+    qed
+  qed
+qed
 
 subsection \<open>Sums compare by the multiset extension\<close>
 
