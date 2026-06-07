@@ -140,6 +140,24 @@
 
 別案（leaner かもしれない）: WF 核を別 datatype で作らず、`three` 上に直接 `Acc_n/M_n`
 階層を maxsub を level proxy として定義し §3.2 の論法を走らせる。要 K の正しい定義。
+（不成立確認: `three` には Ω が無く FC が常に -∞ になり階層が潰れる。Ω scaffolding は
+proof に必須。よって別 datatype `ot` で WF 核を作る本線で進める。）
+
+### wo.thy 進捗（全ビルド緑・コミット済, 2026-06-07）
+Towsner §2 非poly OT_Ωω を `ot` datatype に移植（`W`=ω^ は省略, 埋め込み像は Th/Su のみ;
+`Om` は K の scaffold）。済んだもの:
+- `datatype ot = Om nat | Th nat ot | Su "ot list"`（`Zero ≡ Su []`）, `isH`。
+- `FCset`/`FC`（Def 2.4, formal cardinality 集合と max）, `finite_FCset`。
+- `Kn`（Def 2.2 critical subterms）, `finite_Kn`, `Kn_size`(γ∈Kn n a ⟹ size γ≤size a),
+  `size_lt_Su`(x∈set xs ⟹ size x<size(Su xs))。
+- **順序 `olt`（infix `<\<^sub>o`, Towsner Def 2.3）を `function`+`termination`(size measure) で定義**。
+  K 条件付き＝真の wf 順序（素朴 lex の `olt`@mechanized とは別物）。`ole`(`\<le>\<^sub>o`)。
+- 基本: `not_olt_Zero`, `olt_Zero_iff`, `olt_ZeroI`(Zero が最小)。
+次の段取り: (1) 順序性質: 線形性(Lemma 2.1)/推移律/`FC α<FC β ⟹ α<β`。
+(2) `Acc_n`/`M_n`(Def 3.7), Lemma 3.8(和で閉)–3.10(ϑで閉)–3.11(崩壊で cardinality 降下)
+–Thm 3.12(全項 accessible=wf)。(3) 埋め込み `three`→`ot`（`P a b c ↦ Su(Th a · # tail)`),
+NF 上で `olt_three = <\<^sub>o` を示し `wf Rnf`。
+注: `isbman build -d /home/koteitan/ya-pss/git -v YAPSS`（cwd がリセットされうるので -d 絶対パス）。
 
 ## (diagacc) 証明の方針候補（旧、参考）
 
