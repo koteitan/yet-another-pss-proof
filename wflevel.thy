@@ -68,4 +68,25 @@ proof -
   thus ?thesis by (subst wf_iff_acc) blast
 qed
 
+text \<open>The cumulative level family is monotone.\<close>
+
+lemma accUpto_Suc_supset: "accUpto n \<subseteq> accUpto (Suc n)"
+  by simp
+
+lemma accUpto_mono: "m \<le> n \<Longrightarrow> accUpto m \<subseteq> accUpto n"
+proof (induction n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  show ?case
+  proof (cases "m = Suc n")
+    case True thus ?thesis by simp
+  next
+    case False
+    with Suc.prems have "m \<le> n" by simp
+    with Suc.IH have "accUpto m \<subseteq> accUpto n" .
+    thus ?thesis by (rule subset_trans[OF _ accUpto_Suc_supset])
+  qed
+qed
+
 end
