@@ -194,6 +194,26 @@ Towsner §2 非poly OT_Ωω を `ot` datatype に移植（`W`=ω^ は省略, 埋
   注意（ハマり）: `<\<^sub>o` 上の `auto`/巨大 `metis` は発散（kill 要）。明示 `rule`/`linarith`/
   小さい metis で書く。`{#a#}+X` vs `add_mset a X`, `Suc 0≤length` は `Suc_le_eq` 必要。
 
+### wf principalR の足場（wo.thy/wflevel.thy, 緑・コミット 2026-06-07 続き）
+- `Kn_isH`(Kn 元は principal), `FCset_Kn`(γ∈Kn n a ⟹ FCset γ⊆{k∈FCset a.k<n}),
+  `FC_Kn`(FC γ≤FC(Th n a)), `FCset_Th_eq_Kn`(FCset(Th n a)=⋃_{γ∈Kn n a}FCset γ),
+  `FC_nonempty`, `FC_Th_le`(∀γ∈Kn n a.FC γ≤B ⟹ FC(Th n a)≤B)。
+- **`FC_mono_pr`**: principal で `a<\<^sub>o b ⟹ FC a ≤ FC b`（FC 階層化の鍵）。
+- `wflevel.thy`: `wfpart`/`AAlevel`/`accUpto`(定義), `wf_on_wfpart`(accessible 部分上 wf), `accUpto_mono`。
+
+### ★ 深掘り所見（wf principalR の本質、継続用）
+- FC 階層化（`FC_mono_pr`）で `wf principalR` を **同一 FC レベル内の wf** に還元できるが、
+  それは **subscript による別の崩壊**（`Th m c <\<^sub>o Th n a` の m<n 第2選言ケース）になる。
+- すなわち absolute 系（ϑ_n に subscript n）では **cardinality(FC)→subscript(n)→argument(acc)
+  の三重入れ子帰納**が要る。Towsner **poly 版は単一 ϑ＋Ω-levels でこの subscript 段を吸収**して
+  おり、そこが poly の利点。absolute 移植はこの三重帰納が固有の重さ。
+- さらに注意: 順序 `olt` が使う critical subterm は **subscript ベースの `Kn`**（Def 2.3）。
+  一方 Towsner の WF 階層 M_n は **cardinality ベースの K^{<0}**。absolute では両者が別物で、
+  WF 階層用に cardinality ベースの別 K を要する可能性（要検討）。
+- 選択肢: (a) absolute で三重入れ子帰納を実装（重い）、(b) **poly 版(de Bruijn Ω^(J)+shift)を
+  faithful 移植**し embedding も poly へ（Towsner の完備証明をほぼ直訳, m<n 段が消える）。
+  → 次セッションで (a) vs (b) を判断。現状 (a) の足場（FC 階層補題群）は揃っている。
+
 ### 次セッションの段取り（最重要・本丸 = `wf principalR`）
 **(B') `wf principalR`**: Om/Th 上の `<\<^sub>o` 整礎性。`Om n` は `m<n` で自明。`Th n a` の崩壊が核
   （Towsner 3.10/3.11, level=FC 入れ子帰納, `Acc_n`/`M_n` Def 3.7 を absolute 化）。
