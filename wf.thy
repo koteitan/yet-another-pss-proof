@@ -874,4 +874,41 @@ proof (rule maxsub_mono_cond[OF assms(3)])
     using nfinv_ST_PS[OF assms(2)] by (simp add: nfinv_def spine_translate_eq)
 qed
 
+lemma maxsub_mono_NF':
+  assumes "v \<in> NF" and "u \<in> NF" and "v <o u"
+  shows "maxsub v \<le> maxsub u"
+proof -
+  from assms(1) obtain Mv where Mv: "Mv \<in> ST_PS" "v = translate Mv" by auto
+  from assms(2) obtain Mu where Mu: "Mu \<in> ST_PS" "u = translate Mu" by auto
+  show ?thesis using maxsub_mono_NF[OF Mv(1) Mu(1)] assms(3) Mv(2) Mu(2) by simp
+qed
+
+
+subsection \<open>Reduction of well-foundedness to within-maxsub-level\<close>
+
+text \<open>Since \<open><o\<close>-descent on \<open>NF\<close> is subscript-monotone (@{thm [source] maxsub_mono_NF'}),
+  the maximal-subscript-decreasing part of \<open>Rnf\<close> is well-founded outright; by
+  \<open>wf_union_compatible\<close> the whole \<open>Rnf\<close> is well-founded as soon as its
+  \<^emph>\<open>equal-maximal-subscript\<close> part is.  This isolates the remaining obligation to a
+  single maximal-subscript level (the Buchholz collapsing core).\<close>
+
+theorem wf_Rnf_from_within_level:
+  assumes wfE: "wf {(w,x). w <o x \<and> x \<in> NF \<and> w \<in> NF \<and> maxsub w = maxsub x}"
+  shows "wf Rnf"
+proof -
+  let ?D = "{(w,x). w <o x \<and> x \<in> NF \<and> w \<in> NF \<and> maxsub w < maxsub x}"
+  let ?E = "{(w,x). w <o x \<and> x \<in> NF \<and> w \<in> NF \<and> maxsub w = maxsub x}"
+  have wfD: "wf ?D"
+  proof (rule wf_subset)
+    show "wf (inv_image less_than maxsub)" by (rule wf_inv_image[OF wf_less_than])
+    show "?D \<subseteq> inv_image less_than maxsub" by (auto simp: inv_image_def)
+  qed
+  have split: "Rnf = ?D \<union> ?E"
+    using maxsub_mono_NF' by fastforce
+  have comp: "?D O ?E \<subseteq> ?D"
+    using olt_trans by auto
+  have "wf (?D \<union> ?E)" by (rule wf_union_compatible[OF wfD wfE comp])
+  thus ?thesis using split by simp
+qed
+
 end
