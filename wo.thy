@@ -371,6 +371,24 @@ next
   ultimately show ?case using x(1) by (cases \<gamma>) auto
 qed
 
+subsection \<open>Transitivity of the ordering (order meta-theory, Towsner Lemma 2.1)\<close>
+
+text \<open>\<^bold>\<open>Transitivity (sorry):\<close> the Key-Lemma-level order meta-theory.  A genuine
+  case analysis on the nine shape combinations with a size induction; the
+  principal/principal case is intricate (the critical-subterm conditions chain
+  through the middle term).  Declared here so the asymmetry proof and the
+  well-foundedness core can use it; to be discharged together with the other
+  order meta-theory.\<close>
+
+lemma olt_trans: "a <\<^sub>o b \<Longrightarrow> b <\<^sub>o c \<Longrightarrow> a <\<^sub>o c"
+  sorry
+
+lemma olt_ole_trans: "a <\<^sub>o b \<Longrightarrow> b \<le>\<^sub>o c \<Longrightarrow> a <\<^sub>o c"
+  using olt_trans by blast
+
+lemma ole_olt_trans: "a \<le>\<^sub>o b \<Longrightarrow> b <\<^sub>o c \<Longrightarrow> a <\<^sub>o c"
+  using olt_trans by blast
+
 subsection \<open>Asymmetry of the ordering (hence irreflexivity)\<close>
 
 text \<open>\<open><\<^sub>o\<close> has no 2-cycles.  Proof by induction on \<open>size x + size y\<close>: from
@@ -476,8 +494,15 @@ proof (induction "size x + size y" arbitrary: x y rule: less_induct)
           from YY show False
           proof
             assume YA: "\<exists>\<gamma>\<in>Kn m c. Th n d \<le>\<^sub>o \<gamma>"
-            \<comment> \<open>both dominated by each other's critical subterms: needs transitivity\<close>
-            show False sorry
+            then obtain g' where g': "g' \<in> Kn m c" "Th n d \<le>\<^sub>o g'" by auto
+            \<comment> \<open>both dominated by each other's critical subterms \<dash> chain via transitivity\<close>
+            have "g <\<^sub>o Th n d" by (rule Kn_lt_Th[OF g(1)])
+            hence "g <\<^sub>o g'" using g'(2) by (rule olt_ole_trans)
+            moreover have "g' <\<^sub>o Th m c" by (rule Kn_lt_Th[OF g'(1)])
+            hence "g' <\<^sub>o g" using g(2) by (rule olt_ole_trans)
+            moreover have "size g + size g' < size x + size y"
+              using x_Th y_Th Kn_size[OF g(1)] Kn_size[OF g'(1)] by simp
+            ultimately show False using key by blast
           next
             assume YB: "(\<forall>\<gamma>\<in>Kn n d. \<gamma> <\<^sub>o Th m c) \<and> (n < m \<or> (n = m \<and> d <\<^sub>o c))"
             have "g <\<^sub>o Th m c" using YB g(1) by simp
