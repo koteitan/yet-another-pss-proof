@@ -22,7 +22,8 @@
 | ファイル | 役割 |
 |---|---|
 | `README-ja.md` | このファイル。リポジトリ内ファイルの説明。 |
-| `proof-ja.md` | markdown + MathJax による数学的証明（上位・人間向け）。できるだけ数式で記述。 |
+| `proof-ja.md` | markdown + MathJax による**完成した証明本文**（上位・人間向け）。Isabelle に変換できる証明のみを記し、経験的・未証明事項は書かない（循環論法防止）。 |
+| `memo.md` | 証明完成のための作業メモ（経験的観察・戦略・未解決の核の分析）。証明本文ではない。 |
 | `def.thy` | Bashicu 氏のペア数列システムの定義部分（Isabelle）。`pss-original-paper.html` に倣い、論文に忠実な変数名を用いる。 |
 | `proofs.thy` | `proof-ja.md` に対応する上位の形式証明（停止性定理本体）。`proof` は Isabelle の予約語のため `proofs` とする。 |
 | `mechanized.thy` | `proof-ja.md` では省いた細かい部分（下位）。記法 `p_a(b)+c`、整礎性、translate、減少補題。 |

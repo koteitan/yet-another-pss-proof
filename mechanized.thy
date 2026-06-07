@@ -18,23 +18,23 @@ text \<open>
   Buchholz ordinal \<open>\<psi>\<^sub>0(\<psi>\<^sub>\<omega>(0))\<close>, matching natural-number subscripts.
 \<close>
 
-datatype ord = Z | P nat ord ord
+datatype three = Z | P nat three three
 
 subsection \<open>The subscript-first lexicographic order\<close>
 
-fun olt :: "ord \<Rightarrow> ord \<Rightarrow> bool" (infix "<o" 50) where
+fun olt :: "three \<Rightarrow> three \<Rightarrow> bool" (infix "<o" 50) where
   "olt Z Z = False"
 | "olt Z (P _ _ _) = True"
 | "olt (P _ _ _) Z = False"
 | "olt (P a b c) (P e f g) =
      (a < e \<or> (a = e \<and> b <o f) \<or> (a = e \<and> b = f \<and> c <o g))"
 
-abbreviation ole :: "ord \<Rightarrow> ord \<Rightarrow> bool" (infix "\<le>o" 50) where
+abbreviation ole :: "three \<Rightarrow> three \<Rightarrow> bool" (infix "\<le>o" 50) where
   "x \<le>o y \<equiv> (x <o y \<or> x = y)"
 
 text \<open>Leading subscript of a term (the subscript of its first principal term).\<close>
 
-fun lead :: "ord \<Rightarrow> nat" where
+fun lead :: "three \<Rightarrow> nat" where
   "lead Z = 0"
 | "lead (P a _ _) = a"
 
@@ -116,7 +116,7 @@ lemma olt_P_c: "c1 <o c2 \<Longrightarrow> P a b c1 <o P a b c2"
   by simp
 
 
-section \<open>The translation \<open>translate : pairseq \<Rightarrow> ord\<close>\<close>
+section \<open>The translation \<open>translate : pairseq \<Rightarrow> three\<close>\<close>
 
 text \<open>
   Read the pair sequence left to right as a forest by row 0 (the first
@@ -127,7 +127,7 @@ text \<open>
   This is the PrSS forest map \<open>omap\<close> with \<open>\<omega>\<^bsup>\<bullet>\<^esup>\<close> replaced by \<open>p\<^bsub>y\<^esub>(\<bullet>)\<close>.
 \<close>
 
-function translate :: "pairseq \<Rightarrow> ord" where
+function translate :: "pairseq \<Rightarrow> three" where
   "translate [] = Z"
 | "translate (p # rest) =
      P (snd p) (translate (takeWhile (\<lambda>q. fst p < fst q) rest))
@@ -376,7 +376,7 @@ section \<open>Subscripts and their monotonicity under expansion\<close>
 
 text \<open>The set of subscripts occurring in a notation term.\<close>
 
-fun subs :: "ord \<Rightarrow> nat set" where
+fun subs :: "three \<Rightarrow> nat set" where
   "subs Z = {}"
 | "subs (P a b c) = insert a (subs b \<union> subs c)"
 

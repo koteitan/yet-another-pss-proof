@@ -18,10 +18,10 @@ text \<open>
   so termination now hinges on \<open>wfimg\<close> alone.
 \<close>
 
-abbreviation NF :: "ord set" where
+abbreviation NF :: "three set" where
   "NF \<equiv> translate ` ST_PS"
 
-abbreviation Rnf :: "(ord \<times> ord) set" where
+abbreviation Rnf :: "(three \<times> three) set" where
   "Rnf \<equiv> {(v,u). v <o u \<and> u \<in> NF \<and> v \<in> NF}"
 
 text \<open>
