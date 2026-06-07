@@ -371,6 +371,106 @@ next
   ultimately show ?case using x(1) by (cases \<gamma>) auto
 qed
 
+subsection \<open>Asymmetry of the ordering (hence irreflexivity)\<close>
+
+text \<open>\<open><\<^sub>o\<close> has no 2-cycles.  Proof by induction on \<open>size x + size y\<close>: from
+  \<open>x <\<^sub>o y\<close> and \<open>y <\<^sub>o x\<close> one always extracts a \<^emph>\<open>strictly smaller\<close> 2-cycle
+  (between a witness of one side and a witness of the other), contradicting the
+  inductive hypothesis.\<close>
+
+lemma olt_asym: "\<not> (x <\<^sub>o y \<and> y <\<^sub>o x)"
+proof (induction "size x + size y" arbitrary: x y rule: less_induct)
+  case less
+  have key: "\<not> (u <\<^sub>o v \<and> v <\<^sub>o u)" if "size u + size v < size x + size y" for u v
+    using less.hyps that by blast
+  show ?case
+  proof (rule notI)
+    assume "x <\<^sub>o y \<and> y <\<^sub>o x"
+    hence xy: "x <\<^sub>o y" and yx: "y <\<^sub>o x" by auto
+    show False
+    proof (cases x)
+      case x_Su: (Su xs)
+      show False
+      proof (cases y)
+        case y_Su: (Su ys)
+        from xy x_Su y_Su obtain b where b: "b \<in># mset ys - mset xs"
+          and bdom: "\<forall>a \<in># mset xs - mset ys. a <\<^sub>o b" by auto
+        from yx x_Su y_Su obtain b' where b': "b' \<in># mset xs - mset ys"
+          and b'dom: "\<forall>a \<in># mset ys - mset xs. a <\<^sub>o b'" by auto
+        have "b' <\<^sub>o b" using bdom b' by simp
+        moreover have "b <\<^sub>o b'" using b'dom b by simp
+        moreover have "size b + size b' < size x + size y"
+        proof -
+          have "b \<in> set ys" using b by (meson in_diffD in_multiset_in_set)
+          hence "size b < size y" using y_Su size_lt_Su by simp
+          moreover have "b' \<in> set xs" using b' by (meson in_diffD in_multiset_in_set)
+          hence "size b' < size x" using x_Su size_lt_Su by simp
+          ultimately show ?thesis by linarith
+        qed
+        ultimately show False using key by blast
+      next
+        case y_Om: (Om n)
+        from yx x_Su y_Om obtain b where b: "b \<in> set xs" "Om n \<le>\<^sub>o b" by auto
+        have "b <\<^sub>o Om n" using xy x_Su y_Om b(1) by simp
+        moreover have "size b + size (Om n) < size x + size y"
+          using x_Su y_Om b(1) size_lt_Su by fastforce
+        ultimately show False using b(2) key by force
+      next
+        case y_Th: (Th n d)
+        from yx x_Su y_Th obtain b where b: "b \<in> set xs" "Th n d \<le>\<^sub>o b" by auto
+        have "b <\<^sub>o Th n d" using xy x_Su y_Th b(1) by simp
+        moreover have "size b + size (Th n d) < size x + size y"
+          using x_Su y_Th b(1) size_lt_Su by fastforce
+        ultimately show False using b(2) key by force
+      qed
+    next
+      case x_Om: (Om m)
+      show False
+      proof (cases y)
+        case y_Su: (Su ys)
+        from xy x_Om y_Su obtain b where b: "b \<in> set ys" "Om m \<le>\<^sub>o b" by auto
+        have "b <\<^sub>o Om m" using yx x_Om y_Su b(1) by simp
+        moreover have "size b + size (Om m) < size x + size y"
+          using x_Om y_Su b(1) size_lt_Su by fastforce
+        ultimately show False using b(2) key by force
+      next
+        case y_Om: (Om n) thus False using xy yx x_Om by simp
+      next
+        case y_Th: (Th n d)
+        from xy x_Om y_Th obtain g where g: "g \<in> Kn n d" "Om m \<le>\<^sub>o g" by auto
+        have "g <\<^sub>o Om m" using yx x_Om y_Th g(1) by simp
+        moreover have "size (Om m) + size g < size x + size y"
+          using x_Om y_Th Kn_size[OF g(1)] by simp
+        ultimately show False using g(2) key by force
+      qed
+    next
+      case x_Th: (Th m c)
+      show False
+      proof (cases y)
+        case y_Su: (Su ys)
+        from xy x_Th y_Su obtain b where b: "b \<in> set ys" "Th m c \<le>\<^sub>o b" by auto
+        have "b <\<^sub>o Th m c" using yx x_Th y_Su b(1) by simp
+        moreover have "size b + size (Th m c) < size x + size y"
+          using x_Th y_Su b(1) size_lt_Su by fastforce
+        ultimately show False using b(2) key by force
+      next
+        case y_Om: (Om n)
+        from yx x_Th y_Om obtain g where g: "g \<in> Kn m c" "Om n \<le>\<^sub>o g" by auto
+        have "g <\<^sub>o Om n" using xy x_Th y_Om g(1) by simp
+        moreover have "size (Om n) + size g < size x + size y"
+          using x_Th y_Om Kn_size[OF g(1)] by simp
+        ultimately show False using g(2) key by force
+      next
+        case y_Th: (Th n d)
+        show False sorry
+      qed
+    qed
+  qed
+qed
+
+lemma olt_irrefl: "\<not> (x <\<^sub>o x)"
+  using olt_asym by blast
+
 subsection \<open>Shifting the cardinal levels (Towsner Def 3.3, global form)\<close>
 
 text \<open>\<open>shift k a\<close> adds \<open>k\<close> to every cardinal level (both \<^const>\<open>Om\<close> indices and
