@@ -24,10 +24,13 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
-  - 🚨 整礎性 wfimg（NF = translate(ST_PS) 上で ≺ 整礎）★残る未証明
-    - ✅ 添字単調性（M[n] の行1値 ⊆ M の行1値、δ₁=0）〔oper_snd_subset / subs_translate_oper〕
+  - 🚨 整礎性 wfimg（NF = translate(ST_PS) 上で ≺ 整礎）★残る未証明〔wf.thy〕
     - ✅ wfimg → 対角 accessibility への還元（oper側は減少補題で無料）〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS / oper_eq_self_short〕
-    - 🚨 対角タワー accessibility（D(u,v)=p_u(…p_v(0)) が Rnf-accessible）★残る唯一の本質的核（ψ崩壊）
+    - ✅ 順序核: ≺ は spine の slex を refine、不変条件下で maxsub 単調〔olt_imp_slex / climb_mono / maxsub_mono_cond〕
+    - ✅ spine 再定式化: spine(translate M)=map snd(incpref M)、maxsub=行1最大〔spine_translate_eq / maxsub_translate / maxsub_eq_climb_iff〕
+    - ✅ NF 不変条件 nfinv を全 ST_PS で証明（対角基底＋oper保存 butlast@copies、コピー解析不要）〔nfinv_ST_PS / nfinv_diag / nfinv_butlast / nfinv_append / oper_eq_butlast_append / incpref 各補題〕
+    - ✅ **maxsub 単調性 on NF**（w≺x ⟹ maxsub w ≤ maxsub x、降下で最大添字非増加）〔maxsub_mono_NF〕
+    - 🚨 同一 maxsub レベル内の整礎性（maxsub 階層化帰納の段＝ψ崩壊の本丸）★残る本質的核
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕

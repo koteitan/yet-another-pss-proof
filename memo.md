@@ -75,8 +75,9 @@
 - **スパイン再定式化**: `spine_translate_eq`: `spine(translate M)=map snd(incpref M)`、`incpref`＝行0狭義増加の最長接頭辞。`maxsub_translate`: `maxsub(translate M)=cmax(map snd M)`。`maxsub_eq_climb_iff`。
 - これで NF 不変条件は純ペア数列命題に帰着:
   - (A) `cmax(map snd M)=cmax(map snd(incpref M))`、(B) `inv2(map snd(incpref M))`。
-- 対角基底ケース: `spine_diagSeq0`/`climb_diagSeq0`/`inv2_spine_diagSeq0`。incpref 基本補題: `incpref_append`/`incpref_fst_sorted`。
-- **残り Stage 1**: `M∈ST_PS ⟹ (A)∧(B)`（oper 保存。butlast/bad ケースの incpref 解析）。
+- 対角基底ケース: `spine_diagSeq0`/`climb_diagSeq0`/`inv2_spine_diagSeq0`。incpref 基本補題: `incpref_append`/`incpref_fst_sorted`/`incpref_snoc`/`incpref_butlast`/`incpref_append_stop`/`incpref_append_full`。
+- **Stage 1 完了 ✅**: `nfinv` 述語＋`nfinv_append`（閉包）＋`nfinv_butlast`＋`nfinv_diag`＋`nfinv_ST_PS`（全 ST_PS で (A)∧(B)）。鍵: **`M[n]=butlast M @ R`（R の行1⊆butlast M）**〔`oper_eq_butlast_append`/`oper_bad_eq_butlast_append`〕によりコピーの行0上昇解析が不要に。→ **`maxsub_mono_NF`**（`w≺x` on NF ⟹ `maxsub w ≤ maxsub x`）完成。
+- **残り = Stage 3 のみ**: 同一 maxsub レベル内の整礎性（maxsub 階層化帰納の段）。maxsub 単調で `R_NF` 降下の maxsub は非増加。あとは「maxsub=n 固定で wf（下位レベル wf 仮定の下）」＝ψ崩壊の本丸。
 
 ### Stage 3（同一 maxsub レベル内整礎性）が迂回不可であることの確認
 - `≺` は spine の slex を refine するが、**slex は有界アルファベット上の列でも整礎でない**
