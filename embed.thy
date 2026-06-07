@@ -37,7 +37,7 @@ text \<open>\<open>eprincs t\<close> is the list of principal summands of \<open
 
 fun eprincs :: "three \<Rightarrow> ot list" where
   "eprincs Z = []"
-| "eprincs (P a b c) = Th a (collapse (eprincs b)) # eprincs c"
+| "eprincs (P a b c) = Th (int a) (collapse (eprincs b)) # eprincs c"
 
 definition embed :: "three \<Rightarrow> ot" where
   "embed t = collapse (eprincs t)"
@@ -46,7 +46,7 @@ lemma embed_Z [simp]: "embed Z = Zero"
   by (simp add: embed_def)
 
 lemma eprincs_P [simp]:
-  "eprincs (P a b c) = Th a (embed b) # eprincs c"
+  "eprincs (P a b c) = Th (int a) (embed b) # eprincs c"
   by (simp add: embed_def)
 
 text \<open>\<open>collapse\<close> of a list of well-formed principals is well-formed.\<close>
@@ -71,7 +71,7 @@ text \<open>Every summand produced by the embedding is a principal \<vartheta>-t
 lemma eprincs_props: "x \<in> set (eprincs t) \<Longrightarrow> isH x \<and> wfo x"
 proof (induction t arbitrary: x)
   case (P a b c)
-  from P.prems consider "x = Th a (embed b)" | "x \<in> set (eprincs c)"
+  from P.prems consider "x = Th (int a) (embed b)" | "x \<in> set (eprincs c)"
     by (auto simp: embed_def)
   thus ?case
   proof cases

@@ -27,8 +27,8 @@ text \<open>
 \<close>
 
 datatype ot =
-    Om nat            \<comment> \<open>\<open>\<Omega>\<^sub>n\<close>\<close>
-  | Th nat ot         \<comment> \<open>\<open>\<vartheta>\<^sub>n a\<close>\<close>
+    Om int            \<comment> \<open>\<open>\<Omega>\<^bsub>J\<^esub>\<close>, \<open>J \<in> \<int>\<close> (de Bruijn-style levels; the WF proof shifts these)\<close>
+  | Th int ot         \<comment> \<open>\<open>\<vartheta>\<^bsub>J\<^esub> a\<close>\<close>
   | Su "ot list"      \<comment> \<open>\<open>#{x\<^sub>0,\<dots>}\<close>, summands principal, length \<open>\<noteq> 1\<close>; \<open>Su [] = 0\<close>\<close>
 
 abbreviation Zero :: ot where "Zero \<equiv> Su []"
@@ -45,7 +45,7 @@ subsection \<open>Formal cardinalities (Towsner Def 2.4)\<close>
 text \<open>\<open>FCset a\<close> is the set of cardinal levels occurring free in \<open>a\<close>;
   \<open>FC\<^bsub>n\<^esub>(\<vartheta>\<^sub>n a) = FC(a) \<setminus> {m. m \<ge> n}\<close>.\<close>
 
-fun FCset :: "ot \<Rightarrow> nat set" where
+fun FCset :: "ot \<Rightarrow> int set" where
   "FCset (Om n) = {n}"
 | "FCset (Th n a) = {m \<in> FCset a. m < n}"
 | "FCset (Su xs) = (\<Union>x \<in> set xs. FCset x)"
@@ -53,7 +53,7 @@ fun FCset :: "ot \<Rightarrow> nat set" where
 lemma finite_FCset [simp]: "finite (FCset a)"
   by (induction a) auto
 
-definition FC :: "ot \<Rightarrow> nat" where
+definition FC :: "ot \<Rightarrow> int" where
   "FC a = (if FCset a = {} then 0 else Max (FCset a))"
 
 subsection \<open>Critical subterms (Towsner Def 2.2)\<close>
@@ -61,7 +61,7 @@ subsection \<open>Critical subterms (Towsner Def 2.2)\<close>
 text \<open>\<open>Kn n a\<close> collects the maximal subterms of \<open>a\<close> of cardinality \<open>\<le> n\<close>:
   \<open>K\<^sub>n \<Omega>\<^sub>m = {\<Omega>\<^sub>m}\<close> iff \<open>m < n\<close>, and \<open>K\<^sub>n \<vartheta>\<^sub>m a = {\<vartheta>\<^sub>m a}\<close> iff \<open>m \<le> n\<close> (else recurse).\<close>
 
-fun Kn :: "nat \<Rightarrow> ot \<Rightarrow> ot set" where
+fun Kn :: "int \<Rightarrow> ot \<Rightarrow> ot set" where
   "Kn n (Om m) = (if m < n then {Om m} else {})"
 | "Kn n (Th m a) = (if n < m then Kn n a else {Th m a})"
 | "Kn n (Su xs) = (\<Union>x \<in> set xs. Kn n x)"
@@ -129,44 +129,10 @@ qed
 lemma FC_nonempty: "FCset t \<noteq> {} \<Longrightarrow> FC t = Max (FCset t)"
   by (simp add: FC_def)
 
-text \<open>If every critical subterm of \<open>\<vartheta>\<^sub>n a\<close> has \<open>FC \<le> B\<close>, then so does \<open>\<vartheta>\<^sub>n a\<close>.\<close>
-
-lemma FC_Th_le:
-  assumes "\<forall>\<gamma> \<in> Kn n a. FC \<gamma> \<le> B" shows "FC (Th n a) \<le> B"
-proof (cases "FCset (Th n a) = {}")
-  case True thus ?thesis by (simp add: FC_def)
-next
-  case False
-  have bound: "\<forall>k \<in> FCset (Th n a). k \<le> B"
-  proof
-    fix k assume k: "k \<in> FCset (Th n a)"
-    hence "k \<in> (\<Union>\<gamma> \<in> Kn n a. FCset \<gamma>)" unfolding FCset_Th_eq_Kn[symmetric] .
-    then obtain \<gamma> where g: "\<gamma> \<in> Kn n a" "k \<in> FCset \<gamma>" by auto
-    have "k \<le> Max (FCset \<gamma>)" by (rule Max_ge[OF finite_FCset g(2)])
-    moreover have "FCset \<gamma> \<noteq> {}" using g(2) by auto
-    ultimately have "k \<le> FC \<gamma>" by (simp add: FC_def)
-    thus "k \<le> B" using assms g(1) by fastforce
-  qed
-  have "Max (FCset (Th n a)) \<le> B" using bound False by (simp add: Max.bounded_iff)
-  thus ?thesis using FC_nonempty[OF False] by simp
-qed
-
-lemma FC_Kn: "\<gamma> \<in> Kn n a \<Longrightarrow> FC \<gamma> \<le> FC (Th n a)"
-proof -
-  assume "\<gamma> \<in> Kn n a"
-  hence sub: "FCset \<gamma> \<subseteq> {k \<in> FCset a. k < n}" by (rule FCset_Kn)
-  show ?thesis
-  proof (cases "FCset \<gamma> = {}")
-    case True thus ?thesis by (simp add: FC_def)
-  next
-    case False
-    have ne3: "FCset (Th n a) \<noteq> {}" using sub False by auto
-    have subTh: "FCset \<gamma> \<subseteq> FCset (Th n a)" using sub by simp
-    have "Max (FCset \<gamma>) \<le> Max (FCset (Th n a))"
-      by (rule Max_mono[OF subTh False]) simp
-    thus ?thesis using False ne3 by (auto simp: FC_def)
-  qed
-qed
+text \<open>(The old \<open>FC\<close>-stratification lemmas \<open>FC_Th_le\<close>/\<open>FC_Kn\<close>/\<open>FC_mono_pr\<close> are dropped:
+  with \<^typ>\<open>int\<close> levels they no longer hold under the \<open>FC \<emptyset> = 0\<close> convention, and the
+  well-foundedness proof now stratifies by the \<^emph>\<open>ground\<close> \<open>G\<close> (Towsner Def 3.6\<dash>3.7),
+  not by the top cardinality \<open>FC\<close>.)\<close>
 
 text \<open>A list element is strictly smaller than its sum (for termination below).\<close>
 
@@ -243,41 +209,41 @@ next
   show "((a, Th n b), Su xs, Th n b) \<in> measure (\<lambda>(x,y). size x + size y)"
     using size_lt_Su[OF a] by simp
 next
-  fix m :: nat and ys :: "ot list" and b
+  fix m :: int and ys :: "ot list" and b
   assume b: "b \<in> set ys"
   show "((Om m, b), Om m, Su ys) \<in> measure (\<lambda>(x,y). size x + size y)"
     using size_lt_Su[OF b] by simp
 next
-  fix m :: nat and a and ys :: "ot list" and b
+  fix m :: int and a and ys :: "ot list" and b
   assume b: "b \<in> set ys"
   show "((Th m a, b), Th m a, Su ys) \<in> measure (\<lambda>(x,y). size x + size y)"
     using size_lt_Su[OF b] by simp
 next
-  fix m :: nat and n b \<gamma>
+  fix m :: int and n b \<gamma>
   assume "\<gamma> \<in> Kn n b"
   hence "size \<gamma> \<le> size b" by (rule Kn_size)
   thus "((Om m, \<gamma>), Om m, Th n b) \<in> measure (\<lambda>(x,y). size x + size y)"
     by simp
 next
-  fix m :: nat and a n \<gamma>
+  fix m :: int and a n \<gamma>
   assume "\<gamma> \<in> Kn m a"
   hence "size \<gamma> \<le> size a" by (rule Kn_size)
   thus "((\<gamma>, Om n), Th m a, Om n) \<in> measure (\<lambda>(x,y). size x + size y)"
     by simp
 next
-  fix m :: nat and a n b \<gamma>
+  fix m :: int and a n b \<gamma>
   assume "\<gamma> \<in> Kn n b"
   hence "size \<gamma> \<le> size b" by (rule Kn_size)
   thus "((Th m a, \<gamma>), Th m a, Th n b) \<in> measure (\<lambda>(x,y). size x + size y)"
     by simp
 next
-  fix m :: nat and a n b \<gamma>
+  fix m :: int and a n b \<gamma>
   assume "\<gamma> \<in> Kn m a"
   hence "size \<gamma> \<le> size a" by (rule Kn_size)
   thus "((\<gamma>, Th n b), Th m a, Th n b) \<in> measure (\<lambda>(x,y). size x + size y)"
     by simp
 next
-  fix m :: nat and a n b
+  fix m :: int and a n b
   show "((a, b), Th m a, Th n b) \<in> measure (\<lambda>(x,y). size x + size y)"
     by simp
 qed
@@ -394,89 +360,6 @@ next
   from Su.IH[OF x(1) x(2)] have "\<gamma> \<le>\<^sub>o x" .
   moreover have "isH \<gamma>" using x(2) by (rule Kn_isH)
   ultimately show ?case using x(1) by (cases \<gamma>) auto
-qed
-
-subsection \<open>Cardinality is monotone on principal terms\<close>
-
-text \<open>For principal (\<open>\<Omega>\<close>/\<open>\<vartheta>\<close>) terms, \<open>a <\<^sub>o b \<Longrightarrow> FC a \<le> FC b\<close>.  This lets the
-  accessibility proof stratify principals by cardinality \<^const>\<open>FC\<close>.\<close>
-
-lemma FC_mono_pr:
-  "isH a \<Longrightarrow> isH b \<Longrightarrow> a <\<^sub>o b \<Longrightarrow> FC a \<le> FC b"
-proof (induction "size a + size b" arbitrary: a b rule: less_induct)
-  case less
-  note IH = less.hyps
-  consider (OO) m n where "a = Om m" "b = Om n"
-    | (OT) m n d where "a = Om m" "b = Th n d"
-    | (TO) m c n where "a = Th m c" "b = Om n"
-    | (TT) m c n d where "a = Th m c" "b = Th n d"
-    using less.prems(1,2) by (cases a; cases b) auto
-  then show ?case
-  proof cases
-    case (OO m n)
-    have "m < n" using less.prems(3) OO by simp
-    thus ?thesis using OO by (simp add: FC_def)
-  next
-    case (OT m n d)
-    from less.prems(3) OT obtain g where g: "g \<in> Kn n d" "Om m \<le>\<^sub>o g" by auto
-    have hg: "isH g" using g(1) by (rule Kn_isH)
-    have sz: "size (Om m) + size g < size a + size b"
-      using OT Kn_size[OF g(1)] by simp
-    have "FC (Om m) \<le> FC g"
-    proof (cases "Om m = g")
-      case True thus ?thesis by simp
-    next
-      case False
-      with g(2) have "Om m <\<^sub>o g" by simp
-      thus ?thesis using IH[OF sz _ hg] by simp
-    qed
-    also have "FC g \<le> FC (Th n d)" by (rule FC_Kn[OF g(1)])
-    finally show ?thesis using OT by simp
-  next
-    case (TO m c n)
-    have "\<forall>g \<in> Kn m c. FC g \<le> FC (Om n)"
-    proof
-      fix g assume gg: "g \<in> Kn m c"
-      have lt: "g <\<^sub>o Om n" using less.prems(3) TO gg by simp
-      have "size g + size (Om n) < size a + size b"
-        using TO Kn_size[OF gg] by simp
-      thus "FC g \<le> FC (Om n)" using IH Kn_isH[OF gg] lt by simp
-    qed
-    hence "FC (Th m c) \<le> FC (Om n)" by (rule FC_Th_le)
-    thus ?thesis using TO by simp
-  next
-    case (TT m c n d)
-    show ?thesis
-    proof (cases "\<exists>g \<in> Kn n d. Th m c \<le>\<^sub>o g")
-      case True
-      then obtain g where g: "g \<in> Kn n d" "Th m c \<le>\<^sub>o g" by auto
-      have sz: "size (Th m c) + size g < size a + size b"
-        using TT Kn_size[OF g(1)] by simp
-      have "FC (Th m c) \<le> FC g"
-      proof (cases "Th m c = g")
-        case True thus ?thesis by simp
-      next
-        case False
-        with g(2) have "Th m c <\<^sub>o g" by simp
-        thus ?thesis using IH[OF sz] Kn_isH[OF g(1)] by simp
-      qed
-      also have "FC g \<le> FC (Th n d)" by (rule FC_Kn[OF g(1)])
-      finally show ?thesis using TT by simp
-    next
-      case False
-      have all: "\<forall>g \<in> Kn m c. g <\<^sub>o Th n d"
-        using less.prems(3) TT False by simp
-      have "\<forall>g \<in> Kn m c. FC g \<le> FC (Th n d)"
-      proof
-        fix g assume gg: "g \<in> Kn m c"
-        have "size g + size (Th n d) < size a + size b"
-          using TT Kn_size[OF gg] by simp
-        thus "FC g \<le> FC (Th n d)" using IH Kn_isH[OF gg] all gg by simp
-      qed
-      hence "FC (Th m c) \<le> FC (Th n d)" by (rule FC_Th_le)
-      thus ?thesis using TT by simp
-    qed
-  qed
 qed
 
 subsection \<open>Sums compare by the multiset extension\<close>
