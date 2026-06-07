@@ -240,16 +240,153 @@ abbreviation oltRwF :: "(ot \<times> ot) set" where
 abbreviation pRF :: "(ot \<times> ot) set" where
   "pRF \<equiv> {(a,b). a <\<^sub>o b \<and> isH a \<and> isH b \<and> wfo a \<and> wfo b \<and> omfree a \<and> omfree b}"
 
-text \<open>\<^bold>\<open>The well-foundedness core (sorry):\<close> every \<open>\<Omega>\<close>-free well-formed term is
-  \<open>oltRwF\<close>-accessible.  This is the absolute transcription of Buchholz/Towsner
-  Thm 3.12: structural induction, with the \<^const>\<open>Su\<close> case reduced to principals by
-  the bag/multiset argument and the principal (\<^const>\<open>Th\<close>) case closed by the
-  distinguished-set Lemmas 3.10/3.11 (using \<open>\<Omega>\<^bsub>n\<^esub>\<close> as cardinal scaffolding and
-  \<^const>\<open>norm\<close>/\<^const>\<open>shift\<close> for ground-normalization).  It is the single remaining
-  hard obligation; the whole termination theorem is now reduced to it.\<close>
+subsection \<open>Sum reduction on the \<open>\<Omega>\<close>-free terms\<close>
+
+text \<open>The \<^const>\<open>bag\<close> map sends \<open>oltRwF\<close> into the multiset extension of \<open>oltRwF\<close>.
+  Since \<^const>\<open>omfree\<close> excludes \<^const>\<open>Om\<close>, only the \<^const>\<open>Su\<close>/\<^const>\<open>Th\<close> cases occur.\<close>
+
+lemma bag_mono_wF:
+  assumes "(a, b) \<in> oltRwF"
+  shows "(bag a, bag b) \<in> mult oltRwF"
+proof -
+  have ab: "a <\<^sub>o b" and wa: "wfo a" and wb: "wfo b" and fa: "omfree a" and fb: "omfree b"
+    using assms by auto
+  show ?thesis
+  proof (cases a)
+    case (Om m) thus ?thesis using fa by simp
+  next
+    case a_Su: (Su xs)
+    show ?thesis
+    proof (cases b)
+      case (Om n) thus ?thesis using fb by simp
+    next
+      case b_Su: (Su ys)
+      from ab a_Su b_Su obtain c
+        where c: "c \<in># mset ys - mset xs"
+          and dom: "\<forall>z \<in># mset xs - mset ys. z <\<^sub>o c" by auto
+      let ?I = "mset xs \<inter># mset ys"
+      have x: "mset xs = ?I + (mset xs - mset ys)" by (simp add: multiset_eq_iff min_def)
+      have y: "mset ys = ?I + (mset ys - mset xs)" by (simp add: multiset_eq_iff min_def)
+      have ne: "mset ys - mset xs \<noteq> {#}" using c by auto
+      have "\<forall>k \<in># mset xs - mset ys. \<exists>j \<in># mset ys - mset xs. (k, j) \<in> oltRwF"
+      proof
+        fix k assume k: "k \<in># mset xs - mset ys"
+        hence kx: "k \<in> set xs" by (meson in_diffD set_mset_mset in_multiset_in_set)
+        with a_Su wa fa have "wfo k" "omfree k" by auto
+        moreover have cy: "c \<in> set ys" using c by (meson in_diffD set_mset_mset in_multiset_in_set)
+        with b_Su wb fb have "wfo c" "omfree c" by auto
+        moreover have "k <\<^sub>o c" using dom k by auto
+        ultimately show "\<exists>j \<in># mset ys - mset xs. (k, j) \<in> oltRwF" using c by auto
+      qed
+      hence "(?I + (mset xs - mset ys), ?I + (mset ys - mset xs)) \<in> mult oltRwF"
+        by (rule one_step_implies_mult[OF ne])
+      thus ?thesis using a_Su b_Su x y by simp
+    next
+      case b_Th: (Th n d)
+      have "\<forall>k \<in># mset xs. (k, Th n d) \<in> oltRwF"
+        using a_Su b_Th ab wa wb fa fb by auto
+      hence "(mset xs, {# Th n d #}) \<in> mult oltRwF" by (rule mult_single_dom)
+      thus ?thesis using a_Su b_Th by simp
+    qed
+  next
+    case a_Th: (Th m e)
+    show ?thesis
+    proof (cases b)
+      case (Om n) thus ?thesis using fb by simp
+    next
+      case b_Su: (Su ys)
+      from ab a_Th b_Su obtain z where z: "z \<in> set ys" and le: "a <\<^sub>o z \<or> a = z"
+        using a_Th by auto
+      show ?thesis
+      proof (cases "a <\<^sub>o z")
+        case True
+        have wz: "wfo z" "omfree z" using z b_Su wb fb by auto
+        have "z \<in># mset ys" using z by simp
+        moreover have "(a, z) \<in> oltRwF" using True wz wa fa a_Th by auto
+        ultimately have "({# a #}, mset ys) \<in> mult oltRwF" by (rule mult_dom_set)
+        thus ?thesis using a_Th b_Su by simp
+      next
+        case False
+        with le have ay: "a = z" by simp
+        have ain: "a \<in># mset ys" using z ay by simp
+        have eq: "mset ys = {# a #} + (mset ys - {# a #})"
+          using ain by (metis insert_DiffM add_mset_add_single add.commute)
+        have "ys \<noteq> []" using z by auto
+        hence "1 \<le> length ys" by (simp add: Suc_le_eq)
+        moreover have "length ys \<noteq> 1" using b_Su wb by simp
+        ultimately have "2 \<le> length ys" by linarith
+        hence "1 \<le> size (mset ys - {# a #})" using ain by (simp add: size_Diff_singleton)
+        hence ne: "mset ys - {# a #} \<noteq> {#}" by auto
+        have "({# a #}, mset ys) \<in> mult oltRwF"
+          using mult_add[of "mset ys - {# a #}" "{# a #}" oltRwF, OF ne] eq by simp
+        thus ?thesis using a_Th b_Su by simp
+      qed
+    next
+      case b_Th: (Th n d)
+      hence "(a, b) \<in> oltRwF" using a_Th ab wa wb fa fb by auto
+      hence "({# a #}, {# b #}) \<in> mult oltRwF" using mult_single_dom[of "{# a #}" b] by simp
+      thus ?thesis using a_Th b_Th by simp
+    qed
+  qed
+qed
+
+text \<open>A well-formed \<open>\<Omega>\<close>-free term is accessible once all its \<^const>\<open>bag\<close> summands are.\<close>
+
+lemma acc_of_bag_elemsF:
+  assumes a: "wfo a" "omfree a"
+    and elems: "\<And>x. x \<in># bag a \<Longrightarrow> x \<in> Wellfounded.acc oltRwF"
+  shows "a \<in> Wellfounded.acc oltRwF"
+proof -
+  have bagacc: "bag a \<in> Wellfounded.acc (mult oltRwF)"
+    by (rule acc_mult_of_elems) (rule elems)
+  show "a \<in> Wellfounded.acc oltRwF"
+  proof (rule acc_pullback[where R = oltRwF and S = "mult oltRwF" and f = bag])
+    fix p q assume "(p, q) \<in> oltRwF"
+    thus "(bag p, bag q) \<in> mult oltRwF" by (rule bag_mono_wF)
+  next
+    show "bag a \<in> Wellfounded.acc (mult oltRwF)" by (rule bagacc)
+  qed
+qed
+
+subsection \<open>The principal (collapse) closure \<dash> the hard core (Towsner Lemma 3.10)\<close>
+
+text \<open>\<^bold>\<open>The well-foundedness core (sorry):\<close> if the argument \<open>d\<close> of a collapse is
+  \<open>oltRwF\<close>-accessible then so is \<open>\<vartheta>\<^bsub>n\<^esub> d\<close>.  This is the absolute transcription of
+  Buchholz/Towsner Lemma 3.10\<dash>3.11 (proved by induction on \<open>d\<close>'s accessibility plus
+  a structural induction on the predecessor, using the ground-stratified
+  distinguished sets \<^const>\<open>Acc\<close> with \<open>\<Omega>\<^bsub>n\<^esub>\<close> as cardinal scaffolding and
+  \<^const>\<open>norm\<close>/\<^const>\<open>shift\<close> for ground-normalization; the cross-subscript predecessor
+  case \<open>\<vartheta>\<^bsub>p\<^esub> e <\<^sub>o \<vartheta>\<^bsub>n\<^esub> d\<close> with \<open>p < n\<close> is the genuine difficulty).  It is the single
+  remaining hard obligation; the whole termination theorem reduces to it.\<close>
+
+lemma L_ThF:
+  "omfree d \<Longrightarrow> wfo d \<Longrightarrow> d \<in> Wellfounded.acc oltRwF \<Longrightarrow> Th n d \<in> Wellfounded.acc oltRwF"
+  sorry
+
+text \<open>Towsner Thm 3.12 (structural induction): every \<open>\<Omega>\<close>-free well-formed term is
+  accessible.  \<^const>\<open>Om\<close> cannot occur (\<^const>\<open>omfree\<close>); \<^const>\<open>Su\<close> reduces to its
+  summands; \<^const>\<open>Th\<close> uses the collapse closure @{thm [source] L_ThF}.\<close>
 
 lemma masterF: "omfree a \<Longrightarrow> wfo a \<Longrightarrow> a \<in> Wellfounded.acc oltRwF"
-  sorry
+proof (induction a)
+  case (Om m) thus ?case by simp
+next
+  case (Th n d)
+  have d: "omfree d" "wfo d" using Th.prems by auto
+  hence "d \<in> Wellfounded.acc oltRwF" using Th.IH by blast
+  thus ?case using L_ThF[OF d] by blast
+next
+  case (Su xs)
+  show ?case
+  proof (rule acc_of_bag_elemsF)
+    show "wfo (Su xs)" using Su.prems by simp
+    show "omfree (Su xs)" using Su.prems by simp
+    fix x assume "x \<in># bag (Su xs)"
+    hence x: "x \<in> set xs" by simp
+    hence "omfree x" "wfo x" using Su.prems by auto
+    thus "x \<in> Wellfounded.acc oltRwF" using Su.IH x by blast
+  qed
+qed
 
 subsection \<open>Assembly: \<open>wf oltRwF\<close> (well-foundedness on the \<open>\<Omega>\<close>-free terms)\<close>
 
