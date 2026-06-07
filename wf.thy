@@ -186,6 +186,61 @@ theorem maxsub_mono_cond:
   using climb_mono[OF assms(1) assms(4,5)] assms(2,3) by simp
 
 
+subsection \<open>The spine as the strictly-increasing-row-0 prefix\<close>
+
+text \<open>The leftmost argument spine of \<open>translate M\<close> reads off the row-1 values of
+  the maximal prefix of \<open>M\<close> along which row 0 (\<open>fst\<close>) strictly increases.\<close>
+
+fun incpref :: "pairseq \<Rightarrow> pairseq" where
+  "incpref [] = []"
+| "incpref [p] = [p]"
+| "incpref (p # q # rest) = (if fst p < fst q then p # incpref (q # rest) else [p])"
+
+lemma takeWhile_fst_nest:
+  fixes a b :: nat and xs :: pairseq
+  assumes "a < b"
+  shows "takeWhile (\<lambda>x. b < fst x) (takeWhile (\<lambda>x. a < fst x) xs)
+         = takeWhile (\<lambda>x. b < fst x) xs"
+proof -
+  have "(\<lambda>x::nat\<times>nat. (a < fst x) \<and> (b < fst x)) = (\<lambda>x. b < fst x)"
+    using assms by (auto simp: fun_eq_iff intro: less_trans)
+  thus ?thesis by (simp add: takeWhile_takeWhile)
+qed
+
+lemma spine_translate_eq: "spine (translate M) = map snd (incpref M)"
+proof (induction M rule: incpref.induct)
+  case 1
+  show ?case by simp
+next
+  case (2 p)
+  show ?case by simp
+next
+  case (3 p q rest)
+  show ?case
+  proof (cases "fst p < fst q")
+    case False
+    then have "takeWhile (\<lambda>x. fst p < fst x) (q # rest) = []" by simp
+    then show ?thesis using False by simp
+  next
+    case True
+    have tw: "takeWhile (\<lambda>x. fst p < fst x) (q # rest) = q # takeWhile (\<lambda>x. fst p < fst x) rest"
+      using True by simp
+    have nest: "takeWhile (\<lambda>x. fst q < fst x) (takeWhile (\<lambda>x. fst p < fst x) rest)
+          = takeWhile (\<lambda>x. fst q < fst x) rest"
+      using takeWhile_fst_nest[OF True] .
+    have "spine (translate (p # q # rest))
+          = snd p # spine (translate (q # takeWhile (\<lambda>x. fst p < fst x) rest))"
+      using tw by simp
+    also have "\<dots> = snd p # snd q # spine (translate (takeWhile (\<lambda>x. fst q < fst x) rest))"
+      using nest by simp
+    also have "\<dots> = snd p # spine (translate (q # rest))" by simp
+    also have "\<dots> = snd p # map snd (incpref (q # rest))" using "3.IH" True by simp
+    also have "\<dots> = map snd (incpref (p # q # rest))" using True by simp
+    finally show ?thesis .
+  qed
+qed
+
+
 subsection \<open>The NF invariants for the diagonal towers (base case)\<close>
 
 lemma diagSeq_Cons:
