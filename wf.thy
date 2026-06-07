@@ -185,4 +185,100 @@ theorem maxsub_mono_cond:
   shows "maxsub w \<le> maxsub x"
   using climb_mono[OF assms(1) assms(4,5)] assms(2,3) by simp
 
+
+subsection \<open>The NF invariants for the diagonal towers (base case)\<close>
+
+lemma diagSeq_Cons:
+  assumes "u \<le> v"
+  shows "diagSeq u v = (u, u) # diagSeq (Suc u) v"
+proof -
+  have "[u..<Suc v] = u # [Suc u..<Suc v]" using assms by (simp add: upt_conv_Cons)
+  thus ?thesis by (simp add: diagSeq_def)
+qed
+
+lemma fst_in_diagSeq:
+  assumes "q \<in> set (diagSeq a b)"
+  shows "fst q \<ge> a"
+  using assms by (auto simp: diagSeq_def)
+
+lemma translate_diagSeq:
+  "u \<le> v \<Longrightarrow> translate (diagSeq u v) = P u (translate (diagSeq (Suc u) v)) Z"
+proof -
+  assume uv: "u \<le> v"
+  have rest: "diagSeq u v = (u, u) # diagSeq (Suc u) v" using uv by (rule diagSeq_Cons)
+  have allgt: "\<forall>q \<in> set (diagSeq (Suc u) v). u < fst q"
+    using fst_in_diagSeq[of _ "Suc u" v] by fastforce
+  have tw: "takeWhile (\<lambda>q. u < fst q) (diagSeq (Suc u) v) = diagSeq (Suc u) v"
+    using allgt by (simp add: takeWhile_eq_all_conv)
+  have dw: "dropWhile (\<lambda>q. u < fst q) (diagSeq (Suc u) v) = []"
+    using allgt by (simp add: dropWhile_eq_Nil_conv)
+  show ?thesis by (simp add: rest tw dw)
+qed
+
+lemma cmax_le: "(\<forall>x \<in> set xs. x \<le> b) \<Longrightarrow> cmax xs \<le> b"
+  by (induction xs) auto
+
+lemma spine_translate_diagSeq_aux:
+  "spine (translate (diagSeq u (u + n))) = [u..<Suc (u + n)]"
+proof (induction n arbitrary: u)
+  case 0
+  have e: "diagSeq (Suc u) u = []" by (simp add: diagSeq_def)
+  have "spine (translate (diagSeq u u)) = [u]"
+    using translate_diagSeq[of u u] e by simp
+  thus ?case by simp
+next
+  case (Suc n)
+  have le: "u \<le> u + Suc n" by simp
+  have step1: "spine (translate (diagSeq u (u + Suc n)))
+        = u # spine (translate (diagSeq (Suc u) (u + Suc n)))"
+    using translate_diagSeq[OF le] by simp
+  have shift: "diagSeq (Suc u) (u + Suc n) = diagSeq (Suc u) (Suc u + n)" by simp
+  have ih: "spine (translate (diagSeq (Suc u) (Suc u + n))) = [Suc u..<Suc (Suc u + n)]"
+    using Suc.IH[of "Suc u"] by simp
+  have cons: "[u..<Suc (u + Suc n)] = u # [Suc u..<Suc (u + Suc n)]"
+    by (simp add: upt_conv_Cons)
+  have arith: "Suc (u + Suc n) = Suc (Suc u + n)" by simp
+  show ?case
+    using step1 shift ih cons arith by simp
+qed
+
+lemma spine_translate_diagSeq:
+  assumes "u \<le> v" shows "spine (translate (diagSeq u v)) = [u..<Suc v]"
+proof -
+  have "v = u + (v - u)" using assms by simp
+  thus ?thesis using spine_translate_diagSeq_aux[of u "v - u"] by simp
+qed
+
+lemma cmax_upt:
+  assumes "u \<le> v" shows "cmax [u..<Suc v] = v"
+proof -
+  have "v \<in> set [u..<Suc v]" using assms by simp
+  hence ge: "v \<le> cmax [u..<Suc v]" by (rule cmax_ge)
+  have "\<forall>x \<in> set [u..<Suc v]. x \<le> v" by auto
+  hence "cmax [u..<Suc v] \<le> v" by (rule cmax_le)
+  with ge show ?thesis by simp
+qed
+
+text \<open>For the diagonal towers \<open>D(v) = translate (diagSeq 0 v)\<close> the two NF
+  invariants hold: the spine is exactly \<open>[0,1,\<dots>,v]\<close>, so \<open>inv2\<close> holds and
+  \<open>maxsub = climb = v\<close>.\<close>
+
+lemma spine_diagSeq0: "spine (translate (diagSeq 0 v)) = [0..<Suc v]"
+  using spine_translate_diagSeq[of 0 v] by simp
+
+lemma climb_diagSeq0: "climb (translate (diagSeq 0 v)) = v"
+  using spine_diagSeq0 cmax_upt[of 0 v] by simp
+
+lemma inv2_spine_diagSeq0: "inv2 (spine (translate (diagSeq 0 v)))"
+proof (unfold inv2_def, intro allI impI conjI)
+  fix i assume "i \<le> cmax (spine (translate (diagSeq 0 v)))"
+  then have iv: "i \<le> v" using climb_diagSeq0 by simp
+  show "i < length (spine (translate (diagSeq 0 v)))"
+    using spine_diagSeq0 iv by simp
+  have "spine (translate (diagSeq 0 v)) ! i = [0..<Suc v] ! i"
+    using spine_diagSeq0 by simp
+  also have "\<dots> = i" using iv by (simp del: upt_Suc add: nth_upt)
+  finally show "spine (translate (diagSeq 0 v)) ! i = i" .
+qed
+
 end
