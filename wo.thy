@@ -462,7 +462,48 @@ proof (induction "size x + size y" arbitrary: x y rule: less_induct)
         ultimately show False using g(2) key by force
       next
         case y_Th: (Th n d)
-        show False sorry
+        have XX: "(\<exists>\<gamma>\<in>Kn n d. Th m c \<le>\<^sub>o \<gamma>)
+                  \<or> ((\<forall>\<gamma>\<in>Kn m c. \<gamma> <\<^sub>o Th n d) \<and> (m < n \<or> (m = n \<and> c <\<^sub>o d)))"
+          using xy x_Th y_Th by simp
+        have YY: "(\<exists>\<gamma>\<in>Kn m c. Th n d \<le>\<^sub>o \<gamma>)
+                  \<or> ((\<forall>\<gamma>\<in>Kn n d. \<gamma> <\<^sub>o Th m c) \<and> (n < m \<or> (n = m \<and> d <\<^sub>o c)))"
+          using yx x_Th y_Th by simp
+        from XX show False
+        proof
+          assume XA: "\<exists>\<gamma>\<in>Kn n d. Th m c \<le>\<^sub>o \<gamma>"
+          then obtain g where g: "g \<in> Kn n d" "Th m c \<le>\<^sub>o g" by auto
+          have szg: "size g < size y" using x_Th y_Th Kn_size[OF g(1)] by simp
+          from YY show False
+          proof
+            assume YA: "\<exists>\<gamma>\<in>Kn m c. Th n d \<le>\<^sub>o \<gamma>"
+            \<comment> \<open>both dominated by each other's critical subterms: needs transitivity\<close>
+            show False sorry
+          next
+            assume YB: "(\<forall>\<gamma>\<in>Kn n d. \<gamma> <\<^sub>o Th m c) \<and> (n < m \<or> (n = m \<and> d <\<^sub>o c))"
+            have "g <\<^sub>o Th m c" using YB g(1) by simp
+            moreover have "size (Th m c) + size g < size x + size y"
+              using x_Th szg by simp
+            ultimately show False using g(2) key by force
+          qed
+        next
+          assume XB: "(\<forall>\<gamma>\<in>Kn m c. \<gamma> <\<^sub>o Th n d) \<and> (m < n \<or> (m = n \<and> c <\<^sub>o d))"
+          from YY show False
+          proof
+            assume YA: "\<exists>\<gamma>\<in>Kn m c. Th n d \<le>\<^sub>o \<gamma>"
+            then obtain g where g: "g \<in> Kn m c" "Th n d \<le>\<^sub>o g" by auto
+            have "g <\<^sub>o Th n d" using XB g(1) by simp
+            moreover have "size (Th n d) + size g < size x + size y"
+              using x_Th y_Th Kn_size[OF g(1)] by simp
+            ultimately show False using g(2) key by force
+          next
+            assume YB: "(\<forall>\<gamma>\<in>Kn n d. \<gamma> <\<^sub>o Th m c) \<and> (n < m \<or> (n = m \<and> d <\<^sub>o c))"
+            have "m = n \<and> c <\<^sub>o d \<and> d <\<^sub>o c"
+              using XB YB by force
+            moreover have "size c + size d < size x + size y"
+              using x_Th y_Th by simp
+            ultimately show False using key by blast
+          qed
+        qed
       qed
     qed
   qed
