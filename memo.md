@@ -897,3 +897,25 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **次セッションの具体手順**: (1) `olt_p_total`(principal Om/Th が ≃ 法で全順序)を構造帰納で, (2) 逆橋渡し
   `multp(<o)(mas)(mbs) ⟹ olt(Su xs)(Su ys)`(全順序成分・max 元), (3) olt_trans Su を 易橋渡し(済)+transp_multp+逆橋渡しで.
   combined: principal total と olt_trans は相互依存(Th/Th が arg の trans/total を要する)ので 1 つの size 帰納で。
+
+### 進捗 (2026-06-09 続17): olt_trans の実行可能レシピ確定（全ライブラリ部品特定）＋極大性で mnl-trans 不要判明
+- **完了(commit/緑)**: `olt_Su_imp_multp\<^sub>D\<^sub>M`(易・無条件), `olt_Su_imp_multp`(forward 橋渡し, multp\<^sub>D\<^sub>M_imp_multp 経由)。
+- **重要簡略化**: 逆橋渡しの極大元 m は **極大性だけ**で `∀x∈J. x=m ∨ ¬olt m x` を満たす（mnl-trans/weak-order 不要！）。
+  各 k∈K に対し ∃x∈J. olt k x、x≤m を: x=m→olt k m; x≠m→¬olt m x、さらに olt x m なら trans で olt k m、
+  ¬olt x m なら mnl x m で **mnlcong** より olt k m。∴ 要るのは **trans + mnlcong のみ**（mnl-trans 不要）。
+- **全ライブラリ部品(Isabelle2025-2 確定)**:
+  - `Finite_Set.bex_max_element`: `finite A ⟹ asymp_on A R ⟹ transp_on A R ⟹ A≠{} ⟹ ∃m∈A.∀x∈A. x≠m⟶¬R m x`（極大元）。
+  - `multp\<^sub>D\<^sub>M_imp_multp`, `multp_imp_multp\<^sub>H\<^sub>O`(asymp+transp 要), `multp\<^sub>H\<^sub>O_implies_one_step_strong`(J=B-A≠{}, ∀k∈#A-B.∃x∈#B-A.R k x),
+    `transp_on_multp\<^sub>H\<^sub>O`(wo.thy line 312, transp_on で), `totalp_on_multp\<^sub>D\<^sub>M`/`\<^sub>H\<^sub>O`。
+  - asymp: olt_asym(既存・無条件)→ asymp_on 自明。
+- **olt_trans Su レシピ**: ab,bc →(olt_Su_imp_multp)→ multp 2本 →(transp on summands=IH で transp_multp or _on)→ multp(mas)(mzs)
+  →(multp_imp_multp\<^sub>H\<^sub>O)→ multp\<^sub>H\<^sub>O →(one_step_strong)→ J=mzs-mas≠{} ∧ ∀k∈K=mas-mzs.∃x∈J. k<o x
+  →(bex_max_element on set_mset J, asymp_on=olt_asym, transp_on=IH)→ 極大 m∈J
+  →(各 k: x≤m を trans/mnlcong で k<o m)→ ∃m∈#(mzs-mas).∀k∈#(mas-mzs). k<o m = olt(Su as)(Su zs)。
+- **残実装 = combined size 帰納 `olt_trans + mnlcong`**（両 3 項・同 induction）:
+  - trans: 既存 olt_trans の証明（c=Om/Th/Su[a principal] 済）＋ Su[a=Su] を上記レシピで。
+  - mnlcong: `olt k x ∧ ¬(x<o m) ∧ ¬(m<o x) ⟹ olt k m`（=olt が ≃ を右で尊重, ≃-congruence）。Su-level は mset 経由自動、
+    Th/Om hereditary を帰納で。olt_asym は流用。
+  - mnlcong も summands(smaller)で要るので combined IH に同梱。size 測度は (size k+size x+size m) 等。
+- **実装の安全則**: wo.thy を壊さないため、緑コミット毎に。combined への restructure 前に現 olt_trans(1 sorry)は緑。
+  まず `multp_imp_olt_Su`(逆橋渡し, mnlcong+transp_on を仮説に取る形)を独立補題で緑化→次に combined で仮説供給。
