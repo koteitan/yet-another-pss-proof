@@ -1098,3 +1098,19 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   下流(buchholz/embed/op_NF)は全 wfo で安全。
 - **次の一手**: scratch で midH を書く(現8ケース移植, 中央 principal に特化で簡略)→asym→mnlcong→olt_trans 統合→wo.thy へ。
   wfo_Kn/nneg_Kn を wo.thy へ移動(olt_lin が wo に入るため; 現状 wflevel)。
+
+### 進捗 (2026-06-09 続26): size 境界ヘルパー green 完成。midH 分解の3すくみ entanglement 判明
+- **scratch_trans.thy が green(sorry 0)**: 再利用可能な検証済みピース:
+  - `su_su_trans_via_bridge`(carrier asym+trans+mnlcong 仮定下で Su/Su 推移)＋`transp_on_multp\<^sub>H\<^sub>O'`。
+  - **size 境界群**: `sum_set_size_lt_Su`(∑set xs<size(Su xs))・`sum_Un_le_ot`・`carrier_sum_lt`・`size2_distinct`・`size3_distinct`
+    (distinct 2/3 項 ⊆ carrier の size 和<三 Su サイズ和)。bridge の carrier transp_on の IHtrans 境界に必要。
+- **midH 分解の難所(重要・確定)**: olt_trans_midH(中央 principal)を自己完結に証明したいが、その a=Su∧c=Su 節が
+  **irrefl(z) を要する**(∀v∈as.v<o b≤o z で z∈as だと z<o z 派生→矛盾に irrefl 必須; witness を zs-as に取るため)。
+  そして irrefl(Th m c) は 2-cycle(Th m c,γ)を asym で潰す必要、asym(Th/Th)は trans を**中央 Th n d=full size**で呼ぶ
+  →midH 必要。∴ **irrefl ↔ asym ↔ midH の3すくみ**で、full-size 中央項のため単純な size 同時帰納では閉じない。
+  ＝Buchholz [Buc1] Lemma 2.1 の linearity 同時帰納そのものの難しさ。olt_trans の8ケースは size-IH のみで OK だが、
+  Su/Su を閉じるには linearity(irrefl+asym+trans+mnlcong)の正しい同時帰納設計が要る(measure 工夫: 多重集合 or lexicographic)。
+- **次の一手の候補**: (a) Buchholz Lemma 2.1 型の linearity 同時帰納を measure 慎重設計で(全 4 性質)。
+  full-size 中央項は「中央項を測度で優先する lexicographic 測度」or「multiset {a,b,c} 測度」で吸収できる可能性。要検討。
+  (b) もし olt_trans が op_NF のためだけなら、op_NF が実際に呼ぶ trans instance(像=wfo の特定形)に限定した最小版を直接証明。
+- **現状コミット**: baseline 3 sorry 緑維持。scratch は ROOT 外(参照用 green ファイル)。
