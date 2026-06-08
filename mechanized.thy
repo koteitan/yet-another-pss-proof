@@ -988,6 +988,132 @@ proof -
   from bc e1 e2 show ?thesis by simp
 qed
 
+text \<open>\<^bold>\<open>The bad-branch decomposition\<close> (the data the CNF-preservation proof needs).
+  In the genuine (bad) branch the step factors as \<open>M = G @ blk @ [lp]\<close> and
+  \<open>M[n] = G @ (n shifted copies of blk)\<close>, where \<open>blk = (v\<^sub>0,w\<^sub>0)#R\<close> with body \<open>R\<close>
+  strictly above the root \<open>v\<^sub>0\<close>, the dropped descendant \<open>lp\<close> nests (\<open>v\<^sub>0 < fst lp\<close>),
+  and the per-copy row-0 shift \<open>d\<^sub>0\<close> either vanishes (\<open>i\<^sub>1 = 0\<close>, exact copies) or is
+  positive with \<open>w\<^sub>0 < snd lp\<close> and \<open>fst lp = v\<^sub>0 + d\<^sub>0\<close> (\<open>i\<^sub>1 = 1\<close>, ascending copies).\<close>
+
+lemma oper_bad_blocks:
+  assumes L: "1 < Lng M"
+    and nz: "\<not> (entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)"
+    and hp: "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+    and n: "1 \<le> n"
+  obtains G v0 w0 R d0 lp where
+    "M = G @ ((v0, w0) # R) @ [lp]"
+    "oper M n = G @ concat (map (\<lambda>k. map (\<lambda>p. (fst p + k * d0, snd p)) ((v0, w0) # R)) [0..<n])"
+    "\<forall>x\<in>set R. v0 < fst x"
+    "v0 < fst lp"
+    "d0 = 0 \<or> (0 < d0 \<and> w0 < snd lp \<and> fst lp = v0 + d0)"
+proof -
+  let ?j1 = "Lng M - 1"
+  let ?i1 = "idx1 M ?j1"
+  let ?j0 = "parent M ?i1 ?j1"
+  let ?d0 = "if 0 < ?i1 then entry M 0 ?j1 - entry M 0 ?j0 else (0::nat)"
+  let ?sh = "\<lambda>k j. (entry M 0 j + k * ?d0, entry M 1 j)"
+  let ?B = "map (?sh 0) [?j0..<?j1]"
+  let ?R = "map (?sh 0) [Suc ?j0..<?j1]"
+  let ?cps = "concat (map (\<lambda>k. map (?sh k) [?j0..<?j1]) [0..<n])"
+  let ?lp = "M ! ?j1"
+  let ?v0 = "entry M 0 ?j0"
+  let ?w0 = "entry M 1 ?j0"
+  have ex1: "\<exists>!j0. nextR M ?i1 j0 ?j1" using hp by (simp add: hasParent_def)
+  have np: "nextR M ?i1 ?j0 ?j1" using theI'[OF ex1] by (simp add: parent_def)
+  have j0lt: "?j0 < ?j1"
+    using np by (auto simp: nextR_def nextrel0_def nextrel1_def split: if_splits)
+  have chain: "(nextrel0 M)\<^sup>*\<^sup>* ?j0 ?j1"
+  proof (cases "?i1 = 0")
+    case True with np have "nextrel0 M ?j0 ?j1" by (simp add: nextR_def)
+    thus ?thesis by (rule r_into_rtranclp)
+  next
+    case False with np have "nextrel1 M ?j0 ?j1" by (simp add: nextR_def)
+    thus ?thesis by (simp add: nextrel1_def le0_def)
+  qed
+  have iv: "\<And>k. ?j0 < k \<Longrightarrow> k \<le> ?j1 \<Longrightarrow> ?v0 < entry M 0 k"
+    using le0_interval_gt[OF chain] by blast
+  have LngM: "Lng M = Suc ?j1" using L by simp
+  have B_eq: "?B = (?v0, ?w0) # ?R"
+  proof -
+    have "[?j0..<?j1] = ?j0 # [Suc ?j0..<?j1]" using j0lt by (simp add: upt_conv_Cons)
+    thus ?thesis by simp
+  qed
+  have R_gt: "\<forall>x\<in>set ?R. ?v0 < fst x"
+  proof
+    fix x assume "x \<in> set ?R"
+    then obtain j where j: "j \<in> set [Suc ?j0..<?j1]" and xeq: "x = ?sh 0 j" by auto
+    from j have "?j0 < j" "j \<le> ?j1" by auto
+    hence "?v0 < entry M 0 j" by (rule iv)
+    thus "?v0 < fst x" using xeq by simp
+  qed
+  have lp_gt: "?v0 < fst ?lp"
+  proof -
+    have "?v0 < entry M 0 ?j1" using iv j0lt by simp
+    thus ?thesis by (simp add: entry_def)
+  qed
+  have dropM: "drop ?j0 M = ?B @ [?lp]"
+  proof -
+    have "drop ?j0 M = map (\<lambda>i. M ! i) [?j0..<Lng M]" by (rule drop_eq_map_nth)
+    also have "[?j0..<Lng M] = [?j0..<?j1] @ [?j1]"
+    proof -
+      have le: "?j0 \<le> ?j1" using j0lt by simp
+      show ?thesis by (metis le upt_Suc_append LngM)
+    qed
+    also have "map (\<lambda>i. M ! i) ([?j0..<?j1] @ [?j1])
+                 = map (\<lambda>i. M ! i) [?j0..<?j1] @ [?lp]" by simp
+    also have "map (\<lambda>i. M ! i) [?j0..<?j1] = ?B"
+      by (simp add: entry_def cong: map_cong)
+    finally show ?thesis .
+  qed
+  have Mn: "M[n] = take ?j0 M @ ?cps"
+    by (rule oper_bad_unfold) (use L nz hp in auto)
+  have listeq: "take ?j0 M @ (?B @ [?lp]) = M"
+    using dropM by (metis append_take_drop_id)
+  \<comment> \<open>conclusion 1: \<open>M = G @ blk @ [lp]\<close>\<close>
+  have c1: "M = take ?j0 M @ ((?v0, ?w0) # ?R) @ [?lp]"
+    using listeq B_eq by simp
+  \<comment> \<open>conclusion 2: rewrite the copies into the \<open>blk\<close>-shift form\<close>
+  have cpsrw: "?cps = concat (map (\<lambda>k. map (\<lambda>p. (fst p + k * ?d0, snd p)) ((?v0, ?w0) # ?R)) [0..<n])"
+  proof -
+    have "(\<lambda>k. map (?sh k) [?j0..<?j1])
+          = (\<lambda>k. map (\<lambda>p. (fst p + k * ?d0, snd p)) ((?v0, ?w0) # ?R))"
+    proof
+      fix k
+      have "map (\<lambda>p. (fst p + k * ?d0, snd p)) ((?v0, ?w0) # ?R)
+            = map (\<lambda>p. (fst p + k * ?d0, snd p)) ?B" using B_eq by simp
+      also have "\<dots> = map (?sh k) [?j0..<?j1]" by (simp add: o_def)
+      finally show "map (?sh k) [?j0..<?j1]
+                    = map (\<lambda>p. (fst p + k * ?d0, snd p)) ((?v0, ?w0) # ?R)" ..
+    qed
+    thus ?thesis by simp
+  qed
+  have c2: "oper M n = take ?j0 M
+              @ concat (map (\<lambda>k. map (\<lambda>p. (fst p + k * ?d0, snd p)) ((?v0, ?w0) # ?R)) [0..<n])"
+    using Mn cpsrw by simp
+  \<comment> \<open>conclusion 5: the shift disjunction\<close>
+  have disj: "?d0 = 0 \<or> (0 < ?d0 \<and> ?w0 < snd ?lp \<and> fst ?lp = ?v0 + ?d0)"
+  proof (cases "?i1 = 0")
+    case True
+    hence "?d0 = 0" by simp
+    thus ?thesis by simp
+  next
+    case False
+    with idx1_le1[of M ?j1] have i1: "?i1 = 1" by simp
+    have nl1: "nextrel1 M ?j0 ?j1" using np i1 by (simp add: nextR_def)
+    have v0lt: "?v0 < entry M 0 ?j1" using iv j0lt by simp
+    have d0val: "?d0 = entry M 0 ?j1 - ?v0" using i1 by simp
+    have d0pos: "0 < ?d0" using d0val v0lt by simp
+    have fstv: "fst ?lp = ?v0 + ?d0" using d0val v0lt by (simp add: entry_def)
+    have w0lt: "?w0 < snd ?lp"
+    proof -
+      have "entry M 1 ?j0 < entry M 1 ?j1" using nl1 by (simp add: nextrel1_def)
+      thus ?thesis by (simp add: entry_def)
+    qed
+    show ?thesis using d0pos w0lt fstv by simp
+  qed
+  show ?thesis using that[OF c1 c2 R_gt lp_gt disj] .
+qed
+
 
 subsection \<open>The decrease lemma\<close>
 
