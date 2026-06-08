@@ -1381,6 +1381,23 @@ proof (induction a)
   thus ?case by simp
 qed auto
 
+text \<open>\<^bold>\<open>Nonnegative subscripts.\<close>  A term is \<open>nneg\<close> when every \<open>\<vartheta>\<close>-subscript and every
+  \<open>\<Omega>\<close>-index is \<open>\<ge> 0\<close>.  This is essential: \<^emph>\<open>negative\<close> subscripts are \<^bold>\<open>invalid\<close>
+  notations and break well-foundedness \<dash> \<open>\<vartheta>\<^bsub>-k\<^esub> 0\<close> (\<open>k = 0,1,2,\<dots>\<close>) is an infinite
+  \<^emph>\<open>descending\<close> \<open>\<Omega>\<close>-free \<open><\<^sub>o\<close>-chain (\<open>\<vartheta>\<^bsub>-(k+1)\<^esub> 0 <\<^sub>o \<vartheta>\<^bsub>-k\<^esub> 0\<close>, since \<open>K\<^bsub>-(k+1)\<^esub> 0 = {}\<close>
+  makes the \<open>\<vartheta>\<close>/\<open>\<vartheta>\<close> subscript clause fire vacuously).  Buchholz/Towsner only admit
+  indices \<open>\<ge> 0\<close> (resp.\ \<open>\<le> 0\<close> for the \<^emph>\<open>free\<close> \<open>\<Omega>\<close>); the embedding image is \<open>nneg\<close>
+  (it uses \<open>\<vartheta>\<^bsub>int a\<^esub>\<close> with \<open>a : nat\<close>).  The well-foundedness target must therefore be
+  restricted to the \<open>nneg\<close> fragment.\<close>
+
+fun nneg :: "ot \<Rightarrow> bool" where
+  "nneg (Om n) = (0 \<le> n)"
+| "nneg (Th n a) = (0 \<le> n \<and> nneg a)"
+| "nneg (Su xs) = (\<forall>x \<in> set xs. nneg x)"
+
+lemma nneg_Kn: "nneg a \<Longrightarrow> \<gamma> \<in> Kn n a \<Longrightarrow> nneg \<gamma>"
+  by (induction a arbitrary: \<gamma>) (auto split: if_splits)
+
 text \<open>The multiset of principal summands of a term.\<close>
 
 fun bag :: "ot \<Rightarrow> ot multiset" where

@@ -125,6 +125,43 @@ qed simp
 lemma omfree_embed: "omfree (embed t)"
   unfolding embed_def by (rule omfree_collapse) (use omfree_eprincs in auto)
 
+text \<open>The embedding produces only \<^bold>\<open>nonnegative\<close> subscripts: every \<open>\<vartheta>\<close> uses
+  \<open>\<vartheta>\<^bsub>int a\<^esub>\<close> with \<open>a : nat\<close>, so the image lands in the \<open>nneg\<close> fragment \<dash> exactly the
+  one on which @{thm [source] wf_oltRwF} is well-founded.\<close>
+
+lemma nneg_collapse:
+  assumes "\<forall>x \<in> set xs. nneg x" shows "nneg (collapse xs)"
+proof (cases xs)
+  case Nil thus ?thesis by simp
+next
+  case (Cons x ys)
+  show ?thesis
+  proof (cases ys)
+    case Nil thus ?thesis using Cons assms by simp
+  next
+    case (Cons y zs) thus ?thesis using \<open>xs = x # ys\<close> assms by auto
+  qed
+qed
+
+lemma nneg_eprincs: "x \<in> set (eprincs t) \<Longrightarrow> nneg x"
+proof (induction t arbitrary: x)
+  case (P a b c)
+  from P.prems consider "x = Th (int a) (embed b)" | "x \<in> set (eprincs c)"
+    by (auto simp: embed_def)
+  thus ?case
+  proof cases
+    case 1
+    have "nneg (embed b)" unfolding embed_def
+      by (rule nneg_collapse) (use P.IH(1) in auto)
+    thus ?thesis using 1 by simp
+  next
+    case 2 show ?thesis by (rule P.IH(2)[OF 2])
+  qed
+qed simp
+
+lemma nneg_embed: "nneg (embed t)"
+  unfolding embed_def by (rule nneg_collapse) (use nneg_eprincs in auto)
+
 lemma embed_P_neq_Zero: "embed (P e f g) \<noteq> Zero"
 proof (cases "eprincs g")
   case Nil
@@ -180,7 +217,7 @@ proof -
     then obtain v u where p: "p = (v, u)" and "v <o u" "u \<in> NF" "v \<in> NF" by auto
     have "embed v <\<^sub>o embed u" using op[OF \<open>v \<in> NF\<close> \<open>u \<in> NF\<close> \<open>v <o u\<close>] .
     thus "p \<in> inv_image oltRwF embed"
-      using p wfo_embed omfree_embed by (simp add: inv_image_def)
+      using p wfo_embed omfree_embed nneg_embed by (simp add: inv_image_def)
   qed
   show "wf Rnf" by (rule wf_subset[OF wfT sub])
 qed

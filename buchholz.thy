@@ -237,11 +237,16 @@ lemma omfree_FCset [simp]: "omfree a \<Longrightarrow> FCset a = {}"
 lemma omfree_Kn: "omfree a \<Longrightarrow> \<gamma> \<in> Kn n a \<Longrightarrow> omfree \<gamma>"
   by (induction a arbitrary: \<gamma>) (auto split: if_splits)
 
+text \<open>The well-foundedness target: \<open><\<^sub>o\<close> restricted to the well-formed, \<open>\<Omega>\<close>-free,
+  \<^bold>\<open>nonnegative-subscript\<close> terms.  The \<open>nneg\<close> conjunct is essential for soundness:
+  without it \<open>\<vartheta>\<^bsub>-k\<^esub> 0\<close> gives an infinite descending chain (@{thm [source] nneg_Kn}
+  context).  The embedding image satisfies all four conjuncts.\<close>
+
 abbreviation oltRwF :: "(ot \<times> ot) set" where
-  "oltRwF \<equiv> {(a,b). a <\<^sub>o b \<and> wfo a \<and> wfo b \<and> omfree a \<and> omfree b}"
+  "oltRwF \<equiv> {(a,b). a <\<^sub>o b \<and> wfo a \<and> wfo b \<and> omfree a \<and> omfree b \<and> nneg a \<and> nneg b}"
 
 abbreviation pRF :: "(ot \<times> ot) set" where
-  "pRF \<equiv> {(a,b). a <\<^sub>o b \<and> isH a \<and> isH b \<and> wfo a \<and> wfo b \<and> omfree a \<and> omfree b}"
+  "pRF \<equiv> {(a,b). a <\<^sub>o b \<and> isH a \<and> isH b \<and> wfo a \<and> wfo b \<and> omfree a \<and> omfree b \<and> nneg a \<and> nneg b}"
 
 subsection \<open>Sum reduction on the \<open>\<Omega>\<close>-free terms\<close>
 
@@ -253,6 +258,7 @@ lemma bag_mono_wF:
   shows "(bag a, bag b) \<in> mult oltRwF"
 proof -
   have ab: "a <\<^sub>o b" and wa: "wfo a" and wb: "wfo b" and fa: "omfree a" and fb: "omfree b"
+    and na: "nneg a" and nb: "nneg b"
     using assms by auto
   show ?thesis
   proof (cases a)
@@ -275,9 +281,9 @@ proof -
       proof
         fix k assume k: "k \<in># mset xs - mset ys"
         hence kx: "k \<in> set xs" by (meson in_diffD set_mset_mset in_multiset_in_set)
-        with a_Su wa fa have "wfo k" "omfree k" by auto
+        with a_Su wa fa na have "wfo k" "omfree k" "nneg k" by auto
         moreover have cy: "c \<in> set ys" using c by (meson in_diffD set_mset_mset in_multiset_in_set)
-        with b_Su wb fb have "wfo c" "omfree c" by auto
+        with b_Su wb fb nb have "wfo c" "omfree c" "nneg c" by auto
         moreover have "k <\<^sub>o c" using dom k by auto
         ultimately show "\<exists>j \<in># mset ys - mset xs. (k, j) \<in> oltRwF" using c by auto
       qed
@@ -287,7 +293,7 @@ proof -
     next
       case b_Th: (Th n d)
       have "\<forall>k \<in># mset xs. (k, Th n d) \<in> oltRwF"
-        using a_Su b_Th ab wa wb fa fb by auto
+        using a_Su b_Th ab wa wb fa fb na nb by auto
       hence "(mset xs, {# Th n d #}) \<in> mult oltRwF" by (rule mult_single_dom)
       thus ?thesis using a_Su b_Th by simp
     qed
@@ -303,9 +309,9 @@ proof -
       show ?thesis
       proof (cases "a <\<^sub>o z")
         case True
-        have wz: "wfo z" "omfree z" using z b_Su wb fb by auto
+        have wz: "wfo z" "omfree z" "nneg z" using z b_Su wb fb nb by auto
         have "z \<in># mset ys" using z by simp
-        moreover have "(a, z) \<in> oltRwF" using True wz wa fa a_Th by auto
+        moreover have "(a, z) \<in> oltRwF" using True wz wa fa na a_Th by auto
         ultimately have "({# a #}, mset ys) \<in> mult oltRwF" by (rule mult_dom_set)
         thus ?thesis using a_Th b_Su by simp
       next
@@ -326,7 +332,7 @@ proof -
       qed
     next
       case b_Th: (Th n d)
-      hence "(a, b) \<in> oltRwF" using a_Th ab wa wb fa fb by auto
+      hence "(a, b) \<in> oltRwF" using a_Th ab wa wb fa fb na nb by auto
       hence "({# a #}, {# b #}) \<in> mult oltRwF" using mult_single_dom[of "{# a #}" b] by simp
       thus ?thesis using a_Th b_Th by simp
     qed
@@ -363,10 +369,11 @@ text \<open>\<^bold>\<open>The well-foundedness core (sorry):\<close> if the arg
   remaining hard obligation; the whole termination theorem reduces to it.\<close>
 
 lemma L_ThF:
-  assumes "omfree d" "wfo d" "d \<in> Wellfounded.acc oltRwF"
+  assumes "omfree d" "wfo d" "nneg d" "0 \<le> n" "d \<in> Wellfounded.acc oltRwF"
   shows "Th n d \<in> Wellfounded.acc oltRwF"
 proof -
-  from assms(3) have "omfree d \<longrightarrow> wfo d \<longrightarrow> (\<forall>n. Th n d \<in> Wellfounded.acc oltRwF)"
+  from assms(5)
+  have "omfree d \<longrightarrow> wfo d \<longrightarrow> nneg d \<longrightarrow> (\<forall>n. 0 \<le> n \<longrightarrow> Th n d \<in> Wellfounded.acc oltRwF)"
   proof (induction set: Wellfounded.acc)
     case (1 d)
     note dacc = "1.hyps"
@@ -375,69 +382,74 @@ proof -
       using dacc by (blast intro: acc_downward)
     show ?case
     proof (intro impI allI)
-      assume fd: "omfree d" and wd: "wfo d"
-      fix n
+      assume fd: "omfree d" and wd: "wfo d" and nd: "nneg d"
+      fix n :: int assume n0: "0 \<le> n"
       show "Th n d \<in> Wellfounded.acc oltRwF"
       proof (rule accI)
         fix r assume rR: "(r, Th n d) \<in> oltRwF"
-        hence rlt: "r <\<^sub>o Th n d" and wr: "wfo r" and fr: "omfree r" by auto
+        hence rlt: "r <\<^sub>o Th n d" and wr: "wfo r" and fr: "omfree r" and nr: "nneg r" by auto
         \<comment> \<open>domination by a critical subterm of \<open>d\<close> is accessible\<close>
-        have dom_acc: "\<And>q. wfo q \<Longrightarrow> omfree q \<Longrightarrow> (\<exists>\<gamma>\<in>Kn n d. q \<le>\<^sub>o \<gamma>) \<Longrightarrow> q \<in> Wellfounded.acc oltRwF"
+        have dom_acc: "\<And>q. wfo q \<Longrightarrow> omfree q \<Longrightarrow> nneg q \<Longrightarrow> (\<exists>\<gamma>\<in>Kn n d. q \<le>\<^sub>o \<gamma>) \<Longrightarrow> q \<in> Wellfounded.acc oltRwF"
         proof -
-          fix q assume wq: "wfo q" and fq: "omfree q" and ex: "\<exists>\<gamma>\<in>Kn n d. q \<le>\<^sub>o \<gamma>"
+          fix q assume wq: "wfo q" and fq: "omfree q" and nq: "nneg q" and ex: "\<exists>\<gamma>\<in>Kn n d. q \<le>\<^sub>o \<gamma>"
           from ex obtain \<gamma> where g: "\<gamma> \<in> Kn n d" "q \<le>\<^sub>o \<gamma>" by auto
           have wg: "wfo \<gamma>" using wfo_Kn[OF wd g(1)] .
           have fg: "omfree \<gamma>" using omfree_Kn[OF fd g(1)] .
+          have ng: "nneg \<gamma>" using nneg_Kn[OF nd g(1)] .
           have gd: "\<gamma> \<le>\<^sub>o d" using Kn_le_self[OF g(1)] .
           have g_acc: "\<gamma> \<in> Wellfounded.acc oltRwF"
           proof (cases "\<gamma> = d")
             case True thus ?thesis by (simp add: dacc)
           next
-            case False with gd have "(\<gamma>, d) \<in> oltRwF" using wg fg wd fd by simp
+            case False with gd have "(\<gamma>, d) \<in> oltRwF" using wg fg ng wd fd nd by simp
             thus ?thesis by (rule pred_acc)
           qed
           show "q \<in> Wellfounded.acc oltRwF"
           proof (cases "q = \<gamma>")
             case True thus ?thesis by (simp add: g_acc)
           next
-            case False with g(2) have qg: "(q, \<gamma>) \<in> oltRwF" using wq fq wg fg by simp
+            case False with g(2) have qg: "(q, \<gamma>) \<in> oltRwF" using wq fq nq wg fg ng by simp
             show ?thesis by (rule acc_downward[OF g_acc qg])
           qed
         qed
         \<comment> \<open>principal predecessor of \<open>Th n d\<close> is accessible\<close>
-        have pacc: "\<And>q. wfo q \<Longrightarrow> omfree q \<Longrightarrow> isH q \<Longrightarrow> q <\<^sub>o Th n d \<Longrightarrow> q \<in> Wellfounded.acc oltRwF"
+        have pacc: "\<And>q. wfo q \<Longrightarrow> omfree q \<Longrightarrow> nneg q \<Longrightarrow> isH q \<Longrightarrow> q <\<^sub>o Th n d \<Longrightarrow> q \<in> Wellfounded.acc oltRwF"
         proof -
-          fix q assume wq: "wfo q" and fq: "omfree q" and hq: "isH q" and qlt: "q <\<^sub>o Th n d"
+          fix q assume wq: "wfo q" and fq: "omfree q" and nq: "nneg q" and hq: "isH q" and qlt: "q <\<^sub>o Th n d"
           from hq fq obtain p e where qTh: "q = Th p e"
             by (cases q) auto
           have we: "wfo e" using wq qTh by simp
           have fe: "omfree e" using fq qTh by simp
+          have ne: "nneg e" using nq qTh by simp
+          have p0: "0 \<le> p" using nq qTh by simp
           from qlt qTh
           have disj: "(\<exists>\<gamma>\<in>Kn n d. Th p e \<le>\<^sub>o \<gamma>)
               \<or> ((\<forall>\<gamma>\<in>Kn p e. \<gamma> <\<^sub>o Th n d) \<and> (p < n \<or> (p = n \<and> e <\<^sub>o d)))" by simp
           from disj show "q \<in> Wellfounded.acc oltRwF"
           proof
             assume "\<exists>\<gamma>\<in>Kn n d. Th p e \<le>\<^sub>o \<gamma>"
-            thus ?thesis using dom_acc[of q] wq fq qTh by simp
+            thus ?thesis using dom_acc[of q] wq fq nq qTh by simp
           next
             assume A: "(\<forall>\<gamma>\<in>Kn p e. \<gamma> <\<^sub>o Th n d) \<and> (p < n \<or> (p = n \<and> e <\<^sub>o d))"
             from A consider (eq) "p = n" "e <\<^sub>o d" | (lt) "p < n" by auto
             thus ?thesis
             proof cases
               case eq
-              have "(e, d) \<in> oltRwF" using eq(2) we fe wd fd by simp
-              hence "Th n e \<in> Wellfounded.acc oltRwF" using IH we fe by blast
+              have ed: "(e, d) \<in> oltRwF" using eq(2) we fe ne wd fd nd by simp
+              have "Th n e \<in> Wellfounded.acc oltRwF"
+                using IH[OF ed] we fe ne n0 by blast
               thus ?thesis using qTh eq(1) by simp
             next
               case lt
-              \<comment> \<open>\<^bold>\<open>the genuine Buchholz collapse core (sorry)\<close>: cross-subscript \<open>p < n\<close>\<close>
+              \<comment> \<open>\<^bold>\<open>the genuine Buchholz collapse core (sorry)\<close>: cross-subscript \<open>0 \<le> p < n\<close>\<close>
+              \<comment> \<open>now a TRUE goal (the \<open>nneg\<close> restriction removes the false \<open>p < 0\<close> descent)\<close>
               show ?thesis sorry
             qed
           qed
         qed
         show "r \<in> Wellfounded.acc oltRwF"
         proof (cases "isH r")
-          case True thus ?thesis using pacc[of r] wr fr rlt by simp
+          case True thus ?thesis using pacc[of r] wr fr nr rlt by simp
         next
           case False
           then obtain ys where ys: "r = Su ys" using fr by (cases r) auto
@@ -449,28 +461,30 @@ proof -
             show "omfree r" by (rule fr)
             fix x assume "x \<in># bag r"
             hence x: "x \<in> set ys" using ys by simp
-            hence wx: "wfo x" and hx: "isH x" and fx: "omfree x" using wr fr ys by auto
-            show "x \<in> Wellfounded.acc oltRwF" using pacc[of x] wx fx hx summ[OF x] by simp
+            hence wx: "wfo x" and hx: "isH x" and fx: "omfree x" and nx: "nneg x"
+              using wr fr nr ys by auto
+            show "x \<in> Wellfounded.acc oltRwF" using pacc[of x] wx fx nx hx summ[OF x] by simp
           qed
         qed
       qed
     qed
   qed
-  with assms(1,2) show ?thesis by blast
+  with assms(1,2,3,4) show ?thesis by blast
 qed
 
 text \<open>Towsner Thm 3.12 (structural induction): every \<open>\<Omega>\<close>-free well-formed term is
   accessible.  \<^const>\<open>Om\<close> cannot occur (\<^const>\<open>omfree\<close>); \<^const>\<open>Su\<close> reduces to its
   summands; \<^const>\<open>Th\<close> uses the collapse closure @{thm [source] L_ThF}.\<close>
 
-lemma masterF: "omfree a \<Longrightarrow> wfo a \<Longrightarrow> a \<in> Wellfounded.acc oltRwF"
+lemma masterF: "omfree a \<Longrightarrow> wfo a \<Longrightarrow> nneg a \<Longrightarrow> a \<in> Wellfounded.acc oltRwF"
 proof (induction a)
   case (Om m) thus ?case by simp
 next
   case (Th n d)
-  have d: "omfree d" "wfo d" using Th.prems by auto
-  hence "d \<in> Wellfounded.acc oltRwF" using Th.IH by blast
-  thus ?case using L_ThF[OF d] by blast
+  have d: "omfree d" "wfo d" "nneg d" using Th.prems by auto
+  have n0: "0 \<le> n" using Th.prems by simp
+  have "d \<in> Wellfounded.acc oltRwF" using Th.IH d by blast
+  thus ?case using L_ThF[OF d(1) d(2) d(3) n0] by blast
 next
   case (Su xs)
   show ?case
@@ -479,7 +493,7 @@ next
     show "omfree (Su xs)" using Su.prems by simp
     fix x assume "x \<in># bag (Su xs)"
     hence x: "x \<in> set xs" by simp
-    hence "omfree x" "wfo x" using Su.prems by auto
+    hence "omfree x" "wfo x" "nneg x" using Su.prems by auto
     thus "x \<in> Wellfounded.acc oltRwF" using Su.IH x by blast
   qed
 qed
@@ -490,7 +504,7 @@ theorem wf_oltRwF: "wf oltRwF"
 proof (subst wf_iff_acc, intro allI)
   fix b
   show "b \<in> Wellfounded.acc oltRwF"
-  proof (cases "wfo b \<and> omfree b")
+  proof (cases "wfo b \<and> omfree b \<and> nneg b")
     case True thus ?thesis by (intro masterF) auto
   next
     case False
