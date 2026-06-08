@@ -1065,14 +1065,16 @@ lemma cnf_ctx_cong:
     and decr: "translate Z1 <o translate Z2"
     and ne1: "Z1 \<noteq> []" and ne2: "Z2 \<noteq> []"
     and root: "fst (hd Z1) = fst (hd Z2)"
-    and lead: "\<exists>a b1 b2 c1 c2. translate Z1 = P a b1 c1 \<and> translate Z2 = P a b2 c2 \<and> b1 \<le>o b2"
+    and lead: "\<exists>a1 b1 c1 a2 b2 c2. translate Z1 = P a1 b1 c1 \<and> translate Z2 = P a2 b2 c2
+                  \<and> P a1 b1 Z \<le>o P a2 b2 Z"
     and r1: "\<forall>x\<in>set (tl Z1). fst (hd Z1) \<le> fst x"
     and r2: "\<forall>x\<in>set (tl Z2). fst (hd Z2) \<le> fst x"
   shows "cnf (translate (G @ Z2)) \<Longrightarrow> cnf (translate (G @ Z1))"
 proof (induction G rule: length_induct)
   case (1 G)
-  from lead obtain a b1 b2 c1 c2
-    where lZ1: "translate Z1 = P a b1 c1" and lZ2: "translate Z2 = P a b2 c2" and ble: "b1 \<le>o b2"
+  from lead obtain a1 b1 c1 a2 b2 c2
+    where lZ1: "translate Z1 = P a1 b1 c1" and lZ2: "translate Z2 = P a2 b2 c2"
+      and leadle: "P a1 b1 Z \<le>o P a2 b2 Z"
     by blast
   show ?case
   proof (cases G)
@@ -1112,29 +1114,18 @@ proof (induction G rule: length_induct)
         have dw1: "dropWhile ?Pg (G' @ Z1) = Z1" using allG dwZ1 by (simp add: dropWhile_append2)
         have tw2: "takeWhile ?Pg (G' @ Z2) = G'" using allG twZ2 by (simp add: takeWhile_append2)
         have dw2: "dropWhile ?Pg (G' @ Z2) = Z2" using allG dwZ2 by (simp add: dropWhile_append2)
-        have e1: "translate (G @ Z1) = P (snd g) (translate G') (P a b1 c1)"
+        have e1: "translate (G @ Z1) = P (snd g) (translate G') (P a1 b1 c1)"
           using lZ1 by (simp only: Cons append_Cons translate.simps(2) tw1 dw1)
-        have e2: "translate (G @ Z2) = P (snd g) (translate G') (P a b2 c2)"
+        have e2: "translate (G @ Z2) = P (snd g) (translate G') (P a2 b2 c2)"
           using lZ2 by (simp only: Cons append_Cons translate.simps(2) tw2 dw2)
-        have ctg: "cnf (translate G')" and bnd2: "\<not> (P (snd g) (translate G') Z <o P a b2 Z)"
+        have ctg: "cnf (translate G')" and bnd2: "\<not> (P (snd g) (translate G') Z <o P a2 b2 Z)"
           using "1.prems" e2 by auto
-        have bnd1: "\<not> (P (snd g) (translate G') Z <o P a b1 Z)"
+        have bnd1: "\<not> (P (snd g) (translate G') Z <o P a1 b1 Z)"
         proof
-          assume "P (snd g) (translate G') Z <o P a b1 Z"
-          hence "snd g < a \<or> (snd g = a \<and> translate G' <o b1)" by auto
-          thus False
-          proof
-            assume "snd g < a"
-            hence "P (snd g) (translate G') Z <o P a b2 Z" by simp
-            thus False using bnd2 by simp
-          next
-            assume A: "snd g = a \<and> translate G' <o b1"
-            hence "translate G' <o b2" using ble olt_ole_trans by blast
-            hence "P (snd g) (translate G') Z <o P a b2 Z" using A by simp
-            thus False using bnd2 by simp
-          qed
+          assume "P (snd g) (translate G') Z <o P a1 b1 Z"
+          from olt_ole_trans[OF this leadle] show False using bnd2 by simp
         qed
-        have "cnf (P a b1 c1)" using cZ1 lZ1 by simp
+        have "cnf (P a1 b1 c1)" using cZ1 lZ1 by simp
         thus ?thesis using e1 ctg bnd1 by simp
       qed
     next
@@ -1282,9 +1273,11 @@ proof -
   have cZ1: "cnf (translate (concat (replicate n ?blk)))" using cnf_replicate_block[OF R cR] .
   \<comment> \<open>lead (\<open>b1 \<le>o b2\<close>) and the strict decrease\<close>
   have RltRlp: "translate R <o translate (R @ [lp])" by (rule translate_snoc_increase)
-  have lead: "\<exists>a b1 b2 c1 c2. translate (concat (replicate n ?blk)) = P a b1 c1
-                 \<and> translate (?blk @ [lp]) = P a b2 c2 \<and> b1 \<le>o b2"
-    using tZ1 tZ2 RltRlp by blast
+  have ple: "P w0 (translate R) Z \<le>o P w0 (translate (R @ [lp])) Z"
+    using olt_P_b[OF RltRlp, of w0 Z Z] by simp
+  have lead: "\<exists>a1 b1 c1 a2 b2 c2. translate (concat (replicate n ?blk)) = P a1 b1 c1
+                 \<and> translate (?blk @ [lp]) = P a2 b2 c2 \<and> P a1 b1 Z \<le>o P a2 b2 Z"
+    using tZ1 tZ2 ple by blast
   have decr: "translate (concat (replicate n ?blk)) <o translate (?blk @ [lp])"
     using tZ1 tZ2 RltRlp by (simp add: olt_P_b)
   \<comment> \<open>side conditions for the context congruence\<close>
