@@ -992,6 +992,28 @@ qed
 lemma cnf_butlast: "C \<noteq> [] \<Longrightarrow> cnf (translate C) \<Longrightarrow> cnf (translate (butlast C))"
   using cnf_snoc[of "butlast C" "last C"] by (simp add: snoc_eq_iff_butlast)
 
+text \<open>\<open>cnf\<close> is preserved by any prefix \<open>take k\<close> (iterated @{thm [source] cnf_butlast}).\<close>
+
+lemma cnf_take:
+  assumes "cnf (translate M)" shows "cnf (translate (take k M))"
+proof (induction "length M - k" arbitrary: k)
+  case 0
+  hence "take k M = M" by simp
+  thus ?case using assms by simp
+next
+  case (Suc d)
+  have klt: "k < length M" using Suc.hyps(2) by (cases "k < length M") auto
+  have d: "d = length M - Suc k" using Suc.hyps(2) by simp
+  have ihk: "cnf (translate (take (Suc k) M))" using Suc.hyps(1)[OF d] .
+  have ne: "take (Suc k) M \<noteq> []" using klt by (auto simp: take_eq_Nil)
+  have e: "butlast (take (Suc k) M) = take k M"
+  proof -
+    have "length (take (Suc k) M) = Suc k" using klt by simp
+    thus ?thesis by (simp add: butlast_conv_take take_take)
+  qed
+  show ?case using cnf_butlast[OF ne ihk] e by simp
+qed
+
 text \<open>The top-level sibling subscripts of a term (its \<open>+\<close>-chain of principals).\<close>
 
 fun tops :: "three \<Rightarrow> nat list" where
