@@ -345,6 +345,45 @@ proof -
   thus ?thesis using olt_Th_of_le_Kn[OF Kn_isH[OF assms(1)]] by simp
 qed
 
+text \<open>\<^bold>\<open>Critical-subterm domination by a higher collapse.\<close>  A level-\<open>a\<close> critical
+  subterm of an \<open>\<Omega>\<close>-free term is strictly below \<open>\<vartheta>\<^bsub>e\<^esub> D\<close> for \<^emph>\<open>any\<close> argument \<open>D\<close>,
+  provided \<open>a < e\<close>.  This is the \<open>K\<close>-condition powering the embedding's
+  order-preservation in the \<open>a < e\<close> case (theory \<open>embed\<close>): the subscript drop
+  alone dominates, irrespective of the arguments.  (\<open>\<Omega>\<close>-freeness is essential \<dash>
+  \<open>\<Omega>\<^bsub>m\<^esub> \<in> K\<^bsub>a\<^esub> \<Omega>\<^bsub>m\<^esub>\<close> is \<^emph>\<open>not\<close> below \<open>\<vartheta>\<^bsub>e\<^esub> 0\<close>.)  Proved by induction on the host \<open>c\<close>,
+  mirroring \<^const>\<open>Kn\<close>'s recursion.\<close>
+
+lemma Kn_dom:
+  "omfree c \<Longrightarrow> \<gamma> \<in> Kn a c \<Longrightarrow> a < e \<Longrightarrow> \<gamma> <\<^sub>o Th e D"
+proof (induction c arbitrary: \<gamma> a e D)
+  case (Om m) thus ?case by simp
+next
+  case (Th m b)
+  show ?case
+  proof (cases "a < m")
+    case True
+    with Th.prems(2) have "\<gamma> \<in> Kn a b" by simp
+    moreover have "omfree b" using Th.prems(1) by simp
+    ultimately show ?thesis using Th.IH Th.prems(3) by blast
+  next
+    case False
+    with Th.prems(2) have g: "\<gamma> = Th m b" by simp
+    have me: "m < e" using False Th.prems(3) by simp
+    have "\<forall>\<delta> \<in> Kn m b. \<delta> <\<^sub>o Th e D"
+    proof
+      fix \<delta> assume d: "\<delta> \<in> Kn m b"
+      have "omfree b" using Th.prems(1) by simp
+      thus "\<delta> <\<^sub>o Th e D" using Th.IH[OF _ d me] by blast
+    qed
+    thus ?thesis using g me by simp
+  qed
+next
+  case (Su xs)
+  then obtain x where x: "x \<in> set xs" "\<gamma> \<in> Kn a x" by auto
+  have ox: "omfree x" using Su.prems(1) x(1) by simp
+  show ?case using Su.IH[OF x(1) ox x(2) Su.prems(3)] .
+qed
+
 text \<open>Every critical subterm is \<open>\<le>\<^sub>o\<close> its host (again without transitivity).\<close>
 
 lemma Kn_le_self: "\<gamma> \<in> Kn n d \<Longrightarrow> \<gamma> \<le>\<^sub>o d"
