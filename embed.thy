@@ -190,6 +190,40 @@ qed
 lemma bag_embed_P: "bag (embed (P a b c)) = {# Th (int a) (embed b) #} + bag (embed c)"
   by (simp add: bag_embed del: eprincs.simps)
 
+text \<open>Every principal summand of \<open>embed c\<close> is a collapse \<open>\<vartheta>\<^bsub>int s\<^esub>(\<dots>)\<close> whose
+  subscript \<open>s\<close> is one of \<open>c\<close>'s top-level sibling subscripts \<^const>\<open>tops\<close>.\<close>
+
+lemma eprincs_form:
+  "x \<in> set (eprincs c) \<Longrightarrow> \<exists>s h. x = Th (int s) (embed h) \<and> s \<in> set (tops c)"
+proof (induction c)
+  case Z thus ?case by simp
+next
+  case (P e f g)
+  from P.prems consider "x = Th (int e) (embed f)" | "x \<in> set (eprincs g)"
+    by (auto simp del: eprincs.simps)
+  thus ?case
+  proof cases
+    case 1 thus ?thesis by auto
+  next
+    case 2 with P.IH obtain s h where "x = Th (int s) (embed h)" "s \<in> set (tops g)" by blast
+    thus ?thesis by auto
+  qed
+qed
+
+text \<open>Hence if every top-level sibling subscript of \<open>c\<close> is \<open>< n\<close>, all principal
+  summands of \<open>embed c\<close> are below \<open>\<vartheta>\<^bsub>n\<^esub> D\<close> (for any \<open>D\<close>) \<dash> the subscript drop
+  dominates (@{thm [source] Th_lt_of_sub_lt}).\<close>
+
+lemma eprincs_lt_Th:
+  assumes "\<forall>s \<in> set (tops c). int s < n" "x \<in> set (eprincs c)"
+  shows "x <\<^sub>o Th n D"
+proof -
+  from eprincs_form[OF assms(2)] obtain s h
+    where x: "x = Th (int s) (embed h)" and s: "s \<in> set (tops c)" by blast
+  have "int s < n" using assms(1) s by blast
+  thus ?thesis using x Th_lt_of_sub_lt[OF omfree_embed] by simp
+qed
+
 lemma embed_P_neq_Zero: "embed (P e f g) \<noteq> Zero"
 proof (cases "eprincs g")
   case Nil
@@ -199,6 +233,94 @@ next
   case (Cons y ys)
   hence "embed (P e f g) = Su (Th (int e) (embed f) # y # ys)" by (simp add: embed_def)
   thus ?thesis by simp
+qed
+
+text \<open>Dershowitz\<dash>Manna single-dominator step for collapses: if a principal \<open>c\<close>
+  strictly dominates every summand of \<open>collapse xs\<close>, occurs in \<open>ys\<close>, and is absent
+  from \<open>xs\<close>, then \<open>collapse xs <\<^sub>o collapse ys\<close>.  Covers all the \<open>Zero\<close>/singleton/sum
+  shape combinations uniformly.\<close>
+
+lemma collapse_neq_Zero:
+  assumes "c \<in> set ys" "isH c" shows "collapse ys \<noteq> Zero"
+proof (cases ys)
+  case Nil thus ?thesis using assms(1) by simp
+next
+  case yC: (Cons y1 yr)
+  show ?thesis
+  proof (cases yr)
+    case Nil thus ?thesis using yC assms by (cases c) auto
+  next
+    case (Cons y2 yr2) thus ?thesis using yC by simp
+  qed
+qed
+
+lemma collapse_lt_dom:
+  assumes hx: "\<forall>\<alpha>\<in>set xs. isH \<alpha>"
+    and hc: "isH c"
+    and dom: "\<forall>\<alpha>\<in>set xs. \<alpha> <\<^sub>o c"
+    and cy: "c \<in> set ys"
+    and cnotx: "c \<notin> set xs"
+  shows "collapse xs <\<^sub>o collapse ys"
+proof (cases xs)
+  case Nil
+  have "collapse ys \<noteq> Zero" using collapse_neq_Zero[OF cy hc] .
+  thus ?thesis using Nil by (simp add: olt_ZeroI)
+next
+  case xC: (Cons x1 xr)
+  show ?thesis
+  proof (cases xr)
+    case Nil
+    have x1: "x1 \<in> set xs" using xC by simp
+    have hx1: "isH x1" using hx x1 by simp
+    have x1c: "x1 <\<^sub>o c" using dom x1 by simp
+    have cxs: "collapse xs = x1" using xC Nil by simp
+    show ?thesis
+    proof (cases ys)
+      case Nil thus ?thesis using cy by simp
+    next
+      case yC: (Cons y1 yr)
+      show ?thesis
+      proof (cases yr)
+        case Nil
+        have "y1 = c" using cy yC Nil by simp
+        thus ?thesis using cxs yC Nil x1c by simp
+      next
+        case (Cons y2 yr2)
+        have "x1 <\<^sub>o Su ys" using hx1 x1c cy by (cases x1) auto
+        thus ?thesis using cxs yC Cons by simp
+      qed
+    qed
+  next
+    case xC2: (Cons x2 xr2)
+    have cxs: "collapse xs = Su xs" using xC xC2 by simp
+    show ?thesis
+    proof (cases ys)
+      case Nil thus ?thesis using cy by simp
+    next
+      case yC: (Cons y1 yr)
+      show ?thesis
+      proof (cases yr)
+        case Nil
+        have yc: "y1 = c" using cy yC Nil by simp
+        have "Su xs <\<^sub>o c" using hc dom by (cases c) auto
+        thus ?thesis using cxs yC Nil yc by simp
+      next
+        case (Cons y2 yr2)
+        have cys: "collapse ys = Su ys" using yC Cons by simp
+        have cin: "c \<in># mset ys - mset xs"
+        proof -
+          have z: "count (mset xs) c = 0" using cnotx by (simp add: count_eq_zero_iff)
+          have p: "0 < count (mset ys) c" using cy by (simp add: count_greater_zero_iff)
+          have "count (mset xs) c < count (mset ys) c" using z p by linarith
+          thus ?thesis by (simp add: in_diff_count)
+        qed
+        have "\<forall>\<alpha>\<in>#mset xs - mset ys. \<alpha> <\<^sub>o c"
+          using dom by (auto dest: in_diffD)
+        hence "Su xs <\<^sub>o Su ys" using cin by auto
+        thus ?thesis using cxs cys by simp
+      qed
+    qed
+  qed
 qed
 
 section \<open>Order-preservation of \<open>embed\<close> on \<open>NF\<close> (the embedding obligation \<open>op\<close>)\<close>
