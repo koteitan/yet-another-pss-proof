@@ -879,3 +879,21 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **実装順**: import Multiset_Order → olt_Su_imp_multp_DM(易) → mnl 補題群(refl/sym, asym から) →
   combined trans+mnl-trans(size 帰納, Su は multp の transp/totalp 補助＋mnl-class max) → olt_trans 完成。
 - **注意**: wo.thy の import 変更は全 rebuild(~13s)。olt_asym は既存(無条件)流用。
+
+### 進捗 (2026-06-09 続16): advisor 訂正＝single-dom は全順序成分上で multp と一致（懸念は杞憂）
+- **訂正(安心材料)**: single-dom ⊊ multp は**部分順序**の話。**全順序成分上では single-dom = multp**
+  （max 元論法: multp_HO の ∀k∈X.∃y∈Y.k<y、Y 全順序有限非空 → max(Y) が X を単独支配; 逆 single⊆multp は自明）。
+  ot principal は ≃ を法に全順序 → **wfo 断片で olt-Su = multp**。∴ single-dom は標準 DM/Buchholz 順序の単一支配元表記。
+  embed.collapse_lt_dom の単一支配元構成も妥当な multp witness。**「順序が変」ではなく one-step 形なので推移律に成分全順序が要るだけ**。
+- **(b1) 確定**（advisor 同意）。(b2) 旨み小（wfo で multp=single-dom、再検証コストのみ。embed single-dom 補題は b1 で無傷）。
+- **技法2択**: **(A) 橋渡し**: wfo 上 `olt-Su = multp (<o)` を示し library の transp_multp/totalp_multp(or _on 版)継承。
+  逆向き(multp⟹single-dom)は `one_step_implies_multp` 系＋全順序での max 元一致。multp は「全 ot で≠」でも全順序 carrier 上で使える。
+  **(B) 直接**: 成分全順序(相互 IH)前提で max(Y∪Y') が合成対称差を単独支配、を手書き。→(A) 推奨(library 活用)。
+- **≃ 最小化(重要)**: olt-Su は既に **mset 経由定義**（節が mset xs/mset ys 使用）ゆえ **Su レベル ≈-不変は構成上自動**。
+  congruence の手作業は **Th/Om の hereditary 再帰部のみ**(~50-100行削減)。
+  代替: Su を真の ot multiset(BNF nested `Su "ot multiset"`)化すれば permutation=等号で ≃ が = に潰れ congruence 消滅
+  （ただし list 構造依存(embed/wflevel)の改修が要り invasive。Path A の lex 化よりは小だが今は見送り）。
+- **着手順(advisor 推奨)**: ≃ の扱い見極め(multiset 化するか/mset 経由 congruence か) → 橋渡し補題(olt-Su=multp on wfo) → library 継承。
+- **次セッションの具体手順**: (1) `olt_p_total`(principal Om/Th が ≃ 法で全順序)を構造帰納で, (2) 逆橋渡し
+  `multp(<o)(mas)(mbs) ⟹ olt(Su xs)(Su ys)`(全順序成分・max 元), (3) olt_trans Su を 易橋渡し(済)+transp_multp+逆橋渡しで.
+  combined: principal total と olt_trans は相互依存(Th/Th が arg の trans/total を要する)ので 1 つの size 帰納で。
