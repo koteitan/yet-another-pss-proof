@@ -919,3 +919,24 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - mnlcong も summands(smaller)で要るので combined IH に同梱。size 測度は (size k+size x+size m) 等。
 - **実装の安全則**: wo.thy を壊さないため、緑コミット毎に。combined への restructure 前に現 olt_trans(1 sorry)は緑。
   まず `multp_imp_olt_Su`(逆橋渡し, mnlcong+transp_on を仮説に取る形)を独立補題で緑化→次に combined で仮説供給。
+
+### 進捗 (2026-06-09 続18): forward/reverse 橋渡し完成（olt_trans の hard core 済）＋olt_asym は非独立判明
+- **完成 (commit/緑, wo.thy, olt_trans の前に配置)**:
+  - `olt_Su_imp_multp\<^sub>D\<^sub>M` / `olt_Su_imp_multp` / `olt_Su_imp_multp\<^sub>H\<^sub>O`（forward 橋渡し3本, 単一支配元⟹各 multiset 順序, 無条件）。
+  - **`multp\<^sub>H\<^sub>O_imp_olt_Su`（reverse 橋渡し＝最難関の最大元論法, 完成）**: 仮説 `asymp_on/transp_on (set xs∪set ys)` ＋
+    `mnlcong`(k∈set xs, x m∈set ys: k<o x ∧¬x<o m∧¬m<o x ⟹ k<o m)。証明: one_step_strong→`Finite_Set.bex_max_element`で
+    surplus(mset ys-mset xs)の極大 m→各 deficit a は ∃x. a<o x、x≤m を trans(x<o m)/mnlcong(¬x<o m∧¬m<o x)で a<o m。
+    **olt_asym を使わず carrier 仮説で書いた**ので olt_trans の前に置けて循環なし。
+- **重要判明**: `olt_asym` は **独立でない**（Su/Su 節で `olt_ole_trans`→`olt_trans` を使用）。∴ asym を olt_trans の前に
+  単独で置けない。→ **trans + asym + mnlcong を combined size 帰納で同時証明**が必要（3-way 相互依存、確定）。
+- **残り = combined 帰納のみ**（全 helper 準備済）:
+  `lemma olt_meta: "∀x y z. size x+size y+size z ≤ n ⟹ (x<o y⟶y<o z⟶x<o z) ∧ ¬(x<o y∧y<o x) ∧
+    (x<o y⟶¬(y<o z)⟶¬(z<o y)⟶x<o z)"` を n 上の帰納で。asym は z 無視。
+  - trans の Su/Su/Su: ab,bc→olt_Su_imp_multp\<^sub>H\<^sub>O→multp_HO 2本→`transp_on_multp\<^sub>H\<^sub>O`(carrier=summands, asymp_on/transp_on は IH)
+    で multp_HO(mas)(mzs)→`multp\<^sub>H\<^sub>O_imp_olt_Su`(asym/trans/mnlcong は summands で IH 供給)→ olt(Su as)(Su zs)。
+  - trans の他ケース(Om/Th/Su[a principal]): 既存 olt_trans 証明を流用（IH 名を combined に合わせる）。
+  - asym: 既存 olt_asym 証明を流用、olt_ole_trans 使用箇所を combined IH(trans)に置換。
+  - mnlcong: ≃-congruence。Su-level は mset 経由自動、Th/Om hereditary を IH で。新規証明（~中規模）。
+  - 導出: `olt_trans`/`olt_asym`/`olt_mnlcong` を olt_meta から系として。olt_irrefl は asym から（既存）。
+- **次セッション着手**: olt_meta を組む。既存 olt_trans(400行)+olt_asym(140行)を combined に統合し mnlcong を追加。
+  measure は size の和、asym/mnlcong/trans を1帰納で。helper(橋渡し)は全て緑で利用可。
