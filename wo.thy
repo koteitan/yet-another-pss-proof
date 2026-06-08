@@ -675,6 +675,16 @@ proof -
   show ?thesis unfolding multp\<^sub>D\<^sub>M_def using x1 x2 x3 x4 by blast
 qed
 
+text \<open>Forward bridge: the \<open>Su\<close>-clause implies the library multiset order @{const multp}
+  (via @{thm [source] multp\<^sub>D\<^sub>M_imp_multp}).  Unconditional.  The reverse holds on the
+  totally-ordered (mod incomparability) component carrier and recovers the single
+  dominator by the maximum-element argument; together they give \<open>Su\<close>-transitivity by
+  inheritance from @{thm [source] transp_on_multp\<^sub>H\<^sub>O}.\<close>
+
+lemma olt_Su_imp_multp:
+  "Su xs <\<^sub>o Su ys \<Longrightarrow> multp (<\<^sub>o) (mset xs) (mset ys)"
+  using olt_Su_imp_multp\<^sub>D\<^sub>M multp\<^sub>D\<^sub>M_imp_multp by blast
+
 lemma olt_trans: "a <\<^sub>o b \<Longrightarrow> b <\<^sub>o c \<Longrightarrow> a <\<^sub>o c"
 proof (induction "size a + size b + size c" arbitrary: a b c rule: less_induct)
   case less
