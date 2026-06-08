@@ -685,6 +685,30 @@ lemma olt_Su_imp_multp:
   "Su xs <\<^sub>o Su ys \<Longrightarrow> multp (<\<^sub>o) (mset xs) (mset ys)"
   using olt_Su_imp_multp\<^sub>D\<^sub>M multp\<^sub>D\<^sub>M_imp_multp by blast
 
+text \<open>The single-dominator clause also gives the Huet\<dash>Oppen form @{const multp\<^sub>H\<^sub>O}
+  directly (unconditional): the single witness \<open>b\<close> serves as the per-surplus-element
+  dominator.  This is the form used for the set-restricted transitivity inheritance
+  @{thm [source] transp_on_multp\<^sub>H\<^sub>O}.\<close>
+
+lemma olt_Su_imp_multp\<^sub>H\<^sub>O:
+  assumes "Su xs <\<^sub>o Su ys"
+  shows "multp\<^sub>H\<^sub>O (<\<^sub>o) (mset xs) (mset ys)"
+proof -
+  from assms obtain b where b: "b \<in># mset ys - mset xs"
+    and dom: "\<forall>a \<in># mset xs - mset ys. a <\<^sub>o b" by auto
+  have bcnt: "count (mset xs) b < count (mset ys) b" using b by (simp add: in_diff_count)
+  have ne: "mset xs \<noteq> mset ys" using bcnt by auto
+  have "\<forall>y. count (mset ys) y < count (mset xs) y
+            \<longrightarrow> (\<exists>x. y <\<^sub>o x \<and> count (mset xs) x < count (mset ys) x)"
+  proof (intro allI impI)
+    fix y assume "count (mset ys) y < count (mset xs) y"
+    hence "y \<in># mset xs - mset ys" by (simp add: in_diff_count)
+    hence "y <\<^sub>o b" using dom by simp
+    thus "\<exists>x. y <\<^sub>o x \<and> count (mset xs) x < count (mset ys) x" using bcnt by blast
+  qed
+  thus ?thesis unfolding multp\<^sub>H\<^sub>O_def using ne by blast
+qed
+
 lemma olt_trans: "a <\<^sub>o b \<Longrightarrow> b <\<^sub>o c \<Longrightarrow> a <\<^sub>o c"
 proof (induction "size a + size b + size c" arbitrary: a b c rule: less_induct)
   case less
