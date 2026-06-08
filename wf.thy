@@ -992,6 +992,28 @@ qed
 lemma cnf_butlast: "C \<noteq> [] \<Longrightarrow> cnf (translate C) \<Longrightarrow> cnf (translate (butlast C))"
   using cnf_snoc[of "butlast C" "last C"] by (simp add: snoc_eq_iff_butlast)
 
+text \<open>The top-level sibling subscripts of a term (its \<open>+\<close>-chain of principals).\<close>
+
+fun tops :: "three \<Rightarrow> nat list" where
+  "tops Z = []"
+| "tops (P a b c) = a # tops c"
+
+text \<open>In a CNF term the leading subscript caps every sibling subscript: the \<open>+\<close>-chain
+  is non-increasing in the subscripts.  This is what lets the leading principal of
+  the embedding dominate the whole tail in the order-preservation argument.\<close>
+
+lemma cnf_tops_le: "cnf (P a b c) \<Longrightarrow> \<forall>s \<in> set (tops c). s \<le> a"
+proof (induction c arbitrary: a b)
+  case Z thus ?case by simp
+next
+  case (P e f g)
+  from P.prems have nlt: "\<not> (P a b Z <o P e f Z)" and cg: "cnf (P e f g)" by auto
+  have ea: "e \<le> a" using nlt by auto
+  have "\<forall>s \<in> set (tops g). s \<le> e" using P.IH(2)[OF cg] .
+  hence "\<forall>s \<in> set (tops g). s \<le> a" using ea by auto
+  thus ?case using ea by simp
+qed
+
 
 subsection \<open>Reduction of well-foundedness to within-maxsub-level\<close>
 
