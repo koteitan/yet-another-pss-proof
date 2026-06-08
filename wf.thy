@@ -1498,9 +1498,9 @@ qed
 text \<open>\<^bold>\<open>CNF preservation, the ascending-copies (\<open>i\<^sub>1 = 1\<close>) oper case.\<close>  Like
   @{thm [source] cnf_oper_i1eq0} but for the genuinely ascending copies; the
   strict decrease \<open>translate (copies d\<^sub>0 blk n) <o translate (blk @ [lp])\<close>
-  (the bad-step core, supplied by the caller) lifts the block's CNF through the
-  good part \<open>G\<close> via @{thm [source] cnf_ctx_cong}, while @{thm [source] cnf_copies}
-  furnishes CNF of the copies themselves.\<close>
+  (the bad-step core, derived internally from @{thm [source] core_i1}) lifts the
+  block's CNF through the good part \<open>G\<close> via @{thm [source] cnf_ctx_cong}, while
+  @{thm [source] cnf_copies} furnishes CNF of the copies themselves.\<close>
 
 lemma cnf_oper_i1eq1:
   assumes R: "\<forall>x\<in>set R. v0 < fst x"
@@ -1508,12 +1508,51 @@ lemma cnf_oper_i1eq1:
     and w0lt: "w0 < snd lp"
     and lphd: "fst lp = v0 + d0"
     and n1: "1 \<le> n"
-    and decr: "translate (copies d0 ((v0, w0) # R) n) <o translate (((v0, w0) # R) @ [lp])"
     and cM: "cnf (translate (G @ ((v0, w0) # R) @ [lp]))"
   shows "cnf (translate (G @ copies d0 ((v0, w0) # R) n))"
 proof -
   let ?blk = "(v0, w0) # R"
   have blkne: "?blk \<noteq> []" by simp
+  \<comment> \<open>the bad-step core decrease, derived from @{thm [source] core_i1}\<close>
+  have decr: "translate (copies d0 ?blk n) <o translate (?blk @ [lp])"
+  proof (cases "n = 1")
+    case True
+    hence e: "copies d0 ?blk n = ?blk" by (simp add: copies_Suc_front)
+    show ?thesis unfolding e by (rule translate_snoc_increase)
+  next
+    case False
+    obtain m where m: "n = Suc m" using n1 by (cases n) auto
+    have m1: "1 \<le> m" using False m by (cases m) auto
+    let ?C = "shiftr0 d0 (copies d0 ?blk m)"
+    have cpm_ne: "copies d0 ?blk m \<noteq> []" using blkne m1 by (rule copies_nonempty)
+    have CP: "?C \<noteq> []" using cpm_ne by simp
+    have hdcpm: "hd (copies d0 ?blk m) = (v0, w0)" using blkne m1 hd_copies[of ?blk m d0] by simp
+    have hdC: "hd ?C = (v0 + d0, w0)"
+      using cpm_ne hdcpm hd_shiftr0[of "copies d0 ?blk m" d0] by simp
+    have Cge: "\<forall>x\<in>set (tl ?C). fst (hd ?C) \<le> fst x"
+    proof -
+      have Rle: "\<forall>x\<in>set R. v0 \<le> fst x" using R by (auto intro: less_imp_le)
+      have allge: "\<forall>x\<in>set (copies d0 ?blk m). v0 \<le> fst x" using copies_v0_le[OF refl Rle] by simp
+      have "\<forall>x\<in>set ?C. v0 + d0 \<le> fst x"
+      proof
+        fix x assume "x \<in> set ?C"
+        then obtain p where p: "p \<in> set (copies d0 ?blk m)" and xe: "x = (fst p + d0, snd p)"
+          by (auto simp: shiftr0_def)
+        have "v0 \<le> fst p" using allge p by blast
+        thus "v0 + d0 \<le> fst x" using xe by simp
+      qed
+      hence "\<forall>x\<in>set (tl ?C). v0 + d0 \<le> fst x" using CP by (metis list.set_sel(2))
+      thus ?thesis using hdC by simp
+    qed
+    have Croot: "fst (hd ?C) = fst lp" using hdC lphd by simp
+    have lpv: "v0 < fst lp" using lphd d0pos by simp
+    have lead_lt: "snd (hd ?C) < snd lp" using hdC w0lt by simp
+    have "translate (?blk @ ?C) <o translate (?blk @ [lp])"
+      by (rule core_i1[OF R CP Cge Croot lpv lead_lt])
+    moreover have "copies d0 ?blk n = ?blk @ ?C"
+      using m copies_Suc_front[of d0 ?blk m] by simp
+    ultimately show ?thesis by simp
+  qed
   have cpne: "copies d0 ?blk n \<noteq> []" using blkne n1 by (rule copies_nonempty)
   have hdcp: "hd (copies d0 ?blk n) = (v0, w0)" using blkne n1 hd_copies[of ?blk n d0] by simp
   have cpcons: "copies d0 ?blk n = (v0, w0) # tl (copies d0 ?blk n)"
