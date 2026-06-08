@@ -1052,6 +1052,127 @@ next
   qed
 qed
 
+text \<open>\<^bold>\<open>CNF context congruence.\<close>  If \<open>Z1, Z2\<close> share their leading principal's
+  (subscript, argument), \<open>translate Z1 <o translate Z2\<close>, and \<open>translate Z1\<close> is CNF,
+  then a common good part \<open>G\<close> preserves CNF: \<open>cnf (translate (G @ Z2))\<close> implies
+  \<open>cnf (translate (G @ Z1))\<close>.  The sibling-boundary that \<open>G\<close> creates is preserved
+  because the leading argument only shrinks (\<open>arg\<^sub>1 \<le>o arg\<^sub>2\<close>, extracted from the
+  decrease lifted by @{thm [source] translate_ctx_cong}) and \<open><o\<close> is transitive
+  (three-level, proven).\<close>
+
+lemma cnf_ctx_cong:
+  assumes cZ1: "cnf (translate Z1)"
+    and decr: "translate Z1 <o translate Z2"
+    and ne1: "Z1 \<noteq> []" and ne2: "Z2 \<noteq> []"
+    and root: "fst (hd Z1) = fst (hd Z2)"
+    and lead: "\<exists>a b c1 c2. translate Z1 = P a b c1 \<and> translate Z2 = P a b c2"
+    and r1: "\<forall>x\<in>set (tl Z1). fst (hd Z1) \<le> fst x"
+    and r2: "\<forall>x\<in>set (tl Z2). fst (hd Z2) \<le> fst x"
+  shows "cnf (translate (G @ Z2)) \<Longrightarrow> cnf (translate (G @ Z1))"
+proof (induction G rule: length_induct)
+  case (1 G)
+  from lead obtain a b c1 c2 where lZ1: "translate Z1 = P a b c1" and lZ2: "translate Z2 = P a b c2"
+    by blast
+  show ?case
+  proof (cases G)
+    case Nil thus ?thesis using "1.prems" cZ1 by simp
+  next
+    case (Cons g G')
+    let ?Pg = "\<lambda>q. fst g < fst q"
+    have hd2: "fst (hd Z2) = fst (hd Z1)" using root by simp
+    show ?thesis
+    proof (cases "\<forall>x\<in>set G'. ?Pg x")
+      case allG: True
+      show ?thesis
+      proof (cases "?Pg (hd Z1)")
+        case True
+        have aZ1: "\<forall>x\<in>set Z1. ?Pg x" using True r1 ne1 by (cases Z1) auto
+        have aZ2: "\<forall>x\<in>set Z2. ?Pg x" using True hd2 r2 ne2 by (cases Z2) auto
+        have all1: "\<forall>x\<in>set (G' @ Z1). ?Pg x" using allG aZ1 by auto
+        have all2: "\<forall>x\<in>set (G' @ Z2). ?Pg x" using allG aZ2 by auto
+        have tw1: "takeWhile ?Pg (G' @ Z1) = G' @ Z1" using all1 by (simp add: takeWhile_eq_all_conv)
+        have dw1: "dropWhile ?Pg (G' @ Z1) = []" using all1 by (simp add: dropWhile_eq_Nil_conv)
+        have tw2: "takeWhile ?Pg (G' @ Z2) = G' @ Z2" using all2 by (simp add: takeWhile_eq_all_conv)
+        have dw2: "dropWhile ?Pg (G' @ Z2) = []" using all2 by (simp add: dropWhile_eq_Nil_conv)
+        have e1: "translate (G @ Z1) = P (snd g) (translate (G' @ Z1)) Z"
+          by (simp only: Cons append_Cons translate.simps(2) tw1 dw1 translate.simps(1))
+        have e2: "translate (G @ Z2) = P (snd g) (translate (G' @ Z2)) Z"
+          by (simp only: Cons append_Cons translate.simps(2) tw2 dw2 translate.simps(1))
+        have "cnf (translate (G' @ Z2))" using "1.prems" e2 by simp
+        hence "cnf (translate (G' @ Z1))" using "1.IH" Cons by simp
+        thus ?thesis using e1 by simp
+      next
+        case False
+        have twZ1: "takeWhile ?Pg Z1 = []" using False ne1 by (cases Z1) auto
+        have dwZ1: "dropWhile ?Pg Z1 = Z1" using False ne1 by (cases Z1) auto
+        have twZ2: "takeWhile ?Pg Z2 = []" using False hd2 ne2 by (cases Z2) auto
+        have dwZ2: "dropWhile ?Pg Z2 = Z2" using False hd2 ne2 by (cases Z2) auto
+        have tw1: "takeWhile ?Pg (G' @ Z1) = G'" using allG twZ1 by (simp add: takeWhile_append2)
+        have dw1: "dropWhile ?Pg (G' @ Z1) = Z1" using allG dwZ1 by (simp add: dropWhile_append2)
+        have tw2: "takeWhile ?Pg (G' @ Z2) = G'" using allG twZ2 by (simp add: takeWhile_append2)
+        have dw2: "dropWhile ?Pg (G' @ Z2) = Z2" using allG dwZ2 by (simp add: dropWhile_append2)
+        have e1: "translate (G @ Z1) = P (snd g) (translate G') (P a b c1)"
+          using lZ1 by (simp only: Cons append_Cons translate.simps(2) tw1 dw1)
+        have e2: "translate (G @ Z2) = P (snd g) (translate G') (P a b c2)"
+          using lZ2 by (simp only: Cons append_Cons translate.simps(2) tw2 dw2)
+        have "cnf (translate G') \<and> \<not> (P (snd g) (translate G') Z <o P a b Z) \<and> cnf (P a b c2)"
+          using "1.prems" e2 by simp
+        moreover have "cnf (P a b c1)" using cZ1 lZ1 by simp
+        ultimately show ?thesis using e1 by simp
+      qed
+    next
+      case notallG: False
+      then obtain x where x: "x \<in> set G'" and nx: "\<not> ?Pg x" by blast
+      have tw1: "takeWhile ?Pg (G' @ Z1) = takeWhile ?Pg G'" using x nx by (simp add: takeWhile_append1)
+      have dw1: "dropWhile ?Pg (G' @ Z1) = dropWhile ?Pg G' @ Z1" using x nx by (simp add: dropWhile_append1)
+      have tw2: "takeWhile ?Pg (G' @ Z2) = takeWhile ?Pg G'" using x nx by (simp add: takeWhile_append1)
+      have dw2: "dropWhile ?Pg (G' @ Z2) = dropWhile ?Pg G' @ Z2" using x nx by (simp add: dropWhile_append1)
+      let ?D = "dropWhile ?Pg G'"
+      have e1: "translate (G @ Z1) = P (snd g) (translate (takeWhile ?Pg G')) (translate (?D @ Z1))"
+        by (simp only: Cons append_Cons translate.simps(2) tw1 dw1)
+      have e2: "translate (G @ Z2) = P (snd g) (translate (takeWhile ?Pg G')) (translate (?D @ Z2))"
+        by (simp only: Cons append_Cons translate.simps(2) tw2 dw2)
+      have Dne: "?D \<noteq> []" using x nx by (auto simp: dropWhile_eq_Nil_conv)
+      \<comment> \<open>both tails are principals with the same leading subscript\<close>
+      obtain e arg1 t1 where p1: "translate (?D @ Z1) = P e arg1 t1"
+        using Dne ne1 by (cases "?D @ Z1") auto
+      obtain e' arg2 t2 where p2: "translate (?D @ Z2) = P e' arg2 t2"
+        using Dne ne2 by (cases "?D @ Z2") auto
+      have lenD: "length ?D < length G" using Cons by (simp add: le_imp_less_Suc length_dropWhile_le)
+      have decrD: "translate (?D @ Z1) <o translate (?D @ Z2)"
+        by (rule translate_ctx_cong[OF decr ne1 ne2 root r1 r2])
+      have ee: "e = e'"
+        using p1 p2 lead_translate[of "?D @ Z1"] lead_translate[of "?D @ Z2"] Dne
+        by (cases ?D) auto
+      have argle: "arg1 <o arg2 \<or> arg1 = arg2" using p1 p2 decrD ee by (auto split: if_splits)
+      \<comment> \<open>recurse for CNF of the new tail\<close>
+      have ctw: "cnf (translate (takeWhile ?Pg G'))" using "1.prems" e2 p2 by simp
+      have "cnf (translate (?D @ Z2))" using "1.prems" e2 p2 by simp
+      hence cD1: "cnf (translate (?D @ Z1))" using "1.IH" lenD by blast
+      \<comment> \<open>the boundary \<open>\<not> (... <o P e arg\<^sub>1 Z)\<close> transfers from \<open>arg\<^sub>2\<close>\<close>
+      have bnd2: "\<not> (P (snd g) (translate (takeWhile ?Pg G')) Z <o P e' arg2 Z)"
+        using "1.prems" e2 p2 by simp
+      have bnd1: "\<not> (P (snd g) (translate (takeWhile ?Pg G')) Z <o P e arg1 Z)"
+      proof
+        assume "P (snd g) (translate (takeWhile ?Pg G')) Z <o P e arg1 Z"
+        hence "snd g < e \<or> (snd g = e \<and> translate (takeWhile ?Pg G') <o arg1)" by auto
+        thus False
+        proof
+          assume "snd g < e"
+          hence "P (snd g) (translate (takeWhile ?Pg G')) Z <o P e' arg2 Z" using ee by simp
+          thus False using bnd2 by simp
+        next
+          assume A: "snd g = e \<and> translate (takeWhile ?Pg G') <o arg1"
+          hence "translate (takeWhile ?Pg G') <o arg2" using argle olt_ole_trans by blast
+          hence "P (snd g) (translate (takeWhile ?Pg G')) Z <o P e' arg2 Z" using A ee by simp
+          thus False using bnd2 by simp
+        qed
+      qed
+      show ?thesis using e1 p1 cD1 ctw bnd1 by simp
+    qed
+  qed
+qed
+
 text \<open>The top-level sibling subscripts of a term (its \<open>+\<close>-chain of principals).\<close>
 
 fun tops :: "three \<Rightarrow> nat list" where
