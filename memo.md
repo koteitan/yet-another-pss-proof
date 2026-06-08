@@ -842,3 +842,25 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **DECISION**: Path B。次は eqv 定義＋combined trans+tri を wo.thy に実装。olt_asym は既存(無条件・独立)を流用可。
 - **作業順(確定)**: olt_trans(Path B) → L_ThF核(Towsner 3.10/3.11+Pohlers 9.6.15, main-on-arg 帰納) → op_NF(FC構造, Buchholz survey k⁺/Thm 2.4)。
 - **強度ラベル**: TFBO = ψ_0(ε_{Ω_ω+1})（survey §4-5）。
+
+### 進捗 (2026-06-09 続14): multp ライブラリ調査＋single-dom vs multp の wrinkle
+- **advisor 指針**: HOL-Library.Multiset_Order の `multp` で対称差-最大元論法は既済。olt_Su を multp に橋渡し→trans/tri 継承。
+  ≃-congruence は mset 経由で自動（top-level）。
+- **Isabelle2025-2 (/opt/Isabelle2025-2) の Multiset_Order 補題**: `multp`/`multp\<^sub>D\<^sub>M`(DM)/`multp\<^sub>H\<^sub>O`(HO),
+  `transp_multp\<^sub>H\<^sub>O`(trans のみ要), `totalp_multp\<^sub>D\<^sub>M`/`totalp_multp\<^sub>H\<^sub>O`(total 要),
+  `asymp_multp\<^sub>H\<^sub>O`(asym+trans), `multp_eq_multp\<^sub>D\<^sub>M: asymp r⟹transp r⟹multp r=multp_DM r`,
+  `multp\<^sub>D\<^sub>M_imp_multp`, `multp_imp_multp\<^sub>H\<^sub>O`, `multp\<^sub>H\<^sub>O_implies_one_step_strong`。
+  ※wo.thy は現状 `HOL-Library.Multiset` のみ import。Multiset_Order を足す必要。
+- **wrinkle（重要）**: olt-Su は **単一支配元** `∃b∈Y.∀a∈X.a<b`。multp_DM は **複数支配元** `∀a∈X.∃b∈Y.a<b`。
+  **single-dom ⊊ multp_DM**（single⟹multp は易、逆は uniform max が要＝totality）。∴ 橋渡し `olt_Su⟺multp` は
+  **成分全順序のときのみ**。permutation 非全順序のため無条件には不成立。
+- **olt_trans が真の本当の理由（確定）**: **olt が ≈-不変(hereditary permutation congruence)**。これが反例配置
+  a1<b1∧a2<b2∧a1⊥b2∧a2⊥b1 を矛盾(b2≈a1<b1→b2<b1, a2≈b1<b2→b1<b2, asym 矛盾)で排除。
+  shallow(top-level Su)congruence は olt 定義が mset 使用なので自動。hereditary(Th 引数内 permutation)は congruence 帰納が要る。
+- **olt_trans 実装の確定方針（2案）**:
+  - 案1: olt ≈-invariance(hereditary congruence)を帰納で証明 → 反例排除 → single-dom trans を asym+IH+多重集合帳簿で。
+  - 案2: olt-Su を multp_HO に橋渡し(transp_multp_HO は trans のみ要)。ただし single-dom=multp_HO が成分全順序要なら
+    結局 ≈ 経由。multp_HO_implies_one_step_strong が単一支配元への橋渡しに使える可能性大→要確認。
+  - いずれも「olt が成分の ≈-class 上で全順序」を確立するのが鍵。multp ライブラリは ≈-class が = に潰れた multiset 上で動く。
+- **次**: (a) Multiset_Order を import、(b) olt-Su ⟷ multp_HO/DM の橋渡し補題を試作(single-dom と multp_HO_implies_one_step_strong
+  の関係確認)、(c) 成分 linearity-mod-≈ を構造帰納で、(d) trans/tri をライブラリ継承。≈ は mset 経由で極力自動化。
