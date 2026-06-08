@@ -548,6 +548,39 @@ lemma translate_butlast_decrease:
   using translate_snoc_increase[of "butlast C" "last C"]
   by (simp add: snoc_eq_iff_butlast)
 
+text \<open>Appending a pair can only \<^emph>\<open>increase\<close> (weakly) the translation of a leading
+  same-level block \<open>takeWhile (\<lambda>x. a < fst x)\<close>: either the block is unchanged (some
+  earlier pair already stopped it) or it is extended by the new pair (then
+  @{thm [source] translate_snoc_increase} applies).  Used for the sibling-condition
+  transfer in \<open>cnf_snoc\<close>.\<close>
+
+lemma translate_takeWhile_snoc_le:
+  "translate (takeWhile (\<lambda>x. a < fst x) C) \<le>o translate (takeWhile (\<lambda>x. a < fst x) (C @ [m]))"
+proof (cases "\<forall>x\<in>set C. a < fst x")
+  case True
+  hence twC: "takeWhile (\<lambda>x. a < fst x) C = C" by (simp add: takeWhile_eq_all_conv)
+  show ?thesis
+  proof (cases "a < fst m")
+    case mt: True
+    have e: "takeWhile (\<lambda>x. a < fst x) (C @ [m]) = C @ [m]"
+      using True mt by (simp add: takeWhile_eq_all_conv)
+    have "translate (takeWhile (\<lambda>x. a < fst x) C) <o translate (C @ [m])"
+      unfolding twC by (rule translate_snoc_increase)
+    thus ?thesis using e by auto
+  next
+    case nm: False
+    have eq: "takeWhile (\<lambda>x. a < fst x) (C @ [m]) = C"
+      using True nm by (simp add: takeWhile_append2)
+    show ?thesis by (simp add: eq twC)
+  qed
+next
+  case False
+  then obtain x where "x \<in> set C" "\<not> a < fst x" by blast
+  hence "takeWhile (\<lambda>x. a < fst x) (C @ [m]) = takeWhile (\<lambda>x. a < fst x) C"
+    by (simp add: takeWhile_append1)
+  thus ?thesis by simp
+qed
+
 
 subsection \<open>Abstract bad-step cores\<close>
 
