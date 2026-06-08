@@ -732,3 +732,31 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **残る headline sorry は 3 つのみ**: wo.olt_trans[c=Su[a=Su]], buchholz.L_ThF[0≤p<n], embed.op_NF[P/P]。
 - **次**: op_NF（cnf_ST_PS 入手済→ NF は cnf 使用可）。bfb_ST_PS（principal bag finite/bounded）＋
   op_NF の a=e principal ケース＋op_cnf 組立。その後 L_ThF leveled-Acc, wo.olt_trans。
+
+### 進捗 (2026-06-08 続9): 方針決定（ユーザー指示）＝(A) L_ThF → olt_trans → op_NF。Pohlers §9.6.2 取得
+- **ユーザー方針**: 私の推奨 (A) L_ThF を transitivity-free で先に閉じる → olt_trans → op_NF の順。
+- **参考文献**: `../1989-W.Pohlers-Proof-theory-The-first-step-into-impredicativity.pdf`。
+  §9.6.2「The well-ordering proof」= printed 114-117 = **PDF page 116-119**。§9.6.1(coding) = printed 108-113 = PDF 110-115。
+- **L_ThF の現状（重要）**: buchholz.thy の L_ThF は**既に 9 割完成**。`d∈acc oltRwF` の acc 帰納で、
+  `Th n d` の accI: r<o Th n d を場合分け: (Su=和)→`acc_of_bag_elemsF`済 / (Th p e, disj1 Kn支配)→`dom_acc`済 /
+  (disj2 p=n∧e<o d)→acc帰納IH済 / **(disj2 0≤p<n)のみ sorry**。残りはこの1ケースだけ。
+- **olt_trans 依存に注意**: 現 L_ThF は olt_trans（未証明 sorry）を**使わず**書かれている（Kn_le_self/olt_Th_of_le_Kn/
+  Kn_mono_le=「一般推移律なし」）。p<n も同じ Kn スタイルで推移律を避けて埋める。
+- **Pohlers §9.6.2 構造（写経元）**:
+  - 9.6.9 定義: `α<0 β ⟺ α<β<Ω`(=oltRwF), `Acc≡Acc(<0)`(=acc oltRwF), `M:={α|SC(α)∩Ω⊆Acc}`(controlled),
+    `α<1 β ⟺ α<β∧α∈M∧β∈M`(M制限), `Prog_i(F):=∀ξ∈field(<i).(∀η<i ξ.F η)→F ξ`, `TI_i(α,F)`。
+  - 9.6.12: Acc は + で閉（→`acc_of_bag_elemsF`済）。9.6.13: Prog_1→Prog_0。9.6.14: Acc は Veblen φ で閉
+    （**ot には φ 無し→omfree 断片では Su 和のみ＝9.6.12 で尽きる。この段は不要/自明**）。
+  - **9.6.15(核)**: `Acc_Ω:={α| α∉M ∨ (∃ξ∈K(α).α≤ξ) ∨ ψ(α)∈Acc}` に対し `Prog_1(Acc_Ω)`。
+    証明: α∈M ∧ K(α)⊆α と仮定→ψ(α)∈Acc を示す→`∀ρ<ψ(α).ρ∈Acc`を**ρの項長帰納**で:
+    ρ∉SC→SC(ρ)⊆Acc(IH)+9.6.12で ρ∈Acc。ρ∈SC→∃ρ0.K(ρ0)⊆ρ0<α,ρ=ψ(ρ0)。SC(ρ0)∩Ω の各 ξ=0 or ψ(η)で
+    η∈K(ξ)⊆K(ρ0)⊆ρ0<α かつ ξ=ψ(η)<ψ(α)→項長IHで SC(ρ0)∩Ω⊆Acc→ρ0∈M かつ ρ0<α→ρ0<1 α→
+    **外側 Prog_1 仮定**で ρ0∈Acc_Ω→(K(ρ0)⊆ρ0,ρ0∈M)第3選言で ψ(ρ0)=ρ∈Acc。
+  - **9.6.16 Condensation**: K(α)⊆α,α∈M,TI_1(α,F)⟹ψ(α)∈Acc。9.6.15+TIで ρ0∈Acc_Ω→ψ(α)∈Acc。
+- **ot への相対化（追加設計＝p<n の正体）**: Th n a はレベル n 付き。Pohlers の単一 ψ を「レベル n、p<n は
+  下位 Acc に既収」と読む。`Mn`/`AccB`/`Acc n`（既存, `Acc_subset_AccB:m<n⟹Acc m⊆AccB n`完備）がレベル別 Acc。
+  p<n ケース: Th p e の acc は **n の外側帰納の下位レベル IH**＋e の controlled 性（Kn p e の臨界部分項が下位 acc）で。
+  核は「e が controlled ⟹ e∈acc」＝Pohlers 9.6.15 の項長帰納に相当。
+- **設計上の注意**: ctrl/Acc_Th を新設するより既存 Mn/AccB を使う（wf_oltRwF 配線の二重化回避）。9.6.14(φ)段は不要。
+- **次の一手**: L_ThF を n の外側強帰納に再構成し、p<n を controlled-set（Mn/AccB）＋下位 IH で埋める。
+  推移律を避ける。まず statement ラダーを sorry 骨組みで compile→核(9.6.15 項長帰納の崩壊サブケース)を埋める。
