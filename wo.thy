@@ -384,6 +384,18 @@ next
   show ?case using Su.IH[OF x(1) ox x(2) Su.prems(3)] .
 qed
 
+text \<open>A strictly smaller subscript makes a collapse strictly smaller, \<^emph>\<open>regardless\<close>
+  of the arguments (for \<open>\<Omega>\<close>-free left argument): \<open>\<vartheta>\<^bsub>m\<^esub> g <\<^sub>o \<vartheta>\<^bsub>n\<^esub> h\<close> whenever \<open>m < n\<close>.
+  Immediate from @{thm [source] Kn_dom}.  This is the leading-subscript clause of
+  the embedding's order-preservation.\<close>
+
+lemma Th_lt_of_sub_lt:
+  assumes "omfree g" "m < n" shows "Th m g <\<^sub>o Th n h"
+proof -
+  have "\<forall>\<gamma>\<in>Kn m g. \<gamma> <\<^sub>o Th n h" using Kn_dom[OF assms(1) _ assms(2)] by blast
+  thus ?thesis using assms(2) by simp
+qed
+
 text \<open>Every critical subterm is \<open>\<le>\<^sub>o\<close> its host (again without transitivity).\<close>
 
 lemma Kn_le_self: "\<gamma> \<in> Kn n d \<Longrightarrow> \<gamma> \<le>\<^sub>o d"
