@@ -125,6 +125,41 @@ qed simp
 lemma omfree_embed: "omfree (embed t)"
   unfolding embed_def by (rule omfree_collapse) (use omfree_eprincs in auto)
 
+lemma embed_P_neq_Zero: "embed (P e f g) \<noteq> Zero"
+proof (cases "eprincs g")
+  case Nil
+  hence "embed (P e f g) = Th (int e) (embed f)" by (simp add: embed_def)
+  thus ?thesis by simp
+next
+  case (Cons y ys)
+  hence "embed (P e f g) = Su (Th (int e) (embed f) # y # ys)" by (simp add: embed_def)
+  thus ?thesis by simp
+qed
+
+section \<open>Order-preservation of \<open>embed\<close> on \<open>NF\<close> (the embedding obligation \<open>op\<close>)\<close>
+
+text \<open>\<^bold>\<open>Order-preservation (P/P case sorried):\<close> on \<open>NF\<close>, the naive subscript order \<open><o\<close>
+  (\<^theory>\<open>YAPSS.mechanized\<close>) is refined by the collapsing order \<open><\<^sub>o\<close>.  The \<open>Z\<close> cases
+  are immediate; the principal (\<open>P\<close>/\<open>P\<close>) case needs the \<open>NF\<close> invariants (the
+  built-from-below / spine bounds of \<^theory>\<open>YAPSS.wf\<close>) to discharge the critical-subterm
+  (\<open>K\<close>) conditions of \<open><\<^sub>o\<close>.  This is one of the remaining obligations.\<close>
+
+theorem op_NF:
+  assumes "w \<in> NF" "x \<in> NF" "w <o x"
+  shows "embed w <\<^sub>o embed x"
+proof (cases w)
+  case Z
+  have "x \<noteq> Z" using assms(3) Z olt_Z_iff by blast
+  then obtain e f g where x: "x = P e f g" by (cases x) auto
+  show ?thesis using Z x embed_P_neq_Zero by (simp add: olt_ZeroI)
+next
+  case (P a b c)
+  have "x \<noteq> Z" using assms(3) olt_Z_iff by blast
+  then obtain e f g where x: "x = P e f g" by (cases x) auto
+  \<comment> \<open>principal/principal: needs the \<open>NF\<close> K-condition (built-from-below)\<close>
+  show ?thesis sorry
+qed
+
 section \<open>Wiring: the remaining obligations imply \<open>wf Rnf\<close>\<close>
 
 text \<open>Well-foundedness on the \<open>\<Omega>\<close>-free terms (\<^const>\<open>oltRwF\<close>, @{thm [source] wf_oltRwF},
@@ -158,5 +193,13 @@ theorem step_terminates_via_embed:
   assumes op: "\<And>w x. w \<in> NF \<Longrightarrow> x \<in> NF \<Longrightarrow> w <o x \<Longrightarrow> embed w <\<^sub>o embed x"
   shows "wf {(T, M). M \<in> ST_PS \<and> step M T}"
   by (rule step_terminates[OF wf_Rnf_via_embed[OF op]])
+
+text \<open>Discharging \<open>op\<close> by @{thm [source] op_NF}: PSS termination, modulo the three
+  remaining internal cores (@{thm [source] masterF}'s collapse closure \<open>L_ThF\<close> at
+  the cross-subscript case, the order-meta lemma \<open>olt_trans\<close> at the sum case, and the
+  \<open>P\<close>/\<open>P\<close> case of @{thm [source] op_NF}).\<close>
+
+theorem step_terminates_NF: "wf {(T, M). M \<in> ST_PS \<and> step M T}"
+  by (rule step_terminates_via_embed[OF op_NF])
 
 end
