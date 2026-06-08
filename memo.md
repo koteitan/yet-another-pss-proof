@@ -955,3 +955,24 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   olt_trans Su の multiset 核は完成。残るは carrier 仮説供給の combined trans+asym+mnlcong のみ。
 - **戦略選択肢(要 advisor 判断)**: (a) 非標準 linearity を自前 combined 帰納(subtle measure, 一次資料なし, 高難度)。
   (b) op_NF 和ケースに必要な弱い trans 事実だけ示す(full linearity 回避, op_NF 限定で最小)。(c) Su 節をソート lex 寄せ(部分)。
+
+### 進捗 (2026-06-09 続20): advisor 最終指針＝再順序化(L_ThF 核先行)＋olt_trans 最小化。以降は自律
+- **advisor 最終回答（以降 advisor 不在・完全自律）**:
+  - **Q1**: op_NF 和ケースは full olt_trans 不要。**像 summand(embed の Th-principal)上の制限版 trans** で足りる。
+    olt_trans の唯一の利用者は op_NF なので、op_NF 着手時に実際に呼ぶ trans instance を1つ抜き、像に限った
+    制限版(collapse_lt_dom 系/像の構造帰納)で出す。full linearity 不要＝(b)。
+  - **Q2**: **L_ThF 核を先行（再順序化）**。L_ThF 核は深い(impredicative 崩壊)が transitivity-free・出典明確
+    (Towsner 3.10/Pohlers 9.6.15)＝「難しいが地図のある」仕事、依存なし、最深 headline sorry を消す。
+    olt_trans-full は非標準・一次資料なし・measure subtle・op_NF 専用＝不確実。リスク収益比で L_ThF 先行が明確に良い。
+  - **full linearity が将来必要なら**: 自前 subtle measure 帰納は書かない。**carrier 上で olt_Su=multp の橋渡しを完成
+    （forward は済、reverse=multp_HO_imp_olt_Su も済）→ asym/trans/total を HOL-Library multp から継承**。
+    library が measure を多重集合順序機構で内部処理＝full-size 中央項問題が起きない。相互再帰は外側項サイズ帰納で底打ち、
+    summand 性質(IH)を multp 補題に供給。既存橋渡し資産がそのまま活きる。
+- **確定作業順（自律）**: (1) **L_ThF 核 e∈acc**(Towsner 3.10) → (2) op_NF(最小 trans 含む) → (3) olt_trans は op_NF が要る分だけ。
+- **L_ThF 核の正しい帰納(Towsner 3.10, 要再構成)**: 現 L_ThF は「外側 level 帰納＋内側 d-acc 帰納」だが、advisor 指針は
+  「**引数 d∈acc の main 帰納 ＋ predecessor r の内側構造帰納**」。predecessor r=Th p e の臨界部分項 Kn p e は
+  **r より小さい predecessor**(γ<o Th n d=Acond, size γ<size r)→ **r の構造帰納 IH で γ∈acc**→ e は controlled(Kn p e⊆acc)
+  →「controlled⟹accessible」(Pohlers 9.6.15 核, Mn/AccB)で e∈acc→Th p e∈acc。q≥n は controlled で吸収(level 帰納不要)。
+  ＝現状の「外側 level 帰納」より「predecessor 構造帰納＋controlled」が正しい枠。要 L_ThF 再構成。
+- **次の一手**: L_ThF を「accI 内で predecessor r に構造帰納、Kn p e⊆acc を IH で、controlled⟹acc 補題で e∈acc」に再構成。
+  controlled⟹acc が核(Mn/AccB 利用 or 直接の項長帰納)。これが残る最深 sorry。
