@@ -64,7 +64,8 @@
       - ✅ **`step_terminates_NF`（無条件の停止性定理）** ＝ `step_terminates_via_embed[OF op_NF]`
       - 🚨 **`op_NF`**: Z✅＋`embed_P_neq_Zero`✅、**P/P 残 sorry**。分解検証済(Python 0 反例)・補題整備中:
         - ✅ **K 条件 a<e**: `wo.Kn_dom`（omfree c⟹γ∈Kn a c⟹a<e⟹γ<o Th e D）＋`wo.Th_lt_of_sub_lt`（omfree g⟹m<n⟹Th m g<o Th n h）＝leading-subscript clause 完成
-        - 🚨 **残**: (1)`cnf_ST_PS`（兄弟非増, ST_PS/oper 帰納＝decrease lemma 級の新証明; 兄弟添字 ≤ leading 用）, (2)principal a=e ケース（embed b<o embed f 伝播, bfb 要）, (3)cnf+K ⟹ lex=DM 和順序 glue
+        - ✅ **cnf 機構（部分）**: `mechanized.translate_takeWhile_snoc_le`（leading-block snoc 単調）＋`wf.cnf_snoc`/`cnf_butlast`（cnf は末尾削除で保存）＝oper の Pred 分岐を discharge 可能に
+        - 🚨 **残**: (1)`cnf_ST_PS` の **oper bad/tiling 分岐**（core_i0/i1 構造で tiled translate の cnf; 残る hard 部分）, (2)principal a=e ケース（embed b<o embed f 伝播, bfb 要）, (3)cnf+K ⟹ lex=DM 和順序 glue
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
