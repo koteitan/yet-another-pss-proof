@@ -614,3 +614,18 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   (3)`cnf w∧cnf x∧w<o x(three) ⟹ embed w<o embed x`（非増列で lex=DM 和順序, glue 補題）。
   いずれも **ordinary induction**（非 impredicative）＝ L_ThF の leveled-Acc より achievable。op_NF が先に閉じる見込み。
 - tool: `tools/test_op_nf.py`（op_NF・cnf・principal-pres の経験的検証）。
+
+### 検証 (2026-06-08 続): op_NF の a=e ケースは cnf+bfb 必須
+- **argument-monotonicity `g<o h ⟹ Th a g <o Th a h` は偽**（一般 wfo omfree nneg でも 13886/231555 反例）。
+  反例 g は Su（和, 複数 Th0 principals で cnf 違反）。∴ a=e ケースは NF の cnf+bfb 構造に依存（一般項では不成立）。
+- a<e ケースは `Th_lt_of_sub_lt`（Kn_dom）で**証明済・汎用**。a=e は cnf+bfb 必要。
+- ∴ op_NF 完成には `cnf_ST_PS`＋`bfb`（ともに ST_PS/oper 帰納, decrease lemma 級の新規開発）が不可欠で確定。
+- three 順序を直接 WF にする route(B) も検討したが、three は nat 添字（soundness bug 無し）でも崩壊 WF には
+  Om-scaffold 相当が要り ot route と同難度。∴ 既存 ot 資産を活かす route(A) 継続が妥当。
+
+### 残作業の総括（2026-06-08 セッション末）
+両 headline 核とも **decrease lemma 級の独立した大規模 formalization**:
+- **op_NF**: `cnf_ST_PS`(NF⟹cnf, oper 帰納)＋`bfb`(子添字≤親+1, oper 帰納)＋principal保存(a<e済/a=e要)＋lex=DM glue。
+- **L_ThF[0≤p<n]**: leveled M_n/Acc_n（Towsner 3.7-3.12 を絶対 subscripted ψ 用に再導出; FCset≠Towsner FC のため original; Om-scaffold 込み）。
+今セッション確定の最重要成果＝**致命的 soundness バグ(nneg)修正**（旧証明は L_ThF=偽に依存し無効だった）。
++ Kn_dom/Th_lt_of_sub_lt/cntbl_downclosed/nneg 機構を証明。architecture は健全化済（残2 sorry は真の目標）。
