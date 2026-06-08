@@ -162,6 +162,34 @@ qed simp
 lemma nneg_embed: "nneg (embed t)"
   unfolding embed_def by (rule nneg_collapse) (use nneg_eprincs in auto)
 
+text \<open>The principal \<^const>\<open>bag\<close> of an embedded term is exactly the (multiset of the)
+  list of its principal summands \<^const>\<open>eprincs\<close>.  This lets the order-preservation
+  argument reason about \<open><\<^sub>o\<close> on sums via the Dershowitz\<dash>Manna multiset extension
+  over the principals.\<close>
+
+lemma bag_collapse:
+  assumes "\<forall>x \<in> set xs. isH x" shows "bag (collapse xs) = mset xs"
+proof (cases xs)
+  case Nil thus ?thesis by simp
+next
+  case (Cons y ys)
+  show ?thesis
+  proof (cases ys)
+    case Nil thus ?thesis using Cons assms by (cases y) auto
+  next
+    case (Cons z zs) thus ?thesis using \<open>xs = y # ys\<close> by simp
+  qed
+qed
+
+lemma bag_embed: "bag (embed t) = mset (eprincs t)"
+proof -
+  have "\<forall>x \<in> set (eprincs t). isH x" using eprincs_props by blast
+  from bag_collapse[OF this] show ?thesis by (simp only: embed_def)
+qed
+
+lemma bag_embed_P: "bag (embed (P a b c)) = {# Th (int a) (embed b) #} + bag (embed c)"
+  by (simp add: bag_embed del: eprincs.simps)
+
 lemma embed_P_neq_Zero: "embed (P e f g) \<noteq> Zero"
 proof (cases "eprincs g")
   case Nil
