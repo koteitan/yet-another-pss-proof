@@ -682,3 +682,18 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - decr=translate(B@C)<o translate(B@[lp])（core_i0/core_i1）。lead(b1≤o b2): i1=0 同 b=translate R; i1=1 b1=translate(R@C)<o b2=translate(R@[lp])。
   - cnf_ctx_cong 適用 → cnf(M[n])。
 - **次セッション**: (1) cnf_nest(i1=1 ascending copies cnf), (2) cnf_oper_bad 組立, (3) cnf_ST_PS。その後 bfb_ST_PS, op_cnf 組立, L_ThF leveled-Acc。
+
+### 進捗 (2026-06-08 続6): translate_shift 証明＋i1=1 cnf の難所分析
+- **証明済**: `mechanized.translate_shift`（row-0 一様 shift で translate 不変）。
+- **i1=1 cnf の難所**（cnf_oper_bad の唯一の未解決部）:
+  - 外側 cnf_ctx_cong[Z1=B@C, Z2=B@[lp], G=take j0 M] は OK（B 共有で lead 成立, b1=translate(R@C)≤o b2=translate(R@[lp])）。
+  - 唯一要るのは **cnf(translate(B@C))=cnf(translate(R@C))**（i1=1 は単一木 P w0 (translate(R@C)) Z）。
+  - **内側 cnf_ctx_cong[Z1=C, Z2=[lp], G=R] は使えない**: C(=cp1@..)の先頭 (v0+d0, w0) と lp=(v0+d0, row1 j1) は
+    row-0 同じだが **row-1 が異なる**（RedCondA: j0=parent1(j1) で row1 j0 = row1 j1 - 1 = w0 ≠ row1 j1）。
+    ∴ lead（同 subscript）不成立。
+  - **筋（次セッション）**: R@C は「good prefix R @ tiled copies C」＝**bad block を一段内側に入れた構造**で、
+    **cnf_oper_bad が再帰的**（i1=1 は block 深さで nested induction, 各 copy は translate_shift で同一 translate）。
+    or: cnf_nest を n 帰納で（M[n+1]=M[n]@cp n, cp n は最深 block を append）＝append-deeper cnf。
+  - i1=0 側は cnf_replicate_block で解決済（cnf(B@C)=cnf(block^n)）。
+- **要点**: cnf_oper_bad の組立は (1) oper setup(~40行, translate_oper_bad 模倣), (2) i1=0=cnf_replicate_block,
+  (3) i1=1=cnf_nest(上記, 再帰 or append-deeper), (4) cnf_ctx_cong 適用。i1=1 が research-level の残核。
