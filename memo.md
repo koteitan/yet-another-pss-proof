@@ -781,3 +781,29 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **olt_trans の扱い**: 核を Kn-style(推移律無し)で書けるか要検討。書けなければ olt_trans を先に閉じる必要。
 - **次セッション**: controlled 述語＋`controlled⟹acc`(9.6.15) を statement で置き(sorry骨組)→compile→
   項長帰納の崩壊サブケースを Mn/AccB と levelIH/accIH で埋める。op_NF/olt_trans はその後。
+
+### 進捗 (2026-06-08 続11): advisor 改訂計画＝olt_trans 先行。出典・帰納形・順序の確定
+- **advisor 補正(出典)**: q≥n の壁の精密な出典は Pohlers §9.6 ではなく **Towsner §3.2 Lemma 3.10/3.11**
+  （多レベル Ω_n collapse 閉包＝二軸）。Pohlers 9.6.15=単レベル帰納の型、Towsner 3.10/3.11=多レベル二軸版。
+  Towsner は相対 shifting(α^{≤0}_{-1}, α*)で書くので、それを剥がして絶対系 Mn/AccB へ写す。
+- **advisor 補正(帰納形)**: 「e の構造帰納」は誤り。正しくは **「引数 α∈Acc_n の main 帰納(整礎部分の accessibility 帰納)
+  ＋ predecessor γ の内側構造帰納」**。predecessor γ=Th q h(q≥n 含む)は **M_n(controlled)条件＋main IH** で吸収。
+  subscript ごとの level 帰納は不要。q≥n が levelIH で届かないのは正しいが、届かせる必要が無い。
+- **advisor 回答 Q1**: 既存幅 Mn/AccB 再利用(新述語最小)。二軸は M_n が FC-ground(幅)＋K-control(bfb=臨界部分項が
+  下位 Acc)を1述語に束ねて統合。**確認事項**: 既存 Mn が K-control(bfb)を持つか。無ければ最小限足す。
+  真に新規なのは「collapse 閉包補題(3.10)を main-on-argument 帰納で証明」1補題のみ。
+- **advisor 回答 Q2＋順序改訂**: 前回「L_ThF 先行」は「残り1ケースの早い勝ち」前提で、それは今や偽(e∈acc は
+  impredicative の核そのもの)。**順序を改訂: olt_trans → L_ThF核(Towsner 3.8/3.10 転写) → op_NF(FC最重量,最後)**。
+  理由: olt_trans 残(c=Su[a=Su])は combined induction で closeable、(a)op_NF 和ケース解禁、(b)核のクロスレベル
+  合流(Towsner 3.8 の multiset/和)解禁。核を transitivity-free に縛ると結局 olt_trans 要で二度手間リスク。
+- **advisor 健全性確認点**: main-on-arg 帰納の整礎性(e∈Acc_n, predecessor 厳密下位, 外側 level 帰納と非循環)、
+  「collapse はレベルを下げる」(Towsner 3.11: level n 崩壊→⋃_{m<n}Acc_m)が絶対系 encoding で成立すること。
+- **olt_trans の難所(私の分析)**: sorry は wo.thy の c=Su,a=Su(¬isH a)＝**Su/Su/Su 一段 DM 推移律**(Towsner 3.8)。
+  **単一支配元 one-step DM `∃β∈ms ys-xs.∀α∈ms xs-ys.α<o β` は、base order が全順序でないと推移的でない**
+  （反例: α1<β1,α2<β2,他は incomparable な部分順序で Su{α1,α2}<Su{α2,β1}<Su{β1,β2} だが ¬(Su{α1,α2}<Su{β1,β2})）。
+  ∴ ot 上で olt が**全順序であること(totality)を併せて要する**。現状 asym/irrefl は trans 依存で、totality 未証明。
+  → **trans + totality(asym/trichotomy) を combined induction で同時証明**が必要（summary の 3-way 相互依存）。
+  全順序なら「対称差の最大元」で Su DM 推移律が出る。これが olt_trans を閉じる本体。
+- **olt_trans 実装方針**: `olt_tri: a<o b ∨ a=b ∨ b<o a`(totality) と `olt_trans` を1つの size 帰納で相互に証明。
+  Su/Su/Su trans は tri(下位要素)で max 元論法、または witness 直接操作。まず tri 単独が size 帰納で閉じるか試し、
+  trans の Su ケースで tri を使う。olt_asym/irrefl は tri+trans から従う。
