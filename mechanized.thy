@@ -268,6 +268,32 @@ proof -
   show ?thesis by (simp only: append_Cons fst_conv snd_conv translate.simps(2) twT dwT)
 qed
 
+text \<open>Shifting every row-0 value by a constant preserves the translation: \<open>translate\<close>
+  only reads row-0 through the strict comparisons \<open>fst p < fst q\<close> (shift-invariant)
+  and reads row-1 (\<open>snd\<close>) unchanged.  This is why the ascending copies of the
+  bad-step tiling (which differ from the base block only by a uniform row-0 shift)
+  all translate to the same tree.\<close>
+
+lemma translate_shift: "translate (map (\<lambda>p. (fst p + d, snd p)) M) = translate M"
+proof (induction M rule: translate.induct)
+  case 1 thus ?case by simp
+next
+  case (2 p rest)
+  let ?f = "\<lambda>p. (fst p + d, snd p)"
+  let ?P = "\<lambda>q. fst p < fst q"
+  have tw: "takeWhile (\<lambda>q. fst (?f p) < fst q) (map ?f rest) = map ?f (takeWhile ?P rest)"
+    by (simp add: takeWhile_map o_def)
+  have dw: "dropWhile (\<lambda>q. fst (?f p) < fst q) (map ?f rest) = map ?f (dropWhile ?P rest)"
+    by (simp add: dropWhile_map o_def)
+  have "translate (map ?f (p # rest))
+        = P (snd p) (translate (map ?f (takeWhile ?P rest))) (translate (map ?f (dropWhile ?P rest)))"
+    using tw dw by (simp only: list.map translate.simps(2) fst_conv snd_conv)
+  also have "\<dots> = P (snd p) (translate (takeWhile ?P rest)) (translate (dropWhile ?P rest))"
+    using "2.IH"(1) "2.IH"(2) by simp
+  also have "\<dots> = translate (p # rest)" by simp
+  finally show ?case .
+qed
+
 subsection \<open>Context congruence (BADCTX)\<close>
 
 text \<open>If two tails \<open>Z\<^sub>1, Z\<^sub>2\<close> share the same first pair's row-0 value and all
