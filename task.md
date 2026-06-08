@@ -8,10 +8,13 @@
   - 背景: Towsner §2（絶対系）には WF 証明が無く、§3.2 の WF は polymorphic 系専用。絶対系では `Om n` が「足場ではなく本物の大元」のため構造帰納の底が無く、Acc_n/M_n レベル構築（数百行）が要る。多相系なら §3.2 がほぼ直接移植でき `wf pR` が閉じる。
 
 ## 進捗ツリー
-> **現状サマリ (2026-06-08)**: 停止性は **end-to-end で 2 義務に還元・コミット済**
-> （`embed.step_terminates_via_embed`）: PSS 停止性 ⟸ **(1) `masterF`**（Om-free 項の
-> Buchholz WO 核, 真の sorry）＋ **(2) `op`**（embed の NF 上順序保存, 仮定）。
-> 基盤（shift 順序自己同型・acc 不変・ground/norm/width・omfree・distinguished-set 定義）は全て証明済。
+> **現状サマリ (2026-06-08)**: PSS 停止性は **無条件定理 `embed.step_terminates_NF` として成立**、
+> ただし内部に **3つの sorry のみ**（他は全証明済・ビルド緑）:
+> **(1) `wo.olt_trans[c=Su[a=Su]]`**（順序メタ理論＝Towsner Lemma 2.1, c=Su の sum-sum 推移; 残りは全証明）、
+> **(2) `buchholz.L_ThF[p<n]`**（Buchholz ϑ 崩壊 WO の交差添字ケース; domination/p=n/Su は証明済）、
+> **(3) `embed.op_NF[P/P]`**（embed の NF 順序保存の P/P ケース; Z ケースは証明済）。
+> いずれも研究レベル（崩壊整礎性・順序メタ理論・NF 不変条件橋渡し）。基盤（shift 自己同型・acc 不変・
+> ground/norm/width・omfree・distinguished-set・reduction chain・order meta の主要部）は全証明済。
 - 🚨 定理（標準形ペア数列システムの停止性）〔proofs.thy / embed.thy〕
   - ✅ §5 定式化〔def.thy: 親子関係 nextrel0/1・基本列 oper=M[n]・標準形 ST_PS・step〕
   - ✅ 三分木記法 $p_a(b)+c$〔mechanized.thy〕
@@ -53,8 +56,9 @@
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
       - ✅ embed/eprincs/collapse＋像の well-formed〔wfo_embed〕＋**Om-free〔omfree_embed〕**（int 化済: `Th (int a) ...`）
       - ✅ **`wf_Rnf_via_embed`**: `wf Rnf` ⟸ `op`（NF 上 `w≺x ⟹ embed w<\<^sub>o embed x`）のみ（wf_oltRwF＋omfree_embed で配線済、偽の wf oltRw 仮定は除去）
-      - ✅ **`step_terminates_via_embed`**: PSS 停止性 ⟸ `op` （end-to-end, masterF が唯一の内部 gap）
-      - 🚨 **`op`**（NF 上順序保存, 残 2 義務の一つ）
+      - ✅ **`step_terminates_via_embed`**: PSS 停止性 ⟸ `op`
+      - ✅ **`step_terminates_NF`（無条件の停止性定理）** ＝ `step_terminates_via_embed[OF op_NF]`
+      - 🚨 **`op_NF`**: Z ケース✅＋`embed_P_neq_Zero`✅、**P/P ケースが残 sorry**（NF の built-from-below を ot の K 条件へ）★3義務の一つ
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
