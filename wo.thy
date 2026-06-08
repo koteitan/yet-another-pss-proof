@@ -371,6 +371,185 @@ next
   ultimately show ?case using x(1) by (cases \<gamma>) auto
 qed
 
+subsection \<open>The countable fragment (\<open>M\<^bsub>-\<infinity>\<^esub>\<close>) is downward closed\<close>
+
+text \<open>A term is \<^emph>\<open>countable\<close> (Towsner's formal cardinality \<open>-\<infinity>\<close>, the bottom level
+  \<open>M\<^bsub>-\<infinity>\<^esub>\<close> of Def 3.7) when it has no \<^emph>\<open>free\<close> \<open>\<Omega>\<close> at all, i.e.\ \<^term>\<open>FCset t = {}\<close>.
+  This is the genuine well-foundedness target: it is strictly larger than the
+  \<^const>\<open>omfree\<close> terms (e.g.\ \<open>\<vartheta>\<^bsub>0\<^esub> \<Omega>\<^bsub>5\<^esub>\<close> is countable but not \<open>\<Omega>\<close>-free \<dash> the \<open>\<Omega>\<^bsub>5\<^esub>\<close> is
+  \<^emph>\<open>bound\<close> by the collapse), and that extra \<open>\<Omega>\<close>-scaffolding is exactly what the
+  collapse accessibility argument needs as predecessors.  The embedding image is
+  \<open>\<Omega>\<close>-free, hence countable.\<close>
+
+abbreviation cntbl :: "ot \<Rightarrow> bool" where
+  "cntbl t \<equiv> FCset t = {}"
+
+lemma omfree_imp_cntbl: "omfree t \<Longrightarrow> cntbl t"
+  by (induction t) auto
+
+text \<open>Countability is preserved downward by \<open><\<^sub>o\<close>: a predecessor of a countable
+  term is countable.  Hence the countable terms form a \<open><\<^sub>o\<close>-downward-closed set,
+  and accessibility within them is genuine accessibility.  Proved by induction on
+  \<open>size x + size y\<close> (mirroring \<^const>\<open>olt\<close>'s own recursion), using @{thm [source]
+  FCset_Kn} and @{thm [source] FCset_Th_eq_Kn}.\<close>
+
+lemma cntbl_downclosed:
+  assumes "x <\<^sub>o y" "cntbl y" shows "cntbl x"
+proof -
+  have "x <\<^sub>o y \<longrightarrow> cntbl y \<longrightarrow> cntbl x"
+  proof (induction "size x + size y" arbitrary: x y rule: less_induct)
+    case less
+    have IH: "cntbl x'" if "size x' + size y' < size x + size y" "x' <\<^sub>o y'" "cntbl y'"
+      for x' y' using less.hyps[OF that(1)] that(2,3) by blast
+    show ?case
+    proof (intro impI)
+      assume xy: "x <\<^sub>o y" and cy: "cntbl y"
+      show "cntbl x"
+      proof (cases x)
+        case (Om m)
+        \<comment> \<open>\<open>\<Omega>\<^bsub>m\<^esub>\<close> has \<open>FCset = {m} \<noteq> {}\<close>; we derive a contradiction from \<open>cy\<close>\<close>
+        have False
+        proof (cases y)
+          case (Om n) thus False using cy by simp
+        next
+          case (Su ys)
+          from xy Om Su obtain b where b: "b \<in> set ys" "Om m \<le>\<^sub>o b" by auto
+          have cb: "cntbl b" using cy Su b(1) by auto
+          show False using b(2)
+          proof
+            assume "Om m <\<^sub>o b"
+            moreover have "size (Om m) + size b < size x + size y"
+              using Om Su size_lt_Su[OF b(1)] by simp
+            ultimately have "cntbl (Om m)" using cb IH by blast
+            thus False by simp
+          next
+            assume "Om m = b" hence "b = Om m" by simp
+            thus False using cb by simp
+          qed
+        next
+          case (Th n c)
+          from xy Om Th obtain \<gamma> where g: "\<gamma> \<in> Kn n c" "Om m \<le>\<^sub>o \<gamma>" by auto
+          have cg: "cntbl \<gamma>" using FCset_Kn[OF g(1)] cy Th by auto
+          show False using g(2)
+          proof
+            assume "Om m <\<^sub>o \<gamma>"
+            moreover have "size (Om m) + size \<gamma> < size x + size y"
+              using Om Th Kn_size[OF g(1)] by simp
+            ultimately have "cntbl (Om m)" using cg IH by blast
+            thus False by simp
+          next
+            assume "Om m = \<gamma>" hence "\<gamma> = Om m" by simp
+            thus False using cg by simp
+          qed
+        qed
+        thus ?thesis ..
+      next
+        case (Su xs)
+        note xSu = Su
+        have "\<forall>v \<in> set xs. cntbl v"
+        proof
+          fix v assume v: "v \<in> set xs"
+          show "cntbl v"
+          proof (cases y)
+            case (Om n) thus ?thesis using cy by simp
+          next
+            case (Th n c)
+            have "v <\<^sub>o Th n c" using xy xSu Th v by auto
+            moreover have "size v + size (Th n c) < size x + size y"
+              using xSu Th size_lt_Su[OF v] by simp
+            ultimately show ?thesis using cy Th IH by blast
+          next
+            case (Su ys)
+            show ?thesis
+            proof (cases "v \<in> set ys")
+              case True thus ?thesis using cy Su by auto
+            next
+              case False
+              \<comment> \<open>\<open>v\<close> survives the multiset difference, so it is dominated by the witness\<close>
+              from xy xSu Su obtain b
+                where b: "b \<in># mset ys - mset xs"
+                  and dom: "\<forall>a \<in># mset xs - mset ys. a <\<^sub>o b" by auto
+              have vdiff: "v \<in># mset xs - mset ys"
+              proof -
+                have c1: "0 < count (mset xs) v" using v by (simp add: count_greater_zero_iff)
+                have c2: "count (mset ys) v = 0" using False by (simp add: count_eq_zero_iff)
+                have "count (mset ys) v < count (mset xs) v" using c1 c2 by linarith
+                thus ?thesis by (simp add: in_diff_count)
+              qed
+              have vb: "v <\<^sub>o b" using dom vdiff by blast
+              have bset: "b \<in> set ys" using b by (auto dest: in_diffD)
+              have cb: "cntbl b" using cy Su bset by auto
+              have "size v + size b < size x + size y"
+                using xSu Su size_lt_Su[OF v] size_lt_Su[OF bset] by simp
+              thus ?thesis using vb cb IH by blast
+            qed
+          qed
+        qed
+        thus ?thesis using xSu by auto
+      next
+        case (Th m a)
+        note xTh = Th
+        show ?thesis
+        proof (cases y)
+          case (Om n) thus ?thesis using cy by simp
+        next
+          case (Su ys)
+          from xy xTh Su obtain b where b: "b \<in> set ys" "Th m a \<le>\<^sub>o b" by auto
+          have cb: "cntbl b" using cy Su b(1) by auto
+          show ?thesis using b(2)
+          proof
+            assume "Th m a <\<^sub>o b"
+            moreover have "size (Th m a) + size b < size x + size y"
+              using xTh Su size_lt_Su[OF b(1)] by simp
+            ultimately show ?thesis using xTh cb IH by blast
+          next
+            assume "Th m a = b" hence "b = Th m a" by simp
+            thus ?thesis using cb xTh by simp
+          qed
+        next
+          case (Th n b)
+          have cthb: "cntbl (Th n b)" using cy Th by simp
+          from xy xTh Th
+          have disj: "(\<exists>\<gamma>\<in>Kn n b. Th m a \<le>\<^sub>o \<gamma>)
+              \<or> ((\<forall>\<gamma>\<in>Kn m a. \<gamma> <\<^sub>o Th n b) \<and> (m < n \<or> (m = n \<and> a <\<^sub>o b)))" by simp
+          from disj show ?thesis
+          proof
+            assume "\<exists>\<gamma>\<in>Kn n b. Th m a \<le>\<^sub>o \<gamma>"
+            then obtain \<gamma> where g: "\<gamma> \<in> Kn n b" "Th m a \<le>\<^sub>o \<gamma>" by auto
+            have cg: "cntbl \<gamma>" using FCset_Kn[OF g(1)] cthb by auto
+            show ?thesis using g(2)
+            proof
+              assume "Th m a <\<^sub>o \<gamma>"
+              moreover have "size (Th m a) + size \<gamma> < size x + size y"
+                using xTh Th Kn_size[OF g(1)] by simp
+              ultimately show ?thesis using xTh cg IH by blast
+            next
+              assume "Th m a = \<gamma>" hence "\<gamma> = Th m a" by simp
+              thus ?thesis using cg xTh by simp
+            qed
+          next
+            assume A: "(\<forall>\<gamma>\<in>Kn m a. \<gamma> <\<^sub>o Th n b) \<and> (m < n \<or> (m = n \<and> a <\<^sub>o b))"
+            have "FCset (Th m a) = (\<Union>\<gamma>\<in>Kn m a. FCset \<gamma>)" by (rule FCset_Th_eq_Kn)
+            also have "\<dots> = {}"
+            proof -
+              have "FCset \<gamma> = {}" if g: "\<gamma> \<in> Kn m a" for \<gamma>
+              proof -
+                have "\<gamma> <\<^sub>o Th n b" using A g by blast
+                moreover have "size \<gamma> + size (Th n b) < size x + size y"
+                  using xTh Th Kn_size[OF g] by simp
+                ultimately show ?thesis using cthb IH by blast
+              qed
+              thus ?thesis by simp
+            qed
+            finally show ?thesis using xTh by simp
+          qed
+        qed
+      qed
+    qed
+  qed
+  with assms show ?thesis by blast
+qed
+
 subsection \<open>Monotonicity in an \<open>\<Omega>\<close> upper bound\<close>
 
 text \<open>Raising the cardinal of an \<open>\<Omega>\<close> upper bound preserves \<open><\<^sub>o\<close> below it.
