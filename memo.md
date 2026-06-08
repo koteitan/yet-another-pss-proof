@@ -824,3 +824,21 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **Python 検証スクリプト**: /tmp/olt_check.py（olt/Kn 移植＋反例探索）, /tmp/abstract_dm.py（抽象 DM 非推移性）。
 - **設計判断ポイント(要相談 or 自走)**: (i) trichotomy ≃ をどう定式化するか、(ii) olt_trans を無条件のまま combined
   induction で攻めるか、それとも実利用箇所(oltRwF=wfo∧omfree∧nneg)に合わせ wfo 断片へ制限して totality を確保するか。
+
+### 進捗 (2026-06-09 続13): advisor 出典補正＋Path 決定（Path B＝DM 維持）
+- **advisor 出典補正**: linearity の出典は Towsner ではなく **Buchholz 1986 [Buc1] Lemma 2.1**（<が T 上の狭義全順序）。
+  Towsner は Def 2.3 で順序定義のみ。**姉妹 repo pss-proof §7.1 が [Buc1] Lemma 2.1 を既に形式化**
+  （`lessBT`/`lessBP` を**降順ソート済リスト＋辞書式 lex**で持ち, lessBT_irrefl/trans/total を相互構造帰納で**無条件**証明, repo 全体 sorry 6個）。
+- **難所の根本原因（advisor）**: 2 repo の「和」表現の違い。pss-proof=ソート済リスト+lex（lex は成分全順序なら無条件に全順序・推移的）。
+  ya-pss(本 repo)=Su を **multiset(#)** で持ち単一支配元 DM。私が見つけた DM 非推移性も Su permutation 非全順序も**全て multiset-# 表現の副産物**。
+- **Path A（辞書式ソート表現へ替える）**: linearity が pss-proof からほぼ移植・無条件。permutation も DM 非推移性も消滅。
+  **コスト測定→禁止的**: mset/mult/Su 依存が wo(142/64/120)・buchholz・embed・wflevel(54/37)・accinfra 全体 ~3000行に深く浸透。
+  整礎性も lex(int 添字)では非整礎で別途やり直し（現 mult 整礎機構が好適）。**∴ 不採算**。
+- **Path B（DM 維持, 採用）**: olt_trans を combined induction で。Su/Su/Su trans は単一 witness で閉じない
+  （β1∈ms bs∩ms zs の sub-case で β2 が α を支配せず詰まる）→ **tri-mod-≃(≃=hereditary mset 同値)が必須**。
+  ≃ は inductive で定義（eqv(Om m)(Om m); eqv(Th m a)(Th m b)←eqv a b; eqv(Su xs)(Su ys)←要素 eqv の mset 同値）し、
+  (1)同値関係(2)olt-congruence(olt x y=olt x' y' when eqv x x', eqv y y')を証明→ combined `trans + (x<o y ∨ eqv x y ∨ y<o x)`
+  を size 帰納で。Su trans は eqv-商上の線形性（対称差の最大元）で。
+- **DECISION**: Path B。次は eqv 定義＋combined trans+tri を wo.thy に実装。olt_asym は既存(無条件・独立)を流用可。
+- **作業順(確定)**: olt_trans(Path B) → L_ThF核(Towsner 3.10/3.11+Pohlers 9.6.15, main-on-arg 帰納) → op_NF(FC構造, Buchholz survey k⁺/Thm 2.4)。
+- **強度ラベル**: TFBO = ψ_0(ε_{Ω_ω+1})（survey §4-5）。
