@@ -66,8 +66,8 @@
         - ✅ **K 条件 a<e**: `wo.Kn_dom`（omfree c⟹γ∈Kn a c⟹a<e⟹γ<o Th e D）＋`wo.Th_lt_of_sub_lt`（omfree g⟹m<n⟹Th m g<o Th n h）＝leading-subscript clause 完成
         - ✅ **op_NF glue 基盤 全完成**: `wo.Kn_dom`/`Th_lt_of_sub_lt`(K条件 a<e)・`embed.bag_embed`/`bag_collapse`/`bag_embed_P`(principal bag)・`embed.collapse_lt_dom`/`collapse_neq_Zero`(DM single-dominator)・`embed.eprincs_form`/`eprincs_lt_Th`(tail 支配)・`wf.tops`/`cnf_tops_le`(cnf 添字上限)・`mechanized.translate_takeWhile_snoc_le`・`wf.cnf_snoc`/`cnf_butlast`・`embed.uncollapse`/`collapse_inj`/`embed_inj`(単射)・`embed.collapse_prepend_diff`(equal-leading DM, tail 用)
         - ✅ **`embed.op_lt_a`（op_NF の a<e ケース完全証明, cnf w のみ要）**
-        - ✅ **cnf 機械 全証明**: `translate_block_append`/`translate_shift`(mechanized), `cnf_take`/`cnf_butlast`/`cnf_snoc`/`cnf_tops_le`/`cnf_replicate_block`/`cnf_ctx_cong`(一般化 b1≤o b2)/`cnf_tail`/**`cnf_oper_i1eq0`(i1=0 oper bad ケース完全証明・no sorry)**(wf)
-        - 🚨 **cnf_ST_PS 残**: (1)`cnf_oper_i1eq1`（i1=1 ascending climb, **research核**: n 帰納 append-deepest or block 深さ再帰; translate_shift で copy 同一 translate; climb が pure nesting なら sibling 条件無しで容易だが block row-0 単調性が要確認）, (2)cnf_ST_PS 組立（ST_PS 帰納＋oper setup で cnf_oper_i1eq0/i1eq1 を instantiate）
+        - ✅ **cnf 機械 全証明**: `translate_block_append`/`translate_shift`(mechanized), `cnf_take`/`cnf_butlast`/`cnf_snoc`/`cnf_tops_le`/`cnf_replicate_block`/`cnf_ctx_cong`(**一般化: 先頭principal非増加 P a1 b1 Z ≤o P a2 b2 Z**)/`cnf_tail`/`cnf_oper_i1eq0`(i1=0)/**`cnf_oper_i1eq1`(i1=1 昇順コピー, 自己相似 copies_Suc_front＋shift不変＋w0<snd lp spine支配, core_i1 で decr 内部導出)**(wf)
+        - ✅ **`cnf_ST_PS` 完全証明 (wf.thy sorry=0)**: `shiftr0`/`copies` 定義群＋`oper_bad_blocks`(mechanized: bad分岐分解 obtains)＋`cnf_oper`(全oper分岐)＋ST_PS帰納。罠: obtain discharge は `by (rule ...)`（blast はループ）, translate 非展開に `simp only: leq`
         - 🚨 **その他残**: `bfb_ST_PS`＋op_NF **a=e principal**, op_cnf 組立（tail は collapse_prepend_diff, embed_inj で irrefl 回避済）, L_ThF leveled-Acc
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕

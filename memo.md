@@ -710,3 +710,25 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   climb 構造由来）, (2) 純 nesting tower の cnf 自明補題（or translate が単一 b-chain ⟹ cnf）, (3) edge ケース処理。
   ＝当初の「再帰 cnf_oper_i1eq1」より直接的。
 - **cnf_ST_PS 組立**: ST_PS 帰納＋oper setup で cnf_oper_i1eq0（i1=0）/i1eq1（i1=1）を instantiate。
+
+### 進捗 (2026-06-08 続8): cnf_ST_PS 完全証明（cnf 機械 全完成、wf.thy sorry=0）
+- **続7 の de-risk は誤りだった**: i1=1 bad block の row-0 は **厳密増加とは限らない**（Python 再検証で
+  reduced ST_PS 6000 サンプル中 351 件が非増加、例 `(0,0)(1,1)(1,1)(1,1)` の block row0=[0,1,1]）。
+  純 nesting tower 戦略は不成立。ただし **cnf(translate M) は全 6000 ST_PS で成立**＝cnf_ST_PS は真。
+- **正しい構造**: `translate(R@C)` は自己相似。`copies d0 blk (Suc n) = blk @ shiftr0 d0 (copies d0 blk n)`
+  （front-peel）＋ translate の shift 不変性。鍵は **w0 < snd lp**（i1=1 の row-1 増加）による spine 支配。
+- **手法**: `cnf_ctx_cong` を「先頭 principal 非増加 `P a1 b1 Z ≤o P a2 b2 Z`」に一般化（a1<a2 も許可。
+  subscript が縮むと sibling 条件は easier ＝ olt_ole_trans 一発）。これで i1=0/i1=1 両対応。
+- **新規証明 (all no sorry, wf.thy)**: `shiftr0`/`copies` 定義＋補題群（shiftr0_shiftr0/_concat/_0/Nil,
+  translate_shiftr0, copies_Suc_front/_0/_1/_replicate/_v0_le/_tl_gt, hd_copies, copies_nonempty）,
+  `cnf_copies`（n コピーの cnf, copies_Suc_front 帰納＋一般化 cnf_ctx_cong）,
+  `cnf_oper_i1eq1`（自己完結: core_i1 で decr 内部導出）, `cnf_oper`（全 oper 分岐: Pred=butlast/cnf_butlast,
+  bad=cnf_oper_i1eq0/i1eq1）, `cnf_ST_PS`（ST_PS 帰納）。
+- **新規 (mechanized.thy)**: `oper_bad_blocks`（bad 分岐分解を obtains で公開: M=G@blk@[lp],
+  oper M n=G@copies, R条件, v0<fst lp, d0=0∨(0<d0∧w0<snd lp∧fst lp=v0+d0)）。
+- **罠**: obtain の discharge を `by blast` にすると **無限ループ**（∀set+∨ で blast 探索爆発, 400s timeout）。
+  `by (rule oper_bad_blocks[OF ...])` で決定的に解決。また translate を大 symbolic 項へ展開する `by simp` も
+  遅い→ list 等式を別途立て `by (simp only: leq)` で回避。
+- **残る headline sorry は 3 つのみ**: wo.olt_trans[c=Su[a=Su]], buchholz.L_ThF[0≤p<n], embed.op_NF[P/P]。
+- **次**: op_NF（cnf_ST_PS 入手済→ NF は cnf 使用可）。bfb_ST_PS（principal bag finite/bounded）＋
+  op_NF の a=e principal ケース＋op_cnf 組立。その後 L_ThF leveled-Acc, wo.olt_trans。
