@@ -1114,3 +1114,18 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   full-size 中央項は「中央項を測度で優先する lexicographic 測度」or「multiset {a,b,c} 測度」で吸収できる可能性。要検討。
   (b) もし olt_trans が op_NF のためだけなら、op_NF が実際に呼ぶ trans instance(像=wfo の特定形)に限定した最小版を直接証明。
 - **現状コミット**: baseline 3 sorry 緑維持。scratch は ROOT 外(参照用 green ファイル)。
+
+### 進捗 (2026-06-09 続27): olt_trans_aH(左principal限定)も不可。olt_trans は本質的に linearity 同時帰納が必要
+- **aH ショートカット検討→不可**: ot の trans 使用は asym 内(左 g,g'∈Kn=principal)のみ・op_NF も左 γ principal。
+  そこで `olt_trans_aH: isH a⟹trans` を既存証明から(a=Su 消去で)出せると思ったが、**Th/Th ケースが引数 (e,f,d) の trans を要し、
+  引数 e,d は Su になり得る**(line 1186-1188 IH(e,f,d))。∴ 左 principal 制限では内部再帰が破綻。
+  同様に `olt_trans_HH`(両端 principal)も Th/Th 引数再帰で破綻。**引数 trans は size-IH(小 Su/Su 含む)で扱う＝Su/Su を閉じる必要**。
+- **確定**: olt_trans Su/Su を閉じるには **linearity(trans+asym+mnlcong)の同時 size 帰納**が必須で、asym の Th/Th が trans を
+  **中央 Th n d=full size** で呼ぶ「full-size 中央項問題」を測度設計で吸収する必要。**姉妹 repo pss-proof は簡単版 linearity すら
+  sorry**(p_7_1_lessBT_linord、[Buc1] Lemma 2.1 を外部引用扱い)＝標準でも難物。本系は非標準(多重集合単一支配元)で一次資料無し。
+- **三 sorry の真の規模(確定)**: (1) olt_trans=非標準 linearity 同時帰納(研究級, full-size 中央項) (2) L_ThF=超限 distinguished-set
+  (研究級) (3) op_NF=(1)依存＋NF K条件。**全て研究級の順序論/証明論コア**。memo/adviser の当初想定より大きい。
+- **戦略的選択肢(要判断)**: (A) 全て自前完全証明(数週間規模)。(B) 姉妹 repo 同様、標準メタ理論(linearity 等)を一次資料引用(sorry/axiom)
+  扱いにし、新規部分(translate/decrease/embed/崩壊核)に原証明を集中。但し本系の順序は非標準で引用が弱い。
+  (C) 順序を標準形(Buchholz [Buc1] の lex/辞書式)に作り替えて linearity を引用可能にする(大改修)。
+- **検証済み資産(再掲)**: baseline 3 sorry 緑。scratch_trans.thy(green): bridge 配線＋size 境界群。trans 8ケースは wfo 付き緑(別 scratch, commit 62c3dcb)。
