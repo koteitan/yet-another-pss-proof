@@ -1052,3 +1052,27 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **規模**: ~150-250 行の combined induction(Buchholz [Buc1] Lemma 2.1 型, 但し本系の単一支配元 Su 節は非標準で自前)。
 - **三 sorry 確定方針**: (1) olt_trans_wf(combined linearity, 上記, 最も mapped) → (2) op_NF(wfo-trans+NF K条件) → (3) L_ThF(超限構成, 最難)。
   ＝advisor の「olt_trans 回避」を**部分修正**: full(無条件)は回避だが**wfo 制限 olt_trans は必要かつ実現可能**(op_NF が要る最小 trans＝これ)。
+
+### 進捗 (2026-06-09 続24): bridge green 検証済。combined linearity 実装計画確定
+- **bridge 検証 green (RC=0)**: scratch_trans.thy `su_su_trans_via_bridge`(carrier asym+trans+mnlcong 仮定下で Su/Su 推移)
+  ＋`transp_on_multp\<^sub>H\<^sub>O'`(library `transp_on_multp\<^sub>H\<^sub>O[OF asym trans] auto` で B_sub_A discharge)がコンパイル。
+  ∴ olt_trans Su/Su の道筋＝carrier 仮説供給のみが残課題。
+- **olt_trans 全 9 ケース精査完了**: 8ケース(c=Om 各/c=Th 各/c=Su[a-principal])は **trans-IH のみ・wfo 不要・asym/mnlcong 不要**。
+  **Su/Su(line 997, a=Su∧c=Su)のみ** bridge 必要。
+- **実装方針(確定)= combined linearity `olt_lin`** (wo.thy の olt_trans を置換, scratch で先行ビルド):
+  ```
+  lemma olt_lin: "(∀a b c. size a+size b+size c ≤ N ⟶ wfo a⟶wfo b⟶wfo c⟶ a<o b⟶b<o c⟶ a<o c)
+                ∧ (∀a b.   size a+size b      ≤ N ⟶ wfo a⟶wfo b⟶ a<o b⟶ ¬ b<o a)
+                ∧ (∀k x m. size k+size x+size m ≤ N ⟶ wfo k⟶wfo x⟶wfo m⟶ k<o x⟶ ¬x<o m⟶ ¬m<o x⟶ k<o m)"
+    proof (induction N rule: less_induct) case (less N)
+  ```
+  - less.IH から IHtrans/IHasym/IHmnl を抽出(size 和<N で各 conjunct)。sub-term は常に size<N なので IH 適用可。
+  - **trans 節**: wo.thy 781-1248 の8ケースを移植＋各 IHtrans 呼出前に sub-term の wfo を `wfo_Kn`/`wfo Su summand`/`wfo Th arg` で供給。
+    Su/Su は bridge(`olt_Su_imp_multp\<^sub>H\<^sub>O`,`transp_on_multp\<^sub>H\<^sub>O'`,`multp\<^sub>H\<^sub>O_imp_olt_Su`)＋carrier asym/trans/mnlcong を IH から。
+    carrier transp_on: distinct 三項 size 和<N で IHtrans、x=z は IHasym で vacuous(transp_on_multp\<^sub>H\<^sub>O が内部処理する形に合わせる)。
+  - **asym 節**: wo.thy 1266-1402 olt_asym 移植＋wfo。Th/Th XA-YA で IHtrans(Om/Th sub, 済ケース型)、Su/Su は IHasym(smaller)。
+  - **mnlcong 節(新規)**: k<o x, x~m(非比較) ⟹ k<o m。x,m の形で場合分け。~ は置換合同。IHtrans/IHasym/IHmnl 使用。最も不確実。
+  - 帰結: `olt_trans_wf`/`olt_asym_wf`/`olt_irrefl_wf`/`olt_ole_trans_wf`/`ole_olt_trans_wf` を olt_lin から。
+- **wo.thy 置換時の注意**: 現 olt_trans(無条件,sorry)/olt_ole_trans/ole_olt_trans/olt_asym/olt_irrefl を wfo 版に。
+  下流(buchholz/embed)は ot の trans/asym/irrefl 不使用＝安全。wo 内 bag_mono/wf_olt_of_principal(代替WF経路, 要確認)は wfo 仮定下。
+- **規模**: ~400-500 行(trans 移植が大半)。mnlcong が新規で要注意。**手順: scratch で trans→asym→mnlcong を順に green 化→wo.thy 統合**。
