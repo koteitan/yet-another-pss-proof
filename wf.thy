@@ -1190,6 +1190,64 @@ proof (induction G rule: length_induct)
   qed
 qed
 
+text \<open>CNF is inherited by a re-opening tail: if \<open>translate (G @ Z)\<close> is CNF and \<open>Z\<close>
+  is a single well-formed block (its non-leading pairs all lie above its root),
+  then \<open>translate Z\<close> is CNF.\<close>
+
+lemma cnf_tail:
+  assumes "T \<noteq> []" and rT: "\<forall>x\<in>set (tl T). fst (hd T) \<le> fst x"
+  shows "cnf (translate (G @ T)) \<Longrightarrow> cnf (translate T)"
+proof (induction G rule: length_induct)
+  case (1 G)
+  show ?case
+  proof (cases G)
+    case Nil thus ?thesis using "1.prems" by simp
+  next
+    case (Cons g G')
+    let ?Pg = "\<lambda>q. fst g < fst q"
+    show ?thesis
+    proof (cases "\<forall>x\<in>set G'. ?Pg x")
+      case allG: True
+      show ?thesis
+      proof (cases "?Pg (hd T)")
+        case True
+        have aT: "\<forall>x\<in>set T. ?Pg x" using True rT \<open>T \<noteq> []\<close> by (cases T) auto
+        have all: "\<forall>x\<in>set (G' @ T). ?Pg x" using allG aT by auto
+        have tw: "takeWhile ?Pg (G' @ T) = G' @ T" using all by (simp add: takeWhile_eq_all_conv)
+        have dw: "dropWhile ?Pg (G' @ T) = []" using all by (simp add: dropWhile_eq_Nil_conv)
+        have e: "translate (G @ T) = P (snd g) (translate (G' @ T)) Z"
+          by (simp only: Cons append_Cons translate.simps(2) tw dw translate.simps(1))
+        have cgt: "cnf (translate (G' @ T))" using "1.prems" e by simp
+        have "length G' < length G" using Cons by simp
+        thus ?thesis using "1.IH" cgt by blast
+      next
+        case False
+        have twT: "takeWhile ?Pg T = []" using False \<open>T \<noteq> []\<close> by (cases T) auto
+        have dwT: "dropWhile ?Pg T = T" using False \<open>T \<noteq> []\<close> by (cases T) auto
+        have tw: "takeWhile ?Pg (G' @ T) = G'" using allG twT by (simp add: takeWhile_append2)
+        have dw: "dropWhile ?Pg (G' @ T) = T" using allG dwT by (simp add: dropWhile_append2)
+        have e: "translate (G @ T) = P (snd g) (translate G') (translate T)"
+          by (simp only: Cons append_Cons translate.simps(2) tw dw)
+        have nz: "translate T \<noteq> Z" using \<open>T \<noteq> []\<close> by (cases T) auto
+        thus ?thesis using "1.prems" e by (cases "translate T") auto
+      qed
+    next
+      case notallG: False
+      then obtain x where x: "x \<in> set G'" and nx: "\<not> ?Pg x" by blast
+      have tw: "takeWhile ?Pg (G' @ T) = takeWhile ?Pg G'" using x nx by (simp add: takeWhile_append1)
+      have dw: "dropWhile ?Pg (G' @ T) = dropWhile ?Pg G' @ T" using x nx by (simp add: dropWhile_append1)
+      let ?D = "dropWhile ?Pg G'"
+      have e: "translate (G @ T) = P (snd g) (translate (takeWhile ?Pg G')) (translate (?D @ T))"
+        by (simp only: Cons append_Cons translate.simps(2) tw dw)
+      have Dne: "?D \<noteq> []" using x nx by (auto simp: dropWhile_eq_Nil_conv)
+      have nz: "translate (?D @ T) \<noteq> Z" using Dne by (cases "?D @ T") auto
+      hence "cnf (translate (?D @ T))" using "1.prems" e by (cases "translate (?D @ T)") auto
+      moreover have "length ?D < length G" using Cons by (simp add: le_imp_less_Suc length_dropWhile_le)
+      ultimately show ?thesis using "1.IH" by blast
+    qed
+  qed
+qed
+
 text \<open>The top-level sibling subscripts of a term (its \<open>+\<close>-chain of principals).\<close>
 
 fun tops :: "three \<Rightarrow> nat list" where
