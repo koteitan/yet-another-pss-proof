@@ -709,6 +709,67 @@ proof -
   thus ?thesis unfolding multp\<^sub>H\<^sub>O_def using ne by blast
 qed
 
+text \<open>\<^bold>\<open>Reverse bridge\<close> (carrier hypotheses, no global \<open><\<^sub>o\<close> meta-theory).  On a
+  transitive, asymmetric carrier with the incomparability-congruence \<open>mnlcong\<close>
+  (\<open>k <\<^sub>o x\<close> with \<open>x\<close> incomparable to \<open>m\<close> gives \<open>k <\<^sub>o m\<close>), @{const multp\<^sub>H\<^sub>O} collapses to
+  the single-dominator \<open>Su\<close>-clause: a @{thm [source] Finite_Set.bex_max_element}-maximal
+  element of the surplus dominates every deficit element.  The three carrier hypotheses
+  are exactly what the combined transitivity/asymmetry/congruence induction supplies for
+  the (smaller) summands \<dash> so this lemma stays free of the global order meta-theory and
+  can precede \<open>olt_trans\<close>.\<close>
+
+lemma multp\<^sub>H\<^sub>O_imp_olt_Su:
+  assumes mp: "multp\<^sub>H\<^sub>O (<\<^sub>o) (mset xs) (mset ys)"
+    and asym_xy: "asymp_on (set xs \<union> set ys) (<\<^sub>o)"
+    and trans_xy: "transp_on (set xs \<union> set ys) (<\<^sub>o)"
+    and mnlcong: "\<And>k x m. k \<in> set xs \<Longrightarrow> x \<in> set ys \<Longrightarrow> m \<in> set ys \<Longrightarrow>
+                    k <\<^sub>o x \<Longrightarrow> \<not> x <\<^sub>o m \<Longrightarrow> \<not> m <\<^sub>o x \<Longrightarrow> k <\<^sub>o m"
+  shows "Su xs <\<^sub>o Su ys"
+proof -
+  have Jne: "mset ys - mset xs \<noteq> {#}"
+    using multp\<^sub>H\<^sub>O_implies_one_step_strong(1)[OF mp] .
+  have step: "\<forall>k\<in>#(mset xs - mset ys). \<exists>x\<in>#(mset ys - mset xs). k <\<^sub>o x"
+    using multp\<^sub>H\<^sub>O_implies_one_step_strong(2)[OF mp] .
+  let ?JA = "set_mset (mset ys - mset xs)"
+  have JAsub: "?JA \<subseteq> set ys"
+    by (metis diff_subset_eq_self set_mset_mono set_mset_mset)
+  have JAsub': "?JA \<subseteq> set xs \<union> set ys" using JAsub by blast
+  have finJA: "finite ?JA" by simp
+  have neJA: "?JA \<noteq> {}" using Jne by simp
+  have asymJA: "asymp_on ?JA (<\<^sub>o)" using asym_xy JAsub' by (rule asymp_on_subset)
+  have transJA: "transp_on ?JA (<\<^sub>o)" using trans_xy JAsub' by (rule transp_on_subset)
+  obtain m where mJA: "m \<in> ?JA" and mmax: "\<forall>x\<in>?JA. x \<noteq> m \<longrightarrow> \<not> m <\<^sub>o x"
+    using Finite_Set.bex_max_element[OF finJA asymJA transJA neJA] by blast
+  have mset': "m \<in> set ys" using mJA JAsub by blast
+  have dom: "\<forall>a\<in>#(mset xs - mset ys). a <\<^sub>o m"
+  proof
+    fix a assume aK: "a \<in># mset xs - mset ys"
+    from step aK obtain x where xJ: "x \<in># mset ys - mset xs" and ax: "a <\<^sub>o x" by blast
+    have xJA: "x \<in> ?JA" using xJ by simp
+    have aset: "a \<in> set xs" using aK by (metis in_diffD set_mset_mset)
+    have xset: "x \<in> set ys" using xJA JAsub by blast
+    show "a <\<^sub>o m"
+    proof (cases "x = m")
+      case True thus ?thesis using ax by simp
+    next
+      case False
+      have nmx: "\<not> m <\<^sub>o x" using mmax xJA False by blast
+      show ?thesis
+      proof (cases "x <\<^sub>o m")
+        case True
+        have "a \<in> set xs \<union> set ys" and "x \<in> set xs \<union> set ys" and "m \<in> set xs \<union> set ys"
+          using aset xset mset' by blast+
+        thus ?thesis using transp_onD[OF trans_xy] ax True by blast
+      next
+        case False
+        thus ?thesis using mnlcong[OF aset xset mset' ax] nmx by blast
+      qed
+    qed
+  qed
+  have "m \<in># mset ys - mset xs" using mJA by simp
+  thus ?thesis using dom by auto
+qed
+
 lemma olt_trans: "a <\<^sub>o b \<Longrightarrow> b <\<^sub>o c \<Longrightarrow> a <\<^sub>o c"
 proof (induction "size a + size b + size c" arbitrary: a b c rule: less_induct)
   case less
