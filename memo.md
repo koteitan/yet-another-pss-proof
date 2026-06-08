@@ -629,3 +629,12 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **L_ThF[0≤p<n]**: leveled M_n/Acc_n（Towsner 3.7-3.12 を絶対 subscripted ψ 用に再導出; FCset≠Towsner FC のため original; Om-scaffold 込み）。
 今セッション確定の最重要成果＝**致命的 soundness バグ(nneg)修正**（旧証明は L_ThF=偽に依存し無効だった）。
 + Kn_dom/Th_lt_of_sub_lt/cntbl_downclosed/nneg 機構を証明。architecture は健全化済（残2 sorry は真の目標）。
+
+### 進捗 (2026-06-08 続2): op_NF の a<e ケース完全証明＋glue 基盤完成
+- **証明済**: Kn_dom, Th_lt_of_sub_lt（K条件 a<e）, bag_embed/bag_embed_P, collapse_lt_dom/collapse_neq_Zero（DM single-dominator, Zero/singleton/Su 全形）, eprincs_form/eprincs_lt_Th（tail 支配）, tops/cnf_tops_le（cnf 添字上限）, translate_takeWhile_snoc_le, cnf_snoc/cnf_butlast。
+- **`op_lt_a`（op_NF の a<e 完全証明）**: cnf w のみで embed(P a b c)<o embed(P e f g)。leading Th(int e)(embed f) が全 summand 支配。
+- **残る op_NF**: a=e。
+  - principal (b<o f): Th(int a)(embed b)<o Th(int a)(embed f), K条件 r=int a サブケースで bfb 要（embed b の level-(int a) 臨界部分項 h と embed f の関係）。
+  - tail (b=f,c<o g): prepend 補題 `collapse xs<o collapse ys ⟹ collapse(d#xs)<o collapse(d#ys)` 経験的成立(0/3710)だが **singleton x=y ケースで ot-irrefl 必要** ＝ olt_trans[c=Su[a=Su]] sorry に依存（headline に dead sorry を再混入させてしまう）。回避には embed 単射性 or ot-irrefl の独立証明 or 別構成。
+- **依存関係**: op_NF を閉じるには cnf_ST_PS（w∈NF⟹cnf w, op_lt_a が要求）も必須。
+- **重要**: ot-irrefl(olt_trans)が op_NF tail に効いてくるなら、olt_trans[c=Su[a=Su]] は dead ではなく **op_NF 経由で headline 依存** になる可能性。要再検討（embed 単射で回避できるか）。
