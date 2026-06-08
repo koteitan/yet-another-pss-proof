@@ -650,3 +650,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   ＝ prepend に "dominator ∉ xs" 系の仮定（cnf から導出）を付ければよい。
 - **新優先度**: olt_trans[c=Su[a=Su]] は重要度上昇（order meta ＋ op_NF tail 両方）。ただし cnf 経由回避が op_NF には有効。
 - mem_lt_Su（α∈set xs⟹isH α⟹α<o Su xs, irrefl 不要）は証明可能で有用。
+
+### 進捗 (2026-06-08 続4): cnf_take 完成＋cnf_ST_PS bad case の分解（sorry 非依存と確認）
+- **証明済**: `wf.cnf_take`（cnf は prefix take k で保存, iterated cnf_butlast）。
+- **cnf_ST_PS bad case は three-level の機械的証明**（translate は three 値, cnf も three の olt 使用）
+  ⟹ **three-olt_irrefl（証明済, sorry 非依存）** を使う。ot-irrefl(olt_trans sorry) には依存しない。安全。
+- **構造**: M[n]=take j0 M @ concat(copies)。butlast M = take j0 M @ block（block=M[j0..j1)）。
+  ∴ M[n] = butlast M @ C（C=copies 1..n-1）。cnf(butlast M) は cnf_butlast。
+  - **i1=0** (d0=0): C=block^{n-1}（block=butlast M の trailing block の複製・等しい siblings）。
+    append-one-block で兄弟 (w0, translate R) が Z-tail 比較で不変 ⟹ cnf 条件不変、内部は ¬(x<o x)=three-irrefl。
+    ＝ `cnf_dup_trailing`（trailing block 複製で cnf 保存）＋ n 帰納。
+  - **i1=1** (d0>0): copies は昇順で nest（単一深化木）。core_i1 構造。別途。
+- **残**: cnf_dup_trailing（i1=0, ~50行, boundary 解析）＋ i1=1 nesting（~50行）＋ assembly。three-level なので安全だが分量大。
+- ＋ bfb_ST_PS（a=e principal 用）＋ op_cnf assembly ＋ L_ThF leveled-Acc。
