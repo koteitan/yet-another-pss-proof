@@ -1,5 +1,5 @@
 theory wo
-  imports "HOL-Library.Multiset"
+  imports "HOL-Library.Multiset" "HOL-Library.Multiset_Order"
 begin
 
 section \<open>The well-foundedness core: Towsner's Buchholz ordinal notation\<close>
@@ -645,6 +645,35 @@ text \<open>\<^bold>\<open>Transitivity (sorry):\<close> the Key-Lemma-level ord
   through the middle term).  Declared here so the asymmetry proof and the
   well-foundedness core can use it; to be discharged together with the other
   order meta-theory.\<close>
+
+text \<open>\<^bold>\<open>Bridge to the library multiset order (easy direction).\<close>  The single-dominator
+  \<open>Su\<close>-clause implies the Dershowitz\<dash>Manna multiset order @{const multp\<^sub>D\<^sub>M}: the
+  single witness \<open>b\<close> dominates every removed element, so it witnesses the (weaker)
+  per-element domination.  (The converse needs linearity of the components and is
+  obtained mod the incomparability equivalence.)\<close>
+
+lemma olt_Su_imp_multp\<^sub>D\<^sub>M:
+  assumes "Su xs <\<^sub>o Su ys"
+  shows "multp\<^sub>D\<^sub>M (<\<^sub>o) (mset xs) (mset ys)"
+proof -
+  from assms obtain b where b: "b \<in># mset ys - mset xs"
+    and dom: "\<forall>a \<in># mset xs - mset ys. a <\<^sub>o b" by auto
+  let ?X = "mset ys - mset xs" and ?Y = "mset xs - mset ys"
+  have x1: "?X \<noteq> {#}" using b by auto
+  have x2: "?X \<subseteq># mset ys" by simp
+  have x3: "mset xs = (mset ys - ?X) + ?Y"
+  proof (rule multiset_eqI)
+    fix a
+    have "count ((mset ys - ?X) + ?Y) a
+          = (count (mset ys) a - (count (mset ys) a - count (mset xs) a))
+            + (count (mset xs) a - count (mset ys) a)"
+      by (simp add: count_diff count_union)
+    also have "\<dots> = count (mset xs) a" by linarith
+    finally show "count (mset xs) a = count ((mset ys - ?X) + ?Y) a" by simp
+  qed
+  have x4: "\<forall>k. k \<in># ?Y \<longrightarrow> (\<exists>a. a \<in># ?X \<and> k <\<^sub>o a)" using b dom by blast
+  show ?thesis unfolding multp\<^sub>D\<^sub>M_def using x1 x2 x3 x4 by blast
+qed
 
 lemma olt_trans: "a <\<^sub>o b \<Longrightarrow> b <\<^sub>o c \<Longrightarrow> a <\<^sub>o c"
 proof (induction "size a + size b + size c" arbitrary: a b c rule: less_induct)

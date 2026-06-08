@@ -864,3 +864,18 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - いずれも「olt が成分の ≈-class 上で全順序」を確立するのが鍵。multp ライブラリは ≈-class が = に潰れた multiset 上で動く。
 - **次**: (a) Multiset_Order を import、(b) olt-Su ⟷ multp_HO/DM の橋渡し補題を試作(single-dom と multp_HO_implies_one_step_strong
   の関係確認)、(c) 成分 linearity-mod-≈ を構造帰納で、(d) trans/tri をライブラリ継承。≈ は mset 経由で極力自動化。
+
+### 進捗 (2026-06-09 続15): Path B 実装＝(b1) 採用。multp は単一支配元を直接与えない確定＋mnl 簡略化
+- **multp_HO_implies_one_step_strong 確認**: `∀k∈K.∃x∈J. R k x`（複数支配元）。olt-Su は `∃b∈J.∀k∈K` 単一支配元。
+  **single-dom ⊊ multp、ライブラリは drop-in でない**確定。
+- **(b2) olt-Su を multp に再定義は技術的に不可/高リスク**: olt の function 定義に `multp olt` を入れると
+  関数パッケージが（higher-order・非構造再帰で）termination を通しにくい。現 single-dom 節は size 再帰で素直。∴ **(b1) 採用**。
+- **(b1) の簡略化（重要）**: 別途 `oteq` を inductive 定義＋congruence 証明…ではなく、**`mnl x y ≡ ¬(x<o y)∧¬(y<o x)`**
+  （olt から直接、asym より refl+sym）を使い、**combined size 帰納で `olt_trans` ＋ `mnl 推移的`(=olt が strict weak order
+  =mnl-class 上で全順序)を同時証明**。Su/Su/Su trans は mnl-class 上の対称差最大元で single-dom を構成。
+  これで hereditary oteq の inductive 定義と olt-congruence の手書きを回避。
+- **building block（易方向, 無条件）**: `olt(Su xs)(Su ys) ⟹ multp\<^sub>D\<^sub>M (<o)(mset xs)(mset ys)`
+  （X=ms ys-ms xs, Y=ms xs-ms ys, 単一 b が各 k を支配）。逆は totality 要（mnl で代替）。
+- **実装順**: import Multiset_Order → olt_Su_imp_multp_DM(易) → mnl 補題群(refl/sym, asym から) →
+  combined trans+mnl-trans(size 帰納, Su は multp の transp/totalp 補助＋mnl-class max) → olt_trans 完成。
+- **注意**: wo.thy の import 変更は全 rebuild(~13s)。olt_asym は既存(無条件)流用。
