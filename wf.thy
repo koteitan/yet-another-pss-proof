@@ -1297,6 +1297,264 @@ proof -
   thus ?thesis using imp by simp
 qed
 
+subsection \<open>CNF preservation, the ascending-copies (\<open>i\<^sub>1 = 1\<close>) oper case\<close>
+
+text \<open>The \<open>i\<^sub>1 = 1\<close> bad step replaces the block \<open>blk = (v\<^sub>0,w\<^sub>0)#R\<close> followed by the
+  dropped descendant \<open>lp\<close> by \<open>n\<close> \<^emph>\<open>ascending\<close> copies of \<open>blk\<close>: the \<open>k\<close>-th copy is
+  \<open>blk\<close> with every row-0 entry shifted up by \<open>k * d\<^sub>0\<close> (\<open>d\<^sub>0 > 0\<close>).  We package the
+  copy list as \<open>copies d\<^sub>0 blk n\<close>.\<close>
+
+definition shiftr0 :: "nat \<Rightarrow> (nat \<times> nat) list \<Rightarrow> (nat \<times> nat) list" where
+  "shiftr0 d = map (\<lambda>p. (fst p + d, snd p))"
+
+definition copies :: "nat \<Rightarrow> (nat \<times> nat) list \<Rightarrow> nat \<Rightarrow> (nat \<times> nat) list" where
+  "copies d blk n = concat (map (\<lambda>k. shiftr0 (k * d) blk) [0..<n])"
+
+lemma shiftr0_0 [simp]: "shiftr0 0 M = M"
+  by (simp add: shiftr0_def)
+
+lemma shiftr0_Nil [simp]: "shiftr0 d [] = []"
+  by (simp add: shiftr0_def)
+
+lemma shiftr0_eq_Nil [simp]: "shiftr0 d M = [] \<longleftrightarrow> M = []"
+  by (simp add: shiftr0_def)
+
+lemma shiftr0_shiftr0: "shiftr0 d (shiftr0 e M) = shiftr0 (d + e) M"
+  by (simp add: shiftr0_def comp_def add.commute add.left_commute)
+
+lemma shiftr0_concat: "shiftr0 d (concat L) = concat (map (shiftr0 d) L)"
+  by (simp add: shiftr0_def map_concat)
+
+lemma translate_shiftr0 [simp]: "translate (shiftr0 d M) = translate M"
+  by (simp add: shiftr0_def translate_shift)
+
+lemma hd_shiftr0: "M \<noteq> [] \<Longrightarrow> hd (shiftr0 d M) = (fst (hd M) + d, snd (hd M))"
+  by (cases M) (auto simp: shiftr0_def)
+
+lemma copies_0 [simp]: "copies d blk 0 = []"
+  by (simp add: copies_def)
+
+lemma copies_1 [simp]: "copies d blk 1 = blk"
+  by (simp add: copies_def)
+
+lemma copies_Suc_front: "copies d blk (Suc n) = blk @ shiftr0 d (copies d blk n)"
+proof -
+  have tail: "shiftr0 d (copies d blk n) = concat (map (\<lambda>k. shiftr0 (k * d) blk) [1..<Suc n])"
+  proof -
+    have "shiftr0 d (copies d blk n) = concat (map (\<lambda>k. shiftr0 (d + k * d) blk) [0..<n])"
+      by (simp add: copies_def shiftr0_concat o_def shiftr0_shiftr0)
+    also have "\<dots> = concat (map (\<lambda>k. shiftr0 (k * d) blk) (map Suc [0..<n]))"
+      by (simp add: o_def mult_Suc)
+    also have "\<dots> = concat (map (\<lambda>k. shiftr0 (k * d) blk) [1..<Suc n])"
+      by (simp add: map_Suc_upt)
+    finally show ?thesis .
+  qed
+  have e0: "[0..<Suc n] = 0 # [1..<Suc n]" by (simp add: upt_conv_Cons)
+  have A: "copies d blk (Suc n) = blk @ concat (map (\<lambda>k. shiftr0 (k * d) blk) [1..<Suc n])"
+    by (simp only: copies_def e0 list.map concat.simps mult_zero_left shiftr0_0)
+  thus ?thesis by (simp only: tail)
+qed
+
+lemma copies_nonempty: "blk \<noteq> [] \<Longrightarrow> 1 \<le> n \<Longrightarrow> copies d blk n \<noteq> []"
+  by (cases n) (auto simp: copies_Suc_front)
+
+lemma hd_copies: "blk \<noteq> [] \<Longrightarrow> 1 \<le> n \<Longrightarrow> hd (copies d blk n) = hd blk"
+  by (cases n) (auto simp: copies_Suc_front)
+
+lemma copies_v0_le:
+  assumes blk: "blk = (v0, w0) # R" and Rle: "\<forall>x\<in>set R. v0 \<le> fst x"
+  shows "\<forall>x\<in>set (copies d blk n). v0 \<le> fst x"
+proof
+  fix x assume "x \<in> set (copies d blk n)"
+  then obtain k where "x \<in> set (shiftr0 (k * d) blk)"
+    by (auto simp: copies_def)
+  then obtain p where p: "p \<in> set blk" and xe: "x = (fst p + k * d, snd p)"
+    by (auto simp: shiftr0_def)
+  have "v0 \<le> fst p" using p blk Rle by auto
+  thus "v0 \<le> fst x" using xe by simp
+qed
+
+lemma copies_tl_gt:
+  assumes R: "\<forall>x\<in>set R. v0 < fst x" and d: "0 < d" and n1: "1 \<le> n"
+  shows "\<forall>x\<in>set (tl (copies d ((v0, w0) # R) n)). v0 < fst x"
+proof -
+  obtain m where m: "n = Suc m" using n1 by (cases n) auto
+  have e: "copies d ((v0, w0) # R) n = (v0, w0) # (R @ shiftr0 d (copies d ((v0, w0) # R) m))"
+    using m copies_Suc_front[of d "(v0, w0) # R" m] by simp
+  have "\<forall>x\<in>set (R @ shiftr0 d (copies d ((v0, w0) # R) m)). v0 < fst x"
+  proof
+    fix x assume "x \<in> set (R @ shiftr0 d (copies d ((v0, w0) # R) m))"
+    then consider "x \<in> set R" | "x \<in> set (shiftr0 d (copies d ((v0, w0) # R) m))" by auto
+    thus "v0 < fst x"
+    proof cases
+      case 1 thus ?thesis using R by blast
+    next
+      case 2
+      then obtain p where p: "p \<in> set (copies d ((v0, w0) # R) m)" and xe: "x = (fst p + d, snd p)"
+        by (auto simp: shiftr0_def)
+      have Rle: "\<forall>x\<in>set R. v0 \<le> fst x" using R by (auto intro: less_imp_le)
+      have "v0 \<le> fst p" using copies_v0_le[OF refl Rle] p by blast
+      thus ?thesis using xe d by simp
+    qed
+  qed
+  thus ?thesis using e by simp
+qed
+
+text \<open>The core induction: \<open>n\<close> ascending copies of a CNF block translate to a CNF
+  term.  Each new copy is grafted by @{thm [source] cnf_ctx_cong} against the
+  dropped tail \<open>[lp]\<close>; its leading subscript \<open>w\<^sub>0\<close> is strictly below \<open>snd lp\<close>
+  (the row-1 increase of the \<open>i\<^sub>1 = 1\<close> parent), so the leading principal does not
+  increase and the boundary is preserved.  The recursion uses the self-similarity
+  \<open>copies (Suc n) = blk @ shiftr0 d\<^sub>0 (copies n)\<close> and shift-invariance of
+  @{const translate}.\<close>
+
+lemma cnf_copies:
+  assumes R: "\<forall>x\<in>set R. v0 < fst x"
+    and d0pos: "0 < d0"
+    and w0lt: "w0 < snd lp"
+    and lphd: "fst lp = v0 + d0"
+    and cBlp: "cnf (translate (((v0, w0) # R) @ [lp]))"
+  shows "cnf (translate (copies d0 ((v0, w0) # R) n))"
+proof (induction n)
+  case 0 show ?case by simp
+next
+  case (Suc n)
+  let ?blk = "(v0, w0) # R"
+  have blkne: "?blk \<noteq> []" by simp
+  show ?case
+  proof (cases n)
+    case 0
+    have "cnf (translate ?blk)" using cnf_butlast[of "?blk @ [lp]"] cBlp by simp
+    thus ?thesis using 0 by (simp add: copies_Suc_front)
+  next
+    case (Suc m)
+    have n1: "1 \<le> n" using Suc by simp
+    have cpne: "copies d0 ?blk n \<noteq> []" using blkne n1 by (rule copies_nonempty)
+    have hdcp: "hd (copies d0 ?blk n) = (v0, w0)" using blkne n1 hd_copies[of ?blk n d0] by simp
+    have cpcons: "copies d0 ?blk n = (v0, w0) # tl (copies d0 ?blk n)"
+      using cpne hdcp by (cases "copies d0 ?blk n") auto
+    have tlgt: "\<forall>x\<in>set (tl (copies d0 ?blk n)). v0 < fst x"
+      using copies_tl_gt[OF R d0pos n1] by simp
+    let ?Z1 = "shiftr0 d0 (copies d0 ?blk n)"
+    have Z1ne: "?Z1 \<noteq> []" using cpne by simp
+    \<comment> \<open>\<open>translate ?Z1 = translate (copies n)\<close>, of shape \<open>P w\<^sub>0 _ _\<close>\<close>
+    have tZ1eq: "translate ?Z1 = translate (copies d0 ?blk n)" by simp
+    have st1: "translate (copies d0 ?blk n) = P w0 (translate (tl (copies d0 ?blk n))) Z"
+    proof -
+      have "translate ((v0, w0) # tl (copies d0 ?blk n))
+            = P w0 (translate (tl (copies d0 ?blk n))) Z"
+        using translate_single_tree[of "tl (copies d0 ?blk n)" "(v0, w0)"] tlgt by simp
+      thus ?thesis using cpcons by simp
+    qed
+    have cZ1: "cnf (translate ?Z1)" using Suc.IH tZ1eq by simp
+    have st1Z1: "translate ?Z1 = P w0 (translate (tl (copies d0 ?blk n))) Z"
+      using tZ1eq st1 by simp
+    have tlp: "translate [lp] = P (snd lp) Z Z" by simp
+    have decr: "translate ?Z1 <o translate [lp]"
+    proof -
+      have "P w0 (translate (tl (copies d0 ?blk n))) Z <o P (snd lp) Z Z" using w0lt by simp
+      thus ?thesis using st1Z1 tlp by simp
+    qed
+    have leadle: "\<exists>a1 b1 c1 a2 b2 c2. translate ?Z1 = P a1 b1 c1
+                    \<and> translate [lp] = P a2 b2 c2 \<and> P a1 b1 Z \<le>o P a2 b2 Z"
+    proof -
+      have "P w0 (translate (tl (copies d0 ?blk n))) Z \<le>o P (snd lp) Z Z"
+        using w0lt by simp
+      thus ?thesis using st1Z1 tlp by blast
+    qed
+    have lpne: "[lp] \<noteq> []" by simp
+    have root: "fst (hd ?Z1) = fst (hd [lp])"
+    proof -
+      have "hd ?Z1 = (v0 + d0, w0)" using cpne hdcp hd_shiftr0[of "copies d0 ?blk n" d0] by simp
+      thus ?thesis using lphd by simp
+    qed
+    have r1: "\<forall>x\<in>set (tl ?Z1). fst (hd ?Z1) \<le> fst x"
+    proof -
+      have hdf: "fst (hd ?Z1) = v0 + d0"
+        using cpne hdcp hd_shiftr0[of "copies d0 ?blk n" d0] by simp
+      have Rle: "\<forall>x\<in>set R. v0 \<le> fst x" using R by (auto intro: less_imp_le)
+      have allge: "\<forall>x\<in>set (copies d0 ?blk n). v0 \<le> fst x"
+        using copies_v0_le[OF refl Rle] by simp
+      have "\<forall>x\<in>set ?Z1. v0 + d0 \<le> fst x"
+      proof
+        fix x assume "x \<in> set ?Z1"
+        then obtain p where p: "p \<in> set (copies d0 ?blk n)" and xe: "x = (fst p + d0, snd p)"
+          by (auto simp: shiftr0_def)
+        have "v0 \<le> fst p" using allge p by blast
+        thus "v0 + d0 \<le> fst x" using xe by simp
+      qed
+      hence "\<forall>x\<in>set (tl ?Z1). v0 + d0 \<le> fst x" using Z1ne by (metis list.set_sel(2))
+      thus ?thesis using hdf by simp
+    qed
+    have r2: "\<forall>x\<in>set (tl [lp]). fst (hd [lp]) \<le> fst x" by simp
+    have imp: "cnf (translate (?blk @ [lp])) \<Longrightarrow> cnf (translate (?blk @ ?Z1))"
+      by (rule cnf_ctx_cong[OF cZ1 decr Z1ne lpne root leadle r1 r2])
+    have eq: "copies d0 ?blk (Suc n) = ?blk @ ?Z1"
+      using copies_Suc_front[of d0 ?blk n] by simp
+    show ?thesis unfolding eq by (rule imp[OF cBlp])
+  qed
+qed
+
+text \<open>\<^bold>\<open>CNF preservation, the ascending-copies (\<open>i\<^sub>1 = 1\<close>) oper case.\<close>  Like
+  @{thm [source] cnf_oper_i1eq0} but for the genuinely ascending copies; the
+  strict decrease \<open>translate (copies d\<^sub>0 blk n) <o translate (blk @ [lp])\<close>
+  (the bad-step core, supplied by the caller) lifts the block's CNF through the
+  good part \<open>G\<close> via @{thm [source] cnf_ctx_cong}, while @{thm [source] cnf_copies}
+  furnishes CNF of the copies themselves.\<close>
+
+lemma cnf_oper_i1eq1:
+  assumes R: "\<forall>x\<in>set R. v0 < fst x"
+    and d0pos: "0 < d0"
+    and w0lt: "w0 < snd lp"
+    and lphd: "fst lp = v0 + d0"
+    and n1: "1 \<le> n"
+    and decr: "translate (copies d0 ((v0, w0) # R) n) <o translate (((v0, w0) # R) @ [lp])"
+    and cM: "cnf (translate (G @ ((v0, w0) # R) @ [lp]))"
+  shows "cnf (translate (G @ copies d0 ((v0, w0) # R) n))"
+proof -
+  let ?blk = "(v0, w0) # R"
+  have blkne: "?blk \<noteq> []" by simp
+  have cpne: "copies d0 ?blk n \<noteq> []" using blkne n1 by (rule copies_nonempty)
+  have hdcp: "hd (copies d0 ?blk n) = (v0, w0)" using blkne n1 hd_copies[of ?blk n d0] by simp
+  have cpcons: "copies d0 ?blk n = (v0, w0) # tl (copies d0 ?blk n)"
+    using cpne hdcp by (cases "copies d0 ?blk n") auto
+  have tlgt: "\<forall>x\<in>set (tl (copies d0 ?blk n)). v0 < fst x"
+    using copies_tl_gt[OF R d0pos n1] by simp
+  have Rlp_gt: "\<forall>x\<in>set (R @ [lp]). v0 < fst x" using R lphd d0pos by auto
+  \<comment> \<open>both sides are single trees with leading subscript \<open>w\<^sub>0\<close>\<close>
+  have st1: "translate (copies d0 ?blk n) = P w0 (translate (tl (copies d0 ?blk n))) Z"
+  proof -
+    have "translate ((v0, w0) # tl (copies d0 ?blk n))
+          = P w0 (translate (tl (copies d0 ?blk n))) Z"
+      using translate_single_tree[of "tl (copies d0 ?blk n)" "(v0, w0)"] tlgt by simp
+    thus ?thesis using cpcons by simp
+  qed
+  have st2: "translate (?blk @ [lp]) = P w0 (translate (R @ [lp])) Z"
+    using translate_single_tree[of "R @ [lp]" "(v0, w0)"] Rlp_gt by simp
+  \<comment> \<open>side conditions for the outer context congruence\<close>
+  have ne2: "?blk @ [lp] \<noteq> []" by simp
+  have r2: "\<forall>x\<in>set (tl (?blk @ [lp])). fst (hd (?blk @ [lp])) \<le> fst x"
+    using Rlp_gt by (auto intro: less_imp_le)
+  have cBlp: "cnf (translate (?blk @ [lp]))"
+    using cnf_tail[OF ne2 r2] cM by simp
+  have cCopies: "cnf (translate (copies d0 ?blk n))"
+    by (rule cnf_copies[OF R d0pos w0lt lphd cBlp])
+  have leadle: "\<exists>a1 b1 c1 a2 b2 c2. translate (copies d0 ?blk n) = P a1 b1 c1
+                  \<and> translate (?blk @ [lp]) = P a2 b2 c2 \<and> P a1 b1 Z \<le>o P a2 b2 Z"
+  proof -
+    have "P w0 (translate (tl (copies d0 ?blk n))) Z \<le>o P w0 (translate (R @ [lp])) Z"
+      using decr st1 st2 by simp
+    thus ?thesis using st1 st2 by blast
+  qed
+  have root: "fst (hd (copies d0 ?blk n)) = fst (hd (?blk @ [lp]))" using hdcp by simp
+  have r1: "\<forall>x\<in>set (tl (copies d0 ?blk n)). fst (hd (copies d0 ?blk n)) \<le> fst x"
+    using tlgt hdcp by (auto intro: less_imp_le)
+  have imp: "cnf (translate (G @ (?blk @ [lp]))) \<Longrightarrow> cnf (translate (G @ copies d0 ?blk n))"
+    by (rule cnf_ctx_cong[OF cCopies decr cpne ne2 root leadle r1 r2])
+  have "cnf (translate (G @ (?blk @ [lp])))" using cM by simp
+  thus ?thesis using imp by simp
+qed
+
 text \<open>The top-level sibling subscripts of a term (its \<open>+\<close>-chain of principals).\<close>
 
 fun tops :: "three \<Rightarrow> nat list" where
