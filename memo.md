@@ -663,3 +663,22 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - **i1=1** (d0>0): copies は昇順で nest（単一深化木）。core_i1 構造。別途。
 - **残**: cnf_dup_trailing（i1=0, ~50行, boundary 解析）＋ i1=1 nesting（~50行）＋ assembly。three-level なので安全だが分量大。
 - ＋ bfb_ST_PS（a=e principal 用）＋ op_cnf assembly ＋ L_ThF leveled-Acc。
+
+### 進捗 (2026-06-08 続5): cnf 機械を全証明、cnf_ST_PS 組立だけ残す
+**証明済の cnf 機械（全緑・commit済）**:
+- `mechanized.translate_block_append`（block@reopening-tail = 単一 principal）
+- `wf.cnf_replicate_block`（block^n は cnf, i1=0 exact-copy core, three-irrefl 使用）
+- `wf.cnf_ctx_cong`（cnf 文脈合同: cnf(G@Z2)⟹cnf(G@Z1), 一般化 b1≤o b2 で i1=0/i1=1 両対応; translate_ctx_cong+three-trans で境界保存）
+- `wf.cnf_tail`（cnf(G@T)⟹cnf(T), tail 抽出）
+- `wf.cnf_take`/`cnf_butlast`/`cnf_snoc`/`cnf_tops_le`
+
+**残: cnf_ST_PS の組立**（ST_PS 帰納）:
+- diag: cnf_diag。oper short(Lng≤1): M[n]=M, IH。oper Pred: cnf_butlast。
+- oper bad（cnf_oper_bad）: M[n]=take j0 M @ concat(copies)。setup は translate_oper_bad 模倣(j0,j1,B,C,R)。
+  - Z1=B@C, Z2=B@[lp], G=take j0 M。cnf M=cnf(G@Z2)。
+  - cnf(B@[lp])=cnf_tail[cnf M]。これから cnf(R)[i1=0] or cnf(R@[lp])[i1=1]。
+  - cnf(Z1)=cnf(B@C): **i1=0 は cnf_replicate_block[cnf R] で OK**。
+    **i1=1 は cnf(R@C) が要る＝ascending copies の cnf（未）**: shift 不変性（row-0 一様 shift+row-1 不変で translate 不変）＋ n 帰納+cnf_ctx_cong で nesting 各段保存、が筋。`cnf_nest` として要証明。
+  - decr=translate(B@C)<o translate(B@[lp])（core_i0/core_i1）。lead(b1≤o b2): i1=0 同 b=translate R; i1=1 b1=translate(R@C)<o b2=translate(R@[lp])。
+  - cnf_ctx_cong 適用 → cnf(M[n])。
+- **次セッション**: (1) cnf_nest(i1=1 ascending copies cnf), (2) cnf_oper_bad 組立, (3) cnf_ST_PS。その後 bfb_ST_PS, op_cnf 組立, L_ThF leveled-Acc。
