@@ -912,6 +912,86 @@ qed
 lemma cnf_diag: "cnf (translate (diagSeq 0 v))"
   using cnf_translate_diagSeq_aux[of 0 v] by simp
 
+text \<open>\<open>cnf\<close> is preserved by dropping the last pair: if \<open>translate (D @ [m])\<close> is in CNF
+  then so is \<open>translate D\<close>.  The interesting case appends \<open>m\<close> deep inside the last
+  sibling block; the leading two-principal comparison is preserved because the
+  earlier sibling's argument only grows (@{thm [source] translate_takeWhile_snoc_le})
+  and @{thm [source] olt_ole_trans}.  This discharges the \<open>Pred\<close> case of \<open>cnf\<close>
+  preservation under \<open>oper\<close>.\<close>
+
+lemma cnf_snoc: "cnf (translate (D @ [m])) \<Longrightarrow> cnf (translate D)"
+proof (induction D rule: translate.induct)
+  case 1
+  show ?case by simp
+next
+  case (2 p rest)
+  let ?P = "\<lambda>q. fst p < fst q"
+  let ?tw = "takeWhile ?P rest"
+  let ?dw = "dropWhile ?P rest"
+  show ?case
+  proof (cases "\<forall>x\<in>set rest. ?P x")
+    case allp: True
+    have tw: "?tw = rest" using allp by (simp add: takeWhile_eq_all_conv)
+    have dw: "?dw = []" using allp by (simp add: dropWhile_eq_Nil_conv)
+    have eq0: "translate (p # rest) = P (snd p) (translate rest) Z"
+    proof -
+      have a: "translate ?tw = translate rest" by (simp only: tw)
+      have b: "translate ?dw = Z" by (simp only: dw translate.simps(1))
+      show ?thesis using a b by simp
+    qed
+    show ?thesis
+    proof (cases "?P m")
+      case True
+      have "cnf (translate (rest @ [m]))"
+        using "2.prems" allp True by (simp add: takeWhile_eq_all_conv dropWhile_eq_Nil_conv)
+      hence "cnf (translate rest)" using "2.IH"(1) tw by simp
+      thus ?thesis using eq0 by simp
+    next
+      case False
+      have "translate ((p # rest) @ [m]) = P (snd p) (translate rest) (P (snd m) Z Z)"
+        using allp False by (simp add: takeWhile_append2 dropWhile_append2)
+      hence "cnf (translate rest)" using "2.prems" by simp
+      thus ?thesis using eq0 by simp
+    qed
+  next
+    case notall: False
+    then obtain x where x: "x \<in> set rest" "\<not> ?P x" by blast
+    have tw': "takeWhile ?P (rest @ [m]) = ?tw" using x by (simp add: takeWhile_append1)
+    have dw': "dropWhile ?P (rest @ [m]) = ?dw @ [m]" using x by (simp add: dropWhile_append1)
+    have dwne: "?dw \<noteq> []" using x by (auto simp: dropWhile_eq_Nil_conv)
+    have hyp: "cnf (P (snd p) (translate ?tw) (translate (?dw @ [m])))"
+      using "2.prems" tw' dw' by simp
+    from dwne obtain q rest2 where dwq: "?dw = q # rest2" by (cases ?dw) auto
+    let ?Q = "\<lambda>y. fst q < fst y"
+    let ?f  = "translate (takeWhile ?Q rest2)"
+    let ?f' = "translate (takeWhile ?Q (rest2 @ [m]))"
+    let ?g  = "translate (dropWhile ?Q rest2)"
+    let ?g' = "translate (dropWhile ?Q (rest2 @ [m]))"
+    have td:  "translate ?dw = P (snd q) ?f ?g" using dwq by simp
+    have td': "translate (?dw @ [m]) = P (snd q) ?f' ?g'" using dwq by simp
+    have fle: "?f \<le>o ?f'" using translate_takeWhile_snoc_le[of "fst q" rest2 m] by simp
+    \<comment> \<open>unfold the CNF of the snoc'd term\<close>
+    have H: "cnf (translate ?tw)
+             \<and> \<not> (P (snd p) (translate ?tw) Z <o P (snd q) ?f' Z)
+             \<and> cnf (P (snd q) ?f' ?g')"
+      using hyp td' by simp
+    have cb: "cnf (translate ?tw)" using H by simp
+    have sib': "\<not> (P (snd p) (translate ?tw) Z <o P (snd q) ?f' Z)" using H by simp
+    have cdw: "cnf (translate ?dw)" using "2.IH"(2) H td' by simp
+    \<comment> \<open>transfer the sibling non-increase from \<open>?f'\<close> back to \<open>?f\<close>\<close>
+    have leP: "P (snd q) ?f Z \<le>o P (snd q) ?f' Z" using fle olt_P_b by blast
+    have sib: "\<not> (P (snd p) (translate ?tw) Z <o P (snd q) ?f Z)"
+    proof
+      assume "P (snd p) (translate ?tw) Z <o P (snd q) ?f Z"
+      from olt_ole_trans[OF this leP] show False using sib' by simp
+    qed
+    show ?thesis using td cb cdw sib by simp
+  qed
+qed
+
+lemma cnf_butlast: "C \<noteq> [] \<Longrightarrow> cnf (translate C) \<Longrightarrow> cnf (translate (butlast C))"
+  using cnf_snoc[of "butlast C" "last C"] by (simp add: snoc_eq_iff_butlast)
+
 
 subsection \<open>Reduction of well-foundedness to within-maxsub-level\<close>
 
