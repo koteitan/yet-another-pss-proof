@@ -638,3 +638,15 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - tail (b=f,c<o g): prepend 補題 `collapse xs<o collapse ys ⟹ collapse(d#xs)<o collapse(d#ys)` 経験的成立(0/3710)だが **singleton x=y ケースで ot-irrefl 必要** ＝ olt_trans[c=Su[a=Su]] sorry に依存（headline に dead sorry を再混入させてしまう）。回避には embed 単射性 or ot-irrefl の独立証明 or 別構成。
 - **依存関係**: op_NF を閉じるには cnf_ST_PS（w∈NF⟹cnf w, op_lt_a が要求）も必須。
 - **重要**: ot-irrefl(olt_trans)が op_NF tail に効いてくるなら、olt_trans[c=Su[a=Su]] は dead ではなく **op_NF 経由で headline 依存** になる可能性。要再検討（embed 単射で回避できるか）。
+
+### 進捗 (2026-06-08 続3): injectivity 完成＋op_NF tail の ot-irrefl 障害の精査
+- **証明済**: `embed.uncollapse`/`uncollapse_collapse`/`collapse_inj`/`embed_inj`（embed 単射, c≠g⟹embed c≠embed g）。
+- **op_NF tail (a=e,b=f,c<o g) の障害**: prepend `collapse xs<o collapse ys ⟹ collapse(d#xs)<o collapse(d#ys)`
+  は d が mset 差で相殺され成立するが、サブケース（xs 多元・ys 単元 y1 で y1∈xs）が **a sum < その summand**
+  ＝ y1<o Su xs<o y1 の 2-cycle ⟹ **ot-irrefl(Th)** が要る。ot-irrefl(Th) は第1選言で Kn_lt_Th と cycle になり
+  **asym/olt_trans に依存**（既知の entanglement）。∴ **olt_trans[c=Su[a=Su]] は dead でなく op_NF tail に必要**。
+- **回避可能性**: cnf により c の全 principal は g の leading より lex-小 ⟹ y1(=g の principal) ∉ eprincs c。
+  ∴ application では問題サブケースは起きない。op_cnf tail を**汎用 prepend でなく cnf 構造**で直接証明すれば irrefl 不要。
+  ＝ prepend に "dominator ∉ xs" 系の仮定（cnf から導出）を付ければよい。
+- **新優先度**: olt_trans[c=Su[a=Su]] は重要度上昇（order meta ＋ op_NF tail 両方）。ただし cnf 経由回避が op_NF には有効。
+- mem_lt_Su（α∈set xs⟹isH α⟹α<o Su xs, irrefl 不要）は証明可能で有用。
