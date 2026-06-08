@@ -1248,6 +1248,62 @@ proof (induction G rule: length_induct)
   qed
 qed
 
+text \<open>\<^bold>\<open>CNF preservation, the exact-copy (i1 = 0) oper case (abstract).\<close>  Replacing a
+  block \<open>(v0,w0)#R\<close> followed by the dropped descendant \<open>lp\<close> (which nests, \<open>v0 < fst lp\<close>)
+  by \<open>n\<close> exact copies of the block preserves CNF.  Assembled from @{thm [source]
+  cnf_tail} (extract the block's CNF), @{thm [source] cnf_butlast}, @{thm [source]
+  cnf_replicate_block} (the copies are CNF), and @{thm [source] cnf_ctx_cong} (the
+  good part \<open>G\<close> preserves it; the leading argument shrinks since \<open>lp\<close> is dropped).\<close>
+
+lemma cnf_oper_i1eq0:
+  assumes R: "\<forall>x\<in>set R. v0 < fst x"
+    and lpv: "v0 < fst lp"
+    and n1: "1 \<le> n"
+    and cM: "cnf (translate (G @ ((v0,w0) # R) @ [lp]))"
+  shows "cnf (translate (G @ concat (replicate n ((v0,w0) # R))))"
+proof -
+  let ?blk = "(v0,w0) # R"
+  obtain m where m: "n = Suc m" using n1 by (cases n) auto
+  \<comment> \<open>structures of the two tails\<close>
+  have RlpV: "\<forall>x\<in>set (R @ [lp]). fst (v0,w0) < fst x" using R lpv by auto
+  have tZ2: "translate (?blk @ [lp]) = P w0 (translate (R @ [lp])) Z"
+    using translate_single_tree[OF RlpV] by simp
+  have Tcond: "concat (replicate m ?blk) = [] \<or> \<not> v0 < fst (hd (concat (replicate m ?blk)))"
+    by (cases m) auto
+  have tZ1: "translate (concat (replicate n ?blk))
+             = P w0 (translate R) (translate (concat (replicate m ?blk)))"
+    using m translate_block_append[OF R Tcond] by simp
+  \<comment> \<open>extract CNF of the block body from CNF of \<open>M\<close>\<close>
+  have rT: "\<forall>x\<in>set (tl (?blk @ [lp])). fst (hd (?blk @ [lp])) \<le> fst x" using R lpv by auto
+  have "cnf (translate (G @ (?blk @ [lp])))" using cM by simp
+  hence "cnf (translate (?blk @ [lp]))" using cnf_tail[OF _ rT] by blast
+  hence "cnf (translate (R @ [lp]))" using tZ2 by simp
+  hence cR: "cnf (translate R)" using cnf_butlast[of "R @ [lp]"] by simp
+  have cZ1: "cnf (translate (concat (replicate n ?blk)))" using cnf_replicate_block[OF R cR] .
+  \<comment> \<open>lead (\<open>b1 \<le>o b2\<close>) and the strict decrease\<close>
+  have RltRlp: "translate R <o translate (R @ [lp])" by (rule translate_snoc_increase)
+  have lead: "\<exists>a b1 b2 c1 c2. translate (concat (replicate n ?blk)) = P a b1 c1
+                 \<and> translate (?blk @ [lp]) = P a b2 c2 \<and> b1 \<le>o b2"
+    using tZ1 tZ2 RltRlp by blast
+  have decr: "translate (concat (replicate n ?blk)) <o translate (?blk @ [lp])"
+    using tZ1 tZ2 RltRlp by (simp add: olt_P_b)
+  \<comment> \<open>side conditions for the context congruence\<close>
+  have blkge: "\<forall>x\<in>set ?blk. v0 \<le> fst x" using R by auto
+  have sub: "set (concat (replicate n ?blk)) \<subseteq> set ?blk" using m by (auto simp: set_concat)
+  have allge: "\<forall>x\<in>set (concat (replicate n ?blk)). v0 \<le> fst x" using blkge sub by blast
+  have ne1: "concat (replicate n ?blk) \<noteq> []" using m by simp
+  have ne2: "?blk @ [lp] \<noteq> []" by simp
+  have root: "fst (hd (concat (replicate n ?blk))) = fst (hd (?blk @ [lp]))" using m by simp
+  have hdv: "fst (hd (concat (replicate n ?blk))) = v0" using m by simp
+  have r1: "\<forall>x\<in>set (tl (concat (replicate n ?blk))). fst (hd (concat (replicate n ?blk))) \<le> fst x"
+    using allge hdv ne1 by (metis list.set_sel(2))
+  have r2: "\<forall>x\<in>set (tl (?blk @ [lp])). fst (hd (?blk @ [lp])) \<le> fst x" using rT by simp
+  have imp: "cnf (translate (G @ (?blk @ [lp]))) \<Longrightarrow> cnf (translate (G @ concat (replicate n ?blk)))"
+    by (rule cnf_ctx_cong[OF cZ1 decr ne1 ne2 root lead r1 r2])
+  have "cnf (translate (G @ (?blk @ [lp])))" using cM by simp
+  thus ?thesis using imp by simp
+qed
+
 text \<open>The top-level sibling subscripts of a term (its \<open>+\<close>-chain of principals).\<close>
 
 fun tops :: "three \<Rightarrow> nat list" where
