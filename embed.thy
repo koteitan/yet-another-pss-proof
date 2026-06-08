@@ -377,6 +377,35 @@ next
   qed
 qed
 
+text \<open>Prepending a common principal \<open>d\<close> to both sides preserves the one-step
+  Dershowitz\<dash>Manna condition (the \<open>d\<close> cancels in both multiset differences).  This
+  is the equal-leading case (op_NF's tail \<open>a=e, b=f, c<o g\<close>); no \<open><\<^sub>o\<close>-irreflexivity
+  is needed because we work directly from the difference witness.\<close>
+
+lemma collapse_prepend_diff:
+  assumes hd: "isH d"
+    and diff: "\<exists>\<beta>\<in>#mset ys - mset xs. \<forall>\<alpha>\<in>#mset xs - mset ys. \<alpha> <\<^sub>o \<beta>"
+  shows "collapse (d # xs) <\<^sub>o collapse (d # ys)"
+proof -
+  from diff have "mset ys - mset xs \<noteq> {#}" by auto
+  hence ys_ne: "ys \<noteq> []" by auto
+  show ?thesis
+  proof (cases xs)
+    case Nil
+    have "collapse (d # ys) = Su (d # ys)" using ys_ne by (cases ys) auto
+    moreover have "d <\<^sub>o Su (d # ys)" using hd by (cases d) auto
+    ultimately show ?thesis using Nil by simp
+  next
+    case (Cons x1 xr)
+    have cdx: "collapse (d # xs) = Su (d # xs)" using Cons by (cases xs) auto
+    have cdy: "collapse (d # ys) = Su (d # ys)" using ys_ne by (cases ys) auto
+    have md: "mset (d # ys) - mset (d # xs) = mset ys - mset xs" by simp
+    have md2: "mset (d # xs) - mset (d # ys) = mset xs - mset ys" by simp
+    have "Su (d # xs) <\<^sub>o Su (d # ys)" using diff md md2 by simp
+    thus ?thesis using cdx cdy by simp
+  qed
+qed
+
 section \<open>Order-preservation of \<open>embed\<close> on \<open>NF\<close> (the embedding obligation \<open>op\<close>)\<close>
 
 text \<open>\<^bold>\<open>Order-preservation (P/P case sorried):\<close> on \<open>NF\<close>, the naive subscript order \<open><o\<close>
