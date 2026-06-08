@@ -940,3 +940,18 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - 導出: `olt_trans`/`olt_asym`/`olt_mnlcong` を olt_meta から系として。olt_irrefl は asym から（既存）。
 - **次セッション着手**: olt_meta を組む。既存 olt_trans(400行)+olt_asym(140行)を combined に統合し mnlcong を追加。
   measure は size の和、asym/mnlcong/trans を1帰納で。helper(橋渡し)は全て緑で利用可。
+
+### 進捗 (2026-06-09 続19): 重大発見＝olt の Su 節(多重集合・単一支配元)の線形性は一次資料なし
+- **Buchholz 1986 [Buc1] §2 精読**: 項 `(a_0,…,a_k)` は **ソート済み降順**(a_k≼…≼a_0, OT2)、< は **ソート lex**。
+  Lemma 2.2/2.3 は o(a)(順序数写像)の順序保存で linearity。**pss-proof と同じソート lex**。
+- **Towsner は Def 2.3 で順序定義のみ・linearity 未証明**。∴ **本 repo の `olt` Su 節(多重集合・単一支配元)は
+  Buchholz/Towsner どちらとも異なる非標準形で linearity の一次資料が無い**(Python では真と確認済, 証明は自前)。
+- **measure 難所(確定)**: combined trans+asym で asym-Th/Th(XA∧YA)が `g<o Th n d ≤o g' ⟹ g<o g'` の trans を要し、
+  instance (g,Th n d,g') の中央 y=Th n d が full size＝asym(x,y) の size を減少させない。naive size-sum 帰納が回らない。
+  Buchholz/pss はソート lex ゆえ起きない問題。
+- **olt_trans 必要範囲(再確認)**: buchholz.thy(L_ThF)は **olt_trans 不使用**(transitivity-free)。
+  **olt_trans が要るのは embed.thy op_NF 和ケースのみ**(embed.thy:519)。
+- **完成済(緑)**: forward 橋渡し3本＋reverse 橋渡し `multp_HO_imp_olt_Su`(最大元論法, carrier 仮説付)。
+  olt_trans Su の multiset 核は完成。残るは carrier 仮説供給の combined trans+asym+mnlcong のみ。
+- **戦略選択肢(要 advisor 判断)**: (a) 非標準 linearity を自前 combined 帰納(subtle measure, 一次資料なし, 高難度)。
+  (b) op_NF 和ケースに必要な弱い trans 事実だけ示す(full linearity 回避, op_NF 限定で最小)。(c) Su 節をソート lex 寄せ(部分)。
