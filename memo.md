@@ -1129,3 +1129,17 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   扱いにし、新規部分(translate/decrease/embed/崩壊核)に原証明を集中。但し本系の順序は非標準で引用が弱い。
   (C) 順序を標準形(Buchholz [Buc1] の lex/辞書式)に作り替えて linearity を引用可能にする(大改修)。
 - **検証済み資産(再掲)**: baseline 3 sorry 緑。scratch_trans.thy(green): bridge 配線＋size 境界群。trans 8ケースは wfo 付き緑(別 scratch, commit 62c3dcb)。
+
+### 進捗 (2026-06-09 続28): 【重大訂正】mnlcong は wfo でも偽。multp_HO bridge ルート無効
+- **深さ3 wfo テスト(完走)**: mnlcong wfo: 80,294,809 instances 中 **CE 1,311,260**＝**mnlcong は wfo でも偽**。
+  続23 の深さ2 テスト(CE=0)は浅すぎた誤り。CE 例:
+  u=`Th 0(Su[Om0,Om1])`, v=`Th 0(Th 0(Su[Om0,Om1]))`, m=`Th 0(Su[Om1,Om0])`。
+  u<o v(v の Kn 0={u} で u∈Kn→u<o v)、v~m(非比較)、だが u,m は引数が置換(Su[Om0,Om1]~Su[Om1,Om0])で非比較→¬u<o m。
+- **帰結(重大)**: 逆橋 `multp\<^sub>H\<^sub>O_imp_olt_Su`(mnlcong 必須)は wfo でも使えない＝**olt_trans Su/Su の bridge ルートは死んだ**。
+  scratch_trans.thy の bridge 配線・size 境界は「mnlcong を供給できない」ので olt_trans には使えない(資産だが本筋外)。
+  ＝続23-27 の「wfo 制限 bridge」方針は誤り。
+- **訂正された状況**: trans 自体は無条件に真(python CE=0)だが、**単一支配元 DM 推移律を multp 経由で出す道は無い**(mnlcong 偽)。
+  順序は「置換合同を法に線形」でもない(u が v の下だが置換 m の下でない＝下方集合が置換で不変でない)。続23 の特徴づけも誤り。
+- **olt_trans Su/Su の正しい証明は未知**: 直接証明(中央 b で場合分け、size-IH のみ)を要するが、単一支配元の witness 構成に
+  comparability が要り、それが無い(非線形)ため標準手法が効かない。**要再設計**。これも研究級で、当初想定より難しい。
+- **戦略判断の重要性が増大**: bridge 死亡で olt_trans (A 完全証明)の道筋が不透明化。(B)引用 or (C)標準順序作り替え の比重が上がる。
