@@ -167,6 +167,34 @@ text \<open>The principal \<^const>\<open>bag\<close> of an embedded term is exa
   argument reason about \<open><\<^sub>o\<close> on sums via the Dershowitz\<dash>Manna multiset extension
   over the principals.\<close>
 
+text \<open>\<^const>\<open>collapse\<close> is injective on lists of principals: it has a left inverse
+  (read the summands back off the result).  Hence \<^const>\<open>embed\<close> is injective, which
+  lets the tail order-preservation case avoid \<open><\<^sub>o\<close>-irreflexivity.\<close>
+
+fun uncollapse :: "ot \<Rightarrow> ot list" where
+  "uncollapse (Su xs) = xs"
+| "uncollapse (Om n) = [Om n]"
+| "uncollapse (Th n a) = [Th n a]"
+
+lemma uncollapse_collapse:
+  assumes "\<forall>x \<in> set xs. isH x" shows "uncollapse (collapse xs) = xs"
+proof (cases xs)
+  case Nil thus ?thesis by simp
+next
+  case (Cons y ys)
+  show ?thesis
+  proof (cases ys)
+    case Nil thus ?thesis using Cons assms by (cases y) auto
+  next
+    case (Cons z zs) thus ?thesis using \<open>xs = y # ys\<close> by simp
+  qed
+qed
+
+lemma collapse_inj:
+  assumes "\<forall>x \<in> set xs. isH x" "\<forall>y \<in> set ys. isH y" "collapse xs = collapse ys"
+  shows "xs = ys"
+  by (metis uncollapse_collapse[OF assms(1)] uncollapse_collapse[OF assms(2)] assms(3))
+
 lemma bag_collapse:
   assumes "\<forall>x \<in> set xs. isH x" shows "bag (collapse xs) = mset xs"
 proof (cases xs)
@@ -233,6 +261,32 @@ next
   case (Cons y ys)
   hence "embed (P e f g) = Su (Th (int e) (embed f) # y # ys)" by (simp add: embed_def)
   thus ?thesis by simp
+qed
+
+lemma embed_inj: "embed s = embed t \<Longrightarrow> s = t"
+proof (induction s arbitrary: t)
+  case Z
+  hence "embed t = Zero" by simp
+  thus ?case using embed_P_neq_Zero by (cases t) auto
+next
+  case (P a b c)
+  have "embed t \<noteq> Zero" using P.prems embed_P_neq_Zero by metis
+  then obtain e f g where t: "t = P e f g" by (cases t) auto
+  have hxs: "\<forall>x\<in>set (eprincs (P a b c)). isH x" using eprincs_props by blast
+  have hys: "\<forall>x\<in>set (eprincs (P e f g)). isH x" using eprincs_props by blast
+  have "embed (P a b c) = embed (P e f g)" using P.prems t by simp
+  hence "collapse (eprincs (P a b c)) = collapse (eprincs (P e f g))" by (simp only: embed_def)
+  hence leq: "eprincs (P a b c) = eprincs (P e f g)" using collapse_inj[OF hxs hys] by simp
+  have e1: "eprincs (P a b c) = Th (int a) (embed b) # eprincs c" by (rule eprincs_P)
+  have e2: "eprincs (P e f g) = Th (int e) (embed f) # eprincs g" by (rule eprincs_P)
+  from leq e1 e2 have hd: "Th (int a) (embed b) = Th (int e) (embed f)"
+    and tl: "eprincs c = eprincs g" by auto
+  have ae: "a = e" using hd by auto
+  have "embed b = embed f" using hd by auto
+  hence bf: "b = f" using P.IH(1) by blast
+  have "embed c = embed g" using tl by (simp only: embed_def)
+  hence cg: "c = g" using P.IH(2) by blast
+  show ?case using t ae bf cg by simp
 qed
 
 text \<open>Dershowitz\<dash>Manna single-dominator step for collapses: if a principal \<open>c\<close>
