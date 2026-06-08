@@ -697,3 +697,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - i1=0 側は cnf_replicate_block で解決済（cnf(B@C)=cnf(block^n)）。
 - **要点**: cnf_oper_bad の組立は (1) oper setup(~40行, translate_oper_bad 模倣), (2) i1=0=cnf_replicate_block,
   (3) i1=1=cnf_nest(上記, 再帰 or append-deeper), (4) cnf_ctx_cong 適用。i1=1 が research-level の残核。
+
+### 進捗 (2026-06-08 続7): cnf_oper_i1eq0 完全証明＋i1=1 の de-risk
+- **証明済 (no sorry)**: `wf.cnf_oper_i1eq0`（i1=0 oper bad ケース完全）。cnf_ST_PS の i1=0 分岐 完了。
+- **i1=1 の重要発見（Python 検証）**: i1=1 bad block `[j0,j1)` の **row-0 は strictly increasing**（17/17）。
+  ⟹ block は各列が前列の**引数位置(b)に nest する純 tower**（兄弟なし）。
+  純 b-nesting tower（tail 全部 Z）は **cnf 自明**（cnf(P a b Z)=cnf b で Z まで降下）。
+  ⟹ **cnf_oper_i1eq1 は当初恐れたより容易**: copies も chain で、R@C が（ほぼ）純 nesting tower ＝自明 cnf。
+  - edge: block-max = row0(j1) のケース（1/17）で cp1 root が block 末と同レベル → sibling 生成の可能性。
+    その場合のみ sibling 順序条件（cnf_ctx_cong or 順序）要。大半は純 nesting で自明。
+- **次セッション cnf_oper_i1eq1 方針**: (1) `block_row0_increasing`（i1=1 で block row-0 strictly inc を ST_PS から証明、
+  climb 構造由来）, (2) 純 nesting tower の cnf 自明補題（or translate が単一 b-chain ⟹ cnf）, (3) edge ケース処理。
+  ＝当初の「再帰 cnf_oper_i1eq1」より直接的。
+- **cnf_ST_PS 組立**: ST_PS 帰納＋oper setup で cnf_oper_i1eq0（i1=0）/i1eq1（i1=1）を instantiate。
