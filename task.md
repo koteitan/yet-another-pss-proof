@@ -64,9 +64,10 @@
       - ✅ **`step_terminates_NF`（無条件の停止性定理）** ＝ `step_terminates_via_embed[OF op_NF]`
       - 🚨 **`op_NF`**: Z✅＋`embed_P_neq_Zero`✅、**P/P 残 sorry**。分解検証済(Python 0 反例)・補題整備中:
         - ✅ **K 条件 a<e**: `wo.Kn_dom`（omfree c⟹γ∈Kn a c⟹a<e⟹γ<o Th e D）＋`wo.Th_lt_of_sub_lt`（omfree g⟹m<n⟹Th m g<o Th n h）＝leading-subscript clause 完成
-        - ✅ **op_NF glue 基盤ほぼ完成**: `wo.Kn_dom`/`Th_lt_of_sub_lt`(K条件 a<e)・`embed.bag_embed`/`bag_embed_P`(principal bag)・`embed.collapse_lt_dom`/`collapse_neq_Zero`(DM single-dominator)・`embed.eprincs_form`/`eprincs_lt_Th`(tail 支配)・`wf.tops`/`cnf_tops_le`(cnf 添字上限)・`mechanized.translate_takeWhile_snoc_le`・`wf.cnf_snoc`/`cnf_butlast`
-        - ✅ **`embed.op_lt_a`（op_NF の a<e ケース完全証明, cnf w のみ要）**＝leading principal が全 summand を支配
-        - 🚨 **残**: (1)`cnf_ST_PS` の oper **bad/tiling 分岐**（decrease bad ケース級）, (2)op_NF **a=e** ケース（principal: bfb 要 / tail: prepend 補題は経験的成立だが singleton ケースで **ot-irrefl**(=olt_trans sorry 依存)が要る障害）, (3)`bfb_ST_PS`
+        - ✅ **op_NF glue 基盤 全完成**: `wo.Kn_dom`/`Th_lt_of_sub_lt`(K条件 a<e)・`embed.bag_embed`/`bag_collapse`/`bag_embed_P`(principal bag)・`embed.collapse_lt_dom`/`collapse_neq_Zero`(DM single-dominator)・`embed.eprincs_form`/`eprincs_lt_Th`(tail 支配)・`wf.tops`/`cnf_tops_le`(cnf 添字上限)・`mechanized.translate_takeWhile_snoc_le`・`wf.cnf_snoc`/`cnf_butlast`・`embed.uncollapse`/`collapse_inj`/`embed_inj`(単射)・`embed.collapse_prepend_diff`(equal-leading DM, tail 用)
+        - ✅ **`embed.op_lt_a`（op_NF の a<e ケース完全証明, cnf w のみ要）**
+        - 🚨 **残3大証明**: (1)`cnf_ST_PS` の oper **bad/tiling 分岐**（decrease bad ケース級 ~150行; これが無いと op_lt_a を NF に適用不可）, (2)`bfb_ST_PS`＋op_NF **a=e principal** 補題（bfb K条件, leading と =a tail 両方）, (3)op_cnf 組立（tail は collapse_prepend_diff＋cnf で irrefl 回避; embed c<o embed g→diff cond は cnf で問題 subcase 除外）
+        - 注: op_NF tail の ot-irrefl 障害は **cnf+lex で y1∉eprincs c を保証**して回避（embed_inj で c≠g→embed c≠embed g）
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
