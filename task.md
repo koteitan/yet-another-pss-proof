@@ -8,13 +8,16 @@
   - 背景: Towsner §2（絶対系）には WF 証明が無く、§3.2 の WF は polymorphic 系専用。絶対系では `Om n` が「足場ではなく本物の大元」のため構造帰納の底が無く、Acc_n/M_n レベル構築（数百行）が要る。多相系なら §3.2 がほぼ直接移植でき `wf pR` が閉じる。
 
 ## 進捗ツリー
-> **現状サマリ (2026-06-08)**: PSS 停止性は **無条件定理 `embed.step_terminates_NF` として成立**、
-> ただし内部に **3つの sorry のみ**（他は全証明済・ビルド緑）:
-> **(1) `wo.olt_trans[c=Su[a=Su]]`**（順序メタ理論＝Towsner Lemma 2.1, c=Su の sum-sum 推移; 残りは全証明）、
-> **(2) `buchholz.L_ThF[p<n]`**（Buchholz ϑ 崩壊 WO の交差添字ケース; domination/p=n/Su は証明済）、
-> **(3) `embed.op_NF[P/P]`**（embed の NF 順序保存の P/P ケース; Z ケースは証明済）。
-> いずれも研究レベル（崩壊整礎性・順序メタ理論・NF 不変条件橋渡し）。基盤（shift 自己同型・acc 不変・
-> ground/norm/width・omfree・distinguished-set・reduction chain・order meta の主要部）は全証明済。
+> **現状サマリ (2026-06-08, 致命バグ修正後)**: PSS 停止性 `embed.step_terminates_NF`、
+> 内部 sorry **3つ**（他全証明済・緑）。**重要修正**: WF target を非負添字フラグメントに変更（下記）。
+> **(1) `wo.olt_trans[c=Su[a=Su]]`**（順序メタ理論; **headline 非依存**＝dead, 完成不要）、
+> **(2) `buchholz.L_ThF[p<n]`**（Buchholz ϑ 崩壊核; **修正後 0≤p<n で真**, level machinery 要）、
+> **(3) `embed.op_NF[P/P]`**（embed の NF 順序保存; Z ケース済, 経験的に 0 反例）。
+> **🚨致命バグ修正済 (commit)**: 旧 `oltRwF`(omfree のみ) は **ill-founded**（`Th(-k)0` 無限降下）
+> ＝ `wf_oltRwF`/`masterF` は偽で、L_ThF sorry 経由で緑だった（L_ThF は「難」でなく「偽」だった）。
+> **修正**: `nneg`(全添字≥0) を target に追加（`wo.nneg`/`nneg_Kn`, `nneg_embed`, oltRwF/masterF/L_ThF/
+> bag_mono_wF に thread）。これで architecture は **健全**, L_ThF p<n は真の目標に。
+> 基盤（shift 自己同型・acc 不変・ground/norm・nneg fragment・reduction chain・cntbl_downclosed）は全証明済。
 - 🚨 定理（標準形ペア数列システムの停止性）〔proofs.thy / embed.thy〕
   - ✅ §5 定式化〔def.thy: 親子関係 nextrel0/1・基本列 oper=M[n]・標準形 ST_PS・step〕
   - ✅ 三分木記法 $p_a(b)+c$〔mechanized.thy〕
@@ -49,9 +52,10 @@
       - ✅ ground `gnd`(=Min FCset)・正規化 `norm`(=shift(-FC), top→0)・width `wdt`(=FC-gnd)〔wo.thy, +FC_shift/gnd_shift/wdt_shift/FC_norm〕
       - ✅ **shift＝順序自己同型 `shift_olt`** ＋ `shift_wfo`/`acc_shift`/`acc_shift_pR`〔wo/buchholz, ground 正規化の基盤〕
       - ✅ distinguished-set 定義 Mn/AccB/Acc（ground 階層）＋単調性＋generic `Awf`/`wf_on_Awf`〔buchholz〕
-      - ✅ **致命バグ修正**: `Om int` で全体 `wf pR` は偽（`Om 0>Om(-1)>…` 無限降下）。embed 像は **Om-free**（`omfree_embed`）＝可算。WF 対象を **Om-free 項** に制限〔`omfree`/`oltRwF`/`pRF`〕
-      - ✅ **`masterF`（証明済）**: 全 Om-free wfo 項が `oltRwF`-acc。構造帰納（Om は omfree で消滅／Su は `bag_mono_wF`+`acc_of_bag_elemsF`／Th は `L_ThF`）
-      - 🚨 **`L_ThF`（domination/p=n/Su 証明済, 残 `p<n` 1ケースのみ ＝唯一の sorry）**: `omfree d⟹wfo d⟹d∈acc⟹Th n d∈acc`。`p<n` 交差添字 = 真の Buchholz ϑ 崩壊核（Ω scaffold＋制御集合）★
+      - ✅ **致命バグ修正2 (nneg)**: 旧 target `oltRwF`(omfree のみ) も **ill-founded**（`Th(-k)0` 無限降下, omfree内）＝`wf_oltRwF`/`masterF` は偽だった。**非負添字 `nneg`(全添字≥0) を追加**し target を健全化〔`wo.nneg`/`nneg_Kn`/`nneg_embed`, oltRwF/pRF/bag_mono_wF/masterF/L_ThF に thread〕
+      - ✅ `cntbl`(FCset=∅)＋`cntbl_downclosed`（可算フラグメントは <o-downward-closed; 但し cntbl 自体も ill-founded＝target ではない, 補題は再利用可）〔wo.thy〕
+      - ✅ **`masterF`（nneg 付きで証明済）**: 全 omfree∧wfo∧nneg 項が `oltRwF`-acc。構造帰納（Om消滅／Su は bag／Th は L_ThF）
+      - 🚨 **`L_ThF`（domination/p=n/Su 証明済, 残 `0≤p<n` 1ケース）**: `omfree d⟹wfo d⟹nneg d⟹0≤n⟹d∈acc⟹Th n d∈acc`。**nneg 修正で p<n は真**（0≤p<n, 帰納 base あり）だが Buchholz ϑ 崩壊 level machinery（Ω scaffold＋制御集合 Towsner 3.10/3.11）要 ★
       - ✅ `wf_oltRwF`（masterF から）〔buchholz〕
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
       - ✅ embed/eprincs/collapse＋像の well-formed〔wfo_embed〕＋**Om-free〔omfree_embed〕**（int 化済: `Th (int a) ...`）
