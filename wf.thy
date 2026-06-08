@@ -1014,6 +1014,44 @@ next
   show ?case using cnf_butlast[OF ne ihk] e by simp
 qed
 
+text \<open>CNF core, the exact-copy (i1 = 0) case: \<open>n\<close> identical copies of a block
+  \<open>(v0,w0) # R\<close> translate to a CNF term \<dash> the equal sibling blocks are
+  non-increasing by (three-level, proven) irreflexivity of \<open><o\<close>.\<close>
+
+lemma cnf_replicate_block:
+  assumes R: "\<forall>x\<in>set R. v0 < fst x" and cR: "cnf (translate R)"
+  shows "cnf (translate (concat (replicate n ((v0,w0) # R))))"
+proof (induction n)
+  case 0 thus ?case by simp
+next
+  case (Suc m)
+  let ?blk = "(v0,w0) # R"
+  let ?T = "concat (replicate m ?blk)"
+  have hd: "concat (replicate (Suc m) ?blk) = ?blk @ ?T" by simp
+  have Tcond: "?T = [] \<or> \<not> v0 < fst (hd ?T)"
+    by (cases m) auto
+  have tb: "translate (?blk @ ?T) = P w0 (translate R) (translate ?T)"
+    by (rule translate_block_append[OF R Tcond])
+  show ?case
+  proof (cases m)
+    case 0
+    thus ?thesis using hd tb cR by simp
+  next
+    case (Suc m')
+    have tT: "translate ?T = P w0 (translate R) (translate (concat (replicate m' ?blk)))"
+    proof -
+      have e: "?T = ?blk @ concat (replicate m' ?blk)" using Suc by simp
+      have c: "concat (replicate m' ?blk) = [] \<or> \<not> v0 < fst (hd (concat (replicate m' ?blk)))"
+        by (cases m') auto
+      show ?thesis using e translate_block_append[OF R c] by simp
+    qed
+    have cT: "cnf (translate ?T)" using Suc.IH .
+    have irr: "\<not> (P w0 (translate R) Z <o P w0 (translate R) Z)" using olt_irrefl by blast
+    have "cnf (P w0 (translate R) (translate ?T))" using cR cT tT irr by simp
+    thus ?thesis using hd tb by simp
+  qed
+qed
+
 text \<open>The top-level sibling subscripts of a term (its \<open>+\<close>-chain of principals).\<close>
 
 fun tops :: "three \<Rightarrow> nat list" where

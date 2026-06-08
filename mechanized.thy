@@ -237,6 +237,37 @@ proof -
   show ?thesis by (simp only: translate.simps(2) tw dw translate.simps(1))
 qed
 
+text \<open>A block \<open>(v\<^sub>0,w\<^sub>0) # R\<close> (root \<open>v\<^sub>0\<close>, body \<open>R\<close> all above \<open>v\<^sub>0\<close>) followed by a tail
+  \<open>T\<close> that re-opens at or below \<open>v\<^sub>0\<close> translates to a single principal whose argument
+  is \<open>R\<close> and whose siblings are \<open>T\<close>.  (This is the block shape used by the bad-step
+  cores; exposed here for the CNF preservation proof.)\<close>
+
+lemma translate_block_append:
+  assumes R: "\<forall>x\<in>set R. v0 < fst x" and T: "T = [] \<or> \<not> v0 < fst (hd T)"
+  shows "translate (((v0,w0) # R) @ T) = P w0 (translate R) (translate T)"
+proof -
+  let ?P = "\<lambda>q. v0 < fst q"
+  have twT: "takeWhile ?P (R @ T) = R"
+  proof (cases T)
+    case Nil thus ?thesis using R by (simp add: takeWhile_eq_all_conv)
+  next
+    case (Cons t ts)
+    with T have "\<not> ?P t" by simp
+    hence "takeWhile ?P T = []" using Cons by simp
+    thus ?thesis using R by (simp add: takeWhile_append2)
+  qed
+  have dwT: "dropWhile ?P (R @ T) = T"
+  proof (cases T)
+    case Nil thus ?thesis using R by (simp add: dropWhile_eq_Nil_conv)
+  next
+    case (Cons t ts)
+    with T have "\<not> ?P t" by simp
+    hence "dropWhile ?P T = T" using Cons by simp
+    thus ?thesis using R by (simp add: dropWhile_append2)
+  qed
+  show ?thesis by (simp only: append_Cons fst_conv snd_conv translate.simps(2) twT dwT)
+qed
+
 subsection \<open>Context congruence (BADCTX)\<close>
 
 text \<open>If two tails \<open>Z\<^sub>1, Z\<^sub>2\<close> share the same first pair's row-0 value and all
