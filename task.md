@@ -55,7 +55,7 @@
       - ✅ **致命バグ修正2 (nneg)**: 旧 target `oltRwF`(omfree のみ) も **ill-founded**（`Th(-k)0` 無限降下, omfree内）＝`wf_oltRwF`/`masterF` は偽だった。**非負添字 `nneg`(全添字≥0) を追加**し target を健全化〔`wo.nneg`/`nneg_Kn`/`nneg_embed`, oltRwF/pRF/bag_mono_wF/masterF/L_ThF に thread〕
       - ✅ `cntbl`(FCset=∅)＋`cntbl_downclosed`（可算フラグメントは <o-downward-closed; 但し cntbl 自体も ill-founded＝target ではない, 補題は再利用可）〔wo.thy〕
       - ✅ **`masterF`（nneg 付きで証明済）**: 全 omfree∧wfo∧nneg 項が `oltRwF`-acc。構造帰納（Om消滅／Su は bag／Th は L_ThF）
-      - 🚨 **`L_ThF`（domination/p=n/Su 証明済, 残 `0≤p<n` 1ケース）**: `omfree d⟹wfo d⟹nneg d⟹0≤n⟹d∈acc⟹Th n d∈acc`。**nneg 修正で p<n は真**（0≤p<n, 帰納 base あり）だが Buchholz ϑ 崩壊 level machinery（Ω scaffold＋制御集合 Towsner 3.10/3.11）要 ★
+      - 🚨 **`L_ThF`（再構成済: 外側レベル k 強帰納＋内側 acc 帰納。残核は `e∈acc` 1点）**: `omfree d⟹wfo d⟹nneg d⟹0≤n⟹d∈acc⟹Th n d∈acc`。dom_acc/p=n(accIH)/Su(bag) 全済、p<n は levelIH で `e∈acc` に帰着。**残核 `eacc:e∈acc`**＝Pohlers 9.6.15 controlled⟹acc（要 Mn/AccB 完全構成: 構造帰納 on e は level≥n の Th collapse で破綻）。olt_trans 不使用維持 ★
       - ✅ `wf_oltRwF`（masterF から）〔buchholz〕
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
       - ✅ embed/eprincs/collapse＋像の well-formed〔wfo_embed〕＋**Om-free〔omfree_embed〕**（int 化済: `Th (int a) ...`）

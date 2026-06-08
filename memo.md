@@ -760,3 +760,24 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **設計上の注意**: ctrl/Acc_Th を新設するより既存 Mn/AccB を使う（wf_oltRwF 配線の二重化回避）。9.6.14(φ)段は不要。
 - **次の一手**: L_ThF を n の外側強帰納に再構成し、p<n を controlled-set（Mn/AccB）＋下位 IH で埋める。
   推移律を避ける。まず statement ラダーを sorry 骨組みで compile→核(9.6.15 項長帰納の崩壊サブケース)を埋める。
+
+### 進捗 (2026-06-08 続10): L_ThF 再構成完了＋核の正確な所在
+- **DONE (commit, 緑)**: `L_ThF` を **外側=レベル k 強帰納(less_induct on nat k, n=int k)＋内側=d の acc 帰納**に再構成。
+  p<n ケースは `p=int j, j<k` で **levelIH(下位レベル)** により `Th p e∈acc` を `e∈acc` から導出。
+  残 sorry は **`eacc: e∈acc oltRwF`** 1点のみ（dom_acc/eq(=accIH)/Su(=bag) は全て既済）。olt_trans 不使用を維持。
+- **核 `e∈acc` の難所（重要分析）**: e は omfree/wfo/nneg（→最終的に masterF で acc だが masterF は L_ThF 依存で循環）。
+  文脈: `∀γ∈Kn p e. γ<o Th n d`(Acond), p<n。
+  - **構造帰納 on e は破綻**: e=Th q h で **q≥n** の場合（p<q なので Kn p e=Kn p h に潜るが e 自身の level q は ≥n）、
+    levelIH(level<n のみ) が効かず e∈acc を出せない。同レベル/上位 level の Th collapse を扱えない。
+  - ∴ **Towsner 3.10-3.11 / Pohlers 9.6 の完全 distinguished-set 構成が必要**。
+- **既存機構の整理**: `Awf S`=S の acc 部分(汎用), `wf_on_Awf`=Awf 上 wf（済）。`Mn n prev`/`AccB`/`Acc n`=
+  **幅(ground/FCset cardinal, `nat(-gnd a)≤n`, `Klt`=Kn 0∩below Om0)で stratify** した distinguished set
+  （`Acc_subset_AccB:m<n⟹Acc m⊆AccB n`完備）。注意: この stratify 軸は **Om-幅** であって **Th-subscript n とは別軸**。
+  masterF はこの2軸（幅 collapse=Mn/AccB と subscript collapse=L_ThF）を構造帰納で組合せている。
+- **核の正しい筋(Pohlers 9.6.15 写経, 要 Mn/AccB)**: `controlled a ≡ a の臨界部分項(SC∩Ω=Kn-below-Om)が下位 Acc に入る`
+  を定義し、`controlled a ⟹ a∈acc` を **a の項長帰納**で: a∉SC→SC(a)⊆acc(IH)+bag閉包/9.6.12。
+  a∈SC(=Th collapse)→arg の controlled 性＋ `<1`(M制限順序)の Prog で acc。e の controlled 性は Acond の
+  γ<o Th n d 達が（下位 level/acc IH で）acc になることから。**これが残りの全作業**。
+- **olt_trans の扱い**: 核を Kn-style(推移律無し)で書けるか要検討。書けなければ olt_trans を先に閉じる必要。
+- **次セッション**: controlled 述語＋`controlled⟹acc`(9.6.15) を statement で置き(sorry骨組)→compile→
+  項長帰納の崩壊サブケースを Mn/AccB と levelIH/accIH で埋める。op_NF/olt_trans はその後。
