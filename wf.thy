@@ -1594,6 +1594,89 @@ proof -
   thus ?thesis using imp by simp
 qed
 
+lemma copies_replicate: "copies 0 blk n = concat (replicate n blk)"
+proof -
+  have "copies 0 blk n = concat (map (\<lambda>k. blk) [0..<n])" by (simp add: copies_def)
+  also have "map (\<lambda>k. blk) [0..<n] = replicate n blk" by (simp add: map_replicate_const)
+  finally show ?thesis .
+qed
+
+text \<open>\<^bold>\<open>CNF is preserved by one expansion step.\<close>  The degenerate (\<open>Pred\<close>) branches
+  drop the last pair (@{thm [source] cnf_butlast}) or leave \<open>M\<close> unchanged; the
+  genuine (bad) branch is discharged by @{thm [source] cnf_oper_i1eq0} (exact
+  copies, \<open>d\<^sub>0 = 0\<close>) or @{thm [source] cnf_oper_i1eq1} (ascending copies, \<open>d\<^sub>0 > 0\<close>),
+  fed by the decomposition @{thm [source] oper_bad_blocks}.\<close>
+
+lemma cnf_oper:
+  assumes n: "1 \<le> n" and cM: "cnf (translate M)"
+  shows "cnf (translate (oper M n))"
+proof (cases "Lng M - 1 = 0")
+  case True
+  hence leq: "oper M n = M" by (simp add: oper_def Let_def)
+  show ?thesis using cM by (simp only: leq)
+next
+  case L: False
+  hence L1: "1 < Lng M" by simp
+  have Mne: "M \<noteq> []" using L1 by (cases M) auto
+  show ?thesis
+  proof (cases "entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0")
+    case z: True
+    have leq: "oper M n = butlast M" using z L1 by (simp add: oper_def Let_def Pred_def)
+    show ?thesis using cnf_butlast[OF Mne cM] by (simp only: leq)
+  next
+    case nz: False
+    show ?thesis
+    proof (cases "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)")
+      case False
+      hence leq: "oper M n = butlast M" using L1 nz by (simp add: oper_def Let_def Pred_def)
+      show ?thesis using cnf_butlast[OF Mne cM] by (simp only: leq)
+    next
+      case hp: True
+      obtain G v0 w0 R d0 lp where
+        Meq: "M = G @ ((v0, w0) # R) @ [lp]"
+        and Mneq: "oper M n
+              = G @ concat (map (\<lambda>k. map (\<lambda>p. (fst p + k * d0, snd p)) ((v0, w0) # R)) [0..<n])"
+        and R: "\<forall>x\<in>set R. v0 < fst x" and lpv: "v0 < fst lp"
+        and disj: "d0 = 0 \<or> (0 < d0 \<and> w0 < snd lp \<and> fst lp = v0 + d0)"
+        by (rule oper_bad_blocks[OF L1 nz hp n])
+      have raweq: "concat (map (\<lambda>k. map (\<lambda>p. (fst p + k * d0, snd p)) ((v0, w0) # R)) [0..<n])
+                   = copies d0 ((v0, w0) # R) n"
+        by (simp add: copies_def shiftr0_def)
+      have cM': "cnf (translate (G @ ((v0, w0) # R) @ [lp]))" using cM by (simp only: Meq)
+      show ?thesis
+      proof (cases "d0 = 0")
+        case d0z: True
+        have leq: "oper M n = G @ copies 0 ((v0, w0) # R) n"
+          using Mneq raweq d0z by simp
+        have "cnf (translate (G @ concat (replicate n ((v0, w0) # R))))"
+          by (rule cnf_oper_i1eq0[OF R lpv n cM'])
+        hence "cnf (translate (G @ copies 0 ((v0, w0) # R) n))" by (simp only: copies_replicate)
+        thus ?thesis by (simp only: leq)
+      next
+        case d0nz: False
+        from disj d0nz have d0pos: "0 < d0" and w0lt: "w0 < snd lp" and lphd: "fst lp = v0 + d0"
+          by simp_all
+        have leq: "oper M n = G @ copies d0 ((v0, w0) # R) n"
+          using Mneq raweq by simp
+        have "cnf (translate (G @ copies d0 ((v0, w0) # R) n))"
+          by (rule cnf_oper_i1eq1[OF R d0pos w0lt lphd n cM'])
+        thus ?thesis by (simp only: leq)
+      qed
+    qed
+  qed
+qed
+
+text \<open>\<^bold>\<open>Every standard-form sequence translates to a CNF term.\<close>  Induction over the
+  generation of @{const ST_PS}: the diagonal seeds are CNF (@{thm [source] cnf_diag})
+  and each expansion step preserves CNF (@{thm [source] cnf_oper}).\<close>
+
+lemma cnf_ST_PS: "M \<in> ST_PS \<Longrightarrow> cnf (translate M)"
+proof (induction rule: ST_PS.induct)
+  case (diag v) show ?case by (simp add: cnf_diag)
+next
+  case (oper M n) show ?case using cnf_oper[OF oper.hyps(2) oper.IH] .
+qed
+
 text \<open>The top-level sibling subscripts of a term (its \<open>+\<close>-chain of principals).\<close>
 
 fun tops :: "three \<Rightarrow> nat list" where
