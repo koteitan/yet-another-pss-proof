@@ -1065,13 +1065,14 @@ lemma cnf_ctx_cong:
     and decr: "translate Z1 <o translate Z2"
     and ne1: "Z1 \<noteq> []" and ne2: "Z2 \<noteq> []"
     and root: "fst (hd Z1) = fst (hd Z2)"
-    and lead: "\<exists>a b c1 c2. translate Z1 = P a b c1 \<and> translate Z2 = P a b c2"
+    and lead: "\<exists>a b1 b2 c1 c2. translate Z1 = P a b1 c1 \<and> translate Z2 = P a b2 c2 \<and> b1 \<le>o b2"
     and r1: "\<forall>x\<in>set (tl Z1). fst (hd Z1) \<le> fst x"
     and r2: "\<forall>x\<in>set (tl Z2). fst (hd Z2) \<le> fst x"
   shows "cnf (translate (G @ Z2)) \<Longrightarrow> cnf (translate (G @ Z1))"
 proof (induction G rule: length_induct)
   case (1 G)
-  from lead obtain a b c1 c2 where lZ1: "translate Z1 = P a b c1" and lZ2: "translate Z2 = P a b c2"
+  from lead obtain a b1 b2 c1 c2
+    where lZ1: "translate Z1 = P a b1 c1" and lZ2: "translate Z2 = P a b2 c2" and ble: "b1 \<le>o b2"
     by blast
   show ?case
   proof (cases G)
@@ -1111,14 +1112,30 @@ proof (induction G rule: length_induct)
         have dw1: "dropWhile ?Pg (G' @ Z1) = Z1" using allG dwZ1 by (simp add: dropWhile_append2)
         have tw2: "takeWhile ?Pg (G' @ Z2) = G'" using allG twZ2 by (simp add: takeWhile_append2)
         have dw2: "dropWhile ?Pg (G' @ Z2) = Z2" using allG dwZ2 by (simp add: dropWhile_append2)
-        have e1: "translate (G @ Z1) = P (snd g) (translate G') (P a b c1)"
+        have e1: "translate (G @ Z1) = P (snd g) (translate G') (P a b1 c1)"
           using lZ1 by (simp only: Cons append_Cons translate.simps(2) tw1 dw1)
-        have e2: "translate (G @ Z2) = P (snd g) (translate G') (P a b c2)"
+        have e2: "translate (G @ Z2) = P (snd g) (translate G') (P a b2 c2)"
           using lZ2 by (simp only: Cons append_Cons translate.simps(2) tw2 dw2)
-        have "cnf (translate G') \<and> \<not> (P (snd g) (translate G') Z <o P a b Z) \<and> cnf (P a b c2)"
-          using "1.prems" e2 by simp
-        moreover have "cnf (P a b c1)" using cZ1 lZ1 by simp
-        ultimately show ?thesis using e1 by simp
+        have ctg: "cnf (translate G')" and bnd2: "\<not> (P (snd g) (translate G') Z <o P a b2 Z)"
+          using "1.prems" e2 by auto
+        have bnd1: "\<not> (P (snd g) (translate G') Z <o P a b1 Z)"
+        proof
+          assume "P (snd g) (translate G') Z <o P a b1 Z"
+          hence "snd g < a \<or> (snd g = a \<and> translate G' <o b1)" by auto
+          thus False
+          proof
+            assume "snd g < a"
+            hence "P (snd g) (translate G') Z <o P a b2 Z" by simp
+            thus False using bnd2 by simp
+          next
+            assume A: "snd g = a \<and> translate G' <o b1"
+            hence "translate G' <o b2" using ble olt_ole_trans by blast
+            hence "P (snd g) (translate G') Z <o P a b2 Z" using A by simp
+            thus False using bnd2 by simp
+          qed
+        qed
+        have "cnf (P a b1 c1)" using cZ1 lZ1 by simp
+        thus ?thesis using e1 ctg bnd1 by simp
       qed
     next
       case notallG: False
