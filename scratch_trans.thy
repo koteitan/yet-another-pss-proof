@@ -13,6 +13,26 @@ lemma transp_on_multp\<^sub>H\<^sub>O':
   shows "transp_on {M. set_mset M \<subseteq> A} (multp\<^sub>H\<^sub>O (<\<^sub>o))"
   by (rule transp_on_multp\<^sub>H\<^sub>O[OF assms]) auto
 
+text \<open>Distinct summands of a sum have total size strictly below the sum's size.\<close>
+
+lemma sum_set_size_lt_Su: "(\<Sum>t\<in>set xs. size (t::ot)) < size (Su xs)"
+  by (induction xs) (auto simp: insert_absorb add_strict_mono trans_less_add2)
+
+lemma carrier_sum_lt:
+  assumes T: "T \<subseteq> set as \<union> set bs \<union> set zs" and fT: "finite T"
+  shows "(\<Sum>t\<in>T. size (t::ot)) < size (Su as) + size (Su bs) + size (Su zs)"
+proof -
+  have "(\<Sum>t\<in>T. size t) \<le> (\<Sum>t\<in>set as \<union> set bs \<union> set zs. size t)"
+    by (rule sum_mono2[OF _ T]) auto
+  also have "\<dots> \<le> (\<Sum>t\<in>set as. size t) + (\<Sum>t\<in>set bs \<union> set zs. size t)"
+    by (rule sum_Un_le) auto
+  also have "\<dots> \<le> (\<Sum>t\<in>set as. size t) + ((\<Sum>t\<in>set bs. size t) + (\<Sum>t\<in>set zs. size t))"
+    using sum_Un_le[of "set bs" "set zs" size] by simp
+  also have "\<dots> < size (Su as) + size (Su bs) + size (Su zs)"
+    using sum_set_size_lt_Su[of as] sum_set_size_lt_Su[of bs] sum_set_size_lt_Su[of zs] by simp
+  finally show ?thesis .
+qed
+
 lemma olt_lin:
   "(\<forall>a b c. size a + size b + size c \<le> N \<longrightarrow> wfo a \<longrightarrow> wfo b \<longrightarrow> wfo c \<longrightarrow> a <\<^sub>o b \<longrightarrow> b <\<^sub>o c \<longrightarrow> a <\<^sub>o c)
  \<and> (\<forall>a b. size a + size b \<le> N \<longrightarrow> wfo a \<longrightarrow> wfo b \<longrightarrow> a <\<^sub>o b \<longrightarrow> \<not> b <\<^sub>o a)

@@ -1076,3 +1076,25 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **wo.thy 置換時の注意**: 現 olt_trans(無条件,sorry)/olt_ole_trans/ole_olt_trans/olt_asym/olt_irrefl を wfo 版に。
   下流(buchholz/embed)は ot の trans/asym/irrefl 不使用＝安全。wo 内 bag_mono/wf_olt_of_principal(代替WF経路, 要確認)は wfo 仮定下。
 - **規模**: ~400-500 行(trans 移植が大半)。mnlcong が新規で要注意。**手順: scratch で trans→asym→mnlcong を順に green 化→wo.thy 統合**。
+
+### 進捗 (2026-06-09 続25): monolithic combined induction 破綻→midH 分解に修正（重要）
+- **scratch で combined induction を試作**: trans 節の8ケース(Om/Th, c=Su[a-principal])は **wfo 付きで green 完全証明**、
+  Su/Su(b=Su)は bridge 配線が combined 帰納内で動作(green, carrier 境界は sorry)。構造は妥当。
+- **しかし monolithic(trans+asym+mnlcong を単一 size 帰納)は破綻**: asym の Th/Th XA-YA ケースで
+  trans を **中央項 Th n d=full size** で呼ぶ(`olt_ole_trans(g,Th n d,g')`)→ measure(size g+size(Th n d)+size g')が
+  現 asym measure(size x+size y=2 size(Th n d))より**大きく**、IHtrans 不適用。＝**「full-size 中央項問題」**(memo 既述)。
+  ∴ trans/asym を単一 measure で相互 IH すると asym が閉じない。
+- **正しい分解(確定)= midH 経由で循環を断つ**:
+  1. **`olt_trans_midH: isH b ⟹ a<\<^sub>o b ⟹ b<\<^sub>o c ⟹ a<\<^sub>o c`**（中央 b が principal の推移律, 自己完結 size 帰納, asym/wfo 不要）。
+     再帰は常に中央=b(principal)を保つ。a=Su∧c=Su∧b-principal も込み(現 olt_trans が sorry にしている部分)。
+  2. **`olt_asym`(無条件)** を midH 経由で（Th/Th の trans 呼出は中央=Th n d=principal なので midH で足りる; full olt_trans 不要）。
+     ＝現 olt_asym の `olt_ole_trans` を midH ベースに差し替え。
+  3. **`mnlcong`(wfo 制限, python で wfo 真)** を midH+asym で。trans 呼出が principal 中央か要確認、不足なら asym 併用。
+  4. **完全 `olt_trans`**: 現8ケース＋Su/Su を「b principal→midH、b=Su→bridge(global asym+mnlcong＋IHtrans on carrier)」で。
+     b=Su の carrier transp_on は IHtrans(size 帰納, distinct 三項 size 和<現 measure)＋`carrier_sum_lt`。asymp_on は global asym(対角=irrefl 込)。
+- **ヘルパー(carrier_sum_lt, sum_set_size_lt_Su)**: 要修正(`sum_set_size_lt_Su` の auto 失敗→手動 cases a∈set xs; `sum_Un_le`→`sum.union_inter` 経由)。
+  size(Su xs)=Suc(size_list size xs), size_list size(a#xs)=Suc(size a+size_list size xs)。transp_on(b=Su bridge)用に必要。
+- **wfo 範囲**: midH/asym は無条件可。mnlcong は wfo 必須(非wfo偽)。∴ 完全 olt_trans の Su/Su(bridge)が wfo 依存→ olt_trans 全体 wfo 制限。
+  下流(buchholz/embed/op_NF)は全 wfo で安全。
+- **次の一手**: scratch で midH を書く(現8ケース移植, 中央 principal に特化で簡略)→asym→mnlcong→olt_trans 統合→wo.thy へ。
+  wfo_Kn/nneg_Kn を wo.thy へ移動(olt_lin が wo に入るため; 現状 wflevel)。
