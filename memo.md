@@ -807,3 +807,20 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **olt_trans 実装方針**: `olt_tri: a<o b ∨ a=b ∨ b<o a`(totality) と `olt_trans` を1つの size 帰納で相互に証明。
   Su/Su/Su trans は tri(下位要素)で max 元論法、または witness 直接操作。まず tri 単独が size 帰納で閉じるか試し、
   trans の Su ケースで tri を使う。olt_asym/irrefl は tri+trans から従う。
+
+### 進捗 (2026-06-08 続12): olt_trans を Python 検証＝真だが ot 固有性に依存（重要）
+- **olt/Kn を Python 移植して検証**: ot 小項(depth2, subscript0-3, 145項/Su101項)で **olt_trans 反例ゼロ**＝真。
+  Su[u,v] と Su[v,u] は <o-incomparable かつ ≠（**olt は ot 上で全順序でない**）が、それでも trans は成立。
+- **決定的発見**: 単一支配元 one-step DM `∃β∈ms ys-xs.∀α∈ms xs-ys.α<o β` は **抽象的には推移的でない**。
+  反例(抽象 transitive+asym 部分順序): a1<b1, a2<b2, 他 incomparable で
+  A={a1,a2}≺B={a2,b1}≺C={b1,b2} だが A⊀C（b1 は a1 のみ、b2 は a2 のみ支配、単一支配元が無い）。
+  ∴ **olt_trans の Su 節は asym だけの汎用 multiset 論法では証明不可。ot 固有の totality/trichotomy が要る**。
+- **ot 固有性の正体**: ot では a1<b1∧a2<b2∧a1⊥b2∧a2⊥b1 という配置が起きない（incomparable は Su-permutation 等
+  限定的で、上記反例パターンを実現できない）。これを保証するのが **ot 上の trichotomy**。
+- **∴ olt_trans 実装**: `olt_trans` ＋ `olt_tri`(ot 上の三分律: x<o y ∨ y<o x ∨ x≃y)を **1つの size 帰納で同時証明**。
+  ≃ の定式化が要注意（Su-permutation incomparable は ≠ かつ ⊥）。Su/Su/Su trans は tri(下位)で対称差の最大元論法。
+  これは Towsner Lemma 2.1 の順序メタ理論本体＝数百行規模の combined induction。olt は wfo 制限なしの無条件命題なので
+  trichotomy も全 ot で要る（あるいは olt_trans を wfo/normalized 断片に制限する設計変更も選択肢）。
+- **Python 検証スクリプト**: /tmp/olt_check.py（olt/Kn 移植＋反例探索）, /tmp/abstract_dm.py（抽象 DM 非推移性）。
+- **設計判断ポイント(要相談 or 自走)**: (i) trichotomy ≃ をどう定式化するか、(ii) olt_trans を無条件のまま combined
+  induction で攻めるか、それとも実利用箇所(oltRwF=wfo∧omfree∧nneg)に合わせ wfo 断片へ制限して totality を確保するか。
