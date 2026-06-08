@@ -42,9 +42,12 @@
     - 🚨 **distinguished-set WF 核**〔wo.thy/buchholz.thy〕（§3.2 を絶対系 `ot` に「書き換え転写」: ユーザー決定 2026-06-08）
       - ✅ 記法 `ot`(Om int/Th int/Su)・FCset・FC・critical subterms Kn・Kn_size〔wo.thy〕（**int 化済**: shift に負添字が要る）
       - ✅ K 条件付き整礎順序 `<\<^sub>o`（Towsner Def 2.3）function+termination〔olt / ole〕
-      - 🚨 **順序メタ理論**（Towsner Lemma 2.1）: `olt_Om_mono`✅, `olt_asym`/`olt_irrefl`✅（olt_trans 依存）。
-        **`olt_trans` は c=Om/c=Su[a-principal]/c=Th（Th/Th/Th core 含む）全証明済、残 sorry は c=Su[a=Su] 1つ**
-        （sum-sum の one-step multiset 推移。trans↔asym↔irrefl の 3-way 相互依存で combined induction 要）。★3義務の一つ
+      - 🚨 **順序メタ理論**（出典: Buchholz [Buc1] Lemma 2.1, pss-proof §7.1 に既存）: `olt_Om_mono`✅, `olt_asym`/`olt_irrefl`✅。
+        **`olt_trans` は c=Om/c=Su[a-principal]/c=Th 全証明済、残 sorry は c=Su[a=Su]（Su/Su/Su 一段 DM 推移）1つ**。
+        Python 検証で olt_trans は ot 上で真だが、**単一支配元 DM は抽象的に非推移**＝ot 固有の weak-order(mnl) が鍵。
+        **Path 決定=B(multiset-DM 維持; Path A 辞書式 lex 再表現は ~3000行依存＋整礎性悪化で不採算)。(b1) 採用**。
+        進捗: import Multiset_Order✅, `olt_Su_imp_multp\<^sub>D\<^sub>M`(易方向 single-dom⟹multp_DM)✅。
+        残: converse(multp⟹single-dom, `mnl x y≡¬(x<o y)∧¬(y<o x)` の推移性=weak-order ＋ mnl-congruence を combined size 帰納で)→Su trans 完成。★3義務の一つ
       - ✅ Zero 最小性・Kn 単調補題群〔not_olt_Zero / olt_Zero_iff / Kn_lt_Th / Kn_mono_le / KnTh / Kn_le_self / olt_Th_of_le_Kn〕
       - ✅ **shift（Towsner Def 3.3 global）＝順序自己同型**〔wo.thy: shift / shift_shift/0/inv/inj/isH/eq/eqTh/eqOm/FCset/Kn / **shift_olt**〕＝正規化の基盤
       - ✅ **汎用 acc 基盤**〔accinfra.thy〕（記法非依存・再利用）
