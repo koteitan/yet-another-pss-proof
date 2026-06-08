@@ -331,6 +331,56 @@ text \<open>\<^bold>\<open>Order-preservation (P/P case sorried):\<close> on \<o
   built-from-below / spine bounds of \<^theory>\<open>YAPSS.wf\<close>) to discharge the critical-subterm
   (\<open>K\<close>) conditions of \<open><\<^sub>o\<close>.  This is one of the remaining obligations.\<close>
 
+text \<open>The \<open>a < e\<close> sub-case: when the leading subscript of \<open>w\<close> is strictly below
+  that of \<open>x\<close>, the leading principal \<open>\<vartheta>\<^bsub>int e\<^esub>(embed f)\<close> of \<open>embed x\<close> dominates
+  \<^emph>\<open>every\<close> summand of \<open>embed w\<close> (its own leading by @{thm [source] Th_lt_of_sub_lt},
+  the tail by @{thm [source] eprincs_lt_Th} using @{thm [source] cnf_tops_le}), so
+  @{thm [source] collapse_lt_dom} finishes.  Needs only \<open>cnf w\<close>.\<close>
+
+lemma op_lt_a:
+  assumes ae: "a < e" and cw: "cnf (P a b c)"
+  shows "embed (P a b c) <\<^sub>o embed (P e f g)"
+proof -
+  have xs: "eprincs (P a b c) = Th (int a) (embed b) # eprincs c" by (rule eprincs_P)
+  have ys: "eprincs (P e f g) = Th (int e) (embed f) # eprincs g" by (rule eprincs_P)
+  have ie: "int a < int e" using ae by simp
+  have allt: "\<forall>s\<in>set (tops c). int s < int e" using cnf_tops_le[OF cw] ae by fastforce
+  have hLe: "isH (Th (int e) (embed f))" by simp
+  have dom: "\<forall>\<alpha>\<in>set (eprincs (P a b c)). \<alpha> <\<^sub>o Th (int e) (embed f)"
+  proof
+    fix \<alpha> assume "\<alpha> \<in> set (eprincs (P a b c))"
+    then consider "\<alpha> = Th (int a) (embed b)" | "\<alpha> \<in> set (eprincs c)" using xs by auto
+    thus "\<alpha> <\<^sub>o Th (int e) (embed f)"
+    proof cases
+      case 1 thus ?thesis using Th_lt_of_sub_lt[OF omfree_embed ie] by simp
+    next
+      case 2 thus ?thesis using eprincs_lt_Th[OF allt] by blast
+    qed
+  qed
+  have hx: "\<forall>\<alpha>\<in>set (eprincs (P a b c)). isH \<alpha>" using eprincs_props by blast
+  have Lein: "Th (int e) (embed f) \<in> set (eprincs (P e f g))" using ys by simp
+  have cnotx: "Th (int e) (embed f) \<notin> set (eprincs (P a b c))"
+  proof
+    assume "Th (int e) (embed f) \<in> set (eprincs (P a b c))"
+    then consider "Th (int e) (embed f) = Th (int a) (embed b)"
+                | "Th (int e) (embed f) \<in> set (eprincs c)" using xs by auto
+    thus False
+    proof cases
+      case 1 thus False using ae by auto
+    next
+      case 2
+      from eprincs_form[OF 2] obtain s h
+        where eq: "Th (int e) (embed f) = Th (int s) (embed h)" and s: "s \<in> set (tops c)" by blast
+      have "e = s" using eq by auto
+      moreover have "s \<le> a" using cnf_tops_le[OF cw] s by blast
+      ultimately show False using ae by simp
+    qed
+  qed
+  have "collapse (eprincs (P a b c)) <\<^sub>o collapse (eprincs (P e f g))"
+    by (rule collapse_lt_dom[OF hx hLe dom Lein cnotx])
+  thus ?thesis by (simp add: embed_def)
+qed
+
 theorem op_NF:
   assumes "w \<in> NF" "x \<in> NF" "w <o x"
   shows "embed w <\<^sub>o embed x"
