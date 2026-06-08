@@ -1032,3 +1032,23 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **作業方針(自律, 続22)**: 紙の分析は十分。**Isabelle で経験的に反復**。Towsner ladder を scratch で漸進ビルド
   (各補題 compile)。まず最も具体的な閉包(sum/bag は acc_of_bag_elemsF で既済)→3.10 同レベル ϑ 閉包の我々順序版を試作。
   接続が破綻したら native(Th-subscript stratify)へ転換。各 green ステップで commit。
+
+### 進捗 (2026-06-09 続23): mnlcong 経験検証→olt_trans は wfo 制限で multp_HO bridge 可。順序=「置換合同を法に線形」
+- **python 検証 (tools/olt_check.py 拡張)**:
+  - **mnlcong は非 wfo で偽**(74036 CE; CE は `Su` 内 `Su` 等の非 wfo 項)。**wfo 項で真**(25950 instances, CE=0)。
+  - **principals は全順序でない**(CE 42): `Th 0(Su[Om0,Om1])` と `Th 0(Su[Om1,Om0])` は非比較(引数が置換)。
+  - **wfo 順序は permutation-congruence ~ を法として線形**(total-mod-perm CE=42=上記の Th)。
+    ~ の定義: Su 置換 ＋ `Th p c ~ Th p c'` if `c~c'`(再帰)。非比較⟺ ~ 等価。∴ mnlcong は「~ が <o を保つ congruence」から従う。
+  - olt_trans 自体は**無条件に真**(CE=0, 非 wfo 含む)。但し bridge 証明(mnlcong 経由)は wfo のみ。
+- **使用箇所解析(重要)**: `ot` の olt_trans/olt_ole_trans/olt_asym/olt_irrefl の**下流(buchholz/wflevel/embed)使用は無し**
+  (wf.thy の olt_ole_trans/olt_irrefl は `three` 順序=mechanized で別物・証明済)。wo 内部(ole_trans→asym→irrefl)＋
+  将来 op_NF(像=wfo)のみ。bag_mono/wf_olt_of_principal は wfo 仮定下。**∴ olt_trans を wfo 制限版に置換可**(下流は全 wfo)。
+- **olt_trans 確定方針**: `olt_trans_wf: wfo a⟹wfo b⟹wfo c⟹a<o b⟹b<o c⟹a<o c` を
+  **combined size 帰納(trans_wf ∧ asym_wf ∧ mnlcong_wf 同時)**で。Su/Su は multp_HO bridge
+  (`olt_Su_imp_multp\<^sub>H\<^sub>O`✅ forward, `multp\<^sub>H\<^sub>O_imp_olt_Su`✅ reverse)＋carrier 仮説を IH 供給。
+  carrier transp_on: distinct 三項は size 和<total で IH 適用、x=z は asym で vacuous。mnlcong_wf は ~-congruence。
+  既存 8/9 ケース(Om/Th)は wfo 付きで流用(Kn 元/summand の wfo は wfo_Kn/wfo Su で従う)。scratch_trans.thy に bridge 配線雛形。
+- **olt_asym も wfo 化**: 現 olt_asym(無条件)は Th/Th XA-YA で olt_ole_trans 使用。wfo 版なら Kn 元 wfo で OK。olt_irrefl も wfo。
+- **規模**: ~150-250 行の combined induction(Buchholz [Buc1] Lemma 2.1 型, 但し本系の単一支配元 Su 節は非標準で自前)。
+- **三 sorry 確定方針**: (1) olt_trans_wf(combined linearity, 上記, 最も mapped) → (2) op_NF(wfo-trans+NF K条件) → (3) L_ThF(超限構成, 最難)。
+  ＝advisor の「olt_trans 回避」を**部分修正**: full(無条件)は回避だが**wfo 制限 olt_trans は必要かつ実現可能**(op_NF が要る最小 trans＝これ)。

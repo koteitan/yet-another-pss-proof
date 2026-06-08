@@ -42,12 +42,13 @@
     - 🚨 **distinguished-set WF 核**〔wo.thy/buchholz.thy〕（§3.2 を絶対系 `ot` に「書き換え転写」: ユーザー決定 2026-06-08）
       - ✅ 記法 `ot`(Om int/Th int/Su)・FCset・FC・critical subterms Kn・Kn_size〔wo.thy〕（**int 化済**: shift に負添字が要る）
       - ✅ K 条件付き整礎順序 `<\<^sub>o`（Towsner Def 2.3）function+termination〔olt / ole〕
-      - 🚨 **順序メタ理論**（出典: Buchholz [Buc1] Lemma 2.1, pss-proof §7.1 に既存）: `olt_Om_mono`✅, `olt_asym`/`olt_irrefl`✅。
-        **`olt_trans` は c=Om/c=Su[a-principal]/c=Th 全証明済、残 sorry は c=Su[a=Su]（Su/Su/Su 一段 DM 推移）1つ**。
-        Python 検証で olt_trans は ot 上で真だが、**単一支配元 DM は抽象的に非推移**＝ot 固有の weak-order(mnl) が鍵。
-        **Path 決定=B(multiset-DM 維持; Path A 辞書式 lex 再表現は ~3000行依存＋整礎性悪化で不採算)。(b1) 採用**。
-        進捗: import Multiset_Order✅, `olt_Su_imp_multp\<^sub>D\<^sub>M`(易方向 single-dom⟹multp_DM)✅。
-        残: converse(multp⟹single-dom, `mnl x y≡¬(x<o y)∧¬(y<o x)` の推移性=weak-order ＋ mnl-congruence を combined size 帰納で)→Su trans 完成。★3義務の一つ
+      - 🚨 **順序メタ理論**（出典: Buchholz [Buc1] Lemma 2.1）: `olt_Om_mono`✅, `olt_asym`/`olt_irrefl`✅(無条件,但し olt_trans 依存)。
+        **`olt_trans` 残 sorry = c=Su[a=Su]（Su/Su/Su 単一支配元推移）1つ**（他8ケースは size 帰納で証明済）。
+        **続23 確定方針**: olt_trans を **wfo 制限版 `olt_trans_wf`** に置換（下流=buchholz/embed/op_NF は全 wfo、無条件版は不要と確認）。
+        Su/Su は **multp_HO bridge**: `olt_Su_imp_multp\<^sub>H\<^sub>O`✅(forward)＋`multp\<^sub>H\<^sub>O_imp_olt_Su`✅(reverse, 要 asym+trans+mnlcong)。
+        carrier 仮説は **combined size 帰納(trans_wf∧asym_wf∧mnlcong_wf 同時)** で供給（distinct 三項は size 和<total で IH、x=z は asym で vacuous）。
+        **経験的事実(python)**: mnlcong は wfo で真/非 wfo で偽；wfo 順序は **置換合同 ~ を法に線形**（`Th p c~Th p c'` if `c~c'`）。
+        ~150-250 行。scratch_trans.thy に bridge 配線雛形。★3義務の一つ
       - ✅ Zero 最小性・Kn 単調補題群〔not_olt_Zero / olt_Zero_iff / Kn_lt_Th / Kn_mono_le / KnTh / Kn_le_self / olt_Th_of_le_Kn〕
       - ✅ **shift（Towsner Def 3.3 global）＝順序自己同型**〔wo.thy: shift / shift_shift/0/inv/inj/isH/eq/eqTh/eqOm/FCset/Kn / **shift_olt**〕＝正規化の基盤
       - ✅ **汎用 acc 基盤**〔accinfra.thy〕（記法非依存・再利用）
