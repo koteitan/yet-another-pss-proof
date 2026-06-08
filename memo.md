@@ -976,3 +976,59 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   ＝現状の「外側 level 帰納」より「predecessor 構造帰納＋controlled」が正しい枠。要 L_ThF 再構成。
 - **次の一手**: L_ThF を「accI 内で predecessor r に構造帰納、Kn p e⊆acc を IH で、controlled⟹acc 補題で e∈acc」に再構成。
   controlled⟹acc が核(Mn/AccB 利用 or 直接の項長帰納)。これが残る最深 sorry。
+
+### 進捗 (2026-06-09 続21): 核の深層分析確定＝Towsner 完全構成が必要(単純帰納は本質的に不可)
+- **致命的発見1: 単一レベル controlled⟹acc は q≥n で破綻**。`Φ(n)≡ Kn n a⊆acc ⟹ a∈acc` を構造帰納で示そうとすると、
+  a=Th q h で q>n のとき Kn n(Th q h)=Kn n h⊆acc から h∈acc は出るが、**Th q h∈acc には L_ThF(q,h) が必要**(q 無限大可)。
+  実例: `Th 0 (Th 5 (Su[])) <o Th 1 d` が成立(Kn 0(Th 5 Z)=Kn 0 Z={} で B-lt 枝, 0<1)。∴ predecessor の引数 e は
+  レベル q≥n の Th を含み得る。**レベル帰納(k 有界)も項長帰納も単独では不足**。memo 続20 の「controlled で吸収」は誤り。
+- **致命的発見2: masterF↔L_ThF は相互に絡む**。masterF(Th 節)は L_ThF を呼び、L_ThF 核(e∈acc)は本質的に masterF(e) 相当。
+  この絡みは Towsner の **超限 distinguished-set 構成 ＋ level-drop 補題 3.11** でのみ解ける。eq 副ケース(e''<o g)は
+  引数 g の acc を要するが controlled だけでは出ない＝引数の acc は GIVEN な d∈acc に anchor するしかなく、cross-level の
+  e は d と順序関係を持たない(collapse なので e は d より大きく得る)→ Towsner は shift で同レベル化して main IH。
+- **致命的発見3: shift は nneg を壊す**。Th p e=shift(p-n)(Th n(shift(n-p)e)) だが p-n<0 の shift は subscript を負に
+  し得て nneg(=soundness 必須, Th(-k)Z 降下)を破る。∴ oltRwF 上で Towsner の shift 自己同型(acc_shift は oltRw 用で
+  oltRwF 不可)を直接使えない。**omfree も単独では非整礎**(Th 0 Z>o Th(-1)Z>o…, omfree な負添字降下を確認)。nneg 必須。
+- **重要発見4: 既存 Mn/AccB は Towsner Def 3.7 の Acc_n そのもの**(誤解訂正): `nat(-gnd a)≤n`=G(α)≥-n, `Klt`=K_{<0}α,
+  `norm`=β*, `normd`=FC=0 or omfree, `AccB(Suc n)=AccB n∪Awf(Mn n(AccB n))`, `Acc n`=M_n の wf 部=Acc_n。完全一致。
+  ∴ ladder 3.8-3.12 を既存 Mn/AccB(full order <o + Om + shift)上で証明するのが faithful path。
+- **Towsner ladder (一次資料 /tmp/towsner.txt 492-665 に全文)**:
+  - 3.8 sum 閉包: m≤n,α∈Acc_m,β∈Acc_n ⟹ α^{≥0}_{-(n-m)}#β∈Acc_n。(main:m→α→β の三重帰納)
+  - 3.9 ω^ 閉包: α∈Acc_n⟹ω^α∈Acc_n。(我々の系は ω^ を Su/Th に畳み込み済→不要かも)
+  - 3.10 同レベル ϑ 閉包: α∈Acc_n⟹ϑ(α^{≤0}_{-1})∈Acc_n。**n=-∞(=omfree)で α˘=α**。main 帰納 on α + 構造帰納 on γ<ϑα。
+  - 3.11 level-drop: α∈Acc_n,n>-∞ ⟹ (ϑα)*∈⋃_{m<n}Acc_m。**cross-level の核心**。
+  - 3.12 master: ∀α,∀n≥G(α*). α*∈Acc_n。項の構造帰納＋上記補題。
+- **残る最大リスク=接続(7)**: Mn/AccB は full order <o(Om 込)上の Awf。最終目標 wf oltRwF(omfree+nneg)への接続が非自明。
+  Awf(M_n)-acc → acc oltRwF: oltRwF-predecessor b<o a が M_n に入る保証なし(Su は isH 無, Klt 条件未保証)。
+  この接続補題が 2-6 と同等に難しい可能性。**接続が健全に書けるか未確認＝着手前に要検証**。
+- **決定(自律)**: Option II=faithful Towsner ladder を既存 Mn/AccB 上で。ただし**着手順を「接続(7)の健全性検証」から**:
+  接続が書けなければ Option III(omfree-native 再設計)へ。まず wflevel/proofs が要求する正確な wf ターゲットを確認し、
+  接続の形を最小化できないか探る。olt_trans/shift_olt/acc_shift(oltRw)/Kn/FCset/gnd/norm は既存資産。
+- **次の一手**: (A) wflevel.thy の reduction 連鎖と proofs.thy の Rnf/NF 定義を読み、wf の正確な必要形を確定。
+  (B) 接続補題 Awf(Mn..)→acc oltRwF の健全性を紙で検証。(C) 健全なら 3.8 から着手、不健全なら native 再設計。
+
+### 進捗 (2026-06-09 続22): 障害の数学的確定＝predecessor 非有界→超限 distinguished-set 必須。三 sorry とも大型
+- **決定的障害(証明済)**: `Th n d` の oltRwF-predecessor は **size もレベルも非有界**。
+  実例: `Th 0 (Th 5 Z) <o Th 1 d`(Kn 0(Th 5 Z)=∅で B-lt枝, 0<1)。d を小さく取れば predecessor のサイズ>Th n d。
+  ∴ **構造帰納・size帰納・level帰納のいずれも predecessor を有界化できない**。残る道具は acc-rank(超限)のみ。
+  Towsner も「Acc_n 全体の構成は Π¹₁-CA₀ 不可」と明記＝本質的 impredicative。Isabelle の inductive `acc` が超限エンジン。
+- **masterF↔L_ThF↔Coll の相互entanglement(確定)**: 
+  - `Coll(n): Kn n e⊆acc ⟹ Th n e∈acc` の eq副ケース(同レベル, e''<o e)は引数 e の <o 帰納を要し、e∈acc が要る。
+  - `Acc_at(n): Kn n e⊆acc ⟹ e∈acc` は **偽**(e=Th q h, q>n は Kn q h 制御が無く非acc可)。
+  - level 帰納(IH<n)も上方の Coll(q>n) を要し破綻。size 帰納も非有界で破綻。
+  - ∴ acc を使った distinguished-set(Towsner Acc_n=既存 Mn/AccB)＋ladder 3.8-3.12 が唯一の筋。
+- **我々の順序 ≠ Towsner 順序(逐語転写不可)**: Towsner ϑα<ϑβ は subscript 無し(レベルは引数内 Ω)。我々 `Th m a<o Th n b` は
+  明示 `m<n∨(m=n∧a<o b)`＋Kn 条件。∴ Towsner の補題証明(shift/Ω 操作)は**そのまま転写できず、戦略のみ流用の独自実行**。
+- **接続(7)の難所(確定)**: Towsner ladder は full order <o(Om込)上の Awf(M_n)。masterF(oltRwF)へは
+  `x∈Acc_m ⟹ x∈acc oltRwF` が要るが、M_n は <o-predecessor で閉じない(Kn 0 制御が predecessor の Kn 0 に伝播しない;
+  Kn 0⊄Kn p'')。接続自体が構成と絡む大仕事。
+- **olt_trans も大型(再評価)**: 9ケース中 Om/Th 関連8ケースは size帰納で証明済。残 Su/Su(line 997)は単一支配元の
+  多重集合推移律で **carrier 上 totality 必須**(max 支配元を取るため; 単一支配元は標準DM=多重支配元より強い)。
+  totality は wfo 依存の可能性＋full-size 中央項問題(IH の size 三項和が 1要素3回使用で破綻)。
+  ∴ 自前 combined linearity(trans+total+asym 同時size帰納, Buchholz Lemma 2.1 型)が要る＝大型。
+  advisor 指針通り **full olt_trans は回避し op_NF 用の像制限 trans のみ**が賢明。
+- **op_NF(embed.thy:480)**: 像(embed の Th-principal)上の最小 trans で足りる(advisor)。最も self-contained の可能性。未精査。
+- **三 sorry 難易度(確定)**: L_ThF(研究級, 超限構成+接続) ≫ olt_trans(combined linearity, 大型だが標準) > op_NF(像制限,具体)。
+- **作業方針(自律, 続22)**: 紙の分析は十分。**Isabelle で経験的に反復**。Towsner ladder を scratch で漸進ビルド
+  (各補題 compile)。まず最も具体的な閉包(sum/bag は acc_of_bag_elemsF で既済)→3.10 同レベル ϑ 閉包の我々順序版を試作。
+  接続が破綻したら native(Th-subscript stratify)へ転換。各 green ステップで commit。
