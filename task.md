@@ -36,8 +36,9 @@
       - ✅ maxsub 単調性 on NF：w<o x ⟹ maxsub w ≤ maxsub x〔olt_imp_slex / nfinv / nfinv_ST_PS / maxsub_mono_NF'〕
       - ✅ CNF：標準形は CNF に翻訳〔cnf / cnf_ST_PS / cnf_oper（i1=0/1 ケース cnf_copies 等）/ cnf_tops_le〕
       - ✅ wf Rnf を「maxsub レベル内 WF」に還元〔wf_Rnf_from_within_level：Rnf=減少部(自明WF)∪同値部〕
-      - 🚨 ★残ただ1つ＝`wfE`：wf {(w,x). w<o x ∧ w,x∈NF ∧ maxsub w=maxsub x}（同一 maxsub レベル内整礎＝Buchholz 崩壊核, 純構文的）
-        - 足がかり：NF は nfinv で左スパイン=[0..m]（m=maxsub）に固定 → レベル内再帰が m で有界。Towsner §3.2 の ladder を構造参考。
+      - ✅ wfE（レベル内整礎）→ 和の層を剥離〔wfsum.thy: NF=非増加和 p0(b_i)、olt=lex→multiset 拡張、olt_sum_decomp/olt_sum_mult/wf_level_from_args/wfE_from_args〕
+      - 🚨 ★残ただ1つ＝`wf_ArgsL`：wf {(b,f). b<o f ∧ b,f∈ArgsL m}（レベル m 引数クラス上整礎＝Buchholz 崩壊核）
+        - 注意：遺伝的 inv2 は偽（探索済 tools/wfe_explore.py）→ 引数クラスの正しい不変条件の特定が次段。
     - 🗑 route A（順序数 ψ：ord/psi.thy/otembed.thy, session PSI）破棄：oV=Buchholz ψ 値が対角を collapse（D(2)=D(3)）。原理的に閉じない。ROOT から除去済。
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, L_ThF[p<n] で停止）も不使用。
     - 🗑 旧ルート（K-dom `ot`, 誤変種で破棄予定）〔wo/buchholz/embed: L_ThF・op_NF 残 sorry, masterF/wf_oltRwF/cnf_ST_PS は緑だが route A では不使用〕
