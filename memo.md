@@ -1479,3 +1479,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   次バースト: (a) 行1木を three 側で再構成（spine/添字列から nextR1 を復元できるか）、
   (b) x_1 文脈で (4,1) が禁止される正確な理由を P進 §6（content.md 行1木/Red/Adm 節）で特定、
   (c) adm3 候補を定式化→ genuine 検証→ ladder クラス {cnf, ok3, adm3} で再挑戦。
+
+### (2026-06-10 続5) LPO 還元の検証（否定的だが決定的な近さ）
+- 仮説「NF 上で olt = LPO（添字 precedence, lex status）」を検証: 400 NF 項の全対で
+  **159332 一致 / 268 不一致**。不一致は全て olt=T/lpo=F、典型パターン
+  `p0(p1(0)+p0(X)) <o p0(p1(0)+p1(0))`（任意 X）＝ subscript-first の無条件
+  `p0(X) < p1(0)` が LPO の引数 guard (∀args<t) と衝突。collapse の本質そのもの。
+  ⟹ 古典 path-order（LPO/RPO/WPO）への直接還元は**不可**。
+- 標準 near-miss 5984 例 vs 標準全位置: 局所規則 hasP1（正 row1 は親1を持つ）と
+  climb≤p0(r1)+1 は標準側違反0だが x_1 を殺せず。x_1 の悪さは局所でない。
+- 残る攻め筋（次バースト）: (i) P進 content.md §6-7 を精読し標準形の emergent 不変条件
+  （Trans I–VI が前提にする構造）を抽出, (ii) parent1 横方向比較（copy 由来の bound）の
+  規則 mining 続行, (iii) minimal-bad-sequence を NF の展開系譜と組み合わせる新規路線
+  （Kruskal/Veldman 流: bad seq の極小性 + 展開生成性で矛盾を導く）。
