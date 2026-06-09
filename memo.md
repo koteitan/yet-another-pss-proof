@@ -1143,3 +1143,19 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **olt_trans Su/Su の正しい証明は未知**: 直接証明(中央 b で場合分け、size-IH のみ)を要するが、単一支配元の witness 構成に
   comparability が要り、それが無い(非線形)ため標準手法が効かない。**要再設計**。これも研究級で、当初想定より難しい。
 - **戦略判断の重要性が増大**: bridge 死亡で olt_trans (A 完全証明)の道筋が不透明化。(B)引用 or (C)標準順序作り替え の比重が上がる。
+
+### 進捗 (2026-06-09 続29): 方針A確定。olt_trans 直接証明の構造解析＝full-size 中央項サイクルが核心難所
+- **ユーザー確定: 方針A（完全自前証明, sorry ゼロ）**。本系はオリジナル $p_a(b)$＝非標準なので引用不成立。
+- **witness 経験則(python, 15678ケース)**: `Su a<o Su b<o Su c` の `Su a<o Su c` の witness w∈#(c-a) は
+  **常に w1 か w2（=a<b の支配元 / b<c の支配元）のどちらか**。「どちらも不可」=0。w2 が効くことが多く(13634)、駄目なら w1(2044)。
+  ∴ 直接証明は「w2 を試し、駄目なら w1」。各 u∈#(a-c) は u∈#(a-b)→u<o w1, さもなくば u∈#(b-c)→u<o w2（クリーン, trans不要）。
+- **しかし witness 選択の正当化に asym/irrefl 必須**: w1∈#(b-c) なら w1<o w2(trans-IH)で w2 が全 u を支配。だが
+  count_A(w2)>count_B(w2) の枝で w2<o w1<o w2 の2-サイクル→ asym/irrefl が要る。∴ 直接証明も asym 依存。
+- **asym の full-size 中央項サイクル(核心難所, 確定)**: asym(Th m c, Th n d) の XA-YA で
+  サイクル `Th m c ≤o g <o Th n d ≤o g' <o Th m c`(g∈Kn n d, g'∈Kn m c)。最終矛盾は asym-IH(g,g')(小, size g+size g'<size x+size y ✓)
+  だが、g<o g' / g'<o g を作る中間 trans が **中央 Th n d / Th m c = full size**→ measure が asym の size x+size y を超え得る(size g<size y だが size x 未満とは限らない)。
+  どの collapse も full-size 端点(x,y)＋追加元を含み、size 和でも multiset 測度でも tie/超過。重み付け(asym を2×)は trans→asym 方向で逆に破綻。
+  ＝**標準 linearity 帰納(size/multiset 測度)では閉じない**。Kn-domination 節が生む固有の難所(Buchholz lex 順序には無い)。
+- **次の一手候補(A 継続)**: (i) rank ベース測度(整礎性で定義する rank)or (ii) より強い命題を束ねる(connectedness 込)or
+  (iii) asym を「中央 principal の trans=midH」complete 先行で(但し midH 自身が Th 引数で Su/Su trans を要し循環)。
+  要・測度の本質的工夫 or 文献(Buchholz [Buc1] 2.1 の正確な帰納測度)精読。
