@@ -39,8 +39,10 @@
       - ✅ Ω_v≤ψ_v α〔Om_le_psi〕＋C の α 単調〔Cstep/Citer/Cset_mono_param, CC_mono〕＋ψ_v α 単調〔psi_mono_arg〕
       - ✅ Lemma 1.3（ψ_v 厳密単調 α<β∧α∈C_v α⟹ψ_v α<ψ_v β）〔psi_strict_mono_arg〕＝順序保存の核
       - ✅ Lemma 1.2(c)（ψ_v α<Ω_{v+1}＝基数 |C_v α|≤κ）〔psi_lt_Om_Suc／vcard_Citer_le・vcard_Cset_le・gcard_*' ローカル複製〕
-      - 🚨 §2: o:three→V ＋ Lemma 2.2(c) 順序保存（1.3＋1.2c）→ NF lex 整礎性 ★次の本質的義務
-      - 🚨 (必要なら) Lemma 1.2(b)(ψ_v∈P) / 1.5 / 1.9（G_u γ⊆α⟺γ∈C_u α）
+      - ✅ §2 skeleton 緑：oV:three→V／wf_Rnf／PSS_terminates〔ord/otembed.thy, three+V クロスセッション via YAPSS.proofs〕
+      - 🚨 ★唯一の残 sorry：oV_order_pres_NF（Lemma 2.2c 順序保存 on NF）。要：1.2(b)加法主要数・1.3 C条件・OT降順
+      - 🚨🤖 Lemma 1.2(b)(ψ_v 加法主要数 psi_add_principal)＋below_psi_in_Cset：実装済・ビルド検証中
+      - 🚨 補助：C条件 o b∈C_a(o b) / NF⊆OT(降順) → 2.2c へ
     - 🗑 旧ルート（K-dom `ot`, 誤変種で破棄予定）〔wo/buchholz/embed: L_ThF・op_NF 残 sorry, masterF/wf_oltRwF/cnf_ST_PS は緑だが route A では不使用〕
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
