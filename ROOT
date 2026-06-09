@@ -22,3 +22,4 @@ session YAPSS = HOL +
     mechanized
     proofs
     wf
+    wfsum

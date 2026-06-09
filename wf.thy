@@ -1728,25 +1728,8 @@ proof -
 qed
 
 
-subsection \<open>The within-level core (Buchholz collapse, pure-lex, ordinal-free) \<dash> residual\<close>
-
-text \<open>\<^bold>\<open>The single remaining obligation\<close> of the whole pure-lex termination proof:
-  well-foundedness of \<open><o\<close> on \<open>NF\<close> restricted to a fixed maximal subscript.  All
-  subscripts are then bounded by that level, and \<open>NF\<close> terms are CNF with leading
-  subscript \<open>0\<close> (\<open>inv2\<close>) and non-increasing siblings (\<open>cnf\<close>); the genuine
-  Buchholz-collapse content lives here.  To be proved by an ordinal-free induction
-  (Towsner \<section>3.2 distinguished-set ladder used only as a structural reference).\<close>
-
-lemma wfE_within_level:
-  "wf {(w,x). w <o x \<and> x \<in> NF \<and> w \<in> NF \<and> maxsub w = maxsub x}"
-  sorry
-
-theorem wf_Rnf: "wf Rnf"
-  by (rule wf_Rnf_from_within_level[OF wfE_within_level])
-
-text \<open>\<^bold>\<open>PSS termination\<close> (pure-lex, ordinal-free), modulo \<open>wfE_within_level\<close>.\<close>
-
-theorem PSS_terminates: "wf {(T,M). M \<in> ST_PS \<and> step M T}"
-  by (rule step_terminates[OF wf_Rnf])
+text \<open>The within-level obligation is discharged in \<open>wfsum.thy\<close> (sum-layer reduction
+  to the argument level via the multiset extension); the top-level theorems
+  \<open>wf_Rnf\<close> and \<open>PSS_terminates\<close> live there.\<close>
 
 end
