@@ -27,3 +27,4 @@ session YAPSS = HOL +
     wflevel
     buchholz
     embed
+    scratch_wf
