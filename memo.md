@@ -1203,3 +1203,17 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - 候補(c): WF も lex order で Towsner 流に直接(Acc_n を lex order で再定義)。
 - **統合作業(大)**: ot を bt/bp 式に(Om の扱い決定要)→ olt=lessT 式 → wfo に支配条件 → WF 再構築 → embed 順序保存(lex→lex で容易化見込) → proofs。
 - **重要教訓**: テストは必ず `timeout 240` で(bo2 が metis ループで1時間 OOM kill された。同マシン他エージェントへの配慮も)。
+
+### 進捗 (2026-06-09 続32): ot 単一型の Su[p]=p 問題判明→統合は bt/bp 二型式が筋
+- **scratch_order2(ot 上 lex order oltL+prins)を試作→linearity が反対称性で破綻**:
+  ot は Om|Th|Su が**単一型**。principal p(=Om/Th) と `Su [p]`(length-1 tuple) は `prins` が同一([p])で
+  **順序的に等しいが項として p≠Su[p]**。∴ total/irrefl が raw 等号で成立せず(`prins a=prins b∧a≠b` が起きる)。
+  wfo(Su length≠1)に制限すれば prins 単射だが、証明に wfo を thread する必要＝煩雑。
+- **対して scratch_order の bt/bp は clean**: `bt=Trm "bp list" and bp=Thb int bt`＝**principal(bp) と tuple(bt) を別型**に分離。
+  単一 principal は `Trm[p]`(bt)で、"p as bt" は存在しない＝Su[p]=p 問題が**構造的に消滅**。だから linearity が数行で green だった。
+- **結論**: (A2) 統合は **ot を bt/bp 式の二型 datatype に作り替える**のが正しい(Buchholz の T1-T3 そのもの: 0/principal/tuple)。
+  現 ot(Om 込・単一型)に order を足すのは Su[p] 問題で筋が悪い。bt/bp なら linearity 自明・Om は別途(WF 足場用に principal 種を足す等)。
+- **統合作業(大, 次フェーズ)**: (1) 新 datatype(bt/bp 式, 必要なら Om 相当の principal 種)→ (2) 順序=lessT/lessP(green 実証済)
+  → (3) wfo に支配条件(Gob<b)→ (4) translate/embed を新 datatype へ(decrease は three のまま, embed: three→新)→ (5) WF(L_ThF)を新 order で
+  → (6) op_NF(lex→lex)。three(p_a(b))は不変。L_ThF(WF 核)は順序 style 不問で impredicative=研究級のまま。
+- **教訓再掲**: 単一型 ot の設計が諸難の根。bt/bp 二型が Buchholz 標準。テストは必ず timeout 240。
