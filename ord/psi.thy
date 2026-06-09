@@ -348,4 +348,20 @@ proof -
   with psi_mono_arg[OF le] show ?thesis by (metis order_le_imp_less_or_eq)
 qed
 
+subsection \<open>The cardinality bound (Buchholz Lemma 1.2(c)): \<open>\<psi>\<^sub>v(\<alpha>) < \<Omega>\<^bsub>v+1\<^esub>\<close>\<close>
+
+text \<open>\<^bold>\<open>Deferred (routine cardinal arithmetic, Buchholz "obvious"):\<close> \<open>|C\<^sub>v(\<alpha>)| \<le> \<Omega>\<^sub>v \<squnion> \<omega>
+  < \<Omega>\<^bsub>v+1\<^esub>\<close>, since \<open>C\<^sub>v(\<alpha>)\<close> is the closure of \<^term>\<open>Om v\<close> under \<open>+\<close> and the countably
+  many maps \<open>\<psi>\<^sub>u\<close>.  Plan: \<open>vcard (Citer \<dots> n) \<le> Om v \<squnion> \<omega>\<close> by induction (each
+  \<^const>\<open>Cstep\<close> adds \<^const>\<open>gcard\<close>-\<open>\<le> \<kappa>\<close> sets: \<open>+\<close>-image \<open>\<le> \<kappa> \<otimes> \<kappa> = \<kappa>\<close>,
+  \<open>\<psi>\<close>-image \<open>\<le> \<kappa> \<otimes> \<omega> = \<kappa>\<close>, via \<open>gcard_Union_le_cmult\<close>, \<open>InfCard_cmult_eq\<close> from
+  \<open>ZFC_in_HOL.General_Cardinals\<close>); then \<open>vcard (Cset \<dots>) \<le> \<kappa>\<close> over the countable
+  union; finally \<open>\<Omega>\<^bsub>v+1\<^esub> = csucc \<kappa>\<close> (\<open>Aleph_succ\<close>) gives the strict bound via
+  \<open>Card_lt_csucc_iff\<close>, so some \<open>\<gamma> < \<Omega>\<^bsub>v+1\<^esub>\<close> escapes \<open>C\<^sub>v(\<alpha>)\<close>.  (NB: importing
+  \<open>General_Cardinals\<close> clashes \<^const>\<open>set\<close> with \<^const>\<open>List.set\<close>; resolve with
+  \<open>no_notation\<close>/qualified names when discharging this.)\<close>
+
+lemma psi_lt_Om_Suc: "psi \<alpha> v < Om (Suc v)"
+  sorry
+
 end
