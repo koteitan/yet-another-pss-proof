@@ -1533,3 +1533,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   peel+level0、残 sorry = wf_ArgsA）、(B) wf_olt_wf3（sorry-free）。橋 1 本でどちらの経路でも完結:
   (β1) NF→wf3 順序埋め込み ⟹ wfE 直接 ⟹ wf_ArgsA 不要。
   (β2) ST_PS→wf3 翻訳+展開減少 ⟹ 停止性直接（pure-lex 前半をバイパス、P進構成に近い）。
+
+### ★(2026-06-10 続10) seqlex.thy 緑: translate は列 lex への順序同型（olt_iff_seqlex, sorry-free）
+- blockok d（row0≥d・先頭=d・ステップ≤+1）の下で olt(translate M, translate N) ⟺ seqlex M N。
+  証明: 長さ和帰納＋先頭差分の arg/tail ゾーン整列（seqlex_arg_or_tail）。1ビルド15分で完成。
+- 残: ST_PS ⊆ blockok 0（標準形の row0 規律、ST_PS.induct で oper の保存性）→ wfE の BMS ネイティブ化:
+  wfE ⟺ 「seqlex の標準形無限降下なし」。
+- デバッグ教訓: 新 theory はまず単独でビルド可能に小さく（metis 乱用が 90s+ ループ源、
+  stepprops_tl 型のヘルパで決定化）。`case Cons2: (Cons q rr')` が正しい label 構文。
