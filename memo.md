@@ -1360,3 +1360,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **次セッションの具体作業(fresh context 推奨)**: scratch_wf の実装計画に沿って
   (1) prev に Mbot(base) を含む修正 Mn' 定義、(2) connection(Acc n⊆acc, master と組で n 帰納)、(3) 3.10 collapse closure を experimental に。
   ビルドが速いので theorize より code＋build feedback で進める。ユーザー相談は absolute が実証的に詰んでから(§3 切替判断時)で十分。
+
+### 進捗 (2026-06-09 続42): 【§2 絶対系の循環を具体的反例で確証】＝§3 切替判断点
+- **scratch_wf 実装進展(green)**: `Accl_omfree_acc` の **within-level predecessor ケースを実証明**(acc(R_n)-帰納, q∈Mlv は accIH で閉じる)。
+  残差は cross-level(q∉Mlv n)1点に分離。Mlv/Bst/Accl 定義＋単調性＋Bst_omfree_acc(n 帰納)も green。
+- **§2 絶対系の循環＝具体例で確証(decisive)**: collapse closure CC(r): e∈acc⟹Th r e∈acc を subscript r 帰納で試みると:
+  - level 0 は clean(predecessor の p<0 が nneg で不可能→cross-subscript 無し)。
+  - level r>0 の p<r predecessor `Th p e'` は e'∈acc を要し、e' の **buried `Th s g`(s≥r)** で詰む。
+  - **最小反例**: `Th p (Th r 0) <o Th r 0`(p<r, control は Kn p(Th r 0)=Kn p 0={} で vacuous 成立)。
+    ∴ acc(Th r 0) は acc(Th p(Th r 0)) を要し、後者は CC(p)[arg=Th r 0] 経由で acc(Th r 0) を要す＝**直接循環**(実サイクルではない: Th r 0≮o Th p(Th r 0) を確認、asym OK)。
+  ＝局所帰納(subscript/acc/構造/size いずれも)では原理的に証明不能。**インピーディカティブ**。
+- **§3 多相系が必要(確定)**: de Bruijn Ω^{(J)} の相対化で buried subscript が有界化され、Towsner 3.7-3.12 の全 n 同時 distinguished-set 構成で循環が解ける。
+  絶対§2 には公刊 WF 証明が無く、上記循環で自前証明も不能。
+- **ユーザー相談事項(方針分岐)**: (b)§3 多相系へ datatype 切替(大改修, Towsner 証明が閉じる正道) / (b')§2→§3 順序埋め込み(§2 資産再利用＋§3＋embed 追加) / (c)別構成 / (d)WF を文書化前提として他全証明で完了。
