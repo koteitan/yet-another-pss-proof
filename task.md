@@ -39,9 +39,13 @@
       - ✅ wfE（レベル内整礎）→ 和の層を剥離〔wfsum.thy: NF=非増加和 p0(b_i)、olt=lex→multiset 拡張、olt_sum_decomp/olt_sum_mult/wf_level_from_args/wfE_from_args〕
       - ✅ 一般 summand peel＋添字 peel〔summands/olt_summands_mult（cnf だけで非増加）、singdest lex_prod〕
       - ✅ ladder の底＝レベル0 完全証明〔wf_olt0：cnf∧maxsub=0 クラス、PrSS 流 accp+multp（rA0/accp_multp_olt0/sum_acc/sing0_acc/lvl0_acc）〕
-      - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（崩壊核）。m 帰納の step（下位レベル wf 仮定→レベル m）が本丸
-        - 確定：有限 peel では閉じない（添字 0→…→m→0 再入ループ）。Towsner Acc_n 流の「critical 部分項∈下位 Acc」条件設計が次段。
-        - 探索済：lead(arg)≤sub+1 全部分項成立／consec spine 深さ3で破れ／t_k 危険形トップ不在。
+      - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（崩壊核）。
+        - 確定：有限 peel では閉じない／純構文クラスは t_k・x_k 連鎖で不成立（生成依存）／LPO 還元不可。
+      - ✅ **wf_olt_wf3 SORRY-FREE**〔ord/psi.thy+otembed.thy, session PSI〕＝Buchholz Lemma 2.2 自前証明
+        （pure-lex olt は Buchholz OT の順序そのもの；wf3=OT クラス上で oV 埋め込み厳密単調；
+         C_build＋left-size 主帰納で Ccond 解消；x_k・t_k は wf3 違反で排除）
+      - 🚨 橋：NF→wf3（または ST_PS→wf3）順序保存変換（Trans 級、content.md §7 参照あり）
+        → (β1) wfE 直接 or (β2) 停止性直接。あるいは (α) wf_ArgsA 自前帰納に wf_olt_wf3 を oracle として活用。
     - 🗑 route A（順序数 ψ：ord/psi.thy/otembed.thy, session PSI）破棄：oV=Buchholz ψ 値が対角を collapse（D(2)=D(3)）。原理的に閉じない。ROOT から除去済。
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, L_ThF[p<n] で停止）も不使用。
     - 🗑 旧ルート（K-dom `ot`, 誤変種で破棄予定）〔wo/buchholz/embed: L_ThF・op_NF 残 sorry, masterF/wf_oltRwF/cnf_ST_PS は緑だが route A では不使用〕
