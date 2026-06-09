@@ -309,4 +309,26 @@ proof (rule Cset_mono_param)
     using assms by (auto simp: less_eq_V_def subsetD)
 qed
 
+text \<open>Weak monotonicity in the argument: \<open>\<alpha> \<le> \<beta> \<Longrightarrow> \<psi>\<^sub>v(\<alpha>) \<le> \<psi>\<^sub>v(\<beta>)\<close> (Buchholz 1.2(d)).\<close>
+
+lemma psi_mono_arg:
+  assumes "\<alpha> \<le> \<beta>" shows "psi \<alpha> v \<le> psi \<beta> v"
+proof (rule ccontr)
+  assume "\<not> psi \<alpha> v \<le> psi \<beta> v"
+  hence lt: "psi \<beta> v < psi \<alpha> v" using Ord_not_le[OF Ord_psi Ord_psi] by blast
+  have "psi \<beta> v \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  proof (rule ccontr)
+    assume nin: "psi \<beta> v \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    have "(LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)) \<le> psi \<beta> v"
+    proof (rule Ord_Least_le)
+      show "Ord (psi \<beta> v)" by simp
+      show "psi \<beta> v \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" by (rule nin)
+    qed
+    hence "psi \<alpha> v \<le> psi \<beta> v" using psi_unfold[of \<alpha> v] by simp
+    with lt show False by simp
+  qed
+  with CC_mono[OF assms] have "psi \<beta> v \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> v)" by blast
+  thus False using psi_notin by simp
+qed
+
 end
