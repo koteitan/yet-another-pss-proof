@@ -350,18 +350,248 @@ qed
 
 subsection \<open>The cardinality bound (Buchholz Lemma 1.2(c)): \<open>\<psi>\<^sub>v(\<alpha>) < \<Omega>\<^bsub>v+1\<^esub>\<close>\<close>
 
-text \<open>\<^bold>\<open>Deferred (routine cardinal arithmetic, Buchholz "obvious"):\<close> \<open>|C\<^sub>v(\<alpha>)| \<le> \<Omega>\<^sub>v \<squnion> \<omega>
-  < \<Omega>\<^bsub>v+1\<^esub>\<close>, since \<open>C\<^sub>v(\<alpha>)\<close> is the closure of \<^term>\<open>Om v\<close> under \<open>+\<close> and the countably
-  many maps \<open>\<psi>\<^sub>u\<close>.  Plan: \<open>vcard (Citer \<dots> n) \<le> Om v \<squnion> \<omega>\<close> by induction (each
-  \<^const>\<open>Cstep\<close> adds \<^const>\<open>gcard\<close>-\<open>\<le> \<kappa>\<close> sets: \<open>+\<close>-image \<open>\<le> \<kappa> \<otimes> \<kappa> = \<kappa>\<close>,
-  \<open>\<psi>\<close>-image \<open>\<le> \<kappa> \<otimes> \<omega> = \<kappa>\<close>, via \<open>gcard_Union_le_cmult\<close>, \<open>InfCard_cmult_eq\<close> from
-  \<open>ZFC_in_HOL.General_Cardinals\<close>); then \<open>vcard (Cset \<dots>) \<le> \<kappa>\<close> over the countable
-  union; finally \<open>\<Omega>\<^bsub>v+1\<^esub> = csucc \<kappa>\<close> (\<open>Aleph_succ\<close>) gives the strict bound via
-  \<open>Card_lt_csucc_iff\<close>, so some \<open>\<gamma> < \<Omega>\<^bsub>v+1\<^esub>\<close> escapes \<open>C\<^sub>v(\<alpha>)\<close>.  (NB: importing
-  \<open>General_Cardinals\<close> clashes \<^const>\<open>set\<close> with \<^const>\<open>List.set\<close>; resolve with
-  \<open>no_notation\<close>/qualified names when discharging this.)\<close>
+text \<open>\<open>|C\<^sub>v(\<alpha>)| \<le> \<Omega>\<^sub>v \<squnion> \<omega> < \<Omega>\<^bsub>v+1\<^esub>\<close>, since \<open>C\<^sub>v(\<alpha>)\<close> is the closure of \<^term>\<open>Om v\<close>
+  under \<open>+\<close> and the countably many maps \<open>\<psi>\<^sub>u\<close>.  We avoid importing
+  \<open>ZFC_in_HOL.General_Cardinals\<close> (which clashes \<^const>\<open>set\<close> with \<open>List.set\<close>)
+  by reproving locally the only two of its lemmas we need (the proofs use base
+  \<open>ZFC_in_HOL.ZFC_Cardinals\<close> only).\<close>
+
+text \<open>Local copy of \<open>General_Cardinals.gcard_Times\<close>.\<close>
+
+lemma gcard_Times': "gcard (X \<times> Y) = gcard X \<otimes> gcard Y"
+proof (cases "small X \<and> small Y")
+  case True
+  have "elts (gcard (X \<times> Y)) \<approx> X \<times> Y"
+    by (simp add: True gcard_eqpoll)
+  also have "... \<approx> elts (gcard X) \<times> elts (gcard Y)"
+    by (simp add: True eqpoll_sym gcard_eqpoll times_eqpoll_cong)
+  also have "... \<approx> elts (gcard X \<otimes> gcard Y)"
+    by (simp add: elts_cmult eqpoll_sym)
+  finally show ?thesis
+    using Card_cardinal_eq cmult_def gcardinal_cong by force
+next
+  case False
+  have "gcard (X \<times> Y) = 0"
+    by (metis False Times_empty gcard_big_0 gcard_empty_0 small_Times_iff)
+  then show ?thesis
+    by (metis False cmult_0 cmult_commute gcard_big_0)
+qed
+
+text \<open>Local copy of \<open>General_Cardinals.gcard_Union_le_cmult\<close>.\<close>
+
+lemma gcard_Union_le_cmult':
+  assumes "small U" and \<kappa>: "\<And>x. x \<in> U \<Longrightarrow> gcard x \<le> \<kappa>" and sm: "\<And>x. x \<in> U \<Longrightarrow> small x"
+  shows "gcard (\<Union>U) \<le> gcard U \<otimes> \<kappa>"
+proof -
+  have "\<exists>f. f \<in> x \<rightarrow> elts \<kappa> \<and> inj_on f x" if "x \<in> U" for x
+    using \<kappa> [OF that] gcard_le_lepoll by (metis image_subset_iff_funcset lepoll_def sm that)
+  then obtain \<phi> where \<phi>: "\<And>x. x \<in> U \<Longrightarrow> (\<phi> x) \<in> x \<rightarrow> elts \<kappa> \<and> inj_on (\<phi> x) x"
+    by metis
+  define u where "u \<equiv> \<lambda>y. @x. x \<in> U \<and> y \<in> x"
+  have u: "u y \<in> U \<and> y \<in> (u y)" if "y \<in> \<Union>( U)" for y
+    unfolding u_def using that by (fast intro!: someI2)
+  define \<rho> where "\<rho> \<equiv> \<lambda>y. (u y, \<phi> (u y) y)"
+  have U: "elts (gcard U) \<approx> U"
+    using assms by (simp add: gcard_eqpoll)
+  have "\<Union>U \<lesssim> U \<times> elts \<kappa>"
+    unfolding lepoll_def
+  proof (intro exI conjI)
+    show "inj_on \<rho> (\<Union> U)"
+      using \<phi> u by (smt (verit) \<rho>_def inj_on_def prod.inject)
+    show "\<rho> ` \<Union> U \<subseteq> U \<times> elts \<kappa>"
+      using \<phi> u by (auto simp: \<rho>_def)
+  qed
+  also have "\<dots>  \<approx> elts (gcard U \<otimes> \<kappa>)"
+    using U elts_cmult eqpoll_sym eqpoll_trans times_eqpoll_cong by blast
+  finally have "(\<Union>U) \<lesssim> elts (gcard U \<otimes> \<kappa>)" .
+  then show ?thesis
+    by (metis cardinal_idem cmult_def gcard_eq_vcard lepoll_imp_gcard_le small_elts)
+qed
+
+text \<open>Auxiliary cardinal facts about \<open>\<Omega>\<^sub>v\<close> and \<open>\<nat>\<close>.\<close>
+
+lemma small_nat_UNIV [simp]: "small (UNIV::nat set)"
+  using small_image_nat[of "\<lambda>x. x" UNIV] by simp
+
+lemma Card_Om_all: "Card (Om v)"
+proof (cases v)
+  case 0
+  have "Card (1::V)" using Card_csucc[of 0] by (simp add: csucc_0)
+  then show ?thesis using 0 by (simp add: Om_def)
+next
+  case (Suc k) then show ?thesis by (simp add: Om_def Card_Aleph)
+qed
+
+lemma InfCard_Om_sup_omega: "InfCard (Om v \<squnion> \<omega>)"
+  by (simp add: InfCard_def Card_Om_all)
+
+lemma gcard_UNIV_nat: "gcard (UNIV::nat set) = \<omega>"
+proof -
+  have "gcard (UNIV::nat set) = gcard (ord_of_nat ` (UNIV::nat set))"
+    using gcard_image[OF inj_ord_of_nat] by simp
+  also have "ord_of_nat ` (UNIV::nat set) = elts \<omega>"
+    by (auto simp: elts_\<omega>)
+  also have "gcard (elts \<omega>) = \<omega>"
+    by (simp add: gcard_eq_vcard Card_cardinal_eq)
+  finally show ?thesis .
+qed
+
+lemma omega_less_Om_Suc: "\<omega> < Om (Suc v)"
+proof -
+  have "(0::V) < ord_of_nat (Suc v)"
+    by (metis OrdmemD Ord_ord_of_nat ord_of_nat.simps(2) zero_in_succ)
+  hence "\<aleph>0 < \<aleph> (ord_of_nat (Suc v))"
+    by (rule Aleph_increasing) auto
+  thus ?thesis by (simp add: Om_def)
+qed
+
+lemma kappa_less_Suc: "Om v \<squnion> \<omega> < Om (Suc v)"
+proof (cases "Om v \<le> \<omega>")
+  case True
+  hence "Om v \<squnion> \<omega> = \<omega>" by (simp add: sup.absorb2)
+  thus ?thesis using omega_less_Om_Suc by simp
+next
+  case False
+  hence "\<omega> \<le> Om v" using Ord_linear_le[of "Om v" \<omega>] by auto
+  hence "Om v \<squnion> \<omega> = Om v" by (simp add: sup.absorb1)
+  thus ?thesis using Om_less_Suc by simp
+qed
+
+text \<open>The size of each finite closure iterate is bounded by \<open>\<kappa> = \<Omega>\<^sub>v \<squnion> \<omega>\<close>.  The
+  bound is independent of the parameter \<open>p\<close> (only its domain matters).\<close>
+
+lemma vcard_Citer_le: "vcard (Citer p \<alpha> v n) \<le> Om v \<squnion> \<omega>"
+proof (induction n)
+  case 0
+  have "vcard (Citer p \<alpha> v 0) = Om v"
+    by (simp add: Card_Om_all Card_cardinal_eq)
+  also have "Om v \<le> Om v \<squnion> \<omega>" by simp
+  finally show ?case .
+next
+  case (Suc n)
+  define X where "X = Citer p \<alpha> v n"
+  have IH: "vcard X \<le> Om v \<squnion> \<omega>" using Suc.IH unfolding X_def .
+  have infk: "InfCard (Om v \<squnion> \<omega>)" by (rule InfCard_Om_sup_omega)
+  let ?A = "elts X"
+  let ?B = "(\<lambda>(\<xi>,\<eta>). \<xi> + \<eta>) ` (elts X \<times> elts X)"
+  let ?C = "(\<lambda>(\<xi>,u::nat). p \<xi> u) ` ((elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set))"
+  have smX: "small ?A" by simp
+  have smB: "small ?B" by simp
+  have smC: "small ?C" by (rule small_Cstep_images(2))
+  \<comment> \<open>each of the three building blocks has \<open>gcard \<le> \<kappa>\<close>\<close>
+  have gA: "gcard ?A \<le> Om v \<squnion> \<omega>" using IH by (simp add: gcard_eq_vcard)
+  have leX: "gcard (elts X) \<le> Om v \<squnion> \<omega>" using IH by (simp add: gcard_eq_vcard)
+  have gB: "gcard ?B \<le> Om v \<squnion> \<omega>"
+  proof -
+    have "gcard ?B \<le> gcard (elts X \<times> elts X)"
+      by (rule gcard_image_le[OF small_Times[OF small_elts small_elts]])
+    also have "... = gcard (elts X) \<otimes> gcard (elts X)" by (rule gcard_Times')
+    also have "... \<le> (Om v \<squnion> \<omega>) \<otimes> (Om v \<squnion> \<omega>)" by (rule cmult_le_mono[OF leX leX])
+    also have "... = Om v \<squnion> \<omega>" by (simp add: InfCard_csquare_eq infk)
+    finally show ?thesis .
+  qed
+  have gC: "gcard ?C \<le> Om v \<squnion> \<omega>"
+  proof -
+    have "gcard ?C \<le> gcard ((elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set))"
+      by (rule gcard_image_le[OF small_Times[OF smaller_than_small[OF small_elts Int_lower1] small_nat_UNIV]])
+    also have "... = gcard (elts X \<inter> elts \<alpha>) \<otimes> gcard (UNIV::nat set)" by (rule gcard_Times')
+    also have "... = gcard (elts X \<inter> elts \<alpha>) \<otimes> \<omega>" by (simp add: gcard_UNIV_nat)
+    also have "... \<le> (Om v \<squnion> \<omega>) \<otimes> (Om v \<squnion> \<omega>)"
+    proof (rule cmult_le_mono)
+      have "gcard (elts X \<inter> elts \<alpha>) \<le> gcard (elts X)"
+        by (rule subset_imp_gcard_le[OF Int_lower1 small_elts])
+      thus "gcard (elts X \<inter> elts \<alpha>) \<le> Om v \<squnion> \<omega>" using leX by simp
+      show "\<omega> \<le> Om v \<squnion> \<omega>" by simp
+    qed
+    also have "... = Om v \<squnion> \<omega>" by (simp add: InfCard_csquare_eq infk)
+    finally show ?thesis .
+  qed
+  \<comment> \<open>combine: \<open>elts (Citer \<dots> (Suc n)) = ?A \<union> ?B \<union> ?C = \<Union>{?A,?B,?C}\<close>\<close>
+  have eqset: "elts (Citer p \<alpha> v (Suc n)) = \<Union> {?A, ?B, ?C}"
+    by (auto simp: X_def elts_Cstep)
+  have gU: "gcard {?A, ?B, ?C} \<le> Om v \<squnion> \<omega>"
+  proof -
+    have fin: "finite {?A, ?B, ?C}" by simp
+    have "gcard {?A, ?B, ?C} = ord_of_nat (card {?A, ?B, ?C})" by (rule gcard_eq_card[OF fin])
+    also have "... \<le> \<omega>" by (simp add: ord_of_nat_le_omega)
+    also have "\<omega> \<le> Om v \<squnion> \<omega>" by simp
+    finally show ?thesis .
+  qed
+  have bound: "gcard (\<Union> {?A, ?B, ?C}) \<le> gcard {?A, ?B, ?C} \<otimes> (Om v \<squnion> \<omega>)"
+  proof (rule gcard_Union_le_cmult')
+    show "small {?A, ?B, ?C}" by simp
+    show "gcard x \<le> Om v \<squnion> \<omega>" if "x \<in> {?A, ?B, ?C}" for x
+      using that gA gB gC by blast
+    show "small x" if "x \<in> {?A, ?B, ?C}" for x
+      using that smX smB smC by blast
+  qed
+  have "vcard (Citer p \<alpha> v (Suc n)) = gcard (\<Union> {?A, ?B, ?C})"
+    using eqset by (metis gcard_eq_vcard)
+  also have "... \<le> gcard {?A, ?B, ?C} \<otimes> (Om v \<squnion> \<omega>)" by (rule bound)
+  also have "... \<le> (Om v \<squnion> \<omega>) \<otimes> (Om v \<squnion> \<omega>)" by (rule cmult_le_mono[OF gU order_refl])
+  also have "... = Om v \<squnion> \<omega>" by (simp add: InfCard_csquare_eq infk)
+  finally show ?case .
+qed
+
+text \<open>Hence \<open>|C\<^sub>v(\<alpha>)| \<le> \<kappa>\<close> over the countable union.\<close>
+
+lemma vcard_Cset_le: "vcard (Cset p \<alpha> v) \<le> Om v \<squnion> \<omega>"
+proof -
+  have infk: "InfCard (Om v \<squnion> \<omega>)" by (rule InfCard_Om_sup_omega)
+  have sm: "small (range (\<lambda>n. Citer p \<alpha> v n))" by simp
+  have "vcard (Cset p \<alpha> v) = vcard (\<Squnion> (range (\<lambda>n. Citer p \<alpha> v n)))"
+    by (simp add: Cset_def)
+  also have "... \<le> vcard (set (range (\<lambda>n. Citer p \<alpha> v n))) \<otimes> (Om v \<squnion> \<omega>)"
+  proof (rule vcard_Sup_le_cmult[OF sm])
+    show "vcard x \<le> Om v \<squnion> \<omega>" if "x \<in> range (\<lambda>n. Citer p \<alpha> v n)" for x
+    proof -
+      from that obtain n where "x = Citer p \<alpha> v n" by auto
+      thus ?thesis by (simp add: vcard_Citer_le)
+    qed
+  qed
+  also have "... \<le> (Om v \<squnion> \<omega>) \<otimes> (Om v \<squnion> \<omega>)"
+  proof (rule cmult_le_mono[OF _ order_refl])
+    have "vcard (set (range (\<lambda>n. Citer p \<alpha> v n))) = gcard (range (\<lambda>n. Citer p \<alpha> v n))"
+      by (metis gcard_eq_vcard elts_of_set sm)
+    also have "... \<le> gcard (UNIV::nat set)" by (rule gcard_image_le[OF small_nat_UNIV])
+    also have "... = \<omega>" by (rule gcard_UNIV_nat)
+    also have "\<omega> \<le> Om v \<squnion> \<omega>" by simp
+    finally show "vcard (set (range (\<lambda>n. Citer p \<alpha> v n))) \<le> Om v \<squnion> \<omega>" .
+  qed
+  also have "... = Om v \<squnion> \<omega>" by (simp add: InfCard_csquare_eq infk)
+  finally show ?thesis .
+qed
+
+text \<open>\<^bold>\<open>Buchholz Lemma 1.2(c)\<close>: \<open>\<psi>\<^sub>v(\<alpha>) < \<Omega>\<^bsub>v+1\<^esub>\<close>.  If not, then all ordinals below
+  \<open>\<Omega>\<^bsub>v+1\<^esub>\<close> would lie in \<open>C\<^sub>v(\<alpha>)\<close>, forcing \<open>\<Omega>\<^bsub>v+1\<^esub> = |\<Omega>\<^bsub>v+1\<^esub>| \<le> |C\<^sub>v(\<alpha>)| \<le> \<kappa> < \<Omega>\<^bsub>v+1\<^esub>\<close>.\<close>
 
 lemma psi_lt_Om_Suc: "psi \<alpha> v < Om (Suc v)"
-  sorry
+proof (rule ccontr)
+  assume "\<not> psi \<alpha> v < Om (Suc v)"
+  hence ge: "Om (Suc v) \<le> psi \<alpha> v" using Ord_not_less[OF Ord_psi Ord_Om] by blast
+  have allin: "elts (Om (Suc v)) \<subseteq> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  proof
+    fix \<delta> assume \<delta>: "\<delta> \<in> elts (Om (Suc v))"
+    have od: "Ord \<delta>" using \<delta> Ord_Om Ord_in_Ord by blast
+    have "\<delta> < Om (Suc v)" using \<delta> by (simp add: OrdmemD)
+    hence ltp: "\<delta> < psi \<alpha> v" using ge by simp
+    show "\<delta> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    proof (rule ccontr)
+      assume nin: "\<delta> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+      have "(LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)) \<le> \<delta>"
+        by (rule Ord_Least_le) (use od nin in auto)
+      hence "psi \<alpha> v \<le> \<delta>" by (subst psi_unfold)
+      with ltp show False by simp
+    qed
+  qed
+  have "Om (Suc v) = vcard (Om (Suc v))" by (simp add: Card_cardinal_eq Card_Om_all)
+  also have "... = gcard (elts (Om (Suc v)))" by (simp add: gcard_eq_vcard)
+  also have "... \<le> gcard (elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v))"
+    by (rule subset_imp_gcard_le[OF allin small_elts])
+  also have "... = vcard (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" by (simp add: gcard_eq_vcard)
+  also have "... \<le> Om v \<squnion> \<omega>" by (rule vcard_Cset_le)
+  finally have "Om (Suc v) \<le> Om v \<squnion> \<omega>" .
+  with kappa_less_Suc[of v] show False by (meson leD)
+qed
 
 end
