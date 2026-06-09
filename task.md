@@ -41,14 +41,15 @@
       - ✅ ladder の底＝レベル0 完全証明〔wf_olt0：cnf∧maxsub=0 クラス、PrSS 流 accp+multp（rA0/accp_multp_olt0/sum_acc/sing0_acc/lvl0_acc）〕
       - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（崩壊核）。
         - 確定：有限 peel では閉じない／純構文クラスは t_k・x_k 連鎖で不成立（生成依存）／LPO 還元不可。
-      - ✅ **wf_olt_wf3 SORRY-FREE**〔ord/psi.thy+otembed.thy, session PSI〕＝Buchholz Lemma 2.2 自前証明
+      - ✅ **柱2: wf_olt_wf3 SORRY-FREE**〔ord/psi.thy+otembed.thy, session PSI〕＝Buchholz Lemma 2.2 自前証明
         （pure-lex olt は Buchholz OT の順序そのもの；wf3=OT クラス上で oV 埋め込み厳密単調；
          C_build＋left-size 主帰納で Ccond 解消；x_k・t_k は wf3 違反で排除）
-      - 🚨 橋：NF→wf3（または ST_PS→wf3）順序保存変換（Trans 級、content.md §7 参照あり）
-        → (β1) wfE 直接 or (β2) 停止性直接。あるいは (α) wf_ArgsA 自前帰納に wf_olt_wf3 を oracle として活用。
-    - 🗑 route A（順序数 ψ：ord/psi.thy/otembed.thy, session PSI）破棄：oV=Buchholz ψ 値が対角を collapse（D(2)=D(3)）。原理的に閉じない。ROOT から除去済。
-    - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, L_ThF[p<n] で停止）も不使用。
-    - 🗑 旧ルート（K-dom `ot`, 誤変種で破棄予定）〔wo/buchholz/embed: L_ThF・op_NF 残 sorry, masterF/wf_oltRwF/cnf_ST_PS は緑だが route A では不使用〕
+      - ✅ **柱3: olt_ST_iff_seqlex SORRY-FREE**〔seqlex.thy〕＝標準形上で translate は列 lex からの順序同型
+        （blockok 規律: row0≥d・先頭=d・ステップ≤+1；blockok_ST_PS で全標準形が満たす；
+         wfE ⟺ ST_PS 上の seqlex 整礎性、と BMS ネイティブに言い換え可能に）
+      - 🚨 本丸=崩壊核を3形のどれかで閉じる：(α) wf_ArgsA 自前帰納（wf_olt_wf3 を oracle 候補）
+        / (β1) NF→wf3 順序埋め込み（Trans 級、content.md §7 参照） / (β2) ST_PS→wf3 翻訳+減少（P進構成）
+    - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
