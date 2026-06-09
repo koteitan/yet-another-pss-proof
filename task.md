@@ -38,8 +38,10 @@
       - ✅ wf Rnf を「maxsub レベル内 WF」に還元〔wf_Rnf_from_within_level：Rnf=減少部(自明WF)∪同値部〕
       - ✅ wfE（レベル内整礎）→ 和の層を剥離〔wfsum.thy: NF=非増加和 p0(b_i)、olt=lex→multiset 拡張、olt_sum_decomp/olt_sum_mult/wf_level_from_args/wfE_from_args〕
       - ✅ 一般 summand peel＋添字 peel〔summands/olt_summands_mult（cnf だけで非増加）、singdest lex_prod〕
-      - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（レベルm和引数の summand 単項の引数クラス＝Buchholz 崩壊核）
-        - 探索済：lead(arg)≤sub+1 は全部分項で成立／consec spine は深さ3で破れ／t_k 危険形はトップ引数に不在。
+      - ✅ ladder の底＝レベル0 完全証明〔wf_olt0：cnf∧maxsub=0 クラス、PrSS 流 accp+multp（rA0/accp_multp_olt0/sum_acc/sing0_acc/lvl0_acc）〕
+      - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（崩壊核）。m 帰納の step（下位レベル wf 仮定→レベル m）が本丸
+        - 確定：有限 peel では閉じない（添字 0→…→m→0 再入ループ）。Towsner Acc_n 流の「critical 部分項∈下位 Acc」条件設計が次段。
+        - 探索済：lead(arg)≤sub+1 全部分項成立／consec spine 深さ3で破れ／t_k 危険形トップ不在。
     - 🗑 route A（順序数 ψ：ord/psi.thy/otembed.thy, session PSI）破棄：oV=Buchholz ψ 値が対角を collapse（D(2)=D(3)）。原理的に閉じない。ROOT から除去済。
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, L_ThF[p<n] で停止）も不使用。
     - 🗑 旧ルート（K-dom `ot`, 誤変種で破棄予定）〔wo/buchholz/embed: L_ThF・op_NF 残 sorry, masterF/wf_oltRwF/cnf_ST_PS は緑だが route A では不使用〕
