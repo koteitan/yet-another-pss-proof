@@ -1397,3 +1397,10 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - **閉包 C1-C3**: `Om_subset_Cset`・`Cset_add_closed`(+)・`Cset_psi_closed`(ψ_u, ξ<α)＋補助(elts_Cstep, Citer 単調 Citer_subset_mono, Cset_mem_iff)。
 - **ZFC_in_HOL API メモ**(再利用): small(elts x)=small_elts; small(f`X)⟸small X=replacement[OF .., where f=..]; small(UNIV::nat)=small_image_nat[of "λx.x" UNIV]; small_Times; smaller_than_small[OF small_elts Int_lower1]; elts_sup_iff; elts_Sup(small range); big_ON(¬small ON=Collect Ord); Ord_LeastI_ex/Ord_Least; less_succ_self; Aleph_increasing/InfCard_Aleph; ≤ on V = less_eq_V_def(elts⊆elts); 順序数和は Kirby の +。**型注意**: nat 添字は `(UNIV::nat set)` 明示で多相化回避。
 - **次(§1 続き→§2)**: Cset⊆Ord; Lemma 1.2(ψ_v 0=Om v, Om v≤ψ_v α, ψ_v α∈P 加法的主要数, |Cset|<Om(v+1)⟹ψ_v α<Om(v+1)＝基数算術); 1.3(ψ_v 単調: α<β∧α∈C_v α⟹ψ_v α<ψ_v β, psi_notin 利用); C の α 単調; 1.5; 1.9(G_u). →§2: o:three→V, Lemma 2.2(c) 順序保存 → three/NF の lex 整礎性 → proofs.thy 対角 accessibility。
+
+### 進捗 (2026-06-09 続45): route A §1 大幅前進（ord/psi.thy 全 green, Lemma 1.3 まで）
+- 追加 green: `Om_le_psi`(Ω_v≤ψ_v α)、C の α 単調(`Cstep_mono_param`/`Citer_mono_param`/`Cset_mono_param`/`CC_mono`)、
+  `psi_mono_arg`(α≤β⟹ψ_v α≤ψ_v β)、**`psi_strict_mono_arg`=Buchholz 1.3**(α<β∧α∈C_v α⟹ψ_v α<ψ_v β, 順序保存の鍵)。
+- ZFC_in_HOL API 追加メモ: `Ord_Least_le`(⟦Ord k;P k⟧⟹(LEAST i.Ord i∧P i)≤k)・`Ord_LeastI`・`Ord_mem_iff_lt`・`Ord_not_le`・`Ord_in_Ord`・`Ord_add`(順序数和閉)。
+  **罠**: schematic 補題(Ord_psi 等)を `[OF]` に渡すと multiple unifiers/HO 暴走→ **`rule`+明示ゴールで unification 駆動**、または `[of ..]` で固定。`auto`+条件付補題は後ろ向きループ注意(Ord_in_Ord)→決定的に。premise は ⋀⟹ より ∀⟶ が [OF] 安全。
+- **次**: Lemma 1.2 残(ψ_v 0=Ω_v, ψ_v α∈P 加法的主要数, ψ_v α<Ω_{v+1}＝基数 |C_v α|<ℵ_{v+1}), 1.5, 1.9(G_u)。→§2: o:three→V, Lemma 2.2(c) 順序保存(psi_strict_mono_arg 利用)→ NF lex 整礎性→ proofs.thy 対角 accessibility。
