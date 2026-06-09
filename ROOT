@@ -22,9 +22,3 @@ session YAPSS = HOL +
     mechanized
     proofs
     wf
-    wo
-    accinfra
-    wflevel
-    buchholz
-    embed
-    scratch_wf
