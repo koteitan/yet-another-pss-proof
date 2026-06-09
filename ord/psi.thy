@@ -44,4 +44,33 @@ proof -
   qed
 qed
 
+subsection \<open>The sets \<open>C\<^sub>v(\<alpha>)\<close> and the collapsing functions \<open>\<psi>\<^sub>v(\<alpha>)\<close> (Buchholz \<section>1)\<close>
+
+text \<open>\<open>C\<^sub>v(\<alpha>)\<close> = least set \<open>\<supseteq> \<Omega>\<^sub>v\<close> closed under \<open>+\<close> and under \<open>\<xi> \<mapsto> \<psi>\<^sub>u \<xi>\<close> for
+  \<open>\<xi> < \<alpha>\<close>, \<open>u \<in> \<nat>\<close> (Buchholz's condition \<open>\<xi>\<in>C\<^sub>u(\<xi>)\<close> omitted per his Remark).  Built as
+  the countable union of the finite closure iterates of \<^term>\<open>Cstep\<close> from \<^term>\<open>Om v\<close>.
+  Here \<open>p \<xi> u = \<psi>\<^sub>u \<xi>\<close> is supplied by \<^const>\<open>transrec\<close> for \<open>\<xi> < \<alpha>\<close>.\<close>
+
+definition Cstep :: "(V \<Rightarrow> nat \<Rightarrow> V) \<Rightarrow> V \<Rightarrow> V \<Rightarrow> V" where
+  "Cstep p \<alpha> X =
+     X \<squnion> set ((\<lambda>(\<xi>,\<eta>). \<xi> + \<eta>) ` (elts X \<times> elts X))
+       \<squnion> set ((\<lambda>(\<xi>,u). p \<xi> u) ` ((elts X \<inter> elts \<alpha>) \<times> UNIV))"
+
+definition Cset :: "(V \<Rightarrow> nat \<Rightarrow> V) \<Rightarrow> V \<Rightarrow> nat \<Rightarrow> V" where
+  "Cset p \<alpha> v = \<Squnion> (range (\<lambda>n. (Cstep p \<alpha> ^^ n) (Om v)))"
+
+definition psi :: "V \<Rightarrow> nat \<Rightarrow> V" where
+  "psi = transrec (\<lambda>p \<alpha> v. (LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset p \<alpha> v)))"
+
+text \<open>\<open>\<psi>\<^sub>v(\<alpha>)\<close> with the conventional argument order.\<close>
+
+definition Psi :: "nat \<Rightarrow> V \<Rightarrow> V" where
+  "Psi v \<alpha> = psi \<alpha> v"
+
+text \<open>The defining equation of \<^const>\<open>psi\<close> via \<^const>\<open>transrec\<close>.\<close>
+
+lemma psi_unfold:
+  "psi \<alpha> v = (LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v))"
+  unfolding psi_def by (subst transrec) simp
+
 end
