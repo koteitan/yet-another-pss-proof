@@ -1231,3 +1231,19 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   Th-collapse の WF(L_ThF)は依然 impredicative=研究級(Su とは無関係)。
 - **注意**: cnfo は ot 述語(three の cnf とは別, embed 像用)。embed 像の非増加性は collapse(非増加)から従う。
 - **次**: scratch で cnfo+bridge+olt_trans_cnfo を実装・緑化(timeout 240)→ wo.thy 統合→ op_NF 着手。
+
+### 進捗 (2026-06-09 続34): 【deadlock 回避の鍵】辞書式 trans は自己完結（asym 不要）→ olt_trans_cnf の正しいルート
+- **deadlock 分析**: multp_HO bridge は carrier asym 必須。asym(Th/Th)は trans を full-size 中央項で呼ぶ→combined 帰納でも
+  measure 超過(size g+g'>size x 可)。∴ bridge ルートは olt_trans↔olt_asym の deadlock。
+- **鍵**: **辞書式(dictionary)trans は自己完結**(scratch_order の less_trans は asym 不要で証明済, 関数帰納のみ)。
+  ∴ olt_trans Su/Su(cnf)を **bridge でなく辞書式ルート**で証明すれば asym 不要＝deadlock 回避。
+- **正しい olt_trans_cnf 手順**:
+  1. **bridge 補題**: 非増加 xs,ys で `Su xs <o Su ys ⟺ dictSu xs ys`(多重集合単一支配元=辞書式, python 検証済)。← 組合せ的山場
+  2. dictSu trans(自己完結, scratch_order 型)。
+  3. olt_trans Su/Su(cnf) = bridge＋dictSu trans。**asym 不要**。
+  4. 8 ケース(Om/Th)は既証明(cnfo sub-term は heredity で IH 適用)。→ olt_trans_cnf 完成。
+  5. その後 olt_asym(cnf)は完全 olt_trans_cnf を使い健全(full-size 中央項は complete trans なら OK)。
+- **bridge 補題の証明方針**: 非増加リスト＋要素 comparable(cnf-total, これは Th/Th で γ<a の IH で full-size 中央項なし＝clean)。
+  多重集合差の dominator = 辞書式 first-difference。要素 total と sortedness で帰納。~100-150 行見込み。
+- **次**: scratch_cnf で (a) cnfo_total(clean size 帰納, Th/Th は γ<a の IH) → (b) bridge → (c) dictSu trans → (d) olt_trans_cnf。
+  全て timeout 240 でテスト。完成後 wo.thy 統合・op_NF を olt_trans_cnf に。
