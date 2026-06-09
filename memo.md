@@ -1247,3 +1247,20 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   多重集合差の dominator = 辞書式 first-difference。要素 total と sortedness で帰納。~100-150 行見込み。
 - **次**: scratch_cnf で (a) cnfo_total(clean size 帰納, Th/Th は γ<a の IH) → (b) bridge → (c) dictSu trans → (d) olt_trans_cnf。
   全て timeout 240 でテスト。完成後 wo.thy 統合・op_NF を olt_trans_cnf に。
+
+### 進捗 (2026-06-09 続35): 【根本原因確定】K-dom が問題。WF と linearity で要求が逆。L_ThF は olt_trans 非依存→集中
+- **deadlock の根本**: ot の olt は Th 節に K-dom(∃γ∈Kn n b.Th m a≤oγ)を持つ(Towsner Def 3.5 式)。
+  irrefl(Th m c)/asym(Th/Th)は「γ<o Th m c かつ Th m c<oγ の2-cycle」を潰すのに **trans を中央 Th m c=full size で**呼ぶ
+  →size-IH で measure 超過(full-size 中央項)→ 単純帰納で証明不能。bridge(辞書式)も x=y head 節で irrefl 必須→同 deadlock。
+  ∴ **K-dom-in-order を消さない限り linearity(irrefl/asym/trans)は閉じない**。
+- **重要な分離(確定)**:
+  - **K-dom は WF(Towsner Acc_n)に適合**(Towsner の順序自体が K-dom)。∴ ot(K-dom)で L_ThF は Towsner 直接転写可能。
+  - **K-dom は linearity/op_NF に有害**。op_NF は三系→ot の順序保存で ot trans 要。
+  - **three(p_a(b))は既にクリーン辞書式順序＝linear 証明済**(mechanized)。ot は K-dom を three レベルにも付けた迂回(omfree に不要)。
+- **(A2) の正しい意味**: omfree(=embed 像)上は K-dom 不要＝three のクリーン順序で十分。olt_trans/op_NF はそちらで。
+  WF 足場のカーディナル比較のみ K-dom(内部)。＝et(カーディナル拡張, three 部クリーン)設計。但し大リファクタ。
+- **重要: L_ThF(WF 核)は olt_trans に非依存**(buchholz/wflevel は ot trans/asym 不使用, 確認済)。bag_mono は多重集合機構直接。
+  ∴ **olt_trans を解決せずとも L_ThF を進められる**。L_ThF は最深 sorry・最高価値・Towsner 転写可能(ot は K-dom で Towsner 整合)。
+- **方針(継続作業)**: **L_ThF(Towsner Acc_n ラダー 3.8-3.12)に集中**。既存 Mn/AccB=Towsner Acc_n。olt_trans/op_NF(A2 et 化)は後回し。
+  predecessors 非有界(続21-22)＝超限 distinguished-set 必須。Lemma 3.8(sum 閉包)→3.9→3.10→3.11→3.12 を ot 上で。
+- **運用**: timeout 廃止(valid build を殺す/他agent影響)。**build は background＋Monitor アラーム**で監視、runaway は isbman で手動 kill。
