@@ -156,6 +156,38 @@ next
 qed
 
 
+subsection \<open>Connection: \<open>\<Omega>\<close>-free members of the hierarchy are accessible\<close>
+
+text \<open>The connection target: every \<open>\<Omega>\<close>-free term in the hierarchy is genuinely
+  \<^term>\<open>oltRwF\<close>-accessible.  The base level is clean (@{thm [source] Abot_subset_acc});
+  the \<open>\<Omega>\<close>-level step is the genuine collapse-closure work (Towsner 3.10\<dash>3.11),
+  isolated here as the single residual.\<close>
+
+lemma Bst_omfree_acc: "a \<in> Bst n \<Longrightarrow> omfree a \<Longrightarrow> a \<in> Wellfounded.acc oltRwF"
+proof (induction n arbitrary: a)
+  case 0
+  hence "a \<in> Awf Mbot" by simp
+  thus ?case using Abot_subset_acc by blast
+next
+  case (Suc n)
+  from Suc.prems(1) have "a \<in> Bst n \<or> a \<in> Accl n" by auto
+  thus ?case
+  proof
+    assume "a \<in> Bst n" thus ?thesis using Suc.IH Suc.prems(2) by blast
+  next
+    assume aA: "a \<in> Accl n"
+    \<comment> \<open>\<^bold>\<open>residual (sorry):\<close> an \<open>\<Omega>\<close>-free member of the \<open>\<Omega>\<close>-level \<^term>\<open>Accl n\<close> is
+       \<^term>\<open>oltRwF\<close>-accessible.  The lower levels are accessible by the IH
+       (@{thm [source] Suc.IH}); the residual is the collapse-closure transfer
+       (Towsner 3.10\<dash>3.11) using the \<open>\<Omega>\<close>-scaffolding for the cross-subscript
+       predecessors.\<close>
+    have lower: "\<And>x. x \<in> Bst n \<Longrightarrow> omfree x \<Longrightarrow> x \<in> Wellfounded.acc oltRwF"
+      using Suc.IH by blast
+    show ?thesis using aA Suc.prems(2) lower sorry
+  qed
+qed
+
+
 section \<open>Implementation plan for the multi-\<open>\<vartheta>\<^sub>n\<close> collapsing WF (next phase)\<close>
 
 text \<open>\<^bold>\<open>Established facts (this session, memo 続38\<dash>39), to avoid re-deriving:\<close>
