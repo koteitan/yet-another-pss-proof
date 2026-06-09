@@ -1520,3 +1520,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   vs (β) wf(olt on OT) 自前完成＋NF→OT 橋（重いが参照完備; pss-proof との差別化=2.2自前+pure-lex前半）。
 - 次: (β) の根拠固め＝ord/psi.thy に 1.9 を追加し otembed の Ccond を wf3 クラスで閉じる
   （ROOT に PSI 復活、ZFC ベースのまま）。閉じたら方針相談を提示。
+
+### ★★★(2026-06-10 続8) wf_olt_wf3 SORRY-FREE 達成（Buchholz Lemma 2.2 自前証明）
+- **`wf {(w,x). olt w x ∧ wf3 w ∧ wf3 x}` が sorry なしで緑**（PSI: psi.thy + otembed.thy、
+  ZFC_in_HOL 上の自前 ψ 意味論）。pss-proof が引用で済ませる Buchholz 2.2 を独自に完全証明。
+- 鍵: (i) C_build（G-臨界値 < α ⟹ oV t ∈ C_v(α)；v 超え添字は Ω 跳躍で C1、v 以下は ψ閉包+OT3）、
+  (ii) oV_order_pres を Buchholz 流 **left-size 主帰納**（右項 arbitrary）に再構成し
+  Ccond を IH から導出（Gterm_size / wf3_Gterm）。otembed は NF 非依存（YAPSS.mechanized のみ）。
+- 残る橋＝ **NF → wf3 の順序保存変換**（collapse する昇順名を OT 正規名に潰す Trans 級写像）。
+  これが埋まれば wfE（pure-lex 側）も wf_subset で閉じる。
+- 全体の現状: 2 本柱が完成: (A) pure-lex 前半（def/mechanized/proofs/wf/wfsum: 減少+maxsub+CNF+
+  peel+level0、残 sorry = wf_ArgsA）、(B) wf_olt_wf3（sorry-free）。橋 1 本でどちらの経路でも完結:
+  (β1) NF→wf3 順序埋め込み ⟹ wfE 直接 ⟹ wf_ArgsA 不要。
+  (β2) ST_PS→wf3 翻訳+展開減少 ⟹ 停止性直接（pure-lex 前半をバイパス、P進構成に近い）。
