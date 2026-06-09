@@ -237,6 +237,42 @@ lemma omfree_FCset [simp]: "omfree a \<Longrightarrow> FCset a = {}"
 lemma omfree_Kn: "omfree a \<Longrightarrow> \<gamma> \<in> Kn n a \<Longrightarrow> omfree \<gamma>"
   by (induction a arbitrary: \<gamma>) (auto split: if_splits)
 
+text \<open>Every \<open>\<Omega>\<close>-free term is below the base cardinal \<open>\<Omega>\<^bsub>0\<^esub>\<close> (it is "countable").
+  Hence for \<open>\<Omega>\<close>-free \<open>a\<close> the critical-subterm condition \<^const>\<open>Klt\<close> reduces to plain
+  \<^term>\<open>Kn 0 a\<close> (the \<open>< \<Omega>\<^bsub>0\<^esub>\<close> conjunct is automatic).\<close>
+
+lemma omfree_lt_Om0: "omfree a \<Longrightarrow> a <\<^sub>o Om 0"
+proof (induction "size a" arbitrary: a rule: less_induct)
+  case less
+  show ?case
+  proof (cases a)
+    case (Om m) thus ?thesis using less.prems by simp
+  next
+    case (Th m b)
+    have "\<forall>\<gamma>\<in>Kn m b. \<gamma> <\<^sub>o Om 0"
+    proof
+      fix \<gamma> assume g: "\<gamma> \<in> Kn m b"
+      have "omfree \<gamma>" using omfree_Kn[OF _ g] less.prems Th by simp
+      moreover have "size \<gamma> < size a" using Th Kn_size[OF g] by simp
+      ultimately show "\<gamma> <\<^sub>o Om 0" using less.hyps by blast
+    qed
+    thus ?thesis using Th by simp
+  next
+    case (Su xs)
+    have "\<forall>x\<in>set xs. x <\<^sub>o Om 0"
+    proof
+      fix x assume x: "x \<in> set xs"
+      have "omfree x" using less.prems Su x by simp
+      moreover have "size x < size a" using Su size_lt_Su[OF x] by simp
+      ultimately show "x <\<^sub>o Om 0" using less.hyps by blast
+    qed
+    thus ?thesis using Su by simp
+  qed
+qed
+
+lemma Klt_omfree: "omfree a \<Longrightarrow> Klt a = Kn 0 a"
+  using omfree_Kn omfree_lt_Om0 by (auto simp: Klt_def)
+
 text \<open>The well-foundedness target: \<open><\<^sub>o\<close> restricted to the well-formed, \<open>\<Omega>\<close>-free,
   \<^bold>\<open>nonnegative-subscript\<close> terms.  The \<open>nneg\<close> conjunct is essential for soundness:
   without it \<open>\<vartheta>\<^bsub>-k\<^esub> 0\<close> gives an infinite descending chain (@{thm [source] nneg_Kn}
