@@ -247,4 +247,66 @@ proof (rule ccontr)
   thus False using psi_notin by simp
 qed
 
+subsection \<open>Monotonicity of \<open>C\<^sub>v(\<alpha>)\<close> and \<open>\<psi>\<^sub>v(\<alpha>)\<close> in \<open>\<alpha>\<close> (Buchholz Lemma 1.2(d))\<close>
+
+text \<open>A larger argument and an agreeing (wider) parameter give a larger set.\<close>
+
+lemma Cstep_mono_param:
+  assumes "elts \<alpha> \<subseteq> elts \<beta>" "\<forall>\<xi> u. \<xi> \<in> elts \<alpha> \<longrightarrow> p \<xi> u = q \<xi> u" "elts X \<subseteq> elts Y"
+  shows "elts (Cstep p \<alpha> X) \<subseteq> elts (Cstep q \<beta> Y)"
+proof (rule subsetI)
+  fix x assume "x \<in> elts (Cstep p \<alpha> X)"
+  then consider "x \<in> elts X"
+    | "x \<in> (\<lambda>(\<xi>,\<eta>). \<xi> + \<eta>) ` (elts X \<times> elts X)"
+    | "x \<in> (\<lambda>(\<xi>,u). p \<xi> u) ` ((elts X \<inter> elts \<alpha>) \<times> UNIV)"
+    by (auto simp: elts_Cstep)
+  thus "x \<in> elts (Cstep q \<beta> Y)"
+  proof cases
+    case 1 thus ?thesis using assms(3) by (auto simp: elts_Cstep)
+  next
+    case 2
+    then obtain \<xi> \<eta> where "\<xi> \<in> elts X" "\<eta> \<in> elts X" "x = \<xi> + \<eta>" by auto
+    thus ?thesis using assms(3) by (auto simp: elts_Cstep)
+  next
+    case 3
+    then obtain \<xi> u where x: "\<xi> \<in> elts X \<inter> elts \<alpha>" "x = p \<xi> u" by auto
+    have "\<xi> \<in> elts Y \<inter> elts \<beta>" using x(1) assms(1,3) by blast
+    moreover have "x = q \<xi> u" using x assms(2) by auto
+    ultimately show ?thesis by (auto simp: elts_Cstep)
+  qed
+qed
+
+lemma Citer_mono_param:
+  assumes "elts \<alpha> \<subseteq> elts \<beta>" "\<forall>\<xi> u. \<xi> \<in> elts \<alpha> \<longrightarrow> p \<xi> u = q \<xi> u"
+  shows "elts (Citer p \<alpha> v n) \<subseteq> elts (Citer q \<beta> v n)"
+proof (induction n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  have "elts (Cstep p \<alpha> (Citer p \<alpha> v n)) \<subseteq> elts (Cstep q \<beta> (Citer q \<beta> v n))"
+    by (rule Cstep_mono_param[OF assms(1) assms(2) Suc.IH])
+  thus ?case by simp
+qed
+
+lemma Cset_mono_param:
+  assumes "elts \<alpha> \<subseteq> elts \<beta>" "\<forall>\<xi> u. \<xi> \<in> elts \<alpha> \<longrightarrow> p \<xi> u = q \<xi> u"
+  shows "elts (Cset p \<alpha> v) \<subseteq> elts (Cset q \<beta> v)"
+proof
+  fix x assume "x \<in> elts (Cset p \<alpha> v)"
+  then obtain n where "x \<in> elts (Citer p \<alpha> v n)" by (auto simp: Cset_mem_iff)
+  hence "x \<in> elts (Citer q \<beta> v n)" using Citer_mono_param[OF assms(1) assms(2)] by blast
+  thus "x \<in> elts (Cset q \<beta> v)" by (auto simp: Cset_mem_iff)
+qed
+
+text \<open>Specialised to \<open>p = q = \<psi>\<close>: \<open>\<alpha> \<le> \<beta> \<Longrightarrow> C\<^sub>v(\<alpha>) \<subseteq> C\<^sub>v(\<beta>)\<close>.\<close>
+
+lemma CC_mono:
+  assumes "\<alpha> \<le> \<beta>"
+  shows "elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v) \<subseteq> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> v)"
+proof (rule Cset_mono_param)
+  show "elts \<alpha> \<subseteq> elts \<beta>" using assms by (simp add: less_eq_V_def)
+  show "\<forall>\<xi> u. \<xi> \<in> elts \<alpha> \<longrightarrow> (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<xi> u = (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<xi> u"
+    using assms by (auto simp: less_eq_V_def subsetD)
+qed
+
 end
