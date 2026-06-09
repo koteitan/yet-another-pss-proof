@@ -1404,3 +1404,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - ZFC_in_HOL API 追加メモ: `Ord_Least_le`(⟦Ord k;P k⟧⟹(LEAST i.Ord i∧P i)≤k)・`Ord_LeastI`・`Ord_mem_iff_lt`・`Ord_not_le`・`Ord_in_Ord`・`Ord_add`(順序数和閉)。
   **罠**: schematic 補題(Ord_psi 等)を `[OF]` に渡すと multiple unifiers/HO 暴走→ **`rule`+明示ゴールで unification 駆動**、または `[of ..]` で固定。`auto`+条件付補題は後ろ向きループ注意(Ord_in_Ord)→決定的に。premise は ⋀⟹ より ∀⟶ が [OF] 安全。
 - **次**: Lemma 1.2 残(ψ_v 0=Ω_v, ψ_v α∈P 加法的主要数, ψ_v α<Ω_{v+1}＝基数 |C_v α|<ℵ_{v+1}), 1.5, 1.9(G_u)。→§2: o:three→V, Lemma 2.2(c) 順序保存(psi_strict_mono_arg 利用)→ NF lex 整礎性→ proofs.thy 対角 accessibility。
+
+### ★(2026-06-10) pure-lex に回帰 + wfE 設計の決定的発見
+- route A（ZFC 順序数 ψ）破棄：oV=Buchholz ψ 値が PSS 標準形の対角を collapse（D(2)=D(3)
+  が同じ ψ_0(ψ_2(0))；P進ブログ comment 欄/Maksudov 標準形条件 β∈C_ν(β) で確認）。順序数経由は原理的に閉じない。
+- 本命 = **pure-lex 構文的 WF（wf.thy, 順序数なし, sorry 1個）**。PSS_terminates ⟸ wf_Rnf ⟸
+  wf_Rnf_from_within_level[OF wfE_within_level]。maxsub 単調(maxsub_mono_NF')＋CNF(cnf_ST_PS)は緑。
+- **★決定的: olt は全 three（添字有界でも）で整礎でない。** 反例 `t_k = D_0^{k+1}(D_1 0)` は
+  無限降下（全添字≤1）：t_0=D_0(D_1 0) > t_1=D_0(D_0(D_1 0)) > …（各段、引数先頭添字 0<1 で減少）。
+  ⟹「添字有界フラグメント WF」は偽。`wfE` は **NF 不変 inv2（spine が 0,1,…,m で始まる）が本質**。
+  t_k は inv2 違反（spine=[0,0,…,1]）で NF から排除される。
+  ⟹ wfE 証明は inv2/cnf を最後まで通す必要。multiset 和還元も base(args)が一般には非WF＝NF threading 要。
+- wfE 攻略の足場: NF level-m 項は spine=[0,1,…,m] prefix（inv2）。先頭 D_0(b_0), b_0 の spine は
+  [1,…,m] で始まる（1段シフト）。崩壊核は Towsner §3.2 ladder を構造参考に独自帰納で。
