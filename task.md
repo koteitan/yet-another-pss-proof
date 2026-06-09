@@ -41,7 +41,7 @@
       - ✅ Lemma 1.2(c)（ψ_v α<Ω_{v+1}＝基数 |C_v α|≤κ）〔psi_lt_Om_Suc／vcard_Citer_le・vcard_Cset_le・gcard_*' ローカル複製〕
       - ✅ §2 skeleton 緑：oV:three→V／wf_Rnf／PSS_terminates〔ord/otembed.thy, three+V クロスセッション via YAPSS.proofs〕
       - 🚨 ★唯一の残 sorry：oV_order_pres_NF（Lemma 2.2c 順序保存 on NF）。要：1.2(b)加法主要数・1.3 C条件・OT降順
-      - 🚨🤖 Lemma 1.2(b)(ψ_v 加法主要数 psi_add_principal)＋below_psi_in_Cset：実装済・ビルド検証中
+      - ✅ Lemma 1.2(b)(ψ_v 加法主要数 psi_add_principal)＋below_psi_in_Cset〔決定的tactic, runaway回避済〕
       - 🚨 補助：C条件 o b∈C_a(o b) / NF⊆OT(降順) → 2.2c へ
     - 🗑 旧ルート（K-dom `ot`, 誤変種で破棄予定）〔wo/buchholz/embed: L_ThF・op_NF 残 sorry, masterF/wf_oltRwF/cnf_ST_PS は緑だが route A では不使用〕
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕

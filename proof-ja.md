@@ -11,16 +11,24 @@
 を示して証明する。これは原始数列システム (PrSS) の停止証明
 （[`prss-proof`](https://github.com/koteitan/prss-proof)）の戦略
 ——数列をカントール標準形に写し、`expand` の各ステップで順序数が真に減少する——
-をペア数列へ一般化したものである。Buchholz の ψ への変換とは異なる記法を用いる。
+をペア数列へ一般化したものである。これは P進大好きbot 氏の証明とは異なる別アプローチである。
+
+減少を測る記法 `p_a(b)+c`（型 `three`）自体は Buchholz の ψ 記法をそのまま借りるのでは
+なく独自の三分木として定義するが、それは Buchholz (1986) §2 の項記法系 $(\mathrm{OT},<)$ と
+同型である。その順序 `≺` の**整礎性**は、Buchholz の ψ 崩壊関数（ψ_v）への順序保存的な
+埋め込みによって意味論的に与える（後述 §7, route A）。すなわち減少補題までは独自記法で完結し、
+整礎性の核だけを Buchholz ψ に帰着させる。
 
 PSS の証明論的強さは **ψ₀(ψ_ω(0))**（Buchholz ordinal, Ω_ω の崩壊）と
 考えられており、記法 `p_a(b)` の添字 `a` を自然数（0,1,2,… とその上限 ω）に
 取ることに対応する。
 
-> **記法の凡例**: 本稿には Isabelle/HOL で形式化された証明本文のみを記す（`def.thy`
-> / `mechanized.thy` / `proofs.thy`、`isbman build -d . -v YAPSS` で検証済み）。
-> 最終段の整礎性は、証明済みの含意により**ただ一つの仮定**（対角タワーの
-> accessibility）に還元される。本稿はその含意までを扱い、当該仮定を明示する。
+> **記法の凡例**: 本稿には Isabelle/HOL で形式化された証明本文を記す。前半（§1–§6、
+> `def.thy` / `mechanized.thy` / `proofs.thy`、session YAPSS）は検証済みで、停止性は
+> 整礎性 wfimg（NF 上の `≺` 整礎）一点に帰着する。後半（§7、route A、`ord/psi.thy` /
+> `ord/otembed.thy`、session PSI on AFP `ZFC_in_HOL`）は wfimg を Buchholz ψ で構成し、
+> 現在は順序保存補題 `oV_order_pres_NF`（Lemma 2.2(c)）ただ一つを残す。
+> ビルド: `isbman build -d <afp>/thys -d . PSI`。
 
 ---
 
@@ -258,7 +266,7 @@ $\psi_v(\alpha)=\min\{\gamma\ \text{順序数}\mid\gamma\notin C_v(\alpha)\}$（
 - well-defined（$C_v(\alpha)$ は集合ゆえ全順序数を尽くせない）`psi_ex` / `Ord_psi` / `psi_notin`
 - 閉包 C1–C3（$\Omega_v\subseteq C_v(\alpha)$、$+$ 閉、$\psi_u$ 閉）`Om_subset_Cset` / `Cset_add_closed` / `Cset_psi_closed`
 - $\Omega_v\le\psi_v(\alpha)$ `Om_le_psi`、引数単調 `psi_mono_arg`
-- **Lemma 1.2(b)**（$\psi_v(\alpha)$ は加法主要数：$\beta,\gamma<\psi_v(\alpha)\Rightarrow\beta+\gamma<\psi_v(\alpha)$）`psi_add_principal`（作業中）
+- **Lemma 1.2(b)**（$\psi_v(\alpha)$ は加法主要数：$\beta,\gamma<\psi_v(\alpha)\Rightarrow\beta+\gamma<\psi_v(\alpha)$）`psi_add_principal`
 - **Lemma 1.2(c)**（$\psi_v(\alpha)<\Omega_{v+1}$、濃度評価 $|C_v(\alpha)|\le\Omega_v\sqcup\omega$）`psi_lt_Om_Suc`
 - **Lemma 1.3**（厳密単調：$\alpha<\beta\wedge\alpha\in C_v(\alpha)\Rightarrow\psi_v(\alpha)<\psi_v(\beta)$）`psi_strict_mono_arg`
 
@@ -302,8 +310,7 @@ $$ u,v\in\mathrm{NF}\ \wedge\ v\prec u\ \Longrightarrow\ o\,v<o\,u $$
 | 整礎性の還元（diagacc ⟹ wfimg） | **`wf_Rnf_from_diag`** / `acc_Rnf_of_ST_PS` / `oper_eq_self_short` | ✓ |
 | 停止性（diagacc ⟹ 停止） | `step_terminates_from_diag` / `no_infinite_expansion_from_diag` | ✓ |
 | **route A**: 崩壊関数 $\Omega_v,C_v,\psi_v$ | [`ord/psi.thy`](ord/psi.thy) `Om`/`Cset`/`psi` | ✓ |
-| 補題 1.2(c)/1.3 | `psi_lt_Om_Suc` / `psi_strict_mono_arg` | ✓ |
-| 補題 1.2(b)（加法主要数） | `psi_add_principal` | 作業中 |
+| 補題 1.2(b)/1.2(c)/1.3 | `psi_add_principal` / `psi_lt_Om_Suc` / `psi_strict_mono_arg` | ✓ |
 | 順序埋め込み $o:\mathsf{three}\to V$ | [`ord/otembed.thy`](ord/otembed.thy) `oV` / `Ord_oV` | ✓ |
 | wfimg（$\prec$ on NF 整礎） | **`wf_Rnf`** / 停止性 **`PSS_terminates`** | ✓（順序保存に依存） |
 | 順序保存（Lemma 2.2(c), on NF） | `oV_order_pres_NF` | 作業中 [`memo.md`](memo.md) |
