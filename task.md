@@ -12,8 +12,8 @@
 > 内部 sorry **3つ**（他全証明済・緑, baseline RC=0）。**方針(ユーザー確定)= (A) 全て自前で完全証明**
 > （本系はオリジナル $p_a(b)$ 記法＝非標準で文献引用は不成立。sorry ゼロを目指す）。
 > **3 sorry はいずれも研究級の順序論/証明論コア（当初想定より大）**:
-> **(1) `wo.olt_trans[c=Su[a=Su]]`**（非標準=多重集合単一支配元の推移律。**🚨bridge ルート死亡: mnlcong は wfo でも偽**(続28)。
->   trans は真だが multp 経由不可→直接証明の再設計要。順序は非線形=置換で非比較ペア有り）、
+> **(1) `wo.olt_trans`**（**✅A2 検証済 続31: Buchholz lex order に再定義すれば linearity は容易**。
+>   scratch_order.thy で lex order の neq/irrefl/total/trans を数行で green 化。現 Towsner-K-支配 olt から lex へ統合作業が残）、
 > **(2) `buchholz.L_ThF[e∈acc]`**（Towsner 崩壊整礎性=超限 distinguished-set 構成。predecessor 非有界→Π¹₁, 初等帰納不可）、
 > **(3) `embed.op_NF[P/P]`**（embed の NF 順序保存=翻訳忠実性, **完全オリジナル**。(1)依存＋NF K条件）。
 > **依存**: step_terminates_NF ← wf_Rnf_via_embed ← {wf_oltRwF←masterF←L_ThF, op_NF←olt_trans}。
