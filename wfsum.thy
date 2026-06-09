@@ -339,9 +339,313 @@ fun singdest :: "three \<Rightarrow> nat \<times> three" where
   "singdest Z = (0, Z)"
 | "singdest (P a c d) = (a, c)"
 
+subsection \<open>Level 0: the base of the ladder (PrSS-style accessibility)\<close>
+
+text \<open>At level \<open>0\<close> all subscripts are \<open>0\<close>, so the singleton order never drops a
+  subscript and the PrSS argument (hereditary multisets, Dershowitz\<dash>Manna
+  accessibility) closes outright: \<open><o\<close> is WF on the class of CNF terms with
+  \<open>maxsub = 0\<close>.  This is the base case of the level ladder; the induction step
+  (level \<open>m\<close> from levels \<open>< m\<close>) is the Buchholz-collapse core, still open.\<close>
+
+abbreviation lvl0 :: "three \<Rightarrow> bool" where
+  "lvl0 t \<equiv> cnf t \<and> maxsub t = 0"
+
+definition olt0 :: "three \<Rightarrow> three \<Rightarrow> bool" where
+  "olt0 c f \<longleftrightarrow> c <o f \<and> lvl0 c \<and> lvl0 f"
+
+lemma transp_olt0: "transp olt0"
+  by (auto intro: olt_trans simp: transp_def olt0_def)
+
+lemma cnf_summands: "cnf x \<Longrightarrow> s \<in> set (summands x) \<Longrightarrow> cnf s"
+proof (induction x)
+  case Z thus ?case by simp
+next
+  case (P a b c)
+  have cb: "cnf b" using P.prems(1) by (cases c) auto
+  have cc: "cnf c" using P.prems(1) by (cases c) auto
+  from P.prems(2) consider "s = P a b Z" | "s \<in> set (summands c)" by auto
+  thus ?case
+  proof cases
+    case 1 thus ?thesis using cb by simp
+  next
+    case 2 thus ?thesis using cc P.IH(2) by blast
+  qed
+qed
+
+lemma maxsub_summands_le: "s \<in> set (summands x) \<Longrightarrow> maxsub s \<le> maxsub x"
+proof (induction x)
+  case Z thus ?case by simp
+next
+  case (P a b c)
+  from P.prems consider "s = P a b Z" | "s \<in> set (summands c)" by auto
+  thus ?case
+  proof cases
+    case 1 thus ?thesis by simp
+  next
+    case 2 thus ?thesis using P.IH(2) by fastforce
+  qed
+qed
+
+lemma sargs_size: "b \<in> set (sargs x) \<Longrightarrow> size b < size x"
+proof (induction x)
+  case Z thus ?case by simp
+next
+  case (P a b' c)
+  from P.prems consider "b = b'" | "b \<in> set (sargs c)" by auto
+  thus ?case
+  proof cases
+    case 1 thus ?thesis by simp
+  next
+    case 2 thus ?thesis using P.IH(2)[OF 2] by simp
+  qed
+qed
+
+text \<open>PrSS machinery: accessibility passes through the multiset extension.\<close>
+
+definition rA0 :: "three \<Rightarrow> three \<Rightarrow> bool" where
+  "rA0 x y \<longleftrightarrow> olt0 x y \<and> Wellfounded.accp olt0 x"
+
+lemma rA0_le_olt0: "rA0 \<le> olt0"
+  by (auto simp: rA0_def)
+
+lemma wfp_rA0: "wfp rA0"
+proof (rule accp_wfpI, rule allI)
+  fix x
+  have acc_imp: "Wellfounded.accp olt0 z \<Longrightarrow> Wellfounded.accp rA0 z" for z
+    using accp_subset[OF rA0_le_olt0] by (auto simp: le_fun_def)
+  show "Wellfounded.accp rA0 x"
+  proof (rule accp.accI)
+    fix y assume "rA0 y x"
+    hence "Wellfounded.accp olt0 y" by (simp add: rA0_def)
+    thus "Wellfounded.accp rA0 y" by (rule acc_imp)
+  qed
+qed
+
+lemma wfp_multp_rA0: "wfp (multp rA0)"
+  using wfp_rA0 by (rule wfp_multp)
+
+lemma accp_multp_olt0:
+  assumes "\<forall>x \<in># M. Wellfounded.accp olt0 x"
+  shows "Wellfounded.accp (multp olt0) M"
+proof -
+  have "Wellfounded.accp (multp rA0) M"
+    using wfp_multp_rA0 by (simp add: wfp_iff_accp)
+  thus ?thesis using assms
+  proof (induction M rule: accp_induct_rule)
+    case (1 M)
+    show ?case
+    proof (rule accp.accI)
+      fix N assume "multp olt0 N M"
+      from multp_implies_one_step[OF transp_olt0 this]
+      obtain I J K where dec: "M = I + J" "N = I + K" "J \<noteq> {#}"
+        and Klt: "\<forall>k \<in># K. \<exists>x \<in># J. olt0 k x" by blast
+      have accN: "\<forall>x \<in># N. Wellfounded.accp olt0 x"
+      proof
+        fix x assume "x \<in># N"
+        then consider "x \<in># I" | "x \<in># K" using dec by auto
+        thus "Wellfounded.accp olt0 x"
+        proof cases
+          case 1 thus ?thesis using "1.prems" dec by auto
+        next
+          case 2
+          then obtain y where "y \<in># J" "olt0 x y" using Klt by blast
+          hence "Wellfounded.accp olt0 y" using "1.prems" dec by auto
+          thus ?thesis using \<open>olt0 x y\<close> by (rule accp_downward)
+        qed
+      qed
+      have "\<forall>k \<in># K. \<exists>x \<in># J. rA0 k x"
+      proof
+        fix k assume "k \<in># K"
+        then obtain x where "x \<in># J" "olt0 k x" using Klt by blast
+        moreover have "Wellfounded.accp olt0 k"
+          using accN \<open>k \<in># K\<close> dec by auto
+        ultimately show "\<exists>x \<in># J. rA0 k x" by (auto simp: rA0_def)
+      qed
+      hence "multp rA0 N M"
+        using dec one_step_implies_multp[of J K rA0 I] by simp
+      thus "Wellfounded.accp (multp olt0) N"
+        using "1.IH" accN by blast
+    qed
+  qed
+qed
+
+text \<open>The order embeds sums into multisets of summands (level-0 instance).\<close>
+
+lemma olt0_summands_multp:
+  assumes "olt0 w t"
+  shows "multp olt0 (mset (summands w)) (mset (summands t))"
+proof -
+  have cw: "cnf w" and lw: "lvl0 w" and lt': "lvl0 t" and wt: "w <o t"
+    using assms by (auto simp: olt0_def)
+  have sub: "set (summands u) \<subseteq> {s. lvl0 s}" if u: "lvl0 u" for u
+  proof
+    fix s assume s: "s \<in> set (summands u)"
+    have "cnf s" using cnf_summands s u by blast
+    moreover have "maxsub s = 0" using maxsub_summands_le[OF s] u by simp
+    ultimately show "s \<in> {s. lvl0 s}" by simp
+  qed
+  have "(mset (summands w), mset (summands t))
+          \<in> mult {(s,t). s <o t \<and> s \<in> {s. lvl0 s} \<and> t \<in> {s. lvl0 s}}"
+    by (rule olt_summands_mult[OF cw wt sub[OF lw] sub[OF lt']])
+  moreover have "{(s,t). s <o t \<and> s \<in> {s. lvl0 s} \<and> t \<in> {s. lvl0 s}}
+                   = {(x,y). olt0 x y}"
+    by (auto simp: olt0_def)
+  ultimately show ?thesis by (simp add: multp_def)
+qed
+
+lemma Z_acc0: "Wellfounded.accp olt0 Z"
+proof (rule accp.accI)
+  fix y assume "olt0 y Z"
+  thus "Wellfounded.accp olt0 y" using not_olt_Z by (auto simp: olt0_def)
+qed
+
+text \<open>A sum is accessible once its summand multiset is.\<close>
+
+lemma sum_acc_aux:
+  "Wellfounded.accp (multp olt0) M \<Longrightarrow> lvl0 w \<Longrightarrow> mset (summands w) = M
+     \<Longrightarrow> Wellfounded.accp olt0 w"
+proof (induction M arbitrary: w rule: accp_induct_rule)
+  case (1 M)
+  show ?case
+  proof (rule accp.accI)
+    fix v assume v: "olt0 v w"
+    have lv: "lvl0 v" using v by (simp add: olt0_def)
+    have "multp olt0 (mset (summands v)) (mset (summands w))"
+      by (rule olt0_summands_multp[OF v])
+    hence step: "multp olt0 (mset (summands v)) M" using "1.prems"(2) by simp
+    show "Wellfounded.accp olt0 v"
+      by (rule "1.IH"[OF step lv refl])
+  qed
+qed
+
+lemma sum_acc:
+  assumes "lvl0 v" "Wellfounded.accp (multp olt0) (mset (summands v))"
+  shows "Wellfounded.accp olt0 v"
+  by (rule sum_acc_aux[OF assms(2) assms(1) refl])
+
+text \<open>The level-0 singleton constructor preserves accessibility (no subscript can
+  drop below \<open>0\<close>, so all predecessors of \<open>p\<^bsub>0\<^esub>(b)\<close> are sums of \<open>p\<^bsub>0\<^esub>(d\<^sub>i)\<close> with
+  \<open>d\<^sub>i <\<^sub>o b\<close>: accessible by the accessibility induction on \<open>b\<close>).\<close>
+
+lemma sing0_acc:
+  "Wellfounded.accp olt0 b \<Longrightarrow> lvl0 b \<Longrightarrow> Wellfounded.accp olt0 (P 0 b Z)"
+proof (induction b rule: accp_induct_rule)
+  case (1 b)
+  show ?case
+  proof (rule accp.accI)
+    fix v assume v: "olt0 v (P 0 b Z)"
+    have lv: "lvl0 v" and vlt: "v <o P 0 b Z" using v by (auto simp: olt0_def)
+    show "Wellfounded.accp olt0 v"
+    proof (cases v)
+      case Z thus ?thesis using Z_acc0 by simp
+    next
+      case (P a d e)
+      have a0: "a = 0" using lv P by simp
+      have dlt: "d <o b" using vlt P a0 not_olt_Z by auto
+      have ld: "lvl0 d" using lv P by (cases e) auto
+      have dacc: "olt0 d b" using dlt ld "1.prems" by (simp add: olt0_def)
+      \<comment> \<open>every summand of \<open>v\<close> is \<open>p\<^bsub>0\<^esub>(d\<^sub>i)\<close> with \<open>d\<^sub>i \<le>\<^sub>o d <\<^sub>o b\<close>, hence accessible
+          by the accessibility induction hypothesis on \<open>b\<close>\<close>
+      have summacc: "\<forall>s \<in># mset (summands v). Wellfounded.accp olt0 s"
+      proof
+        fix s assume "s \<in># mset (summands v)"
+        hence sv: "s \<in> set (summands v)" by simp
+        obtain a' d' where s: "s = P a' d' Z" using summands_shape[OF sv] by blast
+        have ls: "lvl0 s" using cnf_summands maxsub_summands_le sv lv by fastforce
+        have a'0: "a' = 0" using ls s by simp
+        have cnfv: "cnf v" using lv by simp
+        have vP: "v = P 0 d e" using P a0 by simp
+        have d'le: "s \<le>o P 0 d Z"
+        proof -
+          from sv vP consider "s = P 0 d Z" | "s \<in> set (summands e)" by auto
+          thus ?thesis
+          proof cases
+            case 1 thus ?thesis by simp
+          next
+            case 2 show ?thesis by (rule summands_le_hd[OF cnfv vP 2])
+          qed
+        qed
+        have "d' \<le>o d" using d'le s a'0 by auto
+        hence d'b: "d' <o b" using dlt ole_olt_trans by blast
+        have ld': "lvl0 d'" using ls s a'0 by (cases "d' = Z") auto
+        have "olt0 d' b" using d'b ld' "1.prems" by (simp add: olt0_def)
+        hence "Wellfounded.accp olt0 (P 0 d' Z)"
+          using "1.IH" ld' by blast
+        thus "Wellfounded.accp olt0 s" using s a'0 by simp
+      qed
+      have "Wellfounded.accp (multp olt0) (mset (summands v))"
+        by (rule accp_multp_olt0[OF summacc])
+      thus ?thesis by (rule sum_acc[OF lv, rotated])
+    qed
+  qed
+qed
+
+text \<open>\<^bold>\<open>Master\<close>: every level-0 CNF term is accessible (strong induction on size;
+  the sum arguments are proper subterms).\<close>
+
+lemma lvl0_acc: "lvl0 t \<Longrightarrow> Wellfounded.accp olt0 t"
+proof (induction t rule: measure_induct_rule[where f = size])
+  case (less t)
+  show ?case
+  proof (cases t)
+    case Z thus ?thesis using Z_acc0 by simp
+  next
+    case (P a b c)
+    have summacc: "\<forall>s \<in># mset (summands t). Wellfounded.accp olt0 s"
+    proof
+      fix s assume "s \<in># mset (summands t)"
+      hence sv: "s \<in> set (summands t)" by simp
+      obtain a' d' where s: "s = P a' d' Z" using summands_shape[OF sv] by blast
+      have ls: "lvl0 s" using cnf_summands maxsub_summands_le sv less.prems by fastforce
+      have a'0: "a' = 0" using ls s by simp
+      have ld': "lvl0 d'" using ls s a'0 by (cases "d' = Z") auto
+      \<comment> \<open>\<open>d'\<close> is a sum argument of \<open>t\<close>, hence a proper subterm\<close>
+      have "d' \<in> set (sargs t)"
+      proof -
+        have "set (summands t) = (\<lambda>(a,b). P a b Z) ` set (zip (tops t) (sargs t))"
+          by (induction t) auto
+        thus ?thesis using sv s
+          by (force dest: set_zip_rightD)
+      qed
+      hence "size d' < size t" by (rule sargs_size)
+      hence "Wellfounded.accp olt0 d'" using less.IH ld' by blast
+      hence "Wellfounded.accp olt0 (P 0 d' Z)" using sing0_acc ld' by blast
+      thus "Wellfounded.accp olt0 s" using s a'0 by simp
+    qed
+    have "Wellfounded.accp (multp olt0) (mset (summands t))"
+      by (rule accp_multp_olt0[OF summacc])
+    thus ?thesis by (rule sum_acc[OF less.prems, rotated])
+  qed
+qed
+
+theorem wf_olt0: "wf {(c,f). c <o f \<and> lvl0 c \<and> lvl0 f}"
+proof -
+  have "wfp olt0"
+  proof (rule accp_wfpI, rule allI)
+    fix x
+    show "Wellfounded.accp olt0 x"
+    proof (cases "lvl0 x")
+      case True thus ?thesis by (rule lvl0_acc)
+    next
+      case False
+      show ?thesis
+      proof (rule accp.accI)
+        fix y assume "olt0 y x"
+        hence "lvl0 x" by (simp add: olt0_def)
+        thus "Wellfounded.accp olt0 y" using False by simp
+      qed
+    qed
+  qed
+  hence "wf {(x,y). olt0 x y}" by (simp add: wfp_def)
+  moreover have "{(x,y). olt0 x y} = {(c,f). c <o f \<and> lvl0 c \<and> lvl0 f}"
+    by (auto simp: olt0_def)
+  ultimately show ?thesis by simp
+qed
+
 text \<open>\<^bold>\<open>The residual core\<close>, two levels in: WF of \<open><o\<close> on the arguments (of any
-  subscript) occurring inside the level-\<open>m\<close> sum arguments.  (Sum and subscript
-  layers are peeled; the Buchholz collapse lives in this class.)\<close>
+  subscript) occurring inside the level-\<open>m\<close> sum arguments.  The level-\<open>0\<close>
+  instance follows from the base theorem \<open>wf_olt0\<close>; the induction step (level
+  \<open>m\<close> from levels \<open>< m\<close>) is the Buchholz-collapse core, still open.\<close>
 
 lemma wf_ArgsA:
   "wf {(c,f). c <o f \<and> c \<in> ArgsA m \<and> f \<in> ArgsA m}"
