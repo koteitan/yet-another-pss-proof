@@ -429,48 +429,76 @@ proof -
                   show ?thesis by (rule acc_downward[OF g_acc qg])
                 qed
               qed
-              \<comment> \<open>principal predecessor of \<open>Th n d\<close> is accessible\<close>
+              \<comment> \<open>principal predecessor of \<open>Th n d\<close> is accessible.  By strong induction on
+                 \<open>size q\<close>: the cross-subscript residual is isolated to the controlled-accessibility
+                 obligation \<open>ctrl_acc\<close> (its critical subterms \<open>Kn p e\<close>, being smaller predecessors
+                 of \<open>Th n d\<close>, are accessible by the size-IH).\<close>
               have pacc: "\<And>q. wfo q \<Longrightarrow> omfree q \<Longrightarrow> nneg q \<Longrightarrow> isH q \<Longrightarrow> q <\<^sub>o Th n d \<Longrightarrow> q \<in> Wellfounded.acc oltRwF"
               proof -
-                fix q assume wq: "wfo q" and fq: "omfree q" and nq: "nneg q" and hq: "isH q" and qlt: "q <\<^sub>o Th n d"
-                from hq fq obtain p e where qTh: "q = Th p e"
-                  by (cases q) auto
-                have we: "wfo e" using wq qTh by simp
-                have fe: "omfree e" using fq qTh by simp
-                have ne: "nneg e" using nq qTh by simp
-                have p0: "0 \<le> p" using nq qTh by simp
-                from qlt qTh
-                have disj: "(\<exists>\<gamma>\<in>Kn n d. Th p e \<le>\<^sub>o \<gamma>)
-                    \<or> ((\<forall>\<gamma>\<in>Kn p e. \<gamma> <\<^sub>o Th n d) \<and> (p < n \<or> (p = n \<and> e <\<^sub>o d)))" by simp
-                from disj show "q \<in> Wellfounded.acc oltRwF"
-                proof
-                  assume "\<exists>\<gamma>\<in>Kn n d. Th p e \<le>\<^sub>o \<gamma>"
-                  thus ?thesis using dom_acc[of q] wq fq nq qTh by simp
-                next
-                  assume A: "(\<forall>\<gamma>\<in>Kn p e. \<gamma> <\<^sub>o Th n d) \<and> (p < n \<or> (p = n \<and> e <\<^sub>o d))"
-                  from A consider (eq) "p = n" "e <\<^sub>o d" | (lt) "p < n" by auto
-                  thus ?thesis
-                  proof cases
-                    case eq
-                    have ed: "(e, d) \<in> oltRwF" using eq(2) we fe ne wd fd nd by simp
-                    have "Th n e \<in> Wellfounded.acc oltRwF"
-                      using accIH[OF ed] we fe ne by blast
-                    thus ?thesis using qTh eq(1) by simp
-                  next
-                    case lt
-                    \<comment> \<open>cross-subscript \<open>0 \<le> p < n\<close>: close by the level IH at the lower level \<open>p\<close>,
-                       provided the collapse argument \<open>e\<close> is accessible (Pohlers 9.6.15 \<dash> the
-                       residual kernel).\<close>
-                    from p0 obtain j where pj: "p = int j" using zero_le_imp_eq_int by blast
-                    have jk: "j < k" using lt pj by (simp add: ndef)
-                    have Acond: "\<forall>\<gamma>\<in>Kn p e. \<gamma> <\<^sub>o Th n d" using A by simp
-                    have eacc: "e \<in> Wellfounded.acc oltRwF" sorry
-                    have "Th (int j) e \<in> Wellfounded.acc oltRwF"
-                      using levelIH[OF jk] eacc we fe ne by blast
-                    thus ?thesis using qTh pj by simp
+                fix q0
+                show "wfo q0 \<Longrightarrow> omfree q0 \<Longrightarrow> nneg q0 \<Longrightarrow> isH q0 \<Longrightarrow> q0 <\<^sub>o Th n d \<Longrightarrow> q0 \<in> Wellfounded.acc oltRwF"
+                proof (induction q0 rule: measure_induct_rule[where f = size])
+                  case (less q)
+                  note pIH = less.IH
+                  from less.prems have wq: "wfo q" and fq: "omfree q" and nq: "nneg q"
+                    and hq: "isH q" and qlt: "q <\<^sub>o Th n d" by blast+
+                  from hq fq obtain p e where qTh: "q = Th p e"
+                    by (cases q) auto
+                    have we: "wfo e" using wq qTh by simp
+                    have fe: "omfree e" using fq qTh by simp
+                    have ne: "nneg e" using nq qTh by simp
+                    have p0: "0 \<le> p" using nq qTh by simp
+                    from qlt qTh
+                    have disj: "(\<exists>\<gamma>\<in>Kn n d. Th p e \<le>\<^sub>o \<gamma>)
+                        \<or> ((\<forall>\<gamma>\<in>Kn p e. \<gamma> <\<^sub>o Th n d) \<and> (p < n \<or> (p = n \<and> e <\<^sub>o d)))" by simp
+                    from disj show ?case
+                    proof
+                      assume "\<exists>\<gamma>\<in>Kn n d. Th p e \<le>\<^sub>o \<gamma>"
+                      thus ?thesis using dom_acc[of q] wq fq nq qTh by simp
+                    next
+                      assume A: "(\<forall>\<gamma>\<in>Kn p e. \<gamma> <\<^sub>o Th n d) \<and> (p < n \<or> (p = n \<and> e <\<^sub>o d))"
+                      from A consider (eq) "p = n" "e <\<^sub>o d" | (lt) "p < n" by auto
+                      thus ?thesis
+                      proof cases
+                        case eq
+                        have ed: "(e, d) \<in> oltRwF" using eq(2) we fe ne wd fd nd by simp
+                        have "Th n e \<in> Wellfounded.acc oltRwF"
+                          using accIH[OF ed] we fe ne by blast
+                        thus ?thesis using qTh eq(1) by simp
+                      next
+                        case lt
+                        \<comment> \<open>cross-subscript \<open>0 \<le> p < n\<close>: close by the level IH at the lower level \<open>p\<close>,
+                           provided the collapse argument \<open>e\<close> is accessible.  Its critical subterms
+                           \<open>Kn p e\<close> are accessible (smaller predecessors of \<open>Th n d\<close>, by the size-IH \<open>pIH\<close>),
+                           so the residual is exactly the controlled-accessibility kernel
+                           \<open>ctrl_acc\<close>: \<open>Kn p e \<subseteq> acc \<Longrightarrow> e \<in> acc\<close> (Towsner 3.10\<dash>3.12).\<close>
+                        from p0 obtain j where pj: "p = int j" using zero_le_imp_eq_int by blast
+                        have jk: "j < k" using lt pj by (simp add: ndef)
+                        have Acond: "\<forall>\<gamma>\<in>Kn p e. \<gamma> <\<^sub>o Th n d" using A by simp
+                        have Kacc: "\<And>\<gamma>. \<gamma> \<in> Kn p e \<Longrightarrow> \<gamma> \<in> Wellfounded.acc oltRwF"
+                        proof -
+                          fix \<gamma> assume g: "\<gamma> \<in> Kn p e"
+                          have szg: "size \<gamma> < size q"
+                            using qTh Kn_size[OF g] by simp
+                          have wg: "wfo \<gamma>" using wfo_Kn[OF we g] .
+                          have fg: "omfree \<gamma>" using omfree_Kn[OF fe g] .
+                          have ng: "nneg \<gamma>" using nneg_Kn[OF ne g] .
+                          have hg: "isH \<gamma>" using Kn_isH[OF g] .
+                          have glt: "\<gamma> <\<^sub>o Th n d" using Acond g by simp
+                          show "\<gamma> \<in> Wellfounded.acc oltRwF"
+                            using pIH[OF szg wg fg ng hg glt] .
+                        qed
+                        \<comment> \<open>\<^bold>\<open>Residual kernel (sorry):\<close> controlled \<open>\<Longrightarrow>\<close> accessible.  The control
+                           \<open>Kacc : Kn p e \<subseteq> acc\<close> is now established (green); the remaining gap is
+                           exactly \<open>ctrl_acc\<close> (Towsner Acc_n distinguished-set construction).\<close>
+                        have eacc: "e \<in> Wellfounded.acc oltRwF" sorry
+                        have "Th (int j) e \<in> Wellfounded.acc oltRwF"
+                          using levelIH[OF jk] eacc we fe ne by blast
+                        thus ?thesis using qTh pj by simp
+                      qed
+                    qed
                   qed
                 qed
-              qed
               show "r \<in> Wellfounded.acc oltRwF"
               proof (cases "isH r")
                 case True thus ?thesis using pacc[of r] wr fr nr rlt by simp
