@@ -14,7 +14,9 @@
 > **3 sorry はいずれも研究級の順序論/証明論コア（当初想定より大）**:
 > **(1) `wo.olt_trans`**（**✅A2 検証済 続31: Buchholz lex order に再定義すれば linearity は容易**。
 >   scratch_order.thy で lex order の neq/irrefl/total/trans を数行で green 化。現 Towsner-K-支配 olt から lex へ統合作業が残）、
-> **(2) `buchholz.L_ThF[e∈acc]`**（Towsner 崩壊整礎性=超限 distinguished-set 構成。predecessor 非有界→Π¹₁, 初等帰納不可）、
+> **(2) `buchholz.L_ThF`（続36: 大半 green, sorry は impredicative 核1点に縮小）**:
+>   pacc 再構成で `Kn p e⊆acc` 証明済、ctrl_acc 構造帰納で Su/Th(r≤p)/Th(p<r<n) green。
+>   **残 sorry = `r≥n, h∈acc ⟹ Th r h∈acc`**（buried 高レベル崩壊, r 無界・h は d と順序無関係）＝global Towsner Acc_n 構成が必須、
 > **(3) `embed.op_NF[P/P]`**（embed の NF 順序保存=翻訳忠実性, **完全オリジナル**。(1)依存＋NF K条件）。
 > **依存**: step_terminates_NF ← wf_Rnf_via_embed ← {wf_oltRwF←masterF←L_ThF, op_NF←olt_trans}。
 > **基盤（全証明済・緑）**: shift 自己同型・acc 不変・ground/norm・**nneg fragment(健全化済)**・reduction chain・
