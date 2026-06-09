@@ -1435,3 +1435,19 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - 次段設計: 引数クラスの帰納は (i) lead≤a+1 + cnf の規律で Towsner 風 ladder を組むか、
   (ii) 引数クラスを数列側（部分ブロックの translate）で特徴づけ sub-block 不変条件を nfinv_ST_PS
   流に証明するか。深さ1,2 の綺麗さは (ii) を示唆。
+
+### (2026-06-10 続2) wf_ArgsA の knot 分析（設計上の確定事項）
+- 一般 peel 完了で chain: PSS_terminates ⟸ wfE ⟸ wf_ArgsL ⟸ wf_SingA ⟸ **wf_ArgsA**（唯一 sorry）。
+- **有限 peel では閉じない**: 和 peel→添字 peel→引数…の繰り返しは構造的に底をつかない。
+  添字 j の singleton p_j(c) の前者には任意の p_i(d) (i<j, d 任意) が来る → 下から順も上から順も循環。
+  lead(arg)≤a+1 で「p_a の引数はレベル a+1 材料」だが maxsub≤m の cap の所で lead-0 再入
+  （実測 (a,lead)=(2,0) あり）→ 添字 0→…→m→0 の閉ループ＝ψ collapse の非可述性そのもの。
+- **レベル 0 は閉じる**: wf_ArgsA 0 は単一添字 p0 の遺伝的 cnf クラス → PrSS hord/multp と同型の
+  構造帰納（acc-of-multiset + constructor-acc）で証明可能。これが ladder の base。★次の実装対象。
+- **ladder の正しい形**（Towsner Def3.7 の構造のみ借用）: レベル m の帰納で
+  「∀i<m. レベル i の全クラス wf」を仮定に持つ形に再編。within-level-m の危険な再入
+  （t_k 型・lead-0 部分）は「critical 部分項が ⋃_{i<m}Acc_i に入る」型の条件で制御する
+  M_n 流のクラス定義が要る（純構文条件では t_k を排除しつつ NF 材料を含む線引きが未確立）。
+- 次手: (1) wf_ArgsA の m=0 を prss 流に証明（実装可能・base 確立）。
+  (2) m 帰納の statement 再編（wf_ArgsA を「∀i<m wf 仮定」付き compound induction へ）。
+  (3) critical-subterm 条件の設計（P進の Adm/Mark に相当する切り口の可能性も検討）。
