@@ -651,6 +651,40 @@ qed
 text \<open>\<^bold>\<open>Buchholz Lemma 1.2(c)\<close>: \<open>\<psi>\<^sub>v(\<alpha>) < \<Omega>\<^bsub>v+1\<^esub>\<close>.  If not, then all ordinals below
   \<open>\<Omega>\<^bsub>v+1\<^esub>\<close> would lie in \<open>C\<^sub>v(\<alpha>)\<close>, forcing \<open>\<Omega>\<^bsub>v+1\<^esub> = |\<Omega>\<^bsub>v+1\<^esub>| \<le> |C\<^sub>v(\<alpha>)| \<le> \<kappa> < \<Omega>\<^bsub>v+1\<^esub>\<close>.\<close>
 
+lemma one_le_Om: "(1::V) \<le> Om b"
+proof -
+  have "(0::V) < Om b"
+  proof (cases "b = 0")
+    case True thus ?thesis by (simp add: Om_def)
+  next
+    case False
+    have "(0::V) < \<omega>" by (metis OrdmemD Ord_\<omega> zero_in_omega)
+    also have "\<omega> \<le> Om b" using False by (simp add: Om_def)
+    finally show ?thesis .
+  qed
+  hence "succ 0 \<le> Om b" by (simp add: succ_le_iff)
+  thus ?thesis by (simp add: succ_eq_add1)
+qed
+
+lemma Om_mono: "a \<le> b \<Longrightarrow> Om a \<le> Om b"
+proof (cases "a = 0")
+  case True
+  show ?thesis using one_le_Om by (simp add: True Om_def)
+next
+  case False
+  assume ab: "a \<le> b"
+  from False have apos: "0 < a" by simp
+  with ab have bpos: "0 < b" by simp
+  have "\<aleph>(ord_of_nat a) \<le> \<aleph>(ord_of_nat b)"
+  proof (cases "a = b")
+    case True thus ?thesis by simp
+  next
+    case False with ab have "ord_of_nat a < ord_of_nat b" by simp
+    thus ?thesis by (simp add: Aleph_increasing less_imp_le)
+  qed
+  thus ?thesis using apos bpos by (simp add: Om_def)
+qed
+
 lemma psi_lt_Om_Suc: "psi \<alpha> v < Om (Suc v)"
 proof (rule ccontr)
   assume "\<not> psi \<alpha> v < Om (Suc v)"
@@ -678,6 +712,19 @@ proof (rule ccontr)
   also have "... \<le> Om v \<squnion> \<omega>" by (rule vcard_Cset_le)
   finally have "Om (Suc v) \<le> Om v \<squnion> \<omega>" .
   with kappa_less_Suc[of v] show False by (meson leD)
+qed
+
+text \<open>\<^bold>\<open>Subscript jump\<close>: a strictly larger subscript dominates regardless of arguments
+  (\<open>\<psi>\<^sub>a(\<alpha>) < \<Omega>\<^bsub>a+1\<^esub> \<le> \<Omega>\<^sub>e \<le> \<psi>\<^sub>e(\<beta>)\<close>).  This is the engine of the subscript-first
+  order (Buchholz Lemma 2.2(c), subscript case).\<close>
+
+lemma psi_subscript_jump:
+  assumes "a < e" shows "psi \<alpha> a < psi \<beta> e"
+proof -
+  have "psi \<alpha> a < Om (Suc a)" by (rule psi_lt_Om_Suc)
+  also have "Om (Suc a) \<le> Om e" using assms by (simp add: Om_mono Suc_leI)
+  also have "Om e \<le> psi \<beta> e" by (rule Om_le_psi)
+  finally show ?thesis .
 qed
 
 end
