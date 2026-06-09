@@ -1541,3 +1541,14 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   wfE ⟺ 「seqlex の標準形無限降下なし」。
 - デバッグ教訓: 新 theory はまず単独でビルド可能に小さく（metis 乱用が 90s+ ループ源、
   stepprops_tl 型のヘルパで決定化）。`case Cons2: (Cons q rr')` が正しい label 構文。
+
+### ★(2026-06-10 続11) seqlex.thy 完全緑（sorry-free）: 標準形の blockok 規律＋順序同型
+- blockok_ST_PS（diag: nth計算 / oper: steps1 合成則。コピー junction は
+  e0(j1)-e0(j1-1)≤1 に帰着、i1=1 は le0_entry0_mono、i1=0 は nextrel0_entry0_less）。
+- **olt_ST_iff_seqlex: 標準形上で translate M <o translate N ⟺ seqlex M N**（順序同型、sorry-free）。
+- wfE は「ST_PS（同 maxsub）上の seqlex 整礎性」と同値に。
+- デバッグ根因: steps1_append case3 の `by auto`（IH 不使用）が発散。教訓: 帰納 case の
+  auto には必ず IH を using で渡す。HO unification は [where n= and F=] で明示。
+- 現状の全体図: (A) pure-lex 前半＋peel＋level0（sorry=wf_ArgsA のみ）
+  (B) wf_olt_wf3 sorry-free (C) olt=seqlex sorry-free。
+  残る本丸は不変: 崩壊核（wf_ArgsA ⟺ seqlex-WF on ST ⟺ NF→wf3 橋のどれかを閉じる）。
