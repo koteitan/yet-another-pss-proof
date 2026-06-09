@@ -1159,3 +1159,47 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **次の一手候補(A 継続)**: (i) rank ベース測度(整礎性で定義する rank)or (ii) より強い命題を束ねる(connectedness 込)or
   (iii) asym を「中央 principal の trans=midH」complete 先行で(但し midH 自身が Th 引数で Su/Su trans を要し循環)。
   要・測度の本質的工夫 or 文献(Buchholz [Buc1] 2.1 の正確な帰納測度)精読。
+
+### 進捗 (2026-06-09 続30): 【方針確定 A2】ot 順序を Buchholz 標準形へ再定義（ユーザー確定）
+- **ユーザー確定: (A2)** — `p_a(b)` 記法(datatype)は保持、`ot` の **olt/wfo を Buchholz 標準形に再定義**。
+  ＝支配(K)条件を**順序の比較から外し wfo 条件へ**移す。Su を**辞書式(非増加リスト)** に。Th を**純辞書式 lex** に。
+- **根拠(Buchholz [Buc1] 精読)**: 彼の order は (<2) `Dᵤa<Dᵥb⟺u<v∨(u=v∧a<b)`(純 lex)・(<3) タプル辞書式。
+  **K 支配は OT3 `Gₒb<b`(=wfo) に在る**。∴ **Lemma 2.1 linearity は "Straightforward"**。姉妹 pss-proof の `lessBT/lessBP` も同形。
+  我々の現 olt は K 支配を比較内に入れた非標準設計＝自滅(full-size 中央項/mnlcong偽/単一支配元非推移)。
+- **再設計の核心難所 = Om(明示カーディナル)の扱い**: Buchholz は Ω を項に持たない(暗黙)。我々は WF 足場(Towsner Acc_n)で
+  Om を明示項にしている。Om vs Th の比較は意味論的(Ω_n vs ψ_m(a))で純 lex に乗らない＝現 olt が Kn ベースにした理由。
+  WF target は omfree(Om 無し)＝embed 像も omfree。∴ **omfree fragment(Th+Su)上で新 order を lex/辞書式に**するのが主戦場。
+- **新 order 設計(omfree, Buchholz/lessBT 準拠)**:
+  - principals = Th n a。tuple = Su xs(非増加, isH 要素)。principal p は length-1 tuple [p] 扱い。
+  - `Th m a < Th n b ⟺ m<n ∨ (m=n ∧ a<b)`(純 lex)。
+  - `Su xs < Su ys` = 辞書式(<3): (i) proper prefix 小 (ii) 最初の差で ak<bk。
+  - principal vs Su は [p] vs ys の辞書式。
+  - **支配 Gₒb<b は wfo へ**: `wfo(Th n b) = wfo b ∧ (Th n b の臨界部分項 < b 相当)`。詳細は Buchholz OT3 を omfree に写す。
+  - Om: WF 足場。omfree 順序には不要かも。新 WF 証明が Om 足場を要するか要再検討(Buchholz の C(α) は別足場)。
+- **影響範囲(中規模リファクタ)**: wo.thy(olt/wfo/Kn/全 order 補題)・wflevel・buchholz(masterF/L_ThF=WF)・embed(op_NF/順序保存)・proofs。
+  three の order(mechanized)は既に純 lex で linear 証明済＝ot も同様にできる手本。
+- **手順**: (1) scratch で新 order(omfree Th+Su)＋linearity(straightforward 確認)→ (2) wfo(支配条件)再定義 → (3) WF(新 order で)
+  → (4) embed 順序保存 → (5) Om/足場の要否決定。まず (1) で「linearity が本当に容易」を実証。
+
+### 進捗 (2026-06-09 続31): 【A2 検証成功】Buchholz lex order の linearity 完全 green
+- **scratch_order.thy が green(RC=0, 16s)**: 新鮮 datatype `bt=Trm "bp list" and bp=Thb int bt`(omfree fragment)に
+  Buchholz 辞書式/lex order `lessT/lessP`(支配節なし)を定義し、**linearity を完全証明**:
+  - `less_neq`(lessT a b⟹a≠b), `less_irrefl`(¬lessT a a), `less_total`(trichotomy=全順序!), `less_trans`(推移律)。
+  - 全て `lessT_lessP.induct`(関数の相互帰納規則)＋簡単な cases で**数行**。total は plain `auto`。
+  ＝**(A2) 決定的検証**: lex order で linearity は容易。現 Towsner-K-支配順序(olt)では研究級だったのと対照的。
+- **新 order 定義(確定, omfree)**:
+  ```
+  lessT (Trm []) (Trm bs) = (bs≠[])
+  lessT (Trm(a#as)) (Trm[]) = False
+  lessT (Trm(a#as)) (Trm(b#bs)) = (lessP a b ∨ (a=b ∧ lessT (Trm as)(Trm bs)))
+  lessP (Thb u a)(Thb v b) = (u<v ∨ (u=v ∧ lessT a b))
+  ```
+  irrefl は less_neq 経由。trans は induct 規則＋(cases c; cases 内側list)。
+- **統合の核心未解決問題 = lex order の WF(L_ThF 相当)をどう証明するか**:
+  - Towsner 3.10-3.12 の組合せ的 WF は **K-支配順序(Def 3.5)用**。Buchholz lex の WF は §2.2 順序数同型(ε_{Ω+1}, 形式化重い)。
+  - 候補(a): lex order の WF を Towsner 流組合せ論で再導出(支配は wfo=Gob<b 条件として)。
+  - 候補(b): lex order と K-支配 order が **normal 項(Gob<b)上で一致**を証明し、WF は K-支配(Towsner)で、linearity は lex で。
+    ＝両方の良いとこ取り。但し「lex=Kdom on normal」の証明＋embed 像が normal の証明が要る。
+  - 候補(c): WF も lex order で Towsner 流に直接(Acc_n を lex order で再定義)。
+- **統合作業(大)**: ot を bt/bp 式に(Om の扱い決定要)→ olt=lessT 式 → wfo に支配条件 → WF 再構築 → embed 順序保存(lex→lex で容易化見込) → proofs。
+- **重要教訓**: テストは必ず `timeout 240` で(bo2 が metis ループで1時間 OOM kill された。同マシン他エージェントへの配慮も)。
