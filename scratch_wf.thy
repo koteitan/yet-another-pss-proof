@@ -72,6 +72,90 @@ next
 qed
 
 
+subsection \<open>The corrected level family (\<open>\<Omega>\<close>-scaffolded, with genuine base)\<close>
+
+text \<open>The level-\<open>n\<close> control set: a normalized well-formed principal whose ground is
+  \<open>\<ge> -n\<close> (or which is countable), and whose below-\<open>\<Omega>\<^bsub>0\<^esub>\<close> critical subterms
+  normalize into \<open>prev\<close>.  \<^bold>\<open>Key fix vs. the old \<^const>\<open>Mn\<close>\<close>: \<open>prev\<close> will include the
+  accessible \<^emph>\<open>countable base\<close> \<^term>\<open>Awf Mbot\<close>, so countable critical subterms are
+  controllable (the old version only allowed the \<open>\<Omega>\<close>-levels, hence degenerated on
+  the \<open>\<Omega>\<close>-free fragment).\<close>
+
+definition Mlv :: "nat \<Rightarrow> ot set \<Rightarrow> ot set" where
+  "Mlv n prev = {a. isH a \<and> wfo a \<and> nneg a \<and> normd a \<and> (FCset a = {} \<or> - int n \<le> gnd a)
+                    \<and> (\<forall>\<gamma> \<in> Klt a. norm \<gamma> \<in> prev)}"
+
+fun Bst :: "nat \<Rightarrow> ot set" where
+  "Bst 0 = Awf Mbot"
+| "Bst (Suc n) = Bst n \<union> Awf (Mlv n (Bst n))"
+
+abbreviation Accl :: "nat \<Rightarrow> ot set" where "Accl n \<equiv> Awf (Mlv n (Bst n))"
+
+text \<open>So \<^term>\<open>Bst n = Awf Mbot \<union> (\<Union>i<n. Accl i)\<close>: the accessible countable base plus
+  all strictly lower \<open>\<Omega>\<close>-levels.\<close>
+
+lemma Mlv_mono_prev: "prev \<subseteq> prev' \<Longrightarrow> Mlv n prev \<subseteq> Mlv n prev'"
+  by (auto simp: Mlv_def)
+
+lemma Bst_Suc: "Bst n \<subseteq> Bst (Suc n)"
+  by auto
+
+lemma Bst_mono: "m \<le> n \<Longrightarrow> Bst m \<subseteq> Bst n"
+proof (induction n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  show ?case
+  proof (cases "m = Suc n")
+    case True thus ?thesis by simp
+  next
+    case False
+    with Suc.prems have "m \<le> n" by simp
+    with Suc.IH have "Bst m \<subseteq> Bst n" .
+    thus ?thesis using Bst_Suc by blast
+  qed
+qed
+
+lemma Awf_Mbot_subset_Bst: "Awf Mbot \<subseteq> Bst n"
+  by (induction n) auto
+
+lemma Accl_subset_Bst_Suc: "Accl n \<subseteq> Bst (Suc n)"
+  by auto
+
+lemma Accl_subset_Bst: "m < n \<Longrightarrow> Accl m \<subseteq> Bst n"
+proof -
+  assume "m < n"
+  hence "Suc m \<le> n" by simp
+  have "Accl m \<subseteq> Bst (Suc m)" by auto
+  also have "Bst (Suc m) \<subseteq> Bst n" using \<open>Suc m \<le> n\<close> by (rule Bst_mono)
+  finally show ?thesis .
+qed
+
+text \<open>The countable base lands in \<^term>\<open>acc oltRwF\<close> for \<open>\<Omega>\<close>-free members (the only part
+  that connects to the target).  The \<open>\<Omega>\<close>-levels \<^term>\<open>Accl n\<close> contain \<^const>\<open>Om\<close> terms
+  and are scaffolding in the \<^emph>\<open>full\<close> order; they connect to the target only through
+  the collapse-closure lemmas (next phase), not directly.\<close>
+
+lemma Bst_props: "a \<in> Bst n \<Longrightarrow> wfo a \<and> nneg a"
+proof (induction n arbitrary: a)
+  case 0
+  hence "a \<in> Awf Mbot" by simp
+  hence "a \<in> Mbot" using Awf_subset by blast
+  thus ?case by (simp add: Mbot_def)
+next
+  case (Suc n)
+  from Suc.prems have "a \<in> Bst n \<or> a \<in> Accl n" by auto
+  thus ?case
+  proof
+    assume "a \<in> Bst n" thus ?thesis by (rule Suc.IH)
+  next
+    assume "a \<in> Accl n"
+    hence "a \<in> Mlv n (Bst n)" using Awf_subset by blast
+    thus ?thesis by (simp add: Mlv_def)
+  qed
+qed
+
+
 section \<open>Implementation plan for the multi-\<open>\<vartheta>\<^sub>n\<close> collapsing WF (next phase)\<close>
 
 text \<open>\<^bold>\<open>Established facts (this session, memo 続38\<dash>39), to avoid re-deriving:\<close>
