@@ -102,4 +102,102 @@ proof -
   thus ?thesis by (subst psi_unfold)
 qed
 
+subsection \<open>Closure properties of \<open>C\<^sub>v(\<alpha>)\<close> (Buchholz \<section>1, conditions C1\<dash>C3)\<close>
+
+abbreviation Citer :: "(V \<Rightarrow> nat \<Rightarrow> V) \<Rightarrow> V \<Rightarrow> nat \<Rightarrow> nat \<Rightarrow> V" where
+  "Citer p \<alpha> v n \<equiv> (Cstep p \<alpha> ^^ n) (Om v)"
+
+lemma small_Cstep_images:
+  "small ((\<lambda>(\<xi>,\<eta>). \<xi> + \<eta>) ` (elts X \<times> elts X))"
+  "small ((\<lambda>(\<xi>,u::nat). p \<xi> u) ` ((elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set)))"
+proof -
+  show "small ((\<lambda>(\<xi>,\<eta>). \<xi> + \<eta>) ` (elts X \<times> elts X))" by simp
+  have nat: "small (UNIV::nat set)" using small_image_nat[of "\<lambda>x. x" UNIV] by simp
+  have "small (elts X \<inter> elts \<alpha>)" using smaller_than_small[OF small_elts Int_lower1] .
+  from small_Times[OF this nat]
+  have sp: "small ((elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set))" .
+  show "small ((\<lambda>(\<xi>,u::nat). p \<xi> u) ` ((elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set)))"
+    using replacement[OF sp, where f = "\<lambda>(\<xi>, u::nat). p \<xi> u"] .
+qed
+
+lemma elts_Cstep:
+  "elts (Cstep p \<alpha> X) = elts X
+     \<union> (\<lambda>(\<xi>,\<eta>). \<xi> + \<eta>) ` (elts X \<times> elts X)
+     \<union> (\<lambda>(\<xi>,u). p \<xi> u) ` ((elts X \<inter> elts \<alpha>) \<times> UNIV)"
+  unfolding Cstep_def by (simp add: small_Cstep_images)
+
+lemma elts_Cset: "elts (Cset p \<alpha> v) = (\<Union>n. elts (Citer p \<alpha> v n))"
+  by (simp add: Cset_def)
+
+lemma Cstep_ge: "X \<le> Cstep p \<alpha> X"
+  by (metis (no_types, lifting) Cstep_def le_supI1 sup_ge1)
+
+lemma Citer_mono_le: "m \<le> n \<Longrightarrow> Citer p \<alpha> v m \<le> Citer p \<alpha> v n"
+proof (induction n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  show ?case
+  proof (cases "m = Suc n")
+    case True thus ?thesis by simp
+  next
+    case False
+    with Suc.prems have "m \<le> n" by simp
+    with Suc.IH have "Citer p \<alpha> v m \<le> Citer p \<alpha> v n" .
+    also have "Citer p \<alpha> v n \<le> Citer p \<alpha> v (Suc n)" using Cstep_ge by simp
+    finally show ?thesis .
+  qed
+qed
+
+lemma Citer_in_Cset: "elts (Citer p \<alpha> v n) \<subseteq> elts (Cset p \<alpha> v)"
+  by (auto simp: elts_Cset)
+
+text \<open>C1: \<open>\<Omega>\<^sub>v \<subseteq> C\<^sub>v(\<alpha>)\<close>.\<close>
+
+lemma Om_subset_Cset: "elts (Om v) \<subseteq> elts (Cset p \<alpha> v)"
+  using Citer_in_Cset[where n=0] by simp
+
+text \<open>Membership reduces to some finite iterate.\<close>
+
+lemma Cset_mem_iff: "x \<in> elts (Cset p \<alpha> v) \<longleftrightarrow> (\<exists>n. x \<in> elts (Citer p \<alpha> v n))"
+  by (auto simp: elts_Cset)
+
+lemma sum_in_Cstep: "\<xi> \<in> elts X \<Longrightarrow> \<eta> \<in> elts X \<Longrightarrow> \<xi> + \<eta> \<in> elts (Cstep p \<alpha> X)"
+  by (auto simp: elts_Cstep)
+
+lemma psiarg_in_Cstep: "\<xi> \<in> elts X \<Longrightarrow> \<xi> \<in> elts \<alpha> \<Longrightarrow> p \<xi> u \<in> elts (Cstep p \<alpha> X)"
+  by (force simp: elts_Cstep)
+
+lemma Citer_subset_mono: "m \<le> n \<Longrightarrow> elts (Citer p \<alpha> v m) \<subseteq> elts (Citer p \<alpha> v n)"
+  by (metis Citer_mono_le less_eq_V_def)
+
+text \<open>C2: closed under \<open>+\<close>.\<close>
+
+lemma Cset_add_closed:
+  assumes "\<xi> \<in> elts (Cset p \<alpha> v)" "\<eta> \<in> elts (Cset p \<alpha> v)"
+  shows "\<xi> + \<eta> \<in> elts (Cset p \<alpha> v)"
+proof -
+  from assms obtain m n where m: "\<xi> \<in> elts (Citer p \<alpha> v m)" and n: "\<eta> \<in> elts (Citer p \<alpha> v n)"
+    by (auto simp: Cset_mem_iff)
+  have "\<xi> \<in> elts (Citer p \<alpha> v (max m n))"
+    using m Citer_subset_mono[OF max.cobounded1] by blast
+  moreover have "\<eta> \<in> elts (Citer p \<alpha> v (max m n))"
+    using n Citer_subset_mono[OF max.cobounded2] by blast
+  ultimately have "\<xi> + \<eta> \<in> elts (Cstep p \<alpha> (Citer p \<alpha> v (max m n)))" by (rule sum_in_Cstep)
+  also have "Cstep p \<alpha> (Citer p \<alpha> v (max m n)) = Citer p \<alpha> v (Suc (max m n))" by simp
+  finally show ?thesis using Citer_in_Cset by blast
+qed
+
+text \<open>C3: closed under \<open>\<xi> \<mapsto> p \<xi> u\<close> for \<open>\<xi> < \<alpha>\<close>.\<close>
+
+lemma Cset_psi_closed:
+  assumes "\<xi> \<in> elts (Cset p \<alpha> v)" "\<xi> \<in> elts \<alpha>"
+  shows "p \<xi> u \<in> elts (Cset p \<alpha> v)"
+proof -
+  from assms(1) obtain n where n: "\<xi> \<in> elts (Citer p \<alpha> v n)" by (auto simp: Cset_mem_iff)
+  from psiarg_in_Cstep[OF n assms(2)] have "p \<xi> u \<in> elts (Cstep p \<alpha> (Citer p \<alpha> v n))" .
+  also have "Cstep p \<alpha> (Citer p \<alpha> v n) = Citer p \<alpha> v (Suc n)" by simp
+  finally show ?thesis using Citer_in_Cset by blast
+qed
+
 end
