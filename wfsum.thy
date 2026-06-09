@@ -179,17 +179,211 @@ proof -
   thus ?thesis using d1 d2 by simp
 qed
 
+subsection \<open>The general sum peel: \<open><o\<close> on \<^emph>\<open>any\<close> CNF sums embeds into the multiset
+  extension of the order on the summand singletons (no zero-tops needed)\<close>
+
+fun summands :: "three \<Rightarrow> three list" where
+  "summands Z = []"
+| "summands (P a b c) = P a b Z # summands c"
+
+lemma summands_shape: "s \<in> set (summands x) \<Longrightarrow> \<exists>a c. s = P a c Z"
+  by (induction x) auto
+
+lemma summands_le_hd:
+  "cnf x \<Longrightarrow> x = P a b c \<Longrightarrow> k \<in> set (summands c) \<Longrightarrow> k \<le>o P a b Z"
+proof (induction c arbitrary: a b x)
+  case Z thus ?case by simp
+next
+  case (P e f g)
+  have nlt: "\<not> (P a b Z <o P e f Z)" using P.prems(1) P.prems(2) by auto
+  have efab: "P e f Z \<le>o P a b Z" using olt_total[of "P a b Z" "P e f Z"] nlt by blast
+  have cnfc: "cnf (P e f g)" using P.prems(1) P.prems(2) by auto
+  from P.prems(3) consider "k = P e f Z" | "k \<in> set (summands g)" by auto
+  thus ?case
+  proof cases
+    case 1 thus ?thesis using efab by simp
+  next
+    case 2
+    have "k \<le>o P e f Z" by (rule P.IH(2)[OF cnfc refl 2])
+    thus ?thesis using efab ole_olt_trans olt_trans by blast
+  qed
+qed
+
+lemma summands_noninc:
+  "cnf x \<Longrightarrow> sorted_wrt (\<lambda>s t. t \<le>o s) (summands x)"
+proof (induction x)
+  case Z thus ?case by simp
+next
+  case (P a b c)
+  have cnfc: "cnf c" using P.prems by (cases c) auto
+  have hd_le: "\<forall>k \<in> set (summands c). k \<le>o P a b Z"
+    using summands_le_hd[OF P.prems refl] by blast
+  show ?case using P.IH(2)[OF cnfc] hd_le by simp
+qed
+
+lemma olt_summands_decomp:
+  assumes "x <o y"
+  shows "\<exists>pre bs fs. summands x = pre @ bs \<and> summands y = pre @ fs \<and>
+           ((bs = [] \<and> fs \<noteq> []) \<or> (bs \<noteq> [] \<and> fs \<noteq> [] \<and> hd bs <o hd fs))"
+  using assms
+proof (induction x arbitrary: y)
+  case Z
+  then obtain e f g where y: "y = P e f g" using olt_Z_iff by (cases y) auto
+  have "summands Z = [] @ [] \<and> summands y = [] @ summands y \<and>
+          (([] = [] \<and> summands y \<noteq> []) \<or>
+           ([] \<noteq> [] \<and> summands y \<noteq> [] \<and> hd [] <o hd (summands y)))"
+    using y by simp
+  thus ?case by blast
+next
+  case (P a b c)
+  have "y \<noteq> Z" using P.prems not_olt_Z by blast
+  then obtain e f g where y: "y = P e f g" by (cases y) auto
+  from P.prems have cases3: "a < e \<or> (a = e \<and> b <o f) \<or> (a = e \<and> b = f \<and> c <o g)"
+    unfolding y by simp
+  show ?case
+  proof (cases "a = e \<and> b = f")
+    case False
+    have hdlt: "P a b Z <o P e f Z" using cases3 False by auto
+    have "summands (P a b c) = [] @ (P a b Z # summands c) \<and>
+          summands y = [] @ (P e f Z # summands g) \<and>
+            ((P a b Z # summands c = [] \<and> P e f Z # summands g \<noteq> []) \<or>
+             (P a b Z # summands c \<noteq> [] \<and> P e f Z # summands g \<noteq> [] \<and>
+              hd (P a b Z # summands c) <o hd (P e f Z # summands g)))"
+      using y hdlt by simp
+    thus ?thesis by blast
+  next
+    case True
+    have cg: "c <o g" using cases3 True olt_irrefl by auto
+    obtain pre bs fs where IH: "summands c = pre @ bs" "summands g = pre @ fs"
+        "((bs = [] \<and> fs \<noteq> []) \<or> (bs \<noteq> [] \<and> fs \<noteq> [] \<and> hd bs <o hd fs))"
+      using P.IH(2)[OF cg] by blast
+    have "summands (P a b c) = (P a b Z # pre) @ bs \<and> summands y = (P a b Z # pre) @ fs \<and>
+            ((bs = [] \<and> fs \<noteq> []) \<or> (bs \<noteq> [] \<and> fs \<noteq> [] \<and> hd bs <o hd fs))"
+      using y IH True by simp
+    thus ?thesis by blast
+  qed
+qed
+
+lemma olt_summands_mult:
+  assumes cx: "cnf x" and lt: "x <o y"
+    and bx: "set (summands x) \<subseteq> A" and byy: "set (summands y) \<subseteq> A"
+  shows "(mset (summands x), mset (summands y)) \<in> mult {(s,t). s <o t \<and> s \<in> A \<and> t \<in> A}"
+proof -
+  let ?r = "{(s,t). s <o t \<and> s \<in> A \<and> t \<in> A}"
+  obtain pre bs fs where d1: "summands x = pre @ bs" and d2: "summands y = pre @ fs"
+    and d3: "(bs = [] \<and> fs \<noteq> []) \<or> (bs \<noteq> [] \<and> fs \<noteq> [] \<and> hd bs <o hd fs)"
+    using olt_summands_decomp[OF lt] by blast
+  have fs_ne: "fs \<noteq> []" using d3 by blast
+  have Jne: "mset fs \<noteq> {#}" using fs_ne by simp
+  have dom: "\<forall>k \<in> set_mset (mset bs). \<exists>j \<in> set_mset (mset fs). (k, j) \<in> ?r"
+  proof
+    fix k assume "k \<in> set_mset (mset bs)"
+    hence kbs: "k \<in> set bs" by simp
+    have bs_ne: "bs \<noteq> []" using kbs by auto
+    have hdlt: "hd bs <o hd fs" using d3 bs_ne by blast
+    have sw: "sorted_wrt (\<lambda>s t. t \<le>o s) (summands x)" using summands_noninc[OF cx] .
+    have khd: "k \<le>o hd bs"
+      by (rule sorted_suffix_le_hd[OF sw[unfolded d1] kbs bs_ne])
+    have klt: "k <o hd fs" using khd hdlt ole_olt_trans by blast
+    have kA: "k \<in> A" using kbs d1 bx by auto
+    have hA: "hd fs \<in> A" using fs_ne d2 byy by auto
+    have "hd fs \<in> set_mset (mset fs)" using fs_ne by simp
+    thus "\<exists>j \<in> set_mset (mset fs). (k, j) \<in> ?r" using klt kA hA by auto
+  qed
+  have "(mset pre + mset bs, mset pre + mset fs) \<in> mult ?r"
+    by (rule one_step_implies_mult[OF Jne dom])
+  thus ?thesis using d1 d2 by simp
+qed
+
+subsection \<open>The level-\<open>m\<close> argument classes and the descent of the residual core\<close>
+
 definition ArgsL :: "nat \<Rightarrow> three set" where
   "ArgsL m = (\<Union>x \<in> {t \<in> NF. maxsub t = m}. set (sargs x))"
 
 lemma sargs_subset_ArgsL: "x \<in> NF \<Longrightarrow> maxsub x = m \<Longrightarrow> set (sargs x) \<subseteq> ArgsL m"
   unfolding ArgsL_def by auto
 
-text \<open>\<^bold>\<open>The residual core\<close>, one level in: WF of \<open><o\<close> on the level-\<open>m\<close> arguments.\<close>
+text \<open>\<open>cnf\<close> is hereditary along the sum arguments.\<close>
+
+lemma cnf_sargs: "cnf x \<Longrightarrow> b \<in> set (sargs x) \<Longrightarrow> cnf b"
+proof (induction x)
+  case Z thus ?case by simp
+next
+  case (P a b' c)
+  have cb: "cnf b'" using P.prems(1) by (cases c) auto
+  have cc: "cnf c" using P.prems(1) by (cases c) auto
+  from P.prems(2) consider "b = b'" | "b \<in> set (sargs c)" by auto
+  thus ?case
+  proof cases
+    case 1 thus ?thesis using cb by simp
+  next
+    case 2 thus ?thesis using cc P.IH(2) by blast
+  qed
+qed
+
+lemma cnf_ArgsL: "b \<in> ArgsL m \<Longrightarrow> cnf b"
+  unfolding ArgsL_def using cnf_NF cnf_sargs by auto
+
+text \<open>Summand singletons of the level-\<open>m\<close> arguments, and their arguments.\<close>
+
+definition SingA :: "nat \<Rightarrow> three set" where
+  "SingA m = (\<Union>b \<in> ArgsL m. set (summands b))"
+
+definition ArgsA :: "nat \<Rightarrow> three set" where
+  "ArgsA m = {c. \<exists>a. P a c Z \<in> SingA m}"
+
+lemma summands_subset_SingA: "b \<in> ArgsL m \<Longrightarrow> set (summands b) \<subseteq> SingA m"
+  unfolding SingA_def by auto
+
+fun singdest :: "three \<Rightarrow> nat \<times> three" where
+  "singdest Z = (0, Z)"
+| "singdest (P a c d) = (a, c)"
+
+text \<open>\<^bold>\<open>The residual core\<close>, two levels in: WF of \<open><o\<close> on the arguments (of any
+  subscript) occurring inside the level-\<open>m\<close> sum arguments.  (Sum and subscript
+  layers are peeled; the Buchholz collapse lives in this class.)\<close>
+
+lemma wf_ArgsA:
+  "wf {(c,f). c <o f \<and> c \<in> ArgsA m \<and> f \<in> ArgsA m}"
+  sorry
+
+lemma wf_SingA:
+  "wf {(s,t). s <o t \<and> s \<in> SingA m \<and> t \<in> SingA m}"
+proof (rule wf_subset[OF wf_inv_image[OF wf_lex_prod[OF wf_less_than wf_ArgsA[of m]], of singdest]])
+  show "{(s,t). s <o t \<and> s \<in> SingA m \<and> t \<in> SingA m}
+          \<subseteq> inv_image (less_than <*lex*> {(c,f). c <o f \<and> c \<in> ArgsA m \<and> f \<in> ArgsA m}) singdest"
+  proof (rule subrelI)
+    fix s t assume st: "(s,t) \<in> {(s,t). s <o t \<and> s \<in> SingA m \<and> t \<in> SingA m}"
+    then have lt: "s <o t" and sS: "s \<in> SingA m" and tS: "t \<in> SingA m" by auto
+    obtain a c where s: "s = P a c Z"
+      using sS summands_shape unfolding SingA_def by blast
+    obtain e f where t: "t = P e f Z"
+      using tS summands_shape unfolding SingA_def by blast
+    have cA: "c \<in> ArgsA m" using sS s unfolding ArgsA_def by auto
+    have fA: "f \<in> ArgsA m" using tS t unfolding ArgsA_def by auto
+    have "a < e \<or> (a = e \<and> c <o f)" using lt unfolding s t by auto
+    thus "(s,t) \<in> inv_image (less_than <*lex*> {(c,f). c <o f \<and> c \<in> ArgsA m \<and> f \<in> ArgsA m}) singdest"
+      using s t cA fA by (auto simp: inv_image_def)
+  qed
+qed
 
 lemma wf_ArgsL:
   "wf {(b,f). b <o f \<and> b \<in> ArgsL m \<and> f \<in> ArgsL m}"
-  sorry
+proof (rule wf_subset[OF wf_inv_image[OF wf_mult[OF wf_SingA[of m]], of "\<lambda>b. mset (summands b)"]])
+  show "{(b,f). b <o f \<and> b \<in> ArgsL m \<and> f \<in> ArgsL m}
+          \<subseteq> inv_image (mult {(s,t). s <o t \<and> s \<in> SingA m \<and> t \<in> SingA m}) (\<lambda>b. mset (summands b))"
+  proof (rule subrelI)
+    fix b f assume "(b,f) \<in> {(b,f). b <o f \<and> b \<in> ArgsL m \<and> f \<in> ArgsL m}"
+    then have lt: "b <o f" and bA: "b \<in> ArgsL m" and fA: "f \<in> ArgsL m" by auto
+    have "(mset (summands b), mset (summands f))
+            \<in> mult {(s,t). s <o t \<and> s \<in> SingA m \<and> t \<in> SingA m}"
+      by (rule olt_summands_mult[OF cnf_ArgsL[OF bA] lt
+            summands_subset_SingA[OF bA] summands_subset_SingA[OF fA]])
+    thus "(b,f) \<in> inv_image (mult {(s,t). s <o t \<and> s \<in> SingA m \<and> t \<in> SingA m})
+                    (\<lambda>b. mset (summands b))"
+      by (simp add: inv_image_def)
+  qed
+qed
 
 lemma wf_level_from_args:
   "wf {(w,x). w <o x \<and> x \<in> NF \<and> w \<in> NF \<and> maxsub w = m \<and> maxsub x = m}"
