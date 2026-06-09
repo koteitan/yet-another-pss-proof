@@ -1373,3 +1373,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **§3 多相系が必要(確定)**: de Bruijn Ω^{(J)} の相対化で buried subscript が有界化され、Towsner 3.7-3.12 の全 n 同時 distinguished-set 構成で循環が解ける。
   絶対§2 には公刊 WF 証明が無く、上記循環で自前証明も不能。
 - **ユーザー相談事項(方針分岐)**: (b)§3 多相系へ datatype 切替(大改修, Towsner 証明が閉じる正道) / (b')§2→§3 順序埋め込み(§2 資産再利用＋§3＋embed 追加) / (c)別構成 / (d)WF を文書化前提として他全証明で完了。
+
+### 進捗 (2026-06-09 続43): 【方針確定 route(A) 意味論】PDF 精読で順序が lex と判明・AFP 導入へ
+- **PDF 精読(conventionals.md に要約, PDF 再読不要)**: Buchholz 1986 を実読し**根本的誤りを発見**:
+  - Buchholz の順序 (<2) は `D_u a<D_v b ⟺ u<v∨(u=v∧a<b)` ＝**純粋辞書式, K-domination 無し**。
+  - ∴ `wo.thy` の `ot`(K-dom) は **Buchholz と非互換の私の誤変種**。`mechanized.thy` の `three`(lex, 線形性 green) が正しい Buchholz §2 系。
+  - WF 対象は OT(標準形, OT3=`G_v b<b`)。`proofs.thy`(three/lex/NF→対角 accessibility)が正しい配線。
+  - **3 sorry の整理**: olt_trans は mechanized で既 green; op_NF は three→ot 埋込が不要で消滅; 残るは**対角 accessibility(=OT の lex 整礎性)1点**。
+- **WF 証明 = Buchholz 意味論 (route A, ユーザー確定)**: o:OT→順序数(ψ_v) の順序同型(Lemma 2.2(c) `a<c⟹o(a)<o(c)`, 2.3)で WF。
+  ＝ §3 多相系への datatype 移行は不要、絶対系 `three` のまま。
+- **要 AFP/ZFC_in_HOL**: ψ_v は Ω_v=ℵ_v(非可算基数)を使うため順序数ライブラリ必須。AFP 未インストール→ネット可→**AFP 導入中**(ユーザー承認 "1")。
+- **次作業**: AFP 導入→ZFC_in_HOL ビルド→`psi.thy` で §1(C_v/ψ_v/補題1.2,1.3,1.5)＋§2(OT,o,Lemma2.2(c))転写→`three` の lex 整礎性→proofs.thy 対角 accessibility 接続。
+- **規模注意**: §1-2 の意味論転写は ℵ_v の正則性・基数算術(|C_v(α)|<Ω_{v+1})を含み大(多セッション)。ZFC_in_HOL の cardinal/regularity API を要確認。
+- **誤迂回の扱い**: wo.thy/buchholz.thy/embed.thy(K-dom ot) は route A では不要→破棄候補(当面は残置、A 完成後に削除)。
