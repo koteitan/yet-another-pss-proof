@@ -727,4 +727,25 @@ proof -
   finally show ?thesis .
 qed
 
+subsection \<open>Additive-principal abstraction\<close>
+
+text \<open>An ordinal \<open>\<delta>\<close> is additive principal when it is positive and a sum of two
+  ordinals below it stays below it.  Each \<open>\<psi>\<^sub>v(\<alpha>)\<close> is additive principal
+  (\<open>0 < \<Omega>\<^sub>v \<le> \<psi>\<^sub>v(\<alpha>)\<close> and Lemma 1.2(b)).\<close>
+
+definition addprinc :: "V \<Rightarrow> bool" where
+  "addprinc \<delta> \<longleftrightarrow> 0 < \<delta> \<and> (\<forall>\<beta> \<gamma>. Ord \<beta> \<longrightarrow> Ord \<gamma> \<longrightarrow> \<beta> < \<delta> \<longrightarrow> \<gamma> < \<delta> \<longrightarrow> \<beta> + \<gamma> < \<delta>)"
+
+lemma psi_addprinc: "addprinc (psi \<alpha> v)"
+  unfolding addprinc_def
+proof
+  have "0 < (1::V)" by simp
+  also have "(1::V) \<le> Om v" by (rule one_le_Om)
+  also have "Om v \<le> psi \<alpha> v" by (rule Om_le_psi)
+  finally show "0 < psi \<alpha> v" .
+next
+  show "\<forall>\<beta> \<gamma>. Ord \<beta> \<longrightarrow> Ord \<gamma> \<longrightarrow> \<beta> < psi \<alpha> v \<longrightarrow> \<gamma> < psi \<alpha> v \<longrightarrow> \<beta> + \<gamma> < psi \<alpha> v"
+    using psi_add_principal by blast
+qed
+
 end
