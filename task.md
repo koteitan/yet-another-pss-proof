@@ -65,6 +65,7 @@
       - 🚨 **`L_ThF`（再構成済: 外側レベル k 強帰納＋内側 acc 帰納。残核は `e∈acc` 1点）**: `omfree d⟹wfo d⟹nneg d⟹0≤n⟹d∈acc⟹Th n d∈acc`。dom_acc/p=n(accIH)/Su(bag) 全済、p<n は levelIH で `e∈acc` に帰着。
         **🚨残核 `eacc:e∈acc` は研究級(続21-22 確定)**: predecessor `Th p e`(p<n) の e はサイズ・レベル**非有界**(例 `Th 0(Th 5 Z)<o Th 1 d`)＝構造/size/level のいかなる初等帰納でも有界化不可。masterF↔L_ThF↔Coll が相互 entangle。Towsner も「Acc_n 全体は Π¹₁-CA₀ 不可」と明記。
         ∴ **Towsner Acc_n=既存 Mn/AccB の超限ラダー(3.8-3.12)＋接続**が必須。我々順序 ≠ Towsner順序(明示 subscript 比較 vs 引数内Ω)で逐語転写不可＝戦略のみ流用の独自実行。olt_trans 不使用維持 ★最難
+        **続35-進展(green)**: pacc を size 強帰納に再構成し **`Kn p e ⊆ acc`(控除性)を証明済**。sorry は `ctrl_acc`(Kn p e⊆acc⟹e∈acc, Towsner Acc_n 核)に綺麗に分離。残: ctrl_acc の q>p ケース(e=Th q h, q 非有界)が global Mn/AccB を要す(level-k 帰納は不足)。
       - ✅ `wf_oltRwF`（masterF から）〔buchholz〕
     - 🚨 **埋め込み `three → ot` の順序保存**〔embed.thy〕
       - ✅ embed/eprincs/collapse＋像の well-formed〔wfo_embed〕＋**Om-free〔omfree_embed〕**（int 化済: `Th (int a) ...`）
