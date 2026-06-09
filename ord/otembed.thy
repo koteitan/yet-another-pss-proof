@@ -119,10 +119,78 @@ text \<open>\<^bold>\<open>Residual obligation\<close> (the genuine Buchholz-lev
   monotonicity 1.3 \<open>psi_strict_mono_arg\<close>) together with the standard-form
   (Buchholz OT) well-formedness of \<open>translate ` ST_PS\<close>.\<close>
 
+lemma oV_pos: "0 < oV (P a b c)"
+proof -
+  have "0 < psi (oV b) a" using psi_addprinc[of "oV b" a] by (simp add: addprinc_def)
+  also have "psi (oV b) a \<le> oV (P a b c)" by (rule psi_le_oV)
+  finally show ?thesis .
+qed
+
+text \<open>\<^bold>\<open>Buchholz Lemma 2.2(c)\<close> on well-formed (OT) terms: \<open>o\<close> is strictly monotone.
+  Subscript and tail cases are direct; the argument case uses strict monotonicity
+  1.3 via the C-membership \<open>o b \<in> C\<^sub>a(o b)\<close> (Buchholz OT3, lemma \<open>Ccond\<close>).\<close>
+
+lemma Ccond:
+  assumes "wf3 (P a b c)"
+  shows "oV b \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b). psi \<xi>) (oV b) a)"
+  sorry
+
+lemma oV_order_pres:
+  "wf3 v \<Longrightarrow> wf3 u \<Longrightarrow> olt v u \<Longrightarrow> oV v < oV u"
+proof (induction "size u + size v" arbitrary: u v rule: less_induct)
+  case less
+  show ?case
+  proof (cases v)
+    case Z
+    have "u \<noteq> Z" using less.prems(3) Z by (cases u) auto
+    then obtain e f g where u: "u = P e f g" by (cases u) auto
+    show ?thesis using Z u oV_pos by simp
+  next
+    case (P a b c)
+    have "u \<noteq> Z" using less.prems(3) P by (cases u) auto
+    then obtain e f g where u: "u = P e f g" by (cases u) auto
+    have wfv: "wf3 (P a b c)" using less.prems(1) P by simp
+    have wfu: "wf3 (P e f g)" using less.prems(2) u by simp
+    have olt: "olt (P a b c) (P e f g)" using less.prems(3) P u by simp
+    consider (sub) "a < e" | (arg) "a = e" "olt b f" | (tail) "a = e" "b = f" "olt c g"
+      using olt by auto
+    then show ?thesis
+    proof cases
+      case sub
+      have sple: "spinesub_le a (P a b c)" using wf3_spinesub_le[OF wfv] by simp
+      have "allprinc_lt (psi (oV f) e) (P a b c)"
+        by (rule allprinc_lt_jump[OF sple sub])
+      hence "oV (P a b c) < psi (oV f) e"
+        by (rule oV_lt_of_allprinc[OF psi_addprinc])
+      also have "psi (oV f) e \<le> oV (P e f g)" by (rule psi_le_oV)
+      finally show ?thesis using P u by simp
+    next
+      case arg
+      show ?thesis sorry
+    next
+      case tail
+      have wfc: "wf3 c" using wfv by simp
+      have wfg: "wf3 g" using wfu by simp
+      have "oV c < oV g"
+      proof (rule less.hyps)
+        show "size g + size c < size u + size v" using P u by simp
+        show "wf3 c" by (rule wfc)
+        show "wf3 g" by (rule wfg)
+        show "olt c g" using tail by simp
+      qed
+      hence "psi (oV b) a + oV c < psi (oV b) a + oV g" by simp
+      thus ?thesis using P u tail by simp
+    qed
+  qed
+qed
+
+lemma NF_wf3: "t \<in> NF \<Longrightarrow> wf3 t"
+  sorry
+
 lemma oV_order_pres_NF:
   assumes "u \<in> NF" "v \<in> NF" "olt v u"
   shows "oV v < oV u"
-  sorry
+  using oV_order_pres[OF NF_wf3[OF assms(2)] NF_wf3[OF assms(1)] assms(3)] .
 
 subsection \<open>Well-foundedness of \<open>olt\<close> on \<open>NF\<close>, and PSS termination\<close>
 
