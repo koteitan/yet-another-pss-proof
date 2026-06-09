@@ -1451,3 +1451,20 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - 次手: (1) wf_ArgsA の m=0 を prss 流に証明（実装可能・base 確立）。
   (2) m 帰納の statement 再編（wf_ArgsA を「∀i<m wf 仮定」付き compound induction へ）。
   (3) critical-subterm 条件の設計（P進の Adm/Mark に相当する切り口の可能性も検討）。
+
+### ★(2026-06-10 続3) 崩壊核クラスの不変条件 狩り（dual-OT3 発見と x_k 反例）
+- **dual-OT3 (ok3) 発見**: 「主要部分項 p_a(c) で lead(c) ≤ a ⟹ c <o P a c Z」
+  （引数が項を超えるのは真正 climb＝lead=a+1 のときだけ）。
+  genuine 全 3132 箇所（ST 695 項）で違反 0。t_k=D_0^k(D_1 0) 連鎖を正確に排除
+  （F(t)=P 0 t Z の反復は2段目で ok3 違反）。Buchholz OT3 (G_v b<b) の ascending 双対。
+- **しかし ok3 でも不足**: 交互チェーン x_k = p0(p1(x_{k-1}))（核 X=p1(0)、spine [0,1,0,1,…,1]）は
+  inv2 ✓ cnf ✓ ok3 ✓ consec ✓ で無限 <o 降下。reduced(M_k) も True（P進 Red では排除されない）。
+  防壁は ST_PS 非所属のみ: 深 BFS（268029 форм, len≤18, seed≤5, n≤6）で
+  (0,0)(1,1)(2,0)(3,1) は standard、(0,0)(1,1)(2,0)(3,1)**(4,0)** も standard だが
+  (0,0)(1,1)(2,0)(3,1)**(4,1)** = x_1 は**非 standard**。
+- ⟹ 第4の不変条件は **行1の許容性（P進の Adm/parent1 規律）** に対応する項側条件。
+  (2,1) が (1,1) の子は OK（x_0=(0,0)(1,1)(2,1) standard）だが、(2,0) を挟んで再上昇した
+  (3,1) の上にさらに (4,1) は禁止される——「climb の後の同レベル再 climb」の制御。
+- 次段: (a) 標準/非標準の近接ペアを大量に diff して Adm 由来の項側条件 (adm3) を同定、
+  (b) ladder クラス = inv2+cnf+ok3+adm3 で within-level 帰納を再設計、
+  (c) NF ⟹ 各不変条件の Isabelle 証明（nfinv_ST_PS/cnf_ST_PS の流儀）。
