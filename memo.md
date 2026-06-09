@@ -1264,3 +1264,21 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **方針(継続作業)**: **L_ThF(Towsner Acc_n ラダー 3.8-3.12)に集中**。既存 Mn/AccB=Towsner Acc_n。olt_trans/op_NF(A2 et 化)は後回し。
   predecessors 非有界(続21-22)＝超限 distinguished-set 必須。Lemma 3.8(sum 閉包)→3.9→3.10→3.11→3.12 を ot 上で。
 - **運用**: timeout 廃止(valid build を殺す/他agent影響)。**build は background＋Monitor アラーム**で監視、runaway は isbman で手動 kill。
+
+### 進捗 (2026-06-09 続36): L_ThF の sorry を impredicative 核1点に縮小(green 多数)
+- **pacc を size 強帰納に再構成(green)**: `Kn p e ⊆ acc`(控除性)を pIH(predecessor の size 帰納)で証明済。
+  measure_induct_rule が premises を IH に thread することを確認。
+- **ctrl_acc を構造帰納で部分証明(green)**: `Kn p e⊆acc ⟹ e∈acc` を e の構造帰納で:
+  - e=Su: summand に IH＋bag 閉包。green。
+  - e=Th r h, r≤p: `Kn p(Th r h)={Th r h}`⊆acc → 直接。green。
+  - e=Th r h, p<r<n: `Kn p h⊆acc`→IH で h∈acc→**levelIH(r<k)** で Th r h∈acc。green。
+  - e=Th r h, **r≥n**: ← **唯一の残 sorry**。
+- **残差(正確)**: `r ≥ n, h∈acc, omfree/wfo/nneg h, p<r, Kn p h⊆acc ⟹ Th r h∈acc`。
+  ＝**L_ThF(r,h) を r≥n(=現在証明中の level k 以上)で**。h は d と順序無関係(buried 部分項)・r 無界。
+  ∴ per-term 帰納(level-k/acc-on-d/size)では measure 不在で不可能＝**global Towsner Mn/AccB 構成が必須**(続21-22 と整合)。
+- **重要**: 残差は「L_ThF を全 level 同時に(global に)確立する」必要を示す。現 key 帰納(less_induct on k)は level<k に限定され不足。
+  Towsner Acc_n(=既存 Mn/AccB)は超限的に全 level の accessible を一括構成＝この residual を吸収する唯一の枠。
+- **次フェーズ(深い研究核, ~300行, 複数セッション)**: Mn/AccB の ladder(Towsner 3.8 sum/3.9 ω/3.10 同レベル ϑ/3.11 level-drop/3.12 master)。
+  接続(AccB⊆acc oltRwF)は Towsner 3.10 の「ϑα の predecessor は全て acc」=現 pacc/ctrl_acc 構造で部分的に実現済。
+  我々順序は K-dom＋明示レベルで Towsner 順序と差異あり＝戦略流用の独自実行。
+- **状態**: baseline 緑, 3 sorry(L_ThF=残差1点に縮小・大半 green / olt_trans / op_NF)。scratch: order(green,lex linearity), trans(green,bridge+size), cnf(foundation), order2(廃).
