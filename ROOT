@@ -23,3 +23,14 @@ session YAPSS = HOL +
     proofs
     wf
     wfsum
+
+session PSI in ord = ZFC_in_HOL +
+  description "Buchholz Lemma 2.2 proved semantically: psi_v on ZFC-in-HOL ordinals
+    + the value map oV embeds (wf3, olt) = Buchholz (OT, <) into the ordinals,
+    hence wf_olt_wf3.  (Bridge NF -> wf3 pending.)"
+  options [document = false, quick_and_dirty]
+  sessions
+    YAPSS
+  theories
+    psi
+    otembed

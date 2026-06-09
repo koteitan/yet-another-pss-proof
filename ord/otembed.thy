@@ -1,5 +1,5 @@
 theory otembed
-  imports psi "YAPSS.proofs"
+  imports psi "YAPSS.mechanized"
 begin
 
 text \<open>\<^bold>\<open>The order embedding \<open>o : three \<Rightarrow> V\<close>\<close> (Buchholz \<section>2) and the resulting
@@ -198,10 +198,103 @@ text \<open>\<^bold>\<open>Buchholz Lemma 2.2(c)\<close> on well-formed (OT) ter
   Subscript and tail cases are direct; the argument case uses strict monotonicity
   1.3 via the C-membership \<open>o b \<in> C\<^sub>a(o b)\<close> (Buchholz OT3, lemma \<open>Ccond\<close>).\<close>
 
-lemma Ccond:
-  assumes "wf3 (P a b c)"
+text \<open>\<^bold>\<open>Building values inside \<open>C\<close>\<close>: if every \<open>G\<^sub>v\<close>-critical subterm of \<open>t\<close> has value
+  \<open>< \<alpha>\<close>, then \<open>o(t) \<in> C\<^sub>v(\<alpha>)\<close>.  (Subscripts \<open>< v\<close> contribute \<open>\<psi>\<^sub>a(\<cdot>) < \<Omega>\<^bsub>a+1\<^esub> \<le> \<Omega>\<^sub>v \<subseteq> C\<close>;
+  subscripts \<open>\<ge> v\<close> are \<open>G\<close>-collected, so their arguments are below \<open>\<alpha>\<close> and the
+  \<open>\<psi>\<close>-closure of \<open>C\<close> applies; sums by \<open>+\<close>-closure.)  No well-formedness needed.\<close>
+
+lemma C_build:
+  assumes "\<And>x. x \<in> Gterm v t \<Longrightarrow> oV x \<in> elts \<alpha>"
+  shows "oV t \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  using assms
+proof (induction t)
+  case Z
+  have z0: "(0::V) \<in> elts (Om v)"
+  proof -
+    have "(0::V) \<in> elts 1" by simp
+    moreover have "elts 1 \<subseteq> elts (Om v)" using one_le_Om less_eq_V_def by blast
+    ultimately show ?thesis by blast
+  qed
+  have "oV Z = 0" by simp
+  thus ?case using z0 Om_subset_Cset by fastforce
+next
+  case (P a b c)
+  have IHc: "oV c \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    using P.IH(2) P.prems by (simp add: restrict_def)
+  have head: "psi (oV b) a \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  proof (cases "v \<le> a")
+    case True
+    have bG: "b \<in> Gterm v (P a b c)" using True by simp
+    have bmem: "oV b \<in> elts \<alpha>" using P.prems[OF bG] .
+    have IHb: "oV b \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+      using P.IH(1) P.prems True by (simp add: restrict_def)
+    have "(\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) (oV b) a \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+      by (rule Cset_psi_closed[OF IHb bmem])
+    thus ?thesis using bmem by (simp add: restrict_def)
+  next
+    case False
+    have av: "a < v" using False by simp
+    have "psi (oV b) a < Om (Suc a)" by (rule psi_lt_Om_Suc)
+    also have "Om (Suc a) \<le> Om v" using av by (simp add: Om_mono Suc_leI)
+    finally have "psi (oV b) a < Om v" .
+    hence "psi (oV b) a \<in> elts (Om v)"
+      using Ord_mem_iff_lt[OF Ord_psi Ord_Om] by blast
+    thus ?thesis using Om_subset_Cset by blast
+  qed
+  have "psi (oV b) a + oV c \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    by (rule Cset_add_closed[OF head IHc])
+  thus ?case by (simp add: restrict_def)
+qed
+
+text \<open>The C-membership needed by 1.3, from order-preservation below the argument:
+  if every critical subterm's value is \<open>< o(b)\<close>, then \<open>o(b) \<in> C\<^sub>a(o(b))\<close>.\<close>
+
+lemma Ccond_of_lt:
+  assumes "\<And>x. x \<in> Gterm a b \<Longrightarrow> oV x < oV b"
   shows "oV b \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b). psi \<xi>) (oV b) a)"
-  sorry
+proof (rule C_build)
+  fix x assume "x \<in> Gterm a b"
+  hence "oV x < oV b" by (rule assms)
+  thus "oV x \<in> elts (oV b)" using Ord_mem_iff_lt[OF Ord_oV Ord_oV] by blast
+qed
+
+text \<open>\<open>G\<close>-critical subterms are well-formed and structurally smaller
+  (Buchholz's Proposition \<open>a \<in> OT \<Rightarrow> G\<^sub>ua \<subseteq> OT\<close>).\<close>
+
+lemma wf3_Gterm: "wf3 t \<Longrightarrow> x \<in> Gterm v t \<Longrightarrow> wf3 x"
+proof (induction t)
+  case Z thus ?case by simp
+next
+  case (P a b c)
+  have wfb: "wf3 b" and wfc: "wf3 c" using P.prems(1) by auto
+  from P.prems(2) consider "v \<le> a \<and> x = b" | "v \<le> a \<and> x \<in> Gterm v b" | "x \<in> Gterm v c"
+    by (auto split: if_split_asm)
+  thus ?case
+  proof cases
+    case 1 thus ?thesis using wfb by simp
+  next
+    case 2 thus ?thesis using P.IH(1) wfb by blast
+  next
+    case 3 thus ?thesis using P.IH(2) wfc by blast
+  qed
+qed
+
+lemma Gterm_size: "x \<in> Gterm v t \<Longrightarrow> size x < size t"
+proof (induction t)
+  case Z thus ?case by simp
+next
+  case (P a b c)
+  from P.prems consider "v \<le> a \<and> x = b" | "v \<le> a \<and> x \<in> Gterm v b" | "x \<in> Gterm v c"
+    by (auto split: if_split_asm)
+  thus ?case
+  proof cases
+    case 1 thus ?thesis by simp
+  next
+    case 2 thus ?thesis using P.IH(1) by fastforce
+  next
+    case 3 thus ?thesis using P.IH(2) by fastforce
+  qed
+qed
 
 text \<open>Every spine principal of a well-formed term whose head is dominated by \<open>D\<^bsub>a\<^esub>(b)\<close>
   (with \<open>b \<prec> f\<close>) is \<open>< \<psi>\<^bsub>a\<^esub>(o f)\<close>: subscript-smaller ones by the jump, subscript-equal
@@ -210,6 +303,8 @@ text \<open>Every spine principal of a well-formed term whose head is dominated 
 
 lemma allprinc_lt_spine:
   assumes mono: "\<And>b'. olt b' f \<Longrightarrow> wf3 b' \<Longrightarrow> size b' < n \<Longrightarrow> oV b' < oV f"
+    and ccnd: "\<And>a' b' c''. wf3 (P a' b' c'') \<Longrightarrow> size b' < n
+                  \<Longrightarrow> oV b' \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b'). psi \<xi>) (oV b') a')"
     and bf: "olt b f"
   shows "headle_all (P a b Z) c \<Longrightarrow> wf3 c \<Longrightarrow> size c < n \<Longrightarrow> allprinc_lt (psi (oV f) a) c"
 proof (induction c)
@@ -234,7 +329,7 @@ next
       have "olt b' f" using bb bf by (auto intro: olt_trans)
       have ob: "oV b' < oV f" by (rule mono[OF \<open>olt b' f\<close> wfb' sb'])
       have mem: "oV b' \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b'). psi \<xi>) (oV b') a')"
-        by (rule Ccond[OF wfnode])
+        by (rule ccnd[OF wfnode sb'])
       have "psi (oV b') a' < psi (oV f) a'"
         by (rule psi_strict_mono_arg[OF Ord_oV Ord_oV ob mem])
       thus ?thesis using aa by simp
@@ -244,10 +339,31 @@ next
   thus ?case using head by simp
 qed
 
-lemma oV_order_pres:
+text \<open>\<^bold>\<open>Buchholz Lemma 2.2(c)\<close> on \<open>wf3\<close> (= Buchholz \<open>OT\<close>): the value map is strictly
+  monotone.  Main induction on the size of the \<^emph>\<open>left\<close> term (Buchholz's induction
+  on \<open>|a|\<close>, with the right term arbitrary); the C-membership for 1.3 is supplied
+  by \<open>Ccond_of_lt\<close> from the induction hypothesis on the critical subterms (OT3).\<close>
+
+theorem oV_order_pres:
   "wf3 v \<Longrightarrow> wf3 u \<Longrightarrow> olt v u \<Longrightarrow> oV v < oV u"
-proof (induction "size u + size v" arbitrary: u v rule: less_induct)
+proof (induction "size v" arbitrary: v u rule: less_induct)
   case less
+  have ccnd: "\<And>a' b' c'. wf3 (P a' b' c') \<Longrightarrow> size b' < size v
+                \<Longrightarrow> oV b' \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b'). psi \<xi>) (oV b') a')"
+  proof -
+    fix a' b' c' assume wfn: "wf3 (P a' b' c')" and szb': "size b' < size v"
+    have wfb': "wf3 b'" using wfn by simp
+    have G: "\<forall>x \<in> Gterm a' b'. olt x b'" using wfn by simp
+    show "oV b' \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b'). psi \<xi>) (oV b') a')"
+    proof (rule Ccond_of_lt)
+      fix x assume xG: "x \<in> Gterm a' b'"
+      have wfx: "wf3 x" by (rule wf3_Gterm[OF wfb' xG])
+      have szx: "size x < size b'" by (rule Gterm_size[OF xG])
+      have lt: "olt x b'" using G xG by blast
+      show "oV x < oV b'"
+        by (rule less.hyps[OF _ wfx wfb' lt]) (use szx szb' in simp)
+    qed
+  qed
   show ?case
   proof (cases v)
     case Z
@@ -282,17 +398,16 @@ proof (induction "size u + size v" arbitrary: u v rule: less_induct)
       have mono: "\<And>b'. olt b' f \<Longrightarrow> wf3 b' \<Longrightarrow> size b' < size v \<Longrightarrow> oV b' < oV f"
       proof -
         fix b' assume A1: "olt b' f" and A2: "wf3 b'" and A3: "size b' < size v"
-        have sz: "size f + size b' < size u + size v" using A3 u by simp
-        show "oV b' < oV f" by (rule less.hyps[OF sz A2 wff A1])
+        show "oV b' < oV f" by (rule less.hyps[OF A3 A2 wff A1])
       qed
       have hac: "headle_all (P a b Z) c" by (rule wf3_headle[OF wfv])
       have szc: "size c < size v" using P by simp
       have spine: "allprinc_lt (psi (oV f) a) c"
-        by (rule allprinc_lt_spine[OF mono arg(2) hac wfc szc])
+        by (rule allprinc_lt_spine[OF mono ccnd arg(2) hac wfc szc])
       have szb: "size b < size v" using P by simp
       have obf: "oV b < oV f" by (rule mono[OF arg(2) wfb szb])
       have memb: "oV b \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b). psi \<xi>) (oV b) a)"
-        by (rule Ccond[OF wfv])
+        by (rule ccnd[OF wfv szb])
       have lead: "psi (oV b) a < psi (oV f) a"
         by (rule psi_strict_mono_arg[OF Ord_oV Ord_oV obf memb])
       have "allprinc_lt (psi (oV f) a) (P a b c)" using lead spine by simp
@@ -306,7 +421,7 @@ proof (induction "size u + size v" arbitrary: u v rule: less_induct)
       have wfg: "wf3 g" using wfu by simp
       have "oV c < oV g"
       proof (rule less.hyps)
-        show "size g + size c < size u + size v" using P u by simp
+        show "size c < size v" using P by simp
         show "wf3 c" by (rule wfc)
         show "wf3 g" by (rule wfg)
         show "olt c g" using tail by simp
@@ -317,29 +432,22 @@ proof (induction "size u + size v" arbitrary: u v rule: less_induct)
   qed
 qed
 
-lemma NF_wf3: "t \<in> NF \<Longrightarrow> wf3 t"
-  sorry
+subsection \<open>Well-foundedness of \<open>olt\<close> on the Buchholz class \<open>wf3\<close> (Lemma 2.2)\<close>
 
-lemma oV_order_pres_NF:
-  assumes "u \<in> NF" "v \<in> NF" "olt v u"
-  shows "oV v < oV u"
-  using oV_order_pres[OF NF_wf3[OF assms(2)] NF_wf3[OF assms(1)] assms(3)] .
+text \<open>The value map embeds \<open>(wf3, olt)\<close> into the ordinals, so \<open>olt\<close> is well-founded
+  on \<open>wf3\<close>.  This is Buchholz's Lemma 2.2 proved (rather than cited): the sole
+  ingredient beyond \<section>1 is the strict monotonicity above.\<close>
 
-subsection \<open>Well-foundedness of \<open>olt\<close> on \<open>NF\<close>, and PSS termination\<close>
-
-theorem wf_Rnf: "wf {(v,u). olt v u \<and> u \<in> NF \<and> v \<in> NF}"
+theorem wf_olt_wf3: "wf {(w,x). olt w x \<and> wf3 w \<and> wf3 x}"
 proof (rule wf_subset[OF wf_inv_image[OF wf_VWF, of oV]])
-  show "{(v,u). olt v u \<and> u \<in> NF \<and> v \<in> NF} \<subseteq> inv_image VWF oV"
+  show "{(w,x). olt w x \<and> wf3 w \<and> wf3 x} \<subseteq> inv_image VWF oV"
   proof (rule subrelI)
-    fix v u assume "(v,u) \<in> {(v,u). olt v u \<and> u \<in> NF \<and> v \<in> NF}"
-    then have "olt v u" "u \<in> NF" "v \<in> NF" by auto
-    then have "oV v < oV u" using oV_order_pres_NF by blast
-    thus "(v,u) \<in> inv_image VWF oV"
+    fix w x assume "(w,x) \<in> {(w,x). olt w x \<and> wf3 w \<and> wf3 x}"
+    then have "olt w x" "wf3 x" "wf3 w" by auto
+    then have "oV w < oV x" using oV_order_pres by blast
+    thus "(w,x) \<in> inv_image VWF oV"
       by (simp add: inv_image_def VWF_iff_Ord_less)
   qed
 qed
-
-theorem PSS_terminates: "wf {(T,M). M \<in> ST_PS \<and> step M T}"
-  by (rule step_terminates[OF wf_Rnf])
 
 end
