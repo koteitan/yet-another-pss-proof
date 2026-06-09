@@ -1504,3 +1504,19 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - ⟹ **残る本物の内容 = Buchholz Lemma 2.2（OT 整礎）級の核**を pure-lex/NF 向けに自前構築する事。
   次バースト: [Buc1] §2 Lemma 2.2 の証明本体を精読（o の順序同型経由か、構文的か）し、
   NF-pure-lex に直接移植できる形（または Acc_n 型の非構文クラス定義）を設計する。
+
+### ★★(2026-06-10 続7) Buc1 §2 精読 → route A 資産の正しい解釈（サルベージ可能性）
+- **Buchholz OT の順序 (<2)(<3) は pure-lex そのもの（olt と同一）**。OT と NF は
+  「同じ項型 three・同じ olt 上の異なる正規形クラス」：OT=G条件名（降順正規）、NF=昇順タワー名。
+- D(2)=D_0D_1D_2(0) の OT3 違反は「collapse する非正規名」だから（同値の正規名 = D_0(D_2 0)、
+  ψ0ψ1ψ2(0)=ψ0ψ2(0) のブログ事実と完全整合）。
+- ⟹ **route A の psi.thy（§1 完備）＋ otembed（wf3=OT, oV_order_pres 4ケース緑）は
+  『wf(olt on wf3クラス)』の証明として誤りでなく、ほぼ完成していた**。偽は NF⊆OT のみ。
+  Ccond（o b∈C_a(o b)）は OT3 から Buchholz 1.9（G_u γ⊆α ⟺ γ∈C_u α）経由で証明可能
+  → 2.2(c) が OT 上で閉じ、wf_VWF 経由で **wf(olt on OT) が sorry-free になる見込み**。
+- 残る橋: **NF→OT の順序保存（または値同値）変換**＝P進 Trans 級。content.md §7（2044-2821,
+  scb分解/Mark/条件I-VI/許容的親子）に完全な構成の参照あり。
+- 分岐: (α) pure-lex 自前帰納のクラス探し続行（x_k で生成依存と判明、未解決級リスク）
+  vs (β) wf(olt on OT) 自前完成＋NF→OT 橋（重いが参照完備; pss-proof との差別化=2.2自前+pure-lex前半）。
+- 次: (β) の根拠固め＝ord/psi.thy に 1.9 を追加し otembed の Ccond を wf3 クラスで閉じる
+  （ROOT に PSI 復活、ZFC ベースのまま）。閉じたら方針相談を提示。
