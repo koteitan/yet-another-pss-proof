@@ -37,8 +37,9 @@
       - ✅ CNF：標準形は CNF に翻訳〔cnf / cnf_ST_PS / cnf_oper（i1=0/1 ケース cnf_copies 等）/ cnf_tops_le〕
       - ✅ wf Rnf を「maxsub レベル内 WF」に還元〔wf_Rnf_from_within_level：Rnf=減少部(自明WF)∪同値部〕
       - ✅ wfE（レベル内整礎）→ 和の層を剥離〔wfsum.thy: NF=非増加和 p0(b_i)、olt=lex→multiset 拡張、olt_sum_decomp/olt_sum_mult/wf_level_from_args/wfE_from_args〕
-      - 🚨 ★残ただ1つ＝`wf_ArgsL`：wf {(b,f). b<o f ∧ b,f∈ArgsL m}（レベル m 引数クラス上整礎＝Buchholz 崩壊核）
-        - 注意：遺伝的 inv2 は偽（探索済 tools/wfe_explore.py）→ 引数クラスの正しい不変条件の特定が次段。
+      - ✅ 一般 summand peel＋添字 peel〔summands/olt_summands_mult（cnf だけで非増加）、singdest lex_prod〕
+      - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（レベルm和引数の summand 単項の引数クラス＝Buchholz 崩壊核）
+        - 探索済：lead(arg)≤sub+1 は全部分項で成立／consec spine は深さ3で破れ／t_k 危険形はトップ引数に不在。
     - 🗑 route A（順序数 ψ：ord/psi.thy/otembed.thy, session PSI）破棄：oV=Buchholz ψ 値が対角を collapse（D(2)=D(3)）。原理的に閉じない。ROOT から除去済。
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, L_ThF[p<n] で停止）も不使用。
     - 🗑 旧ルート（K-dom `ot`, 誤変種で破棄予定）〔wo/buchholz/embed: L_ThF・op_NF 残 sorry, masterF/wf_oltRwF/cnf_ST_PS は緑だが route A では不使用〕
