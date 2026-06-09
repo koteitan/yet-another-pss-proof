@@ -200,4 +200,38 @@ proof -
   finally show ?thesis using Citer_in_Cset by blast
 qed
 
+text \<open>Every element of \<open>C\<^sub>v(\<alpha>)\<close> is an ordinal, provided the parameter \<open>p\<close> produces
+  ordinals on \<open>\<alpha>\<close> (true for \<open>p = \<psi>\<close>).\<close>
+
+lemma Ord_Citer:
+  "(\<forall>\<xi> u. \<xi> \<in> elts \<alpha> \<longrightarrow> Ord (p \<xi> u)) \<Longrightarrow> x \<in> elts (Citer p \<alpha> v n) \<Longrightarrow> Ord x"
+proof (induction n arbitrary: x)
+  case 0
+  have "x \<in> elts (Om v)" using "0.prems"(2) by simp
+  thus ?case by (rule Ord_in_Ord[OF Ord_Om])
+next
+  case (Suc n)
+  from Suc.prems(2) have "x \<in> elts (Cstep p \<alpha> (Citer p \<alpha> v n))" by simp
+  then consider "x \<in> elts (Citer p \<alpha> v n)"
+    | \<xi> \<eta> where "\<xi> \<in> elts (Citer p \<alpha> v n)" "\<eta> \<in> elts (Citer p \<alpha> v n)" "x = \<xi> + \<eta>"
+    | \<xi> u where "\<xi> \<in> elts (Citer p \<alpha> v n)" "\<xi> \<in> elts \<alpha>" "x = p \<xi> u"
+    by (auto simp: elts_Cstep)
+  thus ?case
+  proof cases
+    case 1 thus ?thesis using Suc.IH[OF Suc.prems(1)] by blast
+  next
+    case 2 thus ?thesis using Suc.IH[OF Suc.prems(1)] by (simp add: Ord_add)
+  next
+    case 3 thus ?thesis using Suc.prems(1) by simp
+  qed
+qed
+
+lemma Cset_Ord:
+  assumes "\<forall>\<xi> u. \<xi> \<in> elts \<alpha> \<longrightarrow> Ord (p \<xi> u)" and "x \<in> elts (Cset p \<alpha> v)"
+  shows "Ord x"
+proof -
+  from assms(2) obtain n where n: "x \<in> elts (Citer p \<alpha> v n)" by (auto simp: Cset_mem_iff)
+  show ?thesis by (rule Ord_Citer[OF assms(1) n])
+qed
+
 end
