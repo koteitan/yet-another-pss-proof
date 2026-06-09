@@ -317,6 +317,307 @@ next
   qed
 qed
 
+subsection \<open>Adjacent-step predicate and its composition laws\<close>
+
+fun steps1 :: "pairseq \<Rightarrow> bool" where
+  "steps1 [] = True"
+| "steps1 [p] = True"
+| "steps1 (p # q # r) = (fst q \<le> Suc (fst p) \<and> steps1 (q # r))"
+
+lemma steps1_iff:
+  "steps1 B \<longleftrightarrow> (\<forall>j. Suc j < length B \<longrightarrow> fst (B ! Suc j) \<le> Suc (fst (B ! j)))"
+proof (induction B rule: steps1.induct)
+  case 1 thus ?case by simp
+next
+  case (2 p) thus ?case by simp
+next
+  case (3 p q r)
+  show ?case
+  proof
+    assume "steps1 (p # q # r)"
+    hence h: "fst q \<le> Suc (fst p)" and t: "steps1 (q # r)" by auto
+    show "\<forall>j. Suc j < length (p # q # r) \<longrightarrow>
+            fst ((p # q # r) ! Suc j) \<le> Suc (fst ((p # q # r) ! j))"
+    proof (intro allI impI)
+      fix j assume jl: "Suc j < length (p # q # r)"
+      show "fst ((p # q # r) ! Suc j) \<le> Suc (fst ((p # q # r) ! j))"
+      proof (cases j)
+        case 0 thus ?thesis using h by simp
+      next
+        case (Suc j')
+        have "Suc j' < length (q # r)" using jl Suc by simp
+        thus ?thesis using t "3.IH" Suc by simp
+      qed
+    qed
+  next
+    assume A: "\<forall>j. Suc j < length (p # q # r) \<longrightarrow>
+                 fst ((p # q # r) ! Suc j) \<le> Suc (fst ((p # q # r) ! j))"
+    have h: "fst q \<le> Suc (fst p)" using A by (metis length_Cons nth_Cons_0 nth_Cons_Suc zero_less_Suc)
+    have "\<forall>j. Suc j < length (q # r) \<longrightarrow> fst ((q # r) ! Suc j) \<le> Suc (fst ((q # r) ! j))"
+    proof (intro allI impI)
+      fix j assume "Suc j < length (q # r)"
+      hence "Suc (Suc j) < length (p # q # r)" by simp
+      hence "fst ((p # q # r) ! Suc (Suc j)) \<le> Suc (fst ((p # q # r) ! Suc j))" using A by blast
+      thus "fst ((q # r) ! Suc j) \<le> Suc (fst ((q # r) ! j))" by simp
+    qed
+    hence "steps1 (q # r)" using "3.IH" by blast
+    thus "steps1 (p # q # r)" using h by simp
+  qed
+qed
+
+lemma steps1_append:
+  "steps1 (A @ B) \<longleftrightarrow>
+     steps1 A \<and> steps1 B \<and> (A = [] \<or> B = [] \<or> fst (hd B) \<le> Suc (fst (last A)))"
+proof (induction A rule: steps1.induct)
+  case 1 thus ?case by simp
+next
+  case (2 p) thus ?case by (cases B) auto
+next
+  case (3 p q r) thus ?case by auto
+qed
+
+lemma steps1_butlast: "steps1 B \<Longrightarrow> steps1 (butlast B)"
+proof -
+  assume s: "steps1 B"
+  have "B = butlast B @ (if B = [] then [] else [last B])" by simp
+  thus "steps1 (butlast B)" using s steps1_append by metis
+qed
+
+lemma blockok_via_steps1:
+  "blockok d B \<longleftrightarrow> (B \<noteq> [] \<longrightarrow> fst (hd B) = d) \<and> (\<forall>p \<in> set B. d \<le> fst p) \<and> steps1 B"
+  by (simp add: blockok_def steps1_iff)
+
+lemma blockok_butlast: "blockok d B \<Longrightarrow> blockok d (butlast B)"
+proof -
+  assume b: "blockok d B"
+  have hd': "butlast B \<noteq> [] \<longrightarrow> fst (hd (butlast B)) = d"
+  proof
+    assume ne: "butlast B \<noteq> []"
+    obtain x xs where B: "B = x # xs" using ne by (cases B) auto
+    have xsne: "xs \<noteq> []" using ne B by auto
+    have "hd (butlast B) = x" using B xsne by simp
+    thus "fst (hd (butlast B)) = d" using b B unfolding blockok_def by simp
+  qed
+  have set': "\<forall>p \<in> set (butlast B). d \<le> fst p"
+    using b unfolding blockok_def by (meson in_set_butlastD)
+  have st': "steps1 (butlast B)"
+    using b blockok_via_steps1 steps1_butlast by blast
+  show ?thesis using hd' set' st' blockok_via_steps1 by blast
+qed
+
+lemma steps1_concat_map:
+  assumes F1: "\<And>k. k < n \<Longrightarrow> steps1 (F k)"
+    and Fne: "\<And>k. k < n \<Longrightarrow> F k \<noteq> []"
+    and Fj: "\<And>k. Suc k < n \<Longrightarrow> fst (hd (F (Suc k))) \<le> Suc (fst (last (F k)))"
+  shows "steps1 (concat (map F [0..<n]))
+         \<and> (0 < n \<longrightarrow> concat (map F [0..<n]) \<noteq> []
+              \<and> hd (concat (map F [0..<n])) = hd (F 0)
+              \<and> last (concat (map F [0..<n])) = last (F (n - 1)))"
+  using assms
+proof (induction n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  have IH: "steps1 (concat (map F [0..<n]))
+            \<and> (0 < n \<longrightarrow> concat (map F [0..<n]) \<noteq> []
+                 \<and> hd (concat (map F [0..<n])) = hd (F 0)
+                 \<and> last (concat (map F [0..<n])) = last (F (n - 1)))"
+    using Suc.IH Suc.prems by simp
+  have dec: "concat (map F [0..<Suc n]) = concat (map F [0..<n]) @ F n" by simp
+  show ?case
+  proof (cases "n = 0")
+    case True
+    thus ?thesis using Suc.prems(1)[of 0] Suc.prems(2)[of 0] dec by simp
+  next
+    case False
+    hence npos: "0 < n" by simp
+    have cne: "concat (map F [0..<n]) \<noteq> []" using IH npos by blast
+    have lc: "last (concat (map F [0..<n])) = last (F (n - 1))" using IH npos by blast
+    have junction: "fst (hd (F n)) \<le> Suc (fst (last (F (n - 1))))"
+      using Suc.prems(3)[of "n - 1"] npos by simp
+    have s: "steps1 (concat (map F [0..<n]) @ F n)"
+      using steps1_append IH Suc.prems(1)[of n] junction lc cne by auto
+    have hne: "F n \<noteq> []" using Suc.prems(2)[of n] by simp
+    have lst: "last (concat (map F [0..<Suc n])) = last (F n)"
+      using dec hne by (simp add: last_append)
+    have hd': "hd (concat (map F [0..<Suc n])) = hd (F 0)"
+      using dec cne IH npos by (simp add: hd_append)
+    show ?thesis using s dec lst hd' cne by simp
+  qed
+qed
+
+subsection \<open>Standard forms obey the block discipline\<close>
+
+lemma parent_nextR:
+  assumes "hasParent M i j1" shows "nextR M i (parent M i j1) j1"
+  using assms by (metis hasParent_def parent_def theI')
+
+lemma blockok_diagSeq: "blockok 0 (diagSeq 0 v)"
+  unfolding blockok_def diagSeq_def by (auto simp: hd_map)
+
+lemma blockok_oper:
+  assumes b: "blockok 0 M" and n1: "1 \<le> n"
+  shows "blockok 0 (oper M n)"
+proof -
+  define j1 where "j1 = Lng M - 1"
+  show ?thesis
+  proof (cases "j1 = 0")
+    case True thus ?thesis using b unfolding oper_def Let_def j1_def by simp
+  next
+    case False
+    have len2: "2 \<le> Lng M" using False j1_def by simp
+    have Mne: "M \<noteq> []" using len2 by auto
+    have j1len: "j1 < Lng M" using False j1_def by simp
+    show ?thesis
+    proof (cases "entry M 0 j1 = 0 \<and> entry M 1 j1 = 0")
+      case True
+      have "oper M n = Pred M" unfolding oper_def Let_def j1_def[symmetric] using False True by simp
+      moreover have "blockok 0 (Pred M)"
+        unfolding Pred_def using b blockok_butlast by simp
+      ultimately show ?thesis by simp
+    next
+      case Fz: False
+      define i1 where "i1 = idx1 M j1"
+      show ?thesis
+      proof (cases "hasParent M i1 j1")
+        case False2: False
+        have "oper M n = Pred M"
+          unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+          using False Fz False2 by simp
+        moreover have "blockok 0 (Pred M)"
+          unfolding Pred_def using b blockok_butlast by simp
+        ultimately show ?thesis by simp
+      next
+        case hp: True
+        define j0 where "j0 = parent M i1 j1"
+        define d0 where "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+        define d1 where "d1 = (if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0)"
+        define blk where "blk = (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j + k * d1)) [j0..<j1])"
+        have opeq: "oper M n = take j0 M @ concat (map blk [0..<n])"
+          unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+            j0_def[symmetric] d0_def[symmetric] d1_def[symmetric] blk_def
+          using False Fz hp by simp
+        have nR: "nextR M i1 j0 j1" unfolding j0_def by (rule parent_nextR[OF hp])
+        have j0j1: "j0 < j1" using nR by (rule nextR_less)
+        have e0step: "\<And>j. Suc j < Lng M \<Longrightarrow> entry M 0 (Suc j) \<le> Suc (entry M 0 j)"
+        proof -
+          fix j assume sj: "Suc j < Lng M"
+          have "fst (M ! Suc j) \<le> Suc (fst (M ! j))" using b sj unfolding blockok_def by blast
+          thus "entry M 0 (Suc j) \<le> Suc (entry M 0 j)" unfolding entry_def by simp
+        qed
+        have e0le: "entry M 0 j0 + d0 \<le> Suc (entry M 0 (j1 - 1))"
+        proof (cases "0 < i1")
+          case True
+          have "nextrel1 M j0 j1" using nR True unfolding nextR_def by simp
+          hence "le0 M j0 j1" unfolding nextrel1_def by blast
+          hence le01: "entry M 0 j0 \<le> entry M 0 j1" by (rule le0_entry0_mono)
+          have d0v: "d0 = entry M 0 j1 - entry M 0 j0" using True d0_def by simp
+          have "entry M 0 j0 + d0 = entry M 0 j1" using d0v le01 by simp
+          also have "entry M 0 j1 \<le> Suc (entry M 0 (j1 - 1))"
+            using e0step[of "j1 - 1"] False j1len j1_def by simp
+          finally show ?thesis .
+        next
+          case False3: False
+          have "nextrel0 M j0 j1" using nR False3 unfolding nextR_def i1_def by (simp add: idx1_def)
+          hence lt01: "entry M 0 j0 < entry M 0 j1" by (rule nextrel0_entry0_less)
+          have d0v: "d0 = 0" using False3 d0_def by simp
+          have "entry M 0 j1 \<le> Suc (entry M 0 (j1 - 1))"
+            using e0step[of "j1 - 1"] False j1len j1_def by simp
+          thus ?thesis using lt01 d0v by simp
+        qed
+        have blkne: "\<And>k. blk k \<noteq> []" unfolding blk_def using j0j1 by simp
+        have blkhd: "\<And>k. hd (blk k) = (entry M 0 j0 + k * d0, entry M 1 j0 + k * d1)"
+          unfolding blk_def using j0j1 by (simp add: hd_map upt_conv_Cons)
+        have blklast: "\<And>k. last (blk k)
+            = (entry M 0 (j1 - 1) + k * d0, entry M 1 (j1 - 1) + k * d1)"
+          unfolding blk_def using j0j1 by (simp add: last_map)
+        have blksteps: "\<And>k. steps1 (blk k)"
+        proof -
+          fix k
+          show "steps1 (blk k)"
+            unfolding steps1_iff
+          proof (intro allI impI)
+            fix j assume jl: "Suc j < length (blk k)"
+            have lb: "length (blk k) = j1 - j0" unfolding blk_def by simp
+            have idx: "blk k ! j = (entry M 0 (j0 + j) + k * d0, entry M 1 (j0 + j) + k * d1)"
+                      "blk k ! Suc j = (entry M 0 (j0 + Suc j) + k * d0, entry M 1 (j0 + Suc j) + k * d1)"
+              unfolding blk_def using jl lb by (auto simp: nth_map)
+            have "Suc (j0 + j) < Lng M" using jl lb j1len by simp
+            hence "entry M 0 (Suc (j0 + j)) \<le> Suc (entry M 0 (j0 + j))" by (rule e0step)
+            thus "fst (blk k ! Suc j) \<le> Suc (fst (blk k ! j))" using idx by simp
+          qed
+        qed
+        have blkjunc: "\<And>k. Suc k < n \<Longrightarrow> fst (hd (blk (Suc k))) \<le> Suc (fst (last (blk k)))"
+        proof -
+          fix k assume "Suc k < n"
+          have "fst (hd (blk (Suc k))) = entry M 0 j0 + Suc k * d0" using blkhd by simp
+          also have "entry M 0 j0 + Suc k * d0 = (entry M 0 j0 + d0) + k * d0" by simp
+          also have "\<dots> \<le> Suc (entry M 0 (j1 - 1)) + k * d0" using e0le by simp
+          also have "\<dots> = Suc (fst (last (blk k)))" using blklast by simp
+          finally show "fst (hd (blk (Suc k))) \<le> Suc (fst (last (blk k)))" .
+        qed
+        have cprops: "steps1 (concat (map blk [0..<n]))
+              \<and> (0 < n \<longrightarrow> concat (map blk [0..<n]) \<noteq> []
+                   \<and> hd (concat (map blk [0..<n])) = hd (blk 0)
+                   \<and> last (concat (map blk [0..<n])) = last (blk (n - 1)))"
+          by (rule steps1_concat_map[OF blksteps blkne blkjunc])
+        have npos: "0 < n" using n1 by simp
+        have cne: "concat (map blk [0..<n]) \<noteq> []" using cprops npos by blast
+        have chd: "hd (concat (map blk [0..<n])) = (entry M 0 j0, entry M 1 j0)"
+          using cprops npos blkhd[of 0] by simp
+        \<comment> \<open>head of the result\<close>
+        have hd0: "fst (hd (oper M n)) = 0"
+        proof (cases "j0 = 0")
+          case True
+          have "hd (oper M n) = (entry M 0 0, entry M 1 0)" using opeq True cne chd by simp
+          moreover have "entry M 0 0 = fst (hd M)"
+            unfolding entry_def using Mne by (simp add: hd_conv_nth)
+          ultimately show ?thesis using b Mne unfolding blockok_def by simp
+        next
+          case False4: False
+          have tne: "take j0 M \<noteq> []" using False4 Mne by simp
+          have "hd (oper M n) = hd M" using opeq tne by (simp add: hd_append)
+          thus ?thesis using b Mne unfolding blockok_def by simp
+        qed
+        \<comment> \<open>steps of the result\<close>
+        have tk: "steps1 (take j0 M)"
+          unfolding steps1_iff
+        proof (intro allI impI)
+          fix j assume sj: "Suc j < length (take j0 M)"
+          have sjm: "Suc j < Lng M" and sj0: "Suc j < j0" using sj by auto
+          have "fst (M ! Suc j) \<le> Suc (fst (M ! j))" using b sjm unfolding blockok_def by blast
+          thus "fst (take j0 M ! Suc j) \<le> Suc (fst (take j0 M ! j))" using sj0 by simp
+        qed
+        have junc0: "take j0 M = [] \<or> concat (map blk [0..<n]) = [] \<or>
+                       fst (hd (concat (map blk [0..<n]))) \<le> Suc (fst (last (take j0 M)))"
+        proof (cases "j0 = 0")
+          case True thus ?thesis by simp
+        next
+          case False5: False
+          have j0len: "j0 \<le> Lng M" using j0j1 j1len by simp
+          have lentk: "length (take j0 M) = j0" using j0len by simp
+          have tkne: "take j0 M \<noteq> []" using False5 j0len Mne by simp
+          have "last (take j0 M) = take j0 M ! (j0 - 1)"
+            using tkne lentk by (simp add: last_conv_nth)
+          also have "\<dots> = M ! (j0 - 1)" using False5 by simp
+          finally have lt: "last (take j0 M) = M ! (j0 - 1)" .
+          have "Suc (j0 - 1) < Lng M" using False5 j0j1 j1len by simp
+          hence "entry M 0 (Suc (j0 - 1)) \<le> Suc (entry M 0 (j0 - 1))" by (rule e0step)
+          hence "entry M 0 j0 \<le> Suc (entry M 0 (j0 - 1))" using False5 by simp
+          moreover have "fst (last (take j0 M)) = entry M 0 (j0 - 1)"
+            using lt unfolding entry_def by simp
+          ultimately show ?thesis using chd by simp
+        qed
+        have stepsR: "steps1 (oper M n)"
+          using opeq steps1_append tk cprops junc0 by auto
+        have setR: "\<forall>p \<in> set (oper M n). (0::nat) \<le> fst p" by simp
+        have neR: "oper M n \<noteq> [] \<longrightarrow> fst (hd (oper M n)) = 0" using hd0 by simp
+        show ?thesis using blockok_via_steps1 neR setR stepsR by blast
+      qed
+    qed
+  qed
+qed
+
 theorem olt_iff_seqlex:
   assumes "blockok d M" "blockok d N" "M \<noteq> N"
   shows "translate M <o translate N \<longleftrightarrow> seqlex M N"
@@ -333,5 +634,17 @@ next
     thus False using o olt_trans olt_irrefl by blast
   qed
 qed
+
+theorem blockok_ST_PS: "M \<in> ST_PS \<Longrightarrow> blockok 0 M"
+proof (induction M rule: ST_PS.induct)
+  case (diag v) show ?case by (rule blockok_diagSeq)
+next
+  case (oper M n) show ?case by (rule blockok_oper[OF oper.IH oper.hyps(2)])
+qed
+
+theorem olt_ST_iff_seqlex:
+  assumes "M \<in> ST_PS" "N \<in> ST_PS" "M \<noteq> N"
+  shows "translate M <o translate N \<longleftrightarrow> seqlex M N"
+  by (rule olt_iff_seqlex[OF blockok_ST_PS[OF assms(1)] blockok_ST_PS[OF assms(2)] assms(3)])
 
 end
