@@ -31,18 +31,15 @@
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
-    - ✅ wfimg → 対角 accessibility 還元（oper 側は減少補題で無料）〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS〕
-    - 🚨 **Buchholz 整礎性（route A=意味論, ord/psi.thy, session PSI on ZFC_in_HOL）**
-      - ✅ Ω_v=ℵ_v ＋単調〔Om / Ord_Om / Card_Om / Om_less_Suc〕
-      - ✅ C_v(α)/ψ_v 定義＋well-defined〔Cstep / Cset / psi / psi_unfold / psi_ex / Ord_psi / psi_notin〕
-      - ✅ 閉包 C1-C3＋Cset⊆Ord〔Om_subset_Cset / Cset_add_closed / Cset_psi_closed / Cset_Ord〕
-      - ✅ Ω_v≤ψ_v α〔Om_le_psi〕＋C の α 単調〔Cstep/Citer/Cset_mono_param, CC_mono〕＋ψ_v α 単調〔psi_mono_arg〕
-      - ✅ Lemma 1.3（ψ_v 厳密単調 α<β∧α∈C_v α⟹ψ_v α<ψ_v β）〔psi_strict_mono_arg〕＝順序保存の核
-      - ✅ Lemma 1.2(c)（ψ_v α<Ω_{v+1}＝基数 |C_v α|≤κ）〔psi_lt_Om_Suc／vcard_Citer_le・vcard_Cset_le・gcard_*' ローカル複製〕
-      - ✅ §2 skeleton 緑：oV:three→V／wf_Rnf／PSS_terminates〔ord/otembed.thy, three+V クロスセッション via YAPSS.proofs〕
-      - 🚨 ★唯一の残 sorry：oV_order_pres_NF（Lemma 2.2c 順序保存 on NF）。要：1.2(b)加法主要数・1.3 C条件・OT降順
-      - ✅ Lemma 1.2(b)(ψ_v 加法主要数 psi_add_principal)＋below_psi_in_Cset〔決定的tactic, runaway回避済〕
-      - 🚨 補助：C条件 o b∈C_a(o b) / NF⊆OT(降順) → 2.2c へ
+    - ✅ wfimg → 対角 accessibility 還元〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS〕
+    - 🚨 **本命＝pure-lex 構文的整礎性（順序数なし, wf.thy, sorry ゼロ・緑）** ［決定 2026-06-10, memory pss-wf-route-purelex-syntactic］
+      - ✅ maxsub 単調性 on NF：w<o x ⟹ maxsub w ≤ maxsub x〔olt_imp_slex / nfinv / nfinv_ST_PS / maxsub_mono_NF'〕
+      - ✅ CNF：標準形は CNF に翻訳〔cnf / cnf_ST_PS / cnf_oper（i1=0/1 ケース cnf_copies 等）/ cnf_tops_le〕
+      - ✅ wf Rnf を「maxsub レベル内 WF」に還元〔wf_Rnf_from_within_level：Rnf=減少部(自明WF)∪同値部〕
+      - 🚨 ★残ただ1つ＝`wfE`：wf {(w,x). w<o x ∧ w,x∈NF ∧ maxsub w=maxsub x}（同一 maxsub レベル内整礎＝Buchholz 崩壊核, 純構文的）
+        - 足がかり：NF は nfinv で左スパイン=[0..m]（m=maxsub）に固定 → レベル内再帰が m で有界。Towsner §3.2 の ladder を構造参考。
+    - 🗑 route A（順序数 ψ：ord/psi.thy/otembed.thy, session PSI）破棄：oV=Buchholz ψ 値が対角を collapse（D(2)=D(3)）。原理的に閉じない。ROOT から除去済。
+    - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, L_ThF[p<n] で停止）も不使用。
     - 🗑 旧ルート（K-dom `ot`, 誤変種で破棄予定）〔wo/buchholz/embed: L_ThF・op_NF 残 sorry, masterF/wf_oltRwF/cnf_ST_PS は緑だが route A では不使用〕
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
