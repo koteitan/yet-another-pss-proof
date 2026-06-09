@@ -1297,3 +1297,43 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
     だが ctrl_acc(level r)も同じ q≥r 残差を持つ＝循環。global B n の超限構成で一括解決するしかない。
 - **今セッション成果(全コミット, baseline 緑 3 sorry)**: L_ThF 大半 green(Kn p e⊆acc 証明・ctrl_acc 構造帰納)・sorry を核1点に縮小;
   (A2) lex order linearity 緑検証(scratch_order); 根本原因=K-dom-in-order 特定; 多重集合=辞書式 on 非増加 検証。
+
+### 進捗 (2026-06-09 続38): 【決定的】残差は §2 multi-ϑ_n 特有の cross-subscript ケース＝Towsner §3.2 に存在しないギャップ
+- **残差を Towsner 3.10 の証明と精密照合した結論**: 我々の系は wo.thy の通り §2(ϑ_n, Ω_n を absolute int subscript で持つ複数崩壊関数系)。
+  Towsner の distinguished-set WF 証明(§3.2 Lemma 3.8-3.12)は §3(単一 ϑ＋Ω の de Bruijn polymorphic)用。**§2 の WF 証明は論文に無い**(§2 は Key Lemma 2.5/2.7 の動機付けのみ)。
+- **Towsner 3.10(崩壊閉包)の場合分けと我々の対応(精密)**:
+  - Towsner Case 1 (β<α, predecessor の arg が小): = 我々の **p=r ∧ e<o d**(accIH で green)。
+  - Towsner Case 2 (α<β, 支配): = 我々の **domination ∃γ∈Kn n d. Th p e≤oγ**(dom_acc で green)。
+  - **我々の p<r cross-subscript ケースは Towsner 3.10 に対応物が無い**。単一 ϑ には subscript が無く、ϑ_p e<oϑ_r h が「p<r かつ Kn p e<oϑ_r h」で成立する経路自体が §3 に存在しない。
+  ∴ **wo.thy の「§2 terms＋§3.2 proof」ハイブリッドは本質的に不完全**。p<r ケースは §3.2 が cover しない。multi-ψ_n 版(Buchholz 1991)の追加論証が要る。
+- **downward-closure は FALSE(反例確定)**: M_n(critical-subterm 制御集合)は <o で下方閉でない。
+  反例: q=ϑ_0(0) <o a=ϑ_5(0)。Kn 0 q={ϑ_0(0)}, Kn 0 a=Kn 0(Su[])={}。∴ Kn 0 q ⊄ Kn 0 a 由来の制御に乗らず q∉M_0。
+  K-単調性「q<oa ⟹ Kn n q が Kn n a に支配される」も同反例で FALSE。∴ connection を downward-closure で出す素朴ルートは全滅(既存 Mn/AccB/Acc も同病)。
+- **omfree は FC=∅ の単一基底(Acc_{-∞})**: omfree 項は Ω を含まず FCset={}→全て「可算」=Towsner の M_{-∞}。
+  Ω-ground で sub-stratify されない(gnd≡0)。∴ omfree fragment 全体を 1 レベルで一括 WF する必要＝Lemma 3.10 の -∞ 版＝まさに L_ThF。Th-subscript stratify(続37)も自己参照(ϑ_j(g) は Kn(≥j) に自分自身を含む)で破綻。
+- **核の正体(確証)**: 残差 ϑ_5(0)∈acc 等は**真**(masterF で言えば 0∈acc からの崩壊閉包 level5)だが、
+  level-k 帰納(k=n)は level<k しか与えず到達不能。P(0)="∀r. ϑ_r(0)∈acc" は ϑ_1(0) の predecessor ϑ_0(ϑ_100(0)) が ϑ_100(0)∈acc を要求…と r 無界に相互依存し、r にも h にも size にも整礎順序が無い。
+  ＝**Buchholz の崩壊関数整礎性定理の既約核**。素朴帰納(level/acc-on-d/size/構造)では原理的に閉じない(本セッションで全て反証)。
+- **確定した次フェーズ**: multi-ψ_n(ϑ_n, n∈ℕ)の整礎性を Buchholz 1991/Schütte 流の **全 level 同時の超限構成**で。
+  §3.2 単一 ϑ の素直な移植では p<r が抜けるので、subscript を明示扱いする独自拡張が必須。複数セッション規模。
+  - 候補: Buchholz の C(α,β) 閉包 or operator-controlled。あるいは Ω_n 足場を証明内に導入し ϑ_n を Ω_n 崩壊として multi-level Acc_n を全 n 同時帰納で構成し、最後に omfree(=Ω_n を含まぬ像)へ connection。
+- **状態**: baseline 緑・3 sorry 不変(L_ThF 残差1点 / olt_trans Su/Su / op_NF)。本セッションは核の構造解明と誤ルート(downward-closure, Th-subscript stratify, level/size 帰納)の確定的反証＝今後の手戻り防止が成果。
+
+### 進捗 (2026-06-09 続39): 【Route 確定】proofs.thy は lex/NF の対角 accessibility に帰着＝ユーザー本来の設計。両ルート収束＝L_ThF が臨界経路
+- **proofs.thy 再読の発見**: 最終目標 `wf Rnf` は **`three`(mechanized lex 順序)を NF=translate`ST_PS(標準形)に制限**した Rnf。
+  ot/buchholz/embed は私が足した**並行ルート(Route A)**。proofs.thy(ユーザー設計)は `wf_Rnf_from_diag` で **対角 accessibility `∀v. D(v)=translate(diagSeq 0 v)∈acc Rnf`(Route B)に帰着済**。
+- **Route A は過剰一般化**: wf_oltRwF は**全 omfree 項**(非標準形 ϑ_0(ϑ_100(0)) 等の病的 buried-subscript 項を含む)を対象＝厳密に必要以上に難しい。
+  残差(r≥n buried collapse)を生むのはまさにこの非標準項。NF(標準形)は -s でそれらを除外。
+- **しかし Route B も Buchholz 核を含む(確認)**: lex 順序が NF 上で整礎なのは「標準形＝真の順序数表記」だから。
+  その順序同型＝Buchholz 構成そのもの。acc Rnf ＝「expand 停止」の言い換え(ST_PS は diag+expand 生成, expand は減少)で**循環**＝独立に易しくならない。
+  対角 D(v)=ϑ_0(ϑ_1(...ϑ_v(0))) は基本列で cofinal・増加。その accessibility＝順序数の整礎性核。
+- **結論(確定)**: **どちらのルートでも Buchholz WF 核が臨界経路**。Route A の L_ThF を完成させ wf_oltRwF→(embed/op_NF)→wf Rnf が、ot 機構を再利用できる分むしろ近道。
+  ＝**L_ThF(multi-ψ_n distinguished-set 構成)に集中**で正しい。ユーザー指示「Buchholz/Towsner variant で行くしかない」と完全一致。
+- **次の実装(multi-ψ_n, Ω 足場)**: omfree は FC=∅ 単一基底だが、その整礎性証明には Ω_n を**証明内に足場導入**し全 n 同時帰納で multi-level Acc_n を構成、最後に omfree(=Ω を含まぬ像)へ connection するのが正道。
+  §3.2 単一 ϑ では p<r が抜けるので subscript 明示の独自拡張。Buchholz 1991/Schütte 流。複数セッション。次セッション: scratch_wf.thy で定義＋connection を build 検証から着手。
+- **退化バグ特定(actionable)**: wo.thy `FC_def`/`gnd_def` は `FCset={}→0`。これが Towsner の **−∞ レベルを level 0 に潰している**。
+  Towsner では sup∅=−∞, min∅=−∞ で omfree(FCset={}) は **FC=−∞ の可算基底 M_{−∞}**。現慣習(=0)だと omfree が level 0(Ω_0 と同列)に化け、stratify 退化。
+  ∴ 構成では FC/gnd を **−∞ を持つ型(int option / 番兵)**で定義し直し、omfree を真の −∞ 基底に置くのが正道。Acc_{−∞}⊆acc は omfree の oltRwF-下方閉から自明(Awf 定義)。
+- **但し −∞ 修正だけでは閉じない(再確認)**: 3.10 を −∞ で multi-ϑ_n に展開すると predecessor ϑ_s β(s<r, cross-subscript)ケースが残る。
+  β 任意 omfree で buried ϑ_{r'}(h)(r' 無界)を含み得る＝**multi-ϑ_n 固有の既約核**(単一 ϑ には無い)。dom/s=r ケースは clean、s<r が核。
+  ＝Buchholz ψ_n 整礎性定理の本体。subscript への帰納＋coefficient 制御の超限構成が必須。これが「実装すべき残り全て」。
