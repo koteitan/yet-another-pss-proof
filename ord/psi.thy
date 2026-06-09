@@ -73,4 +73,33 @@ lemma psi_unfold:
   "psi \<alpha> v = (LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v))"
   unfolding psi_def by (subst transrec) simp
 
+text \<open>\<open>C\<^sub>v(\<alpha>)\<close> is a set, so it cannot contain all ordinals: \<open>\<psi>\<^sub>v(\<alpha>)\<close> is well defined.\<close>
+
+lemma psi_ex: "\<exists>\<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset p \<alpha> v)"
+proof (rule ccontr)
+  assume "\<not> (\<exists>\<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset p \<alpha> v))"
+  hence "ON \<subseteq> elts (Cset p \<alpha> v)" by auto
+  from smaller_than_small[OF small_elts this] show False using big_ON by simp
+qed
+
+lemma Ord_psi [simp, intro]: "Ord (psi \<alpha> v)"
+proof -
+  obtain \<gamma> where "Ord \<gamma>" "\<gamma> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    using psi_ex by blast
+  hence "Ord (LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v))"
+    by (rule Ord_Least)
+  thus ?thesis by (subst psi_unfold)
+qed
+
+lemma Ord_Psi [simp, intro]: "Ord (Psi v \<alpha>)"
+  by (simp add: Psi_def)
+
+lemma psi_notin: "psi \<alpha> v \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+proof -
+  have "(LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v))
+          \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    using Ord_LeastI_ex[OF psi_ex] by blast
+  thus ?thesis by (subst psi_unfold)
+qed
+
 end
