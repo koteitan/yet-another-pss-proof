@@ -163,6 +163,53 @@ text \<open>The connection target: every \<open>\<Omega>\<close>-free term in th
   the \<open>\<Omega>\<close>-level step is the genuine collapse-closure work (Towsner 3.10\<dash>3.11),
   isolated here as the single residual.\<close>
 
+text \<open>The \<open>\<Omega>\<close>-level step: an \<open>\<Omega>\<close>-free member of \<^term>\<open>Accl n\<close> is accessible, given the
+  lower levels are.  Within-level predecessors close by the \<^term>\<open>acc\<close>-induction;
+  the cross-level predecessors (\<open>q \<notin> Mlv n (Bst n)\<close>) are the genuine collapse-closure
+  residual (Towsner 3.10\<dash>3.11).\<close>
+
+lemma Accl_omfree_acc:
+  assumes lower: "\<And>x. x \<in> Bst n \<Longrightarrow> omfree x \<Longrightarrow> x \<in> Wellfounded.acc oltRwF"
+    and aA: "a \<in> Accl n" and af: "omfree a"
+  shows "a \<in> Wellfounded.acc oltRwF"
+proof -
+  let ?S = "Mlv n (Bst n)"
+  let ?R = "{(x,y). x <\<^sub>o y \<and> x \<in> ?S \<and> y \<in> ?S}"
+  from aA have aS: "a \<in> ?S" and aR: "a \<in> Wellfounded.acc ?R" by (auto simp: Awf_def)
+  have genacc: "\<And>z. z \<in> Wellfounded.acc ?R \<Longrightarrow> z \<in> ?S \<longrightarrow> omfree z \<longrightarrow> z \<in> Wellfounded.acc oltRwF"
+  proof -
+    fix z0 assume "z0 \<in> Wellfounded.acc ?R"
+    thus "z0 \<in> ?S \<longrightarrow> omfree z0 \<longrightarrow> z0 \<in> Wellfounded.acc oltRwF"
+    proof (induction set: Wellfounded.acc)
+      case (1 x)
+      note accIH = "1.IH"
+      show ?case
+      proof (intro impI)
+        assume xS: "x \<in> ?S" and xf: "omfree x"
+        show "x \<in> Wellfounded.acc oltRwF"
+        proof (rule accI)
+          fix q assume qx: "(q, x) \<in> oltRwF"
+          hence ql: "q <\<^sub>o x" and qf: "omfree q" and qw: "wfo q" and qn: "nneg q" by auto
+          show "q \<in> Wellfounded.acc oltRwF"
+          proof (cases "q \<in> ?S")
+            case True
+            have qR: "(q, x) \<in> ?R" using ql xS True by simp
+            show ?thesis using accIH[OF qR] True qf by blast
+          next
+            case False
+            \<comment> \<open>\<^bold>\<open>residual (sorry):\<close> cross-level predecessor \<open>q <\<^sub>o x\<close>, \<open>q \<notin> Mlv n (Bst n)\<close>.
+               Splits into \<open>q = Su\<close> (sum, via @{thm [source] acc_of_bag_elemsF}) and
+               \<open>q = Th\<close> principal whose level-0 criticals escape \<^term>\<open>Bst n\<close> \<dash> the genuine
+               collapse-closure transfer using the \<open>\<Omega>\<close>-scaffolding.\<close>
+            show ?thesis using qf qw qn ql xS xf lower sorry
+          qed
+        qed
+      qed
+    qed
+  qed
+  show ?thesis using genacc[OF aR] aS af by blast
+qed
+
 lemma Bst_omfree_acc: "a \<in> Bst n \<Longrightarrow> omfree a \<Longrightarrow> a \<in> Wellfounded.acc oltRwF"
 proof (induction n arbitrary: a)
   case 0
@@ -176,14 +223,9 @@ next
     assume "a \<in> Bst n" thus ?thesis using Suc.IH Suc.prems(2) by blast
   next
     assume aA: "a \<in> Accl n"
-    \<comment> \<open>\<^bold>\<open>residual (sorry):\<close> an \<open>\<Omega>\<close>-free member of the \<open>\<Omega>\<close>-level \<^term>\<open>Accl n\<close> is
-       \<^term>\<open>oltRwF\<close>-accessible.  The lower levels are accessible by the IH
-       (@{thm [source] Suc.IH}); the residual is the collapse-closure transfer
-       (Towsner 3.10\<dash>3.11) using the \<open>\<Omega>\<close>-scaffolding for the cross-subscript
-       predecessors.\<close>
     have lower: "\<And>x. x \<in> Bst n \<Longrightarrow> omfree x \<Longrightarrow> x \<in> Wellfounded.acc oltRwF"
       using Suc.IH by blast
-    show ?thesis using aA Suc.prems(2) lower sorry
+    show ?thesis by (rule Accl_omfree_acc[OF lower aA Suc.prems(2)])
   qed
 qed
 
