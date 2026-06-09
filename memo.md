@@ -1417,3 +1417,21 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   ⟹ wfE 証明は inv2/cnf を最後まで通す必要。multiset 和還元も base(args)が一般には非WF＝NF threading 要。
 - wfE 攻略の足場: NF level-m 項は spine=[0,1,…,m] prefix（inv2）。先頭 D_0(b_0), b_0 の spine は
   [1,…,m] で始まる（1段シフト）。崩壊核は Towsner §3.2 ladder を構造参考に独自帰納で。
+
+### ★(2026-06-10 続) 和の層剥離 完了（wfsum.thy 緑）→ 残 sorry = wf_ArgsL ただ1つ
+- wfsum.thy: NF=非増加和 p0(b_i)（NF_lead0/NF_zerotops/sargs_noninc）、olt=lex on 引数列
+  （olt_sum_decomp 先頭差分分解）→ multiset 拡張に埋め込み（olt_sum_mult, one_step_implies_mult）
+  → wf_mult+inv_image でレベル内 wf（wf_level_from_args）→ wf_UN で全レベル（wfE_from_args）
+  → wf_Rnf → PSS_terminates。**ライブチェーンの sorry は wf_ArgsL のみ**。
+- デバッグ教訓: 500s runaway の原因は sorted_wrt まわりの auto/metis。bisect は「新規部を別theory
+  (wfsum) に分離して本体 green を維持」が速い。`wf_mult[OF wf_ArgsL]` は隠れ schematic ?m に
+  `of margs` が誤適用 → `wf_ArgsL[of m]` 明示。連言 hyp は simp で分割されない → auto。
+- **wf_ArgsL の実証調査（tools/wfe_explore.py, ST 214項）**:
+  - ArgsL 元の (lead, maxsub): level0→(0,0), level≥1→lead=1 のみ。危険な t_k 型（lead0 で
+    中に1以上）は**トップ引数位置に出現しない** ⟹ wf_ArgsL は真の見込み。
+  - 深さ1・深さ2 の引数はすべて consec-from-lead（spine が [lead..max] 連続）。
+  - **深さ3以降で consec は破れる**（例 p2 の引数 spine [1,0,1,2,…]）⟹ consec の遺伝的帰納は不可。
+  - **頑健な遺伝不変条件: lead(arg) ≤ sub+1**（全主要部分項 1684 個で違反 0、lead=sub+1 は到達）。
+- 次段設計: 引数クラスの帰納は (i) lead≤a+1 + cnf の規律で Towsner 風 ladder を組むか、
+  (ii) 引数クラスを数列側（部分ブロックの translate）で特徴づけ sub-block 不変条件を nfinv_ST_PS
+  流に証明するか。深さ1,2 の綺麗さは (ii) を示唆。
