@@ -111,6 +111,74 @@ next
   thus ?case by simp
 qed
 
+text \<open>The head order \<open>hdle\<close> is transitive, so in a well-formed term every spine
+  principal is dominated by the leading one.\<close>
+
+lemma hdle_trans:
+  assumes "hdle x y" "hdle y z" shows "hdle x z"
+proof (cases x)
+  case Z thus ?thesis by simp
+next
+  case (P ax bx cx)
+  obtain ay byy cy where y: "y = P ay byy cy" using assms(1) P by (cases y) auto
+  obtain az bz cz where z: "z = P az bz cz" using assms(2) y by (cases z) auto
+  have H1: "ax < ay \<or> (ax = ay \<and> (olt bx byy \<or> bx = byy))" using assms(1) P y by simp
+  have H2: "ay < az \<or> (ay = az \<and> (olt byy bz \<or> byy = bz))" using assms(2) y z by simp
+  have "ax < az \<or> (ax = az \<and> (olt bx bz \<or> bx = bz))"
+  proof -
+    consider (lt) "ax < ay" | (eq) "ax = ay" "olt bx byy \<or> bx = byy" using H1 by blast
+    thus ?thesis
+    proof cases
+      case lt
+      have "ay \<le> az" using H2 by auto
+      hence "ax < az" using less_le_trans[OF lt] by blast
+      thus ?thesis ..
+    next
+      case eq
+      consider (lt2) "ay < az" | (eq2) "ay = az" "olt byy bz \<or> byy = bz" using H2 by blast
+      thus ?thesis
+      proof cases
+        case lt2
+        have "ax < az" using eq(1) lt2 by simp
+        thus ?thesis ..
+      next
+        case eq2
+        have "ax = az" using eq(1) eq2(1) by simp
+        moreover have "olt bx bz \<or> bx = bz" using eq(2) eq2(2) by (metis olt_trans)
+        ultimately show ?thesis by simp
+      qed
+    qed
+  qed
+  thus ?thesis using P z by simp
+qed
+
+fun headle_all :: "three \<Rightarrow> three \<Rightarrow> bool" where
+  "headle_all bnd Z = True"
+| "headle_all bnd (P a b c) = (hdle (P a b Z) bnd \<and> headle_all bnd c)"
+
+lemma hdle_head_ignores_tail: "hdle (P a b c) z = hdle (P a b Z) z"
+  by (cases z) auto
+
+lemma wf3_headle_aux: "wf3 t \<Longrightarrow> hdle t bnd \<Longrightarrow> headle_all bnd t"
+proof (induction t)
+  case Z thus ?case by simp
+next
+  case (P a b c)
+  note IHc = P.IH(2)
+  have wfc: "wf3 c" and hdc: "hdle c (P a b Z)" using P.prems(1) by auto
+  have hd: "hdle (P a b Z) bnd" by (metis P.prems(2) hdle_head_ignores_tail)
+  have "hdle c bnd" using hdc hd by (rule hdle_trans)
+  hence "headle_all bnd c" using IHc[OF wfc] by simp
+  thus ?case using hd by simp
+qed
+
+lemma wf3_headle: "wf3 (P a b c) \<Longrightarrow> headle_all (P a b Z) c"
+proof -
+  assume w: "wf3 (P a b c)"
+  hence "wf3 c" and "hdle c (P a b Z)" by auto
+  thus ?thesis by (rule wf3_headle_aux)
+qed
+
 subsection \<open>Order preservation on the standard-form image (Buchholz Lemma 2.2(c))\<close>
 
 text \<open>\<^bold>\<open>Residual obligation\<close> (the genuine Buchholz-level core): the embedding is
@@ -134,6 +202,47 @@ lemma Ccond:
   assumes "wf3 (P a b c)"
   shows "oV b \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b). psi \<xi>) (oV b) a)"
   sorry
+
+text \<open>Every spine principal of a well-formed term whose head is dominated by \<open>D\<^bsub>a\<^esub>(b)\<close>
+  (with \<open>b \<prec> f\<close>) is \<open>< \<psi>\<^bsub>a\<^esub>(o f)\<close>: subscript-smaller ones by the jump, subscript-equal
+  ones by strict monotonicity 1.3 (\<open>mono\<close> supplies \<open>o b' < o f\<close> from the outer IH,
+  \<open>Ccond\<close> the C-membership).\<close>
+
+lemma allprinc_lt_spine:
+  assumes mono: "\<And>b'. olt b' f \<Longrightarrow> wf3 b' \<Longrightarrow> size b' < n \<Longrightarrow> oV b' < oV f"
+    and bf: "olt b f"
+  shows "headle_all (P a b Z) c \<Longrightarrow> wf3 c \<Longrightarrow> size c < n \<Longrightarrow> allprinc_lt (psi (oV f) a) c"
+proof (induction c)
+  case Z thus ?case by simp
+next
+  case (P a' b' c'')
+  have hd: "hdle (P a' b' Z) (P a b Z)" and hall: "headle_all (P a b Z) c''"
+    using P.prems(1) by auto
+  have wfnode: "wf3 (P a' b' c'')" using P.prems(2) .
+  have wfb': "wf3 b'" and wfc'': "wf3 c''" using P.prems(2) by auto
+  have sb': "size b' < n" using P.prems(3) by simp
+  have szc'': "size c'' < n" using P.prems(3) by simp
+  have head: "psi (oV b') a' < psi (oV f) a"
+  proof -
+    have "a' < a \<or> (a' = a \<and> (olt b' b \<or> b' = b))" using hd by simp
+    thus ?thesis
+    proof
+      assume "a' < a" thus ?thesis by (rule psi_subscript_jump)
+    next
+      assume "a' = a \<and> (olt b' b \<or> b' = b)"
+      hence aa: "a' = a" and bb: "olt b' b \<or> b' = b" by auto
+      have "olt b' f" using bb bf by (auto intro: olt_trans)
+      have ob: "oV b' < oV f" by (rule mono[OF \<open>olt b' f\<close> wfb' sb'])
+      have mem: "oV b' \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b'). psi \<xi>) (oV b') a')"
+        by (rule Ccond[OF wfnode])
+      have "psi (oV b') a' < psi (oV f) a'"
+        by (rule psi_strict_mono_arg[OF Ord_oV Ord_oV ob mem])
+      thus ?thesis using aa by simp
+    qed
+  qed
+  have "allprinc_lt (psi (oV f) a) c''" using P.IH(2)[OF hall wfc'' szc''] .
+  thus ?case using head by simp
+qed
 
 lemma oV_order_pres:
   "wf3 v \<Longrightarrow> wf3 u \<Longrightarrow> olt v u \<Longrightarrow> oV v < oV u"
@@ -166,7 +275,31 @@ proof (induction "size u + size v" arbitrary: u v rule: less_induct)
       finally show ?thesis using P u by simp
     next
       case arg
-      show ?thesis sorry
+      have aa: "e = a" using arg by simp
+      have wff: "wf3 f" using wfu by simp
+      have wfc: "wf3 c" using wfv by simp
+      have wfb: "wf3 b" using wfv by simp
+      have mono: "\<And>b'. olt b' f \<Longrightarrow> wf3 b' \<Longrightarrow> size b' < size v \<Longrightarrow> oV b' < oV f"
+      proof -
+        fix b' assume A1: "olt b' f" and A2: "wf3 b'" and A3: "size b' < size v"
+        have sz: "size f + size b' < size u + size v" using A3 u by simp
+        show "oV b' < oV f" by (rule less.hyps[OF sz A2 wff A1])
+      qed
+      have hac: "headle_all (P a b Z) c" by (rule wf3_headle[OF wfv])
+      have szc: "size c < size v" using P by simp
+      have spine: "allprinc_lt (psi (oV f) a) c"
+        by (rule allprinc_lt_spine[OF mono arg(2) hac wfc szc])
+      have szb: "size b < size v" using P by simp
+      have obf: "oV b < oV f" by (rule mono[OF arg(2) wfb szb])
+      have memb: "oV b \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b). psi \<xi>) (oV b) a)"
+        by (rule Ccond[OF wfv])
+      have lead: "psi (oV b) a < psi (oV f) a"
+        by (rule psi_strict_mono_arg[OF Ord_oV Ord_oV obf memb])
+      have "allprinc_lt (psi (oV f) a) (P a b c)" using lead spine by simp
+      hence "oV (P a b c) < psi (oV f) a"
+        by (rule oV_lt_of_allprinc[OF psi_addprinc])
+      also have "psi (oV f) a \<le> oV (P e f g)" using aa psi_le_oV by simp
+      finally show ?thesis using P u by simp
     next
       case tail
       have wfc: "wf3 c" using wfv by simp
