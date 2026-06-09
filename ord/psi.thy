@@ -348,6 +348,92 @@ proof -
   with psi_mono_arg[OF le] show ?thesis by (metis order_le_imp_less_or_eq)
 qed
 
+subsection \<open>\<open>\<psi>\<^sub>v(\<alpha>)\<close> is additive principal (Buchholz Lemma 1.2(b))\<close>
+
+text \<open>Every ordinal below \<open>\<psi>\<^sub>v(\<alpha>)\<close> already lies in \<open>C\<^sub>v(\<alpha>)\<close> (because \<open>\<psi>\<^sub>v(\<alpha>)\<close> is
+  the \<^emph>\<open>least\<close> ordinal outside it).\<close>
+
+lemma below_psi_in_Cset:
+  assumes "Ord \<delta>" "\<delta> < psi \<alpha> v"
+  shows "\<delta> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+proof (rule ccontr)
+  assume nin: "\<delta> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  have "(LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)) \<le> \<delta>"
+    by (rule Ord_Least_le) (use assms(1) nin in auto)
+  hence "psi \<alpha> v \<le> \<delta>" by (subst psi_unfold)
+  with assms(2) show False by simp
+qed
+
+text \<open>\<^bold>\<open>Lemma 1.2(b)\<close>: \<open>\<psi>\<^sub>v(\<alpha>)\<close> is additive principal — a sum of two ordinals
+  below it stays below it.  (\<open>C\<^sub>v(\<alpha>)\<close> is closed under \<open>+\<close> and contains every
+  ordinal below \<open>\<psi>\<^sub>v(\<alpha>)\<close>, while \<open>\<psi>\<^sub>v(\<alpha>)\<close> itself is not in it.)  Proof by
+  transfinite induction on the second summand.\<close>
+
+lemma psi_add_principal:
+  assumes "Ord \<beta>" "Ord \<gamma>" "\<beta> < psi \<alpha> v" "\<gamma> < psi \<alpha> v"
+  shows "\<beta> + \<gamma> < psi \<alpha> v"
+proof -
+  let ?C = "Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v"
+  have betaC: "\<beta> \<in> elts ?C" using assms(1,3) by (rule below_psi_in_Cset)
+  have "\<gamma> < psi \<alpha> v \<longrightarrow> \<beta> + \<gamma> < psi \<alpha> v" using assms(2)
+  proof (induction \<gamma> rule: Ord_induct)
+    case (step \<gamma>)
+    show ?case
+    proof
+      assume gd: "\<gamma> < psi \<alpha> v"
+      from step.hyps show "\<beta> + \<gamma> < psi \<alpha> v"
+      proof (cases \<gamma> rule: Ord_cases)
+        case 0
+        with assms(3) show ?thesis by simp
+      next
+        case (succ \<eta>)
+        have eg: "\<eta> \<in> elts \<gamma>" using succ by (metis elts_succ insertI1)
+        have eOrd: "Ord \<eta>" using succ by simp
+        have ed: "\<eta> < psi \<alpha> v" using less_trans[OF OrdmemD[OF step.hyps eg] gd] .
+        have bh: "\<beta> + \<eta> < psi \<alpha> v" using step.IH[OF eg] ed by simp
+        have bhC: "\<beta> + \<eta> \<in> elts ?C"
+          by (rule below_psi_in_Cset[OF Ord_add[OF assms(1) eOrd] bh])
+        have d1: "(1::V) < psi \<alpha> v"
+        proof -
+          have zg: "(0::V) \<in> elts \<gamma>" using eOrd succ by (metis zero_in_succ)
+          have "succ 0 \<le> \<gamma>"
+            using succ_le_iff[OF Ord_0 step.hyps] OrdmemD[OF step.hyps zg] by simp
+          hence "(1::V) \<le> \<gamma>" by (simp add: succ_eq_add1)
+          thus ?thesis using gd by (rule le_less_trans)
+        qed
+        have oneC: "(1::V) \<in> elts ?C" by (rule below_psi_in_Cset[OF Ord_1 d1])
+        have bg: "\<beta> + \<gamma> = (\<beta> + \<eta>) + 1" using succ by (metis add.assoc succ_eq_add1)
+        have inC: "\<beta> + \<gamma> \<in> elts ?C"
+          using bg Cset_add_closed[OF bhC oneC] by simp
+        have le: "\<beta> + \<gamma> \<le> psi \<alpha> v"
+        proof -
+          have "(\<beta> + \<eta>) + 1 \<le> psi \<alpha> v"
+            using bh by (simp add: succ_eq_add1[symmetric] succ_le_iff Ord_add assms(1) eOrd)
+          thus ?thesis using bg by simp
+        qed
+        show ?thesis using le inC psi_notin by (metis order_le_imp_less_or_eq)
+      next
+        case limit
+        have gord: "Ord \<gamma>" using limit by (rule Limit_is_Ord)
+        have bz: "\<beta> + z \<le> psi \<alpha> v" if z: "z \<in> elts \<gamma>" for z
+        proof -
+          have "z < psi \<alpha> v" using less_trans[OF OrdmemD[OF step.hyps z] gd] .
+          thus ?thesis using step.IH[OF z] by simp
+        qed
+        have le: "\<beta> + \<gamma> \<le> psi \<alpha> v"
+        proof -
+          have "(\<Squnion>z\<in>elts \<gamma>. \<beta> + z) \<le> psi \<alpha> v" using bz by (simp add: SUP_le_iff)
+          thus ?thesis using add_Limit[OF limit] by simp
+        qed
+        have gC: "\<gamma> \<in> elts ?C" by (rule below_psi_in_Cset[OF gord gd])
+        have "\<beta> + \<gamma> \<in> elts ?C" using betaC gC by (rule Cset_add_closed)
+        with le psi_notin show ?thesis by (metis order_le_imp_less_or_eq)
+      qed
+    qed
+  qed
+  thus ?thesis using assms(4) by blast
+qed
+
 subsection \<open>The cardinality bound (Buchholz Lemma 1.2(c)): \<open>\<psi>\<^sub>v(\<alpha>) < \<Omega>\<^bsub>v+1\<^esub>\<close>\<close>
 
 text \<open>\<open>|C\<^sub>v(\<alpha>)| \<le> \<Omega>\<^sub>v \<squnion> \<omega> < \<Omega>\<^bsub>v+1\<^esub>\<close>, since \<open>C\<^sub>v(\<alpha>)\<close> is the closure of \<^term>\<open>Om v\<close>
