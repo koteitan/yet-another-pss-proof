@@ -1350,3 +1350,13 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - **選択肢(b)**: WF ターゲットを Towsner §3 多相系(新 datatype: 単一 ϑ＋ΩpJq de Bruijn)に切替、§3.2 を素直に移植して wf を閉じ、three(PSS)→§3系 へ embed。大改修だが**証明が実際に閉じる正道**。
   - **選択肢(c)**: 別の WF 証明(Buchholz 1991 operator-controlled 等)。
 - **次アクション**: ユーザーに方針相談(§3 多相系への切替が妥当か、特定の構成/参照の意図があるか)。＝研究級の真の分岐点で domain 知識が数セッション分を節約。
+
+### 進捗 (2026-06-09 続41): 【続40 を訂正】shift-down 問題は omfree では生じない可能性大→絶対系を先に実験すべき
+- **続40 の shift-down 悲観論を訂正**: `norm a = shift(−FC a) a`。**omfree 項は FCset=∅→FC=0→norm=恒等**。
+  ∴ 3.10/3.11 の正規化シフトは**omfree ターゲットでは恒等**＝負添字 Th を作らない。shift が Om を生むのは Om 含有中間項のみで、それは ground レベル(M_n の gnd≥−n 制約)で処理される(Towsner の Ω_{−1} 扱い)。
+  Th 添字 r' は FCset に寄与しない(FCset は Om index のみ)ので正規化対象外。∴ buried ϑ_{r'}(h') の正規化で負添字化は起きない。
+- **修正結論**: 絶対§2 系でも **omfree ターゲットの collapse closure は distinguished-set で閉じ得る**。§3 への大改修は early。
+  まず **scratch_wf で Om-scaffolded distinguished-set を実験的に構築**し、(B2) s<r ケースが level-drop で閉じるか高速ビルド(20-30s)で実証すべき。
+- **次セッションの具体作業(fresh context 推奨)**: scratch_wf の実装計画に沿って
+  (1) prev に Mbot(base) を含む修正 Mn' 定義、(2) connection(Acc n⊆acc, master と組で n 帰納)、(3) 3.10 collapse closure を experimental に。
+  ビルドが速いので theorize より code＋build feedback で進める。ユーザー相談は absolute が実証的に詰んでから(§3 切替判断時)で十分。
