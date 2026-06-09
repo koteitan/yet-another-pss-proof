@@ -331,4 +331,21 @@ proof (rule ccontr)
   thus False using psi_notin by simp
 qed
 
+text \<open>\<^bold>\<open>Strict monotonicity (Buchholz Lemma 1.3)\<close>: if \<open>\<alpha> < \<beta>\<close> and \<open>\<alpha> \<in> C\<^sub>v(\<alpha>)\<close> then
+  \<open>\<psi>\<^sub>v(\<alpha>) < \<psi>\<^sub>v(\<beta>)\<close>.  Key for the order-embedding (Lemma 2.2(c)).\<close>
+
+lemma psi_strict_mono_arg:
+  assumes "Ord \<alpha>" "Ord \<beta>" "\<alpha> < \<beta>" "\<alpha> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  shows "psi \<alpha> v < psi \<beta> v"
+proof -
+  have le: "\<alpha> \<le> \<beta>" using assms(3) by simp
+  have a\<beta>: "\<alpha> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> v)" using assms(4) CC_mono[OF le] by blast
+  have amem: "\<alpha> \<in> elts \<beta>" using assms(1,2,3) by (simp add: Ord_mem_iff_lt)
+  have "(\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<alpha> v \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> v)"
+    by (rule Cset_psi_closed[OF a\<beta> amem])
+  hence "psi \<alpha> v \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> v)" using amem by simp
+  hence "psi \<alpha> v \<noteq> psi \<beta> v" using psi_notin by metis
+  with psi_mono_arg[OF le] show ?thesis by (metis order_le_imp_less_or_eq)
+qed
+
 end
