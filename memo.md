@@ -1468,3 +1468,14 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - 次段: (a) 標準/非標準の近接ペアを大量に diff して Adm 由来の項側条件 (adm3) を同定、
   (b) ladder クラス = inv2+cnf+ok3+adm3 で within-level 帰納を再設計、
   (c) NF ⟹ 各不変条件の Isabelle 証明（nfinv_ST_PS/cnf_ST_PS の流儀）。
+
+### (2026-06-10 続4) adm3 対照データ＋P進 Adm 定義
+- P進 Adm: `nadm M j ⟷ j > Lng M ∨ (nextR M 1 (j-1) j ∧ nextR M 1 j (j+1))`（行1 Next 連鎖の
+  中間 index が非許容）。Adm M j = j が許容ならj、否なら直前の許容 index。
+- 対照（corpus 9274 standard）: 一般には row0 連続 [·,1][·,0][·,1] の直後 row1=1 は許容
+  （674例; 2 も 234例）。**しかし (0,0)(1,1)(2,0)(3,1) 開始では5番目 row1 は常に 0**
+  （779例; 1/2 は 0 例）＝x_1 を排除する規則は局所でなく行1木（親子文脈）依存。
+- ⟹ adm3 の項側化には three の添字を「行1値」として読む行1-Next 構造の項上対応物が要る。
+  次バースト: (a) 行1木を three 側で再構成（spine/添字列から nextR1 を復元できるか）、
+  (b) x_1 文脈で (4,1) が禁止される正確な理由を P進 §6（content.md 行1木/Red/Adm 節）で特定、
+  (c) adm3 候補を定式化→ genuine 検証→ ladder クラス {cnf, ok3, adm3} で再挑戦。
