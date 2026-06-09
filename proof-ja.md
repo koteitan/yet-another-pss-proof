@@ -13,22 +13,23 @@
 ——数列をカントール標準形に写し、`expand` の各ステップで順序数が真に減少する——
 をペア数列へ一般化したものである。これは P進大好きbot 氏の証明とは異なる別アプローチである。
 
-減少を測る記法 `p_a(b)+c`（型 `three`）自体は Buchholz の ψ 記法をそのまま借りるのでは
-なく独自の三分木として定義するが、それは Buchholz (1986) §2 の項記法系 $(\mathrm{OT},<)$ と
-同型である。その順序 `≺` の**整礎性**は、Buchholz の ψ 崩壊関数（ψ_v）への順序保存的な
-埋め込みによって意味論的に与える（後述 §7, route A）。すなわち減少補題までは独自記法で完結し、
-整礎性の核だけを Buchholz ψ に帰着させる。
+減少を測る記法 `p_a(b)+c`（型 `three`）は独自の三分木として定義する（Buchholz §2 の
+項記法系 $(\mathrm{OT},<)$ と同型）。その順序 `≺`（添字優先の純辞書式 `olt`）の**整礎性**は、
+**順序数を一切使わず、構文的な帰納法で**証明する（後述 §7、`wf.thy`、session YAPSS）。
+これが本証明の核心方針：減少補題も整礎性も独自記法上で完結させ、外部の順序数論
+（Buchholz ψ や Towsner 論文の整礎性定理）を**引用せず自前で**与える。
 
 PSS の証明論的強さは **ψ₀(ψ_ω(0))**（Buchholz ordinal, Ω_ω の崩壊）と
 考えられており、記法 `p_a(b)` の添字 `a` を自然数（0,1,2,… とその上限 ω）に
 取ることに対応する。
 
-> **記法の凡例**: 本稿には Isabelle/HOL で形式化された証明本文を記す。前半（§1–§6、
-> `def.thy` / `mechanized.thy` / `proofs.thy`、session YAPSS）は検証済みで、停止性は
-> 整礎性 wfimg（NF 上の `≺` 整礎）一点に帰着する。後半（§7、route A、`ord/psi.thy` /
-> `ord/otembed.thy`、session PSI on AFP `ZFC_in_HOL`）は wfimg を Buchholz ψ で構成し、
-> 現在は順序保存補題 `oV_order_pres_NF`（Lemma 2.2(c)）ただ一つを残す。
-> ビルド: `isbman build -d <afp>/thys -d . PSI`。
+> **記法の凡例**: 本稿には Isabelle/HOL で形式化された証明本文を記す。全体が session
+> YAPSS（`def.thy` / `mechanized.thy` / `proofs.thy` / `wf.thy`、**順序数ライブラリ不使用**）
+> で検証され、停止性 `PSS_terminates` は**ただ一つの未証明補題** `wfE_within_level`
+> （同一 maxsub レベル内の整礎性＝Buchholz 崩壊核）に帰着する。それ以外は全て緑。
+> ビルド: `isbman build -d . YAPSS`。
+> （旧 route A＝ZFC 順序数で ψ を構成する意味論的証明は、Buchholz ψ が PSS 標準形の対角を
+> collapse するため破棄した。)
 
 ---
 
@@ -248,43 +249,38 @@ $$ \{(T,M)\mid M\in\mathrm{ST_{PS}}\wedge \mathrm{step}\,M\,T\}\ \subseteq\ \mat
 
 ---
 
-## 7. 整礎性の証明（route A：Buchholz ψ_v 崩壊関数による意味論的証明）
+## 7. 整礎性の証明（pure-lex 構文的・順序数なし、[`wf.thy`](wf.thy)）
 
 §6 で停止性は **wfimg**（$\mathrm{NF}=\mathrm{translate}\,\text{«}\,\mathrm{ST_{PS}}$ 上の
-$\prec$ 整礎性）一点に帰着した。route A はこれを Buchholz (1986) の ψ 崩壊関数で
-**意味論的に**証明する。ZFC-in-HOL（AFP `ZFC_in_HOL`、順序数型 `V`）上に ψ_v を構成し、
-記法 $\mathsf{three}$ を順序数へ順序保存的に埋め込む。
+$\prec$ 整礎性、`wf Rnf`）一点に帰着した。本証明はこれを**順序数を一切使わず構文的帰納**で
+与える。鍵は「最大添字 `maxsub` による階層化」である。
 
-**崩壊関数（[`ord/psi.thy`](ord/psi.thy)、session PSI）。**
-$\Omega_v=\aleph_v$（$v>0$）、$\Omega_0=1$（`Om`）。$C_v(\alpha)$ を
-「$\Omega_v$ を含み、$+$ と（$\xi<\alpha$, $u\in\mathbb N$ に対する）$\xi\mapsto\psi_u(\xi)$ で
-閉じた最小集合」（`Cset`、有限反復 `Cstep` の可算合併）とし、
-$\psi_v(\alpha)=\min\{\gamma\ \text{順序数}\mid\gamma\notin C_v(\alpha)\}$（`psi`、`transrec`）。
+**(1) maxsub 単調性（Isabelle ✓, `maxsub_mono_NF'`）。**
+NF 項の左スパイン（最左引数の添字列）は不変条件 `inv2` で $0,1,\dots,\mathrm{maxsub}$ から
+始まり、各添字は maxsub 以下（`nfinv`、`nfinv_ST_PS` で全標準形に成立）。`olt` はスパインの
+辞書式順序を refine する（`olt_imp_slex`）ので、
+$$ w\prec x \ \Longrightarrow\ \mathrm{maxsub}\,w \le \mathrm{maxsub}\,x \qquad (w,x\in\mathrm{NF}). $$
 
-主要補題（すべて Isabelle ✓）：
+**(2) CNF（Isabelle ✓, `cnf_ST_PS`）。** 全標準形は Cantor 標準形（兄弟主要項が非増加）に
+翻訳される（`cnf`、展開保存 `cnf_oper`、対角 `cnf_diag`）。`cnf_tops_le`：トップレベルの
+$+$ 連鎖の添字は先頭で上から押さえられる。
 
-- well-defined（$C_v(\alpha)$ は集合ゆえ全順序数を尽くせない）`psi_ex` / `Ord_psi` / `psi_notin`
-- 閉包 C1–C3（$\Omega_v\subseteq C_v(\alpha)$、$+$ 閉、$\psi_u$ 閉）`Om_subset_Cset` / `Cset_add_closed` / `Cset_psi_closed`
-- $\Omega_v\le\psi_v(\alpha)$ `Om_le_psi`、引数単調 `psi_mono_arg`
-- **Lemma 1.2(b)**（$\psi_v(\alpha)$ は加法主要数：$\beta,\gamma<\psi_v(\alpha)\Rightarrow\beta+\gamma<\psi_v(\alpha)$）`psi_add_principal`
-- **Lemma 1.2(c)**（$\psi_v(\alpha)<\Omega_{v+1}$、濃度評価 $|C_v(\alpha)|\le\Omega_v\sqcup\omega$）`psi_lt_Om_Suc`
-- **Lemma 1.3**（厳密単調：$\alpha<\beta\wedge\alpha\in C_v(\alpha)\Rightarrow\psi_v(\alpha)<\psi_v(\beta)$）`psi_strict_mono_arg`
+**(3) レベル内還元（Isabelle ✓, `wf_Rnf_from_within_level`）。**
+maxsub 単調性で $R_{\mathrm{NF}}$ を「maxsub 減少部」（`maxsub` への逆像で自明に整礎）と
+「maxsub 同値部」に分割し、`wf_union_compatible` で
+$$ \textbf{wfE}\quad \mathrm{wf}\{(w,x)\mid w\prec x \wedge w,x\in\mathrm{NF}\wedge \mathrm{maxsub}\,w=\mathrm{maxsub}\,x\} \ \Longrightarrow\ \mathrm{wf}\,R_{\mathrm{NF}}. $$
 
-**順序埋め込み $o:\mathsf{three}\to V$（[`ord/otembed.thy`](ord/otembed.thy)）。**
-$P\,a\,b\,c=D_a(b)+c$ に対応して
-$$ o(Z)=0,\qquad o(P\,a\,b\,c)=\psi_a(o\,b)+o\,c $$
-（`oV`、$\mathrm{Ord}(o\,t)$ は `Ord_oV`）。順序保存（Buchholz **Lemma 2.2(c)**）
+**(4) 残る唯一の核 `wfE_within_level`（作業中, 唯一の sorry）。**
+同一 maxsub レベル内の整礎性。レベル内では全添字がそのレベルで有界、NF 項は先頭添字 0・
+CNF（非増加兄弟）に固定される。ここに Buchholz 崩壊の本体が集約される。**順序数を使わず、
+Towsner §3.2 の distinguished-set ladder を構造の参考にしつつ独自の帰納**で証明する方針
+（和の整礎性は PrSS と同様 multiset 拡張、主要項 $D_a(b)$ の崩壊が核）。詳細は [`memo.md`](memo.md)。
 
-$$ u,v\in\mathrm{NF}\ \wedge\ v\prec u\ \Longrightarrow\ o\,v<o\,u $$
+これが示せれば `wf_Rnf` → §6 `step_terminates` で停止性 `PSS_terminates` が閉じる。
 
-が示せれば、$R_{\mathrm{NF}}\subseteq\mathrm{inv\_image}\ \mathrm{VWF}\ o$ となり、順序数の整礎性
-（`wf_VWF`）と `wf_inv_image`/`wf_subset` で **wfimg** が従う（`wf_Rnf`）。これを §6 の
-`step_terminates` に与えて停止性 `PSS_terminates` が得られる。
-
-> **現状（2026-06-10）**: §1 は上記補題まですべて緑、§2 の骨格（`oV`/`wf_Rnf`/`PSS_terminates`）
-> も緑で、停止性は **順序保存 `oV_order_pres_NF`（Lemma 2.2(c)）ただ一つ**に帰着している。
-> その証明は 1.2(b) 加法主要数・1.3 厳密単調（の C 条件 $o\,b\in C_a(o\,b)$）・標準形 NF の
-> Buchholz OT（降順 CNF）性から行う予定であり、現在作業中。詳細は [`memo.md`](memo.md)。
+> **現状（2026-06-10）**: §1–§6 ＋ (1)(2)(3) はすべて緑。停止性 `PSS_terminates` は
+> **`wfE_within_level` ただ一つ**の補題に帰着（live チェーン全体で sorry はこれ1個のみ）。
+> 順序数ライブラリは不使用。
 
 ---
 
@@ -309,11 +305,11 @@ $$ u,v\in\mathrm{NF}\ \wedge\ v\prec u\ \Longrightarrow\ o\,v<o\,u $$
 | 停止性（wfimg ⟹ 停止） | **`step_terminates`** / `no_infinite_expansion` | ✓ |
 | 整礎性の還元（diagacc ⟹ wfimg） | **`wf_Rnf_from_diag`** / `acc_Rnf_of_ST_PS` / `oper_eq_self_short` | ✓ |
 | 停止性（diagacc ⟹ 停止） | `step_terminates_from_diag` / `no_infinite_expansion_from_diag` | ✓ |
-| **route A**: 崩壊関数 $\Omega_v,C_v,\psi_v$ | [`ord/psi.thy`](ord/psi.thy) `Om`/`Cset`/`psi` | ✓ |
-| 補題 1.2(b)/1.2(c)/1.3 | `psi_add_principal` / `psi_lt_Om_Suc` / `psi_strict_mono_arg` | ✓ |
-| 順序埋め込み $o:\mathsf{three}\to V$ | [`ord/otembed.thy`](ord/otembed.thy) `oV` / `Ord_oV` | ✓ |
-| wfimg（$\prec$ on NF 整礎） | **`wf_Rnf`** / 停止性 **`PSS_terminates`** | ✓（順序保存に依存） |
-| 順序保存（Lemma 2.2(c), on NF） | `oV_order_pres_NF` | 作業中 [`memo.md`](memo.md) |
+| **整礎性 (pure-lex, 順序数なし)** maxsub 単調 | [`wf.thy`](wf.thy) `olt_imp_slex` / `nfinv_ST_PS` / `maxsub_mono_NF'` | ✓ |
+| CNF（標準形 ⟹ CNF） | `cnf` / `cnf_ST_PS` / `cnf_oper` / `cnf_tops_le` | ✓ |
+| wfimg をレベル内に還元 | **`wf_Rnf_from_within_level`** / `wf_Rnf` | ✓ |
+| 停止性（pure-lex 経路） | **`PSS_terminates`** (= `step_terminates[OF wf_Rnf]`) | ✓（`wfE` に依存） |
+| レベル内整礎性（崩壊核） | `wfE_within_level` | 作業中・唯一の sorry [`memo.md`](memo.md) |
 
 ---
 
