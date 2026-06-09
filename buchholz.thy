@@ -488,10 +488,74 @@ proof -
                           show "\<gamma> \<in> Wellfounded.acc oltRwF"
                             using pIH[OF szg wg fg ng hg glt] .
                         qed
-                        \<comment> \<open>\<^bold>\<open>Residual kernel (sorry):\<close> controlled \<open>\<Longrightarrow>\<close> accessible.  The control
-                           \<open>Kacc : Kn p e \<subseteq> acc\<close> is now established (green); the remaining gap is
-                           exactly \<open>ctrl_acc\<close> (Towsner Acc_n distinguished-set construction).\<close>
-                        have eacc: "e \<in> Wellfounded.acc oltRwF" sorry
+                        \<comment> \<open>\<^bold>\<open>Controlled \<open>\<Longrightarrow>\<close> accessible\<close>, by structural induction on \<open>e\<close> using the
+                           control \<open>Kacc\<close>.  The \<^const>\<open>Su\<close> case reduces to summands; \<open>\<vartheta>\<^bsub>r\<^esub> h\<close> with
+                           \<open>r \<le> p\<close> is in \<open>Kn p e\<close> directly; \<open>p < r < n\<close> closes by the level IH at \<open>r\<close>.
+                           The single residual is \<open>r \<ge> n\<close> (a buried high-level collapse \<open>\<vartheta>\<^bsub>r\<^esub> h\<close>,
+                           \<open>h \<in> acc\<close>): the genuine Towsner Acc_n core (sorry).\<close>
+                        have eacc: "e \<in> Wellfounded.acc oltRwF"
+                        proof -
+                          have ctrl: "\<And>e0. omfree e0 \<Longrightarrow> wfo e0 \<Longrightarrow> nneg e0
+                                \<Longrightarrow> (\<forall>\<gamma>\<in>Kn p e0. \<gamma> \<in> Wellfounded.acc oltRwF) \<Longrightarrow> e0 \<in> Wellfounded.acc oltRwF"
+                          proof -
+                            fix e0
+                            show "omfree e0 \<Longrightarrow> wfo e0 \<Longrightarrow> nneg e0
+                                  \<Longrightarrow> (\<forall>\<gamma>\<in>Kn p e0. \<gamma> \<in> Wellfounded.acc oltRwF) \<Longrightarrow> e0 \<in> Wellfounded.acc oltRwF"
+                            proof (induction e0)
+                              case (Om m) thus ?case by simp
+                            next
+                              case (Th r h)
+                              have wh: "wfo h" and fh: "omfree h" and nh: "nneg h" and r0: "0 \<le> r"
+                                using Th.prems by auto
+                              show ?case
+                              proof (cases "p < r")
+                                case False
+                                \<comment> \<open>\<open>r \<le> p\<close>: \<open>Kn p (\<vartheta>\<^bsub>r\<^esub> h) = {\<vartheta>\<^bsub>r\<^esub> h}\<close>, so \<open>\<vartheta>\<^bsub>r\<^esub> h\<close> is controlled directly\<close>
+                                hence "Kn p (Th r h) = {Th r h}" by simp
+                                thus ?thesis using Th.prems(4) by simp
+                              next
+                                case True
+                                hence Kne: "Kn p (Th r h) = Kn p h" by simp
+                                have hctrl: "\<forall>\<gamma>\<in>Kn p h. \<gamma> \<in> Wellfounded.acc oltRwF"
+                                  using Th.prems(4) Kne by simp
+                                have hacc: "h \<in> Wellfounded.acc oltRwF"
+                                  using Th.IH fh wh nh hctrl by blast
+                                show ?thesis
+                                proof (cases "r < n")
+                                  case True
+                                  from r0 obtain j' where rj: "r = int j'"
+                                    using zero_le_imp_eq_int by blast
+                                  have j'k: "j' < k" using \<open>r < n\<close> rj by (simp add: ndef)
+                                  show ?thesis
+                                    using levelIH[OF j'k] hacc fh wh nh rj by blast
+                                next
+                                  case False
+                                  \<comment> \<open>\<^bold>\<open>residual (sorry):\<close> \<open>r \<ge> n\<close>, \<open>h \<in> acc \<Longrightarrow> Th r h \<in> acc\<close> at a high level\<close>
+                                  show ?thesis using hacc fh wh nh r0 sorry
+                                qed
+                              qed
+                            next
+                              case (Su xs)
+                              have wfx: "wfo (Su xs)" and fx: "omfree (Su xs)" and nx: "nneg (Su xs)"
+                                using Su.prems by auto
+                              show ?case
+                              proof (rule acc_of_bag_elemsF)
+                                show "wfo (Su xs)" by (rule wfx)
+                                show "omfree (Su xs)" by (rule fx)
+                                fix x assume "x \<in># bag (Su xs)"
+                                hence x: "x \<in> set xs" by simp
+                                have wx: "wfo x" and fx': "omfree x" and nx': "nneg x"
+                                  using wfx fx nx x by auto
+                                have "\<forall>\<gamma>\<in>Kn p x. \<gamma> \<in> Wellfounded.acc oltRwF"
+                                  using Su.prems(4) x by auto
+                                thus "x \<in> Wellfounded.acc oltRwF"
+                                  using Su.IH[OF x] fx' wx nx' by blast
+                              qed
+                            qed
+                          qed
+                          have Kall: "\<forall>\<gamma>\<in>Kn p e. \<gamma> \<in> Wellfounded.acc oltRwF" using Kacc by blast
+                          show "e \<in> Wellfounded.acc oltRwF" using ctrl[of e] fe we ne Kall by blast
+                        qed
                         have "Th (int j) e \<in> Wellfounded.acc oltRwF"
                           using levelIH[OF jk] eacc we fe ne by blast
                         thus ?thesis using qTh pj by simp
