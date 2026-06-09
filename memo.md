@@ -1282,3 +1282,18 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   接続(AccB⊆acc oltRwF)は Towsner 3.10 の「ϑα の predecessor は全て acc」=現 pacc/ctrl_acc 構造で部分的に実現済。
   我々順序は K-dom＋明示レベルで Towsner 順序と差異あり＝戦略流用の独自実行。
 - **状態**: baseline 緑, 3 sorry(L_ThF=残差1点に縮小・大半 green / olt_trans / op_NF)。scratch: order(green,lex linearity), trans(green,bridge+size), cnf(foundation), order2(廃).
+
+### 進捗 (2026-06-09 続37): 残差の構成方針＝Th-subscript-stratified distinguished sets（Om-based Mn は omfree に degenerate）
+- **残差再掲**: `h∈acc, Kn p h⊆acc, p<r ⟹ Th r h∈acc`(r≥n)。h は d と順序無関係(buried)・r 無界 → per-term 帰納不可。
+  確認: r は e(predecessor の arg)の部分項の添字で、固定 e では r≤maxsub(e)<∞ だが e 横断で無界。h∈acc を「運ぶ」のは L_ThF(r,h) で循環。
+- **既存 Mn/AccB は Om-based で omfree に degenerate**: `gnd`/`FCset`/`Klt`(=Kn 0∩below Om0)は omfree で FCset={}→gnd=0→自明。
+  ∴ omfree 残差には **Th-subscript を軸とした新 distinguished sets** が要る(memo 続21 の「別軸」が正しい)。Om-based Mn は ψ-with-Ω 用。
+- **構成方針(次フェーズ, ~300行, fresh context)**: Th-subscript レベル n で stratify した accessible-controlled 集合 `B n` を
+  acc で定義(`B n = acc-part of {controlled-at-level-n principals}`)し、Towsner 3.8-3.12 を Th-subscript 版で:
+  - level-drop: Th p e(p<r の collapse)は level p に「落ちる」→ B p で accessible。
+  - 残差 Th r h: h∈acc かつ Kn p h⊆acc → h を B r に入れ(controlled at r? 要 Kn r h⊆acc, h∈acc から従う: Kn r h≤o h∈acc)
+    → B r の collapse 閉包で Th r h∈acc。＝鍵は「h∈acc ⟹ Kn r h⊆acc(各 γ≤o h∈acc)」＋ B r 構成。
+  - 実は h∈acc から Kn r h⊆acc は出る(Kn_le_self＋acc_downward)！∴ 残差は「Kn r h⊆acc ⟹ Th r h∈acc」=ctrl_acc at level r。
+    だが ctrl_acc(level r)も同じ q≥r 残差を持つ＝循環。global B n の超限構成で一括解決するしかない。
+- **今セッション成果(全コミット, baseline 緑 3 sorry)**: L_ThF 大半 green(Kn p e⊆acc 証明・ctrl_acc 構造帰納)・sorry を核1点に縮小;
+  (A2) lex order linearity 緑検証(scratch_order); 根本原因=K-dom-in-order 特定; 多重集合=辞書式 on 非増加 検証。
