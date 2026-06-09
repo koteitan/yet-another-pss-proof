@@ -14,9 +14,12 @@
 > **3 sorry はいずれも研究級の順序論/証明論コア（当初想定より大）**:
 > **(1) `wo.olt_trans`**（**✅A2 検証済 続31: Buchholz lex order に再定義すれば linearity は容易**。
 >   scratch_order.thy で lex order の neq/irrefl/total/trans を数行で green 化。現 Towsner-K-支配 olt から lex へ統合作業が残）、
-> **(2) `buchholz.L_ThF`（続36: 大半 green, sorry は impredicative 核1点に縮小）**:
->   pacc 再構成で `Kn p e⊆acc` 証明済、ctrl_acc 構造帰納で Su/Th(r≤p)/Th(p<r<n) green。
->   **残 sorry = `r≥n, h∈acc ⟹ Th r h∈acc`**（buried 高レベル崩壊, r 無界・h は d と順序無関係）＝global Towsner Acc_n 構成が必須、
+> **(2) `buchholz.L_ThF`（続36-41: 既約核と確定。残 sorry=`r≥n,h∈acc⟹Th r h∈acc`=buried 崩壊）**:
+>   pacc 再構成で `Kn p e⊆acc` 証明済、ctrl_acc で Su/Th(r≤p)/Th(p<r<n) green。
+>   **続38-41 確定: これは Buchholz ψ_n 整礎性定理の既約核**。素朴帰納(level/acc/size/構造/lex)全反証、downward-closure 偽(ϑ_0(0)<ϑ_5(0))、
+>   multi-ϑ_n の s<r cross-subscript は単一ϑ §3.2 に対応物無し。**actionable: FC(∅)→0 が Towsner −∞ を level0 に潰す退化バグ**。
+>   **scratch_wf.thy で修正フレームワーク構築中(green, fast build 20-30s)**: Mbot(−∞ base)＋Mlv/Bst/Accl(Ω 足場, prev に base 含む)＋
+>   connection skeleton `Bst_omfree_acc`(base clean, 残差=Accl-omfree)。次: Towsner 3.10/3.11(Ω 足場 collapse closure)を実装し残差除去。
 > **(3) `embed.op_NF[P/P]`**（embed の NF 順序保存=翻訳忠実性, **完全オリジナル**。(1)依存＋NF K条件）。
 > **依存**: step_terminates_NF ← wf_Rnf_via_embed ← {wf_oltRwF←masterF←L_ThF, op_NF←olt_trans}。
 > **基盤（全証明済・緑）**: shift 自己同型・acc 不変・ground/norm・**nneg fragment(健全化済)**・reduction chain・
