@@ -1337,3 +1337,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **但し −∞ 修正だけでは閉じない(再確認)**: 3.10 を −∞ で multi-ϑ_n に展開すると predecessor ϑ_s β(s<r, cross-subscript)ケースが残る。
   β 任意 omfree で buried ϑ_{r'}(h)(r' 無界)を含み得る＝**multi-ϑ_n 固有の既約核**(単一 ϑ には無い)。dom/s=r ケースは clean、s<r が核。
   ＝Buchholz ψ_n 整礎性定理の本体。subscript への帰納＋coefficient 制御の超限構成が必須。これが「実装すべき残り全て」。
+
+### 進捗 (2026-06-09 続40): 【アーキテクチャ分岐確定】絶対§2系では shift-down が ill-founded 領域を生む＝Towsner §3 多相系が正道
+- **scratch_wf.thy green seed 作成(ROOT 登録, build RC=0, 20-30s 高速ループ確立)**: 修正版階層の base(Mbot=−∞)＋
+  `Abot_iff_acc`(base level は acc oltRwF と同値＝tautological＝gap の明示)＋詳細実装計画(Towsner 3.8-3.12 多相版の補題列)をコメントで記載。
+- **致命的発見(shift-down)**: (B2) s<r cross-subscript の buried 高崩壊 ϑ_{r'}(h')(r'≥r) を処理するには Towsner は shift で ground を下げ Ω に吸収する。
+  だが**絶対 int 系では shift k(Th r' h')=Th(r'+k)(shift k h'), k<0 で添字が負に**＝ϑ_{-k} は **ill-founded**(memo 既述: ϑ_{-(k+1)}0<oϑ_{-k}0 無限降下)＝acc に居ない。
+  ∴ **shift-down が accessibility を保たない**＝絶対系では Ω-scaffolding が shift で機能しない。wo.thy「絶対§2＋§3.2証明」ハイブリッドの根本的破綻点。
+- **結論(アーキ分岐)**: Towsner の distinguished-set 証明が実際に閉じるのは **§3 多相系(単一 ϑ＋相対 Ω de Bruijn, ΩpJq)**。
+  そこでは shift が Ω-index に吸収され負領域を作らない。我々の絶対 multi-ϑ_n(§2)では閉じない見込み大。
+  - **選択肢(a)**: §2 を int-option ground で refactor＋多相版 ladder を絶対系に無理に移植 → shift-down 問題で詰む可能性大。
+  - **選択肢(b)**: WF ターゲットを Towsner §3 多相系(新 datatype: 単一 ϑ＋ΩpJq de Bruijn)に切替、§3.2 を素直に移植して wf を閉じ、three(PSS)→§3系 へ embed。大改修だが**証明が実際に閉じる正道**。
+  - **選択肢(c)**: 別の WF 証明(Buchholz 1991 operator-controlled 等)。
+- **次アクション**: ユーザーに方針相談(§3 多相系への切替が妥当か、特定の構成/参照の意図があるか)。＝研究級の真の分岐点で domain 知識が数セッション分を節約。
