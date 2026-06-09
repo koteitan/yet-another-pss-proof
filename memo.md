@@ -1386,3 +1386,14 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **次作業**: AFP 導入→ZFC_in_HOL ビルド→`psi.thy` で §1(C_v/ψ_v/補題1.2,1.3,1.5)＋§2(OT,o,Lemma2.2(c))転写→`three` の lex 整礎性→proofs.thy 対角 accessibility 接続。
 - **規模注意**: §1-2 の意味論転写は ℵ_v の正則性・基数算術(|C_v(α)|<Ω_{v+1})を含み大(多セッション)。ZFC_in_HOL の cardinal/regularity API を要確認。
 - **誤迂回の扱い**: wo.thy/buchholz.thy/embed.thy(K-dom ot) は route A では不要→破棄候補(当面は残置、A 完成後に削除)。
+
+### 進捗 (2026-06-09 続44): 【route A 実装着手】ZFC_in_HOL 上に Buchholz ψ_v 構成中（ord/psi.thy, session PSI, green）
+- **AFP 導入済**: `/home/koteitan/afp-dl/afp-2026-06-05`（Isabelle2025-2 対応）。`ZFC_in_HOL`(順序数/基数/Kirby 順序数和/Ordinal_Exp ω^/ZFC_Cardinals Aleph) 利用。
+  ビルド: `cd git && isbman build -m .. -d /home/koteitan/afp-dl/afp-2026-06-05/thys -d /home/koteitan/ya-pss/git PSI`（**-d は絶対パスで**, cwd 不安定なため）。ZFC_in_HOL ヒープは git ディレクトリの isbman 隔離heapにキャッシュ済(再ビルド ~40s, PSI のみ ~1-10s)。
+- **ord/psi.thy (session PSI in ord, ROOT 登録済) の green 内容**:
+  - `Om v`(=Ω_v=ℵ_v, v>0; 1 if v=0)＋ Ord/Card/単調(Om_less_Suc)。
+  - `Cstep`/`Cset`/`psi`(=transrec で C_v(α)＝Om v からの「+閉包∪{p ξ u:ξ∈X∩α}」反復の可算 sup, ψ_v α=LEAST Ord∉Cset)＋`psi_unfold`。
+  - **well-defined**: `psi_ex`(Cset small ⟹ 全順序数は含まれない, big_ON)・`Ord_psi`・`psi_notin`(ψ_v α∉C_v(α))。
+  - **閉包 C1-C3**: `Om_subset_Cset`・`Cset_add_closed`(+)・`Cset_psi_closed`(ψ_u, ξ<α)＋補助(elts_Cstep, Citer 単調 Citer_subset_mono, Cset_mem_iff)。
+- **ZFC_in_HOL API メモ**(再利用): small(elts x)=small_elts; small(f`X)⟸small X=replacement[OF .., where f=..]; small(UNIV::nat)=small_image_nat[of "λx.x" UNIV]; small_Times; smaller_than_small[OF small_elts Int_lower1]; elts_sup_iff; elts_Sup(small range); big_ON(¬small ON=Collect Ord); Ord_LeastI_ex/Ord_Least; less_succ_self; Aleph_increasing/InfCard_Aleph; ≤ on V = less_eq_V_def(elts⊆elts); 順序数和は Kirby の +。**型注意**: nat 添字は `(UNIV::nat set)` 明示で多相化回避。
+- **次(§1 続き→§2)**: Cset⊆Ord; Lemma 1.2(ψ_v 0=Om v, Om v≤ψ_v α, ψ_v α∈P 加法的主要数, |Cset|<Om(v+1)⟹ψ_v α<Om(v+1)＝基数算術); 1.3(ψ_v 単調: α<β∧α∈C_v α⟹ψ_v α<ψ_v β, psi_notin 利用); C の α 単調; 1.5; 1.9(G_u). →§2: o:three→V, Lemma 2.2(c) 順序保存 → three/NF の lex 整礎性 → proofs.thy 対角 accessibility。
