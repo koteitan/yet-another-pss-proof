@@ -32,5 +32,8 @@ session YAPSS = HOL +
 session PSI in ord = ZFC_in_HOL +
   description "Buchholz psi_v collapsing functions on ZFC-in-HOL ordinals (route A WF)."
   options [document = false, quick_and_dirty]
+  sessions
+    YAPSS
   theories
     psi
+    otembed
