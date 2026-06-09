@@ -23,6 +23,7 @@ session YAPSS = HOL +
     proofs
     wf
     wfsum
+    seqlex
 
 session PSI in ord = ZFC_in_HOL +
   description "Buchholz Lemma 2.2 proved semantically: psi_v on ZFC-in-HOL ordinals
