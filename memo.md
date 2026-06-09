@@ -1217,3 +1217,17 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   → (3) wfo に支配条件(Gob<b)→ (4) translate/embed を新 datatype へ(decrease は three のまま, embed: three→新)→ (5) WF(L_ThF)を新 order で
   → (6) op_NF(lex→lex)。three(p_a(b))は不変。L_ThF(WF 核)は順序 style 不問で impredicative=研究級のまま。
 - **教訓再掲**: 単一型 ot の設計が諸難の根。bt/bp 二型が Buchholz 標準。テストは必ず timeout 240。
+
+### 進捗 (2026-06-09 続33): 【最小 A2 発見】非増加リスト上で 多重集合順序=辞書式順序 → olt_trans_cnf 最小修正
+- **python 検証(7056比較, 差異0)**: **非増加(cnf)リスト xs,ys 上で `Su xs <o Su ys`(現・多重集合単一支配元) = 辞書式順序(Buchholz <3)**。
+  ∴ olt_trans の linearity 困難は Su 多重集合節だが、**cnf 項に限れば Su 節=辞書式で推移律が容易**(scratch_order で辞書式 trans 緑実証済)。
+- **最小 A2 修正(順序も WF も変えない!)**:
+  1. ot 上に `cnfo`(hereditary 非増加 Su ＋ wfo)述語を定義。
+  2. bridge: 非増加 xs,ys で `Su xs <o Su ys ⟺ dictSu xs ys`。
+  3. `olt_trans_cnfo: cnfo a⟹cnfo b⟹cnfo c⟹ a<o b⟹b<o c⟹a<o c` を size 帰納で(Su/Su は bridge＋辞書式 trans, Th/Om 既証明)。
+  4. op_NF は embed 像(cnf)なので olt_trans_cnfo で足りる。embed 像が cnfo を証明。
+  5. 一般 olt_trans(sorry)は op_NF が cnfo 版に切替後、他に ot trans/asym/irrefl 利用者なし(buchholz/wflevel は多重集合機構を直接, 確認済)なら**削除**。
+- **利点**: WF(多重集合 bag_mono/wflevel/buchholz)は無変更。embed/ot 構造も大半保持。olt_trans sorry を最小手数で解消。
+  Th-collapse の WF(L_ThF)は依然 impredicative=研究級(Su とは無関係)。
+- **注意**: cnfo は ot 述語(three の cnf とは別, embed 像用)。embed 像の非増加性は collapse(非増加)から従う。
+- **次**: scratch で cnfo+bridge+olt_trans_cnfo を実装・緑化(timeout 240)→ wo.thy 統合→ op_NF 着手。
