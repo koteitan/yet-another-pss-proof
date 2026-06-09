@@ -234,4 +234,17 @@ proof -
   show ?thesis by (rule Ord_Citer[OF assms(1) n])
 qed
 
+subsection \<open>Basic properties of \<open>\<psi>\<^sub>v\<close> (Buchholz Lemma 1.2)\<close>
+
+text \<open>\<open>\<Omega>\<^sub>v \<le> \<psi>\<^sub>v(\<alpha>)\<close>: since \<open>\<Omega>\<^sub>v \<subseteq> C\<^sub>v(\<alpha>)\<close>, the least ordinal not in \<open>C\<^sub>v(\<alpha>)\<close> is \<open>\<ge> \<Omega>\<^sub>v\<close>.\<close>
+
+lemma Om_le_psi: "Om v \<le> psi \<alpha> v"
+proof (rule ccontr)
+  assume "\<not> Om v \<le> psi \<alpha> v"
+  hence "psi \<alpha> v < Om v" using Ord_not_le[OF Ord_Om Ord_psi] by blast
+  hence "psi \<alpha> v \<in> elts (Om v)" using Ord_mem_iff_lt[OF Ord_psi Ord_Om] by blast
+  hence "psi \<alpha> v \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" using Om_subset_Cset by blast
+  thus False using psi_notin by simp
+qed
+
 end
