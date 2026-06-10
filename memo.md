@@ -1684,3 +1684,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
      もうマッチしない ⟹ `unfolding True` してから素の計算チェーン。
   5. simp は前提 ¬(∀x∈A.P) を ∃形に正規化するため if 条件（∀形）と噛み合わない
      ⟹ witness を obtain して takeWhile_append1/dropWhile_append1 に渡す。
+
+### ★★(2026-06-10 続18) olt 版リストラ完了: nrmstep の sorry = ST_snocok ただ1点
+- proj-Rinc 閉包は wf3 だけでは偽と実証（14541 чек中 EQ 407 = 葉が射影破棄域に入るケース、
+  OTHER-ord 324。標準ホストでは end-append のため起きない）⟹
+  **Rinc 保存を olt 保存に弱め、(C)分岐の proj-olt 条件を snocok 束に内蔵**。
+  nrm_snoc_seg(olt版) 緑・ins_olt 緑・nrm_step_dec_pred 緑。proj_Rinc_snoc は削除。
+- 残る nrmstep の sorry = **ST_snocok**（C@[q]∈ST_PS ⟹ snocok C q）只1点:
+  内容 = (A)新和分: snd q ≤ snd p〔cnf/tops事実〕、(B)tail: no-absorb 2条件
+  〔nrm像の hdsub/hdarg vs (snd p, pb)、兄弟順序＋nrm の head 保存〕、
+  (C)arg: olt (proj y (NT rest)) (proj y (NT rest@[q]))〔E5/E6: proj=首最大row1接尾辞、
+  append列は常に接尾辞内 ⟹ 同型の主張が1段深い接尾辞に再帰 = 数列側帰納で攻略〕。
+- 全体図: PSS_terminates の残決定木 = nrm_order_pres（live, nrm.thy）∨
+  〔nrm_step_dec 直接 = Pred(↑ST_snocokのみ) + bad ケース（コピー、同機構の拡張）〕。
