@@ -982,6 +982,116 @@ next
   qed
 qed
 
+subsection \<open>The max-row1 suffix\<close>
+
+text \<open>The E6 projection theorem (empirically exact on all hereditary standard
+  dominated segments, 15302 positions): when the projection fires at the host
+  level, its value is the normalized image of the suffix of the segment
+  starting at the \<^emph>\<open>first\<close> column of maximal row-1 value.\<close>
+
+definition maxr1 :: "pairseq \<Rightarrow> nat" where
+  "maxr1 S = Max (snd ` set S)"
+
+definition msfx :: "pairseq \<Rightarrow> pairseq" where
+  "msfx S = dropWhile (\<lambda>c. snd c < maxr1 S) S"
+
+lemma maxr1_in: "S \<noteq> [] \<Longrightarrow> maxr1 S \<in> snd ` set S"
+  unfolding maxr1_def by (intro Max_in) auto
+
+lemma maxr1_ub: "c \<in> set S \<Longrightarrow> snd c \<le> maxr1 S"
+  unfolding maxr1_def by (intro Max_ge) auto
+
+lemma msfx_ne: "S \<noteq> [] \<Longrightarrow> msfx S \<noteq> []"
+proof
+  assume S: "S \<noteq> []" and m: "msfx S = []"
+  have "\<forall>c \<in> set S. snd c < maxr1 S"
+    using m unfolding msfx_def by (simp add: dropWhile_eq_Nil_conv)
+  thus False using maxr1_in[OF S] by auto
+qed
+
+lemma msfx_hd: "S \<noteq> [] \<Longrightarrow> snd (hd (msfx S)) = maxr1 S"
+proof -
+  assume S: "S \<noteq> []"
+  have ne: "dropWhile (\<lambda>c. snd c < maxr1 S) S \<noteq> []"
+    using msfx_ne[OF S] unfolding msfx_def .
+  have "\<not> snd (hd (msfx S)) < maxr1 S"
+    using hd_dropWhile[OF ne] unfolding msfx_def .
+  moreover have "hd (msfx S) \<in> set S"
+    using ne hd_in_set set_dropWhileD unfolding msfx_def by fast
+  ultimately show ?thesis using maxr1_ub by fastforce
+qed
+
+lemma msfx_decomp: "S = takeWhile (\<lambda>c. snd c < maxr1 S) S @ msfx S"
+  unfolding msfx_def by simp
+
+lemma msfx_set: "set (msfx S) \<subseteq> set S"
+  unfolding msfx_def using set_dropWhileD by fast
+
+lemma maxr1_append_le:
+  assumes S: "S \<noteq> []" and q: "snd q \<le> maxr1 S"
+  shows "maxr1 (S @ [q]) = maxr1 S"
+proof -
+  have ins: "snd ` set (S @ [q]) = insert (snd q) (snd ` set S)" by auto
+  have "Max (insert (snd q) (snd ` set S)) = max (snd q) (Max (snd ` set S))"
+    by (intro Max_insert) (use S in auto)
+  also have "\<dots> = Max (snd ` set S)"
+    using q unfolding maxr1_def by (simp add: max_absorb2)
+  finally show ?thesis unfolding maxr1_def ins .
+qed
+
+lemma msfx_append_le:
+  assumes S: "S \<noteq> []" and q: "snd q \<le> maxr1 S"
+  shows "msfx (S @ [q]) = msfx S @ [q]"
+proof -
+  obtain c where c: "c \<in> set S" "snd c = maxr1 S"
+    using maxr1_in[OF S] by auto
+  have "dropWhile (\<lambda>r. snd r < maxr1 S) (S @ [q]) =
+        dropWhile (\<lambda>r. snd r < maxr1 S) S @ [q]"
+    using c by (intro dropWhile_append1) auto
+  thus ?thesis unfolding msfx_def maxr1_append_le[OF S q] .
+qed
+
+lemma maxr1_append_gt:
+  assumes q: "maxr1 S < snd q"
+  shows "maxr1 (S @ [q]) = snd q"
+proof (cases "S = []")
+  case True thus ?thesis unfolding maxr1_def by simp
+next
+  case False
+  have ins: "snd ` set (S @ [q]) = insert (snd q) (snd ` set S)" by auto
+  have "Max (insert (snd q) (snd ` set S)) = max (snd q) (Max (snd ` set S))"
+    by (intro Max_insert) (use False in auto)
+  also have "\<dots> = snd q"
+    using q unfolding maxr1_def by (simp add: max_absorb1)
+  finally show ?thesis unfolding maxr1_def ins .
+qed
+
+lemma msfx_append_gt:
+  assumes q: "maxr1 S < snd q"
+  shows "msfx (S @ [q]) = [q]"
+proof -
+  have all: "\<And>c. c \<in> set S \<Longrightarrow> snd c < snd q"
+    using maxr1_ub q by fastforce
+  have "dropWhile (\<lambda>r. snd r < snd q) (S @ [q]) = dropWhile (\<lambda>r. snd r < snd q) [q]"
+    by (intro dropWhile_append2) (use all in auto)
+  thus ?thesis unfolding msfx_def maxr1_append_gt[OF q] by simp
+qed
+
+text \<open>Under fire the projection moves strictly (to a critical, hence smaller
+  in size).\<close>
+
+lemma proj_fire_ne:
+  assumes f: "pfire u b"
+  shows "proj u b \<noteq> b"
+proof -
+  let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
+  have ne: "?gs \<noteq> []" using f pfire_filter by blast
+  have "proj u b = maxo (hd ?gs) (tl ?gs)" using proj_once[of u b] ne by simp
+  moreover have "maxo (hd ?gs) (tl ?gs) \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+  ultimately have "proj u b \<in> Gterm u b" using set_Glist by auto
+  thus ?thesis using Gterm_size by fastforce
+qed
+
 subsection \<open>Transport of \<open>Einc\<close> through \<open>proj\<close>\<close>
 
 text \<open>Provenance: the pair under transport is the normalized image of an
