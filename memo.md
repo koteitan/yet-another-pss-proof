@@ -1788,3 +1788,13 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   **残 sorry 4点**: STS_A（兄弟tops、single-close=cnf遺伝/multi-close=行1規律）、
   STS_B（no-absorb対 = nrm の head 保存＋兄弟順序）、
   projE_iii（ext-only fire の flip 形）、projE_ii（both-fire の max対応再帰）。
+- (続20補3) **残4補題の正確な照準（プローブ確定）**:
+  - STS_A: 素朴形「最終列が閉じる全ブロック頭」は偽（45違反/1243）。真の形:
+    (A)位置は all-dominated スパイン連鎖（頭の row0 は blockok により+1刻みで連続）の
+    **fst p = fst q の要素**のみ。主張=「最終列 row1 ≤ 同 row0 スパイン列の row1」
+    ＝P進 降順性級（content.md 1402、le0-切片 Br lex 非増加）。
+    補題は「スパイン頭連続性」（blockok から）＋「row0揃いの row1 比較」（ST_PS.induct）に分解。
+  - projE_iii: x は常に葉 D_w(0)（43/43）⟹ 補題に provenance 仮定
+    （x = NT S, x' = NT(S@[q]), host 標準）を追加して projE/gen 経由で通す必要
+    （現状の無仮定 sorry はおそらく一般には偽 — 証明時に書き換える）。
+  - projE_ii / STS_B も同様に provenance 付きで証明する設計。
