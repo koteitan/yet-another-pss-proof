@@ -1597,3 +1597,23 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   かつ我々は Buchholz 2.2 も自前（wf_olt_wf3）。
 - 次: nrm.thy（fun nrm + 像∈wf3）→ wf_Rnf 別証ルート → nrm_order_pres の本格帰納
   （クラス C = 標準ブロックの規律、NF⊆C は ST_PS.induct、y_2/stay-after-reentry 排除が鍵）。
+
+### ★★(2026-06-10 続14) nrm 帰納の分解確定＋proj の数列側特徴づけ（E5/E6）
+- **FULL proj-mono: 真の引数集合 A_a（a=0:4655, a=1:4961, a=2:1593, a=3:603）全ペアで違反 0**。
+  分解: proj-mono = 弱単調 + CRUX（proj の A_a 上単射性、衝突 0 実証）。
+  注意: 弱単調は任意 wf3 ペアでは大量に偽（lead 制約違反ペア; A_a は lead≤a+1 等の規律下でのみ成立）。
+  min-no-fire 特徴づけ（T1）は偽（項順序と値順序が非OT項でズレるため）— 不要なので破棄。
+- **E5/E6: proj は数列側で「セグメントの“最初の最大 row1 列”からの接尾辞切り出し」**
+  （fire ケース 1176/1176 完全一致、遺伝的に全再帰深度で）。
+  ただし no-fire ケースでは恒等（一様破棄の NTseq 定義は 3336 不一致で却下）⟹
+  **測度は nrm∘translate のまま、接尾辞特徴づけは減少証明内の補題**として使う。
+- ok4 候補（re-entry 引数の臨界 < ラッパー）は標準ブロックで 3144 違反 → 却下。
+  (0,0)(1,1)(2,0)(3,1)(4,2)（re-entry後の2段climb）も非標準と確認。
+- **アーキテクチャ確定**:
+  - ord/nrm.thy: Glist/maxo/proj(膨張的・停止性=Gterm_size)/ins/nrm + wf3_nrm（証明済、ビルド検証中）
+  - live chain は **nrm_step_dec**（展開ステップ減少 nrm(translate(M[n])) <o nrm(translate M)、
+    単一ホスト・oper 場合分け・E6 接尾辞補題で攻める）→ PSS_terminates が inv_image で閉じる
+  - nrm_order_pres（NF 全ペア保存）は上位目標として別 sorry（wf_Rnf まで閉じる）
+- 次バースト: (a) ビルド緑→commit、(b) nrm.thy に step-dec 層追加、
+  (c) 実証: 展開ペアの NT 第一差分を分類して oper 場合分けの証明ケース木を作る、
+  (d) E6 補題（proj y (NT dom) = NT(首最大row1接尾辞)）の Isabelle 化から着手。
