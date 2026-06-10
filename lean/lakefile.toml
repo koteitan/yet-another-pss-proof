@@ -1,0 +1,10 @@
+name = "yapss"
+defaultTargets = ["YAPSS"]
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.30.0"
+
+[[lean_lib]]
+name = "YAPSS"
