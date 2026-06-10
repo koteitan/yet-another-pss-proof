@@ -1228,6 +1228,22 @@ text \<open>(C1 core) The head of a piece dominates the head of its sum-tail: th
   projected argument of the earlier head is not below that of the later one.
   This is the \<open>ins\<close> no-absorb condition as a sequence-level class fact.\<close>
 
+lemma fbseg_pair_host:
+  assumes "fbseg u (c # rest)"
+    and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+  shows "\<exists>pre' post'. pre' @ (c # takeWhile (\<lambda>r. fst c < fst r) rest) @ [c1] @ post' \<in> ST_PS"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  from assms(1) obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    unfolding fbseg_def by blast
+  have r: "rest = ?K @ (c1 # rest1)" using T by (metis takeWhile_dropWhile_id)
+  have eq: "pre @ (pp # mid @ (c # rest)) @ post
+            = (pre @ (pp # mid)) @ (c # ?K) @ [c1] @ (rest1 @ post)"
+    by (subst r) simp
+  show ?thesis using h unfolding eq by blast
+qed
+
 lemma NT_dom:
   assumes "fbseg u (c # rest)"
     and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
@@ -1542,6 +1558,21 @@ proof -
   have "cnf (translate (pre @ (p # rest) @ [q] @ post))"
     using cnf_ST_PS[OF assms(1)] .
   thus ?thesis using STS_A_aux dom assms(3) by blast
+qed
+
+text \<open>The subscript bound of \<open>NT_dom\<close> in the level-equal case, via \<open>STS_A\<close>.\<close>
+
+lemma NT_dom_sub_eq:
+  assumes A: "fbseg u (c # rest)"
+    and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and F: "fst c1 = fst c"
+  shows "snd c1 \<le> snd c"
+proof -
+  obtain pre' post' where h: "pre' @ (c # takeWhile (\<lambda>r. fst c < fst r) rest) @ [c1] @ post' \<in> ST_PS"
+    using fbseg_pair_host[OF A T] by blast
+  have d: "dropWhile (\<lambda>r. fst c < fst r) (takeWhile (\<lambda>r. fst c < fst r) rest) = []"
+    unfolding dropWhile_eq_Nil_conv by (meson set_takeWhileD)
+  show ?thesis by (rule STS_A[OF h d F])
 qed
 
 lemma STS_B:
