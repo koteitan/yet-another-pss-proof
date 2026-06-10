@@ -795,4 +795,62 @@ theorem r1ok_dropLast {M : PairSeq} (h : r1ok M) : r1ok M.dropLast := by
   rw [List.dropLast_eq_take]
   exact r1ok_take h _
 
+
+/-! ## Index bookkeeping for the copy decomposition
+
+`oper_bad_blocks` presents the expansion as `G ++ (range n).flatMap (copy k)`;
+these lemmas convert positions `k * |B| + q` of the flat copy region to the
+source block, and decompose an arbitrary region index. -/
+
+theorem getD_append_left {G X : PairSeq} {i : ℕ} (h : i < G.length) :
+    (G ++ X).getD i (0,0) = G.getD i (0,0) := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
+      List.getElem?_append_left h]
+
+theorem getD_append_right {G X : PairSeq} {i : ℕ} (h : G.length ≤ i) :
+    (G ++ X).getD i (0,0) = X.getD (i - G.length) (0,0) := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
+      List.getElem?_append_right h]
+
+theorem index_decomp {i L n : ℕ} (hL : 0 < L) (hi : i < n * L) :
+    ∃ k q, k < n ∧ q < L ∧ i = k * L + q := by
+  refine ⟨i / L, i % L, ?_, Nat.mod_lt _ hL, ?_⟩
+  · exact (Nat.div_lt_iff_lt_mul hL).2 hi
+  · calc i = L * (i / L) + i % L := (Nat.div_add_mod i L).symm
+    _ = i / L * L + i % L := by rw [Nat.mul_comm]
+
+theorem copies_map_length (B : PairSeq) (f : ℕ → ℕ × ℕ → ℕ × ℕ) (n : ℕ) :
+    ((List.range n).flatMap fun k => B.map (f k)).length = n * B.length := by
+  induction n with
+  | zero => simp
+  | succ n ih =>
+    rw [List.range_succ, List.flatMap_append]
+    simp [ih, Nat.succ_mul]
+
+theorem copies_map_getD {B : PairSeq} {n k q : ℕ} {f : ℕ → ℕ × ℕ → ℕ × ℕ}
+    (hk : k < n) (hq : q < B.length) :
+    ((List.range n).flatMap fun k => B.map (f k)).getD (k * B.length + q) (0,0)
+      = f k (B.getD q (0,0)) := by
+  induction n with
+  | zero => omega
+  | succ n ih =>
+    rw [List.range_succ, List.flatMap_append]
+    by_cases hkn : k < n
+    · rw [List.getD_eq_getElem?_getD, List.getElem?_append_left,
+          ← List.getD_eq_getElem?_getD]
+      · exact ih hkn
+      · rw [copies_map_length]
+        calc k * B.length + q < k * B.length + B.length := by omega
+        _ = (k + 1) * B.length := (Nat.succ_mul k B.length).symm
+        _ ≤ n * B.length := Nat.mul_le_mul_right _ hkn
+    · have hk_eq : k = n := by omega
+      subst hk_eq
+      rw [List.getD_eq_getElem?_getD, List.getElem?_append_right
+            (by rw [copies_map_length]; exact Nat.le_add_right _ _),
+          copies_map_length, Nat.add_sub_cancel_left]
+      simp only [List.flatMap_cons, List.flatMap_nil, List.append_nil]
+      rw [List.getElem?_map, List.getElem?_eq_getElem hq]
+      rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hq]
+      rfl
+
 end YAPSS
