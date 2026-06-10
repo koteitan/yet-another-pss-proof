@@ -1104,7 +1104,7 @@ text \<open>Provenance: the pair under transport is the normalized image of an
   projection; provenance is what excludes those.)\<close>
 
 definition segprov :: "nat \<Rightarrow> pairseq \<Rightarrow> nat \<times> nat \<Rightarrow> bool" where
-  "segprov u S q \<longleftrightarrow> (\<exists>pre pp. pre @ (pp # S) @ [q] \<in> ST_PS
+  "segprov u S q \<longleftrightarrow> (\<exists>pre pp post. pre @ (pp # S) @ [q] @ post \<in> ST_PS
                        \<and> (\<forall>r \<in> set S. fst pp < fst r) \<and> fst pp < fst q \<and> u = snd pp)"
 
 text \<open>The dominated-segment class and its E6 facts (empirically exact;
@@ -1121,10 +1121,10 @@ lemma segprov_dseg: "segprov u S q \<Longrightarrow> S \<noteq> [] \<Longrightar
 lemma segprov_dsegq:
   assumes "segprov u S q" shows "dseg u (S @ [q])"
 proof -
-  from assms obtain pre pp where h: "pre @ (pp # S) @ [q] \<in> ST_PS"
+  from assms obtain pre pp post where h: "pre @ (pp # S) @ [q] @ post \<in> ST_PS"
       and dom: "\<forall>r \<in> set S. fst pp < fst r" and dq: "fst pp < fst q" and u: "u = snd pp"
     unfolding segprov_def by blast
-  have "pre @ (pp # (S @ [q])) @ [] \<in> ST_PS" using h by simp
+  have "pre @ (pp # (S @ [q])) @ post \<in> ST_PS" using h by simp
   moreover have "\<forall>r \<in> set (S @ [q]). fst pp < fst r" using dom dq by auto
   ultimately show ?thesis unfolding dseg_def using u by blast
 qed
@@ -1205,37 +1205,42 @@ text \<open>With equal row-0 values, the appended column is the next summand aft
 
 lemma STS_A_aux:
   "\<forall>r\<in>set rest. fst p < fst r \<Longrightarrow> fst q = fst p \<Longrightarrow>
-   cnf (translate (pre @ (p # rest) @ [q])) \<Longrightarrow> snd q \<le> snd p"
-proof (induct pre rule: length_induct)
-  case (1 pre)
+   cnf (translate (pre @ (p # rest) @ [q] @ post)) \<Longrightarrow> snd q \<le> snd p"
+proof (induct pre arbitrary: post rule: length_induct)
+  case (1 pre post)
   note IH = 1(1) and dom = 1(2) and fq = 1(3) and CNF = 1(4)
   show ?case
   proof (cases pre)
     case Nil
-    have Tc: "[q] = [] \<or> \<not> fst p < fst (hd [q])" using fq by simp
-    have e: "translate ((p # rest) @ [q])
-              = P (snd p) (translate rest) (translate [q])"
-      using translate_block_append[of rest "fst p" "[q]" "snd p"] dom Tc
+    have Tc: "[q] @ post = [] \<or> \<not> fst p < fst (hd ([q] @ post))" using fq by simp
+    have e: "translate ((p # rest) @ [q] @ post)
+              = P (snd p) (translate rest) (translate ([q] @ post))"
+      using translate_block_append[of rest "fst p" "[q] @ post" "snd p"] dom Tc
       by (simp add: append.assoc)
-    have e2: "translate [q] = P (snd q) Z Z"
-      by (simp only: translate.simps(2) takeWhile.simps(1) dropWhile.simps(1)
-                     translate.simps(1))
-    have c: "cnf (P (snd p) (translate rest) (P (snd q) Z Z))"
+    have e2: "translate ([q] @ post)
+              = P (snd q) (translate (takeWhile (\<lambda>r. fst q < fst r) post))
+                          (translate (dropWhile (\<lambda>r. fst q < fst r) post))"
+      by (cases q) (simp only: append_Cons append_Nil translate.simps(2) fst_conv snd_conv)
+    have c: "cnf (P (snd p) (translate rest)
+                    (P (snd q) (translate (takeWhile (\<lambda>r. fst q < fst r) post))
+                               (translate (dropWhile (\<lambda>r. fst q < fst r) post))))"
       using CNF unfolding Nil append_Nil e e2 .
-    have nlt: "\<not> (P (snd p) (translate rest) Z <o P (snd q) Z Z)"
+    have nlt: "\<not> (P (snd p) (translate rest) Z
+                  <o P (snd q) (translate (takeWhile (\<lambda>r. fst q < fst r) post)) Z)"
       using c by simp
     show ?thesis
     proof (rule ccontr)
       assume "\<not> snd q \<le> snd p"
       hence "snd p < snd q" by simp
-      hence "P (snd p) (translate rest) Z <o P (snd q) Z Z" by simp
+      hence "P (snd p) (translate rest) Z
+             <o P (snd q) (translate (takeWhile (\<lambda>r. fst q < fst r) post)) Z" by simp
       thus False using nlt by blast
     qed
   next
     case (Cons e pre')
     let ?Pe = "\<lambda>r. fst e < fst r"
-    let ?tail = "pre' @ (p # rest) @ [q]"
-    have et: "translate (pre @ (p # rest) @ [q])
+    let ?tail = "pre' @ (p # rest) @ [q] @ post"
+    have et: "translate (pre @ (p # rest) @ [q] @ post)
                = P (snd e) (translate (takeWhile ?Pe ?tail)) (translate (dropWhile ?Pe ?tail))"
       unfolding Cons by (simp only: append_Cons translate.simps(2))
     show ?thesis
@@ -1254,39 +1259,42 @@ proof (induct pre rule: length_induct)
           case 3 thus ?thesis using all fq by simp
         qed
       qed
-      have allT: "\<forall>x \<in> set ?tail. ?Pe x" using all segP by auto
-      have tw: "takeWhile ?Pe ?tail = ?tail"
-        using allT by (simp add: takeWhile_eq_all_conv)
-      have cnfK: "cnf (translate ?tail)"
+      have tw: "takeWhile ?Pe ?tail
+                = pre' @ (p # rest) @ [q] @ takeWhile ?Pe post"
+        using all segP by (simp add: takeWhile_append2)
+      have cnfK: "cnf (translate (pre' @ (p # rest) @ [q] @ takeWhile ?Pe post))"
       proof -
-        have "cnf (P (snd e) (translate ?tail) (translate (dropWhile ?Pe ?tail)))"
-          using CNF unfolding et tw .
-        thus ?thesis by (cases "translate (dropWhile ?Pe ?tail)") auto
+        have "cnf (P (snd e) (translate (takeWhile ?Pe ?tail))
+                             (translate (dropWhile ?Pe ?tail)))"
+          using CNF unfolding et .
+        hence "cnf (translate (takeWhile ?Pe ?tail))"
+          by (cases "translate (dropWhile ?Pe ?tail)") auto
+        thus ?thesis unfolding tw .
       qed
       have lp: "length pre' < length pre" by (simp add: Cons)
       show ?thesis using IH[rule_format, OF lp] dom fq cnfK by blast
     next
       case ncut: False
-      have Dform: "\<exists>pre''. dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q]
+      have Dform: "\<exists>pre''. dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q] @ post
                             \<and> length pre'' < length pre"
       proof (cases "\<forall>x \<in> set pre'. ?Pe x")
         case True
         hence "\<not> fst e < fst p" using ncut by blast
-        hence "dropWhile ?Pe ((p # rest) @ [q]) = (p # rest) @ [q]" by simp
-        hence "dropWhile ?Pe ?tail = (p # rest) @ [q]"
+        hence "dropWhile ?Pe ((p # rest) @ [q] @ post) = (p # rest) @ [q] @ post" by simp
+        hence "dropWhile ?Pe ?tail = (p # rest) @ [q] @ post"
           using True by (simp add: dropWhile_append2)
         thus ?thesis unfolding Cons by (intro exI[of _ "[]"]) simp
       next
         case False
         then obtain w where w: "w \<in> set pre'" "\<not> ?Pe w" by blast
-        have "dropWhile ?Pe ?tail = dropWhile ?Pe pre' @ (p # rest) @ [q]"
+        have "dropWhile ?Pe ?tail = dropWhile ?Pe pre' @ (p # rest) @ [q] @ post"
           using w by (simp add: dropWhile_append1)
         moreover have "length (dropWhile ?Pe pre') < length pre"
           unfolding Cons using length_dropWhile_le[of ?Pe pre']
           by (simp add: le_imp_less_Suc)
         ultimately show ?thesis by blast
       qed
-      obtain pre'' where D: "dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q]"
+      obtain pre'' where D: "dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q] @ post"
         and lpre'': "length pre'' < length pre" using Dform by blast
       have cnfD: "cnf (translate (dropWhile ?Pe ?tail))"
       proof -
@@ -1300,20 +1308,20 @@ proof (induct pre rule: length_induct)
 qed
 
 lemma STS_A:
-  assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
+  assumes "pre @ (p # rest) @ [q] @ post \<in> ST_PS"
     and "dropWhile (\<lambda>r. fst p < fst r) rest = []"
     and "fst q = fst p"
   shows "snd q \<le> snd p"
 proof -
   have dom: "\<forall>r\<in>set rest. fst p < fst r"
     using assms(2) by (simp add: dropWhile_eq_Nil_conv)
-  have "cnf (translate (pre @ (p # rest) @ [q]))"
+  have "cnf (translate (pre @ (p # rest) @ [q] @ post))"
     using cnf_ST_PS[OF assms(1)] .
   thus ?thesis using STS_A_aux dom assms(3) by blast
 qed
 
 lemma STS_B:
-  assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
+  assumes "pre @ (p # rest) @ [q] @ post \<in> ST_PS"
     and "dropWhile (\<lambda>r. fst p < fst r) rest \<noteq> []"
     and "fst (hd (dropWhile (\<lambda>r. fst p < fst r) rest)) = fst p"
   shows "\<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
@@ -1327,7 +1335,7 @@ lemma STS_B:
   sorry
 
 lemma ST_snocokS_gen:
-  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> fst (hd C) \<le> fst q \<Longrightarrow>
+  "pre @ C @ [q] @ post \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> fst (hd C) \<le> fst q \<Longrightarrow>
    \<forall>x \<in> set C. fst (hd C) \<le> fst x \<Longrightarrow> snocokS C q"
 proof (induct C arbitrary: pre rule: length_induct)
   case (1 C)
@@ -1335,9 +1343,9 @@ proof (induct C arbitrary: pre rule: length_induct)
   obtain p rest where C: "C = p # rest" using ne by (cases C) auto
   have stepsC: "stepsok (p # rest)"
   proof -
-    have "blockok 0 (pre @ (p # rest) @ [q])"
+    have "blockok 0 (pre @ (p # rest) @ [q] @ post)"
       using blockok_ST_PS host[unfolded C] by blast
-    hence "stepsok (pre @ (p # rest) @ [q])" by (rule blockok_stepsok)
+    hence "stepsok (pre @ (p # rest) @ ([q] @ post))" by (rule blockok_stepsok)
     thus ?thesis by (rule stepsok_sub)
   qed
   show ?case
@@ -1357,7 +1365,7 @@ proof (induct C arbitrary: pre rule: length_induct)
         show ?thesis unfolding l r using einc.einc_end by blast
       next
         case rne: False
-        have host2: "(pre @ [p]) @ rest @ [q] \<in> ST_PS"
+        have host2: "(pre @ [p]) @ rest @ [q] @ post \<in> ST_PS"
           using host unfolding C by simp
         have len2: "length rest < length C" unfolding C by simp
         have hdr: "fst (hd rest) \<le> Suc (fst p)"
@@ -1410,7 +1418,7 @@ proof (induct C arbitrary: pre rule: length_induct)
             have Tsplit': "rest = takeWhile (\<lambda>c. snd c < maxr1 rest) rest @ msfx rest"
               by (rule msfx_decomp)
             have hostT': "(pre @ [p] @ takeWhile (\<lambda>c. snd c < maxr1 rest) rest)
-                          @ msfx rest @ [q] \<in> ST_PS"
+                          @ msfx rest @ [q] @ post \<in> ST_PS"
               using host unfolding C
               by (metis Tsplit' append.assoc append_Cons append_Nil)
             have seam: "fst (hd (msfx rest)) \<le> fst q \<and>
@@ -1494,7 +1502,7 @@ proof (induct C arbitrary: pre rule: length_induct)
     case Tne: False
     let ?T = "dropWhile (\<lambda>r. fst p < fst r) rest"
     have Tsplit: "rest = takeWhile (\<lambda>r. fst p < fst r) rest @ ?T" by simp
-    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] \<in> ST_PS"
+    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] @ post \<in> ST_PS"
       using host unfolding C by (metis Tsplit append.assoc append_Cons append_Nil)
     have lenT: "length ?T < length C"
       unfolding C using length_dropWhile_le[of "\<lambda>r. fst p < fst r" rest] by simp
@@ -1542,7 +1550,7 @@ proof (induct C arbitrary: pre rule: length_induct)
 qed
 
 lemma ST_snoc_C:
-  assumes H: "pre @ (p # rest) @ [q] \<in> ST_PS"
+  assumes H: "pre @ (p # rest) @ [q] @ post \<in> ST_PS"
     and T: "dropWhile (\<lambda>r. fst p < fst r) rest = []"
     and Q: "fst p < fst q"
   shows "olt (proj (snd p) (nrm (translate rest)))
@@ -1554,7 +1562,7 @@ proof -
   have inv2: "\<forall>x \<in> set (p # rest). fst (hd (p # rest)) \<le> fst x"
     using allD by auto
   have S: "snocokS (p # rest) q"
-    using ST_snocokS_gen[of pre "p # rest" q] H hd0 inv2 by simp
+    using ST_snocokS_gen[of pre "p # rest" q post] H hd0 inv2 by simp
   have unfA: "snocokS (p # rest) q \<longleftrightarrow>
         Einc (proj (snd p) (nrm (translate rest)))
              (proj (snd p) (nrm (translate (rest @ [q]))))"
@@ -1563,7 +1571,7 @@ proof -
 qed
 
 lemma ST_snocok_gen:
-  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> snocok C q"
+  "pre @ C @ [q] @ post \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> snocok C q"
 proof (induct C arbitrary: pre rule: length_induct)
   case (1 C)
   note IH = 1(1) and host = 1(2) and ne = 1(3)
@@ -1583,7 +1591,7 @@ proof (induct C arbitrary: pre rule: length_induct)
     let ?T = "dropWhile (\<lambda>r. fst p < fst r) rest"
     have Tsplit: "rest = takeWhile (\<lambda>r. fst p < fst r) rest @ ?T"
       by simp
-    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] \<in> ST_PS"
+    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] @ post \<in> ST_PS"
       using host unfolding C by (metis Tsplit append.assoc append_Cons append_Nil)
     have lenT: "length ?T < length C"
       unfolding C using length_dropWhile_le[of "\<lambda>r. fst p < fst r" rest]
@@ -1596,15 +1604,28 @@ proof (induct C arbitrary: pre rule: length_induct)
   qed
 qed
 
+lemma ST_snocok_int:
+  assumes "C @ [q] @ post \<in> ST_PS" and "C \<noteq> []"
+  shows "snocok C q"
+  using ST_snocok_gen[of "[]" C q post] assms by simp
+
 lemma ST_snocok:
   assumes "C @ [q] \<in> ST_PS" and "C \<noteq> []"
   shows "snocok C q"
-  using ST_snocok_gen[of "[]" C q] assms by simp
+proof -
+  have "C @ [q] @ [] \<in> ST_PS" using assms(1) by simp
+  thus ?thesis using ST_snocok_int assms(2) by blast
+qed
 
 theorem nrm_snoc:
   assumes "C @ [p] \<in> ST_PS" and "C \<noteq> []"
   shows "olt (nrm (translate C)) (nrm (translate (C @ [p])))"
   by (rule nrm_snoc_seg[OF ST_snocok[OF assms] assms(2)])
+
+theorem nrm_snoc_int:
+  assumes "C @ [p] @ post \<in> ST_PS" and "C \<noteq> []"
+  shows "olt (nrm (translate C)) (nrm (translate (C @ [p])))"
+  by (rule nrm_snoc_seg[OF ST_snocok_int[OF assms] assms(2)])
 
 text \<open>\<open>Pred\<close> case of the step decrease, from \<open>nrm_snoc\<close>.\<close>
 
