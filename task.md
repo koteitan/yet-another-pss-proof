@@ -76,10 +76,12 @@
           sibrel 4族（E/P/F1/F2・lexdiff時hm²）・SIB_shape2・NT_tie_resolved 3ケース・STS_B 前提修正
           ✅ 正確文面の閉包+1監査: E6_lpl/dom_deep/nbcK_T/K/r1ok_climb/seam/qcut/iii 全0違反、
           E6_memT は前提空（討伐可）。マイナーは必ず閉包+1で回す（audit_plus1/exact.py）
-          ✅ **sibm2_oper_bad ほぼ討伐**: n帰納×シーム分解、I-closed/II-int(shf転送)/II-cross 3亜種
-          /seam_I_open(O1) 全証明 — 残核 = **seam_open_core**（コピー丸ごと延長・150件）+
-          **CFGA_r1**（e1値側下界・265件・r1ok_climb同族）
-          🚨 実効コア: 🥇seam_open_core / CFGA_r1 / NT_lexdiff_lt（116万対0failの新値補題）/
+          ✅ **sibm2_oper_bad 討伐**: シーム分解全層（I-closed/II-int/II-cross/I-open O1/
+          blift=b<j0全分岐/copyhead=b=j0全分岐）＋CFGA_r1（NT_dom_sub_eq窓で証明）＋
+          sibrel衝突代数（nopref/ascent/diverge）— 残 = 極小核3点
+          {seam_open_m1(14件・e1j0=0機構) / seam_copyhead_m1(20件・全てcoreM-eq・L=1) /
+          seam_copyhead_deep(実証0件)}
+          🚨 実効コア: 🥇シーム極小核3点 / NT_lexdiff_lt（116万対0failの新値補題）/
           E6_tie_nofire0/1（¬hmタイラン無発火）/
           fire-cascade系5点（E6_lpl / E6_dom_deep / E6_memT / E6_nbcK_T / E6_nbcK_K = GRAND同時帰納の本丸）/
           r1ok_climb（e1正側0/729・機構=memo続26補5）/ TOP_desc（トップ木nrm弱降下0/474・未ステート）
