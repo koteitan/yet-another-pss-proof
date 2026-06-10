@@ -2091,3 +2091,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   SIB_shape = 「タイ兄弟ラン K1 ∈ {K, 真prefix} ∧ prefix時両頭最大」の
   純粋配列形状事実のみ。NT_tie_resolved は E6_hdom+NT_prefix_lt+proj_nofire で再証明。
   教訓: obtain した ⟶ は [OF] 不可（blast で）。
+
+- (続27補4) **次の構造リフト課題（STS_B 攻略の前提）**: C1鎖（NT_shape/NT_dom等）は
+  fbseg（被支配文脈）上に構築したが、ST_snocokS_gen の入口 C = p#rest は
+  **トップレベル（fst p = 0、支配 pp なし）があり得る** → fbseg 不成立。
+  対処案: fbseg を深さパラメータ付きに一般化（仮想ルート d=-1 相当;
+  blockok の hd=0 と steps から「根は全てレベル0」が fbseg_hd_level の類似で出る）
+  → C1鎖をパラメトリックに再証明（ほぼ機械的な premise 差し替え見込み）。
+  これで STS_B の hdsub 節 = NT_hd、hdarg 節 = NT_tie_resolved 同経路が開通する。
