@@ -1928,3 +1928,10 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   + olt_msfx_lowsub（頭添字 < maxr1 ⟹ 即 olt NT(msfx)）。
   **DOM の残り = 頭添字 = maxr1 のタイのみ**（カタログ + 最初max優先の組合せ論）。
   MEM（NT(msfx S) ∈ Gterm の可視鎖）が次の骨格。
+
+- (続24補2) **E6_value 本体証明完了（コンビネータ化・緑）**: proj_once + maxo_ub +
+  E6_mem(sorry: msfx像∈Gterm∧violator) + E6_dom_tie(sorry: 添字タイ violator ≤ msfx像)
+  + 低添字側は olt_msfx_lowsub で純粋に閉じる。
+  sorry 前線 = 全て配列レベルの葉クラス事実 7点: NT_tie / E6_mem / E6_dom_tie /
+  E6_qcut_last / E6_iii_singleton / E6_seam / STS_B（+ nrm_order_pres）。
+  構造コンビネータ（E6_value・NT_dom→NT_shape 鎖・ST_snocokS_gen 配線）は全て証明済。

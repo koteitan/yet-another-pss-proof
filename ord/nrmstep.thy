@@ -1726,10 +1726,67 @@ qed
 text \<open>(E6) When the projection at the host level fires, its value is the
   normalized image of the max-row1 suffix.\<close>
 
-lemma E6_value:
+text \<open>(E6 membership) Under fire the suffix image is itself a critical above
+  the whole: reached through the visible ancestor chain of the first max-row1
+  column.\<close>
+
+lemma E6_mem:
   assumes "dseg u S" and "pfire u (nrm (translate S))"
-  shows "proj u (nrm (translate S)) = nrm (translate (msfx S))"
+  shows "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))
+         \<and> \<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
   sorry
+
+text \<open>(E6 tie dominance) A violating critical whose head subscript reaches the
+  max row-1 is still at most the suffix image (first-max priority).\<close>
+
+lemma E6_dom_tie:
+  assumes "dseg u S" and "pfire u (nrm (translate S))"
+    and "g \<in> Gterm u (nrm (translate S))" and "\<not> olt g (nrm (translate S))"
+    and "g \<noteq> Z" and "hdsub g = maxr1 S"
+  shows "ole g (nrm (translate (msfx S)))"
+  sorry
+
+lemma E6_value:
+  assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
+  shows "proj u (nrm (translate S)) = nrm (translate (msfx S))"
+proof -
+  let ?x = "nrm (translate S)"
+  let ?ms = "nrm (translate (msfx S))"
+  let ?gs = "filter (\<lambda>g. \<not> olt g ?x) (Glist u ?x)"
+  let ?mx = "maxo (hd ?gs) (tl ?gs)"
+  have Sne: "S \<noteq> []" using D unfolding dseg_def by blast
+  obtain c rest where C: "S = c # rest" using Sne by (cases S) auto
+  have xnz: "?x \<noteq> Z" unfolding C by (rule NT_neZ)
+  have ne: "?gs \<noteq> []" using F pfire_filter by blast
+  have po: "proj u ?x = ?mx" using proj_once[of u ?x] ne by simp
+  have mxin: "?mx \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+  have mxG: "?mx \<in> Gterm u ?x" and mxv: "\<not> olt ?mx ?x"
+    using mxin set_Glist by auto
+  have msin: "?ms \<in> set ?gs"
+    using E6_mem[OF D F] set_Glist by auto
+  have msins: "?ms \<in> insert (hd ?gs) (set (tl ?gs))"
+    using msin by (cases ?gs) auto
+  have m2: "\<not> olt ?mx ?ms" using maxo_ub[OF msins] .
+  have mxnz: "?mx \<noteq> Z"
+  proof
+    assume "?mx = Z"
+    hence "\<not> olt Z ?x" using mxv by simp
+    thus False using xnz by (cases ?x) auto
+  qed
+  have m1: "ole ?mx ?ms"
+  proof (cases "hdsub ?mx = maxr1 S")
+    case True
+    show ?thesis by (rule E6_dom_tie[OF D F mxG mxv mxnz True])
+  next
+    case False
+    have "hdsub ?mx \<le> maxr1 S" by (rule Gterm_NT_hdsub_le[OF mxG mxnz])
+    hence "hdsub ?mx < maxr1 S" using False by simp
+    hence "olt ?mx ?ms" using olt_msfx_lowsub[OF Sne] by blast
+    thus ?thesis by simp
+  qed
+  have "?mx = ?ms" using m1 m2 by auto
+  thus ?thesis using po by simp
+qed
 
 text \<open>(V4) In the both-fire q-cut configuration the x-side suffix is the last
   column alone.\<close>
