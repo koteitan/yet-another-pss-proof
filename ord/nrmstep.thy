@@ -2583,6 +2583,54 @@ qed
 lemma sibm2_butlast: "sibm2 M \<Longrightarrow> sibm2 (butlast M)"
   using sibm2_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
+text \<open>Pure seam ingredients: the block head is the strict row-0 minimum of
+  the block (via the row-0 ancestor chain), and runs are unchanged by an
+  append unless they were open.\<close>
+
+lemma block_head_min:
+  assumes hp: "hasParent M i1 j1" and j0d: "j0 = parent M i1 j1"
+  shows "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+proof -
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  have "(nextrel0 M)\<^sup>*\<^sup>* j0 j1"
+  proof (cases "i1 = 0")
+    case True
+    hence "nextrel0 M j0 j1" using nR unfolding nextR_def by simp
+    thus ?thesis by blast
+  next
+    case False
+    hence "nextrel1 M j0 j1" using nR unfolding nextR_def by simp
+    thus ?thesis unfolding nextrel1_def le0_def by blast
+  qed
+  thus ?thesis by (rule le0_interval_gt)
+qed
+
+lemma mrun_append:
+  assumes aY: "a < length Y"
+  shows "mrun (Y @ C) a =
+    (if \<forall>x \<in> set (drop (Suc a) Y). fst (Y ! a) < fst x
+     then drop (Suc a) Y @ takeWhile (\<lambda>r. fst (Y ! a) < fst r) C
+     else mrun Y a)"
+proof -
+  have n: "(Y @ C) ! a = Y ! a" using aY by (simp add: nth_append)
+  have d: "drop (Suc a) (Y @ C) = drop (Suc a) Y @ C" using aY by simp
+  show ?thesis
+  proof (cases "\<forall>x \<in> set (drop (Suc a) Y). fst (Y ! a) < fst x")
+    case True
+    have "takeWhile (\<lambda>r. fst (Y ! a) < fst r) (drop (Suc a) Y @ C)
+          = drop (Suc a) Y @ takeWhile (\<lambda>r. fst (Y ! a) < fst r) C"
+      using True by (simp add: takeWhile_append2)
+    thus ?thesis unfolding mrun_def n d using True by simp
+  next
+    case False
+    then obtain w where "w \<in> set (drop (Suc a) Y)" "\<not> fst (Y ! a) < fst w" by blast
+    hence "takeWhile (\<lambda>r. fst (Y ! a) < fst r) (drop (Suc a) Y @ C)
+          = takeWhile (\<lambda>r. fst (Y ! a) < fst r) (drop (Suc a) Y)"
+      by (rule takeWhile_append1)
+    thus ?thesis unfolding mrun_def n d if_not_P[OF False] .
+  qed
+qed
+
 text \<open>The seam step: appending one more shifted copy of the block preserves
   the sibling-run invariant.  (The whole bad-branch preservation reduces to
   this by induction on the copy count; the base \<open>m = 0\<close> is \<open>sibm2_take\<close>.)\<close>
