@@ -1771,3 +1771,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - 残キャンペーン手順: (1) einc 版グランド補題（snocokS 束 = A条件+B条件+C条件）骨格
   → (2) ST_snoc_A single-close（cnf 経由）→ (3) row1 規律補題（ST_PS.induct、
   multi-close 排除 + B の hdsub 上界）→ (4) 末端到達/max対応 → (5) ST_snoc_C 組立。
+- (続20補) **nrm_snoc_str 緑（einc 構造版グランド補題、sorry-free）**: snocokS 束
+  （A: snd q≤snd p / B: no-absorb対 / C: Einc on projections）の下で
+  Einc (NT C) (NT (C@[q]))。(C)分岐は einc_argZ/eflip_argZ（tail=Z が all-dominated と
+  正確に一致）、(A)は einc_tail[OF einc_end]、(B)は no-absorb+einc_tail/eflip_tail。
+  nested-if 抽出は if_P[OF Tnil] if_P[OF qd] / if_not_P[OF qnd] の二段で。
+  構造層の主装置完備: nrm_snoc_str + fire_transport + gap + maxo_ub。
+  残: ST_snocokS_gen（葉義務 STS_A/B/C の class 証明）→ proj 転送 (iii)/(ii)
+  → ST_snoc_C 導出。

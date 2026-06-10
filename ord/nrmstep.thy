@@ -703,6 +703,150 @@ text \<open>The sole remaining leaf obligation: at the argument-extension step a
   (empirically: \<open>proj\<close> picks the suffix from the first maximal-row-1 column,
   and the appended column always lies in that suffix).\<close>
 
+subsection \<open>Structural layer: \<open>einc \<union> eflip\<close> version of the snoc characterization\<close>
+
+abbreviation Einc :: "three \<Rightarrow> three \<Rightarrow> bool" where
+  "Einc x y \<equiv> einc x y \<or> eflip x y"
+
+lemma Einc_olt: "Einc x y \<Longrightarrow> olt x y"
+  using einc_olt eflip_olt by blast
+
+function snocokS :: "pairseq \<Rightarrow> nat \<times> nat \<Rightarrow> bool" where
+  "snocokS [] q = False"
+| "snocokS (p # rest) q =
+     (if dropWhile (\<lambda>r. fst p < fst r) rest = []
+      then (if fst p < fst q
+            then Einc (proj (snd p) (nrm (translate rest)))
+                      (proj (snd p) (nrm (translate (rest @ [q]))))
+            else snd q \<le> snd p)
+      else snocokS (dropWhile (\<lambda>r. fst p < fst r) rest) q \<and>
+           \<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
+              \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
+                 \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                       (hdarg (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))))) \<and>
+           \<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))
+              \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))
+                 \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                       (hdarg (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))))))"
+  by pat_completeness auto
+termination
+  by (relation "measure (length \<circ> fst)")
+     (auto simp: le_imp_less_Suc length_dropWhile_le)
+
+lemma nrm_snoc_str:
+  "snocokS C q \<Longrightarrow> C \<noteq> [] \<Longrightarrow> Einc (nrm (translate C)) (nrm (translate (C @ [q])))"
+proof (induct C q rule: snocokS.induct)
+  case (1 q) show ?case using 1 by simp
+next
+  case (2 p rest q)
+  have sokA: "snocokS (p # rest) q" by fact
+  show ?case
+  proof -
+    let ?Pp = "\<lambda>r. fst p < fst r"
+    let ?K = "takeWhile ?Pp rest"
+    let ?T = "dropWhile ?Pp rest"
+    let ?pb = "proj (snd p) (nrm (translate ?K))"
+    have nC: "nrm (translate (p # rest)) = ins (snd p) ?pb (nrm (translate ?T))"
+      by (simp only: translate.simps(2) nrm.simps(2))
+    have appC: "(p # rest) @ [q] = p # (rest @ [q])" by simp
+    show "Einc (nrm (translate (p # rest))) (nrm (translate ((p # rest) @ [q])))"
+    proof (cases "?T = []")
+      case Tnil: True
+      have allP: "\<forall>r \<in> set rest. ?Pp r" using Tnil by (simp add: dropWhile_eq_Nil_conv)
+      have Kall: "?K = rest" using allP by (simp add: takeWhile_eq_all_conv)
+      have nCs: "nrm (translate (p # rest)) = P (snd p) (proj (snd p) (nrm (translate rest))) Z"
+        by (simp only: nC Tnil Kall translate.simps(1) nrm.simps(1) ins.simps(1))
+      show ?thesis
+      proof (cases "fst p < fst q")
+        case qd: True   \<comment> \<open>(C) argument extension\<close>
+        have tw': "takeWhile ?Pp (rest @ [q]) = rest @ [q]"
+          using allP qd by (simp add: takeWhile_append)
+        have dw': "dropWhile ?Pp (rest @ [q]) = []"
+          using allP qd by (simp add: dropWhile_append)
+        have e1: "translate ((p # rest) @ [q]) = P (snd p) (translate (rest @ [q])) Z"
+          unfolding appC by (simp only: translate.simps(2) tw' dw' translate.simps(1))
+        have nC': "nrm (translate ((p # rest) @ [q]))
+                    = P (snd p) (proj (snd p) (nrm (translate (rest @ [q])))) Z"
+          by (simp only: e1 nrm.simps ins.simps(1))
+        have unfA: "snocokS (p # rest) q \<longleftrightarrow>
+              Einc (proj (snd p) (nrm (translate rest)))
+                   (proj (snd p) (nrm (translate (rest @ [q]))))"
+          by (simp only: snocokS.simps if_P[OF Tnil] if_P[OF qd])
+        have PR: "Einc (proj (snd p) (nrm (translate rest)))
+                       (proj (snd p) (nrm (translate (rest @ [q]))))"
+          using sokA unfolding unfA .
+        show ?thesis unfolding nCs nC'
+          using PR einc.einc_argZ eflip.eflip_argZ by blast
+      next
+        case qnd: False   \<comment> \<open>(A) new summand\<close>
+        have tw': "takeWhile ?Pp (rest @ [q]) = rest"
+          using allP qnd by (simp add: takeWhile_append)
+        have dw': "dropWhile ?Pp (rest @ [q]) = [q]"
+          using allP qnd by (simp add: dropWhile_append)
+        have e1: "translate ((p # rest) @ [q]) = P (snd p) (translate rest) (translate [q])"
+          unfolding appC by (simp only: translate.simps(2) tw' dw' Kall)
+        have e2: "translate [q] = P (snd q) Z Z"
+          by (simp only: translate.simps(2) takeWhile.simps(1) dropWhile.simps(1)
+                         translate.simps(1))
+        have nC': "nrm (translate ((p # rest) @ [q]))
+                    = ins (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z)"
+          by (simp only: e1 e2 nrm.simps proj_Z ins.simps(1) Kall)
+        have unfA: "snocokS (p # rest) q \<longleftrightarrow> snd q \<le> snd p"
+          by (simp only: snocokS.simps if_P[OF Tnil] if_not_P[OF qnd])
+        have yq: "snd q \<le> snd p" using sokA unfolding unfA .
+        have noab: "ins (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z)
+                     = P (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z)"
+          by (rule ins_noabsorb) (use yq not_olt_Z in auto)
+        have R: "nrm (translate ((p # rest) @ [q]))
+                  = P (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z)"
+          by (simp only: nC' noab)
+        have G1: "einc (P (snd p) (proj (snd p) (nrm (translate rest))) Z)
+                       (P (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z))"
+          by (rule einc.einc_tail[OF einc.einc_end])
+        show ?thesis unfolding nCs R using G1 by blast
+      qed
+    next
+      case Tne: False   \<comment> \<open>(B) tail extension\<close>
+      obtain w where win: "w \<in> set rest" and wnp: "\<not> ?Pp w"
+        using Tne by (fastforce simp: dropWhile_eq_Nil_conv)
+      have tw': "takeWhile ?Pp (rest @ [q]) = ?K"
+        using win wnp by (simp add: takeWhile_append1)
+      have dw': "dropWhile ?Pp (rest @ [q]) = ?T @ [q]"
+        using win wnp by (simp add: dropWhile_append1)
+      have nC': "nrm (translate ((p # rest) @ [q]))
+                  = ins (snd p) ?pb (nrm (translate (?T @ [q])))"
+        unfolding appC by (simp only: translate.simps(2) tw' dw' nrm.simps(2))
+      have unfB: "snocokS (p # rest) q \<longleftrightarrow>
+             (snocokS ?T q \<and>
+              \<not> (snd p < hdsub (nrm (translate ?T))
+                 \<or> (snd p = hdsub (nrm (translate ?T))
+                    \<and> olt ?pb (hdarg (nrm (translate ?T))))) \<and>
+              \<not> (snd p < hdsub (nrm (translate (?T @ [q])))
+                 \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
+                    \<and> olt ?pb (hdarg (nrm (translate (?T @ [q])))))))"
+        by (simp only: snocokS.simps if_not_P[OF Tne])
+      have sokT: "snocokS ?T q" and na: "\<not> (snd p < hdsub (nrm (translate ?T))
+                 \<or> (snd p = hdsub (nrm (translate ?T))
+                    \<and> olt ?pb (hdarg (nrm (translate ?T)))))"
+        and na': "\<not> (snd p < hdsub (nrm (translate (?T @ [q])))
+                 \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
+                    \<and> olt ?pb (hdarg (nrm (translate (?T @ [q]))))))"
+        using sokA unfolding unfB by blast+
+      have IH: "Einc (nrm (translate ?T)) (nrm (translate (?T @ [q])))"
+        by (rule 2(1)[OF Tne sokT Tne])
+      have el: "ins (snd p) ?pb (nrm (translate ?T)) = P (snd p) ?pb (nrm (translate ?T))"
+        by (rule ins_noabsorb) (use na in auto)
+      have er: "ins (snd p) ?pb (nrm (translate (?T @ [q])))
+                 = P (snd p) ?pb (nrm (translate (?T @ [q])))"
+        by (rule ins_noabsorb) (use na' in auto)
+      have "Einc (P (snd p) ?pb (nrm (translate ?T)))
+                 (P (snd p) ?pb (nrm (translate (?T @ [q]))))"
+        using IH einc.einc_tail eflip.eflip_tail by blast
+      thus ?thesis unfolding nC nC' el er by simp
+    qed
+  qed
+qed
+
 lemma ST_snoc_C:
   assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
     and "dropWhile (\<lambda>r. fst p < fst r) rest = []"
