@@ -87,6 +87,94 @@ qed
 lemma proj_ole: "b \<le>o proj u b"
   using proj_inflate[of b u] by auto
 
+subsection \<open>Critical sets under leaf insertion\<close>
+
+text \<open>The engine of the closure: inserting one leaf transforms the critical
+  collection pointwise \<dash> every new critical is an old one, a leaf-extension of
+  an old one, or the trivial \<open>Z\<close>; and no critical is lost.\<close>
+
+lemma Gterm_lext_sub:
+  "lext b b' \<Longrightarrow> \<forall>g' \<in> Gterm u b'. g' \<in> Gterm u b \<or> (\<exists>g \<in> Gterm u b. lext g g') \<or> g' = Z"
+proof (induction arbitrary: u rule: lext.induct)
+  case (lext_end w)
+  show ?case by simp
+next
+  case (lext_tail c c' a b)
+  show ?case
+  proof
+    fix g' assume "g' \<in> Gterm u (P a b c')"
+    then consider "u \<le> a" "g' = b \<or> g' \<in> Gterm u b" | "g' \<in> Gterm u c'"
+      by (auto split: if_splits)
+    thus "g' \<in> Gterm u (P a b c) \<or> (\<exists>g \<in> Gterm u (P a b c). lext g g') \<or> g' = Z"
+    proof cases
+      case 1 thus ?thesis by auto
+    next
+      case 2
+      from lext_tail.IH[of u] 2 show ?thesis by fastforce
+    qed
+  qed
+next
+  case (lext_arg b b' a c)
+  show ?case
+  proof
+    fix g' assume "g' \<in> Gterm u (P a b' c)"
+    then consider "u \<le> a" "g' = b'" | "u \<le> a" "g' \<in> Gterm u b'" | "g' \<in> Gterm u c"
+      by (auto split: if_splits)
+    thus "g' \<in> Gterm u (P a b c) \<or> (\<exists>g \<in> Gterm u (P a b c). lext g g') \<or> g' = Z"
+    proof cases
+      case 1
+      have "b \<in> Gterm u (P a b c)" using 1 by simp
+      thus ?thesis using 1 lext_arg.hyps by auto
+    next
+      case 2
+      from lext_arg.IH[of u] 2 show ?thesis by fastforce
+    next
+      case 3 thus ?thesis by auto
+    qed
+  qed
+qed
+
+lemma Gterm_lext_sup:
+  "lext b b' \<Longrightarrow> \<forall>g \<in> Gterm u b. g \<in> Gterm u b' \<or> (\<exists>g' \<in> Gterm u b'. lext g g')"
+proof (induction arbitrary: u rule: lext.induct)
+  case (lext_end w)
+  show ?case by simp
+next
+  case (lext_tail c c' a b)
+  show ?case
+  proof
+    fix g assume "g \<in> Gterm u (P a b c)"
+    then consider "u \<le> a" "g = b \<or> g \<in> Gterm u b" | "g \<in> Gterm u c"
+      by (auto split: if_splits)
+    thus "g \<in> Gterm u (P a b c') \<or> (\<exists>g' \<in> Gterm u (P a b c'). lext g g')"
+    proof cases
+      case 1 thus ?thesis by auto
+    next
+      case 2
+      from lext_tail.IH[of u] 2 show ?thesis by fastforce
+    qed
+  qed
+next
+  case (lext_arg b b' a c)
+  show ?case
+  proof
+    fix g assume "g \<in> Gterm u (P a b c)"
+    then consider "u \<le> a" "g = b" | "u \<le> a" "g \<in> Gterm u b" | "g \<in> Gterm u c"
+      by (auto split: if_splits)
+    thus "g \<in> Gterm u (P a b' c) \<or> (\<exists>g' \<in> Gterm u (P a b' c). lext g g')"
+    proof cases
+      case 1
+      have "b' \<in> Gterm u (P a b' c)" using 1 by simp
+      thus ?thesis using 1 lext_arg.hyps by auto
+    next
+      case 2
+      from lext_arg.IH[of u] 2 show ?thesis by fastforce
+    next
+      case 3 thus ?thesis by auto
+    qed
+  qed
+qed
+
 subsection \<open>Campaign targets\<close>
 
 text \<open>(T1) the snoc characterization: appending one column to a standard form
