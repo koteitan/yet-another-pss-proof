@@ -847,13 +847,175 @@ next
   qed
 qed
 
-lemma ST_snoc_C:
+subsection \<open>Transport of \<open>Einc\<close> through \<open>proj\<close>\<close>
+
+abbreviation pfire :: "nat \<Rightarrow> three \<Rightarrow> bool" where
+  "pfire u b \<equiv> (\<exists>g \<in> Gterm u b. \<not> olt g b)"
+
+lemma pfire_filter: "pfire u b \<longleftrightarrow> filter (\<lambda>g. \<not> olt g b) (Glist u b) \<noteq> []"
+  using set_Glist by (auto simp: filter_empty_conv)
+
+lemma proj_nofire: "\<not> pfire u b \<Longrightarrow> proj u b = b"
+  using pfire_filter proj_id by blast
+
+text \<open>The two remaining transport cases, against class hypotheses to be
+  supplied by the host induction (empirically: zero violations on standard
+  segments; the only-extended-fires case always yields a flip, the both-fire
+  case recurses into the common maximal critical suffix).\<close>
+
+lemma projE_iii:
+  assumes "Einc x x'" and "\<not> pfire u x" and "pfire u x'"
+  shows "Einc x (proj u x')"
+  sorry
+
+lemma projE_ii:
+  assumes "Einc x x'" and "pfire u x" and "pfire u x'"
+  shows "Einc (proj u x) (proj u x')"
+  sorry
+
+lemma projE:
+  assumes R: "Einc x x'"
+  shows "Einc (proj u x) (proj u x')"
+proof (cases "pfire u x")
+  case xf: True
+  have x'f: "pfire u x'"
+  proof -
+    obtain g where "g \<in> Gterm u x" "\<not> olt g x" using xf by blast
+    from fire_transport[OF R this] show ?thesis .
+  qed
+  show ?thesis by (rule projE_ii[OF R xf x'f])
+next
+  case xnf: False
+  have px: "proj u x = x" by (rule proj_nofire[OF xnf])
+  show ?thesis
+  proof (cases "pfire u x'")
+    case x'f: True
+    show ?thesis unfolding px by (rule projE_iii[OF R xnf x'f])
+  next
+    case x'nf: False
+    have px': "proj u x' = x'" by (rule proj_nofire[OF x'nf])
+    show ?thesis unfolding px px' by (rule R)
+  qed
+qed
+
+subsection \<open>Standardness supplies the bundle\<close>
+
+text \<open>The two remaining leaf obligations of the structural bundle against a
+  standard host: the appended column's row-1 value does not exceed the head's
+  at a new-summand position (sibling tops), and the no-absorb pair at tail
+  positions (head preservation of \<open>nrm\<close> + sibling order).\<close>
+
+lemma STS_A:
   assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
     and "dropWhile (\<lambda>r. fst p < fst r) rest = []"
-    and "fst p < fst q"
+    and "\<not> fst p < fst q"
+  shows "snd q \<le> snd p"
+  sorry
+
+lemma STS_B:
+  assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
+    and "dropWhile (\<lambda>r. fst p < fst r) rest \<noteq> []"
+  shows "\<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
+            \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
+               \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                     (hdarg (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest))))))
+      \<and> \<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))
+            \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))
+               \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                     (hdarg (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q]))))))"
+  sorry
+
+lemma ST_snocokS_gen:
+  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> snocokS C q"
+proof (induct C arbitrary: pre rule: length_induct)
+  case (1 C)
+  note IH = 1(1) and host = 1(2) and ne = 1(3)
+  obtain p rest where C: "C = p # rest" using ne by (cases C) auto
+  show ?case
+  proof (cases "dropWhile (\<lambda>r. fst p < fst r) rest = []")
+    case Tnil: True
+    show ?thesis
+    proof (cases "fst p < fst q")
+      case qd: True
+      have EI: "Einc (proj (snd p) (nrm (translate rest)))
+                     (proj (snd p) (nrm (translate (rest @ [q]))))"
+      proof (cases "rest = []")
+        case True
+        have l: "proj (snd p) (nrm (translate rest)) = Z"
+          unfolding True by (simp add: proj_Z)
+        have r: "proj (snd p) (nrm (translate (rest @ [q]))) = P (snd q) Z Z"
+          unfolding True by (simp add: proj_Z proj_leaf)
+        show ?thesis unfolding l r using einc.einc_end by blast
+      next
+        case rne: False
+        have host2: "(pre @ [p]) @ rest @ [q] \<in> ST_PS"
+          using host unfolding C by simp
+        have len2: "length rest < length C" unfolding C by simp
+        have sok2: "snocokS rest q" using IH len2 host2 rne by blast
+        have E2: "Einc (nrm (translate rest)) (nrm (translate (rest @ [q])))"
+          by (rule nrm_snoc_str[OF sok2 rne])
+        show ?thesis by (rule projE[OF E2])
+      qed
+      have unfA: "snocokS (p # rest) q \<longleftrightarrow>
+            Einc (proj (snd p) (nrm (translate rest)))
+                 (proj (snd p) (nrm (translate (rest @ [q]))))"
+        by (simp only: snocokS.simps if_P[OF Tnil] if_P[OF qd])
+      show ?thesis unfolding C unfA by (rule EI)
+    next
+      case qnd: False
+      have unfA: "snocokS (p # rest) q \<longleftrightarrow> snd q \<le> snd p"
+        by (simp only: snocokS.simps if_P[OF Tnil] if_not_P[OF qnd])
+      show ?thesis unfolding C unfA
+        by (rule STS_A[OF host[unfolded C] Tnil qnd])
+    qed
+  next
+    case Tne: False
+    let ?T = "dropWhile (\<lambda>r. fst p < fst r) rest"
+    have Tsplit: "rest = takeWhile (\<lambda>r. fst p < fst r) rest @ ?T" by simp
+    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] \<in> ST_PS"
+      using host unfolding C by (metis Tsplit append.assoc append_Cons append_Nil)
+    have lenT: "length ?T < length C"
+      unfolding C using length_dropWhile_le[of "\<lambda>r. fst p < fst r" rest] by simp
+    have sokT: "snocokS ?T q" using IH lenT host' Tne by blast
+    have nab: "\<not> (snd p < hdsub (nrm (translate ?T))
+            \<or> (snd p = hdsub (nrm (translate ?T))
+               \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                     (hdarg (nrm (translate ?T)))))
+      \<and> \<not> (snd p < hdsub (nrm (translate (?T @ [q])))
+            \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
+               \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                     (hdarg (nrm (translate (?T @ [q]))))))"
+      by (rule STS_B[OF host[unfolded C] Tne])
+    have unfB: "snocokS (p # rest) q \<longleftrightarrow>
+           (snocokS ?T q \<and>
+            \<not> (snd p < hdsub (nrm (translate ?T))
+               \<or> (snd p = hdsub (nrm (translate ?T))
+                  \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                        (hdarg (nrm (translate ?T))))) \<and>
+            \<not> (snd p < hdsub (nrm (translate (?T @ [q])))
+               \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
+                  \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                        (hdarg (nrm (translate (?T @ [q])))))))"
+      by (simp only: snocokS.simps if_not_P[OF Tne])
+    show ?thesis unfolding C unfB using sokT nab by blast
+  qed
+qed
+
+lemma ST_snoc_C:
+  assumes H: "pre @ (p # rest) @ [q] \<in> ST_PS"
+    and T: "dropWhile (\<lambda>r. fst p < fst r) rest = []"
+    and Q: "fst p < fst q"
   shows "olt (proj (snd p) (nrm (translate rest)))
              (proj (snd p) (nrm (translate (rest @ [q]))))"
-  sorry
+proof -
+  have S: "snocokS (p # rest) q"
+    using ST_snocokS_gen[of pre "p # rest" q] H by simp
+  have unfA: "snocokS (p # rest) q \<longleftrightarrow>
+        Einc (proj (snd p) (nrm (translate rest)))
+             (proj (snd p) (nrm (translate (rest @ [q]))))"
+    by (simp only: snocokS.simps if_P[OF T] if_P[OF Q])
+  show ?thesis using S unfolding unfA using Einc_olt by blast
+qed
 
 lemma ST_snocok_gen:
   "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> snocok C q"

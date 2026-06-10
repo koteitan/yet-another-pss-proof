@@ -1779,3 +1779,12 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   構造層の主装置完備: nrm_snoc_str + fire_transport + gap + maxo_ub。
   残: ST_snocokS_gen（葉義務 STS_A/B/C の class 証明）→ proj 転送 (iii)/(ii)
   → ST_snoc_C 導出。
+- (続20補2) **projE 骨格 + ST_snocokS_gen 緑、ST_snoc_C は導出補題に**:
+  projE（Einc の proj 転送）= ケース(i)同値・(iv)排除(fire_transport)は完証、
+  (iii)/(ii) は projE_iii/projE_ii に分離（sorry）。ST_snocokS_gen の STS_C は
+  「再帰 snocokS rest q → nrm_snoc_str → projE」で**導出**（葉義務から消えた!）。
+  Pred ケースの決定木: nrm_step_dec_pred ⟸ nrm_snoc ⟸ ST_snocok ⟸ ST_snoc_C(導出)
+  ⟸ ST_snocokS_gen ⟸ {STS_A, STS_B} + projE ⟸ {projE_iii, projE_ii}。
+  **残 sorry 4点**: STS_A（兄弟tops、single-close=cnf遺伝/multi-close=行1規律）、
+  STS_B（no-absorb対 = nrm の head 保存＋兄弟順序）、
+  projE_iii（ext-only fire の flip 形）、projE_ii（both-fire の max対応再帰）。
