@@ -1702,3 +1702,8 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   （simp add だと等式仮定 snd p=hdsub… がゴール側 proj 引数だけ書換えて不一致になる罠）。
   nrmstep 残 sorry = ST_snoc_A（cnf/tops から snd q ≤ snd p）/ ST_snoc_B（no-absorb 対）
   / ST_snoc_C（proj-olt、接尾辞再帰）の3点。Pred ケース完成まであと3義務。
+- (続18補2) **snocok を python 移植し全2263標準ホスト (butlast M, last M) で検証: 違反0**
+  （A/B1/B2/C 全分岐）。3葉義務 ST_snoc_A/B/C は記述通り真。〔tools/mine_snocok.py〕
+  次: ST_snoc_A から証明（host 標準性→cnf→セグメント兄弟 tops。host-translate と
+  セグメント translate の部分項対応補題が必要）。その後 B（no-absorb=head保存+兄弟順序）、
+  C（proj-olt 接尾辞再帰、E5/E6 機構の Isabelle 化）。
