@@ -348,8 +348,32 @@ PrSS と同じ accessibility 構成で完全証明（`wf_olt0`）。残る唯一
   - `nrm_step_dec`：展開ステップでの減少 `nrm(translate(M[n])) <o nrm(translate M)`
     （これだけで **PSS_terminates** が閉じる。単一ホストの生成帰納で攻める）
   - `nrm_order_pres`：NF 上の全ペア順序保存（より強い目標。`wf Rnf` まで閉じる）。
-    分解：主帰納（サイズ対）＋ proj の単調性 ＝ 弱単調性 ＋ **CRUX**（proj は
-    引数クラス A_a 上で単射、実証で衝突 0）。
+
+### 9.1 E6 アーキテクチャ（`ord/nrmstep.thy`、2026-06-10〜11）
+
+Pred ケースの攻略は **msfx 接尾辞定理（E6）** を軸に再編された。中心となる事実：
+
+> **E6（射影＝接尾辞切出し）**: 標準ホストの支配セグメント `S` とホストレベル
+> `u` について、射影が発火するとき
+> `proj u (nrm (translate S)) = nrm (translate (msfx S))`。
+> ここで `msfx S` は「S の最初の最大 row1 列からの接尾辞」。
+
+証明済みの主要部品（全て緑）：
+- **proj_once**：射影は1ステップで終わる（max 臨界は自分が発火しない）
+- **C1層**：`blockok` から和-隣接ペアのレベル固定（`fbseg_hd_level`）→ 無吸収
+  （`NT_dom`→`NT_shape`）→ 頭添字保存・和尾部厳密増大（`NT_tail_lt`）
+- **GCAT（G-カタログ）**：正規化像の臨界は全て「S の連続部分片の NT 像」か `Z`
+- **E6_value**：proj_once + maxo 最大性 + カタログ + 低添字支配からのコンビネータ
+- **E6_hdom / E6_dom_tie / E6_mem の resolved 版**：排除・支配・所属の組立
+  （補題レベルの循環は長さ層化で非循環＝最終組立は同時帰納にインライン）
+- **snocok 機構の post 一般化**：内部位置 snoc 単調性 `nrm_snoc_mid` /
+  接頭辞厳密増大 `NT_prefix_lt`
+- **r1ok（row1 規律）**：標準列の全列は row0-親に対し `snd ≤ 親 snd + 1`
+  （生成帰納で証明、コピー証人の簿記込み。残: `r1ok_climb` 1点）
+
+残る sorry は全て「first-max 優先」という単一テーマの変種（兄弟タイ比較・深部
+タイ・カスケード・行レベル配置排除）で、実証 0 違反の正確なステートメントとして
+スコープ済み（詳細地図は `memo.md` 続19〜続26）。
 
 ---
 
