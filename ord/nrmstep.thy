@@ -1759,6 +1759,37 @@ qed
 text \<open>(E6) When the projection at the host level fires, its value is the
   normalized image of the max-row1 suffix.\<close>
 
+text \<open>If the level exceeds the head's row-1 value, no critical is visible:
+  sum-root subscripts are non-increasing along the spine.\<close>
+
+lemma Gterm_NT_high:
+  "fbseg u S \<Longrightarrow> S = c # rest \<Longrightarrow> snd c < v \<Longrightarrow>
+   Gterm v (nrm (translate S)) = {}"
+proof (induct S arbitrary: c rest rule: length_induct)
+  case (1 S)
+  note IH = 1(1) and fb = 1(2) and C = 1(3) and cv = 1(4)
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  have sh: "nrm (translate S) = P (snd c) (proj (snd c) (nrm (translate ?K))) (nrm (translate ?T))"
+    unfolding C by (rule NT_shape[OF fb[unfolded C] refl])
+  have Tpart: "Gterm v (nrm (translate ?T)) = {}"
+  proof (cases ?T)
+    case Nil
+    show ?thesis unfolding Nil by simp
+  next
+    case (Cons c1 rest1)
+    have fbT: "fbseg u ?T"
+      by (rule fbseg_T_desc[OF fb[unfolded C]]) (simp add: Cons)
+    have lT: "length ?T < length S"
+      unfolding C using length_dropWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+    have "\<not> snd c < snd c1"
+      using NT_dom[OF fb[unfolded C] Cons] by blast
+    hence "snd c1 < v" using cv by simp
+    thus ?thesis using IH[rule_format, OF lT fbT Cons] by blast
+  qed
+  show ?case unfolding sh using cv Tpart by simp
+qed
+
 lemma proj_fire_in:
   assumes f: "pfire u b"
   shows "proj u b \<in> Gterm u b"
@@ -2528,15 +2559,44 @@ text \<open>(cascade, K side) If the maximum lives in the head's dominated run a
   the segment fires, the head's run extends to the end, the head is visible,
   and the run itself fires at the head's level.\<close>
 
-lemma E6_nbcK:
-  assumes "dseg u (c0 # rest)" and "pfire u (nrm (translate (c0 # rest)))"
+lemma E6_nbcK_T:
+  assumes "dseg u (c0 # rest)" and "u \<le> snd c0"
     and "takeWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
     and "maxr1 (takeWhile (\<lambda>r. fst c0 < fst r) rest) = maxr1 (c0 # rest)"
     and "snd c0 < maxr1 (c0 # rest)"
+  shows "dropWhile (\<lambda>r. fst c0 < fst r) rest = []"
+  sorry
+
+lemma E6_nbcK_K:
+  assumes "dseg u (c0 # rest)" and "pfire u (nrm (translate (c0 # rest)))"
+    and "u \<le> snd c0"
+    and "takeWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+    and "maxr1 (takeWhile (\<lambda>r. fst c0 < fst r) rest) = maxr1 (c0 # rest)"
+    and "snd c0 < maxr1 (c0 # rest)"
+  shows "pfire (snd c0) (nrm (translate (takeWhile (\<lambda>r. fst c0 < fst r) rest)))
+         \<or> msfx (takeWhile (\<lambda>r. fst c0 < fst r) rest) = takeWhile (\<lambda>r. fst c0 < fst r) rest"
+  sorry
+
+lemma E6_nbcK:
+  assumes D: "dseg u (c0 # rest)" and F: "pfire u (nrm (translate (c0 # rest)))"
+    and K: "takeWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+    and Km: "maxr1 (takeWhile (\<lambda>r. fst c0 < fst r) rest) = maxr1 (c0 # rest)"
+    and hl: "snd c0 < maxr1 (c0 # rest)"
   shows "dropWhile (\<lambda>r. fst c0 < fst r) rest = [] \<and> u \<le> snd c0 \<and>
          (pfire (snd c0) (nrm (translate (takeWhile (\<lambda>r. fst c0 < fst r) rest)))
           \<or> msfx (takeWhile (\<lambda>r. fst c0 < fst r) rest) = takeWhile (\<lambda>r. fst c0 < fst r) rest)"
-  sorry
+proof -
+  have uv: "u \<le> snd c0"
+  proof (rule ccontr)
+    assume "\<not> u \<le> snd c0"
+    hence "snd c0 < u" by simp
+    hence "Gterm u (nrm (translate (c0 # rest))) = {}"
+      by (rule Gterm_NT_high[OF dseg_fbseg[OF D] refl])
+    thus False using F by blast
+  qed
+  show ?thesis
+    using E6_nbcK_T[OF D uv K Km hl] uv E6_nbcK_K[OF D F uv K Km hl] by blast
+qed
 
 text \<open>(cascade, T side) If the maximum lives strictly in the sum tail, the
   membership and violator facts transfer to the tail with the whole as

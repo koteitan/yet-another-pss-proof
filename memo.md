@@ -2005,3 +2005,7 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   ⟹ 第3連言を「pfire ∨ msfx K = K」に弱め、Aval は case 分割（無発火側は
   proj_nofire で自明）。E6_mem_resolved 再緑。
   旧形（K発火必須）は偽だった — sorry 文面の使用前検証ルールがまた効いた。
+
+- (続25補7) **Gterm_NT_high 緑**（u > 頭row1 ⟹ 臨界空；根row1非増加=NT_dom由来）
+  ⟹ **E6_nbcK の可視性連言（u ≤ snd c0）が証明済に**。E6_nbcK = nbcK_T(sorry:
+  u≤y0∧m-in-K⟹T=[]、配置0件の行レベル事実) + nbcK_K(sorry: K発火∨msfx K=K) に分解。
