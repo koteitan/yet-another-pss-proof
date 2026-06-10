@@ -1077,6 +1077,9 @@ proof -
   thus ?thesis unfolding msfx_def maxr1_append_gt[OF q] by simp
 qed
 
+lemma NT_single: "nrm (translate [c]) = P (snd c) Z Z"
+  by (cases c) (simp add: proj_Z)
+
 text \<open>Under fire the projection moves strictly (to a critical, hence smaller
   in size).\<close>
 
@@ -1104,51 +1107,64 @@ definition segprov :: "nat \<Rightarrow> pairseq \<Rightarrow> nat \<times> nat 
   "segprov u S q \<longleftrightarrow> (\<exists>pre pp. pre @ (pp # S) @ [q] \<in> ST_PS
                        \<and> (\<forall>r \<in> set S. fst pp < fst r) \<and> fst pp < fst q \<and> u = snd pp)"
 
-text \<open>The two remaining transport cases (class lemmas; empirically zero
-  violations on all standard hosts, with \<open>x\<close> always a leaf in the
-  only-extended-fires case).\<close>
+text \<open>The dominated-segment class and its E6 facts (empirically exact;
+  validation suite \<open>tools/mine_master.py\<close>, V1--V5 all zero, plus the seam
+  invariants \<open>tools/mine_seam.py\<close>, 1128/1128).\<close>
 
-lemma projE_iii:
-  assumes "segprov u S q"
-    and "Einc (nrm (translate S)) (nrm (translate (S @ [q])))"
-    and "\<not> pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
-  shows "Einc (nrm (translate S)) (proj u (nrm (translate (S @ [q]))))"
-  sorry
+definition dseg :: "nat \<Rightarrow> pairseq \<Rightarrow> bool" where
+  "dseg u S \<longleftrightarrow> S \<noteq> [] \<and> (\<exists>pre pp post. pre @ (pp # S) @ post \<in> ST_PS
+                 \<and> (\<forall>r \<in> set S. fst pp < fst r) \<and> u = snd pp)"
 
-lemma projE_ii:
-  assumes "segprov u S q"
-    and "Einc (nrm (translate S)) (nrm (translate (S @ [q])))"
-    and "pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
-  shows "Einc (proj u (nrm (translate S))) (proj u (nrm (translate (S @ [q]))))"
-  sorry
+lemma segprov_dseg: "segprov u S q \<Longrightarrow> S \<noteq> [] \<Longrightarrow> dseg u S"
+  unfolding segprov_def dseg_def by blast
 
-lemma projE:
-  assumes R: "Einc (nrm (translate S)) (nrm (translate (S @ [q])))"
-    and PV: "segprov u S q"
-  shows "Einc (proj u (nrm (translate S))) (proj u (nrm (translate (S @ [q]))))"
-proof (cases "pfire u (nrm (translate S))")
-  case xf: True
-  have x'f: "pfire u (nrm (translate (S @ [q])))"
-  proof -
-    obtain g where "g \<in> Gterm u (nrm (translate S))" "\<not> olt g (nrm (translate S))"
-      using xf by blast
-    from fire_transport[OF R this] show ?thesis .
-  qed
-  show ?thesis by (rule projE_ii[OF PV R xf x'f])
-next
-  case xnf: False
-  have px: "proj u (nrm (translate S)) = nrm (translate S)" by (rule proj_nofire[OF xnf])
-  show ?thesis
-  proof (cases "pfire u (nrm (translate (S @ [q])))")
-    case x'f: True
-    show ?thesis unfolding px by (rule projE_iii[OF PV R xnf x'f])
-  next
-    case x'nf: False
-    have px': "proj u (nrm (translate (S @ [q]))) = nrm (translate (S @ [q]))"
-      by (rule proj_nofire[OF x'nf])
-    show ?thesis unfolding px px' by (rule R)
-  qed
+lemma segprov_dsegq:
+  assumes "segprov u S q" shows "dseg u (S @ [q])"
+proof -
+  from assms obtain pre pp where h: "pre @ (pp # S) @ [q] \<in> ST_PS"
+      and dom: "\<forall>r \<in> set S. fst pp < fst r" and dq: "fst pp < fst q" and u: "u = snd pp"
+    unfolding segprov_def by blast
+  have "pre @ (pp # (S @ [q])) @ [] \<in> ST_PS" using h by simp
+  moreover have "\<forall>r \<in> set (S @ [q]). fst pp < fst r" using dom dq by auto
+  ultimately show ?thesis unfolding dseg_def using u by blast
 qed
+
+text \<open>(E6) When the projection at the host level fires, its value is the
+  normalized image of the max-row1 suffix.\<close>
+
+lemma E6_value:
+  assumes "dseg u S" and "pfire u (nrm (translate S))"
+  shows "proj u (nrm (translate S)) = nrm (translate (msfx S))"
+  sorry
+
+text \<open>(V4) In the both-fire q-cut configuration the x-side suffix is the last
+  column alone.\<close>
+
+lemma E6_qcut_last:
+  assumes "segprov u S q" and "S \<noteq> []"
+    and "pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
+    and "maxr1 S < snd q"
+  shows "msfx S = [last S]"
+  sorry
+
+text \<open>(V5) In the extension-only-fire configuration the segment is a single
+  column.\<close>
+
+lemma E6_iii_singleton:
+  assumes "segprov u S q" and "S \<noteq> []"
+    and "\<not> pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
+  shows "\<exists>c. S = [c]"
+  sorry
+
+text \<open>(seam) In the both-fire same-cut configuration the max-row1 suffix
+  satisfies the spiral invariants against the appended column.\<close>
+
+lemma E6_seam:
+  assumes "segprov u S q" and "S \<noteq> []"
+    and "pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
+    and "snd q \<le> maxr1 S"
+  shows "fst (hd (msfx S)) \<le> fst q \<and> (\<forall>x \<in> set (msfx S). fst (hd (msfx S)) \<le> fst x)"
+  sorry
 
 subsection \<open>Row-0 step discipline of contiguous sublists\<close>
 
@@ -1369,7 +1385,97 @@ proof (induct C arbitrary: pre rule: length_induct)
           using Tnil by (simp add: dropWhile_eq_Nil_conv)
         have PV: "segprov (snd p) rest q"
           unfolding segprov_def using host[unfolded C] allP qd by blast
-        show ?thesis by (rule projE[OF E2 PV])
+        let ?x = "nrm (translate rest)" and ?x' = "nrm (translate (rest @ [q]))"
+        show ?thesis
+        proof (cases "pfire (snd p) ?x")
+          case xf: True
+          have x'f: "pfire (snd p) ?x'"
+          proof -
+            obtain g where "g \<in> Gterm (snd p) ?x" "\<not> olt g ?x" using xf by blast
+            from fire_transport[OF E2 this] show ?thesis .
+          qed
+          have px: "proj (snd p) ?x = nrm (translate (msfx rest))"
+            by (rule E6_value[OF segprov_dseg[OF PV rne] xf])
+          have px': "proj (snd p) ?x' = nrm (translate (msfx (rest @ [q])))"
+            by (rule E6_value[OF segprov_dsegq[OF PV] x'f])
+          show ?thesis
+          proof (cases "snd q \<le> maxr1 rest")
+            case sc: True
+            have meq: "msfx (rest @ [q]) = msfx rest @ [q]"
+              by (rule msfx_append_le[OF rne sc])
+            have Tne': "msfx rest \<noteq> []" by (rule msfx_ne[OF rne])
+            have lenT': "length (msfx rest) < length C"
+              unfolding C msfx_def
+              using length_dropWhile_le[of "\<lambda>c. snd c < maxr1 rest" rest] by simp
+            have Tsplit': "rest = takeWhile (\<lambda>c. snd c < maxr1 rest) rest @ msfx rest"
+              by (rule msfx_decomp)
+            have hostT': "(pre @ [p] @ takeWhile (\<lambda>c. snd c < maxr1 rest) rest)
+                          @ msfx rest @ [q] \<in> ST_PS"
+              using host unfolding C
+              by (metis Tsplit' append.assoc append_Cons append_Nil)
+            have seam: "fst (hd (msfx rest)) \<le> fst q \<and>
+                        (\<forall>x \<in> set (msfx rest). fst (hd (msfx rest)) \<le> fst x)"
+              by (rule E6_seam[OF PV rne xf x'f sc])
+            have sokT': "snocokS (msfx rest) q"
+              using IH lenT' hostT' Tne' seam by blast
+            have EiT: "Einc (nrm (translate (msfx rest)))
+                            (nrm (translate (msfx rest @ [q])))"
+              by (rule nrm_snoc_str[OF sokT' Tne'])
+            show ?thesis unfolding px px' meq by (rule EiT)
+          next
+            case qc: False
+            hence gt: "maxr1 rest < snd q" by simp
+            have ml: "msfx rest = [last rest]"
+              by (rule E6_qcut_last[OF PV rne xf x'f gt])
+            have mq: "msfx (rest @ [q]) = [q]" by (rule msfx_append_gt[OF gt])
+            have l1: "nrm (translate (msfx rest)) = P (snd (last rest)) Z Z"
+              unfolding ml by (rule NT_single)
+            have l2: "nrm (translate (msfx (rest @ [q]))) = P (snd q) Z Z"
+              unfolding mq by (rule NT_single)
+            have sl: "snd (last rest) = maxr1 rest"
+              using msfx_hd[OF rne] unfolding ml by simp
+            have "eflip (P (snd (last rest)) Z Z) (P (snd q) Z Z)"
+              using sl gt eflip.eflip_leaf by simp
+            thus ?thesis unfolding px px' l1 l2 by blast
+          qed
+        next
+          case xnf: False
+          have px: "proj (snd p) ?x = ?x" by (rule proj_nofire[OF xnf])
+          show ?thesis
+          proof (cases "pfire (snd p) ?x'")
+            case x'f: True
+            obtain c where Sc: "rest = [c]"
+              using E6_iii_singleton[OF PV rne xnf x'f] by blast
+            have px': "proj (snd p) ?x' = nrm (translate (msfx (rest @ [q])))"
+              by (rule E6_value[OF segprov_dsegq[OF PV] x'f])
+            have xc: "?x = P (snd c) Z Z" unfolding Sc by (rule NT_single)
+            have cq: "snd c < snd q"
+            proof (rule ccontr)
+              assume "\<not> snd c < snd q"
+              hence le: "snd q \<le> maxr1 rest" unfolding Sc maxr1_def by simp
+              have mr: "msfx rest = rest"
+                unfolding Sc msfx_def maxr1_def by simp
+              have "msfx (rest @ [q]) = msfx rest @ [q]"
+                by (rule msfx_append_le[OF rne le])
+              hence "msfx (rest @ [q]) = rest @ [q]" using mr by simp
+              hence "proj (snd p) ?x' = ?x'" using px' by simp
+              thus False using proj_fire_ne[OF x'f] by simp
+            qed
+            have gt: "maxr1 rest < snd q" unfolding Sc maxr1_def using cq by simp
+            have mq: "msfx (rest @ [q]) = [q]" by (rule msfx_append_gt[OF gt])
+            have l2: "nrm (translate (msfx (rest @ [q]))) = P (snd q) Z Z"
+              unfolding mq by (rule NT_single)
+            have pxl: "proj (snd p) ?x = P (snd c) Z Z"
+              unfolding xc by (rule proj_leaf)
+            have "eflip (P (snd c) Z Z) (P (snd q) Z Z)"
+              using cq eflip.eflip_leaf by simp
+            thus ?thesis unfolding pxl px' l2 by blast
+          next
+            case x'nf: False
+            have px': "proj (snd p) ?x' = ?x'" by (rule proj_nofire[OF x'nf])
+            show ?thesis unfolding px px' by (rule E2)
+          qed
+        qed
       qed
       have unfA: "snocokS (p # rest) q \<longleftrightarrow>
             Einc (proj (snd p) (nrm (translate rest)))
