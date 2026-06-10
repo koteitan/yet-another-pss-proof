@@ -2137,3 +2137,9 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   デバッグ: diagSeq 記号下で simp の moreover/ultimately 連鎖がスタック溢れ
   （Interrupt_Breakdown）→ e1/e2 を rule で取り unfolding で消してから simp。
   次: sibm_oper（oper_bad_nth 流用のコピー簿記）→ SIB_shape を sibm+切詰めから導出。
+
+- (続28補2) **SIB_shape 完全証明（sibm 導出・緑）**: ホスト位置簿記
+  （ic/b の nth_append_length・drop=append_eq_conv_conj・mrun=takeWhile_append1/2 分岐）
+  + 切詰め安定（K=mrun ic 完全一致＝c1 が止める／K1 は mrun b の prefix、
+  頭最大は Max_mono で継承）。SIB系: sibm_oper(sorry) → sibm_ST_PS → SIB_shape
+  → NT_tie_resolved の鎖が完成。sibm_oper は r1ok_oper と同型のコピー簿記。
