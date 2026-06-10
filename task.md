@@ -47,8 +47,13 @@
       - ✅ **柱3: olt_ST_iff_seqlex SORRY-FREE**〔seqlex.thy〕＝標準形上で translate は列 lex からの順序同型
         （blockok 規律: row0≥d・先頭=d・ステップ≤+1；blockok_ST_PS で全標準形が満たす；
          wfE ⟺ ST_PS 上の seqlex 整礎性、と BMS ネイティブに言い換え可能に）
-      - 🚨 本丸=崩壊核を3形のどれかで閉じる：(α) wf_ArgsA 自前帰納（wf_olt_wf3 を oracle 候補）
-        / (β1) NF→wf3 順序埋め込み（Trans 級、content.md §7 参照） / (β2) ST_PS→wf3 翻訳+減少（P進構成）
+      - 🚨🤖 本丸=(α) 新本線: **値正規化 nrm = NF→OT 順序埋め込み**〔ord/nrm.thy〕
+        - ✅ nrm 定義（Glist/maxo/proj/ins、~40行の構文的射影）＋ wf3_nrm（像⊆OT）
+        - ✅ 実証: 2,643,843 ペア（NF+遺伝ブロック、クロスレベル込）で衝突0・逆転0〔tools/valnorm.py〕
+        - ✅ wf_Rnf_nrm/PSS_terminates_nrm = inv_image wf_olt_wf3 nrm（peel/レベル分解不要の直通路）
+        - 🚨 残 sorry = nrm_order_pres（NF 上 olt 保存）。分解: 主帰納（サイズ対）＋proj-mono
+          ＝弱単調（ドメイン=A_a 規律、lead≤a+1）＋CRUX 単射性（proj は A_a 上単射、実証済・衝突0）
+        - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に（nrm が軽量な橋）。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
