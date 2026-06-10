@@ -4,3 +4,6 @@ import YAPSS.Proofs
 import YAPSS.Wf
 import YAPSS.Wfsum
 import YAPSS.Seqlex
+import YAPSS.Psi
+import YAPSS.Otembed
+import YAPSS.Nrm

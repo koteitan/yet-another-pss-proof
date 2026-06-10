@@ -1,0 +1,379 @@
+/-
+**The order embedding `oV : Three → Ordinal`** (Buchholz §2) and the
+resulting well-foundedness of `olt` on the Buchholz class `wf3`.
+Lean port of `ord/otembed.thy`.
+
+`P a b c` is Buchholz's `D_a(b) + c`, so `oV (P a b c) = ψ_a(oV b) + oV c`
+and `oV Z = 0`.
+-/
+import YAPSS.Psi
+import YAPSS.Wfsum
+
+namespace YAPSS
+
+open Three Ordinal
+
+universe u
+
+noncomputable def oV : Three → Ordinal.{u}
+  | Z => 0
+  | P a b c => psi (oV b) a + oV c
+
+@[simp] theorem oV_Z : oV.{u} Z = 0 := rfl
+@[simp] theorem oV_P (a : ℕ) (b c : Three) :
+    oV.{u} (P a b c) = psi (oV b) a + oV c := rfl
+
+theorem psi_le_oV (a : ℕ) (b c : Three) : psi (oV.{u} b) a ≤ oV (P a b c) :=
+  le_self_add
+
+/-! ## Additive-principal sums and the subscript bound -/
+
+/-- `allprinc_lt d t`: every principal `ψ_{a'}(oV b')` along the spine of `t`
+is `< d`.  If `d` is additive principal, the whole value `oV t` stays
+`< d`. -/
+def allprinc_lt (d : Ordinal.{u}) : Three → Prop
+  | Z => True
+  | P a b c => psi (oV b) a < d ∧ allprinc_lt d c
+
+@[simp] theorem allprinc_lt_Z (d : Ordinal.{u}) : allprinc_lt d Z := trivial
+@[simp] theorem allprinc_lt_P {d : Ordinal.{u}} {a : ℕ} {b c : Three} :
+    allprinc_lt d (P a b c) ↔ psi (oV b) a < d ∧ allprinc_lt d c := Iff.rfl
+
+theorem oV_lt_of_allprinc {d : Ordinal.{u}} (hd : addprinc d) {t : Three}
+    (ht : allprinc_lt d t) : oV t < d := by
+  induction t with
+  | Z => exact hd.1
+  | P a b c ihb ihc =>
+    obtain ⟨h, ht⟩ := ht
+    exact hd.2 _ _ h (ihc ht)
+
+/-- `spinesub_le m t`: every spine subscript of `t` is `≤ m`. -/
+def spinesub_le (m : ℕ) : Three → Prop
+  | Z => True
+  | P a _ c => a ≤ m ∧ spinesub_le m c
+
+@[simp] theorem spinesub_le_Z (m : ℕ) : spinesub_le m Z := trivial
+@[simp] theorem spinesub_le_P {m a : ℕ} {b c : Three} :
+    spinesub_le m (P a b c) ↔ a ≤ m ∧ spinesub_le m c := Iff.rfl
+
+theorem spinesub_le_mono {m m' : ℕ} {t : Three} (h : spinesub_le m t)
+    (hmm : m ≤ m') : spinesub_le m' t := by
+  induction t with
+  | Z => trivial
+  | P a b c ihb ihc =>
+    obtain ⟨h1, h2⟩ := h
+    exact ⟨by omega, ihc h2⟩
+
+theorem allprinc_lt_jump {m e : ℕ} {t : Three} (h : spinesub_le m t)
+    (hme : m < e) (β : Ordinal.{u}) : allprinc_lt (psi β e) t := by
+  induction t with
+  | Z => trivial
+  | P a b c ihb ihc =>
+    obtain ⟨h1, h2⟩ := h
+    exact ⟨psi_subscript_jump (by omega) _ _, ihc h2⟩
+
+/-! ## Buchholz coefficient sets `G_u` and the OT well-formedness predicate -/
+
+/-- `Gterm u t` = Buchholz's `G_u` on terms: for the principal `D_a(b)`, it
+is `{b} ∪ G_u b` when `u ≤ a`, else `∅`; on a sum it is the union. -/
+def Gterm (u : ℕ) : Three → Set Three
+  | Z => ∅
+  | P a b c => (if u ≤ a then insert b (Gterm u b) else ∅) ∪ Gterm u c
+
+@[simp] theorem Gterm_Z (u : ℕ) : Gterm u Z = ∅ := rfl
+theorem Gterm_P (u a : ℕ) (b c : Three) :
+    Gterm u (P a b c) = (if u ≤ a then insert b (Gterm u b) else ∅) ∪ Gterm u c := rfl
+
+theorem mem_Gterm_P {u a : ℕ} {b c x : Three} :
+    x ∈ Gterm u (P a b c) ↔
+      (u ≤ a ∧ (x = b ∨ x ∈ Gterm u b)) ∨ x ∈ Gterm u c := by
+  rw [Gterm_P]
+  by_cases h : u ≤ a <;> simp [h]
+
+/-- `hdle x y`: the principal head of `x` is `≤` that of `y` (subscript-first,
+tails ignored). -/
+def hdle : Three → Three → Prop
+  | Z, _ => True
+  | P _ _ _, Z => False
+  | P a b _, P e f _ => a < e ∨ (a = e ∧ (olt b f ∨ b = f))
+
+@[simp] theorem hdle_Z (y : Three) : hdle Z y := trivial
+@[simp] theorem hdle_P_Z (a : ℕ) (b c : Three) : ¬ hdle (P a b c) Z := fun h => h
+@[simp] theorem hdle_P_P {a e : ℕ} {b c f g : Three} :
+    hdle (P a b c) (P e f g) ↔ a < e ∨ (a = e ∧ (olt b f ∨ b = f)) := Iff.rfl
+
+/-- `wf3 t`: `t` is a Buchholz OT term — recursively well-formed, the OT3
+condition `G_a b < b` for each principal `D_a(b)`, and OT2 non-increasing
+spine. -/
+def wf3 : Three → Prop
+  | Z => True
+  | P a b c => wf3 b ∧ wf3 c ∧ (∀ x ∈ Gterm a b, olt x b) ∧ hdle c (P a b Z)
+
+@[simp] theorem wf3_Z : wf3 Z := trivial
+@[simp] theorem wf3_P {a : ℕ} {b c : Three} :
+    wf3 (P a b c) ↔
+      wf3 b ∧ wf3 c ∧ (∀ x ∈ Gterm a b, olt x b) ∧ hdle c (P a b Z) := Iff.rfl
+
+theorem wf3_spinesub_le {t : Three} (h : wf3 t) : spinesub_le (lead t) t := by
+  induction t with
+  | Z => trivial
+  | P a b c ihb ihc =>
+    obtain ⟨wfb, wfc, -, hd⟩ := h
+    refine ⟨le_rfl, ?_⟩
+    cases c with
+    | Z => trivial
+    | P a' b' c' =>
+      have ha' : a' ≤ a := by
+        rcases hdle_P_P.1 hd with h | ⟨h, -⟩ <;> omega
+      exact spinesub_le_mono (ihc wfc) ha'
+
+/-- The head order `hdle` is transitive. -/
+theorem hdle_trans {x y z : Three} (h1 : hdle x y) (h2 : hdle y z) : hdle x z := by
+  cases x with
+  | Z => trivial
+  | P ax bx cx =>
+    obtain ⟨ay, byy, cy, rfl⟩ : ∃ ay byy cy, y = P ay byy cy := by
+      cases y with
+      | Z => exact absurd h1 (hdle_P_Z _ _ _)
+      | P ay byy cy => exact ⟨ay, byy, cy, rfl⟩
+    obtain ⟨az, bz, cz, rfl⟩ : ∃ az bz cz, z = P az bz cz := by
+      cases z with
+      | Z => exact absurd h2 (hdle_P_Z _ _ _)
+      | P az bz cz => exact ⟨az, bz, cz, rfl⟩
+    rw [hdle_P_P] at h1 h2 ⊢
+    rcases h1 with h1 | ⟨rfl, h1⟩
+    · rcases h2 with h2 | ⟨rfl, -⟩
+      · exact Or.inl (by omega)
+      · exact Or.inl h1
+    · rcases h2 with h2 | ⟨rfl, h2⟩
+      · exact Or.inl h2
+      · refine Or.inr ⟨rfl, ?_⟩
+        rcases h1 with h1 | rfl
+        · rcases h2 with h2 | rfl
+          · exact Or.inl (olt_trans h1 h2)
+          · exact Or.inl h1
+        · exact h2
+
+def headle_all (bnd : Three) : Three → Prop
+  | Z => True
+  | P a b c => hdle (P a b Z) bnd ∧ headle_all bnd c
+
+@[simp] theorem headle_all_Z (bnd : Three) : headle_all bnd Z := trivial
+@[simp] theorem headle_all_P {bnd : Three} {a : ℕ} {b c : Three} :
+    headle_all bnd (P a b c) ↔ hdle (P a b Z) bnd ∧ headle_all bnd c := Iff.rfl
+
+theorem hdle_head_ignores_tail {a : ℕ} {b c z : Three} :
+    hdle (P a b c) z ↔ hdle (P a b Z) z := by
+  cases z <;> rfl
+
+theorem wf3_headle_aux {t bnd : Three} (h : wf3 t) (hd : hdle t bnd) :
+    headle_all bnd t := by
+  induction t with
+  | Z => trivial
+  | P a b c ihb ihc =>
+    obtain ⟨wfb, wfc, -, hdc⟩ := h
+    have hd' : hdle (P a b Z) bnd := hdle_head_ignores_tail.1 hd
+    have hcbnd : hdle c bnd := hdle_trans hdc hd'
+    exact ⟨hd', ihc wfc hcbnd⟩
+
+theorem wf3_headle {a : ℕ} {b c : Three} (h : wf3 (P a b c)) :
+    headle_all (P a b Z) c :=
+  wf3_headle_aux h.2.1 h.2.2.2
+
+/-! ## Order preservation on the Buchholz class (Buchholz Lemma 2.2(c)) -/
+
+theorem oV_pos (a : ℕ) (b c : Three) : 0 < oV.{u} (P a b c) :=
+  lt_of_lt_of_le (psi_addprinc (oV b) a).1 (psi_le_oV a b c)
+
+/-- **Building values inside `C`**: if every `G_v`-critical subterm of `t` has
+value `< α`, then `oV t ∈ C_v(α)`.  (Subscripts `< v` contribute
+`ψ_a(·) < Ω_{a+1} ≤ Ω_v ⊆ C`; subscripts `≥ v` are `G`-collected, so their
+arguments are below `α` and the `ψ`-closure of `C` applies; sums by
+`+`-closure.)  No well-formedness needed. -/
+theorem C_build {v : ℕ} {t : Three} {α : Ordinal.{u}}
+    (h : ∀ x ∈ Gterm v t, oV x < α) :
+    oV t ∈ Cset (psiRes α) α v := by
+  induction t with
+  | Z =>
+    have z0 : (0 : Ordinal.{u}) < Om v := lt_of_lt_of_le zero_lt_one (one_le_Om v)
+    exact Iio_Om_subset_Cset z0
+  | P a b c ihb ihc =>
+    have IHc : oV c ∈ Cset (psiRes α) α v := by
+      apply ihc
+      intro x hx
+      exact h x (mem_Gterm_P.2 (Or.inr hx))
+    have head : psi (oV b) a ∈ Cset (psiRes α) α v := by
+      by_cases hva : v ≤ a
+      · have bmem : oV b < α := h b (mem_Gterm_P.2 (Or.inl ⟨hva, Or.inl rfl⟩))
+        have IHb : oV b ∈ Cset (psiRes α) α v := by
+          apply ihb
+          intro x hx
+          exact h x (mem_Gterm_P.2 (Or.inl ⟨hva, Or.inr hx⟩))
+        have := Cset_psi_closed IHb bmem a
+        rwa [psiRes, if_pos bmem] at this
+      · have av : a < v := by omega
+        have hlt : psi (oV b) a < Om v := by
+          calc psi (oV b) a < Om (a + 1) := psi_lt_Om_succ _ _
+            _ ≤ Om v := Om_mono (by omega)
+        exact Iio_Om_subset_Cset hlt
+    exact Cset_add_closed head IHc
+
+/-- The C-membership needed by 1.3, from order-preservation below the
+argument. -/
+theorem Ccond_of_lt {a : ℕ} {b : Three}
+    (h : ∀ x ∈ Gterm a b, oV.{u} x < oV b) :
+    oV.{u} b ∈ Cset (psiRes (oV b)) (oV b) a :=
+  C_build h
+
+/-- `G`-critical subterms are well-formed (Buchholz's Proposition
+`a ∈ OT → G_u a ⊆ OT`). -/
+theorem wf3_Gterm {t x : Three} (ht : wf3 t) {v : ℕ} (hx : x ∈ Gterm v t) :
+    wf3 x := by
+  induction t with
+  | Z => simp at hx
+  | P a b c ihb ihc =>
+    obtain ⟨wfb, wfc, -, -⟩ := ht
+    rcases mem_Gterm_P.1 hx with ⟨-, rfl | hx⟩ | hx
+    · exact wfb
+    · exact ihb wfb hx
+    · exact ihc wfc hx
+
+theorem Gterm_tsize {t x : Three} {v : ℕ} (hx : x ∈ Gterm v t) :
+    tsize x < tsize t := by
+  induction t with
+  | Z => simp at hx
+  | P a b c ihb ihc =>
+    rcases mem_Gterm_P.1 hx with ⟨-, rfl | hx⟩ | hx
+    · simp only [tsize]
+      omega
+    · have := ihb hx
+      simp only [tsize]
+      omega
+    · have := ihc hx
+      simp only [tsize]
+      omega
+
+/-- Every spine principal of a well-formed term whose head is dominated by
+`D_a(b)` (with `b ≺ f`) is `< ψ_a(oV f)`: subscript-smaller ones by the jump,
+subscript-equal ones by strict monotonicity 1.3. -/
+theorem allprinc_lt_spine {n : ℕ} {a : ℕ} {b f : Three}
+    (mono : ∀ b', olt b' f → wf3 b' → tsize b' < n → oV.{u} b' < oV f)
+    (ccnd : ∀ (a' : ℕ) (b' c'' : Three), wf3 (P a' b' c'') → tsize b' < n →
+      oV.{u} b' ∈ Cset (psiRes (oV b')) (oV b') a')
+    (bf : olt b f) :
+    ∀ {c : Three}, headle_all (P a b Z) c → wf3 c → tsize c < n →
+      allprinc_lt (psi (oV.{u} f) a) c := by
+  intro c
+  induction c with
+  | Z => intro _ _ _; trivial
+  | P a' b' c'' ihb ihc =>
+    intro hall wfn hsz
+    have wfn' := wfn
+    obtain ⟨hd, hall'⟩ := hall
+    obtain ⟨wfb', wfc'', -, -⟩ := wfn
+    have sb' : tsize b' < n := by
+      have : tsize b' < tsize (P a' b' c'') := by
+        simp only [tsize]
+        omega
+      omega
+    have szc'' : tsize c'' < n := by
+      have : tsize c'' < tsize (P a' b' c'') := by
+        simp only [tsize]
+        omega
+      omega
+    have head : psi (oV b') a' < psi (oV f) a := by
+      rcases hdle_P_P.1 hd with h | ⟨rfl, bb⟩
+      · exact psi_subscript_jump h _ _
+      · have hb'f : olt b' f := by
+          rcases bb with h | rfl
+          · exact olt_trans h bf
+          · exact bf
+        have ob : oV b' < oV f := mono b' hb'f wfb' sb'
+        have mem : oV b' ∈ Cset (psiRes (oV b')) (oV b') a' := ccnd a' b' c'' wfn' sb'
+        exact psi_strict_mono_arg ob mem
+    exact ⟨head, ihc hall' wfc'' szc''⟩
+
+/-- **Buchholz Lemma 2.2(c)** on `wf3` (= Buchholz `OT`): the value map is
+strictly monotone.  Main induction on the size of the *left* term. -/
+theorem oV_order_pres {v u' : Three} (hv : wf3 v) (hu : wf3 u') (h : olt v u') :
+    oV.{u} v < oV u' := by
+  generalize hs : tsize v = n
+  induction n using Nat.strong_induction_on generalizing v u' with
+  | _ n IHn =>
+    subst hs
+    have ccnd : ∀ (a' : ℕ) (b' c' : Three), wf3 (P a' b' c') → tsize b' < tsize v →
+        oV.{u} b' ∈ Cset (psiRes (oV b')) (oV b') a' := by
+      intro a' b' c' wfn szb'
+      have wfb' : wf3 b' := wfn.1
+      have G : ∀ x ∈ Gterm a' b', olt x b' := wfn.2.2.1
+      apply Ccond_of_lt
+      intro x xG
+      have wfx : wf3 x := wf3_Gterm wfb' xG
+      have szx : tsize x < tsize b' := Gterm_tsize xG
+      exact IHn (tsize x) (by omega) wfx wfb' (G x xG) rfl
+    cases v with
+    | Z =>
+      obtain ⟨e, f, g, rfl⟩ : ∃ e f g, u' = P e f g := by
+        cases u' with
+        | Z => exact absurd h (olt_irrefl Z)
+        | P e f g => exact ⟨e, f, g, rfl⟩
+      simpa using oV_pos e f g
+    | P a b c =>
+      obtain ⟨e, f, g, rfl⟩ : ∃ e f g, u' = P e f g := by
+        cases u' with
+        | Z => exact absurd h (not_olt_Z _)
+        | P e f g => exact ⟨e, f, g, rfl⟩
+      obtain ⟨wfb, wfc, hG, hhd⟩ := wf3_P.1 hv
+      obtain ⟨wff, wfg, -, -⟩ := wf3_P.1 hu
+      rcases olt_P_P.1 h with hsub | ⟨rfl, harg⟩ | ⟨rfl, rfl, htail⟩
+      · -- subscript case
+        have sple : spinesub_le a (P a b c) := wf3_spinesub_le hv
+        have hap : allprinc_lt (psi (oV f) e) (P a b c) :=
+          allprinc_lt_jump sple hsub _
+        calc oV (P a b c) < psi (oV f) e :=
+            oV_lt_of_allprinc (psi_addprinc _ _) hap
+          _ ≤ oV (P e f g) := psi_le_oV e f g
+      · -- argument case
+        have mono : ∀ b', olt b' f → wf3 b' → tsize b' < tsize (P a b c) →
+            oV.{u} b' < oV f := by
+          intro b' A1 A2 A3
+          exact IHn (tsize b') (by omega) A2 wff A1 rfl
+        have hac : headle_all (P a b Z) c := wf3_headle hv
+        have szc : tsize c < tsize (P a b c) := by
+          simp only [tsize]
+          omega
+        have spine : allprinc_lt (psi (oV f) a) c :=
+          allprinc_lt_spine mono ccnd harg hac wfc szc
+        have szb : tsize b < tsize (P a b c) := by
+          simp only [tsize]
+          omega
+        have obf : oV b < oV f := mono b harg wfb szb
+        have memb : oV b ∈ Cset (psiRes (oV b)) (oV b) a := ccnd a b c hv szb
+        have lead : psi (oV b) a < psi (oV f) a := psi_strict_mono_arg obf memb
+        have hap : allprinc_lt (psi (oV f) a) (P a b c) := ⟨lead, spine⟩
+        calc oV (P a b c) < psi (oV f) a :=
+            oV_lt_of_allprinc (psi_addprinc _ _) hap
+          _ ≤ oV (P a f g) := psi_le_oV a f g
+      · -- tail case
+        have szc : tsize c < tsize (P a b c) := by
+          simp only [tsize]
+          omega
+        have hcg : oV c < oV g := IHn (tsize c) (by omega) wfc wfg htail rfl
+        show psi (oV b) a + oV c < psi (oV b) a + oV g
+        exact add_lt_add_right hcg _
+
+/-! ## Well-foundedness of `olt` on the Buchholz class `wf3` (Lemma 2.2)
+
+The value map embeds `(wf3, olt)` into the ordinals, so `olt` is well-founded
+on `wf3`.  This is Buchholz's Lemma 2.2 proved (rather than cited): the sole
+ingredient beyond §1 is the strict monotonicity above. -/
+
+/-- `olt` restricted to the Buchholz class. -/
+def oltWf3 (w x : Three) : Prop := olt w x ∧ wf3 w ∧ wf3 x
+
+theorem wf_olt_wf3 : WellFounded oltWf3 := by
+  refine Subrelation.wf ?_ (InvImage.wf oV.{0} Ordinal.lt_wf)
+  rintro w x ⟨hlt, hw, hx⟩
+  exact oV_order_pres hw hx hlt
+
+end YAPSS
