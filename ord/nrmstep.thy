@@ -1223,19 +1223,60 @@ text \<open>(C1) Shape of the normalized image on the class: the \<open>ins\<clo
   never absorbs, so the head subscript is the head column's row-1 value.
   (Empirical: zero absorptions on all 8768 closure pieces.)\<close>
 
-lemma NT_shape:
+text \<open>(C1 core) The head of a piece dominates the head of its sum-tail: the
+  subscript cannot rise across a level drop, and on subscript ties the
+  projected argument of the earlier head is not below that of the later one.
+  This is the \<open>ins\<close> no-absorb condition as a sequence-level class fact.\<close>
+
+lemma NT_dom:
   assumes "fbseg u (c # rest)"
-  shows "nrm (translate (c # rest))
-         = P (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
-                     (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+  shows "\<not> (snd c < snd c1 \<or> (snd c = snd c1 \<and>
+            olt (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+                (proj (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))))"
   sorry
+
+lemma NT_shape:
+  "fbseg u S \<Longrightarrow> S = c # rest \<Longrightarrow>
+   nrm (translate (c # rest))
+   = P (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+               (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+proof (induct S arbitrary: c rest rule: length_induct)
+  case (1 S)
+  note IH = 1(1) and fb = 1(2) and C = 1(3)
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  let ?A = "proj (snd c) (nrm (translate ?K))"
+  have un: "nrm (translate (c # rest)) = ins (snd c) ?A (nrm (translate ?T))"
+    by (simp only: translate.simps(2) nrm.simps(2))
+  show ?case
+  proof (cases ?T)
+    case Nil
+    have "nrm (translate ?T) = Z" unfolding Nil by simp
+    thus ?thesis unfolding un by simp
+  next
+    case (Cons c1 rest1)
+    have fbT: "fbseg u ?T"
+      by (rule fbseg_T_desc[OF fb[unfolded C]]) (simp add: Cons)
+    have lT: "length ?T < length S"
+      unfolding C using length_dropWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+    have shT: "nrm (translate ?T)
+               = P (snd c1) (proj (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))
+                            (nrm (translate (dropWhile (\<lambda>r. fst c1 < fst r) rest1)))"
+      using IH[rule_format, OF lT fbT Cons] unfolding Cons .
+    have nab: "\<not> (snd c < snd c1 \<or> (snd c = snd c1 \<and>
+              olt ?A (proj (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))))"
+      by (rule NT_dom[OF fb[unfolded C] Cons])
+    show ?thesis unfolding un shT using nab by auto
+  qed
+qed
 
 lemma NT_hd:
   assumes "fbseg u S"
   shows "\<exists>A R. nrm (translate S) = P (snd (hd S)) A R"
 proof -
   obtain c rest where C: "S = c # rest" using assms unfolding fbseg_def by (cases S) auto
-  show ?thesis unfolding C using NT_shape[OF assms[unfolded C]] by simp
+  show ?thesis unfolding C using NT_shape[OF assms[unfolded C] refl] by simp
 qed
 
 text \<open>The normalized image of a sum-tail is strictly below that of the whole
@@ -1270,14 +1311,14 @@ proof (induct S arbitrary: c rest rule: length_induct)
   let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
   let ?A = "proj (snd c) (nrm (translate ?K))"
   have shS: "nrm (translate (c # rest)) = P (snd c) ?A (nrm (translate ?T))"
-    by (rule NT_shape[OF fb[unfolded C]])
+    by (rule NT_shape[OF fb[unfolded C] refl])
   have fbT: "fbseg u ?T" by (rule fbseg_T_desc[OF fb[unfolded C] ne])
   obtain c1 rest1 where T: "?T = c1 # rest1" using ne by (cases ?T) auto
   let ?K1 = "takeWhile (\<lambda>r. fst c1 < fst r) rest1"
   let ?T1 = "dropWhile (\<lambda>r. fst c1 < fst r) rest1"
   let ?B1 = "proj (snd c1) (nrm (translate ?K1))"
   have shT: "nrm (translate ?T) = P (snd c1) ?B1 (nrm (translate ?T1))"
-    unfolding T by (rule NT_shape[OF fbT[unfolded T]])
+    unfolding T by (rule NT_shape[OF fbT[unfolded T] refl])
   have nab: "\<not> (snd c < snd c1 \<or> (snd c = snd c1 \<and> olt ?A ?B1))"
     by (rule NT_noabsorb[OF shS shT])
   show ?case
