@@ -73,10 +73,13 @@
           ✅ **r1ok 基盤**（row1規律 snd≤親snd+1・実証0/14558）: 生成帰納+diag+take/butlast+
           oper骨格+oper_bad主証明+copy_witness 全緑 — **残 r1ok_climb 1点**（memo続26）
           ✅ **NT_tie_resolved**（SIB_prefix から導出）— SIB核を配列形状事実に還元（memo続27）
-          ✅ **SIB_shape 完全証明**（sibm Mレベル不変量から導出・切詰め安定簿記）/ sibm 骨格（diag+生成帰納）/ fbsegD 追加
-          🚨 実効コア: **sibm_oper**（コピー簿記保存・r1ok_oper と同型・実証0/2964）/
-          E6_lpl / E6_dom_deep / E6_memT / E6_nbcK_T / E6_nbcK_K / r1ok_climb / TOP_desc（未ステート）
+          ✅ **SIB核の解体完了**: sibm（Mレベル兄弟ラン不変量・0/2964）→ SIB_shape →
+          NT_tie_resolved の鎖が緑。sibm_take/butlast（切詰め安定）・sibm_oper ケース骨格・fbsegD 追加
+          🚨 実効コア: 🥇**sibm_oper_bad**（コピー簿記保存・300行級・対カテゴリ4族地図=memo続28補4）/
+          fire-cascade系5点（E6_lpl / E6_dom_deep / E6_memT / E6_nbcK_T / E6_nbcK_K = GRAND同時帰納の本丸）/
+          r1ok_climb（e1正側0/729・機構=memo続26補5）/ TOP_desc（トップ木nrm弱降下0/474・未ステート）
           🚨 行レベル: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（fbsegDリフト＋TOP_desc経路、memo続27-28）
+          🚨 スタブ: NT_tie / E6_mem / E6_dom_tie（resolved版あり・最終組立=長さ同時帰納にインライン）
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
