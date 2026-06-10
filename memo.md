@@ -2278,3 +2278,17 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   残証明義務: (1) E分岐 O2 反駁 (2) P分岐の C/D 三分律（prefix 整列の周期性核）
   (3) hm(K1@C) = maxr1 blk ≤ snd hd K1 (4) F分岐の純粋安定性。
   全て a∈prefix 局在なので M の prefix 構造＋ブロック構造の直接比較で攻められる。
+
+- (続29補9) **sibrel 衝突代数（緑）+ seam_open_core 設計確定**:
+  sibrel_nopref（K の真延長 K@E は sibrel 不可能）・sibrel_ascent
+  （共通接頭辞後の第一差分上昇は不可能、任意分解位置で衝突）を純証明。
+  **討伐方針 = R事実×SY事実の衝突**: M対 (a,b)（b<j0 のとき mrun M b =
+  P0@blk@[M!j1] 形）の sibrel と Y対の sibrel K K1 を衝突させる:
+  - E分岐 (K=K1): K1M ⊋ K（m≤1）→ nopref で False / 分岐位置の M!j1 vs blk!0
+    上昇（m≥2）→ ascent で False ⟹ **E族O2は新事実なしで反駁可能**。
+  - P分岐 m≥2 (d0=0): K!|W1| = blk!0 vs K1M の cj1 = 上昇 → ascent で False
+    ⟹ m≥2 P族も自動反駁、**O2-P は m∈{0,1} に局在**（ミニングと一致）。
+  - 残る実体: m∈{0,1} P族の C/D 整列（R事実の lexdiff/prefix 分岐から GOAL を
+    組む、t=|W1| 分岐は prefix 即閉）・d0>0 の b=コピー頭ケースの持ち上げ
+    （shf 対応で take j1 M 対へ）・hm(K1@C) の maxr1 blk ≤ snd hd K1。
+  - K1M の開性: O2 ⟹ lev b < e0(j0) ≤ ブロック&j1 全部 ⟹ M run open ✓ 純粋。
