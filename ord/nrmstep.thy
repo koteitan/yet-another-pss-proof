@@ -1380,10 +1380,79 @@ qed
 lemma r1ok_butlast: "r1ok M \<Longrightarrow> r1ok (butlast M)"
   using r1ok_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
-lemma r1ok_oper:
-  assumes "r1ok M" and "M \<in> ST_PS" and "1 \<le> n"
+text \<open>The copy index is at most 1, so the row-1 delta is always zero: copies
+  replicate row-1 values exactly.\<close>
+
+lemma idx1_le: "idx1 M j \<le> 1"
+  unfolding idx1_def by simp
+
+lemma r1ok_oper_bad:
+  assumes "r1ok M" and "blockok 0 M" and "1 \<le> n"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "oper M n = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
   shows "r1ok (oper M n)"
   sorry
+
+lemma r1ok_oper:
+  assumes R: "r1ok M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+  shows "r1ok (oper M n)"
+proof -
+  define j1 where "j1 = Lng M - 1"
+  have b: "blockok 0 M" by (rule blockok_ST_PS[OF ST])
+  show ?thesis
+  proof (cases "j1 = 0")
+    case True thus ?thesis using R unfolding oper_def Let_def j1_def by simp
+  next
+    case False
+    show ?thesis
+    proof (cases "entry M 0 j1 = 0 \<and> entry M 1 j1 = 0")
+      case True
+      have "oper M n = Pred M"
+        unfolding oper_def Let_def j1_def[symmetric] using False True by auto
+      moreover have "r1ok (Pred M)"
+        unfolding Pred_def using R r1ok_butlast by simp
+      ultimately show ?thesis by simp
+    next
+      case Fz: False
+      define i1 where "i1 = idx1 M j1"
+      show ?thesis
+      proof (cases "hasParent M i1 j1")
+        case False2: False
+        have "oper M n = Pred M"
+          unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+          using False Fz False2 by auto
+        moreover have "r1ok (Pred M)"
+          unfolding Pred_def using R r1ok_butlast by simp
+        ultimately show ?thesis by simp
+      next
+        case hp: True
+        define j0 where "j0 = parent M i1 j1"
+        define d0 where "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+        have d1z: "(if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0) = 0"
+          using idx1_le[of M j1] unfolding i1_def by simp
+        have opeq: "oper M n = take j0 M @ concat (map (\<lambda>k.
+               map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+        proof -
+          have "oper M n = take j0 M @ concat (map (\<lambda>k.
+                 map (\<lambda>j. (entry M 0 j + k * d0,
+                            entry M 1 j + k * (if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0)))
+                 [j0..<j1]) [0..<n])"
+            unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+              j0_def[symmetric] d0_def[symmetric]
+            using False Fz hp by auto
+          thus ?thesis unfolding d1z by simp
+        qed
+        show ?thesis
+          by (rule r1ok_oper_bad[OF R b n1 j1_def False Fz i1_def hp j0_def d0_def opeq])
+      qed
+    qed
+  qed
+qed
 
 theorem r1ok_ST_PS: "M \<in> ST_PS \<Longrightarrow> r1ok M"
 proof (induction M rule: ST_PS.induct)
