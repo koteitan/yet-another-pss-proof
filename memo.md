@@ -1650,3 +1650,13 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   proj a x (R∪flip∪=) proj a y（G-集合が点ごと R-関連＋新規 leaf 臨界、max 選択の分岐が flip を生む）。
   これで nrm-snoc → translate_oper_pred の nrm 版（Pred ケース完了）。
   bad ケース（コピー）は「コピー素材の nrm 寄与 <o 最終列の寄与」を同機構で。
+- (続16補・帰納設計): nrm_snoc_Rinc はセグメント版に一般化して証明
+  （tail は ST_PS でないため）: 前提 = blockok/cnf/nfinv の遺伝事実（全て既存:
+  blockok_ST_PS/cnf_ST_PS/nfinv_ST_PS）＋ p の付加条件（ホスト標準性から導出）。
+  **声明強化**: 「NT seg の head = (y, proj y (NT dom))（top-level absorb 無し）」を
+  同時帰納に含める（no-absorb が cnf＋head 保存から回る）。
+  ケース: (A) p が tail 域 → IH+congruence＋no-absorb。(B) p が dom 延長 → IH(args)
+  ＋ **proj_Rinc 閉包**（核心）: x' = x+leaf で x' のみ fire する分岐が flip の発生源
+  （例: D1(0) vs D1(D2 0)→fire→D2(0) = lflip）。fire 構成が常にクリーン tower 形に
+  なることを inv2/spine 純性（nfinv）で示すのが class 事実の使い所。
+  まず無条件補題: proj_inflate（ole b (proj u b)、totality+帰納）から着手。
