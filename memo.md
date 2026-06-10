@@ -1846,3 +1846,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   nrm_hd（頭添字保存）と STS_B hdsub 節は K1 が閉じれば STS_A パターンで機械的。
   次の本丸 = K1。攻め筋: olt 第一差分追跡 + fire/gap + 兄弟 cnf 事実、
   逆転には proj ジャンプの交差が必要でクラスでは gap 補題系が遮断する見込み。
+
+### ★★(2026-06-10 続21) proj_once 定理 — 射影は1ステップで終わる（K1 純粋部品完成）
+- **兄弟ペア実証**: 全4696ペアで「等しい(3681) or 和のprefix切詰め(1015)」のみ
+  （sub差分・arg再帰ゼロ）= コピー系譜の構造。proj レベルでも同分類・真の逆転ゼロ。
+- **proj_once（純粋定理・緑）**: max臨界は自分が発火しない（violator g ∈ G(m) ⊆ G(b)
+  が Gterm_trans で持ち上がり、最大性 maxo_ub と size で矛盾）⟹
+  proj u b = if fire then maxG(b) else b。**1ステップ確定**。
+- **proj_submono（純粋・緑）**: Gterm u x ⊆ Gterm u y ∧ ole x y (∧ fire移送) ⟹
+  ole (proj u x) (proj u y)。prefix-和（兄弟ペアの実形）は G-部分集合 ✓ なので
+  K1 の proj 部分はこれで閉じる。クラス事実は「兄弟 nrm 像が prefix-和」のみに縮小。
+- projE_ii も proj_once により「max臨界対応の有限推論」に縮退（再帰不要の見込み）。
+- デバッグ: pfire/proj_nofire の定義位置（未定義だと自由変数として黙ってパースされ
+  obtain が "Failed to apply initial proof method" になる）、blast+trans 連鎖は hang。

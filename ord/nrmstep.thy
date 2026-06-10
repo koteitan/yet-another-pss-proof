@@ -847,8 +847,6 @@ next
   qed
 qed
 
-subsection \<open>Transport of \<open>Einc\<close> through \<open>proj\<close>\<close>
-
 abbreviation pfire :: "nat \<Rightarrow> three \<Rightarrow> bool" where
   "pfire u b \<equiv> (\<exists>g \<in> Gterm u b. \<not> olt g b)"
 
@@ -857,6 +855,134 @@ lemma pfire_filter: "pfire u b \<longleftrightarrow> filter (\<lambda>g. \<not> 
 
 lemma proj_nofire: "\<not> pfire u b \<Longrightarrow> proj u b = b"
   using pfire_filter proj_id by blast
+
+subsection \<open>\<open>proj\<close> terminates in one step\<close>
+
+text \<open>Criticals of criticals are criticals; hence the maximal violating critical
+  is itself collapse-free (a violator inside it would be a strictly larger
+  violator of the original term, contradicting maximality by size).  So the
+  projection loop always stops after a single step.\<close>
+
+lemma Gterm_trans: "g \<in> Gterm u t \<Longrightarrow> h \<in> Gterm u g \<Longrightarrow> h \<in> Gterm u t"
+proof (induction t arbitrary: g)
+  case (P a b c)
+  from P.prems(1) consider "u \<le> a" "g = b" | "u \<le> a" "g \<in> Gterm u b" | "g \<in> Gterm u c"
+    by (auto split: if_splits)
+  thus ?case
+  proof cases
+    case 1 thus ?thesis using P.prems(2) by auto
+  next
+    case 2 thus ?thesis using P.IH(1) P.prems(2) by auto
+  next
+    case 3 thus ?thesis using P.IH(2) P.prems(2) by auto
+  qed
+qed simp
+
+lemma maxg_nofire:
+  assumes ne: "filter (\<lambda>g. \<not> olt g b) (Glist u b) \<noteq> []"
+  shows "\<not> pfire u (maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
+                         (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b))))"
+proof
+  let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
+  let ?m = "maxo (hd ?gs) (tl ?gs)"
+  have mset: "?m \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+  have mG: "?m \<in> Gterm u b" using mset set_Glist by auto
+  have mnb: "\<not> olt ?m b" using mset by auto
+  assume "pfire u ?m"
+  then obtain g where gG: "g \<in> Gterm u ?m" and gnm: "\<not> olt g ?m" by blast
+  have gB: "g \<in> Gterm u b" by (rule Gterm_trans[OF mG gG])
+  have gsz: "size g < size ?m" by (rule Gterm_size[OF gG])
+  have "\<not> olt g b"
+  proof
+    assume "olt g b"
+    have "ole b ?m" using mnb olt_total by blast
+    hence "olt g ?m" using \<open>olt g b\<close> \<open>ole b ?m\<close> olt_ole_trans by blast
+    thus False using gnm by blast
+  qed
+  hence "g \<in> set ?gs" using gB set_Glist by auto
+  hence inseq: "g \<in> insert (hd ?gs) (set (tl ?gs))" by (cases ?gs) auto
+  have "\<not> olt ?m g" using maxo_ub[OF inseq] .
+  hence "g = ?m" using gnm olt_total by blast
+  thus False using gsz by simp
+qed
+
+lemma proj_once:
+  "proj u b = (if filter (\<lambda>g. \<not> olt g b) (Glist u b) = [] then b
+               else maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
+                         (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b))))"
+proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
+  case True thus ?thesis using proj_id by simp
+next
+  case False
+  let ?m = "maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
+                 (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b)))"
+  have "proj u b = proj u ?m" using proj_rec[OF False] by simp
+  also have "proj u ?m = ?m"
+    using maxg_nofire[OF False] proj_nofire by blast
+  finally show ?thesis using False by simp
+qed
+
+text \<open>Prefix monotonicity of the projection: if every critical of \<open>x\<close> is a
+  critical of \<open>y\<close> and \<open>x \<le>\<^sub>o y\<close>, the projections stay ordered \<dash> purely from
+  maximality.  (The intended instance: \<open>x\<close> a summand-prefix of \<open>y\<close>.)\<close>
+
+lemma proj_submono:
+  assumes sub: "Gterm u x \<subseteq> Gterm u y" and xy: "ole x y" and yny: "\<not> pfire u y \<Longrightarrow> \<not> pfire u x"
+  shows "ole (proj u x) (proj u y)"
+proof (cases "pfire u x")
+  case False
+  have pxx: "proj u x = x" by (rule proj_nofire[OF False])
+  have yp: "ole y (proj u y)" using proj_ole[of y u] by simp
+  have "ole x (proj u y)"
+  proof (cases "x = y")
+    case True thus ?thesis using yp by simp
+  next
+    case False
+    hence lxy: "olt x y" using xy by simp
+    show ?thesis using olt_ole_trans[OF lxy] yp by (cases "y = proj u y") auto
+  qed
+  thus ?thesis unfolding pxx .
+next
+  case xf: True
+  have yf: "pfire u y"
+    using xf yny by blast
+  let ?gx = "filter (\<lambda>g. \<not> olt g x) (Glist u x)"
+  let ?gy = "filter (\<lambda>g. \<not> olt g y) (Glist u y)"
+  have nex: "?gx \<noteq> []" using xf pfire_filter by blast
+  have ney: "?gy \<noteq> []" using yf pfire_filter by blast
+  let ?mx = "maxo (hd ?gx) (tl ?gx)"
+  let ?my = "maxo (hd ?gy) (tl ?gy)"
+  have px: "proj u x = ?mx" using proj_once[of u x] nex by simp
+  have py: "proj u y = ?my" using proj_once[of u y] ney by simp
+  have mxx: "?mx \<in> set ?gx" by (rule maxo_hdtl_in[OF nex])
+  have mxG: "?mx \<in> Gterm u y" using mxx set_Glist sub by auto
+  have mxnx: "\<not> olt ?mx x" using mxx by auto
+  have "\<not> olt ?mx y \<or> olt ?mx y" by blast
+  have mxny: "\<not> olt ?mx y \<Longrightarrow> ?mx \<in> set ?gy"
+    using mxG set_Glist by auto
+  show ?thesis
+  proof (cases "olt ?mx y")
+    case True
+    \<comment> \<open>\<open>?mx\<close> is not a violator of \<open>y\<close>; but \<open>?my \<ge>\<^sub>o y >\<^sub>o ?mx\<close> via inflation\<close>
+    have "ole y ?my"
+    proof -
+      have "?my \<in> set ?gy" by (rule maxo_hdtl_in[OF ney])
+      hence "\<not> olt ?my y" by auto
+      thus ?thesis using olt_total by blast
+    qed
+    hence "olt ?mx ?my" using True olt_ole_trans by blast
+    thus ?thesis unfolding px py by blast
+  next
+    case False
+    have inseq: "?mx \<in> insert (hd ?gy) (set (tl ?gy))"
+      using mxny[OF False] by (cases ?gy) auto
+    have "\<not> olt ?my ?mx" using maxo_ub[OF inseq] .
+    hence "ole ?mx ?my" using olt_total by blast
+    thus ?thesis unfolding px py .
+  qed
+qed
+
+subsection \<open>Transport of \<open>Einc\<close> through \<open>proj\<close>\<close>
 
 text \<open>Provenance: the pair under transport is the normalized image of an
   all-dominated standard sub-segment and its one-column extension; \<open>u\<close> is the
