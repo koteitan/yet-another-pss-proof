@@ -1577,3 +1577,23 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   クラスに要求される閉包公理を抽出 → 標準性（ST_PS 生成＋P進 Adm/条件I-VI）から
   その公理群を証明する設計へ。reduced の構文特徴づけ=条件(A)(B)（content.md 1056-）も確認済
   （ただし reduced ⊋ standard なので単独では不足）。
+
+### ★★★(2026-06-10 続13) 大発見: 値正規化 nrm が NF→OT 順序埋め込み（実証）— (α) の新本線
+- P進 Trans 全容把握: T_PS 全域で定義（Red 経由）、本体は Adm による挿入位置補正
+  （条件I-VI + scb/Mark, §8 の減少証明 ~3000行）。クラス制限ではなく「修復写像」。
+- 半面、衝突ペアの片割れ (0,0)(1,1)(2,1)(3,2)（=D_0D_1D_1D_2 0、stay後climb）は**非標準**と確認
+  ⟹ レベル内 oV 単射性が生存 ⟹ 値写像路線が復活。
+- **値正規化器 nrm を発見・実装**（tools/valnorm.py, ~40行）:
+  - D_a(b): b̄=nrm(b) とし、G_a(b̄) に ¬(g <T b̄) な g があれば b̄ := max G_a(b̄) と射影し反復
+    （ψ_a 定数区間の右端への投影 = 値保存の名前書換え）。和は「後方に大きい主項があれば吸収」。
+  - 検証: 全像 OT ✓ / 冪等 ✓ / nrm(D0D1D2 0)=D0(D2 0) ✓ / t_k 値一定 ✓ / y_k 値一定 ✓。
+- **INJ 実験: NF・ArgsA 全レベル内 + クロスレベル NF 全体（244,650ペア）で
+  衝突 0・逆転 0** ⟹ 予想（α-core）: **s <o t on NF ⟹ nrm s <o nrm t**（nrm は順序埋め込み）。
+- ⟹ 新本線: wf_Rnf = inv_image wf_olt_wf3 nrm。レベル分解・peel・wf_ArgsA 不要。
+  残 sorry は nrm_order_pres（構文的・実証済・y_2 は非標準なので標準性規律が本質的に必要）
+  ＋ nrm 像 ⊆ wf3（Gterm は構成から、hdle は吸収の弱降下から）。
+- 重要: **nrm の値論的正しさは証明に不要**（順序保存・像∈wf3・wf_olt_wf3 の3点で閉じる）。
+  ψ 意味論は nrm の発見的根拠にすぎない。P進 Trans との差別化: 挿入修復 vs 構造射影、
+  かつ我々は Buchholz 2.2 も自前（wf_olt_wf3）。
+- 次: nrm.thy（fun nrm + 像∈wf3）→ wf_Rnf 別証ルート → nrm_order_pres の本格帰納
+  （クラス C = 標準ブロックの規律、NF⊆C は ST_PS.induct、y_2/stay-after-reentry 排除が鍵）。
