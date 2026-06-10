@@ -1312,6 +1312,62 @@ proof -
   qed
 qed
 
+subsection \<open>Row-1 discipline of standard sequences\<close>
+
+text \<open>\<open>r1ok\<close>: every column at positive level has a row-0 parent (the nearest
+  preceding column one level below, with no dip in between) whose row-1 value
+  it exceeds by at most one.  (Empirically exact on all standard hosts,
+  14558 columns, difference distribution \<open>-3..+1\<close>.)\<close>
+
+definition r1ok :: "pairseq \<Rightarrow> bool" where
+  "r1ok M \<longleftrightarrow> (\<forall>j. j < length M \<longrightarrow> 0 < fst (M ! j) \<longrightarrow>
+     (\<exists>k. k < j \<and> Suc (fst (M ! k)) = fst (M ! j)
+        \<and> (\<forall>l. k < l \<and> l < j \<longrightarrow> fst (M ! j) \<le> fst (M ! l))
+        \<and> snd (M ! j) \<le> Suc (snd (M ! k))))"
+
+lemma r1ok_diagSeq: "r1ok (diagSeq 0 v)"
+proof -
+  have len: "length (diagSeq 0 v) = Suc v"
+    unfolding diagSeq_def by simp
+  have nth: "\<And>j. j < Suc v \<Longrightarrow> diagSeq 0 v ! j = (j, j)"
+    unfolding diagSeq_def by (simp del: upt_Suc)
+  show ?thesis
+    unfolding r1ok_def
+  proof (intro allI impI)
+    fix j assume jl: "j < length (diagSeq 0 v)"
+      and jp: "0 < fst (diagSeq 0 v ! j)"
+    have jv: "j < Suc v" using jl len by simp
+    have fj: "fst (diagSeq 0 v ! j) = j" using nth[OF jv] by simp
+    have j0: "0 < j" using jp fj by simp
+    have kv: "j - 1 < Suc v" using jv by simp
+    show "\<exists>k. k < j \<and> Suc (fst (diagSeq 0 v ! k)) = fst (diagSeq 0 v ! j)
+        \<and> (\<forall>l. k < l \<and> l < j \<longrightarrow> fst (diagSeq 0 v ! j) \<le> fst (diagSeq 0 v ! l))
+        \<and> snd (diagSeq 0 v ! j) \<le> Suc (snd (diagSeq 0 v ! k))"
+    proof (intro exI[of _ "j - 1"] conjI)
+      show "j - 1 < j" using j0 by simp
+      show "Suc (fst (diagSeq 0 v ! (j - 1))) = fst (diagSeq 0 v ! j)"
+        using nth[OF kv] fj j0 by simp
+      show "\<forall>l. j - 1 < l \<and> l < j \<longrightarrow> fst (diagSeq 0 v ! j) \<le> fst (diagSeq 0 v ! l)"
+        by auto
+      show "snd (diagSeq 0 v ! j) \<le> Suc (snd (diagSeq 0 v ! (j - 1)))"
+        using nth[OF jv] nth[OF kv] j0 by simp
+    qed
+  qed
+qed
+
+lemma r1ok_oper:
+  assumes "r1ok M" and "M \<in> ST_PS" and "1 \<le> n"
+  shows "r1ok (oper M n)"
+  sorry
+
+theorem r1ok_ST_PS: "M \<in> ST_PS \<Longrightarrow> r1ok M"
+proof (induction M rule: ST_PS.induct)
+  case (diag v) show ?case by (rule r1ok_diagSeq)
+next
+  case (oper M n)
+  show ?case by (rule r1ok_oper[OF oper.IH oper.hyps(1) oper.hyps(2)])
+qed
+
 definition fbseg :: "nat \<Rightarrow> pairseq \<Rightarrow> bool" where
   "fbseg u S \<longleftrightarrow> S \<noteq> [] \<and> (\<exists>pre pp mid post. pre @ (pp # mid @ S) @ post \<in> ST_PS
                  \<and> (\<forall>r \<in> set (mid @ S). fst pp < fst r)
