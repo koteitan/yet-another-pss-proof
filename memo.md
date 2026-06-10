@@ -1697,3 +1697,8 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   append列は常に接尾辞内 ⟹ 同型の主張が1段深い接尾辞に再帰 = 数列側帰納で攻略〕。
 - 全体図: PSS_terminates の残決定木 = nrm_order_pres（live, nrm.thy）∨
   〔nrm_step_dec 直接 = Pred(↑ST_snocokのみ) + bad ケース（コピー、同機構の拡張）〕。
+- (続18補) ST_snocok_gen 緑: pre 付き一般化＋length_induct、(B)再帰は host' の結合付替え。
+  最終 show は「unf iff を simp only: snocok.simps if_not_P[OF Tne] で取得→blast」
+  （simp add だと等式仮定 snd p=hdsub… がゴール側 proj 引数だけ書換えて不一致になる罠）。
+  nrmstep 残 sorry = ST_snoc_A（cnf/tops から snd q ≤ snd p）/ ST_snoc_B（no-absorb 対）
+  / ST_snoc_C（proj-olt、接尾辞再帰）の3点。Pred ケース完成まであと3義務。
