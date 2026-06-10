@@ -2631,6 +2631,137 @@ proof -
   qed
 qed
 
+text \<open>Uniform row-0 shifts preserve the whole sibling-run structure: runs,
+  ties, head-maximality and \<open>sibrel\<close> only ever compare row-0 values against
+  each other and leave row 1 untouched.\<close>
+
+definition shf :: "nat \<Rightarrow> pairseq \<Rightarrow> pairseq" where
+  "shf s B = map (\<lambda>p. (fst p + s, snd p)) B"
+
+lemma shf_len [simp]: "length (shf s B) = length B"
+  unfolding shf_def by simp
+
+lemma shf_nth: "q < length B \<Longrightarrow> shf s B ! q = (fst (B ! q) + s, snd (B ! q))"
+  unfolding shf_def by simp
+
+lemma shf_drop: "drop k (shf s B) = shf s (drop k B)"
+  unfolding shf_def by (simp add: drop_map)
+
+lemma shf_takeWhile:
+  "takeWhile (\<lambda>r. c + s < fst r) (shf s B) = shf s (takeWhile (\<lambda>r. c < fst r) B)"
+  unfolding shf_def by (subst takeWhile_map) (simp add: comp_def)
+
+lemma shf_mrun:
+  assumes q: "q < length B"
+  shows "mrun (shf s B) q = shf s (mrun B q)"
+proof -
+  have f: "fst (shf s B ! q) = fst (B ! q) + s" using shf_nth[OF q] by simp
+  show ?thesis
+    unfolding mrun_def f shf_drop shf_takeWhile ..
+qed
+
+lemma shf_maxr1: "maxr1 (shf s B) = maxr1 B"
+proof -
+  have "snd ` set (shf s B) = snd ` set B"
+    unfolding shf_def by force
+  thus ?thesis unfolding maxr1_def by simp
+qed
+
+lemma shf_hd: "B \<noteq> [] \<Longrightarrow> hd (shf s B) = (fst (hd B) + s, snd (hd B))"
+  unfolding shf_def by (simp add: hd_map)
+
+lemma shf_sibrel:
+  assumes R: "sibrel K K1"
+  shows "sibrel (shf s K) (shf s K1)"
+proof -
+  from R consider (E) "K1 = K"
+    | (P) D where "D \<noteq> []" "K = K1 @ D"
+    | (LX) p x x1 r r1 where
+        "snd (hd K) = maxr1 K" "snd (hd K1) = maxr1 K1"
+        "K = p @ x # r" "K1 = p @ x1 # r1"
+        "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
+    unfolding sibrel_def by blast
+  thus ?thesis
+  proof cases
+    case E
+    thus ?thesis unfolding sibrel_def by simp
+  next
+    case P
+    have "shf s D \<noteq> []" using P(1) unfolding shf_def by simp
+    moreover have "shf s K = shf s K1 @ shf s D"
+      unfolding P(2) shf_def by simp
+    ultimately show ?thesis unfolding sibrel_def by blast
+  next
+    case LX
+    have Kne: "K \<noteq> []" and K1ne: "K1 \<noteq> []" unfolding LX(3) LX(4) by simp_all
+    have hm: "snd (hd (shf s K)) = maxr1 (shf s K)"
+      using LX(1) Kne by (simp add: shf_hd shf_maxr1)
+    have hm1: "snd (hd (shf s K1)) = maxr1 (shf s K1)"
+      using LX(2) K1ne by (simp add: shf_hd shf_maxr1)
+    have d1: "shf s K = shf s p @ (fst x + s, snd x) # shf s r"
+      unfolding LX(3) shf_def by simp
+    have d2: "shf s K1 = shf s p @ (fst x1 + s, snd x1) # shf s r1"
+      unfolding LX(4) shf_def by simp
+    have lxs: "(fst (fst x1 + s, snd x1) = fst (fst x + s, snd x)
+                \<and> snd (fst x1 + s, snd x1) < snd (fst x + s, snd x))
+               \<or> (fst (fst x1 + s, snd x1) < fst (fst x + s, snd x)
+                \<and> snd (fst x1 + s, snd x1) = snd (fst x + s, snd x))"
+      using LX(5) by auto
+    show ?thesis unfolding sibrel_def using hm hm1 d1 d2 lxs by blast
+  qed
+qed
+
+lemma shf_0 [simp]: "shf 0 B = B"
+  unfolding shf_def by simp
+
+lemma mrun_suffix:
+  assumes la: "length Y \<le> a" and aL: "a < length (Y @ C)"
+  shows "mrun (Y @ C) a = mrun C (a - length Y)"
+proof -
+  have n: "(Y @ C) ! a = C ! (a - length Y)"
+    using la by (simp add: nth_append)
+  have d: "drop (Suc a) (Y @ C) = drop (Suc (a - length Y)) C"
+    using la by (simp add: Suc_diff_le)
+  show ?thesis unfolding mrun_def n d ..
+qed
+
+text \<open>(seam, open-run core) Extending an open tie-sibling run across the
+  copy seam stays inside \<open>sibrel\<close>.  This is the alignment/periodicity core
+  of the bad-branch preservation (memo 続29補4 I-open).\<close>
+
+lemma seam_I_open:
+  assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "Y = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m])"
+    and "a < length Y" and "0 < fst (Y ! a)"
+    and "b = Suc a + length (mrun Y a)" and "b < length Y"
+    and "fst (Y ! b) = fst (Y ! a)" and "snd (Y ! b) = snd (Y ! a)"
+    and "\<forall>x \<in> set (drop (Suc b) Y). fst (Y ! b) < fst x"
+  shows "sibrel (mrun Y a) (drop (Suc b) Y @ takeWhile (\<lambda>r. fst (Y ! b) < fst r)
+           (map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1]))"
+  sorry
+
+text \<open>(seam, climb-tie refutation core) In the \<open>i1 = 1\<close> block, a column at
+  the level of \<open>j1\<close> whose tail is clear up to \<open>j1\<close> carries at least the
+  row-1 value of \<open>j1\<close> (empirically exactly equal, 265/265; together with
+  \<open>entry M 1 j0 < entry M 1 j1\<close> this refutes the cross-seam tie for
+  \<open>d0 > 0\<close>).  Same value-side lower-bound family as \<open>r1ok_climb\<close>.\<close>
+
+lemma CFGA_r1:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "idx1 M j1 = 1" and "hasParent M 1 j1"
+    and "j0 = parent M 1 j1"
+    and "j0 < jq" and "jq < j1"
+    and "entry M 0 jq = entry M 0 j1"
+    and "\<forall>l. jq < l \<and> l < j1 \<longrightarrow> entry M 0 j1 < entry M 0 l"
+  shows "entry M 1 j1 \<le> entry M 1 jq"
+  sorry
+
 text \<open>The seam step: appending one more shifted copy of the block preserves
   the sibling-run invariant.  (The whole bad-branch preservation reduces to
   this by induction on the copy count; the base \<open>m = 0\<close> is \<open>sibm2_take\<close>.)\<close>
