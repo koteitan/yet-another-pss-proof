@@ -2254,3 +2254,15 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   seam_open_core の中身 = (i) E族O2の反駁（lev b ≥ C頭を示す） (ii) P族:
   D=K[|K1|..] とコピー C の第一差分が降下（周期性整列） (iii) hm保存
   （maxr1 blk ≤ snd hd K1）。次セッションで各個マイニング→証明。
+
+- (続29補7) **CFGA_r1 討伐（緑）**: 新値補題は不要だった —
+  jq と j1 は隣接同レベル和兄弟なので **NT_dom_sub_eq（証明済・STS_A依存のみ）**
+  の fbseg 窓で閉じる: pp = w0 := Max{w < jq. e0(w) < e0(jq)}（j0 が証人で非空）、
+  mid = (w0,jq)（Max性で全部 ≥ e0(jq)＝mid条件・支配OK）、c = M!jq、
+  rest = M[jq+1..j1]（末尾クリアで dropWhile が [M!j1] に到達）→
+  snd(M!j1) ≤ snd(M!jq) ✓。**r1ok_climb も同じ手が効く可能性大**（値側下界
+  ファミリーの正体は NT_dom_sub_eq の窓選択かも）→ 次に検証。
+  教訓: 暴走 metis 2箇所（Cons_nth_drop_Suc 系・in_set_conv_nth+length_take 系の
+  詰め合わせ）→ 単発 in_set_conv_nth + nth_take/linarith 分解で即緑。
+  isbman kill は分類器拒否 → 自分の Bash バックグラウンドタスクなら TaskStop で
+  プロセスツリーごと正当に停止できる。
