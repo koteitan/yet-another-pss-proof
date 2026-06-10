@@ -222,10 +222,181 @@ lemma proj_Rinc_snoc:
   shows "Rinc (proj a x) (proj a x')"
   sorry
 
+subsection \<open>Small computation lemmas\<close>
+
+lemma proj_Z: "proj u Z = Z"
+  by (rule proj_id) simp
+
+lemma nrm_leaf: "nrm (P w Z Z) = P w Z Z"
+  by (simp add: proj_Z)
+
+lemma proj_leaf: "proj u (P w Z Z) = P w Z Z"
+proof -
+  have "filter (\<lambda>g. \<not> olt g (P w Z Z)) (Glist u (P w Z Z)) = []"
+    by auto
+  thus ?thesis by (rule proj_id)
+qed
+
+lemma Rinc_arg_cong: "Rinc b b' \<Longrightarrow> Rinc (P a b c) (P a b' c)"
+  unfolding Rinc_def by (auto intro: lext.intros lflip.intros)
+
+lemma Rinc_tail_cong: "Rinc c c' \<Longrightarrow> Rinc (P a b c) (P a b c')"
+  unfolding Rinc_def by (auto intro: lext.intros lflip.intros)
+
+subsection \<open>The snoc condition bundle and main induction\<close>
+
+text \<open>\<open>snocok C q\<close>: the conditions along the recursive decomposition of \<open>C\<close>
+  under which appending \<open>q\<close> changes the normalized image by one \<open>Rinc\<close> step.
+  The no-absorb conditions in the tail branch are stated directly; deriving
+  the whole bundle from standardness of \<open>C @ [q]\<close> is a separate (pending)
+  obligation concentrating the class facts.\<close>
+
+function snocok :: "pairseq \<Rightarrow> nat \<times> nat \<Rightarrow> bool" where
+  "snocok [] q = False"
+| "snocok (p # rest) q =
+     (if dropWhile (\<lambda>r. fst p < fst r) rest = []
+      then (if fst p < fst q then rest = [] \<or> snocok rest q
+            else snd q \<le> snd p)
+      else snocok (dropWhile (\<lambda>r. fst p < fst r) rest) q \<and>
+           \<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
+              \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
+                 \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                       (hdarg (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))))) \<and>
+           \<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))
+              \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))
+                 \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                       (hdarg (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))))))"
+  by pat_completeness auto
+termination
+  by (relation "measure (length \<circ> fst)")
+     (auto simp: le_imp_less_Suc length_dropWhile_le)
+
+lemma nrm_snoc_seg:
+  "snocok C q \<Longrightarrow> C \<noteq> [] \<Longrightarrow> Rinc (nrm (translate C)) (nrm (translate (C @ [q])))"
+proof (induct C q rule: snocok.induct)
+  case (1 q) show ?case using 1 by simp
+next
+  case (2 p rest q)
+  have sokA: "snocok (p # rest) q" by fact
+  show ?case
+  proof -
+    let ?Pp = "\<lambda>r. fst p < fst r"
+    let ?K = "takeWhile ?Pp rest"
+    let ?T = "dropWhile ?Pp rest"
+    let ?pb = "proj (snd p) (nrm (translate ?K))"
+    have nC: "nrm (translate (p # rest)) = ins (snd p) ?pb (nrm (translate ?T))"
+      by (simp only: translate.simps(2) nrm.simps(2))
+    have appC: "(p # rest) @ [q] = p # (rest @ [q])" by simp
+    show "Rinc (nrm (translate (p # rest))) (nrm (translate ((p # rest) @ [q])))"
+    proof (cases "?T = []")
+      case Tnil: True
+      have allP: "\<forall>r \<in> set rest. ?Pp r" using Tnil by (simp add: dropWhile_eq_Nil_conv)
+      have Kall: "?K = rest" using allP by (simp add: takeWhile_eq_all_conv)
+      have nCs: "nrm (translate (p # rest)) = P (snd p) (proj (snd p) (nrm (translate rest))) Z"
+        by (simp only: nC Tnil Kall translate.simps(1) nrm.simps(1) ins.simps(1))
+      show ?thesis
+      proof (cases "fst p < fst q")
+        case qd: True   \<comment> \<open>(C) argument extension\<close>
+        have tw': "takeWhile ?Pp (rest @ [q]) = rest @ [q]"
+          using allP qd by (simp add: takeWhile_append)
+        have dw': "dropWhile ?Pp (rest @ [q]) = []"
+          using allP qd by (simp add: dropWhile_append)
+        have e1: "translate ((p # rest) @ [q]) = P (snd p) (translate (rest @ [q])) Z"
+          unfolding appC by (simp only: translate.simps(2) tw' dw' translate.simps(1))
+        have nC': "nrm (translate ((p # rest) @ [q]))
+                    = P (snd p) (proj (snd p) (nrm (translate (rest @ [q])))) Z"
+          by (simp only: e1 nrm.simps ins.simps(1))
+        show ?thesis
+        proof (cases "rest = []")
+          case True
+          have l: "nrm (translate (p # rest)) = P (snd p) Z Z"
+            unfolding True by (simp add: proj_Z)
+          have r: "nrm (translate ((p # rest) @ [q])) = P (snd p) (P (snd q) Z Z) Z"
+            unfolding True using qd by (simp add: proj_Z proj_leaf)
+          have G1: "lext (P (snd p) Z Z) (P (snd p) (P (snd q) Z Z) Z)"
+            by (rule lext_arg[OF lext_end])
+          show ?thesis unfolding Rinc_def l r using G1 by blast
+        next
+          case rne: False
+          have sok: "snocok rest q"
+            using sokA Tnil qd rne by (simp add: snocok.simps split: if_splits)
+          have IH: "Rinc (nrm (translate rest)) (nrm (translate (rest @ [q])))"
+            by (rule 2(1)[OF Tnil qd sok rne])
+          have PR: "Rinc (proj (snd p) (nrm (translate rest)))
+                         (proj (snd p) (nrm (translate (rest @ [q]))))"
+            by (rule proj_Rinc_snoc[OF IH])
+          have G1: "Rinc (P (snd p) (proj (snd p) (nrm (translate rest))) Z)
+                         (P (snd p) (proj (snd p) (nrm (translate (rest @ [q])))) Z)"
+            by (rule Rinc_arg_cong[OF PR])
+          show ?thesis unfolding nCs nC' by (rule G1)
+        qed
+      next
+        case qnd: False   \<comment> \<open>(A) new summand\<close>
+        have tw': "takeWhile ?Pp (rest @ [q]) = rest"
+          using allP qnd by (simp add: takeWhile_append)
+        have dw': "dropWhile ?Pp (rest @ [q]) = [q]"
+          using allP qnd by (simp add: dropWhile_append)
+        have e1: "translate ((p # rest) @ [q]) = P (snd p) (translate rest) (translate [q])"
+          unfolding appC by (simp only: translate.simps(2) tw' dw' Kall)
+        have e2: "translate [q] = P (snd q) Z Z"
+          by (simp only: translate.simps(2) takeWhile.simps(1) dropWhile.simps(1)
+                         translate.simps(1))
+        have nC': "nrm (translate ((p # rest) @ [q]))
+                    = ins (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z)"
+          by (simp only: e1 e2 nrm.simps proj_Z ins.simps(1))
+        have yq: "snd q \<le> snd p"
+          using sokA Tnil qnd by (simp add: snocok.simps split: if_splits)
+        have noab: "ins (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z)
+                     = P (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z)"
+          by (rule ins_noabsorb) (use yq not_olt_Z in auto)
+        have R: "nrm (translate ((p # rest) @ [q]))
+                  = P (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z)"
+          by (simp only: nC' noab)
+        have G1: "lext (P (snd p) (proj (snd p) (nrm (translate rest))) Z)
+                       (P (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z))"
+          by (rule lext_tail[OF lext_end])
+        show ?thesis unfolding Rinc_def nCs R using G1 by blast
+      qed
+    next
+      case Tne: False   \<comment> \<open>(B) tail extension\<close>
+      obtain w where win: "w \<in> set rest" and wnp: "\<not> ?Pp w"
+        using Tne by (fastforce simp: dropWhile_eq_Nil_conv)
+      have tw': "takeWhile ?Pp (rest @ [q]) = ?K"
+        using win wnp by (simp add: takeWhile_append1)
+      have dw': "dropWhile ?Pp (rest @ [q]) = ?T @ [q]"
+        using win wnp by (simp add: dropWhile_append1)
+      have nC': "nrm (translate ((p # rest) @ [q]))
+                  = ins (snd p) ?pb (nrm (translate (?T @ [q])))"
+        unfolding appC by (simp only: translate.simps(2) tw' dw' nrm.simps(2))
+      have cond: "snocok ?T q \<and>
+             \<not> (snd p < hdsub (nrm (translate ?T))
+                \<or> (snd p = hdsub (nrm (translate ?T)) \<and> olt ?pb (hdarg (nrm (translate ?T))))) \<and>
+             \<not> (snd p < hdsub (nrm (translate (?T @ [q])))
+                \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
+                   \<and> olt ?pb (hdarg (nrm (translate (?T @ [q]))))))"
+        using sokA Tne by (simp add: snocok.simps split: if_splits)
+      have IH: "Rinc (nrm (translate ?T)) (nrm (translate (?T @ [q])))"
+        by (rule 2(2)[OF Tne conjunct1[OF cond] Tne])
+      have "Rinc (ins (snd p) ?pb (nrm (translate ?T)))
+                 (ins (snd p) ?pb (nrm (translate (?T @ [q]))))"
+        by (rule ins_Rinc[OF IH]) (use cond in auto)
+      thus ?thesis unfolding nC nC' by simp
+    qed
+  qed
+qed
+
+text \<open>Deriving the condition bundle from standardness of the host \<dash> the
+  remaining class obligation for the snoc characterization.\<close>
+
+lemma ST_snocok:
+  assumes "C @ [q] \<in> ST_PS" and "C \<noteq> []"
+  shows "snocok C q"
+  sorry
+
 lemma nrm_snoc_Rinc:
   assumes "C @ [p] \<in> ST_PS" and "C \<noteq> []"
   shows "Rinc (nrm (translate C)) (nrm (translate (C @ [p])))"
-  sorry
+  by (rule nrm_snoc_seg[OF ST_snocok[OF assms] assms(2)])
 
 theorem nrm_snoc:
   assumes "C @ [p] \<in> ST_PS" and "C \<noteq> []"

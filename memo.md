@@ -1665,3 +1665,22 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   キャンペーン sorry 2個: nrm_snoc_Rinc（主帰納で proj_Rinc_snoc+ins_Rinc+新和分ケースに分解予定）
   ＋ proj_Rinc_snoc（fire-flip 解析、クラス事実は blockok/cnf/nfinv から導入予定）。
   live chain sorry は従来通り nrm_order_pres の1個のみ（nrmstep は攻略用で live 外）。
+
+### ★★(2026-06-10 続17) snoc 主帰納 nrm_snoc_seg 緑！（Pred ケースの背骨完成）
+- **nrm_snoc_seg 完全証明**: snocok 条件束（function 定義、dropWhile 再帰）の下で
+  「1列追加 = nrm 像の Rinc 1ステップ」。3ケース（A 新和分=完全証明 / B tail=ins_Rinc 接続 /
+  C arg=proj_Rinc_snoc 接続）＋基底ケース完全証明。
+- nrm_snoc_Rinc = nrm_snoc_seg ∘ ST_snocok に再構成。**残 sorry: proj_Rinc_snoc + ST_snocok の2点**
+  （nrmstep 内。live chain は nrm.thy の nrm_order_pres 1点のまま）。
+- **Isar デバッグ教訓集（2時間級の沼、必読）**:
+  1. batch の「Bad context for command X」= 直前コマンドの失敗（メッセージが出ない失敗もある）。
+     probe を置いて二分すると速い。純骨格→ケース半分ずつ戻すのが結局最速。
+  2. `function`+`termination` の f.simps は**既定 simp に入る**（translate/nrm/ins/snocok とも）。
+     ins のように RHS が if の関数は「tail が具体的構成子のときだけ if 展開→条件地獄」
+     （nC は通るのに nC' だけ落ちる罠）⟹ 計算等式は `simp only:` チェーンで段階的に。
+  3. `induct rule: f.induct` は補題前提をケースに持ち上げ ?case は裸の結論。
+     前提取得は **`by fact`** が最頑健（2.prems(1) は順序不定で rule が滑る）。
+  4. case-fact（例 True: rest=[]）で書換えた後のゴールには rest を含む既出等式（nCs等）が
+     もうマッチしない ⟹ `unfolding True` してから素の計算チェーン。
+  5. simp は前提 ¬(∀x∈A.P) を ∃形に正規化するため if 条件（∀形）と噛み合わない
+     ⟹ witness を obtain して takeWhile_append1/dropWhile_append1 に渡す。
