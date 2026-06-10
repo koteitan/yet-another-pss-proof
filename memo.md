@@ -2198,3 +2198,13 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   mine_lexdiff.py（合成クラスは cnf 規律欠落で広すぎ偽→実 dseg 対で真）、
   audit_plus1.py（既存マイナーの enum_ST を閉包+1 にパッチして一括再監査）。
   PC対は b=copy0頭のみ・CC+1 は d0=0 頭々のみ・CC+2 以遠ゼロ（oper_bad 設計用）。
+
+- (続29補3) **正確文面の閉包+1監査完了（audit_exact.py）**:
+  E6_lpl 0/150929 ✓ / E6_dom_deep 0/182584 ✓ / E6_nbcK_T 0/27729 ✓ /
+  E6_nbcK_K 0/20942 ✓ / r1ok_climb 0/3513 ✓ / 旧マイナー群（seam/nbc/fire5/
+  master V1V2V4V5/ntdom）も閉包+1 全0 ✓（audit_plus1.log）。
+  **STS_B は前提不足で偽（22524/49490違反）→ INV (fst p ≤ fst q)・
+  INV2 (∀x∈rest. fst p ≤ fst x) を前提追加で 0/26322 ✓**（使用箇所は両方常在、
+  呼び出しも修正、緑）。
+  **E6_memT は前提がクラス上空**（dseg+T≠[] で max-in-tail は 0/14638、fire 不要）
+  — 空虚に真。後で「maxr1(c0#K) = maxr1 S (T≠[]時)」の純粋事実から前提矛盾で討伐可。

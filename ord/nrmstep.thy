@@ -3229,6 +3229,8 @@ lemma STS_B:
   assumes "pre @ (p # rest) @ [q] @ post \<in> ST_PS"
     and "dropWhile (\<lambda>r. fst p < fst r) rest \<noteq> []"
     and "fst (hd (dropWhile (\<lambda>r. fst p < fst r) rest)) = fst p"
+    and "fst p \<le> fst q"
+    and "\<forall>x \<in> set rest. fst p \<le> fst x"
   shows "\<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
             \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
                \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
@@ -3438,7 +3440,12 @@ proof (induct C arbitrary: pre rule: length_induct)
             \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
                \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
                      (hdarg (nrm (translate (?T @ [q]))))))"
-      by (rule STS_B[OF host[unfolded C] Tne hdTeq])
+    proof -
+      have invq: "fst p \<le> fst q" using INV unfolding C by simp
+      have inv2r: "\<forall>x \<in> set rest. fst p \<le> fst x"
+        using INV2 unfolding C by simp
+      show ?thesis by (rule STS_B[OF host[unfolded C] Tne hdTeq invq inv2r])
+    qed
     have unfB: "snocokS (p # rest) q \<longleftrightarrow>
            (snocokS ?T q \<and>
             \<not> (snd p < hdsub (nrm (translate ?T))
