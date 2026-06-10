@@ -2061,3 +2061,14 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   subscript 単調降下?）が必要。r1ok_climb は scoped sorry として残し translate 側から攻める。
 - **q-cut の r1ok 帰結（E6_qcut_last 攻略の鍵）**: snd q > maxr1 S ⟹ r1ok で
   snd q ≤ snd(親)+1 ≤ maxr1+1 ⟹ **snd q = maxr1 S + 1 ∧ q の r1親は m-行1列**。
+
+### ★★(2026-06-11 続27) SIB_prefix 発見 — NT_tie の配列レベル還元
+- **実証（fbseg閉包の隣接同レベル兄弟対）**: snd-タイ（snd c1 = snd c）では
+  **K1 = K（1418）∨ K1 ⊏ K（真接頭辞・650）のみ。K⊏K1 と other は 0/2068**。
+  （タイなし全体では K-prefix-of-K1 482 / other 30 もあり — タイが形を強制する）
+- **NT_tie 導出経路**: SIB_prefix(新クラス事実) ⟹
+  K1=K: proj 同値で ¬olt ✓ / K1⊏K: 4象限 {proj=NT or NT∘msfx}×2 を
+  NT_prefix_lt（K1 は K の接頭辞＝ホスト内連続）+ msfx-prefix 関係 + fire 整合で比較。
+  proj_submono 経由なら Gterm-部分集合が要るが、E6_value 直比較なら不要の見込み。
+- これで STS_B hdarg 節も同経路。SIB_prefix 自体は oper のコピー構造から
+  生成帰納で出る見込み（コピー＝同一素材の反復、兄弟ラン＝コピー切り詰め）。
