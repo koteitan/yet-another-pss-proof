@@ -72,8 +72,10 @@
           ✅ E6_mem_resolved（hdom排除+K側カスケード+T側移送）/ E6_nbcK 再構成（可視性連言=Gterm_NT_high で証明）
           ✅ **r1ok 基盤**（row1規律 snd≤親snd+1・実証0/14558）: 生成帰納+diag+take/butlast+
           oper骨格+oper_bad主証明+copy_witness 全緑 — **残 r1ok_climb 1点**（memo続26）
-          🚨 実効コア: E6_lpl / E6_dom_deep / E6_memT / E6_nbcK_T / E6_nbcK_K / NT_tie / r1ok_climb
-          🚨 行レベル: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（r1ok で arithmetic 化予定）
+          ✅ **NT_tie_resolved**（SIB_prefix から導出）— SIB核を配列形状事実に還元（memo続27）
+          🚨 実効コア: **SIB_prefix**（タイ兄弟ラン equal/prefix+両無発火・0/2068・生成不変量化予定）/
+          E6_lpl / E6_dom_deep / E6_memT / E6_nbcK_T / E6_nbcK_K / r1ok_climb
+          🚨 行レベル: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（SIB_prefix/r1okで還元予定）
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
