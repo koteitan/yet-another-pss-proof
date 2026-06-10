@@ -69,9 +69,11 @@
           ✅ nrm_snoc_mid/NT_prefix_lt（mid-host）/ msfx_tail / **E6_dom_tie_resolved**（l=j0閉鎖）/
           **E6_hdom**（排除コア、GCATパターン）— 層化循環は最終組立で同時帰納に（memo続25）
           ✅ 健全性修正: E6_lpl/E6_dom_deep に可視性前提（旧文面は偽・実証2163逆転をキャッチ）
-          🚨 実効コア4: **E6_lpl**（後続片敗北・可視性付き）/ **E6_dom_deep**（深部タイ）/
-          **E6_mem**（可視鎖メンバーシップ連鎖）/ **NT_tie**（SIB核）
-          🚨 行レベル3: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（NT_tieと同核）
+          ✅ E6_mem_resolved（hdom排除+K側カスケード+T側移送）/ E6_nbcK 再構成（可視性連言=Gterm_NT_high で証明）
+          ✅ **r1ok 基盤**（row1規律 snd≤親snd+1・実証0/14558）: 生成帰納+diag+take/butlast+
+          oper骨格+oper_bad主証明+copy_witness 全緑 — **残 r1ok_climb 1点**（memo続26）
+          🚨 実効コア: E6_lpl / E6_dom_deep / E6_memT / E6_nbcK_T / E6_nbcK_K / NT_tie / r1ok_climb
+          🚨 行レベル: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（r1ok で arithmetic 化予定）
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
