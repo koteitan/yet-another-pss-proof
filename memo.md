@@ -2027,3 +2027,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   i1=1 なら d0 = e0 j1 - e0 j0 任意。r1ok_oper の親対応: プレフィクス内✓(take)、
   コピー内＝元の親関係の平行移動、コピー境界＝climb補題（blockok: j0→j1 の
   ≤+1 ステップで中間レベル全訪問）で前コピー内の d0-1 レベル列が親。
+
+- (続26補2) **r1ok_oper_bad の証明レシピ確定（マイニング2本・全数一致）**:
+  親所在は3種のみ {same-copy 18665, prev-copy 2187, prefix}（other 0/26155）。
+  コピー列 (k,q) の証人選択:
+  - k=0: 恒等領域（take j1 M = M の接頭辞そのまま）→ r1ok M の証人 ✓純粋
+  - k≥1 ∧ 元親 p ≥ j0: same-copy 平行移動 ✓純粋（行0シフト・行1不変）
+  - k≥1 ∧ p < j0: tgt = e0(q)+d0-1, cands = {r<L. e0(j0+r) ≤ tgt}:
+    - cands={}（d0=0のみ可能）: 証人 = p（コピー全段 ≥ e0(q) で no-dip）✓純粋
+    - cands≠{}: 証人 = copy k-1 の max-cands 位置。検証: e0=tgt 丁度 2187/2187・
+      no-dip 構成的・**row1バウンド e1(q) ≤ e1(r')+1 が 2187/2187**（r'≥q 常成立、
+      r'=q 1203 / r'>q 984）→ この row1 バウンドだけ新クラス事実 **r1ok_climb**。
+  - 簿記部品: concat(map blk [0..<n]) の nth/length 補題（k*L+q アクセス）が必要。
+  - i1=0 ⟹ d0=0（正確コピー）/ i1=1 ⟹ d0任意≥1, le0_interval_gt でブロック内 > e0 j0。
