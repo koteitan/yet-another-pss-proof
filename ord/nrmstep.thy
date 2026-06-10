@@ -1386,6 +1386,57 @@ text \<open>The copy index is at most 1, so the row-1 delta is always zero: copi
 lemma idx1_le: "idx1 M j \<le> 1"
   unfolding idx1_def by simp
 
+lemma concat_map_upt_length:
+  assumes "\<And>k. k < n \<Longrightarrow> length (F k) = L"
+  shows "length (concat (map F [0..<n])) = n * L"
+  using assms
+proof (induct n)
+  case 0 show ?case by simp
+next
+  case (Suc n)
+  have "length (concat (map F [0..<Suc n]))
+        = length (concat (map F [0..<n])) + length (F n)" by simp
+  also have "\<dots> = n * L + L" using Suc by simp
+  finally show ?case by simp
+qed
+
+lemma concat_map_upt_nth:
+  assumes len: "\<And>k. k < n \<Longrightarrow> length (F k) = L"
+    and k: "k < n" and q: "q < L"
+  shows "concat (map F [0..<n]) ! (k * L + q) = F k ! q"
+  using len k
+proof (induct n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  show ?case
+  proof (cases "k < n")
+    case True
+    have ll: "length (concat (map F [0..<n])) = n * L"
+      by (rule concat_map_upt_length) (use Suc.prems(1) in simp)
+    have il: "k * L + q < n * L"
+    proof -
+      have "k * L + q < k * L + L" using q by simp
+      also have "\<dots> = Suc k * L" by simp
+      also have "\<dots> \<le> n * L" using True by (intro mult_le_mono1) simp
+      finally show ?thesis .
+    qed
+    have "concat (map F [0..<Suc n]) = concat (map F [0..<n]) @ F n" by simp
+    hence "concat (map F [0..<Suc n]) ! (k * L + q) = concat (map F [0..<n]) ! (k * L + q)"
+      using il ll by (simp add: nth_append)
+    thus ?thesis using Suc True by simp
+  next
+    case False
+    hence kn: "k = n" using Suc.prems(2) by simp
+    have ll: "length (concat (map F [0..<n])) = n * L"
+      by (rule concat_map_upt_length) (use Suc.prems(1) in simp)
+    have "concat (map F [0..<Suc n]) = concat (map F [0..<n]) @ F n" by simp
+    hence "concat (map F [0..<Suc n]) ! (n * L + q) = F n ! q"
+      using ll by (simp add: nth_append)
+    thus ?thesis using kn by simp
+  qed
+qed
+
 lemma r1ok_oper_bad:
   assumes "r1ok M" and "blockok 0 M" and "1 \<le> n"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
