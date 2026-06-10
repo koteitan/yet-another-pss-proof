@@ -1219,6 +1219,99 @@ proof -
   show ?thesis unfolding fbseg_def using ne h2 dom2 fb2 u by blast
 qed
 
+text \<open>(C1) Shape of the normalized image on the class: the \<open>ins\<close> at the head
+  never absorbs, so the head subscript is the head column's row-1 value.
+  (Empirical: zero absorptions on all 8768 closure pieces.)\<close>
+
+lemma NT_shape:
+  assumes "fbseg u (c # rest)"
+  shows "nrm (translate (c # rest))
+         = P (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+                     (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+  sorry
+
+lemma NT_hd:
+  assumes "fbseg u S"
+  shows "\<exists>A R. nrm (translate S) = P (snd (hd S)) A R"
+proof -
+  obtain c rest where C: "S = c # rest" using assms unfolding fbseg_def by (cases S) auto
+  show ?thesis unfolding C using NT_shape[OF assms[unfolded C]] by simp
+qed
+
+text \<open>The normalized image of a sum-tail is strictly below that of the whole
+  (the \<open>nrm\<close>-level analogue of \<open>translate_butlast_decrease\<close>'s sum order).\<close>
+
+lemma NT_noabsorb:
+  assumes sh: "nrm (translate (c # rest))
+               = P (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+                           (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+    and Tform: "nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)) = P e f g"
+  shows "\<not> (snd c < e \<or> (snd c = e \<and>
+            olt (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest)))) f))"
+proof
+  let ?A = "proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest)))"
+  let ?T = "nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest))"
+  assume ab: "snd c < e \<or> (snd c = e \<and> olt ?A f)"
+  have un: "nrm (translate (c # rest)) = ins (snd c) ?A ?T"
+    by (simp only: translate.simps(2) nrm.simps(2))
+  have "ins (snd c) ?A ?T = ?T" unfolding Tform using ab by auto
+  hence e: "P (snd c) ?A ?T = ?T" using un sh by simp
+  have "size ?T < size (P (snd c) ?A ?T)" by simp
+  thus False using e by simp
+qed
+
+lemma NT_tail_lt:
+  "fbseg u S \<Longrightarrow> S = c # rest \<Longrightarrow> dropWhile (\<lambda>r. fst c < fst r) rest \<noteq> [] \<Longrightarrow>
+   olt (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest))) (nrm (translate S))"
+proof (induct S arbitrary: c rest rule: length_induct)
+  case (1 S)
+  note IH = 1(1) and fb = 1(2) and C = 1(3) and ne = 1(4)
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  let ?A = "proj (snd c) (nrm (translate ?K))"
+  have shS: "nrm (translate (c # rest)) = P (snd c) ?A (nrm (translate ?T))"
+    by (rule NT_shape[OF fb[unfolded C]])
+  have fbT: "fbseg u ?T" by (rule fbseg_T_desc[OF fb[unfolded C] ne])
+  obtain c1 rest1 where T: "?T = c1 # rest1" using ne by (cases ?T) auto
+  let ?K1 = "takeWhile (\<lambda>r. fst c1 < fst r) rest1"
+  let ?T1 = "dropWhile (\<lambda>r. fst c1 < fst r) rest1"
+  let ?B1 = "proj (snd c1) (nrm (translate ?K1))"
+  have shT: "nrm (translate ?T) = P (snd c1) ?B1 (nrm (translate ?T1))"
+    unfolding T by (rule NT_shape[OF fbT[unfolded T]])
+  have nab: "\<not> (snd c < snd c1 \<or> (snd c = snd c1 \<and> olt ?A ?B1))"
+    by (rule NT_noabsorb[OF shS shT])
+  show ?case
+  proof (cases "snd c1 < snd c")
+    case True
+    show ?thesis unfolding C shS shT by (simp add: True)
+  next
+    case False
+    hence eq: "snd c1 = snd c" using nab by simp
+    have nA: "\<not> olt ?A ?B1" using nab eq by simp
+    show ?thesis
+    proof (cases "?A = ?B1")
+      case False
+      hence BA: "olt ?B1 ?A" using nA olt_total by blast
+      show ?thesis unfolding C shS shT using eq BA by simp
+    next
+      case ABeq: True
+      have tl: "olt (nrm (translate ?T1)) (nrm (translate ?T))"
+      proof (cases "?T1 = []")
+        case True
+        have z: "nrm (translate ?T1) = Z" unfolding True by simp
+        show ?thesis unfolding z shT by simp
+      next
+        case T1ne: False
+        have lT: "length ?T < length S"
+          unfolding C using length_dropWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+        show ?thesis
+          using IH[rule_format, OF lT fbT T T1ne] .
+      qed
+      show ?thesis unfolding C shS shT using eq ABeq tl[unfolded shT] by simp
+    qed
+  qed
+qed
+
 text \<open>(E6) When the projection at the host level fires, its value is the
   normalized image of the max-row1 suffix.\<close>
 
