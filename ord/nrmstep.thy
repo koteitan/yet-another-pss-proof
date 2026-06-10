@@ -2729,7 +2729,13 @@ text \<open>(seam, open-run core) Extending an open tie-sibling run across the
   copy seam stays inside \<open>sibrel\<close>.  This is the alignment/periodicity core
   of the bad-branch preservation (memo 続29補4 I-open).\<close>
 
-lemma seam_I_open:
+text \<open>(seam, open-extension core) When the appended copy's head is still
+  above an open tie-sibling run's level, the WHOLE copy joins the run; the
+  result stays in \<open>sibrel\<close>.  (Empirically 150 instances at closure
+  sampling: equal-family never reaches here, prefix-family extensions land
+  in P/F1/F2, head-max is preserved.)\<close>
+
+lemma seam_open_core:
   assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
     and "i1 = idx1 M j1" and "hasParent M i1 j1"
@@ -2737,13 +2743,80 @@ lemma seam_I_open:
     and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
     and "Y = take j0 M @ concat (map (\<lambda>k.
            map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m])"
+    and "sibm2 Y"
     and "a < length Y" and "0 < fst (Y ! a)"
     and "b = Suc a + length (mrun Y a)" and "b < length Y"
     and "fst (Y ! b) = fst (Y ! a)" and "snd (Y ! b) = snd (Y ! a)"
     and "\<forall>x \<in> set (drop (Suc b) Y). fst (Y ! b) < fst x"
+    and "fst (Y ! b) < entry M 0 j0 + m * d0"
+  shows "sibrel (mrun Y a) (drop (Suc b) Y
+           @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1])"
+  sorry
+
+lemma seam_I_open:
+  assumes R: "sibm2 M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and Yd: "Y = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m])"
+    and SY: "sibm2 Y"
+    and aY: "a < length Y" and pos: "0 < fst (Y ! a)"
+    and bdef: "b = Suc a + length (mrun Y a)" and bY: "b < length Y"
+    and fb: "fst (Y ! b) = fst (Y ! a)" and sb: "snd (Y ! b) = snd (Y ! a)"
+    and ob: "\<forall>x \<in> set (drop (Suc b) Y). fst (Y ! b) < fst x"
   shows "sibrel (mrun Y a) (drop (Suc b) Y @ takeWhile (\<lambda>r. fst (Y ! b) < fst r)
            (map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1]))"
-  sorry
+proof -
+  define C where "C = map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1]"
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  define L where "L = j1 - j0"
+  have L0: "0 < L" unfolding L_def using j0j1 by simp
+  have lenC: "length C = L" unfolding C_def L_def by simp
+  have Cnth: "\<And>q. q < L \<Longrightarrow> C ! q = (entry M 0 (j0+q) + m * d0, entry M 1 (j0+q))"
+    unfolding C_def L_def by simp
+  have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+    by (rule block_head_min[OF hp j0d])
+  have mrYb: "mrun Y b = drop (Suc b) Y"
+    unfolding mrun_def using ob by (simp add: takeWhile_eq_all_conv)
+  show ?thesis
+  proof (cases "fst (Y ! b) < entry M 0 j0 + m * d0")
+    case high: True
+    have tw: "takeWhile (\<lambda>r. fst (Y ! b) < fst r) C = C"
+    proof (rule takeWhile_eq_all_conv[THEN iffD2], intro ballI)
+      fix x assume "x \<in> set C"
+      then obtain q where q: "q < L" "x = C ! q"
+        using lenC by (metis in_set_conv_nth)
+      show "fst (Y ! b) < fst x"
+      proof (cases "q = 0")
+        case True
+        thus ?thesis using q Cnth[OF L0] high by simp
+      next
+        case False
+        have "entry M 0 j0 < entry M 0 (j0 + q)"
+          using hm0 False q(1) unfolding L_def by simp
+        thus ?thesis using q Cnth[OF q(1)] high by simp
+      qed
+    qed
+    show ?thesis
+      unfolding C_def[symmetric] tw
+      by (rule seam_open_core[OF R B ST j1d j1nz i1d hp j0d d0d Yd SY
+            aY pos bdef bY fb sb ob high, folded C_def])
+  next
+    case low: False
+    have Cne: "C \<noteq> []" using lenC L0 by auto
+    have hdC: "hd C = (entry M 0 j0 + m * d0, entry M 1 j0)"
+      using Cnth[OF L0] Cne by (simp add: hd_conv_nth)
+    have tw: "takeWhile (\<lambda>r. fst (Y ! b) < fst r) C = []"
+      using low hdC Cne by (cases C) auto
+    have "sibrel (mrun Y a) (mrun Y b)"
+      by (rule SY[unfolded sibm2_def, rule_format, OF aY pos bdef bY fb sb])
+    thus ?thesis
+      unfolding C_def[symmetric] tw mrYb[symmetric] by simp
+  qed
+qed
 
 text \<open>(seam, climb-tie refutation core) In the \<open>i1 = 1\<close> block, a column at
   the level of \<open>j1\<close> whose tail is clear up to \<open>j1\<close> carries at least the
@@ -2886,7 +2959,7 @@ proof -
             unfolding mrun_append[OF bY] if_P[OF ob] ..
           show ?thesis unfolding mra mrb unfolding C_def cp_def
             by (rule seam_I_open[OF R B ST j1d j1nz i1d hp j0d d0d
-                  Yeq[unfolded cp_def] aY posY bdefY bY fbY sbY ob])
+                  Yeq[unfolded cp_def] SY aY posY bdefY bY fbY sbY ob])
         qed
       next
         case bC: False
