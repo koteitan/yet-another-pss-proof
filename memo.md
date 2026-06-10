@@ -2143,3 +2143,9 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   + 切詰め安定（K=mrun ic 完全一致＝c1 が止める／K1 は mrun b の prefix、
   頭最大は Max_mono で継承）。SIB系: sibm_oper(sorry) → sibm_ST_PS → SIB_shape
   → NT_tie_resolved の鎖が完成。sibm_oper は r1ok_oper と同型のコピー簿記。
+
+- (続28補3) sibm_take/sibm_butlast（切詰め安定・takeWhile_take_comm 自作）+
+  sibm_oper ケース骨格 緑。SIB鎖の残 = **sibm_oper_bad**（コピー簿記、
+  r1ok_oper_bad と同型: 同コピー内対=平行移動・コピー境界対=d0>0ならレベル不一致で
+  対なし/d0=0なら equal・j1-cut切詰め= sibm_take 流用）のみ。
+  ⚠️ 変数 P は three コンストラクタと衝突（Q を使う）。
