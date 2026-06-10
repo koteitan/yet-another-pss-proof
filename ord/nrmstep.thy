@@ -6145,6 +6145,73 @@ text \<open>(tie no-fire, class facts) A tie-sibling run that is not head-maxima
   3027 tie window configurations are no-fire on both sides; the non-head-max
   ones \<dash> 24 configs \<dash> are exactly the P/E-shaped ones.)\<close>
 
+text \<open>If the head subscript of an fbseg window is already below \<open>u\<close>, the
+  whole \<open>u\<close>-visible catalogue is empty: the sum-spine subscripts only
+  decrease (\<open>NT_dom_sub_eq\<close> along the forced level-ties), so no subterm is
+  ever exposed at \<open>u\<close>.\<close>
+
+lemma Gterm_empty_lowhead:
+  assumes "fbseg w S" and "S \<noteq> []" and "snd (hd S) < u"
+  shows "Gterm u (nrm (translate S)) = {}"
+  using assms
+proof (induct S arbitrary: w rule: length_induct)
+  case (1 S)
+  note IH = 1(1) and fb = 1(2) and ne = 1(3) and low = 1(4)
+  obtain c0 rest0 where C: "S = c0 # rest0" using ne by (cases S) auto
+  let ?T = "dropWhile (\<lambda>r. fst c0 < fst r) rest0"
+  have sh: "nrm (translate S)
+      = P (snd c0) (proj (snd c0) (nrm (translate (takeWhile (\<lambda>r. fst c0 < fst r) rest0))))
+                   (nrm (translate ?T))"
+    unfolding C by (rule NT_shape[OF fb[unfolded C] refl])
+  have lowc: "snd c0 < u" using low C by simp
+  have Tempty: "Gterm u (nrm (translate ?T)) = {}"
+  proof (cases ?T)
+    case Nil
+    show ?thesis unfolding Nil by simp
+  next
+    case (Cons c1 rest1)
+    have Tne: "?T \<noteq> []" unfolding Cons by simp
+    have fbT: "fbseg w ?T" by (rule fbseg_T_desc[OF fb[unfolded C] Tne])
+    have lvl: "fst c1 = fst c0"
+      by (rule fbseg_hd_level[OF fb[unfolded C] Cons])
+    have sub: "snd c1 \<le> snd c0"
+      by (rule NT_dom_sub_eq[OF fb[unfolded C] Cons lvl])
+    have lenT: "length ?T < length S"
+      unfolding C using length_dropWhile_le[of "\<lambda>r. fst c0 < fst r" rest0]
+      by simp
+    have lowT: "snd (hd ?T) < u" unfolding Cons using sub lowc by simp
+    show ?thesis
+      using IH[rule_format, OF lenT fbT Tne lowT] .
+  qed
+  show ?case unfolding sh using lowc Tempty by simp
+qed
+
+text \<open>(tie no-fire, high-head residuals) The only unproven part of the tie
+  no-fire facts: a non-head-maximal tie run whose head subscript is not
+  below the tie subscript (empirically empty at closure+2).\<close>
+
+lemma E6_tie_nofire_high0:
+  assumes "fbseg u (c # rest)"
+    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and "snd c1 = snd c"
+    and "takeWhile (\<lambda>r. fst c < fst r) rest \<noteq> []"
+    and "snd (hd (takeWhile (\<lambda>r. fst c < fst r) rest))
+         \<noteq> maxr1 (takeWhile (\<lambda>r. fst c < fst r) rest)"
+    and "snd c \<le> snd (hd (takeWhile (\<lambda>r. fst c < fst r) rest))"
+  shows "\<not> pfire (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest)))"
+  sorry
+
+lemma E6_tie_nofire_high1:
+  assumes "fbseg u (c # rest)"
+    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and "snd c1 = snd c"
+    and "takeWhile (\<lambda>r. fst c1 < fst r) rest1 \<noteq> []"
+    and "snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))
+         \<noteq> maxr1 (takeWhile (\<lambda>r. fst c1 < fst r) rest1)"
+    and "snd c1 \<le> snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))"
+  shows "\<not> pfire (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1)))"
+  sorry
+
 lemma E6_tie_nofire0:
   assumes "fbseg u (c # rest)"
     and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
@@ -6153,7 +6220,19 @@ lemma E6_tie_nofire0:
     and "snd (hd (takeWhile (\<lambda>r. fst c < fst r) rest))
          \<noteq> maxr1 (takeWhile (\<lambda>r. fst c < fst r) rest)"
   shows "\<not> pfire (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest)))"
-  sorry
+proof (cases "snd (hd (takeWhile (\<lambda>r. fst c < fst r) rest)) < snd c")
+  case True
+  have fbK: "fbseg (snd c) (takeWhile (\<lambda>r. fst c < fst r) rest)"
+    by (rule dseg_fbseg[OF fbseg_K_dseg[OF assms(1) assms(4)]])
+  have "Gterm (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))) = {}"
+    by (rule Gterm_empty_lowhead[OF fbK assms(4) True])
+  thus ?thesis by simp
+next
+  case False
+  hence ge: "snd c \<le> snd (hd (takeWhile (\<lambda>r. fst c < fst r) rest))" by simp
+  show ?thesis
+    by (rule E6_tie_nofire_high0[OF assms(1) assms(2) assms(3) assms(4) assms(5) ge])
+qed
 
 lemma E6_tie_nofire1:
   assumes "fbseg u (c # rest)"
@@ -6163,7 +6242,21 @@ lemma E6_tie_nofire1:
     and "snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))
          \<noteq> maxr1 (takeWhile (\<lambda>r. fst c1 < fst r) rest1)"
   shows "\<not> pfire (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1)))"
-  sorry
+proof (cases "snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1)) < snd c1")
+  case True
+  have fbT: "fbseg u (c1 # rest1)"
+    using fbseg_T_desc[OF assms(1)] assms(2) by simp
+  have fbK: "fbseg (snd c1) (takeWhile (\<lambda>r. fst c1 < fst r) rest1)"
+    by (rule dseg_fbseg[OF fbseg_K_dseg[OF fbT assms(4)]])
+  have "Gterm (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))) = {}"
+    by (rule Gterm_empty_lowhead[OF fbK assms(4) True])
+  thus ?thesis by simp
+next
+  case False
+  hence ge: "snd c1 \<le> snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))" by simp
+  show ?thesis
+    by (rule E6_tie_nofire_high1[OF assms(1) assms(2) assms(3) assms(4) assms(5) ge])
+qed
 
 text \<open>(lexdiff value lemma) For head-maximal dominated runs with equal head
   level, a first-difference descent (equal level and smaller row 1, or
