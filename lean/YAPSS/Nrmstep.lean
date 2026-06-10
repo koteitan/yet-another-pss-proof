@@ -617,4 +617,116 @@ theorem nrm_snoc_seg : ∀ {C : PairSeq} {q : ℕ × ℕ}, snocok C q → C ≠ 
   decreasing_by
     exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
 
+/-- Wiring for the `Pred` case of the expansion step: dropping the last
+column strictly decreases the normalized image, provided the condition
+bundle holds for the dropped column. -/
+theorem nrm_dropLast_olt {M : PairSeq} (hM : M ≠ []) (hd : M.dropLast ≠ [])
+    (hsok : snocok M.dropLast (M.getLast hM)) :
+    nrm (translate M.dropLast) <o nrm (translate M) := by
+  have h := nrm_snoc_seg hsok hd
+  rwa [List.dropLast_append_getLast hM] at h
+
+/-! ## The max-row1 suffix (sequence side of the E6 machinery)
+
+`msfx S` is the suffix of `S` starting at the *first* column whose row-1
+value is maximal.  Empirically (E6): on standard dominated segments the
+host-level projection, when it fires, evaluates to `nrm (translate (msfx S))`.
+This section provides the pure sequence laws of `maxr1`/`msfx`. -/
+
+/-- Maximal row-1 value of a segment (`0` on the empty segment). -/
+def maxr1 (S : PairSeq) : ℕ := S.foldr (fun c m => max c.2 m) 0
+
+@[simp] theorem maxr1_nil : maxr1 [] = 0 := rfl
+
+theorem maxr1_cons (c : ℕ × ℕ) (S : PairSeq) :
+    maxr1 (c :: S) = max c.2 (maxr1 S) := rfl
+
+/-- The suffix from the first maximal-row-1 column. -/
+def msfx (S : PairSeq) : PairSeq := S.dropWhile fun c => c.2 < maxr1 S
+
+theorem le_maxr1 {S : PairSeq} : ∀ c ∈ S, c.2 ≤ maxr1 S := by
+  induction S with
+  | nil => simp
+  | cons d S ih =>
+    intro c hc
+    rw [maxr1_cons]
+    rcases List.mem_cons.1 hc with rfl | hc
+    · exact le_max_left ..
+    · exact le_trans (ih c hc) (le_max_right ..)
+
+theorem maxr1_mem {S : PairSeq} (h : S ≠ []) : ∃ c ∈ S, c.2 = maxr1 S := by
+  induction S with
+  | nil => exact absurd rfl h
+  | cons d S ih =>
+    rw [maxr1_cons]
+    by_cases hS : S = []
+    · subst hS
+      exact ⟨d, List.mem_cons_self .., by simp⟩
+    · obtain ⟨c, hc, hce⟩ := ih hS
+      rcases Nat.le_total (maxr1 S) d.2 with h1 | h1
+      · exact ⟨d, List.mem_cons_self .., (max_eq_left h1).symm⟩
+      · exact ⟨c, List.mem_cons_of_mem _ hc, by rw [hce, max_eq_right h1]⟩
+
+theorem maxr1_foldr (S : PairSeq) (m : ℕ) :
+    S.foldr (fun c m => max c.2 m) m = max (maxr1 S) m := by
+  induction S with
+  | nil => simp
+  | cons d S ih => simp [List.foldr_cons, maxr1_cons, ih, max_assoc]
+
+theorem maxr1_append (S T : PairSeq) :
+    maxr1 (S ++ T) = max (maxr1 S) (maxr1 T) := by
+  unfold maxr1
+  rw [List.foldr_append]
+  exact maxr1_foldr S _
+
+theorem maxr1_snoc (S : PairSeq) (q : ℕ × ℕ) :
+    maxr1 (S ++ [q]) = max (maxr1 S) q.2 := by
+  rw [maxr1_append, maxr1_cons, maxr1_nil]
+  simp
+
+theorem msfx_ne_nil {S : PairSeq} (h : S ≠ []) : msfx S ≠ [] := by
+  intro he
+  obtain ⟨c, hc, hce⟩ := maxr1_mem h
+  have := List.dropWhile_eq_nil_iff.1 he c hc
+  simp [hce] at this
+
+theorem head_msfx_not_lt {S : PairSeq}
+    (w : (S.dropWhile fun c => c.2 < maxr1 S) ≠ []) :
+    ¬ ((S.dropWhile fun c => c.2 < maxr1 S).head w).2 < maxr1 S := by
+  have h1 := List.head_dropWhile_not (fun c : ℕ × ℕ => decide (c.2 < maxr1 S)) w
+  simpa using h1
+
+/-- The first column of `msfx S` realizes the maximum. -/
+theorem msfx_head_snd {S : PairSeq} (h : S ≠ []) :
+    ((msfx S).head (msfx_ne_nil h)).2 = maxr1 S := by
+  have h2 := head_msfx_not_lt (S := S) (msfx_ne_nil h)
+  have h3 : (msfx S).head (msfx_ne_nil h) ∈ S :=
+    (List.dropWhile_sublist _).subset (List.head_mem _)
+  exact le_antisymm (le_maxr1 _ h3) (Nat.le_of_not_lt h2)
+
+/-- Same-cut append law: a column not exceeding the maximum extends the
+maximal suffix. -/
+theorem msfx_snoc_le {S : PairSeq} {q : ℕ × ℕ} (hS : S ≠ [])
+    (h : q.2 ≤ maxr1 S) : msfx (S ++ [q]) = msfx S ++ [q] := by
+  have hm : maxr1 (S ++ [q]) = maxr1 S := by
+    rw [maxr1_snoc]
+    exact max_eq_left h
+  unfold msfx
+  rw [hm]
+  obtain ⟨c, hc, hce⟩ := maxr1_mem hS
+  exact dropWhile_append_not hc (by simp [hce])
+
+/-- Cut append law: a column exceeding the maximum restarts the suffix. -/
+theorem msfx_snoc_gt {S : PairSeq} {q : ℕ × ℕ} (h : maxr1 S < q.2) :
+    msfx (S ++ [q]) = [q] := by
+  have hm : maxr1 (S ++ [q]) = q.2 := by
+    rw [maxr1_snoc]
+    exact max_eq_right (le_of_lt h)
+  unfold msfx
+  rw [hm]
+  rw [dropWhile_append_all (by
+    intro c hc
+    simpa using lt_of_le_of_lt (le_maxr1 c hc) h)]
+  simp
+
 end YAPSS
