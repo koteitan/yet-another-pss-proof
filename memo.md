@@ -2120,3 +2120,15 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   fbsegD_hd_level（レベル固定が定義から自由）✓。
   次段（C1鎖の premise を fbsegD に差し替え + NT_tieD = SIB_shape/TOP_desc 2層）は
   次セッションで（既存は無変更のまま緑維持）。
+
+### ★(2026-06-11 続28) SIBM 確定 — SIB_shape の生成不変量（実装準備完了）
+- **SIBM（Mレベル・実証2964対）**: 標準 M の隣接タイ兄弟対（level>0）は
+  run equal（2405）/真prefix（559）/other **0**、かつ**全ケースで両ラン頭最大**
+  （equal でも 2964/2964）⟹ ピース切詰め安定性が完全（truncated K1 は
+  prefix-of-K のまま、頭同じで max は下がるだけ → 頭最大保存）。
+- **SIB_shape ⟸ SIBM + 純粋切詰め簿記**。SIBM の oper 保存:
+  d1=0（row1正確コピー）で頭最大保存✓、d0>0 ならコピー境界に新タイ対なし
+  （レベル不一致）、d0=0 なら境界対は equal ✓、j1-cut の prefix 切詰めも閉形。
+  r1ok_oper と同じ簿記パターンで実装可能（diag: 兄弟ランなし）。
+- 実装順: SIBM def → SIBM_diag → SIBM_oper（コピー簿記・oper_bad_nth 流用）→
+  SIBM_ST_PS → SIB_shape を SIBM+切詰めから導出 → NT_tie 完全閉鎖。
