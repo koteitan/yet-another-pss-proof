@@ -1836,3 +1836,13 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   nrm_hd（頭添字保存）で閉じる準備完了）。残 sorry 3: STS_B / projE_iii / projE_ii。
   小教訓: set (p#rest) 由来の選言は auto（simp では分解されない）、
   dropWhile の集合包含は set_dropWhileD。
+- (続20補10) **収束確定: 残3補題は実質2つの核に集約**:
+  (K1) クラスペア弱保存: 同レベル host-兄弟引数 K_h ≤o K_p（cnf から）に対し
+       proj y (nrm (tr K_h)) ≤o proj y (nrm (tr K_p))（無逆転）。
+       nrm_hd の等号ケース = STS_B hdarg 節 = projE_ii の max 対応が全てここに合流。
+       注意: wf3 一般では偽（lead 不整合ペアで 72623 違反）、クラス（A_a 位置仲間）では
+       実証ゼロ違反。強単調（INJ）と違い単射性は不要 — gap/fire 機構で届く可能性。
+  (K2) projE_iii の葉ケース: x = D_w(0)（実証43/43）で proj u x' の flip 形。
+  nrm_hd（頭添字保存）と STS_B hdsub 節は K1 が閉じれば STS_A パターンで機械的。
+  次の本丸 = K1。攻め筋: olt 第一差分追跡 + fire/gap + 兄弟 cnf 事実、
+  逆転には proj ジャンプの交差が必要でクラスでは gap 補題系が遮断する見込み。
