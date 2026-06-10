@@ -72,11 +72,15 @@
           ✅ E6_mem_resolved（hdom排除+K側カスケード+T側移送）/ E6_nbcK 再構成（可視性連言=Gterm_NT_high で証明）
           ✅ **r1ok 基盤**（row1規律 snd≤親snd+1・実証0/14558）: 生成帰納+diag+take/butlast+
           oper骨格+oper_bad主証明+copy_witness 全緑 — **残 r1ok_climb 1点**（memo続26）
-          🚨 【続29訂正】旧 sibm/SIB_shape は ST_PS 上で**偽**（閉包境界アーティファクト・反例=memo続29）
-          → 修正版 **sibm2 = 4族 {equal/真接頭辞/F1 頭添字降下/F2 レベル降下第一差分}＋頭最大**
-          （0/26235・閉包+1）。NT_tie は生存（0/1486 全fbseg窓）・F1/F2 で olt(NT K1,NT K) 厳密＋無発火
-          🚨 実効コア: 🥇**sibm2 改修+oper_bad**（Isabelle 改修＋コピー簿記・memo続29）/
-          NT_firstdiff_lt（F2用新値補題）/
+          ✅ 【続29】旧 sibm/SIB_shape は偽（閉包境界アーティファクト）→ **sibm2/sibrel 修復完了・緑**:
+          sibrel 4族（E/P/F1/F2・lexdiff時hm²）・SIB_shape2・NT_tie_resolved 3ケース・STS_B 前提修正
+          ✅ 正確文面の閉包+1監査: E6_lpl/dom_deep/nbcK_T/K/r1ok_climb/seam/qcut/iii 全0違反、
+          E6_memT は前提空（討伐可）。マイナーは必ず閉包+1で回す（audit_plus1/exact.py）
+          ✅ **sibm2_oper_bad ほぼ討伐**: n帰納×シーム分解、I-closed/II-int(shf転送)/II-cross 3亜種
+          /seam_I_open(O1) 全証明 — 残核 = **seam_open_core**（コピー丸ごと延長・150件）+
+          **CFGA_r1**（e1値側下界・265件・r1ok_climb同族）
+          🚨 実効コア: 🥇seam_open_core / CFGA_r1 / NT_lexdiff_lt（116万対0failの新値補題）/
+          E6_tie_nofire0/1（¬hmタイラン無発火）/
           fire-cascade系5点（E6_lpl / E6_dom_deep / E6_memT / E6_nbcK_T / E6_nbcK_K = GRAND同時帰納の本丸）/
           r1ok_climb（e1正側0/729・機構=memo続26補5）/ TOP_desc（トップ木nrm弱降下0/474・未ステート）
           🚨 行レベル: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（fbsegDリフト＋TOP_desc経路、memo続27-28）
