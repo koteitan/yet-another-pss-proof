@@ -729,4 +729,70 @@ theorem msfx_snoc_gt {S : PairSeq} {q : ℕ × ℕ} (h : maxr1 S < q.2) :
     simpa using lt_of_le_of_lt (le_maxr1 c hc) h)]
   simp
 
+/-! ## Row-1 discipline `r1ok`
+
+Every column at positive level has a row-0 parent (the nearest preceding
+column one level below, with no dip in between) whose row-1 value it exceeds
+by at most one.  Empirically exact on all standard hosts (14,558 columns).
+This is the foundation for arithmetizing the row-level facts of the E6
+campaign. -/
+
+def r1ok (M : PairSeq) : Prop :=
+  ∀ j, j < M.length → 0 < (M.getD j (0,0)).1 →
+    ∃ k, k < j ∧ (M.getD k (0,0)).1 + 1 = (M.getD j (0,0)).1
+      ∧ (∀ l, k < l → l < j → (M.getD j (0,0)).1 ≤ (M.getD l (0,0)).1)
+      ∧ (M.getD j (0,0)).2 ≤ (M.getD k (0,0)).2 + 1
+
+theorem diagSeq0_length (v : ℕ) : (diagSeq 0 v).length = v + 1 := by
+  unfold diagSeq
+  rw [List.length_map, List.length_range']
+  omega
+
+theorem diagSeq0_getD {v i : ℕ} (hi : i < v + 1) :
+    (diagSeq 0 v).getD i (0,0) = (i, i) := by
+  unfold diagSeq
+  rw [List.getD_eq_getElem?_getD, List.getElem?_map,
+      List.getElem?_range' (by simpa using hi)]
+  simp
+
+theorem r1ok_diagSeq (v : ℕ) : r1ok (diagSeq 0 v) := by
+  intro j hj hpos
+  rw [diagSeq0_length] at hj
+  rw [diagSeq0_getD hj] at hpos
+  have hj0 : 0 < j := by simpa using hpos
+  refine ⟨j - 1, by omega, ?_, ?_, ?_⟩
+  · rw [diagSeq0_getD hj, diagSeq0_getD (show j - 1 < v + 1 by omega)]
+    show j - 1 + 1 = j
+    omega
+  · intro l hl1 hl2
+    omega
+  · rw [diagSeq0_getD hj, diagSeq0_getD (show j - 1 < v + 1 by omega)]
+    show j ≤ (j - 1) + 1
+    omega
+
+theorem getD_take {M : PairSeq} {m j : ℕ} (h : j < m) :
+    (M.take m).getD j (0,0) = M.getD j (0,0) := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
+      List.getElem?_take, if_pos h]
+
+theorem r1ok_take {M : PairSeq} (h : r1ok M) (m : ℕ) : r1ok (M.take m) := by
+  intro j hj hpos
+  rw [List.length_take] at hj
+  have hjm : j < m := lt_of_lt_of_le hj (min_le_left _ _)
+  have hjM : j < M.length := lt_of_lt_of_le hj (min_le_right _ _)
+  rw [getD_take hjm] at hpos
+  obtain ⟨k, hk, he, hbetween, hsnd⟩ := h j hjM hpos
+  refine ⟨k, hk, ?_, ?_, ?_⟩
+  · rw [getD_take (lt_trans hk hjm), getD_take hjm]
+    exact he
+  · intro l hl1 hl2
+    rw [getD_take hjm, getD_take (lt_trans hl2 hjm)]
+    exact hbetween l hl1 hl2
+  · rw [getD_take hjm, getD_take (lt_trans hk hjm)]
+    exact hsnd
+
+theorem r1ok_dropLast {M : PairSeq} (h : r1ok M) : r1ok M.dropLast := by
+  rw [List.dropLast_eq_take]
+  exact r1ok_take h _
+
 end YAPSS
