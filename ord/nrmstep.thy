@@ -2418,6 +2418,126 @@ proof -
   qed
 qed
 
+lemma takeWhile_take_comm: "takeWhile Q (take n xs) = take n (takeWhile Q xs)"
+proof (induct xs arbitrary: n)
+  case Nil thus ?case by simp
+next
+  case (Cons x xs)
+  show ?case
+  proof (cases n)
+    case 0 thus ?thesis by simp
+  next
+    case (Suc n')
+    show ?thesis unfolding Suc by (cases "Q x") (simp_all add: Cons.hyps)
+  qed
+qed
+
+lemma mrun_take:
+  assumes "a < m"
+  shows "mrun (take m M) a = take (m - Suc a) (mrun M a)"
+proof -
+  have n: "take m M ! a = M ! a" using assms by simp
+  have d: "drop (Suc a) (take m M) = take (m - Suc a) (drop (Suc a) M)"
+    by (simp add: drop_take)
+  show ?thesis
+    unfolding mrun_def n d by (rule takeWhile_take_comm)
+qed
+
+lemma sibm_take:
+  assumes S: "sibm M"
+  shows "sibm (take m M)"
+  unfolding sibm_def
+proof (intro allI impI)
+  fix a b assume al: "a < length (take m M)"
+    and ap: "0 < fst (take m M ! a)"
+    and bp: "b = Suc a + length (mrun (take m M) a)"
+    and bl: "b < length (take m M)"
+    and fb: "fst (take m M ! b) = fst (take m M ! a)"
+    and sb: "snd (take m M ! b) = snd (take m M ! a)"
+  have am: "a < m" and aM: "a < length M" using al by auto
+  have bm: "b < m" and bM: "b < length M" using bl by auto
+  have na: "take m M ! a = M ! a" using am by simp
+  have nb: "take m M ! b = M ! b" using bm by simp
+  have mt: "mrun (take m M) a = take (m - Suc a) (mrun M a)"
+    by (rule mrun_take[OF am])
+  have full: "mrun (take m M) a = mrun M a"
+  proof (rule ccontr)
+    assume "mrun (take m M) a \<noteq> mrun M a"
+    hence "m - Suc a < length (mrun M a)" using mt by auto
+    hence "length (mrun (take m M) a) = m - Suc a" using mt by simp
+    hence "b = Suc a + (m - Suc a)" using bp by simp
+    hence "b = m" using am by simp
+    thus False using bm by simp
+  qed
+  have bp': "b = Suc a + length (mrun M a)" using bp full by simp
+  have fb': "fst (M ! b) = fst (M ! a)" using fb na nb by simp
+  have sb': "snd (M ! b) = snd (M ! a)" using sb na nb by simp
+  have ap': "0 < fst (M ! a)" using ap na by simp
+  from S[unfolded sibm_def, rule_format, OF aM ap' bp' bM fb' sb']
+  have core: "mrun M b = mrun M a \<or> (\<exists>D. D \<noteq> [] \<and> mrun M a = mrun M b @ D)"
+    and hA: "mrun M a \<noteq> [] \<longrightarrow> snd (hd (mrun M a)) = maxr1 (mrun M a)"
+    and hB: "mrun M b \<noteq> [] \<longrightarrow> snd (hd (mrun M b)) = maxr1 (mrun M b)"
+    by blast+
+  have mtb: "mrun (take m M) b = take (m - Suc b) (mrun M b)"
+    by (rule mrun_take[OF bm])
+  have pre: "\<exists>G. mrun M b = mrun (take m M) b @ G"
+    using mtb by (metis append_take_drop_id)
+  then obtain G where G: "mrun M b = mrun (take m M) b @ G" by blast
+  have coreT: "mrun (take m M) b = mrun (take m M) a \<or>
+        (\<exists>D. D \<noteq> [] \<and> mrun (take m M) a = mrun (take m M) b @ D)"
+  proof -
+    from core show ?thesis
+    proof
+      assume e: "mrun M b = mrun M a"
+      show ?thesis
+      proof (cases "G = []")
+        case True
+        thus ?thesis using G e full by simp
+      next
+        case False
+        have "mrun (take m M) a = mrun (take m M) b @ G"
+          using full e G by simp
+        thus ?thesis using False by blast
+      qed
+    next
+      assume "\<exists>D. D \<noteq> [] \<and> mrun M a = mrun M b @ D"
+      then obtain D where D: "D \<noteq> []" "mrun M a = mrun M b @ D" by blast
+      have "mrun (take m M) a = mrun (take m M) b @ (G @ D)"
+        using full D(2) G by simp
+      moreover have "G @ D \<noteq> []" using D(1) by simp
+      ultimately show ?thesis by blast
+    qed
+  qed
+  have hAT: "mrun (take m M) a \<noteq> [] \<longrightarrow>
+        snd (hd (mrun (take m M) a)) = maxr1 (mrun (take m M) a)"
+    using hA full by simp
+  have hBT: "mrun (take m M) b \<noteq> [] \<longrightarrow>
+        snd (hd (mrun (take m M) b)) = maxr1 (mrun (take m M) b)"
+  proof
+    assume ne: "mrun (take m M) b \<noteq> []"
+    have mbne: "mrun M b \<noteq> []" using G ne by auto
+    have hdeq: "hd (mrun M b) = hd (mrun (take m M) b)" using G ne by auto
+    have "snd (hd (mrun M b)) = maxr1 (mrun M b)" using hB mbne by blast
+    hence ub: "snd (hd (mrun (take m M) b)) = maxr1 (mrun M b)" using hdeq by simp
+    have "maxr1 (mrun (take m M) b) \<le> maxr1 (mrun M b)"
+      unfolding maxr1_def using G ne by (intro Max_mono) auto
+    moreover have "snd (hd (mrun (take m M) b)) \<le> maxr1 (mrun (take m M) b)"
+      using maxr1_ub ne by (metis hd_in_set)
+    ultimately show "snd (hd (mrun (take m M) b)) = maxr1 (mrun (take m M) b)"
+      using ub by simp
+  qed
+  show "(mrun (take m M) b = mrun (take m M) a \<or>
+         (\<exists>D. D \<noteq> [] \<and> mrun (take m M) a = mrun (take m M) b @ D))
+      \<and> (mrun (take m M) a \<noteq> [] \<longrightarrow>
+         snd (hd (mrun (take m M) a)) = maxr1 (mrun (take m M) a))
+      \<and> (mrun (take m M) b \<noteq> [] \<longrightarrow>
+         snd (hd (mrun (take m M) b)) = maxr1 (mrun (take m M) b))"
+    using coreT hAT hBT by blast
+qed
+
+lemma sibm_butlast: "sibm M \<Longrightarrow> sibm (butlast M)"
+  using sibm_take[of M "length M - 1"] by (simp add: butlast_conv_take)
+
 lemma sibm_oper:
   assumes "sibm M" and "M \<in> ST_PS" and "1 \<le> n"
   shows "sibm (oper M n)"
