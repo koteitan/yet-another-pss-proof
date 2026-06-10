@@ -2348,3 +2348,10 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   e1j0=0機構）/ **seam_copyhead_m1**（b=j0・m=1・20件・全部 L=1）/
   **seam_copyhead_deep**（b>j0・実証0件）。
   暴走犯また metis（Cons_nth_drop_Suc+drop0 詰め合わせ）→ cases blk で即緑。
+
+- (続29補15) **E6_tie_nofire0/1 討伐（緑）**: 新純粋補題 Gterm_empty_lowhead
+  （fbseg 窓で snd hd S < u ⟹ Gterm u (NT S) = ∅。長さ帰納: NT_shape + fbseg_T_desc
+  + fbseg_hd_level（レベル同強制）+ NT_dom_sub_eq（頭添字非増加）で T 鎖を下る）。
+  ¬hm タイランは実証で常に y=snd hd K < u=snd c（16/16）⟹ low ケースで即無発火。
+  残 = E6_tie_nofire_high0/1（y ≥ u ∧ ¬hm・実証空クラス・縮小 sorry）。
+  事故メモ: python str.replace は全置換 — 同一文面の補題が並ぶときは行範囲で編集。
