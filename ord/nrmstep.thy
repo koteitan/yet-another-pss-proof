@@ -2970,8 +2970,241 @@ proof -
           qed
           ultimately show ?thesis by simp
         qed
+        have openYi: "\<And>p. a < p \<Longrightarrow> p < length Y \<Longrightarrow> fst (Y ! a) < fst (Y ! p)"
+        proof -
+          fix p assume ap: "a < p" and pY: "p < length Y"
+          have "fst ((Y @ C) ! a) < fst ((Y @ C) ! p)"
+            by (rule runelem[OF ap]) (use pY beq in simp)
+          thus "fst (Y ! a) < fst (Y ! p)"
+            using na pY by (simp add: nth_append)
+        qed
         show ?thesis
-          sorry
+        proof (cases m)
+          case 0
+          have Ytk: "Y = take j0 M" unfolding Y_def 0 by simp
+          have aj0: "a < j0" using aY lenY 0 by simp
+          have lenM: "length M = Suc j1" using j1d j1nz by (cases M) auto
+          have j0M: "j0 < length M" using j0j1 j1len by simp
+          have Ma: "Y ! a = M ! a" using npre[OF aj0] .
+          have dropM: "drop (Suc a) M = drop (Suc a) (take j0 M) @ drop j0 M"
+          proof -
+            have "drop (Suc a) M = drop (Suc a) (take j0 M @ drop j0 M)" by simp
+            also have "\<dots> = drop (Suc a) (take j0 M)
+                @ drop (Suc a - length (take j0 M)) (drop j0 M)"
+              by (rule drop_append)
+            also have "\<dots> = drop (Suc a) (take j0 M) @ drop j0 M"
+              using aj0 j0M by simp
+            finally show ?thesis .
+          qed
+          have dj0: "drop j0 M = M ! j0 # drop (Suc j0) M"
+            using j0M by (rule Cons_nth_drop_Suc[symmetric])
+          have fstj0: "fst (M ! j0) = fst (M ! a)"
+          proof -
+            have "fst (M ! j0) = entry M 0 j0" unfolding entry_def by simp
+            thus ?thesis using leva Ma 0 by simp
+          qed
+          have mraM: "mrun M a = drop (Suc a) (take j0 M)"
+          proof -
+            have allpre: "\<forall>x \<in> set (drop (Suc a) (take j0 M)). fst (M ! a) < fst x"
+              using openY Ma Ytk by simp
+            have "takeWhile (\<lambda>r. fst (M ! a) < fst r) (drop (Suc a) M)
+                  = drop (Suc a) (take j0 M)
+                    @ takeWhile (\<lambda>r. fst (M ! a) < fst r) (drop j0 M)"
+              unfolding dropM by (rule takeWhile_append2) (use allpre in blast)
+            also have "takeWhile (\<lambda>r. fst (M ! a) < fst r) (drop j0 M) = []"
+              unfolding dj0 using fstj0 by simp
+            finally show ?thesis unfolding mrun_def by simp
+          qed
+          have lenK: "length (mrun M a) = j0 - Suc a"
+            unfolding mraM using j0M by simp
+          have bM: "j0 = Suc a + length (mrun M a)" using lenK aj0 by simp
+          have posM: "0 < fst (M ! a)" using pos na Ma by simp
+          have sndj0: "snd (M ! j0) = snd (M ! a)"
+          proof -
+            have "snd (M ! j0) = entry M 1 j0" unfolding entry_def by simp
+            thus ?thesis using snda Ma by simp
+          qed
+          have aM: "a < length M" using aj0 j0M by simp
+          from R[unfolded sibm2_def, rule_format, OF aM posM bM j0M fstj0 sndj0]
+          have core: "sibrel (mrun M a) (mrun M j0)" by simp
+          have mrj0: "mrun M j0 = drop (Suc j0) M"
+          proof -
+            have "\<forall>x \<in> set (drop (Suc j0) M). fst (M ! j0) < fst x"
+            proof
+              fix x assume "x \<in> set (drop (Suc j0) M)"
+              then obtain t where t: "t < length M - Suc j0" "x = drop (Suc j0) M ! t"
+                by (metis in_set_conv_nth length_drop)
+              have xe: "x = M ! (Suc j0 + t)"
+                using t j0M by simp
+              have "entry M 0 j0 < entry M 0 (Suc j0 + t)"
+                using hm0 t(1) lenM by simp
+              thus "fst (M ! j0) < fst x"
+                unfolding xe entry_def by simp
+            qed
+            thus ?thesis unfolding mrun_def by (simp add: takeWhile_eq_all_conv)
+          qed
+          have K1eq2: "drop 1 C = take (L - 1) (mrun M j0)"
+          proof -
+            have "C = blk" unfolding Ceq 0 by simp
+            hence "drop 1 C = drop (Suc j0) (take j1 M)"
+              unfolding blk_def by (simp add: drop_drop)
+            also have "\<dots> = take (j1 - Suc j0) (drop (Suc j0) M)"
+              by (rule drop_take)
+            finally show ?thesis unfolding mrj0 L_def by simp
+          qed
+          show ?thesis
+            unfolding mra mrb K1eq2
+            using sibrel_trunc[OF core] mraM Ytk by simp
+        next
+          case (Suc km)
+          define pstar where "pstar = j0 + km * L"
+          have kmm: "km < m" unfolding Suc by simp
+          have pstarY: "pstar < length Y"
+            unfolding pstar_def lenY Suc using L0 by simp
+          have Ypstar: "Y ! pstar = (entry M 0 j0 + km * d0, entry M 1 j0)"
+            using ncopy[OF kmm L0] unfolding pstar_def by simp
+          have lenYS: "length Y = j0 + km * L + L"
+            using lenY unfolding Suc by simp
+          show ?thesis
+          proof (cases "d0 = 0")
+            case d0z: True
+            have apstar: "a = pstar"
+            proof (rule ccontr)
+              assume ane: "a \<noteq> pstar"
+              show False
+              proof (cases "a < pstar")
+                case True
+                have "fst (Y ! a) < fst (Y ! pstar)"
+                  by (rule openYi[OF True pstarY])
+                thus False using leva Ypstar d0z by simp
+              next
+                case False
+                hence pa: "pstar < a" using ane by simp
+                define qa where "qa = a - pstar"
+                have qa0: "0 < qa" unfolding qa_def using pa by simp
+                have qaL: "qa < L"
+                proof -
+                  have "a < pstar + L" using aY lenYS unfolding pstar_def by simp
+                  thus ?thesis unfolding qa_def using pa
+                    by (simp add: less_diff_conv2 less_imp_le add.commute)
+                qed
+                have adec: "a = j0 + (km * L + qa)"
+                  unfolding qa_def pstar_def using pa pstar_def by simp
+                have "Y ! a = (entry M 0 (j0 + qa) + km * d0, entry M 1 (j0 + qa))"
+                  unfolding adec by (rule ncopy[OF kmm qaL])
+                hence "entry M 0 (j0 + qa) = entry M 0 j0"
+                  using leva d0z by simp
+                moreover have "entry M 0 j0 < entry M 0 (j0 + qa)"
+                  using hm0 qa0 qaL unfolding L_def by simp
+                ultimately show False by simp
+              qed
+            qed
+            have Ysplit: "Y = (take j0 M @ concat (map cp [0..<km])) @ cp km"
+              unfolding Y_def Suc by simp
+            have lenpre: "length (take j0 M @ concat (map cp [0..<km])) = pstar"
+            proof -
+              have "length (concat (map cp [0..<km])) = km * L"
+                unfolding cp_def L_def by (rule concat_map_upt_length) simp
+              moreover have "length (take j0 M) = j0" using j0j1 j1len by simp
+              ultimately show ?thesis unfolding pstar_def by simp
+            qed
+            have Keq: "drop (Suc a) Y = drop 1 (cp km)"
+            proof -
+              have "drop (Suc a) Y
+                  = drop (Suc a) (take j0 M @ concat (map cp [0..<km]))
+                    @ drop (Suc a - length (take j0 M @ concat (map cp [0..<km])))
+                        (cp km)"
+                unfolding Ysplit by (rule drop_append)
+              hence "drop (Suc a) Y
+                  = drop (Suc a) (take j0 M @ concat (map cp [0..<km]))
+                    @ drop (Suc a - pstar) (cp km)"
+                unfolding lenpre .
+              moreover have "drop (Suc a) (take j0 M @ concat (map cp [0..<km])) = []"
+                using lenpre apstar by simp
+              ultimately show ?thesis using apstar by simp
+            qed
+            have cpkm: "cp km = cp m" unfolding cp_def d0z by simp
+            show ?thesis
+              unfolding mra mrb Keq cpkm C_def[symmetric]
+              unfolding sibrel_def by blast
+          next
+            case d0p: False
+            have i1one: "i1 = 1"
+              using idx1_le[of M j1] d0d d0p i1d by (cases i1) auto
+            have e0j: "entry M 0 j0 < entry M 0 j1"
+              using hm0 j0j1 by simp
+            have ed: "entry M 0 j0 + d0 = entry M 0 j1"
+              unfolding d0d using i1one e0j by simp
+            have pa: "pstar < a"
+            proof (rule ccontr)
+              assume "\<not> pstar < a"
+              hence le: "a \<le> pstar" by simp
+              show False
+              proof (cases "a = pstar")
+                case True
+                have "entry M 0 j0 + km * d0 = entry M 0 j0 + m * d0"
+                  using leva Ypstar True by simp
+                thus False using d0p Suc by simp
+              next
+                case False
+                hence "a < pstar" using le by simp
+                from openYi[OF this pstarY]
+                have "entry M 0 j0 + m * d0 < entry M 0 j0 + km * d0"
+                  using leva Ypstar by simp
+                thus False using Suc d0p by simp
+              qed
+            qed
+            define qa where "qa = a - pstar"
+            have qa0: "0 < qa" unfolding qa_def using pa by simp
+            have qaL: "qa < L"
+            proof -
+              have "a < pstar + L" using aY lenYS unfolding pstar_def by simp
+              thus ?thesis unfolding qa_def using pa
+                by (simp add: less_diff_conv2 less_imp_le add.commute)
+            qed
+            have adec: "a = j0 + (km * L + qa)"
+              unfolding qa_def pstar_def using pa pstar_def by simp
+            have Ya: "Y ! a = (entry M 0 (j0 + qa) + km * d0, entry M 1 (j0 + qa))"
+              unfolding adec by (rule ncopy[OF kmm qaL])
+            have e0qa: "entry M 0 (j0 + qa) = entry M 0 j1"
+            proof -
+              have "entry M 0 (j0 + qa) + km * d0 = entry M 0 j0 + m * d0"
+                using leva Ya by simp
+              hence "entry M 0 (j0 + qa) = entry M 0 j0 + d0"
+                unfolding Suc by simp
+              thus ?thesis using ed by simp
+            qed
+            have e1qa: "entry M 1 (j0 + qa) = entry M 1 j0"
+              using snda Ya by simp
+            have tclear: "\<forall>l. j0 + qa < l \<and> l < j1 \<longrightarrow> entry M 0 j1 < entry M 0 l"
+            proof (intro allI impI)
+              fix l assume lr: "j0 + qa < l \<and> l < j1"
+              define q' where "q' = l - j0"
+              have q'r: "qa < q'" "q' < L"
+                unfolding q'_def L_def using lr by auto
+              have ldec: "l = j0 + q'" unfolding q'_def using lr by simp
+              have pp: "a < pstar + q'" using adec q'r(1) by (simp add: pstar_def)
+              have ppY: "pstar + q' < length Y"
+                unfolding pstar_def lenY Suc using q'r(2) by simp
+              have Yp: "Y ! (pstar + q') = (entry M 0 (j0 + q') + km * d0, entry M 1 (j0 + q'))"
+                using ncopy[OF kmm q'r(2)] unfolding pstar_def by (simp add: add.assoc)
+              from openYi[OF pp ppY]
+              have "entry M 0 (j0 + qa) + km * d0 < entry M 0 (j0 + q') + km * d0"
+                using Ya Yp by simp
+              thus "entry M 0 j1 < entry M 0 l"
+                using e0qa ldec by simp
+            qed
+            have jqr: "j0 < j0 + qa" "j0 + qa < j1"
+              using qa0 qaL unfolding L_def by auto
+            have "entry M 1 j1 \<le> entry M 1 (j0 + qa)"
+              by (rule CFGA_r1[OF ST j1d j1nz i1d[unfolded i1one, symmetric]
+                    hp[unfolded i1one] j0d[unfolded i1one] jqr(1) jqr(2) e0qa tclear])
+            hence le1: "entry M 1 j1 \<le> entry M 1 j0" using e1qa by simp
+            have "nextrel1 M j0 j1" using nR unfolding i1one nextR_def by simp
+            hence "entry M 1 j0 < entry M 1 j1" unfolding nextrel1_def by blast
+            thus ?thesis using le1 by simp
+          qed
+        qed
       qed
     next
       case aC: False
