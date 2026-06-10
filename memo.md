@@ -1935,3 +1935,21 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   sorry 前線 = 全て配列レベルの葉クラス事実 7点: NT_tie / E6_mem / E6_dom_tie /
   E6_qcut_last / E6_iii_singleton / E6_seam / STS_B（+ nrm_order_pres）。
   構造コンビネータ（E6_value・NT_dom→NT_shape 鎖・ST_snocokS_gen 配線）は全て証明済。
+
+### (2026-06-10 続25) 残7 sorry の収束構造 — HDOM/GCAT 設計
+- **NT_prefix_lt 緑**（nrm_snoc_int の連鎖、C@D@post∈ST_PS ⟹ NT C <o NT(C@D)）。
+- 残る組合せ核の還元図:
+  - **GCAT（G-カタログ）**: class S の臨界 = 可視ノード n の arg 群、arg(n) =
+    proj (snd n) (NT (run_n∩S)) =（E6/IH）NT(run_n) or NT(msfx(run_n)) — 常に
+    「S の連続部分セグメントの NT 像」+ Z。帰納で機械的の見込み。
+  - **DOM-tie（E6_dom_tie）**: タイ violator g = NT(piece)、hdsub=maxr1=m ⟹
+    piece は m-列開始、開始位置 l ≥ j0（j0=global first max）。
+    l = j0: piece は msfx S の prefix ⟹ **NT_prefix_lt で閉じる**。
+    l > j0: 再帰的 first-max 優先（msfx S の arg との比較に降下）。
+  - **HDOM（頭max支配）**: maxr1 R = snd (hd R)（先頭が max）⟹ 全臨界 g: olt g (NT R)。
+    = C2 の no-fire 向き = E6_mem の j0=0 ケース排除 = タイ比較の底。
+    NT_tie / STS_B hdarg 節も同じ底に合流。
+  - **E6_mem**: fire ⟹（HDOM 対偶で）msfx S ≠ S、先祖鎖（nbc 930/930）で
+    NT(msfx S) = 最深可視先祖の arg ∈ Gterm（E6/IH を run で使う再帰）。
+- 帰納の正しい束: 長さ強帰納で {HDOM, GCAT, E6_mem, E6_dom_tie}（E6_value は証明済
+  コンビネータ）。NT_tie は HDOM+E6 値の系になる見込み。E6_seam/qcut/iii は行レベル。
