@@ -2107,3 +2107,9 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   （レベル0限定の弱保存）が必要。被支配レベル（fbseg）では SIB_shape 経路有効。
   ⟹ STS_B = fbseg 側（SIB経路）+ トップ側（別機構）の2層。27例の正確な形
   （suffix の段階降下?）は次セッションでマイニング。
+
+- (続27補6) **TOP_desc 確定**: トップレベル隣接 (0,0)-木対は NT_tie 成立 0/474 違反、
+  other 27例も含め **ole (NT K1) (NT K) が nrm レベルで直接成立（27/27）**。
+  ⟹ トップ層の統一クラス事実 = TOP_desc（隣接トップ木の nrm 弱降下、474対0違反）。
+  STS_B 完成形 = NT_hd のトップ版（C1 リフト）+ TOP_desc + 被支配層 SIB_shape 経路。
+  TOP_desc は展開段階構造（m_step/oper 機構）から攻める。
