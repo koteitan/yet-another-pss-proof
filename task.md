@@ -63,8 +63,9 @@
           ST_snocokS_gen にインライン配線・長さ帰納で循環なし; 実証 V1-V5 全0違反 = memo続22）
           ✅ post一般化（segprov/STS_A/ST_snocokS_gen/ST_snocok_int/nrm_snoc_int、内部位置対応・実証8243で0違反）
           ✅ fbseg（森境界ピース）＋閉包補題3本 / NT_noabsorb / **NT_tail_lt**（nrm和尾部厳密増大）
-          🚨 残6: 🚨🤖 **E6_value**（マスター帰納、設計=memo続23: G1可視鎖/G2カタログ+内部snoc/G3）/
-          **NT_shape**（C1形状、タイ=SIB核）/ E6_qcut_last / E6_iii_singleton / E6_seam / STS_B
+          ✅ C1層完成: fbseg_hd_level（blockokレベル固定・drop=0）→NT_dom→NT_shape→NT_hd/NT_tail_lt（memo続24）
+          🚨 残6: **NT_tie**（SIB核=添字タイ兄弟arg比較・1037件0違反）/ 🚨🤖 **E6_value**（マスター帰納）/
+          E6_qcut_last / E6_iii_singleton / E6_seam / STS_B（hdarg節=NT_tieと同核）
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
