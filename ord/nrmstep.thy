@@ -2420,6 +2420,82 @@ proof -
   qed
 qed
 
+text \<open>(LPL) A proper later piece whose head subscript matches the head-maximal
+  whole loses to the whole.  The last comparison core of the exclusion side
+  (empirically part of C2's zero-violation criterion).\<close>
+
+lemma E6_lpl:
+  assumes "dseg u S" and "snd (hd S) = maxr1 S"
+    and "S = pre' @ C @ post'" and "C \<noteq> []" and "pre' \<noteq> []"
+    and "snd (hd C) = maxr1 S"
+  shows "olt (nrm (translate C)) (nrm (translate S))"
+  sorry
+
+text \<open>(HDOM) A head-maximal class segment has no fire: every critical loses.
+  Resolved down to \<open>E6_lpl\<close> by the catalogue, the subscript bound, and prefix
+  monotonicity \<dash> the same pattern as \<open>E6_dom_tie_resolved\<close>.\<close>
+
+lemma E6_hdom:
+  assumes D: "dseg u S" and HM: "snd (hd S) = maxr1 S"
+  shows "\<not> pfire u (nrm (translate S))"
+proof
+  assume F: "pfire u (nrm (translate S))"
+  then obtain g where G: "g \<in> Gterm u (nrm (translate S))"
+    and V: "\<not> olt g (nrm (translate S))" by blast
+  have Sne: "S \<noteq> []" using D unfolding dseg_def by blast
+  obtain AS RS where sh: "nrm (translate S) = P (snd (hd S)) AS RS"
+    using NT_hd[OF dseg_fbseg[OF D]] by blast
+  have NZ: "g \<noteq> Z"
+  proof
+    assume "g = Z"
+    hence "\<not> olt Z (nrm (translate S))" using V by simp
+    thus False unfolding sh by simp
+  qed
+  have fbS: "\<exists>v. fbseg v S" using dseg_fbseg[OF D] by blast
+  from GCAT[OF fbS G] NZ obtain pre' Cp post'
+    where w: "S = pre' @ Cp @ post'" "Cp \<noteq> []" "g = nrm (translate Cp)"
+      "hdsub g = snd (hd Cp)" by blast
+  have le: "hdsub g \<le> maxr1 S" by (rule Gterm_NT_hdsub_le[OF G NZ])
+  show False
+  proof (cases "hdsub g = maxr1 S")
+    case False
+    hence lt: "hdsub g < maxr1 S" using le by simp
+    have "olt g (nrm (translate S))"
+      using lt NZ unfolding sh HM by (cases g) auto
+    thus False using V by blast
+  next
+    case True
+    have hdm: "snd (hd Cp) = maxr1 S" using w(4) True by simp
+    show False
+    proof (cases "pre' = []")
+      case pe: True
+      have CpS: "Cp \<noteq> S"
+      proof
+        assume "Cp = S"
+        hence "g = nrm (translate S)" using w(3) by simp
+        moreover have "size g < size (nrm (translate S))"
+          using Gterm_size[OF G] .
+        ultimately show False by simp
+      qed
+      have pne: "post' \<noteq> []" using w(1) CpS unfolding pe by auto
+      from D obtain preh pp posth where h: "preh @ (pp # S) @ posth \<in> ST_PS"
+        unfolding dseg_def by blast
+      have h2: "(preh @ [pp]) @ Cp @ post' @ posth \<in> ST_PS"
+        using h unfolding w(1) pe by simp
+      have "olt (nrm (translate Cp)) (nrm (translate (Cp @ post')))"
+        by (rule NT_prefix_lt[OF h2 w(2) pne])
+      hence "olt g (nrm (translate S))"
+        using w(3) w(1) unfolding pe by simp
+      thus False using V by blast
+    next
+      case pne: False
+      have "olt (nrm (translate Cp)) (nrm (translate S))"
+        by (rule E6_lpl[OF D HM w(1) w(2) pne hdm])
+      thus False using w(3) V by simp
+    qed
+  qed
+qed
+
 text \<open>\<open>Pred\<close> case of the step decrease, from \<open>nrm_snoc\<close>.\<close>
 
 lemma nrm_step_dec_pred:

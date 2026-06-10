@@ -1973,3 +1973,10 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   当面: E6_dom_tie は sorry スタブのまま、resolved 版を NT_prefix_lt 後方に配置。
 - デバッグ: metis(hd_Cons_tl/set_takeWhileD) が 1800s 暴走 → 明示 obtain/blast 化。
   unfolding の順序で msfx S の書き換え不発 → calc 連鎖（drop j0 経由）。
+
+- (続25補3) **E6_hdom 緑（排除コアの統合）**: 頭最大クラスセグメントは無発火。
+  GCAT分解 → 低添字: NT_hd の P m 形と添字比較で即 olt / タイ+prefix: NT_prefix_lt /
+  タイ+後続片: **E6_lpl**（新 sorry: 後続同添字ピースは全体に負ける = first-max優先の対偶側）。
+  E6_dom_tie_resolved と同パターン。実効コアは {E6_lpl, E6_dom_deep, E6_mem連鎖, NT_tie}
+  + 行レベル {qcut, iii, seam} + STS_B に整理された。
+  E6_lpl と E6_dom_deep は双対（前者: 全体vs後続片、後者: msfx vs後続片）— 統一可能性あり。
