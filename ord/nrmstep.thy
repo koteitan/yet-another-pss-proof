@@ -57,6 +57,36 @@ qed
 lemma Rinc_olt: "Rinc x y \<Longrightarrow> olt x y"
   unfolding Rinc_def using lext_olt lflip_olt by blast
 
+subsection \<open>Unconditional \<open>proj\<close> facts\<close>
+
+text \<open>\<open>proj\<close> is inflationary: each firing step moves to a critical term that is
+  not below the current one, hence (being distinct, by size) strictly above.\<close>
+
+lemma proj_inflate: "olt b (proj u b) \<or> proj u b = b"
+proof (induction u b rule: proj.induct)
+  case (1 u b)
+  show ?case
+  proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
+    case True
+    show ?thesis unfolding proj_id[OF True] by simp
+  next
+    case False
+    let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
+    let ?m = "maxo (hd ?gs) (tl ?gs)"
+    have mset: "?m \<in> set ?gs" by (rule maxo_hdtl_in[OF False])
+    hence mG: "?m \<in> Gterm u b" using set_Glist by auto
+    have mne: "?m \<noteq> b" using Gterm_size[OF mG] by auto
+    have mnlt: "\<not> olt ?m b" using mset by auto
+    have step: "olt b ?m" using olt_total mne mnlt by blast
+    have rec: "olt ?m (proj u ?m) \<or> proj u ?m = ?m" by (rule 1(1)[OF refl False])
+    have eq: "proj u b = proj u ?m" using proj_rec[OF False] by simp
+    show ?thesis using rec step eq olt_trans by auto
+  qed
+qed
+
+lemma proj_ole: "b \<le>o proj u b"
+  using proj_inflate[of b u] by auto
+
 subsection \<open>Campaign targets\<close>
 
 text \<open>(T1) the snoc characterization: appending one column to a standard form
