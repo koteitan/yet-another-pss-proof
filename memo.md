@@ -1813,3 +1813,10 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   デバッグ: CNF の書換えは unfolding ベース（default simp の translate 展開回避）、
   length_induct の IH は rule_format+OF len then blast（Ball/meta 不一致回避）。
   **残 sorry 3: STS_B / projE_iii / projE_ii**。
+- (続20補7) STS_B 前線分析: hdsub 節（snd h_T ≤ snd p）は h_T が deep-close
+  （fst h_T < fst p、row0 の下りジャンプは blockok 非制約）の場合、セグメント translate が
+  host-部分項にならず host-cnf から直接出ない。対策候補: ST_snocokS_gen に
+  INV 螺旋と同型の「レベル整合（fst h_T = fst p となる経路条件）」を追加スレッディング
+  →（A）同様 equality 化で cnf 隣接に帰着できる可能性。ただし (B) 連鎖の fst は
+  弱降下なので等式不変式は単純には立たない — 次セッションで (B)-経路の fst 列を
+  実証プロファイルしてから設計する事。
