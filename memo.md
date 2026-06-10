@@ -1980,3 +1980,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   E6_dom_tie_resolved と同パターン。実効コアは {E6_lpl, E6_dom_deep, E6_mem連鎖, NT_tie}
   + 行レベル {qcut, iii, seam} + STS_B に整理された。
   E6_lpl と E6_dom_deep は双対（前者: 全体vs後続片、後者: msfx vs後続片）— 統一可能性あり。
+
+- (続25補4) **健全性キャッチ＆修正（重要）**: E6_lpl / E6_dom_deep の旧文面
+  （任意の m-頭ピース C）は**偽** — 実ホスト dseg 頭最大対で逆転2163件
+  （例: S=(3,1)(4,0)(5,1)(6,1), C=(5,1)(6,1)。C は u=1 では Gterm 不可視 =
+  GCAT 到達不能片）。**可視性前提 NT C ∈ Gterm u (NT S) を両補題に追加**して修正
+  （hdom/dom_tie の呼び出し側は G をそのまま供給）。教訓: sorry クラス事実は
+  文面確定時に必ず「使用側が供給できる前提だけで」最弱化マイニングする。
+  弱クラス LPL は等値も475件（吸収で NT C = NT S）→ hdom 側はサイズ論法で排除済。

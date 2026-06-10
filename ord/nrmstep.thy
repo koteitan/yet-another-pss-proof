@@ -1917,6 +1917,7 @@ lemma E6_dom_deep:
   assumes "dseg u S" and "pfire u (nrm (translate S))"
     and "S = pre' @ C @ post'" and "C \<noteq> []" and "snd (hd C) = maxr1 S"
     and "length (takeWhile (\<lambda>c. snd c < maxr1 S) S) < length pre'"
+    and "nrm (translate C) \<in> Gterm u (nrm (translate S))"
     and "\<not> olt (nrm (translate C)) (nrm (translate S))"
   shows "ole (nrm (translate C)) (nrm (translate (msfx S)))"
   sorry
@@ -2416,7 +2417,7 @@ proof -
     case False
     hence lt: "?j0 < length pre'" using j0le by simp
     show ?thesis unfolding w(3)
-      by (rule E6_dom_deep[OF D F w(1) w(2) hdm lt V[unfolded w(3)]])
+      by (rule E6_dom_deep[OF D F w(1) w(2) hdm lt G[unfolded w(3)] V[unfolded w(3)]])
   qed
 qed
 
@@ -2428,6 +2429,7 @@ lemma E6_lpl:
   assumes "dseg u S" and "snd (hd S) = maxr1 S"
     and "S = pre' @ C @ post'" and "C \<noteq> []" and "pre' \<noteq> []"
     and "snd (hd C) = maxr1 S"
+    and "nrm (translate C) \<in> Gterm u (nrm (translate S))"
   shows "olt (nrm (translate C)) (nrm (translate S))"
   sorry
 
@@ -2490,7 +2492,7 @@ proof
     next
       case pne: False
       have "olt (nrm (translate Cp)) (nrm (translate S))"
-        by (rule E6_lpl[OF D HM w(1) w(2) pne hdm])
+        by (rule E6_lpl[OF D HM w(1) w(2) pne hdm G[unfolded w(3)]])
       thus False using w(3) V by simp
     qed
   qed
