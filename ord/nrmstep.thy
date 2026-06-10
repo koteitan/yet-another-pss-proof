@@ -2082,6 +2082,82 @@ proof -
   show ?thesis unfolding fbseg_def using ne h2 dom2 fb2 u by blast
 qed
 
+text \<open>Depth-uniform piece class: the head is level-minimal in the piece and
+  in the skipped prefix.  Subsumes \<open>fbseg\<close> (where blockok pins the head to
+  \<open>fst pp + 1\<close>) and the top level (head at 0).  The level-equality of
+  sum-adjacent successors is free from the definition.\<close>
+
+definition fbsegD :: "pairseq \<Rightarrow> bool" where
+  "fbsegD S \<longleftrightarrow> S \<noteq> [] \<and> (\<exists>pre mid post. pre @ mid @ S @ post \<in> ST_PS
+       \<and> (\<forall>r \<in> set mid. fst (hd S) \<le> fst r)
+       \<and> (\<forall>r \<in> set S. fst (hd S) \<le> fst r))"
+
+lemma fbseg_fbsegD:
+  assumes "fbseg u S"
+  shows "fbsegD S"
+proof -
+  from assms obtain pre pp mid post
+    where h: "pre @ (pp # mid @ S) @ post \<in> ST_PS"
+    and dom: "\<forall>r \<in> set (mid @ S). fst pp < fst r"
+    and fb: "\<forall>r \<in> set mid. fst (hd S) \<le> fst r"
+    and ne: "S \<noteq> []"
+    unfolding fbseg_def by blast
+  let ?Y = "mid @ S @ post"
+  let ?h = "pre @ (pp # mid @ S) @ post"
+  have hh: "?h = pre @ pp # ?Y" by simp
+  have Yne: "?Y \<noteq> []" using ne by (cases mid) auto
+  have so: "stepsok ?h"
+    using blockok_stepsok blockok_ST_PS[OF h] by blast
+  have n0: "?h ! length pre = pp"
+    unfolding hh by (simp add: nth_append_length)
+  have n1: "?h ! Suc (length pre) = ?Y ! 0"
+    unfolding hh by (simp add: nth_append)
+  have ln: "Suc (length pre) < length ?h"
+    unfolding hh using Yne by (cases ?Y) auto
+  have step1: "fst (?Y ! 0) \<le> Suc (fst pp)"
+    using so[unfolded stepsok_def, rule_format, OF ln] n0 n1 by simp
+  have hc: "fst (hd S) = Suc (fst pp)"
+  proof (cases mid)
+    case Nil
+    have "?Y ! 0 = hd S" unfolding Nil using ne by (cases S) auto
+    hence "fst (hd S) \<le> Suc (fst pp)" using step1 by simp
+    moreover have "fst pp < fst (hd S)" using dom ne by (cases S) auto
+    ultimately show ?thesis by simp
+  next
+    case (Cons m0 mid')
+    have "?Y ! 0 = m0" unfolding Cons by simp
+    hence "fst m0 \<le> Suc (fst pp)" using step1 by simp
+    moreover have "fst pp < fst m0" using dom unfolding Cons by simp
+    ultimately have m0l: "fst m0 = Suc (fst pp)" by simp
+    have "fst (hd S) \<le> fst m0" using fb unfolding Cons by simp
+    moreover have "fst pp < fst (hd S)" using dom ne by (cases S) auto
+    ultimately show ?thesis using m0l by simp
+  qed
+  have hS: "\<forall>r \<in> set S. fst (hd S) \<le> fst r"
+  proof
+    fix r assume "r \<in> set S"
+    hence "fst pp < fst r" using dom by auto
+    thus "fst (hd S) \<le> fst r" using hc by simp
+  qed
+  have h2: "(pre @ [pp]) @ mid @ S @ post \<in> ST_PS" using h by simp
+  show ?thesis unfolding fbsegD_def using ne h2 fb hS by blast
+qed
+
+lemma fbsegD_hd_level:
+  assumes "fbsegD (c # rest)"
+    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+  shows "fst c1 = fst c"
+proof -
+  have c1S: "c1 \<in> set (c # rest)"
+    using assms(2) by (metis hd_dropWhile list.sel(1) list.set_intros(2)
+      list.simps(3) hd_in_set set_dropWhileD)
+  have ge: "fst c \<le> fst c1"
+    using assms(1) c1S unfolding fbsegD_def by auto
+  have le: "\<not> fst c < fst c1"
+    using hd_dropWhile assms(2) by (metis list.sel(1) list.simps(3))
+  show ?thesis using ge le by simp
+qed
+
 text \<open>(C1) Shape of the normalized image on the class: the \<open>ins\<close> at the head
   never absorbs, so the head subscript is the head column's row-1 value.
   (Empirical: zero absorptions on all 8768 closure pieces.)\<close>
