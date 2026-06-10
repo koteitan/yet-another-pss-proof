@@ -1095,6 +1095,134 @@ proof -
   thus ?thesis using Gterm_size by fastforce
 qed
 
+subsection \<open>Subscript bookkeeping: the head of the suffix image is the max row-1\<close>
+
+lemma Gterm_subs: "g \<in> Gterm u t \<Longrightarrow> subs g \<subseteq> subs t"
+proof (induction t arbitrary: g)
+  case (P a b c)
+  from P.prems consider "u \<le> a" "g = b" | "u \<le> a" "g \<in> Gterm u b" | "g \<in> Gterm u c"
+    by (auto split: if_splits)
+  thus ?case
+  proof cases
+    case 1 thus ?thesis by auto
+  next
+    case 2 thus ?thesis using P.IH(1) by auto
+  next
+    case 3 thus ?thesis using P.IH(2) by auto
+  qed
+qed simp
+
+lemma proj_subs: "subs (proj u b) \<subseteq> subs b"
+proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
+  case True thus ?thesis using proj_once[of u b] by simp
+next
+  case False
+  let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
+  have "proj u b = maxo (hd ?gs) (tl ?gs)" using proj_once[of u b] False by simp
+  moreover have "maxo (hd ?gs) (tl ?gs) \<in> set ?gs" by (rule maxo_hdtl_in[OF False])
+  ultimately have "proj u b \<in> Gterm u b" using set_Glist by auto
+  thus ?thesis by (rule Gterm_subs)
+qed
+
+lemma ins_subs: "subs (ins a b t) \<subseteq> insert a (subs b \<union> subs t)"
+  by (cases t) auto
+
+lemma nrm_subs: "subs (nrm w) \<subseteq> subs w"
+proof (induction w)
+  case (P a b c)
+  have "subs (nrm (P a b c)) \<subseteq> insert a (subs (proj a (nrm b)) \<union> subs (nrm c))"
+    using ins_subs by simp
+  also have "\<dots> \<subseteq> insert a (subs (nrm b) \<union> subs (nrm c))"
+    using proj_subs by fastforce
+  also have "\<dots> \<subseteq> insert a (subs b \<union> subs c)"
+    using P.IH by fastforce
+  finally show ?case by simp
+qed simp
+
+lemma NT_subs: "subs (nrm (translate M)) \<subseteq> snd ` set M"
+  using nrm_subs subs_translate by fast
+
+lemma ins_neZ: "ins a b t \<noteq> Z"
+  by (cases t) auto
+
+lemma ins_hdsub: "a \<le> hdsub (ins a b t)"
+  by (cases t) auto
+
+lemma NT_neZ: "nrm (translate (c # rest)) \<noteq> Z"
+proof -
+  have "nrm (translate (c # rest))
+        = ins (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+                      (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+    by (simp only: translate.simps(2) nrm.simps(2))
+  thus ?thesis using ins_neZ by simp
+qed
+
+lemma NT_hd_ge: "snd c \<le> hdsub (nrm (translate (c # rest)))"
+proof -
+  have "nrm (translate (c # rest))
+        = ins (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+                      (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+    by (simp only: translate.simps(2) nrm.simps(2))
+  thus ?thesis using ins_hdsub by simp
+qed
+
+text \<open>Purely, with no class premise: the head subscript of the normalized
+  image of the max-row1 suffix is exactly the maximal row-1 value.\<close>
+
+lemma NT_msfx_hdsub:
+  assumes S: "S \<noteq> []"
+  shows "hdsub (nrm (translate (msfx S))) = maxr1 S"
+proof -
+  obtain c' rest' where M: "msfx S = c' # rest'"
+    using msfx_ne[OF S] by (cases "msfx S") auto
+  have hd': "snd c' = maxr1 S" using msfx_hd[OF S] unfolding M by simp
+  have ge: "maxr1 S \<le> hdsub (nrm (translate (msfx S)))"
+    unfolding M using NT_hd_ge hd' by metis
+  obtain e f g where E: "nrm (translate (msfx S)) = P e f g"
+    using NT_neZ unfolding M by (cases "nrm (translate (c' # rest'))") auto
+  have "e \<in> subs (nrm (translate (msfx S)))" unfolding E by simp
+  hence "e \<in> snd ` set (msfx S)" using NT_subs by fast
+  hence "e \<in> snd ` set S" using msfx_set by fast
+  hence "e \<le> maxr1 S" using maxr1_ub by fast
+  thus ?thesis using ge unfolding E by simp
+qed
+
+text \<open>Hence two purely subscript-theoretic dominance facts: every critical of
+  a normalized image has head subscript at most the segment's max row-1, and
+  anything with head subscript strictly below it is \<open>olt\<close>-below the suffix
+  image.\<close>
+
+lemma Gterm_NT_hdsub_le:
+  assumes "g \<in> Gterm u (nrm (translate S))" and "g \<noteq> Z"
+  shows "hdsub g \<le> maxr1 S"
+proof -
+  obtain e f r where E: "g = P e f r" using assms(2) by (cases g) auto
+  have "e \<in> subs g" unfolding E by simp
+  hence "e \<in> subs (nrm (translate S))" using Gterm_subs assms(1) by fast
+  hence "e \<in> snd ` set S" using NT_subs by fast
+  hence "e \<le> maxr1 S" using maxr1_ub by fast
+  thus ?thesis unfolding E by simp
+qed
+
+lemma olt_msfx_lowsub:
+  assumes S: "S \<noteq> []" and g: "g = Z \<or> hdsub g < maxr1 S"
+  shows "olt g (nrm (translate (msfx S)))"
+proof -
+  obtain c' rest' where M: "msfx S = c' # rest'"
+    using msfx_ne[OF S] by (cases "msfx S") auto
+  obtain f' g' where E: "nrm (translate (msfx S)) = P (maxr1 S) f' g'"
+    using NT_neZ NT_msfx_hdsub[OF S] unfolding M
+    by (cases "nrm (translate (c' # rest'))") auto
+  show ?thesis
+  proof (cases g)
+    case Z thus ?thesis unfolding E by simp
+  next
+    case (P e f r)
+    have "e < maxr1 S" using g unfolding P by simp
+    thus ?thesis unfolding P E by simp
+  qed
+qed
+
 subsection \<open>Transport of \<open>Einc\<close> through \<open>proj\<close>\<close>
 
 text \<open>Provenance: the pair under transport is the normalized image of an
