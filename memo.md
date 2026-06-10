@@ -1552,3 +1552,28 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - 現状の全体図: (A) pure-lex 前半＋peel＋level0（sorry=wf_ArgsA のみ）
   (B) wf_olt_wf3 sorry-free (C) olt=seqlex sorry-free。
   残る本丸は不変: 崩壊核（wf_ArgsA ⟺ seqlex-WF on ST ⟺ NF→wf3 橋のどれかを閉じる）。
+
+### ★(2026-06-10 続12) (α)決定後の設計探索: ArgsA 実証＋Towsner WF 構造の完全解析
+- ユーザー決定: **(α) wf_ArgsA を自前帰納で閉じる**（wf_olt_wf3 は oracle 候補として使用可）。
+- ArgsA 実証（tools/argsa_check.py, corpus 1550）:
+  - y_k 連鎖（y_0=p1(0), y_{k+1}=p0(p1(y_k))）は k≥1 で ArgsA に**不在** ⟹ wf_ArgsA 真の見込み。
+  - **y_1 = translate((0,0)(1,1)(2,1)) ∈ NF**（標準!）、y_2 = translate(x_1) から非標準。
+    降下アンカーは「re-entry 後の横ばい climb」p1(p1(0)) の位置（Adm 規律の項側像）。
+  - ArgsA[m] は m≥2 で全員非 NF（lead≥1 の内部ブロック、spine 下降混在 [2,1,0,1,2,…]）かつ
+    全員 maxsub=m（**レベル降下なし＝再入**）。ArgsA[1] は NF/非NF 混在。
+  - 標準族 t(x_0[n])=p0(p1(p0(p1(…p0(p1 0)…)))) は re-entry 入れ子 rank~n **無限大**で olt **上昇**列
+    ⟹ 入れ子深さ有界は不変条件にならない（続3の補強）。
+- Towsner §3.2 完全解析（2504.02131v2）:
+  - 順序定義自体に **K-guard**（ϑα<ϑβ ⟸ α<β ∧ ∀γ∈K^{<0}α. γ<ϑβ）。y 型連鎖は
+    **順序の段階で降下にならない**（guard 違反で非比較）。
+  - Acc_n/M_n 梯子（M_n = FC=0 ∧ G≥-n ∧ K-部分項* ⊆ ⋃_{i<n}Acc_i、Acc_n=M_n の WF 部）は
+    閉包補題 3.8-3.11（和/ω/ϑ-collapse、collapse は Acc_n 帰納×側構造帰納）→ Thm 3.12
+    「全項 α* ∈ Acc_{G(α*)}」。最終断片 M_{-∞} は**無条件**（guard が全部支える）。
+  - ⟹ **pure-lex（guard なし）には直接移植不可**。我々のクラス（標準ブロック）内降下は
+    rank を無限遡行できる: y_1 の下に t(x_0[n]) が全 rank、さらに任意降下点の下にも
+    tail 詰めで全 rank ⟹ 深さ/rank 梯子では降下列を単一層に閉じ込められない。
+- **次の照準: Buchholz–Schütte distinguished set 法**（pure-lex 順序＋クラス条件の組で
+  OT の WF を直接証明する古典手法; Pohlers 1989 PDF が手元にある）。
+  クラスに要求される閉包公理を抽出 → 標準性（ST_PS 生成＋P進 Adm/条件I-VI）から
+  その公理群を証明する設計へ。reduced の構文特徴づけ=条件(A)(B)（content.md 1056-）も確認済
+  （ただし reduced ⊋ standard なので単独では不足）。
