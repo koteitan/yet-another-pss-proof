@@ -1754,3 +1754,20 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   ⟹ ST_snoc_C の (iv) ケース排除の部品が揃った。
   残部品: maxo_partner（max臨界の対応）、末端到達クラス事実、einc 版 snoc 特徴づけ、
   サイズ帰納での組立て。
+
+### (2026-06-10 続20) 構造層の戦線分析（次キャンペーンの正確な地図）
+- fire_transport/gap は einc∪eflip の**構造関係**を要求 ⟹ ST_snoc_C には
+  「einc 版 snoc 構造特徴づけ」（olt 版 nrm_snoc_seg の強化）が必要で、
+  そこでは absorb が許されないため **A/B 条件（snd q ≤ snd p・no-absorb 対）が復活**する。
+  olt 弱化の利得は「olt 層が先に閉じた」こと（層分離）。構造層の請求書: A+B+C 級の class 事実。
+- **ST_snoc_A の証明地図**:
+  - single-close（q が p のブロックだけ閉じる、fst q > 親 h の row0）:
+    セグメント translate が host translate の c-部分項に現れる ⟹ cnf 遺伝
+    （cnf_ST_PS）から tops 非増加で snd q ≤ snd p。機械的。
+  - multi-close（fst q ≤ fst h）: cnf 隣接が成立しない。blockok（row0 ステップ≤+1、
+    blockok_ST_PS 済）で構成は制約されるが、排除には行1規律（row1≤row0 + 行1親）
+    が必要 = P進 §2 条件(B)系の項側化。ST_PS.induct 系の新補題。
+  - 実証は全 (A) 位置で違反0（mine_snocok）。
+- 残キャンペーン手順: (1) einc 版グランド補題（snocokS 束 = A条件+B条件+C条件）骨格
+  → (2) ST_snoc_A single-close（cnf 経由）→ (3) row1 規律補題（ST_PS.induct、
+  multi-close 排除 + B の hdsub 上界）→ (4) 末端到達/max対応 → (5) ST_snoc_C 組立。
