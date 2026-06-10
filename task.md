@@ -58,8 +58,9 @@
         - 🚨🤖 攻略 nrmstep.thy（Pred ケース）: ✅ olt層（nrm_snoc_seg/ins_olt_mono）
           ✅ 構造層（einc/eflip・gap補題・fire_transport・nrm_snoc_str・projE骨格・
           ST_snocokS_gen+INV螺旋・maxo_ub・stepsok）✅ **STS_A 完全証明**（cnf隣接+pre帰納）
+          ✅ **proj_once**（射影=1ステップ; max臨界は自ら無発火）+ **proj_submono**＋Gterm_trans/maxg_nofire
           🚨 残3: STS_B（no-absorb対）/ projE_iii（ext-fire flip形・x葉）/
-          projE_ii（both-fire max対応）— 共通核=兄弟/接尾辞の nrm∘proj 保存
+          🚨🤖 projE_ii（both-fire max対応; proj_once で有限max対応に還元、攻略中）
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
