@@ -2373,6 +2373,64 @@ text \<open>(SIB core) On subscript ties the projected argument of the earlier h
   is not below that of its sum-successor.  This is the single remaining
   irreducible class fact of the C1 layer (empirically 0/1037 violations).\<close>
 
+text \<open>Host-level sibling-run invariant: at every adjacent tie-sibling pair
+  (positive level, equal level and row-1) the second run is the first or a
+  proper prefix of it, and both runs are head-maximal.  (Empirically exact:
+  2964 pairs, 2405 equal + 559 prefix, all head-max.)\<close>
+
+definition mrun :: "pairseq \<Rightarrow> nat \<Rightarrow> pairseq" where
+  "mrun M a = takeWhile (\<lambda>r. fst (M ! a) < fst r) (drop (Suc a) M)"
+
+definition sibm :: "pairseq \<Rightarrow> bool" where
+  "sibm M \<longleftrightarrow> (\<forall>a b. a < length M \<longrightarrow> 0 < fst (M ! a) \<longrightarrow>
+      b = Suc a + length (mrun M a) \<longrightarrow> b < length M \<longrightarrow>
+      fst (M ! b) = fst (M ! a) \<longrightarrow> snd (M ! b) = snd (M ! a) \<longrightarrow>
+      ((mrun M b = mrun M a \<or> (\<exists>D. D \<noteq> [] \<and> mrun M a = mrun M b @ D))
+       \<and> (mrun M a \<noteq> [] \<longrightarrow> snd (hd (mrun M a)) = maxr1 (mrun M a))
+       \<and> (mrun M b \<noteq> [] \<longrightarrow> snd (hd (mrun M b)) = maxr1 (mrun M b))))"
+
+lemma sibm_diagSeq: "sibm (diagSeq 0 v)"
+proof -
+  have len: "length (diagSeq 0 v) = Suc v" unfolding diagSeq_def by simp
+  have nth: "\<And>j. j < Suc v \<Longrightarrow> diagSeq 0 v ! j = (j, j)"
+    unfolding diagSeq_def by (simp del: upt_Suc)
+  show ?thesis
+    unfolding sibm_def
+  proof (intro allI impI)
+    fix a b assume al: "a < length (diagSeq 0 v)"
+      and bp: "b = Suc a + length (mrun (diagSeq 0 v) a)"
+      and bl: "b < length (diagSeq 0 v)"
+      and fb: "fst (diagSeq 0 v ! b) = fst (diagSeq 0 v ! a)"
+    have av: "a < Suc v" using al len by simp
+    have bv: "b < Suc v" using bl len by simp
+    have ab: "a < b" using bp by linarith
+    have e1: "diagSeq 0 v ! b = (b, b)" by (rule nth[OF bv])
+    have e2: "diagSeq 0 v ! a = (a, a)" by (rule nth[OF av])
+    have "b = a" using fb unfolding e1 e2 by simp
+    hence False using ab by simp
+    thus "(mrun (diagSeq 0 v) b = mrun (diagSeq 0 v) a \<or>
+           (\<exists>D. D \<noteq> [] \<and> mrun (diagSeq 0 v) a = mrun (diagSeq 0 v) b @ D))
+       \<and> (mrun (diagSeq 0 v) a \<noteq> [] \<longrightarrow>
+          snd (hd (mrun (diagSeq 0 v) a)) = maxr1 (mrun (diagSeq 0 v) a))
+       \<and> (mrun (diagSeq 0 v) b \<noteq> [] \<longrightarrow>
+          snd (hd (mrun (diagSeq 0 v) b)) = maxr1 (mrun (diagSeq 0 v) b))"
+      by blast
+  qed
+qed
+
+lemma sibm_oper:
+  assumes "sibm M" and "M \<in> ST_PS" and "1 \<le> n"
+  shows "sibm (oper M n)"
+  sorry
+
+theorem sibm_ST_PS: "M \<in> ST_PS \<Longrightarrow> sibm M"
+proof (induction M rule: ST_PS.induct)
+  case (diag v) show ?case by (rule sibm_diagSeq)
+next
+  case (oper M n)
+  show ?case by (rule sibm_oper[OF oper.IH oper.hyps(1) oper.hyps(2)])
+qed
+
 text \<open>(SIB) On subscript ties the successor's run is the same as, or a
   proper prefix of, the head's run, and in the proper-prefix case both runs
   are head-maximal (empirically 1418 equal + 650 prefix with both head-max,
