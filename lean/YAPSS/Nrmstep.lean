@@ -1109,4 +1109,120 @@ theorem r1ok_min_d0zero {G B : PairSeq} {lp : ℕ × ℕ} {n v0 w0 : ℕ} {R : P
     show w0 ≤ (G.getD p (0,0)).2 + 1
     exact hs'
 
+/-- The previous-copy witness case for `d0 ≥ 1`: the witness is the *last*
+block offset at level `v0 + d0 - 1` in the previous copy.  Exactness of the
+level and the no-dip property are forced by the `≤ +1` step discipline and
+maximality; only the row-1 bound (`hclimb`) is a class fact. -/
+theorem r1ok_min_d0pos {G B : PairSeq} {lp : ℕ × ℕ} {n v0 w0 d0 : ℕ} {R : PairSeq}
+    (hB : B = (v0, w0) :: R) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hd0 : 0 < d0) (hlp : lp.1 = v0 + d0)
+    (hstep : ∀ r, r + 1 < B.length →
+      (B.getD (r+1) (0,0)).1 ≤ (B.getD r (0,0)).1 + 1)
+    (hlpstep : lp.1 ≤ (B.getD (B.length - 1) (0,0)).1 + 1)
+    (hclimb : ∀ r', r' < B.length → (B.getD r' (0,0)).1 = v0 + d0 - 1 →
+      (∀ rr, r' < rr → rr < B.length → v0 + d0 ≤ (B.getD rr (0,0)).1) →
+      w0 ≤ (B.getD r' (0,0)).2 + 1)
+    {k q : ℕ} (hk1 : 0 < k) (hk : k < n) (hq : q < B.length)
+    (hPM : ∀ r, r < q → (B.getD q (0,0)).1 ≤ (B.getD r (0,0)).1)
+    (_hpos : 0 < (B.getD q (0,0)).1 + k * d0) :
+    ∃ p, p < G.length + (k * B.length + q) ∧
+      ((copyExp G B d0 n).getD p (0,0)).1 + 1 = (B.getD q (0,0)).1 + k * d0 ∧
+      (∀ l, p < l → l < G.length + (k * B.length + q) →
+        (B.getD q (0,0)).1 + k * d0 ≤ ((copyExp G B d0 n).getD l (0,0)).1) ∧
+      (B.getD q (0,0)).2 ≤ ((copyExp G B d0 n).getD p (0,0)).2 + 1 := by
+  have hq0 : q = 0 := by
+    subst hB
+    exact dominated_PM_zero hdom hq hPM
+  subst hq0
+  have hL : 0 < B.length := by
+    subst hB
+    simp
+  have hB0 : B.getD 0 (0,0) = (v0, w0) := by
+    subst hB
+    rfl
+  -- the candidate set and its greatest element
+  set P : ℕ → Prop := fun r => (B.getD r (0,0)).1 ≤ v0 + d0 - 1 with hP
+  have hP0 : P 0 := by
+    rw [hP]
+    simp only [hB0]
+    show v0 ≤ v0 + d0 - 1
+    omega
+  set r' := Nat.findGreatest P (B.length - 1) with hr'def
+  have hPr' : P r' := Nat.findGreatest_spec (Nat.zero_le _) hP0
+  have hr'L : r' ≤ B.length - 1 := Nat.findGreatest_le _
+  have hgreat : ∀ rr, r' < rr → rr ≤ B.length - 1 → ¬ P rr := by
+    intro rr h1 h2
+    exact Nat.findGreatest_is_greatest h1 h2
+  have hgreat' : ∀ rr, r' < rr → rr < B.length →
+      v0 + d0 ≤ (B.getD rr (0,0)).1 := by
+    intro rr h1 h2
+    have := hgreat rr h1 (by omega)
+    rw [hP] at this
+    simp only [not_le] at this
+    omega
+  -- level exactness at the witness
+  have rexact : (B.getD r' (0,0)).1 = v0 + d0 - 1 := by
+    have hub : (B.getD r' (0,0)).1 ≤ v0 + d0 - 1 := hPr'
+    rcases Nat.lt_or_ge r' (B.length - 1) with hlt | hge
+    · have hnP := hgreat (r' + 1) (Nat.lt_succ_self _) (by omega)
+      rw [hP] at hnP
+      simp only [not_le] at hnP
+      have := hstep r' (by omega)
+      omega
+    · have hr'eq : r' = B.length - 1 := by omega
+      rw [hlp] at hlpstep
+      rw [hr'eq]
+      rw [hr'eq] at hub
+      omega
+  -- multiplication bookkeeping
+  have hkL : k * B.length = (k - 1) * B.length + B.length := by
+    obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k - 1, by omega⟩
+    rw [Nat.succ_mul]
+    simp
+  have hkd : k * d0 = (k - 1) * d0 + d0 := by
+    obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k - 1, by omega⟩
+    rw [Nat.succ_mul]
+    simp
+  have hk1n : k - 1 < n := by omega
+  have hr'B : r' < B.length := by omega
+  refine ⟨G.length + ((k - 1) * B.length + r'), by omega, ?_, ?_, ?_⟩
+  · rw [copyExp_getD_copy hk1n hr'B]
+    show (B.getD r' (0,0)).1 + (k - 1) * d0 + 1 = (B.getD 0 (0,0)).1 + k * d0
+    rw [hB0, rexact]
+    show v0 + d0 - 1 + (k - 1) * d0 + 1 = v0 + k * d0
+    omega
+  · intro l hl1 hl2
+    have hmul : k * B.length ≤ n * B.length :=
+      Nat.mul_le_mul_right _ (le_of_lt hk)
+    have hlX : l - G.length < n * B.length := by omega
+    obtain ⟨k'', rr, hk'', hrrL, hldec⟩ := index_decomp hL hlX
+    -- the in-between positions live in copy `k - 1`, beyond `r'`
+    have hk''eq : k'' = k - 1 := by
+      rcases Nat.lt_trichotomy k'' (k - 1) with h | h | h
+      · exfalso
+        have : k'' + 1 ≤ k - 1 := by omega
+        have hmul2 : (k'' + 1) * B.length ≤ (k - 1) * B.length :=
+          Nat.mul_le_mul_right _ this
+        rw [Nat.succ_mul] at hmul2
+        omega
+      · exact h
+      · exfalso
+        have : k ≤ k'' := by omega
+        have hmul2 : k * B.length ≤ k'' * B.length :=
+          Nat.mul_le_mul_right _ this
+        omega
+    subst hk''eq
+    have hrr1 : r' < rr := by omega
+    obtain rfl : l = G.length + ((k - 1) * B.length + rr) := by omega
+    rw [copyExp_getD_copy hk1n hrrL]
+    show (B.getD 0 (0,0)).1 + k * d0 ≤ (B.getD rr (0,0)).1 + (k - 1) * d0
+    rw [hB0]
+    have := hgreat' rr hrr1 hrrL
+    show v0 + k * d0 ≤ (B.getD rr (0,0)).1 + (k - 1) * d0
+    omega
+  · rw [copyExp_getD_copy hk1n hr'B]
+    show (B.getD 0 (0,0)).2 ≤ (B.getD r' (0,0)).2 + 1
+    rw [hB0]
+    exact hclimb r' hr'B rexact hgreat'
+
 end YAPSS
