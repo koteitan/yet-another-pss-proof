@@ -1920,3 +1920,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   → snoc単調(nrm_snoc_int)+host cnf。STS_B hdarg 節と同核なので一方が閉じれば両方閉じる。
 - 現 sorry: nrmstep = NT_tie/E6_value/E6_qcut_last/E6_iii_singleton/E6_seam/STS_B (6)、
   nrm = nrm_order_pres (1)。ツール: tools/mine_ntdom.py。
+
+- (続24補) **E6_value dominance の純粋半分が完成（全て緑・クラス前提なし）**:
+  subs連鎖 Gterm_subs/proj_subs/ins_subs/nrm_subs/NT_subs + ins_neZ/ins_hdsub/NT_neZ/NT_hd_ge
+  ⟹ **NT_msfx_hdsub**: hdsub (NT (msfx S)) = maxr1 S（吸収があっても頭添字は上がるだけ、
+  subs で上から押さえる — fbseg 不要！）⟹ Gterm_NT_hdsub_le（臨界の頭添字 ≤ maxr1）
+  + olt_msfx_lowsub（頭添字 < maxr1 ⟹ 即 olt NT(msfx)）。
+  **DOM の残り = 頭添字 = maxr1 のタイのみ**（カタログ + 最初max優先の組合せ論）。
+  MEM（NT(msfx S) ∈ Gterm の可視鎖）が次の骨格。
