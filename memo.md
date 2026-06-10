@@ -2132,3 +2132,8 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   r1ok_oper と同じ簿記パターンで実装可能（diag: 兄弟ランなし）。
 - 実装順: SIBM def → SIBM_diag → SIBM_oper（コピー簿記・oper_bad_nth 流用）→
   SIBM_ST_PS → SIB_shape を SIBM+切詰めから導出 → NT_tie 完全閉鎖。
+
+- (続28補) sibm 骨格緑（def+diag+ST_PS帰納、残 sibm_oper のみ）。
+  デバッグ: diagSeq 記号下で simp の moreover/ultimately 連鎖がスタック溢れ
+  （Interrupt_Breakdown）→ e1/e2 を rule で取り unfolding で消してから simp。
+  次: sibm_oper（oper_bad_nth 流用のコピー簿記）→ SIB_shape を sibm+切詰めから導出。
