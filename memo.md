@@ -2244,3 +2244,13 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   は length 形で当ててから lenpre/lentj0 で書換 / nat引き算境界は
   less_diff_conv2＋明示前提（linarith は m*L 非線形で死ぬ→lenYS 展開を渡す）/
   takeWhile_append2 の前提はメタ含意（rule 後 use..blast）。
+
+- (続29補6) **seam_I_open 討伐（緑）**: 延長 E = takeWhile(>lev b) C は
+  block_head_min により **空 or コピー丸ごと** の2値（部分切断なし・純粋証明済）。
+  O1（C頭 ≤ lev b、E=[]・実証6642/6794）= IH sibm2 Y 直結で閉。
+  O2（C頭 > lev b、E=C・150件）= **seam_open_core** に分離（sorry）。
+  実証: E族はO2に到達しない(0/5652)・P族延長は P/F1/F2 に着地・hm保存 102/102。
+  sibm2_oper_bad 鎖の残核 = seam_open_core + CFGA_r1 の2点のみ。
+  seam_open_core の中身 = (i) E族O2の反駁（lev b ≥ C頭を示す） (ii) P族:
+  D=K[|K1|..] とコピー C の第一差分が降下（周期性整列） (iii) hm保存
+  （maxr1 blk ≤ snd hd K1）。次セッションで各個マイニング→証明。
