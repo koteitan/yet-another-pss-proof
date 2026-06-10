@@ -945,12 +945,118 @@ text \<open>The two remaining leaf obligations of the structural bundle against 
   at a new-summand position (sibling tops), and the no-absorb pair at tail
   positions (head preservation of \<open>nrm\<close> + sibling order).\<close>
 
+text \<open>With equal row-0 values, the appended column is the next summand after
+  \<open>p\<close>'s block at the same level of the host's translation; the \<open>cnf\<close> discipline
+  of standard forms (non-increasing summand heads) gives the row-1 comparison.\<close>
+
+lemma STS_A_aux:
+  "\<forall>r\<in>set rest. fst p < fst r \<Longrightarrow> fst q = fst p \<Longrightarrow>
+   cnf (translate (pre @ (p # rest) @ [q])) \<Longrightarrow> snd q \<le> snd p"
+proof (induct pre rule: length_induct)
+  case (1 pre)
+  note IH = 1(1) and dom = 1(2) and fq = 1(3) and CNF = 1(4)
+  show ?case
+  proof (cases pre)
+    case Nil
+    have Tc: "[q] = [] \<or> \<not> fst p < fst (hd [q])" using fq by simp
+    have e: "translate ((p # rest) @ [q])
+              = P (snd p) (translate rest) (translate [q])"
+      using translate_block_append[of rest "fst p" "[q]" "snd p"] dom Tc
+      by (simp add: append.assoc)
+    have e2: "translate [q] = P (snd q) Z Z"
+      by (simp only: translate.simps(2) takeWhile.simps(1) dropWhile.simps(1)
+                     translate.simps(1))
+    have c: "cnf (P (snd p) (translate rest) (P (snd q) Z Z))"
+      using CNF unfolding Nil append_Nil e e2 .
+    have nlt: "\<not> (P (snd p) (translate rest) Z <o P (snd q) Z Z)"
+      using c by simp
+    show ?thesis
+    proof (rule ccontr)
+      assume "\<not> snd q \<le> snd p"
+      hence "snd p < snd q" by simp
+      hence "P (snd p) (translate rest) Z <o P (snd q) Z Z" by simp
+      thus False using nlt by blast
+    qed
+  next
+    case (Cons e pre')
+    let ?Pe = "\<lambda>r. fst e < fst r"
+    let ?tail = "pre' @ (p # rest) @ [q]"
+    have et: "translate (pre @ (p # rest) @ [q])
+               = P (snd e) (translate (takeWhile ?Pe ?tail)) (translate (dropWhile ?Pe ?tail))"
+      unfolding Cons by (simp only: append_Cons translate.simps(2))
+    show ?thesis
+    proof (cases "(\<forall>x \<in> set pre'. ?Pe x) \<and> fst e < fst p")
+      case all: True
+      have segP: "\<forall>x \<in> set ((p # rest) @ [q]). ?Pe x"
+      proof
+        fix x assume "x \<in> set ((p # rest) @ [q])"
+        then consider "x = p" | "x \<in> set rest" | "x = q" by auto
+        thus "?Pe x"
+        proof cases
+          case 1 thus ?thesis using all by simp
+        next
+          case 2 thus ?thesis using all dom by fastforce
+        next
+          case 3 thus ?thesis using all fq by simp
+        qed
+      qed
+      have allT: "\<forall>x \<in> set ?tail. ?Pe x" using all segP by auto
+      have tw: "takeWhile ?Pe ?tail = ?tail"
+        using allT by (simp add: takeWhile_eq_all_conv)
+      have cnfK: "cnf (translate ?tail)"
+      proof -
+        have "cnf (P (snd e) (translate ?tail) (translate (dropWhile ?Pe ?tail)))"
+          using CNF unfolding et tw .
+        thus ?thesis by (cases "translate (dropWhile ?Pe ?tail)") auto
+      qed
+      have lp: "length pre' < length pre" by (simp add: Cons)
+      show ?thesis using IH[rule_format, OF lp] dom fq cnfK by blast
+    next
+      case ncut: False
+      have Dform: "\<exists>pre''. dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q]
+                            \<and> length pre'' < length pre"
+      proof (cases "\<forall>x \<in> set pre'. ?Pe x")
+        case True
+        hence "\<not> fst e < fst p" using ncut by blast
+        hence "dropWhile ?Pe ((p # rest) @ [q]) = (p # rest) @ [q]" by simp
+        hence "dropWhile ?Pe ?tail = (p # rest) @ [q]"
+          using True by (simp add: dropWhile_append2)
+        thus ?thesis unfolding Cons by (intro exI[of _ "[]"]) simp
+      next
+        case False
+        then obtain w where w: "w \<in> set pre'" "\<not> ?Pe w" by blast
+        have "dropWhile ?Pe ?tail = dropWhile ?Pe pre' @ (p # rest) @ [q]"
+          using w by (simp add: dropWhile_append1)
+        moreover have "length (dropWhile ?Pe pre') < length pre"
+          unfolding Cons using length_dropWhile_le[of ?Pe pre']
+          by (simp add: le_imp_less_Suc)
+        ultimately show ?thesis by blast
+      qed
+      obtain pre'' where D: "dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q]"
+        and lpre'': "length pre'' < length pre" using Dform by blast
+      have cnfD: "cnf (translate (dropWhile ?Pe ?tail))"
+      proof -
+        have c0: "cnf (P (snd e) (translate (takeWhile ?Pe ?tail)) (translate (dropWhile ?Pe ?tail)))"
+          using CNF unfolding et .
+        thus ?thesis by (cases "translate (dropWhile ?Pe ?tail)") auto
+      qed
+      show ?thesis using IH[rule_format, OF lpre''] dom fq cnfD[unfolded D] by blast
+    qed
+  qed
+qed
+
 lemma STS_A:
   assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
     and "dropWhile (\<lambda>r. fst p < fst r) rest = []"
     and "fst q = fst p"
   shows "snd q \<le> snd p"
-  sorry
+proof -
+  have dom: "\<forall>r\<in>set rest. fst p < fst r"
+    using assms(2) by (simp add: dropWhile_eq_Nil_conv)
+  have "cnf (translate (pre @ (p # rest) @ [q]))"
+    using cnf_ST_PS[OF assms(1)] .
+  thus ?thesis using STS_A_aux dom assms(3) by blast
+qed
 
 lemma STS_B:
   assumes "pre @ (p # rest) @ [q] \<in> ST_PS"

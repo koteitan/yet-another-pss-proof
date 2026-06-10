@@ -1806,3 +1806,10 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   (A)位置で fst q = fst p が**導出**され、STS_A は等式形（同 row0 の row1 比較）に確定。
   ST_snoc_C 側の起動は仮定 Q から自明。残4 sorry とも真な命題＋証明地図つき:
   STS_A（等式形・降順性級）/ STS_B / projE_iii（x葉）/ projE_ii（max対応再帰）。
+- (続20補6) **STS_A 完全証明（緑）**: 等式形なら q は p ブロック直後の同レベル隣接和分
+  ⟹ STS_A_aux（pre の長さ帰納、カット3分岐: 全通過/途中カット/段差カット）で
+  translate_block_append ＋ cnf 節（¬ 隣接頭 olt）から snd q ≤ snd p。
+  降順性の形式化は不要だった（INV 螺旋の等式化が効いた）。
+  デバッグ: CNF の書換えは unfolding ベース（default simp の translate 展開回避）、
+  length_induct の IH は rule_format+OF len then blast（Ball/meta 不一致回避）。
+  **残 sorry 3: STS_B / projE_iii / projE_ii**。
