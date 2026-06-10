@@ -2583,6 +2583,100 @@ qed
 lemma sibm2_butlast: "sibm2 M \<Longrightarrow> sibm2 (butlast M)"
   using sibm2_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
+text \<open>The pure clash algebra of \<open>sibrel\<close>: the relation never tolerates a
+  proper extension of the first run, nor a first-difference ascent.  These
+  two principles let facts \<open>sibrel K K2\<close> obtained from different hosts
+  (the base sequence and the copy stack) be played against each other.\<close>
+
+lemma sibrel_nopref:
+  assumes R: "sibrel K K2" and E: "K2 = K @ E" and ne: "E \<noteq> []"
+  shows False
+proof -
+  from R consider (eq) "K2 = K"
+    | (pre) D where "D \<noteq> []" "K = K2 @ D"
+    | (lx) p x x1 r r1 where "K = p @ x # r" "K2 = p @ x1 # r1"
+        "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
+    unfolding sibrel_def by blast
+  thus False
+  proof cases
+    case eq thus False using E ne by simp
+  next
+    case pre
+    have "length K = length K2 + length D" using pre(2) by simp
+    moreover have "length K2 = length K + length E" using E by simp
+    ultimately show False using ne by simp
+  next
+    case lx
+    have pK: "length p < length K" unfolding lx(1) by simp
+    have "K ! length p = x" unfolding lx(1) by simp
+    moreover have "K2 ! length p = x1" unfolding lx(2) by simp
+    moreover have "K2 ! length p = K ! length p"
+      unfolding E using pK by (simp add: nth_append)
+    ultimately have "x1 = x" by simp
+    thus False using lx(3) by auto
+  qed
+qed
+
+lemma sibrel_ascent:
+  assumes R: "sibrel K K2"
+    and dK: "K = p @ x # r" and dK2: "K2 = p @ x1 # r1"
+    and ne: "x1 \<noteq> x"
+    and asc: "\<not> ((fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x))"
+  shows False
+proof -
+  have nthK: "K ! length p = x" unfolding dK by simp
+  have nthK2: "K2 ! length p = x1" unfolding dK2 by simp
+  have pK: "length p < length K" unfolding dK by simp
+  have pK2: "length p < length K2" unfolding dK2 by simp
+  from R consider (eq) "K2 = K"
+    | (pre) D where "D \<noteq> []" "K = K2 @ D"
+    | (lx) p' x' x1' r' r1' where "K = p' @ x' # r'" "K2 = p' @ x1' # r1'"
+        "(fst x1' = fst x' \<and> snd x1' < snd x') \<or> (fst x1' < fst x' \<and> snd x1' = snd x')"
+    unfolding sibrel_def by blast
+  thus False
+  proof cases
+    case eq
+    thus False using nthK nthK2 ne by simp
+  next
+    case pre
+    have "K ! length p = K2 ! length p"
+      unfolding pre(2) using pK2 by (simp add: nth_append)
+    thus False using nthK nthK2 ne by simp
+  next
+    case lx
+    have nthK': "K ! length p' = x'" unfolding lx(1) by simp
+    have nthK2': "K2 ! length p' = x1'" unfolding lx(2) by simp
+    have pK': "length p' < length K" unfolding lx(1) by simp
+    have pK2': "length p' < length K2" unfolding lx(2) by simp
+    have x1x': "x1' \<noteq> x'" using lx(3) by auto
+    consider (less) "length p' < length p" | (same) "length p' = length p"
+      | (more) "length p < length p'" by linarith
+    thus False
+    proof cases
+      case same
+      have "x' = x" using nthK nthK' same by simp
+      moreover have "x1' = x1" using nthK2 nthK2' same by simp
+      ultimately show False using lx(3) asc by simp
+    next
+      case less
+      have "K ! length p' = p ! length p'"
+        unfolding dK using less by (simp add: nth_append)
+      moreover have "K2 ! length p' = p ! length p'"
+        unfolding dK2 using less by (simp add: nth_append)
+      ultimately have "x' = x1'" using nthK' nthK2' by simp
+      thus False using x1x' by simp
+    next
+      case more
+      have "K ! length p = p' ! length p"
+        unfolding lx(1) using more by (simp add: nth_append)
+      moreover have "K2 ! length p = p' ! length p"
+        unfolding lx(2) using more by (simp add: nth_append)
+      ultimately have "x = x1" using nthK nthK2 by simp
+      thus False using ne by simp
+    qed
+  qed
+qed
+
 text \<open>Pure seam ingredients: the block head is the strict row-0 minimum of
   the block (via the row-0 ancestor chain), and runs are unchanged by an
   append unless they were open.\<close>
