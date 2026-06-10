@@ -1830,3 +1830,9 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   残る真の核 = 兄弟引数の nrm∘proj 弱保存（hdarg 節と projE_ii の共通核）と
   nrm_hd（nrm が segment-translate の頭添字を保存、同帰納で同時に取れる見込み）。
   次セッション実装順: INV2 スレッディング → nrm_hd+hdsub 節 → 共通核 → projE_iii。
+- (続20補9) **INV2 スレッディング緑**: ST_snocokS_gen に「∀x∈set C. fst (hd C) ≤ fst x」
+  を追加、(B)位置で fst (hd T) = fst p を導出（hdTeq）し STS_B に等式仮定として渡した。
+  STS_B は「同レベル隣接」前提つきに鋭化（hdsub 節は STS_A_aux 型 cnf 隣接 +
+  nrm_hd（頭添字保存）で閉じる準備完了）。残 sorry 3: STS_B / projE_iii / projE_ii。
+  小教訓: set (p#rest) 由来の選言は auto（simp では分解されない）、
+  dropWhile の集合包含は set_dropWhileD。

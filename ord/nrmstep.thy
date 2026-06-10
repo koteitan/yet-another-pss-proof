@@ -1061,6 +1061,7 @@ qed
 lemma STS_B:
   assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
     and "dropWhile (\<lambda>r. fst p < fst r) rest \<noteq> []"
+    and "fst (hd (dropWhile (\<lambda>r. fst p < fst r) rest)) = fst p"
   shows "\<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
             \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
                \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
@@ -1072,10 +1073,11 @@ lemma STS_B:
   sorry
 
 lemma ST_snocokS_gen:
-  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> fst (hd C) \<le> fst q \<Longrightarrow> snocokS C q"
+  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> fst (hd C) \<le> fst q \<Longrightarrow>
+   \<forall>x \<in> set C. fst (hd C) \<le> fst x \<Longrightarrow> snocokS C q"
 proof (induct C arbitrary: pre rule: length_induct)
   case (1 C)
-  note IH = 1(1) and host = 1(2) and ne = 1(3) and INV = 1(4)
+  note IH = 1(1) and host = 1(2) and ne = 1(3) and INV = 1(4) and INV2 = 1(5)
   obtain p rest where C: "C = p # rest" using ne by (cases C) auto
   have stepsC: "stepsok (p # rest)"
   proof -
@@ -1111,8 +1113,18 @@ proof (induct C arbitrary: pre rule: length_induct)
             using stepsC unfolding stepsok_def by blast
           thus ?thesis using rne by (simp add: hd_conv_nth)
         qed
-        have INV2: "fst (hd rest) \<le> fst q" using hdr qd by simp
-        have sok2: "snocokS rest q" using IH len2 host2 rne INV2 by blast
+        have INVq2: "fst (hd rest) \<le> fst q" using hdr qd by simp
+        have allPr: "\<forall>r \<in> set rest. fst p < fst r"
+          using Tnil by (simp add: dropWhile_eq_Nil_conv)
+        have hdr2: "fst p < fst (hd rest)" using allPr rne by auto
+        have INV2r: "\<forall>x \<in> set rest. fst (hd rest) \<le> fst x"
+        proof
+          fix x assume "x \<in> set rest"
+          hence "fst p < fst x" using allPr by blast
+          moreover have "fst (hd rest) \<le> Suc (fst p)" using hdr .
+          ultimately show "fst (hd rest) \<le> fst x" by simp
+        qed
+        have sok2: "snocokS rest q" using IH len2 host2 rne INVq2 INV2r by blast
         have E2: "Einc (nrm (translate rest)) (nrm (translate (rest @ [q])))"
           by (rule nrm_snoc_str[OF sok2 rne])
         have allP: "\<forall>r \<in> set rest. fst p < fst r"
@@ -1144,8 +1156,23 @@ proof (induct C arbitrary: pre rule: length_induct)
       unfolding C using length_dropWhile_le[of "\<lambda>r. fst p < fst r" rest] by simp
     have hdT: "\<not> fst p < fst (hd ?T)"
       using hd_dropWhile[OF Tne] by blast
-    have INVT: "fst (hd ?T) \<le> fst q" using hdT INV unfolding C by simp
-    have sokT: "snocokS ?T q" using IH lenT host' Tne INVT by blast
+    have hdTin: "hd ?T \<in> set C"
+      using Tne unfolding C by (meson hd_in_set set_dropWhileD list.set_intros(2))
+    have hdTeq: "fst (hd ?T) = fst p"
+    proof -
+      have "fst p \<le> fst (hd ?T)" using INV2 hdTin unfolding C by auto
+      thus ?thesis using hdT by simp
+    qed
+    have INVT: "fst (hd ?T) \<le> fst q" using hdTeq INV unfolding C by simp
+    have INV2T: "\<forall>x \<in> set ?T. fst (hd ?T) \<le> fst x"
+    proof
+      fix x assume "x \<in> set ?T"
+      hence "x \<in> set C" unfolding C
+        by (meson set_dropWhileD list.set_intros(2))
+      hence "fst p \<le> fst x" using INV2 unfolding C by auto
+      thus "fst (hd ?T) \<le> fst x" using hdTeq by simp
+    qed
+    have sokT: "snocokS ?T q" using IH lenT host' Tne INVT INV2T by blast
     have nab: "\<not> (snd p < hdsub (nrm (translate ?T))
             \<or> (snd p = hdsub (nrm (translate ?T))
                \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
@@ -1154,7 +1181,7 @@ proof (induct C arbitrary: pre rule: length_induct)
             \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
                \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
                      (hdarg (nrm (translate (?T @ [q]))))))"
-      by (rule STS_B[OF host[unfolded C] Tne])
+      by (rule STS_B[OF host[unfolded C] Tne hdTeq])
     have unfB: "snocokS (p # rest) q \<longleftrightarrow>
            (snocokS ?T q \<and>
             \<not> (snd p < hdsub (nrm (translate ?T))
@@ -1178,8 +1205,12 @@ lemma ST_snoc_C:
              (proj (snd p) (nrm (translate (rest @ [q]))))"
 proof -
   have hd0: "fst (hd (p # rest)) \<le> fst q" using Q by simp
+  have allD: "\<forall>r \<in> set rest. fst p < fst r"
+    using T by (simp add: dropWhile_eq_Nil_conv)
+  have inv2: "\<forall>x \<in> set (p # rest). fst (hd (p # rest)) \<le> fst x"
+    using allD by auto
   have S: "snocokS (p # rest) q"
-    using ST_snocokS_gen[of pre "p # rest" q] H hd0 by simp
+    using ST_snocokS_gen[of pre "p # rest" q] H hd0 inv2 by simp
   have unfA: "snocokS (p # rest) q \<longleftrightarrow>
         Einc (proj (snd p) (nrm (translate rest)))
              (proj (snd p) (nrm (translate (rest @ [q]))))"
