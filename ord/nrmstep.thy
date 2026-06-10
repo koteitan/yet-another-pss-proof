@@ -1475,17 +1475,179 @@ proof -
   show ?thesis unfolding opeqX using c m lt by (simp add: nth_append)
 qed
 
+text \<open>The remaining copy-witness case: a level-minimal column of the block
+  prefix inside a later copy.  Its parent is the last block column at the
+  previous copy's matching level (or the original prefix parent for exact
+  copies); only the row-1 bound of that witness (\<open>r1ok_climb\<close>) is a class
+  fact.\<close>
+
+lemma r1ok_copy_witness:
+  assumes R: "r1ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"
+    and j1len: "j1 < length M" and j0j1: "j0 < j1"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and opeq: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    and k1: "1 \<le> k" and kn: "k < n" and qL: "q < j1 - j0"
+    and PM: "\<forall>r. r < q \<longrightarrow> entry M 0 (j0 + q) \<le> entry M 0 (j0 + r)"
+    and pos: "0 < entry M 0 (j0 + q) + k * d0"
+  shows "\<exists>w. w < j0 + (k * (j1 - j0) + q)
+       \<and> Suc (fst (X ! w)) = fst (X ! (j0 + (k * (j1 - j0) + q)))
+       \<and> (\<forall>l. w < l \<and> l < j0 + (k * (j1 - j0) + q) \<longrightarrow>
+            fst (X ! (j0 + (k * (j1 - j0) + q))) \<le> fst (X ! l))
+       \<and> snd (X ! (j0 + (k * (j1 - j0) + q))) \<le> Suc (snd (X ! w))"
+  sorry
+
 lemma r1ok_oper_bad:
-  assumes "r1ok M" and "blockok 0 M" and "1 \<le> n"
-    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
-    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
-    and "i1 = idx1 M j1" and "hasParent M i1 j1"
-    and "j0 = parent M i1 j1"
-    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
-    and "oper M n = take j0 M @ concat (map (\<lambda>k.
+  assumes R: "r1ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and opeq0: "oper M n = take j0 M @ concat (map (\<lambda>k.
            map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
   shows "r1ok (oper M n)"
-  sorry
+proof -
+  define X where "X = oper M n"
+  have opeq: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    unfolding X_def by (rule opeq0)
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have j1len: "j1 < length M" using j1d j1nz by (cases M) auto
+  define L where "L = j1 - j0"
+  have L0: "0 < L" unfolding L_def using j0j1 by simp
+  have lenX: "length X = j0 + n * L"
+    unfolding L_def by (rule oper_bad_len[OF opeq j0j1 j1len])
+  have pairM: "\<And>j. (entry M 0 j, entry M 1 j) = M ! j"
+    unfolding entry_def by simp
+  have np: "\<And>i. i < j0 \<Longrightarrow> X ! i = M ! i"
+    using oper_bad_nth_pre[OF opeq _ j1len j0j1] by blast
+  have nc: "\<And>k q. k < n \<Longrightarrow> q < L \<Longrightarrow>
+        X ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+    unfolding L_def using oper_bad_nth_copy[OF opeq j0j1 j1len] by blast
+  show ?thesis
+    unfolding X_def[symmetric] r1ok_def
+  proof (intro allI impI)
+    fix i assume il: "i < length X" and ip: "0 < fst (X ! i)"
+    show "\<exists>w. w < i \<and> Suc (fst (X ! w)) = fst (X ! i)
+        \<and> (\<forall>l. w < l \<and> l < i \<longrightarrow> fst (X ! i) \<le> fst (X ! l))
+        \<and> snd (X ! i) \<le> Suc (snd (X ! w))"
+    proof (cases "i < j0")
+      case True
+      have iM: "i < length M" using True j0j1 j1len by simp
+      have Xi: "X ! i = M ! i" by (rule np[OF True])
+      from R iM ip Xi obtain w where w: "w < i" "Suc (fst (M ! w)) = fst (M ! i)"
+        "\<forall>l. w < l \<and> l < i \<longrightarrow> fst (M ! i) \<le> fst (M ! l)"
+        "snd (M ! i) \<le> Suc (snd (M ! w))"
+        unfolding r1ok_def by metis
+      have eqs: "\<And>l. l \<le> i \<Longrightarrow> X ! l = M ! l" using True np by simp
+      show ?thesis
+        by (intro exI[of _ w]) (use w eqs Xi in auto)
+    next
+      case ige: False
+      define m where "m = i - j0"
+      define k where "k = m div L"
+      define q where "q = m mod L"
+      have mdec: "m = k * L + q" unfolding k_def q_def by simp
+      have idec: "i = j0 + (k * L + q)" unfolding mdec[symmetric] m_def using ige by simp
+      have qL: "q < L" unfolding q_def using L0 by simp
+      have mn: "m < n * L" using il lenX m_def ige by simp
+      have kn: "k < n" unfolding k_def using mn L0
+        by (metis less_mult_imp_div_less mult.commute)
+      have Xi: "X ! i = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+        unfolding idec by (rule nc[OF kn qL])
+      have jqlen: "j0 + q < length M" using qL j1len unfolding L_def by simp
+      show ?thesis
+      proof (cases "k = 0")
+        case k0: True
+        have iq: "i = j0 + q" unfolding idec k0 by simp
+        have XiM: "X ! i = M ! (j0 + q)"
+          unfolding Xi k0 using pairM by simp
+        have idl: "\<And>l. l \<le> i \<Longrightarrow> X ! l = M ! l"
+        proof -
+          fix l assume li: "l \<le> i"
+          show "X ! l = M ! l"
+          proof (cases "l < j0")
+            case True thus ?thesis by (rule np)
+          next
+            case False
+            have lq: "l - j0 \<le> q" using li iq by simp
+            have ldec: "l = j0 + (0 * L + (l - j0))" using False by simp
+            have "X ! l = (entry M 0 (j0 + (l - j0)) + 0 * d0, entry M 1 (j0 + (l - j0)))"
+              using nc[OF _ _] kn lq qL by (subst ldec) (intro nc, auto)
+            thus ?thesis using pairM False by simp
+          qed
+        qed
+        have ipM: "0 < fst (M ! (j0 + q))" using ip XiM by simp
+        from R jqlen ipM obtain w where w: "w < j0 + q" "Suc (fst (M ! w)) = fst (M ! (j0 + q))"
+          "\<forall>l. w < l \<and> l < j0 + q \<longrightarrow> fst (M ! (j0 + q)) \<le> fst (M ! l)"
+          "snd (M ! (j0 + q)) \<le> Suc (snd (M ! w))"
+          unfolding r1ok_def by metis
+        show ?thesis
+          by (intro exI[of _ w])
+             (use w idl XiM iq in \<open>auto simp: less_imp_le\<close>)
+      next
+        case kpos: False
+        have k1: "1 \<le> k" using kpos by simp
+        show ?thesis
+        proof (cases "\<forall>r. r < q \<longrightarrow> entry M 0 (j0 + q) \<le> entry M 0 (j0 + r)")
+          case PM: True
+          have pos: "0 < entry M 0 (j0 + q) + k * d0" using ip Xi by simp
+          from r1ok_copy_witness[OF R B ST j1len j0j1 i1d hp j0d d0d opeq k1 kn
+                 qL[unfolded L_def] PM pos]
+          show ?thesis unfolding idec L_def by blast
+        next
+          case nPM: False
+          then obtain r0 where r0: "r0 < q" "entry M 0 (j0 + r0) < entry M 0 (j0 + q)"
+            by auto
+          have e0pos: "0 < entry M 0 (j0 + q)" using r0(2) by simp
+          have ipM: "0 < fst (M ! (j0 + q))" using e0pos unfolding entry_def by simp
+          from R jqlen ipM obtain p where p: "p < j0 + q" "Suc (fst (M ! p)) = fst (M ! (j0 + q))"
+            "\<forall>l. p < l \<and> l < j0 + q \<longrightarrow> fst (M ! (j0 + q)) \<le> fst (M ! l)"
+            "snd (M ! (j0 + q)) \<le> Suc (snd (M ! p))"
+            unfolding r1ok_def by metis
+          have pj0: "j0 \<le> p"
+          proof (rule ccontr)
+            assume "\<not> j0 \<le> p"
+            hence "p < j0 + r0 \<and> j0 + r0 < j0 + q" using r0(1) by simp
+            hence "fst (M ! (j0 + q)) \<le> fst (M ! (j0 + r0))" using p(3) by blast
+            thus False using r0(2) unfolding entry_def by simp
+          qed
+          define rp where "rp = p - j0"
+          have prp: "p = j0 + rp" unfolding rp_def using pj0 by simp
+          have rpq: "rp < q" using p(1) prp by simp
+          define w where "w = j0 + (k * L + rp)"
+          have wi: "w < i" unfolding w_def idec using rpq by simp
+          have Xw: "X ! w = (entry M 0 (j0 + rp) + k * d0, entry M 1 (j0 + rp))"
+            unfolding w_def by (rule nc[OF kn]) (use rpq qL in simp)
+          have fstw: "Suc (fst (X ! w)) = fst (X ! i)"
+            unfolding Xw Xi using p(2) prp unfolding entry_def by simp
+          have ndip: "\<forall>l. w < l \<and> l < i \<longrightarrow> fst (X ! i) \<le> fst (X ! l)"
+          proof (intro allI impI)
+            fix l assume lw: "w < l \<and> l < i"
+            have lge: "j0 \<le> l" using lw unfolding w_def by simp
+            define rl where "rl = l - j0 - k * L"
+            have lrl: "l = j0 + (k * L + rl)"
+              unfolding rl_def using lw unfolding w_def idec by simp
+            have rlq: "rp < rl \<and> rl < q" using lw unfolding w_def idec lrl by simp
+            have Xl: "X ! l = (entry M 0 (j0 + rl) + k * d0, entry M 1 (j0 + rl))"
+              unfolding lrl by (rule nc[OF kn]) (use rlq qL in simp)
+            have "fst (M ! (j0 + q)) \<le> fst (M ! (j0 + rl))"
+              using p(3) rlq prp by simp
+            thus "fst (X ! i) \<le> fst (X ! l)"
+              unfolding Xi Xl entry_def by simp
+          qed
+          have sndw: "snd (X ! i) \<le> Suc (snd (X ! w))"
+            unfolding Xi Xw using p(4) prp unfolding entry_def by simp
+          show ?thesis using wi fstw ndip sndw by blast
+        qed
+      qed
+    qed
+  qed
+qed
 
 lemma r1ok_oper:
   assumes R: "r1ok M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
@@ -1537,7 +1699,7 @@ proof -
           thus ?thesis unfolding d1z by simp
         qed
         show ?thesis
-          by (rule r1ok_oper_bad[OF R b n1 j1_def False Fz i1_def hp j0_def d0_def opeq])
+          by (rule r1ok_oper_bad[OF R b ST n1 j1_def False Fz i1_def hp j0_def d0_def opeq])
       qed
     qed
   qed

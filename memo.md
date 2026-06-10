@@ -2040,3 +2040,8 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
       r'=q 1203 / r'>q 984）→ この row1 バウンドだけ新クラス事実 **r1ok_climb**。
   - 簿記部品: concat(map blk [0..<n]) の nth/length 補題（k*L+q アクセス）が必要。
   - i1=0 ⟹ d0=0（正確コピー）/ i1=1 ⟹ d0任意≥1, le0_interval_gt でブロック内 > e0 j0。
+
+- (続26補3) **r1ok_oper_bad 主証明緑（一発）**: i<j0 転送 / k=0 恒等領域 /
+  k≥1∧¬PM（同コピー平行移動、p≥j0 は no-dip と ¬PM の矛盾から）の3ケース純粋完了。
+  残 = r1ok_copy_witness（k≥1∧PM: max-cands 証人、行1バウンド=r1ok_climb 相当）1点。
+  div/mod 分解は less_mult_imp_div_less + mult.commute。k=0 の idl は ldec subst。
