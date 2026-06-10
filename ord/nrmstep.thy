@@ -2767,16 +2767,337 @@ text \<open>The seam step: appending one more shifted copy of the block preserve
   this by induction on the copy count; the base \<open>m = 0\<close> is \<open>sibm2_take\<close>.)\<close>
 
 lemma sibm2_snoc_copy:
-  assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
-    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
-    and "i1 = idx1 M j1" and "hasParent M i1 j1"
-    and "j0 = parent M i1 j1"
-    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
-    and "sibm2 (take j0 M @ concat (map (\<lambda>k.
+  assumes R: "sibm2 M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and Sm: "sibm2 (take j0 M @ concat (map (\<lambda>k.
            map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m]))"
   shows "sibm2 (take j0 M @ concat (map (\<lambda>k.
            map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<Suc m]))"
-  sorry
+proof -
+  define cp where "cp = (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1])"
+  define Y where "Y = take j0 M @ concat (map cp [0..<m])"
+  define C where "C = cp m"
+  have Yeq: "Y = take j0 M @ concat (map (\<lambda>k.
+        map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m])"
+    unfolding Y_def cp_def ..
+  have SY: "sibm2 Y" using Sm unfolding Yeq[symmetric] .
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have j1len: "j1 < length M" using j1d j1nz by (cases M) auto
+  define L where "L = j1 - j0"
+  have L0: "0 < L" unfolding L_def using j0j1 by simp
+  have lenY: "length Y = j0 + m * L"
+    unfolding L_def by (rule oper_bad_len[OF Yeq j0j1 j1len])
+  have lenC: "length C = L"
+    unfolding C_def cp_def L_def by simp
+  have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+    by (rule block_head_min[OF hp j0d])
+  have pairM: "\<And>j. (entry M 0 j, entry M 1 j) = M ! j"
+    unfolding entry_def by simp
+  define blk where "blk = drop j0 (take j1 M)"
+  have lenblk: "length blk = L"
+    unfolding blk_def L_def using j1len by simp
+  have blknth: "\<And>q. q < L \<Longrightarrow> blk ! q = M ! (j0 + q)"
+    unfolding blk_def L_def using j1len by simp
+  have cpnth: "\<And>k q. q < L \<Longrightarrow> cp k ! q = (entry M 0 (j0+q) + k * d0, entry M 1 (j0+q))"
+    unfolding cp_def L_def by simp
+  have Ceq: "C = shf (m * d0) blk"
+  proof (rule nth_equalityI)
+    show "length C = length (shf (m * d0) blk)" using lenC lenblk by simp
+  next
+    fix q assume "q < length C"
+    hence qL: "q < L" using lenC by simp
+    have "C ! q = (entry M 0 (j0+q) + m * d0, entry M 1 (j0+q))"
+      unfolding C_def by (rule cpnth[OF qL])
+    moreover have "shf (m * d0) blk ! q
+        = (fst (M ! (j0+q)) + m * d0, snd (M ! (j0+q)))"
+      using shf_nth[of q blk "m * d0"] blknth[OF qL] lenblk qL by simp
+    ultimately show "C ! q = shf (m * d0) blk ! q"
+      unfolding entry_def by simp
+  qed
+  have npre: "\<And>i. i < j0 \<Longrightarrow> Y ! i = M ! i"
+    using oper_bad_nth_pre[OF Yeq _ j1len j0j1] by blast
+  have ncopy: "\<And>k q. k < m \<Longrightarrow> q < L \<Longrightarrow>
+        Y ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+    unfolding L_def using oper_bad_nth_copy[OF Yeq j0j1 j1len] by blast
+  have main: "sibm2 (Y @ C)"
+    unfolding sibm2_def
+  proof (intro allI impI)
+    fix a b
+    assume aL: "a < length (Y @ C)" and pos: "0 < fst ((Y @ C) ! a)"
+      and bdef: "b = Suc a + length (mrun (Y @ C) a)" and bL: "b < length (Y @ C)"
+      and fb: "fst ((Y @ C) ! b) = fst ((Y @ C) ! a)"
+      and sb: "snd ((Y @ C) ! b) = snd ((Y @ C) ! a)"
+    have ab: "a < b" using bdef by linarith
+    have runelem: "\<And>p. a < p \<Longrightarrow> p < b \<Longrightarrow> fst ((Y @ C) ! a) < fst ((Y @ C) ! p)"
+    proof -
+      fix p assume ap: "a < p" and pb: "p < b"
+      have pi: "p - Suc a < length (mrun (Y @ C) a)" using ap pb bdef by linarith
+      have "mrun (Y @ C) a ! (p - Suc a) \<in> set (mrun (Y @ C) a)"
+        using pi by simp
+      hence P: "fst ((Y @ C) ! a) < fst (mrun (Y @ C) a ! (p - Suc a))"
+        unfolding mrun_def using set_takeWhileD by metis
+      have "mrun (Y @ C) a ! (p - Suc a) = drop (Suc a) (Y @ C) ! (p - Suc a)"
+        using pi unfolding mrun_def by (rule takeWhile_nth)
+      also have "\<dots> = (Y @ C) ! (Suc a + (p - Suc a))"
+        using aL by (intro nth_drop) simp
+      also have "\<dots> = (Y @ C) ! p" using ap by simp
+      finally show "fst ((Y @ C) ! a) < fst ((Y @ C) ! p)" using P by simp
+    qed
+    show "sibrel (mrun (Y @ C) a) (mrun (Y @ C) b)"
+    proof (cases "a < length Y")
+      case aY: True
+      have na: "(Y @ C) ! a = Y ! a" using aY by (simp add: nth_append)
+      show ?thesis
+      proof (cases "b < length Y")
+        case bY: True
+        have nb: "(Y @ C) ! b = Y ! b" using bY by (simp add: nth_append)
+        have mra: "mrun (Y @ C) a = mrun Y a"
+        proof (cases "\<forall>x \<in> set (drop (Suc a) Y). fst (Y ! a) < fst x")
+          case True
+          have "mrun (Y @ C) a = drop (Suc a) Y @ takeWhile (\<lambda>r. fst (Y ! a) < fst r) C"
+            unfolding mrun_append[OF aY] if_P[OF True] ..
+          hence "length Y - Suc a \<le> length (mrun (Y @ C) a)" by simp
+          hence "length Y \<le> b" using bdef aY by linarith
+          hence False using bY by simp
+          thus ?thesis ..
+        next
+          case False
+          show ?thesis unfolding mrun_append[OF aY] if_not_P[OF False] ..
+        qed
+        have bdefY: "b = Suc a + length (mrun Y a)" using bdef mra by simp
+        have posY: "0 < fst (Y ! a)" using pos na by simp
+        have fbY: "fst (Y ! b) = fst (Y ! a)" using fb na nb by simp
+        have sbY: "snd (Y ! b) = snd (Y ! a)" using sb na nb by simp
+        show ?thesis
+        proof (cases "\<forall>x \<in> set (drop (Suc b) Y). fst (Y ! b) < fst x")
+          case ob: False
+          have mrb: "mrun (Y @ C) b = mrun Y b"
+            unfolding mrun_append[OF bY] if_not_P[OF ob] ..
+          show ?thesis unfolding mra mrb
+            by (rule SY[unfolded sibm2_def, rule_format, OF aY posY bdefY bY fbY sbY])
+        next
+          case ob: True
+          have mrb: "mrun (Y @ C) b
+              = drop (Suc b) Y @ takeWhile (\<lambda>r. fst (Y ! b) < fst r) C"
+            unfolding mrun_append[OF bY] if_P[OF ob] ..
+          show ?thesis unfolding mra mrb unfolding C_def cp_def
+            by (rule seam_I_open[OF R B ST j1d j1nz i1d hp j0d d0d
+                  Yeq[unfolded cp_def] aY posY bdefY bY fbY sbY ob])
+        qed
+      next
+        case bC: False
+        hence bY2: "length Y \<le> b" by simp
+        have hC: "C ! 0 = (entry M 0 j0 + m * d0, entry M 1 j0)"
+          unfolding C_def using cpnth[OF L0] by simp
+        have ctail_gt: "\<And>q. 0 < q \<Longrightarrow> q < L \<Longrightarrow> fst (C ! 0) < fst (C ! q)"
+        proof -
+          fix q assume q0: "0 < (q::nat)" and qL: "q < L"
+          have "entry M 0 j0 < entry M 0 (j0 + q)"
+            using hm0 q0 qL unfolding L_def by simp
+          thus "fst (C ! 0) < fst (C ! q)"
+            unfolding C_def by (simp add: cpnth[OF qL] cpnth[OF L0])
+        qed
+        have beq: "b = length Y"
+        proof (rule ccontr)
+          assume "b \<noteq> length Y"
+          hence blt: "length Y < b" using bY2 by simp
+          define qb where "qb = b - length Y"
+          have qb0: "0 < qb" unfolding qb_def using blt by simp
+          have qbL: "qb < L"
+            unfolding qb_def using bL lenC bY2
+            by (simp add: less_diff_conv2 add.commute)
+          have nb: "(Y @ C) ! b = C ! qb"
+            unfolding qb_def using bY2 by (simp add: nth_append)
+          have hd_in_run: "fst ((Y @ C) ! a) < fst ((Y @ C) ! length Y)"
+            by (rule runelem[OF _ blt]) (use aY in simp)
+          have nY: "(Y @ C) ! length Y = C ! 0" by (simp add: nth_append)
+          have "fst (C ! 0) < fst (C ! qb)" by (rule ctail_gt[OF qb0 qbL])
+          moreover have "fst (C ! qb) = fst ((Y @ C) ! a)" using fb nb by simp
+          ultimately show False using hd_in_run nY by simp
+        qed
+        have nb: "(Y @ C) ! b = C ! 0" unfolding beq by (simp add: nth_append)
+        have leva: "fst (Y ! a) = entry M 0 j0 + m * d0"
+          using fb na nb hC by simp
+        have snda: "snd (Y ! a) = entry M 1 j0"
+          using sb na nb hC by simp
+        have openY: "\<forall>x \<in> set (drop (Suc a) Y). fst (Y ! a) < fst x"
+        proof
+          fix x assume "x \<in> set (drop (Suc a) Y)"
+          then obtain t where t: "t < length Y - Suc a" "x = drop (Suc a) Y ! t"
+            by (metis in_set_conv_nth length_drop)
+          have pY: "Suc a + t < length Y" using t(1) by simp
+          have "x = Y ! (Suc a + t)" using t aY by simp
+          hence xe: "x = (Y @ C) ! (Suc a + t)" using pY by (simp add: nth_append)
+          have "fst ((Y @ C) ! a) < fst ((Y @ C) ! (Suc a + t))"
+            by (rule runelem) (use pY beq in simp_all)
+          thus "fst (Y ! a) < fst x" using na xe by simp
+        qed
+        have mra: "mrun (Y @ C) a = drop (Suc a) Y"
+        proof -
+          have e: "mrun (Y @ C) a
+              = drop (Suc a) Y @ takeWhile (\<lambda>r. fst (Y ! a) < fst r) C"
+            unfolding mrun_append[OF aY] if_P[OF openY] ..
+          have "length (mrun (Y @ C) a) = length Y - Suc a"
+            using bdef beq aY by simp
+          hence "takeWhile (\<lambda>r. fst (Y ! a) < fst r) C = []"
+            using e by simp
+          thus ?thesis using e by simp
+        qed
+        have mrb: "mrun (Y @ C) b = drop 1 C"
+        proof -
+          have "mrun (Y @ C) b = mrun C 0"
+            using mrun_suffix[OF bY2 bL] beq by simp
+          moreover have "mrun C 0 = drop 1 C"
+          proof -
+            have "\<forall>x \<in> set (drop 1 C). fst (C ! 0) < fst x"
+            proof
+              fix x assume "x \<in> set (drop 1 C)"
+              then obtain t where t: "t < length C - 1" "x = drop 1 C ! t"
+                by (metis in_set_conv_nth length_drop)
+              have "x = C ! (1 + t)" using t lenC L0 by simp
+              thus "fst (C ! 0) < fst x"
+                using ctail_gt[of "1 + t"] t(1) lenC by simp
+            qed
+            thus ?thesis
+              unfolding mrun_def using lenC L0
+              by (metis One_nat_def drop0 drop_Suc_Cons hd_drop_conv_nth
+                    length_pos_if_in_set list.exhaust_sel list.size(3)
+                    not_gr_zero takeWhile_eq_all_conv zero_neq_one)
+          qed
+          ultimately show ?thesis by simp
+        qed
+        show ?thesis
+          sorry
+      qed
+    next
+      case aC: False
+      hence aY2: "length Y \<le> a" by simp
+      define qa where "qa = a - length Y"
+      define qb where "qb = b - length Y"
+      have bY2: "length Y \<le> b" using ab aY2 by simp
+      have qaC: "qa < length C"
+        unfolding qa_def using aL aY2
+        by (simp add: less_diff_conv2 add.commute)
+      have qbC: "qb < length C"
+        unfolding qb_def using bL bY2
+        by (simp add: less_diff_conv2 add.commute)
+      have qaL: "qa < L" using qaC lenC by simp
+      have qbL: "qb < L" using qbC lenC by simp
+      have mra: "mrun (Y @ C) a = mrun C qa"
+        unfolding qa_def by (rule mrun_suffix[OF aY2 aL])
+      have mrb: "mrun (Y @ C) b = mrun C qb"
+        unfolding qb_def by (rule mrun_suffix[OF bY2 bL])
+      have na: "(Y @ C) ! a = C ! qa"
+        unfolding qa_def using aY2 by (simp add: nth_append)
+      have nb: "(Y @ C) ! b = C ! qb"
+        unfolding qb_def using bY2 by (simp add: nth_append)
+      have bq: "qb = Suc qa + length (mrun C qa)"
+      proof -
+        have "b = Suc a + length (mrun C qa)" using bdef mra by simp
+        thus ?thesis unfolding qa_def qb_def using aY2 by linarith
+      qed
+      have qa0: "0 < qa"
+      proof (rule ccontr)
+        assume "\<not> 0 < qa"
+        hence qaz: "qa = 0" by simp
+        have "\<forall>x \<in> set (drop 1 C). fst (C ! 0) < fst x"
+        proof
+          fix x assume "x \<in> set (drop 1 C)"
+          then obtain t where t: "t < length C - 1" "x = drop 1 C ! t"
+            by (metis in_set_conv_nth length_drop)
+          have "x = C ! (1 + t)" using t lenC L0 by simp
+          moreover have "entry M 0 j0 < entry M 0 (j0 + (1 + t))"
+            using hm0 t(1) lenC unfolding L_def by simp
+          ultimately show "fst (C ! 0) < fst x"
+            using cpnth[of "1+t" m] cpnth[OF L0] t(1) lenC
+            unfolding C_def by simp
+        qed
+        hence "mrun C 0 = drop 1 C"
+          unfolding mrun_def using lenC L0
+          by (metis One_nat_def drop0 drop_Suc_Cons hd_drop_conv_nth
+                length_pos_if_in_set list.exhaust_sel list.size(3)
+                not_gr_zero takeWhile_eq_all_conv zero_neq_one)
+        hence "length (mrun C 0) = L - 1" using lenC by simp
+        hence "qb = L" using bq qaz L0 by simp
+        thus False using qbL by simp
+      qed
+      have posblk: "0 < fst (blk ! qa)"
+      proof -
+        have "entry M 0 j0 < entry M 0 (j0 + qa)"
+          using hm0 qa0 qaL unfolding L_def by simp
+        thus ?thesis using blknth[OF qaL] unfolding entry_def by simp
+      qed
+      have blksfx: "take j1 M = take j0 M @ blk"
+        unfolding blk_def
+        by (metis append_take_drop_id j0j1 min.absorb1 nat_less_le take_take)
+      have lentj0: "length (take j0 M) = j0" using j0j1 j1len by simp
+      have mrblk: "\<And>q. q < L \<Longrightarrow> mrun (take j1 M) (j0 + q) = mrun blk q"
+      proof -
+        fix q assume qL: "q < L"
+        have "length (take j0 M) \<le> j0 + q" using lentj0 by simp
+        moreover have "j0 + q < length (take j0 M @ blk)"
+          using lentj0 lenblk qL by simp
+        ultimately have "mrun (take j0 M @ blk) (j0 + q)
+            = mrun blk (j0 + q - length (take j0 M))"
+          by (rule mrun_suffix)
+        thus "mrun (take j1 M) (j0 + q) = mrun blk q"
+          unfolding blksfx[symmetric] using lentj0 by simp
+      qed
+      have tjnth: "\<And>q. q < L \<Longrightarrow> take j1 M ! (j0 + q) = M ! (j0 + q)"
+        unfolding L_def using j1len by simp
+      have fblk: "fst (blk ! qb) = fst (blk ! qa)"
+      proof -
+        have "fst (C ! qb) = fst (C ! qa)" using fb sb na nb by simp
+        thus ?thesis
+          using shf_nth[of qa blk "m*d0"] shf_nth[of qb blk "m*d0"]
+            qaL qbL lenblk unfolding Ceq by simp
+      qed
+      have sblk: "snd (blk ! qb) = snd (blk ! qa)"
+      proof -
+        have "snd (C ! qb) = snd (C ! qa)" using sb na nb by simp
+        thus ?thesis
+          using shf_nth[of qa blk "m*d0"] shf_nth[of qb blk "m*d0"]
+            qaL qbL lenblk unfolding Ceq by simp
+      qed
+      have core: "sibrel (mrun (take j1 M) (j0 + qa)) (mrun (take j1 M) (j0 + qb))"
+      proof -
+        have S1: "sibm2 (take j1 M)" by (rule sibm2_take[OF R])
+        have i1': "j0 + qa < length (take j1 M)"
+          using qaL j1len unfolding L_def by simp
+        have i2': "0 < fst (take j1 M ! (j0 + qa))"
+          using posblk blknth[OF qaL] tjnth[OF qaL] by simp
+        have i3': "j0 + qb = Suc (j0 + qa) + length (mrun (take j1 M) (j0 + qa))"
+        proof -
+          have "length (mrun C qa) = length (mrun blk qa)"
+            unfolding Ceq using shf_mrun[of qa blk "m*d0"] qaL lenblk by simp
+          thus ?thesis using bq mrblk[OF qaL] by simp
+        qed
+        have i4': "j0 + qb < length (take j1 M)"
+          using qbL j1len unfolding L_def by simp
+        have i5': "fst (take j1 M ! (j0 + qb)) = fst (take j1 M ! (j0 + qa))"
+          using fblk blknth[OF qaL] blknth[OF qbL] tjnth[OF qaL] tjnth[OF qbL] by simp
+        have i6': "snd (take j1 M ! (j0 + qb)) = snd (take j1 M ! (j0 + qa))"
+          using sblk blknth[OF qaL] blknth[OF qbL] tjnth[OF qaL] tjnth[OF qbL] by simp
+        from S1[unfolded sibm2_def, rule_format, OF i1' i2' i3' i4' i5' i6']
+        show ?thesis .
+      qed
+      have "sibrel (mrun blk qa) (mrun blk qb)"
+        using core mrblk[OF qaL] mrblk[OF qbL] by simp
+      hence "sibrel (shf (m*d0) (mrun blk qa)) (shf (m*d0) (mrun blk qb))"
+        by (rule shf_sibrel)
+      thus ?thesis
+        unfolding mra mrb unfolding Ceq
+        using shf_mrun[of qa blk "m*d0"] shf_mrun[of qb blk "m*d0"]
+          qaL qbL lenblk by simp
+    qed
+  qed
+  show ?thesis
+    using main unfolding Y_def C_def cp_def by simp
+qed
 
 lemma sibm2_oper_bad:
   assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
