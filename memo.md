@@ -1660,3 +1660,8 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   （例: D1(0) vs D1(D2 0)→fire→D2(0) = lflip）。fire 構成が常にクリーン tower 形に
   なることを inv2/spine 純性（nfinv）で示すのが class 事実の使い所。
   まず無条件補題: proj_inflate（ole b (proj u b)、totality+帰納）から着手。
+- (続16補2) nrmstep.thy 拡充緑: proj_inflate/proj_ole（膨張性）、Gterm_lext_sub/sup
+  （臨界集合対応）、ins_noabsorb/ins_Rinc（条件付き congruence）、proj_Rinc_snoc（核心 target, sorry）。
+  キャンペーン sorry 2個: nrm_snoc_Rinc（主帰納で proj_Rinc_snoc+ins_Rinc+新和分ケースに分解予定）
+  ＋ proj_Rinc_snoc（fire-flip 解析、クラス事実は blockok/cnf/nfinv から導入予定）。
+  live chain sorry は従来通り nrm_order_pres の1個のみ（nrmstep は攻略用で live 外）。

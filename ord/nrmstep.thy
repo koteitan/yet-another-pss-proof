@@ -182,6 +182,46 @@ text \<open>(T1) the snoc characterization: appending one column to a standard f
   \<open>Pred\<close> case of the step decrease.  The closure lemmas of \<open>Rinc\<close> under
   \<open>proj\<close>/\<open>ins\<close> along the \<open>translate\<close> recursion are the planned route to (T1).\<close>
 
+subsection \<open>\<open>ins\<close> congruence under \<open>Rinc\<close>\<close>
+
+text \<open>Head principal of a (nonzero) sum, for absorb-condition bookkeeping.\<close>
+
+fun hdsub :: "three \<Rightarrow> nat" where
+  "hdsub Z = 0" | "hdsub (P e f g) = e"
+fun hdarg :: "three \<Rightarrow> three" where
+  "hdarg Z = Z" | "hdarg (P e f g) = f"
+
+lemma ins_noabsorb:
+  assumes "t = Z \<or> \<not> (a < hdsub t \<or> (a = hdsub t \<and> olt b (hdarg t)))"
+  shows "ins a b t = P a b t"
+  using assms by (cases t) auto
+
+lemma ins_Rinc:
+  assumes R: "Rinc t t'"
+    and na:  "t = Z \<or> \<not> (a < hdsub t \<or> (a = hdsub t \<and> olt b (hdarg t)))"
+    and na': "t' = Z \<or> \<not> (a < hdsub t' \<or> (a = hdsub t' \<and> olt b (hdarg t')))"
+  shows "Rinc (ins a b t) (ins a b t')"
+proof -
+  have e:  "ins a b t = P a b t"  by (rule ins_noabsorb[OF na])
+  have e': "ins a b t' = P a b t'" by (rule ins_noabsorb[OF na'])
+  show ?thesis using R unfolding e e' Rinc_def
+    by (auto intro: lext.intros lflip.intros)
+qed
+
+subsection \<open>The core closure (campaign target): \<open>proj\<close> versus \<open>Rinc\<close>\<close>
+
+text \<open>At an argument extension the two sides are \<open>proj\<close>-images of \<open>Rinc\<close>-related
+  arguments.  Empirically (full \<open>A\<^sub>a\<close> sets, zero violations) the projections are
+  again \<open>Rinc\<close>-related \<dash> the fire-flip \<open>D\<^bsub>y'\<^esub>(0) \<rightarrow> D\<^bsub>y\<^esub>(0)\<close> arises exactly when
+  the inserted leaf creates a tower that out-scales the old argument.  The
+  hypotheses will be refined to the hereditary class facts (blockok/cnf/nfinv)
+  as the proof is developed.\<close>
+
+lemma proj_Rinc_snoc:
+  assumes "Rinc x x'"
+  shows "Rinc (proj a x) (proj a x')"
+  sorry
+
 lemma nrm_snoc_Rinc:
   assumes "C @ [p] \<in> ST_PS" and "C \<noteq> []"
   shows "Rinc (nrm (translate C)) (nrm (translate (C @ [p])))"
