@@ -1886,3 +1886,23 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   必要なら C3 兄弟弱保存を連言に）。cnf_ST_PS の頭支配を nrm レベルに移送する箇所が核。
 - ツール: tools/mine_pe2.py (パートナー対応), mine_fire{2,3,4,5}.py (判定式の探索),
   mine_master.py (最終検証スイート V1-V5)。
+
+### ★★(2026-06-10 続23) E6_value 帰納の設計確定 — base対のみで閉じる
+- **クラスの正解 = base 対のみ**: (u,S) = (snd pp, pp直後の隣接支配ラン＋右切詰任意)。
+  mine_master3: base 8351対で C1/C2/C5 全て 0 違反。降下T対の標準単独 E6 は不成立
+  （99/127 失敗）だが、それは閾値が NT T でなく NT S_full であるべき統計混入 —
+  帰納では T 部の臨界は「閾値 NT S_full 上の violator」としてのみ扱うので不要。
+  任意ピース（mid 森境界条件付き）は C1 のみ 0（吸収なしは広く成立）。
+- **境界横断なし定理（実証 930/930）**: fire 時、j0 の全先祖のランは S 末尾まで延びる
+  ⟹ NT(msfx S) = 最深先祖 c_d の arg = proj (snd c_d) (NT (run c_d)) =（IH・隣接base対）
+  NT(msfx(run c_d)) = NT(S[j0:])。msfx S は単木 921 / 複木 9（どちらも値は同じ機構）。
+- **G1 (membership)**: vis u S の先祖 row1 ≥ u 条件が Gterm の可視鎖にそのまま対応。
+- **G2 (dominance)**: violator g は全て「クラス部分セグメントの NT 像」(G-カタログ)。
+  hd 添字 < m なら即 olt。= m なら S[j0:] の右切詰 prefix との比較
+  ⟹ **内部位置版 snoc 単調性が必要 = ST_snocokS_gen / STS_A / nrm_snoc の post 一般化**
+  （現行は host 末尾 q 限定。premise を pre@C@[q]@post ∈ ST_PS に広げる外科手術）。
+- **G3 (completeness)**: fire ⟹ criterion。violator 存在 ⟹ その由来セグメントの
+  hd row1 ≥ ... ⟹ msfx ≠ S ∧ vis ∧ olt。G2 と同じカタログで。
+- **次の手順**: (1) snoc 機構の post 一般化（機械的見込み、STS_A の
+  translate_block_append 部のみ要注意）(2) G-カタログ補題 (3) E6_value 長さ帰納本体。
+- ツール: tools/mine_master2.py (ピース族), mine_master3.py (降下閉包), mine_nbc.py (境界横断なし)。
