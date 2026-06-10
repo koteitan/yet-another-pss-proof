@@ -1014,4 +1014,99 @@ theorem r1ok_copyExp {G B : PairSeq} {lp : ℕ × ℕ} {n d0 : ℕ}
         show (B.getD q (0,0)).2 ≤ (B.getD r' (0,0)).2 + 1
         exact hs
 
+
+/-! ## The previous-copy witness: `q = 0` degeneration and the `d0 = 0` case
+
+In `oper_bad_blocks` the block is *strictly* dominated (every later element
+exceeds the root level `v0`), so the only level-minimal offset is the block
+root itself (`dominated_PM_zero`).  For exact copies (`d0 = 0`) the host
+witness of the root serves every copy unchanged. -/
+
+theorem getD_mem {l : List (ℕ × ℕ)} {i : ℕ} (h : i < l.length) :
+    l.getD i (0,0) ∈ l := by
+  rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem h]
+  exact List.getElem_mem h
+
+/-- In the strictly dominated block of `oper_bad_blocks`, the only
+level-minimal offset is `q = 0`: any later offset has the dip `r = 0`. -/
+theorem dominated_PM_zero {v0 w0 : ℕ} {R : PairSeq} {q : ℕ}
+    (hdom : ∀ x ∈ R, v0 < x.1) (hq : q < ((v0,w0) :: R).length)
+    (hPM : ∀ r, r < q →
+      (((v0,w0) :: R).getD q (0,0)).1 ≤ (((v0,w0) :: R).getD r (0,0)).1) :
+    q = 0 := by
+  by_contra hq0
+  obtain ⟨q', rfl⟩ : ∃ q', q = q' + 1 := ⟨q - 1, by omega⟩
+  have hq' : q' < R.length := by simpa using hq
+  have hmem : R.getD q' (0,0) ∈ R := getD_mem hq'
+  have hv : v0 < (R.getD q' (0,0)).1 := hdom _ hmem
+  have h0 := hPM 0 (by omega)
+  rw [List.getD_cons_zero, List.getD_cons_succ] at h0
+  have h0' : (R.getD q' (0,0)).1 ≤ v0 := h0
+  omega
+
+/-- The previous-copy witness case for `d0 = 0`: the host witness of the
+block root lies in the prefix and serves every copy (all copy levels stay
+at or above `v0`). -/
+theorem r1ok_min_d0zero {G B : PairSeq} {lp : ℕ × ℕ} {n v0 w0 : ℕ} {R : PairSeq}
+    (hB : B = (v0, w0) :: R) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hr : r1ok (G ++ B ++ [lp]))
+    {k q : ℕ} (_hk1 : 0 < k) (hk : k < n) (hq : q < B.length)
+    (hPM : ∀ r, r < q → (B.getD q (0,0)).1 ≤ (B.getD r (0,0)).1)
+    (hpos : 0 < (B.getD q (0,0)).1 + k * 0) :
+    ∃ p, p < G.length + (k * B.length + q) ∧
+      ((copyExp G B 0 n).getD p (0,0)).1 + 1 = (B.getD q (0,0)).1 + k * 0 ∧
+      (∀ l, p < l → l < G.length + (k * B.length + q) →
+        (B.getD q (0,0)).1 + k * 0 ≤ ((copyExp G B 0 n).getD l (0,0)).1) ∧
+      (B.getD q (0,0)).2 ≤ ((copyExp G B 0 n).getD p (0,0)).2 + 1 := by
+  subst hB
+  have hq0 : q = 0 := dominated_PM_zero hdom hq hPM
+  subst hq0
+  have hposv : 0 < v0 := by simpa using hpos
+  have hMg : (G ++ ((v0,w0) :: R) ++ [lp]).getD G.length (0,0) = (v0, w0) := by
+    have h := hostM_getD_blk (G := G) (lp := lp)
+      (show 0 < ((v0,w0) :: R).length by simp)
+    rw [Nat.add_zero] at h
+    rw [h, List.getD_cons_zero]
+  have hjM : G.length < (G ++ ((v0,w0) :: R) ++ [lp]).length := by
+    rw [hostM_length]
+    omega
+  have hposM : 0 < ((G ++ ((v0,w0) :: R) ++ [lp]).getD G.length (0,0)).1 := by
+    rw [hMg]
+    exact hposv
+  obtain ⟨p, hp, he, hnd, hs⟩ := hr G.length hjM hposM
+  rw [hostM_getD_pre hp, hMg] at he hs
+  have he' : (G.getD p (0,0)).1 + 1 = v0 := he
+  have hs' : w0 ≤ (G.getD p (0,0)).2 + 1 := hs
+  refine ⟨p, by omega, ?_, ?_, ?_⟩
+  · rw [copyExp_getD_pre hp]
+    show (G.getD p (0,0)).1 + 1 = v0 + k * 0
+    omega
+  · intro l hl1 hl2
+    show v0 + k * 0 ≤ ((copyExp G ((v0,w0) :: R) 0 n).getD l (0,0)).1
+    by_cases hlg : l < G.length
+    · rw [copyExp_getD_pre hlg]
+      have hh := hnd l hl1 hlg
+      rw [hostM_getD_pre hlg, hMg] at hh
+      have hh' : v0 ≤ (G.getD l (0,0)).1 := hh
+      omega
+    · push Not at hlg
+      have hmul : k * ((v0,w0) :: R).length ≤ n * ((v0,w0) :: R).length :=
+        Nat.mul_le_mul_right _ (le_of_lt hk)
+      have hlX : l - G.length < n * ((v0,w0) :: R).length := by omega
+      obtain ⟨k', r, hk', hrL, hldec⟩ :=
+        index_decomp (show 0 < ((v0,w0) :: R).length by simp) hlX
+      obtain rfl : l = G.length + (k' * ((v0,w0) :: R).length + r) := by omega
+      rw [copyExp_getD_copy hk' hrL]
+      show v0 + k * 0 ≤ (((v0,w0) :: R).getD r (0,0)).1 + k' * 0
+      have hbase : v0 ≤ (((v0,w0) :: R).getD r (0,0)).1 := by
+        cases r with
+        | zero => simp
+        | succ r' =>
+          rw [List.getD_cons_succ]
+          exact le_of_lt (hdom _ (getD_mem (by simpa using hrL)))
+      omega
+  · rw [copyExp_getD_pre hp]
+    show w0 ≤ (G.getD p (0,0)).2 + 1
+    exact hs'
+
 end YAPSS
