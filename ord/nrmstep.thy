@@ -1481,6 +1481,19 @@ text \<open>The remaining copy-witness case: a level-minimal column of the block
   copies); only the row-1 bound of that witness (\<open>r1ok_climb\<close>) is a class
   fact.\<close>
 
+lemma r1ok_climb:
+  assumes "M \<in> ST_PS"
+    and "j1 < length M" and "j0 < j1"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1" and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "q < j1 - j0"
+    and "\<forall>r. r < q \<longrightarrow> entry M 0 (j0 + q) \<le> entry M 0 (j0 + r)"
+    and "r' < j1 - j0" and "q \<le> r'"
+    and "entry M 0 (j0 + r') = entry M 0 (j0 + q) + d0 - 1"
+    and "\<forall>r. r' < r \<and> r < j1 - j0 \<longrightarrow> entry M 0 (j0 + q) + d0 - 1 < entry M 0 (j0 + r)"
+  shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + r'))"
+  sorry
+
 lemma r1ok_copy_witness:
   assumes R: "r1ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"
     and j1len: "j1 < length M" and j0j1: "j0 < j1"
@@ -1497,7 +1510,278 @@ lemma r1ok_copy_witness:
        \<and> (\<forall>l. w < l \<and> l < j0 + (k * (j1 - j0) + q) \<longrightarrow>
             fst (X ! (j0 + (k * (j1 - j0) + q))) \<le> fst (X ! l))
        \<and> snd (X ! (j0 + (k * (j1 - j0) + q))) \<le> Suc (snd (X ! w))"
-  sorry
+proof -
+  define L where "L = j1 - j0"
+  have L0: "0 < L" unfolding L_def using j0j1 by simp
+  have qL': "q < L" unfolding L_def by (rule qL)
+  define i where "i = j0 + (k * L + q)"
+  have nc: "\<And>k' q'. k' < n \<Longrightarrow> q' < L \<Longrightarrow>
+        X ! (j0 + (k' * L + q')) = (entry M 0 (j0 + q') + k' * d0, entry M 1 (j0 + q'))"
+    unfolding L_def using oper_bad_nth_copy[OF opeq j0j1 j1len] by blast
+  have np: "\<And>l. l < j0 \<Longrightarrow> X ! l = M ! l"
+    using oper_bad_nth_pre[OF opeq _ j1len j0j1] by blast
+  have Xi: "X ! i = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+    unfolding i_def by (rule nc[OF kn qL'])
+  have e0step: "\<And>j. Suc j < length M \<Longrightarrow> entry M 0 (Suc j) \<le> Suc (entry M 0 j)"
+  proof -
+    fix j assume sj: "Suc j < length M"
+    have "fst (M ! Suc j) \<le> Suc (fst (M ! j))" using B sj unfolding blockok_def by simp
+    thus "entry M 0 (Suc j) \<le> Suc (entry M 0 j)" unfolding entry_def by simp
+  qed
+  define tgt where "tgt = entry M 0 (j0 + q) + d0 - 1"
+  define cands where "cands = {r. r < L \<and> entry M 0 (j0 + r) \<le> tgt}"
+  have fin: "finite cands" unfolding cands_def by simp
+  show ?thesis
+  proof (cases "cands = {}")
+    case empty: True
+    have d00: "d0 = 0"
+    proof (rule ccontr)
+      assume "d0 \<noteq> 0"
+      hence "entry M 0 (j0 + q) \<le> tgt" unfolding tgt_def by simp
+      hence "q \<in> cands" unfolding cands_def using qL' by simp
+      thus False using empty by simp
+    qed
+    have e0pos: "0 < entry M 0 (j0 + q)" using pos d00 by simp
+    have jqlen: "j0 + q < length M" using qL' j1len unfolding L_def by simp
+    have ipM: "0 < fst (M ! (j0 + q))" using e0pos unfolding entry_def by simp
+    from R jqlen ipM obtain p where p: "p < j0 + q" "Suc (fst (M ! p)) = fst (M ! (j0 + q))"
+      "\<forall>l. p < l \<and> l < j0 + q \<longrightarrow> fst (M ! (j0 + q)) \<le> fst (M ! l)"
+      "snd (M ! (j0 + q)) \<le> Suc (snd (M ! p))"
+      unfolding r1ok_def by metis
+    have pj0: "p < j0"
+    proof (rule ccontr)
+      assume "\<not> p < j0"
+      hence pin: "p - j0 < q" and pdec: "p = j0 + (p - j0)" using p(1) by auto
+      have "entry M 0 (j0 + (p - j0)) < entry M 0 (j0 + q)"
+        using p(2) pdec unfolding entry_def by simp
+      moreover have "entry M 0 (j0 + q) \<le> entry M 0 (j0 + (p - j0))" using PM pin by blast
+      ultimately show False by simp
+    qed
+    have wi: "p < i" unfolding i_def using pj0 by simp
+    have Xw: "X ! p = M ! p" by (rule np[OF pj0])
+    have f1: "Suc (fst (X ! p)) = fst (X ! i)"
+      unfolding Xi Xw using p(2) d00 unfolding entry_def by simp
+    have nd: "\<forall>l. p < l \<and> l < i \<longrightarrow> fst (X ! i) \<le> fst (X ! l)"
+    proof (intro allI impI)
+      fix l assume lw: "p < l \<and> l < i"
+      show "fst (X ! i) \<le> fst (X ! l)"
+      proof (cases "l < j0")
+        case True
+        have "l < j0 + q" using True by simp
+        hence "fst (M ! (j0 + q)) \<le> fst (M ! l)" using p(3) lw by blast
+        thus ?thesis unfolding Xi np[OF True] entry_def using d00 by simp
+      next
+        case False
+        define kl where "kl = (l - j0) div L"
+        define rl where "rl = (l - j0) mod L"
+        have ldec: "l = j0 + (kl * L + rl)"
+          unfolding kl_def rl_def using False by simp
+        have rlL: "rl < L" unfolding rl_def using L0 by simp
+        have kln: "kl < n"
+        proof -
+          have "l < j0 + (k * L + q)" using lw unfolding i_def by simp
+          hence "l - j0 < k * L + L" using qL' by simp
+          hence "l - j0 < Suc k * L" by simp
+          hence "kl < Suc k" unfolding kl_def
+            by (metis less_mult_imp_div_less mult.commute)
+          thus ?thesis using kn by simp
+        qed
+        have Xl: "X ! l = (entry M 0 (j0 + rl) + kl * d0, entry M 1 (j0 + rl))"
+          unfolding ldec by (rule nc[OF kln rlL])
+        have "rl \<notin> cands" using empty by simp
+        hence "tgt < entry M 0 (j0 + rl)" unfolding cands_def using rlL by simp
+        hence "entry M 0 (j0 + q) \<le> entry M 0 (j0 + rl)"
+          unfolding tgt_def using d00 by simp
+        thus ?thesis unfolding Xi Xl using d00 by simp
+      qed
+    qed
+    have s1: "snd (X ! i) \<le> Suc (snd (X ! p))"
+      unfolding Xi Xw using p(4) unfolding entry_def by simp
+    show ?thesis
+      using wi f1 nd s1 unfolding i_def L_def by blast
+  next
+    case ne: False
+    define r' where "r' = Max cands"
+    have rin: "r' \<in> cands" unfolding r'_def using fin ne by simp
+    have rL: "r' < L" and rtgt: "entry M 0 (j0 + r') \<le> tgt"
+      using rin unfolding cands_def by auto
+    have rmax: "\<And>r. r \<in> cands \<Longrightarrow> r \<le> r'" unfolding r'_def using fin by simp
+    have above: "\<forall>r. r' < r \<and> r < L \<longrightarrow> tgt < entry M 0 (j0 + r)"
+    proof (intro allI impI)
+      fix r assume rr: "r' < r \<and> r < L"
+      have "r \<notin> cands" using rmax rr by fastforce
+      thus "tgt < entry M 0 (j0 + r)" unfolding cands_def using rr by simp
+    qed
+    have qr: "q \<le> r'"
+    proof (cases "d0 = 0")
+      case True
+      show ?thesis
+      proof (rule ccontr)
+        assume "\<not> q \<le> r'"
+        hence "r' < q" by simp
+        hence le1: "entry M 0 (j0 + q) \<le> entry M 0 (j0 + r')" using PM by blast
+        have le2: "entry M 0 (j0 + r') \<le> entry M 0 (j0 + q) - 1"
+          using rtgt unfolding tgt_def True by simp
+        have "0 < entry M 0 (j0 + q)" using pos True by simp
+        thus False using le1 le2 by simp
+      qed
+    next
+      case False
+      hence "entry M 0 (j0 + q) \<le> tgt" unfolding tgt_def by simp
+      hence "q \<in> cands" unfolding cands_def using qL' by simp
+      thus ?thesis by (rule rmax)
+    qed
+    have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+    have rexact: "entry M 0 (j0 + r') = tgt"
+    proof (cases "Suc r' < L")
+      case True
+      have "tgt < entry M 0 (j0 + Suc r')" using above True by blast
+      moreover have "Suc (j0 + r') < length M"
+        using True j1len unfolding L_def by simp
+      ultimately have "tgt < Suc (entry M 0 (j0 + r'))"
+        using e0step[of "j0 + r'"] by simp
+      thus ?thesis using rtgt by simp
+    next
+      case False
+      hence rlast: "r' = L - 1" using rL by simp
+      have jr: "j0 + r' = j1 - 1" unfolding rlast L_def using j0j1 by simp
+      have "Suc (j1 - 1) < length M" using j0j1 j1len by simp
+      hence "entry M 0 j1 \<le> Suc (entry M 0 (j1 - 1))"
+        using e0step[of "j1 - 1"] j0j1 by simp
+      hence stepj1: "entry M 0 j1 - 1 \<le> entry M 0 (j0 + r')" using jr by simp
+      have e0q0: "entry M 0 (j0 + q) \<le> entry M 0 j0"
+      proof (cases "q = 0")
+        case True thus ?thesis by simp
+      next
+        case False
+        thus ?thesis using PM by auto
+      qed
+      have tgt_le: "tgt \<le> entry M 0 j1 - 1"
+      proof (cases "0 < i1")
+        case True
+        have "nextrel1 M j0 j1" using nR True unfolding nextR_def by simp
+        hence "le0 M j0 j1" unfolding nextrel1_def by blast
+        hence le01: "entry M 0 j0 \<le> entry M 0 j1" by (rule le0_entry0_mono)
+        have d0v: "d0 = entry M 0 j1 - entry M 0 j0" using True d0d by simp
+        have "tgt = entry M 0 (j0 + q) + (entry M 0 j1 - entry M 0 j0) - 1"
+          unfolding tgt_def d0v by simp
+        also have "\<dots> \<le> entry M 0 j0 + (entry M 0 j1 - entry M 0 j0) - 1"
+          using e0q0 by simp
+        also have "\<dots> = entry M 0 j1 - 1" using le01 by simp
+        finally show ?thesis .
+      next
+        case False
+        have "nextrel0 M j0 j1" using nR False unfolding nextR_def i1d by (simp add: idx1_def)
+        hence lt01: "entry M 0 j0 < entry M 0 j1" by (rule nextrel0_entry0_less)
+        have d0v: "d0 = 0" using False d0d by simp
+        have "tgt = entry M 0 (j0 + q) - 1" unfolding tgt_def d0v by simp
+        also have "\<dots> \<le> entry M 0 j0 - 1" using e0q0 by simp
+        also have "\<dots> \<le> entry M 0 j1 - 1" using lt01 by simp
+        finally show ?thesis .
+      qed
+      show ?thesis using rtgt stepj1 tgt_le by simp
+    qed
+    define w where "w = j0 + ((k - 1) * L + r')"
+    have wi: "w < i"
+    proof -
+      have "(k - 1) * L + r' < k * L + q \<longleftrightarrow> (k - 1) * L + r' < k * L + q" by simp
+      have "(k - 1) * L + r' < (k - 1) * L + L" using rL by simp
+      also have "\<dots> = k * L" using k1 by (simp add: mult_eq_if)
+      also have "\<dots> \<le> k * L + q" by simp
+      finally show ?thesis unfolding w_def i_def by simp
+    qed
+    have k1n: "k - 1 < n" using k1 kn by simp
+    have Xw: "X ! w = (entry M 0 (j0 + r') + (k - 1) * d0, entry M 1 (j0 + r'))"
+      unfolding w_def by (rule nc[OF k1n rL])
+    have tgtpos: "Suc tgt = entry M 0 (j0 + q) + d0"
+    proof (cases "d0 = 0")
+      case True
+      have "0 < entry M 0 (j0 + q)" using pos True by simp
+      thus ?thesis unfolding tgt_def True by simp
+    next
+      case False thus ?thesis unfolding tgt_def by simp
+    qed
+    have f1: "Suc (fst (X ! w)) = fst (X ! i)"
+    proof -
+      have "Suc (fst (X ! w)) = Suc tgt + (k - 1) * d0"
+        unfolding Xw rexact by simp
+      also have "\<dots> = entry M 0 (j0 + q) + d0 + (k - 1) * d0" using tgtpos by simp
+      also have "\<dots> = entry M 0 (j0 + q) + k * d0"
+        using k1 by (simp add: mult_eq_if)
+      finally show ?thesis unfolding Xi by simp
+    qed
+    have nd: "\<forall>l. w < l \<and> l < i \<longrightarrow> fst (X ! i) \<le> fst (X ! l)"
+    proof (intro allI impI)
+      fix l assume lw: "w < l \<and> l < i"
+      have lge: "j0 \<le> l" using lw unfolding w_def by simp
+      define kl where "kl = (l - j0) div L"
+      define rl where "rl = (l - j0) mod L"
+      have ldec: "l = j0 + (kl * L + rl)"
+        unfolding kl_def rl_def using lge by simp
+      have rlL: "rl < L" unfolding rl_def using L0 by simp
+      have bnds: "(k - 1) * L + r' < kl * L + rl \<and> kl * L + rl < k * L + q"
+        using lw unfolding w_def i_def ldec by simp
+      have klr: "kl = k - 1 \<and> r' < rl \<or> kl = k \<and> rl < q"
+      proof -
+        have klk: "kl < Suc k"
+        proof (rule ccontr)
+          assume "\<not> kl < Suc k"
+          hence "Suc k * L \<le> kl * L" by (intro mult_le_mono1) simp
+          moreover have "kl * L + rl < Suc k * L" using bnds qL' by simp
+          ultimately show False by simp
+        qed
+        have klk1: "k - 1 \<le> kl"
+        proof (rule ccontr)
+          assume "\<not> k - 1 \<le> kl"
+          hence "Suc kl \<le> k - 1" by simp
+          hence "Suc kl * L \<le> (k - 1) * L" by (intro mult_le_mono1)
+          hence "kl * L + rl < (k - 1) * L" using rlL by simp
+          thus False using bnds by simp
+        qed
+        consider "kl = k - 1" | "kl = k" using klk klk1 k1 by linarith
+        thus ?thesis
+        proof cases
+          case 1
+          have "r' < rl" using bnds unfolding 1 by simp
+          thus ?thesis using 1 by simp
+        next
+          case 2
+          have "rl < q" using bnds unfolding 2 by simp
+          thus ?thesis using 2 by simp
+        qed
+      qed
+      have Xl: "X ! l = (entry M 0 (j0 + rl) + kl * d0, entry M 1 (j0 + rl))"
+        unfolding ldec by (rule nc[OF _ rlL]) (use klr kn k1n in auto)
+      from klr show "fst (X ! i) \<le> fst (X ! l)"
+      proof
+        assume A: "kl = k - 1 \<and> r' < rl"
+        have "tgt < entry M 0 (j0 + rl)" using above A rlL by blast
+        hence "Suc tgt \<le> entry M 0 (j0 + rl)" by simp
+        hence "entry M 0 (j0 + q) + d0 + (k - 1) * d0 \<le> entry M 0 (j0 + rl) + (k - 1) * d0"
+          using tgtpos by simp
+        hence "entry M 0 (j0 + q) + k * d0 \<le> entry M 0 (j0 + rl) + (k - 1) * d0"
+          using k1 by (simp add: mult_eq_if)
+        thus ?thesis unfolding Xi Xl using A by simp
+      next
+        assume A: "kl = k \<and> rl < q"
+        have "entry M 0 (j0 + q) \<le> entry M 0 (j0 + rl)" using PM A by blast
+        thus ?thesis unfolding Xi Xl using A by simp
+      qed
+    qed
+    have s1: "snd (X ! i) \<le> Suc (snd (X ! w))"
+    proof -
+      have ab': "\<forall>r. r' < r \<and> r < j1 - j0 \<longrightarrow>
+                  entry M 0 (j0 + q) + d0 - 1 < entry M 0 (j0 + r)"
+        using above unfolding L_def tgt_def by blast
+      have "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + r'))"
+        by (rule r1ok_climb[OF ST j1len j0j1 i1d hp j0d d0d qL PM rL[unfolded L_def] qr
+              rexact[unfolded tgt_def] ab'])
+      thus ?thesis unfolding Xi Xw by simp
+    qed
+    show ?thesis
+      using wi f1 nd s1 unfolding i_def L_def by blast
+  qed
+qed
 
 lemma r1ok_oper_bad:
   assumes R: "r1ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"

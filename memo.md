@@ -2045,3 +2045,10 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   k≥1∧¬PM（同コピー平行移動、p≥j0 は no-dip と ¬PM の矛盾から）の3ケース純粋完了。
   残 = r1ok_copy_witness（k≥1∧PM: max-cands 証人、行1バウンド=r1ok_climb 相当）1点。
   div/mod 分解は less_mult_imp_div_less + mult.commute。k=0 の idl は ldec subst。
+
+- (続26補4) **r1ok_copy_witness 緑** — r1ok_ST_PS は r1ok_climb 1点に収束。
+  cands空(d0=0)=prefix親転送・純粋 / cands非空= Max証人: rexact（o2: Max+1段step、
+  r'=L-1端は PM(r=0含む q=0は自明) + nextrel0/1 の e0関係で閉）・no-dip（above+PM）・
+  f1（mult_eq_if で k分配）全て純粋。行1バウンドのみ r1ok_climb。
+  デバッグ: nat減算の e0=0退化（pos供給）、∀インスタンス化の Suc正規形（blast）、
+  乗法キャンセル（ccontr+mult_le_mono1）。
