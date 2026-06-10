@@ -853,4 +853,165 @@ theorem copies_map_getD {B : PairSeq} {n k q : ℕ} {f : ℕ → ℕ × ℕ → 
       rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hq]
       rfl
 
+
+/-! ## Row-1 discipline under the copy expansion
+
+`copyExp G B d0 n` abstracts the bad branch of `oper` (`oper_bad_blocks`):
+prefix `G` followed by `n` copies of the block `B`, the `k`-th copy shifted
+in row 0 by `k * d0`.  `r1ok_copyExp` proves the three unconditional witness
+cases (prefix transfer, identity copy, same-copy translation); the
+level-minimal case (witness in the previous copy, the `r1ok_climb` core) is
+the explicit hypothesis `hmin`. -/
+
+/-- The copy expansion shape produced by the bad branch of `oper`. -/
+def copyExp (G B : PairSeq) (d0 n : ℕ) : PairSeq :=
+  G ++ (List.range n).flatMap fun k => B.map fun p => (p.1 + k * d0, p.2)
+
+theorem copyExp_length (G B : PairSeq) (d0 n : ℕ) :
+    (copyExp G B d0 n).length = G.length + n * B.length := by
+  unfold copyExp
+  rw [List.length_append, copies_map_length]
+
+theorem copyExp_getD_pre {G B : PairSeq} {d0 n i : ℕ} (h : i < G.length) :
+    (copyExp G B d0 n).getD i (0,0) = G.getD i (0,0) :=
+  getD_append_left h
+
+theorem copyExp_getD_copy {G B : PairSeq} {d0 n k q : ℕ}
+    (hk : k < n) (hq : q < B.length) :
+    (copyExp G B d0 n).getD (G.length + (k * B.length + q)) (0,0)
+      = ((B.getD q (0,0)).1 + k * d0, (B.getD q (0,0)).2) := by
+  unfold copyExp
+  rw [getD_append_right (Nat.le_add_right _ _), Nat.add_sub_cancel_left,
+      copies_map_getD hk hq]
+
+theorem hostM_getD_pre {G B : PairSeq} {lp : ℕ × ℕ} {i : ℕ} (h : i < G.length) :
+    (G ++ B ++ [lp]).getD i (0,0) = G.getD i (0,0) := by
+  rw [getD_append_left (by simp; omega), getD_append_left h]
+
+theorem hostM_getD_blk {G B : PairSeq} {lp : ℕ × ℕ} {q : ℕ} (hq : q < B.length) :
+    (G ++ B ++ [lp]).getD (G.length + q) (0,0) = B.getD q (0,0) := by
+  rw [getD_append_left (by simp; omega),
+      getD_append_right (Nat.le_add_right _ _), Nat.add_sub_cancel_left]
+
+theorem hostM_length (G B : PairSeq) (lp : ℕ × ℕ) :
+    (G ++ B ++ [lp]).length = G.length + B.length + 1 := by
+  simp
+  omega
+
+theorem r1ok_copyExp {G B : PairSeq} {lp : ℕ × ℕ} {n d0 : ℕ}
+    (hr : r1ok (G ++ B ++ [lp]))
+    (hmin : ∀ k q, 0 < k → k < n → q < B.length →
+      (∀ r, r < q → (B.getD q (0,0)).1 ≤ (B.getD r (0,0)).1) →
+      0 < (B.getD q (0,0)).1 + k * d0 →
+      ∃ p, p < G.length + (k * B.length + q) ∧
+        ((copyExp G B d0 n).getD p (0,0)).1 + 1 = (B.getD q (0,0)).1 + k * d0 ∧
+        (∀ l, p < l → l < G.length + (k * B.length + q) →
+          (B.getD q (0,0)).1 + k * d0 ≤ ((copyExp G B d0 n).getD l (0,0)).1) ∧
+        (B.getD q (0,0)).2 ≤ ((copyExp G B d0 n).getD p (0,0)).2 + 1) :
+    r1ok (copyExp G B d0 n) := by
+  intro j hj hpos
+  rw [copyExp_length] at hj
+  by_cases hjL : j < G.length + B.length
+  · -- transfer region: `copyExp` agrees with the host on `[0, |G| + |B|)`
+    have hagree : ∀ i, i ≤ j → (copyExp G B d0 n).getD i (0,0)
+        = (G ++ B ++ [lp]).getD i (0,0) := by
+      intro i hi
+      by_cases hig : i < G.length
+      · rw [copyExp_getD_pre hig, hostM_getD_pre hig]
+      · push Not at hig
+        have hiL : i - G.length < B.length := by omega
+        have hn0 : 0 < n := by
+          cases n with
+          | zero =>
+            rw [Nat.zero_mul] at hj
+            omega
+          | succ m => exact Nat.succ_pos m
+        have e1 : (copyExp G B d0 n).getD i (0,0)
+            = ((B.getD (i - G.length) (0,0)).1 + 0 * d0,
+               (B.getD (i - G.length) (0,0)).2) := by
+          have hieq : i = G.length + (0 * B.length + (i - G.length)) := by
+            rw [Nat.zero_mul]
+            omega
+          conv_lhs => rw [hieq]
+          rw [copyExp_getD_copy hn0 hiL]
+        have e2 : (G ++ B ++ [lp]).getD i (0,0) = B.getD (i - G.length) (0,0) := by
+          have hieq : i = G.length + (i - G.length) := by omega
+          conv_lhs => rw [hieq]
+          rw [hostM_getD_blk hiL]
+        rw [e1, e2]
+        simp
+    have hjM : j < (G ++ B ++ [lp]).length := by
+      rw [hostM_length]
+      omega
+    have hposM : 0 < ((G ++ B ++ [lp]).getD j (0,0)).1 := by
+      rw [← hagree j le_rfl]
+      exact hpos
+    obtain ⟨p, hp, he, hnd, hs⟩ := hr j hjM hposM
+    refine ⟨p, hp, ?_, ?_, ?_⟩
+    · rw [hagree p (le_of_lt hp), hagree j le_rfl]
+      exact he
+    · intro l hl1 hl2
+      rw [hagree j le_rfl, hagree l (le_of_lt hl2)]
+      exact hnd l hl1 hl2
+    · rw [hagree j le_rfl, hagree p (le_of_lt hp)]
+      exact hs
+  · -- copy region with `k ≥ 1`
+    push Not at hjL
+    have hL : 0 < B.length := by
+      by_contra hB0
+      push Not at hB0
+      have hB0' : B.length = 0 := by omega
+      rw [hB0', Nat.mul_zero] at hj
+      omega
+    obtain ⟨k, q, hk, hq, hdec⟩ :=
+      index_decomp hL (show j - G.length < n * B.length by omega)
+    have hk1 : 0 < k := by
+      rcases Nat.eq_zero_or_pos k with rfl | h
+      · rw [Nat.zero_mul] at hdec
+        omega
+      · exact h
+    have hjeq : j = G.length + (k * B.length + q) := by omega
+    subst hjeq
+    rw [copyExp_getD_copy hk hq] at hpos ⊢
+    by_cases hPM : ∀ r, r < q → (B.getD q (0,0)).1 ≤ (B.getD r (0,0)).1
+    · -- level-minimal: previous-copy witness, by hypothesis
+      exact hmin k q hk1 hk hq hPM hpos
+    · -- in-block dip: the host witness lies in the block; translate it
+      push Not at hPM
+      obtain ⟨r, hrq, hrdip⟩ := hPM
+      have hposB : 0 < (B.getD q (0,0)).1 := by omega
+      have hjMq : G.length + q < (G ++ B ++ [lp]).length := by
+        rw [hostM_length]
+        omega
+      have hposMq : 0 < ((G ++ B ++ [lp]).getD (G.length + q) (0,0)).1 := by
+        rw [hostM_getD_blk hq]
+        exact hposB
+      obtain ⟨p, hp, he, hnd, hs⟩ := hr (G.length + q) hjMq hposMq
+      have hpg : G.length + r ≤ p := by
+        by_contra hcon
+        push Not at hcon
+        have hh := hnd (G.length + r) (by omega) (by omega)
+        rw [hostM_getD_blk hq, hostM_getD_blk (lt_trans hrq hq)] at hh
+        omega
+      obtain ⟨r', rfl⟩ : ∃ r', p = G.length + r' := ⟨p - G.length, by omega⟩
+      have hr'q : r' < q := by omega
+      have hr'B : r' < B.length := lt_trans hr'q hq
+      rw [hostM_getD_blk hr'B, hostM_getD_blk hq] at he hs
+      refine ⟨G.length + (k * B.length + r'), by omega, ?_, ?_, ?_⟩
+      · rw [copyExp_getD_copy hk hr'B]
+        show (B.getD r' (0,0)).1 + k * d0 + 1 = (B.getD q (0,0)).1 + k * d0
+        omega
+      · intro l hl1 hl2
+        obtain ⟨rr, hrr1, hrr2, rfl⟩ :
+            ∃ rr, r' < rr ∧ rr < q ∧ l = G.length + (k * B.length + rr) :=
+          ⟨l - G.length - k * B.length, by omega, by omega, by omega⟩
+        rw [copyExp_getD_copy hk (lt_trans hrr2 hq)]
+        show (B.getD q (0,0)).1 + k * d0 ≤ (B.getD rr (0,0)).1 + k * d0
+        have hh := hnd (G.length + rr) (by omega) (by omega)
+        rw [hostM_getD_blk hq, hostM_getD_blk (lt_trans hrr2 hq)] at hh
+        omega
+      · rw [copyExp_getD_copy hk hr'B]
+        show (B.getD q (0,0)).2 ≤ (B.getD r' (0,0)).2 + 1
+        exact hs
+
 end YAPSS
