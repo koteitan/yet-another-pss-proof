@@ -72,10 +72,11 @@
           ✅ E6_mem_resolved（hdom排除+K側カスケード+T側移送）/ E6_nbcK 再構成（可視性連言=Gterm_NT_high で証明）
           ✅ **r1ok 基盤**（row1規律 snd≤親snd+1・実証0/14558）: 生成帰納+diag+take/butlast+
           oper骨格+oper_bad主証明+copy_witness 全緑 — **残 r1ok_climb 1点**（memo続26）
-          ✅ **NT_tie_resolved**（SIB_prefix から導出）— SIB核を配列形状事実に還元（memo続27）
-          ✅ **SIB核の解体完了**: sibm（Mレベル兄弟ラン不変量・0/2964）→ SIB_shape →
-          NT_tie_resolved の鎖が緑。sibm_take/butlast（切詰め安定）・sibm_oper ケース骨格・fbsegD 追加
-          🚨 実効コア: 🥇**sibm_oper_bad**（コピー簿記保存・300行級・対カテゴリ4族地図=memo続28補4）/
+          🚨 【続29訂正】旧 sibm/SIB_shape は ST_PS 上で**偽**（閉包境界アーティファクト・反例=memo続29）
+          → 修正版 **sibm2 = 4族 {equal/真接頭辞/F1 頭添字降下/F2 レベル降下第一差分}＋頭最大**
+          （0/26235・閉包+1）。NT_tie は生存（0/1486 全fbseg窓）・F1/F2 で olt(NT K1,NT K) 厳密＋無発火
+          🚨 実効コア: 🥇**sibm2 改修+oper_bad**（Isabelle 改修＋コピー簿記・memo続29）/
+          NT_firstdiff_lt（F2用新値補題）/
           fire-cascade系5点（E6_lpl / E6_dom_deep / E6_memT / E6_nbcK_T / E6_nbcK_K = GRAND同時帰納の本丸）/
           r1ok_climb（e1正側0/729・機構=memo続26補5）/ TOP_desc（トップ木nrm弱降下0/474・未ステート）
           🚨 行レベル: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（fbsegDリフト＋TOP_desc経路、memo続27-28）

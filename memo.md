@@ -2158,3 +2158,29 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - CC同: M 対の平行移動（レベル同シフト・row1 不変、ブロック端切詰めは sibm_take 流）。
   - CC隣: d0>0 でも存在（e0(qb) = e0(qa) - d0 の組合せ）。
   規模 300行級・新セッション推奨。部品は oper_bad_nth/concat簿記/sibm_take 全て流用可。
+
+### ★★(2026-06-11 続29) 【重大訂正】sibm は ST_PS 上で偽 — 修正版 sibm2 (4族) 確定
+- **反例**: M=(0,0)(1,1)(2,0)(3,0)(4,0)(2,0)(3,0)(4,0)∈ST_PS, X=oper(M,2)
+  =...(2,0)(3,0)(3,0)。X の対 (a=2,b=5)=(2,0)タイ: K=(3,0)(4,0), K1=(3,0)(3,0)
+  — equal でも prefix でもない。**SIB_shape も同データで偽**（X 自身を host,
+  pp=(1,1), mid=[] の fbseg 窓で前提成立）。続27-28 の SIB 解体は偽前提だった。
+- **原因＝閉包境界アーティファクト**: 旧マイニングは enum_ST の集合内の M しか
+  検査せず、最終ラウンドの M に oper を当てた X を見ていなかった。違反は閉包の
+  1歩先で初出。**教訓: マイナーは必ず「閉包+1段」（全 M×全 n の oper(M,n) を
+  検査対象に追加）で回す**。他の 0違反実証（fire-cascade 系・TOP_desc 等）も
+  閉包+1 で再検証が必要（→続29補で実施）。
+- **修正版 sibm2（0/26235対, 閉包+1, mine_sibm5.py）**: 隣接タイ兄弟対の
+  K=mrun a, K1=mrun b は次の4族のみ＋両ラン頭最大:
+  (E) K1=K / (P) K1 真接頭辞 / (F1) 第一差分 t=0: fst同・snd K[0]>snd K1[0]
+  / (F2) 第一差分 t≥1: fst K[t]>fst K1[t]。
+  逆向き（K が K1 の真接頭辞・第一差分上昇）は 0。
+  = **K1 ≤ K の列 lex 弱降下**（柱3 seqlex と同じ向き）。
+  F1/F2 は **b のランが open（M終端切詰め）のときのみ** 発生（closed では E/P のみ）。
+  F1 は常に t=0（両頭は fst c+1 で同レベルだから）、F2 は常に t≥1。
+- **NT_tie は生存**: 全 fbseg 窓×閉包+1 で 0/1486 (mine_sibm4.py)。値側機構:
+  全 F1/F2 ケースで olt(NT K1, NT K) **厳密**成立・両者無発火（頭最大⟹msfx=self）。
+  修正導出: (E) 同項 irrefl / (P) NT_prefix_lt / (F1) 頭添字 y>y1 の P項直接比較
+  / (F2) **NT_firstdiff_lt（新値補題: 共通接頭辞+レベル降下第一差分 ⟹ 厳密 olt）**。
+- 残作業更新: sibm→sibm2 へ Isabelle 改修（def/diag/take/oper骨格/oper_bad sorry
+  ステート修正・SIB_shape→SIB_shape2 4族版・NT_tie_resolved 4ケース化）、
+  NT_firstdiff_lt 新設、sibm2_oper_bad 手術（真の文面になった）。
