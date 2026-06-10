@@ -1080,6 +1080,32 @@ qed
 lemma NT_single: "nrm (translate [c]) = P (snd c) Z Z"
   by (cases c) (simp add: proj_Z)
 
+lemma maxr1_tail:
+  assumes Y: "Y \<noteq> []" and X: "\<forall>c \<in> set X. snd c < maxr1 Y"
+  shows "maxr1 (X @ Y) = maxr1 Y"
+proof (cases "X = []")
+  case True thus ?thesis by simp
+next
+  case False
+  have su: "snd ` set (X @ Y) = snd ` set X \<union> snd ` set Y" by auto
+  have mu: "Max (snd ` set X \<union> snd ` set Y) = max (Max (snd ` set X)) (Max (snd ` set Y))"
+    by (intro Max_Un) (use False Y in auto)
+  have "Max (snd ` set X) \<in> snd ` set X" by (intro Max_in) (use False in auto)
+  hence "Max (snd ` set X) < maxr1 Y" using X by auto
+  hence "Max (snd ` set X) \<le> Max (snd ` set Y)" unfolding maxr1_def by simp
+  thus ?thesis unfolding maxr1_def su mu by (simp add: max_absorb2)
+qed
+
+lemma msfx_tail:
+  assumes Y: "Y \<noteq> []" and X: "\<forall>c \<in> set X. snd c < maxr1 Y"
+  shows "msfx (X @ Y) = msfx Y"
+proof -
+  have m: "maxr1 (X @ Y) = maxr1 Y" by (rule maxr1_tail[OF Y X])
+  have "dropWhile (\<lambda>c. snd c < maxr1 Y) (X @ Y) = dropWhile (\<lambda>c. snd c < maxr1 Y) Y"
+    using X by (intro dropWhile_append2) auto
+  thus ?thesis unfolding msfx_def m .
+qed
+
 text \<open>Under fire the projection moves strictly (to a critical, hence smaller
   in size).\<close>
 
