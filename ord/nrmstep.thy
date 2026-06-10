@@ -2297,6 +2297,22 @@ text \<open>(SIB core) On subscript ties the projected argument of the earlier h
   is not below that of its sum-successor.  This is the single remaining
   irreducible class fact of the C1 layer (empirically 0/1037 violations).\<close>
 
+text \<open>(SIB) On subscript ties the successor's run is the same as, or a
+  proper prefix of, the head's run, and in the proper-prefix case neither run
+  fires at the tie level (empirically 1418 equal + 650 prefix, 0 other, with
+  all 650 prefix pairs no-fire/no-fire).\<close>
+
+lemma SIB_prefix:
+  assumes "fbseg u (c # rest)"
+    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and "snd c1 = snd c"
+  shows "takeWhile (\<lambda>r. fst c1 < fst r) rest1 = takeWhile (\<lambda>r. fst c < fst r) rest
+         \<or> (\<exists>D. D \<noteq> [] \<and> takeWhile (\<lambda>r. fst c < fst r) rest
+                  = takeWhile (\<lambda>r. fst c1 < fst r) rest1 @ D
+             \<and> \<not> pfire (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest)))
+             \<and> \<not> pfire (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))"
+  sorry
+
 lemma NT_tie:
   assumes "fbseg u (c # rest)"
     and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
@@ -3236,6 +3252,64 @@ proof
       have "olt (nrm (translate Cp)) (nrm (translate S))"
         by (rule E6_lpl[OF D HM w(1) w(2) pne hdm G[unfolded w(3)]])
       thus False using w(3) V by simp
+    qed
+  qed
+qed
+
+text \<open>Resolution of \<open>NT_tie\<close> from \<open>SIB_prefix\<close>: equal runs give equal
+  projections; a proper-prefix run is strictly below by prefix monotonicity,
+  with both projections trivial by the no-fire conjuncts.  (Same stratified
+  placement as the other resolved lemmas.)\<close>
+
+lemma NT_tie_resolved:
+  assumes A: "fbseg u (c # rest)"
+    and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and tie: "snd c1 = snd c"
+  shows "\<not> olt (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+               (proj (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?K1 = "takeWhile (\<lambda>r. fst c1 < fst r) rest1"
+  from SIB_prefix[OF A T tie]
+  show ?thesis
+  proof
+    assume eq: "?K1 = ?K"
+    show ?thesis unfolding eq tie using olt_irrefl by blast
+  next
+    assume "\<exists>D. D \<noteq> [] \<and> ?K = ?K1 @ D
+             \<and> \<not> pfire (snd c) (nrm (translate ?K))
+             \<and> \<not> pfire (snd c) (nrm (translate ?K1))"
+    then obtain D where D: "D \<noteq> []" "?K = ?K1 @ D"
+      and nfK: "\<not> pfire (snd c) (nrm (translate ?K))"
+      and nfK1: "\<not> pfire (snd c) (nrm (translate ?K1))" by blast
+    have pK: "proj (snd c) (nrm (translate ?K)) = nrm (translate ?K)"
+      by (rule proj_nofire[OF nfK])
+    have pK1: "proj (snd c1) (nrm (translate ?K1)) = nrm (translate ?K1)"
+      unfolding tie by (rule proj_nofire[OF nfK1])
+    show ?thesis
+    proof (cases "?K1 = []")
+      case True
+      have "nrm (translate ?K1) = Z" unfolding True by simp
+      thus ?thesis unfolding pK pK1 using not_olt_Z by simp
+    next
+      case K1ne: False
+      from A obtain pre pp mid post
+        where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+        unfolding fbseg_def by blast
+      have r: "rest = ?K @ dropWhile (\<lambda>r. fst c < fst r) rest" by simp
+      have eqh: "pre @ (pp # mid @ (c # rest)) @ post
+                 = (pre @ (pp # mid) @ [c]) @ ?K1 @ D
+                   @ (dropWhile (\<lambda>r. fst c < fst r) rest @ post)"
+        by (subst r) (simp add: D(2))
+      have h2: "(pre @ (pp # mid) @ [c]) @ ?K1 @ D
+                @ (dropWhile (\<lambda>r. fst c < fst r) rest @ post) \<in> ST_PS"
+        using h unfolding eqh .
+      have "olt (nrm (translate ?K1)) (nrm (translate (?K1 @ D)))"
+        by (rule NT_prefix_lt[OF h2 K1ne D(1)])
+      hence "olt (nrm (translate ?K1)) (nrm (translate ?K))"
+        using D(2) by simp
+      thus ?thesis unfolding pK pK1
+        using olt_total olt_irrefl olt_trans by blast
     qed
   qed
 qed

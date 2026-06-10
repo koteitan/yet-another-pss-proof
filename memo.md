@@ -2072,3 +2072,8 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   proj_submono 経由なら Gterm-部分集合が要るが、E6_value 直比較なら不要の見込み。
 - これで STS_B hdarg 節も同経路。SIB_prefix 自体は oper のコピー構造から
   生成帰納で出る見込み（コピー＝同一素材の反復、兄弟ラン＝コピー切り詰め）。
+
+- (続27補) **NT_tie_resolved 緑**: SIB_prefix（equal/prefix+両無発火）から
+  equal→irrefl / prefix→proj恒等+NT_prefix_lt / K1=[]→not_olt_Z で完全導出。
+  **SIB核は順序論ゼロの配列形状事実 SIB_prefix に還元**（生成不変量として
+  r1ok_oper と同パターンで証明可能見込み）。STS_B hdarg 節も同経路で閉じる見込み。
