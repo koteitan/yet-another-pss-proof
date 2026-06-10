@@ -2292,3 +2292,13 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
     組む、t=|W1| 分岐は prefix 即閉）・d0>0 の b=コピー頭ケースの持ち上げ
     （shf 対応で take j1 M 対へ）・hm(K1@C) の maxr1 blk ≤ snd hd K1。
   - K1M の開性: O2 ⟹ lev b < e0(j0) ≤ ブロック&j1 全部 ⟹ M run open ✓ 純粋。
+
+- (続29補10) **seam_E_refute 討伐（緑）**: b<j0 の E族O2（K=K1）を反駁。
+  機構 = M持ち上げ（mrun M a = K の closed-run 簿記 + mrun M b = P0@blk@[M!j1]
+  の open 証明・levlow は m=0なら high・m≥1なら copy0頭で ob から）→
+  sibm2 M インスタンス sibrel K K1M → m≤1 は nopref・m≥2 は分岐点
+  cp1!0=(e0j0+d0,e1j0) vs M!j1=(e0j1,e1j1) の上昇（d0=0:fst上昇 / d0>0:fst同・
+  snd上昇=nextrel1）で ascent 衝突。デバッグ: dropbM 双方向 simp ループ（自殺技）・
+  append_take_drop_id[symmetric] 直当て・upt数値リテラルは Suc 1 形。
+  残: seam_open_core 本体の組み立て（P/lexdiff 分岐・b≥j0 ケース）。
+  P分岐 m=0 は R事実分岐から完全純粋で閉じる設計済（続29補9）。
