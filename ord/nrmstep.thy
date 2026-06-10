@@ -2538,10 +2538,72 @@ qed
 lemma sibm_butlast: "sibm M \<Longrightarrow> sibm (butlast M)"
   using sibm_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
-lemma sibm_oper:
-  assumes "sibm M" and "M \<in> ST_PS" and "1 \<le> n"
+lemma sibm_oper_bad:
+  assumes "sibm M" and "blockok 0 M" and "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "oper M n = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
   shows "sibm (oper M n)"
   sorry
+
+lemma sibm_oper:
+  assumes R: "sibm M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+  shows "sibm (oper M n)"
+proof -
+  define j1 where "j1 = Lng M - 1"
+  have b: "blockok 0 M" by (rule blockok_ST_PS[OF ST])
+  show ?thesis
+  proof (cases "j1 = 0")
+    case True thus ?thesis using R unfolding oper_def Let_def j1_def by simp
+  next
+    case False
+    show ?thesis
+    proof (cases "entry M 0 j1 = 0 \<and> entry M 1 j1 = 0")
+      case True
+      have "oper M n = Pred M"
+        unfolding oper_def Let_def j1_def[symmetric] using False True by auto
+      moreover have "sibm (Pred M)"
+        unfolding Pred_def using R sibm_butlast by simp
+      ultimately show ?thesis by simp
+    next
+      case Fz: False
+      define i1 where "i1 = idx1 M j1"
+      show ?thesis
+      proof (cases "hasParent M i1 j1")
+        case False2: False
+        have "oper M n = Pred M"
+          unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+          using False Fz False2 by auto
+        moreover have "sibm (Pred M)"
+          unfolding Pred_def using R sibm_butlast by simp
+        ultimately show ?thesis by simp
+      next
+        case hp: True
+        define j0 where "j0 = parent M i1 j1"
+        define d0 where "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+        have d1z: "(if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0) = 0"
+          using idx1_le[of M j1] unfolding i1_def by simp
+        have opeq: "oper M n = take j0 M @ concat (map (\<lambda>k.
+               map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+        proof -
+          have "oper M n = take j0 M @ concat (map (\<lambda>k.
+                 map (\<lambda>j. (entry M 0 j + k * d0,
+                            entry M 1 j + k * (if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0)))
+                 [j0..<j1]) [0..<n])"
+            unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+              j0_def[symmetric] d0_def[symmetric]
+            using False Fz hp by auto
+          thus ?thesis unfolding d1z by simp
+        qed
+        show ?thesis
+          by (rule sibm_oper_bad[OF R b ST j1_def False i1_def hp j0_def d0_def opeq])
+      qed
+    qed
+  qed
+qed
 
 theorem sibm_ST_PS: "M \<in> ST_PS \<Longrightarrow> sibm M"
 proof (induction M rule: ST_PS.induct)
