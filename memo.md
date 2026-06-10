@@ -2077,3 +2077,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   equal→irrefl / prefix→proj恒等+NT_prefix_lt / K1=[]→not_olt_Z で完全導出。
   **SIB核は順序論ゼロの配列形状事実 SIB_prefix に還元**（生成不変量として
   r1ok_oper と同パターンで証明可能見込み）。STS_B hdarg 節も同経路で閉じる見込み。
+
+- (続27補2) **E6_seam の構造確定（796件）**: INV側 fst q - fst(hd msfx S) ∈ {0..9}
+  （常に ≥0 ✓）、INV2側 msfx S の森 = 単木 790 / 同レベル複木 6 / **other 0**
+  ⟹ E6_seam ⟸ (s1) fst(hd msfx S) ≤ fst q ＋ (s2) hd が最小レベル（fire構造帰結）。
+- 次キャンペーン最優先 = **SIB_prefix の生成不変量化**（r1ok_oper と同パターン:
+  diag では兄弟ランなし/全同形、oper コピーは同一素材反復＝prefix 切詰のみ生成）。
+  閉じると NT_tie 完了・STS_B hdarg 節も同経路。次いで nbcK_T/K・memT・lpl/dom_deep
+  （これらは fire-cascade 系で GRAND 同時帰納の本丸）。
