@@ -1129,6 +1129,96 @@ proof -
   ultimately show ?thesis unfolding dseg_def using u by blast
 qed
 
+text \<open>Forest-boundary pieces: contiguous sublists of a dominated run whose
+  skipped prefix \<open>mid\<close> lies entirely at levels \<open>\<ge>\<close> the piece head's level.
+  This is the closure of the adjacent class under the two descents of the
+  \<open>translate\<close> recursion (empirically C1-clean: \<open>tools/mine_master2.py\<close>).\<close>
+
+definition fbseg :: "nat \<Rightarrow> pairseq \<Rightarrow> bool" where
+  "fbseg u S \<longleftrightarrow> S \<noteq> [] \<and> (\<exists>pre pp mid post. pre @ (pp # mid @ S) @ post \<in> ST_PS
+                 \<and> (\<forall>r \<in> set (mid @ S). fst pp < fst r)
+                 \<and> (\<forall>r \<in> set mid. fst (hd S) \<le> fst r) \<and> u = snd pp)"
+
+lemma dseg_fbseg: "dseg u S \<Longrightarrow> fbseg u S"
+proof -
+  assume "dseg u S"
+  then obtain pre pp post where h: "pre @ (pp # S) @ post \<in> ST_PS"
+    and dom: "\<forall>r \<in> set S. fst pp < fst r" and u: "u = snd pp" and ne: "S \<noteq> []"
+    unfolding dseg_def by blast
+  have h2: "pre @ (pp # [] @ S) @ post \<in> ST_PS" using h by simp
+  have dom2: "\<forall>r \<in> set ([] @ S). fst pp < fst r" using dom by simp
+  have fb2: "\<forall>r \<in> set []. fst (hd S) \<le> fst r" by simp
+  show ?thesis unfolding fbseg_def using ne h2 dom2 fb2 u by blast
+qed
+
+lemma fbseg_K_desc:
+  assumes "fbseg u (c # rest)"
+    and ne: "takeWhile (\<lambda>r. fst c < fst r) rest \<noteq> []"
+  shows "fbseg (snd c) (takeWhile (\<lambda>r. fst c < fst r) rest)"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  from assms(1) obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    unfolding fbseg_def by blast
+  have r: "rest = ?K @ ?T" by simp
+  have eq: "pre @ (pp # mid @ (c # rest)) @ post
+            = (pre @ (pp # mid)) @ (c # [] @ ?K) @ (?T @ post)"
+    by (subst r) simp
+  have h2: "(pre @ (pp # mid)) @ (c # [] @ ?K) @ (?T @ post) \<in> ST_PS"
+    using h unfolding eq .
+  have dom2: "\<forall>r \<in> set ([] @ ?K). fst c < fst r"
+    using set_takeWhileD by fastforce
+  have fb2: "\<forall>r \<in> set []. fst (hd ?K) \<le> fst r" by simp
+  show ?thesis unfolding fbseg_def using ne h2 dom2 fb2 by blast
+qed
+
+lemma fbseg_T_desc:
+  assumes A: "fbseg u (c # rest)"
+    and ne: "dropWhile (\<lambda>r. fst c < fst r) rest \<noteq> []"
+  shows "fbseg u (dropWhile (\<lambda>r. fst c < fst r) rest)"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  from A obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    and dom: "\<forall>r \<in> set (mid @ (c # rest)). fst pp < fst r"
+    and fb: "\<forall>r \<in> set mid. fst (hd (c # rest)) \<le> fst r"
+    and u: "u = snd pp"
+    unfolding fbseg_def by blast
+  have r: "rest = ?K @ ?T" by simp
+  have hdT: "fst (hd ?T) \<le> fst c" using hd_dropWhile[OF ne] by simp
+  have eq: "pre @ (pp # mid @ (c # rest)) @ post
+            = pre @ (pp # (mid @ (c # ?K)) @ ?T) @ post"
+    by (subst r) simp
+  have h2: "pre @ (pp # (mid @ (c # ?K)) @ ?T) @ post \<in> ST_PS"
+    using h unfolding eq .
+  have dom2: "\<forall>r \<in> set ((mid @ (c # ?K)) @ ?T). fst pp < fst r"
+  proof
+    fix x assume "x \<in> set ((mid @ (c # ?K)) @ ?T)"
+    hence "x \<in> set (mid @ (c # rest))" by auto
+    thus "fst pp < fst x" using dom by blast
+  qed
+  have fb2: "\<forall>r \<in> set (mid @ (c # ?K)). fst (hd ?T) \<le> fst r"
+  proof
+    fix x assume "x \<in> set (mid @ (c # ?K))"
+    then consider "x \<in> set mid" | "x = c" | "x \<in> set ?K" by auto
+    thus "fst (hd ?T) \<le> fst x"
+    proof cases
+      case 1
+      have "fst c \<le> fst x" using fb 1 by simp
+      thus ?thesis using hdT by simp
+    next
+      case 2 thus ?thesis using hdT by simp
+    next
+      case 3
+      have "fst c < fst x" using set_takeWhileD 3 by fast
+      thus ?thesis using hdT by simp
+    qed
+  qed
+  show ?thesis unfolding fbseg_def using ne h2 dom2 fb2 u by blast
+qed
+
 text \<open>(E6) When the projection at the host level fires, its value is the
   normalized image of the max-row1 suffix.\<close>
 
