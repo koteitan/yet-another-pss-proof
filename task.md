@@ -61,9 +61,10 @@
           ✅ **proj_once**（射影=1ステップ; max臨界は自ら無発火）+ **proj_submono**＋Gterm_trans/maxg_nofire
           ✅ **E6アーキテクチャ移行**（projE系削除→msfx接尾辞定理に再編; maxr1/msfx/NT_single/proj_fire_ne 純粋部品緑;
           ST_snocokS_gen にインライン配線・長さ帰納で循環なし; 実証 V1-V5 全0違反 = memo続22）
-          🚨 残5: 🚨🤖 **E6_value**（fire⟹proj=NT(msfx S)・マスター帰納・攻略中）/
-          E6_qcut_last（V4: msfx=[末列]）/ E6_iii_singleton（V5: S単元）/
-          E6_seam（INV/INV2移送）/ STS_B（no-absorb対）
+          ✅ post一般化（segprov/STS_A/ST_snocokS_gen/ST_snocok_int/nrm_snoc_int、内部位置対応・実証8243で0違反）
+          ✅ fbseg（森境界ピース）＋閉包補題3本 / NT_noabsorb / **NT_tail_lt**（nrm和尾部厳密増大）
+          🚨 残6: 🚨🤖 **E6_value**（マスター帰納、設計=memo続23: G1可視鎖/G2カタログ+内部snoc/G3）/
+          **NT_shape**（C1形状、タイ=SIB核）/ E6_qcut_last / E6_iii_singleton / E6_seam / STS_B
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
