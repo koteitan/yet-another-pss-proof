@@ -1633,3 +1633,7 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - 次: nrm_step_dec の直接証明キャンペーン（order_pres から独立に）。武器: E6 接尾辞補題
   （proj y (NT dom) = NT(首最大row1接尾辞)）、E7 ケース木（第一差分は prefix/sub の2種のみ）、
   oper 場合分け機構（m_step_decreases の全補題群）。
+- (続15補) 統一閉形式「proj = max(NT dom, NT 首最大row1接尾辞)」は**偽**（15302中2595不一致）。
+  根因: **G_a の可視性規則 = row1 < a の列の支配ブロック内部には降りない**（Gterm の if u≤a）。
+  E5/E6 の一致は fire ケース標本での偶然。⟹ step-dec キャンペーンは項側
+  （Gterm/proj と構造編集 butlast/copy-append の相互作用補題）で直接進める。
