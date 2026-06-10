@@ -2009,3 +2009,12 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - (続25補7) **Gterm_NT_high 緑**（u > 頭row1 ⟹ 臨界空；根row1非増加=NT_dom由来）
   ⟹ **E6_nbcK の可視性連言（u ≤ snd c0）が証明済に**。E6_nbcK = nbcK_T(sorry:
   u≤y0∧m-in-K⟹T=[]、配置0件の行レベル事実) + nbcK_K(sorry: K発火∨msfx K=K) に分解。
+
+### (2026-06-11 続26) r1ok 発見 — row1 規律（行レベル事実群の土台）
+- **実証 14,558 列で 0 違反**: 標準 M の fst>0 の全列 j に row0-親
+  （最後の k<j で fst k = fst j - 1、間に fst < fst j - 1 なし）が存在し、
+  **snd (M!j) ≤ snd(親) + 1**。差分分布 {-3:3, -2:313, -1:3306, 0:5754, +1:5182}。
+- r1ok は blockok_ST_PS と同様に ST_PS 生成帰納で証明する（未実装）。
+  これで nbcK_T / E6_qcut_last / E6_iii_singleton / E6_seam の行レベル4点を
+  arithmetic 化する計画。残りの再帰束 {E6_lpl, E6_dom_deep, E6_memT, NT_tie,
+  nbcK_K} は GRAND 同時帰納（スパイン歩き＋閾値付き MEM/DOM）で締める。
