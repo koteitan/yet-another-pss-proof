@@ -2296,26 +2296,31 @@ theorem nrm_snoc_int:
   shows "olt (nrm (translate C)) (nrm (translate (C @ [p])))"
   by (rule nrm_snoc_seg[OF ST_snocok_int[OF assms] assms(2)])
 
+theorem nrm_snoc_mid:
+  assumes "pre @ C @ [p] @ post \<in> ST_PS" and "C \<noteq> []"
+  shows "olt (nrm (translate C)) (nrm (translate (C @ [p])))"
+  by (rule nrm_snoc_seg[OF ST_snocok_gen[OF assms] assms(2)])
+
 text \<open>Iterated: the normalized image of a proper contiguous prefix is strictly
   below that of any contiguous extension within a standard host.\<close>
 
 lemma NT_prefix_lt:
-  "C @ D @ post \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> D \<noteq> [] \<Longrightarrow>
+  "pre @ C @ D @ post \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> D \<noteq> [] \<Longrightarrow>
    olt (nrm (translate C)) (nrm (translate (C @ D)))"
 proof (induct D arbitrary: C post)
   case Nil thus ?case by simp
 next
   case (Cons d0 D')
-  have h1: "C @ [d0] @ (D' @ post) \<in> ST_PS" using Cons.prems(1) by simp
+  have h1: "pre @ C @ [d0] @ (D' @ post) \<in> ST_PS" using Cons.prems(1) by simp
   have s1: "olt (nrm (translate C)) (nrm (translate (C @ [d0])))"
-    by (rule nrm_snoc_int[OF h1 Cons.prems(2)])
+    by (rule nrm_snoc_mid[OF h1 Cons.prems(2)])
   show ?case
   proof (cases "D' = []")
     case True
     show ?thesis using s1 unfolding True by simp
   next
     case False
-    have h2: "(C @ [d0]) @ D' @ post \<in> ST_PS" using Cons.prems(1) by simp
+    have h2: "pre @ (C @ [d0]) @ D' @ post \<in> ST_PS" using Cons.prems(1) by simp
     have s2: "olt (nrm (translate (C @ [d0]))) (nrm (translate ((C @ [d0]) @ D')))"
       using Cons.hyps[OF h2 _ False] by simp
     have "olt (nrm (translate C)) (nrm (translate ((C @ [d0]) @ D')))"
