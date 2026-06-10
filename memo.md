@@ -1721,3 +1721,20 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   olt (proj (snd p) (NT rest)) (proj (snd p) (NT (rest@[q])))」。
   攻め筋: E5/E6 = proj は首最大row1接尾辞、append 列は常に接尾辞内。
   数列側の接尾辞再帰（同型の主張が suffix に降りる）＋ blockok/nfinv 事実。
+- (続19補) **ST_snoc_C の証明地図**（ケース統計: no-no 12007 / fire-fire 1133 /
+  ext-only 43 / **base-only 0**〔tools/mine_stc.py〕）。サイズ帰納＋4ケース:
+  (i) 両不発火: proj=id 両方（proj_id）→ olt は nrm_snoc_seg の再帰（snocok rest q は
+      ST_snocok_gen の相互再帰、長さ減少で整礎）から直接。
+  (iii) 拡張側のみ発火: olt x x' ≤o proj x'（proj_ole）で自明。
+  (iv) 基底側のみ発火: **排除可能**＝gap補題+Gterm_size+Gterm_lext_sup:
+      max臨界 g >o x は g<x' だと size g > size x が必要（gap補題）だが Gterm_size で
+      size g < size x: 矛盾 ⟹ g ≥o x' ⟹ partner臨界が x' を発火させる。
+      **gap補題（純粋・新規）**: lext x x'（葉は Z 位置=末端挿入）⟹ x ≤o g <o x' なら
+      g は x の末端拡張（size > size x）。証明: g≥x の上向き第一差分が x 内部なら
+      x' も同位置で同値（葉は末端のみ差）→ g >o x' 矛盾; ∴差分は延長のみ。
+  (ii) 両発火: max臨界 g_x の partner g_x' が葉を含む（=末端到達接尾辞、E5/E6 のクラス事実）
+      なら (g_x, g_x') が再び lext ペア → サイズ帰納で再帰。
+      必要なクラス事実 = 「標準セグメントの fire 時 max臨界は末端到達接尾辞」（E5/E6 の
+      Isabelle 化）＋ maxo 選択の partner 対応（Gterm_lext_sub/sup + gap機構）。
+- 必要な新部品: lext_end_gap（純粋）、maxo_partner（Gterm_lext + maxo_ub 復活）、
+  末端到達性のクラス補題（ST_PS.induct or blockok 系から）。
