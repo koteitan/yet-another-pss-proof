@@ -2099,3 +2099,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   blockok の hd=0 と steps から「根は全てレベル0」が fbseg_hd_level の類似で出る）
   → C1鎖をパラメトリックに再証明（ほぼ機械的な premise 差し替え見込み）。
   これで STS_B の hdsub 節 = NT_hd、hdarg 節 = NT_tie_resolved 同経路が開通する。
+
+- (続27補5) **トップレベル訂正（重要）**: レベル0の兄弟木対（全根 (0,0)、474対）では
+  SIB_shape 不成立 — equal 276 / prefix 171 / **other 27**（例: K=(1,0)(2,0) vs
+  K1=(1,0)(1,0)、row0 デクリメント形）。トップ木は copy-切詰めでなく
+  「展開段階」列なので、STS_B の hdarg 節はトップでは cnf 降下の nrm 移送
+  （レベル0限定の弱保存）が必要。被支配レベル（fbseg）では SIB_shape 経路有効。
+  ⟹ STS_B = fbseg 側（SIB経路）+ トップ側（別機構）の2層。27例の正確な形
+  （suffix の段階降下?）は次セッションでマイニング。
