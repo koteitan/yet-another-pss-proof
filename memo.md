@@ -2113,3 +2113,10 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   ⟹ トップ層の統一クラス事実 = TOP_desc（隣接トップ木の nrm 弱降下、474対0違反）。
   STS_B 完成形 = NT_hd のトップ版（C1 リフト）+ TOP_desc + 被支配層 SIB_shape 経路。
   TOP_desc は展開段階構造（m_step/oper 機構）から攻める。
+
+- (続27補7) **fbsegD 追加（緑・追加的変更のみ）**: 深さ統一クラス
+  「fbsegD S = ホスト埋め込み ∧ mid/S とも fst (hd S) が下界」。
+  fbseg_fbsegD（blockok step で fst hd S = pp+1 を内部導出）と
+  fbsegD_hd_level（レベル固定が定義から自由）✓。
+  次段（C1鎖の premise を fbsegD に差し替え + NT_tieD = SIB_shape/TOP_desc 2層）は
+  次セッションで（既存は無変更のまま緑維持）。
