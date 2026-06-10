@@ -330,6 +330,72 @@ next
   qed
 qed
 
+text \<open>The selected maximum is an upper bound (deterministic re-proof; needed
+  for the max-critical correspondence in the both-fire case).\<close>
+
+lemma maxo_ub: "z \<in> insert x (set ys) \<Longrightarrow> \<not> olt (maxo x ys) z"
+proof (induction ys arbitrary: x z)
+  case Nil
+  hence "z = x" by simp
+  thus ?case using olt_irrefl by simp
+next
+  case (Cons y ys)
+  let ?m = "if olt x y then y else x"
+  have ub: "\<And>w. w \<in> insert ?m (set ys) \<Longrightarrow> \<not> olt (maxo ?m ys) w"
+    using Cons.IH by blast
+  have inm: "\<not> olt (maxo ?m ys) ?m" using ub by simp
+  have mx: "\<not> olt (maxo ?m ys) x"
+  proof (cases "olt x y")
+    case True
+    have my: "\<not> olt (maxo y ys) y" using inm True by simp
+    show ?thesis
+    proof
+      assume "olt (maxo ?m ys) x"
+      hence "olt (maxo y ys) x" using True by simp
+      hence "olt (maxo y ys) y" using True olt_trans by blast
+      thus False using my by blast
+    qed
+  next
+    case False
+    thus ?thesis using inm by simp
+  qed
+  have my: "\<not> olt (maxo ?m ys) y"
+  proof (cases "olt x y")
+    case True thus ?thesis using inm by simp
+  next
+    case False
+    have yx: "olt y x \<or> y = x" using False olt_total by blast
+    show ?thesis
+    proof
+      assume a: "olt (maxo ?m ys) y"
+      from yx show False
+      proof
+        assume "olt y x"
+        hence "olt (maxo ?m ys) x" using a olt_trans by blast
+        thus False using mx by blast
+      next
+        assume "y = x"
+        thus False using a mx by simp
+      qed
+    qed
+  qed
+  from Cons.prems show ?case
+  proof (elim insertE)
+    assume "z = x" thus ?thesis using mx by simp
+  next
+    assume "z \<in> set (y # ys)"
+    hence "z = y \<or> z \<in> set ys" by auto
+    thus ?thesis
+    proof
+      assume "z = y" thus ?thesis using my by simp
+    next
+      assume "z \<in> set ys"
+      hence "z \<in> insert ?m (set ys)" by simp
+      thus ?thesis using ub by simp
+    qed
+  qed
+qed
+
 subsection \<open>End-position increase and the gap lemma\<close>
 
 text \<open>\<open>einc\<close>: one leaf inserted at the \<^emph>\<open>lex-final\<close> position \<dash> along tails to the
