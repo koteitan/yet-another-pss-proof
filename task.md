@@ -52,9 +52,12 @@
         - ✅ 実証: 2,643,843 ペア（NF+遺伝ブロック、クロスレベル込）で衝突0・逆転0〔tools/valnorm.py〕
         - ✅ **PSS_terminates_nrm** = inv_image wf_olt_wf3 (nrm∘translate)（peel/レベル分解不要）
         - ✅ wf_Rnf_nrm（order_pres⟹wf Rnf）・nrm_step_dec（order_pres から導出）
-        - 🚨 残 sorry = nrm_order_pres ただ1つ。攻め筋2段: (弱) nrm_step_dec 直接証明
+        - 🚨 live sorry = nrm_order_pres ただ1つ。攻め筋2段: (弱) nrm_step_dec 直接証明
           〔E6: proj=首最大row1接尾辞切出し、E7: 第一差分は prefix/sub の2種のみ、oper 機構流用〕
           / (強) 全ペア保存＝proj-mono（弱単調＋CRUX 単射、A_a 全集合で実証済・衝突0）
+        - 🚨🤖 攻略 nrmstep.thy: ✅ snoc主帰納 nrm_snoc_seg（snocok束、3ケース+基底）緑
+          ＋ proj_inflate/Gterm_lext/ins_Rinc 緑。残2: proj_Rinc_snoc（fire-flip閉包）
+          / ST_snocok（標準性⟹条件束）→ 閉じれば Pred ケース完成
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
