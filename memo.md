@@ -1859,3 +1859,30 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - projE_ii も proj_once により「max臨界対応の有限推論」に縮退（再帰不要の見込み）。
 - デバッグ: pfire/proj_nofire の定義位置（未定義だと自由変数として黙ってパースされ
   obtain が "Failed to apply initial proof method" になる）、blast+trans 連鎖は hang。
+
+### ★★★(2026-06-10 続22) E6 マスター補題発見 — projE 攻略の決定版アーキテクチャ
+- **E6 接尾辞定理（実証 15302/15302 + クラス 9918 セグメントで 0 違反）**:
+  クラス = segprov 型支配セグメント (pp,S)（∃pre post. pre@(pp#S)@post ∈ ST_PS、
+  S 全支配、u = snd pp。S 側 post=[q] と SQ 側 post=[] の両方）に対し
+  - **(C1) nrm_hd**: NT S の頭添字 = snd (hd S)、spine 上で ins 吸収ゼロ (V1=0)
+  - **(C2) fire 判定**: pfire u (NT S) ⟺ msfx S ≠ S ∧ vis u S ∧ olt (NT S) (NT (msfx S))
+    （ホスト u 限定！任意 u では 930 違反 V3。使用箇所は全てホスト u なので OK）
+  - **(C5) proj 値**: fire ⟹ proj u (NT S) = NT (msfx S)
+  ここで msfx S = dropWhile (λc. snd c < maxr1 S) S（最初の max-row1 列からの接尾辞）、
+  vis u S = 翻訳再帰で j0 の先祖列 row1 が全て ≥ u（再帰定義: 頭が max なら True /
+  max が K 内なら snd c0 ≥ u ∧ vis u K / max が T 内（厳密に大）なら vis u T）。
+- **projE_ii の還元**（both-fire 1133 = same-cut 1128 + q-cut 5）:
+  - same-cut (snd q ≤ maxr1 S): msfx(S@[q]) = msfx S @ [q]（100%）⟹ 結論は
+    **T = msfx S への snoc 命題 Einc (NT T) (NT (T@[q]))** — 長さ |T| ≤ |S| < |C| の
+    強帰納で snoc グランド補題に再帰（循環なし！）
+  - q-cut (snd q > maxr1 S): V4=0 より msfx S = [S最終列] ⟹ proj 両辺とも葉、
+    eflip (maxr1 S < snd q)。純粋。
+- **projE_iii の還元** (V5=0): S 単元 or msfx S = S。snd q > maxr1 S なら eflip 葉対、
+  snd q ≤ なら msfx S = S で結論 = R 前提そのもの。fire 排除は C2 の ⟸ 向きで。
+- mx'-パートナー実証 (mine_pe2): both-fire 全1133で rel(mx,mx') ∈ {einc 1042, eflip 91}、
+  eq ゼロ、mx' は常に mx のパートナー (Q3=0)。projE_iii は全43で eflip (Q4)。
+- **次キャンペーン**: nrmstep.thy に maxr1/msfx/vis 定義 + 純粋列補題（msfx append 法則
+  ・msfx ≠ []・hd msfx の snd = maxr1）→ マスター補題を長さ強帰納で（C1+C2+C5 ＋
+  必要なら C3 兄弟弱保存を連言に）。cnf_ST_PS の頭支配を nrm レベルに移送する箇所が核。
+- ツール: tools/mine_pe2.py (パートナー対応), mine_fire{2,3,4,5}.py (判定式の探索),
+  mine_master.py (最終検証スイート V1-V5)。
