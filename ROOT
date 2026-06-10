@@ -35,3 +35,4 @@ session PSI in ord = ZFC_in_HOL +
   theories
     psi
     otembed
+    nrm

@@ -1617,3 +1617,19 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - 次バースト: (a) ビルド緑→commit、(b) nrm.thy に step-dec 層追加、
   (c) 実証: 展開ペアの NT 第一差分を分類して oper 場合分けの証明ケース木を作る、
   (d) E6 補題（proj y (NT dom) = NT(首最大row1接尾辞)）の Isabelle 化から着手。
+
+### ★(2026-06-10 続15) ord/nrm.thy 緑（sorry = nrm_order_pres のみ）＋ループ根因
+- **PSI 緑 3s**: Glist/maxo/proj(停止性=Gterm_size)/ins/nrm 定義、proj_id/proj_rec（subst単発展開）、
+  proj_wf3/proj_G/Gterm_wf3/wf3_ins/**wf3_nrm**（像⊆OT）全て証明済。
+  wf_Rnf_nrm（order_pres⟹wf Rnf）・nrm_step_dec（order_pres+m_step_decreases から導出）・
+  **PSS_terminates_nrm**（inv_image wf_olt_wf3 (nrm∘translate)）が rule 連鎖で完結。
+- **デバッグ根因（2時間費消）**: `by (simp add: proj.simps Let_def)` — function の simps を
+  simpset に入れると再帰 RHS の proj 呼び出しを無限展開（False分岐で条件未決定のまま発散）。
+  **教訓: 再帰関数の unfold は `by (subst f.simps) (simp add: Let_def)` の単発展開補題
+  （proj_id/proj_rec 型）を作り、それだけを使う。** simp-free の決定的 Isar
+  （unfolding proj_id/proj_rec + rule）が最終形。並列処理のためエラー(line58)と
+  ループが同居し 950s 沈黙→二分探索+ベースライン計測（psi+otembed キャッシュは4s）で特定。
+- m_step_decreases は ST_PS 前提なし（OF L n のみ）。
+- 次: nrm_step_dec の直接証明キャンペーン（order_pres から独立に）。武器: E6 接尾辞補題
+  （proj y (NT dom) = NT(首最大row1接尾辞)）、E7 ケース木（第一差分は prefix/sub の2種のみ）、
+  oper 場合分け機構（m_step_decreases の全補題群）。
