@@ -2184,3 +2184,17 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - 残作業更新: sibm→sibm2 へ Isabelle 改修（def/diag/take/oper骨格/oper_bad sorry
   ステート修正・SIB_shape→SIB_shape2 4族版・NT_tie_resolved 4ケース化）、
   NT_firstdiff_lt 新設、sibm2_oper_bad 手術（真の文面になった）。
+
+- (続29補) **Isabelle 改修完了（緑20s・コミット 60e581c）**: sibrel（E∨P∨hm²∧lexdiff{F1,F2}）
+  + sibm2 + hm_take/sibrel_trunc（切詰め安定が一般補題化、旧版の E→P-hm欠落問題は
+  「P に hm を要求しない」設計で消滅）+ sibm2_take/butlast/oper骨格/ST_PS +
+  SIB_shape2（結論=sibrel・旧 hm 簿記は sibrel_trunc に吸収され簡素化）+
+  fbseg_run_hd_level（ラン頭レベル= fst c + 1・stepsok簿記）+
+  NT_tie_resolved 3ケース版。新 sorry: sibm2_oper_bad（真文面）/
+  E6_tie_nofire0/1（¬hm タイランは無発火・実証3027窓全無発火）/
+  NT_lexdiff_lt（dseg²+hm²+頭レベル同+LF1∨LF2 ⟹ 厳密 olt・実証116万対0失敗）。
+  計17 sorry（nrmstep 16+nrm 1）、全て実証済文面。
+- (続29補2) 検証ツール: mine_sibm2/3/4/5.py（run地理・窓カタログ・M レベル4族）、
+  mine_lexdiff.py（合成クラスは cnf 規律欠落で広すぎ偽→実 dseg 対で真）、
+  audit_plus1.py（既存マイナーの enum_ST を閉包+1 にパッチして一括再監査）。
+  PC対は b=copy0頭のみ・CC+1 は d0=0 頭々のみ・CC+2 以遠ゼロ（oper_bad 設計用）。
