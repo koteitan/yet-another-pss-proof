@@ -1820,3 +1820,13 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   →（A）同様 equality 化で cnf 隣接に帰着できる可能性。ただし (B) 連鎖の fst は
   弱降下なので等式不変式は単純には立たない — 次セッションで (B)-経路の fst 列を
   実証プロファイルしてから設計する事。
+- (続20補8) **(B)-経路プロファイル: fst h_T = fst p が全9361降下で成立（drop 0件）**。
+  構造証明スケッチ: 不変式 INV2「∀x∈set C. fst (hd C) ≤ fst x」が
+  (C)降下（rest 全 > fst p ⟹ 新 hd = fst p+1 で再成立）と
+  (B)降下（T ⊆ C ⟹ 全 ≥ fst p、T頭 ≤ fst p ⟹ 等値＋再成立）で保存、top は自明。
+  ⟹ (B)位置で p と h_T は同レベル隣接和分 ⟹ STS_B の hdsub 節は STS_A_aux 型の
+  cnf 隣接抽出（¬ olt 頭対 ⟹ snd h_T ≤ snd p ＋ 等号時 tr K_T ≤o tr K）で閉じる。
+  さらに等号時の第2成分（tr K_T ≤o tr K）が hdarg 節の素材。
+  残る真の核 = 兄弟引数の nrm∘proj 弱保存（hdarg 節と projE_ii の共通核）と
+  nrm_hd（nrm が segment-translate の頭添字を保存、同帰納で同時に取れる見込み）。
+  次セッション実装順: INV2 スレッディング → nrm_hd+hdsub 節 → 共通核 → projE_iii。
