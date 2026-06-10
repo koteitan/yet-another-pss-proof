@@ -1000,12 +1000,14 @@ text \<open>The two remaining transport cases (class lemmas; empirically zero
 
 lemma projE_iii:
   assumes "segprov u S q"
+    and "Einc (nrm (translate S)) (nrm (translate (S @ [q])))"
     and "\<not> pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
   shows "Einc (nrm (translate S)) (proj u (nrm (translate (S @ [q]))))"
   sorry
 
 lemma projE_ii:
   assumes "segprov u S q"
+    and "Einc (nrm (translate S)) (nrm (translate (S @ [q])))"
     and "pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
   shows "Einc (proj u (nrm (translate S))) (proj u (nrm (translate (S @ [q]))))"
   sorry
@@ -1022,14 +1024,14 @@ proof (cases "pfire u (nrm (translate S))")
       using xf by blast
     from fire_transport[OF R this] show ?thesis .
   qed
-  show ?thesis by (rule projE_ii[OF PV xf x'f])
+  show ?thesis by (rule projE_ii[OF PV R xf x'f])
 next
   case xnf: False
   have px: "proj u (nrm (translate S)) = nrm (translate S)" by (rule proj_nofire[OF xnf])
   show ?thesis
   proof (cases "pfire u (nrm (translate (S @ [q])))")
     case x'f: True
-    show ?thesis unfolding px by (rule projE_iii[OF PV xnf x'f])
+    show ?thesis unfolding px by (rule projE_iii[OF PV R xnf x'f])
   next
     case x'nf: False
     have px': "proj u (nrm (translate (S @ [q]))) = nrm (translate (S @ [q]))"
