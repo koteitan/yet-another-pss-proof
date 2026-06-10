@@ -255,7 +255,9 @@ function snocok :: "pairseq \<Rightarrow> nat \<times> nat \<Rightarrow> bool" w
   "snocok [] q = False"
 | "snocok (p # rest) q =
      (if dropWhile (\<lambda>r. fst p < fst r) rest = []
-      then (if fst p < fst q then rest = [] \<or> snocok rest q
+      then (if fst p < fst q
+            then olt (proj (snd p) (nrm (translate rest)))
+                     (proj (snd p) (nrm (translate (rest @ [q]))))
             else snd q \<le> snd p)
       else snocok (dropWhile (\<lambda>r. fst p < fst r) rest) q \<and>
            \<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
@@ -271,8 +273,19 @@ termination
   by (relation "measure (length \<circ> fst)")
      (auto simp: le_imp_less_Suc length_dropWhile_le)
 
+lemma ins_olt:
+  assumes R: "olt t t'"
+    and na:  "t = Z \<or> \<not> (a < hdsub t \<or> (a = hdsub t \<and> olt b (hdarg t)))"
+    and na': "t' = Z \<or> \<not> (a < hdsub t' \<or> (a = hdsub t' \<and> olt b (hdarg t')))"
+  shows "olt (ins a b t) (ins a b t')"
+proof -
+  have e:  "ins a b t = P a b t"  by (rule ins_noabsorb[OF na])
+  have e': "ins a b t' = P a b t'" by (rule ins_noabsorb[OF na'])
+  show ?thesis unfolding e e' using R by (rule olt_P_c)
+qed
+
 lemma nrm_snoc_seg:
-  "snocok C q \<Longrightarrow> C \<noteq> [] \<Longrightarrow> Rinc (nrm (translate C)) (nrm (translate (C @ [q])))"
+  "snocok C q \<Longrightarrow> C \<noteq> [] \<Longrightarrow> olt (nrm (translate C)) (nrm (translate (C @ [q])))"
 proof (induct C q rule: snocok.induct)
   case (1 q) show ?case using 1 by simp
 next
@@ -287,7 +300,7 @@ next
     have nC: "nrm (translate (p # rest)) = ins (snd p) ?pb (nrm (translate ?T))"
       by (simp only: translate.simps(2) nrm.simps(2))
     have appC: "(p # rest) @ [q] = p # (rest @ [q])" by simp
-    show "Rinc (nrm (translate (p # rest))) (nrm (translate ((p # rest) @ [q])))"
+    show "olt (nrm (translate (p # rest))) (nrm (translate ((p # rest) @ [q])))"
     proof (cases "?T = []")
       case Tnil: True
       have allP: "\<forall>r \<in> set rest. ?Pp r" using Tnil by (simp add: dropWhile_eq_Nil_conv)
@@ -306,30 +319,10 @@ next
         have nC': "nrm (translate ((p # rest) @ [q]))
                     = P (snd p) (proj (snd p) (nrm (translate (rest @ [q])))) Z"
           by (simp only: e1 nrm.simps ins.simps(1))
-        show ?thesis
-        proof (cases "rest = []")
-          case True
-          have l: "nrm (translate (p # rest)) = P (snd p) Z Z"
-            unfolding True by (simp add: proj_Z)
-          have r: "nrm (translate ((p # rest) @ [q])) = P (snd p) (P (snd q) Z Z) Z"
-            unfolding True using qd by (simp add: proj_Z proj_leaf)
-          have G1: "lext (P (snd p) Z Z) (P (snd p) (P (snd q) Z Z) Z)"
-            by (rule lext_arg[OF lext_end])
-          show ?thesis unfolding Rinc_def l r using G1 by blast
-        next
-          case rne: False
-          have sok: "snocok rest q"
-            using sokA Tnil qd rne by (simp add: snocok.simps split: if_splits)
-          have IH: "Rinc (nrm (translate rest)) (nrm (translate (rest @ [q])))"
-            by (rule 2(1)[OF Tnil qd sok rne])
-          have PR: "Rinc (proj (snd p) (nrm (translate rest)))
-                         (proj (snd p) (nrm (translate (rest @ [q]))))"
-            by (rule proj_Rinc_snoc[OF IH])
-          have G1: "Rinc (P (snd p) (proj (snd p) (nrm (translate rest))) Z)
-                         (P (snd p) (proj (snd p) (nrm (translate (rest @ [q])))) Z)"
-            by (rule Rinc_arg_cong[OF PR])
-          show ?thesis unfolding nCs nC' by (rule G1)
-        qed
+        have PR: "olt (proj (snd p) (nrm (translate rest)))
+                      (proj (snd p) (nrm (translate (rest @ [q]))))"
+          using sokA Tnil qd by (simp add: snocok.simps split: if_splits)
+        show ?thesis unfolding nCs nC' by (rule olt_P_b[OF PR])
       next
         case qnd: False   \<comment> \<open>(A) new summand\<close>
         have tw': "takeWhile ?Pp (rest @ [q]) = rest"
@@ -352,10 +345,7 @@ next
         have R: "nrm (translate ((p # rest) @ [q]))
                   = P (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z)"
           by (simp only: nC' noab)
-        have G1: "lext (P (snd p) (proj (snd p) (nrm (translate rest))) Z)
-                       (P (snd p) (proj (snd p) (nrm (translate rest))) (P (snd q) Z Z))"
-          by (rule lext_tail[OF lext_end])
-        show ?thesis unfolding Rinc_def nCs R using G1 by blast
+        show ?thesis unfolding nCs R by (rule olt_P_c) simp
       qed
     next
       case Tne: False   \<comment> \<open>(B) tail extension\<close>
@@ -375,37 +365,27 @@ next
                 \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
                    \<and> olt ?pb (hdarg (nrm (translate (?T @ [q]))))))"
         using sokA Tne by (simp add: snocok.simps split: if_splits)
-      have IH: "Rinc (nrm (translate ?T)) (nrm (translate (?T @ [q])))"
-        by (rule 2(2)[OF Tne conjunct1[OF cond] Tne])
-      have "Rinc (ins (snd p) ?pb (nrm (translate ?T)))
-                 (ins (snd p) ?pb (nrm (translate (?T @ [q]))))"
-        by (rule ins_Rinc[OF IH]) (use cond in auto)
+      have IH: "olt (nrm (translate ?T)) (nrm (translate (?T @ [q])))"
+        by (rule 2(1)[OF Tne conjunct1[OF cond] Tne])
+      have "olt (ins (snd p) ?pb (nrm (translate ?T)))
+                (ins (snd p) ?pb (nrm (translate (?T @ [q]))))"
+        by (rule ins_olt[OF IH]) (use cond in auto)
       thus ?thesis unfolding nC nC' by simp
     qed
   qed
 qed
-
-text \<open>Deriving the condition bundle from standardness of the host \<dash> the
-  remaining class obligation for the snoc characterization.\<close>
 
 lemma ST_snocok:
   assumes "C @ [q] \<in> ST_PS" and "C \<noteq> []"
   shows "snocok C q"
   sorry
 
-lemma nrm_snoc_Rinc:
-  assumes "C @ [p] \<in> ST_PS" and "C \<noteq> []"
-  shows "Rinc (nrm (translate C)) (nrm (translate (C @ [p])))"
-  by (rule nrm_snoc_seg[OF ST_snocok[OF assms] assms(2)])
-
 theorem nrm_snoc:
   assumes "C @ [p] \<in> ST_PS" and "C \<noteq> []"
   shows "olt (nrm (translate C)) (nrm (translate (C @ [p])))"
-  using Rinc_olt[OF nrm_snoc_Rinc[OF assms]] .
+  by (rule nrm_snoc_seg[OF ST_snocok[OF assms] assms(2)])
 
-text \<open>\<open>Pred\<close> case of the step decrease, from \<open>nrm_snoc\<close>: in the \<open>Pred\<close> branch
-  \<open>M[n] = Pred M = butlast M\<close>, so with \<open>M = butlast M @ [last M]\<close> standard the
-  decrease is exactly \<open>nrm_snoc\<close> read right-to-left.\<close>
+text \<open>\<open>Pred\<close> case of the step decrease, from \<open>nrm_snoc\<close>.\<close>
 
 lemma nrm_step_dec_pred:
   assumes M: "M \<in> ST_PS" and L: "1 < Lng M"
