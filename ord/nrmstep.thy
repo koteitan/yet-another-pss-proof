@@ -208,20 +208,6 @@ proof -
     by (auto intro: lext.intros lflip.intros)
 qed
 
-subsection \<open>The core closure (campaign target): \<open>proj\<close> versus \<open>Rinc\<close>\<close>
-
-text \<open>At an argument extension the two sides are \<open>proj\<close>-images of \<open>Rinc\<close>-related
-  arguments.  Empirically (full \<open>A\<^sub>a\<close> sets, zero violations) the projections are
-  again \<open>Rinc\<close>-related \<dash> the fire-flip \<open>D\<^bsub>y'\<^esub>(0) \<rightarrow> D\<^bsub>y\<^esub>(0)\<close> arises exactly when
-  the inserted leaf creates a tower that out-scales the old argument.  The
-  hypotheses will be refined to the hereditary class facts (blockok/cnf/nfinv)
-  as the proof is developed.\<close>
-
-lemma proj_Rinc_snoc:
-  assumes "Rinc x x'"
-  shows "Rinc (proj a x) (proj a x')"
-  sorry
-
 subsection \<open>Small computation lemmas\<close>
 
 lemma proj_Z: "proj u Z = Z"
