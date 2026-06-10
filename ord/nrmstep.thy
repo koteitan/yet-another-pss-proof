@@ -361,10 +361,102 @@ next
   qed
 qed
 
+text \<open>The three leaf obligations of the condition bundle, against a standard
+  host \<open>pre @ (p # rest) @ [q]\<close>.  (A) new-summand: the appended column's row-1
+  value does not exceed the head's (sibling tops, from \<open>cnf\<close>).  (B) tail: the
+  no-absorb pair (head preservation of \<open>nrm\<close> + sibling order).  (C) argument
+  extension: strictness of the projections \<dash> by the suffix recursion of
+  \<open>proj\<close> on standard segments.\<close>
+
+lemma ST_snoc_A:
+  assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
+    and "dropWhile (\<lambda>r. fst p < fst r) rest = []"
+    and "\<not> fst p < fst q"
+  shows "snd q \<le> snd p"
+  sorry
+
+lemma ST_snoc_B:
+  assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
+    and "dropWhile (\<lambda>r. fst p < fst r) rest \<noteq> []"
+  shows "\<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
+            \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
+               \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                     (hdarg (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest))))))
+      \<and> \<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))
+            \<or> (snd p = hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q])))
+               \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                     (hdarg (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest @ [q]))))))"
+  sorry
+
+lemma ST_snoc_C:
+  assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
+    and "dropWhile (\<lambda>r. fst p < fst r) rest = []"
+    and "fst p < fst q"
+  shows "olt (proj (snd p) (nrm (translate rest)))
+             (proj (snd p) (nrm (translate (rest @ [q]))))"
+  sorry
+
+lemma ST_snocok_gen:
+  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> snocok C q"
+proof (induct C arbitrary: pre rule: length_induct)
+  case (1 C)
+  note IH = 1(1) and host = 1(2) and ne = 1(3)
+  obtain p rest where C: "C = p # rest" using ne by (cases C) auto
+  show ?case
+  proof (cases "dropWhile (\<lambda>r. fst p < fst r) rest = []")
+    case Tnil: True
+    show ?thesis
+    proof (cases "fst p < fst q")
+      case True
+      have "olt (proj (snd p) (nrm (translate rest)))
+                (proj (snd p) (nrm (translate (rest @ [q]))))"
+        by (rule ST_snoc_C[OF host[unfolded C] Tnil True])
+      thus ?thesis unfolding C by (simp add: snocok.simps Tnil True)
+    next
+      case False
+      have "snd q \<le> snd p" by (rule ST_snoc_A[OF host[unfolded C] Tnil False])
+      thus ?thesis unfolding C by (simp add: snocok.simps Tnil False)
+    qed
+  next
+    case Tne: False
+    let ?T = "dropWhile (\<lambda>r. fst p < fst r) rest"
+    have Tsplit: "rest = takeWhile (\<lambda>r. fst p < fst r) rest @ ?T"
+      by simp
+    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] \<in> ST_PS"
+      using host unfolding C by (metis Tsplit append.assoc append_Cons append_Nil)
+    have lenT: "length ?T < length C"
+      unfolding C using length_dropWhile_le[of "\<lambda>r. fst p < fst r" rest]
+      by simp
+    have sokT: "snocok ?T q"
+      using IH lenT host' Tne by blast
+    have nab: "\<not> (snd p < hdsub (nrm (translate ?T))
+            \<or> (snd p = hdsub (nrm (translate ?T))
+               \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                     (hdarg (nrm (translate ?T)))))
+      \<and> \<not> (snd p < hdsub (nrm (translate (?T @ [q])))
+            \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
+               \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                     (hdarg (nrm (translate (?T @ [q]))))))"
+      by (rule ST_snoc_B[OF host[unfolded C] Tne])
+    have unf: "snocok (p # rest) q \<longleftrightarrow>
+               (snocok ?T q \<and>
+                \<not> (snd p < hdsub (nrm (translate ?T))
+                   \<or> (snd p = hdsub (nrm (translate ?T))
+                      \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                            (hdarg (nrm (translate ?T))))) \<and>
+                \<not> (snd p < hdsub (nrm (translate (?T @ [q])))
+                   \<or> (snd p = hdsub (nrm (translate (?T @ [q])))
+                      \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
+                            (hdarg (nrm (translate (?T @ [q])))))))"
+      by (simp only: snocok.simps if_not_P[OF Tne])
+    show ?thesis unfolding C using unf sokT nab by blast
+  qed
+qed
+
 lemma ST_snocok:
   assumes "C @ [q] \<in> ST_PS" and "C \<noteq> []"
   shows "snocok C q"
-  sorry
+  using ST_snocok_gen[of "[]" C q] assms by simp
 
 theorem nrm_snoc:
   assumes "C @ [p] \<in> ST_PS" and "C \<noteq> []"
