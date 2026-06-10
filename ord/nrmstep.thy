@@ -1437,6 +1437,44 @@ next
   qed
 qed
 
+lemma oper_bad_len:
+  assumes opeqX: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    and j0j1X: "j0 < j1" and j1lenX: "j1 < length M"
+  shows "length X = j0 + n * (j1 - j0)"
+proof -
+  have "length (concat (map (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n]))
+        = n * (j1 - j0)"
+    by (rule concat_map_upt_length) simp
+  moreover have "length (take j0 M) = j0" using j0j1X j1lenX by simp
+  ultimately show ?thesis unfolding opeqX by simp
+qed
+
+lemma oper_bad_nth_pre:
+  assumes opeqX: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    and "i < j0" and "j1 < length M" and "j0 < j1"
+  shows "X ! i = M ! i"
+  unfolding opeqX using assms(2-4) by (simp add: nth_append)
+
+lemma oper_bad_nth_copy:
+  assumes opeqX: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    and j0j1X: "j0 < j1" and j1lenX: "j1 < length M"
+    and k: "k < n" and q: "q < j1 - j0"
+  shows "X ! (j0 + (k * (j1 - j0) + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+proof -
+  have c: "concat (map (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])
+           ! (k * (j1 - j0) + q)
+           = map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1] ! q"
+    by (rule concat_map_upt_nth[OF _ k q]) simp
+  have m: "map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1] ! q
+           = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+    using q by simp
+  have lt: "length (take j0 M) = j0" using j0j1X j1lenX by simp
+  show ?thesis unfolding opeqX using c m lt by (simp add: nth_append)
+qed
+
 lemma r1ok_oper_bad:
   assumes "r1ok M" and "blockok 0 M" and "1 \<le> n"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
