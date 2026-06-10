@@ -1738,3 +1738,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
       Isabelle 化）＋ maxo 選択の partner 対応（Gterm_lext_sub/sup + gap機構）。
 - 必要な新部品: lext_end_gap（純粋）、maxo_partner（Gterm_lext + maxo_ub 復活）、
   末端到達性のクラス補題（ST_PS.induct or blockok 系から）。
+- (続19補2) gap補題の精密化: lext（任意Z位置挿入）では gap に小型項が入り得る
+  （空 arg への挿入は lex-走査の途中: g = P a (P w' Z Z) h 型の反例）。
+  **正しい枠 = einc（lex-末端挿入 + 末端葉 flip）**: 実ペアでは追加列は常に
+  最終ブロックの最深 tail = lex-末端 ✓。einc なら gap論法成立:
+  g vs x の厳密内部解決点は x' でも同一（末端のみ差）→ g≥x ∧ g<x' は延長のみ
+  → Gterm_size と矛盾 → fire 輸送 (iv) 排除。ケース(ii)の接尾辞再帰も末端性を保存。
+  次セッション: einc 定義 → einc_gap → fire 輸送 → maxo_partner → 末端到達クラス事実
+  （ST_PS.induct）→ ST_snoc_C 完成 → Pred ケース完了。
