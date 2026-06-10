@@ -2266,3 +2266,15 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   詰め合わせ）→ 単発 in_set_conv_nth + nth_take/linarith 分解で即緑。
   isbman kill は分類器拒否 → 自分の Bash バックグラウンドタスクなら TaskStop で
   プロセスツリーごと正当に停止できる。
+
+- (続29補8) **seam_open_core の完全地図（O2=150件の局在化）**: a は**常に prefix 内**、
+  (family, b位置, d0) は4型のみ:
+  (i) F1, b=copy0頭, d0>0 (60) — 分岐は既に K1 内 ⟹ family/hm 安定（純粋寄り）
+  (ii) F2, b∈prefix, d0=0 (42) — 同上
+  (iii) P, b∈prefix, d0=0 (28) — C vs D: C-pref-D か先頭即降下
+  (iv) P, b=最終コピー頭, d0>0 (20) — 同
+  P族 O2 の C vs D 比較は **t=0 で即降下 or C⊆D 接頭辞のみ**（深い分岐ゼロ、
+  lenC=lenD は降下時のみ）。E族は O2 に到達しない（0/5652、b は常に高位置）。
+  残証明義務: (1) E分岐 O2 反駁 (2) P分岐の C/D 三分律（prefix 整列の周期性核）
+  (3) hm(K1@C) = maxr1 blk ≤ snd hd K1 (4) F分岐の純粋安定性。
+  全て a∈prefix 局在なので M の prefix 構造＋ブロック構造の直接比較で攻められる。
