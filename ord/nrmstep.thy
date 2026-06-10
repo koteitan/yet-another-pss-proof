@@ -2524,6 +2524,182 @@ proof
   qed
 qed
 
+text \<open>(cascade, K side) If the maximum lives in the head's dominated run and
+  the segment fires, the head's run extends to the end, the head is visible,
+  and the run itself fires at the head's level.\<close>
+
+lemma E6_nbcK:
+  assumes "dseg u (c0 # rest)" and "pfire u (nrm (translate (c0 # rest)))"
+    and "takeWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+    and "maxr1 (takeWhile (\<lambda>r. fst c0 < fst r) rest) = maxr1 (c0 # rest)"
+    and "snd c0 < maxr1 (c0 # rest)"
+  shows "dropWhile (\<lambda>r. fst c0 < fst r) rest = [] \<and> u \<le> snd c0 \<and>
+         pfire (snd c0) (nrm (translate (takeWhile (\<lambda>r. fst c0 < fst r) rest)))"
+  sorry
+
+text \<open>(cascade, T side) If the maximum lives strictly in the sum tail, the
+  membership and violator facts transfer to the tail with the whole as
+  threshold.\<close>
+
+lemma E6_memT:
+  assumes "dseg u (c0 # rest)" and "pfire u (nrm (translate (c0 # rest)))"
+    and "dropWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+    and "maxr1 (c0 # takeWhile (\<lambda>r. fst c0 < fst r) rest) < maxr1 (c0 # rest)"
+  shows "nrm (translate (msfx (dropWhile (\<lambda>r. fst c0 < fst r) rest)))
+           \<in> Gterm u (nrm (translate (dropWhile (\<lambda>r. fst c0 < fst r) rest)))
+         \<and> \<not> olt (nrm (translate (msfx (dropWhile (\<lambda>r. fst c0 < fst r) rest))))
+                 (nrm (translate (c0 # rest)))"
+  sorry
+
+text \<open>Resolution of \<open>E6_mem\<close>: head-max is excluded by \<open>E6_hdom\<close>; max-in-run
+  assembles from the K-cascade, \<open>E6_value\<close> at the run, and pure subscript
+  facts; max-in-tail transfers by the T-cascade and \<open>msfx_tail\<close>.\<close>
+
+lemma E6_mem_resolved:
+  assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
+  shows "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))
+         \<and> \<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
+proof -
+  have Sne: "S \<noteq> []" using D unfolding dseg_def by blast
+  obtain c0 rest where C: "S = c0 # rest" using Sne by (cases S) auto
+  let ?K = "takeWhile (\<lambda>r. fst c0 < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c0 < fst r) rest"
+  let ?A = "proj (snd c0) (nrm (translate ?K))"
+  let ?m = "maxr1 S"
+  have fbC: "fbseg u (c0 # rest)" using dseg_fbseg[OF D] unfolding C .
+  have sh: "nrm (translate S) = P (snd c0) ?A (nrm (translate ?T))"
+    unfolding C by (rule NT_shape[OF fbC refl])
+  have DC: "dseg u (c0 # rest)" using D unfolding C .
+  have FC: "pfire u (nrm (translate (c0 # rest)))" using F unfolding C .
+  have rsplit: "rest = ?K @ ?T" by simp
+  have xs: "set (c0 # rest) = set (c0 # ?K) \<union> set ?T"
+  proof -
+    have "set rest = set ?K \<union> set ?T"
+      by (metis rsplit set_append)
+    thus ?thesis by auto
+  qed
+  show ?thesis
+  proof (cases "snd c0 = ?m")
+    case True
+    have "snd (hd S) = maxr1 S" using True unfolding C by simp
+    hence "\<not> pfire u (nrm (translate S))" by (rule E6_hdom[OF D])
+    thus ?thesis using F by blast
+  next
+    case hl: False
+    have hlt: "snd c0 < ?m"
+      using maxr1_ub[of c0 S] hl unfolding C by simp
+    show ?thesis
+    proof (cases "?K \<noteq> [] \<and> maxr1 ?K = ?m")
+      case Kmax: True
+      have hltC: "snd c0 < maxr1 (c0 # rest)" using hlt unfolding C by simp
+      from E6_nbcK[OF DC FC _ _ hltC] Kmax
+      have Tnil: "?T = []" and uv: "u \<le> snd c0"
+        and Kf: "pfire (snd c0) (nrm (translate ?K))"
+        using C by blast+
+      have dsK: "dseg (snd c0) ?K"
+        using fbseg_K_dseg[OF fbC] Kmax by blast
+      have Aval: "?A = nrm (translate (msfx ?K))"
+        by (rule E6_value[OF dsK Kf])
+      have rk: "rest = ?K" using rsplit Tnil by simp
+      have meq: "msfx S = msfx ?K"
+      proof -
+        have "msfx S = dropWhile (\<lambda>c. snd c < ?m) S" by (simp add: msfx_def)
+        also have "\<dots> = dropWhile (\<lambda>c. snd c < ?m) rest"
+          unfolding C using hltC by simp
+        also have "\<dots> = dropWhile (\<lambda>c. snd c < ?m) ?K" using rk by simp
+        also have "\<dots> = msfx ?K" unfolding msfx_def using Kmax by auto
+        finally show ?thesis .
+      qed
+      have mem: "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))"
+        unfolding sh meq Aval[symmetric] using uv by simp
+      have hdms: "hdsub (nrm (translate (msfx S))) = ?m"
+        using NT_msfx_hdsub[OF Sne] by simp
+      obtain c' rest' where M': "msfx S = c' # rest'"
+        using msfx_ne[OF Sne] by (cases "msfx S") auto
+      obtain e f g where E: "nrm (translate (msfx S)) = P e f g"
+        using NT_neZ unfolding M' by (cases "nrm (translate (c' # rest'))") auto
+      have em: "e = ?m" using hdms unfolding E by simp
+      have "\<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
+        unfolding sh E using em hlt by simp
+      thus ?thesis using mem by blast
+    next
+      case nK: False
+      have KleM: "maxr1 (c0 # ?K) \<le> ?m"
+        unfolding maxr1_def
+        by (intro Max_mono) (auto simp: C dest: set_takeWhileD)
+      have noKwit: "\<And>x. x \<in> set (c0 # ?K) \<Longrightarrow> snd x \<noteq> ?m"
+      proof
+        fix x assume xin: "x \<in> set (c0 # ?K)" and xm: "snd x = ?m"
+        have "x = c0 \<or> x \<in> set ?K" using xin by auto
+        thus False
+        proof
+          assume "x = c0" thus False using xm hlt by simp
+        next
+          assume xK: "x \<in> set ?K"
+          hence Kne: "?K \<noteq> []" by auto
+          have "?m \<le> maxr1 ?K" using xK xm maxr1_ub by fastforce
+          moreover have "maxr1 ?K \<le> ?m"
+            unfolding maxr1_def
+            by (intro Max_mono) (use Kne in \<open>auto simp: C dest: set_takeWhileD\<close>)
+          ultimately show False using nK Kne by simp
+        qed
+      qed
+      obtain xm where xm: "xm \<in> set S" "snd xm = ?m"
+        using maxr1_in[OF Sne] by auto
+      have xmT: "xm \<in> set ?T"
+      proof -
+        have "xm \<in> set (c0 # ?K) \<union> set ?T" using xm(1) xs unfolding C by blast
+        moreover have "xm \<notin> set (c0 # ?K)" using noKwit xm(2) by blast
+        ultimately show ?thesis by blast
+      qed
+      have Tne: "?T \<noteq> []" using xmT by (metis empty_iff empty_set)
+      have mT: "maxr1 ?T = ?m"
+      proof -
+        have "?m \<le> maxr1 ?T" using maxr1_ub[OF xmT] xm(2) by simp
+        moreover have "maxr1 ?T \<le> ?m"
+          unfolding maxr1_def
+          by (intro Max_mono) (use Tne in \<open>auto simp: C dest: set_dropWhileD\<close>)
+        ultimately show ?thesis by simp
+      qed
+      have mlt: "maxr1 (c0 # ?K) < ?m"
+      proof -
+        have "maxr1 (c0 # ?K) \<noteq> ?m"
+        proof
+          assume eqm: "maxr1 (c0 # ?K) = ?m"
+          have "?m \<in> snd ` set (c0 # ?K)"
+            using maxr1_in[of "c0 # ?K"] eqm by simp
+          then obtain x where xx: "x \<in> set (c0 # ?K)" and xsnd: "snd x = ?m" by force
+          show False using noKwit[OF xx] xsnd by simp
+        qed
+        thus ?thesis using KleM by simp
+      qed
+      have mltC: "maxr1 (c0 # ?K) < maxr1 (c0 # rest)" using mlt unfolding C by simp
+      from E6_memT[OF DC FC Tne mltC]
+      have memT: "nrm (translate (msfx ?T)) \<in> Gterm u (nrm (translate ?T))"
+        and vioT: "\<not> olt (nrm (translate (msfx ?T))) (nrm (translate (c0 # rest)))"
+        by blast+
+      have meq: "msfx S = msfx ?T"
+      proof -
+        have Ssplit: "S = (c0 # ?K) @ ?T" unfolding C by simp
+        have bound: "\<forall>c \<in> set (c0 # ?K). snd c < maxr1 ?T"
+        proof
+          fix c assume "c \<in> set (c0 # ?K)"
+          hence "snd c \<le> maxr1 (c0 # ?K)" using maxr1_ub by fast
+          thus "snd c < maxr1 ?T" using mlt mT by simp
+        qed
+        show ?thesis unfolding Ssplit by (rule msfx_tail[OF Tne bound])
+      qed
+      have sub: "Gterm u (nrm (translate ?T)) \<subseteq> Gterm u (nrm (translate S))"
+        unfolding sh by auto
+      have m1: "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))"
+        using memT sub meq by auto
+      have m2: "\<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
+        using vioT meq unfolding C by simp
+      show ?thesis using m1 m2 by blast
+    qed
+  qed
+qed
+
 text \<open>\<open>Pred\<close> case of the step decrease, from \<open>nrm_snoc\<close>.\<close>
 
 lemma nrm_step_dec_pred:

@@ -1988,3 +1988,12 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   （hdom/dom_tie の呼び出し側は G をそのまま供給）。教訓: sorry クラス事実は
   文面確定時に必ず「使用側が供給できる前提だけで」最弱化マイニングする。
   弱クラス LPL は等値も475件（吸収で NT C = NT S）→ hdom 側はサイズ論法で排除済。
+
+- (続25補5) **E6_mem_resolved 緑（3コンビネータ完成）**: 頭max → E6_hdom 排除 /
+  m-in-K → E6_nbcK(sorry: T=[]∧可視∧K発火) + E6_value(K) + 純粋部品で完全組立 /
+  m-in-T → E6_memT(sorry: 尾部への membership/violator 移送) + msfx_tail。
+  Max_mono 系は nonempty を use で明示供給（xs ファクト混入で auto 迷走する）。
+  imageE 系 obtain は force。最終 show は meq/sub を介して m1/m2 に分解。
+  実効 sorry コア: E6_lpl / E6_dom_deep / E6_nbcK / E6_memT / NT_tie（+行レベル3+STS_B）。
+  全コンビネータ・カタログ・排除パターンが証明済みなので、残コアは全て
+  「スパイン/ラン上の first-max 優先」という単一テーマの変種。
