@@ -2583,16 +2583,42 @@ qed
 lemma sibm2_butlast: "sibm2 M \<Longrightarrow> sibm2 (butlast M)"
   using sibm2_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
+text \<open>The seam step: appending one more shifted copy of the block preserves
+  the sibling-run invariant.  (The whole bad-branch preservation reduces to
+  this by induction on the copy count; the base \<open>m = 0\<close> is \<open>sibm2_take\<close>.)\<close>
+
+lemma sibm2_snoc_copy:
+  assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "sibm2 (take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m]))"
+  shows "sibm2 (take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<Suc m]))"
+  sorry
+
 lemma sibm2_oper_bad:
   assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
     and "i1 = idx1 M j1" and "hasParent M i1 j1"
     and "j0 = parent M i1 j1"
     and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
-    and "oper M n = take j0 M @ concat (map (\<lambda>k.
+    and opeq: "oper M n = take j0 M @ concat (map (\<lambda>k.
            map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
   shows "sibm2 (oper M n)"
-  sorry
+proof -
+  have all: "sibm2 (take j0 M @ concat (map (\<lambda>k.
+        map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n]))"
+  proof (induct n)
+    case 0 show ?case using sibm2_take[OF assms(1)] by simp
+  next
+    case (Suc n)
+    show ?case by (rule sibm2_snoc_copy[OF assms(1-9) Suc])
+  qed
+  show ?thesis unfolding opeq by (rule all)
+qed
 
 lemma sibm2_oper:
   assumes R: "sibm2 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"

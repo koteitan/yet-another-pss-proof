@@ -2208,3 +2208,27 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   呼び出しも修正、緑）。
   **E6_memT は前提がクラス上空**（dseg+T≠[] で max-in-tail は 0/14638、fire 不要）
   — 空虚に真。後で「maxr1(c0#K) = maxr1 S (T≠[]時)」の純粋事実から前提矛盾で討伐可。
+
+- (続29補4) **sibm2_oper_bad = n帰納×シーム補題 sibm2_snoc_copy に再構成（緑）**。
+  シーム（Y = take j0 M @ copies[0..<m] → Y @ C, C = copy m）の対分類と討伐地図:
+  - **I-closed**: 対(a,b)が Y 内・mrun Y b 閉 → run は append で不変
+    （takeWhile_append1）→ IH sibm2 Y から sibrel そのまま。純粋・易。
+  - **I-open**: mrun Y b 開（Y終端まで）→ Y' で E = takeWhile(>lev b) C だけ延長。
+    sibrel K (K1@E) が必要 = **残る本丸（周期性/整列算術）**。
+    家族の変化: E-open は延長空が必要（lev b ≥ hd C レベル）等、位置・レベル事実で処理。
+  - **II-int**: 両端 C 内 → C = block の m·d0 シフト ＝ take j1 M の接尾辞と
+    run 構造が同型（シフトは fst 比較を保存）→ sibm2_take[OF R] から転送。
+    シフト対応簿記（mrun_shift 系小補題）が必要。
+  - **II-cross**: a が Y 内・b が C 内 → b = C頭 (lenY) が強制
+    （C頭はコピー内厳密最小: S1 = ブロック頭最小 ∀q∈(0,L). e0(j0+q) > e0(j0)、
+    le0 連鎖 or le0_interval_gt から）。3亜種:
+    (i) m=0 (PC): M の対 (a,j0) の sibrel + mrun M j0 = blocktail@[M!j1] の
+        切詰め = **sibrel_trunc で即閉** ✓
+    (ii) m≥1, d0=0: a = 最終コピー頭が強制（手前だと先に止まる）→ K=K1=blocktail
+        = E族 ✓ 自明
+    (iii) m≥1, d0>0: e0(j0+qa)=e0(j1)・尾部クリア・e1(j0+qa)=e1(j0) の同時成立を
+        **CFGA_r1 で反駁**: 新Mレベル事実「CFG-A ⟹ e1(j0+qa) ≥ e1(j1)」
+        （実証 265/265 で等号、e1(j1) > e1(j0) と合わせ ≠ e1(j0)）。
+        j0+qa と j1 は同一 row0 親 w0 の隣接同レベル兄弟、w0 は le0鎖上で
+        e1(w0) ≥ e1(j1) — r1ok_climb と同じ値側下界ファミリー。
+  - S1 と mrun_shift と I-closed から先に実装、I-open と CFGA_r1 は sorry 小核に分離。
