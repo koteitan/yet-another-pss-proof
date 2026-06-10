@@ -64,8 +64,14 @@
           ✅ post一般化（segprov/STS_A/ST_snocokS_gen/ST_snocok_int/nrm_snoc_int、内部位置対応・実証8243で0違反）
           ✅ fbseg（森境界ピース）＋閉包補題3本 / NT_noabsorb / **NT_tail_lt**（nrm和尾部厳密増大）
           ✅ C1層完成: fbseg_hd_level（blockokレベル固定・drop=0）→NT_dom→NT_shape→NT_hd/NT_tail_lt（memo続24）
-          🚨 残6: **NT_tie**（SIB核=添字タイ兄弟arg比較・1037件0違反）/ 🚨🤖 **E6_value**（マスター帰納）/
-          E6_qcut_last / E6_iii_singleton / E6_seam / STS_B（hdarg節=NT_tieと同核）
+          ✅ **E6_value 本体**（E6_mem/E6_dom_tie 分解のコンビネータ・proj_once+maxo_ub）
+          ✅ **GCAT**（Gカタログ・u一様・E6_value非依存）+ subs連鎖 + NT_msfx_hdsub + 低添字dominance
+          ✅ nrm_snoc_mid/NT_prefix_lt（mid-host）/ msfx_tail / **E6_dom_tie_resolved**（l=j0閉鎖）/
+          **E6_hdom**（排除コア、GCATパターン）— 層化循環は最終組立で同時帰納に（memo続25）
+          ✅ 健全性修正: E6_lpl/E6_dom_deep に可視性前提（旧文面は偽・実証2163逆転をキャッチ）
+          🚨 実効コア4: **E6_lpl**（後続片敗北・可視性付き）/ **E6_dom_deep**（深部タイ）/
+          **E6_mem**（可視鎖メンバーシップ連鎖）/ **NT_tie**（SIB核）
+          🚨 行レベル3: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（NT_tieと同核）
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
