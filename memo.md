@@ -1953,3 +1953,12 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
     NT(msfx S) = 最深可視先祖の arg ∈ Gterm（E6/IH を run で使う再帰）。
 - 帰納の正しい束: 長さ強帰納で {HDOM, GCAT, E6_mem, E6_dom_tie}（E6_value は証明済
   コンビネータ）。NT_tie は HDOM+E6 値の系になる見込み。E6_seam/qcut/iii は行レベル。
+
+- (続25補) **GCAT 緑（G-カタログ・u一様・130行帰納が一発）**: fbseg閉包 S の臨界は
+  Z または「S の連続部分片 C の NT 像で hdsub g = snd (hd C)」。
+  鍵: NT_shape の結論が u 非依存 → GCAT を ∃v.fbseg v S で述べる / msfx-片の再帰は
+  proj_fire_in + Gterm_mono(u≤y0) + Gterm_trans で K-再帰に吸収（msfx片の fbseg 不成立を回避）。
+  補助: proj_fire_in / fbseg_K_dseg / Gterm_mono 緑。
+  ⚠️ 注意: GCAT は E6_value（sorry依存コンビネータ）を K(短い)に使用。最終組立時は
+  {GCAT, E6_mem, E6_dom_tie, E6_value} を長さ同時帰納に**インライン統合**が必要
+  （同長で GCAT(n)→mem/dom(n)→value(n) の層順・短い側だけ value を呼ぶ⟹非循環）。

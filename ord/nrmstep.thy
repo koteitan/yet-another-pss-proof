@@ -1606,6 +1606,13 @@ proof -
   show ?thesis using sub NT_tie[OF A T] by auto
 qed
 
+lemma Gterm_mono:
+  "u \<le> v \<Longrightarrow> Gterm v t \<subseteq> Gterm u t"
+proof (induction t)
+  case (P a b c)
+  thus ?case by (auto split: if_splits)
+qed simp
+
 lemma NT_shape:
   "fbseg u S \<Longrightarrow> S = c # rest \<Longrightarrow>
    nrm (translate (c # rest))
@@ -1786,6 +1793,160 @@ proof -
   qed
   have "?mx = ?ms" using m1 m2 by auto
   thus ?thesis using po by simp
+qed
+
+lemma proj_fire_in:
+  assumes f: "pfire u b"
+  shows "proj u b \<in> Gterm u b"
+proof -
+  let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
+  have ne: "?gs \<noteq> []" using f pfire_filter by blast
+  have "proj u b = maxo (hd ?gs) (tl ?gs)" using proj_once[of u b] ne by simp
+  moreover have "maxo (hd ?gs) (tl ?gs) \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+  ultimately show ?thesis using set_Glist by auto
+qed
+
+lemma fbseg_K_dseg:
+  assumes "fbseg u (c # rest)"
+    and ne: "takeWhile (\<lambda>r. fst c < fst r) rest \<noteq> []"
+  shows "dseg (snd c) (takeWhile (\<lambda>r. fst c < fst r) rest)"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  from assms(1) obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    unfolding fbseg_def by blast
+  have r: "rest = ?K @ ?T" by simp
+  have eq: "pre @ (pp # mid @ (c # rest)) @ post
+            = (pre @ (pp # mid)) @ (c # ?K) @ (?T @ post)"
+    by (subst r) simp
+  have h2: "(pre @ (pp # mid)) @ (c # ?K) @ (?T @ post) \<in> ST_PS"
+    using h unfolding eq .
+  have dom2: "\<forall>r \<in> set ?K. fst c < fst r"
+    using set_takeWhileD by fastforce
+  show ?thesis unfolding dseg_def using ne h2 dom2 by blast
+qed
+
+text \<open>(G-catalogue) Every critical of a normalized class image is \<open>Z\<close> or the
+  normalized image of a nonempty contiguous sub-piece whose head realizes the
+  head subscript.  Stated \<open>u\<close>-uniformly; the level only decides visibility.\<close>
+
+lemma GCAT:
+  "(\<exists>v. fbseg v S) \<Longrightarrow> g \<in> Gterm u (nrm (translate S)) \<Longrightarrow>
+   g = Z \<or> (\<exists>pre' C post'. S = pre' @ C @ post' \<and> C \<noteq> [] \<and> g = nrm (translate C)
+            \<and> hdsub g = snd (hd C))"
+proof (induct S arbitrary: g u rule: length_induct)
+  case (1 S)
+  note IH = 1(1)
+  obtain v where fb: "fbseg v S" using 1(2) by blast
+  obtain c rest where C: "S = c # rest" using fb unfolding fbseg_def by (cases S) auto
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  let ?A = "proj (snd c) (nrm (translate ?K))"
+  have sh: "nrm (translate (c # rest)) = P (snd c) ?A (nrm (translate ?T))"
+    by (rule NT_shape[OF fb[unfolded C] refl])
+  have gin: "g \<in> Gterm u (P (snd c) ?A (nrm (translate ?T)))"
+    using 1(3) unfolding C sh .
+  consider (a) "u \<le> snd c" "g = ?A" | (b) "u \<le> snd c" "g \<in> Gterm u ?A"
+         | (t) "g \<in> Gterm u (nrm (translate ?T))"
+    using gin by (auto split: if_splits)
+  thus ?case
+  proof cases
+    case a
+    show ?thesis
+    proof (cases "?K = []")
+      case True
+      have "?A = Z" unfolding True by (simp add: proj_Z)
+      thus ?thesis using a by simp
+    next
+      case Kne: False
+      show ?thesis
+      proof (cases "pfire (snd c) (nrm (translate ?K))")
+        case False
+        have gA: "g = nrm (translate ?K)" using a proj_nofire[OF False] by simp
+        have "\<exists>A R. nrm (translate ?K) = P (snd (hd ?K)) A R"
+          by (rule NT_hd[OF fbseg_K_desc[OF fb[unfolded C] Kne]])
+        hence hs: "hdsub g = snd (hd ?K)" using gA by auto
+        have dec: "S = [c] @ ?K @ ?T" unfolding C by simp
+        show ?thesis using gA hs dec Kne by blast
+      next
+        case True
+        have gA: "g = nrm (translate (msfx ?K))"
+          using a E6_value[OF fbseg_K_dseg[OF fb[unfolded C] Kne] True] by simp
+        have hs1: "hdsub g = maxr1 ?K"
+          using gA NT_msfx_hdsub[OF Kne] by simp
+        have hs2: "snd (hd (msfx ?K)) = maxr1 ?K" by (rule msfx_hd[OF Kne])
+        have dec0: "?K = takeWhile (\<lambda>r. snd r < maxr1 ?K) ?K @ msfx ?K"
+          by (rule msfx_decomp)
+        have dec: "S = (c # takeWhile (\<lambda>r. snd r < maxr1 ?K) ?K) @ msfx ?K @ ?T"
+          unfolding C
+          by (metis dec0 append.assoc append_Cons takeWhile_dropWhile_id)
+        show ?thesis using gA hs1 hs2 dec msfx_ne[OF Kne] by metis
+      qed
+    qed
+  next
+    case b
+    have Kne: "?K \<noteq> []"
+    proof
+      assume "?K = []"
+      hence "?A = Z" by (simp add: proj_Z)
+      thus False using b by simp
+    qed
+    have gK: "g \<in> Gterm u (nrm (translate ?K))"
+    proof (cases "pfire (snd c) (nrm (translate ?K))")
+      case False
+      thus ?thesis using b proj_nofire[OF False] by simp
+    next
+      case True
+      have "?A \<in> Gterm (snd c) (nrm (translate ?K))" by (rule proj_fire_in[OF True])
+      hence "?A \<in> Gterm u (nrm (translate ?K))" using Gterm_mono b(1) by blast
+      thus ?thesis using Gterm_trans b(2) by blast
+    qed
+    have lK: "length ?K < length S"
+      unfolding C using length_takeWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+    have pcK: "\<exists>v. fbseg v ?K"
+      using fbseg_K_desc[OF fb[unfolded C] Kne] by blast
+    from IH[rule_format, OF lK pcK gK]
+    show ?thesis
+    proof
+      assume "g = Z" thus ?thesis by simp
+    next
+      assume "\<exists>pre' C' post'. ?K = pre' @ C' @ post' \<and> C' \<noteq> [] \<and> g = nrm (translate C')
+              \<and> hdsub g = snd (hd C')"
+      then obtain pre' C' post' where w: "?K = pre' @ C' @ post'" "C' \<noteq> []"
+        "g = nrm (translate C')" "hdsub g = snd (hd C')" by blast
+      have "S = (c # pre') @ C' @ (post' @ ?T)"
+        unfolding C by (metis w(1) append.assoc append_Cons takeWhile_dropWhile_id)
+      thus ?thesis using w by blast
+    qed
+  next
+    case t
+    show ?thesis
+    proof (cases "?T = []")
+      case True
+      have "nrm (translate ?T) = Z" unfolding True by simp
+      thus ?thesis using t by simp
+    next
+      case Tne: False
+      have lT: "length ?T < length S"
+        unfolding C using length_dropWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+      have pcT: "\<exists>v. fbseg v ?T"
+        using fbseg_T_desc[OF fb[unfolded C] Tne] by blast
+      from IH[rule_format, OF lT pcT t]
+      show ?thesis
+      proof
+        assume "g = Z" thus ?thesis by simp
+      next
+        assume "\<exists>pre' C' post'. ?T = pre' @ C' @ post' \<and> C' \<noteq> [] \<and> g = nrm (translate C')
+                \<and> hdsub g = snd (hd C')"
+        then obtain pre' C' post' where w: "?T = pre' @ C' @ post'" "C' \<noteq> []"
+          "g = nrm (translate C')" "hdsub g = snd (hd C')" by blast
+        have "S = (c # ?K @ pre') @ C' @ post'"
+          unfolding C by (metis w(1) append.assoc append_Cons takeWhile_dropWhile_id)
+        thus ?thesis using w by blast
+      qed
+    qed
+  qed
 qed
 
 text \<open>(V4) In the both-fire q-cut configuration the x-side suffix is the last
