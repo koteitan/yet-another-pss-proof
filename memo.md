@@ -1637,3 +1637,16 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   根因: **G_a の可視性規則 = row1 < a の列の支配ブロック内部には降りない**（Gterm の if u≤a）。
   E5/E6 の一致は fire ケース標本での偶然。⟹ step-dec キャンペーンは項側
   （Gterm/proj と構造編集 butlast/copy-append の相互作用補題）で直接進める。
+
+### ★★(2026-06-10 続16) nrm-snoc の完全特徴づけ（Pred ケース設計確定）
+- **実証定理（2263 snoc ペアで完全一致）**: 標準 C@[m] に対し nrm(translate(C@[m])) は
+  nrm(translate C) から (i) 葉 D_y(0) を1箇所挿入（2220例）または
+  (ii) 1つの葉の添字を増分 D_{y'}(0)→D_y(0), y'<y（43例、fire-flip、全例クリーン単一位置）
+  のどちらか**だけ**で得られる。どちらも olt 厳密増加（単一位置合同）⟹ E7 の prefix/sub 二分と整合。
+- fire-flip の機構: 末尾 climb 追加でタワー D_{y'}(D_y 0) 形成 → 上位 G で fire → D_y(0) に射影
+  ＝「葉の置換」。タワー再帰でも単一 flip に潰れる（D0(D1(D2(D3 0)))→D0(D3 0)）。
+- **証明設計（nrmstep キャンペーン）**: 関係 R = lext（葉挿入）∪ lflip（葉添字増分）。
+  L1: R ⟹ olt（位置合同、容易）。**核心 = R の proj/ins-閉包**: x R y ⟹
+  proj a x (R∪flip∪=) proj a y（G-集合が点ごと R-関連＋新規 leaf 臨界、max 選択の分岐が flip を生む）。
+  これで nrm-snoc → translate_oper_pred の nrm 版（Pred ケース完了）。
+  bad ケース（コピー）は「コピー素材の nrm 寄与 <o 最終列の寄与」を同機構で。
