@@ -2318,3 +2318,12 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   - 残実体 = (s1) m=1 P族の e1(j0)=0 問題（d0=0・b<j0）
             (s2) b≥j0 コピー頭ケース（d0>0・F1 b=C0頭 60 + P b=Clast頭 20）
     (s2) は shf 持ち上げ＋同型の衝突が効くはず（次セッション）。
+
+- (続29補12) **seam_open_blift 討伐（緑）・seam_open_core 配線完了**:
+  b<j0 ケース完全証明 — E族= seam_E_refute / P族 m=0 = coreM 3分岐
+  （eq/pre→接頭辞・lexdiff→butlast_append+hm_take）/ P族 m≥2 = ascent反駁 /
+  lexdiff族 = snd集合論法（m≥1: blk⊆K1 / m=0: sibrel_diverge で coreM の
+  hm K1M を強制取得）。sibrel_diverge（分岐強制補題）新設。
+  残 sorry = **seam_open_m1**（m=1 P族・D vs cp1 比較・e1(j0)=0 問題）と
+  **seam_open_copyhead**（b≥j0・d0>0・F1@C0頭60+P@Clast頭20）の2点
+  + 既存の値側群。sibm2_oper_bad 鎖はこの2点で完結。
