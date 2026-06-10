@@ -289,6 +289,215 @@ next
   qed
 qed
 
+lemma Gterm_lflip_sup:
+  "lflip b b' \<Longrightarrow> \<forall>g \<in> Gterm u b. g \<in> Gterm u b' \<or> (\<exists>g' \<in> Gterm u b'. lflip g g')"
+proof (induction arbitrary: u rule: lflip.induct)
+  case (lflip_leaf w w')
+  show ?case using lflip_leaf.hyps by auto
+next
+  case (lflip_tail c c' a b)
+  show ?case
+  proof
+    fix g assume "g \<in> Gterm u (P a b c)"
+    then consider "u \<le> a" "g = b \<or> g \<in> Gterm u b" | "g \<in> Gterm u c"
+      by (auto split: if_splits)
+    thus "g \<in> Gterm u (P a b c') \<or> (\<exists>g' \<in> Gterm u (P a b c'). lflip g g')"
+    proof cases
+      case 1 thus ?thesis by auto
+    next
+      case 2
+      from lflip_tail.IH[of u] 2 show ?thesis by fastforce
+    qed
+  qed
+next
+  case (lflip_arg b b' a c)
+  show ?case
+  proof
+    fix g assume "g \<in> Gterm u (P a b c)"
+    then consider "u \<le> a" "g = b" | "u \<le> a" "g \<in> Gterm u b" | "g \<in> Gterm u c"
+      by (auto split: if_splits)
+    thus "g \<in> Gterm u (P a b' c) \<or> (\<exists>g' \<in> Gterm u (P a b' c). lflip g g')"
+    proof cases
+      case 1
+      have "b' \<in> Gterm u (P a b' c)" using 1 by simp
+      thus ?thesis using 1 lflip_arg.hyps by auto
+    next
+      case 2
+      from lflip_arg.IH[of u] 2 show ?thesis by fastforce
+    next
+      case 3 thus ?thesis by auto
+    qed
+  qed
+qed
+
+subsection \<open>End-position increase and the gap lemma\<close>
+
+text \<open>\<open>einc\<close>: one leaf inserted at the \<^emph>\<open>lex-final\<close> position \<dash> along tails to the
+  last summand, then (only when the tail is already \<open>Z\<close>) into its argument.
+  \<open>eflip\<close>: the final leaf's subscript incremented.  These are the shapes
+  actually produced by appending one column to a (standard) segment.  The gap
+  lemma: nothing of size \<open>\<le> size x\<close> other than extensions separates \<open>x\<close> from its
+  end-increase \<open>x'\<close>; hence (fire transport) any collapse witness of \<open>x\<close> remains
+  one for \<open>x'\<close>.\<close>
+
+inductive einc :: "three \<Rightarrow> three \<Rightarrow> bool" where
+  einc_end:  "einc Z (P w Z Z)"
+| einc_tail: "einc c c' \<Longrightarrow> einc (P a b c) (P a b c')"
+| einc_argZ: "einc b b' \<Longrightarrow> einc (P a b Z) (P a b' Z)"
+
+inductive eflip :: "three \<Rightarrow> three \<Rightarrow> bool" where
+  eflip_leaf: "w < w' \<Longrightarrow> eflip (P w Z Z) (P w' Z Z)"
+| eflip_tail: "eflip c c' \<Longrightarrow> eflip (P a b c) (P a b c')"
+| eflip_argZ: "eflip b b' \<Longrightarrow> eflip (P a b Z) (P a b' Z)"
+
+lemma einc_lext: "einc x y \<Longrightarrow> lext x y"
+  by (induction rule: einc.induct) (auto intro: lext.intros)
+
+lemma eflip_lflip: "eflip x y \<Longrightarrow> lflip x y"
+  by (induction rule: eflip.induct) (auto intro: lflip.intros)
+
+lemma einc_olt: "einc x y \<Longrightarrow> olt x y"
+  using einc_lext lext_olt by blast
+
+lemma eflip_olt: "eflip x y \<Longrightarrow> olt x y"
+  using eflip_lflip lflip_olt by blast
+
+lemma einc_gap:
+  "einc x x' \<Longrightarrow> \<not> olt g x \<Longrightarrow> olt g x' \<Longrightarrow> size x \<le> size g"
+proof (induction arbitrary: g rule: einc.induct)
+  case (einc_end w)
+  show ?case by simp
+next
+  case (einc_tail c c' a b)
+  show ?case
+  proof (cases g)
+    case Z thus ?thesis using einc_tail.prems by simp
+  next
+    case (P e f h)
+    have ne: "\<not> e < a" and nf: "\<not> (e = a \<and> olt f b)" and nh: "\<not> (e = a \<and> f = b \<and> olt h c)"
+      using einc_tail.prems(1) P by auto
+    have "e = a" "f = b" "olt h c'"
+      using einc_tail.prems(2) P ne nf by auto
+    hence "size c \<le> size h" using nh \<open>e = a\<close> einc_tail.IH by blast
+    thus ?thesis using P \<open>f = b\<close> by simp
+  qed
+next
+  case (einc_argZ b b' a)
+  show ?case
+  proof (cases g)
+    case Z thus ?thesis using einc_argZ.prems by simp
+  next
+    case (P e f h)
+    have ne: "\<not> e < a" and nf: "\<not> (e = a \<and> olt f b)"
+      using einc_argZ.prems(1) P by auto
+    have ea: "e = a" and fb': "olt f b'"
+      using einc_argZ.prems(2) P ne not_olt_Z by auto
+    have "size b \<le> size f" using nf ea fb' einc_argZ.IH by blast
+    thus ?thesis using P by simp
+  qed
+qed
+
+lemma eflip_gap:
+  "eflip x x' \<Longrightarrow> \<not> olt g x \<Longrightarrow> olt g x' \<Longrightarrow> size x \<le> size g"
+proof (induction arbitrary: g rule: eflip.induct)
+  case (eflip_leaf w w')
+  show ?case
+  proof (cases g)
+    case Z thus ?thesis using eflip_leaf.prems by simp
+  next
+    case (P e f h)
+    show ?thesis using P by simp
+  qed
+next
+  case (eflip_tail c c' a b)
+  show ?case
+  proof (cases g)
+    case Z thus ?thesis using eflip_tail.prems by simp
+  next
+    case (P e f h)
+    have ne: "\<not> e < a" and nf: "\<not> (e = a \<and> olt f b)" and nh: "\<not> (e = a \<and> f = b \<and> olt h c)"
+      using eflip_tail.prems(1) P by auto
+    have "e = a" "f = b" "olt h c'"
+      using eflip_tail.prems(2) P ne nf by auto
+    hence "size c \<le> size h" using nh \<open>e = a\<close> eflip_tail.IH by blast
+    thus ?thesis using P \<open>f = b\<close> by simp
+  qed
+next
+  case (eflip_argZ b b' a)
+  show ?case
+  proof (cases g)
+    case Z thus ?thesis using eflip_argZ.prems by simp
+  next
+    case (P e f h)
+    have ne: "\<not> e < a" and nf: "\<not> (e = a \<and> olt f b)"
+      using eflip_argZ.prems(1) P by auto
+    have ea: "e = a" and fb': "olt f b'"
+      using eflip_argZ.prems(2) P ne not_olt_Z by auto
+    have "size b \<le> size f" using nf ea fb' eflip_argZ.IH by blast
+    thus ?thesis using P by simp
+  qed
+qed
+
+text \<open>Fire transport: a collapse witness of \<open>x\<close> yields one for any end-increase
+  of \<open>x\<close>.  (\<open>fire u b \<equiv> \<exists>g\<in>Gterm u b. \<not> olt g b\<close>.)\<close>
+
+lemma fire_transport:
+  assumes R: "einc x x' \<or> eflip x x'"
+    and g: "g \<in> Gterm u x" and ng: "\<not> olt g x"
+  shows "\<exists>g' \<in> Gterm u x'. \<not> olt g' x'"
+proof -
+  have szg: "size g < size x" by (rule Gterm_size[OF g])
+  have ngx': "\<not> olt g x'"
+  proof
+    assume "olt g x'"
+    hence "size x \<le> size g" using R ng einc_gap eflip_gap by blast
+    thus False using szg by simp
+  qed
+  have lr: "lext x x' \<or> lflip x x'"
+    using R einc_lext eflip_lflip by blast
+  show ?thesis
+  proof (cases "lext x x'")
+    case True
+    from Gterm_lext_sup[OF True, of u] g
+    have "g \<in> Gterm u x' \<or> (\<exists>g' \<in> Gterm u x'. lext g g')" by blast
+    thus ?thesis
+    proof
+      assume "g \<in> Gterm u x'" thus ?thesis using ngx' by blast
+    next
+      assume "\<exists>g' \<in> Gterm u x'. lext g g'"
+      then obtain g' where g': "g' \<in> Gterm u x'" and lgg': "lext g g'" by blast
+      have "\<not> olt g' x'"
+      proof
+        assume a: "olt g' x'"
+        have "olt g g'" by (rule lext_olt[OF lgg'])
+        hence "olt g x'" using a olt_trans by blast
+        thus False using ngx' by blast
+      qed
+      thus ?thesis using g' by blast
+    qed
+  next
+    case False
+    hence lf: "lflip x x'" using lr by blast
+    from Gterm_lflip_sup[OF lf, of u] g
+    have "g \<in> Gterm u x' \<or> (\<exists>g' \<in> Gterm u x'. lflip g g')" by blast
+    thus ?thesis
+    proof
+      assume "g \<in> Gterm u x'" thus ?thesis using ngx' by blast
+    next
+      assume "\<exists>g' \<in> Gterm u x'. lflip g g'"
+      then obtain g' where g': "g' \<in> Gterm u x'" and lgg': "lflip g g'" by blast
+      have "\<not> olt g' x'"
+      proof
+        assume a: "olt g' x'"
+        have "olt g g'" by (rule lflip_olt[OF lgg'])
+        hence "olt g x'" using a olt_trans by blast
+        thus False using ngx' by blast
+      qed
+      thus ?thesis using g' by blast
+    qed
+  qed
+qed
+
 subsection \<open>Small computation lemmas\<close>
 
 lemma proj_Z: "proj u Z = Z"

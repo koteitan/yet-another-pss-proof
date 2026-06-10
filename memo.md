@@ -1746,3 +1746,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   → Gterm_size と矛盾 → fire 輸送 (iv) 排除。ケース(ii)の接尾辞再帰も末端性を保存。
   次セッション: einc 定義 → einc_gap → fire 輸送 → maxo_partner → 末端到達クラス事実
   （ST_PS.induct）→ ST_snoc_C 完成 → Pred ケース完了。
+- (続19補3) **einc/eflip + gap補題 + fire_transport 全て緑（純粋部品完成）**:
+  einc/eflip（lex-末端挿入/末端葉flip、einc_lext/eflip_lflip で lext/lflip に射影）、
+  einc_gap/eflip_gap（¬olt g x ∧ olt g x' ⟹ size x ≤ size g、6ケース初等帰納）、
+  Gterm_lflip_sup、**fire_transport**（einc∪eflip x x' ∧ x の fire 証人 ⟹ x' の fire 証人;
+  gap+Gterm_size で証人が x' 未満に落ちないことを示し partner へ olt_trans）。
+  ⟹ ST_snoc_C の (iv) ケース排除の部品が揃った。
+  残部品: maxo_partner（max臨界の対応）、末端到達クラス事実、einc 版 snoc 特徴づけ、
+  サイズ帰納での組立て。
