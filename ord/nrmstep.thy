@@ -1,5 +1,5 @@
 theory nrmstep
-  imports nrm
+  imports nrm "YAPSS.seqlex"
 begin
 
 text \<open>
@@ -912,6 +912,32 @@ next
   qed
 qed
 
+subsection \<open>Row-0 step discipline of contiguous sublists\<close>
+
+definition stepsok :: "pairseq \<Rightarrow> bool" where
+  "stepsok C \<longleftrightarrow> (\<forall>j. Suc j < length C \<longrightarrow> fst (C ! Suc j) \<le> Suc (fst (C ! j)))"
+
+lemma blockok_stepsok: "blockok d M \<Longrightarrow> stepsok M"
+  unfolding blockok_def stepsok_def by blast
+
+lemma stepsok_sub: "stepsok (u @ C @ v) \<Longrightarrow> stepsok C"
+proof -
+  assume H: "stepsok (u @ C @ v)"
+  show "stepsok C"
+    unfolding stepsok_def
+  proof (intro allI impI)
+    fix j assume j: "Suc j < length C"
+    have e1: "(u @ C @ v) ! (length u + j) = C ! j"
+      using j by (simp add: nth_append)
+    have e2: "(u @ C @ v) ! (length u + Suc j) = C ! Suc j"
+      using j by (simp add: nth_append)
+    have "Suc (length u + j) < length (u @ C @ v)" using j by simp
+    hence "fst ((u @ C @ v) ! Suc (length u + j)) \<le> Suc (fst ((u @ C @ v) ! (length u + j)))"
+      using H unfolding stepsok_def by blast
+    thus "fst (C ! Suc j) \<le> Suc (fst (C ! j))" using e1 e2 by simp
+  qed
+qed
+
 subsection \<open>Standardness supplies the bundle\<close>
 
 text \<open>The two remaining leaf obligations of the structural bundle against a
@@ -922,7 +948,7 @@ text \<open>The two remaining leaf obligations of the structural bundle against 
 lemma STS_A:
   assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
     and "dropWhile (\<lambda>r. fst p < fst r) rest = []"
-    and "\<not> fst p < fst q"
+    and "fst q = fst p"
   shows "snd q \<le> snd p"
   sorry
 
@@ -940,11 +966,18 @@ lemma STS_B:
   sorry
 
 lemma ST_snocokS_gen:
-  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> snocokS C q"
+  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> fst (hd C) \<le> fst q \<Longrightarrow> snocokS C q"
 proof (induct C arbitrary: pre rule: length_induct)
   case (1 C)
-  note IH = 1(1) and host = 1(2) and ne = 1(3)
+  note IH = 1(1) and host = 1(2) and ne = 1(3) and INV = 1(4)
   obtain p rest where C: "C = p # rest" using ne by (cases C) auto
+  have stepsC: "stepsok (p # rest)"
+  proof -
+    have "blockok 0 (pre @ (p # rest) @ [q])"
+      using blockok_ST_PS host[unfolded C] by blast
+    hence "stepsok (pre @ (p # rest) @ [q])" by (rule blockok_stepsok)
+    thus ?thesis by (rule stepsok_sub)
+  qed
   show ?case
   proof (cases "dropWhile (\<lambda>r. fst p < fst r) rest = []")
     case Tnil: True
@@ -965,7 +998,15 @@ proof (induct C arbitrary: pre rule: length_induct)
         have host2: "(pre @ [p]) @ rest @ [q] \<in> ST_PS"
           using host unfolding C by simp
         have len2: "length rest < length C" unfolding C by simp
-        have sok2: "snocokS rest q" using IH len2 host2 rne by blast
+        have hdr: "fst (hd rest) \<le> Suc (fst p)"
+        proof -
+          have "Suc 0 < length (p # rest)" using rne by (cases rest) auto
+          hence "fst ((p # rest) ! Suc 0) \<le> Suc (fst ((p # rest) ! 0))"
+            using stepsC unfolding stepsok_def by blast
+          thus ?thesis using rne by (simp add: hd_conv_nth)
+        qed
+        have INV2: "fst (hd rest) \<le> fst q" using hdr qd by simp
+        have sok2: "snocokS rest q" using IH len2 host2 rne INV2 by blast
         have E2: "Einc (nrm (translate rest)) (nrm (translate (rest @ [q])))"
           by (rule nrm_snoc_str[OF sok2 rne])
         have allP: "\<forall>r \<in> set rest. fst p < fst r"
@@ -983,8 +1024,9 @@ proof (induct C arbitrary: pre rule: length_induct)
       case qnd: False
       have unfA: "snocokS (p # rest) q \<longleftrightarrow> snd q \<le> snd p"
         by (simp only: snocokS.simps if_P[OF Tnil] if_not_P[OF qnd])
+      have fpq: "fst q = fst p" using qnd INV unfolding C by simp
       show ?thesis unfolding C unfA
-        by (rule STS_A[OF host[unfolded C] Tnil qnd])
+        by (rule STS_A[OF host[unfolded C] Tnil fpq])
     qed
   next
     case Tne: False
@@ -994,7 +1036,10 @@ proof (induct C arbitrary: pre rule: length_induct)
       using host unfolding C by (metis Tsplit append.assoc append_Cons append_Nil)
     have lenT: "length ?T < length C"
       unfolding C using length_dropWhile_le[of "\<lambda>r. fst p < fst r" rest] by simp
-    have sokT: "snocokS ?T q" using IH lenT host' Tne by blast
+    have hdT: "\<not> fst p < fst (hd ?T)"
+      using hd_dropWhile[OF Tne] by blast
+    have INVT: "fst (hd ?T) \<le> fst q" using hdT INV unfolding C by simp
+    have sokT: "snocokS ?T q" using IH lenT host' Tne INVT by blast
     have nab: "\<not> (snd p < hdsub (nrm (translate ?T))
             \<or> (snd p = hdsub (nrm (translate ?T))
                \<and> olt (proj (snd p) (nrm (translate (takeWhile (\<lambda>r. fst p < fst r) rest))))
@@ -1026,8 +1071,9 @@ lemma ST_snoc_C:
   shows "olt (proj (snd p) (nrm (translate rest)))
              (proj (snd p) (nrm (translate (rest @ [q]))))"
 proof -
+  have hd0: "fst (hd (p # rest)) \<le> fst q" using Q by simp
   have S: "snocokS (p # rest) q"
-    using ST_snocokS_gen[of pre "p # rest" q] H by simp
+    using ST_snocokS_gen[of pre "p # rest" q] H hd0 by simp
   have unfA: "snocokS (p # rest) q \<longleftrightarrow>
         Einc (proj (snd p) (nrm (translate rest)))
              (proj (snd p) (nrm (translate (rest @ [q]))))"

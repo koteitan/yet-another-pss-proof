@@ -1801,3 +1801,8 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - (続20補4) segprov（provenance: pre@(pp#S)@[q]∈ST_PS ∧ all-dominated ∧ fst pp<fst q
   ∧ u=snd pp）を導入し projE_iii/projE_ii/projE に通した（緑）。
   残4 sorry は全て真な命題として確定: STS_A / STS_B / projE_iii / projE_ii。
+- (続20補5) **INV 螺旋 retrofit 緑**: ST_snocokS_gen に「fst (hd C) ≤ fst q」を追加し
+  stepsok（blockok の step 節の sublist 抽出、stepsok_sub）＋hd_dropWhile で螺旋を証明。
+  (A)位置で fst q = fst p が**導出**され、STS_A は等式形（同 row0 の row1 比較）に確定。
+  ST_snoc_C 側の起動は仮定 Q から自明。残4 sorry とも真な命題＋証明地図つき:
+  STS_A（等式形・降順性級）/ STS_B / projE_iii（x葉）/ projE_ii（max対応再帰）。
