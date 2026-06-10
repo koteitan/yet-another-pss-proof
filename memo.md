@@ -2302,3 +2302,19 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   append_take_drop_id[symmetric] 直当て・upt数値リテラルは Suc 1 形。
   残: seam_open_core 本体の組み立て（P/lexdiff 分岐・b≥j0 ケース）。
   P分岐 m=0 は R事実分岐から完全純粋で閉じる設計済（続29補9）。
+
+- (続29補11) **b<j0 ケースの完全設計（実装待ち）— hm境界は無料だった**:
+  - **snd集合論法**: コピーはsndを変えない（shf）ので snd-set(K1@C) ⊆
+    snd-set(P0@blk) 。m≥1 なら K1 ⊇ P0@blk ⟹ maxr1(K1@C) = maxr1 K1 ⟹
+    SY-lexdiff の hm K1 がそのまま hm(K1@C) に。m=0 は coreM-lexdiff が強制
+    （分岐点 < |P0| では eq/pre 不可能）で hm K1M ⟹ maxr1 blk ≤ snd hd P0 ✓。
+    **hm境界の新規マイニング事実は不要**。
+  - **m三分律 (P族)**: m=0 → coreM の3分岐から純粋に閉じる（eq/pre は
+    K1@C=P0@blk が K の接頭辞・lexdiff は butlast K1M=P0@blk で hm_take）/
+    m≥2 → K⊇P0@blk@cp1 と K1M の分岐点で ascent 反駁（seam_E_refute と同じ手）/
+    **m=1 のみ実体**: D vs [cj1] / cp1 比較で d0=0 のとき snd等式 e1(j0)=0 が
+    必要（i1=0 ⟹ e1(j1)=0 は無料）— 28実例・要マイニング＆討伐。
+  - lexdiff族: 全 m で純粋（分岐点は |K1| 内・snd集合論法で hm 継承）。
+  - 残実体 = (s1) m=1 P族の e1(j0)=0 問題（d0=0・b<j0）
+            (s2) b≥j0 コピー頭ケース（d0>0・F1 b=C0頭 60 + P b=Clast頭 20）
+    (s2) は shf 持ち上げ＋同型の衝突が効くはず（次セッション）。
