@@ -1798,3 +1798,6 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
     （x = NT S, x' = NT(S@[q]), host 標準）を追加して projE/gen 経由で通す必要
     （現状の無仮定 sorry はおそらく一般には偽 — 証明時に書き換える）。
   - projE_ii / STS_B も同様に provenance 付きで証明する設計。
+- (続20補4) segprov（provenance: pre@(pp#S)@[q]∈ST_PS ∧ all-dominated ∧ fst pp<fst q
+  ∧ u=snd pp）を導入し projE_iii/projE_ii/projE に通した（緑）。
+  残4 sorry は全て真な命題として確定: STS_A / STS_B / projE_iii / projE_ii。

@@ -858,42 +858,56 @@ lemma pfire_filter: "pfire u b \<longleftrightarrow> filter (\<lambda>g. \<not> 
 lemma proj_nofire: "\<not> pfire u b \<Longrightarrow> proj u b = b"
   using pfire_filter proj_id by blast
 
-text \<open>The two remaining transport cases, against class hypotheses to be
-  supplied by the host induction (empirically: zero violations on standard
-  segments; the only-extended-fires case always yields a flip, the both-fire
-  case recurses into the common maximal critical suffix).\<close>
+text \<open>Provenance: the pair under transport is the normalized image of an
+  all-dominated standard sub-segment and its one-column extension; \<open>u\<close> is the
+  enclosing head's row-1 value.  (The transport cases are false for arbitrary
+  \<open>Einc\<close> pairs \<dash> e.g.\ a leaf inserted into a region discarded by the
+  projection; provenance is what excludes those.)\<close>
+
+definition segprov :: "nat \<Rightarrow> pairseq \<Rightarrow> nat \<times> nat \<Rightarrow> bool" where
+  "segprov u S q \<longleftrightarrow> (\<exists>pre pp. pre @ (pp # S) @ [q] \<in> ST_PS
+                       \<and> (\<forall>r \<in> set S. fst pp < fst r) \<and> fst pp < fst q \<and> u = snd pp)"
+
+text \<open>The two remaining transport cases (class lemmas; empirically zero
+  violations on all standard hosts, with \<open>x\<close> always a leaf in the
+  only-extended-fires case).\<close>
 
 lemma projE_iii:
-  assumes "Einc x x'" and "\<not> pfire u x" and "pfire u x'"
-  shows "Einc x (proj u x')"
+  assumes "segprov u S q"
+    and "\<not> pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
+  shows "Einc (nrm (translate S)) (proj u (nrm (translate (S @ [q]))))"
   sorry
 
 lemma projE_ii:
-  assumes "Einc x x'" and "pfire u x" and "pfire u x'"
-  shows "Einc (proj u x) (proj u x')"
+  assumes "segprov u S q"
+    and "pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
+  shows "Einc (proj u (nrm (translate S))) (proj u (nrm (translate (S @ [q]))))"
   sorry
 
 lemma projE:
-  assumes R: "Einc x x'"
-  shows "Einc (proj u x) (proj u x')"
-proof (cases "pfire u x")
+  assumes R: "Einc (nrm (translate S)) (nrm (translate (S @ [q])))"
+    and PV: "segprov u S q"
+  shows "Einc (proj u (nrm (translate S))) (proj u (nrm (translate (S @ [q]))))"
+proof (cases "pfire u (nrm (translate S))")
   case xf: True
-  have x'f: "pfire u x'"
+  have x'f: "pfire u (nrm (translate (S @ [q])))"
   proof -
-    obtain g where "g \<in> Gterm u x" "\<not> olt g x" using xf by blast
+    obtain g where "g \<in> Gterm u (nrm (translate S))" "\<not> olt g (nrm (translate S))"
+      using xf by blast
     from fire_transport[OF R this] show ?thesis .
   qed
-  show ?thesis by (rule projE_ii[OF R xf x'f])
+  show ?thesis by (rule projE_ii[OF PV xf x'f])
 next
   case xnf: False
-  have px: "proj u x = x" by (rule proj_nofire[OF xnf])
+  have px: "proj u (nrm (translate S)) = nrm (translate S)" by (rule proj_nofire[OF xnf])
   show ?thesis
-  proof (cases "pfire u x'")
+  proof (cases "pfire u (nrm (translate (S @ [q])))")
     case x'f: True
-    show ?thesis unfolding px by (rule projE_iii[OF R xnf x'f])
+    show ?thesis unfolding px by (rule projE_iii[OF PV xnf x'f])
   next
     case x'nf: False
-    have px': "proj u x' = x'" by (rule proj_nofire[OF x'nf])
+    have px': "proj u (nrm (translate (S @ [q]))) = nrm (translate (S @ [q]))"
+      by (rule proj_nofire[OF x'nf])
     show ?thesis unfolding px px' by (rule R)
   qed
 qed
@@ -954,7 +968,11 @@ proof (induct C arbitrary: pre rule: length_induct)
         have sok2: "snocokS rest q" using IH len2 host2 rne by blast
         have E2: "Einc (nrm (translate rest)) (nrm (translate (rest @ [q])))"
           by (rule nrm_snoc_str[OF sok2 rne])
-        show ?thesis by (rule projE[OF E2])
+        have allP: "\<forall>r \<in> set rest. fst p < fst r"
+          using Tnil by (simp add: dropWhile_eq_Nil_conv)
+        have PV: "segprov (snd p) rest q"
+          unfolding segprov_def using host[unfolded C] allP qd by blast
+        show ?thesis by (rule projE[OF E2 PV])
       qed
       have unfA: "snocokS (p # rest) q \<longleftrightarrow>
             Einc (proj (snd p) (nrm (translate rest)))
