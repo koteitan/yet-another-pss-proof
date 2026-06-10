@@ -1962,3 +1962,14 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   ⚠️ 注意: GCAT は E6_value（sorry依存コンビネータ）を K(短い)に使用。最終組立時は
   {GCAT, E6_mem, E6_dom_tie, E6_value} を長さ同時帰納に**インライン統合**が必要
   （同長で GCAT(n)→mem/dom(n)→value(n) の層順・短い側だけ value を呼ぶ⟹非循環）。
+
+- (続25補2) **E6_dom_tie_resolved 緑**: GCAT で violator g = NT(Cp)（Cp は S の連続片、
+  頭が m-列）に分解 → 開始位置 l ≥ j0（takeWhile_nth 論法）→
+  l = j0: msfx S = Cp@post' で NT_prefix_lt（post'≠[]）/ refl（=[]）→ 閉じる。
+  l > j0: E6_dom_deep（新 sorry、first-max 優先の再帰核）。
+- **補題レベル循環の顕在化と扱い**: NT_prefix_lt → ST_snocokS_gen → E6_value →
+  E6_dom_tie が循環。長さで層化すると 値(n-1) → snocok(n) → prefix_lt(n) →
+  dom_tie(n) → 値(n) の層順で非循環 ⟹ 最終組立は1本の同時長さ帰納にインライン。
+  当面: E6_dom_tie は sorry スタブのまま、resolved 版を NT_prefix_lt 後方に配置。
+- デバッグ: metis(hd_Cons_tl/set_takeWhileD) が 1800s 暴走 → 明示 obtain/blast 化。
+  unfolding の順序で msfx S の書き換え不発 → calc 連鎖（drop j0 経由）。

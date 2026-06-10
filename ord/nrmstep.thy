@@ -1733,68 +1733,6 @@ qed
 text \<open>(E6) When the projection at the host level fires, its value is the
   normalized image of the max-row1 suffix.\<close>
 
-text \<open>(E6 membership) Under fire the suffix image is itself a critical above
-  the whole: reached through the visible ancestor chain of the first max-row1
-  column.\<close>
-
-lemma E6_mem:
-  assumes "dseg u S" and "pfire u (nrm (translate S))"
-  shows "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))
-         \<and> \<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
-  sorry
-
-text \<open>(E6 tie dominance) A violating critical whose head subscript reaches the
-  max row-1 is still at most the suffix image (first-max priority).\<close>
-
-lemma E6_dom_tie:
-  assumes "dseg u S" and "pfire u (nrm (translate S))"
-    and "g \<in> Gterm u (nrm (translate S))" and "\<not> olt g (nrm (translate S))"
-    and "g \<noteq> Z" and "hdsub g = maxr1 S"
-  shows "ole g (nrm (translate (msfx S)))"
-  sorry
-
-lemma E6_value:
-  assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
-  shows "proj u (nrm (translate S)) = nrm (translate (msfx S))"
-proof -
-  let ?x = "nrm (translate S)"
-  let ?ms = "nrm (translate (msfx S))"
-  let ?gs = "filter (\<lambda>g. \<not> olt g ?x) (Glist u ?x)"
-  let ?mx = "maxo (hd ?gs) (tl ?gs)"
-  have Sne: "S \<noteq> []" using D unfolding dseg_def by blast
-  obtain c rest where C: "S = c # rest" using Sne by (cases S) auto
-  have xnz: "?x \<noteq> Z" unfolding C by (rule NT_neZ)
-  have ne: "?gs \<noteq> []" using F pfire_filter by blast
-  have po: "proj u ?x = ?mx" using proj_once[of u ?x] ne by simp
-  have mxin: "?mx \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
-  have mxG: "?mx \<in> Gterm u ?x" and mxv: "\<not> olt ?mx ?x"
-    using mxin set_Glist by auto
-  have msin: "?ms \<in> set ?gs"
-    using E6_mem[OF D F] set_Glist by auto
-  have msins: "?ms \<in> insert (hd ?gs) (set (tl ?gs))"
-    using msin by (cases ?gs) auto
-  have m2: "\<not> olt ?mx ?ms" using maxo_ub[OF msins] .
-  have mxnz: "?mx \<noteq> Z"
-  proof
-    assume "?mx = Z"
-    hence "\<not> olt Z ?x" using mxv by simp
-    thus False using xnz by (cases ?x) auto
-  qed
-  have m1: "ole ?mx ?ms"
-  proof (cases "hdsub ?mx = maxr1 S")
-    case True
-    show ?thesis by (rule E6_dom_tie[OF D F mxG mxv mxnz True])
-  next
-    case False
-    have "hdsub ?mx \<le> maxr1 S" by (rule Gterm_NT_hdsub_le[OF mxG mxnz])
-    hence "hdsub ?mx < maxr1 S" using False by simp
-    hence "olt ?mx ?ms" using olt_msfx_lowsub[OF Sne] by blast
-    thus ?thesis by simp
-  qed
-  have "?mx = ?ms" using m1 m2 by auto
-  thus ?thesis using po by simp
-qed
-
 lemma proj_fire_in:
   assumes f: "pfire u b"
   shows "proj u b \<in> Gterm u b"
@@ -1871,17 +1809,26 @@ proof (induct S arbitrary: g u rule: length_induct)
         show ?thesis using gA hs dec Kne by blast
       next
         case True
-        have gA: "g = nrm (translate (msfx ?K))"
-          using a E6_value[OF fbseg_K_dseg[OF fb[unfolded C] Kne] True] by simp
-        have hs1: "hdsub g = maxr1 ?K"
-          using gA NT_msfx_hdsub[OF Kne] by simp
-        have hs2: "snd (hd (msfx ?K)) = maxr1 ?K" by (rule msfx_hd[OF Kne])
-        have dec0: "?K = takeWhile (\<lambda>r. snd r < maxr1 ?K) ?K @ msfx ?K"
-          by (rule msfx_decomp)
-        have dec: "S = (c # takeWhile (\<lambda>r. snd r < maxr1 ?K) ?K) @ msfx ?K @ ?T"
-          unfolding C
-          by (metis dec0 append.assoc append_Cons takeWhile_dropWhile_id)
-        show ?thesis using gA hs1 hs2 dec msfx_ne[OF Kne] by metis
+        have "?A \<in> Gterm (snd c) (nrm (translate ?K))" by (rule proj_fire_in[OF True])
+        hence gK: "g \<in> Gterm u (nrm (translate ?K))"
+          using a Gterm_mono by blast
+        have lK: "length ?K < length S"
+          unfolding C using length_takeWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+        have pcK: "\<exists>v. fbseg v ?K"
+          using fbseg_K_desc[OF fb[unfolded C] Kne] by blast
+        from IH[rule_format, OF lK pcK gK]
+        show ?thesis
+        proof
+          assume "g = Z" thus ?thesis by simp
+        next
+          assume "\<exists>pre' C' post'. ?K = pre' @ C' @ post' \<and> C' \<noteq> [] \<and> g = nrm (translate C')
+                  \<and> hdsub g = snd (hd C')"
+          then obtain pre' C' post' where w: "?K = pre' @ C' @ post'" "C' \<noteq> []"
+            "g = nrm (translate C')" "hdsub g = snd (hd C')" by blast
+          have "S = (c # pre') @ C' @ (post' @ ?T)"
+            unfolding C by (metis w(1) append.assoc append_Cons takeWhile_dropWhile_id)
+          thus ?thesis using w by blast
+        qed
       qed
     qed
   next
@@ -1947,6 +1894,80 @@ proof (induct S arbitrary: g u rule: length_induct)
       qed
     qed
   qed
+qed
+
+text \<open>(E6 membership) Under fire the suffix image is itself a critical above
+  the whole: reached through the visible ancestor chain of the first max-row1
+  column.\<close>
+
+lemma E6_mem:
+  assumes "dseg u S" and "pfire u (nrm (translate S))"
+  shows "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))
+         \<and> \<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
+  sorry
+
+text \<open>(E6 tie dominance) A violating critical whose head subscript reaches the
+  max row-1 is still at most the suffix image (first-max priority).\<close>
+
+text \<open>The deep tie case: a violating critical piece starting at a
+  \<^emph>\<open>later\<close> max-row1 column than the first one (first-max priority; the
+  remaining recursive core of the dominance).\<close>
+
+lemma E6_dom_deep:
+  assumes "dseg u S" and "pfire u (nrm (translate S))"
+    and "S = pre' @ C @ post'" and "C \<noteq> []" and "snd (hd C) = maxr1 S"
+    and "length (takeWhile (\<lambda>c. snd c < maxr1 S) S) < length pre'"
+    and "\<not> olt (nrm (translate C)) (nrm (translate S))"
+  shows "ole (nrm (translate C)) (nrm (translate (msfx S)))"
+  sorry
+
+lemma E6_dom_tie:
+  assumes "dseg u S" and "pfire u (nrm (translate S))"
+    and "g \<in> Gterm u (nrm (translate S))" and "\<not> olt g (nrm (translate S))"
+    and "g \<noteq> Z" and "hdsub g = maxr1 S"
+  shows "ole g (nrm (translate (msfx S)))"
+  sorry
+
+lemma E6_value:
+  assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
+  shows "proj u (nrm (translate S)) = nrm (translate (msfx S))"
+proof -
+  let ?x = "nrm (translate S)"
+  let ?ms = "nrm (translate (msfx S))"
+  let ?gs = "filter (\<lambda>g. \<not> olt g ?x) (Glist u ?x)"
+  let ?mx = "maxo (hd ?gs) (tl ?gs)"
+  have Sne: "S \<noteq> []" using D unfolding dseg_def by blast
+  obtain c rest where C: "S = c # rest" using Sne by (cases S) auto
+  have xnz: "?x \<noteq> Z" unfolding C by (rule NT_neZ)
+  have ne: "?gs \<noteq> []" using F pfire_filter by blast
+  have po: "proj u ?x = ?mx" using proj_once[of u ?x] ne by simp
+  have mxin: "?mx \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+  have mxG: "?mx \<in> Gterm u ?x" and mxv: "\<not> olt ?mx ?x"
+    using mxin set_Glist by auto
+  have msin: "?ms \<in> set ?gs"
+    using E6_mem[OF D F] set_Glist by auto
+  have msins: "?ms \<in> insert (hd ?gs) (set (tl ?gs))"
+    using msin by (cases ?gs) auto
+  have m2: "\<not> olt ?mx ?ms" using maxo_ub[OF msins] .
+  have mxnz: "?mx \<noteq> Z"
+  proof
+    assume "?mx = Z"
+    hence "\<not> olt Z ?x" using mxv by simp
+    thus False using xnz by (cases ?x) auto
+  qed
+  have m1: "ole ?mx ?ms"
+  proof (cases "hdsub ?mx = maxr1 S")
+    case True
+    show ?thesis by (rule E6_dom_tie[OF D F mxG mxv mxnz True])
+  next
+    case False
+    have "hdsub ?mx \<le> maxr1 S" by (rule Gterm_NT_hdsub_le[OF mxG mxnz])
+    hence "hdsub ?mx < maxr1 S" using False by simp
+    hence "olt ?mx ?ms" using olt_msfx_lowsub[OF Sne] by blast
+    thus ?thesis by simp
+  qed
+  have "?mx = ?ms" using m1 m2 by auto
+  thus ?thesis using po by simp
 qed
 
 text \<open>(V4) In the both-fire q-cut configuration the x-side suffix is the last
@@ -2326,6 +2347,76 @@ next
     have "olt (nrm (translate C)) (nrm (translate ((C @ [d0]) @ D')))"
       using olt_trans s1 s2 by blast
     thus ?thesis by simp
+  qed
+qed
+
+text \<open>Resolution of \<open>E6_dom_tie\<close> using the catalogue and the prefix
+  monotonicity.  Kept separate because the lemma-level dependency
+  \<open>NT_prefix_lt \<rightarrow> ST_snocokS_gen \<rightarrow> E6_value \<rightarrow> E6_dom_tie\<close> is circular;
+  stratified by segment length it is well-founded, so the final assembly
+  inlines this proof into one simultaneous length induction
+  (deep case = \<open>E6_dom_deep\<close>).\<close>
+
+lemma E6_dom_tie_resolved:
+  assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
+    and G: "g \<in> Gterm u (nrm (translate S))" and V: "\<not> olt g (nrm (translate S))"
+    and NZ: "g \<noteq> Z" and HS: "hdsub g = maxr1 S"
+  shows "ole g (nrm (translate (msfx S)))"
+proof -
+  let ?m = "maxr1 S"
+  let ?j0 = "length (takeWhile (\<lambda>c. snd c < ?m) S)"
+  have fbS: "\<exists>v. fbseg v S" using dseg_fbseg[OF D] by blast
+  from GCAT[OF fbS G] NZ obtain pre' Cp post'
+    where w: "S = pre' @ Cp @ post'" "Cp \<noteq> []" "g = nrm (translate Cp)"
+      "hdsub g = snd (hd Cp)" by blast
+  have hdm: "snd (hd Cp) = ?m" using w(4) HS by simp
+  obtain ch ct where Cp: "Cp = ch # ct" using w(2) by (cases Cp) auto
+  have nthl: "S ! length pre' = hd Cp"
+    unfolding w(1) Cp by (simp add: nth_append)
+  have j0le: "?j0 \<le> length pre'"
+  proof (rule ccontr)
+    assume "\<not> ?j0 \<le> length pre'"
+    hence l: "length pre' < length (takeWhile (\<lambda>c. snd c < ?m) S)" by simp
+    have m1: "takeWhile (\<lambda>c. snd c < ?m) S ! length pre' = S ! length pre'"
+      by (rule takeWhile_nth[OF l])
+    have m2: "takeWhile (\<lambda>c. snd c < ?m) S ! length pre'
+              \<in> set (takeWhile (\<lambda>c. snd c < ?m) S)"
+      using l by (rule nth_mem)
+    have "snd (takeWhile (\<lambda>c. snd c < ?m) S ! length pre') < ?m"
+      using set_takeWhileD[OF m2] by blast
+    thus False using m1 nthl hdm by simp
+  qed
+  have msd: "msfx S = drop ?j0 S"
+    unfolding msfx_def by (rule dropWhile_eq_drop)
+  show ?thesis
+  proof (cases "?j0 = length pre'")
+    case True
+    have mC: "msfx S = Cp @ post'"
+    proof -
+      have "msfx S = drop ?j0 S" by (fact msd)
+      also have "\<dots> = drop (length pre') S" using True by simp
+      also have "\<dots> = Cp @ post'" unfolding w(1) by simp
+      finally show ?thesis .
+    qed
+    show ?thesis
+    proof (cases "post' = []")
+      case True
+      show ?thesis unfolding w(3) mC True by simp
+    next
+      case pne: False
+      from D obtain preh pp posth where h: "preh @ (pp # S) @ posth \<in> ST_PS"
+        unfolding dseg_def by blast
+      have h2: "(preh @ (pp # pre')) @ Cp @ post' @ posth \<in> ST_PS"
+        using h unfolding w(1) by simp
+      have "olt (nrm (translate Cp)) (nrm (translate (Cp @ post')))"
+        by (rule NT_prefix_lt[OF h2 w(2) pne])
+      thus ?thesis unfolding w(3) mC by simp
+    qed
+  next
+    case False
+    hence lt: "?j0 < length pre'" using j0le by simp
+    show ?thesis unfolding w(3)
+      by (rule E6_dom_deep[OF D F w(1) w(2) hdm lt V[unfolded w(3)]])
   qed
 qed
 
