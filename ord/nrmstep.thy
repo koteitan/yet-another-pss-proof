@@ -2825,15 +2825,172 @@ text \<open>(seam, climb-tie refutation core) In the \<open>i1 = 1\<close> block
   \<open>d0 > 0\<close>).  Same value-side lower-bound family as \<open>r1ok_climb\<close>.\<close>
 
 lemma CFGA_r1:
-  assumes "M \<in> ST_PS"
-    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
-    and "idx1 M j1 = 1" and "hasParent M 1 j1"
-    and "j0 = parent M 1 j1"
-    and "j0 < jq" and "jq < j1"
-    and "entry M 0 jq = entry M 0 j1"
-    and "\<forall>l. jq < l \<and> l < j1 \<longrightarrow> entry M 0 j1 < entry M 0 l"
+  assumes ST: "M \<in> ST_PS"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and i1d: "idx1 M j1 = 1" and hp: "hasParent M 1 j1"
+    and j0d: "j0 = parent M 1 j1"
+    and j0jq: "j0 < jq" and jqj1: "jq < j1"
+    and e0q: "entry M 0 jq = entry M 0 j1"
+    and tcl: "\<forall>l. jq < l \<and> l < j1 \<longrightarrow> entry M 0 j1 < entry M 0 l"
   shows "entry M 1 j1 \<le> entry M 1 jq"
-  sorry
+proof -
+  have lenM: "length M = Suc j1" using j1d j1nz by (cases M) auto
+  have jqM: "jq < length M" using jqj1 lenM by simp
+  have j1M: "j1 < length M" using lenM by simp
+  define W where "W = {w. w < jq \<and> entry M 0 w < entry M 0 jq}"
+  have finW: "finite W" unfolding W_def by simp
+  have j0W: "j0 \<in> W"
+  proof -
+    have "entry M 0 j0 < entry M 0 jq"
+      using block_head_min[OF hp j0d] j0jq jqj1 by simp
+    thus ?thesis unfolding W_def using j0jq by simp
+  qed
+  define w0 where "w0 = Max W"
+  have w0W: "w0 \<in> W" unfolding w0_def using finW j0W by (intro Max_in) auto
+  have w0jq: "w0 < jq" and w0lev: "entry M 0 w0 < entry M 0 jq"
+    using w0W unfolding W_def by auto
+  have w0max: "\<And>p. w0 < p \<Longrightarrow> p < jq \<Longrightarrow> entry M 0 jq \<le> entry M 0 p"
+  proof -
+    fix p assume pw: "w0 < p" and pjq: "p < jq"
+    show "entry M 0 jq \<le> entry M 0 p"
+    proof (rule ccontr)
+      assume "\<not> entry M 0 jq \<le> entry M 0 p"
+      hence "p \<in> W" unfolding W_def using pjq by simp
+      hence "p \<le> w0" unfolding w0_def using finW by simp
+      thus False using pw by simp
+    qed
+  qed
+  define mid where "mid = take (jq - Suc w0) (drop (Suc w0) M)"
+  define rest where "rest = drop (Suc jq) M"
+  have w0M: "w0 < length M" using w0jq jqM by simp
+  have midnth: "\<And>t. t < jq - Suc w0 \<Longrightarrow> mid ! t = M ! (Suc w0 + t)"
+    unfolding mid_def using w0jq jqM by simp
+  have lenmid: "length mid = jq - Suc w0"
+    unfolding mid_def using w0jq jqM by simp
+  have Mdec: "M = take w0 M @ M ! w0 # mid @ (M ! jq # rest)"
+  proof -
+    have d1: "M = take w0 M @ M ! w0 # drop (Suc w0) M"
+      using id_take_nth_drop[OF w0M] by simp
+    have iq: "jq - Suc w0 < length (drop (Suc w0) M)"
+      using w0jq jqM by simp
+    have nq: "drop (Suc w0) M ! (jq - Suc w0) = M ! jq"
+      using w0jq jqM by simp
+    have ar: "Suc (jq - Suc w0) + Suc w0 = Suc jq"
+      using w0jq by linarith
+    have d3: "drop (Suc (jq - Suc w0)) (drop (Suc w0) M) = drop (Suc jq) M"
+      unfolding drop_drop ar ..
+    have d2: "drop (Suc w0) M
+        = mid @ drop (Suc w0) M ! (jq - Suc w0) # drop (Suc (jq - Suc w0)) (drop (Suc w0) M)"
+      unfolding mid_def by (rule id_take_nth_drop[OF iq])
+    have "drop (Suc w0) M = mid @ M ! jq # drop (Suc jq) M"
+      using d2 unfolding nq d3 .
+    thus ?thesis using d1 unfolding rest_def by metis
+  qed
+  have restnth: "\<And>t. t < j1 - jq \<Longrightarrow> rest ! t = M ! (Suc jq + t)"
+    unfolding rest_def using jqM lenM by simp
+  have lenrest: "length rest = j1 - jq"
+    unfolding rest_def using lenM by simp
+  have fbA: "fbseg (snd (M ! w0)) (M ! jq # rest)"
+    unfolding fbseg_def
+  proof (intro conjI exI)
+    show "M ! jq # rest \<noteq> []" by simp
+    show "take w0 M @ (M ! w0 # mid @ (M ! jq # rest)) @ [] \<in> ST_PS"
+      using ST Mdec by (metis append_Nil2 append_Cons append_assoc)
+    show "snd (M ! w0) = snd (M ! w0)" ..
+    show "\<forall>r \<in> set mid. fst (hd (M ! jq # rest)) \<le> fst r"
+    proof
+      fix r assume "r \<in> set mid"
+      then obtain t where t: "t < jq - Suc w0" "r = mid ! t"
+        using lenmid by (metis in_set_conv_nth)
+      have h1: "Suc w0 + t < jq" using t(1) by linarith
+      have "entry M 0 jq \<le> entry M 0 (Suc w0 + t)"
+        using w0max[of "Suc w0 + t"] h1 by simp
+      thus "fst (hd (M ! jq # rest)) \<le> fst r"
+        using midnth[OF t(1)] t(2) unfolding entry_def by simp
+    qed
+    show "\<forall>r \<in> set (mid @ (M ! jq # rest)). fst (M ! w0) < fst r"
+    proof
+      fix r assume "r \<in> set (mid @ (M ! jq # rest))"
+      then consider (m) "r \<in> set mid" | (c) "r = M ! jq" | (rr) "r \<in> set rest"
+        by auto
+      thus "fst (M ! w0) < fst r"
+      proof cases
+        case m
+        then obtain t where t: "t < jq - Suc w0" "r = mid ! t"
+          using lenmid by (metis in_set_conv_nth)
+        have h1: "Suc w0 + t < jq" using t(1) by linarith
+        have "entry M 0 w0 < entry M 0 (Suc w0 + t)"
+          using w0max[of "Suc w0 + t"] h1 w0lev by simp
+        thus ?thesis using midnth[OF t(1)] t(2) unfolding entry_def by simp
+      next
+        case c
+        thus ?thesis using w0lev unfolding entry_def by simp
+      next
+        case rr
+        then obtain t where t: "t < j1 - jq" "r = rest ! t"
+          using lenrest by (metis in_set_conv_nth)
+        have "entry M 0 j1 \<le> entry M 0 (Suc jq + t)"
+        proof (cases "Suc jq + t = j1")
+          case True thus ?thesis by simp
+        next
+          case False
+          hence lt: "Suc jq + t < j1" using t(1) by simp
+          have "entry M 0 j1 < entry M 0 (Suc jq + t)"
+            using tcl[rule_format, of "Suc jq + t"] lt by simp
+          thus ?thesis by simp
+        qed
+        hence "entry M 0 w0 < entry M 0 (Suc jq + t)"
+          using w0lev e0q by simp
+        thus ?thesis using restnth[OF t(1)] t(2) unfolding entry_def by simp
+      qed
+    qed
+  qed
+  have restsplit: "rest = take (j1 - Suc jq) rest @ [M ! j1]"
+  proof -
+    have "rest = take (j1 - Suc jq) rest @ drop (j1 - Suc jq) rest" by simp
+    moreover have "drop (j1 - Suc jq) rest = [M ! j1]"
+    proof -
+      have "drop (j1 - Suc jq) rest = drop (j1 - Suc jq) (drop (Suc jq) M)"
+        unfolding rest_def ..
+      also have "\<dots> = drop j1 M" using jqj1 by (simp add: drop_drop)
+      also have "\<dots> = M ! j1 # drop (Suc j1) M"
+        by (rule Cons_nth_drop_Suc[symmetric, OF j1M])
+      also have "drop (Suc j1) M = []" using lenM by simp
+      finally show ?thesis by simp
+    qed
+    ultimately show ?thesis by simp
+  qed
+  have Tsplit: "dropWhile (\<lambda>r. fst (M ! jq) < fst r) rest = M ! j1 # []"
+  proof -
+    have allpre: "\<forall>x \<in> set (take (j1 - Suc jq) rest). fst (M ! jq) < fst x"
+    proof
+      fix x assume "x \<in> set (take (j1 - Suc jq) rest)"
+      then obtain t where t1: "t < length (take (j1 - Suc jq) rest)"
+        and t2: "x = take (j1 - Suc jq) rest ! t"
+        by (metis in_set_conv_nth)
+      have tn: "t < j1 - Suc jq" using t1 by simp
+      have xe: "x = rest ! t" using t2 tn by simp
+      have lt: "Suc jq + t < j1" using tn by linarith
+      have "entry M 0 j1 < entry M 0 (Suc jq + t)"
+        using tcl[rule_format, of "Suc jq + t"] lt by simp
+      hence "entry M 0 jq < entry M 0 (Suc jq + t)" using e0q by simp
+      moreover have "t < j1 - jq" using tn by linarith
+      ultimately show "fst (M ! jq) < fst x"
+        using restnth[of t] xe unfolding entry_def by simp
+    qed
+    have "dropWhile (\<lambda>r. fst (M ! jq) < fst r) rest
+        = dropWhile (\<lambda>r. fst (M ! jq) < fst r) [M ! j1]"
+      by (subst restsplit) (rule dropWhile_append2[OF allpre[rule_format]])
+    also have "\<dots> = [M ! j1]"
+      using e0q unfolding entry_def by simp
+    finally show ?thesis by simp
+  qed
+  have F: "fst (M ! j1) = fst (M ! jq)"
+    using e0q unfolding entry_def by simp
+  have "snd (M ! j1) \<le> snd (M ! jq)"
+    by (rule NT_dom_sub_eq[OF fbA Tsplit F])
+  thus ?thesis unfolding entry_def by simp
+qed
 
 text \<open>The seam step: appending one more shifted copy of the block preserves
   the sibling-run invariant.  (The whole bad-branch preservation reduces to
