@@ -55,9 +55,9 @@
         - 🚨 live sorry = nrm_order_pres ただ1つ。攻め筋2段: (弱) nrm_step_dec 直接証明
           〔E6: proj=首最大row1接尾辞切出し、E7: 第一差分は prefix/sub の2種のみ、oper 機構流用〕
           / (強) 全ペア保存＝proj-mono（弱単調＋CRUX 単射、A_a 全集合で実証済・衝突0）
-        - 🚨🤖 攻略 nrmstep.thy: ✅ snoc主帰納 nrm_snoc_seg（snocok束、3ケース+基底）緑
-          ＋ proj_inflate/Gterm_lext/ins_Rinc 緑。残2: proj_Rinc_snoc（fire-flip閉包）
-          / ST_snocok（標準性⟹条件束）→ 閉じれば Pred ケース完成
+        - 🚨🤖 攻略 nrmstep.thy: ✅ snoc主帰納 nrm_snoc_seg・ST_snocok_gen・ins_olt_mono
+          （無条件 ins 単調性で A/B 義務消滅）全て緑。**残1: ST_snoc_C**（標準ホストの
+          arg拡張で proj-olt。接尾辞再帰＋gap補題で攻略）→ 閉じれば Pred ケース完成
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
