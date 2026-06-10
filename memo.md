@@ -1707,3 +1707,17 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   次: ST_snoc_A から証明（host 標準性→cnf→セグメント兄弟 tops。host-translate と
   セグメント translate の部分項対応補題が必要）。その後 B（no-absorb=head保存+兄弟順序）、
   C（proj-olt 接尾辞再帰、E5/E6 機構の Isabelle 化）。
+
+### ★★★(2026-06-10 続19) ins_olt_mono 発見で A/B 義務消滅 — Pred ケースは ST_snoc_C 1点に
+- **ins_olt_mono（無条件！）**: olt t t' ⟹ olt (ins a b t) (ins a b t')。
+  鍵: absorb が右だけ発火→右頭部が (a,b) を支配済みで olt 直出。absorb-左⟹absorb-右
+  （olt_trans 経由）。absorb 両方→t vs t' = 前提。**no-absorb 条件は一切不要だった。**
+- ⟹ snocok は「(C)分岐: fst p < fst q ⟶ proj-olt」只1条件に縮退。(A)新和分も
+  ins_olt_mono[OF olt-Z-leaf] の直接インスタンス（yq 条件も不要）。
+- nrm_snoc_seg / ST_snocok_gen / nrm_snoc / nrm_step_dec_pred 全て緑。
+  条件抽出は全箇所「simp only: snocok.simps if_P/if_not_P[OF case-fact] で iff→blast/rule」
+  パターンに統一（∀/∃正規化問題の根治）。
+- **残: ST_snoc_C 1点**＝「標準ホスト pre@(p#rest)@[q]、rest 全支配、fst p < fst q のとき
+  olt (proj (snd p) (NT rest)) (proj (snd p) (NT (rest@[q])))」。
+  攻め筋: E5/E6 = proj は首最大row1接尾辞、append 列は常に接尾辞内。
+  数列側の接尾辞再帰（同型の主張が suffix に降りる）＋ blockok/nfinv 事実。
