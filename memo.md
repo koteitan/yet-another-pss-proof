@@ -2327,3 +2327,13 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   残 sorry = **seam_open_m1**（m=1 P族・D vs cp1 比較・e1(j0)=0 問題）と
   **seam_open_copyhead**（b≥j0・d0>0・F1@C0頭60+P@Clast頭20）の2点
   + 既存の値側群。sibm2_oper_bad 鎖はこの2点で完結。
+
+- (続29補13) **seam_open_m1 の実態（マイニング確定）**: 全14件が
+  m=1・d0=0・**L=1**・D=[cj1]・e1(j0)=0・e1(j1)=0 の単一形。
+  目標は F2分岐: x=cj1=(e0j1,0) vs x1=blk!0=(e0j0,e1j0)、必要事実は
+  (f1) e1(j0)=0 (f2) hm K=P0@blk@[cj1] (f3) hm K1@C。いずれも対(a,b)の
+  共起構造から来る生成機構が未解明（裸の i1=0 ブロックでは e1(j0)≠0 可）。
+  m≥2 は 0件（ascent反駁の実証一致）。b<j0-P-O2 は m∈{0,1} のみ ✓。
+  次の攻め: (a,b) 対の存在が M の自己相似構造（prefix が P0@blk@[cj1] を含む
+  ＝前世代の oper 痕跡）を強制する点を使う or seam_open_m1 を閉包+2 で
+  最弱前提化してから生成帰納。
