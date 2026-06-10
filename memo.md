@@ -2232,3 +2232,15 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
         j0+qa と j1 は同一 row0 親 w0 の隣接同レベル兄弟、w0 は le0鎖上で
         e1(w0) ≥ e1(j1) — r1ok_climb と同じ値側下界ファミリー。
   - S1 と mrun_shift と I-closed から先に実装、I-open と CFGA_r1 は sorry 小核に分離。
+
+- (続29補5) **シーム手術ほぼ完了（緑）**: sibm2_snoc_copy の I-closed（mrun_append
+  閉run不変）・II-int（shf/suffix 転送で sibm2_take から）・II-cross 3亜種
+  （m=0: M対(a,j0)+sibrel_trunc / d0=0: a=最終コピー頭強制→K=K1 / d0>0:
+  CFGA_r1 反駁＋nextrel1 矛盾）全て証明。sibm2_oper_bad = n帰納で閉。
+  残核2点: **seam_I_open**（開タイrunのコピー跨ぎ延長、周期性算術）/
+  **CFGA_r1**（e1(j1) ≤ e1(jq)・値側下界・265/265等号・r1ok_climb同族）。
+  Isarデバッグ知見: unfolding は同時 fixpoint なので「mra→C_def」の順序依存は
+  `unfolding mra mrb unfolding C_def` と2段に分ける / drop_append・mrun_suffix
+  は length 形で当ててから lenpre/lentj0 で書換 / nat引き算境界は
+  less_diff_conv2＋明示前提（linarith は m*L 非線形で死ぬ→lenYS 展開を渡す）/
+  takeWhile_append2 の前提はメタ含意（rule 後 use..blast）。
