@@ -2438,9 +2438,9 @@ text \<open>(SIB) On subscript ties the successor's run is the same as, or a
   \<open>E6_hdom\<close>.\<close>
 
 lemma SIB_shape:
-  assumes "fbseg u (c # rest)"
-    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
-    and "snd c1 = snd c"
+  assumes A: "fbseg u (c # rest)"
+    and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and tie: "snd c1 = snd c"
   shows "takeWhile (\<lambda>r. fst c1 < fst r) rest1 = takeWhile (\<lambda>r. fst c < fst r) rest
          \<or> (\<exists>D. D \<noteq> [] \<and> takeWhile (\<lambda>r. fst c < fst r) rest
                   = takeWhile (\<lambda>r. fst c1 < fst r) rest1 @ D
@@ -2449,7 +2449,129 @@ lemma SIB_shape:
              \<and> (takeWhile (\<lambda>r. fst c1 < fst r) rest1 \<noteq> [] \<longrightarrow>
                 snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))
                 = maxr1 (takeWhile (\<lambda>r. fst c1 < fst r) rest1)))"
-  sorry
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?K1 = "takeWhile (\<lambda>r. fst c1 < fst r) rest1"
+  from A obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    and dom: "\<forall>r \<in> set (mid @ (c # rest)). fst pp < fst r"
+    unfolding fbseg_def by blast
+  define H where "H = pre @ (pp # mid @ (c # rest)) @ post"
+  define ic where "ic = length pre + 1 + length mid"
+  have lvl: "fst c1 = fst c" by (rule fbseg_hd_level[OF A T])
+  have cpos: "0 < fst c" using dom by auto
+  have rsplit: "rest = ?K @ (c1 # rest1)"
+    using T by (metis takeWhile_dropWhile_id)
+  have Hic: "H ! ic = c"
+  proof -
+    have "H = (pre @ pp # mid) @ c # (rest @ post)"
+      unfolding H_def by simp
+    moreover have "length (pre @ pp # mid) = ic" unfolding ic_def by simp
+    ultimately show ?thesis by (metis nth_append_length)
+  qed
+  have dic: "drop (Suc ic) H = rest @ post"
+  proof -
+    have "H = (pre @ pp # mid @ [c]) @ rest @ post" unfolding H_def by simp
+    moreover have "length (pre @ pp # mid @ [c]) = Suc ic" unfolding ic_def by simp
+    ultimately show ?thesis
+      by (metis append_eq_conv_conj)
+  qed
+  have mric: "mrun H ic = ?K"
+  proof -
+    have "c1 \<in> set rest" using rsplit by (metis in_set_conv_decomp)
+    moreover have "\<not> fst c < fst c1" using lvl by simp
+    ultimately have "takeWhile (\<lambda>r. fst c < fst r) (rest @ post)
+                     = takeWhile (\<lambda>r. fst c < fst r) rest"
+      by (rule takeWhile_append1)
+    thus ?thesis unfolding mrun_def dic Hic .
+  qed
+  define b where "b = Suc ic + length ?K"
+  have icH: "ic < length H" unfolding H_def ic_def by simp
+  have Hb: "H ! b = c1"
+  proof -
+    have "H = (pre @ pp # mid @ c # ?K) @ c1 # (rest1 @ post)"
+      unfolding H_def by (subst rsplit) simp
+    moreover have "length (pre @ pp # mid @ c # ?K) = b"
+      unfolding b_def ic_def by simp
+    ultimately show ?thesis by (metis nth_append_length)
+  qed
+  have bH: "b < length H"
+  proof -
+    have "length H = length pre + 1 + length mid + 1 + length rest + length post"
+      unfolding H_def by simp
+    moreover have "length rest = length ?K + 1 + length rest1"
+      by (subst rsplit) simp
+    ultimately show ?thesis unfolding b_def ic_def by simp
+  qed
+  have db: "drop (Suc b) H = rest1 @ post"
+  proof -
+    have "H = (pre @ pp # mid @ c # ?K @ [c1]) @ rest1 @ post"
+      unfolding H_def by (subst rsplit) simp
+    moreover have "length (pre @ pp # mid @ c # ?K @ [c1]) = Suc b"
+      unfolding b_def ic_def by simp
+    ultimately show ?thesis by (metis append_eq_conv_conj)
+  qed
+  have mrb_pre: "\<exists>E. mrun H b = ?K1 @ E"
+  proof (cases "dropWhile (\<lambda>r. fst c1 < fst r) rest1 = []")
+    case True
+    have allr: "\<forall>r \<in> set rest1. fst c1 < fst r"
+      using True by (simp add: dropWhile_eq_Nil_conv)
+    have k1all: "?K1 = rest1" using allr by (simp add: takeWhile_eq_all_conv)
+    have "takeWhile (\<lambda>r. fst c1 < fst r) (rest1 @ post)
+          = rest1 @ takeWhile (\<lambda>r. fst c1 < fst r) post"
+      using allr by (simp add: takeWhile_append2)
+    hence "mrun H b = rest1 @ takeWhile (\<lambda>r. fst c1 < fst r) post"
+      unfolding mrun_def db Hb by simp
+    thus ?thesis using k1all by metis
+  next
+    case False
+    then obtain w where w: "w \<in> set rest1" "\<not> fst c1 < fst w"
+      by (metis dropWhile_eq_Nil_conv)
+    have "takeWhile (\<lambda>r. fst c1 < fst r) (rest1 @ post)
+          = takeWhile (\<lambda>r. fst c1 < fst r) rest1"
+      using w by (rule takeWhile_append1)
+    hence "mrun H b = ?K1" unfolding mrun_def db Hb by simp
+    thus ?thesis by (metis append_Nil2)
+  qed
+  have sm: "sibm H" unfolding H_def by (rule sibm_ST_PS[OF h])
+  have bb: "b = Suc ic + length (mrun H ic)" unfolding b_def mric by simp
+  have fstb: "fst (H ! b) = fst (H ! ic)" unfolding Hb Hic using lvl by simp
+  have sndb: "snd (H ! b) = snd (H ! ic)" unfolding Hb Hic using tie by simp
+  have icpos: "0 < fst (H ! ic)" unfolding Hic using cpos by simp
+  from sm[unfolded sibm_def, rule_format, OF icH icpos bb bH fstb sndb]
+  have core: "mrun H b = mrun H ic \<or> (\<exists>D. D \<noteq> [] \<and> mrun H ic = mrun H b @ D)"
+    and hmA: "mrun H ic \<noteq> [] \<longrightarrow> snd (hd (mrun H ic)) = maxr1 (mrun H ic)"
+    and hmB: "mrun H b \<noteq> [] \<longrightarrow> snd (hd (mrun H b)) = maxr1 (mrun H b)"
+    by blast+
+  have hmK: "?K \<noteq> [] \<longrightarrow> snd (hd ?K) = maxr1 ?K" using hmA mric by simp
+  from mrb_pre obtain E where E: "mrun H b = ?K1 @ E" by blast
+  have K1K: "\<exists>F. ?K = ?K1 @ F"
+    using core E mric by (metis append.assoc)
+  have hmK1: "?K1 \<noteq> [] \<longrightarrow> snd (hd ?K1) = maxr1 ?K1"
+  proof
+    assume K1ne: "?K1 \<noteq> []"
+    have mbne: "mrun H b \<noteq> []" using E K1ne by auto
+    have hdeq: "hd (mrun H b) = hd ?K1" using E K1ne by auto
+    have "snd (hd (mrun H b)) = maxr1 (mrun H b)" using hmB mbne by blast
+    hence ub: "snd (hd ?K1) = maxr1 (mrun H b)" using hdeq by simp
+    have "maxr1 ?K1 \<le> maxr1 (mrun H b)"
+      unfolding maxr1_def using E K1ne by (intro Max_mono) auto
+    moreover have "snd (hd ?K1) \<le> maxr1 ?K1"
+      using maxr1_ub K1ne by (metis hd_in_set)
+    ultimately show "snd (hd ?K1) = maxr1 ?K1" using ub by simp
+  qed
+  from K1K obtain F where F: "?K = ?K1 @ F" by blast
+  show ?thesis
+  proof (cases "F = []")
+    case True
+    have "?K1 = ?K" using F True by simp
+    thus ?thesis by blast
+  next
+    case False
+    have "?K \<noteq> []" using F False by auto
+    thus ?thesis using F False hmK hmK1 by blast
+  qed
+qed
 
 lemma NT_tie:
   assumes "fbseg u (c # rest)"
