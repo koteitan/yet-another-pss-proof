@@ -1906,3 +1906,17 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **次の手順**: (1) snoc 機構の post 一般化（機械的見込み、STS_A の
   translate_block_append 部のみ要注意）(2) G-カタログ補題 (3) E6_value 長さ帰納本体。
 - ツール: tools/mine_master2.py (ピース族), mine_master3.py (降下閉包), mine_nbc.py (境界横断なし)。
+
+### ★★(2026-06-10 続24) C1層完成 — NT_dom が NT_tie（SIB核）1点に縮小
+- **drop=0 定理（実証1455/1455 → 純粋証明完了）**: fbseg 閉包で和-隣接ペアは常に同レベル。
+  理由: blockok ステップ≤+1 ⟹ 支配ランの最初の列 = fst pp + 1、森境界条件で
+  piece 先頭も fst pp+1 に固定、c1 は支配で挟み撃ち ⟹ **fst c1 = fst c**〔fbseg_hd_level 緑〕。
+- **C1層の依存鎖（全て緑）**: NT_tie(sorry) → NT_dom → NT_shape（長さ帰納+ins展開）→
+  NT_hd / NT_tail_lt（和尾部厳密増大; ABeq ケースは IH再帰）。
+  部品: NT_noabsorb（吸収⟹サイズ矛盾）、fbseg_pair_host（ホスト隣接抽出）、
+  NT_dom_sub_eq（STS_A直結の添字バウンド）、stepsok 群を前方移動。
+- **NT_tie**: fbseg ∧ T=c1#rest1 ∧ snd c1 = snd c ⟹ ¬ olt (proj (snd c) (NT K)) (proj (snd c1) (NT K1))。
+  タイ1037件で違反0。= K1/SIB の正規形。攻め筋: E6で proj=NT(msfx)化 → セグメント比較
+  → snoc単調(nrm_snoc_int)+host cnf。STS_B hdarg 節と同核なので一方が閉じれば両方閉じる。
+- 現 sorry: nrmstep = NT_tie/E6_value/E6_qcut_last/E6_iii_singleton/E6_seam/STS_B (6)、
+  nrm = nrm_order_pres (1)。ツール: tools/mine_ntdom.py。
