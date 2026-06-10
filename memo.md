@@ -2052,3 +2052,12 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   f1（mult_eq_if で k分配）全て純粋。行1バウンドのみ r1ok_climb。
   デバッグ: nat減算の e0=0退化（pos供給）、∀インスタンス化の Suc正規形（blast）、
   乗法キャンセル（ccontr+mult_le_mono1）。
+
+- (続26補5) **r1ok_climb の機構マイニング**: PM∧cands≠{} 全729配置で
+  **e1(q) - e1(r') ∈ {-3,-2,-1,0}** — 正側ゼロ（必要な ≤+1 より強く e1(q) ≤ e1(r')）。
+  last-visit 連鎖 w_ℓ（レベルℓの最終訪問列）は w_{ℓ+1} > w_ℓ かつ
+  w_{ℓ+1} の r1親 = w_ℓ（純粋: w_ℓ 後は全列 > ℓ ＋ step≤+1 で ℓ+1 訪問存在）— ただし
+  r1ok は上界のみ与え e1 の下界（落ちない側）は別機構（maxsub/cnf 系 = nfinv の
+  subscript 単調降下?）が必要。r1ok_climb は scoped sorry として残し translate 側から攻める。
+- **q-cut の r1ok 帰結（E6_qcut_last 攻略の鍵）**: snd q > maxr1 S ⟹ r1ok で
+  snd q ≤ snd(親)+1 ≤ maxr1+1 ⟹ **snd q = maxr1 S + 1 ∧ q の r1親は m-行1列**。
