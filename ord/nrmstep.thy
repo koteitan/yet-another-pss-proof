@@ -2373,29 +2373,39 @@ text \<open>(SIB core) On subscript ties the projected argument of the earlier h
   is not below that of its sum-successor.  This is the single remaining
   irreducible class fact of the C1 layer (empirically 0/1037 violations).\<close>
 
-text \<open>Host-level sibling-run invariant: at every adjacent tie-sibling pair
-  (positive level, equal level and row-1) the second run is the first or a
-  proper prefix of it, and both runs are head-maximal.  (Empirically exact:
-  2964 pairs, 2405 equal + 559 prefix, all head-max.)\<close>
+text \<open>Host-level sibling-run invariant (repaired, cf. memo 続29: the earlier
+  equal-or-prefix-with-head-max form is FALSE on \<open>ST_PS\<close>).  At every adjacent
+  tie-sibling pair the second run \<open>K1\<close> relates to the first run \<open>K\<close> by
+  \<open>sibrel\<close>: equal, or a proper prefix, or — with both runs head-maximal —
+  a first-difference descent (same level and smaller row 1, or smaller level
+  and same row 1).  Empirically exact at closure+2 sampling: 58116 pairs,
+  families E 44567 / P 12941 / F1 324 / F2 284, zero others; head-max can
+  fail only in the equal family.\<close>
 
 definition mrun :: "pairseq \<Rightarrow> nat \<Rightarrow> pairseq" where
   "mrun M a = takeWhile (\<lambda>r. fst (M ! a) < fst r) (drop (Suc a) M)"
 
-definition sibm :: "pairseq \<Rightarrow> bool" where
-  "sibm M \<longleftrightarrow> (\<forall>a b. a < length M \<longrightarrow> 0 < fst (M ! a) \<longrightarrow>
+definition sibrel :: "pairseq \<Rightarrow> pairseq \<Rightarrow> bool" where
+  "sibrel K K1 \<longleftrightarrow> K1 = K
+     \<or> (\<exists>D. D \<noteq> [] \<and> K = K1 @ D)
+     \<or> (snd (hd K) = maxr1 K \<and> snd (hd K1) = maxr1 K1 \<and>
+        (\<exists>p x x1 r r1. K = p @ x # r \<and> K1 = p @ x1 # r1 \<and>
+           ((fst x1 = fst x \<and> snd x1 < snd x)
+            \<or> (fst x1 < fst x \<and> snd x1 = snd x))))"
+
+definition sibm2 :: "pairseq \<Rightarrow> bool" where
+  "sibm2 M \<longleftrightarrow> (\<forall>a b. a < length M \<longrightarrow> 0 < fst (M ! a) \<longrightarrow>
       b = Suc a + length (mrun M a) \<longrightarrow> b < length M \<longrightarrow>
       fst (M ! b) = fst (M ! a) \<longrightarrow> snd (M ! b) = snd (M ! a) \<longrightarrow>
-      ((mrun M b = mrun M a \<or> (\<exists>D. D \<noteq> [] \<and> mrun M a = mrun M b @ D))
-       \<and> (mrun M a \<noteq> [] \<longrightarrow> snd (hd (mrun M a)) = maxr1 (mrun M a))
-       \<and> (mrun M b \<noteq> [] \<longrightarrow> snd (hd (mrun M b)) = maxr1 (mrun M b))))"
+      sibrel (mrun M a) (mrun M b))"
 
-lemma sibm_diagSeq: "sibm (diagSeq 0 v)"
+lemma sibm2_diagSeq: "sibm2 (diagSeq 0 v)"
 proof -
   have len: "length (diagSeq 0 v) = Suc v" unfolding diagSeq_def by simp
   have nth: "\<And>j. j < Suc v \<Longrightarrow> diagSeq 0 v ! j = (j, j)"
     unfolding diagSeq_def by (simp del: upt_Suc)
   show ?thesis
-    unfolding sibm_def
+    unfolding sibm2_def
   proof (intro allI impI)
     fix a b assume al: "a < length (diagSeq 0 v)"
       and bp: "b = Suc a + length (mrun (diagSeq 0 v) a)"
@@ -2408,12 +2418,7 @@ proof -
     have e2: "diagSeq 0 v ! a = (a, a)" by (rule nth[OF av])
     have "b = a" using fb unfolding e1 e2 by simp
     hence False using ab by simp
-    thus "(mrun (diagSeq 0 v) b = mrun (diagSeq 0 v) a \<or>
-           (\<exists>D. D \<noteq> [] \<and> mrun (diagSeq 0 v) a = mrun (diagSeq 0 v) b @ D))
-       \<and> (mrun (diagSeq 0 v) a \<noteq> [] \<longrightarrow>
-          snd (hd (mrun (diagSeq 0 v) a)) = maxr1 (mrun (diagSeq 0 v) a))
-       \<and> (mrun (diagSeq 0 v) b \<noteq> [] \<longrightarrow>
-          snd (hd (mrun (diagSeq 0 v) b)) = maxr1 (mrun (diagSeq 0 v) b))"
+    thus "sibrel (mrun (diagSeq 0 v) a) (mrun (diagSeq 0 v) b)"
       by blast
   qed
 qed
@@ -2443,10 +2448,103 @@ proof -
     unfolding mrun_def n d by (rule takeWhile_take_comm)
 qed
 
-lemma sibm_take:
-  assumes S: "sibm M"
-  shows "sibm (take m M)"
-  unfolding sibm_def
+lemma hm_take:
+  assumes ne: "take s K1 \<noteq> []" and hm: "snd (hd K1) = maxr1 K1"
+  shows "snd (hd (take s K1)) = maxr1 (take s K1)"
+proof -
+  have ne1: "K1 \<noteq> []" using ne by auto
+  have hdeq: "hd (take s K1) = hd K1"
+    using ne by (cases K1; cases s) auto
+  have sub: "snd ` set (take s K1) \<subseteq> snd ` set K1"
+    using set_take_subset by fastforce
+  have "maxr1 (take s K1) \<le> maxr1 K1"
+    unfolding maxr1_def using ne sub by (intro Max_mono) auto
+  moreover have "snd (hd (take s K1)) \<le> maxr1 (take s K1)"
+    using maxr1_ub ne by (metis hd_in_set)
+  ultimately show ?thesis using hm hdeq by simp
+qed
+
+lemma sibrel_trunc:
+  assumes R: "sibrel K K1"
+  shows "sibrel K (take s K1)"
+proof (cases "length K1 \<le> s")
+  case True
+  thus ?thesis using R by simp
+next
+  case False
+  hence sl: "s < length K1" by simp
+  have K1ne: "K1 \<noteq> []" using sl by auto
+  have dec: "K1 = take s K1 @ drop s K1" by simp
+  have dne: "drop s K1 \<noteq> []" using sl by simp
+  from R show ?thesis unfolding sibrel_def
+  proof (elim disjE)
+    assume "K1 = K"
+    hence "K = take s K1 @ drop s K1" using dec by simp
+    thus "take s K1 = K \<or> (\<exists>D. D \<noteq> [] \<and> K = take s K1 @ D)
+        \<or> (snd (hd K) = maxr1 K \<and> snd (hd (take s K1)) = maxr1 (take s K1) \<and>
+           (\<exists>p x x1 r r1. K = p @ x # r \<and> take s K1 = p @ x1 # r1 \<and>
+              ((fst x1 = fst x \<and> snd x1 < snd x)
+               \<or> (fst x1 < fst x \<and> snd x1 = snd x))))"
+      using dne by blast
+  next
+    assume "\<exists>D. D \<noteq> [] \<and> K = K1 @ D"
+    then obtain D where D: "D \<noteq> []" "K = K1 @ D" by blast
+    have "K = take s K1 @ (drop s K1 @ D)"
+      using D(2) dec by (metis append.assoc)
+    thus "take s K1 = K \<or> (\<exists>D. D \<noteq> [] \<and> K = take s K1 @ D)
+        \<or> (snd (hd K) = maxr1 K \<and> snd (hd (take s K1)) = maxr1 (take s K1) \<and>
+           (\<exists>p x x1 r r1. K = p @ x # r \<and> take s K1 = p @ x1 # r1 \<and>
+              ((fst x1 = fst x \<and> snd x1 < snd x)
+               \<or> (fst x1 < fst x \<and> snd x1 = snd x))))"
+      using dne by blast
+  next
+    assume L: "snd (hd K) = maxr1 K \<and> snd (hd K1) = maxr1 K1 \<and>
+        (\<exists>p x x1 r r1. K = p @ x # r \<and> K1 = p @ x1 # r1 \<and>
+           ((fst x1 = fst x \<and> snd x1 < snd x)
+            \<or> (fst x1 < fst x \<and> snd x1 = snd x)))"
+    then obtain p x x1 r r1 where w: "K = p @ x # r" "K1 = p @ x1 # r1"
+      and lx: "(fst x1 = fst x \<and> snd x1 < snd x)
+               \<or> (fst x1 < fst x \<and> snd x1 = snd x)" by blast
+    have hmK: "snd (hd K) = maxr1 K" and hmK1: "snd (hd K1) = maxr1 K1"
+      using L by blast+
+    show "take s K1 = K \<or> (\<exists>D. D \<noteq> [] \<and> K = take s K1 @ D)
+        \<or> (snd (hd K) = maxr1 K \<and> snd (hd (take s K1)) = maxr1 (take s K1) \<and>
+           (\<exists>p x x1 r r1. K = p @ x # r \<and> take s K1 = p @ x1 # r1 \<and>
+              ((fst x1 = fst x \<and> snd x1 < snd x)
+               \<or> (fst x1 < fst x \<and> snd x1 = snd x))))"
+    proof (cases "s \<le> length p")
+      case True
+      have tp: "take s K1 = take s p" unfolding w(2) using True by simp
+      have tpK: "take s K1 = take s K" unfolding tp w(1) using True by simp
+      have "K = take s K1 @ drop s K" using tpK by (metis append_take_drop_id)
+      moreover have "drop s K \<noteq> []"
+        unfolding w(1) using True by simp
+      ultimately show ?thesis by blast
+    next
+      case False
+      hence sp: "length p < s" by simp
+      have t1: "take s K1 = p @ x1 # take (s - length p - 1) r1"
+      proof -
+        have "take s K1 = take s p @ take (s - length p) (x1 # r1)"
+          unfolding w(2) by (simp add: take_append)
+        moreover have "take s p = p" using sp by simp
+        moreover have "take (s - length p) (x1 # r1)
+                       = x1 # take (s - length p - 1) r1"
+          using sp by (cases "s - length p") auto
+        ultimately show ?thesis by simp
+      qed
+      have ne: "take s K1 \<noteq> []" unfolding t1 by simp
+      have hm1: "snd (hd (take s K1)) = maxr1 (take s K1)"
+        by (rule hm_take[OF ne hmK1])
+      show ?thesis using hmK hm1 w(1) t1 lx by blast
+    qed
+  qed
+qed
+
+lemma sibm2_take:
+  assumes S: "sibm2 M"
+  shows "sibm2 (take m M)"
+  unfolding sibm2_def
 proof (intro allI impI)
   fix a b assume al: "a < length (take m M)"
     and ap: "0 < fst (take m M ! a)"
@@ -2473,85 +2571,32 @@ proof (intro allI impI)
   have fb': "fst (M ! b) = fst (M ! a)" using fb na nb by simp
   have sb': "snd (M ! b) = snd (M ! a)" using sb na nb by simp
   have ap': "0 < fst (M ! a)" using ap na by simp
-  from S[unfolded sibm_def, rule_format, OF aM ap' bp' bM fb' sb']
-  have core: "mrun M b = mrun M a \<or> (\<exists>D. D \<noteq> [] \<and> mrun M a = mrun M b @ D)"
-    and hA: "mrun M a \<noteq> [] \<longrightarrow> snd (hd (mrun M a)) = maxr1 (mrun M a)"
-    and hB: "mrun M b \<noteq> [] \<longrightarrow> snd (hd (mrun M b)) = maxr1 (mrun M b)"
-    by blast+
+  from S[unfolded sibm2_def, rule_format, OF aM ap' bp' bM fb' sb']
+  have core: "sibrel (mrun M a) (mrun M b)" .
   have mtb: "mrun (take m M) b = take (m - Suc b) (mrun M b)"
     by (rule mrun_take[OF bm])
-  have pre: "\<exists>G. mrun M b = mrun (take m M) b @ G"
-    using mtb by (metis append_take_drop_id)
-  then obtain G where G: "mrun M b = mrun (take m M) b @ G" by blast
-  have coreT: "mrun (take m M) b = mrun (take m M) a \<or>
-        (\<exists>D. D \<noteq> [] \<and> mrun (take m M) a = mrun (take m M) b @ D)"
-  proof -
-    from core show ?thesis
-    proof
-      assume e: "mrun M b = mrun M a"
-      show ?thesis
-      proof (cases "G = []")
-        case True
-        thus ?thesis using G e full by simp
-      next
-        case False
-        have "mrun (take m M) a = mrun (take m M) b @ G"
-          using full e G by simp
-        thus ?thesis using False by blast
-      qed
-    next
-      assume "\<exists>D. D \<noteq> [] \<and> mrun M a = mrun M b @ D"
-      then obtain D where D: "D \<noteq> []" "mrun M a = mrun M b @ D" by blast
-      have "mrun (take m M) a = mrun (take m M) b @ (G @ D)"
-        using full D(2) G by simp
-      moreover have "G @ D \<noteq> []" using D(1) by simp
-      ultimately show ?thesis by blast
-    qed
-  qed
-  have hAT: "mrun (take m M) a \<noteq> [] \<longrightarrow>
-        snd (hd (mrun (take m M) a)) = maxr1 (mrun (take m M) a)"
-    using hA full by simp
-  have hBT: "mrun (take m M) b \<noteq> [] \<longrightarrow>
-        snd (hd (mrun (take m M) b)) = maxr1 (mrun (take m M) b)"
-  proof
-    assume ne: "mrun (take m M) b \<noteq> []"
-    have mbne: "mrun M b \<noteq> []" using G ne by auto
-    have hdeq: "hd (mrun M b) = hd (mrun (take m M) b)" using G ne by auto
-    have "snd (hd (mrun M b)) = maxr1 (mrun M b)" using hB mbne by blast
-    hence ub: "snd (hd (mrun (take m M) b)) = maxr1 (mrun M b)" using hdeq by simp
-    have "maxr1 (mrun (take m M) b) \<le> maxr1 (mrun M b)"
-      unfolding maxr1_def using G ne by (intro Max_mono) auto
-    moreover have "snd (hd (mrun (take m M) b)) \<le> maxr1 (mrun (take m M) b)"
-      using maxr1_ub ne by (metis hd_in_set)
-    ultimately show "snd (hd (mrun (take m M) b)) = maxr1 (mrun (take m M) b)"
-      using ub by simp
-  qed
-  show "(mrun (take m M) b = mrun (take m M) a \<or>
-         (\<exists>D. D \<noteq> [] \<and> mrun (take m M) a = mrun (take m M) b @ D))
-      \<and> (mrun (take m M) a \<noteq> [] \<longrightarrow>
-         snd (hd (mrun (take m M) a)) = maxr1 (mrun (take m M) a))
-      \<and> (mrun (take m M) b \<noteq> [] \<longrightarrow>
-         snd (hd (mrun (take m M) b)) = maxr1 (mrun (take m M) b))"
-    using coreT hAT hBT by blast
+  show "sibrel (mrun (take m M) a) (mrun (take m M) b)"
+    unfolding full mtb by (rule sibrel_trunc[OF core])
 qed
 
-lemma sibm_butlast: "sibm M \<Longrightarrow> sibm (butlast M)"
-  using sibm_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
-lemma sibm_oper_bad:
-  assumes "sibm M" and "blockok 0 M" and "M \<in> ST_PS"
+lemma sibm2_butlast: "sibm2 M \<Longrightarrow> sibm2 (butlast M)"
+  using sibm2_take[of M "length M - 1"] by (simp add: butlast_conv_take)
+
+lemma sibm2_oper_bad:
+  assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
     and "i1 = idx1 M j1" and "hasParent M i1 j1"
     and "j0 = parent M i1 j1"
     and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
     and "oper M n = take j0 M @ concat (map (\<lambda>k.
            map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
-  shows "sibm (oper M n)"
+  shows "sibm2 (oper M n)"
   sorry
 
-lemma sibm_oper:
-  assumes R: "sibm M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
-  shows "sibm (oper M n)"
+lemma sibm2_oper:
+  assumes R: "sibm2 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+  shows "sibm2 (oper M n)"
 proof -
   define j1 where "j1 = Lng M - 1"
   have b: "blockok 0 M" by (rule blockok_ST_PS[OF ST])
@@ -2565,8 +2610,8 @@ proof -
       case True
       have "oper M n = Pred M"
         unfolding oper_def Let_def j1_def[symmetric] using False True by auto
-      moreover have "sibm (Pred M)"
-        unfolding Pred_def using R sibm_butlast by simp
+      moreover have "sibm2 (Pred M)"
+        unfolding Pred_def using R sibm2_butlast by simp
       ultimately show ?thesis by simp
     next
       case Fz: False
@@ -2577,8 +2622,8 @@ proof -
         have "oper M n = Pred M"
           unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
           using False Fz False2 by auto
-        moreover have "sibm (Pred M)"
-          unfolding Pred_def using R sibm_butlast by simp
+        moreover have "sibm2 (Pred M)"
+          unfolding Pred_def using R sibm2_butlast by simp
         ultimately show ?thesis by simp
       next
         case hp: True
@@ -2599,38 +2644,32 @@ proof -
           thus ?thesis unfolding d1z by simp
         qed
         show ?thesis
-          by (rule sibm_oper_bad[OF R b ST j1_def False i1_def hp j0_def d0_def opeq])
+          by (rule sibm2_oper_bad[OF R b ST j1_def False i1_def hp j0_def d0_def opeq])
       qed
     qed
   qed
 qed
 
-theorem sibm_ST_PS: "M \<in> ST_PS \<Longrightarrow> sibm M"
+theorem sibm2_ST_PS: "M \<in> ST_PS \<Longrightarrow> sibm2 M"
 proof (induction M rule: ST_PS.induct)
-  case (diag v) show ?case by (rule sibm_diagSeq)
+  case (diag v) show ?case by (rule sibm2_diagSeq)
 next
   case (oper M n)
-  show ?case by (rule sibm_oper[OF oper.IH oper.hyps(1) oper.hyps(2)])
+  show ?case by (rule sibm2_oper[OF oper.IH oper.hyps(1) oper.hyps(2)])
 qed
 
-text \<open>(SIB) On subscript ties the successor's run is the same as, or a
-  proper prefix of, the head's run, and in the proper-prefix case both runs
-  are head-maximal (empirically 1418 equal + 650 prefix with both head-max,
-  0 other).  A pure sequence-shape fact \<dash> the no-fire facts follow via
-  \<open>E6_hdom\<close>.\<close>
+text \<open>(SIB, repaired) On subscript ties the runs are related by \<open>sibrel\<close>:
+  equal, proper prefix, or first-difference descent with both runs
+  head-maximal (memo 続29; closure+2 windows: 3027 configs, all in family,
+  zero \<open>NT_tie\<close> violations).  The window truncation of the successor's run
+  is absorbed by \<open>sibrel_trunc\<close>.\<close>
 
-lemma SIB_shape:
+lemma SIB_shape2:
   assumes A: "fbseg u (c # rest)"
     and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
     and tie: "snd c1 = snd c"
-  shows "takeWhile (\<lambda>r. fst c1 < fst r) rest1 = takeWhile (\<lambda>r. fst c < fst r) rest
-         \<or> (\<exists>D. D \<noteq> [] \<and> takeWhile (\<lambda>r. fst c < fst r) rest
-                  = takeWhile (\<lambda>r. fst c1 < fst r) rest1 @ D
-             \<and> snd (hd (takeWhile (\<lambda>r. fst c < fst r) rest))
-                = maxr1 (takeWhile (\<lambda>r. fst c < fst r) rest)
-             \<and> (takeWhile (\<lambda>r. fst c1 < fst r) rest1 \<noteq> [] \<longrightarrow>
-                snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))
-                = maxr1 (takeWhile (\<lambda>r. fst c1 < fst r) rest1)))"
+  shows "sibrel (takeWhile (\<lambda>r. fst c < fst r) rest)
+                (takeWhile (\<lambda>r. fst c1 < fst r) rest1)"
 proof -
   let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
   let ?K1 = "takeWhile (\<lambda>r. fst c1 < fst r) rest1"
@@ -2715,45 +2754,20 @@ proof -
     hence "mrun H b = ?K1" unfolding mrun_def db Hb by simp
     thus ?thesis by (metis append_Nil2)
   qed
-  have sm: "sibm H" unfolding H_def by (rule sibm_ST_PS[OF h])
+  have sm: "sibm2 H" unfolding H_def by (rule sibm2_ST_PS[OF h])
   have bb: "b = Suc ic + length (mrun H ic)" unfolding b_def mric by simp
   have fstb: "fst (H ! b) = fst (H ! ic)" unfolding Hb Hic using lvl by simp
   have sndb: "snd (H ! b) = snd (H ! ic)" unfolding Hb Hic using tie by simp
   have icpos: "0 < fst (H ! ic)" unfolding Hic using cpos by simp
-  from sm[unfolded sibm_def, rule_format, OF icH icpos bb bH fstb sndb]
-  have core: "mrun H b = mrun H ic \<or> (\<exists>D. D \<noteq> [] \<and> mrun H ic = mrun H b @ D)"
-    and hmA: "mrun H ic \<noteq> [] \<longrightarrow> snd (hd (mrun H ic)) = maxr1 (mrun H ic)"
-    and hmB: "mrun H b \<noteq> [] \<longrightarrow> snd (hd (mrun H b)) = maxr1 (mrun H b)"
-    by blast+
-  have hmK: "?K \<noteq> [] \<longrightarrow> snd (hd ?K) = maxr1 ?K" using hmA mric by simp
+  from sm[unfolded sibm2_def, rule_format, OF icH icpos bb bH fstb sndb]
+  have core: "sibrel (mrun H ic) (mrun H b)" .
   from mrb_pre obtain E where E: "mrun H b = ?K1 @ E" by blast
-  have K1K: "\<exists>F. ?K = ?K1 @ F"
-    using core E mric by (metis append.assoc)
-  have hmK1: "?K1 \<noteq> [] \<longrightarrow> snd (hd ?K1) = maxr1 ?K1"
-  proof
-    assume K1ne: "?K1 \<noteq> []"
-    have mbne: "mrun H b \<noteq> []" using E K1ne by auto
-    have hdeq: "hd (mrun H b) = hd ?K1" using E K1ne by auto
-    have "snd (hd (mrun H b)) = maxr1 (mrun H b)" using hmB mbne by blast
-    hence ub: "snd (hd ?K1) = maxr1 (mrun H b)" using hdeq by simp
-    have "maxr1 ?K1 \<le> maxr1 (mrun H b)"
-      unfolding maxr1_def using E K1ne by (intro Max_mono) auto
-    moreover have "snd (hd ?K1) \<le> maxr1 ?K1"
-      using maxr1_ub K1ne by (metis hd_in_set)
-    ultimately show "snd (hd ?K1) = maxr1 ?K1" using ub by simp
-  qed
-  from K1K obtain F where F: "?K = ?K1 @ F" by blast
+  have tk: "?K1 = take (length ?K1) (mrun H b)"
+    unfolding E by simp
   show ?thesis
-  proof (cases "F = []")
-    case True
-    have "?K1 = ?K" using F True by simp
-    thus ?thesis by blast
-  next
-    case False
-    have "?K \<noteq> []" using F False by auto
-    thus ?thesis using F False hmK hmK1 by blast
-  qed
+    using sibrel_trunc[OF core[unfolded mric], of "length ?K1"] tk by metis
 qed
+
 
 lemma NT_tie:
   assumes "fbseg u (c # rest)"
@@ -3698,10 +3712,101 @@ proof
   qed
 qed
 
-text \<open>Resolution of \<open>NT_tie\<close> from \<open>SIB_prefix\<close>: equal runs give equal
-  projections; a proper-prefix run is strictly below by prefix monotonicity,
-  with both projections trivial by the no-fire conjuncts.  (Same stratified
-  placement as the other resolved lemmas.)\<close>
+text \<open>The level of the head of a tie-sibling run: the host block discipline
+  forces the first run column one level above its head column.\<close>
+
+lemma fbseg_run_hd_level:
+  assumes A: "fbseg u (c # rest)"
+    and ne: "takeWhile (\<lambda>r. fst c < fst r) rest \<noteq> []"
+  shows "fst (hd (takeWhile (\<lambda>r. fst c < fst r) rest)) = Suc (fst c)"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  from A obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    unfolding fbseg_def by blast
+  define H where "H = pre @ (pp # mid @ (c # rest)) @ post"
+  define ic where "ic = length pre + 1 + length mid"
+  have rne: "rest \<noteq> []" using ne by auto
+  have hdK: "hd ?K = hd rest"
+    using ne by (cases rest) (auto split: if_splits)
+  have gt: "fst c < fst (hd ?K)"
+    using ne set_takeWhileD by (metis hd_in_set)
+  have so: "stepsok H"
+    using blockok_stepsok blockok_ST_PS[OF h] H_def by blast
+  have Hic: "H ! ic = c"
+  proof -
+    have "H = (pre @ pp # mid) @ c # (rest @ post)"
+      unfolding H_def by simp
+    moreover have "length (pre @ pp # mid) = ic" unfolding ic_def by simp
+    ultimately show ?thesis by (metis nth_append_length)
+  qed
+  have Hic1: "H ! Suc ic = hd rest"
+  proof -
+    have "H = (pre @ pp # mid @ [c]) @ hd rest # (tl rest @ post)"
+      unfolding H_def using rne by simp
+    moreover have "length (pre @ pp # mid @ [c]) = Suc ic"
+      unfolding ic_def by simp
+    ultimately show ?thesis by (metis nth_append_length)
+  qed
+  have ln: "Suc ic < length H"
+  proof -
+    have "length H = length pre + 1 + length mid + 1 + length rest + length post"
+      unfolding H_def by simp
+    thus ?thesis unfolding ic_def using rne by (cases rest) auto
+  qed
+  have "fst (H ! Suc ic) \<le> Suc (fst (H ! ic))"
+    using so[unfolded stepsok_def, rule_format, OF ln] .
+  hence "fst (hd rest) \<le> Suc (fst c)" unfolding Hic Hic1 .
+  thus ?thesis using gt hdK by simp
+qed
+
+text \<open>(tie no-fire, class facts) A tie-sibling run that is not head-maximal
+  never fires at its head's subscript: the row-1 maximum is buried under a
+  lower-subscript head, so visibility fails.  (Empirically: closure+2, all
+  3027 tie window configurations are no-fire on both sides; the non-head-max
+  ones \<dash> 24 configs \<dash> are exactly the P/E-shaped ones.)\<close>
+
+lemma E6_tie_nofire0:
+  assumes "fbseg u (c # rest)"
+    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and "snd c1 = snd c"
+    and "takeWhile (\<lambda>r. fst c < fst r) rest \<noteq> []"
+    and "snd (hd (takeWhile (\<lambda>r. fst c < fst r) rest))
+         \<noteq> maxr1 (takeWhile (\<lambda>r. fst c < fst r) rest)"
+  shows "\<not> pfire (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest)))"
+  sorry
+
+lemma E6_tie_nofire1:
+  assumes "fbseg u (c # rest)"
+    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and "snd c1 = snd c"
+    and "takeWhile (\<lambda>r. fst c1 < fst r) rest1 \<noteq> []"
+    and "snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))
+         \<noteq> maxr1 (takeWhile (\<lambda>r. fst c1 < fst r) rest1)"
+  shows "\<not> pfire (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1)))"
+  sorry
+
+text \<open>(lexdiff value lemma) For head-maximal dominated runs with equal head
+  level, a first-difference descent (equal level and smaller row 1, or
+  smaller level and equal row 1) strictly decreases the normalised value.
+  (Empirically: 1164974 cross-host pairs of truncated dominated runs,
+  zero failures.)\<close>
+
+lemma NT_lexdiff_lt:
+  assumes "dseg u K" and "dseg u1 K1"
+    and "snd (hd K) = maxr1 K" and "snd (hd K1) = maxr1 K1"
+    and "fst (hd K1) = fst (hd K)"
+    and "K = p @ x # r" and "K1 = p @ x1 # r1"
+    and "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
+  shows "olt (nrm (translate K1)) (nrm (translate K))"
+  sorry
+
+text \<open>Resolution of \<open>NT_tie\<close> from \<open>SIB_shape2\<close> (repaired, memo 続29): equal
+  runs give equal projections; a proper prefix is strictly below by prefix
+  monotonicity; a first-difference descent is strictly below by
+  \<open>NT_lexdiff_lt\<close>; projections are trivial by head-max no-fire (\<open>E6_hdom\<close>)
+  or tie no-fire (\<open>E6_tie_nofire0/1\<close>).  (Same stratified placement as the
+  other resolved lemmas.)\<close>
 
 lemma NT_tie_resolved:
   assumes A: "fbseg u (c # rest)"
@@ -3712,23 +3817,43 @@ lemma NT_tie_resolved:
 proof -
   let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
   let ?K1 = "takeWhile (\<lambda>r. fst c1 < fst r) rest1"
-  from SIB_shape[OF A T tie]
-  show ?thesis
-  proof
+  have nfK: "?K \<noteq> [] \<Longrightarrow> \<not> pfire (snd c) (nrm (translate ?K))"
+  proof -
+    assume Kne: "?K \<noteq> []"
+    show "\<not> pfire (snd c) (nrm (translate ?K))"
+    proof (cases "snd (hd ?K) = maxr1 ?K")
+      case True
+      show ?thesis by (rule E6_hdom[OF fbseg_K_dseg[OF A Kne] True])
+    next
+      case False
+      show ?thesis by (rule E6_tie_nofire0[OF A T tie Kne False])
+    qed
+  qed
+  have fbT: "fbseg u (c1 # rest1)"
+    using fbseg_T_desc[OF A] T by simp
+  have nfK1: "?K1 \<noteq> [] \<Longrightarrow> \<not> pfire (snd c1) (nrm (translate ?K1))"
+  proof -
+    assume K1ne: "?K1 \<noteq> []"
+    show "\<not> pfire (snd c1) (nrm (translate ?K1))"
+    proof (cases "snd (hd ?K1) = maxr1 ?K1")
+      case True
+      show ?thesis by (rule E6_hdom[OF fbseg_K_dseg[OF fbT K1ne] True])
+    next
+      case False
+      show ?thesis by (rule E6_tie_nofire1[OF A T tie K1ne False])
+    qed
+  qed
+  from SIB_shape2[OF A T tie] show ?thesis
+    unfolding sibrel_def
+  proof (elim disjE)
     assume eq: "?K1 = ?K"
     show ?thesis unfolding eq tie using olt_irrefl by blast
   next
-    assume "\<exists>D. D \<noteq> [] \<and> ?K = ?K1 @ D
-             \<and> snd (hd ?K) = maxr1 ?K
-             \<and> (?K1 \<noteq> [] \<longrightarrow> snd (hd ?K1) = maxr1 ?K1)"
-    then obtain D where D: "D \<noteq> []" "?K = ?K1 @ D"
-      and hmK: "snd (hd ?K) = maxr1 ?K"
-      and hmK1: "?K1 \<noteq> [] \<longrightarrow> snd (hd ?K1) = maxr1 ?K1" by blast
+    assume "\<exists>D. D \<noteq> [] \<and> ?K = ?K1 @ D"
+    then obtain D where D: "D \<noteq> []" "?K = ?K1 @ D" by blast
     have Kne: "?K \<noteq> []" using D by auto
-    have nfK: "\<not> pfire (snd c) (nrm (translate ?K))"
-      by (rule E6_hdom[OF fbseg_K_dseg[OF A Kne] hmK])
     have pK: "proj (snd c) (nrm (translate ?K)) = nrm (translate ?K)"
-      by (rule proj_nofire[OF nfK])
+      by (rule proj_nofire[OF nfK[OF Kne]])
     show ?thesis
     proof (cases "?K1 = []")
       case True
@@ -3737,16 +3862,8 @@ proof -
       thus ?thesis using not_olt_Z by simp
     next
       case K1ne: False
-      have fbT: "fbseg u (c1 # rest1)"
-        using fbseg_T_desc[OF A] T by simp
-      have dsK1: "dseg (snd c1) ?K1"
-        by (rule fbseg_K_dseg[OF fbT K1ne])
-      have hm1: "snd (hd ?K1) = maxr1 ?K1"
-        using hmK1 K1ne by blast
-      have nfK1: "\<not> pfire (snd c1) (nrm (translate ?K1))"
-        by (rule E6_hdom[OF dsK1 hm1])
       have pK1: "proj (snd c1) (nrm (translate ?K1)) = nrm (translate ?K1)"
-        by (rule proj_nofire[OF nfK1])
+        by (rule proj_nofire[OF nfK1[OF K1ne]])
       from A obtain pre pp mid post
         where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
         unfolding fbseg_def by blast
@@ -3765,8 +3882,37 @@ proof -
       thus ?thesis unfolding pK pK1
         using olt_total olt_irrefl olt_trans by blast
     qed
+  next
+    assume L: "snd (hd ?K) = maxr1 ?K \<and> snd (hd ?K1) = maxr1 ?K1 \<and>
+        (\<exists>p x x1 r r1. ?K = p @ x # r \<and> ?K1 = p @ x1 # r1 \<and>
+           ((fst x1 = fst x \<and> snd x1 < snd x)
+            \<or> (fst x1 < fst x \<and> snd x1 = snd x)))"
+    then obtain p x x1 r r1 where w1: "?K = p @ x # r" and w2: "?K1 = p @ x1 # r1"
+      and lx: "(fst x1 = fst x \<and> snd x1 < snd x)
+               \<or> (fst x1 < fst x \<and> snd x1 = snd x)" by blast
+    have hmK: "snd (hd ?K) = maxr1 ?K" and hmK1: "snd (hd ?K1) = maxr1 ?K1"
+      using L by blast+
+    have Kne: "?K \<noteq> []" unfolding w1 by simp
+    have K1ne: "?K1 \<noteq> []" unfolding w2 by simp
+    have dsK: "dseg (snd c) ?K" by (rule fbseg_K_dseg[OF A Kne])
+    have dsK1: "dseg (snd c1) ?K1" by (rule fbseg_K_dseg[OF fbT K1ne])
+    have pK: "proj (snd c) (nrm (translate ?K)) = nrm (translate ?K)"
+      by (rule proj_nofire[OF E6_hdom[OF dsK hmK]])
+    have pK1: "proj (snd c1) (nrm (translate ?K1)) = nrm (translate ?K1)"
+      by (rule proj_nofire[OF E6_hdom[OF dsK1 hmK1]])
+    have lvl: "fst c1 = fst c" by (rule fbseg_hd_level[OF A T])
+    have lvlK: "fst (hd ?K) = Suc (fst c)"
+      by (rule fbseg_run_hd_level[OF A Kne])
+    have lvlK1: "fst (hd ?K1) = Suc (fst c1)"
+      by (rule fbseg_run_hd_level[OF fbT K1ne])
+    have hdlv: "fst (hd ?K1) = fst (hd ?K)" using lvlK lvlK1 lvl by simp
+    have "olt (nrm (translate ?K1)) (nrm (translate ?K))"
+      by (rule NT_lexdiff_lt[OF dsK dsK1 hmK hmK1 hdlv w1 w2 lx])
+    thus ?thesis unfolding pK pK1
+      using olt_total olt_irrefl olt_trans by blast
   qed
 qed
+
 
 text \<open>(cascade, K side) If the maximum lives in the head's dominated run and
   the segment fires, the head's run extends to the end, the head is visible,
