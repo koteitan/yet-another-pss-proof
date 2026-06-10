@@ -2298,19 +2298,23 @@ text \<open>(SIB core) On subscript ties the projected argument of the earlier h
   irreducible class fact of the C1 layer (empirically 0/1037 violations).\<close>
 
 text \<open>(SIB) On subscript ties the successor's run is the same as, or a
-  proper prefix of, the head's run, and in the proper-prefix case neither run
-  fires at the tie level (empirically 1418 equal + 650 prefix, 0 other, with
-  all 650 prefix pairs no-fire/no-fire).\<close>
+  proper prefix of, the head's run, and in the proper-prefix case both runs
+  are head-maximal (empirically 1418 equal + 650 prefix with both head-max,
+  0 other).  A pure sequence-shape fact \<dash> the no-fire facts follow via
+  \<open>E6_hdom\<close>.\<close>
 
-lemma SIB_prefix:
+lemma SIB_shape:
   assumes "fbseg u (c # rest)"
     and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
     and "snd c1 = snd c"
   shows "takeWhile (\<lambda>r. fst c1 < fst r) rest1 = takeWhile (\<lambda>r. fst c < fst r) rest
          \<or> (\<exists>D. D \<noteq> [] \<and> takeWhile (\<lambda>r. fst c < fst r) rest
                   = takeWhile (\<lambda>r. fst c1 < fst r) rest1 @ D
-             \<and> \<not> pfire (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest)))
-             \<and> \<not> pfire (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))"
+             \<and> snd (hd (takeWhile (\<lambda>r. fst c < fst r) rest))
+                = maxr1 (takeWhile (\<lambda>r. fst c < fst r) rest)
+             \<and> (takeWhile (\<lambda>r. fst c1 < fst r) rest1 \<noteq> [] \<longrightarrow>
+                snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))
+                = maxr1 (takeWhile (\<lambda>r. fst c1 < fst r) rest1)))"
   sorry
 
 lemma NT_tie:
@@ -3270,29 +3274,41 @@ lemma NT_tie_resolved:
 proof -
   let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
   let ?K1 = "takeWhile (\<lambda>r. fst c1 < fst r) rest1"
-  from SIB_prefix[OF A T tie]
+  from SIB_shape[OF A T tie]
   show ?thesis
   proof
     assume eq: "?K1 = ?K"
     show ?thesis unfolding eq tie using olt_irrefl by blast
   next
     assume "\<exists>D. D \<noteq> [] \<and> ?K = ?K1 @ D
-             \<and> \<not> pfire (snd c) (nrm (translate ?K))
-             \<and> \<not> pfire (snd c) (nrm (translate ?K1))"
+             \<and> snd (hd ?K) = maxr1 ?K
+             \<and> (?K1 \<noteq> [] \<longrightarrow> snd (hd ?K1) = maxr1 ?K1)"
     then obtain D where D: "D \<noteq> []" "?K = ?K1 @ D"
-      and nfK: "\<not> pfire (snd c) (nrm (translate ?K))"
-      and nfK1: "\<not> pfire (snd c) (nrm (translate ?K1))" by blast
+      and hmK: "snd (hd ?K) = maxr1 ?K"
+      and hmK1: "?K1 \<noteq> [] \<longrightarrow> snd (hd ?K1) = maxr1 ?K1" by blast
+    have Kne: "?K \<noteq> []" using D by auto
+    have nfK: "\<not> pfire (snd c) (nrm (translate ?K))"
+      by (rule E6_hdom[OF fbseg_K_dseg[OF A Kne] hmK])
     have pK: "proj (snd c) (nrm (translate ?K)) = nrm (translate ?K)"
       by (rule proj_nofire[OF nfK])
-    have pK1: "proj (snd c1) (nrm (translate ?K1)) = nrm (translate ?K1)"
-      unfolding tie by (rule proj_nofire[OF nfK1])
     show ?thesis
     proof (cases "?K1 = []")
       case True
-      have "nrm (translate ?K1) = Z" unfolding True by simp
-      thus ?thesis unfolding pK pK1 using not_olt_Z by simp
+      have z: "nrm (translate ?K1) = Z" unfolding True by simp
+      have "proj (snd c1) (nrm (translate ?K1)) = Z" unfolding z by (simp add: proj_Z)
+      thus ?thesis using not_olt_Z by simp
     next
       case K1ne: False
+      have fbT: "fbseg u (c1 # rest1)"
+        using fbseg_T_desc[OF A] T by simp
+      have dsK1: "dseg (snd c1) ?K1"
+        by (rule fbseg_K_dseg[OF fbT K1ne])
+      have hm1: "snd (hd ?K1) = maxr1 ?K1"
+        using hmK1 K1ne by blast
+      have nfK1: "\<not> pfire (snd c1) (nrm (translate ?K1))"
+        by (rule E6_hdom[OF dsK1 hm1])
+      have pK1: "proj (snd c1) (nrm (translate ?K1)) = nrm (translate ?K1)"
+        by (rule proj_nofire[OF nfK1])
       from A obtain pre pp mid post
         where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
         unfolding fbseg_def by blast

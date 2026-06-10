@@ -2085,3 +2085,9 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   diag では兄弟ランなし/全同形、oper コピーは同一素材反復＝prefix 切詰のみ生成）。
   閉じると NT_tie 完了・STS_B hdarg 節も同経路。次いで nbcK_T/K・memT・lpl/dom_deep
   （これらは fire-cascade 系で GRAND 同時帰納の本丸）。
+
+- (続27補3) **SIB_prefix → SIB_shape 還元完了（緑）**: 無発火連言は導出可能
+  （prefix-タイ対は両ラン頭最大 650/650 → E6_hdom 経由で無発火）。
+  SIB_shape = 「タイ兄弟ラン K1 ∈ {K, 真prefix} ∧ prefix時両頭最大」の
+  純粋配列形状事実のみ。NT_tie_resolved は E6_hdom+NT_prefix_lt+proj_nofire で再証明。
+  教訓: obtain した ⟶ は [OF] 不可（blast で）。
