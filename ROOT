@@ -36,3 +36,4 @@ session PSI in ord = ZFC_in_HOL +
     psi
     otembed
     nrm
+    nrmstep
