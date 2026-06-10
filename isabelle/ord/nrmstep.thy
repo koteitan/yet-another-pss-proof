@@ -1080,6 +1080,32 @@ qed
 lemma NT_single: "nrm (translate [c]) = P (snd c) Z Z"
   by (cases c) (simp add: proj_Z)
 
+lemma maxr1_tail:
+  assumes Y: "Y \<noteq> []" and X: "\<forall>c \<in> set X. snd c < maxr1 Y"
+  shows "maxr1 (X @ Y) = maxr1 Y"
+proof (cases "X = []")
+  case True thus ?thesis by simp
+next
+  case False
+  have su: "snd ` set (X @ Y) = snd ` set X \<union> snd ` set Y" by auto
+  have mu: "Max (snd ` set X \<union> snd ` set Y) = max (Max (snd ` set X)) (Max (snd ` set Y))"
+    by (intro Max_Un) (use False Y in auto)
+  have "Max (snd ` set X) \<in> snd ` set X" by (intro Max_in) (use False in auto)
+  hence "Max (snd ` set X) < maxr1 Y" using X by auto
+  hence "Max (snd ` set X) \<le> Max (snd ` set Y)" unfolding maxr1_def by simp
+  thus ?thesis unfolding maxr1_def su mu by (simp add: max_absorb2)
+qed
+
+lemma msfx_tail:
+  assumes Y: "Y \<noteq> []" and X: "\<forall>c \<in> set X. snd c < maxr1 Y"
+  shows "msfx (X @ Y) = msfx Y"
+proof -
+  have m: "maxr1 (X @ Y) = maxr1 Y" by (rule maxr1_tail[OF Y X])
+  have "dropWhile (\<lambda>c. snd c < maxr1 Y) (X @ Y) = dropWhile (\<lambda>c. snd c < maxr1 Y) Y"
+    using X by (intro dropWhile_append2) auto
+  thus ?thesis unfolding msfx_def m .
+qed
+
 text \<open>Under fire the projection moves strictly (to a critical, hence smaller
   in size).\<close>
 
@@ -1095,6 +1121,134 @@ proof -
   thus ?thesis using Gterm_size by fastforce
 qed
 
+subsection \<open>Subscript bookkeeping: the head of the suffix image is the max row-1\<close>
+
+lemma Gterm_subs: "g \<in> Gterm u t \<Longrightarrow> subs g \<subseteq> subs t"
+proof (induction t arbitrary: g)
+  case (P a b c)
+  from P.prems consider "u \<le> a" "g = b" | "u \<le> a" "g \<in> Gterm u b" | "g \<in> Gterm u c"
+    by (auto split: if_splits)
+  thus ?case
+  proof cases
+    case 1 thus ?thesis by auto
+  next
+    case 2 thus ?thesis using P.IH(1) by auto
+  next
+    case 3 thus ?thesis using P.IH(2) by auto
+  qed
+qed simp
+
+lemma proj_subs: "subs (proj u b) \<subseteq> subs b"
+proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
+  case True thus ?thesis using proj_once[of u b] by simp
+next
+  case False
+  let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
+  have "proj u b = maxo (hd ?gs) (tl ?gs)" using proj_once[of u b] False by simp
+  moreover have "maxo (hd ?gs) (tl ?gs) \<in> set ?gs" by (rule maxo_hdtl_in[OF False])
+  ultimately have "proj u b \<in> Gterm u b" using set_Glist by auto
+  thus ?thesis by (rule Gterm_subs)
+qed
+
+lemma ins_subs: "subs (ins a b t) \<subseteq> insert a (subs b \<union> subs t)"
+  by (cases t) auto
+
+lemma nrm_subs: "subs (nrm w) \<subseteq> subs w"
+proof (induction w)
+  case (P a b c)
+  have "subs (nrm (P a b c)) \<subseteq> insert a (subs (proj a (nrm b)) \<union> subs (nrm c))"
+    using ins_subs by simp
+  also have "\<dots> \<subseteq> insert a (subs (nrm b) \<union> subs (nrm c))"
+    using proj_subs by fastforce
+  also have "\<dots> \<subseteq> insert a (subs b \<union> subs c)"
+    using P.IH by fastforce
+  finally show ?case by simp
+qed simp
+
+lemma NT_subs: "subs (nrm (translate M)) \<subseteq> snd ` set M"
+  using nrm_subs subs_translate by fast
+
+lemma ins_neZ: "ins a b t \<noteq> Z"
+  by (cases t) auto
+
+lemma ins_hdsub: "a \<le> hdsub (ins a b t)"
+  by (cases t) auto
+
+lemma NT_neZ: "nrm (translate (c # rest)) \<noteq> Z"
+proof -
+  have "nrm (translate (c # rest))
+        = ins (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+                      (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+    by (simp only: translate.simps(2) nrm.simps(2))
+  thus ?thesis using ins_neZ by simp
+qed
+
+lemma NT_hd_ge: "snd c \<le> hdsub (nrm (translate (c # rest)))"
+proof -
+  have "nrm (translate (c # rest))
+        = ins (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+                      (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+    by (simp only: translate.simps(2) nrm.simps(2))
+  thus ?thesis using ins_hdsub by simp
+qed
+
+text \<open>Purely, with no class premise: the head subscript of the normalized
+  image of the max-row1 suffix is exactly the maximal row-1 value.\<close>
+
+lemma NT_msfx_hdsub:
+  assumes S: "S \<noteq> []"
+  shows "hdsub (nrm (translate (msfx S))) = maxr1 S"
+proof -
+  obtain c' rest' where M: "msfx S = c' # rest'"
+    using msfx_ne[OF S] by (cases "msfx S") auto
+  have hd': "snd c' = maxr1 S" using msfx_hd[OF S] unfolding M by simp
+  have ge: "maxr1 S \<le> hdsub (nrm (translate (msfx S)))"
+    unfolding M using NT_hd_ge hd' by metis
+  obtain e f g where E: "nrm (translate (msfx S)) = P e f g"
+    using NT_neZ unfolding M by (cases "nrm (translate (c' # rest'))") auto
+  have "e \<in> subs (nrm (translate (msfx S)))" unfolding E by simp
+  hence "e \<in> snd ` set (msfx S)" using NT_subs by fast
+  hence "e \<in> snd ` set S" using msfx_set by fast
+  hence "e \<le> maxr1 S" using maxr1_ub by fast
+  thus ?thesis using ge unfolding E by simp
+qed
+
+text \<open>Hence two purely subscript-theoretic dominance facts: every critical of
+  a normalized image has head subscript at most the segment's max row-1, and
+  anything with head subscript strictly below it is \<open>olt\<close>-below the suffix
+  image.\<close>
+
+lemma Gterm_NT_hdsub_le:
+  assumes "g \<in> Gterm u (nrm (translate S))" and "g \<noteq> Z"
+  shows "hdsub g \<le> maxr1 S"
+proof -
+  obtain e f r where E: "g = P e f r" using assms(2) by (cases g) auto
+  have "e \<in> subs g" unfolding E by simp
+  hence "e \<in> subs (nrm (translate S))" using Gterm_subs assms(1) by fast
+  hence "e \<in> snd ` set S" using NT_subs by fast
+  hence "e \<le> maxr1 S" using maxr1_ub by fast
+  thus ?thesis unfolding E by simp
+qed
+
+lemma olt_msfx_lowsub:
+  assumes S: "S \<noteq> []" and g: "g = Z \<or> hdsub g < maxr1 S"
+  shows "olt g (nrm (translate (msfx S)))"
+proof -
+  obtain c' rest' where M: "msfx S = c' # rest'"
+    using msfx_ne[OF S] by (cases "msfx S") auto
+  obtain f' g' where E: "nrm (translate (msfx S)) = P (maxr1 S) f' g'"
+    using NT_neZ NT_msfx_hdsub[OF S] unfolding M
+    by (cases "nrm (translate (c' # rest'))") auto
+  show ?thesis
+  proof (cases g)
+    case Z thus ?thesis unfolding E by simp
+  next
+    case (P e f r)
+    have "e < maxr1 S" using g unfolding P by simp
+    thus ?thesis unfolding P E by simp
+  qed
+qed
+
 subsection \<open>Transport of \<open>Einc\<close> through \<open>proj\<close>\<close>
 
 text \<open>Provenance: the pair under transport is the normalized image of an
@@ -1104,7 +1258,7 @@ text \<open>Provenance: the pair under transport is the normalized image of an
   projection; provenance is what excludes those.)\<close>
 
 definition segprov :: "nat \<Rightarrow> pairseq \<Rightarrow> nat \<times> nat \<Rightarrow> bool" where
-  "segprov u S q \<longleftrightarrow> (\<exists>pre pp. pre @ (pp # S) @ [q] \<in> ST_PS
+  "segprov u S q \<longleftrightarrow> (\<exists>pre pp post. pre @ (pp # S) @ [q] @ post \<in> ST_PS
                        \<and> (\<forall>r \<in> set S. fst pp < fst r) \<and> fst pp < fst q \<and> u = snd pp)"
 
 text \<open>The dominated-segment class and its E6 facts (empirically exact;
@@ -1121,21 +1275,758 @@ lemma segprov_dseg: "segprov u S q \<Longrightarrow> S \<noteq> [] \<Longrightar
 lemma segprov_dsegq:
   assumes "segprov u S q" shows "dseg u (S @ [q])"
 proof -
-  from assms obtain pre pp where h: "pre @ (pp # S) @ [q] \<in> ST_PS"
+  from assms obtain pre pp post where h: "pre @ (pp # S) @ [q] @ post \<in> ST_PS"
       and dom: "\<forall>r \<in> set S. fst pp < fst r" and dq: "fst pp < fst q" and u: "u = snd pp"
     unfolding segprov_def by blast
-  have "pre @ (pp # (S @ [q])) @ [] \<in> ST_PS" using h by simp
+  have "pre @ (pp # (S @ [q])) @ post \<in> ST_PS" using h by simp
   moreover have "\<forall>r \<in> set (S @ [q]). fst pp < fst r" using dom dq by auto
   ultimately show ?thesis unfolding dseg_def using u by blast
+qed
+
+text \<open>Forest-boundary pieces: contiguous sublists of a dominated run whose
+  skipped prefix \<open>mid\<close> lies entirely at levels \<open>\<ge>\<close> the piece head's level.
+  This is the closure of the adjacent class under the two descents of the
+  \<open>translate\<close> recursion (empirically C1-clean: \<open>tools/mine_master2.py\<close>).\<close>
+
+definition stepsok :: "pairseq \<Rightarrow> bool" where
+  "stepsok C \<longleftrightarrow> (\<forall>j. Suc j < length C \<longrightarrow> fst (C ! Suc j) \<le> Suc (fst (C ! j)))"
+
+lemma blockok_stepsok: "blockok d M \<Longrightarrow> stepsok M"
+  unfolding blockok_def stepsok_def by blast
+
+lemma stepsok_sub: "stepsok (u @ C @ v) \<Longrightarrow> stepsok C"
+proof -
+  assume H: "stepsok (u @ C @ v)"
+  show "stepsok C"
+    unfolding stepsok_def
+  proof (intro allI impI)
+    fix j assume j: "Suc j < length C"
+    have e1: "(u @ C @ v) ! (length u + j) = C ! j"
+      using j by (simp add: nth_append)
+    have e2: "(u @ C @ v) ! (length u + Suc j) = C ! Suc j"
+      using j by (simp add: nth_append)
+    have "Suc (length u + j) < length (u @ C @ v)" using j by simp
+    hence "fst ((u @ C @ v) ! Suc (length u + j)) \<le> Suc (fst ((u @ C @ v) ! (length u + j)))"
+      using H unfolding stepsok_def by blast
+    thus "fst (C ! Suc j) \<le> Suc (fst (C ! j))" using e1 e2 by simp
+  qed
+qed
+
+definition fbseg :: "nat \<Rightarrow> pairseq \<Rightarrow> bool" where
+  "fbseg u S \<longleftrightarrow> S \<noteq> [] \<and> (\<exists>pre pp mid post. pre @ (pp # mid @ S) @ post \<in> ST_PS
+                 \<and> (\<forall>r \<in> set (mid @ S). fst pp < fst r)
+                 \<and> (\<forall>r \<in> set mid. fst (hd S) \<le> fst r) \<and> u = snd pp)"
+
+lemma dseg_fbseg: "dseg u S \<Longrightarrow> fbseg u S"
+proof -
+  assume "dseg u S"
+  then obtain pre pp post where h: "pre @ (pp # S) @ post \<in> ST_PS"
+    and dom: "\<forall>r \<in> set S. fst pp < fst r" and u: "u = snd pp" and ne: "S \<noteq> []"
+    unfolding dseg_def by blast
+  have h2: "pre @ (pp # [] @ S) @ post \<in> ST_PS" using h by simp
+  have dom2: "\<forall>r \<in> set ([] @ S). fst pp < fst r" using dom by simp
+  have fb2: "\<forall>r \<in> set []. fst (hd S) \<le> fst r" by simp
+  show ?thesis unfolding fbseg_def using ne h2 dom2 fb2 u by blast
+qed
+
+lemma fbseg_K_desc:
+  assumes "fbseg u (c # rest)"
+    and ne: "takeWhile (\<lambda>r. fst c < fst r) rest \<noteq> []"
+  shows "fbseg (snd c) (takeWhile (\<lambda>r. fst c < fst r) rest)"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  from assms(1) obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    unfolding fbseg_def by blast
+  have r: "rest = ?K @ ?T" by simp
+  have eq: "pre @ (pp # mid @ (c # rest)) @ post
+            = (pre @ (pp # mid)) @ (c # [] @ ?K) @ (?T @ post)"
+    by (subst r) simp
+  have h2: "(pre @ (pp # mid)) @ (c # [] @ ?K) @ (?T @ post) \<in> ST_PS"
+    using h unfolding eq .
+  have dom2: "\<forall>r \<in> set ([] @ ?K). fst c < fst r"
+    using set_takeWhileD by fastforce
+  have fb2: "\<forall>r \<in> set []. fst (hd ?K) \<le> fst r" by simp
+  show ?thesis unfolding fbseg_def using ne h2 dom2 fb2 by blast
+qed
+
+lemma fbseg_T_desc:
+  assumes A: "fbseg u (c # rest)"
+    and ne: "dropWhile (\<lambda>r. fst c < fst r) rest \<noteq> []"
+  shows "fbseg u (dropWhile (\<lambda>r. fst c < fst r) rest)"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  from A obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    and dom: "\<forall>r \<in> set (mid @ (c # rest)). fst pp < fst r"
+    and fb: "\<forall>r \<in> set mid. fst (hd (c # rest)) \<le> fst r"
+    and u: "u = snd pp"
+    unfolding fbseg_def by blast
+  have r: "rest = ?K @ ?T" by simp
+  have hdT: "fst (hd ?T) \<le> fst c" using hd_dropWhile[OF ne] by simp
+  have eq: "pre @ (pp # mid @ (c # rest)) @ post
+            = pre @ (pp # (mid @ (c # ?K)) @ ?T) @ post"
+    by (subst r) simp
+  have h2: "pre @ (pp # (mid @ (c # ?K)) @ ?T) @ post \<in> ST_PS"
+    using h unfolding eq .
+  have dom2: "\<forall>r \<in> set ((mid @ (c # ?K)) @ ?T). fst pp < fst r"
+  proof
+    fix x assume "x \<in> set ((mid @ (c # ?K)) @ ?T)"
+    hence "x \<in> set (mid @ (c # rest))" by auto
+    thus "fst pp < fst x" using dom by blast
+  qed
+  have fb2: "\<forall>r \<in> set (mid @ (c # ?K)). fst (hd ?T) \<le> fst r"
+  proof
+    fix x assume "x \<in> set (mid @ (c # ?K))"
+    then consider "x \<in> set mid" | "x = c" | "x \<in> set ?K" by auto
+    thus "fst (hd ?T) \<le> fst x"
+    proof cases
+      case 1
+      have "fst c \<le> fst x" using fb 1 by simp
+      thus ?thesis using hdT by simp
+    next
+      case 2 thus ?thesis using hdT by simp
+    next
+      case 3
+      have "fst c < fst x" using set_takeWhileD 3 by fast
+      thus ?thesis using hdT by simp
+    qed
+  qed
+  show ?thesis unfolding fbseg_def using ne h2 dom2 fb2 u by blast
+qed
+
+text \<open>(C1) Shape of the normalized image on the class: the \<open>ins\<close> at the head
+  never absorbs, so the head subscript is the head column's row-1 value.
+  (Empirical: zero absorptions on all 8768 closure pieces.)\<close>
+
+text \<open>(C1 core) The head of a piece dominates the head of its sum-tail: the
+  subscript cannot rise across a level drop, and on subscript ties the
+  projected argument of the earlier head is not below that of the later one.
+  This is the \<open>ins\<close> no-absorb condition as a sequence-level class fact.\<close>
+
+lemma fbseg_pair_host:
+  assumes "fbseg u (c # rest)"
+    and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+  shows "\<exists>pre' post'. pre' @ (c # takeWhile (\<lambda>r. fst c < fst r) rest) @ [c1] @ post' \<in> ST_PS"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  from assms(1) obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    unfolding fbseg_def by blast
+  have r: "rest = ?K @ (c1 # rest1)" using T by (metis takeWhile_dropWhile_id)
+  have eq: "pre @ (pp # mid @ (c # rest)) @ post
+            = (pre @ (pp # mid)) @ (c # ?K) @ [c1] @ (rest1 @ post)"
+    by (subst r) simp
+  show ?thesis using h unfolding eq by blast
+qed
+
+text \<open>Within a piece the sum-adjacent successor sits at exactly the head's
+  level: \<open>blockok\<close> forces the first dominated column to level \<open>fst pp + 1\<close>,
+  and the forest-boundary condition pins the piece head (and hence, by the
+  domination sandwich, every sum-root) to that same level.\<close>
+
+lemma fbseg_hd_level:
+  assumes "fbseg u (c # rest)"
+    and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+  shows "fst c1 = fst c"
+proof -
+  from assms(1) obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    and dom: "\<forall>r \<in> set (mid @ (c # rest)). fst pp < fst r"
+    and fb: "\<forall>r \<in> set mid. fst (hd (c # rest)) \<le> fst r"
+    unfolding fbseg_def by blast
+  let ?Y = "mid @ (c # rest) @ post"
+  let ?h = "pre @ (pp # mid @ (c # rest)) @ post"
+  have hh: "?h = pre @ pp # ?Y" by simp
+  have Yne: "?Y \<noteq> []" by (cases mid) auto
+  have so: "stepsok ?h"
+    using blockok_stepsok blockok_ST_PS[OF h] by blast
+  have n0: "?h ! length pre = pp"
+    unfolding hh by (simp add: nth_append_length)
+  have n1: "?h ! Suc (length pre) = ?Y ! 0"
+    unfolding hh by (simp add: nth_append)
+  have ln: "Suc (length pre) < length ?h"
+    unfolding hh using Yne by (cases ?Y) auto
+  have step1: "fst (?Y ! 0) \<le> Suc (fst pp)"
+    using so[unfolded stepsok_def, rule_format, OF ln] n0 n1 by simp
+  have hc: "fst c = Suc (fst pp)"
+  proof (cases mid)
+    case Nil
+    have "?Y ! 0 = c" unfolding Nil by simp
+    hence "fst c \<le> Suc (fst pp)" using step1 by simp
+    moreover have "fst pp < fst c" using dom by simp
+    ultimately show ?thesis by simp
+  next
+    case (Cons m0 mid')
+    have "?Y ! 0 = m0" unfolding Cons by simp
+    hence "fst m0 \<le> Suc (fst pp)" using step1 by simp
+    moreover have "fst pp < fst m0" using dom unfolding Cons by simp
+    ultimately have m0l: "fst m0 = Suc (fst pp)" by simp
+    have "fst c \<le> fst m0" using fb unfolding Cons by simp
+    moreover have "fst pp < fst c" using dom by simp
+    ultimately show ?thesis using m0l by simp
+  qed
+  have c1r: "c1 \<in> set rest"
+    using T set_dropWhileD by (metis list.set_intros(1))
+  have c1d: "fst pp < fst c1" using dom c1r by simp
+  have c1u: "\<not> fst c < fst c1"
+    using hd_dropWhile T by (metis list.sel(1) list.simps(3))
+  show ?thesis using hc c1d c1u by simp
+qed
+
+lemma STS_A_aux:
+  "\<forall>r\<in>set rest. fst p < fst r \<Longrightarrow> fst q = fst p \<Longrightarrow>
+   cnf (translate (pre @ (p # rest) @ [q] @ post)) \<Longrightarrow> snd q \<le> snd p"
+proof (induct pre arbitrary: post rule: length_induct)
+  case (1 pre post)
+  note IH = 1(1) and dom = 1(2) and fq = 1(3) and CNF = 1(4)
+  show ?case
+  proof (cases pre)
+    case Nil
+    have Tc: "[q] @ post = [] \<or> \<not> fst p < fst (hd ([q] @ post))" using fq by simp
+    have e: "translate ((p # rest) @ [q] @ post)
+              = P (snd p) (translate rest) (translate ([q] @ post))"
+      using translate_block_append[of rest "fst p" "[q] @ post" "snd p"] dom Tc
+      by (simp add: append.assoc)
+    have e2: "translate ([q] @ post)
+              = P (snd q) (translate (takeWhile (\<lambda>r. fst q < fst r) post))
+                          (translate (dropWhile (\<lambda>r. fst q < fst r) post))"
+      by (cases q) (simp only: append_Cons append_Nil translate.simps(2) fst_conv snd_conv)
+    have c: "cnf (P (snd p) (translate rest)
+                    (P (snd q) (translate (takeWhile (\<lambda>r. fst q < fst r) post))
+                               (translate (dropWhile (\<lambda>r. fst q < fst r) post))))"
+      using CNF unfolding Nil append_Nil e e2 .
+    have nlt: "\<not> (P (snd p) (translate rest) Z
+                  <o P (snd q) (translate (takeWhile (\<lambda>r. fst q < fst r) post)) Z)"
+      using c by simp
+    show ?thesis
+    proof (rule ccontr)
+      assume "\<not> snd q \<le> snd p"
+      hence "snd p < snd q" by simp
+      hence "P (snd p) (translate rest) Z
+             <o P (snd q) (translate (takeWhile (\<lambda>r. fst q < fst r) post)) Z" by simp
+      thus False using nlt by blast
+    qed
+  next
+    case (Cons e pre')
+    let ?Pe = "\<lambda>r. fst e < fst r"
+    let ?tail = "pre' @ (p # rest) @ [q] @ post"
+    have et: "translate (pre @ (p # rest) @ [q] @ post)
+               = P (snd e) (translate (takeWhile ?Pe ?tail)) (translate (dropWhile ?Pe ?tail))"
+      unfolding Cons by (simp only: append_Cons translate.simps(2))
+    show ?thesis
+    proof (cases "(\<forall>x \<in> set pre'. ?Pe x) \<and> fst e < fst p")
+      case all: True
+      have segP: "\<forall>x \<in> set ((p # rest) @ [q]). ?Pe x"
+      proof
+        fix x assume "x \<in> set ((p # rest) @ [q])"
+        then consider "x = p" | "x \<in> set rest" | "x = q" by auto
+        thus "?Pe x"
+        proof cases
+          case 1 thus ?thesis using all by simp
+        next
+          case 2 thus ?thesis using all dom by fastforce
+        next
+          case 3 thus ?thesis using all fq by simp
+        qed
+      qed
+      have tw: "takeWhile ?Pe ?tail
+                = pre' @ (p # rest) @ [q] @ takeWhile ?Pe post"
+        using all segP by (simp add: takeWhile_append2)
+      have cnfK: "cnf (translate (pre' @ (p # rest) @ [q] @ takeWhile ?Pe post))"
+      proof -
+        have "cnf (P (snd e) (translate (takeWhile ?Pe ?tail))
+                             (translate (dropWhile ?Pe ?tail)))"
+          using CNF unfolding et .
+        hence "cnf (translate (takeWhile ?Pe ?tail))"
+          by (cases "translate (dropWhile ?Pe ?tail)") auto
+        thus ?thesis unfolding tw .
+      qed
+      have lp: "length pre' < length pre" by (simp add: Cons)
+      show ?thesis using IH[rule_format, OF lp] dom fq cnfK by blast
+    next
+      case ncut: False
+      have Dform: "\<exists>pre''. dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q] @ post
+                            \<and> length pre'' < length pre"
+      proof (cases "\<forall>x \<in> set pre'. ?Pe x")
+        case True
+        hence "\<not> fst e < fst p" using ncut by blast
+        hence "dropWhile ?Pe ((p # rest) @ [q] @ post) = (p # rest) @ [q] @ post" by simp
+        hence "dropWhile ?Pe ?tail = (p # rest) @ [q] @ post"
+          using True by (simp add: dropWhile_append2)
+        thus ?thesis unfolding Cons by (intro exI[of _ "[]"]) simp
+      next
+        case False
+        then obtain w where w: "w \<in> set pre'" "\<not> ?Pe w" by blast
+        have "dropWhile ?Pe ?tail = dropWhile ?Pe pre' @ (p # rest) @ [q] @ post"
+          using w by (simp add: dropWhile_append1)
+        moreover have "length (dropWhile ?Pe pre') < length pre"
+          unfolding Cons using length_dropWhile_le[of ?Pe pre']
+          by (simp add: le_imp_less_Suc)
+        ultimately show ?thesis by blast
+      qed
+      obtain pre'' where D: "dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q] @ post"
+        and lpre'': "length pre'' < length pre" using Dform by blast
+      have cnfD: "cnf (translate (dropWhile ?Pe ?tail))"
+      proof -
+        have c0: "cnf (P (snd e) (translate (takeWhile ?Pe ?tail)) (translate (dropWhile ?Pe ?tail)))"
+          using CNF unfolding et .
+        thus ?thesis by (cases "translate (dropWhile ?Pe ?tail)") auto
+      qed
+      show ?thesis using IH[rule_format, OF lpre''] dom fq cnfD[unfolded D] by blast
+    qed
+  qed
+qed
+
+lemma STS_A:
+  assumes "pre @ (p # rest) @ [q] @ post \<in> ST_PS"
+    and "dropWhile (\<lambda>r. fst p < fst r) rest = []"
+    and "fst q = fst p"
+  shows "snd q \<le> snd p"
+proof -
+  have dom: "\<forall>r\<in>set rest. fst p < fst r"
+    using assms(2) by (simp add: dropWhile_eq_Nil_conv)
+  have "cnf (translate (pre @ (p # rest) @ [q] @ post))"
+    using cnf_ST_PS[OF assms(1)] .
+  thus ?thesis using STS_A_aux dom assms(3) by blast
+qed
+
+text \<open>The subscript bound of \<open>NT_dom\<close> in the level-equal case, via \<open>STS_A\<close>.\<close>
+
+lemma NT_dom_sub_eq:
+  assumes A: "fbseg u (c # rest)"
+    and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and F: "fst c1 = fst c"
+  shows "snd c1 \<le> snd c"
+proof -
+  obtain pre' post' where h: "pre' @ (c # takeWhile (\<lambda>r. fst c < fst r) rest) @ [c1] @ post' \<in> ST_PS"
+    using fbseg_pair_host[OF A T] by blast
+  have d: "dropWhile (\<lambda>r. fst c < fst r) (takeWhile (\<lambda>r. fst c < fst r) rest) = []"
+    unfolding dropWhile_eq_Nil_conv by (meson set_takeWhileD)
+  show ?thesis by (rule STS_A[OF h d F])
+qed
+
+text \<open>(SIB core) On subscript ties the projected argument of the earlier head
+  is not below that of its sum-successor.  This is the single remaining
+  irreducible class fact of the C1 layer (empirically 0/1037 violations).\<close>
+
+lemma NT_tie:
+  assumes "fbseg u (c # rest)"
+    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and "snd c1 = snd c"
+  shows "\<not> olt (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+               (proj (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))"
+  sorry
+
+lemma NT_dom:
+  assumes A: "fbseg u (c # rest)"
+    and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+  shows "\<not> (snd c < snd c1 \<or> (snd c = snd c1 \<and>
+            olt (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+                (proj (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))))"
+proof -
+  have lvl: "fst c1 = fst c" by (rule fbseg_hd_level[OF A T])
+  have sub: "snd c1 \<le> snd c" by (rule NT_dom_sub_eq[OF A T lvl])
+  show ?thesis using sub NT_tie[OF A T] by auto
+qed
+
+lemma Gterm_mono:
+  "u \<le> v \<Longrightarrow> Gterm v t \<subseteq> Gterm u t"
+proof (induction t)
+  case (P a b c)
+  thus ?case by (auto split: if_splits)
+qed simp
+
+lemma NT_shape:
+  "fbseg u S \<Longrightarrow> S = c # rest \<Longrightarrow>
+   nrm (translate (c # rest))
+   = P (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+               (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+proof (induct S arbitrary: c rest rule: length_induct)
+  case (1 S)
+  note IH = 1(1) and fb = 1(2) and C = 1(3)
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  let ?A = "proj (snd c) (nrm (translate ?K))"
+  have un: "nrm (translate (c # rest)) = ins (snd c) ?A (nrm (translate ?T))"
+    by (simp only: translate.simps(2) nrm.simps(2))
+  show ?case
+  proof (cases ?T)
+    case Nil
+    have "nrm (translate ?T) = Z" unfolding Nil by simp
+    thus ?thesis unfolding un by simp
+  next
+    case (Cons c1 rest1)
+    have fbT: "fbseg u ?T"
+      by (rule fbseg_T_desc[OF fb[unfolded C]]) (simp add: Cons)
+    have lT: "length ?T < length S"
+      unfolding C using length_dropWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+    have shT: "nrm (translate ?T)
+               = P (snd c1) (proj (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))
+                            (nrm (translate (dropWhile (\<lambda>r. fst c1 < fst r) rest1)))"
+      using IH[rule_format, OF lT fbT Cons] unfolding Cons .
+    have nab: "\<not> (snd c < snd c1 \<or> (snd c = snd c1 \<and>
+              olt ?A (proj (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))))"
+      by (rule NT_dom[OF fb[unfolded C] Cons])
+    show ?thesis unfolding un shT using nab by auto
+  qed
+qed
+
+lemma NT_hd:
+  assumes "fbseg u S"
+  shows "\<exists>A R. nrm (translate S) = P (snd (hd S)) A R"
+proof -
+  obtain c rest where C: "S = c # rest" using assms unfolding fbseg_def by (cases S) auto
+  show ?thesis unfolding C using NT_shape[OF assms[unfolded C] refl] by simp
+qed
+
+text \<open>The normalized image of a sum-tail is strictly below that of the whole
+  (the \<open>nrm\<close>-level analogue of \<open>translate_butlast_decrease\<close>'s sum order).\<close>
+
+lemma NT_noabsorb:
+  assumes sh: "nrm (translate (c # rest))
+               = P (snd c) (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+                           (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)))"
+    and Tform: "nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest)) = P e f g"
+  shows "\<not> (snd c < e \<or> (snd c = e \<and>
+            olt (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest)))) f))"
+proof
+  let ?A = "proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest)))"
+  let ?T = "nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest))"
+  assume ab: "snd c < e \<or> (snd c = e \<and> olt ?A f)"
+  have un: "nrm (translate (c # rest)) = ins (snd c) ?A ?T"
+    by (simp only: translate.simps(2) nrm.simps(2))
+  have "ins (snd c) ?A ?T = ?T" unfolding Tform using ab by auto
+  hence e: "P (snd c) ?A ?T = ?T" using un sh by simp
+  have "size ?T < size (P (snd c) ?A ?T)" by simp
+  thus False using e by simp
+qed
+
+lemma NT_tail_lt:
+  "fbseg u S \<Longrightarrow> S = c # rest \<Longrightarrow> dropWhile (\<lambda>r. fst c < fst r) rest \<noteq> [] \<Longrightarrow>
+   olt (nrm (translate (dropWhile (\<lambda>r. fst c < fst r) rest))) (nrm (translate S))"
+proof (induct S arbitrary: c rest rule: length_induct)
+  case (1 S)
+  note IH = 1(1) and fb = 1(2) and C = 1(3) and ne = 1(4)
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  let ?A = "proj (snd c) (nrm (translate ?K))"
+  have shS: "nrm (translate (c # rest)) = P (snd c) ?A (nrm (translate ?T))"
+    by (rule NT_shape[OF fb[unfolded C] refl])
+  have fbT: "fbseg u ?T" by (rule fbseg_T_desc[OF fb[unfolded C] ne])
+  obtain c1 rest1 where T: "?T = c1 # rest1" using ne by (cases ?T) auto
+  let ?K1 = "takeWhile (\<lambda>r. fst c1 < fst r) rest1"
+  let ?T1 = "dropWhile (\<lambda>r. fst c1 < fst r) rest1"
+  let ?B1 = "proj (snd c1) (nrm (translate ?K1))"
+  have shT: "nrm (translate ?T) = P (snd c1) ?B1 (nrm (translate ?T1))"
+    unfolding T by (rule NT_shape[OF fbT[unfolded T] refl])
+  have nab: "\<not> (snd c < snd c1 \<or> (snd c = snd c1 \<and> olt ?A ?B1))"
+    by (rule NT_noabsorb[OF shS shT])
+  show ?case
+  proof (cases "snd c1 < snd c")
+    case True
+    show ?thesis unfolding C shS shT by (simp add: True)
+  next
+    case False
+    hence eq: "snd c1 = snd c" using nab by simp
+    have nA: "\<not> olt ?A ?B1" using nab eq by simp
+    show ?thesis
+    proof (cases "?A = ?B1")
+      case False
+      hence BA: "olt ?B1 ?A" using nA olt_total by blast
+      show ?thesis unfolding C shS shT using eq BA by simp
+    next
+      case ABeq: True
+      have tl: "olt (nrm (translate ?T1)) (nrm (translate ?T))"
+      proof (cases "?T1 = []")
+        case True
+        have z: "nrm (translate ?T1) = Z" unfolding True by simp
+        show ?thesis unfolding z shT by simp
+      next
+        case T1ne: False
+        have lT: "length ?T < length S"
+          unfolding C using length_dropWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+        show ?thesis
+          using IH[rule_format, OF lT fbT T T1ne] .
+      qed
+      show ?thesis unfolding C shS shT using eq ABeq tl[unfolded shT] by simp
+    qed
+  qed
 qed
 
 text \<open>(E6) When the projection at the host level fires, its value is the
   normalized image of the max-row1 suffix.\<close>
 
-lemma E6_value:
+text \<open>If the level exceeds the head's row-1 value, no critical is visible:
+  sum-root subscripts are non-increasing along the spine.\<close>
+
+lemma Gterm_NT_high:
+  "fbseg u S \<Longrightarrow> S = c # rest \<Longrightarrow> snd c < v \<Longrightarrow>
+   Gterm v (nrm (translate S)) = {}"
+proof (induct S arbitrary: c rest rule: length_induct)
+  case (1 S)
+  note IH = 1(1) and fb = 1(2) and C = 1(3) and cv = 1(4)
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  have sh: "nrm (translate S) = P (snd c) (proj (snd c) (nrm (translate ?K))) (nrm (translate ?T))"
+    unfolding C by (rule NT_shape[OF fb[unfolded C] refl])
+  have Tpart: "Gterm v (nrm (translate ?T)) = {}"
+  proof (cases ?T)
+    case Nil
+    show ?thesis unfolding Nil by simp
+  next
+    case (Cons c1 rest1)
+    have fbT: "fbseg u ?T"
+      by (rule fbseg_T_desc[OF fb[unfolded C]]) (simp add: Cons)
+    have lT: "length ?T < length S"
+      unfolding C using length_dropWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+    have "\<not> snd c < snd c1"
+      using NT_dom[OF fb[unfolded C] Cons] by blast
+    hence "snd c1 < v" using cv by simp
+    thus ?thesis using IH[rule_format, OF lT fbT Cons] by blast
+  qed
+  show ?case unfolding sh using cv Tpart by simp
+qed
+
+lemma proj_fire_in:
+  assumes f: "pfire u b"
+  shows "proj u b \<in> Gterm u b"
+proof -
+  let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
+  have ne: "?gs \<noteq> []" using f pfire_filter by blast
+  have "proj u b = maxo (hd ?gs) (tl ?gs)" using proj_once[of u b] ne by simp
+  moreover have "maxo (hd ?gs) (tl ?gs) \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+  ultimately show ?thesis using set_Glist by auto
+qed
+
+lemma fbseg_K_dseg:
+  assumes "fbseg u (c # rest)"
+    and ne: "takeWhile (\<lambda>r. fst c < fst r) rest \<noteq> []"
+  shows "dseg (snd c) (takeWhile (\<lambda>r. fst c < fst r) rest)"
+proof -
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  from assms(1) obtain pre pp mid post
+    where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    unfolding fbseg_def by blast
+  have r: "rest = ?K @ ?T" by simp
+  have eq: "pre @ (pp # mid @ (c # rest)) @ post
+            = (pre @ (pp # mid)) @ (c # ?K) @ (?T @ post)"
+    by (subst r) simp
+  have h2: "(pre @ (pp # mid)) @ (c # ?K) @ (?T @ post) \<in> ST_PS"
+    using h unfolding eq .
+  have dom2: "\<forall>r \<in> set ?K. fst c < fst r"
+    using set_takeWhileD by fastforce
+  show ?thesis unfolding dseg_def using ne h2 dom2 by blast
+qed
+
+text \<open>(G-catalogue) Every critical of a normalized class image is \<open>Z\<close> or the
+  normalized image of a nonempty contiguous sub-piece whose head realizes the
+  head subscript.  Stated \<open>u\<close>-uniformly; the level only decides visibility.\<close>
+
+lemma GCAT:
+  "(\<exists>v. fbseg v S) \<Longrightarrow> g \<in> Gterm u (nrm (translate S)) \<Longrightarrow>
+   g = Z \<or> (\<exists>pre' C post'. S = pre' @ C @ post' \<and> C \<noteq> [] \<and> g = nrm (translate C)
+            \<and> hdsub g = snd (hd C))"
+proof (induct S arbitrary: g u rule: length_induct)
+  case (1 S)
+  note IH = 1(1)
+  obtain v where fb: "fbseg v S" using 1(2) by blast
+  obtain c rest where C: "S = c # rest" using fb unfolding fbseg_def by (cases S) auto
+  let ?K = "takeWhile (\<lambda>r. fst c < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c < fst r) rest"
+  let ?A = "proj (snd c) (nrm (translate ?K))"
+  have sh: "nrm (translate (c # rest)) = P (snd c) ?A (nrm (translate ?T))"
+    by (rule NT_shape[OF fb[unfolded C] refl])
+  have gin: "g \<in> Gterm u (P (snd c) ?A (nrm (translate ?T)))"
+    using 1(3) unfolding C sh .
+  consider (a) "u \<le> snd c" "g = ?A" | (b) "u \<le> snd c" "g \<in> Gterm u ?A"
+         | (t) "g \<in> Gterm u (nrm (translate ?T))"
+    using gin by (auto split: if_splits)
+  thus ?case
+  proof cases
+    case a
+    show ?thesis
+    proof (cases "?K = []")
+      case True
+      have "?A = Z" unfolding True by (simp add: proj_Z)
+      thus ?thesis using a by simp
+    next
+      case Kne: False
+      show ?thesis
+      proof (cases "pfire (snd c) (nrm (translate ?K))")
+        case False
+        have gA: "g = nrm (translate ?K)" using a proj_nofire[OF False] by simp
+        have "\<exists>A R. nrm (translate ?K) = P (snd (hd ?K)) A R"
+          by (rule NT_hd[OF fbseg_K_desc[OF fb[unfolded C] Kne]])
+        hence hs: "hdsub g = snd (hd ?K)" using gA by auto
+        have dec: "S = [c] @ ?K @ ?T" unfolding C by simp
+        show ?thesis using gA hs dec Kne by blast
+      next
+        case True
+        have "?A \<in> Gterm (snd c) (nrm (translate ?K))" by (rule proj_fire_in[OF True])
+        hence gK: "g \<in> Gterm u (nrm (translate ?K))"
+          using a Gterm_mono by blast
+        have lK: "length ?K < length S"
+          unfolding C using length_takeWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+        have pcK: "\<exists>v. fbseg v ?K"
+          using fbseg_K_desc[OF fb[unfolded C] Kne] by blast
+        from IH[rule_format, OF lK pcK gK]
+        show ?thesis
+        proof
+          assume "g = Z" thus ?thesis by simp
+        next
+          assume "\<exists>pre' C' post'. ?K = pre' @ C' @ post' \<and> C' \<noteq> [] \<and> g = nrm (translate C')
+                  \<and> hdsub g = snd (hd C')"
+          then obtain pre' C' post' where w: "?K = pre' @ C' @ post'" "C' \<noteq> []"
+            "g = nrm (translate C')" "hdsub g = snd (hd C')" by blast
+          have "S = (c # pre') @ C' @ (post' @ ?T)"
+            unfolding C by (metis w(1) append.assoc append_Cons takeWhile_dropWhile_id)
+          thus ?thesis using w by blast
+        qed
+      qed
+    qed
+  next
+    case b
+    have Kne: "?K \<noteq> []"
+    proof
+      assume "?K = []"
+      hence "?A = Z" by (simp add: proj_Z)
+      thus False using b by simp
+    qed
+    have gK: "g \<in> Gterm u (nrm (translate ?K))"
+    proof (cases "pfire (snd c) (nrm (translate ?K))")
+      case False
+      thus ?thesis using b proj_nofire[OF False] by simp
+    next
+      case True
+      have "?A \<in> Gterm (snd c) (nrm (translate ?K))" by (rule proj_fire_in[OF True])
+      hence "?A \<in> Gterm u (nrm (translate ?K))" using Gterm_mono b(1) by blast
+      thus ?thesis using Gterm_trans b(2) by blast
+    qed
+    have lK: "length ?K < length S"
+      unfolding C using length_takeWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+    have pcK: "\<exists>v. fbseg v ?K"
+      using fbseg_K_desc[OF fb[unfolded C] Kne] by blast
+    from IH[rule_format, OF lK pcK gK]
+    show ?thesis
+    proof
+      assume "g = Z" thus ?thesis by simp
+    next
+      assume "\<exists>pre' C' post'. ?K = pre' @ C' @ post' \<and> C' \<noteq> [] \<and> g = nrm (translate C')
+              \<and> hdsub g = snd (hd C')"
+      then obtain pre' C' post' where w: "?K = pre' @ C' @ post'" "C' \<noteq> []"
+        "g = nrm (translate C')" "hdsub g = snd (hd C')" by blast
+      have "S = (c # pre') @ C' @ (post' @ ?T)"
+        unfolding C by (metis w(1) append.assoc append_Cons takeWhile_dropWhile_id)
+      thus ?thesis using w by blast
+    qed
+  next
+    case t
+    show ?thesis
+    proof (cases "?T = []")
+      case True
+      have "nrm (translate ?T) = Z" unfolding True by simp
+      thus ?thesis using t by simp
+    next
+      case Tne: False
+      have lT: "length ?T < length S"
+        unfolding C using length_dropWhile_le[of "\<lambda>r. fst c < fst r" rest] by simp
+      have pcT: "\<exists>v. fbseg v ?T"
+        using fbseg_T_desc[OF fb[unfolded C] Tne] by blast
+      from IH[rule_format, OF lT pcT t]
+      show ?thesis
+      proof
+        assume "g = Z" thus ?thesis by simp
+      next
+        assume "\<exists>pre' C' post'. ?T = pre' @ C' @ post' \<and> C' \<noteq> [] \<and> g = nrm (translate C')
+                \<and> hdsub g = snd (hd C')"
+        then obtain pre' C' post' where w: "?T = pre' @ C' @ post'" "C' \<noteq> []"
+          "g = nrm (translate C')" "hdsub g = snd (hd C')" by blast
+        have "S = (c # ?K @ pre') @ C' @ post'"
+          unfolding C by (metis w(1) append.assoc append_Cons takeWhile_dropWhile_id)
+        thus ?thesis using w by blast
+      qed
+    qed
+  qed
+qed
+
+text \<open>(E6 membership) Under fire the suffix image is itself a critical above
+  the whole: reached through the visible ancestor chain of the first max-row1
+  column.\<close>
+
+lemma E6_mem:
   assumes "dseg u S" and "pfire u (nrm (translate S))"
-  shows "proj u (nrm (translate S)) = nrm (translate (msfx S))"
+  shows "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))
+         \<and> \<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
   sorry
+
+text \<open>(E6 tie dominance) A violating critical whose head subscript reaches the
+  max row-1 is still at most the suffix image (first-max priority).\<close>
+
+text \<open>The deep tie case: a violating critical piece starting at a
+  \<^emph>\<open>later\<close> max-row1 column than the first one (first-max priority; the
+  remaining recursive core of the dominance).\<close>
+
+lemma E6_dom_deep:
+  assumes "dseg u S" and "pfire u (nrm (translate S))"
+    and "S = pre' @ C @ post'" and "C \<noteq> []" and "snd (hd C) = maxr1 S"
+    and "length (takeWhile (\<lambda>c. snd c < maxr1 S) S) < length pre'"
+    and "nrm (translate C) \<in> Gterm u (nrm (translate S))"
+    and "\<not> olt (nrm (translate C)) (nrm (translate S))"
+  shows "ole (nrm (translate C)) (nrm (translate (msfx S)))"
+  sorry
+
+lemma E6_dom_tie:
+  assumes "dseg u S" and "pfire u (nrm (translate S))"
+    and "g \<in> Gterm u (nrm (translate S))" and "\<not> olt g (nrm (translate S))"
+    and "g \<noteq> Z" and "hdsub g = maxr1 S"
+  shows "ole g (nrm (translate (msfx S)))"
+  sorry
+
+lemma E6_value:
+  assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
+  shows "proj u (nrm (translate S)) = nrm (translate (msfx S))"
+proof -
+  let ?x = "nrm (translate S)"
+  let ?ms = "nrm (translate (msfx S))"
+  let ?gs = "filter (\<lambda>g. \<not> olt g ?x) (Glist u ?x)"
+  let ?mx = "maxo (hd ?gs) (tl ?gs)"
+  have Sne: "S \<noteq> []" using D unfolding dseg_def by blast
+  obtain c rest where C: "S = c # rest" using Sne by (cases S) auto
+  have xnz: "?x \<noteq> Z" unfolding C by (rule NT_neZ)
+  have ne: "?gs \<noteq> []" using F pfire_filter by blast
+  have po: "proj u ?x = ?mx" using proj_once[of u ?x] ne by simp
+  have mxin: "?mx \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+  have mxG: "?mx \<in> Gterm u ?x" and mxv: "\<not> olt ?mx ?x"
+    using mxin set_Glist by auto
+  have msin: "?ms \<in> set ?gs"
+    using E6_mem[OF D F] set_Glist by auto
+  have msins: "?ms \<in> insert (hd ?gs) (set (tl ?gs))"
+    using msin by (cases ?gs) auto
+  have m2: "\<not> olt ?mx ?ms" using maxo_ub[OF msins] .
+  have mxnz: "?mx \<noteq> Z"
+  proof
+    assume "?mx = Z"
+    hence "\<not> olt Z ?x" using mxv by simp
+    thus False using xnz by (cases ?x) auto
+  qed
+  have m1: "ole ?mx ?ms"
+  proof (cases "hdsub ?mx = maxr1 S")
+    case True
+    show ?thesis by (rule E6_dom_tie[OF D F mxG mxv mxnz True])
+  next
+    case False
+    have "hdsub ?mx \<le> maxr1 S" by (rule Gterm_NT_hdsub_le[OF mxG mxnz])
+    hence "hdsub ?mx < maxr1 S" using False by simp
+    hence "olt ?mx ?ms" using olt_msfx_lowsub[OF Sne] by blast
+    thus ?thesis by simp
+  qed
+  have "?mx = ?ms" using m1 m2 by auto
+  thus ?thesis using po by simp
+qed
 
 text \<open>(V4) In the both-fire q-cut configuration the x-side suffix is the last
   column alone.\<close>
@@ -1166,32 +2057,6 @@ lemma E6_seam:
   shows "fst (hd (msfx S)) \<le> fst q \<and> (\<forall>x \<in> set (msfx S). fst (hd (msfx S)) \<le> fst x)"
   sorry
 
-subsection \<open>Row-0 step discipline of contiguous sublists\<close>
-
-definition stepsok :: "pairseq \<Rightarrow> bool" where
-  "stepsok C \<longleftrightarrow> (\<forall>j. Suc j < length C \<longrightarrow> fst (C ! Suc j) \<le> Suc (fst (C ! j)))"
-
-lemma blockok_stepsok: "blockok d M \<Longrightarrow> stepsok M"
-  unfolding blockok_def stepsok_def by blast
-
-lemma stepsok_sub: "stepsok (u @ C @ v) \<Longrightarrow> stepsok C"
-proof -
-  assume H: "stepsok (u @ C @ v)"
-  show "stepsok C"
-    unfolding stepsok_def
-  proof (intro allI impI)
-    fix j assume j: "Suc j < length C"
-    have e1: "(u @ C @ v) ! (length u + j) = C ! j"
-      using j by (simp add: nth_append)
-    have e2: "(u @ C @ v) ! (length u + Suc j) = C ! Suc j"
-      using j by (simp add: nth_append)
-    have "Suc (length u + j) < length (u @ C @ v)" using j by simp
-    hence "fst ((u @ C @ v) ! Suc (length u + j)) \<le> Suc (fst ((u @ C @ v) ! (length u + j)))"
-      using H unfolding stepsok_def by blast
-    thus "fst (C ! Suc j) \<le> Suc (fst (C ! j))" using e1 e2 by simp
-  qed
-qed
-
 subsection \<open>Standardness supplies the bundle\<close>
 
 text \<open>The two remaining leaf obligations of the structural bundle against a
@@ -1203,117 +2068,8 @@ text \<open>With equal row-0 values, the appended column is the next summand aft
   \<open>p\<close>'s block at the same level of the host's translation; the \<open>cnf\<close> discipline
   of standard forms (non-increasing summand heads) gives the row-1 comparison.\<close>
 
-lemma STS_A_aux:
-  "\<forall>r\<in>set rest. fst p < fst r \<Longrightarrow> fst q = fst p \<Longrightarrow>
-   cnf (translate (pre @ (p # rest) @ [q])) \<Longrightarrow> snd q \<le> snd p"
-proof (induct pre rule: length_induct)
-  case (1 pre)
-  note IH = 1(1) and dom = 1(2) and fq = 1(3) and CNF = 1(4)
-  show ?case
-  proof (cases pre)
-    case Nil
-    have Tc: "[q] = [] \<or> \<not> fst p < fst (hd [q])" using fq by simp
-    have e: "translate ((p # rest) @ [q])
-              = P (snd p) (translate rest) (translate [q])"
-      using translate_block_append[of rest "fst p" "[q]" "snd p"] dom Tc
-      by (simp add: append.assoc)
-    have e2: "translate [q] = P (snd q) Z Z"
-      by (simp only: translate.simps(2) takeWhile.simps(1) dropWhile.simps(1)
-                     translate.simps(1))
-    have c: "cnf (P (snd p) (translate rest) (P (snd q) Z Z))"
-      using CNF unfolding Nil append_Nil e e2 .
-    have nlt: "\<not> (P (snd p) (translate rest) Z <o P (snd q) Z Z)"
-      using c by simp
-    show ?thesis
-    proof (rule ccontr)
-      assume "\<not> snd q \<le> snd p"
-      hence "snd p < snd q" by simp
-      hence "P (snd p) (translate rest) Z <o P (snd q) Z Z" by simp
-      thus False using nlt by blast
-    qed
-  next
-    case (Cons e pre')
-    let ?Pe = "\<lambda>r. fst e < fst r"
-    let ?tail = "pre' @ (p # rest) @ [q]"
-    have et: "translate (pre @ (p # rest) @ [q])
-               = P (snd e) (translate (takeWhile ?Pe ?tail)) (translate (dropWhile ?Pe ?tail))"
-      unfolding Cons by (simp only: append_Cons translate.simps(2))
-    show ?thesis
-    proof (cases "(\<forall>x \<in> set pre'. ?Pe x) \<and> fst e < fst p")
-      case all: True
-      have segP: "\<forall>x \<in> set ((p # rest) @ [q]). ?Pe x"
-      proof
-        fix x assume "x \<in> set ((p # rest) @ [q])"
-        then consider "x = p" | "x \<in> set rest" | "x = q" by auto
-        thus "?Pe x"
-        proof cases
-          case 1 thus ?thesis using all by simp
-        next
-          case 2 thus ?thesis using all dom by fastforce
-        next
-          case 3 thus ?thesis using all fq by simp
-        qed
-      qed
-      have allT: "\<forall>x \<in> set ?tail. ?Pe x" using all segP by auto
-      have tw: "takeWhile ?Pe ?tail = ?tail"
-        using allT by (simp add: takeWhile_eq_all_conv)
-      have cnfK: "cnf (translate ?tail)"
-      proof -
-        have "cnf (P (snd e) (translate ?tail) (translate (dropWhile ?Pe ?tail)))"
-          using CNF unfolding et tw .
-        thus ?thesis by (cases "translate (dropWhile ?Pe ?tail)") auto
-      qed
-      have lp: "length pre' < length pre" by (simp add: Cons)
-      show ?thesis using IH[rule_format, OF lp] dom fq cnfK by blast
-    next
-      case ncut: False
-      have Dform: "\<exists>pre''. dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q]
-                            \<and> length pre'' < length pre"
-      proof (cases "\<forall>x \<in> set pre'. ?Pe x")
-        case True
-        hence "\<not> fst e < fst p" using ncut by blast
-        hence "dropWhile ?Pe ((p # rest) @ [q]) = (p # rest) @ [q]" by simp
-        hence "dropWhile ?Pe ?tail = (p # rest) @ [q]"
-          using True by (simp add: dropWhile_append2)
-        thus ?thesis unfolding Cons by (intro exI[of _ "[]"]) simp
-      next
-        case False
-        then obtain w where w: "w \<in> set pre'" "\<not> ?Pe w" by blast
-        have "dropWhile ?Pe ?tail = dropWhile ?Pe pre' @ (p # rest) @ [q]"
-          using w by (simp add: dropWhile_append1)
-        moreover have "length (dropWhile ?Pe pre') < length pre"
-          unfolding Cons using length_dropWhile_le[of ?Pe pre']
-          by (simp add: le_imp_less_Suc)
-        ultimately show ?thesis by blast
-      qed
-      obtain pre'' where D: "dropWhile ?Pe ?tail = pre'' @ (p # rest) @ [q]"
-        and lpre'': "length pre'' < length pre" using Dform by blast
-      have cnfD: "cnf (translate (dropWhile ?Pe ?tail))"
-      proof -
-        have c0: "cnf (P (snd e) (translate (takeWhile ?Pe ?tail)) (translate (dropWhile ?Pe ?tail)))"
-          using CNF unfolding et .
-        thus ?thesis by (cases "translate (dropWhile ?Pe ?tail)") auto
-      qed
-      show ?thesis using IH[rule_format, OF lpre''] dom fq cnfD[unfolded D] by blast
-    qed
-  qed
-qed
-
-lemma STS_A:
-  assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
-    and "dropWhile (\<lambda>r. fst p < fst r) rest = []"
-    and "fst q = fst p"
-  shows "snd q \<le> snd p"
-proof -
-  have dom: "\<forall>r\<in>set rest. fst p < fst r"
-    using assms(2) by (simp add: dropWhile_eq_Nil_conv)
-  have "cnf (translate (pre @ (p # rest) @ [q]))"
-    using cnf_ST_PS[OF assms(1)] .
-  thus ?thesis using STS_A_aux dom assms(3) by blast
-qed
-
 lemma STS_B:
-  assumes "pre @ (p # rest) @ [q] \<in> ST_PS"
+  assumes "pre @ (p # rest) @ [q] @ post \<in> ST_PS"
     and "dropWhile (\<lambda>r. fst p < fst r) rest \<noteq> []"
     and "fst (hd (dropWhile (\<lambda>r. fst p < fst r) rest)) = fst p"
   shows "\<not> (snd p < hdsub (nrm (translate (dropWhile (\<lambda>r. fst p < fst r) rest)))
@@ -1327,7 +2083,7 @@ lemma STS_B:
   sorry
 
 lemma ST_snocokS_gen:
-  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> fst (hd C) \<le> fst q \<Longrightarrow>
+  "pre @ C @ [q] @ post \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> fst (hd C) \<le> fst q \<Longrightarrow>
    \<forall>x \<in> set C. fst (hd C) \<le> fst x \<Longrightarrow> snocokS C q"
 proof (induct C arbitrary: pre rule: length_induct)
   case (1 C)
@@ -1335,9 +2091,9 @@ proof (induct C arbitrary: pre rule: length_induct)
   obtain p rest where C: "C = p # rest" using ne by (cases C) auto
   have stepsC: "stepsok (p # rest)"
   proof -
-    have "blockok 0 (pre @ (p # rest) @ [q])"
+    have "blockok 0 (pre @ (p # rest) @ [q] @ post)"
       using blockok_ST_PS host[unfolded C] by blast
-    hence "stepsok (pre @ (p # rest) @ [q])" by (rule blockok_stepsok)
+    hence "stepsok (pre @ (p # rest) @ ([q] @ post))" by (rule blockok_stepsok)
     thus ?thesis by (rule stepsok_sub)
   qed
   show ?case
@@ -1357,7 +2113,7 @@ proof (induct C arbitrary: pre rule: length_induct)
         show ?thesis unfolding l r using einc.einc_end by blast
       next
         case rne: False
-        have host2: "(pre @ [p]) @ rest @ [q] \<in> ST_PS"
+        have host2: "(pre @ [p]) @ rest @ [q] @ post \<in> ST_PS"
           using host unfolding C by simp
         have len2: "length rest < length C" unfolding C by simp
         have hdr: "fst (hd rest) \<le> Suc (fst p)"
@@ -1410,7 +2166,7 @@ proof (induct C arbitrary: pre rule: length_induct)
             have Tsplit': "rest = takeWhile (\<lambda>c. snd c < maxr1 rest) rest @ msfx rest"
               by (rule msfx_decomp)
             have hostT': "(pre @ [p] @ takeWhile (\<lambda>c. snd c < maxr1 rest) rest)
-                          @ msfx rest @ [q] \<in> ST_PS"
+                          @ msfx rest @ [q] @ post \<in> ST_PS"
               using host unfolding C
               by (metis Tsplit' append.assoc append_Cons append_Nil)
             have seam: "fst (hd (msfx rest)) \<le> fst q \<and>
@@ -1494,7 +2250,7 @@ proof (induct C arbitrary: pre rule: length_induct)
     case Tne: False
     let ?T = "dropWhile (\<lambda>r. fst p < fst r) rest"
     have Tsplit: "rest = takeWhile (\<lambda>r. fst p < fst r) rest @ ?T" by simp
-    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] \<in> ST_PS"
+    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] @ post \<in> ST_PS"
       using host unfolding C by (metis Tsplit append.assoc append_Cons append_Nil)
     have lenT: "length ?T < length C"
       unfolding C using length_dropWhile_le[of "\<lambda>r. fst p < fst r" rest] by simp
@@ -1542,7 +2298,7 @@ proof (induct C arbitrary: pre rule: length_induct)
 qed
 
 lemma ST_snoc_C:
-  assumes H: "pre @ (p # rest) @ [q] \<in> ST_PS"
+  assumes H: "pre @ (p # rest) @ [q] @ post \<in> ST_PS"
     and T: "dropWhile (\<lambda>r. fst p < fst r) rest = []"
     and Q: "fst p < fst q"
   shows "olt (proj (snd p) (nrm (translate rest)))
@@ -1554,7 +2310,7 @@ proof -
   have inv2: "\<forall>x \<in> set (p # rest). fst (hd (p # rest)) \<le> fst x"
     using allD by auto
   have S: "snocokS (p # rest) q"
-    using ST_snocokS_gen[of pre "p # rest" q] H hd0 inv2 by simp
+    using ST_snocokS_gen[of pre "p # rest" q post] H hd0 inv2 by simp
   have unfA: "snocokS (p # rest) q \<longleftrightarrow>
         Einc (proj (snd p) (nrm (translate rest)))
              (proj (snd p) (nrm (translate (rest @ [q]))))"
@@ -1563,7 +2319,7 @@ proof -
 qed
 
 lemma ST_snocok_gen:
-  "pre @ C @ [q] \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> snocok C q"
+  "pre @ C @ [q] @ post \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> snocok C q"
 proof (induct C arbitrary: pre rule: length_induct)
   case (1 C)
   note IH = 1(1) and host = 1(2) and ne = 1(3)
@@ -1583,7 +2339,7 @@ proof (induct C arbitrary: pre rule: length_induct)
     let ?T = "dropWhile (\<lambda>r. fst p < fst r) rest"
     have Tsplit: "rest = takeWhile (\<lambda>r. fst p < fst r) rest @ ?T"
       by simp
-    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] \<in> ST_PS"
+    have host': "(pre @ [p] @ takeWhile (\<lambda>r. fst p < fst r) rest) @ ?T @ [q] @ post \<in> ST_PS"
       using host unfolding C by (metis Tsplit append.assoc append_Cons append_Nil)
     have lenT: "length ?T < length C"
       unfolding C using length_dropWhile_le[of "\<lambda>r. fst p < fst r" rest]
@@ -1596,15 +2352,421 @@ proof (induct C arbitrary: pre rule: length_induct)
   qed
 qed
 
+lemma ST_snocok_int:
+  assumes "C @ [q] @ post \<in> ST_PS" and "C \<noteq> []"
+  shows "snocok C q"
+  using ST_snocok_gen[of "[]" C q post] assms by simp
+
 lemma ST_snocok:
   assumes "C @ [q] \<in> ST_PS" and "C \<noteq> []"
   shows "snocok C q"
-  using ST_snocok_gen[of "[]" C q] assms by simp
+proof -
+  have "C @ [q] @ [] \<in> ST_PS" using assms(1) by simp
+  thus ?thesis using ST_snocok_int assms(2) by blast
+qed
 
 theorem nrm_snoc:
   assumes "C @ [p] \<in> ST_PS" and "C \<noteq> []"
   shows "olt (nrm (translate C)) (nrm (translate (C @ [p])))"
   by (rule nrm_snoc_seg[OF ST_snocok[OF assms] assms(2)])
+
+theorem nrm_snoc_int:
+  assumes "C @ [p] @ post \<in> ST_PS" and "C \<noteq> []"
+  shows "olt (nrm (translate C)) (nrm (translate (C @ [p])))"
+  by (rule nrm_snoc_seg[OF ST_snocok_int[OF assms] assms(2)])
+
+theorem nrm_snoc_mid:
+  assumes "pre @ C @ [p] @ post \<in> ST_PS" and "C \<noteq> []"
+  shows "olt (nrm (translate C)) (nrm (translate (C @ [p])))"
+  by (rule nrm_snoc_seg[OF ST_snocok_gen[OF assms] assms(2)])
+
+text \<open>Iterated: the normalized image of a proper contiguous prefix is strictly
+  below that of any contiguous extension within a standard host.\<close>
+
+lemma NT_prefix_lt:
+  "pre @ C @ D @ post \<in> ST_PS \<Longrightarrow> C \<noteq> [] \<Longrightarrow> D \<noteq> [] \<Longrightarrow>
+   olt (nrm (translate C)) (nrm (translate (C @ D)))"
+proof (induct D arbitrary: C post)
+  case Nil thus ?case by simp
+next
+  case (Cons d0 D')
+  have h1: "pre @ C @ [d0] @ (D' @ post) \<in> ST_PS" using Cons.prems(1) by simp
+  have s1: "olt (nrm (translate C)) (nrm (translate (C @ [d0])))"
+    by (rule nrm_snoc_mid[OF h1 Cons.prems(2)])
+  show ?case
+  proof (cases "D' = []")
+    case True
+    show ?thesis using s1 unfolding True by simp
+  next
+    case False
+    have h2: "pre @ (C @ [d0]) @ D' @ post \<in> ST_PS" using Cons.prems(1) by simp
+    have s2: "olt (nrm (translate (C @ [d0]))) (nrm (translate ((C @ [d0]) @ D')))"
+      using Cons.hyps[OF h2 _ False] by simp
+    have "olt (nrm (translate C)) (nrm (translate ((C @ [d0]) @ D')))"
+      using olt_trans s1 s2 by blast
+    thus ?thesis by simp
+  qed
+qed
+
+text \<open>Resolution of \<open>E6_dom_tie\<close> using the catalogue and the prefix
+  monotonicity.  Kept separate because the lemma-level dependency
+  \<open>NT_prefix_lt \<rightarrow> ST_snocokS_gen \<rightarrow> E6_value \<rightarrow> E6_dom_tie\<close> is circular;
+  stratified by segment length it is well-founded, so the final assembly
+  inlines this proof into one simultaneous length induction
+  (deep case = \<open>E6_dom_deep\<close>).\<close>
+
+lemma E6_dom_tie_resolved:
+  assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
+    and G: "g \<in> Gterm u (nrm (translate S))" and V: "\<not> olt g (nrm (translate S))"
+    and NZ: "g \<noteq> Z" and HS: "hdsub g = maxr1 S"
+  shows "ole g (nrm (translate (msfx S)))"
+proof -
+  let ?m = "maxr1 S"
+  let ?j0 = "length (takeWhile (\<lambda>c. snd c < ?m) S)"
+  have fbS: "\<exists>v. fbseg v S" using dseg_fbseg[OF D] by blast
+  from GCAT[OF fbS G] NZ obtain pre' Cp post'
+    where w: "S = pre' @ Cp @ post'" "Cp \<noteq> []" "g = nrm (translate Cp)"
+      "hdsub g = snd (hd Cp)" by blast
+  have hdm: "snd (hd Cp) = ?m" using w(4) HS by simp
+  obtain ch ct where Cp: "Cp = ch # ct" using w(2) by (cases Cp) auto
+  have nthl: "S ! length pre' = hd Cp"
+    unfolding w(1) Cp by (simp add: nth_append)
+  have j0le: "?j0 \<le> length pre'"
+  proof (rule ccontr)
+    assume "\<not> ?j0 \<le> length pre'"
+    hence l: "length pre' < length (takeWhile (\<lambda>c. snd c < ?m) S)" by simp
+    have m1: "takeWhile (\<lambda>c. snd c < ?m) S ! length pre' = S ! length pre'"
+      by (rule takeWhile_nth[OF l])
+    have m2: "takeWhile (\<lambda>c. snd c < ?m) S ! length pre'
+              \<in> set (takeWhile (\<lambda>c. snd c < ?m) S)"
+      using l by (rule nth_mem)
+    have "snd (takeWhile (\<lambda>c. snd c < ?m) S ! length pre') < ?m"
+      using set_takeWhileD[OF m2] by blast
+    thus False using m1 nthl hdm by simp
+  qed
+  have msd: "msfx S = drop ?j0 S"
+    unfolding msfx_def by (rule dropWhile_eq_drop)
+  show ?thesis
+  proof (cases "?j0 = length pre'")
+    case True
+    have mC: "msfx S = Cp @ post'"
+    proof -
+      have "msfx S = drop ?j0 S" by (fact msd)
+      also have "\<dots> = drop (length pre') S" using True by simp
+      also have "\<dots> = Cp @ post'" unfolding w(1) by simp
+      finally show ?thesis .
+    qed
+    show ?thesis
+    proof (cases "post' = []")
+      case True
+      show ?thesis unfolding w(3) mC True by simp
+    next
+      case pne: False
+      from D obtain preh pp posth where h: "preh @ (pp # S) @ posth \<in> ST_PS"
+        unfolding dseg_def by blast
+      have h2: "(preh @ (pp # pre')) @ Cp @ post' @ posth \<in> ST_PS"
+        using h unfolding w(1) by simp
+      have "olt (nrm (translate Cp)) (nrm (translate (Cp @ post')))"
+        by (rule NT_prefix_lt[OF h2 w(2) pne])
+      thus ?thesis unfolding w(3) mC by simp
+    qed
+  next
+    case False
+    hence lt: "?j0 < length pre'" using j0le by simp
+    show ?thesis unfolding w(3)
+      by (rule E6_dom_deep[OF D F w(1) w(2) hdm lt G[unfolded w(3)] V[unfolded w(3)]])
+  qed
+qed
+
+text \<open>(LPL) A proper later piece whose head subscript matches the head-maximal
+  whole loses to the whole.  The last comparison core of the exclusion side
+  (empirically part of C2's zero-violation criterion).\<close>
+
+lemma E6_lpl:
+  assumes "dseg u S" and "snd (hd S) = maxr1 S"
+    and "S = pre' @ C @ post'" and "C \<noteq> []" and "pre' \<noteq> []"
+    and "snd (hd C) = maxr1 S"
+    and "nrm (translate C) \<in> Gterm u (nrm (translate S))"
+  shows "olt (nrm (translate C)) (nrm (translate S))"
+  sorry
+
+text \<open>(HDOM) A head-maximal class segment has no fire: every critical loses.
+  Resolved down to \<open>E6_lpl\<close> by the catalogue, the subscript bound, and prefix
+  monotonicity \<dash> the same pattern as \<open>E6_dom_tie_resolved\<close>.\<close>
+
+lemma E6_hdom:
+  assumes D: "dseg u S" and HM: "snd (hd S) = maxr1 S"
+  shows "\<not> pfire u (nrm (translate S))"
+proof
+  assume F: "pfire u (nrm (translate S))"
+  then obtain g where G: "g \<in> Gterm u (nrm (translate S))"
+    and V: "\<not> olt g (nrm (translate S))" by blast
+  have Sne: "S \<noteq> []" using D unfolding dseg_def by blast
+  obtain AS RS where sh: "nrm (translate S) = P (snd (hd S)) AS RS"
+    using NT_hd[OF dseg_fbseg[OF D]] by blast
+  have NZ: "g \<noteq> Z"
+  proof
+    assume "g = Z"
+    hence "\<not> olt Z (nrm (translate S))" using V by simp
+    thus False unfolding sh by simp
+  qed
+  have fbS: "\<exists>v. fbseg v S" using dseg_fbseg[OF D] by blast
+  from GCAT[OF fbS G] NZ obtain pre' Cp post'
+    where w: "S = pre' @ Cp @ post'" "Cp \<noteq> []" "g = nrm (translate Cp)"
+      "hdsub g = snd (hd Cp)" by blast
+  have le: "hdsub g \<le> maxr1 S" by (rule Gterm_NT_hdsub_le[OF G NZ])
+  show False
+  proof (cases "hdsub g = maxr1 S")
+    case False
+    hence lt: "hdsub g < maxr1 S" using le by simp
+    have "olt g (nrm (translate S))"
+      using lt NZ unfolding sh HM by (cases g) auto
+    thus False using V by blast
+  next
+    case True
+    have hdm: "snd (hd Cp) = maxr1 S" using w(4) True by simp
+    show False
+    proof (cases "pre' = []")
+      case pe: True
+      have CpS: "Cp \<noteq> S"
+      proof
+        assume "Cp = S"
+        hence "g = nrm (translate S)" using w(3) by simp
+        moreover have "size g < size (nrm (translate S))"
+          using Gterm_size[OF G] .
+        ultimately show False by simp
+      qed
+      have pne: "post' \<noteq> []" using w(1) CpS unfolding pe by auto
+      from D obtain preh pp posth where h: "preh @ (pp # S) @ posth \<in> ST_PS"
+        unfolding dseg_def by blast
+      have h2: "(preh @ [pp]) @ Cp @ post' @ posth \<in> ST_PS"
+        using h unfolding w(1) pe by simp
+      have "olt (nrm (translate Cp)) (nrm (translate (Cp @ post')))"
+        by (rule NT_prefix_lt[OF h2 w(2) pne])
+      hence "olt g (nrm (translate S))"
+        using w(3) w(1) unfolding pe by simp
+      thus False using V by blast
+    next
+      case pne: False
+      have "olt (nrm (translate Cp)) (nrm (translate S))"
+        by (rule E6_lpl[OF D HM w(1) w(2) pne hdm G[unfolded w(3)]])
+      thus False using w(3) V by simp
+    qed
+  qed
+qed
+
+text \<open>(cascade, K side) If the maximum lives in the head's dominated run and
+  the segment fires, the head's run extends to the end, the head is visible,
+  and the run itself fires at the head's level.\<close>
+
+lemma E6_nbcK_T:
+  assumes "dseg u (c0 # rest)" and "u \<le> snd c0"
+    and "takeWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+    and "maxr1 (takeWhile (\<lambda>r. fst c0 < fst r) rest) = maxr1 (c0 # rest)"
+    and "snd c0 < maxr1 (c0 # rest)"
+  shows "dropWhile (\<lambda>r. fst c0 < fst r) rest = []"
+  sorry
+
+lemma E6_nbcK_K:
+  assumes "dseg u (c0 # rest)" and "pfire u (nrm (translate (c0 # rest)))"
+    and "u \<le> snd c0"
+    and "takeWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+    and "maxr1 (takeWhile (\<lambda>r. fst c0 < fst r) rest) = maxr1 (c0 # rest)"
+    and "snd c0 < maxr1 (c0 # rest)"
+  shows "pfire (snd c0) (nrm (translate (takeWhile (\<lambda>r. fst c0 < fst r) rest)))
+         \<or> msfx (takeWhile (\<lambda>r. fst c0 < fst r) rest) = takeWhile (\<lambda>r. fst c0 < fst r) rest"
+  sorry
+
+lemma E6_nbcK:
+  assumes D: "dseg u (c0 # rest)" and F: "pfire u (nrm (translate (c0 # rest)))"
+    and K: "takeWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+    and Km: "maxr1 (takeWhile (\<lambda>r. fst c0 < fst r) rest) = maxr1 (c0 # rest)"
+    and hl: "snd c0 < maxr1 (c0 # rest)"
+  shows "dropWhile (\<lambda>r. fst c0 < fst r) rest = [] \<and> u \<le> snd c0 \<and>
+         (pfire (snd c0) (nrm (translate (takeWhile (\<lambda>r. fst c0 < fst r) rest)))
+          \<or> msfx (takeWhile (\<lambda>r. fst c0 < fst r) rest) = takeWhile (\<lambda>r. fst c0 < fst r) rest)"
+proof -
+  have uv: "u \<le> snd c0"
+  proof (rule ccontr)
+    assume "\<not> u \<le> snd c0"
+    hence "snd c0 < u" by simp
+    hence "Gterm u (nrm (translate (c0 # rest))) = {}"
+      by (rule Gterm_NT_high[OF dseg_fbseg[OF D] refl])
+    thus False using F by blast
+  qed
+  show ?thesis
+    using E6_nbcK_T[OF D uv K Km hl] uv E6_nbcK_K[OF D F uv K Km hl] by blast
+qed
+
+text \<open>(cascade, T side) If the maximum lives strictly in the sum tail, the
+  membership and violator facts transfer to the tail with the whole as
+  threshold.\<close>
+
+lemma E6_memT:
+  assumes "dseg u (c0 # rest)" and "pfire u (nrm (translate (c0 # rest)))"
+    and "dropWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+    and "maxr1 (c0 # takeWhile (\<lambda>r. fst c0 < fst r) rest) < maxr1 (c0 # rest)"
+  shows "nrm (translate (msfx (dropWhile (\<lambda>r. fst c0 < fst r) rest)))
+           \<in> Gterm u (nrm (translate (dropWhile (\<lambda>r. fst c0 < fst r) rest)))
+         \<and> \<not> olt (nrm (translate (msfx (dropWhile (\<lambda>r. fst c0 < fst r) rest))))
+                 (nrm (translate (c0 # rest)))"
+  sorry
+
+text \<open>Resolution of \<open>E6_mem\<close>: head-max is excluded by \<open>E6_hdom\<close>; max-in-run
+  assembles from the K-cascade, \<open>E6_value\<close> at the run, and pure subscript
+  facts; max-in-tail transfers by the T-cascade and \<open>msfx_tail\<close>.\<close>
+
+lemma E6_mem_resolved:
+  assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
+  shows "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))
+         \<and> \<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
+proof -
+  have Sne: "S \<noteq> []" using D unfolding dseg_def by blast
+  obtain c0 rest where C: "S = c0 # rest" using Sne by (cases S) auto
+  let ?K = "takeWhile (\<lambda>r. fst c0 < fst r) rest"
+  let ?T = "dropWhile (\<lambda>r. fst c0 < fst r) rest"
+  let ?A = "proj (snd c0) (nrm (translate ?K))"
+  let ?m = "maxr1 S"
+  have fbC: "fbseg u (c0 # rest)" using dseg_fbseg[OF D] unfolding C .
+  have sh: "nrm (translate S) = P (snd c0) ?A (nrm (translate ?T))"
+    unfolding C by (rule NT_shape[OF fbC refl])
+  have DC: "dseg u (c0 # rest)" using D unfolding C .
+  have FC: "pfire u (nrm (translate (c0 # rest)))" using F unfolding C .
+  have rsplit: "rest = ?K @ ?T" by simp
+  have xs: "set (c0 # rest) = set (c0 # ?K) \<union> set ?T"
+  proof -
+    have "set rest = set ?K \<union> set ?T"
+      by (metis rsplit set_append)
+    thus ?thesis by auto
+  qed
+  show ?thesis
+  proof (cases "snd c0 = ?m")
+    case True
+    have "snd (hd S) = maxr1 S" using True unfolding C by simp
+    hence "\<not> pfire u (nrm (translate S))" by (rule E6_hdom[OF D])
+    thus ?thesis using F by blast
+  next
+    case hl: False
+    have hlt: "snd c0 < ?m"
+      using maxr1_ub[of c0 S] hl unfolding C by simp
+    show ?thesis
+    proof (cases "?K \<noteq> [] \<and> maxr1 ?K = ?m")
+      case Kmax: True
+      have hltC: "snd c0 < maxr1 (c0 # rest)" using hlt unfolding C by simp
+      from E6_nbcK[OF DC FC _ _ hltC] Kmax
+      have Tnil: "?T = []" and uv: "u \<le> snd c0"
+        and Kf: "pfire (snd c0) (nrm (translate ?K)) \<or> msfx ?K = ?K"
+        using C by blast+
+      have dsK: "dseg (snd c0) ?K"
+        using fbseg_K_dseg[OF fbC] Kmax by blast
+      have Aval: "?A = nrm (translate (msfx ?K))"
+      proof (cases "pfire (snd c0) (nrm (translate ?K))")
+        case True
+        show ?thesis by (rule E6_value[OF dsK True])
+      next
+        case False
+        have "msfx ?K = ?K" using Kf False by blast
+        thus ?thesis using proj_nofire[OF False] by simp
+      qed
+      have rk: "rest = ?K" using rsplit Tnil by simp
+      have meq: "msfx S = msfx ?K"
+      proof -
+        have "msfx S = dropWhile (\<lambda>c. snd c < ?m) S" by (simp add: msfx_def)
+        also have "\<dots> = dropWhile (\<lambda>c. snd c < ?m) rest"
+          unfolding C using hltC by simp
+        also have "\<dots> = dropWhile (\<lambda>c. snd c < ?m) ?K" using rk by simp
+        also have "\<dots> = msfx ?K" unfolding msfx_def using Kmax by auto
+        finally show ?thesis .
+      qed
+      have mem: "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))"
+        unfolding sh meq Aval[symmetric] using uv by simp
+      have hdms: "hdsub (nrm (translate (msfx S))) = ?m"
+        using NT_msfx_hdsub[OF Sne] by simp
+      obtain c' rest' where M': "msfx S = c' # rest'"
+        using msfx_ne[OF Sne] by (cases "msfx S") auto
+      obtain e f g where E: "nrm (translate (msfx S)) = P e f g"
+        using NT_neZ unfolding M' by (cases "nrm (translate (c' # rest'))") auto
+      have em: "e = ?m" using hdms unfolding E by simp
+      have "\<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
+        unfolding sh E using em hlt by simp
+      thus ?thesis using mem by blast
+    next
+      case nK: False
+      have KleM: "maxr1 (c0 # ?K) \<le> ?m"
+        unfolding maxr1_def
+        by (intro Max_mono) (auto simp: C dest: set_takeWhileD)
+      have noKwit: "\<And>x. x \<in> set (c0 # ?K) \<Longrightarrow> snd x \<noteq> ?m"
+      proof
+        fix x assume xin: "x \<in> set (c0 # ?K)" and xm: "snd x = ?m"
+        have "x = c0 \<or> x \<in> set ?K" using xin by auto
+        thus False
+        proof
+          assume "x = c0" thus False using xm hlt by simp
+        next
+          assume xK: "x \<in> set ?K"
+          hence Kne: "?K \<noteq> []" by auto
+          have "?m \<le> maxr1 ?K" using xK xm maxr1_ub by fastforce
+          moreover have "maxr1 ?K \<le> ?m"
+            unfolding maxr1_def
+            by (intro Max_mono) (use Kne in \<open>auto simp: C dest: set_takeWhileD\<close>)
+          ultimately show False using nK Kne by simp
+        qed
+      qed
+      obtain xm where xm: "xm \<in> set S" "snd xm = ?m"
+        using maxr1_in[OF Sne] by auto
+      have xmT: "xm \<in> set ?T"
+      proof -
+        have "xm \<in> set (c0 # ?K) \<union> set ?T" using xm(1) xs unfolding C by blast
+        moreover have "xm \<notin> set (c0 # ?K)" using noKwit xm(2) by blast
+        ultimately show ?thesis by blast
+      qed
+      have Tne: "?T \<noteq> []" using xmT by (metis empty_iff empty_set)
+      have mT: "maxr1 ?T = ?m"
+      proof -
+        have "?m \<le> maxr1 ?T" using maxr1_ub[OF xmT] xm(2) by simp
+        moreover have "maxr1 ?T \<le> ?m"
+          unfolding maxr1_def
+          by (intro Max_mono) (use Tne in \<open>auto simp: C dest: set_dropWhileD\<close>)
+        ultimately show ?thesis by simp
+      qed
+      have mlt: "maxr1 (c0 # ?K) < ?m"
+      proof -
+        have "maxr1 (c0 # ?K) \<noteq> ?m"
+        proof
+          assume eqm: "maxr1 (c0 # ?K) = ?m"
+          have "?m \<in> snd ` set (c0 # ?K)"
+            using maxr1_in[of "c0 # ?K"] eqm by simp
+          then obtain x where xx: "x \<in> set (c0 # ?K)" and xsnd: "snd x = ?m" by force
+          show False using noKwit[OF xx] xsnd by simp
+        qed
+        thus ?thesis using KleM by simp
+      qed
+      have mltC: "maxr1 (c0 # ?K) < maxr1 (c0 # rest)" using mlt unfolding C by simp
+      from E6_memT[OF DC FC Tne mltC]
+      have memT: "nrm (translate (msfx ?T)) \<in> Gterm u (nrm (translate ?T))"
+        and vioT: "\<not> olt (nrm (translate (msfx ?T))) (nrm (translate (c0 # rest)))"
+        by blast+
+      have meq: "msfx S = msfx ?T"
+      proof -
+        have Ssplit: "S = (c0 # ?K) @ ?T" unfolding C by simp
+        have bound: "\<forall>c \<in> set (c0 # ?K). snd c < maxr1 ?T"
+        proof
+          fix c assume "c \<in> set (c0 # ?K)"
+          hence "snd c \<le> maxr1 (c0 # ?K)" using maxr1_ub by fast
+          thus "snd c < maxr1 ?T" using mlt mT by simp
+        qed
+        show ?thesis unfolding Ssplit by (rule msfx_tail[OF Tne bound])
+      qed
+      have sub: "Gterm u (nrm (translate ?T)) \<subseteq> Gterm u (nrm (translate S))"
+        unfolding sh by auto
+      have m1: "nrm (translate (msfx S)) \<in> Gterm u (nrm (translate S))"
+        using memT sub meq by auto
+      have m2: "\<not> olt (nrm (translate (msfx S))) (nrm (translate S))"
+        using vioT meq unfolding C by simp
+      show ?thesis using m1 m2 by blast
+    qed
+  qed
+qed
 
 text \<open>\<open>Pred\<close> case of the step decrease, from \<open>nrm_snoc\<close>.\<close>
 

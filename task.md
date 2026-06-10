@@ -61,9 +61,17 @@
           ✅ **proj_once**（射影=1ステップ; max臨界は自ら無発火）+ **proj_submono**＋Gterm_trans/maxg_nofire
           ✅ **E6アーキテクチャ移行**（projE系削除→msfx接尾辞定理に再編; maxr1/msfx/NT_single/proj_fire_ne 純粋部品緑;
           ST_snocokS_gen にインライン配線・長さ帰納で循環なし; 実証 V1-V5 全0違反 = memo続22）
-          🚨 残5: 🚨🤖 **E6_value**（fire⟹proj=NT(msfx S)・マスター帰納・攻略中）/
-          E6_qcut_last（V4: msfx=[末列]）/ E6_iii_singleton（V5: S単元）/
-          E6_seam（INV/INV2移送）/ STS_B（no-absorb対）
+          ✅ post一般化（segprov/STS_A/ST_snocokS_gen/ST_snocok_int/nrm_snoc_int、内部位置対応・実証8243で0違反）
+          ✅ fbseg（森境界ピース）＋閉包補題3本 / NT_noabsorb / **NT_tail_lt**（nrm和尾部厳密増大）
+          ✅ C1層完成: fbseg_hd_level（blockokレベル固定・drop=0）→NT_dom→NT_shape→NT_hd/NT_tail_lt（memo続24）
+          ✅ **E6_value 本体**（E6_mem/E6_dom_tie 分解のコンビネータ・proj_once+maxo_ub）
+          ✅ **GCAT**（Gカタログ・u一様・E6_value非依存）+ subs連鎖 + NT_msfx_hdsub + 低添字dominance
+          ✅ nrm_snoc_mid/NT_prefix_lt（mid-host）/ msfx_tail / **E6_dom_tie_resolved**（l=j0閉鎖）/
+          **E6_hdom**（排除コア、GCATパターン）— 層化循環は最終組立で同時帰納に（memo続25）
+          ✅ 健全性修正: E6_lpl/E6_dom_deep に可視性前提（旧文面は偽・実証2163逆転をキャッチ）
+          🚨 実効コア4: **E6_lpl**（後続片敗北・可視性付き）/ **E6_dom_deep**（深部タイ）/
+          **E6_mem**（可視鎖メンバーシップ連鎖）/ **NT_tie**（SIB核）
+          🚨 行レベル3: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（NT_tieと同核）
         - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕

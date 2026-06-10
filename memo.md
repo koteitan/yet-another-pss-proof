@@ -1906,3 +1906,115 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 - **次の手順**: (1) snoc 機構の post 一般化（機械的見込み、STS_A の
   translate_block_append 部のみ要注意）(2) G-カタログ補題 (3) E6_value 長さ帰納本体。
 - ツール: tools/mine_master2.py (ピース族), mine_master3.py (降下閉包), mine_nbc.py (境界横断なし)。
+
+### ★★(2026-06-10 続24) C1層完成 — NT_dom が NT_tie（SIB核）1点に縮小
+- **drop=0 定理（実証1455/1455 → 純粋証明完了）**: fbseg 閉包で和-隣接ペアは常に同レベル。
+  理由: blockok ステップ≤+1 ⟹ 支配ランの最初の列 = fst pp + 1、森境界条件で
+  piece 先頭も fst pp+1 に固定、c1 は支配で挟み撃ち ⟹ **fst c1 = fst c**〔fbseg_hd_level 緑〕。
+- **C1層の依存鎖（全て緑）**: NT_tie(sorry) → NT_dom → NT_shape（長さ帰納+ins展開）→
+  NT_hd / NT_tail_lt（和尾部厳密増大; ABeq ケースは IH再帰）。
+  部品: NT_noabsorb（吸収⟹サイズ矛盾）、fbseg_pair_host（ホスト隣接抽出）、
+  NT_dom_sub_eq（STS_A直結の添字バウンド）、stepsok 群を前方移動。
+- **NT_tie**: fbseg ∧ T=c1#rest1 ∧ snd c1 = snd c ⟹ ¬ olt (proj (snd c) (NT K)) (proj (snd c1) (NT K1))。
+  タイ1037件で違反0。= K1/SIB の正規形。攻め筋: E6で proj=NT(msfx)化 → セグメント比較
+  → snoc単調(nrm_snoc_int)+host cnf。STS_B hdarg 節と同核なので一方が閉じれば両方閉じる。
+- 現 sorry: nrmstep = NT_tie/E6_value/E6_qcut_last/E6_iii_singleton/E6_seam/STS_B (6)、
+  nrm = nrm_order_pres (1)。ツール: tools/mine_ntdom.py。
+
+- (続24補) **E6_value dominance の純粋半分が完成（全て緑・クラス前提なし）**:
+  subs連鎖 Gterm_subs/proj_subs/ins_subs/nrm_subs/NT_subs + ins_neZ/ins_hdsub/NT_neZ/NT_hd_ge
+  ⟹ **NT_msfx_hdsub**: hdsub (NT (msfx S)) = maxr1 S（吸収があっても頭添字は上がるだけ、
+  subs で上から押さえる — fbseg 不要！）⟹ Gterm_NT_hdsub_le（臨界の頭添字 ≤ maxr1）
+  + olt_msfx_lowsub（頭添字 < maxr1 ⟹ 即 olt NT(msfx)）。
+  **DOM の残り = 頭添字 = maxr1 のタイのみ**（カタログ + 最初max優先の組合せ論）。
+  MEM（NT(msfx S) ∈ Gterm の可視鎖）が次の骨格。
+
+- (続24補2) **E6_value 本体証明完了（コンビネータ化・緑）**: proj_once + maxo_ub +
+  E6_mem(sorry: msfx像∈Gterm∧violator) + E6_dom_tie(sorry: 添字タイ violator ≤ msfx像)
+  + 低添字側は olt_msfx_lowsub で純粋に閉じる。
+  sorry 前線 = 全て配列レベルの葉クラス事実 7点: NT_tie / E6_mem / E6_dom_tie /
+  E6_qcut_last / E6_iii_singleton / E6_seam / STS_B（+ nrm_order_pres）。
+  構造コンビネータ（E6_value・NT_dom→NT_shape 鎖・ST_snocokS_gen 配線）は全て証明済。
+
+### (2026-06-10 続25) 残7 sorry の収束構造 — HDOM/GCAT 設計
+- **NT_prefix_lt 緑**（nrm_snoc_int の連鎖、C@D@post∈ST_PS ⟹ NT C <o NT(C@D)）。
+- 残る組合せ核の還元図:
+  - **GCAT（G-カタログ）**: class S の臨界 = 可視ノード n の arg 群、arg(n) =
+    proj (snd n) (NT (run_n∩S)) =（E6/IH）NT(run_n) or NT(msfx(run_n)) — 常に
+    「S の連続部分セグメントの NT 像」+ Z。帰納で機械的の見込み。
+  - **DOM-tie（E6_dom_tie）**: タイ violator g = NT(piece)、hdsub=maxr1=m ⟹
+    piece は m-列開始、開始位置 l ≥ j0（j0=global first max）。
+    l = j0: piece は msfx S の prefix ⟹ **NT_prefix_lt で閉じる**。
+    l > j0: 再帰的 first-max 優先（msfx S の arg との比較に降下）。
+  - **HDOM（頭max支配）**: maxr1 R = snd (hd R)（先頭が max）⟹ 全臨界 g: olt g (NT R)。
+    = C2 の no-fire 向き = E6_mem の j0=0 ケース排除 = タイ比較の底。
+    NT_tie / STS_B hdarg 節も同じ底に合流。
+  - **E6_mem**: fire ⟹（HDOM 対偶で）msfx S ≠ S、先祖鎖（nbc 930/930）で
+    NT(msfx S) = 最深可視先祖の arg ∈ Gterm（E6/IH を run で使う再帰）。
+- 帰納の正しい束: 長さ強帰納で {HDOM, GCAT, E6_mem, E6_dom_tie}（E6_value は証明済
+  コンビネータ）。NT_tie は HDOM+E6 値の系になる見込み。E6_seam/qcut/iii は行レベル。
+
+- (続25補) **GCAT 緑（G-カタログ・u一様・130行帰納が一発）**: fbseg閉包 S の臨界は
+  Z または「S の連続部分片 C の NT 像で hdsub g = snd (hd C)」。
+  鍵: NT_shape の結論が u 非依存 → GCAT を ∃v.fbseg v S で述べる / msfx-片の再帰は
+  proj_fire_in + Gterm_mono(u≤y0) + Gterm_trans で K-再帰に吸収（msfx片の fbseg 不成立を回避）。
+  補助: proj_fire_in / fbseg_K_dseg / Gterm_mono 緑。
+  ⚠️ 注意: GCAT は E6_value（sorry依存コンビネータ）を K(短い)に使用。最終組立時は
+  {GCAT, E6_mem, E6_dom_tie, E6_value} を長さ同時帰納に**インライン統合**が必要
+  （同長で GCAT(n)→mem/dom(n)→value(n) の層順・短い側だけ value を呼ぶ⟹非循環）。
+
+- (続25補2) **E6_dom_tie_resolved 緑**: GCAT で violator g = NT(Cp)（Cp は S の連続片、
+  頭が m-列）に分解 → 開始位置 l ≥ j0（takeWhile_nth 論法）→
+  l = j0: msfx S = Cp@post' で NT_prefix_lt（post'≠[]）/ refl（=[]）→ 閉じる。
+  l > j0: E6_dom_deep（新 sorry、first-max 優先の再帰核）。
+- **補題レベル循環の顕在化と扱い**: NT_prefix_lt → ST_snocokS_gen → E6_value →
+  E6_dom_tie が循環。長さで層化すると 値(n-1) → snocok(n) → prefix_lt(n) →
+  dom_tie(n) → 値(n) の層順で非循環 ⟹ 最終組立は1本の同時長さ帰納にインライン。
+  当面: E6_dom_tie は sorry スタブのまま、resolved 版を NT_prefix_lt 後方に配置。
+- デバッグ: metis(hd_Cons_tl/set_takeWhileD) が 1800s 暴走 → 明示 obtain/blast 化。
+  unfolding の順序で msfx S の書き換え不発 → calc 連鎖（drop j0 経由）。
+
+- (続25補3) **E6_hdom 緑（排除コアの統合）**: 頭最大クラスセグメントは無発火。
+  GCAT分解 → 低添字: NT_hd の P m 形と添字比較で即 olt / タイ+prefix: NT_prefix_lt /
+  タイ+後続片: **E6_lpl**（新 sorry: 後続同添字ピースは全体に負ける = first-max優先の対偶側）。
+  E6_dom_tie_resolved と同パターン。実効コアは {E6_lpl, E6_dom_deep, E6_mem連鎖, NT_tie}
+  + 行レベル {qcut, iii, seam} + STS_B に整理された。
+  E6_lpl と E6_dom_deep は双対（前者: 全体vs後続片、後者: msfx vs後続片）— 統一可能性あり。
+
+- (続25補4) **健全性キャッチ＆修正（重要）**: E6_lpl / E6_dom_deep の旧文面
+  （任意の m-頭ピース C）は**偽** — 実ホスト dseg 頭最大対で逆転2163件
+  （例: S=(3,1)(4,0)(5,1)(6,1), C=(5,1)(6,1)。C は u=1 では Gterm 不可視 =
+  GCAT 到達不能片）。**可視性前提 NT C ∈ Gterm u (NT S) を両補題に追加**して修正
+  （hdom/dom_tie の呼び出し側は G をそのまま供給）。教訓: sorry クラス事実は
+  文面確定時に必ず「使用側が供給できる前提だけで」最弱化マイニングする。
+  弱クラス LPL は等値も475件（吸収で NT C = NT S）→ hdom 側はサイズ論法で排除済。
+
+- (続25補5) **E6_mem_resolved 緑（3コンビネータ完成）**: 頭max → E6_hdom 排除 /
+  m-in-K → E6_nbcK(sorry: T=[]∧可視∧K発火) + E6_value(K) + 純粋部品で完全組立 /
+  m-in-T → E6_memT(sorry: 尾部への membership/violator 移送) + msfx_tail。
+  Max_mono 系は nonempty を use で明示供給（xs ファクト混入で auto 迷走する）。
+  imageE 系 obtain は force。最終 show は meq/sub を介して m1/m2 に分解。
+  実効 sorry コア: E6_lpl / E6_dom_deep / E6_nbcK / E6_memT / NT_tie（+行レベル3+STS_B）。
+  全コンビネータ・カタログ・排除パターンが証明済みなので、残コアは全て
+  「スパイン/ラン上の first-max 優先」という単一テーマの変種。
+
+- (続25補6) **E6_nbcK の文面確定（診断マイニング3本で締め直し・緑）**:
+  m-in-K fire 930件の構造 = (i) 全て u ≤ snd c0（u > y0 なら根 row1 非増加で
+  Gterm 空 = 純粋に証明可能な見込み）(ii) u≤y0 ∧ m-in-K ∧ T≠[] の配置は **0件**
+  （T=[] は自動）(iii) K発火は 219/930 のみ、無発火 711 件は**全て msfx K = K**
+  ⟹ 第3連言を「pfire ∨ msfx K = K」に弱め、Aval は case 分割（無発火側は
+  proj_nofire で自明）。E6_mem_resolved 再緑。
+  旧形（K発火必須）は偽だった — sorry 文面の使用前検証ルールがまた効いた。
+
+- (続25補7) **Gterm_NT_high 緑**（u > 頭row1 ⟹ 臨界空；根row1非増加=NT_dom由来）
+  ⟹ **E6_nbcK の可視性連言（u ≤ snd c0）が証明済に**。E6_nbcK = nbcK_T(sorry:
+  u≤y0∧m-in-K⟹T=[]、配置0件の行レベル事実) + nbcK_K(sorry: K発火∨msfx K=K) に分解。
+
+### (2026-06-11 続26) r1ok 発見 — row1 規律（行レベル事実群の土台）
+- **実証 14,558 列で 0 違反**: 標準 M の fst>0 の全列 j に row0-親
+  （最後の k<j で fst k = fst j - 1、間に fst < fst j - 1 なし）が存在し、
+  **snd (M!j) ≤ snd(親) + 1**。差分分布 {-3:3, -2:313, -1:3306, 0:5754, +1:5182}。
+- r1ok は blockok_ST_PS と同様に ST_PS 生成帰納で証明する（未実装）。
+  これで nbcK_T / E6_qcut_last / E6_iii_singleton / E6_seam の行レベル4点を
+  arithmetic 化する計画。残りの再帰束 {E6_lpl, E6_dom_deep, E6_memT, NT_tie,
+  nbcK_K} は GRAND 同時帰納（スパイン歩き＋閾値付き MEM/DOM）で締める。
