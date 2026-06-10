@@ -1355,6 +1355,31 @@ proof -
   qed
 qed
 
+lemma r1ok_take: "r1ok M \<Longrightarrow> r1ok (take m M)"
+proof -
+  assume A: "r1ok M"
+  show ?thesis
+    unfolding r1ok_def
+  proof (intro allI impI)
+    fix j assume jl: "j < length (take m M)" and jp: "0 < fst (take m M ! j)"
+    have jm: "j < m" and jM: "j < length M" using jl by auto
+    have nj: "take m M ! j = M ! j" using jm by simp
+    from A jM jp obtain k where k: "k < j" "Suc (fst (M ! k)) = fst (M ! j)"
+      "\<forall>l. k < l \<and> l < j \<longrightarrow> fst (M ! j) \<le> fst (M ! l)"
+      "snd (M ! j) \<le> Suc (snd (M ! k))"
+      unfolding r1ok_def nj by blast
+    have nk: "take m M ! k = M ! k" using k(1) jm by simp
+    have nl: "\<And>l. k < l \<and> l < j \<Longrightarrow> take m M ! l = M ! l" using jm by simp
+    show "\<exists>k. k < j \<and> Suc (fst (take m M ! k)) = fst (take m M ! j)
+        \<and> (\<forall>l. k < l \<and> l < j \<longrightarrow> fst (take m M ! j) \<le> fst (take m M ! l))
+        \<and> snd (take m M ! j) \<le> Suc (snd (take m M ! k))"
+      using k nj nk nl by (intro exI[of _ k]) auto
+  qed
+qed
+
+lemma r1ok_butlast: "r1ok M \<Longrightarrow> r1ok (butlast M)"
+  using r1ok_take[of M "length M - 1"] by (simp add: butlast_conv_take)
+
 lemma r1ok_oper:
   assumes "r1ok M" and "M \<in> ST_PS" and "1 \<le> n"
   shows "r1ok (oper M n)"

@@ -2018,3 +2018,12 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   これで nbcK_T / E6_qcut_last / E6_iii_singleton / E6_seam の行レベル4点を
   arithmetic 化する計画。残りの再帰束 {E6_lpl, E6_dom_deep, E6_memT, NT_tie,
   nbcK_K} は GRAND 同時帰納（スパイン歩き＋閾値付き MEM/DOM）で締める。
+
+- (続26補) r1ok キャンペーン開始: 定義＋生成帰納骨格＋diag ケース＋
+  r1ok_take/r1ok_butlast 緑（oper 保存のみ sorry）。
+  **oper 構造の重要事実**: idx1 ∈ {0,1} なので **d1 = 0 恒等**（row1 は常に正確コピー、
+  d1 増分は発生しない）。bad分岐 = take j0 M @ concat(copies)、copy k は
+  [j0..<j1] を (row0 +k*d0, row1 そのまま) でシフト。i1=0 なら d0=1（row0親）、
+  i1=1 なら d0 = e0 j1 - e0 j0 任意。r1ok_oper の親対応: プレフィクス内✓(take)、
+  コピー内＝元の親関係の平行移動、コピー境界＝climb補題（blockok: j0→j1 の
+  ≤+1 ステップで中間レベル全訪問）で前コピー内の d0-1 レベル列が親。
