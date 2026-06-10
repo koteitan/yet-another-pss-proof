@@ -2337,3 +2337,14 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   次の攻め: (a,b) 対の存在が M の自己相似構造（prefix が P0@blk@[cj1] を含む
   ＝前世代の oper 痕跡）を強制する点を使う or seam_open_m1 を閉包+2 で
   最弱前提化してから生成帰納。
+
+- (続29補14) **seam_open_copyhead 討伐（緑）**: b=j0 ケース完全証明
+  （b>j0 は copyhead_deep に分離・実証0件）。機構: b=j0 ⟹ d0>0 強制
+  （d0=0 なら high が即矛盾）⟹ i1=1 ⟹ e1j0<e1j1 で全 snd 比較無料。
+  M対 (a,j0)・mrun M j0 = blktail@[cj1]・E/P-m≥2 は xx=(e0j1,e1j0) vs
+  cj1=(e0j1,e1j1) の snd 上昇 ascent 反駁・lexdiff は snd 集合論法
+  （m≥2: cp1⊆K1 / m=1: sibrel_diverge で hm K1M 強制・e1j0<e1j1≤maxr1）。
+  sibm2_oper_bad 鎖の残 sorry 3点: **seam_open_m1**（b<j0・m=1・14件・
+  e1j0=0機構）/ **seam_copyhead_m1**（b=j0・m=1・20件・全部 L=1）/
+  **seam_copyhead_deep**（b>j0・実証0件）。
+  暴走犯また metis（Cons_nth_drop_Suc+drop0 詰め合わせ）→ cases blk で即緑。
