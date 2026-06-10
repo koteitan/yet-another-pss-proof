@@ -1997,3 +1997,11 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   実効 sorry コア: E6_lpl / E6_dom_deep / E6_nbcK / E6_memT / NT_tie（+行レベル3+STS_B）。
   全コンビネータ・カタログ・排除パターンが証明済みなので、残コアは全て
   「スパイン/ラン上の first-max 優先」という単一テーマの変種。
+
+- (続25補6) **E6_nbcK の文面確定（診断マイニング3本で締め直し・緑）**:
+  m-in-K fire 930件の構造 = (i) 全て u ≤ snd c0（u > y0 なら根 row1 非増加で
+  Gterm 空 = 純粋に証明可能な見込み）(ii) u≤y0 ∧ m-in-K ∧ T≠[] の配置は **0件**
+  （T=[] は自動）(iii) K発火は 219/930 のみ、無発火 711 件は**全て msfx K = K**
+  ⟹ 第3連言を「pfire ∨ msfx K = K」に弱め、Aval は case 分割（無発火側は
+  proj_nofire で自明）。E6_mem_resolved 再緑。
+  旧形（K発火必須）は偽だった — sorry 文面の使用前検証ルールがまた効いた。

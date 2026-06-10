@@ -2534,7 +2534,8 @@ lemma E6_nbcK:
     and "maxr1 (takeWhile (\<lambda>r. fst c0 < fst r) rest) = maxr1 (c0 # rest)"
     and "snd c0 < maxr1 (c0 # rest)"
   shows "dropWhile (\<lambda>r. fst c0 < fst r) rest = [] \<and> u \<le> snd c0 \<and>
-         pfire (snd c0) (nrm (translate (takeWhile (\<lambda>r. fst c0 < fst r) rest)))"
+         (pfire (snd c0) (nrm (translate (takeWhile (\<lambda>r. fst c0 < fst r) rest)))
+          \<or> msfx (takeWhile (\<lambda>r. fst c0 < fst r) rest) = takeWhile (\<lambda>r. fst c0 < fst r) rest)"
   sorry
 
 text \<open>(cascade, T side) If the maximum lives strictly in the sum tail, the
@@ -2594,12 +2595,19 @@ proof -
       have hltC: "snd c0 < maxr1 (c0 # rest)" using hlt unfolding C by simp
       from E6_nbcK[OF DC FC _ _ hltC] Kmax
       have Tnil: "?T = []" and uv: "u \<le> snd c0"
-        and Kf: "pfire (snd c0) (nrm (translate ?K))"
+        and Kf: "pfire (snd c0) (nrm (translate ?K)) \<or> msfx ?K = ?K"
         using C by blast+
       have dsK: "dseg (snd c0) ?K"
         using fbseg_K_dseg[OF fbC] Kmax by blast
       have Aval: "?A = nrm (translate (msfx ?K))"
-        by (rule E6_value[OF dsK Kf])
+      proof (cases "pfire (snd c0) (nrm (translate ?K))")
+        case True
+        show ?thesis by (rule E6_value[OF dsK True])
+      next
+        case False
+        have "msfx ?K = ?K" using Kf False by blast
+        thus ?thesis using proj_nofire[OF False] by simp
+      qed
       have rk: "rest = ?K" using rsplit Tnil by simp
       have meq: "msfx S = msfx ?K"
       proof -
