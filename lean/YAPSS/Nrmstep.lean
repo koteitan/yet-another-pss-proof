@@ -3864,4 +3864,140 @@ theorem rtg_host_of_copy {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
       exact h3
     exact (ih (by omega)).tail hstepM
 
+/-- The within-copy row-1 instances of `tailokA` transfer from the host:
+above the copy root, ancestry and maximality are in exact correspondence. -/
+theorem tailokA_copyExp_row1 {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
+    {lp : ℕ × ℕ} {d0 n k q j0X : ℕ}
+    (htA : tailokA (G ++ ((v0,w0) :: R) ++ [lp]))
+    (hk : k < n) (hq : q < ((v0,w0) :: R).length)
+    (hi1 : idx1 (copyExp G ((v0,w0) :: R) d0 n)
+      (G.length + (k * ((v0,w0) :: R).length + q)) = 1)
+    (hnx : nextrel1 (copyExp G ((v0,w0) :: R) d0 n) j0X
+      (G.length + (k * ((v0,w0) :: R).length + q)))
+    (hge : G.length + k * ((v0,w0) :: R).length ≤ j0X)
+    (htrig : ∃ b, j0X < b ∧ b < G.length + (k * ((v0,w0) :: R).length + q) ∧
+      ((copyExp G ((v0,w0) :: R) d0 n).getD
+          (G.length + (k * ((v0,w0) :: R).length + q)) (0,0)).1
+        ≤ ((copyExp G ((v0,w0) :: R) d0 n).getD b (0,0)).1 ∧
+      ((copyExp G ((v0,w0) :: R) d0 n).getD j0X (0,0)).2
+        ≤ ((copyExp G ((v0,w0) :: R) d0 n).getD b (0,0)).2) :
+    hhm (((copyExp G ((v0,w0) :: R) d0 n).take
+        (G.length + (k * ((v0,w0) :: R).length + q))).drop (j0X + 1)) := by
+  obtain ⟨hb1, hb2, hb3, hb4, hb5, hb6⟩ := hnx
+  have hq0 : j0X - G.length - k * ((v0,w0) :: R).length < q := by omega
+  have hq0B : j0X - G.length - k * ((v0,w0) :: R).length
+      < ((v0,w0) :: R).length := by omega
+  have hMlen : (G ++ ((v0,w0) :: R) ++ [lp]).length
+      = G.length + ((v0,w0) :: R).length + 1 := hostM_length ..
+  have hXlen : (copyExp G ((v0,w0) :: R) d0 n).length
+      = G.length + n * ((v0,w0) :: R).length := copyExp_length ..
+  have he1 : ∀ {r}, r < ((v0,w0) :: R).length →
+      entry (copyExp G ((v0,w0) :: R) d0 n) 1
+        (G.length + (k * ((v0,w0) :: R).length + r))
+      = (((v0,w0) :: R).getD r (0,0)).2 :=
+    fun hr => (entry_copyExp hk hr).2
+  have heM1 : ∀ {r}, r < ((v0,w0) :: R).length →
+      entry (G ++ ((v0,w0) :: R) ++ [lp]) 1 (G.length + r)
+        = (((v0,w0) :: R).getD r (0,0)).2 := by
+    intro r hr
+    unfold entry
+    rw [if_neg one_ne_zero, hostM_getD_blk hr]
+  have hj0eq : j0X = G.length + (k * ((v0,w0) :: R).length
+      + (j0X - G.length - k * ((v0,w0) :: R).length)) := by omega
+  -- the host parenthood
+  have hM1 : nextrel1 (G ++ ((v0,w0) :: R) ++ [lp])
+      (G.length + (j0X - G.length - k * ((v0,w0) :: R).length))
+      (G.length + q) := by
+    refine ⟨by omega, by omega, by omega, ?_, ?_, ?_⟩
+    · rw [heM1 hq0B, heM1 hq]
+      rw [hj0eq] at hb4
+      rw [he1 hq0B, he1 hq] at hb4
+      exact hb4
+    · obtain ⟨-, -, hchain⟩ := hb5
+      refine ⟨by omega, by omega, ?_⟩
+      have hlift := rtg_host_of_copy (lp := lp) hk hchain
+        (by omega) (by omega)
+      rw [show j0X - k * ((v0,w0) :: R).length
+            = G.length + (j0X - G.length - k * ((v0,w0) :: R).length)
+            by omega,
+          show G.length + (k * ((v0,w0) :: R).length + q)
+              - k * ((v0,w0) :: R).length = G.length + q by omega] at hlift
+      exact hlift
+    · intro j' hj'
+      obtain ⟨hj'gt, hj'le0⟩ := hj'
+      have hj'le : j' ≤ G.length + q := le0_le hj'le0
+      obtain ⟨-, -, hchain⟩ := hj'le0
+      have hlift := rtg_copy_of_host (d0 := d0) (n := n) hk hchain
+        (by omega) (by omega)
+      rw [show G.length + q + k * ((v0,w0) :: R).length
+            = G.length + (k * ((v0,w0) :: R).length + q) by omega] at hlift
+      have hX := hb6 (j' + k * ((v0,w0) :: R).length)
+        ⟨by omega, by omega, by omega, hlift⟩
+      rw [he1 hq] at hX
+      rw [show j' + k * ((v0,w0) :: R).length
+            = G.length + (k * ((v0,w0) :: R).length + (j' - G.length))
+            by omega,
+          he1 (show j' - G.length < ((v0,w0) :: R).length by omega)] at hX
+      rw [heM1 hq, show j' = G.length + (j' - G.length) by omega,
+          heM1 (show j' - G.length < ((v0,w0) :: R).length by omega)]
+      exact hX
+  have hiM : idx1 (G ++ ((v0,w0) :: R) ++ [lp]) (G.length + q) = 1 := by
+    rw [← idx1_copy (d0 := d0) (n := n) hk hq]
+    exact hi1
+  -- the host trigger
+  have htrigM : idx1 (G ++ ((v0,w0) :: R) ++ [lp]) (G.length + q) = 1 →
+      ∃ b, G.length + (j0X - G.length - k * ((v0,w0) :: R).length) < b
+        ∧ b < G.length + q
+        ∧ ((G ++ ((v0,w0) :: R) ++ [lp]).getD (G.length + q) (0,0)).1
+            ≤ ((G ++ ((v0,w0) :: R) ++ [lp]).getD b (0,0)).1
+        ∧ ((G ++ ((v0,w0) :: R) ++ [lp]).getD
+              (G.length + (j0X - G.length - k * ((v0,w0) :: R).length)) (0,0)).2
+            ≤ ((G ++ ((v0,w0) :: R) ++ [lp]).getD b (0,0)).2 := by
+    intro _
+    obtain ⟨b, hbb1, hbb2, hbb3, hbb4⟩ := htrig
+    have hrb : b - G.length - k * ((v0,w0) :: R).length
+        < ((v0,w0) :: R).length := by omega
+    have hbeq : b = G.length + (k * ((v0,w0) :: R).length
+        + (b - G.length - k * ((v0,w0) :: R).length)) := by omega
+    refine ⟨G.length + (b - G.length - k * ((v0,w0) :: R).length),
+      by omega, by omega, ?_, ?_⟩
+    · rw [hostM_getD_blk hq, hostM_getD_blk hrb]
+      rw [hbeq, copyExp_getD_copy hk hq, copyExp_getD_copy hk hrb] at hbb3
+      have hbb3' : (((v0,w0) :: R).getD q (0,0)).1 + k * d0
+          ≤ (((v0,w0) :: R).getD
+              (b - G.length - k * ((v0,w0) :: R).length) (0,0)).1 + k * d0 :=
+        hbb3
+      omega
+    · rw [hostM_getD_blk hq0B, hostM_getD_blk hrb]
+      rw [hbeq, hj0eq, copyExp_getD_copy hk hq0B,
+          copyExp_getD_copy hk hrb] at hbb4
+      exact hbb4
+  have happ := htA (G.length + q)
+    (G.length + (j0X - G.length - k * ((v0,w0) :: R).length))
+    (by omega) (by omega)
+    (by unfold nextR; rw [hiM, if_neg one_ne_zero]; exact hM1) htrigM
+  have hMtake : ((G ++ ((v0,w0) :: R) ++ [lp]).take (G.length + q)).drop
+      (G.length + (j0X - G.length - k * ((v0,w0) :: R).length) + 1)
+      = (((v0,w0) :: R).take q).drop
+          ((j0X - G.length - k * ((v0,w0) :: R).length) + 1) := by
+    rw [hostM_take_at (le_of_lt hq), List.drop_append,
+        List.drop_eq_nil_of_le (by omega), List.nil_append,
+        show G.length + (j0X - G.length - k * ((v0,w0) :: R).length) + 1
+            - G.length
+          = (j0X - G.length - k * ((v0,w0) :: R).length) + 1 by omega]
+  have hXtake : ((copyExp G ((v0,w0) :: R) d0 n).take
+        (G.length + (k * ((v0,w0) :: R).length + q))).drop (j0X + 1)
+      = ((((v0,w0) :: R).take q).drop
+          ((j0X - G.length - k * ((v0,w0) :: R).length) + 1)).map
+            fun p => (p.1 + k * d0, p.2) := by
+    rw [copyExp_take_at hk (le_of_lt hq), List.drop_append,
+        List.drop_eq_nil_of_le (by rw [copyExp_length]; omega),
+        List.nil_append, copyExp_length,
+        show j0X + 1 - (G.length + k * ((v0,w0) :: R).length)
+          = (j0X - G.length - k * ((v0,w0) :: R).length) + 1 by omega,
+        ← List.map_take, ← List.map_drop]
+  rw [hXtake]
+  rw [hMtake] at happ
+  exact hhm_shift happ
+
 end YAPSS
