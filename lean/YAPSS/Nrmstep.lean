@@ -4721,4 +4721,32 @@ theorem hmok_tailok_ST_PS {M : PairSeq} (hM : ST_PS M)
       tailok_oper hk h1 h2 (blockok_ST_PS hN) (z0ok_ST_PS hN)
         (hseam N k hN hk) (htr N k hN hk)⟩
 
+
+/-! ## The single-climb discipline -/
+
+/-- **The single-climb discipline** (mined exact, 434/434): in a row-1
+parented host, no block column before the last column's row-0 parent
+reaches within one of the last column's level. -/
+def sclimb (M : PairSeq) : Prop :=
+  ∀ j0 r' r, j0 + 1 < M.length →
+    nextR M (idx1 M (M.length - 1)) j0 (M.length - 1) →
+    idx1 M (M.length - 1) = 1 →
+    j0 < r' → r' + 1 < M.length →
+    (M.getD r' (0,0)).1 + 1 = (M.getD (M.length - 1) (0,0)).1 →
+    (∀ l, r' < l → l + 1 < M.length →
+      (M.getD (M.length - 1) (0,0)).1 ≤ (M.getD l (0,0)).1) →
+    j0 < r → r < r' →
+    (M.getD r (0,0)).1 + 1 < (M.getD (M.length - 1) (0,0)).1
+
+theorem sclimb_diagSeq (v : ℕ) : sclimb (diagSeq 0 v) := by
+  intro j0 r' r hj0 _hnx _hi1 hr'1 hr'2 hlev _hafter hr1 hr2
+  have hlen : (diagSeq 0 v).length = v + 1 := diagSeq0_length v
+  rw [hlen] at hj0 hr'2 hlev ⊢
+  rw [show v + 1 - 1 = v by omega] at hlev ⊢
+  rw [diagSeq0_getD (by omega), diagSeq0_getD (by omega)] at hlev
+  rw [diagSeq0_getD (by omega), diagSeq0_getD (by omega)]
+  have h1 : r' + 1 = v := by simpa using hlev
+  show r + 1 < v
+  omega
+
 end YAPSS
