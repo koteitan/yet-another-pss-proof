@@ -4749,4 +4749,21 @@ theorem sclimb_diagSeq (v : ℕ) : sclimb (diagSeq 0 v) := by
   show r + 1 < v
   omega
 
+/-- The `sclimb` witness data is exactly a `nextrel0` edge into the last
+column. -/
+theorem sclimb_rp_nextrel0 {M : PairSeq} {r' : ℕ}
+    (hr'2 : r' + 1 < M.length)
+    (hlev : (M.getD r' (0,0)).1 + 1 = (M.getD (M.length - 1) (0,0)).1)
+    (hafter : ∀ l, r' < l → l + 1 < M.length →
+      (M.getD (M.length - 1) (0,0)).1 ≤ (M.getD l (0,0)).1) :
+    nextrel0 M r' (M.length - 1) := by
+  refine ⟨by omega, by omega, by omega, ?_, ?_⟩
+  · unfold entry
+    rw [if_pos rfl, if_pos rfl]
+    omega
+  · intro l hl
+    unfold entry
+    rw [if_pos rfl, if_pos rfl]
+    exact hafter l hl.1 (by omega)
+
 end YAPSS
