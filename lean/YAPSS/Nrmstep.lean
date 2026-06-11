@@ -4243,4 +4243,77 @@ theorem z0ok_copyExp {G B : PairSeq} {lp : ℕ × ℕ} {d0 n : ℕ}
     show (B.getD q (0,0)).2 = 0
     exact hM (by omega)
 
+
+/-! ## Parent uniqueness and row-0 existence -/
+
+/-- Row-0 parents are unique: a later candidate dips the earlier's clause. -/
+theorem nextrel0_unique {M : PairSeq} {k1 k2 j : ℕ}
+    (h1 : nextrel0 M k1 j) (h2 : nextrel0 M k2 j) : k1 = k2 := by
+  rcases Nat.lt_trichotomy k1 k2 with h | h | h
+  · have := h1.2.2.2.2 k2 ⟨h, h2.2.2.1⟩
+    have := h2.2.2.2.1
+    omega
+  · exact h
+  · have := h2.2.2.2.2 k1 ⟨h, h1.2.2.1⟩
+    have := h1.2.2.2.1
+    omega
+
+/-- Row-1 parents are unique: maximality excludes a later candidate. -/
+theorem nextrel1_unique {M : PairSeq} {k1 k2 j : ℕ}
+    (h1 : nextrel1 M k1 j) (h2 : nextrel1 M k2 j) : k1 = k2 := by
+  rcases Nat.lt_trichotomy k1 k2 with h | h | h
+  · have := h1.2.2.2.2.2 k2 ⟨h, h2.2.2.2.2.1⟩
+    have := h2.2.2.2.1
+    omega
+  · exact h
+  · have := h2.2.2.2.2.2 k1 ⟨h, h1.2.2.2.2.1⟩
+    have := h1.2.2.2.1
+    omega
+
+/-- The head of a `blockok 0` host is a level-0 column. -/
+theorem blockok_head_zero {M : PairSeq} (hb : blockok 0 M)
+    (hne : 0 < M.length) : (M.getD 0 (0,0)).1 = 0 := by
+  obtain ⟨m0, M', rfl⟩ : ∃ m0 M', M = m0 :: M' := by
+    cases M with
+    | nil => simp at hne
+    | cons m0 M' => exact ⟨m0, M', rfl⟩
+  rw [List.getD_cons_zero]
+  have := hb.1 (by simp)
+  rw [List.headI_cons] at this
+  exact this
+
+/-- Row-0 parent existence: the largest lower-level position qualifies. -/
+theorem parent0_exists {M : PairSeq} (hb : blockok 0 M) {j : ℕ}
+    (hj : j < M.length) (h0 : 0 < entry M 0 j) :
+    ∃ k, nextrel0 M k j := by
+  classical
+  have hj0 : 0 < j := by
+    by_contra hc
+    push Not at hc
+    have : j = 0 := by omega
+    subst this
+    have := blockok_head_zero hb (by omega)
+    unfold entry at h0
+    rw [if_pos rfl] at h0
+    omega
+  set P : ℕ → Prop := fun k => entry M 0 k < entry M 0 j with hP
+  have hP0 : P 0 := by
+    show entry M 0 0 < entry M 0 j
+    unfold entry
+    rw [if_pos rfl, blockok_head_zero hb (by omega)]
+    unfold entry at h0
+    rw [if_pos rfl] at h0
+    exact h0
+  refine ⟨Nat.findGreatest P (j - 1), ?_, hj, ?_, ?_, ?_⟩
+  · have := Nat.findGreatest_le (P := P) (j - 1)
+    omega
+  · have := Nat.findGreatest_le (P := P) (j - 1)
+    omega
+  · exact Nat.findGreatest_spec (Nat.zero_le _) hP0
+  · intro l hl
+    have hnl := Nat.findGreatest_is_greatest (P := P) hl.1 (by omega)
+    rw [hP] at hnl
+    push Not at hnl
+    exact hnl
+
 end YAPSS
