@@ -3663,6 +3663,41 @@ lemma btfullok_butlast: "btfullok M \<Longrightarrow> btfullok (butlast M)"
 lemma btfullok3_butlast: "btfullok3 M \<Longrightarrow> btfullok3 (butlast M)"
   using btfullok3_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
+text \<open>(BT-WRAP-U) The untied exact-copy wrap bounds (memo 続49): with
+  \<open>d0 = 0\<close>, a level-anchored dominated block tail is bounded without any tie
+  (closure+2: 21537 / T3 5867, zero violations).\<close>
+
+lemma ginv_BTWRAPU:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "d0 = 0"
+    and "qa < j1 - j0"
+    and "entry M 0 j0 \<le> entry M 0 (j0 + qa)"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "qa < q" and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + qa))"
+  sorry
+
+lemma ginv_BTWRAPU3:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "d0 = 0"
+    and "qa < j1 - j0"
+    and "entry M 0 j0 \<le> entry M 0 (j0 + qa)"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
+    and "qa < q" and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
+  sorry
+
 lemma btfullok_oper_bad:
   assumes BF: "btfullok M" and BF3: "btfullok3 M"
     and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
@@ -3674,7 +3709,364 @@ lemma btfullok_oper_bad:
     and opeq: "X = take j0 M @ concat (map (\<lambda>k.
            map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
   shows "btfullok X"
-  sorry
+proof -
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have lenM: "length M = Suc j1" using j1d j1nz by (cases M) auto
+  have j1len: "j1 < length M" using lenM by simp
+  define L where "L = j1 - j0"
+  have L0: "0 < L" unfolding L_def using j0j1 by simp
+  have lenX: "length X = j0 + n * L"
+    unfolding L_def by (rule oper_bad_len[OF opeq j0j1 j1len])
+  have npre: "\<And>i. i < j0 \<Longrightarrow> X ! i = M ! i"
+    using oper_bad_nth_pre[OF opeq _ j1len j0j1] by blast
+  have ncopy: "\<And>k q. k < n \<Longrightarrow> q < L \<Longrightarrow>
+        X ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+    unfolding L_def using oper_bad_nth_copy[OF opeq j0j1 j1len] by blast
+  have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+    by (rule block_head_min[OF hp j0d])
+  have pairM: "\<And>j. (entry M 0 j, entry M 1 j) = M ! j"
+    unfolding entry_def by simp
+  have j0Lj1: "j0 + L = j1" unfolding L_def using j0j1 by simp
+  have Xv0: "\<And>i. i < j0 + L \<Longrightarrow> X ! i = M ! i"
+  proof -
+    fix i assume iL: "i < j0 + L"
+    show "X ! i = M ! i"
+    proof (cases "i < j0")
+      case True thus ?thesis by (rule npre)
+    next
+      case False
+      have qL: "i - j0 < L" using iL False by simp
+      have c0: "X ! (j0 + (0 * L + (i - j0)))
+          = (entry M 0 (j0 + (i - j0)) + 0 * d0, entry M 1 (j0 + (i - j0)))"
+        by (rule ncopy) (use n1 qL in simp_all)
+      have ii: "j0 + (i - j0) = i" using False by simp
+      have "X ! i = (entry M 0 i, entry M 1 i)" using c0 ii by simp
+      thus ?thesis using pairM by simp
+    qed
+  qed
+  have idxE: "\<And>i. j0 \<le> i \<Longrightarrow> i < length X \<Longrightarrow>
+       \<exists>k q. k < n \<and> q < L \<and> i = j0 + (k * L + q)
+           \<and> X ! i = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+  proof -
+    fix i assume ji: "j0 \<le> i" and iX: "i < length X"
+    define k where "k = (i - j0) div L"
+    define q where "q = (i - j0) mod L"
+    have kq: "i - j0 = k * L + q" unfolding k_def q_def by simp
+    have qL: "q < L" unfolding q_def using L0 by simp
+    have kn: "k < n"
+    proof -
+      have "i - j0 < n * L" using iX lenX ji by simp
+      thus ?thesis unfolding k_def
+        by (metis less_mult_imp_div_less mult.commute)
+    qed
+    have ii: "i = j0 + (k * L + q)" using kq ji by simp
+    have "X ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+      by (rule ncopy[OF kn qL])
+    thus "\<exists>k q. k < n \<and> q < L \<and> i = j0 + (k * L + q)
+           \<and> X ! i = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+      using kn qL ii by blast
+  qed
+  show ?thesis
+    unfolding btfullok_def
+  proof (intro allI impI)
+    fix a om l
+    assume bl: "om < length X"
+      and dom: "\<forall>k. a < k \<and> k < om \<longrightarrow> fst (X ! a) < fst (X ! k)"
+      and st: "fst (X ! om) \<le> fst (X ! a)"
+      and al: "a < l" and lo: "l < om"
+    have ao: "a < om" using al lo by simp
+    show "snd (X ! l) \<le> Suc (snd (X ! a))"
+    proof (cases "om < j0 + L")
+      case A: True
+      have XM: "\<And>i. i \<le> om \<Longrightarrow> X ! i = M ! i"
+      proof -
+        fix i assume "i \<le> om"
+        hence "i < j0 + L" using A by simp
+        thus "X ! i = M ! i" by (rule Xv0)
+      qed
+      have omM: "om < length M" using A j0Lj1 j1len by simp
+      have dom': "\<forall>k. a < k \<and> k < om \<longrightarrow> fst (M ! a) < fst (M ! k)"
+      proof (intro allI impI)
+        fix k assume kk: "a < k \<and> k < om"
+        have "fst (X ! a) < fst (X ! k)" using dom kk by blast
+        thus "fst (M ! a) < fst (M ! k)" using XM kk ao by simp
+      qed
+      have st': "fst (M ! om) \<le> fst (M ! a)" using st XM ao by simp
+      have "snd (M ! l) \<le> Suc (snd (M ! a))"
+        using BF[unfolded btfullok_def, rule_format, of om a l]
+          omM dom' st' al lo by blast
+      thus ?thesis using XM al lo ao by simp
+    next
+      case B: False
+      hence Bge: "j0 + L \<le> om" by simp
+      show ?thesis
+      proof (cases "a < j0")
+        case apre: True
+        have j0in: "a < j0 \<and> j0 < om" using apre Bge L0 by simp
+        have "fst (X ! a) < fst (X ! j0)" using dom j0in by blast
+        moreover have "X ! j0 = M ! j0" using Xv0 L0 by simp
+        ultimately have aj0lev: "fst (X ! a) < entry M 0 j0"
+          unfolding entry_def by simp
+        have omj0: "j0 \<le> om" using Bge L0 by simp
+        obtain ko qo where ko: "ko < n" "qo < L" "om = j0 + (ko * L + qo)"
+            and Xo: "X ! om = (entry M 0 (j0 + qo) + ko * d0, entry M 1 (j0 + qo))"
+          using idxE[OF omj0 bl] by blast
+        have e0qo: "entry M 0 j0 \<le> entry M 0 (j0 + qo)"
+        proof (cases qo)
+          case 0 thus ?thesis by simp
+        next
+          case (Suc q')
+          have "j0 < j0 + qo \<and> j0 + qo \<le> j1" using Suc ko(2) j0Lj1 by simp
+          thus ?thesis using hm0 by fastforce
+        qed
+        have "entry M 0 j0 \<le> fst (X ! om)" using Xo e0qo by simp
+        thus ?thesis using st aj0lev by simp
+      next
+        case False
+        hence aj0: "j0 \<le> a" by simp
+        obtain ka qa where ka: "ka < n" "qa < L" "a = j0 + (ka * L + qa)"
+            and Xa: "X ! a = (entry M 0 (j0 + qa) + ka * d0, entry M 1 (j0 + qa))"
+          using idxE[OF aj0] bl ao by (meson dual_order.strict_trans)
+        have omj0: "j0 \<le> om" using aj0 ao by simp
+        obtain ko qo where ko: "ko < n" "qo < L" "om = j0 + (ko * L + qo)"
+            and Xo: "X ! om = (entry M 0 (j0 + qo) + ko * d0, entry M 1 (j0 + qo))"
+          using idxE[OF omj0 bl] by blast
+        define h where "h = j0 + ((ka + 1) * L + 0)"
+        have hN: "h = j0 + (L + ka * L)" unfolding h_def by simp
+        have ah: "a < h" unfolding hN using ka(3) ka(2) by simp
+        show ?thesis
+        proof (cases "om < h")
+          case sameC: True
+          have koka: "ko = ka"
+          proof -
+            have le1: "ko * L + qo < L + ka * L" using ko(3) sameC unfolding hN by simp
+            have le2: "ka * L + qa < ko * L + qo" using ka(3) ko(3) ao by simp
+            have "ko \<le> ka"
+            proof (rule ccontr)
+              assume "\<not> ko \<le> ka"
+              hence "Suc ka \<le> ko" by simp
+              hence "Suc ka * L \<le> ko * L" by (rule mult_le_mono1)
+              hence "L + ka * L \<le> ko * L" by simp
+              thus False using le1 by arith
+            qed
+            moreover have "ka \<le> ko"
+            proof (rule ccontr)
+              assume "\<not> ka \<le> ko"
+              hence "Suc ko \<le> ka" by simp
+              hence "Suc ko * L \<le> ka * L" by (rule mult_le_mono1)
+              hence "L + ko * L \<le> ka * L" by simp
+              thus False using le2 ko(2) by arith
+            qed
+            ultimately show ?thesis by simp
+          qed
+          have qaqo: "qa < qo" using ka(3) ko(3) koka ao by arith
+          have lj0: "j0 \<le> l" using aj0 al by simp
+          have lX: "l < length X" using bl lo by simp
+          obtain kl ql where kl: "kl < n" "ql < L" "l = j0 + (kl * L + ql)"
+              and Xl: "X ! l = (entry M 0 (j0 + ql) + kl * d0, entry M 1 (j0 + ql))"
+            using idxE[OF lj0 lX] by blast
+          have klka: "kl = ka"
+          proof -
+            have lo1: "kl * L + ql < ko * L + qo" using kl(3) ko(3) lo by arith
+            have lo2: "ka * L + qa < kl * L + ql" using ka(3) kl(3) al by arith
+            have "kl \<le> ko"
+            proof (rule ccontr)
+              assume "\<not> kl \<le> ko"
+              hence "Suc ko \<le> kl" by simp
+              hence "L + ko * L \<le> kl * L" using mult_le_mono1[of "Suc ko" kl L] by simp
+              thus False using lo1 ko(2) by arith
+            qed
+            moreover have "ka \<le> kl"
+            proof (rule ccontr)
+              assume "\<not> ka \<le> kl"
+              hence "Suc kl \<le> ka" by simp
+              hence "L + kl * L \<le> ka * L" using mult_le_mono1[of "Suc kl" ka L] by simp
+              thus False using lo2 kl(2) by arith
+            qed
+            ultimately show ?thesis using koka by simp
+          qed
+          have qlrange: "qa < ql \<and> ql < qo"
+            using ka(3) kl(3) ko(3) klka koka al lo by arith
+          have omM: "j0 + qo < length M" using ko(2) j0Lj1 j1len by arith
+          have dom': "\<forall>k. j0 + qa < k \<and> k < j0 + qo \<longrightarrow>
+              fst (M ! (j0 + qa)) < fst (M ! k)"
+          proof (intro allI impI)
+            fix k assume kk: "j0 + qa < k \<and> k < j0 + qo"
+            define qq where "qq = k - j0"
+            have ke: "k = j0 + qq" unfolding qq_def using kk by arith
+            have qr: "qa < qq \<and> qq < qo" unfolding qq_def using kk by arith
+            have qqL: "qq < L" using qr ko(2) by arith
+            have idx: "a + (qq - qa) = j0 + (ka * L + qq)" using ka(3) qr by arith
+            have win: "a < a + (qq - qa) \<and> a + (qq - qa) < om"
+              using qr ka(3) ko(3) koka by arith
+            have "fst (X ! a) < fst (X ! (a + (qq - qa)))" using dom win by blast
+            moreover have "X ! (a + (qq - qa))
+                = (entry M 0 (j0 + qq) + ka * d0, entry M 1 (j0 + qq))"
+              unfolding idx by (rule ncopy[OF ka(1) qqL])
+            ultimately have "entry M 0 (j0 + qa) < entry M 0 (j0 + qq)" using Xa by simp
+            thus "fst (M ! (j0 + qa)) < fst (M ! k)" unfolding ke entry_def by simp
+          qed
+          have st': "fst (M ! (j0 + qo)) \<le> fst (M ! (j0 + qa))"
+            using st Xa Xo koka unfolding entry_def by simp
+          have "snd (M ! (j0 + ql)) \<le> Suc (snd (M ! (j0 + qa)))"
+            using BF[unfolded btfullok_def, rule_format, of "j0 + qo" "j0 + qa" "j0 + ql"]
+              omM dom' st' qlrange by simp
+          thus ?thesis using Xa Xl klka unfolding entry_def by simp
+        next
+          case notlt: False
+          show ?thesis
+          proof (cases "om = h")
+            case omh: True
+            have ka1n: "ka + 1 < n"
+            proof -
+              have "h < length X" using omh bl by simp
+              hence "(ka + 1) * L < n * L" unfolding h_def lenX by simp
+              thus ?thesis using L0
+                by (metis gr_implies_not0 less_mult_imp_div_less nonzero_mult_div_cancel_right)
+            qed
+            have Xh: "X ! h = (entry M 0 j0 + (ka + 1) * d0, entry M 1 j0)"
+              unfolding h_def using ncopy[OF ka1n L0] by simp
+            have stp: "entry M 0 j0 + (ka + 1) * d0 \<le> entry M 0 (j0 + qa) + ka * d0"
+              using st Xa Xh omh by simp
+            have dag: "entry M 0 j0 + d0 \<le> entry M 0 (j0 + qa)" using stp by simp
+            have lj0: "j0 \<le> l" using aj0 al by simp
+            have lX: "l < length X" using bl lo by simp
+            obtain kl ql where kl: "kl < n" "ql < L" "l = j0 + (kl * L + ql)"
+                and Xl: "X ! l = (entry M 0 (j0 + ql) + kl * d0, entry M 1 (j0 + ql))"
+              using idxE[OF lj0 lX] by blast
+            have klka: "kl = ka \<and> qa < ql"
+            proof -
+              have lo1: "kl * L + ql < L + ka * L" using kl(3) omh lo unfolding hN by arith
+              have lo2: "ka * L + qa < kl * L + ql" using ka(3) kl(3) al by arith
+              have "kl \<le> ka"
+              proof (rule ccontr)
+                assume "\<not> kl \<le> ka"
+                hence "Suc ka \<le> kl" by simp
+                hence "L + ka * L \<le> kl * L" using mult_le_mono1[of "Suc ka" kl L] by simp
+                thus False using lo1 by arith
+              qed
+              moreover have "ka \<le> kl"
+              proof (rule ccontr)
+                assume "\<not> ka \<le> kl"
+                hence "Suc kl \<le> ka" by simp
+                hence "L + kl * L \<le> ka * L" using mult_le_mono1[of "Suc kl" ka L] by simp
+                thus False using lo2 kl(2) by arith
+              qed
+              ultimately show ?thesis using lo2 by simp
+            qed
+            have domtail: "\<forall>q. qa < q \<and> q < L \<longrightarrow>
+                entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+            proof (intro allI impI)
+              fix q assume qq: "qa < q \<and> q < L"
+              have idx: "a + (q - qa) = j0 + (ka * L + q)" using ka(3) qq by arith
+              have win: "a < a + (q - qa) \<and> a + (q - qa) < om"
+                using qq ka(3) omh unfolding hN by arith
+              have "fst (X ! a) < fst (X ! (a + (q - qa)))" using dom win by blast
+              moreover have "X ! (a + (q - qa))
+                  = (entry M 0 (j0 + q) + ka * d0, entry M 1 (j0 + q))"
+                unfolding idx by (rule ncopy[OF ka(1)]) (use qq in simp)
+              ultimately show "entry M 0 (j0 + qa) < entry M 0 (j0 + q)" using Xa by simp
+            qed
+            show ?thesis
+            proof (cases "d0 = 0")
+              case d00: True
+              have stpu: "entry M 0 j0 \<le> entry M 0 (j0 + qa)" using dag d00 by simp
+              have "entry M 1 (j0 + ql) \<le> Suc (entry M 1 (j0 + qa))"
+                by (rule ginv_BTWRAPU[OF ST j1d j1nz Fz i1d hp j0d d0d d00 _ stpu
+                      domtail[unfolded L_def]])
+                   (use ka(2) klka kl(2) L_def in simp_all)
+              thus ?thesis using Xa Xl klka by simp
+            next
+              case d0pos': False
+              have d0pos: "0 < d0" using d0pos' by simp
+              have i1one: "i1 = 1"
+                using idx1_le[of M j1] d0d d0pos i1d by (cases i1) auto
+              have e0j: "entry M 0 j0 < entry M 0 j1" using hm0 j0j1 by simp
+              have d0ex: "entry M 0 j0 + d0 = entry M 0 j1"
+                unfolding d0d using i1one e0j by simp
+              have omM: "j1 < length M" by (rule j1len)
+              have dom': "\<forall>k. j0 + qa < k \<and> k < j1 \<longrightarrow>
+                  fst (M ! (j0 + qa)) < fst (M ! k)"
+              proof (intro allI impI)
+                fix k assume kk: "j0 + qa < k \<and> k < j1"
+                define qq where "qq = k - j0"
+                have ke: "k = j0 + qq" unfolding qq_def using kk by arith
+                have qr: "qa < qq \<and> qq < L" unfolding qq_def L_def using kk by arith
+                have "entry M 0 (j0 + qa) < entry M 0 (j0 + qq)" using domtail qr by blast
+                thus "fst (M ! (j0 + qa)) < fst (M ! k)" unfolding ke entry_def by simp
+              qed
+              have st': "fst (M ! j1) \<le> fst (M ! (j0 + qa))"
+                using dag d0ex unfolding entry_def by simp
+              have lrange: "j0 + qa < j0 + ql \<and> j0 + ql < j1"
+                using klka kl(2) j0Lj1 by arith
+              have "snd (M ! (j0 + ql)) \<le> Suc (snd (M ! (j0 + qa)))"
+                using BF[unfolded btfullok_def, rule_format, of j1 "j0 + qa" "j0 + ql"]
+                  omM dom' st' lrange by blast
+              thus ?thesis using Xa Xl klka unfolding entry_def by simp
+            qed
+          next
+            case omgt': False
+            have omgt: "h < om" using notlt omgt' by simp
+            have hwin: "a < h \<and> h < om" using ah omgt by simp
+            have ka1n: "ka + 1 < n"
+            proof -
+              have "h < length X" using omgt bl by simp
+              hence "(ka + 1) * L < n * L" unfolding h_def lenX by simp
+              thus ?thesis using L0
+                by (metis gr_implies_not0 less_mult_imp_div_less nonzero_mult_div_cancel_right)
+            qed
+            have Xh: "X ! h = (entry M 0 j0 + (ka + 1) * d0, entry M 1 j0)"
+              unfolding h_def using ncopy[OF ka1n L0] by simp
+            have hdom: "fst (X ! a) < fst (X ! h)" using dom hwin by blast
+            have star: "entry M 0 (j0 + qa) + ka * d0 < entry M 0 j0 + (ka + 1) * d0"
+              using hdom Xa Xh by simp
+            have starn: "entry M 0 (j0 + qa) + ka * d0 < entry M 0 j0 + d0 + ka * d0"
+              using star by (simp add: algebra_simps)
+            have kogt: "ka + 1 \<le> ko"
+            proof -
+              have "L + ka * L \<le> ko * L + qo" using ko(3) omgt unfolding hN by arith
+              show ?thesis
+              proof (rule ccontr)
+                assume "\<not> ka + 1 \<le> ko"
+                hence "ko \<le> ka" by simp
+                hence "ko * L + qo < L + ka * L"
+                  using ko(2) mult_le_mono1[of ko ka L] by arith
+                thus False using \<open>L + ka * L \<le> ko * L + qo\<close> by arith
+              qed
+            qed
+            have False
+            proof (cases qo)
+              case 0
+              have "ka + 2 \<le> ko"
+              proof (rule ccontr)
+                assume "\<not> ka + 2 \<le> ko"
+                hence "ko = ka + 1" using kogt by simp
+                hence "om = h" using ko(3) 0 unfolding hN by simp
+                thus False using omgt by simp
+              qed
+              hence "(ka + 2) * d0 \<le> ko * d0" by (rule mult_le_mono1)
+              hence m2n: "d0 + d0 + ka * d0 \<le> ko * d0" by (simp add: algebra_simps)
+              have "entry M 0 j0 + ko * d0 \<le> entry M 0 (j0 + qa) + ka * d0"
+                using st Xa Xo 0 by simp
+              thus False using m2n starn by arith
+            next
+              case (Suc q')
+              have "j0 < j0 + qo \<and> j0 + qo \<le> j1" using Suc ko(2) j0Lj1 by arith
+              hence e0qo: "entry M 0 j0 < entry M 0 (j0 + qo)" using hm0 by blast
+              have "(ka + 1) * d0 \<le> ko * d0" using kogt by (rule mult_le_mono1)
+              hence m1n: "d0 + ka * d0 \<le> ko * d0" by (simp add: algebra_simps)
+              have "entry M 0 (j0 + qo) + ko * d0 \<le> entry M 0 (j0 + qa) + ka * d0"
+                using st Xa Xo by simp
+              thus False using m1n starn e0qo by arith
+            qed
+            thus ?thesis ..
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
 
 lemma btfullok3_oper_bad:
   assumes BF: "btfullok M" and BF3: "btfullok3 M"
