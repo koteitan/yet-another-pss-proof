@@ -2664,3 +2664,13 @@ X = oper-bad のタイ対 (a,b) 分類（T1 違反 0 / 全 23396 対）:
 
 - (続43補) 凍結全量の閉包+2監査 ✓: t1ok 146108 / t3ok 34347 / BT1 18945 /
   BT1_T3 5251 / GBLK0 3580 — 全0違反。世代側凍結コアの土台は +2 で健全。
+
+- (続43補2) t14ok_oper_bad シーム地図（hi 限定・全15クラス hm ✓）:
+  a∈P: b∈{P, C0(=j0頭)} 強制。inM（ラン ⊆ 位置 < j0+L）は Xv0 同値転送
+  （closed は完全転送 / open は n=1 で X-run = take(M-run)、t14ok M + hm_take）。
+  **past クラス（(P,P,past,open) 87・(P,C0,past,open) 20）が新規内容**
+  （prefix 頭がブロック snd 群を支配する GBLK0 族）。
+  a∈Ck: 同コピー stop（shift 転送+末尾）/ 次コピー頭 stop（コピー尾ラン
+  = BT-hm 族だが hi 付きで真の形）。実装は t1ok 級の本格戦 — 地図のみ
+  確定し凍結維持。次の優先 = **BT1 本体の世代解析**（oper 結果の
+  bad-params (j0',j1') と親 M の関係から block 内事実を帰納）。
