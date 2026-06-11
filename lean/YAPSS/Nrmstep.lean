@@ -4316,4 +4316,111 @@ theorem parent0_exists {M : PairSeq} (hb : blockok 0 M) {j : ℕ}
     push Not at hnl
     exact hnl
 
+
+/-! ## Parent existence: the no-parent branch is empty on the class -/
+
+theorem chain_to_zero {M : PairSeq} (hb : blockok 0 M) :
+    ∀ lev j, entry M 0 j = lev → j < M.length →
+      ∃ r, r ≤ j ∧ entry M 0 r = 0
+        ∧ Relation.ReflTransGen (nextrel0 M) r j := by
+  intro lev
+  induction lev using Nat.strong_induction_on with
+  | _ lev IH =>
+    intro j he hj
+    by_cases h0 : entry M 0 j = 0
+    · exact ⟨j, le_rfl, h0, Relation.ReflTransGen.refl⟩
+    · obtain ⟨k, hk⟩ := parent0_exists hb hj (by omega)
+      have hklt : entry M 0 k < entry M 0 j := hk.2.2.2.1
+      have hkj : k < j := hk.2.2.1
+      obtain ⟨r, hr1, hr2, hr3⟩ :=
+        IH (entry M 0 k) (by omega) k rfl hk.1
+      exact ⟨r, by omega, hr2, hr3.tail hk⟩
+
+theorem parent1_exists {M : PairSeq} (hb : blockok 0 M) (hz : z0ok M)
+    {j : ℕ} (hj : j < M.length) (h1 : 0 < entry M 1 j) :
+    ∃ k, nextrel1 M k j := by
+  classical
+  obtain ⟨r, hrle, hr0, hchain⟩ := chain_to_zero hb (entry M 0 j) j rfl hj
+  have hre1 : entry M 1 r = 0 := by
+    have hz' := hz r (by omega)
+    unfold entry at hr0 ⊢
+    rw [if_pos rfl] at hr0
+    rw [if_neg one_ne_zero]
+    exact hz' hr0
+  have hrj : r < j := by
+    rcases Nat.eq_or_lt_of_le hrle with rfl | h
+    · omega
+    · exact h
+  set P : ℕ → Prop := fun k => le0 M k j ∧ entry M 1 k < entry M 1 j with hP
+  have hPr : P r := by
+    refine ⟨⟨by omega, hj, hchain⟩, ?_⟩
+    rw [hre1]
+    exact h1
+  have hspec := Nat.findGreatest_spec (P := P) (show r ≤ j - 1 by omega) hPr
+  have hle := Nat.findGreatest_le (P := P) (j - 1)
+  refine ⟨Nat.findGreatest P (j - 1), ?_, hj, by omega, hspec.2, hspec.1, ?_⟩
+  · omega
+  · intro j' hj'
+    rcases Nat.eq_or_lt_of_le (le0_le hj'.2) with rfl | hlt
+    · exact le_rfl
+    · by_contra hcon
+      push Not at hcon
+      exact Nat.findGreatest_is_greatest (P := P) hj'.1 (by omega)
+        ⟨hj'.2, hcon⟩
+
+theorem nextR_one_iff {M : PairSeq} {k j : ℕ} :
+    nextR M 1 k j ↔ nextrel1 M k j := by
+  unfold nextR
+  rw [if_neg one_ne_zero]
+
+theorem nextR_zero_iff {M : PairSeq} {k j : ℕ} :
+    nextR M 0 k j ↔ nextrel0 M k j := by
+  unfold nextR
+  rw [if_pos rfl]
+
+/-- **Every nonzero final column of a standard-shaped host has a unique
+parent** — the no-parent `Pred` branch is empty on the class. -/
+theorem hp_last {M : PairSeq} (hb : blockok 0 M) (hz : z0ok M)
+    (hlen : 0 < M.length)
+    (hzz : ¬ M.getD (M.length - 1) (0,0) = (0,0)) :
+    hasParent M (idx1 M (M.length - 1)) (M.length - 1) := by
+  classical
+  by_cases h1 : 0 < entry M 1 (M.length - 1)
+  · have hi : idx1 M (M.length - 1) = 1 := by
+      unfold idx1
+      rw [if_pos h1]
+    obtain ⟨k, hk⟩ := parent1_exists hb hz (by omega) h1
+    refine ⟨k, ?_, ?_⟩
+    · show nextR M (idx1 M (M.length - 1)) k (M.length - 1)
+      rw [hi, nextR_one_iff]
+      exact hk
+    · intro y hy
+      have hy' : nextR M (idx1 M (M.length - 1)) y (M.length - 1) := hy
+      rw [hi, nextR_one_iff] at hy'
+      exact nextrel1_unique hy' hk
+  · have h1' : entry M 1 (M.length - 1) = 0 := by omega
+    have h0 : 0 < entry M 0 (M.length - 1) := by
+      by_contra hc
+      push Not at hc
+      apply hzz
+      unfold entry at h1'
+      rw [if_neg one_ne_zero] at h1'
+      have h0' : (M.getD (M.length - 1) (0,0)).1 = 0 := by
+        unfold entry at hc
+        rw [if_pos rfl] at hc
+        omega
+      exact Prod.ext h0' h1'
+    have hi : idx1 M (M.length - 1) = 0 := by
+      unfold idx1
+      rw [if_neg (by omega)]
+    obtain ⟨k, hk⟩ := parent0_exists hb (by omega) h0
+    refine ⟨k, ?_, ?_⟩
+    · show nextR M (idx1 M (M.length - 1)) k (M.length - 1)
+      rw [hi, nextR_zero_iff]
+      exact hk
+    · intro y hy
+      have hy' : nextR M (idx1 M (M.length - 1)) y (M.length - 1) := hy
+      rw [hi, nextR_zero_iff] at hy'
+      exact nextrel0_unique hy' hk
+
 end YAPSS
