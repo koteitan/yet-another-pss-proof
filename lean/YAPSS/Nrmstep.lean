@@ -2017,40 +2017,34 @@ theorem dropWhile_cons_head_not {α : Type*} {p : α → Bool} {l : List α}
   rw [h2] at h1
   exact h1
 
-/-- **Sum-adjacent row-1 non-increase** (the F1 fact): inside any host with
-CNF translate, the head of the sum-adjacent tail of a column `c` (at level at
-least `c`'s) has row-1 value at most `c`'s.  Extracted from the CNF adjacency
-clause by walking the translate recursion down to `c`'s node. -/
-theorem cnf_adjacent_snd_le : ∀ {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : PairSeq},
+/-- **The full CNF adjacency clause at an arbitrary column**: a column and
+the head of its sum-adjacent tail (at level at least the column's) compare
+as non-increasing principal terms — subscripts first, then the raw translate
+arguments at a tie. -/
+theorem cnf_adjacent_full : ∀ {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : PairSeq},
     cnf (translate W) → (c :: Zs) <:+ W →
     (Zs.dropWhile fun r => c.1 < r.1) = t0 :: T' →
-    c.1 ≤ t0.1 → t0.2 ≤ c.2
+    c.1 ≤ t0.1 →
+    ¬ (P c.2 (translate (Zs.takeWhile fun r => c.1 < r.1)) Z
+        <o P t0.2 (translate (T'.takeWhile fun r => t0.1 < r.1)) Z)
   | [], c, t0, Zs, T', _, hsuf, _, _ => by
     have := hsuf.length_le
     simp at this
   | w :: W', c, t0, Zs, T', hcnf, hsuf, hT0, hge => by
     rcases List.suffix_cons_iff.1 hsuf with heq | hsuf'
-    · -- head case: read the CNF adjacency clause at `c`'s node
-      injection heq with h1 h2
+    · injection heq with h1 h2
       subst h1
       subst h2
       rw [translate_cons, hT0, translate_cons] at hcnf
-      have hadj := (cnf_P_P.1 hcnf).2.1
-      rw [olt_P_P] at hadj
-      push Not at hadj
-      omega
+      exact (cnf_P_P.1 hcnf).2.1
     · rw [translate_cons] at hcnf
       have hsplit := List.suffix_or_suffix_of_suffix hsuf'
         (List.dropWhile_suffix (l := W') (fun r => decide (w.1 < r.1)))
       rcases hsplit with hin | hout
-      · -- `c` lives in the tail forest: recurse there
-        exact cnf_adjacent_snd_le (cnf_P_tail hcnf) hin hT0 hge
+      · exact cnf_adjacent_full (cnf_P_tail hcnf) hin hT0 hge
       · rcases List.suffix_cons_iff.1 hout with hTeq | hTZ
-        · -- the tail forest is exactly `c :: Zs`
-          exact cnf_adjacent_snd_le (cnf_P_tail hcnf)
-            (by rw [hTeq]) hT0 hge
-        · -- `c` lives in the argument run `K0`, `Zs ⊇ T0`
-          obtain ⟨Zk, hZk⟩ := hTZ
+        · exact cnf_adjacent_full (cnf_P_tail hcnf) (by rw [hTeq]) hT0 hge
+        · obtain ⟨Zk, hZk⟩ := hTZ
           have hcZk : (c :: Zk) <:+ (W'.takeWhile fun r => w.1 < r.1) := by
             obtain ⟨s, hs⟩ := hsuf'
             refine ⟨s, ?_⟩
@@ -2067,7 +2061,6 @@ theorem cnf_adjacent_snd_le : ∀ {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : Pai
             simpa using this
           cases hZkd : Zk.dropWhile fun r => c.1 < r.1 with
           | nil =>
-            -- the drop crosses the boundary: the tail head is too low
             exfalso
             have hdw : Zs.dropWhile (fun r => c.1 < r.1)
                 = (W'.dropWhile fun r => w.1 < r.1).dropWhile
@@ -2090,7 +2083,6 @@ theorem cnf_adjacent_snd_le : ∀ {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : Pai
               subst h1
               omega
           | cons d D =>
-            -- the drop stays inside `Zk`: recurse into the argument run
             have hdmem : d ∈ Zk :=
               (List.dropWhile_sublist _).subset (hZkd ▸ List.mem_cons_self ..)
             have hdfail : ¬ c.1 < d.1 := by
@@ -2105,11 +2097,57 @@ theorem cnf_adjacent_snd_le : ∀ {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : Pai
             rw [hdw] at hT0
             injection hT0 with h1 h2
             subst h1
-            exact cnf_adjacent_snd_le (cnf_P_arg hcnf) hcZk hZkd hge
+            -- run equalities: the conclusion's runs match the recursive ones
+            have hKeq : Zs.takeWhile (fun r => c.1 < r.1)
+                = Zk.takeWhile (fun r => c.1 < r.1) := by
+              conv_lhs => rw [← hZk]
+              exact takeWhile_append_not hdmem (by simpa using hdfail)
+            have hT'eq : T'.takeWhile (fun r => d.1 < r.1)
+                = D.takeWhile (fun r => d.1 < r.1) := by
+              rw [← h2]
+              have hd_gt : w.1 < d.1 := by
+                have hdK0 : d ∈ (W'.takeWhile fun r => w.1 < r.1) :=
+                  hcZk.subset (List.mem_cons_of_mem _ hdmem)
+                have := List.mem_takeWhile_imp hdK0
+                simpa using this
+              cases hDd : D.dropWhile fun r => d.1 < r.1 with
+              | nil =>
+                rw [takeWhile_append_all (List.dropWhile_eq_nil_iff.1 hDd),
+                    List.takeWhile_eq_self_iff.2 (List.dropWhile_eq_nil_iff.1 hDd)]
+                cases hTc : (W'.dropWhile fun r => w.1 < r.1) with
+                | nil =>
+                  simp
+                | cons h0 T0' =>
+                  have hh0 : ¬ w.1 < h0.1 := by
+                    have := dropWhile_cons_head_not hTc
+                    simpa using this
+                  rw [List.takeWhile_cons,
+                      if_neg (by simpa using (show ¬ d.1 < h0.1 by omega))]
+                  simp
+              | cons e E =>
+                have hemem : e ∈ D :=
+                  (List.dropWhile_sublist _).subset (hDd ▸ List.mem_cons_self ..)
+                have hefail : ¬ d.1 < e.1 := by
+                  have := dropWhile_cons_head_not hDd
+                  simpa using this
+                exact takeWhile_append_not hemem (by simpa using hefail)
+            rw [hKeq, hT'eq]
+            exact cnf_adjacent_full (cnf_P_arg hcnf) hcZk hZkd hge
   termination_by W _ _ _ _ _ _ _ _ => W.length
   decreasing_by
   · exact Nat.lt_succ_of_le (List.length_dropWhile_le _ W')
   · exact Nat.lt_succ_of_le (List.length_dropWhile_le _ W')
   · exact Nat.lt_succ_of_le (List.takeWhile_sublist _).length_le
+
+/-- Sum-adjacent row-1 non-increase (the subscript half of
+`cnf_adjacent_full`). -/
+theorem cnf_adjacent_snd_le {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : PairSeq}
+    (hcnf : cnf (translate W)) (hsuf : (c :: Zs) <:+ W)
+    (hT0 : (Zs.dropWhile fun r => c.1 < r.1) = t0 :: T')
+    (hge : c.1 ≤ t0.1) : t0.2 ≤ c.2 := by
+  have h := cnf_adjacent_full hcnf hsuf hT0 hge
+  rw [olt_P_P] at h
+  push Not at h
+  omega
 
 end YAPSS
