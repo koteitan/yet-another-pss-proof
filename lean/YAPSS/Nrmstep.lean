@@ -2373,4 +2373,21 @@ theorem translate_prefix_olt {D : PairSeq} (hD : D ≠ []) :
       rw [List.append_assoc] at h2
       exact olt_trans h1 (by simpa using h2)
 
+/-- Runs commute with the row-0 shift. -/
+theorem runAt_shiftr0 (d : ℕ) (B : PairSeq) {q : ℕ} (hq : q < B.length) :
+    runAt (shiftr0 d B) q = shiftr0 d (runAt B q) := by
+  unfold runAt shiftr0
+  have hget : ((B.map fun p => (p.1 + d, p.2)).getD q (0,0))
+      = ((B.getD q (0,0)).1 + d, (B.getD q (0,0)).2) := by
+    rw [List.getD_eq_getElem?_getD, List.getElem?_map,
+        List.getElem?_eq_getElem hq, List.getD_eq_getElem?_getD,
+        List.getElem?_eq_getElem hq]
+    rfl
+  rw [hget, ← List.map_drop, List.takeWhile_map]
+  congr 1
+  congr 1
+  funext r
+  simp only [Function.comp]
+  exact decide_eq_decide.2 (by omega)
+
 end YAPSS
