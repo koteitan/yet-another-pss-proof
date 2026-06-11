@@ -3473,7 +3473,7 @@ theorem hmok_copyExp {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ}
 /-- **HM⁺ is preserved by the expansion step**, given the all-column block
 discipline of the host. -/
 theorem hmok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hM : hmok M)
-    (htA : tailokA M) : hmok (M⟦n⟧) := by
+    (htl : tailok M) : hmok (M⟦n⟧) := by
   by_cases hL0 : M.length - 1 = 0
   · rw [oper_eq_self_of_short n hL0]
     exact hM
@@ -3495,7 +3495,7 @@ theorem hmok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hM : hmok M)
     have hj1 : M.length - 1 = G.length + ((v0,w0) :: R).length := by omega
     refine hmok_copyExp hn hdom (hMeq ▸ hM) ?_
     rintro ⟨q, hq, hroot, hw0⟩
-    have happ := htA (M.length - 1) G.length (by omega) (by omega) hnxt ?_
+    have happ := htl G.length (by omega) hnxt ?_
     · have htake : M.take (M.length - 1) = G ++ ((v0,w0) :: R) := by
         rw [hj1, hMeq,
             show G.length + ((v0,w0) :: R).length
@@ -4587,5 +4587,138 @@ theorem z0ok_ST_PS {M : PairSeq} (hM : ST_PS M) : z0ok M := by
   induction hM with
   | diag v => exact z0ok_diagSeq v
   | oper hN hn ih => exact z0ok_oper hn ih
+
+
+/-! ## The conditional generation closure of the invariant package -/
+
+/-- The seam obligation: final-column instances of the expansion whose
+parent lies before the last copy (mined exact on the class). -/
+def seamOK (M : PairSeq) (n : ℕ) : Prop :=
+  ∀ j0X, j0X + 1 < (M⟦n⟧).length →
+    nextR (M⟦n⟧) (idx1 (M⟦n⟧) ((M⟦n⟧).length - 1)) j0X ((M⟦n⟧).length - 1) →
+    (idx1 (M⟦n⟧) ((M⟦n⟧).length - 1) = 1 →
+      ∃ b, j0X < b ∧ b + 1 < (M⟦n⟧).length ∧
+        ((M⟦n⟧).getD ((M⟦n⟧).length - 1) (0,0)).1
+          ≤ ((M⟦n⟧).getD b (0,0)).1 ∧
+        ((M⟦n⟧).getD j0X (0,0)).2 ≤ ((M⟦n⟧).getD b (0,0)).2) →
+    hhm (((M⟦n⟧).take ((M⟦n⟧).length - 1)).drop (j0X + 1))
+
+/-- The within-trigger obligation: a consumed final-column instance whose
+parent lies in the last copy yields the host trigger when the host parent
+row is 1 (mined exact: direct transfer in the 0-configs, vacuity in the
+−1-configs via `interior_low`, and the iX = 0 coincidence). -/
+def withinTrigOK (M : PairSeq) (n : ℕ) : Prop :=
+  ∀ G v0 w0 (R : PairSeq) (lp : ℕ × ℕ) d0,
+    M = G ++ ((v0,w0) :: R) ++ [lp] →
+    M⟦n⟧ = copyExp G ((v0,w0) :: R) d0 n →
+    ∀ j0X, G.length + (n - 1) * ((v0,w0) :: R).length ≤ j0X →
+      j0X + 1 < (M⟦n⟧).length →
+      nextR (M⟦n⟧) (idx1 (M⟦n⟧) ((M⟦n⟧).length - 1)) j0X ((M⟦n⟧).length - 1) →
+      (idx1 (M⟦n⟧) ((M⟦n⟧).length - 1) = 1 →
+        ∃ b, j0X < b ∧ b + 1 < (M⟦n⟧).length ∧
+          ((M⟦n⟧).getD ((M⟦n⟧).length - 1) (0,0)).1
+            ≤ ((M⟦n⟧).getD b (0,0)).1 ∧
+          ((M⟦n⟧).getD j0X (0,0)).2 ≤ ((M⟦n⟧).getD b (0,0)).2) →
+      idx1 M (M.length - 1) = 1 →
+      ∃ b, G.length < b ∧ b + 1 < M.length ∧
+        (M.getD (M.length - 1) (0,0)).1 ≤ (M.getD b (0,0)).1 ∧
+        (M.getD G.length (0,0)).2 ≤ (M.getD b (0,0)).2
+
+/-- **The expansion step preserves the final-block discipline**, modulo the
+seam and within-trigger obligations. -/
+theorem tailok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
+    (hMok : hmok M) (htl : tailok M) (hbk : blockok 0 M) (hz0 : z0ok M)
+    (hseam : seamOK M n) (htr : withinTrigOK M n) : tailok (M⟦n⟧) := by
+  by_cases hL0 : M.length - 1 = 0
+  · rw [oper_eq_self_of_short n hL0] at *
+    exact htl
+  by_cases hz : entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0
+  · rw [oper_eq_pred_of_zero n hL0 hz] at *
+    unfold Pred at *
+    by_cases hl : M.length ≤ 1
+    · rw [if_pos hl] at *
+      exact htl
+    · rw [if_neg hl] at *
+      refine tailok_Pred_zero hMok ?_ (by omega)
+      obtain ⟨h0, h1⟩ := hz
+      unfold entry at h0 h1
+      rw [if_pos rfl] at h0
+      rw [if_neg one_ne_zero] at h1
+      exact Prod.ext h0 h1
+  by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
+  case neg =>
+    exfalso
+    exact hp (hp_last hbk hz0 (by omega) (by
+      intro he
+      apply hz
+      constructor
+      · unfold entry
+        rw [if_pos rfl, he]
+      · unfold entry
+        rw [if_neg one_ne_zero, he]))
+  case pos =>
+    obtain ⟨G, v0, w0, R, d0, lp, hMeq, hX, hdom, -, hd0, hnxtM⟩ :=
+      oper_bad_blocks (by omega) hz hp hn
+    have hMlen : M.length = G.length + ((v0,w0) :: R).length + 1 := by
+      rw [hMeq]
+      exact hostM_length ..
+    have hL : 0 < ((v0,w0) :: R).length := by simp
+    have hXc : M⟦n⟧ = copyExp G ((v0,w0) :: R) d0 n := hX
+    intro j0X hj0 hnx htrigX
+    by_cases hge : G.length + (n - 1) * ((v0,w0) :: R).length ≤ j0X
+    · -- within the last copy
+      have hhmR : hhm R := by
+        have htake : M.take (M.length - 1) = G ++ ((v0,w0) :: R) := by
+          rw [show M.length - 1 = G.length + ((v0,w0) :: R).length by omega,
+              hMeq,
+              show G.length + ((v0,w0) :: R).length
+                = (G ++ ((v0,w0) :: R)).length by simp,
+              List.take_left]
+        have hdrop : (G ++ ((v0,w0) :: R)).drop (G.length + 1) = R := by
+          rw [List.drop_append, List.drop_eq_nil_of_le (by omega),
+              List.nil_append, show G.length + 1 - G.length = 1 by omega,
+              List.drop_succ_cons, List.drop_zero]
+        rcases hd0 with ⟨-, hi0⟩ | ⟨hd0p, hwlt, hlpe, -⟩
+        · have happ := htl G.length (by omega) hnxtM (by
+            intro h1
+            rw [hi0] at h1
+            exact absurd h1 (by omega))
+          rw [htake, hdrop] at happ
+          exact happ
+        · have hi1 : idx1 M (M.length - 1) = 1 := by
+            unfold idx1
+            rw [if_pos]
+            unfold entry
+            rw [if_neg one_ne_zero,
+                show M.length - 1
+                  = G.length + ((v0,w0) :: R).length by omega, hMeq,
+                hostM_getD_lp]
+            omega
+          have hMtrig := htr G v0 w0 R lp d0 hMeq hXc j0X hge hj0 hnx
+            htrigX hi1
+          have happ := htl G.length (by omega) hnxtM (by
+            intro _
+            exact hMtrig)
+          rw [htake, hdrop] at happ
+          exact happ
+      have hres := tlast_copyExp_within (d0 := d0) (n := n) hdom hn hhmR
+        (by omega) (by rw [← hXc]; exact hnx)
+      rw [← hXc] at hres
+      exact hres
+    · exact hseam j0X hj0 hnx htrigX
+
+/-- **The invariant package on standard hosts**, modulo the seam and
+within-trigger obligations. -/
+theorem hmok_tailok_ST_PS {M : PairSeq} (hM : ST_PS M)
+    (hseam : ∀ N k, ST_PS N → 1 ≤ k → seamOK N k)
+    (htr : ∀ N k, ST_PS N → 1 ≤ k → withinTrigOK N k) :
+    hmok M ∧ tailok M := by
+  induction hM with
+  | diag v => exact ⟨hmok_diagSeq v, tailok_diagSeq v⟩
+  | @oper N k hN hk ih =>
+    obtain ⟨h1, h2⟩ := ih
+    exact ⟨hmok_oper hk h1 h2,
+      tailok_oper hk h1 h2 (blockok_ST_PS hN) (z0ok_ST_PS hN)
+        (hseam N k hN hk) (htr N k hN hk)⟩
 
 end YAPSS
