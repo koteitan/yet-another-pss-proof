@@ -1365,4 +1365,85 @@ theorem r1ok_ST_PS {M : PairSeq} (hM : ST_PS M) : r1ok M := by
   | diag v => exact r1ok_diagSeq v
   | oper hN hn ih => exact r1ok_oper hn ih (blockok_ST_PS hN).2.2
 
+
+/-! ## The innermost dominated run and the `ST_snocok` interface -/
+
+/-- The innermost dominated run of a segment: follow the `snocok` descent
+(drop the dominated prefix run repeatedly) to the final stage `(p, rest)`
+with `rest` entirely dominated by `p`. -/
+def innermost : PairSeq → (ℕ × ℕ) × PairSeq
+  | [] => ((0, 0), [])
+  | p :: rest =>
+    if (rest.dropWhile fun r => p.1 < r.1) = [] then (p, rest)
+    else innermost (rest.dropWhile fun r => p.1 < r.1)
+  termination_by C => C.length
+  decreasing_by
+    exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
+
+theorem innermost_cons (p : ℕ × ℕ) (rest : PairSeq) :
+    innermost (p :: rest) =
+      if (rest.dropWhile fun r => p.1 < r.1) = [] then (p, rest)
+      else innermost (rest.dropWhile fun r => p.1 < r.1) := by
+  rw [innermost]
+
+/-- `snocok` says exactly: the argument-extension condition holds at the
+innermost dominated run. -/
+theorem snocok_iff_innermost : ∀ {C : PairSeq} (q : ℕ × ℕ), C ≠ [] →
+    (snocok C q ↔
+      ((innermost C).1.1 < q.1 →
+        proj (innermost C).1.2 (nrm (translate (innermost C).2))
+          <o proj (innermost C).1.2 (nrm (translate ((innermost C).2 ++ [q])))))
+  | [], _, hne => absurd rfl hne
+  | p :: rest, q, _ => by
+    rw [snocok_cons, innermost_cons]
+    by_cases hT : (rest.dropWhile fun r => p.1 < r.1) = []
+    · rw [if_pos hT, if_pos hT]
+    · rw [if_neg hT, if_neg hT]
+      exact snocok_iff_innermost q hT
+  termination_by C _ _ => C.length
+  decreasing_by
+    exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
+
+theorem innermost_suffix : ∀ {C : PairSeq}, C ≠ [] →
+    ((innermost C).1 :: (innermost C).2) <:+ C
+  | [], hne => absurd rfl hne
+  | p :: rest, _ => by
+    rw [innermost_cons]
+    by_cases hT : (rest.dropWhile fun r => p.1 < r.1) = []
+    · rw [if_pos hT]
+    · rw [if_neg hT]
+      exact (innermost_suffix hT).trans
+        ((List.dropWhile_suffix _).trans (List.suffix_cons p rest))
+  termination_by C _ => C.length
+  decreasing_by
+    exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
+
+theorem innermost_dom : ∀ {C : PairSeq}, C ≠ [] →
+    ∀ r ∈ (innermost C).2, (innermost C).1.1 < r.1
+  | [], hne => absurd rfl hne
+  | p :: rest, _ => by
+    rw [innermost_cons]
+    by_cases hT : (rest.dropWhile fun r => p.1 < r.1) = []
+    · rw [if_pos hT]
+      intro r hr
+      have := List.dropWhile_eq_nil_iff.1 hT r hr
+      simpa using this
+    · rw [if_neg hT]
+      exact innermost_dom hT
+  termination_by C _ => C.length
+  decreasing_by
+    exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
+
+/-- **The `ST_snocok` interface**: `snocok C q` follows once the
+argument-extension condition holds at every dominated suffix run of `C`.
+This is the precise remaining obligation (`ST_snoc_C`) of the Pred-case
+campaign: prove it for standard hosts `C ++ [q] ∈ ST_PS`. -/
+theorem snocok_of_C {C : PairSeq} {q : ℕ × ℕ} (hne : C ≠ [])
+    (hC : ∀ p rest, (p :: rest) <:+ C → (∀ r ∈ rest, p.1 < r.1) →
+      p.1 < q.1 →
+      proj p.2 (nrm (translate rest)) <o proj p.2 (nrm (translate (rest ++ [q])))) :
+    snocok C q := by
+  rw [snocok_iff_innermost q hne]
+  exact hC _ _ (innermost_suffix hne) (innermost_dom hne)
+
 end YAPSS
