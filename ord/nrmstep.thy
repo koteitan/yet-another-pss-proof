@@ -3555,6 +3555,26 @@ lemma t14ok_oper_bad:
   shows "t14ok X"
   sorry
 
+text \<open>(BT1) The block-tail row-1 bound at a copy-boundary tie: with the tie,
+  stop and dominance conditions of a cross-copy tie pair, the dominated block
+  tail is bounded one above the anchor (closure+1: 6370 instances, zero
+  violations; the head-tie variant drops the successor).\<close>
+
+lemma ginv_BT1:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "qa < j1 - j0"
+    and "entry M 1 (j0 + qa) = entry M 1 j0"
+    and "entry M 0 j0 + d0 \<le> entry M 0 (j0 + qa)"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "qa < q" and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + qa))"
+  sorry
+
 lemma t1ok_oper_bad:
   assumes T: "t1ok M" and T3: "t3ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"
     and n1: "1 \<le> n"

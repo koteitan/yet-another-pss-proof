@@ -2613,3 +2613,11 @@ X = oper-bad のタイ対 (a,b) 分類（T1 違反 0 / 全 23396 対）:
   M 転送は (j0+qa, j1) 対が d0>0 でタイにならないため BT1 は真に新規
   （凍結対象）。次: BT1/BT1-T3 を凍結して t1ok/t3ok_oper_bad を実装、
   t14ok_oper_bad は6違反例の精査後に設計。
+
+- (続41補2) ginv_BT1 凍結（緑）。t1ok_oper_bad 実装メモ（次ティック用）:
+  停止事実 fst(X!b) ≤ fst(X!a) は **nth_length_takeWhile**
+  （|takeWhile| < |xs| ⟹ ¬P (xs ! |takeWhile|)）で導出（mrun_def 展開、
+  drop の nth で X!b へ）。ケース: a<j0（b≤j0 強制: j0∈run と hm0/シフトで
+  停止矛盾 → Xv0 恒等転送＋mrMa crib → t1ok M）/ a≥j0 同コピー
+  （qa≥1 強制（qa=0 だと停止が hm0 矛盾）→ shift 転送 → t1ok M）/
+  跨ぎ（b = j0+(ka+1)L 強制 → BT1）。
