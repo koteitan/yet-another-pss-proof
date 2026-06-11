@@ -2457,4 +2457,23 @@ theorem msfx_eq_self_of_headmax {s0 : ℕ × ℕ} {S' : PairSeq}
   simp only [decide_eq_true_eq]
   omega
 
+
+/-! ## The NT_tie combinator -/
+
+/-- **`NT_tie` combinator**: given the run dichotomy (proved:
+`tie_sibling_seqlex`), the master order-preservation at shorter pairs, and
+no-fire on both runs (the head-maximality class fact), the earlier sibling's
+projection is never below the later's. -/
+theorem NT_tie_of {u : ℕ} {K K1 : PairSeq}
+    (hdich : K1 = K ∨ seqlex K1 K)
+    (hmaster : seqlex K1 K → nrm (translate K1) <o nrm (translate K))
+    (hnf : ¬ pfire u (nrm (translate K)))
+    (hnf1 : ¬ pfire u (nrm (translate K1))) :
+    ¬ (proj u (nrm (translate K)) <o proj u (nrm (translate K1))) := by
+  rw [proj_nofire hnf, proj_nofire hnf1]
+  rcases hdich with rfl | hsl
+  · exact olt_irrefl _
+  · intro hlt
+    exact olt_irrefl _ (olt_trans (hmaster hsl) hlt)
+
 end YAPSS
