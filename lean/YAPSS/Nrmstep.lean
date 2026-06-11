@@ -4918,4 +4918,30 @@ theorem sclimb_shift {S : PairSeq} {d : ℕ} (h : sclimb S) :
   rw [hgd (by omega), hgd (by omega)]
   omega
 
+/-- Slices of the diagonal ascend, so the single-climb is immediate. -/
+theorem classOK_diagSeq (v : ℕ) : classOK (diagSeq 0 v) := by
+  intro S pre pp mid post heq _hdom _hbd
+  have hlen := congrArg List.length heq
+  rw [diagSeq0_length] at hlen
+  simp at hlen
+  have hgd : ∀ i, i < S.length →
+      S.getD i (0,0) = (pre.length + (1 + (mid.length + i)),
+                        pre.length + (1 + (mid.length + i))) := by
+    intro i hi
+    have h1 : S.getD i (0,0)
+        = (diagSeq 0 v).getD (pre.length + (1 + (mid.length + i))) (0,0) := by
+      rw [heq, getD_middle (by simp; omega),
+          show 1 + (mid.length + i) = (mid.length + i) + 1 by omega,
+          List.getD_cons_succ, getD_append_right (Nat.le_add_right _ _),
+          Nat.add_sub_cancel_left]
+    rw [h1, diagSeq0_getD (by omega)]
+  intro j0 r' r hj0 _hnx _hi1 hr'1 hr'2 hlev _hafter hr1 hr2
+  rw [hgd r' (by omega), hgd (S.length - 1) (by omega)] at hlev
+  rw [hgd r (by omega), hgd (S.length - 1) (by omega)]
+  have h2 : pre.length + (1 + (mid.length + r')) + 1
+      = pre.length + (1 + (mid.length + (S.length - 1))) := hlev
+  show pre.length + (1 + (mid.length + r)) + 1
+      < pre.length + (1 + (mid.length + (S.length - 1)))
+  omega
+
 end YAPSS
