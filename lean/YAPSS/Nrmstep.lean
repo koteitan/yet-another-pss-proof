@@ -1900,4 +1900,75 @@ theorem fbseg_T_desc {u : ℕ} {c : ℕ × ℕ} {rest : PairSeq}
       simp at this
       omega
 
+
+/-! ## The forest-boundary level squeeze -/
+
+theorem getD_middle {pre X post : PairSeq} {i : ℕ} (h : i < X.length) :
+    (pre ++ X ++ post).getD (pre.length + i) (0,0) = X.getD i (0,0) := by
+  rw [getD_append_left (by simp; omega),
+      getD_append_right (Nat.le_add_right _ _), Nat.add_sub_cancel_left]
+
+/-- **Level squeeze at the forest boundary**: in an `fbseg`, the head of the
+segment sits exactly one level above the enclosing head, and so does the
+head of any sum-adjacent tail; hence the two heads tie in row 0. -/
+theorem fbseg_hd_level {u : ℕ} {c : ℕ × ℕ} {rest : PairSeq}
+    (h : fbseg u (c :: rest)) {t0 : ℕ × ℕ} {T' : PairSeq}
+    (hT0 : (rest.dropWhile fun r => c.1 < r.1) = t0 :: T') :
+    t0.1 = c.1 := by
+  obtain ⟨-, pre, pp, mid, post, hst, hdom, hfb, -⟩ := h
+  have hsteps := steps1_iff.1 (blockok_ST_PS hst).2.2
+  have hlen : (pre ++ (pp :: (mid ++ (c :: rest))) ++ post).length
+      = pre.length + (mid.length + rest.length + 2) + post.length := by
+    simp
+    omega
+  -- the column right after `pp`
+  have hpp : (pre ++ (pp :: (mid ++ (c :: rest))) ++ post).getD pre.length (0,0)
+      = pp := by
+    have h0 := getD_middle (pre := pre) (X := pp :: (mid ++ (c :: rest)))
+      (post := post) (i := 0) (by simp)
+    rw [Nat.add_zero, List.getD_cons_zero] at h0
+    exact h0
+  have hstep0 := hsteps pre.length (by omega)
+  rw [show pre.length + 1 = pre.length + 1 from rfl, hpp] at hstep0
+  have hnext : (pre ++ (pp :: (mid ++ (c :: rest))) ++ post).getD
+      (pre.length + 1) (0,0) = (mid ++ (c :: rest)).getD 0 (0,0) := by
+    have := getD_middle (pre := pre) (X := pp :: (mid ++ (c :: rest)))
+      (post := post) (i := 1) (by simp)
+    simpa using this
+  rw [hnext] at hstep0
+  -- squeeze: fst c = fst pp + 1
+  have hc_eq : c.1 = pp.1 + 1 := by
+    have hc_gt : pp.1 < c.1 := hdom c (by simp)
+    cases mid with
+    | nil =>
+      rw [List.nil_append, List.getD_cons_zero] at hstep0
+      omega
+    | cons m0 mid' =>
+      have hm0 : ((m0 :: mid') ++ (c :: rest)).getD 0 (0,0) = m0 := by
+        rw [List.cons_append, List.getD_cons_zero]
+      rw [hm0] at hstep0
+      have hbd := hfb m0 (List.mem_cons_self ..)
+      rw [List.headI_cons] at hbd
+      omega
+  -- t0 is dominated by pp and not by c
+  have ht0_gt : pp.1 < t0.1 := by
+    refine hdom t0 ?_
+    have ht0rest : t0 ∈ rest :=
+      (List.dropWhile_sublist _).subset (hT0 ▸ List.mem_cons_self ..)
+    simp [ht0rest]
+  have ht0_le : ¬ c.1 < t0.1 := by
+    have h1 := List.head_dropWhile_not (fun r : ℕ × ℕ => decide (c.1 < r.1))
+      (l := rest) (by rw [hT0]; simp)
+    have h2 : (rest.dropWhile fun r => c.1 < r.1).head (by rw [hT0]; simp)
+        = t0 := by
+      have ha := List.head?_eq_some_head
+        (l := rest.dropWhile fun r => c.1 < r.1) (by rw [hT0]; simp)
+      have hb : (rest.dropWhile fun r => c.1 < r.1).head? = some t0 := by
+        rw [hT0]
+        rfl
+      exact Option.some.inj (ha.symm.trans hb)
+    rw [h2] at h1
+    simpa using h1
+  omega
+
 end YAPSS
