@@ -2770,4 +2770,133 @@ theorem tailokA_diagSeq (v : ℕ) : tailokA (diagSeq 0 v) := by
   have : j ≤ b := by simpa using hb3
   omega
 
+/-! ## Take-transfer for the parent relations -/
+
+theorem entry_take {M : PairSeq} {m i j : ℕ} (h : j < m) :
+    entry (M.take m) i j = entry M i j := by
+  unfold entry
+  rw [getD_take h]
+
+theorem nextrel0_lt {M : PairSeq} {a b : ℕ} (h : nextrel0 M a b) : a < b :=
+  h.2.2.1
+
+theorem nextrel0_bound {M : PairSeq} {a b : ℕ} (h : nextrel0 M a b) :
+    b < M.length := h.2.1
+
+theorem nextrel0_take_iff {M : PairSeq} {m j0 j : ℕ} (hj : j < m)
+    (hjM : j < M.length) :
+    nextrel0 (M.take m) j0 j ↔ nextrel0 M j0 j := by
+  unfold nextrel0
+  rw [List.length_take]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨by omega, hjM, h3, ?_, ?_⟩
+    · rwa [entry_take (by omega), entry_take hj] at h4
+    · intro l hl
+      have h6 := h5 l hl
+      rwa [entry_take hj, entry_take (by omega)] at h6
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨by omega, by omega, h3, ?_, ?_⟩
+    · rwa [entry_take (by omega), entry_take hj]
+    · intro l hl
+      have h6 := h5 l hl
+      rwa [entry_take hj, entry_take (by omega)]
+
+theorem rtg_nextrel0_of_take {M : PairSeq} {m : ℕ} {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 (M.take m)) a b) :
+    Relation.ReflTransGen (nextrel0 M) a b := by
+  induction h with
+  | refl => exact Relation.ReflTransGen.refl
+  | tail _ hs ih =>
+    have hb := nextrel0_bound hs
+    rw [List.length_take] at hb
+    exact ih.tail ((nextrel0_take_iff (by omega) (by omega)).1 hs)
+
+theorem rtg_nextrel0_to_take {M : PairSeq} {m : ℕ} {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 M) a b) (hb : b < m) :
+    Relation.ReflTransGen (nextrel0 (M.take m)) a b := by
+  induction h with
+  | refl => exact Relation.ReflTransGen.refl
+  | tail hc hs ih =>
+    have hlt := nextrel0_lt hs
+    have hbM := nextrel0_bound hs
+    exact (ih (by omega)).tail ((nextrel0_take_iff hb hbM).2 hs)
+
+theorem le0_le {M : PairSeq} {a b : ℕ} (h : le0 M a b) : a ≤ b := by
+  obtain ⟨-, -, hch⟩ := h
+  induction hch with
+  | refl => exact le_rfl
+  | tail _ hs ih => exact le_trans ih (le_of_lt (nextrel0_lt hs))
+
+theorem le0_take_iff {M : PairSeq} {m j0 j : ℕ} (hj : j < m)
+    (hjM : j < M.length) :
+    le0 (M.take m) j0 j ↔ le0 M j0 j := by
+  unfold le0
+  rw [List.length_take]
+  constructor
+  · rintro ⟨h1, h2, h3⟩
+    exact ⟨by omega, hjM, rtg_nextrel0_of_take h3⟩
+  · rintro ⟨h1, h2, h3⟩
+    have hj0j : j0 ≤ j := le0_le ⟨h1, h2, h3⟩
+    exact ⟨by omega, by omega, rtg_nextrel0_to_take h3 hj⟩
+
+theorem nextrel1_take_iff {M : PairSeq} {m j0 j : ℕ} (hj : j < m)
+    (hjM : j < M.length) :
+    nextrel1 (M.take m) j0 j ↔ nextrel1 M j0 j := by
+  unfold nextrel1
+  rw [List.length_take]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5, h6⟩
+    refine ⟨by omega, hjM, h3, ?_, (le0_take_iff hj hjM).1 h5, ?_⟩
+    · rwa [entry_take (by omega), entry_take hj] at h4
+    · intro l hl
+      have hlj : l ≤ j := le0_le hl.2
+      have h7 := h6 l ⟨hl.1, (le0_take_iff hj hjM).2 hl.2⟩
+      rwa [entry_take hj, entry_take (by omega)] at h7
+  · rintro ⟨h1, h2, h3, h4, h5, h6⟩
+    refine ⟨by omega, by omega, h3, ?_, (le0_take_iff hj hjM).2 h5, ?_⟩
+    · rwa [entry_take (by omega), entry_take hj]
+    · intro l hl
+      have hl0 := (le0_take_iff hj hjM).1 hl.2
+      have hlj : l ≤ j := le0_le hl0
+      have h7 := h6 l ⟨hl.1, hl0⟩
+      rwa [entry_take hj, entry_take (by omega)]
+
+theorem idx1_take {M : PairSeq} {m j : ℕ} (h : j < m) :
+    idx1 (M.take m) j = idx1 M j := by
+  unfold idx1
+  rw [entry_take h]
+
+theorem nextR_take_iff {M : PairSeq} {m i j0 j : ℕ} (hj : j < m)
+    (hjM : j < M.length) :
+    nextR (M.take m) i j0 j ↔ nextR M i j0 j := by
+  unfold nextR
+  by_cases hi : i = 0
+  · rw [if_pos hi, if_pos hi]
+    exact nextrel0_take_iff hj hjM
+  · rw [if_neg hi, if_neg hi]
+    exact nextrel1_take_iff hj hjM
+
+/-- `tailokA` is inherited by truncation: every instance is fully interior. -/
+theorem tailokA_take {M : PairSeq} (h : tailokA M) (m : ℕ) :
+    tailokA (M.take m) := by
+  intro j j0 hj hj0 hnext htrig
+  rw [List.length_take] at hj
+  have hjm : j < m := lt_of_lt_of_le hj (min_le_left _ _)
+  have hjM : j < M.length := lt_of_lt_of_le hj (min_le_right _ _)
+  rw [idx1_take hjm, nextR_take_iff hjm hjM] at hnext
+  have htrig' : idx1 M j = 1 →
+      ∃ b, j0 < b ∧ b < j ∧
+        (M.getD j (0,0)).1 ≤ (M.getD b (0,0)).1 ∧
+        (M.getD j0 (0,0)).2 ≤ (M.getD b (0,0)).2 := by
+    intro hi
+    obtain ⟨b, hb1, hb2, hb3, hb4⟩ := htrig (by rwa [idx1_take hjm])
+    refine ⟨b, hb1, hb2, ?_, ?_⟩
+    · rwa [getD_take hjm, getD_take (by omega)] at hb3
+    · rwa [getD_take (by omega), getD_take (by omega)] at hb4
+  have hres := h j j0 hjM hj0 hnext htrig'
+  have heq : ((M.take m).take j).drop (j0 + 1) = (M.take j).drop (j0 + 1) := by
+    rw [List.take_take, min_eq_left (le_of_lt hjm)]
+  rwa [heq]
+
 end YAPSS
