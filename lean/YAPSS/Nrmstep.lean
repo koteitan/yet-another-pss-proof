@@ -1225,4 +1225,95 @@ theorem r1ok_min_d0pos {G B : PairSeq} {lp : ℕ × ℕ} {n v0 w0 d0 : ℕ} {R :
     rw [hB0]
     exact hclimb r' hr'B rexact hgreat'
 
+
+/-! ## Assembly: `r1ok` is preserved by `oper`, hence holds on `ST_PS`
+
+All branches of the expansion step are wired: identity (short), `Pred`
+(dropLast), and the bad branch through `oper_bad_blocks` → `copyExp`.
+The step facts `hstep`/`hlpstep` come from the `steps1` component of
+`blockok_ST_PS`.  The sole remaining obligation is the class fact
+`climbok` (the `r1ok_climb` of the Isabelle campaign, open there too). -/
+
+theorem hostM_getD_lp {G B : PairSeq} {lp : ℕ × ℕ} :
+    (G ++ B ++ [lp]).getD (G.length + B.length) (0,0) = lp := by
+  have e : (G ++ B).length = G.length + B.length := by simp
+  rw [getD_append_right (by omega), e, Nat.sub_self]
+  rfl
+
+theorem r1ok_Pred {M : PairSeq} (h : r1ok M) : r1ok (Pred M) := by
+  unfold Pred
+  by_cases hl : M.length ≤ 1
+  · rw [if_pos hl]
+    exact h
+  · rw [if_neg hl]
+    exact r1ok_dropLast h
+
+/-- The single open class fact: at any bad-branch decomposition with strictly
+ascending copies, the row-1 value of the block root exceeds that of the last
+block column at the parent level by at most one. -/
+def climbok (M : PairSeq) : Prop :=
+  ∀ G v0 w0 (R : PairSeq) (lp : ℕ × ℕ) (d0 : ℕ),
+    M = G ++ ((v0,w0) :: R) ++ [lp] →
+    (∀ x ∈ R, v0 < x.1) →
+    0 < d0 → lp.1 = v0 + d0 → w0 < lp.2 →
+    ∀ r', r' < ((v0,w0) :: R).length →
+      (((v0,w0) :: R).getD r' (0,0)).1 = v0 + d0 - 1 →
+      (∀ rr, r' < rr → rr < ((v0,w0) :: R).length →
+        v0 + d0 ≤ (((v0,w0) :: R).getD rr (0,0)).1) →
+      w0 ≤ (((v0,w0) :: R).getD r' (0,0)).2 + 1
+
+/-- **Row-1 discipline is preserved by the expansion step**, modulo the
+climb bound `climbok`. -/
+theorem r1ok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hr : r1ok M)
+    (hst : steps1 M) (hcl : climbok M) : r1ok (M⟦n⟧) := by
+  by_cases hL0 : M.length - 1 = 0
+  · rw [oper_eq_self_of_short n hL0]
+    exact hr
+  by_cases hz : entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0
+  · rw [oper_eq_pred_of_zero n hL0 hz]
+    exact r1ok_Pred hr
+  by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
+  case neg =>
+    rw [oper_eq_pred_of_noParent n hL0 hz hp]
+    exact r1ok_Pred hr
+  case pos =>
+    obtain ⟨G, v0, w0, R, d0, lp, hM, hX, hdom, _hlpgt, hd0⟩ :=
+      oper_bad_blocks (by omega) hz hp hn
+    rw [hX]
+    have hrM : r1ok (G ++ ((v0,w0) :: R) ++ [lp]) := hM ▸ hr
+    have hstM : steps1 (G ++ ((v0,w0) :: R) ++ [lp]) := hM ▸ hst
+    have hstep : ∀ r, r + 1 < ((v0,w0) :: R).length →
+        ((((v0,w0) :: R)).getD (r+1) (0,0)).1
+          ≤ ((((v0,w0) :: R)).getD r (0,0)).1 + 1 := by
+      intro r hr1
+      have hs := steps1_iff.1 hstM (G.length + r)
+        (by rw [hostM_length]; omega)
+      rw [show G.length + r + 1 = G.length + (r+1) by omega] at hs
+      rw [hostM_getD_blk hr1, hostM_getD_blk (by omega)] at hs
+      exact hs
+    have hlpstep : lp.1
+        ≤ ((((v0,w0) :: R)).getD (((v0,w0) :: R).length - 1) (0,0)).1 + 1 := by
+      have hBlen : 0 < ((v0,w0) :: R).length := by simp
+      have hs := steps1_iff.1 hstM (G.length + (((v0,w0) :: R).length - 1))
+        (by rw [hostM_length]; omega)
+      rw [show G.length + (((v0,w0) :: R).length - 1) + 1
+            = G.length + ((v0,w0) :: R).length by omega] at hs
+      rw [hostM_getD_lp, hostM_getD_blk (by omega)] at hs
+      exact hs
+    show r1ok (copyExp G ((v0,w0) :: R) d0 n)
+    refine r1ok_copyExp hrM ?_
+    intro k q hk1 hk hq hPM hpos
+    rcases hd0 with hd00 | ⟨hd0p, hwlt, hlpe⟩
+    · subst hd00
+      exact r1ok_min_d0zero rfl hdom hrM hk1 hk hq hPM hpos
+    · exact r1ok_min_d0pos rfl hdom hd0p hlpe hstep hlpstep
+        (hcl G v0 w0 R lp d0 hM hdom hd0p hlpe hwlt) hk1 hk hq hPM hpos
+
+/-- **Row-1 discipline of standard sequences**, modulo the climb bound. -/
+theorem r1ok_ST_PS {M : PairSeq} (hM : ST_PS M)
+    (hcl : ∀ N, ST_PS N → climbok N) : r1ok M := by
+  induction hM with
+  | diag v => exact r1ok_diagSeq v
+  | oper hN hn ih => exact r1ok_oper hn ih (blockok_ST_PS hN).2.2 (hcl _ hN)
+
 end YAPSS
