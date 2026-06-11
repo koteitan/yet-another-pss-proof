@@ -3470,4 +3470,73 @@ theorem hmok_copyExp {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ}
         rw [copyExp_length] at this
         omega
 
+/-- **HM⁺ is preserved by the expansion step**, given the all-column block
+discipline of the host. -/
+theorem hmok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hM : hmok M)
+    (htA : tailokA M) : hmok (M⟦n⟧) := by
+  by_cases hL0 : M.length - 1 = 0
+  · rw [oper_eq_self_of_short n hL0]
+    exact hM
+  by_cases hz : entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0
+  · rw [oper_eq_pred_of_zero n hL0 hz]
+    exact hmok_Pred hM
+  by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
+  case neg =>
+    rw [oper_eq_pred_of_noParent n hL0 hz hp]
+    exact hmok_Pred hM
+  case pos =>
+    obtain ⟨G, v0, w0, R, d0, lp, hMeq, hX, hdom, _hlpgt, hd0, hnxt⟩ :=
+      oper_bad_blocks (by omega) hz hp hn
+    rw [hX]
+    show hmok (copyExp G ((v0,w0) :: R) d0 n)
+    have hMlen : M.length = G.length + ((v0,w0) :: R).length + 1 := by
+      rw [hMeq]
+      exact hostM_length ..
+    have hj1 : M.length - 1 = G.length + ((v0,w0) :: R).length := by omega
+    refine hmok_copyExp hn hdom (hMeq ▸ hM) ?_
+    rintro ⟨q, hq, hroot, hw0⟩
+    have happ := htA (M.length - 1) G.length (by omega) (by omega) hnxt ?_
+    · have htake : M.take (M.length - 1) = G ++ ((v0,w0) :: R) := by
+        rw [hj1, hMeq,
+            show G.length + ((v0,w0) :: R).length
+              = (G ++ ((v0,w0) :: R)).length by simp,
+            List.take_left]
+      rw [htake] at happ
+      have hdrop : (G ++ ((v0,w0) :: R)).drop (G.length + 1) = R := by
+        rw [List.drop_append, List.drop_eq_nil_of_le (by omega),
+            List.nil_append, show G.length + 1 - G.length = 1 by omega,
+            List.drop_succ_cons, List.drop_zero]
+      rwa [hdrop] at happ
+    · intro hi1
+      rcases hd0 with ⟨-, hi0⟩ | ⟨hd0p, -, hlpe, -⟩
+      · rw [hi1] at hi0
+        exact absurd hi0 one_ne_zero
+      · have hq1 : 1 ≤ q := by
+          by_contra hq0
+          push Not at hq0
+          have : q = 0 := by omega
+          subst this
+          rw [List.getD_cons_zero] at hroot
+          simp at hroot
+          omega
+        refine ⟨G.length + q, by omega, by omega, ?_, ?_⟩
+        · have h1 : M.getD (M.length - 1) (0,0) = lp := by
+            rw [hj1, hMeq]
+            exact hostM_getD_lp
+          have h2 : M.getD (G.length + q) (0,0) = ((v0,w0) :: R).getD q (0,0) := by
+            rw [hMeq]
+            exact hostM_getD_blk hq
+          rw [h1, h2, hlpe]
+          exact hroot
+        · have h3 : M.getD G.length (0,0) = (v0, w0) := by
+            have h := hostM_getD_blk (G := G) (lp := lp)
+              (show 0 < ((v0,w0) :: R).length by simp)
+            rw [Nat.add_zero] at h
+            rw [hMeq, h, List.getD_cons_zero]
+          have h2 : M.getD (G.length + q) (0,0) = ((v0,w0) :: R).getD q (0,0) := by
+            rw [hMeq]
+            exact hostM_getD_blk hq
+          rw [h3, h2]
+          exact hw0
+
 end YAPSS
