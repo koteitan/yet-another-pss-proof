@@ -4944,4 +4944,12 @@ theorem classOK_diagSeq (v : ℕ) : classOK (diagSeq 0 v) := by
       < pre.length + (1 + (mid.length + (S.length - 1)))
   omega
 
+theorem classOK_Pred {H : PairSeq} (h : classOK H) : classOK (Pred H) := by
+  unfold Pred
+  by_cases hl : H.length ≤ 1
+  · rw [if_pos hl]
+    exact h
+  · rw [if_neg hl, List.dropLast_eq_take]
+    exact classOK_take h _
+
 end YAPSS
