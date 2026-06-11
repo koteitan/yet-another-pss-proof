@@ -3248,4 +3248,226 @@ theorem copyExp_stop_open {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
   rw [Nat.add_mul] at h5
   omega
 
+
+/-! ## `hmok` survives the copy expansion -/
+
+/-- All block runs are head-maximal under `hhm` of the dominated tail. -/
+theorem headmax_runAt_block {v0 w0 : ℕ} {R : PairSeq}
+    (hdom : ∀ x ∈ R, v0 < x.1) (hR : hhm R) :
+    ∀ r, r < ((v0,w0) :: R).length → headmax (runAt ((v0,w0) :: R) r) := by
+  intro r hr
+  cases r with
+  | zero =>
+    rw [runAt_root_block hdom]
+    exact hR.1
+  | succ r' =>
+    rw [runAt_cons_succ]
+    exact hR.2 r' (by simpa using hr)
+
+/-- **`hmok` survives the copy expansion**, given `hmok` of the host and the
+final-block fact (conditioned on the trigger, which every next-root closure
+supplies). -/
+theorem hmok_copyExp {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ}
+    {d0 n : ℕ} (hn : 1 ≤ n)
+    (hdom : ∀ x ∈ R, v0 < x.1)
+    (hM : hmok (G ++ ((v0,w0) :: R) ++ [lp]))
+    (htail : (∃ q, q < ((v0,w0) :: R).length
+        ∧ v0 + d0 ≤ (((v0,w0) :: R).getD q (0,0)).1
+        ∧ w0 ≤ (((v0,w0) :: R).getD q (0,0)).2) → hhm R) :
+    hmok (copyExp G ((v0,w0) :: R) d0 n) := by
+  have hL : 0 < ((v0,w0) :: R).length := by simp
+  have hbaseL : ∀ x ∈ ((v0,w0) :: R), v0 ≤ x.1 := by
+    intro x hx
+    rcases List.mem_cons.1 hx with rfl | hx
+    · exact le_rfl
+    · exact le_of_lt (hdom x hx)
+  intro a ha hstop hclo p hp1 hp2
+  rw [copyExp_length] at ha hstop
+  by_cases hcase : stopAt (copyExp G ((v0,w0) :: R) d0 n) a
+      < G.length + ((v0,w0) :: R).length
+  · -- H1: the closure lives in the shared base
+    have hbase := copyExp_take_base (G := G) (B := (v0,w0) :: R)
+      (lp := lp) (d0 := d0) hn
+    have hT : hmok ((copyExp G ((v0,w0) :: R) d0 n).take
+        (G.length + ((v0,w0) :: R).length)) := by
+      rw [hbase]
+      exact hmok_take hM _
+    exact hmok_of_take hT a (by rw [copyExp_length]; omega)
+      (by rw [copyExp_length]; omega) hcase hclo p hp1 hp2
+  · push Not at hcase
+    -- the base lies in the copy region
+    have hag : G.length ≤ a := by
+      by_contra hcon
+      push Not at hcon
+      have h1 := run_region_gt (M := copyExp G ((v0,w0) :: R) d0 n)
+        (a := a) (p := G.length) hcon (by omega)
+      have hgv : ((copyExp G ((v0,w0) :: R) d0 n).getD G.length (0,0)).1 = v0 := by
+        have h2 := copyExp_getD_copy (G := G) (B := (v0,w0) :: R)
+          (d0 := d0) (n := n) (k := 0) (q := 0) (by omega) (by simp)
+        rw [show G.length + (0 * ((v0,w0) :: R).length + 0) = G.length
+              by omega] at h2
+        rw [h2]
+        simp
+      have hsle := stopAt_col_le
+        (M := copyExp G ((v0,w0) :: R) d0 n) (a := a)
+        (by rw [copyExp_length]; omega)
+      obtain ⟨ks, qs, hks, hqs, hdec⟩ := index_decomp hL
+        (show stopAt (copyExp G ((v0,w0) :: R) d0 n) a - G.length
+            < n * ((v0,w0) :: R).length by omega)
+      have hslevel : v0 ≤ ((copyExp G ((v0,w0) :: R) d0 n).getD
+          (stopAt (copyExp G ((v0,w0) :: R) d0 n) a) (0,0)).1 := by
+        rw [show stopAt (copyExp G ((v0,w0) :: R) d0 n) a
+              = G.length + (ks * ((v0,w0) :: R).length + qs) by omega,
+            copyExp_getD_copy hks hqs]
+        have := hbaseL _ (getD_mem hqs)
+        omega
+      rw [hgv] at h1
+      omega
+    obtain ⟨k', q, hk', hq, hadec⟩ := index_decomp hL
+      (show a - G.length < n * ((v0,w0) :: R).length by omega)
+    have haeq : a = G.length + (k' * ((v0,w0) :: R).length + q) := by omega
+    subst haeq
+    -- the interior offset of p
+    have hple : p < stopAt (copyExp G ((v0,w0) :: R) d0 n)
+        (G.length + (k' * ((v0,w0) :: R).length + q)) := hp2
+    by_cases hin : stopAt ((v0,w0) :: R) q < ((v0,w0) :: R).length
+    · -- H2: within-copy closure, inherited from the host block closure
+      have hrun := copyExp_runAt_within (G := G) (d0 := d0) (n := n) hk' hq hin
+      have hseq : stopAt (copyExp G ((v0,w0) :: R) d0 n)
+          (G.length + (k' * ((v0,w0) :: R).length + q))
+          = G.length + (k' * ((v0,w0) :: R).length + stopAt ((v0,w0) :: R) q) := by
+        unfold stopAt
+        rw [hrun, List.length_map]
+        have : stopAt ((v0,w0) :: R) q = q + 1 + (runAt ((v0,w0) :: R) q).length :=
+          rfl
+        omega
+      have hMrun := hostM_runAt_within (G := G) (lp := lp) hq hin
+      have hMseq : stopAt (G ++ ((v0,w0) :: R) ++ [lp]) (G.length + q)
+          = G.length + stopAt ((v0,w0) :: R) q := by
+        unfold stopAt
+        rw [hMrun]
+        have : stopAt ((v0,w0) :: R) q = q + 1 + (runAt ((v0,w0) :: R) q).length :=
+          rfl
+        omega
+      have hMlen : (G ++ ((v0,w0) :: R) ++ [lp]).length
+          = G.length + ((v0,w0) :: R).length + 1 := hostM_length ..
+      -- the closure premise transfers to the host
+      have hcloM : ((G ++ ((v0,w0) :: R) ++ [lp]).getD
+            (stopAt (G ++ ((v0,w0) :: R) ++ [lp]) (G.length + q)) (0,0)).2
+          ≤ ((G ++ ((v0,w0) :: R) ++ [lp]).getD (G.length + q) (0,0)).2 := by
+        rw [hMseq, hostM_getD_blk hin, hostM_getD_blk hq]
+        rw [hseq, copyExp_getD_copy hk' hin, copyExp_getD_copy hk' hq] at hclo
+        exact hclo
+      -- offsets
+      have hr : p - G.length - k' * ((v0,w0) :: R).length < ((v0,w0) :: R).length := by
+        rw [hseq] at hple
+        omega
+      have hpeq : p = G.length
+          + (k' * ((v0,w0) :: R).length
+            + (p - G.length - k' * ((v0,w0) :: R).length)) := by omega
+      have hrq : q ≤ p - G.length - k' * ((v0,w0) :: R).length := by omega
+      have hrs : p - G.length - k' * ((v0,w0) :: R).length
+          < stopAt ((v0,w0) :: R) q := by
+        rw [hseq] at hple
+        omega
+      -- the host conclusion at the corresponding offset
+      have hres := hM (G.length + q) (by omega)
+        (by rw [hMseq]; omega) hcloM
+        (G.length + (p - G.length - k' * ((v0,w0) :: R).length))
+        (by omega) (by rw [hMseq]; omega)
+      -- interior block runs close inside the block
+      have hinr : stopAt ((v0,w0) :: R)
+          (p - G.length - k' * ((v0,w0) :: R).length)
+          ≤ stopAt ((v0,w0) :: R) q :=
+        stopAt_interior_le (by omega) hrq hrs
+      have hMrun' := hostM_runAt_within (G := G) (lp := lp) hr (by omega)
+      have hXrun' := copyExp_runAt_within (G := G) (d0 := d0) (n := n)
+        hk' hr (by omega)
+      rw [hMrun'] at hres
+      rw [hpeq, hXrun']
+      exact headmax_shift hres
+    · push Not at hin
+      by_cases hroot : v0 + d0 ≤ (((v0,w0) :: R).getD q (0,0)).1
+      · -- H3: next-root closure; the trigger is the base itself
+        have hrun := copyExp_runAt_root (G := G) (n := n) hk' hq hin hroot
+        have hseq : stopAt (copyExp G ((v0,w0) :: R) d0 n)
+            (G.length + (k' * ((v0,w0) :: R).length + q))
+            = G.length + (k' + 1) * ((v0,w0) :: R).length := by
+          unfold stopAt
+          rw [hrun, List.length_map, List.length_drop, Nat.succ_mul]
+          omega
+        have hk1n : k' + 1 < n := by
+          by_contra hcon
+          push Not at hcon
+          have : n * ((v0,w0) :: R).length
+              ≤ (k' + 1) * ((v0,w0) :: R).length :=
+            Nat.mul_le_mul_right _ hcon
+          omega
+        have hw0 : w0 ≤ (((v0,w0) :: R).getD q (0,0)).2 := by
+          rw [hseq, show G.length + (k' + 1) * ((v0,w0) :: R).length
+                = G.length + ((k' + 1) * ((v0,w0) :: R).length + 0) by omega,
+              copyExp_getD_copy hk1n (by simp),
+              copyExp_getD_copy hk' hq] at hclo
+          simpa using hclo
+        have hhmR := htail ⟨q, hq, hroot, hw0⟩
+        -- the interior offset
+        have hr : p - G.length - k' * ((v0,w0) :: R).length
+            < ((v0,w0) :: R).length := by
+          rw [hseq, Nat.succ_mul] at hple
+          omega
+        have hpeq : p = G.length
+            + (k' * ((v0,w0) :: R).length
+              + (p - G.length - k' * ((v0,w0) :: R).length)) := by omega
+        have hrq : q ≤ p - G.length - k' * ((v0,w0) :: R).length := by omega
+        -- every interior block run is head-maximal
+        have hhead := headmax_runAt_block hdom hhmR
+          (p - G.length - k' * ((v0,w0) :: R).length) hr
+        -- relate the X-run to the block run
+        by_cases hin' : stopAt ((v0,w0) :: R)
+            (p - G.length - k' * ((v0,w0) :: R).length) < ((v0,w0) :: R).length
+        · have hXrun' := copyExp_runAt_within (G := G) (d0 := d0) (n := n)
+            hk' hr hin'
+          rw [hpeq, hXrun']
+          exact headmax_shift hhead
+        · push Not at hin'
+          have hroot' : v0 + d0
+              ≤ (((v0,w0) :: R).getD
+                  (p - G.length - k' * ((v0,w0) :: R).length) (0,0)).1 := by
+            rcases Nat.eq_or_lt_of_le hrq with heq | hlt
+            · rw [← heq]
+              exact hroot
+            · have := run_region_gt (M := (v0,w0) :: R) (a := q)
+                (p := p - G.length - k' * ((v0,w0) :: R).length) hlt (by omega)
+              omega
+          have hXrun' := copyExp_runAt_root (G := G) (n := n) hk' hr hin' hroot'
+          have hself : runAt ((v0,w0) :: R)
+              (p - G.length - k' * ((v0,w0) :: R).length)
+              = ((v0,w0) :: R).drop
+                  ((p - G.length - k' * ((v0,w0) :: R).length) + 1) := by
+            have hle := (List.takeWhile_sublist
+              (l := ((v0,w0) :: R).drop
+                ((p - G.length - k' * ((v0,w0) :: R).length) + 1))
+              (fun r => decide ((((v0,w0) :: R).getD
+                (p - G.length - k' * ((v0,w0) :: R).length) (0,0)).1 < r.1))).length_le
+            have hlen : (runAt ((v0,w0) :: R)
+                (p - G.length - k' * ((v0,w0) :: R).length)).length
+                = (((v0,w0) :: R).drop
+                    ((p - G.length - k' * ((v0,w0) :: R).length) + 1)).length := by
+              unfold stopAt at hin'
+              rw [List.length_drop] at *
+              have hb : (runAt ((v0,w0) :: R)
+                  (p - G.length - k' * ((v0,w0) :: R).length)).length
+                  ≤ ((v0,w0) :: R).length
+                    - ((p - G.length - k' * ((v0,w0) :: R).length) + 1) := hle
+              omega
+            exact (List.takeWhile_prefix _).eq_of_length hlen
+          rw [hpeq, hXrun', ← hself]
+          exact headmax_shift hhead
+      · -- excluded: the run never stops
+        exfalso
+        push Not at hroot
+        have := copyExp_stop_open (G := G) (n := n) hk' hq hdom hin hroot
+        rw [copyExp_length] at this
+        omega
+
 end YAPSS
