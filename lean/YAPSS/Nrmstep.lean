@@ -3718,4 +3718,82 @@ theorem copyExp_take_at {G B : PairSeq} {d0 n k q : ℕ}
       List.take_append_of_le_length (by rw [List.length_map]; omega),
       Nat.add_zero]
 
+
+/-! ## Within-copy row-0 instances of `tailokA` -/
+
+theorem hostM_take_at {G B : PairSeq} {lp : ℕ × ℕ} {q : ℕ}
+    (hq : q ≤ B.length) :
+    (G ++ B ++ [lp]).take (G.length + q) = G ++ B.take q := by
+  rw [List.append_assoc, List.take_append,
+      List.take_of_length_le (by omega),
+      show G.length + q - G.length = q by omega,
+      List.take_append_of_le_length hq]
+
+theorem idx1_copy {G B : PairSeq} {lp : ℕ × ℕ} {d0 n k q : ℕ}
+    (hk : k < n) (hq : q < B.length) :
+    idx1 (copyExp G B d0 n) (G.length + (k * B.length + q))
+      = idx1 (G ++ B ++ [lp]) (G.length + q) := by
+  unfold idx1
+  rw [(entry_copyExp hk hq).2]
+  unfold entry
+  rw [if_neg one_ne_zero, hostM_getD_blk hq]
+
+/-- The within-copy row-0 instances of `tailokA` transfer from the host. -/
+theorem tailokA_copyExp_row0 {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
+    {lp : ℕ × ℕ} {d0 n k q j0X : ℕ}
+    (htA : tailokA (G ++ ((v0,w0) :: R) ++ [lp]))
+    (hdom : ∀ x ∈ R, v0 < x.1)
+    (hk : k < n) (hq : q < ((v0,w0) :: R).length) (hq1 : 1 ≤ q)
+    (hi0 : idx1 (copyExp G ((v0,w0) :: R) d0 n)
+      (G.length + (k * ((v0,w0) :: R).length + q)) = 0)
+    (hnx : nextrel0 (copyExp G ((v0,w0) :: R) d0 n) j0X
+      (G.length + (k * ((v0,w0) :: R).length + q))) :
+    hhm (((copyExp G ((v0,w0) :: R) d0 n).take
+        (G.length + (k * ((v0,w0) :: R).length + q))).drop (j0X + 1)) := by
+  have hge := nextrel0_into_copy hk hq hq1 hdom hnx
+  have hlt := nextrel0_lt hnx
+  have hq0 : j0X - G.length - k * ((v0,w0) :: R).length < q := by omega
+  have hjeq : j0X = G.length + (k * ((v0,w0) :: R).length
+      + (j0X - G.length - k * ((v0,w0) :: R).length)) := by omega
+  rw [hjeq] at hnx
+  have hM0 : nextrel0 (G ++ ((v0,w0) :: R) ++ [lp])
+      (G.length + (j0X - G.length - k * ((v0,w0) :: R).length))
+      (G.length + q) := (nextrel0_copy_iff hk hq hq0).1 hnx
+  have hiM : idx1 (G ++ ((v0,w0) :: R) ++ [lp]) (G.length + q) = 0 := by
+    rw [← idx1_copy (d0 := d0) (n := n) hk hq]
+    exact hi0
+  have hMlen : (G ++ ((v0,w0) :: R) ++ [lp]).length
+      = G.length + ((v0,w0) :: R).length + 1 := hostM_length ..
+  have happ := htA (G.length + q)
+    (G.length + (j0X - G.length - k * ((v0,w0) :: R).length))
+    (by omega) (by omega)
+    (by unfold nextR; rw [hiM, if_pos rfl]; exact hM0)
+    (by
+      intro h1
+      rw [hiM] at h1
+      exact absurd h1 (by omega))
+  have hMtake : ((G ++ ((v0,w0) :: R) ++ [lp]).take (G.length + q)).drop
+      (G.length + (j0X - G.length - k * ((v0,w0) :: R).length) + 1)
+      = (((v0,w0) :: R).take q).drop
+          ((j0X - G.length - k * ((v0,w0) :: R).length) + 1) := by
+    rw [hostM_take_at (le_of_lt hq), List.drop_append,
+        List.drop_eq_nil_of_le (by omega), List.nil_append,
+        show G.length + (j0X - G.length - k * ((v0,w0) :: R).length) + 1
+            - G.length
+          = (j0X - G.length - k * ((v0,w0) :: R).length) + 1 by omega]
+  have hXtake : ((copyExp G ((v0,w0) :: R) d0 n).take
+        (G.length + (k * ((v0,w0) :: R).length + q))).drop (j0X + 1)
+      = ((((v0,w0) :: R).take q).drop
+          ((j0X - G.length - k * ((v0,w0) :: R).length) + 1)).map
+            fun p => (p.1 + k * d0, p.2) := by
+    rw [copyExp_take_at hk (le_of_lt hq), List.drop_append,
+        List.drop_eq_nil_of_le (by rw [copyExp_length]; omega),
+        List.nil_append, copyExp_length,
+        show j0X + 1 - (G.length + k * ((v0,w0) :: R).length)
+          = (j0X - G.length - k * ((v0,w0) :: R).length) + 1 by omega,
+        ← List.map_take, ← List.map_drop]
+  rw [hXtake]
+  rw [hMtake] at happ
+  exact hhm_shift happ
+
 end YAPSS
