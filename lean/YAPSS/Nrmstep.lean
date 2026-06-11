@@ -2990,4 +2990,42 @@ theorem copyExp_take_base {G B : PairSeq} {lp : ℕ × ℕ} {d0 n : ℕ}
   rw [show G.length + B.length = (G ++ B).length by simp,
       List.take_left, List.take_left]
 
+
+/-! ## Drop decomposition of the general copy region -/
+
+theorem copies_map_drop {B : PairSeq} (f : ℕ → ℕ × ℕ → ℕ × ℕ) :
+    ∀ (k n q : ℕ), k < n → q < B.length →
+      ((List.range n).flatMap fun i => B.map (f i)).drop (k * B.length + (q + 1))
+        = (B.map (f k)).drop (q + 1)
+          ++ ((List.range (n - (k + 1))).flatMap fun i => B.map (f (i + (k + 1))))
+  | 0, 0, q, hk, _ => absurd hk (by omega)
+  | 0, n + 1, q, _, hq => by
+    rw [List.range_succ_eq_map, List.flatMap_cons, Nat.zero_mul, Nat.zero_add,
+        List.drop_append_of_le_length (by rw [List.length_map]; omega),
+        List.flatMap_map]
+    simp only [Nat.add_sub_cancel]
+  | k + 1, 0, q, hk, _ => absurd hk (by omega)
+  | k + 1, n + 1, q, hk, hq => by
+    rw [List.range_succ_eq_map, List.flatMap_cons, List.drop_append,
+        List.drop_eq_nil_of_le (by
+          rw [List.length_map]
+          calc B.length = 1 * B.length := (Nat.one_mul _).symm
+          _ ≤ (k + 1) * B.length + (q + 1) := by
+              have := Nat.mul_le_mul_right B.length (show 1 ≤ k + 1 by omega)
+              omega),
+        List.nil_append, List.length_map,
+        show (k + 1) * B.length + (q + 1) - B.length
+            = k * B.length + (q + 1) by
+          rw [Nat.succ_mul]
+          omega,
+        List.flatMap_map]
+    have hrec := copies_map_drop (B := B) (fun i => f (i + 1)) k n q (by omega) hq
+    simp only [Nat.succ_eq_add_one]
+    have hfn : (fun i => B.map (f (i + (k + 1 + 1))))
+        = (fun i => B.map (f (i + (k + 1) + 1))) := by
+      funext i
+      congr 2
+    rw [hfn, show n + 1 - (k + 1 + 1) = n - (k + 1) by omega]
+    exact hrec
+
 end YAPSS
