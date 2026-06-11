@@ -85,7 +85,8 @@
   - ✅ BT-WIN/BT-WRAP 統一不変量〔タイ不要窓停止形＋d0:0頭タイ形・閉包+2全0違反・BT1系は系に〕
   - ✅ 凍結階層確立〔BTFULL（全域形63999/0）→BTWIN系化 / BTWRAPG（τ量化49609/0）→BTWRAP系化〕
   - ✅ btfullok±T3 ユニバーサル化〔全ホスト不変量・標準テンプレート緑・ginv_BTFULL系は導出〕
-  - 🚨 GRANDシーム残〔btfullok(3)_oper_bad（マップ済・実装待ち）/ BTWRAPG±T3本体（族別） / t14ok_oper_bad / GBLK0 / qpos〕
+  - ✅ btfullok(3)_oper_bad 討伐〔ユニバーサル窓シーム5ケース＋T3クローン・BT階層がBTWRAPU±U3の2点に立脚〕
+  - 🚨 GRANDシーム残〔BTWRAPU±U3 本体（d0:0非因果核） / t14ok_oper_bad / GBLK0 / qpos〕
   - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam＝ginv適用候補〕＋ STS_B 本体〔0/26322〕
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - 🚨 TOP_desc〔0/474・未ステート〕
