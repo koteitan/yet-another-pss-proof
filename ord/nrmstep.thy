@@ -3568,6 +3568,25 @@ text \<open>(BT-WIN / BT-WRAP) The unified block-window row-1 invariants
   (closure+2: 18144 / T3 without the \<open>d0\<close> restriction 5251, zero violations).
   \<open>ginv_BT1\<close>/\<open>ginv_BT1_T3\<close> are corollaries.\<close>
 
+text \<open>(BT-FULL) The host-wide tie-free window bound on a bad-branch host
+  (memo 続46): ANY dominated window closed by a level drop at a column
+  \<open>\<le> j1\<close> is bounded one above its anchor (closure+2: 63999, zero
+  violations).  \<open>ginv_BTWIN\<close> is the in-block corollary.\<close>
+
+lemma ginv_BTFULL:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "a < om" and "om \<le> j1"
+    and "\<forall>k. a < k \<and> k < om \<longrightarrow> fst (M ! a) < fst (M ! k)"
+    and "fst (M ! om) \<le> fst (M ! a)"
+    and "a < l" and "l < om"
+  shows "snd (M ! l) \<le> Suc (snd (M ! a))"
+  sorry
+
 lemma ginv_BTWIN:
   assumes "M \<in> ST_PS"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
@@ -3580,7 +3599,28 @@ lemma ginv_BTWIN:
     and "entry M 0 (j0 + om) \<le> entry M 0 (j0 + al)"
     and "al < q" and "q < om"
   shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + al))"
-  sorry
+proof -
+  have nR: "nextR M i1 j0 j1" unfolding assms(7) by (rule parent_nextR[OF assms(6)])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have a1: "j0 + al < j0 + om" using assms(9) by simp
+  have a2: "j0 + om \<le> j1" using assms(10) j0j1 by arith
+  have a3: "\<forall>k. j0 + al < k \<and> k < j0 + om \<longrightarrow> fst (M ! (j0 + al)) < fst (M ! k)"
+  proof (intro allI impI)
+    fix k assume kk: "j0 + al < k \<and> k < j0 + om"
+    define qq where "qq = k - j0"
+    have ke: "k = j0 + qq" unfolding qq_def using kk by arith
+    have "al < qq \<and> qq < om" unfolding qq_def using kk by arith
+    hence "entry M 0 (j0 + al) < entry M 0 (j0 + qq)" using assms(11) by blast
+    thus "fst (M ! (j0 + al)) < fst (M ! k)" unfolding ke entry_def by simp
+  qed
+  have a4: "fst (M ! (j0 + om)) \<le> fst (M ! (j0 + al))"
+    using assms(12) unfolding entry_def by simp
+  have a5: "j0 + al < j0 + q" using assms(13) by simp
+  have a6: "j0 + q < j0 + om" using assms(14) by simp
+  have "snd (M ! (j0 + q)) \<le> Suc (snd (M ! (j0 + al)))"
+    by (rule ginv_BTFULL[OF assms(1-8) a1 a2 a3 a4 a5 a6])
+  thus ?thesis unfolding entry_def by simp
+qed
 
 lemma ginv_BTWIN_T3:
   assumes "M \<in> ST_PS"
