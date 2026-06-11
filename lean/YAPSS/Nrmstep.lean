@@ -4952,4 +4952,38 @@ theorem classOK_Pred {H : PairSeq} (h : classOK H) : classOK (Pred H) := by
   · rw [if_neg hl, List.dropLast_eq_take]
     exact classOK_take h _
 
+/-- **Shared-base segment transfer**: if `X` and `Y` agree on their first `m`
+entries and the dominated-segment witness of `X` lies entirely within those
+`m` entries, then `classOK Y` yields the single-climb conclusion for the
+witness in `X`. -/
+theorem classOK_of_take_eq {X Y : PairSeq} {m : ℕ}
+    (hXY : X.take m = Y.take m) (hY : classOK Y) :
+    ∀ (S pre : PairSeq) (pp : ℕ × ℕ) (mid post : PairSeq),
+      X = pre ++ (pp :: (mid ++ S)) ++ post →
+      pre.length + (1 + (mid.length + S.length)) ≤ m →
+      (∀ r ∈ mid ++ S, pp.1 < r.1) →
+      (∀ r ∈ mid, S.headI.1 ≤ r.1) →
+      sclimb S := by
+  intro S pre pp mid post heq hm hdom hbd
+  have hctxlen : (pre ++ (pp :: (mid ++ S))).length
+      = pre.length + (1 + (mid.length + S.length)) := by
+    simp only [List.length_append, List.length_cons]
+    omega
+  have hXctx : X.take (pre.length + (1 + (mid.length + S.length)))
+      = pre ++ (pp :: (mid ++ S)) := by
+    rw [heq, ← hctxlen, List.take_left]
+  have hYctx : Y.take (pre.length + (1 + (mid.length + S.length)))
+      = pre ++ (pp :: (mid ++ S)) := by
+    have h1 : Y.take (pre.length + (1 + (mid.length + S.length)))
+        = (Y.take m).take (pre.length + (1 + (mid.length + S.length))) := by
+      rw [List.take_take, min_eq_left hm]
+    rw [h1, ← hXY, List.take_take, min_eq_left hm]
+    exact hXctx
+  have hYeq : Y = pre ++ (pp :: (mid ++ S))
+      ++ Y.drop (pre.length + (1 + (mid.length + S.length))) := by
+    conv_lhs => rw [← List.take_append_drop
+      (pre.length + (1 + (mid.length + S.length))) Y]
+    rw [hYctx]
+  exact hY S pre pp mid _ hYeq hdom hbd
+
 end YAPSS
