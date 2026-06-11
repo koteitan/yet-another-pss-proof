@@ -3568,6 +3568,193 @@ text \<open>(BT-WIN / BT-WRAP) The unified block-window row-1 invariants
   (closure+2: 18144 / T3 without the \<open>d0\<close> restriction 5251, zero violations).
   \<open>ginv_BT1\<close>/\<open>ginv_BT1_T3\<close> are corollaries.\<close>
 
+text \<open>\<open>btfullok\<close>: the UNIVERSAL window row-1 bound (memo 続48) — on any
+  standard host, any dominated window closed by a level drop is bounded one
+  above its anchor; with a head tie, exactly by it.  (Closure+2: 65178 resp.
+  41100 windows, zero violations; no bad-branch context needed.)\<close>
+
+definition btfullok :: "pairseq \<Rightarrow> bool" where
+  "btfullok M \<longleftrightarrow> (\<forall>a om l. om < length M \<longrightarrow>
+      (\<forall>k. a < k \<and> k < om \<longrightarrow> fst (M ! a) < fst (M ! k)) \<longrightarrow>
+      fst (M ! om) \<le> fst (M ! a) \<longrightarrow> a < l \<longrightarrow> l < om \<longrightarrow>
+      snd (M ! l) \<le> Suc (snd (M ! a)))"
+
+definition btfullok3 :: "pairseq \<Rightarrow> bool" where
+  "btfullok3 M \<longleftrightarrow> (\<forall>a om l. om < length M \<longrightarrow>
+      (\<forall>k. a < k \<and> k < om \<longrightarrow> fst (M ! a) < fst (M ! k)) \<longrightarrow>
+      fst (M ! om) \<le> fst (M ! a) \<longrightarrow>
+      snd (M ! Suc a) = snd (M ! a) \<longrightarrow> a < l \<longrightarrow> l < om \<longrightarrow>
+      snd (M ! l) \<le> snd (M ! a))"
+
+lemma btfull_diag_absurd:
+  assumes dom: "\<forall>k. a < k \<and> k < om \<longrightarrow>
+      fst (diagSeq 0 v ! a) < fst (diagSeq 0 v ! k)"
+    and st: "fst (diagSeq 0 v ! om) \<le> fst (diagSeq 0 v ! a)"
+    and bl: "om < length (diagSeq 0 v)"
+    and al: "a < l" and lo: "l < om"
+  shows False
+proof -
+  have len: "length (diagSeq 0 v) = Suc v" unfolding diagSeq_def by simp
+  have nth: "\<And>j. j < Suc v \<Longrightarrow> diagSeq 0 v ! j = (j, j)"
+    unfolding diagSeq_def by (simp del: upt_Suc)
+  have ao: "a < om" using al lo by simp
+  have "fst (diagSeq 0 v ! om) = om" using nth bl len by simp
+  moreover have "fst (diagSeq 0 v ! a) = a" using nth bl len ao by simp
+  ultimately show False using st ao by simp
+qed
+
+lemma btfullok_diagSeq: "btfullok (diagSeq 0 v)"
+  unfolding btfullok_def using btfull_diag_absurd by blast
+
+lemma btfullok3_diagSeq: "btfullok3 (diagSeq 0 v)"
+  unfolding btfullok3_def using btfull_diag_absurd by blast
+
+lemma btfullok_take:
+  assumes T: "btfullok M" shows "btfullok (take m M)"
+  unfolding btfullok_def
+proof (intro allI impI)
+  fix a om l
+  assume bl: "om < length (take m M)"
+    and dom: "\<forall>k. a < k \<and> k < om \<longrightarrow> fst (take m M ! a) < fst (take m M ! k)"
+    and st: "fst (take m M ! om) \<le> fst (take m M ! a)"
+    and al: "a < l" and lo: "l < om"
+  have bm: "om < m" and bM: "om < length M" using bl by simp_all
+  have nt: "\<And>j. j \<le> om \<Longrightarrow> take m M ! j = M ! j" using bm by auto
+  have dom': "\<forall>k. a < k \<and> k < om \<longrightarrow> fst (M ! a) < fst (M ! k)"
+  proof (intro allI impI)
+    fix k assume kk: "a < k \<and> k < om"
+    have "fst (take m M ! a) < fst (take m M ! k)" using dom kk by blast
+    thus "fst (M ! a) < fst (M ! k)" using nt kk al lo by simp
+  qed
+  have st': "fst (M ! om) \<le> fst (M ! a)" using st nt al lo by simp
+  have "snd (M ! l) \<le> Suc (snd (M ! a))"
+    using T[unfolded btfullok_def, rule_format, of om a l] bM dom' st' al lo by blast
+  thus "snd (take m M ! l) \<le> Suc (snd (take m M ! a))" using nt al lo by simp
+qed
+
+lemma btfullok3_take:
+  assumes T: "btfullok3 M" shows "btfullok3 (take m M)"
+  unfolding btfullok3_def
+proof (intro allI impI)
+  fix a om l
+  assume bl: "om < length (take m M)"
+    and dom: "\<forall>k. a < k \<and> k < om \<longrightarrow> fst (take m M ! a) < fst (take m M ! k)"
+    and st: "fst (take m M ! om) \<le> fst (take m M ! a)"
+    and ht: "snd (take m M ! Suc a) = snd (take m M ! a)"
+    and al: "a < l" and lo: "l < om"
+  have bm: "om < m" and bM: "om < length M" using bl by simp_all
+  have nt: "\<And>j. j \<le> om \<Longrightarrow> take m M ! j = M ! j" using bm by auto
+  have dom': "\<forall>k. a < k \<and> k < om \<longrightarrow> fst (M ! a) < fst (M ! k)"
+  proof (intro allI impI)
+    fix k assume kk: "a < k \<and> k < om"
+    have "fst (take m M ! a) < fst (take m M ! k)" using dom kk by blast
+    thus "fst (M ! a) < fst (M ! k)" using nt kk al lo by simp
+  qed
+  have st': "fst (M ! om) \<le> fst (M ! a)" using st nt al lo by simp
+  have ht': "snd (M ! Suc a) = snd (M ! a)" using ht nt al lo by simp
+  have "snd (M ! l) \<le> snd (M ! a)"
+    using T[unfolded btfullok3_def, rule_format, of om a l] bM dom' st' ht' al lo by blast
+  thus "snd (take m M ! l) \<le> snd (take m M ! a)" using nt al lo by simp
+qed
+
+lemma btfullok_butlast: "btfullok M \<Longrightarrow> btfullok (butlast M)"
+  using btfullok_take[of M "length M - 1"] by (simp add: butlast_conv_take)
+
+lemma btfullok3_butlast: "btfullok3 M \<Longrightarrow> btfullok3 (butlast M)"
+  using btfullok3_take[of M "length M - 1"] by (simp add: butlast_conv_take)
+
+lemma btfullok_oper_bad:
+  assumes BF: "btfullok M" and BF3: "btfullok3 M"
+    and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and opeq: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+  shows "btfullok X"
+  sorry
+
+lemma btfullok3_oper_bad:
+  assumes BF: "btfullok M" and BF3: "btfullok3 M"
+    and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and opeq: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+  shows "btfullok3 X"
+  sorry
+
+lemma btfullok_oper:
+  assumes BF: "btfullok M" and BF3: "btfullok3 M"
+    and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+  shows "btfullok (oper M n) \<and> btfullok3 (oper M n)"
+proof -
+  define j1 where "j1 = Lng M - 1"
+  have b: "blockok 0 M" by (rule blockok_ST_PS[OF ST])
+  show ?thesis
+  proof (cases "j1 = 0")
+    case True thus ?thesis using BF BF3 unfolding oper_def Let_def j1_def by simp
+  next
+    case False
+    show ?thesis
+    proof (cases "entry M 0 j1 = 0 \<and> entry M 1 j1 = 0")
+      case True
+      have "oper M n = Pred M"
+        unfolding oper_def Let_def j1_def[symmetric] using False True by auto
+      thus ?thesis
+        unfolding Pred_def using BF BF3 btfullok_butlast btfullok3_butlast by simp
+    next
+      case Fz: False
+      define i1 where "i1 = idx1 M j1"
+      show ?thesis
+      proof (cases "hasParent M i1 j1")
+        case False2: False
+        have "oper M n = Pred M"
+          unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+          using False Fz False2 by auto
+        thus ?thesis
+          unfolding Pred_def using BF BF3 btfullok_butlast btfullok3_butlast by simp
+      next
+        case hp: True
+        define j0 where "j0 = parent M i1 j1"
+        define d0 where "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+        have d1z: "(if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0) = 0"
+          using idx1_le[of M j1] unfolding i1_def by simp
+        have opeq: "oper M n = take j0 M @ concat (map (\<lambda>k.
+               map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+        proof -
+          have "oper M n = take j0 M @ concat (map (\<lambda>k.
+                 map (\<lambda>j. (entry M 0 j + k * d0,
+                            entry M 1 j + k * (if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0)))
+                 [j0..<j1]) [0..<n])"
+            unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+              j0_def[symmetric] d0_def[symmetric]
+            using False Fz hp by auto
+          thus ?thesis unfolding d1z by simp
+        qed
+        show ?thesis
+          using btfullok_oper_bad[OF BF BF3 b ST n1 j1_def False Fz i1_def hp j0_def d0_def opeq]
+            btfullok3_oper_bad[OF BF BF3 b ST n1 j1_def False Fz i1_def hp j0_def d0_def opeq]
+          by blast
+      qed
+    qed
+  qed
+qed
+
+theorem btfullok_ST_PS: "M \<in> ST_PS \<Longrightarrow> btfullok M \<and> btfullok3 M"
+proof (induction M rule: ST_PS.induct)
+  case (diag v) show ?case using btfullok_diagSeq btfullok3_diagSeq by blast
+next
+  case (oper M n)
+  show ?case
+    by (rule btfullok_oper[OF _ _ oper.hyps(1) oper.hyps(2)]) (use oper.IH in blast)+
+qed
+
 text \<open>(BT-FULL) The host-wide tie-free window bound on a bad-branch host
   (memo 続46): ANY dominated window closed by a level drop at a column
   \<open>\<le> j1\<close> is bounded one above its anchor (closure+2: 63999, zero
@@ -3585,7 +3772,15 @@ lemma ginv_BTFULL:
     and "fst (M ! om) \<le> fst (M ! a)"
     and "a < l" and "l < om"
   shows "snd (M ! l) \<le> Suc (snd (M ! a))"
-  sorry
+proof -
+  have lenM: "length M = Suc j1" using assms(2,3) by (cases M) auto
+  have omM: "om < length M" using assms(10) lenM by simp
+  show ?thesis
+    using btfullok_ST_PS[OF assms(1)]
+      conjunct1[of "btfullok M" "btfullok3 M"]
+    unfolding btfullok_def
+    using omM assms(11) assms(12) assms(13) assms(14) by blast
+qed
 
 lemma ginv_BTFULL_T3:
   assumes "M \<in> ST_PS"
@@ -3600,7 +3795,14 @@ lemma ginv_BTFULL_T3:
     and "snd (M ! Suc a) = snd (M ! a)"
     and "a < l" and "l < om"
   shows "snd (M ! l) \<le> snd (M ! a)"
-  sorry
+proof -
+  have lenM: "length M = Suc j1" using assms(2,3) by (cases M) auto
+  have omM: "om < length M" using assms(10) lenM by simp
+  show ?thesis
+    using btfullok_ST_PS[OF assms(1)]
+    unfolding btfullok3_def
+    using omM assms(11) assms(12) assms(13) assms(14) assms(15) by blast
+qed
 
 lemma ginv_BTWIN:
   assumes "M \<in> ST_PS"
