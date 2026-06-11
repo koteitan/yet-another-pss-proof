@@ -3587,4 +3587,70 @@ theorem tailokA_of_take_eq {X Y : PairSeq} {m : ℕ}
     rw [h1, h2, hXY]
   rwa [htk]
 
+
+/-! ## Within-copy parenthood transfer -/
+
+/-- Entry values at copy positions. -/
+theorem entry_copyExp {G B : PairSeq} {d0 n k q : ℕ}
+    (hk : k < n) (hq : q < B.length) :
+    entry (copyExp G B d0 n) 0 (G.length + (k * B.length + q))
+      = (B.getD q (0,0)).1 + k * d0
+    ∧ entry (copyExp G B d0 n) 1 (G.length + (k * B.length + q))
+      = (B.getD q (0,0)).2 := by
+  unfold entry
+  rw [if_pos rfl, if_neg one_ne_zero, copyExp_getD_copy hk hq]
+  exact ⟨rfl, rfl⟩
+
+/-- Within-copy row-0 parenthood is the shifted host-block parenthood. -/
+theorem nextrel0_copy_iff {G B : PairSeq} {lp : ℕ × ℕ} {d0 n k q0 q : ℕ}
+    (hk : k < n) (hq : q < B.length) (hq0 : q0 < q) :
+    nextrel0 (copyExp G B d0 n)
+        (G.length + (k * B.length + q0)) (G.length + (k * B.length + q))
+      ↔ nextrel0 (G ++ B ++ [lp]) (G.length + q0) (G.length + q) := by
+  have hq0B : q0 < B.length := by omega
+  have hXlen : (copyExp G B d0 n).length = G.length + n * B.length :=
+    copyExp_length ..
+  have hMlen : (G ++ B ++ [lp]).length = G.length + B.length + 1 :=
+    hostM_length ..
+  have hkL : k * B.length + B.length ≤ n * B.length := by
+    have := Nat.mul_le_mul_right B.length (show k + 1 ≤ n by omega)
+    rw [Nat.succ_mul] at this
+    omega
+  have he0 : ∀ {r}, r < B.length →
+      entry (copyExp G B d0 n) 0 (G.length + (k * B.length + r))
+        = (B.getD r (0,0)).1 + k * d0 := fun hr => (entry_copyExp hk hr).1
+  have heM : ∀ {r}, r < B.length →
+      entry (G ++ B ++ [lp]) 0 (G.length + r) = (B.getD r (0,0)).1 := by
+    intro r hr
+    unfold entry
+    rw [if_pos rfl, hostM_getD_blk hr]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨by omega, by omega, by omega, ?_, ?_⟩
+    · rw [heM hq0B, heM hq]
+      rw [he0 hq0B, he0 hq] at h4
+      omega
+    · intro l hl
+      have hloff : l - G.length < B.length := by omega
+      have hleq : l = G.length + (l - G.length) := by omega
+      have hX := h5 (G.length + (k * B.length + (l - G.length)))
+        (by constructor <;> omega)
+      rw [he0 hq, he0 hloff] at hX
+      rw [hleq, heM hq, heM hloff]
+      omega
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨by omega, by omega, by omega, ?_, ?_⟩
+    · rw [he0 hq0B, he0 hq]
+      rw [heM hq0B, heM hq] at h4
+      omega
+    · intro l hl
+      have hloff : l - G.length - k * B.length < B.length := by omega
+      have hleq : l = G.length + (k * B.length
+          + (l - G.length - k * B.length)) := by omega
+      have hM := h5 (G.length + (l - G.length - k * B.length))
+        (by constructor <;> omega)
+      rw [heM hq, heM hloff] at hM
+      rw [hleq, he0 hq, he0 hloff]
+      omega
+
 end YAPSS
