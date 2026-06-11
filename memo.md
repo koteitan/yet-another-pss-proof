@@ -2567,3 +2567,18 @@ X = take j0 M @ copies。閉鎖窓 (P, c0=X!(P+1), 窓 [P+1..end), 閉鎖位置 
 - sorry 22（t1ok/t3ok_oper_bad +2、high0 -1）。oper_bad 2点は GRAND シーム
   （ginv_oper_bad の地図を雛形に、新タイ=コピー境界タイの分析）。
 - 事故録: cwd リセットで相対パス編集が2回空振り→以後ファイル編集は絶対パスで。
+
+### (2026-06-11 続40) E6_tie_nofire_high1 討伐（緑）— タイ無発火コンプレックス完全制覇
+
+- 新不変量 **t14ok**（T14: snd タイ停止列 c1 の自前ランは head-max。閉包+1 で
+  705ラン 0違反、開ラン/閉ラン両方・¬hm 皆無・停止は常に snd タイ）。
+  diag/take（hm_take 接頭辞遺伝）/butlast/dispatch 緑、oper_bad 凍結。
+- **high1 討伐**: ホスト抽出→タイ対 (a,b) 確立→mrun H' b = takeWhile(rest1@post)
+  → 窓ラン K1 は take |K1| (ホストラン)（takeWhile_append1/2 の2分岐）→
+  t14ok で hm(ホストラン) → hm_take で hm K1 → ¬hm premise と矛盾。
+- これで E6_tie_nofire0/1 + high0/high1 全滅 = **NT_tie_resolved の無発火系
+  依存が全て緑**。
+- 事故録: hm_take が t ブロックより後方定義で Undefined fact → 前方移動。
+  b_def で畳んだ不等式は bH[unfolded b_def] で渡す（unfolding は goal のみ）。
+- sorry 22（t14ok_oper_bad +1 / high1 -1）。GRAND シーム在庫:
+  t1ok/t3ok/t14ok_oper_bad・GBLK0・qpos（全て同型のコピー境界タイ分析）。

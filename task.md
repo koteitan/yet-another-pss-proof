@@ -74,7 +74,8 @@
   - ✅ seam_copyhead_m1 討伐〔一般L直証: coreM 4分岐×E-const/F1直証・F2-L1=blockok反駁・実在114件全カバー〕
   - 🚨 シーム残差〔seam_open_m1 14件 e1j0=0機構 / copyhead残差 P・E2var・F2L2 閉包+1で0件 / copyhead_deep 実証0件〕
   - ✅ t1ok/t3ok 基盤＋E6_tie_nofire_high0 討伐〔タイラン≤u+1/=u 不変量・y∈{u,u+1}強制→hm矛盾・残 t1ok/t3ok_oper_bad〕
-  - 🚨 値側コア〔NT_lexdiff_lt 0/116万 / E6_tie_nofire_high1（c1ラン停止情報なし・要追加機構）〕
+  - ✅ E6_tie_nofire_high1 討伐〔t14ok=タイ停止ランhm不変量＋hm_take接頭辞遺伝〕＝タイ無発火コンプレックス完全制覇
+  - 🚨 値側コア〔NT_lexdiff_lt 0/116万〕
   - ✅ ginv 基盤＋E6_nbcK_T 討伐〔ginv=閉鎖窓row1上界・生成帰納骨格緑・dseg橋渡し・残 ginv_oper_bad のみ〕
   - 🚨 fire-cascade 残4点〔E6_lpl/E6_dom_deep/E6_memT/E6_nbcK_K＝GRAND同時帰納の本丸〕
   - ✅ ginv_oper_bad 討伐〔A/B/C/E転送＋反駁＋d01/d02閉鎖証人・残差 GBLK0/qpos の2点〕

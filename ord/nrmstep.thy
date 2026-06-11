@@ -3372,6 +3372,22 @@ proof -
     unfolding mrun_def n d by (rule takeWhile_take_comm)
 qed
 
+lemma hm_take:
+  assumes ne: "take s K1 \<noteq> []" and hm: "snd (hd K1) = maxr1 K1"
+  shows "snd (hd (take s K1)) = maxr1 (take s K1)"
+proof -
+  have ne1: "K1 \<noteq> []" using ne by auto
+  have hdeq: "hd (take s K1) = hd K1"
+    using ne by (cases K1; cases s) auto
+  have sub: "snd ` set (take s K1) \<subseteq> snd ` set K1"
+    using set_take_subset by fastforce
+  have "maxr1 (take s K1) \<le> maxr1 K1"
+    unfolding maxr1_def using ne sub by (intro Max_mono) auto
+  moreover have "snd (hd (take s K1)) \<le> maxr1 (take s K1)"
+    using maxr1_ub ne by (metis hd_in_set)
+  ultimately show ?thesis using hm hdeq by simp
+qed
+
 text \<open>Tie-run row-1 bounds (GRAND components T1/T3, memo 続33/続38): at any
   snd-tie run stop, every run element's row 1 is at most one above the tie
   value (\<open>t1ok\<close>), and exactly bounded by it when the run head ties (\<open>t3ok\<close>).
@@ -3486,6 +3502,59 @@ lemma t1ok_butlast: "t1ok M \<Longrightarrow> t1ok (butlast M)"
 lemma t3ok_butlast: "t3ok M \<Longrightarrow> t3ok (butlast M)"
   using t3ok_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
+text \<open>(T14) The stop column's own run after an snd-tie is head-maximal
+  (closure+1: 705 runs, zero violations, both open and closed).\<close>
+
+definition t14ok :: "pairseq \<Rightarrow> bool" where
+  "t14ok M \<longleftrightarrow> (\<forall>a b. a < length M \<longrightarrow> 0 < fst (M ! a) \<longrightarrow>
+      b = Suc a + length (mrun M a) \<longrightarrow> b < length M \<longrightarrow>
+      snd (M ! b) = snd (M ! a) \<longrightarrow> mrun M b \<noteq> [] \<longrightarrow>
+      snd (hd (mrun M b)) = maxr1 (mrun M b))"
+
+lemma t14ok_diagSeq: "t14ok (diagSeq 0 v)"
+  unfolding t14ok_def using tie_diag_absurd by blast
+
+lemma t14ok_take:
+  assumes T: "t14ok M" shows "t14ok (take m M)"
+  unfolding t14ok_def
+proof (intro allI impI)
+  fix a b
+  assume al: "a < length (take m M)" and pos: "0 < fst (take m M ! a)"
+    and bp: "b = Suc a + length (mrun (take m M) a)"
+    and bl: "b < length (take m M)"
+    and sb: "snd (take m M ! b) = snd (take m M ! a)"
+    and ne: "mrun (take m M) b \<noteq> []"
+  have mr: "mrun (take m M) a = mrun M a" by (rule tie_take_pair[OF bp bl])
+  have aM: "a < length M" and am: "a < m" using al by simp_all
+  have bM: "b < length M" and bm: "b < m" using bl by simp_all
+  have na: "take m M ! a = M ! a" using am by simp
+  have nb: "take m M ! b = M ! b" using bm by simp
+  have mrb: "mrun (take m M) b = take (m - Suc b) (mrun M b)"
+    by (rule mrun_take[OF bm])
+  have neM: "mrun M b \<noteq> []" using ne mrb by auto
+  have hmM: "snd (hd (mrun M b)) = maxr1 (mrun M b)"
+    using T[unfolded t14ok_def, rule_format, of a b] aM bM bp[unfolded mr]
+      pos[unfolded na] sb[unfolded na nb] neM by blast
+  show "snd (hd (mrun (take m M) b)) = maxr1 (mrun (take m M) b)"
+    unfolding mrb by (rule hm_take[OF ne[unfolded mrb] hmM])
+qed
+
+lemma t14ok_butlast: "t14ok M \<Longrightarrow> t14ok (butlast M)"
+  using t14ok_take[of M "length M - 1"] by (simp add: butlast_conv_take)
+
+lemma t14ok_oper_bad:
+  assumes T: "t1ok M" and T3: "t3ok M" and T14: "t14ok M"
+    and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and opeq: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+  shows "t14ok X"
+  sorry
+
 lemma t1ok_oper_bad:
   assumes T: "t1ok M" and T3: "t3ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"
     and n1: "1 \<le> n"
@@ -3513,14 +3582,15 @@ lemma t3ok_oper_bad:
   sorry
 
 lemma t13ok_oper:
-  assumes T: "t1ok M" and T3: "t3ok M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
-  shows "t1ok (oper M n) \<and> t3ok (oper M n)"
+  assumes T: "t1ok M" and T3: "t3ok M" and T14: "t14ok M"
+    and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+  shows "t1ok (oper M n) \<and> t3ok (oper M n) \<and> t14ok (oper M n)"
 proof -
   define j1 where "j1 = Lng M - 1"
   have b: "blockok 0 M" by (rule blockok_ST_PS[OF ST])
   show ?thesis
   proof (cases "j1 = 0")
-    case True thus ?thesis using T T3 unfolding oper_def Let_def j1_def by simp
+    case True thus ?thesis using T T3 T14 unfolding oper_def Let_def j1_def by simp
   next
     case False
     show ?thesis
@@ -3529,7 +3599,7 @@ proof -
       have "oper M n = Pred M"
         unfolding oper_def Let_def j1_def[symmetric] using False True by auto
       thus ?thesis
-        unfolding Pred_def using T T3 t1ok_butlast t3ok_butlast by simp
+        unfolding Pred_def using T T3 T14 t1ok_butlast t3ok_butlast t14ok_butlast by simp
     next
       case Fz: False
       define i1 where "i1 = idx1 M j1"
@@ -3540,7 +3610,7 @@ proof -
           unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
           using False Fz False2 by auto
         thus ?thesis
-          unfolding Pred_def using T T3 t1ok_butlast t3ok_butlast by simp
+          unfolding Pred_def using T T3 T14 t1ok_butlast t3ok_butlast t14ok_butlast by simp
       next
         case hp: True
         define j0 where "j0 = parent M i1 j1"
@@ -3562,35 +3632,20 @@ proof -
         show ?thesis
           using t1ok_oper_bad[OF T T3 b ST n1 j1_def False Fz i1_def hp j0_def d0_def opeq]
             t3ok_oper_bad[OF T T3 b ST n1 j1_def False Fz i1_def hp j0_def d0_def opeq]
+            t14ok_oper_bad[OF T T3 T14 b ST n1 j1_def False Fz i1_def hp j0_def d0_def opeq]
           by blast
       qed
     qed
   qed
 qed
 
-theorem t13ok_ST_PS: "M \<in> ST_PS \<Longrightarrow> t1ok M \<and> t3ok M"
+theorem t13ok_ST_PS: "M \<in> ST_PS \<Longrightarrow> t1ok M \<and> t3ok M \<and> t14ok M"
 proof (induction M rule: ST_PS.induct)
-  case (diag v) show ?case using t1ok_diagSeq t3ok_diagSeq by blast
+  case (diag v) show ?case using t1ok_diagSeq t3ok_diagSeq t14ok_diagSeq by blast
 next
   case (oper M n)
   show ?case
-    by (rule t13ok_oper[OF _ _ oper.hyps(1) oper.hyps(2)]) (use oper.IH in blast)+
-qed
-
-lemma hm_take:
-  assumes ne: "take s K1 \<noteq> []" and hm: "snd (hd K1) = maxr1 K1"
-  shows "snd (hd (take s K1)) = maxr1 (take s K1)"
-proof -
-  have ne1: "K1 \<noteq> []" using ne by auto
-  have hdeq: "hd (take s K1) = hd K1"
-    using ne by (cases K1; cases s) auto
-  have sub: "snd ` set (take s K1) \<subseteq> snd ` set K1"
-    using set_take_subset by fastforce
-  have "maxr1 (take s K1) \<le> maxr1 K1"
-    unfolding maxr1_def using ne sub by (intro Max_mono) auto
-  moreover have "snd (hd (take s K1)) \<le> maxr1 (take s K1)"
-    using maxr1_ub ne by (metis hd_in_set)
-  ultimately show ?thesis using hm hdeq by simp
+    by (rule t13ok_oper[OF _ _ _ oper.hyps(1) oper.hyps(2)]) (use oper.IH in blast)+
 qed
 
 lemma sibrel_trunc:
@@ -8130,15 +8185,109 @@ proof -
 qed
 
 lemma E6_tie_nofire_high1:
-  assumes "fbseg u (c # rest)"
-    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
-    and "snd c1 = snd c"
-    and "takeWhile (\<lambda>r. fst c1 < fst r) rest1 \<noteq> []"
-    and "snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))
+  assumes A: "fbseg u (c # rest)"
+    and D: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and S: "snd c1 = snd c"
+    and NE: "takeWhile (\<lambda>r. fst c1 < fst r) rest1 \<noteq> []"
+    and NH: "snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))
          \<noteq> maxr1 (takeWhile (\<lambda>r. fst c1 < fst r) rest1)"
-    and "snd c1 \<le> snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))"
+    and HI: "snd c1 \<le> snd (hd (takeWhile (\<lambda>r. fst c1 < fst r) rest1))"
   shows "\<not> pfire (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1)))"
-  sorry
+proof -
+  define K where "K = takeWhile (\<lambda>r. fst c < fst r) rest"
+  define K1 where "K1 = takeWhile (\<lambda>r. fst c1 < fst r) rest1"
+  have K1NE: "K1 \<noteq> []" unfolding K1_def by (rule NE)
+  obtain pre pp mid post where H: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+    and dom: "\<forall>r \<in> set (mid @ (c # rest)). fst pp < fst r"
+    using A unfolding fbseg_def by blast
+  define H' where "H' = pre @ (pp # mid @ (c # rest)) @ post"
+  have HST: "H' \<in> ST_PS" unfolding H'_def by (rule H)
+  have T14: "t14ok H'" using t13ok_ST_PS[OF HST] by blast
+  define a where "a = length pre + (1 + length mid)"
+  have nthc: "H' ! a = c"
+    unfolding H'_def a_def by (simp add: nth_append)
+  have dropa: "drop (Suc a) H' = rest @ post"
+    unfolding H'_def a_def by (simp add: drop_append)
+  have rdec: "rest = K @ (c1 # rest1)"
+    unfolding K_def using D by (metis takeWhile_dropWhile_id)
+  have mrK: "mrun H' a = K"
+  proof -
+    have nP: "\<not> fst c < fst c1"
+    proof -
+      have "dropWhile (\<lambda>r. fst c < fst r) rest \<noteq> []" using D by simp
+      hence "\<not> fst c < fst (hd (dropWhile (\<lambda>r. fst c < fst r) rest))"
+        by (rule hd_dropWhile)
+      thus ?thesis using D by simp
+    qed
+    have allK: "\<forall>x \<in> set K. fst c < fst x"
+      unfolding K_def using set_takeWhileD by metis
+    have split: "rest @ post = K @ ((c1 # rest1) @ post)" using rdec by simp
+    have "takeWhile (\<lambda>r. fst c < fst r) (rest @ post)
+        = K @ takeWhile (\<lambda>r. fst c < fst r) ((c1 # rest1) @ post)"
+      unfolding split by (rule takeWhile_append2) (use allK in blast)
+    moreover have "takeWhile (\<lambda>r. fst c < fst r) ((c1 # rest1) @ post) = []"
+      using nP by simp
+    ultimately show ?thesis unfolding mrun_def nthc dropa by simp
+  qed
+  have lenH: "length H' = length pre + 2 + length mid + length rest + length post"
+    unfolding H'_def by simp
+  have lrest: "length rest = length K + 1 + length rest1" using rdec by simp
+  have aH: "a < length H'" unfolding a_def lenH by simp
+  define b where "b = Suc a + length K"
+  have bH: "b < length H'" unfolding b_def a_def lenH lrest by simp
+  have nthc1: "H' ! b = c1"
+  proof -
+    have "H' ! b = drop (Suc a) H' ! length K"
+      unfolding b_def using bH[unfolded b_def] by (simp add: add.commute)
+    also have "\<dots> = (K @ ((c1 # rest1) @ post)) ! length K"
+      unfolding dropa using rdec by simp
+    also have "\<dots> = c1" by (simp add: nth_append)
+    finally show ?thesis .
+  qed
+  have posH: "0 < fst (H' ! a)"
+  proof -
+    have "c \<in> set (mid @ (c # rest))" by simp
+    hence "fst pp < fst c" using dom by blast
+    thus ?thesis unfolding nthc by simp
+  qed
+  have bdefH: "b = Suc a + length (mrun H' a)" unfolding b_def mrK ..
+  have sndt: "snd (H' ! b) = snd (H' ! a)"
+    unfolding nthc1 nthc using S by simp
+  have dropb: "drop (Suc b) H' = rest1 @ post"
+  proof -
+    have "drop (Suc b) H' = drop (Suc (length K)) (drop (Suc a) H')"
+      unfolding b_def by (simp add: drop_drop add.commute)
+    also have "\<dots> = drop (Suc (length K)) (K @ ((c1 # rest1) @ post))"
+      unfolding dropa using rdec by simp
+    also have "\<dots> = rest1 @ post" by simp
+    finally show ?thesis .
+  qed
+  have mrb: "mrun H' b = takeWhile (\<lambda>r. fst c1 < fst r) (rest1 @ post)"
+    unfolding mrun_def nthc1 dropb ..
+  have K1pre: "K1 = take (length K1) (mrun H' b)"
+  proof (cases "takeWhile (\<lambda>r. fst c1 < fst r) rest1 = rest1")
+    case True
+    have "mrun H' b = rest1 @ takeWhile (\<lambda>r. fst c1 < fst r) post"
+      unfolding mrb by (rule takeWhile_append2) (use True set_takeWhileD in \<open>force\<close>)
+    moreover have "K1 = rest1" unfolding K1_def by (rule True)
+    ultimately show ?thesis by simp
+  next
+    case False
+    then obtain w where w: "w \<in> set rest1" "\<not> fst c1 < fst w"
+      by (metis set_takeWhileD takeWhile_eq_all_conv)
+    have "mrun H' b = takeWhile (\<lambda>r. fst c1 < fst r) rest1"
+      unfolding mrb using w by (rule takeWhile_append1)
+    thus ?thesis unfolding K1_def by simp
+  qed
+  have mbne: "mrun H' b \<noteq> []" using K1pre K1NE by auto
+  have hmb: "snd (hd (mrun H' b)) = maxr1 (mrun H' b)"
+    using T14[unfolded t14ok_def, rule_format, of a b]
+      aH posH bdefH bH sndt mbne by blast
+  have hmK1: "snd (hd K1) = maxr1 K1"
+    using hm_take[OF _ hmb] K1pre K1NE by metis
+  have False using NH[folded K1_def] hmK1 by simp
+  thus ?thesis ..
+qed
 
 lemma E6_tie_nofire0:
   assumes "fbseg u (c # rest)"
