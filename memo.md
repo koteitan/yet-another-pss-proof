@@ -3014,3 +3014,10 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   （nrm_snoc_seg・ins_olt_mono 等の緑部品）で q の寄与する新違反者を
   S 側に移送する論法。次: |S|≥2 ∧ ¬fire(S) ∧ fire(S@[q]) の「あと一歩」
   反例ダンプ（fire の違反者 g の所在を S/q 寄与で分類）。
+
+- (続55補) iii 対偶監査 ✓: **|S|≥2 ∧ fire(S@[q]) ⟹ fire(S)**（閉包+1:
+  2,267/0）。E6_iii_singleton = この fire-butlast 安定性（FBS）1点に帰着。
+  FBS の証明 = 違反者 g の snoc 移送（Gterm の snoc 分解と NT(S@[q]) vs
+  NT(S) の olt 橋 — nrm_snoc_seg/ins_olt_mono の緑部品圏）。次セッションで
+  FBS を凍結 or 直証して iii を落とす。qcut_last/seam も同じ fire-snoc
+  移送圏の見込み。
