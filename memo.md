@@ -2551,3 +2551,19 @@ X = take j0 M @ copies。閉鎖窓 (P, c0=X!(P+1), 窓 [P+1..end), 閉鎖位置 
 - 値側（NT_lexdiff_lt / nbcK_K / E6_lpl / E6_dom_deep / qcut・iii・seam・STS_B）
   は別軸（fire-cascade）。GRAND-世代側が閉じると行レベルの前提が
   arithmetic 化される（続26計画の完成形）。
+
+### (2026-06-11 続39) t1ok/t3ok 基盤＋E6_tie_nofire_high0 討伐（緑）
+
+- **t1ok/t3ok 定義・生成帰納骨格 緑**（GRAND 成分 T1/T3 の Isabelle 化）:
+  snd タイ停止のラン上界（≤ u+1 / 頭タイなら ≤ u）。緩和形（fst 停止は ≤ のみ）
+  で閉包+1 13106/8097 件 0違反。diag=空虚（snd 単射）/ take=tie_take_pair
+  （b<m が飽和を排除し mrun 同一）/ oper_bad ×2 凍結。
+- **E6_tie_nofire_high0 討伐**: fbseg→host 抽出、mrun H' a = K（takeWhile
+  分割+hd_dropWhile）、t1ok ⟹ y ≤ u+1、premise u ≤ y ⟹ y∈{u,u+1}、
+  y=u は t3ok で全≤u ⟹ hm、y=u+1 は t1b で全≤y ⟹ hm — どちらも ¬hm premise
+  と矛盾（前提偽クラスの discharge）。
+- high1 は c1 のランの停止情報が premise に無く未着手（c1 ラン停止の
+  snd タイ性 or 停止なしケースの別機構が要る — 次の調査対象）。
+- sorry 22（t1ok/t3ok_oper_bad +2、high0 -1）。oper_bad 2点は GRAND シーム
+  （ginv_oper_bad の地図を雛形に、新タイ=コピー境界タイの分析）。
+- 事故録: cwd リセットで相対パス編集が2回空振り→以後ファイル編集は絶対パスで。
