@@ -3597,6 +3597,41 @@ lemma ginv_BTWIN_T3:
   shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + al)"
   sorry
 
+text \<open>(BT-WRAP-GEN) The \<open>\<tau>\<close>-generalised exact-copy wrap bound (memo 続46補2):
+  with \<open>d0 = 0\<close> the tie partner may be ANY earlier block column (closure+2:
+  49609 / T3 10179, zero violations; \<open>d0 > 0\<close> is false for both).\<close>
+
+lemma ginv_BTWRAPG:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "d0 = 0"
+    and "ta \<le> qa" and "qa < j1 - j0"
+    and "entry M 1 (j0 + qa) = entry M 1 (j0 + ta)"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "qa < q" and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + qa))"
+  sorry
+
+lemma ginv_BTWRAPG_T3:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "d0 = 0"
+    and "ta \<le> qa" and "qa < j1 - j0"
+    and "entry M 1 (j0 + qa) = entry M 1 (j0 + ta)"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
+    and "qa < q" and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
+  sorry
+
 lemma ginv_BTWRAP:
   assumes "M \<in> ST_PS"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
@@ -3610,7 +3645,13 @@ lemma ginv_BTWRAP:
     and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
     and "qa < q" and "q < j1 - j0"
   shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + qa))"
-  sorry
+proof -
+  have t0: "(0::nat) \<le> qa" by simp
+  have tie0: "entry M 1 (j0 + qa) = entry M 1 (j0 + 0)" using assms(11) by simp
+  show ?thesis
+    by (rule ginv_BTWRAPG[OF assms(1-8) assms(9) t0 assms(10) tie0 assms(12)
+          assms(13) assms(14)])
+qed
 
 lemma ginv_BTWRAP_T3:
   assumes "M \<in> ST_PS"
