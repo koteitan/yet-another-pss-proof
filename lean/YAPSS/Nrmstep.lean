@@ -3796,4 +3796,72 @@ theorem tailokA_copyExp_row0 {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
   rw [hMtake] at happ
   exact hhm_shift happ
 
+
+/-! ## Chain lifts between the host block and a copy -/
+
+theorem rtg_nextrel0_le {W : PairSeq} {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 W) a b) : a ≤ b := by
+  induction h with
+  | refl => exact le_rfl
+  | tail _ hs ih => exact le_trans ih (le_of_lt (nextrel0_lt hs))
+
+/-- Host-block chains lift to within-copy chains. -/
+theorem rtg_copy_of_host {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
+    {lp : ℕ × ℕ} {d0 n k : ℕ} (hk : k < n) {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 (G ++ ((v0,w0) :: R) ++ [lp])) a b)
+    (ha : G.length ≤ a) (hb : b < G.length + ((v0,w0) :: R).length) :
+    Relation.ReflTransGen (nextrel0 (copyExp G ((v0,w0) :: R) d0 n))
+      (a + k * ((v0,w0) :: R).length) (b + k * ((v0,w0) :: R).length) := by
+  induction h with
+  | refl => exact Relation.ReflTransGen.refl
+  | @tail c e hchain hstep ih =>
+    have hac : a ≤ c := rtg_nextrel0_le hchain
+    have hce : c < e := nextrel0_lt hstep
+    have hstepX : nextrel0 (copyExp G ((v0,w0) :: R) d0 n)
+        (c + k * ((v0,w0) :: R).length) (e + k * ((v0,w0) :: R).length) := by
+      have h1 : c = G.length + (c - G.length) := by omega
+      have h2 : e = G.length + (e - G.length) := by omega
+      rw [h1, h2] at hstep
+      have h3 := (nextrel0_copy_iff (d0 := d0) (n := n) hk
+        (show e - G.length < ((v0,w0) :: R).length by omega)
+        (show c - G.length < e - G.length by omega)).2 hstep
+      rw [show G.length + (k * ((v0,w0) :: R).length + (c - G.length))
+            = c + k * ((v0,w0) :: R).length by omega,
+          show G.length + (k * ((v0,w0) :: R).length + (e - G.length))
+            = e + k * ((v0,w0) :: R).length by omega] at h3
+      exact h3
+    exact (ih (by omega)).tail hstepX
+
+/-- Within-copy chains project to host-block chains. -/
+theorem rtg_host_of_copy {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
+    {lp : ℕ × ℕ} {d0 n k : ℕ} (hk : k < n) {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 (copyExp G ((v0,w0) :: R) d0 n)) a b)
+    (ha : G.length + k * ((v0,w0) :: R).length ≤ a)
+    (hb : b < G.length + k * ((v0,w0) :: R).length + ((v0,w0) :: R).length) :
+    Relation.ReflTransGen (nextrel0 (G ++ ((v0,w0) :: R) ++ [lp]))
+      (a - k * ((v0,w0) :: R).length) (b - k * ((v0,w0) :: R).length) := by
+  induction h with
+  | refl => exact Relation.ReflTransGen.refl
+  | @tail c e hchain hstep ih =>
+    have hac : a ≤ c := rtg_nextrel0_le hchain
+    have hce : c < e := nextrel0_lt hstep
+    have hstepM : nextrel0 (G ++ ((v0,w0) :: R) ++ [lp])
+        (c - k * ((v0,w0) :: R).length) (e - k * ((v0,w0) :: R).length) := by
+      have h1 : c = G.length + (k * ((v0,w0) :: R).length
+          + (c - G.length - k * ((v0,w0) :: R).length)) := by omega
+      have h2 : e = G.length + (k * ((v0,w0) :: R).length
+          + (e - G.length - k * ((v0,w0) :: R).length)) := by omega
+      rw [h1, h2] at hstep
+      have h3 := (nextrel0_copy_iff (lp := lp) hk
+        (show e - G.length - k * ((v0,w0) :: R).length < ((v0,w0) :: R).length
+          by omega)
+        (show c - G.length - k * ((v0,w0) :: R).length
+            < e - G.length - k * ((v0,w0) :: R).length by omega)).1 hstep
+      rw [show G.length + (c - G.length - k * ((v0,w0) :: R).length)
+            = c - k * ((v0,w0) :: R).length by omega,
+          show G.length + (e - G.length - k * ((v0,w0) :: R).length)
+            = e - k * ((v0,w0) :: R).length by omega] at h3
+      exact h3
+    exact (ih (by omega)).tail hstepM
+
 end YAPSS
