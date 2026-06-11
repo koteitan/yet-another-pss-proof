@@ -2534,4 +2534,168 @@ theorem hmok_diagSeq (v : ℕ) : hmok (diagSeq 0 v) := by
   rw [runAt_diagSeq0 v a ha] at hstop
   omega
 
+
+/-! ## HM⁺ under truncation -/
+
+theorem takeWhile_length_le_of_fail {α : Type*} {pr : α → Bool} {L : List α}
+    {i : ℕ} (hi : i < L.length) (hf : pr L[i] = false) :
+    (L.takeWhile pr).length ≤ i := by
+  by_contra hcon
+  push Not at hcon
+  have h1 : (L.takeWhile pr)[i] = L[i] :=
+    (List.takeWhile_prefix pr).getElem hcon
+  have h2 := List.mem_takeWhile_imp (List.getElem_mem hcon)
+  rw [h1, hf] at h2
+  exact Bool.false_ne_true h2
+
+theorem runAt_take_length {M : PairSeq} {m a : ℕ} (ha : a < m) :
+    (runAt (M.take m) a).length = min (m - (a + 1)) (runAt M a).length := by
+  unfold runAt
+  rw [getD_take ha, List.drop_take, ← List.take_takeWhile, List.length_take]
+
+theorem runAt_take_eq {M : PairSeq} {m a : ℕ} (ha : a < m)
+    (hstop : stopAt (M.take m) a < m) :
+    runAt (M.take m) a = runAt M a := by
+  unfold stopAt at hstop
+  rw [runAt_take_length ha] at hstop
+  have hle : (runAt M a).length ≤ m - (a + 1) := by omega
+  unfold runAt
+  rw [getD_take ha, List.drop_take, ← List.take_takeWhile]
+  exact List.take_of_length_le (le_trans hle (by omega))
+
+
+
+theorem prefix_getD_eq {α : Type*} {l1 l2 : List α}
+    (h : l1 <+: l2) {i : ℕ} (hi : i < l1.length) (d : α) :
+    l1.getD i d = l2.getD i d := by
+  rw [getD_eq_getElem' _ _ hi,
+      getD_eq_getElem' _ _ (lt_of_lt_of_le hi h.length_le)]
+  exact h.getElem hi
+
+
+theorem getD_drop {α : Type*} {L : List α} {n i : ℕ} (d : α) :
+    (L.drop n).getD i d = L.getD (n + i) d := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
+      List.getElem?_drop]
+
+/-- The column at the stop position fails the run predicate. -/
+theorem stop_col_fails {pr : (ℕ × ℕ) → Bool} {L : List (ℕ × ℕ)}
+    (h : (L.takeWhile pr).length < L.length) :
+    pr (L.getD (L.takeWhile pr).length (0,0)) = false := by
+  have hdec : L.takeWhile pr ++ L.dropWhile pr = L :=
+    List.takeWhile_append_dropWhile
+  have hne : L.dropWhile pr ≠ [] := by
+    intro he
+    have hlen := congrArg List.length hdec
+    rw [he] at hlen
+    simp at hlen
+    omega
+  obtain ⟨d, D, hdD⟩ : ∃ d D, L.dropWhile pr = d :: D := by
+    cases hc : L.dropWhile pr with
+    | nil => exact absurd hc hne
+    | cons d D => exact ⟨d, D, rfl⟩
+  have hdrop : L.drop (L.takeWhile pr).length = L.dropWhile pr := by
+    nth_rewrite 2 [← hdec]
+    exact List.drop_left
+  have hd : L.getD (L.takeWhile pr).length (0,0) = d := by
+    calc L.getD (L.takeWhile pr).length (0,0)
+        = (L.drop (L.takeWhile pr).length).getD 0 (0,0) := by
+          rw [getD_drop, Nat.add_zero]
+    _ = d := by rw [hdrop, hdD, List.getD_cons_zero]
+  rw [hd]
+  exact dropWhile_cons_head_not hdD
+
+/-- Positions strictly inside a run region carry the run's elements. -/
+theorem getD_run_region {M : PairSeq} {a p : ℕ} (hp1 : a < p)
+    (hp2 : p < stopAt M a) :
+    M.getD p (0,0) = (runAt M a).getD (p - (a + 1)) (0,0) := by
+  unfold stopAt at hp2
+  have hidx : p - (a + 1) < (runAt M a).length := by omega
+  unfold runAt at hidx ⊢
+  rw [prefix_getD_eq (List.takeWhile_prefix _) hidx, getD_drop]
+  congr 1
+  omega
+
+/-- Run members sit strictly above the base level. -/
+theorem run_region_gt {M : PairSeq} {a p : ℕ} (hp1 : a < p)
+    (hp2 : p < stopAt M a) :
+    (M.getD a (0,0)).1 < (M.getD p (0,0)).1 := by
+  unfold stopAt at hp2
+  have hidx : p - (a + 1) < (runAt M a).length := by omega
+  have hmem : (runAt M a).getD (p - (a + 1)) (0,0) ∈ runAt M a := by
+    rw [getD_eq_getElem' _ _ hidx]
+    exact List.getElem_mem hidx
+  have hpass := List.mem_takeWhile_imp hmem
+  rw [getD_run_region hp1 hp2]
+  simpa using hpass
+
+theorem stopAt_col_le {M : PairSeq} {a : ℕ} (hs : stopAt M a < M.length) :
+    (M.getD (stopAt M a) (0,0)).1 ≤ (M.getD a (0,0)).1 := by
+  have hlen : (((M.drop (a + 1)).takeWhile
+      fun r => decide ((M.getD a (0,0)).1 < r.1))).length
+      < (M.drop (a + 1)).length := by
+    unfold stopAt runAt at hs
+    rw [List.length_drop]
+    omega
+  have hfail := stop_col_fails hlen
+  rw [getD_drop] at hfail
+  have hidx : a + 1 + ((M.drop (a + 1)).takeWhile
+      fun r => decide ((M.getD a (0,0)).1 < r.1)).length = stopAt M a := rfl
+  rw [hidx] at hfail
+  simpa using hfail
+
+/-- **HM⁺ survives truncation**: under the closure premise the stop column
+survives, the runs coincide, and the interior runs are untouched. -/
+theorem hmok_take {M : PairSeq} (h : hmok M) (m : ℕ) : hmok (M.take m) := by
+  intro a ha hstop hclo p hp1 hp2
+  rw [List.length_take] at ha hstop
+  have ham : a < m := lt_of_lt_of_le ha (min_le_left _ _)
+  have haM : a < M.length := lt_of_lt_of_le ha (min_le_right _ _)
+  have hsm : stopAt (M.take m) a < m := lt_of_lt_of_le hstop (min_le_left _ _)
+  have hrun : runAt (M.take m) a = runAt M a := runAt_take_eq ham hsm
+  have hseq : stopAt (M.take m) a = stopAt M a := by
+    unfold stopAt
+    rw [hrun]
+  have hsm' : stopAt M a < m := hseq ▸ hsm
+  have hsM : stopAt M a < M.length :=
+    hseq ▸ (lt_of_lt_of_le hstop (min_le_right _ _))
+  rw [hseq] at hp2
+  rw [getD_take hsm, hseq, getD_take ham] at hclo
+  have hint := h a haM hsM hclo p hp1 hp2
+  have hpm : p < m := by omega
+  have hpfail : stopAt (M.take m) p < m := by
+    rcases Nat.eq_or_lt_of_le hp1 with rfl | hpa'
+    · exact hsm
+    · have hidx : stopAt M a - (p + 1) < ((M.take m).drop (p + 1)).length := by
+        rw [List.length_drop, List.length_take]
+        omega
+      have hcolfail : (fun r => decide (((M.take m).getD p (0,0)).1 < r.1))
+          (((M.take m).drop (p + 1))[stopAt M a - (p + 1)]) = false := by
+        have he : ((M.take m).drop (p + 1))[stopAt M a - (p + 1)]
+            = M.getD (stopAt M a) (0,0) := by
+          rw [← getD_eq_getElem' _ (0,0) hidx, getD_drop,
+              show p + 1 + (stopAt M a - (p + 1)) = stopAt M a by omega,
+              getD_take hsm']
+        rw [he, getD_take hpm]
+        simp only [decide_eq_false_iff_not, not_lt]
+        exact le_trans (stopAt_col_le hsM) (le_of_lt (run_region_gt hpa' hp2))
+      have hbound := takeWhile_length_le_of_fail
+        (pr := fun r => decide (((M.take m).getD p (0,0)).1 < r.1)) hidx hcolfail
+      unfold stopAt runAt
+      omega
+  rw [runAt_take_eq hpm hpfail]
+  exact hint
+
+theorem hmok_dropLast {M : PairSeq} (h : hmok M) : hmok M.dropLast := by
+  rw [List.dropLast_eq_take]
+  exact hmok_take h _
+
+theorem hmok_Pred {M : PairSeq} (h : hmok M) : hmok (Pred M) := by
+  unfold Pred
+  by_cases hl : M.length ≤ 1
+  · rw [if_pos hl]
+    exact h
+  · rw [if_neg hl]
+    exact hmok_dropLast h
+
 end YAPSS
