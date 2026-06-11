@@ -2526,3 +2526,10 @@ X = take j0 M @ copies。閉鎖窓 (P, c0=X!(P+1), 窓 [P+1..end), 閉鎖位置 
   候補 — r1ok_climb と同じ武器が効く可能性）。
 - これで ginv_ST_PS は GBLK0/qpos を残して完全。E6_nbcK_T は既に ginv 経由で
   討伐済み。次: qcut_last/iii_singleton/seam への ginv 適用 or qpos 攻略。
+
+- (続37補) qpos 機構マイニング: 全260サブ要素が (i) j1 の row0 祖先
+  （一般ブロック列では祖先の27%が e1>e1j1 なのに qpos 文脈では全て ≤、
+  nextrel1 最小性の ≥ と合わせ **e1 = e1j1 ピッタリ**）(ii) snd ≤ snd(M!(j0+qP))
+  =pp直接。q'=0 は e1j0 < e1j1 ≤ B（M窓に j1 含む）で証明可能。q'≥1 は
+  qP=2 窓のみで出現（q'=1）。「前のブロック列を後ろで抑える」型＝GBLK0 と
+  同族の世代機構。GRAND 統合候補。
