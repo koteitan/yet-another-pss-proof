@@ -4189,4 +4189,58 @@ theorem tailok_Pred_zero {M : PairSeq} (hM : hmok M)
     rw [← h1, runAt_take (by omega)]
     exact headmax_take (hcc (j0 + 1 + p') (by omega) (by omega)) _
 
+
+/-! ## Level-0 columns are `(0,0)` -/
+
+/-- Level-0 columns carry row-1 value `0`. -/
+def z0ok (M : PairSeq) : Prop :=
+  ∀ j, j < M.length → (M.getD j (0,0)).1 = 0 → (M.getD j (0,0)).2 = 0
+
+theorem z0ok_diagSeq (v : ℕ) : z0ok (diagSeq 0 v) := by
+  intro j hj h0
+  rw [diagSeq0_length] at hj
+  rw [diagSeq0_getD hj] at h0 ⊢
+  simpa using h0
+
+theorem z0ok_take {M : PairSeq} (h : z0ok M) (m : ℕ) : z0ok (M.take m) := by
+  intro j hj h0
+  rw [List.length_take] at hj
+  rw [getD_take (by omega)] at h0 ⊢
+  exact h j (by omega) h0
+
+theorem z0ok_Pred {M : PairSeq} (h : z0ok M) : z0ok (Pred M) := by
+  unfold Pred
+  by_cases hl : M.length ≤ 1
+  · rw [if_pos hl]
+    exact h
+  · rw [if_neg hl, List.dropLast_eq_take]
+    exact z0ok_take h _
+
+theorem z0ok_copyExp {G B : PairSeq} {lp : ℕ × ℕ} {d0 n : ℕ}
+    (h : z0ok (G ++ B ++ [lp])) : z0ok (copyExp G B d0 n) := by
+  intro j hj h0
+  rw [copyExp_length] at hj
+  by_cases hjg : j < G.length
+  · rw [copyExp_getD_pre hjg] at h0 ⊢
+    have hg := h j (by rw [hostM_length]; omega)
+    rw [hostM_getD_pre hjg] at hg
+    exact hg h0
+  · push Not at hjg
+    have hL : 0 < B.length := by
+      by_contra hB0
+      push Not at hB0
+      have : B.length = 0 := by omega
+      rw [this, Nat.mul_zero] at hj
+      omega
+    obtain ⟨k, q, hk, hq, hdec⟩ := index_decomp hL
+      (show j - G.length < n * B.length by omega)
+    have hjeq : j = G.length + (k * B.length + q) := by omega
+    subst hjeq
+    rw [copyExp_getD_copy hk hq] at h0 ⊢
+    have h0' : (B.getD q (0,0)).1 + k * d0 = 0 := h0
+    have hM := h (G.length + q) (by rw [hostM_length]; omega)
+    rw [hostM_getD_blk hq] at hM
+    show (B.getD q (0,0)).2 = 0
+    exact hM (by omega)
+
 end YAPSS
