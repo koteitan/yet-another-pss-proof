@@ -47,48 +47,34 @@
       - ✅ **柱3: olt_ST_iff_seqlex SORRY-FREE**〔seqlex.thy〕＝標準形上で translate は列 lex からの順序同型
         （blockok 規律: row0≥d・先頭=d・ステップ≤+1；blockok_ST_PS で全標準形が満たす；
          wfE ⟺ ST_PS 上の seqlex 整礎性、と BMS ネイティブに言い換え可能に）
-      - 🚨🤖 本丸=(α) 新本線: **値正規化 nrm = NF→OT 順序埋め込み**〔ord/nrm.thy 緑〕
-        - ✅ nrm 定義＋ proj_id/proj_rec/proj_wf3/proj_G/**wf3_nrm**（像⊆OT）全証明済（PSI 3s 緑）
-        - ✅ 実証: 2,643,843 ペア（NF+遺伝ブロック、クロスレベル込）で衝突0・逆転0〔tools/valnorm.py〕
-        - ✅ **PSS_terminates_nrm** = inv_image wf_olt_wf3 (nrm∘translate)（peel/レベル分解不要）
-        - ✅ wf_Rnf_nrm（order_pres⟹wf Rnf）・nrm_step_dec（order_pres から導出）
-        - 🚨 live sorry = nrm_order_pres ただ1つ。攻め筋2段: (弱) nrm_step_dec 直接証明
-          〔E6: proj=首最大row1接尾辞切出し、E7: 第一差分は prefix/sub の2種のみ、oper 機構流用〕
-          / (強) 全ペア保存＝proj-mono（弱単調＋CRUX 単射、A_a 全集合で実証済・衝突0）
-        - 🚨🤖 攻略 nrmstep.thy（Pred ケース）: ✅ olt層（nrm_snoc_seg/ins_olt_mono）
-          ✅ 構造層（einc/eflip・gap補題・fire_transport・nrm_snoc_str・projE骨格・
-          ST_snocokS_gen+INV螺旋・maxo_ub・stepsok）✅ **STS_A 完全証明**（cnf隣接+pre帰納）
-          ✅ **proj_once**（射影=1ステップ; max臨界は自ら無発火）+ **proj_submono**＋Gterm_trans/maxg_nofire
-          ✅ **E6アーキテクチャ移行**（projE系削除→msfx接尾辞定理に再編; maxr1/msfx/NT_single/proj_fire_ne 純粋部品緑;
-          ST_snocokS_gen にインライン配線・長さ帰納で循環なし; 実証 V1-V5 全0違反 = memo続22）
-          ✅ post一般化（segprov/STS_A/ST_snocokS_gen/ST_snocok_int/nrm_snoc_int、内部位置対応・実証8243で0違反）
-          ✅ fbseg（森境界ピース）＋閉包補題3本 / NT_noabsorb / **NT_tail_lt**（nrm和尾部厳密増大）
-          ✅ C1層完成: fbseg_hd_level（blockokレベル固定・drop=0）→NT_dom→NT_shape→NT_hd/NT_tail_lt（memo続24）
-          ✅ **E6_value 本体**（E6_mem/E6_dom_tie 分解のコンビネータ・proj_once+maxo_ub）
-          ✅ **GCAT**（Gカタログ・u一様・E6_value非依存）+ subs連鎖 + NT_msfx_hdsub + 低添字dominance
-          ✅ nrm_snoc_mid/NT_prefix_lt（mid-host）/ msfx_tail / **E6_dom_tie_resolved**（l=j0閉鎖）/
-          **E6_hdom**（排除コア、GCATパターン）— 層化循環は最終組立で同時帰納に（memo続25）
-          ✅ 健全性修正: E6_lpl/E6_dom_deep に可視性前提（旧文面は偽・実証2163逆転をキャッチ）
-          ✅ E6_mem_resolved（hdom排除+K側カスケード+T側移送）/ E6_nbcK 再構成（可視性連言=Gterm_NT_high で証明）
-          ✅ **r1ok 基盤**（row1規律 snd≤親snd+1・実証0/14558）: 生成帰納+diag+take/butlast+
-          oper骨格+oper_bad主証明+copy_witness 全緑 — **残 r1ok_climb 1点**（memo続26）
-          ✅ 【続29】旧 sibm/SIB_shape は偽（閉包境界アーティファクト）→ **sibm2/sibrel 修復完了・緑**:
-          sibrel 4族（E/P/F1/F2・lexdiff時hm²）・SIB_shape2・NT_tie_resolved 3ケース・STS_B 前提修正
-          ✅ 正確文面の閉包+1監査: E6_lpl/dom_deep/nbcK_T/K/r1ok_climb/seam/qcut/iii 全0違反、
-          E6_memT は前提空（討伐可）。マイナーは必ず閉包+1で回す（audit_plus1/exact.py）
-          ✅ **sibm2_oper_bad 討伐**: シーム分解全層（I-closed/II-int/II-cross/I-open O1/
-          blift=b<j0全分岐/copyhead=b=j0全分岐）＋CFGA_r1（NT_dom_sub_eq窓で証明）＋
-          sibrel衝突代数（nopref/ascent/diverge）— 残 = 極小核3点
-          {seam_open_m1(14件・e1j0=0機構) / seam_copyhead_m1(20件・全てcoreM-eq・L=1) /
-          seam_copyhead_deep(実証0件)}
-          🚨 実効コア: 🥇シーム極小核3点 / NT_lexdiff_lt（116万対0failの新値補題）/
-          E6_tie_nofire0/1（¬hmタイラン無発火）/
-          fire-cascade系5点（E6_lpl / E6_dom_deep / E6_memT / E6_nbcK_T / E6_nbcK_K = GRAND同時帰納の本丸）/
-          r1ok_climb（e1正側0/729・機構=memo続26補5）/ TOP_desc（トップ木nrm弱降下0/474・未ステート）
-          🚨 行レベル: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（fbsegDリフト＋TOP_desc経路、memo続27-28）
-          🚨 スタブ: NT_tie / E6_mem / E6_dom_tie（resolved版あり・最終組立=長さ同時帰納にインライン）
-        - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
+      - 🚨🤖 本丸=(α) 新本線: **値正規化 nrm = NF→OT 順序埋め込み** → 下の「## (α) nrm 路線 進捗ツリー」参照
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
+
+## (α) nrm 路線 進捗ツリー（本丸・ord/nrm.thy + ord/nrmstep.thy）
+> **PSS_terminates_nrm = inv_image wf_olt_wf3 (nrm∘translate)**（peel/レベル分解不要）。
+> live sorry = nrm_order_pres 1点。攻め筋 = (弱) nrm_step_dec 直接証明（nrmstep.thy・現19 sorry 全て実証済文面）。
+> 設計詳細・経緯は memo.md 続19〜続29。
+- ✅ nrm 基盤〔nrm定義・proj_id/rec/wf3/G・wf3_nrm（像⊆OT）・PSI 緑〕
+- ✅ 実証: 2,643,843 ペアで衝突0・逆転0〔tools/valnorm.py〕
+- ✅ PSS_terminates_nrm / wf_Rnf_nrm / nrm_step_dec（order_pres からの導出）
+- 🚨🤖 nrm_step_dec 直接証明〔nrmstep.thy〕
+  - ✅ olt層・構造層〔nrm_snoc_seg/ins_olt_mono/einc/eflip/gap/fire_transport/stepsok〕
+  - ✅ STS_A 完全証明 / proj_once / proj_submono
+  - ✅ E6 アーキテクチャ〔msfx 接尾辞定理・実証 V1-V5 全0違反・memo続22〕＋ post一般化〔0/8243〕
+  - ✅ C1層〔fbseg_hd_level→NT_dom→NT_shape→NT_hd/NT_tail_lt・memo続24〕
+  - ✅ コンビネータ群〔E6_value/GCAT/E6_hdom/E6_dom_tie_resolved/E6_mem_resolved/E6_nbcK/Gterm_NT_high〕
+  - ✅ r1ok 基盤〔row1規律 0/14558・残 r1ok_climb のみ・memo続26〕
+  - ✅ sibm2/sibrel 修復〔旧 sibm/SIB_shape は偽＝閉包境界教訓・SIB_shape2・NT_tie_resolved 3ケース・memo続29〕
+  - ✅ 正確文面の閉包+1監査〔E6_lpl 等 全0違反・STS_B 前提修正・E6_memT 前提空・audit_*.py〕
+  - ✅ sibm2_oper_bad 討伐〔n帰納×シーム分解・CFGA_r1=NT_dom_sub_eq窓・sibrel衝突代数 nopref/ascent/diverge〕
+  - ✅ E6_tie_nofire0/1 討伐〔Gterm_empty_lowhead＝スパイン低頭でカタログ空・memo続29補15〕
+  - 🚨 シーム極小核3点〔seam_open_m1 14件 e1j0=0機構 / seam_copyhead_m1 20件 coreM-eq L=1 / seam_copyhead_deep 実証0件〕
+  - 🚨 値側コア〔NT_lexdiff_lt 0/116万 / E6_tie_nofire_high0・high1 実証空クラス〕
+  - 🚨 fire-cascade 5点〔E6_lpl/E6_dom_deep/E6_memT/E6_nbcK_T/E6_nbcK_K＝GRAND同時帰納の本丸〕
+  - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam〕＋ STS_B 本体〔INV/INV2前提付き 0/26322〕
+  - 🚨 r1ok_climb〔0/3513・値側下界・CFGA_r1の窓手法を試す〕/ TOP_desc〔0/474・未ステート〕
+  - 🚨 スタブ〔NT_tie/E6_mem/E6_dom_tie＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン〕
+- 🗑 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要。wf_ArgsA 路線は凍結〔wfsum に残置〕
