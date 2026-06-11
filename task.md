@@ -71,7 +71,8 @@
   - ✅ 正確文面の閉包+1監査〔E6_lpl 等 全0違反・STS_B 前提修正・E6_memT 前提空・audit_*.py〕
   - ✅ sibm2_oper_bad 討伐〔n帰納×シーム分解・CFGA_r1=NT_dom_sub_eq窓・sibrel衝突代数 nopref/ascent/diverge〕
   - ✅ E6_tie_nofire0/1 討伐〔Gterm_empty_lowhead＝スパイン低頭でカタログ空・memo続29補15〕
-  - 🚨 シーム極小核3点〔seam_open_m1 14件 e1j0=0機構 / seam_copyhead_m1 20件 coreM-eq L=1 / seam_copyhead_deep 実証0件〕
+  - ✅ seam_copyhead_m1 討伐〔一般L直証: coreM 4分岐×E-const/F1直証・F2-L1=blockok反駁・実在114件全カバー〕
+  - 🚨 シーム残差〔seam_open_m1 14件 e1j0=0機構 / copyhead残差 P・E2var・F2L2 閉包+1で0件 / copyhead_deep 実証0件〕
   - 🚨 値側コア〔NT_lexdiff_lt 0/116万 / E6_tie_nofire_high0・high1 実証空クラス〕
   - 🚨 fire-cascade 5点〔E6_lpl/E6_dom_deep/E6_memT/E6_nbcK_T/E6_nbcK_K＝GRAND同時帰納の本丸〕
   - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam〕＋ STS_B 本体〔INV/INV2前提付き 0/26322〕

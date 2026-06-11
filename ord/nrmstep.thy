@@ -3199,9 +3199,506 @@ lemma seam_open_m1:
            @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1])"
   sorry
 
-text \<open>(seam, copy-head residuals) Two tight remainders of the cross-copy
-  analysis: the \<open>m = 1\<close> prefix-family comparison at the copy head, and the
-  empirically empty deep position \<open>b > j0\<close>.\<close>
+text \<open>(seam, copy-head residuals) Tight remainders of the cross-copy
+  analysis at the copy head: the \<open>m = 1\<close> comparison with a long copy
+  (\<open>Suc j0 < j1\<close>; mining: all 20 realized instances have \<open>j1 = Suc j0\<close>),
+  the \<open>m = 1\<close> prefix-family shape (the continuation strictly extends
+  \<open>[M ! j1]\<close>; mining: all realized instances are the equality family),
+  and the empirically empty deep position \<open>b > j0\<close>.\<close>
+
+lemma seam_copyhead_m1_E2var:
+  assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "Y = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m])"
+    and "sibm2 Y"
+    and "a < length Y" and "0 < fst (Y ! a)"
+    and "b = Suc a + length (mrun Y a)" and "b < length Y"
+    and "fst (Y ! b) = fst (Y ! a)" and "snd (Y ! b) = snd (Y ! a)"
+    and "\<forall>x \<in> set (drop (Suc b) Y). fst (Y ! b) < fst x"
+    and "fst (Y ! b) < entry M 0 j0 + m * d0"
+    and "b = j0" and "m = 1"
+    and "mrun Y a = drop (Suc b) Y @ D" and "D \<noteq> []"
+    and "Suc j0 < j1"
+    and "D = [M ! j1]"
+    and "x \<in> set (drop (Suc j0) (take j1 M))" and "x \<noteq> M ! j1"
+  shows "sibrel (mrun Y a) (drop (Suc b) Y
+           @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1])"
+  sorry
+
+lemma seam_copyhead_m1_F2L2:
+  assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "Y = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m])"
+    and "sibm2 Y"
+    and "a < length Y" and "0 < fst (Y ! a)"
+    and "b = Suc a + length (mrun Y a)" and "b < length Y"
+    and "fst (Y ! b) = fst (Y ! a)" and "snd (Y ! b) = snd (Y ! a)"
+    and "\<forall>x \<in> set (drop (Suc b) Y). fst (Y ! b) < fst x"
+    and "fst (Y ! b) < entry M 0 j0 + m * d0"
+    and "b = j0" and "m = 1"
+    and "mrun Y a = drop (Suc b) Y @ D" and "D \<noteq> []"
+    and "Suc j0 < j1"
+    and "fst (M ! j1) < fst (hd D)" and "snd (M ! j1) = snd (hd D)"
+  shows "sibrel (mrun Y a) (drop (Suc b) Y
+           @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1])"
+  sorry
+
+lemma seam_copyhead_m1_P:
+  assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "Y = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m])"
+    and "sibm2 Y"
+    and "a < length Y" and "0 < fst (Y ! a)"
+    and "b = Suc a + length (mrun Y a)" and "b < length Y"
+    and "fst (Y ! b) = fst (Y ! a)" and "snd (Y ! b) = snd (Y ! a)"
+    and "\<forall>x \<in> set (drop (Suc b) Y). fst (Y ! b) < fst x"
+    and "fst (Y ! b) < entry M 0 j0 + m * d0"
+    and "b = j0" and "m = 1"
+    and "mrun Y a = drop (Suc b) Y @ D" and "D \<noteq> []"
+    and "D = M ! j1 # D'" and "D' \<noteq> []"
+  shows "sibrel (mrun Y a) (drop (Suc b) Y
+           @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1])"
+  sorry
+
+lemma seam_copyhead_m1_L2:
+  assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "Y = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m])"
+    and "sibm2 Y"
+    and "a < length Y" and "0 < fst (Y ! a)"
+    and "b = Suc a + length (mrun Y a)" and "b < length Y"
+    and "fst (Y ! b) = fst (Y ! a)" and "snd (Y ! b) = snd (Y ! a)"
+    and "\<forall>x \<in> set (drop (Suc b) Y). fst (Y ! b) < fst x"
+    and "fst (Y ! b) < entry M 0 j0 + m * d0"
+    and "b = j0" and "m = 1"
+    and "mrun Y a = drop (Suc b) Y @ D" and "D \<noteq> []"
+    and "Suc j0 < j1"
+  shows "sibrel (mrun Y a) (drop (Suc b) Y
+           @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1])"
+proof -
+  note R = assms(1) and B = assms(2) and ST = assms(3) and j1d = assms(4)
+    and j1nz = assms(5) and i1d = assms(6) and hp = assms(7) and j0d = assms(8)
+    and d0d = assms(9) and Yd = assms(10) and SY = assms(11) and aY = assms(12)
+    and pos = assms(13) and bdef = assms(14) and bY = assms(15) and fb = assms(16)
+    and sb = assms(17) and ob = assms(18) and high = assms(19) and beq = assms(20)
+    and meq = assms(21) and KDef = assms(22) and Dne = assms(23) and L2 = assms(24)
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have lenM: "length M = Suc j1" using j1d j1nz by (cases M) auto
+  have j1len: "j1 < length M" using lenM by simp
+  define L where "L = j1 - j0"
+  have L0: "0 < L" unfolding L_def using j0j1 by simp
+  have lenY: "length Y = j0 + m * L"
+    unfolding L_def by (rule oper_bad_len[OF Yd j0j1 j1len])
+  have lenYj1: "length Y = j1" unfolding lenY L_def meq using j0j1 by simp
+  have npre: "\<And>i. i < j0 \<Longrightarrow> Y ! i = M ! i"
+    using oper_bad_nth_pre[OF Yd _ j1len j0j1] by blast
+  have ncopy: "\<And>k q. k < m \<Longrightarrow> q < L \<Longrightarrow>
+        Y ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+    unfolding L_def using oper_bad_nth_copy[OF Yd j0j1 j1len] by blast
+  have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+    by (rule block_head_min[OF hp j0d])
+  have pairM: "\<And>j. (entry M 0 j, entry M 1 j) = M ! j"
+    unfolding entry_def by simp
+  have m1le: "1 \<le> m" unfolding meq by simp
+  have ab: "a < b" using bdef by linarith
+  have aj0: "a < j0" using ab beq by simp
+  have Ya: "Y ! a = M ! a" by (rule npre[OF aj0])
+  have Yj0: "Y ! j0 = (entry M 0 j0, entry M 1 j0)"
+    using ncopy[of 0 0] m1le L0 by simp
+  have levb: "fst (Y ! b) = entry M 0 j0" unfolding beq Yj0 by simp
+  have d0pos: "0 < d0"
+  proof (rule ccontr)
+    assume "\<not> 0 < d0"
+    hence "d0 = 0" by simp
+    thus False using high levb m1le by simp
+  qed
+  have i1one: "i1 = 1"
+    using idx1_le[of M j1] d0d d0pos i1d by (cases i1) auto
+  have e0j: "entry M 0 j0 < entry M 0 j1" using hm0 j0j1 by simp
+  have d0ex: "entry M 0 j0 + d0 = entry M 0 j1"
+    unfolding d0d using i1one e0j by simp
+  have e1j: "entry M 1 j0 < entry M 1 j1"
+  proof -
+    have "nextrel1 M j0 j1" using nR unfolding i1one nextR_def by simp
+    thus ?thesis unfolding nextrel1_def by blast
+  qed
+  have Yt: "Y = take j1 M"
+  proof (rule nth_equalityI)
+    show "length Y = length (take j1 M)" using lenYj1 j1len by simp
+  next
+    fix i assume "i < length Y"
+    hence ij1: "i < j1" using lenYj1 by simp
+    show "Y ! i = take j1 M ! i"
+    proof (cases "i < j0")
+      case True thus ?thesis using npre ij1 by simp
+    next
+      case False
+      have qL: "i - j0 < L" unfolding L_def using ij1 False by simp
+      have c0: "Y ! (j0 + (0 * L + (i - j0)))
+          = (entry M 0 (j0 + (i - j0)) + 0 * d0, entry M 1 (j0 + (i - j0)))"
+        by (rule ncopy) (use m1le qL in simp_all)
+      have ii: "j0 + (i - j0) = i" using False by simp
+      have "Y ! i = (entry M 0 i, entry M 1 i)" using c0 ii by simp
+      thus ?thesis using pairM ij1 by simp
+    qed
+  qed
+  define blktail where "blktail = drop (Suc j0) (take j1 M)"
+  have btlen: "length blktail = j1 - Suc j0"
+    unfolding blktail_def using j1len by simp
+  have btne: "blktail \<noteq> []"
+  proof -
+    have "0 < j1 - Suc j0" using L2 by simp
+    thus ?thesis using btlen by auto
+  qed
+  have btnth: "\<And>t. t < j1 - Suc j0 \<Longrightarrow> blktail ! t = M ! (Suc j0 + t)"
+    unfolding blktail_def using j1len j0j1 by simp
+  have dropbY: "drop (Suc b) Y = blktail"
+    unfolding beq Yt blktail_def ..
+  define K where "K = mrun Y a"
+  have KD: "K = blktail @ D" using KDef dropbY unfolding K_def by simp
+  have Kne: "K \<noteq> []" using KD Dne by simp
+  have DneC: "D = hd D # tl D" using Dne by simp
+  have lenK: "length K = b - Suc a" unfolding K_def using bdef by simp
+  have Kel: "\<And>t. t < b - Suc a \<Longrightarrow> K ! t = M ! (Suc a + t) \<and> fst (M ! a) < fst (K ! t)"
+  proof -
+    fix t assume tb: "t < b - Suc a"
+    have tK: "t < length (mrun Y a)" using tb bdef by simp
+    have tw: "K ! t = drop (Suc a) Y ! t"
+      using tK unfolding K_def mrun_def by (rule takeWhile_nth)
+    have "drop (Suc a) Y ! t = Y ! (Suc a + t)"
+      using aY by (intro nth_drop) simp
+    moreover have "Suc a + t < j0" using tb beq by simp
+    ultimately have e: "K ! t = M ! (Suc a + t)" using tw npre by simp
+    have "K ! t \<in> set K" using tb lenK by simp
+    hence "fst (Y ! a) < fst (K ! t)"
+      unfolding K_def mrun_def using set_takeWhileD by metis
+    thus "K ! t = M ! (Suc a + t) \<and> fst (M ! a) < fst (K ! t)"
+      using e Ya by simp
+  qed
+  have Mb: "M ! j0 = Y ! b" unfolding beq Yj0 using pairM by simp
+  have mrMa: "mrun M a = K"
+  proof -
+    have bM: "b < length M" using beq j0j1 j1len by simp
+    have Keq: "K = take (b - Suc a) (drop (Suc a) M)"
+    proof (rule nth_equalityI)
+      show "length K = length (take (b - Suc a) (drop (Suc a) M))"
+        using lenK bM by simp
+    next
+      fix t assume "t < length K"
+      hence tb: "t < b - Suc a" using lenK by simp
+      show "K ! t = take (b - Suc a) (drop (Suc a) M) ! t"
+        using Kel[OF tb] tb bM by simp
+    qed
+    have dsplit: "drop (Suc a) M = K @ M ! b # drop (Suc b) M"
+    proof -
+      have "drop (Suc a) M = take (b - Suc a) (drop (Suc a) M)
+          @ drop (b - Suc a) (drop (Suc a) M)"
+        by (rule append_take_drop_id[symmetric])
+      moreover have "drop (b - Suc a) (drop (Suc a) M) = drop b M"
+        using ab by (simp add: drop_drop)
+      moreover have "drop b M = M ! b # drop (Suc b) M"
+        using bM by (rule Cons_nth_drop_Suc[symmetric])
+      ultimately show ?thesis using Keq by metis
+    qed
+    have allK: "\<forall>x \<in> set K. fst (M ! a) < fst x"
+    proof
+      fix x assume "x \<in> set K"
+      then obtain t where tt: "t < length K" "x = K ! t" by (metis in_set_conv_nth)
+      have tb2: "t < b - Suc a" using tt(1) lenK by simp
+      have "fst (M ! a) < fst (K ! t)" using Kel[OF tb2] by blast
+      thus "fst (M ! a) < fst x" using tt(2) by simp
+    qed
+    have "takeWhile (\<lambda>r. fst (M ! a) < fst r) (drop (Suc a) M)
+        = K @ takeWhile (\<lambda>r. fst (M ! a) < fst r) (M ! b # drop (Suc b) M)"
+      unfolding dsplit by (rule takeWhile_append2) (use allK in blast)
+    moreover have "takeWhile (\<lambda>r. fst (M ! a) < fst r) (M ! b # drop (Suc b) M) = []"
+    proof -
+      have "fst (M ! b) = fst (M ! a)"
+        using fb Ya Mb unfolding beq by simp
+      thus ?thesis by simp
+    qed
+    ultimately show ?thesis unfolding mrun_def by simp
+  qed
+  have dropj0M: "drop (Suc j0) M = blktail @ [M ! j1]"
+  proof -
+    have Mdec: "M = take j1 M @ [M ! j1]"
+    proof -
+      have "drop j1 M = M ! j1 # drop (Suc j1) M"
+        using j1len by (rule Cons_nth_drop_Suc[symmetric])
+      moreover have "drop (Suc j1) M = []" using lenM by simp
+      ultimately have "drop j1 M = [M ! j1]" by simp
+      thus ?thesis by (metis append_take_drop_id)
+    qed
+    have "drop (Suc j0) M = drop (Suc j0) (take j1 M)
+        @ drop (Suc j0 - length (take j1 M)) [M ! j1]"
+      by (subst Mdec) (rule drop_append)
+    thus ?thesis unfolding blktail_def using j0j1 j1len by simp
+  qed
+  have obMj0: "\<forall>x \<in> set (drop (Suc j0) M). fst (M ! j0) < fst x"
+  proof
+    fix x assume "x \<in> set (drop (Suc j0) M)"
+    then obtain t where t: "t < length M - Suc j0" "x = drop (Suc j0) M ! t"
+      by (metis in_set_conv_nth length_drop)
+    have xi: "x = M ! (Suc j0 + t)"
+    proof -
+      have "drop (Suc j0) M ! t = M ! (Suc j0 + t)"
+        by (intro nth_drop) (use j0j1 j1len in simp)
+      thus ?thesis using t(2) by simp
+    qed
+    have "entry M 0 j0 < entry M 0 (Suc j0 + t)"
+      using hm0 t(1) lenM by simp
+    thus "fst (M ! j0) < fst x" using xi unfolding entry_def by simp
+  qed
+  have mrMb: "mrun M b = blktail @ [M ! j1]"
+  proof -
+    have "mrun M b = drop (Suc j0) M"
+      unfolding mrun_def beq using obMj0 by (simp add: takeWhile_eq_all_conv)
+    thus ?thesis unfolding dropj0M .
+  qed
+  have coreM: "sibrel K (blktail @ [M ! j1])"
+  proof -
+    have aM: "a < length M" using aj0 j0j1 j1len by simp
+    have bM: "b < length M" using beq j0j1 j1len by simp
+    have posM: "0 < fst (M ! a)" using pos Ya by simp
+    have bdefM: "b = Suc a + length (mrun M a)" using bdef mrMa K_def by simp
+    have fbM: "fst (M ! b) = fst (M ! a)" using fb Ya Mb unfolding beq by simp
+    have sbM: "snd (M ! b) = snd (M ! a)" using sb Ya Mb unfolding beq by simp
+    show ?thesis
+      using R[unfolded sibm2_def, rule_format, OF aM posM bdefM bM fbM sbM]
+      unfolding mrMa mrMb .
+  qed
+  define C1 where "C1 = map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1]"
+  have C1ne: "C1 \<noteq> []" unfolding C1_def using j0j1 by simp
+  have C1nth0: "C1 ! 0 = (entry M 0 j1, entry M 1 j0)"
+  proof -
+    have "C1 ! 0 = (entry M 0 j0 + m * d0, entry M 1 j0)"
+      unfolding C1_def using j0j1 by simp
+    thus ?thesis using d0ex meq by simp
+  qed
+  have C1hd: "C1 = (entry M 0 j1, entry M 1 j0) # tl C1"
+    using C1nth0 C1ne by (metis hd_conv_nth list.exhaust_sel)
+  have C1snd: "\<And>x. x \<in> set C1 \<Longrightarrow>
+      snd x = entry M 1 j0 \<or> (\<exists>j. Suc j0 \<le> j \<and> j < j1 \<and> snd x = entry M 1 j)"
+  proof -
+    fix x assume "x \<in> set C1"
+    then obtain j where j1c: "j \<in> set [j0..<j1]"
+        and j2c: "x = (entry M 0 j + m * d0, entry M 1 j)"
+      unfolding C1_def by auto
+    have jr: "j0 \<le> j" "j < j1" using j1c by auto
+    show "snd x = entry M 1 j0 \<or> (\<exists>j. Suc j0 \<le> j \<and> j < j1 \<and> snd x = entry M 1 j)"
+    proof (cases "j = j0")
+      case True
+      thus ?thesis using j2c by simp
+    next
+      case False
+      have "Suc j0 \<le> j \<and> j < j1 \<and> snd x = entry M 1 j"
+        using jr False j2c by simp
+      thus ?thesis by blast
+    qed
+  qed
+  have btsnd_le: "\<And>x ub. (\<And>y. y \<in> set blktail \<Longrightarrow> snd y \<le> ub) \<Longrightarrow>
+      x \<in> set C1 \<Longrightarrow> entry M 1 j0 \<le> ub \<Longrightarrow> snd x \<le> ub"
+  proof -
+    fix x ub assume bt: "\<And>y. y \<in> set blktail \<Longrightarrow> snd y \<le> ub"
+      and xc: "x \<in> set C1" and j0le: "entry M 1 j0 \<le> ub"
+    from C1snd[OF xc] show "snd x \<le> ub"
+    proof
+      assume "snd x = entry M 1 j0"
+      thus ?thesis using j0le by simp
+    next
+      assume "\<exists>j. Suc j0 \<le> j \<and> j < j1 \<and> snd x = entry M 1 j"
+      then obtain j where jj: "Suc j0 \<le> j" "j < j1" "snd x = entry M 1 j" by blast
+      have tj: "j - Suc j0 < length blktail" using jj btlen by simp
+      have "blktail ! (j - Suc j0) = M ! j"
+        using btnth[of "j - Suc j0"] jj btlen by simp
+      hence "M ! j \<in> set blktail" using tj by (metis nth_mem)
+      hence "snd (M ! j) \<le> ub" by (rule bt)
+      thus ?thesis using jj(3) unfolding entry_def by simp
+    qed
+  qed
+  have goalC: "drop (Suc b) Y
+      @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1] = blktail @ C1"
+    unfolding dropbY C1_def ..
+  have main: "sibrel K (blktail @ C1)"
+  proof (cases "M ! j1 = hd D")
+    case hdeq: True
+    show ?thesis
+    proof (cases "tl D = []")
+      case tlD: True
+      have Deq: "D = [M ! j1]"
+        using DneC tlD unfolding hdeq by simp
+      have Keq: "K = blktail @ [M ! j1]" using KD Deq by simp
+      show ?thesis
+      proof (cases "\<forall>x \<in> set blktail. x = M ! j1")
+        case allc: True
+        have hdbt: "hd blktail = M ! j1" using allc btne by (cases blktail) auto
+        have hdK: "hd K = M ! j1" using Keq btne hdbt by (simp add: hd_append)
+        have hmK: "snd (hd K) = maxr1 K"
+        proof -
+          have "snd ` set K = {snd (M ! j1)}" using Keq allc Kne by auto
+          thus ?thesis unfolding maxr1_def hdK by simp
+        qed
+        have e1top: "\<And>x. x \<in> set (blktail @ C1) \<Longrightarrow> snd x \<le> snd (M ! j1)"
+        proof -
+          fix x assume "x \<in> set (blktail @ C1)"
+          then consider (bt) "x \<in> set blktail" | (c1) "x \<in> set C1" by auto
+          thus "snd x \<le> snd (M ! j1)"
+          proof cases
+            case bt thus ?thesis using allc by simp
+          next
+            case c1
+            have btb: "\<And>y. y \<in> set blktail \<Longrightarrow> snd y \<le> snd (M ! j1)"
+              using allc by simp
+            have j0b: "entry M 1 j0 \<le> snd (M ! j1)"
+              using e1j unfolding entry_def by simp
+            show ?thesis by (rule btsnd_le[OF btb c1 j0b])
+          qed
+        qed
+        have hdBC: "hd (blktail @ C1) = M ! j1" using btne hdbt by (simp add: hd_append)
+        have hmK1: "snd (hd (blktail @ C1)) = maxr1 (blktail @ C1)"
+        proof -
+          have mem: "snd (M ! j1) \<in> snd ` set (blktail @ C1)"
+            using btne hdbt by (metis hd_in_set image_eqI set_append UnI1)
+          have "Max (snd ` set (blktail @ C1)) = snd (M ! j1)"
+            by (rule Max_eqI) (use e1top mem in auto)
+          thus ?thesis unfolding maxr1_def hdBC by simp
+        qed
+        have desc: "fst (entry M 0 j1, entry M 1 j0) = fst (M ! j1) \<and>
+                    snd (entry M 0 j1, entry M 1 j0) < snd (M ! j1)"
+          using e1j unfolding entry_def by simp
+        have decC: "blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1"
+          using C1hd by metis
+        have "snd (hd K) = maxr1 K \<and>
+              snd (hd (blktail @ C1)) = maxr1 (blktail @ C1) \<and>
+              K = blktail @ M ! j1 # [] \<and>
+              blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1 \<and>
+              ((fst (entry M 0 j1, entry M 1 j0) = fst (M ! j1) \<and>
+                snd (entry M 0 j1, entry M 1 j0) < snd (M ! j1))
+               \<or> (fst (entry M 0 j1, entry M 1 j0) < fst (M ! j1) \<and>
+                  snd (entry M 0 j1, entry M 1 j0) = snd (M ! j1)))"
+          using hmK hmK1 Keq decC desc by simp
+        thus ?thesis unfolding sibrel_def by blast
+      next
+        case False
+        then obtain x where xb: "x \<in> set blktail" "x \<noteq> M ! j1" by blast
+        show ?thesis
+          using seam_copyhead_m1_E2var[OF R B ST j1d j1nz i1d hp j0d d0d Yd SY
+              aY pos bdef bY fb sb ob high beq meq KDef Dne L2 Deq
+              xb(1)[unfolded blktail_def] xb(2)]
+          unfolding K_def goalC by simp
+      qed
+    next
+      case tlD: False
+      have DP: "D = M ! j1 # tl D" using DneC unfolding hdeq by simp
+      show ?thesis
+        using seam_copyhead_m1_P[OF R B ST j1d j1nz i1d hp j0d d0d Yd SY
+            aY pos bdef bY fb sb ob high beq meq KDef Dne DP tlD]
+        unfolding K_def goalC by simp
+    qed
+  next
+    case hdne: False
+    have decK: "K = blktail @ hd D # tl D" using KD DneC by metis
+    have decM: "blktail @ [M ! j1] = blktail @ M ! j1 # []" by simp
+    have div: "((fst (M ! j1) = fst (hd D) \<and> snd (M ! j1) < snd (hd D))
+                \<or> (fst (M ! j1) < fst (hd D) \<and> snd (M ! j1) = snd (hd D)))
+               \<and> snd (hd K) = maxr1 K
+               \<and> snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1])"
+      by (rule sibrel_diverge[OF coreM decK decM hdne])
+    from div have hmK: "snd (hd K) = maxr1 K"
+      and hmKM: "snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1])"
+      by blast+
+    from div consider
+      (F1) "fst (M ! j1) = fst (hd D)" "snd (M ! j1) < snd (hd D)"
+      | (F2) "fst (M ! j1) < fst (hd D)" "snd (M ! j1) = snd (hd D)"
+      by blast
+    thus ?thesis
+    proof cases
+      case F1
+      have hdbtM: "hd (blktail @ [M ! j1]) = hd blktail"
+        using btne by (simp add: hd_append)
+      have btmax: "snd (hd blktail) = maxr1 (blktail @ [M ! j1])"
+        using hmKM hdbtM by simp
+      have e1le: "snd (M ! j1) \<le> snd (hd blktail)"
+      proof -
+        have "snd (M ! j1) \<in> snd ` set (blktail @ [M ! j1])" by simp
+        thus ?thesis using btmax unfolding maxr1_def by simp
+      qed
+      have btle: "\<And>y. y \<in> set blktail \<Longrightarrow> snd y \<le> snd (hd blktail)"
+      proof -
+        fix y assume "y \<in> set blktail"
+        hence "snd y \<in> snd ` set (blktail @ [M ! j1])" by auto
+        thus "snd y \<le> snd (hd blktail)" using btmax unfolding maxr1_def by simp
+      qed
+      have e1top: "\<And>x. x \<in> set (blktail @ C1) \<Longrightarrow> snd x \<le> snd (hd blktail)"
+      proof -
+        fix x assume "x \<in> set (blktail @ C1)"
+        then consider (bt) "x \<in> set blktail" | (c1) "x \<in> set C1" by auto
+        thus "snd x \<le> snd (hd blktail)"
+        proof cases
+          case bt thus ?thesis by (rule btle)
+        next
+          case c1
+          have j0b: "entry M 1 j0 \<le> snd (hd blktail)"
+            using e1j e1le unfolding entry_def by simp
+          show ?thesis by (rule btsnd_le[OF btle c1 j0b])
+        qed
+      qed
+      have hdBC: "hd (blktail @ C1) = hd blktail" using btne by (simp add: hd_append)
+      have hmK1: "snd (hd (blktail @ C1)) = maxr1 (blktail @ C1)"
+      proof -
+        have mem: "snd (hd blktail) \<in> snd ` set (blktail @ C1)"
+          using btne by (metis hd_in_set image_eqI set_append UnI1)
+        have "Max (snd ` set (blktail @ C1)) = snd (hd blktail)"
+          by (rule Max_eqI) (use e1top mem in auto)
+        thus ?thesis unfolding maxr1_def hdBC by simp
+      qed
+      have desc1: "fst (entry M 0 j1, entry M 1 j0) = fst (hd D) \<and>
+                   snd (entry M 0 j1, entry M 1 j0) < snd (hd D)"
+      proof -
+        have "fst (M ! j1) = entry M 0 j1" unfolding entry_def by simp
+        moreover have "entry M 1 j0 < snd (M ! j1)"
+          using e1j unfolding entry_def by simp
+        ultimately show ?thesis using F1 by simp
+      qed
+      have decC: "blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1"
+        using C1hd by metis
+      have "snd (hd K) = maxr1 K \<and>
+            snd (hd (blktail @ C1)) = maxr1 (blktail @ C1) \<and>
+            K = blktail @ hd D # tl D \<and>
+            blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1 \<and>
+            ((fst (entry M 0 j1, entry M 1 j0) = fst (hd D) \<and>
+              snd (entry M 0 j1, entry M 1 j0) < snd (hd D))
+             \<or> (fst (entry M 0 j1, entry M 1 j0) < fst (hd D) \<and>
+                snd (entry M 0 j1, entry M 1 j0) = snd (hd D)))"
+        using hmK hmK1 decK decC desc1 by blast
+      thus ?thesis unfolding sibrel_def by blast
+    next
+      case F2
+      show ?thesis
+        using seam_copyhead_m1_F2L2[OF R B ST j1d j1nz i1d hp j0d d0d Yd SY
+            aY pos bdef bY fb sb ob high beq meq KDef Dne L2 F2(1) F2(2)]
+        unfolding K_def goalC by simp
+    qed
+  qed
+  show ?thesis using main unfolding K_def[symmetric] goalC by simp
+qed
 
 lemma seam_copyhead_m1:
   assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
@@ -3221,7 +3718,239 @@ lemma seam_copyhead_m1:
     and "mrun Y a = drop (Suc b) Y @ D" and "D \<noteq> []"
   shows "sibrel (mrun Y a) (drop (Suc b) Y
            @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1])"
-  sorry
+proof -
+  note R = assms(1) and B = assms(2) and ST = assms(3) and j1d = assms(4)
+    and j1nz = assms(5) and i1d = assms(6) and hp = assms(7) and j0d = assms(8)
+    and d0d = assms(9) and Yd = assms(10) and SY = assms(11) and aY = assms(12)
+    and pos = assms(13) and bdef = assms(14) and bY = assms(15) and fb = assms(16)
+    and sb = assms(17) and ob = assms(18) and high = assms(19) and beq = assms(20)
+    and meq = assms(21) and KDef = assms(22) and Dne = assms(23)
+  show ?thesis
+  proof (cases "Suc j0 < j1")
+    case True
+    show ?thesis
+      by (rule seam_copyhead_m1_L2[OF R B ST j1d j1nz i1d hp j0d d0d Yd SY
+            aY pos bdef bY fb sb ob high beq meq KDef Dne True])
+  next
+    case False
+    have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+    have j0j1: "j0 < j1" using nR by (rule nextR_less)
+    have Leq: "j1 = Suc j0" using False j0j1 by simp
+    have lenM: "length M = Suc j1" using j1d j1nz by (cases M) auto
+    have j1len: "j1 < length M" using lenM by simp
+    define L where "L = j1 - j0"
+    have L0: "0 < L" unfolding L_def using j0j1 by simp
+    have L1: "L = 1" unfolding L_def Leq by simp
+    have lenY: "length Y = j0 + m * L"
+      unfolding L_def by (rule oper_bad_len[OF Yd j0j1 j1len])
+    have lenY1: "length Y = Suc j0" unfolding lenY L1 meq by simp
+    have npre: "\<And>i. i < j0 \<Longrightarrow> Y ! i = M ! i"
+      using oper_bad_nth_pre[OF Yd _ j1len j0j1] by blast
+    have ncopy: "\<And>k q. k < m \<Longrightarrow> q < L \<Longrightarrow>
+          Y ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+      unfolding L_def using oper_bad_nth_copy[OF Yd j0j1 j1len] by blast
+    have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+      by (rule block_head_min[OF hp j0d])
+    have pairM: "\<And>j. (entry M 0 j, entry M 1 j) = M ! j"
+      unfolding entry_def by simp
+    have m1le: "1 \<le> m" unfolding meq by simp
+    have ab: "a < b" using bdef by linarith
+    have aj0: "a < j0" using ab beq by simp
+    have Ya: "Y ! a = M ! a" by (rule npre[OF aj0])
+    have Yj0: "Y ! j0 = (entry M 0 j0, entry M 1 j0)"
+      using ncopy[of 0 0] m1le L0 by simp
+    have levb: "fst (Y ! b) = entry M 0 j0" unfolding beq Yj0 by simp
+    have d0pos: "0 < d0"
+    proof (rule ccontr)
+      assume "\<not> 0 < d0"
+      hence "d0 = 0" by simp
+      thus False using high levb m1le by simp
+    qed
+    have i1one: "i1 = 1"
+      using idx1_le[of M j1] d0d d0pos i1d by (cases i1) auto
+    have e0j: "entry M 0 j0 < entry M 0 j1" using hm0 j0j1 by simp
+    have d0ex: "entry M 0 j0 + d0 = entry M 0 j1"
+      unfolding d0d using i1one e0j by simp
+    have e1j: "entry M 1 j0 < entry M 1 j1"
+    proof -
+      have "nextrel1 M j0 j1" using nR unfolding i1one nextR_def by simp
+      thus ?thesis unfolding nextrel1_def by blast
+    qed
+    define K where "K = mrun Y a"
+    have dropY: "drop (Suc b) Y = []" unfolding beq using lenY1 by simp
+    have KD: "K = D" using KDef dropY unfolding K_def by simp
+    have Kne: "K \<noteq> []" using KD Dne by simp
+    have lenK: "length K = b - Suc a" unfolding K_def using bdef by simp
+    have Kel: "\<And>t. t < b - Suc a \<Longrightarrow> K ! t = M ! (Suc a + t) \<and> fst (M ! a) < fst (K ! t)"
+    proof -
+      fix t assume tb: "t < b - Suc a"
+      have tK: "t < length (mrun Y a)" using tb bdef by simp
+      have tw: "K ! t = drop (Suc a) Y ! t"
+        using tK unfolding K_def mrun_def by (rule takeWhile_nth)
+      have "drop (Suc a) Y ! t = Y ! (Suc a + t)"
+        using aY by (intro nth_drop) simp
+      moreover have "Suc a + t < j0" using tb beq by simp
+      ultimately have e: "K ! t = M ! (Suc a + t)" using tw npre by simp
+      have "K ! t \<in> set K" using tb lenK by simp
+      hence "fst (Y ! a) < fst (K ! t)"
+        unfolding K_def mrun_def using set_takeWhileD by metis
+      thus "K ! t = M ! (Suc a + t) \<and> fst (M ! a) < fst (K ! t)"
+        using e Ya by simp
+    qed
+    have Mb: "M ! j0 = Y ! b" unfolding beq Yj0 using pairM by simp
+    have mrMa: "mrun M a = K"
+    proof -
+      have bM: "b < length M" using beq j0j1 j1len by simp
+      have Keq: "K = take (b - Suc a) (drop (Suc a) M)"
+      proof (rule nth_equalityI)
+        show "length K = length (take (b - Suc a) (drop (Suc a) M))"
+          using lenK bM by simp
+      next
+        fix t assume "t < length K"
+        hence tb: "t < b - Suc a" using lenK by simp
+        show "K ! t = take (b - Suc a) (drop (Suc a) M) ! t"
+          using Kel[OF tb] tb bM by simp
+      qed
+      have dsplit: "drop (Suc a) M = K @ M ! b # drop (Suc b) M"
+      proof -
+        have "drop (Suc a) M = take (b - Suc a) (drop (Suc a) M)
+            @ drop (b - Suc a) (drop (Suc a) M)"
+          by (rule append_take_drop_id[symmetric])
+        moreover have "drop (b - Suc a) (drop (Suc a) M) = drop b M"
+          using ab by (simp add: drop_drop)
+        moreover have "drop b M = M ! b # drop (Suc b) M"
+          using bM by (rule Cons_nth_drop_Suc[symmetric])
+        ultimately show ?thesis using Keq by metis
+      qed
+      have allK: "\<forall>x \<in> set K. fst (M ! a) < fst x"
+      proof
+        fix x assume "x \<in> set K"
+        then obtain t where tt: "t < length K" "x = K ! t" by (metis in_set_conv_nth)
+        have tb2: "t < b - Suc a" using tt(1) lenK by simp
+        have "fst (M ! a) < fst (K ! t)" using Kel[OF tb2] by blast
+        thus "fst (M ! a) < fst x" using tt(2) by simp
+      qed
+      have "takeWhile (\<lambda>r. fst (M ! a) < fst r) (drop (Suc a) M)
+          = K @ takeWhile (\<lambda>r. fst (M ! a) < fst r) (M ! b # drop (Suc b) M)"
+        unfolding dsplit by (rule takeWhile_append2) (use allK in blast)
+      moreover have "takeWhile (\<lambda>r. fst (M ! a) < fst r) (M ! b # drop (Suc b) M) = []"
+      proof -
+        have "fst (M ! b) = fst (M ! a)"
+          using fb Ya Mb unfolding beq by simp
+        thus ?thesis by simp
+      qed
+      ultimately show ?thesis unfolding mrun_def by simp
+    qed
+    have dropj1: "drop j1 M = [M ! j1]"
+    proof -
+      have "drop j1 M = M ! j1 # drop (Suc j1) M"
+        using j1len by (rule Cons_nth_drop_Suc[symmetric])
+      moreover have "drop (Suc j1) M = []" using lenM by simp
+      ultimately show ?thesis by simp
+    qed
+    have dropj0M: "drop (Suc j0) M = [M ! j1]" using dropj1 Leq by simp
+    have Mj0f: "fst (M ! j0) = entry M 0 j0" unfolding entry_def by simp
+    have Mj1f: "fst (M ! j1) = entry M 0 j1" unfolding entry_def by simp
+    have Mj1s: "snd (M ! j1) = entry M 1 j1" unfolding entry_def by simp
+    have mrMb: "mrun M b = [M ! j1]"
+      unfolding mrun_def beq dropj0M using e0j Mj0f Mj1f by simp
+    have coreM: "sibrel K [M ! j1]"
+    proof -
+      have aM: "a < length M" using aj0 j0j1 j1len by simp
+      have bM: "b < length M" using beq j0j1 j1len by simp
+      have posM: "0 < fst (M ! a)" using pos Ya by simp
+      have bdefM: "b = Suc a + length (mrun M a)" using bdef mrMa K_def by simp
+      have fbM: "fst (M ! b) = fst (M ! a)" using fb Ya Mb unfolding beq by simp
+      have sbM: "snd (M ! b) = snd (M ! a)" using sb Ya Mb unfolding beq by simp
+      show ?thesis
+        using R[unfolded sibm2_def, rule_format, OF aM posM bdefM bM fbM sbM]
+        unfolding mrMa mrMb .
+    qed
+    define xx where "xx = (entry M 0 j1, entry M 1 j0)"
+    have mapxx: "map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1] = [xx]"
+    proof -
+      have "[j0..<j1] = [j0]" unfolding Leq by simp
+      thus ?thesis unfolding xx_def meq using d0ex by simp
+    qed
+    have hdK: "K ! 0 = M ! (Suc a)"
+    proof -
+      have "0 < b - Suc a" using lenK Kne by (cases "b - Suc a") auto
+      thus ?thesis using Kel[of 0] by simp
+    qed
+    have hdK': "hd K = M ! (Suc a)" using hdK Kne by (simp add: hd_conv_nth)
+    have Kdec: "K = M ! (Suc a) # tl K" using Kne hdK' by (cases K) auto
+    have stepA: "fst (M ! Suc a) \<le> Suc (fst (M ! a))"
+    proof -
+      have "Suc a < length M" using aj0 j0j1 j1len by simp
+      thus ?thesis using B unfolding blockok_def by simp
+    qed
+    have fstMa: "fst (M ! a) = entry M 0 j0"
+    proof -
+      have "fst (Y ! a) = fst (Y ! b)" using fb by simp
+      thus ?thesis using Ya levb by simp
+    qed
+    have main: "sibrel K [xx]"
+    proof (cases "M ! j1 = M ! (Suc a)")
+      case hdeq: True
+      show ?thesis
+      proof (cases "tl K = []")
+        case True
+        have Keq1: "K = [M ! j1]" using Kdec hdeq True by simp
+        have desc: "fst xx = fst (M ! j1) \<and> snd xx < snd (M ! j1)"
+          unfolding xx_def using Mj1f Mj1s e1j by simp
+        have "snd (hd K) = maxr1 K \<and> snd (hd [xx]) = maxr1 [xx] \<and>
+              K = [] @ M ! j1 # [] \<and> [xx] = [] @ xx # [] \<and>
+              ((fst xx = fst (M ! j1) \<and> snd xx < snd (M ! j1))
+               \<or> (fst xx < fst (M ! j1) \<and> snd xx = snd (M ! j1)))"
+          using Keq1 desc by (simp add: maxr1_def)
+        thus ?thesis unfolding sibrel_def by blast
+      next
+        case tlne: False
+        have DP: "D = M ! j1 # tl K"
+          using KD Kdec hdeq by metis
+        show ?thesis
+          using seam_copyhead_m1_P[OF R B ST j1d j1nz i1d hp j0d d0d Yd SY
+              aY pos bdef bY fb sb ob high beq meq KDef Dne DP tlne]
+          unfolding K_def dropY mapxx by simp
+      qed
+    next
+      case hdne: False
+      have dK: "K = [] @ M ! (Suc a) # tl K" using Kdec by simp
+      have dK2: "[M ! j1] = [] @ M ! j1 # []" by simp
+      have div: "((fst (M ! j1) = fst (M ! (Suc a)) \<and> snd (M ! j1) < snd (M ! (Suc a)))
+                  \<or> (fst (M ! j1) < fst (M ! (Suc a)) \<and> snd (M ! j1) = snd (M ! (Suc a))))
+                 \<and> snd (hd K) = maxr1 K \<and> snd (hd [M ! j1]) = maxr1 [M ! j1]"
+        by (rule sibrel_diverge[OF coreM dK dK2]) (use hdne in simp)
+      from div have hmK: "snd (hd K) = maxr1 K" by blast
+      from div consider
+        (F1) "fst (M ! j1) = fst (M ! (Suc a))" "snd (M ! j1) < snd (M ! (Suc a))"
+        | (F2) "fst (M ! j1) < fst (M ! (Suc a))" "snd (M ! j1) = snd (M ! (Suc a))"
+        by blast
+      thus ?thesis
+      proof cases
+        case F1
+        have desc: "fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a))"
+          unfolding xx_def using Mj1f Mj1s e1j F1 by simp
+        have "snd (hd K) = maxr1 K \<and> snd (hd [xx]) = maxr1 [xx] \<and>
+              K = [] @ M ! (Suc a) # tl K \<and> [xx] = [] @ xx # [] \<and>
+              ((fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a)))
+               \<or> (fst xx < fst (M ! (Suc a)) \<and> snd xx = snd (M ! (Suc a))))"
+          using hmK desc dK by (simp add: maxr1_def)
+        thus ?thesis unfolding sibrel_def by blast
+      next
+        case F2
+        have "fst (M ! (Suc a)) \<le> Suc (entry M 0 j0)" using stepA fstMa by simp
+        moreover have "Suc (entry M 0 j0) \<le> entry M 0 j1"
+          using d0ex d0pos by linarith
+        moreover have "entry M 0 j1 < fst (M ! (Suc a))" using F2(1) Mj1f by simp
+        ultimately have False by simp
+        thus ?thesis ..
+      qed
+    qed
+    show ?thesis
+      using main unfolding K_def[symmetric] dropY mapxx by simp
+  qed
+qed
 
 lemma seam_copyhead_deep:
   assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
