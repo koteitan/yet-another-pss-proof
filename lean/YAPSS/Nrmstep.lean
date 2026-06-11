@@ -2698,4 +2698,48 @@ theorem hmok_Pred {M : PairSeq} (h : hmok M) : hmok (Pred M) := by
   · rw [if_neg hl]
     exact hmok_dropLast h
 
+
+/-! ## The final-block discipline `tailok` -/
+
+/-- Hereditary head-maximality of a standalone segment: the segment and
+every dominated run inside it are head-maximal. -/
+def hhm (S : PairSeq) : Prop :=
+  headmax S ∧ ∀ p, p < S.length → headmax (runAt S p)
+
+/-- **The final-block discipline** `tailok`: if the last column has a
+parent, then — always when the parent row is 0, and under the trigger
+(a block column at the last column's level with row-1 value at least the
+parent's) when the parent row is 1 — the block between parent and last
+column is hereditarily head-maximal.  (Mined exact: 0/543 for row 0,
+0/265 for triggered row 1; general row-1 blocks fail 224/642, so the
+trigger is essential.) -/
+def tailok (M : PairSeq) : Prop :=
+  ∀ j0, j0 + 1 < M.length →
+    nextR M (idx1 M (M.length - 1)) j0 (M.length - 1) →
+    (idx1 M (M.length - 1) = 1 →
+      ∃ b, j0 < b ∧ b + 1 < M.length ∧
+        (M.getD (M.length - 1) (0,0)).1 ≤ (M.getD b (0,0)).1 ∧
+        (M.getD j0 (0,0)).2 ≤ (M.getD b (0,0)).2) →
+    hhm ((M.take (M.length - 1)).drop (j0 + 1))
+
+/-- On the diagonal the trigger is refutable: the block sits strictly below
+the last column's level. -/
+theorem tailok_diagSeq (v : ℕ) : tailok (diagSeq 0 v) := by
+  intro j0 hj0 _hnext htrig
+  rw [diagSeq0_length] at hj0
+  have hv : 1 ≤ v := by omega
+  have hi1 : idx1 (diagSeq 0 v) ((diagSeq 0 v).length - 1) = 1 := by
+    have he : entry (diagSeq 0 v) 1 ((diagSeq 0 v).length - 1) = v := by
+      unfold entry
+      rw [if_neg one_ne_zero, diagSeq0_length, show v + 1 - 1 = v by omega,
+          diagSeq0_getD (by omega)]
+    unfold idx1
+    rw [he, if_pos (by omega)]
+  obtain ⟨b, hb1, hb2, hb3, -⟩ := htrig hi1
+  rw [diagSeq0_length] at hb2 hb3
+  rw [show v + 1 - 1 = v by omega, diagSeq0_getD (by omega),
+      diagSeq0_getD (by omega)] at hb3
+  have : v ≤ b := by simpa using hb3
+  omega
+
 end YAPSS
