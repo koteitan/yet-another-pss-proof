@@ -3681,4 +3681,41 @@ theorem nextrel0_into_copy {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
       ≤ v0 + k * d0 := hroot
   omega
 
+
+/-! ## Segment extraction at copy positions -/
+
+theorem hhm_shift {S : PairSeq} {d : ℕ} (h : hhm S) :
+    hhm (S.map fun p => (p.1 + d, p.2)) := by
+  constructor
+  · exact headmax_shift h.1
+  · intro p hp
+    rw [List.length_map] at hp
+    have hr := runAt_shiftr0 d S hp
+    rw [show (S.map fun p => (p.1 + d, p.2)) = shiftr0 d S from rfl, hr]
+    exact headmax_shift (h.2 p hp)
+
+theorem copyExp_split (G B : PairSeq) (d0 : ℕ) {k n : ℕ} (hk : k ≤ n) :
+    copyExp G B d0 n = copyExp G B d0 k
+      ++ ((List.range (n - k)).flatMap
+          fun i => B.map fun p => (p.1 + (k + i) * d0, p.2)) := by
+  unfold copyExp
+  rw [show n = k + (n - k) by omega, List.range_add, List.flatMap_append,
+      List.flatMap_map, ← List.append_assoc,
+      show k + (n - k) - k = n - k by omega]
+
+theorem copyExp_take_at {G B : PairSeq} {d0 n k q : ℕ}
+    (hk : k < n) (hq : q ≤ B.length) :
+    (copyExp G B d0 n).take (G.length + (k * B.length + q))
+      = copyExp G B d0 k ++ (B.map fun p => (p.1 + k * d0, p.2)).take q := by
+  rw [copyExp_split G B d0 (le_of_lt hk)]
+  have hlen : (copyExp G B d0 k).length = G.length + k * B.length :=
+    copyExp_length ..
+  rw [List.take_append, List.take_of_length_le (by rw [hlen]; omega), hlen,
+      show G.length + (k * B.length + q) - (G.length + k * B.length) = q
+        by omega]
+  obtain ⟨m, hm⟩ : ∃ m, n - k = m + 1 := ⟨n - k - 1, by omega⟩
+  rw [hm, List.range_succ_eq_map, List.flatMap_cons,
+      List.take_append_of_le_length (by rw [List.length_map]; omega),
+      Nat.add_zero]
+
 end YAPSS
