@@ -3509,6 +3509,7 @@ definition t14ok :: "pairseq \<Rightarrow> bool" where
   "t14ok M \<longleftrightarrow> (\<forall>a b. a < length M \<longrightarrow> 0 < fst (M ! a) \<longrightarrow>
       b = Suc a + length (mrun M a) \<longrightarrow> b < length M \<longrightarrow>
       snd (M ! b) = snd (M ! a) \<longrightarrow> mrun M b \<noteq> [] \<longrightarrow>
+      snd (M ! b) \<le> snd (hd (mrun M b)) \<longrightarrow>
       snd (hd (mrun M b)) = maxr1 (mrun M b))"
 
 lemma t14ok_diagSeq: "t14ok (diagSeq 0 v)"
@@ -3524,6 +3525,7 @@ proof (intro allI impI)
     and bl: "b < length (take m M)"
     and sb: "snd (take m M ! b) = snd (take m M ! a)"
     and ne: "mrun (take m M) b \<noteq> []"
+    and hi: "snd (take m M ! b) \<le> snd (hd (mrun (take m M) b))"
   have mr: "mrun (take m M) a = mrun M a" by (rule tie_take_pair[OF bp bl])
   have aM: "a < length M" and am: "a < m" using al by simp_all
   have bM: "b < length M" and bm: "b < m" using bl by simp_all
@@ -3532,9 +3534,13 @@ proof (intro allI impI)
   have mrb: "mrun (take m M) b = take (m - Suc b) (mrun M b)"
     by (rule mrun_take[OF bm])
   have neM: "mrun M b \<noteq> []" using ne mrb by auto
+  have hdeqb: "hd (mrun (take m M) b) = hd (mrun M b)"
+    using ne unfolding mrb by (cases "mrun M b"; cases "m - Suc b") auto
+  have hiM: "snd (M ! b) \<le> snd (hd (mrun M b))"
+    using hi hdeqb nb by simp
   have hmM: "snd (hd (mrun M b)) = maxr1 (mrun M b)"
     using T[unfolded t14ok_def, rule_format, of a b] aM bM bp[unfolded mr]
-      pos[unfolded na] sb[unfolded na nb] neM by blast
+      pos[unfolded na] sb[unfolded na nb] neM hiM by blast
   show "snd (hd (mrun (take m M) b)) = maxr1 (mrun (take m M) b)"
     unfolding mrb by (rule hm_take[OF ne[unfolded mrb] hmM])
 qed
@@ -9185,9 +9191,20 @@ proof -
     thus ?thesis unfolding K1_def by simp
   qed
   have mbne: "mrun H' b \<noteq> []" using K1pre K1NE by auto
+  have hdeq1: "hd (mrun H' b) = hd K1"
+  proof -
+    have l0: "0 < length K1" using K1NE by (cases K1) auto
+    have "hd K1 = K1 ! 0" using K1NE by (simp add: hd_conv_nth)
+    also have "\<dots> = take (length K1) (mrun H' b) ! 0" using K1pre by metis
+    also have "\<dots> = mrun H' b ! 0" using l0 by simp
+    also have "\<dots> = hd (mrun H' b)" using mbne by (simp add: hd_conv_nth)
+    finally show ?thesis by simp
+  qed
+  have hib: "snd (H' ! b) \<le> snd (hd (mrun H' b))"
+    using HI nthc1 hdeq1 unfolding K1_def by simp
   have hmb: "snd (hd (mrun H' b)) = maxr1 (mrun H' b)"
     using T14[unfolded t14ok_def, rule_format, of a b]
-      aH posH bdefH bH sndt mbne by blast
+      aH posH bdefH bH sndt mbne hib by blast
   have hmK1: "snd (hd K1) = maxr1 K1"
     using hm_take[OF _ hmb] K1pre K1NE by metis
   have False using NH[folded K1_def] hmK1 by simp
