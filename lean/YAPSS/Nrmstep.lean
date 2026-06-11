@@ -2241,4 +2241,52 @@ theorem repB_drop (B : PairSeq) :
         omega,
       repB_drop B k n q (by omega) hq]
 
+theorem repB_getD (B : PairSeq) :
+    ∀ (k n q : ℕ), k < n → q < B.length →
+      (repB B n).getD (k * B.length + q) (0,0) = B.getD q (0,0)
+  | 0, 0, q, hk, _ => absurd hk (by omega)
+  | 0, n + 1, q, _, hq => by
+    rw [repB_succ, Nat.zero_mul, Nat.zero_add, getD_append_left hq]
+  | k + 1, 0, q, hk, _ => absurd hk (by omega)
+  | k + 1, n + 1, q, hk, hq => by
+    rw [repB_succ, getD_append_right (by
+        have : B.length ≤ (k + 1) * B.length := by
+          calc B.length = 1 * B.length := (Nat.one_mul _).symm
+          _ ≤ (k + 1) * B.length := Nat.mul_le_mul_right _ (by omega)
+        omega),
+      show (k + 1) * B.length + q - B.length = k * B.length + q by
+        rw [Nat.succ_mul]
+        omega,
+      repB_getD B k n q (by omega) hq]
+
+/-- **Runs in the constant-copy region never cross a copy boundary**: at the
+copy position `(k, q)` the dominated run is exactly the block's own run at
+`q` (the next copy's root level is at most every block level). -/
+theorem repB_runAt {v0 w0 : ℕ} {R : PairSeq} (hdom : ∀ x ∈ R, v0 < x.1)
+    {k n q : ℕ} (hk : k < n) (hq : q < ((v0,w0) :: R).length) :
+    runAt (repB ((v0,w0) :: R) n) (k * ((v0,w0) :: R).length + q)
+      = runAt ((v0,w0) :: R) q := by
+  have hroot : v0 ≤ (((v0,w0) :: R).getD q (0,0)).1 := by
+    cases q with
+    | zero => simp
+    | succ q' =>
+      rw [List.getD_cons_succ]
+      exact le_of_lt (hdom _ (getD_mem (by simpa using hq)))
+  unfold runAt
+  rw [show k * ((v0,w0) :: R).length + q + 1
+        = k * ((v0,w0) :: R).length + (q + 1) by omega,
+      repB_drop _ k n q hk hq, repB_getD _ k n q hk hq,
+      takeWhile_append_head_stop (by
+        intro a ha
+        cases hm : n - k - 1 with
+        | zero =>
+          rw [hm] at ha
+          simp at ha
+        | succ m =>
+          rw [hm, repB_succ, List.cons_append] at ha
+          simp only [List.head?_cons, Option.mem_some_iff] at ha
+          subst ha
+          simp only [decide_eq_false_iff_not, not_lt]
+          exact hroot)]
+
 end YAPSS
