@@ -4563,4 +4563,29 @@ theorem tlast_copyExp_within {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
       by omega] at hl
   omega
 
+theorem z0ok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (h : z0ok M) :
+    z0ok (M⟦n⟧) := by
+  by_cases hL0 : M.length - 1 = 0
+  · rw [oper_eq_self_of_short n hL0]
+    exact h
+  by_cases hz : entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0
+  · rw [oper_eq_pred_of_zero n hL0 hz]
+    exact z0ok_Pred h
+  by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
+  case neg =>
+    rw [oper_eq_pred_of_noParent n hL0 hz hp]
+    exact z0ok_Pred h
+  case pos =>
+    obtain ⟨G, v0, w0, R, d0, lp, hMeq, hX, -, -, -, -⟩ :=
+      oper_bad_blocks (by omega) hz hp hn
+    rw [hX]
+    show z0ok (copyExp G ((v0,w0) :: R) d0 n)
+    exact z0ok_copyExp (hMeq ▸ h)
+
+/-- **Level-0 columns of standard hosts are `(0,0)`** — unconditional. -/
+theorem z0ok_ST_PS {M : PairSeq} (hM : ST_PS M) : z0ok M := by
+  induction hM with
+  | diag v => exact z0ok_diagSeq v
+  | oper hN hn ih => exact z0ok_oper hn ih
+
 end YAPSS
