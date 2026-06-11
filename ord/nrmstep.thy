@@ -4707,7 +4707,23 @@ lemma ginv_BTWRAPG:
     and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
     and "qa < q" and "q < j1 - j0"
   shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + qa))"
-  sorry
+proof -
+  have nR: "nextR M i1 j0 j1" unfolding assms(7) by (rule parent_nextR[OF assms(6)])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+    by (rule block_head_min[OF assms(6) assms(7)])
+  have e0c: "entry M 0 j0 \<le> entry M 0 (j0 + qa)"
+  proof (cases qa)
+    case 0 thus ?thesis by simp
+  next
+    case (Suc q')
+    have "j0 < j0 + qa \<and> j0 + qa \<le> j1" using Suc assms(11) j0j1 by arith
+    thus ?thesis using hm0 by fastforce
+  qed
+  show ?thesis
+    by (rule ginv_BTWRAPU[OF assms(1-8) assms(9) assms(11) e0c assms(13)
+          assms(14) assms(15)])
+qed
 
 lemma ginv_BTWRAPG_T3:
   assumes "M \<in> ST_PS"
@@ -4723,7 +4739,23 @@ lemma ginv_BTWRAPG_T3:
     and "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
     and "qa < q" and "q < j1 - j0"
   shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
-  sorry
+proof -
+  have nR: "nextR M i1 j0 j1" unfolding assms(7) by (rule parent_nextR[OF assms(6)])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+    by (rule block_head_min[OF assms(6) assms(7)])
+  have e0c: "entry M 0 j0 \<le> entry M 0 (j0 + qa)"
+  proof (cases qa)
+    case 0 thus ?thesis by simp
+  next
+    case (Suc q')
+    have "j0 < j0 + qa \<and> j0 + qa \<le> j1" using Suc assms(11) j0j1 by arith
+    thus ?thesis using hm0 by fastforce
+  qed
+  show ?thesis
+    by (rule ginv_BTWRAPU3[OF assms(1-8) assms(9) assms(11) e0c assms(13)
+          assms(14) assms(15) assms(16)])
+qed
 
 lemma ginv_BTWRAP:
   assumes "M \<in> ST_PS"
