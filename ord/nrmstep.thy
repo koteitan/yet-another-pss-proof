@@ -2173,6 +2173,24 @@ text \<open>The two regional halves of the cross-copy window preservation
   except the \<open>p = j0 - 1, d0 = 0\<close> copy-head-tie seam; copy-anchored windows
   transport via the block twin except the \<open>qP > 0\<close> crossing seam.\<close>
 
+text \<open>(GAP) In a dominated exact-copy branch, any block column whose row 1
+  exceeds the head's is bounded by the dominating prefix predecessor
+  (closure+2: 246 instances, zero violations).\<close>
+
+lemma ginv_GAP:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "d0 = 0" and "0 < j0"
+    and "fst (M ! (j0 - 1)) < entry M 0 j0"
+    and "q < j1 - j0"
+    and "entry M 1 j0 < entry M 1 (j0 + q)"
+  shows "entry M 1 (j0 + q) \<le> snd (M ! (j0 - 1))"
+  sorry
+
 text \<open>(GBLK0) The \<open>d0 = 0\<close> copy-head-tie seam: with an exact-copy bad branch
   whose block head is dominated by its immediate predecessor, the block's
   row-1 values are bounded by that predecessor and the block head.
@@ -2190,7 +2208,21 @@ lemma ginv_GBLK0:
     and "fst (M ! (j0 - 1)) < entry M 0 j0"
     and "q < j1 - j0"
   shows "entry M 1 (j0 + q) \<le> max (snd (M ! (j0 - 1))) (entry M 1 j0)"
-  sorry
+proof (cases "entry M 1 (j0 + q) \<le> entry M 1 j0")
+  case True
+  thus ?thesis by simp
+next
+  case False
+  hence gt: "entry M 1 j0 < entry M 1 (j0 + q)" by simp
+  have q0: "q \<noteq> 0"
+  proof
+    assume "q = 0"
+    thus False using gt by simp
+  qed
+  have "entry M 1 (j0 + q) \<le> snd (M ! (j0 - 1))"
+    by (rule ginv_GAP[OF assms(1-8) assms(9) assms(10) assms(11) assms(12) gt])
+  thus ?thesis by simp
+qed
 
 lemma ginv_ob_pre:
   assumes G: "ginv M" and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
