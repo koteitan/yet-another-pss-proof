@@ -2476,4 +2476,13 @@ theorem NT_tie_of {u : ℕ} {K K1 : PairSeq}
   · intro hlt
     exact olt_irrefl _ (olt_trans (hmaster hsl) hlt)
 
+/-- Head-maximality survives truncation of the tail. -/
+theorem headmax_prefix {s0 : ℕ × ℕ} {S' D : PairSeq}
+    (h : s0.2 = maxr1 (s0 :: (S' ++ D))) : s0.2 = maxr1 (s0 :: S') := by
+  have h1 : s0.2 ≤ maxr1 (s0 :: S') := le_maxr1 s0 (List.mem_cons_self ..)
+  have h2 : maxr1 (s0 :: S') ≤ maxr1 (s0 :: (S' ++ D)) := by
+    rw [show s0 :: (S' ++ D) = (s0 :: S') ++ D by simp, maxr1_append]
+    exact le_max_left ..
+  omega
+
 end YAPSS
