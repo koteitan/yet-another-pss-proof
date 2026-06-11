@@ -2098,6 +2098,215 @@ next
   show ?case by (rule r1ok_oper[OF oper.IH oper.hyps(1) oper.hyps(2)])
 qed
 
+text \<open>\<open>ginv\<close>: the closed-window row-1 bound.  In any dominated window
+  \<open>pp # S\<close> of a standard host whose opening run returns to the opener's
+  level (\<open>S\<close> contains a later column at level \<open>\<le> fst (hd S)\<close>), every row-1
+  value in \<open>S\<close> is bounded by \<open>max (snd pp) (snd (hd S))\<close>.  (Empirically
+  exact: closure+1 14638 / closure+2 42489 closed windows, zero violations.
+  The bound is acausal — a later return constrains earlier columns — so it
+  is proved by generation induction like \<open>r1ok\<close>.)\<close>
+
+definition ginv :: "pairseq \<Rightarrow> bool" where
+  "ginv H \<longleftrightarrow> (\<forall>p n t l.
+     Suc p + n < length H \<longrightarrow>
+     (\<forall>k. p < k \<and> k \<le> Suc p + n \<longrightarrow> fst (H ! p) < fst (H ! k)) \<longrightarrow>
+     0 < t \<longrightarrow> t \<le> n \<longrightarrow> fst (H ! (Suc p + t)) \<le> fst (H ! Suc p) \<longrightarrow>
+     p < l \<longrightarrow> l \<le> Suc p + n \<longrightarrow>
+     snd (H ! l) \<le> max (snd (H ! p)) (snd (H ! Suc p)))"
+
+lemma ginv_diagSeq: "ginv (diagSeq 0 v)"
+proof -
+  have nth: "\<And>j. j < length (diagSeq 0 v) \<Longrightarrow> diagSeq 0 v ! j = (j, j)"
+    unfolding diagSeq_def by (simp del: upt_Suc)
+  show ?thesis
+    unfolding ginv_def
+  proof (intro allI impI)
+    fix p n t l
+    assume bnd: "Suc p + n < length (diagSeq 0 v)"
+      and dom: "\<forall>k. p < k \<and> k \<le> Suc p + n \<longrightarrow>
+                  fst (diagSeq 0 v ! p) < fst (diagSeq 0 v ! k)"
+      and t0: "0 < t" and tn: "t \<le> n"
+      and cl: "fst (diagSeq 0 v ! (Suc p + t)) \<le> fst (diagSeq 0 v ! Suc p)"
+      and pl: "p < l" and ln: "l \<le> Suc p + n"
+    have lt1: "Suc p + t < length (diagSeq 0 v)" using bnd tn by simp
+    have lt2: "Suc p < length (diagSeq 0 v)" using bnd by simp
+    have False using cl t0 unfolding nth[OF lt1] nth[OF lt2] by simp
+    thus "snd (diagSeq 0 v ! l)
+        \<le> max (snd (diagSeq 0 v ! p)) (snd (diagSeq 0 v ! Suc p))" ..
+  qed
+qed
+
+lemma ginv_take:
+  assumes G: "ginv M" shows "ginv (take m M)"
+  unfolding ginv_def
+proof (intro allI impI)
+  fix p n t l
+  assume bnd: "Suc p + n < length (take m M)"
+    and dom: "\<forall>k. p < k \<and> k \<le> Suc p + n \<longrightarrow>
+                fst (take m M ! p) < fst (take m M ! k)"
+    and t0: "0 < t" and tn: "t \<le> n"
+    and cl: "fst (take m M ! (Suc p + t)) \<le> fst (take m M ! Suc p)"
+    and pl: "p < l" and ln: "l \<le> Suc p + n"
+  have bm: "Suc p + n < m" and bM: "Suc p + n < length M" using bnd by auto
+  have ntk: "\<And>j. j \<le> Suc p + n \<Longrightarrow> take m M ! j = M ! j"
+    using bm by (auto intro: nth_take)
+  have dom': "\<forall>k. p < k \<and> k \<le> Suc p + n \<longrightarrow> fst (M ! p) < fst (M ! k)"
+  proof (intro allI impI)
+    fix k assume kk: "p < k \<and> k \<le> Suc p + n"
+    have "fst (take m M ! p) < fst (take m M ! k)" using dom kk by blast
+    thus "fst (M ! p) < fst (M ! k)" using ntk kk by simp
+  qed
+  have cl': "fst (M ! (Suc p + t)) \<le> fst (M ! Suc p)"
+    using cl ntk tn by simp
+  have "snd (M ! l) \<le> max (snd (M ! p)) (snd (M ! Suc p))"
+    using G[unfolded ginv_def, rule_format, of p n t l]
+      bM dom' t0 tn cl' pl ln by blast
+  thus "snd (take m M ! l) \<le> max (snd (take m M ! p)) (snd (take m M ! Suc p))"
+    using ntk pl ln by simp
+qed
+
+lemma ginv_butlast: "ginv M \<Longrightarrow> ginv (butlast M)"
+  using ginv_take[of M "length M - 1"] by (simp add: butlast_conv_take)
+
+lemma ginv_oper_bad:
+  assumes G: "ginv M" and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and opeq: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+  shows "ginv X"
+  sorry
+
+lemma ginv_oper:
+  assumes G: "ginv M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+  shows "ginv (oper M n)"
+proof -
+  define j1 where "j1 = Lng M - 1"
+  have b: "blockok 0 M" by (rule blockok_ST_PS[OF ST])
+  show ?thesis
+  proof (cases "j1 = 0")
+    case True thus ?thesis using G unfolding oper_def Let_def j1_def by simp
+  next
+    case False
+    show ?thesis
+    proof (cases "entry M 0 j1 = 0 \<and> entry M 1 j1 = 0")
+      case True
+      have "oper M n = Pred M"
+        unfolding oper_def Let_def j1_def[symmetric] using False True by auto
+      moreover have "ginv (Pred M)"
+        unfolding Pred_def using G ginv_butlast by simp
+      ultimately show ?thesis by simp
+    next
+      case Fz: False
+      define i1 where "i1 = idx1 M j1"
+      show ?thesis
+      proof (cases "hasParent M i1 j1")
+        case False2: False
+        have "oper M n = Pred M"
+          unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+          using False Fz False2 by auto
+        moreover have "ginv (Pred M)"
+          unfolding Pred_def using G ginv_butlast by simp
+        ultimately show ?thesis by simp
+      next
+        case hp: True
+        define j0 where "j0 = parent M i1 j1"
+        define d0 where "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+        have d1z: "(if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0) = 0"
+          using idx1_le[of M j1] unfolding i1_def by simp
+        have opeq: "oper M n = take j0 M @ concat (map (\<lambda>k.
+               map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+        proof -
+          have "oper M n = take j0 M @ concat (map (\<lambda>k.
+                 map (\<lambda>j. (entry M 0 j + k * d0,
+                            entry M 1 j + k * (if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0)))
+                 [j0..<j1]) [0..<n])"
+            unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+              j0_def[symmetric] d0_def[symmetric]
+            using False Fz hp by auto
+          thus ?thesis unfolding d1z by simp
+        qed
+        show ?thesis
+          by (rule ginv_oper_bad[OF G b ST n1 j1_def False Fz i1_def hp j0_def d0_def opeq])
+      qed
+    qed
+  qed
+qed
+
+theorem ginv_ST_PS: "M \<in> ST_PS \<Longrightarrow> ginv M"
+proof (induction M rule: ST_PS.induct)
+  case (diag v) show ?case by (rule ginv_diagSeq)
+next
+  case (oper M n)
+  show ?case by (rule ginv_oper[OF oper.IH oper.hyps(1) oper.hyps(2)])
+qed
+
+text \<open>Bridge: the closed-window bound in \<open>dseg\<close> form.\<close>
+
+lemma ginv_dseg_bound:
+  assumes D: "dseg u (c0 # rest)"
+    and cl: "dropWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+    and x: "x \<in> set (c0 # rest)"
+  shows "snd x \<le> max u (snd c0)"
+proof -
+  obtain pre pp post where H: "pre @ (pp # (c0 # rest)) @ post \<in> ST_PS"
+    and dom0: "\<forall>r \<in> set (c0 # rest). fst pp < fst r" and ud: "u = snd pp"
+    using D unfolding dseg_def by blast
+  define H' where "H' = pre @ (pp # (c0 # rest)) @ post"
+  have GH: "ginv H'" unfolding H'_def by (rule ginv_ST_PS[OF H])
+  define p where "p = length pre"
+  define n where "n = length rest"
+  have nthpp: "H' ! p = pp"
+    unfolding H'_def p_def by (simp add: nth_append)
+  have nthW: "\<And>i. i \<le> n \<Longrightarrow> H' ! (p + Suc i) = (c0 # rest) ! i"
+  proof -
+    fix i assume iL: "i \<le> n"
+    have "H' ! (p + Suc i) = ((pp # (c0 # rest)) @ post) ! Suc i"
+      unfolding H'_def p_def by (simp add: nth_append)
+    also have "\<dots> = (pp # (c0 # rest)) ! Suc i"
+      using iL unfolding n_def by (cases i) (simp_all add: nth_append)
+    also have "\<dots> = (c0 # rest) ! i" by simp
+    finally show "H' ! (p + Suc i) = (c0 # rest) ! i" .
+  qed
+  have nthc0: "H' ! Suc p = c0" using nthW[of 0] by simp
+  have lenH: "Suc p + n < length H'"
+    unfolding H'_def p_def n_def by simp
+  have dom: "\<forall>k. p < k \<and> k \<le> Suc p + n \<longrightarrow> fst (H' ! p) < fst (H' ! k)"
+  proof (intro allI impI)
+    fix k assume kk: "p < k \<and> k \<le> Suc p + n"
+    define i where "i = k - Suc p"
+    have ki: "k = p + Suc i" unfolding i_def using kk by arith
+    have iL: "i \<le> n" unfolding i_def using kk by arith
+    have "H' ! k = (c0 # rest) ! i" unfolding ki by (rule nthW[OF iL])
+    moreover have "(c0 # rest) ! i \<in> set (c0 # rest)"
+      by (rule nth_mem) (use iL n_def in simp)
+    ultimately show "fst (H' ! p) < fst (H' ! k)"
+      using dom0 nthpp by auto
+  qed
+  obtain xr where xr: "xr \<in> set rest" "\<not> fst c0 < fst xr"
+    using cl unfolding dropWhile_eq_Nil_conv by blast
+  obtain ir where ir: "ir < length rest" "rest ! ir = xr"
+    using xr(1) by (metis in_set_conv_nth)
+  have tcl: "0 < Suc ir" "Suc ir \<le> n" using ir(1) unfolding n_def by simp_all
+  have clw: "fst (H' ! (Suc p + Suc ir)) \<le> fst (H' ! Suc p)"
+  proof -
+    have "H' ! (p + Suc (Suc ir)) = (c0 # rest) ! Suc ir"
+      by (rule nthW) (use tcl(2) in simp)
+    hence "H' ! (Suc p + Suc ir) = xr" using ir(2) by simp
+    thus ?thesis using xr(2) nthc0 by simp
+  qed
+  obtain j where j: "j \<le> n" "(c0 # rest) ! j = x"
+    using x unfolding n_def by (metis in_set_conv_nth less_Suc_eq_le length_Cons)
+  have lj: "p < p + Suc j" "p + Suc j \<le> Suc p + n" using j(1) by simp_all
+  have "snd (H' ! (p + Suc j)) \<le> max (snd (H' ! p)) (snd (H' ! Suc p))"
+    using GH[unfolded ginv_def, rule_format, of p n "Suc ir" "p + Suc j"]
+      lenH dom tcl clw lj by blast
+  thus ?thesis using nthW[OF j(1)] j(2) nthpp nthc0 ud by simp
+qed
+
 definition fbseg :: "nat \<Rightarrow> pairseq \<Rightarrow> bool" where
   "fbseg u S \<longleftrightarrow> S \<noteq> [] \<and> (\<exists>pre pp mid post. pre @ (pp # mid @ S) @ post \<in> ST_PS
                  \<and> (\<forall>r \<in> set (mid @ S). fst pp < fst r)
@@ -7208,7 +7417,21 @@ lemma E6_nbcK_T:
     and "maxr1 (takeWhile (\<lambda>r. fst c0 < fst r) rest) = maxr1 (c0 # rest)"
     and "snd c0 < maxr1 (c0 # rest)"
   shows "dropWhile (\<lambda>r. fst c0 < fst r) rest = []"
-  sorry
+proof (rule ccontr)
+  assume cl: "dropWhile (\<lambda>r. fst c0 < fst r) rest \<noteq> []"
+  have bnd: "\<And>x. x \<in> set (c0 # rest) \<Longrightarrow> snd x \<le> max u (snd c0)"
+    using ginv_dseg_bound[OF assms(1) cl] by blast
+  have mx: "max u (snd c0) = snd c0" using assms(2) by simp
+  have "maxr1 (c0 # rest) \<le> snd c0"
+    unfolding maxr1_def
+  proof (intro Max.boundedI)
+    show "finite (snd ` set (c0 # rest))" by simp
+    show "snd ` set (c0 # rest) \<noteq> {}" by simp
+    show "\<And>s. s \<in> snd ` set (c0 # rest) \<Longrightarrow> s \<le> snd c0"
+      using bnd mx by auto
+  qed
+  thus False using assms(5) by simp
+qed
 
 lemma E6_nbcK_K:
   assumes "dseg u (c0 # rest)" and "pfire u (nrm (translate (c0 # rest)))"

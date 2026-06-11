@@ -74,8 +74,9 @@
   - ✅ seam_copyhead_m1 討伐〔一般L直証: coreM 4分岐×E-const/F1直証・F2-L1=blockok反駁・実在114件全カバー〕
   - 🚨 シーム残差〔seam_open_m1 14件 e1j0=0機構 / copyhead残差 P・E2var・F2L2 閉包+1で0件 / copyhead_deep 実証0件〕
   - 🚨 値側コア〔NT_lexdiff_lt 0/116万 / E6_tie_nofire_high0・high1 実証空クラス〕
-  - 🚨 fire-cascade 5点〔E6_lpl/E6_dom_deep/E6_memT/E6_nbcK_T/E6_nbcK_K＝GRAND同時帰納の本丸〕
-  - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam〕＋ STS_B 本体〔INV/INV2前提付き 0/26322〕
+  - ✅ ginv 基盤＋E6_nbcK_T 討伐〔ginv=閉鎖窓row1上界・生成帰納骨格緑・dseg橋渡し・残 ginv_oper_bad のみ〕
+  - 🚨 fire-cascade 残4点〔E6_lpl/E6_dom_deep/E6_memT/E6_nbcK_K＝GRAND同時帰納の本丸〕
+  - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam＝ginv適用候補〕＋ STS_B 本体〔0/26322〕/ ginv_oper_bad〔閉包+2で42489窓0違反・シーム型〕
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - 🚨 TOP_desc〔0/474・未ステート〕
   - 🚨 スタブ〔NT_tie/E6_mem/E6_dom_tie＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン〕
