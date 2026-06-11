@@ -2911,4 +2911,83 @@ theorem tailokA_Pred {M : PairSeq} (h : tailokA M) : tailokA (Pred M) := by
   · rw [if_neg hl]
     exact tailokA_dropLast h
 
+
+/-! ## H1: closures below the shared base transfer through the truncation -/
+
+/-- Interior runs end no later than the closure stop. -/
+theorem stopAt_interior_le {X : PairSeq} {a p : ℕ}
+    (hstopX : stopAt X a < X.length) (hp1 : a ≤ p) (hp2 : p < stopAt X a) :
+    stopAt X p ≤ stopAt X a := by
+  rcases Nat.eq_or_lt_of_le hp1 with rfl | hpa
+  · exact le_rfl
+  · have hsfail : (X.getD (stopAt X a) (0,0)).1 ≤ (X.getD a (0,0)).1 :=
+      stopAt_col_le hstopX
+  
+    have hgt : (X.getD a (0,0)).1 < (X.getD p (0,0)).1 :=
+      run_region_gt hpa hp2
+    have hidx : stopAt X a - (p + 1) < (X.drop (p + 1)).length := by
+      rw [List.length_drop]
+      omega
+    have hfail : (fun r => decide ((X.getD p (0,0)).1 < r.1))
+        ((X.drop (p + 1))[stopAt X a - (p + 1)]) = false := by
+      have he : (X.drop (p + 1))[stopAt X a - (p + 1)]
+          = X.getD (stopAt X a) (0,0) := by
+        rw [← getD_eq_getElem' _ (0,0) hidx, getD_drop,
+            show p + 1 + (stopAt X a - (p + 1)) = stopAt X a by omega]
+      rw [he]
+      simp only [decide_eq_false_iff_not, not_lt]
+      omega
+    have hbound0 := takeWhile_length_le_of_fail
+      (pr := fun r => decide ((X.getD p (0,0)).1 < r.1)) hidx hfail
+    have hbound : (runAt X p).length ≤ stopAt X a - (p + 1) := hbound0
+    have h1 : stopAt X p = p + 1 + (runAt X p).length := rfl
+    omega
+
+/-- Conclusions of an `hmok` instance whose stop falls below `m` transfer
+from `hmok` of the truncation. -/
+theorem hmok_of_take {X : PairSeq} {m : ℕ} (hT : hmok (X.take m)) :
+    ∀ a, a < X.length → stopAt X a < X.length → stopAt X a < m →
+      (X.getD (stopAt X a) (0,0)).2 ≤ (X.getD a (0,0)).2 →
+      ∀ p, a ≤ p → p < stopAt X a → headmax (runAt X p) := by
+  intro a ha hstopX hstop hclo p hp1 hp2
+  have ham : a < m := by
+    unfold stopAt at hstop
+    omega
+  have hlen := runAt_take_length (M := X) (m := m) ham
+  have hstopT : stopAt (X.take m) a < m := by
+    unfold stopAt at hstop ⊢
+    rw [hlen]
+    omega
+  have hrun : runAt (X.take m) a = runAt X a := runAt_take_eq ham hstopT
+  have hseq : stopAt (X.take m) a = stopAt X a := by
+    unfold stopAt
+    rw [hrun]
+  have hpm : p < m := by omega
+  have hps : stopAt X p ≤ stopAt X a := stopAt_interior_le hstopX hp1 hp2
+  have hplen := runAt_take_length (M := X) (m := m) hpm
+  have hpstopT : stopAt (X.take m) p < m := by
+    unfold stopAt at hps hstop ⊢
+    rw [hplen]
+    omega
+  have hprun : runAt (X.take m) p = runAt X p := runAt_take_eq hpm hpstopT
+  have hres := hT a (by rw [List.length_take]; omega)
+    (by rw [List.length_take, hseq]; omega)
+    (by rw [hseq, getD_take hstop, getD_take ham]; exact hclo)
+    p hp1 (by rw [hseq]; exact hp2)
+  rwa [hprun] at hres
+
+/-- The shared base: `copyExp` and the host agree up to the end of copy 0. -/
+theorem copyExp_take_base {G B : PairSeq} {lp : ℕ × ℕ} {d0 n : ℕ}
+    (hn : 1 ≤ n) :
+    (copyExp G B d0 n).take (G.length + B.length)
+      = (G ++ B ++ [lp]).take (G.length + B.length) := by
+  unfold copyExp
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  rw [List.range_succ_eq_map, List.flatMap_cons]
+  have hB0 : B.map (fun p => (p.1 + 0 * d0, p.2)) = B := by
+    simp
+  rw [hB0, ← List.append_assoc]
+  rw [show G.length + B.length = (G ++ B).length by simp,
+      List.take_left, List.take_left]
+
 end YAPSS
