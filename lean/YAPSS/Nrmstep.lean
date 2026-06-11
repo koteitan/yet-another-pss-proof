@@ -3028,4 +3028,96 @@ theorem copies_map_drop {B : PairSeq} (f : ℕ → ℕ × ℕ → ℕ × ℕ) :
     rw [hfn, show n + 1 - (k + 1 + 1) = n - (k + 1) by omega]
     exact hrec
 
+
+/-! ## Run characterization at copy positions -/
+
+/-- The shifted-suffix takeWhile core shared by the run lemmas. -/
+theorem takeWhile_shift_core (d : ℕ) (B : PairSeq) (q : ℕ) :
+    ((B.map fun p => (p.1 + d, p.2)).drop (q + 1)).takeWhile
+        (fun r => decide ((B.getD q (0,0)).1 + d < r.1))
+      = (runAt B q).map fun p => (p.1 + d, p.2) := by
+  rw [← List.map_drop, List.takeWhile_map]
+  unfold runAt
+  congr 1
+  congr 1
+  funext r
+  simp only [Function.comp]
+  exact decide_eq_decide.2 (by omega)
+
+/-- The drop decomposition of `copyExp` at a copy position. -/
+theorem copyExp_drop_at {G B : PairSeq} {d0 n k q : ℕ}
+    (hk : k < n) (hq : q < B.length) :
+    (copyExp G B d0 n).drop (G.length + (k * B.length + q) + 1)
+      = (B.map fun p => (p.1 + k * d0, p.2)).drop (q + 1)
+        ++ ((List.range (n - (k + 1))).flatMap
+            fun i => B.map fun p => (p.1 + (i + (k + 1)) * d0, p.2)) := by
+  unfold copyExp
+  rw [show G.length + (k * B.length + q) + 1
+        = G.length + (k * B.length + (q + 1)) by omega,
+      List.drop_append, List.drop_eq_nil_of_le (by omega), List.nil_append,
+      Nat.add_sub_cancel_left]
+  exact copies_map_drop (fun i p => (p.1 + i * d0, p.2)) k n q hk hq
+
+/-- **Within-copy runs are shifted block runs** (when the block run closes
+inside the block). -/
+theorem copyExp_runAt_within {G B : PairSeq} {d0 n k q : ℕ}
+    (hk : k < n) (hq : q < B.length) (hin : stopAt B q < B.length) :
+    runAt (copyExp G B d0 n) (G.length + (k * B.length + q))
+      = (runAt B q).map fun p => (p.1 + k * d0, p.2) := by
+  have hg1 : ((copyExp G B d0 n).getD (G.length + (k * B.length + q)) (0,0)).1
+      = (B.getD q (0,0)).1 + k * d0 := by
+    rw [copyExp_getD_copy hk hq]
+  unfold runAt
+  rw [hg1, copyExp_drop_at hk hq, List.takeWhile_append, if_neg,
+      takeWhile_shift_core]
+  · unfold runAt
+    rfl
+  · intro he
+    rw [takeWhile_shift_core, List.length_map, List.length_drop,
+        List.length_map] at he
+    unfold stopAt at hin
+    omega
+
+/-- **Open block runs at copy positions above the next root stop exactly
+there**: the run is the whole shifted block suffix. -/
+theorem copyExp_runAt_root {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
+    {d0 n k q : ℕ} (hk : k < n) (hq : q < ((v0,w0) :: R).length)
+    (hopen : ((v0,w0) :: R).length ≤ stopAt ((v0,w0) :: R) q)
+    (hroot : v0 + d0 ≤ (((v0,w0) :: R).getD q (0,0)).1) :
+    runAt (copyExp G ((v0,w0) :: R) d0 n) (G.length + (k * ((v0,w0) :: R).length + q))
+      = (((v0,w0) :: R).drop (q + 1)).map fun p => (p.1 + k * d0, p.2) := by
+  have hself : runAt ((v0,w0) :: R) q = ((v0,w0) :: R).drop (q + 1) := by
+    have hle : (runAt ((v0,w0) :: R) q).length
+        ≤ (((v0,w0) :: R).drop (q + 1)).length :=
+      (List.takeWhile_sublist _).length_le
+    have hlen : (runAt ((v0,w0) :: R) q).length
+        = (((v0,w0) :: R).drop (q + 1)).length := by
+      unfold stopAt at hopen
+      rw [List.length_drop] at hle ⊢
+      omega
+    exact (List.takeWhile_prefix _).eq_of_length hlen
+  have hg1 : ((copyExp G ((v0,w0) :: R) d0 n).getD
+      (G.length + (k * ((v0,w0) :: R).length + q)) (0,0)).1
+      = (((v0,w0) :: R).getD q (0,0)).1 + k * d0 := by
+    rw [copyExp_getD_copy hk hq]
+  unfold runAt
+  rw [hg1, copyExp_drop_at hk hq,
+      takeWhile_append_head_stop (by
+        intro a ha
+        cases hm : n - (k + 1) with
+        | zero =>
+          rw [hm] at ha
+          simp at ha
+        | succ m =>
+          rw [hm, List.range_succ_eq_map, List.flatMap_cons,
+              List.map_cons, List.cons_append] at ha
+          simp only [List.head?_cons, Option.mem_some_iff] at ha
+          subst ha
+          simp only [decide_eq_false_iff_not, not_lt]
+          show v0 + (0 + (k + 1)) * d0 ≤ (((v0,w0) :: R).getD q (0,0)).1 + k * d0
+          have : (0 + (k + 1)) * d0 = k * d0 + d0 := by
+            rw [Nat.zero_add, Nat.succ_mul]
+          omega),
+      takeWhile_shift_core, hself]
+
 end YAPSS
