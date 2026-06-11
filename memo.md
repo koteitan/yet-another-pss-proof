@@ -2981,3 +2981,28 @@ BTWRAPU 攻略の3ルート（優先順）:
   BTWRAPG±T3・BTWRAPU±U3・GBLK0 は全て導出/証明済み。
   世代側 GRAND 残: CT/NT3/GAP/BTWRAP_T3/qpos/t14ok_oper_bad ＋ シーム空6種
   — 全て微小クラスか地図済み。
+
+### (2026-06-11 続54) 本日総括＋次セッション開幕指針（compact 引継ぎ）
+
+**本日の戦果（19討伐・★6発見・健全性キャッチ2件）**:
+seam_copyhead_m1(+L2) / r1ok_climb / E6_nbcK_T / E6_tie_nofire_high0+high1 /
+ginv_ob_pre+ob_copy / t1ok+t3ok_oper_bad / BT1+BT1_T3系化 / BTWIN系化 /
+BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
+新基盤: ginv・t1ok/t3ok/t14ok・btfullok±T3（全て標準テンプレート緑）。
+健全性: t14ok を hi 前提付きに弱化（閉包+2 反例36）/BTWRAPG_T3 は無事。
+
+**nrmstep.thy sorry 23 の内訳**:
+- 世代側微小: ginv_CT(7件) / ginv_NT3(空) / ginv_GAP(246件) /
+  ginv_BTWRAP_T3(d0自由τ=0・5251/0) / ginv_ob_qpos(171 live・e1j1経由候補) /
+  t14ok_oper_bad(15クラス地図済・続43補2)
+- シーム空: seam_open_m1 / copyhead P・E2var・F2L2 / copyhead_deep（実証0）
+- 値側（次の主戦線）: NT_lexdiff_lt(0/116万) / E6_lpl / E6_dom_deep /
+  E6_memT(前提空) / E6_nbcK_K / E6_qcut_last / E6_iii_singleton / E6_seam /
+  STS_B(0/26322) / スタブ NT_tie・E6_mem・E6_dom_tie（resolved 版あり・
+  最終組立=1本の同時長さ帰納）。nrm.thy: nrm_order_pres。TOP_desc 未ステート。
+
+**次セッションの優先**: (1) 値側戦線の再開 — E6_qcut_last/iii_singleton/seam
+を btfullok/t1ok 新兵器で攻める（続26計画の完成形）(2) CT/GAP の世代帰納
+（微小クラス・同テンプレート）(3) qpos は e1j1 経由（M窓に j1 含む形・
+続37補）。教訓集は続51。ビルド: isbman build -m MSG
+-d /home/koteitan/afp-dl/afp-2026-06-05/thys -d /home/koteitan/ya-pss/git PSI。
