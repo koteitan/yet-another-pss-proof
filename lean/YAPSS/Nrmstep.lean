@@ -4788,4 +4788,38 @@ theorem classOK_take {H : PairSeq} (h : classOK H) (m : ℕ) :
   rw [heq]
   simp [List.append_assoc]
 
+
+/-! ## Shift invariance of the parent relations -/
+
+theorem entry_shift {S : PairSeq} {d j : ℕ} (hj : j < S.length) :
+    entry (S.map fun p => (p.1 + d, p.2)) 0 j = entry S 0 j + d
+    ∧ entry (S.map fun p => (p.1 + d, p.2)) 1 j = entry S 1 j := by
+  unfold entry
+  rw [if_pos rfl, if_neg one_ne_zero,
+      getD_eq_getElem' _ _ (by rw [List.length_map]; omega),
+      List.getElem_map, ← getD_eq_getElem' _ (0,0) hj]
+  exact ⟨rfl, rfl⟩
+
+theorem nextrel0_shift_iff {S : PairSeq} {d a b : ℕ} (hb : b < S.length) :
+    nextrel0 (S.map fun p => (p.1 + d, p.2)) a b ↔ nextrel0 S a b := by
+  unfold nextrel0
+  rw [List.length_map]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨h1, h2, h3, ?_, ?_⟩
+    · rw [(entry_shift (by omega)).1, (entry_shift hb).1] at h4
+      omega
+    · intro l hl
+      have h6 := h5 l hl
+      rw [(entry_shift hb).1, (entry_shift (by omega)).1] at h6
+      omega
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨h1, h2, h3, ?_, ?_⟩
+    · rw [(entry_shift (by omega)).1, (entry_shift hb).1]
+      omega
+    · intro l hl
+      have h6 := h5 l hl
+      rw [(entry_shift hb).1, (entry_shift (by omega)).1]
+      omega
+
 end YAPSS
