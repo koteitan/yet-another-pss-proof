@@ -2173,6 +2173,25 @@ text \<open>The two regional halves of the cross-copy window preservation
   except the \<open>p = j0 - 1, d0 = 0\<close> copy-head-tie seam; copy-anchored windows
   transport via the block twin except the \<open>qP > 0\<close> crossing seam.\<close>
 
+text \<open>(GBLK0) The \<open>d0 = 0\<close> copy-head-tie seam: with an exact-copy bad branch
+  whose block head is dominated by its immediate predecessor, the block's
+  row-1 values are bounded by that predecessor and the block head.
+  (Empirically exact: closure+1, 1549 instances, zero violations; the
+  \<open>\<le> e1j0\<close>-only form is false — 32 counterexamples need the max.)\<close>
+
+lemma ginv_GBLK0:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "d0 = 0" and "0 < j0"
+    and "fst (M ! (j0 - 1)) < entry M 0 j0"
+    and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> max (snd (M ! (j0 - 1))) (entry M 1 j0)"
+  sorry
+
 lemma ginv_ob_pre:
   assumes G: "ginv M" and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
     and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
@@ -2189,7 +2208,222 @@ lemma ginv_ob_pre:
     and pl: "p < l" and lN: "l \<le> Suc p + N"
     and pj0: "p < j0"
   shows "snd (X ! l) \<le> max (snd (X ! p)) (snd (X ! Suc p))"
-  sorry
+proof -
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have lenM: "length M = Suc j1" using j1d j1nz by (cases M) auto
+  have j1len: "j1 < length M" using lenM by simp
+  define L where "L = j1 - j0"
+  have L0: "0 < L" unfolding L_def using j0j1 by simp
+  have lenX: "length X = j0 + n * L"
+    unfolding L_def by (rule oper_bad_len[OF opeq j0j1 j1len])
+  have npre: "\<And>i. i < j0 \<Longrightarrow> X ! i = M ! i"
+    using oper_bad_nth_pre[OF opeq _ j1len j0j1] by blast
+  have ncopy: "\<And>k q. k < n \<Longrightarrow> q < L \<Longrightarrow>
+        X ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+    unfolding L_def using oper_bad_nth_copy[OF opeq j0j1 j1len] by blast
+  have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+    by (rule block_head_min[OF hp j0d])
+  have pairM: "\<And>j. (entry M 0 j, entry M 1 j) = M ! j"
+    unfolding entry_def by simp
+  have j0Lj1: "j0 + L = j1" unfolding L_def using j0j1 by simp
+  have Xv0: "\<And>i. i < j0 + L \<Longrightarrow> X ! i = M ! i"
+  proof -
+    fix i assume iL: "i < j0 + L"
+    show "X ! i = M ! i"
+    proof (cases "i < j0")
+      case True thus ?thesis by (rule npre)
+    next
+      case False
+      have qL: "i - j0 < L" using iL False by simp
+      have c0: "X ! (j0 + (0 * L + (i - j0)))
+          = (entry M 0 (j0 + (i - j0)) + 0 * d0, entry M 1 (j0 + (i - j0)))"
+        by (rule ncopy) (use n1 qL in simp_all)
+      have ii: "j0 + (i - j0) = i" using False by simp
+      have "X ! i = (entry M 0 i, entry M 1 i)" using c0 ii by simp
+      thus ?thesis using pairM by simp
+    qed
+  qed
+  have Xpv: "X ! p = M ! p" using npre pj0 by simp
+  have spj0: "Suc p \<le> j0" using pj0 by simp
+  have c0v: "X ! Suc p = M ! Suc p" using Xv0 spj0 L0 by simp
+  have idxE: "\<And>i. j0 \<le> i \<Longrightarrow> i < length X \<Longrightarrow>
+       \<exists>k q. k < n \<and> q < L \<and> i = j0 + (k * L + q)
+           \<and> X ! i = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+  proof -
+    fix i assume ji: "j0 \<le> i" and iX: "i < length X"
+    define k where "k = (i - j0) div L"
+    define q where "q = (i - j0) mod L"
+    have kq: "i - j0 = k * L + q" unfolding k_def q_def by simp
+    have qL: "q < L" unfolding q_def using L0 by simp
+    have kn: "k < n"
+    proof -
+      have "i - j0 < n * L" using iX lenX ji by simp
+      thus ?thesis unfolding k_def
+        by (metis less_mult_imp_div_less mult.commute)
+    qed
+    have ii: "i = j0 + (k * L + q)" using kq ji by simp
+    have "X ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+      by (rule ncopy[OF kn qL])
+    thus "\<exists>k q. k < n \<and> q < L \<and> i = j0 + (k * L + q)
+           \<and> X ! i = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+      using kn qL ii by blast
+  qed
+  show ?thesis
+  proof (cases "Suc p + N < j0 + L")
+    case C1: True
+    have XM: "\<And>i. i \<le> Suc p + N \<Longrightarrow> X ! i = M ! i"
+      using Xv0 C1 by simp
+    have bndM: "Suc p + N < length M" using C1 j0Lj1 j1len by simp
+    have domM: "\<forall>k. p < k \<and> k \<le> Suc p + N \<longrightarrow> fst (M ! p) < fst (M ! k)"
+    proof (intro allI impI)
+      fix k assume kk: "p < k \<and> k \<le> Suc p + N"
+      have "fst (X ! p) < fst (X ! k)" using dom kk by blast
+      thus "fst (M ! p) < fst (M ! k)" using XM kk by simp
+    qed
+    have clM: "fst (M ! (Suc p + t)) \<le> fst (M ! Suc p)"
+      using cl XM tN by simp
+    have "snd (M ! l) \<le> max (snd (M ! p)) (snd (M ! Suc p))"
+      using G[unfolded ginv_def, rule_format, of p N t l]
+        bndM domM t0 tN clM pl lN by blast
+    thus ?thesis using XM pl lN by simp
+  next
+    case C2: False
+    hence C2': "j0 + L \<le> Suc p + N" by simp
+    show ?thesis
+    proof (cases "Suc p = j0")
+      case sp: True
+      have cpos: "j0 \<le> Suc p + t" using sp by simp
+      have cX: "Suc p + t < length X" using bnd tN by simp
+      obtain kc qc where kc: "kc < n" "qc < L" "Suc p + t = j0 + (kc * L + qc)"
+          and Xc: "X ! (Suc p + t) = (entry M 0 (j0 + qc) + kc * d0, entry M 1 (j0 + qc))"
+        using idxE[OF cpos cX] by blast
+      have fc0: "fst (X ! Suc p) = entry M 0 j0"
+        using c0v unfolding sp entry_def by simp
+      have clq: "entry M 0 (j0 + qc) + kc * d0 \<le> entry M 0 j0"
+        using cl Xc fc0 by simp
+      have qc0: "qc = 0"
+      proof (rule ccontr)
+        assume "qc \<noteq> 0"
+        hence "j0 < j0 + qc \<and> j0 + qc \<le> j1" using kc(2) j0Lj1 by simp
+        hence "entry M 0 j0 < entry M 0 (j0 + qc)" using hm0 by blast
+        thus False using clq by simp
+      qed
+      have kc1: "0 < kc"
+      proof (rule ccontr)
+        assume "\<not> 0 < kc"
+        hence "Suc p + t = j0" using kc(3) qc0 by simp
+        thus False using sp t0 by simp
+      qed
+      have d00: "d0 = 0" using clq qc0 kc1 by auto
+      have lX: "l < length X" using bnd lN by simp
+      have lj0: "j0 \<le> l" using pl sp by simp
+      obtain kl ql where kl: "kl < n" "ql < L" "l = j0 + (kl * L + ql)"
+          and Xl: "X ! l = (entry M 0 (j0 + ql) + kl * d0, entry M 1 (j0 + ql))"
+        using idxE[OF lj0 lX] by blast
+      have j0pos: "0 < j0" using sp by simp
+      have pj: "p = j0 - 1" using sp by simp
+      have fpp: "fst (M ! (j0 - 1)) < entry M 0 j0"
+      proof -
+        have "fst (X ! p) < fst (X ! Suc p)" using dom by simp
+        thus ?thesis using Xpv fc0 pj by simp
+      qed
+      have qlj1: "ql < j1 - j0" using kl(2) unfolding L_def .
+      have "entry M 1 (j0 + ql) \<le> max (snd (M ! (j0 - 1))) (entry M 1 j0)"
+        by (rule ginv_GBLK0[OF ST j1d j1nz Fz i1d hp j0d d0d d00 j0pos fpp qlj1])
+      moreover have "snd (X ! l) = entry M 1 (j0 + ql)" using Xl by simp
+      moreover have "snd (X ! p) = snd (M ! (j0 - 1))" using Xpv pj by simp
+      moreover have "snd (X ! Suc p) = entry M 1 j0"
+        using c0v unfolding sp entry_def by simp
+      ultimately show ?thesis by simp
+    next
+      case spl: False
+      hence spj0': "Suc p < j0" using spj0 by simp
+      define NM where "NM = j1 - 1 - Suc p"
+      have NMe: "Suc p + NM = j1 - 1" unfolding NM_def using spj0' j0j1 by arith
+      have bndM: "Suc p + NM < length M" unfolding NMe using j1len j1nz by simp
+      have domM: "\<forall>k. p < k \<and> k \<le> Suc p + NM \<longrightarrow> fst (M ! p) < fst (M ! k)"
+      proof (intro allI impI)
+        fix k assume kk: "p < k \<and> k \<le> Suc p + NM"
+        show "fst (M ! p) < fst (M ! k)"
+        proof (cases "k < j0")
+          case True
+          have "k \<le> Suc p + N" using True C2' by simp
+          hence "fst (X ! p) < fst (X ! k)" using dom kk by blast
+          thus ?thesis using Xpv npre[OF True] by simp
+        next
+          case False
+          hence kj0: "j0 \<le> k" by simp
+          have kj1: "k \<le> j1 - 1" using kk NMe by simp
+          define q where "q = k - j0"
+          have qL: "q < L" unfolding q_def L_def using kj1 kj0 j0j1 by arith
+          have kpos: "j0 + q = k" unfolding q_def using kj0 by simp
+          have wX: "j0 + (0 * L + q) \<le> Suc p + N" using C2' qL by simp
+          have pw: "p < j0 + (0 * L + q)" using pj0 by simp
+          have "fst (X ! p) < fst (X ! (j0 + (0 * L + q)))"
+            using dom wX pw by blast
+          moreover have "X ! (j0 + (0 * L + q))
+              = (entry M 0 (j0 + q) + 0 * d0, entry M 1 (j0 + q))"
+            by (rule ncopy) (use n1 qL in simp_all)
+          ultimately have "fst (X ! p) < entry M 0 (j0 + q)" by simp
+          thus ?thesis using Xpv kpos unfolding entry_def by simp
+        qed
+      qed
+      have clX: "Suc p + t < length X" using bnd tN by simp
+      have EXcl: "\<exists>tm. 0 < tm \<and> tm \<le> NM \<and> fst (M ! (Suc p + tm)) \<le> fst (M ! Suc p)"
+      proof (cases "Suc p + t < j0")
+        case True
+        have "fst (M ! (Suc p + t)) \<le> fst (M ! Suc p)"
+          using cl Xv0[of "Suc p + t"] c0v True L0 by simp
+        moreover have "t \<le> NM" unfolding NM_def using True j0j1 by arith
+        ultimately show ?thesis using t0 by blast
+      next
+        case False
+        hence cj0: "j0 \<le> Suc p + t" by simp
+        obtain kc qc where kc: "kc < n" "qc < L" "Suc p + t = j0 + (kc * L + qc)"
+            and Xc: "X ! (Suc p + t) = (entry M 0 (j0 + qc) + kc * d0, entry M 1 (j0 + qc))"
+          using idxE[OF cj0 clX] by blast
+        have "entry M 0 (j0 + qc) + kc * d0 \<le> fst (M ! Suc p)"
+          using cl Xc c0v by simp
+        hence ec: "entry M 0 (j0 + qc) \<le> fst (M ! Suc p)" by simp
+        define tm where "tm = j0 + qc - Suc p"
+        have tm1: "0 < tm" unfolding tm_def using spj0' by arith
+        have qcj1: "j0 + qc \<le> j1 - 1" using kc(2) j0Lj1 by arith
+        have tm2: "tm \<le> NM" unfolding tm_def NM_def using qcj1 by arith
+        have tme: "Suc p + tm = j0 + qc" unfolding tm_def using spj0' by arith
+        have "fst (M ! (Suc p + tm)) \<le> fst (M ! Suc p)"
+          unfolding tme using ec unfolding entry_def by simp
+        thus ?thesis using tm1 tm2 by blast
+      qed
+      obtain tm where tm: "0 < tm" "tm \<le> NM" "fst (M ! (Suc p + tm)) \<le> fst (M ! Suc p)"
+        using EXcl by blast
+      have lX: "l < length X" using bnd lN by simp
+      show ?thesis
+      proof (cases "l < j0")
+        case True
+        have lM: "l \<le> Suc p + NM" unfolding NMe using True j0j1 by arith
+        have "snd (M ! l) \<le> max (snd (M ! p)) (snd (M ! Suc p))"
+          using G[unfolded ginv_def, rule_format, of p NM tm l]
+            bndM domM tm pl lM by blast
+        thus ?thesis using npre[OF True] Xpv c0v by simp
+      next
+        case False
+        hence lj0: "j0 \<le> l" by simp
+        obtain kl ql where kl: "kl < n" "ql < L" "l = j0 + (kl * L + ql)"
+            and Xl: "X ! l = (entry M 0 (j0 + ql) + kl * d0, entry M 1 (j0 + ql))"
+          using idxE[OF lj0 lX] by blast
+        have lt: "p < j0 + ql" using pj0 by simp
+        have lm: "j0 + ql \<le> Suc p + NM" unfolding NMe using kl(2) j0Lj1 by arith
+        have "snd (M ! (j0 + ql)) \<le> max (snd (M ! p)) (snd (M ! Suc p))"
+          using G[unfolded ginv_def, rule_format, of p NM tm "j0 + ql"]
+            bndM domM tm lt lm by blast
+        moreover have "snd (X ! l) = snd (M ! (j0 + ql))"
+          using Xl unfolding entry_def by simp
+        ultimately show ?thesis using Xpv c0v by simp
+      qed
+    qed
+  qed
+qed
 
 lemma ginv_ob_copy:
   assumes G: "ginv M" and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
