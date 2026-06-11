@@ -2972,3 +2972,12 @@ BTWRAPU 攻略の3ルート（優先順）:
 - 凍結は **ginv_CT（7件クラス）のみ**。BTWRAPU の 21,537 件級が 7 件級へ。
 - 残: ginv_BTWRAPU3（T3 版 — headtie 基底の同型鎖帰納、CT3 変種の
   監査が必要）→ 落ちれば窓族完結。
+
+- (続53補) **🎉ginv_BTWRAPU3 討伐（緑）— BT 窓族完全終結**:
+  BTWRAPU(≤+1) ＋ 新凍結 **ginv_NT3**（headtie 下の +1 到達は空クラス、
+  16,783 件中 0）の2行組立。
+  **窓族の最終凍結 = {ginv_CT(7件), ginv_NT3(空), ginv_GAP(246件)}**
+  ＋ BTWRAP_T3（d0自由 τ=0・5,251/0）。btfullok±T3・BTWIN±T3・BT1±T3・
+  BTWRAPG±T3・BTWRAPU±U3・GBLK0 は全て導出/証明済み。
+  世代側 GRAND 残: CT/NT3/GAP/BTWRAP_T3/qpos/t14ok_oper_bad ＋ シーム空6種
+  — 全て微小クラスか地図済み。

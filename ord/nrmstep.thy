@@ -3815,6 +3815,24 @@ proof -
   show ?thesis by (rule main[OF assms(13) assms(14)])
 qed
 
+text \<open>(NT3) Under a head tie the +1 budget is never attained on an
+  exact-copy dominated tail (closure+2: 16783 elements, zero attainments).\<close>
+
+lemma ginv_NT3:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "d0 = 0"
+    and "qa < j1 - j0"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
+    and "qa < q" and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<noteq> Suc (entry M 1 (j0 + qa))"
+  sorry
+
 lemma ginv_BTWRAPU3:
   assumes "M \<in> ST_PS"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
@@ -3829,7 +3847,15 @@ lemma ginv_BTWRAPU3:
     and "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
     and "qa < q" and "q < j1 - j0"
   shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
-  sorry
+proof -
+  have "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + qa))"
+    by (rule ginv_BTWRAPU[OF assms(1-8) assms(9) assms(10) assms(11) assms(12)
+          assms(14) assms(15)])
+  moreover have "entry M 1 (j0 + q) \<noteq> Suc (entry M 1 (j0 + qa))"
+    by (rule ginv_NT3[OF assms(1-8) assms(9) assms(10) assms(12) assms(13)
+          assms(14) assms(15)])
+  ultimately show ?thesis by simp
+qed
 
 lemma btfullok_oper_bad:
   assumes BF: "btfullok M" and BF3: "btfullok3 M"
