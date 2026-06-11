@@ -2449,4 +2449,12 @@ theorem tie_sibling_seqlex {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : PairSeq}
   · exact Or.inr hlt
   · exact absurd (seqlex_imp_olt (c.1 + 1) _ _ bK bK1 hgt) hnolt
 
+/-- A head-maximal segment is its own maximal suffix. -/
+theorem msfx_eq_self_of_headmax {s0 : ℕ × ℕ} {S' : PairSeq}
+    (h : s0.2 = maxr1 (s0 :: S')) : msfx (s0 :: S') = s0 :: S' := by
+  unfold msfx
+  rw [List.dropWhile_cons, if_neg]
+  simp only [decide_eq_true_eq]
+  omega
+
 end YAPSS
