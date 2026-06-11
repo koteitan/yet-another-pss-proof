@@ -2621,3 +2621,21 @@ X = oper-bad のタイ対 (a,b) 分類（T1 違反 0 / 全 23396 対）:
   停止矛盾 → Xv0 恒等転送＋mrMa crib → t1ok M）/ a≥j0 同コピー
   （qa≥1 強制（qa=0 だと停止が hm0 矛盾）→ shift 転送 → t1ok M）/
   跨ぎ（b = j0+(ka+1)L 強制 → BT1）。
+
+### (2026-06-11 続42) t1ok_oper_bad 討伐（緑）— GRAND シーム第1号
+
+- 3ケース実装: **prefix**（b≤j0 強制: j0∈run と hm0 で停止矛盾 → 恒等転送 →
+  t1ok M）/ **C-same**（qa≥1 強制 → KM define で shift 転送 → t1ok M）/
+  **C-cross**（b = 次コピー頭 j0+(ka+1)L 強制 → tie/stop/dom 前提を抽出 →
+  ginv_BT1）。停止事実は nth_length_takeWhile。
+- 事故録3連:
+  (1) 暴走 = 7補題 metis（in_set_conv_nth+length_take 詰め合わせ）→
+  in_set_conv_nth 単独+明示化。
+  (2) arith は積を原子扱い — (ka+1)*L と ka*L が無関係になる →
+  事前に b - Suc a = L - Suc qa 形へ simp 正規化してから arith。
+  (3) **unfolding 無限再帰**: dsplit の RHS が LHS 部分項
+  （take … (drop (Suc am) M) が drop (Suc am) M を含む）を含むと
+  unfolding がスタック溢れ（Interrupt_Breakdown）→ KM を define で
+  不透明化してから dsplit。教訓: dsplit 系の分解は必ず define 越し。
+- 残 GRAND シーム: t3ok_oper_bad（本補題のクローン+BT1-T3）/
+  t14ok_oper_bad（BT-hm 偽のため要再設計）/ GBLK0 / qpos / BT1 本体。

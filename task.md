@@ -79,7 +79,8 @@
   - ✅ ginv 基盤＋E6_nbcK_T 討伐〔ginv=閉鎖窓row1上界・生成帰納骨格緑・dseg橋渡し・残 ginv_oper_bad のみ〕
   - 🚨 fire-cascade 残4点〔E6_lpl/E6_dom_deep/E6_memT/E6_nbcK_K＝GRAND同時帰納の本丸〕
   - ✅ ginv_oper_bad 討伐〔A/B/C/E転送＋反駁＋d01/d02閉鎖証人・残差 GBLK0/qpos の2点〕
-  - 🚨 ginv残差〔GBLK0=d0:0コピー頭タイ 1549実証0違反 / qpos=コピー内pp横断 171件live・e1j1経由候補〕
+  - ✅ t1ok_oper_bad 討伐〔3ケース転送＋BT1・unfolding再帰/metis/arith原子の3事故克服〕
+  - 🚨 GRANDシーム残〔t3ok/t14ok_oper_bad / GBLK0 / qpos / BT1・BT1-T3 本体〕
   - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam＝ginv適用候補〕＋ STS_B 本体〔0/26322〕
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - 🚨 TOP_desc〔0/474・未ステート〕
