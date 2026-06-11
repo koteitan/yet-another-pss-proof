@@ -1446,4 +1446,22 @@ theorem snocok_of_C {C : PairSeq} {q : ℕ × ℕ} (hne : C ≠ [])
   rw [snocok_iff_innermost q hne]
   exact hC _ _ (innermost_suffix hne) (innermost_dom hne)
 
+
+/-! ## Case combinators for `ST_snoc_C` -/
+
+/-- Case combinator for `ST_snoc_C`: if the base side does not fire, the
+strict increase passes straight through the projections. -/
+theorem proj_olt_of_nofire {u : ℕ} {x x' : Three} (hnf : ¬ pfire u x)
+    (hlt : x <o x') : proj u x <o proj u x' := by
+  rw [proj_nofire hnf]
+  exact olt_ole_trans hlt (proj_ole u x')
+
+/-- Case combinator for `ST_snoc_C`: a fire on the base side transports to
+the end-increased side, so "base fires, extension does not" cannot occur. -/
+theorem pfire_transport {u : ℕ} {x x' : Three}
+    (hR : einc x x' ∨ eflip x x') (hf : pfire u x) : pfire u x' := by
+  obtain ⟨g, hg, hng⟩ := pfire_iff.1 hf
+  obtain ⟨g', hg', hng'⟩ := fire_transport hR hg hng
+  exact pfire_iff.2 ⟨g', hg', hng'⟩
+
 end YAPSS
