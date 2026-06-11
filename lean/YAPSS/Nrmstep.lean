@@ -2195,4 +2195,50 @@ theorem takeWhile_append_head_stop {α : Type*} {p : α → Bool}
       simp [hself]
   · rw [if_neg hl]
 
+
+/-! ## The constant-copy region and its drop decomposition -/
+
+/-- The constant-copy region (`d0 = 0`): `n` literal repetitions of `B`. -/
+def repB (B : PairSeq) : ℕ → PairSeq
+  | 0 => []
+  | n + 1 => B ++ repB B n
+
+@[simp] theorem repB_zero (B : PairSeq) : repB B 0 = [] := rfl
+theorem repB_succ (B : PairSeq) (n : ℕ) : repB B (n + 1) = B ++ repB B n := rfl
+
+theorem flatMap_const_eq_repB (B : PairSeq) :
+    ∀ n, ((List.range n).flatMap fun _ => B) = repB B n
+  | 0 => by simp
+  | n + 1 => by
+    rw [List.range_succ_eq_map, List.flatMap_cons, repB_succ,
+        ← flatMap_const_eq_repB B n]
+    congr 1
+    rw [List.flatMap_map]
+
+/-- Dropping into the `k`-th repetition exposes the block suffix followed by
+the remaining repetitions. -/
+theorem repB_drop (B : PairSeq) :
+    ∀ (k n q : ℕ), k < n → q < B.length →
+      (repB B n).drop (k * B.length + (q + 1))
+        = B.drop (q + 1) ++ repB B (n - k - 1)
+  | 0, 0, q, hk, _ => absurd hk (by omega)
+  | 0, n + 1, q, _, hq => by
+    rw [repB_succ, Nat.zero_mul, Nat.zero_add,
+        List.drop_append_of_le_length (by omega)]
+    simp
+  | k + 1, 0, q, hk, _ => absurd hk (by omega)
+  | k + 1, n + 1, q, hk, hq => by
+    rw [show n + 1 - (k + 1) - 1 = n - k - 1 by omega]
+    rw [repB_succ, List.drop_append, List.drop_eq_nil_of_le (by
+        have : B.length ≤ (k + 1) * B.length := by
+          calc B.length = 1 * B.length := (Nat.one_mul _).symm
+          _ ≤ (k + 1) * B.length := Nat.mul_le_mul_right _ (by omega)
+        omega),
+      List.nil_append,
+      show (k + 1) * B.length + (q + 1) - B.length
+          = k * B.length + (q + 1) by
+        rw [Nat.succ_mul]
+        omega,
+      repB_drop B k n q (by omega) hq]
+
 end YAPSS
