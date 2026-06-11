@@ -3587,6 +3587,21 @@ lemma ginv_BTFULL:
   shows "snd (M ! l) \<le> Suc (snd (M ! a))"
   sorry
 
+lemma ginv_BTFULL_T3:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "a < om" and "om \<le> j1"
+    and "\<forall>k. a < k \<and> k < om \<longrightarrow> fst (M ! a) < fst (M ! k)"
+    and "fst (M ! om) \<le> fst (M ! a)"
+    and "snd (M ! Suc a) = snd (M ! a)"
+    and "a < l" and "l < om"
+  shows "snd (M ! l) \<le> snd (M ! a)"
+  sorry
+
 lemma ginv_BTWIN:
   assumes "M \<in> ST_PS"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
@@ -3635,7 +3650,33 @@ lemma ginv_BTWIN_T3:
     and "entry M 1 (j0 + Suc al) = entry M 1 (j0 + al)"
     and "al < q" and "q < om"
   shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + al)"
-  sorry
+proof -
+  have nR: "nextR M i1 j0 j1" unfolding assms(7) by (rule parent_nextR[OF assms(6)])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have a1: "j0 + al < j0 + om" using assms(9) by simp
+  have a2: "j0 + om \<le> j1" using assms(10) j0j1 by arith
+  have a3: "\<forall>k. j0 + al < k \<and> k < j0 + om \<longrightarrow> fst (M ! (j0 + al)) < fst (M ! k)"
+  proof (intro allI impI)
+    fix k assume kk: "j0 + al < k \<and> k < j0 + om"
+    define qq where "qq = k - j0"
+    have ke: "k = j0 + qq" unfolding qq_def using kk by arith
+    have "al < qq \<and> qq < om" unfolding qq_def using kk by arith
+    hence "entry M 0 (j0 + al) < entry M 0 (j0 + qq)" using assms(11) by blast
+    thus "fst (M ! (j0 + al)) < fst (M ! k)" unfolding ke entry_def by simp
+  qed
+  have a4: "fst (M ! (j0 + om)) \<le> fst (M ! (j0 + al))"
+    using assms(12) unfolding entry_def by simp
+  have ht: "snd (M ! Suc (j0 + al)) = snd (M ! (j0 + al))"
+  proof -
+    have "j0 + Suc al = Suc (j0 + al)" by simp
+    thus ?thesis using assms(13) unfolding entry_def by simp
+  qed
+  have a5: "j0 + al < j0 + q" using assms(14) by simp
+  have a6: "j0 + q < j0 + om" using assms(15) by simp
+  have "snd (M ! (j0 + q)) \<le> snd (M ! (j0 + al))"
+    by (rule ginv_BTFULL_T3[OF assms(1-8) a1 a2 a3 a4 ht a5 a6])
+  thus ?thesis unfolding entry_def by simp
+qed
 
 text \<open>(BT-WRAP-GEN) The \<open>\<tau>\<close>-generalised exact-copy wrap bound (memo 続46補2):
   with \<open>d0 = 0\<close> the tie partner may be ANY earlier block column (closure+2:
