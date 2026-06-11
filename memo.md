@@ -3038,3 +3038,15 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   「qcut 前提（両 fire ∧ maxr1 S < snd q）⟹ S の snd は厳密増加」—
   これさえあれば qcut_last は純リスト論証。次セッションで QDIAG 監査→
   qcut 討伐。
+
+### (2026-06-11 続57) E6_qcut_last 討伐（緑）
+
+- **E6_QDIAG 凍結**（qcut 前提〔segprov・S≠[]・両 fire・maxr1 S < snd q〕
+  ⟹ snd(S!i) < snd(S!Suc i)。閉包+2: 12/0、実例12件は全て厳密増加対角）。
+- qcut_last 本体は純リスト論証で完落ち: QDIAG → 位置単調帰納
+  （∀i≤j. snd(S!i) ≤ snd(S!j)）→ maxr1 S = snd(last S)（Max_eqI）→
+  butlast 全要素 < maxr1 → msfx S = dropWhile … (butlast S @ [last S])
+  = [last S]（dropWhile_append2）。ビルド36秒緑。
+- 値側行レベル残り = **E6_seam**（5,358/0・msfx の head-min 不変量を
+  btfullok/FBS 機構で設計）。sorry 数 23（qcut の sorry が QDIAG 凍結に
+  置換・正味同数だが監査済み微小クラス化）。

@@ -9746,6 +9746,18 @@ proof -
   thus ?thesis using po by simp
 qed
 
+text \<open>(QDIAG) In the q-cut both-fire configuration the segment's row 1 is
+  strictly increasing (closure+2: all 12 realized instances are strict
+  diagonals, zero violations).\<close>
+
+lemma E6_QDIAG:
+  assumes "segprov u S q" and "S \<noteq> []"
+    and "pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
+    and "maxr1 S < snd q"
+    and "Suc i < length S"
+  shows "snd (S ! i) < snd (S ! Suc i)"
+  sorry
+
 text \<open>(V4) In the both-fire q-cut configuration the x-side suffix is the last
   column alone.\<close>
 
@@ -9754,7 +9766,73 @@ lemma E6_qcut_last:
     and "pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
     and "maxr1 S < snd q"
   shows "msfx S = [last S]"
-  sorry
+proof -
+  have step: "\<And>i. Suc i < length S \<Longrightarrow> snd (S ! i) < snd (S ! Suc i)"
+    using E6_QDIAG[OF assms] by blast
+  have mono: "\<And>j. j < length S \<Longrightarrow> \<forall>i. i \<le> j \<longrightarrow> snd (S ! i) \<le> snd (S ! j)"
+  proof -
+    fix j
+    show "j < length S \<Longrightarrow> \<forall>i. i \<le> j \<longrightarrow> snd (S ! i) \<le> snd (S ! j)"
+    proof (induction j)
+      case 0 thus ?case by simp
+    next
+      case (Suc j)
+      have jS: "j < length S" using Suc.prems by simp
+      show ?case
+      proof (intro allI impI)
+        fix i assume "i \<le> Suc j"
+        thus "snd (S ! i) \<le> snd (S ! Suc j)"
+        proof (cases "i = Suc j")
+          case True thus ?thesis by simp
+        next
+          case False
+          hence "i \<le> j" using \<open>i \<le> Suc j\<close> by simp
+          hence "snd (S ! i) \<le> snd (S ! j)" using Suc.IH jS by blast
+          also have "\<dots> < snd (S ! Suc j)" using step Suc.prems by blast
+          finally show ?thesis by simp
+        qed
+      qed
+    qed
+  qed
+  have Sne: "S \<noteq> []" by (rule assms(2))
+  define n where "n = length S - 1"
+  have nS: "n < length S" unfolding n_def using Sne by (cases S) auto
+  have lastn: "last S = S ! n" unfolding n_def using Sne by (simp add: last_conv_nth)
+  have lastmax: "\<And>x. x \<in> set S \<Longrightarrow> snd x \<le> snd (last S)"
+  proof -
+    fix x assume "x \<in> set S"
+    then obtain i where ii: "i < length S" "x = S ! i" by (metis in_set_conv_nth)
+    have "i \<le> n" unfolding n_def using ii(1) by simp
+    thus "snd x \<le> snd (last S)" using mono[OF nS] ii(2) lastn by simp
+  qed
+  have mx: "maxr1 S = snd (last S)"
+    unfolding maxr1_def
+  proof (rule Max_eqI)
+    show "finite (snd ` set S)" by simp
+    show "\<And>s. s \<in> snd ` set S \<Longrightarrow> s \<le> snd (last S)" using lastmax by auto
+    show "snd (last S) \<in> snd ` set S" using Sne by (simp add: last_in_set)
+  qed
+  have blstrict: "\<forall>x \<in> set (butlast S). snd x < maxr1 S"
+  proof
+    fix x assume "x \<in> set (butlast S)"
+    then obtain i where ii: "i < length (butlast S)" "x = butlast S ! i"
+      by (metis in_set_conv_nth)
+    have iln: "i < n" unfolding n_def using ii(1) by simp
+    have xe: "x = S ! i" using ii by (simp add: nth_butlast)
+    have "snd (S ! i) \<le> snd (S ! (n - 1))"
+      using mono[of "n - 1"] nS iln by auto
+    also have "\<dots> < snd (S ! n)"
+      using step[of "n - 1"] iln nS by auto
+    finally show "snd x < maxr1 S" using xe mx lastn by simp
+  qed
+  have dec: "S = butlast S @ [last S]" using Sne by simp
+  have "msfx S = dropWhile (\<lambda>c. snd c < maxr1 S) (butlast S @ [last S])"
+    unfolding msfx_def using dec by metis
+  also have "\<dots> = dropWhile (\<lambda>c. snd c < maxr1 S) [last S]"
+    by (rule dropWhile_append2) (use blstrict in blast)
+  also have "\<dots> = [last S]" using mx by simp
+  finally show ?thesis .
+qed
 
 text \<open>(FBS) Fire is butlast-stable on long provenance segments: if the
   extended segment fires, so does the segment itself once it has at least
