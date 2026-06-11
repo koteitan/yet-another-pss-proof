@@ -2390,4 +2390,63 @@ theorem runAt_shiftr0 (d : ℕ) (B : PairSeq) {q : ℕ} (hq : q < B.length) :
   simp only [Function.comp]
   exact decide_eq_decide.2 (by omega)
 
+
+/-! ## The tie-sibling run dichotomy (SIB without generation induction) -/
+
+/-- Position bookkeeping: the run of the head of a suffix. -/
+theorem runAt_suffix {W : PairSeq} {c : ℕ × ℕ} {Zs : PairSeq}
+    (hsuf : (c :: Zs) <:+ W) :
+    ∃ j, j < W.length ∧ W.getD j (0,0) = c ∧
+      runAt W j = Zs.takeWhile fun r => c.1 < r.1 := by
+  obtain ⟨s, hs⟩ := hsuf
+  refine ⟨s.length, ?_, ?_, ?_⟩
+  · rw [← hs]
+    simp
+  · rw [← hs]
+    have h := getD_middle (pre := s) (X := c :: Zs) (post := []) (i := 0)
+      (by simp)
+    rw [List.append_nil, Nat.add_zero, List.getD_cons_zero] at h
+    exact h
+  · rw [← hs]
+    have h := runAt_append_left (G := s) (M := c :: Zs) (j := 0)
+    rw [Nat.add_zero] at h
+    rw [h, runAt_cons_zero]
+
+/-- **Tie-sibling run dichotomy**: at a full tie, the sum-adjacent sibling's
+run is the run itself or lexicographically below it.  No generation
+induction needed: CNF adjacency excludes the ascending case through the
+order isomorphism on blockok segments. -/
+theorem tie_sibling_seqlex {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : PairSeq}
+    (hcnf : cnf (translate W)) (hst : steps1 W) (hsuf : (c :: Zs) <:+ W)
+    (hT0 : (Zs.dropWhile fun r => c.1 < r.1) = t0 :: T')
+    (htie0 : c.1 = t0.1) (htie1 : c.2 = t0.2) :
+    (T'.takeWhile fun r => t0.1 < r.1) = (Zs.takeWhile fun r => c.1 < r.1)
+    ∨ seqlex (T'.takeWhile fun r => t0.1 < r.1)
+        (Zs.takeWhile fun r => c.1 < r.1) := by
+  have hadj := cnf_adjacent_full hcnf hsuf hT0 (le_of_eq htie0)
+  have hnolt : ¬ (translate (Zs.takeWhile fun r => c.1 < r.1)
+      <o translate (T'.takeWhile fun r => t0.1 < r.1)) := by
+    intro hlt
+    exact hadj (olt_P_P.2 (Or.inr (Or.inl ⟨htie1, hlt⟩)))
+  -- both runs are blockok segments at level `c.1 + 1`
+  obtain ⟨j, hjW, hjc, hjrun⟩ := runAt_suffix hsuf
+  have hsufT : (t0 :: T') <:+ W := by
+    have h1 : (t0 :: T') <:+ Zs := hT0 ▸ List.dropWhile_suffix _
+    exact (h1.trans (List.suffix_cons c Zs)).trans hsuf
+  obtain ⟨j', hj'W, hj't0, hj'run⟩ := runAt_suffix hsufT
+  have bK : blockok (c.1 + 1) (Zs.takeWhile fun r => c.1 < r.1) := by
+    have h := runAt_blockok hst hjW
+    rw [hjc, hjrun] at h
+    exact h
+  have bK1 : blockok (c.1 + 1) (T'.takeWhile fun r => t0.1 < r.1) := by
+    rw [htie0]
+    have h := runAt_blockok hst hj'W
+    rw [hj't0, hj'run] at h
+    exact h
+  rcases seqlex_total (T'.takeWhile fun r => t0.1 < r.1)
+      (Zs.takeWhile fun r => c.1 < r.1) with heq | hlt | hgt
+  · exact Or.inl heq
+  · exact Or.inr hlt
+  · exact absurd (seqlex_imp_olt (c.1 + 1) _ _ bK bK1 hgt) hnolt
+
 end YAPSS
