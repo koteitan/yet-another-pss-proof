@@ -2485,4 +2485,53 @@ theorem headmax_prefix {s0 : ℕ × ℕ} {S' D : PairSeq}
     exact le_max_left ..
   omega
 
+
+/-! ## The HM⁺ discipline (head-maximality under low closure)
+
+Mined exact on standard hosts (0/19030): whenever a run is closed by a
+column whose row-1 value does not exceed the base's, every run based at or
+inside the region is head-maximal.  This subsumes the head-maximality of
+tie-closed sibling runs (the no-fire input of `NT_tie_of`) and of `i1 = 0`
+block tails. -/
+
+/-- A segment is head-maximal if its head realizes its maximal row-1 value. -/
+def headmax (K : PairSeq) : Prop := K = [] ∨ K.headI.2 = maxr1 K
+
+/-- The stop position of the run of `a` (first later position not above). -/
+def stopAt (M : PairSeq) (a : ℕ) : ℕ := a + 1 + (runAt M a).length
+
+/-- **The HM⁺ discipline** (mined exact, 0/19030): whenever the run of `a`
+is closed by a column whose row-1 value does not exceed `a`'s, every run
+based at or inside that region is head-maximal. -/
+def hmok (M : PairSeq) : Prop :=
+  ∀ a, a < M.length → stopAt M a < M.length →
+    (M.getD (stopAt M a) (0,0)).2 ≤ (M.getD a (0,0)).2 →
+    ∀ p, a ≤ p → p < stopAt M a → headmax (runAt M p)
+
+theorem runAt_diagSeq0 (v a : ℕ) (ha : a < v + 1) :
+    (runAt (diagSeq 0 v) a).length = v - a := by
+  unfold runAt
+  rw [diagSeq0_getD ha]
+  have hdrop : (diagSeq 0 v).drop (a + 1)
+      = (List.range' (a + 1) (v - a)).map fun j => (j, j) := by
+    unfold diagSeq
+    rw [← List.map_drop]
+    congr 1
+    rw [List.drop_range']
+    congr 1 <;> omega
+  rw [hdrop, List.takeWhile_eq_self_iff.2 (by
+    intro x hx
+    obtain ⟨j, hj, rfl⟩ := List.mem_map.1 hx
+    obtain ⟨i, hi, rfl⟩ := List.mem_range'.1 hj
+    simp
+    omega)]
+  rw [List.length_map, List.length_range']
+
+theorem hmok_diagSeq (v : ℕ) : hmok (diagSeq 0 v) := by
+  intro a ha hstop
+  rw [diagSeq0_length] at ha hstop
+  unfold stopAt at hstop
+  rw [runAt_diagSeq0 v a ha] at hstop
+  omega
+
 end YAPSS
