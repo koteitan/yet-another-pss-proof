@@ -3539,4 +3539,52 @@ theorem hmok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hM : hmok M)
           rw [h3, h2]
           exact hw0
 
+
+/-! ## Wholesale instance transfer below a shared truncation -/
+
+theorem nextR_eq_of_take_eq {X Y : PairSeq} {m i j0 j : ℕ}
+    (hXY : X.take m = Y.take m) (hj : j < m) (hjX : j < X.length)
+    (hjY : j < Y.length) : nextR X i j0 j ↔ nextR Y i j0 j := by
+  rw [← nextR_take_iff (M := X) hj hjX, hXY, nextR_take_iff (M := Y) hj hjY]
+
+theorem idx1_eq_of_take_eq {X Y : PairSeq} {m j : ℕ}
+    (hXY : X.take m = Y.take m) (hj : j < m) : idx1 X j = idx1 Y j := by
+  rw [← idx1_take (M := X) hj, hXY, idx1_take (M := Y) hj]
+
+theorem getD_eq_of_take_eq {X Y : PairSeq} {m j : ℕ}
+    (hXY : X.take m = Y.take m) (hj : j < m) :
+    X.getD j (0,0) = Y.getD j (0,0) := by
+  rw [← getD_take (M := X) hj, hXY, getD_take (M := Y) hj]
+
+/-- `tailokA` instances below a shared truncation transfer wholesale. -/
+theorem tailokA_of_take_eq {X Y : PairSeq} {m : ℕ}
+    (hXY : X.take m = Y.take m) (htA : tailokA Y) :
+    ∀ j j0, j < m → j < X.length → j < Y.length → j0 < j →
+      nextR X (idx1 X j) j0 j →
+      (idx1 X j = 1 → ∃ b, j0 < b ∧ b < j ∧
+        (X.getD j (0,0)).1 ≤ (X.getD b (0,0)).1 ∧
+        (X.getD j0 (0,0)).2 ≤ (X.getD b (0,0)).2) →
+      hhm ((X.take j).drop (j0 + 1)) := by
+  intro j j0 hjm hjX hjY hj0 hnx htrig
+  rw [idx1_eq_of_take_eq hXY hjm] at hnx htrig
+  rw [nextR_eq_of_take_eq hXY hjm hjX hjY] at hnx
+  have htrig' : idx1 Y j = 1 → ∃ b, j0 < b ∧ b < j ∧
+      (Y.getD j (0,0)).1 ≤ (Y.getD b (0,0)).1 ∧
+      (Y.getD j0 (0,0)).2 ≤ (Y.getD b (0,0)).2 := by
+    intro h1
+    obtain ⟨b, hb1, hb2, hb3, hb4⟩ := htrig h1
+    refine ⟨b, hb1, hb2, ?_, ?_⟩
+    · rwa [getD_eq_of_take_eq (j := j) hXY hjm,
+        getD_eq_of_take_eq (j := b) hXY (by omega)] at hb3
+    · rwa [getD_eq_of_take_eq (j := j0) hXY (by omega),
+        getD_eq_of_take_eq (j := b) hXY (by omega)] at hb4
+  have happ := htA j j0 hjY hj0 hnx htrig'
+  have htk : X.take j = Y.take j := by
+    have h1 : X.take j = (X.take m).take j := by
+      rw [List.take_take, min_eq_left (by omega)]
+    have h2 : Y.take j = (Y.take m).take j := by
+      rw [List.take_take, min_eq_left (by omega)]
+    rw [h1, h2, hXY]
+  rwa [htk]
+
 end YAPSS
