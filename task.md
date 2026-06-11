@@ -76,6 +76,7 @@
   - 🚨 値側コア〔NT_lexdiff_lt 0/116万 / E6_tie_nofire_high0・high1 実証空クラス〕
   - 🚨 fire-cascade 5点〔E6_lpl/E6_dom_deep/E6_memT/E6_nbcK_T/E6_nbcK_K＝GRAND同時帰納の本丸〕
   - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam〕＋ STS_B 本体〔INV/INV2前提付き 0/26322〕
-  - 🚨 r1ok_climb〔0/3513・値側下界・CFGA_r1の窓手法を試す〕/ TOP_desc〔0/474・未ステート〕
+  - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
+  - 🚨 TOP_desc〔0/474・未ステート〕
   - 🚨 スタブ〔NT_tie/E6_mem/E6_dom_tie＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン〕
 - 🗑 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要。wf_ArgsA 路線は凍結〔wfsum に残置〕

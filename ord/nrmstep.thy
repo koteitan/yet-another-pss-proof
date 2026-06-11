@@ -1481,6 +1481,25 @@ text \<open>The remaining copy-witness case: a level-minimal column of the block
   copies); only the row-1 bound of that witness (\<open>r1ok_climb\<close>) is a class
   fact.\<close>
 
+lemma block_head_min:
+  assumes hp: "hasParent M i1 j1" and j0d: "j0 = parent M i1 j1"
+  shows "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+proof -
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  have "(nextrel0 M)\<^sup>*\<^sup>* j0 j1"
+  proof (cases "i1 = 0")
+    case True
+    hence "nextrel0 M j0 j1" using nR unfolding nextR_def by simp
+    thus ?thesis by blast
+  next
+    case False
+    hence "nextrel1 M j0 j1" using nR unfolding nextR_def by simp
+    thus ?thesis unfolding nextrel1_def le0_def by blast
+  qed
+  thus ?thesis by (rule le0_interval_gt)
+qed
+
+
 lemma r1ok_climb:
   assumes "M \<in> ST_PS"
     and "j1 < length M" and "j0 < j1"
@@ -1492,7 +1511,89 @@ lemma r1ok_climb:
     and "entry M 0 (j0 + r') = entry M 0 (j0 + q) + d0 - 1"
     and "\<forall>r. r' < r \<and> r < j1 - j0 \<longrightarrow> entry M 0 (j0 + q) + d0 - 1 < entry M 0 (j0 + r)"
   shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + r'))"
-  sorry
+proof -
+  note ST = assms(1) and j1len = assms(2) and j0j1 = assms(3) and i1d = assms(4)
+    and hp = assms(5) and j0d = assms(6) and d0d = assms(7) and qL = assms(8)
+    and PM = assms(9) and rL = assms(10) and qr = assms(11) and rlvl = assms(12)
+    and rlast = assms(13)
+  show ?thesis
+  proof (cases "r' = 0")
+    case True
+    hence "q = 0" using qr by simp
+    thus ?thesis using True by simp
+  next
+    case rpos: False
+    have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+      by (rule block_head_min[OF hp j0d])
+    have q0: "q = 0"
+    proof (rule ccontr)
+      assume "q \<noteq> 0"
+      hence qpos: "0 < q" by simp
+      have "entry M 0 (j0 + q) \<le> entry M 0 (j0 + 0)" using PM qpos by blast
+      hence le: "entry M 0 (j0 + q) \<le> entry M 0 j0" by simp
+      have "j0 < j0 + q \<and> j0 + q \<le> j1"
+        using qpos qL by (simp add: less_diff_conv add.commute)
+      hence "entry M 0 j0 < entry M 0 (j0 + q)" using hm0 by blast
+      thus False using le by simp
+    qed
+    have rj1: "j0 + r' < j1"
+      using rL by (simp add: less_diff_conv add.commute)
+    have e0r: "entry M 0 (j0 + r') = entry M 0 j0 + d0 - 1"
+      using rlvl unfolding q0 by simp
+    have e0rgt: "entry M 0 j0 < entry M 0 (j0 + r')"
+    proof -
+      have "j0 < j0 + r' \<and> j0 + r' \<le> j1" using rpos rj1 by simp
+      thus ?thesis using hm0 by blast
+    qed
+    have d02: "2 \<le> d0" using e0r e0rgt by arith
+    have i1one: "i1 = 1"
+      using idx1_le[of M j1] d0d d02 i1d by (cases i1) auto
+    have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+    have nR1: "nextrel1 M j0 j1" using nR unfolding i1one nextR_def by simp
+    have e1j: "entry M 1 j0 < entry M 1 j1" using nR1 unfolding nextrel1_def by blast
+    have e0j1d: "entry M 0 j1 = entry M 0 j0 + d0"
+    proof -
+      have dd: "d0 = entry M 0 j1 - entry M 0 j0" using d0d i1one by simp
+      show ?thesis
+      proof (cases "entry M 0 j0 \<le> entry M 0 j1")
+        case True thus ?thesis using dd by simp
+      next
+        case False
+        hence "d0 = 0" using dd by simp
+        thus ?thesis using d02 by simp
+      qed
+    qed
+    have n0: "nextrel0 M (j0 + r') j1"
+      unfolding nextrel0_def
+    proof (intro conjI allI impI)
+      show "j0 + r' < Lng M" using rj1 j1len by simp
+      show "j1 < Lng M" using j1len by simp
+      show "j0 + r' < j1" by (rule rj1)
+      show "entry M 0 (j0 + r') < entry M 0 j1"
+        using e0r e0j1d d02 by arith
+    next
+      fix j assume jb: "j0 + r' < j \<and> j < j1"
+      have j0j: "j0 \<le> j" using jb by simp
+      have jj: "j0 + (j - j0) = j" by (rule le_add_diff_inverse[OF j0j])
+      have rr1: "r' < j - j0"
+        using jb by (simp add: less_diff_conv add.commute)
+      have rr2: "j - j0 < j1 - j0"
+        using jb j0j by (simp add: diff_less_mono)
+      have "entry M 0 (j0 + q) + d0 - 1 < entry M 0 (j0 + (j - j0))"
+        using rlast rr1 rr2 by blast
+      hence "entry M 0 j0 + d0 - 1 < entry M 0 j" unfolding q0 jj by simp
+      thus "entry M 0 j1 \<le> entry M 0 j" using e0j1d d02 by arith
+    qed
+    have le0r: "le0 M (j0 + r') j1"
+      unfolding le0_def using n0 j1len rj1 by (auto intro: r_into_rtranclp)
+    have anc: "entry M 1 j1 \<le> entry M 1 (j0 + r')"
+    proof -
+      have "j0 < j0 + r'" using rpos by simp
+      thus ?thesis using nR1 le0r unfolding nextrel1_def by blast
+    qed
+    show ?thesis unfolding q0 using e1j anc by simp
+  qed
+qed
 
 lemma r1ok_copy_witness:
   assumes R: "r1ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"
@@ -2739,24 +2840,6 @@ qed
 text \<open>Pure seam ingredients: the block head is the strict row-0 minimum of
   the block (via the row-0 ancestor chain), and runs are unchanged by an
   append unless they were open.\<close>
-
-lemma block_head_min:
-  assumes hp: "hasParent M i1 j1" and j0d: "j0 = parent M i1 j1"
-  shows "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
-proof -
-  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
-  have "(nextrel0 M)\<^sup>*\<^sup>* j0 j1"
-  proof (cases "i1 = 0")
-    case True
-    hence "nextrel0 M j0 j1" using nR unfolding nextR_def by simp
-    thus ?thesis by blast
-  next
-    case False
-    hence "nextrel1 M j0 j1" using nR unfolding nextR_def by simp
-    thus ?thesis unfolding nextrel1_def le0_def by blast
-  qed
-  thus ?thesis by (rule le0_interval_gt)
-qed
 
 lemma mrun_append:
   assumes aY: "a < length Y"
