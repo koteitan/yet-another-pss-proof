@@ -1803,4 +1803,101 @@ theorem Gterm_NT_lead_le {S : PairSeq} {u : ℕ} {g : Three}
   rw [← hce]
   exact le_maxr1 c hc
 
+/-! ## The dominated-segment classes
+
+`dseg u S`: `S` is a nonempty, entirely dominated standard sub-segment whose
+enclosing head has row-1 value `u`.  `fbseg` relaxes the left boundary by a
+skipped `mid` whose levels stay at or above the head of `S` (the forest
+boundary condition); it is closed under both descents of the translate
+recursion. -/
+
+def dseg (u : ℕ) (S : PairSeq) : Prop :=
+  S ≠ [] ∧ ∃ pre pp post, ST_PS (pre ++ (pp :: S) ++ post)
+    ∧ (∀ r ∈ S, pp.1 < r.1) ∧ u = pp.2
+
+def fbseg (u : ℕ) (S : PairSeq) : Prop :=
+  S ≠ [] ∧ ∃ pre pp mid post, ST_PS (pre ++ (pp :: (mid ++ S)) ++ post)
+    ∧ (∀ r ∈ mid ++ S, pp.1 < r.1)
+    ∧ (∀ r ∈ mid, S.headI.1 ≤ r.1) ∧ u = pp.2
+
+theorem dseg_fbseg {u : ℕ} {S : PairSeq} (h : dseg u S) : fbseg u S := by
+  obtain ⟨hne, pre, pp, post, hst, hdom, hu⟩ := h
+  exact ⟨hne, pre, pp, [], post, by simpa using hst, by simpa using hdom,
+    by simp, hu⟩
+
+/-- Descent into the argument (the dominated run after the head column). -/
+theorem fbseg_K_desc {u : ℕ} {c : ℕ × ℕ} {rest : PairSeq}
+    (h : fbseg u (c :: rest))
+    (hne : (rest.takeWhile fun r => c.1 < r.1) ≠ []) :
+    fbseg c.2 (rest.takeWhile fun r => c.1 < r.1) := by
+  obtain ⟨-, pre, pp, mid, post, hst, -, -, -⟩ := h
+  refine ⟨hne, pre ++ (pp :: mid), c, [],
+    (rest.dropWhile fun r => c.1 < r.1) ++ post, ?_, ?_, by simp, rfl⟩
+  · have heq : (pre ++ (pp :: mid))
+        ++ (c :: ([] ++ (rest.takeWhile fun r => c.1 < r.1)))
+        ++ ((rest.dropWhile fun r => c.1 < r.1) ++ post)
+        = pre ++ (pp :: (mid ++ (c :: rest))) ++ post := by
+      simp only [List.cons_append, List.append_assoc, List.nil_append]
+      rw [← List.append_assoc (rest.takeWhile fun r => c.1 < r.1),
+          List.takeWhile_append_dropWhile]
+    rw [heq]
+    exact hst
+  · intro r hr
+    have := List.mem_takeWhile_imp (by simpa using hr)
+    simpa using this
+
+/-- Descent into the tail (the rest after the dominated run), keeping the
+same enclosing head. -/
+theorem fbseg_T_desc {u : ℕ} {c : ℕ × ℕ} {rest : PairSeq}
+    (h : fbseg u (c :: rest))
+    (hne : (rest.dropWhile fun r => c.1 < r.1) ≠ []) :
+    fbseg u (rest.dropWhile fun r => c.1 < r.1) := by
+  obtain ⟨-, pre, pp, mid, post, hst, hdom, hfb, hu⟩ := h
+  obtain ⟨t0, T', hT0⟩ : ∃ t0 T',
+      (rest.dropWhile fun r => c.1 < r.1) = t0 :: T' := by
+    cases hTc : rest.dropWhile fun r => c.1 < r.1 with
+    | nil => exact absurd hTc hne
+    | cons t0 T' => exact ⟨t0, T', rfl⟩
+  have ht0 : ¬ c.1 < t0.1 := by
+    have h1 := List.head_dropWhile_not (fun r : ℕ × ℕ => decide (c.1 < r.1)) hne
+    have h2 : (rest.dropWhile fun r => c.1 < r.1).head hne = t0 := by
+      have ha : (rest.dropWhile fun r => c.1 < r.1).head?
+          = some ((rest.dropWhile fun r => c.1 < r.1).head hne) :=
+        List.head?_eq_some_head _
+      have hb : (rest.dropWhile fun r => c.1 < r.1).head? = some t0 := by
+        rw [hT0]
+        rfl
+      exact Option.some.inj (ha.symm.trans hb)
+    rw [h2] at h1
+    simpa using h1
+  refine ⟨hne, pre, pp, mid ++ (c :: (rest.takeWhile fun r => c.1 < r.1)),
+    post, ?_, ?_, ?_, hu⟩
+  · have heq : pre ++ (pp :: ((mid ++ (c :: (rest.takeWhile fun r => c.1 < r.1)))
+        ++ (rest.dropWhile fun r => c.1 < r.1))) ++ post
+        = pre ++ (pp :: (mid ++ (c :: rest))) ++ post := by
+      simp only [List.cons_append, List.append_assoc]
+      rw [← List.append_assoc (rest.takeWhile fun r => c.1 < r.1),
+          List.takeWhile_append_dropWhile]
+    rw [heq]
+    exact hst
+  · intro r hr
+    apply hdom
+    simp only [List.mem_append, List.mem_cons] at hr ⊢
+    rcases hr with (hm | rfl | hK) | hT'
+    · exact Or.inl hm
+    · exact Or.inr (Or.inl rfl)
+    · exact Or.inr (Or.inr ((List.takeWhile_sublist _).subset hK))
+    · exact Or.inr (Or.inr ((List.dropWhile_sublist _).subset hT'))
+  · intro r hr
+    rw [hT0, List.headI_cons]
+    simp only [List.mem_append, List.mem_cons] at hr
+    rcases hr with hm | rfl | hK
+    · have := hfb r hm
+      rw [List.headI_cons] at this
+      omega
+    · omega
+    · have := List.mem_takeWhile_imp hK
+      simp at this
+      omega
+
 end YAPSS
