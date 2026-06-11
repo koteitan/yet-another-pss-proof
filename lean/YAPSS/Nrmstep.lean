@@ -2358,4 +2358,19 @@ theorem runAt_blockok {M : PairSeq} {j : ℕ} (hst : steps1 M)
   · -- steps within the run
     exact steps1_infix (hdecomp ▸ hst)
 
+/-- Raw translate strictly increases along any proper prefix extension. -/
+theorem translate_prefix_olt {D : PairSeq} (hD : D ≠ []) :
+    ∀ C, translate C <o translate (C ++ D) := by
+  induction D with
+  | nil => exact absurd rfl hD
+  | cons d D' ih =>
+    intro C
+    have h1 := translate_snoc_increase C d
+    cases D' with
+    | nil => simpa using h1
+    | cons e E =>
+      have h2 := ih (by simp) (C ++ [d])
+      rw [List.append_assoc] at h2
+      exact olt_trans h1 (by simpa using h2)
+
 end YAPSS
