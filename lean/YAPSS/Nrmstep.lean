@@ -2289,4 +2289,73 @@ theorem repB_runAt {v0 w0 : ℕ} {R : PairSeq} (hdom : ∀ x ∈ R, v0 < x.1)
           simp only [decide_eq_false_iff_not, not_lt]
           exact hroot)]
 
+
+/-! ## Runs are blockok segments -/
+
+/-- `steps1` restricts to any contiguous infix. -/
+theorem steps1_infix {l1 l2 l3 : PairSeq} (h : steps1 (l1 ++ l2 ++ l3)) :
+    steps1 l2 := by
+  rw [steps1_iff] at h ⊢
+  intro j hj
+  have hh := h (l1.length + j) (by simp; omega)
+  rwa [show l1.length + j + 1 = l1.length + (j + 1) by omega,
+       getD_middle (by omega), getD_middle (by omega)] at hh
+
+/-- A dominated run inside a `steps1` host is a `blockok` segment one level
+above its base column. -/
+theorem runAt_blockok {M : PairSeq} {j : ℕ} (hst : steps1 M)
+    (hj : j < M.length) :
+    blockok ((M.getD j (0,0)).1 + 1) (runAt M j) := by
+  have hdecomp : M = M.take (j + 1) ++ runAt M j
+      ++ (M.drop (j + 1)).dropWhile (fun r => (M.getD j (0,0)).1 < r.1) := by
+    conv_lhs => rw [← List.take_append_drop (j + 1) M]
+    rw [List.append_assoc]
+    congr 1
+    exact (List.takeWhile_append_dropWhile).symm
+  refine ⟨?_, ?_, ?_⟩
+  · -- head of the run sits exactly one level above
+    intro hne
+    obtain ⟨r0, R', hr0⟩ : ∃ r0 R', runAt M j = r0 :: R' := by
+      cases hrc : runAt M j with
+      | nil => exact absurd hrc hne
+      | cons r0 R' => exact ⟨r0, R', rfl⟩
+    rw [hr0, List.headI_cons]
+    obtain ⟨rest, hrest⟩ :=
+      List.takeWhile_prefix (l := M.drop (j + 1))
+        (p := fun r => decide ((M.getD j (0,0)).1 < r.1))
+    have hr0' : (M.drop (j + 1)).takeWhile
+        (fun r => decide ((M.getD j (0,0)).1 < r.1)) = r0 :: R' := hr0
+    rw [hr0'] at hrest
+    have hdrop : M.drop (j + 1) = r0 :: (R' ++ rest) := by
+      rw [← hrest]
+      rfl
+    have hjlen : j + 1 < M.length := by
+      have := congrArg List.length hdrop
+      simp [List.length_drop] at this
+      omega
+    have h0 : (M.drop (j + 1))[0]? = some r0 := by
+      rw [hdrop]
+      rfl
+    rw [List.getElem?_drop] at h0
+    simp only [Nat.add_zero] at h0
+    have hr0M : M.getD (j + 1) (0,0) = r0 := by
+      rw [List.getD_eq_getElem?_getD, h0]
+      rfl
+    have hdom : (M.getD j (0,0)).1 < r0.1 := by
+      have hmem : r0 ∈ runAt M j := by
+        rw [hr0]
+        exact List.mem_cons_self ..
+      have := List.mem_takeWhile_imp hmem
+      simpa using this
+    have hstep := steps1_iff.1 hst j hjlen
+    rw [hr0M] at hstep
+    omega
+  · -- all run elements are above the base level
+    intro p hp
+    have := List.mem_takeWhile_imp hp
+    simp only [decide_eq_true_eq] at this
+    omega
+  · -- steps within the run
+    exact steps1_infix (hdecomp ▸ hst)
+
 end YAPSS
