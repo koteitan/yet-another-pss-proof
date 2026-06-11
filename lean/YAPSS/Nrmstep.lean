@@ -1248,24 +1248,73 @@ theorem r1ok_Pred {M : PairSeq} (h : r1ok M) : r1ok (Pred M) := by
   · rw [if_neg hl]
     exact r1ok_dropLast h
 
-/-- The single open class fact: at any bad-branch decomposition with strictly
-ascending copies, the row-1 value of the block root exceeds that of the last
-block column at the parent level by at most one. -/
-def climbok (M : PairSeq) : Prop :=
-  ∀ G v0 w0 (R : PairSeq) (lp : ℕ × ℕ) (d0 : ℕ),
-    M = G ++ ((v0,w0) :: R) ++ [lp] →
-    (∀ x ∈ R, v0 < x.1) →
-    0 < d0 → lp.1 = v0 + d0 → w0 < lp.2 →
-    ∀ r', r' < ((v0,w0) :: R).length →
-      (((v0,w0) :: R).getD r' (0,0)).1 = v0 + d0 - 1 →
-      (∀ rr, r' < rr → rr < ((v0,w0) :: R).length →
-        v0 + d0 ≤ (((v0,w0) :: R).getD rr (0,0)).1) →
-      w0 ≤ (((v0,w0) :: R).getD r' (0,0)).2 + 1
+/-- **The climb bound.**  At a bad-branch decomposition with strictly
+ascending copies (`d0 ≥ 1`, so the parent is in row 1), the last block column
+`r'` at the parent level `v0 + d0 - 1` is a row-0 ancestor of the last
+column; the maximality clause of `nextrel1` therefore forces its row-1 value
+to be at least `lp.2 > w0`.  (This closes the `r1ok_climb` core: the `q = 0`
+reduction `dominated_PM_zero` ties the witness to the *parent structure* of
+the last column, where row-1 parenthood is decisive.) -/
+theorem climb_bound {M G : PairSeq} {v0 w0 d0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ}
+    (hM : M = G ++ ((v0,w0) :: R) ++ [lp])
+    (hd0 : 0 < d0) (hlp1 : lp.1 = v0 + d0) (hwlt : w0 < lp.2)
+    (hnl1 : nextrel1 M G.length (M.length - 1))
+    {r' : ℕ} (hr' : r' < ((v0,w0) :: R).length)
+    (hlev : (((v0,w0) :: R).getD r' (0,0)).1 = v0 + d0 - 1)
+    (hafter : ∀ rr, r' < rr → rr < ((v0,w0) :: R).length →
+      v0 + d0 ≤ (((v0,w0) :: R).getD rr (0,0)).1) :
+    w0 ≤ (((v0,w0) :: R).getD r' (0,0)).2 + 1 := by
+  subst hM
+  rcases Nat.eq_zero_or_pos r' with rfl | hr'pos
+  · rw [List.getD_cons_zero]
+    omega
+  · have hlen : (G ++ ((v0,w0) :: R) ++ [lp]).length
+        = G.length + ((v0,w0) :: R).length + 1 := hostM_length ..
+    have hj1 : (G ++ ((v0,w0) :: R) ++ [lp]).length - 1
+        = G.length + ((v0,w0) :: R).length := by omega
+    have e0r : entry (G ++ ((v0,w0) :: R) ++ [lp]) 0 (G.length + r')
+        = v0 + d0 - 1 := by
+      unfold entry
+      rw [if_pos rfl, hostM_getD_blk hr']
+      exact hlev
+    have e0j1 : entry (G ++ ((v0,w0) :: R) ++ [lp]) 0
+        (G.length + ((v0,w0) :: R).length) = v0 + d0 := by
+      unfold entry
+      rw [if_pos rfl, hostM_getD_lp]
+      exact hlp1
+    have hn0 : nextrel0 (G ++ ((v0,w0) :: R) ++ [lp]) (G.length + r')
+        (G.length + ((v0,w0) :: R).length) := by
+      refine ⟨by omega, by omega, by omega, ?_, ?_⟩
+      · rw [e0r, e0j1]
+        omega
+      · intro j hj
+        obtain ⟨rr, hrr1, hrr2, rfl⟩ : ∃ rr, r' < rr
+            ∧ rr < ((v0,w0) :: R).length ∧ j = G.length + rr :=
+          ⟨j - G.length, by omega, by omega, by omega⟩
+        rw [e0j1]
+        unfold entry
+        rw [if_pos rfl, hostM_getD_blk hrr2]
+        exact hafter rr hrr1 hrr2
+    have hle0 : le0 (G ++ ((v0,w0) :: R) ++ [lp]) (G.length + r')
+        (G.length + ((v0,w0) :: R).length) :=
+      ⟨by omega, by omega, Relation.ReflTransGen.single hn0⟩
+    have hmax := hnl1.2.2.2.2.2 (G.length + r')
+      ⟨by omega, by rw [hj1]; exact hle0⟩
+    rw [hj1] at hmax
+    have e1j1 : entry (G ++ ((v0,w0) :: R) ++ [lp]) 1
+        (G.length + ((v0,w0) :: R).length) = lp.2 := by
+      unfold entry
+      rw [if_neg one_ne_zero, hostM_getD_lp]
+    have e1r : entry (G ++ ((v0,w0) :: R) ++ [lp]) 1 (G.length + r')
+        = (((v0,w0) :: R).getD r' (0,0)).2 := by
+      unfold entry
+      rw [if_neg one_ne_zero, hostM_getD_blk hr']
+    rw [e1j1, e1r] at hmax
+    omega
 
-/-- **Row-1 discipline is preserved by the expansion step**, modulo the
-climb bound `climbok`. -/
+/-- **Row-1 discipline is preserved by the expansion step.** -/
 theorem r1ok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hr : r1ok M)
-    (hst : steps1 M) (hcl : climbok M) : r1ok (M⟦n⟧) := by
+    (hst : steps1 M) : r1ok (M⟦n⟧) := by
   by_cases hL0 : M.length - 1 = 0
   · rw [oper_eq_self_of_short n hL0]
     exact hr
@@ -1303,17 +1352,17 @@ theorem r1ok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hr : r1ok M)
     show r1ok (copyExp G ((v0,w0) :: R) d0 n)
     refine r1ok_copyExp hrM ?_
     intro k q hk1 hk hq hPM hpos
-    rcases hd0 with hd00 | ⟨hd0p, hwlt, hlpe⟩
+    rcases hd0 with hd00 | ⟨hd0p, hwlt, hlpe, hnl1⟩
     · subst hd00
       exact r1ok_min_d0zero rfl hdom hrM hk1 hk hq hPM hpos
     · exact r1ok_min_d0pos rfl hdom hd0p hlpe hstep hlpstep
-        (hcl G v0 w0 R lp d0 hM hdom hd0p hlpe hwlt) hk1 hk hq hPM hpos
+        (fun r' hr' hlev hafter => climb_bound hM hd0p hlpe hwlt hnl1 hr' hlev hafter)
+        hk1 hk hq hPM hpos
 
-/-- **Row-1 discipline of standard sequences**, modulo the climb bound. -/
-theorem r1ok_ST_PS {M : PairSeq} (hM : ST_PS M)
-    (hcl : ∀ N, ST_PS N → climbok N) : r1ok M := by
+/-- **Row-1 discipline of standard sequences.** -/
+theorem r1ok_ST_PS {M : PairSeq} (hM : ST_PS M) : r1ok M := by
   induction hM with
   | diag v => exact r1ok_diagSeq v
-  | oper hN hn ih => exact r1ok_oper hn ih (blockok_ST_PS hN).2.2 (hcl _ hN)
+  | oper hN hn ih => exact r1ok_oper hn ih (blockok_ST_PS hN).2.2
 
 end YAPSS

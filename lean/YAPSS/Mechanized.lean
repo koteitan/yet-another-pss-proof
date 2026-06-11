@@ -843,7 +843,8 @@ theorem oper_bad_blocks {M : PairSeq} {n : ℕ} (L : 1 < M.length)
         (fun k => ((v0, w0) :: R).map fun p => (p.1 + k * d0, p.2)) ∧
       (∀ x ∈ R, v0 < x.1) ∧
       v0 < lp.1 ∧
-      (d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0)) := by
+      (d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
+        nextrel1 M G.length (M.length - 1))) := by
   have hLen : M.length = (M.length - 1) + 1 := by omega
   -- abbreviations (kept as plain `have`-style definitions to ease rewriting)
   have np : nextR M (idx1 M (M.length - 1)) (parent M (idx1 M (M.length - 1)) (M.length - 1))
@@ -918,9 +919,14 @@ theorem oper_bad_blocks {M : PairSeq} {n : ℕ} (L : 1 < M.length)
       have v0lt : entry M 0 j0 < entry M 0 j1 := iv j1 j0lt le_rfl
       have hd0eq : d0 = entry M 0 j1 - entry M 0 j0 := by
         rw [hd0, if_pos hi]
-      refine ⟨by omega, nl1.2.2.2.1, ?_⟩
-      show entry M 0 j1 = entry M 0 j0 + d0
-      omega
+      refine ⟨by omega, nl1.2.2.2.1, ?_, ?_⟩
+      · show entry M 0 j1 = entry M 0 j0 + d0
+        omega
+      · have hlen' : (M.take j0).length = j0 := by
+          rw [List.length_take]
+          omega
+        rw [hlen']
+        exact nl1
     · left
       rw [hd0, if_neg hi]
 
@@ -980,7 +986,7 @@ theorem translate_oper_bad {M : PairSeq} {n : ℕ} (L : 1 < M.length)
               ++ (List.range' 2 (n - 2)).flatMap
                   (fun k => ((v0, w0) :: R).map fun p => (p.1 + k * d0, p.2))) := by
         rw [hC, hsplit, List.flatMap_cons, List.map_cons, List.cons_append]
-      rcases disj with hd0 | ⟨d0pos, w0lt, lpfst⟩
+      rcases disj with hd0 | ⟨d0pos, w0lt, lpfst, -⟩
       · -- `d0 = 0`: exact copies, the next copy re-opens at `v0`
         apply core_i0 R_gt lp_gt
         right
