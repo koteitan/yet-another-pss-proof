@@ -4822,4 +4822,100 @@ theorem nextrel0_shift_iff {S : PairSeq} {d a b : ℕ} (hb : b < S.length) :
       rw [(entry_shift hb).1, (entry_shift (by omega)).1]
       omega
 
+theorem rtg_shift_of {S : PairSeq} {d : ℕ} {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 (S.map fun p => (p.1 + d, p.2))) a b) :
+    Relation.ReflTransGen (nextrel0 S) a b := by
+  induction h with
+  | refl => exact Relation.ReflTransGen.refl
+  | @tail c e hchain hstep ih =>
+    have hb := nextrel0_bound hstep
+    rw [List.length_map] at hb
+    exact ih.tail ((nextrel0_shift_iff hb).1 hstep)
+
+theorem rtg_shift_to {S : PairSeq} {d : ℕ} {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 S) a b) :
+    Relation.ReflTransGen (nextrel0 (S.map fun p => (p.1 + d, p.2))) a b := by
+  induction h with
+  | refl => exact Relation.ReflTransGen.refl
+  | @tail c e hchain hstep ih =>
+    have hb := nextrel0_bound hstep
+    exact ih.tail ((nextrel0_shift_iff hb).2 hstep)
+
+theorem le0_shift_iff {S : PairSeq} {d a b : ℕ} :
+    le0 (S.map fun p => (p.1 + d, p.2)) a b ↔ le0 S a b := by
+  unfold le0
+  rw [List.length_map]
+  exact ⟨fun ⟨h1, h2, h3⟩ => ⟨h1, h2, rtg_shift_of h3⟩,
+    fun ⟨h1, h2, h3⟩ => ⟨h1, h2, rtg_shift_to h3⟩⟩
+
+theorem idx1_shift {S : PairSeq} {d j : ℕ} :
+    idx1 (S.map fun p => (p.1 + d, p.2)) j = idx1 S j := by
+  unfold idx1
+  by_cases hj : j < S.length
+  · rw [(entry_shift hj).2]
+  · push Not at hj
+    have h1 : (S.map fun p => (p.1 + d, p.2)).getD j (0,0) = (0,0) := by
+      rw [List.getD_eq_getElem?_getD, List.getElem?_eq_none
+        (by rw [List.length_map]; omega)]
+      rfl
+    have h2 : S.getD j (0,0) = (0,0) := by
+      rw [List.getD_eq_getElem?_getD, List.getElem?_eq_none (by omega)]
+      rfl
+    unfold entry
+    rw [if_neg one_ne_zero, if_neg one_ne_zero, h1, h2]
+
+theorem nextrel1_shift_iff {S : PairSeq} {d a b : ℕ} (hb : b < S.length) :
+    nextrel1 (S.map fun p => (p.1 + d, p.2)) a b ↔ nextrel1 S a b := by
+  unfold nextrel1
+  rw [List.length_map]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5, h6⟩
+    refine ⟨h1, h2, h3, ?_, (le0_shift_iff).1 h5, ?_⟩
+    · rwa [(entry_shift (by omega)).2, (entry_shift hb).2] at h4
+    · intro l hl
+      have h7 := h6 l ⟨hl.1, (le0_shift_iff).2 hl.2⟩
+      have hlb : l ≤ b := le0_le hl.2
+      rwa [(entry_shift hb).2, (entry_shift (by omega)).2] at h7
+  · rintro ⟨h1, h2, h3, h4, h5, h6⟩
+    refine ⟨h1, h2, h3, ?_, (le0_shift_iff).2 h5, ?_⟩
+    · rwa [(entry_shift (by omega)).2, (entry_shift hb).2]
+    · intro l hl
+      have hl0 := (le0_shift_iff).1 hl.2
+      have hlb : l ≤ b := le0_le hl0
+      have h7 := h6 l ⟨hl.1, hl0⟩
+      rwa [(entry_shift hb).2, (entry_shift (by omega)).2]
+
+/-- The single-climb discipline is shift-invariant. -/
+theorem sclimb_shift {S : PairSeq} {d : ℕ} (h : sclimb S) :
+    sclimb (S.map fun p => (p.1 + d, p.2)) := by
+  intro j0 r' r hj0 hnx hi1 hr'1 hr'2 hlev hafter hr1 hr2
+  rw [List.length_map] at hj0 hr'2
+  have hlen : (S.map fun p => (p.1 + d, p.2)).length = S.length :=
+    List.length_map ..
+  rw [hlen, idx1_shift] at hnx hi1
+  rw [hlen] at hlev hafter ⊢
+  have hgd : ∀ {i}, i < S.length →
+      ((S.map fun p => (p.1 + d, p.2)).getD i (0,0)).1
+        = (S.getD i (0,0)).1 + d := by
+    intro i hi
+    rw [getD_eq_getElem' _ _ (by rw [List.length_map]; omega),
+        List.getElem_map, ← getD_eq_getElem' _ (0,0) hi]
+  have hnx' : nextR S (idx1 S (S.length - 1)) j0 (S.length - 1) := by
+    unfold nextR at hnx ⊢
+    by_cases hi : idx1 S (S.length - 1) = 0
+    · rw [if_pos hi] at hnx ⊢
+      exact (nextrel0_shift_iff (by omega)).1 hnx
+    · rw [if_neg hi] at hnx ⊢
+      exact (nextrel1_shift_iff (by omega)).1 hnx
+  have hres := h j0 r' r hj0 hnx' hi1 hr'1 hr'2 (by
+      rw [hgd (by omega), hgd (by omega)] at hlev
+      omega)
+    (by
+      intro l hl1 hl2
+      have h7 := hafter l hl1 hl2
+      rw [hgd (by omega), hgd (by omega)] at h7
+      omega) hr1 hr2
+  rw [hgd (by omega), hgd (by omega)]
+  omega
+
 end YAPSS
