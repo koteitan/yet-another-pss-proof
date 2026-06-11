@@ -1984,4 +1984,132 @@ theorem NT_lead_le {S : PairSeq} (hne : S ≠ []) :
   rw [← hce]
   exact le_maxr1 c hc
 
+
+/-! ## Sum-adjacent row-1 non-increase (F1)
+
+The CNF adjacency clause of the host translate, extracted at an arbitrary
+column by walking the translate recursion: the head of the sum-adjacent
+tail (at level at least the column's) has row-1 value at most the column's.
+This is the engine behind the no-absorption facts of the C1 chain. -/
+
+theorem cnf_P_arg {a : ℕ} {b t : Three} (h : cnf (P a b t)) : cnf b := by
+  cases t with
+  | Z => exact h
+  | P e f g => exact h.1
+
+theorem cnf_P_tail {a : ℕ} {b t : Three} (h : cnf (P a b t)) : cnf t := by
+  cases t with
+  | Z => trivial
+  | P e f g => exact h.2.2
+
+theorem dropWhile_cons_head_not {α : Type*} {p : α → Bool} {l : List α}
+    {a : α} {t : List α} (h : l.dropWhile p = a :: t) : p a = false := by
+  have hne : l.dropWhile p ≠ [] := by
+    rw [h]
+    simp
+  have h1 := List.head_dropWhile_not p hne
+  have h2 : (l.dropWhile p).head hne = a := by
+    have ha := List.head?_eq_some_head (l := l.dropWhile p) hne
+    have hb : (l.dropWhile p).head? = some a := by
+      rw [h]
+      rfl
+    exact Option.some.inj (ha.symm.trans hb)
+  rw [h2] at h1
+  exact h1
+
+/-- **Sum-adjacent row-1 non-increase** (the F1 fact): inside any host with
+CNF translate, the head of the sum-adjacent tail of a column `c` (at level at
+least `c`'s) has row-1 value at most `c`'s.  Extracted from the CNF adjacency
+clause by walking the translate recursion down to `c`'s node. -/
+theorem cnf_adjacent_snd_le : ∀ {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : PairSeq},
+    cnf (translate W) → (c :: Zs) <:+ W →
+    (Zs.dropWhile fun r => c.1 < r.1) = t0 :: T' →
+    c.1 ≤ t0.1 → t0.2 ≤ c.2
+  | [], c, t0, Zs, T', _, hsuf, _, _ => by
+    have := hsuf.length_le
+    simp at this
+  | w :: W', c, t0, Zs, T', hcnf, hsuf, hT0, hge => by
+    rcases List.suffix_cons_iff.1 hsuf with heq | hsuf'
+    · -- head case: read the CNF adjacency clause at `c`'s node
+      injection heq with h1 h2
+      subst h1
+      subst h2
+      rw [translate_cons, hT0, translate_cons] at hcnf
+      have hadj := (cnf_P_P.1 hcnf).2.1
+      rw [olt_P_P] at hadj
+      push Not at hadj
+      omega
+    · rw [translate_cons] at hcnf
+      have hsplit := List.suffix_or_suffix_of_suffix hsuf'
+        (List.dropWhile_suffix (l := W') (fun r => decide (w.1 < r.1)))
+      rcases hsplit with hin | hout
+      · -- `c` lives in the tail forest: recurse there
+        exact cnf_adjacent_snd_le (cnf_P_tail hcnf) hin hT0 hge
+      · rcases List.suffix_cons_iff.1 hout with hTeq | hTZ
+        · -- the tail forest is exactly `c :: Zs`
+          exact cnf_adjacent_snd_le (cnf_P_tail hcnf)
+            (by rw [hTeq]) hT0 hge
+        · -- `c` lives in the argument run `K0`, `Zs ⊇ T0`
+          obtain ⟨Zk, hZk⟩ := hTZ
+          have hcZk : (c :: Zk) <:+ (W'.takeWhile fun r => w.1 < r.1) := by
+            obtain ⟨s, hs⟩ := hsuf'
+            refine ⟨s, ?_⟩
+            have hsplit2 : (s ++ (c :: Zk)) ++ (W'.dropWhile fun r => w.1 < r.1)
+                = (W'.takeWhile fun r => w.1 < r.1)
+                  ++ (W'.dropWhile fun r => w.1 < r.1) := by
+              rw [List.takeWhile_append_dropWhile, List.append_assoc,
+                  List.cons_append, hZk, hs]
+            exact List.append_cancel_right hsplit2
+          have hcK : w.1 < c.1 := by
+            have hcmem : c ∈ W'.takeWhile fun r => w.1 < r.1 :=
+              hcZk.subset (List.mem_cons_self ..)
+            have := List.mem_takeWhile_imp hcmem
+            simpa using this
+          cases hZkd : Zk.dropWhile fun r => c.1 < r.1 with
+          | nil =>
+            -- the drop crosses the boundary: the tail head is too low
+            exfalso
+            have hdw : Zs.dropWhile (fun r => c.1 < r.1)
+                = (W'.dropWhile fun r => w.1 < r.1).dropWhile
+                    (fun r => c.1 < r.1) := by
+              conv_lhs => rw [← hZk]
+              exact dropWhile_append_all (List.dropWhile_eq_nil_iff.1 hZkd)
+            cases hTc : (W'.dropWhile fun r => w.1 < r.1) with
+            | nil =>
+              rw [hTc] at hdw
+              rw [hdw] at hT0
+              simp at hT0
+            | cons h0 T0' =>
+              have hh0 : ¬ w.1 < h0.1 := by
+                have := dropWhile_cons_head_not hTc
+                simpa using this
+              have hfail : ¬ c.1 < h0.1 := by omega
+              rw [hTc, List.dropWhile_cons, if_neg (by simpa using hfail)] at hdw
+              rw [hdw] at hT0
+              injection hT0 with h1 h2
+              subst h1
+              omega
+          | cons d D =>
+            -- the drop stays inside `Zk`: recurse into the argument run
+            have hdmem : d ∈ Zk :=
+              (List.dropWhile_sublist _).subset (hZkd ▸ List.mem_cons_self ..)
+            have hdfail : ¬ c.1 < d.1 := by
+              have := dropWhile_cons_head_not hZkd
+              simpa using this
+            have hdw : Zs.dropWhile (fun r => c.1 < r.1)
+                = (Zk.dropWhile fun r => c.1 < r.1)
+                  ++ (W'.dropWhile fun r => w.1 < r.1) := by
+              conv_lhs => rw [← hZk]
+              exact dropWhile_append_not hdmem (by simpa using hdfail)
+            rw [hZkd, List.cons_append] at hdw
+            rw [hdw] at hT0
+            injection hT0 with h1 h2
+            subst h1
+            exact cnf_adjacent_snd_le (cnf_P_arg hcnf) hcZk hZkd hge
+  termination_by W _ _ _ _ _ _ _ _ => W.length
+  decreasing_by
+  · exact Nat.lt_succ_of_le (List.length_dropWhile_le _ W')
+  · exact Nat.lt_succ_of_le (List.length_dropWhile_le _ W')
+  · exact Nat.lt_succ_of_le (List.takeWhile_sublist _).length_le
+
 end YAPSS
