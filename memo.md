@@ -2500,3 +2500,9 @@ X = take j0 M @ copies。閉鎖窓 (P, c0=X!(P+1), 窓 [P+1..end), 閉鎖位置 
     祖先鎖の窓手法を試す）。
 
 実装順: A/B/C/反駁/E-qP=0 を本体に、D=GBLK0 と E-qpos を凍結 sorry に分離。
+
+- (続36補) E-qpos の bound 源マイニング: q'<qP 要素 260/260 が
+  snd ≤ snd(M!(j0+qP))・≤ B・**≤ e1j1** を全て満足。証明源候補 = e1j1 経由
+  （M窓 [j0+qP+1..j1] は j1 を含むので e1j1 ≤ B が ginv M から無料；残るは
+  「窓内 q'<qP ブロック列の snd ≤ e1j1」— 支配条件 e0(j0+q') > e0(j0+qP)-d0
+  の高レベル列に対する上界。nextrel1 鎖 or NT_dom_sub_eq 窓を次に試す）。
