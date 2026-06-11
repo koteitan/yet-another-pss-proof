@@ -3561,6 +3561,72 @@ lemma t14ok_oper_bad:
   shows "t14ok X"
   sorry
 
+text \<open>(BT-WIN / BT-WRAP) The unified block-window row-1 invariants
+  (memo 続45): a dominated in-block window closed by a level drop is bounded
+  one above its anchor — no tie required (closure+2: 40344 / T3 7207, zero
+  violations); for exact copies (\<open>d0 = 0\<close>) the head-tie full-tail form holds
+  (closure+2: 18144 / T3 without the \<open>d0\<close> restriction 5251, zero violations).
+  \<open>ginv_BT1\<close>/\<open>ginv_BT1_T3\<close> are corollaries.\<close>
+
+lemma ginv_BTWIN:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "al < om" and "om \<le> j1 - j0"
+    and "\<forall>q. al < q \<and> q < om \<longrightarrow> entry M 0 (j0 + al) < entry M 0 (j0 + q)"
+    and "entry M 0 (j0 + om) \<le> entry M 0 (j0 + al)"
+    and "al < q" and "q < om"
+  shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + al))"
+  sorry
+
+lemma ginv_BTWIN_T3:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "al < om" and "om \<le> j1 - j0"
+    and "\<forall>q. al < q \<and> q < om \<longrightarrow> entry M 0 (j0 + al) < entry M 0 (j0 + q)"
+    and "entry M 0 (j0 + om) \<le> entry M 0 (j0 + al)"
+    and "entry M 1 (j0 + Suc al) = entry M 1 (j0 + al)"
+    and "al < q" and "q < om"
+  shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + al)"
+  sorry
+
+lemma ginv_BTWRAP:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "d0 = 0"
+    and "qa < j1 - j0"
+    and "entry M 1 (j0 + qa) = entry M 1 j0"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "qa < q" and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + qa))"
+  sorry
+
+lemma ginv_BTWRAP_T3:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "qa < j1 - j0"
+    and "entry M 1 (j0 + qa) = entry M 1 j0"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
+    and "qa < q" and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
+  sorry
+
 text \<open>(BT1) The block-tail row-1 bound at a copy-boundary tie: with the tie,
   stop and dominance conditions of a cross-copy tie pair, the dominated block
   tail is bounded one above the anchor (closure+1: 6370 instances, zero
@@ -3579,7 +3645,30 @@ lemma ginv_BT1:
     and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
     and "qa < q" and "q < j1 - j0"
   shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + qa))"
-  sorry
+proof (cases "d0 = 0")
+  case True
+  show ?thesis
+    by (rule ginv_BTWRAP[OF assms(1-8) True assms(9) assms(10) assms(12)
+          assms(13) assms(14)])
+next
+  case False
+  have d0pos: "0 < d0" using False by simp
+  have i1one: "i1 = 1"
+    using idx1_le[of M j1] assms(8) d0pos assms(5) by (cases i1) auto
+  have nR: "nextR M i1 j0 j1" unfolding assms(7) by (rule parent_nextR[OF assms(6)])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+    by (rule block_head_min[OF assms(6) assms(7)])
+  have e0j: "entry M 0 j0 < entry M 0 j1" using hm0 j0j1 by simp
+  have d0ex: "entry M 0 j0 + d0 = entry M 0 j1"
+    unfolding assms(8) using i1one e0j by simp
+  have omj: "j0 + (j1 - j0) = j1" using j0j1 by simp
+  have stop: "entry M 0 (j0 + (j1 - j0)) \<le> entry M 0 (j0 + qa)"
+    unfolding omj using assms(11) d0ex by simp
+  show ?thesis
+    by (rule ginv_BTWIN[OF assms(1-8) assms(9) _ assms(12) stop assms(13) assms(14)])
+       simp
+qed
 
 lemma t1ok_oper_bad:
   assumes T: "t1ok M" and T3: "t3ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"
@@ -4022,7 +4111,8 @@ lemma ginv_BT1_T3:
     and "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
     and "qa < q" and "q < j1 - j0"
   shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
-  sorry
+  by (rule ginv_BTWRAP_T3[OF assms(1-8) assms(9) assms(10) assms(12)
+        assms(13) assms(14) assms(15)])
 
 lemma t3ok_oper_bad:
   assumes T: "t1ok M" and T3: "t3ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"

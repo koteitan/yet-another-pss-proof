@@ -82,7 +82,8 @@
   - ✅ t1ok_oper_bad 討伐〔3ケース転送＋BT1・unfolding再帰/metis/arith原子の3事故克服〕
   - ✅ t3ok_oper_bad 討伐〔t1okクローン+T3デルタ+BT1_T3凍結〕
   - ✅ t14ok 健全性修正〔閉包+2で旧形偽→hi前提付きへ弱化・high1無傷・(hi,¬hm)=0/54440〕
-  - 🚨 GRANDシーム残〔t14ok_oper_bad / GBLK0 / qpos / BT1・BT1_T3 本体〕＋ t1ok/t3ok の閉包+2監査
+  - ✅ BT-WIN/BT-WRAP 統一不変量〔タイ不要窓停止形＋d0:0頭タイ形・閉包+2全0違反・BT1系は系に〕
+  - 🚨 GRANDシーム残〔BTWIN/BTWRAP本体（X→M窓写像帰納）/ t14ok_oper_bad / GBLK0 / qpos〕
   - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam＝ginv適用候補〕＋ STS_B 本体〔0/26322〕
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - 🚨 TOP_desc〔0/474・未ステート〕
