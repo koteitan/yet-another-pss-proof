@@ -1767,4 +1767,40 @@ theorem NT_msfx_lead {S : PairSeq} (h : S ≠ []) :
   · rw [hdD, ← hd2]
     exact NT_lead_ge d D
 
+
+/-! ## Low-subscript dominance -/
+
+/-- A nonzero term is a principal term headed by its lead. -/
+theorem eq_P_lead {t : Three} (h : t ≠ Z) : ∃ b c, t = P (lead t) b c := by
+  cases t with
+  | Z => exact absurd rfl h
+  | P a b c => exact ⟨b, c, rfl⟩
+
+/-- Low-subscript dominance: any term whose head subscript stays below
+`maxr1 S` is strictly below the normalized maximal suffix. -/
+theorem olt_NT_msfx_of_lead_lt {S : PairSeq} (h : S ≠ []) {g : Three}
+    (hg : g = Z ∨ lead g < maxr1 S) :
+    g <o nrm (translate (msfx S)) := by
+  obtain ⟨d, D, hdD⟩ : ∃ d D, msfx S = d :: D := by
+    cases hm : msfx S with
+    | nil => exact absurd hm (msfx_ne_nil h)
+    | cons d D => exact ⟨d, D, rfl⟩
+  have hne : nrm (translate (msfx S)) ≠ Z := by
+    rw [hdD]
+    exact NT_neZ
+  obtain ⟨b, c, hP⟩ := eq_P_lead hne
+  rw [hP, NT_msfx_lead h]
+  exact olt_P_of_lead_lt b c hg
+
+/-- Critical terms of a normalized image never exceed the maximal row-1
+value in head subscript. -/
+theorem Gterm_NT_lead_le {S : PairSeq} {u : ℕ} {g : Three}
+    (hg : g ∈ Gterm u (nrm (translate S))) (hne : g ≠ Z) :
+    lead g ≤ maxr1 S := by
+  have h1 : lead g ∈ subs g := lead_mem_subs hne
+  have h2 : lead g ∈ sndSet S := NT_subs S (Gterm_subs hg h1)
+  obtain ⟨c, hc, hce⟩ := mem_sndSet.1 h2
+  rw [← hce]
+  exact le_maxr1 c hc
+
 end YAPSS
