@@ -1352,7 +1352,7 @@ theorem r1ok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hr : r1ok M)
     show r1ok (copyExp G ((v0,w0) :: R) d0 n)
     refine r1ok_copyExp hrM ?_
     intro k q hk1 hk hq hPM hpos
-    rcases hd0 with hd00 | ⟨hd0p, hwlt, hlpe, hnl1⟩
+    rcases hd0 with ⟨hd00, -⟩ | ⟨hd0p, hwlt, hlpe, hnl1⟩
     · subst hd00
       exact r1ok_min_d0zero rfl hdom hrM hk1 hk hq hPM hpos
     · exact r1ok_min_d0pos rfl hdom hd0p hlpe hstep hlpstep

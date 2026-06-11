@@ -843,8 +843,9 @@ theorem oper_bad_blocks {M : PairSeq} {n : ℕ} (L : 1 < M.length)
         (fun k => ((v0, w0) :: R).map fun p => (p.1 + k * d0, p.2)) ∧
       (∀ x ∈ R, v0 < x.1) ∧
       v0 < lp.1 ∧
-      (d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
-        nextrel1 M G.length (M.length - 1))) ∧
+      ((d0 = 0 ∧ idx1 M (M.length - 1) = 0)
+        ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
+            nextrel1 M G.length (M.length - 1))) ∧
       nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) := by
   have hLen : M.length = (M.length - 1) + 1 := by omega
   -- abbreviations (kept as plain `have`-style definitions to ease rewriting)
@@ -929,7 +930,9 @@ theorem oper_bad_blocks {M : PairSeq} {n : ℕ} (L : 1 < M.length)
         rw [hlen']
         exact nl1
     · left
-      rw [hd0, if_neg hi]
+      constructor
+      · rw [hd0, if_neg hi]
+      · omega
   · -- the parenthood of the last column at the prefix boundary
     have hlen' : (M.take j0).length = j0 := by
       rw [List.length_take]
@@ -993,7 +996,7 @@ theorem translate_oper_bad {M : PairSeq} {n : ℕ} (L : 1 < M.length)
               ++ (List.range' 2 (n - 2)).flatMap
                   (fun k => ((v0, w0) :: R).map fun p => (p.1 + k * d0, p.2))) := by
         rw [hC, hsplit, List.flatMap_cons, List.map_cons, List.cons_append]
-      rcases disj with hd0 | ⟨d0pos, w0lt, lpfst, -⟩
+      rcases disj with ⟨hd0, -⟩ | ⟨d0pos, w0lt, lpfst, -⟩
       · -- `d0 = 0`: exact copies, the next copy re-opens at `v0`
         apply core_i0 R_gt lp_gt
         right

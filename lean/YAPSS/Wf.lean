@@ -1682,7 +1682,7 @@ theorem cnf_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (cM : cnf (translate M))
             = copies d0 ((v0, w0) :: R) n := rfl
         have cM' : cnf (translate (G ++ ((v0, w0) :: R) ++ [lp])) := Meq ▸ cM
         rw [Mneq, raweq]
-        rcases disj with d0z | ⟨d0pos, w0lt, lphd, -⟩
+        rcases disj with ⟨d0z, -⟩ | ⟨d0pos, w0lt, lphd, -⟩
         · subst d0z
           rw [copies_replicate]
           exact cnf_oper_i1eq0 hR lpv hn cM'
