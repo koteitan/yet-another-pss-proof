@@ -844,7 +844,8 @@ theorem oper_bad_blocks {M : PairSeq} {n : ℕ} (L : 1 < M.length)
       (∀ x ∈ R, v0 < x.1) ∧
       v0 < lp.1 ∧
       (d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
-        nextrel1 M G.length (M.length - 1))) := by
+        nextrel1 M G.length (M.length - 1))) ∧
+      nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) := by
   have hLen : M.length = (M.length - 1) + 1 := by omega
   -- abbreviations (kept as plain `have`-style definitions to ease rewriting)
   have np : nextR M (idx1 M (M.length - 1)) (parent M (idx1 M (M.length - 1)) (M.length - 1))
@@ -865,7 +866,7 @@ theorem oper_bad_blocks {M : PairSeq} {n : ℕ} (L : 1 < M.length)
   -- the components
   refine ⟨M.take j0, entry M 0 j0, entry M 1 j0,
     (List.range' (j0 + 1) (j1 - (j0 + 1))).map (fun j => (entry M 0 j, entry M 1 j)),
-    d0, M.getD j1 (0, 0), ?_, ?_, ?_, ?_, ?_⟩
+    d0, M.getD j1 (0, 0), ?_, ?_, ?_, ?_, ?_, ?_⟩
   · -- `M = G ++ blk ++ [lp]`
     have dropM : M.drop j0 = ((entry M 0 j0, entry M 1 j0)
         :: (List.range' (j0 + 1) (j1 - (j0 + 1))).map (fun j => (entry M 0 j, entry M 1 j)))
@@ -929,6 +930,12 @@ theorem oper_bad_blocks {M : PairSeq} {n : ℕ} (L : 1 < M.length)
         exact nl1
     · left
       rw [hd0, if_neg hi]
+  · -- the parenthood of the last column at the prefix boundary
+    have hlen' : (M.take j0).length = j0 := by
+      rw [List.length_take]
+      omega
+    rw [hlen']
+    exact np
 
 /-! ## The expansion step strictly decreases the measure: bad branch
 
@@ -942,7 +949,7 @@ theorem translate_oper_bad {M : PairSeq} {n : ℕ} (L : 1 < M.length)
     (hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1))
     (hn : 1 ≤ n) :
     translate (M⟦n⟧) <o translate M := by
-  obtain ⟨G, v0, w0, R, d0, lp, hM, hMn, R_gt, lp_gt, disj⟩ :=
+  obtain ⟨G, v0, w0, R, d0, lp, hM, hMn, R_gt, lp_gt, disj, -⟩ :=
     oper_bad_blocks L hz hp hn
   -- split the copies into the base block and the rest `C`
   have hrange : List.range n = 0 :: List.range' 1 (n - 1) := by

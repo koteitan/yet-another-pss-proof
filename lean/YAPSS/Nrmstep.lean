@@ -1326,7 +1326,7 @@ theorem r1ok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hr : r1ok M)
     rw [oper_eq_pred_of_noParent n hL0 hz hp]
     exact r1ok_Pred hr
   case pos =>
-    obtain ⟨G, v0, w0, R, d0, lp, hM, hX, hdom, _hlpgt, hd0⟩ :=
+    obtain ⟨G, v0, w0, R, d0, lp, hM, hX, hdom, _hlpgt, hd0, -⟩ :=
       oper_bad_blocks (by omega) hz hp hn
     rw [hX]
     have hrM : r1ok (G ++ ((v0,w0) :: R) ++ [lp]) := hM ▸ hr

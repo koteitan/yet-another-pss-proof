@@ -648,7 +648,7 @@ theorem oper_eq_dropLast_append {M : PairSeq} {n : ℕ} (L : 1 < M.length)
     rw [oper_eq_pred_of_zero n (by omega) hz, hPred, List.append_nil]
   · by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
     · -- bad case, via the block decomposition
-      obtain ⟨G, v0, w0, R0, d0, lp, hM, hMn, -, -, -⟩ :=
+      obtain ⟨G, v0, w0, R0, d0, lp, hM, hMn, -, -, -, -⟩ :=
         oper_bad_blocks L hz hp n1
       have hdrop : M.dropLast = G ++ (v0, w0) :: R0 := by
         rw [hM, List.dropLast_concat]
@@ -1675,7 +1675,7 @@ theorem cnf_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (cM : cnf (translate M))
     · rw [oper_eq_pred_of_zero n hL hz, hPred]
       exact cnf_dropLast Mne cM
     · by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
-      · obtain ⟨G, v0, w0, R, d0, lp, Meq, Mneq, hR, lpv, disj⟩ :=
+      · obtain ⟨G, v0, w0, R, d0, lp, Meq, Mneq, hR, lpv, disj, -⟩ :=
           oper_bad_blocks L1 hz hp hn
         have raweq : (List.range n).flatMap
               (fun k => ((v0, w0) :: R).map fun p => (p.1 + k * d0, p.2))
