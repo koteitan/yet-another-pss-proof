@@ -3175,4 +3175,77 @@ theorem hostM_runAt_within {G B : PairSeq} {lp : ℕ × ℕ} {q : ℕ}
   unfold stopAt at hin
   omega
 
+/-- When the block run is open and the next root is not low enough, the
+copy-position run swallows the whole remainder: no stop exists. -/
+theorem copyExp_stop_open {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
+    {d0 n k q : ℕ} (hk : k < n) (hq : q < ((v0,w0) :: R).length)
+    (hdom : ∀ x ∈ R, v0 < x.1)
+    (hopen : ((v0,w0) :: R).length ≤ stopAt ((v0,w0) :: R) q)
+    (hnroot : (((v0,w0) :: R).getD q (0,0)).1 < v0 + d0) :
+    stopAt (copyExp G ((v0,w0) :: R) d0 n)
+        (G.length + (k * ((v0,w0) :: R).length + q))
+      = (copyExp G ((v0,w0) :: R) d0 n).length := by
+  have hself : runAt ((v0,w0) :: R) q = ((v0,w0) :: R).drop (q + 1) := by
+    have hle : (runAt ((v0,w0) :: R) q).length
+        ≤ (((v0,w0) :: R).drop (q + 1)).length :=
+      (List.takeWhile_sublist _).length_le
+    have hlen : (runAt ((v0,w0) :: R) q).length
+        = (((v0,w0) :: R).drop (q + 1)).length := by
+      unfold stopAt at hopen
+      rw [List.length_drop] at hle ⊢
+      omega
+    exact (List.takeWhile_prefix _).eq_of_length hlen
+  have hpass : ∀ y ∈ ((v0,w0) :: R).drop (q + 1),
+      (((v0,w0) :: R).getD q (0,0)).1 < y.1 := by
+    intro y hy
+    rw [← hself] at hy
+    have := List.mem_takeWhile_imp hy
+    simpa using this
+  have hg1 : ((copyExp G ((v0,w0) :: R) d0 n).getD
+      (G.length + (k * ((v0,w0) :: R).length + q)) (0,0)).1
+      = (((v0,w0) :: R).getD q (0,0)).1 + k * d0 := by
+    rw [copyExp_getD_copy hk hq]
+  have hbase : ∀ x ∈ ((v0,w0) :: R), v0 ≤ x.1 := by
+    intro x hx
+    rcases List.mem_cons.1 hx with rfl | hx
+    · exact le_rfl
+    · exact le_of_lt (hdom x hx)
+  have hrunself : runAt (copyExp G ((v0,w0) :: R) d0 n)
+      (G.length + (k * ((v0,w0) :: R).length + q))
+      = ((((v0,w0) :: R).map fun p => (p.1 + k * d0, p.2)).drop (q + 1))
+        ++ ((List.range (n - (k + 1))).flatMap
+            fun i => ((v0,w0) :: R).map fun p => (p.1 + (i + (k + 1)) * d0, p.2)) := by
+    unfold runAt
+    rw [hg1, copyExp_drop_at hk hq]
+    apply List.takeWhile_eq_self_iff.2
+    intro x hx
+    simp only [decide_eq_true_eq]
+    rcases List.mem_append.1 hx with hx | hx
+    · rw [← List.map_drop] at hx
+      obtain ⟨y, hy, rfl⟩ := List.mem_map.1 hx
+      have := hpass y hy
+      omega
+    · obtain ⟨i, hi, hx2⟩ := List.mem_flatMap.1 hx
+      obtain ⟨y, hy, rfl⟩ := List.mem_map.1 hx2
+      have h1 := hbase y hy
+      have h2 : v0 + (i + (k + 1)) * d0 ≤ y.1 + (i + (k + 1)) * d0 := by omega
+      have h3 : v0 + (k + 1) * d0 ≤ v0 + (i + (k + 1)) * d0 := by
+        have := Nat.mul_le_mul_right d0 (show k + 1 ≤ i + (k + 1) by omega)
+        omega
+      have h4 : (k + 1) * d0 = k * d0 + d0 := Nat.succ_mul k d0
+      show (((v0,w0) :: R).getD q (0,0)).1 + k * d0 < y.1 + (i + (k + 1)) * d0
+      omega
+  unfold stopAt
+  rw [hrunself, copyExp_length, List.length_append, List.length_drop,
+      List.length_map, copies_map_length]
+  have h4 : (k + 1) * ((v0,w0) :: R).length
+      = k * ((v0,w0) :: R).length + ((v0,w0) :: R).length :=
+    Nat.succ_mul _ _
+  have h5 : (k + 1 + (n - (k + 1))) * ((v0,w0) :: R).length
+      = n * ((v0,w0) :: R).length := by
+    congr 1
+    omega
+  rw [Nat.add_mul] at h5
+  omega
+
 end YAPSS
