@@ -2742,4 +2742,32 @@ theorem tailok_diagSeq (v : ℕ) : tailok (diagSeq 0 v) := by
   have : v ≤ b := by simpa using hb3
   omega
 
+/-- **The all-column block discipline** `tailokA` (mined exact, 0/440):
+for every column `j` with a row-`idx1 j` parent `j0`, the block between
+them is hereditarily head-maximal — unconditionally for row 0, under the
+trigger for row 1. -/
+def tailokA (M : PairSeq) : Prop :=
+  ∀ j j0, j < M.length → j0 < j →
+    nextR M (idx1 M j) j0 j →
+    (idx1 M j = 1 →
+      ∃ b, j0 < b ∧ b < j ∧
+        (M.getD j (0,0)).1 ≤ (M.getD b (0,0)).1 ∧
+        (M.getD j0 (0,0)).2 ≤ (M.getD b (0,0)).2) →
+    hhm ((M.take j).drop (j0 + 1))
+
+theorem tailokA_diagSeq (v : ℕ) : tailokA (diagSeq 0 v) := by
+  intro j j0 hj hj0 _hnext htrig
+  rw [diagSeq0_length] at hj
+  have hj1 : 1 ≤ j := by omega
+  have hi1 : idx1 (diagSeq 0 v) j = 1 := by
+    have he : entry (diagSeq 0 v) 1 j = j := by
+      unfold entry
+      rw [if_neg one_ne_zero, diagSeq0_getD (by omega)]
+    unfold idx1
+    rw [he, if_pos (by omega)]
+  obtain ⟨b, hb1, hb2, hb3, -⟩ := htrig hi1
+  rw [diagSeq0_getD (by omega), diagSeq0_getD (by omega)] at hb3
+  have : j ≤ b := by simpa using hb3
+  omega
+
 end YAPSS
