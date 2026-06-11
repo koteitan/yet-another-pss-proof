@@ -3120,4 +3120,59 @@ theorem copyExp_runAt_root {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
           omega),
       takeWhile_shift_core, hself]
 
+
+/-! ## Assembly helpers for `hmok` under the copy expansion -/
+
+theorem maxr1_map_shift (d : ℕ) :
+    ∀ L : PairSeq, maxr1 (L.map fun p => (p.1 + d, p.2)) = maxr1 L
+  | [] => rfl
+  | x :: L => by
+    rw [List.map_cons, maxr1_cons]
+    show max x.2 (maxr1 (L.map fun p => (p.1 + d, p.2))) = _
+    rw [maxr1_map_shift d L, maxr1_cons]
+
+/-- `headmax` is invariant under row-0 shifts. -/
+theorem headmax_shift {K : PairSeq} {d : ℕ}
+    (h : headmax K) : headmax (K.map fun p => (p.1 + d, p.2)) := by
+  rcases h with rfl | h
+  · exact Or.inl rfl
+  · cases K with
+    | nil => exact Or.inl rfl
+    | cons k0 K' =>
+      right
+      show ((k0.1 + d, k0.2) :: K'.map fun p => (p.1 + d, p.2)).headI.2
+        = maxr1 ((k0 :: K').map fun p => (p.1 + d, p.2))
+      rw [List.headI_cons, maxr1_map_shift]
+      rw [List.headI_cons] at h
+      exact h
+
+/-- The root's run inside the block is the whole dominated tail. -/
+theorem runAt_root_block {v0 w0 : ℕ} {R : PairSeq}
+    (hdom : ∀ x ∈ R, v0 < x.1) :
+    runAt ((v0,w0) :: R) 0 = R := by
+  rw [runAt_cons_zero]
+  exact List.takeWhile_eq_self_iff.2 (by
+    intro x hx
+    simpa using hdom x hx)
+
+/-- Host runs at block positions with an in-block stop are the block runs. -/
+theorem hostM_runAt_within {G B : PairSeq} {lp : ℕ × ℕ} {q : ℕ}
+    (hq : q < B.length) (hin : stopAt B q < B.length) :
+    runAt (G ++ B ++ [lp]) (G.length + q) = runAt B q := by
+  have hg1 : ((G ++ B ++ [lp]).getD (G.length + q) (0,0)).1
+      = (B.getD q (0,0)).1 := by
+    rw [hostM_getD_blk hq]
+  have hdrop : (G ++ B ++ [lp]).drop (G.length + q + 1)
+      = B.drop (q + 1) ++ [lp] := by
+    rw [List.append_assoc, List.drop_append, List.drop_eq_nil_of_le (by omega),
+        List.nil_append, show G.length + q + 1 - G.length = q + 1 by omega,
+        List.drop_append_of_le_length (by omega)]
+  unfold runAt
+  rw [hg1, hdrop, List.takeWhile_append, if_neg]
+  intro he
+  have h2 : (runAt B q).length = (B.drop (q + 1)).length := he
+  rw [List.length_drop] at h2
+  unfold stopAt at hin
+  omega
+
 end YAPSS
