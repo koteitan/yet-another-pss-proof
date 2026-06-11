@@ -2355,3 +2355,25 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
   ¬hm タイランは実証で常に y=snd hd K < u=snd c（16/16）⟹ low ケースで即無発火。
   残 = E6_tie_nofire_high0/1（y ≥ u ∧ ¬hm・実証空クラス・縮小 sorry）。
   事故メモ: python str.replace は全置換 — 同一文面の補題が並ぶときは行範囲で編集。
+
+### (2026-06-11 続30) Buchholz ψ との対応に関する Q&A 記録（P進bot ブログ照合）
+
+ユーザー質問:「P a b c は既存の Buchholz ψ_a(b)+c とは対応しないけど大丈夫？」
+（参照: P進大好きbot "Please Help me on study of Pair Sequence System" Googology
+Wiki 2018、親ディレクトリに PDF）。回答＝**大丈夫、設計で織り込み済み**:
+
+- ブログの論点: (a,b)→「深さ a の ψ_b」の素朴対応は本物の Buchholz OCF では
+  壊れる。原因は正規形条件 β∈C_ν(β)（Maksudov コメント）: ψ₂(0)>ψ₁(ψ₂(0)) ゆえ
+  ψ₀(ψ₁(ψ₂(0))) = ψ₀(ψ₂(0)) と値が潰れ、項構文と順序数値が一対一でない。
+- 本証明は P a b c = ψ_a(b)+c という意味論対応を一切仮定しない:
+  (i) olt は全項上で非整礎（t_k/x_k 鎖）→ 整礎性は wf3 クラスに制限して自前証明
+  （柱2 wf_olt_wf3）。wf3 の条件 ∀g∈Gterm u b. olt g b は β∈C_ν(β) の構文版。
+  (ii) proj はこの潰れ等式 ψ_u(b)=ψ_u(g) を計算する装置そのもの。nrm∘translate
+  ＝「正規形条件を尊重した正しい Buchholz 読み」。
+  (iii) 旧 route A（NF→順序数値直接埋め込み）はまさにこの collapse で破棄
+  （proof-ja.md 冒頭凡例・task.md 行51 に記録済）。
+  (iv) 必要なのは ψ 値との一致ではなく、wf3 上 olt 整礎（済）＋ nrm_step_dec
+  （攻略中）の2点のみ。otembed の oV も「wf3 上の何らかの厳密単調順序数値写像」
+  でよく ψ と一致する必要なし。
+- 標準形どうしは nrm 後も非衝突（valnorm.py 2,643,843 ペア衝突0・逆転0）。
+  ブログの「1=3」例は非正規形 ψ 式の値同一視であり標準形の衝突ではない。
