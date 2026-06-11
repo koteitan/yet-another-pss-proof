@@ -3032,3 +3032,9 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   微小クラス。両者の証明は fire/msfx 機構設計（FBS と同圏だが msfx の
   位置情報が要る — FBS だけでは落ちない）。次セッション: qcut の12実例
   ダンプから msfx=last の機構特定 → seam は head-min を btfullok 系で。
+
+- (続56補2) qcut 12実例ダンプ: **全て厳密増加対角**（S=(v+1,u+1)(v+2,u+2)…・
+  q 続き）。snd 厳密増 ⟹ msfx=[last] 自明。⟹ 縮約凍結候補 **QDIAG**:
+  「qcut 前提（両 fire ∧ maxr1 S < snd q）⟹ S の snd は厳密増加」—
+  これさえあれば qcut_last は純リスト論証。次セッションで QDIAG 監査→
+  qcut 討伐。
