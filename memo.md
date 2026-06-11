@@ -2506,3 +2506,23 @@ X = take j0 M @ copies。閉鎖窓 (P, c0=X!(P+1), 窓 [P+1..end), 閉鎖位置 
   （M窓 [j0+qP+1..j1] は j1 を含むので e1j1 ≤ B が ginv M から無料；残るは
   「窓内 q'<qP ブロック列の snd ≤ e1j1」— 支配条件 e0(j0+q') > e0(j0+qP)-d0
   の高レベル列に対する上界。nextrel1 鎖 or NT_dom_sub_eq 窓を次に試す）。
+
+### (2026-06-11 続37) ginv_oper_bad 討伐（緑）— 横断窓保存の完成
+
+- **ginv_ob_pre 緑（一発）**: C1=窓⊆prefix+copy0 の同値転送 / Suc p=j0 では
+  閉鎖が qc=0∧kc≥1 を強制し d0=0 が**導出**される（d0>0 反駁が不要に）→
+  GBLK0 シームへ / C2=M窓 [p+1..j1-1] 転送（閉鎖はブロック双子位置で転送）。
+- **ginv_ob_copy 緑**: EB=コピー内 shift 不変転送 / L=1 横断は閉鎖不能で反駁 /
+  qP=0 横断は M窓 [j0+1..j1]（支配=block_head_min 無料、閉鎖証人は
+  d0=1→j1 自身・d0≥2→qc≥2 強制（qc∈{0,1} は blockok+算術で反駁））/
+  qP>0 → ginv_ob_qpos 凍結。
+- **暴走犯の確定**: `thus ?thesis using NM1 by blast`（∃tm ゴール）— blast が
+  0<NM と 1≤NM の橋渡しできず深さ反復でハング（1800s×2回）。教訓:
+  **∃ ゴールは blast 任せにせず `by (intro exI[of _ w]) (use … in simp)`**。
+  二分探索手順: ブロック sorry 化→復元を繰り返し 3 ビルドで特定。
+  ついでに meson 連鎖/simp+trans 規則 4 箇所も明示 mult_le_mono1+arith 化。
+- 残差: **ginv_GBLK0**（実証 1549/0、d0=0 世代機構）と **ginv_ob_qpos**
+  （**live 171件**、q'<qP 要素は全て snd≤e1j1=B 内、nextrel1 最小性経由が
+  候補 — r1ok_climb と同じ武器が効く可能性）。
+- これで ginv_ST_PS は GBLK0/qpos を残して完全。E6_nbcK_T は既に ginv 経由で
+  討伐済み。次: qcut_last/iii_singleton/seam への ginv 適用 or qpos 攻略。
