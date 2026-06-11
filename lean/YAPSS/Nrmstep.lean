@@ -4469,4 +4469,98 @@ theorem hhm_block_interval {v0 w0 : ℕ} {R : PairSeq}
     rw [← h1, runAt_take (by omega)]
     exact headmax_take (headmax_runAt_block hdom hR _ hp'L) _
 
+
+/-! ## Final-column instances with a parent inside the last copy -/
+
+/-- The final-column instances of `copyExp` with a parent inside the last
+copy: the block is a shifted dominated interval of the host block. -/
+theorem tlast_copyExp_within {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
+    {d0 n j0X : ℕ} (hdom : ∀ x ∈ R, v0 < x.1) (hn : 1 ≤ n) (hhmR : hhm R)
+    (hge : G.length + (n - 1) * ((v0,w0) :: R).length ≤ j0X)
+    (hnx : nextR (copyExp G ((v0,w0) :: R) d0 n)
+      (idx1 (copyExp G ((v0,w0) :: R) d0 n)
+        ((copyExp G ((v0,w0) :: R) d0 n).length - 1)) j0X
+      ((copyExp G ((v0,w0) :: R) d0 n).length - 1)) :
+    hhm (((copyExp G ((v0,w0) :: R) d0 n).take
+        ((copyExp G ((v0,w0) :: R) d0 n).length - 1)).drop (j0X + 1)) := by
+  have hL : 0 < ((v0,w0) :: R).length := by simp
+  have hXlen : (copyExp G ((v0,w0) :: R) d0 n).length
+      = G.length + n * ((v0,w0) :: R).length := copyExp_length ..
+  have hnL : (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length
+      = n * ((v0,w0) :: R).length := by
+    have h := Nat.succ_mul (n - 1) ((v0,w0) :: R).length
+    rw [Nat.succ_eq_add_one, show n - 1 + 1 = n by omega] at h
+    omega
+  -- the dip-free property across the block, both rows
+  have hj0lt : j0X < (copyExp G ((v0,w0) :: R) d0 n).length - 1 := by
+    unfold nextR at hnx
+    by_cases hi : idx1 (copyExp G ((v0,w0) :: R) d0 n)
+        ((copyExp G ((v0,w0) :: R) d0 n).length - 1) = 0
+    · rw [if_pos hi] at hnx
+      exact hnx.2.2.1
+    · rw [if_neg hi] at hnx
+      exact hnx.2.2.1
+  have hdip : ∀ l, j0X < l → l < (copyExp G ((v0,w0) :: R) d0 n).length - 1 →
+      entry (copyExp G ((v0,w0) :: R) d0 n) 0 j0X
+        < entry (copyExp G ((v0,w0) :: R) d0 n) 0 l := by
+    intro l hl1 hl2
+    unfold nextR at hnx
+    by_cases hi : idx1 (copyExp G ((v0,w0) :: R) d0 n)
+        ((copyExp G ((v0,w0) :: R) d0 n).length - 1) = 0
+    · rw [if_pos hi] at hnx
+      have h5 := hnx.2.2.2.2 l ⟨hl1, hl2⟩
+      have h4 := hnx.2.2.2.1
+      omega
+    · rw [if_neg hi] at hnx
+      obtain ⟨-, -, hchain⟩ := hnx.2.2.2.2.1
+      exact rtg_no_dip hchain l hl1 hl2
+  -- offsets within the last copy
+  have hq0 : j0X - G.length - (n - 1) * ((v0,w0) :: R).length
+      < ((v0,w0) :: R).length := by omega
+  -- the block in canonical shifted-interval form
+  have hblock : ((copyExp G ((v0,w0) :: R) d0 n).take
+        ((copyExp G ((v0,w0) :: R) d0 n).length - 1)).drop (j0X + 1)
+      = ((((v0,w0) :: R).drop
+            ((j0X - G.length - (n - 1) * ((v0,w0) :: R).length) + 1)).take
+          (((v0,w0) :: R).length - 1
+            - ((j0X - G.length - (n - 1) * ((v0,w0) :: R).length) + 1))).map
+        fun p => (p.1 + (n - 1) * d0, p.2) := by
+    rw [hXlen,
+        show G.length + n * ((v0,w0) :: R).length - 1
+          = G.length + ((n - 1) * ((v0,w0) :: R).length
+            + (((v0,w0) :: R).length - 1)) by omega,
+        copyExp_take_at (by omega) (by omega),
+        List.drop_append,
+        List.drop_eq_nil_of_le (by rw [copyExp_length]; omega),
+        List.nil_append, copyExp_length,
+        show j0X + 1 - (G.length + (n - 1) * ((v0,w0) :: R).length)
+          = (j0X - G.length - (n - 1) * ((v0,w0) :: R).length) + 1 by omega,
+        ← List.map_take, ← List.map_drop, List.drop_take]
+  rw [hblock]
+  apply hhm_shift
+  apply hhm_block_interval hdom hhmR hq0
+  intro i hi hi2
+  rw [List.length_drop] at hi2
+  have hj0form : j0X = G.length + ((n - 1) * ((v0,w0) :: R).length
+      + (j0X - G.length - (n - 1) * ((v0,w0) :: R).length)) := by omega
+  have he1' : entry (copyExp G ((v0,w0) :: R) d0 n) 0 j0X
+      = (((v0,w0) :: R).getD
+          (j0X - G.length - (n - 1) * ((v0,w0) :: R).length) (0,0)).1
+        + (n - 1) * d0 := by
+    conv_lhs => rw [hj0form]
+    exact (entry_copyExp (show n - 1 < n by omega) hq0).1
+  have he2 := (entry_copyExp (G := G) (B := (v0,w0) :: R) (d0 := d0)
+    (show n - 1 < n by omega)
+    (show (j0X - G.length - (n - 1) * ((v0,w0) :: R).length) + 1 + i
+        < ((v0,w0) :: R).length by omega)).1
+  have hl := hdip (G.length + ((n - 1) * ((v0,w0) :: R).length
+      + ((j0X - G.length - (n - 1) * ((v0,w0) :: R).length) + 1 + i)))
+    (by omega) (by omega)
+  rw [he1', he2] at hl
+  rw [getD_drop]
+  rw [show (j0X - G.length - (n - 1) * ((v0,w0) :: R).length) + 1 + i
+        = (j0X - G.length - (n - 1) * ((v0,w0) :: R).length + 1) + i
+      by omega] at hl
+  omega
+
 end YAPSS
