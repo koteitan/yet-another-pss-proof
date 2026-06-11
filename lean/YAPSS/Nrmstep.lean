@@ -4000,4 +4000,44 @@ theorem tailokA_copyExp_row1 {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
   rw [hMtake] at happ
   exact hhm_shift happ
 
+
+/-! ## Chains cover their interval without dips -/
+
+theorem rtg_nextrel0_e0_le {W : PairSeq} {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 W) a b) :
+    a = b ∨ entry W 0 a < entry W 0 b := by
+  induction h with
+  | refl => exact Or.inl rfl
+  | @tail c e hchain hstep ih =>
+    right
+    rcases ih with rfl | hlt
+    · exact hstep.2.2.2.1
+    · exact lt_trans hlt hstep.2.2.2.1
+
+/-- A `nextrel0` chain covers its interval without dips: every strictly
+intermediate position sits strictly above the base level. -/
+theorem rtg_no_dip {W : PairSeq} {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 W) a b) :
+    ∀ l, a < l → l < b → entry W 0 a < entry W 0 l := by
+  induction h with
+  | refl =>
+    intro l h1 h2
+    omega
+  | @tail c e hchain hstep ih =>
+    intro l h1 h2
+    have hac : a ≤ c := rtg_nextrel0_le hchain
+    by_cases hlc : l < c
+    · exact ih l h1 hlc
+    · rcases Nat.eq_or_lt_of_le (show c ≤ l by omega) with rfl | hlt
+      · rcases rtg_nextrel0_e0_le hchain with rfl | hlt'
+        · omega
+        · exact hlt'
+      · have h5 := hstep.2.2.2.2 l ⟨hlt, h2⟩
+        have h4 := hstep.2.2.2.1
+        have h6 : entry W 0 a ≤ entry W 0 c := by
+          rcases rtg_nextrel0_e0_le hchain with rfl | h7
+          · exact le_rfl
+          · exact le_of_lt h7
+        omega
+
 end YAPSS
