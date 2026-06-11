@@ -4423,4 +4423,50 @@ theorem hp_last {M : PairSeq} (hb : blockok 0 M) (hz : z0ok M)
       rw [hi, nextR_zero_iff] at hy'
       exact nextrel0_unique hy' hk
 
+
+/-! ## Block intervals above a base are hereditarily head-maximal -/
+
+theorem interval_eq_run_take {B : PairSeq} {q0 t : ℕ}
+    (hpass : ∀ i, i < t → i < (B.drop (q0 + 1)).length →
+      (B.getD q0 (0,0)).1 < ((B.drop (q0 + 1)).getD i (0,0)).1) :
+    (B.drop (q0 + 1)).take t = (runAt B q0).take t := by
+  unfold runAt
+  rw [List.take_takeWhile]
+  rw [List.takeWhile_eq_self_iff.2 (by
+    intro x hx
+    obtain ⟨i, hi, hgd⟩ := mem_iff_getD hx
+    rw [List.length_take] at hi
+    have hieq : x = (B.drop (q0 + 1)).getD i (0,0) := by
+      rw [← hgd, getD_take (by omega)]
+    rw [hieq]
+    simp only [decide_eq_true_eq]
+    exact hpass i (by omega) (by omega))]
+
+/-- `hhm` of every block interval above a base. -/
+theorem hhm_block_interval {v0 w0 : ℕ} {R : PairSeq}
+    (hdom : ∀ x ∈ R, v0 < x.1) (hR : hhm R) {q0 t : ℕ}
+    (hq0 : q0 < ((v0,w0) :: R).length)
+    (hpass : ∀ i, i < t → i < (((v0,w0) :: R).drop (q0 + 1)).length →
+      (((v0,w0) :: R).getD q0 (0,0)).1
+        < ((((v0,w0) :: R).drop (q0 + 1)).getD i (0,0)).1) :
+    hhm ((((v0,w0) :: R).drop (q0 + 1)).take t) := by
+  constructor
+  · rw [interval_eq_run_take hpass]
+    exact headmax_take (headmax_runAt_block hdom hR q0 hq0) t
+  · intro p' hp'
+    rw [List.length_take, List.length_drop] at hp'
+    have hp'L : q0 + 1 + p' < ((v0,w0) :: R).length := by omega
+    have hsplit : ((v0,w0) :: R).take (q0 + 1 + t)
+        = ((v0,w0) :: R).take (q0 + 1)
+          ++ (((v0,w0) :: R).drop (q0 + 1)).take t := by
+      conv_lhs => rw [← List.take_append_drop (q0 + 1)
+        (((v0,w0) :: R).take (q0 + 1 + t))]
+      rw [List.take_take, min_eq_left (by omega), List.drop_take,
+          Nat.add_sub_cancel_left]
+    have h1 := runAt_append_left (G := ((v0,w0) :: R).take (q0 + 1))
+      (M := (((v0,w0) :: R).drop (q0 + 1)).take t) (j := p')
+    rw [← hsplit, List.length_take, min_eq_left (by omega)] at h1
+    rw [← h1, runAt_take (by omega)]
+    exact headmax_take (headmax_runAt_block hdom hR _ hp'L) _
+
 end YAPSS
