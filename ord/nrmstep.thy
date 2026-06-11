@@ -9864,6 +9864,30 @@ next
   thus ?thesis by (metis One_nat_def length_0_conv length_Suc_conv)
 qed
 
+text \<open>(seam-MIN) On any \<^emph>\<open>firing\<close> provenance segment the max-row1 suffix has
+  a row0-minimal head.  This is the q-free general form: no both-fire
+  coupling, no cut condition (closure+2: 458980 fire segments, zero
+  violations; the fire premise is essential — without it closure+1 already
+  has 70 violations).\<close>
+
+lemma E6_seam_MIN:
+  assumes "segprov u S q" and "S \<noteq> []"
+    and "pfire u (nrm (translate S))"
+  shows "\<forall>x \<in> set (msfx S). fst (hd (msfx S)) \<le> fst x"
+  sorry
+
+text \<open>(seam-INV) Under the same fire premise the suffix head also stays
+  at-or-below the appended column's row0 whenever that column cuts
+  at-or-below the segment's max row1 (closure+2: 426489 same-cut fire
+  positions, zero violations).\<close>
+
+lemma E6_seam_INV:
+  assumes "segprov u S q" and "S \<noteq> []"
+    and "pfire u (nrm (translate S))"
+    and "snd q \<le> maxr1 S"
+  shows "fst (hd (msfx S)) \<le> fst q"
+  sorry
+
 text \<open>(seam) In the both-fire same-cut configuration the max-row1 suffix
   satisfies the spiral invariants against the appended column.\<close>
 
@@ -9872,7 +9896,7 @@ lemma E6_seam:
     and "pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
     and "snd q \<le> maxr1 S"
   shows "fst (hd (msfx S)) \<le> fst q \<and> (\<forall>x \<in> set (msfx S). fst (hd (msfx S)) \<le> fst x)"
-  sorry
+  using E6_seam_INV[OF assms(1,2,3,5)] E6_seam_MIN[OF assms(1,2,3)] by blast
 
 subsection \<open>Standardness supplies the bundle\<close>
 

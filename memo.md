@@ -3050,3 +3050,22 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 - 値側行レベル残り = **E6_seam**（5,358/0・msfx の head-min 不変量を
   btfullok/FBS 機構で設計）。sorry 数 23（qcut の sorry が QDIAG 凍結に
   置換・正味同数だが監査済み微小クラス化）。
+
+### (2026-06-11 続58) E6_seam 分割 — q 脱結合凍結核（緑）
+
+- 採掘結果（mine_seam2〜6）: msfx は最大45列で qcut 型の縮小は不可。
+  fire 前提なしでは反例（INV2: 70件）→ fire が本質。FDIAG（fst 非減少）は
+  135件で不成立 → 結論の単調化も不可。
+- **前提最小化が当たり**: same-cut 窓では fire(S) ⟺ fire(S@[q])（実例集合が
+  完全一致）で、fire(S) 単独で両結論が出る。さらに q 条件を外した一般形が
+  成立:
+  - **seam_MIN**: segprov 区間が fire ⟹ hd(msfx S) は msfx S の fst 最小
+    （閉包+2: **458,980/0**。q 自由・カット条件不要）
+  - **seam_INV**: ＋same-cut（snd q ≤ maxr1 S）⟹ fst(hd(msfx S)) ≤ fst q
+    （閉包+2: **426,489/0**）
+- E6_seam 本体は2行導出に。監査基盤 5,358 → 458,980 へ86倍強化、
+  both-fire 結合が前提から消えた（世代帰納時の負担減）。sorry 数 24
+  （seam 1個 → 凍結核 2個、正味+1だが圧倒的に強い凍結）。
+- 値側行レベルは全て凍結核化完了。残る値側 = NT_lexdiff_lt（116万ペア/0・
+  深い値機構）、fire カスケード（E6_lpl/dom_deep/memT/nbcK_K）、STS_B、
+  nrm_order_pres、最終組立。
