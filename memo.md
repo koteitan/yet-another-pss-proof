@@ -3027,3 +3027,8 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 - **E6_FBS 凍結**（fire の butlast 安定性・一般 q 形・閉包+2: 5,370/0）→
   iii は対偶2行で落ちた。FBS は次に qcut_last/seam でも主部品の見込み。
   値側討伐は本日20点目。
+
+- (続56補) qcut_last/seam 閉包+2 再確認（12/0・5,358/0）。qcut は実例12件の
+  微小クラス。両者の証明は fire/msfx 機構設計（FBS と同圏だが msfx の
+  位置情報が要る — FBS だけでは落ちない）。次セッション: qcut の12実例
+  ダンプから msfx=last の機構特定 → seam は head-min を btfullok 系で。
