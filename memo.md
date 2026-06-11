@@ -2960,3 +2960,15 @@ BTWRAPU 攻略の3ルート（優先順）:
   監査を実装時に。
 - 世代側 GRAND の残凍結見込み: **{CT, GAP(246), qpos(171), t14ok_oper_bad}**
   ＋シーム空6種 — BTWRAPU±U3 が落ちれば窓族は完全終結。
+
+### (2026-06-11 続53) 🎉ginv_BTWRAPU 討伐（緑）— 非因果核の陥落
+
+- 実装 = 設計どおり: **LAND**（witness はギャップでアンカーを飛び越せない —
+  kanch: k < j0+qa なら gap が j0+qa（低レベル）を含み矛盾、k=anchor は
+  r1ok 直、k>anchor は窓内で IH）＋ **位置 less_induct 強帰納**（witness
+  k < x が測度）＋ 分岐: 親 e1 ≤ アンカー → r1ok 段 / 親タイト → **ginv_CT**。
+  r1ok_ST_PS（証明済）を witness 供給に使用 — r1ok 基盤の完成が effectively
+  ここで効いた。
+- 凍結は **ginv_CT（7件クラス）のみ**。BTWRAPU の 21,537 件級が 7 件級へ。
+- 残: ginv_BTWRAPU3（T3 版 — headtie 基底の同型鎖帰納、CT3 変種の
+  監査が必要）→ 落ちれば窓族完結。

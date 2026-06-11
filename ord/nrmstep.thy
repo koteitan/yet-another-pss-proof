@@ -3695,6 +3695,28 @@ lemma btfullok_butlast: "btfullok M \<Longrightarrow> btfullok (butlast M)"
 lemma btfullok3_butlast: "btfullok3 M \<Longrightarrow> btfullok3 (butlast M)"
   using btfullok3_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
+text \<open>(CT) Tight-node child drop (memo 続52): on an exact-copy dominated
+  tail, a child of a node that has already spent the +1 budget drops back to
+  the anchor level (closure+2: the 7 realized tight-parent instances, zero
+  violations).\<close>
+
+lemma ginv_CT:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "d0 = 0"
+    and "qa < j1 - j0"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "qa < w" and "w < j1 - j0" and "qa < x" and "x < j1 - j0" and "w < x"
+    and "Suc (entry M 0 (j0 + w)) = entry M 0 (j0 + x)"
+    and "\<forall>r. j0 + w < r \<and> r < j0 + x \<longrightarrow> entry M 0 (j0 + x) \<le> fst (M ! r)"
+    and "entry M 1 (j0 + w) = Suc (entry M 1 (j0 + qa))"
+  shows "entry M 1 (j0 + x) \<le> entry M 1 (j0 + qa)"
+  sorry
+
 text \<open>(BT-WRAP-U) The untied exact-copy wrap bounds (memo 続49): with
   \<open>d0 = 0\<close>, a level-anchored dominated block tail is bounded without any tie
   (closure+2: 21537 / T3 5867, zero violations).\<close>
@@ -3712,7 +3734,86 @@ lemma ginv_BTWRAPU:
     and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
     and "qa < q" and "q < j1 - j0"
   shows "entry M 1 (j0 + q) \<le> Suc (entry M 1 (j0 + qa))"
-  sorry
+proof -
+  note ST = assms(1) and j1d = assms(2) and j1nz = assms(3) and Fz = assms(4)
+    and i1d = assms(5) and hp = assms(6) and j0d = assms(7) and d0d = assms(8)
+    and d00 = assms(9) and qaL = assms(10) and e0c = assms(11) and dom = assms(12)
+  have lenM: "length M = Suc j1" using j1d j1nz by (cases M) auto
+  have j1len: "j1 < length M" using lenM by simp
+  have R: "r1ok M" using r1ok_ST_PS[OF ST] .
+  have main: "\<And>x. qa < x \<Longrightarrow> x < j1 - j0 \<Longrightarrow>
+      entry M 1 (j0 + x) \<le> Suc (entry M 1 (j0 + qa))"
+  proof -
+    fix x
+    show "qa < x \<Longrightarrow> x < j1 - j0 \<Longrightarrow>
+        entry M 1 (j0 + x) \<le> Suc (entry M 1 (j0 + qa))"
+    proof (induction x rule: less_induct)
+      case (less x)
+      have xw: "qa < x" "x < j1 - j0" using less.prems by auto
+      have xM: "j0 + x < length M" using xw(2) j1len by arith
+      have xpos: "0 < fst (M ! (j0 + x))"
+      proof -
+        have "entry M 0 (j0 + qa) < entry M 0 (j0 + x)" using dom xw by blast
+        thus ?thesis unfolding entry_def by simp
+      qed
+      obtain k where k: "k < j0 + x" "Suc (fst (M ! k)) = fst (M ! (j0 + x))"
+          "\<forall>l. k < l \<and> l < j0 + x \<longrightarrow> fst (M ! (j0 + x)) \<le> fst (M ! l)"
+          "snd (M ! (j0 + x)) \<le> Suc (snd (M ! k))"
+        using R[unfolded r1ok_def, rule_format, OF xM xpos] by blast
+      have kanch: "j0 + qa \<le> k"
+      proof (rule ccontr)
+        assume "\<not> j0 + qa \<le> k"
+        hence kqa: "k < j0 + qa" by simp
+        have inq: "k < j0 + qa \<and> j0 + qa < j0 + x" using kqa xw(1) by simp
+        have "fst (M ! (j0 + x)) \<le> fst (M ! (j0 + qa))" using k(3) inq by blast
+        moreover have "entry M 0 (j0 + qa) < entry M 0 (j0 + x)" using dom xw by blast
+        ultimately show False unfolding entry_def by simp
+      qed
+      show ?case
+      proof (cases "k = j0 + qa")
+        case True
+        have "snd (M ! (j0 + x)) \<le> Suc (snd (M ! (j0 + qa)))" using k(4) True by simp
+        thus ?thesis unfolding entry_def by simp
+      next
+        case False
+        hence kin: "j0 + qa < k" using kanch by simp
+        define w where "w = k - j0"
+        have wk: "k = j0 + w" unfolding w_def using kin by arith
+        have ww: "qa < w" unfolding w_def using kin by arith
+        have wx: "w < x" unfolding w_def using k(1) kin by arith
+        have wL: "w < j1 - j0" using wx xw(2) by arith
+        have IH: "entry M 1 (j0 + w) \<le> Suc (entry M 1 (j0 + qa))"
+          by (rule less.IH[OF wx ww wL])
+        show ?thesis
+        proof (cases "entry M 1 (j0 + w) \<le> entry M 1 (j0 + qa)")
+          case True
+          have "snd (M ! (j0 + x)) \<le> Suc (snd (M ! (j0 + w)))" using k(4) wk by simp
+          hence "entry M 1 (j0 + x) \<le> Suc (entry M 1 (j0 + w))"
+            unfolding entry_def by simp
+          thus ?thesis using True by simp
+        next
+          case False
+          have tight: "entry M 1 (j0 + w) = Suc (entry M 1 (j0 + qa))"
+            using False IH by simp
+          have e0wx: "Suc (entry M 0 (j0 + w)) = entry M 0 (j0 + x)"
+            using k(2) wk unfolding entry_def by simp
+          have gap: "\<forall>r. j0 + w < r \<and> r < j0 + x \<longrightarrow>
+              entry M 0 (j0 + x) \<le> fst (M ! r)"
+          proof (intro allI impI)
+            fix r assume rr: "j0 + w < r \<and> r < j0 + x"
+            have "fst (M ! (j0 + x)) \<le> fst (M ! r)" using k(3) rr wk by simp
+            thus "entry M 0 (j0 + x) \<le> fst (M ! r)" unfolding entry_def by simp
+          qed
+          have "entry M 1 (j0 + x) \<le> entry M 1 (j0 + qa)"
+            by (rule ginv_CT[OF ST j1d j1nz Fz i1d hp j0d d0d d00 qaL dom
+                  ww wL xw(1) xw(2) wx e0wx gap tight])
+          thus ?thesis by simp
+        qed
+      qed
+    qed
+  qed
+  show ?thesis by (rule main[OF assms(13) assms(14)])
+qed
 
 lemma ginv_BTWRAPU3:
   assumes "M \<in> ST_PS"
