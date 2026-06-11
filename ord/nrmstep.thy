@@ -2168,6 +2168,47 @@ qed
 lemma ginv_butlast: "ginv M \<Longrightarrow> ginv (butlast M)"
   using ginv_take[of M "length M - 1"] by (simp add: butlast_conv_take)
 
+text \<open>The two regional halves of the cross-copy window preservation
+  (case map: memo 続36).  Prefix-anchored windows transport to \<open>M\<close>-windows
+  except the \<open>p = j0 - 1, d0 = 0\<close> copy-head-tie seam; copy-anchored windows
+  transport via the block twin except the \<open>qP > 0\<close> crossing seam.\<close>
+
+lemma ginv_ob_pre:
+  assumes G: "ginv M" and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and opeq: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    and bnd: "Suc p + N < length X"
+    and dom: "\<forall>k. p < k \<and> k \<le> Suc p + N \<longrightarrow> fst (X ! p) < fst (X ! k)"
+    and t0: "0 < t" and tN: "t \<le> N"
+    and cl: "fst (X ! (Suc p + t)) \<le> fst (X ! Suc p)"
+    and pl: "p < l" and lN: "l \<le> Suc p + N"
+    and pj0: "p < j0"
+  shows "snd (X ! l) \<le> max (snd (X ! p)) (snd (X ! Suc p))"
+  sorry
+
+lemma ginv_ob_copy:
+  assumes G: "ginv M" and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and opeq: "X = take j0 M @ concat (map (\<lambda>k.
+           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    and bnd: "Suc p + N < length X"
+    and dom: "\<forall>k. p < k \<and> k \<le> Suc p + N \<longrightarrow> fst (X ! p) < fst (X ! k)"
+    and t0: "0 < t" and tN: "t \<le> N"
+    and cl: "fst (X ! (Suc p + t)) \<le> fst (X ! Suc p)"
+    and pl: "p < l" and lN: "l \<le> Suc p + N"
+    and pj0: "j0 \<le> p"
+  shows "snd (X ! l) \<le> max (snd (X ! p)) (snd (X ! Suc p))"
+  sorry
+
 lemma ginv_oper_bad:
   assumes G: "ginv M" and B: "blockok 0 M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
     and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
@@ -2178,7 +2219,28 @@ lemma ginv_oper_bad:
     and opeq: "X = take j0 M @ concat (map (\<lambda>k.
            map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
   shows "ginv X"
-  sorry
+  unfolding ginv_def
+proof (intro allI impI)
+  fix p N t l
+  assume bnd: "Suc p + N < length X"
+    and dom: "\<forall>k. p < k \<and> k \<le> Suc p + N \<longrightarrow> fst (X ! p) < fst (X ! k)"
+    and t0: "0 < t" and tN: "t \<le> N"
+    and cl: "fst (X ! (Suc p + t)) \<le> fst (X ! Suc p)"
+    and pl: "p < l" and lN: "l \<le> Suc p + N"
+  show "snd (X ! l) \<le> max (snd (X ! p)) (snd (X ! Suc p))"
+  proof (cases "p < j0")
+    case True
+    show ?thesis
+      by (rule ginv_ob_pre[OF G B ST n1 j1d j1nz Fz i1d hp j0d d0d opeq
+            bnd dom t0 tN cl pl lN True])
+  next
+    case False
+    hence ge: "j0 \<le> p" by simp
+    show ?thesis
+      by (rule ginv_ob_copy[OF G B ST n1 j1d j1nz Fz i1d hp j0d d0d opeq
+            bnd dom t0 tN cl pl lN ge])
+  qed
+qed
 
 lemma ginv_oper:
   assumes G: "ginv M" and ST: "M \<in> ST_PS" and n1: "1 \<le> n"
