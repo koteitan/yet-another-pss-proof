@@ -1464,4 +1464,165 @@ theorem pfire_transport {u : ℕ} {x x' : Three}
   obtain ⟨g', hg', hng'⟩ := fire_transport hR hg hng
   exact pfire_iff.2 ⟨g', hg', hng'⟩
 
+
+/-! ## Structural layer: the `einc ∪ eflip` snoc characterization
+
+Where `nrm_snoc_seg` records only the strict `olt` increase, the structural
+bundle `snocokS` pins the exact shape: appending one column performs one
+end-position increase on the normalized image.  This is the input to
+`pfire_transport` (a base-side fire survives the append), which excludes the
+"base fires, extension does not" case of `ST_snoc_C`. -/
+
+/-- Head argument of a term (`Z` on `Z`). -/
+def hdarg : Three → Three
+  | Z => Z
+  | P _ b _ => b
+
+@[simp] theorem hdarg_Z : hdarg Z = Z := rfl
+@[simp] theorem hdarg_P (a : ℕ) (b c : Three) : hdarg (P a b c) = b := rfl
+
+/-- The no-absorption condition for `ins a b t`. -/
+def noabsorb (a : ℕ) (b t : Three) : Prop :=
+  ¬ (a < lead t ∨ (a = lead t ∧ b <o hdarg t))
+
+theorem ins_noabsorb {a : ℕ} {b t : Three} (h : noabsorb a b t) :
+    ins a b t = P a b t := by
+  cases t with
+  | Z => rfl
+  | P e f g =>
+    rw [ins_P, if_neg]
+    intro hab
+    exact h (by simpa using hab)
+
+/-- One-position end increase: insertion of one end leaf or one end-leaf
+subscript flip. -/
+def Einc (x y : Three) : Prop := einc x y ∨ eflip x y
+
+theorem Einc_olt {x y : Three} (h : Einc x y) : x <o y := by
+  rcases h with h | h
+  · exact einc_olt h
+  · exact eflip_olt h
+
+/-- The structural snoc condition bundle: as `snocok`, but recording the
+`Einc` shape at the argument extension, the row-1 bound at the new summand,
+and the two no-absorption conditions along the tail descent. -/
+def snocokS : PairSeq → ℕ × ℕ → Prop
+  | [], _ => False
+  | p :: rest, q =>
+    if (rest.dropWhile fun r => p.1 < r.1) = [] then
+      if p.1 < q.1 then
+        Einc (proj p.2 (nrm (translate rest)))
+             (proj p.2 (nrm (translate (rest ++ [q]))))
+      else q.2 ≤ p.2
+    else
+      snocokS (rest.dropWhile fun r => p.1 < r.1) q ∧
+      noabsorb p.2 (proj p.2 (nrm (translate (rest.takeWhile fun r => p.1 < r.1))))
+        (nrm (translate (rest.dropWhile fun r => p.1 < r.1))) ∧
+      noabsorb p.2 (proj p.2 (nrm (translate (rest.takeWhile fun r => p.1 < r.1))))
+        (nrm (translate ((rest.dropWhile fun r => p.1 < r.1) ++ [q])))
+  termination_by C _ => C.length
+  decreasing_by
+    exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
+
+theorem snocokS_cons (p : ℕ × ℕ) (rest : PairSeq) (q : ℕ × ℕ) :
+    snocokS (p :: rest) q =
+      (if (rest.dropWhile fun r => p.1 < r.1) = [] then
+        if p.1 < q.1 then
+          Einc (proj p.2 (nrm (translate rest)))
+               (proj p.2 (nrm (translate (rest ++ [q]))))
+        else q.2 ≤ p.2
+      else
+        snocokS (rest.dropWhile fun r => p.1 < r.1) q ∧
+        noabsorb p.2 (proj p.2 (nrm (translate (rest.takeWhile fun r => p.1 < r.1))))
+          (nrm (translate (rest.dropWhile fun r => p.1 < r.1))) ∧
+        noabsorb p.2 (proj p.2 (nrm (translate (rest.takeWhile fun r => p.1 < r.1))))
+          (nrm (translate ((rest.dropWhile fun r => p.1 < r.1) ++ [q])))) := by
+  rw [snocokS]
+
+/-- **Structural snoc characterization**: under the structural bundle,
+appending one column changes the normalized image by exactly one
+end-position increase (`einc` or `eflip`). -/
+theorem nrm_snoc_str : ∀ {C : PairSeq} {q : ℕ × ℕ}, snocokS C q → C ≠ [] →
+    Einc (nrm (translate C)) (nrm (translate (C ++ [q])))
+  | [], _, _, hne => absurd rfl hne
+  | p :: rest, q, hsok, _ => by
+    by_cases hT : (rest.dropWhile fun r => p.1 < r.1) = []
+    · have Kall : (rest.takeWhile fun r => p.1 < r.1) = rest :=
+        List.takeWhile_eq_self_iff.2 (List.dropWhile_eq_nil_iff.1 hT)
+      have nCs : nrm (translate (p :: rest))
+          = P p.2 (proj p.2 (nrm (translate rest))) Z := by
+        rw [translate_cons, Kall, hT, translate_nil, nrm_P, nrm_Z, ins_Z]
+      rw [snocokS_cons, if_pos hT] at hsok
+      by_cases qd : p.1 < q.1
+      · -- (C) argument extension
+        rw [if_pos qd] at hsok
+        have tw' : ((rest ++ [q]).takeWhile fun r => p.1 < r.1) = rest ++ [q] := by
+          rw [takeWhile_append_all (List.dropWhile_eq_nil_iff.1 hT)]
+          simp [qd]
+        have dw' : ((rest ++ [q]).dropWhile fun r => p.1 < r.1) = [] := by
+          rw [dropWhile_append_all (List.dropWhile_eq_nil_iff.1 hT)]
+          simp [qd]
+        have nC' : nrm (translate ((p :: rest) ++ [q]))
+            = P p.2 (proj p.2 (nrm (translate (rest ++ [q])))) Z := by
+          rw [List.cons_append, translate_cons, tw', dw', translate_nil,
+              nrm_P, nrm_Z, ins_Z]
+        rw [nCs, nC']
+        rcases hsok with he | hf
+        · exact Or.inl (einc.argZ p.2 he)
+        · exact Or.inr (eflip.argZ p.2 hf)
+      · -- (A) new summand
+        rw [if_neg qd] at hsok
+        have tw' : ((rest ++ [q]).takeWhile fun r => p.1 < r.1) = rest := by
+          rw [takeWhile_append_all (List.dropWhile_eq_nil_iff.1 hT)]
+          simp [qd]
+        have dw' : ((rest ++ [q]).dropWhile fun r => p.1 < r.1) = [q] := by
+          rw [dropWhile_append_all (List.dropWhile_eq_nil_iff.1 hT)]
+          simp [qd]
+        have nC' : nrm (translate ((p :: rest) ++ [q]))
+            = ins p.2 (proj p.2 (nrm (translate rest))) (P q.2 Z Z) := by
+          rw [List.cons_append, translate_cons, tw', dw', translate_single,
+              nrm_P, nrm_leaf]
+        have noab : ins p.2 (proj p.2 (nrm (translate rest))) (P q.2 Z Z)
+            = P p.2 (proj p.2 (nrm (translate rest))) (P q.2 Z Z) := by
+          apply ins_noabsorb
+          intro hab
+          rcases hab with h1 | ⟨h1, h2⟩
+      
+          · simp at h1
+            omega
+          · exact absurd h2 (by simp)
+        rw [nCs, nC', noab]
+        exact Or.inl (einc.tail p.2 _ (einc.end_ q.2))
+    · -- (B) tail extension
+      obtain ⟨w, win, wnp⟩ : ∃ w ∈ rest, ¬ p.1 < w.1 := by
+        by_contra hall
+        push Not at hall
+        exact hT (List.dropWhile_eq_nil_iff.2 (by
+          intro x hx
+          simpa using hall x hx))
+      have tw' : ((rest ++ [q]).takeWhile fun r => p.1 < r.1)
+          = rest.takeWhile fun r => p.1 < r.1 :=
+        takeWhile_append_not win (by simpa using wnp)
+      have dw' : ((rest ++ [q]).dropWhile fun r => p.1 < r.1)
+          = (rest.dropWhile fun r => p.1 < r.1) ++ [q] :=
+        dropWhile_append_not win (by simpa using wnp)
+      have nC : nrm (translate (p :: rest))
+          = ins p.2 (proj p.2 (nrm (translate (rest.takeWhile fun r => p.1 < r.1))))
+                (nrm (translate (rest.dropWhile fun r => p.1 < r.1))) := by
+        rw [translate_cons, nrm_P]
+      have nC' : nrm (translate ((p :: rest) ++ [q]))
+          = ins p.2 (proj p.2 (nrm (translate (rest.takeWhile fun r => p.1 < r.1))))
+                (nrm (translate ((rest.dropWhile fun r => p.1 < r.1) ++ [q]))) := by
+        rw [List.cons_append, translate_cons, tw', dw', nrm_P]
+      rw [snocokS_cons, if_neg hT] at hsok
+      obtain ⟨sokT, na, na'⟩ := hsok
+      have IH := nrm_snoc_str sokT hT
+      rw [nC, nC', ins_noabsorb na, ins_noabsorb na']
+      rcases IH with he | hf
+      · exact Or.inl (einc.tail p.2 _ he)
+      · exact Or.inr (eflip.tail p.2 _ hf)
+  termination_by C _ _ _ => C.length
+  decreasing_by
+    exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
+
 end YAPSS
