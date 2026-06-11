@@ -3653,4 +3653,32 @@ theorem nextrel0_copy_iff {G B : PairSeq} {lp : ℕ × ℕ} {d0 n k q0 q : ℕ}
       rw [hleq, he0 hq, he0 hloff]
       omega
 
+/-- A row-0 parent of a non-root copy column lies at or after the copy
+root: the root itself dips below the column's level. -/
+theorem nextrel0_into_copy {G : PairSeq} {v0 w0 : ℕ} {R : PairSeq}
+    {d0 n k q j0X : ℕ} (hk : k < n) (hq : q < ((v0,w0) :: R).length)
+    (hq1 : 1 ≤ q) (hdom : ∀ x ∈ R, v0 < x.1)
+    (h : nextrel0 (copyExp G ((v0,w0) :: R) d0 n) j0X
+      (G.length + (k * ((v0,w0) :: R).length + q))) :
+    G.length + k * ((v0,w0) :: R).length ≤ j0X := by
+  by_contra hcon
+  push Not at hcon
+  obtain ⟨-, -, -, -, h5⟩ := h
+  have hroot := h5 (G.length + (k * ((v0,w0) :: R).length + 0))
+    (by constructor <;> omega)
+  have he1 := (entry_copyExp (G := G) (B := (v0,w0) :: R) (d0 := d0)
+    hk hq).1
+  have he2 := (entry_copyExp (G := G) (B := (v0,w0) :: R) (d0 := d0)
+    hk (show 0 < ((v0,w0) :: R).length by simp)).1
+  rw [he1, he2] at hroot
+  rw [List.getD_cons_zero] at hroot
+  -- the column's level strictly exceeds the root's
+  have hgt : v0 < (((v0,w0) :: R).getD q (0,0)).1 := by
+    obtain ⟨q', rfl⟩ : ∃ q', q = q' + 1 := ⟨q - 1, by omega⟩
+    rw [List.getD_cons_succ]
+    exact hdom _ (getD_mem (by simpa using hq))
+  have hroot' : (((v0,w0) :: R).getD q (0,0)).1 + k * d0
+      ≤ v0 + k * d0 := hroot
+  omega
+
 end YAPSS
