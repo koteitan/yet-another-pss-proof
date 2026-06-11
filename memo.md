@@ -3006,3 +3006,11 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 （微小クラス・同テンプレート）(3) qpos は e1j1 経由（M窓に j1 含む形・
 続37補）。教訓集は続51。ビルド: isbman build -m MSG
 -d /home/koteitan/afp-dl/afp-2026-06-05/thys -d /home/koteitan/ya-pss/git PSI。
+
+### (2026-06-11 続55) 値側戦線プローブ開始 — E6_iii_singleton
+
+- 実例43件: 全て |S|=1 ✓、形一様（q は単一列 c に対し fst>・snd>）。
+  証明形候補 = 対偶「|S|≥2 ⟹ (fire(S@[q]) ⟹ fire(S))」: snoc 橋
+  （nrm_snoc_seg・ins_olt_mono 等の緑部品）で q の寄与する新違反者を
+  S 側に移送する論法。次: |S|≥2 ∧ ¬fire(S) ∧ fire(S@[q]) の「あと一歩」
+  反例ダンプ（fire の違反者 g の所在を S/q 寄与で分類）。
