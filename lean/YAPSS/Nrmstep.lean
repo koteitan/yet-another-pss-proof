@@ -2177,4 +2177,22 @@ theorem runAt_append_left {G M : PairSeq} {j : ℕ} :
       List.drop_append, List.drop_eq_nil_of_le (by omega), List.nil_append,
       Nat.add_sub_cancel_left]
 
+/-- `takeWhile` over an append never enters the second part when its head
+fails the predicate. -/
+theorem takeWhile_append_head_stop {α : Type*} {p : α → Bool}
+    {l1 l2 : List α} (h : ∀ a ∈ l2.head?, p a = false) :
+    (l1 ++ l2).takeWhile p = l1.takeWhile p := by
+  rw [List.takeWhile_append]
+  by_cases hl : (l1.takeWhile p).length = l1.length
+  · rw [if_pos hl]
+    have hself : l1.takeWhile p = l1 :=
+      (List.takeWhile_sublist _).eq_of_length hl
+    cases l2 with
+    | nil => simp [hself]
+    | cons a t =>
+      have ha : p a = false := h a rfl
+      rw [List.takeWhile_cons, if_neg (by simp [ha])]
+      simp [hself]
+  · rw [if_neg hl]
+
 end YAPSS
