@@ -3021,3 +3021,9 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   NT(S) の olt 橋 — nrm_snoc_seg/ins_olt_mono の緑部品圏）。次セッションで
   FBS を凍結 or 直証して iii を落とす。qcut_last/seam も同じ fire-snoc
   移送圏の見込み。
+
+### (2026-06-11 続56) E6_iii_singleton 討伐（緑）— 値側行レベル初討伐
+
+- **E6_FBS 凍結**（fire の butlast 安定性・一般 q 形・閉包+2: 5,370/0）→
+  iii は対偶2行で落ちた。FBS は次に qcut_last/seam でも主部品の見込み。
+  値側討伐は本日20点目。

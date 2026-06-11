@@ -89,7 +89,8 @@
   - ✅ BTWRAPU±U3 討伐〔LAND+鎖帰納+CT / +NT3空クラス〕＝**BT窓族完全終結**
   - ✅ GBLK0 討伐〔GAP 246件級へ分解〕
   - 🚨 GRANDシーム残〔CT(7件)/NT3(空)/GAP(246)/BTWRAP_T3/qpos(171)/t14ok_oper_bad(地図済)〕
-  - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam＝ginv適用候補〕＋ STS_B 本体〔0/26322〕
+  - ✅ E6_iii_singleton 討伐〔FBS=fire-butlast安定 5370/0 の対偶2行〕
+  - 🚨 行レベル〔E6_qcut_last/E6_seam＝FBS圏で続攻〕＋ STS_B 本体〔0/26322〕/ E6_FBS 本体
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - 🚨 TOP_desc〔0/474・未ステート〕
   - 🚨 スタブ〔NT_tie/E6_mem/E6_dom_tie＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン〕

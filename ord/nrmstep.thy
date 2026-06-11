@@ -9756,6 +9756,17 @@ lemma E6_qcut_last:
   shows "msfx S = [last S]"
   sorry
 
+text \<open>(FBS) Fire is butlast-stable on long provenance segments: if the
+  extended segment fires, so does the segment itself once it has at least
+  two columns (closure+2: 5370 extended fires, zero violations, including
+  mid-host \<open>q\<close>).\<close>
+
+lemma E6_FBS:
+  assumes "segprov u S q" and "2 \<le> length S"
+    and "pfire u (nrm (translate (S @ [q])))"
+  shows "pfire u (nrm (translate S))"
+  sorry
+
 text \<open>(V5) In the extension-only-fire configuration the segment is a single
   column.\<close>
 
@@ -9763,7 +9774,17 @@ lemma E6_iii_singleton:
   assumes "segprov u S q" and "S \<noteq> []"
     and "\<not> pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
   shows "\<exists>c. S = [c]"
-  sorry
+proof (cases "2 \<le> length S")
+  case True
+  have "pfire u (nrm (translate S))"
+    by (rule E6_FBS[OF assms(1) True assms(4)])
+  thus ?thesis using assms(3) by simp
+next
+  case False
+  have "length S \<noteq> 0" using assms(2) by simp
+  hence "length S = 1" using False by arith
+  thus ?thesis by (metis One_nat_def length_0_conv length_Suc_conv)
+qed
 
 text \<open>(seam) In the both-fire same-cut configuration the max-row1 suffix
   satisfies the spiral invariants against the appended column.\<close>
