@@ -4040,4 +4040,153 @@ theorem rtg_no_dip {W : PairSeq} {a b : ℕ}
           · exact le_of_lt h7
         omega
 
+
+/-! ## The Pred branch of the final-block discipline -/
+
+theorem runAt_take {M : PairSeq} {p m : ℕ} (hp : p < m) :
+    runAt (M.take m) p = (runAt M p).take (m - (p + 1)) := by
+  unfold runAt
+  rw [getD_take hp, List.drop_take, ← List.take_takeWhile]
+
+theorem headmax_take {K : PairSeq} (h : headmax K) (t : ℕ) :
+    headmax (K.take t) := by
+  rcases h with rfl | h
+  · exact Or.inl (by simp)
+  · cases K with
+    | nil => exact Or.inl (by simp)
+    | cons k0 K' =>
+      cases t with
+      | zero => exact Or.inl rfl
+      | succ t' =>
+        rw [List.take_succ_cons]
+        right
+        rw [List.headI_cons] at h ⊢
+        have hdec : k0 :: K' = k0 :: (K'.take t' ++ K'.drop t') := by
+          rw [List.take_append_drop]
+        rw [hdec] at h
+        exact headmax_prefix h
+
+theorem mem_iff_getD {L : List (ℕ × ℕ)} {x : ℕ × ℕ} (h : x ∈ L) :
+    ∃ i, i < L.length ∧ L.getD i (0,0) = x := by
+  obtain ⟨i, hi, hget⟩ := List.getElem_of_mem h
+  exact ⟨i, hi, by rw [getD_eq_getElem' _ _ hi]; exact hget⟩
+
+/-- **The Pred branch preserves the final-block discipline** when the host
+ends in `(0,0)`: that column closes every run with row-1 value `0`, so the
+new block and all its interior runs live inside `hmok` closures. -/
+theorem tailok_Pred_zero {M : PairSeq} (hM : hmok M)
+    (hlast : M.getD (M.length - 1) (0,0) = (0,0)) (hlen : 2 ≤ M.length) :
+    tailok M.dropLast := by
+  intro j0 hj0 hnx _htrig
+  clear _htrig
+  rw [List.dropLast_eq_take] at hj0 hnx ⊢
+  have hXlen : (M.take (M.length - 1)).length = M.length - 1 := by
+    rw [List.length_take]
+    omega
+  rw [hXlen] at hj0 hnx ⊢
+  rw [show M.length - 1 - 1 = M.length - 2 by omega] at hnx ⊢
+  rw [idx1_take (by omega), nextR_take_iff (by omega) (by omega)] at hnx
+  have hdip : ∀ l, j0 < l → l < M.length - 2 →
+      entry M 0 j0 < entry M 0 l := by
+    intro l hl1 hl2
+    unfold nextR at hnx
+    by_cases hi : idx1 M (M.length - 2) = 0
+    · rw [if_pos hi] at hnx
+      have h5 := hnx.2.2.2.2 l ⟨hl1, hl2⟩
+      have h4 := hnx.2.2.2.1
+      omega
+    · rw [if_neg hi] at hnx
+      obtain ⟨-, -, hchain⟩ := hnx.2.2.2.2.1
+      exact rtg_no_dip hchain l hl1 hl2
+  have hj0lt : entry M 0 j0 < entry M 0 (M.length - 2) := by
+    unfold nextR at hnx
+    by_cases hi : idx1 M (M.length - 2) = 0
+    · rw [if_pos hi] at hnx
+      exact hnx.2.2.2.1
+    · rw [if_neg hi] at hnx
+      obtain ⟨-, -, hchain⟩ := hnx.2.2.2.2.1
+      rcases rtg_nextrel0_e0_le hchain with heq | hlt
+      · omega
+      · exact hlt
+  have hrun : runAt M j0
+      = (M.drop (j0 + 1)).take (M.length - 1 - (j0 + 1)) := by
+    unfold runAt
+    have hdec : M.drop (j0 + 1)
+        = (M.drop (j0 + 1)).take (M.length - 1 - (j0 + 1))
+          ++ (M.drop (j0 + 1)).drop (M.length - 1 - (j0 + 1)) := by
+      rw [List.take_append_drop]
+    conv_lhs => rw [hdec]
+    rw [takeWhile_append_head_stop (by
+      intro a ha
+      have h1 : ((M.drop (j0 + 1)).drop (M.length - 1 - (j0 + 1)))[0]?
+          = some a := by
+        rw [← List.head?_eq_getElem?]
+        exact ha
+      rw [List.getElem?_drop, List.getElem?_drop] at h1
+      have h2 : M.getD (j0 + 1 + (M.length - 1 - (j0 + 1) + 0)) (0,0) = a := by
+        rw [List.getD_eq_getElem?_getD, h1]
+        rfl
+      have hidx : j0 + 1 + (M.length - 1 - (j0 + 1) + 0) = M.length - 1 := by
+        omega
+      rw [hidx] at h2
+      rw [hlast] at h2
+      rw [← h2]
+      simp)]
+    apply List.takeWhile_eq_self_iff.2
+    intro x hx
+    obtain ⟨i, hi, hgd⟩ := mem_iff_getD hx
+    rw [List.length_take, List.length_drop] at hi
+    have hieq : x = M.getD (j0 + 1 + i) (0,0) := by
+      rw [← hgd, getD_take (by omega), getD_drop]
+    have he : ∀ l, entry M 0 l = (M.getD l (0,0)).1 := by
+      intro l
+      unfold entry
+      rw [if_pos rfl]
+    have hgoal : (M.getD j0 (0,0)).1 < (M.getD (j0 + 1 + i) (0,0)).1 := by
+      rcases Nat.lt_or_ge (j0 + 1 + i) (M.length - 2) with hc | hc
+      · have h7 := hdip (j0 + 1 + i) (by omega) hc
+        rw [he, he] at h7
+        exact h7
+      · have hieq2 : j0 + 1 + i = M.length - 2 := by omega
+        rw [hieq2]
+        have h7 := hj0lt
+        rw [he, he] at h7
+        exact h7
+    rw [hieq]
+    simpa using hgoal
+  have hstopeq : stopAt M j0 = M.length - 1 := by
+    unfold stopAt
+    rw [hrun, List.length_take, List.length_drop]
+    omega
+  have hcc := hM j0 (by omega) (by omega)
+    (by
+      rw [hstopeq, hlast]
+      simp)
+  rw [hstopeq] at hcc
+  -- the new block in canonical form
+  have hbeq : ((M.take (M.length - 1)).take (M.length - 2)).drop (j0 + 1)
+      = (M.take (M.length - 2)).drop (j0 + 1) := by
+    rw [List.take_take, min_eq_left (by omega)]
+  rw [hbeq]
+  constructor
+  · -- the block is a truncation of the parent's run
+    have hb2 : (M.take (M.length - 2)).drop (j0 + 1)
+        = (runAt M j0).take (M.length - 2 - (j0 + 1)) := by
+      rw [hrun, List.drop_take, List.take_take,
+          min_eq_left (by omega)]
+    rw [hb2]
+    exact headmax_take (hcc j0 le_rfl (by omega)) _
+  · intro p' hp'
+    rw [List.length_drop, List.length_take] at hp'
+    have hp'2 : p' < M.length - 2 - (j0 + 1) := by omega
+    have hsplit : M.take (M.length - 2)
+        = M.take (j0 + 1) ++ (M.take (M.length - 2)).drop (j0 + 1) := by
+      conv_lhs => rw [← List.take_append_drop (j0 + 1) (M.take (M.length - 2))]
+      rw [List.take_take, min_eq_left (by omega)]
+    have h1 := runAt_append_left (G := M.take (j0 + 1))
+      (M := (M.take (M.length - 2)).drop (j0 + 1)) (j := p')
+    rw [← hsplit, List.length_take, min_eq_left (by omega)] at h1
+    rw [← h1, runAt_take (by omega)]
+    exact headmax_take (hcc (j0 + 1 + p') (by omega) (by omega)) _
+
 end YAPSS
