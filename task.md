@@ -80,7 +80,8 @@
   - 🚨 fire-cascade 残4点〔E6_lpl/E6_dom_deep/E6_memT/E6_nbcK_K＝GRAND同時帰納の本丸〕
   - ✅ ginv_oper_bad 討伐〔A/B/C/E転送＋反駁＋d01/d02閉鎖証人・残差 GBLK0/qpos の2点〕
   - ✅ t1ok_oper_bad 討伐〔3ケース転送＋BT1・unfolding再帰/metis/arith原子の3事故克服〕
-  - 🚨 GRANDシーム残〔t3ok/t14ok_oper_bad / GBLK0 / qpos / BT1・BT1-T3 本体〕
+  - ✅ t3ok_oper_bad 討伐〔t1okクローン+T3デルタ+BT1_T3凍結〕
+  - 🚨 GRANDシーム残〔t14ok_oper_bad（BT-hm偽・再設計）/ GBLK0 / qpos / BT1・BT1_T3 本体〕
   - 🚨 行レベル〔E6_qcut_last/E6_iii_singleton/E6_seam＝ginv適用候補〕＋ STS_B 本体〔0/26322〕
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - 🚨 TOP_desc〔0/474・未ステート〕

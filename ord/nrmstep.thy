@@ -4002,6 +4002,22 @@ proof -
   qed
 qed
 
+lemma ginv_BT1_T3:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "i1 = idx1 M j1" and "hasParent M i1 j1"
+    and "j0 = parent M i1 j1"
+    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "qa < j1 - j0"
+    and "entry M 1 (j0 + qa) = entry M 1 j0"
+    and "entry M 0 j0 + d0 \<le> entry M 0 (j0 + qa)"
+    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
+    and "qa < q" and "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
+  sorry
+
 lemma t3ok_oper_bad:
   assumes T: "t1ok M" and T3: "t3ok M" and B: "blockok 0 M" and ST: "M \<in> ST_PS"
     and n1: "1 \<le> n"
@@ -4013,7 +4029,462 @@ lemma t3ok_oper_bad:
     and opeq: "X = take j0 M @ concat (map (\<lambda>k.
            map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
   shows "t3ok X"
-  sorry
+proof -
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have lenM: "length M = Suc j1" using j1d j1nz by (cases M) auto
+  have j1len: "j1 < length M" using lenM by simp
+  define L where "L = j1 - j0"
+  have L0: "0 < L" unfolding L_def using j0j1 by simp
+  have lenX: "length X = j0 + n * L"
+    unfolding L_def by (rule oper_bad_len[OF opeq j0j1 j1len])
+  have npre: "\<And>i. i < j0 \<Longrightarrow> X ! i = M ! i"
+    using oper_bad_nth_pre[OF opeq _ j1len j0j1] by blast
+  have ncopy: "\<And>k q. k < n \<Longrightarrow> q < L \<Longrightarrow>
+        X ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+    unfolding L_def using oper_bad_nth_copy[OF opeq j0j1 j1len] by blast
+  have hm0: "\<forall>k. j0 < k \<and> k \<le> j1 \<longrightarrow> entry M 0 j0 < entry M 0 k"
+    by (rule block_head_min[OF hp j0d])
+  have pairM: "\<And>j. (entry M 0 j, entry M 1 j) = M ! j"
+    unfolding entry_def by simp
+  have j0Lj1: "j0 + L = j1" unfolding L_def using j0j1 by simp
+  have Xv0: "\<And>i. i < j0 + L \<Longrightarrow> X ! i = M ! i"
+  proof -
+    fix i assume iL: "i < j0 + L"
+    show "X ! i = M ! i"
+    proof (cases "i < j0")
+      case True thus ?thesis by (rule npre)
+    next
+      case False
+      have qL: "i - j0 < L" using iL False by simp
+      have c0: "X ! (j0 + (0 * L + (i - j0)))
+          = (entry M 0 (j0 + (i - j0)) + 0 * d0, entry M 1 (j0 + (i - j0)))"
+        by (rule ncopy) (use n1 qL in simp_all)
+      have ii: "j0 + (i - j0) = i" using False by simp
+      have "X ! i = (entry M 0 i, entry M 1 i)" using c0 ii by simp
+      thus ?thesis using pairM by simp
+    qed
+  qed
+  have idxE: "\<And>i. j0 \<le> i \<Longrightarrow> i < length X \<Longrightarrow>
+       \<exists>k q. k < n \<and> q < L \<and> i = j0 + (k * L + q)
+           \<and> X ! i = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+  proof -
+    fix i assume ji: "j0 \<le> i" and iX: "i < length X"
+    define k where "k = (i - j0) div L"
+    define q where "q = (i - j0) mod L"
+    have kq: "i - j0 = k * L + q" unfolding k_def q_def by simp
+    have qL: "q < L" unfolding q_def using L0 by simp
+    have kn: "k < n"
+    proof -
+      have "i - j0 < n * L" using iX lenX ji by simp
+      thus ?thesis unfolding k_def
+        by (metis less_mult_imp_div_less mult.commute)
+    qed
+    have ii: "i = j0 + (k * L + q)" using kq ji by simp
+    have "X ! (j0 + (k * L + q)) = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+      by (rule ncopy[OF kn qL])
+    thus "\<exists>k q. k < n \<and> q < L \<and> i = j0 + (k * L + q)
+           \<and> X ! i = (entry M 0 (j0 + q) + k * d0, entry M 1 (j0 + q))"
+      using kn qL ii by blast
+  qed
+  show ?thesis
+    unfolding t3ok_def
+  proof (intro allI impI)
+    fix a b
+    assume aX: "a < length X" and pos: "0 < fst (X ! a)"
+      and bdef: "b = Suc a + length (mrun X a)" and bX: "b < length X"
+      and sb: "snd (X ! b) = snd (X ! a)"
+      and ne: "mrun X a \<noteq> []"
+      and hd1: "snd (hd (mrun X a)) = snd (X ! a)"
+    have ab: "a < b" using bdef by linarith
+    define K where "K = mrun X a"
+    have lenK: "length K = b - Suc a" unfolding K_def using bdef by simp
+    have Kel: "\<And>t. t < b - Suc a \<Longrightarrow> K ! t = X ! (Suc a + t) \<and> fst (X ! a) < fst (K ! t)"
+    proof -
+      fix t assume tb: "t < b - Suc a"
+      have tK: "t < length (mrun X a)" using tb bdef by simp
+      have tw: "K ! t = drop (Suc a) X ! t"
+        using tK unfolding K_def mrun_def by (rule takeWhile_nth)
+      have "drop (Suc a) X ! t = X ! (Suc a + t)"
+        using aX by (intro nth_drop) simp
+      hence e: "K ! t = X ! (Suc a + t)" using tw by simp
+      have "K ! t \<in> set K" using tb lenK by simp
+      hence "fst (X ! a) < fst (K ! t)"
+        unfolding K_def mrun_def using set_takeWhileD by metis
+      thus "K ! t = X ! (Suc a + t) \<and> fst (X ! a) < fst (K ! t)"
+        using e by simp
+    qed
+    have stopb: "\<not> fst (X ! a) < fst (X ! b)"
+    proof -
+      have ld: "length (takeWhile (\<lambda>r. fst (X ! a) < fst r) (drop (Suc a) X))
+          < length (drop (Suc a) X)"
+        using bdef bX unfolding mrun_def by simp
+      have n0: "\<not> fst (X ! a)
+          < fst (drop (Suc a) X ! length (takeWhile (\<lambda>r. fst (X ! a) < fst r) (drop (Suc a) X)))"
+        using nth_length_takeWhile[OF ld] by simp
+      have "drop (Suc a) X ! (b - Suc a) = X ! (Suc a + (b - Suc a))"
+        using aX by (intro nth_drop) simp
+      hence "drop (Suc a) X ! (b - Suc a) = X ! b" using ab by simp
+      thus ?thesis using n0 bdef unfolding mrun_def by simp
+    qed
+    have Kne: "K \<noteq> []" unfolding K_def by (rule ne)
+    have hdK0: "hd K = K ! 0" using Kne by (simp add: hd_conv_nth)
+    have K0pos: "0 < b - Suc a" using lenK Kne by (cases "b - Suc a") auto
+    show "\<forall>x \<in> set (mrun X a). snd x \<le> snd (X ! a)"
+    proof (cases "a < j0")
+      case apre: True
+      have bj0: "b \<le> j0"
+      proof (rule ccontr)
+        assume "\<not> b \<le> j0"
+        hence j0b: "j0 < b" by simp
+        have t: "j0 - Suc a < b - Suc a" using j0b apre by arith
+        have e: "Suc a + (j0 - Suc a) = j0" using apre by arith
+        have kel: "K ! (j0 - Suc a) = X ! (Suc a + (j0 - Suc a))
+            \<and> fst (X ! a) < fst (K ! (j0 - Suc a))"
+          by (rule Kel[OF t])
+        hence j0run: "fst (X ! a) < fst (X ! j0)" unfolding e by metis
+        have Xj0: "X ! j0 = M ! j0" using Xv0 L0 by simp
+        have bj0': "j0 \<le> b" using j0b by simp
+        obtain kb qb where kb: "kb < n" "qb < L" "b = j0 + (kb * L + qb)"
+            and Xb: "X ! b = (entry M 0 (j0 + qb) + kb * d0, entry M 1 (j0 + qb))"
+          using idxE[OF bj0' bX] by blast
+        have e0qb: "entry M 0 j0 \<le> entry M 0 (j0 + qb)"
+        proof (cases qb)
+          case 0 thus ?thesis by simp
+        next
+          case (Suc q')
+          have "j0 < j0 + qb \<and> j0 + qb \<le> j1" using Suc kb(2) j0Lj1 by simp
+          thus ?thesis using hm0 by fastforce
+        qed
+        have "entry M 0 j0 \<le> fst (X ! b)" using Xb e0qb by simp
+        moreover have "fst (X ! b) \<le> fst (X ! a)" using stopb by simp
+        moreover have "fst (X ! a) < entry M 0 j0"
+          using j0run Xj0 unfolding entry_def by simp
+        ultimately show False by simp
+      qed
+      have XMall: "\<And>i. i \<le> b \<Longrightarrow> X ! i = M ! i"
+      proof -
+        fix i assume "i \<le> b"
+        hence "i < j0 + L" using bj0 L0 by simp
+        thus "X ! i = M ! i" by (rule Xv0)
+      qed
+      have bM: "b < length M" using bj0 j0j1 j1len by simp
+      have aM: "a < length M" using apre j0j1 j1len by simp
+      have Xa: "X ! a = M ! a" using XMall[of a] ab by simp
+      have Xb': "X ! b = M ! b" using XMall[of b] by simp
+      have KelM: "\<And>t. t < b - Suc a \<Longrightarrow> K ! t = M ! (Suc a + t) \<and> fst (M ! a) < fst (K ! t)"
+      proof -
+        fix t assume tb: "t < b - Suc a"
+        have "K ! t = X ! (Suc a + t)" "fst (X ! a) < fst (K ! t)" using Kel[OF tb] by auto
+        moreover have "X ! (Suc a + t) = M ! (Suc a + t)"
+          using XMall[of "Suc a + t"] tb by (simp add: less_diff_conv add.commute)
+        ultimately show "K ! t = M ! (Suc a + t) \<and> fst (M ! a) < fst (K ! t)"
+          using Xa by simp
+      qed
+      have mrMa: "mrun M a = K"
+      proof -
+        have Keq: "K = take (b - Suc a) (drop (Suc a) M)"
+        proof (rule nth_equalityI)
+          show "length K = length (take (b - Suc a) (drop (Suc a) M))"
+            using lenK bM by simp
+        next
+          fix t assume "t < length K"
+          hence tb: "t < b - Suc a" using lenK by simp
+          show "K ! t = take (b - Suc a) (drop (Suc a) M) ! t"
+            using KelM[OF tb] tb bM by simp
+        qed
+        have dsplit: "drop (Suc a) M = K @ M ! b # drop (Suc b) M"
+        proof -
+          have "drop (Suc a) M = take (b - Suc a) (drop (Suc a) M)
+              @ drop (b - Suc a) (drop (Suc a) M)"
+            by (rule append_take_drop_id[symmetric])
+          moreover have "drop (b - Suc a) (drop (Suc a) M) = drop b M"
+            using ab by (simp add: drop_drop)
+          moreover have "drop b M = M ! b # drop (Suc b) M"
+            using bM by (rule Cons_nth_drop_Suc[symmetric])
+          ultimately show ?thesis using Keq by metis
+        qed
+        have allK: "\<forall>x \<in> set K. fst (M ! a) < fst x"
+        proof
+          fix x assume "x \<in> set K"
+          then obtain t where tt: "t < length K" "x = K ! t" by (metis in_set_conv_nth)
+          have tb2: "t < b - Suc a" using tt(1) lenK by simp
+          have "fst (M ! a) < fst (K ! t)" using KelM[OF tb2] by blast
+          thus "fst (M ! a) < fst x" using tt(2) by simp
+        qed
+        have "takeWhile (\<lambda>r. fst (M ! a) < fst r) (drop (Suc a) M)
+            = K @ takeWhile (\<lambda>r. fst (M ! a) < fst r) (M ! b # drop (Suc b) M)"
+          unfolding dsplit by (rule takeWhile_append2) (use allK in blast)
+        moreover have "takeWhile (\<lambda>r. fst (M ! a) < fst r) (M ! b # drop (Suc b) M) = []"
+        proof -
+          have "\<not> fst (M ! a) < fst (M ! b)" using stopb Xa Xb' by simp
+          thus ?thesis by simp
+        qed
+        ultimately show ?thesis unfolding mrun_def by simp
+      qed
+      have bdefM: "b = Suc a + length (mrun M a)" using bdef mrMa K_def by simp
+      have posM: "0 < fst (M ! a)" using pos Xa by simp
+      have sbM: "snd (M ! b) = snd (M ! a)" using sb Xa Xb' by simp
+      have neM: "mrun M a \<noteq> []" using Kne mrMa by simp
+      have hdM: "snd (hd (mrun M a)) = snd (M ! a)"
+        using hd1 Xa unfolding mrMa K_def by simp
+      have "\<forall>x \<in> set (mrun M a). snd x \<le> snd (M ! a)"
+        using T3[unfolded t3ok_def, rule_format, of a b]
+          aM posM bdefM bM sbM neM hdM by blast
+      thus ?thesis unfolding mrMa K_def[symmetric] using Xa by simp
+    next
+      case False
+      hence aj0: "j0 \<le> a" by simp
+      obtain ka qa where ka: "ka < n" "qa < L" "a = j0 + (ka * L + qa)"
+          and Xa: "X ! a = (entry M 0 (j0 + qa) + ka * d0, entry M 1 (j0 + qa))"
+        using idxE[OF aj0 aX] by blast
+      have bj0: "j0 \<le> b" using aj0 ab by simp
+      obtain kb qb where kb: "kb < n" "qb < L" "b = j0 + (kb * L + qb)"
+          and Xb: "X ! b = (entry M 0 (j0 + qb) + kb * d0, entry M 1 (j0 + qb))"
+        using idxE[OF bj0 bX] by blast
+      have kakb: "ka \<le> kb"
+      proof (rule ccontr)
+        assume "\<not> ka \<le> kb"
+        hence "Suc kb \<le> ka" by simp
+        hence "Suc kb * L \<le> ka * L" by (rule mult_le_mono1)
+        hence "L + kb * L \<le> ka * L" by simp
+        hence "kb * L + qb < ka * L + qa" using kb(2) by arith
+        thus False using ka(3) kb(3) ab by arith
+      qed
+      show ?thesis
+      proof (cases "kb = ka")
+        case kbka: True
+        have qaqb: "qa < qb" using ka(3) kb(3) kbka ab by arith
+        define am where "am = j0 + qa"
+        define bm where "bm = j0 + qb"
+        have amM: "am < length M" unfolding am_def using ka(2) j0Lj1 j1len by arith
+        have bmM: "bm < length M" unfolding bm_def using kb(2) j0Lj1 j1len by arith
+        have lrun: "b - Suc a = qb - Suc qa" using ka(3) kb(3) kbka by arith
+        have e0stop: "entry M 0 bm \<le> entry M 0 am"
+        proof -
+          have "fst (X ! b) \<le> fst (X ! a)" using stopb by simp
+          thus ?thesis using Xa Xb kbka unfolding am_def bm_def by simp
+        qed
+        have qa1: "0 < qa"
+        proof (rule ccontr)
+          assume "\<not> 0 < qa"
+          hence qa0: "qa = 0" by simp
+          have "j0 < j0 + qb \<and> j0 + qb \<le> j1" using qaqb qa0 kb(2) j0Lj1 by arith
+          hence "entry M 0 j0 < entry M 0 (j0 + qb)" using hm0 by blast
+          thus False using e0stop qa0 unfolding am_def bm_def by simp
+        qed
+        have Kel2: "\<And>t. t < b - Suc a \<Longrightarrow>
+            K ! t = (entry M 0 (am + Suc t) + ka * d0, entry M 1 (am + Suc t))"
+        proof -
+          fix t assume tb: "t < b - Suc a"
+          have idx: "Suc a + t = j0 + (ka * L + (qa + Suc t))" using ka(3) by simp
+          have qlt: "qa + Suc t < L"
+          proof -
+            have "qa + Suc t \<le> qb" using tb lrun by arith
+            thus ?thesis using kb(2) by arith
+          qed
+          have "X ! (Suc a + t) = (entry M 0 (j0 + (qa + Suc t)) + ka * d0,
+                entry M 1 (j0 + (qa + Suc t)))"
+            unfolding idx by (rule ncopy[OF ka(1) qlt])
+          thus "K ! t = (entry M 0 (am + Suc t) + ka * d0, entry M 1 (am + Suc t))"
+            using Kel[OF tb] unfolding am_def by (simp add: add.assoc)
+        qed
+        have KelM: "\<And>t. t < bm - Suc am \<Longrightarrow> entry M 0 am < entry M 0 (am + Suc t)"
+        proof -
+          fix t assume tb: "t < bm - Suc am"
+          have tb': "t < b - Suc a" using tb lrun unfolding am_def bm_def by arith
+          have "fst (X ! a) < fst (K ! t)" using Kel[OF tb'] by blast
+          thus "entry M 0 am < entry M 0 (am + Suc t)"
+            using Xa Kel2[OF tb'] unfolding am_def by simp
+        qed
+        define KM where "KM = take (bm - Suc am) (drop (Suc am) M)"
+        have lenKM: "length KM = bm - Suc am" unfolding KM_def using bmM by simp
+        have KMel: "\<And>t. t < bm - Suc am \<Longrightarrow> KM ! t = M ! (Suc am + t)"
+          unfolding KM_def using bmM by simp
+        have mrM: "mrun M am = KM"
+        proof -
+          have allpre: "\<forall>x \<in> set KM. fst (M ! am) < fst x"
+          proof
+            fix x assume "x \<in> set KM"
+            then obtain t where tt: "t < length KM" "x = KM ! t"
+              by (metis in_set_conv_nth)
+            have t1: "t < bm - Suc am" using tt(1) lenKM by simp
+            have "x = M ! (Suc am + t)" using tt(2) KMel[OF t1] by simp
+            thus "fst (M ! am) < fst x"
+              using KelM[OF t1] unfolding entry_def by simp
+          qed
+          have dsplit: "drop (Suc am) M = KM @ M ! bm # drop (Suc bm) M"
+          proof -
+            have "drop (Suc am) M = KM @ drop (bm - Suc am) (drop (Suc am) M)"
+              unfolding KM_def by (rule append_take_drop_id[symmetric])
+            moreover have "drop (bm - Suc am) (drop (Suc am) M) = drop bm M"
+              using qaqb unfolding am_def bm_def by (simp add: drop_drop add.commute)
+            moreover have "drop bm M = M ! bm # drop (Suc bm) M"
+              using bmM by (rule Cons_nth_drop_Suc[symmetric])
+            ultimately show ?thesis by metis
+          qed
+          have "takeWhile (\<lambda>r. fst (M ! am) < fst r) (drop (Suc am) M)
+              = KM @ takeWhile (\<lambda>r. fst (M ! am) < fst r) (M ! bm # drop (Suc bm) M)"
+            unfolding dsplit by (rule takeWhile_append2) (use allpre in blast)
+          moreover have "takeWhile (\<lambda>r. fst (M ! am) < fst r) (M ! bm # drop (Suc bm) M) = []"
+            using e0stop unfolding entry_def by simp
+          ultimately show ?thesis unfolding mrun_def by simp
+        qed
+        have lmr: "length (mrun M am) = bm - Suc am"
+          unfolding mrM by (rule lenKM)
+        have posM: "0 < fst (M ! am)"
+        proof -
+          have "j0 < j0 + qa \<and> j0 + qa \<le> j1" using qa1 ka(2) j0Lj1 by arith
+          hence "entry M 0 j0 < entry M 0 am" unfolding am_def using hm0 by blast
+          thus ?thesis unfolding entry_def by simp
+        qed
+        have sbM: "snd (M ! bm) = snd (M ! am)"
+        proof -
+          have "entry M 1 (j0 + qb) = entry M 1 (j0 + qa)" using sb Xa Xb by simp
+          thus ?thesis unfolding am_def bm_def entry_def by simp
+        qed
+        have bdefM: "bm = Suc am + length (mrun M am)"
+          using lmr qaqb unfolding am_def bm_def by arith
+        have neM2: "mrun M am \<noteq> []" using lmr lrun Kne lenK
+          unfolding am_def bm_def by (cases "qb - Suc qa") auto
+        have hdM2: "snd (hd (mrun M am)) = snd (M ! am)"
+        proof -
+          have bmpos: "0 < bm - Suc am"
+            using K0pos lrun unfolding am_def bm_def by arith
+          have h0: "hd (mrun M am) = M ! (Suc am)"
+          proof -
+            have "hd (mrun M am) = mrun M am ! 0" using neM2 by (simp add: hd_conv_nth)
+            also have "\<dots> = KM ! 0" unfolding mrM ..
+            also have "\<dots> = M ! (Suc am + 0)" using KMel[OF bmpos] by simp
+            finally show ?thesis by simp
+          qed
+          have "snd (K ! 0) = entry M 1 (am + Suc 0)" using Kel2[OF K0pos] by simp
+          hence "entry M 1 (Suc am) = snd (X ! a)" using hd1 hdK0 unfolding K_def by simp
+          thus ?thesis unfolding h0 using Xa unfolding am_def entry_def by simp
+        qed
+        have bnd: "\<forall>x \<in> set (mrun M am). snd x \<le> snd (M ! am)"
+          using T3[unfolded t3ok_def, rule_format, of am bm]
+            amM posM bdefM bmM sbM neM2 hdM2 by blast
+        show ?thesis
+        proof
+          fix x assume "x \<in> set (mrun X a)"
+          then obtain t where tt: "t < length K" "x = K ! t"
+            unfolding K_def by (metis in_set_conv_nth)
+          have tb: "t < b - Suc a" using tt(1) lenK by simp
+          have sx: "snd x = entry M 1 (am + Suc t)" using Kel2[OF tb] tt(2) by simp
+          have tbm: "t < bm - Suc am" using tb lrun unfolding am_def bm_def by arith
+          have "M ! (Suc am + t) \<in> set (mrun M am)"
+            unfolding mrM using KMel[OF tbm] tbm lenKM by (metis nth_mem)
+          hence "snd (M ! (Suc am + t)) \<le> snd (M ! am)" using bnd by blast
+          thus "snd x \<le> snd (X ! a)"
+            using sx Xa unfolding am_def entry_def by simp
+        qed
+      next
+        case kbka: False
+        hence kgt: "ka < kb" using kakb by simp
+        define h where "h = j0 + ((ka + 1) * L + 0)"
+        have hb: "h \<le> b"
+        proof -
+          have "(ka + 1) * L \<le> kb * L" using kgt by (intro mult_le_mono1) simp
+          thus ?thesis unfolding h_def using ka(3) kb(3) by simp
+        qed
+        have ka1n: "ka + 1 < n" using kgt kb(1) by simp
+        have Xh: "X ! h = (entry M 0 j0 + (ka + 1) * d0, entry M 1 j0)"
+          unfolding h_def using ncopy[OF ka1n L0] by simp
+        have beq: "b = h"
+        proof (rule ccontr)
+          assume "b \<noteq> h"
+          hence hltb: "h < b" using hb by simp
+          have ah: "a < h" unfolding h_def using ka(3) ka(2) by simp
+          have t: "h - Suc a < b - Suc a" using hltb ah by arith
+          have e: "Suc a + (h - Suc a) = h" using ah by arith
+          have kel: "K ! (h - Suc a) = X ! (Suc a + (h - Suc a))
+              \<and> fst (X ! a) < fst (K ! (h - Suc a))"
+            by (rule Kel[OF t])
+          hence hrun: "fst (X ! a) < fst (X ! h)" unfolding e by metis
+          have star: "entry M 0 (j0 + qa) + ka * d0 < entry M 0 j0 + (ka + 1) * d0"
+            using hrun Xa Xh by simp
+          have dstar: "fst (X ! b) \<le> fst (X ! a)" using stopb by simp
+          show False
+          proof (cases qb)
+            case 0
+            have "entry M 0 j0 + kb * d0 \<le> entry M 0 (j0 + qa) + ka * d0"
+              using dstar Xa Xb 0 by simp
+            moreover have "(ka + 1) * d0 \<le> kb * d0" using kgt by (intro mult_le_mono1) simp
+            ultimately show False using star by arith
+          next
+            case (Suc q')
+            have "j0 < j0 + qb \<and> j0 + qb \<le> j1" using Suc kb(2) j0Lj1 by arith
+            hence e0qb: "entry M 0 j0 < entry M 0 (j0 + qb)" using hm0 by blast
+            have "entry M 0 (j0 + qb) + kb * d0 \<le> entry M 0 (j0 + qa) + ka * d0"
+              using dstar Xa Xb by simp
+            moreover have "(ka + 1) * d0 \<le> kb * d0" using kgt by (intro mult_le_mono1) simp
+            ultimately show False using star e0qb by arith
+          qed
+        qed
+        have tiep: "entry M 1 (j0 + qa) = entry M 1 j0"
+          using sb Xa Xb[unfolded beq[symmetric]] beq Xh by simp
+        have stopc: "entry M 0 j0 + d0 \<le> entry M 0 (j0 + qa)"
+        proof -
+          have "entry M 0 j0 + (ka + 1) * d0 \<le> entry M 0 (j0 + qa) + ka * d0"
+            using stopb Xa Xh beq by simp
+          thus ?thesis by simp
+        qed
+        have domc: "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+        proof (intro allI impI)
+          fix q assume qq: "qa < q \<and> q < j1 - j0"
+          have qL: "q < L" using qq unfolding L_def by simp
+          define t where "t = q - Suc qa"
+          have bsa: "b - Suc a = L - Suc qa"
+            unfolding beq h_def using ka(3) by simp
+          have tb: "t < b - Suc a"
+            unfolding t_def bsa using qq qL by arith
+          have idx: "Suc a + t = j0 + (ka * L + q)"
+            unfolding t_def using ka(3) qq by simp
+          have "X ! (Suc a + t) = (entry M 0 (j0 + q) + ka * d0, entry M 1 (j0 + q))"
+            unfolding idx by (rule ncopy[OF ka(1) qL])
+          moreover have "fst (X ! a) < fst (X ! (Suc a + t))"
+            using Kel[OF tb] by metis
+          ultimately show "entry M 0 (j0 + qa) < entry M 0 (j0 + q)" using Xa by simp
+        qed
+        have headtie: "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
+        proof -
+          have sqaL: "Suc qa < L"
+          proof -
+            have "b - Suc a = L - Suc qa" unfolding beq h_def using ka(3) by simp
+            thus ?thesis using K0pos by arith
+          qed
+          have idx0: "Suc a + 0 = j0 + (ka * L + Suc qa)" using ka(3) by simp
+          have "X ! (Suc a + 0) = (entry M 0 (j0 + Suc qa) + ka * d0, entry M 1 (j0 + Suc qa))"
+            unfolding idx0 by (rule ncopy[OF ka(1) sqaL])
+          hence "snd (K ! 0) = entry M 1 (j0 + Suc qa)" using Kel[OF K0pos] by simp
+          thus ?thesis using hd1 hdK0 Xa unfolding K_def by simp
+        qed
+        show ?thesis
+        proof
+          fix x assume "x \<in> set (mrun X a)"
+          then obtain t where tt: "t < length K" "x = K ! t"
+            unfolding K_def by (metis in_set_conv_nth)
+          have tb: "t < b - Suc a" using tt(1) lenK by simp
+          define q where "q = qa + Suc t"
+          have bsa2: "b - Suc a = L - Suc qa"
+            unfolding beq h_def using ka(3) by simp
+          have qL: "q < L"
+            unfolding q_def using tb bsa2 by arith
+          have idx: "Suc a + t = j0 + (ka * L + q)" unfolding q_def using ka(3) by simp
+          have "X ! (Suc a + t) = (entry M 0 (j0 + q) + ka * d0, entry M 1 (j0 + q))"
+            unfolding idx by (rule ncopy[OF ka(1) qL])
+          hence sx: "snd x = entry M 1 (j0 + q)" using Kel[OF tb] tt(2) by simp
+          have "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
+            by (rule ginv_BT1_T3[OF ST j1d j1nz Fz i1d hp j0d d0d _ tiep stopc domc headtie])
+               (use ka(2) qL q_def L_def in simp_all)
+          thus "snd x \<le> snd (X ! a)" using sx Xa by simp
+        qed
+      qed
+    qed
+  qed
+qed
+
 
 lemma t13ok_oper:
   assumes T: "t1ok M" and T3: "t3ok M" and T14: "t14ok M"

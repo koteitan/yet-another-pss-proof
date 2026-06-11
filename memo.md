@@ -2639,3 +2639,10 @@ X = oper-bad のタイ対 (a,b) 分類（T1 違反 0 / 全 23396 対）:
   不透明化してから dsplit。教訓: dsplit 系の分解は必ず define 越し。
 - 残 GRAND シーム: t3ok_oper_bad（本補題のクローン+BT1-T3）/
   t14ok_oper_bad（BT-hm 偽のため要再設計）/ GBLK0 / qpos / BT1 本体。
+
+- (続42補) **t3ok_oper_bad 討伐（緑）**: t1ok 本体のクローン＋T3 デルタ
+  （ne/hd1 前提・Suc なし結論・prefix/C-same は t3ok M 転送＋hd 移送
+  （h0 は calc 形 — unfolding で am_def が mrM パターンを先に壊す事故）・
+  C-cross は headtie 抽出 → **ginv_BT1_T3** 凍結）。
+  残 GRAND シーム: t14ok_oper_bad（BT-hm 偽・要再設計）/ GBLK0 / qpos /
+  BT1・BT1_T3 本体（ブロック内世代事実・実証 6370/1755 全0違反）。
