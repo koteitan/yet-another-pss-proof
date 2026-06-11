@@ -1625,4 +1625,146 @@ theorem nrm_snoc_str : ∀ {C : PairSeq} {q : ℕ × ℕ}, snocokS C q → C ≠
   decreasing_by
     exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
 
+
+/-! ## Both-fire reduction and the subscript chain -/
+
+/-- Reduction of `ST_snoc_C` to the both-fire case: with the structural
+shape `Einc x x'`, only the simultaneous-fire comparison remains. -/
+theorem proj_olt_of_Einc {u : ℕ} {x x' : Three} (hE : Einc x x')
+    (hboth : pfire u x → pfire u x' → proj u x <o proj u x') :
+    proj u x <o proj u x' := by
+  by_cases hf : pfire u x
+  · exact hboth hf (pfire_transport hE hf)
+  · exact proj_olt_of_nofire hf (Einc_olt hE)
+
+/-! ## The subscript chain: criticals, projections and `nrm` never invent
+subscripts -/
+
+theorem subs_P' (a : ℕ) (b c : Three) :
+    subs (P a b c) = insert a (subs b ∪ subs c) := rfl
+
+theorem Gterm_subs {u : ℕ} {g t : Three} (hg : g ∈ Gterm u t) :
+    subs g ⊆ subs t := by
+  induction t with
+  | Z => simp at hg
+  | P a b c ihb ihc =>
+    rw [subs_P']
+    rcases mem_Gterm_P.1 hg with ⟨_, rfl | hgb⟩ | hgc
+    · exact fun x hx => Set.mem_insert_iff.2 (Or.inr (Set.mem_union_left _ hx))
+    · exact fun x hx =>
+        Set.mem_insert_iff.2 (Or.inr (Set.mem_union_left _ (ihb hgb hx)))
+    · exact fun x hx =>
+        Set.mem_insert_iff.2 (Or.inr (Set.mem_union_right _ (ihc hgc hx)))
+
+theorem proj_subs (u : ℕ) (b : Three) : subs (proj u b) ⊆ subs b := by
+  by_cases h : (Glist u b).filter (fun g => ¬ olt g b) = []
+  · rw [proj_id h]
+  · exact Gterm_subs (proj_mem_of_fire h)
+
+theorem ins_subs (a : ℕ) (b t : Three) :
+    subs (ins a b t) ⊆ insert a (subs b ∪ subs t) := by
+  cases t with
+  | Z =>
+    rw [ins_Z, subs_P']
+  | P e f g =>
+    rw [ins_P]
+    by_cases h : a < e ∨ (a = e ∧ b <o f)
+    · rw [if_pos h]
+      exact fun x hx => Set.mem_insert_iff.2 (Or.inr (Set.mem_union_right _ hx))
+    · rw [if_neg h, subs_P']
+
+theorem nrm_subs (t : Three) : subs (nrm t) ⊆ subs t := by
+  induction t with
+  | Z => simp [nrm_Z]
+  | P a b c ihb ihc =>
+    rw [nrm_P, subs_P']
+    refine (ins_subs _ _ _).trans ?_
+    intro x hx
+    rcases Set.mem_insert_iff.1 hx with rfl | hx
+    · exact Set.mem_insert _ _
+    · rcases (Set.mem_union _ _ _).1 hx with hx | hx
+      · exact Set.mem_insert_iff.2
+          (Or.inr (Set.mem_union_left _ (ihb ((proj_subs a (nrm b)) hx))))
+      · exact Set.mem_insert_iff.2 (Or.inr (Set.mem_union_right _ (ihc hx)))
+
+theorem NT_subs (S : PairSeq) : subs (nrm (translate S)) ⊆ sndSet S :=
+  (nrm_subs _).trans (subs_translate S)
+
+/-! ## Head-subscript facts for normalized images -/
+
+theorem ins_neZ (a : ℕ) (b t : Three) : ins a b t ≠ Z := by
+  cases t with
+  | Z => simp [ins_Z]
+  | P e f g =>
+    rw [ins_P]
+    by_cases h : a < e ∨ (a = e ∧ b <o f)
+    · rw [if_pos h]
+      simp
+    · rw [if_neg h]
+      simp
+
+theorem NT_neZ {p : ℕ × ℕ} {rest : PairSeq} :
+    nrm (translate (p :: rest)) ≠ Z := by
+  rw [translate_cons, nrm_P]
+  exact ins_neZ _ _ _
+
+/-- `ins` can only raise the head subscript. -/
+theorem ins_lead_ge (a : ℕ) (b t : Three) : a ≤ lead (ins a b t) := by
+  cases t with
+  | Z => simp [ins_Z]
+  | P e f g =>
+    rw [ins_P]
+    by_cases h : a < e ∨ (a = e ∧ b <o f)
+    · rw [if_pos h]
+      rcases h with h | ⟨rfl, _⟩
+      · simp
+        omega
+      · simp
+    · rw [if_neg h]
+      simp
+
+theorem NT_lead_ge (p : ℕ × ℕ) (rest : PairSeq) :
+    p.2 ≤ lead (nrm (translate (p :: rest))) := by
+  rw [translate_cons, nrm_P]
+  exact ins_lead_ge ..
+
+theorem lead_mem_subs {t : Three} (h : t ≠ Z) : lead t ∈ subs t := by
+  cases t with
+  | Z => exact absurd rfl h
+  | P a b c =>
+    rw [lead_P, subs_P']
+    exact Set.mem_insert _ _
+
+/-- **Head subscript of the normalized maximal suffix** = the maximal row-1
+value: from below by the head column, from above by the subscript chain. -/
+theorem NT_msfx_lead {S : PairSeq} (h : S ≠ []) :
+    lead (nrm (translate (msfx S))) = maxr1 S := by
+  obtain ⟨d, D, hdD⟩ : ∃ d D, msfx S = d :: D := by
+    cases hm : msfx S with
+    | nil => exact absurd hm (msfx_ne_nil h)
+    | cons d D => exact ⟨d, D, rfl⟩
+  have hd_eq : (msfx S).head (msfx_ne_nil h) = d := by
+    have h1 : (msfx S).head? = some ((msfx S).head (msfx_ne_nil h)) :=
+      List.head?_eq_some_head _
+    have h2 : (msfx S).head? = some d := by
+      rw [hdD]
+      rfl
+    exact Option.some.inj (h1.symm.trans h2)
+  have hd2 : d.2 = maxr1 S := by
+    have := msfx_head_snd h
+    rw [hd_eq] at this
+    exact this
+  refine le_antisymm ?_ ?_
+  · -- ≤ : the head subscript is a subscript of the image, hence a row-1 value
+    have h1 : lead (nrm (translate (msfx S))) ∈ subs (nrm (translate (msfx S))) := by
+      rw [hdD]
+      exact lead_mem_subs NT_neZ
+    have h2 := NT_subs (msfx S) h1
+    obtain ⟨c, hc, hce⟩ := mem_sndSet.1 h2
+    have hcS : c ∈ S := (List.dropWhile_suffix _).subset hc
+    rw [← hce]
+    exact le_maxr1 c hcS
+  · rw [hdD, ← hd2]
+    exact NT_lead_ge d D
+
 end YAPSS
