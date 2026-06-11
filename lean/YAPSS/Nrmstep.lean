@@ -1971,4 +1971,17 @@ theorem fbseg_hd_level {u : ℕ} {c : ℕ × ℕ} {rest : PairSeq}
     simpa using h1
   omega
 
+/-- Upper bound on the head subscript of any normalized segment image. -/
+theorem NT_lead_le {S : PairSeq} (hne : S ≠ []) :
+    lead (nrm (translate S)) ≤ maxr1 S := by
+  obtain ⟨p, rest, rfl⟩ : ∃ p rest, S = p :: rest := by
+    cases S with
+    | nil => exact absurd rfl hne
+    | cons p rest => exact ⟨p, rest, rfl⟩
+  have h1 : lead (nrm (translate (p :: rest))) ∈ subs (nrm (translate (p :: rest))) :=
+    lead_mem_subs NT_neZ
+  obtain ⟨c, hc, hce⟩ := mem_sndSet.1 (NT_subs _ h1)
+  rw [← hce]
+  exact le_maxr1 c hc
+
 end YAPSS
