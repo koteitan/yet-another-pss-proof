@@ -2150,4 +2150,31 @@ theorem cnf_adjacent_snd_le {W : PairSeq} {c t0 : ℕ × ℕ} {Zs T' : PairSeq}
   push Not at h
   omega
 
+
+/-! ## Dominated runs by position (toward `SIB_prefix`) -/
+
+/-- The dominated run of position `j`: the maximal block of strictly higher
+columns immediately after `j`. -/
+def runAt (M : PairSeq) (j : ℕ) : PairSeq :=
+  (M.drop (j + 1)).takeWhile fun r => (M.getD j (0,0)).1 < r.1
+
+theorem runAt_cons_zero (p : ℕ × ℕ) (rest : PairSeq) :
+    runAt (p :: rest) 0 = rest.takeWhile fun r => p.1 < r.1 := by
+  unfold runAt
+  rw [List.drop_succ_cons, List.drop_zero, List.getD_cons_zero]
+
+theorem runAt_cons_succ (p : ℕ × ℕ) (rest : PairSeq) (j : ℕ) :
+    runAt (p :: rest) (j + 1) = runAt rest j := by
+  unfold runAt
+  rw [List.drop_succ_cons, List.getD_cons_succ]
+
+/-- `runAt` only sees the suffix from `j`: stable under prefix extension. -/
+theorem runAt_append_left {G M : PairSeq} {j : ℕ} :
+    runAt (G ++ M) (G.length + j) = runAt M j := by
+  unfold runAt
+  rw [getD_append_right (Nat.le_add_right _ _), Nat.add_sub_cancel_left,
+      show G.length + j + 1 = G.length + (j + 1) by omega,
+      List.drop_append, List.drop_eq_nil_of_le (by omega), List.nil_append,
+      Nat.add_sub_cancel_left]
+
 end YAPSS
