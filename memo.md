@@ -2582,3 +2582,24 @@ X = take j0 M @ copies。閉鎖窓 (P, c0=X!(P+1), 窓 [P+1..end), 閉鎖位置 
   b_def で畳んだ不等式は bH[unfolded b_def] で渡す（unfolding は goal のみ）。
 - sorry 22（t14ok_oper_bad +1 / high1 -1）。GRAND シーム在庫:
   t1ok/t3ok/t14ok_oper_bad・GBLK0・qpos（全て同型のコピー境界タイ分析）。
+
+### (2026-06-11 続41) GRAND シーム地図確定（t1ok/t3ok/t14ok_oper_bad の設計）
+
+X = oper-bad のタイ対 (a,b) 分類（T1 違反 0 / 全 23396 対）:
+- **P-P**: 両方 prefix → ラン共有・恒等転送（停止 < j0）。
+- **C-same**: 同一コピー内 → shift 転送（EB と同型）。
+- **P-C**: a∈prefix・b∈コピー → **b = (0,0) 強制**（証明: ランが copies に
+  入ると copy-0 頭 e0j0 > fst a が必要だが停止 ≤ fst a、ゆえに copy-0 頭が
+  最初の停止。kb≥1 は d0=0 でも copy-0 頭が先に停止するので不可能）
+  → M 対 (a, j0) に恒等転送（値・ラン完全一致）✓。
+- **C-cross-qa-0**: a=(ka,qa)・b=(kb,0) コピー頭のみ（rb>0 は皆無 — 同上の
+  論法で頭強制）。新内容はここだけ:
+  - kb=ka+1: ラン = コピー ka 尾。M ランは j1 で停止（e0j0+d0 ≤ e0(j0+qa) が
+    停止条件から出る）が e1j1 ≠ e1j0（i1=1）でタイにならず M 不変量沈黙。
+    必要事実 **BT1: 支配条件下のブロック尾 snd ≤ e1(j0+qa)+1**（t3/t14 用は
+    =/hm 版）。
+  - kb>ka+1: ラン = 尾 + フルコピー数回 + …: snds = 尾∪ブロック全体:
+    **ブロック全体版 BT2** が要る（GBLK0 の max 形と同族）。
+- ⟹ 世代シーム5点（t1/t3/t14_oper_bad・GBLK0・qpos）は全て
+  **ブロック内 row1 上界の小族（BT 族）** に帰着。次: BT 族の正確文面
+  マイニング → M 不変量からの導出可否判定 → 導出不能分のみ凍結して組立。
