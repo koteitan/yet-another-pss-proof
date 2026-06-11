@@ -4766,4 +4766,26 @@ theorem sclimb_rp_nextrel0 {M : PairSeq} {r' : ℕ}
     rw [if_pos rfl, if_pos rfl]
     exact hafter l hl.1 (by omega)
 
+
+/-! ## The master segment discipline -/
+
+/-- **The master segment discipline**: every dominated segment of the host
+satisfies the single-climb fact (mined exact, 14,279/14,279). -/
+def classOK (H : PairSeq) : Prop :=
+  ∀ S pre (pp : ℕ × ℕ) mid post,
+    H = pre ++ (pp :: (mid ++ S)) ++ post →
+    (∀ r ∈ mid ++ S, pp.1 < r.1) →
+    (∀ r ∈ mid, S.headI.1 ≤ r.1) →
+    sclimb S
+
+/-- Truncation closure: dominated segments of a truncation are dominated
+segments of the host with extended `post`. -/
+theorem classOK_take {H : PairSeq} (h : classOK H) (m : ℕ) :
+    classOK (H.take m) := by
+  intro S pre pp mid post heq hdom hbd
+  refine h S pre pp mid (post ++ H.drop m) ?_ hdom hbd
+  conv_lhs => rw [← List.take_append_drop m H]
+  rw [heq]
+  simp [List.append_assoc]
+
 end YAPSS
