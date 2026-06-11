@@ -2899,4 +2899,16 @@ theorem tailokA_take {M : PairSeq} (h : tailokA M) (m : ℕ) :
     rw [List.take_take, min_eq_left (le_of_lt hjm)]
   rwa [heq]
 
+theorem tailokA_dropLast {M : PairSeq} (h : tailokA M) : tailokA M.dropLast := by
+  rw [List.dropLast_eq_take]
+  exact tailokA_take h _
+
+theorem tailokA_Pred {M : PairSeq} (h : tailokA M) : tailokA (Pred M) := by
+  unfold Pred
+  by_cases hl : M.length ≤ 1
+  · rw [if_pos hl]
+    exact h
+  · rw [if_neg hl]
+    exact tailokA_dropLast h
+
 end YAPSS
