@@ -2533,3 +2533,21 @@ X = take j0 M @ copies。閉鎖窓 (P, c0=X!(P+1), 窓 [P+1..end), 閉鎖位置 
   =pp直接。q'=0 は e1j0 < e1j1 ≤ B（M窓に j1 含む）で証明可能。q'≥1 は
   qP=2 窓のみで出現（q'=1）。「前のブロック列を後ろで抑える」型＝GBLK0 と
   同族の世代機構。GRAND 統合候補。
+
+### (2026-06-11 続38) 戦略ノート — GRAND 統合の輪郭（次の主設計）
+
+残 sorry の質的分類（nrmstep 21 = 値側数点 + 世代機構群 + 行レベル）:
+- **世代機構群（強化不変量 ginv2 候補）**: ginv_GBLK0（d0=0 ブロック e1 上界）/
+  ginv_ob_qpos（ブロック内後方上界・祖先 e1=e1j1 ピッタリ）/
+  E6_tie_nofire_high の T1・T3（タイラン ≤ u+1, =u）/ seam_open_m1（e1j0=0機構）/
+  copyhead 残差 P・E2var・F2L2。共通形＝「裸の局所制約では出ない、コピー由来
+  の構造が後方・上方を縛る」。
+- 統合案: **ginv2 M = ginv M ∧ gblk0 M ∧ (qpos-fact M) ∧ (tie-T1 M) ∧ …** を
+  1本の ST_PS 生成帰納で同時保存（r1ok/ginv と同じ骨格、oper_bad で相互供給）。
+  各成分は単独では帰納が閉じず、相互に前提を供給し合う（GRAND の正体）。
+- 手順案: (1) 各成分を M レベル述語に正規化（パラメータ依存を「M の最終列の
+  bad-branch 構成」に限定）(2) 閉包+1/+2 で各成分の正確文面監査
+  (3) oper_bad 保存をシーム分解（ginv_oper_bad の地図を雛形に）。
+- 値側（NT_lexdiff_lt / nbcK_K / E6_lpl / E6_dom_deep / qcut・iii・seam・STS_B）
+  は別軸（fire-cascade）。GRAND-世代側が閉じると行レベルの前提が
+  arithmetic 化される（続26計画の完成形）。
