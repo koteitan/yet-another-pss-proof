@@ -7590,4 +7590,28 @@ theorem bf1_rootsplit {R RX : PairSeq} {v0 w0 vX wX s : ℕ}
   rw [hwX]
   exact hBF1 q hq1 (by omega) hle' hpos
 
+/-- **BF2 at the root split**: root row-1 minimality transfers through the
+entrywise correspondence. -/
+theorem bf2_rootsplit {R RX : PairSeq} {v0 w0 vX wX s : ℕ}
+    (hlen : (RX.length + 1) + 1 = ((v0,w0) :: R).length)
+    (hcorr : ∀ q, q < RX.length + 1 →
+      ((vX,wX) :: RX).getD q (0,0)
+        = ((((v0,w0) :: R).getD q (0,0)).1 + s,
+           (((v0,w0) :: R).getD q (0,0)).2))
+    (hBF2 : ∀ q, q < ((v0,w0) :: R).length →
+      w0 ≤ (((v0,w0) :: R).getD q (0,0)).2) :
+    ∀ q, q < ((vX,wX) :: RX).length →
+      wX ≤ (((vX,wX) :: RX).getD q (0,0)).2 := by
+  have hBXlen : ((vX,wX) :: RX).length = RX.length + 1 := rfl
+  have hwX : wX = w0 := by
+    have h9 := hcorr 0 (by omega)
+    rw [List.getD_cons_zero, List.getD_cons_zero] at h9
+    have h10 := congrArg Prod.snd h9
+    simpa using h10
+  intro q hq
+  rw [hBXlen] at hq
+  rw [hcorr q (by omega), hwX]
+  show w0 ≤ (((v0,w0) :: R).getD q (0,0)).2
+  exact hBF2 q (by omega)
+
 end YAPSS
