@@ -7448,4 +7448,53 @@ theorem bf2_take {v0 w0 : ℕ} {R : PairSeq} {m : ℕ}
   rw [getD_take (by omega)]
   exact h q (by omega)
 
+/-- `nextrel0` only reads lengths and row-0 entries. -/
+theorem nextrel0_congr {S T : PairSeq} (hlen : S.length = T.length)
+    (hent : ∀ i, i < S.length → entry S 0 i = entry T 0 i) {a b : ℕ} :
+    nextrel0 S a b ↔ nextrel0 T a b := by
+  unfold nextrel0
+  rw [hlen]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨h1, h2, h3, ?_, ?_⟩
+    · rwa [hent a (by omega), hent b (by omega)] at h4
+    · intro j hj
+      have h6 := h5 j hj
+      rwa [hent b (by omega), hent j (by omega)] at h6
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨h1, h2, h3, ?_, ?_⟩
+    · rw [hent a (by omega), hent b (by omega)]
+      exact h4
+    · intro j hj
+      rw [hent b (by omega), hent j (by omega)]
+      exact h5 j hj
+
+/-- `le0` only reads lengths and row-0 entries. -/
+theorem le0_congr {S T : PairSeq} (hlen : S.length = T.length)
+    (hent : ∀ i, i < S.length → entry S 0 i = entry T 0 i) {a b : ℕ} :
+    le0 S a b ↔ le0 T a b := by
+  unfold le0
+  rw [hlen]
+  have hrtg : ∀ a b, Relation.ReflTransGen (nextrel0 S) a b →
+      Relation.ReflTransGen (nextrel0 T) a b := by
+    intro a b h
+    induction h with
+    | refl => exact .refl
+    | @tail y z _ hs ih =>
+      refine ih.tail ?_
+      exact (nextrel0_congr hlen hent).1 hs
+  have hrtg' : ∀ a b, Relation.ReflTransGen (nextrel0 T) a b →
+      Relation.ReflTransGen (nextrel0 S) a b := by
+    intro a b h
+    induction h with
+    | refl => exact .refl
+    | @tail y z _ hs ih =>
+      refine ih.tail ?_
+      exact (nextrel0_congr hlen hent).2 hs
+  constructor
+  · rintro ⟨h1, h2, h3⟩
+    exact ⟨h1, h2, hrtg a b h3⟩
+  · rintro ⟨h1, h2, h3⟩
+    exact ⟨h1, h2, hrtg' a b h3⟩
+
 end YAPSS
