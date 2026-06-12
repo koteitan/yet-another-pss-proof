@@ -7297,4 +7297,70 @@ theorem copyExp_parent_in_last {G R : PairSeq} {v0 w0 d0 n p : ℕ}
     have h9 := seam_edge1_short hn hdom hBF1 hlt hnx hpos
     omega
 
+/-- **Last-copy split correspondence**: a decomposition of the expansion
+whose split lies in the last copy reads off as the shifted block suffix. -/
+theorem copyExp_split_corr {G R : PairSeq} {v0 w0 d0 n : ℕ}
+    {GX : PairSeq} {vX wX : ℕ} {RX : PairSeq} {lpX : ℕ × ℕ}
+    (hn : 1 ≤ n)
+    (hX : copyExp G ((v0,w0) :: R) d0 n = GX ++ ((vX,wX) :: RX) ++ [lpX])
+    (hge : G.length + (n - 1) * ((v0,w0) :: R).length ≤ GX.length) :
+    ∃ q0, GX.length = G.length + ((n - 1) * ((v0,w0) :: R).length + q0) ∧
+      q0 + (RX.length + 1) + 1 = ((v0,w0) :: R).length ∧
+      (∀ q, q < RX.length + 1 →
+        ((vX,wX) :: RX).getD q (0,0)
+          = ((((v0,w0) :: R).getD (q0 + q) (0,0)).1 + (n - 1) * d0,
+             (((v0,w0) :: R).getD (q0 + q) (0,0)).2)) ∧
+      lpX = ((((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+              + (n - 1) * d0,
+             (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).2) := by
+  have hL1 : 1 ≤ ((v0,w0) :: R).length := by simp
+  have hbr2 : n * ((v0,w0) :: R).length = n * (R.length + 1) := rfl
+  have hbr3 : (n - 1) * ((v0,w0) :: R).length = (n - 1) * (R.length + 1) :=
+    rfl
+  have hXlen : (copyExp G ((v0,w0) :: R) d0 n).length
+      = G.length + n * ((v0,w0) :: R).length := copyExp_length ..
+  have hnL : n * ((v0,w0) :: R).length
+      = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+    have h9 : n - 1 + 1 = n := by omega
+    calc n * ((v0,w0) :: R).length
+        = (n - 1 + 1) * ((v0,w0) :: R).length := by rw [h9]
+    _ = (n - 1) * ((v0,w0) :: R).length + 1 * ((v0,w0) :: R).length := by
+        rw [Nat.add_mul]
+    _ = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+        rw [Nat.one_mul]
+  have hlenX : GX.length + (RX.length + 1) + 1
+      = G.length + n * ((v0,w0) :: R).length := by
+    have h := congrArg List.length hX
+    rw [hXlen] at h
+    simp at h
+    omega
+  refine ⟨GX.length - (G.length + (n - 1) * ((v0,w0) :: R).length),
+    by omega, by omega, ?_, ?_⟩
+  · intro q hq
+    have h1 : ((vX,wX) :: RX).getD q (0,0)
+        = (copyExp G ((v0,w0) :: R) d0 n).getD (GX.length + q) (0,0) := by
+      rw [hX, getD_append_left (by simp; omega),
+          getD_append_right (by omega)]
+      congr 1
+      omega
+    rw [h1, show GX.length + q = G.length
+          + ((n - 1) * ((v0,w0) :: R).length
+            + (GX.length - (G.length + (n - 1) * ((v0,w0) :: R).length)
+              + q)) by omega,
+        copyExp_getD_copy (by omega) (by omega)]
+  · have h1 : (copyExp G ((v0,w0) :: R) d0 n).getD
+        ((copyExp G ((v0,w0) :: R) d0 n).length - 1) (0,0) = lpX := by
+      have hidx : (copyExp G ((v0,w0) :: R) d0 n).length - 1
+          = (GX ++ ((vX,wX) :: RX)).length + 0 := by
+        rw [hXlen]
+        simp only [List.length_append, List.length_cons, Nat.add_zero]
+        omega
+      rw [hidx, hX, getD_append_right (Nat.le_add_right _ _),
+          Nat.add_sub_cancel_left, List.getD_cons_zero]
+    rw [show (copyExp G ((v0,w0) :: R) d0 n).length - 1
+          = G.length + ((n - 1) * ((v0,w0) :: R).length
+            + (((v0,w0) :: R).length - 1)) by rw [hXlen]; omega,
+        copyExp_getD_copy (by omega) (by omega)] at h1
+    exact h1.symm
+
 end YAPSS
