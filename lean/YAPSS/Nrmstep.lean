@@ -8017,4 +8017,45 @@ theorem block_chain_ivp {M G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ}
         refine ⟨q, hq, le0_block_root hr1 hMeq hdom q hq, ?_⟩
         omega
 
+/-- Consecutive roots of a unit-climb one-root expansion chain along
+row 0 by adjacent steps. -/
+theorem roots_chain {G : PairSeq} {v0 w0 n : ℕ} :
+    ∀ k', k' < n → ∀ k, k ≤ k' →
+      Relation.ReflTransGen (nextrel0 (copyExp G [(v0,w0)] 1 n))
+        (G.length + k) (G.length + k') := by
+  have hone : ([(v0,w0)] : PairSeq).length = 1 := rfl
+  have hXlen : (copyExp G [(v0,w0)] 1 n).length = G.length + n * 1 := by
+    rw [← hone]
+    exact copyExp_length ..
+  have hent : ∀ k, k < n →
+      entry (copyExp G [(v0,w0)] 1 n) 0 (G.length + k) = v0 + k := by
+    intro k hk
+    have h9 : entry (copyExp G [(v0,w0)] 1 n) 0
+        (G.length + (k * ([(v0,w0)] : PairSeq).length + 0))
+        = (([(v0,w0)] : PairSeq).getD 0 (0,0)).1 + k * 1 :=
+      (entry_copyExp hk (by rw [hone]; omega)).1
+    rw [show G.length + (k * ([(v0,w0)] : PairSeq).length + 0)
+          = G.length + k by rw [hone]; omega] at h9
+    rw [h9, List.getD_cons_zero]
+    show (v0, w0).1 + k * 1 = v0 + k
+    omega
+  intro k'
+  induction k' with
+  | zero =>
+    intro _ k hk
+    have : k = 0 := by omega
+    rw [this]
+  | succ k' ih =>
+    intro hk'n k hk
+    rcases Nat.eq_or_lt_of_le hk with he | hlt
+    · rw [he]
+    · refine (ih (by omega) k (by omega)).tail ?_
+      refine ⟨by rw [hXlen]; omega, by rw [hXlen]; omega, by omega,
+        ?_, ?_⟩
+      · rw [hent k' (by omega), hent (k' + 1) (by omega)]
+        omega
+      · intro l hl
+        exfalso
+        omega
+
 end YAPSS
