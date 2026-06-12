@@ -46,14 +46,17 @@ def sibrel(K, K1):
         return True
     if len(K) > len(K1) and K[:len(K1)] == K1:
         return True
-    if K and K1 and K[0][1] == maxr1(K) and K1[0][1] == maxr1(K1):
-        t = 0
-        while t < len(K) and t < len(K1) and K[t] == K1[t]:
-            t += 1
-        if t < len(K) and t < len(K1):
-            x, x1 = K[t], K1[t]
+    t = 0
+    while t < len(K) and t < len(K1) and K[t] == K1[t]:
+        t += 1
+    if t < len(K) and t < len(K1):
+        x, x1 = K[t], K1[t]
+        if K[0][1] == maxr1(K) and K1[0][1] == maxr1(K1):
             if (x1[0] == x[0] and x1[1] < x[1]) or (x1[0] < x[0] and x1[1] == x[1]):
                 return True
+        # branch 4: end-position snd-drop, no head-max
+        if t == len(K) - 1 and x1[0] == x[0] and x1[1] < x[1]:
+            return True
     return False
 
 

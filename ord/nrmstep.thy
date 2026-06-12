@@ -3661,7 +3661,9 @@ definition sibrel :: "pairseq \<Rightarrow> pairseq \<Rightarrow> bool" where
      \<or> (snd (hd K) = maxr1 K \<and> snd (hd K1) = maxr1 K1 \<and>
         (\<exists>p x x1 r r1. K = p @ x # r \<and> K1 = p @ x1 # r1 \<and>
            ((fst x1 = fst x \<and> snd x1 < snd x)
-            \<or> (fst x1 < fst x \<and> snd x1 = snd x))))"
+            \<or> (fst x1 < fst x \<and> snd x1 = snd x))))
+     \<or> (\<exists>p x x1 r1. K = p @ [x] \<and> K1 = p @ x1 # r1
+          \<and> fst x1 = fst x \<and> snd x1 < snd x)"
 
 definition sibm2 :: "pairseq \<Rightarrow> bool" where
   "sibm2 M \<longleftrightarrow> (\<forall>a b. a < length M \<longrightarrow> 0 < fst (M ! a) \<longrightarrow>
@@ -6149,53 +6151,41 @@ proof (cases "length K1 \<le> s")
 next
   case False
   hence sl: "s < length K1" by simp
-  have K1ne: "K1 \<noteq> []" using sl by auto
   have dec: "K1 = take s K1 @ drop s K1" by simp
   have dne: "drop s K1 \<noteq> []" using sl by simp
-  from R show ?thesis unfolding sibrel_def
-  proof (elim disjE)
-    assume "K1 = K"
-    hence "K = take s K1 @ drop s K1" using dec by simp
-    thus "take s K1 = K \<or> (\<exists>D. D \<noteq> [] \<and> K = take s K1 @ D)
-        \<or> (snd (hd K) = maxr1 K \<and> snd (hd (take s K1)) = maxr1 (take s K1) \<and>
-           (\<exists>p x x1 r r1. K = p @ x # r \<and> take s K1 = p @ x1 # r1 \<and>
-              ((fst x1 = fst x \<and> snd x1 < snd x)
-               \<or> (fst x1 < fst x \<and> snd x1 = snd x))))"
-      using dne by blast
+  from R consider
+      (eq) "K1 = K"
+    | (pre) "\<exists>D. D \<noteq> [] \<and> K = K1 @ D"
+    | (diff) "snd (hd K) = maxr1 K" "snd (hd K1) = maxr1 K1"
+        "\<exists>p x x1 r r1. K = p @ x # r \<and> K1 = p @ x1 # r1 \<and>
+           ((fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x))"
+    | (edrop) "\<exists>p x x1 r1. K = p @ [x] \<and> K1 = p @ x1 # r1 \<and> fst x1 = fst x \<and> snd x1 < snd x"
+    unfolding sibrel_def by blast
+  then show ?thesis
+  proof cases
+    case eq
+    have "K = take s K1 @ drop s K1" using eq dec by simp
+    thus ?thesis unfolding sibrel_def using dne by blast
   next
-    assume "\<exists>D. D \<noteq> [] \<and> K = K1 @ D"
+    case pre
     then obtain D where D: "D \<noteq> []" "K = K1 @ D" by blast
-    have "K = take s K1 @ (drop s K1 @ D)"
-      using D(2) dec by (metis append.assoc)
-    thus "take s K1 = K \<or> (\<exists>D. D \<noteq> [] \<and> K = take s K1 @ D)
-        \<or> (snd (hd K) = maxr1 K \<and> snd (hd (take s K1)) = maxr1 (take s K1) \<and>
-           (\<exists>p x x1 r r1. K = p @ x # r \<and> take s K1 = p @ x1 # r1 \<and>
-              ((fst x1 = fst x \<and> snd x1 < snd x)
-               \<or> (fst x1 < fst x \<and> snd x1 = snd x))))"
-      using dne by blast
+    have "K = take s K1 @ (drop s K1 @ D)" using D(2) dec by (metis append.assoc)
+    moreover have "drop s K1 @ D \<noteq> []" using dne by simp
+    ultimately show ?thesis unfolding sibrel_def by blast
   next
-    assume L: "snd (hd K) = maxr1 K \<and> snd (hd K1) = maxr1 K1 \<and>
-        (\<exists>p x x1 r r1. K = p @ x # r \<and> K1 = p @ x1 # r1 \<and>
-           ((fst x1 = fst x \<and> snd x1 < snd x)
-            \<or> (fst x1 < fst x \<and> snd x1 = snd x)))"
+    case diff
     then obtain p x x1 r r1 where w: "K = p @ x # r" "K1 = p @ x1 # r1"
-      and lx: "(fst x1 = fst x \<and> snd x1 < snd x)
-               \<or> (fst x1 < fst x \<and> snd x1 = snd x)" by blast
-    have hmK: "snd (hd K) = maxr1 K" and hmK1: "snd (hd K1) = maxr1 K1"
-      using L by blast+
-    show "take s K1 = K \<or> (\<exists>D. D \<noteq> [] \<and> K = take s K1 @ D)
-        \<or> (snd (hd K) = maxr1 K \<and> snd (hd (take s K1)) = maxr1 (take s K1) \<and>
-           (\<exists>p x x1 r r1. K = p @ x # r \<and> take s K1 = p @ x1 # r1 \<and>
-              ((fst x1 = fst x \<and> snd x1 < snd x)
-               \<or> (fst x1 < fst x \<and> snd x1 = snd x))))"
+      and lx: "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
+      by blast
+    note hmK = diff(1) and hmK1 = diff(2)
+    show ?thesis
     proof (cases "s \<le> length p")
       case True
       have tp: "take s K1 = take s p" unfolding w(2) using True by simp
       have tpK: "take s K1 = take s K" unfolding tp w(1) using True by simp
-      have "K = take s K1 @ drop s K" using tpK by (metis append_take_drop_id)
-      moreover have "drop s K \<noteq> []"
-        unfolding w(1) using True by simp
-      ultimately show ?thesis by blast
+      have KK: "K = take s K1 @ drop s K" using tpK by (metis append_take_drop_id)
+      have "drop s K \<noteq> []" unfolding w(1) using True by simp
+      thus ?thesis unfolding sibrel_def using KK by blast
     next
       case False
       hence sp: "length p < s" by simp
@@ -6212,7 +6202,34 @@ next
       have ne: "take s K1 \<noteq> []" unfolding t1 by simp
       have hm1: "snd (hd (take s K1)) = maxr1 (take s K1)"
         by (rule hm_take[OF ne hmK1])
-      show ?thesis using hmK hm1 w(1) t1 lx by blast
+      show ?thesis unfolding sibrel_def using hmK hm1 w(1) t1 lx by blast
+    qed
+  next
+    case edrop
+    then obtain p x x1 r1 where w: "K = p @ [x]" "K1 = p @ x1 # r1"
+      and f: "fst x1 = fst x" and sd: "snd x1 < snd x" by blast
+    show ?thesis
+    proof (cases "s \<le> length p")
+      case True
+      have tp: "take s K1 = take s p" unfolding w(2) using True by simp
+      have KK: "K = take s K1 @ (drop s p @ [x])"
+        unfolding tp w(1) by (metis append.assoc append_take_drop_id)
+      have "drop s p @ [x] \<noteq> []" by simp
+      thus ?thesis unfolding sibrel_def using KK by blast
+    next
+      case False
+      hence sp: "length p < s" by simp
+      have t1: "take s K1 = p @ x1 # take (s - length p - 1) r1"
+      proof -
+        have "take s K1 = take s p @ take (s - length p) (x1 # r1)"
+          unfolding w(2) by (simp add: take_append)
+        moreover have "take s p = p" using sp by simp
+        moreover have "take (s - length p) (x1 # r1)
+                       = x1 # take (s - length p - 1) r1"
+          using sp by (cases "s - length p") auto
+        ultimately show ?thesis by simp
+      qed
+      show ?thesis unfolding sibrel_def using w(1) t1 f sd by blast
     qed
   qed
 qed
@@ -10935,6 +10952,18 @@ text \<open>Resolution of \<open>NT_tie\<close> from \<open>SIB_shape2\<close> (
   or tie no-fire (\<open>E6_tie_nofire0/1\<close>).  (Same stratified placement as the
   other resolved lemmas.)\<close>
 
+text \<open>(end-drop value lemma) The branch-4 sibling shape: the earlier run ends
+  exactly one column past the shared prefix and the later run drops in row 1
+  there; the normalized image strictly descends, with no head-maximality
+  required (closure+3-reachable: 2403 pairs, zero violations).\<close>
+
+lemma NT_enddrop:
+  assumes "dseg u K" and "dseg u1 K1"
+    and "K = p @ [x]" and "K1 = p @ x1 # r1"
+    and "fst x1 = fst x" and "snd x1 < snd x"
+  shows "olt (nrm (translate K1)) (nrm (translate K))"
+  sorry
+
 lemma NT_tie_resolved:
   assumes A: "fbseg u (c # rest)"
     and T: "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
@@ -11035,6 +11064,23 @@ proof -
     have hdlv: "fst (hd ?K1) = fst (hd ?K)" using lvlK lvlK1 lvl by simp
     have "olt (nrm (translate ?K1)) (nrm (translate ?K))"
       by (rule NT_lexdiff_lt[OF dsK dsK1 hmK hmK1 hdlv w1 w2 lx])
+    thus ?thesis unfolding pK pK1
+      using olt_total olt_irrefl olt_trans by blast
+  next
+    assume E: "\<exists>p x x1 r1. ?K = p @ [x] \<and> ?K1 = p @ x1 # r1
+                 \<and> fst x1 = fst x \<and> snd x1 < snd x"
+    then obtain p x x1 r1 where w1: "?K = p @ [x]" and w2: "?K1 = p @ x1 # r1"
+      and f: "fst x1 = fst x" and sd: "snd x1 < snd x" by blast
+    have Kne: "?K \<noteq> []" unfolding w1 by simp
+    have K1ne: "?K1 \<noteq> []" unfolding w2 by simp
+    have dsK: "dseg (snd c) ?K" by (rule fbseg_K_dseg[OF A Kne])
+    have dsK1: "dseg (snd c1) ?K1" by (rule fbseg_K_dseg[OF fbT K1ne])
+    have pK: "proj (snd c) (nrm (translate ?K)) = nrm (translate ?K)"
+      by (rule proj_nofire[OF nfK[OF Kne]])
+    have pK1: "proj (snd c1) (nrm (translate ?K1)) = nrm (translate ?K1)"
+      by (rule proj_nofire[OF nfK1[OF K1ne]])
+    have "olt (nrm (translate ?K1)) (nrm (translate ?K))"
+      by (rule NT_enddrop[OF dsK dsK1 w1 w2 f sd])
     thus ?thesis unfolding pK pK1
       using olt_total olt_irrefl olt_trans by blast
   qed

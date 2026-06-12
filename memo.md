@@ -3274,3 +3274,26 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   GCD 0/61 / BTWRAP_T3(i1=0 e0c) 0/83,606・_pos 0/60。
   クラスは成長（GCD 7→61 等）したが違反ゼロ。偽は sibrel/sibm2 系のみと
   確定（修復中）。TOP_desc/STS_B/FBS/lexdiff の +3 は次バッチ。
+
+### (2026-06-12 続68) sibrel4 修復キャンペーン — WIP（ビルド赤・修復続行中）
+
+- 完了: sibrel 定義第4分岐 / sibrel_trunc 全面書換（consider 4分岐・緑見込）/
+  NT_enddrop 凍結（branch-4 対 NT 厳密降下・closure+3到達 2,403/0）/
+  NT_tie_resolved 第4ケース（nfK/nfK1 は head-max 不要なので proj は
+  そのまま消え、NT_enddrop で閉じる）。
+- ★スタック原因特定: **elimination 型 consider（旧3形列挙）** が
+  4分岐定義に対し blast 発散。ビルドは isbman kill 不可（classifier）→
+  TaskStop で自分の bash ごと停止する運用。
+- **残修復ワークリスト**（elimination サイト12箇所）:
+  1. sibrel_nopref (6284): 第4ケース = nth 衝突で機械的クローン
+  2. sibrel_ascent (6313): 同・lx ケースの p'位置場合分けクローン（r'=[]）
+  3. **sibrel_diverge (6373): 結論の弱化が必要** —
+     「(降下∧両hm) ∨ (r=[] ∧ fst等値 ∧ snd降下)」へ。
+     呼び出し側 7298/7598/8000/8455 に新ケース伝播
+  4. shf_sibrel (6500前後): branch-4 は shift で形保存・機械的
+  5. seam_open_copyhead (7930/8046 + diverge 呼び出し)
+  6. seam_open_blift (8309〜8497 多数 + diverge 呼び出し)
+  7. sibm2_snoc_copy (9146)
+- 修復方針: nopref/ascent/shf は機械クローン→先に処理。diverge は弱化＋
+  伝播（呼び出し側の新ケースでは構築目標も branch-4 で供給できるはず —
+  コピー転送は形を保存するため）。
