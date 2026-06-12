@@ -3388,3 +3388,26 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
     「r=[] ∧ lex降下」へ弱化。呼び出し側は r≠[]（blift Suc-km は D≠[] 等）
     か lex 反駁（d0>0: snd 逆・d0=0: fst 逆）で閉じられる見込み。
   - diverge の ed 結論も lex 形へ。closure+5 確認ジョブ実行中（/tmp/sib5_c5.out）。
+
+### ★(2026-06-13 続72) SIBREL6 確定 — 3分岐への大幅単純化（決定）
+
+- SIB5 は +5 で破れ（414対 = **中間位置 feq-sdrop・hm なし**）。形状進化の
+  収束先を直接検証: **SIBREL6 = K1=K ∨ (K=K1@D, D≠[]) ∨
+  first-diff lex降下（x1 <lex x、hm・位置制約なし）**。
+- closure+5（1,273,013 ホスト・first-diff 対 10,500 dedup）:
+  - V1（lex形）: **0違反** — sibrel6 抽象成立
+  - V2（olt(NT K1)(NT K) 厳密・**hm 前提なし**）: **0違反**
+  - V3（NT_tie 結論 proj レベル）: **0違反**
+- **隣接タイ対の特殊性が本質**（任意 dseg 対では hm なし lex は偽 —
+  弱窓 lpl 採掘の教訓）⟹ 値凍結は NT_tie 文脈で:
+  **NT_tie_fdlex**（fbseg タイ対・共有接頭辞・lex 降下 ⟹ proj 比較 ¬olt、
+  10,500/0@+5）。
+- リファクタ計画（全てが縮む方向）:
+  1. sibrel 定義 → 3分岐（オリジナルより単純）
+  2. 消費側の hm 簿記全廃（copyhead/blift の hmKC/bigle 機械が不要に！）
+  3. ascent は asc:=¬lex で False 結論復活・diverge 結論 = lex のみ
+  4. NT_tie_resolved = eq/prefix/fdlex の3ケース
+     （nfK/nofire は prefix ケースのみ・hdom/tie_nofire 依存が消える）
+  5. **NT_lexdiff_lt・NT_enddrop 削除**（fdlex に統合・sorry -2）
+  6. シーム凍結文面の sibrel6 再監査（open_m1 の69違反は SE⊆6 で解消見込み）
+  7. +6 検証ジョブをバックグラウンド長期実行（V1 形のみ）
