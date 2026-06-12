@@ -6382,4 +6382,186 @@ theorem I_ST_PS {M : PairSeq} (hM : ST_PS M)
       (hsp N k hN hk))
   exact ⟨h1, h2, hcl M hM⟩
 
+/-- **No row-0 seam edge over a long block**: a `nextrel0` edge into the
+expansion's last column from before the last copy forces the block to be a
+single root — the between-condition at the last copy's root would put the
+root at or above the block tail, contradicting its strict minimality. -/
+theorem seam_edge0_short {G R : PairSeq} {v0 w0 d0 n j0X : ℕ}
+    (hn : 1 ≤ n) (hdom : ∀ p ∈ R, v0 < p.1)
+    (hj0 : j0X < G.length + (n - 1) * ((v0,w0) :: R).length)
+    (hedge : nextrel0 (copyExp G ((v0,w0) :: R) d0 n) j0X
+      ((copyExp G ((v0,w0) :: R) d0 n).length - 1)) :
+    ((v0,w0) :: R).length = 1 := by
+  by_contra hL
+  have hL1 : 1 ≤ ((v0,w0) :: R).length := by simp
+  have hL2 : 2 ≤ ((v0,w0) :: R).length := by omega
+  have hXlen : (copyExp G ((v0,w0) :: R) d0 n).length
+      = G.length + n * ((v0,w0) :: R).length := copyExp_length ..
+  have hnL : n * ((v0,w0) :: R).length
+      = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+    have h9 : n - 1 + 1 = n := by omega
+    calc n * ((v0,w0) :: R).length
+        = (n - 1 + 1) * ((v0,w0) :: R).length := by rw [h9]
+    _ = (n - 1) * ((v0,w0) :: R).length + 1 * ((v0,w0) :: R).length := by
+        rw [Nat.add_mul]
+    _ = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+        rw [Nat.one_mul]
+  -- the last copy's root lies strictly between
+  have hroot : entry (copyExp G ((v0,w0) :: R) d0 n) 0
+      (G.length + ((n - 1) * ((v0,w0) :: R).length + 0))
+      = v0 + (n - 1) * d0 := by
+    rw [(entry_copyExp (by omega) (by omega)).1, List.getD_cons_zero]
+  have htail : entry (copyExp G ((v0,w0) :: R) d0 n) 0
+      ((copyExp G ((v0,w0) :: R) d0 n).length - 1)
+      = (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+        + (n - 1) * d0 := by
+    rw [show (copyExp G ((v0,w0) :: R) d0 n).length - 1
+          = G.length + ((n - 1) * ((v0,w0) :: R).length
+            + (((v0,w0) :: R).length - 1)) by rw [hXlen]; omega]
+    exact (entry_copyExp (by omega) (by omega)).1
+  have hbet := hedge.2.2.2.2
+    (G.length + ((n - 1) * ((v0,w0) :: R).length + 0))
+    ⟨by omega, by rw [hXlen]; omega⟩
+  rw [hroot, htail] at hbet
+  -- v0 ≥ tail value, contradicting strict root minimality
+  obtain ⟨q', hq'⟩ : ∃ q', ((v0,w0) :: R).length - 1 = q' + 1 :=
+    ⟨((v0,w0) :: R).length - 2, by omega⟩
+  rw [hq', List.getD_cons_succ] at hbet
+  have hmem : R.getD q' (0,0) ∈ R := by
+    rw [getD_eq_getElem' _ _ (by
+      have h9 : ((v0,w0) :: R).length = R.length + 1 := by simp
+      omega)]
+    exact List.getElem_mem ..
+  have hv := hdom _ hmem
+  omega
+
+/-- **No row-1 seam edge over a long block**: a `nextrel1` edge into the
+expansion's last column from before the last copy forces the block to be a
+single root — the chain passes through the last copy's root, whose
+maximality clause contradicts the strict row-1 ascent of the block (BF1). -/
+theorem seam_edge1_short {G R : PairSeq} {v0 w0 d0 n j0X : ℕ}
+    (hn : 1 ≤ n) (hdom : ∀ p ∈ R, v0 < p.1)
+    (hBF1 : ∀ q, 0 < q → q < ((v0,w0) :: R).length →
+      le0 ((v0,w0) :: R) 0 q → 0 < (((v0,w0) :: R).getD q (0,0)).2 →
+      w0 < (((v0,w0) :: R).getD q (0,0)).2)
+    (hj0 : j0X < G.length + (n - 1) * ((v0,w0) :: R).length)
+    (hedge : nextrel1 (copyExp G ((v0,w0) :: R) d0 n) j0X
+      ((copyExp G ((v0,w0) :: R) d0 n).length - 1))
+    (hpos : 0 < entry (copyExp G ((v0,w0) :: R) d0 n) 1
+      ((copyExp G ((v0,w0) :: R) d0 n).length - 1)) :
+    ((v0,w0) :: R).length = 1 := by
+  by_contra hL
+  have hL1 : 1 ≤ ((v0,w0) :: R).length := by simp
+  have hL2 : 2 ≤ ((v0,w0) :: R).length := by omega
+  have hXlen : (copyExp G ((v0,w0) :: R) d0 n).length
+      = G.length + n * ((v0,w0) :: R).length := copyExp_length ..
+  have hnL : n * ((v0,w0) :: R).length
+      = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+    have h9 : n - 1 + 1 = n := by omega
+    calc n * ((v0,w0) :: R).length
+        = (n - 1 + 1) * ((v0,w0) :: R).length := by rw [h9]
+    _ = (n - 1) * ((v0,w0) :: R).length + 1 * ((v0,w0) :: R).length := by
+        rw [Nat.add_mul]
+    _ = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+        rw [Nat.one_mul]
+  -- the last copy's root and tail entries
+  have hroot0 : entry (copyExp G ((v0,w0) :: R) d0 n) 0
+      (G.length + ((n - 1) * ((v0,w0) :: R).length + 0))
+      = v0 + (n - 1) * d0 := by
+    rw [(entry_copyExp (by omega) (by omega)).1, List.getD_cons_zero]
+  have hroot1 : entry (copyExp G ((v0,w0) :: R) d0 n) 1
+      (G.length + ((n - 1) * ((v0,w0) :: R).length + 0)) = w0 := by
+    rw [(entry_copyExp (by omega) (by omega)).2, List.getD_cons_zero]
+  have hlastidx : (copyExp G ((v0,w0) :: R) d0 n).length - 1
+      = G.length + ((n - 1) * ((v0,w0) :: R).length
+        + (((v0,w0) :: R).length - 1)) := by
+    rw [hXlen]
+    omega
+  have htail1 : entry (copyExp G ((v0,w0) :: R) d0 n) 1
+      ((copyExp G ((v0,w0) :: R) d0 n).length - 1)
+      = (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).2 := by
+    rw [hlastidx]
+    exact (entry_copyExp (by omega) (by omega)).2
+  -- the chain into the last column passes through the last copy's root
+  have hle0X : le0 (copyExp G ((v0,w0) :: R) d0 n) j0X
+      ((copyExp G ((v0,w0) :: R) d0 n).length - 1) := hedge.2.2.2.2.1
+  have hpiv : ∀ y, G.length + ((n - 1) * ((v0,w0) :: R).length + 0) < y →
+      y ≤ (copyExp G ((v0,w0) :: R) d0 n).length - 1 →
+      entry (copyExp G ((v0,w0) :: R) d0 n) 0
+        (G.length + ((n - 1) * ((v0,w0) :: R).length + 0))
+        < entry (copyExp G ((v0,w0) :: R) d0 n) 0 y := by
+    intro y hy1 hy2
+    obtain ⟨qy, hqy⟩ : ∃ qy,
+        y = G.length + ((n - 1) * ((v0,w0) :: R).length + qy) :=
+      ⟨y - (G.length + (n - 1) * ((v0,w0) :: R).length), by omega⟩
+    have hqy1 : 1 ≤ qy := by omega
+    have hqyL : qy < ((v0,w0) :: R).length := by
+      rw [hXlen] at hy2
+      omega
+    have hey : entry (copyExp G ((v0,w0) :: R) d0 n) 0 y
+        = (((v0,w0) :: R).getD qy (0,0)).1 + (n - 1) * d0 := by
+      rw [hqy]
+      exact (entry_copyExp (by omega) (by omega)).1
+    rw [hroot0, hey]
+    obtain ⟨qy', rfl⟩ : ∃ qy', qy = qy' + 1 := ⟨qy - 1, by omega⟩
+    rw [List.getD_cons_succ]
+    have hmem : R.getD qy' (0,0) ∈ R := by
+      rw [getD_eq_getElem' _ _ (by
+        have h9 : ((v0,w0) :: R).length = R.length + 1 := by simp
+        omega)]
+      exact List.getElem_mem ..
+    have hv := hdom _ hmem
+    omega
+  have hle0ρ := le0_through_pivot hle0X (by omega)
+    (by rw [hXlen]; omega) hpiv
+  -- maximality at the root
+  have hmax := hedge.2.2.2.2.2
+    (G.length + ((n - 1) * ((v0,w0) :: R).length + 0))
+    ⟨by omega, hle0ρ⟩
+  rw [htail1] at hmax
+  unfold entry at hmax
+  rw [if_neg one_ne_zero] at hmax
+  have hmax' : (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).2
+      ≤ w0 := by
+    have h9 := hroot1
+    unfold entry at h9
+    rw [if_neg one_ne_zero] at h9
+    rw [h9] at hmax
+    exact hmax
+  -- the last copy is exactly the shifted block
+  have hwin : (copyExp G ((v0,w0) :: R) d0 n).drop
+      (G.length + (n - 1) * ((v0,w0) :: R).length)
+      = ((v0,w0) :: R).map fun p => (p.1 + (n - 1) * d0, p.2) := by
+    have hsplit := copyExp_split G ((v0,w0) :: R) d0
+      (show n - 1 ≤ n by omega)
+    rw [show n - (n - 1) = 1 by omega] at hsplit
+    rw [show (1:ℕ) = 0 + 1 from rfl, List.range_succ_eq_map,
+        List.range_zero, List.map_nil, List.flatMap_cons,
+        List.flatMap_nil, List.append_nil] at hsplit
+    simp only [Nat.add_zero] at hsplit
+    rw [hsplit, show G.length + (n - 1) * ((v0,w0) :: R).length
+          = (copyExp G ((v0,w0) :: R) d0 (n - 1)).length from
+        (copyExp_length ..).symm,
+      List.drop_left]
+  -- transfer the chain to the unshifted block
+  have hd1 : le0 ((copyExp G ((v0,w0) :: R) d0 n).drop
+      (G.length + (n - 1) * ((v0,w0) :: R).length))
+      ((G.length + ((n - 1) * ((v0,w0) :: R).length + 0))
+        - (G.length + (n - 1) * ((v0,w0) :: R).length))
+      (((copyExp G ((v0,w0) :: R) d0 n).length - 1)
+        - (G.length + (n - 1) * ((v0,w0) :: R).length)) :=
+    (le0_drop_iff (by omega) (by rw [hXlen]; omega)
+      (by rw [hXlen]; omega)).2 hle0ρ
+  rw [hwin, show (G.length + ((n - 1) * ((v0,w0) :: R).length + 0))
+        - (G.length + (n - 1) * ((v0,w0) :: R).length) = 0 by omega,
+      show ((copyExp G ((v0,w0) :: R) d0 n).length - 1)
+        - (G.length + (n - 1) * ((v0,w0) :: R).length)
+        = ((v0,w0) :: R).length - 1 by rw [hXlen]; omega] at hd1
+  have hd2 : le0 ((v0,w0) :: R) 0 (((v0,w0) :: R).length - 1) :=
+    (le0_shift_iff).1 hd1
+  -- BF1 against the maximality
+  have hbf := hBF1 (((v0,w0) :: R).length - 1) (by omega) (by omega) hd2
+    (by rw [← htail1]; exact hpos)
+  omega
+
 end YAPSS
