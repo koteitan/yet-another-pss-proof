@@ -3426,3 +3426,7 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
      div ケース分析も縮小（E2var/F2L2 残差呼び出しの場合分けだけ残る）
   5. audit_seam_c3 を sibrel6 で再実行 → open_m1/P 残差の文面浄化
   6. +6 V1 確認（/tmp/sib6_c6.out）
+
+- (続72補2) **closure+6 確証: SIBREL6 0/1,156,797 first-diff 対（4,665,170
+  ホスト）** — lex first-diff 形は6リング目も完全成立。構造的確信度が
+  これまでで最高（lex 降下は自然な整礎関係・値核も hm なしで安定）。
