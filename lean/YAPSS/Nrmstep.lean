@@ -5257,7 +5257,7 @@ theorem hspan_discharge {G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ} {d0 n : 
     (hd0 : d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
       nextrel1 (G ++ ((v0,w0) :: R) ++ [lp]) G.length
         ((G ++ ((v0,w0) :: R) ++ [lp]).length - 1)))
-    (hBF1 : ∀ q, q < ((v0,w0) :: R).length →
+    (hBF1 : ∀ q, 0 < q → q < ((v0,w0) :: R).length →
       le0 ((v0,w0) :: R) 0 q → 0 < (((v0,w0) :: R).getD q (0,0)).2 →
       w0 < (((v0,w0) :: R).getD q (0,0)).2)
     (hBF2 : 0 < d0 → ∀ q, q < ((v0,w0) :: R).length →
@@ -5434,7 +5434,7 @@ theorem hspan_discharge {G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ} {d0 n : 
           show u.length + (S.length - 1) = G.length + (kt * B.length + qt) by
             clear hnc; omega]
       exact (entry_copyExp hktn hqtL).2
-    have hbf := hBF1 qt hqtL hd3 (by rw [← he1t]; exact he1pos)
+    have hbf := hBF1 qt hqtpos hqtL hd3 (by rw [← he1t]; exact he1pos)
     rw [← he1t] at hbf
     clear hnc
     omega
@@ -6098,7 +6098,7 @@ def spanOK (M : PairSeq) : Prop :=
     nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) →
     (d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
       nextrel1 M G.length (M.length - 1))) →
-    (∀ q, q < ((v0,w0) :: R).length →
+    (∀ q, 0 < q → q < ((v0,w0) :: R).length →
       le0 ((v0,w0) :: R) 0 q → 0 < (((v0,w0) :: R).getD q (0,0)).2 →
       w0 < (((v0,w0) :: R).getD q (0,0)).2)
     ∧ (0 < d0 → ∀ q, q < ((v0,w0) :: R).length →
