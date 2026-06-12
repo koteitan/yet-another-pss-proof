@@ -6773,11 +6773,11 @@ lemma seam_open_m1:
   sorry
 
 text \<open>(seam, copy-head residuals) Tight remainders of the cross-copy
-  analysis at the copy head: the \<open>m = 1\<close> comparison with a long copy
-  (\<open>Suc j0 < j1\<close>; mining: all 20 realized instances have \<open>j1 = Suc j0\<close>),
-  the \<open>m = 1\<close> prefix-family shape (the continuation strictly extends
-  \<open>[M ! j1]\<close>; mining: all realized instances are the equality family),
-  and the empirically empty deep position \<open>b > j0\<close>.\<close>
+  analysis at the copy head, re-audited under \<open>sibrel6\<close> at closure+3:
+  the variant family \<open>E2var\<close> is empty, the prefix family \<open>P\<close> has 261
+  realized instances with zero conclusion violations, the open run below
+  the head (\<open>seam_open_m1\<close>) has 5447 instances with zero violations, and
+  the deep position \<open>b > j0\<close> has 45 instances with zero violations.\<close>
 
 lemma seam_copyhead_m1_E2var:
   assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
