@@ -4611,6 +4611,9 @@ def withinTrigOK (M : PairSeq) (n : ℕ) : Prop :=
   ∀ G v0 w0 (R : PairSeq) (lp : ℕ × ℕ) d0,
     M = G ++ ((v0,w0) :: R) ++ [lp] →
     M⟦n⟧ = copyExp G ((v0,w0) :: R) d0 n →
+    0 < d0 → w0 < lp.2 → lp.1 = v0 + d0 →
+    nextrel1 M G.length (M.length - 1) →
+    nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) →
     ∀ j0X, G.length + (n - 1) * ((v0,w0) :: R).length ≤ j0X →
       j0X + 1 < (M⟦n⟧).length →
       nextR (M⟦n⟧) (idx1 (M⟦n⟧) ((M⟦n⟧).length - 1)) j0X ((M⟦n⟧).length - 1) →
@@ -4678,7 +4681,7 @@ theorem tailok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
           rw [List.drop_append, List.drop_eq_nil_of_le (by omega),
               List.nil_append, show G.length + 1 - G.length = 1 by omega,
               List.drop_succ_cons, List.drop_zero]
-        rcases hd0 with ⟨-, hi0⟩ | ⟨hd0p, hwlt, hlpe, -⟩
+        rcases hd0 with ⟨-, hi0⟩ | ⟨hd0p, hwlt, hlpe, hnx1M⟩
         · have happ := htl G.length (by omega) hnxtM (by
             intro h1
             rw [hi0] at h1
@@ -4694,8 +4697,8 @@ theorem tailok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
                   = G.length + ((v0,w0) :: R).length by omega, hMeq,
                 hostM_getD_lp]
             omega
-          have hMtrig := htr G v0 w0 R lp d0 hMeq hXc j0X hge hj0 hnx
-            htrigX hi1
+          have hMtrig := htr G v0 w0 R lp d0 hMeq hXc hd0p hwlt hlpe
+            hnx1M hnxtM j0X hge hj0 hnx htrigX hi1
           have happ := htl G.length (by omega) hnxtM (by
             intro _
             exact hMtrig)
@@ -6150,5 +6153,233 @@ theorem classOK_ST_PS {M : PairSeq} (hM : ST_PS M)
   induction hM with
   | diag v => exact classOK_diagSeq v
   | @oper N k hN hk ih => exact classOK_oper hk ih (hsp N k hN hk)
+
+/-- **Block interiors below the row-0 parent of the last column stay below
+its level** — the anchored single-climb instance of the host segment
+`B ++ [lp]` rooted at the row-1 parent. -/
+theorem block_interior_low {G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ}
+    (hM : classOK (G ++ ((v0,w0) :: R) ++ [lp]))
+    (hwlp : w0 < lp.2)
+    (hnxM : nextrel1 (G ++ ((v0,w0) :: R) ++ [lp]) G.length
+      ((G ++ ((v0,w0) :: R) ++ [lp]).length - 1))
+    {qr : ℕ} (hqr0 : 0 < qr) (hqrL : qr < ((v0,w0) :: R).length)
+    (hlev : (((v0,w0) :: R).getD qr (0,0)).1 + 1 = lp.1)
+    (hafter : ∀ l, qr < l → l < ((v0,w0) :: R).length →
+      lp.1 ≤ (((v0,w0) :: R).getD l (0,0)).1) :
+    ∀ rr, 0 < rr → rr < qr →
+      (((v0,w0) :: R).getD rr (0,0)).1 + 1 < lp.1 := by
+  set B : PairSeq := (v0,w0) :: R with hBdef
+  have hMlen : (G ++ B ++ [lp]).length = G.length + B.length + 1 :=
+    hostM_length ..
+  have hdecT2 : G ++ B ++ [lp] = G ++ (B ++ [lp]) ++ ([] : PairSeq) := by
+    simp [List.append_assoc]
+  have hsclT2 : sclimb (B ++ [lp]) := hM G (B ++ [lp]) [] hdecT2
+  have hT2len : (B ++ [lp]).length = B.length + 1 := by simp
+  have hgB : ∀ j, j < B.length →
+      (B ++ [lp]).getD j (0,0) = B.getD j (0,0) :=
+    fun j hj => getD_append_left hj
+  have hgLp : (B ++ [lp]).getD B.length (0,0) = lp := by
+    rw [getD_append_right le_rfl, Nat.sub_self]
+    rfl
+  have heB1 : entry (B ++ [lp]) 1 B.length = lp.2 := by
+    unfold entry
+    rw [if_neg one_ne_zero, hgLp]
+  have hdropM : (G ++ B ++ [lp]).drop G.length = B ++ [lp] := by
+    rw [List.append_assoc, List.drop_left]
+  have hnxT2 : nextrel1 (B ++ [lp]) 0 B.length := by
+    have h10 : (G ++ B ++ [lp]).length - 1 = G.length + B.length := by
+      rw [hMlen, Nat.add_sub_cancel]
+    have h11 := hnxM
+    rw [h10] at h11
+    have h9 := (nextrel1_drop_iff (M := G ++ B ++ [lp])
+      (k := G.length) (a := G.length) (b := G.length + B.length)
+      le_rfl (by omega) (by rw [hMlen]; omega)).2 h11
+    rw [hdropM, Nat.sub_self, Nat.add_sub_cancel_left] at h9
+    exact h9
+  have hi1T2 : idx1 (B ++ [lp]) ((B ++ [lp]).length - 1) = 1 := by
+    rw [hT2len, Nat.add_sub_cancel]
+    unfold idx1
+    rw [if_pos (by rw [heB1]; omega)]
+  have hnxRT2 : nextR (B ++ [lp])
+      (idx1 (B ++ [lp]) ((B ++ [lp]).length - 1)) 0
+      ((B ++ [lp]).length - 1) := by
+    rw [hi1T2]
+    unfold nextR
+    rw [if_neg one_ne_zero, hT2len, Nat.add_sub_cancel]
+    exact hnxT2
+  intro rr h1 h2
+  have hconc2 := hsclT2 qr rr (by rw [hT2len]; omega) hnxRT2 hi1T2 hqr0
+    (by rw [hT2len]; omega)
+    (by
+      rw [hT2len, Nat.add_sub_cancel, hgLp, hgB qr (by omega)]
+      exact hlev)
+    (by
+      intro l hl1 hl2
+      rw [hT2len] at hl2
+      rw [hT2len, Nat.add_sub_cancel, hgLp, hgB l (by omega)]
+      exact hafter l hl1 (by omega))
+    h1 h2
+  rw [hT2len, Nat.add_sub_cancel, hgLp, hgB rr (by omega)] at hconc2
+  exact hconc2
+
+/-- **The within-trigger obligation discharges** from `r1ok`, `classOK` and
+the spanning block facts: the row-0-parent dichotomy at the last column
+either yields the host trigger directly at the last block column, or forces
+the −1 configuration, where the parent-edge maximality makes the expansion
+row-1-triggered and the block single-climb refutes its witness. -/
+theorem withinTrigOK_of {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
+    (hr1 : r1ok M) (hcl : classOK M) (hsp : spanOK M) :
+    withinTrigOK M n := by
+  intro G v0 w0 R lp d0 hMeq hX hd0p hwlp hlp1 hnx1M hnxtM j0X hge hj0 hnx
+    htrigX hi1
+  have hL1 : 1 ≤ ((v0,w0) :: R).length := by simp
+  have hMlen : M.length = G.length + ((v0,w0) :: R).length + 1 := by
+    rw [hMeq]
+    exact hostM_length ..
+  have hXlen : (M⟦n⟧).length = G.length + n * ((v0,w0) :: R).length := by
+    rw [hX]
+    exact copyExp_length ..
+  have hnL : n * ((v0,w0) :: R).length
+      = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+    have h9 : n - 1 + 1 = n := by omega
+    calc n * ((v0,w0) :: R).length
+        = (n - 1 + 1) * ((v0,w0) :: R).length := by rw [h9]
+    _ = (n - 1) * ((v0,w0) :: R).length + 1 * ((v0,w0) :: R).length := by
+        rw [Nat.add_mul]
+    _ = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+        rw [Nat.one_mul]
+  obtain ⟨-, hBF2, -, -⟩ := hsp G v0 w0 R lp d0 hMeq hnxtM
+    (Or.inr ⟨hd0p, hwlp, hlp1, hnx1M⟩)
+  have hBF2' := hBF2 hd0p
+  have hgblk : ∀ q, q < ((v0,w0) :: R).length →
+      M.getD (G.length + q) (0,0) = ((v0,w0) :: R).getD q (0,0) := by
+    intro q hq
+    rw [hMeq]
+    exact hostM_getD_blk hq
+  have hglp : M.getD (M.length - 1) (0,0) = lp := by
+    rw [show M.length - 1 = G.length + ((v0,w0) :: R).length by omega, hMeq]
+    exact hostM_getD_lp
+  have hlp1pos : 0 < (M.getD (M.length - 1) (0,0)).1 := by
+    rw [hglp]
+    omega
+  obtain ⟨k, hklt, hklev, hkval, hkr1⟩ := hr1 (M.length - 1) (by omega) hlp1pos
+  by_cases hcase : lp.1
+      ≤ (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+  · -- direct host trigger at the last block column
+    have hL2 : 2 ≤ ((v0,w0) :: R).length := by
+      by_contra hL1'
+      push Not at hL1'
+      have hLe : ((v0,w0) :: R).length = 1 := by omega
+      rw [hLe, show (1:ℕ) - 1 = 0 from rfl, List.getD_cons_zero] at hcase
+      have h9 : lp.1 ≤ v0 := hcase
+      omega
+    refine ⟨G.length + (((v0,w0) :: R).length - 1), by omega, by omega,
+      ?_, ?_⟩
+    · rw [hglp, hgblk _ (by omega)]
+      exact hcase
+    · have h9 := hBF2' (((v0,w0) :: R).length - 1) (by omega)
+      have hgroot : M.getD G.length (0,0) = (v0, w0) := by
+        have h10 := hgblk 0 (by omega)
+        rw [Nat.add_zero] at h10
+        rw [h10, List.getD_cons_zero]
+      rw [hgroot, hgblk _ (by omega)]
+      exact h9
+  · -- the −1 configuration: refute the instance
+    push Not at hcase
+    have hkeq : k = G.length + (((v0,w0) :: R).length - 1) := by
+      by_contra hne
+      have h9 : k < G.length + (((v0,w0) :: R).length - 1) ∨
+          G.length + (((v0,w0) :: R).length - 1) < k := by omega
+      rcases h9 with h9 | h9
+      · have h10 := hkval (G.length + (((v0,w0) :: R).length - 1)) h9
+          (by omega)
+        rw [hglp, hgblk _ (by omega)] at h10
+        omega
+      · omega
+    have htail : (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+        + 1 = lp.1 := by
+      have h9 := hklev
+      rw [hkeq, hgblk _ (by omega), hglp] at h9
+      exact h9
+    have hadj : nextrel0 M (G.length + (((v0,w0) :: R).length - 1))
+        (M.length - 1) := by
+      refine ⟨by omega, by omega, by omega, ?_, ?_⟩
+      · unfold entry
+        rw [if_pos rfl, if_pos rfl, hgblk _ (by omega), hglp]
+        omega
+      · intro l hl
+        exfalso
+        omega
+    have hle0adj : le0 M (G.length + (((v0,w0) :: R).length - 1))
+        (M.length - 1) :=
+      ⟨by omega, by omega, Relation.ReflTransGen.single hadj⟩
+    have hmax := hnx1M.2.2.2.2.2 (G.length + (((v0,w0) :: R).length - 1))
+      ⟨by omega, hle0adj⟩
+    have htail2 : 0
+        < (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).2 := by
+      unfold entry at hmax
+      rw [if_neg one_ne_zero, if_neg one_ne_zero, hgblk _ (by omega),
+          hglp] at hmax
+      omega
+    have hXlast : (M⟦n⟧).getD ((M⟦n⟧).length - 1) (0,0)
+        = ((((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+            + (n - 1) * d0,
+           (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).2) := by
+      rw [hX]
+      rw [show (copyExp G ((v0,w0) :: R) d0 n).length - 1
+            = G.length + ((n - 1) * ((v0,w0) :: R).length
+              + (((v0,w0) :: R).length - 1)) by
+          rw [copyExp_length]
+          omega]
+      exact copyExp_getD_copy (by omega) (by omega)
+    have hiX : idx1 (M⟦n⟧) ((M⟦n⟧).length - 1) = 1 := by
+      unfold idx1
+      rw [if_pos (by
+        unfold entry
+        rw [if_neg one_ne_zero, hXlast]
+        exact htail2)]
+    obtain ⟨bX, hbX1, hbX2, hbXe0, hbXe1⟩ := htrigX hiX
+    obtain ⟨rb, hrb⟩ : ∃ rb,
+        bX = G.length + ((n - 1) * ((v0,w0) :: R).length + rb) :=
+      ⟨bX - (G.length + (n - 1) * ((v0,w0) :: R).length), by omega⟩
+    have hrb1 : 0 < rb := by omega
+    have hrbL : rb < ((v0,w0) :: R).length - 1 := by
+      rw [hXlen] at hbX2
+      omega
+    have hbXval : (M⟦n⟧).getD bX (0,0)
+        = ((((v0,w0) :: R).getD rb (0,0)).1 + (n - 1) * d0,
+           (((v0,w0) :: R).getD rb (0,0)).2) := by
+      rw [hX, hrb]
+      exact copyExp_getD_copy (by omega) (by omega)
+    have hge0 : (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+        ≤ (((v0,w0) :: R).getD rb (0,0)).1 := by
+      rw [hXlast, hbXval] at hbXe0
+      have h9 : (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+            + (n - 1) * d0
+          ≤ (((v0,w0) :: R).getD rb (0,0)).1 + (n - 1) * d0 := hbXe0
+      omega
+    exfalso
+    have hlow := block_interior_low (hMeq ▸ hcl) hwlp
+      (by rw [← hMeq]; exact hnx1M)
+      (show 0 < ((v0,w0) :: R).length - 1 by omega) (by omega) htail
+      (by
+        intro l hl1 hl2
+        exfalso
+        omega)
+      rb hrb1 hrbL
+    omega
+
+
+/-- **The invariant package on standard hosts**, now modulo only the seam
+and spanning obligations: the within-trigger obligation is discharged. -/
+theorem I_ST_PS {M : PairSeq} (hM : ST_PS M)
+    (hseam : ∀ N k, ST_PS N → 1 ≤ k → seamOK N k)
+    (hsp : ∀ N k, ST_PS N → 1 ≤ k → spanOK N) :
+    hmok M ∧ tailok M ∧ classOK M := by
+  have hcl : ∀ N, ST_PS N → classOK N := fun N hN => classOK_ST_PS hN hsp
+  obtain ⟨h1, h2⟩ := hmok_tailok_ST_PS hM hseam
+    (fun N k hN hk => withinTrigOK_of hk (r1ok_ST_PS hN) (hcl N hN)
+      (hsp N k hN hk))
+  exact ⟨h1, h2, hcl M hM⟩
 
 end YAPSS
