@@ -7747,4 +7747,101 @@ theorem rootsplit_low_ancestor {G R : PairSeq} {v0 w0 d0 n : ℕ}
       rw [if_neg one_ne_zero, copyExp_getD_pre hapre]
     omega
 
+/-- **The prefix bound at the root split** (multi-copy, multi-column):
+intermediate entries before the last-copy root stay below its level plus
+the shift — prefix entries via the host bound, roots by arithmetic,
+interiors via the fourth fact or the profile. -/
+theorem rootsplit_hbound {G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
+    (hn2 : 2 ≤ n) (hd0p : 0 < d0) (hlp1 : lp.1 = v0 + d0) (hR : R ≠ [])
+    (hdom : ∀ p ∈ R, v0 < p.1)
+    (hBF45 : ∀ q, 0 < q → q < ((v0,w0) :: R).length →
+      (((v0,w0) :: R).getD q (0,0)).1 + 1 < v0 + 2 * d0)
+    (hprof : ∀ a q q', a < q → q < q' → q' < ((v0,w0) :: R).length →
+      (((v0,w0) :: R).getD q (0,0)).1 + 1 + (((v0,w0) :: R).getD a (0,0)).1
+        < 2 * (((v0,w0) :: R).getD q' (0,0)).1)
+    (hpre : ∀ h, h < G.length → (G.getD h (0,0)).1 + 1 < lp.1) :
+    ∀ h, h < G.length + (n - 1) * ((v0,w0) :: R).length →
+      entry (copyExp G ((v0,w0) :: R) d0 n) 0 h + 1
+        < (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+          + (n - 1) * d0 := by
+  intro h hh
+  have hL2 : 2 ≤ ((v0,w0) :: R).length := by
+    rcases R with _ | ⟨r, R'⟩
+    · exact absurd rfl hR
+    · simp
+  have htail_gt : v0 < (((v0,w0) :: R).getD
+      (((v0,w0) :: R).length - 1) (0,0)).1 := by
+    obtain ⟨q', hq'⟩ : ∃ q', ((v0,w0) :: R).length - 1 = q' + 1 :=
+      ⟨((v0,w0) :: R).length - 2, by omega⟩
+    rw [hq', List.getD_cons_succ]
+    have hmem : R.getD q' (0,0) ∈ R := by
+      rw [getD_eq_getElem' _ _ (by
+        have h8 : ((v0,w0) :: R).length = R.length + 1 := rfl
+        omega)]
+      exact List.getElem_mem ..
+    exact hdom _ hmem
+  by_cases hhg : h < G.length
+  · -- prefix entries
+    have h9 : entry (copyExp G ((v0,w0) :: R) d0 n) 0 h
+        = (G.getD h (0,0)).1 := by
+      unfold entry
+      rw [if_pos rfl, copyExp_getD_pre hhg]
+    have h10 := hpre h hhg
+    rw [h9, hlp1] at *
+    have h11 : 1 * d0 ≤ (n - 1) * d0 :=
+      Nat.mul_le_mul_right d0 (by omega)
+    rw [Nat.one_mul] at h11
+    omega
+  · push Not at hhg
+    obtain ⟨kh, qh, hqhL, hdmh⟩ : ∃ kh qh, qh < ((v0,w0) :: R).length ∧
+        h - G.length = ((v0,w0) :: R).length * kh + qh :=
+      ⟨_, _, Nat.mod_lt _ (by omega),
+        (Nat.div_add_mod (h - G.length) ((v0,w0) :: R).length).symm⟩
+    have hcmh : ((v0,w0) :: R).length * kh = kh * ((v0,w0) :: R).length :=
+      Nat.mul_comm ..
+    have hkhn : kh < n - 1 := by
+      have h1 : ((v0,w0) :: R).length * kh
+          < ((v0,w0) :: R).length * (n - 1) := by
+        have hcomm : (n - 1) * ((v0,w0) :: R).length
+            = ((v0,w0) :: R).length * (n - 1) := Nat.mul_comm ..
+        omega
+      exact Nat.lt_of_mul_lt_mul_left h1
+    have h9 : entry (copyExp G ((v0,w0) :: R) d0 n) 0 h
+        = (((v0,w0) :: R).getD qh (0,0)).1 + kh * d0 := by
+      rw [show h = G.length + (kh * ((v0,w0) :: R).length + qh) by omega]
+      exact (entry_copyExp (by omega) hqhL).1
+    rw [h9]
+    -- kh * d0 + d0 ≤ (n-1) * d0
+    have hkd : kh * d0 + d0 ≤ (n - 1) * d0 := by
+      have h11 : (kh + 1) * d0 ≤ (n - 1) * d0 :=
+        Nat.mul_le_mul_right d0 (by omega)
+      rw [Nat.add_mul, Nat.one_mul] at h11
+      exact h11
+    rcases Nat.eq_zero_or_pos qh with hqh0 | hqhpos
+    · -- root entries
+      rw [hqh0, List.getD_cons_zero]
+      show v0 + kh * d0 + 1
+          < (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+            + (n - 1) * d0
+      omega
+    · -- interior entries
+      by_cases hcfg : v0 + d0
+          ≤ (((v0,w0) :: R).getD (((v0,w0) :: R).length - 1) (0,0)).1
+      · have h10 := hBF45 qh hqhpos hqhL
+        omega
+      · push Not at hcfg
+        rcases Nat.eq_or_lt_of_le (by omega : qh ≤ ((v0,w0) :: R).length - 1)
+          with he | hlt
+        · -- qh is the tail itself: forced d0 ≥ 2 contradiction route
+          rw [he]
+          have hd02 : 2 ≤ d0 := by omega
+          omega
+        · have h10 := hprof 0 qh (((v0,w0) :: R).length - 1) (by omega)
+            (by omega) (by omega)
+          rw [List.getD_cons_zero] at h10
+          have h10' : (((v0,w0) :: R).getD qh (0,0)).1 + 1 + v0
+              < 2 * (((v0,w0) :: R).getD
+                (((v0,w0) :: R).length - 1) (0,0)).1 := h10
+          omega
+
 end YAPSS
