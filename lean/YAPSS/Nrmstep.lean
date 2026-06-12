@@ -6117,6 +6117,10 @@ def spanOK (M : PairSeq) : Prop :=
       ∀ h, a < h → h < G.length → (G.getD h (0,0)).1 + 1 < lp.1)
     ∧ (0 < w0 → 0 < d0 → ∀ q, 0 < q → q < ((v0,w0) :: R).length →
       (((v0,w0) :: R).getD q (0,0)).1 + 1 < v0 + 2 * d0)
+    ∧ (0 < w0 → 0 < d0 → ∀ a q q', a < q → q < q' →
+      q' < ((v0,w0) :: R).length →
+      (((v0,w0) :: R).getD q (0,0)).1 + 1 + (((v0,w0) :: R).getD a (0,0)).1
+        < 2 * (((v0,w0) :: R).getD q' (0,0)).1)
 
 /-- **`classOK` is preserved by the expansion step**, given the spanning
 block facts of the host. -/
@@ -6139,7 +6143,7 @@ theorem classOK_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hM : classOK M)
     show classOK (copyExp G ((v0,w0) :: R) d0 n)
     have hd0' : d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
         nextrel1 M G.length (M.length - 1)) := hd0.imp (·.1) id
-    obtain ⟨hBF1, hBF2, hMF3, hBF45⟩ := hsp G v0 w0 R lp d0 hMeq hnxt hd0'
+    obtain ⟨hBF1, hBF2, hMF3, hBF45, -⟩ := hsp G v0 w0 R lp d0 hMeq hnxt hd0'
     have hMc : classOK (G ++ ((v0,w0) :: R) ++ [lp]) := hMeq ▸ hM
     have hd0M : d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
         nextrel1 (G ++ ((v0,w0) :: R) ++ [lp]) G.length
@@ -6257,7 +6261,7 @@ theorem withinTrigOK_of {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
         rw [Nat.add_mul]
     _ = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
         rw [Nat.one_mul]
-  obtain ⟨-, hBF2, -, -⟩ := hsp G v0 w0 R lp d0 hMeq hnxtM
+  obtain ⟨-, hBF2, -, -, -⟩ := hsp G v0 w0 R lp d0 hMeq hnxtM
     (Or.inr ⟨hd0p, hwlp, hlp1, hnx1M⟩)
   have hBF2' := hBF2 hd0p
   have hgblk : ∀ q, q < ((v0,w0) :: R).length →
@@ -6785,7 +6789,7 @@ theorem spanOK_diagSeq (v : ℕ) : spanOK (diagSeq 0 v) := by
       rw [h2, List.getD_cons_zero]
     rw [hgd v (by omega)] at h1
     exact h1.symm
-  refine ⟨?_, ?_, ?_, ?_⟩
+  refine ⟨?_, ?_, ?_, ?_, ?_⟩
   · intro q hq1 hq2 _ _
     simp at hq2
     omega
@@ -6798,6 +6802,9 @@ theorem spanOK_diagSeq (v : ℕ) : spanOK (diagSeq 0 v) := by
     omega
   · intro _ _ q hq1 hq2
     simp at hq2
+    omega
+  · intro _ _ a q q' ha hq hq'
+    simp at hq'
     omega
 
 /-- The guard under which `oper` truncates: zero last column or no unique
@@ -6965,7 +6972,12 @@ theorem spanOK_roots_rootsplit {G : PairSeq} {v0 w0 d0 n : ℕ}
       (GX.getD a (0,0)).2 < wX →
       ∀ h, a < h → h < GX.length → (GX.getD h (0,0)).1 + 1 < lpX.1)
     ∧ (0 < wX → 0 < dX → ∀ q, 0 < q → q < ((vX,wX) :: RX).length →
-      (((vX,wX) :: RX).getD q (0,0)).1 + 1 < vX + 2 * dX) := by
+      (((vX,wX) :: RX).getD q (0,0)).1 + 1 < vX + 2 * dX)
+    ∧ (0 < wX → 0 < dX → ∀ a q q', a < q → q < q' →
+      q' < ((vX,wX) :: RX).length →
+      (((vX,wX) :: RX).getD q (0,0)).1 + 1
+          + (((vX,wX) :: RX).getD a (0,0)).1
+        < 2 * (((vX,wX) :: RX).getD q' (0,0)).1) := by
   -- lengths
   have hone : ([(v0,w0)] : PairSeq).length = 1 := rfl
   have hXlen : (copyExp G [(v0,w0)] d0 n).length = G.length + n * 1 := by
@@ -7012,7 +7024,7 @@ theorem spanOK_roots_rootsplit {G : PairSeq} {v0 w0 d0 n : ℕ}
         unfold entry at hpos
         rw [if_neg one_ne_zero, hlast] at hpos
         simpa using hpos
-    refine ⟨?_, ?_, ?_, ?_⟩
+    refine ⟨?_, ?_, ?_, ?_, ?_⟩
     · intro q hq1 hq2 hle hpos
       -- every block entry is a root with row-1 = w0 = 0
       have hq3 : GX.length + q < G.length + n := by omega
@@ -7031,6 +7043,9 @@ theorem spanOK_roots_rootsplit {G : PairSeq} {v0 w0 d0 n : ℕ}
       exfalso
       omega
     · intro hdp
+      exfalso
+      omega
+    · intro _ hdp
       exfalso
       omega
     · intro _ hdp
