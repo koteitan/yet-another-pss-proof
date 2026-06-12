@@ -3358,3 +3358,20 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   closure+3 再採掘（open_m1 は sibrel4 で 202/0 確認済・+3 再確認要）
   (2) 全 sorry 文面の sibrel4 意味総点検 (3) その後通常戦線へ復帰
   （続64 優先順位）。
+
+### ★(2026-06-13 続71) sibrel4 も closure+4 で破れる — sibrel 設計の根本問題
+
+- audit_seam_c3（+3・sibrel4 下）: open_m1 結論 **69違反/5,447**・copyhead P
+  クラス **空でなく261件**・E2var/F2L2 空維持・deep 45件0違反。
+- 違反解剖: M[2]（+4圏）で K=[(6,1),(7,0)] vs K1=[(6,1),(6,1)] —
+  divergence は K 末尾だが **fst降下+snd上昇**（branch-4 は fst等値要求で
+  不適合）。つまり sibrel の有限分岐リストは**コピー力学で閉じず**、
+  リング毎に新形状が湧く。
+- **価値レベルは安定**: NT_tie 結論 ✓（D1(D0) vs D1+D1 ¬olt）・最終減少 ✓。
+- 仮説 **SIB5**: 末尾分岐は無条件（∃p x x1 r1. K=p@[x] ∧ K1=p@x1#r1 のみ、
+  x1 制約なし）∨ 旧1/2 ∨ 中間分岐は head-max 第3分岐。closure+4 で
+  分岐位置統計を採掘中。SIB5 が閉じれば: sibrel5 改定 + NT_enddrop を
+  「末尾任意分岐」の値補題 NT_endany に一般化（要採掘）。閉じなければ
+  **sibm2 層を捨て NT レベル不変量（NTTIE2 M）へ全面再設計**。
+- 現状: ビルド緑だが seam_open_m1 文面は再び偽認定（+3 69違反）。
+  sibrel5/NT 設計決定後に文面改定。
