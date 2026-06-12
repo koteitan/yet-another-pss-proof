@@ -3090,3 +3090,26 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   ⟹ 組立は全葉討伐後に一度だけ実施。当面は凍結葉の討伐を継続。
 - 次の標的: E6_lpl（head-max 全体 vs 後続同添字可視片、可視性前提付きで
   0違反/続25補4）。採掘で実例構造（C の形・位置）を特定し、縮約 or 直証。
+
+### (2026-06-12 続60) G6 統一支配核 — dom_tie/dom_deep/lpl の3点を1凍結に統合（緑）
+
+- 採掘経過（mine_lpl2/lpl3/g6/g6u/g6f/g6f2/g6h）:
+  - lpl の弱窓（非隣接支配・u自由）監査は可視性込みでも反例 110,273 —
+    **u は隣接 pp の snd でないと偽**。正確な dseg では 0/103,565 ✓。
+  - 統一仮説 **G6**: dseg u S ⟹ 可視 g（hdsub g = maxr1 S）⟹
+    ole g (NT(msfx S))。**fire・head-max・violator 前提すべて不要**。
+    閉包+1: 0/128,657、**閉包+2: 0/711,342**（窓 460,931）— 本計画最強の監査。
+  - 一般化限界の地図: u=0 一様化 ✗（84,795）、fbseg（mid-gap、真の定義の
+    mid≥hd 条件込み）✗（10,586）、head-min fbseg ✗（90,681）。
+    exact dseg（stepsok による fst(hd S)=fst pp+1 強制＋到達可能性）が本質。
+    T側降下は self-msfx 比較では偽 — memT 型の「全体閾値渡し」が必要
+    （将来の G6 本体証明の設計指針）。
+- 帰結（ビルド31秒緑）:
+  - **E6_dom_tie スタブ = G6 の直接系**（2行）— スタブ討伐。
+  - **E6_lpl = G6 + head-max ⟹ msfx S = S + Gterm_size 厳密化**
+    （前提を snd(hd C) → hdsub(NT C) 形に差替、hdom 呼び出し側は w(4) で供給）。
+  - **E6_dom_deep・E6_dom_tie_resolved は削除**（G6 が包摂）。
+  - sorry 24 → 22。値側の支配系は E6_G6 1点に立脚。
+- 残値側: E6_G6 本体・seam_MIN/INV・FBS・QDIAG・STS_B・NT_lexdiff_lt・
+  E6_memT・E6_nbcK_K・E6_mem スタブ（mem_resolved あり・組立待ち）・
+  NT_tie スタブ（resolved あり・組立待ち）・nrm_order_pres。

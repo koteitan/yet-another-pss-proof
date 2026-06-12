@@ -9684,17 +9684,20 @@ lemma E6_mem:
 text \<open>(E6 tie dominance) A violating critical whose head subscript reaches the
   max row-1 is still at most the suffix image (first-max priority).\<close>
 
-text \<open>The deep tie case: a violating critical piece starting at a
-  \<^emph>\<open>later\<close> max-row1 column than the first one (first-max priority; the
-  remaining recursive core of the dominance).\<close>
+text \<open>(G6, unified dominance core) On a provenance segment \<^emph>\<open>any\<close> visible
+  critical whose head subscript attains the max row-1 is at most the
+  max-row1 suffix image — no fire, no head-max and no violator premise
+  (closure+2: 711342 visible max-headed criticals over 460931 dseg
+  windows, zero violations).  Subsumes \<open>E6_dom_tie\<close>, the deep tie case and
+  \<open>E6_lpl\<close>.  The exact \<open>dseg\<close> shape (adjacent dominator, \<open>u = snd pp\<close>) is
+  essential: both the \<open>u = 0\<close> relaxation and the \<open>fbseg\<close> mid-gap relaxation
+  already fail at closure+1 (84795 resp. 10586 violations).\<close>
 
-lemma E6_dom_deep:
-  assumes "dseg u S" and "pfire u (nrm (translate S))"
-    and "S = pre' @ C @ post'" and "C \<noteq> []" and "snd (hd C) = maxr1 S"
-    and "length (takeWhile (\<lambda>c. snd c < maxr1 S) S) < length pre'"
-    and "nrm (translate C) \<in> Gterm u (nrm (translate S))"
-    and "\<not> olt (nrm (translate C)) (nrm (translate S))"
-  shows "ole (nrm (translate C)) (nrm (translate (msfx S)))"
+lemma E6_G6:
+  assumes "dseg u S"
+    and "g \<in> Gterm u (nrm (translate S))" and "g \<noteq> Z"
+    and "hdsub g = maxr1 S"
+  shows "ole g (nrm (translate (msfx S)))"
   sorry
 
 lemma E6_dom_tie:
@@ -9702,7 +9705,7 @@ lemma E6_dom_tie:
     and "g \<in> Gterm u (nrm (translate S))" and "\<not> olt g (nrm (translate S))"
     and "g \<noteq> Z" and "hdsub g = maxr1 S"
   shows "ole g (nrm (translate (msfx S)))"
-  sorry
+  by (rule E6_G6[OF assms(1) assms(3) assms(5) assms(6)])
 
 lemma E6_value:
   assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
@@ -10256,91 +10259,37 @@ next
   qed
 qed
 
-text \<open>Resolution of \<open>E6_dom_tie\<close> using the catalogue and the prefix
-  monotonicity.  Kept separate because the lemma-level dependency
-  \<open>NT_prefix_lt \<rightarrow> ST_snocokS_gen \<rightarrow> E6_value \<rightarrow> E6_dom_tie\<close> is circular;
-  stratified by segment length it is well-founded, so the final assembly
-  inlines this proof into one simultaneous length induction
-  (deep case = \<open>E6_dom_deep\<close>).\<close>
-
-lemma E6_dom_tie_resolved:
-  assumes D: "dseg u S" and F: "pfire u (nrm (translate S))"
-    and G: "g \<in> Gterm u (nrm (translate S))" and V: "\<not> olt g (nrm (translate S))"
-    and NZ: "g \<noteq> Z" and HS: "hdsub g = maxr1 S"
-  shows "ole g (nrm (translate (msfx S)))"
-proof -
-  let ?m = "maxr1 S"
-  let ?j0 = "length (takeWhile (\<lambda>c. snd c < ?m) S)"
-  have fbS: "\<exists>v. fbseg v S" using dseg_fbseg[OF D] by blast
-  from GCAT[OF fbS G] NZ obtain pre' Cp post'
-    where w: "S = pre' @ Cp @ post'" "Cp \<noteq> []" "g = nrm (translate Cp)"
-      "hdsub g = snd (hd Cp)" by blast
-  have hdm: "snd (hd Cp) = ?m" using w(4) HS by simp
-  obtain ch ct where Cp: "Cp = ch # ct" using w(2) by (cases Cp) auto
-  have nthl: "S ! length pre' = hd Cp"
-    unfolding w(1) Cp by (simp add: nth_append)
-  have j0le: "?j0 \<le> length pre'"
-  proof (rule ccontr)
-    assume "\<not> ?j0 \<le> length pre'"
-    hence l: "length pre' < length (takeWhile (\<lambda>c. snd c < ?m) S)" by simp
-    have m1: "takeWhile (\<lambda>c. snd c < ?m) S ! length pre' = S ! length pre'"
-      by (rule takeWhile_nth[OF l])
-    have m2: "takeWhile (\<lambda>c. snd c < ?m) S ! length pre'
-              \<in> set (takeWhile (\<lambda>c. snd c < ?m) S)"
-      using l by (rule nth_mem)
-    have "snd (takeWhile (\<lambda>c. snd c < ?m) S ! length pre') < ?m"
-      using set_takeWhileD[OF m2] by blast
-    thus False using m1 nthl hdm by simp
-  qed
-  have msd: "msfx S = drop ?j0 S"
-    unfolding msfx_def by (rule dropWhile_eq_drop)
-  show ?thesis
-  proof (cases "?j0 = length pre'")
-    case True
-    have mC: "msfx S = Cp @ post'"
-    proof -
-      have "msfx S = drop ?j0 S" by (fact msd)
-      also have "\<dots> = drop (length pre') S" using True by simp
-      also have "\<dots> = Cp @ post'" unfolding w(1) by simp
-      finally show ?thesis .
-    qed
-    show ?thesis
-    proof (cases "post' = []")
-      case True
-      show ?thesis unfolding w(3) mC True by simp
-    next
-      case pne: False
-      from D obtain preh pp posth where h: "preh @ (pp # S) @ posth \<in> ST_PS"
-        unfolding dseg_def by blast
-      have h2: "(preh @ (pp # pre')) @ Cp @ post' @ posth \<in> ST_PS"
-        using h unfolding w(1) by simp
-      have "olt (nrm (translate Cp)) (nrm (translate (Cp @ post')))"
-        by (rule NT_prefix_lt[OF h2 w(2) pne])
-      thus ?thesis unfolding w(3) mC by simp
-    qed
-  next
-    case False
-    hence lt: "?j0 < length pre'" using j0le by simp
-    show ?thesis unfolding w(3)
-      by (rule E6_dom_deep[OF D F w(1) w(2) hdm lt G[unfolded w(3)] V[unfolded w(3)]])
-  qed
-qed
-
-text \<open>(LPL) A proper later piece whose head subscript matches the head-maximal
-  whole loses to the whole.  The last comparison core of the exclusion side
-  (empirically part of C2's zero-violation criterion).\<close>
+text \<open>(LPL) A proper later piece whose normalized head subscript matches the
+  head-maximal whole loses to the whole: from \<open>E6_G6\<close>, since head-maximality
+  makes the suffix the whole segment, and the size bound makes the bound
+  strict.\<close>
 
 lemma E6_lpl:
-  assumes "dseg u S" and "snd (hd S) = maxr1 S"
-    and "S = pre' @ C @ post'" and "C \<noteq> []" and "pre' \<noteq> []"
-    and "snd (hd C) = maxr1 S"
-    and "nrm (translate C) \<in> Gterm u (nrm (translate S))"
+  assumes D: "dseg u S" and HM: "snd (hd S) = maxr1 S"
+    and SC: "S = pre' @ C @ post'" and Cne: "C \<noteq> []" and Pne: "pre' \<noteq> []"
+    and HS: "hdsub (nrm (translate C)) = maxr1 S"
+    and G: "nrm (translate C) \<in> Gterm u (nrm (translate S))"
   shows "olt (nrm (translate C)) (nrm (translate S))"
-  sorry
+proof -
+  have Sne: "S \<noteq> []" using D unfolding dseg_def by blast
+  obtain c ct where C: "C = c # ct" using Cne by (cases C) auto
+  have NZ: "nrm (translate C) \<noteq> Z" unfolding C by (rule NT_neZ)
+  have mS: "msfx S = S"
+  proof -
+    obtain s ss where S: "S = s # ss" using Sne by (cases S) auto
+    have "\<not> snd s < maxr1 S" using HM unfolding S by simp
+    thus ?thesis unfolding msfx_def S by simp
+  qed
+  have "ole (nrm (translate C)) (nrm (translate (msfx S)))"
+    by (rule E6_G6[OF D G NZ HS])
+  moreover have "nrm (translate C) \<noteq> nrm (translate S)"
+    using Gterm_size[OF G] by auto
+  ultimately show ?thesis unfolding mS by auto
+qed
 
 text \<open>(HDOM) A head-maximal class segment has no fire: every critical loses.
   Resolved down to \<open>E6_lpl\<close> by the catalogue, the subscript bound, and prefix
-  monotonicity \<dash> the same pattern as \<open>E6_dom_tie_resolved\<close>.\<close>
+  monotonicity \<dash> all through the unified core \<open>E6_G6\<close>.\<close>
 
 lemma E6_hdom:
   assumes D: "dseg u S" and HM: "snd (hd S) = maxr1 S"
@@ -10396,8 +10345,10 @@ proof
       thus False using V by blast
     next
       case pne: False
+      have hsC: "hdsub (nrm (translate Cp)) = maxr1 S"
+        using w(4) True unfolding w(3) by simp
       have "olt (nrm (translate Cp)) (nrm (translate S))"
-        by (rule E6_lpl[OF D HM w(1) w(2) pne hdm G[unfolded w(3)]])
+        by (rule E6_lpl[OF D HM w(1) w(2) pne hsC G[unfolded w(3)]])
       thus False using w(3) V by simp
     qed
   qed

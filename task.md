@@ -92,7 +92,8 @@
   - ✅ E6_iii_singleton 討伐〔FBS=fire-butlast安定 5370/0 の対偶2行〕
   - ✅ E6_qcut_last 討伐〔QDIAG=厳密対角 12/0 凍結＋単調帰納・dropWhile リスト論証〕
   - ✅ E6_seam 分割〔q脱結合凍結核 seam_MIN(458980/0)＋seam_INV(426489/0)・本体は2行導出〕
-  - 🚨 行レベル凍結核〔seam_MIN/seam_INV/E6_FBS/E6_QDIAG 本体〕＋ STS_B 本体〔0/26322〕
+  - ✅ G6統一支配核〔E6_G6 凍結 711342/0・E6_dom_tie/E6_lpl 討伐・E6_dom_deep/dom_tie_resolved 削除〕
+  - 🚨 行レベル凍結核〔E6_G6/seam_MIN/seam_INV/E6_FBS/E6_QDIAG 本体〕＋ STS_B 本体〔0/26322〕
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - 🚨 TOP_desc〔0/474・未ステート〕
   - 🚨 スタブ〔NT_tie/E6_mem/E6_dom_tie＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン〕
