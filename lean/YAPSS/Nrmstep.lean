@@ -8420,4 +8420,33 @@ theorem le0_roots {G : PairSeq} {v0 w0 n k k' : ℕ}
   exact ⟨by rw [hXlen]; omega, by rw [hXlen]; omega,
     roots_chain k' hk' k hk⟩
 
+/-- Adjacent chains along any unit staircase window. -/
+theorem rtg_stair {M : PairSeq} {s e : ℕ} (he : e < M.length)
+    (hstair : ∀ j, s ≤ j → j < e → entry M 0 (j + 1) = entry M 0 j + 1) :
+    ∀ b, b ≤ e → ∀ a, s ≤ a → a ≤ b →
+      Relation.ReflTransGen (nextrel0 M) a b := by
+  intro b
+  induction b with
+  | zero =>
+    intro _ a _ ha
+    have : a = 0 := by omega
+    rw [this]
+  | succ b ih =>
+    intro hbe a hsa hab
+    rcases Nat.eq_or_lt_of_le hab with hEq | hlt
+    · rw [hEq]
+    · refine (ih (by omega) a hsa (by omega)).tail ?_
+      refine ⟨by omega, by omega, by omega, ?_, ?_⟩
+      · rw [hstair b (by omega) (by omega)]
+        omega
+      · intro l hl
+        exfalso
+        omega
+
+theorem le0_stair {M : PairSeq} {s e a b : ℕ} (he : e < M.length)
+    (hstair : ∀ j, s ≤ j → j < e → entry M 0 (j + 1) = entry M 0 j + 1)
+    (hsa : s ≤ a) (hab : a ≤ b) (hbe : b ≤ e) :
+    le0 M a b :=
+  ⟨by omega, by omega, rtg_stair he hstair b hbe a hsa hab⟩
+
 end YAPSS
