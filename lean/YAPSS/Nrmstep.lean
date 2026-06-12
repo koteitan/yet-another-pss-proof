@@ -8449,4 +8449,15 @@ theorem le0_stair {M : PairSeq} {s e a b : ℕ} (he : e < M.length)
     le0 M a b :=
   ⟨by omega, by omega, rtg_stair he hstair b hbe a hsa hab⟩
 
+/-- Over a staircase window, the parent-edge maximality pins every later
+row 1 strictly above the split head's. -/
+theorem split_row1_of_stair {X : PairSeq} {gX last : ℕ}
+    (hedge : nextrel1 X gX last) (hlast : last < X.length)
+    (hstair : ∀ j, gX ≤ j → j < last →
+      entry X 0 (j + 1) = entry X 0 j + 1) :
+    ∀ j, gX < j → j ≤ last → entry X 1 gX < entry X 1 j :=
+  split_row1_strict hedge
+    (fun j hj1 hj2 =>
+      le0_stair hlast hstair (by omega) (by omega) (by omega))
+
 end YAPSS
