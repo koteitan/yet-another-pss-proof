@@ -69,6 +69,7 @@
   - ✅ r1ok 基盤〔row1規律 0/14558・残 r1ok_climb のみ・memo続26〕
   - ✅ sibm2/sibrel 修復〔旧 sibm/SIB_shape は偽＝閉包境界教訓・SIB_shape2・NT_tie_resolved 3ケース・memo続29〕
   - ✅ sibrel4 修復〔閉包+3で旧sibrel偽（4例目すり抜け）→第4分岐(末尾snd降下)追加 0/729131・全消費側再構成・NT_enddrop凍結・続67〜70〕
+  - ✅ SIBREL6 確定〔+4/+5でも逐次破れ→first-diff lex降下3分岐が+6で0/1.16M・hm全廃-747行・NT_tie_fdlex単一核(10500/0)・lexdiff/enddrop/F2L2削除・全シーム文面再監査済(open_m1 5447/0・P 261/0)・続71〜73〕
   - ✅ 正確文面の閉包+1監査〔E6_lpl 等 全0違反・STS_B 前提修正・E6_memT 前提空・audit_*.py〕
   - ✅ sibm2_oper_bad 討伐〔n帰納×シーム分解・CFGA_r1=NT_dom_sub_eq窓・sibrel衝突代数 nopref/ascent/diverge〕
   - ✅ E6_tie_nofire0/1 討伐〔Gterm_empty_lowhead＝スパイン低頭でカタログ空・memo続29補15〕
