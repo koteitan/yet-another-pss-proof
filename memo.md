@@ -3113,3 +3113,10 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 - 残値側: E6_G6 本体・seam_MIN/INV・FBS・QDIAG・STS_B・NT_lexdiff_lt・
   E6_memT・E6_nbcK_K・E6_mem スタブ（mem_resolved あり・組立待ち）・
   NT_tie スタブ（resolved あり・組立待ち）・nrm_order_pres。
+
+### (2026-06-12 続60補) QDIAG 前提弱化（緑）
+
+- mine_qdiag2: q-cut 配置で fire(S@[q]) 単独 ⟹ snd 厳密増（閉包+2:
+  **0/32,491**、both-fire 形の6倍基盤）。fire なしは 20,819 違反で fire が
+  本質。E6_QDIAG の前提から fire(S) を削除（qcut_last 呼び出し側は
+  assms(1,2,4,5) に調整）。

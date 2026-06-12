@@ -9749,13 +9749,14 @@ proof -
   thus ?thesis using po by simp
 qed
 
-text \<open>(QDIAG) In the q-cut both-fire configuration the segment's row 1 is
-  strictly increasing (closure+2: all 12 realized instances are strict
-  diagonals, zero violations).\<close>
+text \<open>(QDIAG) In the q-cut configuration a firing extension already forces
+  the segment's row 1 to be strictly increasing — the segment's own fire is
+  redundant (closure+2: 32491 extension-fire positions, zero violations;
+  without any fire premise 20819 violations).\<close>
 
 lemma E6_QDIAG:
   assumes "segprov u S q" and "S \<noteq> []"
-    and "pfire u (nrm (translate S))" and "pfire u (nrm (translate (S @ [q])))"
+    and "pfire u (nrm (translate (S @ [q])))"
     and "maxr1 S < snd q"
     and "Suc i < length S"
   shows "snd (S ! i) < snd (S ! Suc i)"
@@ -9771,7 +9772,7 @@ lemma E6_qcut_last:
   shows "msfx S = [last S]"
 proof -
   have step: "\<And>i. Suc i < length S \<Longrightarrow> snd (S ! i) < snd (S ! Suc i)"
-    using E6_QDIAG[OF assms] by blast
+    using E6_QDIAG[OF assms(1,2,4,5)] by blast
   have mono: "\<And>j. j < length S \<Longrightarrow> \<forall>i. i \<le> j \<longrightarrow> snd (S ! i) \<le> snd (S ! j)"
   proof -
     fix j

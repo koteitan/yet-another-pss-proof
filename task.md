@@ -90,7 +90,7 @@
   - ✅ GBLK0 討伐〔GAP 246件級へ分解〕
   - 🚨 GRANDシーム残〔CT(7件)/NT3(空)/GAP(246)/BTWRAP_T3/qpos(171)/t14ok_oper_bad(地図済)〕
   - ✅ E6_iii_singleton 討伐〔FBS=fire-butlast安定 5370/0 の対偶2行〕
-  - ✅ E6_qcut_last 討伐〔QDIAG=厳密対角 12/0 凍結＋単調帰納・dropWhile リスト論証〕
+  - ✅ E6_qcut_last 討伐〔QDIAG=厳密対角凍結（拡張fire単独 32491/0）＋単調帰納・dropWhile リスト論証〕
   - ✅ E6_seam 分割〔q脱結合凍結核 seam_MIN(458980/0)＋seam_INV(426489/0)・本体は2行導出〕
   - ✅ G6統一支配核〔E6_G6 凍結 711342/0・E6_dom_tie/E6_lpl 討伐・E6_dom_deep/dom_tie_resolved 削除〕
   - 🚨 行レベル凍結核〔E6_G6/seam_MIN/seam_INV/E6_FBS/E6_QDIAG 本体〕＋ STS_B 本体〔0/26322〕
