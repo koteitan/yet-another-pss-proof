@@ -7497,4 +7497,97 @@ theorem le0_congr {S T : PairSeq} (hlen : S.length = T.length)
   · rintro ⟨h1, h2, h3⟩
     exact ⟨h1, h2, hrtg' a b h3⟩
 
+/-- `nextrel0` is invariant under a uniform row-0 shift read entrywise. -/
+theorem nextrel0_congr_shift {S T : PairSeq} {s : ℕ}
+    (hlen : S.length = T.length)
+    (hent : ∀ i, i < S.length → entry S 0 i = entry T 0 i + s) {a b : ℕ} :
+    nextrel0 S a b ↔ nextrel0 T a b := by
+  unfold nextrel0
+  rw [hlen]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨h1, h2, h3, ?_, ?_⟩
+    · rw [hent a (by omega), hent b (by omega)] at h4
+      omega
+    · intro j hj
+      have h6 := h5 j hj
+      rw [hent b (by omega), hent j (by omega)] at h6
+      omega
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨h1, h2, h3, ?_, ?_⟩
+    · rw [hent a (by omega), hent b (by omega)]
+      omega
+    · intro j hj
+      have h6 := h5 j hj
+      rw [hent b (by omega), hent j (by omega)]
+      omega
+
+/-- `le0` is invariant under a uniform row-0 shift read entrywise. -/
+theorem le0_congr_shift {S T : PairSeq} {s : ℕ}
+    (hlen : S.length = T.length)
+    (hent : ∀ i, i < S.length → entry S 0 i = entry T 0 i + s) {a b : ℕ} :
+    le0 S a b ↔ le0 T a b := by
+  unfold le0
+  rw [hlen]
+  have hrtg : ∀ a b, Relation.ReflTransGen (nextrel0 S) a b →
+      Relation.ReflTransGen (nextrel0 T) a b := by
+    intro a b h
+    induction h with
+    | refl => exact .refl
+    | @tail y z _ hs ih => exact ih.tail ((nextrel0_congr_shift hlen hent).1 hs)
+  have hrtg' : ∀ a b, Relation.ReflTransGen (nextrel0 T) a b →
+      Relation.ReflTransGen (nextrel0 S) a b := by
+    intro a b h
+    induction h with
+    | refl => exact .refl
+    | @tail y z _ hs ih => exact ih.tail ((nextrel0_congr_shift hlen hent).2 hs)
+  constructor
+  · rintro ⟨h1, h2, h3⟩
+    exact ⟨h1, h2, hrtg a b h3⟩
+  · rintro ⟨h1, h2, h3⟩
+    exact ⟨h1, h2, hrtg' a b h3⟩
+
+/-- **BF1 at the root split**: the root-anchored row-1 ascent transfers to
+the shifted truncated block through the entrywise correspondence. -/
+theorem bf1_rootsplit {R RX : PairSeq} {v0 w0 vX wX s : ℕ}
+    (hlen : (RX.length + 1) + 1 = ((v0,w0) :: R).length)
+    (hcorr : ∀ q, q < RX.length + 1 →
+      ((vX,wX) :: RX).getD q (0,0)
+        = ((((v0,w0) :: R).getD q (0,0)).1 + s,
+           (((v0,w0) :: R).getD q (0,0)).2))
+    (hBF1 : ∀ q, 0 < q → q < ((v0,w0) :: R).length →
+      le0 ((v0,w0) :: R) 0 q → 0 < (((v0,w0) :: R).getD q (0,0)).2 →
+      w0 < (((v0,w0) :: R).getD q (0,0)).2) :
+    ∀ q, 0 < q → q < ((vX,wX) :: RX).length →
+      le0 ((vX,wX) :: RX) 0 q → 0 < (((vX,wX) :: RX).getD q (0,0)).2 →
+      wX < (((vX,wX) :: RX).getD q (0,0)).2 := by
+  have hBXlen : ((vX,wX) :: RX).length = RX.length + 1 := rfl
+  have hBlen : ((v0,w0) :: R).length = R.length + 1 := rfl
+  have hwX : wX = w0 := by
+    have h9 := hcorr 0 (by omega)
+    rw [List.getD_cons_zero, List.getD_cons_zero] at h9
+    have h10 := congrArg Prod.snd h9
+    simpa using h10
+  intro q hq1 hq2 hle hpos
+  rw [hBXlen] at hq2
+  -- transfer the chain to the truncated host block
+  have hT : le0 (((v0,w0) :: R).take (RX.length + 1)) 0 q := by
+    refine (le0_congr_shift (s := s) ?_ ?_).1 hle
+    · rw [hBXlen, List.length_take]
+      omega
+    · intro i hi
+      rw [hBXlen] at hi
+      unfold entry
+      rw [if_pos rfl, if_pos rfl, hcorr i (by omega),
+          getD_take (by omega)]
+  have hle' : le0 ((v0,w0) :: R) 0 q :=
+    (le0_take_iff (m := RX.length + 1) (by omega) (by omega)).1 hT
+  -- the row-1 values match
+  have hq2' : (((vX,wX) :: RX).getD q (0,0)).2
+      = (((v0,w0) :: R).getD q (0,0)).2 := by
+    rw [hcorr q (by omega)]
+  rw [hq2'] at hpos ⊢
+  rw [hwX]
+  exact hBF1 q hq1 (by omega) hle' hpos
+
 end YAPSS
