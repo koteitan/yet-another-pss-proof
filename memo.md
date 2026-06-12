@@ -3150,3 +3150,14 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   - ただし part1 の導出には fbsegD 版 C1 層（pair_host/SIB_shape2/
     NT_dom 鎖 = NT_tie 含む）が必要 — NT_tie スタブ解消（最終組立）後に
     実施が適切。STS_B は当面凍結のまま、この地図を将来の討伐設計に使う。
+
+### (2026-06-12 続63) TOP_desc ステート（緑）— 未ステート問題解消
+
+- mine_topdesc/topdesc2: 隣接トップ木対（fst=0 根）の弱降下
+  ole (NT K1) (NT K)。K1 は**次木の任意非空先頭部分**でよい（prefix 弱化・
+  post 条件不要）。閉包+1: 0/678、**閉包+2: 0/967**。
+- nrmstep.thy の nrm_step_dec_pred 直前に凍結ステート（ビルド緑）。
+  これで「TOP_desc 未ステート」リスクが消え、**全 sorry が監査済み文面**に。
+- nrm_order_pres はクリティカルパス外と確認（続63補）: PSS_terminates_nrm
+  は nrm_step_dec のみ必要で、nrmstep の直接証明が閉じれば order_pres は
+  削除可能（wf_Rnf_nrm 経路は冗長な強い版）。

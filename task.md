@@ -95,6 +95,6 @@
   - ✅ G6統一支配核〔E6_G6 凍結 711342/0・E6_dom_tie/E6_lpl 討伐・E6_dom_deep/dom_tie_resolved 削除〕
   - 🚨 行レベル凍結核〔E6_G6/seam_MIN/seam_INV/E6_FBS/E6_QDIAG 本体〕＋ STS_B 本体〔0/26322〕
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
-  - 🚨 TOP_desc〔0/474・未ステート〕
+  - ✅ TOP_desc ステート〔prefix弱化形・閉包+2 967/0 凍結・本体は未証明〕
   - 🚨 スタブ〔NT_tie/E6_mem＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン（SCC地図=memo続59）〕
 - 🗑 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要。wf_ArgsA 路線は凍結〔wfsum に残置〕

@@ -11070,6 +11070,20 @@ proof -
   qed
 qed
 
+text \<open>(TOP) Adjacent top-level trees descend weakly under \<open>nrm\<close>: the later
+  tree's image — or the image of any nonempty initial portion of it — is at
+  most the earlier full tree's image (closure+2: 967 adjacent root pairs,
+  zero violations).  The top-layer analogue of \<open>NT_dom\<close>, previously
+  unstated (memo 続27補6).\<close>
+
+lemma TOP_desc:
+  assumes "pre @ K @ K1 @ post \<in> ST_PS"
+    and "K \<noteq> []" and "K1 \<noteq> []"
+    and "fst (hd K) = 0" and "\<forall>x \<in> set (tl K). 0 < fst x"
+    and "fst (hd K1) = 0" and "\<forall>x \<in> set (tl K1). 0 < fst x"
+  shows "ole (nrm (translate K1)) (nrm (translate K))"
+  sorry
+
 text \<open>\<open>Pred\<close> case of the step decrease, from \<open>nrm_snoc\<close>.\<close>
 
 lemma nrm_step_dec_pred:
