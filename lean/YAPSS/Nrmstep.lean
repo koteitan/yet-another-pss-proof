@@ -8460,4 +8460,25 @@ theorem split_row1_of_stair {X : PairSeq} {gX last : ℕ}
     (fun j hj1 hj2 =>
       le0_stair hlast hstair (by omega) (by omega) (by omega))
 
+/-- **The dichotomy pins row 1 above any edge source**: descendants of the
+source with positive row 1 sit strictly above it — by the maximality
+clause in the bridge case and by the target equality in the tie case. -/
+theorem row1_gt_of_dichOK {X : PairSeq} {p t : ℕ}
+    (hdich : dichOK X) (hedge : nextrel1 X p t) :
+    ∀ q, p < q → le0 X p q → q < t → 0 < (X.getD q (0,0)).2 →
+      (X.getD p (0,0)).2 < (X.getD q (0,0)).2 := by
+  intro q hpq0 hpq hqt hpos
+  have hC1 : (X.getD p (0,0)).2 < (X.getD t (0,0)).2 := by
+    have h9 := hedge.2.2.2.1
+    unfold entry at h9
+    rw [if_neg one_ne_zero, if_neg one_ne_zero] at h9
+    exact h9
+  rcases hdich p q t hedge hpq hqt hpos with h9 | h9
+  · have hmax := hedge.2.2.2.2.2 q ⟨hpq0, h9⟩
+    unfold entry at hmax
+    rw [if_neg one_ne_zero, if_neg one_ne_zero] at hmax
+    omega
+  · rw [h9]
+    exact hC1
+
 end YAPSS
