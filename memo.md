@@ -3210,3 +3210,9 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   前）は GCD→CT→NT3→BTWRAPU→BTWRAPU3 ブロック（依存 = r1ok/CT のみと
   機械抽出で確認）を OSC の上に移動して解決。sorry 24→23。
   OSC 残凍結 = O2(158/0)・GCD(7/0) の2点のみ。
+
+- (続65補2) **ginv_BTWRAP_T3 分割（緑）**: i1=0 主部（閉包+2: 20,699件・
+  e0c 違反0）は **BTWRAPU3 + nextrel0-gap 導出**で証明。残差凍結 =
+  ginv_BTWRAP_T3_pos（0<i1 上昇枝・**6件/0**）。世代側残凍結 =
+  O2(158)/GCD(7)/NT3(空)/BTWRAP_T3_pos(6)/qpos(171)/t14ok_oper_bad(地図済)
+  ＋シーム空クラス。

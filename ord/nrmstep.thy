@@ -5058,13 +5058,17 @@ proof -
           assms(13) assms(14)])
 qed
 
-lemma ginv_BTWRAP_T3:
+text \<open>(BT-WRAP-T3, residual) The ascending-branch (\<open>0 < i1\<close>) instances of the
+  \<open>\<tau> = 0\<close> head-tie wrap (closure+2: 6 instances, zero violations; the
+  \<open>i1 = 0\<close> bulk — 20699 instances — is the \<open>BTWRAPU3\<close> route below).\<close>
+
+lemma ginv_BTWRAP_T3_pos:
   assumes "M \<in> ST_PS"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
     and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
     and "i1 = idx1 M j1" and "hasParent M i1 j1"
     and "j0 = parent M i1 j1"
-    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and "0 < i1"
     and "qa < j1 - j0"
     and "entry M 1 (j0 + qa) = entry M 1 j0"
     and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
@@ -5072,6 +5076,47 @@ lemma ginv_BTWRAP_T3:
     and "qa < q" and "q < j1 - j0"
   shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
   sorry
+
+lemma ginv_BTWRAP_T3:
+  assumes ST: "M \<in> ST_PS"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and qaL: "qa < j1 - j0"
+    and tau: "entry M 1 (j0 + qa) = entry M 1 j0"
+    and dom: "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and tie: "entry M 1 (j0 + Suc qa) = entry M 1 (j0 + qa)"
+    and ql: "qa < q" and qh: "q < j1 - j0"
+  shows "entry M 1 (j0 + q) \<le> entry M 1 (j0 + qa)"
+proof (cases "i1 = 0")
+  case False
+  hence "0 < i1" by simp
+  thus ?thesis
+    by (rule ginv_BTWRAP_T3_pos[OF ST j1d j1nz Fz i1d hp j0d _ qaL tau dom tie ql qh])
+next
+  case True
+  have d00: "d0 = 0" using d0d True by simp
+  have n0: "nextrel0 M j0 j1"
+    using parent_nextR[OF hp] j0d unfolding nextR_def True by simp
+  have jlt: "j0 < j1" and e0lt: "entry M 0 j0 < entry M 0 j1"
+    using n0 unfolding nextrel0_def by blast+
+  have gapc: "\<And>j. j0 < j \<Longrightarrow> j < j1 \<Longrightarrow> entry M 0 j1 \<le> entry M 0 j"
+    using n0 unfolding nextrel0_def by blast
+  have e0c: "entry M 0 j0 \<le> entry M 0 (j0 + qa)"
+  proof (cases qa)
+    case 0 thus ?thesis by simp
+  next
+    case (Suc m)
+    have b1: "j0 < j0 + qa" unfolding Suc by simp
+    have b2: "j0 + qa < j1" using qaL jlt by simp
+    have "entry M 0 j1 \<le> entry M 0 (j0 + qa)" using gapc[OF b1 b2] .
+    thus ?thesis using e0lt by simp
+  qed
+  show ?thesis
+    by (rule ginv_BTWRAPU3[OF ST j1d j1nz Fz i1d hp j0d d0d d00 qaL e0c dom tie ql qh])
+qed
 
 text \<open>(BT1) The block-tail row-1 bound at a copy-boundary tie: with the tie,
   stop and dominance conditions of a cross-copy tie pair, the dominated block
