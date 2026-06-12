@@ -3658,12 +3658,8 @@ definition mrun :: "pairseq \<Rightarrow> nat \<Rightarrow> pairseq" where
 definition sibrel :: "pairseq \<Rightarrow> pairseq \<Rightarrow> bool" where
   "sibrel K K1 \<longleftrightarrow> K1 = K
      \<or> (\<exists>D. D \<noteq> [] \<and> K = K1 @ D)
-     \<or> (snd (hd K) = maxr1 K \<and> snd (hd K1) = maxr1 K1 \<and>
-        (\<exists>p x x1 r r1. K = p @ x # r \<and> K1 = p @ x1 # r1 \<and>
-           ((fst x1 = fst x \<and> snd x1 < snd x)
-            \<or> (fst x1 < fst x \<and> snd x1 = snd x))))
-     \<or> (\<exists>p x x1 r1. K = p @ [x] \<and> K1 = p @ x1 # r1
-          \<and> fst x1 = fst x \<and> snd x1 < snd x)"
+     \<or> (\<exists>p x x1 r r1. K = p @ x # r \<and> K1 = p @ x1 # r1
+          \<and> (fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)))"
 
 definition sibm2 :: "pairseq \<Rightarrow> bool" where
   "sibm2 M \<longleftrightarrow> (\<forall>a b. a < length M \<longrightarrow> 0 < fst (M ! a) \<longrightarrow>
@@ -6156,10 +6152,8 @@ next
   from R consider
       (eq) "K1 = K"
     | (pre) "\<exists>D. D \<noteq> [] \<and> K = K1 @ D"
-    | (diff) "snd (hd K) = maxr1 K" "snd (hd K1) = maxr1 K1"
-        "\<exists>p x x1 r r1. K = p @ x # r \<and> K1 = p @ x1 # r1 \<and>
-           ((fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x))"
-    | (edrop) "\<exists>p x x1 r1. K = p @ [x] \<and> K1 = p @ x1 # r1 \<and> fst x1 = fst x \<and> snd x1 < snd x"
+    | (fd) p x x1 r r1 where "K = p @ x # r" "K1 = p @ x1 # r1"
+        "fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)"
     unfolding sibrel_def by blast
   then show ?thesis
   proof cases
@@ -6173,18 +6167,14 @@ next
     moreover have "drop s K1 @ D \<noteq> []" using dne by simp
     ultimately show ?thesis unfolding sibrel_def by blast
   next
-    case diff
-    then obtain p x x1 r r1 where w: "K = p @ x # r" "K1 = p @ x1 # r1"
-      and lx: "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
-      by blast
-    note hmK = diff(1) and hmK1 = diff(2)
+    case fd
     show ?thesis
     proof (cases "s \<le> length p")
       case True
-      have tp: "take s K1 = take s p" unfolding w(2) using True by simp
-      have tpK: "take s K1 = take s K" unfolding tp w(1) using True by simp
+      have tp: "take s K1 = take s p" unfolding fd(2) using True by simp
+      have tpK: "take s K1 = take s K" unfolding tp fd(1) using True by simp
       have KK: "K = take s K1 @ drop s K" using tpK by (metis append_take_drop_id)
-      have "drop s K \<noteq> []" unfolding w(1) using True by simp
+      have "drop s K \<noteq> []" unfolding fd(1) using True by simp
       thus ?thesis unfolding sibrel_def using KK by blast
     next
       case False
@@ -6192,44 +6182,14 @@ next
       have t1: "take s K1 = p @ x1 # take (s - length p - 1) r1"
       proof -
         have "take s K1 = take s p @ take (s - length p) (x1 # r1)"
-          unfolding w(2) by (simp add: take_append)
+          unfolding fd(2) by (simp add: take_append)
         moreover have "take s p = p" using sp by simp
         moreover have "take (s - length p) (x1 # r1)
                        = x1 # take (s - length p - 1) r1"
           using sp by (cases "s - length p") auto
         ultimately show ?thesis by simp
       qed
-      have ne: "take s K1 \<noteq> []" unfolding t1 by simp
-      have hm1: "snd (hd (take s K1)) = maxr1 (take s K1)"
-        by (rule hm_take[OF ne hmK1])
-      show ?thesis unfolding sibrel_def using hmK hm1 w(1) t1 lx by blast
-    qed
-  next
-    case edrop
-    then obtain p x x1 r1 where w: "K = p @ [x]" "K1 = p @ x1 # r1"
-      and f: "fst x1 = fst x" and sd: "snd x1 < snd x" by blast
-    show ?thesis
-    proof (cases "s \<le> length p")
-      case True
-      have tp: "take s K1 = take s p" unfolding w(2) using True by simp
-      have KK: "K = take s K1 @ (drop s p @ [x])"
-        unfolding tp w(1) by (metis append.assoc append_take_drop_id)
-      have "drop s p @ [x] \<noteq> []" by simp
-      thus ?thesis unfolding sibrel_def using KK by blast
-    next
-      case False
-      hence sp: "length p < s" by simp
-      have t1: "take s K1 = p @ x1 # take (s - length p - 1) r1"
-      proof -
-        have "take s K1 = take s p @ take (s - length p) (x1 # r1)"
-          unfolding w(2) by (simp add: take_append)
-        moreover have "take s p = p" using sp by simp
-        moreover have "take (s - length p) (x1 # r1)
-                       = x1 # take (s - length p - 1) r1"
-          using sp by (cases "s - length p") auto
-        ultimately show ?thesis by simp
-      qed
-      show ?thesis unfolding sibrel_def using w(1) t1 f sd by blast
+      show ?thesis unfolding sibrel_def using fd(1) t1 fd(3) by blast
     qed
   qed
 qed
@@ -6287,10 +6247,8 @@ lemma sibrel_nopref:
 proof -
   from R consider (eq) "K2 = K"
     | (pre) D where "D \<noteq> []" "K = K2 @ D"
-    | (lx) p x x1 r r1 where "K = p @ x # r" "K2 = p @ x1 # r1"
-        "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
-    | (ed) p x x1 r1 where "K = p @ [x]" "K2 = p @ x1 # r1"
-        "fst x1 = fst x" "snd x1 < snd x"
+    | (fd) p x x1 r r1 where "K = p @ x # r" "K2 = p @ x1 # r1"
+        "fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)"
     unfolding sibrel_def by blast
   thus False
   proof cases
@@ -6301,23 +6259,14 @@ proof -
     moreover have "length K2 = length K + length E" using E by simp
     ultimately show False using ne by simp
   next
-    case lx
-    have pK: "length p < length K" unfolding lx(1) by simp
-    have "K ! length p = x" unfolding lx(1) by simp
-    moreover have "K2 ! length p = x1" unfolding lx(2) by simp
+    case fd
+    have pK: "length p < length K" unfolding fd(1) by simp
+    have "K ! length p = x" unfolding fd(1) by simp
+    moreover have "K2 ! length p = x1" unfolding fd(2) by simp
     moreover have "K2 ! length p = K ! length p"
       unfolding E using pK by (simp add: nth_append)
     ultimately have "x1 = x" by simp
-    thus False using lx(3) by auto
-  next
-    case ed
-    have pK: "length p < length K" unfolding ed(1) by simp
-    have "K ! length p = x" unfolding ed(1) by simp
-    moreover have "K2 ! length p = x1" unfolding ed(2) by simp
-    moreover have "K2 ! length p = K ! length p"
-      unfolding E using pK by (simp add: nth_append)
-    ultimately have "x1 = x" by simp
-    thus False using ed(4) by auto
+    thus False using fd(3) by auto
   qed
 qed
 
@@ -6325,7 +6274,7 @@ lemma sibrel_ascent:
   assumes R: "sibrel K K2"
     and dK: "K = p @ x # r" and dK2: "K2 = p @ x1 # r1"
     and ne: "x1 \<noteq> x"
-    and asc: "\<not> ((fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x))"
+    and asc: "\<not> (fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x))"
   shows False
 proof -
   have nthK: "K ! length p = x" unfolding dK by simp
@@ -6334,10 +6283,8 @@ proof -
   have pK2: "length p < length K2" unfolding dK2 by simp
   from R consider (eq) "K2 = K"
     | (pre) D where "D \<noteq> []" "K = K2 @ D"
-    | (lx) p' x' x1' r' r1' where "K = p' @ x' # r'" "K2 = p' @ x1' # r1'"
-        "(fst x1' = fst x' \<and> snd x1' < snd x') \<or> (fst x1' < fst x' \<and> snd x1' = snd x')"
-    | (ed) p' x' x1' r1' where "K = p' @ [x']" "K2 = p' @ x1' # r1'"
-        "fst x1' = fst x'" "snd x1' < snd x'"
+    | (fd) p' x' x1' r' r1' where "K = p' @ x' # r'" "K2 = p' @ x1' # r1'"
+        "fst x1' < fst x' \<or> (fst x1' = fst x' \<and> snd x1' < snd x')"
     unfolding sibrel_def by blast
   thus False
   proof cases
@@ -6349,12 +6296,10 @@ proof -
       unfolding pre(2) using pK2 by (simp add: nth_append)
     thus False using nthK nthK2 ne by simp
   next
-    case lx
-    have nthK': "K ! length p' = x'" unfolding lx(1) by simp
-    have nthK2': "K2 ! length p' = x1'" unfolding lx(2) by simp
-    have pK': "length p' < length K" unfolding lx(1) by simp
-    have pK2': "length p' < length K2" unfolding lx(2) by simp
-    have x1x': "x1' \<noteq> x'" using lx(3) by auto
+    case fd
+    have nthK': "K ! length p' = x'" unfolding fd(1) by simp
+    have nthK2': "K2 ! length p' = x1'" unfolding fd(2) by simp
+    have x1x': "x1' \<noteq> x'" using fd(3) by auto
     consider (less) "length p' < length p" | (same) "length p' = length p"
       | (more) "length p < length p'" by linarith
     thus False
@@ -6362,7 +6307,7 @@ proof -
       case same
       have "x' = x" using nthK nthK' same by simp
       moreover have "x1' = x1" using nthK2 nthK2' same by simp
-      ultimately show False using lx(3) asc by simp
+      ultimately show False using fd(3) asc by simp
     next
       case less
       have "K ! length p' = p ! length p'"
@@ -6374,39 +6319,9 @@ proof -
     next
       case more
       have "K ! length p = p' ! length p"
-        unfolding lx(1) using more by (simp add: nth_append)
+        unfolding fd(1) using more by (simp add: nth_append)
       moreover have "K2 ! length p = p' ! length p"
-        unfolding lx(2) using more by (simp add: nth_append)
-      ultimately have "x = x1" using nthK nthK2 by simp
-      thus False using ne by simp
-    qed
-  next
-    case ed
-    have nthK': "K ! length p' = x'" unfolding ed(1) by simp
-    have nthK2': "K2 ! length p' = x1'" unfolding ed(2) by simp
-    have pK': "length p' < length K" unfolding ed(1) by simp
-    consider (less) "length p' < length p" | (same) "length p' = length p"
-      | (more) "length p < length p'" by linarith
-    thus False
-    proof cases
-      case same
-      have "x' = x" using nthK nthK' same by simp
-      moreover have "x1' = x1" using nthK2 nthK2' same by simp
-      ultimately show False using ed(3,4) asc by simp
-    next
-      case less
-      have "K ! length p' = p ! length p'"
-        unfolding dK using less by (simp add: nth_append)
-      moreover have "K2 ! length p' = p ! length p'"
-        unfolding dK2 using less by (simp add: nth_append)
-      ultimately have "x' = x1'" using nthK' nthK2' by simp
-      thus False using ed(4) by simp
-    next
-      case more
-      have "K ! length p = p' ! length p"
-        unfolding ed(1) using more by (simp add: nth_append)
-      moreover have "K2 ! length p = p' ! length p"
-        unfolding ed(2) using more by (simp add: nth_append)
+        unfolding fd(2) using more by (simp add: nth_append)
       ultimately have "x = x1" using nthK nthK2 by simp
       thus False using ne by simp
     qed
@@ -6417,97 +6332,8 @@ lemma sibrel_diverge:
   assumes R: "sibrel K K2"
     and dK: "K = p @ x # r" and dK2: "K2 = p @ x1 # r1"
     and ne: "x1 \<noteq> x"
-  shows "(((fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x))
-          \<and> snd (hd K) = maxr1 K \<and> snd (hd K2) = maxr1 K2)
-       \<or> (r = [] \<and> fst x1 = fst x \<and> snd x1 < snd x)"
-proof -
-  have nthK: "K ! length p = x" unfolding dK by simp
-  have nthK2: "K2 ! length p = x1" unfolding dK2 by simp
-  have pK: "length p < length K" unfolding dK by simp
-  have pK2: "length p < length K2" unfolding dK2 by simp
-  from R consider (eq) "K2 = K"
-    | (pre) D where "D \<noteq> []" "K = K2 @ D"
-    | (lx) p' x' x1' r' r1' where "K = p' @ x' # r'" "K2 = p' @ x1' # r1'"
-        "(fst x1' = fst x' \<and> snd x1' < snd x') \<or> (fst x1' < fst x' \<and> snd x1' = snd x')"
-        "snd (hd K) = maxr1 K" "snd (hd K2) = maxr1 K2"
-    | (ed) p' x' x1' r1' where "K = p' @ [x']" "K2 = p' @ x1' # r1'"
-        "fst x1' = fst x'" "snd x1' < snd x'"
-    unfolding sibrel_def by blast
-  thus ?thesis
-  proof cases
-    case eq
-    thus ?thesis using nthK nthK2 ne by simp
-  next
-    case pre
-    have "K ! length p = K2 ! length p"
-      unfolding pre(2) using pK2 by (simp add: nth_append)
-    thus ?thesis using nthK nthK2 ne by simp
-  next
-    case lx
-    have nthK': "K ! length p' = x'" unfolding lx(1) by simp
-    have nthK2': "K2 ! length p' = x1'" unfolding lx(2) by simp
-    have x1x': "x1' \<noteq> x'" using lx(3) by auto
-    have same: "length p' = length p"
-    proof (rule ccontr)
-      assume "length p' \<noteq> length p"
-      then consider (less) "length p' < length p" | (more) "length p < length p'"
-        by linarith
-      thus False
-      proof cases
-        case less
-        have "K ! length p' = p ! length p'"
-          unfolding dK using less by (simp add: nth_append)
-        moreover have "K2 ! length p' = p ! length p'"
-          unfolding dK2 using less by (simp add: nth_append)
-        ultimately show False using nthK' nthK2' x1x' by simp
-      next
-        case more
-        have "K ! length p = p' ! length p"
-          unfolding lx(1) using more by (simp add: nth_append)
-        moreover have "K2 ! length p = p' ! length p"
-          unfolding lx(2) using more by (simp add: nth_append)
-        ultimately show False using nthK nthK2 ne by simp
-      qed
-    qed
-    have "x' = x" using nthK nthK' same by simp
-    moreover have "x1' = x1" using nthK2 nthK2' same by simp
-    ultimately show ?thesis using lx(3) lx(4) lx(5) by simp
-  next
-    case ed
-    have nthK': "K ! length p' = x'" unfolding ed(1) by simp
-    have nthK2': "K2 ! length p' = x1'" unfolding ed(2) by simp
-    have x1x': "x1' \<noteq> x'" using ed(4) by auto
-    have same: "length p' = length p"
-    proof (rule ccontr)
-      assume "length p' \<noteq> length p"
-      then consider (less) "length p' < length p" | (more) "length p < length p'"
-        by linarith
-      thus False
-      proof cases
-        case less
-        have "K ! length p' = p ! length p'"
-          unfolding dK using less by (simp add: nth_append)
-        moreover have "K2 ! length p' = p ! length p'"
-          unfolding dK2 using less by (simp add: nth_append)
-        ultimately show False using nthK' nthK2' x1x' by simp
-      next
-        case more
-        have "K ! length p = p' ! length p"
-          unfolding ed(1) using more by (simp add: nth_append)
-        moreover have "K2 ! length p = p' ! length p"
-          unfolding ed(2) using more by (simp add: nth_append)
-        ultimately show False using nthK nthK2 ne by simp
-      qed
-    qed
-    have peq: "p' = p"
-      using dK ed(1) same by (metis append_eq_append_conv)
-    have xx: "x' = x" using nthK nthK' same by simp
-    have x1x1: "x1' = x1" using nthK2 nthK2' same by simp
-    have req: "r = []"
-      using dK ed(1) peq xx by simp
-    show ?thesis using req ed(3) ed(4) xx x1x1 by simp
-  qed
-qed
+  shows "fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)"
+  using sibrel_ascent[OF R dK dK2 ne] by blast
 
 text \<open>Pure seam ingredients: the block head is the strict row-0 minimum of
   the block (via the row-0 ancestor chain), and runs are unchanged by an
@@ -6584,12 +6410,8 @@ lemma shf_sibrel:
 proof -
   from R consider (E) "K1 = K"
     | (P) D where "D \<noteq> []" "K = K1 @ D"
-    | (LX) p x x1 r r1 where
-        "snd (hd K) = maxr1 K" "snd (hd K1) = maxr1 K1"
-        "K = p @ x # r" "K1 = p @ x1 # r1"
-        "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
-    | (ED) p x x1 r1 where "K = p @ [x]" "K1 = p @ x1 # r1"
-        "fst x1 = fst x" "snd x1 < snd x"
+    | (FD) p x x1 r r1 where "K = p @ x # r" "K1 = p @ x1 # r1"
+        "fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)"
     unfolding sibrel_def by blast
   thus ?thesis
   proof cases
@@ -6602,33 +6424,16 @@ proof -
       unfolding P(2) shf_def by simp
     ultimately show ?thesis unfolding sibrel_def by blast
   next
-    case LX
-    have Kne: "K \<noteq> []" and K1ne: "K1 \<noteq> []" unfolding LX(3) LX(4) by simp_all
-    have hm: "snd (hd (shf s K)) = maxr1 (shf s K)"
-      using LX(1) Kne by (simp add: shf_hd shf_maxr1)
-    have hm1: "snd (hd (shf s K1)) = maxr1 (shf s K1)"
-      using LX(2) K1ne by (simp add: shf_hd shf_maxr1)
+    case FD
     have d1: "shf s K = shf s p @ (fst x + s, snd x) # shf s r"
-      unfolding LX(3) shf_def by simp
+      unfolding FD(1) shf_def by simp
     have d2: "shf s K1 = shf s p @ (fst x1 + s, snd x1) # shf s r1"
-      unfolding LX(4) shf_def by simp
-    have lxs: "(fst (fst x1 + s, snd x1) = fst (fst x + s, snd x)
-                \<and> snd (fst x1 + s, snd x1) < snd (fst x + s, snd x))
-               \<or> (fst (fst x1 + s, snd x1) < fst (fst x + s, snd x)
-                \<and> snd (fst x1 + s, snd x1) = snd (fst x + s, snd x))"
-      using LX(5) by auto
-    show ?thesis unfolding sibrel_def using hm hm1 d1 d2 lxs by blast
-  next
-    case ED
-    have d1: "shf s K = shf s p @ [(fst x + s, snd x)]"
-      unfolding ED(1) shf_def by simp
-    have d2: "shf s K1 = shf s p @ (fst x1 + s, snd x1) # shf s r1"
-      unfolding ED(2) shf_def by simp
-    have f: "fst (fst x1 + s, snd x1) = fst (fst x + s, snd x)"
-      using ED(3) by simp
-    have sd: "snd (fst x1 + s, snd x1) < snd (fst x + s, snd x)"
-      using ED(4) by simp
-    show ?thesis unfolding sibrel_def using d1 d2 f sd by blast
+      unfolding FD(2) shf_def by simp
+    have lxs: "fst (fst x1 + s, snd x1) < fst (fst x + s, snd x)
+               \<or> (fst (fst x1 + s, snd x1) = fst (fst x + s, snd x)
+                  \<and> snd (fst x1 + s, snd x1) < snd (fst x + s, snd x))"
+      using FD(3) by auto
+    show ?thesis unfolding sibrel_def using d1 d2 lxs by blast
   qed
 qed
 
@@ -6919,8 +6724,8 @@ proof
       have e0j: "entry M 0 j0 < entry M 0 j1" using hm0 j0j1 by simp
       have Mj1: "M ! j1 = (entry M 0 j1, entry M 1 j1)" using pairM by simp
       have neasc: "M ! j1 \<noteq> x \<and>
-          \<not> ((fst (M ! j1) = fst x \<and> snd (M ! j1) < snd x)
-             \<or> (fst (M ! j1) < fst x \<and> snd (M ! j1) = snd x))"
+          \<not> (fst (M ! j1) < fst x
+             \<or> (fst (M ! j1) = fst x \<and> snd (M ! j1) < snd x))"
       proof (cases "0 < i1")
         case False
         hence "d0 = 0" using d0d by simp
@@ -6993,28 +6798,6 @@ lemma seam_copyhead_m1_E2var:
     and "Suc j0 < j1"
     and "D = [M ! j1]"
     and "x \<in> set (drop (Suc j0) (take j1 M))" and "x \<noteq> M ! j1"
-  shows "sibrel (mrun Y a) (drop (Suc b) Y
-           @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1])"
-  sorry
-
-lemma seam_copyhead_m1_F2L2:
-  assumes "sibm2 M" and "blockok 0 M" and "M \<in> ST_PS"
-    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
-    and "i1 = idx1 M j1" and "hasParent M i1 j1"
-    and "j0 = parent M i1 j1"
-    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
-    and "Y = take j0 M @ concat (map (\<lambda>k.
-           map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<m])"
-    and "sibm2 Y"
-    and "a < length Y" and "0 < fst (Y ! a)"
-    and "b = Suc a + length (mrun Y a)" and "b < length Y"
-    and "fst (Y ! b) = fst (Y ! a)" and "snd (Y ! b) = snd (Y ! a)"
-    and "\<forall>x \<in> set (drop (Suc b) Y). fst (Y ! b) < fst x"
-    and "fst (Y ! b) < entry M 0 j0 + m * d0"
-    and "b = j0" and "m = 1"
-    and "mrun Y a = drop (Suc b) Y @ D" and "D \<noteq> []"
-    and "Suc j0 < j1"
-    and "fst (M ! j1) < fst (hd D)" and "snd (M ! j1) = snd (hd D)"
   shows "sibrel (mrun Y a) (drop (Suc b) Y
            @ map (\<lambda>j. (entry M 0 j + m * d0, entry M 1 j)) [j0..<j1])"
   sorry
@@ -7384,106 +7167,37 @@ proof -
     case hdne: False
     have decK: "K = blktail @ hd D # tl D" using KD DneC by metis
     have decM: "blktail @ [M ! j1] = blktail @ M ! j1 # []" by simp
-    have div: "(((fst (M ! j1) = fst (hd D) \<and> snd (M ! j1) < snd (hd D))
-                \<or> (fst (M ! j1) < fst (hd D) \<and> snd (M ! j1) = snd (hd D)))
-               \<and> snd (hd K) = maxr1 K
-               \<and> snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1]))
-             \<or> (tl D = [] \<and> fst (M ! j1) = fst (hd D) \<and> snd (M ! j1) < snd (hd D))"
+    have div: "fst (M ! j1) < fst (hd D)
+             \<or> (fst (M ! j1) = fst (hd D) \<and> snd (M ! j1) < snd (hd D))"
       by (rule sibrel_diverge[OF coreM decK decM hdne])
-    from div consider
-      (F1) "fst (M ! j1) = fst (hd D)" "snd (M ! j1) < snd (hd D)"
-           "snd (hd K) = maxr1 K"
-           "snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1])"
-      | (F2) "fst (M ! j1) < fst (hd D)" "snd (M ! j1) = snd (hd D)"
-           "snd (hd K) = maxr1 K"
-           "snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1])"
-      | (ED) "tl D = []" "fst (M ! j1) = fst (hd D)" "snd (M ! j1) < snd (hd D)"
-      by blast
-    thus ?thesis
-    proof cases
-      case F1
-      note hmK = F1(3) and hmKM = F1(4)
-      have hdbtM: "hd (blktail @ [M ! j1]) = hd blktail"
-        using btne by (simp add: hd_append)
-      have btmax: "snd (hd blktail) = maxr1 (blktail @ [M ! j1])"
-        using hmKM hdbtM by simp
-      have e1le: "snd (M ! j1) \<le> snd (hd blktail)"
-      proof -
-        have "snd (M ! j1) \<in> snd ` set (blktail @ [M ! j1])" by simp
-        thus ?thesis using btmax unfolding maxr1_def by simp
+    have lnk: "entry M 1 j0 < snd (M ! j1)" using e1j unfolding entry_def by simp
+    have decC: "blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1"
+      using C1hd by metis
+    have lexC: "fst (entry M 0 j1, entry M 1 j0) < fst (hd D)
+              \<or> (fst (entry M 0 j1, entry M 1 j0) = fst (hd D)
+                  \<and> snd (entry M 0 j1, entry M 1 j0) < snd (hd D))"
+    proof -
+      from div show ?thesis
+      proof
+        assume a: "fst (M ! j1) < fst (hd D)"
+        have "fst (entry M 0 j1, entry M 1 j0) = fst (M ! j1)"
+          unfolding entry_def by simp
+        thus ?thesis using a by simp
+      next
+        assume a: "fst (M ! j1) = fst (hd D) \<and> snd (M ! j1) < snd (hd D)"
+        have f: "fst (entry M 0 j1, entry M 1 j0) = fst (hd D)"
+          using a unfolding entry_def by simp
+        have "entry M 1 j0 < snd (hd D)" using lnk a by linarith
+        thus ?thesis using f by simp
       qed
-      have btle: "\<And>y. y \<in> set blktail \<Longrightarrow> snd y \<le> snd (hd blktail)"
-      proof -
-        fix y assume "y \<in> set blktail"
-        hence "snd y \<in> snd ` set (blktail @ [M ! j1])" by auto
-        thus "snd y \<le> snd (hd blktail)" using btmax unfolding maxr1_def by simp
-      qed
-      have e1top: "\<And>x. x \<in> set (blktail @ C1) \<Longrightarrow> snd x \<le> snd (hd blktail)"
-      proof -
-        fix x assume "x \<in> set (blktail @ C1)"
-        then consider (bt) "x \<in> set blktail" | (c1) "x \<in> set C1" by auto
-        thus "snd x \<le> snd (hd blktail)"
-        proof cases
-          case bt thus ?thesis by (rule btle)
-        next
-          case c1
-          have j0b: "entry M 1 j0 \<le> snd (hd blktail)"
-            using e1j e1le unfolding entry_def by simp
-          show ?thesis by (rule btsnd_le[OF btle c1 j0b])
-        qed
-      qed
-      have hdBC: "hd (blktail @ C1) = hd blktail" using btne by (simp add: hd_append)
-      have hmK1: "snd (hd (blktail @ C1)) = maxr1 (blktail @ C1)"
-      proof -
-        have mem: "snd (hd blktail) \<in> snd ` set (blktail @ C1)"
-          using btne by (metis hd_in_set image_eqI set_append UnI1)
-        have "Max (snd ` set (blktail @ C1)) = snd (hd blktail)"
-          by (rule Max_eqI) (use e1top mem in auto)
-        thus ?thesis unfolding maxr1_def hdBC by simp
-      qed
-      have desc1: "fst (entry M 0 j1, entry M 1 j0) = fst (hd D) \<and>
-                   snd (entry M 0 j1, entry M 1 j0) < snd (hd D)"
-      proof -
-        have "fst (M ! j1) = entry M 0 j1" unfolding entry_def by simp
-        moreover have "entry M 1 j0 < snd (M ! j1)"
-          using e1j unfolding entry_def by simp
-        ultimately show ?thesis using F1 by simp
-      qed
-      have decC: "blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1"
-        using C1hd by metis
-      have "snd (hd K) = maxr1 K \<and>
-            snd (hd (blktail @ C1)) = maxr1 (blktail @ C1) \<and>
-            K = blktail @ hd D # tl D \<and>
-            blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1 \<and>
-            ((fst (entry M 0 j1, entry M 1 j0) = fst (hd D) \<and>
-              snd (entry M 0 j1, entry M 1 j0) < snd (hd D))
-             \<or> (fst (entry M 0 j1, entry M 1 j0) < fst (hd D) \<and>
-                snd (entry M 0 j1, entry M 1 j0) = snd (hd D)))"
-        using hmK hmK1 decK decC desc1 by blast
-      thus ?thesis unfolding sibrel_def by blast
-    next
-      case F2
-      show ?thesis
-        using seam_copyhead_m1_F2L2[OF R B ST j1d j1nz i1d hp j0d d0d Yd SY
-            aY pos bdef bY fb sb ob high beq meq KDef Dne L2 F2(1) F2(2)]
-        unfolding K_def goalC by simp
-    next
-      case ED
-      have Ksing: "K = blktail @ [hd D]" using decK ED(1) by simp
-      have d4f: "fst (entry M 0 j1, entry M 1 j0) = fst (hd D)"
-        using ED(2) unfolding entry_def by simp
-      have lnk: "entry M 1 j0 < snd (M ! j1)" using e1j unfolding entry_def by simp
-      have e1lt: "entry M 1 j0 < snd (hd D)" using lnk ED(3) by linarith
-      have d4s: "snd (entry M 0 j1, entry M 1 j0) < snd (hd D)" using e1lt by simp
-      have decC: "blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1"
-        using C1hd by metis
-      have "K = blktail @ [hd D] \<and>
-            blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1 \<and>
-            fst (entry M 0 j1, entry M 1 j0) = fst (hd D) \<and>
-            snd (entry M 0 j1, entry M 1 j0) < snd (hd D)"
-        using Ksing decC d4f d4s by blast
-      thus ?thesis unfolding sibrel_def by blast
     qed
+    have "K = blktail @ hd D # tl D \<and>
+          blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1 \<and>
+          (fst (entry M 0 j1, entry M 1 j0) < fst (hd D)
+           \<or> (fst (entry M 0 j1, entry M 1 j0) = fst (hd D)
+               \<and> snd (entry M 0 j1, entry M 1 j0) < snd (hd D)))"
+      using decK decC lexC by blast
+    thus ?thesis unfolding sibrel_def by blast
   qed
   show ?thesis using main unfolding K_def[symmetric] goalC by simp
 qed
@@ -7705,38 +7419,22 @@ proof -
       case hdne: False
       have dK: "K = [] @ M ! (Suc a) # tl K" using Kdec by simp
       have dK2: "[M ! j1] = [] @ M ! j1 # []" by simp
-      have div: "(((fst (M ! j1) = fst (M ! (Suc a)) \<and> snd (M ! j1) < snd (M ! (Suc a)))
-                  \<or> (fst (M ! j1) < fst (M ! (Suc a)) \<and> snd (M ! j1) = snd (M ! (Suc a))))
-                 \<and> snd (hd K) = maxr1 K \<and> snd (hd [M ! j1]) = maxr1 [M ! j1])
-               \<or> (tl K = [] \<and> fst (M ! j1) = fst (M ! (Suc a))
-                   \<and> snd (M ! j1) < snd (M ! (Suc a)))"
+      have div: "fst (M ! j1) < fst (M ! (Suc a))
+               \<or> (fst (M ! j1) = fst (M ! (Suc a)) \<and> snd (M ! j1) < snd (M ! (Suc a)))"
         by (rule sibrel_diverge[OF coreM dK dK2]) (use hdne in simp)
       from div consider
         (F1) "fst (M ! j1) = fst (M ! (Suc a))" "snd (M ! j1) < snd (M ! (Suc a))"
-             "snd (hd K) = maxr1 K"
-        | (F2) "fst (M ! j1) < fst (M ! (Suc a))" "snd (M ! j1) = snd (M ! (Suc a))"
-        | (ED) "tl K = []" "fst (M ! j1) = fst (M ! (Suc a))"
-               "snd (M ! j1) < snd (M ! (Suc a))"
+        | (F2) "fst (M ! j1) < fst (M ! (Suc a))"
         by blast
       thus ?thesis
       proof cases
         case F1
-        note hmK = F1(3)
         have desc: "fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a))"
           unfolding xx_def using Mj1f Mj1s e1j F1 by simp
-        have "snd (hd K) = maxr1 K \<and> snd (hd [xx]) = maxr1 [xx] \<and>
-              K = [] @ M ! (Suc a) # tl K \<and> [xx] = [] @ xx # [] \<and>
-              ((fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a)))
-               \<or> (fst xx < fst (M ! (Suc a)) \<and> snd xx = snd (M ! (Suc a))))"
-          using hmK desc dK by (simp add: maxr1_def)
-        thus ?thesis unfolding sibrel_def by blast
-      next
-        case ED
-        have desc: "fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a))"
-          unfolding xx_def using Mj1f Mj1s e1j ED(2) ED(3) by simp
-        have "K = [] @ [M ! (Suc a)] \<and> [xx] = [] @ xx # [] \<and>
-              fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a))"
-          using dK ED(1) desc by simp
+        have "K = [] @ M ! (Suc a) # tl K \<and> [xx] = [] @ xx # [] \<and>
+              (fst xx < fst (M ! (Suc a))
+               \<or> (fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a))))"
+          using desc dK by simp
         thus ?thesis unfolding sibrel_def by blast
       next
         case F2
@@ -8026,8 +7724,8 @@ proof -
       unfolding K_def mrYb .
     define xx where "xx = (entry M 0 j0 + d0, entry M 1 j0)"
     have neasc: "M ! j1 \<noteq> xx \<and>
-        \<not> ((fst (M ! j1) = fst xx \<and> snd (M ! j1) < snd xx)
-           \<or> (fst (M ! j1) < fst xx \<and> snd (M ! j1) = snd xx))"
+        \<not> (fst (M ! j1) < fst xx
+           \<or> (fst (M ! j1) = fst xx \<and> snd (M ! j1) < snd xx))"
     proof -
       have Mj1: "M ! j1 = (entry M 0 j1, entry M 1 j1)" using pairM by simp
       have "fst xx = entry M 0 j1" unfolding xx_def using d0ex by simp
@@ -8051,10 +7749,7 @@ proof -
       from SYf consider (eqf) "K1 = K"
         | (pref) D where "D \<noteq> []" "K = K1 @ D"
         | (lxf) p x x1 r r1 where "K = p @ x # r" "K1 = p @ x1 # r1"
-            "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
-            "snd (hd K) = maxr1 K" "snd (hd K1) = maxr1 K1"
-        | (edf) p x x1 r1 where "K = p @ [x]" "K1 = p @ x1 # r1"
-            "fst x1 = fst x" "snd x1 < snd x"
+            "fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)"
         unfolding sibrel_def by blast
       thus ?thesis
       proof cases
@@ -8098,124 +7793,10 @@ proof -
         qed
       next
         case lxf
-        have K1ne: "K1 \<noteq> []" unfolding lxf(2) by simp
         have ext: "K1 @ C = p @ x1 # (r1 @ C)" unfolding lxf(2) by simp
-        have x1x: "x1 \<noteq> x" using lxf(3) by auto
-        have hdE: "hd (K1 @ C) = hd K1" using K1ne by simp
-        have ub: "snd (hd K1) \<le> maxr1 (K1 @ C)"
-          using K1ne by (intro maxr1_ub) (simp add: hd_in_set)
-        show ?thesis
-        proof (cases "1 < m")
-          case mgt: True
-          have bigle: "\<And>c'. c' \<in> set blk \<Longrightarrow> snd c' \<le> snd (hd K1)"
-          proof -
-            fix c' assume cb: "c' \<in> set blk"
-            have "(fst c' + d0, snd c') \<in> set (cp 1)"
-              using cb cpk_shf[of 1] unfolding shf_def by force
-            hence "(fst c' + d0, snd c') \<in> set K1"
-              using dropbY cdec2[OF mgt] by simp
-            hence "snd c' \<le> maxr1 K1"
-              using maxr1_ub[of "(fst c' + d0, snd c')" K1] by simp
-            thus "snd c' \<le> snd (hd K1)" using lxf(5) by simp
-          qed
-          have dwn: "maxr1 (K1 @ C) \<le> snd (hd K1)"
-          proof -
-            have "maxr1 (K1 @ C) \<in> snd ` set (K1 @ C)"
-              using K1ne by (intro maxr1_in) simp
-            then obtain c0 where c0: "c0 \<in> set (K1 @ C)" "snd c0 = maxr1 (K1 @ C)"
-              by (metis (no_types, lifting) imageE)
-            from c0(1) consider (inK1) "c0 \<in> set K1" | (inC) "c0 \<in> set C" by auto
-            thus ?thesis
-            proof cases
-              case inK1
-              have "snd c0 \<le> maxr1 K1" using inK1 by (rule maxr1_ub)
-              thus ?thesis using c0(2) lxf(5) by simp
-            next
-              case inC
-              obtain c' where "c' \<in> set blk" "snd c0 = snd c'"
-                using sndC[OF inC] by blast
-              thus ?thesis using bigle c0(2) by simp
-            qed
-          qed
-          have hmKC: "snd (hd (K1 @ C)) = maxr1 (K1 @ C)" using ub dwn hdE by simp
-          show ?thesis
-            unfolding sibrel_def
-            using lxf(1) ext lxf(3) lxf(4) hmKC by blast
-        next
-          case False
-          hence meq: "m = 1" using m1le by simp
-          have K1bt: "K1 = blktail" using dropbY unfolding meq by simp
-          have dvg: "blktail @ [M ! j1] = p @ x1 # (r1 @ [M ! j1])"
-            using lxf(2)[unfolded K1bt] by simp
-          from sibrel_diverge[OF coreM lxf(1) dvg x1x]
-          consider (hOK) "snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1])"
-            | (hED) "r = []" "fst x1 = fst x" "snd x1 < snd x"
-            by blast
-          thus ?thesis
-          proof cases
-            case hED
-            have Ke: "K = p @ [x]" unfolding lxf(1) hED(1) by simp
-            have "K = p @ [x] \<and> K1 @ C = p @ x1 # (r1 @ C)
-                  \<and> fst x1 = fst x \<and> snd x1 < snd x"
-              using Ke ext hED(2) hED(3) by blast
-            thus ?thesis unfolding sibrel_def by blast
-          next
-            case hOK
-            note hmM = hOK
-            have hdM: "hd (blktail @ [M ! j1]) = hd K1"
-              using K1ne unfolding K1bt by (cases blktail) auto
-            have bigle: "\<And>c'. c' \<in> set blk \<Longrightarrow> snd c' \<le> snd (hd K1)"
-            proof -
-              fix c' assume cb: "c' \<in> set blk"
-              from sndblk[OF cb] show "snd c' \<le> snd (hd K1)"
-              proof
-                assume "snd c' = entry M 1 j0"
-                moreover have "entry M 1 j1 \<le> maxr1 (blktail @ [M ! j1])"
-                proof -
-                  have "M ! j1 \<in> set (blktail @ [M ! j1])" by simp
-                  hence "snd (M ! j1) \<le> maxr1 (blktail @ [M ! j1])"
-                    by (rule maxr1_ub)
-                  thus ?thesis unfolding entry_def by simp
-                qed
-                ultimately show ?thesis using e1j hmM hdM by simp
-              next
-                assume "c' \<in> set blktail"
-                hence "snd c' \<le> maxr1 (blktail @ [M ! j1])"
-                  by (intro maxr1_ub) simp
-                thus ?thesis using hmM hdM by simp
-              qed
-            qed
-            have dwn: "maxr1 (K1 @ C) \<le> snd (hd K1)"
-            proof -
-              have "maxr1 (K1 @ C) \<in> snd ` set (K1 @ C)"
-                using K1ne by (intro maxr1_in) simp
-              then obtain c0 where c0: "c0 \<in> set (K1 @ C)" "snd c0 = maxr1 (K1 @ C)"
-                by (metis (no_types, lifting) imageE)
-              from c0(1) consider (inK1) "c0 \<in> set K1" | (inC) "c0 \<in> set C" by auto
-              thus ?thesis
-              proof cases
-                case inK1
-                have "snd c0 \<le> maxr1 K1" using inK1 by (rule maxr1_ub)
-                thus ?thesis using c0(2) lxf(5) by simp
-              next
-                case inC
-                obtain c' where "c' \<in> set blk" "snd c0 = snd c'"
-                  using sndC[OF inC] by blast
-                thus ?thesis using bigle c0(2) by simp
-              qed
-            qed
-            have hmKC: "snd (hd (K1 @ C)) = maxr1 (K1 @ C)" using ub dwn hdE by simp
-            show ?thesis
-              unfolding sibrel_def
-              using lxf(1) ext lxf(3) lxf(4) hmKC by blast
-          qed
-        qed
-      next
-        case edf
-        have ext: "K1 @ C = p @ x1 # (r1 @ C)" unfolding edf(2) by simp
-        have "K = p @ [x] \<and> K1 @ C = p @ x1 # (r1 @ C)
-              \<and> fst x1 = fst x \<and> snd x1 < snd x"
-          using edf(1) ext edf(3) edf(4) by blast
+        have "K = p @ x # r \<and> K1 @ C = p @ x1 # (r1 @ C)
+              \<and> (fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x))"
+          using lxf(1) ext lxf(3) by blast
         thus ?thesis unfolding sibrel_def by blast
       qed
     qed
@@ -8476,10 +8057,7 @@ proof -
     from SYf consider (eqf) "K1 = K"
       | (pref) D where "D \<noteq> []" "K = K1 @ D"
       | (lxf) p x x1 r r1 where "K = p @ x # r" "K1 = p @ x1 # r1"
-          "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
-          "snd (hd K) = maxr1 K" "snd (hd K1) = maxr1 K1"
-      | (edf) p x x1 r1 where "K = p @ [x]" "K1 = p @ x1 # r1"
-          "fst x1 = fst x" "snd x1 < snd x"
+          "fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)"
       unfolding sibrel_def by blast
     thus ?thesis
     proof cases
@@ -8498,11 +8076,7 @@ proof -
         from coreM consider (eq2) "K = P0 @ blk @ [M ! j1]"
           | (pre2) D2 where "D2 \<noteq> []" "K = (P0 @ blk @ [M ! j1]) @ D2"
           | (lx2) p x x1 r r1 where "K = p @ x # r" "P0 @ blk @ [M ! j1] = p @ x1 # r1"
-              "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
-              "snd (hd K) = maxr1 K"
-              "snd (hd (P0 @ blk @ [M ! j1])) = maxr1 (P0 @ blk @ [M ! j1])"
-          | (ed2) p x x1 r1 where "K = p @ [x]" "P0 @ blk @ [M ! j1] = p @ x1 # r1"
-              "fst x1 = fst x" "snd x1 < snd x"
+              "fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)"
           unfolding sibrel_def by blast
         thus ?thesis
         proof cases
@@ -8540,49 +8114,9 @@ proof -
                 using False by (simp add: butlast_append)
               ultimately show ?thesis using lx2(2) by simp
             qed
-            have hmP: "snd (hd (P0 @ blk)) = maxr1 (P0 @ blk)"
-            proof -
-              have ne: "take (length (P0 @ blk)) (P0 @ blk @ [M ! j1]) \<noteq> []"
-                using blkne by simp
-              have tk: "take (length (P0 @ blk)) (P0 @ blk @ [M ! j1]) = P0 @ blk"
-                by simp
-              show ?thesis
-                using hm_take[OF _ lx2(5), of "length (P0 @ blk)"] ne tk by simp
-            qed
             show ?thesis
               unfolding sibrel_def K1P0 CB
-              using lx2(1) bl lx2(3) lx2(4) hmP by blast
-          qed
-        next
-          case ed2
-          show ?thesis
-          proof (cases "r1 = []")
-            case True
-            have pe: "P0 @ blk = p \<and> M ! j1 = x1"
-            proof -
-              have "P0 @ blk @ [M ! j1] = (P0 @ blk) @ [M ! j1]" by simp
-              moreover have "p @ x1 # r1 = p @ [x1]" unfolding True by simp
-              ultimately show ?thesis
-                using ed2(2) by (metis butlast_snoc last_snoc)
-            qed
-            have "K = (K1 @ C) @ [x]"
-              unfolding K1P0 CB using ed2(1) pe by simp
-            moreover have "[x] \<noteq> []" by simp
-            ultimately show ?thesis unfolding sibrel_def by blast
-          next
-            case False
-            have bl: "P0 @ blk = p @ x1 # butlast r1"
-            proof -
-              have "butlast (P0 @ blk @ [M ! j1]) = P0 @ blk"
-                by (simp add: butlast_append)
-              moreover have "butlast (p @ x1 # r1) = p @ x1 # butlast r1"
-                using False by (simp add: butlast_append)
-              ultimately show ?thesis using ed2(2) by simp
-            qed
-            have "K = p @ [x] \<and> K1 @ C = p @ x1 # butlast r1
-                  \<and> fst x1 = fst x \<and> snd x1 < snd x"
-              using ed2(1) bl ed2(3) ed2(4) unfolding K1P0 CB by simp
-            thus ?thesis unfolding sibrel_def by blast
+              using lx2(1) bl lx2(3) by blast
           qed
         qed
       next
@@ -8620,8 +8154,8 @@ proof -
           have e0j: "entry M 0 j0 < entry M 0 j1" using hm0 j0j1 by simp
           have Mj1: "M ! j1 = (entry M 0 j1, entry M 1 j1)" using pairM by simp
           have neasc: "M ! j1 \<noteq> x \<and>
-              \<not> ((fst (M ! j1) = fst x \<and> snd (M ! j1) < snd x)
-                 \<or> (fst (M ! j1) < fst x \<and> snd (M ! j1) = snd x))"
+              \<not> (fst (M ! j1) < fst x
+                 \<or> (fst (M ! j1) = fst x \<and> snd (M ! j1) < snd x))"
           proof (cases "0 < i1")
             case False
             hence "d0 = 0" using d0d by simp
@@ -8642,110 +8176,10 @@ proof -
       qed
     next
       case lxf
-      have K1ne: "K1 \<noteq> []" unfolding lxf(2) by simp
       have ext: "K1 @ C = p @ x1 # (r1 @ C)" unfolding lxf(2) by simp
-      have x1x: "x1 \<noteq> x" using lxf(3) by auto
-      have hdE: "hd (K1 @ C) = hd K1" using K1ne by simp
-      have ub: "snd (hd K1) \<le> maxr1 (K1 @ C)"
-        using K1ne by (intro maxr1_ub) (simp add: hd_in_set)
-      show ?thesis
-      proof (cases m)
-        case m0: 0
-        have K1P0: "K1 = P0" using dropbY unfolding m0 by simp
-        have dvg: "P0 @ blk @ [M ! j1] = p @ x1 # (r1 @ blk @ [M ! j1])"
-          using lxf(2)[unfolded K1P0] by simp
-        from sibrel_diverge[OF coreM lxf(1) dvg x1x]
-        consider (hOK) "snd (hd (P0 @ blk @ [M ! j1])) = maxr1 (P0 @ blk @ [M ! j1])"
-          | (hED) "r = []" "fst x1 = fst x" "snd x1 < snd x"
-          by blast
-        thus ?thesis
-        proof cases
-          case hED
-          have Ke: "K = p @ [x]" unfolding lxf(1) hED(1) by simp
-          have "K = p @ [x] \<and> K1 @ C = p @ x1 # (r1 @ C)
-                \<and> fst x1 = fst x \<and> snd x1 < snd x"
-            using Ke ext hED(2) hED(3) by blast
-          thus ?thesis unfolding sibrel_def by blast
-        next
-          case hOK
-          note hmM = hOK
-          have hdM: "hd (P0 @ blk @ [M ! j1]) = hd K1"
-            using K1ne unfolding K1P0 by (cases P0) auto
-          have bigle: "\<And>c'. c' \<in> set blk \<Longrightarrow> snd c' \<le> snd (hd K1)"
-          proof -
-            fix c' assume cb: "c' \<in> set blk"
-            have "snd c' \<le> maxr1 (P0 @ blk @ [M ! j1])"
-              using cb by (intro maxr1_ub) simp
-            thus "snd c' \<le> snd (hd K1)" using hmM hdM by simp
-          qed
-          have dwn: "maxr1 (K1 @ C) \<le> snd (hd K1)"
-          proof -
-            have "maxr1 (K1 @ C) \<in> snd ` set (K1 @ C)"
-              using K1ne by (intro maxr1_in) simp
-            then obtain c0 where c0: "c0 \<in> set (K1 @ C)" "snd c0 = maxr1 (K1 @ C)"
-              by (metis (no_types, lifting) imageE)
-            from c0(1) consider (inK1) "c0 \<in> set K1" | (inC) "c0 \<in> set C" by auto
-            thus ?thesis
-            proof cases
-              case inK1
-              have "snd c0 \<le> maxr1 K1" using inK1 by (rule maxr1_ub)
-              thus ?thesis using c0(2) lxf(5) by simp
-            next
-              case inC
-              obtain c' where "c' \<in> set blk" "snd c0 = snd c'"
-                using sndC[OF inC] by blast
-              thus ?thesis using bigle c0(2) by simp
-            qed
-          qed
-          have hmKC: "snd (hd (K1 @ C)) = maxr1 (K1 @ C)" using ub dwn hdE by simp
-          show ?thesis
-            unfolding sibrel_def
-            using lxf(1) ext lxf(3) lxf(4) hmKC by blast
-        qed
-      next
-        case (Suc km)
-        have bigle: "\<And>c'. c' \<in> set blk \<Longrightarrow> snd c' \<le> snd (hd K1)"
-        proof -
-          fix c' assume cb: "c' \<in> set blk"
-          have cdec: "concat (map cp [0..<m]) = blk @ concat (map cp [1..<m])"
-          proof -
-            have "[0..<m] = 0 # [1..<m]" unfolding Suc by (simp add: upt_conv_Cons)
-            thus ?thesis using cp0 by simp
-          qed
-          have "c' \<in> set K1" using cb dropbY cdec by simp
-          hence "snd c' \<le> maxr1 K1" by (rule maxr1_ub)
-          thus "snd c' \<le> snd (hd K1)" using lxf(5) by simp
-        qed
-        have dwn: "maxr1 (K1 @ C) \<le> snd (hd K1)"
-        proof -
-          have "maxr1 (K1 @ C) \<in> snd ` set (K1 @ C)"
-            using K1ne by (intro maxr1_in) simp
-          then obtain c0 where c0: "c0 \<in> set (K1 @ C)" "snd c0 = maxr1 (K1 @ C)"
-            by (metis (no_types, lifting) imageE)
-          from c0(1) consider (inK1) "c0 \<in> set K1" | (inC) "c0 \<in> set C" by auto
-          thus ?thesis
-          proof cases
-            case inK1
-            have "snd c0 \<le> maxr1 K1" using inK1 by (rule maxr1_ub)
-            thus ?thesis using c0(2) lxf(5) by simp
-          next
-            case inC
-            obtain c' where "c' \<in> set blk" "snd c0 = snd c'"
-              using sndC[OF inC] by blast
-            thus ?thesis using bigle c0(2) by simp
-          qed
-        qed
-        have hmKC: "snd (hd (K1 @ C)) = maxr1 (K1 @ C)" using ub dwn hdE by simp
-        show ?thesis
-          unfolding sibrel_def
-          using lxf(1) ext lxf(3) lxf(4) hmKC by blast
-      qed
-    next
-      case edf
-      have ext: "K1 @ C = p @ x1 # (r1 @ C)" unfolding edf(2) by simp
-      have "K = p @ [x] \<and> K1 @ C = p @ x1 # (r1 @ C)
-            \<and> fst x1 = fst x \<and> snd x1 < snd x"
-        using edf(1) ext edf(3) edf(4) by blast
+      have "K = p @ x # r \<and> K1 @ C = p @ x1 # (r1 @ C)
+            \<and> (fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x))"
+        using lxf(1) ext lxf(3) by blast
       thus ?thesis unfolding sibrel_def by blast
     qed
   qed
@@ -11181,38 +10615,23 @@ next
     by (rule E6_tie_nofire_high1[OF assms(1) assms(2) assms(3) assms(4) assms(5) ge])
 qed
 
-text \<open>(lexdiff value lemma) For head-maximal dominated runs with equal head
-  level, a first-difference descent (equal level and smaller row 1, or
-  smaller level and equal row 1) strictly decreases the normalised value.
-  (Empirically: 1164974 cross-host pairs of truncated dominated runs,
-  zero failures.)\<close>
+text \<open>(fdlex value core) The sole frozen comparison core of the tie machinery
+  under \<open>sibrel6\<close>: on an adjacent tie-sibling pair whose runs diverge at the
+  first difference with a lexicographic drop, the projected normalized images
+  never invert — with \<^emph>\<open>no\<close> head-maximality and \<^emph>\<open>no\<close> position constraint
+  (closure+5: 10500 first-difference pairs, zero violations, including the
+  strict \<open>olt\<close> of the raw images; closure+6 shape check 0/1156797).
+  Subsumes the former \<open>NT_lexdiff_lt\<close> and \<open>NT_enddrop\<close>.\<close>
 
-lemma NT_lexdiff_lt:
-  assumes "dseg u K" and "dseg u1 K1"
-    and "snd (hd K) = maxr1 K" and "snd (hd K1) = maxr1 K1"
-    and "fst (hd K1) = fst (hd K)"
-    and "K = p @ x # r" and "K1 = p @ x1 # r1"
-    and "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
-  shows "olt (nrm (translate K1)) (nrm (translate K))"
-  sorry
-
-text \<open>Resolution of \<open>NT_tie\<close> from \<open>SIB_shape2\<close> (repaired, memo 続29): equal
-  runs give equal projections; a proper prefix is strictly below by prefix
-  monotonicity; a first-difference descent is strictly below by
-  \<open>NT_lexdiff_lt\<close>; projections are trivial by head-max no-fire (\<open>E6_hdom\<close>)
-  or tie no-fire (\<open>E6_tie_nofire0/1\<close>).  (Same stratified placement as the
-  other resolved lemmas.)\<close>
-
-text \<open>(end-drop value lemma) The branch-4 sibling shape: the earlier run ends
-  exactly one column past the shared prefix and the later run drops in row 1
-  there; the normalized image strictly descends, with no head-maximality
-  required (closure+3-reachable: 2403 pairs, zero violations).\<close>
-
-lemma NT_enddrop:
-  assumes "dseg u K" and "dseg u1 K1"
-    and "K = p @ [x]" and "K1 = p @ x1 # r1"
-    and "fst x1 = fst x" and "snd x1 < snd x"
-  shows "olt (nrm (translate K1)) (nrm (translate K))"
+lemma NT_tie_fdlex:
+  assumes "fbseg u (c # rest)"
+    and "dropWhile (\<lambda>r. fst c < fst r) rest = c1 # rest1"
+    and "snd c1 = snd c"
+    and "takeWhile (\<lambda>r. fst c < fst r) rest = p @ x # r"
+    and "takeWhile (\<lambda>r. fst c1 < fst r) rest1 = p @ x1 # r1"
+    and "fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)"
+  shows "\<not> olt (proj (snd c) (nrm (translate (takeWhile (\<lambda>r. fst c < fst r) rest))))
+               (proj (snd c1) (nrm (translate (takeWhile (\<lambda>r. fst c1 < fst r) rest1))))"
   sorry
 
 lemma NT_tie_resolved:
@@ -11250,15 +10669,18 @@ proof -
       show ?thesis by (rule E6_tie_nofire1[OF A T tie K1ne False])
     qed
   qed
-  from SIB_shape2[OF A T tie] show ?thesis
-    unfolding sibrel_def
-  proof (elim disjE)
-    assume eq: "?K1 = ?K"
+  from SIB_shape2[OF A T tie] consider (eq) "?K1 = ?K"
+    | (pre) D where "D \<noteq> []" "?K = ?K1 @ D"
+    | (fd) p x x1 r r1 where "?K = p @ x # r" "?K1 = p @ x1 # r1"
+        "fst x1 < fst x \<or> (fst x1 = fst x \<and> snd x1 < snd x)"
+    unfolding sibrel_def by blast
+  thus ?thesis
+  proof cases
+    case eq
     show ?thesis unfolding eq tie using olt_irrefl by blast
   next
-    assume "\<exists>D. D \<noteq> [] \<and> ?K = ?K1 @ D"
-    then obtain D where D: "D \<noteq> []" "?K = ?K1 @ D" by blast
-    have Kne: "?K \<noteq> []" using D by auto
+    case pre
+    have Kne: "?K \<noteq> []" using pre by auto
     have pK: "proj (snd c) (nrm (translate ?K)) = nrm (translate ?K)"
       by (rule proj_nofire[OF nfK[OF Kne]])
     show ?thesis
@@ -11271,72 +10693,29 @@ proof -
       case K1ne: False
       have pK1: "proj (snd c1) (nrm (translate ?K1)) = nrm (translate ?K1)"
         by (rule proj_nofire[OF nfK1[OF K1ne]])
-      from A obtain pre pp mid post
-        where h: "pre @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
+      from A obtain pre' pp mid post
+        where h: "pre' @ (pp # mid @ (c # rest)) @ post \<in> ST_PS"
         unfolding fbseg_def by blast
       have r: "rest = ?K @ dropWhile (\<lambda>r. fst c < fst r) rest" by simp
-      have eqh: "pre @ (pp # mid @ (c # rest)) @ post
-                 = (pre @ (pp # mid) @ [c]) @ ?K1 @ D
+      have eqh: "pre' @ (pp # mid @ (c # rest)) @ post
+                 = (pre' @ (pp # mid) @ [c]) @ ?K1 @ D
                    @ (dropWhile (\<lambda>r. fst c < fst r) rest @ post)"
-        by (subst r) (simp add: D(2))
-      have h2: "(pre @ (pp # mid) @ [c]) @ ?K1 @ D
+        by (subst r) (simp add: pre(2))
+      have h2: "(pre' @ (pp # mid) @ [c]) @ ?K1 @ D
                 @ (dropWhile (\<lambda>r. fst c < fst r) rest @ post) \<in> ST_PS"
         using h unfolding eqh .
       have "olt (nrm (translate ?K1)) (nrm (translate (?K1 @ D)))"
-        by (rule NT_prefix_lt[OF h2 K1ne D(1)])
+        by (rule NT_prefix_lt[OF h2 K1ne pre(1)])
       hence "olt (nrm (translate ?K1)) (nrm (translate ?K))"
-        using D(2) by simp
+        using pre(2) by simp
       thus ?thesis unfolding pK pK1
         using olt_total olt_irrefl olt_trans by blast
     qed
   next
-    assume L: "snd (hd ?K) = maxr1 ?K \<and> snd (hd ?K1) = maxr1 ?K1 \<and>
-        (\<exists>p x x1 r r1. ?K = p @ x # r \<and> ?K1 = p @ x1 # r1 \<and>
-           ((fst x1 = fst x \<and> snd x1 < snd x)
-            \<or> (fst x1 < fst x \<and> snd x1 = snd x)))"
-    then obtain p x x1 r r1 where w1: "?K = p @ x # r" and w2: "?K1 = p @ x1 # r1"
-      and lx: "(fst x1 = fst x \<and> snd x1 < snd x)
-               \<or> (fst x1 < fst x \<and> snd x1 = snd x)" by blast
-    have hmK: "snd (hd ?K) = maxr1 ?K" and hmK1: "snd (hd ?K1) = maxr1 ?K1"
-      using L by blast+
-    have Kne: "?K \<noteq> []" unfolding w1 by simp
-    have K1ne: "?K1 \<noteq> []" unfolding w2 by simp
-    have dsK: "dseg (snd c) ?K" by (rule fbseg_K_dseg[OF A Kne])
-    have dsK1: "dseg (snd c1) ?K1" by (rule fbseg_K_dseg[OF fbT K1ne])
-    have pK: "proj (snd c) (nrm (translate ?K)) = nrm (translate ?K)"
-      by (rule proj_nofire[OF E6_hdom[OF dsK hmK]])
-    have pK1: "proj (snd c1) (nrm (translate ?K1)) = nrm (translate ?K1)"
-      by (rule proj_nofire[OF E6_hdom[OF dsK1 hmK1]])
-    have lvl: "fst c1 = fst c" by (rule fbseg_hd_level[OF A T])
-    have lvlK: "fst (hd ?K) = Suc (fst c)"
-      by (rule fbseg_run_hd_level[OF A Kne])
-    have lvlK1: "fst (hd ?K1) = Suc (fst c1)"
-      by (rule fbseg_run_hd_level[OF fbT K1ne])
-    have hdlv: "fst (hd ?K1) = fst (hd ?K)" using lvlK lvlK1 lvl by simp
-    have "olt (nrm (translate ?K1)) (nrm (translate ?K))"
-      by (rule NT_lexdiff_lt[OF dsK dsK1 hmK hmK1 hdlv w1 w2 lx])
-    thus ?thesis unfolding pK pK1
-      using olt_total olt_irrefl olt_trans by blast
-  next
-    assume E: "\<exists>p x x1 r1. ?K = p @ [x] \<and> ?K1 = p @ x1 # r1
-                 \<and> fst x1 = fst x \<and> snd x1 < snd x"
-    then obtain p x x1 r1 where w1: "?K = p @ [x]" and w2: "?K1 = p @ x1 # r1"
-      and f: "fst x1 = fst x" and sd: "snd x1 < snd x" by blast
-    have Kne: "?K \<noteq> []" unfolding w1 by simp
-    have K1ne: "?K1 \<noteq> []" unfolding w2 by simp
-    have dsK: "dseg (snd c) ?K" by (rule fbseg_K_dseg[OF A Kne])
-    have dsK1: "dseg (snd c1) ?K1" by (rule fbseg_K_dseg[OF fbT K1ne])
-    have pK: "proj (snd c) (nrm (translate ?K)) = nrm (translate ?K)"
-      by (rule proj_nofire[OF nfK[OF Kne]])
-    have pK1: "proj (snd c1) (nrm (translate ?K1)) = nrm (translate ?K1)"
-      by (rule proj_nofire[OF nfK1[OF K1ne]])
-    have "olt (nrm (translate ?K1)) (nrm (translate ?K))"
-      by (rule NT_enddrop[OF dsK dsK1 w1 w2 f sd])
-    thus ?thesis unfolding pK pK1
-      using olt_total olt_irrefl olt_trans by blast
+    case fd
+    show ?thesis by (rule NT_tie_fdlex[OF A T tie fd(1) fd(2) fd(3)])
   qed
 qed
-
 
 text \<open>(cascade, K side) If the maximum lives in the head's dominated run and
   the segment fires, the head's run extends to the end, the head is visible,

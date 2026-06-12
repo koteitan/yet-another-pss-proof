@@ -3430,3 +3430,20 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 - (続72補2) **closure+6 確証: SIBREL6 0/1,156,797 first-diff 対（4,665,170
   ホスト）** — lex first-diff 形は6リング目も完全成立。構造的確信度が
   これまでで最高（lex 降下は自然な整礎関係・値核も hm なしで安定）。
+
+### (2026-06-13 続73) SIBREL6 リファクタ完結（緑・sorry 22）
+
+- 実装完了（ビルド18秒緑）:
+  - sibrel = **3分岐**（S1/S2/first-diff lex降下）— closure+6 0/1,156,797
+  - 代数全面書換: trunc（hm機械削除）/nopref/ascent（asc:=¬lex で False
+    復活）/diverge（= ascent の対偶1行）/shf — 全て短縮
+  - **NT_tie_fdlex 凍結**（proj レベル・10,500/0@+5）が唯一のタイ比較核。
+    NT_lexdiff_lt（116万監査）と NT_enddrop を**削除**
+  - copyhead/blift の lxf = 4行構築（bigle/hmKC/M側diverge 機械全廃）、
+    blift lx2 の hmP 削除、site1/2 の div 消費 = lex 2分岐に崩し
+  - **seam_copyhead_m1_F2L2 孤立化→削除**（lex 構築が直接カバー）
+  - neasc 3箇所を lex 反駁形に
+- sorry 24→22。タイ機構の凍結は NT_tie_fdlex 1点+残差（open_m1/P/E2var/
+  deep — 文面再監査が次）。**hm（頭最大）概念がタイ機構から完全消滅**。
+- 次: audit_seam_c3 を sibrel6 で再実行（python 同期済）→ open_m1（+3で
+  69違反だった）と P 残差（261件）の文面浄化 → 健全性総点検完了へ。
