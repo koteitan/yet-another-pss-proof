@@ -5271,7 +5271,7 @@ theorem hspan_discharge {G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ} {d0 n : 
       w0 < (((v0,w0) :: R).getD q (0,0)).2)
     (hBF2 : 0 < d0 → ∀ q, q < ((v0,w0) :: R).length →
       w0 ≤ (((v0,w0) :: R).getD q (0,0)).2)
-    (hMF3 : ∀ a, a < G.length →
+    (hMF3 : 0 < d0 → ∀ a, a < G.length →
       le0 (G ++ ((v0,w0) :: R) ++ [lp]) a G.length →
       (G.getD a (0,0)).2 < w0 →
       ∀ h, a < h → h < G.length → (G.getD h (0,0)).1 + 1 < lp.1)
@@ -5849,7 +5849,7 @@ theorem hspan_discharge {G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ} {d0 n : 
       rw [hentS 1 0 (by clear hnc; omega), Nat.add_zero]
       unfold entry
       rw [if_neg one_ne_zero, copyExp_getD_pre hslt]
-    have hpre := hMF3 u.length hslt hle0M (by rw [← hpre1]; exact hC1)
+    have hpre := hMF3 hd0p u.length hslt hle0M (by rw [← hpre1]; exact hC1)
     have hpre0 : ∀ j, j < S.length → u.length + j < G.length →
         (S.getD j (0,0)).1 = (G.getD (u.length + j) (0,0)).1 := by
       intro j hj hjg
@@ -6112,7 +6112,7 @@ def spanOK (M : PairSeq) : Prop :=
       w0 < (((v0,w0) :: R).getD q (0,0)).2)
     ∧ (0 < d0 → ∀ q, q < ((v0,w0) :: R).length →
       w0 ≤ (((v0,w0) :: R).getD q (0,0)).2)
-    ∧ (∀ a, a < G.length → le0 M a G.length →
+    ∧ (0 < d0 → ∀ a, a < G.length → le0 M a G.length →
       (G.getD a (0,0)).2 < w0 →
       ∀ h, a < h → h < G.length → (G.getD h (0,0)).1 + 1 < lp.1)
     ∧ (0 < w0 → 0 < d0 → ∀ q, 0 < q → q < ((v0,w0) :: R).length →
@@ -6146,7 +6146,7 @@ theorem classOK_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hM : classOK M)
           ((G ++ ((v0,w0) :: R) ++ [lp]).length - 1)) := by
       rw [← hMeq]
       exact hd0'
-    have hMF3' : ∀ a, a < G.length →
+    have hMF3' : 0 < d0 → ∀ a, a < G.length →
         le0 (G ++ ((v0,w0) :: R) ++ [lp]) a G.length →
         (G.getD a (0,0)).2 < w0 →
         ∀ h, a < h → h < G.length → (G.getD h (0,0)).1 + 1 < lp.1 := by
