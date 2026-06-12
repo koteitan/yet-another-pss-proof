@@ -3454,3 +3454,33 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   **全 sorry 文面が sibrel6 下で閉包+3 監査済みの真文面に復帰**。
   sibrel 健全性危機（続67〜73）はこれで完全終結。
   通常戦線（続64 優先順位）へ復帰可能。
+
+### (2026-06-13 続74) セッション総括ロールアップ（続55〜73）— 次セッション開幕はここから
+
+**討伐・導出（sorry 実質前進）**: E6_qcut_last（QDIAG凍結+リスト論証）/
+E6_iii_singleton（FBS）/ E6_seam 分割（seam_MIN 458k/0 + INV 426k/0）/
+**G6統一支配核**（E6_G6 凍結→E6_dom_tie・E6_lpl 討伐、dom_deep/
+dom_tie_resolved 削除）/ ginv_O1（証明済BTWRAPUのqa=0系と発見し完全証明）/
+BTWRAP_T3 分割（主部20,699証明・残差6件）/ OSC再構成（CT/GAP→O2+GCD 導出・
+i1>0真空性証明）/ TOP_desc ステート（967/0）/ QDIAG弱前提化。
+
+**★sibrel 健全性危機と終結（続67〜73・本セッション最大の事件）**:
+続29版 sibrel が閉包+3で偽（最終減少・NT_tie 結論は無傷）→ sibrel4(+4で偽)
+→ SIB5(+5で偽) → **SIBREL6 = first-diff lex 降下・3分岐**が閉包+6で
+0/1,156,797 対。値核 NT_tie_fdlex（proj比較 10,500/0）単一凍結に統合、
+hm 概念全廃（-747行）、NT_lexdiff_lt(116万監査)/NT_enddrop/F2L2 削除。
+全シーム文面 sibrel6 下で再監査済（open_m1 5,447/0・P 261/0・deep 45/0）。
+**教訓: 有限形状分類はコピー力学で閉じない。lex 降下が真の不変量。
+シーム系の監査は閉包+3以上必須（+1/+2 は4回すり抜けた）。**
+
+**現況**: sorry 22（nrmstep）+ nrm_order_pres（パス外）。ビルド緑 ~20秒。
+全凍結が監査済み真文面。
+
+**次セッションの優先順位**:
+1. **qpos**（171・続37補地図: q'=0 は e1j0<e1j1≤B で直証可能・q'≥1 は
+   qP=2 窓のみ — ginv_ob_copy の窓代数をテンプレートに分割実装）
+2. **t14ok_oper_bad**（続43補2 の15クラス地図実行・past クラスが新規内容）
+3. **OSC 核 O2/GCD**（振動規律: GCD の機構候補 =「正親の等値子は
+   nextrel1 一意性で禁止」— 要採掘。chains: バンプは0親のみ）
+4. **G6 本体**（T側閾値渡し再帰・seam_MIN を K側合成・wf3 OT3 部品）
+5. 最終組立（メガ束・続59 地図・全葉後）
