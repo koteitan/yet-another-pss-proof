@@ -8309,4 +8309,66 @@ theorem dichOK_shift {B : PairSeq} {d : ℕ} (h : dichOK B) :
   · right
     rw [hgd q hqB, hgd t htB, h9]
 
+/-- The `k`-th copy window of the expansion is the shifted block. -/
+theorem copyExp_copy_window {G B : PairSeq} {d0 n k : ℕ} (hk : k < n) :
+    ∀ w, w ≤ B.length →
+      ((copyExp G B d0 n).drop (G.length + k * B.length)).take w
+        = ((B.map fun p => (p.1 + k * d0, p.2)).drop 0).take w := by
+  intro w hw
+  rw [List.drop_zero]
+  have hsplit := copyExp_split G B d0 (le_of_lt hk)
+  obtain ⟨m, hm⟩ : ∃ m, n - k = m + 1 := ⟨n - k - 1, by omega⟩
+  rw [hm, List.range_succ_eq_map, List.flatMap_cons] at hsplit
+  simp only [Nat.add_zero] at hsplit
+  have hdrop : (copyExp G B d0 n).drop (G.length + k * B.length)
+      = (B.map fun p => (p.1 + k * d0, p.2))
+        ++ ((List.map Nat.succ (List.range m)).flatMap
+            fun i => B.map fun p => (p.1 + (k + i) * d0, p.2)) := by
+    conv_lhs => rw [hsplit]
+    rw [show G.length + k * B.length = (copyExp G B d0 k).length from
+          (copyExp_length ..).symm,
+        List.drop_left]
+  rw [hdrop, List.take_append_of_le_length (by rw [List.length_map]; omega)]
+
+/-- **The same-copy instances of the copy dichotomy**: edges inside one
+copy inherit the host block's dichotomy through the window, the shift and
+the infix closures. -/
+theorem dichOK_copy {G B : PairSeq} {d0 n k : ℕ} {lp : ℕ × ℕ}
+    {M : PairSeq} (hM : dichOK M) (hMeq : M = G ++ B ++ [lp])
+    (hk : k < n) :
+    ∀ p q t, t < B.length →
+      nextrel1 (copyExp G B d0 n) (G.length + k * B.length + p)
+        (G.length + k * B.length + t) →
+      le0 (copyExp G B d0 n) (G.length + k * B.length + p)
+        (G.length + k * B.length + q) →
+      q < t →
+      0 < ((copyExp G B d0 n).getD (G.length + k * B.length + q) (0,0)).2 →
+      le0 (copyExp G B d0 n) (G.length + k * B.length + q)
+        (G.length + k * B.length + t)
+      ∨ (copyExp G B d0 n).getD (G.length + k * B.length + q) (0,0)
+        = (copyExp G B d0 n).getD (G.length + k * B.length + t) (0,0) := by
+  intro p q t htm hnx hpq hqt hpos
+  -- the block inherits the dichotomy, then shifts
+  have hB : dichOK B := by
+    have h1 : dichOK (M.drop G.length) := dichOK_drop hM G.length
+    have h2 : M.drop G.length = B ++ [lp] := by
+      rw [hMeq, List.append_assoc, List.drop_left]
+    rw [h2] at h1
+    have h3 : dichOK ((B ++ [lp]).take B.length) := dichOK_take h1 _
+    have h4 : (B ++ [lp]).take B.length = B :=
+      List.take_left' rfl
+    rwa [h4] at h3
+  have hBs : dichOK (B.map fun p => (p.1 + k * d0, p.2)) := dichOK_shift hB
+  have hXlen : (copyExp G B d0 n).length = G.length + n * B.length :=
+    copyExp_length ..
+  have hnL : (k + 1) * B.length ≤ n * B.length :=
+    Nat.mul_le_mul_right B.length (by omega)
+  have hk1 : (k + 1) * B.length = k * B.length + B.length := by
+    rw [Nat.add_mul, Nat.one_mul]
+  exact dichOK_window (X := copyExp G B d0 n)
+    (Y := B.map fun x => (x.1 + k * d0, x.2))
+    (s := G.length + k * B.length) (sY := 0) (m := B.length)
+    (copyExp_copy_window hk) hBs
+    (by omega) (by rw [List.length_map]; omega) p q t htm hnx hpq hqt hpos
+
 end YAPSS
