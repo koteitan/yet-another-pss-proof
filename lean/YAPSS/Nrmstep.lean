@@ -8171,4 +8171,87 @@ theorem dichOK_of_take_eq {X Y : PairSeq} {m : ℕ}
     rw [hgd q (by omega) (by omega), hgd t htm htX]
     exact h9
 
+/-- The edge dichotomy transfers to any window given by a drop of a
+shared-prefix region: relations localize to the window. -/
+theorem dichOK_window {X Y : PairSeq} {s sY m : ℕ}
+    (hwin : ∀ w, w ≤ m → (X.drop s).take w = (Y.drop sY).take w)
+    (hY : dichOK Y)
+    (hmX : s + m ≤ X.length) (hmY : sY + m ≤ Y.length) :
+    ∀ p q t, t < m →
+      nextrel1 X (s + p) (s + t) → le0 X (s + p) (s + q) → q < t →
+      0 < (X.getD (s + q) (0,0)).2 →
+      le0 X (s + q) (s + t) ∨ X.getD (s + q) (0,0) = X.getD (s + t) (0,0) := by
+  intro p q t htm hnx hpq hqt hpos
+  -- localize to the X-window
+  have hW := hwin m le_rfl
+  have hXlen : m ≤ (X.drop s).length := by
+    rw [List.length_drop]
+    omega
+  have hYlen : m ≤ (Y.drop sY).length := by
+    rw [List.length_drop]
+    omega
+  -- getD correspondence
+  have hgd : ∀ j, j < m →
+      X.getD (s + j) (0,0) = Y.getD (sY + j) (0,0) := by
+    intro j hj
+    have h1 : (X.drop s).getD j (0,0) = ((X.drop s).take m).getD j (0,0) :=
+      (getD_take hj).symm
+    have h2 : ((Y.drop sY).take m).getD j (0,0)
+        = (Y.drop sY).getD j (0,0) := getD_take hj
+    have h3 := getD_drop (L := X) (n := s) (i := j) ((0,0) : ℕ × ℕ)
+    have h4 := getD_drop (L := Y) (n := sY) (i := j) ((0,0) : ℕ × ℕ)
+    rw [← h3, h1, hW, h2, h4]
+  -- relations through the window: X-side down
+  have hnx1 : nextrel1 (X.drop s) p t := by
+    have h9 := (nextrel1_drop_iff (M := X) (k := s) (a := s + p)
+      (b := s + t) (by omega) (by omega) (by omega)).2 hnx
+    rwa [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h9
+  have hpq1 : le0 (X.drop s) p q := by
+    have h9 := (le0_drop_iff (M := X) (k := s) (a := s + p)
+      (b := s + q) (by omega) (by omega) (by omega)).2 hpq
+    rwa [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h9
+  -- into the take, across, and up on the Y side
+  have hnx2 : nextrel1 (Y.drop sY) p t := by
+    have h9 : nextrel1 ((X.drop s).take m) p t :=
+      (nextrel1_take_iff htm (by omega)).2 hnx1
+    rw [hW] at h9
+    exact (nextrel1_take_iff htm (by omega)).1 h9
+  have hpq2 : le0 (Y.drop sY) p q := by
+    have h9 : le0 ((X.drop s).take m) p q :=
+      (le0_take_iff (m := m) (by omega) (by omega)).2 hpq1
+    rw [hW] at h9
+    exact (le0_take_iff (m := m) (by omega) (by omega)).1 h9
+  have hnxY : nextrel1 Y (sY + p) (sY + t) := by
+    have h9 := (nextrel1_drop_iff (M := Y) (k := sY) (a := sY + p)
+      (b := sY + t) (by omega) (by omega) (by omega)).1
+    rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h9
+    exact h9 hnx2
+  have hpqY : le0 Y (sY + p) (sY + q) := by
+    have h9 := (le0_drop_iff (M := Y) (k := sY) (a := sY + p)
+      (b := sY + q) (by omega) (by omega) (by omega)).1
+    rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h9
+    exact h9 hpq2
+  have hposY : 0 < (Y.getD (sY + q) (0,0)).2 := by
+    rw [← hgd q (by omega)]
+    exact hpos
+  rcases hY (sY + p) (sY + q) (sY + t) hnxY hpqY (by omega) hposY
+    with h9 | h9
+  · -- back down and across
+    left
+    have h10 := (le0_drop_iff (M := Y) (k := sY) (a := sY + q)
+      (b := sY + t) (by omega) (by omega) (by omega)).2 h9
+    rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h10
+    have h11 : le0 ((Y.drop sY).take m) q t :=
+      (le0_take_iff htm (by omega)).2 h10
+    rw [← hW] at h11
+    have h12 : le0 (X.drop s) q t :=
+      (le0_take_iff htm (by omega)).1 h11
+    have h13 := (le0_drop_iff (M := X) (k := s) (a := s + q)
+      (b := s + t) (by omega) (by omega) (by omega)).1
+    rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h13
+    exact h13 h12
+  · right
+    rw [hgd q (by omega), hgd t htm]
+    exact h9
+
 end YAPSS
