@@ -3251,3 +3251,19 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 - **方法論更新（最重要）**: コピーシーム系の凍結は closure+2 でも不足
   （本件は closure+3 で初出）。**全凍結文面の closure+3 再監査が必須**。
   以後、シーム/sibm2 系freeze は +3 を標準とする。
+
+- (続67補) **sibrel 修復設計確定**: 違反162対は完全一様 —
+  「**K 末尾での fst 等値 snd 降下**」（K = p@[x], K1 = p@x1#r1,
+  fst x1 = fst x, snd x1 < snd x、head-max 不要）。
+  **sibrel4 = 旧3分岐 + 第4分岐（末尾 snd 降下）: 0/729,131 対
+  （closure+3 95,182 ホスト全タイ対）**で監査クリア。
+- 修復実装計画:
+  1. sibrel 定義に第4分岐追加（nrmstep.thy）
+  2. sibrel を「供給」する側（sibm2_diagSeq/oper_bad シーム群）は disjunct
+     追加なので既存証明は原則無傷（弱化方向）。偽だった seam_open_m1 系の
+     残差クラスは第4分岐で再分類（要再採掘）
+  3. sibrel を「消費」する側に第4ケース追加: sibrel_trunc（打切吸収）と
+     SIB_shape2→NT_tie_resolved。NT_tie の第4分岐ケース = 末尾 snd 降下対の
+     proj 比較 — **新値補題（NT_enddrop）の採掘・凍結が必要**
+     （反例対で projK=D0(D1) vs projK1=D0(D0)、¬olt 成立確認済み）
+  4. 全シーム系凍結の closure+3 再監査（実行中: /tmp/c3_all.out）
