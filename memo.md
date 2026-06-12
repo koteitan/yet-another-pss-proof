@@ -3267,3 +3267,10 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
      proj 比較 — **新値補題（NT_enddrop）の採掘・凍結が必要**
      （反例対で projK=D0(D1) vs projK1=D0(D0)、¬olt 成立確認済み）
   4. 全シーム系凍結の closure+3 再監査（実行中: /tmp/c3_all.out）
+
+- (続67補2) **closure+3 全凍結再監査 — sibm2 系以外は全てクリア**:
+  G6 **0/3,447,851**（窓1.99M）/ seam_MIN 0/2,707,846 / seam_INV
+  0/2,556,336 / QDIAG(P2形) 0/151,510 / O1 0/56,565ブロック / O2 0/489 /
+  GCD 0/61 / BTWRAP_T3(i1=0 e0c) 0/83,606・_pos 0/60。
+  クラスは成長（GCD 7→61 等）したが違反ゼロ。偽は sibrel/sibm2 系のみと
+  確定（修復中）。TOP_desc/STS_B/FBS/lexdiff の +3 は次バッチ。
