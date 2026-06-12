@@ -7363,4 +7363,40 @@ theorem copyExp_split_corr {G R : PairSeq} {v0 w0 d0 n : ℕ}
         copyExp_getD_copy (by omega) (by omega)] at h1
     exact h1.symm
 
+/-- The triple profile transfers to any shifted suffix segment. -/
+theorem profile_transfer {B BX : PairSeq} {s q0 : ℕ}
+    (hcorr : ∀ q, q < BX.length →
+      (BX.getD q (0,0)).1 = (B.getD (q0 + q) (0,0)).1 + s)
+    (hlen : q0 + BX.length ≤ B.length)
+    (hprof : ∀ a q q', a < q → q < q' → q' < B.length →
+      (B.getD q (0,0)).1 + 1 + (B.getD a (0,0)).1
+        < 2 * (B.getD q' (0,0)).1) :
+    ∀ a q q', a < q → q < q' → q' < BX.length →
+      (BX.getD q (0,0)).1 + 1 + (BX.getD a (0,0)).1
+        < 2 * (BX.getD q' (0,0)).1 := by
+  intro a q q' ha hq hq'
+  rw [hcorr a (by omega), hcorr q (by omega), hcorr q' (by omega)]
+  have h9 := hprof (q0 + a) (q0 + q) (q0 + q') (by omega) (by omega)
+    (by omega)
+  omega
+
+/-- The fourth block fact at a last-copy split follows from the host's
+triple profile anchored at the split offset. -/
+theorem bf45_transfer {B BX : PairSeq} {s q0 vX dX : ℕ}
+    (hcorr : ∀ q, q < BX.length →
+      (BX.getD q (0,0)).1 = (B.getD (q0 + q) (0,0)).1 + s)
+    (hlen : q0 + BX.length + 1 = B.length)
+    (hvX : vX = (B.getD q0 (0,0)).1 + s)
+    (hdX : (B.getD (B.length - 1) (0,0)).1 + s = vX + dX)
+    (hprof : ∀ a q q', a < q → q < q' → q' < B.length →
+      (B.getD q (0,0)).1 + 1 + (B.getD a (0,0)).1
+        < 2 * (B.getD q' (0,0)).1) :
+    ∀ q, 0 < q → q < BX.length →
+      (BX.getD q (0,0)).1 + 1 < vX + 2 * dX := by
+  intro q hq0 hq
+  rw [hcorr q (by omega)]
+  have h9 := hprof q0 (q0 + q) (B.length - 1) (by omega) (by omega)
+    (by omega)
+  omega
+
 end YAPSS
