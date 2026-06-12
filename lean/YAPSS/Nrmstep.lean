@@ -4769,6 +4769,103 @@ theorem sclimb_rp_nextrel0 {M : PairSeq} {r' : ℕ}
     exact hafter l hl.1 (by omega)
 
 
+/-! ## Drop transfer and chain-pivot machinery -/
+
+theorem entry_drop {M : PairSeq} {k i j : ℕ} :
+    entry (M.drop k) i j = entry M i (k + j) := by
+  unfold entry
+  rw [getD_drop]
+
+theorem nextrel0_drop_iff {M : PairSeq} {k a b : ℕ} (hka : k ≤ a)
+    (hkb : k ≤ b) :
+    nextrel0 (M.drop k) (a - k) (b - k) ↔ nextrel0 M a b := by
+  unfold nextrel0
+  rw [List.length_drop]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨by omega, by omega, by omega, ?_, ?_⟩
+    · rwa [entry_drop, entry_drop, Nat.add_sub_cancel' hka,
+           Nat.add_sub_cancel' hkb] at h4
+    · intro l hl
+      have h6 := h5 (l - k) (by omega)
+      rwa [entry_drop, entry_drop, Nat.add_sub_cancel' hkb,
+           Nat.add_sub_cancel' (show k ≤ l by omega)] at h6
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨by omega, by omega, by omega, ?_, ?_⟩
+    · rw [entry_drop, entry_drop, Nat.add_sub_cancel' hka,
+          Nat.add_sub_cancel' hkb]
+      exact h4
+    · intro l hl
+      rw [entry_drop, entry_drop, Nat.add_sub_cancel' hkb]
+      exact h5 (k + l) (by omega)
+
+theorem rtg_nextrel0_of_drop {M : PairSeq} {k a' b' : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 (M.drop k)) a' b') :
+    Relation.ReflTransGen (nextrel0 M) (k + a') (k + b') := by
+  induction h with
+  | refl => exact .refl
+  | @tail y z _ hs ih =>
+    refine ih.tail ?_
+    have h2 := (nextrel0_drop_iff (M := M) (k := k) (a := k + y) (b := k + z)
+      (by omega) (by omega)).1
+    rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h2
+    exact h2 hs
+
+theorem rtg_nextrel0_to_drop {M : PairSeq} {k a b : ℕ} (hka : k ≤ a)
+    (h : Relation.ReflTransGen (nextrel0 M) a b) :
+    Relation.ReflTransGen (nextrel0 (M.drop k)) (a - k) (b - k) := by
+  induction h with
+  | refl => exact .refl
+  | @tail y z hay hs ih =>
+    have hky : k ≤ y := le_trans hka (nextrel0_rtrancl_index_le hay)
+    have hz := nextrel0_lt hs
+    exact ih.tail ((nextrel0_drop_iff hky (by omega)).2 hs)
+
+theorem le0_drop_iff {M : PairSeq} {k a b : ℕ} (hka : k ≤ a) (hkb : k ≤ b)
+    (hb : b < M.length) :
+    le0 (M.drop k) (a - k) (b - k) ↔ le0 M a b := by
+  unfold le0
+  rw [List.length_drop]
+  constructor
+  · rintro ⟨h1, h2, h3⟩
+    have h4 := rtg_nextrel0_of_drop (M := M) h3
+    rw [Nat.add_sub_cancel' hka, Nat.add_sub_cancel' hkb] at h4
+    exact ⟨by omega, hb, h4⟩
+  · rintro ⟨h1, h2, h3⟩
+    exact ⟨by omega, by omega, rtg_nextrel0_to_drop hka h3⟩
+
+/-- A row-0 chain cannot jump a strict floor: if every column in `(ρ, b]`
+sits strictly above `ρ`, any chain into `b` from before `ρ` passes
+through `ρ`. -/
+theorem rtg_through_pivot {M : PairSeq} {ρ : ℕ} :
+    ∀ {a b}, Relation.ReflTransGen (nextrel0 M) a b → a < ρ → ρ ≤ b →
+    (∀ y, ρ < y → y ≤ b → entry M 0 ρ < entry M 0 y) →
+    Relation.ReflTransGen (nextrel0 M) ρ b := by
+  intro a b h
+  induction h with
+  | refl =>
+    intro h1 h2 _
+    exact absurd (h1.trans_le h2) (lt_irrefl a)
+  | @tail y z hay hyz ih =>
+    intro h1 h2 hpiv
+    by_cases hρy : ρ ≤ y
+    · have ihy := ih h1 hρy
+        (fun y' hy1 hy2 => hpiv y' hy1 (hy2.trans (nextrel0_lt hyz).le))
+      exact ihy.tail hyz
+    · push Not at hρy
+      rcases eq_or_lt_of_le h2 with he | hlt
+      · rw [he]
+      · have hb5 := hyz.2.2.2.2 ρ ⟨hρy, hlt⟩
+        exact absurd (hpiv z hlt le_rfl) (not_lt.mpr hb5)
+
+theorem le0_through_pivot {M : PairSeq} {a ρ b : ℕ}
+    (h : le0 M a b) (h1 : a < ρ) (h2 : ρ ≤ b)
+    (hpiv : ∀ y, ρ < y → y ≤ b → entry M 0 ρ < entry M 0 y) :
+    le0 M ρ b := by
+  obtain ⟨_, hb, hch⟩ := h
+  exact ⟨by omega, hb, rtg_through_pivot hch h1 h2 hpiv⟩
+
+
 /-! ## The master segment discipline -/
 
 /-- **The master segment discipline**: every contiguous segment of the host
