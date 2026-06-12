@@ -7614,4 +7614,137 @@ theorem bf2_rootsplit {R RX : PairSeq} {v0 w0 vX wX s : ℕ}
   show w0 ≤ (((v0,w0) :: R).getD q (0,0)).2
   exact hBF2 q (by omega)
 
+/-- **Low ancestors of the last-copy root live in the prefix**: BF2
+excludes copy positions, and the chain restricts to the host prefix
+through the copy-0 root pivot. -/
+theorem rootsplit_low_ancestor {G R : PairSeq} {v0 w0 d0 n : ℕ}
+    {lp : ℕ × ℕ} {a : ℕ}
+    (hn : 1 ≤ n) (hd0p : 0 < d0)
+    (hdom : ∀ p ∈ R, v0 < p.1)
+    (hBF2 : ∀ q, q < ((v0,w0) :: R).length →
+      w0 ≤ (((v0,w0) :: R).getD q (0,0)).2)
+    (ha : a < G.length + (n - 1) * ((v0,w0) :: R).length)
+    (hle0 : le0 (copyExp G ((v0,w0) :: R) d0 n) a
+      (G.length + (n - 1) * ((v0,w0) :: R).length))
+    (ha2 : entry (copyExp G ((v0,w0) :: R) d0 n) 1 a < w0) :
+    a < G.length ∧ le0 (G ++ ((v0,w0) :: R) ++ [lp]) a G.length ∧
+      (G.getD a (0,0)).2 < w0 := by
+  have hL1 : 1 ≤ ((v0,w0) :: R).length := by simp
+  have hXlen : (copyExp G ((v0,w0) :: R) d0 n).length
+      = G.length + n * ((v0,w0) :: R).length := copyExp_length ..
+  have hnL : n * ((v0,w0) :: R).length
+      = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+    have h9 : n - 1 + 1 = n := by omega
+    calc n * ((v0,w0) :: R).length
+        = (n - 1 + 1) * ((v0,w0) :: R).length := by rw [h9]
+    _ = (n - 1) * ((v0,w0) :: R).length + 1 * ((v0,w0) :: R).length := by
+        rw [Nat.add_mul]
+    _ = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+        rw [Nat.one_mul]
+  -- a lies in the prefix
+  have hapre : a < G.length := by
+    by_contra hge
+    push Not at hge
+    obtain ⟨ka, qa, hqaL, hdma⟩ : ∃ ka qa, qa < ((v0,w0) :: R).length ∧
+        a - G.length = ((v0,w0) :: R).length * ka + qa :=
+      ⟨_, _, Nat.mod_lt _ (by omega),
+        (Nat.div_add_mod (a - G.length) ((v0,w0) :: R).length).symm⟩
+    have hcma : ((v0,w0) :: R).length * ka = ka * ((v0,w0) :: R).length :=
+      Nat.mul_comm ..
+    have hkan : ka < n := by
+      have h1 : ((v0,w0) :: R).length * ka
+          < ((v0,w0) :: R).length * n := by
+        have hcomm : n * ((v0,w0) :: R).length
+            = ((v0,w0) :: R).length * n := Nat.mul_comm ..
+        omega
+      exact Nat.lt_of_mul_lt_mul_left h1
+    have hav : entry (copyExp G ((v0,w0) :: R) d0 n) 1 a
+        = (((v0,w0) :: R).getD qa (0,0)).2 := by
+      rw [show a = G.length + (ka * ((v0,w0) :: R).length + qa) by omega]
+      exact (entry_copyExp hkan hqaL).2
+    rw [hav] at ha2
+    have h9 := hBF2 qa hqaL
+    omega
+  refine ⟨hapre, ?_, ?_⟩
+  · -- the chain restricts to the host
+    have hroot0 : entry (copyExp G ((v0,w0) :: R) d0 n) 0 G.length
+        = v0 := by
+      have h9 := (entry_copyExp (G := G) (B := (v0,w0) :: R) (d0 := d0)
+        (n := n) (k := 0) (q := 0) (by omega) (by omega)).1
+      simp only [Nat.zero_mul, Nat.add_zero] at h9
+      rw [h9, List.getD_cons_zero]
+    have hpiv : ∀ y, G.length < y →
+        y ≤ G.length + (n - 1) * ((v0,w0) :: R).length →
+        entry (copyExp G ((v0,w0) :: R) d0 n) 0 G.length
+          < entry (copyExp G ((v0,w0) :: R) d0 n) 0 y := by
+      intro y hy1 hy2
+      rw [hroot0]
+      obtain ⟨ky, qy, hqyL, hdmy⟩ : ∃ ky qy, qy < ((v0,w0) :: R).length ∧
+          y - G.length = ((v0,w0) :: R).length * ky + qy :=
+        ⟨_, _, Nat.mod_lt _ (by omega),
+          (Nat.div_add_mod (y - G.length) ((v0,w0) :: R).length).symm⟩
+      have hcmy : ((v0,w0) :: R).length * ky
+          = ky * ((v0,w0) :: R).length := Nat.mul_comm ..
+      have hkyn : ky < n := by
+        have h1 : ((v0,w0) :: R).length * ky
+            < ((v0,w0) :: R).length * n := by
+          have hcomm : n * ((v0,w0) :: R).length
+              = ((v0,w0) :: R).length * n := Nat.mul_comm ..
+          omega
+        exact Nat.lt_of_mul_lt_mul_left h1
+      have hey : entry (copyExp G ((v0,w0) :: R) d0 n) 0 y
+          = (((v0,w0) :: R).getD qy (0,0)).1 + ky * d0 := by
+        rw [show y = G.length + (ky * ((v0,w0) :: R).length + qy) by omega]
+        exact (entry_copyExp hkyn hqyL).1
+      rw [hey]
+      rcases Nat.eq_zero_or_pos qy with hqy0 | hqypos
+      · have hky1 : 1 ≤ ky := by
+          rcases Nat.eq_zero_or_pos ky with h0 | h1
+          · exfalso
+            rw [h0, Nat.mul_zero] at hdmy
+            omega
+          · exact h1
+        have hkd : 0 < ky * d0 := Nat.mul_pos hky1 hd0p
+        rw [hqy0, List.getD_cons_zero]
+        show v0 < (v0, w0).1 + ky * d0
+        omega
+      · obtain ⟨qy', rfl⟩ : ∃ qy', qy = qy' + 1 := ⟨qy - 1, by omega⟩
+        rw [List.getD_cons_succ]
+        have hmem : R.getD qy' (0,0) ∈ R := by
+          rw [getD_eq_getElem' _ _ (by
+            have h8 : ((v0,w0) :: R).length = R.length + 1 := rfl
+            omega)]
+          exact List.getElem_mem ..
+        have hv := hdom _ hmem
+        omega
+    have hle0g : le0 (copyExp G ((v0,w0) :: R) d0 n) a G.length :=
+      le0_to_pivot hle0 hapre (by omega) hpiv
+    have htkXM : (copyExp G ((v0,w0) :: R) d0 n).take
+        (G.length + ((v0,w0) :: R).length)
+        = (G ++ ((v0,w0) :: R) ++ [lp]).take
+          (G.length + ((v0,w0) :: R).length) := by
+      have htkX : (copyExp G ((v0,w0) :: R) d0 n).take
+          (G.length + ((v0,w0) :: R).length) = G ++ ((v0,w0) :: R) := by
+        have h9 := copyExp_take_at (G := G) (B := (v0,w0) :: R) (d0 := d0)
+          (n := n) (k := 0) (q := ((v0,w0) :: R).length) (by omega) le_rfl
+        simpa [copyExp] using h9
+      have htkM : (G ++ ((v0,w0) :: R) ++ [lp]).take
+          (G.length + ((v0,w0) :: R).length) = G ++ ((v0,w0) :: R) := by
+        have h9 := hostM_take_at (G := G) (B := (v0,w0) :: R) (lp := lp)
+          (q := ((v0,w0) :: R).length) le_rfl
+        rwa [List.take_length] at h9
+      rw [htkX, htkM]
+    have hMlen : (G ++ ((v0,w0) :: R) ++ [lp]).length
+        = G.length + ((v0,w0) :: R).length + 1 := hostM_length ..
+    have h9 := (le0_take_iff (m := G.length + ((v0,w0) :: R).length)
+      (by omega) (by rw [hXlen]; omega)).2 hle0g
+    rw [htkXM] at h9
+    exact (le0_take_iff (m := G.length + ((v0,w0) :: R).length)
+      (by omega) (by rw [hMlen]; omega)).1 h9
+  · have h9 : entry (copyExp G ((v0,w0) :: R) d0 n) 1 a
+        = (G.getD a (0,0)).2 := by
+      unfold entry
+      rw [if_neg one_ne_zero, copyExp_getD_pre hapre]
+    omega
+
 end YAPSS
