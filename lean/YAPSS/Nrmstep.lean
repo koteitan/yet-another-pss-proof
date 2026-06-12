@@ -6800,4 +6800,148 @@ theorem spanOK_diagSeq (v : ℕ) : spanOK (diagSeq 0 v) := by
     simp at hq2
     omega
 
+/-- The guard under which `oper` truncates: zero last column or no unique
+parent. -/
+def predGuard (N : PairSeq) : Prop :=
+  (entry N 0 (N.length - 1) = 0 ∧ entry N 1 (N.length - 1) = 0) ∨
+  ¬ hasParent N (idx1 N (N.length - 1)) (N.length - 1)
+
+/-- Guarded truncation images. -/
+inductive predImages : PairSeq → PairSeq → Prop
+  | refl (M : PairSeq) : predImages M M
+  | step {M N : PairSeq} (h : predImages M N) (hg : predGuard N) :
+      predImages M (Pred N)
+
+/-- The spanning block facts along all guarded truncations. -/
+def spanOKg (M : PairSeq) : Prop :=
+  ∀ N, predImages M N → spanOK N
+
+theorem spanOKg_spanOK {M : PairSeq} (h : spanOKg M) : spanOK M :=
+  h M (predImages.refl M)
+
+theorem predImages_trans {M N P : PairSeq} (h1 : predImages M N)
+    (h2 : predImages N P) : predImages M P := by
+  induction h2 with
+  | refl => exact h1
+  | step _ hg ih => exact ih.step hg
+
+theorem spanOKg_pred {M : PairSeq} (h : spanOKg M) (hg : predGuard M) :
+    spanOKg (Pred M) := by
+  intro N hN
+  exact h N (predImages_trans ((predImages.refl M).step hg) hN)
+
+theorem spanOKg_self {M : PairSeq} (h : spanOK M)
+    (hfix : ∀ N, predImages M N → N = M) : spanOKg M := by
+  intro N hN
+  rw [hfix N hN]
+  exact h
+
+/-- The diagonal's last column has the unique parent `v - 1`. -/
+theorem diag_hasParent (v : ℕ) (hv : 1 ≤ v) :
+    hasParent (diagSeq 0 v) (idx1 (diagSeq 0 v) ((diagSeq 0 v).length - 1))
+      ((diagSeq 0 v).length - 1) := by
+  have hlen : (diagSeq 0 v).length = v + 1 := diagSeq0_length v
+  have h9 : (diagSeq 0 v).length - 1 = v := by rw [hlen]; omega
+  rw [h9]
+  have hi1 : idx1 (diagSeq 0 v) v = 1 := by
+    unfold idx1
+    rw [if_pos]
+    unfold entry
+    rw [if_neg one_ne_zero, diagSeq0_getD (by omega)]
+    show 0 < (v, v).2
+    omega
+  rw [hi1]
+  have hedge : nextrel1 (diagSeq 0 v) (v - 1) v := by
+    refine ⟨by rw [hlen]; omega, by rw [hlen]; omega, by omega, ?_,
+      le0_diagSeq (by omega) (by omega), ?_⟩
+    · unfold entry
+      rw [if_neg one_ne_zero, if_neg one_ne_zero, diagSeq0_getD (by omega),
+          diagSeq0_getD (by omega)]
+      show (v - 1, v - 1).2 < (v, v).2
+      omega
+    · intro j hj
+      have hjv : j ≤ v := le0_le hj.2
+      have hj1 : j = v := by omega
+      rw [hj1]
+  refine ⟨v - 1, ?_, ?_⟩
+  · show nextrel1 (diagSeq 0 v) (v - 1) v
+    exact hedge
+  · intro y hy
+    have hy' : nextrel1 (diagSeq 0 v) y v := hy
+    exact nextrel1_unique hy' hedge
+
+theorem predImages_diag {v : ℕ} (hv : 1 ≤ v) :
+    ∀ N, predImages (diagSeq 0 v) N → N = diagSeq 0 v := by
+  intro N h
+  induction h with
+  | refl => rfl
+  | step h hg ih =>
+    exfalso
+    rw [ih] at hg
+    rcases hg with ⟨-, h1⟩ | hp
+    · unfold entry at h1
+      rw [if_neg one_ne_zero, diagSeq0_length,
+          show v + 1 - 1 = v by omega, diagSeq0_getD (by omega)] at h1
+      omega
+    · exact hp (diag_hasParent v hv)
+
+theorem predImages_diag_zero :
+    ∀ N, predImages (diagSeq 0 0) N → N = diagSeq 0 0 := by
+  intro N h
+  induction h with
+  | refl => rfl
+  | step h hg ih =>
+    rw [ih]
+    unfold Pred
+    rw [if_pos (by rw [diagSeq0_length])]
+
+theorem spanOKg_diagSeq (v : ℕ) : spanOKg (diagSeq 0 v) := by
+  rcases Nat.eq_zero_or_pos v with h0 | hv
+  · subst h0
+    exact spanOKg_self (spanOK_diagSeq 0) predImages_diag_zero
+  · exact spanOKg_self (spanOK_diagSeq v) (predImages_diag hv)
+
+/-- The remaining spanning obligation: the copy expansion and its guarded
+truncations satisfy the block facts. -/
+def copySpanOK (M : PairSeq) (n : ℕ) : Prop :=
+  ∀ G v0 w0 (R : PairSeq) (lp : ℕ × ℕ) d0,
+    M = G ++ ((v0,w0) :: R) ++ [lp] →
+    M⟦n⟧ = copyExp G ((v0,w0) :: R) d0 n →
+    (∀ p ∈ R, v0 < p.1) →
+    nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) →
+    ((d0 = 0 ∧ idx1 M (M.length - 1) = 0) ∨ (0 < d0 ∧ w0 < lp.2 ∧
+      lp.1 = v0 + d0 ∧ nextrel1 M G.length (M.length - 1))) →
+    spanOKg (M⟦n⟧)
+
+/-- **The spanning facts along the standard closure**, modulo the copy
+obligation. -/
+theorem spanOKg_ST_PS {M : PairSeq} (hM : ST_PS M)
+    (hbad : ∀ N k, ST_PS N → 1 ≤ k → copySpanOK N k) : spanOKg M := by
+  induction hM with
+  | diag v => exact spanOKg_diagSeq v
+  | @oper N k hN hk ih =>
+    by_cases hL0 : N.length - 1 = 0
+    · rw [oper_eq_self_of_short k hL0]
+      exact ih
+    by_cases hz : entry N 0 (N.length - 1) = 0 ∧ entry N 1 (N.length - 1) = 0
+    · rw [oper_eq_pred_of_zero k hL0 hz]
+      exact spanOKg_pred ih (Or.inl hz)
+    by_cases hp : hasParent N (idx1 N (N.length - 1)) (N.length - 1)
+    case neg =>
+      rw [oper_eq_pred_of_noParent k hL0 hz hp]
+      exact spanOKg_pred ih (Or.inr hp)
+    case pos =>
+      obtain ⟨G, v0, w0, R, d0, lp, hMeq, hX, hdom, -, hd0, hnxt⟩ :=
+        oper_bad_blocks (by omega) hz hp hk
+      exact hbad N k hN hk G v0 w0 R lp d0 hMeq hX hdom hnxt hd0
+
+/-- The invariant package with the spanning obligation reduced to the copy
+case. -/
+theorem I_ST_PS' {M : PairSeq} (hM : ST_PS M)
+    (hseam1 : ∀ N k, ST_PS N → 1 ≤ k → seamOK1 N k)
+    (hbad : ∀ N k, ST_PS N → 1 ≤ k → copySpanOK N k) :
+    hmok M ∧ tailok M ∧ classOK M :=
+  I_ST_PS hM hseam1
+    (fun N k hN _ => spanOKg_spanOK (spanOKg_ST_PS hN hbad))
+
 end YAPSS
