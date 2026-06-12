@@ -7844,4 +7844,45 @@ theorem rootsplit_hbound {G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
                 (((v0,w0) :: R).length - 1) (0,0)).1 := h10
           omega
 
+/-- **A one-root triggered block climbs by exactly one**: the last column's
+row-0 parent must be the root (a prefix parent's valley would lift the
+root to the last column's level), so the climb is `1`. -/
+theorem oneroot_d1 {G : PairSeq} {v0 w0 d0 : ℕ} {lp : ℕ × ℕ}
+    {M : PairSeq} (hr1 : r1ok M) (hMeq : M = G ++ [(v0,w0)] ++ [lp])
+    (hd0p : 0 < d0) (hlp1 : lp.1 = v0 + d0) : d0 = 1 := by
+  have hone : ([(v0,w0)] : PairSeq).length = 1 := rfl
+  have hMlen : M.length = G.length + 1 + 1 := by
+    rw [hMeq]
+    have h9 := hostM_length G [(v0,w0)] lp
+    rw [hone] at h9
+    exact h9
+  have hglp : M.getD (M.length - 1) (0,0) = lp := by
+    rw [show M.length - 1 = G.length + ([(v0,w0)] : PairSeq).length by
+        rw [hone]; omega, hMeq]
+    exact hostM_getD_lp
+  have hgroot : M.getD G.length (0,0) = (v0, w0) := by
+    have h9 := hostM_getD_blk (G := G) (B := [(v0,w0)]) (lp := lp)
+      (q := 0) (by rw [hone]; omega)
+    rw [Nat.add_zero] at h9
+    rw [hMeq, h9, List.getD_cons_zero]
+  have hlp1pos : 0 < (M.getD (M.length - 1) (0,0)).1 := by
+    rw [hglp]
+    omega
+  obtain ⟨k, hklt, hklev, hkval, -⟩ := hr1 (M.length - 1) (by omega) hlp1pos
+  rw [hglp] at hklev hkval
+  rcases Nat.lt_trichotomy k G.length with hk | hk | hk
+  · -- prefix parent: the valley lifts the root
+    exfalso
+    have h9 := hkval G.length hk (by omega)
+    rw [hgroot] at h9
+    have h9' : lp.1 ≤ v0 := h9
+    omega
+  · -- the root: climb is one
+    rw [hk, hgroot] at hklev
+    have hklev' : v0 + 1 = lp.1 := hklev
+    omega
+  · -- no positions between the root and the last column
+    exfalso
+    omega
+
 end YAPSS
