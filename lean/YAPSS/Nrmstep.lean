@@ -7153,4 +7153,101 @@ theorem predImages_copyExp_fix {N : PairSeq} {k : ℕ} {G R : PairSeq}
     rw [ih] at hg
     exact copyExp_noguard hN hk hX hdom hR hg
 
+/-- **Every block column is a row-0 descendant of the root**: the `r1ok`
+one-level descent stays inside the block (the valley condition at the root
+excludes prefix parents), so iterating it builds the ascending chain. -/
+theorem le0_block_root {M G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ}
+    (hr1 : r1ok M) (hMeq : M = G ++ ((v0,w0) :: R) ++ [lp])
+    (hdom : ∀ p ∈ R, v0 < p.1) :
+    ∀ q, q < ((v0,w0) :: R).length → le0 ((v0,w0) :: R) 0 q := by
+  have hBR : ((v0,w0) :: R).length = R.length + 1 := rfl
+  have hMlen : M.length = G.length + ((v0,w0) :: R).length + 1 := by
+    rw [hMeq]
+    exact hostM_length ..
+  have hgblk : ∀ q, q < ((v0,w0) :: R).length →
+      M.getD (G.length + q) (0,0) = ((v0,w0) :: R).getD q (0,0) := by
+    intro q hq
+    rw [hMeq]
+    exact hostM_getD_blk hq
+  -- strong induction on the level above the root
+  suffices h : ∀ d q, q < ((v0,w0) :: R).length →
+      (((v0,w0) :: R).getD q (0,0)).1 = v0 + d →
+      le0 ((v0,w0) :: R) 0 q by
+    intro q hq
+    rcases Nat.eq_zero_or_pos q with h0 | hqpos
+    · rw [h0]
+      exact ⟨by omega, by omega, .refl⟩
+    · obtain ⟨q', rfl⟩ : ∃ q', q = q' + 1 := ⟨q - 1, by omega⟩
+      have hmem : R.getD q' (0,0) ∈ R := by
+        rw [getD_eq_getElem' _ _ (by omega)]
+        exact List.getElem_mem ..
+      have hv := hdom _ hmem
+      refine h ((R.getD q' (0,0)).1 - v0) (q' + 1) hq ?_
+      rw [List.getD_cons_succ]
+      omega
+  intro d
+  induction d using Nat.strong_induction_on with
+  | _ d ih =>
+    intro q hq hlev
+    rcases Nat.eq_zero_or_pos d with hd0 | hdpos
+    · -- level v0: only the root
+      rcases Nat.eq_zero_or_pos q with h0 | hqpos
+      · rw [h0]
+        exact ⟨by omega, by omega, .refl⟩
+      · exfalso
+        obtain ⟨q', rfl⟩ : ∃ q', q = q' + 1 := ⟨q - 1, by omega⟩
+        have hmem : R.getD q' (0,0) ∈ R := by
+          rw [getD_eq_getElem' _ _ (by omega)]
+          exact List.getElem_mem ..
+        have hv := hdom _ hmem
+        rw [List.getD_cons_succ] at hlev
+        omega
+    · -- positive level: descend one step via r1ok
+      have hqpos : 0 < q := by
+        rcases Nat.eq_zero_or_pos q with h0 | hpos
+        · exfalso
+          rw [h0, List.getD_cons_zero] at hlev
+          omega
+        · exact hpos
+      have hjM : G.length + q < M.length := by omega
+      have hpos0 : 0 < (M.getD (G.length + q) (0,0)).1 := by
+        rw [hgblk q hq, hlev]
+        omega
+      obtain ⟨k, hklt, hklev, hkval, -⟩ := hr1 (G.length + q) hjM hpos0
+      rw [hgblk q hq, hlev] at hklev hkval
+      -- the parent stays in the block
+      have hkg : G.length ≤ k := by
+        by_contra hkpre
+        push Not at hkpre
+        have h9 := hkval G.length (by omega) (by omega)
+        have hroot : M.getD G.length (0,0) = (v0, w0) := by
+          have h10 := hgblk 0 (by omega)
+          rw [Nat.add_zero] at h10
+          rw [h10, List.getD_cons_zero]
+        rw [hroot] at h9
+        have h9' : v0 + d ≤ v0 := h9
+        omega
+      obtain ⟨q', hq'⟩ : ∃ q', k = G.length + q' := ⟨k - G.length, by omega⟩
+      have hq'lt : q' < ((v0,w0) :: R).length := by omega
+      have hq'q : q' < q := by omega
+      -- its level is one below
+      have hlev' : (((v0,w0) :: R).getD q' (0,0)).1 = v0 + (d - 1) := by
+        have h9 := hklev
+        rw [hq', hgblk q' hq'lt] at h9
+        omega
+      -- the in-block edge
+      have hedge : nextrel0 ((v0,w0) :: R) q' q := by
+        refine ⟨by omega, by omega, hq'q, ?_, ?_⟩
+        · unfold entry
+          rw [if_pos rfl, if_pos rfl, hlev', hlev]
+          omega
+        · intro l hl
+          have h9 := hkval (G.length + l) (by omega) (by omega)
+          rw [hgblk l (by omega)] at h9
+          unfold entry
+          rw [if_pos rfl, if_pos rfl, hlev]
+          exact h9
+      have hch := ih (d - 1) (by omega) q' hq'lt hlev'
+      exact ⟨by omega, by omega, hch.2.2.tail hedge⟩
+
 end YAPSS
