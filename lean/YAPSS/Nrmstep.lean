@@ -7916,4 +7916,105 @@ theorem oneroot_d1 {G : PairSeq} {v0 w0 d0 : ℕ} {lp : ℕ × ℕ}
     exfalso
     omega
 
+/-- **Row-1 intermediate value along the block descent**: any block column
+whose row 1 exceeds the root's admits a root-descendant sitting at exactly
+one above the root — the `r1ok` descent changes row 1 by at most one per
+step. -/
+theorem block_chain_ivp {M G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ}
+    (hr1 : r1ok M) (hMeq : M = G ++ ((v0,w0) :: R) ++ [lp])
+    (hdom : ∀ p ∈ R, v0 < p.1) :
+    ∀ q, q < ((v0,w0) :: R).length →
+      w0 + 1 ≤ (((v0,w0) :: R).getD q (0,0)).2 →
+      ∃ q', q' < ((v0,w0) :: R).length ∧ le0 ((v0,w0) :: R) 0 q' ∧
+        (((v0,w0) :: R).getD q' (0,0)).2 = w0 + 1 := by
+  have hBR : ((v0,w0) :: R).length = R.length + 1 := rfl
+  have hMlen : M.length = G.length + ((v0,w0) :: R).length + 1 := by
+    rw [hMeq]
+    exact hostM_length ..
+  have hgblk : ∀ q, q < ((v0,w0) :: R).length →
+      M.getD (G.length + q) (0,0) = ((v0,w0) :: R).getD q (0,0) := by
+    intro q hq
+    rw [hMeq]
+    exact hostM_getD_blk hq
+  suffices h : ∀ d q, q < ((v0,w0) :: R).length →
+      (((v0,w0) :: R).getD q (0,0)).1 = v0 + d →
+      w0 + 1 ≤ (((v0,w0) :: R).getD q (0,0)).2 →
+      ∃ q', q' < ((v0,w0) :: R).length ∧ le0 ((v0,w0) :: R) 0 q' ∧
+        (((v0,w0) :: R).getD q' (0,0)).2 = w0 + 1 by
+    intro q hq ht
+    rcases Nat.eq_zero_or_pos q with h0 | hqpos
+    · exfalso
+      rw [h0, List.getD_cons_zero] at ht
+      have ht' : w0 + 1 ≤ w0 := ht
+      omega
+    · obtain ⟨q'', rfl⟩ : ∃ q'', q = q'' + 1 := ⟨q - 1, by omega⟩
+      have hmem : R.getD q'' (0,0) ∈ R := by
+        rw [getD_eq_getElem' _ _ (by omega)]
+        exact List.getElem_mem ..
+      have hv := hdom _ hmem
+      refine h ((R.getD q'' (0,0)).1 - v0) (q'' + 1) hq ?_ ht
+      rw [List.getD_cons_succ]
+      omega
+  intro d
+  induction d using Nat.strong_induction_on with
+  | _ d ih =>
+    intro q hq hlev ht
+    rcases Nat.eq_zero_or_pos d with hd0 | hdpos
+    · -- level v0: only the root, whose row 1 is w0 < w0 + 1
+      exfalso
+      rcases Nat.eq_zero_or_pos q with h0 | hqpos
+      · rw [h0, List.getD_cons_zero] at ht
+        have ht' : w0 + 1 ≤ w0 := ht
+        omega
+      · obtain ⟨q'', rfl⟩ : ∃ q'', q = q'' + 1 := ⟨q - 1, by omega⟩
+        have hmem : R.getD q'' (0,0) ∈ R := by
+          rw [getD_eq_getElem' _ _ (by omega)]
+          exact List.getElem_mem ..
+        have hv := hdom _ hmem
+        rw [List.getD_cons_succ] at hlev
+        omega
+    · -- positive level: descend one step
+      have hqpos : 0 < q := by
+        rcases Nat.eq_zero_or_pos q with h0 | hpos
+        · exfalso
+          rw [h0, List.getD_cons_zero] at hlev
+          omega
+        · exact hpos
+      have hjM : G.length + q < M.length := by omega
+      have hpos0 : 0 < (M.getD (G.length + q) (0,0)).1 := by
+        rw [hgblk q hq, hlev]
+        omega
+      obtain ⟨k, hklt, hklev, hkval, hkr1⟩ :=
+        hr1 (G.length + q) hjM hpos0
+      rw [hgblk q hq, hlev] at hklev hkval
+      rw [hgblk q hq] at hkr1
+      have hkg : G.length ≤ k := by
+        by_contra hkpre
+        push Not at hkpre
+        have h9 := hkval G.length (by omega) (by omega)
+        have hroot : M.getD G.length (0,0) = (v0, w0) := by
+          have h10 := hgblk 0 (by omega)
+          rw [Nat.add_zero] at h10
+          rw [h10, List.getD_cons_zero]
+        rw [hroot] at h9
+        have h9' : v0 + d ≤ v0 := h9
+        omega
+      obtain ⟨q', hq'⟩ : ∃ q', k = G.length + q' := ⟨k - G.length, by omega⟩
+      have hq'lt : q' < ((v0,w0) :: R).length := by omega
+      have hlev' : (((v0,w0) :: R).getD q' (0,0)).1 = v0 + (d - 1) := by
+        have h9 := hklev
+        rw [hq', hgblk q' hq'lt] at h9
+        omega
+      have hkr1' : (((v0,w0) :: R).getD q (0,0)).2
+          ≤ (((v0,w0) :: R).getD q' (0,0)).2 + 1 := by
+        have h9 := hkr1
+        rw [hq', hgblk q' hq'lt] at h9
+        exact h9
+      by_cases hcase : w0 + 1 ≤ (((v0,w0) :: R).getD q' (0,0)).2
+      · exact ih (d - 1) (by omega) q' hq'lt hlev' hcase
+      · -- the parent is at or below w0: q itself sits at exactly w0 + 1
+        push Not at hcase
+        refine ⟨q, hq, le0_block_root hr1 hMeq hdom q hq, ?_⟩
+        omega
+
 end YAPSS
