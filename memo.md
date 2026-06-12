@@ -3310,3 +3310,18 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   - 8511圏 (blift m=0): 同上
   + seam_open_copyhead (7930/8046 elim) / seam_open_blift (8309-8497 elim) /
     sibm2_snoc_copy (9146 elim) の consider 4分岐化。
+
+- (続68補2) 呼び出し側修復 1/2 完了:
+  - **site1 seam_copyhead_m1_L2**: div を弱形に・3-way consider
+    （F1/F2 に hm を運搬・note で再束縛）・ED = branch-4 直接構築
+    （K=blktail@[hd D]・C1頭 (e0j1,e1j0) と fst等値・snd降下は
+    e1j+ED(3) を linarith 連鎖）。
+  - **site2 seam_copyhead_m1**: 同型・ED = K=[M!(Suc a)] 単集合 vs [xx]
+    の branch-4（desc は F1 と同じ Mj1f/Mj1s/e1j 導出）。
+  - **site3/4（seam_open_copyhead 8093 / seam_open_blift 8548）は保留**:
+    diverge 消費が hmKC 補助（bigle）の内部にあり、ED では hmKC 自体が
+    偽になり得る ⟹ micro-patch 不可、**lxf ケースレベルで branch-4 脱出**
+    （M側 core が branch-4 形なら Y側転送対も branch-4 形で目標 sibrel を
+    直接構築）に再設計が必要。seam_open 複合体（copyhead/blift/m1凍結）の
+    一体再設計として次に実施。残 elim: copyhead/blift 内 consider 群・
+    sibm2_snoc_copy (9146圏)。

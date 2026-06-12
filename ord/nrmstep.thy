@@ -7384,21 +7384,25 @@ proof -
     case hdne: False
     have decK: "K = blktail @ hd D # tl D" using KD DneC by metis
     have decM: "blktail @ [M ! j1] = blktail @ M ! j1 # []" by simp
-    have div: "((fst (M ! j1) = fst (hd D) \<and> snd (M ! j1) < snd (hd D))
+    have div: "(((fst (M ! j1) = fst (hd D) \<and> snd (M ! j1) < snd (hd D))
                 \<or> (fst (M ! j1) < fst (hd D) \<and> snd (M ! j1) = snd (hd D)))
                \<and> snd (hd K) = maxr1 K
-               \<and> snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1])"
+               \<and> snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1]))
+             \<or> (tl D = [] \<and> fst (M ! j1) = fst (hd D) \<and> snd (M ! j1) < snd (hd D))"
       by (rule sibrel_diverge[OF coreM decK decM hdne])
-    from div have hmK: "snd (hd K) = maxr1 K"
-      and hmKM: "snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1])"
-      by blast+
     from div consider
       (F1) "fst (M ! j1) = fst (hd D)" "snd (M ! j1) < snd (hd D)"
+           "snd (hd K) = maxr1 K"
+           "snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1])"
       | (F2) "fst (M ! j1) < fst (hd D)" "snd (M ! j1) = snd (hd D)"
+           "snd (hd K) = maxr1 K"
+           "snd (hd (blktail @ [M ! j1])) = maxr1 (blktail @ [M ! j1])"
+      | (ED) "tl D = []" "fst (M ! j1) = fst (hd D)" "snd (M ! j1) < snd (hd D)"
       by blast
     thus ?thesis
     proof cases
       case F1
+      note hmK = F1(3) and hmKM = F1(4)
       have hdbtM: "hd (blktail @ [M ! j1]) = hd blktail"
         using btne by (simp add: hd_append)
       have btmax: "snd (hd blktail) = maxr1 (blktail @ [M ! j1])"
@@ -7463,6 +7467,22 @@ proof -
         using seam_copyhead_m1_F2L2[OF R B ST j1d j1nz i1d hp j0d d0d Yd SY
             aY pos bdef bY fb sb ob high beq meq KDef Dne L2 F2(1) F2(2)]
         unfolding K_def goalC by simp
+    next
+      case ED
+      have Ksing: "K = blktail @ [hd D]" using decK ED(1) by simp
+      have d4f: "fst (entry M 0 j1, entry M 1 j0) = fst (hd D)"
+        using ED(2) unfolding entry_def by simp
+      have lnk: "entry M 1 j0 < snd (M ! j1)" using e1j unfolding entry_def by simp
+      have e1lt: "entry M 1 j0 < snd (hd D)" using lnk ED(3) by linarith
+      have d4s: "snd (entry M 0 j1, entry M 1 j0) < snd (hd D)" using e1lt by simp
+      have decC: "blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1"
+        using C1hd by metis
+      have "K = blktail @ [hd D] \<and>
+            blktail @ C1 = blktail @ (entry M 0 j1, entry M 1 j0) # tl C1 \<and>
+            fst (entry M 0 j1, entry M 1 j0) = fst (hd D) \<and>
+            snd (entry M 0 j1, entry M 1 j0) < snd (hd D)"
+        using Ksing decC d4f d4s by blast
+      thus ?thesis unfolding sibrel_def by blast
     qed
   qed
   show ?thesis using main unfolding K_def[symmetric] goalC by simp
@@ -7685,18 +7705,23 @@ proof -
       case hdne: False
       have dK: "K = [] @ M ! (Suc a) # tl K" using Kdec by simp
       have dK2: "[M ! j1] = [] @ M ! j1 # []" by simp
-      have div: "((fst (M ! j1) = fst (M ! (Suc a)) \<and> snd (M ! j1) < snd (M ! (Suc a)))
+      have div: "(((fst (M ! j1) = fst (M ! (Suc a)) \<and> snd (M ! j1) < snd (M ! (Suc a)))
                   \<or> (fst (M ! j1) < fst (M ! (Suc a)) \<and> snd (M ! j1) = snd (M ! (Suc a))))
-                 \<and> snd (hd K) = maxr1 K \<and> snd (hd [M ! j1]) = maxr1 [M ! j1]"
+                 \<and> snd (hd K) = maxr1 K \<and> snd (hd [M ! j1]) = maxr1 [M ! j1])
+               \<or> (tl K = [] \<and> fst (M ! j1) = fst (M ! (Suc a))
+                   \<and> snd (M ! j1) < snd (M ! (Suc a)))"
         by (rule sibrel_diverge[OF coreM dK dK2]) (use hdne in simp)
-      from div have hmK: "snd (hd K) = maxr1 K" by blast
       from div consider
         (F1) "fst (M ! j1) = fst (M ! (Suc a))" "snd (M ! j1) < snd (M ! (Suc a))"
+             "snd (hd K) = maxr1 K"
         | (F2) "fst (M ! j1) < fst (M ! (Suc a))" "snd (M ! j1) = snd (M ! (Suc a))"
+        | (ED) "tl K = []" "fst (M ! j1) = fst (M ! (Suc a))"
+               "snd (M ! j1) < snd (M ! (Suc a))"
         by blast
       thus ?thesis
       proof cases
         case F1
+        note hmK = F1(3)
         have desc: "fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a))"
           unfolding xx_def using Mj1f Mj1s e1j F1 by simp
         have "snd (hd K) = maxr1 K \<and> snd (hd [xx]) = maxr1 [xx] \<and>
@@ -7704,6 +7729,14 @@ proof -
               ((fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a)))
                \<or> (fst xx < fst (M ! (Suc a)) \<and> snd xx = snd (M ! (Suc a))))"
           using hmK desc dK by (simp add: maxr1_def)
+        thus ?thesis unfolding sibrel_def by blast
+      next
+        case ED
+        have desc: "fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a))"
+          unfolding xx_def using Mj1f Mj1s e1j ED(2) ED(3) by simp
+        have "K = [] @ [M ! (Suc a)] \<and> [xx] = [] @ xx # [] \<and>
+              fst xx = fst (M ! (Suc a)) \<and> snd xx < snd (M ! (Suc a))"
+          using dK ED(1) desc by simp
         thus ?thesis unfolding sibrel_def by blast
       next
         case F2
