@@ -7054,4 +7054,103 @@ theorem spanOK_roots_rootsplit {G : PairSeq} {v0 w0 d0 n : ℕ}
     simp at hwlt
     omega
 
+/-- A multi-column block keeps the expansion guard off: the last column is
+positive and, by standardness, uniquely parented. -/
+theorem copyExp_noguard {N : PairSeq} {k : ℕ} {G R : PairSeq} {v0 w0 d0 : ℕ}
+    (hN : ST_PS N) (hk : 1 ≤ k)
+    (hX : N⟦k⟧ = copyExp G ((v0,w0) :: R) d0 k)
+    (hdom : ∀ p ∈ R, v0 < p.1) (hR : R ≠ []) :
+    ¬ predGuard (N⟦k⟧) := by
+  have hL1 : 1 ≤ ((v0,w0) :: R).length := by simp
+  have hR1 : 1 ≤ R.length := by
+    rcases R with _ | ⟨r, R'⟩
+    · exact absurd rfl hR
+    · simp
+  have hBR : ((v0,w0) :: R).length = R.length + 1 := rfl
+  have hXlen : (N⟦k⟧).length = G.length + k * ((v0,w0) :: R).length := by
+    rw [hX]
+    exact copyExp_length ..
+  have hnL : k * ((v0,w0) :: R).length
+      = (k - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+    have h9 : k - 1 + 1 = k := by omega
+    calc k * ((v0,w0) :: R).length
+        = (k - 1 + 1) * ((v0,w0) :: R).length := by rw [h9]
+    _ = (k - 1) * ((v0,w0) :: R).length + 1 * ((v0,w0) :: R).length := by
+        rw [Nat.add_mul]
+    _ = (k - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
+        rw [Nat.one_mul]
+  -- the last column's row 0 is positive
+  have hlastpos : 0 < entry (N⟦k⟧) 0 ((N⟦k⟧).length - 1) := by
+    have hidx : (N⟦k⟧).length - 1
+        = G.length + ((k - 1) * ((v0,w0) :: R).length
+          + (((v0,w0) :: R).length - 1)) := by
+      rw [hXlen]
+      omega
+    unfold entry
+    rw [if_pos rfl, hidx, hX, copyExp_getD_copy (by omega) (by omega)]
+    obtain ⟨q', hq'⟩ : ∃ q', ((v0,w0) :: R).length - 1 = q' + 1 :=
+      ⟨((v0,w0) :: R).length - 2, by omega⟩
+    rw [hq', List.getD_cons_succ]
+    have hmem : R.getD q' (0,0) ∈ R := by
+      rw [getD_eq_getElem' _ _ (by omega)]
+      exact List.getElem_mem ..
+    have hv := hdom _ hmem
+    show 0 < (R.getD q' (0,0)).1 + (k - 1) * d0
+    omega
+  intro hg
+  rcases hg with ⟨h0, -⟩ | hp
+  · rw [h0] at hlastpos
+    exact absurd hlastpos (lt_irrefl 0)
+  · apply hp
+    have hSTX : ST_PS (N⟦k⟧) := ST_PS.oper hN hk
+    have hb := blockok_ST_PS hSTX
+    have hz := z0ok_ST_PS hSTX
+    have hlt : (N⟦k⟧).length - 1 < (N⟦k⟧).length := by
+      rw [hXlen]
+      have h9 : 1 ≤ k * ((v0,w0) :: R).length := by
+        calc 1 = 1 * 1 := rfl
+        _ ≤ k * ((v0,w0) :: R).length :=
+            Nat.mul_le_mul hk (by omega)
+      omega
+    by_cases hiX : idx1 (N⟦k⟧) ((N⟦k⟧).length - 1) = 0
+    · obtain ⟨p, hedge⟩ := parent0_exists hb hlt hlastpos
+      refine ⟨p, ?_, ?_⟩
+      · rw [hiX]
+        show nextrel0 (N⟦k⟧) p ((N⟦k⟧).length - 1)
+        exact hedge
+      · intro y hy
+        rw [hiX] at hy
+        have hy' : nextrel0 (N⟦k⟧) y ((N⟦k⟧).length - 1) := hy
+        exact nextrel0_unique hy' hedge
+    · have hpos1 : 0 < entry (N⟦k⟧) 1 ((N⟦k⟧).length - 1) := by
+        by_contra hc
+        exact hiX (by unfold idx1; rw [if_neg hc])
+      obtain ⟨p, hedge⟩ := parent1_exists hb hz hlt hpos1
+      have hi1 : idx1 (N⟦k⟧) ((N⟦k⟧).length - 1) = 1 := by
+        unfold idx1
+        rw [if_pos hpos1]
+      refine ⟨p, ?_, ?_⟩
+      · rw [hi1]
+        show nextrel1 (N⟦k⟧) p ((N⟦k⟧).length - 1)
+        exact hedge
+      · intro y hy
+        rw [hi1] at hy
+        have hy' : nextrel1 (N⟦k⟧) y ((N⟦k⟧).length - 1) := hy
+        exact nextrel1_unique hy' hedge
+
+/-- With a multi-column block the guarded chain from the expansion is
+trivial. -/
+theorem predImages_copyExp_fix {N : PairSeq} {k : ℕ} {G R : PairSeq}
+    {v0 w0 d0 : ℕ} (hN : ST_PS N) (hk : 1 ≤ k)
+    (hX : N⟦k⟧ = copyExp G ((v0,w0) :: R) d0 k)
+    (hdom : ∀ p ∈ R, v0 < p.1) (hR : R ≠ []) :
+    ∀ Y, predImages (N⟦k⟧) Y → Y = N⟦k⟧ := by
+  intro Y h
+  induction h with
+  | refl => rfl
+  | step h hg ih =>
+    exfalso
+    rw [ih] at hg
+    exact copyExp_noguard hN hk hX hdom hR hg
+
 end YAPSS
