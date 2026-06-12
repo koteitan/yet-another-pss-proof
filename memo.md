@@ -3411,3 +3411,18 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   5. **NT_lexdiff_lt・NT_enddrop 削除**（fdlex に統合・sorry -2）
   6. シーム凍結文面の sibrel6 再監査（open_m1 の69違反は SE⊆6 で解消見込み）
   7. +6 検証ジョブをバックグラウンド長期実行（V1 形のみ）
+
+- (続72補) sibrel6 実装手順（実行中・python 同期済み・+6 V1 ジョブ実行中）:
+  1. sibrel def → 3分岐（S1/S2/FD-lex）
+  2. 代数書換: trunc（diff ケースの hm 機械削除・lex 転送のみ）/
+     nopref（3ケース）/ ascent（asc := ¬lex で False 復活・呼び出し3箇所の
+     neasc に lex 反駁を追加: d0=0 は fst 逆・d0>0 は snd 逆）/
+     diverge（結論 = lex のみ）/ shf（lex はシフト保存）
+  3. NT_tie_resolved → eq/prefix/fdlex 3ケース・
+     **NT_tie_fdlex 凍結**（proj レベル・fbseg タイ対・10,500/0@+5）・
+     **NT_lexdiff_lt と NT_enddrop を削除**（正味 sorry -1）
+  4. seam 供給側: copyhead/blift の lxf は branch-3'直接構築で
+     **bigle/hmKC/diverge 機械が丸ごと不要**（数行に縮む）。site1/2 の
+     div ケース分析も縮小（E2var/F2L2 残差呼び出しの場合分けだけ残る）
+  5. audit_seam_c3 を sibrel6 で再実行 → open_m1/P 残差の文面浄化
+  6. +6 V1 確認（/tmp/sib6_c6.out）
