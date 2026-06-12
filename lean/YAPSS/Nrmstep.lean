@@ -8371,4 +8371,39 @@ theorem dichOK_copy {G B : PairSeq} {d0 n k : ℕ} {lp : ℕ × ℕ}
     (copyExp_copy_window hk) hBs
     (by omega) (by rw [List.length_map]; omega) p q t htm hnx hpq hqt hpos
 
+/-- **The prefix instances of the copy dichotomy** transfer through the
+shared base. -/
+theorem dichOK_pre {G B : PairSeq} {lp : ℕ × ℕ} {d0 n : ℕ} {M : PairSeq}
+    (hM : dichOK M) (hMeq : M = G ++ B ++ [lp]) (hn : 1 ≤ n)
+    (hB1 : 1 ≤ B.length) :
+    ∀ p q t, t < G.length →
+      nextrel1 (copyExp G B d0 n) p t →
+      le0 (copyExp G B d0 n) p q → q < t →
+      0 < ((copyExp G B d0 n).getD q (0,0)).2 →
+      le0 (copyExp G B d0 n) q t
+      ∨ (copyExp G B d0 n).getD q (0,0)
+        = (copyExp G B d0 n).getD t (0,0) := by
+  have htkXM : (copyExp G B d0 n).take (G.length + B.length)
+      = M.take (G.length + B.length) := by
+    have htkX : (copyExp G B d0 n).take (G.length + B.length)
+        = G ++ B := by
+      have h9 := copyExp_take_at (G := G) (B := B) (d0 := d0)
+        (n := n) (k := 0) (q := B.length) (by omega) le_rfl
+      simpa [copyExp] using h9
+    have htkM : M.take (G.length + B.length) = G ++ B := by
+      rw [hMeq]
+      have h9 := hostM_take_at (G := G) (B := B) (lp := lp)
+        (q := B.length) le_rfl
+      rwa [List.take_length] at h9
+    rw [htkX, htkM]
+  have hXlen : (copyExp G B d0 n).length = G.length + n * B.length :=
+    copyExp_length ..
+  have hMlen : M.length = G.length + B.length + 1 := by
+    rw [hMeq]
+    exact hostM_length ..
+  intro p q t ht hnx hpq hqt hpos
+  exact dichOK_of_take_eq htkXM hM p q t (by omega)
+    (by rw [hXlen]; have := Nat.mul_le_mul_right B.length hn; omega)
+    (by omega) hnx hpq hqt hpos
+
 end YAPSS
