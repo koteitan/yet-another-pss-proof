@@ -7399,4 +7399,20 @@ theorem bf45_transfer {B BX : PairSeq} {s q0 vX dX : ℕ}
     (by omega)
   omega
 
+/-- At a last-copy split whose suffix consists of ancestors of the tail,
+the parent-edge maximality pushes every later row-1 strictly above the
+split head's. -/
+theorem split_row1_strict {X : PairSeq} {gX last : ℕ}
+    (hedge : nextrel1 X gX last)
+    (hanc : ∀ j, gX < j → j < last → le0 X j last) :
+    ∀ j, gX < j → j ≤ last →
+      entry X 1 gX < entry X 1 j := by
+  intro j hj1 hj2
+  have hC1 := hedge.2.2.2.1
+  rcases Nat.eq_or_lt_of_le hj2 with he | hlt
+  · rw [he]
+    exact hC1
+  · have hmax := hedge.2.2.2.2.2 j ⟨hj1, hanc j hj1 hlt⟩
+    omega
+
 end YAPSS
