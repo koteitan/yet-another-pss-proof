@@ -8106,4 +8106,37 @@ theorem dichOK_Pred {M : PairSeq} (h : dichOK M) : dichOK (Pred M) := by
   · rw [if_neg hl, List.dropLast_eq_take]
     exact dichOK_take h _
 
+/-- The copy obligation for the edge dichotomy. -/
+def copyDichOK (M : PairSeq) (n : ℕ) : Prop :=
+  ∀ G v0 w0 (R : PairSeq) (lp : ℕ × ℕ) d0,
+    M = G ++ ((v0,w0) :: R) ++ [lp] →
+    M⟦n⟧ = copyExp G ((v0,w0) :: R) d0 n →
+    (∀ p ∈ R, v0 < p.1) →
+    nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) →
+    ((d0 = 0 ∧ idx1 M (M.length - 1) = 0) ∨ (0 < d0 ∧ w0 < lp.2 ∧
+      lp.1 = v0 + d0 ∧ nextrel1 M G.length (M.length - 1))) →
+    dichOK (M⟦n⟧)
+
+/-- **The edge dichotomy along the standard closure**, modulo the copy
+obligation: the truncation branches are unconditional. -/
+theorem dichOK_ST_PS {M : PairSeq} (hM : ST_PS M)
+    (hbad : ∀ N k, ST_PS N → 1 ≤ k → copyDichOK N k) : dichOK M := by
+  induction hM with
+  | diag v => exact dichOK_diagSeq v
+  | @oper N k hN hk ih =>
+    by_cases hL0 : N.length - 1 = 0
+    · rw [oper_eq_self_of_short k hL0]
+      exact ih
+    by_cases hz : entry N 0 (N.length - 1) = 0 ∧ entry N 1 (N.length - 1) = 0
+    · rw [oper_eq_pred_of_zero k hL0 hz]
+      exact dichOK_Pred ih
+    by_cases hp : hasParent N (idx1 N (N.length - 1)) (N.length - 1)
+    case neg =>
+      rw [oper_eq_pred_of_noParent k hL0 hz hp]
+      exact dichOK_Pred ih
+    case pos =>
+      obtain ⟨G, v0, w0, R, d0, lp, hMeq, hX, hdom, -, hd0, hnxt⟩ :=
+        oper_bad_blocks (by omega) hz hp hk
+      exact hbad N k hN hk G v0 w0 R lp d0 hMeq hX hdom hnxt hd0
+
 end YAPSS
