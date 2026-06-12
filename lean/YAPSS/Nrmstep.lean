@@ -6083,4 +6083,72 @@ theorem hspan_discharge {G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ} {d0 n : 
           clear hnc
           omega
 
+/-- **The spanning block facts** (all mined exact): for the parent
+decomposition of the host, (1) row-0 descendants of the block root with
+positive row 1 sit strictly above the root's row 1; (2) in the triggered
+branch the root's row 1 is minimal in its block; (3) prefix row-0 ancestors
+of the parent with row 1 below the root see everything after them below
+`lp.1 - 1`; (4) block interiors stay below `v0 + 2*d0`. -/
+def spanOK (M : PairSeq) : Prop :=
+  ∀ G v0 w0 R (lp : ℕ × ℕ) d0,
+    M = G ++ ((v0, w0) :: R) ++ [lp] →
+    nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) →
+    (d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
+      nextrel1 M G.length (M.length - 1))) →
+    (∀ q, q < ((v0,w0) :: R).length →
+      le0 ((v0,w0) :: R) 0 q → 0 < (((v0,w0) :: R).getD q (0,0)).2 →
+      w0 < (((v0,w0) :: R).getD q (0,0)).2)
+    ∧ (0 < d0 → ∀ q, q < ((v0,w0) :: R).length →
+      w0 ≤ (((v0,w0) :: R).getD q (0,0)).2)
+    ∧ (∀ a, a < G.length → le0 M a G.length →
+      (G.getD a (0,0)).2 < w0 →
+      ∀ h, a < h → h < G.length → (G.getD h (0,0)).1 + 1 < lp.1)
+    ∧ (0 < w0 → 0 < d0 → ∀ q, 0 < q → q < ((v0,w0) :: R).length →
+      (((v0,w0) :: R).getD q (0,0)).1 + 1 < v0 + 2 * d0)
+
+/-- **`classOK` is preserved by the expansion step**, given the spanning
+block facts of the host. -/
+theorem classOK_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hM : classOK M)
+    (hsp : spanOK M) : classOK (M⟦n⟧) := by
+  by_cases hL0 : M.length - 1 = 0
+  · rw [oper_eq_self_of_short n hL0]
+    exact hM
+  by_cases hz : entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0
+  · rw [oper_eq_pred_of_zero n hL0 hz]
+    exact classOK_Pred hM
+  by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
+  case neg =>
+    rw [oper_eq_pred_of_noParent n hL0 hz hp]
+    exact classOK_Pred hM
+  case pos =>
+    obtain ⟨G, v0, w0, R, d0, lp, hMeq, hX, hdom, _hlpgt, hd0, hnxt⟩ :=
+      oper_bad_blocks (by omega) hz hp hn
+    rw [hX]
+    show classOK (copyExp G ((v0,w0) :: R) d0 n)
+    have hd0' : d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
+        nextrel1 M G.length (M.length - 1)) := hd0.imp (·.1) id
+    obtain ⟨hBF1, hBF2, hMF3, hBF45⟩ := hsp G v0 w0 R lp d0 hMeq hnxt hd0'
+    have hMc : classOK (G ++ ((v0,w0) :: R) ++ [lp]) := hMeq ▸ hM
+    have hd0M : d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
+        nextrel1 (G ++ ((v0,w0) :: R) ++ [lp]) G.length
+          ((G ++ ((v0,w0) :: R) ++ [lp]).length - 1)) := by
+      rw [← hMeq]
+      exact hd0'
+    have hMF3' : ∀ a, a < G.length →
+        le0 (G ++ ((v0,w0) :: R) ++ [lp]) a G.length →
+        (G.getD a (0,0)).2 < w0 →
+        ∀ h, a < h → h < G.length → (G.getD h (0,0)).1 + 1 < lp.1 := by
+      rw [← hMeq]
+      exact hMF3
+    exact classOK_copyExp hn hMc
+      (hspan_discharge hn hdom hMc hd0M hBF1 hBF2 hMF3' hBF45)
+
+/-- **The master segment discipline along the standard closure**, modulo the
+spanning block facts. -/
+theorem classOK_ST_PS {M : PairSeq} (hM : ST_PS M)
+    (hsp : ∀ N k, ST_PS N → 1 ≤ k → spanOK N) : classOK M := by
+  induction hM with
+  | diag v => exact classOK_diagSeq v
+  | @oper N k hN hk ih => exact classOK_oper hk ih (hsp N k hN hk)
+
 end YAPSS
