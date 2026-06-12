@@ -8254,4 +8254,34 @@ theorem dichOK_window {X Y : PairSeq} {s sY m : ℕ}
     rw [hgd q (by omega), hgd t htm]
     exact h9
 
+/-- The edge dichotomy restricts to suffixes. -/
+theorem dichOK_drop {M : PairSeq} (h : dichOK M) (k : ℕ) :
+    dichOK (M.drop k) := by
+  intro p q t hnx hpq hqt hpos
+  have htM : k + t < M.length := by
+    have h9 := hnx.2.1
+    rw [List.length_drop] at h9
+    omega
+  have hnx' : nextrel1 M (k + p) (k + t) := by
+    have h9 := (nextrel1_drop_iff (M := M) (k := k) (a := k + p)
+      (b := k + t) (by omega) (by omega) (by omega)).1
+    rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h9
+    exact h9 hnx
+  have hpq' : le0 M (k + p) (k + q) := by
+    have h9 := (le0_drop_iff (M := M) (k := k) (a := k + p)
+      (b := k + q) (by omega) (by omega) (by omega)).1
+    rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h9
+    exact h9 hpq
+  have hpos' : 0 < (M.getD (k + q) (0,0)).2 := by
+    rw [← getD_drop (L := M) (n := k) (i := q) ((0,0) : ℕ × ℕ)]
+    exact hpos
+  rcases h (k + p) (k + q) (k + t) hnx' hpq' (by omega) hpos' with h9 | h9
+  · left
+    have h10 := (le0_drop_iff (M := M) (k := k) (a := k + q)
+      (b := k + t) (by omega) (by omega) (by omega)).2 h9
+    rwa [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h10
+  · right
+    rw [getD_drop, getD_drop]
+    exact h9
+
 end YAPSS
