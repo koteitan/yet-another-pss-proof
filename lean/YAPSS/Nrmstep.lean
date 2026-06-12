@@ -4866,6 +4866,73 @@ theorem le0_through_pivot {M : PairSeq} {a ρ b : ℕ}
   exact ⟨by omega, hb, rtg_through_pivot hch h1 h2 hpiv⟩
 
 
+theorem entry_seg {X u S v : PairSeq} (heq : X = u ++ S ++ v) {i j : ℕ}
+    (hj : j < S.length) :
+    entry S i j = entry X i (u.length + j) := by
+  unfold entry
+  rw [heq, getD_middle hj]
+
+/-- First half of the pivot split: the chain reaches the pivot. -/
+theorem rtg_to_pivot {M : PairSeq} {ρ : ℕ} :
+    ∀ {a b}, Relation.ReflTransGen (nextrel0 M) a b → a < ρ → ρ ≤ b →
+    (∀ y, ρ < y → y ≤ b → entry M 0 ρ < entry M 0 y) →
+    Relation.ReflTransGen (nextrel0 M) a ρ := by
+  intro a b h
+  induction h with
+  | refl =>
+    intro h1 h2 _
+    exact absurd (h1.trans_le h2) (lt_irrefl a)
+  | @tail y z hay hyz ih =>
+    intro h1 h2 hpiv
+    by_cases hρy : ρ ≤ y
+    · exact ih h1 hρy
+        (fun y' hy1 hy2 => hpiv y' hy1 (hy2.trans (nextrel0_lt hyz).le))
+    · push Not at hρy
+      rcases eq_or_lt_of_le h2 with he | hlt
+      · rw [he]
+        exact hay.tail hyz
+      · have hb5 := hyz.2.2.2.2 ρ ⟨hρy, hlt⟩
+        exact absurd (hpiv z hlt le_rfl) (not_lt.mpr hb5)
+
+theorem le0_to_pivot {M : PairSeq} {a ρ b : ℕ}
+    (h : le0 M a b) (h1 : a < ρ) (h2 : ρ ≤ b)
+    (hpiv : ∀ y, ρ < y → y ≤ b → entry M 0 ρ < entry M 0 y) :
+    le0 M a ρ := by
+  obtain ⟨ha, hb, hch⟩ := h
+  exact ⟨ha, by omega, rtg_to_pivot hch h1 h2 hpiv⟩
+
+theorem nextrel1_drop_iff {M : PairSeq} {k a b : ℕ} (hka : k ≤ a)
+    (hkb : k ≤ b) (hb : b < M.length) :
+    nextrel1 (M.drop k) (a - k) (b - k) ↔ nextrel1 M a b := by
+  unfold nextrel1
+  rw [List.length_drop]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5, h6⟩
+    refine ⟨by omega, hb, by omega, ?_, (le0_drop_iff hka hkb hb).1 h5, ?_⟩
+    · rwa [entry_drop, entry_drop, Nat.add_sub_cancel' hka,
+           Nat.add_sub_cancel' hkb] at h4
+    · intro l hl
+      have hkl : k ≤ l := by omega
+      have h7 := h6 (l - k) ⟨by omega, (le0_drop_iff hkl hkb hb).2 hl.2⟩
+      rwa [entry_drop, entry_drop, Nat.add_sub_cancel' hkb,
+           Nat.add_sub_cancel' hkl] at h7
+  · rintro ⟨h1, h2, h3, h4, h5, h6⟩
+    refine ⟨by omega, by omega, by omega, ?_,
+      (le0_drop_iff hka hkb hb).2 h5, ?_⟩
+    · rw [entry_drop, entry_drop, Nat.add_sub_cancel' hka,
+          Nat.add_sub_cancel' hkb]
+      exact h4
+    · intro l hl
+      have h8 : le0 M (k + l) b := by
+        have h9 := (le0_drop_iff (M := M) (k := k) (a := k + l) (b := b)
+          (by omega) hkb hb).1
+        rw [Nat.add_sub_cancel_left] at h9
+        exact h9 hl.2
+      have h7 := h6 (k + l) ⟨by omega, h8⟩
+      rw [entry_drop, entry_drop, Nat.add_sub_cancel' hkb]
+      exact h7
+
+
 /-! ## The master segment discipline -/
 
 /-- **The master segment discipline**: every contiguous segment of the host
