@@ -6379,18 +6379,6 @@ theorem withinTrigOK_of {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
     omega
 
 
-/-- **The invariant package on standard hosts**, now modulo only the seam
-and spanning obligations: the within-trigger obligation is discharged. -/
-theorem I_ST_PS {M : PairSeq} (hM : ST_PS M)
-    (hseam : ∀ N k, ST_PS N → 1 ≤ k → seamOK N k)
-    (hsp : ∀ N k, ST_PS N → 1 ≤ k → spanOK N) :
-    hmok M ∧ tailok M ∧ classOK M := by
-  have hcl : ∀ N, ST_PS N → classOK N := fun N hN => classOK_ST_PS hN hsp
-  obtain ⟨h1, h2⟩ := hmok_tailok_ST_PS hM hseam
-    (fun N k hN hk => withinTrigOK_of hk (r1ok_ST_PS hN) (hcl N hN)
-      (hsp N k hN hk))
-  exact ⟨h1, h2, hcl M hM⟩
-
 /-- **No row-0 seam edge over a long block**: a `nextrel0` edge into the
 expansion's last column from before the last copy forces the block to be a
 single root — the between-condition at the last copy's root would put the
@@ -6698,5 +6686,21 @@ theorem seamOK_of {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
             hent _ (by omega)]
       rw [h1e, h2e] at hinc
       omega
+
+/-- **The invariant package on standard hosts**, now modulo only the seam
+and spanning obligations: the within-trigger obligation is discharged. -/
+theorem I_ST_PS {M : PairSeq} (hM : ST_PS M)
+    (hseam1 : ∀ N k, ST_PS N → 1 ≤ k → seamOK1 N k)
+    (hsp : ∀ N k, ST_PS N → 1 ≤ k → spanOK N) :
+    hmok M ∧ tailok M ∧ classOK M := by
+  have hcl : ∀ N, ST_PS N → classOK N := fun N hN => classOK_ST_PS hN hsp
+  obtain ⟨h1, h2⟩ := hmok_tailok_ST_PS hM
+    (fun N k hN hk => seamOK_of hk
+      (fun G v0 w0 R lp d0 hMeq hnxtM hd0 =>
+        (hsp N k hN hk G v0 w0 R lp d0 hMeq hnxtM hd0).1)
+      (hseam1 N k hN hk))
+    (fun N k hN hk => withinTrigOK_of hk (r1ok_ST_PS hN) (hcl N hN)
+      (hsp N k hN hk))
+  exact ⟨h1, h2, hcl M hM⟩
 
 end YAPSS
