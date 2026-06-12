@@ -8284,4 +8284,29 @@ theorem dichOK_drop {M : PairSeq} (h : dichOK M) (k : ℕ) :
     rw [getD_drop, getD_drop]
     exact h9
 
+/-- The edge dichotomy is shift-invariant. -/
+theorem dichOK_shift {B : PairSeq} {d : ℕ} (h : dichOK B) :
+    dichOK (B.map fun p => (p.1 + d, p.2)) := by
+  intro p q t hnx hpq hqt hpos
+  have htB : t < B.length := by
+    have h9 := hnx.2.1
+    rw [List.length_map] at h9
+    exact h9
+  have hgd : ∀ j, j < B.length →
+      (B.map fun p => (p.1 + d, p.2)).getD j (0,0)
+        = ((B.getD j (0,0)).1 + d, (B.getD j (0,0)).2) := by
+    intro j hj
+    rw [getD_eq_getElem' _ _ (by rw [List.length_map]; omega),
+        List.getElem_map, ← getD_eq_getElem' _ (0,0) hj]
+  have hnx' : nextrel1 B p t := (nextrel1_shift_iff htB).1 hnx
+  have hpq' : le0 B p q := (le0_shift_iff).1 hpq
+  have hqB : q < B.length := by omega
+  have hpos' : 0 < (B.getD q (0,0)).2 := by
+    rw [hgd q hqB] at hpos
+    exact hpos
+  rcases h p q t hnx' hpq' hqt hpos' with h9 | h9
+  · exact Or.inl ((le0_shift_iff).2 h9)
+  · right
+    rw [hgd q hqB, hgd t htB, h9]
+
 end YAPSS
