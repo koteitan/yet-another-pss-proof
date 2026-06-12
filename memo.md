@@ -3230,3 +3230,24 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   テンプレート流用可）。i1=1 は実例0。
 - 実装は次セッション: F1〜F3 を凍結 or 直証（F2 は d0=0/i1=0 ブロックの
   head snd — O 族と同根の可能性）、sibrel 組み立てはリスト代数。
+
+### ★★(2026-06-12 続67) 重大健全性キャッチ — sibm2/sibrel は閉包+3 で偽
+
+- **発見経路**: seam_open_m1 の再構成採掘で closure+2 監査が 18反例を検出
+  （F1〜F3 一様性は closure+1 の錯覚 — +2すり抜けの4例目）。さらに反例
+  ホストの M[2]（closure+3 圏）で **sibm2 自体が偽**:
+  M = (0,0)(1,1)(2,0)(3,1)(4,0)(5,1)(3,1)(4,0)(5,1)(3,1)(4,0)(5,1)（到達可能）
+  の M[2] で対 (a=6,b=9): K=[(4,0),(5,1)] vs K1=[(4,0),(5,0)] —
+  first-diff 降下形だが **K の頭が max でない**（hd=(4,0) snd0 < maxr1=1）
+  ⟹ sibrel 第3分岐の head-max 条件が偽 ⟹ sibm2(M[2]) = False。
+- **sibm2_ST_PS は偽**（証明は偽凍結 seam_open_m1 経由で「通って」いた）。
+  続29 の修復 sibrel もまだ強すぎた。
+- **被害評価（緊急検証済み）**:
+  - 最終減少 olt(NT(M[n]), NT(M)) は反例ホスト全てで**成立** ✓（本丸無傷）
+  - **NT_tie 結論も反例対で成立** ✓（projK = D0(D1) vs projK1 = D0(D0)、
+    ¬olt ✓）⟹ 偽なのは sibrel 抽象だけ。修復 = sibrel 第4分岐
+    （head-max なし first-diff・尾は climb 形）追加 + sibm2_oper_bad 再戦
+    + NT_tie_resolved の第4分岐ケース（新値補題）。
+- **方法論更新（最重要）**: コピーシーム系の凍結は closure+2 でも不足
+  （本件は closure+3 で初出）。**全凍結文面の closure+3 再監査が必須**。
+  以後、シーム/sibm2 系freeze は +3 を標準とする。
