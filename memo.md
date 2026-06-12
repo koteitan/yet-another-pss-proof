@@ -3375,3 +3375,16 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   **sibm2 層を捨て NT レベル不変量（NTTIE2 M）へ全面再設計**。
 - 現状: ビルド緑だが seam_open_m1 文面は再び偽認定（+3 69違反）。
   sibrel5/NT 設計決定後に文面改定。
+
+- (続71補) **SIB5 確証 + sibrel5 設計確定**:
+  - closure+4 全タイ対 **0/3,533,164** が S1∨S2∨S3∨SE。SE は **lex 降下形に
+    締まる**（fst上昇・feq-srise は皆無; 内訳 fdrop-seq 24,303 / feq-sdrop
+    11,646 / fdrop-sdrop 153 / fdrop-srise 54）。
+  - **sibrel5** = S1 ∨ S2 ∨ S3(head-max中間) ∨ SE-lex
+    （∃p x x1 r1. K=p@[x] ∧ K1=p@x1#r1 ∧ (fst x1 < fst x ∨ (fst= ∧ snd<)))。
+  - **値補題 NT_endlex**（NT_enddrop の一般化）: SE 対で
+    olt(NT K1)(NT K) 厳密 — closure+4 **0/2,292**（NT_tie 結論も 0違反）。
+  - **sibrel_ascent は SE で偽** ⟹ 結論を False から
+    「r=[] ∧ lex降下」へ弱化。呼び出し側は r≠[]（blift Suc-km は D≠[] 等）
+    か lex 反駁（d0>0: snd 逆・d0=0: fst 逆）で閉じられる見込み。
+  - diverge の ed 結論も lex 形へ。closure+5 確認ジョブ実行中（/tmp/sib5_c5.out）。
