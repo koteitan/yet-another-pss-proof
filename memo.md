@@ -3134,3 +3134,19 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
     ⟹ CT の本質 =「gap-clear 子の存在 ⟹ w=j0+1 強制」型の振動勘定で、
     BTWRAPU 級の専用窓設計が必要。実例7件は全て w=1/x=2/ブロック長3。
   - 当面 CT は凍結のまま。次: E6_memT / STS_B の前提最小化採掘へ。
+
+### (2026-06-12 続62) E6_memT 空クラス再確認 / STS_B 分解地図
+
+- E6_memT: exact dseg 窓では前提（max が T 側に厳密集中）が実現せず
+  **n=0**（既知の前提空を mine_memt.py で再確認）。空クラス凍結のまま。
+- **STS_B 分解採掘（mine_stsb.py, 19,865 配置）**:
+  - part1（vs NT T）: 0違反 — NT_shape 展開で **NT_dom と同内容**
+    （hdsub(NT T)=snd c1・hdarg=proj(snd c1)(NT K1)）。
+  - part2 nojoin（q がhd T のランに合流しない）: **hdarg(NT(T@[q])) =
+    hdarg(NT T) が全件成立（Q2=0）** — takeWhile_append1/2 の純リスト
+    論証で part1 に転送可能。
+  - part2 join（rest1 全上昇 ∧ fst c1 < fst q）: 5,624件・0違反 —
+    **真の凍結残差はこの join ケースのみ**。
+  - ただし part1 の導出には fbsegD 版 C1 層（pair_host/SIB_shape2/
+    NT_dom 鎖 = NT_tie 含む）が必要 — NT_tie スタブ解消（最終組立）後に
+    実施が適切。STS_B は当面凍結のまま、この地図を将来の討伐設計に使う。
