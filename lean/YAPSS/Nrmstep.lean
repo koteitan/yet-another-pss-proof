@@ -5235,4 +5235,852 @@ theorem classOK_copyExp {G B : PairSeq} {lp : ℕ × ℕ} {d0 n : ℕ} (hn : 1 �
       omega
   · exact hspan u S v heq (by omega) hc2
 
+/-- Windows of lists agreeing on a prefix agree. -/
+theorem take_eq_window {α : Type*} {X Y : List α} {m s w : ℕ}
+    (hXY : X.take m = Y.take m) (hw : s + w ≤ m) :
+    (X.drop s).take w = (Y.drop s).take w := by
+  rw [List.take_drop, List.take_drop]
+  have h2 : X.take (s + w) = Y.take (s + w) := by
+    have h3 := congrArg (List.take (s + w)) hXY
+    rwa [List.take_take, List.take_take, min_eq_left hw] at h3
+  rw [h2]
+
+/-- **Spanning discharge**: a copy-crossing segment of the copy expansion
+satisfies the anchored single-climb, given the mined block facts. -/
+theorem hspan_discharge {G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ} {d0 n : ℕ}
+    (hn : 1 ≤ n)
+    (hdom : ∀ p ∈ R, v0 < p.1)
+    (hM : classOK (G ++ ((v0,w0) :: R) ++ [lp]))
+    (hd0 : d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
+      nextrel1 (G ++ ((v0,w0) :: R) ++ [lp]) G.length
+        ((G ++ ((v0,w0) :: R) ++ [lp]).length - 1)))
+    (hBF1 : ∀ q, q < ((v0,w0) :: R).length →
+      le0 ((v0,w0) :: R) 0 q → 0 < (((v0,w0) :: R).getD q (0,0)).2 →
+      w0 < (((v0,w0) :: R).getD q (0,0)).2)
+    (hBF2 : 0 < d0 → ∀ q, q < ((v0,w0) :: R).length →
+      w0 ≤ (((v0,w0) :: R).getD q (0,0)).2)
+    (hMF3 : ∀ a, a < G.length →
+      le0 (G ++ ((v0,w0) :: R) ++ [lp]) a G.length →
+      (G.getD a (0,0)).2 < w0 →
+      ∀ h, a < h → h < G.length → (G.getD h (0,0)).1 + 1 < lp.1)
+    (hBF45 : 0 < w0 → 0 < d0 → ∀ q, 0 < q → q < ((v0,w0) :: R).length →
+      (((v0,w0) :: R).getD q (0,0)).1 + 1 < v0 + 2 * d0) :
+    ∀ u S v, copyExp G ((v0,w0) :: R) d0 n = u ++ S ++ v →
+      G.length + ((v0,w0) :: R).length < u.length + S.length →
+      (¬ ∃ k, k < n ∧ G.length + k * ((v0,w0) :: R).length ≤ u.length ∧
+        u.length + S.length ≤ G.length + (k + 1) * ((v0,w0) :: R).length) →
+      sclimb S := by
+  intro u S v heq hsp hnc r' r hS1 hnx hi1 hr'pos hr'lt hlev hafter hrpos hrlt
+  set B : PairSeq := (v0,w0) :: R with hBdef
+  have hL1 : 1 ≤ B.length := by simp [hBdef]
+  -- length bookkeeping
+  have hXlen : (copyExp G B d0 n).length = G.length + n * B.length :=
+    copyExp_length ..
+  have hlen : u.length + S.length + v.length = G.length + n * B.length := by
+    have h := congrArg List.length heq
+    rw [hXlen] at h
+    simp at h
+    clear hnc
+    omega
+  have hht : u.length + (S.length - 1) < G.length + n * B.length := by
+    clear hnc
+    omega
+  have htc : G.length + B.length ≤ u.length + (S.length - 1) := by
+    clear hnc
+    omega
+  -- copy coordinates of t
+  obtain ⟨kt, qt, hqtL, hdm⟩ : ∃ kt qt, qt < B.length ∧
+      u.length + (S.length - 1) - G.length = B.length * kt + qt :=
+    ⟨_, _, Nat.mod_lt _ (by omega),
+      (Nat.div_add_mod (u.length + (S.length - 1) - G.length) B.length).symm⟩
+  have hdecomp : u.length + (S.length - 1)
+      = G.length + (B.length * kt + qt) := by
+    clear hnc
+    omega
+  have hktn : kt < n := by
+    have h1 : B.length * kt < B.length * n := by
+      have hcomm : n * B.length = B.length * n := Nat.mul_comm n B.length
+      clear hnc
+      omega
+    exact Nat.lt_of_mul_lt_mul_left h1
+  have hkt1 : 1 ≤ kt := by
+    rcases Nat.eq_zero_or_pos kt with h0 | h1
+    · rw [h0, Nat.mul_zero] at hdm
+      clear hnc
+      omega
+    · exact h1
+  -- the instance's parent edge
+  have hnx1 : nextrel1 S 0 (S.length - 1) := by
+    unfold nextR at hnx
+    rw [if_neg (by rw [hi1]; exact one_ne_zero)] at hnx
+    exact hnx
+  have he1pos : 0 < entry S 1 (S.length - 1) := by
+    by_contra h0
+    unfold idx1 at hi1
+    rw [if_neg h0] at hi1
+    exact absurd hi1 zero_ne_one
+  -- entries of S are X-entries
+  have hentS : ∀ i j, j < S.length →
+      entry S i j = entry (copyExp G B d0 n) i (u.length + j) :=
+    fun i j hj => entry_seg heq hj
+  have hBR : B.length = R.length + 1 := by
+    rw [hBdef]
+    rfl
+  have hcm : B.length * kt = kt * B.length := Nat.mul_comm ..
+  -- Step A2: t sits at a copy root
+  have hqt0 : qt = 0 := by
+    by_contra hqt
+    have hqtpos : 0 < qt := Nat.pos_of_ne_zero hqt
+    -- the segment head lies before the copy-kt root
+    have hsρ : u.length < G.length + kt * B.length := by
+      by_contra hge
+      push Not at hge
+      refine hnc ⟨kt, hktn, hge, ?_⟩
+      have hsucc : (kt + 1) * B.length = kt * B.length + B.length := by
+        rw [Nat.add_mul, Nat.one_mul]
+      clear hnc
+      omega
+    obtain ⟨ρ, hρ⟩ : ∃ ρ, u.length + ρ = G.length + kt * B.length :=
+      ⟨G.length + kt * B.length - u.length, by clear hnc; omega⟩
+    have hρpos : 0 < ρ := by clear hnc; omega
+    have hρt : ρ + qt = S.length - 1 := by clear hnc; omega
+    -- the root and window entries
+    have hce0 := entry_copyExp (G := G) (B := B) (d0 := d0) (n := n)
+      (k := kt) (q := 0) hktn (by clear hnc; omega)
+    have hroot0 : entry S 0 ρ = v0 + kt * d0 := by
+      rw [hentS 0 ρ (by clear hnc; omega),
+          show u.length + ρ = G.length + (kt * B.length + 0) by clear hnc; omega,
+          hce0.1, hBdef, List.getD_cons_zero]
+    have hroot1 : entry S 1 ρ = w0 := by
+      rw [hentS 1 ρ (by clear hnc; omega),
+          show u.length + ρ = G.length + (kt * B.length + 0) by clear hnc; omega,
+          hce0.2, hBdef, List.getD_cons_zero]
+    -- pivot condition: the copy-kt interior sits strictly above the root
+    have hpiv : ∀ y, ρ < y → y ≤ S.length - 1 →
+        entry S 0 ρ < entry S 0 y := by
+      intro y hy1 hy2
+      obtain ⟨qy, hqy⟩ : ∃ qy, y = ρ + qy := ⟨y - ρ, by clear hnc; omega⟩
+      have hey : entry S 0 y = (B.getD qy (0,0)).1 + kt * d0 := by
+        rw [hentS 0 y (by clear hnc; omega),
+            show u.length + y = G.length + (kt * B.length + qy) by
+              clear hnc; omega]
+        exact (entry_copyExp hktn (by clear hnc; omega)).1
+      rw [hroot0, hey]
+      rcases qy with _ | qy'
+      · omega
+      · rw [hBdef, List.getD_cons_succ]
+        have hmem : R.getD qy' (0,0) ∈ R := by
+          rw [getD_eq_getElem' _ _ (by clear hnc; omega)]
+          exact List.getElem_mem ..
+        have hv := hdom _ hmem
+        clear hnc
+        omega
+    -- the chain into t passes through the root
+    have hle0S : le0 S 0 (S.length - 1) := hnx1.2.2.2.2.1
+    have hle0ρ := le0_through_pivot hle0S hρpos (by clear hnc; omega) hpiv
+    have hmax := hnx1.2.2.2.2.2 ρ ⟨hρpos, hle0ρ⟩
+    rw [hroot1] at hmax
+    -- the suffix from the root is the truncated shifted block
+    have hwin : S.drop ρ
+        = (B.map fun p => (p.1 + kt * d0, p.2)).take (qt + 1) := by
+      have h1 : (copyExp G B d0 n).drop u.length = S ++ v := by
+        rw [heq, List.append_assoc, List.drop_left]
+      have h2 : (copyExp G B d0 n).drop (u.length + ρ) = S.drop ρ ++ v := by
+        rw [← List.drop_drop, h1, List.drop_append,
+            show ρ - S.length = 0 by clear hnc; omega, List.drop_zero]
+      rw [hρ] at h2
+      have hsplit := copyExp_split G B d0 (le_of_lt hktn)
+      obtain ⟨m, hm⟩ : ∃ m, n - kt = m + 1 := ⟨n - kt - 1, by clear hnc; omega⟩
+      rw [hm, List.range_succ_eq_map, List.flatMap_cons] at hsplit
+      simp only [Nat.add_zero] at hsplit
+      have h3 : (copyExp G B d0 n).drop (G.length + kt * B.length)
+          = (B.map fun p => (p.1 + kt * d0, p.2))
+            ++ ((List.map Nat.succ (List.range m)).flatMap
+                fun i => B.map fun p => (p.1 + (kt + i) * d0, p.2)) := by
+        conv_lhs => rw [hsplit]
+        rw [show G.length + kt * B.length = (copyExp G B d0 kt).length from
+              (copyExp_length ..).symm,
+            List.drop_left]
+      have h4 := h2.symm.trans h3
+      have h5 := congrArg (List.take (qt + 1)) h4
+      rw [List.take_append_of_le_length (by
+            rw [List.length_drop]
+            clear hnc
+            omega),
+          List.take_append_of_le_length (by
+            rw [List.length_map]
+            clear hnc
+            omega),
+          List.take_of_length_le (by
+            rw [List.length_drop]
+            clear hnc
+            omega)] at h5
+      exact h5
+    -- transfer the chain to the unshifted block
+    have hd1 : le0 (S.drop ρ) (ρ - ρ) ((S.length - 1) - ρ) :=
+      (le0_drop_iff le_rfl (by clear hnc; omega) (by clear hnc; omega)).2 hle0ρ
+    rw [Nat.sub_self, show S.length - 1 - ρ = qt by clear hnc; omega,
+        hwin] at hd1
+    have hd2 : le0 (B.map fun p => (p.1 + kt * d0, p.2)) 0 qt :=
+      (le0_take_iff (by omega)
+        (by rw [List.length_map]; clear hnc; omega)).1 hd1
+    have hd3 : le0 B 0 qt := (le0_shift_iff).1 hd2
+    -- BF1 against the parent-edge maximality
+    have he1t : entry S 1 (S.length - 1) = (B.getD qt (0,0)).2 := by
+      rw [hentS 1 _ (by clear hnc; omega),
+          show u.length + (S.length - 1) = G.length + (kt * B.length + qt) by
+            clear hnc; omega]
+      exact (entry_copyExp hktn hqtL).2
+    have hbf := hBF1 qt hqtL hd3 (by rw [← he1t]; exact he1pos)
+    rw [← he1t] at hbf
+    clear hnc
+    omega
+  -- Step A3: the segment head lies in the prefix
+  have hslt : u.length < G.length := by
+    by_contra hge
+    push Not at hge
+    obtain ⟨ks, qs, hqsL, hdms⟩ : ∃ ks qs, qs < B.length ∧
+        u.length - G.length = B.length * ks + qs :=
+      ⟨_, _, Nat.mod_lt _ (by clear hnc; omega),
+        (Nat.div_add_mod (u.length - G.length) B.length).symm⟩
+    have hcms : B.length * ks = ks * B.length := Nat.mul_comm ..
+    have hksn : ks < n := by
+      have h1 : B.length * ks < B.length * n := by
+        have hcomm : n * B.length = B.length * n := Nat.mul_comm ..
+        clear hnc
+        omega
+      exact Nat.lt_of_mul_lt_mul_left h1
+    have hhead : entry S 1 0 = (B.getD qs (0,0)).2 := by
+      rw [hentS 1 0 (by clear hnc; omega),
+          show u.length + 0 = G.length + (ks * B.length + qs) by
+            clear hnc; omega]
+      exact (entry_copyExp hksn hqsL).2
+    have he1t : entry S 1 (S.length - 1) = w0 := by
+      rw [hentS 1 _ (by clear hnc; omega),
+          show u.length + (S.length - 1) = G.length + (kt * B.length + 0) by
+            clear hnc; omega,
+          (entry_copyExp hktn (by clear hnc; omega)).2, hBdef,
+          List.getD_cons_zero]
+    have hC1 := hnx1.2.2.2.1
+    rw [he1t, hhead] at hC1
+    rcases Nat.eq_zero_or_pos qs with hqs0 | hqspos
+    · rw [hqs0, hBdef, List.getD_cons_zero] at hC1
+      exact absurd hC1 (lt_irrefl w0)
+    · rcases hd0 with hd0z | ⟨hd0p, -, -, -⟩
+      · have hle0S : le0 S 0 (S.length - 1) := hnx1.2.2.2.2.1
+        obtain ⟨-, -, hch⟩ := hle0S
+        rcases Relation.ReflTransGen.cases_tail hch with he | ⟨y, hy, hyz⟩
+        · clear hnc
+          omega
+        · have hylt : y < S.length - 1 := nextrel0_lt hyz
+          have hinc := nextrel0_entry0_less hyz
+          have he0t : entry S 0 (S.length - 1) = v0 := by
+            rw [hentS 0 _ (by clear hnc; omega),
+                show u.length + (S.length - 1)
+                  = G.length + (kt * B.length + 0) by clear hnc; omega,
+                (entry_copyExp hktn (by clear hnc; omega)).1, hBdef,
+                List.getD_cons_zero, hd0z, Nat.mul_zero, Nat.add_zero]
+          obtain ⟨ky, qy, hqyL, hdmy⟩ : ∃ ky qy, qy < B.length ∧
+              u.length + y - G.length = B.length * ky + qy :=
+            ⟨_, _, Nat.mod_lt _ (by clear hnc; omega),
+              (Nat.div_add_mod (u.length + y - G.length) B.length).symm⟩
+          have hcmy : B.length * ky = ky * B.length := Nat.mul_comm ..
+          have hkyn : ky < n := by
+            have h1 : B.length * ky < B.length * n := by
+              have hcomm : n * B.length = B.length * n := Nat.mul_comm ..
+              clear hnc
+              omega
+            exact Nat.lt_of_mul_lt_mul_left h1
+          have hey : entry S 0 y = (B.getD qy (0,0)).1 := by
+            rw [hentS 0 y (by clear hnc; omega),
+                show u.length + y = G.length + (ky * B.length + qy) by
+                  clear hnc; omega,
+                (entry_copyExp hkyn hqyL).1, hd0z, Nat.mul_zero,
+                Nat.add_zero]
+          rw [hey, he0t] at hinc
+          rcases Nat.eq_zero_or_pos qy with hqy0 | hqypos
+          · rw [hqy0, hBdef, List.getD_cons_zero] at hinc
+            exact absurd hinc (lt_irrefl v0)
+          · obtain ⟨qy', rfl⟩ : ∃ qy', qy = qy' + 1 :=
+              ⟨qy - 1, by clear hnc; omega⟩
+            rw [hBdef, List.getD_cons_succ] at hinc
+            have hmem : R.getD qy' (0,0) ∈ R := by
+              rw [getD_eq_getElem' _ _ (by clear hnc; omega)]
+              exact List.getElem_mem ..
+            have hv := hdom _ hmem
+            clear hnc
+            omega
+      · have hbf2 := hBF2 hd0p qs hqsL
+        clear hnc
+        omega
+  subst hqt0
+  -- shared bookkeeping for the possible shapes
+  have hgdS : ∀ j, j < S.length →
+      S.getD j (0,0) = (copyExp G B d0 n).getD (u.length + j) (0,0) := by
+    intro j hj
+    rw [heq, getD_middle hj]
+  have hgt : S.getD (S.length - 1) (0,0) = (v0 + kt * d0, w0) := by
+    rw [hgdS _ (by clear hnc; omega),
+        show u.length + (S.length - 1) = G.length + (kt * B.length + 0) by
+          clear hnc; omega,
+        copyExp_getD_copy hktn (by clear hnc; omega), hBdef,
+        List.getD_cons_zero]
+  have hewt : entry S 1 (S.length - 1) = w0 := by
+    unfold entry
+    rw [if_neg one_ne_zero, hgt]
+  have hw0pos : 0 < w0 := hewt ▸ he1pos
+  have htkXM : (copyExp G B d0 n).take (G.length + B.length)
+      = (G ++ B ++ [lp]).take (G.length + B.length) := by
+    have htkX : (copyExp G B d0 n).take (G.length + B.length) = G ++ B := by
+      have h := copyExp_take_at (G := G) (B := B) (d0 := d0) (n := n)
+        (k := 0) (q := B.length) (by omega) le_rfl
+      simpa [copyExp] using h
+    have htkM : (G ++ B ++ [lp]).take (G.length + B.length) = G ++ B := by
+      have h := hostM_take_at (G := G) (B := B) (lp := lp)
+        (q := B.length) le_rfl
+      rwa [List.take_length] at h
+    rw [htkX, htkM]
+  have hcopy_ge : ∀ j, j < S.length → G.length ≤ u.length + j →
+      v0 ≤ entry S 0 j := by
+    intro j hj hjg
+    obtain ⟨kj, qj, hqjL, hdmj⟩ : ∃ kj qj, qj < B.length ∧
+        u.length + j - G.length = B.length * kj + qj :=
+      ⟨_, _, Nat.mod_lt _ (by clear hnc; omega),
+        (Nat.div_add_mod (u.length + j - G.length) B.length).symm⟩
+    have hcmj : B.length * kj = kj * B.length := Nat.mul_comm ..
+    have hkjn : kj < n := by
+      have h1 : B.length * kj < B.length * n := by
+        have hcomm : n * B.length = B.length * n := Nat.mul_comm ..
+        clear hnc
+        omega
+      exact Nat.lt_of_mul_lt_mul_left h1
+    have hej : entry S 0 j = (B.getD qj (0,0)).1 + kj * d0 := by
+      rw [hentS 0 j hj,
+          show u.length + j = G.length + (kj * B.length + qj) by
+            clear hnc; omega]
+      exact (entry_copyExp hkjn hqjL).1
+    rw [hej]
+    rcases Nat.eq_zero_or_pos qj with hqj0 | hqjpos
+    · rw [hqj0, hBdef, List.getD_cons_zero]
+      show v0 ≤ v0 + kj * d0
+      clear hnc
+      omega
+    · obtain ⟨qj', rfl⟩ : ∃ qj', qj = qj' + 1 :=
+        ⟨qj - 1, by clear hnc; omega⟩
+      rw [hBdef, List.getD_cons_succ]
+      have hmem : R.getD qj' (0,0) ∈ R := by
+        rw [getD_eq_getElem' _ _ (by clear hnc; omega)]
+        exact List.getElem_mem ..
+      have hv := hdom _ hmem
+      clear hnc
+      omega
+  -- conclusion
+  show (S.getD r (0,0)).1 + 1 < (S.getD (S.length - 1) (0,0)).1
+  rcases hd0 with hd0z | ⟨hd0p, hwlp, hlp1, hnxM⟩
+  · -- F3: d0 = 0
+    have hg2 : (S.getD (S.length - 1) (0,0)).1 = v0 := by
+      rw [hgt, hd0z]
+      simp
+    have het0 : entry S 0 (S.length - 1) = v0 := by
+      unfold entry
+      rw [if_pos rfl]
+      exact hg2
+    -- the climb column lies in the prefix
+    have hr'g : u.length + r' < G.length := by
+      by_contra hge'
+      push Not at hge'
+      have h6 := hcopy_ge r' (by clear hnc; omega) hge'
+      unfold entry at h6
+      rw [if_pos rfl] at h6
+      clear hnc
+      omega
+    -- the copy-0 root inside S
+    obtain ⟨gs, hgs⟩ : ∃ gs, u.length + gs = G.length :=
+      ⟨G.length - u.length, by clear hnc; omega⟩
+    have hgs1 : 1 ≤ gs := by clear hnc; omega
+    have hgsS : gs + 1 ≤ S.length := by clear hnc; omega
+    have hgsroot : S.getD gs (0,0) = (v0 + 0 * d0, w0) := by
+      rw [hgdS _ (by clear hnc; omega),
+          show u.length + gs = G.length + (0 * B.length + 0) by
+            clear hnc; omega,
+          copyExp_getD_copy (show 0 < n by omega) (by clear hnc; omega),
+          hBdef, List.getD_cons_zero]
+    have hgsv : (S.getD gs (0,0)).1 = v0 := by
+      rw [hgsroot]
+      simp
+    have hgsw : (S.getD gs (0,0)).2 = w0 := by
+      rw [hgsroot]
+    have hegs : entry S 0 gs = v0 := by
+      unfold entry
+      rw [if_pos rfl]
+      exact hgsv
+    have hewgs : entry S 1 gs = w0 := by
+      unfold entry
+      rw [if_neg one_ne_zero]
+      exact hgsw
+    -- sclimb of the prefix segment through classOK M
+    have hdecT : copyExp G B d0 n
+        = u ++ S.take (gs + 1) ++ (S.drop (gs + 1) ++ v) := by
+      calc copyExp G B d0 n = u ++ S ++ v := heq
+      _ = u ++ (S.take (gs + 1) ++ S.drop (gs + 1)) ++ v := by
+          rw [List.take_append_drop]
+      _ = u ++ S.take (gs + 1) ++ (S.drop (gs + 1) ++ v) := by
+          simp only [List.append_assoc]
+    have hsclT : sclimb (S.take (gs + 1)) :=
+      classOK_of_take_eq htkXM hM u (S.take (gs + 1)) _ hdecT (by
+        rw [List.length_take]
+        clear hnc
+        omega)
+    have hTlen : (S.take (gs + 1)).length = gs + 1 := by
+      rw [List.length_take]
+      clear hnc
+      omega
+    -- the S-chain's last edge lands from the prefix
+    have hle0S : le0 S 0 (S.length - 1) := hnx1.2.2.2.2.1
+    obtain ⟨-, -, hch⟩ := hle0S
+    rcases Relation.ReflTransGen.cases_tail hch with he | ⟨y, hy, hyz⟩
+    · exfalso
+      clear hnc
+      omega
+    · have hylt := nextrel0_lt hyz
+      have hinc := nextrel0_entry0_less hyz
+      have hyg : u.length + y < G.length := by
+        by_contra hyge
+        push Not at hyge
+        have h6 := hcopy_ge y (by clear hnc; omega) hyge
+        rw [het0] at hinc
+        clear hnc
+        omega
+      have hygs : y < gs := by clear hnc; omega
+      have hchT : Relation.ReflTransGen (nextrel0 (S.take (gs + 1))) 0 y :=
+        rtg_nextrel0_to_take hy (by omega)
+      have hedge : nextrel0 (S.take (gs + 1)) y gs := by
+        refine ⟨by rw [hTlen]; omega, by rw [hTlen]; omega, hygs, ?_, ?_⟩
+        · rw [entry_take (by omega), entry_take (by omega), hegs, ← het0]
+          exact hinc
+        · intro l hl
+          rw [entry_take (by omega), entry_take (by omega), hegs]
+          have h6 := hyz.2.2.2.2 l ⟨hl.1, by clear hnc; omega⟩
+          rwa [het0] at h6
+      have hle0T : le0 (S.take (gs + 1)) 0 gs :=
+        ⟨by rw [hTlen]; omega, by rw [hTlen]; omega, hchT.tail hedge⟩
+      have hmaxT : ∀ jj, 0 < jj ∧ le0 (S.take (gs + 1)) jj gs →
+          entry (S.take (gs + 1)) 1 gs ≤ entry (S.take (gs + 1)) 1 jj := by
+        intro jj hjj
+        obtain ⟨hjj0, hjle⟩ := hjj
+        have hjjgs : jj ≤ gs := le0_le hjle
+        rw [entry_take (by omega), entry_take (by omega), hewgs]
+        rcases eq_or_lt_of_le hjjgs with hje | hjlt
+        · rw [hje, hewgs]
+        · have hjS : le0 S jj gs :=
+            (le0_take_iff (by omega) (by clear hnc; omega)).1 hjle
+          obtain ⟨-, -, hchj⟩ := hjS
+          rcases Relation.ReflTransGen.cases_tail hchj with he2 | ⟨x, hx, hxe⟩
+          · exfalso
+            omega
+          · have hxlt := nextrel0_lt hxe
+            have hxg : entry S 0 x < v0 := by
+              have h6 := nextrel0_entry0_less hxe
+              rwa [hegs] at h6
+            have hedge2 : nextrel0 S x (S.length - 1) := by
+              refine ⟨by clear hnc; omega, by clear hnc; omega,
+                by clear hnc; omega, ?_, ?_⟩
+              · rw [het0]
+                exact hxg
+              · intro l hl
+                rw [het0]
+                by_cases hlg : l < gs
+                · have h6 := hxe.2.2.2.2 l ⟨hl.1, hlg⟩
+                  rwa [hegs] at h6
+                · push Not at hlg
+                  exact hcopy_ge l (by clear hnc; omega) (by clear hnc; omega)
+            have hjt : le0 S jj (S.length - 1) :=
+              ⟨by clear hnc; omega, by clear hnc; omega, hx.tail hedge2⟩
+            have h7 := hnx1.2.2.2.2.2 jj ⟨hjj0, hjt⟩
+            rwa [hewt] at h7
+      have hnxT : nextrel1 (S.take (gs + 1)) 0 gs := by
+        refine ⟨by rw [hTlen]; omega, by rw [hTlen]; omega, by omega, ?_,
+          hle0T, hmaxT⟩
+        rw [entry_take (by omega), entry_take (by omega), hewgs]
+        have hC1 := hnx1.2.2.2.1
+        rwa [hewt] at hC1
+      have hi1T : idx1 (S.take (gs + 1)) ((S.take (gs + 1)).length - 1)
+          = 1 := by
+        rw [hTlen, Nat.add_sub_cancel]
+        unfold idx1
+        rw [if_pos (by rw [entry_take (by omega), hewgs]; exact hw0pos)]
+      have hnxRT : nextR (S.take (gs + 1))
+          (idx1 (S.take (gs + 1)) ((S.take (gs + 1)).length - 1)) 0
+          ((S.take (gs + 1)).length - 1) := by
+        rw [hi1T]
+        unfold nextR
+        rw [if_neg one_ne_zero, hTlen, Nat.add_sub_cancel]
+        exact hnxT
+      have hconc := hsclT r' r (by rw [hTlen]; omega) hnxRT hi1T hr'pos
+        (by rw [hTlen]; clear hnc; omega)
+        (by
+          rw [hTlen, Nat.add_sub_cancel, getD_take (by clear hnc; omega),
+              getD_take (by omega), hgsv, ← hg2]
+          exact hlev)
+        (by
+          intro l hl1 hl2
+          rw [hTlen] at hl2
+          rw [hTlen, Nat.add_sub_cancel, getD_take (by omega),
+              getD_take (by clear hnc; omega), hgsv]
+          have h6 := hafter l hl1 (by clear hnc; omega)
+          rwa [hg2] at h6)
+        hrpos hrlt
+      rw [hTlen, Nat.add_sub_cancel, getD_take (by clear hnc; omega),
+          getD_take (by omega), hgsv] at hconc
+      rw [hg2]
+      exact hconc
+  · -- F2: d0 > 0
+    have hMlen : (G ++ B ++ [lp]).length = G.length + B.length + 1 :=
+      hostM_length ..
+    -- strict copy-region lower bound
+    have hcopy_gt : ∀ j, j < S.length → G.length < u.length + j →
+        v0 < entry S 0 j := by
+      intro j hj hjg
+      obtain ⟨kj, qj, hqjL, hdmj⟩ : ∃ kj qj, qj < B.length ∧
+          u.length + j - G.length = B.length * kj + qj :=
+        ⟨_, _, Nat.mod_lt _ (by clear hnc; omega),
+          (Nat.div_add_mod (u.length + j - G.length) B.length).symm⟩
+      have hcmj : B.length * kj = kj * B.length := Nat.mul_comm ..
+      have hkjn : kj < n := by
+        have h1 : B.length * kj < B.length * n := by
+          have hcomm : n * B.length = B.length * n := Nat.mul_comm ..
+          clear hnc
+          omega
+        exact Nat.lt_of_mul_lt_mul_left h1
+      have hej : entry S 0 j = (B.getD qj (0,0)).1 + kj * d0 := by
+        rw [hentS 0 j hj,
+            show u.length + j = G.length + (kj * B.length + qj) by
+              clear hnc; omega]
+        exact (entry_copyExp hkjn hqjL).1
+      rw [hej]
+      rcases Nat.eq_zero_or_pos qj with hqj0 | hqjpos
+      · have hkj1 : 1 ≤ kj := by
+          rcases Nat.eq_zero_or_pos kj with h0 | h1
+          · rw [h0, Nat.mul_zero] at hdmj
+            exfalso
+            clear hnc
+            omega
+          · exact h1
+        have hposj : 0 < kj * d0 := Nat.mul_pos hkj1 hd0p
+        rw [hqj0, hBdef, List.getD_cons_zero]
+        show v0 < v0 + kj * d0
+        clear hnc
+        omega
+      · obtain ⟨qj', rfl⟩ : ∃ qj', qj = qj' + 1 :=
+          ⟨qj - 1, by clear hnc; omega⟩
+        rw [hBdef, List.getD_cons_succ]
+        have hmem : R.getD qj' (0,0) ∈ R := by
+          rw [getD_eq_getElem' _ _ (by clear hnc; omega)]
+          exact List.getElem_mem ..
+        have hv := hdom _ hmem
+        clear hnc
+        omega
+    -- the copy-0 root inside S
+    obtain ⟨gs, hgs⟩ : ∃ gs, u.length + gs = G.length :=
+      ⟨G.length - u.length, by clear hnc; omega⟩
+    have hgs1 : 1 ≤ gs := by clear hnc; omega
+    have hgsS : gs + 1 ≤ S.length := by clear hnc; omega
+    have hgsroot : S.getD gs (0,0) = (v0 + 0 * d0, w0) := by
+      rw [hgdS _ (by clear hnc; omega),
+          show u.length + gs = G.length + (0 * B.length + 0) by
+            clear hnc; omega,
+          copyExp_getD_copy (show 0 < n by omega) (by clear hnc; omega),
+          hBdef, List.getD_cons_zero]
+    have hgsv : (S.getD gs (0,0)).1 = v0 := by
+      rw [hgsroot]
+      simp
+    have hegs : entry S 0 gs = v0 := by
+      unfold entry
+      rw [if_pos rfl]
+      exact hgsv
+    -- the chain reaches the copy-0 root
+    have hpiv : ∀ y, gs < y → y ≤ S.length - 1 →
+        entry S 0 gs < entry S 0 y := by
+      intro y hy1 hy2
+      rw [hegs]
+      exact hcopy_gt y (by clear hnc; omega) (by clear hnc; omega)
+    have hle0S : le0 S 0 (S.length - 1) := hnx1.2.2.2.2.1
+    have hle0gs : le0 S 0 gs :=
+      le0_to_pivot hle0S (by omega) (by clear hnc; omega) hpiv
+    -- transfer to the host M
+    have hSwin : S.take (gs + 1)
+        = ((copyExp G B d0 n).drop u.length).take (gs + 1) := by
+      have h1 : (copyExp G B d0 n).drop u.length = S ++ v := by
+        rw [heq, List.append_assoc, List.drop_left]
+      rw [h1, List.take_append_of_le_length (by clear hnc; omega)]
+    have hMwin : S.take (gs + 1)
+        = ((G ++ B ++ [lp]).drop u.length).take (gs + 1) := by
+      rw [hSwin]
+      exact take_eq_window htkXM (by clear hnc; omega)
+    have hle0M : le0 (G ++ B ++ [lp]) u.length G.length := by
+      have h8 : le0 ((G ++ B ++ [lp]).drop u.length) 0 gs := by
+        have h9 := (le0_take_iff (m := gs + 1) (by omega)
+          (by clear hnc; omega)).2 hle0gs
+        rw [hMwin] at h9
+        exact (le0_take_iff (m := gs + 1) (by omega)
+          (by rw [List.length_drop, hMlen]; clear hnc; omega)).1 h9
+      have h10 := (le0_drop_iff (M := G ++ B ++ [lp]) (k := u.length)
+        (a := u.length) (b := G.length) le_rfl (le_of_lt hslt)
+        (by rw [hMlen]; omega)).1
+      refine h10 ?_
+      rw [Nat.sub_self, show G.length - u.length = gs by clear hnc; omega]
+      exact h8
+    -- the prefix bound from MF3
+    have hC1 := hnx1.2.2.2.1
+    rw [hewt] at hC1
+    have hpre1 : entry S 1 0 = (G.getD u.length (0,0)).2 := by
+      rw [hentS 1 0 (by clear hnc; omega), Nat.add_zero]
+      unfold entry
+      rw [if_neg one_ne_zero, copyExp_getD_pre hslt]
+    have hpre := hMF3 u.length hslt hle0M (by rw [← hpre1]; exact hC1)
+    have hpre0 : ∀ j, j < S.length → u.length + j < G.length →
+        (S.getD j (0,0)).1 = (G.getD (u.length + j) (0,0)).1 := by
+      intro j hj hjg
+      rw [hgdS j hj, copyExp_getD_pre hjg]
+    -- the climb column lies in copy kt-1
+    have hr'lev : (S.getD r' (0,0)).1 + 1 = v0 + kt * d0 := by
+      have h9 := hlev
+      rw [hgt] at h9
+      exact h9
+    have hktd0 : d0 ≤ kt * d0 := by
+      have h9 := Nat.mul_le_mul_right d0 hkt1
+      rwa [Nat.one_mul] at h9
+    have hr'ge : G.length ≤ u.length + r' := by
+      by_contra hpre'
+      push Not at hpre'
+      have h8 := hpre (u.length + r') (by omega) hpre'
+      rw [← hpre0 r' (by clear hnc; omega) hpre', hlp1] at h8
+      clear hnc
+      omega
+    obtain ⟨kr, qr, hqrL, hdmr⟩ : ∃ kr qr, qr < B.length ∧
+        u.length + r' - G.length = B.length * kr + qr :=
+      ⟨_, _, Nat.mod_lt _ (by clear hnc; omega),
+        (Nat.div_add_mod (u.length + r' - G.length) B.length).symm⟩
+    have hcmr : B.length * kr = kr * B.length := Nat.mul_comm ..
+    have hkrn : kr < n := by
+      have h1 : B.length * kr < B.length * n := by
+        have hcomm : n * B.length = B.length * n := Nat.mul_comm ..
+        clear hnc
+        omega
+      exact Nat.lt_of_mul_lt_mul_left h1
+    have hgr' : S.getD r' (0,0)
+        = ((B.getD qr (0,0)).1 + kr * d0, (B.getD qr (0,0)).2) := by
+      rw [hgdS _ (by clear hnc; omega),
+          show u.length + r' = G.length + (kr * B.length + qr) by
+            clear hnc; omega,
+          copyExp_getD_copy hkrn hqrL]
+    have hr'val : (B.getD qr (0,0)).1 + kr * d0 + 1 = v0 + kt * d0 := by
+      have h9 := hr'lev
+      rw [hgr'] at h9
+      exact h9
+    have hkrkt : kr + 1 = kt := by
+      have hkrlt : kr < kt := by
+        have h9 : B.length * kr < B.length * kt := by clear hnc; omega
+        exact Nat.lt_of_mul_lt_mul_left h9
+      by_contra hne
+      obtain ⟨ir, hir⟩ : ∃ ir, u.length + ir
+          = G.length + (kr + 1) * B.length :=
+        ⟨G.length + (kr + 1) * B.length - u.length, by
+          have hsucc : (kr + 1) * B.length = kr * B.length + B.length := by
+            rw [Nat.add_mul, Nat.one_mul]
+          clear hnc
+          omega⟩
+      have hsucc : (kr + 1) * B.length = kr * B.length + B.length := by
+        rw [Nat.add_mul, Nat.one_mul]
+      have hirgt : r' < ir := by clear hnc; omega
+      have hirlt : ir < S.length - 1 := by
+        have h9 : kr + 2 ≤ kt := by omega
+        have h11 := Nat.mul_le_mul_right B.length h9
+        rw [Nat.add_mul] at h11
+        clear hnc
+        omega
+      have hroot' : (S.getD ir (0,0)).1 = v0 + (kr + 1) * d0 := by
+        rw [hgdS _ (by clear hnc; omega),
+            show u.length + ir = G.length + ((kr + 1) * B.length + 0) by
+              clear hnc; omega,
+            copyExp_getD_copy (by clear hnc; omega) (by clear hnc; omega),
+            hBdef, List.getD_cons_zero]
+      have h12 := hafter ir hirgt (by clear hnc; omega)
+      rw [hgt, hroot'] at h12
+      have h12' : v0 + kt * d0 ≤ v0 + (kr + 1) * d0 := h12
+      have h13 : kr + 2 ≤ kt := by omega
+      have h14 := Nat.mul_le_mul_right d0 h13
+      rw [Nat.add_mul] at h14
+      have h15 : (kr + 1) * d0 = kr * d0 + d0 := by
+        rw [Nat.add_mul, Nat.one_mul]
+      clear hnc
+      omega
+    have hktkr2 : kt * d0 = kr * d0 + d0 := by
+      rw [← hkrkt, Nat.add_mul, Nat.one_mul]
+    have hktB : kt * B.length = kr * B.length + B.length := by
+      rw [← hkrkt, Nat.add_mul, Nat.one_mul]
+    have hqrval : (B.getD qr (0,0)).1 + 1 = lp.1 := by
+      rw [hlp1]
+      clear hnc
+      omega
+    -- the within-block conclusion via the host parent edge
+    have hT2conc : ∀ rr, 0 < rr → rr < qr →
+        (B.getD rr (0,0)).1 + 1 < lp.1 := by
+      rcases Nat.eq_zero_or_pos qr with hqr0 | hqrpos
+      · intro rr h1 h2
+        exfalso
+        omega
+      · have hdecT2 : G ++ B ++ [lp] = G ++ (B ++ [lp]) ++ ([] : PairSeq) := by
+          simp [List.append_assoc]
+        have hsclT2 : sclimb (B ++ [lp]) := hM G (B ++ [lp]) [] hdecT2
+        have hT2len : (B ++ [lp]).length = B.length + 1 := by simp
+        have hgB : ∀ j, j < B.length →
+            (B ++ [lp]).getD j (0,0) = B.getD j (0,0) :=
+          fun j hj => getD_append_left hj
+        have hgLp : (B ++ [lp]).getD B.length (0,0) = lp := by
+          rw [getD_append_right le_rfl, Nat.sub_self]
+          rfl
+        have heB1 : entry (B ++ [lp]) 1 B.length = lp.2 := by
+          unfold entry
+          rw [if_neg one_ne_zero, hgLp]
+        have hdropM : (G ++ B ++ [lp]).drop G.length = B ++ [lp] := by
+          rw [List.append_assoc, List.drop_left]
+        have hnxT2 : nextrel1 (B ++ [lp]) 0 B.length := by
+          have h10 : (G ++ B ++ [lp]).length - 1 = G.length + B.length := by
+            rw [hMlen, Nat.add_sub_cancel]
+          have h11 := hnxM
+          rw [h10] at h11
+          have h9 := (nextrel1_drop_iff (M := G ++ B ++ [lp])
+            (k := G.length) (a := G.length) (b := G.length + B.length)
+            le_rfl (by omega) (by rw [hMlen]; omega)).2 h11
+          rw [hdropM, Nat.sub_self, Nat.add_sub_cancel_left] at h9
+          exact h9
+        have hi1T2 : idx1 (B ++ [lp]) ((B ++ [lp]).length - 1) = 1 := by
+          rw [hT2len, Nat.add_sub_cancel]
+          unfold idx1
+          rw [if_pos (by rw [heB1]; omega)]
+        have hnxRT2 : nextR (B ++ [lp])
+            (idx1 (B ++ [lp]) ((B ++ [lp]).length - 1)) 0
+            ((B ++ [lp]).length - 1) := by
+          rw [hi1T2]
+          unfold nextR
+          rw [if_neg one_ne_zero, hT2len, Nat.add_sub_cancel]
+          exact hnxT2
+        have hT2after : ∀ l, qr < l → l + 1 < (B ++ [lp]).length →
+            ((B ++ [lp]).getD ((B ++ [lp]).length - 1) (0,0)).1
+              ≤ ((B ++ [lp]).getD l (0,0)).1 := by
+          intro l hl1 hl2
+          rw [hT2len] at hl2
+          rw [hT2len, Nat.add_sub_cancel, hgLp, hgB l (by omega)]
+          obtain ⟨il, hil⟩ : ∃ il, u.length + il
+              = G.length + (kr * B.length + l) :=
+            ⟨G.length + (kr * B.length + l) - u.length, by
+              clear hnc; omega⟩
+          have hil1 : r' < il := by clear hnc; omega
+          have hil2 : il < S.length - 1 := by clear hnc; omega
+          have h12 := hafter il hil1 (by clear hnc; omega)
+          have hgil : S.getD il (0,0)
+              = ((B.getD l (0,0)).1 + kr * d0, (B.getD l (0,0)).2) := by
+            rw [hgdS _ (by clear hnc; omega),
+                show u.length + il = G.length + (kr * B.length + l) from hil,
+                copyExp_getD_copy (by clear hnc; omega) (by omega)]
+          rw [hgt, hgil] at h12
+          have h13 : v0 + kt * d0 ≤ (B.getD l (0,0)).1 + kr * d0 := h12
+          rw [hlp1]
+          clear hnc
+          omega
+        intro rr h1 h2
+        have hconc2 := hsclT2 qr rr (by rw [hT2len]; omega) hnxRT2 hi1T2
+          hqrpos (by rw [hT2len]; omega)
+          (by
+            rw [hT2len, Nat.add_sub_cancel, hgLp, hgB qr (by omega)]
+            exact hqrval)
+          hT2after h1 h2
+        rw [hT2len, Nat.add_sub_cancel, hgLp, hgB rr (by omega)] at hconc2
+        exact hconc2
+    -- assemble the conclusion
+    rw [hgt]
+    show (S.getD r (0,0)).1 + 1 < v0 + kt * d0
+    by_cases hrg : u.length + r < G.length
+    · have h8 := hpre (u.length + r) (by omega) hrg
+      rw [← hpre0 r (by clear hnc; omega) hrg, hlp1] at h8
+      clear hnc
+      omega
+    · push Not at hrg
+      obtain ⟨k2, q2, hq2L, hdm2⟩ : ∃ k2 q2, q2 < B.length ∧
+          u.length + r - G.length = B.length * k2 + q2 :=
+        ⟨_, _, Nat.mod_lt _ (by clear hnc; omega),
+          (Nat.div_add_mod (u.length + r - G.length) B.length).symm⟩
+      have hcm2 : B.length * k2 = k2 * B.length := Nat.mul_comm ..
+      have hk2n : k2 < n := by
+        have h1 : B.length * k2 < B.length * n := by
+          have hcomm : n * B.length = B.length * n := Nat.mul_comm ..
+          clear hnc
+          omega
+        exact Nat.lt_of_mul_lt_mul_left h1
+      have hgr2 : S.getD r (0,0)
+          = ((B.getD q2 (0,0)).1 + k2 * d0, (B.getD q2 (0,0)).2) := by
+        rw [hgdS _ (by clear hnc; omega),
+            show u.length + r = G.length + (k2 * B.length + q2) by
+              clear hnc; omega,
+            copyExp_getD_copy hk2n hq2L]
+      have hval : (S.getD r (0,0)).1 = (B.getD q2 (0,0)).1 + k2 * d0 := by
+        rw [hgr2]
+      have hk2kr : k2 < kr ∨ (k2 = kr ∧ q2 < qr) := by
+        by_cases h9 : k2 < kr
+        · exact Or.inl h9
+        · push Not at h9
+          have hk2eq : k2 = kr := by
+            by_contra h10
+            have h11 : kr + 1 ≤ k2 := by omega
+            have h12 := Nat.mul_le_mul_left B.length h11
+            have h13 : B.length * (kr + 1) = B.length * kr + B.length := by
+              rw [Nat.mul_add, Nat.mul_one]
+            clear hnc
+            omega
+          refine Or.inr ⟨hk2eq, ?_⟩
+          rw [hk2eq] at hdm2
+          clear hnc
+          omega
+      rw [hval]
+      rcases Nat.eq_zero_or_pos q2 with hq20 | hq2pos
+      · have hval0 : (B.getD q2 (0,0)).1 = v0 := by
+          rw [hq20, hBdef, List.getD_cons_zero]
+        rw [hval0]
+        rcases hk2kr with h9 | ⟨h9, h10⟩
+        · have h11 : k2 + 2 ≤ kt := by omega
+          have h12 := Nat.mul_le_mul_right d0 h11
+          rw [Nat.add_mul] at h12
+          clear hnc
+          omega
+        · have hd02 : 2 ≤ d0 := by
+            have hqrpos : 0 < qr := by omega
+            obtain ⟨qr', hqr'⟩ : ∃ qr', qr = qr' + 1 :=
+              ⟨qr - 1, by omega⟩
+            have hmem : R.getD qr' (0,0) ∈ R := by
+              rw [getD_eq_getElem' _ _ (by clear hnc; omega)]
+              exact List.getElem_mem ..
+            have hv := hdom _ hmem
+            have h13 : (B.getD qr (0,0)).1 = (R.getD qr' (0,0)).1 := by
+              rw [hqr', hBdef, List.getD_cons_succ]
+            have h14 := hqrval
+            rw [hlp1, h13] at h14
+            clear hnc
+            omega
+          rw [h9]
+          clear hnc
+          omega
+      · rcases hk2kr with h9 | ⟨h9, h10⟩
+        · have h11 := hBF45 hw0pos hd0p q2 hq2pos hq2L
+          have h12 : k2 + 2 ≤ kt := by omega
+          have h13 := Nat.mul_le_mul_right d0 h12
+          rw [Nat.add_mul] at h13
+          clear hnc
+          omega
+        · have h11 := hT2conc q2 hq2pos h10
+          rw [hlp1] at h11
+          rw [h9]
+          clear hnc
+          omega
+
 end YAPSS
