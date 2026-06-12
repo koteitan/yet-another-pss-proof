@@ -4986,4 +4986,153 @@ theorem classOK_of_take_eq {X Y : PairSeq} {m : ℕ}
     rw [hYctx]
   exact hY S pre pp mid _ hYeq hdom hbd
 
+theorem sclimb_nil : sclimb ([] : PairSeq) := by
+  intro j0 r' r hj0 _ _ _ _ _ _ _ _
+  simp at hj0
+
+/-- `classOK` restricts to any infix. -/
+theorem classOK_infix {H u H' v : PairSeq} (h : classOK H)
+    (heq : H = u ++ H' ++ v) : classOK H' := by
+  intro S pre pp mid post heq' hdom hbd
+  refine h S (u ++ pre) pp mid (post ++ v) ?_ hdom hbd
+  rw [heq, heq']
+  simp [List.append_assoc]
+
+/-- The master segment discipline is shift-invariant. -/
+theorem classOK_shift {B : PairSeq} {d : ℕ} (h : classOK B) :
+    classOK (B.map fun p => (p.1 + d, p.2)) := by
+  intro S pre pp mid post heq hdom hbd
+  obtain ⟨l1, post0, hB, hl1, hpost⟩ := List.map_eq_append_iff.mp heq
+  obtain ⟨pre0, ctx0, hl1e, hpre, hctx⟩ := List.map_eq_append_iff.mp hl1
+  obtain ⟨pp0, tl0, hctx2, hpp, htl⟩ := List.map_eq_cons_iff.mp hctx
+  obtain ⟨mid0, S0, htl2, hmid, hS⟩ := List.map_eq_append_iff.mp htl
+  subst hl1e hctx2 htl2
+  have hdom0 : ∀ r ∈ mid0 ++ S0, pp0.1 < r.1 := by
+    intro r hr
+    have hmem : ((r.1 + d, r.2) : ℕ × ℕ) ∈ mid ++ S := by
+      rw [← hmid, ← hS, ← List.map_append]
+      exact List.mem_map_of_mem hr
+    have h2 := hdom _ hmem
+    rw [← hpp] at h2
+    have h3 : pp0.1 + d < r.1 + d := h2
+    omega
+  rcases S0 with _ | ⟨s0, S0t⟩
+  · have hSnil : S = [] := by simpa using hS.symm
+    rw [hSnil]
+    exact sclimb_nil
+  · have hbd0 : ∀ r ∈ mid0, (s0 :: S0t).headI.1 ≤ r.1 := by
+      intro r hr
+      have hmem : ((r.1 + d, r.2) : ℕ × ℕ) ∈ mid := by
+        rw [← hmid]
+        exact List.mem_map_of_mem hr
+      have h2 := hbd _ hmem
+      rw [← hS] at h2
+      simp only [List.map_cons, List.headI_cons] at h2
+      have h3 : s0.1 + d ≤ r.1 + d := h2
+      simp only [List.headI_cons]
+      omega
+    have hres := h (s0 :: S0t) pre0 pp0 mid0 post0 hB hdom0 hbd0
+    have h4 := sclimb_shift (d := d) hres
+    rwa [hS] at h4
+
+/-- A dominated-segment witness lying inside an infix window transfers to
+the infix. -/
+theorem classOK_within_infix {X u C v : PairSeq}
+    (hX : X = u ++ C ++ v) (hC : classOK C) :
+    ∀ (S pre : PairSeq) (pp : ℕ × ℕ) (mid post : PairSeq),
+      X = pre ++ (pp :: (mid ++ S)) ++ post →
+      u.length ≤ pre.length →
+      pre.length + (1 + (mid.length + S.length)) ≤ u.length + C.length →
+      (∀ r ∈ mid ++ S, pp.1 < r.1) →
+      (∀ r ∈ mid, S.headI.1 ≤ r.1) →
+      sclimb S := by
+  intro S pre pp mid post heq hlo hhi hdom hbd
+  have hctxlen : (pp :: (mid ++ S)).length = 1 + (mid.length + S.length) := by
+    simp only [List.length_cons, List.length_append]
+    omega
+  have h1 : X.take u.length = u := by
+    rw [hX, List.take_append_of_le_length (by rw [List.length_append]; omega),
+        List.take_append_of_le_length le_rfl, List.take_length]
+  have h2 : X.take u.length = pre.take u.length := by
+    rw [heq, List.take_append_of_le_length (by rw [List.length_append]; omega),
+        List.take_append_of_le_length hlo]
+  have hpu : pre.take u.length = u := h2.symm.trans h1
+  have hpre : pre = u ++ pre.drop u.length := by
+    conv_lhs => rw [← List.take_append_drop u.length pre]
+    rw [hpu]
+  have hcancel : C ++ v
+      = pre.drop u.length ++ ((pp :: (mid ++ S)) ++ post) := by
+    have h3 := hX.symm.trans heq
+    rw [hpre] at h3
+    simp only [List.append_assoc] at h3
+    exact List.append_cancel_left h3
+  have hlen2 : (pre.drop u.length).length + (pp :: (mid ++ S)).length
+      ≤ C.length := by
+    rw [List.length_drop, hctxlen]
+    omega
+  have hkey : C.take ((pre.drop u.length).length + (pp :: (mid ++ S)).length)
+      = pre.drop u.length ++ (pp :: (mid ++ S)) := by
+    have h4 : (C ++ v).take
+        ((pre.drop u.length).length + (pp :: (mid ++ S)).length)
+        = C.take ((pre.drop u.length).length + (pp :: (mid ++ S)).length) :=
+      List.take_append_of_le_length hlen2
+    rw [hcancel] at h4
+    rw [← h4, List.take_append, List.take_of_length_le (Nat.le_add_right _ _),
+        Nat.add_sub_cancel_left, List.take_append_of_le_length le_rfl,
+        List.take_length]
+  refine hC S (pre.drop u.length) pp mid
+    (C.drop ((pre.drop u.length).length + (pp :: (mid ++ S)).length))
+    ?_ hdom hbd
+  conv_lhs => rw [← List.take_append_drop
+    ((pre.drop u.length).length + (pp :: (mid ++ S)).length) C]
+  rw [hkey]
+
+/-- `classOK` for the copy expansion: witnesses within the shared base or a
+single copy transfer unconditionally; copy-spanning witnesses are the
+explicit hypothesis `hspan`. -/
+theorem classOK_copyExp {G B : PairSeq} {lp : ℕ × ℕ} {d0 n : ℕ} (hn : 1 ≤ n)
+    (hM : classOK (G ++ B ++ [lp]))
+    (hspan : ∀ (S pre : PairSeq) (pp : ℕ × ℕ) (mid post : PairSeq),
+      copyExp G B d0 n = pre ++ (pp :: (mid ++ S)) ++ post →
+      (∀ r ∈ mid ++ S, pp.1 < r.1) →
+      (∀ r ∈ mid, S.headI.1 ≤ r.1) →
+      G.length + B.length < pre.length + (1 + (mid.length + S.length)) →
+      (¬ ∃ k, k < n ∧ G.length + k * B.length ≤ pre.length ∧
+        pre.length + (1 + (mid.length + S.length))
+          ≤ G.length + (k + 1) * B.length) →
+      sclimb S) :
+    classOK (copyExp G B d0 n) := by
+  have htkX : (copyExp G B d0 n).take (G.length + B.length) = G ++ B := by
+    have h := copyExp_take_at (G := G) (B := B) (d0 := d0) (n := n)
+      (k := 0) (q := B.length) (by omega) le_rfl
+    simpa [copyExp] using h
+  have htkM : (G ++ B ++ [lp]).take (G.length + B.length) = G ++ B := by
+    have h := hostM_take_at (G := G) (B := B) (lp := lp) (q := B.length) le_rfl
+    rwa [List.take_length] at h
+  have htk : (copyExp G B d0 n).take (G.length + B.length)
+      = (G ++ B ++ [lp]).take (G.length + B.length) := by rw [htkX, htkM]
+  intro S pre pp mid post heq hdom hbd
+  by_cases hc1 : pre.length + (1 + (mid.length + S.length))
+      ≤ G.length + B.length
+  · exact classOK_of_take_eq htk hM S pre pp mid post heq hc1 hdom hbd
+  by_cases hc2 : ∃ k, k < n ∧ G.length + k * B.length ≤ pre.length ∧
+      pre.length + (1 + (mid.length + S.length))
+        ≤ G.length + (k + 1) * B.length
+  · obtain ⟨k, hk, hlo, hhi⟩ := hc2
+    have hwin := copyExp_split G B d0 (le_of_lt hk)
+    obtain ⟨m, hm⟩ : ∃ m, n - k = m + 1 := ⟨n - k - 1, by omega⟩
+    rw [hm, List.range_succ_eq_map, List.flatMap_cons] at hwin
+    simp only [Nat.add_zero] at hwin
+    rw [← List.append_assoc] at hwin
+    have hCk : classOK (B.map fun p => (p.1 + k * d0, p.2)) :=
+      classOK_shift (classOK_infix (u := G) (H' := B) (v := [lp]) hM rfl)
+    refine classOK_within_infix hwin hCk S pre pp mid post heq ?_ ?_ hdom hbd
+    · rw [copyExp_length]
+      exact hlo
+    · rw [copyExp_length, List.length_map]
+      have hsm : (k + 1) * B.length = k * B.length + B.length :=
+        Nat.succ_mul k B.length
+      omega
+  · exact hspan S pre pp mid post heq hdom hbd (by omega) hc2
+
 end YAPSS
