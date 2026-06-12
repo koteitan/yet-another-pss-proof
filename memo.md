@@ -3325,3 +3325,19 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
     直接構築）に再設計が必要。seam_open 複合体（copyhead/blift/m1凍結）の
     一体再設計として次に実施。残 elim: copyhead/blift 内 consider 群・
     sibm2_snoc_copy (9146圏)。
+
+### (2026-06-13 続69) sibrel4 修復 — ビルド緑チェックポイント到達
+
+- ビルド緑（19秒）。修復完了分: sibrel 定義第4分岐 / trunc 4分岐書換 /
+  NT_enddrop 凍結(2,403/0) / NT_tie_resolved 第4ケース / nopref・ascent・
+  shf_sibrel 機械対応 / diverge 弱化(ed: r=[]) / 呼び出し site1
+  (copyhead_m1_L2)・site2 (copyhead_m1) = ED は branch-4 直接構築。
+- **一時凍結**: seam_open_copyhead / seam_open_blift（旧緑証明は git 履歴・
+  lxf 内 diverge 消費に branch-4 脱出が必要 = 再設計対象。statement は
+  sibm2 closure+3 監査 0/729,131 の傘下で真）。
+- sorry 26（+NT_enddrop+copyhead+blift の一時分）。
+- 次: (1) seam_open 複合体の branch-4 再設計（一時凍結2点の復旧・
+  edf ケースは Y側 K1@C 拡張で自明、M側 ed2 は |p| vs |P0@blk| 場合分け
+  の純リスト代数 — 設計済み続68補2）(2) sibm2 系シーム凍結
+  （open_m1/copyhead 残差/deep）の closure+3 再監査と文面再採掘
+  (3) 健全性総点検: 全 sorry 文面の sibrel4 下での意味再確認。
