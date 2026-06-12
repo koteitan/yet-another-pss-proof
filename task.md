@@ -91,7 +91,8 @@
   - ✅ BTWRAPU±U3 討伐〔LAND+鎖帰納+CT / +NT3空クラス〕＝**BT窓族完全終結**
   - ✅ GBLK0 討伐〔GAP 246件級へ分解〕
   - ✅ OSC再構成〔CT/GAP→導出・O1はBTWRAPU qa=0系で討伐・残凍結 O2(158/0)+GCD(7/0)・i1>0真空性証明済〕
-  - 🚨 GRANDシーム残〔O2(158)/GCD(7)/NT3(空)/BTWRAP_T3_pos(6・主部20699はBTWRAPU3導出済)/qpos(171)/t14ok_oper_bad(地図済)〕
+  - ✅ ginv修復〔閉包+3で偽（コピーシーム再上昇・6例目）→真形(l≤Suc p+t)制限・保存連鎖修理・ob_cross凍結・**qpos包摂削除**・dseg_bound'/nbcK_T修理・続75〜76〕
+  - 🚨 GRANDシーム残〔O2(489/0@+3)/GCD(61/0@+3)/NT3(空)/BTWRAP_T3_pos(60/0@+3)/ob_cross(+3含意)/t14ok_oper_bad(地図済)〕
   - ✅ E6_iii_singleton 討伐〔FBS=fire-butlast安定 5370/0 の対偶2行〕
   - ✅ E6_qcut_last 討伐〔QDIAG=厳密対角凍結（拡張fire単独 32491/0）＋単調帰納・dropWhile リスト論証〕
   - ✅ E6_seam 分割〔q脱結合凍結核 seam_MIN(458980/0)＋seam_INV(426489/0)・本体は2行導出〕
