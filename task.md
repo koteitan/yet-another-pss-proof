@@ -65,7 +65,7 @@
   - ✅ STS_A 完全証明 / proj_once / proj_submono
   - ✅ E6 アーキテクチャ〔msfx 接尾辞定理・実証 V1-V5 全0違反・memo続22〕＋ post一般化〔0/8243〕
   - ✅ C1層〔fbseg_hd_level→NT_dom→NT_shape→NT_hd/NT_tail_lt・memo続24〕
-  - ✅ コンビネータ群〔E6_value/GCAT/E6_hdom/E6_dom_tie_resolved/E6_mem_resolved/E6_nbcK/Gterm_NT_high〕
+  - ✅ コンビネータ群〔E6_value/GCAT/E6_hdom/E6_dom_tie/E6_mem_resolved/E6_nbcK/Gterm_NT_high〕
   - ✅ r1ok 基盤〔row1規律 0/14558・残 r1ok_climb のみ・memo続26〕
   - ✅ sibm2/sibrel 修復〔旧 sibm/SIB_shape は偽＝閉包境界教訓・SIB_shape2・NT_tie_resolved 3ケース・memo続29〕
   - ✅ 正確文面の閉包+1監査〔E6_lpl 等 全0違反・STS_B 前提修正・E6_memT 前提空・audit_*.py〕
@@ -77,7 +77,7 @@
   - ✅ E6_tie_nofire_high1 討伐〔t14ok=タイ停止ランhm不変量＋hm_take接頭辞遺伝〕＝タイ無発火コンプレックス完全制覇
   - 🚨 値側コア〔NT_lexdiff_lt 0/116万〕
   - ✅ ginv 基盤＋E6_nbcK_T 討伐〔ginv=閉鎖窓row1上界・生成帰納骨格緑・dseg橋渡し・残 ginv_oper_bad のみ〕
-  - 🚨 fire-cascade 残4点〔E6_lpl/E6_dom_deep/E6_memT/E6_nbcK_K＝GRAND同時帰納の本丸〕
+  - 🚨 fire-cascade 残2点〔E6_memT/E6_nbcK_K（lpl/dom_deep は G6 で討伐済）〕
   - ✅ ginv_oper_bad 討伐〔A/B/C/E転送＋反駁＋d01/d02閉鎖証人・残差 GBLK0/qpos の2点〕
   - ✅ t1ok_oper_bad 討伐〔3ケース転送＋BT1・unfolding再帰/metis/arith原子の3事故克服〕
   - ✅ t3ok_oper_bad 討伐〔t1okクローン+T3デルタ+BT1_T3凍結〕
@@ -96,5 +96,5 @@
   - 🚨 行レベル凍結核〔E6_G6/seam_MIN/seam_INV/E6_FBS/E6_QDIAG 本体〕＋ STS_B 本体〔0/26322〕
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - 🚨 TOP_desc〔0/474・未ステート〕
-  - 🚨 スタブ〔NT_tie/E6_mem/E6_dom_tie＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン〕
+  - 🚨 スタブ〔NT_tie/E6_mem＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン（SCC地図=memo続59）〕
 - 🗑 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要。wf_ArgsA 路線は凍結〔wfsum に残置〕
