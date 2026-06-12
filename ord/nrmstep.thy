@@ -6289,6 +6289,8 @@ proof -
     | (pre) D where "D \<noteq> []" "K = K2 @ D"
     | (lx) p x x1 r r1 where "K = p @ x # r" "K2 = p @ x1 # r1"
         "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
+    | (ed) p x x1 r1 where "K = p @ [x]" "K2 = p @ x1 # r1"
+        "fst x1 = fst x" "snd x1 < snd x"
     unfolding sibrel_def by blast
   thus False
   proof cases
@@ -6307,6 +6309,15 @@ proof -
       unfolding E using pK by (simp add: nth_append)
     ultimately have "x1 = x" by simp
     thus False using lx(3) by auto
+  next
+    case ed
+    have pK: "length p < length K" unfolding ed(1) by simp
+    have "K ! length p = x" unfolding ed(1) by simp
+    moreover have "K2 ! length p = x1" unfolding ed(2) by simp
+    moreover have "K2 ! length p = K ! length p"
+      unfolding E using pK by (simp add: nth_append)
+    ultimately have "x1 = x" by simp
+    thus False using ed(4) by auto
   qed
 qed
 
@@ -6325,6 +6336,8 @@ proof -
     | (pre) D where "D \<noteq> []" "K = K2 @ D"
     | (lx) p' x' x1' r' r1' where "K = p' @ x' # r'" "K2 = p' @ x1' # r1'"
         "(fst x1' = fst x' \<and> snd x1' < snd x') \<or> (fst x1' < fst x' \<and> snd x1' = snd x')"
+    | (ed) p' x' x1' r1' where "K = p' @ [x']" "K2 = p' @ x1' # r1'"
+        "fst x1' = fst x'" "snd x1' < snd x'"
     unfolding sibrel_def by blast
   thus False
   proof cases
@@ -6367,6 +6380,36 @@ proof -
       ultimately have "x = x1" using nthK nthK2 by simp
       thus False using ne by simp
     qed
+  next
+    case ed
+    have nthK': "K ! length p' = x'" unfolding ed(1) by simp
+    have nthK2': "K2 ! length p' = x1'" unfolding ed(2) by simp
+    have pK': "length p' < length K" unfolding ed(1) by simp
+    consider (less) "length p' < length p" | (same) "length p' = length p"
+      | (more) "length p < length p'" by linarith
+    thus False
+    proof cases
+      case same
+      have "x' = x" using nthK nthK' same by simp
+      moreover have "x1' = x1" using nthK2 nthK2' same by simp
+      ultimately show False using ed(3,4) asc by simp
+    next
+      case less
+      have "K ! length p' = p ! length p'"
+        unfolding dK using less by (simp add: nth_append)
+      moreover have "K2 ! length p' = p ! length p'"
+        unfolding dK2 using less by (simp add: nth_append)
+      ultimately have "x' = x1'" using nthK' nthK2' by simp
+      thus False using ed(4) by simp
+    next
+      case more
+      have "K ! length p = p' ! length p"
+        unfolding ed(1) using more by (simp add: nth_append)
+      moreover have "K2 ! length p = p' ! length p"
+        unfolding ed(2) using more by (simp add: nth_append)
+      ultimately have "x = x1" using nthK nthK2 by simp
+      thus False using ne by simp
+    qed
   qed
 qed
 
@@ -6374,8 +6417,9 @@ lemma sibrel_diverge:
   assumes R: "sibrel K K2"
     and dK: "K = p @ x # r" and dK2: "K2 = p @ x1 # r1"
     and ne: "x1 \<noteq> x"
-  shows "((fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x))
-         \<and> snd (hd K) = maxr1 K \<and> snd (hd K2) = maxr1 K2"
+  shows "(((fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x))
+          \<and> snd (hd K) = maxr1 K \<and> snd (hd K2) = maxr1 K2)
+       \<or> (r = [] \<and> fst x1 = fst x \<and> snd x1 < snd x)"
 proof -
   have nthK: "K ! length p = x" unfolding dK by simp
   have nthK2: "K2 ! length p = x1" unfolding dK2 by simp
@@ -6386,6 +6430,8 @@ proof -
     | (lx) p' x' x1' r' r1' where "K = p' @ x' # r'" "K2 = p' @ x1' # r1'"
         "(fst x1' = fst x' \<and> snd x1' < snd x') \<or> (fst x1' < fst x' \<and> snd x1' = snd x')"
         "snd (hd K) = maxr1 K" "snd (hd K2) = maxr1 K2"
+    | (ed) p' x' x1' r1' where "K = p' @ [x']" "K2 = p' @ x1' # r1'"
+        "fst x1' = fst x'" "snd x1' < snd x'"
     unfolding sibrel_def by blast
   thus ?thesis
   proof cases
@@ -6426,6 +6472,40 @@ proof -
     have "x' = x" using nthK nthK' same by simp
     moreover have "x1' = x1" using nthK2 nthK2' same by simp
     ultimately show ?thesis using lx(3) lx(4) lx(5) by simp
+  next
+    case ed
+    have nthK': "K ! length p' = x'" unfolding ed(1) by simp
+    have nthK2': "K2 ! length p' = x1'" unfolding ed(2) by simp
+    have x1x': "x1' \<noteq> x'" using ed(4) by auto
+    have same: "length p' = length p"
+    proof (rule ccontr)
+      assume "length p' \<noteq> length p"
+      then consider (less) "length p' < length p" | (more) "length p < length p'"
+        by linarith
+      thus False
+      proof cases
+        case less
+        have "K ! length p' = p ! length p'"
+          unfolding dK using less by (simp add: nth_append)
+        moreover have "K2 ! length p' = p ! length p'"
+          unfolding dK2 using less by (simp add: nth_append)
+        ultimately show False using nthK' nthK2' x1x' by simp
+      next
+        case more
+        have "K ! length p = p' ! length p"
+          unfolding ed(1) using more by (simp add: nth_append)
+        moreover have "K2 ! length p = p' ! length p"
+          unfolding ed(2) using more by (simp add: nth_append)
+        ultimately show False using nthK nthK2 ne by simp
+      qed
+    qed
+    have peq: "p' = p"
+      using dK ed(1) same by (metis append_eq_append_conv)
+    have xx: "x' = x" using nthK nthK' same by simp
+    have x1x1: "x1' = x1" using nthK2 nthK2' same by simp
+    have req: "r = []"
+      using dK ed(1) peq xx by simp
+    show ?thesis using req ed(3) ed(4) xx x1x1 by simp
   qed
 qed
 
@@ -6508,6 +6588,8 @@ proof -
         "snd (hd K) = maxr1 K" "snd (hd K1) = maxr1 K1"
         "K = p @ x # r" "K1 = p @ x1 # r1"
         "(fst x1 = fst x \<and> snd x1 < snd x) \<or> (fst x1 < fst x \<and> snd x1 = snd x)"
+    | (ED) p x x1 r1 where "K = p @ [x]" "K1 = p @ x1 # r1"
+        "fst x1 = fst x" "snd x1 < snd x"
     unfolding sibrel_def by blast
   thus ?thesis
   proof cases
@@ -6536,6 +6618,17 @@ proof -
                 \<and> snd (fst x1 + s, snd x1) = snd (fst x + s, snd x))"
       using LX(5) by auto
     show ?thesis unfolding sibrel_def using hm hm1 d1 d2 lxs by blast
+  next
+    case ED
+    have d1: "shf s K = shf s p @ [(fst x + s, snd x)]"
+      unfolding ED(1) shf_def by simp
+    have d2: "shf s K1 = shf s p @ (fst x1 + s, snd x1) # shf s r1"
+      unfolding ED(2) shf_def by simp
+    have f: "fst (fst x1 + s, snd x1) = fst (fst x + s, snd x)"
+      using ED(3) by simp
+    have sd: "snd (fst x1 + s, snd x1) < snd (fst x + s, snd x)"
+      using ED(4) by simp
+    show ?thesis unfolding sibrel_def using d1 d2 f sd by blast
   qed
 qed
 

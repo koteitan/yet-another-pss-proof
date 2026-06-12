@@ -3297,3 +3297,16 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 - 修復方針: nopref/ascent/shf は機械クローン→先に処理。diverge は弱化＋
   伝播（呼び出し側の新ケースでは構築目標も branch-4 で供給できるはず —
   コピー転送は形を保存するため）。
+
+- (続68補) 修復進捗: sibrel_nopref/ascent/shf_sibrel に第4(ed)ケース追加
+  （機械クローン・nth衝突/シフト保存）。**sibrel_diverge を弱化**:
+  結論 = (降下∧両hm) ∨ **(r=[] ∧ fst等値 ∧ snd降下)**、ed ケースは
+  位置一致 p'=p（append_eq_append_conv）から r=[] を導出。
+- 残り = diverge 呼び出し4箇所の新ケース（各ローカルゴール対応）:
+  - 7354圏（seam_E系）: div を conjunction で受けている → 場合分けに変更、
+    end側: D 単集合・fst(M!j1)=fst(hd D)・snd降下 の下でローカル反駁/構築
+  - 7654圏: dK = []@M!(Suc a)#tl K — end側: tl K = [] (K 単集合)
+  - 8056圏 (blift m=1): hmM のみ消費 — end側では hmM が無い → 別経路
+  - 8511圏 (blift m=0): 同上
+  + seam_open_copyhead (7930/8046 elim) / seam_open_blift (8309-8497 elim) /
+    sibm2_snoc_copy (9146 elim) の consider 4分岐化。
