@@ -7415,4 +7415,37 @@ theorem split_row1_strict {X : PairSeq} {gX last : ℕ}
   · have hmax := hedge.2.2.2.2.2 j ⟨hj1, hanc j hj1 hlt⟩
     omega
 
+/-- BF1 restricts to truncated blocks. -/
+theorem bf1_take {v0 w0 : ℕ} {R : PairSeq} {m : ℕ}
+    (h : ∀ q, 0 < q → q < ((v0,w0) :: R).length →
+      le0 ((v0,w0) :: R) 0 q → 0 < (((v0,w0) :: R).getD q (0,0)).2 →
+      w0 < (((v0,w0) :: R).getD q (0,0)).2) :
+    ∀ q, 0 < q → q < ((v0,w0) :: R.take m).length →
+      le0 ((v0,w0) :: R.take m) 0 q →
+      0 < (((v0,w0) :: R.take m).getD q (0,0)).2 →
+      w0 < (((v0,w0) :: R.take m).getD q (0,0)).2 := by
+  have hcons : (v0,w0) :: R.take m = ((v0,w0) :: R).take (m + 1) := by
+    rw [List.take_succ_cons]
+  intro q hq1 hq2 hle hpos
+  rw [hcons] at hq2 hle hpos ⊢
+  rw [List.length_take] at hq2
+  have hqlt : q < ((v0,w0) :: R).length := by omega
+  rw [getD_take (by omega)] at hpos ⊢
+  exact h q hq1 hqlt
+    ((le0_take_iff (m := m + 1) (by omega) hqlt).1 hle) hpos
+
+/-- BF2 restricts to truncated blocks. -/
+theorem bf2_take {v0 w0 : ℕ} {R : PairSeq} {m : ℕ}
+    (h : ∀ q, q < ((v0,w0) :: R).length →
+      w0 ≤ (((v0,w0) :: R).getD q (0,0)).2) :
+    ∀ q, q < ((v0,w0) :: R.take m).length →
+      w0 ≤ (((v0,w0) :: R.take m).getD q (0,0)).2 := by
+  have hcons : (v0,w0) :: R.take m = ((v0,w0) :: R).take (m + 1) := by
+    rw [List.take_succ_cons]
+  intro q hq
+  rw [hcons] at hq ⊢
+  rw [List.length_take] at hq
+  rw [getD_take (by omega)]
+  exact h q (by omega)
+
 end YAPSS
