@@ -3341,3 +3341,20 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   の純リスト代数 — 設計済み続68補2）(2) sibm2 系シーム凍結
   （open_m1/copyhead 残差/deep）の closure+3 再監査と文面再採掘
   (3) 健全性総点検: 全 sorry 文面の sibrel4 下での意味再確認。
+
+### (2026-06-13 続70) sibrel4 修復キャンペーン完全完了（緑・一時凍結ゼロ）
+
+- **seam_open_copyhead / seam_open_blift を本復旧**（一時凍結解消）:
+  - lxf ケースを m 分岐外側に再構成: 通常側（copyhead: 1<m / blift: Suc）は
+    旧 hm 論理、diverge 側（m=1 / m=0）は弱化 diverge の hOK/hED 分岐 —
+    **hED は K=p@[x]（r=[]強制）+ K1@C 拡張で branch-4 即構築**。
+  - SYf consider に edf（Y側 branch-4）追加 — K1@C = p@x1#(r1@C) で自明。
+  - blift pref/m0 の coreM consider に ed2 追加 — r1=[] は butlast/last で
+    branch-2、r1≠[] は butlast 代数で branch-4。metis→blast。
+- sorry 24 = 修復前 23 + NT_enddrop（branch-4 値降下・closure+3到達 2,403/0）。
+  **健全性事件（続67）は文面・証明とも完全解決**。ビルド28秒緑。
+- 残 TODO（次セッション）: (1) sibm2 系シーム凍結（seam_open_m1/copyhead
+  残差 P・E2var・F2L2/copyhead_deep/STS_B 等）の文面を sibrel4 下で
+  closure+3 再採掘（open_m1 は sibrel4 で 202/0 確認済・+3 再確認要）
+  (2) 全 sorry 文面の sibrel4 意味総点検 (3) その後通常戦線へ復帰
+  （続64 優先順位）。
