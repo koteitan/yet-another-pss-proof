@@ -8410,4 +8410,14 @@ theorem le0_trans {M : PairSeq} {a b c : ℕ}
     (h1 : le0 M a b) (h2 : le0 M b c) : le0 M a c :=
   ⟨h1.1, h2.2.1, h1.2.2.trans h2.2.2⟩
 
+theorem le0_roots {G : PairSeq} {v0 w0 n k k' : ℕ}
+    (hk' : k' < n) (hk : k ≤ k') :
+    le0 (copyExp G [(v0,w0)] 1 n) (G.length + k) (G.length + k') := by
+  have hone : ([(v0,w0)] : PairSeq).length = 1 := rfl
+  have hXlen : (copyExp G [(v0,w0)] 1 n).length = G.length + n * 1 := by
+    rw [← hone]
+    exact copyExp_length ..
+  exact ⟨by rw [hXlen]; omega, by rw [hXlen]; omega,
+    roots_chain k' hk' k hk⟩
+
 end YAPSS
