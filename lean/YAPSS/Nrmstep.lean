@@ -6703,4 +6703,101 @@ theorem I_ST_PS {M : PairSeq} (hM : ST_PS M)
       (hsp N k hN hk))
   exact ⟨h1, h2, hcl M hM⟩
 
+theorem rtg_diag_adj (v : ℕ) : ∀ b, b ≤ v → ∀ a, a ≤ b →
+    Relation.ReflTransGen (nextrel0 (diagSeq 0 v)) a b := by
+  intro b
+  induction b with
+  | zero =>
+    intro _ a ha
+    have : a = 0 := by omega
+    rw [this]
+  | succ b ih =>
+    intro hbv a ha
+    rcases Nat.eq_or_lt_of_le ha with he | hlt
+    · rw [he]
+    · refine (ih (by omega) a (by omega)).tail ?_
+      refine ⟨by rw [diagSeq0_length]; omega, by rw [diagSeq0_length]; omega,
+        by omega, ?_, ?_⟩
+      · unfold entry
+        rw [if_pos rfl, if_pos rfl, diagSeq0_getD (by omega),
+            diagSeq0_getD (by omega)]
+        omega
+      · intro l hl
+        exfalso
+        omega
+
+theorem le0_diagSeq {v a b : ℕ} (hab : a ≤ b) (hb : b ≤ v) :
+    le0 (diagSeq 0 v) a b :=
+  ⟨by rw [diagSeq0_length]; omega, by rw [diagSeq0_length]; omega,
+    rtg_diag_adj v b hb a hab⟩
+
+/-- On the diagonal the only parent edge into the last column is the
+second-to-last column, where all spanning block facts trivialize. -/
+theorem spanOK_diagSeq (v : ℕ) : spanOK (diagSeq 0 v) := by
+  intro G v0 w0 R lp d0 hMeq hnxtM hd0
+  have hlen := congrArg List.length hMeq
+  rw [diagSeq0_length] at hlen
+  simp at hlen
+  have hG : G.length + (R.length + 1) = v := by omega
+  have hgd : ∀ i, i < v + 1 → (diagSeq 0 v).getD i (0,0) = (i, i) :=
+    fun i hi => diagSeq0_getD hi
+  -- the maximality or between condition forces a one-root block
+  have hR : R = [] := by
+    by_contra hRne
+    have hR1 : 1 ≤ R.length := by
+      rcases R with _ | ⟨r, R'⟩
+      · exact absurd rfl hRne
+      · simp
+    unfold nextR at hnxtM
+    by_cases hi1 : idx1 (diagSeq 0 v) ((diagSeq 0 v).length - 1) = 0
+    · rw [if_pos hi1] at hnxtM
+      have hb := hnxtM.2.2.2.2 (G.length + 1)
+        ⟨by omega, by rw [diagSeq0_length]; omega⟩
+      unfold entry at hb
+      rw [if_pos rfl, if_pos rfl, diagSeq0_length,
+          show v + 1 - 1 = v by omega, hgd v (by omega),
+          hgd (G.length + 1) (by omega)] at hb
+      have hb' : v ≤ G.length + 1 := hb
+      omega
+    · rw [if_neg hi1] at hnxtM
+      have hb := hnxtM.2.2.2.2.2 (G.length + 1) ⟨by omega, by
+        rw [diagSeq0_length, show v + 1 - 1 = v by omega]
+        exact le0_diagSeq (by omega) (by omega)⟩
+      unfold entry at hb
+      rw [if_neg one_ne_zero, if_neg one_ne_zero, diagSeq0_length,
+          show v + 1 - 1 = v by omega, hgd v (by omega),
+          hgd (G.length + 1) (by omega)] at hb
+      have hb' : v ≤ G.length + 1 := hb
+      omega
+  subst hR
+  have hG1 : G.length + 1 = v := by simpa using hG
+  -- the prefix entries and the last pair
+  have hGent : ∀ h, h < G.length → G.getD h (0,0) = (h, h) := by
+    intro h hh
+    have h1 : (diagSeq 0 v).getD h (0,0) = G.getD h (0,0) := by
+      rw [hMeq, getD_append_left (by simp; omega), getD_append_left hh]
+    rw [hgd h (by omega)] at h1
+    exact h1.symm
+  have hlp : lp = (v, v) := by
+    have h1 : (diagSeq 0 v).getD v (0,0) = lp := by
+      rw [hMeq, getD_append_right (by simp; omega)]
+      have h2 : v - (G ++ [(v0,w0)]).length = 0 := by simp; omega
+      rw [h2, List.getD_cons_zero]
+    rw [hgd v (by omega)] at h1
+    exact h1.symm
+  refine ⟨?_, ?_, ?_, ?_⟩
+  · intro q hq1 hq2 _ _
+    simp at hq2
+    omega
+  · intro _ q hq
+    simp at hq
+    rw [hq, List.getD_cons_zero]
+  · intro _ a _ _ _ h ha hh
+    rw [hGent h hh, hlp]
+    show h + 1 < v
+    omega
+  · intro _ _ q hq1 hq2
+    simp at hq2
+    omega
+
 end YAPSS
