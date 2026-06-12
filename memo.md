@@ -3161,3 +3161,30 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 - nrm_order_pres はクリティカルパス外と確認（続63補）: PSS_terminates_nrm
   は nrm_step_dec のみ必要で、nrmstep の直接証明が閉じれば order_pres は
   削除可能（wf_Rnf_nrm 経路は冗長な強い版）。
+
+- (続63補) **ginv_GAP 偵察**: 286実例（閉包+2）が**完全剛性** —
+  全件 (i1=0, snd pp=1, snd j0=0, 超過列 snd=1)、ホストは CT の B6-fail と
+  同じ深振動ブロック (7,1)(7,0)(8,1)(7,0)(8,1)…。
+  ⟹ **CT と GAP は同じ振動規律の双子**（d0=0 ブロックの interior bump は
+  ちょうど s0+1・bump 存在 ⟹ 支配前任 snd ≥ s0+1・tight 子は gap-clear
+  不能 or 降下）。次の世代側戦役 =「振動規律 OSC」一本で CT+GAP 同時討伐。
+
+### (2026-06-12 続64) 次セッション開幕指針
+
+- **sorry 現況**: nrmstep.thy 23（全て閉包+2監査済み文面）+ nrm.thy
+  nrm_order_pres 1（クリティカルパス外・直接証明が閉じれば削除）。
+- 値側凍結核: E6_G6（711,342/0・dom_tie/lpl は系）/ seam_MIN（458,980/0）/
+  seam_INV（426,489/0）/ E6_FBS（5,370/0）/ E6_QDIAG（拡張fire単独
+  32,491/0）/ STS_B（残差=join 5,624件のみ・地図続62）/ NT_lexdiff_lt
+  （116万/0）/ E6_memT（空）/ E6_nbcK_K / TOP_desc（967/0）。
+- スタブ: NT_tie / E6_mem（resolved あり・最終組立待ち・SCC地図続59）。
+- 世代側凍結核: CT(7)+GAP(286)=振動規律双子（続61/63補）/ NT3(空) /
+  qpos(171・e1j1経由=続37補) / t14ok_oper_bad(15クラス地図=続43補2) /
+  BTWRAP_T3 / シーム空クラス（open_m1 14件・copyhead残差 P/E2var/F2L2 空・
+  copyhead_deep 空）。
+- **優先順位案**: (1) 振動規律 OSC の設計（CT+GAP 同時・B7v/i1>0空/B5a は
+  監査済み部品）(2) G6 本体の再帰設計（T側は全体閾値渡し・seam_MIN が
+  K側で合成可能・wf3 OT3 部品あり=続60採掘）(3) qpos/t14ok の既地図実行
+  (4) 最終組立（全葉後・メガ束）。
+- 方法論リマインド: 前提最小化採掘が強力（fire 片側だけ等）。新凍結は
+  閉包+2 必須。教訓 = 続51。
