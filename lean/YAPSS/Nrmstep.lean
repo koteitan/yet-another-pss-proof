@@ -4594,7 +4594,15 @@ theorem z0ok_ST_PS {M : PairSeq} (hM : ST_PS M) : z0ok M := by
 /-- The seam obligation: final-column instances of the expansion whose
 parent lies before the last copy (mined exact on the class). -/
 def seamOK (M : PairSeq) (n : ℕ) : Prop :=
-  ∀ j0X, j0X + 1 < (M⟦n⟧).length →
+  ∀ G v0 w0 (R : PairSeq) (lp : ℕ × ℕ) d0,
+    M = G ++ ((v0,w0) :: R) ++ [lp] →
+    M⟦n⟧ = copyExp G ((v0,w0) :: R) d0 n →
+    (∀ p ∈ R, v0 < p.1) →
+    nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) →
+    (d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
+      nextrel1 M G.length (M.length - 1))) →
+    ∀ j0X, j0X < G.length + (n - 1) * ((v0,w0) :: R).length →
+      j0X + 1 < (M⟦n⟧).length →
     nextR (M⟦n⟧) (idx1 (M⟦n⟧) ((M⟦n⟧).length - 1)) j0X ((M⟦n⟧).length - 1) →
     (idx1 (M⟦n⟧) ((M⟦n⟧).length - 1) = 1 →
       ∃ b, j0X < b ∧ b + 1 < (M⟦n⟧).length ∧
@@ -4708,7 +4716,8 @@ theorem tailok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
         (by omega) (by rw [← hXc]; exact hnx)
       rw [← hXc] at hres
       exact hres
-    · exact hseam j0X hj0 hnx htrigX
+    · exact hseam G v0 w0 R lp d0 hMeq hXc hdom hnxtM (hd0.imp (·.1) id)
+        j0X (by omega) hj0 hnx htrigX
 
 /-- **The invariant package on standard hosts**, modulo the seam and
 within-trigger obligations. -/
@@ -6563,5 +6572,131 @@ theorem seam_edge1_short {G R : PairSeq} {v0 w0 d0 n j0X : ℕ}
   have hbf := hBF1 (((v0,w0) :: R).length - 1) (by omega) (by omega) hd2
     (by rw [← htail1]; exact hpos)
   omega
+
+theorem hhm_nil : hhm ([] : PairSeq) := by
+  refine ⟨Or.inl rfl, ?_⟩
+  intro p hp
+  simp at hp
+
+/-- The narrowed seam obligation: single-root blocks, prefix parents. -/
+def seamOK1 (M : PairSeq) (n : ℕ) : Prop :=
+  ∀ (G : PairSeq) (v0 w0 d0 : ℕ) (lp : ℕ × ℕ),
+    M = G ++ [(v0,w0)] ++ [lp] →
+    M⟦n⟧ = copyExp G [(v0,w0)] d0 n →
+    nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) →
+    ∀ j0X, j0X < G.length →
+      j0X + 1 < (M⟦n⟧).length →
+      nextR (M⟦n⟧) (idx1 (M⟦n⟧) ((M⟦n⟧).length - 1)) j0X
+        ((M⟦n⟧).length - 1) →
+      (idx1 (M⟦n⟧) ((M⟦n⟧).length - 1) = 1 →
+        ∃ b, j0X < b ∧ b + 1 < (M⟦n⟧).length ∧
+          ((M⟦n⟧).getD ((M⟦n⟧).length - 1) (0,0)).1
+            ≤ ((M⟦n⟧).getD b (0,0)).1 ∧
+          ((M⟦n⟧).getD j0X (0,0)).2 ≤ ((M⟦n⟧).getD b (0,0)).2) →
+      hhm (((M⟦n⟧).take ((M⟦n⟧).length - 1)).drop (j0X + 1))
+
+/-- **The seam obligation reduces to single-root blocks with prefix
+parents**: the edge-shortness lemmas force the block to one root; root
+parents are refuted (row 1) or yield an empty region (row 0). -/
+theorem seamOK_of {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
+    (hBF1all : ∀ (G : PairSeq) (v0 w0 : ℕ) (R : PairSeq) (lp : ℕ × ℕ)
+      (d0 : ℕ),
+      M = G ++ ((v0,w0) :: R) ++ [lp] →
+      nextR M (idx1 M (M.length - 1)) G.length (M.length - 1) →
+      (d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
+        nextrel1 M G.length (M.length - 1))) →
+      ∀ q, 0 < q → q < ((v0,w0) :: R).length →
+        le0 ((v0,w0) :: R) 0 q → 0 < (((v0,w0) :: R).getD q (0,0)).2 →
+        w0 < (((v0,w0) :: R).getD q (0,0)).2)
+    (h1 : seamOK1 M n) : seamOK M n := by
+  intro G v0 w0 R lp d0 hMeq hX hdom hnxtM hd0 j0X hj0lt hj0 hnx htrigX
+  have hL : ((v0,w0) :: R).length = 1 := by
+    unfold nextR at hnx
+    by_cases hiX : idx1 (M⟦n⟧) ((M⟦n⟧).length - 1) = 0
+    · rw [if_pos hiX] at hnx
+      have hnx' := hnx
+      rw [hX] at hnx'
+      exact seam_edge0_short hn hdom hj0lt hnx'
+    · rw [if_neg hiX] at hnx
+      have hnx' := hnx
+      rw [hX] at hnx'
+      refine seam_edge1_short hn hdom
+        (hBF1all G v0 w0 R lp d0 hMeq hnxtM hd0) hj0lt hnx' ?_
+      rw [← hX]
+      by_contra hpos0
+      exact hiX (by unfold idx1; rw [if_neg hpos0])
+  obtain rfl : R = [] := List.eq_nil_of_length_eq_zero (by simpa using hL)
+  by_cases hg : j0X < G.length
+  · exact h1 G v0 w0 d0 lp hMeq hX hnxtM j0X hg hj0 hnx htrigX
+  · push Not at hg
+    have hXlen : (M⟦n⟧).length = G.length + n * 1 := by
+      rw [hX]
+      exact copyExp_length ..
+    have hent : ∀ k, k < n → (M⟦n⟧).getD (G.length + k) (0,0)
+        = (v0 + k * d0, w0) := by
+      intro k hk
+      have hone : ([(v0,w0)] : PairSeq).length = 1 := rfl
+      rw [hX, show G.length + k
+            = G.length + (k * ([(v0,w0)] : PairSeq).length + 0) by
+          rw [hone]; omega,
+          copyExp_getD_copy hk (by rw [hone]; omega), List.getD_cons_zero]
+    have hn2 : 2 ≤ n := by omega
+    unfold nextR at hnx
+    by_cases hiX : idx1 (M⟦n⟧) ((M⟦n⟧).length - 1) = 0
+    · rw [if_pos hiX] at hnx
+      have hj0eq : j0X = (M⟦n⟧).length - 2 := by
+        by_contra hne
+        have hlt : j0X < (M⟦n⟧).length - 2 := by omega
+        have hbet := hnx.2.2.2.2 ((M⟦n⟧).length - 2) ⟨by omega, by omega⟩
+        have h1e : entry (M⟦n⟧) 0 ((M⟦n⟧).length - 2)
+            = v0 + (n - 2) * d0 := by
+          unfold entry
+          rw [if_pos rfl,
+              show (M⟦n⟧).length - 2 = G.length + (n - 2) by omega,
+              hent (n - 2) (by omega)]
+        have h2e : entry (M⟦n⟧) 0 ((M⟦n⟧).length - 1)
+            = v0 + (n - 1) * d0 := by
+          unfold entry
+          rw [if_pos rfl,
+              show (M⟦n⟧).length - 1 = G.length + (n - 1) by omega,
+              hent (n - 1) (by omega)]
+        obtain ⟨k0, hk0⟩ : ∃ k0, j0X = G.length + k0 :=
+          ⟨j0X - G.length, by omega⟩
+        have h3e : entry (M⟦n⟧) 0 j0X = v0 + k0 * d0 := by
+          unfold entry
+          rw [if_pos rfl, hk0, hent k0 (by omega)]
+        have hinc := hnx.2.2.2.1
+        rw [h3e, h2e] at hinc
+        rw [h1e, h2e] at hbet
+        have hb1 : (n - 2) * d0 + d0 = (n - 1) * d0 := by
+          have h9 : n - 2 + 1 = n - 1 := by omega
+          calc (n - 2) * d0 + d0 = (n - 2 + 1) * d0 := by
+                rw [Nat.add_mul, Nat.one_mul]
+          _ = (n - 1) * d0 := by rw [h9]
+        have hd00 : d0 = 0 := by omega
+        rw [hd00, Nat.mul_zero, Nat.mul_zero] at hinc
+        omega
+      have hreg : (((M⟦n⟧).take ((M⟦n⟧).length - 1)).drop (j0X + 1))
+          = [] := by
+        apply List.drop_eq_nil_of_le
+        rw [List.length_take]
+        omega
+      rw [hreg]
+      exact hhm_nil
+    · rw [if_neg hiX] at hnx
+      exfalso
+      have hinc := hnx.2.2.2.1
+      obtain ⟨k0, hk0⟩ : ∃ k0, j0X = G.length + k0 :=
+        ⟨j0X - G.length, by omega⟩
+      have h1e : entry (M⟦n⟧) 1 j0X = w0 := by
+        unfold entry
+        rw [if_neg one_ne_zero, hk0, hent k0 (by omega)]
+      have h2e : entry (M⟦n⟧) 1 ((M⟦n⟧).length - 1) = w0 := by
+        unfold entry
+        rw [if_neg one_ne_zero,
+            show (M⟦n⟧).length - 1 = G.length + (n - 1) by omega,
+            hent _ (by omega)]
+      rw [h1e, h2e] at hinc
+      omega
 
 end YAPSS
