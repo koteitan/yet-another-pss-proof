@@ -6944,4 +6944,114 @@ theorem I_ST_PS' {M : PairSeq} (hM : ST_PS M)
   I_ST_PS hM hseam1
     (fun N k hN _ => spanOKg_spanOK (spanOKg_ST_PS hN hbad))
 
+/-- In the one-root world, spanning-fact instances anchored at a copy root
+are vacuous: the row-1 premises collapse since all roots share `w0`. -/
+theorem spanOK_roots_rootsplit {G : PairSeq} {v0 w0 d0 n : ℕ}
+    {GX : PairSeq} {vX wX : ℕ} {RX : PairSeq} {lpX : ℕ × ℕ} {dX : ℕ}
+    (hX : copyExp G [(v0,w0)] d0 n = GX ++ ((vX,wX) :: RX) ++ [lpX])
+    (hg : G.length ≤ GX.length)
+    (hd0X : (dX = 0 ∧ idx1 (copyExp G [(v0,w0)] d0 n)
+        ((copyExp G [(v0,w0)] d0 n).length - 1) = 0)
+      ∨ (0 < dX ∧ wX < lpX.2 ∧ lpX.1 = vX + dX ∧
+        nextrel1 (copyExp G [(v0,w0)] d0 n) GX.length
+          ((copyExp G [(v0,w0)] d0 n).length - 1))) :
+    (∀ q, 0 < q → q < ((vX,wX) :: RX).length →
+      le0 ((vX,wX) :: RX) 0 q → 0 < (((vX,wX) :: RX).getD q (0,0)).2 →
+      wX < (((vX,wX) :: RX).getD q (0,0)).2)
+    ∧ (0 < dX → ∀ q, q < ((vX,wX) :: RX).length →
+      wX ≤ (((vX,wX) :: RX).getD q (0,0)).2)
+    ∧ (0 < dX → ∀ a, a < GX.length →
+      le0 (copyExp G [(v0,w0)] d0 n) a GX.length →
+      (GX.getD a (0,0)).2 < wX →
+      ∀ h, a < h → h < GX.length → (GX.getD h (0,0)).1 + 1 < lpX.1)
+    ∧ (0 < wX → 0 < dX → ∀ q, 0 < q → q < ((vX,wX) :: RX).length →
+      (((vX,wX) :: RX).getD q (0,0)).1 + 1 < vX + 2 * dX) := by
+  -- lengths
+  have hone : ([(v0,w0)] : PairSeq).length = 1 := rfl
+  have hXlen : (copyExp G [(v0,w0)] d0 n).length = G.length + n * 1 := by
+    rw [← hone]
+    exact copyExp_length ..
+  have hRXlen : ((vX,wX) :: RX).length = RX.length + 1 := rfl
+  have hlenX : GX.length + (RX.length + 1) + 1 = G.length + n := by
+    have h := congrArg List.length hX
+    rw [hXlen] at h
+    simp at h
+    omega
+  -- every position from G.length on is a root (v0 + k*d0, w0)
+  have hent : ∀ k, k < n → (copyExp G [(v0,w0)] d0 n).getD (G.length + k) (0,0)
+      = (v0 + k * d0, w0) := by
+    intro k hk
+    rw [show G.length + k = G.length + (k * ([(v0,w0)] : PairSeq).length + 0) by
+        rw [hone]; omega,
+        copyExp_getD_copy hk (by rw [hone]; omega), List.getD_cons_zero]
+  -- the split head and the last column are roots
+  have hroot : (vX, wX) = (v0 + (GX.length - G.length) * d0, w0) := by
+    have h1 : (copyExp G [(v0,w0)] d0 n).getD GX.length (0,0) = (vX, wX) := by
+      rw [hX, getD_append_left (by simp),
+          getD_append_right le_rfl, Nat.sub_self, List.getD_cons_zero]
+    rw [show GX.length = G.length + (GX.length - G.length) by omega,
+        hent _ (by omega)] at h1
+    exact h1.symm
+  have hwX : wX = w0 := by
+    have := congrArg Prod.snd hroot
+    simpa using this
+  have hlast : (copyExp G [(v0,w0)] d0 n).getD
+      ((copyExp G [(v0,w0)] d0 n).length - 1) (0,0)
+      = (v0 + (n - 1) * d0, w0) := by
+    rw [hXlen, show G.length + n * 1 - 1 = G.length + (n - 1) by omega,
+        hent _ (by omega)]
+  rcases hd0X with ⟨hdz, hi0⟩ | ⟨hdp, hwlt, hlp1, hnx⟩
+  · -- untriggered: w0 = 0 kills the BF1 premise
+    have hw0 : w0 = 0 := by
+      unfold idx1 at hi0
+      by_cases hpos : 0 < entry (copyExp G [(v0,w0)] d0 n) 1
+          ((copyExp G [(v0,w0)] d0 n).length - 1)
+      · rw [if_pos hpos] at hi0
+        exact absurd hi0 one_ne_zero
+      · push Not at hpos
+        unfold entry at hpos
+        rw [if_neg one_ne_zero, hlast] at hpos
+        simpa using hpos
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · intro q hq1 hq2 hle hpos
+      -- every block entry is a root with row-1 = w0 = 0
+      have hq3 : GX.length + q < G.length + n := by omega
+      have hqe : ((vX,wX) :: RX).getD q (0,0)
+          = (copyExp G [(v0,w0)] d0 n).getD (GX.length + q) (0,0) := by
+        rw [hX, getD_append_left (by simp; omega),
+            getD_append_right (by omega)]
+        congr 1
+        omega
+      rw [show GX.length + q = G.length + (GX.length - G.length + q) by omega,
+          hent _ (by omega)] at hqe
+      rw [hqe] at hpos
+      simp at hpos
+      omega
+    · intro hdp
+      exfalso
+      omega
+    · intro hdp
+      exfalso
+      omega
+    · intro _ hdp
+      exfalso
+      omega
+  · -- triggered: wX < lpX.2 = w0 = wX is absurd
+    exfalso
+    have hlpX : lpX = (v0 + (n - 1) * d0, w0) := by
+      have h1 : (copyExp G [(v0,w0)] d0 n).getD
+          ((copyExp G [(v0,w0)] d0 n).length - 1) (0,0) = lpX := by
+        have hidx : (copyExp G [(v0,w0)] d0 n).length - 1
+            = (GX ++ ((vX,wX) :: RX)).length + 0 := by
+          rw [hXlen]
+          simp only [List.length_append, List.length_cons, Nat.add_zero]
+          omega
+        rw [hidx, hX, getD_append_right (Nat.le_add_right _ _),
+            Nat.add_sub_cancel_left, List.getD_cons_zero]
+      rw [hlast] at h1
+      exact h1.symm
+    rw [hlpX] at hwlt
+    simp at hwlt
+    omega
+
 end YAPSS
