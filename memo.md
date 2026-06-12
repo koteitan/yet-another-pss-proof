@@ -3069,3 +3069,24 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 - 値側行レベルは全て凍結核化完了。残る値側 = NT_lexdiff_lt（116万ペア/0・
   深い値機構）、fire カスケード（E6_lpl/dom_deep/memT/nbcK_K）、STS_B、
   nrm_order_pres、最終組立。
+
+### (2026-06-12 続59) 最終組立の SCC 完全地図 — 組立は端末フェーズに延期
+
+- 引用グラフ機械抽出の結果、スタブ循環の SCC は予想より深い:
+  **NT_shape が NT_dom（→NT_tie スタブ）を直接引用**しており、
+  NT_shape/NT_hd/Gterm_NT_high/GCAT/E6_nbcK など NT 構造層が全て循環に参加。
+  さらに mem(n)→nbcK(n)→Gterm_NT_high(n)→NT_shape(n)→NT_tie(n)→(resolved
+  本体)→hdom(<n) と「同長で呼ぶ」鎖が多数 → 同長で呼ばれる補題は全て束行き。
+- 完全束 = {NT_tie, NT_dom, NT_shape, NT_hd, Gterm_NT_high, GCAT, E6_nbcK,
+  E6_mem, E6_dom_tie, E6_value, E6_hdom, NT_prefix_lt, ST_snocokS_gen,
+  ST_snoc_C, ST_snocok_gen, (nrm_snoc_mid inline), + ヘルパ
+  （Gterm_NT_hdsub_le/olt_msfx_lowsub/NT_msfx_hdsub 等 NT_shape 引用組）
+  + 凍結葉 conjunct（lpl/dom_deep/memT/nbcK_K）} ≈ 20+ メンバー・2,500行級。
+- 層化は ≤n 形 IH で健全（NT_tie(n)→hdom(≤n-2) 等、全て小さい側に降りる）。
+  ステップ内順序: tie→dom→shape→hd→high→GCAT→PL→hdom→dom_tie→nbcK→mem→
+  value→SGS→SC→SG。
+- **判断**: 凍結葉の将来証明は束メンバー化する見込みが高く、9メンバー部分
+  組立（mem/dom_tie の2 sorry 削減のみ）は端末で作り直しになる無駄足。
+  ⟹ 組立は全葉討伐後に一度だけ実施。当面は凍結葉の討伐を継続。
+- 次の標的: E6_lpl（head-max 全体 vs 後続同添字可視片、可視性前提付きで
+  0違反/続25補4）。採掘で実例構造（C の形・位置）を特定し、縮約 or 直証。
