@@ -3203,3 +3203,10 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
 - sorry 22→24 だが（CT/GAP 2 → O1/O2/GCD 3 + α）、凍結核は全て生成帰納
   しやすい純ブロック形・監査基盤は 246/7 → 15,279 ブロック級に強化。
   ビルド32秒緑。
+
+- (続65補) **ginv_O1 討伐（緑）**: O1 は**証明済み ginv_BTWRAPU の qa=0
+  インスタンス**だった！ dom 前提は nextrel0 の gap 条件（∀j∈(j0,j1):
+  e0(j)≥e0(j1)>e0(j0)）から導出。ファイル順序の障害（O1 が BTWRAPU より
+  前）は GCD→CT→NT3→BTWRAPU→BTWRAPU3 ブロック（依存 = r1ok/CT のみと
+  機械抽出で確認）を OSC の上に移動して解決。sorry 24→23。
+  OSC 残凍結 = O2(158/0)・GCD(7/0) の2点のみ。
