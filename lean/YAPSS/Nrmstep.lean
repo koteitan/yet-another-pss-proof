@@ -8139,4 +8139,36 @@ theorem dichOK_ST_PS {M : PairSeq} (hM : ST_PS M)
         oper_bad_blocks (by omega) hz hp hk
       exact hbad N k hN hk G v0 w0 R lp d0 hMeq hX hdom hnxt hd0
 
+/-- The edge dichotomy transfers through a shared prefix. -/
+theorem dichOK_of_take_eq {X Y : PairSeq} {m : ℕ}
+    (hXY : X.take m = Y.take m) (hY : dichOK Y) :
+    ∀ p q t, t < m → t < X.length → t < Y.length →
+      nextrel1 X p t → le0 X p q → q < t → 0 < (X.getD q (0,0)).2 →
+      le0 X q t ∨ X.getD q (0,0) = X.getD t (0,0) := by
+  intro p q t htm htX htY hnx hpq hqt hpos
+  have hgd : ∀ j, j < m → j < X.length → X.getD j (0,0) = Y.getD j (0,0) := by
+    intro j hj hjX
+    have h1 : (X.take m).getD j (0,0) = X.getD j (0,0) := getD_take hj
+    have h2 : (Y.take m).getD j (0,0) = Y.getD j (0,0) := getD_take hj
+    rw [← h1, hXY, h2]
+  have hnx' : nextrel1 Y p t := by
+    have h1 : nextrel1 (X.take m) p t := (nextrel1_take_iff htm htX).2 hnx
+    rw [hXY] at h1
+    exact (nextrel1_take_iff htm htY).1 h1
+  have hpq' : le0 Y p q := by
+    have h1 : le0 (X.take m) p q := (le0_take_iff (by omega) (by omega)).2 hpq
+    rw [hXY] at h1
+    exact (le0_take_iff (by omega) (by omega)).1 h1
+  have hpos' : 0 < (Y.getD q (0,0)).2 := by
+    rw [← hgd q (by omega) (by omega)]
+    exact hpos
+  rcases hY p q t hnx' hpq' hqt hpos' with h9 | h9
+  · left
+    have h1 : le0 (Y.take m) q t := (le0_take_iff htm htY).2 h9
+    rw [← hXY] at h1
+    exact (le0_take_iff htm htX).1 h1
+  · right
+    rw [hgd q (by omega) (by omega), hgd t htm htX]
+    exact h9
+
 end YAPSS
