@@ -8058,4 +8058,52 @@ theorem roots_chain {G : PairSeq} {v0 w0 n : ℕ} :
         exfalso
         omega
 
+/-- **The edge dichotomy** (mined exact, 28054/28054): below any row-1
+edge, every row-0 descendant of its source with positive row 1 either
+reaches the target along row 0 or equals it. -/
+def dichOK (M : PairSeq) : Prop :=
+  ∀ p q t, nextrel1 M p t → le0 M p q → q < t →
+    0 < (M.getD q (0,0)).2 →
+    le0 M q t ∨ M.getD q (0,0) = M.getD t (0,0)
+
+/-- On the diagonal every pair below the bound is row-0 connected, so the
+dichotomy holds by the left branch. -/
+theorem dichOK_diagSeq (v : ℕ) : dichOK (diagSeq 0 v) := by
+  intro p q t hnx hpq hqt hpos
+  left
+  have htlen := hnx.2.1
+  rw [diagSeq0_length] at htlen
+  exact le0_diagSeq (le_of_lt hqt) (by omega)
+
+/-- The dichotomy restricts to truncations. -/
+theorem dichOK_take {M : PairSeq} (h : dichOK M) (m : ℕ) :
+    dichOK (M.take m) := by
+  intro p q t hnx hpq hqt hpos
+  have htm : t < m := by
+    have := hnx.2.1
+    rw [List.length_take] at this
+    omega
+  have htM : t < M.length := by
+    have := hnx.2.1
+    rw [List.length_take] at this
+    omega
+  have hnx' : nextrel1 M p t := (nextrel1_take_iff htm htM).1 hnx
+  have hqm : q < m := by omega
+  have hqM : q < M.length := by omega
+  have hpq' : le0 M p q := (le0_take_iff hqm hqM).1 hpq
+  rw [getD_take hqm] at hpos
+  rcases h p q t hnx' hpq' hqt hpos with h9 | h9
+  · exact Or.inl ((le0_take_iff htm htM).2 h9)
+  · right
+    rw [getD_take hqm, getD_take htm]
+    exact h9
+
+theorem dichOK_Pred {M : PairSeq} (h : dichOK M) : dichOK (Pred M) := by
+  unfold Pred
+  by_cases hl : M.length ≤ 1
+  · rw [if_pos hl]
+    exact h
+  · rw [if_neg hl, List.dropLast_eq_take]
+    exact dichOK_take h _
+
 end YAPSS
