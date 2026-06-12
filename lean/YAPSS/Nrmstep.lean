@@ -7250,4 +7250,36 @@ theorem le0_block_root {M G R : PairSeq} {v0 w0 : ℕ} {lp : ℕ × ℕ}
       have hch := ih (d - 1) (by omega) q' hq'lt hlev'
       exact ⟨by omega, by omega, hch.2.2.tail hedge⟩
 
+/-- With a multi-column block, any parent edge into the expansion's last
+column comes from the last copy. -/
+theorem copyExp_parent_in_last {G R : PairSeq} {v0 w0 d0 n p : ℕ}
+    (hn : 1 ≤ n) (hdom : ∀ x ∈ R, v0 < x.1) (hR : R ≠ [])
+    (hBF1 : ∀ q, 0 < q → q < ((v0,w0) :: R).length →
+      le0 ((v0,w0) :: R) 0 q → 0 < (((v0,w0) :: R).getD q (0,0)).2 →
+      w0 < (((v0,w0) :: R).getD q (0,0)).2)
+    (hnx : nextR (copyExp G ((v0,w0) :: R) d0 n)
+      (idx1 (copyExp G ((v0,w0) :: R) d0 n)
+        ((copyExp G ((v0,w0) :: R) d0 n).length - 1)) p
+      ((copyExp G ((v0,w0) :: R) d0 n).length - 1)) :
+    G.length + (n - 1) * ((v0,w0) :: R).length ≤ p := by
+  by_contra hlt
+  push Not at hlt
+  have hL2 : 2 ≤ ((v0,w0) :: R).length := by
+    rcases R with _ | ⟨r, R'⟩
+    · exact absurd rfl hR
+    · simp
+  unfold nextR at hnx
+  by_cases hiX : idx1 (copyExp G ((v0,w0) :: R) d0 n)
+      ((copyExp G ((v0,w0) :: R) d0 n).length - 1) = 0
+  · rw [if_pos hiX] at hnx
+    have h9 := seam_edge0_short hn hdom hlt hnx
+    omega
+  · rw [if_neg hiX] at hnx
+    have hpos : 0 < entry (copyExp G ((v0,w0) :: R) d0 n) 1
+        ((copyExp G ((v0,w0) :: R) d0 n).length - 1) := by
+      by_contra hc
+      exact hiX (by unfold idx1; rw [if_neg hc])
+    have h9 := seam_edge1_short hn hdom hBF1 hlt hnx hpos
+    omega
+
 end YAPSS
