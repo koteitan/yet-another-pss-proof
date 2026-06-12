@@ -8406,4 +8406,8 @@ theorem dichOK_pre {G B : PairSeq} {lp : ℕ × ℕ} {d0 n : ℕ} {M : PairSeq}
     (by rw [hXlen]; have := Nat.mul_le_mul_right B.length hn; omega)
     (by omega) hnx hpq hqt hpos
 
+theorem le0_trans {M : PairSeq} {a b c : ℕ}
+    (h1 : le0 M a b) (h2 : le0 M b c) : le0 M a c :=
+  ⟨h1.1, h2.2.1, h1.2.2.trans h2.2.2⟩
+
 end YAPSS
