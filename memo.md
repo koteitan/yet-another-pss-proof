@@ -3216,3 +3216,17 @@ BTWRAPG系化 / GBLK0 / btfullok+btfullok3_oper_bad / BTWRAPU+BTWRAPU3。
   ginv_BTWRAP_T3_pos（0<i1 上昇枝・**6件/0**）。世代側残凍結 =
   O2(158)/GCD(7)/NT3(空)/BTWRAP_T3_pos(6)/qpos(171)/t14ok_oper_bad(地図済)
   ＋シーム空クラス。
+
+### (2026-06-12 続66) seam_open_m1 偵察 — first-diff 一様クラスと閉事実3点
+
+- mine_openm1: 開ランシーム実例 **202件**（閉包+1・旧メモの14件は別数え）が
+  **完全一様**: 全件 (i1=0, d0=0)、D≠B だが sibrel は**第3分岐
+  （first-difference 降下）で全件成立**:
+  - F1: fst(hd D) = fst(hd B) + 1 = e0(j0)+1、snd(hd D) = 0
+  - F2: e1(j0) = 0（「e1j0=0 機構」の正体 — hd B = (e0(j0), 0) と snd タイ）
+  - F3: K・K1 = tail@B とも頭最大（snd 全0系）
+  ⟹ 共通接頭辞 = tail、分岐点 = len(tail)、fst 1降下＋snd タイで
+  sibrel 第3分岐。証明 = F1/F2/F3 の世代事実 + 位置代数（copyhead_m1 の
+  テンプレート流用可）。i1=1 は実例0。
+- 実装は次セッション: F1〜F3 を凍結 or 直証（F2 は d0=0/i1=0 ブロックの
+  head snd — O 族と同根の可能性）、sibrel 組み立てはリスト代数。
