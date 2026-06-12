@@ -2173,23 +2173,122 @@ text \<open>The two regional halves of the cross-copy window preservation
   except the \<open>p = j0 - 1, d0 = 0\<close> copy-head-tie seam; copy-anchored windows
   transport via the block twin except the \<open>qP > 0\<close> crossing seam.\<close>
 
-text \<open>(GAP) In a dominated exact-copy branch, any block column whose row 1
-  exceeds the head's is bounded by the dominating prefix predecessor
-  (closure+2: 246 instances, zero violations).\<close>
+text \<open>Row-0 parenthood strictly raises the level; hence a positive-index
+  parent (\<open>nextrel1\<close>, whose \<open>le0\<close>-ancestry is proper) sits strictly below its
+  child, and the exact-copy branch \<open>d0 = 0\<close> forces \<open>i1 = 0\<close>.\<close>
 
-lemma ginv_GAP:
+lemma rtran_nextrel0_e0: "(nextrel0 M)\<^sup>*\<^sup>* a b \<Longrightarrow> entry M 0 a \<le> entry M 0 b"
+proof (induction rule: rtranclp_induct)
+  case base show ?case by simp
+next
+  case (step y z)
+  have "entry M 0 y < entry M 0 z" using step.hyps(2) unfolding nextrel0_def by blast
+  thus ?case using step.IH by simp
+qed
+
+lemma nextrel1_e0_lt:
+  assumes "nextrel1 M j0 j1"
+  shows "entry M 0 j0 < entry M 0 j1"
+proof -
+  have le0: "le0 M j0 j1" and lt: "j0 < j1" using assms unfolding nextrel1_def by blast+
+  have rt: "(nextrel0 M)\<^sup>*\<^sup>* j0 j1" using le0 unfolding le0_def by blast
+  from rtranclpD[OF rt] lt obtain z where z: "nextrel0 M j0 z" "(nextrel0 M)\<^sup>*\<^sup>* z j1"
+    by (metis less_irrefl tranclpD)
+  have "entry M 0 j0 < entry M 0 z" using z(1) unfolding nextrel0_def by blast
+  also have "\<dots> \<le> entry M 0 j1" by (rule rtran_nextrel0_e0[OF z(2)])
+  finally show ?thesis .
+qed
+
+text \<open>(OSC discipline, the frozen oscillation cores of the \<open>i1 = 0\<close> exact-copy
+  block; memo 続61/続63補/続64.  All audited closure+2.)
+  \<^item> O1: interior row 1 never exceeds the head's by more than one
+    (15279 blocks, zero violations);
+  \<^item> O2: if some interior column attains the head's row 1 plus one and the
+    head is dominated by its immediate predecessor, that predecessor already
+    carries at least that value (158 configurations, zero violations);
+  \<^item> GCD: the gap-clear level+1 child of a \<^emph>\<open>positive\<close>-row-1 interior column
+    strictly drops in row 1 (7 pairs, zero violations).\<close>
+
+lemma ginv_O1:
   assumes "M \<in> ST_PS"
     and "j1 = Lng M - 1" and "j1 \<noteq> 0"
     and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
-    and "i1 = idx1 M j1" and "hasParent M i1 j1"
-    and "j0 = parent M i1 j1"
-    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
-    and "d0 = 0" and "0 < j0"
-    and "fst (M ! (j0 - 1)) < entry M 0 j0"
-    and "q < j1 - j0"
-    and "entry M 1 j0 < entry M 1 (j0 + q)"
-  shows "entry M 1 (j0 + q) \<le> snd (M ! (j0 - 1))"
+    and "idx1 M j1 = 0" and "hasParent M 0 j1"
+    and "j0 = parent M 0 j1"
+    and "j0 < r" and "r < j1"
+  shows "entry M 1 r \<le> Suc (entry M 1 j0)"
   sorry
+
+lemma ginv_O2:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "idx1 M j1 = 0" and "hasParent M 0 j1"
+    and "j0 = parent M 0 j1"
+    and "0 < j0" and "fst (M ! (j0 - 1)) < entry M 0 j0"
+    and "j0 < r" and "r < j1"
+    and "entry M 1 r = Suc (entry M 1 j0)"
+  shows "Suc (entry M 1 j0) \<le> snd (M ! (j0 - 1))"
+  sorry
+
+lemma ginv_GCD:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "idx1 M j1 = 0" and "hasParent M 0 j1"
+    and "j0 = parent M 0 j1"
+    and "j0 < w" and "w < x" and "x < j1"
+    and "0 < entry M 1 w"
+    and "entry M 0 x = Suc (entry M 0 w)"
+    and "\<forall>t. w < t \<and> t < x \<longrightarrow> entry M 0 x \<le> fst (M ! t)"
+  shows "entry M 1 x < entry M 1 w"
+  sorry
+
+text \<open>(GAP) In a dominated exact-copy branch, any block column whose row 1
+  exceeds the head's is bounded by the dominating prefix predecessor —
+  derived: O1 pins the exceeder to exactly head-plus-one, O2 bounds it by
+  the predecessor; a positive \<open>i1\<close> contradicts \<open>d0 = 0\<close>.\<close>
+
+lemma ginv_GAP:
+  assumes ST: "M \<in> ST_PS"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and d00: "d0 = 0" and j0pos: "0 < j0"
+    and domp: "fst (M ! (j0 - 1)) < entry M 0 j0"
+    and qb: "q < j1 - j0"
+    and exc: "entry M 1 j0 < entry M 1 (j0 + q)"
+  shows "entry M 1 (j0 + q) \<le> snd (M ! (j0 - 1))"
+proof (cases "i1 = 0")
+  case False
+  hence pos: "0 < i1" by simp
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  hence "nextrel1 M j0 j1" unfolding nextR_def using False by simp
+  hence "entry M 0 j0 < entry M 0 j1" by (rule nextrel1_e0_lt)
+  hence "d0 \<noteq> 0" unfolding d0d using pos by simp
+  thus ?thesis using d00 by simp
+next
+  case True
+  have hp0: "hasParent M 0 j1" and j0d0: "j0 = parent M 0 j1"
+    using hp j0d unfolding i1d[symmetric] True by auto
+  have i10: "idx1 M j1 = 0" using i1d True by simp
+  have qpos: "0 < q" using exc by (cases q) auto
+  have jlt: "j0 < j1"
+  proof -
+    have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+    hence "nextrel0 M j0 j1" unfolding nextR_def using True i1d by simp
+    thus ?thesis unfolding nextrel0_def by blast
+  qed
+  have rlt: "j0 + q < j1" using qb jlt by simp
+  have rgt: "j0 < j0 + q" using qpos by simp
+  have le1: "entry M 1 (j0 + q) \<le> Suc (entry M 1 j0)"
+    by (rule ginv_O1[OF ST j1d j1nz Fz i10 hp0 j0d0 rgt rlt])
+  have eq1: "entry M 1 (j0 + q) = Suc (entry M 1 j0)" using le1 exc by simp
+  show ?thesis
+    using ginv_O2[OF ST j1d j1nz Fz i10 hp0 j0d0 j0pos domp rgt rlt eq1] eq1 by simp
+qed
 
 text \<open>(GBLK0) The \<open>d0 = 0\<close> copy-head-tie seam: with an exact-copy bad branch
   whose block head is dominated by its immediate predecessor, the block's
@@ -3701,21 +3800,51 @@ text \<open>(CT) Tight-node child drop (memo 続52): on an exact-copy dominated
   violations).\<close>
 
 lemma ginv_CT:
-  assumes "M \<in> ST_PS"
-    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
-    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
-    and "i1 = idx1 M j1" and "hasParent M i1 j1"
-    and "j0 = parent M i1 j1"
-    and "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
-    and "d0 = 0"
-    and "qa < j1 - j0"
-    and "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
-    and "qa < w" and "w < j1 - j0" and "qa < x" and "x < j1 - j0" and "w < x"
-    and "Suc (entry M 0 (j0 + w)) = entry M 0 (j0 + x)"
-    and "\<forall>r. j0 + w < r \<and> r < j0 + x \<longrightarrow> entry M 0 (j0 + x) \<le> fst (M ! r)"
-    and "entry M 1 (j0 + w) = Suc (entry M 1 (j0 + qa))"
+  assumes ST: "M \<in> ST_PS"
+    and j1d: "j1 = Lng M - 1" and j1nz: "j1 \<noteq> 0"
+    and Fz: "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and i1d: "i1 = idx1 M j1" and hp: "hasParent M i1 j1"
+    and j0d: "j0 = parent M i1 j1"
+    and d0d: "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+    and d00: "d0 = 0"
+    and qab: "qa < j1 - j0"
+    and anc: "\<forall>q. qa < q \<and> q < j1 - j0 \<longrightarrow> entry M 0 (j0 + qa) < entry M 0 (j0 + q)"
+    and qw: "qa < w" and wb: "w < j1 - j0" and qx: "qa < x" and xb: "x < j1 - j0"
+    and wx: "w < x"
+    and chld: "Suc (entry M 0 (j0 + w)) = entry M 0 (j0 + x)"
+    and gap: "\<forall>r. j0 + w < r \<and> r < j0 + x \<longrightarrow> entry M 0 (j0 + x) \<le> fst (M ! r)"
+    and tight: "entry M 1 (j0 + w) = Suc (entry M 1 (j0 + qa))"
   shows "entry M 1 (j0 + x) \<le> entry M 1 (j0 + qa)"
-  sorry
+proof (cases "i1 = 0")
+  case False
+  hence pos: "0 < i1" by simp
+  have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+  hence "nextrel1 M j0 j1" unfolding nextR_def using False by simp
+  hence "entry M 0 j0 < entry M 0 j1" by (rule nextrel1_e0_lt)
+  hence "d0 \<noteq> 0" unfolding d0d using pos by simp
+  thus ?thesis using d00 by simp
+next
+  case True
+  have hp0: "hasParent M 0 j1" and j0d0: "j0 = parent M 0 j1"
+    using hp j0d unfolding i1d[symmetric] True by auto
+  have i10: "idx1 M j1 = 0" using i1d True by simp
+  have jlt: "j0 < j1"
+  proof -
+    have nR: "nextR M i1 j0 j1" unfolding j0d by (rule parent_nextR[OF hp])
+    hence "nextrel0 M j0 j1" unfolding nextR_def using True i1d by simp
+    thus ?thesis unfolding nextrel0_def by blast
+  qed
+  have wgt: "j0 < j0 + w" using qw by simp
+  have wxa: "j0 + w < j0 + x" using wx by simp
+  have xlt: "j0 + x < j1" using xb jlt by simp
+  have wpos: "0 < entry M 1 (j0 + w)" using tight by simp
+  have chld': "entry M 0 (j0 + x) = Suc (entry M 0 (j0 + w))" using chld by simp
+  have gap': "\<forall>t. j0 + w < t \<and> t < j0 + x \<longrightarrow> entry M 0 (j0 + x) \<le> fst (M ! t)"
+    using gap by blast
+  have "entry M 1 (j0 + x) < entry M 1 (j0 + w)"
+    by (rule ginv_GCD[OF ST j1d j1nz Fz i10 hp0 j0d0 wgt wxa xlt wpos chld' gap'])
+  thus ?thesis using tight by simp
+qed
 
 text \<open>(BT-WRAP-U) The untied exact-copy wrap bounds (memo 続49): with
   \<open>d0 = 0\<close>, a level-anchored dominated block tail is bounded without any tie

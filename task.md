@@ -88,7 +88,8 @@
   - ✅ btfullok(3)_oper_bad 討伐〔ユニバーサル窓シーム5ケース＋T3クローン・BT階層がBTWRAPU±U3の2点に立脚〕
   - ✅ BTWRAPU±U3 討伐〔LAND+鎖帰納+CT / +NT3空クラス〕＝**BT窓族完全終結**
   - ✅ GBLK0 討伐〔GAP 246件級へ分解〕
-  - 🚨 GRANDシーム残〔CT(7件)/NT3(空)/GAP(246)/BTWRAP_T3/qpos(171)/t14ok_oper_bad(地図済)〕
+  - ✅ OSC再構成〔CT/GAP→純ブロック凍結核 O1(15279/0)+O2(158/0)+GCD(7/0) 導出・i1>0真空性は nextrel1_e0_lt で完全証明〕
+  - 🚨 GRANDシーム残〔OSC核3点(O1/O2/GCD)/NT3(空)/BTWRAP_T3/qpos(171)/t14ok_oper_bad(地図済)〕
   - ✅ E6_iii_singleton 討伐〔FBS=fire-butlast安定 5370/0 の対偶2行〕
   - ✅ E6_qcut_last 討伐〔QDIAG=厳密対角凍結（拡張fire単独 32491/0）＋単調帰納・dropWhile リスト論証〕
   - ✅ E6_seam 分割〔q脱結合凍結核 seam_MIN(458980/0)＋seam_INV(426489/0)・本体は2行導出〕
