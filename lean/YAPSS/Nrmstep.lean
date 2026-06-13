@@ -9187,4 +9187,97 @@ theorem cross_dichOK {G R : PairSeq} {v0 w0 d0 n kt p : ℕ} {lp : ℕ × ℕ}
         have ht := htie kq qoff hkqkt hqoffp hqoff hle0B htieM
         rw [hqeq]; exact ht
 
+/-- **Refutation of a grid→root edge** whose source lies in an earlier copy:
+the root target has row 1 `w0`, but every copy column has row 1 `≥ w0`
+(spanOK clause 2), contradicting the strict row-1 ascent of the edge. -/
+theorem cross_refute_gridroot {G R : PairSeq} {v0 w0 d0 n kt kp poff : ℕ}
+    (hkt : kt < n) (hkp : kp < n) (hpoff : poff < ((v0,w0)::R).length)
+    (hBF2 : ∀ off, off < ((v0,w0)::R).length →
+      w0 ≤ (((v0,w0)::R).getD off (0,0)).2)
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) d0 n)
+      (G.length + (kp * ((v0,w0)::R).length + poff))
+      (G.length + kt * ((v0,w0)::R).length)) : False := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hp2 : entry (copyExp G ((v0,w0)::R) d0 n) 1
+      (G.length + (kp * ((v0,w0)::R).length + poff))
+      = (((v0,w0)::R).getD poff (0,0)).2 :=
+    (entry_copyExp hkp hpoff).2
+  have ht2 : entry (copyExp G ((v0,w0)::R) d0 n) 1
+      (G.length + kt * ((v0,w0)::R).length) = w0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := d0) (n := n)
+      (k := kt) (q := 0) hkt hL).2
+    simpa using h
+  have h4 := hedge.2.2.2.1
+  rw [hp2, ht2] at h4
+  have := hBF2 poff hpoff
+  omega
+
+/-- **Refutation of an edge into an interior column** whose source precedes
+that copy's root: the copy root is a row-0 ancestor of the target with row 1
+`w0`, so edge maximality forces the target's row 1 `≤ w0`; spanOK clause 2
+pins it `= w0`, then clause 1 (`w0 > 0`) or the edge's strict ascent (`w0 = 0`)
+gives the contradiction. -/
+theorem cross_refute_interior {G R : PairSeq} {v0 w0 d0 n kt toff p : ℕ}
+    (hd0 : 0 < d0) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hkt : kt < n) (htoff0 : 0 < toff) (htoff : toff < ((v0,w0)::R).length)
+    (hpr : p < G.length + kt * ((v0,w0)::R).length)
+    (hBF1 : ∀ q, 0 < q → q < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 q → 0 < (((v0,w0)::R).getD q (0,0)).2 →
+      w0 < (((v0,w0)::R).getD q (0,0)).2)
+    (hBF2 : ∀ off, off < ((v0,w0)::R).length →
+      w0 ≤ (((v0,w0)::R).getD off (0,0)).2)
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+      (G.length + (kt * ((v0,w0)::R).length + toff))) : False := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have htltX : G.length + (kt * ((v0,w0)::R).length + toff)
+      < (copyExp G ((v0,w0)::R) d0 n).length := hedge.2.1
+  have hX0root : entry (copyExp G ((v0,w0)::R) d0 n) 0
+      (G.length + kt * ((v0,w0)::R).length) = v0 + kt * d0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := d0) (n := n)
+      (k := kt) (q := 0) hkt hL).1
+    simpa using h
+  have hpivk := copyExp_root_pivot (G := G) (v0 := v0) (w0 := w0) (d0 := d0)
+    (n := n) (R := R) (k' := kt) hd0 hdom hkt
+  have hroot_le_t : G.length + kt * ((v0,w0)::R).length
+      ≤ G.length + (kt * ((v0,w0)::R).length + toff) := by omega
+  have hpiv : ∀ y, G.length + kt * ((v0,w0)::R).length < y →
+      y ≤ G.length + (kt * ((v0,w0)::R).length + toff) →
+      entry (copyExp G ((v0,w0)::R) d0 n) 0 (G.length + kt * ((v0,w0)::R).length)
+        < entry (copyExp G ((v0,w0)::R) d0 n) 0 y := by
+    intro y hy1 hy2
+    rw [hX0root]
+    exact hpivk y hy1 (by omega)
+  have hle0roott : le0 (copyExp G ((v0,w0)::R) d0 n)
+      (G.length + kt * ((v0,w0)::R).length)
+      (G.length + (kt * ((v0,w0)::R).length + toff)) :=
+    le0_through_pivot (hedge.2.2.2.2.1) (by omega) hroot_le_t hpiv
+  have hmax := hedge.2.2.2.2.2 (G.length + kt * ((v0,w0)::R).length)
+    ⟨hpr, hle0roott⟩
+  have htval2 : entry (copyExp G ((v0,w0)::R) d0 n) 1
+      (G.length + (kt * ((v0,w0)::R).length + toff))
+      = (((v0,w0)::R).getD toff (0,0)).2 := (entry_copyExp hkt htoff).2
+  have hroot2 : entry (copyExp G ((v0,w0)::R) d0 n) 1
+      (G.length + kt * ((v0,w0)::R).length) = w0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := d0) (n := n)
+      (k := kt) (q := 0) hkt hL).2
+    simpa using h
+  rw [htval2, hroot2] at hmax
+  have hBF2t := hBF2 toff htoff
+  have htval_eq : (((v0,w0)::R).getD toff (0,0)).2 = w0 := by omega
+  have hle0B : le0 ((v0,w0)::R) 0 toff := by
+    have hin : le0 (copyExp G ((v0,w0)::R) d0 n)
+        (G.length + (kt * ((v0,w0)::R).length + 0))
+        (G.length + (kt * ((v0,w0)::R).length + toff)) := by
+      have e0 : G.length + (kt * ((v0,w0)::R).length + 0)
+          = G.length + kt * ((v0,w0)::R).length := by omega
+      rw [e0]; exact hle0roott
+    exact le0_copy_to_block hkt htoff hin
+  have h4 := hedge.2.2.2.1
+  rw [htval2, htval_eq] at h4
+  rcases Nat.eq_zero_or_pos w0 with hw0 | hw0pos
+  · omega
+  · have hbf1 := hBF1 toff htoff0 htoff hle0B (by rw [htval_eq]; exact hw0pos)
+    rw [htval_eq] at hbf1
+    omega
+
 end YAPSS
