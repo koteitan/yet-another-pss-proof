@@ -290,6 +290,13 @@ theorem psi_strict_mono_mem {α ζ : Ordinal.{u}} {v : ℕ}
     rwa [psiRes, if_pos hζα] at this
   exact psi_notMem α v (he ▸ hmem)
 
+/-- `ψ` depends only on the `C`-set: equal `C`-sets give equal `ψ` (since
+`ψ α v = sInf` of the complement of `C_v(α)`).  Bridge for the collapsing lemma
+(ported from ya-pss `psi_eq_of_Cset_eq`). -/
+theorem psi_eq_of_Cset_eq {α β : Ordinal.{u}} {v : ℕ}
+    (h : Cset (psiRes α) α v = Cset (psiRes β) β v) : psi α v = psi β v := by
+  rw [psi_unfold α v, psi_unfold β v, h]
+
 /-- **(Buchholz 1.4(a))** Uniqueness of the canonical `ψ`-representation: if
 `ξ, ξ'` are both `a`-canonical (`ξ ∈ C_a(ξ)`, `ξ' ∈ C_a(ξ')`) and `ψ_a ξ = ψ_a ξ'`
 then `ξ = ξ'`.  (Canonical points are exactly where `ψ_a` strictly increases.) -/
