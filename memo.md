@@ -3888,3 +3888,26 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
     特徴づけ proj 単調性を証明 / (ii) fire×sum-vs-nest を NT_shape 再帰で
     直接場合分け（proj 発火時の sum↔nest 切替の値比較を個別に）。
     いずれも腰を据えた設計。次セッションは (i) の NF 特徴づけ採掘から。
+
+### (2026-06-13 続84) Buchholz Hydra + UBI 検討 / NF-class 特徴づけ(slip)失敗 → 自己相似再帰へ
+
+- **Buchholz 1987 Hydra 論文 精読**: 項構造 T = three と構文同型。停止性 Theorem I を
+  §1(無限整礎木 ‖A‖∈T_0・‖A(n)‖=‖A‖(n)) と §2(W_0=T_0・ID_ω・Lemma 2.4 和閉包/
+  2.5 D_v閉包の項長帰納) の2通りで証明。§3 の **step-down 関係 ≪_k**（3.2(a):
+  (D_v a)·n ≪_k D_v(a+1) ＝「n コピー（和）は入れ子+1 に step-down」）が sum-vs-nest
+  crux の組合せ核心。**但し p≠ψ で [n]/dom/≪_k 規則は移植不可**（[[psi-correspondence-not-assumed]]）。
+  ya-pss の wf_olt_wf3 が既に §1/Lemma2.2 相当。新WF不要。値側 crux が残課題。
+- **UBI ブログ（koteitan 2018）精読**: ペア数列=ヒドラ（親=nextrel0/1・上枝無視=nextrel1
+  の le0祖先制限・上昇=d0>0/コピー=d0=0）。展開機構の静的可視化で停止性証明は無し。
+  示唆「行1 nest は行0 祖先に従う(≤親+1)」。
+- **NF-class 特徴づけ slip（subscript-Lipschitz: 入れ子で添字+1まで）は失敗**:
+  (a) NT-像 49878/93974 違反（S=(1,1)(2,2)(3,3)→NT=D1(D3(0)) で外1→内3 の2ジャンプ）。
+  **proj が中間レベルを collapse して添字ジャンプを作る**。(b) slip-class でも proj単調
+  3.5M 違反。⟹「行1≤親+1」はシーケンス側のみ真、**proj/NT 後の term 添字には効かない**。
+  ＝清潔な term-level 特徴づけが見つからない根本理由。
+- **方針修正**: term-level proj 単調性の特徴づけは断念。代わりに**自己相似再帰**:
+  fire 階層の (K_n,K_M) は Kn 末尾=(8,1)(8,1)コピー vs Km 末尾=(8,1)(9,0)climb で
+  **より深いレベルの copy-vs-climb（=M[n]-vs-M の縮小版）**。⟹ 値側減少を「項/列サイズの
+  整礎帰納で各 fire 階層の proj 比較を1段深い同型比較に還元、最深 NT_prefix_lt で底打ち」
+  として組む設計。proj を別補題でなく帰納の中で descend させる。次=この自己相似再帰が
+  実際に閉じるか（proj が IH を descend で運ぶか）を採掘で確認。
