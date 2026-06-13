@@ -60,60 +60,35 @@
 - ✅ nrm 基盤〔nrm定義・proj_id/rec/wf3/G・wf3_nrm（像⊆OT）・PSI 緑〕
 - ✅ 実証: 2,643,843 ペアで衝突0・逆転0〔tools/valnorm.py〕
 - ✅ PSS_terminates_nrm / wf_Rnf_nrm / nrm_step_dec（order_pres からの導出）
-- 🚨🤖 nrm_step_dec 直接証明〔nrmstep.thy〕
-  - ✅ olt層・構造層〔nrm_snoc_seg/ins_olt_mono/einc/eflip/gap/fire_transport/stepsok〕
-  - ✅ STS_A 完全証明 / proj_once / proj_submono
-  - ✅ E6 アーキテクチャ〔msfx 接尾辞定理・実証 V1-V5 全0違反・memo続22〕＋ post一般化〔0/8243〕
-  - ✅ C1層〔fbseg_hd_level→NT_dom→NT_shape→NT_hd/NT_tail_lt・memo続24〕
-  - ✅ コンビネータ群〔E6_value/GCAT/E6_hdom/E6_dom_tie/E6_mem_resolved/E6_nbcK/Gterm_NT_high〕
-  - ✅ r1ok 基盤〔row1規律 0/14558・残 r1ok_climb のみ・memo続26〕
-  - ✅ sibm2/sibrel 修復〔旧 sibm/SIB_shape は偽＝閉包境界教訓・SIB_shape2・NT_tie_resolved 3ケース・memo続29〕
-  - ✅ sibrel4 修復〔閉包+3で旧sibrel偽（4例目すり抜け）→第4分岐(末尾snd降下)追加 0/729131・全消費側再構成・NT_enddrop凍結・続67〜70〕
-  - ✅ SIBREL6 確定〔+4/+5でも逐次破れ→first-diff lex降下3分岐が+6で0/1.16M・hm全廃-747行・NT_tie_fdlex単一核(10500/0)・lexdiff/enddrop/F2L2削除・全シーム文面再監査済(open_m1 5447/0・P 261/0)・続71〜73〕
-  - ✅ 正確文面の閉包+1監査〔E6_lpl 等 全0違反・STS_B 前提修正・E6_memT 前提空・audit_*.py〕
-  - ✅ sibm2_oper_bad 討伐〔n帰納×シーム分解・CFGA_r1=NT_dom_sub_eq窓・sibrel衝突代数 nopref/ascent/diverge〕
-  - ✅ E6_tie_nofire0/1 討伐〔Gterm_empty_lowhead＝スパイン低頭でカタログ空・memo続29補15〕
-  - ✅ seam_copyhead_m1 討伐〔一般L直証: coreM 4分岐×E-const/F1直証・F2-L1=blockok反駁・実在114件全カバー〕
-  - 🚨 シーム残差〔seam_open_m1 14件 e1j0=0機構 / copyhead残差 P・E2var・F2L2 閉包+1で0件 / copyhead_deep 実証0件〕
-  - ✅ t1ok/t3ok 基盤＋E6_tie_nofire_high0 討伐〔タイラン≤u+1/=u 不変量・y∈{u,u+1}強制→hm矛盾・残 t1ok/t3ok_oper_bad〕
-  - ✅ E6_tie_nofire_high1 討伐〔t14ok=タイ停止ランhm不変量＋hm_take接頭辞遺伝〕＝タイ無発火コンプレックス完全制覇
-  - 🚨 値側コア〔NT_lexdiff_lt 0/116万〕
-  - ✅ ginv 基盤＋E6_nbcK_T 討伐〔ginv=閉鎖窓row1上界・生成帰納骨格緑・dseg橋渡し・残 ginv_oper_bad のみ〕
-  - 🚨 fire-cascade 残2点〔E6_memT/E6_nbcK_K（lpl/dom_deep は G6 で討伐済）〕
-  - ✅ ginv_oper_bad 討伐〔A/B/C/E転送＋反駁＋d01/d02閉鎖証人・残差 GBLK0/qpos の2点〕
-  - ✅ t1ok_oper_bad 討伐〔3ケース転送＋BT1・unfolding再帰/metis/arith原子の3事故克服〕
-  - ✅ t3ok_oper_bad 討伐〔t1okクローン+T3デルタ+BT1_T3凍結〕
-  - ✅ t14ok 健全性修正〔閉包+2で旧形偽→hi前提付きへ弱化・high1無傷・(hi,¬hm)=0/54440〕
-  - ✅ BT-WIN/BT-WRAP 統一不変量〔タイ不要窓停止形＋d0:0頭タイ形・閉包+2全0違反・BT1系は系に〕
-  - ✅ 凍結階層確立〔BTFULL（全域形63999/0）→BTWIN系化 / BTWRAPG（τ量化49609/0）→BTWRAP系化〕
-  - ✅ btfullok±T3 ユニバーサル化〔全ホスト不変量・標準テンプレート緑・ginv_BTFULL系は導出〕
-  - ✅ btfullok(3)_oper_bad 討伐〔ユニバーサル窓シーム5ケース＋T3クローン・BT階層がBTWRAPU±U3の2点に立脚〕
-  - ✅ BTWRAPU±U3 討伐〔LAND+鎖帰納+CT / +NT3空クラス〕＝**BT窓族完全終結**
-  - ✅ GBLK0 討伐〔GAP 246件級へ分解〕
-  - ✅ OSC再構成〔CT/GAP→導出・O1はBTWRAPU qa=0系で討伐・残凍結 O2(158/0)+GCD(7/0)・i1>0真空性証明済〕
-  - ✅ ginv修復〔閉包+3で偽（コピーシーム再上昇・6例目）→真形(l≤Suc p+t)制限・保存連鎖修理・ob_cross凍結・**qpos包摂削除**・dseg_bound'/nbcK_T修理・続75〜76〕
-  - 🚨 GRANDシーム残〔O2(489/0@+3)/GCD(61/0@+3)/NT3(空)/BTWRAP_T3_pos(60/0@+3)/ob_cross(+3含意)/t14ok_oper_bad(地図済)〕
-  - ✅ E6_iii_singleton 討伐〔FBS=fire-butlast安定 5370/0 の対偶2行〕
-  - ✅ E6_qcut_last 討伐〔QDIAG=厳密対角凍結（拡張fire単独 32491/0）＋単調帰納・dropWhile リスト論証〕
-  - ✅ E6_seam 分割〔q脱結合凍結核 seam_MIN(458980/0)＋seam_INV(426489/0)・本体は2行導出〕
-  - ✅ G6統一支配核〔E6_G6 凍結 711342/0・E6_dom_tie/E6_lpl 討伐・E6_dom_deep/dom_tie_resolved 削除〕
-  - 🚨 行レベル凍結核〔E6_G6/seam_MIN/seam_INV/E6_FBS/E6_QDIAG 本体〕＋ STS_B 本体〔0/26322〕
-  - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
-  - ✅ TOP_desc ステート〔prefix弱化形・閉包+2 967/0 凍結・本体は未証明〕
-  - 🚨 スタブ〔NT_tie/E6_mem＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン（SCC地図=memo続59）〕
-  - 🔬 **値側 dichOK→proj単調性 へ（続82）**: d0=0 減少= M=G@B@[lp], M[n]=G@B^n。
-    NT(M[1])<oNT(M)=NT_prefix_lt(真)。n≥2 は lead一致＋hdarg=proj(NT K)で決まり、
-    **proj単調性 a≤ob⟹proj u a≤o proj u b** に帰着。proj単調性は**NT-像上で深層
-    頑健に真**（再上昇ファミリー120万/0・broad+5 32万/0）＝E6_valueの健全な置換。
-    任意wf3では偽（標準性依存）。次=Isabelle形式化（NT-像不変条件付き帰納）。
-  - ✅ **戦略転換（続79）**: 偽 E6_value/ginv/nbcK 族を捨て **dichOK 戦略**へ
-    （lean-yapss/Lean Nrmstep=sorry0 が青写真・dichOK=辺二分律で健全）。
-    Phase1 dichOK 移植 / Phase2 偽族撤去 / Phase3 dichOK+NT_tie で値減少完成。
-  - 🚨🚨🚨 **健全性第7事件（最重大・続78）**: 値側基盤 E6_value(proj=NT msfx) /
-    E6_mem(msfx∈Gterm) / ginv(anchor-max) / O2/O1P/GAP/GBLK0 / E6_nbcK_T が
-    **closure+5/+6 で偽**（row-1 上昇鎖のコピー再上昇）。「全sorry +3検証完了」
-    （続77）は ginv/OSC/nbcK/E6_value 族について無効。**真（深層0違反）**:
-    最終減少・NT_tie_resolved/fdlex・E6_mem_resolved の¬olt部分。値側
-    アーキテクチャ再設計が必要（A:¬oltのみで再構築 / B:proj真核発見 /
-    C:r1ok親鎖でginv置換）。本セッションのOSC再構成(GCDV/O2V/O1P)は復元済。
+- 🚨 nrm_step_dec 直接証明〔nrmstep.thy〕＝**値側を健全な部品で再建中（続78〜83）**
+  - 🚨🚨🚨 **健全性第7事件（最重大・続78）**: 旧値側基盤が closure+5/+6 で偽と確定。
+    **偽（reachable 反例・モデル検証済）**: E6_value(proj=NT msfx)/E6_mem(msfx∈Gterm)/
+    ginv(anchor-max)族/O2/O1P/GAP/GBLK0/ginv_dseg_bound/E6_nbcK_T。機構=row1上昇鎖の
+    d0=0完全コピー再上昇。「全sorry +3検証完了」(続77)は本族について**無効**。
+  - 🗑 **撤回（上記の偽に依存していた旧✅は全て無効）**: 旧 E6_value/E6_mem/ginv系
+    （基盤/oper_bad/修復/ob_cross/qpos/dseg_bound）/nbcK系/O1/O2/GCD/GAP/GBLK0/
+    OSC再構成/BT-WIN/BT-WRAP/BTFULL/BTWRAPU/btfullok/G6統一核(E6_G6)/dom_tie/lpl/
+    dom_deep/CT/sibrel系凍結。＝アンカーmax型の窓row1上界の族全体（教訓: 続78〜81）。
+  - ✅ **健全で残る部品（kernel-checked または深層0違反で検証済）**:
+    - ✅ olt層・構造層〔nrm_snoc_seg/ins_olt_mono/einc/eflip/gap/stepsok〕
+    - ✅ STS_A / proj_once / proj_submono / proj_ole / proj_nofire（既証明）
+    - ✅ NT_shape〔NT(c0#rest)=P(snd c0)(proj(snd c0)(NT K))(NT T)・既証明・分解の背骨〕
+    - ✅ NT_dom/NT_hd/NT_tail_lt/NT_noabsorb（C1層・既証明）
+    - ✅ NT_prefix_lt〔prefix は <o・既証明・d0=0 base〕
+    - ✅ r1ok 基盤（row1規律 0/14558・既証明）/ r1ok_climb（既証明）
+    - 🚨 NT_tie_resolved/NT_tie_fdlex〔タイ比較¬olt・深層0違反で真・fdlex は sorry〕
+    - 🚨 E6_mem_resolved の **¬olt 部分のみ真**（Gterm帰属部分は偽）
+  - 🔬 **新本線: proj 単調性で値側減少を再建（続82〜83）**
+    - d0=0 減少構造: **M=G@B@[lp], M[n]=G@B^n**。NT(M[1])<oNT(M)=NT_prefix_lt(真・base)。
+      並行 NT_shape 再帰: nofire 階層(167208)は proj=恒等で自明・c0共有でlead一致。
+    - ✅(純項・要形式化) **proj_emb_mono**: `x⊑y ⟹ ole(proj u x)(proj u y)`
+      （⊑=階層的初期部分項埋込・任意wf3で0違反60609・構造帰納で証明可＝**深層監査不要**）。
+      `emb_imp_ole`(x⊑y⟹x≤oy・0違反)も。fire階層406件＋nofire全部をカバー。
+    - 🚨 **真の irreducible crux = fire×sum-vs-nest（1218件）**: 最深で M[n]=和(D1(0)+D1(0))
+      vs M=入れ子(D1(D0(0)))。proj単調性は真だが⊑で説明できない。proj単調 on NF-class
+      は深層頑健に真（再上昇120万/0・broad+5 32万/0）だが任意wf3では偽（埋もれた高subscript）。
+    - 🚨 次の鍵: **NF-class の清潔な term-level 特徴づけ**（in_OT＋r1ok由来のsubscript-深さ
+      条件）→ その下で proj単調性を証明。次セッションは NF特徴づけの採掘から。
+  - 参考: lean-yapss/Lean Nrmstep(sorry0) も dichOK 戦略だが d0=0 未接続で**同じ crux 未解決**
+    （advice.md に共有・dichOK も d0=0 完全コピーで偽）。
 - 🗑 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要。wf_ArgsA 路線は凍結〔wfsum に残置〕
