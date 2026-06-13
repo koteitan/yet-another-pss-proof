@@ -6127,6 +6127,13 @@ def spanOK (M : PairSeq) : Prop :=
       le0 (G ++ ((v0,w0) :: R) ++ [lp]) (G.length + q)
         ((G ++ ((v0,w0) :: R) ++ [lp]).length - 1)
       ∨ ((v0,w0) :: R).getD q (0,0) = lp)
+    ∧ (0 < d0 → ∀ j, j < G.length → G.getD j (0,0) ≠ (v0, w0))
+    ∧ (lp.2 = 0 → 0 < w0 → ∀ i, 0 < i → i < ((v0,w0) :: R).length →
+      le0 ((v0,w0) :: R) 0 i → (((v0,w0) :: R).getD i (0,0)).2 = 0)
+    ∧ (0 < d0 → ∀ i, le0 ((v0,w0) :: R) 0 i → i < ((v0,w0) :: R).length →
+      ((v0,w0) :: R).getD i (0,0) = lp →
+      ∀ m, i ≤ m → m < ((v0,w0) :: R).length →
+        lp.1 ≤ (((v0,w0) :: R).getD m (0,0)).1)
 
 /-- **`classOK` is preserved by the expansion step**, given the spanning
 block facts of the host. -/
@@ -6149,7 +6156,8 @@ theorem classOK_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (hM : classOK M)
     show classOK (copyExp G ((v0,w0) :: R) d0 n)
     have hd0' : d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
         nextrel1 M G.length (M.length - 1)) := hd0.imp (·.1) id
-    obtain ⟨hBF1, hBF2, hMF3, hBF45, -, -, -⟩ := hsp G v0 w0 R lp d0 hMeq hnxt hd0'
+    obtain ⟨hBF1, hBF2, hMF3, hBF45, -, -, -, -, -, -⟩ :=
+      hsp G v0 w0 R lp d0 hMeq hnxt hd0'
     have hMc : classOK (G ++ ((v0,w0) :: R) ++ [lp]) := hMeq ▸ hM
     have hd0M : d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
         nextrel1 (G ++ ((v0,w0) :: R) ++ [lp]) G.length
@@ -6267,7 +6275,7 @@ theorem withinTrigOK_of {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
         rw [Nat.add_mul]
     _ = (n - 1) * ((v0,w0) :: R).length + ((v0,w0) :: R).length := by
         rw [Nat.one_mul]
-  obtain ⟨-, hBF2, -, -, -, -, -⟩ := hsp G v0 w0 R lp d0 hMeq hnxtM
+  obtain ⟨-, hBF2, -, -, -, -, -, -, -, -⟩ := hsp G v0 w0 R lp d0 hMeq hnxtM
     (Or.inr ⟨hd0p, hwlp, hlp1, hnx1M⟩)
   have hBF2' := hBF2 hd0p
   have hgblk : ∀ q, q < ((v0,w0) :: R).length →
@@ -6795,7 +6803,11 @@ theorem spanOK_diagSeq (v : ℕ) : spanOK (diagSeq 0 v) := by
       rw [h2, List.getD_cons_zero]
     rw [hgd v (by omega)] at h1
     exact h1.symm
-  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  have h9 : (diagSeq 0 v).getD G.length (0,0) = (v0, w0) := by
+    rw [hMeq, getD_append_left (by simp),
+        getD_append_right le_rfl, Nat.sub_self, List.getD_cons_zero]
+  rw [hgd G.length (by omega)] at h9
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro q hq1 hq2 _ _
     simp at hq2
     omega
@@ -6814,10 +6826,6 @@ theorem spanOK_diagSeq (v : ℕ) : spanOK (diagSeq 0 v) := by
     omega
   · intro _
     rw [hlp]
-    have h9 : (diagSeq 0 v).getD G.length (0,0) = (v0, w0) := by
-      rw [hMeq, getD_append_left (by simp),
-          getD_append_right le_rfl, Nat.sub_self, List.getD_cons_zero]
-    rw [hgd G.length (by omega)] at h9
     have h10 := congrArg Prod.snd h9
     simp at h10
     show (v, v).2 = w0 + 1
@@ -6825,6 +6833,25 @@ theorem spanOK_diagSeq (v : ℕ) : spanOK (diagSeq 0 v) := by
   · intro _ q hq1 hq2 _ _
     simp at hq2
     omega
+  · -- clause 8: no prefix column equals the block head
+    intro _ j hj hcontra
+    rw [hGent j hj] at hcontra
+    have e1 := congrArg Prod.fst hcontra
+    have e2 := congrArg Prod.fst h9
+    simp at e1 e2
+    omega
+  · -- clause 9: vacuous, the block has a single column
+    intro _ _ i hi0 hi _
+    simp only [List.length_cons, List.length_nil] at hi
+    omega
+  · -- clause 10: i = m = 0 forced, conclusion reflexive via the tie premise
+    intro _ i _ hi heq m hm1 hm2
+    simp only [List.length_cons, List.length_nil] at hi hm2
+    have hi0 : i = 0 := by omega
+    have hm0 : m = 0 := by omega
+    subst hi0
+    subst hm0
+    rw [heq]
 
 /-- The guard under which `oper` truncates: zero last column or no unique
 parent. -/
@@ -8120,7 +8147,7 @@ def copyDichOK (M : PairSeq) (n : ℕ) : Prop :=
 /-- **The edge dichotomy along the standard closure**, modulo the copy
 obligation: the truncation branches are unconditional. -/
 theorem dichOK_ST_PS {M : PairSeq} (hM : ST_PS M)
-    (hbad : ∀ N k, ST_PS N → 1 ≤ k → copyDichOK N k) : dichOK M := by
+    (hbad : ∀ N k, ST_PS N → dichOK N → 1 ≤ k → copyDichOK N k) : dichOK M := by
   induction hM with
   | diag v => exact dichOK_diagSeq v
   | @oper N k hN hk ih =>
@@ -8137,7 +8164,7 @@ theorem dichOK_ST_PS {M : PairSeq} (hM : ST_PS M)
     case pos =>
       obtain ⟨G, v0, w0, R, d0, lp, hMeq, hX, hdom, -, hd0, hnxt⟩ :=
         oper_bad_blocks (by omega) hz hp hk
-      exact hbad N k hN hk G v0 w0 R lp d0 hMeq hX hdom hnxt hd0
+      exact hbad N k hN ih hk G v0 w0 R lp d0 hMeq hX hdom hnxt hd0
 
 /-- The edge dichotomy transfers through a shared prefix. -/
 theorem dichOK_of_take_eq {X Y : PairSeq} {m : ℕ}
