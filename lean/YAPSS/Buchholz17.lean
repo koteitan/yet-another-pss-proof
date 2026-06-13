@@ -259,4 +259,54 @@ the necessity argument. -/
 theorem mem_Cself_of_lt_epsilon {v : ℕ} (hv : 0 < v) {α : Ordinal} (hα : α < ε_ (Om v + 1)) :
     α ∈ Cset (psiRes α) α v := (psi_eq_opow_add v hv α hα).1
 
+
+/-! ## Buchholz 1.8(a): the global `C`-bound `ε_{Ω_ω+1}` -/
+
+noncomputable def Omω : Ordinal := (ℵ_ (ω : Ordinal)).ord
+noncomputable def epsB : Ordinal := ε_ (Omω + 1)
+
+theorem Om_lt_Omω (v : ℕ) : Om v < Omω := by
+  unfold Omω
+  rcases Nat.eq_zero_or_pos v with rfl | hv
+  · rw [Om_zero]
+    exact lt_of_lt_of_le one_lt_omega0 (omega0_le_ord.2 (aleph0_le_aleph _))
+  · rw [Om_of_pos hv]
+    exact (Cardinal.ord_lt_ord).2 (aleph_lt_aleph.2 (natCast_lt_omega0 v))
+
+theorem Omω_lt_epsB : Omω < epsB := by
+  unfold epsB
+  exact lt_of_lt_of_le (lt_add_one _) (veblen_right_strictMono 1).le_apply
+
+theorem psi_lt_epsB (ξ : Ordinal) (u : ℕ) : psi ξ u < epsB := by
+  calc psi ξ u < Om (u + 1) := psi_lt_Om_succ ξ u
+    _ < Omω := Om_lt_Omω (u + 1)
+    _ < epsB := Omω_lt_epsB
+
+theorem epsB_principal : Ordinal.IsPrincipal (· + ·) epsB := by
+  unfold epsB
+  have h := omega0_opow_epsilon (Omω + 1)
+  rw [← h]; exact isPrincipal_add_omega0_opow _
+
+theorem Cset_subset_epsB {α : Ordinal} {v : ℕ} : Cset (psiRes α) α v ⊆ Set.Iio epsB := by
+  intro x hx
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hx
+  clear hx
+  induction n generalizing x with
+  | zero =>
+    rw [Citer, Function.iterate_zero, id_eq] at hn
+    exact lt_trans (lt_of_lt_of_le hn (le_of_lt (Om_lt_Omω v))) Omω_lt_epsB
+  | succ n IH =>
+    rw [Citer_succ, Cstep] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH h1
+    · obtain ⟨y, hy, z, hz, hyz⟩ := h2
+      dsimp only at hyz
+      rw [← hyz]
+      exact epsB_principal (IH hy) (IH hz)
+    · obtain ⟨u, ⟨ξ, ⟨hξC, hξα⟩, hξx⟩⟩ := Set.mem_iUnion.1 h3
+      have hξα' : ξ < α := hξα
+      simp only [psiRes, if_pos hξα'] at hξx
+      rw [← hξx]
+      exact psi_lt_epsB ξ u
+
 end YAPSS
