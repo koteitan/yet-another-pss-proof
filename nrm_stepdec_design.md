@@ -545,3 +545,17 @@ recursion). Also still TODO: connect NEC(wf3)→psi_proj per-step — CAVEAT the
 per-step `ψ_a(oV b)∉C_a(oV g*)` has b NON-a-reduced (not wf3-at-a), so it needs
 NON-canonical necessity, NOT NEC(wf3) directly; the per-step is a separate
 (harder) reduction than wf3-NEC. Both bottleneck on the same band-recursive core.
+
+### UPDATE2 (same session): wf3-necessity reduced to SBC alone
+PROVEN sorry-free (Otembed.lean): `argExtract_of_SBC` (arg_extract ⟸ SBC, via
+Citer-stage induction at level v — the generator arg already lives in C_v(α), so
+NO level mismatch; SBC + psi_strict_mono_arg pin the witness ζ=β) and `NEC_of_SBC`
+= NEC_of_argExtract ∘ argExtract_of_SBC. So **the whole wf3 necessity direction
+⟸ SBC** (`β∈C_a(β) → ξ<β → ψ_a ξ<ψ_a β`). SBC cases: ξ∈C_a(β) = existing
+`psi_strict_mono_mem`; successor β = `psi_strict_mono_below_succ`; **ONLY
+limit-canonical β (β≥Ω_{a+1}) OPEN** = band-recursive core (ψ_{u>a}; Buchholz 1986
+§1.9 C-rank induction). 9 lemmas this session, all kernel-checked, build 949 green.
+NB the psi_proj per-step (`ψ_a(oV b)=ψ_a(oV g*)`, b non-a-reduced) is a SEPARATE
+bridge: NEC_of_SBC(b) gives oV b∉C_a(oV g*) (b non-canonical at a), but the
+obligation needs ψ_a(oV b)∉C_a(oV g*) which doesn't follow without canonicity —
+so the per-step is its own non-canonical-collapse piece (same ψ-plateau core).
