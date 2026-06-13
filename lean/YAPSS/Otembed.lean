@@ -279,6 +279,15 @@ theorem psi_eq_of_notMem {α β : Ordinal.{u}} {v : ℕ} (hαβ : α ≤ β)
   rw [psi_unfold β v]
   exact csInf_le' hnm
 
+/-- **Collapse ⟺ equality** (for `α ≤ β`): `ψ_v α ∉ C_v(β)` iff `ψ_v α = ψ_v β`.
+The `→` is `psi_eq_of_notMem`; the `←` is `psi_notMem` (rewrite `ψ_v α = ψ_v β`).
+Lets the per-step collapse obligation `ψ_a(oV b') ∉ C_a(oV g)` be read as the
+plateau equality `ψ_a(oV b') = ψ_a(oV g)`. -/
+theorem psi_notMem_iff_eq {α β : Ordinal.{u}} {v : ℕ} (hαβ : α ≤ β) :
+    psi α v ∉ Cset (psiRes β) β v ↔ psi α v = psi β v := by
+  refine ⟨psi_eq_of_notMem hαβ, fun he => ?_⟩
+  rw [he]; exact psi_notMem β v
+
 /-- Strict monotonicity from membership in the *outer* `C_v(α)` (weaker
 hypothesis than Buchholz 1.3's `ζ ∈ C_v(ζ)`, since `C_v(ζ) ⊆ C_v(α)`):
 if `ζ ∈ C_v(α)` and `ζ < α` then `ψ_v(ζ) < ψ_v(α)`. -/
