@@ -3989,3 +3989,14 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
     だが、**証明が順序数側（再上昇 auto-collapse）の方が項側（再上昇で破綻）より tractable
     な可能性**。ord/psi.thy の ψ 機械を使う。次セッションの最有力候補。
   - 並行して maxr1≤1 フラグメント（crux-free・translate∈wf3）は PSI で形式化可能な実成果。
+
+- (続86補2) semantic ルート enabler 確認: **oV は全項 total**（otembed.thy: oV Z=0,
+  oV(P a b c)=ψ_a(oV b)+oV c・nrm 不要）。oV_mono は wf3 限定（olt v u∧wf3 ⟹ oV v<oV u）
+  だが oV 自体は非wf3 でも値を持つ。⟹ **semantic ルートの具体目標 = oV(translate(M[n]))
+  < oV(translate(M))** を、m_step_decreases の <o 減少を ψ-recursion で oV 減少に持ち上げる
+  形で示す。wf3 限定の oV_mono は使えない（translate 非wf3）ので、**標準形に特化した
+  oV 減少**を別途証明する必要（≡nrm_step_dec だが順序数側証明）。Buchholz §1 の ‖·‖ 減少。
+  - 次セッション最有力: この oV 減少を、(a) oper の bad 分岐の項変形を ψ-recursion で
+    評価し (b) コピー展開 ψ_a(...)·n < ψ_a(...+1) 型の順序数事実で押さえる、形で攻める。
+    PSI セッション（ord/）で otembed の oV/psi を使う。
+  - 代替（保険）: maxr1≤1 フラグメント（translate∈wf3・crux-free）を先に形式化＝v-帰納の底。
