@@ -290,6 +290,23 @@ theorem psi_strict_mono_mem {α ζ : Ordinal.{u}} {v : ℕ}
     rwa [psiRes, if_pos hζα] at this
   exact psi_notMem α v (he ▸ hmem)
 
+/-- **NEC value-bound:** if `ψ_v(β) ∈ C_v(α)` then `β < α`.  (The arg of an
+in-`C_v(α)` principal value lies below `α`.)  Proof: `M1` gives `ψ_v(β)=ψ_v(ζ)`
+with `ζ<α, ζ∈C_v(α)`; `psi_strict_mono_mem` then forces `ψ_v(β)<ψ_v(α)`, so
+`β<α` by monotonicity.  This is the principal/value half of the Buchholz
+necessity direction. -/
+theorem psi_arg_lt_of_mem {α β : Ordinal.{u}} {v : ℕ}
+    (h : psi β v ∈ Cset (psiRes α) α v) : β < α := by
+  have hap : Ordinal.IsPrincipal (· + ·) (psi β v) :=
+    fun {x y} hx hy => (psi_addprinc β v).2 x y hx hy
+  obtain ⟨ζ, hζmem, hζα, hζeq⟩ :=
+    psi_form_of_mem hap (Om_le_psi β v) (psi_lt_Om_succ β v) h
+  -- hζeq : psi ζ v = psi β v
+  have hlt : psi β v < psi α v := by
+    rw [← hζeq]; exact psi_strict_mono_mem hζmem hζα
+  by_contra hc
+  exact absurd (psi_mono_arg (not_lt.1 hc) v) (not_le.2 hlt)
+
 /-- `G`-critical subterms are well-formed (Buchholz's Proposition
 `a ∈ OT → G_u a ⊆ OT`). -/
 theorem wf3_Gterm {t x : Three} (ht : wf3 t) {v : ℕ} (hx : x ∈ Gterm v t) :
