@@ -307,6 +307,37 @@ theorem psi_arg_lt_of_mem {α β : Ordinal.{u}} {v : ℕ}
   by_contra hc
   exact absurd (psi_mono_arg (not_lt.1 hc) v) (not_le.2 hlt)
 
+/-- `C_v(α)` grows with the subscript: `v ≤ w → C_v(α) ⊆ C_w(α)`.  `Cstep` is
+independent of the subscript; only the base `Iio (Ω_v)` widens. -/
+theorem Cset_level_mono {α : Ordinal.{u}} {v w : ℕ} (hvw : v ≤ w) :
+    Cset (psiRes α) α v ⊆ Cset (psiRes α) α w := by
+  have h : ∀ n, Citer (psiRes α) α v n ⊆ Citer (psiRes α) α w n := by
+    intro n
+    induction n with
+    | zero =>
+      simp only [Citer, Function.iterate_zero, id_eq]
+      intro x hx; exact lt_of_lt_of_le hx (Om_mono hvw)
+    | succ n IH =>
+      rw [Citer_succ, Citer_succ]
+      intro x hx
+      rcases hx with (h1 | h2) | h3
+      · exact Set.mem_union_left _ (Set.mem_union_left _ (IH h1))
+      · obtain ⟨a, ha, b, hb, hab⟩ := h2
+        exact Set.mem_union_left _ (Set.mem_union_right _ ⟨a, IH ha, b, IH hb, hab⟩)
+      · obtain ⟨u, hu⟩ := Set.mem_iUnion.1 h3
+        obtain ⟨ξ, ⟨hξ, hξα⟩, hξx⟩ := hu
+        exact Set.mem_union_right _ (Set.mem_iUnion.2 ⟨u, ⟨ξ, ⟨IH hξ, hξα⟩, hξx⟩⟩)
+  intro x hx
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hx
+  exact Cset_mem_iff.2 ⟨n, h n hn⟩
+
+/-- **Cross-level NEC value-bound:** for `v ≤ a'`, if `ψ_{a'}(β) ∈ C_v(α)` then
+`β < α`.  Lift to `C_{a'}(α)` (where band = subscript) and apply
+`psi_arg_lt_of_mem`. -/
+theorem psi_arg_lt_of_mem_cross {α β : Ordinal.{u}} {v a' : ℕ} (hv : v ≤ a')
+    (h : psi β a' ∈ Cset (psiRes α) α v) : β < α :=
+  psi_arg_lt_of_mem (Cset_level_mono hv h)
+
 /-- `C_v(α)` is closed under CNF-summand extraction: if `δ + r ∈ C_v(α)` with
 `δ` additive-principal and `r < δ`, then `δ ∈ C_v(α)` and `r ∈ C_v(α)`.
 Induction on the `Citer` stage; the `+`-generator case uses ordinal subtraction
