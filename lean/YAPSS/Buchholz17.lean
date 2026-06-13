@@ -102,4 +102,21 @@ theorem psi_zero_eq_opow : ∀ α : Ordinal, α < ε_ 0 →
 theorem mem_Cself_zero_of_lt_epsilon0 {α : Ordinal} (hα : α < ε_ 0) :
     α ∈ Cset (psiRes α) α 0 := (psi_zero_eq_opow α hα).1
 
+/-! ### Toward Buchholz 1.7(b) (level `v ≠ 0`): `Ω_v` arithmetic -/
+
+/-- `ω < Ω_v` for `v ≥ 1` (`Ω_v = ℵ_v.ord` is uncountable). -/
+theorem omega_lt_Om {v : ℕ} (hv : 0 < v) : (ω : Ordinal) < Om v := by
+  rw [Om_of_pos hv, lt_ord, card_omega0, ← aleph_zero]
+  exact aleph_lt_aleph.2 (by exact_mod_cast hv)
+
+/-- `Ω_v` (`v ≥ 1`) is an `ω`-power fixpoint: `ω^{Ω_v} = Ω_v`.  (`Ω_v = ℵ_v.ord` is
+`opow`-principal and a succ-limit, so `ω^{Ω_v} = sup_{b<Ω_v} ω^b = Ω_v`.)  Gives
+`ω^{Ω_v+α} = Ω_v · ω^α`, the level-`v` band base for 1.7(b). -/
+theorem omega_opow_Om {v : ℕ} (hv : 0 < v) : ω ^ Om v = Om v := by
+  refine le_antisymm ?_ (right_le_opow _ one_lt_omega0)
+  rw [Om_of_pos hv, opow_le_of_isSuccLimit omega0_pos.ne' (isSuccLimit_ord (aleph0_le_aleph _))]
+  intro b hb
+  have hω : (ω : Ordinal) < (ℵ_ (v : Ordinal)).ord := by rw [← Om_of_pos hv]; exact omega_lt_Om hv
+  exact le_of_lt ((isPrincipal_opow_ord (aleph0_le_aleph _)) hω hb)
+
 end YAPSS
