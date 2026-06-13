@@ -529,11 +529,12 @@ theorem canon_pred {a : ℕ} {δ : Ordinal.{u}}
   rw [he] at h
   exact hδ (succ_mem h)
 
-/-- **Strict monotonicity below a canonical successor** (the successor case of
-"`ψ_a` strictly increases below any `a`-canonical point"): if `δ+1` is
-`a`-canonical then `ξ < δ+1 → ψ_a ξ < ψ_a(δ+1)`.  (`canon_pred` makes `δ`
-canonical, so `ψ_a δ < ψ_a(δ+1)` by `psi_strict_mono_arg`, and `ξ ≤ δ`.)  The
-limit-canonical case is the open Buchholz band-recursive core. -/
+/-- **Strict monotonicity below a canonical successor**: if `δ+1` is `a`-canonical
+then `ξ < δ+1 → ψ_a ξ < ψ_a(δ+1)`.  (`canon_pred` makes `δ` canonical, so
+`ψ_a δ < ψ_a(δ+1)` by `psi_strict_mono_arg`, and `ξ ≤ δ`.)  NB the analogous claim
+for *limit*-canonical points is FALSE: `ψ_a` is left-continuous there (constant on
+the non-canonical run just below, by `collapse_succ`/`collapse_le`), so a limit
+canonical isolated above a gap has `ψ_a ξ = ψ_a β` for `ξ` in the run. -/
 theorem psi_strict_mono_below_succ {a : ℕ} {δ ξ : Ordinal.{u}}
     (hβ : δ + 1 ∈ Cset (psiRes (δ + 1)) (δ + 1) a) (hξ : ξ < δ + 1) :
     psi ξ a < psi (δ + 1) a := by
@@ -853,61 +854,6 @@ theorem head_tail_mem {α : Ordinal.{u}} {v a : ℕ} {b c : Three}
     fun {x y} hx hy => (psi_addprinc (oV b) a).2 x y hx hy
   exact Cset_add_split (oV_tail_lt hw) hpr hm
 
-/-- **Arg-extraction from strict-mono-below-canonical (SBC).**  Assuming SBC
-(`β` `a`-canonical, `ξ < β` ⟹ `ψ_a ξ < ψ_a β`), if `β` is `a`-canonical and
-`ψ_a β ∈ C_v(α)` (with `v ≤ a`) then `β ∈ C_v(α)`.  `Citer`-stage induction at
-level `v`: the `ψ`-generator `ψ_u(ζ)` (with `ζ ∈ C_v(α)` at the previous stage,
-`ζ < α`) has `u = a` by band-disjointness, and `ψ_a ζ = ψ_a β` forces `ζ = β`
-(SBC rules out `ζ < β`, `psi_strict_mono_arg` rules out `β < ζ`), so
-`β = ζ ∈ C_v(α)`.  No level mismatch — the witness already lives in `C_v(α)`. -/
-theorem argExtract_of_SBC
-    (SBC : ∀ {a : ℕ} {β ξ : Ordinal.{u}}, β ∈ Cset (psiRes β) β a → ξ < β →
-       psi ξ a < psi β a)
-    {v a : ℕ} {β α : Ordinal.{u}} (hva : v ≤ a)
-    (hβc : β ∈ Cset (psiRes β) β a) (hmem : psi β a ∈ Cset (psiRes α) α v) :
-    β ∈ Cset (psiRes α) α v := by
-  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hmem
-  clear hmem
-  revert hn
-  induction n with
-  | zero =>
-    intro hn
-    rw [Citer, Function.iterate_zero, id_eq] at hn
-    exact absurd (lt_of_le_of_lt (le_trans (Om_mono hva) (Om_le_psi β a)) hn) (lt_irrefl _)
-  | succ n IH =>
-    intro hn
-    rw [Citer_succ, Cstep] at hn
-    rcases hn with (h1 | h2) | h3
-    · exact IH h1
-    · obtain ⟨y, hy, z, hz, hyz⟩ := h2
-      dsimp only at hyz
-      rcases eq_or_lt_of_le (show y ≤ psi β a from hyz ▸ le_self_add) with hye | hylt
-      · exact IH (hye ▸ hy)
-      · rcases eq_or_lt_of_le (show z ≤ psi β a from hyz ▸ le_add_self) with hze | hzlt
-        · exact IH (hze ▸ hz)
-        · exact absurd hyz (ne_of_lt ((psi_addprinc β a).2 y z hylt hzlt))
-    · obtain ⟨u, ⟨ζ, ⟨hζC, hζα⟩, hζx⟩⟩ := Set.mem_iUnion.1 h3
-      have hζα' : ζ < α := hζα
-      simp only [psiRes, if_pos hζα'] at hζx
-      have hua : u = a := by
-        have h1 : Om u ≤ psi β a := hζx ▸ Om_le_psi ζ u
-        have h2 : psi β a < Om (u + 1) := hζx ▸ psi_lt_Om_succ ζ u
-        have hua1 : u ≤ a := by
-          by_contra hc
-          exact absurd (lt_of_le_of_lt h1 (psi_lt_Om_succ β a)) (not_lt.2 (Om_mono (by omega)))
-        have hua2 : a ≤ u := by
-          by_contra hc
-          exact absurd (lt_of_le_of_lt (Om_le_psi β a) h2) (not_lt.2 (Om_mono (by omega)))
-        omega
-      subst hua
-      have hζv : ζ ∈ Cset (psiRes α) α v := Citer_subset_Cset hζC
-      have hζβ : ζ = β := by
-        rcases lt_trichotomy ζ β with h | h | h
-        · exact absurd hζx (ne_of_lt (SBC hβc h))
-        · exact h
-        · exact absurd hζx.symm (ne_of_lt (psi_strict_mono_arg h hβc))
-      rwa [← hζβ]
-
 /-- **Buchholz Lemma 1.9 necessity for `wf3` (OT) terms, modulo arg-extraction.**
 If `oV t ∈ C_v(α)` then every `G_v`-critical subterm has value `< α`.  Structural
 induction on `t = P a b c`: `head_tail_mem` splits off `ψ_a(oV b) ∈ C_v(α)` and
@@ -940,19 +886,6 @@ theorem NEC_of_argExtract
         exact oV_order_pres (wf3_Gterm wfb hy) wfb (hGab y hy)
       exact ihb wfb (argExt hva hbcan hhead) x hxb
     · exact ihc wfc htail x hxc
-
-/-- **Buchholz Lemma 1.9 necessity for `wf3` terms, modulo SBC.**  Composing
-`NEC_of_argExtract` with `argExtract_of_SBC`: the whole necessity direction
-follows from `SBC` alone (strict monotonicity below canonical points), whose
-successor case is `psi_strict_mono_below_succ` and whose `ξ ∈ C_a(β)` case is
-`psi_strict_mono_mem` — leaving only the limit-canonical case (the band-recursive
-Buchholz core) open. -/
-theorem NEC_of_SBC
-    (SBC : ∀ {a : ℕ} {β ξ : Ordinal.{u}}, β ∈ Cset (psiRes β) β a → ξ < β →
-       psi ξ a < psi β a)
-    {t : Three} (ht : wf3 t) {v : ℕ} {α : Ordinal.{u}}
-    (hm : oV t ∈ Cset (psiRes α) α v) : ∀ x ∈ Gterm v t, oV x < α :=
-  NEC_of_argExtract (argExtract_of_SBC SBC) ht hm
 
 /-! ## Well-foundedness of `olt` on the Buchholz class `wf3` (Lemma 2.2)
 
