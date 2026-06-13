@@ -404,4 +404,89 @@ theorem NEC_of_collapseCanon
     (hm : oV t ∈ Cset (psiRes α) α v) : ∀ x ∈ Gterm v t, oV x < α :=
   NEC_of_canonWitness (CW_of_collapseCanon CC) ht hm
 
+/-! ## Sharper reduction: necessity from the minimal non-canonical-arg kernel `K`
+
+`CW_of_collapseCanon`/`CC` bundle four obligations on the canonical representative
+`ξ''` (value equality, `ξ'' < α`, `ξ'' ∈ C_v(α)`, `ξ''` canonical).  Two of those
+are *free*:
+
+* `ξ'' < α` follows from `psi_arg_lt_of_mem_cross` (the value `ψ_{u'} ξ'' ∈ C_v(α)`
+  with `v ≤ u'` already forces the argument below `α`) — no bootstrap needed; and
+* in the only consumer (`argExtract_of_canonWitness` / `NEC_of_argExtract`) the
+  canonical witness is pinned by `psi_canonical_inj` to the *given* canonical `β`,
+  so the representative is `β` itself.
+
+Eliminating those, the entire `wf3`-necessity direction reduces to a single
+minimal kernel `K`: a NON-canonical argument `ξ ∈ C_v(α)` whose `ψ_a`-value equals
+that of a canonical `β` forces `β ∈ C_v(α)`.  This is exactly Buchholz's Remark
+(p197) "omitting the condition `ξ ∈ C_u(ξ)` does not change `C_v(α)`" restricted to
+its genuine residue: the omitted-canonicity `Cstep` may admit a non-canonical
+generator `ξ`, and `K` says its canonical representative is admitted too.  `1.7`
+(`mem_Cself_lvl`) already discharges every `ξ < ε(a)`, so `K` only bites in the
+collapse region `ξ ≥ ε(a)`. -/
+
+/-- **Arg-extraction reduced to the non-canonical-arg kernel `K`.**  Stage
+induction on `ψ_a β ∈ C_v(α)`: the base case is vacuous (`ψ_a β ≥ Ω_v`), the `+`
+case is absorbed (the value is additive-principal), and the `ψ`-generator case
+yields `ψ_u ξ = ψ_a β` with `ξ ∈ C_v(α) ∩ Iio α`; the band forces `u = a`.  If the
+generator argument `ξ` is canonical, `psi_canonical_inj` gives `ξ = β`; otherwise
+`K` supplies `β ∈ C_v(α)`.  (0 sorry — the whole reduction is kernel-checked; only
+`K` itself remains, the genuine Buchholz core.) -/
+theorem argExt_of_kernel
+    (K : ∀ (v a : ℕ) (ξ β α : Ordinal.{u}), v ≤ a →
+      ξ ∈ Cset (psiRes α) α v → ξ < α → ξ ∉ Cset (psiRes ξ) ξ a →
+      β ∈ Cset (psiRes β) β a → psi ξ a = psi β a → β ∈ Cset (psiRes α) α v)
+    {v a : ℕ} {β α : Ordinal.{u}} (hva : v ≤ a)
+    (hβc : β ∈ Cset (psiRes β) β a) (hmem : psi β a ∈ Cset (psiRes α) α v) :
+    β ∈ Cset (psiRes α) α v := by
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hmem
+  clear hmem
+  induction n generalizing β with
+  | zero =>
+    rw [Citer, Function.iterate_zero, id_eq] at hn
+    exact absurd (lt_of_lt_of_le hn (le_trans (Om_mono hva) (Om_le_psi β a))) (lt_irrefl _)
+  | succ n IH =>
+    rw [Citer_succ, Cstep] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH hβc h1
+    · obtain ⟨x, hx, y, hy, hxy⟩ := h2
+      have hap : Ordinal.IsPrincipal (· + ·) (psi β a) :=
+        fun {p q} hp hq => (psi_addprinc β a).2 p q hp hq
+      have : psi β a ∈ Citer (psiRes α) α v n := by
+        rcases eq_or_lt_of_le (show x ≤ psi β a from hxy ▸ le_self_add) with hxe | hxlt
+        · exact hxe ▸ hx
+        · rcases eq_or_lt_of_le (show y ≤ psi β a from hxy ▸ le_add_self) with hye | hylt
+          · exact hye ▸ hy
+          · exact absurd hxy.symm (ne_of_gt (hap hxlt hylt))
+      exact IH hβc this
+    · obtain ⟨u, ⟨ξ, ⟨hξC, hξα⟩, hξx⟩⟩ := Set.mem_iUnion.1 h3
+      have hξα : ξ < α := hξα
+      simp only [psiRes, if_pos hξα] at hξx
+      have hua : u = a := by
+        have h1 : Om u ≤ psi β a := hξx ▸ Om_le_psi ξ u
+        have h2 : psi β a < Om (u + 1) := hξx ▸ psi_lt_Om_succ ξ u
+        have hua1 : u ≤ a := by
+          by_contra hc
+          exact absurd (lt_of_le_of_lt h1 (psi_lt_Om_succ β a)) (not_lt.2 (Om_mono (by omega)))
+        have hua2 : a ≤ u := by
+          by_contra hc
+          exact absurd (lt_of_le_of_lt (Om_le_psi β a) h2) (not_lt.2 (Om_mono (by omega)))
+        omega
+      subst hua
+      by_cases hξcanon : ξ ∈ Cset (psiRes ξ) ξ u
+      · exact (psi_canonical_inj hξcanon hβc hξx) ▸ Citer_subset_Cset hξC
+      · exact K v u ξ β α hva (Citer_subset_Cset hξC) hξα hξcanon hβc hξx
+
+/-- **`wf3`-necessity (Buchholz 1.9) from the minimal kernel `K`.**  Wires
+`argExt_of_kernel` through `NEC_of_argExtract`.  The whole necessity direction
+follows from `K` alone — strictly sharper than `NEC_of_collapseCanon`/`CC`
+(the `ξ'' < α` bootstrap and the `ξ''` construction are eliminated). -/
+theorem NEC_of_kernel
+    (K : ∀ (v a : ℕ) (ξ β α : Ordinal.{u}), v ≤ a →
+      ξ ∈ Cset (psiRes α) α v → ξ < α → ξ ∉ Cset (psiRes ξ) ξ a →
+      β ∈ Cset (psiRes β) β a → psi ξ a = psi β a → β ∈ Cset (psiRes α) α v)
+    {t : Three} (ht : wf3 t) {v : ℕ} {α : Ordinal.{u}}
+    (hm : oV t ∈ Cset (psiRes α) α v) : ∀ x ∈ Gterm v t, oV x < α :=
+  NEC_of_argExtract (fun hva hβc hmem => argExt_of_kernel K hva hβc hmem) ht hm
+
 end YAPSS
