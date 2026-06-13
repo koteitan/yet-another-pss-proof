@@ -8861,4 +8861,55 @@ theorem cross_dichOK_rootq {G R : PairSeq} {v0 w0 d0 n kt p kq : ℕ}
     exact hpivkq y hy1 (by omega)
   exact le0_through_pivot (hedge.2.2.2.2.1) (by omega) (by omega) hpiv
 
+/-- **Row-0 ancestry localizes to a shared window** given by equal takes of
+the two drops — the le0 analogue of `dichOK_window`. -/
+theorem le0_window {X Y : PairSeq} {s sY m a b : ℕ}
+    (hwin : ∀ w, w ≤ m → (X.drop s).take w = (Y.drop sY).take w)
+    (hmX : s + m ≤ X.length) (hmY : sY + m ≤ Y.length)
+    (hbm : b < m) (h : le0 X (s + a) (s + b)) :
+    le0 Y (sY + a) (sY + b) := by
+  have hdropX : m ≤ (X.drop s).length := by rw [List.length_drop]; omega
+  have hdropY : m ≤ (Y.drop sY).length := by rw [List.length_drop]; omega
+  have hpq1 : le0 (X.drop s) a b := by
+    have h9 := (le0_drop_iff (M := X) (k := s) (a := s + a) (b := s + b)
+      (by omega) (by omega) (by omega)).2 h
+    rwa [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h9
+  have hpq2 : le0 (Y.drop sY) a b := by
+    have h9 : le0 ((X.drop s).take m) a b :=
+      (le0_take_iff hbm (by omega)).2 hpq1
+    rw [hwin m le_rfl] at h9
+    exact (le0_take_iff hbm (by omega)).1 h9
+  have h9 := (le0_drop_iff (M := Y) (k := sY) (a := sY + a) (b := sY + b)
+    (by omega) (by omega) (by omega)).1
+  rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h9
+  exact h9 hpq2
+
+/-- **Within-copy row-0 ancestry is block row-0 ancestry**: a chain inside the
+`k`-th copy descends to the shifted block via the window, then unshifts. -/
+theorem le0_copy_to_block {G B : PairSeq} {d0 n k a b : ℕ} (hk : k < n)
+    (hbm : b < B.length)
+    (h : le0 (copyExp G B d0 n) (G.length + (k * B.length + a))
+          (G.length + (k * B.length + b))) :
+    le0 B a b := by
+  have hmX : (G.length + k * B.length) + B.length ≤ (copyExp G B d0 n).length := by
+    rw [copyExp_length]
+    have h2 : (k + 1) * B.length ≤ n * B.length :=
+      Nat.mul_le_mul_right B.length (by omega)
+    have h1 : (k + 1) * B.length = k * B.length + B.length := by
+      rw [Nat.add_mul, Nat.one_mul]
+    omega
+  have hmY : 0 + B.length ≤ (B.map fun p => (p.1 + k * d0, p.2)).length := by
+    rw [List.length_map]; omega
+  have h' : le0 (copyExp G B d0 n) ((G.length + k * B.length) + a)
+      ((G.length + k * B.length) + b) := by
+    have e1 : (G.length + k * B.length) + a = G.length + (k * B.length + a) := by omega
+    have e2 : (G.length + k * B.length) + b = G.length + (k * B.length + b) := by omega
+    rw [e1, e2]; exact h
+  have hshift := le0_window (X := copyExp G B d0 n)
+    (Y := B.map fun p => (p.1 + k * d0, p.2))
+    (s := G.length + k * B.length) (sY := 0) (m := B.length) (a := a) (b := b)
+    (copyExp_copy_window hk) hmX hmY hbm h'
+  simp only [Nat.zero_add] at hshift
+  exact le0_shift_iff.1 hshift
+
 end YAPSS
