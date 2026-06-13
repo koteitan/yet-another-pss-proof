@@ -579,6 +579,17 @@ theorem oV_tail_lt {a : ℕ} {b c : Three} (h : wf3 (P a b c)) :
     oV.{u} c < oV (P a b c) :=
   oV_order_pres (wf3_P.1 h).2.1 h (olt_cons_tail c h)
 
+/-- Head/tail extraction in `C_v(α)`: from `oV (P a b c) ∈ C_v(α)` (wf3) extract
+both the head principal `ψ_a(oV b) ∈ C_v(α)` and the tail value `oV c ∈ C_v(α)`.
+Uses the generalized `Cset_add_split` with `r = oV c < oV (P a b c)` (`oV_tail_lt`,
+which handles repeated principals). -/
+theorem head_tail_mem {α : Ordinal.{u}} {v a : ℕ} {b c : Three}
+    (hw : wf3 (P a b c)) (hm : oV (P a b c) ∈ Cset (psiRes α) α v) :
+    psi (oV b) a ∈ Cset (psiRes α) α v ∧ oV c ∈ Cset (psiRes α) α v := by
+  have hpr : Ordinal.IsPrincipal (· + ·) (psi (oV b) a) :=
+    fun {x y} hx hy => (psi_addprinc (oV b) a).2 x y hx hy
+  exact Cset_add_split (oV_tail_lt hw) hpr hm
+
 /-! ## Well-foundedness of `olt` on the Buchholz class `wf3` (Lemma 2.2)
 
 The value map embeds `(wf3, olt)` into the ordinals, so `olt` is well-founded
