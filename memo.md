@@ -3797,3 +3797,35 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   をかけて監査／紙スケッチ必須（再上昇ケースの欠落を検知）／「row1≤有限アンカー」型は
   構造的に疑う／同機構2回falsifyで形・方法論を再検討／sorry=負債（マイルストーン
   にしない・kernel 0-sorry だけが証明）／クロスチェックは権威でなく中身を掘る。
+
+### (2026-06-13 続82) d0=0 値側減少の構造解析 + proj 単調性（E6_value の健全な置換候補）
+
+ユーザー一任で d0=0 完全コピーの値側減少を**理解フェーズから**着手（凍結前に紙
+スケッチ・教訓厳守）。
+
+**d0=0 減少の構造**（study_d0zero.py で確認）:
+- bad-branch d0=0/i1=0 では **M = G @ B @ [lp]**（G=take j0, B=block[j0,j1),
+  lp=M[j1]＝最終列）、**M[n] = G @ B^n**（lp を落とし B を n 個・完全コピー）。
+- **NT(M[1]) <o NT(M) は NT_prefix_lt そのもの**（C=M[1]=G@B, D=[lp]・既証明・真）。
+  ＝lp が総和に1項追加する切り詰め。
+- n≥2 は G@B 共有後に分岐。実証（13,224 d0=0 例 0 fail）: **lead(NT M[n]) =
+  lead(NT M)** が常に成立し、減少は subscript-first lex で **hdarg で決まる**
+  （hdarg(NT M[n]) ≤o hdarg(NT M)）。
+- NT_shape より **hdarg(NT(c0#rest)) = proj(snd c0)(NT K)**（K=takeWhile）。
+  ⟹ 減少は **proj の単調性** `a ≤o b ⟹ proj u a ≤o proj u b` に帰着。
+
+**proj 単調性の検証**:
+- NT-像（標準セグメント）上: **+4 broad 149,428 ペア 0 違反**、**深層再上昇
+  ファミリー 1,195,095 ペア 0 違反**（E6_value が190違反で死んだ同じ集合で生存！）。
+  ⟹ **order だけ保てばよい proj 単調性は再上昇に耐える**（value を主張する
+  E6_value と本質的に違う）＝**E6_value の健全な置換**。
+- ただし**任意 wf3 項では偽**（26,808 違反・lead 相違 D0(D1(..)) vs D1(..)）。
+  sameLead/bothLeadGEu 制約でも残る（2,463 違反）。⟹ **純項レベルでなく
+  NT-像クラス特有**＝標準性構造に依存。形式化には NT-像の特徴づけが必要。
+
+**次フェーズ（形式化設計）**:
+- 値側減少を NT_shape（真）+ proj 単調性（NT-像上・要形式化）+ NT_prefix_lt（真・
+  base）+ lead 一致 で再帰的に組む。E6_value/E6_mem/msfx は全廃。
+- proj 単調性 on NT-像 を Isabelle でどう証明するか（NT-像の不変条件を伴う帰納）が
+  次の核心。**凍結前に +5/+6 broad 監査**（教訓）＋紙スケッチ。
+- d0>0 ケースは別途（lean-yapss の copyExp/le0 合同が健全な道具として流用可）。
