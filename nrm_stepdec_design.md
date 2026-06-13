@@ -207,6 +207,31 @@ irreducible hard core and the ONLY place standardness/UBI enters — and it is a
 VALUE statement, not a combinatorial window invariant, so it escapes the dead
 spanOK/dichOK family.
 
+## PROGRESS
+- **lemma 2 `oV_ins` — DONE & kernel-checked** (Nrm.lean, commit b2f815a).
+  Final signature: `oV_ins (wb : wf3 b) (wc : wf3 c) (hGb : ∀ x ∈ Gterm a b,
+  olt x b) : oV (ins a b c) = oV (P a b c)`. In the nrm use the args are
+  `proj a (nrm b)` / `nrm c`, so `wb=proj_wf3∘wf3_nrm`, `wc=wf3_nrm`,
+  `hGb=proj_G`.
+- **lemma 1 `psi_proj` — NEXT.** Take `wf3 b` (every term in `proj`'s recursion
+  on a wf3 seed `nrm b` is wf3, via `wf3_Gterm`). Statement:
+  `psi_proj (wb : wf3 b) : psi (oV (proj a b)) a = psi (oV b) a`. Strong
+  induction on `tsize b` along proj; engine is `psi_plateau`.
+  - **`psi_plateau` reduced (wf3 form):** `wf3 b → wf3 g → g ∈ Gterm a b →
+    ¬ olt g b → psi (oV g) a = psi (oV b) a`. Via olt-trichotomy on wf3:
+    `g = b` (refl) or `olt b g`. In the `olt b g` case `oV_order_pres` gives
+    `oV b < oV g`, so `psi (oV b) a ≤ psi (oV g) a` (`psi_mono_arg`); the reverse
+    `psi (oV g) a ≤ psi (oV b) a` needs **`psi (oV b) a ∉ Cset (psiRes (oV g)) (oV g) a`**
+    (then `psi (oV g) a = sInf{γ∉…} ≤ psi (oV b) a` via `csInf_le'`). THE precise
+    remaining obligation. It should hold because `g ∈ Gterm a b` with `oV b<oV g`
+    means `oV b` is built from a principal `ψ_{a'}(oV g)` (a'≥a) with `oV g>oV b`
+    — the "non-normal/critical" config where `ψ_a` plateaus. Needs Cset analysis
+    (`below_psi_mem_Cset`, `Cset_psi_closed`, `psi_notMem`, `CC_mono`). HARD CORE
+    of the value lemmas — focused ordinal proof.
+- After `psi_proj`: **lemma 3 `oV_nrm`** is a short induction
+  (`oV(nrm(P a b c)) =oV_ins= oV(P a (proj a (nrm b)) (nrm c)) = psi(oV(proj a (nrm b)))a
+  + oV(nrm c) =psi_proj= psi(oV(nrm b))a + oV(nrm c) =IH= psi(oV b)a+oV c`).
+
 ## 7. Viability note (disciplined, before committing): VALUE route is NEW territory
 The Isabelle source `ord/nrm.thy` states explicitly: *"the ψ-semantics only
 **motivates** nrm; the chain below **never mentions values**."* So BOTH projects
