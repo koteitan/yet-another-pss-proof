@@ -276,13 +276,61 @@ theorem proj_oV_mem_C (a : ℕ) (b : Three) (wb : wf3 b) :
   intro x hx
   exact oV_order_pres (wf3_Gterm (proj_wf3 wb) hx) (proj_wf3 wb) (proj_G a b x hx)
 
-/-- **Hard core 1 (Buchholz collapsing, M1–M3 in the design doc):** `proj`
-preserves the outer `ψ_a`-value.  Reduces (via `psi_form_of_mem` M1 +
-`psi_eq_of_notMem`) to the per-step obligation `psi(oV t)a ∉ C_a(oV g*)`; the
-fixpoint is `a`-reduced (`proj_oV_mem_C`).  Constancy core M3 still open. -/
-theorem psi_proj (a : ℕ) (b : Three) (wb : wf3 b) :
+/-- **`psi_proj` reduced to a precise per-step obligation.**  Strong induction on
+`tsize b` along `proj`'s recursion: if the violator filter is empty, `proj a b = b`
+(refl); otherwise `proj a b = proj a g*` for `g* = maxo …` (the max OT3-violator,
+`g* ∈ G_a(b)`, `¬ g* <o b`), and `ψ_a(oV g*) = ψ_a(oV b)` follows from the
+per-step C-membership hypothesis `notmem` via `psi_eq_of_notMem` (using
+`oV b ≤ oV g*`); the IH closes `ψ_a(oV(proj a g*)) = ψ_a(oV g*)`.  This isolates
+the whole collapsing core to `notmem`. -/
+theorem psi_proj_of_notmem (a : ℕ)
+    (notmem : ∀ (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
+      psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a)
+    (b : Three) (wb : wf3 b) :
     psi.{u} (oV (proj a b)) a = psi (oV b) a := by
+  generalize hs : tsize b = n
+  induction n using Nat.strong_induction_on generalizing b with
+  | _ n IH =>
+    subst hs
+    by_cases h : (Glist a b).filter (fun g => ¬ olt g b) = []
+    · rw [proj_id h]
+    · rw [proj_rec h]
+      have hin := maxo_hdtl_in h
+      set g := maxo ((Glist a b).filter (fun g => ¬ olt g b)).headI
+                    ((Glist a b).filter (fun g => ¬ olt g b)).tail with hg
+      have hgmem : g ∈ Gterm a b := mem_Glist.1 (List.mem_of_mem_filter hin)
+      have hgviol : ¬ olt g b := by
+        have := List.of_mem_filter hin
+        simpa using this
+      have wg : wf3 g := wf3_Gterm wb hgmem
+      have hsz : tsize g < tsize b := Gterm_tsize hgmem
+      have ihg : psi.{u} (oV (proj a g)) a = psi (oV g) a := IH (tsize g) hsz g wg rfl
+      have hle : oV.{u} b ≤ oV g := by
+        rcases olt_total b g with hbg | hbe | hgb
+        · exact le_of_lt (oV_order_pres wb wg hbg)
+        · rw [hbe]
+        · exact absurd hgb hgviol
+      have hstep : psi.{u} (oV g) a = psi (oV b) a :=
+        (psi_eq_of_notMem hle (notmem b g wb hgmem hgviol)).symm
+      rw [ihg]; exact hstep
+
+/-- **The precise remaining collapsing obligation** (replaces the old opaque
+`psi_proj` sorry): at a non-`a`-reduced `b'` with an OT3-violator `g ∈ G_a(b')`
+(`¬ g <o b'`, so `oV b' ≤ oV g`), the principal value `ψ_a(oV b')` is *not* in
+`C_a(oV g)`.  Equivalent (via 1.5 + monotonicity) to `ψ_a(oV b') = ψ_a(oV g)` —
+the Buchholz collapse across the critical point.  This is the genuine necessity
+core (and is exactly where a non-canonical `b'` defeats the `wf3` necessity
+`NEC_of_argExtract`); still open. -/
+theorem psi_proj_notmem (a : ℕ) (b' g : Three) (wb' : wf3 b')
+    (hg : g ∈ Gterm a b') (hv : ¬ olt g b') :
+    psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a := by
   sorry
+
+/-- **Hard core 1 (Buchholz collapsing):** `proj` preserves the outer `ψ_a`-value.
+Assembled from `psi_proj_of_notmem` and the per-step obligation `psi_proj_notmem`. -/
+theorem psi_proj (a : ℕ) (b : Three) (wb : wf3 b) :
+    psi.{u} (oV (proj a b)) a = psi (oV b) a :=
+  psi_proj_of_notmem a (psi_proj_notmem a) b wb
 
 /-- **Hard core 2 (standardness / UBI):** on `NF` the subscript-first order
 refines the `ψ`-value order.  Off `NF` this fails (the `y₂ <o y₁`, equal-value
