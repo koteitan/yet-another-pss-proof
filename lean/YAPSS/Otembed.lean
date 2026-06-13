@@ -269,6 +269,16 @@ theorem psi_form_of_mem {α δ : Ordinal.{u}} {v : ℕ}
       subst huv
       exact ⟨ξ, Citer_subset_Cset hξC, hξα, hξδ⟩
 
+/-- The plateau bridge: if `α ≤ β` and `ψ_v(α)` is *not* in `C_v(β)`, then
+`ψ_v(α) = ψ_v(β)`.  (`ψ_v(β)` is the least non-member of `C_v(β)`, so it is
+`≤ ψ_v(α)`; monotonicity gives the reverse.)  This reduces the collapsing
+core `psi_proj` to showing `ψ_v(oV t) ∉ C_v(oV g*)` for the collapse target. -/
+theorem psi_eq_of_notMem {α β : Ordinal.{u}} {v : ℕ} (hαβ : α ≤ β)
+    (hnm : psi α v ∉ Cset (psiRes β) β v) : psi α v = psi β v := by
+  refine le_antisymm (psi_mono_arg hαβ v) ?_
+  rw [psi_unfold β v]
+  exact csInf_le' hnm
+
 /-- `G`-critical subterms are well-formed (Buchholz's Proposition
 `a ∈ OT → G_u a ⊆ OT`). -/
 theorem wf3_Gterm {t x : Three} (ht : wf3 t) {v : ℕ} (hx : x ∈ Gterm v t) :
