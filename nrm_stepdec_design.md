@@ -164,9 +164,22 @@ psi a (oV b) + oV c` (Otembed:18-25); `oV_order_pres : wf3 v → wf3 u → olt v
    not jump between `oV b` and `oV g`. CAUTION: term-order `¬olt g b` does NOT
    give `oV b ≤ oV g` off-wf3 — the plateau must be argued from coefficient
    membership (Cset), not from a value inequality.
-2. **`oV_ins : oV (ins a b c) = oV (P a b c)`** — absorption preserves value
-   (`ins` drops a principal dominated by a later one; in the sum `ψ_x+ψ_y=ψ_y`
-   when `ψ_x<ψ_y`). Case on `ins`'s if.
+2. **`oV_ins : wf3 b → wf3 c → oV (ins a b c) = oV (P a b c)`** — absorption
+   preserves value. Worked out: `ins a b Z = P a b Z` (refl); `ins a b (P e f g)`
+   = (else) `P a b (P e f g) = P a c` (refl) | (then, `a<e ∨ (a=e ∧ olt b f)`)
+   `P e f g = c`, so need `oV (P a b c) = oV c`, i.e. `psi (oV b) a + oV c = oV c`
+   — absorption, holds iff `psi (oV b) a < ψ_e(oV f)` (leading additive-principal
+   term of `oV c`; `ξ + ψ = ψ` for ξ<ψ additive-principal). Sub-cases:
+   • `a < e`: `psi (oV b) a < Om (a+1) ≤ Om e ≤ psi (oV f) e` (`psi_lt_Om_succ`,
+     `Om_mono`, `Om_le_psi`) — i.e. `psi_subscript_jump`.
+   • `a = e ∧ olt b f`: need `psi (oV b) a < psi (oV f) a` = `psi_strict_mono_arg`
+     from `oV b < oV f` (= `oV_order_pres` on wf3 `b,f`) + `oV b ∈ Cset(psiRes(oV b))(oV b) a`
+     (the ccnd coefficient membership, available for wf3 — same pattern as
+     oV_order_pres's argument case, Otembed:336-356). **Needs the wf3 hyps**;
+     in the nrm use `ins a (proj a (nrm b)) (nrm c)` both args are wf3
+     (`proj_wf3∘wf3_nrm`, `wf3_nrm`), so the hyps are discharged. Requires the
+     absorption fact `addprinc δ → ξ < δ → ξ + δ = δ` (find in Mathlib or via
+     `psi_add_principal`/`add_absorp`).
 3. **`oV_nrm : oV (nrm t) = oV t`** — induction from 1,2:
    `oV(nrm(P a b c)) = oV(ins a (proj a (nrm b)) (nrm c)) =_2 psi a (oV(proj a (nrm b))) + oV(nrm c) =_1 psi a (oV(nrm b)) + oV(nrm c) = psi a (oV b)+oV c`.
 4. **`oV_order_refl : wf3 x → wf3 y → oV x < oV y → olt x y`** — the converse of
