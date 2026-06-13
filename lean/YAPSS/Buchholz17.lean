@@ -374,7 +374,7 @@ The witness `ξ` from `psi_witness_of_mem` is canonicalized by `1.7` when
 hypothesis `CC` (canonical-rep existence for collapsed arguments).  This isolates
 the entire remaining Buchholz necessity core to `CC`. -/
 theorem CW_of_collapseCanon
-    (CC : ∀ (v u' : ℕ) (ξ α : Ordinal.{u}), ξ ∈ Cset (psiRes α) α v → ξ < α →
+    (CC : ∀ (v u' : ℕ) (ξ α : Ordinal.{u}), v ≤ u' → ξ ∈ Cset (psiRes α) α v → ξ < α →
        epsLvl u' ≤ ξ → ∃ ξ'' : Ordinal.{u}, psi ξ'' u' = psi ξ u' ∧ ξ'' < α ∧
          ξ'' ∈ Cset (psiRes α) α v ∧ ξ'' ∈ Cset (psiRes ξ'') ξ'' u') :
     ∀ (v : ℕ) (γ α : Ordinal.{u}), γ ∈ Cset (psiRes α) α v → Om v ≤ γ →
@@ -382,9 +382,14 @@ theorem CW_of_collapseCanon
          γ = psi ξ u' ∧ ξ < α ∧ ξ ∈ Cset (psiRes α) α v ∧ ξ ∈ Cset (psiRes ξ) ξ u' := by
   intro v γ α hmem hlo hap
   obtain ⟨u', ξ, hγ, hξα, hξC⟩ := psi_witness_of_mem hap hlo hmem
+  -- the band forces `v ≤ u'`: `Ω_v ≤ γ = ψ_{u'} ξ < Ω_{u'+1}`
+  have hvu' : v ≤ u' := by
+    by_contra hlt
+    have hle : Om (u' + 1) ≤ Om v := Om_mono (by omega)
+    exact absurd (lt_of_le_of_lt (hγ ▸ hlo) (psi_lt_Om_succ ξ u')) (not_lt.2 hle)
   by_cases hc : ξ < epsLvl u'
   · exact ⟨u', ξ, hγ, hξα, hξC, mem_Cself_lvl hc⟩
-  · obtain ⟨ξ'', hψ, hξ''α, hξ''C, hξ''can⟩ := CC v u' ξ α hξC hξα (not_lt.1 hc)
+  · obtain ⟨ξ'', hψ, hξ''α, hξ''C, hξ''can⟩ := CC v u' ξ α hvu' hξC hξα (not_lt.1 hc)
     exact ⟨u', ξ'', hγ.trans hψ.symm, hξ''α, hξ''C, hξ''can⟩
 
 /-- **`wf3`-necessity reduced to the collapse-region canonical-rep core `CC`.**
@@ -392,7 +397,7 @@ Combines `CW_of_collapseCanon` with `NEC_of_canonWitness`: the entire Buchholz 1
 necessity direction follows from `CC` alone (the proven `1.7` discharges the
 non-collapse region). -/
 theorem NEC_of_collapseCanon
-    (CC : ∀ (v u' : ℕ) (ξ α : Ordinal.{u}), ξ ∈ Cset (psiRes α) α v → ξ < α →
+    (CC : ∀ (v u' : ℕ) (ξ α : Ordinal.{u}), v ≤ u' → ξ ∈ Cset (psiRes α) α v → ξ < α →
        epsLvl u' ≤ ξ → ∃ ξ'' : Ordinal.{u}, psi ξ'' u' = psi ξ u' ∧ ξ'' < α ∧
          ξ'' ∈ Cset (psiRes α) α v ∧ ξ'' ∈ Cset (psiRes ξ'') ξ'' u')
     {t : Three} (ht : wf3 t) {v : ℕ} {α : Ordinal.{u}}
