@@ -38,5 +38,6 @@ session PSI in ord = ZFC_in_HOL +
     collapsing
     wttbase
     otembed
+    necessity
     nrm
     nrmstep
