@@ -576,3 +576,22 @@ reduces to "plateau-min is canonical" (least η with ψ_u η=V has η∈C_u(η) 
 from SBC, possibly true; successor clean). KEPT (true): `psi_strict_mono_below_succ`
 (successor SBC), canon_pred, succ_mem, collapse_le, Cset_limit_sub, 1.5,
 NEC_of_argExtract.
+
+### NO-SHORTCUT FINDING (same session): argExtract reduces to `descends`, also false
+Mechanically (Lean scratch, compiled): `argExtract` (β canonical, ψ_a β∈C_v(α),
+v≤a → β∈C_v(α)) by strong induction on bound α reduces — in the sole hard case
+(generator ψ_a(ζ), ζ<β, ψ_a ζ=ψ_a β) — to a single micro-lemma
+`descends`: `β∈C_a(β), ζ<β, ζ∈C_v(α), ψ_a ζ=ψ_a β → ζ∈C_v(β)` (then IH at bound β
+gives β∈C_v(β)⊆C_v(α)). BUT `descends` is **likely FALSE** (parallels SBC): its
+own proof-by-stage has a SUM case needing the GENERAL bound-lowering
+`ζ∈C_v(α), ζ<β → ζ∈C_v(β)`, which is FALSE (ζ=ψ_w(δ), δ∈[β,α), w≥v: ζ<β collapses,
+ζ∈C_v(α)∖C_v(β)). So `argExtract_of_descends` is a sound-but-vacuous dead route —
+NOT committed. **CONCLUSION: every "nice shortcut" (SBC, descends) to break the
+canonical-witness circularity hits a false hypothesis. The TRUE proof of argExtract
+/ 1.9-necessity is the Buchholz §1 SIMULTANEOUS INDUCTION (the canonical witness β
+itself enters C_v(α) via canonical generation), which Lean's omitted-canonicity
+Cstep does not provide directly.** This is the irreducible large formalization
+(peer is doing it in Isabelle via C-rank). Lesson: stress-test reduction hypotheses
+for falsity BEFORE committing. Verified-committed this session stands:
+psi_notMem_iff_eq, psi_proj_of_notmem+psi_proj_notmem(gap), NEC_of_argExtract,
+collapse_le, Cset_limit_sub, 1.5, succ_mem, canon_pred, psi_strict_mono_below_succ.
