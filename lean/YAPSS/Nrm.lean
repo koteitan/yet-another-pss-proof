@@ -198,6 +198,40 @@ theorem wf3_nrm (t : Three) : wf3 (nrm t) := by
     rw [nrm_P]
     exact wf3_ins (proj_wf3 ihb) ihc (proj_G a (nrm b))
 
+/-! ## Value preservation of `ins` (value route — see git/nrm_stepdec_design.md)
+
+`ins a b c = oV (P a b c)`: in the absorbing branch the inserted principal
+`ψ_a(oV b)` is `< ψ_e(oV f)` (the leading additive-principal term of `oV c`),
+so it is swallowed.  The argument-equal subcase uses Buchholz strict
+monotonicity 1.3, which needs `oV b ∈ C_a(oV b)` — supplied by the OT3 condition
+`hGb` at level `a` (in the `nrm` use this is exactly `proj_G`). -/
+theorem oV_ins {a : ℕ} {b c : Three} (wb : wf3 b) (wc : wf3 c)
+    (hGb : ∀ x ∈ Gterm a b, olt x b) :
+    oV.{u} (ins a b c) = oV (P a b c) := by
+  cases c with
+  | Z => rfl
+  | P e f g =>
+    rw [ins_P]
+    by_cases h : a < e ∨ (a = e ∧ olt b f)
+    · rw [if_pos h]
+      obtain ⟨wff, wfg, -, -⟩ := wf3_P.1 wc
+      have hlt : psi.{u} (oV b) a < psi (oV f) e := by
+        rcases h with hae | ⟨rfl, hbf⟩
+        · exact psi_subscript_jump hae _ _
+        · have obf : oV.{u} b < oV f := oV_order_pres wb wff hbf
+          have hmem : oV.{u} b ∈ Cset (psiRes (oV b)) (oV b) a := by
+            apply Ccond_of_lt
+            intro x hx
+            exact oV_order_pres (wf3_Gterm wb hx) wb (hGb x hx)
+          exact psi_strict_mono_arg obf hmem
+      have hp : Ordinal.IsPrincipal (· + ·) (psi.{u} (oV f) e) :=
+        fun {x y} hx hy => (psi_addprinc (oV f) e).2 x y hx hy
+      have absorb : psi.{u} (oV b) a + psi (oV f) e = psi (oV f) e :=
+        hp.add_eq_right hlt
+      simp only [oV_P]
+      rw [← add_assoc, absorb]
+    · rw [if_neg h]
+
 /-! ## The remaining core: order preservation on `NF`
 
 Validated empirically on 2,643,843 pairs of (hereditary blocks of)
