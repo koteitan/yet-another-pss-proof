@@ -3836,3 +3836,11 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   「proj 単調性 on NT-像」をどう証明するか（NT-像の不変条件付き帰納・任意wf3では
   偽なので標準性が要る）の形式化設計。既存 proj 補題（proj_once/nofire/fire_in/
   proj_submono）を土台に検討。
+
+- (続82補2) proj_submono は既証明（`Gterm u x ⊆ Gterm u y ∧ ole x y ∧ fire条件 ⟹
+  ole(proj u x)(proj u y)`）。だが d0=0 再帰の**素朴 top-split**（c0=M[0] の takeWhile
+  対）では **Gterm 包含が 0/348 で不成立**（ole は 348/348 成立）。proj 単調性自体は
+  NT-像で真なのに proj_submono の包含ルートで閉じない。⟹ **正しい分解（M と M[n] の
+  ブロック差が局所化する位置）を見つける**のが次の核心。素朴 top-split は run が
+  M/M[n] で全く違うため不適。NT_shape の tail 降下で block 領域（M=…[lp] /
+  M[n]=…B^(n-1)）まで降りた所で包含が回復するか、を次に検証する設計。
