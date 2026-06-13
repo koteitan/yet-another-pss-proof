@@ -4212,6 +4212,16 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
   - これは crux の reformulation（難易度は等価）だが攻め面が clean。形式化は careful multi-session。
     当面は記録に留め、green 資産（collapsing module）と併せて次セッションの足場とする。
 
+**(13) ★重要発見: wf3(translate M) は ST_PS 固有・blockok/reduced では出ない（base1_hyp.py）**
+  - 反例 (0,0)(1,0)(2,1): reduced ✓ blockok0 ✓ maxr1≤1 ✓ だが translate=D0(D0(D1(0))) 非wf3・
+    **ST_PS 外**。reduced+blockok0+maxr1≤1 のうち **305/465 が translate 非wf3**（全て ST_PS 外）。
+  - ⟹ **「blockok ∧ maxr1≤1 ⟹ wf3」は偽**。wf3(translate) は **ST_PS（oper 到達可能性）固有**。
+  - ⟹ maxr1=1 base（crux-free と思っていた小片）も実は **ST_PS 生成帰納**が要る。crux も同様。
+    **全ピースが ST_PS 生成構造（diag+oper）に依存**。局所述語（r1ok/wf3/blockok/reduced）は
+    全て不足と確定。NF=translate(ST_PS) の oper 生成構造のみが本質。
+  - ⟹ 攻め筋は ST_PS.induct（wtt.thy diag_acc 路線）か oper ステップ構造（m_step_decreases の
+    機構）。これが irreducible core の正体。multi-session。
+
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
   proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
