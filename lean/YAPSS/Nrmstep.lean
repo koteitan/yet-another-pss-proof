@@ -9458,4 +9458,25 @@ theorem cross_refute_b0_interior {G R : PairSeq} {v0 w0 n kq qoff p : ℕ}
   have hc9 := hC9 hlp2 hw0 qoff hqoffp hqoff hle0B
   omega
 
+/-- **b0 root descendant is a tie** (`d0 = 0`): two copy roots carry the same
+pair `(v0, w0)`, so the dichotomy holds by the right disjunct. -/
+theorem cross_b0_rootq {G R : PairSeq} {v0 w0 n kq kt : ℕ}
+    (hkq : kq < n) (hkt : kt < n) :
+    (copyExp G ((v0,w0)::R) 0 n).getD
+        (G.length + kq * ((v0,w0)::R).length) (0,0)
+      = (copyExp G ((v0,w0)::R) 0 n).getD
+        (G.length + kt * ((v0,w0)::R).length) (0,0) := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hq : (copyExp G ((v0,w0)::R) 0 n).getD
+      (G.length + kq * ((v0,w0)::R).length) (0,0) = (v0, w0) := by
+    have h := copyExp_getD_copy (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := kq) (q := 0) hkq hL
+    simpa using h
+  have ht : (copyExp G ((v0,w0)::R) 0 n).getD
+      (G.length + kt * ((v0,w0)::R).length) (0,0) = (v0, w0) := by
+    have h := copyExp_getD_copy (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := kt) (q := 0) hkt hL
+    simpa using h
+  rw [hq, ht]
+
 end YAPSS
