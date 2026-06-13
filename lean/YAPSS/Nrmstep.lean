@@ -9728,4 +9728,43 @@ theorem cross_dichOK_b0 {G R : PairSeq} {v0 w0 n kt p : ℕ} {lp : ℕ × ℕ}
         rw [← hqeq]; exact hpos
       exact cross_refute_b0_interior hdom hlp2 hw0 hkq hqoffp hqoff hC9 hppos hqq hposq
 
+/-- **Strict row-0 increase along a non-trivial row-0 chain**: `le0 M a b` with
+`a < b` forces `entry M 0 a < entry M 0 b` (the final `nextrel0` step is
+strict). -/
+theorem le0_entry0_lt {M : PairSeq} {a b : ℕ} (h : le0 M a b) (hab : a < b) :
+    entry M 0 a < entry M 0 b := by
+  obtain ⟨ha, hb, hrtg⟩ := h
+  rcases hrtg.cases_tail with he | ⟨x, hax, hxb⟩
+  · omega
+  · have hax' : le0 M a x := ⟨ha, hxb.1, hax⟩
+    have h1 := le0_entry0_mono hax'
+    have h2 : entry M 0 x < entry M 0 b := hxb.2.2.2.1
+    omega
+
+/-- **b0 grid→root refutation** (`d0 = 0`): an edge from a copy position to a
+later copy root cannot exist — the source sits at grid level `≥ v0`, but the
+strict row-0 chain to the root (level `v0`) would force its level `< v0`. -/
+theorem cross_refute_b0_gridroot {G R : PairSeq} {v0 w0 n kt kp poff : ℕ}
+    (hdom : ∀ x ∈ R, v0 < x.1) (hkt : kt < n)
+    (hlt : kp * ((v0,w0)::R).length + poff < kt * ((v0,w0)::R).length)
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) 0 n)
+      (G.length + (kp * ((v0,w0)::R).length + poff))
+      (G.length + kt * ((v0,w0)::R).length)) : False := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hple : le0 (copyExp G ((v0,w0)::R) 0 n)
+      (G.length + (kp * ((v0,w0)::R).length + poff))
+      (G.length + kt * ((v0,w0)::R).length) := hedge.2.2.2.2.1
+  have hlt' : G.length + (kp * ((v0,w0)::R).length + poff)
+      < G.length + kt * ((v0,w0)::R).length := by omega
+  have hstrict := le0_entry0_lt hple hlt'
+  have hr0 : entry (copyExp G ((v0,w0)::R) 0 n) 0
+      (G.length + kt * ((v0,w0)::R).length) = v0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := kt) (q := 0) hkt hL).1
+    simpa using h
+  have hge := copyExp_b0_ge_v0 (G := G) (v0 := v0) (w0 := w0) (n := n) (R := R)
+    hdom (G.length + (kp * ((v0,w0)::R).length + poff)) (by omega) hedge.1
+  rw [hr0] at hstrict
+  omega
+
 end YAPSS
