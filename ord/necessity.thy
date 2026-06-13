@@ -69,4 +69,16 @@ proof -
   thus ?thesis using indec_mult_nat[OF indecomposable_psi Ord_psi] by blast
 qed
 
+text \<open>\<open>n\<close> copies plus a smaller remainder still stay below the \<open>(\<beta>+1)\<close>-nest
+  (the remainder is the prefix/tail contribution in the \<open>oper\<close> step).\<close>
+
+lemma indec_psi_mult_add:
+  assumes "Ord \<beta>" and "\<beta> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> v)"
+    and "Ord \<delta>" and "\<delta> < psi (succ \<beta>) v"
+  shows "psi \<beta> v * ord_of_nat n + \<delta> < psi (succ \<beta>) v"
+proof (rule indecomposableD[OF indecomposable_psi _ assms(4) _ assms(3)])
+  show "psi \<beta> v * ord_of_nat n < psi (succ \<beta>) v" by (rule indec_psi_mult[OF assms(1,2)])
+  show "Ord (psi \<beta> v * ord_of_nat n)" by simp
+qed
+
 end
