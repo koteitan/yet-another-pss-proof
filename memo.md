@@ -3959,3 +3959,18 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
     強度はどの路線でも不可避。closure 補題の正確な文面（B/G の「文脈付き停止」概念）が核心。
   - wf_olt_wf3（証明済）を使うには nrm 橋（nrm_step_dec=crux）が要るため、W=T は
     それを避ける独立証明（Buchholz §2 流の項長/構造帰納）が本筋。
+
+### (2026-06-13 続86) ★crux の正確な局在発見: 再上昇は maxr1≥2 でちょうど出現
+
+- **採掘結果（+3/+5）**: M∈ST_PS の translate が wf3(in_OT) か否かは maxr1 で決まる:
+  - **maxr1 ≤ 1: translate は常に wf3**（0 non-wf3 / 91152+821112 @+5）。
+  - **maxr1 ≥ 2: 100% 非wf3**（再上昇 D2(D1(...))・199872+160876 @+5 全部）。
+- ⟹ **maxr1 ≤ 1 フラグメントは crux なしで停止性証明可能**:
+  translate∈wf3・maxr1 は <o 減少で非増加（maxsub_mono_NF）・m_step_decreases（証明済）
+  ・wf_olt_wf3（証明済）で直接 WF。nrm 不要。これは v-帰納の底（diagSeq 0 0, 0 1 含む
+  全 level≤1 形）。
+- **crux は maxr1 ≥ 2 の within-level に正確に局在**（再上昇＝proj/nrm の値比較が破れる所）。
+  v-帰納: level≤1 を底に、level k の within-level WF（再上昇込み・crux）を k で帰納。
+- **次**: wtt.thy に maxr1≤1 フラグメントの accessibility を形式化（crux-free・実証可能）。
+  必要補題: (i) maxr1 M ≤ 1 ⟹ translate M ∈ wf3 (ii) oper は maxr1≤1 を保つ
+  (iii) inv_image wf_olt_wf3 translate で subgame WF。
