@@ -61,6 +61,21 @@ oV b が非 canonical（その係数 g が oV b を超える）であること�
 ### lean 担当（advice-reply.md §3）
 - 1.4(b) canonical witness / C-集合同値（1.4(a) psi_canonical_inj 済を活用）。
 
+### 続89(15): ψ §1 toolkit 構築進捗（necessity.thy・PSI 緑sorry無・全て自前/独立）
+- **collapse**（collapsing.thy）: psi_eq_of_Cset_eq / Cset_succ_eq / collapse_succ(1.6a) /
+  Cset_grow_eq / collapse_grow（一般 collapsing）。
+- **n-copies**（necessity.thy）: indec_mult_nat / indec_psi_mult(ψ_β·n<ψ_(succ β)) /
+  indec_psi_mult_add。＋ indecomposable_psi。
+- **★1.4(a) injectivity**（necessity.thy）: psi_inj_subscript（Ω-range で subscript 決定）/
+  psi_inj_arg_canonical（canonical 引数で arg 決定）/ psi_inj_canonical。
+- **残る intricate core = 1.4(b) canonical-rep 構成**:
+  1.9 necessity → 1.4(b)（C-元の ψ-arg は canonical rep に collapse）に帰着。
+  これは「非 canonical ξ に対し ψ_ξ u = ψ_{ξ°} u, ξ° canonical」＝**ordinal collapse**で、
+  collapse_grow が道具だが **ξ°（canonical rep）の構成**が肝（gap [ξ°,ξ) 非canonical を示す）。
+  lean も「canonical-rep 構成で詰まる」（advice-reply §2）＝両者の共通 intricate 核。
+  我々の Cstep は canonicity 省略（psi.thy:54）なので、full-gen=canonical-gen Cset 同値
+  （Buchholz Remark p.197）を示すか canonical-rep を構成する必要。**ここが本丸**。
+
 ### 続89(14): oV-route 直接攻略の assembly 計画（nrm/necessity を迂回）
 finding(13)で wf3(translate)/nrm_order_pres は ST_PS 固有・blockok 不可と確定。⟹ general
 necessity(1.9)経由は canonical-witness の沼。**代わりに oV step-decrease を oper 構造で直接**:
