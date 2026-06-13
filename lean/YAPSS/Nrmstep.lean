@@ -9047,4 +9047,144 @@ theorem cross_dichOK_inq_bridge {G R : PairSeq} {v0 w0 d0 n kt p kq i : ℕ}
     le0_through_pivot (hedge.2.2.2.2.1) (by omega) hr1t hpiv
   exact le0_trans hstep1 hstep2
 
+/-- **Block row-0 ancestry lifts to the host**: a chain inside the standalone
+block transfers to the host's block region. -/
+theorem le0_block_to_host {G B : PairSeq} {lp : ℕ × ℕ} {a b : ℕ}
+    (hb : b < B.length) (h : le0 B a b) :
+    le0 (G ++ B ++ [lp]) (G.length + a) (G.length + b) := by
+  have hdropeq : (G ++ B ++ [lp]).drop G.length = B ++ [lp] := by
+    rw [List.append_assoc, List.drop_left]
+  have htakeeq : ((G ++ B ++ [lp]).drop G.length).take B.length = B := by
+    rw [hdropeq, List.take_left]
+  have h1 : le0 (((G ++ B ++ [lp]).drop G.length).take B.length) a b := by
+    rw [htakeeq]; exact h
+  have hdroplen : B.length ≤ ((G ++ B ++ [lp]).drop G.length).length := by
+    rw [hdropeq]; simp
+  have h2 : le0 ((G ++ B ++ [lp]).drop G.length) a b :=
+    (le0_take_iff hb (by omega)).1 h1
+  have hbM : G.length + b < (G ++ B ++ [lp]).length := by rw [hostM_length]; omega
+  have h3 := (le0_drop_iff (M := G ++ B ++ [lp]) (k := G.length)
+    (a := G.length + a) (b := G.length + b) (by omega) (by omega) hbM).1
+  rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h3
+  exact h3 h2
+
+/-- **Cross-family dichotomy for a single prefix→copy-root edge**: every
+descendant `q` of the edge source either row-0-reaches the target root or ties
+with it.  Prefix descendants bridge through the host dichotomy (clause-8
+refutes the tie); copy-root descendants pivot directly; interior descendants
+split via the host dichotomy at `(g, g+i, g+L)` into the bridge case
+(`cross_dichOK_inq_bridge`) and the tie case (supplied by `htie`). -/
+theorem cross_dichOK {G R : PairSeq} {v0 w0 d0 n kt p : ℕ} {lp : ℕ × ℕ}
+    (hn : 1 ≤ n) (hd0 : 0 < d0) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hkt : kt < n) (hp : p < G.length) (hlp1 : lp.1 = v0 + d0)
+    (hM : dichOK (G ++ ((v0,w0)::R) ++ [lp]))
+    (hMedge : nextrel1 (G ++ ((v0,w0)::R) ++ [lp]) G.length
+              ((G ++ ((v0,w0)::R) ++ [lp]).length - 1))
+    (hc8 : ∀ j, j < G.length → G.getD j (0,0) ≠ (v0, w0))
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+              (G.length + kt * ((v0,w0)::R).length))
+    (htie : ∀ kq qoff, kq < kt → 0 < qoff → qoff < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 qoff → ((v0,w0)::R).getD qoff (0,0) = lp →
+      le0 (copyExp G ((v0,w0)::R) d0 n)
+        (G.length + (kq * ((v0,w0)::R).length + qoff))
+        (G.length + kt * ((v0,w0)::R).length)) :
+    ∀ q, le0 (copyExp G ((v0,w0)::R) d0 n) p q →
+      q < G.length + kt * ((v0,w0)::R).length →
+      0 < ((copyExp G ((v0,w0)::R) d0 n).getD q (0,0)).2 →
+      le0 (copyExp G ((v0,w0)::R) d0 n) q (G.length + kt * ((v0,w0)::R).length)
+      ∨ (copyExp G ((v0,w0)::R) d0 n).getD q (0,0)
+        = (copyExp G ((v0,w0)::R) d0 n).getD
+          (G.length + kt * ((v0,w0)::R).length) (0,0) := by
+  intro q hq hqt hpos
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hXlen : (copyExp G ((v0,w0)::R) d0 n).length
+      = G.length + n * ((v0,w0)::R).length := copyExp_length ..
+  rcases Nat.lt_or_ge q G.length with hqg | hqg
+  · exact Or.inl (cross_dichOK_preq hn hd0 hdom hkt hp hM hc8 hedge hq hqg hpos)
+  · have htX : G.length + kt * ((v0,w0)::R).length
+        < (copyExp G ((v0,w0)::R) d0 n).length := by
+      rw [hXlen]
+      have : kt * ((v0,w0)::R).length < n * ((v0,w0)::R).length :=
+        (Nat.mul_lt_mul_right hL).mpr hkt
+      omega
+    obtain ⟨kq, qoff, hkq, hqoff, hqdec⟩ :=
+      index_decomp hL (show q - G.length < n * ((v0,w0)::R).length by
+        rw [hXlen] at htX; omega)
+    have hqeq : q = G.length + (kq * ((v0,w0)::R).length + qoff) := by omega
+    have hkqkt : kq < kt := by
+      have hlt : kq * ((v0,w0)::R).length < kt * ((v0,w0)::R).length := by
+        have : kq * ((v0,w0)::R).length + qoff < kt * ((v0,w0)::R).length := by omega
+        omega
+      exact (Nat.mul_lt_mul_right hL).mp hlt
+    have hXq : (copyExp G ((v0,w0)::R) d0 n).getD q (0,0)
+        = ((((v0,w0)::R).getD qoff (0,0)).1 + kq * d0,
+           (((v0,w0)::R).getD qoff (0,0)).2) := by
+      rw [hqeq]; exact copyExp_getD_copy hkq hqoff
+    have hposB : 0 < (((v0,w0)::R).getD qoff (0,0)).2 := by
+      have := hpos; rw [hXq] at this; exact this
+    rcases Nat.eq_zero_or_pos qoff with hq0 | hqoffp
+    · left
+      have hqroot : q = G.length + kq * ((v0,w0)::R).length := by rw [hqeq, hq0]; omega
+      rw [hqroot]
+      exact cross_dichOK_rootq hd0 hdom hkt hp hkq (by
+        have : kq * ((v0,w0)::R).length < kt * ((v0,w0)::R).length :=
+          (Nat.mul_lt_mul_right hL).mpr hkqkt
+        omega) hedge
+    · left
+      have hX0root : entry (copyExp G ((v0,w0)::R) d0 n) 0
+          (G.length + kq * ((v0,w0)::R).length) = v0 + kq * d0 := by
+        have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := d0) (n := n)
+          (k := kq) (q := 0) hkq hL).1
+        simpa using h
+      have hpivk := copyExp_root_pivot (G := G) (v0 := v0) (w0 := w0) (d0 := d0)
+        (n := n) (R := R) (k' := kq) hd0 hdom hkq
+      have hpiv : ∀ y, G.length + kq * ((v0,w0)::R).length < y → y ≤ q →
+          entry (copyExp G ((v0,w0)::R) d0 n) 0 (G.length + kq * ((v0,w0)::R).length)
+            < entry (copyExp G ((v0,w0)::R) d0 n) 0 y := by
+        intro y hy1 hy2
+        rw [hX0root]
+        exact hpivk y hy1 (by omega)
+      have hroot_le_q : G.length + kq * ((v0,w0)::R).length ≤ q := by rw [hqeq]; omega
+      have hp_lt_root : p < G.length + kq * ((v0,w0)::R).length := by omega
+      have hle0rootq : le0 (copyExp G ((v0,w0)::R) d0 n)
+          (G.length + kq * ((v0,w0)::R).length) q :=
+        le0_through_pivot hq hp_lt_root hroot_le_q hpiv
+      have hle0B : le0 ((v0,w0)::R) 0 qoff := by
+        have hin : le0 (copyExp G ((v0,w0)::R) d0 n)
+            (G.length + (kq * ((v0,w0)::R).length + 0))
+            (G.length + (kq * ((v0,w0)::R).length + qoff)) := by
+          have e0 : G.length + (kq * ((v0,w0)::R).length + 0)
+              = G.length + kq * ((v0,w0)::R).length := by omega
+          rw [e0, ← hqeq]; exact hle0rootq
+        exact le0_copy_to_block hkq hqoff hin
+      have hle0Mg : le0 (G ++ ((v0,w0)::R) ++ [lp]) (G.length + 0) (G.length + qoff) :=
+        le0_block_to_host hqoff hle0B
+      have hle0Mg' : le0 (G ++ ((v0,w0)::R) ++ [lp]) G.length (G.length + qoff) := by
+        have : G.length + 0 = G.length := by omega
+        rw [this] at hle0Mg; exact hle0Mg
+      have hMlen : (G ++ ((v0,w0)::R) ++ [lp]).length
+          = G.length + ((v0,w0)::R).length + 1 := hostM_length ..
+      have hlastidx : (G ++ ((v0,w0)::R) ++ [lp]).length - 1
+          = G.length + ((v0,w0)::R).length := by rw [hMlen]; omega
+      have hMedge' : nextrel1 (G ++ ((v0,w0)::R) ++ [lp]) G.length
+          (G.length + ((v0,w0)::R).length) := by rw [← hlastidx]; exact hMedge
+      have hMpos : 0 < ((G ++ ((v0,w0)::R) ++ [lp]).getD (G.length + qoff) (0,0)).2 := by
+        rw [hostM_getD_blk hqoff]; exact hposB
+      have hqoffL : G.length + qoff < G.length + ((v0,w0)::R).length := by omega
+      rcases hM G.length (G.length + qoff) (G.length + ((v0,w0)::R).length)
+        hMedge' hle0Mg' hqoffL hMpos with hbridge | htieM
+      · have hb := cross_dichOK_inq_bridge (G := G) (R := R) (v0 := v0) (w0 := w0)
+          (d0 := d0) (n := n) (kt := kt) (p := p) (kq := kq) (i := qoff) (lp := lp)
+          hd0 hdom hkt hp hlp1 hkqkt hedge hbridge
+        rw [hqeq]; exact hb
+      · have hMlp : (G ++ ((v0,w0)::R) ++ [lp]).getD
+            (G.length + ((v0,w0)::R).length) (0,0) = lp := by
+          rw [getD_append_right (by simp)]
+          have hz : G.length + ((v0,w0)::R).length - (G ++ ((v0,w0)::R)).length = 0 := by
+            simp
+          rw [hz, List.getD_cons_zero]
+        rw [hostM_getD_blk hqoff, hMlp] at htieM
+        have ht := htie kq qoff hkqkt hqoffp hqoff hle0B htieM
+        rw [hqeq]; exact ht
+
 end YAPSS
