@@ -4134,6 +4134,22 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
     その中の偽補題）。multi-session。
   - off-NF 反例（既知）: y₂=p0(p1(y1))<o y1=p0(p1(p1(0))), nrm 等値・列(0,0)(1,1)(2,0)(3,1)(4,1)
     非標準。NF 制約（row-1 parenthood）が strict 性を担保。
+  - ✗ **r1ok でも不足**（r1ok_proj.py）: child subscript≤parent+1 の in-context cap=a で
+    323,926 中 **38,468 reversal**。局所述語（wf3/r1ok）では proj-monotone は出ない。
+    ⟹ 完全な NF（blockok 両 row）構造が必要。
+
+**(7) lean 姉妹エージェントとの協調（advice-reply.md / advice-reply2.md, 2026-06-13）**
+  - lean-yapss が **独立に同一 value route に収束**（oV_nrm + psi_proj + oV_nf_order_pres）。
+    lean は ψ 側 port で先行（18 補題 kernel 通過・Buchholz 1.4(a) psi_canonical_inj 済）。
+  - **共通 gap 確認**: 両者の Cstep は canonicity ξ∈C_u(ξ) 省略（psi.thy:54「per Remark」）。
+    両者とも sufficiency(C_build/oV_order_pres)のみ・1.9 necessity/1.4(b) canonical witness/
+    psi_proj 無し。nrm_order_pres は両者 sorry。
+  - **分担**: ya-pss=psi_proj(collapsing, pure・1.6(a) plateau)+1.9 necessity(C-rank 帰納,
+    Citer/Cset_mem_iff 機構)。lean=1.4(b) canonical witness。共通核=oV_nf_order_pres の
+    NF-strictness（両者必要・NF 不変量定式化が最後の山）。
+  - ya-pss の含意提供: **psi_proj は pure の公算大**（値の等式・plateau で割れる）。
+    対して **oV_nf_order_pres の order/strictness は NF 本質**（proj が wf3/r1ok で非単調）。
+    ⟹ 純 ψ canonical-witness では order 部分は閉じない、と lean に警告。
 
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
