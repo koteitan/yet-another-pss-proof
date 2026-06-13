@@ -3974,3 +3974,18 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
 - **次**: wtt.thy に maxr1≤1 フラグメントの accessibility を形式化（crux-free・実証可能）。
   必要補題: (i) maxr1 M ≤ 1 ⟹ translate M ∈ wf3 (ii) oper は maxr1≤1 を保つ
   (iii) inv_image wf_olt_wf3 translate で subgame WF。
+
+- (続86補) 再上昇は有界でない（crux 完全確認）+ 新ルート候補:
+  - translate(M) (maxr1≥2) の principal D_a(b) で **maxsub(b)≥a が 724万件**（D2 の引数に
+    D2・再上昇 maxsub(arg)-a 分布 -4..+4）。⟹ within-level peel は同レベルに戻り**還元
+    不能**＝wf_ArgsA と同一 crux。maxr1≤1 のみ再上昇なし（クリーン）。
+  - **crux の最終同定**: maxr1≥2 同レベル再上昇の within-level WF ＝ wf_ArgsA ＝ nrm_step_dec
+    ＝ nrm_order_pres、全て同一の irreducible 核。意味論的には wf_olt_wf3（証明済）で解決済、
+    gap は「列ゲーム ↔ 意味論 WF」の橋（nrm 値比較）が再上昇で清潔な特徴づけを持たない点。
+  - **新ルート候補（semantic ψ-value, Buchholz §1）**: nrm-項比較を避け、**oV∘translate を
+    ψ で順序数として意味論的に定義**（全項で total・ψ 再帰）、減少 oV(translate M[n]) <
+    oV(translate M) を **ψ 再帰＋oper 構造で示す**。順序数上では再上昇は ψ が自動 collapse
+    するので、nrm-項の非正準問題を回避できる可能性。oV-減少 ≡ nrm_step_dec（命題は同値）
+    だが、**証明が順序数側（再上昇 auto-collapse）の方が項側（再上昇で破綻）より tractable
+    な可能性**。ord/psi.thy の ψ 機械を使う。次セッションの最有力候補。
+  - 並行して maxr1≤1 フラグメント（crux-free・translate∈wf3）は PSI で形式化可能な実成果。
