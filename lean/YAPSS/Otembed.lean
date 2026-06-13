@@ -297,6 +297,49 @@ theorem psi_eq_of_Cset_eq {α β : Ordinal.{u}} {v : ℕ}
     (h : Cset (psiRes α) α v = Cset (psiRes β) β v) : psi α v = psi β v := by
   rw [psi_unfold α v, psi_unfold β v, h]
 
+/-- If `α ∉ C_v(α)` then `C_v(α+1) = C_v(α)`: the only new ingredient at `α+1`
+is the generator `ψ_·(α)` (now `α < α+1`), which never fires because `α` never
+enters the closure.  Iterate-stage induction (ported from ya-pss `Cset_succ_eq`
+/ `Citer_succ_stays`). -/
+theorem Cset_succ_eq {α : Ordinal.{u}} {v : ℕ}
+    (hα : α ∉ Cset (psiRes α) α v) :
+    Cset (psiRes (α + 1)) (α + 1) v = Cset (psiRes α) α v := by
+  have key : ∀ n, Citer (psiRes (α + 1)) (α + 1) v n = Citer (psiRes α) α v n := by
+    intro n
+    induction n with
+    | zero => rfl
+    | succ n IH =>
+      rw [Citer_succ, Citer_succ, IH]
+      have hαn : α ∉ Citer (psiRes α) α v n := fun h => hα (Citer_subset_Cset h)
+      have hII : Citer (psiRes α) α v n ∩ Set.Iio (α + 1)
+               = Citer (psiRes α) α v n ∩ Set.Iio α := by
+        ext y
+        simp only [Set.mem_inter_iff, Set.mem_Iio]
+        refine ⟨fun hy => ⟨hy.1, ?_⟩,
+                fun hy => ⟨hy.1, lt_trans hy.2 (Order.lt_succ α)⟩⟩
+        rcases lt_or_eq_of_le (Order.lt_succ_iff.1 hy.2) with h | h
+        · exact h
+        · exact absurd (h ▸ hy.1) hαn
+      unfold Cstep
+      rw [hII]
+      congr 1
+      apply Set.iUnion_congr
+      intro u
+      apply Set.image_congr
+      intro ξ hξ
+      have hξα : ξ < α := Set.mem_Iio.1 hξ.2
+      have hξα1 : ξ < α + 1 := lt_of_lt_of_le hξα le_self_add
+      simp only [psiRes, if_pos hξα, if_pos hξα1]
+  ext x
+  rw [Cset_mem_iff, Cset_mem_iff]
+  exact exists_congr (fun n => by rw [key n])
+
+/-- **Buchholz 1.6(a)** (collapse across a non-canonical point): if `α ∉ C_v(α)`
+then `ψ_v α = ψ_v(α+1)`.  (Ported from ya-pss `collapse_succ`.) -/
+theorem collapse_succ {α : Ordinal.{u}} {v : ℕ}
+    (hα : α ∉ Cset (psiRes α) α v) : psi α v = psi (α + 1) v :=
+  psi_eq_of_Cset_eq (Cset_succ_eq hα).symm
+
 /-- **(Buchholz 1.4(a))** Uniqueness of the canonical `ψ`-representation: if
 `ξ, ξ'` are both `a`-canonical (`ξ ∈ C_a(ξ)`, `ξ' ∈ C_a(ξ')`) and `ψ_a ξ = ψ_a ξ'`
 then `ξ = ξ'`.  (Canonical points are exactly where `ψ_a` strictly increases.) -/
