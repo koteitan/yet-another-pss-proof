@@ -9400,4 +9400,62 @@ theorem copyDichOK_b1 {G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
     hsp G v0 w0 R lp d0 rfl hnxt hdisj
   exact copyDichOK_of hn hd0 hdom hlp1 hM hMedge (hc8 hd0) hBF1 (hBF2 hd0) htie
 
+/-- **b0 interior refutation** (`d0 = 0`, periodic copies): an interior
+descendant in a copy cannot have positive row 1 — the copy root pivots locally
+to `le0 B 0 qoff`, and spanOK clause 9 (under `lp.2 = 0`, `0 < w0`) forces
+`B[qoff]` to have row 1 zero. -/
+theorem cross_refute_b0_interior {G R : PairSeq} {v0 w0 n kq qoff p : ℕ}
+    {lp : ℕ × ℕ}
+    (hdom : ∀ x ∈ R, v0 < x.1) (hlp2 : lp.2 = 0) (hw0 : 0 < w0)
+    (hkq : kq < n) (hqoffp : 0 < qoff) (hqoff : qoff < ((v0,w0)::R).length)
+    (hC9 : lp.2 = 0 → 0 < w0 → ∀ i, 0 < i → i < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 i → (((v0,w0)::R).getD i (0,0)).2 = 0)
+    (hppos : p < G.length + kq * ((v0,w0)::R).length)
+    (hq : le0 (copyExp G ((v0,w0)::R) 0 n) p
+      (G.length + (kq * ((v0,w0)::R).length + qoff)))
+    (hpos : 0 < ((copyExp G ((v0,w0)::R) 0 n).getD
+      (G.length + (kq * ((v0,w0)::R).length + qoff)) (0,0)).2) : False := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hX0root : entry (copyExp G ((v0,w0)::R) 0 n) 0
+      (G.length + kq * ((v0,w0)::R).length) = v0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := kq) (q := 0) hkq hL).1
+    simpa using h
+  have hpivl := copyExp_root_pivot_local (G := G) (v0 := v0) (w0 := w0) (d0 := 0)
+    (n := n) (R := R) (k' := kq) hdom hkq
+  have hroot_le_q : G.length + kq * ((v0,w0)::R).length
+      ≤ G.length + (kq * ((v0,w0)::R).length + qoff) := by omega
+  have hpiv : ∀ y, G.length + kq * ((v0,w0)::R).length < y →
+      y ≤ G.length + (kq * ((v0,w0)::R).length + qoff) →
+      entry (copyExp G ((v0,w0)::R) 0 n) 0 (G.length + kq * ((v0,w0)::R).length)
+        < entry (copyExp G ((v0,w0)::R) 0 n) 0 y := by
+    intro y hy1 hy2
+    obtain ⟨q', hq'eq⟩ : ∃ q', y = G.length + (kq * ((v0,w0)::R).length + q') :=
+      ⟨y - G.length - kq * ((v0,w0)::R).length, by omega⟩
+    have hq'p : 0 < q' := by omega
+    have hq'L : q' < ((v0,w0)::R).length := by omega
+    rw [hX0root, hq'eq]
+    have := hpivl q' hq'p hq'L
+    simpa using this
+  have hle0rootq : le0 (copyExp G ((v0,w0)::R) 0 n)
+      (G.length + kq * ((v0,w0)::R).length)
+      (G.length + (kq * ((v0,w0)::R).length + qoff)) :=
+    le0_through_pivot hq (by omega) hroot_le_q hpiv
+  have hle0B : le0 ((v0,w0)::R) 0 qoff := by
+    have hin : le0 (copyExp G ((v0,w0)::R) 0 n)
+        (G.length + (kq * ((v0,w0)::R).length + 0))
+        (G.length + (kq * ((v0,w0)::R).length + qoff)) := by
+      have e0 : G.length + (kq * ((v0,w0)::R).length + 0)
+          = G.length + kq * ((v0,w0)::R).length := by omega
+      rw [e0]; exact hle0rootq
+    exact le0_copy_to_block hkq hqoff hin
+  have hXq : (copyExp G ((v0,w0)::R) 0 n).getD
+      (G.length + (kq * ((v0,w0)::R).length + qoff)) (0,0)
+      = ((((v0,w0)::R).getD qoff (0,0)).1 + kq * 0,
+         (((v0,w0)::R).getD qoff (0,0)).2) := copyExp_getD_copy hkq hqoff
+  have hposB : 0 < (((v0,w0)::R).getD qoff (0,0)).2 := by
+    have := hpos; rw [hXq] at this; exact this
+  have hc9 := hC9 hlp2 hw0 qoff hqoffp hqoff hle0B
+  omega
+
 end YAPSS
