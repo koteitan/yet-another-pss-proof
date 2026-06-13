@@ -340,6 +340,86 @@ theorem collapse_succ {α : Ordinal.{u}} {v : ℕ}
     (hα : α ∉ Cset (psiRes α) α v) : psi α v = psi (α + 1) v :=
   psi_eq_of_Cset_eq (Cset_succ_eq hα).symm
 
+/-- **C-set continuity from below**: at a positive successor-limit bound `β`,
+every member of `C_v(β)` already lies in `C_v(δ)` for some `δ < β`.  The base
+`Iio Ω_v` is bound-independent, and each `+`/`ψ`-generator uses finitely many
+predecessors all below `β`, so a single `δ < β` bounds them (binary `max` in the
+`Citer`-stage induction).  Underlies `collapse_le` at limits. -/
+theorem Cset_limit_sub {β : Ordinal.{u}} {v : ℕ}
+    (hβ : Order.IsSuccLimit β) (hβ0 : 0 < β)
+    {x : Ordinal.{u}} (hx : x ∈ Cset (psiRes β) β v) :
+    ∃ δ, δ < β ∧ x ∈ Cset (psiRes δ) δ v := by
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hx
+  clear hx
+  induction n generalizing x with
+  | zero =>
+    rw [Citer, Function.iterate_zero, id_eq] at hn
+    exact ⟨0, hβ0, Iio_Om_subset_Cset hn⟩
+  | succ n IH =>
+    rw [Citer_succ, Cstep] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH h1
+    · obtain ⟨y, hy, z, hz, hyz⟩ := h2
+      obtain ⟨δ1, hδ1, hy'⟩ := IH hy
+      obtain ⟨δ2, hδ2, hz'⟩ := IH hz
+      refine ⟨max δ1 δ2, max_lt hδ1 hδ2, ?_⟩
+      have hy2 := CC_mono (le_max_left δ1 δ2) v hy'
+      have hz2 := CC_mono (le_max_right δ1 δ2) v hz'
+      rw [← hyz]
+      exact Cset_add_closed hy2 hz2
+    · obtain ⟨u, ⟨ξ, ⟨hξC, hξβ⟩, hξx⟩⟩ := Set.mem_iUnion.1 h3
+      have hξβ' : ξ < β := hξβ
+      simp only [psiRes, if_pos hξβ'] at hξx
+      obtain ⟨δ0, hδ0, hξ'⟩ := IH hξC
+      have hξ1 : ξ + 1 < β := by rw [← Order.succ_eq_add_one]; exact hβ.succ_lt hξβ'
+      refine ⟨max δ0 (ξ + 1), max_lt hδ0 hξ1, ?_⟩
+      have hξδ : ξ < max δ0 (ξ + 1) :=
+        lt_of_lt_of_le (lt_add_one ξ) (le_max_right δ0 (ξ + 1))
+      have hξmem := CC_mono (le_max_left δ0 (ξ + 1)) v hξ'
+      have hclosed := Cset_psi_closed hξmem hξδ u
+      rw [psiRes, if_pos hξδ] at hclosed
+      rw [← hξx]
+      exact hclosed
+
+/-- **General collapsing** (the plateau lemma): if every ordinal in `[α, β)` is
+non-canonical (`γ ∉ C_a(γ)`), then `ψ_a` is constant on `[α, β]`, i.e.
+`ψ_a α = ψ_a β`.  Transfinite induction on `β`: successors iterate
+`collapse_succ` (Buchholz 1.6(a)); limits use C-set continuity
+(`Cset_limit_sub`).  A building block for the collapsing core `psi_proj`. -/
+theorem collapse_le {a : ℕ} :
+    ∀ β α : Ordinal.{u}, α ≤ β →
+      (∀ γ, α ≤ γ → γ < β → γ ∉ Cset (psiRes γ) γ a) →
+      psi α a = psi β a := by
+  intro β
+  induction β using WellFoundedLT.induction with
+  | _ β IHβ =>
+    intro α hαβ hnc
+    rcases eq_or_lt_of_le hαβ with rfl | hlt
+    · rfl
+    · have hβ0 : 0 < β := lt_of_le_of_lt bot_le hlt
+      rcases Ordinal.zero_or_succ_or_isSuccLimit β with hz | ⟨δ, hδ⟩ | hl
+      · rw [hz] at hβ0; exact absurd hβ0 (lt_irrefl 0)
+      · obtain ⟨δ, rfl⟩ : ∃ δ', β = δ' + 1 := ⟨δ, by rw [← hδ, Order.succ_eq_add_one]⟩
+        have hδβ : δ < δ + 1 := lt_add_one δ
+        have hαδ : α ≤ δ :=
+          Order.lt_succ_iff.1 (by rw [Order.succ_eq_add_one]; exact hlt)
+        have e1 : psi α a = psi δ a :=
+          IHβ δ hδβ α hαδ (fun γ hγ hγδ => hnc γ hγ (lt_trans hγδ hδβ))
+        rw [e1]
+        exact collapse_succ (hnc δ hαδ hδβ)
+      · refine le_antisymm (psi_mono_arg hαβ a) ?_
+        have hnotin : psi α a ∉ Cset (psiRes β) β a := by
+          intro hin
+          obtain ⟨δ, hδβ, hmem⟩ := Cset_limit_sub hl hβ0 hin
+          rcases lt_or_ge δ α with hδα | hαδ
+          · exact psi_notMem α a (CC_mono hδα.le a hmem)
+          · have e1 : psi α a = psi δ a :=
+              IHβ δ hδβ α hαδ (fun γ hγ hγδ => hnc γ hγ (lt_trans hγδ hδβ))
+            rw [e1] at hmem
+            exact psi_notMem δ a hmem
+        rw [psi_unfold β a]
+        exact csInf_le' hnotin
+
 /-- **(Buchholz 1.4(a))** Uniqueness of the canonical `ψ`-representation: if
 `ξ, ξ'` are both `a`-canonical (`ξ ∈ C_a(ξ)`, `ξ' ∈ C_a(ξ')`) and `ψ_a ξ = ψ_a ξ'`
 then `ξ = ξ'`.  (Canonical points are exactly where `ψ_a` strictly increases.) -/

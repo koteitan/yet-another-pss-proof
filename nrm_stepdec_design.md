@@ -480,3 +480,45 @@ confirms nrm's value-preservation — then attack (5) with the scaffold in hand.
 If (5) proves no easier than syntactic, fall back to the source's syntactic
 route but armed with the UBI valid-forest characterization for standardness.
 ```
+
+## ★ THIS SESSION (2026-06-14): general collapsing DONE; arg_extract pinned to SBC
+Reduction chain re-confirmed and SHARPENED:
+  `psi_proj` ⟸ per-step `psi(oV b)a = psi(oV g*)a` (g*=max{g∈Gterm a b:¬olt g b})
+            ⟸ obligation `psi(oV b)a ∉ C_a(oV g*)` (via `psi_eq_of_notMem`, oV b≤oV g*)
+  NEC (`wf3 t → oV t∈C_v(α) → ∀x∈Gterm v t, oV x<α`) head-arg recursion
+            ⟸ `arg_extract` (`v≤a, oV b∈C_a(oV b), ψ_a(oV b)∈C_v(α) → oV b∈C_v(α)`)
+            ⟸ **SBC** (`psi_strict_below_canonical`: `β∈C_a(β), ξ<β → ψ_a ξ < ψ_a β`).
+SBC closes arg_extract's hard subcase: M1 gives ζ∈C_v(α), ζ<α, ψ_a ζ=ψ_a(oV b);
+β:=oV b canonical ⟹ (psi_strict_mono_arg) ξ≤β; SBC ⟹ ζ=β (¬ζ<β) ⟹ oV b=ζ∈C_v(α).
+
+**PROVEN this session (sorry-free, kernel-checked = [propext,Classical.choice,Quot.sound], full build 949 jobs green), in Otembed.lean after `collapse_succ`:**
+- `Cset_limit_sub` (C-set continuity from below): β succ-limit, 0<β, x∈C_v(β) →
+  ∃δ<β, x∈C_v(δ). Citer-stage induction; base bound-independent (δ=0); +/ψ
+  generators bounded by binary `max` (β limit). [The ⊆ half of C-limit-continuity;
+  ⊇ is `CC_mono`.]
+- `collapse_le` (GENERAL COLLAPSING / plateau): ∀β α, α≤β → (∀γ∈[α,β), γ∉C_a(γ))
+  → ψ_a α = ψ_a β. Transfinite induction on β: succ iterates `collapse_succ`
+  (1.6(a)); limit uses `Cset_limit_sub` to show ψ_a α∉C_a(β) ⟹ ψ_a β≤ψ_a α.
+
+**SBC status — successor case PROVABLE, LIMIT case = the irreducible nut:**
+Proof of SBC (β∈C_a(β), ξ<β, suppose ψ_a ξ=ψ_a β=:W): if ξ∈C_a(β) then
+Cset_psi_closed gives W=ψ_a ξ∈C_a(β) ⊥ psi_notMem. So ξ∉C_a(β), W≤ξ<β, and
+∀γ∈[ξ,β) noncanon (γ∈C_a(γ) would give psi_strict_mono_arg γ<β ⟹ ψ_a γ<ψ_a β,
+but ψ_a γ=W=ψ_a β by collapse on [ξ,β)).
+- **β=δ+1 (succ): DONE-able.** δ∈[ξ,β) noncanon (δ∉C_a(δ)). `Cset_succ_eq` ⟹
+  C_a(δ+1)=C_a(δ), so β=δ+1∈C_a(β)=C_a(δ). Then **`succ_mem`** (clean Citer-stage
+  lemma, UNPROVEN-but-easy: `x+1∈C_v(α) → x∈C_v(α)`; base downward-closed; sum
+  case z must be succ since x+1 succ, peel via Cset_add_closed; ψ-case: ψ value
+  additive-principal+succ ⟹ =1 ⟹ x=0∈base) gives δ∈C_a(δ) ⊥ δ noncanon.
+- **β limit: OPEN (genuine Buchholz core).** Continuity: β∈C_a(β)=⋃_{δ<β}C_a(δ),
+  take δ∈[ξ,β), β∈C_a(δ), δ noncanon, W=ψ_a δ≤δ<β, β>ψ_a δ. Derived structural
+  fact (useful, unproven): **C_a(δ)∩[ψ_a δ, Ω_{a+1}) = ∅** — members ≥ψ_a δ need a
+  ψ_{u>a} summand (≥Ω_{a+1}); sums of <ψ_a δ stay <ψ_a δ (additive-principal);
+  ψ_{u≤a} gen ≤... <ψ_a δ. So if β<Ω_{a+1} we'd get β∈ the empty gap ⊥. BUT β may
+  be ≥Ω_{a+1} (big canonical), where C_a(δ) legitimately has large members ⟹ no
+  contradiction by this argument. ⟹ limit case needs the FULL band-recursive
+  simultaneous induction (handle u>a bands), = Buchholz's actual 1.9 proof. This
+  is the multi-session core; collapse_le is its succ-engine prerequisite.
+NEXT: (i) land `succ_mem` (clean) + SBC-successor as standalone if useful; (ii)
+crack SBC-limit via band-recursion or read Buchholz 1986 §1 1.9 C-rank induction
+(NOT tsize) for the exact limit handling; (iii) then arg_extract→NEC→psi_proj.
