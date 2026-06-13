@@ -208,6 +208,43 @@ VALUE statement, not a combinatorial window invariant, so it escapes the dead
 spanOK/dichOK family.
 
 ## PROGRESS
+- **lemma 4 `oV_order_refl` — DONE & kernel-checked** (Nrm.lean, commit 98ef189):
+  `wf3 x → wf3 y → oV x < oV y → olt x y` (olt-trichotomy + oV_order_pres).
+- **lemma 2 `oV_ins` — DONE & kernel-checked** (Nrm.lean, commit b2f815a).
+
+## ⚠️ CORRECTED DIFFICULTY (this turn): `psi_proj` IS A HARD CORE = Buchholz collapsing lemma
+§7's "lemmas 1-3 low-risk" was WRONG. `oV_ins` (2) and `oV_order_refl` (4) ARE
+easy (done). But **`psi_proj` (1) / its engine `psi_plateau` is the Buchholz
+*collapsing lemma* and is genuinely hard — comparable to the original core.**
+Analysis this turn:
+- Tried to reduce the obligation `psi(oV b)a ∉ Cset(psiRes(oV g))(oV g)a` to
+  NEC `oV t ∈ C_a(α) → ∀x∈Gterm a t, oV x < α`. **NEC IS FALSE**: the plateau
+  lets `psi(oV g)a ∈ C_a(α)` even when `oV g ≥ α` (via `psi α' a = psi(oV g)a`
+  for some `α'<α`). So necessity-of-coefficients fails.
+- The obligation `psi(oV b)a ∉ C_a(oV g)` is ≈ the plateau itself (circular via
+  simple Cset arguments). The codebase has only the SUFFICIENCY direction
+  (`oV_order_pres`, `Ccond_of_lt`/`C_build`); the collapsing/constancy direction
+  is NOT formalized.
+- ψ NON-INJECTIVITY (= the plateau) makes all the natural converses
+  interdependent (psi_strict_mono_arg's converse, NEC, the obligation all
+  reduce to each other). Need Buchholz's genuine simultaneous development.
+**Needed ordinal module (Buchholz collapsing, to formalize):**
+  (M1) additive-principal form: `δ ∈ C_v(α)`, `δ` add-principal, `Om v ≤ δ <
+       Om(v+1)` ⟹ `∃ ξ<α, ξ∈C_v(α), δ = psi ξ v` (level forced by disjoint
+       Om-ranges — TRUE & provable, induction on Citer stage; insufficient alone).
+  (M2) `oV b ∉ C_a(oV b)` from the OT3 failure `∃g∈Gterm a b, ¬olt g b`
+       (the ordinal form of "b is not a-reduced").
+  (M3) converse strict-mono / constancy: `α<β ∧ α∉C_a(α) ⟹ psi α a = psi β a`
+       (the actual collapsing fact; the hard interdependent core).
+  Then `psi_plateau`: from g∈Gterm a b, ¬olt g b get `oV b∉C_a(oV b)` (M2) ⟹
+  `psi(oV b)a = psi(oV g)a` (M3). This is textbook Buchholz — TRUE, but a real
+  formalization effort (several interdependent ordinal lemmas).
+NB: the value route is still the right route (clear classical targets, vs the
+dead combinatorial families and the stuck syntactic route), but the difficulty
+is now honestly TWO hard cores: `psi_proj` (Buchholz collapsing, M1-M3) and
+`oV_nf_order_pres` (standardness/UBI). Lemmas 2,3,4 are/were the easy glue.
+
+### OLD PROGRESS (oV_ins detail)
 - **lemma 2 `oV_ins` — DONE & kernel-checked** (Nrm.lean, commit b2f815a).
   Final signature: `oV_ins (wb : wf3 b) (wc : wf3 c) (hGb : ∀ x ∈ Gterm a b,
   olt x b) : oV (ins a b c) = oV (P a b c)`. In the nrm use the args are
