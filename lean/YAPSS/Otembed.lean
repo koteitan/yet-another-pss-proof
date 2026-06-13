@@ -290,6 +290,17 @@ theorem psi_strict_mono_mem {α ζ : Ordinal.{u}} {v : ℕ}
     rwa [psiRes, if_pos hζα] at this
   exact psi_notMem α v (he ▸ hmem)
 
+/-- **(Buchholz 1.4(a))** Uniqueness of the canonical `ψ`-representation: if
+`ξ, ξ'` are both `a`-canonical (`ξ ∈ C_a(ξ)`, `ξ' ∈ C_a(ξ')`) and `ψ_a ξ = ψ_a ξ'`
+then `ξ = ξ'`.  (Canonical points are exactly where `ψ_a` strictly increases.) -/
+theorem psi_canonical_inj {a : ℕ} {ξ ξ' : Ordinal.{u}}
+    (hξ : ξ ∈ Cset (psiRes ξ) ξ a) (hξ' : ξ' ∈ Cset (psiRes ξ') ξ' a)
+    (he : psi ξ a = psi ξ' a) : ξ = ξ' := by
+  rcases lt_trichotomy ξ ξ' with h | h | h
+  · exact absurd he (ne_of_lt (psi_strict_mono_arg h hξ))
+  · exact h
+  · exact absurd he.symm (ne_of_lt (psi_strict_mono_arg h hξ'))
+
 /-- **NEC value-bound:** if `ψ_v(β) ∈ C_v(α)` then `β < α`.  (The arg of an
 in-`C_v(α)` principal value lies below `α`.)  Proof: `M1` gives `ψ_v(β)=ψ_v(ζ)`
 with `ζ<α, ζ∈C_v(α)`; `psi_strict_mono_mem` then forces `ψ_v(β)<ψ_v(α)`, so
