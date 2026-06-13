@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /home/koteitan/ya-pss/git/tools
+cd /home/koteitan/proofs/ya-pss/git/tools
 echo "=== topdesc EXTRA=3 $(date +%H:%M) ===" >> /tmp/c3_b2.out
 EXTRA=3 timeout 14400 python3 mine_topdesc2.py >> /tmp/c3_b2.out 2>&1
 echo "=== openm1 sibrel4 closure+2 $(date +%H:%M) ===" >> /tmp/c3_b2.out
