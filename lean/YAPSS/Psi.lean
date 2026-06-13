@@ -506,6 +506,19 @@ theorem canon_succ {a : ℕ} {δ : Ordinal} (hδ : δ ∈ Cset (psiRes δ) δ a)
     one_mem_Cset (lt_of_lt_of_le zero_lt_one le_add_self)
   exact Cset_add_closed hδ' h1
 
+/-- `C_v(α)` is closed under multiplication by a natural (`x·n` = `n` copies of
+`x` summed).  Used to build `Iio (ω^{α+1}) ⊆ C` for Buchholz 1.7. -/
+theorem Cset_mul_nat {α : Ordinal} {v : ℕ} {x : Ordinal}
+    (hx : x ∈ Cset (psiRes α) α v) (n : ℕ) :
+    x * (n : Ordinal) ∈ Cset (psiRes α) α v := by
+  induction n with
+  | zero =>
+    simp only [Nat.cast_zero, mul_zero]
+    exact Iio_Om_subset_Cset (lt_of_lt_of_le zero_lt_one (one_le_Om v))
+  | succ n IH =>
+    rw [Nat.cast_succ, mul_add, mul_one]
+    exact Cset_add_closed IH hx
+
 theorem Om_mono {a b : ℕ} (hab : a ≤ b) : Om a ≤ Om b := by
   rcases Nat.eq_zero_or_pos a with rfl | ha
   · rw [Om_zero]
