@@ -4000,3 +4000,25 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
     評価し (b) コピー展開 ψ_a(...)·n < ψ_a(...+1) 型の順序数事実で押さえる、形で攻める。
     PSI セッション（ord/）で otembed の oV/psi を使う。
   - 代替（保険）: maxr1≤1 フラグメント（translate∈wf3・crux-free）を先に形式化＝v-帰納の底。
+
+### (2026-06-13 続87) ★crux irreducibility 確定 — 全ルートが wf3/正準化を要する
+
+- **semantic ルートも crux を回避できない**: oV_order_pres（oV 厳密単調）の証明は
+  **wf3 不変量に全面依存**（spinesub_le/Gterm-OT3/headle/wf3_Gterm）。非wf3（再上昇）項では
+  oV 厳密単調が崩れる（y₂ collapse: olt だが oV 等値）。⟹ oV(translate M[n])<oV(translate M)
+  を出すにも wf3/正準化（=nrm）が必要。
+- **結論（確定）**: 3ルート全て同一 crux に収束:
+  - nrm 値比較: 再上昇で proj=msfx 等が破綻（第7事件）。
+  - W=T 閉包: within-level maxr1≥2 = wf_ArgsA = 同レベル再上昇。
+  - semantic oV: oV 厳密単調が wf3 依存・非wf3 で崩れる。
+  ＝**再上昇項の正準化（nrm 値比較）が irreducible 核**。repackaging では逃げられない。
+- **唯一の前進路**: 再上昇を明示的に場合分けする「正しい messy な nrm_step_dec 証明」
+  （旧 nrmstep の 11000 行が偽 E6_value で頓挫した所を、正しい補題で再構築）。これは
+  multi-session の大規模形式化。novel insight が無ければ近道なし。
+- **当面の確実な実成果**: maxr1≤1 フラグメント（translate∈wf3・crux-free）の accessibility を
+  wf_olt_wf3 で形式化（v-帰納の底・PSI セッション）。crux は触らず確実に証明可能な部分。
+
+**今セッション総括（続78〜87）**: (1)健全性第7事件確定・全記録・再発防止恒久化
+(2)W=T 骨格 wtt.thy 緑（PSS停止性→diag_acc・reduction証明済・nrm-free）
+(3)crux を maxr1≥2 再上昇に完全局在・全ルートで irreducible と確定
+(4)残＝再上昇正準化の大規模形式化（または novel insight）。
