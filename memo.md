@@ -3911,3 +3911,18 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   整礎帰納で各 fire 階層の proj 比較を1段深い同型比較に還元、最深 NT_prefix_lt で底打ち」
   として組む設計。proj を別補題でなく帰納の中で descend させる。次=この自己相似再帰が
   実際に閉じるか（proj が IH を descend で運ぶか）を採掘で確認。
+
+- (続84補) proj=NT(部分列) の精密化も内部再上昇で破れる:
+  - fire 階層で proj(snd c0)(NT K) = NT(連続部分列 K') は成立（1624/1624）だが、その K' は
+    **shallow では msfx（firstmax:len）に見えるが深層で破れる**: 再上昇ファミリーで
+    fire 限定でも 151 違反（同反例 a=0,K=(7,1)(8,2)(7,1)・K 内部の 7→8→7 内部再上昇、
+    c0 境界でない）。broad+5 サンプル 0 はサンプルが深い再上昇を取り逃すだけ。
+  - ⟹ **takeWhile に絞っても proj=NT(msfx) は偽**（内部再上昇が原因）。proj=NT(連続部分列)
+    だが「どの部分列か」は再上昇構造依存で、msfx/msfx2/firstmax いずれの単純規則でも不可。
+  - **総括**: proj/nrm 値比較ルートの crux（値側減少 for コピー展開）は、proj の値が
+    再上昇下で単純なシーケンス特徴づけを持たないため、清潔な term-level 補題で閉じない。
+    proj 単調性 on NF は真だが特徴づけ不能。E6_value/msfx 系は全滅。
+  - **戦略的結論**: proj/nrm 値比較を介さず、**Buchholz §2 W=T 流の木上直接帰納**を
+    PSS の UBI 木（親=nextrel・コピー/上昇=bad-branch）に適応する路線が本筋に見える
+    （ユーザー誘導の方向）。p≠ψ ゆえ基本列規則は自作。次セッションはこの Hydra 直接
+    帰納の設計（PSS-native な fundamental sequence と W=T 帰納）から。
