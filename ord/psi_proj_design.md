@@ -40,13 +40,23 @@ elts (Cset (λξ∈elts(oV b). psi ξ) (oV b) a) = elts (Cset (λξ∈elts(oV g)
 collapse_succ の argument 版一般化＋ **1.9 necessity**（C-membership ⟺ Gterm/oV 条件）で
 oV b が非 canonical（その係数 g が oV b を超える）であることを使う。
 
-### 必要な補題（ya-pss 担当）
-1. **collapse 一般化（argument 側・任意 gap）**: 連続区間でなく proj の有限鎖で十分。
-   per-step: `oV g ≤ oV b ∧ (oV b ∈ [closure of oV g at a]) ⟹ ψ_a(oV b)=ψ_a(oV g)`。
-   ＝ C_a^{arg}(oV b)=C_a^{arg}(oV g)。collapse_succ の argument 版。
-2. **1.9 necessity**（順序数 or term 側）: `γ∈C_v(α) ⟹ G_v γ ⊆ elts α`。
-   C-rank 帰納（psi.thy の Citer/Cset_mem_iff 機構が土台）。term 側は oV/Gterm(otembed)。
-3. これらで psi_proj を組む。
+### ★実測の訂正（psiproj.py / perstep.py, 続89(9)）
+- **psi_proj（full proj・maxo 規律）は真**: ψ_a(oV b)=ψ_a(oV(proj a(nrm b)))・
+  46,033 主項で **0 反例**。proj は nrm.thy:43 通り「bad集合の olt-maxo を取り反復」。
+- **✗ 任意 g の per-step は偽**: g∈Gterm a b, ¬olt g b の任意 g で ψ_a(oV b)=ψ_a(oV g) は
+  64,262/72,942 で偽。⟹ **per-step は maxo 選択に従う必要**（arbitrary g 厳禁）。
+- ✓ **clean fact**: bad な g（¬olt g b）は全て **oV g ≥ oV b**（72,942/72,942）。
+  ＝ proj で捨てる係数は値で b 以上＝b が level a で非 canonical の証左。
+
+### 必要な補題（ya-pss 担当・訂正版）
+1. **非 canonical 判定**: b が係数 g∈Gterm a b で ¬olt g b を持つ ⟹ oV b ∉ C_a(oV b)
+   （oV g ≥ oV b な係数を使う＝閉包外）。これが collapse の起動条件。
+2. **collapse 一般化（argument 側）**: oV b ∉ C_a(oV b) かつ proj が canonical fixpoint
+   （Gterm a(proj)<proj, proj_G 済）に到達 ⟹ ψ_a(oV b)=ψ_a(oV(proj a b))。
+   collapse_succ の argument 版＋ maxo 鎖。C_a^{arg}(oV b)=C_a^{arg}(oV(proj)) を示す。
+3. **1.9 necessity**（C-membership ⟺ Gterm/oV 条件）が 1.2 の土台。C-rank 帰納
+   （psi.thy Citer/Cset_mem_iff）。term 側は oV/Gterm(otembed)。
+これらで psi_proj。検証: tools/psiproj.py, perstep.py。
 
 ### lean 担当（advice-reply.md §3）
 - 1.4(b) canonical witness / C-集合同値（1.4(a) psi_canonical_inj 済を活用）。
