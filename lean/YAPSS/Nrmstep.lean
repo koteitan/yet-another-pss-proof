@@ -9985,4 +9985,25 @@ theorem copyDichOK_of_full {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
     exact copyDichOK_b1 hn hdom hnxt hd0 hwlt hlp1 hMedge hMdich hMsp
       (htie G v0 w0 R lp d0 hMeq hd0)
 
+/-- **The edge dichotomy holds along the whole standard closure**, modulo the
+spanning facts (`hsp`) and the single `b1` in-copy tie obligation (`htie`).
+This wires `copyDichOK_of_full` into `dichOK_ST_PS`: the `oper` induction
+hypothesis supplies `dichOK N`, `hsp` supplies `spanOK N`, and `htie` the lone
+tie case (the `d0 = L` staircase fact). -/
+theorem dichOK_ST_PS_of {M : PairSeq} (hM : ST_PS M)
+    (hsp : ∀ N, ST_PS N → spanOK N)
+    (htie : ∀ N k, ST_PS N → 1 ≤ k → ∀ G v0 w0 R (lp : ℕ × ℕ) d0,
+      N = G ++ ((v0,w0)::R) ++ [lp] → 0 < d0 → ∀ kt p, p < G.length → kt < k →
+      nextrel1 (copyExp G ((v0,w0)::R) d0 k) p
+        (G.length + kt * ((v0,w0)::R).length) →
+      ∀ kq qoff, kq < kt → 0 < qoff → qoff < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 qoff → ((v0,w0)::R).getD qoff (0,0) = lp →
+      le0 (copyExp G ((v0,w0)::R) d0 k)
+        (G.length + (kq * ((v0,w0)::R).length + qoff))
+        (G.length + kt * ((v0,w0)::R).length)) :
+    dichOK M := by
+  apply dichOK_ST_PS hM
+  intro N k hN hdichN hk
+  exact copyDichOK_of_full hk hdichN (hsp N hN) (htie N k hN hk)
+
 end YAPSS
