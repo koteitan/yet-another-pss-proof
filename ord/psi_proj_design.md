@@ -61,6 +61,19 @@ oV b が非 canonical（その係数 g が oV b を超える）であること�
 ### lean 担当（advice-reply.md §3）
 - 1.4(b) canonical witness / C-集合同値（1.4(a) psi_canonical_inj 済を活用）。
 
+### ★続89(10): 1.9 necessity を ψ-injectivity 一点に reduce（necessity.thy）
+necessity（C_build の逆: oV t∈C_v(α) ⟹ ∀x∈Gterm v t. oV x<α）の分解を精密化:
+- **(B) psi-arg necessity**: ψ_{a'}(ζ)∈C_v(α) ∧ v≤a' ⟹ ζ<α。Citer n 帰納で:
+  - n=0 (∈Om v): a'≥v ⟹ ψ_{a'}(ζ)≥Om a'≥Om v ⟹ ∉elts(Om v)。**矛盾で消える**（psi_lt_Om_Suc/Om_le_psi）。
+  - sum ξ+η: ψ_{a'}(ζ) は **indecomposable_psi**（証明済）⟹ ξ or η が 0/δ ⟹ Citer n に帰着（IH）。
+  - generator ψ_u(ξ), ξ∈Citer n∩elts α (ξ<α): ψ_{a'}(ζ)=ψ_u(ξ) ⟹ **ψ-injectivity で ζ=ξ<α**。
+  ⟹ **(B) は ψ-injectivity (Buchholz 1.4a) 一点に帰着**。sum/Om は Isabelle で処理可能。
+- **ψ-injectivity = lean の psi_canonical_inj（証明済）**。Isabelle に無い唯一の primitive。
+  ⟹ lean から 1.4a 証明構造を貰って port するのが最効率（独立再証明は canonical-witness の
+  難所で重複）。
+- **(A) leading 成分抽出**: Citer 帰納＋Cantor_NF（indecomposable_psi で接続済）。(B) と独立に進められる。
+- necessity.thy 済: indecomposable_psi（ψ値=加法主要数, Cantor_NF 接続）。
+
 ## 注意（freeze-soundness-lessons）
 - 旧 nrmstep の syntactic 攻略（E6_value=proj=NT msfx）は **偽**（closure+5/6 反例）。
   本設計は値（oV/ψ）側で組む。各補題は実測（tools/）で +5 検証してから形式化。

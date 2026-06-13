@@ -4175,6 +4175,18 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
     ⟹ collapse_grow が直接効くか未確認。term 側 1.9 で「proj gap が非 canonical」を要証明。
     （collapse_grow/succ 自体は正しい再利用可能ツール。psi_proj への適用可否が次の検証点。）
 
+**(10) necessity.thy 開始 + 1.9 necessity を ψ-injectivity 一点に reduce（PSI 緑）**
+  - `indecomposable_psi`（ψ値=Cantor_NF の加法主要数）証明済＝Cantor_NF toolkit 接続。
+  - **1.9 necessity（oV t∈C_v(α)⟹∀x∈Gterm v t. oV x<α）= C_build の逆** を分解:
+    - (A) leading 成分抽出（Citer 帰納＋Cantor_NF）— (B) と独立。
+    - (B) psi-arg necessity（ψ_{a'}(ζ)∈C_v(α)∧v≤a'⟹ζ<α）を Citer 帰納で分解 →
+      **n=0/sum ケースは Isabelle で処理可（Om 境界＋indecomposable_psi）、generator ケースのみ
+      ψ-injectivity（ψ_u(ξ)=ψ_{a'}(ζ)⟹ζ=ξ）に帰着**。
+  - ⟹ **残る primitive は ψ-injectivity（Buchholz 1.4a）唯一**。＝lean の psi_canonical_inj
+    （証明済）。Isabelle に無い。canonical-witness 難所（非 canonical ξ の扱い）含むので
+    **lean から 1.4a を貰って port が最効率**（advice-reply2 §6 で依頼）。
+  - design 詳細 ord/psi_proj_design.md（続89(10)節）。
+
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
   proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
