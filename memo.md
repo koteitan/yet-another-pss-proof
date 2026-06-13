@@ -4119,6 +4119,22 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
     各小補題を実測検証してから形式化。big monolithic 厳禁。<br>
   ⟹ 続87 の結論（crux は irreducible・nrm 正準化が核）が正しく、続89(4) の sharpening は誤りだった。
 
+**(6) building blocks 実測（次セッションの形式化の土台・proj_mono.py/proj_weak.py）**
+  - ✓ **principal-arg 単調（NF 上・strict）**: NF の sub-arg b,f（同 subscript a 文脈）で
+    olt b f ⟹ olt(proj a(nrm b))(proj a(nrm f))。319,200 対・**reversal 0・nonstrict 0**。
+    ＝ nrm_order_pres の arg ケースの心臓部。NF 上では strict（collapse-to-equal が起きない）。
+  - ✗ **proj は wf3 上で非単調**: 任意 wf3 対で olt x y ⟹ ole(proj a x)(proj a y) は
+    **2,022,750 中 199,114 reversal で偽**。反例 proj_0(D1(0)+D0(D3(D3+D2)))＝深く埋もれた
+    巨大 subterm D3(D3+D2) に collapse（subscript 0→3 跳躍＝blockok +1 違反）。
+    ⟹ **proj の良性には NF/標準形性が本質的（wf3 だけでは不足）**。pure-wf3 補題は無い。
+  - 帰結: nrm_order_pres の証明は **NF 不変量（標準形性/blockok の three 側像）を全体に
+    thread する**必要。clean な pure-term 分解は存在しない。次の課題＝「proj が良性となる
+    three 側 NF 不変量」を定義し、(a)NF が満たす (b)sub-term/proj/nrm で保存 (c)proj 単調＋
+    strict を導く、を示すこと。これが旧 nrmstep の 11000 行が格闘した本体（E6_value は
+    その中の偽補題）。multi-session。
+  - off-NF 反例（既知）: y₂=p0(p1(y1))<o y1=p0(p1(p1(0))), nrm 等値・列(0,0)(1,1)(2,0)(3,1)(4,1)
+    非標準。NF 制約（row-1 parenthood）が strict 性を担保。
+
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
   proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
