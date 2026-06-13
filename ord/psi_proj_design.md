@@ -61,6 +61,22 @@ oV b が非 canonical（その係数 g が oV b を超える）であること�
 ### lean 担当（advice-reply.md §3）
 - 1.4(b) canonical witness / C-集合同値（1.4(a) psi_canonical_inj 済を活用）。
 
+### 続89(17): ★core の正体確定 = Buchholz §1 同時帰納（canonical-rep/1.9/1.4b）
+per-maxo-step `ψ_a(oV b)=ψ_a(oV m)` (oV b≤oV m, m∈Gterm a b) を追い込んだ:
+- 必要十分: `ψ_a(oV b) ∉ C_a(oV m)`（then ψ_a(oV m)=LEAST∉ ≤ ψ_a(oV b)・mono と合わせ等号）。
+- これは `oV b ∉ C_a(oV m)`（1.9 necessity: m は a-係数で oV m⊀oV m）+ 1.4a（generator 解析）
+  に帰着。**1.9 necessity が必須**。
+- 1.9 necessity の generator ケースは「generator witness ξ が canonical」を要する（β=ξ を
+  1.4a で出すため）が、我々の Cstep は canonicity 省略で ξ 非canonical 可。⟹ **1.4b
+  （canonical-Cstep 同値: 非canonical generator ψ_u(ξ)=ψ_u(ξ°) で冗長）が必須**。
+- だが **1.4b ↔ canonical-rep（ξ° 構成）は循環**。Buchholz は **C-rank（Citer の n）の
+  同時超限帰納**で canonical-rep 存在(1.4b)・1.9・collapse を一括証明して循環を破る。
+- **これが irreducible core**。lean も同地点で停滞（canonical-rep 構成）。
+- **済の周辺資産**（全 PSI 緑・自前）: 1.4a(psi_inj_canonical) / collapse_succ(1.6a)/collapse_grow /
+  n-copies(indec_psi_mult*) / proj_canonical / indecomposable_psi。core 以外は揃った。
+- **次の major effort**: C-rank 同時帰納の setup（canonical 述語 + Citer 段数帰納で
+  1.4b/1.9/collapse 同時証明）。Buchholz 1986 §1 の機械化。multi-session・本丸。
+
 ### 続89(16): ★psi_proj を per-maxo-step に精密帰着（proj.induct）
 psi_proj (ψ_a(oV b)=ψ_a(oV(proj a b))) を proj.induct で分解:
 - base（bad={g∈Gterm a b:¬olt g b}=∅, proj a b=b）: 自明（両辺同じ）。
