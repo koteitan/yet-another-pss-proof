@@ -9369,4 +9369,35 @@ theorem copyDichOK_of {G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
         rw [← hqeq, ← hteq2] at hres
         exact hres
 
+/-- **b1 wiring of the expansion dichotomy**: from the bad-block decomposition,
+the `b1` disjunct, the host dichotomy/spanOK, and the in-copy tie obligation
+`htie`, the expansion satisfies `dichOK`.  The spanOK clauses BF1/BF2/clause-8
+needed by `copyDichOK_of` are extracted from `hsp`. -/
+theorem copyDichOK_b1 {G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
+    (hn : 1 ≤ n) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hnxt : nextR (G ++ ((v0,w0)::R) ++ [lp])
+      (idx1 (G ++ ((v0,w0)::R) ++ [lp]) ((G ++ ((v0,w0)::R) ++ [lp]).length - 1))
+      G.length ((G ++ ((v0,w0)::R) ++ [lp]).length - 1))
+    (hd0 : 0 < d0) (hwlt : w0 < lp.2) (hlp1 : lp.1 = v0 + d0)
+    (hMedge : nextrel1 (G ++ ((v0,w0)::R) ++ [lp]) G.length
+      ((G ++ ((v0,w0)::R) ++ [lp]).length - 1))
+    (hM : dichOK (G ++ ((v0,w0)::R) ++ [lp]))
+    (hsp : spanOK (G ++ ((v0,w0)::R) ++ [lp]))
+    (htie : ∀ kt p, p < G.length → kt < n →
+      nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+        (G.length + kt * ((v0,w0)::R).length) →
+      ∀ kq qoff, kq < kt → 0 < qoff → qoff < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 qoff → ((v0,w0)::R).getD qoff (0,0) = lp →
+      le0 (copyExp G ((v0,w0)::R) d0 n)
+        (G.length + (kq * ((v0,w0)::R).length + qoff))
+        (G.length + kt * ((v0,w0)::R).length)) :
+    dichOK (copyExp G ((v0,w0)::R) d0 n) := by
+  have hdisj : d0 = 0 ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0 ∧
+      nextrel1 (G ++ ((v0,w0)::R) ++ [lp]) G.length
+        ((G ++ ((v0,w0)::R) ++ [lp]).length - 1)) :=
+    Or.inr ⟨hd0, hwlt, hlp1, hMedge⟩
+  obtain ⟨hBF1, hBF2, _, _, _, _, _, hc8, _, _⟩ :=
+    hsp G v0 w0 R lp d0 rfl hnxt hdisj
+  exact copyDichOK_of hn hd0 hdom hlp1 hM hMedge (hc8 hd0) hBF1 (hBF2 hd0) htie
+
 end YAPSS
