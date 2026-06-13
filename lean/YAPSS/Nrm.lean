@@ -242,6 +242,22 @@ theorem oV_order_refl {x y : Three} (wx : wf3 x) (wy : wf3 y)
   · exact absurd h (lt_irrefl _)
   · exact absurd (oV_order_pres wy wx hyx) (not_lt.2 h.le)
 
+/-- Value route lemma 3, conditional on `psi_proj` (the Buchholz collapsing
+core, still open — see git/nrm_stepdec_design.md M1–M3).  Given that `proj`
+preserves the outer `ψ_a`-value, `nrm` preserves the whole `oV`-value.  This
+verifies the reduction `oV_ins ∘ psi_proj ⟹ oV∘nrm = oV` is sound. -/
+theorem oV_nrm_of_psi_proj
+    (psi_proj : ∀ (a : ℕ) (b : Three), wf3 b →
+      psi.{u} (oV (proj a b)) a = psi (oV b) a) :
+    ∀ t : Three, oV.{u} (nrm t) = oV t := by
+  intro t
+  induction t with
+  | Z => rfl
+  | P a b c ihb ihc =>
+    rw [nrm_P]
+    rw [oV_ins (proj_wf3 (wf3_nrm b)) (wf3_nrm c) (proj_G a (nrm b))]
+    rw [oV_P, oV_P, psi_proj a (nrm b) (wf3_nrm b), ihb, ihc]
+
 /-! ## The remaining core: order preservation on `NF`
 
 Validated empirically on 2,643,843 pairs of (hereditary blocks of)
