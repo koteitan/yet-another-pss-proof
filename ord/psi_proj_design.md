@@ -168,3 +168,14 @@ necessity（C_build の逆: oV t∈C_v(α) ⟹ ∀x∈Gterm v t. oV x<α）の�
 - 旧 nrmstep の syntactic 攻略（E6_value=proj=NT msfx）は **偽**（closure+5/6 反例）。
   本設計は値（oV/ψ）側で組む。各補題は実測（tools/）で +5 検証してから形式化。
 - 1.9 necessity は Buchholz の実質部分・intricate。monolithic 厳禁・小補題ごと kernel 確認。
+
+### 続89(19): ★AFP 調査結論 — §1 は自前構築のみ（Explore subagent, 2026-06-14）
+AFP(afp-2026-06-05) に Buchholz ψ崩壊 / C集合特徴づけ / canonical 表現（Veblen正規形超）は
+皆無。確認した関連エントリ:
+- ZFC_in_HOL/Cantor_NF.thy: V 上 CNF + 一意性(Cantor_nf_unique_aux:307) + indecomposable。
+  ＝唯一の再利用可能資産（既使用）。sub-argument に有用だが Buchholz レベルには届かない。
+- Ordinal/OrdinalVeblen.thy(Huffman): 2変数 Veblen 階層 + 不動点/critical-set 特徴づけ。
+  ただし別型 ordinal（≠V）・正規形定理なし・C集合なし。手法の青写真にはなる。
+- Nested_Multisets_Ordinals, Ordinal_Partitions/Omega_Omega: CNF 系のみ（崩壊なし）。
+⟹ Buchholz §1（canonical-rep/1.9/1.4b の同時帰納）は psi.thy 上で自前ゼロ構築が必須。
+  外部近道なし確定。アーキテクト方針: subagent で §1 を段階的に構築。
