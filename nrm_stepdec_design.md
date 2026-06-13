@@ -530,3 +530,18 @@ but ψ_a γ=W=ψ_a β by collapse on [ξ,β)).
 NEXT: (i) land `succ_mem` (clean) + SBC-successor as standalone if useful; (ii)
 crack SBC-limit via band-recursion or read Buchholz 1986 §1 1.9 C-rank induction
 (NOT tsize) for the exact limit handling; (iii) then arg_extract→NEC→psi_proj.
+
+### UPDATE (same session): NEC reduced to a SINGLE conditional theorem
+PROVEN sorry-free (Otembed.lean, after head_tail_mem): **`NEC_of_argExtract`** =
+Buchholz 1.9 necessity for `wf3` terms, taking `arg_extract` as a hypothesis:
+  `argExt : v≤a → β∈C_a(β) → ψ_a β∈C_v(α) → β∈C_v(α)`
+  ⟹ `∀ wf3 t v α, oV t∈C_v(α) → ∀x∈Gterm v t, oV x<α`.
+Structural tsize induction: head_tail_mem split; `{b}` via psi_arg_lt_of_mem_cross;
+head-arg deep via argExt + wf3 a-canonicity (Ccond_of_lt+oV_order_pres); tail ihc.
+**So the ENTIRE wf3-necessity direction is now isolated to `arg_extract`** (cf. the
+`oV_nrm_of_psi_proj` conditional pattern). REMAINING = prove `arg_extract`; its
+hard case (M1 witness ζ<β with β canonical) = SBC = needs SBC-limit (band
+recursion). Also still TODO: connect NEC(wf3)→psi_proj per-step — CAVEAT the
+per-step `ψ_a(oV b)∉C_a(oV g*)` has b NON-a-reduced (not wf3-at-a), so it needs
+NON-canonical necessity, NOT NEC(wf3) directly; the per-step is a separate
+(harder) reduction than wf3-NEC. Both bottleneck on the same band-recursive core.
