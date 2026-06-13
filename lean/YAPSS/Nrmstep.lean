@@ -9767,4 +9767,73 @@ theorem cross_refute_b0_gridroot {G R : PairSeq} {v0 w0 n kt kp poff : ℕ}
   rw [hr0] at hstrict
   omega
 
+/-- **b0 edge→interior refutation** (`d0 = 0`): an edge into an interior copy
+column whose source precedes that copy's root is impossible.  The copy root is
+a local strict pivot (interiors `> v0`), so it is a row-0 ancestor of the
+target; edge maximality forces the target's row 1 `≤ w0`, spanOK clause 9
+forces it `= 0`, and then the strict row-1 ascent of the edge fails. -/
+theorem cross_refute_b0_interioredge {G R : PairSeq} {v0 w0 n kt toff p : ℕ}
+    {lp : ℕ × ℕ}
+    (hdom : ∀ x ∈ R, v0 < x.1) (hlp2 : lp.2 = 0)
+    (hkt : kt < n) (htoff0 : 0 < toff) (htoff : toff < ((v0,w0)::R).length)
+    (hpr : p < G.length + kt * ((v0,w0)::R).length)
+    (hC9 : lp.2 = 0 → 0 < w0 → ∀ i, 0 < i → i < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 i → (((v0,w0)::R).getD i (0,0)).2 = 0)
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) 0 n) p
+      (G.length + (kt * ((v0,w0)::R).length + toff))) : False := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have htltX : G.length + (kt * ((v0,w0)::R).length + toff)
+      < (copyExp G ((v0,w0)::R) 0 n).length := hedge.2.1
+  have hX0root : entry (copyExp G ((v0,w0)::R) 0 n) 0
+      (G.length + kt * ((v0,w0)::R).length) = v0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := kt) (q := 0) hkt hL).1
+    simpa using h
+  have hpivl := copyExp_root_pivot_local (G := G) (v0 := v0) (w0 := w0) (d0 := 0)
+    (n := n) (R := R) (k' := kt) hdom hkt
+  have hroot_le_t : G.length + kt * ((v0,w0)::R).length
+      ≤ G.length + (kt * ((v0,w0)::R).length + toff) := by omega
+  have hpiv : ∀ y, G.length + kt * ((v0,w0)::R).length < y →
+      y ≤ G.length + (kt * ((v0,w0)::R).length + toff) →
+      entry (copyExp G ((v0,w0)::R) 0 n) 0 (G.length + kt * ((v0,w0)::R).length)
+        < entry (copyExp G ((v0,w0)::R) 0 n) 0 y := by
+    intro y hy1 hy2
+    obtain ⟨q', hq'eq⟩ : ∃ q', y = G.length + (kt * ((v0,w0)::R).length + q') :=
+      ⟨y - G.length - kt * ((v0,w0)::R).length, by omega⟩
+    have hq'p : 0 < q' := by omega
+    have hq'L : q' < ((v0,w0)::R).length := by omega
+    rw [hX0root, hq'eq]
+    have := hpivl q' hq'p hq'L
+    simpa using this
+  have hle0roott : le0 (copyExp G ((v0,w0)::R) 0 n)
+      (G.length + kt * ((v0,w0)::R).length)
+      (G.length + (kt * ((v0,w0)::R).length + toff)) :=
+    le0_through_pivot (hedge.2.2.2.2.1) (by omega) hroot_le_t hpiv
+  have hmax := hedge.2.2.2.2.2 (G.length + kt * ((v0,w0)::R).length)
+    ⟨hpr, hle0roott⟩
+  have htval2 : entry (copyExp G ((v0,w0)::R) 0 n) 1
+      (G.length + (kt * ((v0,w0)::R).length + toff))
+      = (((v0,w0)::R).getD toff (0,0)).2 := (entry_copyExp hkt htoff).2
+  have hroot2 : entry (copyExp G ((v0,w0)::R) 0 n) 1
+      (G.length + kt * ((v0,w0)::R).length) = w0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := kt) (q := 0) hkt hL).2
+    simpa using h
+  rw [htval2, hroot2] at hmax
+  have hle0B : le0 ((v0,w0)::R) 0 toff := by
+    have hin : le0 (copyExp G ((v0,w0)::R) 0 n)
+        (G.length + (kt * ((v0,w0)::R).length + 0))
+        (G.length + (kt * ((v0,w0)::R).length + toff)) := by
+      have e0 : G.length + (kt * ((v0,w0)::R).length + 0)
+          = G.length + kt * ((v0,w0)::R).length := by omega
+      rw [e0]; exact hle0roott
+    exact le0_copy_to_block hkt htoff hin
+  have h4 := hedge.2.2.2.1
+  rw [htval2] at h4
+  have htval0 : (((v0,w0)::R).getD toff (0,0)).2 = 0 := by
+    rcases Nat.eq_zero_or_pos w0 with hw0 | hw0pos
+    · omega
+    · exact hC9 hlp2 hw0pos toff htoff0 htoff hle0B
+  omega
+
 end YAPSS
