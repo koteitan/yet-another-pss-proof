@@ -205,6 +205,46 @@ theorem Om_le_psi (α : Ordinal) (v : ℕ) : Om v ≤ psi α v := by
   push Not at h
   exact psi_notMem α v (Iio_Om_subset_Cset h)
 
+/-- `Ω_v` is additive principal (`1` for `v=0`, an infinite cardinal's `ord`
+otherwise). -/
+theorem Om_isPrincipal (v : ℕ) : Ordinal.IsPrincipal (· + ·) (Om v) := by
+  rcases Nat.eq_zero_or_pos v with h | h
+  · subst h; rw [Om_zero]; exact isPrincipal_add_one
+  · rw [Om_of_pos h]
+    intro a b ha hb
+    rw [lt_ord] at ha hb
+    show a + b < (ℵ_ (v : Ordinal)).ord
+    rw [lt_ord, card_add]
+    exact add_lt_of_lt (aleph0_le_aleph _) ha hb
+
+/-- At bound `0`, `C_v(0) = Iio Ω_v`: the `ψ`-generators are vacuous (`X ∩ Iio 0
+= ∅`) and `Iio Ω_v` is closed under `+` (`Om_isPrincipal`). -/
+theorem Cset_zero (v : ℕ) : Cset (psiRes 0) 0 v = Set.Iio (Om v) := by
+  apply Set.Subset.antisymm
+  · intro x hx
+    obtain ⟨n, hn⟩ := Cset_mem_iff.1 hx
+    clear hx
+    induction n generalizing x with
+    | zero => rwa [Citer, Function.iterate_zero, id_eq] at hn
+    | succ n IH =>
+      rw [Citer_succ, Cstep] at hn
+      rcases hn with (h1 | h2) | h3
+      · exact IH h1
+      · obtain ⟨y, hy, z, hz, hyz⟩ := h2
+        dsimp only at hyz
+        rw [← hyz]
+        exact (Om_isPrincipal v) (IH hy) (IH hz)
+      · obtain ⟨u, hu⟩ := Set.mem_iUnion.1 h3
+        obtain ⟨ξ, ⟨_, hξ0⟩, _⟩ := hu
+        simp at hξ0
+  · exact Iio_Om_subset_Cset
+
+/-- **Buchholz Lemma 1.2(a)**: `ψ_v 0 = Ω_v`. -/
+theorem psi_zero (v : ℕ) : psi 0 v = Om v := by
+  refine le_antisymm ?_ (Om_le_psi 0 v)
+  rw [psi_unfold, Cset_zero]
+  exact csInf_le' (show Om v ∈ {γ | γ ∉ Set.Iio (Om v)} by simp)
+
 /-! ## Monotonicity of `C_v(α)` and `ψ_v(α)` in `α` (Buchholz Lemma 1.2(d)) -/
 
 theorem Cstep_mono_param {p q : Ordinal.{u} → ℕ → Ordinal.{u}} {α β : Ordinal.{u}}
