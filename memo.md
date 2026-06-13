@@ -4053,3 +4053,11 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   ⟹ maxr1=0 base の全部品が証明済。残=acc_subs0（これら+wf_olt_wf3 を wf_induct で組む
   accessibility 組立・プラミングのみ・"translate M arbitrary M rule:wf_induct_rule" の
   case 構造で難航中→次回 clean 化）。
+
+- (続88補2) ★**acc_subs0 完成（PSI 緑・sorry 無し）**: `M∈ST_PS ⟹ (∀p∈set M. snd p=0)
+  ⟹ M∈acc stepR`。maxr1=0 標準形は全て accessible＝**v-帰納の底を完全証明**（crux-free・
+  nrm 不使用）。wf_induct_rule[OF wf_olt_wf3, where P=Q] + subs0_step_closed/decreases で組立。
+  教訓: wf_induct は IH が ∀/⟶ 形、wf_induct_rule は meta(⋀/⟹)形—assume と合わせる。
+  HO 単一化は where P= で固定。∀N 形は { fix N .. } raw ブロック+blast で導入（intro 回避）。
+- これで diagSeq 0 0 ∈ acc（acc_short or acc_subs0）。次: maxr1=1 base（r1ok 要・clean 抽出）
+  → level 帰納で diagSeq 0 1、さらに maxr1≥2（crux 本体）。

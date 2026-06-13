@@ -174,6 +174,36 @@ proof -
   ultimately show ?thesis by simp
 qed
 
+lemma acc_subs0:
+  assumes "M \<in> ST_PS" and "\<forall>p \<in> set M. snd p = 0"
+  shows "M \<in> Wellfounded.acc stepR"
+proof -
+  define Q where
+    "Q t \<longleftrightarrow> (\<forall>N. translate N = t \<longrightarrow> N \<in> ST_PS \<longrightarrow> (\<forall>p \<in> set N. snd p = 0)
+                  \<longrightarrow> N \<in> Wellfounded.acc stepR)" for t
+  have "Q (translate M)"
+  proof (rule wf_induct_rule[OF wf_olt_wf3, where P = Q])
+    fix t assume IH: "\<And>y. (y, t) \<in> {(w,x). olt w x \<and> wf3 w \<and> wf3 x} \<Longrightarrow> Q y"
+    {
+      fix N assume tN: "translate N = t" and NST: "N \<in> ST_PS"
+        and Nz: "\<forall>p \<in> set N. snd p = 0"
+      have "N \<in> Wellfounded.acc stepR"
+      proof (rule acc.accI)
+        fix T assume "(T, N) \<in> stepR"
+        hence stp: "step N T" by simp
+        have TST: "T \<in> ST_PS" and Tz: "\<forall>p \<in> set T. snd p = 0"
+          using subs0_step_closed[OF NST Nz stp] by auto
+        have "(translate T, t) \<in> {(w,x). olt w x \<and> wf3 w \<and> wf3 x}"
+          using subs0_step_decreases[OF NST Nz stp] tN by simp
+        from IH[OF this] have "Q (translate T)" .
+        thus "T \<in> Wellfounded.acc stepR" using TST Tz unfolding Q_def by blast
+      qed
+    }
+    thus "Q t" unfolding Q_def by blast
+  qed
+  thus ?thesis using assms unfolding Q_def by blast
+qed
+
 end
 
 
