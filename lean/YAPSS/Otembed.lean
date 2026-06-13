@@ -279,6 +279,17 @@ theorem psi_eq_of_notMem {α β : Ordinal.{u}} {v : ℕ} (hαβ : α ≤ β)
   rw [psi_unfold β v]
   exact csInf_le' hnm
 
+/-- Strict monotonicity from membership in the *outer* `C_v(α)` (weaker
+hypothesis than Buchholz 1.3's `ζ ∈ C_v(ζ)`, since `C_v(ζ) ⊆ C_v(α)`):
+if `ζ ∈ C_v(α)` and `ζ < α` then `ψ_v(ζ) < ψ_v(α)`. -/
+theorem psi_strict_mono_mem {α ζ : Ordinal.{u}} {v : ℕ}
+    (hζ : ζ ∈ Cset (psiRes α) α v) (hζα : ζ < α) : psi ζ v < psi α v := by
+  refine lt_of_le_of_ne (psi_mono_arg hζα.le v) (fun he => ?_)
+  have hmem : psi ζ v ∈ Cset (psiRes α) α v := by
+    have := Cset_psi_closed hζ hζα v
+    rwa [psiRes, if_pos hζα] at this
+  exact psi_notMem α v (he ▸ hmem)
+
 /-- `G`-critical subterms are well-formed (Buchholz's Proposition
 `a ∈ OT → G_u a ⊆ OT`). -/
 theorem wf3_Gterm {t x : Three} (ht : wf3 t) {v : ℕ} (hx : x ∈ Gterm v t) :
