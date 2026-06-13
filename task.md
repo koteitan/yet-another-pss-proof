@@ -60,10 +60,13 @@
 - ✅ nrm 基盤〔nrm定義・proj_id/rec/wf3/G・wf3_nrm（像⊆OT）・PSI 緑〕
 - ✅ 実証: 2,643,843 ペアで衝突0・逆転0〔tools/valnorm.py〕
 - ✅ PSS_terminates_nrm / wf_Rnf_nrm / nrm_step_dec（order_pres からの導出）
-- 🔬 **W=T 直接路線（続85・本線化）〔wtt.thy・緑〕**: nrm/順序/translate を使わず
-    PSS 停止性を **diag_acc**（diag種 accessibility）1点に帰着。reduction
-    （direct_acc_of_ST_PS / PSS_terminates_direct）は**証明済**。diag_acc は OPEN、
-    Buchholz W=T の sum/principal 閉包（PSS版）で攻める。旧 nrm_order_pres（第7事件で偽核）を放棄。
+- 🔬 **W=T 直接路線（続85〜88・本線）〔wtt.thy/ord/wttbase.thy・緑〕**: nrm/順序/translate
+    を使わず PSS 停止性を **diag_acc**（diag種 accessibility）1点に帰着。
+    - ✅ reduction（direct_acc_of_ST_PS / PSS_terminates_direct / acc_short）+ step_level_noninc 証明済。
+    - ✅ **maxr1=0 base 完全証明**〔wf3_of_cnf_subs0（純項 cnf∧subs⊆{0}⟹wf3）/ wf3_translate_subs0 /
+      subs0_step_closed/decreases / **acc_subs0**（maxr1=0標準形は全accessible）・sorry無・crux-free〕。
+    - 🚨 残: maxr1=1 base（r1ok要）→ level帰納 → **maxr1≥2＝crux本体**（再上昇正準化）。
+    旧 nrm_order_pres（第7事件で偽核）放棄。
   - 🚨 nrm_step_dec 直接証明〔nrmstep.thy〕＝旧値側ルート（凍結・第7事件で偽核含む）
   - 🚨🚨🚨 **健全性第7事件（最重大・続78）**: 旧値側基盤が closure+5/+6 で偽と確定。
     **偽（reachable 反例・モデル検証済）**: E6_value(proj=NT msfx)/E6_mem(msfx∈Gterm)/
