@@ -896,6 +896,50 @@ theorem NEC_of_argExtract
       exact ihb wfb (argExt hva hbcan hhead) x hxb
     · exact ihc wfc htail x hxc
 
+/-- **Arg-extraction from the canonical-witness lemma (Buchholz 1.4(b)).**  If every
+additive-principal `γ ∈ C_v(α)` with `Ω_v ≤ γ` is `ψ_u ξ` for a CANONICAL
+`ξ ∈ C_v(α) ∩ Iio α` (`ξ ∈ C_u(ξ)`), then arg-extraction holds: the band-`a`
+witness for `ψ_a β ∈ C_v(α)` is canonical, and `psi_canonical_inj` pins it to the
+canonical `β`.  (`CW` is Buchholz 1.4(b), free in his canonicity-carrying `C`;
+for the omitted-canonicity Lean `Cstep` it is the genuine remaining core — true by
+the Remark `omitted = with`, with `1.7` covering the non-collapse region.) -/
+theorem argExtract_of_canonWitness
+    (CW : ∀ (v : ℕ) (γ α : Ordinal.{u}), γ ∈ Cset (psiRes α) α v → Om v ≤ γ →
+       Ordinal.IsPrincipal (· + ·) γ → ∃ (u' : ℕ) (ξ : Ordinal.{u}),
+         γ = psi ξ u' ∧ ξ < α ∧ ξ ∈ Cset (psiRes α) α v ∧ ξ ∈ Cset (psiRes ξ) ξ u')
+    {v a : ℕ} {β α : Ordinal.{u}} (hva : v ≤ a)
+    (hβc : β ∈ Cset (psiRes β) β a) (hmem : psi β a ∈ Cset (psiRes α) α v) :
+    β ∈ Cset (psiRes α) α v := by
+  have hlo : Om v ≤ psi β a := le_trans (Om_mono hva) (Om_le_psi β a)
+  have hpr : Ordinal.IsPrincipal (· + ·) (psi β a) :=
+    fun {x y} hx hy => (psi_addprinc β a).2 x y hx hy
+  obtain ⟨u', ξ, heq, hξα, hξv, hξc⟩ := CW v (psi β a) α hmem hlo hpr
+  have hua : u' = a := by
+    have h1 : Om u' ≤ psi β a := heq ▸ Om_le_psi ξ u'
+    have h2 : psi β a < Om (u' + 1) := heq ▸ psi_lt_Om_succ ξ u'
+    have hua1 : u' ≤ a := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt h1 (psi_lt_Om_succ β a)) (not_lt.2 (Om_mono (by omega)))
+    have hua2 : a ≤ u' := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt (Om_le_psi β a) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  subst hua
+  have hξβ : ξ = β := psi_canonical_inj hξc hβc heq.symm
+  rwa [← hξβ]
+
+/-- **Buchholz Lemma 1.9 necessity for `wf3` terms, modulo the canonical-witness
+lemma 1.4(b)** (`NEC_of_argExtract ∘ argExtract_of_canonWitness`).  So the entire
+`wf3`-necessity direction follows from `CW` (1.4(b)) — the single precise ordinal
+gap, true and the genuine Buchholz core for the omitted-canonicity `Cstep`. -/
+theorem NEC_of_canonWitness
+    (CW : ∀ (v : ℕ) (γ α : Ordinal.{u}), γ ∈ Cset (psiRes α) α v → Om v ≤ γ →
+       Ordinal.IsPrincipal (· + ·) γ → ∃ (u' : ℕ) (ξ : Ordinal.{u}),
+         γ = psi ξ u' ∧ ξ < α ∧ ξ ∈ Cset (psiRes α) α v ∧ ξ ∈ Cset (psiRes ξ) ξ u')
+    {t : Three} (ht : wf3 t) {v : ℕ} {α : Ordinal.{u}}
+    (hm : oV t ∈ Cset (psiRes α) α v) : ∀ x ∈ Gterm v t, oV x < α :=
+  NEC_of_argExtract (fun hva hβc hmem => argExtract_of_canonWitness CW hva hβc hmem) ht hm
+
 /-! ## Well-foundedness of `olt` on the Buchholz class `wf3` (Lemma 2.2)
 
 The value map embeds `(wf3, olt)` into the ordinals, so `olt` is well-founded
