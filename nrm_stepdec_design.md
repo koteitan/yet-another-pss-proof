@@ -556,6 +556,23 @@ NO level mismatch; SBC + psi_strict_mono_arg pin the witness ζ=β) and `NEC_of_
 limit-canonical β (β≥Ω_{a+1}) OPEN** = band-recursive core (ψ_{u>a}; Buchholz 1986
 §1.9 C-rank induction). 9 lemmas this session, all kernel-checked, build 949 green.
 NB the psi_proj per-step (`ψ_a(oV b)=ψ_a(oV g*)`, b non-a-reduced) is a SEPARATE
-bridge: NEC_of_SBC(b) gives oV b∉C_a(oV g*) (b non-canonical at a), but the
+bridge: NEC(b) gives oV b∉C_a(oV g*) (b non-canonical at a), but the
 obligation needs ψ_a(oV b)∉C_a(oV g*) which doesn't follow without canonicity —
 so the per-step is its own non-canonical-collapse piece (same ψ-plateau core).
+
+### ⚠️ CORRECTION (same session, commit c826400): SBC is FALSE
+Stress-testing SBC before chasing its "limit case" revealed SBC is FALSE, not
+merely open. `SBC: β∈C_a(β) → ξ<β → ψ_a ξ<ψ_a β`. By collapse_succ iterated, for
+non-canonical ξ, `ψ_a ξ = ψ_a(γ)` with γ=least canonical >ξ. A LIMIT-canonical β
+isolated above a non-canonical gap (β=least canonical >ξ, e.g. a ψ-value limit
+≥Ω_{a+1}) has `ψ_a ξ=ψ_a β` for ξ in the run ⟹ SBC violated. ψ_a is LEFT-CONTINUOUS
+at limit-canonical points; jumps occur only at SUCCESSOR canonical points. Reverted
+`argExtract_of_SBC`/`NEC_of_SBC` (sound implications, false premise → dead route).
+**Live target = `arg_extract` (Buchholz 1.4(c), TRUE) via `NEC_of_argExtract`.**
+Since the plateau gives a non-canonical witness ζ<β with ψ_a ζ=ψ_a β, arg_extract
+needs the CANONICAL-GENERATION equivalence (Lean's Cstep omits Buchholz's
+`ξ∈C_u(ξ)` side-condition; his Remark: sets equal). Proving `Cstep = canonical-Cstep`
+reduces to "plateau-min is canonical" (least η with ψ_u η=V has η∈C_u(η) — distinct
+from SBC, possibly true; successor clean). KEPT (true): `psi_strict_mono_below_succ`
+(successor SBC), canon_pred, succ_mem, collapse_le, Cset_limit_sub, 1.5,
+NEC_of_argExtract.
