@@ -3761,3 +3761,23 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   Phase2: 偽族（ginv/E6_value/E6_mem/nbcK/O2/GBLK0/GAP/dseg_bound/ob_*）を撤去。
   Phase3: dichOK + NT_tie で nrm 値側減少を完成（Lean 未完＝新規設計）。
   対角の m_step_decreases（translate 減少）は健全・流用。
+
+### ★★(2026-06-13 続80) 訂正 — dichOK も d0=0 完全コピーで偽・lean-yapss は crux 未解決
+
+**続79 の「Lean が値側を健全に解いた青写真」評価は誤り**だった。精査結果:
+- ya-pss モデルで **dichOK は closure+4 で 130,392 違反**。反例 M=(0,0)(1,1)
+  (2,1)(3,1)(4,0)(5,1)(6,1)(7,0)(8,1)(9,1)(8,1)(9,0)... の p=7,q=9,t=10:
+  **t=10 列 (8,1) は位置8 (8,1) の完全コピー再上昇**（d0=0 exact-copy re-entry）
+  = E6_value を壊したのと同じ再上昇機構。M は到達可能・r1ok 成立。
+- Lean 側の対応: `copyDichOK_of` は **hd0: 0<d0（シフトコピー）のみ証明**。
+  完全コピー d0=0 分岐は未証明。`dichOK_ST_PS`（hbad 義務付き）は **Nrmstep 内で
+  一度も適用されず**、dichOK は **Nrm/Proofs で未使用**＝**停止性に未接続**。
+  値側最終減少 `nrm_order_pres` は依然 sorry。
+- ⟹ **dichOK は d0=0 で偽**で、Lean は d0>0 だけ証明し crux を未接続のまま放置。
+  Nrmstep.lean が「0 sorry」なのは、crux を **未充足の仮説 hbad に退避**し
+  dichOK をゴールに繋いでいないため。**lean-yapss も値側 crux は未解決**。
+
+**真の hard core 確定**: **d0=0 完全コピーの再上昇**。msfx-anchor（E6_value）も
+  辺二分律（dichOK）も、この再上昇でいずれも偽。最終減少は真（検証済）なので
+  論証は存在するが、両姉妹プロジェクトとも未達。dichOK への単純乗り換えでは
+  crux を回避できない。
