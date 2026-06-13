@@ -3829,3 +3829,10 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
 - proj 単調性 on NT-像 を Isabelle でどう証明するか（NT-像の不変条件を伴う帰納）が
   次の核心。**凍結前に +5/+6 broad 監査**（教訓）＋紙スケッチ。
 - d0>0 ケースは別途（lean-yapss の copyExp/le0 合同が健全な道具として流用可）。
+
+- (続82補) proj 単調性 broad +5 監査クリア: **+5 新フロンティアsample 319,200ペア
+  0違反**（classes u=0..3）。深層再上昇ファミリー120万＋broad+4 15万と合わせ
+  **proj 単調性 on NT-像は深層で頑健に真**＝凍結前監査ゲート通過。次は Isabelle で
+  「proj 単調性 on NT-像」をどう証明するか（NT-像の不変条件付き帰納・任意wf3では
+  偽なので標準性が要る）の形式化設計。既存 proj 補題（proj_once/nofire/fire_in/
+  proj_submono）を土台に検討。

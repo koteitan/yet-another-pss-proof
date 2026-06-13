@@ -101,6 +101,11 @@
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - ✅ TOP_desc ステート〔prefix弱化形・閉包+2 967/0 凍結・本体は未証明〕
   - 🚨 スタブ〔NT_tie/E6_mem＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン（SCC地図=memo続59）〕
+  - 🔬 **値側 dichOK→proj単調性 へ（続82）**: d0=0 減少= M=G@B@[lp], M[n]=G@B^n。
+    NT(M[1])<oNT(M)=NT_prefix_lt(真)。n≥2 は lead一致＋hdarg=proj(NT K)で決まり、
+    **proj単調性 a≤ob⟹proj u a≤o proj u b** に帰着。proj単調性は**NT-像上で深層
+    頑健に真**（再上昇ファミリー120万/0・broad+5 32万/0）＝E6_valueの健全な置換。
+    任意wf3では偽（標準性依存）。次=Isabelle形式化（NT-像不変条件付き帰納）。
   - ✅ **戦略転換（続79）**: 偽 E6_value/ginv/nbcK 族を捨て **dichOK 戦略**へ
     （lean-yapss/Lean Nrmstep=sorry0 が青写真・dichOK=辺二分律で健全）。
     Phase1 dichOK 移植 / Phase2 偽族撤去 / Phase3 dichOK+NT_tie で値減少完成。
