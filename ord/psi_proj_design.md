@@ -61,6 +61,17 @@ oV b が非 canonical（その係数 g が oV b を超える）であること�
 ### lean 担当（advice-reply.md §3）
 - 1.4(b) canonical witness / C-集合同値（1.4(a) psi_canonical_inj 済を活用）。
 
+### 続89(16): ★psi_proj を per-maxo-step に精密帰着（proj.induct）
+psi_proj (ψ_a(oV b)=ψ_a(oV(proj a b))) を proj.induct で分解:
+- base（bad={g∈Gterm a b:¬olt g b}=∅, proj a b=b）: 自明（両辺同じ）。
+- step（bad≠∅, proj a b = proj a (maxo bad)）: IH で ψ_a(oV(maxo bad))=ψ_a(oV(proj a(maxo bad)))。
+  ⟹ 残り = **per-maxo-step `ψ_a(oV b) = ψ_a(oV(maxo bad))`**（m:=maxo bad∈Gterm a b, ¬olt m b）。
+- wf3 b なら ¬olt m b ⟹ oV b ≤ oV m（oV_order_pres 逆）。m∈Gterm a b（構造的係数）。
+- **これが irreducible core**: ψ_a(oV b)=ψ_a(oV m), oV b≤oV m, m∈Gterm a b。
+  道具候補: collapse_succ/grow（gap [oV b,oV m) 非canonical を要するが確立が肝＝canonical-rep）。
+  proj_canonical（proj a b は a-canonical・証明済）は psi_strict_mono_arg 適用の足場。
+  残課題: gap 非canonical or C_a(oV b)=C_a(oV m) の確立。Lean も同地点。
+
 ### 続89(15): ψ §1 toolkit 構築進捗（necessity.thy・PSI 緑sorry無・全て自前/独立）
 - **collapse**（collapsing.thy）: psi_eq_of_Cset_eq / Cset_succ_eq / collapse_succ(1.6a) /
   Cset_grow_eq / collapse_grow（一般 collapsing）。
