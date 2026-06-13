@@ -119,4 +119,24 @@ theorem omega_opow_Om {v : ℕ} (hv : 0 < v) : ω ^ Om v = Om v := by
   have hω : (ω : Ordinal) < (ℵ_ (v : Ordinal)).ord := by rw [← Om_of_pos hv]; exact omega_lt_Om hv
   exact le_of_lt ((isPrincipal_opow_ord (aleph0_le_aleph _)) hω hb)
 
+/-- `ε_{Ω_v+1} < Ω_{v+1}` (the level-`v` formula bound stays below band `v+1`):
+`ε_ = deriv (ω^·)` stays below the regular `ℵ_{v+1}` by `deriv_lt_ord` (since
+`ω^·` does, by `isPrincipal_opow_ord`), and `Ω_v + 1 < Ω_{v+1}`.  This is the
+correct bound for 1.7(b) (consistent with `ψ_v α < Ω_{v+1}`); the global
+`ε_{Ω_ω+1}` is only the 1.8(a) `C`-bound. -/
+theorem epsilon_Om_succ_lt_Om {v : ℕ} : ε_ (Om v + 1) < Om (v + 1) := by
+  have hOm : Om (v + 1) = (ℵ_ ((v : Ordinal) + 1)).ord := by
+    rw [Om_of_pos (Nat.succ_pos v), Nat.cast_succ]
+  have hpos : (0 : Ordinal) < (v : Ordinal) + 1 := lt_of_le_of_lt bot_le (lt_add_one _)
+  have hω : (ω : Ordinal) < (ℵ_ ((v : Ordinal) + 1)).ord := by
+    rw [lt_ord, card_omega0, ← aleph_zero]; exact aleph_lt_aleph.2 hpos
+  rw [epsilon_eq_deriv, hOm]
+  refine deriv_lt_ord (isRegular_aleph_add_one _) ?_ ?_ ?_
+  · rw [← aleph_zero]; exact (aleph_lt_aleph.2 hpos).ne'
+  · intro i hi; exact (isPrincipal_opow_ord (aleph0_le_aleph _)) hω hi
+  · have hlt : Om v < Om (v + 1) := Om_lt_succ v
+    rw [hOm] at hlt
+    rw [← Order.succ_eq_add_one]
+    exact (isSuccLimit_ord (aleph0_le_aleph _)).succ_lt hlt
+
 end YAPSS
