@@ -108,6 +108,22 @@ proof (induction u b rule: proj.induct)
   qed
 qed
 
+text \<open>\<^bold>\<open>The projection produces an \<open>a\<close>-canonical value\<close>: since every \<open>G\<^bsub>a\<^esub>\<close>-critical
+  subterm of \<open>proj a b\<close> is \<open><\<close> it (\<open>proj_G\<close>) and all are well-formed, their values
+  drop below \<open>o(proj a b)\<close>, so \<open>o(proj a b) \<in> C\<^bsub>a\<^esub>(o(proj a b))\<close> (Buchholz OT3 \<Rightarrow> C).
+  This is the canonicity that \<open>psi_strict_mono_arg\<close> (1.3) needs after collapsing.\<close>
+
+lemma proj_canonical:
+  assumes "wf3 b"
+  shows "oV (proj a b) \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV (proj a b)). psi \<xi>) (oV (proj a b)) a)"
+proof (rule Ccond_of_lt)
+  have wfp: "wf3 (proj a b)" by (rule proj_wf3[OF assms])
+  fix x assume x: "x \<in> Gterm a (proj a b)"
+  have "olt x (proj a b)" using proj_G x by blast
+  moreover have "wf3 x" by (rule Gterm_wf3[OF x wfp])
+  ultimately show "oV x < oV (proj a b)" using oV_order_pres wfp by blast
+qed
+
 subsection \<open>Sum insertion with absorption, and \<open>nrm\<close>\<close>
 
 fun ins :: "nat \<Rightarrow> three \<Rightarrow> three \<Rightarrow> three" where
