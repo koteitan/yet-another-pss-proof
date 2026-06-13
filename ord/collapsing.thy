@@ -17,36 +17,33 @@ text \<open>\<^bold>\<open>Buchholz Lemma 1.6(a) (the collapsing step) on the ZF
 abbreviation (input) Cv :: "V \<Rightarrow> nat \<Rightarrow> V" where
   "Cv \<alpha> v \<equiv> Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v"
 
-text \<open>Under \<open>\<alpha> \<notin> C\<^sub>v(\<alpha>)\<close>, every iterate of the \<open>\<alpha>+1\<close> closure stays inside
-  \<open>C\<^sub>v(\<alpha>)\<close> and avoids \<open>\<alpha>\<close>.  (Joint induction so the \<open>\<psi>\<^sub>\<alpha>\<close>-generator case can
-  use that \<open>\<alpha>\<close> is absent from the previous iterate.)  The closure parameter is
-  kept abstract (\<open>p\<close> agreeing with \<open>\<psi>\<close> below \<open>\<alpha>\<close>) to dodge \<open>restrict\<close>/\<open>elts (succ \<alpha>)\<close>
-  normalization noise.\<close>
+text \<open>\<^bold>\<open>General argument growth.\<close>  If every ordinal in the gap \<open>elts \<beta> \<setminus> elts \<alpha>\<close>
+  is \<^emph>\<open>not\<close> in \<open>C\<^sub>v(\<alpha>)\<close>, then growing the argument from \<open>\<alpha>\<close> to \<open>\<beta>\<close> adds nothing:
+  the extra \<open>\<psi>\<^sub>\<xi>\<close>-generators (gap subscripts) never fire because those \<open>\<xi>\<close> never
+  enter the closure.  Every iterate of the \<open>\<beta>\<close>-closure stays inside \<open>C\<^sub>v(\<alpha>)\<close> and
+  avoids the gap.  (Closure parameter \<open>p\<close> kept abstract to dodge \<open>restrict\<close> noise.)\<close>
 
-lemma Citer_succ_stays:
-  assumes notin: "\<alpha> \<notin> elts (Cv \<alpha> v)"
+lemma Citer_grow_stays:
+  assumes gap: "\<And>\<xi>. \<xi> \<in> elts \<beta> \<Longrightarrow> \<xi> \<notin> elts \<alpha> \<Longrightarrow> \<xi> \<notin> elts (Cv \<alpha> v)"
     and pagree: "\<And>\<xi> u. \<xi> \<in> elts \<alpha> \<Longrightarrow> p \<xi> u = psi \<xi> u"
-  shows "elts (Citer p (succ \<alpha>) v n) \<subseteq> elts (Cv \<alpha> v)
-         \<and> \<alpha> \<notin> elts (Citer p (succ \<alpha>) v n)"
+  shows "elts (Citer p \<beta> v n) \<subseteq> elts (Cv \<alpha> v)
+         \<and> (\<forall>\<xi>\<in>elts \<beta>. \<xi> \<notin> elts \<alpha> \<longrightarrow> \<xi> \<notin> elts (Citer p \<beta> v n))"
 proof (induction n)
   case 0
-  have c0: "elts (Citer p (succ \<alpha>) v 0) = elts (Om v)" by simp
+  have c0: "elts (Citer p \<beta> v 0) = elts (Om v)" by simp
   have om: "elts (Om v) \<subseteq> elts (Cv \<alpha> v)" by (rule Om_subset_Cset)
-  show ?case unfolding c0 using om notin by blast
+  show ?case unfolding c0 using om gap by blast
 next
   case (Suc n)
-  note IHsub = Suc.IH[THEN conjunct1] and IHna = Suc.IH[THEN conjunct2]
-  have step: "elts (Citer p (succ \<alpha>) v (Suc n))
-              = elts (Cstep p (succ \<alpha>) (Citer p (succ \<alpha>) v n))" by simp
-  have "elts (Cstep p (succ \<alpha>) (Citer p (succ \<alpha>) v n)) \<subseteq> elts (Cv \<alpha> v)"
+  note IHsub = Suc.IH[THEN conjunct1] and IHgap = Suc.IH[THEN conjunct2]
+  have step: "elts (Citer p \<beta> v (Suc n)) = elts (Cstep p \<beta> (Citer p \<beta> v n))" by simp
+  have sub: "elts (Cstep p \<beta> (Citer p \<beta> v n)) \<subseteq> elts (Cv \<alpha> v)"
   proof (rule subsetI)
-    fix x assume "x \<in> elts (Cstep p (succ \<alpha>) (Citer p (succ \<alpha>) v n))"
+    fix x assume "x \<in> elts (Cstep p \<beta> (Citer p \<beta> v n))"
     then consider
-        (old) "x \<in> elts (Citer p (succ \<alpha>) v n)"
-      | (sum) \<xi> \<eta> where "\<xi> \<in> elts (Citer p (succ \<alpha>) v n)"
-                         "\<eta> \<in> elts (Citer p (succ \<alpha>) v n)" "x = \<xi> + \<eta>"
-      | (gen) \<xi> u where "\<xi> \<in> elts (Citer p (succ \<alpha>) v n)" "\<xi> \<in> elts (succ \<alpha>)"
-                        "x = p \<xi> u"
+        (old) "x \<in> elts (Citer p \<beta> v n)"
+      | (sum) \<xi> \<eta> where "\<xi> \<in> elts (Citer p \<beta> v n)" "\<eta> \<in> elts (Citer p \<beta> v n)" "x = \<xi> + \<eta>"
+      | (gen) \<xi> u where "\<xi> \<in> elts (Citer p \<beta> v n)" "\<xi> \<in> elts \<beta>" "x = p \<xi> u"
       by (auto simp: elts_Cstep)
     thus "x \<in> elts (Cv \<alpha> v)"
     proof cases
@@ -58,35 +55,47 @@ next
     next
       case gen
       have xinC: "\<xi> \<in> elts (Cv \<alpha> v)" using gen(1) IHsub by blast
-      have "\<xi> \<noteq> \<alpha>" using gen(1) IHna by blast
-      hence xa: "\<xi> \<in> elts \<alpha>" using gen(2) by (auto simp: elts_succ)
+      have xa: "\<xi> \<in> elts \<alpha>" using gen(1,2) IHgap by blast
       have "p \<xi> u = psi \<xi> u" by (rule pagree[OF xa])
       also have "psi \<xi> u = (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<xi> u" using xa by simp
       finally have "x = (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<xi> u" using gen(3) by simp
       thus ?thesis using Cset_psi_closed[OF xinC xa] by simp
     qed
   qed
-  hence sub: "elts (Citer p (succ \<alpha>) v (Suc n)) \<subseteq> elts (Cv \<alpha> v)" using step by simp
-  have "\<alpha> \<notin> elts (Citer p (succ \<alpha>) v (Suc n))" using sub notin by blast
-  thus ?case using sub by blast
+  hence subS: "elts (Citer p \<beta> v (Suc n)) \<subseteq> elts (Cv \<alpha> v)" using step by simp
+  have "\<forall>\<xi>\<in>elts \<beta>. \<xi> \<notin> elts \<alpha> \<longrightarrow> \<xi> \<notin> elts (Citer p \<beta> v (Suc n))"
+    using subS gap by blast
+  thus ?case using subS by blast
 qed
+
+lemma Cset_grow_eq:
+  assumes gap: "\<And>\<xi>. \<xi> \<in> elts \<beta> \<Longrightarrow> \<xi> \<notin> elts \<alpha> \<Longrightarrow> \<xi> \<notin> elts (Cv \<alpha> v)"
+    and le: "elts \<alpha> \<subseteq> elts \<beta>"
+  shows "elts (Cv \<beta> v) = elts (Cv \<alpha> v)"
+proof
+  have pagree: "\<And>\<xi> u. \<xi> \<in> elts \<alpha> \<Longrightarrow> (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<xi> u = psi \<xi> u"
+    using le by auto
+  show "elts (Cv \<beta> v) \<subseteq> elts (Cv \<alpha> v)"
+  proof (rule subsetI)
+    fix x assume "x \<in> elts (Cv \<beta> v)"
+    then obtain n where "x \<in> elts (Citer (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> v n)"
+      by (auto simp: Cset_mem_iff)
+    thus "x \<in> elts (Cv \<alpha> v)" using Citer_grow_stays[OF gap pagree] by blast
+  qed
+next
+  show "elts (Cv \<alpha> v) \<subseteq> elts (Cv \<beta> v)"
+    by (rule Cset_mono_param) (use le in \<open>auto simp: subsetD\<close>)
+qed
+
+text \<open>The successor case (\<open>\<beta> = \<alpha>+1\<close>, gap \<open>= {\<alpha>}\<close>) is the original Lemma 1.6(a).\<close>
 
 lemma Cset_succ_eq:
   assumes "\<alpha> \<notin> elts (Cv \<alpha> v)"
   shows "elts (Cv (succ \<alpha>) v) = elts (Cv \<alpha> v)"
-proof
-  have pagree: "\<And>\<xi> u. \<xi> \<in> elts \<alpha> \<Longrightarrow> (\<lambda>\<xi>\<in>elts (succ \<alpha>). psi \<xi>) \<xi> u = psi \<xi> u"
-    by (auto simp: elts_succ)
-  show "elts (Cv (succ \<alpha>) v) \<subseteq> elts (Cv \<alpha> v)"
-  proof (rule subsetI)
-    fix x assume "x \<in> elts (Cv (succ \<alpha>) v)"
-    then obtain n where "x \<in> elts (Citer (\<lambda>\<xi>\<in>elts (succ \<alpha>). psi \<xi>) (succ \<alpha>) v n)"
-      by (auto simp: Cset_mem_iff)
-    thus "x \<in> elts (Cv \<alpha> v)" using Citer_succ_stays[OF assms pagree] by blast
-  qed
-next
-  show "elts (Cv \<alpha> v) \<subseteq> elts (Cv (succ \<alpha>) v)"
-    by (rule CC_mono) (auto simp: less_eq_V_def)
+proof (rule Cset_grow_eq)
+  show "\<And>\<xi>. \<xi> \<in> elts (succ \<alpha>) \<Longrightarrow> \<xi> \<notin> elts \<alpha> \<Longrightarrow> \<xi> \<notin> elts (Cv \<alpha> v)"
+    using assms by (auto simp: elts_succ)
+  show "elts \<alpha> \<subseteq> elts (succ \<alpha>)" by (auto simp: elts_succ)
 qed
 
 text \<open>\<open>\<psi>\<^sub>v\<close> depends only on the \<^emph>\<open>set\<close> \<open>C\<^sub>v(\<alpha>)\<close> (it is its least non-element), so
@@ -96,6 +105,17 @@ lemma psi_eq_of_Cset_eq:
   assumes "elts (Cv \<alpha> v) = elts (Cv \<beta> v)"
   shows "psi \<alpha> v = psi \<beta> v"
   by (simp add: psi_unfold[of \<alpha> v] psi_unfold[of \<beta> v] assms)
+
+text \<open>\<^bold>\<open>General collapsing\<close>: if the whole gap up to \<open>\<beta>\<close> is non-canonical
+  (absent from \<open>C\<^sub>v(\<alpha>)\<close>), then \<open>\<psi>\<^sub>v\<close> is constant from \<open>\<alpha>\<close> to \<open>\<beta>\<close>.  This is the
+  argument-side collapse the term-level \<open>psi_proj\<close> needs (\<open>proj\<close> grows the value
+  \<open>oV b \<le> oV(proj a b)\<close> across a non-canonical gap).\<close>
+
+theorem collapse_grow:
+  assumes "\<And>\<xi>. \<xi> \<in> elts \<beta> \<Longrightarrow> \<xi> \<notin> elts \<alpha> \<Longrightarrow> \<xi> \<notin> elts (Cv \<alpha> v)"
+    and "elts \<alpha> \<subseteq> elts \<beta>"
+  shows "psi \<alpha> v = psi \<beta> v"
+  by (rule psi_eq_of_Cset_eq[OF Cset_grow_eq[OF assms, symmetric]])
 
 theorem collapse_succ:
   assumes "\<alpha> \<notin> elts (Cv \<alpha> v)"
