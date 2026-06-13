@@ -650,6 +650,25 @@ WHOLE necessity is additive after all. (R1/R2 NOT needed — earlier pessimism w
   psi_proj_notmem from NEC on the non-canonical b' — RECHECK this still needs the
   non-canonical necessity (NEC is for wf3/canonical t); the per-step b' is
   non-a-reduced. May need 1.9 necessity applied differently. Re-derive at that point.
-Mathlib deps available: `Ordinal.CNF`, `ε_`(Veblen), `aleph`, opow. LARGE but additive. Verified-committed this session stands:
+Mathlib deps available: `Ordinal.CNF`, `ε_`(Veblen), `aleph`, opow. LARGE but additive.
+
+### 1.7(a) PROGRESS (this session): structure solved, pieces proven, sub-obstacle pinned
+PROVEN-committed (Psi.lean) toward 1.7(a): `psi_zero`(ψ_v 0=Ω_v=base), `Om_isPrincipal`,
+`Cset_zero`, `one_mem_Cset`, `canon_succ`, `Cset_mul_nat`(C closed under ·n),
+`Iio_opow_succ_subset`(**≥-dir of 1.7a successor**: Iio(ω^{α+1})⊆C_0(α+1) given
+ω^α∈C ∧ Iio(ω^α)⊆C, via lt_omega0_opow_succ+Cset_mul_nat).
+**1.7(a) CLEAN STRUCTURE (solved this session):** `∀α<ε₀, α∈C_0(α) ∧ ψ_0 α=ω^α` by
+transfinite induction, IH = both. Prove FORMULA first, then CANONICITY for FREE:
+α<ε₀ ⟹ α<ω^α (`epsilon_zero_le_of_omega0_opow_le` contrapositive + `right_le_opow`),
+so α<ω^α=ψ_0 α ⟹ α∈C_0(α) by `below_psi_mem_Cset`. NO CNF/canon_succ needed for canonicity!
+FORMULA ψ_0 α=ω^α: ≥ by cases (0: psi_zero; succ: Iio_opow_succ_subset; limit:
+ω^α=sup_{β<α}ω^β, each ω^β=ψ_0 β<ψ_0 α via 1.3+IH-canon); ≤ via `ω^α∉C_0(α)`: M1
+(`psi_form_of_mem`, band 0) + IH-formula (ω^α=ψ_0 ξ=ω^ξ ⟹ α=ξ<α ⊥).
+**REMAINING SUB-OBSTACLE for ≤:** M1 needs ω^α BAND 0 i.e. **ω^α<Ω_1=ω_1** ⟸ ε₀<ω_1
+(ε₀ COUNTABLE; ε₀=nfp(ω^·)0=sup_n iterates, each countable). Need `(ε_ 0).card ≤ ℵ₀`
+then `lt_ord`. That + assembling the induction = finishes 1.7(a). (import
+Mathlib.SetTheory.Ordinal.Veblen.) Then 1.7(b) [v≠0, ε_{Ω_ω+1}, Ω_ω=ℵ_ω], 1.4(b),
+argExtract, NEC, then RE-DERIVE psi_proj_notmem (non-canonical b' — NEC is wf3/canon,
+recheck the per-step uses necessity correctly). Peer doing same in Isabelle. Verified-committed this session stands:
 psi_notMem_iff_eq, psi_proj_of_notmem+psi_proj_notmem(gap), NEC_of_argExtract,
 collapse_le, Cset_limit_sub, 1.5, succ_mem, canon_pred, psi_strict_mono_below_succ.
