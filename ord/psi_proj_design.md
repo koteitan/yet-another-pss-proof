@@ -61,6 +61,27 @@ oV b が非 canonical（その係数 g が oV b を超える）であること�
 ### lean 担当（advice-reply.md §3）
 - 1.4(b) canonical witness / C-集合同値（1.4(a) psi_canonical_inj 済を活用）。
 
+### 続89(14): oV-route 直接攻略の assembly 計画（nrm/necessity を迂回）
+finding(13)で wf3(translate)/nrm_order_pres は ST_PS 固有・blockok 不可と確定。⟹ general
+necessity(1.9)経由は canonical-witness の沼。**代わりに oV step-decrease を oper 構造で直接**:
+- 目標(termination 十分): `oV(translate(M[n])) < oV(translate M)`（step 対のみ・wf Rnf 不要、
+  inv_image VWF oV で直接 wf step 関係）。実測 bulletproof（98910 step 0 反例）。
+- 構造: `oper_bad_blocks`(mechanized.thy:998) が
+  `M = G@((v0,w0)#R)@[lp]`, `M[n]=G@(n 個 shifted copies, shift=k*d0 in row-0, row-1 不変)`,
+  `∀x∈R. v0<fst x`, `v0<fst lp`, `d0=0 ∨ (0<d0 ∧ w0<snd lp ∧ fst lp=v0+d0)` を与える。
+- **済の順序数 toolkit**: indec_mult_nat / indec_psi_mult (ψ_β·n<ψ_(succ β)) /
+  indec_psi_mult_add (ψ_β·n+δ<ψ_(succ β)) / collapse_succ / collapse_grow / indecomposable_psi。
+- **計画**:
+  - (i) translate-block-value 橋: translate(G@blocks) の oV を block 構造で表す
+    （translate の takeWhile/dropWhile 再帰を値側へ。seqlex_imp_olt の blockok_arg/tail 帰納が雛形）。
+  - (ii) d0=0 ケース（同一コピー・re-climb 無し）: n 個の同一主項 = ψ_w0(arg)·n、原 M の lp が
+    ψ_w0(arg+1) 型を作る ⟹ **indec_psi_mult で直接減少**。clean。
+  - (iii) d0>0 ケース（row-0 ramp・re-climb・非wf3）: 埋没する大項を **collapse_succ/grow** で
+    値保存しつつ畳む ⟹ 同様に n-copies 減少。**ここが本丸**。
+  - 残り課題: (i) の translate-value 橋（mechanized の translate 再帰を要する）。これが次の山。
+- 利点: nrm/proj/general-necessity/canonical-witness を全て迂回。値(oV)と ψ-collapse のみ。
+  green toolkit が既にある。欠点: translate-value 橋 + d0>0 collapse 接続が substantial。
+
 ### ✗続89(11) 訂正: 続89(10) の (B) reduction は欠陥あり
 - 「(B) ψ_{a'}(ζ)∈C_v(α)∧v≤a' ⟹ ζ<α」は **偽**。generator ケース ψ_{a'}(ζ)=ψ_u(ξ)
   (ξ<α) で、value の range により a'=u は出る（ψ_v(α)∈[Ω_v,Ω_{v+1}) が排他・
