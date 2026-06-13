@@ -1,5 +1,5 @@
 theory wtt
-  imports "proofs"
+  imports "proofs" "wf"
 begin
 
 text \<open>
@@ -88,6 +88,24 @@ proof (rule acc.accI)
   then have "1 < Lng M" by (cases rule: step.cases) auto
   moreover assume "Lng M \<le> 1"
   ultimately show "y \<in> Wellfounded.acc stepR" by simp
+qed
+
+text \<open>Level (max row-1) is non-increasing along a step: the expansion never
+  raises the maximal subscript.  This underlies the level induction toward
+  \<open>diag_acc\<close> (re-climb / the crux lives strictly at \<open>maxsub \<ge> 2\<close>; memo 続86).\<close>
+
+lemma step_level_noninc:
+  assumes M: "M \<in> ST_PS" and st: "step M T"
+  shows "maxsub (translate T) \<le> maxsub (translate M)"
+proof -
+  from st obtain n where L: "1 < Lng M" and n: "1 \<le> n" and TM: "T = M[n]"
+    by (auto elim!: step.cases)
+  have T: "T \<in> ST_PS" using M st by (rule step_in_ST_PS)
+  have dec: "olt (translate T) (translate M)"
+    using m_step_decreases[OF L n] TM by simp
+  have vNF: "translate T \<in> NF" using T by simp
+  have uNF: "translate M \<in> NF" using M by simp
+  show ?thesis by (rule maxsub_mono_NF'[OF vNF uNF dec])
 qed
 
 text \<open>\<^bold>\<open>The W = T core (OPEN).\<close>  Every diagonal seed is accessible.  To be
