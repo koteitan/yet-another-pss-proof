@@ -9280,4 +9280,93 @@ theorem cross_refute_interior {G R : PairSeq} {v0 w0 d0 n kt toff p : ℕ}
     rw [htval_eq] at hbf1
     omega
 
+/-- **The edge dichotomy of the expansion, fully assembled** modulo the in-copy
+tie obligation `htie`.  Every row-1 edge of `copyExp` falls into the location
+trichotomy — prefix→prefix (`dichOK_pre`), within-copy (`dichOK_copy`),
+prefix→copy-root (`cross_dichOK`) — and the remaining geometries (grid→root
+from an earlier copy, edge into an interior column from before its root) are
+refuted by `cross_refute_gridroot` / `cross_refute_interior`.  `htie` supplies
+the single open case (an interior tie descendant of a cross edge). -/
+theorem copyDichOK_of {G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
+    (hn : 1 ≤ n) (hd0 : 0 < d0) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hlp1 : lp.1 = v0 + d0)
+    (hM : dichOK (G ++ ((v0,w0)::R) ++ [lp]))
+    (hMedge : nextrel1 (G ++ ((v0,w0)::R) ++ [lp]) G.length
+              ((G ++ ((v0,w0)::R) ++ [lp]).length - 1))
+    (hc8 : ∀ j, j < G.length → G.getD j (0,0) ≠ (v0, w0))
+    (hBF1 : ∀ q, 0 < q → q < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 q → 0 < (((v0,w0)::R).getD q (0,0)).2 →
+      w0 < (((v0,w0)::R).getD q (0,0)).2)
+    (hBF2 : ∀ off, off < ((v0,w0)::R).length →
+      w0 ≤ (((v0,w0)::R).getD off (0,0)).2)
+    (htie : ∀ kt p, p < G.length → kt < n →
+      nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+        (G.length + kt * ((v0,w0)::R).length) →
+      ∀ kq qoff, kq < kt → 0 < qoff → qoff < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 qoff → ((v0,w0)::R).getD qoff (0,0) = lp →
+      le0 (copyExp G ((v0,w0)::R) d0 n)
+        (G.length + (kq * ((v0,w0)::R).length + qoff))
+        (G.length + kt * ((v0,w0)::R).length)) :
+    dichOK (copyExp G ((v0,w0)::R) d0 n) := by
+  intro p q t hedge hpq hqt hpos
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hXlen : (copyExp G ((v0,w0)::R) d0 n).length
+      = G.length + n * ((v0,w0)::R).length := copyExp_length ..
+  have htX : t < (copyExp G ((v0,w0)::R) d0 n).length := hedge.2.1
+  rcases Nat.lt_or_ge t G.length with htg | htg
+  · exact dichOK_pre hM rfl hn hL p q t htg hedge hpq hqt hpos
+  · obtain ⟨kt, toff, hkt, htoff, htdec⟩ :=
+      index_decomp hL (show t - G.length < n * ((v0,w0)::R).length by
+        rw [hXlen] at htX; omega)
+    have hteq : t = G.length + (kt * ((v0,w0)::R).length + toff) := by omega
+    rcases Nat.eq_zero_or_pos toff with htoff0 | htoffp
+    · have hteqr : t = G.length + kt * ((v0,w0)::R).length := by rw [hteq, htoff0]; omega
+      rcases Nat.lt_or_ge p G.length with hpg | hpg
+      · have hedger : nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+            (G.length + kt * ((v0,w0)::R).length) := by rw [← hteqr]; exact hedge
+        have hqtr : q < G.length + kt * ((v0,w0)::R).length := by rw [← hteqr]; exact hqt
+        have hres := cross_dichOK hn hd0 hdom hkt hpg hlp1 hM hMedge hc8 hedger
+          (htie kt p hpg hkt hedger) q hpq hqtr hpos
+        rw [← hteqr] at hres
+        exact hres
+      · exfalso
+        obtain ⟨kp, poff, hkp, hpoff, hpdec⟩ :=
+          index_decomp hL (show p - G.length < n * ((v0,w0)::R).length by
+            have : p < t := hedge.2.2.1
+            rw [hXlen] at htX; omega)
+        have hpeq : p = G.length + (kp * ((v0,w0)::R).length + poff) := by omega
+        have hedger : nextrel1 (copyExp G ((v0,w0)::R) d0 n)
+            (G.length + (kp * ((v0,w0)::R).length + poff))
+            (G.length + kt * ((v0,w0)::R).length) := by
+          rw [← hpeq, ← hteqr]; exact hedge
+        exact cross_refute_gridroot hkt hkp hpoff hBF2 hedger
+    · rcases Nat.lt_or_ge p (G.length + kt * ((v0,w0)::R).length) with hpr | hpge
+      · exfalso
+        have hedgei : nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+            (G.length + (kt * ((v0,w0)::R).length + toff)) := by rw [← hteq]; exact hedge
+        exact cross_refute_interior hd0 hdom hkt htoffp htoff hpr hBF1 hBF2 hedgei
+      · have hqge : G.length + kt * ((v0,w0)::R).length ≤ q := by
+          have := le0_le hpq; omega
+        set poff := p - (G.length + kt * ((v0,w0)::R).length) with hpoffdef
+        set qoff := q - (G.length + kt * ((v0,w0)::R).length) with hqoffdef
+        have hpeq : p = G.length + kt * ((v0,w0)::R).length + poff := by omega
+        have hqeq : q = G.length + kt * ((v0,w0)::R).length + qoff := by omega
+        have hteq2 : t = G.length + kt * ((v0,w0)::R).length + toff := by rw [hteq]; omega
+        have htofflt : qoff < toff := by omega
+        have hedgeC : nextrel1 (copyExp G ((v0,w0)::R) d0 n)
+            (G.length + kt * ((v0,w0)::R).length + poff)
+            (G.length + kt * ((v0,w0)::R).length + toff) := by
+          rw [← hpeq, ← hteq2]; exact hedge
+        have hpqC : le0 (copyExp G ((v0,w0)::R) d0 n)
+            (G.length + kt * ((v0,w0)::R).length + poff)
+            (G.length + kt * ((v0,w0)::R).length + qoff) := by
+          rw [← hpeq, ← hqeq]; exact hpq
+        have hposC : 0 < ((copyExp G ((v0,w0)::R) d0 n).getD
+            (G.length + kt * ((v0,w0)::R).length + qoff) (0,0)).2 := by
+          rw [← hqeq]; exact hpos
+        have hres := dichOK_copy hM rfl hkt poff qoff toff htoff hedgeC hpqC
+          htofflt hposC
+        rw [← hqeq, ← hteq2] at hres
+        exact hres
+
 end YAPSS
