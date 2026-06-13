@@ -3844,3 +3844,32 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   ブロック差が局所化する位置）を見つける**のが次の核心。素朴 top-split は run が
   M/M[n] で全く違うため不適。NT_shape の tail 降下で block 領域（M=…[lp] /
   M[n]=…B^(n-1)）まで降りた所で包含が回復するか、を次に検証する設計。
+
+### (2026-06-13 続83) d0=0 値側減少の精密分解 — proj_emb_mono(純項・確定) と残ギャップ(sum-vs-nest)
+
+並行 NT_shape 再帰で d0=0 減少（13,224件・168,832階層）を解析:
+- **proj は再帰の全 proj 比較対で単調**（monotone_fail=0）。発火は1,624のみ（9割超は
+  proj=恒等）。c0 は全階層で共有（cdiff=0）＝lead 常に一致。
+- **純項レベルの清潔な補題を発見・検証**（任意 wf3 項で 0 違反）:
+  - **proj_emb_mono**: `x ⊑ y ⟹ ole (proj u x) (proj u y)`（60,609/0）
+  - **emb_imp_ole**: `x ⊑ y ⟹ ole x y`（emb but not ≤o: 0）
+  - ⊑ = 階層的初期部分項埋め込み（principal 列を componentwise: 同 subscript・
+    引数も ⊑・和は長さ prefix）。**標準性に依らず構造帰納で証明可＝深層監査不要**。
+- **だが ⊑ は不十分**: 
+  - top-level `NT(M[n]) ⊑ NT(M)` は不成立（3,306/13,224 のみ・和の深引数で項増加）。
+  - 再帰 K-level でも `NT K_n ⊑ NT K_M` は 39,066/168,832 で不成立。失敗核 =
+    **sum-vs-nest**: M[n] が同レベル継続で**和**(D0(0)+D0(0))・M が climb で
+    **入れ子**(D0(D0(0)))＝NT 構造が別物だが olt は成立（nest >o sum）。
+- proj 単調性 on NT-像 は真（再上昇でも・続82）だが**任意 wf3 では偽**（26,808違反・
+  sameLead でも 2,463・「埋もれた高 subscript」D0(D2(0)) 等）。⟹ NF(cnf)＋標準性
+  特有で、清潔な term-level 特徴づけは未確定。
+
+**確定した証明部品（健全・形式化価値あり）**:
+  NT_shape(真)・NT_prefix_lt(真・base)・**proj_emb_mono / emb_imp_ole(純項・要形式化)**・
+  proj_submono(既証明・但し Gterm包含は本件で不成立で不適)。
+
+**残る核心ギャップ**: sum-vs-nest を含む lex 比較。⊑ で閉じる部分（多数）は
+  proj_emb_mono で、閉じない部分（sum↔nest 切替）は別途。これが E6_value(偽)が
+  雑に潰そうとし dichOK(偽)も捉えられなかった真の hard core。次は **NT_shape による
+  term-size 強帰納で proj 発火/sum-vs-nest を場合分けする値比較の正面再構築**
+  （proj_emb_mono を主道具に）。
