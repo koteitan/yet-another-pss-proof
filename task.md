@@ -101,4 +101,11 @@
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - ✅ TOP_desc ステート〔prefix弱化形・閉包+2 967/0 凍結・本体は未証明〕
   - 🚨 スタブ〔NT_tie/E6_mem＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン（SCC地図=memo続59）〕
+  - 🚨🚨🚨 **健全性第7事件（最重大・続78）**: 値側基盤 E6_value(proj=NT msfx) /
+    E6_mem(msfx∈Gterm) / ginv(anchor-max) / O2/O1P/GAP/GBLK0 / E6_nbcK_T が
+    **closure+5/+6 で偽**（row-1 上昇鎖のコピー再上昇）。「全sorry +3検証完了」
+    （続77）は ginv/OSC/nbcK/E6_value 族について無効。**真（深層0違反）**:
+    最終減少・NT_tie_resolved/fdlex・E6_mem_resolved の¬olt部分。値側
+    アーキテクチャ再設計が必要（A:¬oltのみで再構築 / B:proj真核発見 /
+    C:r1ok親鎖でginv置換）。本セッションのOSC再構成(GCDV/O2V/O1P)は復元済。
 - 🗑 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要。wf_ArgsA 路線は凍結〔wfsum に残置〕
