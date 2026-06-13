@@ -8997,4 +8997,54 @@ theorem le0_block_lp_to_copy {G R : PairSeq} {v0 w0 d0 n kq i : ℕ} {lp : ℕ �
   rw [e1, e2] at hX3
   exact hX3
 
+/-- **Cross-family dichotomy, in-copy bridge case**: an interior descendant `q`
+in copy `kq` whose host counterpart bridges to `lp` reaches the target — the
+host bridge transports to `le0 X q root_{kq+1}`, which pivots through to `t`. -/
+theorem cross_dichOK_inq_bridge {G R : PairSeq} {v0 w0 d0 n kt p kq i : ℕ}
+    {lp : ℕ × ℕ}
+    (hd0 : 0 < d0) (hdom : ∀ x ∈ R, v0 < x.1) (hkt : kt < n) (hp : p < G.length)
+    (hlp1 : lp.1 = v0 + d0) (hkqkt : kq < kt)
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+              (G.length + kt * ((v0,w0)::R).length))
+    (hbridge : le0 (G ++ ((v0,w0)::R) ++ [lp]) (G.length + i)
+                (G.length + ((v0,w0)::R).length)) :
+    le0 (copyExp G ((v0,w0)::R) d0 n)
+        (G.length + (kq * ((v0,w0)::R).length + i))
+        (G.length + kt * ((v0,w0)::R).length) := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hkq1n : kq + 1 < n := by omega
+  have hstep1 := le0_block_lp_to_copy (G := G) (R := R) (v0 := v0) (w0 := w0)
+    (d0 := d0) (n := n) (kq := kq) (i := i) (lp := lp) hkq1n hlp1 hbridge
+  have htlt : G.length + kt * ((v0,w0)::R).length
+      < (copyExp G ((v0,w0)::R) d0 n).length := by
+    rw [copyExp_length]
+    have : kt * ((v0,w0)::R).length < n * ((v0,w0)::R).length :=
+      (Nat.mul_lt_mul_right hL).mpr hkt
+    omega
+  have hr1t : G.length + (kq + 1) * ((v0,w0)::R).length
+      ≤ G.length + kt * ((v0,w0)::R).length := by
+    have : (kq + 1) * ((v0,w0)::R).length ≤ kt * ((v0,w0)::R).length :=
+      Nat.mul_le_mul_right _ (by omega)
+    omega
+  have hX0r : entry (copyExp G ((v0,w0)::R) d0 n) 0
+      (G.length + (kq + 1) * ((v0,w0)::R).length) = v0 + (kq + 1) * d0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := d0) (n := n)
+      (k := kq + 1) (q := 0) (by omega) hL).1
+    simpa using h
+  have hpivr := copyExp_root_pivot (G := G) (v0 := v0) (w0 := w0) (d0 := d0)
+    (n := n) (R := R) (k' := kq + 1) hd0 hdom (by omega)
+  have hpiv : ∀ y, G.length + (kq + 1) * ((v0,w0)::R).length < y →
+      y ≤ G.length + kt * ((v0,w0)::R).length →
+      entry (copyExp G ((v0,w0)::R) d0 n) 0
+          (G.length + (kq + 1) * ((v0,w0)::R).length)
+        < entry (copyExp G ((v0,w0)::R) d0 n) 0 y := by
+    intro y hy1 hy2
+    rw [hX0r]
+    exact hpivr y hy1 (by omega)
+  have hstep2 : le0 (copyExp G ((v0,w0)::R) d0 n)
+      (G.length + (kq + 1) * ((v0,w0)::R).length)
+      (G.length + kt * ((v0,w0)::R).length) :=
+    le0_through_pivot (hedge.2.2.2.2.1) (by omega) hr1t hpiv
+  exact le0_trans hstep1 hstep2
+
 end YAPSS
