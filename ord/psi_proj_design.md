@@ -77,6 +77,21 @@ per-maxo-step `ψ_a(oV b)=ψ_a(oV m)` (oV b≤oV m, m∈Gterm a b) を追い込�
 - **次の major effort**: C-rank 同時帰納の setup（canonical 述語 + Citer 段数帰納で
   1.4b/1.9/collapse 同時証明）。Buchholz 1986 §1 の機械化。multi-session・本丸。
 
+### 続89(18): acanon 述語 draft（ord/acanon-snippet.diff・未検証で revert・次回再追加）
+- §1 setup として canonical 述語を draft: `acanon a δ ≡ δ∈elts(Cset(λξ∈elts δ.psi ξ)δ a)` +
+  `acanon_of_lt_psi`(δ<psi δ a⟹acanon, by below_psi_in_Cset) +
+  `psi_le_of_not_acanon`(¬acanon⟹psi δ a≤δ)。コードは `ord/acanon-snippet.diff` に保存。
+- ⚠️ **教訓（重大・1.5h spin の原因）**: `psi_le_of_not_acanon` を当初 `by auto` で書いたら
+  **acanon_def の巨大 Cset 式を auto が展開して無限ループ**（poly 1.5時間 114%CPU spin）。
+  必ず**構造化証明**（acanon_of_lt_psi の対偶 + Ord_linear2）で書く。acanon_def を auto/simp に
+  晒さない。snippet 版は修正済。
+- 未検証（isbman 隔離ヒープのフル再ビルド=nrmstep 11k で 30分規模・900s timeout）のため
+  緑規律で revert。次回 `git apply ord/acanon-snippet.diff` → isbman build（2回目以降は
+  isolated heap に PSI image があり incremental で速い）→ commit。
+- **ビルド運用の教訓**: 必ず **isbman** を使う（`isabelle build` 直叩き厳禁）。raw build を
+  重ねて同時 PSI ビルドが heap lock で deadlock・1.5h spin した。isbman は isolated heap +
+  isbman-id kill で競合しない。
+
 ### 続89(16): ★psi_proj を per-maxo-step に精密帰着（proj.induct）
 psi_proj (ψ_a(oV b)=ψ_a(oV(proj a b))) を proj.induct で分解:
 - base（bad={g∈Gterm a b:¬olt g b}=∅, proj a b=b）: 自明（両辺同じ）。
