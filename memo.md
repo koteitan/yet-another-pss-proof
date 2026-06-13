@@ -244,7 +244,7 @@ Towsner §2 非poly OT_Ωω を `ot` datatype に移植（`W`=ω^ は省略, 埋
 (2) `Acc_n`/`M_n`(Def 3.7), Lemma 3.8(和で閉)–3.10(ϑで閉)–3.11(崩壊で cardinality 降下)
 –Thm 3.12(全項 accessible=wf)。(3) 埋め込み `three`→`ot`（`P a b c ↦ Su(Th a · # tail)`),
 NF 上で `olt_three = <\<^sub>o` を示し `wf Rnf`。
-注: `isbman build -d /home/koteitan/ya-pss/git -v YAPSS`（cwd がリセットされうるので -d 絶対パス）。
+注: `isbman build -d /home/koteitan/proofs/ya-pss/git -v YAPSS`（cwd がリセットされうるので -d 絶対パス）。
 
 ## (diagacc) 証明の方針候補（旧、参考）
 
@@ -1389,7 +1389,7 @@ Python で design 検証 → Isabelle 構築、が最有力。今セッション
 
 ### 進捗 (2026-06-09 続44): 【route A 実装着手】ZFC_in_HOL 上に Buchholz ψ_v 構成中（ord/psi.thy, session PSI, green）
 - **AFP 導入済**: `/home/koteitan/afp-dl/afp-2026-06-05`（Isabelle2025-2 対応）。`ZFC_in_HOL`(順序数/基数/Kirby 順序数和/Ordinal_Exp ω^/ZFC_Cardinals Aleph) 利用。
-  ビルド: `cd git && isbman build -m .. -d /home/koteitan/afp-dl/afp-2026-06-05/thys -d /home/koteitan/ya-pss/git PSI`（**-d は絶対パスで**, cwd 不安定なため）。ZFC_in_HOL ヒープは git ディレクトリの isbman 隔離heapにキャッシュ済(再ビルド ~40s, PSI のみ ~1-10s)。
+  ビルド: `cd git && isbman build -m .. -d /home/koteitan/afp-dl/afp-2026-06-05/thys -d /home/koteitan/proofs/ya-pss/git PSI`（**-d は絶対パスで**, cwd 不安定なため）。ZFC_in_HOL ヒープは git ディレクトリの isbman 隔離heapにキャッシュ済(再ビルド ~40s, PSI のみ ~1-10s)。
 - **ord/psi.thy (session PSI in ord, ROOT 登録済) の green 内容**:
   - `Om v`(=Ω_v=ℵ_v, v>0; 1 if v=0)＋ Ord/Card/単調(Om_less_Suc)。
   - `Cstep`/`Cset`/`psi`(=transrec で C_v(α)＝Om v からの「+閉包∪{p ξ u:ξ∈X∩α}」反復の可算 sup, ψ_v α=LEAST Ord∉Cset)＋`psi_unfold`。
