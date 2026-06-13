@@ -78,6 +78,18 @@ proof -
   thus "wf stepR" by (simp add: wf_iff_acc)
 qed
 
+text \<open>Base case: a form too short to expand has no \<open>stepR\<close>-successor, hence is
+  trivially accessible.\<close>
+
+lemma acc_short: "Lng M \<le> 1 \<Longrightarrow> M \<in> Wellfounded.acc stepR"
+proof (rule acc.accI)
+  fix y assume "(y, M) \<in> stepR"
+  hence "step M y" by simp
+  then have "1 < Lng M" by (cases rule: step.cases) auto
+  moreover assume "Lng M \<le> 1"
+  ultimately show "y \<in> Wellfounded.acc stepR" by simp
+qed
+
 text \<open>\<^bold>\<open>The W = T core (OPEN).\<close>  Every diagonal seed is accessible.  To be
   proved by the PSS analogue of Buchholz's sum/principal closure (Lemmas
   2.4/2.5), inducting on the block/nesting structure of the standard form

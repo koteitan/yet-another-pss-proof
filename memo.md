@@ -3948,3 +3948,14 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   （cross-copy・bad-root がコピー跨ぎ）が sum-vs-nest と同型の難所になりうる。閉包補題の
   正確な文面設計（B/G の「文脈付き停止」概念）が次の核心。p≠ψ ゆえ Buchholz の dom/[n]
   規則は使わず PSS-native に。
+
+- (続85補) wtt.thy に acc_short（Lng M≤1 ⟹ acc・step不能の基底・証明済）追加。緑。
+  diag_acc 攻略の設計（次の本格作業）:
+  - **v-帰納案**: diagSeq 0 v の展開は row-1 値を下げる（last col (v,v)・i1=1・row-1 親
+    (v-1,v-1)・d0=d1=1 → copies の snd=v-1）。⟹ diagSeq 0 v のゲームは「level v-1
+    相当」の形に還元 → v 帰納の見込み。但し還元の各形の accessibility を v-1 から
+    導く closure（合成）が要る＝Buchholz Lemma 2.4/2.5 の PSS 版。
+  - **closure の難所**: コピー間相互作用（bad-root のコピー跨ぎ）。同じ proof-theoretic
+    強度はどの路線でも不可避。closure 補題の正確な文面（B/G の「文脈付き停止」概念）が核心。
+  - wf_olt_wf3（証明済）を使うには nrm 橋（nrm_step_dec=crux）が要るため、W=T は
+    それを避ける独立証明（Buchholz §2 流の項長/構造帰納）が本筋。
