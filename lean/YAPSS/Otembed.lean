@@ -338,13 +338,14 @@ theorem psi_arg_lt_of_mem_cross {α β : Ordinal.{u}} {v a' : ℕ} (hv : v ≤ a
     (h : psi β a' ∈ Cset (psiRes α) α v) : β < α :=
   psi_arg_lt_of_mem (Cset_level_mono hv h)
 
-/-- `C_v(α)` is closed under CNF-summand extraction: if `δ + r ∈ C_v(α)` with
-`δ` additive-principal and `r < δ`, then `δ ∈ C_v(α)` and `r ∈ C_v(α)`.
+/-- `C_v(α)` is closed under leading-summand extraction: if `δ + r ∈ C_v(α)`
+with `δ` additive-principal and `r < δ + r` (i.e. `δ` is not absorbed by `r` —
+`δ` is at least the leading principal, so this covers repeated principals
+`δ·(m+1)+s`, not just `r < δ`), then `δ ∈ C_v(α)` and `r ∈ C_v(α)`.
 Induction on the `Citer` stage; the `+`-generator case uses ordinal subtraction
-and additive-principal absorption to recurse; the `ψ`-generator case forces
-`r = 0` (a `ψ`-value is additive-principal). -/
++ absorption; the `ψ`-generator case forces `r = 0`. -/
 theorem Cset_add_split {α : Ordinal.{u}} {v : ℕ} {δ r : Ordinal.{u}}
-    (hr : r < δ) (hprin : Ordinal.IsPrincipal (· + ·) δ)
+    (hr : r < δ + r) (hprin : Ordinal.IsPrincipal (· + ·) δ)
     (hmem : δ + r ∈ Cset (psiRes α) α v) :
     δ ∈ Cset (psiRes α) α v ∧ r ∈ Cset (psiRes α) α v := by
   obtain ⟨n, hn⟩ := Cset_mem_iff.1 hmem
@@ -379,7 +380,17 @@ theorem Cset_add_split {α : Ordinal.{u}} {v : ℕ} {δ r : Ordinal.{u}}
           have h := huw
           rw [add_assoc] at h
           exact (add_right_inj δ).1 h
-        have hu'lt : u' < δ := lt_of_le_of_lt (hcancel ▸ (le_self_add : u' ≤ u' + w)) hr
+        -- `δ` not absorbed by `u'`: else `δ + r = r`, contradicting `hr`.
+        have hu'lt : u' < δ + u' := by
+          rcases lt_or_eq_of_le (le_add_self : u' ≤ δ + u') with h | h
+          · exact h
+          · exfalso
+            have heq2 : δ + r = r := by
+              calc δ + r = δ + (u' + w) := by rw [hcancel]
+                _ = (δ + u') + w := (add_assoc δ u' w).symm
+                _ = u' + w := by rw [← h]
+                _ = r := hcancel
+            exact absurd hr (by rw [heq2]; exact lt_irrefl r)
         obtain ⟨hδmem, hu'mem⟩ := IH hu'lt hu
         exact ⟨hδmem, hcancel ▸ Cset_add_closed hu'mem (Citer_subset_Cset hw)⟩
     · obtain ⟨uu, ⟨ζ, ⟨hζC, hζα⟩, hζδ⟩⟩ := Set.mem_iUnion.1 h3
@@ -388,14 +399,16 @@ theorem Cset_add_split {α : Ordinal.{u}} {v : ℕ} {δ r : Ordinal.{u}}
       have hr0 : r = 0 := by
         by_contra hne
         have hrpos : 0 < r := pos_iff_ne_zero.2 hne
-        have hap : Ordinal.IsPrincipal (· + ·) (δ + r) := by
-          rw [← hζδ]; exact fun {x y} hx hy => (psi_addprinc ζ uu).2 x y hx hy
         have hδlt : δ < δ + r := by
           rcases lt_or_eq_of_le (le_self_add : δ ≤ δ + r) with h | h
           · exact h
           · have h2 : δ + 0 = δ + r := by rw [add_zero]; exact h
             exact absurd ((add_right_inj δ).1 h2).symm (ne_of_gt hrpos)
-        exact absurd (hap hδlt (lt_of_lt_of_le hr le_self_add)) (lt_irrefl _)
+        have hδlt' : δ < psi ζ uu := by rw [hζδ]; exact hδlt
+        have hr' : r < psi ζ uu := by rw [hζδ]; exact hr
+        have key : δ + r < psi ζ uu := (psi_addprinc ζ uu).2 δ r hδlt' hr'
+        rw [hζδ] at key
+        exact absurd key (lt_irrefl _)
       subst hr0
       rw [add_zero] at hζδ
       refine ⟨?_, Iio_Om_subset_Cset (lt_of_lt_of_le zero_lt_one (one_le_Om v))⟩
