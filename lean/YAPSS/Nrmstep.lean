@@ -8737,4 +8737,128 @@ theorem cross_host_edge {G R : PairSeq} {v0 w0 d0 n p kt : ℕ} {lp : ℕ × ℕ
     rw [hM1g, hej]
     exact hmax
 
+/-- **The copy-0 root reaches the edge target** (a copy-`kt` root): pivot the
+edge's own `le0 X p t` through the copy-0 root. -/
+theorem cross_le0_root_t {G R : PairSeq} {v0 w0 d0 n kt : ℕ} {p : ℕ}
+    (hd0 : 0 < d0) (hdom : ∀ x ∈ R, v0 < x.1) (hkt : kt < n) (hp : p < G.length)
+    (hle0Xpt : le0 (copyExp G ((v0,w0)::R) d0 n) p
+              (G.length + kt * ((v0,w0)::R).length)) :
+    le0 (copyExp G ((v0,w0)::R) d0 n) G.length
+        (G.length + kt * ((v0,w0)::R).length) := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hXg : (copyExp G ((v0,w0)::R) d0 n).getD G.length (0,0) = (v0, w0) := by
+    have h := copyExp_getD_copy (G := G) (B := (v0,w0)::R) (d0 := d0) (n := n)
+      (k := 0) (q := 0) (by omega) hL
+    simpa using h
+  have hX0g : entry (copyExp G ((v0,w0)::R) d0 n) 0 G.length = v0 := by
+    unfold entry; rw [if_pos rfl, hXg]
+  have hpiv0 := copyExp_root_pivot (G := G) (v0 := v0) (w0 := w0) (d0 := d0)
+    (n := n) (R := R) (k' := 0) hd0 hdom (by omega)
+  simp only [Nat.zero_mul, Nat.add_zero] at hpiv0
+  have hgt : G.length ≤ G.length + kt * ((v0,w0)::R).length := Nat.le_add_right _ _
+  have htlt : G.length + kt * ((v0,w0)::R).length
+      < (copyExp G ((v0,w0)::R) d0 n).length := by
+    rw [copyExp_length]
+    have : kt * ((v0,w0)::R).length < n * ((v0,w0)::R).length :=
+      (Nat.mul_lt_mul_right hL).mpr hkt
+    omega
+  have hpiv : ∀ y, G.length < y → y ≤ G.length + kt * ((v0,w0)::R).length →
+      entry (copyExp G ((v0,w0)::R) d0 n) 0 G.length
+        < entry (copyExp G ((v0,w0)::R) d0 n) 0 y := by
+    intro y hy1 hy2
+    rw [hX0g]
+    exact hpiv0 y hy1 (by omega)
+  exact le0_through_pivot hle0Xpt hp hgt hpiv
+
+/-- **Cross-family dichotomy, prefix-descendant case**: a descendant `q` of the
+edge source lying in the prefix bridges to the target — the host dichotomy at
+`(p, q, G.length)` gives `le0 M q g` (the tie is impossible by spanOK clause 8),
+which transfers back and composes with `le0 X g t`. -/
+theorem cross_dichOK_preq {G R : PairSeq} {v0 w0 d0 n kt p q : ℕ} {lp : ℕ × ℕ}
+    (hn : 1 ≤ n) (hd0 : 0 < d0) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hkt : kt < n) (hp : p < G.length)
+    (hM : dichOK (G ++ ((v0,w0)::R) ++ [lp]))
+    (hc8 : ∀ j, j < G.length → G.getD j (0,0) ≠ (v0, w0))
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+              (G.length + kt * ((v0,w0)::R).length))
+    (hq : le0 (copyExp G ((v0,w0)::R) d0 n) p q)
+    (hqg : q < G.length)
+    (hpos : 0 < ((copyExp G ((v0,w0)::R) d0 n).getD q (0,0)).2) :
+    le0 (copyExp G ((v0,w0)::R) d0 n) q
+        (G.length + kt * ((v0,w0)::R).length) := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hXlen : (copyExp G ((v0,w0)::R) d0 n).length
+      = G.length + n * ((v0,w0)::R).length := copyExp_length ..
+  have hMlen : (G ++ ((v0,w0)::R) ++ [lp]).length
+      = G.length + ((v0,w0)::R).length + 1 := hostM_length ..
+  have htake : (copyExp G ((v0,w0)::R) d0 n).take (G.length + ((v0,w0)::R).length)
+      = (G ++ ((v0,w0)::R) ++ [lp]).take (G.length + ((v0,w0)::R).length) :=
+    copyExp_take_base hn
+  have hhost : nextrel1 (G ++ ((v0,w0)::R) ++ [lp]) p G.length :=
+    cross_host_edge hn hd0 hdom hkt hp hedge
+  have hqX : q < (copyExp G ((v0,w0)::R) d0 n).length := by rw [hXlen]; omega
+  have hqM : q < (G ++ ((v0,w0)::R) ++ [lp]).length := by rw [hMlen]; omega
+  have hqm : q < G.length + ((v0,w0)::R).length := by omega
+  have hgm : G.length < G.length + ((v0,w0)::R).length := by omega
+  have hgX : G.length < (copyExp G ((v0,w0)::R) d0 n).length := by
+    rw [hXlen]; have : 0 < n * ((v0,w0)::R).length := Nat.mul_pos (by omega) hL; omega
+  have hgM : G.length < (G ++ ((v0,w0)::R) ++ [lp]).length := by rw [hMlen]; omega
+  have hqMle : le0 (G ++ ((v0,w0)::R) ++ [lp]) p q :=
+    le0_take_eq htake hqm hqX hqM hq
+  have hgdq : (copyExp G ((v0,w0)::R) d0 n).getD q (0,0)
+      = (G ++ ((v0,w0)::R) ++ [lp]).getD q (0,0) := by
+    rw [copyExp_getD_pre hqg, hostM_getD_pre hqg]
+  have hposM : 0 < ((G ++ ((v0,w0)::R) ++ [lp]).getD q (0,0)).2 := by
+    rw [← hgdq]; exact hpos
+  have hMg : (G ++ ((v0,w0)::R) ++ [lp]).getD G.length (0,0) = (v0, w0) := by
+    have h := hostM_getD_blk (G := G) (B := (v0,w0)::R) (lp := lp) (q := 0) hL
+    simpa using h
+  rcases hM p q G.length hhost hqMle hqg hposM with hbridge | htie
+  · have hqgX : le0 (copyExp G ((v0,w0)::R) d0 n) q G.length :=
+      le0_take_eq htake.symm hgm hgM hgX hbridge
+    have hgt : le0 (copyExp G ((v0,w0)::R) d0 n) G.length
+        (G.length + kt * ((v0,w0)::R).length) :=
+      cross_le0_root_t hd0 hdom hkt hp (hedge.2.2.2.2.1)
+    exact le0_trans hqgX hgt
+  · exfalso
+    rw [hMg] at htie
+    have hMq : (G ++ ((v0,w0)::R) ++ [lp]).getD q (0,0) = G.getD q (0,0) :=
+      hostM_getD_pre hqg
+    rw [hMq] at htie
+    exact hc8 q hqg htie
+
+/-- **Cross-family dichotomy, copy-root-descendant case**: a descendant `q`
+that is itself a copy root pivots directly through to the target. -/
+theorem cross_dichOK_rootq {G R : PairSeq} {v0 w0 d0 n kt p kq : ℕ}
+    (hd0 : 0 < d0) (hdom : ∀ x ∈ R, v0 < x.1) (hkt : kt < n) (hp : p < G.length)
+    (hkq : kq < n)
+    (hqt : G.length + kq * ((v0,w0)::R).length
+            < G.length + kt * ((v0,w0)::R).length)
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+              (G.length + kt * ((v0,w0)::R).length)) :
+    le0 (copyExp G ((v0,w0)::R) d0 n) (G.length + kq * ((v0,w0)::R).length)
+        (G.length + kt * ((v0,w0)::R).length) := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have htlt : G.length + kt * ((v0,w0)::R).length
+      < (copyExp G ((v0,w0)::R) d0 n).length := by
+    rw [copyExp_length]
+    have : kt * ((v0,w0)::R).length < n * ((v0,w0)::R).length :=
+      (Nat.mul_lt_mul_right hL).mpr hkt
+    omega
+  have hX0r : entry (copyExp G ((v0,w0)::R) d0 n) 0
+      (G.length + kq * ((v0,w0)::R).length) = v0 + kq * d0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := d0) (n := n)
+      (k := kq) (q := 0) hkq hL).1
+    simpa using h
+  have hpivkq := copyExp_root_pivot (G := G) (v0 := v0) (w0 := w0) (d0 := d0)
+    (n := n) (R := R) (k' := kq) hd0 hdom hkq
+  have hpiv : ∀ y, G.length + kq * ((v0,w0)::R).length < y →
+      y ≤ G.length + kt * ((v0,w0)::R).length →
+      entry (copyExp G ((v0,w0)::R) d0 n) 0 (G.length + kq * ((v0,w0)::R).length)
+        < entry (copyExp G ((v0,w0)::R) d0 n) 0 y := by
+    intro y hy1 hy2
+    rw [hX0r]
+    exact hpivkq y hy1 (by omega)
+  exact le0_through_pivot (hedge.2.2.2.2.1) (by omega) (by omega) hpiv
+
 end YAPSS
