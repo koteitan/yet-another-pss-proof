@@ -489,6 +489,23 @@ theorem one_le_Om (b : ℕ) : (1 : Ordinal) ≤ Om b := by
       exact lt_of_lt_of_le one_lt_aleph0 (aleph0_le_aleph _)
     exact h.le
 
+/-- `1 = ψ_0 0 ∈ C_v(α)` whenever `α > 0` (so `0 < α` is a valid generator arg). -/
+theorem one_mem_Cset {α : Ordinal} {v : ℕ} (hα : 0 < α) :
+    (1 : Ordinal) ∈ Cset (psiRes α) α v := by
+  have h0 : (0 : Ordinal) ∈ Cset (psiRes α) α v :=
+    Iio_Om_subset_Cset (lt_of_lt_of_le zero_lt_one (one_le_Om v))
+  have := Cset_psi_closed h0 hα 0
+  rwa [psiRes, if_pos hα, psi_zero, Om_zero] at this
+
+/-- **Canonical predecessor ⟹ canonical successor**: `δ ∈ C_a(δ) → δ+1 ∈ C_a(δ+1)`
+(add `δ` and `1`).  The successor step of Buchholz 1.7's canonicity. -/
+theorem canon_succ {a : ℕ} {δ : Ordinal} (hδ : δ ∈ Cset (psiRes δ) δ a) :
+    δ + 1 ∈ Cset (psiRes (δ + 1)) (δ + 1) a := by
+  have hδ' : δ ∈ Cset (psiRes (δ + 1)) (δ + 1) a := CC_mono (lt_add_one δ).le a hδ
+  have h1 : (1 : Ordinal) ∈ Cset (psiRes (δ + 1)) (δ + 1) a :=
+    one_mem_Cset (lt_of_lt_of_le zero_lt_one le_add_self)
+  exact Cset_add_closed hδ' h1
+
 theorem Om_mono {a b : ℕ} (hab : a ≤ b) : Om a ≤ Om b := by
   rcases Nat.eq_zero_or_pos a with rfl | ha
   · rw [Om_zero]
