@@ -309,6 +309,24 @@ point β∉C can have `psi β v=psi ζ v∈C`). NEC-wf3 induction path:
 Honest: collapsing core = several more cross-level/canonicity lemmas. ~half the
 pieces cracked this turn. C2 (oV_nf_order_pres, standardness) untouched.
 
+### UPDATE: cross-level RESOLVED; 3 NEC subtleties pinned (research-grade)
+- RESOLVED: `Cset_level_mono` + `psi_arg_lt_of_mem_cross` (v≤a', psi β a'∈C_v(α)
+  →β<α). So NEC's SPINE coefficients at any level a'≥v are bounded. ✓
+- `Cset_add_split` proven but GENUINELY needs `r<δ` (dropping it breaks the
+  ψ-case via absorption `δ+r=r`, e.g. δ=1,r=ω). So it peels only STRICTLY-
+  decreasing CNF.
+- 3 confirmed subtleties blocking a naive NEC: (i) head-arg-behind-collapse
+  (arg-extraction `psi β v∈C→β∈C` FALSE via plateau); (ii) level mismatch
+  (wf3-canonicity gives C at level a'≥v, need level v, `C_v⊆C_{a'}` wrong way);
+  (iii) repeated principals (`wf3(P a b c)` allows `c=P a b c'`=ψ_a(b)·2, so
+  `oV c<psi(oV b)a` FALSE → Cset_add_split can't peel; needs multiplicity-aware
+  peeling-from-right or a CNF-list lemma).
+⟹ NEC = a careful NESTED induction (tsize×level) with wf3 spine structure
+(spinesub_le/headle/allprinc_lt_spine) + repeat handling. All 13 supporting
+lemmas this turn SUPPORT it; the assembly is a focused multi-session formalization
+of Buchholz's normal-form/collapsing lemma (unformalized in BOTH projects).
+`psi_proj` IS TRUE (= nrm value-preservation, the design intent).
+
 ### OLD PROGRESS (oV_ins detail)
 - **lemma 2 `oV_ins` — DONE & kernel-checked** (Nrm.lean, commit b2f815a).
   Final signature: `oV_ins (wb : wf3 b) (wc : wf3 c) (hGb : ∀ x ∈ Gterm a b,
