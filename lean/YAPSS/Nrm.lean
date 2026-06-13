@@ -267,9 +267,29 @@ outside `NF` is `y₂ = p₀(p₁(y₁)) <o y₁ = p₀(p₁(p₁(0)))` with
 standard, so the standardness discipline (row-1 parenthood) is what the proof
 must exploit. -/
 
+/-- **Hard core 1 (Buchholz collapsing, M1–M3 in the design doc):** `proj`
+preserves the outer `ψ_a`-value.  Reduces (via `psi_form_of_mem` M1) to the
+constancy fact M3; still open. -/
+theorem psi_proj (a : ℕ) (b : Three) (wb : wf3 b) :
+    psi.{u} (oV (proj a b)) a = psi (oV b) a := by
+  sorry
+
+/-- **Hard core 2 (standardness / UBI):** on `NF` the subscript-first order
+refines the `ψ`-value order.  Off `NF` this fails (the `y₂ <o y₁`, equal-value
+counterexample above is non-standard), so the proof must consume standardness
+(the UBI valid-forest / row-1 parenthood invariant). Still open. -/
+theorem oV_nf_order_pres {v u : Three} (hv : v ∈ NF) (hu : u ∈ NF)
+    (h : olt v u) : oV.{u} v < oV u := by
+  sorry
+
+/-- The remaining core, now REDUCED to the two hard cores above via the proven
+glue (`oV_ins`, `oV_order_refl`, `oV_nrm_of_psi_proj`).  This assembly is
+kernel-checked; only `psi_proj` and `oV_nf_order_pres` remain `sorry`. -/
 theorem nrm_order_pres {v u : Three} (hv : v ∈ NF) (hu : u ∈ NF)
     (h : olt v u) : olt (nrm v) (nrm u) := by
-  sorry
+  apply oV_order_refl.{0} (wf3_nrm v) (wf3_nrm u)
+  rw [oV_nrm_of_psi_proj.{0} psi_proj.{0} v, oV_nrm_of_psi_proj.{0} psi_proj.{0} u]
+  exact oV_nf_order_pres.{0} hv hu h
 
 /-! ## Well-foundedness of `<o` on `NF`, and PSS termination -/
 
