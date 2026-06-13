@@ -4030,3 +4030,18 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
 - **確定**: quick win は無い。全前進路（crux 本体 / maxr1≤1 base）が標準形構造の
   実質的形式化を要する。crux 本体は multi-session の大規模作業（再上昇正準化）、
   soundness 教訓（[[freeze-soundness-lessons]]）に従い拙速を避け careful に。
+
+### (2026-06-13 続88) ★maxr1=0 base を crux-free で形式化（wttbase.thy・PSI 緑）
+
+- **新理論 ord/wttbase.thy（PSI・緑・sorry なし）**:
+  - `olt_arg_principal0`（subs⊆{0}: arg < principal）・`olt_tail_principal0`（cnf+subs⊆{0}:
+    tail < whole）・`OT3all`（cnf∧wf3∧subs⊆{0} ⟹ Gterm 0 の全元 <o）。
+  - **`wf3_of_cnf_subs0`: cnf t ∧ subs t⊆{0} ⟹ wf3 t**（純項・構造帰納・**r1ok 不要**）。
+  - **`wf3_translate_subs0`: M∈ST_PS ∧ (∀p. snd p=0) ⟹ wf3(translate M)**
+    （cnf_ST_PS + subs_translate + 上記）。
+- ＝**maxr1=0 標準形は translate が wf3**＝v-帰納の底を crux なしで確立。
+  全添字0で再上昇不能（cnf+subs⊆{0}⟹wf3 は 200項0違反で検証済→形式化完了）。
+- wtt.thy 側: `step_level_noninc`（level 非増加）も証明済。
+- 次: maxr1=0 フラグメントの accessibility（wf3_translate_subs0 + wf_olt_wf3 +
+  m_step_decreases + level非増加で subgame WF）→ maxr1≤1 へ拡張は再上昇境界ぎりぎり
+  （maxr1=1 は wf3 だが subs⊆{0,1} で OT3 が D0(D0(D1)) 型を避ける標準構造=r1ok 要）。

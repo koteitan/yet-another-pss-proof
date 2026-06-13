@@ -35,6 +35,7 @@ session PSI in ord = ZFC_in_HOL +
     YAPSS
   theories
     psi
+    wttbase
     otembed
     nrm
     nrmstep
