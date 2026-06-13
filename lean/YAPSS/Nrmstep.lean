@@ -8560,4 +8560,75 @@ theorem le0_shorten {M : PairSeq} {a ρ b : ℕ}
       have h9 := hx5 j ⟨hj.1, by omega⟩
       omega
 
+/-- **The copy-`k'` root is a strict row-0 pivot** over every later position
+of the expansion (`0 < d0`): later copies sit at strictly higher levels and
+the copy's own interior columns are strictly dominated. -/
+theorem copyExp_root_pivot {G : PairSeq} {v0 w0 d0 n k' : ℕ} {R : PairSeq}
+    (hd0 : 0 < d0) (hdom : ∀ x ∈ R, v0 < x.1) (hk' : k' < n) :
+    ∀ y, G.length + k' * ((v0,w0)::R).length < y →
+      y < (copyExp G ((v0,w0)::R) d0 n).length →
+      v0 + k' * d0 < entry (copyExp G ((v0,w0)::R) d0 n) 0 y := by
+  intro y hy1 hy2
+  set B : PairSeq := (v0,w0)::R with hBdef
+  have hL : 0 < B.length := by rw [hBdef]; simp
+  have hXlen : (copyExp G B d0 n).length = G.length + n * B.length :=
+    copyExp_length ..
+  rw [hXlen] at hy2
+  have hyg : G.length ≤ y := by
+    have : G.length ≤ G.length + k' * B.length := Nat.le_add_right _ _
+    omega
+  obtain ⟨k, q, hk, hq, hyeq⟩ :=
+    index_decomp hL (show y - G.length < n * B.length by omega)
+  have hye : y = G.length + (k * B.length + q) := by omega
+  rw [hye, (entry_copyExp hk hq).1]
+  have hpos : k' * B.length < k * B.length + q := by omega
+  have hBq : v0 ≤ (B.getD q (0,0)).1 := by
+    rcases Nat.eq_zero_or_pos q with hq0 | hqp
+    · rw [hq0, hBdef, List.getD_cons_zero]
+    · obtain ⟨q', rfl⟩ : ∃ q', q = q' + 1 := ⟨q - 1, by omega⟩
+      have hq'R : q' < R.length := by
+        have := hq; rw [hBdef] at this; simp at this; omega
+      rw [hBdef, List.getD_cons_succ]
+      exact le_of_lt (hdom _ (getD_mem hq'R))
+  rcases Nat.lt_trichotomy k k' with hkk | hkk | hkk
+  · exfalso
+    have hk1 : (k + 1) * B.length = k * B.length + B.length := by
+      rw [Nat.add_mul, Nat.one_mul]
+    have h2 : (k + 1) * B.length ≤ k' * B.length :=
+      Nat.mul_le_mul_right B.length (by omega)
+    omega
+  · subst hkk
+    have hqp : 0 < q := by
+      rcases Nat.eq_zero_or_pos q with h0 | h0
+      · exfalso; rw [h0] at hpos; omega
+      · exact h0
+    have hBqs : v0 < (B.getD q (0,0)).1 := by
+      obtain ⟨q', rfl⟩ : ∃ q', q = q' + 1 := ⟨q - 1, by omega⟩
+      have hq'R : q' < R.length := by
+        have := hq; rw [hBdef] at this; simp at this; omega
+      rw [hBdef, List.getD_cons_succ]
+      exact hdom _ (getD_mem hq'R)
+    omega
+  · have h3 : (k' + 1) * d0 = k' * d0 + d0 := by rw [Nat.add_mul, Nat.one_mul]
+    have h2 : (k' + 1) * d0 ≤ k * d0 := Nat.mul_le_mul_right d0 (by omega)
+    omega
+
+/-- **The copy-`k'` root pivots over its own interior** with no `d0`
+hypothesis — needed for the `d0 = 0` branch, where later copy roots tie. -/
+theorem copyExp_root_pivot_local {G : PairSeq} {v0 w0 d0 n k' : ℕ} {R : PairSeq}
+    (hdom : ∀ x ∈ R, v0 < x.1) (hk' : k' < n) :
+    ∀ q, 0 < q → q < ((v0,w0)::R).length →
+      v0 + k' * d0 <
+        entry (copyExp G ((v0,w0)::R) d0 n) 0
+          (G.length + (k' * ((v0,w0)::R).length + q)) := by
+  intro q hqp hq
+  set B : PairSeq := (v0,w0)::R with hBdef
+  rw [(entry_copyExp hk' hq).1]
+  obtain ⟨q', rfl⟩ : ∃ q', q = q' + 1 := ⟨q - 1, by omega⟩
+  have hq'R : q' < R.length := by
+    have := hq; rw [hBdef] at this; simp at this; omega
+  rw [hBdef, List.getD_cons_succ]
+  have := hdom _ (getD_mem hq'R)
+  omega
+
 end YAPSS
