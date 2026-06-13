@@ -138,11 +138,32 @@ psi a (oV b) + oV c` (Otembed:18-25); `oV_order_pres : wf3 v → wf3 u → olt v
 → oV v < oV u` (Otembed:298, the wf3 half — DONE); `wf3_nrm`, `proj_wf3`,
 `proj_G`, `wf3_ins`, the `Cset`/`Ccond`/`psi_strict_mono_arg`/`C_build` apparatus.
 
-1. **`oV_proj : oV (proj u b) = oV b`** — proj is value-invariant (Buchholz: ψ_a
-   is constant on the interval up to the critical value; Nrm.lean:7-9). Induct
-   on `tsize b` along `proj`'s recursion; each collapse step
-   `b ↦ max_o {g∈Glist u b : g≥o b}` preserves `oV` (the offending `g≥o b`
-   means ψ is constant from `oV b` to `oV g`). FIRST TARGET.
+1. **`psi_proj : psi (oV (proj a b)) a = psi (oV b) a`** — the OUTER ψ_a is
+   invariant under proj at level a. NB `oV (proj a b) = oV b` is FALSE in general
+   (proj changes the value); only ψ_a of it is preserved (Buchholz: ψ_a is
+   constant on the interval up to the critical value; Nrm.lean:7-9). Induct on
+   `tsize b` along `proj`'s recursion; each collapse step
+   `b ↦ g* = max_o {g∈Glist a b : g≥o b}` satisfies `psi (oV g*) a = psi (oV b) a`
+   (the coefficient `g*≥o b` is exactly the "critical value reached" so ψ_a
+   plateaus from `oV b` to `oV g*`). FIRST TARGET.
+
+   **ENGINE sub-lemma `psi_plateau`** (the precise obligation, against the actual
+   `proj`/`Glist`/`maxo` defs in Nrm.lean:38-88):
+   `g ∈ Gterm a b → ¬ olt g b → psi (oV g) a = psi (oV b) a`.
+   Then `psi_proj` by `Nat.strong_induction_on (tsize b)` along `proj`'s
+   recursion: base (filter `(Glist a b).filter (¬ olt · b) = []` → `proj a b = b`,
+   refl); step (`proj a b = proj a g*`, `g* = maxo gs.headI gs.tail ∈ filtered ⊆
+   Gterm a b` with `¬ olt g* b`; `tsize g* < tsize b` by `Gterm_tsize`; IH gives
+   `psi (oV (proj a g*)) a = psi (oV g*) a`, and `psi_plateau` gives
+   `psi (oV g*) a = psi (oV b) a`). The reusable `maxo_hdtl_in`,
+   `mem_Glist`, `List.mem_of_mem_filter`, `Gterm_tsize` are already in Nrm.lean.
+   `psi_plateau` itself is the genuine ordinal work: `g ∈ Gterm a b` = `g` is an
+   `a`-coefficient of `b`; the `Cset`/`psiRes` apparatus (Psi.lean:65-291,
+   esp. `below_psi_mem_Cset`, `psi_mono_arg`, `psi_unfold`, `Cset_psi_closed`)
+   plus the `ccnd`/`allprinc_lt` pattern from `oV_order_pres` should show ψ_a does
+   not jump between `oV b` and `oV g`. CAUTION: term-order `¬olt g b` does NOT
+   give `oV b ≤ oV g` off-wf3 — the plateau must be argued from coefficient
+   membership (Cset), not from a value inequality.
 2. **`oV_ins : oV (ins a b c) = oV (P a b c)`** — absorption preserves value
    (`ins` drops a principal dominated by a later one; in the sum `ψ_x+ψ_y=ψ_y`
    when `ψ_x<ψ_y`). Case on `ins`'s if.
