@@ -267,9 +267,19 @@ outside `NF` is `y₂ = p₀(p₁(y₁)) <o y₁ = p₀(p₁(p₁(0)))` with
 standard, so the standardness discipline (row-1 parenthood) is what the proof
 must exploit. -/
 
+/-- The `proj` fixpoint is `a`-reduced: its value lies in its own `C_a`.
+From `proj_G` (OT3 at level `a`) + `oV_order_pres`.  A building block for the
+collapsing core. -/
+theorem proj_oV_mem_C (a : ℕ) (b : Three) (wb : wf3 b) :
+    oV.{u} (proj a b) ∈ Cset (psiRes (oV (proj a b))) (oV (proj a b)) a := by
+  apply Ccond_of_lt
+  intro x hx
+  exact oV_order_pres (wf3_Gterm (proj_wf3 wb) hx) (proj_wf3 wb) (proj_G a b x hx)
+
 /-- **Hard core 1 (Buchholz collapsing, M1–M3 in the design doc):** `proj`
-preserves the outer `ψ_a`-value.  Reduces (via `psi_form_of_mem` M1) to the
-constancy fact M3; still open. -/
+preserves the outer `ψ_a`-value.  Reduces (via `psi_form_of_mem` M1 +
+`psi_eq_of_notMem`) to the per-step obligation `psi(oV t)a ∉ C_a(oV g*)`; the
+fixpoint is `a`-reduced (`proj_oV_mem_C`).  Constancy core M3 still open. -/
 theorem psi_proj (a : ℕ) (b : Three) (wb : wf3 b) :
     psi.{u} (oV (proj a b)) a = psi (oV b) a := by
   sorry
