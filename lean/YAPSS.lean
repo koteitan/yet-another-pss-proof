@@ -6,5 +6,6 @@ import YAPSS.Wfsum
 import YAPSS.Seqlex
 import YAPSS.Psi
 import YAPSS.Otembed
+import YAPSS.Buchholz17
 import YAPSS.Nrm
 import YAPSS.Nrmstep
