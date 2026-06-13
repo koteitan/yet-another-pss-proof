@@ -193,4 +193,25 @@ Lemmas 1-4 are clean value-arithmetic (tractable, do first). Lemma 5 is the
 irreducible hard core and the ONLY place standardness/UBI enters — and it is a
 VALUE statement, not a combinatorial window invariant, so it escapes the dead
 spanOK/dichOK family.
+
+## 7. Viability note (disciplined, before committing): VALUE route is NEW territory
+The Isabelle source `ord/nrm.thy` states explicitly: *"the ψ-semantics only
+**motivates** nrm; the chain below **never mentions values**."* So BOTH projects
+deliberately pursued a value-FREE syntactic proof of `nrm_order_pres` and left
+it `sorry`. The value route here is UNATTEMPTED by either — it is not validated
+by the source, which is both the opportunity (the syntactic route is stuck) and
+the risk (untrodden; psi_plateau / oV_nf_order_pres may have their own walls).
+Why it should still be better: it ELIMINATES reasoning about the messy `nrm`
+fixpoint (via `oV∘nrm = oV`), REUSES the proven `oV_order_pres` Cset/psi
+scaffold (Otembed:298, so psi_plateau is "more of the same" tractable ordinal
+work the codebase already does), and ISOLATES standardness into the single value
+statement (5). KEY VIABILITY QUESTION to resolve early: is (5) `oV_nf_order_pres`
+genuinely easier than the raw syntactic `nrm_order_pres`? Both need the
+standardness insight; the bet is that comparing raw `oV` values (clean `oV_P`/
+`allprinc_lt` structure + existing scaffold) beats comparing `nrm`-fixpoints.
+Decision: PURSUE the value route; prove lemmas 1-4 first (they are unconditional
+and low-risk and immediately establish `oV∘nrm = oV`), which also independently
+confirms nrm's value-preservation — then attack (5) with the scaffold in hand.
+If (5) proves no easier than syntactic, fall back to the source's syntactic
+route but armed with the UBI valid-forest characterization for standardness.
 ```
