@@ -4222,6 +4222,20 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
   - ⟹ 攻め筋は ST_PS.induct（wtt.thy diag_acc 路線）か oper ステップ構造（m_step_decreases の
     機構）。これが irreducible core の正体。multi-session。
 
+**(14) ★core 完全確定 = Buchholz §1（unavoidable・全ルート共通）+ ψ §1 toolkit 構築**
+  - **全ルート（nrm/oV/W=T）が re-climb 処理＝collapse＝§1 を要する**（PSS の本質）。近道全滅:
+    - psi_proj per-maxo-step → ψ_a(oV b)∉C_a(oV m) → 1.9 necessity + 1.4b(canonical 生成)。
+    - 1.4b↔canonical-rep 循環 → Buchholz は C-rank 同時超限帰納で破る（§1 の核）。
+    - d0>0 の subscript-jump 近道も不可（d0check.py: 478/741 でブロック row-1≥snd lp・re-climb 本物）。
+  - **構築済 ψ §1 toolkit（全 PSI 緑・sorry無・自前/独立）**:
+    collapsing.thy: psi_eq_of_Cset_eq/collapse_succ(1.6a)/collapse_grow。
+    necessity.thy: indecomposable_psi/indec_mult_nat/indec_psi_mult(±add)(n-copies)/
+      psi_inj_subscript/psi_inj_arg_canonical/**psi_inj_canonical(1.4a)**。
+    nrm.thy: proj_canonical（proj は a-canonical 値）。
+  - **残る core = §1 simultaneous construction**（canonical-rep 存在=1.4b + 1.9 necessity +
+    collapse を C-rank 同時帰納で一括）。Buchholz 1986 §1 の本格機械化。lean も canonical-rep で停滞。
+    multi-session の本丸。周辺は全て揃った。検証: tools/ d0check.py, nrm_blockok.py, base1_hyp.py。
+
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
   proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
