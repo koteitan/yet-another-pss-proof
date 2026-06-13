@@ -4022,3 +4022,11 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
 (2)W=T 骨格 wtt.thy 緑（PSS停止性→diag_acc・reduction証明済・nrm-free）
 (3)crux を maxr1≥2 再上昇に完全局在・全ルートで irreducible と確定
 (4)残＝再上昇正準化の大規模形式化（または novel insight）。
+
+- (続87補) maxr1≤1 フラグメントも純項では出ない（標準形構造が要る）:
+  「subs⊆{0,1} ⟹ wf3」偽（非cnf和）、「cnf+subs⊆{0,1} ⟹ wf3」も偽（D0(D0(D1(0)))で
+  OT3違反: G_0 が D1 を引き上げ ¬olt D1(0) (D0(D1(0)))）。⟹ maxr1≤1⟹wf3 は r1ok 等の
+  標準形構造に依存（純項補題でない）。base フラグメントすら実質的な形式化を要する。
+- **確定**: quick win は無い。全前進路（crux 本体 / maxr1≤1 base）が標準形構造の
+  実質的形式化を要する。crux 本体は multi-session の大規模作業（再上昇正準化）、
+  soundness 教訓（[[freeze-soundness-lessons]]）に従い拙速を避け careful に。
