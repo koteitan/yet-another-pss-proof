@@ -39,6 +39,31 @@ next
   ultimately show ?case by simp
 qed
 
+text \<open>\<^bold>\<open>Subscript injectivity\<close> (part of Buchholz 1.4(a)): the subscript of a
+  \<open>\<psi>\<close>-value is determined by the value, because \<open>\<psi>\<^bsub>v\<^esub>(\<alpha>) \<in> [\<Omega>\<^bsub>v\<^esub>, \<Omega>\<^bsub>v+1\<^esub>)\<close> and these
+  ranges are disjoint for distinct \<open>v\<close>.\<close>
+
+lemma psi_inj_subscript:
+  assumes "psi \<alpha> v = psi \<beta> w" shows "v = w"
+proof (rule ccontr)
+  assume "v \<noteq> w"
+  then consider (lt) "v < w" | (gt) "w < v" by linarith
+  thus False
+  proof cases
+    case lt
+    have "psi \<alpha> v < Om (Suc v)" by (rule psi_lt_Om_Suc)
+    also have "Om (Suc v) \<le> Om w" using lt by (simp add: Om_mono Suc_leI)
+    also have "Om w \<le> psi \<beta> w" by (rule Om_le_psi)
+    finally show False using assms by simp
+  next
+    case gt
+    have "psi \<beta> w < Om (Suc w)" by (rule psi_lt_Om_Suc)
+    also have "Om (Suc w) \<le> Om v" using gt by (simp add: Om_mono Suc_leI)
+    also have "Om v \<le> psi \<alpha> v" by (rule Om_le_psi)
+    finally show False using assms by simp
+  qed
+qed
+
 lemma indecomposable_psi: "indecomposable (psi \<alpha> v)"
 proof -
   have pos: "0 < psi \<alpha> v" using psi_addprinc[of \<alpha> v] by (simp add: addprinc_def)
@@ -53,6 +78,51 @@ proof -
     thus ?thesis using Ord_mem_iff_lt[OF Ord_add[OF ob og] Ord_psi] by blast
   qed
   thus ?thesis unfolding indecomposable_def using Ord_psi by blast
+qed
+
+text \<open>\<^bold>\<open>Argument injectivity on canonical arguments\<close> (the rest of Buchholz 1.4(a)):
+  for canonical \<open>\<alpha>,\<beta>\<close> (\<open>\<alpha> \<in> C\<^bsub>v\<^esub>(\<alpha>)\<close>), equal \<open>\<psi>\<close>-values force equal arguments, by
+  strict monotonicity 1.3.\<close>
+
+lemma psi_inj_arg_canonical:
+  assumes "Ord \<alpha>" "Ord \<beta>"
+    and "\<alpha> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    and "\<beta> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> v)"
+    and "psi \<alpha> v = psi \<beta> v"
+  shows "\<alpha> = \<beta>"
+proof (rule ccontr)
+  assume "\<alpha> \<noteq> \<beta>"
+  then consider (lt) "\<alpha> < \<beta>" | (gt) "\<beta> < \<alpha>"
+    using assms(1,2) Ord_linear_lt by blast
+  thus False
+  proof cases
+    case lt
+    have "psi \<alpha> v < psi \<beta> v" by (rule psi_strict_mono_arg[OF assms(1,2) lt assms(3)])
+    thus False using assms(5) by simp
+  next
+    case gt
+    have "psi \<beta> v < psi \<alpha> v" by (rule psi_strict_mono_arg[OF assms(2,1) gt assms(4)])
+    thus False using assms(5) by simp
+  qed
+qed
+
+text \<open>\<^bold>\<open>Buchholz 1.4(a)\<close>: on canonical arguments, \<open>\<psi>\<close> is injective in both subscript
+  and argument.\<close>
+
+theorem psi_inj_canonical:
+  assumes "Ord \<alpha>" "Ord \<beta>"
+    and "\<alpha> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    and "\<beta> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> w)"
+    and "psi \<alpha> v = psi \<beta> w"
+  shows "v = w \<and> \<alpha> = \<beta>"
+proof
+  show vw: "v = w" by (rule psi_inj_subscript[OF assms(5)])
+  show "\<alpha> = \<beta>"
+  proof (rule psi_inj_arg_canonical[OF assms(1,2)])
+    show "\<alpha> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> w)" using assms(3) vw by simp
+    show "\<beta> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> w)" by (rule assms(4))
+    show "psi \<alpha> w = psi \<beta> w" using assms(5) vw by simp
+  qed
 qed
 
 text \<open>The \<open>n\<close>-copies decrease for \<open>\<psi>\<close>: \<open>n\<close> copies of the \<open>\<beta>\<close>-block stay below the
