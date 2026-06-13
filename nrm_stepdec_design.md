@@ -726,3 +726,59 @@ consecutive). Bounded chunk; finish next. (NB earlier panic that 1.7(b) is
 =Ω_v·2, not absorbed; consistent.) Verified-committed this session stands:
 psi_notMem_iff_eq, psi_proj_of_notmem+psi_proj_notmem(gap), NEC_of_argExtract,
 collapse_le, Cset_limit_sub, 1.5, succ_mem, canon_pred, psi_strict_mono_below_succ.
+
+---
+
+## ★★★ 2026-06-14 (latest): ATOMIC CRUX RESOLVED — CC isolated; CC proof sketch
+
+### What got committed (build 955 green, kernel-checked, NO new sorry)
+- `Buchholz17.lean`: `epsLvl w` (=ε(w)), `mem_Cself_lvl` (unified 1.7 canonicity),
+  `psi_witness_of_mem` (general witness extraction, no band), **`CW_of_collapseCanon CC`**
+  (CW ⟸ collapse-region core CC, 1.7 discharges ξ<ε(u')), **`NEC_of_collapseCanon CC`**
+  (full wf3-necessity 1.9 ⟸ CC). CC carries hypothesis **v ≤ u'** (mandatory — see below).
+- `Nrm.lean`: **`psi_proj_notmem_of_intervalNoncanon`** (psi_proj_notmem ⟸ "every ordinal
+  in [oV b',oV g) is a-non-canonical", via proven `collapse_le`+`psi_notMem_iff_eq`).
+
+### Atomic crux RESOLVED (was: "maybe NO canonical rep / limit-plateau-min subtle")
+Re-read Buchholz 1986 §1 exact defs (p197) + the ε_0/Ω_1 model:
+- with-Cstep fires ψ_u ξ only for ξ∈C^n_v(α)∩Iio α ∧ **ξ∈C_u(ξ)** (canonical).
+  Lean's Cstep OMITS ξ∈C_u(ξ). Buchholz Remark p197: omitting "does not change C_v(α)"
+  but he only ASSERTS it ("it can be shown"), never proves it. = our CW core.
+- Canonical rep of value V=ψ_u ξ is the **MAX of the ψ_u-plateau** {δ:ψ_u δ=V} (1.6(a):
+  canonical δ ⟹ ψ_u(δ+1)>ψ_u δ, so canonical = right end; max always exists & is the
+  unique canonical pt of the plateau by 1.4(a)). So rep ξ''≥ξ.
+- **WHY rep ξ''<α: BOOTSTRAP.** A non-canonical ξ enters C only via ψ_u(ξ), which needs
+  ξ already in C — circular — so ξ is reachable ONLY after its canonical rep ξ'' enters
+  (e.g. ε_0=ψ_0(Ω_1) so ε_0∈C_0(α) ⟺ Ω_1<α, rep Ω_1 < α automatically). Verified both
+  omitted- & with-C_0(ε_0+1) EXCLUDE ε_0 → omitted=with there. **⟹ CW is TRUE.**
+
+### Why CC NEEDS `v ≤ u'` (soundness, commit f86cbf8)
+CC false for u'<v: v=1,u'=0,ξ=ε_0,α=ε_0+1 — ξ∈Iio(Ω_1)=base of C_1(α), ξ<α, ε_0≤ξ,
+but only level-0 canonical rep of ψ_0(ε_0)=ε_0 is Ω_1≥α → no rep below α. CW's caller
+never hits this: γ=ψ_{u'}ξ≥Ω_v forces Ω_v≤γ<Ω_{u'+1} ⟹ v≤u'.
+
+### CC proof sketch (the remaining core; NOT yet formalized — multi-session)
+Target REP (⊇CC): ξ∈C_v(α), ξ<α, v≤u' ⟹ ∃ canonical ξ''<α∈C_v(α), ψ_{u'}ξ''=ψ_{u'}ξ.
+Strategy = induction on Citer-stage n of ξ (`Cset_mem_iff`), strengthened invariant
+"every ξ∈Citer n has its ψ_{u'}-rep in C_v(α)∩Iio α". Cases of Cstep at n+1:
+- **base / sub-stage**: n=0 ⟹ ξ<Ω_v≤Ω_{u'} (v≤u') ⟹ ξ<Ω_{u'} ⟹ ξ∈Iio(Ω_{u'})⊆C_{u'}(ξ)
+  canonical, ξ''=ξ. ξ∈Citer n ⟹ IH. (clean.)
+- **ξ canonical at u'** (ξ∈C_{u'}(ξ)): ξ''=ξ. (covers all ξ<ε(u') via 1.7; this is the
+  CW_of_collapseCanon split.)
+- **ξ = x+y (sum), non-canonical**: G_{u'}(x+y)=G_{u'}x∪G_{u'}y; rep of ψ_{u'}(sum)
+  — OPEN sub-case, needs the principal-decomposition of the rep. [hard]
+- **ξ = ψ_p η (principal), non-canonical at u'**: forces u'≤p and η≥ξ (collapse:
+  G_{u'}(ψ_p η)={η}∪G_{u'}η ⊄ξ). rep of ψ_{u'}(ψ_p η) tracked through η. THE collapse
+  heart. [hard — the genuine Buchholz "it can be shown"]
+NB the upward direction (rep ξ''≥ξ) means naive downward induction on ξ fails; the
+stage induction with the bootstrap invariant is the right frame. n=0 has collapse
+subcases only when u'<v (excluded by v≤u') — with v≤u', n=0 is clean.
+
+### psi_proj_notmem status
+psi_proj_notmem ⟺ ψ_a(oV b')=ψ_a(oV g) ⟺ "[oV b',oV g) all a-non-canonical" (H).
+H is TRUE (psi_proj_notmem is) but is a statement over ALL ordinals in the gap — the
+gap IS a ψ_a-plateau, so H ⟺ "oV b',oV g co-plateau", circular with the goal. The
+`collapse_le` reduction (committed) is a sound RESTATEMENT, not yet a proof step. H does
+NOT reduce to NEC/CC alone (needs the 1.6 sufficiency side, not just necessity).
+oV b'∉C_a(oV g) (the ARG, not principal) DOES follow from NEC contrapositive (g∈Gterm
+a b', oV g≥oV b'). The deep content = co-plateau, = same collapse core as CC.
