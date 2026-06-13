@@ -9479,4 +9479,134 @@ theorem cross_b0_rootq {G R : PairSeq} {v0 w0 n kq kt : ℕ}
     simpa using h
   rw [hq, ht]
 
+/-- **In the `d0 = 0` expansion every grid column sits at level ≥ v0** — the
+`b0` analogue of the strict root pivot, giving the valley condition that lets
+`le0_retarget`/`le0_shorten` bridge the same-level copy roots. -/
+theorem copyExp_b0_ge_v0 {G R : PairSeq} {v0 w0 n : ℕ}
+    (hdom : ∀ x ∈ R, v0 < x.1) :
+    ∀ y, G.length ≤ y → y < (copyExp G ((v0,w0)::R) 0 n).length →
+      v0 ≤ entry (copyExp G ((v0,w0)::R) 0 n) 0 y := by
+  intro y hy1 hy2
+  set B : PairSeq := (v0,w0)::R with hBdef
+  have hL : 0 < B.length := by rw [hBdef]; simp
+  have hXlen : (copyExp G B 0 n).length = G.length + n * B.length :=
+    copyExp_length ..
+  rw [hXlen] at hy2
+  obtain ⟨k, q, hk, hq, hyeq⟩ :=
+    index_decomp hL (show y - G.length < n * B.length by omega)
+  have hye : y = G.length + (k * B.length + q) := by omega
+  rw [hye, (entry_copyExp hk hq).1]
+  have hBq : v0 ≤ (B.getD q (0,0)).1 := by
+    rcases Nat.eq_zero_or_pos q with hq0 | hqp
+    · rw [hq0, hBdef, List.getD_cons_zero]
+    · obtain ⟨q', rfl⟩ : ∃ q', q = q' + 1 := ⟨q - 1, by omega⟩
+      have hq'R : q' < R.length := by
+        have := hq; rw [hBdef] at this; simp at this; omega
+      rw [hBdef, List.getD_cons_succ]
+      exact le_of_lt (hdom _ (getD_mem hq'R))
+  omega
+
+/-- **Host-edge reconstruction for a `d0 = 0` cross instance**: a row-1 edge
+onto a copy-`kt` root (`kt ≥ 1`) sourced in the prefix transfers to the host
+row-1 edge `p → G.length`.  `le0_shorten` recovers `le0 X p g` and
+`le0_retarget` (valley ≥ v0) carries each prefix ancestor of `g` forward to the
+target root for the maximality clause. -/
+theorem cross_host_edge_b0 {G R : PairSeq} {v0 w0 n p kt : ℕ} {lp : ℕ × ℕ}
+    (hn : 1 ≤ n) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hkt : kt < n) (hkt1 : 1 ≤ kt) (hp : p < G.length)
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) 0 n) p
+              (G.length + kt * ((v0,w0)::R).length)) :
+    nextrel1 (G ++ ((v0,w0)::R) ++ [lp]) p G.length := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hXlen : (copyExp G ((v0,w0)::R) 0 n).length
+      = G.length + n * ((v0,w0)::R).length := copyExp_length ..
+  have hMlen : (G ++ ((v0,w0)::R) ++ [lp]).length
+      = G.length + ((v0,w0)::R).length + 1 := hostM_length ..
+  have htlt : G.length + kt * ((v0,w0)::R).length
+      < (copyExp G ((v0,w0)::R) 0 n).length := hedge.2.1
+  have hgt : G.length < G.length + kt * ((v0,w0)::R).length := by
+    have : 0 < kt * ((v0,w0)::R).length := Nat.mul_pos (by omega) hL
+    omega
+  have hXg : (copyExp G ((v0,w0)::R) 0 n).getD G.length (0,0) = (v0, w0) := by
+    have h := copyExp_getD_copy (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := 0) (q := 0) (by omega) hL
+    simpa using h
+  have hMg : (G ++ ((v0,w0)::R) ++ [lp]).getD G.length (0,0) = (v0, w0) := by
+    have h := hostM_getD_blk (G := G) (B := (v0,w0)::R) (lp := lp) (q := 0) hL
+    simpa using h
+  have hX0g : entry (copyExp G ((v0,w0)::R) 0 n) 0 G.length = v0 := by
+    unfold entry; rw [if_pos rfl, hXg]
+  have hX0r : entry (copyExp G ((v0,w0)::R) 0 n) 0
+      (G.length + kt * ((v0,w0)::R).length) = v0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := kt) (q := 0) hkt hL).1
+    simpa using h
+  have hvalley : ∀ y, G.length < y → y < G.length + kt * ((v0,w0)::R).length →
+      v0 ≤ entry (copyExp G ((v0,w0)::R) 0 n) 0 y := fun y hy1 hy2 =>
+    copyExp_b0_ge_v0 hdom y (by omega) (by omega)
+  have hle0Xpt : le0 (copyExp G ((v0,w0)::R) 0 n) p
+      (G.length + kt * ((v0,w0)::R).length) := hedge.2.2.2.2.1
+  have hle0Xpg : le0 (copyExp G ((v0,w0)::R) 0 n) p G.length := by
+    refine le0_shorten hle0Xpt (by omega) hgt (by omega) ?_ ?_
+    · rw [hX0g, hX0r]
+    · intro y hy1 hy2
+      rw [hX0r]
+      exact hvalley y hy1 hy2
+  have htake : (copyExp G ((v0,w0)::R) 0 n).take (G.length + ((v0,w0)::R).length)
+      = (G ++ ((v0,w0)::R) ++ [lp]).take (G.length + ((v0,w0)::R).length) :=
+    copyExp_take_base hn
+  have hgm : G.length < G.length + ((v0,w0)::R).length := by omega
+  have hgX : G.length < (copyExp G ((v0,w0)::R) 0 n).length := by omega
+  have hgM : G.length < (G ++ ((v0,w0)::R) ++ [lp]).length := by rw [hMlen]; omega
+  have hgd : ∀ j, j ≤ G.length →
+      (copyExp G ((v0,w0)::R) 0 n).getD j (0,0)
+        = (G ++ ((v0,w0)::R) ++ [lp]).getD j (0,0) := by
+    intro j hj
+    rcases Nat.lt_or_ge j G.length with hjg | hjg
+    · rw [copyExp_getD_pre hjg, hostM_getD_pre hjg]
+    · have hje : j = G.length := by omega
+      rw [hje, hXg, hMg]
+  have ht1 : entry (copyExp G ((v0,w0)::R) 0 n) 1
+      (G.length + kt * ((v0,w0)::R).length) = w0 := by
+    have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := kt) (q := 0) hkt hL).2
+    simpa using h
+  have hM1g : entry (G ++ ((v0,w0)::R) ++ [lp]) 1 G.length = w0 := by
+    unfold entry; rw [if_neg one_ne_zero, hMg]
+  refine ⟨by omega, by omega, hp, ?_, ?_, ?_⟩
+  · have hep : entry (G ++ ((v0,w0)::R) ++ [lp]) 1 p
+        = entry (copyExp G ((v0,w0)::R) 0 n) 1 p := by
+      unfold entry; rw [if_neg one_ne_zero, if_neg one_ne_zero,
+        (hgd p (by omega)).symm]
+    have h4 := hedge.2.2.2.1
+    rw [hep, hM1g]
+    rw [ht1] at h4
+    exact h4
+  · exact le0_take_eq htake hgm hgX hgM hle0Xpg
+  · intro j hj
+    obtain ⟨hpj, hjg⟩ := hj
+    have hjgle : j ≤ G.length := le0_le hjg
+    rcases Nat.lt_or_eq_of_le hjgle with hjlt | hjeq
+    · have hjX : le0 (copyExp G ((v0,w0)::R) 0 n) j G.length :=
+        le0_take_eq htake.symm hgm hgM hgX hjg
+      have hjt : le0 (copyExp G ((v0,w0)::R) 0 n) j
+          (G.length + kt * ((v0,w0)::R).length) := by
+        refine le0_retarget hjX hjlt hgt (by omega) ?_ ?_
+        · rw [hX0g, hX0r]
+        · intro y hy1 hy2
+          rw [hX0r]
+          rcases Nat.lt_or_ge G.length y with hgy | hgy
+          · exact hvalley y hgy hy2
+          · have : y = G.length := by omega
+            rw [this, hX0g]
+      have hmax := hedge.2.2.2.2.2 j ⟨hpj, hjt⟩
+      rw [ht1] at hmax
+      have hej : entry (G ++ ((v0,w0)::R) ++ [lp]) 1 j
+          = entry (copyExp G ((v0,w0)::R) 0 n) 1 j := by
+        unfold entry; rw [if_neg one_ne_zero, if_neg one_ne_zero, hgd j hjgle]
+      rw [hM1g, hej]
+      exact hmax
+    · subst hjeq
+      exact le_refl _
+
 end YAPSS
