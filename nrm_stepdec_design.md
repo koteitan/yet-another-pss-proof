@@ -288,6 +288,27 @@ pure principal), since `g*∈Gterm a (P a b Z)` and NEC would force `oV g*<oV g*
   argument for sum/arg decomposition. Proven tools ready: `psi_form_of_mem`(M1),
   `psi_strict_mono_mem`, `psi_eq_of_notMem`, `proj_oV_mem_C`.
 
+## COLLAPSING MODULE — pieces cracked + precise remaining sub-frontiers
+Proven sorry-free this turn (Otembed, toward `psi_proj`/NEC):
+`psi_form_of_mem`(M1, band-v add-principal members are psi_v values),
+`psi_eq_of_notMem`(plateau bridge), `psi_strict_mono_mem`(ζ∈C_v(α),ζ<α→psi ζ v<
+psi α v), `psi_arg_lt_of_mem`(psi β v∈C_v(α)→β<α, LEVEL v), `Cset_add_split`
+(C_v(α) closed under CNF-summand extraction — the SUM half of NEC), `proj_oV_mem_C`.
+**NEC needs wf3** (arg-extraction `psi β v∈C→β∈C` is FALSE in general: a plateau
+point β∉C can have `psi β v=psi ζ v∈C`). NEC-wf3 induction path:
+- t=P a' b' c' (wf3): `Cset_add_split` (r=oV c'<δ=psi(oV b')a' by headle) →
+  `psi(oV b')a'∈C ∧ oV c'∈C`. Tail: IH on c' (oV c'∈C, wf3 c'). ✓ structure.
+- HEAD remaining sub-frontier: need `oV b'<α` from `psi(oV b')a'∈C_v(α)` with
+  a'≥v (b'∈Gterm v t). `psi_arg_lt_of_mem` is LEVEL-v only; at level a'≠v the
+  proof breaks (psi_strict_mono_mem/psi_notMem are level-specific: `psi α a'`
+  may BE in C_v(α) for a'≠v). So need a CROSS-LEVEL `psi_arg_lt` (psi β a'∈
+  C_v(α), a'≥v → β<α) — genuinely subtle, the next real sub-lemma.
+- Then recurse into Gterm v b': needs oV b'∈C (have only oV b'<α) → uses wf3
+  canonicity (Ccond_of_lt: wf3 principal → oV(arg)∈C_a'(oV arg)) — the
+  canonicity propagation. This is where wf3 is essential.
+Honest: collapsing core = several more cross-level/canonicity lemmas. ~half the
+pieces cracked this turn. C2 (oV_nf_order_pres, standardness) untouched.
+
 ### OLD PROGRESS (oV_ins detail)
 - **lemma 2 `oV_ins` — DONE & kernel-checked** (Nrm.lean, commit b2f815a).
   Final signature: `oV_ins (wb : wf3 b) (wc : wf3 c) (hGb : ∀ x ∈ Gterm a b,
