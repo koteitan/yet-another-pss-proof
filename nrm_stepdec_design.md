@@ -269,6 +269,25 @@ KEY FRAMING FINDINGS:
   exact C-membership characterization for OT values — a focused multi-lemma
   ordinal development. This is the honest remaining shape of hard core 1.
 
+## NEC IS PROVABLE — value-bound done, arg-extraction is the precise gap
+Big positive update: the earlier "NEC is false via plateau" worry was WRONG.
+`psi_strict_mono_mem` rules out the plateau membership. NEC reduces the
+obligation: `psi(oV b)a ∉ C_a(oV g*)` ⟸ NEC on `P a b Z` (oV = psi(oV b)a, a
+pure principal), since `g*∈Gterm a (P a b Z)` and NEC would force `oV g*<oV g*`.
+- **NEC value-bound (DONE-able): `psi(oV b)a ∈ C_a(α) → oV b < α`.** Proof:
+  M1 → `psi(oV b)a = psi ζ a`, `ζ<α`, `ζ∈C_a(α)`; `psi_strict_mono_mem` →
+  `psi(oV b)a < psi α a`; contrapositive of `psi_mono_arg` (oV b≥α → psi(oV b)a
+  ≥ psi α a) → `oV b < α`. CLEAN, uses only proven lemmas.
+- **Remaining gap = arg-extraction / recursion into deeper coefficients.** NEC
+  needs `∀x∈Gterm a b, oV x<α` too (the critical `g*∈Gterm a b`). Recursing
+  needs `oV b ∈ C_a(α)` (have only `oV b<α`) and, for the head principal,
+  `psi(oV b')a' ∈ C → oV b' ∈ C` — which FAILS naively due to the plateau
+  (M1 gives `psi ζ a' = psi(oV b')a'` with `ζ ≠ oV b'` possible). This
+  plateau-in-recursion is the genuine Buchholz NEC technical core. Likely needs
+  a strengthened simultaneous induction (Buchholz §1) or a CNF/wf3 structural
+  argument for sum/arg decomposition. Proven tools ready: `psi_form_of_mem`(M1),
+  `psi_strict_mono_mem`, `psi_eq_of_notMem`, `proj_oV_mem_C`.
+
 ### OLD PROGRESS (oV_ins detail)
 - **lemma 2 `oV_ins` — DONE & kernel-checked** (Nrm.lean, commit b2f815a).
   Final signature: `oV_ins (wb : wf3 b) (wc : wf3 c) (hGb : ∀ x ∈ Gterm a b,
