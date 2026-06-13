@@ -269,6 +269,48 @@ theorem psi_form_of_mem {α δ : Ordinal.{u}} {v : ℕ}
       subst huv
       exact ⟨ξ, Citer_subset_Cset hξC, hξα, hξδ⟩
 
+/-- **Generalized M1 (band `w ≥ v`):** an additive-principal member of `C_v(α)` in
+the level-`w` band `[Ω_w, Ω_{w+1})` (with `v ≤ w`) is `ψ_w ξ` for some
+`ξ ∈ C_v(α) ∩ Iio α`.  Same `Citer`-stage induction as `psi_form_of_mem`; the
+base `Iio Ω_v` is vacuous since `Ω_w ≥ Ω_v` while `δ < Ω_v`, and band-disjointness
+forces the generator level to be `w`.  (The witness lives in the *level-`v`*
+closure `C_v(α)`, which is the content needed by `argExtract`.) -/
+theorem psi_form_of_mem_band {α δ : Ordinal.{u}} {v w : ℕ} (hvw : v ≤ w)
+    (hap : Ordinal.IsPrincipal (· + ·) δ)
+    (hlo : Om w ≤ δ) (hhi : δ < Om (w + 1)) (hmem : δ ∈ Cset (psiRes α) α v) :
+    ∃ ξ ∈ Cset (psiRes α) α v, ξ < α ∧ psi ξ w = δ := by
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hmem
+  clear hmem
+  induction n generalizing δ with
+  | zero =>
+    rw [Citer, Function.iterate_zero, id_eq] at hn
+    exact absurd (lt_of_le_of_lt (le_trans (Om_mono hvw) hlo) hn) (lt_irrefl _)
+  | succ n IH =>
+    rw [Citer_succ, Cstep] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH hap hlo hhi h1
+    · obtain ⟨x, hx, y, hy, hxy⟩ := h2
+      have hmemn : δ ∈ Citer (psiRes α) α v n := by
+        rcases eq_or_lt_of_le (show x ≤ δ from hxy ▸ le_self_add) with hxe | hxlt
+        · exact hxe ▸ hx
+        · rcases eq_or_lt_of_le (show y ≤ δ from hxy ▸ le_add_self) with hye | hylt
+          · exact hye ▸ hy
+          · exact absurd hxy.symm (ne_of_gt (hap hxlt hylt))
+      exact IH hap hlo hhi hmemn
+    · obtain ⟨u, ⟨ξ, ⟨hξC, hξα⟩, hξδ⟩⟩ := Set.mem_iUnion.1 h3
+      have hξα : ξ < α := hξα
+      simp only [psiRes, if_pos hξα] at hξδ
+      have huw : u = w := by
+        have h1 : Om u ≤ δ := hξδ ▸ Om_le_psi ξ u
+        have h2 : δ < Om (u + 1) := hξδ ▸ psi_lt_Om_succ ξ u
+        have hle1 : u ≤ w := by
+          by_contra hc; exact absurd (lt_of_le_of_lt h1 hhi) (not_lt.2 (Om_mono (by omega)))
+        have hle2 : w ≤ u := by
+          by_contra hc; exact absurd (lt_of_le_of_lt hlo h2) (not_lt.2 (Om_mono (by omega)))
+        omega
+      subst huw
+      exact ⟨ξ, Citer_subset_Cset hξC, hξα, hξδ⟩
+
 /-- The plateau bridge: if `α ≤ β` and `ψ_v(α)` is *not* in `C_v(β)`, then
 `ψ_v(α) = ψ_v(β)`.  (`ψ_v(β)` is the least non-member of `C_v(β)`, so it is
 `≤ ψ_v(α)`; monotonicity gives the reverse.)  This reduces the collapsing
