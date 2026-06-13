@@ -669,6 +669,30 @@ FORMULA ψ_0 α=ω^α: ≥ by cases (0: psi_zero; succ: Iio_opow_succ_subset; li
 then `lt_ord`. That + assembling the induction = finishes 1.7(a). (import
 Mathlib.SetTheory.Ordinal.Veblen.) Then 1.7(b) [v≠0, ε_{Ω_ω+1}, Ω_ω=ℵ_ω], 1.4(b),
 argExtract, NEC, then RE-DERIVE psi_proj_notmem (non-canonical b' — NEC is wf3/canon,
-recheck the per-step uses necessity correctly). Peer doing same in Isabelle. Verified-committed this session stands:
+recheck the per-step uses necessity correctly). Peer doing same in Isabelle.
+
+## ✅✅ 1.7(a) PROVEN (Buchholz17.lean) + ⚠️ 1.7(b)/argExtract SOUNDNESS CHECKS
+**DONE (sorry-free, build 955 green, new file YAPSS/Buchholz17.lean):** the "version-
+missing" lemmas were just MISSING IMPORTS — `import Mathlib.SetTheory.Cardinal.Ordinal
+/.Regular /Ordinal.Veblen` gives `card_opow_le`, `isRegular_aleph_one`,
+`nfp_lt_ord_of_isRegular`, `isPrincipal_opow_ord`, `isSuccLimit_ord`, `ε_`,
+`lt_opow_of_isSuccLimit`, etc. Proved: `epsilon0_lt_omega1`/`_Om_one` (ε₀<Ω_1),
+`lt_opow_self_of_lt_epsilon0` (α<ε₀→α<ω^α), `opow_lt_Om_one_of_lt_epsilon0`,
+**`psi_zero_eq_opow` = 1.7(a): ∀α<ε₀, α∈C_0(α)∧ψ_0 α=ω^α**, `mem_Cself_zero_of_lt_epsilon0`,
+`omega_lt_Om`, **`omega_opow_Om`** (ω^{Ω_v}=Ω_v, v≥1).
+**⚠️ SOUNDNESS CHECK on 1.7(b) — DO NOT build until statement confirmed:** paper image
+1.7(b) reads `α<ε_{Ω_ω+1}, v≠0 → α∈C_v(α)∧ψ_v α=ω^{Ω_v+α}`, BUT this is INCONSISTENT
+with 1.2(c) `ψ_v α<Ω_{v+1}`: at α=Ω_{v+1} (<ε_{Ω_ω+1}), ω^{Ω_v+Ω_{v+1}}=ω^{Ω_{v+1}}=Ω_{v+1}
+(omega_opow_Om) ≮ Ω_{v+1}. ⟹ the bound MUST be **ε_{Ω_v+1}** (level-dependent; the proof's
+`ε(v)` def is ambiguous Ω_v vs Ω_ω in the scan). ε_{Ω_v+1}<Ω_{v+1} (Ω_{v+1} closed under
+ε). RE-READ/RE-DERIVE before formalizing 1.7(b).
+**⚠️ argExtract witness-canonicity SUBTLETY:** the M1 witness ζ∈C_v(α)⊆ε_{Ω_ω+1}(1.8a,
+GLOBAL bound) needs to be canonical at the GENERATOR level u; but 1.7 gives u-canonicity
+only for ζ<ε_{Ω_u+1}, and ζ can exceed that (ζ up to ε_{Ω_ω+1}). So 1.7 does NOT directly
+give witness-canonicity for large ζ — the level-0/low-u case (where SBC fails) needs the
+genuine Buchholz argument. RE-ANALYZE argExtract with the paper at this point.
+**STATE: 1.7(a) solidly done (a real milestone). 1.7(b)+argExtract need careful paper
+work (statement + the level-u canonicity-bound subtlety) — exactly the kind of place
+where rushing produced SBC/descends false-findings; verify before building.** Verified-committed this session stands:
 psi_notMem_iff_eq, psi_proj_of_notmem+psi_proj_notmem(gap), NEC_of_argExtract,
 collapse_le, Cset_limit_sub, 1.5, succ_mem, canon_pred, psi_strict_mono_below_succ.
