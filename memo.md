@@ -4198,6 +4198,20 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
     maxr1=1 base（translate∈wf3 for maxr1≤1）** を安全な green 増分として進める
     （wf3 内・ψ 不要・soundness 罠なし）。[[agent-independence]] 独立路線維持。
 
+**(12) ★crux の列側 clean 形を同定: σ seqlex-monotone（tools/sigma.py, sigma_mono.py）**
+  - translate は pairseq↔three 全単射（untranslate 構成可）。⟹ **σ := untranslate∘nrm∘translate**
+    という列操作が定まる。実機同定: σ＝**「各ブロックで再帰的に『最初の最大 row-1 列からの
+    suffix』を取り (0,0) 基底を保つ」**（note "suffix from first maximal-row1 column" と一致）。
+  - 実測（標準形上）: σ は **blockok 0 を保存（0 bad）** かつ **strict に seqlex-monotone**
+    （seqlex M N ⟹ seqlex(σM)(σN)・319,600 対 0 反例・collapse-to-equal も 0）。
+  - ⟹ **crux の列側 clean 形**: `M,N∈ST_PS ⟹ seqlex M N ⟹ seqlex(σM)(σN)`。
+    olt_iff_seqlex の iso ＋ blockok 保存で **nrm_order_pres と等価**（より clean な攻め面：
+    列・suffix・seqlex・blockok）。seqlex_imp_olt(seqlex.thy:238) の block 帰納が雛形。
+  - ⚠️ 注意: 旧 nrmstep の偽 E6_value は σ を **単純な msfx に simplify** した主張（+5/6 で偽）。
+    σ は **full 再帰 nrm**（定義上正しい）。simplify せず full σ の monotone を攻める。
+  - これは crux の reformulation（難易度は等価）だが攻め面が clean。形式化は careful multi-session。
+    当面は記録に留め、green 資産（collapsing module）と併せて次セッションの足場とする。
+
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
   proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
