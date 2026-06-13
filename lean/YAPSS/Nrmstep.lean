@@ -9609,4 +9609,123 @@ theorem cross_host_edge_b0 {G R : PairSeq} {v0 w0 n p kt : ℕ} {lp : ℕ × ℕ
     · subst hjeq
       exact le_refl _
 
+/-- **Cross-family dichotomy for a `d0 = 0` prefix→copy-root edge** (`kt ≥ 1`):
+every descendant either row-0-reaches the target or ties with it.  Prefix
+descendants split via the host dichotomy at `(p, q, g)` (`cross_host_edge_b0`)
+— the bridge case retargets `le0 X q g` forward across the same-level roots
+(`le0_retarget`, valley ≥ v0), the tie case yields `X[q] = (v0,w0) = X[t]`.
+Copy-root descendants tie (`cross_b0_rootq`); interior descendants are refuted
+(`cross_refute_b0_interior`). -/
+theorem cross_dichOK_b0 {G R : PairSeq} {v0 w0 n kt p : ℕ} {lp : ℕ × ℕ}
+    (hn : 1 ≤ n) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hkt : kt < n) (hkt1 : 1 ≤ kt) (hp : p < G.length) (hlp2 : lp.2 = 0)
+    (hM : dichOK (G ++ ((v0,w0)::R) ++ [lp]))
+    (hC9 : lp.2 = 0 → 0 < w0 → ∀ i, 0 < i → i < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 i → (((v0,w0)::R).getD i (0,0)).2 = 0)
+    (hedge : nextrel1 (copyExp G ((v0,w0)::R) 0 n) p
+              (G.length + kt * ((v0,w0)::R).length)) :
+    ∀ q, le0 (copyExp G ((v0,w0)::R) 0 n) p q →
+      q < G.length + kt * ((v0,w0)::R).length →
+      0 < ((copyExp G ((v0,w0)::R) 0 n).getD q (0,0)).2 →
+      le0 (copyExp G ((v0,w0)::R) 0 n) q (G.length + kt * ((v0,w0)::R).length)
+      ∨ (copyExp G ((v0,w0)::R) 0 n).getD q (0,0)
+        = (copyExp G ((v0,w0)::R) 0 n).getD
+          (G.length + kt * ((v0,w0)::R).length) (0,0) := by
+  intro q hq hqt hpos
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hXlen : (copyExp G ((v0,w0)::R) 0 n).length
+      = G.length + n * ((v0,w0)::R).length := copyExp_length ..
+  have hMlen : (G ++ ((v0,w0)::R) ++ [lp]).length
+      = G.length + ((v0,w0)::R).length + 1 := hostM_length ..
+  have htX : G.length + kt * ((v0,w0)::R).length
+      < (copyExp G ((v0,w0)::R) 0 n).length := hedge.2.1
+  have hXt : (copyExp G ((v0,w0)::R) 0 n).getD
+      (G.length + kt * ((v0,w0)::R).length) (0,0) = (v0, w0) := by
+    have h := copyExp_getD_copy (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := kt) (q := 0) hkt hL
+    simpa using h
+  have hw0 : 0 < w0 := by
+    have h4 := hedge.2.2.2.1
+    have ht1 : entry (copyExp G ((v0,w0)::R) 0 n) 1
+        (G.length + kt * ((v0,w0)::R).length) = w0 := by
+      have h := (entry_copyExp (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+        (k := kt) (q := 0) hkt hL).2
+      simpa using h
+    rw [ht1] at h4
+    omega
+  have hXg : (copyExp G ((v0,w0)::R) 0 n).getD G.length (0,0) = (v0, w0) := by
+    have h := copyExp_getD_copy (G := G) (B := (v0,w0)::R) (d0 := 0) (n := n)
+      (k := 0) (q := 0) (by omega) hL
+    simpa using h
+  have hX0g : entry (copyExp G ((v0,w0)::R) 0 n) 0 G.length = v0 := by
+    unfold entry; rw [if_pos rfl, hXg]
+  have hX0r : entry (copyExp G ((v0,w0)::R) 0 n) 0
+      (G.length + kt * ((v0,w0)::R).length) = v0 := by
+    unfold entry; rw [if_pos rfl, hXt]
+  have hgt : G.length < G.length + kt * ((v0,w0)::R).length := by
+    have : 0 < kt * ((v0,w0)::R).length := Nat.mul_pos (by omega) hL
+    omega
+  have htake : (copyExp G ((v0,w0)::R) 0 n).take (G.length + ((v0,w0)::R).length)
+      = (G ++ ((v0,w0)::R) ++ [lp]).take (G.length + ((v0,w0)::R).length) :=
+    copyExp_take_base hn
+  have hgm : G.length < G.length + ((v0,w0)::R).length := by omega
+  have hgX : G.length < (copyExp G ((v0,w0)::R) 0 n).length := by omega
+  have hgM : G.length < (G ++ ((v0,w0)::R) ++ [lp]).length := by rw [hMlen]; omega
+  have hMg : (G ++ ((v0,w0)::R) ++ [lp]).getD G.length (0,0) = (v0, w0) := by
+    have h := hostM_getD_blk (G := G) (B := (v0,w0)::R) (lp := lp) (q := 0) hL
+    simpa using h
+  rcases Nat.lt_or_ge q G.length with hqg | hqg
+  · have hhost : nextrel1 (G ++ ((v0,w0)::R) ++ [lp]) p G.length :=
+      cross_host_edge_b0 hn hdom hkt hkt1 hp hedge
+    have hqM : q < (G ++ ((v0,w0)::R) ++ [lp]).length := by rw [hMlen]; omega
+    have hqm : q < G.length + ((v0,w0)::R).length := by omega
+    have hqX : q < (copyExp G ((v0,w0)::R) 0 n).length := by omega
+    have hqMle : le0 (G ++ ((v0,w0)::R) ++ [lp]) p q :=
+      le0_take_eq htake hqm hqX hqM hq
+    have hgdq : (copyExp G ((v0,w0)::R) 0 n).getD q (0,0)
+        = (G ++ ((v0,w0)::R) ++ [lp]).getD q (0,0) := by
+      rw [copyExp_getD_pre hqg, hostM_getD_pre hqg]
+    have hposM : 0 < ((G ++ ((v0,w0)::R) ++ [lp]).getD q (0,0)).2 := by
+      rw [← hgdq]; exact hpos
+    rcases hM p q G.length hhost hqMle hqg hposM with hbridge | htie
+    · left
+      have hqgX : le0 (copyExp G ((v0,w0)::R) 0 n) q G.length :=
+        le0_take_eq htake.symm hgm hgM hgX hbridge
+      refine le0_retarget hqgX hqg hgt (by omega) ?_ ?_
+      · rw [hX0g, hX0r]
+      · intro y hy1 hy2
+        rw [hX0r]
+        rcases Nat.lt_or_ge G.length y with hgy | hgy
+        · exact copyExp_b0_ge_v0 hdom y (by omega) (by omega)
+        · have : y = G.length := by omega
+          rw [this, hX0g]
+    · right
+      rw [hMg] at htie
+      rw [hgdq, hXt]
+      rw [hostM_getD_pre hqg] at htie
+      rw [hostM_getD_pre hqg]
+      exact htie
+  · obtain ⟨kq, qoff, hkq, hqoff, hqdec⟩ :=
+      index_decomp hL (show q - G.length < n * ((v0,w0)::R).length by
+        rw [hXlen] at htX; omega)
+    have hqeq : q = G.length + (kq * ((v0,w0)::R).length + qoff) := by omega
+    rcases Nat.eq_zero_or_pos qoff with hq0 | hqoffp
+    · right
+      have hqroot : q = G.length + kq * ((v0,w0)::R).length := by rw [hqeq, hq0]; omega
+      rw [hqroot]
+      exact cross_b0_rootq hkq hkt
+    · exfalso
+      have hkqkt : kq < kt := by
+        have hlt : kq * ((v0,w0)::R).length < kt * ((v0,w0)::R).length := by
+          have : kq * ((v0,w0)::R).length + qoff < kt * ((v0,w0)::R).length := by omega
+          omega
+        exact (Nat.mul_lt_mul_right hL).mp hlt
+      have hppos : p < G.length + kq * ((v0,w0)::R).length := by omega
+      have hqq : le0 (copyExp G ((v0,w0)::R) 0 n) p
+          (G.length + (kq * ((v0,w0)::R).length + qoff)) := by rw [← hqeq]; exact hq
+      have hposq : 0 < ((copyExp G ((v0,w0)::R) 0 n).getD
+          (G.length + (kq * ((v0,w0)::R).length + qoff)) (0,0)).2 := by
+        rw [← hqeq]; exact hpos
+      exact cross_refute_b0_interior hdom hlp2 hw0 hkq hqoffp hqoff hC9 hppos hqq hposq
+
 end YAPSS
