@@ -61,7 +61,19 @@ oV b が非 canonical（その係数 g が oV b を超える）であること�
 ### lean 担当（advice-reply.md §3）
 - 1.4(b) canonical witness / C-集合同値（1.4(a) psi_canonical_inj 済を活用）。
 
-### ★続89(10): 1.9 necessity を ψ-injectivity 一点に reduce（necessity.thy）
+### ✗続89(11) 訂正: 続89(10) の (B) reduction は欠陥あり
+- 「(B) ψ_{a'}(ζ)∈C_v(α)∧v≤a' ⟹ ζ<α」は **偽**。generator ケース ψ_{a'}(ζ)=ψ_u(ξ)
+  (ξ<α) で、value の range により a'=u は出る（ψ_v(α)∈[Ω_v,Ω_{v+1}) が排他・
+  psi_lt_Om_Suc+Om_le_psi+Om_mono）が、**引数 injectivity は canonical 限定**。
+  α が collapse 領域（ψ_{a'} が [ξ,α] で一定）なら ζ≥α が起こり得る ⟹ ζ<α は偽。
+- ⟹ 1.9 necessity は **canonical-rep 依存**（Buchholz は K 関数/canonical witness で
+  慎重に証明）。私の (B) clean reduction は gap あり。indecomposable_psi で sum/Om を
+  消す部分は正しいが、generator ケースは canonical witness（1.4b・lean が保留した方）が
+  実は要る可能性が高い。necessity は当初想定より intricate。要 careful 再設計。
+- 教訓（[[freeze-soundness-lessons]]）: 順序数 §1 の quick reduction は危険（第7事件と同型の
+  over-confident 誤り）。各 step を慎重に・できれば検証してから形式化。
+
+### 続89(10): 1.9 necessity を ψ-injectivity 一点に reduce（necessity.thy）【※(B) は上記で訂正】
 necessity（C_build の逆: oV t∈C_v(α) ⟹ ∀x∈Gterm v t. oV x<α）の分解を精密化:
 - **(B) psi-arg necessity**: ψ_{a'}(ζ)∈C_v(α) ∧ v≤a' ⟹ ζ<α。Citer n 帰納で:
   - n=0 (∈Om v): a'≥v ⟹ ψ_{a'}(ζ)≥Om a'≥Om v ⟹ ∉elts(Om v)。**矛盾で消える**（psi_lt_Om_Suc/Om_le_psi）。

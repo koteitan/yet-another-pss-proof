@@ -4187,6 +4187,17 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
     **lean から 1.4a を貰って port が最効率**（advice-reply2 §6 で依頼）。
   - design 詳細 ord/psi_proj_design.md（続89(10)節）。
 
+**(11) ✗訂正: 続89(10) の (B) reduction は欠陥（ζ<α は偽）**
+  - 「ψ_{a'}(ζ)∈C_v(α)⟹ζ<α」は偽。value range で subscript a'=u は決まる（ψ_v∈[Ω_v,Ω_{v+1})
+    排他）が、引数 injectivity は canonical 限定。α が collapse 領域なら ζ≥α 可。
+  - ⟹ 1.9 necessity は **canonical-rep 依存**で当初 sketch より intricate（Buchholz K 関数/
+    canonical witness 要）。indecomposable_psi で sum/Om 消去は正・generator は要 canonical witness。
+  - 教訓: ψ §1 の quick reduction は第7事件と同型の危険。慎重に。green 資産
+    （collapse_succ/grow/psi_eq_of_Cset_eq/indecomposable_psi）は kernel 確認済で健全。
+  - ⟹ ψ-collapse ルートは careful multi-session。当面は **W=T ルートの crux-free な
+    maxr1=1 base（translate∈wf3 for maxr1≤1）** を安全な green 増分として進める
+    （wf3 内・ψ 不要・soundness 罠なし）。[[agent-independence]] 独立路線維持。
+
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
   proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
