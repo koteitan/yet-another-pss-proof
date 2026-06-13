@@ -3873,3 +3873,18 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   雑に潰そうとし dichOK(偽)も捉えられなかった真の hard core。次は **NT_shape による
   term-size 強帰納で proj 発火/sum-vs-nest を場合分けする値比較の正面再構築**
   （proj_emb_mono を主道具に）。
+
+- (続83補) crux 局所化完了: 並行再帰で **nofire 階層 167,208 全て proj=恒等で自明**
+  （ole そのまま再帰）。**fire 階層 1,624 のうち ⊑ を満たすのは 406 のみ**、
+  残 **1,218 は fire かつ sum-vs-nest**（最深で M[n]=和 D1(0)+D1(0) vs M=入れ子
+  D1(D0(0))・(8,1)(8,1) 反復 vs (8,1)(9,0) climb）。ここで proj_emb_mono 不適。
+  proj 単調性はこの 1,218 でも真だが ⊑ で説明できない＝**fire×sum-vs-nest が
+  真の irreducible crux**（E6_value も dichOK も捉え損ねた核心）。
+  - 確定ツール: proj_emb_mono（fire 406 + nofire 全部をカバー）。
+  - 残: fire×sum-vs-nest の proj 比較。proj 単調性 on NF-class の清潔な
+    term-level 特徴づけ（任意 wf3 では偽・「埋もれた高 subscript」が原因・
+    標準性=r1ok が subscript を制御している筈）が次の鍵。
+  - 次の設計案: (i) NF-class を「in_OT＋r1ok 由来の subscript-深さ条件」で
+    特徴づけ proj 単調性を証明 / (ii) fire×sum-vs-nest を NT_shape 再帰で
+    直接場合分け（proj 発火時の sum↔nest 切替の値比較を個別に）。
+    いずれも腰を据えた設計。次セッションは (i) の NF 特徴づけ採掘から。
