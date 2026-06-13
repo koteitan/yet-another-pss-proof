@@ -499,6 +499,13 @@ SBC closes arg_extract's hard subcase: M1 gives ζ∈C_v(α), ζ<α, ψ_a ζ=ψ_
 - `collapse_le` (GENERAL COLLAPSING / plateau): ∀β α, α≤β → (∀γ∈[α,β), γ∉C_a(γ))
   → ψ_a α = ψ_a β. Transfinite induction on β: succ iterates `collapse_succ`
   (1.6(a)); limit uses `Cset_limit_sub` to show ψ_a α∉C_a(β) ⟹ ψ_a β≤ψ_a α.
+- `Cset_lt_psi_of_lt_Om` (**Buchholz 1.5**, the useful ⊆ half): x∈C_a(α) ∧
+  x<Ω_{a+1} → x<ψ_a α (i.e. C_a(α)∩Ω_{a+1}=ψ_a α). Clean Citer-stage induction;
+  KEY non-circularity: ψ-generator ψ_u(ξ) with bound forces u≤a; u=a case has
+  ξ<α AND ξ∈C_a(α) (it's a Citer member!), so Cset_psi_closed gives ψ_a ξ∈C_a(α)
+  ⟹ ψ_a ξ≠ψ_a α ⟹ <. Gives SBC for the β<Ω_{a+1} region directly (β∈C_a(β),
+  β<Ω_{a+1} ⟹ β<ψ_a β ⟹ ξ<β<ψ_a β ⟹ ξ∈C_a(β) ⟹ clean case). **β≥Ω_{a+1} (e.g.
+  oV b=ψ_{a+1}(0)) still needs the higher-band recursion = the genuine core.**
 
 **SBC status — successor case PROVABLE, LIMIT case = the irreducible nut:**
 Proof of SBC (β∈C_a(β), ξ<β, suppose ψ_a ξ=ψ_a β=:W): if ξ∈C_a(β) then

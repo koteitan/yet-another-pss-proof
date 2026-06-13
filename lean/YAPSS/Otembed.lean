@@ -420,6 +420,53 @@ theorem collapse_le {a : ℕ} :
         rw [psi_unfold β a]
         exact csInf_le' hnotin
 
+/-- **Buchholz Lemma 1.5** (one direction): every member of `C_a(α)` below
+`Ω_{a+1}` is `< ψ_a α` (so `C_a(α) ∩ Ω_{a+1} = ψ_a α`, the reverse being
+`below_psi_mem_Cset`).  Clean `Citer`-stage induction: in the `ψ`-generator case
+`ψ_u(ξ)`, the bound `ψ_u(ξ) < Ω_{a+1}` forces `u ≤ a`; for `u < a` the value is
+`< Ω_{u+1} ≤ Ω_a ≤ ψ_a α`, and for `u = a` the argument `ξ < α` lies in `C_a(α)`,
+so `ψ_a(ξ) ∈ C_a(α)` and hence `ψ_a(ξ) ≠ ψ_a α` — no circularity with strict
+monotonicity. -/
+theorem Cset_lt_psi_of_lt_Om {α x : Ordinal.{u}} {a : ℕ}
+    (hx : x ∈ Cset (psiRes α) α a) (hlt : x < Om (a + 1)) : x < psi α a := by
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hx
+  clear hx
+  induction n generalizing x with
+  | zero =>
+    rw [Citer, Function.iterate_zero, id_eq] at hn
+    exact lt_of_lt_of_le hn (Om_le_psi α a)
+  | succ n IH =>
+    rw [Citer_succ, Cstep] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH hlt h1
+    · obtain ⟨y, hy, z, hz, hyz⟩ := h2
+      have hyx : y ≤ x := hyz ▸ le_self_add
+      have hzx : z ≤ x := hyz ▸ le_add_self
+      have hy' : y < psi α a := IH (lt_of_le_of_lt hyx hlt) hy
+      have hz' : z < psi α a := IH (lt_of_le_of_lt hzx hlt) hz
+      rw [← hyz]
+      exact psi_add_principal hy' hz'
+    · obtain ⟨u, ⟨ξ, ⟨hξC, hξα⟩, hξx⟩⟩ := Set.mem_iUnion.1 h3
+      have hξα' : ξ < α := hξα
+      simp only [psiRes, if_pos hξα'] at hξx
+      subst hξx
+      have hu_le : u ≤ a := by
+        by_contra hc
+        have hau : a + 1 ≤ u := by omega
+        exact absurd (lt_of_lt_of_le hlt (Om_mono hau)) (not_lt.2 (Om_le_psi ξ u))
+      rcases lt_or_eq_of_le hu_le with hua | hua
+      · calc psi ξ u < Om (u + 1) := psi_lt_Om_succ ξ u
+          _ ≤ Om a := Om_mono (by omega)
+          _ ≤ psi α a := Om_le_psi α a
+      · subst hua
+        have hmem : psi ξ u ∈ Cset (psiRes α) α u := by
+          have := Cset_psi_closed (Citer_subset_Cset hξC) hξα' u
+          rwa [psiRes, if_pos hξα'] at this
+        have hle : psi ξ u ≤ psi α u := psi_mono_arg hξα'.le u
+        rcases lt_or_eq_of_le hle with h | h
+        · exact h
+        · exact absurd (h ▸ hmem) (psi_notMem α u)
+
 /-- **(Buchholz 1.4(a))** Uniqueness of the canonical `ψ`-representation: if
 `ξ, ξ'` are both `a`-canonical (`ξ ∈ C_a(ξ)`, `ξ' ∈ C_a(ξ')`) and `ψ_a ξ = ψ_a ξ'`
 then `ξ = ξ'`.  (Canonical points are exactly where `ψ_a` strictly increases.) -/
