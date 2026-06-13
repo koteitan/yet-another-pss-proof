@@ -4151,6 +4151,17 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
     対して **oV_nf_order_pres の order/strictness は NF 本質**（proj が wf3/r1ok で非単調）。
     ⟹ 純 ψ canonical-witness では order 部分は閉じない、と lean に警告。
 
+**(8) ★形式化前進: collapse_succ (Buchholz 1.6(a)) 証明（ord/collapsing.thy・PSI 緑・sorry無）**
+  - `psi_eq_of_Cset_eq`: elts(C_v α)=elts(C_v β) ⟹ psi α v=psi β v（ψ=LEAST not in C なので
+    C-集合のみ依存・再利用可能 bridge）。
+  - `collapse_succ`: α∉C_v(α) ⟹ psi α v = psi(succ α) v。証明＝`Cset_succ_eq`(C_v(α+1)=C_v(α),
+    iterate 帰納`Citer_succ_stays`で新 generator ψ_α が α∉closure ゆえ非発火)＋psi_eq_of_Cset_eq。
+    canonicity 省略 Cset のまま・term 側不要・abstract param p で restrict/elts-succ ノイズ回避。
+  - ＝**psi_proj（collapsing keystone）の順序数側 core**。lean 協調の ya-pss 担当分の第一歩。
+  - 次: (i) 一般 collapsing（α∉C_v(α)⟹任意 succ 反復で一定 / 極限）→ (ii) 1.9 necessity
+    （γ∈C_v(α)⟹G_u γ⊆α・C-rank 帰納）→ (iii) term 橋 ψ_a(oV b)=ψ_a(oV(proj a b))=psi_proj。
+    (ii)(iii) が残りの山。lean は 1.4(b) canonical witness 担当。
+
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
   proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
