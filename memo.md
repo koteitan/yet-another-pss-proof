@@ -4067,3 +4067,43 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   ⟹ 各 level の (step閉包 + translate∈wf3) を示せば accessibility が自動。再利用可能な土台。
   次の maxr1=1 base は (step閉包: oper_snd_subset で snd≤1 保存 ✓) + (translate∈wf3: r1ok 要)
   の2点で acc_wf3_fragment に流せる。crux は maxr1≥2（translate が非wf3＝再上昇）。
+
+### (2026-06-13 続89) ★crux を Cmem_NF に sharpen — 「OT2は無料・OT3だけが核」
+
+今セッションの主成果。続87の「semantic も crux 回避不可」を **大幅に sharpen**。
+crux は「nrm 全証明をやり直す」のではなく **たった一つの C-membership 補題** に縮約される。
+
+**(1) ターゲットの実証的確定（bulletproof）**
+- oV-decrease は **全 step・全 maxr1 で厳密減少**: 98,910 steps, 0 反例（maxr1=0..4）。
+- nrm_order_pres (= olt v u ⟹ olt(nrm v)(nrm u)) は **NF 全 olt-対で成立**:
+  1,124,250 対, 0 反例。step だけでなく一般の NF 対で真。
+- wf3_nrm（nrm∈OT）も全 14635 translate で確認（既証明 wf3_nrm と一致）。
+- nrm-value proxy で oV(translate) も追認（V4 恒等式 nrm(D0 D1 D2 0)=D0 D2 も pass）。
+
+**(2) 証明の全体像 = 単一 sorry `nrm_order_pres`（nrm.thy:169）**
+- nrm.thy は **PSS_terminates_nrm を nrm_order_pres 一点まで完成済**（他は全部緑）:
+  wf3_nrm(N1)✓ / proj_wf3 / proj_G / wf3_ins ✓ / oV_order_pres(PSI)✓ / wf_olt_wf3✓ /
+  m_step_decreases✓。`λM. nrm(translate M)` を測度に wf_olt_wf3 で wf。
+- 等価な semantic 版 **oV_mono_NF**（v,u∈NF⟹olt v u⟹oV v<oV u）は **nrm 無しで直接** wf Rnf
+  を出す（Rnf={(v,u).olt v u∧v,u∈NF}, proofs.thy:25; inv_image VWF oV）。
+
+**(3) ★KEY 精密化: oV_order_pres は wf3 を「C-membership 供給」だけに使う**
+- otembed.thy:347 の oV_order_pres を精査: wf3 を使う箇所は **ccnd（C-membership
+  oV b' ∈ Cset(λξ.psi ξ)(oV b') a'）の供給のみ**。これは OT3（Gterm a' b'<b'）から来る。
+  spine 側（OT2/headle）も使うが——
+- **実測（wf_localize.py）**: 全 32,971 translate で
+  - **OT2（spine 主項 非増加）= 0 fail（全成立）** ← cnf_ST_PS で Isabelle 上も無料のはず
+  - **OT3（Gterm<arg）= maxr1≥2 の 9,192 でちょうど fail**
+- ⟹ NF ⊆ {OT2 holds, OT3 may fail}。oV_mono_NF に足りないのは **C-membership だけ**。
+
+**(4) ★crux 縮約: `Cmem_NF`**
+  「v∈NF の各主項 D_a(b) について oV b ∈ Cset(a, oV b)（OT3 が破れても）」。
+  ＝ 標準形性（row-1 parenthood discipline）が oV b を ψ-collapse 閾値以下に保つ、の順序数版。
+  これを示せば oV_order_pres の証明が NF でそのまま走り → oV_mono_NF → wf Rnf → 停止性。
+  **「11000行の nrm 全証明やり直し」ではなく Cmem_NF 一本が核**。次セッションはここを攻める。
+
+**(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
+  ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
+  proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
+  泥沼を避けられる）。ただし N2 単独では olt v u→比較に橋渡しできず crux は閉じない
+  （order-preservation が本体）。Cmem_NF ルートの方が直接的。
