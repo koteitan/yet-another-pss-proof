@@ -467,6 +467,58 @@ theorem Cset_lt_psi_of_lt_Om {α x : Ordinal.{u}} {a : ℕ}
         · exact h
         · exact absurd (h ▸ hmem) (psi_notMem α u)
 
+/-- `C_v(α)` is closed under taking the predecessor of a successor member:
+`x + 1 ∈ C_v(α) → x ∈ C_v(α)`.  `Citer`-stage induction: a successor sum
+`y + z = x + 1` forces `z` to be a successor (limit `z` would make `y + z` a
+limit), peeled by `Cset_add_closed`; a `ψ`-value generator is additive-principal,
+so being a successor forces it to be `1` (hence `x = 0`).  Used in the successor
+case of strict monotonicity below canonical points. -/
+theorem succ_mem {α x : Ordinal.{u}} {v : ℕ}
+    (hx : x + 1 ∈ Cset (psiRes α) α v) : x ∈ Cset (psiRes α) α v := by
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hx
+  clear hx
+  induction n generalizing x with
+  | zero =>
+    rw [Citer, Function.iterate_zero, id_eq] at hn
+    exact Iio_Om_subset_Cset (lt_trans (lt_add_one x) hn)
+  | succ n IH =>
+    rw [Citer_succ, Cstep] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH h1
+    · obtain ⟨y, hy, z, hz, hyz⟩ := h2
+      dsimp only at hyz
+      rcases Ordinal.zero_or_succ_or_isSuccLimit z with rfl | ⟨w, hw⟩ | hlim
+      · rw [add_zero] at hyz
+        exact IH (hyz ▸ hy)
+      · obtain ⟨w, rfl⟩ : ∃ w', z = w' + 1 := ⟨w, by rw [← hw, Order.succ_eq_add_one]⟩
+        have hxe : y + w = x := by
+          apply Order.succ_injective
+          rw [Order.succ_eq_add_one, Order.succ_eq_add_one, add_assoc]
+          exact hyz
+        rw [← hxe]
+        exact Cset_add_closed (Citer_subset_Cset hy) (IH hz)
+      · refine absurd (hyz ▸ Ordinal.isSuccLimit_add y hlim) ?_
+        rw [← Order.succ_eq_add_one]
+        exact Order.not_isSuccLimit_succ x
+    · obtain ⟨u, ⟨ξ, ⟨hξC, hξα⟩, hξx⟩⟩ := Set.mem_iUnion.1 h3
+      have hξα' : ξ < α := hξα
+      simp only [psiRes, if_pos hξα'] at hξx
+      by_cases h0 : 0 < x
+      · exfalso
+        have hx1 : x < psi ξ u := by rw [hξx]; exact lt_add_one x
+        have h1 : (1 : Ordinal) < psi ξ u := by
+          rw [hξx]
+          have hle : (1 : Ordinal) ≤ x := by
+            have h := Order.succ_le_of_lt h0
+            rwa [Order.succ_eq_add_one, zero_add] at h
+          exact lt_of_le_of_lt hle (lt_add_one x)
+        have := (psi_addprinc ξ u).2 x 1 hx1 h1
+        rw [hξx] at this
+        exact lt_irrefl _ this
+      · have : x = 0 := le_antisymm (not_lt.1 h0) bot_le
+        rw [this]
+        exact Iio_Om_subset_Cset (lt_of_lt_of_le zero_lt_one (one_le_Om v))
+
 /-- **(Buchholz 1.4(a))** Uniqueness of the canonical `ψ`-representation: if
 `ξ, ξ'` are both `a`-canonical (`ξ ∈ C_a(ξ)`, `ξ' ∈ C_a(ξ')`) and `ψ_a ξ = ψ_a ξ'`
 then `ξ = ξ'`.  (Canonical points are exactly where `ψ_a` strictly increases.) -/

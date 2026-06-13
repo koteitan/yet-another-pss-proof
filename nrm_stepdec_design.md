@@ -513,9 +513,10 @@ Cset_psi_closed gives W=ψ_a ξ∈C_a(β) ⊥ psi_notMem. So ξ∉C_a(β), W≤�
 ∀γ∈[ξ,β) noncanon (γ∈C_a(γ) would give psi_strict_mono_arg γ<β ⟹ ψ_a γ<ψ_a β,
 but ψ_a γ=W=ψ_a β by collapse on [ξ,β)).
 - **β=δ+1 (succ): DONE-able.** δ∈[ξ,β) noncanon (δ∉C_a(δ)). `Cset_succ_eq` ⟹
-  C_a(δ+1)=C_a(δ), so β=δ+1∈C_a(β)=C_a(δ). Then **`succ_mem`** (clean Citer-stage
-  lemma, UNPROVEN-but-easy: `x+1∈C_v(α) → x∈C_v(α)`; base downward-closed; sum
-  case z must be succ since x+1 succ, peel via Cset_add_closed; ψ-case: ψ value
+  C_a(δ+1)=C_a(δ), so β=δ+1∈C_a(β)=C_a(δ). Then **`succ_mem`** (PROVEN this
+  session, sorry-free: `x+1∈C_v(α) → x∈C_v(α)`; base downward-closed; sum
+  case z must be succ since x+1 succ — limit z ⟹ y+z limit via
+  `Ordinal.isSuccLimit_add` — peel via Cset_add_closed; ψ-case: ψ value
   additive-principal+succ ⟹ =1 ⟹ x=0∈base) gives δ∈C_a(δ) ⊥ δ noncanon.
 - **β limit: OPEN (genuine Buchholz core).** Continuity: β∈C_a(β)=⋃_{δ<β}C_a(δ),
   take δ∈[ξ,β), β∈C_a(δ), δ noncanon, W=ψ_a δ≤δ<β, β>ψ_a δ. Derived structural
