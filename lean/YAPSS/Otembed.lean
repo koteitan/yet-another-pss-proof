@@ -553,6 +553,32 @@ theorem oV_order_pres {v u' : Three} (hv : wf3 v) (hu : wf3 u') (h : olt v u') :
         show psi (oV b) a + oV c < psi (oV b) a + oV g
         exact add_lt_add_right hcg _
 
+/-- The tail `c` is `<o` the whole `P a b c` (for `wf3`, via the head bound
+`hdle c (P a b Z)`).  Structural induction on `c`. -/
+theorem olt_cons_tail {a : ℕ} {b : Three} :
+    ∀ c, wf3 (P a b c) → olt c (P a b c) := by
+  intro c
+  induction c with
+  | Z => intro _; exact olt_Z_P a b Z
+  | P a' b' c' ihb ihc =>
+    intro h
+    obtain ⟨_, wfc, _, hd⟩ := wf3_P.1 h
+    rw [hdle_P_P] at hd
+    rcases hd with hlt | ⟨hae, hbb⟩
+    · exact olt_P_P.2 (Or.inl hlt)
+    · subst hae
+      rcases hbb with hb | hbe
+      · exact olt_P_P.2 (Or.inr (Or.inl ⟨rfl, hb⟩))
+      · subst hbe
+        exact olt_P_P.2 (Or.inr (Or.inr ⟨rfl, rfl, ihc wfc⟩))
+
+/-- The tail value is strictly below the whole value: `wf3 (P a b c) →
+oV c < oV (P a b c)`.  Supplies the `r < δ + r` hypothesis of `Cset_add_split`
+for spine extraction (`δ = ψ_a(oV b)`, `r = oV c`). -/
+theorem oV_tail_lt {a : ℕ} {b c : Three} (h : wf3 (P a b c)) :
+    oV.{u} c < oV (P a b c) :=
+  oV_order_pres (wf3_P.1 h).2.1 h (olt_cons_tail c h)
+
 /-! ## Well-foundedness of `olt` on the Buchholz class `wf3` (Lemma 2.2)
 
 The value map embeds `(wf3, olt)` into the ordinals, so `olt` is well-founded
