@@ -12,6 +12,7 @@
 > 順序は **Buchholz lex**（`mechanized.three`, olt_trans/total/irrefl 緑）＝旧(1)olt_trans 解決済・旧(3)op_NF は three 直用で不要。
 > WF は **route A = Buchholz §1-2 を ZFC_in_HOL 順序数上で意味論的に証明**（`ord/psi.thy`, session PSI）。旧 K-dom `ot`(wo/buchholz/embed) は誤変種で破棄予定。
 > 設計詳細・ZFC_in_HOL API・経緯は memo.md / conventionals.md へ。
+> **サマリ (2026-06-14, Lean route)**: 残 3 sorry（nrm_order_pres 経由の psi_proj_notmem / oV_nf_order_pres, および独立路 wf_ArgsA）は全て同一の **Buchholz 崩壊核 CC**（= 論文 Remark p197「omitting condition は C_v(α) を変えない」の collapse 領域, 未証明）に帰着。atomic crux 解明済（bootstrap ⟹ canonical rep は <α に必ず存在 ⟹ CW は真）。NEC(1.9)/CW は `CC_of_collapseCanon`+1.7 で CC 単独に還元済（Buchholz17.lean, 緑）。詳細 memory nrm-campaign-status / nrm_stepdec_design.md。
 - 🚨 定理（標準形ペア数列システムの停止性）〔proofs.thy / embed.thy〕
   - ✅ §5 定式化〔def.thy: 親子関係 nextrel0/1・基本列 oper=M[n]・標準形 ST_PS・step〕
   - ✅ 三分木記法 $p_a(b)+c$〔mechanized.thy〕
@@ -39,7 +40,7 @@
       - ✅ wfE（レベル内整礎）→ 和の層を剥離〔wfsum.thy: NF=非増加和 p0(b_i)、olt=lex→multiset 拡張、olt_sum_decomp/olt_sum_mult/wf_level_from_args/wfE_from_args〕
       - ✅ 一般 summand peel＋添字 peel〔summands/olt_summands_mult（cnf だけで非増加）、singdest lex_prod〕
       - ✅ ladder の底＝レベル0 完全証明〔wf_olt0：cnf∧maxsub=0 クラス、PrSS 流 accp+multp（rA0/accp_multp_olt0/sum_acc/sing0_acc/lvl0_acc）〕
-      - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（崩壊核）。
+      - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（崩壊核 = Buchholz CC, 下記 nrm 路と同核）。
         - 確定：有限 peel では閉じない／純構文クラスは t_k・x_k 連鎖で不成立（生成依存）／LPO 還元不可。
       - ✅ **柱2: wf_olt_wf3 SORRY-FREE**〔ord/psi.thy+otembed.thy, session PSI〕＝Buchholz Lemma 2.2 自前証明
         （pure-lex olt は Buchholz OT の順序そのもの；wf3=OT クラス上で oV 埋め込み厳密単調；
@@ -52,7 +53,7 @@
         - ✅ 実証: 2,643,843 ペア（NF+遺伝ブロック、クロスレベル込）で衝突0・逆転0〔tools/valnorm.py〕
         - ✅ **PSS_terminates_nrm** = inv_image wf_olt_wf3 (nrm∘translate)（peel/レベル分解不要）
         - ✅ wf_Rnf_nrm（order_pres⟹wf Rnf）・nrm_step_dec（order_pres から導出）
-        - 🚨 live sorry = nrm_order_pres ただ1つ。攻め筋2段: (弱) nrm_step_dec 直接証明
+        - 🚨 live sorry = nrm_order_pres ただ1つ。【Lean】= psi_proj_notmem + oV_nf_order_pres に分解済、両者とも Buchholz 崩壊核 CC へ還元（psi_proj_notmem→区間非canonical via collapse_le; NEC→CC via 1.7）。攻め筋2段: (弱) nrm_step_dec 直接証明
           〔E6: proj=首最大row1接尾辞切出し、E7: 第一差分は prefix/sub の2種のみ、oper 機構流用〕
           / (強) 全ペア保存＝proj-mono（弱単調＋CRUX 単射、A_a 全集合で実証済・衝突0）
         - 🚨🤖 攻略 nrmstep.thy（Pred ケース）: ✅ olt層（nrm_snoc_seg/ins_olt_mono）
