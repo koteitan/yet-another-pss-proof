@@ -693,6 +693,16 @@ give witness-canonicity for large ζ — the level-0/low-u case (where SBC fails
 genuine Buchholz argument. RE-ANALYZE argExtract with the paper at this point.
 **STATE: 1.7(a) solidly done (a real milestone). 1.7(b)+argExtract need careful paper
 work (statement + the level-u canonicity-bound subtlety) — exactly the kind of place
-where rushing produced SBC/descends false-findings; verify before building.** Verified-committed this session stands:
+where rushing produced SBC/descends false-findings; verify before building.**
+**★ KEY CLARIFICATION (don't over-claim): 1.7 is NECESSARY-but-NOT-SUFFICIENT for
+argExtract.** 1.7 gives canonicity + formula only on the NON-COLLAPSING region
+`[0, ε_{Ω_v+1})` (ψ_v α=ω^{Ω_v+α}, strictly increasing, every point canonical).
+argExtract's M1-witness ζ∈C_v(α) can lie in the COLLAPSING region
+`[ε_{Ω_v+1}, ε_{Ω_ω+1})` — where ψ_v collapses (ψ_v α<ω^{Ω_v+α}) and canonicity is
+NOT given by 1.7. That region is the GENUINE Buchholz core (where 1.4(b) canonical-
+witness / the with-condition C matters, and where SBC fails). So proving 1.7(a)/(b)
+does NOT by itself discharge argExtract; the collapsing-region witness handling is the
+real remaining difficulty. 1.7 is still a genuine prerequisite + a real milestone, and
+it confirms the infrastructure (imports, ε-numbers, card_opow_le) all works in Lean. Verified-committed this session stands:
 psi_notMem_iff_eq, psi_proj_of_notmem+psi_proj_notmem(gap), NEC_of_argExtract,
 collapse_le, Cset_limit_sub, 1.5, succ_mem, canon_pred, psi_strict_mono_below_succ.
