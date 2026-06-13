@@ -101,6 +101,9 @@
   - ✅ r1ok_climb 討伐〔q=0強制＋r'=parent0(j1)＋nextrel1最小性で残差なし完全証明〕
   - ✅ TOP_desc ステート〔prefix弱化形・閉包+2 967/0 凍結・本体は未証明〕
   - 🚨 スタブ〔NT_tie/E6_mem＝resolved版あり・最終組立＝1本の同時長さ帰納にインライン（SCC地図=memo続59）〕
+  - ✅ **戦略転換（続79）**: 偽 E6_value/ginv/nbcK 族を捨て **dichOK 戦略**へ
+    （lean-yapss/Lean Nrmstep=sorry0 が青写真・dichOK=辺二分律で健全）。
+    Phase1 dichOK 移植 / Phase2 偽族撤去 / Phase3 dichOK+NT_tie で値減少完成。
   - 🚨🚨🚨 **健全性第7事件（最重大・続78）**: 値側基盤 E6_value(proj=NT msfx) /
     E6_mem(msfx∈Gterm) / ginv(anchor-max) / O2/O1P/GAP/GBLK0 / E6_nbcK_T が
     **closure+5/+6 で偽**（row-1 上昇鎖のコピー再上昇）。「全sorry +3検証完了」

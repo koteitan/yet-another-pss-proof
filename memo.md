@@ -3727,3 +3727,37 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   (C) r1ok 親鎖上界（climb する真の不変量）で ginv を置換し、nbcK を r1ok
       ベースで再証明。
   いずれも大規模な再設計。最終減少が真である以上ルートは存在する。
+
+### ★★★(2026-06-13 続79) 戦略転換決定 — dichOK 戦略へ（lean-yapss/Lean を青写真に）
+
+**ユーザー指示**: ya-pss Isabelle を進める。Lean 版を参考・同戦略への乗り換え可。
+（「Route A」等の私の選択肢ラベルは今後不使用＝混乱回避）
+
+**lean-yapss 調査結論**:
+- lean-yapss/**Isabelle** 版（isabelle/ord/nrmstep.thy・sorry 12）は ya-pss と
+  **同じ偽 E6_value（proj=NT msfx）+ E6_mem(sorry) 架構**＝同じ袋小路。
+- lean-yapss/**Lean** 版（lean/YAPSS/Nrmstep.lean・**sorry 0**）は **E6_value/
+  E6_mem/ginv/nbcK/GBLK0/O2/dom_deep/lpl を一切持たない**（grep ゼロ）。健全。
+  抜け穴なし（axiom/native_decide/unsafe/sorry なし、Nrm の nrm_order_pres と
+  Wfsum の wf_ArgsA のみ別 sorry）。
+- **私の第7事件発見は正しい**（Lean は健全ゆえ偽の E6_value を使えず別路線に）。
+
+**Lean の健全な土台 = dichOK（辺二分律）**:
+  `dichOK M ⟺ ∀p q t. nextrel1 M p t → le0 M p q → q<t → 0<snd(M!q) →
+              (le0 M q t ∨ M!q = M!t)`
+  ＝行0/行1 祖先の**接続性二分律**（値bound でない）。ginv のアンカーmax（偽）の
+  健全な代替。マイニング 28054/28054 一致。Lean 証明済（dichOK_ST_PS、copy 義務
+  copyDichOK_of も 0 sorry）。土台補題群: le0/nextrel0 合同（_congr/_shift）・
+  rootsplit・copyExp・cross_dichOK・dichOK_{diagSeq,take,Pred,ST_PS}。
+  併せて **NT_tie_of**（健全な tie コンビネータ）も Lean に存在。
+
+**重要**: dichOK はまだ nrm_order_pres に未接続（Lean でも Nrm/Proofs で未使用）。
+  ⟹ 値側最終減少は**両プロジェクト未完**。Lean は健全土台＋方向のみ確立。
+
+**ya-pss 移植計画（続79〜）**:
+  Phase1: dichOK 定義 + 保存補題群（diagSeq/take/Pred/ST_PS + copyExp/le0合同/
+    rootsplit/cross_dichOK）を Lean→Isabelle 翻訳（0 sorry の健全部分）。
+    def.thy に nextrel0/le0/nextrel1/nextR 既存・流用可。
+  Phase2: 偽族（ginv/E6_value/E6_mem/nbcK/O2/GBLK0/GAP/dseg_bound/ob_*）を撤去。
+  Phase3: dichOK + NT_tie で nrm 値側減少を完成（Lean 未完＝新規設計）。
+  対角の m_step_decreases（translate 減少）は健全・流用。
