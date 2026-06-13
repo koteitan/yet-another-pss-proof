@@ -8912,4 +8912,89 @@ theorem le0_copy_to_block {G B : PairSeq} {d0 n k a b : ℕ} (hk : k < n)
   simp only [Nat.zero_add] at hshift
   exact le0_shift_iff.1 hshift
 
+/-- **Block-to-copy transport across the copy boundary**: a host row-0 chain
+from block offset `i` to the appended last column `lp` shifts to the row-0
+chain from copy-`kq` offset `i` up to the copy-`(kq+1)` root — the boundary
+column `lp` lands on the next copy root (row-0 entries differ by `kq·d0`,
+endpoint `lp.1 + kq·d0 = v0 + (kq+1)·d0`). -/
+theorem le0_block_lp_to_copy {G R : PairSeq} {v0 w0 d0 n kq i : ℕ} {lp : ℕ × ℕ}
+    (hkq1 : kq + 1 < n) (hlp1 : lp.1 = v0 + d0)
+    (h : le0 (G ++ ((v0,w0)::R) ++ [lp]) (G.length + i)
+          (G.length + ((v0,w0)::R).length)) :
+    le0 (copyExp G ((v0,w0)::R) d0 n)
+        (G.length + (kq * ((v0,w0)::R).length + i))
+        (G.length + (kq + 1) * ((v0,w0)::R).length) := by
+  set B : PairSeq := (v0,w0)::R with hBdef
+  have hL : 0 < B.length := by rw [hBdef]; simp
+  have hMlen : (G ++ B ++ [lp]).length = G.length + B.length + 1 := hostM_length ..
+  have hXlen : (copyExp G B d0 n).length = G.length + n * B.length := copyExp_length ..
+  have hkq1Le : (kq + 1) * B.length = kq * B.length + B.length := by
+    rw [Nat.add_mul, Nat.one_mul]
+  have hdMlen : B.length + 1 ≤ ((G ++ B ++ [lp]).drop G.length).length := by
+    rw [List.length_drop, hMlen]; omega
+  have hdXlen : B.length + 1
+      ≤ ((copyExp G B d0 n).drop (G.length + kq * B.length)).length := by
+    rw [List.length_drop, hXlen]
+    have h3 : (kq + 1 + 1) * B.length ≤ n * B.length :=
+      Nat.mul_le_mul_right B.length (by omega)
+    have e3 : (kq + 1 + 1) * B.length = kq * B.length + B.length + B.length := by
+      rw [Nat.add_mul, Nat.add_mul]; omega
+    omega
+  have hM1 : le0 ((G ++ B ++ [lp]).drop G.length) i B.length := by
+    have h9 := (le0_drop_iff (M := G ++ B ++ [lp]) (k := G.length)
+      (a := G.length + i) (b := G.length + B.length)
+      (by omega) (by omega) (by rw [hMlen]; omega)).2 h
+    rwa [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at h9
+  have hsegM : le0 (((G ++ B ++ [lp]).drop G.length).take (B.length + 1)) i B.length :=
+    (le0_take_iff (by omega) (by omega)).2 hM1
+  have hent : ∀ j, j < (((copyExp G B d0 n).drop (G.length + kq * B.length)).take
+        (B.length + 1)).length →
+      entry (((copyExp G B d0 n).drop (G.length + kq * B.length)).take (B.length + 1)) 0 j
+        = entry (((G ++ B ++ [lp]).drop G.length).take (B.length + 1)) 0 j + kq * d0 := by
+    intro j hj
+    rw [List.length_take] at hj
+    have hjL1 : j < B.length + 1 := by omega
+    unfold entry
+    rw [if_pos rfl, if_pos rfl, getD_take hjL1, getD_drop, getD_take hjL1, getD_drop]
+    rcases Nat.lt_or_ge j B.length with hjlt | hjge
+    · have hidxX : G.length + kq * B.length + j = G.length + (kq * B.length + j) := by omega
+      rw [hidxX, copyExp_getD_copy (show kq < n by omega) hjlt, hostM_getD_blk hjlt]
+    · have hjeq : j = B.length := by omega
+      subst hjeq
+      have hidxX : G.length + kq * B.length + B.length
+          = G.length + ((kq + 1) * B.length + 0) := by rw [hkq1Le]; omega
+      rw [hidxX, copyExp_getD_copy (show kq + 1 < n by omega) hL]
+      have hMlp : (G ++ B ++ [lp]).getD (G.length + B.length) (0,0) = lp := by
+        rw [getD_append_right (by simp)]
+        have hz : G.length + B.length - (G ++ B).length = 0 := by simp
+        rw [hz, List.getD_cons_zero]
+      rw [hMlp, hBdef]
+      simp only [List.getD_cons_zero]
+      show v0 + (kq + 1) * d0 = lp.1 + kq * d0
+      have hm : (kq + 1) * d0 = kq * d0 + d0 := by rw [Nat.add_mul, Nat.one_mul]
+      rw [hlp1]; omega
+  have hlenEq : (((copyExp G B d0 n).drop (G.length + kq * B.length)).take
+        (B.length + 1)).length
+      = (((G ++ B ++ [lp]).drop G.length).take (B.length + 1)).length := by
+    rw [List.length_take, List.length_take]; omega
+  have hsegX : le0 (((copyExp G B d0 n).drop (G.length + kq * B.length)).take
+        (B.length + 1)) i B.length :=
+    (le0_congr_shift hlenEq hent).2 hsegM
+  have hX1 : le0 ((copyExp G B d0 n).drop (G.length + kq * B.length)) i B.length :=
+    (le0_take_iff (by omega) (by omega)).1 hsegX
+  have hbnd : (G.length + kq * B.length) + B.length < (copyExp G B d0 n).length := by
+    have hh := hdXlen
+    rw [List.length_drop, hXlen] at hh
+    rw [hXlen]; omega
+  have hX2 := (le0_drop_iff (M := copyExp G B d0 n) (k := G.length + kq * B.length)
+    (a := (G.length + kq * B.length) + i) (b := (G.length + kq * B.length) + B.length)
+    (by omega) (by omega) hbnd).1
+  rw [Nat.add_sub_cancel_left, Nat.add_sub_cancel_left] at hX2
+  have hX3 := hX2 hX1
+  have e1 : (G.length + kq * B.length) + i = G.length + (kq * B.length + i) := by omega
+  have e2 : (G.length + kq * B.length) + B.length = G.length + (kq + 1) * B.length := by
+    rw [hkq1Le]; omega
+  rw [e1, e2] at hX3
+  exact hX3
+
 end YAPSS
