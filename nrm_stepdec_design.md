@@ -622,6 +622,34 @@ Buchholz; 1.4(b) trivial; cost = re-port 1.2/1.3/1.5/1.6 basics + psi for with-C
 psi/Cset are foundational so this ripples). (R2) prove omitted=with equivalence
 (Buchholz's unproven Remark; hard direction needs canonical-rep-in-C, the same crux).
 ASSESSMENT: R1 is the principled fix (Isabelle ya-pss likely faces the same choice).
-This is the genuine large task; do with the paper open + fresh context. Verified-committed this session stands:
+This is the genuine large task; do with the paper open + fresh context.
+
+### ★ KEY REVISION: 1.7 IS PROVABLE ADDITIVELY for the omitted psi (NO R1 refactor!)
+Re-examining: 1.6(b)'s use of 1.4(b) is AVOIDED inside 1.7's own α-induction —
+1.7's IH `∀ξ<α, ξ∈C_v(ξ)` makes the M1-witness `ζ<α` canonical FOR FREE (no
+separate 1.4b). So **1.7 (canonicity + the ψ_v α=ω^{Ω_v+α} formula) can be proven
+by ONE transfinite induction on α using M1 (`psi_form_of_mem`, HAVE) + `collapse_succ`
+(HAVE) + `below_psi_mem_Cset` + the IH** — additive, no Cstep redefinition. Then
+1.4(b) follows (witness canonical via 1.7), then argExtract→NEC→psi_proj. So the
+WHOLE necessity is additive after all. (R1/R2 NOT needed — earlier pessimism wrong.)
+**1.7 SUB-ROADMAP (the remaining build):**
+- DONE this session (Psi.lean): `psi_zero`(1.2a, ψ_v 0=Ω_v=ω^{0*v}, the base),
+  `Cset_zero`, `Om_isPrincipal`, `one_mem_Cset`, `canon_succ` (succ canonicity step).
+- TODO `psi_succ_principal` (**1.6a canonical case**): `α∈C_v(α) → ψ_v(α+1)=`least
+  additive-principal `>ψ_v α`. (Have collapse_succ for the α∉C case.)
+- TODO **1.7(a)** `α<ε_0 → α∈C_0(α) ∧ ψ_0 α=ω^α`: transfinite induction; succ via
+  1.6a-canonical + "least principal >ω^α = ω^{α+1}"; additive-principal canonicity
+  via α=ψ_0 δ (the formula); needs Mathlib CNF (`Ordinal.CNF`) for "<ω^{α+1}⊆C_0(α+1)".
+- TODO **1.7(b)** `α<ε_{Ω_ω+1}, v≠0 → α∈C_v(α) ∧ ψ_v α=ω^{Ω_v+α}`: like 1.7a, bound
+  ε_{Ω_ω+1} (Mathlib `ε_`/Veblen; need Ω_ω=ℵ_ω — Om is ℕ-indexed, lift to Ordinal).
+- TODO **1.8(a)** `C_v(α)⊆ε_{Ω_ω+1}` (induction on Citer, using 1.7b+1.2c).
+- TODO **1.4(b)** omitted: M1 witness ζ∈C_v(α)⊆ε_{Ω_ω+1} (1.8a) → ζ canonical (1.7b,
+  u≠0) → done. **Level u=0 needs ζ<ε_0** (1.7a) — handle: args of D_0 in OT are
+  <ε_0? verify, else extra care (level-0 is where SBC fails).
+- TODO argExtract (1.4c) = 1.4b+psi_canonical_inj; NEC=NEC_of_argExtract(HAVE);
+  psi_proj_notmem from NEC on the non-canonical b' — RECHECK this still needs the
+  non-canonical necessity (NEC is for wf3/canonical t); the per-step b' is
+  non-a-reduced. May need 1.9 necessity applied differently. Re-derive at that point.
+Mathlib deps available: `Ordinal.CNF`, `ε_`(Veblen), `aleph`, opow. LARGE but additive. Verified-committed this session stands:
 psi_notMem_iff_eq, psi_proj_of_notmem+psi_proj_notmem(gap), NEC_of_argExtract,
 collapse_le, Cset_limit_sub, 1.5, succ_mem, canon_pred, psi_strict_mono_below_succ.
