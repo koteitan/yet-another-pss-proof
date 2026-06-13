@@ -705,6 +705,24 @@ NOT given by 1.7. That region is the GENUINE Buchholz core (where 1.4(b) canonic
 witness / the with-condition C matters, and where SBC fails). So proving 1.7(a)/(b)
 does NOT by itself discharge argExtract; the collapsing-region witness handling is the
 real remaining difficulty. 1.7 is still a genuine prerequisite + a real milestone, and
-it confirms the infrastructure (imports, ε-numbers, card_opow_le) all works in Lean. Verified-committed this session stands:
+it confirms the infrastructure (imports, ε-numbers, card_opow_le) all works in Lean.
+
+### 1.7(b) STATUS (this session): infrastructure done; formula proof works; canonicity gap
+PROVEN-committed (Buchholz17.lean) toward 1.7(b): `omega_lt_Om`, `omega_opow_Om`
+(ω^{Ω_v}=Ω_v), `epsilon_Om_succ_lt_Om` (ε_{Ω_v+1}<Ω_{v+1}), generalized
+`Iio_opow_succ_subset` (any level v, bound δ). The 1.7(b) FORMULA proof
+(`ψ_v α=ω^{Ω_v+α}`, ∀α<ε_{Ω_v+1}, v≥1) was written & compiles for the ≤/≥/limit
+cases (band-v bounds: lower `Ω_v=ω^{Ω_v}≤ω^{Ω_v+α}`, upper `ω^{Ω_v+α}<Ω_{v+1}` via
+`Ω_v+α<Ω_{v+1}` + isPrincipal_opow_ord; limit via `isSuccLimit_add`+split β<Ω_v
+base / β=Ω_v+α' offset). **NOT committed — the CANONICITY (α∈C_v(α)) has a gap**:
+it needs `α<ψ_v α=ω^{Ω_v+α}`, which in the ABSORBED case `Ω_v+α=α` reduces to
+`α<ω^α` (α not an ε-number). True because the only ε-number in `[Ω_v,ε_{Ω_v+1})`
+is `ε_{Ω_v}=Ω_v` (KEY: `Ω_v=ℵ_v.ord` IS an ε-number and equals `ε_{Ω_v}`, since
+there are exactly Ω_v ε-numbers below it), and absorbed α≥Ω_v·ω>Ω_v is strictly
+between ε_{Ω_v} and ε_{Ω_v+1} ⟹ not an ε-number. Formalizing needs ε-ENUMERATION
+lemmas ("ω^α≤α → α=ε_β for some β" + ε strictMono ⟹ no ε strictly between
+consecutive). Bounded chunk; finish next. (NB earlier panic that 1.7(b) is
+"inconsistent" was wrong — `ε_{Ω_v}=Ω_v=Ω_v` is NOT strictly < Ω_v so Ω_v+ε_{Ω_v}
+=Ω_v·2, not absorbed; consistent.) Verified-committed this session stands:
 psi_notMem_iff_eq, psi_proj_of_notmem+psi_proj_notmem(gap), NEC_of_argExtract,
 collapse_le, Cset_limit_sub, 1.5, succ_mem, canon_pred, psi_strict_mono_below_succ.
