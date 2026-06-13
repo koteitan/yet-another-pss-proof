@@ -174,34 +174,62 @@ proof -
   ultimately show ?thesis by simp
 qed
 
-lemma acc_subs0:
-  assumes "M \<in> ST_PS" and "\<forall>p \<in> set M. snd p = 0"
+text \<open>\<^bold>\<open>Generic fragment accessibility\<close>: any step-closed sub-class \<open>D\<close> of
+  standard forms on which \<open>translate\<close> lands in \<open>wf3\<close> is accessible, directly
+  from \<open>wf_olt_wf3\<close> + \<open>m_step_decreases\<close>.  (Reusable for each \<open>maxr1\<close>-bounded
+  level once its \<open>wf3\<close>-membership is established.)\<close>
+
+lemma acc_wf3_fragment:
+  assumes MD: "M \<in> D"
+    and DST: "D \<subseteq> ST_PS"
+    and closed: "\<And>N T. N \<in> D \<Longrightarrow> step N T \<Longrightarrow> T \<in> D"
+    and wf3D: "\<And>N. N \<in> D \<Longrightarrow> wf3 (translate N)"
   shows "M \<in> Wellfounded.acc stepR"
 proof -
   define Q where
-    "Q t \<longleftrightarrow> (\<forall>N. translate N = t \<longrightarrow> N \<in> ST_PS \<longrightarrow> (\<forall>p \<in> set N. snd p = 0)
-                  \<longrightarrow> N \<in> Wellfounded.acc stepR)" for t
+    "Q t \<longleftrightarrow> (\<forall>N. translate N = t \<longrightarrow> N \<in> D \<longrightarrow> N \<in> Wellfounded.acc stepR)" for t
   have "Q (translate M)"
   proof (rule wf_induct_rule[OF wf_olt_wf3, where P = Q])
     fix t assume IH: "\<And>y. (y, t) \<in> {(w,x). olt w x \<and> wf3 w \<and> wf3 x} \<Longrightarrow> Q y"
     {
-      fix N assume tN: "translate N = t" and NST: "N \<in> ST_PS"
-        and Nz: "\<forall>p \<in> set N. snd p = 0"
+      fix N assume tN: "translate N = t" and ND: "N \<in> D"
       have "N \<in> Wellfounded.acc stepR"
       proof (rule acc.accI)
         fix T assume "(T, N) \<in> stepR"
         hence stp: "step N T" by simp
-        have TST: "T \<in> ST_PS" and Tz: "\<forall>p \<in> set T. snd p = 0"
-          using subs0_step_closed[OF NST Nz stp] by auto
-        have "(translate T, t) \<in> {(w,x). olt w x \<and> wf3 w \<and> wf3 x}"
-          using subs0_step_decreases[OF NST Nz stp] tN by simp
+        from stp obtain n where L: "1 < Lng N" and n: "1 \<le> n" and TN: "T = N[n]"
+          by (auto elim!: step.cases)
+        have TD: "T \<in> D" using closed[OF ND stp] .
+        have "olt (translate T) (translate N)" using m_step_decreases[OF L n] TN by simp
+        moreover have "wf3 (translate N)" using wf3D[OF ND] .
+        moreover have "wf3 (translate T)" using wf3D[OF TD] .
+        ultimately have "(translate T, t) \<in> {(w,x). olt w x \<and> wf3 w \<and> wf3 x}"
+          using tN by simp
         from IH[OF this] have "Q (translate T)" .
-        thus "T \<in> Wellfounded.acc stepR" using TST Tz unfolding Q_def by blast
+        thus "T \<in> Wellfounded.acc stepR" using TD unfolding Q_def by blast
       qed
     }
     thus "Q t" unfolding Q_def by blast
   qed
-  thus ?thesis using assms unfolding Q_def by blast
+  thus ?thesis using MD unfolding Q_def by blast
+qed
+
+text \<open>The \<open>maxr1 = 0\<close> instance (the crux-free base level).\<close>
+
+lemma acc_subs0:
+  assumes "M \<in> ST_PS" and "\<forall>p \<in> set M. snd p = 0"
+  shows "M \<in> Wellfounded.acc stepR"
+proof (rule acc_wf3_fragment[where D = "{N. N \<in> ST_PS \<and> (\<forall>p \<in> set N. snd p = 0)}"])
+  show "M \<in> {N. N \<in> ST_PS \<and> (\<forall>p \<in> set N. snd p = 0)}" using assms by simp
+next
+  show "{N. N \<in> ST_PS \<and> (\<forall>p \<in> set N. snd p = 0)} \<subseteq> ST_PS" by auto
+next
+  fix N T assume "N \<in> {N. N \<in> ST_PS \<and> (\<forall>p \<in> set N. snd p = 0)}" and "step N T"
+  thus "T \<in> {N. N \<in> ST_PS \<and> (\<forall>p \<in> set N. snd p = 0)}"
+    using subs0_step_closed by auto
+next
+  fix N assume "N \<in> {N. N \<in> ST_PS \<and> (\<forall>p \<in> set N. snd p = 0)}"
+  thus "wf3 (translate N)" using wf3_translate_subs0 by auto
 qed
 
 end

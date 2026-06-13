@@ -4061,3 +4061,9 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
   HO 単一化は where P= で固定。∀N 形は { fix N .. } raw ブロック+blast で導入（intro 回避）。
 - これで diagSeq 0 0 ∈ acc（acc_short or acc_subs0）。次: maxr1=1 base（r1ok 要・clean 抽出）
   → level 帰納で diagSeq 0 1、さらに maxr1≥2（crux 本体）。
+
+- (続88補3) **acc_wf3_fragment 一般化（PSI 緑）**: 「step-閉な wf3-フラグメント D⊆ST_PS は
+  全 accessible」（wf_olt_wf3+m_step_decreases）。acc_subs0 はその maxr1=0 instance に。
+  ⟹ 各 level の (step閉包 + translate∈wf3) を示せば accessibility が自動。再利用可能な土台。
+  次の maxr1=1 base は (step閉包: oper_snd_subset で snd≤1 保存 ✓) + (translate∈wf3: r1ok 要)
+  の2点で acc_wf3_fragment に流せる。crux は maxr1≥2（translate が非wf3＝再上昇）。
