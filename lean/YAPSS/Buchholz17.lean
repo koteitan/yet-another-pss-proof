@@ -12,6 +12,8 @@ namespace YAPSS
 
 open Cardinal Ordinal Set
 
+universe u
+
 /-- `ε₀ < ω_1`: `ε₀ = nfp(ω^·)0` and `ω_1` (regular) is closed under `ω^·`
 (`card(ω^i) ≤ ℵ₀ ⊔ card i`). -/
 theorem epsilon0_lt_omega1 : ε_ 0 < (ℵ_ 1).ord := by
@@ -308,5 +310,93 @@ theorem Cset_subset_epsB {α : Ordinal} {v : ℕ} : Cset (psiRes α) α v ⊆ Se
       simp only [psiRes, if_pos hξα'] at hξx
       rw [← hξx]
       exact psi_lt_epsB ξ u
+
+/-! ## Buchholz 1.4(b) (canonical witness) reduced to the collapse region
+
+The proven `1.7` makes every argument below `ε(w)` canonical, so the canonical-
+witness lemma `CW` (and hence the entire necessity direction `NEC`) is reduced to
+the *collapse region* `ξ ≥ ε(w)` alone — the genuine remaining Buchholz core
+(`CC` below).  Mathematically `CC` is true: the omitted-canonicity `Cstep`
+generates a non-canonical argument `ξ` only after its (unique, by `1.4(a)`)
+canonical representative has already entered `C_v(α)` below `α` (bootstrapping:
+`ψ_w ξ` cannot fire without `ξ ∈ C`, and a collapsed `ξ` is reachable only via
+its representative).  This is Buchholz's "it can be shown that omitting the
+condition does not change the sets `C_v(α)`" (Remark, p197), left unproved there. -/
+
+/-- Level-`w` non-collapse threshold `ε(w)`: `ε_0` for `w = 0`, `ε_{Ω_w+1}` for
+`w ≥ 1`.  Below it, `1.7` makes every argument `w`-canonical. -/
+noncomputable def epsLvl (w : ℕ) : Ordinal.{u} := if w = 0 then ε_ 0 else ε_ (Om w + 1)
+
+/-- Unified `1.7` canonicity: `ξ < ε(w) ⟹ ξ` is `w`-canonical (`ξ ∈ C_w(ξ)`). -/
+theorem mem_Cself_lvl {w : ℕ} {ξ : Ordinal.{u}} (h : ξ < epsLvl w) :
+    ξ ∈ Cset (psiRes ξ) ξ w := by
+  unfold epsLvl at h
+  cases w with
+  | zero => simpa using mem_Cself_zero_of_lt_epsilon0 (by simpa using h)
+  | succ k =>
+    rw [if_neg (Nat.succ_ne_zero k)] at h
+    exact mem_Cself_of_lt_epsilon (Nat.succ_pos k) h
+
+/-- **General witness extraction.**  Any additive-principal `γ ∈ C_v(α)` with
+`Ω_v ≤ γ` is `ψ_{u'} ξ` for some `ξ ∈ C_v(α) ∩ Iio α` (level `u'` read off the
+generator).  Like `psi_form_of_mem` but without band hypotheses — keeps the actual
+generator level instead of forcing it to `v`. -/
+theorem psi_witness_of_mem {α γ : Ordinal.{u}} {v : ℕ}
+    (hap : Ordinal.IsPrincipal (· + ·) γ) (hlo : Om v ≤ γ)
+    (hmem : γ ∈ Cset (psiRes α) α v) :
+    ∃ (u' : ℕ) (ξ : Ordinal.{u}), γ = psi ξ u' ∧ ξ < α ∧ ξ ∈ Cset (psiRes α) α v := by
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hmem
+  clear hmem
+  induction n generalizing γ with
+  | zero =>
+    rw [Citer, Function.iterate_zero, id_eq] at hn
+    exact absurd hn (not_lt.2 hlo)
+  | succ n IH =>
+    rw [Citer_succ, Cstep] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH hap hlo h1
+    · obtain ⟨x, hx, y, hy, hxy⟩ := h2
+      have hmemn : γ ∈ Citer (psiRes α) α v n := by
+        rcases eq_or_lt_of_le (show x ≤ γ from hxy ▸ le_self_add) with hxe | hxlt
+        · exact hxe ▸ hx
+        · rcases eq_or_lt_of_le (show y ≤ γ from hxy ▸ le_add_self) with hye | hylt
+          · exact hye ▸ hy
+          · exact absurd hxy.symm (ne_of_gt (hap hxlt hylt))
+      exact IH hap hlo hmemn
+    · obtain ⟨u, ⟨ξ, ⟨hξC, hξα⟩, hξδ⟩⟩ := Set.mem_iUnion.1 h3
+      have hξα : ξ < α := hξα
+      simp only [psiRes, if_pos hξα] at hξδ
+      exact ⟨u, ξ, hξδ.symm, hξα, Citer_subset_Cset hξC⟩
+
+/-- **CW reduced to the collapse region** (Buchholz 1.4(b) modulo the genuine core).
+The witness `ξ` from `psi_witness_of_mem` is canonicalized by `1.7` when
+`ξ < ε(u')` (non-collapse); only the collapse region `ε(u') ≤ ξ` needs the
+hypothesis `CC` (canonical-rep existence for collapsed arguments).  This isolates
+the entire remaining Buchholz necessity core to `CC`. -/
+theorem CW_of_collapseCanon
+    (CC : ∀ (v u' : ℕ) (ξ α : Ordinal.{u}), ξ ∈ Cset (psiRes α) α v → ξ < α →
+       epsLvl u' ≤ ξ → ∃ ξ'' : Ordinal.{u}, psi ξ'' u' = psi ξ u' ∧ ξ'' < α ∧
+         ξ'' ∈ Cset (psiRes α) α v ∧ ξ'' ∈ Cset (psiRes ξ'') ξ'' u') :
+    ∀ (v : ℕ) (γ α : Ordinal.{u}), γ ∈ Cset (psiRes α) α v → Om v ≤ γ →
+       Ordinal.IsPrincipal (· + ·) γ → ∃ (u' : ℕ) (ξ : Ordinal.{u}),
+         γ = psi ξ u' ∧ ξ < α ∧ ξ ∈ Cset (psiRes α) α v ∧ ξ ∈ Cset (psiRes ξ) ξ u' := by
+  intro v γ α hmem hlo hap
+  obtain ⟨u', ξ, hγ, hξα, hξC⟩ := psi_witness_of_mem hap hlo hmem
+  by_cases hc : ξ < epsLvl u'
+  · exact ⟨u', ξ, hγ, hξα, hξC, mem_Cself_lvl hc⟩
+  · obtain ⟨ξ'', hψ, hξ''α, hξ''C, hξ''can⟩ := CC v u' ξ α hξC hξα (not_lt.1 hc)
+    exact ⟨u', ξ'', hγ.trans hψ.symm, hξ''α, hξ''C, hξ''can⟩
+
+/-- **`wf3`-necessity reduced to the collapse-region canonical-rep core `CC`.**
+Combines `CW_of_collapseCanon` with `NEC_of_canonWitness`: the entire Buchholz 1.9
+necessity direction follows from `CC` alone (the proven `1.7` discharges the
+non-collapse region). -/
+theorem NEC_of_collapseCanon
+    (CC : ∀ (v u' : ℕ) (ξ α : Ordinal.{u}), ξ ∈ Cset (psiRes α) α v → ξ < α →
+       epsLvl u' ≤ ξ → ∃ ξ'' : Ordinal.{u}, psi ξ'' u' = psi ξ u' ∧ ξ'' < α ∧
+         ξ'' ∈ Cset (psiRes α) α v ∧ ξ'' ∈ Cset (psiRes ξ'') ξ'' u')
+    {t : Three} (ht : wf3 t) {v : ℕ} {α : Ordinal.{u}}
+    (hm : oV t ∈ Cset (psiRes α) α v) : ∀ x ∈ Gterm v t, oV x < α :=
+  NEC_of_canonWitness (CW_of_collapseCanon CC) ht hm
 
 end YAPSS
