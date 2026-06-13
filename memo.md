@@ -4162,6 +4162,19 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
     （γ∈C_v(α)⟹G_u γ⊆α・C-rank 帰納）→ (iii) term 橋 ψ_a(oV b)=ψ_a(oV(proj a b))=psi_proj。
     (ii)(iii) が残りの山。lean は 1.4(b) canonical witness 担当。
 
+**(9) 続: collapse_grow 一般化 + psi_proj 実測訂正（collapsing.thy 緑・続89(9)）**
+  - collapsing.thy 完成（全 6 補題 sorry無）: psi_eq_of_Cset_eq / Citer_grow_stays /
+    Cset_grow_eq / collapse_grow / Cset_succ_eq / collapse_succ。
+  - **collapse_grow**: gap(elts β\elts α) が全て C_v(α) 外 ⟹ psi α v=psi β v
+    （argument 側・任意 gap）。collapse_succ はその succ 特例。
+  - **psi_proj 実測訂正（psiproj.py/perstep.py）**: full proj（maxo 規律）で psi_proj は真
+    （46033 主項 0 反例）。✗ 任意 g の per-step は偽（64262/72942）。✓ bad な g は全て
+    oV g ≥ oV b（proj は値を上げる: oV b ≤ oV(proj a b)）。
+  - **★次に検証すべき開問**: psi_proj を collapse_grow で出すには gap=[oV b, oV(proj a b))
+    が全て C_a(oV b) 外（非 canonical）が要るが、C_a は + 閉なので区間内に C 元があり得る
+    ⟹ collapse_grow が直接効くか未確認。term 側 1.9 で「proj gap が非 canonical」を要証明。
+    （collapse_grow/succ 自体は正しい再利用可能ツール。psi_proj への適用可否が次の検証点。）
+
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
   proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
