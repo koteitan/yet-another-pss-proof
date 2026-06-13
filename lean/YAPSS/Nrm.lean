@@ -232,6 +232,16 @@ theorem oV_ins {a : ℕ} {b c : Three} (wb : wf3 b) (wc : wf3 c)
       rw [← add_assoc, absorb]
     · rw [if_neg h]
 
+/-- Converse of `oV_order_pres` on `wf3` (value route lemma 4): on the Buchholz
+class the value order refines back to `<o`.  Via `olt`-trichotomy + the forward
+strict monotonicity. -/
+theorem oV_order_refl {x y : Three} (wx : wf3 x) (wy : wf3 y)
+    (h : oV.{u} x < oV y) : olt x y := by
+  rcases olt_total x y with hxy | rfl | hyx
+  · exact hxy
+  · exact absurd h (lt_irrefl _)
+  · exact absurd (oV_order_pres wy wx hyx) (not_lt.2 h.le)
+
 /-! ## The remaining core: order preservation on `NF`
 
 Validated empirically on 2,643,843 pairs of (hereditary blocks of)
