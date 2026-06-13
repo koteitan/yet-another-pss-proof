@@ -519,6 +519,29 @@ theorem succ_mem {α x : Ordinal.{u}} {v : ℕ}
         rw [this]
         exact Iio_Om_subset_Cset (lt_of_lt_of_le zero_lt_one (one_le_Om v))
 
+/-- **Canonical successor ⟹ canonical predecessor**: if `δ+1 ∈ C_a(δ+1)` then
+`δ ∈ C_a(δ)`.  If `δ` were non-canonical, `Cset_succ_eq` gives `C_a(δ+1)=C_a(δ)`,
+so `δ+1 ∈ C_a(δ)`, whence `succ_mem` forces `δ ∈ C_a(δ)` — contradiction. -/
+theorem canon_pred {a : ℕ} {δ : Ordinal.{u}}
+    (h : δ + 1 ∈ Cset (psiRes (δ + 1)) (δ + 1) a) : δ ∈ Cset (psiRes δ) δ a := by
+  by_contra hδ
+  have he := Cset_succ_eq (v := a) hδ
+  rw [he] at h
+  exact hδ (succ_mem h)
+
+/-- **Strict monotonicity below a canonical successor** (the successor case of
+"`ψ_a` strictly increases below any `a`-canonical point"): if `δ+1` is
+`a`-canonical then `ξ < δ+1 → ψ_a ξ < ψ_a(δ+1)`.  (`canon_pred` makes `δ`
+canonical, so `ψ_a δ < ψ_a(δ+1)` by `psi_strict_mono_arg`, and `ξ ≤ δ`.)  The
+limit-canonical case is the open Buchholz band-recursive core. -/
+theorem psi_strict_mono_below_succ {a : ℕ} {δ ξ : Ordinal.{u}}
+    (hβ : δ + 1 ∈ Cset (psiRes (δ + 1)) (δ + 1) a) (hξ : ξ < δ + 1) :
+    psi ξ a < psi (δ + 1) a := by
+  have hδc : δ ∈ Cset (psiRes δ) δ a := canon_pred hβ
+  have hδlt : psi δ a < psi (δ + 1) a := psi_strict_mono_arg (lt_add_one δ) hδc
+  have hξδ : ξ ≤ δ := Order.lt_succ_iff.1 (by rw [Order.succ_eq_add_one]; exact hξ)
+  exact lt_of_le_of_lt (psi_mono_arg hξδ a) hδlt
+
 /-- **(Buchholz 1.4(a))** Uniqueness of the canonical `ψ`-representation: if
 `ξ, ξ'` are both `a`-canonical (`ξ ∈ C_a(ξ)`, `ξ' ∈ C_a(ξ')`) and `ψ_a ξ = ψ_a ξ'`
 then `ξ = ξ'`.  (Canonical points are exactly where `ψ_a` strictly increases.) -/
