@@ -307,6 +307,71 @@ theorem psi_arg_lt_of_mem {α β : Ordinal.{u}} {v : ℕ}
   by_contra hc
   exact absurd (psi_mono_arg (not_lt.1 hc) v) (not_le.2 hlt)
 
+/-- `C_v(α)` is closed under CNF-summand extraction: if `δ + r ∈ C_v(α)` with
+`δ` additive-principal and `r < δ`, then `δ ∈ C_v(α)` and `r ∈ C_v(α)`.
+Induction on the `Citer` stage; the `+`-generator case uses ordinal subtraction
+and additive-principal absorption to recurse; the `ψ`-generator case forces
+`r = 0` (a `ψ`-value is additive-principal). -/
+theorem Cset_add_split {α : Ordinal.{u}} {v : ℕ} {δ r : Ordinal.{u}}
+    (hr : r < δ) (hprin : Ordinal.IsPrincipal (· + ·) δ)
+    (hmem : δ + r ∈ Cset (psiRes α) α v) :
+    δ ∈ Cset (psiRes α) α v ∧ r ∈ Cset (psiRes α) α v := by
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hmem
+  clear hmem
+  induction n generalizing r with
+  | zero =>
+    rw [Citer, Function.iterate_zero, id_eq] at hn
+    exact ⟨Iio_Om_subset_Cset (lt_of_le_of_lt (le_self_add : δ ≤ δ + r) hn),
+           Iio_Om_subset_Cset (lt_of_le_of_lt (le_add_self : r ≤ δ + r) hn)⟩
+  | succ n IH =>
+    rw [Citer_succ, Cstep] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH hr h1
+    · obtain ⟨u, hu, w, hw, huw⟩ := h2
+      dsimp only at huw
+      rcases lt_or_ge u δ with hδu | hδu
+      · -- u < δ : absorption u + δ = δ, then w = δ + r
+        rcases lt_or_ge w δ with hδw | hδw
+        · -- u < δ, w < δ : u + w < δ ≤ δ + r contradicts huw
+          exact absurd huw
+            (ne_of_lt (lt_of_lt_of_le (hprin hδu hδw) le_self_add))
+        · obtain ⟨w', rfl⟩ := exists_add_of_le hδw
+          have habs : u + δ = δ := hprin.add_eq_right hδu
+          have heq : δ + w' = δ + r := by
+            rw [← add_assoc, habs] at huw; exact huw
+          have hw'r : w' = r := (add_right_inj δ).1 heq
+          subst hw'r
+          exact IH hr hw
+      · -- δ ≤ u : u = δ + u', recurse on δ + u' ∈ Citer n
+        obtain ⟨u', rfl⟩ := exists_add_of_le hδu
+        have hcancel : u' + w = r := by
+          have h := huw
+          rw [add_assoc] at h
+          exact (add_right_inj δ).1 h
+        have hu'lt : u' < δ := lt_of_le_of_lt (hcancel ▸ (le_self_add : u' ≤ u' + w)) hr
+        obtain ⟨hδmem, hu'mem⟩ := IH hu'lt hu
+        exact ⟨hδmem, hcancel ▸ Cset_add_closed hu'mem (Citer_subset_Cset hw)⟩
+    · obtain ⟨uu, ⟨ζ, ⟨hζC, hζα⟩, hζδ⟩⟩ := Set.mem_iUnion.1 h3
+      have hζα : ζ < α := hζα
+      simp only [psiRes, if_pos hζα] at hζδ
+      have hr0 : r = 0 := by
+        by_contra hne
+        have hrpos : 0 < r := pos_iff_ne_zero.2 hne
+        have hap : Ordinal.IsPrincipal (· + ·) (δ + r) := by
+          rw [← hζδ]; exact fun {x y} hx hy => (psi_addprinc ζ uu).2 x y hx hy
+        have hδlt : δ < δ + r := by
+          rcases lt_or_eq_of_le (le_self_add : δ ≤ δ + r) with h | h
+          · exact h
+          · have h2 : δ + 0 = δ + r := by rw [add_zero]; exact h
+            exact absurd ((add_right_inj δ).1 h2).symm (ne_of_gt hrpos)
+        exact absurd (hap hδlt (lt_of_lt_of_le hr le_self_add)) (lt_irrefl _)
+      subst hr0
+      rw [add_zero] at hζδ
+      refine ⟨?_, Iio_Om_subset_Cset (lt_of_lt_of_le zero_lt_one (one_le_Om v))⟩
+      rw [← hζδ]
+      have := Cset_psi_closed (Citer_subset_Cset hζC) hζα uu
+      rwa [psiRes, if_pos hζα] at this
+
 /-- `G`-critical subterms are well-formed (Buchholz's Proposition
 `a ∈ OT → G_u a ⊆ OT`). -/
 theorem wf3_Gterm {t x : Three} (ht : wf3 t) {v : ℕ} (hx : x ∈ Gterm v t) :
