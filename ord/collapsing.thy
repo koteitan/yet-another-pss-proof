@@ -89,18 +89,17 @@ next
     by (rule CC_mono) (auto simp: less_eq_V_def)
 qed
 
+text \<open>\<open>\<psi>\<^sub>v\<close> depends only on the \<^emph>\<open>set\<close> \<open>C\<^sub>v(\<alpha>)\<close> (it is its least non-element), so
+  equal \<open>C\<close>-sets give equal \<open>\<psi>\<close>-values.  Reusable bridge for every collapsing step.\<close>
+
+lemma psi_eq_of_Cset_eq:
+  assumes "elts (Cv \<alpha> v) = elts (Cv \<beta> v)"
+  shows "psi \<alpha> v = psi \<beta> v"
+  by (simp add: psi_unfold[of \<alpha> v] psi_unfold[of \<beta> v] assms)
+
 theorem collapse_succ:
   assumes "\<alpha> \<notin> elts (Cv \<alpha> v)"
   shows "psi \<alpha> v = psi (succ \<alpha>) v"
-proof -
-  have le: "psi \<alpha> v \<le> psi (succ \<alpha>) v"
-    by (rule psi_mono_arg) (auto simp: less_eq_V_def)
-  have notinS: "psi \<alpha> v \<notin> elts (Cv (succ \<alpha>) v)"
-    using psi_notin[of \<alpha> v] Cset_succ_eq[OF assms] by simp
-  have "(LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cv (succ \<alpha>) v)) \<le> psi \<alpha> v"
-    by (rule Ord_Least_le) (use notinS in auto)
-  hence "psi (succ \<alpha>) v \<le> psi \<alpha> v" by (subst psi_unfold)
-  with le show ?thesis by simp
-qed
+  by (rule psi_eq_of_Cset_eq[OF Cset_succ_eq[OF assms, symmetric]])
 
 end
