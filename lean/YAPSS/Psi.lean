@@ -519,26 +519,26 @@ theorem Cset_mul_nat {α : Ordinal} {v : ℕ} {x : Ordinal}
     rw [Nat.cast_succ, mul_add, mul_one]
     exact Cset_add_closed IH hx
 
-/-- `Iio (ω^{α+1}) ⊆ C_0(α+1)`, given `ω^α ∈ C_0(α+1)` and `Iio (ω^α) ⊆ C_0(α+1)`:
-every `γ < ω^{α+1}` is `< ω^α · n` (`lt_omega0_opow_succ`), so `γ = ω^α·k + s`
-with `s < ω^α`; `ω^α·k ∈ C` (`Cset_mul_nat`) and `s ∈ C`, closed under `+`.
-The `≥`-direction of Buchholz 1.7(a)'s successor step. -/
-theorem Iio_opow_succ_subset (α : Ordinal)
-    (hω : ω ^ α ∈ Cset (psiRes (α + 1)) (α + 1) 0)
-    (hbelow : ∀ s, s < ω ^ α → s ∈ Cset (psiRes (α + 1)) (α + 1) 0) :
-    ∀ γ, γ < ω ^ (α + 1) → γ ∈ Cset (psiRes (α + 1)) (α + 1) 0 := by
+/-- `Iio (ω^{β+1}) ⊆ C_v(δ)`, given `ω^β ∈ C_v(δ)` and `Iio (ω^β) ⊆ C_v(δ)`:
+every `γ < ω^{β+1}` is `< ω^β · n` (`lt_omega0_opow_succ`), so `γ = ω^β·k + s`
+with `s < ω^β`; `ω^β·k ∈ C` (`Cset_mul_nat`) and `s ∈ C`, closed under `+`.
+The `≥`-direction of Buchholz 1.7's successor step (level/bound-generic). -/
+theorem Iio_opow_succ_subset {v : ℕ} {δ : Ordinal} (β : Ordinal)
+    (hω : ω ^ β ∈ Cset (psiRes δ) δ v)
+    (hbelow : ∀ s, s < ω ^ β → s ∈ Cset (psiRes δ) δ v) :
+    ∀ γ, γ < ω ^ (β + 1) → γ ∈ Cset (psiRes δ) δ v := by
   intro γ hγ
-  rw [show (α + 1) = Order.succ α from (Order.succ_eq_add_one α).symm] at hγ
+  rw [show (β + 1) = Order.succ β from (Order.succ_eq_add_one β).symm] at hγ
   obtain ⟨n, hn⟩ := lt_omega0_opow_succ.1 hγ
   clear hγ
   induction n generalizing γ with
   | zero => simp at hn
   | succ n IH =>
     rw [Nat.cast_succ, mul_add, mul_one] at hn
-    rcases lt_or_ge γ (ω ^ α * (n : Ordinal)) with hlt | hge
+    rcases lt_or_ge γ (ω ^ β * (n : Ordinal)) with hlt | hge
     · exact IH γ hlt
     · obtain ⟨s, rfl⟩ := exists_add_of_le hge
-      have hs : s < ω ^ α := (add_lt_add_iff_left _).1 hn
+      have hs : s < ω ^ β := (add_lt_add_iff_left _).1 hn
       exact Cset_add_closed (Cset_mul_nat hω n) (hbelow s hs)
 
 theorem Om_mono {a b : ℕ} (hab : a ≤ b) : Om a ≤ Om b := by
