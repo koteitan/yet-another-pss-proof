@@ -592,6 +592,36 @@ canonical-witness circularity hits a false hypothesis. The TRUE proof of argExtr
 itself enters C_v(α) via canonical generation), which Lean's omitted-canonicity
 Cstep does not provide directly.** This is the irreducible large formalization
 (peer is doing it in Isabelle via C-rank). Lesson: stress-test reduction hypotheses
-for falsity BEFORE committing. Verified-committed this session stands:
+for falsity BEFORE committing.
+
+### ★★★ BUCHHOLZ 1986 §1 READ (definitive roadmap; ../Buchholz_1986_psi...pdf p195-200)
+The paper gives the EXACT proofs. Mapping to Lean:
+- **1.2(e)** `γ∈C_v(α) ⟺ P(γ)⊆C_v(α)` (P=additive components). [ordinal C_build/extract]
+- **1.3** `α<β ∧ α∈C_v(α) → ψ_v α<ψ_v β` = `psi_strict_mono_arg` ✓ HAVE.
+- **1.4(a)** canonical-rep unique = `psi_canonical_inj` ✓ HAVE.
+- **1.4(b) CANONICAL WITNESS**: `γ∈C_v(α), Ω_v≤γ∈P → ∃u ξ, γ=ψ_u ξ ∧ ξ∈α∩C_v(α)∩C_u(ξ)`.
+  In Buchholz this is TRIVIAL: `γ∈C^{n+1}_v(α)∖C^n` ⟹ `γ=ψ_u ξ` with the generator
+  ALREADY carrying `ξ∈C_u(ξ)` (his C^{n+1} INCLUDES that side-condition).
+- **1.4(c) = argExtract**: `Ω_v≤ψ_u ξ∈C_v(α) ∧ ξ∈C_u(ξ) → ξ∈α∩C_v(α)`. Proof: 1.4(b)
+  gives `ψ_u ξ=ψ_w ζ`, ζ canonical; 1.4(a) ⟹ w=u, ξ=ζ∈α∩C_v(α). CLEAN.
+- **1.5** `C_v(α)∩Ω_{v+1}=ψ_v α` = `Cset_lt_psi_of_lt_Om` ✓ HAVE (one half).
+- **1.6(a)** = `collapse_succ` ✓ HAVE. **1.6(b)** (limit: ψ_v α=sup) — portable.
+- **1.7** `α<ε_0→α∈C_0(α)∧ψ_0 α=ω^α`; `α<ε_{Ω_ω+1},v≠0→α∈C_v(α)∧ψ_v α=ω^{Ω_v+α}`.
+  ⟹ for v≠0 EVERY α<ε_{Ω_ω+1} is canonical (so SBC TRUE for v≠0); **level 0 is
+  special** (canonical only <ε_0) ⟹ **SBC FALSE at level 0** (`ψ_0 ε_0=ε_0=ψ_0 Ω_1`,
+  ε_0<Ω_1 canonical — confirms the revert). 1.8 `C_v(α)⊆ε_{Ω_ω+1}`.
+- **1.9 NECESSITY** `γ∈C_u(α) ⟺ G_u γ⊆α` (G_u = ordinal coeff set, def via canonical
+  ψ-rep, 1.4(b)). Proof by induction on C-rank using 1.4(c). G_u(ψ_v ξ)={ξ}∪G_u ξ
+  (u≤v) else ∅; G_u(γ)=⋃ G_u(P(γ)) for γ∉P.
+**THE CRUX for Lean (omitted Cstep):** 1.4(b) needs the CANONICAL witness, which
+Buchholz gets free from the WITH-condition C. Lean's `Cstep` (Psi.lean:59) omits
+`ξ∈C_u(ξ)`. The Remark claims omitted=with but does NOT prove it (and the level-0
+ε_0/Ω_1 case shows the canonical rep can be ≥α, making the equivalence subtle).
+**TWO routes:** (R1) re-define Cstep WITH the canonicity side-condition (matches
+Buchholz; 1.4(b) trivial; cost = re-port 1.2/1.3/1.5/1.6 basics + psi for with-C —
+psi/Cset are foundational so this ripples). (R2) prove omitted=with equivalence
+(Buchholz's unproven Remark; hard direction needs canonical-rep-in-C, the same crux).
+ASSESSMENT: R1 is the principled fix (Isabelle ya-pss likely faces the same choice).
+This is the genuine large task; do with the paper open + fresh context. Verified-committed this session stands:
 psi_notMem_iff_eq, psi_proj_of_notmem+psi_proj_notmem(gap), NEC_of_argExtract,
 collapse_le, Cset_limit_sub, 1.5, succ_mem, canon_pred, psi_strict_mono_below_succ.
