@@ -683,9 +683,11 @@ missing" lemmas were just MISSING IMPORTS — `import Mathlib.SetTheory.Cardinal
 **⚠️ SOUNDNESS CHECK on 1.7(b) — DO NOT build until statement confirmed:** paper image
 1.7(b) reads `α<ε_{Ω_ω+1}, v≠0 → α∈C_v(α)∧ψ_v α=ω^{Ω_v+α}`, BUT this is INCONSISTENT
 with 1.2(c) `ψ_v α<Ω_{v+1}`: at α=Ω_{v+1} (<ε_{Ω_ω+1}), ω^{Ω_v+Ω_{v+1}}=ω^{Ω_{v+1}}=Ω_{v+1}
-(omega_opow_Om) ≮ Ω_{v+1}. ⟹ the bound MUST be **ε_{Ω_v+1}** (level-dependent; the proof's
-`ε(v)` def is ambiguous Ω_v vs Ω_ω in the scan). ε_{Ω_v+1}<Ω_{v+1} (Ω_{v+1} closed under
-ε). RE-READ/RE-DERIVE before formalizing 1.7(b).
+(omega_opow_Om) ≮ Ω_{v+1}. ⟹ the bound IS **ε_{Ω_v+1}** (level-dependent — `ε(v)` notation DEPENDS on v;
+the scan's "Ω_ω" in 1.7(b) is "Ω_v", an ω/v confusion). RESOLVED: ε_{Ω_v+1}<Ω_{v+1}
+(Ω_{v+1} regular+closed under the normal ε-function), so α<ε_{Ω_v+1}<Ω_{v+1} makes
+`ψ_v α=ω^{Ω_v+α}<Ω_{v+1}` consistent with 1.2(c). NB **ε_{Ω_ω+1} is only the GLOBAL
+C-bound (1.8a)** `C_v(α)⊆ε_{Ω_ω+1}`, NOT the 1.7(b) formula bound.
 **⚠️ argExtract witness-canonicity SUBTLETY:** the M1 witness ζ∈C_v(α)⊆ε_{Ω_ω+1}(1.8a,
 GLOBAL bound) needs to be canonical at the GENERATOR level u; but 1.7 gives u-canonicity
 only for ζ<ε_{Ω_u+1}, and ζ can exceed that (ζ up to ε_{Ω_ω+1}). So 1.7 does NOT directly
