@@ -8481,4 +8481,56 @@ theorem row1_gt_of_dichOK {X : PairSeq} {p t : ℕ}
   · rw [h9]
     exact hC1
 
+/-- **Retarget the final step of a row-0 chain forward** to a column with the
+same row-0 entry, provided the closed interval `[ρ, b)` stays at or above that
+level (so the last hop's between-condition still holds). -/
+theorem le0_retarget {M : PairSeq} {a ρ b : ℕ}
+    (h : le0 M a ρ) (haρ : a < ρ) (hρb : ρ < b) (hb : b < M.length)
+    (heq : entry M 0 ρ = entry M 0 b)
+    (hval : ∀ y, ρ ≤ y → y < b → entry M 0 b ≤ entry M 0 y) :
+    le0 M a b := by
+  obtain ⟨ha, hρ, hch⟩ := h
+  refine ⟨ha, hb, ?_⟩
+  rcases hch.cases_tail with he | ⟨x, hax, hxρ⟩
+  · exfalso
+    omega
+  · refine hax.tail ?_
+    obtain ⟨hx1, -, hx3, hx4, hx5⟩ := hxρ
+    refine ⟨hx1, hb, by omega, by omega, ?_⟩
+    intro j hj
+    by_cases hjρ : j < ρ
+    · have h9 := hx5 j ⟨hj.1, hjρ⟩
+      omega
+    · exact hval j (by omega) hj.2
+
+/-- **Shorten a row-0 chain backward** to an interior column with the same
+row-0 entry, when the open interval `(ρ, b)` stays at or above that level
+(forcing the final step's source to lie below `ρ`). -/
+theorem le0_shorten {M : PairSeq} {a ρ b : ℕ}
+    (h : le0 M a b) (haρ : a ≤ ρ) (hρb : ρ < b) (hρ : ρ < M.length)
+    (heq : entry M 0 ρ = entry M 0 b)
+    (hval : ∀ y, ρ < y → y < b → entry M 0 b ≤ entry M 0 y) :
+    le0 M a ρ := by
+  obtain ⟨ha, hb, hch⟩ := h
+  refine ⟨ha, hρ, ?_⟩
+  rcases Nat.eq_or_lt_of_le haρ with he | hlt
+  · rw [he]
+  · rcases hch.cases_tail with he2 | ⟨x, hax, hxb⟩
+    · exfalso
+      omega
+    · obtain ⟨hx1, -, hx3, hx4, hx5⟩ := hxb
+      have hxρ : x < ρ := by
+        by_contra hge
+        push Not at hge
+        rcases Nat.eq_or_lt_of_le hge with hEq | hlt2
+        · rw [← hEq] at hx4
+          omega
+        · have h9 := hval x hlt2 hx3
+          omega
+      refine hax.tail ?_
+      refine ⟨hx1, hρ, hxρ, by omega, ?_⟩
+      intro j hj
+      have h9 := hx5 j ⟨hj.1, by omega⟩
+      omega
+
 end YAPSS
