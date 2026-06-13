@@ -314,13 +314,34 @@ theorem psi_proj_of_notmem (a : ℕ)
         (psi_eq_of_notMem hle (notmem b g wb hgmem hgviol)).symm
       rw [ihg]; exact hstep
 
+/-- **`psi_proj_notmem` reduced to interval non-canonicity.**  The per-step
+collapse obligation `ψ_a(oV b') ∉ C_a(oV g)` — equivalently the plateau equality
+`ψ_a(oV b') = ψ_a(oV g)` (`psi_notMem_iff_eq`) — follows from the proven plateau
+lemma `collapse_le` once every ordinal in `[oV b', oV g)` is `a`-non-canonical.
+This isolates the genuine remaining core to the interval hypothesis `H` (true,
+since `psi_proj_notmem` is, but a statement about *all* ordinals in the gap, not
+just term values). -/
+theorem psi_proj_notmem_of_intervalNoncanon (a : ℕ) (b' g : Three) (wb' : wf3 b')
+    (hg : g ∈ Gterm a b') (hv : ¬ olt g b')
+    (H : ∀ γ : Ordinal.{u}, oV b' ≤ γ → γ < oV g → γ ∉ Cset (psiRes γ) γ a) :
+    psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a := by
+  have wg : wf3 g := wf3_Gterm wb' hg
+  have hle : oV.{u} b' ≤ oV g := by
+    rcases olt_total b' g with h | rfl | h
+    · exact (oV_order_pres wb' wg h).le
+    · exact le_rfl
+    · exact absurd h hv
+  have heq : psi.{u} (oV b') a = psi (oV g) a := collapse_le (oV g) (oV b') hle H
+  exact (psi_notMem_iff_eq hle).2 heq
+
 /-- **The precise remaining collapsing obligation** (replaces the old opaque
 `psi_proj` sorry): at a non-`a`-reduced `b'` with an OT3-violator `g ∈ G_a(b')`
 (`¬ g <o b'`, so `oV b' ≤ oV g`), the principal value `ψ_a(oV b')` is *not* in
 `C_a(oV g)`.  Equivalent (via 1.5 + monotonicity) to `ψ_a(oV b') = ψ_a(oV g)` —
 the Buchholz collapse across the critical point.  This is the genuine necessity
 core (and is exactly where a non-canonical `b'` defeats the `wf3` necessity
-`NEC_of_argExtract`); still open. -/
+`NEC_of_argExtract`); reduces to interval non-canonicity by
+`psi_proj_notmem_of_intervalNoncanon`; still open. -/
 theorem psi_proj_notmem (a : ℕ) (b' g : Three) (wb' : wf3 b')
     (hg : g ∈ Gterm a b') (hv : ¬ olt g b') :
     psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a := by
