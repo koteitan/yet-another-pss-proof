@@ -327,6 +327,39 @@ lemmas this turn SUPPORT it; the assembly is a focused multi-session formalizati
 of Buchholz's normal-form/collapsing lemma (unformalized in BOTH projects).
 `psi_proj` IS TRUE (= nrm value-preservation, the design intent).
 
+### CONCRETE NEC EXECUTION ROADMAP (next session)
+Target: `NEC : wf3 t → oV t ∈ C_v(α) → ∀ x ∈ Gterm v t, oV x < α`. Then the
+obligation `psi(oV b)a ∉ C_a(oV g*)` follows (apply NEC to `P a b Z` at level a;
+`g*∈Gterm a b` would force `oV g*<oV g*`); and `psi_proj` follows via
+`psi_eq_of_notMem`. Roadmap:
+1. **Spine-principal extraction lemma** `oV t∈C_v(α) → wf3 t → every spine
+   principal psi(oV bi)ai of oV t (ai≥v) is ∈C_v(α)`. Induction on the Three
+   tail (P a0 b0 c0 → head + c0). Head/tail split needs Cset extraction with
+   REPEAT handling: when head(c0)=head(P a0 b0 Z) (equal principal), peel via a
+   multiplicity-aware lemma (`ψ_a(b)·(k+1)+s ∈C, head(s)≤ψ_a(b) → ψ_a(b)∈C`,
+   provable since the leading ψ_a(b) is NOT absorbed — the absorption-break of
+   Cset_add_split only happens when δ < r's head, which CNF-decreasing forbids).
+   Build this `Cset_lead_split` (head(r)≤δ instead of r<δ) — the right
+   generalization of `Cset_add_split` for CNF.
+2. For each spine principal psi(oV bi)ai∈C_v(α): `psi_arg_lt_of_mem_cross`
+   (ai≥v) → oV bi<α (the `{bi}` part of Gterm v t). ✓ (cross-level done).
+3. Deep recursion (Gterm v bi): need oV bi∈C_v(α). NOT obtainable from
+   psi(oV bi)ai∈C (arg-extraction false). RESOLUTION: recurse via wf3-canonicity
+   — wf3 bi → oV bi∈C_{ai}(oV bi) (Ccond_of_lt). Then NEST: prove a level-indexed
+   NEC `NEC_lvl : wf3 t → oV t∈C_w(β) → ∀x∈Gterm w t, oV x<β` and recurse on bi
+   at LEVEL ai with β:=α (need oV bi∈C_{ai}(α): from oV bi<α + oV bi∈C_{ai}(oV bi)
+   ⊆C_{ai}(α) via CC_mono). Then Gterm ai bi<α. The level-[v,ai) coefficients of
+   bi are handled because bi's spine subscripts are ≤ai (wf3_spinesub_le) so
+   Gterm v bi = Gterm ai bi when... CHECK: is Gterm v bi = Gterm ai bi for wf3 bi
+   with lead bi ≤ ai? Gterm w collects args of principals with subscript ≥w;
+   bi's principals have subscript ≤ lead bi ≤ ai. So principals with subscript in
+   [v, ai) ARE collected by Gterm v but maybe not Gterm ai. NEED: lead bi and the
+   spine vs v. If lead bi < v: Gterm v bi=∅ (no principal ≥v), trivial. This
+   needs care — the level bookkeeping is the crux of the nested induction.
+KEY tools ready: Cset_add_split, Cset_level_mono, psi_arg_lt_of_mem_cross,
+psi_form_of_mem, wf3_spinesub_le, Ccond_of_lt, wf3_headle, allprinc_lt_spine.
+Estimated: a focused session building Cset_lead_split + the nested NEC_lvl.
+
 ### OLD PROGRESS (oV_ins detail)
 - **lemma 2 `oV_ins` — DONE & kernel-checked** (Nrm.lean, commit b2f815a).
   Final signature: `oV_ins (wb : wf3 b) (wc : wf3 c) (hGb : ∀ x ∈ Gterm a b,
