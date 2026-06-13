@@ -3926,3 +3926,25 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
     PSS の UBI 木（親=nextrel・コピー/上昇=bad-branch）に適応する路線が本筋に見える
     （ユーザー誘導の方向）。p≠ψ ゆえ基本列規則は自作。次セッションはこの Hydra 直接
     帰納の設計（PSS-native な fundamental sequence と W=T 帰納）から。
+
+### (2026-06-13 続85) W=T 直接路線の骨格を確立（wtt.thy・緑・nrm-free）
+
+- **確認**: translate(ST_PS) は標準形でも非NF多数（+3 で 26556/95182・例 D2(D1(...))
+  の再上昇）。⟹ nrm は本当に必要・値側 crux 実在。よって W=T 直接路線が正解。
+- **既存基盤の発見**: step_terminates_cond は translate 直用（nrm 経由でない）+ dec(証明済)
+  + wfimg(NF上<o WF) に帰着。さらに **acc_downward の生成帰納で「M∈ST_PS ⟹ M∈acc(step)」は
+  diag 種 accessibility に帰着**（translate/順序/nrm 全て不要）。
+- **wtt.thy 新設（YAPSS・緑）**:
+  - `stepR = {(T,M). M∈ST_PS ∧ step M T}`。
+  - `direct_acc_of_ST_PS`（**証明済**）: diag 種 acc ⟹ 全 ST_PS が acc（生成帰納+acc_downward）。
+  - `PSS_terminates_direct`（**証明済**）: diag 種 acc ⟹ wf stepR。
+  - `diag_acc`（**OPEN・sorry**）: diagSeq 0 v ∈ acc stepR ＝ W=T の hard core。
+  - `PSS_terminates_wtt`: diag_acc から wf stepR。
+  ⟹ **PSS 停止性を nrm/順序/translate を一切使わず diag_acc 1点に帰着**。旧 nrm_order_pres
+  （第7事件で偽核を含む）を捨て、diag_acc を Buchholz W=T の sum/principal 閉包
+  （Lemma 2.4/2.5 の PSS 版）で攻める入口を確立。
+- **次の hard core 設計（diag_acc 攻略）**: M[n]=G@B^n のゲームが、より小さいブロック B と
+  prefix G のゲームから合成的に停止する composition 閉包。注意: コピー間相互作用
+  （cross-copy・bad-root がコピー跨ぎ）が sum-vs-nest と同型の難所になりうる。閉包補題の
+  正確な文面設計（B/G の「文脈付き停止」概念）が次の核心。p≠ψ ゆえ Buchholz の dom/[n]
+  規則は使わず PSS-native に。

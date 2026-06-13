@@ -21,6 +21,7 @@ session YAPSS = HOL +
     def
     mechanized
     proofs
+    wtt
     wf
     wfsum
     seqlex
