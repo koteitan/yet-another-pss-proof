@@ -244,6 +244,31 @@ dead combinatorial families and the stuck syntactic route), but the difficulty
 is now honestly TWO hard cores: `psi_proj` (Buchholz collapsing, M1-M3) and
 `oV_nf_order_pres` (standardness/UBI). Lemmas 2,3,4 are/were the easy glue.
 
+## DEEPER FINDINGS on `psi_proj` (this turn — guides the collapsing development)
+Proven building blocks (all kernel-checked): `psi_form_of_mem` (M1),
+`psi_eq_of_notMem` (the bridge: `α≤β ∧ psi α v∉C_v(β) → psi α v = psi β v`,
+Otembed), `proj_oV_mem_C` (the proj fixpoint is a-reduced: `oV p∈C_a(oV p)`).
+So `psi_proj` reduces to the per-step obligation **`psi(oV t)a ∉ C_a(oV g*)`**.
+KEY FRAMING FINDINGS:
+- **MUST prove `psi_proj` PER-STEP** (induction along proj's recursion), NOT via
+  the fixpoint: for multi-step proj, intermediate coefficients drop below `oV p`,
+  so `C_build` would give `oV b∈C_a(oV p)` and the plateau collapses. Per-step,
+  `g*` = MAX coefficient `≥o t`, so `oV g* = α` is exactly the BOUNDARY and is
+  the blocking coefficient (`g*∈Gterm a t`, `oV g* = oV g* ≮ oV g*`).
+- The obligation ≡ the NECESSITY direction of the C-characterization
+  `oV t ∈ C_a(α) ⟺ ∀x∈Gterm a t, oV x < α`. The codebase has only SUFFICIENCY
+  (`C_build`/`Ccond_of_lt`). **NEITHER project (Lean nor Isabelle ord/) has the
+  necessity/collapsing lemma** (checked otembed.thy: only sufficiency; nrm.thy
+  is value-free + sorry). So it is genuine unformalized territory — the classical
+  Buchholz normal-form/collapsing lemma.
+- CAUTION: `M1` alone is INSUFFICIENT (the plateau lets `psi(oV t)a = psi ξ a`,
+  `ξ<oV g*`, with no contradiction). And NEC may need MORE than `wf3` — the ψ
+  non-injectivity (plateau) means even a-reduced `oV g*∈C_a(oV g*)` can have
+  plateau points `ξ<oV g*` with `psi ξ a = psi(oV g*)a`. The necessity direction
+  likely needs a careful simultaneous induction (Buchholz §1) establishing the
+  exact C-membership characterization for OT values — a focused multi-lemma
+  ordinal development. This is the honest remaining shape of hard core 1.
+
 ### OLD PROGRESS (oV_ins detail)
 - **lemma 2 `oV_ins` — DONE & kernel-checked** (Nrm.lean, commit b2f815a).
   Final signature: `oV_ins (wb : wf3 b) (wc : wf3 c) (hGb : ∀ x ∈ Gterm a b,
