@@ -853,6 +853,39 @@ theorem head_tail_mem {α : Ordinal.{u}} {v a : ℕ} {b c : Three}
     fun {x y} hx hy => (psi_addprinc (oV b) a).2 x y hx hy
   exact Cset_add_split (oV_tail_lt hw) hpr hm
 
+/-- **Buchholz Lemma 1.9 necessity for `wf3` (OT) terms, modulo arg-extraction.**
+If `oV t ∈ C_v(α)` then every `G_v`-critical subterm has value `< α`.  Structural
+induction on `t = P a b c`: `head_tail_mem` splits off `ψ_a(oV b) ∈ C_v(α)` and
+`oV c ∈ C_v(α)`; the `{b}` part is `psi_arg_lt_of_mem_cross`; the tail recurses
+(`ihc`); the head-arg deep recursion (`Gterm v b`) needs `oV b ∈ C_v(α)`, obtained
+from `ψ_a(oV b) ∈ C_v(α)` + the `a`-canonicity of `oV b` (`wf3`'s OT3 condition
+via `Ccond_of_lt`) by the hypothesis `argExt` (the remaining ordinal lemma:
+`v ≤ a`, `β` `a`-canonical, `ψ_a β ∈ C_v(α)` → `β ∈ C_v(α)`).  This isolates the
+whole necessity direction to `argExt`. -/
+theorem NEC_of_argExtract
+    (argExt : ∀ {v a : ℕ} {β α : Ordinal.{u}}, v ≤ a →
+       β ∈ Cset (psiRes β) β a → psi β a ∈ Cset (psiRes α) α v →
+       β ∈ Cset (psiRes α) α v) :
+    ∀ {t : Three}, wf3 t → ∀ {v : ℕ} {α : Ordinal.{u}},
+      oV t ∈ Cset (psiRes α) α v → ∀ x ∈ Gterm v t, oV x < α := by
+  intro t
+  induction t with
+  | Z => intro _ v α _ x hx; simp [Gterm_Z] at hx
+  | P a b c ihb ihc =>
+    intro ht v α hm x hx
+    obtain ⟨wfb, wfc, hGab, hhd⟩ := wf3_P.1 ht
+    obtain ⟨hhead, htail⟩ := head_tail_mem ht hm
+    rw [mem_Gterm_P] at hx
+    rcases hx with ⟨hva, hb | hxb⟩ | hxc
+    · subst hb
+      exact psi_arg_lt_of_mem_cross hva hhead
+    · have hbcan : oV b ∈ Cset (psiRes (oV b)) (oV b) a := by
+        apply Ccond_of_lt
+        intro y hy
+        exact oV_order_pres (wf3_Gterm wfb hy) wfb (hGab y hy)
+      exact ihb wfb (argExt hva hbcan hhead) x hxb
+    · exact ihc wfc htail x hxc
+
 /-! ## Well-foundedness of `olt` on the Buchholz class `wf3` (Lemma 2.2)
 
 The value map embeds `(wf3, olt)` into the ordinals, so `olt` is well-founded
