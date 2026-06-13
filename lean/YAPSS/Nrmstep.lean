@@ -9958,4 +9958,31 @@ theorem copyDichOK_b0 {G R : PairSeq} {v0 w0 n : ℕ} {lp : ℕ × ℕ}
   have hC9 := (hsp G v0 w0 R lp 0 rfl hnxt (Or.inl rfl)).2.2.2.2.2.2.2.2.1
   exact copyDichOK_of_b0 hn hdom hlp2 hM hC9
 
+/-- **The full copy obligation, assembled** from the host dichotomy, spanOK,
+and the single in-copy tie obligation `htie` (needed only on the `b1`
+disjunct).  Dispatches each bad-block decomposition by its disjunct:
+`copyDichOK_b0` (unconditional) for `d0 = 0`, `copyDichOK_b1` for `0 < d0`. -/
+theorem copyDichOK_of_full {M : PairSeq} {n : ℕ} (hn : 1 ≤ n)
+    (hMdich : dichOK M) (hMsp : spanOK M)
+    (htie : ∀ G v0 w0 R (lp : ℕ × ℕ) d0, M = G ++ ((v0,w0)::R) ++ [lp] →
+      0 < d0 → ∀ kt p, p < G.length → kt < n →
+      nextrel1 (copyExp G ((v0,w0)::R) d0 n) p
+        (G.length + kt * ((v0,w0)::R).length) →
+      ∀ kq qoff, kq < kt → 0 < qoff → qoff < ((v0,w0)::R).length →
+      le0 ((v0,w0)::R) 0 qoff → ((v0,w0)::R).getD qoff (0,0) = lp →
+      le0 (copyExp G ((v0,w0)::R) d0 n)
+        (G.length + (kq * ((v0,w0)::R).length + qoff))
+        (G.length + kt * ((v0,w0)::R).length)) :
+    copyDichOK M n := by
+  intro G v0 w0 R lp d0 hMeq hX hdom hnxt hdisj
+  rw [hX]
+  rw [hMeq] at hMdich hMsp hnxt
+  rcases hdisj with ⟨hd0eq0, hidx⟩ | ⟨hd0, hwlt, hlp1, hMedge⟩
+  · subst hd0eq0
+    rw [hMeq] at hidx
+    exact copyDichOK_b0 hn hdom hnxt hidx hMdich hMsp
+  · rw [hMeq] at hMedge
+    exact copyDichOK_b1 hn hdom hnxt hd0 hwlt hlp1 hMedge hMdich hMsp
+      (htie G v0 w0 R lp d0 hMeq hd0)
+
 end YAPSS
