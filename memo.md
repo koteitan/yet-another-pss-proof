@@ -4096,11 +4096,28 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
   - **OT3（Gterm<arg）= maxr1≥2 の 9,192 でちょうど fail**
 - ⟹ NF ⊆ {OT2 holds, OT3 may fail}。oV_mono_NF に足りないのは **C-membership だけ**。
 
-**(4) ★crux 縮約: `Cmem_NF`**
-  「v∈NF の各主項 D_a(b) について oV b ∈ Cset(a, oV b)（OT3 が破れても）」。
-  ＝ 標準形性（row-1 parenthood discipline）が oV b を ψ-collapse 閾値以下に保つ、の順序数版。
-  これを示せば oV_order_pres の証明が NF でそのまま走り → oV_mono_NF → wf Rnf → 停止性。
-  **「11000行の nrm 全証明やり直し」ではなく Cmem_NF 一本が核**。次セッションはここを攻める。
+**(4) ✗Cmem_NF は否定された（semantic OT3 は raw NF で偽）**
+  当初「raw translate の各主項で oV b ∈ Cset（semantic OT3）が成立」と推測したが
+  **実測で偽**（semOT3.py: 137,390 件で oV x ≥ oV b・collapse 0 件）。raw translate の
+  引数 b は OT3 を破り、Ccond_of_lt を raw b に適用できない。⟹ arg ケースは projection
+  （proj/nrm）を経由しないと閉じない。**この (4) の Cmem_NF ルートは dead end**。
+
+**(4') ★真の構造: crux は純粋に「nrm の olt 順序保存」**
+  post-nrm の項 nrm v, nrm u は **完全に wf3**（wf3_nrm 証明済; proj_G が proj a(nrm b) の
+  syntactic OT3 を保証）。⟹ **nrm 後は C-membership 問題は無い**。唯一の困難は組合せ的:
+  **「raw lex 順序 olt v u が正規化を生き残るか」= olt v u ⟹ olt(nrm v)(nrm u)（NF 上）**
+  ＝ nrm_order_pres そのもの。N2(oV(nrm t)=oV t)を足しても oV_mono_NF と等価になるだけで
+  この順序保存は迂回できない（olt は syntactic・oV は semantic・非wf3 で乖離）。
+  - **oV_mono_NF の場合分け（有用）**: v=P a b c, u=P e f g, olt v u の3ケース:
+    - a<e: OT2(spinesub_le)+allprinc_lt_jump+psi_subscript_jump で **wf3 不要**。
+    - tail(a=e,b=f,olt c g): IH(c,g) で **wf3 不要**。
+    - arg(a=e,olt b f): ψ_a(oV b)<ψ_a(oV f) が要る＝ψ_a の arg 厳密単調＝**唯一の難所**。
+      raw b の C-membership は偽なので projection 経由必須。＝結局 nrm 順序保存に帰着。
+  - nrm は NF 外では非単調（反例 y₂=p0(p1(y1))<o y1, nrm 等値・非標準列）。標準形性
+    （row-1 parenthood）が本質的。旧 nrmstep(11000行)が E6_value(偽)で頓挫した所。
+  - **次セッション**: nrm-monotone-on-NF を olt 構造帰納で。E6_value 再発を避けるため
+    各小補題を実測検証してから形式化。big monolithic 厳禁。<br>
+  ⟹ 続87 の結論（crux は irreducible・nrm 正準化が核）が正しく、続89(4) の sharpening は誤りだった。
 
 **(5) N2 分解の知見（参考・別ルート）**: oV(nrm t)=oV t は
   ins が **加法主要数の左吸収（psi_addprinc: α<γ加法主要 ⟹ α+γ=γ）** で oV 保存、
