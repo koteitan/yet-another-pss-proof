@@ -360,6 +360,80 @@ KEY tools ready: Cset_add_split, Cset_level_mono, psi_arg_lt_of_mem_cross,
 psi_form_of_mem, wf3_spinesub_le, Ccond_of_lt, wf3_headle, allprinc_lt_spine.
 Estimated: a focused session building Cset_lead_split + the nested NEC_lvl.
 
+### DONE (this continued session): spine-extraction machinery, all sorry-free
+- `Cset_add_split` GENERALIZED to `r < δ+r` (handles repeated principals; the
+  Cset_lead_split goal — DONE, cleaner than expected).
+- `olt_cons_tail`, `oV_tail_lt` (supplies `r<δ+r`), `head_tail_mem`
+  (oV(P a b c)∈C_v(α) → ψ_a(oV b)∈C ∧ oV c∈C). 17 lemmas total this turn.
+
+### THE IRREDUCIBLE WALL (precise, for fresh attack)
+NEC-wf3 `wf3 t → oV t∈C_v(α) → ∀x∈Gterm v t, oV x<α`, induction on tsize t,
+t=P a b c. TAIL (Gterm v c): `head_tail_mem`→oV c∈C_v(α), IH(c). ✓. HEAD {b}:
+cross-level psi_arg_lt → oV b<α. ✓. **HEAD-ARG DEEP (Gterm v b): THE WALL.**
+- Need oV b∈C_v(α) to recurse IH(b, level v). Have only oV b<α + (wf3 t ⟹)
+  oV b∈C_a(oV b) (Ccond, level a) ⊆ C_a(α). LEVEL MISMATCH: have C_a(α) (a≥v),
+  need C_v(α); `C_v⊆C_a` is the wrong direction.
+- Can't extract oV b∈C from ψ_a(oV b)∈C (arg-extraction FALSE, plateau).
+- Can't bound oV x<α (x∈Gterm a b) from oV b<α (collapse: oV x can exceed oV b).
+- Recursing on b at level a covers Gterm a b but NOT Gterm v b's level-[v,a)
+  coefficients (from b's lower spine principals); those need oV b∈C_v(α) again.
+CANDIDATE FRESH DIRECTIONS (none cracked yet):
+  (A) Strengthen IH to carry C-membership at ALL levels ≤ lead, proven by a
+      simultaneous induction with C_build (the NEC⟺C_build mutual recursion,
+      broken by tsize well-foundedness — but the head-arg has smaller tsize, so
+      maybe IH(b) gives BOTH "Gterm v b<α ⟸ oV b∈C_v(α)" AND a way to get
+      oV b∈C_v(α) from the wf3 spine + oV b<α).
+  (B) Prove the dedicated lemma `wf3 b → oV b < α → (∀ spine principal ψ_{a'}(d)
+      of b with a'≥v: ψ_{a'}(d) ∈ C_v(α))` directly by induction on b's spine,
+      using oV_tail_lt/head_tail_mem-style extraction INSIDE b — but this needs
+      oV b∈C_v(α) as the entry, same wall.
+  (C) Reformulate via Buchholz's actual NF proof (Buchholz [2] / the 1986 ψ
+      paper ../Buchholz_1986_psi...pdf): the standard proof of "C_v(α) = {oV t :
+      Gterm v t < α}" likely uses a transfinite induction on α or a direct
+      structural argument we haven't replicated. CHECK that paper next.
+  (D) Maybe NEC at level v is FALSE for the head-arg deep coefficients and the
+      RIGHT statement bounds Gterm at the term's OWN levels (a level-indexed
+      Gterm matching the spine), making the recursion level-consistent. Re-derive
+      what the obligation EXACTLY needs (g*∈Gterm a b, level a = obligation level)
+      and whether a level-a-only NEC suffices (avoiding the [v,a) gap).
+Next concrete: read Buchholz 1986 ψ paper for the NF/C-characterization proof
+structure (direction C), OR pursue (D) — the obligation only needs level a, so a
+level-MATCHED NEC (`b wf3 → ψ_a(oV b)∈C_a(α) → ∀x∈Gterm a b, oV x<α`) might avoid
+the [v,a) gap entirely (Gterm a, level a → no lower-level range). Verify (D) first.
+
+## ★ BREAKTHROUGH (direction C): Buchholz 1986 has the C-characterization
+Read ../Buchholz_1986_psi...pdf §1. The key facts:
+- **Lemma 1.9**: `γ∈C_u(α) ⟺ G_u γ ⊆ α`, where `G_u γ` = Buchholz's coefficient
+  set (the ordinal analog of Three's `Gterm u`). The `⟹` is EXACTLY NEC. Proven
+  by induction on the C-rank `min{n: γ∈C_0^n(ε)}` (NOT tsize), using 1.4(c).
+- **Lemma 1.4(c)**: `Ω_v ≤ ψ_u ξ ∈ C_v(α) ∧ ξ∈C_u(ξ) ⟹ ξ∈α∩C_v(α)`. So
+  **ARG-EXTRACTION `ψ_a(oV b)∈C_v(α) → oV b∈C_v(α)` HOLDS when oV b is CANONICAL
+  (`oV b∈C_a(oV b)`)** — which wf3 PROVIDES (Ccond: wf3(P a b c)→oV b∈C_a(oV b)).
+  My earlier "arg-extraction false via plateau" was for NON-canonical args only.
+  THIS BREAKS THE WALL: NEC's head-arg recursion gets `oV b∈C_v(α)` from
+  `ψ_a(oV b)∈C_v(α)` (head_tail_mem) + canonicity (wf3), then recurses.
+- Supporting: 1.4(a) (unique ψ-rep for canonical args), 1.4(b) (`γ∈C_v(α)`,
+  `Ω_v≤γ∈P` → `∃u ξ, γ=ψ_u ξ ∧ ξ∈α∩C_v(α)∩C_u(ξ)` — M1 + CANONICAL witness),
+  1.2(e) `γ∈C_v(α)⟺P(γ)⊆C_v(α)`, 1.5 `C_v(α)∩Ω_{v+1}=ψ_v α`.
+- **CAVEAT (Lean port):** Lean's `Cstep` (Psi.lean:59) OMITS Buchholz's
+  canonicity side-condition `ξ∈C_u(ξ)` on the ψ-generator (Buchholz Remark p.197:
+  the SETS are equal, but his lemmas use the canonical generation). So my M1
+  (`psi_form_of_mem`) gives a witness `ζ∈C_v(α)` with `ψ_a ζ=ψ_a(oV b)` but NOT
+  necessarily `ζ` canonical / `ζ=oV b` (the `ζ<oV b` plateau case). Need either:
+  (i) the canonical-witness M1 (Buchholz 1.4(b)) — show the Lean C_v(α) = the
+  canonically-generated set, OR (ii) prove arg_extract directly: from
+  `oV b∈C_a(oV b)` + `ψ_a ζ=ψ_a(oV b)` + `ζ∈C_v(α)`, the `oV b≤ζ` subcase forces
+  `oV b=ζ∈C_v(α)` (psi_strict_mono_arg rules out `oV b<ζ`); the `ζ<oV b` subcase
+  needs the canonical-rep argument (oV b is the canonical/minimal rep so... TBD).
+
+### CONCRETE NEXT (port plan)
+Define `arg_extract : oV b∈C_a(oV b) → ψ_a(oV b)∈C_v(α) → oV b∈C_v(α)` (1.4(c)
+specialized; the `ζ<oV b` subcase is the remaining ordinal lemma — likely needs
+"canonical rep is minimal in its plateau" or the C-set generation equivalence).
+Then NEC by induction on tsize: head principal → head_tail_mem → ψ_a(oV b)∈C_v(α)
+→ arg_extract (wf3 canonicity) → oV b∈C_v(α) → IH(b). Tail → IH(c). WALL BROKEN
+modulo arg_extract. This is the path to psi_proj → oV_nrm → termination.
+
 ### OLD PROGRESS (oV_ins detail)
 - **lemma 2 `oV_ins` — DONE & kernel-checked** (Nrm.lean, commit b2f815a).
   Final signature: `oV_ins (wb : wf3 b) (wc : wf3 c) (hGb : ∀ x ∈ Gterm a b,
