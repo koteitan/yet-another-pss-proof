@@ -4045,3 +4045,11 @@ msfx∈Gterm / ginv anchor-max / nbcK 連鎖）が基盤レベルで偽。選択
 - 次: maxr1=0 フラグメントの accessibility（wf3_translate_subs0 + wf_olt_wf3 +
   m_step_decreases + level非増加で subgame WF）→ maxr1≤1 へ拡張は再上昇境界ぎりぎり
   （maxr1=1 は wf3 だが subs⊆{0,1} で OT3 が D0(D0(D1)) 型を避ける標準構造=r1ok 要）。
+
+- (続88補) wttbase.thy 全数学内容 緑（PSI）: olt_arg_principal0/olt_tail_principal0/
+  OT3all/wf3_of_cnf_subs0（純項 cnf∧subs⊆{0}⟹wf3）/wf3_translate_subs0（maxr1=0⟹wf3）/
+  **subs0_step_closed**（maxr1=0 フラグメント step 閉包・step_in_ST_PS+oper_snd_subset）/
+  **subs0_step_decreases**（フラグメントで (translate T,translate M)∈wf3-<o）。全て sorry なし。
+  ⟹ maxr1=0 base の全部品が証明済。残=acc_subs0（これら+wf_olt_wf3 を wf_induct で組む
+  accessibility 組立・プラミングのみ・"translate M arbitrary M rule:wf_induct_rule" の
+  case 構造で難航中→次回 clean 化）。

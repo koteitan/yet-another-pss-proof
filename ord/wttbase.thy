@@ -1,5 +1,5 @@
 theory wttbase
-  imports otembed "YAPSS.wf"
+  imports otembed "YAPSS.wf" "YAPSS.wtt"
 begin
 
 text \<open>
@@ -138,6 +138,43 @@ proof -
   ultimately show ?thesis by (rule wf3_of_cnf_subs0)
 qed
 
+text \<open>\<^bold>\<open>The \<open>maxr1 = 0\<close> fragment is accessible\<close> (crux-free).  Its game stays
+  in the all-zero-row-1 fragment (\<open>oper_snd_subset\<close>), where \<open>translate\<close> lands
+  in \<open>wf3\<close> and strictly decreases (\<open>m_step_decreases\<close>), so termination follows
+  from \<open>wf_olt_wf3\<close> with no \<open>nrm\<close>.  The fragment closure facts (below) are the
+  ingredients; the accessibility assembly via \<open>wf_induct\<close> is the next step.\<close>
+
+lemma subs0_step_closed:
+  assumes "M \<in> ST_PS" and "\<forall>p \<in> set M. snd p = 0" and "step M T"
+  shows "T \<in> ST_PS \<and> (\<forall>p \<in> set T. snd p = 0)"
+proof
+  show TST: "T \<in> ST_PS" using assms(1,3) by (rule step_in_ST_PS)
+  from assms(3) obtain n where TM: "T = M[n]" by (auto elim!: step.cases)
+  show "\<forall>p \<in> set T. snd p = 0"
+  proof
+    fix q assume "q \<in> set T"
+    hence "snd q \<in> snd ` set (M[n])" using TM by auto
+    hence "snd q \<in> snd ` set M" using oper_snd_subset by blast
+    thus "snd q = 0" using assms(2) by auto
+  qed
+qed
+
+lemma subs0_step_decreases:
+  assumes "M \<in> ST_PS" and "\<forall>p \<in> set M. snd p = 0" and "step M T"
+  shows "(translate T, translate M) \<in> {(w,x). olt w x \<and> wf3 w \<and> wf3 x}"
+proof -
+  from assms(3) obtain n where L: "1 < Lng M" and n: "1 \<le> n" and TM: "T = M[n]"
+    by (auto elim!: step.cases)
+  have TST: "T \<in> ST_PS" using assms(1,3) by (rule step_in_ST_PS)
+  have Tz: "\<forall>p \<in> set T. snd p = 0"
+    using subs0_step_closed[OF assms] by simp
+  have "olt (translate T) (translate M)" using m_step_decreases[OF L n] TM by simp
+  moreover have "wf3 (translate M)" by (rule wf3_translate_subs0[OF assms(1,2)])
+  moreover have "wf3 (translate T)" by (rule wf3_translate_subs0[OF TST Tz])
+  ultimately show ?thesis by simp
+qed
+
 end
+
 
 
