@@ -9923,4 +9923,39 @@ theorem copyDichOK_of_b0 {G R : PairSeq} {v0 w0 n : ℕ} {lp : ℕ × ℕ}
         rw [← hqeq, ← hteq2] at hres
         exact hres
 
+/-- **b0 wiring of the expansion dichotomy** (UNCONDITIONAL, no `htie`): from
+the bad-block decomposition, the `b0` disjunct (`idx1 = 0`, giving `lp.2 = 0`),
+the host dichotomy and spanOK (clause 9), the `d0 = 0` expansion satisfies
+`dichOK`. -/
+theorem copyDichOK_b0 {G R : PairSeq} {v0 w0 n : ℕ} {lp : ℕ × ℕ}
+    (hn : 1 ≤ n) (hdom : ∀ x ∈ R, v0 < x.1)
+    (hnxt : nextR (G ++ ((v0,w0)::R) ++ [lp])
+      (idx1 (G ++ ((v0,w0)::R) ++ [lp]) ((G ++ ((v0,w0)::R) ++ [lp]).length - 1))
+      G.length ((G ++ ((v0,w0)::R) ++ [lp]).length - 1))
+    (hidx : idx1 (G ++ ((v0,w0)::R) ++ [lp])
+      ((G ++ ((v0,w0)::R) ++ [lp]).length - 1) = 0)
+    (hM : dichOK (G ++ ((v0,w0)::R) ++ [lp]))
+    (hsp : spanOK (G ++ ((v0,w0)::R) ++ [lp])) :
+    dichOK (copyExp G ((v0,w0)::R) 0 n) := by
+  have hL : 0 < ((v0,w0)::R).length := by simp
+  have hMlen : (G ++ ((v0,w0)::R) ++ [lp]).length
+      = G.length + ((v0,w0)::R).length + 1 := hostM_length ..
+  have hlast : (G ++ ((v0,w0)::R) ++ [lp]).getD
+      ((G ++ ((v0,w0)::R) ++ [lp]).length - 1) (0,0) = lp := by
+    rw [hMlen, show G.length + ((v0,w0)::R).length + 1 - 1
+        = G.length + ((v0,w0)::R).length from by omega]
+    rw [getD_append_right (by simp)]
+    rw [show G.length + ((v0,w0)::R).length - (G ++ ((v0,w0)::R)).length = 0
+        from by simp, List.getD_cons_zero]
+  have hlp2 : lp.2 = 0 := by
+    unfold idx1 at hidx
+    by_contra hne
+    rw [if_pos ?_] at hidx
+    · exact absurd hidx one_ne_zero
+    · unfold entry
+      rw [if_neg one_ne_zero, hlast]
+      omega
+  have hC9 := (hsp G v0 w0 R lp 0 rfl hnxt (Or.inl rfl)).2.2.2.2.2.2.2.2.1
+  exact copyDichOK_of_b0 hn hdom hlp2 hM hC9
+
 end YAPSS
