@@ -2200,15 +2200,56 @@ proof -
   finally show ?thesis .
 qed
 
-text \<open>(OSC discipline, the frozen oscillation cores of the \<open>i1 = 0\<close> exact-copy
-  block; memo 続61/続63補/続64.  All audited closure+2.)
-  \<^item> O1: interior row 1 never exceeds the head's by more than one
-    (15279 blocks, zero violations);
-  \<^item> O2: if some interior column attains the head's row 1 plus one and the
-    head is dominated by its immediate predecessor, that predecessor already
-    carries at least that value (158 configurations, zero violations);
-  \<^item> GCD: the gap-clear level+1 child of a \<^emph>\<open>positive\<close>-row-1 interior column
-    strictly drops in row 1 (7 pairs, zero violations).\<close>
+text \<open>(OSC discipline, the frozen oscillation cores; memo 続61/続63補/続64/続78.
+  The bad-block forms GCD/O2 are now \<^emph>\<open>derived\<close> from universal
+  \<open>nextrel0\<close>-window cores (any window \<open>a = parent0(om)\<close> with a zero-row-1
+  closing column \<open>om\<close> — position-local, hence take-stable):
+  \<^item> GCDV: the gap-clear level+1 child of a positive-row-1 column inside such
+    a window strictly drops in row 1 (closure+3: 118667 instances, zero
+    violations);
+  \<^item> O2V: if the window head has row 1 zero, is dominated by its immediate
+    predecessor, and some interior column attains row 1 one, the predecessor
+    already carries at least one (closure+3: 66088, zero violations);
+  \<^item> O1P: a \<^emph>\<open>positive\<close>-row-1 head of an \<open>i1 = 0\<close> bad block bounds the whole
+    block interior (closure+3: 16901 blocks, zero violations; the universal
+    \<open>om\<close>-window analogue is false — last-column anchoring is essential).\<close>
+
+lemma ginv_GCDV:
+  assumes "M \<in> ST_PS"
+    and "om < Lng M"
+    and "entry M 0 a < entry M 0 om"
+    and "\<forall>j. a < j \<and> j < om \<longrightarrow> entry M 0 om \<le> entry M 0 j"
+    and "entry M 1 om = 0"
+    and "a < w" and "w < x" and "x < om"
+    and "0 < entry M 1 w"
+    and "entry M 0 x = Suc (entry M 0 w)"
+    and "\<forall>t. w < t \<and> t < x \<longrightarrow> entry M 0 x \<le> fst (M ! t)"
+  shows "entry M 1 x < entry M 1 w"
+  sorry
+
+lemma ginv_O2V:
+  assumes "M \<in> ST_PS"
+    and "om < Lng M"
+    and "entry M 0 a < entry M 0 om"
+    and "\<forall>j. a < j \<and> j < om \<longrightarrow> entry M 0 om \<le> entry M 0 j"
+    and "entry M 1 om = 0"
+    and "entry M 1 a = 0"
+    and "0 < a" and "fst (M ! (a - 1)) < entry M 0 a"
+    and "a < r" and "r < om"
+    and "entry M 1 r = Suc (entry M 1 a)"
+  shows "Suc (entry M 1 a) \<le> snd (M ! (a - 1))"
+  sorry
+
+lemma ginv_O1P:
+  assumes "M \<in> ST_PS"
+    and "j1 = Lng M - 1" and "j1 \<noteq> 0"
+    and "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)"
+    and "idx1 M j1 = 0" and "hasParent M 0 j1"
+    and "j0 = parent M 0 j1"
+    and "0 < entry M 1 j0"
+    and "j0 < l" and "l < j1"
+  shows "entry M 1 l \<le> entry M 1 j0"
+  sorry
 
 lemma ginv_GCD:
   assumes "M \<in> ST_PS"
@@ -2221,7 +2262,20 @@ lemma ginv_GCD:
     and "entry M 0 x = Suc (entry M 0 w)"
     and "\<forall>t. w < t \<and> t < x \<longrightarrow> entry M 0 x \<le> fst (M ! t)"
   shows "entry M 1 x < entry M 1 w"
-  sorry
+proof -
+  have n0: "nextrel0 M j0 j1"
+    using parent_nextR[OF assms(6)] unfolding assms(7)[symmetric] nextR_def
+    by simp
+  have j1L: "j1 < Lng M" and e0lt: "entry M 0 j0 < entry M 0 j1"
+    using n0 unfolding nextrel0_def by blast+
+  have gap: "\<forall>j. j0 < j \<and> j < j1 \<longrightarrow> entry M 0 j1 \<le> entry M 0 j"
+    using n0 unfolding nextrel0_def by blast
+  have s0: "entry M 1 j1 = 0"
+    using assms(5) unfolding idx1_def by (simp split: if_splits)
+  show ?thesis
+    by (rule ginv_GCDV[OF assms(1) j1L e0lt gap s0 assms(8) assms(9)
+          assms(10) assms(11) assms(12) assms(13)])
+qed
 
 text \<open>(CT) Tight-node child drop (memo 続52): on an exact-copy dominated
   tail, a child of a node that has already spent the +1 budget drops back to
@@ -2458,7 +2512,28 @@ lemma ginv_O2:
     and "j0 < r" and "r < j1"
     and "entry M 1 r = Suc (entry M 1 j0)"
   shows "Suc (entry M 1 j0) \<le> snd (M ! (j0 - 1))"
-  sorry
+proof (cases "entry M 1 j0 = 0")
+  case True
+  have n0: "nextrel0 M j0 j1"
+    using parent_nextR[OF assms(6)] unfolding assms(7)[symmetric] nextR_def
+    by simp
+  have j1L: "j1 < Lng M" and e0lt: "entry M 0 j0 < entry M 0 j1"
+    using n0 unfolding nextrel0_def by blast+
+  have gap: "\<forall>j. j0 < j \<and> j < j1 \<longrightarrow> entry M 0 j1 \<le> entry M 0 j"
+    using n0 unfolding nextrel0_def by blast
+  have s0: "entry M 1 j1 = 0"
+    using assms(5) unfolding idx1_def by (simp split: if_splits)
+  show ?thesis
+    by (rule ginv_O2V[OF assms(1) j1L e0lt gap s0 True assms(8) assms(9)
+          assms(10) assms(11) assms(12)])
+next
+  case False
+  hence pos: "0 < entry M 1 j0" by simp
+  have "entry M 1 r \<le> entry M 1 j0"
+    by (rule ginv_O1P[OF assms(1) assms(2) assms(3) assms(4) assms(5)
+          assms(6) assms(7) pos assms(10) assms(11)])
+  thus ?thesis using assms(12) by simp
+qed
 
 text \<open>(GAP) In a dominated exact-copy branch, any block column whose row 1
   exceeds the head's is bounded by the dominating prefix predecessor —
