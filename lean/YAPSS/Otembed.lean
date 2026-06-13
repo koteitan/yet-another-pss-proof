@@ -225,6 +225,50 @@ theorem Ccond_of_lt {a : ℕ} {b : Three}
     oV.{u} b ∈ Cset (psiRes (oV b)) (oV b) a :=
   C_build h
 
+/-! ## Buchholz collapsing module (value route — see git/nrm_stepdec_design.md)
+
+`(M1)` Every additive-principal element of `C_v(α)` lying in the level-`v` band
+`[Ω_v, Ω_{v+1})` is `ψ_v(ξ)` for some `ξ ∈ C_v(α)`, `ξ < α`.  The level is
+forced because `ψ_u(ξ) ∈ [Ω_u, Ω_{u+1})` and these bands are disjoint. -/
+theorem psi_form_of_mem {α δ : Ordinal.{u}} {v : ℕ}
+    (hap : Ordinal.IsPrincipal (· + ·) δ)
+    (hlo : Om v ≤ δ) (hhi : δ < Om (v + 1)) (hmem : δ ∈ Cset (psiRes α) α v) :
+    ∃ ξ ∈ Cset (psiRes α) α v, ξ < α ∧ psi ξ v = δ := by
+  obtain ⟨n, hn⟩ := Cset_mem_iff.1 hmem
+  clear hmem
+  induction n generalizing δ with
+  | zero =>
+    rw [Citer, Function.iterate_zero, id_eq] at hn
+    exact absurd hn (not_lt.2 hlo)
+  | succ n IH =>
+    rw [Citer_succ, Cstep] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH hap hlo hhi h1
+    · obtain ⟨x, hx, y, hy, hxy⟩ := h2
+      have hmemn : δ ∈ Citer (psiRes α) α v n := by
+        rcases eq_or_lt_of_le (show x ≤ δ from hxy ▸ le_self_add) with hxe | hxlt
+        · exact hxe ▸ hx
+        · rcases eq_or_lt_of_le (show y ≤ δ from hxy ▸ le_add_self) with hye | hylt
+          · exact hye ▸ hy
+          · exact absurd hxy.symm (ne_of_gt (hap hxlt hylt))
+      exact IH hap hlo hhi hmemn
+    · obtain ⟨u, ⟨ξ, ⟨hξC, hξα⟩, hξδ⟩⟩ := Set.mem_iUnion.1 h3
+      have hξα : ξ < α := hξα
+      simp only [psiRes, if_pos hξα] at hξδ
+      -- δ = psi ξ u; band-disjointness forces u = v
+      have huv : u = v := by
+        have h1 : Om u ≤ δ := hξδ ▸ Om_le_psi ξ u
+        have h2 : δ < Om (u + 1) := hξδ ▸ psi_lt_Om_succ ξ u
+        have hle1 : u ≤ v := by
+          by_contra hc
+          exact absurd (lt_of_le_of_lt h1 hhi) (not_lt.2 (Om_mono (by omega)))
+        have hle2 : v ≤ u := by
+          by_contra hc
+          exact absurd (lt_of_le_of_lt hlo h2) (not_lt.2 (Om_mono (by omega)))
+        omega
+      subst huv
+      exact ⟨ξ, Citer_subset_Cset hξC, hξα, hξδ⟩
+
 /-- `G`-critical subterms are well-formed (Buchholz's Proposition
 `a ∈ OT → G_u a ⊆ OT`). -/
 theorem wf3_Gterm {t x : Three} (ht : wf3 t) {v : ℕ} (hx : x ∈ Gterm v t) :
