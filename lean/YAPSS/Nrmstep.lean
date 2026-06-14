@@ -1637,6 +1637,21 @@ theorem proj_olt_of_Einc {u : ℕ} {x x' : Three} (hE : Einc x x')
   · exact hboth hf (pfire_transport hE hf)
   · exact proj_olt_of_nofire hf (Einc_olt hE)
 
+/-- **General `olt`-version of `proj_olt_of_Einc`** (no `Einc`, no `wf3`): from a
+strict `olt x x'`, fire-propagation `pfire u x → pfire u x'`, and the both-fire
+comparison, the projection is strictly monotone.  The non-fire case uses only
+`proj_nofire` + inflation `proj_ole`.  This is the clean case split for
+`proj0_olt_NF`: the two residuals are *fire-propagation* and *both-fire*, both of
+which are facts of `NF`/standardness (and false on general `wf3`). -/
+theorem proj_olt_of_fireprop {u : ℕ} {x x' : Three} (hlt : x <o x')
+    (hprop : pfire u x → pfire u x')
+    (hboth : pfire u x → pfire u x' → proj u x <o proj u x') :
+    proj u x <o proj u x' := by
+  by_cases hf : pfire u x
+  · exact hboth hf (hprop hf)
+  · rw [proj_nofire hf]
+    exact olt_ole_trans hlt (proj_ole u x')
+
 /-! ## The subscript chain: criticals, projections and `nrm` never invent
 subscripts -/
 
