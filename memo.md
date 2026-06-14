@@ -4514,3 +4514,26 @@ witness=oV(proj a b))。w=oV(proj a m)≥oV m(oV_le_proj at m)。⟹ w<oV m(from
 term_nec/Cset_eq_Cset_c(modulo residue)/B2/1.4 trio/1.5/1.6a/1.2h/2.2c/Cset_c 全ツールキット。
 **次**: §1 canonical-rep の simultaneous transfinite induction(closure-rank 同時帰納 or G_u on ordinals
 の忠実 port)。本丸・multi-session・improvisation 厳禁。
+
+### 続89(37): sub-agent RES — §1 核を最もクリーンな canonical_witness_in_Cset_c に還元(緑)
+
+**3体目の sub-agent RES の成果**(necessity.thy 緑統合済):
+- **wit(最小 ψ_w-witness)機構を緑で構築**: wit ξ w = LEAST δ. Ord δ∧psi δ w=psi ξ w。
+  psi_wit/Ord_wit/wit_spec/wit_le/wit_not_less 全緑。
+- residue noncanon_gen_in_Cset_c_residue と **Cset_eq_Cset_c(Buchholz Remark)を完全緑化**。
+- **唯一の sorry を canonical_witness_in_Cset_c に局所化**(最もクリーンな §1 deferred 核):
+  「ξ∈α∩Cset_c α v, ¬acanon w ξ, v≤w ⟹ ∃canonical δ∈α∩Cset_c α v. psi δ w=psi ξ w」。
+- **3障害の確定**: (i)値 psi ξ w 非canonical (ii)最小witness 非canonical不動点 (iii)最大witness≥α。
+  ⟹ 局所 witness 不可。**δ∈Cset_c の閉包メンバーシップが真の急所**(Cset_c 非下方閉)。
+  Citer_subset_Cset_c の outer-rank 帰納に「α未満引数の canonical-rep 性」を carried invariant に持たせる
+  (route B)or G_u 閉包ランク再帰定義(route A)が次の攻め筋。
+- 健全性: 偽補題 wit_fixpoint_if_noncanon(metis 294s スピン)を破棄・enshrine せず。probe ツール追加。
+
+**現状の sorry(2個・同一核)**: necessity.thy:canonical_witness_in_Cset_c / nrm.thy:psi_proj_nonmem。
+両者とも **Buchholz §1 simultaneous transfinite induction(canonical-rep 存在)** に帰着。
+Buchholz が "can be shown" と省略・lean も停滞する唯一の本丸。**周辺は全て緑**(1.4 trio/term_nec/Remark
+modulo核/B2/Cset_c 全ツールキット/1.5/1.6a/1.2h/2.2c/wit 機構)。
+
+**今セッションの sub-agent 活用総括**: TN(term_nec 緑)+RM(Remark)+RES(核を canonical_witness_in_Cset_c に
+クリーン還元)。並列 worktree + ヒープ seed で効率化。3体とも soundness 厳守(偽補題 enshrine せず)。
+残り = canonical_witness_in_Cset_c の simultaneous induction(route A:G_u / route B:carried invariant)。
