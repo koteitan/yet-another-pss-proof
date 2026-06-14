@@ -543,4 +543,44 @@ proof -
   qed
 qed
 
+text \<open>\<^bold>\<open>Buchholz 1.4(c)\<close> (the canonical-argument necessity): if \<open>\<psi>\<^sub>a(\<delta>)\<close> with
+  \<open>\<delta>\<close> \<^bold>\<open>canonical\<close> lies in the canonical closure \<open>C\<^sup>c\<^sub>a(\<alpha>)\<close>, then the argument \<open>\<delta>\<close>
+  is \<open>< \<alpha>\<close> (and itself in the closure).  Proof: 1.4(b) gives a \<^emph>\<open>canonical\<close>
+  generator \<open>\<psi>\<^sub>u(\<xi>) = \<psi>\<^sub>a(\<delta>)\<close> with \<open>\<xi> \<in> \<alpha>\<close>; \<open>psi_inj_subscript\<close> forces \<open>u=a\<close> and
+  \<open>psi_inj_arg_canonical\<close> (1.4a, both canonical) forces \<open>\<xi>=\<delta>\<close>.  This is the
+  necessity that discharges \<open>psi_proj_nonmem\<close>: the canonical witness of
+  \<open>\<psi>\<^sub>a(oV b)\<close> is \<open>oV(proj a b) \<ge> oV m\<close>, so it cannot be \<open>< oV m\<close>.\<close>
+
+lemma psi_canonical_arg_lt:
+  assumes can: "\<delta> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<delta>. psi \<xi>) \<delta> a)"
+    and mem: "psi \<delta> a \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> a)"
+  shows "\<delta> \<in> elts \<alpha> \<and> \<delta> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> a)"
+proof -
+  let ?p = "\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>"
+  have ordp: "\<And>\<xi> u. \<xi> \<in> elts \<alpha> \<Longrightarrow> Ord (?p \<xi> u)" by simp
+  have notOm: "psi \<delta> a \<notin> elts (Om a)"
+  proof
+    assume "psi \<delta> a \<in> elts (Om a)"
+    hence "psi \<delta> a < Om a" using Ord_mem_iff_lt[OF Ord_psi Ord_Om] by blast
+    moreover have "Om a \<le> psi \<delta> a" by (rule Om_le_psi)
+    ultimately show False by simp
+  qed
+  from indec_Cset_c_generator[OF ordp indecomposable_psi notOm mem]
+  obtain \<xi> u where \<xi>: "\<xi> \<in> elts (Cset_c ?p \<alpha> a)" "\<xi> \<in> elts \<alpha>"
+    "acanon u \<xi>" "psi \<delta> a = ?p \<xi> u" by blast
+  have val: "psi \<delta> a = psi \<xi> u" using \<xi>(2,4) by simp
+  have ua: "a = u" by (rule psi_inj_subscript[OF val])
+  have aca\<xi>: "\<xi> \<in> elts (Cset (\<lambda>\<eta>\<in>elts \<xi>. psi \<eta>) \<xi> a)"
+    using \<xi>(3) ua unfolding acanon_def by simp
+  have Od: "Ord \<delta>"
+    by (rule Cset_Ord[OF _ can]) (simp add: Ord_psi)
+  have Ox: "Ord \<xi>"
+    by (rule Cset_Ord[OF _ aca\<xi>]) (simp add: Ord_psi)
+  have "\<delta> = \<xi>"
+  proof (rule psi_inj_arg_canonical[OF Od Ox can aca\<xi>])
+    show "psi \<delta> a = psi \<xi> a" using val ua by simp
+  qed
+  thus ?thesis using \<xi>(1,2) by simp
+qed
+
 end
