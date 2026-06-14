@@ -4381,3 +4381,18 @@ psi_inj_canonical 等既存)。psi_proj(A2)は単一 necessity sorry に対し�
 
 **注意(再掲)**: nrmstep.thy は旧 nrm route の死蔵(22 sorry, E6_value 由来)。live 鎖と無関係。
 top-level termination は今も nrm_order_pres(nrm.thy:269)経由。psi_proj 鎖は oV_mono_NF 別ルート用infra。
+
+### 続89(27-28): oV_le_proj + D-eq-0(Cset_c)緑 — D1 周辺をさらに固める
+
+- ✅ `oV_le_proj`(nrm.thy 緑): wf3 b⟹oV b≤oV(proj a b)。proj.induct+B1。proj は値を上げる
+  ⟹ canonical witness oV(proj a b)≥oV m。psi_proj_nonmem の「小さい canonical generator なし」論証部品。
+- ✅ **D-eq-0 緑**(necessity.thy, plan group D-eq の boilerplate): `Cstep_c`/`Cset_c`=
+  Buchholz 側条件(*) ξ∈C_u(ξ)(=acanon u ξ)で generator 制限した閉包。
+  small_Cstep_c_gen/elts_Cstep_c/Cstep_c_subset_Cstep/Citer_c_subset_Citer/`Cset_c_subset_Cset`
+  (易方向)全 sorry 無。
+  - **罠記録**: necessity.thy では bare `set` が **List.set に解決**される→`ZFC_in_HOL.set` 明示修飾必須
+    (psi.thy では bare で通るが necessity.thy の import 構成では通らない)。set-builder は `{q∈A. P q}` 形で型明示。
+- 🚨 残 **D-eq-1 = Cset⊆Cset_c**(非canonical generator の redundancy・Buchholz Remark)= §1 同時帰納 D1。
+  これが psi_proj_nonmem を出す: Cset=Cset_c なら psi(oV b)a∈Cv(oV m)a は canonical generator
+  psi ξ a(ξ canonical, ξ<oV m)由来→1.4a で ξ=oV(proj a b)≥oV m と矛盾(ξ<oV m)。
+  D-eq-1 の証明が canonical-witness 同時帰納の本体。次セッション本丸。
