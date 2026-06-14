@@ -208,6 +208,35 @@ proof (induction a b rule: proj.induct)
   qed
 qed
 
+text \<open>\<^bold>\<open>The projection grows the value\<close>: \<open>oV b \<le> oV (proj a b)\<close>.  \<open>proj\<close> replaces the
+  argument by an OT3-violating critical subterm of value \<open>\<ge> oV b\<close> (B1) and iterates
+  upward, so the canonical representative \<open>oV (proj a b)\<close> is \<open>\<ge>\<close> every intermediate
+  bound \<dash> in particular \<open>\<ge> oV m\<close> at the first maxo-step.  This (with
+  \<open>proj_canonical\<close>) is what makes the \<open>psi_proj_nonmem\<close> necessity true: the unique
+  canonical argument carrying the value \<open>\<psi>\<^sub>a(oV b)\<close> sits \<^emph>\<open>at or above\<close> the bound, so
+  no smaller canonical generator can re-create it.\<close>
+
+lemma oV_le_proj: "wf3 b \<Longrightarrow> oV b \<le> oV (proj a b)"
+proof (induction a b rule: proj.induct)
+  case (1 u b)
+  show ?case
+  proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
+    case True
+    show ?thesis unfolding proj_id[OF True] by simp
+  next
+    case False
+    let ?m = "maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
+                   (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b)))"
+    have mins: "?m \<in> set (filter (\<lambda>g. \<not> olt g b) (Glist u b))" by (rule maxo_hdtl_in[OF False])
+    have mG: "?m \<in> Gterm u b" using mins set_Glist by auto
+    have mbad: "\<not> olt ?m b" using mins by simp
+    have le1: "oV b \<le> oV ?m" by (rule bad_imp_oV_ge[OF 1(2) mG mbad])
+    have w: "wf3 ?m" by (rule Gterm_wf3[OF mG 1(2)])
+    have le2: "oV ?m \<le> oV (proj u ?m)" by (rule 1(1)[OF refl False w])
+    show ?thesis unfolding proj_rec[OF False] using le1 le2 by simp
+  qed
+qed
+
 subsection \<open>Sum insertion with absorption, and \<open>nrm\<close>\<close>
 
 fun ins :: "nat \<Rightarrow> three \<Rightarrow> three \<Rightarrow> three" where
