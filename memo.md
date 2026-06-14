@@ -4299,3 +4299,31 @@ discharge を精査:
 - **次の D1 標的(改訂)**: `wf3 t ⟹ psi (oV t) a ∈ Cv μ v ⟹ (∃ coeff of t with oV ≥ μ ⟹ False)`
   の generator-trace 形、ないし直接 `psi β a ∉ Cv μ a`(B1 で β の係数 ≥ β=... を使い、
   necessity で psi β a 生成には arg<μ canonical が要る→係数 μ で矛盾)。collapse_grow は使わない。
+
+### 続89(23-24): 1.9 necessity の構造的部品を緑で積む + ★band-argument 洞察
+
+**緑で追加(necessity.thy, sorry無)**:
+- `indec_Cset_generator`(続89(23)): indecomposable γ ∉ Om v ∧ γ∈Cset p α v ⟹ γ は
+  generator(∃ξ∈Cset∩α. γ=p ξ u)。Citer-rank 帰納+加法吸収(sum は ξ=γ∨η=γ で低 rank へ)。
+  **同時帰納不要の構造補題**。1.9 の「値が generator に帰着」する半分。
+- `psi_in_Cset_same_sub_generator`(続89(24)): psi β v ∈ Cv α v(同 subscript v)⟹
+  ∃ξ∈Cv α v∩α. psi ξ v = psi β v。indec_Cset_generator + psi_inj_subscript。
+
+**★band-argument(続89(22) の collapse_grow 危険視を訂正)**: A1 で gap [oV b, oV m) は
+**clean(∉ Cv(oV b) a)で collapse_grow は適用可能**。理由:
+- oV b, oV m は同じ ψ_a レベル値で **[Om a, Om(a+1)) の band 内**(oV m < Om(a+1))。
+- Cv(oV b) a の band 内の元は全て **< psi(oV b) a**:
+  - generator psi η u: u>a ⟹ ≥Om(a+1)>oV m(band 外); u<a ⟹ <Om a≤oV b(band 下); u=a ⟹
+    psi η a ≤ psi(oV b) a(弱単調 psi_mono_arg, η≤oV b)かつ ≠ psi(oV b) a(psi_notin: psi(oV b)a∉Cv)
+    ⟹ **< psi(oV b) a**。
+  - sum: 全 band 元 < psi(oV b) a、psi(oV b) a は加法主要(indecomposable_psi)⟹ sum も < psi(oV b)a。
+- ⟹ band 内の Cv 元は全て < psi(oV b) a ≤ oV b(B2)⟹ **[oV b, oV m) ∩ Cv(oV b) a = ∅**。clean。
+- **⟹ A1 = B2(oV b 非canonical = psi(oV b) a ≤ oV b)+ band facts + collapse_grow**。
+  collapse_grow は過剰でなく**ちょうど効く**(続89(22) の心配は band 構造で解消)。
+
+**残る核 = B2 = 1.9 necessity を oV b 自身の bound に適用**: oV b∈Cv(oV b) a ⟹ 矛盾。
+oV b の G_a-係数 m は oV m≥oV b(B1)。necessity が「oV b∈Cv(oV b)a ⟹ 全係数<oV b」を出せば
+oV m<oV b で B1 と矛盾。oV b は一般に decomposable(=ψ+...)なので indec_Cset_generator 直接適用不可、
+leading ψ 成分分解(indecomposable_psi + Cantor_NF)+ canonical-witness が要る。**これが D1 の本体**。
+- 次: (i) band facts を補題化(Om level 分離 / generator<psi の band 補題)。
+  (ii) B2 を leading-ψ 分解で necessity に帰着。canonical-witness(1.4b)が最後の山。
