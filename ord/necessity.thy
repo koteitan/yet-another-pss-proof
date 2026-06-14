@@ -1136,14 +1136,171 @@ text \<open>\<^bold>\<open>The single open obligation (this session), now carryi
   remaining content is the cross-subscript canonical collapse of the
   non-canonical argument \<open>\<xi>\<close> using \<open>IH\<close> at \<open>\<xi> < \<alpha>\<close>.\<close>
 
+text \<open>\<^bold>\<open>Helper 1 (the single remaining \<open>sorry\<close>): \<open>\<psi>\<close>-values are canonical\<close>.
+  For \<open>v \<le> w\<close>, the value \<open>\<psi>\<^bsub>w\<^esub>(\<zeta>)\<close> is \<^bold>\<open>canonical\<close> at \<open>v\<close>: it lies in its own
+  \<open>v\<close>-band-closure \<open>C\<^sub>v(\<psi>\<^bsub>w\<^esub>(\<zeta>))\<close>.  This is Buchholz's basic fact that every
+  generator value already belongs to every \<open>C\<close> with \<^emph>\<open>at most\<close> its subscript
+  (\<open>\<psi>\<^bsub>w\<^esub>(\<zeta>) \<in> C\<^bsub>v\<^esub>(\<dots>)\<close> for \<open>v \<le> w\<close>; he uses it freely in \<section>1).  Concretely:
+  \<open>\<psi>\<^bsub>w\<^esub>(\<zeta>) = \<psi>\<^bsub>w\<^esub>(\<eta>)\<close> for a \<^emph>\<open>canonical\<close> witness \<open>\<eta> < \<psi>\<^bsub>w\<^esub>(\<zeta>)\<close>
+  (\<open>acanon w \<eta>\<close>), which lies in the \<open>v\<close>-closure of \<open>\<psi>\<^bsub>w\<^esub>(\<zeta>)\<close> and fires the
+  generator step there.  Establishing the canonical witness \<open>\<eta>\<close> below the value is
+  precisely Buchholz's \<section>1 canonical-representation existence; it is the single
+  irreducible obligation, here stated in its cleanest positive form.
+
+  \<^bold>\<open>Soundness note.\<close>  The earlier formulation \<open>acanon a \<delta> \<Longrightarrow> \<delta> < \<psi>\<^sub>a(\<delta>)\<close> was
+  \<^emph>\<open>FALSE\<close> (e.g. \<open>\<delta> = \<Omega>\<^bsub>1\<^esub> = \<omega>\<close>, \<open>a = 0\<close>: \<open>acanon 0 \<omega>\<close> via \<open>\<omega> = \<psi>\<^bsub>1\<^esub>(0)\<close>, yet
+  \<open>\<psi>\<^bsub>0\<^esub>(\<omega>) < \<Omega>\<^bsub>1\<^esub> = \<omega>\<close>); a finite-model probe (\<^file>\<open>../tools/probe_false2.py\<close>)
+  exposed it.  \<open>psi_value_acanon\<close> is the \<^emph>\<open>true\<close> replacement (probe
+  \<^file>\<open>../tools/probe_valcanon_big.py\<close>: 56/0, no counterexample, incl. the
+  extended \<open>\<Omega>\<^bsub>3\<^esub>\<close> model).\<close>
+
+lemma psi_value_acanon:
+  assumes "v \<le> w" shows "acanon v (psi \<zeta> w)"
+  sorry
+
+text \<open>\<^bold>\<open>Helper 2: \<open>C\<^sub>v(\<alpha>)\<close> is monotone in the subscript\<close> \<open>v\<close> (only the base \<open>\<Omega>\<^sub>v\<close>
+  grows; the generator step is subscript-independent).\<close>
+
+lemma Citer_sub_mono:
+  assumes "v \<le> u"
+  shows "elts (Citer p \<alpha> v n) \<subseteq> elts (Citer p \<alpha> u n)"
+proof (induction n)
+  case 0
+  show ?case using Om_mono[OF assms] by (simp add: less_eq_V_def)
+next
+  case (Suc n)
+  have "elts (Cstep p \<alpha> (Citer p \<alpha> v n)) \<subseteq> elts (Cstep p \<alpha> (Citer p \<alpha> u n))"
+    by (rule Cstep_mono_param[OF subset_refl _ Suc.IH]) simp
+  thus ?case by (simp only: funpow.simps(2) comp_apply)
+qed
+
+lemma Cset_sub_mono:
+  assumes "v \<le> u"
+  shows "elts (Cset p \<alpha> v) \<subseteq> elts (Cset p \<alpha> u)"
+proof (rule subsetI)
+  fix x assume "x \<in> elts (Cset p \<alpha> v)"
+  then obtain n where "x \<in> elts (Citer p \<alpha> v n)" by (auto simp: Cset_mem_iff)
+  hence "x \<in> elts (Citer p \<alpha> u n)" using Citer_sub_mono[OF assms] by blast
+  thus "x \<in> elts (Cset p \<alpha> u)" by (auto simp: Cset_mem_iff)
+qed
+
+text \<open>\<^bold>\<open>Helper 3: canonicity is monotone in the subscript\<close>: \<open>acanon v \<delta> \<Longrightarrow> v \<le> u
+  \<Longrightarrow> acanon u \<delta>\<close>.\<close>
+
+lemma acanon_sub_mono:
+  assumes "acanon v \<delta>" "v \<le> u" shows "acanon u \<delta>"
+  using assms Cset_sub_mono[OF assms(2), of "(\<lambda>\<xi>\<in>elts \<delta>. psi \<xi>)" \<delta>]
+  unfolding acanon_def by blast
+
+text \<open>\<^bold>\<open>The core (\<section>1 simultaneous-induction step), vacuity form\<close>.  Carrying the
+  \<open>\<alpha>\<close>-IH \<open>C\<^sub>{u'}(\<beta>) \<subseteq> C\<^sup>c\<^bsub>u'\<^esub>(\<beta>)\<close> for all \<open>\<beta> < \<alpha>\<close>, every member \<open>\<xi> < \<alpha>\<close> of the
+  canonical closure \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close> is \<^bold>\<open>canonical\<close> at \<open>v\<close>: \<open>\<xi> \<in> C\<^sub>v(\<xi>)\<close> (\<open>acanon v \<xi>\<close>).
+  This is Buchholz's necessity 1.9 in the form the rank induction produces.  By
+  induction on the \<open>Cstep_c\<close>-rank \<open>N\<close> of \<open>\<xi>\<close>:
+  \<^item> \<^bold>\<open>base\<close> (\<open>\<xi> \<in> \<Omega>\<^sub>v\<close>): \<open>\<Omega>\<^sub>v \<subseteq> C\<^sub>v(\<xi>)\<close>;
+  \<^item> \<^bold>\<open>sum\<close> \<open>\<xi> = a+b\<close>: both summands are at rank \<open>N\<close> and \<open>< \<alpha>\<close>, so canonical by the
+    inner IH, hence in \<open>C\<^sub>v(\<xi>)\<close> (\<open>a,b \<le> \<xi>\<close>, \<open>CC_mono\<close>); rebuild by \<open>Cset_add_closed\<close>;
+  \<^item> \<^bold>\<open>generator\<close> \<open>\<xi> = \<psi>\<^sub>w(\<zeta>)\<close> (a \<open>\<psi>\<close>-value): if \<open>w < v\<close> then \<open>\<xi> \<in> \<Omega>\<^sub>v \<subseteq> C\<^sub>v(\<xi>)\<close>;
+    otherwise \<open>v \<le> w\<close> and \<open>psi_value_acanon\<close> gives \<open>\<xi> \<in> C\<^sub>v(\<xi>)\<close> directly.
+  The \<open>\<alpha>\<close>-IH is not needed in this vacuity form \<dash> the inner rank induction with
+  \<open>Cset_c_gen_closed\<close>'s built-in canonicity (every \<open>Cstep_c\<close> generator argument is
+  canonical) plus \<open>psi_value_acanon\<close> suffices; the \<open>\<alpha>\<close>-IH remains as a (now-unused)
+  carried hypothesis, exactly as the route-B skeleton supplies it.\<close>
+
+lemma Citer_c_mem_lt_acanon:
+  assumes O\<alpha>: "Ord \<alpha>"
+  shows "\<And>\<xi>. \<xi> \<in> elts ((Cstep_c (\<lambda>\<eta>\<in>elts \<alpha>. psi \<eta>) \<alpha> ^^ N) (Om v))
+              \<Longrightarrow> \<xi> \<in> elts \<alpha> \<Longrightarrow> acanon v \<xi>"
+proof (induction N)
+  case 0
+  let ?p = "\<lambda>\<eta>\<in>elts \<alpha>. psi \<eta>"
+  fix \<xi> assume "\<xi> \<in> elts ((Cstep_c ?p \<alpha> ^^ 0) (Om v))" "\<xi> \<in> elts \<alpha>"
+  hence inOm: "\<xi> \<in> elts (Om v)" by simp
+  have "\<xi> \<in> elts (Cset (\<lambda>\<eta>\<in>elts \<xi>. psi \<eta>) \<xi> v)" using inOm Om_subset_Cset by blast
+  thus "acanon v \<xi>" unfolding acanon_def .
+next
+  case (Suc N)
+  let ?p = "\<lambda>\<eta>\<in>elts \<alpha>. psi \<eta>"
+  fix \<xi> assume xmem: "\<xi> \<in> elts ((Cstep_c ?p \<alpha> ^^ Suc N) (Om v))" and xa: "\<xi> \<in> elts \<alpha>"
+  let ?X = "(Cstep_c ?p \<alpha> ^^ N) (Om v)"
+  have ordp': "\<forall>\<zeta> u. \<zeta> \<in> elts \<alpha> \<longrightarrow> Ord (?p \<zeta> u)" by simp
+  from xmem have "\<xi> \<in> elts (Cstep_c ?p \<alpha> ?X)"
+    by (simp only: funpow.simps(2) comp_apply)
+  then consider "\<xi> \<in> elts ?X"
+    | a b where "a \<in> elts ?X" "b \<in> elts ?X" "\<xi> = a + b"
+    | \<zeta> w where "(\<zeta>,w) \<in> {q \<in> (elts ?X \<inter> elts \<alpha>) \<times> (UNIV::nat set). acanon (snd q) (fst q)}"
+                 "\<xi> = ?p \<zeta> w"
+    by (auto simp: elts_Cstep_c)
+  thus "acanon v \<xi>"
+  proof cases
+    case 1
+    show ?thesis by (rule Suc.IH[OF 1 xa])
+  next
+    case 2
+    have sub: "elts ?X \<subseteq> elts ((Cstep ?p \<alpha> ^^ N) (Om v))" by (rule Citer_c_subset_Citer)
+    have Oa: "Ord a" using 2(1) sub Ord_Citer[OF ordp'] by blast
+    have Ob: "Ord b" using 2(2) sub Ord_Citer[OF ordp'] by blast
+    have Ox: "Ord \<xi>" using 2(3) Oa Ob by (simp add: Ord_add)
+    have xlt: "\<xi> < \<alpha>" using xa Ord_mem_iff_lt[OF Ox O\<alpha>] by blast
+    have ale: "a \<le> \<xi>" using 2(3) by simp
+    have ble: "b \<le> \<xi>" using 2(3) add_le_left[OF Oa Ob] by simp
+    have aa: "a \<in> elts \<alpha>"
+      using ale xlt order.strict_trans1 Ord_mem_iff_lt[OF Oa O\<alpha>] by blast
+    have ba: "b \<in> elts \<alpha>"
+      using ble xlt order.strict_trans1 Ord_mem_iff_lt[OF Ob O\<alpha>] by blast
+    have aca: "acanon v a" by (rule Suc.IH[OF 2(1) aa])
+    have acb: "acanon v b" by (rule Suc.IH[OF 2(2) ba])
+    have aC: "a \<in> elts (Cset (\<lambda>\<eta>\<in>elts \<xi>. psi \<eta>) \<xi> v)"
+      using aca CC_mono[OF ale] unfolding acanon_def by blast
+    have bC: "b \<in> elts (Cset (\<lambda>\<eta>\<in>elts \<xi>. psi \<eta>) \<xi> v)"
+      using acb CC_mono[OF ble] unfolding acanon_def by blast
+    have "a + b \<in> elts (Cset (\<lambda>\<eta>\<in>elts \<xi>. psi \<eta>) \<xi> v)"
+      by (rule Cset_add_closed[OF aC bC])
+    thus ?thesis using 2(3) unfolding acanon_def by simp
+  next
+    case 3
+    have za: "\<zeta> \<in> elts ?X \<inter> elts \<alpha>" and acw: "acanon w \<zeta>" using 3(1) by auto
+    have z\<alpha>: "\<zeta> \<in> elts \<alpha>" using za by blast
+    have val: "\<xi> = psi \<zeta> w" using 3(2) z\<alpha> by simp
+    \<comment> \<open>\<open>\<xi> = \<psi>\<^bsub>w\<^esub>(\<zeta>)\<close> is a \<open>\<psi>\<close>-value.  If \<open>w < v\<close> it sits inside \<open>\<Omega>\<^sub>v\<close>, hence in
+       its own \<open>v\<close>-closure; otherwise \<open>v \<le> w\<close> and \<open>psi_value_acanon\<close> gives
+       canonicity at \<open>v\<close> directly.\<close>
+    show ?thesis
+    proof (cases "w < v")
+      case True
+      have "psi \<zeta> w \<in> elts (Om v)" by (rule psi_low_sub_in_Om[OF True])
+      hence "\<xi> \<in> elts (Cset (\<lambda>\<eta>\<in>elts \<xi>. psi \<eta>) \<xi> v)"
+        using val Om_subset_Cset by blast
+      thus ?thesis unfolding acanon_def .
+    next
+      case False
+      hence "v \<le> w" by simp
+      from psi_value_acanon[OF this, of \<zeta>] show ?thesis using val by simp
+    qed
+  qed
+qed
+
+text \<open>\<^bold>\<open>The localized residue, now \<^emph>\<open>proved\<close>\<close>.  Its hypotheses are contradictory:
+  a member \<open>\<xi> < \<alpha>\<close> of \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close> is canonical at \<open>v\<close> (\<open>Citer_c_mem_lt_acanon\<close>),
+  hence at \<open>u \<ge> v\<close> (\<open>acanon_sub_mono\<close>), contradicting \<open>\<not> acanon u \<xi>\<close>.  So the
+  conclusion holds vacuously \<dash> the non-canonical generator with argument inside
+  the closure never arises.  This is exactly Buchholz's "can be shown".\<close>
+
 lemma alpha_step_residue:
-  assumes IH: "\<And>\<beta> u' m y. \<beta> \<in> elts \<alpha> \<Longrightarrow>
+  assumes O\<alpha>: "Ord \<alpha>"
+    and IH: "\<And>\<beta> u' m y. \<beta> \<in> elts \<alpha> \<Longrightarrow>
                  y \<in> elts ((Cstep (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> ^^ m) (Om u'))
                  \<Longrightarrow> y \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> u')"
     and "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
     and "\<not> acanon u \<xi>" "v \<le> u"
   shows "psi \<xi> u \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
-  sorry
+proof -
+  from assms(4) obtain N where N: "\<xi> \<in> elts ((Cstep_c (\<lambda>\<eta>\<in>elts \<alpha>. psi \<eta>) \<alpha> ^^ N) (Om v))"
+    by (auto simp: Cset_c_mem_iff)
+  have "acanon v \<xi>" by (rule Citer_c_mem_lt_acanon[OF O\<alpha> N assms(5)])
+  hence "acanon u \<xi>" by (rule acanon_sub_mono[OF _ assms(7)])
+  with assms(6) show ?thesis by contradiction
+qed
 
 text \<open>\<^bold>\<open>The \<open>\<alpha>\<close>-induction (route B), green modulo \<open>alpha_step_residue\<close>\<close>.  The full
   closure \<open>C\<^sub>v(\<alpha>)\<close> sits inside the canonical closure \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close>, proved by
@@ -1209,7 +1366,7 @@ proof (induction \<alpha> rule: Ord_induct)
             case False
             hence vleu: "v \<le> u" by simp
             have "psi \<xi> u \<in> elts (Cset_c ?p \<alpha> v)"
-              by (rule alpha_step_residue[OF step.IH ox xc 3(2) \<open>\<not> acanon u \<xi>\<close> vleu])
+              by (rule alpha_step_residue[OF step.hyps step.IH ox xc 3(2) \<open>\<not> acanon u \<xi>\<close> vleu])
             thus ?thesis using val by (simp add: restrict_def)
           qed
         qed
