@@ -1045,16 +1045,91 @@ proof -
   finally show ?thesis using Ord_mem_iff_lt[OF Ord_psi Ord_Om] by blast
 qed
 
-text \<open>\<^bold>\<open>The localized residue (single \<open>sorry\<close>)\<close>: a \<^emph>\<open>non-canonical\<close> generator
-  \<open>\<psi>\<^sub>w(\<xi>)\<close> with subscript \<open>w \<ge> v\<close> and argument \<open>\<xi> \<in> C\<^sup>c\<^sub>v(\<alpha>) \<inter> \<alpha>\<close> is reproduced
-  in \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close>.  This is Buchholz's "can be shown": the cross-subscript collapse
-  of the non-canonical argument to a canonical witness in the closure.\<close>
+text \<open>\<^bold>\<open>Green scaffolding for the residue: the least \<open>\<psi>\<^sub>w\<close>-witness.\<close>
+  For an ordinal \<open>\<xi>\<close>, the least \<open>\<delta>\<close> with \<open>\<psi>\<^sub>w(\<delta>) = \<psi>\<^sub>w(\<xi>)\<close> exists, is \<open>\<le> \<xi>\<close>, and
+  reproduces the value.  This is the natural candidate for the canonical witness
+  that the residue needs.\<close>
+
+definition wit :: "V \<Rightarrow> nat \<Rightarrow> V" where
+  "wit \<xi> w = (LEAST \<delta>. Ord \<delta> \<and> psi \<delta> w = psi \<xi> w)"
+
+lemma psi_wit:
+  assumes "Ord \<xi>" shows "psi (wit \<xi> w) w = psi \<xi> w"
+proof -
+  have ex: "\<exists>i. Ord i \<and> psi i w = psi \<xi> w" using assms by blast
+  show ?thesis unfolding wit_def
+    by (rule Ord_LeastI_ex[where P = "\<lambda>i. psi i w = psi \<xi> w", OF ex])
+qed
+
+lemma Ord_wit:
+  assumes "Ord \<xi>" shows "Ord (wit \<xi> w)"
+  unfolding wit_def
+  by (rule Ord_Least[where P = "\<lambda>i. psi i w = psi \<xi> w" and k = \<xi>]) (use assms in auto)
+
+lemma wit_spec:
+  "Ord \<xi> \<Longrightarrow> Ord (wit \<xi> w) \<and> psi (wit \<xi> w) w = psi \<xi> w"
+  using Ord_wit psi_wit by blast
+
+lemma wit_le:
+  assumes "Ord \<xi>" shows "wit \<xi> w \<le> \<xi>"
+  unfolding wit_def
+  by (rule Ord_Least_le[where P = "\<lambda>i. psi i w = psi \<xi> w" and k = \<xi>]) (use assms in auto)
+
+text \<open>\<^bold>\<open>The witness is least\<close>: no strictly smaller ordinal reproduces the value.
+  In particular the least witness is unique-from-below.  The phenomenon that
+  blocks a local proof of the residue (RM's \<open>noncanon_value_noncanon\<close>): a
+  non-canonical least witness \<open>\<delta>\<close> satisfies \<open>\<psi>\<^sub>w(\<delta>) \<le> \<delta>\<close>
+  (\<open>psi_le_of_not_acanon\<close>) and is a \<^emph>\<open>\<psi>-fixpoint\<close> \<open>\<psi>\<^sub>w(\<delta>) = \<delta>\<close>, so the
+  \<^emph>\<open>minimal\<close> witness can be non-canonical; the \<^emph>\<open>maximal\<close> witness (1.6a) can be
+  \<open>\<ge> \<alpha>\<close>.  Neither extreme is usable \<dash> the cross-subscript collapse genuinely
+  needs Buchholz's simultaneous transfinite induction.\<close>
+
+lemma wit_not_less:
+  assumes "Ord \<xi>" "Ord \<beta>" "\<beta> < wit \<xi> w" shows "psi \<beta> w \<noteq> psi \<xi> w"
+proof
+  assume eq: "psi \<beta> w = psi \<xi> w"
+  have "wit \<xi> w \<le> \<beta>" unfolding wit_def
+    by (rule Ord_Least_le[where P = "\<lambda>i. psi i w = psi \<xi> w" and k = \<beta>])
+       (use assms(2) eq in auto)
+  thus False using assms(3) by simp
+qed
+
+text \<open>\<^bold>\<open>The localized residue (single \<open>sorry\<close>, isolated to the Buchholz \<section>1 core)\<close>.
+
+  A \<^emph>\<open>non-canonical\<close> generator \<open>\<psi>\<^sub>w(\<xi>)\<close> with subscript \<open>w \<ge> v\<close> and argument
+  \<open>\<xi> \<in> C\<^sup>c\<^sub>v(\<alpha>) \<inter> \<alpha>\<close> is reproduced in \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close>.  By \<open>noncanon_value_noncanon\<close> the
+  value \<open>c = \<psi>\<^sub>w(\<xi>) \<le> \<xi> < \<alpha>\<close> and the value itself is non-canonical; by the
+  scaffolding above the \<^emph>\<open>least witness\<close> \<open>wit \<xi> w\<close> reproduces \<open>c\<close> and is \<open>\<le> \<xi>\<close>, but
+  it may be a non-canonical \<open>\<psi>\<close>-fixpoint (RM), so it is not directly usable.
+
+  The remaining content \<dash> the existence of a \<^bold>\<open>canonical witness inside the
+  closure\<close> \<dash> is exactly Buchholz's deferred "can be shown".  We isolate it as the
+  single hypothesis \<open>canonical_witness_in_Cset_c\<close>: there is a canonical
+  \<open>\<delta> \<in> \<alpha> \<inter> C\<^sup>c\<^sub>v(\<alpha>)\<close> with \<open>\<psi>\<^sub>w(\<delta>) = \<psi>\<^sub>w(\<xi>)\<close>.  Granting it, the residue is
+  \<^bold>\<open>green\<close> via \<open>Cset_c_gen_closed\<close>.  This statement is the Buchholz \<section>1
+  simultaneous transfinite induction core (closure-rank induction on \<open>\<alpha>\<close> carrying
+  the canonical-rep invariant); it is the single irreducible \<open>sorry\<close>.\<close>
+
+lemma canonical_witness_in_Cset_c:
+  assumes "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
+    and "\<not> acanon w \<xi>" "v \<le> w"
+  shows "\<exists>\<delta>. Ord \<delta> \<and> \<delta> \<in> elts \<alpha> \<and> \<delta> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)
+              \<and> acanon w \<delta> \<and> psi \<delta> w = psi \<xi> w"
+  sorry
 
 lemma noncanon_gen_in_Cset_c_residue:
   assumes "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
     and "\<not> acanon w \<xi>" "v \<le> w"
   shows "psi \<xi> w \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
-  sorry
+proof -
+  obtain \<delta> where \<delta>: "Ord \<delta>" "\<delta> \<in> elts \<alpha>"
+      "\<delta> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "acanon w \<delta>" "psi \<delta> w = psi \<xi> w"
+    using canonical_witness_in_Cset_c[OF assms] by blast
+  have "(\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<delta> w \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    by (rule Cset_c_gen_closed[OF \<delta>(3) \<delta>(2) \<delta>(4)])
+  hence "psi \<delta> w \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" using \<delta>(2) by simp
+  thus ?thesis using \<delta>(5) by simp
+qed
 
 text \<open>\<open>C\<^sup>c\<^sub>v(\<alpha>)\<close> is closed under \<^bold>\<open>every\<close> generator with argument in
   \<open>C\<^sup>c\<^sub>v(\<alpha>) \<inter> \<alpha>\<close> (canonical \<open>\<Rightarrow>\<close> \<open>Cset_c_gen_closed\<close>; \<open>w<v\<close> \<open>\<Rightarrow>\<close> \<open>\<Omega>\<^sub>v\<close>-part;
