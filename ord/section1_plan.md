@@ -535,3 +535,38 @@ nonmem: ψ_a(oV b)∉Cv(oV m)a。
 (2) Cset_c に対し 1.4(b)(canonical-gen 帰属、ほぼ自明)→ 1.4(c) → 1.9 necessity。
 (3) Remark Cv=Cv_c(collapse_succ で非canonical generator redundancy)。
 (4) nonmem を上記チェーンで discharge → psi_proj 完成 → oV_mono_NF へ。
+
+---
+
+## ROADMAP 続89(33) — 1.4 trio 緑 + term_nec が G_u を回避(2026-06-14)
+
+### 緑で完成した 1.4 trio(necessity.thy)
+- **1.4(a)** psi_inj_canonical(既)/ **1.4(b) core** indec_Cset_c_generator(続89(31))/
+  **1.4(c)** psi_canonical_arg_lt(続89(33)): canonical δ で ψ_a δ∈Cv_c α a ⟹ δ<α∧δ∈Cv_c。
+  証明 = 1.4b core(canonical generator ξ<α 取得)+ psi_inj_subscript(u=a)+ 1.4a(ξ=δ)。
+
+### ★term_nec = Buchholz 1.9 for wf3 terms(構造帰納・G_u 不要)
+**term_nec**: wf3 t ⟹ oV t∈Cv_c α a ⟹ ∀x∈Gterm a t. oV x<α。**t の構造帰納で証明可**:
+- t=P a' b' c': oV t=ψ_{a'}(oV b')+oV c'。1.2(e)(P(γ)⊆Cv_c ⟺ γ∈Cv_c, Cantor_NF)で
+  ψ_{a'}(oV b')∈Cv_c ∧ oV c'∈Cv_c に分解。
+- leading ψ_{a'}(oV b')∈Cv_c: indec_Cset_c_generator で ξ<α canonical, psi ξ a'=ψ_{a'}(oV b')。
+  wf3 b'⟹acanon a'(oV b')(Ccond)。1.4a で **ξ=oV b'<α** ∧ oV b'∈Cv_c α a。
+- 再帰: oV b'∈Cv_c α a で IH(b')、oV c'∈Cv_c α a で IH(c')。
+- ⟹ **G_u on ordinals の定義(閉包ランク再帰・繊細)を完全回避**。circularity 無し(wf3 項の構造帰納で
+  A2 不使用)。
+- 必要部品: (i) **1.2(e) for Cv_c**(Cantor_NF P分解 + Cset_c_add_closed)(ii)wf3⟹acanon(Ccond, ほぼ済)
+  (iii)indec_Cset_c_generator/1.4a(済)。
+
+### ★残る循環(nonmem への接続)= A2 + Remark
+- nonmem: ψ_a(oV b)∈Cv(oV m)a。ψ_a(oV b) は**非wf3値**(D_a(b) は bad で OT 外)。
+  term_nec を使うには ψ_a(oV b)=oV(D_a(proj a b))(wf3)に書換え=**A2 必須**(循環)。
+- gap-clean(collapse_grow 経由 A2)も任意 ordinal の gap で 1.5(band)では bound できず(引数 scale)、
+  **任意 ordinal の 1.9 = G_u が要る**。
+- ⟹ **circularity は依然 G_u+1.9(任意 ordinal)or rank-induction でしか切れない**。term_nec(wf3)は
+  必要だが nonmem 単独では閉じない。Remark(Cv=Cv_c)も別途(band_lt_psi で canonical witness<α は示せる
+  ＝1.5 が redundancy の鍵、cross-subscript の扱いが要)。
+
+### 次セッション推奨順
+(1) term_nec(構造帰納・1.2e for Cv_c が要・Cantor_NF)= Buchholz 1.9 for terms、緑の大物。
+(2) Remark Cv=Cv_c(band_lt_psi で witness<α、rank 帰納、cross-subscript careful)。
+(3) A2/nonmem: G_u on ordinals 定義 OR term_nec+Remark+rank-induction で circularity を切る設計。
