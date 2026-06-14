@@ -30,6 +30,17 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
+  - 🎯 **★最新(続89(40-41)): PSS 停止性を単一 NF-構造核に縮約・2独立ルート(sub-agent 並列)**
+    > ユーザー指摘「§1 移植しても PSS と繋がらない」は正。§1/psi_proj は live path 外と確定。本当の接続点:
+    - ✅ **(A) nrm ルート緑 assembly**〔nrm.thy・R2〕: nrm_order_pres = olt_ST_iff_seqlex + translate_sigma +
+      seqlex_imp_olt + [核]。green infra: untr/blockok_untr/translate_untr/sigma/translate_sigma/blockok_sigma。
+      🚨 **唯一の live 核 `sigma_seqlex_mono`**: M,N∈ST_PS⟹seqlex M N⟹seqlex(σM)(σN)〔列・組合せ・深層604450/0〕。
+    - ✅ **(B) oV ルート緑**〔ovnf.thy・R1・nrm 非依存の第2ルート〕: wf_Rnf_oV/PSS_terminates_oV/cnf_* 群。
+      🚨 核 `oV_mono_NF`: v,u∈NF⟹olt v u⟹oV v<oV u〔意味論・749525/0〕。
+    - 両核は同一 Buchholz 標準形核(NF=blockok 両 row 本質、cnf/wf3/r1ok 局所述語不可)の双対。**次の本丸**。
+    - soundness: 偽補題 acanon_arg_lt/oV_mono_cnf を深層 probe で破棄(第7事件再演防止)。
+  - 🗄 §1/psi_proj 路線(続89(21-39)・健全 infra だが live path 外): term_nec/1.4 trio/Cset_eq_Cset_c
+    (psi_value_acanon modulo)/B2/wit機構。Buchholz §1 機械化として価値あるが PSS には不要と確定。
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
     - ✅ wfimg → 対角 accessibility 還元〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS〕
     - 🚨 **本命＝pure-lex 構文的整礎性（順序数なし, wf.thy, sorry ゼロ・緑）** ［決定 2026-06-10, memory pss-wf-route-purelex-syntactic］
