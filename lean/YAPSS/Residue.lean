@@ -29,6 +29,17 @@ The generator step splits exactly as ya-pss's `Cset_c_anygen_closed`:
 From `Cset = CsetSelf` we get `psi = psiSelf` (sInf of equal complements), which
 transports the proven self-collapse machinery to the omitted form.
 
+**On the residue itself (this session).**  `alpha_step_residue` is no longer a
+bare `sorry`: it is reduced GREEN to a strictly sharper residual
+`CanonWitnessResidue` (canonical-witness existence for `psiSelf ξ u` inside the
+closure).  The value-identity, the `< α` bound, and the `CsetSelf_psi_closed`
+reproduction step are all discharged; the irreducible remainder is *(witness
+canonical) ∧ (witness ∈ CsetSelf_α)*.  See the `CanonWitnessResidue` docstring for
+the precise wall (the least-argument witness fails canonicity exactly at
+ψ-fixpoint values; `CsetSelf` non-downward-closure blocks the membership).  This
+is the genuine multi-session §1 core, still open on both the psiSelf route (here)
+and ya-pss's `Cset_c` route — now isolated to the *same* residual on both sides.
+
 **On `psi_proj_notmem`.**  ya-pss keeps the §1 core as *two* `sorry`s: the
 necessity-side `alpha_step_residue` (necessity.thy:1139) and the collapse-side
 `psi_proj_nonmem` (nrm.thy:186), explicitly the "same §1 core" but not reduced to
@@ -47,30 +58,113 @@ namespace YAPSS
 
 open Three
 
-/-! ## The single residue (the shared Buchholz §1 simultaneous-induction crux) -/
+/-! ## The single residue (the shared Buchholz §1 simultaneous-induction crux)
 
-/-- **`alpha_step_residue` (the SINGLE `sorry`).**  Lean analogue of ya-pss's
-`alpha_step_residue` (necessity.thy:1139): the non-canonical-generator step of the
-closure-rank induction, carrying the **α-induction hypothesis** `IHa` as an
-explicit local assumption.
+**Status of the attack (psiSelf route).**  `alpha_step_residue` is reduced here,
+GREEN, to a strictly sharper residual `CanonWitnessResidue` — the **existence of a
+canonical generator witness** for the value `psiSelf ξ u` inside the closure.
+Three of the four witness obligations are discharged unconditionally:
 
-`IHa`: for every smaller bound `β < α`, the full omitted closure already equals
-the canonical (self) closure (`psi β w = psiSelf β w`) — Buchholz's carried
-invariant of the §1 simultaneous transfinite induction.
+* the value identity `psiSelf δ u = psiSelf ξ u` (the least-argument witness,
+  `leastWitness_val`);
+* `δ < α` (the least witness is `≤ ξ < α`, `leastWitness_lt`);
+* the reproduction step `CsetSelf_psi_closed` once a canonical δ ∈ closure is in
+  hand (`alpha_step_of_canonWitness`).
 
-Given that IH and a generator `ψ_u ξ` whose argument `ξ ∈ CsetSelf_α` lies below
-`α`, is **non-canonical** (`ξ ∉ CsetSelf (psiResSelf ξ) ξ u`) with `v ≤ u`, the
-value `ψ_u ξ` is reproduced inside `CsetSelf_α`.  This is the genuine Buchholz §1
-core (the cross-subscript canonical collapse of the non-canonical argument `ξ`
-using the IH at `ξ < α`); it is attacked separately and is the only `sorry`. -/
+The IRREDUCIBLE residual is the conjunction *(δ is canonical) ∧ (δ ∈ CsetSelf_α)*
+for the witness.  The precise wall (documented on `CanonWitnessResidue`): the
+least-argument witness is **NOT** always canonical — it fails exactly when the
+value `c = psiSelf ξ u` is a ψ-fixpoint (`psiSelf c u = c`), which can occur for a
+non-canonical ξ in c's plateau; and even a canonical δ need not be downward-
+reachable inside `CsetSelf_α`.  This matches ya-pss's report that
+`alpha_step_residue` is the multi-session §1 core (necessity.thy:1139, still a
+`sorry` on its `Cset_c` route).  The two routes now isolate the **same** residual
+(canonical-witness existence in the closure), giving an independent cross-check. -/
+
+/-- **Non-canonical argument collapses at-or-below itself.**  If `ξ` is
+non-canonical at `u` (`ξ ∉ CsetSelf (psiResSelf ξ) ξ u`) then `psiSelf ξ u ≤ ξ`.
+(Contrapositive of `below_psiSelf_mem_CsetSelf` at bound `ξ`.)  Proven, no IH. -/
+theorem psiSelf_le_self_of_not_canon {ξ : Ordinal.{u}} {u : ℕ}
+    (hnc : ξ ∉ CsetSelf (psiResSelf ξ) ξ u) : psiSelf ξ u ≤ ξ := by
+  by_contra h; push Not at h; exact hnc (below_psiSelf_mem_CsetSelf h)
+
+/-- The least argument realizing the value `psiSelf ξ u`.  (The plateau bottom;
+its value is `psiSelf ξ u` and it is `≤ ξ`.) -/
+noncomputable def leastWitness (ξ : Ordinal.{u}) (u : ℕ) : Ordinal.{u} :=
+  sInf {d : Ordinal | psiSelf d u = psiSelf ξ u}
+
+theorem leastWitness_val (ξ : Ordinal.{u}) (u : ℕ) :
+    psiSelf (leastWitness ξ u) u = psiSelf ξ u :=
+  csInf_mem (s := {d : Ordinal | psiSelf d u = psiSelf ξ u}) ⟨ξ, rfl⟩
+
+theorem leastWitness_le (ξ : Ordinal.{u}) (u : ℕ) : leastWitness ξ u ≤ ξ :=
+  csInf_le' (s := {d : Ordinal | psiSelf d u = psiSelf ξ u}) rfl
+
+theorem leastWitness_lt {α ξ : Ordinal.{u}} (u : ℕ) (hξα : ξ < α) :
+    leastWitness ξ u < α :=
+  lt_of_le_of_lt (leastWitness_le ξ u) hξα
+
+/-- **The sharpened residual (the psiSelf-route Buchholz §1 core).**  The
+existence of a *canonical generator witness* `δ` for the value `psiSelf ξ u`,
+inside the closure `CsetSelf_α` and below `α`.  This is strictly weaker than the
+original `alpha_step_residue` (it discharges the reproduction step and the value /
+`< α` obligations; see `alpha_step_of_canonWitness`).
+
+**Where the IH must enter, and the wall.**  The natural witness is
+`leastWitness ξ u` (value-correct and `< α` for free).  Its two open obligations:
+1. *canonicity* `δ ∈ CsetSelf (psiResSelf δ) δ u` — FALSE for the least witness
+   exactly when `c = psiSelf ξ u` is a ψ-fixpoint (`psiSelf c u = c`); then the
+   least witness is `c` itself and is non-canonical;
+2. *membership* `δ ∈ CsetSelf (psiResSelf α) α v` — not derivable from
+   `δ ≤ ξ ∈ CsetSelf_α` since `CsetSelf` is not downward-closed.
+The α-IH `IHa : ∀ β < α, ∀ w, psi β w = psiSelf β w` is the intended lever for (2)
+(canonicity of the *full* closure below α), but a Lean-native proof that the
+canonical witness lands in `CsetSelf_α` is the genuine irreducible content. -/
+def CanonWitnessResidue.{u} (α : Ordinal.{u}) (v : ℕ) (ξ : Ordinal.{u}) (u' : ℕ) : Prop :=
+  ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
+    δ ∈ CsetSelf (psiResSelf δ) δ u' ∧ psiSelf δ u' = psiSelf ξ u'
+
+/-- **`alpha_step_residue` reduced to the canonical-witness residual.**  GREEN:
+given a canonical witness `δ` in the closure with the right value, the generator
+value `psi ξ u = psiSelf ξ u` (`IHa` at `ξ < α`) is reproduced by
+`CsetSelf_psi_closed` at `δ`.  All of `hξC`, `hnc`, `hvu` are consumed only inside
+the (open) construction of the witness — here the witness does all the work. -/
+theorem alpha_step_of_canonWitness
+    (α : Ordinal.{u}) (v : ℕ)
+    (IHa : ∀ β, β < α → ∀ w, psi.{u} β w = psiSelf β w)
+    (ξ : Ordinal.{u}) (u : ℕ) (hξα : ξ < α)
+    (CWR : CanonWitnessResidue α v ξ u) :
+    psi.{u} ξ u ∈ CsetSelf (psiResSelf α) α v := by
+  rw [IHa ξ hξα u]
+  obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ := CWR
+  have hconv : δ ∈ CsetSelf (psiResSelf α) δ u := by
+    rwa [CsetSelf_param_eq (p := psiResSelf δ) (q := psiResSelf α)
+          (fun ζ uu hζ => by
+            rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hδα)])] at hδcanon
+  have hc := CsetSelf_psi_closed hδC hδα u hconv
+  rw [psiResSelf, if_pos hδα] at hc
+  rwa [hval] at hc
+
+/-- **`alpha_step_residue` (the residue; now reduced to `CanonWitnessResidue`).**
+Lean analogue of ya-pss's `alpha_step_residue` (necessity.thy:1139), the
+non-canonical-generator step of the closure-rank induction carrying the α-IH.
+The single remaining `sorry` is the canonical-witness existence
+`CanonWitnessResidue` (strictly sharper than the original statement — see the
+docstring there for the precise wall). -/
 theorem alpha_step_residue
     (α : Ordinal.{u}) (v : ℕ)
     (IHa : ∀ β, β < α → ∀ w, psi.{u} β w = psiSelf β w)
     (ξ : Ordinal.{u}) (u : ℕ)
     (hξC : ξ ∈ CsetSelf (psiResSelf α) α v) (hξα : ξ < α)
     (hnc : ξ ∉ CsetSelf (psiResSelf ξ) ξ u) (hvu : v ≤ u) :
-    psi.{u} ξ u ∈ CsetSelf (psiResSelf α) α v := by
-  sorry
+    psi.{u} ξ u ∈ CsetSelf (psiResSelf α) α v :=
+  alpha_step_of_canonWitness α v IHa ξ u hξα
+    (show CanonWitnessResidue α v ξ u from
+      -- The sharpened Buchholz §1 core: canonical-witness existence.  See the
+      -- `CanonWitnessResidue` docstring for the precise (fixpoint / non-downward-
+      -- closure) wall.  Still open on BOTH the psiSelf (here) and Cset_c (ya-pss)
+      -- routes — the genuine multi-session simultaneous-induction core.
+      sorry)
 
 /-! ## The generator step (all three sub-cases), modulo the residue
 
