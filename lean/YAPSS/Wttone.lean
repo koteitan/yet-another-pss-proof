@@ -295,10 +295,29 @@ empirical facts narrow it:
     general (`p₁(0)+p₀(p₁(0)+p₁(0))` is a `hyp` term failing the clause), so
     `(★)` needs the descendant block's deeper `r1ok` structure, not just the
     lead bound.
-  • The descendant block of a row-1-`0` root is itself an `r1ok` sub-sequence
-    whose row-1-`1` columns have row-0 parents (fact S: in a standard form with
-    `maxr1 ≤ 1`, every column with row-1 `= 1` has row-0 `> 0`); this is the
-    structural lever for `(★)` still to be turned into a Lean proof. -/
+  • Fact S is now AVAILABLE as a proved lemma: `z0ok_ST_PS`
+    (`Nrmstep.lean`) gives `z0ok M`, i.e. every column with row-0 `= 0` has
+    row-1 `= 0` (equivalently row-1 `= 1 ⟹` row-0 `> 0`).  `z0ok` is a
+    per-column property, hence inherited by every `takeWhile`/`dropWhile`
+    sub-block, so it flows freely through the `translate.induct` recursion.
+
+EQUIVALENT CLEANER FORM (recommended attack).  `nrm (translate M) = translate M`
+is EQUIVALENT to this whole level (verified `= id` on 404 940 maxr1-`≤1` forms,
+and `≠ id` on every maxr1-`= 2` form — exactly the crux boundary), and it
+discharges `wf3 (translate M)` immediately via the proved `wf3_nrm`:
+`wf3 (translate M) = wf3 (nrm (translate M))`.  Concretely `nrm (P a b c) =
+ins a (proj a (nrm b)) (nrm c)`, so `nrm t = t` reduces at each node to
+`proj a (arg) = arg` (i.e. `¬ pfire a (arg)` — the SAME head-`a` OT3 clause)
+plus `ins`-no-absorption (`cnf`).  For `a = 1` this is `OT3all1_head1`; for
+`a = 0` it is the SAME residual.
+
+SHARED PROJECT-WIDE BRIDGE.  This head-`0` `r1ok`-through-`translate` fact is
+the SAME open obstruction as the `Nrm`-route residuals `proj0_fireprop_NF`
+and `proj0_bothfire_NF` (`Nrmstep.lean`, both `sorry`): "`pfire 0` on an `NF`
+argument propagates / descends".  Their audit note records the structural key
+`proj 0 (P 1 b' c') = proj 0 b'` (proj-0 peels an outer `p₁` into the ascent
+source).  Closing any one of these closes the maxr1-`= 1` level; it is the
+genuine forest core the whole project shares, not a quick development. -/
 theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
     (z : ∀ p ∈ M, p.2 ≤ 1) : H0clause (translate M) := by
   sorry
