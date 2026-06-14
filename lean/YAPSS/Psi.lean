@@ -968,4 +968,181 @@ theorem argExtract_W
   have hξβ : ξ = β := INJ a ξ β hξc_self hβc heq.symm
   rwa [← hξβ]
 
+/-! ## Self-referential with-condition C-set `C^s_v(α)` (Buchholz's faithful form)
+
+The `ψ^w`/`CsetW` above test canonicity with the *omitted* set (`ξ ∈ Cset p ξ u`),
+which leaves an omitted=with residue surfacing in 1.3/1.4(a).  Buchholz's actual
+condition is `ξ ∈ C_u(ξ)` referring to the SAME `C` under definition.  Modelled
+here as `ξ ∈ CsetSelf p ξ u`: the canonicity test consults `CsetSelf` at the
+strictly smaller bound `ξ < α`, so `CsetSelf` is definable by well-founded
+recursion on the bound.  Crucially the test is **bound-independent**, which makes
+the bound/parameter monotonicities (`CsetSelf_mono_bound`/`_param`/`CCSelf_mono`)
+free — dissolving the residue (1.3/1.4(a) need no extra membership hypothesis). -/
+
+/-- Self-referential with-C closure step at bound `α`, given the closure function
+`Csub` at all strictly smaller bounds. -/
+def CstepSelf (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u})
+    (Csub : ∀ ξ, ξ < α → ℕ → Set Ordinal.{u}) (X : Set Ordinal.{u}) : Set Ordinal.{u} :=
+  X ∪ Set.image2 (· + ·) X X ∪
+    ⋃ u : ℕ, (fun ξ => p ξ u) '' (X ∩ {ξ | ∃ h : ξ < α, ξ ∈ Csub ξ h u})
+
+/-- The full self-referential with-C set at bound `α`, by WF recursion on `α`. -/
+noncomputable def CsetSelf (p : Ordinal.{u} → ℕ → Ordinal.{u}) :
+    Ordinal.{u} → ℕ → Set Ordinal.{u} :=
+  Ordinal.lt_wf.fix fun α IH v =>
+    ⋃ n : ℕ, (CstepSelf p α IH)^[n] (Set.Iio (Om v))
+
+theorem CsetSelf_unfold (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (v : ℕ) :
+    CsetSelf p α v =
+      ⋃ n : ℕ, (CstepSelf p α (fun ξ _ => CsetSelf p ξ))^[n] (Set.Iio (Om v)) := by
+  rw [CsetSelf, WellFounded.fix_eq]
+
+/-- one closure step at bound `α` with the canonicalisation function plugged in. -/
+abbrev CstepSelf' (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) :
+    Set Ordinal.{u} → Set Ordinal.{u} :=
+  CstepSelf p α (fun ξ _ => CsetSelf p ξ)
+
+theorem CsetSelf_eq (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (v : ℕ) :
+    CsetSelf p α v = ⋃ n : ℕ, (CstepSelf' p α)^[n] (Set.Iio (Om v)) :=
+  CsetSelf_unfold p α v
+
+theorem CsetSelf_mem_iff {p : Ordinal → ℕ → Ordinal} {α x : Ordinal} {v : ℕ} :
+    x ∈ CsetSelf p α v ↔ ∃ n, x ∈ (CstepSelf' p α)^[n] (Set.Iio (Om v)) := by
+  rw [CsetSelf_eq]; exact Set.mem_iUnion
+
+theorem CiterSelf_subset_CsetSelf {p : Ordinal.{u} → ℕ → Ordinal.{u}} {α : Ordinal.{u}}
+    {v n : ℕ} : (CstepSelf' p α)^[n] (Set.Iio (Om v)) ⊆ CsetSelf p α v := by
+  rw [CsetSelf_eq]; exact Set.subset_iUnion (fun n => (CstepSelf' p α)^[n] (Set.Iio (Om v))) n
+
+/-! ### bound/parameter monotonicity (the residue-dissolving lemmas) -/
+
+/-- **Bound-monotone**: the self-canonicity test `ζ ∈ CsetSelf p ζ u` is
+independent of the outer bound, so enlarging the bound only relaxes `ζ < β`. -/
+theorem CstepSelf'_mono_bound (p : Ordinal.{u} → ℕ → Ordinal.{u}) {α β : Ordinal.{u}}
+    (hαβ : α ≤ β) {X Y : Set Ordinal.{u}} (hXY : X ⊆ Y) :
+    CstepSelf' p α X ⊆ CstepSelf' p β Y := by
+  intro x hx
+  rcases hx with (hx | hx) | hx
+  · exact Set.mem_union_left _ (Set.mem_union_left _ (hXY hx))
+  · obtain ⟨ξ, hξ, η, hη, rfl⟩ := Set.mem_image2.1 hx
+    exact Set.mem_union_left _
+      (Set.mem_union_right _ (Set.mem_image2_of_mem (hXY hξ) (hXY hη)))
+  · obtain ⟨u, hu⟩ := Set.mem_iUnion.1 hx
+    obtain ⟨ζ, ⟨hζX, ⟨hζα, hζcanon⟩⟩, rfl⟩ := hu
+    refine Set.mem_union_right _ (Set.mem_iUnion.2 ⟨u, Set.mem_image_of_mem _
+      ⟨hXY hζX, ⟨lt_of_lt_of_le hζα hαβ, hζcanon⟩⟩⟩)
+
+theorem CiterSelf_mono_bound (p : Ordinal.{u} → ℕ → Ordinal.{u}) {α β : Ordinal.{u}}
+    (hαβ : α ≤ β) (v n : ℕ) :
+    (CstepSelf' p α)^[n] (Set.Iio (Om v)) ⊆ (CstepSelf' p β)^[n] (Set.Iio (Om v)) := by
+  induction n with
+  | zero => exact subset_rfl
+  | succ n ih =>
+    rw [Function.iterate_succ_apply', Function.iterate_succ_apply']
+    exact CstepSelf'_mono_bound p hαβ ih
+
+theorem CsetSelf_mono_bound (p : Ordinal.{u} → ℕ → Ordinal.{u}) {α β : Ordinal.{u}}
+    (hαβ : α ≤ β) (v : ℕ) : CsetSelf p α v ⊆ CsetSelf p β v := by
+  rw [CsetSelf_eq, CsetSelf_eq]
+  intro x hx
+  obtain ⟨n, hn⟩ := Set.mem_iUnion.1 hx
+  exact Set.mem_iUnion.2 ⟨n, CiterSelf_mono_bound p hαβ v n hn⟩
+
+/-- **Parameter-monotone at a fixed bound** (strong induction on the bound; the
+self-canonicity test at bound `ζ < α` is lifted by the IH). -/
+theorem CsetSelf_mono_param (p q : Ordinal.{u} → ℕ → Ordinal.{u}) :
+    ∀ (α : Ordinal.{u}) (v : ℕ), (∀ ξ u, ξ < α → p ξ u = q ξ u) →
+      CsetSelf p α v ⊆ CsetSelf q α v := by
+  intro α
+  induction α using WellFoundedLT.induction with
+  | _ α IHα =>
+    intro v hpq
+    rw [CsetSelf_eq, CsetSelf_eq]
+    intro x hx
+    obtain ⟨n, hn⟩ := Set.mem_iUnion.1 hx
+    refine Set.mem_iUnion.2 ⟨n, ?_⟩
+    clear hx
+    induction n generalizing x with
+    | zero => simpa using hn
+    | succ n ih =>
+      rw [Function.iterate_succ_apply'] at hn ⊢
+      rcases hn with (h | h) | h
+      · exact Set.mem_union_left _ (Set.mem_union_left _ (ih h))
+      · obtain ⟨ξ, hξ, η, hη, rfl⟩ := Set.mem_image2.1 h
+        exact Set.mem_union_left _ (Set.mem_union_right _
+          (Set.mem_image2_of_mem (ih hξ) (ih hη)))
+      · obtain ⟨u, hu⟩ := Set.mem_iUnion.1 h
+        obtain ⟨ζ, ⟨hζX, ⟨hζα, hζcanon⟩⟩, rfl⟩ := hu
+        show (fun ξ => p ξ u) ζ ∈ _
+        simp only
+        rw [hpq ζ u hζα]
+        refine Set.mem_union_right _ (Set.mem_iUnion.2 ⟨u, Set.mem_image_of_mem _
+          ⟨ih hζX, ⟨hζα, ?_⟩⟩⟩)
+        exact IHα ζ hζα u (fun ρ uu hρ => hpq ρ uu (lt_trans hρ hζα)) hζcanon
+
+/-! ### well-definedness of `ψ^s` -/
+
+theorem CiterSelf_subset_Citer (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u})
+    (v : ℕ) : ∀ n, (CstepSelf' p α)^[n] (Set.Iio (Om v)) ⊆ Citer p α v n := by
+  intro n
+  induction n with
+  | zero => simp [Citer]
+  | succ n ih =>
+    rw [Function.iterate_succ_apply', Citer_succ]
+    intro x hn
+    rcases hn with (h | h) | h
+    · exact Set.mem_union_left _ (Set.mem_union_left _ (ih h))
+    · obtain ⟨ξ, hξ, η, hη, rfl⟩ := Set.mem_image2.1 h
+      exact Set.mem_union_left _ (Set.mem_union_right _
+        (Set.mem_image2_of_mem (ih hξ) (ih hη)))
+    · obtain ⟨u, hu⟩ := Set.mem_iUnion.1 h
+      obtain ⟨ζ, ⟨hζX, ⟨hζα, _⟩⟩, rfl⟩ := hu
+      exact Set.mem_union_right _ (Set.mem_iUnion.2 ⟨u,
+        Set.mem_image_of_mem _ ⟨ih hζX, hζα⟩⟩)
+
+/-- **`CsetSelf ⊆ Cset`**: self with-C fires a subset of omitted generators. -/
+theorem CsetSelf_subset_Cset (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (v : ℕ) :
+    CsetSelf p α v ⊆ Cset p α v := by
+  rw [CsetSelf_eq]
+  intro x hx
+  obtain ⟨n, hn⟩ := Set.mem_iUnion.1 hx
+  exact Citer_subset_Cset (CiterSelf_subset_Citer p α v n hn)
+
+theorem small_CsetSelf (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (v : ℕ) :
+    Small.{u} (CsetSelf p α v) :=
+  have : Small.{u} (Cset p α v) := small_Cset p α v
+  small_subset (CsetSelf_subset_Cset p α v)
+
+theorem exists_notMem_CsetSelf (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (v : ℕ) :
+    ∃ γ, γ ∉ CsetSelf p α v := by
+  have hbdd : BddAbove (CsetSelf p α v) := Ordinal.bddAbove_iff_small.2 (small_CsetSelf p α v)
+  refine ⟨sSup (CsetSelf p α v) + 1, fun h => ?_⟩
+  have := le_csSup hbdd h
+  rw [Order.add_one_le_iff] at this
+  exact lt_irrefl _ this
+
+/-- Self-referential with-C collapsing function `ψ^s_v(α)`. -/
+noncomputable def psiSelf : Ordinal.{u} → ℕ → Ordinal.{u} :=
+  Ordinal.lt_wf.fix (C := fun _ => ℕ → Ordinal.{u}) fun α IH v =>
+    sInf {γ | γ ∉ CsetSelf (fun ξ u => if h : ξ < α then IH ξ h u else 0) α v}
+
+noncomputable def psiResSelf (α : Ordinal.{u}) : Ordinal.{u} → ℕ → Ordinal.{u} :=
+  fun ξ u => if ξ < α then psiSelf ξ u else 0
+
+theorem psiSelf_unfold (α : Ordinal.{u}) (v : ℕ) :
+    psiSelf α v = sInf {γ | γ ∉ CsetSelf (psiResSelf α) α v} := by
+  unfold psiSelf; rw [WellFounded.fix_eq]; rfl
+
+theorem psiSelf_notMem (α : Ordinal) (v : ℕ) : psiSelf α v ∉ CsetSelf (psiResSelf α) α v := by
+  rw [psiSelf_unfold]; exact csInf_mem (exists_notMem_CsetSelf (psiResSelf α) α v)
+
+/-- **`CCSelf_mono` = bound-lift ∘ param-lift, the with-C analogue of `CC_mono`** —
+the lemma that dissolves the omitted=with residue. -/
+theorem CCSelf_mono {α β : Ordinal} (hαβ : α ≤ β) (v : ℕ) :
+    CsetSelf (psiResSelf α) α v ⊆ CsetSelf (psiResSelf β) β v := by
+  have hparam : CsetSelf (psiResSelf α) α v ⊆ CsetSelf (psiResSelf β) α v :=
+    CsetSelf_mono_param _ _ α v (fun ξ u hξ => by
+      rw [psiResSelf, psiResSelf, if_pos hξ, if_pos (lt_of_lt_of_le hξ hαβ)])
+  exact hparam.trans (CsetSelf_mono_bound _ hαβ v)
+
 end YAPSS
