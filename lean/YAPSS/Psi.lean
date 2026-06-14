@@ -572,4 +572,104 @@ theorem psi_addprinc (α : Ordinal) (v : ℕ) : addprinc (psi α v) := by
       _ ≤ psi α v := Om_le_psi α v
   · exact fun β γ hβ hγ => psi_add_principal hβ hγ
 
+/-! ## With-condition collapsing functions `ψ^w_v` (Buchholz's *faithful* §1)
+
+Buchholz 1986 defines `C_v(α)` with the generator side-condition `ξ ∈ C_u(ξ)`
+(canonicity).  The omitted-condition port above drops it (his Remark p197).  The
+with-condition version makes Buchholz 1.4(b) (the canonical-witness lemma, the
+genuine core of the necessity direction) hold *by definition* — the generator
+carries canonicity, so any extracted witness is canonical.
+
+We add `ψ^w` (`psiW`) **additively**, in parallel with `psi`, so the existing
+omitted development stays green.  `CstepW` = `Cstep` with the generator clause
+intersected by the canonicity test `{ξ | ξ ∈ Cset p ξ u}`.  Since `ψ^w` fires a
+*subset* of the omitted generators, `CsetW ⊆ Cset`, which gives smallness (hence
+well-definedness) for free. -/
+
+/-- With-condition closure step: the `ψ`-generator fires only for `u`-canonical
+arguments (`ξ ∈ Cset p ξ u`). -/
+def CstepW (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (X : Set Ordinal.{u}) :
+    Set Ordinal.{u} :=
+  X ∪ Set.image2 (· + ·) X X ∪
+    ⋃ u : ℕ, (fun ξ => p ξ u) '' (X ∩ Set.Iio α ∩ {ξ | ξ ∈ Cset p ξ u})
+
+def CiterW (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (v : ℕ) (n : ℕ) :
+    Set Ordinal.{u} :=
+  (CstepW p α)^[n] (Set.Iio (Om v))
+
+def CsetW (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (v : ℕ) : Set Ordinal.{u} :=
+  ⋃ n : ℕ, CiterW p α v n
+
+theorem CiterW_succ (p : Ordinal → ℕ → Ordinal) (α : Ordinal) (v n : ℕ) :
+    CiterW p α v (n + 1) = CstepW p α (CiterW p α v n) := by
+  rw [CiterW, CiterW, Function.iterate_succ_apply']
+
+theorem CiterW_subset_CsetW {p : Ordinal.{u} → ℕ → Ordinal.{u}} {α : Ordinal.{u}}
+    {v n : ℕ} : CiterW p α v n ⊆ CsetW p α v := Set.subset_iUnion (CiterW p α v) n
+
+theorem CsetW_mem_iff {p : Ordinal → ℕ → Ordinal} {α x : Ordinal} {v : ℕ} :
+    x ∈ CsetW p α v ↔ ∃ n, x ∈ CiterW p α v n := Set.mem_iUnion
+
+/-- with-C fires a subset of omitted generators: `CstepW ⊆ Cstep`. -/
+theorem CstepW_subset_Cstep (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u})
+    {X : Set Ordinal.{u}} : CstepW p α X ⊆ Cstep p α X := by
+  intro x hx
+  rcases hx with (h | h) | h
+  · exact Set.mem_union_left _ (Set.mem_union_left _ h)
+  · exact Set.mem_union_left _ (Set.mem_union_right _ h)
+  · obtain ⟨u, hu⟩ := Set.mem_iUnion.1 h
+    obtain ⟨ξ, ⟨⟨hξX, hξα⟩, _hcanon⟩, hξx⟩ := hu
+    exact Set.mem_union_right _ (Set.mem_iUnion.2 ⟨u, ⟨ξ, ⟨hξX, hξα⟩, hξx⟩⟩)
+
+theorem CiterW_subset_Citer (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u})
+    (v n : ℕ) : CiterW p α v n ⊆ Citer p α v n := by
+  induction n with
+  | zero => exact subset_rfl
+  | succ n ih =>
+    rw [CiterW_succ, Citer_succ]
+    exact (CstepW_subset_Cstep p α).trans (Cstep_mono_param (le_refl α)
+      (fun _ _ _ => rfl) ih)
+
+/-- **`CsetW ⊆ Cset`**: the with-condition set is contained in the omitted one. -/
+theorem CsetW_subset_Cset (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u})
+    (v : ℕ) : CsetW p α v ⊆ Cset p α v := by
+  intro x hx
+  obtain ⟨n, hn⟩ := CsetW_mem_iff.1 hx
+  exact Citer_subset_Cset (CiterW_subset_Citer p α v n hn)
+
+/-- well-definedness input: `CsetW` is small (subset of the small `Cset`). -/
+theorem small_CsetW (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (v : ℕ) :
+    Small.{u} (CsetW p α v) :=
+  have : Small.{u} (Cset p α v) := small_Cset p α v
+  small_subset (CsetW_subset_Cset p α v)
+
+theorem exists_notMem_CsetW (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u})
+    (v : ℕ) : ∃ γ, γ ∉ CsetW p α v := by
+  have hsm : Small.{u} (CsetW p α v) := small_CsetW p α v
+  have hbdd : BddAbove (CsetW p α v) := Ordinal.bddAbove_iff_small.2 hsm
+  refine ⟨sSup (CsetW p α v) + 1, fun h => ?_⟩
+  have := le_csSup hbdd h
+  rw [Order.add_one_le_iff] at this
+  exact lt_irrefl _ this
+
+/-- With-condition collapsing function `ψ^w_v(α)` = least ordinal not in
+`C^w_v(α)`.  Defined by transfinite recursion in parallel with `psi`. -/
+noncomputable def psiW : Ordinal.{u} → ℕ → Ordinal.{u} :=
+  Ordinal.lt_wf.fix (C := fun _ => ℕ → Ordinal.{u}) fun α IH v =>
+    sInf {γ | γ ∉ CsetW (fun ξ u => if h : ξ < α then IH ξ h u else 0) α v}
+
+/-- `ψ^w` restricted below `α`. -/
+noncomputable def psiResW (α : Ordinal.{u}) : Ordinal.{u} → ℕ → Ordinal.{u} :=
+  fun ξ u => if ξ < α then psiW ξ u else 0
+
+theorem psiW_unfold (α : Ordinal.{u}) (v : ℕ) :
+    psiW α v = sInf {γ | γ ∉ CsetW (psiResW α) α v} := by
+  unfold psiW
+  rw [WellFounded.fix_eq]
+  rfl
+
+theorem psiW_notMem (α : Ordinal) (v : ℕ) : psiW α v ∉ CsetW (psiResW α) α v := by
+  rw [psiW_unfold]
+  exact csInf_mem (exists_notMem_CsetW (psiResW α) α v)
+
 end YAPSS
