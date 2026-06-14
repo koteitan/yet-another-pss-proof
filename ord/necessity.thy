@@ -159,6 +159,35 @@ proof -
   qed
 qed
 
+text \<open>\<^bold>\<open>Same-subscript specialization\<close>: a \<open>\<psi>\<close>-value \<open>\<psi>\<^sub>v(\<beta>)\<close> lying in \<open>C\<^sub>v(\<alpha>)\<close>
+  (\<^emph>\<open>same\<close> subscript \<open>v\<close> as the closure) is necessarily a generator value
+  \<open>\<psi>\<^sub>v(\<xi>) = \<psi>\<^sub>v(\<beta>)\<close> for some closure argument \<open>\<xi> \<in> C\<^sub>v(\<alpha>) \<inter> \<alpha>\<close>.  Combines
+  \<open>indec_Cset_generator\<close> (\<open>\<psi>\<close>-values are indecomposable and \<open>\<ge> \<Omega>\<^sub>v\<close>) with
+  \<open>psi_inj_subscript\<close> (the generator's subscript is forced to be \<open>v\<close>).  This is
+  the step that feeds the necessity argument: the producing argument \<open>\<xi>\<close> is
+  \<open>< \<alpha>\<close>, and \<open>\<psi>\<^sub>v\<close> is constant from \<open>\<xi>\<close> to \<open>\<beta>\<close>.\<close>
+
+lemma psi_in_Cset_same_sub_generator:
+  assumes "psi \<beta> v \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  shows "\<exists>\<xi>. \<xi> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v) \<and> \<xi> \<in> elts \<alpha> \<and> psi \<xi> v = psi \<beta> v"
+proof -
+  have ordp: "\<And>\<xi> u. \<xi> \<in> elts \<alpha> \<Longrightarrow> Ord ((\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<xi> u)" by simp
+  have notOm: "psi \<beta> v \<notin> elts (Om v)"
+  proof
+    assume "psi \<beta> v \<in> elts (Om v)"
+    hence "psi \<beta> v < Om v" using Ord_mem_iff_lt[OF Ord_psi Ord_Om] by blast
+    moreover have "Om v \<le> psi \<beta> v" by (rule Om_le_psi)
+    ultimately show False by simp
+  qed
+  from indec_Cset_generator[OF ordp indecomposable_psi notOm assms]
+  obtain \<xi> u where \<xi>: "\<xi> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+    "\<xi> \<in> elts \<alpha>" "psi \<beta> v = (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<xi> u" by blast
+  have val: "psi \<beta> v = psi \<xi> u" using \<xi>(2,3) by simp
+  have "v = u" by (rule psi_inj_subscript[OF val])
+  with val have "psi \<xi> v = psi \<beta> v" by simp
+  with \<xi>(1,2) show ?thesis by blast
+qed
+
 text \<open>\<^bold>\<open>Argument injectivity on canonical arguments\<close> (the rest of Buchholz 1.4(a)):
   for canonical \<open>\<alpha>,\<beta>\<close> (\<open>\<alpha> \<in> C\<^bsub>v\<^esub>(\<alpha>)\<close>), equal \<open>\<psi>\<close>-values force equal arguments, by
   strict monotonicity 1.3.\<close>
