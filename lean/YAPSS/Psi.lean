@@ -672,4 +672,169 @@ theorem psiW_notMem (α : Ordinal) (v : ℕ) : psiW α v ∉ CsetW (psiResW α) 
   rw [psiW_unfold]
   exact csInf_mem (exists_notMem_CsetW (psiResW α) α v)
 
+/-! ### §1 port for `ψ^w` (with-condition).  Buchholz 1.2–1.4(a). -/
+
+/-- C1 for with-C: `Iio Ω_v ⊆ C^w_v(α)`. -/
+theorem Iio_Om_subset_CsetW {p : Ordinal → ℕ → Ordinal} {α : Ordinal} {v : ℕ} :
+    Set.Iio (Om v) ⊆ CsetW p α v := by
+  intro x hx
+  exact CiterW_subset_CsetW (n := 0) (by simpa [CiterW] using hx)
+
+/-- C2 for with-C: closed under `+` (no canonicity needed). -/
+theorem CsetW_add_closed {p : Ordinal → ℕ → Ordinal} {α ξ η : Ordinal} {v : ℕ}
+    (hξ : ξ ∈ CsetW p α v) (hη : η ∈ CsetW p α v) : ξ + η ∈ CsetW p α v := by
+  obtain ⟨m, hm⟩ := CsetW_mem_iff.1 hξ
+  obtain ⟨n, hn⟩ := CsetW_mem_iff.1 hη
+  have mono : ∀ {a b : ℕ}, a ≤ b → CiterW p α v a ⊆ CiterW p α v b := by
+    intro a b hab
+    induction b with
+    | zero => rw [Nat.le_zero.1 hab]
+    | succ b ih =>
+      rcases Nat.lt_or_ge a (b + 1) with h | h
+      · rw [CiterW_succ]
+        exact (ih (by omega)).trans
+          (fun _ hx => Set.mem_union_left _ (Set.mem_union_left _ hx))
+      · rw [Nat.le_antisymm hab h]
+  have hm' : ξ ∈ CiterW p α v (max m n) := mono (le_max_left m n) hm
+  have hn' : η ∈ CiterW p α v (max m n) := mono (le_max_right m n) hn
+  refine CiterW_subset_CsetW (n := max m n + 1) ?_
+  rw [CiterW_succ]
+  exact Set.mem_union_left _ (Set.mem_union_right _ (Set.mem_image2_of_mem hm' hn'))
+
+/-- C3 for with-C: closed under `ξ ↦ p ξ u` for `ξ < α` **canonical** (`ξ ∈ Cset
+p ξ u`).  This is the only closure clause that gains a hypothesis over the
+omitted version. -/
+theorem CsetW_psi_closed {p : Ordinal → ℕ → Ordinal} {α ξ : Ordinal} {v : ℕ}
+    (hξ : ξ ∈ CsetW p α v) (hα : ξ < α) (u : ℕ) (hcanon : ξ ∈ Cset p ξ u) :
+    p ξ u ∈ CsetW p α v := by
+  obtain ⟨n, hn⟩ := CsetW_mem_iff.1 hξ
+  refine CiterW_subset_CsetW (n := n + 1) ?_
+  rw [CiterW_succ]
+  exact Set.mem_union_right _ (Set.mem_iUnion.2 ⟨u,
+    Set.mem_image_of_mem _ ⟨⟨hn, hα⟩, hcanon⟩⟩)
+
+/-- with-C parameter-monotonicity.  The canonicity test `ξ ∈ Cset p ξ u` is
+invariant under swapping `p`/`q` that agree below `α`, because that set only
+references arguments `< ξ < α`. -/
+theorem CstepW_mono_param {p q : Ordinal.{u} → ℕ → Ordinal.{u}} {α β : Ordinal.{u}}
+    {X Y : Set Ordinal.{u}} (hαβ : α ≤ β) (hpq : ∀ ξ u, ξ < α → p ξ u = q ξ u)
+    (hXY : X ⊆ Y) : CstepW p α X ⊆ CstepW q β Y := by
+  intro x hx
+  rcases hx with (hx | hx) | hx
+  · exact Set.mem_union_left _ (Set.mem_union_left _ (hXY hx))
+  · obtain ⟨ξ, hξ, η, hη, rfl⟩ := Set.mem_image2.1 hx
+    exact Set.mem_union_left _
+      (Set.mem_union_right _ (Set.mem_image2_of_mem (hXY hξ) (hXY hη)))
+  · obtain ⟨w, hw⟩ := Set.mem_iUnion.1 hx
+    obtain ⟨ξ, ⟨⟨hξX, hξα⟩, hξcanon⟩, rfl⟩ := hw
+    show p ξ w ∈ CstepW q β Y
+    rw [hpq ξ w hξα]
+    refine Set.mem_union_right _ (Set.mem_iUnion.2 ⟨w, Set.mem_image_of_mem _
+      ⟨⟨hXY hξX, lt_of_lt_of_le hξα hαβ⟩, ?_⟩⟩)
+    exact Cset_mono_param (le_refl ξ) (fun ζ uu hζ => hpq ζ uu (lt_trans hζ hξα)) hξcanon
+
+theorem CiterW_mono_param {p q : Ordinal → ℕ → Ordinal} {α β : Ordinal} {v : ℕ}
+    (hαβ : α ≤ β) (hpq : ∀ ξ u, ξ < α → p ξ u = q ξ u) (n : ℕ) :
+    CiterW p α v n ⊆ CiterW q β v n := by
+  induction n with
+  | zero => exact subset_rfl
+  | succ n ih => rw [CiterW_succ, CiterW_succ]; exact CstepW_mono_param hαβ hpq ih
+
+theorem CsetW_mono_param {p q : Ordinal → ℕ → Ordinal} {α β : Ordinal} {v : ℕ}
+    (hαβ : α ≤ β) (hpq : ∀ ξ u, ξ < α → p ξ u = q ξ u) :
+    CsetW p α v ⊆ CsetW q β v := by
+  intro x hx
+  obtain ⟨n, hn⟩ := CsetW_mem_iff.1 hx
+  exact CiterW_subset_CsetW (CiterW_mono_param hαβ hpq n hn)
+
+/-- **Buchholz 1.2(d) for with-C**: `α ≤ β → C^w_v(α) ⊆ C^w_v(β)`. -/
+theorem CCW_mono {α β : Ordinal} (hαβ : α ≤ β) (v : ℕ) :
+    CsetW (psiResW α) α v ⊆ CsetW (psiResW β) β v := by
+  apply CsetW_mono_param hαβ
+  intro ξ u hξ
+  rw [psiResW, psiResW, if_pos hξ, if_pos (lt_of_lt_of_le hξ hαβ)]
+
+/-- `Ω_v ≤ ψ^w_v(α)` (from C1). -/
+theorem Om_le_psiW (α : Ordinal) (v : ℕ) : Om v ≤ psiW α v := by
+  by_contra h
+  push Not at h
+  exact psiW_notMem α v (Iio_Om_subset_CsetW h)
+
+/-- Every ordinal below `ψ^w_v(α)` lies in `C^w_v(α)` (sInf-minimality). -/
+theorem below_psiW_mem_CsetW {α δ : Ordinal} {v : ℕ} (hδ : δ < psiW α v) :
+    δ ∈ CsetW (psiResW α) α v := by
+  by_contra nin
+  have : psiW α v ≤ δ := by
+    rw [psiW_unfold]
+    exact csInf_le' nin
+  exact absurd hδ (not_lt.2 this)
+
+/-- **Buchholz 1.2(c) for with-C**: `ψ^w_v(α) < Ω_{v+1}`.  Reuses the omitted
+`psi_lt_Om_succ` cardinality bound via `CsetW ⊆ Cset`. -/
+theorem psiW_lt_Om_succ (α : Ordinal.{u}) (v : ℕ) : psiW α v < Om (v + 1) := by
+  by_contra hge
+  push Not at hge
+  -- Iio (Ω_{v+1}) ⊆ CsetW ⊆ Cset, contradicting psi_lt_Om_succ's cardinality bound
+  have allinW : Set.Iio (Om (v + 1)) ⊆ CsetW (psiResW α) α v :=
+    fun δ hδ => below_psiW_mem_CsetW (lt_of_lt_of_le hδ hge)
+  have allin : Set.Iio (Om (v + 1)) ⊆ Cset (psiResW α) α v :=
+    allinW.trans (CsetW_subset_Cset (psiResW α) α v)
+  -- mimic psi_lt_Om_succ's contradiction directly
+  have hcard : Cardinal.lift.{u + 1, u} (ℵ_ (v + 1 : ℕ)) ≤ OmKappa.{u} v := by
+    calc Cardinal.lift.{u + 1, u} (ℵ_ (v + 1 : ℕ))
+        = Cardinal.lift.{u + 1, u} (Om (v + 1)).card := by
+          rw [Om_of_pos (by omega), Cardinal.card_ord]
+      _ = #(Set.Iio (Om (v + 1))) := (Cardinal.mk_Iio_ordinal _).symm
+      _ ≤ #(Cset (psiResW α) α v) := Cardinal.mk_le_mk_of_subset allin
+      _ ≤ OmKappa v := mk_Cset_le _ _ _
+  exact absurd hcard (not_le.2 (OmKappa_lt_aleph_succ v))
+
+/-- **Buchholz 1.2(d) for with-C**: weak monotonicity `α ≤ β → ψ^w_v(α) ≤ ψ^w_v(β)`. -/
+theorem psiW_mono_arg {α β : Ordinal.{u}} (hαβ : α ≤ β) (v : ℕ) :
+    psiW α v ≤ psiW β v := by
+  by_contra h
+  push Not at h
+  have hmem : psiW β v ∈ CsetW (psiResW α) α v := by
+    by_contra nin
+    have hle : psiW α v ≤ psiW β v := by
+      rw [psiW_unfold]
+      exact csInf_le' nin
+    exact absurd hle (not_le.2 h)
+  exact psiW_notMem β v (CCW_mono hαβ v hmem)
+
+/-- `psiResW` agrees with itself across different bounds on arguments below the
+smaller bound: lifts the self-canonicity set `Cset (psiResW ξ) ξ a` to
+`Cset (psiResW β) ξ a` for `ξ ≤ β`. -/
+theorem CsetW_self_canon_lift {ξ β : Ordinal} {a : ℕ} (hξβ : ξ ≤ β)
+    (hcan : ξ ∈ Cset (psiResW ξ) ξ a) : ξ ∈ Cset (psiResW β) ξ a := by
+  refine Cset_mono_param (le_refl ξ) (fun ζ uu hζ => ?_) hcan
+  rw [psiResW, psiResW, if_pos (lt_of_lt_of_le hζ hξβ), if_pos hζ]
+
+/-- **Buchholz 1.3 for with-C (strict monotonicity)**: `α < β`, `α` canonical in
+`C^w_v(α)` and omitted-self-canonical (`α ∈ Cset (psiResW α) α v`, exactly what
+the with-C generator records) ⟹ `ψ^w_v(α) < ψ^w_v(β)`. -/
+theorem psiW_strict_mono_arg {α β : Ordinal} (hαβ : α < β)
+    {v : ℕ} (hα : α ∈ CsetW (psiResW α) α v) (hαcanon : α ∈ Cset (psiResW α) α v) :
+    psiW α v < psiW β v := by
+  have le : α ≤ β := hαβ.le
+  have aβ : α ∈ CsetW (psiResW β) β v := CCW_mono le v hα
+  have hmem : psiW α v ∈ CsetW (psiResW β) β v := by
+    have := CsetW_psi_closed aβ hαβ v (CsetW_self_canon_lift le hαcanon)
+    rwa [psiResW, if_pos hαβ] at this
+  have hne : psiW α v ≠ psiW β v := fun he => psiW_notMem β v (he ▸ hmem)
+  exact lt_of_le_of_ne (psiW_mono_arg le v) hne
+
+/-- **Buchholz 1.4(a) for with-C (canonical-rep uniqueness / injectivity)**: two
+`a`-canonical arguments with equal `ψ^w_a`-value are equal.  Canonicity here is
+the omitted-C self-canonicity `ξ ∈ Cset (psiResW ξ) ξ a`, exactly what the
+with-C generator clause records. -/
+theorem psiW_canonical_inj {a : ℕ} {ξ ξ' : Ordinal.{u}}
+    (hξ : ξ ∈ CsetW (psiResW ξ) ξ a) (hξcan : ξ ∈ Cset (psiResW ξ) ξ a)
+    (hξ' : ξ' ∈ CsetW (psiResW ξ') ξ' a) (hξ'can : ξ' ∈ Cset (psiResW ξ') ξ' a)
+    (he : psiW ξ a = psiW ξ' a) : ξ = ξ' := by
+  rcases lt_trichotomy ξ ξ' with h | h | h
+  · exact absurd he (ne_of_lt (psiW_strict_mono_arg h hξ hξcan))
+  · exact h
+  · exact absurd he.symm (ne_of_lt (psiW_strict_mono_arg h hξ' hξ'can))
+
 end YAPSS
