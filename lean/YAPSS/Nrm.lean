@@ -449,7 +449,7 @@ inequality `ψ_0(oV b) < ψ_0(oV f)` holds **iff** `ψ_0(oV b) ≠ ψ_0(oV f)`
 on `NF` is the single fact: *standardness excludes the `ψ_0`-plateau between
 `oV b` and `oV f`* — the dual of the collapsing obligation `psi_proj_notmem`. -/
 theorem psi0_oV_lt_iff_ne {b f : Three} (hle : oV.{u} b ≤ oV f) :
-    psi.{u} (oV b) 0 < psi (oV f) 0 ↔ psi (oV b) 0 ≠ psi (oV f) 0 := by
+    psi.{u} (oV b) 0 < psi (oV f) 0 ↔ psi.{u} (oV b) 0 ≠ psi.{u} (oV f) 0 := by
   constructor
   · exact fun h => ne_of_lt h
   · exact fun hne => lt_of_le_of_ne (psi_mono_arg hle 0) hne
