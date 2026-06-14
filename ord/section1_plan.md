@@ -452,3 +452,41 @@ psi_proj  (A2)
 ```
 Build the scaffolding (A,B1,C2) first against a *sorried* D1/D2 to validate the
 assembly compiles, then attack D1 (multi-session). D1 is the whole game.
+
+---
+
+## UPDATE 続89(21-29) — 実装の確定事項と route 訂正(2026-06-14)
+
+今セッションで PART 2 の大部分を緑で実装し、route を訂正した。
+
+### 緑で完成した部品(necessity.thy / collapsing.thy / nrm.thy, 全 sorry 無)
+- **A2 psi_proj 実証明**(modulo 単一 sorry)・**A1 psi_proj_step 実証明**(psi_eq_of_not_mem 経由)・
+  **B1 bad_imp_oV_ge**・**oV_le_proj**(proj は値を上げる)。
+- **psi_eq_of_not_mem**(collapsing.thy): α≤β ∧ psi α v∉Cv β v ⟹ psi α v=psi β v。
+  ★collapse_grow より弱仮定。A1 はこれで「単一非帰属」に還元。
+- **indec_Cset_generator**: 閉包の indecomposable 元は generator(Citer 帰納・同時帰納不要)。
+- **psi_in_Cset_same_sub_generator**: 同 subscript ψ値∈閉包 ⟹ generator 由来。
+- **band_lt_psi**: Cv(δ)a の Om(Suc a)-band 内元 < psi δ a。
+- **D-eq-0 完成**: Cstep_c/Cset_c + small_Cstep_c_gen/elts_Cstep_c/Cstep_c_subset_Cstep/
+  Citer_c_subset_Citer/Cset_c_subset_Cset/Cset_c_mem_iff/Om_subset_Cset_c/
+  **Cset_c_add_closed**/**Cset_c_gen_closed**。D-eq-1 の easy cases は全てこれで緑化可能。
+
+### ★route 訂正(PART 2 の誤りを実装で発見)
+1. **collapse_grow は A1 に使えない**(C1/C2 ルート破棄): A1 で collapse する ψ_a の引数
+   oV b, oV m は band 外になり得る(値 psi(oV b)a だけが band 内)。gap [oV b,oV m) は
+   clean でない。⟹ A1 は **psi_eq_of_not_mem による単一非帰属** psi(oV b)a∉Cv(oV m)a に還元
+   (= **psi_proj_nonmem**, nrm.thy:166, 唯一の sorry)。これが正しい 1.9 necessity 形。
+2. **A1⟺nonmem 完全同値**(psi_notin で逆も)。A1 実測真 6677/0 ⟹ nonmem 真(sorry 健全)。
+3. **band_lt_psi は refutation 不可**(consistency のみ): ∈⟹< を言うだけ。
+
+### ★★ D1 の本質 = 循環性、A2 と nonmem は同時帰納必須(最重要)
+- nonmem を D-eq-1(Cset=Cset_c)で割るには、canonical ξ<oV m を oV(proj a b) と同一視する
+  injectivity が要るが、それには **psi(oV(proj a b))a=psi(oV b)a = A2 自身**が要る。A2 は
+  nonmem 依存。⟹ **A2 と nonmem は線形分離不能**。
+- proj recursion は oV を**増やす**(A1: oV m≥oV b)ので oV b 下降帰納も効かない。
+- ⟹ **D1 = A2+nonmem(+1.4b canonical-rep 存在)を Buchholz の (α,n)同時超限帰納で同時証明**。
+  これが §1 の hard core(lean も同地点で停滞)。D-eq-1 単独の sorry 化は孤立債務ゆえ非推奨。
+- **次セッションの D1 設計**: 抽象順序数 δ 上の transfinite induction で「δ の canonical-rep
+  存在(1.4b)∧ necessity(1.9)」を同時に carry。generator の arg は <δ ゆえ IH 適用可。
+  term 側(oV b, proj)はその系として A2/nonmem を得る。measure 設計が山。
+  Cset_c ツールキットは全て揃った。canonical_witness(1.4b)が唯一の未証明 primitive。
