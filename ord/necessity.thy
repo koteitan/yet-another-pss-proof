@@ -103,6 +103,62 @@ proof -
   thus ?thesis unfolding indecomposable_def using Ord_psi by blast
 qed
 
+text \<open>\<^bold>\<open>Indecomposable elements of the closure are generators\<close>.  An additively
+  indecomposable ordinal \<open>\<gamma> \<ge> \<Omega>\<^sub>v\<close> that lies in \<open>C\<^sub>v(\<alpha>)\<close> cannot be a proper sum
+  (indecomposability) nor an element of \<open>\<Omega>\<^sub>v\<close>, so it must have entered as a
+  \<^emph>\<open>generator\<close> \<open>p \<xi> u\<close> with \<open>\<xi> \<in> C\<^sub>v(\<alpha>) \<inter> \<alpha>\<close>.  This is the structural half of
+  Buchholz 1.9 (the part that does \<^emph>\<open>not\<close> need the simultaneous induction): it
+  reduces \<open>\<psi>\<^bsub>a\<^esub>(\<beta>) \<in> C\<^sub>v(\<alpha>)\<close> to "\<open>\<psi>\<^bsub>a\<^esub>(\<beta>)\<close> is a generator value", and then
+  \<open>psi_inj_subscript\<close> pins the subscript.  Proof by induction on the closure rank
+  (\<open>Citer\<close> index): a fresh sum \<open>\<xi>+\<eta>=\<gamma>\<close> forces \<open>\<xi>=\<gamma>\<close> or \<open>\<eta>=\<gamma>\<close>, dropping to a lower
+  rank (handled by IH); a fresh generator is the witness.\<close>
+
+lemma indec_Cset_generator:
+  assumes ordp: "\<And>\<xi> u. \<xi> \<in> elts \<alpha> \<Longrightarrow> Ord (p \<xi> u)"
+    and indec: "indecomposable \<gamma>" and notOm: "\<gamma> \<notin> elts (Om v)"
+    and mem: "\<gamma> \<in> elts (Cset p \<alpha> v)"
+  shows "\<exists>\<xi> u. \<xi> \<in> elts (Cset p \<alpha> v) \<and> \<xi> \<in> elts \<alpha> \<and> \<gamma> = p \<xi> u"
+proof -
+  have ordp': "\<forall>\<xi> u. \<xi> \<in> elts \<alpha> \<longrightarrow> Ord (p \<xi> u)" using ordp by blast
+  from mem obtain N where "\<gamma> \<in> elts (Citer p \<alpha> v N)" by (auto simp: Cset_mem_iff)
+  thus ?thesis
+  proof (induction N)
+    case 0
+    hence "\<gamma> \<in> elts (Om v)" by simp
+    with notOm show ?case by blast
+  next
+    case (Suc n)
+    from Suc.prems have "\<gamma> \<in> elts (Cstep p \<alpha> (Citer p \<alpha> v n))" by simp
+    then consider "\<gamma> \<in> elts (Citer p \<alpha> v n)"
+      | \<xi> \<eta> where "\<xi> \<in> elts (Citer p \<alpha> v n)" "\<eta> \<in> elts (Citer p \<alpha> v n)" "\<gamma> = \<xi> + \<eta>"
+      | \<xi> u where "\<xi> \<in> elts (Citer p \<alpha> v n)" "\<xi> \<in> elts \<alpha>" "\<gamma> = p \<xi> u"
+      by (auto simp: elts_Cstep)
+    thus ?case
+    proof cases
+      case 1 thus ?thesis by (rule Suc.IH)
+    next
+      case 2
+      have o\<xi>: "Ord \<xi>" by (rule Ord_Citer[OF ordp' 2(1)])
+      have o\<eta>: "Ord \<eta>" by (rule Ord_Citer[OF ordp' 2(2)])
+      have le\<xi>: "\<xi> \<le> \<gamma>" using 2(3) add_le_cancel_left0 by simp
+      have le\<eta>: "\<eta> \<le> \<gamma>" using 2(3) add_le_left[OF o\<xi> o\<eta>] by simp
+      have "\<not> (\<xi> < \<gamma> \<and> \<eta> < \<gamma>)"
+      proof
+        assume "\<xi> < \<gamma> \<and> \<eta> < \<gamma>"
+        hence "\<xi> + \<eta> < \<gamma>" using indecomposableD[OF indec _ _ o\<xi> o\<eta>] by blast
+        thus False using 2(3) by simp
+      qed
+      hence "\<gamma> = \<xi> \<or> \<gamma> = \<eta>" using le\<xi> le\<eta> by (auto simp: less_V_def)
+      hence "\<gamma> \<in> elts (Citer p \<alpha> v n)" using 2(1,2) by auto
+      thus ?thesis by (rule Suc.IH)
+    next
+      case 3
+      have "\<xi> \<in> elts (Cset p \<alpha> v)" using 3(1) Citer_in_Cset by blast
+      thus ?thesis using 3(2,3) by blast
+    qed
+  qed
+qed
+
 text \<open>\<^bold>\<open>Argument injectivity on canonical arguments\<close> (the rest of Buchholz 1.4(a)):
   for canonical \<open>\<alpha>,\<beta>\<close> (\<open>\<alpha> \<in> C\<^bsub>v\<^esub>(\<alpha>)\<close>), equal \<open>\<psi>\<close>-values force equal arguments, by
   strict monotonicity 1.3.\<close>
