@@ -4327,3 +4327,23 @@ oV m<oV b で B1 と矛盾。oV b は一般に decomposable(=ψ+...)なので in
 leading ψ 成分分解(indecomposable_psi + Cantor_NF)+ canonical-witness が要る。**これが D1 の本体**。
 - 次: (i) band facts を補題化(Om level 分離 / generator<psi の band 補題)。
   (ii) B2 を leading-ψ 分解で necessity に帰着。canonical-witness(1.4b)が最後の山。
+
+### 続89(25): band_lt_psi 緑 + ★続89(22-24) band-argument の訂正(引数 band の誤り)
+
+- **緑追加**: `band_lt_psi`(necessity.thy, sorry無): Ord δ ⟹ x∈Cv(δ) a ⟹ x<Om(Suc a) ⟹
+  x<psi δ a。Citer-rank 帰納。generator(u≷a 三分)+sum(加法主要)で。**necessity 不要の真の補題**。
+  ＝Cv(δ) a は band [psi δ a, Om(Suc a)) に元を持たない。
+- **★訂正(続89(22-24) の band-argument は欠陥)**: A1 で collapse する psi_a の**引数** oV b, oV m は
+  **band 外になり得る**(b=D_{a+5}(..) なら oV b≥Om(a+5))。band 内なのは**値** psi(oV b) a の方。
+  ⟹ gap [oV b, oV m)(引数側)は band に収まらず、Cv(oV b) a の generator psi η u(η<oV b, u 大)が
+  gap 内に在り得る ⟹ **gap-clean は偽・collapse_grow は A1 に直接使えない**(続89(22) の当初の
+  心配が正しかった)。band_lt_psi[δ=oV m] は「psi(oV b)a∈Cv(oV m)a ⟹ psi(oV b)a<psi(oV m)a」を
+  与えるが**非帰属は出ない**(circular)。
+- **確定(再)**: A1 = `psi(oV b) a ∉ Cv(oV m) a`(単一非帰属)。psi_in_Cset_same_sub_generator で
+  「∈ ⟹ ∃ξ<oV m∈Cv. psi ξ a=psi(oV b)a」まで来るが、ξ を oV b に pin する/他の ξ を排除するのに
+  **1.4b canonical-witness + injectivity = D1**。**irreducible 確定(再確認)**。
+- **緑資産(necessity.thy, 全 sorry 無)**: indec_Cset_generator / psi_in_Cset_same_sub_generator /
+  band_lt_psi。これらは D1 の構造的部品。band_lt_psi は ψ_a band 構造の特徴づけで将来再利用可。
+- **次セッション D1 本体**: psi(oV b) a∉Cv(oV m) a を、(α,n) 同時超限帰納で
+  「ξ∈Cv(oV m)a∩oV m ∧ psi ξ a=psi(oV b)a ⟹ ξ canonical ⟹ ξ=oV b ⟹ oV b∈Cv ⟹ B1 矛盾」。
+  canonical-witness 構成が山。lean の psi_canonical_inj(1.4a 済)を port 検討。
