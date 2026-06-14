@@ -159,6 +159,91 @@ proof -
   qed
 qed
 
+text \<open>\<^bold>\<open>The \<open>\<Omega>\<^bsub>a+1\<^esub>\<close>-band lemma\<close> (the geometric heart of the argument-side collapse):
+  every element of \<open>C\<^sub>a(\<delta>)\<close> that lies in the \<open>\<psi>\<^sub>a\<close>-band \<open>[\<Omega>\<^sub>a, \<Omega>\<^bsub>a+1\<^esub>)\<close> is in fact
+  \<open>< \<psi>\<^sub>a(\<delta>)\<close>.  Reason: a generator \<open>\<psi>\<^sub>u(\<xi>)\<close> with \<open>u>a\<close> is \<open>\<ge> \<Omega>\<^bsub>a+1\<^esub>\<close> (out of band),
+  with \<open>u<a\<close> is \<open>< \<Omega>\<^sub>a \<le> \<psi>\<^sub>a(\<delta>)\<close>, and with \<open>u=a\<close> uses \<open>\<xi> < \<delta>\<close> so
+  \<open>\<psi>\<^sub>a(\<xi>) \<le> \<psi>\<^sub>a(\<delta>)\<close> (weak monotonicity) and \<open>\<noteq>\<close> (else \<open>\<psi>\<^sub>a(\<delta>)\<close> would be a member,
+  contradicting \<open>psi_notin\<close>); sums stay below by additive principality.  \<^bold>\<open>No
+  necessity / simultaneous induction needed.\<close>  This is what makes the gap
+  \<open>[\<psi>\<^sub>a(\<delta>)\<dots>)\<close> clean for \<open>collapse_grow\<close> once \<open>\<delta>\<close> is known non-canonical.\<close>
+
+lemma band_lt_psi:
+  assumes "Ord \<delta>"
+    and "x \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<delta>. psi \<xi>) \<delta> a)"
+    and "x < Om (Suc a)"
+  shows "x < psi \<delta> a"
+proof -
+  let ?p = "\<lambda>\<xi>\<in>elts \<delta>. psi \<xi>"
+  have ordp': "\<forall>\<xi> u. \<xi> \<in> elts \<delta> \<longrightarrow> Ord (?p \<xi> u)" by simp
+  have key: "x \<in> elts (Citer ?p \<delta> a N) \<Longrightarrow> x < Om (Suc a) \<Longrightarrow> x < psi \<delta> a" for N x
+  proof (induction N arbitrary: x)
+    case 0
+    hence "x \<in> elts (Om a)" by simp
+    hence "x < Om a" by (rule OrdmemD[OF Ord_Om])
+    also have "Om a \<le> psi \<delta> a" by (rule Om_le_psi)
+    finally show ?case .
+  next
+    case (Suc n)
+    from Suc.prems(1) have "x \<in> elts (Cstep ?p \<delta> (Citer ?p \<delta> a n))"
+      by (simp only: funpow.simps(2) comp_apply)
+    then consider "x \<in> elts (Citer ?p \<delta> a n)"
+      | \<xi> \<eta> where "\<xi> \<in> elts (Citer ?p \<delta> a n)" "\<eta> \<in> elts (Citer ?p \<delta> a n)" "x = \<xi> + \<eta>"
+      | \<xi> u where "\<xi> \<in> elts (Citer ?p \<delta> a n)" "\<xi> \<in> elts \<delta>" "x = ?p \<xi> u"
+      by (auto simp: elts_Cstep)
+    thus ?case
+    proof cases
+      case 1 thus ?thesis using Suc.IH Suc.prems(2) by blast
+    next
+      case 2
+      have o\<xi>: "Ord \<xi>" by (rule Ord_Citer[OF ordp' 2(1)])
+      have o\<eta>: "Ord \<eta>" by (rule Ord_Citer[OF ordp' 2(2)])
+      have "\<xi> \<le> x" using 2(3) add_le_cancel_left0 by simp
+      hence lx\<xi>: "\<xi> < Om (Suc a)" using Suc.prems(2) by simp
+      have "\<eta> \<le> x" using 2(3) add_le_left[OF o\<xi> o\<eta>] by simp
+      hence lx\<eta>: "\<eta> < Om (Suc a)" using Suc.prems(2) by simp
+      have lt\<xi>: "\<xi> < psi \<delta> a" by (rule Suc.IH[OF 2(1) lx\<xi>])
+      have lt\<eta>: "\<eta> < psi \<delta> a" by (rule Suc.IH[OF 2(2) lx\<eta>])
+      have "\<xi> + \<eta> < psi \<delta> a"
+        by (rule indecomposableD[OF indecomposable_psi lt\<xi> lt\<eta> o\<xi> o\<eta>])
+      thus ?thesis using 2(3) by simp
+    next
+      case 3
+      have val: "x = psi \<xi> u" using 3(2,3) by simp
+      consider (lt) "u < a" | (eq) "u = a" | (gt) "a < u" by linarith
+      thus ?thesis
+      proof cases
+        case lt
+        have "psi \<xi> u < Om (Suc u)" by (rule psi_lt_Om_Suc)
+        also have "Om (Suc u) \<le> Om a" using lt by (simp add: Om_mono Suc_leI)
+        also have "Om a \<le> psi \<delta> a" by (rule Om_le_psi)
+        finally show ?thesis using val by simp
+      next
+        case eq
+        have "\<xi> < \<delta>" by (rule OrdmemD[OF assms(1) 3(2)])
+        hence "psi \<xi> a \<le> psi \<delta> a" using psi_mono_arg[of \<xi> \<delta> a] by simp
+        moreover have "psi \<xi> a \<noteq> psi \<delta> a"
+        proof
+          assume *: "psi \<xi> a = psi \<delta> a"
+          have "x \<in> elts (Cset ?p \<delta> a)" using Suc.prems(1) Citer_in_Cset by blast
+          hence "psi \<delta> a \<in> elts (Cset ?p \<delta> a)" using val eq * by simp
+          thus False using psi_notin by simp
+        qed
+        ultimately have "psi \<xi> a < psi \<delta> a" by simp
+        thus ?thesis using val eq by simp
+      next
+        case gt
+        have "Om (Suc a) \<le> Om u" using gt by (simp add: Om_mono Suc_leI)
+        also have "Om u \<le> psi \<xi> u" by (rule Om_le_psi)
+        finally have "Om (Suc a) \<le> psi \<xi> u" .
+        with val Suc.prems(2) show ?thesis by simp
+      qed
+    qed
+  qed
+  from assms(2) obtain N where "x \<in> elts (Citer ?p \<delta> a N)" by (auto simp: Cset_mem_iff)
+  thus ?thesis using key assms(3) by blast
+qed
+
 text \<open>\<^bold>\<open>Same-subscript specialization\<close>: a \<open>\<psi>\<close>-value \<open>\<psi>\<^sub>v(\<beta>)\<close> lying in \<open>C\<^sub>v(\<alpha>)\<close>
   (\<^emph>\<open>same\<close> subscript \<open>v\<close> as the closure) is necessarily a generator value
   \<open>\<psi>\<^sub>v(\<xi>) = \<psi>\<^sub>v(\<beta>)\<close> for some closure argument \<open>\<xi> \<in> C\<^sub>v(\<alpha>) \<inter> \<alpha>\<close>.  Combines
