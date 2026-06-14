@@ -70,13 +70,17 @@
   - 🔬 **§1 / psi_proj ルート（続89・意味論・nrm_order_pres を oV_mono_NF で迂回）〔ord/necessity.thy・nrm.thy〕**
     > 目標 psi_proj: wf3 b ⟹ psi(oV b)a=psi(oV(proj a b))a。section1_plan.md 参照。
     - ✅ scaffolding 緑: bad_imp_oV_ge(B1) / psi_proj_step(A1) / **psi_proj(A2 実証明 modulo nonmem)**〔nrm.thy〕
-    - ✅ 構造部品 緑〔necessity.thy〕: indec_Cset_generator（閉包の indec 元=generator）/
-      psi_in_Cset_same_sub_generator / band_lt_psi（Om(Suc a)-band 内元<psi δ a）/
-      psi_eq_of_not_mem（α≤β∧psi α v∉Cv β v⟹=・collapsing.thy）/ acanon 一式（spin 修正済）
-    - 🚨 ★残核ただ1つ＝**psi_proj_nonmem**: psi(oV b)a∉Cv(oV m)a = Buchholz 1.9 necessity
-      〔nrm.thy:166 sorry〕。A1⟺nonmem（実測真6677/0で健全）。proj は値を**上げる**ため
-      canonical witness≥oV m、band_lt_psi は consistency のみ⟹ canonical-rep 存在の
-      (α,n)同時超限帰納（D1）が irreducible。次セッション本丸。
+    - ✅ 構造部品 緑〔necessity.thy〕: indec_Cset_generator / psi_in_Cset_same_sub_generator /
+      band_lt_psi(1.5) / psi_eq_of_not_mem(collapsing) / acanon 一式 / **1.4 trio**(psi_inj_canonical
+      1.4a・indec_Cset_c_generator 1.4b core・psi_canonical_arg_lt 1.4c) / **Cset_c 全ツールキット**(D-eq-0)
+    - ✅ **term_nec(Buchholz 1.9 for wf3 terms)完全緑**〔necessity.thy・sub-agent TN〕: wf3 t⟹
+      oV t∈Cv_c α a⟹∀x∈Gterm a t. oV x<α。Cset_c_add_principal_elim(1.2e/g)で G_u 回避。
+    - ✅ **Cset_eq_Cset_c(Buchholz Remark)**〔necessity.thy・sub-agent RM・residue 1 sorry〕
+    - ✅ **B2 oV_noncanon_of_bad 緑**〔nrm.thy〕: bad係数⟹非canonical。term_nec+Remark で。
+    - 🚨🤖 ★残核ただ1つ＝**§1 simultaneous induction**（= residue `noncanon_gen_in_Cset_c_residue`
+      〔necessity.thy〕= psi_proj_nonmem〔nrm.thy〕、同一核）。canonical-rep 存在の (α,n)同時超限帰納。
+      Buchholz が "can be shown" と省略・lean も停滞。A2/nonmem は canonical witness=oV(proj a b) の
+      1.4a 同定に A2 自身を要し irreducibly circular。**sub-agent RES が本丸を攻撃中（G_u 構成 or 同時帰納）**。
   - 🚨 nrm_step_dec 直接証明〔nrmstep.thy〕＝旧値側ルート（凍結・第7事件で偽核含む）
   - 🚨🚨🚨 **健全性第7事件（最重大・続78）**: 旧値側基盤が closure+5/+6 で偽と確定。
     **偽（reachable 反例・モデル検証済）**: E6_value(proj=NT msfx)/E6_mem(msfx∈Gterm)/
