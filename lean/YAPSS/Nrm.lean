@@ -399,12 +399,35 @@ faces of the same Buchholz content, as the memory note warned). -/
 `psi_proj` glue and `proj_oV_mem_C`) to the proj-side value order
 `oV(proj 0 b) < oV(proj 0 f)`.  C-membership-free at `b` itself; the C-membership
 is supplied at the `0`-reduced fixpoint `proj 0 b` where it is *true*
-(`proj_oV_mem_C`). -/
+(`proj_oV_mem_C`).  NB: the proj-side hypothesis needs `proj`-monotonicity, which
+is **false** on `wf3` (a dead static-domain family); kept only as a fallback. -/
 theorem psi0_lt_of_proj_lt {b f : Three} (wb : wf3 b) (wf : wf3 f)
     (hproj_lt : oV.{u} (proj 0 b) < oV (proj 0 f)) :
     psi.{u} (oV b) 0 < psi (oV f) 0 := by
   rw [← psi_proj 0 b wb, ← psi_proj 0 f wf]
   exact psi_strict_mono_arg hproj_lt (proj_oV_mem_C 0 b wb)
+
+/-- **The clean sufficiency reduction (new main axis).**  The argument head
+`ψ_0(β₀) < ψ_0(α)` follows from a single `0`-canonical ordinal `γ` in the gap
+`[β₀, α)` — *no* `psi_proj`, *no* `proj`-monotonicity.  Proof: `γ ∈ C_0(γ) ⊆
+C_0(α)` (`CC_mono`, since `γ ≤ α`); `psi_strict_mono_mem` gives `ψ_0(γ) < ψ_0(α)`;
+`psi_mono_arg` gives `ψ_0(β₀) ≤ ψ_0(γ)`.  This isolates the whole argument-head
+content to the **existence of an in-gap `0`-canonical witness** — the sufficiency
+side of the Buchholz collapse. -/
+theorem psi0_lt_of_canon_between {β₀ γ α : Ordinal.{u}}
+    (hγc : γ ∈ Cset (psiRes γ) γ 0) (hbγ : β₀ ≤ γ) (hγα : γ < α) :
+    psi.{u} β₀ 0 < psi α 0 :=
+  lt_of_le_of_lt (psi_mono_arg hbγ 0)
+    (psi_strict_mono_mem (CC_mono hγα.le 0 hγc) hγα)
+
+/-- The argument head specialised to term values: `ψ_0(oV b) < ψ_0(oV f)` from an
+in-gap `0`-canonical witness `γ ∈ [oV b, oV f)`.  This is the crux interface for
+`oV_nf_arg_lt`: the remaining obligation is to **construct** such a `γ` from the
+`NF`/UBI/r1ok structure of `b, f`. -/
+theorem psi0_oV_lt_of_canon_between {b f : Three} {γ : Ordinal.{u}}
+    (hγc : γ ∈ Cset (psiRes γ) γ 0) (hbγ : oV b ≤ γ) (hγf : γ < oV f) :
+    psi.{u} (oV b) 0 < psi (oV f) 0 :=
+  psi0_lt_of_canon_between hγc hbγ hγf
 
 /-- **Argument-branch core (genuine UBI / row-1 content).**  At the outer
 subscript `0` (forced by `NF_lead0`), a strictly larger argument gives a strictly
