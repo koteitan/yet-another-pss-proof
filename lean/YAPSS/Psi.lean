@@ -870,4 +870,102 @@ theorem CsetW_witness_canonical {α γ : Ordinal.{u}} {v : ℕ}
     · obtain ⟨u, ⟨ξ, ⟨⟨⟨hξC, hξα⟩, hξcanon⟩, hξγ⟩⟩⟩ := Set.mem_iUnion.1 h3
       exact ⟨u, ξ, hξγ.symm, hξα, CiterW_subset_CsetW hξC, hξcanon⟩
 
+/-- **1.3 (strict mono) for `ψ^w`, given the with-C membership of the smaller
+canonical argument at the larger bound.**  The omitted `psi_strict_mono_arg`
+obtained `α ∈ Cset (psiResW β) β v` for free via `CC_mono` (the omitted set needs
+no canonicity); the with-C set requires *membership*, so it is taken here as the
+explicit hypothesis `aβ : α ∈ CsetW (psiResW β) β v`.  Everything else is the
+omitted proof transcribed. -/
+theorem psiW_strict_mono_arg_of_mem {α β : Ordinal} (hαβ : α < β)
+    {v : ℕ} (aβ : α ∈ CsetW (psiResW β) β v) (hαcanon : α ∈ Cset (psiResW α) α v) :
+    psiW α v < psiW β v := by
+  have le : α ≤ β := hαβ.le
+  have hmem : psiW α v ∈ CsetW (psiResW β) β v := by
+    have := CsetW_psi_closed aβ hαβ v (CsetW_self_canon_lift le hαcanon)
+    rwa [psiResW, if_pos hαβ] at this
+  have hne : psiW α v ≠ psiW β v := fun he => psiW_notMem β v (he ▸ hmem)
+  exact lt_of_le_of_ne (psiW_mono_arg le v) hne
+
+/-! ### `ψ^w` additive-principality and arg-extraction (necessity payoff) -/
+
+/-- **Lemma 1.2(b) for with-C**: `ψ^w_v(α)` is additive-principal.  Same proof
+shape as the omitted `psi_add_principal`, with `below_psiW_mem_CsetW` /
+`CsetW_add_closed` / `psiW_notMem`. -/
+theorem psiW_add_principal {α β γ : Ordinal} {v : ℕ}
+    (hβ : β < psiW α v) (hγ : γ < psiW α v) : β + γ < psiW α v := by
+  have betaC : β ∈ CsetW (psiResW α) α v := below_psiW_mem_CsetW hβ
+  have main : ∀ γ, γ < psiW α v → β + γ < psiW α v := by
+    intro γ
+    induction γ using WellFoundedLT.induction with
+    | _ γ IH =>
+      intro hγ
+      rcases Ordinal.zero_or_succ_or_isSuccLimit γ with rfl | ⟨η, hη⟩ | hl
+      · simpa using hβ
+      · obtain ⟨η, rfl⟩ : ∃ η', γ = η' + 1 := ⟨η, by rw [← hη, Order.succ_eq_add_one]⟩
+        have ηγ : η < η + 1 := lt_add_one η
+        have ed : η < psiW α v := lt_trans ηγ hγ
+        have bh : β + η < psiW α v := IH η ηγ ed
+        have bhC : β + η ∈ CsetW (psiResW α) α v := below_psiW_mem_CsetW bh
+        have d1 : (1 : Ordinal) < psiW α v := lt_of_le_of_lt (le_add_self) hγ
+        have oneC : (1 : Ordinal) ∈ CsetW (psiResW α) α v := below_psiW_mem_CsetW d1
+        have bg : β + (η + 1) = (β + η) + 1 := by rw [add_assoc]
+        have inC : β + (η + 1) ∈ CsetW (psiResW α) α v := by
+          rw [bg]; exact CsetW_add_closed bhC oneC
+        have le : β + (η + 1) ≤ psiW α v := by
+          rw [bg, Order.add_one_le_iff]; exact bh
+        exact lt_of_le_of_ne le fun he => psiW_notMem α v (he ▸ inC)
+      · have le : β + γ ≤ psiW α v := by
+          rw [Ordinal.add_le_iff_of_isSuccLimit hl]
+          intro z hz
+          exact (IH z hz (lt_trans hz hγ)).le
+        have gC : γ ∈ CsetW (psiResW α) α v := below_psiW_mem_CsetW hγ
+        have inC : β + γ ∈ CsetW (psiResW α) α v := CsetW_add_closed betaC gC
+        exact lt_of_le_of_ne le fun he => psiW_notMem α v (he ▸ inC)
+  exact main γ hγ
+
+theorem psiW_addprinc (α : Ordinal) (v : ℕ) : addprinc (psiW α v) := by
+  refine ⟨lt_of_lt_of_le (lt_of_lt_of_le zero_lt_one (one_le_Om v)) (Om_le_psiW α v), ?_⟩
+  exact fun β γ hβ hγ => psiW_add_principal hβ hγ
+
+/-- **Arg-extraction for `ψ^w` from `ψ^w`-injectivity-on-canonical (`INJ`).**
+The 1.4(b) canonical-witness lemma is now FREE (`CsetW_witness_canonical`), so the
+band logic that pins the witness `ξ` to `β` is *unconditional*; the only residual
+is that equal `ψ^w_a`-values of two `a`-canonical arguments force equality
+(`INJ` = with-C Buchholz 1.4(a)).  `INJ` itself reduces to `ψ^w` strict
+monotonicity (`psiW_strict_mono_arg_of_mem`) modulo the one residual membership
+`smaller-canonical ∈ C^w` at the larger bound — the with-C residue of the
+omitted=with equivalence, surfacing in 1.3/1.4(a) rather than 1.4(b).
+
+This theorem records that **once `INJ` holds, the necessity arg-extraction closes
+unconditionally** — the 1.4(b)-free payoff is genuine; the gap moved to 1.4(a). -/
+theorem argExtract_W
+    (INJ : ∀ (a : ℕ) (ξ ξ' : Ordinal.{u}),
+      ξ ∈ Cset (psiResW ξ) ξ a → ξ' ∈ Cset (psiResW ξ') ξ' a →
+      psiW ξ a = psiW ξ' a → ξ = ξ')
+    {v a : ℕ} {β α : Ordinal.{u}} (hva : v ≤ a)
+    (hβc : β ∈ Cset (psiResW β) β a)
+    (hmem : psiW β a ∈ CsetW (psiResW α) α v) :
+    β ∈ CsetW (psiResW α) α v := by
+  have hlo : Om v ≤ psiW β a := le_trans (Om_mono hva) (Om_le_psiW β a)
+  have hpr : Ordinal.IsPrincipal (· + ·) (psiW β a) :=
+    fun {x y} hx hy => (psiW_addprinc β a).2 x y hx hy
+  obtain ⟨u', ξ, heq, hξα, hξvW, hξc⟩ := CsetW_witness_canonical hpr hlo hmem
+  rw [psiResW, if_pos hξα] at heq
+  have hua : u' = a := by
+    have h1 : Om u' ≤ psiW β a := heq ▸ Om_le_psiW ξ u'
+    have h2 : psiW β a < Om (u' + 1) := heq ▸ psiW_lt_Om_succ ξ u'
+    have hua1 : u' ≤ a := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt h1 (psiW_lt_Om_succ β a)) (not_lt.2 (Om_mono (by omega)))
+    have hua2 : a ≤ u' := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt (Om_le_psiW β a) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  rw [hua] at heq hξc
+  have hξc_self : ξ ∈ Cset (psiResW ξ) ξ a :=
+    Cset_mono_param (le_refl ξ)
+      (fun ζ uu hζ => by rw [psiResW, psiResW, if_pos hζ, if_pos (lt_trans hζ hξα)]) hξc
+  have hξβ : ξ = β := INJ a ξ β hξc_self hβc heq.symm
+  rwa [← hξβ]
+
 end YAPSS
