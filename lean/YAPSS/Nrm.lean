@@ -353,13 +353,75 @@ theorem psi_proj (a : ℕ) (b : Three) (wb : wf3 b) :
     psi.{u} (oV (proj a b)) a = psi (oV b) a :=
   psi_proj_of_notmem a (psi_proj_notmem a) b wb
 
-/-- **Hard core 2 (standardness / UBI):** on `NF` the subscript-first order
-refines the `ψ`-value order.  Off `NF` this fails (the `y₂ <o y₁`, equal-value
-counterexample above is non-standard), so the proof must consume standardness
-(the UBI valid-forest / row-1 parenthood invariant). Still open. -/
+/-! ### Reduction of `oV_nf_order_pres` to its two genuine standardness cores
+
+The `wf3`-route value-order proof `oV_order_pres` splits `olt` into three
+branches (subscript `a<e`, argument `a=e, b<f`, tail `a=e,b=f,c<g`).  On `NF`
+that proof does **not** port, because each branch needs a `wf3` fact that is
+*false* on `NF`: the subscript branch needs `spinesub_le` (the row-1 spine
+bound — false on `NF`, 15745 violations at closure+8), and the argument branch
+needs the C-membership `oV b ∈ C_a(oV b)` (false on `NF`, 10185 violations even
+when the resulting `ψ`-inequality is true).  So a direct port is blocked.
+
+Two structural `NF` facts repair the split:
+
+* `NF_lead0`: every `NF` term's outer subscript is `0`.  Hence comparing two
+  `NF` terms, the **subscript branch cannot occur at the top** (`0 < 0` is
+  absurd) — it is eliminated unconditionally.
+* The remaining argument and tail branches are isolated as the two cores below.
+
+The tail-branch core `oV_nf_tail_lt` is the value-order statement on the
+*tail* (itself an `NF` term, verified hereditarily); the argument-branch core
+`oV_nf_arg_lt` is the genuine UBI/row-1 content (C-membership-free, see the
+design notes — collapse is excluded by `r1ok`, the dual of `psi_proj_notmem`). -/
+
+/-- **Argument-branch core (genuine UBI / row-1 content).**  At the outer
+subscript `0` (forced by `NF_lead0`), a strictly larger argument gives a
+strictly larger value.  This is C-membership-free: `ψ_0(oV b) < ψ_0(oV f)` holds
+on `NF` even where `oV b ∉ C_0(oV b)`, because standardness (`r1ok`) excludes the
+`ψ`-plateau (the dual of the collapsing obligation `psi_proj_notmem`).  The
+counterexample `y₂ <o y₁` (equal value) is exactly a non-standard plateau. -/
+theorem oV_nf_arg_lt {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
+    oV.{u} (P 0 b c) < oV (P 0 f g) := by
+  sorry
+
+/-- **Tail-branch core.**  The tail of an `NF` term is again an `NF` term, so
+this is the value-order statement on a strictly smaller `NF` pair.  (It reduces
+to `oV_nf_order_pres` on the tail once tail-`NF`-closure is available; kept
+separate for now.) -/
+theorem oV_nf_tail_lt {b c g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 b g) ∈ NF) (htail : olt c g) :
+    oV.{u} c < oV g := by
+  sorry
+
+/-- **Hard core 2 (standardness / UBI), now reduced.**  On `NF` the
+subscript-first order refines the `ψ`-value order.  The subscript branch is
+**eliminated** via `NF_lead0` (outer subscript `0`); only the argument core
+`oV_nf_arg_lt` and the tail core `oV_nf_tail_lt` remain. -/
 theorem oV_nf_order_pres {v u : Three} (hv : v ∈ NF) (hu : u ∈ NF)
     (h : olt v u) : oV.{u} v < oV u := by
-  sorry
+  cases v with
+  | Z =>
+    cases u with
+    | Z => exact absurd h (olt_irrefl Z)
+    | P e f g =>
+      have he : e = 0 := NF_lead0 hu rfl
+      subst he
+      simpa using oV_pos 0 f g
+  | P a b c =>
+    have ha : a = 0 := NF_lead0 hv rfl
+    subst ha
+    cases u with
+    | Z => exact absurd h (not_olt_Z _)
+    | P e f g =>
+      have he : e = 0 := NF_lead0 hu rfl
+      subst he
+      rcases olt_P_P.1 h with hsub | ⟨_, harg⟩ | ⟨_, rfl, htail⟩
+      · exact absurd hsub (lt_irrefl 0)
+      · exact oV_nf_arg_lt hv hu harg
+      · show psi (oV b) 0 + oV c < psi (oV b) 0 + oV g
+        exact add_lt_add_right (oV_nf_tail_lt hv hu htail) _
 
 /-- The remaining core, now REDUCED to the two hard cores above via the proven
 glue (`oV_ins`, `oV_order_refl`, `oV_nrm_of_psi_proj`).  This assembly is
