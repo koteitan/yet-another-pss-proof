@@ -43,11 +43,18 @@ and ya-pss's `Cset_c` route — now isolated to the *same* residual on both side
 **On `psi_proj_notmem`.**  ya-pss keeps the §1 core as *two* `sorry`s: the
 necessity-side `alpha_step_residue` (necessity.thy:1139) and the collapse-side
 `psi_proj_nonmem` (nrm.thy:186), explicitly the "same §1 core" but not reduced to
-one another.  We mirror this: the single *new* `sorry` of this file is
-`alpha_step_residue`; the collapse face is exposed as the named secondary
-`CollapseResidue` (stated in the green self machinery, NOT the dead
-interval-noncanonicity route), and `Nrm.psi_proj_notmem` is reduced to
-`alpha_step_residue ∧ CollapseResidue`.
+one another.  We mirror this with two residues: the closure face
+`CanonWitnessResidue` (⟶ `alpha_step_residue`, the only `sorry`) and the collapse
+face `CollapseResidue`.  They are genuinely independent in the formalization (see
+the independence note at file end); we keep both.
+
+**End-to-end payoff.**  `oV_nrm_eq_of_collapseResidue : CollapseResidue → ∀ t,
+oV (nrm t) = oV t` — the termination-relevant §1 consequence — is proven GREEN
+through `Nrm.lean`'s parametric chain, resting on the single `CollapseResidue`
+hypothesis (no `Nrm.lean` edit, no extra `sorry`; axiom profile WITHOUT `sorryAx`).
+`CollapseResidue` is stated in the omitted form `psi`/`Cset` (so the chain
+consumes it directly); the self-form `CollapseResidueSelf` (for attack via
+`collapseSelf_le`) is equivalent modulo `alpha_step_residue`.
 -/
 import YAPSS.Buchholz17
 import YAPSS.Nrm
@@ -293,22 +300,46 @@ content (`Cset = CsetSelf`, the Lean analogue of ya-pss's
 keeps these as *two distinct* `sorry`s (`alpha_step_residue` in `necessity.thy`
 vs. `psi_proj_nonmem` in `nrm.thy:186`), explicitly noting they are "the same §1
 core" that only Buchholz's simultaneous transfinite induction breaks, but neither
-is mechanically reduced to the other.  We mirror that faithfully: the genuine
-single new `sorry` is `alpha_step_residue`; the collapse face is exposed below as
-a clearly-named **secondary** statement, transported to the self form so it rests
-on the *self-collapse* machinery (`collapseSelf_le`) that `Cset = CsetSelf` now
-unlocks for the omitted form.
+is mechanically reduced to the other (see the independence note at the end of this
+file).  We mirror that faithfully: the genuine single new `sorry` is
+`alpha_step_residue`; the collapse face is exposed as the clearly-named
+**secondary** residue `CollapseResidue`.
 
-What the spine *does* buy here: by `psi_eq_psiSelf` / `Cset_eq_CsetSelf`, the
-omitted-form collapse obligation is **equivalent** to its self-form version, and
-self-non-canonicity is identified with omitted-form non-canonicity
-(`canon_iff_self`).  So the remaining collapse residue can be stated and consumed
-entirely in the green self machinery. -/
+**Design choice (this cleanup).**  `CollapseResidue` is stated in the *omitted*
+form `psi`/`Cset` — exactly the shape `Nrm.psi_proj_notmem` has and the
+`Nrm.lean` chain directly consumes.  This keeps the end-to-end payoff resting on
+**exactly one** residue hypothesis with **no** transport drag (the end-to-end
+theorem has axiom profile WITHOUT `sorryAx`; `sorryAx` only appears once you also
+plug in `alpha_step_residue` via the spine).  The self-form phrasing — useful for
+attacking the residue with the green `collapseSelf_le` machinery — is provided as
+the equivalent `CollapseResidueSelf` (the equivalence holds modulo
+`alpha_step_residue`, via `psi_eq_psiSelf`). -/
 
-/-- The omitted-form `psi_proj_notmem` is **equivalent** to its self-form
-counterpart, by the closure identity `psi_eq_psiSelf`.  GREEN modulo
-`alpha_step_residue` (through `psi_eq_psiSelf`). -/
-theorem psi_proj_notmem_iff_self {a : ℕ} {b' g : Three} (hle : oV.{u} b' ≤ oV g) :
+/-- **The collapse-side residue (omitted form).**  Lean analogue of ya-pss's
+`psi_proj_nonmem` (nrm.thy:186) — the *dual* face of `alpha_step_residue`, kept
+(as in ya-pss) as a separate statement.  Stated in the omitted machinery
+`psi`/`Cset`, i.e. *literally* `Nrm.psi_proj_notmem`'s statement, so the
+`Nrm.lean` chain consumes it with no transport.  Note: this is **NOT** the dead
+interval-noncanonicity `H` of `Nrm.psi_proj_notmem_of_intervalNoncanon` (false via
+Ω-crossing); it is the bare per-step collapse non-membership, the genuine TRUE
+statement. -/
+def CollapseResidue.{u} : Prop :=
+  ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
+    psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a
+
+/-- **The collapse-side residue (self form).**  The `CollapseResidue` content
+phrased in the green self machinery (`psiSelf`/`CsetSelf`), which is where the
+self-collapse tool `collapseSelf_le` lives.  Provided so the residue can be
+attacked self-side; equivalent to `CollapseResidue` modulo `alpha_step_residue`
+(`collapseResidue_iff_self`). -/
+def CollapseResidueSelf.{u} : Prop :=
+  ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
+    psiSelf.{u} (oV b') a ∉ CsetSelf (psiResSelf (oV g)) (oV g) a
+
+/-- The omitted/self collapse non-membership are **equivalent** pointwise, by the
+closure identity `psi_eq_psiSelf` / `Cset_eq_CsetSelf` (GREEN modulo
+`alpha_step_residue`).  The `≤` is not needed — it is a pure rewrite. -/
+theorem psi_proj_notmem_iff_self {a : ℕ} {b' g : Three} :
     psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a ↔
       psiSelf.{u} (oV b') a ∉ CsetSelf (psiResSelf.{u} (oV g)) (oV g) a := by
   have h1 : psi.{u} (oV b') a = psiSelf (oV b') a := psi_eq_psiSelf _ _
@@ -319,33 +350,102 @@ theorem psi_proj_notmem_iff_self {a : ℕ} {b' g : Three} (hle : oV.{u} b' ≤ o
     rw [h1, h2]
   exact not_congr (iff_of_eq hmem)
 
-/-- **The collapse-side residue (self form).**  Lean analogue of ya-pss's
-`psi_proj_nonmem` (nrm.thy:186) — the *dual* face of `alpha_step_residue`, kept
-(as in ya-pss) as a separate statement.  Stated in the green self machinery
-(`psiSelf`/`CsetSelf`).  Note: this is **NOT** the dead interval-noncanonicity
-`H` of `Nrm.psi_proj_notmem_of_intervalNoncanon` (which is false via Ω-crossing);
-it is the bare per-step collapse non-membership, the genuine TRUE statement. -/
-def CollapseResidue.{u} : Prop :=
-  ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
-    psiSelf.{u} (oV b') a ∉ CsetSelf (psiResSelf (oV g)) (oV g) a
+/-- `CollapseResidue ↔ CollapseResidueSelf` (GREEN modulo `alpha_step_residue`).
+Lets the residue be attacked in the self machinery and consumed in the omitted
+one interchangeably. -/
+theorem collapseResidue_iff_self : CollapseResidue.{u} ↔ CollapseResidueSelf.{u} := by
+  constructor
+  · exact fun CR a b' g wb' hg hv => psi_proj_notmem_iff_self.1 (CR a b' g wb' hg hv)
+  · exact fun CR a b' g wb' hg hv => psi_proj_notmem_iff_self.2 (CR a b' g wb' hg hv)
 
-/-- **`Nrm.lean`'s `psi_proj_notmem` from the collapse residue.**  Discharges the
-omitted-form obligation by transporting it to the self form
-(`psi_proj_notmem_iff_self`, green modulo `alpha_step_residue`) and applying the
-collapse residue.  Thus `Nrm.psi_proj_notmem` reduces to
-`alpha_step_residue ∧ CollapseResidue` — the two faces of the single Buchholz §1
-core, exactly as in ya-pss. -/
+/-- **`Nrm.lean`'s `psi_proj_notmem` from the collapse residue.**  Since
+`CollapseResidue` is the omitted form, this is *definitionally* the residue
+applied — no transport, no `alpha_step_residue`.  (The self-form variant
+`CollapseResidueSelf` is consumed via `collapseResidue_iff_self`, which does drag
+in `alpha_step_residue`.) -/
 theorem psi_proj_notmem_of_collapseResidue
     (CR : CollapseResidue.{u})
     (a : ℕ) (b' g : Three) (wb' : wf3 b')
     (hg : g ∈ Gterm a b') (hv : ¬ olt g b') :
-    psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a := by
-  have wg : wf3 g := wf3_Gterm wb' hg
-  have hle : oV.{u} b' ≤ oV g := by
-    rcases olt_total b' g with h | rfl | h
-    · exact (oV_order_pres wb' wg h).le
-    · exact le_rfl
-    · exact absurd h hv
-  exact (psi_proj_notmem_iff_self hle).2 (CR a b' g wb' hg hv)
+    psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a :=
+  CR a b' g wb' hg hv
+
+/-! ## END-TO-END: the `nrm` value-preservation payoff, modulo `CollapseResidue`
+
+The termination-relevant consequence that `Nrm.lean` ultimately wants from the §1
+collapse core is **`oV (nrm t) = oV t`** (`nrm` preserves the ordinal value), which
+is what makes the `Rnf`/`wf` argument go through.  `Nrm.lean` already exposes this
+as a *parameterized* chain:
+
+* `psi_proj_of_notmem`  : the per-step collapse `psi_proj_notmem` ⟹ `psi_proj`
+  (`proj` preserves `ψ_a`);
+* `oV_nrm_of_psi_proj`  : `psi_proj` ⟹ `oV (nrm t) = oV t`.
+
+Composing the §1-route reduction `psi_proj_notmem_of_collapseResidue` through both
+gives the single green end-to-end statement below.  No `Nrm.lean` edit is needed
+(the chain is parametric), and no dangling extra `sorry` is introduced: the whole
+chain rests on the **single** hypothesis `CollapseResidue` and nothing else.
+Because `CollapseResidue` is the omitted form, this end-to-end theorem's axiom
+profile is `[propext, Classical.choice, Quot.sound]` — **no `sorryAx`** (it would
+appear only after one *also* plugs in `alpha_step_residue` via the spine to
+discharge `CollapseResidue`). -/
+
+/-- **`proj` preserves `ψ_a`, modulo `CollapseResidue`.**  The §1-route discharge
+of `Nrm.psi_proj` (which in `Nrm.lean` rests on the open `psi_proj_notmem`). -/
+theorem psi_proj_of_collapseResidue (CR : CollapseResidue.{u})
+    (a : ℕ) (b : Three) (wb : wf3 b) :
+    psi.{u} (oV (proj a b)) a = psi (oV b) a :=
+  psi_proj_of_notmem a (fun b' g => psi_proj_notmem_of_collapseResidue CR a b' g) b wb
+
+/-- **END-TO-END: `nrm` preserves the ordinal value, modulo `CollapseResidue`.**
+`oV (nrm t) = oV t` for every term `t`, the termination-relevant §1 payoff, proven
+through the parametric `Nrm.lean` chain:
+`CollapseResidue` ⟹ `psi_proj_notmem` ⟹ `psi_proj` ⟹ `oV ∘ nrm = oV`.
+This is the clean single theorem a reader inspects to see "the §1 termination
+consequence holds modulo exactly the collapse residue".  Axiom profile:
+`[propext, Classical.choice, Quot.sound]` — NO `sorryAx`; the proof depends on
+nothing open beyond the explicit `CollapseResidue` hypothesis. -/
+theorem oV_nrm_eq_of_collapseResidue (CR : CollapseResidue.{u}) :
+    ∀ t : Three, oV.{u} (nrm t) = oV t :=
+  oV_nrm_of_psi_proj (fun a b wb => psi_proj_of_collapseResidue CR a b wb)
+
+/-! ## Are `CollapseResidue` and `CanonWitnessResidue` independent? — they are.
+
+**Finding: the two residues are genuinely independent in the formalization; we
+keep both (matching ya-pss), with a precise reason.**
+
+`CanonWitnessResidue α v ξ u` is a *closure-reproduction / existence* statement:
+the value `psiSelf ξ u` has a **canonical generator witness** `δ < α` inside
+`CsetSelf_α`.  Via the spine it yields `Cset = CsetSelf` and hence `psi = psiSelf`
+(`psi_eq_psiSelf`) — the **necessity / closure** content.
+
+`CollapseResidue` is a *value-equality (collapse)* statement: by
+`psi_notMem_iff_eq` (with `oV b' ≤ oV g`) it is exactly
+`psi (oV b') a = psi (oV g) a` for the OT3-violator pair — the **collapse**
+content (the gap `[oV b', oV g)` carries no new ψ-value).  (Equivalently in self
+form `CollapseResidueSelf`, `collapseResidue_iff_self`.)
+
+These do not reduce to one another:
+
+* `CollapseResidue ⇏` from the closure structure.  Even granting `Cset = CsetSelf`
+  (i.e. `CanonWitnessResidue` everywhere), the membership
+  `psi (oV b') a ∈ Cset (psiRes (oV g)) (oV g) a` only yields `oV b' < oV g` via
+  `psi_arg_lt_of_mem` — which is *consistent* with `oV b' ≤ oV g`, NOT a
+  contradiction.  So the closure/witness content cannot force the collapse
+  equality; that equality is an extra fact about the specific gap.
+* This mirrors ya-pss exactly: its `psi_proj_nonmem` (nrm.thy:186, the collapse
+  face) "needs `ξ = oV(proj a b) ≥ oV m`, whose value-identity is `psi_proj`
+  itself — the irreducible circularity"; ya-pss keeps it as a *separate* `sorry`
+  from `alpha_step_residue` (necessity.thy:1139, the closure face), explicitly the
+  "same §1 core" but not mechanically inter-reducible.
+
+So Lean reproduces the ya-pss two-residue picture independently:
+  - closure face: `CanonWitnessResidue` (⟶ `alpha_step_residue`, the psiSelf spine);
+  - collapse face: `CollapseResidue`.
+Both bottom out at Buchholz's single simultaneous transfinite induction (which
+proves closure + collapse *together*), but no sound first-order reduction collapses
+one to the other without re-running that induction.  Hence we keep both, and the
+end-to-end payoff `oV_nrm_eq_of_collapseResidue` rests on `CollapseResidue` (the
+collapse face is the one `Nrm.lean`'s chain actually consumes). -/
 
 end YAPSS
