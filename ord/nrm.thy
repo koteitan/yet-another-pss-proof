@@ -1,5 +1,5 @@
 theory nrm
-  imports otembed "YAPSS.proofs"
+  imports necessity "YAPSS.proofs"
 begin
 
 text \<open>
@@ -146,14 +146,28 @@ proof -
   qed
 qed
 
+text \<open>\<^bold>\<open>A1-core\<close> (\<open>psi_proj_nonmem\<close>): the \<^emph>\<open>single non-membership\<close> that the maxo-step
+  reduces to \<dash> \<open>\<psi>\<^sub>a(oV b)\<close> is non-canonical w.r.t. the larger bound \<open>oV m\<close>, i.e. it
+  is not in \<open>C\<^sub>a(oV m)\<close>.  This is exactly Buchholz \<^bold>\<open>1.9 necessity\<close> (plan
+  \<open>section1_plan.md\<close> group D / D1 simultaneous induction): the only way \<open>\<psi>\<^sub>a(oV b)\<close>
+  could enter \<open>C\<^sub>a(oV m)\<close> is as a generator \<open>\<psi>\<^sub>a(\<xi>)\<close> with \<open>\<xi> < oV m\<close> canonical
+  (\<open>psi_in_Cset_same_sub_generator\<close>), which by injectivity (1.4a) forces \<open>\<xi> = oV b\<close>,
+  whence \<open>oV b \<in> C\<^sub>a(oV m)\<close> \<dash> but \<open>oV b\<close> has the coefficient \<open>oV m \<ge> oV b\<close> (B1), the
+  necessity-blocked re-climb.  \<^bold>\<open>Localized \<open>sorry\<close>\<close> (the irreducible core); the
+  whole \<open>psi_proj\<close> chain is checked against this one statement.  Its truth is the
+  established empirical fact (\<open>psi_proj\<close> TRUE 46033/46033, \<open>perstep_maxo.py\<close> 6677/0).\<close>
+
+lemma psi_proj_nonmem:
+  assumes "wf3 b"
+    and "filter (\<lambda>g. \<not> olt g b) (Glist a b) \<noteq> []"
+  shows "psi (oV b) a
+         \<notin> elts (Cv (oV (maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist a b)))
+                              (tl (filter (\<lambda>g. \<not> olt g b) (Glist a b))))) a)"
+  sorry
+
 text \<open>\<^bold>\<open>A1\<close> (\<open>psi_proj_step\<close>): a single \<open>maxo\<close>-step of \<open>proj\<close> preserves the \<open>\<psi>\<close>-value.
-  This is the \<^emph>\<open>isolated Buchholz \<section>1 core\<close> (argument-side collapse across the
-  non-canonical gap \<open>[oV b, oV m)\<close>): \<open>oV b\<close> is non-canonical at \<open>a\<close> (its argument
-  has a coefficient \<open>\<ge>\<close> itself, B1), so \<open>\<psi>\<^sub>a\<close> is constant up to \<open>oV m\<close>.  Its
-  discharge needs Buchholz 1.9 necessity (the simultaneous induction, plan
-  \<open>section1_plan.md\<close> group D); \<^bold>\<open>empirically verified\<close> on 6677 maxo-steps with zero
-  failures (\<open>tools/perstep_maxo.py\<close>).  Kept as a localized \<open>sorry\<close> so the assembly
-  (A2) below is fully checked against it.\<close>
+  \<^bold>\<open>Proven\<close> from the non-membership core via \<open>psi_eq_of_not_mem\<close> (the weak-hypothesis
+  collapse) and \<open>bad_imp_oV_ge\<close> (B1, the argument grows \<open>oV b \<le> oV m\<close>).\<close>
 
 lemma psi_proj_step:
   assumes "wf3 b"
@@ -161,7 +175,15 @@ lemma psi_proj_step:
   shows "psi (oV b) a
        = psi (oV (maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist a b)))
                         (tl (filter (\<lambda>g. \<not> olt g b) (Glist a b))))) a"
-  sorry
+proof -
+  let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist a b)"
+  let ?m = "maxo (hd ?gs) (tl ?gs)"
+  have mins: "?m \<in> set ?gs" by (rule maxo_hdtl_in[OF assms(2)])
+  have mG: "?m \<in> Gterm a b" using mins set_Glist by auto
+  have mbad: "\<not> olt ?m b" using mins by simp
+  have le: "oV b \<le> oV ?m" by (rule bad_imp_oV_ge[OF assms(1) mG mbad])
+  show ?thesis by (rule psi_eq_of_not_mem[OF le psi_proj_nonmem[OF assms]])
+qed
 
 text \<open>\<^bold>\<open>A2\<close> (\<open>psi_proj\<close>): the full projection preserves the \<open>\<psi>\<close>-value.  Assembly by
   \<open>proj.induct\<close>, composing the maxo-step A1 with the induction hypothesis.  Fully

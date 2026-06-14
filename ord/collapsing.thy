@@ -106,6 +106,24 @@ lemma psi_eq_of_Cset_eq:
   shows "psi \<alpha> v = psi \<beta> v"
   by (simp add: psi_unfold[of \<alpha> v] psi_unfold[of \<beta> v] assms)
 
+text \<open>\<^bold>\<open>Collapse by single non-membership\<close>: if \<open>\<alpha> \<le> \<beta>\<close> and the value \<open>\<psi>\<^sub>v(\<alpha>)\<close> is
+  \<^emph>\<open>not\<close> in the larger closure \<open>C\<^sub>v(\<beta>)\<close>, then \<open>\<psi>\<^sub>v(\<alpha>) = \<psi>\<^sub>v(\<beta>)\<close>.  Weaker hypothesis
+  than \<open>collapse_grow\<close> (no whole-gap cleanness): we only need that the one ordinal
+  \<open>\<psi>\<^sub>v(\<alpha>)\<close> survives as a non-member.  This is the exact bridge the \<open>psi_proj\<close>
+  maxo-step needs (the argument grows, \<open>\<alpha> = oV b \<le> oV m = \<beta>\<close>, and \<open>\<psi>\<^sub>a(oV b)\<close> must
+  be shown non-canonical w.r.t. the larger bound \<dash> Buchholz 1.9 necessity).\<close>
+
+lemma psi_eq_of_not_mem:
+  assumes "\<alpha> \<le> \<beta>" and "psi \<alpha> v \<notin> elts (Cv \<beta> v)"
+  shows "psi \<alpha> v = psi \<beta> v"
+proof -
+  have le1: "psi \<alpha> v \<le> psi \<beta> v" by (rule psi_mono_arg[OF assms(1)])
+  have "(LEAST \<gamma>. Ord \<gamma> \<and> \<gamma> \<notin> elts (Cset (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> v)) \<le> psi \<alpha> v"
+    by (rule Ord_Least_le) (use assms(2) in auto)
+  hence "psi \<beta> v \<le> psi \<alpha> v" by (subst psi_unfold)
+  with le1 show ?thesis by simp
+qed
+
 text \<open>\<^bold>\<open>General collapsing\<close>: if the whole gap up to \<open>\<beta>\<close> is non-canonical
   (absent from \<open>C\<^sub>v(\<alpha>)\<close>), then \<open>\<psi>\<^sub>v\<close> is constant from \<open>\<alpha>\<close> to \<open>\<beta>\<close>.  This is the
   argument-side collapse the term-level \<open>psi_proj\<close> needs (\<open>proj\<close> grows the value
