@@ -4537,3 +4537,28 @@ modulo核/B2/Cset_c 全ツールキット/1.5/1.6a/1.2h/2.2c/wit 機構)。
 **今セッションの sub-agent 活用総括**: TN(term_nec 緑)+RM(Remark)+RES(核を canonical_witness_in_Cset_c に
 クリーン還元)。並列 worktree + ヒープ seed で効率化。3体とも soundness 厳守(偽補題 enshrine せず)。
 残り = canonical_witness_in_Cset_c の simultaneous induction(route A:G_u / route B:carried invariant)。
+
+### 続89(39-41): ★sub-agent 並列で PSS を「§1 でなく NF-構造核」に縮約(ユーザー指摘の解決)
+
+**ユーザー指摘「Buchholz §1 を移植しても PSS と繋がらないのでは」は正しかった**。実際 live top sorry は
+nrm_order_pres(olt v u⟹olt(nrm v)(nrm u) on NF)で psi_proj は live path 外。並列 sub-agent で本当の接続点を発見:
+
+- **AS(§1 仕上げ)**: alpha_step_residue を vacuity(閉包の ξ<α は常に v-canonical, H0 実測376695/0)で解消、
+  §1 核を **psi_value_acanon**(v≤w⟹acanon v(psi ζ w))に縮約。★偽補題 acanon_arg_lt を probe で破棄。
+- **★R2(構文ルート・本命)**: nrm_order_pres を **olt_ST_iff_seqlex で列側 reframe → 緑 assembly** 化。
+  green infra: untr(translate 左逆)/blockok_untr/translate_untr/sigma(=untr 0∘nrm∘translate)/translate_sigma/
+  blockok_sigma。**PSS live chain = PSS_terminates ← wf_Rnf_nrm ← nrm_order_pres ← `sigma_seqlex_mono`(唯一の live sorry)**。
+  核 sigma_seqlex_mono: M,N∈ST_PS⟹seqlex M N⟹seqlex(σM)(σN)。純組合せ(順序数/ψ不要)・深層 604450/0。
+- **R1(意味論ルート・代替)**: ord/ovnf.thy 新規。nrm 非依存の第2ルート。green infra:
+  wf_Rnf_oV/PSS_terminates_oV/cnf_* 群。核 **oV_mono_NF**(v,u∈NF⟹olt v u⟹oV v<oV u)・749525/0。
+  ★偽の cnf 弱化(oV_mono_cnf)を既知反例 y₂/y₁(両cnf だが nrm 等値⟹oV 等値)で破棄(第7事件再演防止)。
+
+**★現状確定**: PSS 停止性 = **2つの独立ルートの単一 NF-構造核**:
+  (A)nrm: `sigma_seqlex_mono`[列・seqlex・blockok・組合せ] (B)oV: `oV_mono_NF`[意味論]。
+  両者は同一の Buchholz 標準形核(NF=blockok 両 row が本質、cnf/wf3/r1ok 局所述語では不可)の双対。
+  **§1/psi_proj(psi_proj_nonmem/psi_value_acanon)は両 live path 外**(健全 infra だが PSS には不要)。
+- **次の本丸**: sigma_seqlex_mono(列側・最も clean な攻め面・seqlex_imp_olt のブロック帰納が雛形)
+  or oV_mono_NF。これが多セッション stall の真の crux。両方とも深層実測で反例ゼロ(偽でない)。
+- **sub-agent 運用知見**: worktree 分離 + isbman ヒープ seed で並列。各 agent に第7事件 soundness 警告
+  (深層 closure+5 で反証優先・偽補題 enshrine 厳禁)を渡したことで **2件の偽補題(acanon_arg_lt/oV_mono_cnf)を
+  未然に破棄**。git は agent 側 deny→worktree から手動統合(全文を本文に貼らせる)。
