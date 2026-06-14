@@ -4424,3 +4424,28 @@ psi_proj_nonmem(psi(oV b)a∉Cv(oV m)a)を D-eq-1(Cset=Cset_c)経由で割ろう
    psi_eq_of_not_mem / oV_le_proj / Cset_c 完全ツールキット(D-eq-0)。
 4. band-argument の誤り訂正、循環性核心の確定。
 **残核 = A2+nonmem の同時帰納(canonical-rep 存在 1.4b)= Buchholz §1 本丸**。周辺は全て揃った。
+
+### 続89(30-31): Buchholz 原論文精読 + 1.4(b) core 緑 — 残作業の正確ロードマップ確定
+
+**Buchholz 1986 §1-2 精読(PDF p.197-201)**:
+- 私の wf3=Buchholz OT、oV=o、olt=<、oV_order_pres=**2.2(c)**(necessity 無しで証明済=achievement)。
+- **nonmem の正しい証明 = 1.9 necessity**: ψ_a(oV b)∈Cv(oV m)a ⟹ G_a(ψ_a(oV b))⊆oV m。
+  G_a(ψ_a(oV b))={oV b}∪G_a(oV b)、2.2b で G_a(oV b)={oV x:x∈Gterm a b}∋oV m(bad係数,B1)。
+  oV m⊆oV m 偽 ⟹ 矛盾。
+- **1.9 は Cset_c 必須**(非canonical generator では G_u ξ が α 超過で 1.9 偽)。私の band_lt_psi
+  (=1.5)は値bound のみで unrestricted でも真だったが、1.9 は係数構造で canonicity 必須。
+- ロードマップ: G_u をオーダー数上に定義 → 1.4(c) → 1.9(Cset_c)→ Remark(Cv=Cv_c, collapse_succ
+  で非canonical redundancy)→ nonmem。詳細 section1_plan.md 続89(30)。
+
+**緑追加**: `indec_Cset_c_generator`(**Buchholz 1.4(b) core**): indec γ≥Om∈Cset_c ⟹
+γ=p ξ u, ξ∈Cset_c∩α, **acanon u ξ**(canonical), γ=p ξ u。Cset_c の generator step が
+canonicity を含むので witness が canonical で出る。leading generator の arg<α(=部分 necessity)。
+
+**循環の正確な所在**: nonmem で canonical ξ<oV m, psi ξ a=psi(oV b)a を得る(indec_Cset_c_generator
++psi_inj_subscript)。ξ を oV(proj a b)≥oV m と 1.4a で同一視するには psi(oV(proj a b))a=psi(oV b)a
+=**A2 自身**が要る ⟹ 循環。**Buchholz は G_u on ordinals + 1.9 で ordinal 側完結**させ、term 橋
+(2.2b)は最後。⟹ 次は **G_u on ordinals の定義**(closure-rank 再帰, canonical-rep 一意=1.4a)が
+prerequisite。これが最後の大きな部品。
+
+**緑資産(necessity.thy/collapsing.thy, sorry 無)**: 続89(29)の全部 + indec_Cset_c_generator。
+残 live sorry = psi_proj_nonmem(nrm.thy)。次=G_u定義→1.9→Remark→nonmem discharge。
