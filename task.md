@@ -67,6 +67,16 @@
       subs0_step_closed/decreases / **acc_subs0**（maxr1=0標準形は全accessible）・sorry無・crux-free〕。
     - 🚨 残: maxr1=1 base（r1ok要）→ level帰納 → **maxr1≥2＝crux本体**（再上昇正準化）。
     旧 nrm_order_pres（第7事件で偽核）放棄。
+  - 🔬 **§1 / psi_proj ルート（続89・意味論・nrm_order_pres を oV_mono_NF で迂回）〔ord/necessity.thy・nrm.thy〕**
+    > 目標 psi_proj: wf3 b ⟹ psi(oV b)a=psi(oV(proj a b))a。section1_plan.md 参照。
+    - ✅ scaffolding 緑: bad_imp_oV_ge(B1) / psi_proj_step(A1) / **psi_proj(A2 実証明 modulo nonmem)**〔nrm.thy〕
+    - ✅ 構造部品 緑〔necessity.thy〕: indec_Cset_generator（閉包の indec 元=generator）/
+      psi_in_Cset_same_sub_generator / band_lt_psi（Om(Suc a)-band 内元<psi δ a）/
+      psi_eq_of_not_mem（α≤β∧psi α v∉Cv β v⟹=・collapsing.thy）/ acanon 一式（spin 修正済）
+    - 🚨 ★残核ただ1つ＝**psi_proj_nonmem**: psi(oV b)a∉Cv(oV m)a = Buchholz 1.9 necessity
+      〔nrm.thy:166 sorry〕。A1⟺nonmem（実測真6677/0で健全）。proj は値を**上げる**ため
+      canonical witness≥oV m、band_lt_psi は consistency のみ⟹ canonical-rep 存在の
+      (α,n)同時超限帰納（D1）が irreducible。次セッション本丸。
   - 🚨 nrm_step_dec 直接証明〔nrmstep.thy〕＝旧値側ルート（凍結・第7事件で偽核含む）
   - 🚨🚨🚨 **健全性第7事件（最重大・続78）**: 旧値側基盤が closure+5/+6 で偽と確定。
     **偽（reachable 反例・モデル検証済）**: E6_value(proj=NT msfx)/E6_mem(msfx∈Gterm)/
