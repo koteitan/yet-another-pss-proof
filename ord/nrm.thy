@@ -157,6 +157,32 @@ text \<open>\<^bold>\<open>A1-core\<close> (\<open>psi_proj_nonmem\<close>): the
   whole \<open>psi_proj\<close> chain is checked against this one statement.  Its truth is the
   established empirical fact (\<open>psi_proj\<close> TRUE 46033/46033, \<open>perstep_maxo.py\<close> 6677/0).\<close>
 
+text \<open>\<^bold>\<open>B2\<close> (\<open>oV_noncanon_of_bad\<close>): a term with an OT3-violating critical subterm has a
+  \<^bold>\<open>non-canonical\<close> value.  Now \<^bold>\<open>provable\<close> from the sub-agent results: \<open>term_nec\<close>
+  (Buchholz 1.9 for \<open>wf3\<close> terms, green) + \<open>Cset_eq_Cset_c\<close> (the Remark) turn
+  "\<open>oV b\<close> canonical" into "all critical coefficients \<open>< oV b\<close>", contradicting
+  \<open>oV g \<ge> oV b\<close> (B1).  (Transitively rests on the one Remark residue \<open>sorry\<close>.)\<close>
+
+lemma oV_noncanon_of_bad:
+  assumes "wf3 b" and "g \<in> Gterm a b" and "\<not> olt g b"
+  shows "\<not> acanon a (oV b)"
+proof
+  assume "acanon a (oV b)"
+  hence "oV b \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b). psi \<xi>) (oV b) a)" unfolding acanon_def .
+  hence "oV b \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts (oV b). psi \<xi>) (oV b) a)"
+    using Cset_eq_Cset_c by blast
+  from term_nec[OF Ord_oV assms(1) this] have "oV g < oV b" using assms(2) by blast
+  moreover have "oV b \<le> oV g" by (rule bad_imp_oV_ge[OF assms(1,2,3)])
+  ultimately show False by simp
+qed
+
+text \<open>\<^bold>\<open>The remaining core\<close> \<open>psi_proj_nonmem\<close>: \<open>\<psi>\<^sub>a(oV b) \<notin> C\<^sub>a(oV m)\<close>.  With B2 the
+  \<open>\<xi> = oV b\<close> case of the generator analysis is excluded, but the genuine collapse
+  case (\<open>\<xi>\<close> a \<^emph>\<open>larger\<close> canonical witness \<open>< oV m\<close>) needs \<open>\<xi> = oV(proj a b) \<ge> oV m\<close>,
+  whose value-identity is \<open>psi_proj\<close> itself \<dash> the irreducible circularity that only
+  Buchholz's simultaneous transfinite induction breaks (= the same \<section>1 core as the
+  Remark residue).  Localized \<open>sorry\<close>; empirically TRUE (\<open>perstep_maxo.py\<close> 6677/0).\<close>
+
 lemma psi_proj_nonmem:
   assumes "wf3 b"
     and "filter (\<lambda>g. \<not> olt g b) (Glist a b) \<noteq> []"
