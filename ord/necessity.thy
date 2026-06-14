@@ -485,4 +485,62 @@ proof -
   thus ?thesis using Citer_c_in_Cset_c by blast
 qed
 
+text \<open>\<^bold>\<open>Buchholz 1.4(b) core\<close>: an indecomposable \<open>\<gamma> \<ge> \<Omega>\<^sub>v\<close> in the \<^emph>\<open>canonical\<close>
+  closure \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close> is a generator \<open>p \<xi> u\<close> whose argument \<open>\<xi>\<close> is \<^bold>\<open>canonical\<close>
+  (\<^const>\<open>acanon\<close> \<open>u \<xi>\<close>) and \<open>\<in> C\<^sup>c\<^sub>v(\<alpha>) \<inter> \<alpha>\<close>.  Mirror of \<open>indec_Cset_generator\<close> on
+  \<open>Cset_c\<close>; the difference is that the \<open>Cstep_c\<close> generator step \<^emph>\<open>builds in\<close> the
+  canonicity side-condition, so the witness is canonical for free \<dash> exactly why
+  Buchholz's (*)-definition makes 1.4(b) immediate.\<close>
+
+lemma indec_Cset_c_generator:
+  assumes ordp: "\<And>\<xi> u. \<xi> \<in> elts \<alpha> \<Longrightarrow> Ord (p \<xi> u)"
+    and indec: "indecomposable \<gamma>" and notOm: "\<gamma> \<notin> elts (Om v)"
+    and mem: "\<gamma> \<in> elts (Cset_c p \<alpha> v)"
+  shows "\<exists>\<xi> u. \<xi> \<in> elts (Cset_c p \<alpha> v) \<and> \<xi> \<in> elts \<alpha> \<and> acanon u \<xi> \<and> \<gamma> = p \<xi> u"
+proof -
+  have ordp': "\<forall>\<xi> u. \<xi> \<in> elts \<alpha> \<longrightarrow> Ord (p \<xi> u)" using ordp by blast
+  from mem obtain N where "\<gamma> \<in> elts ((Cstep_c p \<alpha> ^^ N) (Om v))" by (auto simp: Cset_c_mem_iff)
+  thus ?thesis
+  proof (induction N)
+    case 0
+    hence "\<gamma> \<in> elts (Om v)" by simp
+    with notOm show ?case by blast
+  next
+    case (Suc n)
+    from Suc.prems have instep: "\<gamma> \<in> elts (Cstep_c p \<alpha> ((Cstep_c p \<alpha> ^^ n) (Om v)))"
+      by (simp only: funpow.simps(2) comp_apply)
+    let ?X = "(Cstep_c p \<alpha> ^^ n) (Om v)"
+    from instep consider "\<gamma> \<in> elts ?X"
+      | \<xi> \<eta> where "\<xi> \<in> elts ?X" "\<eta> \<in> elts ?X" "\<gamma> = \<xi> + \<eta>"
+      | \<xi> u where "(\<xi>,u) \<in> {q \<in> (elts ?X \<inter> elts \<alpha>) \<times> (UNIV::nat set). acanon (snd q) (fst q)}"
+                   "\<gamma> = p \<xi> u"
+      by (auto simp: elts_Cstep_c)
+    thus ?case
+    proof cases
+      case 1 thus ?thesis by (rule Suc.IH)
+    next
+      case 2
+      have sub: "elts ?X \<subseteq> elts ((Cstep p \<alpha> ^^ n) (Om v))" by (rule Citer_c_subset_Citer)
+      have o\<xi>: "Ord \<xi>" using 2(1) sub Ord_Citer[OF ordp'] by blast
+      have o\<eta>: "Ord \<eta>" using 2(2) sub Ord_Citer[OF ordp'] by blast
+      have le\<xi>: "\<xi> \<le> \<gamma>" using 2(3) add_le_cancel_left0 by simp
+      have le\<eta>: "\<eta> \<le> \<gamma>" using 2(3) add_le_left[OF o\<xi> o\<eta>] by simp
+      have "\<not> (\<xi> < \<gamma> \<and> \<eta> < \<gamma>)"
+      proof
+        assume "\<xi> < \<gamma> \<and> \<eta> < \<gamma>"
+        hence "\<xi> + \<eta> < \<gamma>" using indecomposableD[OF indec _ _ o\<xi> o\<eta>] by blast
+        thus False using 2(3) by simp
+      qed
+      hence "\<gamma> = \<xi> \<or> \<gamma> = \<eta>" using le\<xi> le\<eta> by (auto simp: less_V_def)
+      hence "\<gamma> \<in> elts ?X" using 2(1,2) by auto
+      thus ?thesis by (rule Suc.IH)
+    next
+      case 3
+      have x\<alpha>: "\<xi> \<in> elts ?X \<inter> elts \<alpha>" and ac: "acanon u \<xi>" using 3(1) by auto
+      have "\<xi> \<in> elts (Cset_c p \<alpha> v)" using x\<alpha> Citer_c_in_Cset_c by blast
+      thus ?thesis using x\<alpha> ac 3(2) by blast
+    qed
+  qed
+qed
+
 end
