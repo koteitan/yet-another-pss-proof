@@ -344,4 +344,74 @@ proof (rule indecomposableD[OF indecomposable_psi _ assms(4) _ assms(3)])
   show "Ord (psi \<beta> v * ord_of_nat n)" by simp
 qed
 
+subsection \<open>Canonical-generator closure \<open>C\<^sup>c\<close> (Buchholz's side-condition (*), toward D-eq)\<close>
+
+text \<open>\<open>Cstep_c\<close>/\<open>Cset_c\<close> mirror \<open>Cstep\<close>/\<open>Cset\<close> but \<^emph>\<open>restrict the generator step\<close> to
+  \<^bold>\<open>canonical\<close> arguments \<open>\<xi> \<in> C\<^bsub>u\<^esub>(\<xi>)\<close> (\<^const>\<open>acanon\<close> \<open>u \<xi>\<close>) \<dash> exactly Buchholz's (*).
+  The aim (Buchholz's Remark / plan group D-eq) is \<open>Cset_c = Cset\<close>: non-canonical
+  generators are redundant.  Here we set up the definition and the \<^emph>\<open>easy\<close>
+  inclusion \<open>Cset_c \<subseteq> Cset\<close>; the reverse (the \<section>1 core) is the simultaneous
+  induction.  \<^const>\<open>acanon\<close> is kept folded throughout (no \<open>auto\<close>/\<open>simp\<close> exposure).\<close>
+
+definition Cstep_c :: "(V \<Rightarrow> nat \<Rightarrow> V) \<Rightarrow> V \<Rightarrow> V \<Rightarrow> V" where
+  "Cstep_c p \<alpha> X =
+     X \<squnion> ZFC_in_HOL.set ((\<lambda>(\<xi>,\<eta>). \<xi> + \<eta>) ` (elts X \<times> elts X))
+       \<squnion> ZFC_in_HOL.set ((\<lambda>(\<xi>,u). p \<xi> u)
+                 ` {q \<in> (elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set). acanon (snd q) (fst q)})"
+
+lemma small_Cstep_c_gen:
+  "small ((\<lambda>(\<xi>,u::nat). p \<xi> u)
+            ` {q \<in> (elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set). acanon (snd q) (fst q)})"
+proof -
+  have nat: "small (UNIV::nat set)" using small_image_nat[of "\<lambda>x. x" UNIV] by simp
+  have "small (elts X \<inter> elts \<alpha>)" using smaller_than_small[OF small_elts Int_lower1] .
+  from small_Times[OF this nat] have sp: "small ((elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set))" .
+  have sub: "{q \<in> (elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set). acanon (snd q) (fst q)}
+               \<subseteq> (elts X \<inter> elts \<alpha>) \<times> UNIV" by blast
+  have "small {q \<in> (elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set). acanon (snd q) (fst q)}"
+    using smaller_than_small[OF sp sub] .
+  thus ?thesis using replacement[where f="\<lambda>(\<xi>,u::nat). p \<xi> u"] by blast
+qed
+
+lemma elts_Cstep_c:
+  "elts (Cstep_c p \<alpha> X) = elts X
+     \<union> (\<lambda>(\<xi>,\<eta>). \<xi> + \<eta>) ` (elts X \<times> elts X)
+     \<union> (\<lambda>(\<xi>,u). p \<xi> u) ` {q \<in> (elts X \<inter> elts \<alpha>) \<times> (UNIV::nat set). acanon (snd q) (fst q)}"
+  unfolding Cstep_c_def by (simp add: small_Cstep_images(1) small_Cstep_c_gen)
+
+lemma Cstep_c_subset_Cstep: "elts (Cstep_c p \<alpha> X) \<subseteq> elts (Cstep p \<alpha> X)"
+  by (auto simp: elts_Cstep_c elts_Cstep)
+
+definition Cset_c :: "(V \<Rightarrow> nat \<Rightarrow> V) \<Rightarrow> V \<Rightarrow> nat \<Rightarrow> V" where
+  "Cset_c p \<alpha> v = \<Squnion> (range (\<lambda>n. (Cstep_c p \<alpha> ^^ n) (Om v)))"
+
+lemma elts_Cset_c: "elts (Cset_c p \<alpha> v) = (\<Union>n. elts ((Cstep_c p \<alpha> ^^ n) (Om v)))"
+  by (simp add: Cset_c_def)
+
+lemma Citer_c_subset_Citer:
+  "elts ((Cstep_c p \<alpha> ^^ n) (Om v)) \<subseteq> elts ((Cstep p \<alpha> ^^ n) (Om v))"
+proof (induction n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  have "elts ((Cstep_c p \<alpha> ^^ Suc n) (Om v))
+          = elts (Cstep_c p \<alpha> ((Cstep_c p \<alpha> ^^ n) (Om v)))"
+    by (simp only: funpow.simps(2) comp_apply)
+  also have "\<dots> \<subseteq> elts (Cstep p \<alpha> ((Cstep_c p \<alpha> ^^ n) (Om v)))"
+    by (rule Cstep_c_subset_Cstep)
+  also have "\<dots> \<subseteq> elts (Cstep p \<alpha> ((Cstep p \<alpha> ^^ n) (Om v)))"
+  proof (rule Cstep_mono_param[OF subset_refl _ Suc.IH])
+    show "\<forall>\<xi> u. \<xi> \<in> elts \<alpha> \<longrightarrow> p \<xi> u = p \<xi> u" by simp
+  qed
+  also have "\<dots> = elts ((Cstep p \<alpha> ^^ Suc n) (Om v))"
+    by (simp only: funpow.simps(2) comp_apply)
+  finally show ?case .
+qed
+
+text \<open>\<^bold>\<open>Easy inclusion\<close>: canonical-generator closure \<open>\<subseteq>\<close> full closure (fewer
+  generators).  The reverse \<open>Cset \<subseteq> Cset_c\<close> (Buchholz's Remark) is the \<section>1 core.\<close>
+
+lemma Cset_c_subset_Cset: "elts (Cset_c p \<alpha> v) \<subseteq> elts (Cset p \<alpha> v)"
+  by (auto simp: elts_Cset_c elts_Cset Citer_c_subset_Citer[THEN subsetD])
+
 end
