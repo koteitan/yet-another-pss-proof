@@ -429,6 +429,31 @@ theorem psi0_oV_lt_of_canon_between {b f : Three} {γ : Ordinal.{u}}
     psi.{u} (oV b) 0 < psi (oV f) 0 :=
   psi0_lt_of_canon_between hγc hbγ hγf
 
+/-- **Witness existence ⟺ non-collapse** (the converse direction, via
+`collapse_le`'s contrapositive).  If `ψ_a` is *not* constant on `[α, β]` then the
+gap `[α, β)` contains an `a`-canonical ordinal.  Combined with
+`psi0_lt_of_canon_between`, this shows the in-gap canonical witness is **equivalent
+to** the strict inequality `ψ_a α < ψ_a β` (given `α ≤ β`, `psi_mono_arg` makes
+non-equality and strictness coincide).  So the witness search is neither easier
+nor harder than the head itself; the true content is **non-collapse on `NF`**. -/
+theorem canon_witness_of_psi_ne {a : ℕ} {α β : Ordinal.{u}} (hαβ : α ≤ β)
+    (hne : psi α a ≠ psi β a) :
+    ∃ γ, α ≤ γ ∧ γ < β ∧ γ ∈ Cset (psiRes γ) γ a := by
+  by_contra hno
+  push Not at hno
+  exact hne (collapse_le β α hαβ (fun γ hγα hγβ => hno γ hγα hγβ))
+
+/-- **The argument head ⟺ non-collapse.**  Given `oV b ≤ oV f`, the strict
+inequality `ψ_0(oV b) < ψ_0(oV f)` holds **iff** `ψ_0(oV b) ≠ ψ_0(oV f)`
+(`psi_mono_arg` upgrades `≤` + `≠` to `<`).  So the entire argument-head content
+on `NF` is the single fact: *standardness excludes the `ψ_0`-plateau between
+`oV b` and `oV f`* — the dual of the collapsing obligation `psi_proj_notmem`. -/
+theorem psi0_oV_lt_iff_ne {b f : Three} (hle : oV.{u} b ≤ oV f) :
+    psi.{u} (oV b) 0 < psi (oV f) 0 ↔ psi (oV b) 0 ≠ psi (oV f) 0 := by
+  constructor
+  · exact fun h => ne_of_lt h
+  · exact fun hne => lt_of_le_of_ne (psi_mono_arg hle 0) hne
+
 /-- **Argument-branch core (genuine UBI / row-1 content).**  At the outer
 subscript `0` (forced by `NF_lead0`), a strictly larger argument gives a strictly
 larger value.  Reduces to the argument head `psi0_lt_of_proj_lt` (which routes
