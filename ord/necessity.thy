@@ -1006,10 +1006,16 @@ text \<open>\<^bold>\<open>Buchholz's Remark\<close> (the redundancy of the non-
   (\<open>psi_le_of_not_acanon\<close>) and the value is itself non-canonical
   (\<open>noncanon_value_noncanon\<close>); reproducing it in \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close> needs the cross-subscript
   collapse of the non-canonical argument to a canonical witness inside the closure.
-  It is isolated below as the single lemma \<open>noncanon_gen_in_Cset_c_residue\<close>
-  (\<^bold>\<open>one localized \<open>sorry\<close>\<close>).  Everything else is green, and a finite-CNF model
-  check (\<^file>\<open>../tools/cset_remark_check.py\<close>) found \<open>C\<^sub>v(\<alpha>) = C\<^sup>c\<^sub>v(\<alpha>)\<close> in all
-  48 tested \<open>(\<alpha>,v)\<close> instances (no counterexample), so the residue is not false.\<close>
+
+  \<^bold>\<open>Route B (this session).\<close>  The whole Remark is now proved by the \<^bold>\<open>simultaneous
+  transfinite induction on \<open>\<alpha>\<close>\<close> of \<open>Citer_subset_Cset_c_alpha\<close> (outer \<open>Ord_induct\<close>
+  on \<open>\<alpha>\<close>, inner closure-rank \<open>n\<close>), and the single \<open>sorry\<close> is reduced to the one
+  genuinely-Buchholz step \<open>alpha_step_residue\<close> \<dash> the non-canonical generator
+  sub-case \<^bold>\<open>carrying the \<open>\<alpha>\<close>-induction hypothesis\<close> for arguments \<open>< \<alpha>\<close>.  All the
+  closure-rank cases and the canonical / low-subscript generator cases are green.
+  A finite-CNF model check (\<^file>\<open>../tools/cset_remark_check.py\<close>) found
+  \<open>C\<^sub>v(\<alpha>) = C\<^sup>c\<^sub>v(\<alpha>)\<close> in all 48 tested \<open>(\<alpha>,v)\<close> instances (no counterexample), so the
+  residue is not false.\<close>
 
 text \<open>A non-canonical generator value is itself non-canonical and \<open>\<le>\<close> its argument:
   \<open>\<psi>\<^sub>w(\<xi>) \<le> \<xi>\<close> and \<open>\<not> acanon w (\<psi>\<^sub>w(\<xi>))\<close>.  (If the value were canonical it would
@@ -1097,52 +1103,199 @@ qed
 text \<open>\<^bold>\<open>The localized residue (single \<open>sorry\<close>, isolated to the Buchholz \<section>1 core)\<close>.
 
   A \<^emph>\<open>non-canonical\<close> generator \<open>\<psi>\<^sub>w(\<xi>)\<close> with subscript \<open>w \<ge> v\<close> and argument
-  \<open>\<xi> \<in> C\<^sup>c\<^sub>v(\<alpha>) \<inter> \<alpha>\<close> is reproduced in \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close>.  By \<open>noncanon_value_noncanon\<close> the
-  value \<open>c = \<psi>\<^sub>w(\<xi>) \<le> \<xi> < \<alpha>\<close> and the value itself is non-canonical; by the
-  scaffolding above the \<^emph>\<open>least witness\<close> \<open>wit \<xi> w\<close> reproduces \<open>c\<close> and is \<open>\<le> \<xi>\<close>, but
-  it may be a non-canonical \<open>\<psi>\<close>-fixpoint (RM), so it is not directly usable.
+  \<open>\<xi> \<in> C\<^sup>c\<^sub>v(\<alpha>) \<inter> \<alpha>\<close> is reproduced in \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close>.
 
-  The remaining content \<dash> the existence of a \<^bold>\<open>canonical witness inside the
-  closure\<close> \<dash> is exactly Buchholz's deferred "can be shown".  We isolate it as the
-  single hypothesis \<open>canonical_witness_in_Cset_c\<close>: there is a canonical
-  \<open>\<delta> \<in> \<alpha> \<inter> C\<^sup>c\<^sub>v(\<alpha>)\<close> with \<open>\<psi>\<^sub>w(\<delta>) = \<psi>\<^sub>w(\<xi>)\<close>.  Granting it, the residue is
-  \<^bold>\<open>green\<close> via \<open>Cset_c_gen_closed\<close>.  This statement is the Buchholz \<section>1
-  simultaneous transfinite induction core (closure-rank induction on \<open>\<alpha>\<close> carrying
-  the canonical-rep invariant); it is the single irreducible \<open>sorry\<close>.\<close>
+  \<^bold>\<open>Reduction (this session).\<close>  The previous formulation isolated the
+  \<^emph>\<open>existence of a canonical witness\<close> \<open>canonical_witness_in_Cset_c\<close>.  We sharpen
+  the residue to its most primitive form, the bare \<^bold>\<open>value-membership\<close>
+  \<open>\<psi>\<^sub>w(\<xi>) \<in> C\<^sup>c\<^sub>v(\<alpha>)\<close> (\<open>value_in_Cset_c_residue\<close>), and show this single statement
+  \<^emph>\<open>implies\<close> the canonical-witness existence \<^bold>\<open>as a theorem\<close>:
 
-lemma canonical_witness_in_Cset_c:
-  assumes "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
-    and "\<not> acanon w \<xi>" "v \<le> w"
-  shows "\<exists>\<delta>. Ord \<delta> \<and> \<delta> \<in> elts \<alpha> \<and> \<delta> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)
-              \<and> acanon w \<delta> \<and> psi \<delta> w = psi \<xi> w"
+  \<^item> the value \<open>c = \<psi>\<^sub>w(\<xi>)\<close> is additively indecomposable (\<open>indecomposable_psi\<close>)
+    and \<open>\<ge> \<Omega>\<^sub>w \<ge> \<Omega>\<^sub>v\<close> (since \<open>v \<le> w\<close>), hence \<open>c \<notin> \<Omega>\<^sub>v\<close>;
+  \<^item> granting \<open>c \<in> C\<^sup>c\<^sub>v(\<alpha>)\<close>, the canonical-generator extraction
+    \<open>indec_Cset_c_generator\<close> produces a \<^bold>\<open>canonical\<close> argument \<open>\<delta> \<in> C\<^sup>c\<^sub>v(\<alpha>) \<inter> \<alpha>\<close>
+    with \<open>c = \<psi>\<^sub>u(\<delta>)\<close>, and \<open>psi_inj_subscript\<close> forces \<open>u = w\<close>.
+
+  So the canonical witness is \<^emph>\<open>recovered\<close>, not assumed.  The two old \<open>sorry\<close>s
+  (\<open>canonical_witness_in_Cset_c\<close> and the value membership inside
+  \<open>noncanon_gen_in_Cset_c_residue\<close>) are thereby \<^bold>\<open>equivalent\<close>, and we keep the
+  single most primitive one.  \<open>value_in_Cset_c_residue\<close> is exactly Buchholz's
+  Remark content (\<open>C\<^sub>v(\<alpha>) \<subseteq> C\<^sup>c\<^sub>v(\<alpha>)\<close> reduces to it via \<open>Cset_psi_closed\<close>), and
+  is the Buchholz \<section>1 simultaneous transfinite induction core; it is the single
+  irreducible \<open>sorry\<close>.\<close>
+
+text \<open>\<^bold>\<open>The single open obligation (this session), now carrying the inductive
+  hypothesis\<close>.  The non-canonical generator step of the closure-rank induction,
+  with the \<^bold>\<open>\<open>\<alpha>\<close>-induction hypothesis\<close> \<open>IH\<close> made an explicit local assumption:
+  for every smaller argument \<open>\<beta> \<in> \<alpha>\<close>, the full closure of \<open>\<beta>\<close> is already
+  canonical (\<open>C\<^sub>{u'}(\<beta>) \<subseteq> C\<^sup>c\<^bsub>u'\<^esub>(\<beta>)\<close>).  This is exactly the carried invariant of
+  Buchholz's \<section>1 simultaneous transfinite induction (plan \<open>section1_plan.md\<close>
+  D1, route B): the previous \<open>value_in_Cset_c_residue\<close> \<open>sorry\<close> had \<^emph>\<open>no\<close> inductive
+  hypothesis available; here the IH for arguments \<open>< \<alpha>\<close> is supplied.  The
+  remaining content is the cross-subscript canonical collapse of the
+  non-canonical argument \<open>\<xi>\<close> using \<open>IH\<close> at \<open>\<xi> < \<alpha>\<close>.\<close>
+
+lemma alpha_step_residue:
+  assumes IH: "\<And>\<beta> u' m y. \<beta> \<in> elts \<alpha> \<Longrightarrow>
+                 y \<in> elts ((Cstep (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> ^^ m) (Om u'))
+                 \<Longrightarrow> y \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<beta>. psi \<xi>) \<beta> u')"
+    and "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
+    and "\<not> acanon u \<xi>" "v \<le> u"
+  shows "psi \<xi> u \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
   sorry
 
-lemma noncanon_gen_in_Cset_c_residue:
-  assumes "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
+text \<open>\<^bold>\<open>The \<open>\<alpha>\<close>-induction (route B), green modulo \<open>alpha_step_residue\<close>\<close>.  The full
+  closure \<open>C\<^sub>v(\<alpha>)\<close> sits inside the canonical closure \<open>C\<^sup>c\<^sub>v(\<alpha>)\<close>, proved by
+  transfinite induction on \<open>\<alpha>\<close> (outer) and closure rank \<open>n\<close> (inner).  Every step
+  is discharged except the non-canonical generator sub-case, which is
+  \<open>alpha_step_residue\<close> \<dash> and that sub-case now has the \<open>\<alpha>\<close>-IH (\<open>step.IH\<close>)
+  available, exactly as Buchholz's simultaneous induction requires.\<close>
+
+lemma Citer_subset_Cset_c_alpha:
+  assumes "Ord \<alpha>"
+  shows "\<And>v n x. x \<in> elts ((Cstep (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> ^^ n) (Om v))
+                 \<Longrightarrow> x \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  using assms
+proof (induction \<alpha> rule: Ord_induct)
+  case (step \<alpha>)
+  let ?p = "\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>"
+  show "\<And>v n x. x \<in> elts ((Cstep ?p \<alpha> ^^ n) (Om v)) \<Longrightarrow> x \<in> elts (Cset_c ?p \<alpha> v)"
+  proof -
+    fix v n x
+    show "x \<in> elts ((Cstep ?p \<alpha> ^^ n) (Om v)) \<Longrightarrow> x \<in> elts (Cset_c ?p \<alpha> v)"
+    proof (induction n arbitrary: x)
+      case 0
+      hence "x \<in> elts (Om v)" by simp
+      thus ?case using Om_subset_Cset_c by blast
+    next
+      case (Suc n)
+      have ordp': "\<forall>\<zeta> u. \<zeta> \<in> elts \<alpha> \<longrightarrow> Ord (?p \<zeta> u)" by simp
+      from Suc.prems have "x \<in> elts (Cstep ?p \<alpha> ((Cstep ?p \<alpha> ^^ n) (Om v)))"
+        by (simp only: funpow.simps(2) comp_apply)
+      then consider "x \<in> elts ((Cstep ?p \<alpha> ^^ n) (Om v))"
+        | \<xi> \<eta> where "\<xi> \<in> elts ((Cstep ?p \<alpha> ^^ n) (Om v))"
+                    "\<eta> \<in> elts ((Cstep ?p \<alpha> ^^ n) (Om v))" "x = \<xi> + \<eta>"
+        | \<xi> u where "\<xi> \<in> elts ((Cstep ?p \<alpha> ^^ n) (Om v))" "\<xi> \<in> elts \<alpha>" "x = ?p \<xi> u"
+        by (auto simp: elts_Cstep)
+      thus ?case
+      proof cases
+        case 1 thus ?thesis using Suc.IH by blast
+      next
+        case 2
+        have "\<xi> \<in> elts (Cset_c ?p \<alpha> v)" "\<eta> \<in> elts (Cset_c ?p \<alpha> v)"
+          using 2(1,2) Suc.IH by blast+
+        thus ?thesis using 2(3) Cset_c_add_closed by blast
+      next
+        case 3
+        have xc: "\<xi> \<in> elts (Cset_c ?p \<alpha> v)" using 3(1) Suc.IH by blast
+        have ox: "Ord \<xi>" using 3(1) Ord_Citer[OF ordp'] by blast
+        have val: "x = psi \<xi> u" using 3(2,3) by simp
+        show ?thesis
+        proof (cases "acanon u \<xi>")
+          case True
+          have "?p \<xi> u \<in> elts (Cset_c ?p \<alpha> v)"
+            by (rule Cset_c_gen_closed[OF xc 3(2) True])
+          hence "psi \<xi> u \<in> elts (Cset_c ?p \<alpha> v)" using 3(2) by simp
+          thus ?thesis using val by (simp add: restrict_def)
+        next
+          case False
+          show ?thesis
+          proof (cases "u < v")
+            case True
+            have "psi \<xi> u \<in> elts (Om v)" by (rule psi_low_sub_in_Om[OF True])
+            thus ?thesis using val Om_subset_Cset_c by blast
+          next
+            case False
+            hence vleu: "v \<le> u" by simp
+            have "psi \<xi> u \<in> elts (Cset_c ?p \<alpha> v)"
+              by (rule alpha_step_residue[OF step.IH ox xc 3(2) \<open>\<not> acanon u \<xi>\<close> vleu])
+            thus ?thesis using val by (simp add: restrict_def)
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+text \<open>From the \<open>\<alpha>\<close>-induction inclusion, the value-membership residue follows.
+  GREEN modulo \<open>alpha_step_residue\<close>.\<close>
+
+lemma value_in_Cset_c_residue:
+  assumes "Ord \<alpha>"
+    and "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
     and "\<not> acanon w \<xi>" "v \<le> w"
   shows "psi \<xi> w \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
 proof -
-  obtain \<delta> where \<delta>: "Ord \<delta>" "\<delta> \<in> elts \<alpha>"
-      "\<delta> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "acanon w \<delta>" "psi \<delta> w = psi \<xi> w"
-    using canonical_witness_in_Cset_c[OF assms] by blast
-  have "(\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<delta> w \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
-    by (rule Cset_c_gen_closed[OF \<delta>(3) \<delta>(2) \<delta>(4)])
-  hence "psi \<delta> w \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" using \<delta>(2) by simp
-  thus ?thesis using \<delta>(5) by simp
+  let ?p = "\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>"
+  have xiCset: "\<xi> \<in> elts (Cset ?p \<alpha> v)"
+    using assms(3) Cset_c_subset_Cset by blast
+  have "?p \<xi> w \<in> elts (Cset ?p \<alpha> v)"
+    by (rule Cset_psi_closed[OF xiCset assms(4)])
+  hence "psi \<xi> w \<in> elts (Cset ?p \<alpha> v)" using assms(4) by simp
+  then obtain n where "psi \<xi> w \<in> elts ((Cstep ?p \<alpha> ^^ n) (Om v))"
+    by (auto simp: Cset_mem_iff)
+  thus ?thesis by (rule Citer_subset_Cset_c_alpha[OF assms(1)])
 qed
+
+text \<open>The canonical witness now follows \<^bold>\<open>as a theorem\<close> from the value-membership
+  residue, via canonical-generator extraction and subscript injectivity.\<close>
+
+lemma canonical_witness_in_Cset_c:
+  assumes "Ord \<alpha>"
+    and "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
+    and "\<not> acanon w \<xi>" "v \<le> w"
+  shows "\<exists>\<delta>. Ord \<delta> \<and> \<delta> \<in> elts \<alpha> \<and> \<delta> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)
+              \<and> acanon w \<delta> \<and> psi \<delta> w = psi \<xi> w"
+proof -
+  let ?p = "\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>"
+  have ordp: "\<And>\<zeta> u. \<zeta> \<in> elts \<alpha> \<Longrightarrow> Ord (?p \<zeta> u)" by simp
+  have cmem: "psi \<xi> w \<in> elts (Cset_c ?p \<alpha> v)"
+    by (rule value_in_Cset_c_residue[OF assms])
+  have notOm: "psi \<xi> w \<notin> elts (Om v)"
+  proof
+    assume "psi \<xi> w \<in> elts (Om v)"
+    hence "psi \<xi> w < Om v" using Ord_mem_iff_lt[OF Ord_psi Ord_Om] by blast
+    moreover have "Om v \<le> Om w" using \<open>v \<le> w\<close> by (simp add: Om_mono)
+    moreover have "Om w \<le> psi \<xi> w" by (rule Om_le_psi)
+    ultimately show False by simp
+  qed
+  from indec_Cset_c_generator[OF ordp indecomposable_psi notOm cmem]
+  obtain \<delta> u where \<delta>: "\<delta> \<in> elts (Cset_c ?p \<alpha> v)" "\<delta> \<in> elts \<alpha>"
+      "acanon u \<delta>" "psi \<xi> w = ?p \<delta> u" by blast
+  have val: "psi \<xi> w = psi \<delta> u" using \<delta>(2,4) by simp
+  have uw: "w = u" by (rule psi_inj_subscript[OF val])
+  have acw: "acanon w \<delta>" using \<delta>(3) uw by simp
+  have dmem: "\<delta> \<in> elts (Cset (\<lambda>\<eta>\<in>elts \<delta>. psi \<eta>) \<delta> w)"
+    using acw unfolding acanon_def .
+  have Od: "Ord \<delta>"
+    by (rule Cset_Ord[OF _ dmem]) (simp add: Ord_psi)
+  show ?thesis using Od \<delta>(1,2) acw val uw by metis
+qed
+
+text \<open>The residue lemma in its original \<open>\<psi>\<close>-generator phrasing: now a direct
+  restatement of \<open>value_in_Cset_c_residue\<close>.\<close>
+
+lemma noncanon_gen_in_Cset_c_residue:
+  assumes "Ord \<alpha>"
+    and "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
+    and "\<not> acanon w \<xi>" "v \<le> w"
+  shows "psi \<xi> w \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  by (rule value_in_Cset_c_residue[OF assms])
 
 text \<open>\<open>C\<^sup>c\<^sub>v(\<alpha>)\<close> is closed under \<^bold>\<open>every\<close> generator with argument in
   \<open>C\<^sup>c\<^sub>v(\<alpha>) \<inter> \<alpha>\<close> (canonical \<open>\<Rightarrow>\<close> \<open>Cset_c_gen_closed\<close>; \<open>w<v\<close> \<open>\<Rightarrow>\<close> \<open>\<Omega>\<^sub>v\<close>-part;
   the residual non-canonical \<open>w\<ge>v\<close> case \<open>\<Rightarrow>\<close> the lemma above).\<close>
 
 lemma Cset_c_anygen_closed:
-  assumes "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
+  assumes "Ord \<alpha>"
+    and "Ord \<xi>" "\<xi> \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)" "\<xi> \<in> elts \<alpha>"
   shows "psi \<xi> w \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
 proof (cases "acanon w \<xi>")
   case True
   have "(\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<xi> w \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
-    by (rule Cset_c_gen_closed[OF assms(2,3) True])
-  thus ?thesis using assms(3) by simp
+    by (rule Cset_c_gen_closed[OF assms(3,4) True])
+  thus ?thesis using assms(4) by simp
 next
   case False
   show ?thesis
@@ -1163,6 +1316,7 @@ text \<open>\<^bold>\<open>Outer rank induction\<close>: every \<open>Citer\<clo
   generator case uses \<open>Cset_c_anygen_closed\<close>.\<close>
 
 lemma Citer_subset_Cset_c:
+  assumes "Ord \<alpha>"
   shows "elts ((Cstep (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> ^^ n) (Om v))
            \<subseteq> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
 proof (induction n)
@@ -1195,7 +1349,7 @@ next
       have xc: "\<xi> \<in> elts (Cset_c ?p \<alpha> v)" using 3(1) Suc.IH by blast
       have ox: "Ord \<xi>" using 3(1) Ord_Citer[OF ordp'] by blast
       have val: "x = psi \<xi> u" using 3(2,3) by simp
-      show ?thesis using Cset_c_anygen_closed[OF ox xc 3(2)] val by simp
+      show ?thesis using Cset_c_anygen_closed[OF assms ox xc 3(2)] val by simp
     qed
   qed
 qed
@@ -1204,7 +1358,8 @@ text \<open>\<^bold>\<open>Buchholz's Remark\<close>: \<open>C\<^sub>v(\<alpha>)
   (canonicity of generator arguments) does not change the closure.\<close>
 
 lemma Cset_eq_Cset_c:
-  "elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v) = elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
+  assumes "Ord \<alpha>"
+  shows "elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v) = elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
 proof
   show "elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v) \<subseteq> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
   proof (rule subsetI)
@@ -1212,7 +1367,7 @@ proof
     then obtain n where "x \<in> elts ((Cstep (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> ^^ n) (Om v))"
       by (auto simp: Cset_mem_iff)
     thus "x \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"
-      using Citer_subset_Cset_c by blast
+      using Citer_subset_Cset_c[OF assms] by blast
   qed
 next
   show "elts (Cset_c (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v) \<subseteq> elts (Cset (\<lambda>\<xi>\<in>elts \<alpha>. psi \<xi>) \<alpha> v)"

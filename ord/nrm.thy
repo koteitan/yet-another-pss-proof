@@ -170,7 +170,7 @@ proof
   assume "acanon a (oV b)"
   hence "oV b \<in> elts (Cset (\<lambda>\<xi>\<in>elts (oV b). psi \<xi>) (oV b) a)" unfolding acanon_def .
   hence "oV b \<in> elts (Cset_c (\<lambda>\<xi>\<in>elts (oV b). psi \<xi>) (oV b) a)"
-    using Cset_eq_Cset_c by blast
+    using Cset_eq_Cset_c[OF Ord_oV] by blast
   from term_nec[OF Ord_oV assms(1) this] have "oV g < oV b" using assms(2) by blast
   moreover have "oV b \<le> oV g" by (rule bad_imp_oV_ge[OF assms(1,2,3)])
   ultimately show False by simp
