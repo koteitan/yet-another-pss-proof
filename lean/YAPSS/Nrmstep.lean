@@ -1661,12 +1661,32 @@ static-domain family) but TRUE on `NF` arguments (audited 79800/79800, zero
 reversals).  Pure `olt` (no ordinals), `wf3`-free.  Via `proj_olt_of_fireprop`
 it splits into the two `NF`-standardness residuals below. -/
 
+/-- `olt` is monotone in the leading subscript. -/
+theorem lead_le_of_olt {x y : Three} (h : olt x y) : lead x ≤ lead y := by
+  cases x with
+  | Z => cases y <;> simp [lead]
+  | P a b c => cases y with
+    | Z => exact absurd h (not_olt_Z _)
+    | P e f g => rcases olt_P_P.1 h with hl | ⟨he, _⟩ | ⟨he, _, _⟩ <;>
+        simp [lead] <;> omega
+
+/-- **`pfire`-via-ascent, easy direction** (pure `olt`, no `NF`): a `Gterm`-`0`
+element with subscript strictly above `lead b` makes `b` fire.  (The converse —
+*fire implies such an ascent exists* — is the genuine `NF` content: it needs the
+`r1ok`/`steps1` subscript discipline, because on general terms the leading
+subscript `lead b` and an argument's subscript are unrelated, so the violator's
+chain need not expose an above-`lead b` element by pure recursion.) -/
+theorem pfire0_of_ascent {b : Three} (h : ∃ g ∈ Gterm 0 b, lead b < lead g) :
+    pfire 0 b := by
+  obtain ⟨g, hg, hlt⟩ := h
+  exact pfire_iff.2 ⟨g, hg, fun hgb => absurd (lead_le_of_olt hgb) (by omega)⟩
+
 /-- **Fire-propagation on `NF` arguments** (residual 1).  `olt b f → pfire 0 b →
-pfire 0 f`.  Audit: `pfire 0 b ⟺ b has a subscript ascent`; non-fire `NF` args
-are exactly the subscript-non-increasing ones (`p₁(p₁0)`, `p₁(p₀0)`), fire ones
-have an ascent (`p₁(p₂…)`).  The "fn" case is absent on all `NF` arg pairs (0
-violations) but present on general terms (`b=p₀(p₂0)+p₁0`, `f=p₂0`), so the `NF`
-subscript discipline (`r1ok`/`steps1`) is exactly what excludes it. -/
+pfire 0 f`.  Audit: `pfire 0 b ⟺ b has a subscript ascent` (`pfire0_of_ascent` is
+the easy half; the hard half *fire → ascent* needs the bridge below).  The "fn"
+case is absent on all `NF` arg pairs (0 violations) but present on general terms
+(`b=p₀(p₂0)+p₁0`, `f=p₂0`), so the `NF` subscript discipline (`r1ok`/`steps1`,
+the `+1`-step row structure) is exactly what excludes it. -/
 theorem proj0_fireprop_NF {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) : pfire 0 f := by
