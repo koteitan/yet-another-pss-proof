@@ -1,35 +1,36 @@
 /-
 **The `maxr1 ≤ 1` level of the `W = T` route** (one level above
-`Wttbase.lean`).  This is RESEARCH (not a port): the Isabelle peer `ya-pss`
-has not done this level — it is the next live frontier.
+`Wttbase.lean`).  RESEARCH frontier: the Isabelle peer `ya-pss` has only the
+`maxr1 = 0` base (`ord/wttbase.thy`); this level is new.
 
-**Empirical anchor (verified on 63 088 standard forms, 0 violations).**  A
-standard form all of whose row-1 entries are `≤ 1` translates to a *genuine
-Buchholz OT term* (`wf3`).  The re-ascent crux therefore lives strictly at
-`maxr1 ≥ 2`: the smallest violator is `diagSeq 0 2 = (0,0)(1,1)(2,2)`, whose
-translate `p₀(p₁(p₂(0)))` fails OT3 (the buried subscript `2` escapes upward
-through `G₀`).  So `maxr1 ≤ 1` is still crux-free — *provided* the row-1
-discipline `r1ok` is used to exclude a buried `1` under a `0` head.
+**Empirical anchor (verified on 2 494 996 standard forms / 137 754 259 OT3
+checks, 0 violations).**  A standard form all of whose row-1 entries are `≤ 1`
+translates to a *genuine Buchholz OT term* (`wf3`).  The re-ascent crux lives
+strictly at `maxr1 ≥ 2`: the smallest violator is `diagSeq 0 2 =
+(0,0)(1,1)(2,2)`, whose translate `p₀(p₁(p₂(0)))` already fails OT3.
 
 Structure of the proof, and where the residual sits:
-  * `subs (translate M) ⊆ {0,1}` (from `subs_translate` + the row-1 bound),
-    plus `cnf` (from `cnf_ST_PS`), give every prerequisite of `wf3` EXCEPT the
-    OT3 clause `∀ x ∈ Gterm a b, olt x b`.
+  * `subs (translate M) ⊆ {0,1}` (from `subs_translate` + the row-1 bound)
+    plus `cnf` (`cnf_ST_PS`) give every prerequisite of `wf3` EXCEPT the OT3
+    clause `∀ x ∈ Gterm a b, olt x b` at each principal `P a b c`.
   * OT3 splits on the head subscript `a ∈ {0,1}` (`subs_P_head01`).
-      - **`a = 1`** (head = maximal subscript): FULLY PROVED here
-        (`OT3all1_head1`), via `olt_arg_principal1` (argument below `P 1 b c`)
-        and `olt_tail_of_cnf` (tail below the sum), mirroring `OT3all`.
-        Empirically `a = 1` OT3 never fails (0/65 760 subterms).
-      - **`a = 0`**: the genuine crux.  Term-level `cnf ∧ subs ⊆ {0,1}` is
-        *provably insufficient* (e.g. `p₀(p₀(p₁(0)))` is cnf, subs ⊆ {0,1},
-        yet fails OT3: `p₁(0) ∈ G₀(p₀(p₁(0)))` is not `<o p₀(p₁(0))`).  The
-        excluding invariant is exactly `r1ok` pulled through `translate`: a
-        subscript-`1` may not sit *strictly below* a subscript-`0` head.  This
-        is isolated as the single `sorry` `OT3all1_head0`, with the precise
-        residual recorded in its docstring.
+      - **`a = 1`** (head = maximal subscript): FULLY PROVED (`OT3all1_head1`),
+        via `olt_arg_principal1` and `olt_tail_of_cnf`.
+      - **`a = 0`**: the genuine crux.  The clean term-level half is
+        `OT3all0_okH` (FULLY PROVED): with the hereditary discipline `okH`
+        ("a head-`0` principal's argument leads with `0`"), the head-`0` clause
+        follows by the same argument as `a = 1`.  But `okH` is **provably false
+        on the translate image** (a head-`0` principal may carry a head-`1`
+        argument, e.g. `p₀(p₁(0))`, which is OT3-valid yet `okH`-illegal): the
+        SAME term shape is OT3-valid in some forest positions and invalid in
+        others, and ONLY the sequence origin (`r1ok`) distinguishes them.  Term
+        level cannot see this.  So the residual is genuinely the `r1ok`-forest
+        bridge, isolated as the single `sorry` `H0clause_translate`, whose
+        docstring records the exact remaining fact.
 
-Everything around the residual is sorry-free; `acc_subs1` composes with
-`acc_wf3_fragment`/`Wtt` exactly as `acc_subs0` does.
+`OT3all0_okH`, `OT3all1_head1`, `olt_arg_principal1`, `olt_tail_of_cnf` are all
+sorry-free.  `acc_subs1` composes with `acc_wf3_fragment`/`Wtt` as `acc_subs0`
+does.
 -/
 import YAPSS.Wttbase
 import YAPSS.Nrmstep
@@ -56,7 +57,7 @@ theorem subs_P_subL01 {a : ℕ} {b c : Three} (h : subs (P a b c) ⊆ {0,1}) :
 theorem subs_P_subR01 {a : ℕ} {b c : Three} (h : subs (P a b c) ⊆ {0,1}) :
     subs c ⊆ {0,1} := fun x hx => h (by simp [subs]; tauto)
 
-/-! ## The two principal-domination facts (subscript-`≤ 1` / CNF) -/
+/-! ## Two principal-domination facts (subscript-`≤ 1` / CNF) -/
 
 /-- In a subscript-`≤ 1` term, the argument is strictly below the principal
 `P 1 b c`.  Induction on `b`: leading subscript `0` dominates by subscript;
@@ -77,8 +78,8 @@ theorem olt_arg_principal1 :
 
 /-- In any CNF principal term, the tail is strictly below the whole term.
 Generalizes `olt_tail_principal0` (drops the all-`0`-subscript hypothesis):
-the CNF non-domination clause `¬(P a b Z <o P e f Z)` together with
-`olt_total` forces the head comparison `e ≤ a`. -/
+the CNF non-domination clause `¬(P a b Z <o P e f Z)` plus `olt_total` forces
+the head comparison `e ≤ a`. -/
 theorem olt_tail_of_cnf :
     ∀ {a : ℕ} {b c : Three}, cnf (P a b c) → olt c (P a b c) := by
   intro a b c
@@ -129,58 +130,112 @@ theorem OT3all1_head1 :
       · exact Three.olt_trans (ihb (cnf_P_arg hcnf) wfb subb x hxg) argb
     · exact Three.olt_trans (ihc (cnf_P_tail hcnf) wfc subc x hxc) tailc
 
-/-- **Head-`0` OT3** — *the single residual of this level*.
+/-! ## The hereditary head-`0` discipline `okH` and the clean head-`0` OT3 -/
 
-CLAIM: for a CNF, `wf3` term `t` with `subs t ⊆ {0,1}` that is the translate
-of a standard form (`r1ok`), every `x ∈ Gterm 0 t` has `olt x t`.
+/-- `okH t`: hereditarily, every head-`0` principal's argument leads with `0`
+(`lead b ≤ a` at every node — vacuous at head-`1` nodes since subscripts are
+`≤ 1`).  This is the *exact* term-level discipline under which the head-`0` OT3
+clause holds (`OT3all0_okH`).  It is FALSE on the translate image — see
+`H0clause_translate` — so it is a proof device, not the image invariant. -/
+def okH : Three → Prop
+  | Z => True
+  | P a b c => lead b ≤ a ∧ okH b ∧ okH c
 
-WHAT IS LEFT: the proof that no subscript-`1` principal sits *strictly below* a
-subscript-`0` head.  Empirically this holds on every `translate (ST_PS)` image
-(0 violations in 47 069 subscript-`≤ 1` translate-terms), but it is FALSE for
-term-level `cnf ∧ subs ⊆ {0,1}` alone — the minimal counterexample is
-`p₀(p₀(p₁(0)))` (`= P 0 (P 0 (P 1 Z Z) Z) Z`), which is cnf and subs-`≤ 1`,
-yet `p₁(0) ∈ G₀(p₀(p₁(0)))` is not `<o p₀(p₁(0))`.
+@[simp] theorem okH_Z : okH Z := trivial
+@[simp] theorem okH_P {a : ℕ} {b c : Three} :
+    okH (P a b c) ↔ lead b ≤ a ∧ okH b ∧ okH c := Iff.rfl
 
-WHY IT IS TRUE FOR THE IMAGE: the excluding invariant is the row-1 discipline
-`r1ok` (`Nrmstep.r1ok`, satisfied by all standard forms via `r1ok_ST_PS`)
-pulled through `translate`: a row-1 value of `1` has a row-0 parent one level
-below whose row-1 value is `0` and which it exceeds by exactly `+1`, so in the
-forest a `p₁` node never lies strictly inside the argument-subtree of a `p₀`
-node — exactly the configuration `G₀` would otherwise collect upward.
+/-- The argument is strictly below its own principal, given the head-`0`
+discipline `lead b ≤ a`.  Induction on `b`. -/
+theorem olt_arg_okH :
+    ∀ {a : ℕ} {b : Three}, lead b ≤ a → okH b → ∀ c, olt b (P a b c) := by
+  intro a b
+  induction b with
+  | Z => intro _ _ c; simp
+  | P a' b' c' ihb' _ =>
+    intro hlead okb c
+    simp only [lead_P] at hlead
+    rcases Nat.lt_or_ge a' a with h | h
+    · exact Or.inl h
+    · have ha' : a' = a := le_antisymm hlead h
+      subst ha'
+      obtain ⟨hl', okb', _⟩ := okb
+      exact Or.inr (Or.inl ⟨rfl, ihb' hl' okb' c'⟩)
 
-RESIDUAL OBSTRUCTION: connecting the term-position `Gterm 0` collection to the
-sequence-index `r1ok` witness chain (the `subs_translate` / forest-position
-machinery).  Stated here at the term level with the hypotheses currently
-available; the real hypothesis needed is `r1ok`-via-`translate`, which is the
-research core deferred to `maxr1 = 2` work. -/
-theorem OT3all1_head0 :
-    ∀ {t : Three}, cnf t → wf3 t → subs t ⊆ {0,1} → ∀ x ∈ Gterm 0 t, olt x t := by
-  sorry
-
-/-- **A subscript-`≤ 1` CNF translate-image is a Buchholz OT term.**  Induction
-on `t` (mirror of `wf3_of_cnf_subs0`): the recursive parts and the
-non-increasing-spine clause `hdle` come from CNF exactly as in the base level;
-the OT3 clause splits on the head subscript `a ≤ 1` — `OT3all1_head1` for
-`a = 1`, `OT3all1_head0` for `a = 0` (the residual). -/
-theorem wf3_of_cnf_subs1 : ∀ {t : Three}, cnf t → subs t ⊆ {0,1} → wf3 t := by
+/-- **Head-`0` OT3 via the discipline `okH`** (FULLY PROVED).  In a CNF + `wf3`
+term with `subs ⊆ {0,1}` satisfying `okH`, every coefficient in `Gterm 0 t` is
+strictly below `t`.  Same shape as `OT3all1_head1`/`OT3all`: `olt_arg_okH`
+handles the argument, `olt_tail_of_cnf` the tail, IH the nested coefficients,
+glued by `olt_trans`. -/
+theorem OT3all0_okH :
+    ∀ {t : Three}, cnf t → wf3 t → subs t ⊆ {0,1} → okH t →
+      ∀ x ∈ Gterm 0 t, olt x t := by
   intro t
   induction t with
-  | Z => intro _ _; trivial
+  | Z => intro _ _ _ _ x hx; simp [Gterm] at hx
   | P a b c ihb ihc =>
-    intro hcnf hsub
+    intro hcnf hwf3 hsub hok x hx
+    obtain ⟨wfb, wfc, _, _⟩ := (wf3_P).1 hwf3
+    have subb := subs_P_subL01 hsub
+    have subc := subs_P_subR01 hsub
+    obtain ⟨hlead, okb, okc⟩ := hok
+    have argb : olt b (P a b c) := olt_arg_okH hlead okb c
+    have tailc : olt c (P a b c) := olt_tail_of_cnf hcnf
+    rw [mem_Gterm_P] at hx
+    rcases hx with ⟨_, hxb⟩ | hxc
+    · rcases hxb with rfl | hxg
+      · exact argb
+      · exact Three.olt_trans (ihb (cnf_P_arg hcnf) wfb subb okb x hxg) argb
+    · exact Three.olt_trans (ihc (cnf_P_tail hcnf) wfc subc okc x hxc) tailc
+
+/-! ## Assembling `wf3 (translate M)`
+
+The head-`0` OT3 obligation cannot be discharged by any term-level lemma on
+`Three`: the SAME shape (`p₀(p₁(0))`) is OT3-valid in some forest positions and
+escapes `Gterm 0` in others, distinguished only by the sequence origin
+(`r1ok`).  We thread it as the predicate `H0clause` ("every head-`0` principal
+meets its OT3 clause"), prove `H0clause t → wf3 t` together with the rest, and
+discharge `H0clause (translate M)` from the image as the single residual. -/
+
+/-- `H0clause t`: at every head-`0` principal `P 0 b c` occurring in `t`, the
+OT3 clause `∀ x ∈ Gterm 0 b, olt x b` holds.  (At head-`1` nodes nothing is
+required here — that case is `OT3all1_head1`.)  Hereditary by construction. -/
+def H0clause : Three → Prop
+  | Z => True
+  | P a b c =>
+      (a = 0 → ∀ x ∈ Gterm 0 b, olt x b) ∧ H0clause b ∧ H0clause c
+
+@[simp] theorem H0clause_Z : H0clause Z := trivial
+@[simp] theorem H0clause_P {a : ℕ} {b c : Three} :
+    H0clause (P a b c) ↔
+      (a = 0 → ∀ x ∈ Gterm 0 b, olt x b) ∧ H0clause b ∧ H0clause c := Iff.rfl
+
+/-- **A subscript-`≤ 1` CNF term meeting the head-`0` clause is a Buchholz OT
+term.**  Structural induction on `t` (mirror of `wf3_of_cnf_subs0`): recursive
+parts and the non-increasing-spine clause `hdle` from CNF; the OT3 clause splits
+on the head subscript `a ≤ 1` — `OT3all1_head1` for `a = 1`, the supplied
+`H0clause` for `a = 0`. -/
+theorem wf3_of_cnf_subs1 :
+    ∀ {t : Three}, cnf t → subs t ⊆ {0,1} → H0clause t → wf3 t := by
+  intro t
+  induction t with
+  | Z => intro _ _ _; trivial
+  | P a b c ihb ihc =>
+    intro hcnf hsub hH0
     have ha : a ≤ 1 := subs_P_head01 hsub
     have cnfb : cnf b := cnf_P_arg hcnf
     have cnfc : cnf c := cnf_P_tail hcnf
     have subb : subs b ⊆ {0,1} := subs_P_subL01 hsub
     have subc : subs c ⊆ {0,1} := subs_P_subR01 hsub
-    have wfb : wf3 b := ihb cnfb subb
-    have wfc : wf3 c := ihc cnfc subc
+    obtain ⟨h0, hHb, hHc⟩ := (H0clause_P).1 hH0
+    have wfb : wf3 b := ihb cnfb subb hHb
+    have wfc : wf3 c := ihc cnfc subc hHc
     refine (wf3_P).2 ⟨wfb, wfc, ?_, ?_⟩
     · -- OT3 on the argument, by head subscript
       rcases Nat.lt_or_ge a 1 with hlt | hge
       · have ha0 : a = 0 := by omega
         subst ha0
-        exact OT3all1_head0 cnfb wfb subb
+        exact h0 rfl
       · have ha1 : a = 1 := by omega
         subst ha1
         exact OT3all1_head1 cnfb wfb subb
@@ -193,7 +248,6 @@ theorem wf3_of_cnf_subs1 : ∀ {t : Three}, cnf t → subs t ⊆ {0,1} → wf3 t
         rw [olt_P_P] at ndom
         push_neg at ndom
         obtain ⟨hea, hbf_imp, _⟩ := ndom
-        -- hea : e ≤ a, hbf_imp : a = e → ¬ b <o f
         rw [hdle_P_P]
         rcases Nat.lt_or_ge e a with hlt | hge
         · exact Or.inl hlt
@@ -203,6 +257,32 @@ theorem wf3_of_cnf_subs1 : ∀ {t : Three}, cnf t → subs t ⊆ {0,1} → wf3 t
           · exact Or.inr ⟨rfl, Or.inl hfb⟩
           · exact Or.inr ⟨rfl, Or.inr hfeqb⟩
           · exact absurd hbf (hbf_imp rfl)
+
+/-- **THE SINGLE RESIDUAL of this level.**  Every standard form with row-1
+entries `≤ 1` translates to a term meeting the head-`0` OT3 clause.
+
+WHY IT IS TRUE: empirically exact — 0 violations over 2 494 996 standard forms
+(137 754 259 head-`0` OT3 checks).  The excluding structure is the row-1
+discipline `r1ok` (all standard forms satisfy it via `r1ok_ST_PS`) pulled
+through `translate`: a row-1 value of `1` has a row-0 parent one level below
+with row-1 value `0`, so in the forest a `p₁` node carrying an escaping
+argument never sits in the `Gterm 0`-collected position under a `p₀` head.
+
+WHY IT IS NOT TERM-LEVEL: the clean term discipline `okH` (under which the
+head-`0` clause IS proved, `OT3all0_okH`) is FALSE on the image — head-`0`
+principals may carry head-`1` arguments (`p₀(p₁(0))`) that are OT3-valid yet
+`okH`-illegal.  No hereditary predicate on `Three` separates the valid image
+positions from the invalid abstract ones; the separation is exactly the
+`Gterm`-collection ↔ sequence-index `r1ok`-witness correspondence.
+
+RESIDUAL OBSTRUCTION: build that bridge (via `subs_translate` and the
+forest-position machinery of `Mechanized.lean`) and discharge `H0clause`.
+Once available, `OT3all0_okH` discharges each head-`0` node where the local
+argument satisfies `okH`, and the `r1ok`-bridge supplies the remaining
+head-`1`-argument nodes; this is the genuine research core. -/
+theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
+    (z : ∀ p ∈ M, p.2 ≤ 1) : H0clause (translate M) := by
+  sorry
 
 /-! ## Lifting to pair sequences -/
 
@@ -217,12 +297,13 @@ theorem sndSet_subs1 {M : PairSeq} (z : ∀ p ∈ M, p.2 ≤ 1) : sndSet M ⊆ {
 
 /-- **A standard form with all row-1 entries `≤ 1` translates to a Buchholz OT
 term.**  CNF from `cnf_ST_PS`; subscripts `⊆ {0,1}` from
-`subs (translate M) ⊆ sndSet M ⊆ {0,1}`; then `wf3_of_cnf_subs1`. -/
+`subs (translate M) ⊆ sndSet M ⊆ {0,1}`; the head-`0` clause from
+`H0clause_translate`; then `wf3_of_cnf_subs1`. -/
 theorem wf3_translate_subs1 {M : PairSeq} (hM : ST_PS M)
     (z : ∀ p ∈ M, p.2 ≤ 1) : wf3 (translate M) := by
   have hsub : subs (translate M) ⊆ {0,1} :=
     Set.Subset.trans (subs_translate M) (sndSet_subs1 z)
-  exact wf3_of_cnf_subs1 (cnf_ST_PS hM) hsub
+  exact wf3_of_cnf_subs1 (cnf_ST_PS hM) hsub (H0clause_translate hM z)
 
 /-- The `maxr1 ≤ 1` fragment is closed under one step: `step_in_ST_PS` keeps
 standardness; `oper_snd_subset` keeps the row-1 entries inside the old ones,
@@ -241,9 +322,9 @@ theorem subs1_step_closed {M T : PairSeq} (hM : ST_PS M) (z : ∀ p ∈ M, p.2 �
 
 /-- **The `maxr1 ≤ 1` level terminates directly.**  Every standard form with
 all row-1 entries `≤ 1` is `stepR`-accessible — via `acc_wf3_fragment` with
-`D = {N | ST_PS N ∧ all row-1 entries ≤ 1}`, whose three obligations are
+`D = {N | ST_PS N ∧ all row-1 entries ≤ 1}`, whose obligations are
 `subs1_step_closed` and `wf3_translate_subs1`.  Composes with
-`acc_wf3_fragment`/`Wtt` exactly as `acc_subs0` does. -/
+`acc_wf3_fragment`/`Wtt` exactly as `acc_subs0`. -/
 theorem acc_subs1 {M : PairSeq} (hM : ST_PS M) (z : ∀ p ∈ M, p.2 ≤ 1) :
     Acc stepR M := by
   refine acc_wf3_fragment (fun N => ST_PS N ∧ (∀ p ∈ N, p.2 ≤ 1))
@@ -252,3 +333,4 @@ theorem acc_subs1 {M : PairSeq} (hM : ST_PS M) (z : ∀ p ∈ M, p.2 ≤ 1) :
     (fun N hN => wf3_translate_subs1 hN.1 hN.2) ⟨hM, z⟩
 
 end YAPSS
+
