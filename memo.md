@@ -4255,3 +4255,47 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
    - 核D1 = (α,n)辞書式同時超限帰納(外:Ord_induct on α, 内:Citer-rank n)。1.4b canonical witness∧1.9 necessity∧1.4a inj。
    - D1必要形は「generator-trace形」(coeffs関数を作らずCiter由来の`ψ_μ(ξ)生成⟹ξ<α`)推奨。
    - acanon_def/Cset/Citerを**auto/simpに晒さない**(1.5hスピン事故・続89(18))。全D群は構造化証明。
+
+### 続89(21): clear 後再開 — acanon spin 修正 + §1 scaffolding 緑 (2026-06-14)
+
+- **acanon 検証で blast スピン再発・修正**: 続89(20) の未コミット acanon を PSI ビルドしたら
+  `necessity.thy:61` の `by blast` が **1785s スピン → timeout**(続89(18) auto-loop hazard が
+  acanon context で再発)。`psi_le_of_not_acanon` を **構造化 ccontr + `Ord_not_le` iff** に
+  書換えて解消。`Ord_not_le: ⟦Ord x;Ord y⟧⟹¬x≤y⟷y<x`(iff・ZFC_in_HOL.thy:776、`by simp`使用、
+  `Ord_psi[of δ a]` でスキーマ具体化が必須)。acanon 一式緑。
+- **§1 scaffolding を nrm.thy に追加・緑**(section1_plan.md A/B 群、commit 72a0c08):
+  - `bad_imp_oV_ge`(B1): wf3 b⟹g∈Gterm a b⟹¬olt g b⟹oV b≤oV g。実証明(oV_order_pres+olt_total)。
+  - `psi_proj_step`(A1): 単一 maxo-step が ψ 値保存 = **Buchholz §1 core を isolate**。
+    **実測検証済み**(tools/perstep_maxo.py: 6677 steps, 0 fail)→ localized sorry(健全)。
+  - `psi_proj`(A2): full proj が ψ 値保存。**proj.induct で A1 と IH 合成・実証明**(A1 modulo)。
+    proj_wf3 の構造を踏襲。memo 続89(16) を実現。
+- **残 core = A1 = Buchholz 1.9 necessity**(section1_plan.md group D / D1 simult induction)。
+  A1 を sorry で isolate したことで C1/C2/B2/D2 を単一 sorry に短絡(plan の多補題 sorry 連鎖より clean)。
+  psi_proj(A2)は A1 modulo で完全検証済み。
+- **ビルド注意(再確認)**: 初回 ZFC_in_HOL フルビルドは重い(~20分超)が、隔離ホーム
+  `~/.cache/isbman-clean/home/git-62f647fc` に **AFP 登録(etc/components)を手動コピー**して
+  ZFC_in_HOL 親セッションを解決。以後の PSI 増分ビルドは ~25s。`ISBMAN_TIMEOUT=600` でスピン早期検出。
+- **次**: D-eq-0(Cstep_c/Cset_c canonical-gen 閉包・psi.thy boilerplate ミラー)を緑で積む
+  → D1(simult induction)へ。auto/simp に acanon/Cset/Citer を晒さない(構造化のみ)。
+
+### 続89(22): ★A1 の正しい証明標的 = 単一非帰属(full-gap collapse_grow は強すぎ)
+
+A1(`psi_proj_step`: psi(oV b) a = psi(oV m) a, β:=oV b ≤ μ:=oV m, m=maxo bad)の
+discharge を精査:
+- psi β a ≤ psi μ a は `psi_mono_arg`(弱単調・β≤μ)で無料。
+- 残りは psi μ a ≤ psi β a ⟺ **psi β a ∉ Cv μ a**(psi β a が Cv μ a の非元なら、
+  psi μ a=least非元 ≤ psi β a)。これが唯一の核。
+- ⟹ **A1 の真の核 = `psi(oV b) a ∉ Cv(oV m) a`(単一非帰属)= 1.9 necessity を
+  ψ値 psi β a に適用**。β=oV b の G-係数の最大が m(oV m=μ)なので、necessity が
+  「psi β a∈Cv μ a ⟹ β の係数 < μ」を与えると、係数=μ ⊀ μ で矛盾。B1(oV b≤oV m)が
+  まさにこの「係数 ≥ β」を供給。
+- **⚠ section1_plan.md の C1/C2/collapse_grow ルートは過剰仮定で危険**:
+  collapse_grow は gap [β,μ) 全体が ∉ Cv β a を要求し **Cv β a=Cv μ a(集合一致)**を出すが、
+  これは A1(psi 一致)より真に強い。gap 内に Cv β a の元(大きい generator 値)が在り得るので
+  **full-gap clean は偽の可能性**。その場合 collapse_grow は適用不能だが A1 は単一非帰属で
+  なお真。⟹ **D1 は「全 gap の canonicity」でなく「psi β a の単一非帰属」を出す弱い形で十分**。
+  これは続89(18) の C-rank 同時帰納より tractable な可能性(必要なのは psi β a という
+  ψ値一点の necessity)。
+- **次の D1 標的(改訂)**: `wf3 t ⟹ psi (oV t) a ∈ Cv μ v ⟹ (∃ coeff of t with oV ≥ μ ⟹ False)`
+  の generator-trace 形、ないし直接 `psi β a ∉ Cv μ a`(B1 で β の係数 ≥ β=... を使い、
+  necessity で psi β a 生成には arg<μ canonical が要る→係数 μ で矛盾)。collapse_grow は使わない。
