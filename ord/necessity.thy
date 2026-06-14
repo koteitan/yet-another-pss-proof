@@ -39,6 +39,29 @@ next
   ultimately show ?case by simp
 qed
 
+subsection \<open>The \<open>a\<close>-canonical predicate (toward Buchholz \<section>1 canonical reps)\<close>
+
+text \<open>\<open>acanon a \<delta>\<close>: \<open>\<delta>\<close> is its own \<open>a\<close>-coefficient-closure point, i.e. \<open>\<delta> \<in> C\<^bsub>a\<^esub>(\<delta>)\<close>.
+  These are the arguments on which \<open>\<psi>\<^bsub>a\<^esub>\<close> is strictly monotone (1.3) and injective
+  (1.4(a)); every value collapses to such a canonical argument (the \<section>1 core).\<close>
+
+definition acanon :: "nat \<Rightarrow> V \<Rightarrow> bool" where
+  "acanon a \<delta> \<longleftrightarrow> \<delta> \<in> elts (Cset (\<lambda>\<xi>\<in>elts \<delta>. psi \<xi>) \<delta> a)"
+
+text \<open>Everything strictly below its own \<open>\<psi>\<close>-value is canonical (it lies in \<open>C\<close> as a
+  sub-\<open>\<psi>\<close> ordinal); contrapositively, a non-canonical argument is \<open>\<ge>\<close> its value.\<close>
+
+lemma acanon_of_lt_psi: "Ord \<delta> \<Longrightarrow> \<delta> < psi \<delta> a \<Longrightarrow> acanon a \<delta>"
+  unfolding acanon_def by (rule below_psi_in_Cset)
+
+lemma psi_le_of_not_acanon:
+  assumes "Ord \<delta>" "\<not> acanon a \<delta>" shows "psi \<delta> a \<le> \<delta>"
+proof (rule ccontr)
+  assume "\<not> psi \<delta> a \<le> \<delta>"
+  hence "\<delta> < psi \<delta> a" using Ord_not_le[OF Ord_psi[of \<delta> a] assms(1)] by simp
+  from acanon_of_lt_psi[OF assms(1) this] assms(2) show False by simp
+qed
+
 text \<open>\<^bold>\<open>Subscript injectivity\<close> (part of Buchholz 1.4(a)): the subscript of a
   \<open>\<psi>\<close>-value is determined by the value, because \<open>\<psi>\<^bsub>v\<^esub>(\<alpha>) \<in> [\<Omega>\<^bsub>v\<^esub>, \<Omega>\<^bsub>v+1\<^esub>)\<close> and these
   ranges are disjoint for distinct \<open>v\<close>.\<close>

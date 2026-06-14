@@ -124,6 +124,68 @@ proof (rule Ccond_of_lt)
   ultimately show "oV x < oV (proj a b)" using oV_order_pres wfp by blast
 qed
 
+subsection \<open>The collapsing identity \<open>psi_proj\<close> (Buchholz \<section>1 keystone, scaffolding)\<close>
+
+text \<open>\<^bold>\<open>B1\<close> (\<open>bad_imp_oV_ge\<close>): a critical subterm \<open>g\<close> that is \<^emph>\<open>not\<close> \<open>< b\<close> (an OT3
+  violator) has value \<open>\<ge> oV b\<close>.  Pure consequence of \<open>oV_order_pres\<close> + totality.
+  (Empirically 72942/72942, memo 続89(9).)\<close>
+
+lemma bad_imp_oV_ge:
+  assumes "wf3 b" and "g \<in> Gterm a b" and "\<not> olt g b"
+  shows "oV b \<le> oV g"
+proof -
+  have wfg: "wf3 g" by (rule Gterm_wf3[OF assms(2,1)])
+  from assms(3) olt_total[of g b] consider "g = b" | "olt b g" by blast
+  thus ?thesis
+  proof cases
+    case 1 thus ?thesis by simp
+  next
+    case 2
+    have "oV b < oV g" by (rule oV_order_pres[OF assms(1) wfg 2])
+    thus ?thesis by simp
+  qed
+qed
+
+text \<open>\<^bold>\<open>A1\<close> (\<open>psi_proj_step\<close>): a single \<open>maxo\<close>-step of \<open>proj\<close> preserves the \<open>\<psi>\<close>-value.
+  This is the \<^emph>\<open>isolated Buchholz \<section>1 core\<close> (argument-side collapse across the
+  non-canonical gap \<open>[oV b, oV m)\<close>): \<open>oV b\<close> is non-canonical at \<open>a\<close> (its argument
+  has a coefficient \<open>\<ge>\<close> itself, B1), so \<open>\<psi>\<^sub>a\<close> is constant up to \<open>oV m\<close>.  Its
+  discharge needs Buchholz 1.9 necessity (the simultaneous induction, plan
+  \<open>section1_plan.md\<close> group D); \<^bold>\<open>empirically verified\<close> on 6677 maxo-steps with zero
+  failures (\<open>tools/perstep_maxo.py\<close>).  Kept as a localized \<open>sorry\<close> so the assembly
+  (A2) below is fully checked against it.\<close>
+
+lemma psi_proj_step:
+  assumes "wf3 b"
+    and "filter (\<lambda>g. \<not> olt g b) (Glist a b) \<noteq> []"
+  shows "psi (oV b) a
+       = psi (oV (maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist a b)))
+                        (tl (filter (\<lambda>g. \<not> olt g b) (Glist a b))))) a"
+  sorry
+
+text \<open>\<^bold>\<open>A2\<close> (\<open>psi_proj\<close>): the full projection preserves the \<open>\<psi>\<close>-value.  Assembly by
+  \<open>proj.induct\<close>, composing the maxo-step A1 with the induction hypothesis.  Fully
+  checked modulo A1.  (Realizes memo 続89(16); psi_proj TRUE 46033/46033.)\<close>
+
+lemma psi_proj: "wf3 b \<Longrightarrow> psi (oV b) a = psi (oV (proj a b)) a"
+proof (induction a b rule: proj.induct)
+  case (1 u b)
+  show ?case
+  proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
+    case True
+    show ?thesis unfolding proj_id[OF True] by simp
+  next
+    case False
+    let ?m = "maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
+                   (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b)))"
+    have mG: "?m \<in> Gterm u b" using maxo_hdtl_in[OF False] set_Glist by auto
+    have w: "wf3 ?m" by (rule Gterm_wf3[OF mG 1(2)])
+    have step: "psi (oV b) u = psi (oV ?m) u" by (rule psi_proj_step[OF 1(2) False])
+    have ih: "psi (oV ?m) u = psi (oV (proj u ?m)) u" by (rule 1(1)[OF refl False w])
+    show ?thesis unfolding proj_rec[OF False] using step ih by simp
+  qed
+qed
+
 subsection \<open>Sum insertion with absorption, and \<open>nrm\<close>\<close>
 
 fun ins :: "nat \<Rightarrow> three \<Rightarrow> three \<Rightarrow> three" where
