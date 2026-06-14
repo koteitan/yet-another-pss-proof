@@ -493,6 +493,20 @@ theorem psi0_oV_lt_of_proj_olt {b f : Three} (wb : wf3 b) (wf : wf3 f)
   psi0_lt_of_proj_lt wb wf
     (oV_order_pres (proj_wf3 wb) (proj_wf3 wf) hproj)
 
+/-- **The proj-side order crux (the genuine residual of the argument head).**
+`proj 0`-monotonicity on `NF` arguments: `olt b f → olt (proj 0 b) (proj 0 f)`.
+FALSE on general `wf3` (7291 reversals, a dead static-domain family), but TRUE on
+`NF` arguments (audited 79800/79800, zero reversals).  The existing `proj`
+monotonicity tooling (`proj_submono`, `proj_olt_of_Einc`) is `≤o` or tied to the
+step-specific `Einc` structure, so the general `NF`-argument strict version is a
+genuine open obligation.  NB: an `NF` argument need not be `wf3` (936/4655 are
+not), so the `wf3` hypotheses below are an over-approximation of the real `NF`
+hypothesis; they hold on the minimal example and let the head route close. -/
+theorem proj0_olt_NF {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
+    olt (proj 0 b) (proj 0 f) := by
+  sorry
+
 /-- **Argument-branch core (genuine UBI / row-1 content).**  At the outer
 subscript `0` (forced by `NF_lead0`), a strictly larger argument gives a strictly
 larger value.  The head routes through `proj` (the only working route, see
