@@ -454,11 +454,50 @@ theorem psi0_oV_lt_iff_ne {b f : Three} (hle : oV.{u} b ≤ oV f) :
   · exact fun h => ne_of_lt h
   · exact fun hne => lt_of_le_of_ne (psi_mono_arg hle 0) hne
 
+/-! ### Why the argument head needs `proj` (the three routes, all kernel-checked)
+
+The argument head `ψ_0(oV b) < ψ_0(oV f)` (`olt b f`, both `NF` arguments) has
+exactly three candidate routes, and on the minimal example `b=p₁(p₂0)`,
+`f=p₁(p₂(p₃0))` we settled all three in kernel:
+
+1. **Sufficiency witness** (`psi0_lt_of_canon_between`): a `0`-canonical `γ ∈
+   [oV b, oV f)`.  But `canon_witness_of_psi_ne` shows the witness exists **iff**
+   the head is strict (`collapse_le` converse) — so the witness search is the
+   head, not a cheaper lever.  No shortcut.
+
+2. **Direct C-membership** (`psi_strict_mono_arg`/`psi_strict_mono_mem`): needs
+   `oV b ∈ C_0(oV b)` or `oV b ∈ C_0(oV f)`.  **Both false** (kernel: the inner
+   `ψ₂0 ∈ [Ω₂,Ω₃)` sits above `oV b ∈ [Ω₁,Ω₂)` — a *subscript ascent*, which
+   `NF` arguments structurally contain).  `nrm` does not help (it leaves
+   `b=p₁(p₂0)` unchanged).
+
+3. **`proj` route** (`psi0_lt_of_proj_lt`): `proj 0` *collapses the subscript
+   ascent* — kernel `#eval`: `proj 0 b = p₂0`, `proj 0 f = p₃0`, and
+   `olt (proj 0 b) (proj 0 f)`.  This is the **only** working route.  It needs
+   (i) `psi_proj` (the collapsing core), (ii) the proj-side order
+   `olt (proj 0 b) (proj 0 f)`, (iii) `wf3 (proj 0 b)`.
+
+So the argument core is **inseparable from the collapsing core** `psi_proj`.
+The remaining genuine content is the proj-side order — `proj 0`-monotonicity,
+which is **false on general `wf3`** (7291 reversals) but **true on `NF`
+arguments** (audited: 79800/79800, zero reversals) — a real structural fact of
+standardness, not a static anchor. -/
+
+/-- The argument head reduced to its working route: `wf3`-ness of `b` and the
+proj-side order `olt (proj 0 b) (proj 0 f)`.  Routes through `psi0_lt_of_proj_lt`
+(hence through `psi_proj`).  This is the precise residual for the argument head:
+**`proj 0`-monotonicity on `NF` arguments**. -/
+theorem psi0_oV_lt_of_proj_olt {b f : Three} (wb : wf3 b) (wf : wf3 f)
+    (hproj : olt (proj 0 b) (proj 0 f)) :
+    psi.{u} (oV b) 0 < psi (oV f) 0 :=
+  psi0_lt_of_proj_lt wb wf
+    (oV_order_pres (proj_wf3 wb) (proj_wf3 wf) hproj)
+
 /-- **Argument-branch core (genuine UBI / row-1 content).**  At the outer
 subscript `0` (forced by `NF_lead0`), a strictly larger argument gives a strictly
-larger value.  Reduces to the argument head `psi0_lt_of_proj_lt` (which routes
-through the collapsing core `psi_proj`) plus tail control.  Off `NF` it fails
-(the `y₂ <o y₁` equal-value counterexample is a non-standard plateau). -/
+larger value.  The head routes through `proj` (the only working route, see
+above) — needing `psi_proj`, the proj-side order, and tail control.  Off `NF` it
+fails (the `y₂ <o y₁` equal-value counterexample is a non-standard plateau). -/
 theorem oV_nf_arg_lt {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
     oV.{u} (P 0 b c) < oV (P 0 f g) := by
