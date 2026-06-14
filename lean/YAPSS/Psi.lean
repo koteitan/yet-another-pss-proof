@@ -1145,4 +1145,139 @@ theorem CCSelf_mono {α β : Ordinal} (hαβ : α ≤ β) (v : ℕ) :
       rw [psiResSelf, psiResSelf, if_pos hξ, if_pos (lt_of_lt_of_le hξ hαβ)])
   exact hparam.trans (CsetSelf_mono_bound _ hαβ v)
 
+/-! ### §1 port for `ψ^s` (Buchholz 1.2–1.4), residue-free -/
+
+/-- C1: `Iio Ω_v ⊆ C^s_v(α)`. -/
+theorem Iio_Om_subset_CsetSelf {p : Ordinal → ℕ → Ordinal} {α : Ordinal} {v : ℕ} :
+    Set.Iio (Om v) ⊆ CsetSelf p α v := by
+  intro x hx
+  exact CiterSelf_subset_CsetSelf (n := 0) (by simpa using hx)
+
+/-- C2: closed under `+`. -/
+theorem CsetSelf_add_closed {p : Ordinal → ℕ → Ordinal} {α ξ η : Ordinal} {v : ℕ}
+    (hξ : ξ ∈ CsetSelf p α v) (hη : η ∈ CsetSelf p α v) : ξ + η ∈ CsetSelf p α v := by
+  obtain ⟨m, hm⟩ := CsetSelf_mem_iff.1 hξ
+  obtain ⟨n, hn⟩ := CsetSelf_mem_iff.1 hη
+  have mono : ∀ {a b : ℕ}, a ≤ b →
+      (CstepSelf' p α)^[a] (Set.Iio (Om v)) ⊆ (CstepSelf' p α)^[b] (Set.Iio (Om v)) := by
+    intro a b hab
+    induction b with
+    | zero => rw [Nat.le_zero.1 hab]
+    | succ b ih =>
+      rcases Nat.lt_or_ge a (b + 1) with h | h
+      · rw [Function.iterate_succ_apply']
+        exact (ih (by omega)).trans
+          (fun _ hx => Set.mem_union_left _ (Set.mem_union_left _ hx))
+      · rw [Nat.le_antisymm hab h]
+  have hm' := mono (le_max_left m n) hm
+  have hn' := mono (le_max_right m n) hn
+  refine CiterSelf_subset_CsetSelf (n := max m n + 1) ?_
+  rw [Function.iterate_succ_apply']
+  exact Set.mem_union_left _ (Set.mem_union_right _ (Set.mem_image2_of_mem hm' hn'))
+
+/-- C3: generator closure with self-referential canonicity `ξ ∈ CsetSelf p ξ u`. -/
+theorem CsetSelf_psi_closed {p : Ordinal → ℕ → Ordinal} {α ξ : Ordinal} {v : ℕ}
+    (hξ : ξ ∈ CsetSelf p α v) (hα : ξ < α) (u : ℕ) (hcanon : ξ ∈ CsetSelf p ξ u) :
+    p ξ u ∈ CsetSelf p α v := by
+  obtain ⟨n, hn⟩ := CsetSelf_mem_iff.1 hξ
+  refine CiterSelf_subset_CsetSelf (n := n + 1) ?_
+  rw [Function.iterate_succ_apply']
+  exact Set.mem_union_right _ (Set.mem_iUnion.2 ⟨u,
+    Set.mem_image_of_mem _ ⟨hn, ⟨hα, hcanon⟩⟩⟩)
+
+/-- `Ω_v ≤ ψ^s_v(α)` (from C1). -/
+theorem Om_le_psiSelf (α : Ordinal) (v : ℕ) : Om v ≤ psiSelf α v := by
+  by_contra h; push Not at h
+  exact psiSelf_notMem α v (Iio_Om_subset_CsetSelf h)
+
+/-- Every ordinal below `ψ^s_v(α)` lies in `C^s_v(α)` (sInf-minimality). -/
+theorem below_psiSelf_mem_CsetSelf {α δ : Ordinal} {v : ℕ} (hδ : δ < psiSelf α v) :
+    δ ∈ CsetSelf (psiResSelf α) α v := by
+  by_contra nin
+  have : psiSelf α v ≤ δ := by rw [psiSelf_unfold]; exact csInf_le' nin
+  exact absurd hδ (not_lt.2 this)
+
+/-- **Buchholz 1.2(c) for `ψ^s`**: `ψ^s_v(α) < Ω_{v+1}` (reuses the omitted
+cardinality bound via `CsetSelf ⊆ Cset`). -/
+theorem psiSelf_lt_Om_succ (α : Ordinal.{u}) (v : ℕ) : psiSelf α v < Om (v + 1) := by
+  by_contra hge
+  push Not at hge
+  have allin : Set.Iio (Om (v + 1)) ⊆ Cset (psiResSelf α) α v :=
+    Set.Subset.trans (fun δ hδ => below_psiSelf_mem_CsetSelf (lt_of_lt_of_le hδ hge))
+      (CsetSelf_subset_Cset (psiResSelf α) α v)
+  have hcard : Cardinal.lift.{u + 1, u} (ℵ_ (v + 1 : ℕ)) ≤ OmKappa.{u} v := by
+    calc Cardinal.lift.{u + 1, u} (ℵ_ (v + 1 : ℕ))
+        = Cardinal.lift.{u + 1, u} (Om (v + 1)).card := by
+          rw [Om_of_pos (by omega), Cardinal.card_ord]
+      _ = #(Set.Iio (Om (v + 1))) := (Cardinal.mk_Iio_ordinal _).symm
+      _ ≤ #(Cset (psiResSelf α) α v) := Cardinal.mk_le_mk_of_subset allin
+      _ ≤ OmKappa v := mk_Cset_le _ _ _
+  exact absurd hcard (not_le.2 (OmKappa_lt_aleph_succ v))
+
+/-- **Buchholz 1.2(d) for `ψ^s`**: `α ≤ β → ψ^s_v(α) ≤ ψ^s_v(β)`. -/
+theorem psiSelf_mono_arg {α β : Ordinal.{u}} (hαβ : α ≤ β) (v : ℕ) :
+    psiSelf α v ≤ psiSelf β v := by
+  by_contra h; push Not at h
+  have hmem : psiSelf β v ∈ CsetSelf (psiResSelf α) α v := by
+    by_contra nin
+    have hle : psiSelf α v ≤ psiSelf β v := by rw [psiSelf_unfold]; exact csInf_le' nin
+    exact absurd hle (not_le.2 h)
+  exact psiSelf_notMem β v (CCSelf_mono hαβ v hmem)
+
+/-- **Buchholz 1.3 for `ψ^s` (strict mono), residue-free**: self-canonicity is the
+ONLY hypothesis; the `aβ` membership is obtained free via `CCSelf_mono`. -/
+theorem psiSelf_strict_mono_arg {α β : Ordinal} (hαβ : α < β)
+    {v : ℕ} (hα : α ∈ CsetSelf (psiResSelf α) α v) :
+    psiSelf α v < psiSelf β v := by
+  have le : α ≤ β := hαβ.le
+  have aβ : α ∈ CsetSelf (psiResSelf β) β v := CCSelf_mono le v hα
+  have hαcanon : α ∈ CsetSelf (psiResSelf β) α v :=
+    CsetSelf_mono_param _ _ α v (fun ξ u hξ => by
+      rw [psiResSelf, psiResSelf, if_pos hξ, if_pos (lt_of_lt_of_le hξ le)]) hα
+  have hmem : psiSelf α v ∈ CsetSelf (psiResSelf β) β v := by
+    have := CsetSelf_psi_closed aβ hαβ v hαcanon
+    rwa [psiResSelf, if_pos hαβ] at this
+  have hne : psiSelf α v ≠ psiSelf β v := fun he => psiSelf_notMem β v (he ▸ hmem)
+  exact lt_of_le_of_ne (psiSelf_mono_arg le v) hne
+
+/-- **Buchholz 1.4(a) for `ψ^s` (injectivity), UNCONDITIONAL** — self-canonicity
+is the only hypothesis. -/
+theorem psiSelf_canonical_inj {a : ℕ} {ξ ξ' : Ordinal.{u}}
+    (hξ : ξ ∈ CsetSelf (psiResSelf ξ) ξ a) (hξ' : ξ' ∈ CsetSelf (psiResSelf ξ') ξ' a)
+    (he : psiSelf ξ a = psiSelf ξ' a) : ξ = ξ' := by
+  rcases lt_trichotomy ξ ξ' with h | h | h
+  · exact absurd he (ne_of_lt (psiSelf_strict_mono_arg h hξ))
+  · exact h
+  · exact absurd he.symm (ne_of_lt (psiSelf_strict_mono_arg h hξ'))
+
+/-- **Buchholz 1.4(b) for `ψ^s` is FREE, witness SELF-canonical** — the with-C
+payoff, residue-free: the extracted witness `ξ` is canonical in its OWN with-C
+set (`ξ ∈ CsetSelf p ξ u'`), no omitted form involved. -/
+theorem CsetSelf_witness_canonical {α γ : Ordinal.{u}} {v : ℕ}
+    {p : Ordinal.{u} → ℕ → Ordinal.{u}}
+    (hap : Ordinal.IsPrincipal (· + ·) γ) (hlo : Om v ≤ γ)
+    (hmem : γ ∈ CsetSelf p α v) :
+    ∃ (u' : ℕ) (ξ : Ordinal.{u}),
+      γ = p ξ u' ∧ ξ < α ∧ ξ ∈ CsetSelf p α v ∧ ξ ∈ CsetSelf p ξ u' := by
+  obtain ⟨n, hn⟩ := CsetSelf_mem_iff.1 hmem
+  clear hmem
+  induction n generalizing γ with
+  | zero =>
+    simp only [Function.iterate_zero, id_eq] at hn
+    exact absurd hn (not_lt.2 hlo)
+  | succ n IH =>
+    rw [Function.iterate_succ_apply'] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH hap hlo h1
+    · obtain ⟨x, hx, y, hy, hxy⟩ := h2
+      have hxmem : γ ∈ (CstepSelf' p α)^[n] (Set.Iio (Om v)) := by
+        rcases eq_or_lt_of_le (show x ≤ γ from hxy ▸ le_self_add) with hxe | hxlt
+        · exact hxe ▸ hx
+        · rcases eq_or_lt_of_le (show y ≤ γ from hxy ▸ le_add_self) with hye | hylt
+          · exact hye ▸ hy
+          · exact absurd hxy.symm (ne_of_gt (hap hxlt hylt))
+      exact IH hap hlo hxmem
+    · obtain ⟨u, ⟨ξ, ⟨hξX, ⟨hξα, hξcanon⟩⟩, hξγ⟩⟩ := Set.mem_iUnion.1 h3
+      exact ⟨u, ξ, hξγ.symm, hξα, CiterSelf_subset_CsetSelf hξX, hξcanon⟩
+
 end YAPSS
