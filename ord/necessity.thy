@@ -461,4 +461,28 @@ proof -
   thus ?thesis using Citer_c_in_Cset_c by blast
 qed
 
+text \<open>\<open>Cset_c\<close> is closed under \<^emph>\<open>canonical\<close> generators: a generator \<open>p \<xi> u\<close> with
+  \<open>\<xi> \<in> Cset_c \<inter> \<alpha>\<close> \<^bold>\<open>and\<close> \<open>\<xi>\<close> canonical (\<^const>\<open>acanon\<close> \<open>u \<xi>\<close>) is again in \<open>Cset_c\<close>.
+  (The non-canonical generators are the ones \<open>D-eq-1\<close> must show redundant.)\<close>
+
+lemma Cset_c_gen_closed:
+  assumes "\<xi> \<in> elts (Cset_c p \<alpha> v)" and "\<xi> \<in> elts \<alpha>" and "acanon u \<xi>"
+  shows "p \<xi> u \<in> elts (Cset_c p \<alpha> v)"
+proof -
+  from assms(1) obtain n where n: "\<xi> \<in> elts ((Cstep_c p \<alpha> ^^ n) (Om v))"
+    by (auto simp: Cset_c_mem_iff)
+  have qmem: "(\<xi>, u) \<in> {q \<in> (elts ((Cstep_c p \<alpha> ^^ n) (Om v)) \<inter> elts \<alpha>) \<times> (UNIV::nat set).
+                          acanon (snd q) (fst q)}"
+    using n assms(2,3) by simp
+  have "p \<xi> u \<in> (\<lambda>(\<xi>,u). p \<xi> u)
+          ` {q \<in> (elts ((Cstep_c p \<alpha> ^^ n) (Om v)) \<inter> elts \<alpha>) \<times> (UNIV::nat set).
+               acanon (snd q) (fst q)}"
+    using qmem by (force split: prod.split)
+  hence "p \<xi> u \<in> elts (Cstep_c p \<alpha> ((Cstep_c p \<alpha> ^^ n) (Om v)))"
+    by (simp add: elts_Cstep_c)
+  hence "p \<xi> u \<in> elts ((Cstep_c p \<alpha> ^^ Suc n) (Om v))"
+    by (simp only: funpow.simps(2) comp_apply)
+  thus ?thesis using Citer_c_in_Cset_c by blast
+qed
+
 end
