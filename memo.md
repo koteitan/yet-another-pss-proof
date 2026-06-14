@@ -4347,3 +4347,37 @@ leading ψ 成分分解(indecomposable_psi + Cantor_NF)+ canonical-witness が�
 - **次セッション D1 本体**: psi(oV b) a∉Cv(oV m) a を、(α,n) 同時超限帰納で
   「ξ∈Cv(oV m)a∩oV m ∧ psi ξ a=psi(oV b)a ⟹ ξ canonical ⟹ ξ=oV b ⟹ oV b∈Cv ⟹ B1 矛盾」。
   canonical-witness 構成が山。lean の psi_canonical_inj(1.4a 済)を port 検討。
+
+### 続89(26): A1 を単一非帰属 psi_proj_nonmem に還元(緑)+ D1 構造の精密確定
+
+**緑の鎖(commit 続89(26))**: `psi_proj`(A2)⟸`psi_proj_step`(A1, 実証明)⟸
+`psi_eq_of_not_mem`(緑)+`bad_imp_oV_ge`(B1, 緑)+ **`psi_proj_nonmem`(唯一の sorry)**。
+- `psi_eq_of_not_mem`(collapsing.thy 緑): α≤β ∧ psi α v∉Cv β v ⟹ psi α v=psi β v
+  (Ord_Least_le・whole-gap clean 不要)。続89(25) で collapse_grow が効かないと判明したのを受けた正しい橋。
+- `psi_proj_nonmem`(nrm.thy:166, sorry): **psi(oV b) a ∉ Cv(oV m) a** = Buchholz 1.9 necessity 精密形。
+
+**A1 ⟺ nonmem を確認**: psi_eq_of_not_mem で nonmem⟹A1。逆も: A1(psi(oV b)a=psi(oV m)a)∧
+psi_notin(psi(oV m)a∉Cv(oV m)a)⟹ psi(oV b)a∉Cv(oV m)a=nonmem。⟹ **A1 ⟺ nonmem 完全同値**、
+A1 実測真(6677/0)ゆえ **nonmem は真**(sorry 健全)。
+
+**★重要な構造確定(次セッションの D1 攻略用)**:
+- **proj は値を上げる**: oV(proj a b) ≥ oV b(proj は bad coeff m≥oV b で置換）。⟹ ψ_a の
+  canonical witness β°=oV(proj a b) は **oV b より大**(≥ oV m もあり得る)。Buchholz の「下への
+  collapse」と逆向き＝引数を**増やして**canonical 化(proj_canonical: oV(proj a b)∈Cv(oV(proj a b))a)。
+- **band_lt_psi は refutation に使えない**: psi(oV b)a∈Cv(oV m)a を仮定→
+  psi_in_Cset_same_sub_generator で ∃ξ<oV m∈Cv. psi ξ a=psi(oV b)a→generator psi ξ a∈Cv(oV m)a→
+  band_lt_psi[δ=oV m] で psi ξ a<psi(oV m)a ⟹ psi(oV b)a<psi(oV m)a。これは membership と
+  **consistent**(矛盾でない)。⟹ band_lt_psi は「∈なら<」を言うだけで「∉」は出ない。**refutation には
+  canonical-witness(1.4b)が本質的に必要**＝D1 irreducible（再確認・今回構造的に厳密化）。
+- ⟹ **D1 = psi_proj_nonmem の証明 = (α,n)同時超限帰納で canonical-rep 存在**。
+  ξ<oV m∈Cv(oV m)a で psi ξ a=psi(oV b)a なる ξ が**存在しない**ことを示す必要。
+  proj が上向きゆえ canonical witness oV(proj a b)≥oV m なら ξ<oV m に canonical 値一致点なし、
+  だが非canonical ξ も generator を撃つので「非canonical ξ は redundant(Buchholz Remark/D-eq)」が要る。
+
+**緑資産まとめ(necessity.thy/collapsing.thy, 全 sorry 無)**: indec_Cset_generator,
+psi_in_Cset_same_sub_generator, band_lt_psi, psi_eq_of_not_mem, acanon 一式(+collapse_succ/grow,
+psi_inj_canonical 等既存)。psi_proj(A2)は単一 necessity sorry に対し完全検証済。
+**残核 = psi_proj_nonmem(=Buchholz 1.9 necessity, D1 同時帰納)**。次セッション本丸。
+
+**注意(再掲)**: nrmstep.thy は旧 nrm route の死蔵(22 sorry, E6_value 由来)。live 鎖と無関係。
+top-level termination は今も nrm_order_pres(nrm.thy:269)経由。psi_proj 鎖は oV_mono_NF 別ルート用infra。
