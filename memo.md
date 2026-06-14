@@ -4486,3 +4486,31 @@ witness=oV(proj a b))。w=oV(proj a m)≥oV m(oV_le_proj at m)。⟹ w<oV m(from
   or rank-induction でしか切れない**(再確認)。term_nec(wf3)は必要だが nonmem 単独では閉じない。
 - **次**: (1)term_nec(構造帰納, 1.2e for Cv_c 要)= 緑の大物 (2)Remark Cv=Cv_c(band で witness<α)
   (3)circularity を rank-induction で切る設計。1.4 trio は揃った。
+
+### 続89(35-36): ★sub-agent 並列で term_nec 緑獲得 + B2 緑 + 核を単一同定
+
+**sub-agent 2体並列(worktree 分離・isbman ヒープ seed)で大進展**:
+- ✅ **term_nec(Buchholz 1.9 for wf3 terms)を完全緑**(TN, sorryなし): wf3 t⟹oV t∈Cv_c α a⟹
+  ∀x∈Gterm a t. oV x<α。構造帰納 + **Cset_c_add_principal_elim**(1.2e/g sum 分解, noabs 条件本質的)で
+  **G_u on ordinals 定義を完全回避**。helpers: psi_canonical_arg_lt_gen(1.4c 一般化, ψ添字≥閉包添字)/
+  indec_mult_omega/noabs_of_lt_mult_omega/oV_tail_lt_mult_omega(wf3 hdle で oV c'<ψ·ω)。
+- ✅ **Cset_eq_Cset_c(Buchholz Remark)を構造化証明、単一 residue sorry に局所化**(RM):
+  noncanon_gen_in_Cset_c_residue(¬acanon∧w≥v の cross-subscript collapse)。実測48件 Cset=Cv_c 成立
+  (tools/cset_remark_check.py)。helpers: noncanon_value_noncanon(値も非canonical で≤ξ)/psi_low_sub_in_Om/
+  Cset_c_anygen_closed/Citer_subset_Cset_c。
+- ✅ **B2 = oV_noncanon_of_bad(nrm.thy 緑)**: bad 係数を持つ項は非canonical。term_nec+Cset_eq_Cset_c で実証明。
+
+**★残核の単一同定(確定)**: **residue(necessity.thy) = psi_proj_nonmem(nrm.thy) = §1 simultaneous induction 核**。
+- nonmem: ψ_a(oV b)∈Cv(oV m)a で indec_Cset_c_generator が canonical ξ<oV m, ψ_a(ξ)=ψ_a(oV b) を出す。
+  B2 で ξ=oV b ケースは排除、ξ<oV b は strict mono で排除。**残る ξ>oV b(真の collapse)を排除するには
+  ξ=oV(proj a b)≥oV m を 1.4a で同定が要り、それには ψ_a(oV(proj a b))=ψ_a(oV b)=A2 自身が必要 ⟹ 循環**。
+- full 1.9(G_u 込み)でも canonical witness の同定に A2 が要り循環は残る(順序数↔項の橋が任意閉包元で無い)。
+- ⟹ **A2/nonmem/residue は全て canonical-rep 存在(Buchholz §1 simultaneous transfinite induction)に帰着**。
+  Buchholz は "can be shown" とだけ。lean も canonical-rep で停滞。**これが唯一の本丸**(周辺は全て緑)。
+- residue は Buchholz の least-C1C3-set 特徴づけでも回避不可(RM の Citer_subset_Cset_c がまさにそれで、
+  Cset_c の full-C3 閉包性=residue が irreducible 残)。
+
+**現 sorry**: necessity.thy:1057(residue)・nrm.thy(psi_proj_nonmem)。同一核。周辺の §1 補題は全緑:
+term_nec/Cset_eq_Cset_c(modulo residue)/B2/1.4 trio/1.5/1.6a/1.2h/2.2c/Cset_c 全ツールキット。
+**次**: §1 canonical-rep の simultaneous transfinite induction(closure-rank 同時帰納 or G_u on ordinals
+の忠実 port)。本丸・multi-session・improvisation 厳禁。
