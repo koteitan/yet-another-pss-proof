@@ -414,4 +414,51 @@ text \<open>\<^bold>\<open>Easy inclusion\<close>: canonical-generator closure \
 lemma Cset_c_subset_Cset: "elts (Cset_c p \<alpha> v) \<subseteq> elts (Cset p \<alpha> v)"
   by (auto simp: elts_Cset_c elts_Cset Citer_c_subset_Citer[THEN subsetD])
 
+text \<open>Basic closure structure of \<open>Cset_c\<close> (mirrors \<open>Cset\<close>), for the \<open>D-eq-1\<close> assembly.\<close>
+
+lemma Citer_c_in_Cset_c: "elts ((Cstep_c p \<alpha> ^^ n) (Om v)) \<subseteq> elts (Cset_c p \<alpha> v)"
+  by (auto simp: elts_Cset_c)
+
+lemma Cset_c_mem_iff:
+  "x \<in> elts (Cset_c p \<alpha> v) \<longleftrightarrow> (\<exists>n. x \<in> elts ((Cstep_c p \<alpha> ^^ n) (Om v)))"
+  by (auto simp: elts_Cset_c)
+
+lemma Om_subset_Cset_c: "elts (Om v) \<subseteq> elts (Cset_c p \<alpha> v)"
+  using Citer_c_in_Cset_c[where n=0] by simp
+
+text \<open>\<open>Cset_c\<close> is closed under addition (the sum branch of \<open>Cstep_c\<close>): if \<open>\<xi>,\<eta>\<close> are
+  both in \<open>Cset_c\<close> then so is \<open>\<xi>+\<eta>\<close> (they appear together at some finite stage,
+  whose successor stage contains the sum).\<close>
+
+lemma Cset_c_add_closed:
+  assumes "\<xi> \<in> elts (Cset_c p \<alpha> v)" and "\<eta> \<in> elts (Cset_c p \<alpha> v)"
+  shows "\<xi> + \<eta> \<in> elts (Cset_c p \<alpha> v)"
+proof -
+  from assms obtain m k where m: "\<xi> \<in> elts ((Cstep_c p \<alpha> ^^ m) (Om v))"
+    and k: "\<eta> \<in> elts ((Cstep_c p \<alpha> ^^ k) (Om v))" by (auto simp: Cset_c_mem_iff)
+  have mono: "\<And>i j. i \<le> j \<Longrightarrow> elts ((Cstep_c p \<alpha> ^^ i) (Om v)) \<subseteq> elts ((Cstep_c p \<alpha> ^^ j) (Om v))"
+  proof -
+    fix i j :: nat assume "i \<le> j"
+    then obtain d where "j = i + d" using le_Suc_ex by blast
+    moreover have "elts ((Cstep_c p \<alpha> ^^ i) (Om v)) \<subseteq> elts ((Cstep_c p \<alpha> ^^ (i+d)) (Om v))"
+    proof (induction d)
+      case (Suc d)
+      have "(Cstep_c p \<alpha> ^^ (i + Suc d)) (Om v) = Cstep_c p \<alpha> ((Cstep_c p \<alpha> ^^ (i+d)) (Om v))"
+        by (simp only: add_Suc_right funpow.simps(2) comp_apply)
+      moreover have "elts X \<subseteq> elts (Cstep_c p \<alpha> X)" for X
+        by (auto simp: elts_Cstep_c)
+      ultimately show ?case using Suc.IH by auto
+    qed simp
+    ultimately show "elts ((Cstep_c p \<alpha> ^^ i) (Om v)) \<subseteq> elts ((Cstep_c p \<alpha> ^^ j) (Om v))" by simp
+  qed
+  let ?n = "max m k"
+  have x: "\<xi> \<in> elts ((Cstep_c p \<alpha> ^^ ?n) (Om v))" using m mono[of m ?n] by auto
+  have y: "\<eta> \<in> elts ((Cstep_c p \<alpha> ^^ ?n) (Om v))" using k mono[of k ?n] by auto
+  have "\<xi> + \<eta> \<in> elts (Cstep_c p \<alpha> ((Cstep_c p \<alpha> ^^ ?n) (Om v)))"
+    using x y by (auto simp: elts_Cstep_c)
+  hence "\<xi> + \<eta> \<in> elts ((Cstep_c p \<alpha> ^^ Suc ?n) (Om v))"
+    by (simp only: funpow.simps(2) comp_apply)
+  thus ?thesis using Citer_c_in_Cset_c by blast
+qed
+
 end
