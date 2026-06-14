@@ -489,4 +489,50 @@ theorem NEC_of_kernel
     (hm : oV t ∈ Cset (psiRes α) α v) : ∀ x ∈ Gterm v t, oV x < α :=
   NEC_of_argExtract (fun hva hβc hmem => argExt_of_kernel K hva hβc hmem) ht hm
 
+/-! ## Reduction of the kernel `K` to ordinal-level Buchholz 1.9 sufficiency
+
+The kernel `K` carries five hypotheses, of which the non-canonicity of `ξ`
+(`ξ ∉ C_a(ξ)`) and the membership `ξ ∈ C_v(α)` serve *only* to deliver `β < α`
+for free (via `Cset_psi_closed` ⟶ `psi_arg_lt_of_mem_cross`).  Once `β < α` is
+in hand, the remaining content of `K` is exactly the **sufficiency direction of
+Buchholz 1.9 at the ordinal level**:
+
+> `SUFF`:  `v ≤ a → β` is `a`-canonical (`β ∈ C_a(β)`) → `β < α → β ∈ C_v(α)`.
+
+`SUFF` is the genuine residual hard core.  It is *not* circular with the
+necessity machinery: necessity (`NEC_of_kernel`) is reduced **to** `K`, and `K`
+is reduced here **to** `SUFF`, a pure closure/sufficiency statement whose own
+proof (Buchholz 1.9, induction on the `C_a(β)`-rank, generators handled by the
+`with-C` canonicity witness) never invokes necessity.  The chain
+`SUFF ⟹ K ⟹ NEC` is a DAG, not a cycle. -/
+
+/-- **`K` from ordinal-level 1.9 sufficiency `SUFF`.**  The two `ξ`-hypotheses of
+`K` are consumed solely to produce `β < α` (free, via `Cset_psi_closed` and
+`psi_arg_lt_of_mem_cross`); the goal `β ∈ C_v(α)` is then `SUFF` applied to the
+canonical `β`.  (0 sorry — `K` is fully reduced to `SUFF`.) -/
+theorem kernel_of_suff
+    (SUFF : ∀ (v a : ℕ) (β α : Ordinal.{u}), v ≤ a →
+      β ∈ Cset (psiRes β) β a → β < α → β ∈ Cset (psiRes α) α v) :
+    ∀ (v a : ℕ) (ξ β α : Ordinal.{u}), v ≤ a →
+      ξ ∈ Cset (psiRes α) α v → ξ < α → ξ ∉ Cset (psiRes ξ) ξ a →
+      β ∈ Cset (psiRes β) β a → psi ξ a = psi β a → β ∈ Cset (psiRes α) α v := by
+  intro v a ξ β α hva hξC hξα _hξnc hβc heq
+  have hβα : β < α := by
+    have hpsi_in : psi ξ a ∈ Cset (psiRes α) α v := by
+      have := Cset_psi_closed hξC hξα a
+      rwa [psiRes, if_pos hξα] at this
+    rw [heq] at hpsi_in
+    exact psi_arg_lt_of_mem_cross hva hpsi_in
+  exact SUFF v a β α hva hβc hβα
+
+/-- **`wf3`-necessity (Buchholz 1.9) from ordinal-level 1.9 sufficiency `SUFF`
+alone.**  Composes `kernel_of_suff` with `NEC_of_kernel`.  This pins the entire
+remaining Buchholz necessity direction to the single sufficiency core `SUFF`. -/
+theorem NEC_of_suff
+    (SUFF : ∀ (v a : ℕ) (β α : Ordinal.{u}), v ≤ a →
+      β ∈ Cset (psiRes β) β a → β < α → β ∈ Cset (psiRes α) α v)
+    {t : Three} (ht : wf3 t) {v : ℕ} {α : Ordinal.{u}}
+    (hm : oV t ∈ Cset (psiRes α) α v) : ∀ x ∈ Gterm v t, oV x < α :=
+  NEC_of_kernel (kernel_of_suff SUFF) ht hm
+
 end YAPSS
