@@ -4473,3 +4473,16 @@ witness=oV(proj a b))。w=oV(proj a m)≥oV m(oV_le_proj at m)。⟹ w<oV m(from
 緑インフラ完備(1.4b core=indec_Cset_c_generator 含む)。Buchholz ロードマップ確定(section1_plan 続89(30))。
 **残 = G_u on ordinals 定義(closure-rank 再帰)→ 1.9 → Remark(Cv=Cv_c)→ nonmem**。
 次セッションは G_u 定義から(Buchholz §1末の定義を Cantor_NF で忠実 port)。
+
+### 続89(33): Buchholz 1.4(c) 緑 + term_nec 戦略(G_u 回避)
+
+- ✅ **1.4(c)** psi_canonical_arg_lt(necessity.thy 緑): canonical δ で ψ_a δ∈Cv_c α a ⟹ δ<α。
+  1.4b core + psi_inj_subscript + 1.4a。**1.4 trio(a/b-core/c)完成**。
+- ★**term_nec 戦略**(section1_plan 続89(33)): wf3 項の 1.9 necessity(oV t∈Cv_c α a⟹∀x∈Gterm a t.
+  oV x<α)は **t の構造帰納で証明可・G_u on ordinals 定義を回避**(循環なし)。
+  部品=1.2(e) for Cv_c(Cantor_NF)+ indec_Cset_c_generator + 1.4a + wf3⟹acanon(Ccond)。
+- ⚠ ただし nonmem は非wf3値 ψ_a(oV b) で、term_nec 適用に A2 書換えが要り依然循環。
+  任意 gap の collapse_grow も band では bound 不可(引数 scale)⟹ **circularity は G_u+1.9(任意ord)
+  or rank-induction でしか切れない**(再確認)。term_nec(wf3)は必要だが nonmem 単独では閉じない。
+- **次**: (1)term_nec(構造帰納, 1.2e for Cv_c 要)= 緑の大物 (2)Remark Cv=Cv_c(band で witness<α)
+  (3)circularity を rank-induction で切る設計。1.4 trio は揃った。
