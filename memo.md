@@ -4241,3 +4241,17 @@ crux は「nrm 全証明をやり直す」のではなく **たった一つの C
   proj が ψ-collapse 恒等で oV 保存、から純順序数事実に分解できる（旧 E6_value の syntactic
   泥沼を避けられる）。ただし N2 単独では olt v u→比較に橋渡しできず crux は閉じない
   （order-preservation が本体）。Cmem_NF ルートの方が直接的。
+
+### 続89(20): セッション再起動後の引き継ぎ（2026-06-14）
+**tool呼び出し破損ループ**: 履歴に壊れたtool呼び出し(`court`+`antml:`無し`<invoke>`)が溜まり自己強化ループ化→`/clear`でリセット推奨。状態は全てディスク上。
+
+**clear後の最初のタスク**:
+1. acanon検証ビルド（未コミットの`necessity.thy` acanon追記）:
+   `ISBMAN_HOME=~/.cache/isbman-clean isbman build -d /home/koteitan/proofs/ya-pss/git -v PSI`
+   - 注意: cwdが親`/home/koteitan/proofs/ya-pss`にリセットされる不具合あり→`-d`は**絶対パス必須**。
+   - 注意: 既存隔離ホーム`~/.cache/isbman/home/git-62f647fc`のZFC_in_HOLヒープ破損(d5ecfc timeout kill起因)→fresh `ISBMAN_HOME=~/.cache/isbman-clean`で回避中（rm -rfはauto modeが拒否）。
+   - 緑なら`git add ord/necessity.thy && git commit`（acanon = `δ∈C_a(δ)`予測, `acanon_of_lt_psi`/`psi_le_of_not_acanon`構造化証明済）。
+2. §1実装（`ord/section1_plan.md`の最終Summary参照）: scaffolding A(psi_proj_step/psi_proj)/B1(bad_imp_oV_ge)/C2(collapse_grow経由)＋sorried D1(section1_simult)/D2を**サブエージェント**(isbman使用)に委譲しassembly検証→その後D1核を攻略。
+   - 核D1 = (α,n)辞書式同時超限帰納(外:Ord_induct on α, 内:Citer-rank n)。1.4b canonical witness∧1.9 necessity∧1.4a inj。
+   - D1必要形は「generator-trace形」(coeffs関数を作らずCiter由来の`ψ_μ(ξ)生成⟹ξ<α`)推奨。
+   - acanon_def/Cset/Citerを**auto/simpに晒さない**(1.5hスピン事故・続89(18))。全D群は構造化証明。
