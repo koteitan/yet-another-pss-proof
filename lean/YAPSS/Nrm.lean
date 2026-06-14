@@ -375,12 +375,42 @@ The tail-branch core `oV_nf_tail_lt` is the value-order statement on the
 `oV_nf_arg_lt` is the genuine UBI/row-1 content (C-membership-free, see the
 design notes — collapse is excluded by `r1ok`, the dual of `psi_proj_notmem`). -/
 
+/-! ### The argument-branch head, via the collapsing core `psi_proj`
+
+The direct C-membership routes for `ψ_0(oV b) < ψ_0(oV f)` are all **blocked on
+`NF`** (kernel-verified on the minimal example `b = p₁(p₂0)`, `f = p₁(p₂(p₃0))`):
+
+* `psi_strict_mono_arg` needs `oV b ∈ C_0(oV b)` — false (the inner `ψ₂0` lies
+  in the band `[Ω₂,Ω₃)` above `oV b ∈ [Ω₁,Ω₂)`, so `oV b ∉ C_0(oV b)`);
+* `psi_strict_mono_mem` needs `oV b ∈ C_0(oV f)` — also false: by `M1`
+  (`psi_form_of_mem`) + `Cset_level_mono` + `psi_arg_lt_of_mem` membership would
+  force `oV(p₂0) < oV f`, but band-disjointness gives `oV f < oV(p₂0)`.
+
+The repair is to route through the **collapsing core** `psi_proj`: `proj 0 b` is
+`0`-reduced (`proj_G`), so its value sits in its **own** `C_0` (`proj_oV_mem_C`,
+already proven), and `psi_proj` identifies `ψ_0(oV(proj 0 b)) = ψ_0(oV b)`.  Then
+Buchholz strict monotonicity `psi_strict_mono_arg` applies at `proj 0 b`.  Thus
+the argument head reduces to the **proj-side value order**
+`oV(proj 0 b) < oV(proj 0 f)` — and to `psi_proj` itself.  This pins the precise
+dependency: **the argument core needs the collapsing core** (the two are the two
+faces of the same Buchholz content, as the memory note warned). -/
+
+/-- The argument-branch head `ψ_0(oV b) < ψ_0(oV f)`, reduced (via the proven
+`psi_proj` glue and `proj_oV_mem_C`) to the proj-side value order
+`oV(proj 0 b) < oV(proj 0 f)`.  C-membership-free at `b` itself; the C-membership
+is supplied at the `0`-reduced fixpoint `proj 0 b` where it is *true*
+(`proj_oV_mem_C`). -/
+theorem psi0_lt_of_proj_lt {b f : Three} (wb : wf3 b) (wf : wf3 f)
+    (hproj_lt : oV.{u} (proj 0 b) < oV (proj 0 f)) :
+    psi.{u} (oV b) 0 < psi (oV f) 0 := by
+  rw [← psi_proj 0 b wb, ← psi_proj 0 f wf]
+  exact psi_strict_mono_arg hproj_lt (proj_oV_mem_C 0 b wb)
+
 /-- **Argument-branch core (genuine UBI / row-1 content).**  At the outer
-subscript `0` (forced by `NF_lead0`), a strictly larger argument gives a
-strictly larger value.  This is C-membership-free: `ψ_0(oV b) < ψ_0(oV f)` holds
-on `NF` even where `oV b ∉ C_0(oV b)`, because standardness (`r1ok`) excludes the
-`ψ`-plateau (the dual of the collapsing obligation `psi_proj_notmem`).  The
-counterexample `y₂ <o y₁` (equal value) is exactly a non-standard plateau. -/
+subscript `0` (forced by `NF_lead0`), a strictly larger argument gives a strictly
+larger value.  Reduces to the argument head `psi0_lt_of_proj_lt` (which routes
+through the collapsing core `psi_proj`) plus tail control.  Off `NF` it fails
+(the `y₂ <o y₁` equal-value counterexample is a non-standard plateau). -/
 theorem oV_nf_arg_lt {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
     oV.{u} (P 0 b c) < oV (P 0 f g) := by
