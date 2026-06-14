@@ -4449,3 +4449,27 @@ prerequisite。これが最後の大きな部品。
 
 **緑資産(necessity.thy/collapsing.thy, sorry 無)**: 続89(29)の全部 + indec_Cset_c_generator。
 残 live sorry = psi_proj_nonmem(nrm.thy)。次=G_u定義→1.9→Remark→nonmem discharge。
+
+### 続89(32): canonical-witness 方向を実測で訂正 + nonmem の正しい ordinal 証明確定
+
+**実測確定(tools/proj_oval.py)**: proj は wf3 項を 6677/46033 で変える ⟹ oV 厳密単調(oV_order_pres)
+より **oV(proj a b)≠oV b**(proj は oV-値を**変える**)。psi_proj は非自明(値の等式)。
+
+**★canonical-witness 方向の訂正(改善前の reasoning は誤り・実測で回避)**:
+- ψ_a の constancy 構造(1.6a): canonical α で ψ_a(α+1) jump、non-canonical α で ψ_a(α+1)=ψ_a(α)。
+  ⟹ ψ_a は **canonical arg を右端(最大)とする区間で一定**。
+- ⟹ **canonical witness w = その ψ_a 値を持つ最大の arg ≥ oV b = oV(proj a b)**(proj 上向き oV_le_proj
+  と整合・proj_canonical で canonical)。改善前の「least/down」は**誤り**だった(実測 proj≠id で気づき訂正)。
+- **教訓**: §1 の canonical-rep は微妙(値によっては canonical witness の位置が直感と逆)。improvisation
+  厳禁・Buchholz 忠実 port のみ([[freeze-soundness-lessons]])。実測(proj_oval.py)で誤りを未然に回避。
+
+**nonmem の正しい証明(ordinal 1.9 + G_a)**:
+ψ_a(oV b)∈Cv(oV m)a ⟹(1.9)G_a(ψ_a(oV b))⊆oV m。G_a(ψ_a(oV b))={w}∪G_a(w)(w=canonical
+witness=oV(proj a b))。w=oV(proj a m)≥oV m(oV_le_proj at m)。⟹ w<oV m(from ⊆)と w≥oV m が矛盾。
+- ★ローカルな 1.4a 同定(ξ=oV(proj a b))は A2 を要し循環。**G_u を ordinal 側に intrinsic 定義**して
+  1.9 で完結させるのが Buchholz の循環回避(everything at args<α, IH 適用)。w≥oV m は ordinal 側で要証明。
+
+**今セッション最終状態(続89(21)-(32))**: psi_proj(A2)緑 modulo psi_proj_nonmem 1点。
+緑インフラ完備(1.4b core=indec_Cset_c_generator 含む)。Buchholz ロードマップ確定(section1_plan 続89(30))。
+**残 = G_u on ordinals 定義(closure-rank 再帰)→ 1.9 → Remark(Cv=Cv_c)→ nonmem**。
+次セッションは G_u 定義から(Buchholz §1末の定義を Cantor_NF で忠実 port)。
