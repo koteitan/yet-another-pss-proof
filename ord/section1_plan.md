@@ -570,3 +570,38 @@ nonmem: ψ_a(oV b)∉Cv(oV m)a。
 (1) term_nec(構造帰納・1.2e for Cv_c が要・Cantor_NF)= Buchholz 1.9 for terms、緑の大物。
 (2) Remark Cv=Cv_c(band_lt_psi で witness<α、rank 帰納、cross-subscript careful)。
 (3) A2/nonmem: G_u on ordinals 定義 OR term_nec+Remark+rank-induction で circularity を切る設計。
+
+---
+
+## ROADMAP 続89(34) — term_nec の sum 分解は Cantor_NF API で(2026-06-14)
+
+### 利用可能な Cantor_NF API(加法主要数=indecomposable)
+- `indecomposable_imp_eq`: indecomposable α ⟹ Ord β ⟹ β<α ⟹ **β+α=α**(左吸収)。
+- `indecomposableD`: indec α ⟹ β<α ⟹ γ<α ⟹ Ord β,γ ⟹ β+γ<α。
+- `eq_imp_indecomposable` / `indecomposable_\<omega>_power`(ω^δ は indec)/ `Cantor_nf_exists`。
+- 自前: `indecomposable_psi`(ψ値は indec, 緑)/ `indec_psi_mult(_add)`。
+
+### term_nec の sum 分解(1.2g 相当)の攻め方
+目標 `Cv_c_add_principal_elim`: **ξ indecomposable ∧ ξ+η ∈ Cv_c α v ∧ η<ξ ⟹ ξ∈Cv_c α v ∧ η∈Cv_c α v**。
+(oV(P a' b' c')=ψ_{a'}(oV b')+oV c' で ξ=ψ_{a'}(oV b') indec、η=oV c'。wf3 の hdle で η の主要数 ≤ ξ。)
+- 攻め筋: Citer_c-rank 帰納。ξ+η∈Citer_c(Suc n)。
+  - Om: ξ+η<Om v ⟹ ξ,η<Om v(ξ≤ξ+η, η≤ξ+η)⟹ ∈Om v⊆Cv_c。
+  - sum a+b(a,b∈Citer_c n): a+b=ξ+η。**indecomposable_imp_eq で ξ が左吸収**: η<ξ indec ⟹
+    ... 加法の結合・左相殺(add_mem_right_cancel 等)で a,b と ξ,η を対応。careful な ordinal 算術。
+  - generator(ψ, indec): ξ+η=ψ単項 indec ⟹ η=0(η<ξ=ψ, η+ψ=ψ なので和が単項なら η=0)∧ξ=ψ∈Cv_c。
+- 代替（より簡単かも）: oV t∈Cv_c, oV t=ξ+η。η≤oV t∈Cv_c。**band_lt_psi 流**でなく、
+  「Cv_c の元は Cv_c-主要数の有限和」補題(rank 帰納)を先に作り、その先頭を取る。
+
+### term_nec 本体(1.2g 後は構造帰納)
+term_nec: wf3 t ⟹ oV t∈Cv_c α a ⟹ ∀x∈Gterm a t. oV x<α。t 構造帰納:
+- P a' b' c': 1.2g で ψ_{a'}(oV b')∈Cv_c ∧ oV c'∈Cv_c。
+  - ψ_{a'}(oV b')∈Cv_c: indec_Cset_c_generator + 1.4a(wf3 b'⟹acanon a'(oV b'))⟹ **oV b'<α ∧ oV b'∈Cv_c**。
+  - 再帰: IH(b')[oV b'∈Cv_c]、IH(c')[oV c'∈Cv_c]。
+- ⟹ B2(oV b 非canonical): term_nec(b) at bound oV b の contrapositive(bad 係数 oV m≥oV b で矛盾)。
+
+### B2 後の circularity 切断(設計案)
+B2(oV b 非canonical)が出れば、NM(b) で「ξ=oV b(canonical)」case を B2 で排除でき、
+「ξ>oV b ∧ oV b 非canonical」case のみ残る。この case で ξ canonical<oV m, ψ_a(ξ)=ψ_a(oV b)。
+**term_nec を ξ や oV(proj a b) に適用** or **A2 を rank 帰納で同時に**。要設計(次々セッション)。
++ **Remark Cv=Cv_c** が全所で必要(非canonical generator ψ_{w'}ξ≤ξ<α だが Cv_c 帰属は cross-subscript
+  で非自明。band_lt_psi[同subscript]では w'≠v を直接扱えない。1.6a collapse_succ 反復で canonical 化が要る)。
