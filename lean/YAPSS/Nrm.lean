@@ -370,8 +370,9 @@ Two structural `NF` facts repair the split:
   absurd) — it is eliminated unconditionally.
 * The remaining argument and tail branches are isolated as the two cores below.
 
-The tail-branch core `oV_nf_tail_lt` is the value-order statement on the
-*tail* (itself an `NF` term, verified hereditarily); the argument-branch core
+The tail branch is discharged by `tsize`-strong-induction inside
+`oV_nf_order_pres` itself, using tail-`NF`-closure `NF_tail` (the *tail* is again
+an `NF` term, verified hereditarily); the argument-branch core
 `oV_nf_arg_lt` is the genuine UBI/row-1 content (C-membership-free, see the
 design notes — collapse is excluded by `r1ok`, the dual of `psi_proj_notmem`). -/
 
@@ -493,20 +494,6 @@ theorem psi0_oV_lt_of_proj_olt {b f : Three} (wb : wf3 b) (wf : wf3 f)
   psi0_lt_of_proj_lt wb wf
     (oV_order_pres (proj_wf3 wb) (proj_wf3 wf) hproj)
 
-/-- **The proj-side order crux (the genuine residual of the argument head).**
-`proj 0`-monotonicity on `NF` arguments: `olt b f → olt (proj 0 b) (proj 0 f)`.
-FALSE on general `wf3` (7291 reversals, a dead static-domain family), but TRUE on
-`NF` arguments (audited 79800/79800, zero reversals).  The existing `proj`
-monotonicity tooling (`proj_submono`, `proj_olt_of_Einc`) is `≤o` or tied to the
-step-specific `Einc` structure, so the general `NF`-argument strict version is a
-genuine open obligation.  NB: an `NF` argument need not be `wf3` (936/4655 are
-not), so the `wf3` hypotheses below are an over-approximation of the real `NF`
-hypothesis; they hold on the minimal example and let the head route close. -/
-theorem proj0_olt_NF {b c f g : Three}
-    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
-    olt (proj 0 b) (proj 0 f) := by
-  sorry
-
 /-- **Argument-branch core (genuine UBI / row-1 content).**  At the outer
 subscript `0` (forced by `NF_lead0`), a strictly larger argument gives a strictly
 larger value.  The head routes through `proj` (the only working route, see
@@ -517,42 +504,111 @@ theorem oV_nf_arg_lt {b c f g : Three}
     oV.{u} (P 0 b c) < oV (P 0 f g) := by
   sorry
 
-/-- **Tail-branch core.**  The tail of an `NF` term is again an `NF` term, so
-this is the value-order statement on a strictly smaller `NF` pair.  (It reduces
-to `oV_nf_order_pres` on the tail once tail-`NF`-closure is available; kept
-separate for now.) -/
-theorem oV_nf_tail_lt {b c g : Three}
-    (hv : (P 0 b c) ∈ NF) (hu : (P 0 b g) ∈ NF) (htail : olt c g) :
-    oV.{u} c < oV g := by
+/-- Every `ST_PS` list is non-empty (the diagonals have length `v+1`; `oper`
+preserves non-emptiness via `oper_eq_dropLast_append`). -/
+theorem stps_len_pos {M : PairSeq} (hM : ST_PS M) : 0 < M.length := by
+  induction hM with
+  | diag v => rw [diagSeq_cons (Nat.zero_le v)]; simp
+  | @oper N n hN hn ih =>
+    by_cases L : 1 < N.length
+    · obtain ⟨R, hR, -⟩ := oper_eq_dropLast_append L hn
+      rw [hR, List.length_append, List.length_dropLast]; omega
+    · rw [oper_eq_self_short n (by omega)]; exact ih
+
+/-- The dropWhile-tail of a base diagonal `(0,0) :: diagSeq 1 v` is empty: every
+non-leading column has row-0 `≥ 1 > 0`, so `dropWhile (0 < ·.1)` drops them all. -/
+theorem suffix_diag (v : ℕ) :
+    (diagSeq 1 v).dropWhile (fun q => (0 : ℕ) < q.1) = [] := by
+  rw [List.dropWhile_eq_nil_iff]
+  intro x hx
+  have := fst_in_diagSeq hx
+  simp only [decide_eq_true_eq]; omega
+
+/-- **`ST_PS`-suffix-closure (the single combinatorial residual).**  For an
+`ST_PS` list `p :: rest`, the `dropWhile`-tail — the columns from the first
+row-0 return to `≤ p.1` onward — is empty or again `ST_PS`.
+
+Audited TRUE (783/783 non-empty suffixes at closure+6; `/tmp/nf_tail2.py`).
+The tail is a literal contiguous suffix `M.drop k`.  Proof skeleton (induction on
+the `ST_PS` derivation):
+* **diag**: tail is empty (`suffix_diag`) — `p = (0,0)`, all others row-0 `≥ 1`.
+* **oper, `Pred` branches**: `M⟦n⟧ = Pred M = M.dropLast`; the suffix of a
+  `dropLast` is the IH suffix with its last column dropped (or empty).
+* **oper, tiling branch** (`oper_bad_blocks`: `M = G ++ (v0,w0)::R ++ [lp]`,
+  `M⟦n⟧ = G ++ copies`, `R` all above `v0`): if `v0 > 0` the suffix lives inside
+  `G` (IH); if `v0 = 0` the `n` copies become fresh top-level siblings and the
+  suffix is `copies 2..n`, an `ST_PS`-shaped object — the Buchholz/hydra
+  sub-recursion.  This last sub-case is the genuine open content. -/
+theorem ST_PS_suffix {p : ℕ × ℕ} {rest : PairSeq} (hM : ST_PS (p :: rest)) :
+    rest.dropWhile (fun q => p.1 < q.1) = [] ∨
+    ST_PS (rest.dropWhile (fun q => p.1 < q.1)) := by
   sorry
+
+/-- **Tail-`NF`-closure.**  Reduced to the pure list-level `ST_PS_suffix`: the
+tail `c` of `P 0 b c ∈ NF` is `translate` of the `dropWhile`-tail of the `ST_PS`
+preimage, which (when non-empty, i.e. `c ≠ Z`) is again `ST_PS`. -/
+theorem NF_tail {b c : Three} (hv : (P 0 b c) ∈ NF) (hc : c ≠ Z) : c ∈ NF := by
+  obtain ⟨M, hM, hMt⟩ := hv
+  obtain ⟨p, rest, rfl⟩ : ∃ p rest, M = p :: rest := by
+    have := stps_len_pos hM
+    cases M with
+    | nil => simp at this
+    | cons p rest => exact ⟨p, rest, rfl⟩
+  rw [translate] at hMt
+  have hceq : c = translate (rest.dropWhile (fun q => p.1 < q.1)) := by
+    injection hMt with _ _ h3; exact h3.symm
+  rcases ST_PS_suffix hM with hempty | hstps
+  · rw [hempty, translate] at hceq; exact absurd hceq hc
+  · exact ⟨_, hstps, by rw [hceq]⟩
 
 /-- **Hard core 2 (standardness / UBI), now reduced.**  On `NF` the
 subscript-first order refines the `ψ`-value order.  The subscript branch is
-**eliminated** via `NF_lead0` (outer subscript `0`); only the argument core
-`oV_nf_arg_lt` and the tail core `oV_nf_tail_lt` remain. -/
+**eliminated** via `NF_lead0` (outer subscript `0`).  The **tail branch is now
+folded into this proof's own `tsize` strong induction** (via `NF_tail`, which
+yields strictly smaller `NF` operands), so the only genuine residuals are the
+argument core `oV_nf_arg_lt` and tail-`NF`-closure `NF_tail`. -/
 theorem oV_nf_order_pres {v u : Three} (hv : v ∈ NF) (hu : u ∈ NF)
     (h : olt v u) : oV.{u} v < oV u := by
-  cases v with
-  | Z =>
-    cases u with
-    | Z => exact absurd h (olt_irrefl Z)
-    | P e f g =>
-      have he : e = 0 := NF_lead0 hu rfl
-      subst he
-      simpa using oV_pos 0 f g
-  | P a b c =>
-    have ha : a = 0 := NF_lead0 hv rfl
-    subst ha
-    cases u with
-    | Z => exact absurd h (not_olt_Z _)
-    | P e f g =>
-      have he : e = 0 := NF_lead0 hu rfl
-      subst he
-      rcases olt_P_P.1 h with hsub | ⟨_, harg⟩ | ⟨_, rfl, htail⟩
-      · exact absurd hsub (lt_irrefl 0)
-      · exact oV_nf_arg_lt hv hu harg
-      · show psi (oV b) 0 + oV c < psi (oV b) 0 + oV g
-        exact add_lt_add_right (oV_nf_tail_lt hv hu htail) _
+  generalize hs : tsize v = n
+  induction n using Nat.strong_induction_on generalizing v u with
+  | _ n IH =>
+    subst hs
+    cases v with
+    | Z =>
+      cases u with
+      | Z => exact absurd h (olt_irrefl Z)
+      | P e f g =>
+        have he : e = 0 := NF_lead0 hu rfl
+        subst he
+        simpa using oV_pos 0 f g
+    | P a b c =>
+      have ha : a = 0 := NF_lead0 hv rfl
+      subst ha
+      cases u with
+      | Z => exact absurd h (not_olt_Z _)
+      | P e f g =>
+        have he : e = 0 := NF_lead0 hu rfl
+        subst he
+        rcases olt_P_P.1 h with hsub | ⟨_, harg⟩ | ⟨_, rfl, htail⟩
+        · exact absurd hsub (lt_irrefl 0)
+        · exact oV_nf_arg_lt hv hu harg
+        · show psi (oV b) 0 + oV c < psi (oV b) 0 + oV g
+          refine add_lt_add_right ?_ _
+          by_cases hcZ : c = Z
+          · subst hcZ
+            have hgZ : g ≠ Z := by
+              rintro rfl; exact absurd htail (not_olt_Z _)
+            obtain ⟨e2, f2, g2, rfl⟩ : ∃ e2 f2 g2, g = P e2 f2 g2 := by
+              cases g with
+              | Z => exact absurd rfl hgZ
+              | P e2 f2 g2 => exact ⟨_, _, _, rfl⟩
+            simpa using oV_pos e2 f2 g2
+          · have hcNF : c ∈ NF := NF_tail hv hcZ
+            have hgZ : g ≠ Z := by
+              rintro rfl; exact absurd htail (not_olt_Z _)
+            have hgNF : g ∈ NF := NF_tail hu hgZ
+            have szc : tsize c < tsize (P 0 b c) := by simp only [tsize]; omega
+            exact IH (tsize c) szc hcNF hgNF htail rfl
 
 /-- The remaining core, now REDUCED to the two hard cores above via the proven
 glue (`oV_ins`, `oV_order_refl`, `oV_nrm_of_psi_proj`).  This assembly is

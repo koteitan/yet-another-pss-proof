@@ -1652,6 +1652,44 @@ theorem proj_olt_of_fireprop {u : ℕ} {x x' : Three} (hlt : x <o x')
   · rw [proj_nofire hf]
     exact olt_ole_trans hlt (proj_ole u x')
 
+/-! ### `proj0_olt_NF`: proj-side order on `NF` arguments (the argument-head residual)
+
+`proj 0`-monotonicity on `NF` arguments — `olt b f → olt (proj 0 b) (proj 0 f)`.
+This is the genuine residual of the argument-head of `oV_nf_order_pres` (see
+`Nrm.psi0_oV_lt_of_proj_olt`).  FALSE on general `wf3` (7291 reversals, a dead
+static-domain family) but TRUE on `NF` arguments (audited 79800/79800, zero
+reversals).  Pure `olt` (no ordinals), `wf3`-free.  Via `proj_olt_of_fireprop`
+it splits into the two `NF`-standardness residuals below. -/
+
+/-- **Fire-propagation on `NF` arguments** (residual 1).  `olt b f → pfire 0 b →
+pfire 0 f`.  Audit: `pfire 0 b ⟺ b has a subscript ascent`; non-fire `NF` args
+are exactly the subscript-non-increasing ones (`p₁(p₁0)`, `p₁(p₀0)`), fire ones
+have an ascent (`p₁(p₂…)`).  The "fn" case is absent on all `NF` arg pairs (0
+violations) but present on general terms (`b=p₀(p₂0)+p₁0`, `f=p₂0`), so the `NF`
+subscript discipline (`r1ok`/`steps1`) is exactly what excludes it. -/
+theorem proj0_fireprop_NF {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) : pfire 0 f := by
+  sorry
+
+/-- **Both-fire comparison on `NF` arguments** (residual 2).  Audit structural
+key: for a firing `NF` arg `P 1 b' c'`, `proj 0 (P 1 b' c') = proj 0 b'`
+(1285/1285) — `proj 0` peels the outer `p₁` and recurses into the ascent source,
+so both-fire descends to a strictly smaller proj-order comparison. -/
+theorem proj0_bothfire_NF {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) (hf : pfire 0 f) : olt (proj 0 b) (proj 0 f) := by
+  sorry
+
+/-- **The proj-side order crux**, split into the two `NF`-standardness residuals
+via the pure-`olt` `proj_olt_of_fireprop`.  No `wf3` needed. -/
+theorem proj0_olt_NF {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
+    olt (proj 0 b) (proj 0 f) :=
+  proj_olt_of_fireprop harg
+    (fun hb => proj0_fireprop_NF hv hu harg hb)
+    (fun hb hf => proj0_bothfire_NF hv hu harg hb hf)
+
 /-! ## The subscript chain: criticals, projections and `nrm` never invent
 subscripts -/
 
