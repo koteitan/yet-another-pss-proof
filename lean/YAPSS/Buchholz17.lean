@@ -535,4 +535,153 @@ theorem NEC_of_suff
     (hm : oV t ∈ Cset (psiRes α) α v) : ∀ x ∈ Gterm v t, oV x < α :=
   NEC_of_kernel (kernel_of_suff SUFF) ht hm
 
+/-! ## Collapsing (Buchholz 1.6) for `ψ^s` (self-referential with-C)
+
+`psi_proj_notmem`'s tool, ported to the residue-free self with-C set.  The
+canonicity test in `CstepSelf` is bound-independent (and param-invariant below the
+bound via `CsetSelf_param_eq`), so the omitted collapse proofs translate. -/
+
+theorem psiSelf_eq_of_notMem {α β : Ordinal.{u}} {v : ℕ} (hαβ : α ≤ β)
+    (hnm : psiSelf α v ∉ CsetSelf (psiResSelf β) β v) : psiSelf α v = psiSelf β v := by
+  refine le_antisymm (psiSelf_mono_arg hαβ v) ?_
+  rw [psiSelf_unfold β v]
+  exact csInf_le' hnm
+
+theorem psiSelf_notMem_iff_eq {α β : Ordinal.{u}} {v : ℕ} (hαβ : α ≤ β) :
+    psiSelf α v ∉ CsetSelf (psiResSelf β) β v ↔ psiSelf α v = psiSelf β v := by
+  refine ⟨psiSelf_eq_of_notMem hαβ, fun he => ?_⟩
+  rw [he]; exact psiSelf_notMem β v
+
+theorem psiSelf_eq_of_CsetSelf_eq {α β : Ordinal.{u}} {v : ℕ}
+    (h : CsetSelf (psiResSelf α) α v = CsetSelf (psiResSelf β) β v) :
+    psiSelf α v = psiSelf β v := by
+  rw [psiSelf_unfold α v, psiSelf_unfold β v, h]
+
+/-- **1.6(a) C-set part for `ψ^s`**: if `α ∉ C^s_v(α)` then `C^s_v(α+1) = C^s_v(α)`.
+Stage induction; the generator's `ξ < α+1` collapses to `ξ < α` (`α` never enters
+the closure), and the canonicity test `ξ ∈ CsetSelf p ξ u` (bound ξ < α) is
+param-invariant between `psiResSelf (α+1)` and `psiResSelf α` (`CsetSelf_param_eq`). -/
+theorem CsetSelf_succ_eq {α : Ordinal.{u}} {v : ℕ}
+    (hα : α ∉ CsetSelf (psiResSelf α) α v) :
+    CsetSelf (psiResSelf (α + 1)) (α + 1) v = CsetSelf (psiResSelf α) α v := by
+  have key : ∀ n, (CstepSelf' (psiResSelf (α + 1)) (α + 1))^[n] (Set.Iio (Om v))
+                = (CstepSelf' (psiResSelf α) α)^[n] (Set.Iio (Om v)) := by
+    intro n
+    induction n with
+    | zero => rfl
+    | succ n IH =>
+      rw [Function.iterate_succ_apply', Function.iterate_succ_apply', IH]
+      have hαn : α ∉ (CstepSelf' (psiResSelf α) α)^[n] (Set.Iio (Om v)) :=
+        fun h => hα (CiterSelf_subset_CsetSelf h)
+      show CstepSelf (psiResSelf (α+1)) (α+1) _ _ = CstepSelf (psiResSelf α) α _ _
+      unfold CstepSelf
+      congr 1
+      apply Set.iUnion_congr
+      intro u
+      ext y
+      simp only [Set.mem_image, Set.mem_inter_iff, Set.mem_setOf_eq]
+      constructor
+      · rintro ⟨ξ, ⟨hξX, ⟨hξα1, hξc⟩⟩, rfl⟩
+        have hξα : ξ < α := by
+          rcases lt_or_eq_of_le (Order.lt_succ_iff.1 hξα1) with h | h
+          · exact h
+          · exact absurd (h ▸ hξX) hαn
+        refine ⟨ξ, ⟨hξX, ⟨hξα, ?_⟩⟩, ?_⟩
+        · rwa [CsetSelf_param_eq (fun ζ uu hζ => psiResSelf_eq_below (lt_add_one α).le (lt_trans hζ hξα))] at hξc
+        · rw [psiResSelf_eq_below (lt_add_one α).le hξα]
+      · rintro ⟨ξ, ⟨hξX, ⟨hξα, hξc⟩⟩, rfl⟩
+        refine ⟨ξ, ⟨hξX, ⟨lt_of_lt_of_le hξα le_self_add, ?_⟩⟩, ?_⟩
+        · rwa [CsetSelf_param_eq (fun ζ uu hζ => psiResSelf_eq_below (lt_add_one α).le (lt_trans hζ hξα))]
+        · rw [psiResSelf_eq_below (lt_add_one α).le hξα]
+  ext x
+  rw [CsetSelf_mem_iff, CsetSelf_mem_iff]
+  exact exists_congr (fun n => by rw [key n])
+
+/-- **Buchholz 1.6(a) for `ψ^s`**: `α ∉ C^s_v(α) → ψ^s_v α = ψ^s_v(α+1)`. -/
+theorem collapseSelf_succ {α : Ordinal.{u}} {v : ℕ}
+    (hα : α ∉ CsetSelf (psiResSelf α) α v) : psiSelf α v = psiSelf (α + 1) v :=
+  psiSelf_eq_of_CsetSelf_eq (CsetSelf_succ_eq hα).symm
+
+/-- **C^s-set continuity from below** at a positive succ-limit bound. -/
+theorem CsetSelf_limit_sub {β : Ordinal.{u}} {v : ℕ}
+    (hβ : Order.IsSuccLimit β) (hβ0 : 0 < β)
+    {x : Ordinal.{u}} (hx : x ∈ CsetSelf (psiResSelf β) β v) :
+    ∃ δ, δ < β ∧ x ∈ CsetSelf (psiResSelf δ) δ v := by
+  obtain ⟨n, hn⟩ := CsetSelf_mem_iff.1 hx
+  clear hx
+  induction n generalizing x with
+  | zero =>
+    simp only [Function.iterate_zero, id_eq] at hn
+    exact ⟨0, hβ0, Iio_Om_subset_CsetSelf hn⟩
+  | succ n IH =>
+    rw [Function.iterate_succ_apply'] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH h1
+    · obtain ⟨y, hy, z, hz, hyz⟩ := h2
+      obtain ⟨δ1, hδ1, hy'⟩ := IH hy
+      obtain ⟨δ2, hδ2, hz'⟩ := IH hz
+      refine ⟨max δ1 δ2, max_lt hδ1 hδ2, ?_⟩
+      have hy2 := CCSelf_mono (le_max_left δ1 δ2) v hy'
+      have hz2 := CCSelf_mono (le_max_right δ1 δ2) v hz'
+      rw [← hyz]
+      exact CsetSelf_add_closed hy2 hz2
+    · obtain ⟨u, ⟨ξ, ⟨hξX, ⟨hξβ, hξc⟩⟩, hξx⟩⟩ := Set.mem_iUnion.1 h3
+      have hξβ' : ξ < β := hξβ
+      obtain ⟨δ0, hδ0, hξ'⟩ := IH hξX
+      have hξ1 : ξ + 1 < β := by rw [← Order.succ_eq_add_one]; exact hβ.succ_lt hξβ'
+      refine ⟨max δ0 (ξ + 1), max_lt hδ0 hξ1, ?_⟩
+      have hξδ : ξ < max δ0 (ξ + 1) :=
+        lt_of_lt_of_le (lt_add_one ξ) (le_max_right δ0 (ξ + 1))
+      have hδle : max δ0 (ξ + 1) ≤ β := le_of_lt (max_lt hδ0 hξ1)
+      have hξmem := CCSelf_mono (le_max_left δ0 (ξ + 1)) v hξ'
+      -- canonicity of ξ at bound ξ: param-invariant psiResSelf β → psiResSelf (max ..)
+      have hξc0 : ξ ∈ CsetSelf (psiResSelf β) ξ u := hξc
+      have hξc' : ξ ∈ CsetSelf (psiResSelf (max δ0 (ξ + 1))) ξ u := by
+        rwa [CsetSelf_param_eq (p := psiResSelf β) (q := psiResSelf (max δ0 (ξ + 1)))
+          (fun ζ uu hζ => by
+            rw [psiResSelf, psiResSelf, if_pos (lt_trans hζ hξβ'),
+              if_pos (lt_trans hζ hξδ)])] at hξc0
+      have hclosed := CsetSelf_psi_closed hξmem hξδ u hξc'
+      rw [psiResSelf, if_pos hξδ] at hclosed
+      have hxv : x = psiSelf ξ u := by
+        have : psiResSelf β ξ u = x := hξx
+        rw [← this, psiResSelf, if_pos hξβ']
+      rw [hxv]; exact hclosed
+
+/-- **Buchholz general collapse (plateau) for `ψ^s`**: if every ordinal in `[α,β)`
+is non-`a`-canonical, then `ψ^s_a` is constant on `[α,β]`. -/
+theorem collapseSelf_le {a : ℕ} :
+    ∀ β α : Ordinal.{u}, α ≤ β →
+      (∀ γ, α ≤ γ → γ < β → γ ∉ CsetSelf (psiResSelf γ) γ a) →
+      psiSelf α a = psiSelf β a := by
+  intro β
+  induction β using WellFoundedLT.induction with
+  | _ β IHβ =>
+    intro α hαβ hnc
+    rcases eq_or_lt_of_le hαβ with rfl | hlt
+    · rfl
+    · have hβ0 : 0 < β := lt_of_le_of_lt bot_le hlt
+      rcases Ordinal.zero_or_succ_or_isSuccLimit β with hz | ⟨δ, hδ⟩ | hl
+      · rw [hz] at hβ0; exact absurd hβ0 (lt_irrefl 0)
+      · obtain ⟨δ, rfl⟩ : ∃ δ', β = δ' + 1 := ⟨δ, by rw [← hδ, Order.succ_eq_add_one]⟩
+        have hδβ : δ < δ + 1 := lt_add_one δ
+        have hαδ : α ≤ δ :=
+          Order.lt_succ_iff.1 (by rw [Order.succ_eq_add_one]; exact hlt)
+        have e1 : psiSelf α a = psiSelf δ a :=
+          IHβ δ hδβ α hαδ (fun γ hγ hγδ => hnc γ hγ (lt_trans hγδ hδβ))
+        rw [e1]
+        exact collapseSelf_succ (hnc δ hαδ hδβ)
+      · refine le_antisymm (psiSelf_mono_arg hαβ a) ?_
+        have hnotin : psiSelf α a ∉ CsetSelf (psiResSelf β) β a := by
+          intro hin
+          obtain ⟨δ, hδβ, hmem⟩ := CsetSelf_limit_sub hl hβ0 hin
+          rcases lt_or_ge δ α with hδα | hαδ
+          · exact psiSelf_notMem α a (CCSelf_mono hδα.le a hmem)
+          · have e1 : psiSelf α a = psiSelf δ a :=
+              IHβ δ hδβ α hαδ (fun γ hγ hγδ => hnc γ hγ (lt_trans hγδ hδβ))
+            rw [e1] at hmem
+            exact psiSelf_notMem δ a hmem
+        rw [psiSelf_unfold β a]
+        exact csInf_le' hnotin
+
 end YAPSS

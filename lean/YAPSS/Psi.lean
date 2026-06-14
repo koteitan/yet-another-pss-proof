@@ -1145,6 +1145,18 @@ theorem CCSelf_mono {α β : Ordinal} (hαβ : α ≤ β) (v : ℕ) :
       rw [psiResSelf, psiResSelf, if_pos hξ, if_pos (lt_of_lt_of_le hξ hαβ)])
   exact hparam.trans (CsetSelf_mono_bound _ hαβ v)
 
+/-- Two parameters agreeing strictly below the bound `α` give the SAME `CsetSelf`
+at bound `α` (both inclusions from `CsetSelf_mono_param`). -/
+theorem CsetSelf_param_eq {p q : Ordinal.{u} → ℕ → Ordinal.{u}} {α : Ordinal.{u}} {v : ℕ}
+    (hpq : ∀ ξ u, ξ < α → p ξ u = q ξ u) : CsetSelf p α v = CsetSelf q α v :=
+  Set.Subset.antisymm (CsetSelf_mono_param p q α v hpq)
+    (CsetSelf_mono_param q p α v (fun ξ u hξ => (hpq ξ u hξ).symm))
+
+/-- `psiResSelf` at two bounds `α ≤ β` agree on arguments `< α`. -/
+theorem psiResSelf_eq_below {α β : Ordinal} (hαβ : α ≤ β) {ξ : Ordinal} {u : ℕ}
+    (hξ : ξ < α) : psiResSelf β ξ u = psiResSelf α ξ u := by
+  rw [psiResSelf, psiResSelf, if_pos (lt_of_lt_of_le hξ hαβ), if_pos hξ]
+
 /-! ### §1 port for `ψ^s` (Buchholz 1.2–1.4), residue-free -/
 
 /-- C1: `Iio Ω_v ⊆ C^s_v(α)`. -/
