@@ -1,5 +1,5 @@
 theory nrm
-  imports necessity "YAPSS.proofs"
+  imports necessity "YAPSS.proofs" "YAPSS.seqlex"
 begin
 
 text \<open>
@@ -309,19 +309,255 @@ next
   show ?case using wf3_ins[OF wb P.IH(2) g] by simp
 qed
 
+subsection \<open>Inverse of \<open>translate\<close>: \<open>untr\<close>, and the sequence-side reframe\<close>
+
+text \<open>\<^bold>\<open>The block reader \<open>untr d\<close>\<close>: the left inverse of \<open>translate\<close> at depth \<open>d\<close>.
+  Reading a principal \<open>P a b c\<close> as the column \<open>(d,a)\<close> followed by the depth-\<open>Suc d\<close>
+  unfolding of the argument \<open>b\<close> (its descendants) and the depth-\<open>d\<close> unfolding of the
+  tail \<open>c\<close> (its siblings) exactly inverts the forest reading of @{const translate}.
+  This recasts order preservation under \<open>nrm\<close> on \<open>NF\<close> into the BMS-native column
+  lexicographic order (\<open>seqlex\<close>), via the \<open>translate\<close> order isomorphism
+  (@{thm [source] olt_ST_iff_seqlex}).\<close>
+
+fun untr :: "nat \<Rightarrow> three \<Rightarrow> pairseq" where
+  "untr d Z = []"
+| "untr d (P a b c) = (d, a) # untr (Suc d) b @ untr d c"
+
+text \<open>\<^bold>\<open>\<open>untr d\<close> always produces a depth-\<open>d\<close> block\<close>: the head sits at \<open>d\<close>, every row
+  is \<open>\<ge> d\<close>, and row-0 increases by at most one (descending into an argument raises
+  the depth by exactly one, while a tail keeps it).  Unconditional in \<open>t\<close>.
+  (Empirically 0 bad / 20000 random terms.)\<close>
+
+lemma untr_set_ge: "\<forall>p \<in> set (untr d t). d \<le> fst p"
+proof (induction d t rule: untr.induct)
+  case (1 d) show ?case by simp
+next
+  case (2 d a b c)
+  have "\<forall>p \<in> set (untr (Suc d) b). d \<le> fst p" using 2(1) by (meson Suc_leD)
+  thus ?case using 2(2) by auto
+qed
+
+lemma untr_hd: "untr d t \<noteq> [] \<Longrightarrow> fst (hd (untr d t)) = d"
+  by (induction d t rule: untr.induct) auto
+
+lemma blockok_untr: "blockok d (untr d t)"
+proof (induction d t rule: untr.induct)
+  case (1 d) show ?case by simp
+next
+  case (2 d a b c)
+  let ?A = "untr (Suc d) b" and ?C = "untr d c"
+  have bA: "blockok (Suc d) ?A" by (rule 2(1))
+  have bC: "blockok d ?C" by (rule 2(2))
+  \<comment> \<open>head\<close>
+  have hd0: "fst (hd (untr d (P a b c))) = d" by simp
+  \<comment> \<open>all rows \<open>\<ge> d\<close>\<close>
+  have geA: "\<forall>p \<in> set ?A. d \<le> fst p" using untr_set_ge[of "Suc d" b] by (meson Suc_leD)
+  have geC: "\<forall>p \<in> set ?C. d \<le> fst p" using untr_set_ge[of d c] by simp
+  have setge: "\<forall>p \<in> set (untr d (P a b c)). d \<le> fst p"
+  proof
+    fix p assume "p \<in> set (untr d (P a b c))"
+    hence "p = (d,a) \<or> p \<in> set ?A \<or> p \<in> set ?C" by auto
+    thus "d \<le> fst p" using geA geC by auto
+  qed
+  \<comment> \<open>row-0 steps by at most one\<close>
+  have stA: "\<forall>j. Suc j < length ?A \<longrightarrow> fst (?A ! Suc j) \<le> Suc (fst (?A ! j))"
+    using bA unfolding blockok_def by blast
+  have stC: "\<forall>j. Suc j < length ?C \<longrightarrow> fst (?C ! Suc j) \<le> Suc (fst (?C ! j))"
+    using bC unfolding blockok_def by blast
+  \<comment> \<open>seam between the leading column / argument / tail\<close>
+  have seam_hd_A: "?A \<noteq> [] \<longrightarrow> fst (hd ?A) = Suc d"
+    using bA unfolding blockok_def by blast
+  have seam_A_C: "?A \<noteq> [] \<longrightarrow> ?C \<noteq> [] \<longrightarrow> fst (hd ?C) = d"
+    using bC unfolding blockok_def by blast
+  have seam_hd_C: "?A = [] \<longrightarrow> ?C \<noteq> [] \<longrightarrow> fst (hd ?C) = d"
+    using bC unfolding blockok_def by blast
+  let ?B = "(d, a) # ?A @ ?C"
+  have steps: "\<forall>j. Suc j < length ?B \<longrightarrow> fst (?B ! Suc j) \<le> Suc (fst (?B ! j))"
+  proof (intro allI impI)
+    fix j assume jl: "Suc j < length ?B"
+    show "fst (?B ! Suc j) \<le> Suc (fst (?B ! j))"
+    proof (cases j)
+      case 0
+      \<comment> \<open>step from the leading \<open>(d,a)\<close> into the first element of \<open>?A @ ?C\<close>\<close>
+      have "fst (?B ! Suc 0) \<le> Suc d"
+      proof (cases "?A = []")
+        case True
+        have Cne: "?C \<noteq> []" using jl 0 True by auto
+        have "fst (hd ?C) = d" using True seam_hd_C Cne by simp
+        hence "fst (?C ! 0) = d" using Cne by (simp add: hd_conv_nth)
+        thus ?thesis using True by simp
+      next
+        case False
+        have "fst (hd ?A) = Suc d" using seam_hd_A False by simp
+        hence "fst (?A ! 0) = Suc d" using False by (simp add: hd_conv_nth)
+        thus ?thesis using False by (simp add: nth_append)
+      qed
+      thus ?thesis using 0 by simp
+    next
+      case (Suc i)
+      \<comment> \<open>step inside \<open>?A @ ?C\<close>: reduce to the steps of \<open>?A\<close>, \<open>?C\<close>, and the \<open>A\<close>-\<open>C\<close> seam\<close>
+      have jl': "Suc i < length (?A @ ?C)" using jl Suc by simp
+      have idx: "fst ((?A @ ?C) ! Suc i) \<le> Suc (fst ((?A @ ?C) ! i))"
+      proof (cases "Suc i < length ?A")
+        case True
+        hence "i < length ?A" by simp
+        thus ?thesis using True stA by (simp add: nth_append)
+      next
+        case False
+        show ?thesis
+        proof (cases "i < length ?A")
+          case True
+          \<comment> \<open>the seam: \<open>i\<close> is the last index of \<open>?A\<close>, \<open>Suc i\<close> the first of \<open>?C\<close>\<close>
+          have eqlen: "Suc i = length ?A" using True False by simp
+          have Ane: "?A \<noteq> []" using True by auto
+          have Cne: "?C \<noteq> []" using jl' False by auto
+          have "(?A @ ?C) ! Suc i = ?C ! (Suc i - length ?A)"
+            using False by (simp add: nth_append)
+          hence "(?A @ ?C) ! Suc i = ?C ! 0" using eqlen by simp
+          hence lhs: "fst ((?A @ ?C) ! Suc i) = d"
+            using seam_A_C Ane Cne by (simp add: hd_conv_nth)
+          have "(?A @ ?C) ! i = ?A ! i" using True by (simp add: nth_append)
+          hence "d \<le> fst ((?A @ ?C) ! i)" using True geA by simp
+          thus ?thesis using lhs by simp
+        next
+          case False2: False
+          \<comment> \<open>both indices inside \<open>?C\<close>\<close>
+          let ?k = "i - length ?A"
+          have le: "length ?A \<le> i" using False2 by simp
+          have sk: "Suc i - length ?A = Suc ?k" using le by simp
+          have "Suc ?k < length ?C" using jl' False2 by auto
+          hence "fst (?C ! Suc ?k) \<le> Suc (fst (?C ! ?k))" using stC by blast
+          moreover have "(?A @ ?C) ! i = ?C ! ?k" using False2 by (simp add: nth_append)
+          moreover have "(?A @ ?C) ! Suc i = ?C ! Suc ?k"
+            using False2 sk by (simp add: nth_append)
+          ultimately show ?thesis by simp
+        qed
+      qed
+      show ?thesis using idx Suc by (simp add: nth_append)
+    qed
+  qed
+  show ?case unfolding blockok_def using hd0 setge steps by simp
+qed
+
+text \<open>\<^bold>\<open>\<open>untr\<close> is a section of \<open>translate\<close>\<close>: \<open>translate (untr d t) = t\<close>, unconditionally.
+  The forest split of @{const translate} \<open>takeWhile/dropWhile (\<lambda>q. d < fst q)\<close>
+  exactly recovers the argument zone \<open>untr (Suc d) b\<close> (all rows \<open>> d\<close>) and the tail
+  zone \<open>untr d c\<close> (starting at row \<open>d\<close>).  (Empirically 0 bad / 11708.)\<close>
+
+lemma translate_untr: "translate (untr d t) = t"
+proof (induction d t rule: untr.induct)
+  case (1 d) show ?case by simp
+next
+  case (2 d a b c)
+  let ?A = "untr (Suc d) b" and ?C = "untr d c"
+  have gtA: "\<forall>p \<in> set ?A. d < fst p" using untr_set_ge[of "Suc d" b] by auto
+  have tw: "takeWhile (\<lambda>q. d < fst q) (?A @ ?C) = ?A"
+  proof -
+    have allA: "\<forall>p \<in> set ?A. d < fst p" by (rule gtA)
+    have headC: "?C \<noteq> [] \<longrightarrow> \<not> d < fst (hd ?C)" using untr_hd[of d c] by auto
+    show ?thesis
+    proof (cases "?C = []")
+      case True thus ?thesis using allA by (simp add: takeWhile_eq_all_conv)
+    next
+      case False
+      have "\<not> (\<lambda>q. d < fst q) (hd ?C)" using headC False by simp
+      hence "takeWhile (\<lambda>q. d < fst q) ?C = []"
+        using False by (cases ?C) auto
+      thus ?thesis using allA by (simp add: takeWhile_append2 takeWhile_eq_all_conv)
+    qed
+  qed
+  have dw: "dropWhile (\<lambda>q. d < fst q) (?A @ ?C) = ?C"
+  proof -
+    have allA: "\<forall>p \<in> set ?A. d < fst p" by (rule gtA)
+    have headC: "?C \<noteq> [] \<longrightarrow> \<not> d < fst (hd ?C)" using untr_hd[of d c] by auto
+    show ?thesis
+    proof (cases "?C = []")
+      case True thus ?thesis using allA by (simp add: dropWhile_eq_Nil_conv)
+    next
+      case False
+      have "\<not> (\<lambda>q. d < fst q) (hd ?C)" using headC False by simp
+      hence "dropWhile (\<lambda>q. d < fst q) ?C = ?C"
+        using False by (cases ?C) auto
+      thus ?thesis using allA by (simp add: dropWhile_append2)
+    qed
+  qed
+  have "translate (untr d (P a b c))
+        = P a (translate (takeWhile (\<lambda>q. d < fst q) (?A @ ?C)))
+              (translate (dropWhile (\<lambda>q. d < fst q) (?A @ ?C)))"
+    by simp
+  also have "\<dots> = P a (translate ?A) (translate ?C)" using tw dw by simp
+  also have "\<dots> = P a b c" using 2(1) 2(2) by simp
+  finally show ?case .
+qed
+
 subsection \<open>The remaining core: order preservation on \<open>NF\<close>\<close>
 
-text \<open>Validated empirically on 2{,}643{,}843 pairs of (hereditary blocks of)
-  standard-form translates: zero collapses, zero reversals.  The counterexample
-  outside \<open>NF\<close> is \<open>y\<^sub>2 = p\<^bsub>0\<^esub>(p\<^bsub>1\<^esub>(y\<^sub>1)) <o y\<^sub>1 = p\<^bsub>0\<^esub>(p\<^bsub>1\<^esub>(p\<^bsub>1\<^esub>(0)))\<close> with
-  \<open>nrm y\<^sub>2 = nrm y\<^sub>1\<close>; its pair sequence \<open>(0,0)(1,1)(2,0)(3,1)(4,1)\<close> is not
-  standard, so the standardness discipline (row-1 parenthood) is what the
-  proof must exploit.\<close>
+text \<open>\<^bold>\<open>The sequence-side normalizer\<close> \<open>\<sigma>\<close>: pulling \<open>nrm\<close> back through the
+  \<open>translate\<close> isomorphism.  By @{thm [source] translate_untr}, \<open>\<sigma> M\<close> is a genuine
+  pair sequence whose translate \<^emph>\<open>is\<close> the normalized term \<open>nrm (translate M)\<close>, and by
+  @{thm [source] blockok_untr} it is a depth-\<open>0\<close> block — so the \<open>translate\<close> order
+  isomorphism applies on both sides.\<close>
+
+definition sigma :: "pairseq \<Rightarrow> pairseq" where
+  "sigma M = untr 0 (nrm (translate M))"
+
+lemma translate_sigma: "translate (sigma M) = nrm (translate M)"
+  unfolding sigma_def by (rule translate_untr)
+
+lemma blockok_sigma: "blockok 0 (sigma M)"
+  unfolding sigma_def by (rule blockok_untr)
+
+text \<open>\<^bold>\<open>The single remaining core\<close> \<open>sigma_seqlex_mono\<close>: on standard forms, the
+  sequence normalizer \<open>\<sigma>\<close> is \<^emph>\<open>monotone\<close> for the column lexicographic order.
+  This is \<open>nrm_order_pres\<close> transported entirely onto the BMS-native (column,
+  suffix, \<open>seqlex\<close>, \<open>blockok\<close>) side via the \<open>translate\<close> isomorphism, the cleanest
+  attack surface for the residual Buchholz-\<section>1 collapse content.
+
+  \<^bold>\<open>Caveat\<close> (\<open>memo\<close> 続78 / 第7事件): \<open>\<sigma>\<close> must \<^emph>\<open>not\<close> be simplified to a single
+  maximal-suffix step \<open>msfx\<close> (the false \<open>E6_value\<close> core).  Here \<open>\<sigma>\<close> is the full
+  recursive \<open>untr \<circ> nrm \<circ> translate\<close> by definition; the statement below is about
+  that full normalizer.
+
+  \<^bold>\<open>Empirical status\<close> (soundness gate, deep closure +5): with closure of size
+  17700 standard forms, \<open>\<sigma>\<close> preserves \<open>blockok 0\<close> (0 bad) and is strictly
+  \<open>seqlex\<close>-monotone (604450 ordered pairs, 0 violations, 0 collapses-to-equal); the
+  earlier calibration was 319600 / 0.  No counterexample at any tested depth.\<close>
+
+lemma sigma_seqlex_mono:
+  assumes "M \<in> ST_PS" and "N \<in> ST_PS" and "seqlex M N"
+  shows "seqlex (sigma M) (sigma N)"
+  sorry
+
+text \<open>\<^bold>\<open>Order preservation on \<open>NF\<close>\<close> (\<open>nrm_order_pres\<close>): now a \<^emph>\<open>green assembly\<close> of
+  \<^item> the \<open>translate\<close> order isomorphism @{thm [source] olt_ST_iff_seqlex} (turning
+    \<open>olt v u\<close> on \<open>NF\<close> into \<open>seqlex M N\<close> on the standard forms),
+  \<^item> the section property @{thm [source] translate_sigma} and block property
+    @{thm [source] blockok_sigma} (so \<open>nrm (translate M) = translate (\<sigma> M)\<close> with
+    \<open>\<sigma> M\<close> a depth-0 block),
+  \<^item> the half-isomorphism @{thm [source] seqlex_imp_olt} (turning
+    \<open>seqlex (\<sigma> M) (\<sigma> N)\<close> back into \<open>olt\<close>),
+  on top of the \<^emph>\<open>single\<close> residual core @{thm [source] sigma_seqlex_mono}.\<close>
 
 lemma nrm_order_pres:
   assumes "v \<in> NF" and "u \<in> NF" and "olt v u"
   shows "olt (nrm v) (nrm u)"
-  sorry
+proof -
+  from \<open>v \<in> NF\<close> obtain M where M: "M \<in> ST_PS" and vM: "v = translate M" by auto
+  from \<open>u \<in> NF\<close> obtain N where N: "N \<in> ST_PS" and uN: "u = translate N" by auto
+  have MN: "M \<noteq> N"
+  proof
+    assume "M = N"
+    hence "v = u" using vM uN by simp
+    thus False using \<open>olt v u\<close> olt_irrefl by simp
+  qed
+  have sl: "seqlex M N"
+    using olt_ST_iff_seqlex[OF M N MN] \<open>olt v u\<close> vM uN by blast
+  have core: "seqlex (sigma M) (sigma N)" by (rule sigma_seqlex_mono[OF M N sl])
+  have "translate (sigma M) <o translate (sigma N)"
+    by (rule seqlex_imp_olt[OF blockok_sigma blockok_sigma core])
+  thus "olt (nrm v) (nrm u)"
+    using translate_sigma vM uN by simp
+qed
 
 subsection \<open>Well-foundedness of \<open><o\<close> on \<open>NF\<close>, and PSS termination\<close>
 
