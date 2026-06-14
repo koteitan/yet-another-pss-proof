@@ -490,3 +490,48 @@ assembly compiles, then attack D1 (multi-session). D1 is the whole game.
   存在(1.4b)∧ necessity(1.9)」を同時に carry。generator の arg は <δ ゆえ IH 適用可。
   term 側(oV b, proj)はその系として A2/nonmem を得る。measure 設計が山。
   Cset_c ツールキットは全て揃った。canonical_witness(1.4b)が唯一の未証明 primitive。
+
+---
+
+## ROADMAP 続89(30) — Buchholz 1986 原論文精読で残作業を確定(2026-06-14)
+
+原論文(PDF p.197-201, §1.2-1.9 + §2.2)を精読。**残作業 = Buchholz の短い補題の port**と判明。
+
+### psi_proj_nonmem の正しい証明(Buchholz 1.9 necessity 経由)
+nonmem: ψ_a(oV b)∉Cv(oV m)a。
+1. 仮定 ψ_a(oV b)∈Cv(oV m)a。
+2. **1.9 necessity**(γ∈C_u(α)⟹G_u γ⊆α)で **G_a(ψ_a(oV b))⊆oV m**。
+3. G_a の定義(Buchholz §2 G3 / 2.2b 橋): G_a(ψ_a(oV b))={oV b}∪G_a(oV b)(a≤a ゆえ)。
+   さらに 2.2b: G_a(oV b)={oV x : x∈Gterm a b}(term↔ordinal 橋)。
+4. bad 係数 m∈Gterm a b, oV m≥oV b(B1)⟹ oV m∈G_a(oV b)⊆oV m ⟹ oV m<oV m。**矛盾**。✓
+
+### ★1.9 necessity には Cset_c(canonical-generator 閉包)が必須
+- 非canonical generator ψ_w ξ(ξ∉C_w(ξ), ξ<α)では G_u ξ が α を超え得る(ξ の係数は ξ で
+  bound されない)⟹ **unrestricted Cset では 1.9 は偽**。band_lt_psi(=1.5)は値bound だけで
+  済むので unrestricted でも真だったが、1.9 は係数構造ゆえ canonicity 必須。
+- ⟹ **Cset_c(続89(28) で定義済)に対し 1.9 を証明**。Buchholz の証明は短い:
+  - **1.4(c)**: Ω_v≤ψ_u ξ∈C_v(α) ∧ ξ∈C_u(ξ) ⟹ ξ∈α∩C_v(α)。(canonical 前提込み・1.4b 経由)
+  - **1.4(b)**: γ∈C_v(α) ∧ Ω_v≤γ∈P ⟹ ∃u,ξ(γ=ψ_u ξ ∧ ξ∈α∩C_v(α)∩C_u(ξ))。
+    Cset_c では generator step が ξ∈C_u(ξ) を**定義に含む**ので **ほぼ自明**(続89 の indec_Cset_generator
+    + canonical-gen 帰属で出る)。← これが unrestricted で苦労していた所、Cset_c なら無料。
+  - **1.9**: min{n: γ∈C_0^n(ε)} 帰納 + 1.4(c) + 1.2(e)。
+- G_u をオーダー数上に定義(Buchholz §1末: γ∉P⟹G_u γ=∪{G_u ξ:ξ∈P(γ)}; γ=ψ_v ξ(ξ∈C_v(ξ))⟹
+  G_u γ=({ξ}∪G_u ξ if u≤v else ∅))。Cantor_NF(P(γ)分解)で形式化。
+
+### Remark(Cv=Cv_c)で私の psi に転送
+- psi は unrestricted Cv で定義済。nonmem は Cv(unrestricted)についてなので **Cv=Cv_c が要る**
+  (Buchholz Remark「(*)省略は C を変えない」)。⊇自明、⊆が核(非canonical generator の redundancy)。
+  ⊆: 非canonical ξ の ψ_w ξ は collapse_succ(=1.6a, 済)で canonical 化。collapse 機械で port。
+- 代替: psi を Cset_c で再定義(Buchholz 忠実)。ただし C_build/Ccond/oV_order_pres 等の
+  green 証明への影響要確認(C_build は sufficiency なので Cset_c でも通る可能性)。**Remark 経由が低risk**。
+
+### 既に持っている Buchholz 補題(緑)
+1.2(b)psi_addprinc / 1.2(c)Om_le_psi+psi_lt_Om_Suc / 1.2(d)psi_mono_arg / 1.2(h)collapse_grow /
+1.3 psi_strict_mono_arg / 1.4(a)psi_inj_canonical / 1.5 band_lt_psi(⊆)+below_psi_in_Cset(⊇) /
+1.6(a)collapse_succ / 2.2(c)oV_order_pres / indec_Cset_generator / Cset_c ツールキット全部。
+
+### 次セッションの実行順(全て Buchholz の短い証明の port)
+(1) G_u をオーダー数上に定義(Cantor_NF P分解利用)+ 2.2b 橋(G_a(oV t)={oV x:x∈Gterm a t})。
+(2) Cset_c に対し 1.4(b)(canonical-gen 帰属、ほぼ自明)→ 1.4(c) → 1.9 necessity。
+(3) Remark Cv=Cv_c(collapse_succ で非canonical generator redundancy)。
+(4) nonmem を上記チェーンで discharge → psi_proj 完成 → oV_mono_NF へ。
