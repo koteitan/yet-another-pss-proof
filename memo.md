@@ -4396,3 +4396,31 @@ top-level termination は今も nrm_order_pres(nrm.thy:269)経由。psi_proj 鎖
   これが psi_proj_nonmem を出す: Cset=Cset_c なら psi(oV b)a∈Cv(oV m)a は canonical generator
   psi ξ a(ξ canonical, ξ<oV m)由来→1.4a で ξ=oV(proj a b)≥oV m と矛盾(ξ<oV m)。
   D-eq-1 の証明が canonical-witness 同時帰納の本体。次セッション本丸。
+
+### 続89(29): Cset_c ツールキット完成 + ★循環性の核心確定(A2 と nonmem は同時帰納必須)
+
+**緑追加(necessity.thy, 全 sorry 無)**: Cset_c 完全ツールキット:
+Citer_c_in_Cset_c / Cset_c_mem_iff / Om_subset_Cset_c / **Cset_c_add_closed**(和閉) /
+**Cset_c_gen_closed**(canonical generator 帰属)。D-eq-1 の easy cases(base/sum/old/canonical-gen)
+は全てこれで緑にできる。
+
+**★循環性の核心(今セッション最重要の確定・次セッション必読)**:
+psi_proj_nonmem(psi(oV b)a∉Cv(oV m)a)を D-eq-1(Cset=Cset_c)経由で割ろうとすると:
+- ∈仮定 → canonical-gen で canonical ξ<oV m, psi ξ a=psi(oV b)a 取得。
+- ξ を pin するには「psi(oV(proj a b))a=psi(oV b)a かつ oV(proj a b) canonical(proj_canonical 済)
+  かつ oV(proj a b)≥oV m(oV_le_proj 済)」で 1.4a injectivity → ξ=oV(proj a b)≥oV m と
+  ξ<oV m が矛盾。**しかし psi(oV(proj a b))a=psi(oV b)a は A2(psi_proj)そのもの**で、
+  A2 は nonmem に依存 ⟹ **循環**。
+- ⟹ **A2(psi_proj)と nonmem(1.9 necessity)は線形分離不能・Buchholz の (α,n)同時超限帰納で
+  同時に証明するしかない**(これが §1 が hard たる本質・lean も同地点で停滞)。
+- ⟹ D-eq-1 単独 + canonical_witness を sorry で足すのは**孤立債務**(nonmem を割らない)ので
+  soundness 規律により**今は追加しない**。次セッションは A2+nonmem+1.4b を**単一の
+  同時帰納定理**として再設計する(measure=size b or oV b の整礎帰納、内 Citer-rank)。
+
+**今セッション総括(続89(21)-(29)・全緑増分・commit 済 push 済)**:
+1. acanon blast spin 修正(timeout→緑)。
+2. psi_proj(A2)を**単一精密 sorry psi_proj_nonmem**(=1.9 necessity)まで構築・実証明化。
+3. 緑部品: bad_imp_oV_ge / indec_Cset_generator / psi_in_Cset_same_sub_generator / band_lt_psi /
+   psi_eq_of_not_mem / oV_le_proj / Cset_c 完全ツールキット(D-eq-0)。
+4. band-argument の誤り訂正、循環性核心の確定。
+**残核 = A2+nonmem の同時帰納(canonical-rep 存在 1.4b)= Buchholz §1 本丸**。周辺は全て揃った。
