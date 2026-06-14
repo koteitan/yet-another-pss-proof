@@ -1280,4 +1280,75 @@ theorem CsetSelf_witness_canonical {α γ : Ordinal.{u}} {v : ℕ}
     · obtain ⟨u, ⟨ξ, ⟨hξX, ⟨hξα, hξcanon⟩⟩, hξγ⟩⟩ := Set.mem_iUnion.1 h3
       exact ⟨u, ξ, hξγ.symm, hξα, CiterSelf_subset_CsetSelf hξX, hξcanon⟩
 
+/-! ### `ψ^s` additive-principality + UNCONDITIONAL arg-extraction (necessity) -/
+
+/-- **Lemma 1.2(b) for `ψ^s`**: `ψ^s_v(α)` is additive-principal. -/
+theorem psiSelf_add_principal {α β γ : Ordinal} {v : ℕ}
+    (hβ : β < psiSelf α v) (hγ : γ < psiSelf α v) : β + γ < psiSelf α v := by
+  have betaC : β ∈ CsetSelf (psiResSelf α) α v := below_psiSelf_mem_CsetSelf hβ
+  have main : ∀ γ, γ < psiSelf α v → β + γ < psiSelf α v := by
+    intro γ
+    induction γ using WellFoundedLT.induction with
+    | _ γ IH =>
+      intro hγ
+      rcases Ordinal.zero_or_succ_or_isSuccLimit γ with rfl | ⟨η, hη⟩ | hl
+      · simpa using hβ
+      · obtain ⟨η, rfl⟩ : ∃ η', γ = η' + 1 := ⟨η, by rw [← hη, Order.succ_eq_add_one]⟩
+        have ηγ : η < η + 1 := lt_add_one η
+        have bh : β + η < psiSelf α v := IH η ηγ (lt_trans ηγ hγ)
+        have bhC : β + η ∈ CsetSelf (psiResSelf α) α v := below_psiSelf_mem_CsetSelf bh
+        have oneC : (1 : Ordinal) ∈ CsetSelf (psiResSelf α) α v :=
+          below_psiSelf_mem_CsetSelf (lt_of_le_of_lt le_add_self hγ)
+        have bg : β + (η + 1) = (β + η) + 1 := by rw [add_assoc]
+        have inC : β + (η + 1) ∈ CsetSelf (psiResSelf α) α v := by
+          rw [bg]; exact CsetSelf_add_closed bhC oneC
+        have le : β + (η + 1) ≤ psiSelf α v := by rw [bg, Order.add_one_le_iff]; exact bh
+        exact lt_of_le_of_ne le fun he => psiSelf_notMem α v (he ▸ inC)
+      · have le : β + γ ≤ psiSelf α v := by
+          rw [Ordinal.add_le_iff_of_isSuccLimit hl]
+          intro z hz
+          exact (IH z hz (lt_trans hz hγ)).le
+        have gC : γ ∈ CsetSelf (psiResSelf α) α v := below_psiSelf_mem_CsetSelf hγ
+        have inC : β + γ ∈ CsetSelf (psiResSelf α) α v := CsetSelf_add_closed betaC gC
+        exact lt_of_le_of_ne le fun he => psiSelf_notMem α v (he ▸ inC)
+  exact main γ hγ
+
+theorem psiSelf_addprinc (α : Ordinal) (v : ℕ) : addprinc (psiSelf α v) := by
+  refine ⟨lt_of_lt_of_le (lt_of_lt_of_le zero_lt_one (one_le_Om v)) (Om_le_psiSelf α v), ?_⟩
+  exact fun β γ hβ hγ => psiSelf_add_principal hβ hγ
+
+/-- **Arg-extraction for `ψ^s` is UNCONDITIONAL** (no `INJ` hypothesis): the
+1.4(b) witness is free and self-canonical (`CsetSelf_witness_canonical`), and the
+self-form 1.4(a) injectivity (`psiSelf_canonical_inj`) is itself unconditional, so
+the canonical witness `ξ` is pinned to `β` with no residual.  This is the final
+confirmation that the with-C switch makes necessity arg-extraction close
+unconditionally. -/
+theorem argExtract_Self {v a : ℕ} {β α : Ordinal.{u}} (hva : v ≤ a)
+    (hβc : β ∈ CsetSelf (psiResSelf β) β a)
+    (hmem : psiSelf β a ∈ CsetSelf (psiResSelf α) α v) :
+    β ∈ CsetSelf (psiResSelf α) α v := by
+  have hlo : Om v ≤ psiSelf β a := le_trans (Om_mono hva) (Om_le_psiSelf β a)
+  have hpr : Ordinal.IsPrincipal (· + ·) (psiSelf β a) :=
+    fun {x y} hx hy => (psiSelf_addprinc β a).2 x y hx hy
+  obtain ⟨u', ξ, heq, hξα, hξv, hξc⟩ := CsetSelf_witness_canonical hpr hlo hmem
+  rw [psiResSelf, if_pos hξα] at heq
+  have hua : u' = a := by
+    have h1 : Om u' ≤ psiSelf β a := heq ▸ Om_le_psiSelf ξ u'
+    have h2 : psiSelf β a < Om (u' + 1) := heq ▸ psiSelf_lt_Om_succ ξ u'
+    have hua1 : u' ≤ a := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt h1 (psiSelf_lt_Om_succ β a)) (not_lt.2 (Om_mono (by omega)))
+    have hua2 : a ≤ u' := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt (Om_le_psiSelf β a) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  rw [hua] at heq hξc
+  -- ξ self-canonical at bound ξ: lift the witness canonicity (bound ξ, param
+  -- psiResSelf α) to param psiResSelf ξ (args < ξ < α agree).
+  have hξc_self : ξ ∈ CsetSelf (psiResSelf ξ) ξ a :=
+    CsetSelf_mono_param _ _ ξ a
+      (fun ζ uu hζ => by rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hξα)]) hξc
+  have hξβ : ξ = β := psiSelf_canonical_inj hξc_self hβc heq.symm
+  rwa [← hξβ]
+
 end YAPSS
