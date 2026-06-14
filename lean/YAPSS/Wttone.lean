@@ -277,9 +277,28 @@ positions from the invalid abstract ones; the separation is exactly the
 
 RESIDUAL OBSTRUCTION: build that bridge (via `subs_translate` and the
 forest-position machinery of `Mechanized.lean`) and discharge `H0clause`.
-Once available, `OT3all0_okH` discharges each head-`0` node where the local
-argument satisfies `okH`, and the `r1ok`-bridge supplies the remaining
-head-`1`-argument nodes; this is the genuine research core. -/
+
+PROGRESS / REDUCTION (for whoever closes this).  By `translate.induct`, at a
+node `translate (p :: rest) = P p.2 (translate desc) (translate sib)` (with
+`desc = rest.takeWhile (p.1 < ·.1)`, `sib = rest.dropWhile …`) the IH gives
+`H0clause` for the two sub-translates, so the whole obligation reduces to the
+PER-ROOT fact:
+
+  (★)  if `p.2 = 0` (a row-1-`0` root) then
+       `∀ x ∈ Gterm 0 (translate desc), olt x (translate desc)`.
+
+(★) is empirically exact (0 violations over all row-1-`0` roots; the descendant
+translates split as lead-`1` ≈ 20251 vs lead-`0` ≈ 241).  Two further
+empirical facts narrow it:
+  • `lead`-bound `hyp t := ∀ x ∈ Gterm 0 t, lead x ≤ lead t` holds for every
+    such `translate desc`.  But `hyp ∧ wf3 ∧ subs ⊆ {0,1} ⟹ (★)` is FALSE in
+    general (`p₁(0)+p₀(p₁(0)+p₁(0))` is a `hyp` term failing the clause), so
+    `(★)` needs the descendant block's deeper `r1ok` structure, not just the
+    lead bound.
+  • The descendant block of a row-1-`0` root is itself an `r1ok` sub-sequence
+    whose row-1-`1` columns have row-0 parents (fact S: in a standard form with
+    `maxr1 ≤ 1`, every column with row-1 `= 1` has row-0 `> 0`); this is the
+    structural lever for `(★)` still to be turned into a Lean proof. -/
 theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
     (z : ∀ p ∈ M, p.2 ≤ 1) : H0clause (translate M) := by
   sorry
