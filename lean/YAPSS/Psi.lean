@@ -837,4 +837,37 @@ theorem psiW_canonical_inj {a : ℕ} {ξ ξ' : Ordinal.{u}}
   · exact h
   · exact absurd he.symm (ne_of_lt (psiW_strict_mono_arg h hξ' hξ'can))
 
+/-- **Buchholz Lemma 1.4(b) for with-C is FREE (the payoff of the switch).**
+Any additive-principal `γ ∈ C^w_v(α)` with `Ω_v ≤ γ` is `p ξ u'` for an argument
+`ξ` that is `< α`, in `C^w_v(α)`, AND canonical (`ξ ∈ Cset p ξ u'`).  The
+canonicity is read straight off the with-C generator clause — no omitted=with
+Remark, no bootstrap.  This is exactly the canonical-witness hypothesis that the
+omitted-C necessity proof had to *assume* (`CW`/`argExtract_of_canonWitness`). -/
+theorem CsetW_witness_canonical {α γ : Ordinal.{u}} {v : ℕ}
+    {p : Ordinal.{u} → ℕ → Ordinal.{u}}
+    (hap : Ordinal.IsPrincipal (· + ·) γ) (hlo : Om v ≤ γ)
+    (hmem : γ ∈ CsetW p α v) :
+    ∃ (u' : ℕ) (ξ : Ordinal.{u}),
+      γ = p ξ u' ∧ ξ < α ∧ ξ ∈ CsetW p α v ∧ ξ ∈ Cset p ξ u' := by
+  obtain ⟨n, hn⟩ := CsetW_mem_iff.1 hmem
+  clear hmem
+  induction n generalizing γ with
+  | zero =>
+    simp only [CiterW, Function.iterate_zero, id_eq] at hn
+    exact absurd hn (not_lt.2 hlo)
+  | succ n IH =>
+    rw [CiterW_succ] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH hap hlo h1
+    · obtain ⟨x, hx, y, hy, hxy⟩ := h2
+      have hxmem : γ ∈ CiterW p α v n := by
+        rcases eq_or_lt_of_le (show x ≤ γ from hxy ▸ le_self_add) with hxe | hxlt
+        · exact hxe ▸ hx
+        · rcases eq_or_lt_of_le (show y ≤ γ from hxy ▸ le_add_self) with hye | hylt
+          · exact hye ▸ hy
+          · exact absurd hxy.symm (ne_of_gt (hap hxlt hylt))
+      exact IH hap hlo hxmem
+    · obtain ⟨u, ⟨ξ, ⟨⟨⟨hξC, hξα⟩, hξcanon⟩, hξγ⟩⟩⟩ := Set.mem_iUnion.1 h3
+      exact ⟨u, ξ, hξγ.symm, hξα, CiterW_subset_CsetW hξC, hξcanon⟩
+
 end YAPSS
