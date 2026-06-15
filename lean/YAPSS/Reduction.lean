@@ -463,4 +463,64 @@ theorem PSS_terminates_nrm_true
     (wf_Rnf_nrm_pf PF (fun hv hu hbf => hArg_of_headFamily HF hv hu hbf)
       (fun hM => ST_PS_suffix hM))
 
+/-! ## DOES `HeadFamilyNF` TRIVIALIZE? — NO; it is genuine Ω-band §1 content, but it
+    is REPLACEABLE by `NFwf3` (NF ⊆ wf3), which collapses the head entirely.
+
+Parallel investigation to `ProjFixesNrm` (audit `audit_headfam.py`, closure+5/+6):
+
+* **(1)** The head args `b` (= args of lead-0 NF terms) overwhelmingly have lead
+  `≥ 1` (262/267 at closure+6) — so `oV b ≥ Ω_1 > ε(0)`, the COLLAPSE region.  The
+  sub-`ε` lever `psi_strict_mono_lt_epsLvl` does NOT apply.
+* **(2)** `proj 0 b` does NOT reach sub-`Ω` (`lead (proj 0 b)` stays `≥ 1`), so the
+  proj route lands in another Ω-band fixpoint; and `psi0_oV_lt_of_proj_olt` routes
+  through `psi_proj` (sorryAx — the suspect collapse).  So the head does NOT
+  trivialize via sub-`ε`/proj-to-sub-`Ω`, and its `oV`-route inherits the collapse.
+
+So `HeadFamilyNF` is GENUINE Ω-band §1 content (the dual of the collapse that
+`ProjFixesNrm` bypassed).  It does NOT trivialize on its own domain.
+
+* **(3) BUT** `nrm` is strictly term-order-preserving on `NF` (closure+6:
+  44551 pairs, 0 collapses, 0 reversals).  So `nrm_order_pres` is TRUE and the
+  CLEAN route is TERM-STRUCTURAL (proj/ins monotone via `Nrmstep.proj0_olt_NF` =
+  the shared crux `{proj0_fireprop_NF, proj0_bothfire_NF}`), avoiding `oV`/`psi`
+  entirely — exactly the route the other agent is building.
+
+**The single replacement that removes the head: `NFwf3` (NF ⊆ wf3).**  If every NF
+term is `wf3`, then `oV_nf_order_pres` is just `oV_order_pres` (`oV_nf_order_pres_-
+of_NFwf3` below), so `HeadFamilyNF` is NOT needed at all.  And `NFwf3` reduces to
+"`nrm` is identity on `NF`" via the proven `wf3_nrm` (`NFwf3_of_nrmFixesNF`) — the
+SAME shared crux (`Wttone.H0clause_translate` / `proj0_*_NF`).  NB `nrm t = t` is
+FALSE on translate-images in general (76/299 at closure+6), so `NFwf3` is NOT free;
+it is the genuine residual, identical in content to `HeadFamilyNF`/`ProjFixesNrm`. -/
+
+/-- **Head trivializes given `NFwf3`.**  If every NF term is `wf3`, the NF order is
+just `oV_order_pres` — no §1 head.  (GREEN, sorry-free.) -/
+theorem oV_nf_order_pres_of_NFwf3
+    (NFwf3 : ∀ t : Three, t ∈ NF → wf3 t)
+    {v u : Three} (hv : v ∈ NF) (hu : u ∈ NF) (h : olt v u) :
+    oV.{0} v < oV u :=
+  oV_order_pres (NFwf3 v hv) (NFwf3 u hu) h
+
+/-- **`NFwf3` from "`nrm` is identity on `NF`"** via the proven `wf3_nrm`.  Pins the
+head/collapse content to the single shared crux `nrm t = t` on `NF`. -/
+theorem NFwf3_of_nrmFixesNF
+    (NrmFix : ∀ t : Three, t ∈ NF → nrm t = t) :
+    ∀ t : Three, t ∈ NF → wf3 t := by
+  intro t ht; have := wf3_nrm t; rwa [NrmFix t ht] at this
+
+/-- **`PSS_terminates_nrm` modulo `{ProjFixesNrm, NFwf3}`** — the head `HeadFamilyNF`
+ELIMINATED in favour of `NFwf3` (NF ⊆ wf3), under which the NF order is plain
+`oV_order_pres`.  Both residuals are the SAME shared term-level crux ("`nrm`
+normalizes NF": `proj`-fixes / `nrm`-fixes / OT3-through-translate).  sorryAx-free. -/
+theorem PSS_terminates_nrm_via_NFwf3
+    (PF : ProjFixesNrm) (NFwf3 : ∀ t : Three, t ∈ NF → wf3 t) :
+    WellFounded stepRel := by
+  apply step_terminates
+  refine Subrelation.wf ?_ (InvImage.wf nrm wf_olt_wf3)
+  rintro v u ⟨hlt, hu, hv⟩
+  refine ⟨?_, wf3_nrm v, wf3_nrm u⟩
+  apply oV_order_refl.{0} (wf3_nrm v) (wf3_nrm u)
+  rw [oV_nrm_eq_of_projFixesNrm PF v, oV_nrm_eq_of_projFixesNrm PF u]
+  exact oV_nf_order_pres_of_NFwf3 NFwf3 hv hu hlt
+
 end YAPSS
