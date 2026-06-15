@@ -1456,7 +1456,8 @@ theorem ST_PS_suffix {p : ℕ × ℕ} {rest : PairSeq} (hM : ST_PS (p :: rest)) 
       rw [oper_eq_self_short n (by omega)] at hL
       exact ih hL
 
-/-- **`ST_PS`-descendant-closure** (the `takeWhile` dual of `ST_PS_suffix`).
+/-! **`ST_PS`-descendant-closure** (`ST_PS_desc`, the `takeWhile` dual of
+`ST_PS_suffix`).
 For an `ST_PS` list `(0,0) :: rest`, prepending the root `(0,0)` to the
 *descendant block* — the leading run `rest.takeWhile (0 < ·.1)` of columns above
 the root, i.e. the first top-level subtree — is again `ST_PS`.
@@ -1479,10 +1480,57 @@ to `oper`-images).  Proof path (mirror of `ST_PS_suffix`, `ST_PS`-induction):
   (Case B) or lives inside the prefix `G` (`v0 > 0`) — the `takeWhile` dual of
   the `dropWhile_rest_*` machinery, the genuine `oper`-structural content.
 This is the minimal isolated copy-structure fact feeding the §1 head-`0` wall
-(`Wttone.H0clause_oper_step`). -/
-theorem ST_PS_desc {rest : PairSeq} (hM : ST_PS ((0,0) :: rest)) :
+(`Wttone.H0clause_translate`). -/
+
+/-- **The oper-case of `ST_PS_desc`** (the isolated `takeWhile`-dual residual).
+For a long `ST_PS` form `N` (root `(0,0)`, `1 < |N|`) whose expansion
+`N⟦n⟧ = (0,0) :: rest`, the descendant block `(0,0) :: rest.takeWhile (0 < ·.1)`
+is `ST_PS` — given the descendant-closure IH on `N` itself.
+
+This is the `takeWhile` mirror of `oper_tail_cases` + the `ST_PS_suffix` oper
+case: the first top-level subtree of `N⟦n⟧` is either (commute, `oper` touches
+only the LAST block) the SAME first block as `N` (IH on `N`), or (tiling Case B,
+the single-block `v0 = 0` case) the first copy `N.dropLast`'s descendant.  The
+genuine `oper` copy/tiling content; `MODEL-VERIFIED` as part of `ST_PS_desc`
+(13105 / 13105). -/
+theorem ST_PS_desc_oper {N : PairSeq} {n : ℕ} {rest : PairSeq}
+    (L : 1 < N.length) (hn : 1 ≤ n) (h0 : entry N 0 0 = 0) (hN : ST_PS N)
+    (ih : ∀ {rest' : PairSeq}, (0,0) :: rest' = N →
+      ST_PS ((0,0) :: rest'.takeWhile (fun q => (0:ℕ) < q.1)))
+    (hL : (0,0) :: rest = N⟦n⟧) :
     ST_PS ((0,0) :: rest.takeWhile (fun q => (0:ℕ) < q.1)) := by
   sorry
+
+theorem ST_PS_desc {rest : PairSeq} (hM : ST_PS ((0,0) :: rest)) :
+    ST_PS ((0,0) :: rest.takeWhile (fun q => (0:ℕ) < q.1)) := by
+  generalize hL : ((0,0) : ℕ × ℕ) :: rest = M at hM
+  induction hM generalizing rest with
+  | diag v =>
+    -- `(0,0) :: rest = diagSeq 0 v`, so `rest = diagSeq 1 v` (all row-`0` `≥ 1`),
+    -- hence `takeWhile (0 < ·.1) rest = rest` and `(0,0) :: rest = diagSeq 0 v`.
+    rw [diagSeq_cons (Nat.zero_le v)] at hL
+    have hrest : rest = diagSeq 1 v := (List.cons_eq_cons.1 hL).2
+    have hall : rest.takeWhile (fun q => (0:ℕ) < q.1) = rest := by
+      rw [hrest, List.takeWhile_eq_self_iff]
+      intro x hx
+      have := fst_in_diagSeq hx
+      simp only [decide_eq_true_eq]; omega
+    rw [hall, hrest, ← diagSeq_cons (Nat.zero_le v)]
+    exact ST_PS.diag v
+  | @oper N n hN hn ih =>
+    by_cases L : 1 < N.length
+    · -- `N⟦n⟧ = (0,0) :: rest`, `N = (0,0) :: D` (`stps_head`).
+      have h0 : entry N 0 0 = 0 := by
+        have hh := stps_head hN
+        rcases N with _ | ⟨a, N'⟩
+        · rfl
+        · unfold entry; rw [if_pos rfl]; simpa using congrArg Prod.fst hh
+      -- The descendant block of `N⟦n⟧` is governed by the same first-block / tiling
+      -- split as `oper_tail_cases`; this is the `takeWhile` dual residual.
+      exact ST_PS_desc_oper L hn h0 hN ih hL
+    · -- `N⟦n⟧ = N`.
+      rw [oper_eq_self_short n (by omega)] at hL
+      exact ih hL
 
 /-- **Tail-`NF`-closure.**  Reduced to the pure list-level `ST_PS_suffix`: the
 tail `c` of `P 0 b c ∈ NF` is `translate` of the `dropWhile`-tail of the `ST_PS`
