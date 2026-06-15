@@ -2602,12 +2602,20 @@ counterexamples this session):
   • `ST_PS`-descendant blocks STILL fire (`1652` real descendant blocks of `ST_PS`
     sequences fire) — "`ST_PS`-descendant" alone is NOT the predicate; the
     proj-descent bottoms are the STRICTER greatest-critical-descent subset;
-  • `ST_PS_head_val_zero` (head row-`1` `= 0`) is the anchoring lever but is NOT
-    yet a Lean lemma (only `stps_head`: head `= (0,0)`); `ST_PS_suffix` (the
-    suffix-closure feeding this) is itself an open residual (`Nrm.lean:1411`).
+  • the anchoring lemmas ARE available (kernel-checked sorryAx-free): `stps_head`
+    (`ST_PS M → headD M = (0,0)`, head row-`1` `= 0`, the root-`0`-anchoring),
+    `ST_PS_suffix` (suffix-closure, `Nrm.lean:1426`), `r1ok_ST_PS`, `z0ok_ST_PS`,
+    `blockok_ST_PS`.  The gap is NOT a missing anchoring fact but the CARRIER that
+    re-establishes `NF`/`ST_PS`-anchoring on the proj-descent criticals (which
+    leave the `NF` class): the `maxoviol`-step monotonicity holds on the
+    descent-class (`438747 / 0`) but the descent-class predicate `P` (= "greatest-
+    critical-descent node of an `ST_PS`-image arg") is currently defined only
+    operationally — formalizing `P` + its `maxoviol`-step preservation is the
+    substantial remaining undertaking.
 The criticals/bottoms of the proj-descent leave the `NF`/`ST_PS` class, and
 re-establishing the forest anchoring on them (via `SubBlock` + `r1ok_ST_PS` +
-the `oper`/`translate` parent-forest) is the substantial remaining undertaking. -/
+`stps_head` + `ST_PS_suffix` + the `oper`/`translate` parent-forest) is the
+substantial remaining construction. -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
