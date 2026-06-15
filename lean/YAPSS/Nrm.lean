@@ -651,6 +651,46 @@ theorem nextrel0_no_cross (A T : PairSeq) (hroot : entry T 0 0 = 0)
     have := entry_append_right A T 0 0; rw [Nat.add_zero] at this; rw [this, hroot]
   rw [hz] at hval; omega
 
+/-- A row-0-`0` column has no `nextrel0`-predecessor (`nextrel0` needs a strict
+row-0 increase into it). -/
+theorem nextrel0_no_pred_zero {M : PairSeq} {a b : ℕ} (hz : entry M 0 b = 0)
+    (h : nextrel0 M a b) : False := by
+  obtain ⟨_, _, _, h4, _⟩ := h; rw [hz] at h4; omega
+
+/-- A `nextrel0`-reachability chain ending at a row-0-`0` column is trivial
+(`refl`): the root has no predecessor. -/
+theorem rtg_to_root {M : PairSeq} {k b : ℕ} (hz : entry M 0 b = 0)
+    (h : Relation.ReflTransGen (nextrel0 M) k b) : k = b := by
+  cases h with
+  | refl => rfl
+  | tail _ hlast => exact absurd hlast (fun hh => nextrel0_no_pred_zero hz hh)
+
+/-- **`le0` blocking** (the key cross-boundary fact): with `T` root-anchored, no
+`le0`-chain crosses from a prefix index `k < |A|` into a positive-row-0 column at
+index `|A| + j1`.  Induction on the chain: each step into a positive column has
+its source `≥ |A|` (`nextrel0_no_cross`); a root source would have no predecessor
+(`rtg_to_root`), forcing `k` itself `≥ |A|`. -/
+theorem le0_no_cross (A T : PairSeq) (hroot : entry T 0 0 = 0)
+    {k j1 : ℕ} (hk : k < A.length) (hpos : 0 < entry (A ++ T) 0 (A.length + j1))
+    (h : le0 (A ++ T) k (A.length + j1)) : False := by
+  obtain ⟨-, -, hrt⟩ := h
+  suffices H : ∀ e, Relation.ReflTransGen (nextrel0 (A ++ T)) k e →
+      A.length ≤ e → 0 < entry (A ++ T) 0 e → A.length ≤ k by
+    exact absurd (H _ hrt (by omega) hpos) (by omega)
+  intro e hrt'
+  induction hrt' with
+  | refl => intro he _; exact he
+  | @tail c d hcd hde ih =>
+    intro hd hpd
+    have hcA : A.length ≤ c := by
+      by_contra hlt; push_neg at hlt
+      exact nextrel0_no_cross A T hroot hlt hd hpd hde
+    by_cases hcpos : 0 < entry (A ++ T) 0 c
+    · exact ih hcA hcpos
+    · have hcz : entry (A ++ T) 0 c = 0 := by omega
+      have hkc : k = c := rtg_to_root hcz hcd
+      omega
+
 /-- `nextrel1` is suffix-invariant on shifted indices.  The row-1 valley universal
 ranges only over `j > |A| + j0 ≥ |A|` (all in `T`); `le0` is suffix-invariant
 (`le0_append_right`). -/
