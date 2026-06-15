@@ -2751,6 +2751,39 @@ theorem proj0_olt_of_mvstep_olt {R : Three → Three → Prop}
       rw [proj_nofire hfx]
       exact olt_ole_trans hxy (proj_ole 0 y)
 
+/-- **The descent-pair relation** `Rdesc x y`: `(x, y)` is reachable from a
+firing `NF`-arg pair `(b, f)` (`P 0 b c, P 0 f g ∈ NF`, `olt b f`,
+`maxsub b = maxsub f`) by simultaneous `mvstep`.  This is the carrier on which
+the strict STEP holds (`hpres` is automatic from `base`/`step`).  The two
+remaining residual obligations are `hfire` (lockstep firing, model-verified
+`0 / 877494` mismatch) and `hstep` (the strict STEP, `438747 / 0`, the
+irreducible forest fact). -/
+inductive Rdesc : Three → Three → Prop
+  | base {b c f g : Three} (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF)
+      (harg : olt b f) (heq : maxsub b = maxsub f)
+      (hb : pfire 0 b) (hf : pfire 0 f) : Rdesc b f
+  | step {x y : Three} (h : Rdesc x y) (hfx : pfire 0 x) (hfy : pfire 0 y) :
+      Rdesc (mvstep x) (mvstep y)
+
+/-- `Rdesc` is `mvstep`-preserved (both firing) — by the `step` constructor. -/
+theorem Rdesc_pres {x y : Three} (h : Rdesc x y) (hfx : pfire 0 x)
+    (hfy : pfire 0 y) : Rdesc (mvstep x) (mvstep y) := Rdesc.step h hfx hfy
+
+/-- **The equal-`maxsub` witness, reduced to the `Rdesc` STEP residuals**
+(`hfire` + `hstep`).  GREEN assembly: `Rdesc` base for `(b, f)`, then the strict
+`mvstep` recursion `proj0_olt_of_mvstep_olt` gives `olt (proj 0 b) (proj 0 f)`;
+the witness is `proj 0 f`. -/
+theorem proj_bothfire_witness_eq_of_Rdesc
+    (hfire : ∀ x y, Rdesc x y → (pfire 0 x ↔ pfire 0 y))
+    (hstep : ∀ x y, Rdesc x y → olt x y → olt (mvstep x) (mvstep y))
+    {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
+    ∃ h ∈ Gterm 0 f, olt (proj 0 b) h := by
+  refine ⟨proj 0 f, proj_mem_Gterm_of_fire hf, ?_⟩
+  exact proj0_olt_of_mvstep_olt hfire (fun x y h hx hy => Rdesc.step h hx hy)
+    hstep b f (Rdesc.base hv hu harg heq hb hf) harg
+
 /-- **The both-fire witness (reduced to the equal-`maxsub` core), Lean form.**
 For two firing head-`0` `NF` arguments `b <o f`, there is a `G₀`-critical `h`
 of the larger argument `f` that **strictly dominates** `proj 0 b` (the greatest
