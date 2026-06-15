@@ -2041,6 +2041,77 @@ theorem proj_mem_Gterm_of_fire {u : ℕ} {b : Three} (hf : pfire u b) :
     rw [pfire] at hf; exact hf
   exact mem_filter_Gterm (maxo_hdtl_in h)
 
+/-- **`proj u b` is the greatest critical term of `b`** (for firing `b`): every
+critical `g ∈ Gterm u b` satisfies `g ≤o proj u b`.  (Violators are `≤o` the
+`maxo`; non-violators are `< b ≤o maxo`.) -/
+theorem proj_ge_crit {u : ℕ} {b : Three} (hf : pfire u b)
+    {g : Three} (hg : g ∈ Gterm u b) : g ≤o proj u b := by
+  rw [proj_eq_maxo_bad hf]
+  have h : (Glist u b).filter (fun g => ¬ olt g b) ≠ [] := by
+    rw [pfire] at hf; exact hf
+  set bad := (Glist u b).filter (fun g => ¬ olt g b) with hbad
+  set m := maxo bad.headI bad.tail with hm
+  have hmin : m ∈ bad := maxo_hdtl_in h
+  have hbm : b ≤o m := by
+    have hmnotolt : ¬ olt m b := mem_filter_not_olt hmin
+    rcases olt_total b m with h1 | h1 | h1
+    · exact Or.inl h1
+    · exact Or.inr h1
+    · exact absurd h1 hmnotolt
+  by_cases hgb : olt g b
+  · exact Or.inl (Three.olt_ole_trans hgb hbm)
+  · have hgbad : g ∈ bad := by
+      rw [hbad]; exact List.mem_filter.2 ⟨mem_Glist.2 hg, by simpa using hgb⟩
+    exact maxo_ub_mem h g hgbad
+
+/-- Leading subscript is `≤` the maximal subscript. -/
+theorem lead_le_maxsub_self (t : Three) : lead t ≤ maxsub t := by
+  cases t with
+  | Z => simp
+  | P a b c => rw [lead_P, maxsub_P]; omega
+
+/-- A critical term's leading subscript is bounded by the host's maximal
+subscript. -/
+theorem lead_crit_le_maxsub {u : ℕ} {t : Three} :
+    ∀ {g : Three}, g ∈ Gterm u t → lead g ≤ maxsub t := by
+  induction t with
+  | Z => intro g hg; simp [Gterm] at hg
+  | P a b c ihb ihc =>
+    intro g hg; rw [maxsub_P]; rw [mem_Gterm_P] at hg
+    rcases hg with ⟨ha, hgb⟩ | hgc
+    · rcases hgb with rfl | hgg
+      · have := lead_le_maxsub_self g; omega
+      · have := ihb hgg; omega
+    · have := ihc hgc; omega
+
+/-- `ole` weakens to a leading-subscript inequality. -/
+theorem lead_le_of_ole {x y : Three} (h : x ≤o y) : lead x ≤ lead y := by
+  rcases h with h | rfl
+  · exact lead_le_of_olt h
+  · exact le_refl _
+
+/-- **`proj 0` of a firing `NF` argument leads with the maximal subscript:**
+`lead (proj 0 b) = maxsub b`.  Upper bound: `proj 0 b` is a critical
+(`lead_crit_le_maxsub`).  Lower bound: `climb_achieved` exposes a witness with
+`lead = climb b = maxsub b` (`maxsub_arg_eq_climb`), and `proj 0 b` dominates it
+(`proj_ge_crit` / `proj_ole`). -/
+theorem lead_proj_eq_maxsub_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hf : pfire 0 b) :
+    lead (proj 0 b) = maxsub b := by
+  have hmc : maxsub b = climb b := maxsub_arg_eq_climb hv
+  have hup : lead (proj 0 b) ≤ maxsub b :=
+    lead_crit_le_maxsub (proj_mem_Gterm_of_fire hf)
+  obtain ⟨g, hg, hgl⟩ := climb_achieved b
+  have hglow : maxsub b ≤ lead (proj 0 b) := by
+    have hgmax : lead g = maxsub b := by rw [hgl, ← hmc]
+    rcases hg with rfl | hgmem
+    · -- g = b: lead b = maxsub b ≤ lead (proj 0 b) via proj_ole
+      have := lead_le_of_ole (proj_ole 0 g)
+      omega
+    · -- g ∈ Gterm 0 b: g ≤o proj 0 b via proj_ge_crit
+      have := lead_le_of_ole (proj_ge_crit hf hgmem)
+      omega
+  omega
+
 /-- **Both-fire comparison on `NF` arguments** (residual 2).
 
 Structure now pinned down (`fire_shape_NF`, peel audit):
