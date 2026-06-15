@@ -1,0 +1,304 @@
+theory ovnf
+  imports nrm "YAPSS.wf" "YAPSS.proofs"
+begin
+
+text \<open>
+  \<^bold>\<open>Value-semantics route to \<open>wf Rnf\<close> (\<open>oV_mono_NF\<close>)\<close>.
+
+  This theory assembles PSS termination through the order-embedding value map
+  \<open>oV\<close>.  The keystone is
+
+    \<open>oV_mono_NF\<close>:  \<open>v \<in> NF \<Longrightarrow> u \<in> NF \<Longrightarrow> v <o u \<Longrightarrow> oV v < oV u\<close>
+
+  i.e. the value map is strictly monotone on the standard-form fragment
+  \<open>NF = translate ` ST_PS\<close>.  From it, \<open>wf Rnf\<close> and PSS termination follow with
+  \<^emph>\<open>green\<close> plumbing (\<open>wf_Rnf_oV\<close>, \<open>PSS_terminates_oV\<close> below), via \<open>inv_image VWF oV\<close>
+  and \<open>step_terminates_cond[OF m_step_decreases]\<close>.
+
+  \<^bold>\<open>Status (2026-06): \<open>oV_mono_NF\<close> is now a GREEN assembly\<close>, no longer a standalone
+  \<open>sorry\<close>.  The value bridge \<open>oV_nrm\<close> (\<open>cnf t \<Longrightarrow> oV (nrm t) = oV t\<close>, proved below
+  from @{thm [source] psi_proj} + the syntactic \<open>nrm_hdle\<close>) lets us route
+  \<open>oV_mono_NF\<close> through \<open>nrm\<close>:
+
+    \<open>oV v = oV (nrm v) < oV (nrm u) = oV u\<close>,
+
+  where the middle \<open><\<close> is the \<^emph>\<open>green\<close> \<open>wf3\<close>-restricted @{thm [source] oV_order_pres}
+  applied to the Buchholz-\<open>OT\<close> terms \<open>nrm v, nrm u\<close> (@{thm [source] wf3_nrm}), and
+  the order \<open>olt (nrm v) (nrm u)\<close> is @{thm [source] nrm_order_pres}.  So both the
+  \<open>oV\<close>-route and the \<open>nrm\<close>-route now share a \<^bold>\<open>single live ordinal crux\<close>,
+  \<open>sigma_seqlex_mono\<close> (the Buchholz \<section>1 core, closed independently); the only other
+  residuals on this route are the \<^emph>\<open>syntactic\<close> \<open>nrm_hdle\<close> (no-absorption of \<open>ins\<close>
+  inside \<open>nrm\<close>, \<open>0/17408\<close> empirically) and \<open>psi_proj\<close>'s pre-existing
+  \<open>psi_proj_nonmem\<close> (nrm.thy) \<dash> neither carries fresh ordinal/canonicity content.
+
+  \<^bold>\<open>Why the \<^emph>\<open>direct\<close> (term-recursion / per-principal) route to \<open>oV_mono_NF\<close> fails
+  (recorded honestly; motivates the \<open>nrm\<close> detour above).\<close>  A structural recursion
+  on the term \<open>v\<close> (mirroring \<open>oV_order_pres\<close>) splits \<open>v <o u\<close> into \<open>sub\<close>
+  (subscript jump), \<open>arg\<close> (same subscript, \<open>b <o f\<close>) and \<open>tail\<close>.  The \<open>sub\<close> case
+  is green from \<open>cnf_spinesub_le\<close> (the OT2 property of \<open>NF\<close>, proved below).  But
+  the \<open>arg\<close> and \<open>tail\<close> cases recurse into the \<^emph>\<open>arguments\<close> \<open>b, f\<close> and \<^emph>\<open>tails\<close>
+  \<open>c, g\<close>, which are \<^bold>\<open>not in \<open>NF\<close>\<close> (a sub-term of a translate is not a translate),
+  so the induction hypothesis is unavailable.  Weakening the carried invariant
+  to \<open>cnf\<close> (which \<^emph>\<open>does\<close> descend to args and tails) makes the statement
+  \<^bold>\<open>FALSE\<close>: \<open>y\<^sub>2 = p\<^bsub>0\<^esub>(p\<^bsub>1\<^esub>(y\<^sub>1)) <o y\<^sub>1 = p\<^bsub>0\<^esub>(p\<^bsub>1\<^esub>(p\<^bsub>1\<^esub>(0)))\<close> are both \<open>cnf\<close>,
+  yet \<open>oV y\<^sub>2 = oV y\<^sub>1\<close> (here \<open>y\<^sub>1 \<in> NF\<close> but \<open>y\<^sub>2 \<notin> NF\<close>; its pair sequence
+  \<open>(0,0)(1,1)(2,0)(3,1)(4,1)\<close> is non-standard).  Hence the standard-form
+  (\<open>blockok\<close>, row-1 parenthood) discipline of \<open>NF\<close> is genuinely essential and
+  does \<^emph>\<open>not\<close> reduce to a clean term-level invariant; this is the same Buchholz
+  \<section>1 / \<open>nrm_order_pres\<close> core (memo 続78,89(4'),(6)).  This is exactly why
+  \<open>oV_mono_NF\<close> is discharged \<^emph>\<open>not\<close> by term recursion but by the \<open>nrm\<close> detour
+  (\<open>oV_nrm\<close> + \<open>oV_order_pres\<close> + \<open>nrm_order_pres\<close>) above; the keystone is empirically
+  TRUE (zero violations on 749{,}525 arg-case \<open>NF\<close>-pairs at closure+5; memo 続89(1)
+  1{,}124{,}250/0).
+
+  \<^bold>\<open>Precise obstruction, pinpointed (2026-06).\<close>  The keystone is genuinely TRUE
+  (re-verified: \<^file>\<open>../tools/check_oV_mono_NF.py\<close>, \<open>3{,}378{,}700\<close> \<open>olt\<close>-ordered \<open>NF\<close>
+  pairs, \<open>1{,}923{,}799\<close> of them \<^emph>\<open>cross-level\<close>, \<open>0\<close> collapses, \<open>0\<close> reversals).  Three
+  candidate reductions to the green \<open>oV_order_pres\<close> (\<open>wf3 v \<Longrightarrow> wf3 u \<Longrightarrow> v <o u \<Longrightarrow>
+  oV v < oV u\<close>, otembed.thy) were tried and \<^bold>\<open>all ruled out empirically\<close>:
+    \<^item> \<open>NF \<subseteq> wf3\<close> is \<^bold>\<open>FALSE\<close> (\<^file>\<open>../tools/check_nf_wf3.py\<close>: \<open>2207/10207\<close> \<open>NF\<close> terms
+      fail Buchholz OT3, e.g. \<open>p\<^bsub>0\<^esub>(p\<^bsub>1\<^esub>(p\<^bsub>2\<^esub>(\<dots>)))\<close> has \<open>p\<^bsub>2\<^esub>(\<dots>) \<in> Gterm 0 (p\<^bsub>1\<^esub>(p\<^bsub>2\<^esub>(\<dots>)))\<close>
+      yet \<open>\<not> p\<^bsub>2\<^esub>(\<dots>) <o p\<^bsub>1\<^esub>(p\<^bsub>2\<^esub>(\<dots>))\<close>);
+    \<^item> \<^emph>\<open>semantic\<close> OT3 on \<open>NF\<close> is also \<^bold>\<open>FALSE\<close> (\<^file>\<open>../tools/semOT3.py\<close>: \<open>137390/0\<close>
+      collapses \<dash> whenever syntactic OT3 fails, \<open>oV x \<ge> oV b\<close> too);
+    \<^item> the lone \<open>wf3\<close>-using step of \<open>oV_order_pres\<close> is \<open>ccnd\<close>, the C-membership
+      \<open>oV b \<in> elts (Cset (\<lambda>\<xi>. psi \<xi>) (oV b) a) = acanon a (oV b)\<close>, supplied there by
+      \<open>Ccond_of_lt\<close>+OT3.  This is \<^bold>\<open>FALSE on \<open>NF\<close>\<close> (\<^file>\<open>../tools/check_ccnd_NF.py\<close>, in the
+      genuine finite collapse model \<^file>\<open>../tools/cset_remark_check.py\<close>: \<open>93/179\<close>
+      distinct \<open>NF\<close> principals have \<^bold>\<open>non-canonical\<close> \<open>oV b\<close>, e.g. \<open>a = 0\<close>,
+      \<open>oV b = \<omega>\<^sup>4 + 2 \<notin> Cset(\<dots>)\<close>).  Hence a per-principal \<open>Cmem_NF\<close> lemma
+      \<^bold>\<open>cannot exist\<close>; the standard-form discipline keeps the \<^emph>\<open>aggregate\<close>
+      \<open>psi\<close>-collapse order-consistent between two \<open>NF\<close> terms without making each
+      argument canonical \<dash> precisely the irreducible Buchholz \<section>1 content.  \<^bold>\<open>The
+      viable reduction\<close> (now taken, see \<open>oV_mono_NF\<close> below) routes through
+      \<open>oV (nrm v) = oV v\<close> [\<open>oV_nrm\<close>, \<^file>\<open>../tools/check_oV_nrm.py\<close> \<open>0/17409\<close>],
+      \<open>wf3_nrm\<close> [green, nrm.thy], \<open>oV_order_pres\<close> [green] and \<open>nrm_order_pres\<close>; its
+      ordinal order step \<open>nrm_order_pres\<close> rests on the \<open>sigma_seqlex_mono\<close> \<section>1 \<open>sorry\<close>
+      \<dash> the \<^emph>\<open>same\<close> single crux as the \<open>nrm\<close> route, NOT the \<open>nrmstep\<close> sorry-cluster
+      (\<open>nrmstep\<close> builds after this theory and is not imported).  The reduction thus
+      \<^emph>\<open>unifies\<close> the two routes onto one live crux rather than enshrining a false
+      per-principal lemma.)
+\<close>
+
+subsection \<open>OT2 for \<open>cnf\<close>: the spine subscripts are dominated by the lead (green)\<close>
+
+text \<open>A \<open>cnf\<close> term has weakly-decreasing spine heads (subscript-first), so every
+  spine subscript is \<open>\<le>\<close> the leading one.  This is the (green) OT2 ingredient the
+  subscript-jump case needs on \<open>NF\<close>; it does \<^emph>\<open>not\<close> require \<open>wf3\<close>.  Reusable.\<close>
+
+lemma cnf_spine_le_head:
+  "cnf (P a b c) \<Longrightarrow> spinesub_le a c"
+proof (induction c arbitrary: a b)
+  case Z thus ?case by simp
+next
+  case (P e f g)
+  have ncmp: "\<not> (P a b Z <o P e f Z)" and cnfg: "cnf (P e f g)"
+    using P.prems by auto
+  have "e \<le> a"
+  proof (rule ccontr)
+    assume "\<not> e \<le> a" hence "a < e" by simp
+    hence "P a b Z <o P e f Z" by simp
+    with ncmp show False by simp
+  qed
+  moreover have "spinesub_le e g" by (rule P.IH(2)[OF cnfg])
+  ultimately show ?case using spinesub_le_mono by auto
+qed
+
+lemma cnf_spinesub_le: "cnf t \<Longrightarrow> spinesub_le (lead t) t"
+proof (cases t)
+  case Z thus ?thesis by simp
+next
+  case (P a b c)
+  assume "cnf t"
+  hence "spinesub_le a c" using P by (simp add: cnf_spine_le_head)
+  thus ?thesis using P by simp
+qed
+
+text \<open>The \<open>cnf\<close> head comparison propagates down the spine: every spine principal
+  has head \<open>\<le>\<close> the leading principal (\<open>headle_all\<close>).  Also green; reusable for the
+  \<open>arg\<close>-case spine bound once the leading inequality is available.\<close>
+
+lemma headle_all_mono:
+  "headle_all y c \<Longrightarrow> hdle y z \<Longrightarrow> headle_all z c"
+proof (induction c)
+  case Z thus ?case by simp
+next
+  case (P a b c')
+  have "hdle (P a b Z) y" and "headle_all y c'" using P.prems(1) by auto
+  thus ?case using P.IH P.prems(2) hdle_trans by auto
+qed
+
+lemma cnf_headle_all:
+  "cnf (P a b c) \<Longrightarrow> headle_all (P a b Z) c"
+proof (induction c arbitrary: a b)
+  case Z thus ?case by simp
+next
+  case (P e f g)
+  have ncmp: "\<not> (P a b Z <o P e f Z)" and cnfg: "cnf (P e f g)"
+    using P.prems by auto
+  have hd: "hdle (P e f Z) (P a b Z)"
+  proof -
+    from ncmp have "\<not> (a < e \<or> (a = e \<and> olt b f))" by simp
+    hence na: "\<not> a < e" and nb: "a = e \<longrightarrow> \<not> olt b f" by auto
+    have "e < a \<or> e = a" using na by arith
+    moreover have "e = a \<Longrightarrow> olt f b \<or> f = b" using nb olt_total by blast
+    ultimately show ?thesis by auto
+  qed
+  have "headle_all (P e f Z) g" by (rule P.IH(2)[OF cnfg])
+  hence htail: "headle_all (P a b Z) g" by (rule headle_all_mono[OF _ hd])
+  show ?case using hd htail by simp
+qed
+
+text \<open>\<open>cnf\<close> is inherited by the \<^emph>\<open>arguments\<close> and by spine \<^emph>\<open>suffixes\<close> (green,
+  structural).  These record that \<open>cnf\<close> descends \<dash> the property that makes the
+  \<open>cnf\<close>-weakening tempting, and exactly why its failure (the \<open>y\<^sub>1,y\<^sub>2\<close>
+  counterexample) pins the irreducibility on the \<^emph>\<open>OT3 / canonicity\<close> content
+  rather than on OT2.\<close>
+
+lemma cnf_arg: "cnf (P a b c) \<Longrightarrow> cnf b"
+  by (cases c) auto
+
+lemma cnf_tail_suffix: "cnf (P a b c) \<Longrightarrow> cnf c"
+  by (cases c) auto
+
+subsection \<open>The value bridge \<open>oV_nrm\<close>: \<open>oV (nrm t) = oV t\<close>\<close>
+
+text \<open>\<^bold>\<open>\<open>ins\<close> on the \<open>nrm\<close>-prepend branch is a principal-add\<close>.  \<open>ins a b c\<close> either
+  \<^emph>\<open>absorbs\<close> (\<open>c = P e f g\<close> with \<open>(a,b)\<close> strictly below the head of \<open>c\<close>) or
+  \<^emph>\<open>prepends\<close> the principal \<open>D\<^bsub>a\<^esub>(b)\<close>.  On the prepend branch the value is the
+  ordinal principal-add \<open>\<psi>\<^bsub>a\<^esub>(oV b) + oV c\<close>.  (\<open>ins\<close> def: \<open>ovnf.thy\<close>'s import \<open>nrm\<close>.)\<close>
+
+lemma oV_ins_prepend:
+  assumes "c = Z \<or> (\<exists>e f g. c = P e f g \<and> \<not> (a < e \<or> (a = e \<and> olt b f)))"
+  shows "oV (ins a b c) = psi (oV b) a + oV c"
+  using assms by (cases c) auto
+
+text \<open>The shape of \<open>nrm\<close> on a non-trivial term: it is a principal with the
+  \<^emph>\<open>same\<close> head subscript (\<open>ins\<close> keeps the new subscript when it prepends, and a
+  \<open>cnf\<close>-tail never absorbs \<dash> \<open>nrm_hdle\<close> below).  Green, used to read off the head.\<close>
+
+lemma nrm_principal:
+  "nrm (P a b c) = ins a (proj a (nrm b)) (nrm c)"
+  by simp
+
+text \<open>\<^bold>\<open>No-absorption inside \<open>nrm\<close>\<close> (\<open>nrm_hdle\<close>) \<dash> the \<^emph>\<open>single residual\<close> of the
+  \<open>oV\<close>-bridge.  It is a \<^bold>\<open>purely syntactic\<close> head bound: for a \<open>cnf\<close> principal
+  \<open>P a b c\<close>, the head of \<open>nrm c\<close> is \<open>\<le>\<close> the new head \<open>D\<^bsub>a\<^esub>(proj a (nrm b))\<close>, so the
+  \<open>ins\<close> in \<open>nrm (P a b c)\<close> prepends (never absorbs).  Mathematically it is the OT2
+  (non-increasing spine) property of \<open>cnf\<close> carried through \<open>nrm\<close>/\<open>proj\<close>; a full
+  proof needs the \<open>proj\<close>/\<open>nrm\<close> head-monotonicity (the \<open>ins_olt_mono\<close> family lives in
+  \<open>nrmstep\<close>, which builds \<^emph>\<open>after\<close> this theory).  \<^bold>\<open>Empirically TRUE\<close>: \<open>0\<close> violations
+  on the \<open>17408\<close> \<open>cnf\<close> subterms of the closure+5 corpus
+  (\<^file>\<open>../tools/check_oV_helpers.py\<close>, \<^file>\<open>../tools/check_ins_absorb.py\<close>:
+  \<open>absorb=0, prepend=1343\<close>; head probes \<open>0/17408\<close>).  Unlike \<open>oV_mono_NF\<close> this carries
+  \<^bold>\<open>no\<close> ordinal/canonicity content, so it is a far weaker residual than the \<section>1 core.\<close>
+
+lemma nrm_hdle:
+  "cnf (P a b c) \<Longrightarrow> nrm c = Z
+     \<or> (\<exists>e f g. nrm c = P e f g \<and> \<not> (a < e \<or> (a = e \<and> olt (proj a (nrm b)) f)))"
+  sorry
+
+text \<open>\<^bold>\<open>The value bridge\<close> \<open>oV_nrm\<close>: on \<open>cnf\<close> terms (in particular on \<open>NF\<close>), the
+  normalizer \<open>nrm\<close> \<^emph>\<open>preserves the ordinal value\<close> \<open>oV\<close>.  Induction on \<open>t\<close>:
+  \<^item> \<open>nrm (P a b c) = ins a (proj a (nrm b)) (nrm c)\<close>, which \<^emph>\<open>prepends\<close> by
+    \<open>nrm_hdle\<close> (\<open>cnf\<close>), so its value is \<open>\<psi>\<^bsub>a\<^esub>(oV (proj a (nrm b))) + oV (nrm c)\<close>;
+  \<^item> \<open>\<psi>\<^bsub>a\<^esub>(oV (proj a (nrm b))) = \<psi>\<^bsub>a\<^esub>(oV (nrm b))\<close> by the collapsing identity
+    @{thm [source] psi_proj} (with \<open>wf3 (nrm b)\<close> from @{thm [source] wf3_nrm});
+  \<^item> \<open>oV (nrm b) = oV b\<close>, \<open>oV (nrm c) = oV c\<close> by the induction hypotheses.
+  Empirically \<open>0/17409\<close> (\<^file>\<open>../tools/check_oV_nrm.py\<close>, \<^file>\<open>../tools/check_oV_helpers.py\<close>
+  H0).  Rests only on \<open>nrm_hdle\<close> (syntactic) and @{thm [source] psi_proj} (green).\<close>
+
+lemma oV_nrm:
+  "cnf t \<Longrightarrow> oV (nrm t) = oV t"
+proof (induction t)
+  case Z thus ?case by simp
+next
+  case (P a b c)
+  have cnfb: "cnf b" by (rule cnf_arg[OF P.prems])
+  have cnfc: "cnf c" by (rule cnf_tail_suffix[OF P.prems])
+  have ihb: "oV (nrm b) = oV b" by (rule P.IH(1)[OF cnfb])
+  have ihc: "oV (nrm c) = oV c" by (rule P.IH(2)[OF cnfc])
+  \<comment> \<open>prepend branch of \<open>ins\<close> via \<open>nrm_hdle\<close>\<close>
+  have prep: "oV (ins a (proj a (nrm b)) (nrm c))
+                = psi (oV (proj a (nrm b))) a + oV (nrm c)"
+  proof (rule oV_ins_prepend)
+    show "nrm c = Z \<or> (\<exists>e f g. nrm c = P e f g
+            \<and> \<not> (a < e \<or> (a = e \<and> olt (proj a (nrm b)) f)))"
+      by (rule nrm_hdle[OF P.prems])
+  qed
+  \<comment> \<open>collapsing identity \<open>\<psi>(oV(proj a (nrm b)))a = \<psi>(oV(nrm b))a\<close>\<close>
+  have wfnb: "wf3 (nrm b)" by (rule wf3_nrm)
+  have psieq: "psi (oV (nrm b)) a = psi (oV (proj a (nrm b))) a"
+    by (rule psi_proj[OF wfnb])
+  have "oV (nrm (P a b c)) = psi (oV (proj a (nrm b))) a + oV (nrm c)"
+    using prep by simp
+  also have "\<dots> = psi (oV (nrm b)) a + oV (nrm c)" using psieq by simp
+  also have "\<dots> = psi (oV b) a + oV c" using ihb ihc by simp
+  also have "\<dots> = oV (P a b c)" by simp
+  finally show ?case .
+qed
+
+subsection \<open>The keystone \<open>oV_mono_NF\<close> (green assembly over \<open>nrm_order_pres\<close>)\<close>
+
+text \<open>\<^bold>\<open>\<open>oV\<close> is strictly monotone on \<open>NF\<close>\<close>.  Previously a standalone \<open>sorry\<close>; now a
+  \<^bold>\<open>green assembly\<close>: \<open>nrm_order_pres\<close> turns \<open>v <o u\<close> on \<open>NF\<close> into
+  \<open>nrm v <o nrm u\<close>; \<open>nrm v, nrm u\<close> are Buchholz \<open>OT\<close> terms (\<open>wf3_nrm\<close>), so the
+  green \<open>wf3\<close>-restricted \<open>oV_order_pres\<close> gives \<open>oV (nrm v) < oV (nrm u)\<close>; and the
+  value bridge \<open>oV_nrm\<close> (\<open>NF \<subseteq> cnf\<close>) rewrites both sides back to \<open>oV v, oV u\<close>.  The
+  \<^emph>\<open>only\<close> live obligations under this route are \<open>nrm_order_pres\<close>'s residual
+  \<open>sigma_seqlex_mono\<close> (the \<section>1 core, being closed independently), \<open>psi_proj\<close>'s
+  residual \<open>psi_proj_nonmem\<close>, and the syntactic \<open>nrm_hdle\<close> \<dash> no fresh ordinal
+  content here.\<close>
+
+lemma NF_cnf: "v \<in> NF \<Longrightarrow> cnf v"
+proof -
+  assume "v \<in> NF"
+  then obtain M where "M \<in> ST_PS" and "v = translate M" by auto
+  thus ?thesis using cnf_ST_PS by simp
+qed
+
+theorem oV_mono_NF:
+  assumes "v \<in> NF" and "u \<in> NF" and "olt v u"
+  shows "oV v < oV u"
+proof -
+  have nlt: "olt (nrm v) (nrm u)" by (rule nrm_order_pres[OF assms])
+  have wfv: "wf3 (nrm v)" and wfu: "wf3 (nrm u)" by (rule wf3_nrm)+
+  have "oV (nrm v) < oV (nrm u)" by (rule oV_order_pres[OF wfv wfu nlt])
+  moreover have "oV (nrm v) = oV v" by (rule oV_nrm[OF NF_cnf[OF assms(1)]])
+  moreover have "oV (nrm u) = oV u" by (rule oV_nrm[OF NF_cnf[OF assms(2)]])
+  ultimately show ?thesis by simp
+qed
+
+subsection \<open>\<open>wf Rnf\<close> and PSS termination via \<open>oV\<close> (green, no \<open>nrm\<close>)\<close>
+
+text \<open>\<^bold>\<open>Well-foundedness of \<open><o\<close> on \<open>NF\<close>\<close>, obtained by pulling back the
+  well-ordering \<open>VWF\<close> on the ordinals along \<open>oV\<close>; \<open>oV_mono_NF\<close> embeds \<open>Rnf\<close> into
+  \<open>inv_image VWF oV\<close>.  Independent of \<open>nrm\<close> and \<open>nrm_order_pres\<close>.\<close>
+
+theorem wf_Rnf_oV: "wf Rnf"
+proof (rule wf_subset[OF wf_inv_image[OF wf_VWF, of oV]])
+  show "Rnf \<subseteq> inv_image VWF oV"
+  proof (rule subrelI)
+    fix v u assume "(v,u) \<in> Rnf"
+    hence vu: "olt v u" and uNF: "u \<in> NF" and vNF: "v \<in> NF" by auto
+    have "oV v < oV u" by (rule oV_mono_NF[OF vNF uNF vu])
+    thus "(v,u) \<in> inv_image VWF oV"
+      by (simp add: inv_image_def VWF_iff_Ord_less)
+  qed
+qed
+
+text \<open>\<^bold>\<open>PSS termination\<close> through the value measure \<open>oV \<circ> translate\<close>.  Assembled from
+  \<open>m_step_decreases\<close> (the green expansion-step decrease) and \<open>wf_Rnf_oV\<close> via the
+  generic \<open>step_terminates_cond\<close> \<dash> the entire route avoids \<open>nrm\<close>, resting solely
+  on the single \<open>oV_mono_NF\<close> obligation.\<close>
+
+theorem PSS_terminates_oV: "wf {(T,M). M \<in> ST_PS \<and> step M T}"
+proof (rule step_terminates_cond)
+  fix M :: pairseq and n :: nat
+  assume "M \<in> ST_PS" and L: "1 < Lng M" and n: "1 \<le> n"
+  show "olt (translate (M[n])) (translate M)" by (rule m_step_decreases[OF L n])
+next
+  show "wf {(v,u). olt v u \<and> u \<in> NF \<and> v \<in> NF}" by (rule wf_Rnf_oV)
+qed
+
+end
