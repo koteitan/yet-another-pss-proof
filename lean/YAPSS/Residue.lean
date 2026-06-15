@@ -464,6 +464,69 @@ theorem AcanonLtValue_lt_eps {δ : Ordinal.{u}} {v : ℕ} (hv : 0 < v)
   rw [hform]
   exact lt_opow_Om_add hv hδe
 
+open Ordinal in
+/-- **PROVEN: psiSelf explicit value at subscript 0** (`psi_zero_eq_opow` port).
+For `α < ε₀`: `α` is `0`-canonical and `psiSelf α 0 = ω^α`. -/
+theorem psiSelf_zero_eq_opow : ∀ α : Ordinal.{u}, α < ε_ 0 →
+    α ∈ CsetSelf (psiResSelf α) α 0 ∧ psiSelf α 0 = omega0 ^ α := by
+  intro α
+  induction α using WellFoundedLT.induction with
+  | _ α IH =>
+    intro hα
+    have hsub : ∀ γ, γ < omega0 ^ α → γ ∈ CsetSelf (psiResSelf α) α 0 := by
+      rcases Ordinal.zero_or_succ_or_isSuccLimit α with rfl | ⟨δ, hδ⟩ | hlim
+      · intro γ hγ
+        rw [opow_zero] at hγ
+        exact Iio_Om_subset_CsetSelf (lt_of_lt_of_le hγ (one_le_Om 0))
+      · obtain ⟨δ, rfl⟩ : ∃ δ', α = δ' + 1 := ⟨δ, by rw [← hδ, Order.succ_eq_add_one]⟩
+        obtain ⟨hδc, hδf⟩ := IH δ (lt_add_one δ) ((lt_add_one δ).trans hα)
+        have hδc1 : δ ∈ CsetSelf (psiResSelf (δ+1)) (δ+1) 0 := CCSelf_mono (lt_add_one δ).le 0 hδc
+        have hδcanon : δ ∈ CsetSelf (psiResSelf (δ+1)) δ 0 := by
+          rwa [CsetSelf_param_eq (p := psiResSelf δ) (q := psiResSelf (δ+1))
+                (fun ζ uu hζ => by rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ (lt_add_one δ))])] at hδc
+        have hω : omega0 ^ δ ∈ CsetSelf (psiResSelf (δ + 1)) (δ + 1) 0 := by
+          have := CsetSelf_psi_closed hδc1 (lt_add_one δ) 0 hδcanon
+          rwa [psiResSelf, if_pos (lt_add_one δ), hδf] at this
+        have hbelow : ∀ s, s < omega0 ^ δ → s ∈ CsetSelf (psiResSelf (δ + 1)) (δ + 1) 0 := by
+          intro s hs; rw [← hδf] at hs; exact CCSelf_mono (lt_add_one δ).le 0 (below_psiSelf_mem_CsetSelf hs)
+        exact Iio_opow_succ_subset_Self δ hω hbelow
+      · intro γ hγ
+        rw [lt_opow_of_isSuccLimit (by simp) hlim] at hγ
+        obtain ⟨β, hβα, hγβ⟩ := hγ
+        obtain ⟨hβc, hβf⟩ := IH β hβα (hβα.trans hα)
+        rw [← hβf] at hγβ
+        exact CCSelf_mono hβα.le 0 (below_psiSelf_mem_CsetSelf hγβ)
+    have hle : psiSelf α 0 ≤ omega0 ^ α := by
+      rw [psiSelf_unfold]; apply csInf_le'; intro hmem
+      obtain ⟨ξ, hξC, hξα, hξeq⟩ := psiSelf_form_of_mem (isPrincipal_add_omega0_opow α)
+        (by rw [Om_zero, ← opow_zero omega0]; exact opow_le_opow_right omega0_pos bot_le)
+        (opow_lt_Om_one_of_lt_epsilon0 hα) hmem
+      rw [(IH ξ hξα (hξα.trans hα)).2] at hξeq
+      exact absurd hξeq (ne_of_lt ((opow_lt_opow_iff_right one_lt_omega0).2 hξα))
+    have hge : omega0 ^ α ≤ psiSelf α 0 := by
+      by_contra hlt; push Not at hlt; exact psiSelf_notMem α 0 (hsub _ hlt)
+    have hform : psiSelf α 0 = omega0 ^ α := le_antisymm hle hge
+    exact ⟨below_psiSelf_mem_CsetSelf (hform ▸ lt_opow_self_of_lt_epsilon0 hα), hform⟩
+
+open Ordinal in
+/-- **PROVEN: `AcanonLtValue` on the unified below-`ε(w)` range, ALL `w`**
+(`δ < epsLvl w → δ < psiSelf δ w`).  `w = 0` via `psiSelf_zero_eq_opow` +
+`lt_opow_self_of_lt_epsilon0`; `w ≥ 1` via `AcanonLtValue_lt_eps`.  This is the
+genuine §1.7 content (below `ε(w)` everything is canonical AND below its value),
+now PROVEN for `psiSelf` with NO residual on this range. -/
+theorem AcanonLtValue_lt_epsLvl {δ : Ordinal.{u}} {w : ℕ}
+    (hδ : δ < epsLvl w) : δ < psiSelf δ w := by
+  cases w with
+  | zero =>
+    have hδ0 : δ < ε_ 0 := by simpa [epsLvl] using hδ
+    rw [(psiSelf_zero_eq_opow δ hδ0).2]
+    exact lt_opow_self_of_lt_epsilon0 hδ0
+  | succ k =>
+    have hδe : δ < ε_ (Om (k+1) + 1) := by
+      have : epsLvl (k+1) = ε_ (Om (k+1) + 1) := by simp [epsLvl]
+      rwa [this] at hδ
+    exact AcanonLtValue_lt_eps (Nat.succ_pos k) hδe
+
 /-- **(a) `lwit c w < c` from `AcanonLtValue` + `CanonWitness`** (GREEN).  The
 canonical witness `δ` is `< c` by `AcanonLtValue`, and `lwit ≤ δ` by minimality. -/
 theorem a_of_AcanonLtValue (hALV : AcanonLtValue.{u}) (hCW : CanonWitness.{u})
@@ -472,6 +535,25 @@ theorem a_of_AcanonLtValue (hALV : AcanonLtValue.{u}) (hCW : CanonWitness.{u})
   have hδlt : δ < psiSelf ζ w := hδv ▸ hALV hδc
   exact lt_of_le_of_lt
     (csInf_le' (s := {x : Ordinal | psiSelf x w = psiSelf ζ w}) hδv) hδlt
+
+/-- **The SHARPENED single residual for (a): `CanonWitnessLt`.**  Every ψ-value
+`psiSelf ζ w` has a witness `δ < epsLvl w` (`psiSelf δ w = psiSelf ζ w`).  Because
+the "below value" half is now PROVEN (`AcanonLtValue_lt_epsLvl`), (a) follows from
+this single existence statement — strictly sharper than `AcanonLtValue ∧
+CanonWitness`.  Conjecturally TRUE: the `psiSelf·w` collapse means every value is
+already attained by an argument `< ε(w)` (args `≥ ε(w)` add nothing new).  This is
+the lone clean residual gating sub-residual (a). -/
+def CanonWitnessLt.{u} : Prop :=
+  ∀ (ζ : Ordinal.{u}) (w : ℕ), ∃ δ, δ < epsLvl w ∧ psiSelf δ w = psiSelf ζ w
+
+/-- **(a) `lwit c w < c` from `CanonWitnessLt` ALONE** (GREEN) — the "below value"
+half is discharged by the PROVEN `AcanonLtValue_lt_epsLvl`. -/
+theorem a_of_CanonWitnessLt (hCW : CanonWitnessLt.{u})
+    (ζ : Ordinal.{u}) (w : ℕ) : lwit (psiSelf ζ w) w < psiSelf ζ w := by
+  obtain ⟨δ, hδlt, hδv⟩ := hCW ζ w
+  have hδc : δ < psiSelf ζ w := hδv ▸ AcanonLtValue_lt_epsLvl hδlt
+  exact lt_of_le_of_lt
+    (csInf_le' (s := {x : Ordinal | psiSelf x w = psiSelf ζ w}) hδv) hδc
 
 /-- **`PsiValueAcanon` from the two sub-residuals (a) and (c)** (with (b) derived).
 GREEN: given (a) `lwit c w < c` and (c) `lwit c w ∈ C_v(c)`, the least witness is
