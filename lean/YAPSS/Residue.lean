@@ -220,12 +220,19 @@ from (a)** (`psiSelf_le_self_of_not_canon`: a non-canonical witness would have
 generator step `CsetSelf_psi_closed` fires `psiSelf (lwit) w = c` into `C_v(c)`.
 
 **Why these are the genuine residual** (empirically verified, 0 violations on the
-ya-pss model — `/tmp/probe_lw.py`, `/tmp/probe_c.py`): (a) is "the least witness
-is below its value" (would fail only at a ψ-fixpoint `psiSelf c w = c`, which a
-ψ-value is conjectured never to be); (c) is itself a `C_v`-membership of a *simpler*
-ordinal `lwit < c` — recursive, the heart of Buchholz's simultaneous transfinite
-induction.  The `below_psiSelf` shortcut does NOT prove (c): for `v < w`,
-`psiSelf c v < c`, so `lwit < c` does not give `lwit < psiSelf c v`. -/
+ya-pss model — `/tmp/probe_lw.py`, `/tmp/probe_c.py`):
+
+* **(a)** "the least witness is below its value".  The fixpoint case
+  (`psiSelf c w = c`, then `lwit = c`) is one obstruction, but NOT the only one:
+  assuming `c ≤ lwit` and non-fixpoint, monotonicity gives `psiSelf c w < c`, and
+  the residual case `c < lwit` with `psiSelf c w < c` (the value first reached
+  strictly above `c`) is consistent with all *first-order* facts here — ruling it
+  out needs the canonical-representative structure (the least witness IS the
+  plateau bottom and is `< c`), i.e. Buchholz's simultaneous induction.  So (a) is
+  NOT merely "non-fixpoint".
+* **(c)** is a `C_v`-membership of the *simpler* ordinal `lwit < c` — recursive,
+  the same induction.  The `below_psiSelf` shortcut does NOT prove (c): for
+  `v < w`, `psiSelf c v < c`, so `lwit < c` does not give `lwit < psiSelf c v`. -/
 
 /-- The least argument realizing the value `c` at subscript `w`. -/
 noncomputable def lwit (c : Ordinal.{u}) (w : ℕ) : Ordinal.{u} :=
