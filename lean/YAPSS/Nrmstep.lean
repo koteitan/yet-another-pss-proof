@@ -1962,10 +1962,34 @@ theorem proj0_fireprop_NF {b c f g : Three}
   have hcf : maxsub f = climb f := maxsub_arg_eq_climb hu
   exact pfire0_of_lt_climb (by rw [← hcf]; omega)
 
-/-- **Both-fire comparison on `NF` arguments** (residual 2).  Audit structural
-key: for a firing `NF` arg `P 1 b' c'`, `proj 0 (P 1 b' c') = proj 0 b'`
-(1285/1285) — `proj 0` peels the outer `p₁` and recurses into the ascent source,
-so both-fire descends to a strictly smaller proj-order comparison. -/
+/-- A firing `NF` argument has the shape `P 1 b' c'` (its head subscript is `1`,
+by `fire_lead_one_NF`). -/
+theorem fire_shape_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hb : pfire 0 b) :
+    ∃ b' c', b = P 1 b' c' := by
+  have hl : lead b = 1 := fire_lead_one_NF hv hb
+  cases b with
+  | Z => simp [lead] at hl
+  | P a bb cc => simp only [lead] at hl; exact ⟨bb, cc, by rw [hl]⟩
+
+/-- **Both-fire comparison on `NF` arguments** (residual 2).
+
+Structure now pinned down (`fire_shape_NF`, peel audit):
+  • A firing `NF` arg has the shape `P 1 b' c'` (`fire_lead_one_NF`/`fire_shape_NF`).
+  • The peel `proj 0 (P 1 b' c') = proj 0 b'` holds on firing `NF` args and is
+    EXACTLY tail-independent (0/13507 cases where the tail `c'` changes the value),
+    so `proj 0` collapses the firing `p₁` head into its argument.
+  • Hence `b = P 1 b' c', f = P 1 f' g'`, `proj 0 b = proj 0 b'`,
+    `proj 0 f = proj 0 f'`, and (both firing + `olt b f`) `⟹ olt b' f'` with
+    `b' ≠ f'` (0 cases of `b' = f'`, an `NF` uniqueness fact).
+
+REMAINING obstruction (more than fireprop's single residual): the descent
+`olt b' f' ⟹ olt (proj 0 b')(proj 0 f')` is `proj 0`-monotonicity on the *inner*
+args `b', f'` (head `≥ 2`, NOT `NF` args), so it is NOT `proj0_olt_NF` but a
+general `proj 0`-order-preservation on the `NF`-substructure class — a `tsize`
+recursion combining the peel, fireprop, and bothfire on smaller terms.  Closing
+it needs (a) the peel lemma `proj 0 (P 1 b' c') = proj 0 b' (NF, firing)`,
+(b) the `b' ≠ f'` uniqueness, and (c) the general recursion.  This is the larger
+half of Wall B; fireprop (residual 1) is fully reduced to one clean residual. -/
 theorem proj0_bothfire_NF {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) : olt (proj 0 b) (proj 0 f) := by
