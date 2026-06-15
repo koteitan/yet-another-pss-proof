@@ -2748,6 +2748,37 @@ theorem Gterm_NT_lead_le {S : PairSeq} {u : ℕ} {g : Three}
   rw [← hce]
   exact le_maxr1 c hc
 
+/-! ### Forest-bridge positional lemmas (`Gterm`-subscript ↔ row-1 value)
+
+The first layer of the `Gterm`-position ↔ sequence-index correspondence: a
+subscript appearing anywhere in `translate S` — in particular the leading
+subscript of any `Gterm 0` critical — is a *row-1 value* of `S` (`subs_translate`).
+Hence every critical's lead is `≤ maxr1 S`, the row-1 maximum.  These pull the
+term-level subscript structure back to the sequence, the entry point for the
+`r1ok` climbing discipline. -/
+
+/-- **A critical of `translate S` leads with a row-1 value of `S`** (the plain
+`translate` analogue of `Gterm_NT_lead_le`).  Its leading subscript is `≤ maxr1 S`. -/
+theorem Gterm_translate_lead_le {S : PairSeq} {u : ℕ} {g : Three}
+    (hg : g ∈ Gterm u (translate S)) (hne : g ≠ Z) :
+    lead g ≤ maxr1 S := by
+  have h1 : lead g ∈ subs g := lead_mem_subs hne
+  have h2 : lead g ∈ subs (translate S) := Gterm_subs hg h1
+  have h3 : lead g ∈ sndSet S := subs_translate S h2
+  obtain ⟨c, hc, hce⟩ := mem_sndSet.1 h3
+  rw [← hce]
+  exact le_maxr1 c hc
+
+/-- **`maxsub (translate S) = maxr1 S`**: the term's maximal subscript is exactly
+the sequence's row-1 maximum.  (`maxsub_translate` gives `cmax (map snd S)`; that
+equals `maxr1 S`.) -/
+theorem maxsub_translate_eq_maxr1 (S : PairSeq) :
+    maxsub (translate S) = maxr1 S := by
+  rw [maxsub_translate]
+  induction S with
+  | nil => simp [maxr1]
+  | cons p rest ih => rw [maxr1_cons, List.map_cons, cmax_cons, ih]
+
 /-! ## The dominated-segment classes
 
 `dseg u S`: `S` is a nonempty, entirely dominated standard sub-segment whose
