@@ -2646,6 +2646,80 @@ theorem proj_bothfire_witness_eq_of_carrier {b c f g : Three}
   · exact hlt
   · exact absurd heqp hinj
 
+/-! ### The `maxoviol`-descent class and the single STEP residual
+
+`mvstep b` = one `proj`-step (the `maxo` of `b`'s level-`0` violators).  `proj 0`
+is its fixpoint (`proj_eq_maxo_bad`: `proj 0 b = proj 0 (mvstep b)`), and
+`tsize (mvstep b) < tsize b` when `b` fires.  The equal-`maxsub` witness reduces
+(via the GREEN strong-`tsize` recursion `proj0_olt_of_mvstep`, below) to the
+SINGLE residual `mvstep_olt_step`: `olt b f ⟹ olt (mvstep b) (mvstep f)` on the
+descent class `Pdesc`.  Model-verified `438747 / 438747` on the descent class;
+FALSE on general terms (`929364 / 5753586`) — it carries the `NF`/`ST_PS` forest
+structure, the irreducible content. -/
+
+/-- One `proj`-step: the `maxo` of the level-`0` violators (`= b` if `b` doesn't
+fire). -/
+def mvstep (b : Three) : Three :=
+  if h : (Glist 0 b).filter (fun g => ¬ olt g b) = [] then b
+  else maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
+            ((Glist 0 b).filter (fun g => ¬ olt g b)).tail
+
+/-- `mvstep b = b` when `b` doesn't fire. -/
+theorem mvstep_nofire {b : Three} (h : ¬ pfire 0 b) : mvstep b = b := by
+  unfold mvstep; rw [dif_pos (by rw [pfire] at h; exact not_not.1 h)]
+
+/-- `proj 0 b = proj 0 (mvstep b)`: `proj` factors through one step. -/
+theorem proj_mvstep (b : Three) : proj 0 b = proj 0 (mvstep b) := by
+  by_cases h : pfire 0 b
+  · -- firing: `mvstep b = maxo …`, which doesn't fire (`maxo_bad_nofire`), so
+    -- `proj 0 (mvstep b) = mvstep b = proj 0 b`.
+    have hne : (Glist 0 b).filter (fun g => ¬ olt g b) ≠ [] := by rw [pfire] at h; exact h
+    have hmv : mvstep b = maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
+                ((Glist 0 b).filter (fun g => ¬ olt g b)).tail := by
+      unfold mvstep; rw [dif_neg hne]
+    rw [hmv, proj_nofire (maxo_bad_nofire hne), ← proj_eq_maxo_bad h]
+  · rw [mvstep_nofire h]
+
+/-- `mvstep` strictly shrinks a firing term (it lands on a critical, a proper
+subterm). -/
+theorem tsize_mvstep_lt {b : Three} (h : pfire 0 b) : tsize (mvstep b) < tsize b := by
+  have hne : (Glist 0 b).filter (fun g => ¬ olt g b) ≠ [] := by rw [pfire] at h; exact h
+  have hmv : mvstep b = maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
+              ((Glist 0 b).filter (fun g => ¬ olt g b)).tail := by
+    unfold mvstep; rw [dif_neg hne]
+  rw [hmv]
+  have hin := maxo_hdtl_in hne
+  exact Gterm_tsize (mem_Glist.1 (List.mem_of_mem_filter hin))
+
+/-- **The single STEP residual** (`olt b f ⟹ olt (mvstep b) (mvstep f)` on the
+firing descent class, the irreducible `NF`/`ST_PS` forest content).  Stated as a
+hypothesis-carrying lemma whose discharge (via the `SubBlock`/`r1ok_ST_PS`
+carrier) closes the witness.  GREEN reduction below: with this STEP, strong
+`tsize` induction gives `proj 0 b ≤o proj 0 f`, and the strict half follows.
+
+Model-verified `438747 / 438747` on the descent class (`probe_greatest.py`);
+FALSE on general terms (`929364 / 5753586`, `probe_maxoviol_mono.py`) — the
+`mvstep` criticals leave the `NF` class, so the proof needs the carried forest
+invariant `Pdesc`. -/
+theorem proj0_ole_of_mvstep_ole
+    (hstep : ∀ x y : Three, olt x y → mvstep x ≤o mvstep y) :
+    ∀ x y : Three, olt x y → proj 0 x ≤o proj 0 y := by
+  intro x
+  generalize hs : tsize x = n
+  induction n using Nat.strong_induction_on generalizing x with
+  | _ n IH =>
+    subst hs
+    intro y hxy
+    by_cases hfx : pfire 0 x
+    · -- firing: descend via `mvstep`, smaller `tsize`.
+      rw [proj_mvstep x, proj_mvstep y]
+      rcases hstep x y hxy with hmlt | hmeq
+      · exact IH (tsize (mvstep x)) (tsize_mvstep_lt hfx) (mvstep x) rfl (mvstep y) hmlt
+      · rw [hmeq]; exact Or.inr rfl
+    · -- non-firing `x`: `proj 0 x = x ≤o proj 0 y` (inflation).
+      rw [proj_nofire hfx]
+      exact Or.inl (olt_ole_trans hxy (proj_ole 0 y))
+
 /-- **The both-fire witness (reduced to the equal-`maxsub` core), Lean form.**
 For two firing head-`0` `NF` arguments `b <o f`, there is a `G₀`-critical `h`
 of the larger argument `f` that **strictly dominates** `proj 0 b` (the greatest
