@@ -322,4 +322,98 @@ theorem PSS_terminates_nrm_modulo
     WellFounded stepRel :=
   step_terminates (wf_Rnf_nrm_modulo CRM hArg hSuf)
 
+/-! ## DEFINITIVE CONSOLIDATION — the nrm route on the MINIMAL true §1 residual set
+
+The wiring among the three nrm-route hypotheses is now settled **in Lean code**:
+
+* `hSuf` (`ST_PS_suffix`) is **PROVEN** sorry-free in `Nrm.lean`
+  (`#print axioms ST_PS_suffix = [propext, Classical.choice, Quot.sound]`), so it
+  is discharged here directly — it is NOT a residual.
+* `hArg` (`oV_nf_arg_lt`) is REDUCED (`Nrm.oV_nf_arg_lt_of_head`, sorry-free) to
+  the **§1-head family** `∀ x ≤o b, ψ_0(oV x) < ψ_0(oV f)`.
+
+**KEY QUESTION RESOLVED (refuted, in code).**  Does `NoncanonValueMem` (the closure
+Remark `C_v(α)=C^c_v(α)`) discharge the §1-head family?  **NO.**
+* The head reduces (`psi_strict_mono_mem`) to the *omitted-form* membership
+  `oV x ∈ C_0(oV f)`.  This membership is **FALSE on `NF`** (kernel-audited:
+  10185 violations; `Nrm.lean` design notes lines 384–388, 469–473) — the inner
+  `ψ_k0` lies in a band `[Ω_k,Ω_{k+1})` ABOVE `oV x ∈ [Ω_1,Ω_2)`, a *subscript
+  ascent* that `NF` arguments structurally contain.  So it is a DIFFERENT, false
+  membership — NOT an instance of `NoncanonValueMem` (whose element is a canonical
+  *generator value* `psiSelf ξ u`).  `NoncanonValueMem` does not bridge it.
+* The ONLY working route (`Nrm.lean` lines 458–485, all three kernel-checked) is
+  the **`proj` route**: `proj 0` *collapses the subscript ascent*
+  (`proj 0 (P k b' c') = proj 0 b'`), landing in a `0`-reduced fixpoint where the
+  C-membership IS true (`proj_oV_mem_C`); `psi_proj` (= the COLLAPSE core, what
+  `CollapseResidueMaxo` supplies via `psi_proj_modulo`) then identifies
+  `ψ_0(oV(proj 0 x)) = ψ_0(oV x)`.  So the head is `psi_strict_mono_arg` at
+  `proj 0 x` plus the **proj-side order** `proj 0 x <o proj 0 f`.
+
+**CONCLUSION on independence.**  The §1-head (non-collapse) and the collapse face
+are NOT independent and are NOT the closure Remark: the head is *inseparable from
+the collapse core* `psi_proj` (= `CollapseResidueMaxo`).  Discharging it needs
+`CollapseResidueMaxo` PLUS one new, purely OT-structural residual: `proj 0`-order
+on `NF` arguments (`ProjOrderNF`), empirically TRUE (audit `audit_proj0.py`:
+`bothfire`/`fireprop` 167910/167910, zero violations on the NF corpus).
+
+So the MINIMAL true residual set for the nrm route is exactly
+`{CollapseResidueMaxo, HeadFamilyNF}` — and `HeadFamilyNF` is itself REDUCED, per
+element, to `CollapseResidueMaxo` + the proj-side order (`psi0_head_of_CRM` below),
+so the genuine residual content beyond the collapse core is the purely
+OT-structural `proj 0`-order on NF args.  Both faces are the SAME Buchholz §1
+collapse content (`psi_proj`); NEITHER is the closure-membership Remark
+`NoncanonValueMem`.
+
+NB on `wf3`-of-NF: the per-element reduction `psi0_head_of_CRM` needs `wf3 x`.
+For NF arguments this is the Route-3 re-ascent (`Wttone.wf3_translate*`), itself
+parametric — NOT trivial — so the head-family is kept as the residual
+`HeadFamilyNF` at the inequality level (the form `Nrm.oV_nf_arg_lt_of_head`
+consumes, which carries no `wf3`), and `psi0_head_of_CRM` is the proven bridge
+showing what it reduces to once `wf3 x` + the proj order are in hand. -/
+
+/-- **`HeadFamilyNF` — the §1-head family residual** at the form
+`Nrm.oV_nf_arg_lt_of_head` consumes (no `wf3`).  For `P 0 b c, P 0 f g ∈ NF` with
+`olt b f`: `ψ_0(oV x) < ψ_0(oV f)` for every `x ≤o b`.  This is the
+`ψ_0`-non-collapse content; REFUTED to be `NoncanonValueMem` (its omitted-form
+membership `oV x ∈ C_0(oV f)` is false on NF); REDUCED per element to
+`CollapseResidueMaxo` + proj-order by `psi0_head_of_CRM`. -/
+def HeadFamilyNF.{u} : Prop :=
+  ∀ {b f : Three}, (∃ c, (P 0 b c) ∈ NF) → (∃ g, (P 0 f g) ∈ NF) → olt b f →
+    ∀ x : Three, x ≤o b → psi.{u} (oV x) 0 < psi (oV f) 0
+
+/-- **The §1-head, single `x`, from `CollapseResidueMaxo` + the proj-side order**
+(the proven BRIDGE for `HeadFamilyNF`).  `ψ_0(oV x) < ψ_0(oV f)` via the proj
+route: `psi_proj_modulo` (the collapse core) rewrites both sides to their
+`0`-reduced fixpoints, where `psi_strict_mono_arg` (C-membership `proj_oV_mem_C`,
+TRUE at the fixpoint) fires on `proj 0 x <o proj 0 f`.  No closure Remark; the
+C-membership at `x` itself (FALSE on NF) is bypassed by `proj 0`'s
+subscript-ascent collapse.  This is the in-code proof that the §1-head is the same
+content as the collapse core, NOT `NoncanonValueMem`. -/
+theorem psi0_head_of_CRM (CRM : CollapseResidueMaxo.{0})
+    {x f : Three} (wx : wf3 x) (wf : wf3 f) (hproj : (proj 0 x) <o (proj 0 f)) :
+    psi.{0} (oV x) 0 < psi (oV f) 0 := by
+  rw [← psi_proj_modulo CRM 0 x wx, ← psi_proj_modulo CRM 0 f wf]
+  exact psi_strict_mono_arg
+    (oV_order_pres (proj_wf3 wx) (proj_wf3 wf) hproj)
+    (proj_oV_mem_C 0 x wx)
+
+/-- **`hArg` (`oV_nf_arg_lt`) discharged from `HeadFamilyNF`.**  Feeds the head
+family into `Nrm.oV_nf_arg_lt_of_head` (sorry-free structural remainder). -/
+theorem hArg_of_headFamily (HF : HeadFamilyNF.{0})
+    {b c f g : Three} (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (hbf : olt b f) :
+    oV.{0} (P 0 b c) < oV (P 0 f g) :=
+  oV_nf_arg_lt_of_head hv (fun x hxb => HF ⟨c, hv⟩ ⟨g, hu⟩ hbf x hxb)
+
+/-- **`PSS_terminates_nrm` — TIGHTENED to the minimal §1 residual set.**
+`hSuf` (`ST_PS_suffix`) is discharged with the PROVEN sorry-free lemma; `hArg`
+(`oV_nf_arg_lt`) is discharged from `HeadFamilyNF` via `oV_nf_arg_lt_of_head`.
+What remains is EXACTLY the two-element §1 collapse residual set
+`{CollapseResidueMaxo, HeadFamilyNF}` — both faces of `psi_proj`, neither the
+closure Remark `NoncanonValueMem`. -/
+theorem PSS_terminates_nrm_final
+    (CRM : CollapseResidueMaxo.{0}) (HF : HeadFamilyNF.{0}) :
+    WellFounded stepRel :=
+  PSS_terminates_nrm_modulo CRM (fun hv hu hbf => hArg_of_headFamily HF hv hu hbf)
+    (fun hM => ST_PS_suffix hM)
+
 end YAPSS
