@@ -141,14 +141,20 @@ theorem psiSelf_low_sub_in_Om {ζ : Ordinal.{u}} {w v : ℕ} (hwv : w < v) :
   lt_of_lt_of_le (psiSelf_lt_Om_succ ζ w) (Om_mono hwv)
 
 /-- **The sharpened residual (the psiSelf-route Buchholz §1 core).**  *Every
-ψ-value is canonical at every lower-or-equal subscript.*  Lean analogue of ya-pss's
-`psi_value_acanon` (necessity.thy).  α-free; strictly sharper than the previous
-`CanonWitnessResidue` (no witness construction; `alpha_step_residue` is now
-vacuous given it).  Empirically TRUE (0 violations).  The earlier candidate
-`acanon u δ → δ < psiSelf δ u` is FALSE (e.g. `δ = ω`, `u = 0`); `PsiValueAcanon`
-is the true replacement. -/
+ψ-value with a `w`-CANONICAL argument is canonical at every lower-or-equal
+subscript.*  Lean analogue of ya-pss's `psi_value_acanon` (necessity.thy).
+
+**⚠ SOUNDNESS FIX (this session).**  The previous form quantified over ALL `ζ`;
+that is **FALSE** at ε-fixpoints: for `ζ = ε(w)` (an ε-number `≥ Ω_w`),
+`psiSelf ε(w) w = ε(w)` (the value is the least non-member of its own closure),
+so `ε(w) ∉ CsetSelf (psiResSelf ε(w)) ε(w) w` — the conclusion fails.  But such
+`ζ` is **non-canonical**, and in the closure-rank induction the generator only
+fires for `w`-canonical `ζ` (the `CstepSelf` canonicity side-condition).  So we
+restrict the residual to canonical `ζ` (`hζc`), which excludes the false ε-fixpoint
+cases and is what the vacuity proof actually needs.  (NB: my indexing `Ω_v = ω_v`,
+`Ω_0 = 1`; ya-pss's `Ω_1 = ω` counterexample lives in a different indexing.) -/
 def PsiValueAcanon.{u} : Prop :=
-  ∀ (ζ : Ordinal.{u}) (w v : ℕ), v ≤ w →
+  ∀ (ζ : Ordinal.{u}) (w v : ℕ), v ≤ w → ζ ∈ CsetSelf (psiResSelf ζ) ζ w →
     psiSelf ζ w ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) v
 
 /-- **Closure-rank induction: every member `ξ < α` of `CsetSelf_α` is canonical
@@ -157,8 +163,9 @@ By induction on the `CstepSelf'`-rank `N`:
 * base (`ξ ∈ Ω_v`): `Iio_Om_subset_CsetSelf`;
 * sum `ξ = a + b`: `a, b ≤ ξ < α` so canonical by inner IH, lifted to bound `ξ`
   by `CCSelf_mono` and recombined by `CsetSelf_add_closed`;
-* generator `ξ = psiSelf ζ w` (`ζ < α`): if `w < v` it lands in `Ω_v`, else
-  `v ≤ w` and `PsiValueAcanon` applies.
+* generator `ξ = psiSelf ζ w` (`ζ < α`, `ζ` `w`-canonical): if `w < v` it lands in
+  `Ω_v`, else `v ≤ w` and `PsiValueAcanon` applies (the generator's built-in
+  canonicity supplies `hζc`).
 The α-IH is not even needed in this vacuity form. -/
 theorem CiterSelf_mem_lt_acanon (PVA : PsiValueAcanon.{u})
     (α : Ordinal.{u}) (v : ℕ) :
@@ -194,7 +201,12 @@ theorem CiterSelf_mem_lt_acanon (PVA : PsiValueAcanon.{u})
       subst hζx
       rcases lt_or_ge w v with hwv | hvw
       · exact Iio_Om_subset_CsetSelf (psiSelf_low_sub_in_Om hwv)
-      · exact PVA ζ w v hvw
+      · -- the generator's built-in canonicity `hζc` gives `ζ` `w`-canonical
+        have hζcanon : ζ ∈ CsetSelf (psiResSelf ζ) ζ w := by
+          rwa [CsetSelf_param_eq (p := psiResSelf α) (q := psiResSelf ζ)
+                (fun η uu hη => by
+                  rw [psiResSelf, psiResSelf, if_pos hη, if_pos (lt_trans hη hζα)])] at hζc
+        exact PVA ζ w v hvw hζcanon
 
 /-- **Every member `ξ < α` of the full closure `CsetSelf_α` is canonical at `v`**
 (lift of `CiterSelf_mem_lt_acanon` to the full union).  Modulo `PsiValueAcanon`. -/
@@ -527,6 +539,57 @@ theorem AcanonLtValue_lt_epsLvl {δ : Ordinal.{u}} {w : ℕ}
       rwa [this] at hδ
     exact AcanonLtValue_lt_eps (Nat.succ_pos k) hδe
 
+/-! ### `PsiValueAcanon` via the canonical argument ITSELF (the clean route)
+
+With the soundness-fixed `PsiValueAcanon` (canonical `ζ` only), the witness for the
+value `c = psiSelf ζ w` is **`ζ` itself** — it is `w`-canonical by hypothesis and
+`< c` by `AcanonLtValue`.  This bypasses the `lwit`/`CanonWitness*` machinery (which
+broke at ε-fixpoints).  Two clean results:
+
+* **diagonal `v = w`**: FULLY reduced to `AcanonLtValue` (`psiValueAcanon_diag_of_
+  AcanonLtValue`), and since `AcanonLtValue` is PROVEN below `ε(w)`
+  (`AcanonLtValue_lt_epsLvl`), the diagonal is PROVEN for sub-`ε` canonical `ζ`;
+* general `v ≤ w`: reduced to `AcanonLtValue` + the residual membership
+  `ζ ∈ C_v(c)` (only the `v < w` part remains — same shape as old (c) but on the
+  canonical `ζ` directly). -/
+
+/-- **Diagonal `v = w` of `PsiValueAcanon` from `AcanonLtValue`** (GREEN).  For
+`w`-canonical `ζ`, `psiSelf ζ w ∈ C_w(psiSelf ζ w)`: the witness is `ζ` (canonical,
+`< c` by `AcanonLtValue`, and `< psiSelf c w` since `c ≤ psiSelf c w` by mono);
+`CsetSelf_psi_closed` fires it. -/
+theorem psiValueAcanon_diag_of_AcanonLtValue (hALV : AcanonLtValue.{u})
+    {ζ : Ordinal.{u}} {w : ℕ} (hζc : ζ ∈ CsetSelf (psiResSelf ζ) ζ w) :
+    psiSelf ζ w ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) w := by
+  set c := psiSelf ζ w with hcdef
+  have hζlt : ζ < c := hALV hζc
+  have hcc : c ≤ psiSelf c w := by
+    have := psiSelf_mono_arg hζlt.le w; rwa [hcdef] at this
+  have hζmem : ζ ∈ CsetSelf (psiResSelf c) c w :=
+    below_psiSelf_mem_CsetSelf (lt_of_lt_of_le hζlt hcc)
+  have hζcanon : ζ ∈ CsetSelf (psiResSelf c) ζ w := by
+    rwa [CsetSelf_param_eq (p := psiResSelf ζ) (q := psiResSelf c)
+          (fun η uu hη => by rw [psiResSelf, psiResSelf, if_pos hη, if_pos (lt_trans hη hζlt)])] at hζc
+  have hfire := CsetSelf_psi_closed hζmem hζlt w hζcanon
+  rwa [psiResSelf, if_pos hζlt, ← hcdef] at hfire
+
+/-- **`PsiValueAcanon` from `AcanonLtValue` + the `v < w` membership residual**
+(GREEN).  The witness is the canonical `ζ` itself; `AcanonLtValue` gives `ζ < c`,
+and the firing needs `ζ ∈ C_v(c)`.  For `v = w` this is free (`below_psiSelf`); the
+hypothesis `hmem` supplies the residual `v < w` case. -/
+theorem psiValueAcanon_of_AcanonLtValue (hALV : AcanonLtValue.{u})
+    (hmem : ∀ (ζ : Ordinal.{u}) (w v : ℕ), v ≤ w → ζ ∈ CsetSelf (psiResSelf ζ) ζ w →
+       ζ < psiSelf ζ w → ζ ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) v) :
+    PsiValueAcanon.{u} := by
+  intro ζ w v hvw hζc
+  set c := psiSelf ζ w with hcdef
+  have hζlt : ζ < c := hALV hζc
+  have hζmem : ζ ∈ CsetSelf (psiResSelf c) c v := hmem ζ w v hvw hζc hζlt
+  have hζcanon : ζ ∈ CsetSelf (psiResSelf c) ζ w := by
+    rwa [CsetSelf_param_eq (p := psiResSelf ζ) (q := psiResSelf c)
+          (fun η uu hη => by rw [psiResSelf, psiResSelf, if_pos hη, if_pos (lt_trans hη hζlt)])] at hζc
+  have hfire := CsetSelf_psi_closed hζmem hζlt w hζcanon
+  rwa [psiResSelf, if_pos hζlt, ← hcdef] at hfire
+
 /-! ### NON-COLLAPSE lever from the explicit formula (termination-critical)
 
 The explicit value formula makes `ψ_a` **strictly monotone (injective) on the
@@ -550,6 +613,26 @@ theorem psi_noncollapse_lt_epsLvl {α β : Ordinal.{u}} {a : ℕ}
     (hαe : α < epsLvl a) (hαβ : α ≤ β) (hne : α ≠ β) : psi α a < psi β a :=
   psi_strict_mono_lt_epsLvl hαe (lt_of_le_of_ne hαβ hne)
 
+/-- **`Nrm.oV_nf_arg_lt` discharged via the lever** (the §1 head content closed).
+The argument-branch value strict-mono `oV (P 0 b c) < oV (P 0 f g)` follows from:
+* `hbf` — the `<o`-to-`oV` order bridge `oV b < oV f` (NF-recursive order; the
+  same recursion `oV_nf_order_pres` already runs);
+* `hbe` — `oV b < ε(0)` (sub-`ε`: the head's genuine §1 hypothesis, now sufficient
+  thanks to the lever — it REPLACES the false-on-`NF` `oV b ∈ C_0(oV b)`);
+* `hspine` — tail domination `allprinc_lt (ψ_0(oV f)) c` (NF tail structure).
+
+The §1 head `ψ_0(oV b) < ψ_0(oV f)` is PROVEN here by `psi_strict_mono_lt_epsLvl`
+(no membership residual).  The remaining hypotheses are NF-structural (Wall B),
+not §1.  This is the formula's payoff on the non-collapse leaf. -/
+theorem oV_nf_arg_lt_of_lever {b c f g : Three}
+    (hbf : oV.{u} b < oV f) (hbe : oV.{u} b < epsLvl 0)
+    (hspine : allprinc_lt (psi.{u} (oV f) 0) c) :
+    oV.{u} (P 0 b c) < oV (P 0 f g) := by
+  have lead : psi.{u} (oV b) 0 < psi (oV f) 0 := psi_strict_mono_lt_epsLvl hbe hbf
+  have hap : allprinc_lt (psi.{u} (oV f) 0) (P 0 b c) := ⟨lead, hspine⟩
+  calc oV.{u} (P 0 b c) < psi (oV f) 0 := oV_lt_of_allprinc (psi_addprinc _ _) hap
+    _ ≤ oV (P 0 f g) := psi_le_oV 0 f g
+
 /-- **(a) `lwit c w < c` from `AcanonLtValue` + `CanonWitness`** (GREEN).  The
 canonical witness `δ` is `< c` by `AcanonLtValue`, and `lwit ≤ δ` by minimality. -/
 theorem a_of_AcanonLtValue (hALV : AcanonLtValue.{u}) (hCW : CanonWitness.{u})
@@ -559,13 +642,24 @@ theorem a_of_AcanonLtValue (hALV : AcanonLtValue.{u}) (hCW : CanonWitness.{u})
   exact lt_of_le_of_lt
     (csInf_le' (s := {x : Ordinal | psiSelf x w = psiSelf ζ w}) hδv) hδlt
 
-/-- **The SHARPENED single residual for (a): `CanonWitnessLt`.**  Every ψ-value
-`psiSelf ζ w` has a witness `δ < epsLvl w` (`psiSelf δ w = psiSelf ζ w`).  Because
-the "below value" half is now PROVEN (`AcanonLtValue_lt_epsLvl`), (a) follows from
-this single existence statement — strictly sharper than `AcanonLtValue ∧
-CanonWitness`.  Conjecturally TRUE: the `psiSelf·w` collapse means every value is
-already attained by an argument `< ε(w)` (args `≥ ε(w)` add nothing new).  This is
-the lone clean residual gating sub-residual (a). -/
+/-- **The residual for (a): `CanonWitnessLt`.**  Every ψ-value `psiSelf ζ w` has a
+witness `δ < epsLvl w` (`psiSelf δ w = psiSelf ζ w`).  Because the "below value"
+half is PROVEN (`AcanonLtValue_lt_epsLvl`), (a) follows from this existence
+statement (`a_of_CanonWitnessLt`).
+
+**⚠ CORRECTION / SOUNDNESS NOTE (this session).**  `CanonWitnessLt` is **FALSE at
+ε-fixpoint values** and is therefore NOT a sound final residual for the *general*
+(a).  Reason: by the explicit formula, witnesses `δ < ε(w)` give values
+`psiSelf δ w = ω^(Ω_w+δ) < ε(w)`; so for `c = psiSelf ζ w` with `c ≥ ε(w)` (which
+happens exactly when `ζ ≥ ε(w)`, e.g. the fixpoint `psiSelf ε(w) w = ε(w)`) there
+is NO witness below `ε(w)`.  At such fixpoint values `lwit c w = c`, so even (a)
+`lwit < c` itself FAILS.  Consequently the `lwit`-decomposition of `PsiValueAcanon`
+is sound ONLY at non-fixpoint values; the ε-fixpoint values must be handled
+directly (they are ε-numbers, additively principal limits, canonical via the limit
+structure of `CsetSelf`).  This corrects the earlier "conjecturally TRUE" claim.
+(NB: my indexing has `Ω_v = ω_v`, `Ω_0 = 1`, so the boundary is `ε(w)`, and
+ya-pss's `Ω_1 = ω` counterexample to `acanon ⟹ δ<ψ` does NOT transfer — my
+`AcanonLtValue_lt_epsLvl` is correct in this indexing.) -/
 def CanonWitnessLt.{u} : Prop :=
   ∀ (ζ : Ordinal.{u}) (w : ℕ), ∃ δ, δ < epsLvl w ∧ psiSelf δ w = psiSelf ζ w
 
@@ -578,11 +672,16 @@ theorem a_of_CanonWitnessLt (hCW : CanonWitnessLt.{u})
   exact lt_of_le_of_lt
     (csInf_le' (s := {x : Ordinal | psiSelf x w = psiSelf ζ w}) hδv) hδc
 
-/-- **The MAXIMALLY sharp residual for (a): collapse-region surjectivity.**
-`CanonWitnessLtBig`: for `ζ ≥ epsLvl w`, the value `psiSelf ζ w` is *already*
-attained by some `δ < epsLvl w`.  (For `ζ < epsLvl w` the witness `δ = ζ` is
-trivial.)  This is exactly Buchholz's collapse: arguments at or beyond `ε(w)` add
-no new ψ-value.  `CanonWitnessLt` (hence (a)) follows — `CanonWitnessLt_of_big`. -/
+/-- **The collapse-region residual `CanonWitnessLtBig`** — `ζ ≥ epsLvl w` ⟹ the
+value `psiSelf ζ w` is attained by some `δ < epsLvl w`.
+
+**⚠ FALSE (this session's finding).**  This is NOT true: for `ζ ≥ ε(w)`,
+`psiSelf ζ w ≥ psiSelf ε(w) w = ε(w)` (the fixpoint), while every `δ < ε(w)` gives
+`psiSelf δ w < ε(w)`.  So no sub-`ε(w)` witness exists for these values — the
+"args beyond `ε(w)` add no new ψ-value" intuition is WRONG at the ε-boundary (they
+add exactly the fixpoint and above).  Kept as a documented dead-end; the genuine
+collapse-region content is that those values are themselves ε-numbers handled
+directly, NOT re-attained below `ε(w)`. -/
 def CanonWitnessLtBig.{u} : Prop :=
   ∀ (ζ : Ordinal.{u}) (w : ℕ), epsLvl w ≤ ζ →
     ∃ δ, δ < epsLvl w ∧ psiSelf δ w = psiSelf ζ w
@@ -604,7 +703,7 @@ theorem psiValueAcanon_of_ac
     (hc : ∀ (ζ : Ordinal.{u}) (w v : ℕ), v ≤ w →
        lwit (psiSelf ζ w) w ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) v) :
     PsiValueAcanon.{u} := by
-  intro ζ w v hvw
+  intro ζ w v hvw _hζc
   set c := psiSelf ζ w with hcdef
   set ξ0 := lwit c w with hξ0
   have hval : psiSelf ξ0 w = c := lwit_val ζ w
