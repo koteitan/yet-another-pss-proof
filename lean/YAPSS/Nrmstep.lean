@@ -2615,7 +2615,17 @@ counterexamples this session):
 The criticals/bottoms of the proj-descent leave the `NF`/`ST_PS` class, and
 re-establishing the forest anchoring on them (via `SubBlock` + `r1ok_ST_PS` +
 `stps_head` + `ST_PS_suffix` + the `oper`/`translate` parent-forest) is the
-substantial remaining construction. -/
+substantial remaining construction.
+
+**NOW FULLY ASSEMBLED** as `proj_bothfire_witness_eq_final` (below, GREEN modulo
+the two precise forest residuals `Rdesc_firing_char` + `Rdesc_hstep`): the entire
+`mvstep`-descent recursion (`mvstep`, `proj_mvstep`, `tsize_mvstep_lt`,
+`proj0_olt_of_mvstep_olt`, `Rdesc`, `Rdesc_match`, `Rdesc_hfire`,
+`proj_bothfire_witness_eq_of_Rdesc`) is sorry-free, so this lemma's content is
+EXACTLY `Rdesc_firing_char` (`pfire 0 t ↔ lead t < maxsub t` on descent nodes) +
+`Rdesc_hstep` (strict `mvstep`-monotonicity).  (This `sorry` is the same
+statement as `_final`; the two coexist only because of declaration ordering —
+`_final` and the `mvstep` machinery are stated downstream.) -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
@@ -3067,6 +3077,44 @@ theorem Rdesc_hfire
   have hcx := hchar x (Or.inl ⟨y, hR⟩)
   have hcy := hchar y (Or.inr ⟨x, hR⟩)
   rw [hcx, hcy, hl, hms]
+
+/-! ### The two precise forest residuals (the carrier keystone)
+
+The §1 firing wall is now EXACTLY these two facts on the `mvstep`-descent class
+`Rdesc`/`RdescNode` (all reductions above are GREEN).  Both are the genuine
+`r1ok_ST_PS`/`stps_head` root-anchored forest content — model-verified on the
+descent class, FALSE off-class (the cter `p₁(p₀(p₁(p₁0)))` satisfies neither's
+hypotheses since it is NOT a greatest-violator (`mvstep`)-image of any `NF`
+subterm, `probe_cter_diff.py`).  Discharging both closes the §1 wall. -/
+
+/-- **Forest residual 1 (firing characterization).**  On the descent class, `pfire`
+is exactly `lead < maxsub` (model-verified `2568 / 0`).  The hard `⟹` direction
+(`pfire ⟹ lead < maxsub`) is the root-anchored-`r1ok` content: a descent node is a
+greatest-violator (`mvstep`)-image, so a firing one has `lead < maxsub` (it is a
+non-final descent node); FALSE off-class (cter `lead = maxsub = 1` fires). -/
+theorem Rdesc_firing_char (t : Three) (h : RdescNode t) :
+    pfire 0 t ↔ lead t < maxsub t := by
+  sorry
+
+/-- **Forest residual 2 (strict STEP).**  On the descent class, `mvstep` (the
+greatest-violator step) is strictly `olt`-monotone (model-verified `438747 / 0`;
+FALSE on general terms `929364 / 5753586`).  The root-anchored `r1ok` climbing
+forces the maxo-violators to resolve strictly along the shared spine. -/
+theorem Rdesc_hstep (x y : Three) (hR : Rdesc x y) (hxy : olt x y) :
+    olt (mvstep x) (mvstep y) := by
+  sorry
+
+/-- **The §1 equal-`maxsub` witness, fully assembled from the two forest
+residuals.**  `Rdesc_hfire` (from `Rdesc_firing_char`) supplies `hfire`;
+`Rdesc_hstep` supplies `hstep`; `proj_bothfire_witness_eq_of_Rdesc` closes.  This
+is the GREEN endpoint: closing `Rdesc_firing_char` + `Rdesc_hstep` closes the
+witness (and, by the same descent machinery, `not_pfire0_lead1max1_NF`). -/
+theorem proj_bothfire_witness_eq_final {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
+    ∃ h ∈ Gterm 0 f, olt (proj 0 b) h :=
+  proj_bothfire_witness_eq_of_Rdesc (Rdesc_hfire Rdesc_firing_char) Rdesc_hstep
+    hv hu harg hb hf heq
 
 theorem proj_subs (u : ℕ) (b : Three) : subs (proj u b) ⊆ subs b := by
   by_cases h : (Glist u b).filter (fun g => ¬ olt g b) = []
