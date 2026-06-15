@@ -196,11 +196,16 @@ Residuals taken as hypotheses:
 * `CollapseResidue` (Wall A collapse face) ⟹ `psi_proj_notmem` ⟹ `psi_proj`;
 * `hArg : oV_nf_arg_lt` and `hSuf : ST_PS_suffix` (Wall B). -/
 
-/-- `psi_proj` re-derived from `CollapseResidue` (= `Residue` glue + `Nrm`'s
-`psi_proj_of_notmem`). -/
-theorem psi_proj_modulo (CR : CollapseResidue.{0}) (a : ℕ) (b : Three) (wb : wf3 b) :
+/-- `psi_proj` re-derived from the TRUE maxo-restricted residual
+`CollapseResidueMaxo` (= `Residue.psi_proj_of_collapseResidueMaxo`).
+
+**Corrected:** the previous version used the general `CollapseResidue`, which is
+FALSE for non-maxo OT3-violators (`Residue` maxo-correction note).  `psi_proj` only
+needs the residual at the `maxo` violator, so `CollapseResidueMaxo` is the genuine
+(TRUE) hypothesis. -/
+theorem psi_proj_modulo (CRM : CollapseResidueMaxo.{0}) (a : ℕ) (b : Three) (wb : wf3 b) :
     psi.{0} (oV (proj a b)) a = psi (oV b) a :=
-  psi_proj_of_collapseResidue CR a b wb
+  psi_proj_of_collapseResidueMaxo CRM a b wb
 
 /-- `NF_tail` re-derived from `ST_PS_suffix` (the upstream `NF_tail` rests on the
 `sorry` `ST_PS_suffix`; here it is an explicit hypothesis `hSuf`). -/
@@ -277,7 +282,7 @@ theorem oV_nf_order_pres_modulo
 /-- `nrm_order_pres` re-derived parametrically on `CollapseResidue` + the two
 Wall-B `NF` residuals. -/
 theorem nrm_order_pres_modulo
-    (CR : CollapseResidue.{0})
+    (CRM : CollapseResidueMaxo.{0})
     (hArg : ∀ {b c f g : Three}, (P 0 b c) ∈ NF → (P 0 f g) ∈ NF → olt b f →
       oV.{0} (P 0 b c) < oV (P 0 f g))
     (hSuf : ∀ {p : ℕ × ℕ} {rest : PairSeq}, ST_PS (p :: rest) →
@@ -286,13 +291,13 @@ theorem nrm_order_pres_modulo
     {v u : Three} (hv : v ∈ NF) (hu : u ∈ NF) (h : olt v u) :
     olt (nrm v) (nrm u) := by
   apply oV_order_refl.{0} (wf3_nrm v) (wf3_nrm u)
-  rw [oV_nrm_of_psi_proj.{0} (psi_proj_modulo CR) v,
-      oV_nrm_of_psi_proj.{0} (psi_proj_modulo CR) u]
+  rw [oV_nrm_of_psi_proj.{0} (psi_proj_modulo CRM) v,
+      oV_nrm_of_psi_proj.{0} (psi_proj_modulo CRM) u]
   exact oV_nf_order_pres_modulo hArg hSuf hv hu h
 
 /-- `wf_Rnf` (nrm route) re-derived parametrically. -/
 theorem wf_Rnf_nrm_modulo
-    (CR : CollapseResidue.{0})
+    (CRM : CollapseResidueMaxo.{0})
     (hArg : ∀ {b c f g : Three}, (P 0 b c) ∈ NF → (P 0 f g) ∈ NF → olt b f →
       oV.{0} (P 0 b c) < oV (P 0 f g))
     (hSuf : ∀ {p : ℕ × ℕ} {rest : PairSeq}, ST_PS (p :: rest) →
@@ -301,19 +306,20 @@ theorem wf_Rnf_nrm_modulo
     WellFounded Rnf := by
   refine Subrelation.wf ?_ (InvImage.wf nrm wf_olt_wf3)
   rintro v u ⟨hlt, hu, hv⟩
-  exact ⟨nrm_order_pres_modulo CR hArg hSuf hv hu hlt, wf3_nrm v, wf3_nrm u⟩
+  exact ⟨nrm_order_pres_modulo CRM hArg hSuf hv hu hlt, wf3_nrm v, wf3_nrm u⟩
 
 /-- **Route 2 — PSS termination modulo the nrm-route residuals.**  Reduced to
-EXACTLY: the Wall A collapse face `CollapseResidue`, and the two Wall B `NF`
+EXACTLY: the Wall A collapse face `CollapseResidueMaxo` (the TRUE maxo-restricted
+residue), and the two Wall B `NF`
 residuals `hArg` (= `oV_nf_arg_lt`) and `hSuf` (= `ST_PS_suffix`).  `sorryAx`-free. -/
 theorem PSS_terminates_nrm_modulo
-    (CR : CollapseResidue.{0})
+    (CRM : CollapseResidueMaxo.{0})
     (hArg : ∀ {b c f g : Three}, (P 0 b c) ∈ NF → (P 0 f g) ∈ NF → olt b f →
       oV.{0} (P 0 b c) < oV (P 0 f g))
     (hSuf : ∀ {p : ℕ × ℕ} {rest : PairSeq}, ST_PS (p :: rest) →
       rest.dropWhile (fun q => p.1 < q.1) = [] ∨
       ST_PS (rest.dropWhile (fun q => p.1 < q.1))) :
     WellFounded stepRel :=
-  step_terminates (wf_Rnf_nrm_modulo CR hArg hSuf)
+  step_terminates (wf_Rnf_nrm_modulo CRM hArg hSuf)
 
 end YAPSS

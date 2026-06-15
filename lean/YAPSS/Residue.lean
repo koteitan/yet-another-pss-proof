@@ -1260,13 +1260,104 @@ theorem psi_proj_of_collapseResidue (CR : CollapseResidue.{u})
 `oV (nrm t) = oV t` for every term `t`, the termination-relevant §1 payoff, proven
 through the parametric `Nrm.lean` chain:
 `CollapseResidue` ⟹ `psi_proj_notmem` ⟹ `psi_proj` ⟹ `oV ∘ nrm = oV`.
-This is the clean single theorem a reader inspects to see "the §1 termination
-consequence holds modulo exactly the collapse residue".  Axiom profile:
-`[propext, Classical.choice, Quot.sound]` — NO `sorryAx`; the proof depends on
-nothing open beyond the explicit `CollapseResidue` hypothesis. -/
+NB: `CollapseResidue` (arbitrary `g`) is FALSE (see the maxo correction above); this
+theorem is a valid implication but its hypothesis is unsatisfiable.  Use
+`oV_nrm_eq_of_collapseResidueMaxo` (on the TRUE `CollapseResidueMaxo`) instead. -/
 theorem oV_nrm_eq_of_collapseResidue (CR : CollapseResidue.{u}) :
     ∀ t : Three, oV.{u} (nrm t) = oV t :=
   oV_nrm_of_psi_proj (fun a b wb => psi_proj_of_collapseResidue CR a b wb)
+
+/-! ### CORRECTED chain on the TRUE residual `CollapseResidueMaxo` -/
+
+/-- `ole` transitivity (local helper for `maxo_ge`). -/
+theorem ole_trans' {x y z : Three} (hxy : ole x y) (hyz : ole y z) : ole x z := by
+  rcases hxy with h | rfl
+  · exact Or.inl (olt_ole_trans h hyz)
+  · exact hyz
+
+/-- **`maxo` is the `ole`-maximum**: every element of `x :: ys` is `ole (maxo x ys)`. -/
+theorem maxo_ge : ∀ (ys : List Three) (x y : Three),
+    y ∈ x :: ys → ole y (maxo x ys) := by
+  intro ys
+  induction ys with
+  | nil =>
+    intro x y hy; rw [maxo_nil]
+    rcases List.mem_cons.1 hy with heq | hy2
+    · exact Or.inr heq
+    · simp at hy2
+  | cons z zs ih =>
+    intro x y hy; rw [maxo_cons]
+    by_cases hxz : olt x z
+    · rw [if_pos hxz]
+      rcases List.mem_cons.1 hy with heq | hy2
+      · have : ole y z := Or.inl (heq ▸ hxz)
+        exact ole_trans' this (ih z z List.mem_cons_self)
+      · exact ih z y hy2
+    · rw [if_neg hxz]
+      have hzx : ole z x := by
+        rcases olt_total z x with h | h | h
+        · exact Or.inl h
+        · exact Or.inr h
+        · exact absurd h hxz
+      rcases List.mem_cons.1 hy with heq | hy2
+      · exact heq ▸ ih x x List.mem_cons_self
+      · rcases List.mem_cons.1 hy2 with heq2 | hy3
+        · have : ole y x := heq2 ▸ hzx
+          exact ole_trans' this (ih x x List.mem_cons_self)
+        · exact ih x y (List.mem_cons_of_mem _ hy3)
+
+/-- **`proj` preserves `ψ_a`, from the TRUE maxo-restricted residual** (re-derived,
+mirroring `Nrm.psi_proj_of_notmem` but feeding `CollapseResidueMaxo` only at the
+`maxo` violator that `proj` selects — supplying its `ole`-maximality via `maxo_ge`).
+This REPLACES the false-hypothesis `psi_proj_of_collapseResidue`. -/
+theorem psi_proj_of_collapseResidueMaxo (CRM : CollapseResidueMaxo.{u})
+    (a : ℕ) (b : Three) (wb : wf3 b) :
+    psi.{u} (oV (proj a b)) a = psi (oV b) a := by
+  generalize hs : tsize b = n
+  induction n using Nat.strong_induction_on generalizing b with
+  | _ n IH =>
+    subst hs
+    by_cases h : (Glist a b).filter (fun g => ¬ olt g b) = []
+    · rw [proj_id h]
+    · rw [proj_rec h]
+      have hin := maxo_hdtl_in h
+      set g := maxo ((Glist a b).filter (fun g => ¬ olt g b)).headI
+                    ((Glist a b).filter (fun g => ¬ olt g b)).tail with hg
+      have hgmem : g ∈ Gterm a b := mem_Glist.1 (List.mem_of_mem_filter hin)
+      have hgviol : ¬ olt g b := by
+        have := List.of_mem_filter hin; simpa using this
+      have wg : wf3 g := wf3_Gterm wb hgmem
+      have hsz : tsize g < tsize b := Gterm_tsize hgmem
+      have ihg : psi.{u} (oV (proj a g)) a = psi (oV g) a := IH (tsize g) hsz g wg rfl
+      have hle : oV.{u} b ≤ oV g := by
+        rcases olt_total b g with hbg | hbe | hgb
+        · exact le_of_lt (oV_order_pres wb wg hbg)
+        · rw [hbe]
+        · exact absurd hgb hgviol
+      have hmax : ∀ x ∈ Gterm a b, ¬ olt x b → ole x g := by
+        intro x hxG hxv
+        have hxf : x ∈ (Glist a b).filter (fun g => ¬ olt g b) :=
+          List.mem_filter.2 ⟨mem_Glist.2 hxG, by simpa using hxv⟩
+        have hlist : (Glist a b).filter (fun g => ¬ olt g b)
+                   = ((Glist a b).filter (fun g => ¬ olt g b)).headI
+                     :: ((Glist a b).filter (fun g => ¬ olt g b)).tail := by
+          cases hc : (Glist a b).filter (fun g => ¬ olt g b) with
+          | nil => exact absurd hc h
+          | cons hd tl => simp [List.headI, List.tail]
+        rw [hlist] at hxf
+        exact hg ▸ maxo_ge _ _ x hxf
+      have hstep : psi.{u} (oV g) a = psi (oV b) a :=
+        (psi_eq_of_notMem hle (CRM a b g wb hgmem hgviol hmax)).symm
+      rw [ihg]; exact hstep
+
+/-- **END-TO-END (CORRECTED): `nrm` preserves the ordinal value, modulo the TRUE
+`CollapseResidueMaxo`.**  `oV (nrm t) = oV t`, via `psi_proj_of_collapseResidueMaxo`
++ `oV_nrm_of_psi_proj`.  Rests on the maxo-restricted residual (TRUE, 278/278),
+NOT the false general `CollapseResidue`.  Axiom profile: `[propext,
+Classical.choice, Quot.sound]` — NO `sorryAx`. -/
+theorem oV_nrm_eq_of_collapseResidueMaxo (CRM : CollapseResidueMaxo.{u}) :
+    ∀ t : Three, oV.{u} (nrm t) = oV t :=
+  oV_nrm_of_psi_proj (fun a b wb => psi_proj_of_collapseResidueMaxo CRM a b wb)
 
 /-! ## Are `CollapseResidue` and `PsiValueAcanon` independent? — they are.
 
