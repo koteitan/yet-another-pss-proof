@@ -3006,6 +3006,12 @@ theorem maxsub_crit_le {u : ℕ} {g t : Three} (hg : g ∈ Gterm u t) :
   · subst hgZ; simp [maxsub]
   · exact mem_subs_le_maxsub (Gterm_subs hg (maxsub_mem_subs hgZ))
 
+/-- The leading subscript is `≤` the spine maximum `climb` (first spine entry). -/
+theorem lead_le_climb (t : Three) : lead t ≤ climb t := by
+  cases t with
+  | Z => simp [climb]
+  | P a b c => unfold climb; rw [spine_P, cmax_cons, lead_P]; exact le_max_left _ _
+
 /-- **`maxsub (mvstep b) = maxsub b`** for a firing term with `maxsub = climb`.
 `≤` because `mvstep b` is a critical (`maxsub_crit_le`); `≥` because
 `maxsub b = lead (mvstep b) ≤ maxsub (mvstep b)`. -/
@@ -3016,16 +3022,7 @@ theorem maxsub_mvstep {b : Three} (hf : pfire 0 b) (hms : maxsub b = climb b) :
   have := lead_le_maxsub_self (mvstep b)
   omega
 
-/-- The leading subscript is `≤` the spine maximum `climb` (it is the first spine
-entry). -/
-theorem lead_le_climb (t : Three) : lead t ≤ climb t := by
-  cases t with
-  | Z => simp [climb]
-  | P a b c => unfold climb; rw [spine_P, cmax_cons, lead_P]; exact le_max_left _ _
-
-/-- **`mvstep` preserves the `maxsub = climb` spine invariant** on firing terms:
-from `lead (mvstep b) = maxsub b = maxsub (mvstep b)` and `lead ≤ climb ≤ maxsub`,
-`climb (mvstep b) = maxsub (mvstep b)`. -/
+/-- **`mvstep` preserves the `maxsub = climb` spine invariant** on firing terms. -/
 theorem maxsub_climb_mvstep {b : Three} (hf : pfire 0 b) (hms : maxsub b = climb b) :
     maxsub (mvstep b) = climb (mvstep b) := by
   have hlead : lead (mvstep b) = maxsub b := lead_mvstep_eq_maxsub hf hms
@@ -3033,6 +3030,26 @@ theorem maxsub_climb_mvstep {b : Three} (hf : pfire 0 b) (hms : maxsub b = climb
   have hlc : lead (mvstep b) ≤ climb (mvstep b) := lead_le_climb (mvstep b)
   have hcm : climb (mvstep b) ≤ maxsub (mvstep b) := climb_le_maxsub (mvstep b)
   omega
+
+/-- **`Rdesc` carries the lead/maxsub/climb match** (the GREEN structural
+invariant): `Rdesc x y` implies `lead x = lead y`, `maxsub x = maxsub y`, and
+`maxsub x = climb x`, `maxsub y = climb y`.  By induction: base — `NF` args have
+`lead = 1` (`fire_lead_one_NF`), equal `maxsub` (`heq`), `maxsub = climb`
+(`maxsub_arg_eq_climb`); step — `mvstep` preserves all via `lead_mvstep_eq_maxsub`,
+`maxsub_mvstep`, `maxsub_climb_mvstep`. -/
+theorem Rdesc_match {x y : Three} (h : Rdesc x y) :
+    lead x = lead y ∧ maxsub x = maxsub y ∧ maxsub x = climb x ∧ maxsub y = climb y := by
+  induction h with
+  | @base b c f g hv hu harg heq hb hf =>
+    exact ⟨by rw [fire_lead_one_NF hv hb, fire_lead_one_NF hu hf],
+      heq, maxsub_arg_eq_climb hv, maxsub_arg_eq_climb hu⟩
+  | @step x y hxy hfx hfy ih =>
+    obtain ⟨_, hms, hmcx, hmcy⟩ := ih
+    refine ⟨?_, ?_, ?_, ?_⟩
+    · rw [lead_mvstep_eq_maxsub hfx hmcx, lead_mvstep_eq_maxsub hfy hmcy, hms]
+    · rw [maxsub_mvstep hfx hmcx, maxsub_mvstep hfy hmcy, hms]
+    · exact maxsub_climb_mvstep hfx hmcx
+    · exact maxsub_climb_mvstep hfy hmcy
 
 theorem proj_subs (u : ℕ) (b : Three) : subs (proj u b) ⊆ subs b := by
   by_cases h : (Glist u b).filter (fun g => ¬ olt g b) = []
