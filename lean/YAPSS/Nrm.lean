@@ -1482,6 +1482,21 @@ to `oper`-images).  Proof path (mirror of `ST_PS_suffix`, `ST_PS`-induction):
 This is the minimal isolated copy-structure fact feeding the §1 head-`0` wall
 (`Wttone.H0clause_translate`). -/
 
+/-- **Case B of the `ST_PS_desc` oper case** (the `takeWhile`-dual tiling residual,
+the single genuine open structural fact).  When `N`'s tail block
+`D.dropWhile (0 < ·.1)` is short (`≤ 1`, the single-block / `v0 = 0` tiling regime)
+and `N⟦n⟧ = (0,0) :: rest`, the descendant block `(0,0) :: rest.takeWhile (0 < ·.1)`
+— the tiling-fused leading run of the `n` copies of `N.dropLast` — is `ST_PS`.
+This is the `takeWhile` mirror of `dropWhile_rest_caseB` / `dropWhile_rest_tiling`;
+model-verified as part of `ST_PS_desc` (13105 / 13105). -/
+theorem ST_PS_desc_caseB {D : PairSeq} {n : ℕ} {rest : PairSeq}
+    (L : 1 < ((0,0) :: D).length) (hn : 1 ≤ n)
+    (hTle : (D.dropWhile (fun r => (0:ℕ) < r.1)).length ≤ 1)
+    (hN : ST_PS ((0,0) :: D))
+    (hL : (0,0) :: rest = ((0,0) :: D)⟦n⟧) :
+    ST_PS ((0,0) :: rest.takeWhile (fun q => (0:ℕ) < q.1)) := by
+  sorry
+
 /-- **The oper-case of `ST_PS_desc`** (the isolated `takeWhile`-dual residual).
 For a long `ST_PS` form `N` (root `(0,0)`, `1 < |N|`) whose expansion
 `N⟦n⟧ = (0,0) :: rest`, the descendant block `(0,0) :: rest.takeWhile (0 < ·.1)`
@@ -1552,8 +1567,14 @@ theorem ST_PS_desc_oper {N : PairSeq} {n : ℕ} {rest : PairSeq}
     rw [htkrest]
     -- `(0,0) :: FB = (0,0) :: D.takeWhile (0<·.1)` is `ih` applied to `N = (0,0)::D`.
     exact ih (rest' := D) rfl
-  · -- ===== Case B (tiling, `|T| ≤ 1`): first subtree = first copy `N.dropLast` =====
-    sorry
+  · -- ===== Case B (tiling, `|T| ≤ 1`): first subtree = the tiling-merged copies =====
+    -- Unlike Case A, the first top-level subtree of `N⟦n⟧` is NOT `N`'s first
+    -- subtree `FB`: the `v0 = 0` tiling fuses the `n` copies of `N.dropLast` so the
+    -- leading run extends past `FB` (model-verified: `takeWhile (N⟦n⟧) ≠ FB(N)` in
+    -- 12224 / 12249 Case-B step-pairs).  This is the `takeWhile` dual of
+    -- `dropWhile_rest_caseB` / `dropWhile_rest_tiling`, the genuine open content.
+    push_neg at hT2
+    exact ST_PS_desc_caseB L hn (by simpa using hT2) hN hL
 
 theorem ST_PS_desc {rest : PairSeq} (hM : ST_PS ((0,0) :: rest)) :
     ST_PS ((0,0) :: rest.takeWhile (fun q => (0:ℕ) < q.1)) := by
