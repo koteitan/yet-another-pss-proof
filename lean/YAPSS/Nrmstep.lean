@@ -3398,9 +3398,6 @@ theorem entry_take {M : PairSeq} {m i j : ℕ} (h : j < m) :
   unfold entry
   rw [getD_take h]
 
-theorem nextrel0_lt {M : PairSeq} {a b : ℕ} (h : nextrel0 M a b) : a < b :=
-  h.2.2.1
-
 theorem nextrel0_bound {M : PairSeq} {a b : ℕ} (h : nextrel0 M a b) :
     b < M.length := h.2.1
 
