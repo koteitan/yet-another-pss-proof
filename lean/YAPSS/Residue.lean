@@ -527,6 +527,29 @@ theorem AcanonLtValue_lt_epsLvl {δ : Ordinal.{u}} {w : ℕ}
       rwa [this] at hδ
     exact AcanonLtValue_lt_eps (Nat.succ_pos k) hδe
 
+/-! ### NON-COLLAPSE lever from the explicit formula (termination-critical)
+
+The explicit value formula makes `ψ_a` **strictly monotone (injective) on the
+sub-`ε(a)` range**, so there is NO `ψ_a`-plateau whose lower endpoint is below
+`ε(a)`.  Concretely: a sub-`ε(a)` ordinal is `a`-canonical (`mem_Cself_lvl`), so
+`psi_strict_mono_mem` fires with NO upper bound on the larger argument.  This is
+the omitted-form lever that powers `oV_nf_arg_lt` (the non-collapse / argument
+head), the DUAL of `CollapseResidue`.  These are PROVEN (sorryAx-free). -/
+
+/-- **The non-collapse lever (omitted form).**  If `α < ε(a)` then `ψ_a` is
+strictly increasing from `α` upward, with NO upper bound: `α < β → psi α a <
+psi β a`.  (`α` is `a`-canonical by `mem_Cself_lvl`; `psi_strict_mono_mem`.) -/
+theorem psi_strict_mono_lt_epsLvl {α β : Ordinal.{u}} {a : ℕ}
+    (hαe : α < epsLvl a) (hαβ : α < β) : psi α a < psi β a :=
+  psi_strict_mono_mem (CC_mono hαβ.le a (mem_Cself_lvl hαe)) hαβ
+
+/-- **No `ψ_a`-collapse below `ε(a)`**: for `α < ε(a)` and `α ≤ β`,
+`psi α a = psi β a ↔ α = β` is replaced by the usable form — distinctness of
+arguments forces distinct values.  (Hence the plateau is confined to `≥ ε(a)`.) -/
+theorem psi_noncollapse_lt_epsLvl {α β : Ordinal.{u}} {a : ℕ}
+    (hαe : α < epsLvl a) (hαβ : α ≤ β) (hne : α ≠ β) : psi α a < psi β a :=
+  psi_strict_mono_lt_epsLvl hαe (lt_of_le_of_ne hαβ hne)
+
 /-- **(a) `lwit c w < c` from `AcanonLtValue` + `CanonWitness`** (GREEN).  The
 canonical witness `δ` is `< c` by `AcanonLtValue`, and `lwit ≤ δ` by minimality. -/
 theorem a_of_AcanonLtValue (hALV : AcanonLtValue.{u}) (hCW : CanonWitness.{u})
