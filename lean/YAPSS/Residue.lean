@@ -617,6 +617,37 @@ theorem AcanonLtValue_is_false : ¬ AcanonLtValue.{u} := by
   have hlt : Om (0+1) < psiSelf (Om (0+1)) 0 := hALV (Omsucc_canon_at_w 0)
   exact absurd (lt_trans hlt (psiSelf_lt_Om_succ (Om (0+1)) 0)) (lt_irrefl _)
 
+/-! ### ⚠⚠⚠ `PsiValueAcanon` ITSELF IS FALSE — the vacuity reduction is UNSOUND
+
+The value `c = psiSelf Ω_1 0` is a `0`-canonical-argument ψ-value (`ζ = Ω_1` is
+`0`-canonical, `Omsucc_canon_at_w`) yet `c` is **NOT** `0`-canonical:
+`C_0(c) ⊆ C_0(Ω_1)` (`CCSelf_mono`, `c ≤ Ω_1`) and `c = psiSelf Ω_1 0 ∉ C_0(Ω_1)`
+(`psiSelf_notMem`).  So `PsiValueAcanon` (even the canonical-`ζ` form) is FALSE.
+
+CONSEQUENCE: the `alpha_step_residue` **vacuity** reduction (`CsetSelf_mem_lt_acanon`
+— "every member `ξ < α` of `C_v(α)` is `v`-canonical") is **FALSE** (counterexample
+`ξ = psiSelf Ω_1 0`, a non-canonical member), and `alpha_step_residue`'s `sorry`
+asserts a FALSE statement.  The non-canonical generator step is NOT vacuous; it
+genuinely must reproduce `psi ξ u`.  This invalidates the vacuity route (mine and
+ya-pss's `Citer_c_mem_lt_acanon`/`psi_value_acanon` neighbourhood).  See the
+re-sound `alpha_step_residue` below, which rests on the genuine canonical-WITNESS
+residual instead. -/
+
+/-- The ψ-value `psiSelf Ω_1 0` is NOT `0`-canonical (`C_0(c) ⊆ C_0(Ω_1)` and
+`c ∉ C_0(Ω_1)`). -/
+theorem psiSelf_Om1_not_canon :
+    psiSelf (Om 1) 0 ∉ CsetSelf (psiResSelf (psiSelf (Om 1) 0)) (psiSelf (Om 1) 0) 0 := by
+  intro hc
+  exact psiSelf_notMem (Om 1) 0
+    (CCSelf_mono (le_of_lt (psiSelf_lt_Om_succ (Om 1) 0)) 0 hc)
+
+/-- **`PsiValueAcanon` is FALSE** (Lean-proven).  `ζ = Ω_1` is `0`-canonical
+(`Omsucc_canon_at_w`) but its value `psiSelf Ω_1 0` is NOT `0`-canonical
+(`psiSelf_Om1_not_canon`).  The vacuity reduction of `alpha_step_residue` is
+therefore UNSOUND on this residual. -/
+theorem PsiValueAcanon_is_false : ¬ PsiValueAcanon.{u} := fun hPVA =>
+  psiSelf_Om1_not_canon (hPVA (Om 1) 0 0 (le_refl 0) (Omsucc_canon_at_w 0))
+
 /-! ### `PsiValueAcanon` via the canonical argument ITSELF (the clean route)
 
 **⚠⚠ DEAD ROUTE (this session's finding).**  This route takes the witness for
@@ -856,13 +887,29 @@ theorem psiValueAcanon_of_ac
   rw [psiResSelf, if_pos haa, hval] at hfire
   exact hfire
 
-/-- **`alpha_step_residue` (the residue; now reduced to `PsiValueAcanon` via
-vacuity).**  Lean analogue of ya-pss's `alpha_step_residue` (necessity.thy:1139),
-the non-canonical-generator step of the closure-rank induction carrying the α-IH.
-The hypotheses are **contradictory** modulo `PsiValueAcanon`: `ξ < α` in
-`CsetSelf_α` is canonical at `v` (`CsetSelf_mem_lt_acanon`), hence at `u ≥ v`
-(`acanon_sub_mono`), contradicting `hnc : ¬ acanon u ξ`.  So the conclusion holds
-vacuously.  The single remaining `sorry` is `PsiValueAcanon`. -/
+/-- **The GENUINE `alpha_step_residue` residual (canonical-witness existence).**
+Since the vacuity route is UNSOUND (`PsiValueAcanon_is_false`), `alpha_step_residue`
+is NOT vacuous: the non-canonical generator value `psiSelf ξ u` must be genuinely
+reproduced via its **canonical representative** `δ` — `δ ∈ C_v(α) ∩ Iio α`, `δ`
+`u`-canonical, `psiSelf δ u = psiSelf ξ u`.  This is the real Buchholz §1 core
+(necessity.thy:1139 content), not a contradiction. -/
+def AlphaStepResidue.{u} : Prop :=
+  ∀ (α : Ordinal.{u}) (v : ℕ) (ξ : Ordinal.{u}) (u : ℕ),
+    ξ ∈ CsetSelf (psiResSelf α) α v → ξ < α →
+    ξ ∉ CsetSelf (psiResSelf ξ) ξ u → v ≤ u →
+    ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
+      δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf ξ u
+
+/-- **`alpha_step_residue` (re-sound).**  Lean analogue of ya-pss's
+`alpha_step_residue` (necessity.thy:1139), the non-canonical-generator step of the
+closure-rank induction.  GREEN modulo the genuine `AlphaStepResidue` (canonical
+representative existence): fire the canonical witness `δ` via `CsetSelf_psi_closed`,
+then transport `psi ξ u = psiSelf ξ u` (`IHa` at `ξ < α`).
+
+**This REPLACES the prior vacuity proof**, which was UNSOUND — it rested on
+`PsiValueAcanon`, now DISPROVEN (`PsiValueAcanon_is_false`).  The non-canonical
+generator with argument in the closure DOES arise (`ξ = psiSelf Ω_1 0`), so the
+step is not vacuous; it genuinely reproduces the value via the canonical rep. -/
 theorem alpha_step_residue
     (α : Ordinal.{u}) (v : ℕ)
     (IHa : ∀ β, β < α → ∀ w, psi.{u} β w = psiSelf β w)
@@ -870,18 +917,22 @@ theorem alpha_step_residue
     (hξC : ξ ∈ CsetSelf (psiResSelf α) α v) (hξα : ξ < α)
     (hnc : ξ ∉ CsetSelf (psiResSelf ξ) ξ u) (hvu : v ≤ u) :
     psi.{u} ξ u ∈ CsetSelf (psiResSelf α) α v := by
-  exact absurd
-    (acanon_sub_mono
-      (CsetSelf_mem_lt_acanon
-        (show PsiValueAcanon.{u} from
-          -- The sharpened Buchholz §1 core: every ψ-value is canonical at every
-          -- lower-or-equal subscript (ya-pss `psi_value_acanon`).  α-free; still
-          -- open on BOTH the psiSelf route (here) and the Cset_c route (ya-pss).
-          -- Empirically TRUE (0 violations).  See `PsiValueAcanon` docstring.
-          sorry)
-        hξC hξα)
-      hvu)
-    hnc
+  -- transport psi → psiSelf at ξ < α
+  rw [IHa ξ hξα u]
+  -- the genuine residual supplies the canonical witness δ
+  obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ :=
+    (show AlphaStepResidue.{u} from
+      -- GENUINE Buchholz §1 core: the non-canonical generator's value has a
+      -- canonical representative δ < α inside C_v(α).  Replaces the false vacuity.
+      sorry) α v ξ u hξC hξα hnc hvu
+  -- fire δ: psiResSelf α δ u = psiSelf δ u = psiSelf ξ u ∈ C_v(α)
+  have hconv : δ ∈ CsetSelf (psiResSelf α) δ u := by
+    rwa [CsetSelf_param_eq (p := psiResSelf δ) (q := psiResSelf α)
+          (fun ζ' uu hζ' => by
+            rw [psiResSelf, psiResSelf, if_pos hζ', if_pos (lt_trans hζ' hδα)])] at hδcanon
+  have hfire := CsetSelf_psi_closed hδC hδα u hconv
+  rw [psiResSelf, if_pos hδα, hval] at hfire
+  exact hfire
 
 /-- **`alpha_step_residue` reduced to `AcanonLtValue` + the `v < w` membership**
 (GREEN, parametric).  Makes the residual structure legible: `PsiValueAcanon` (the
