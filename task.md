@@ -43,14 +43,19 @@
       PROJMONO(14739 reversal)全て深層実測で破棄。**標準形(blockok 両row)不変量が本質**、cnf/wf3/r1ok 局所述語不可。
     - ✅ **続90後半: `sigma_seqlex_mono` 緑のブロック帰納証明完成**(SIG2, (S)分解で seqlex_imp_olt 移植)。
       PSS live path を3つの残核に精密局所化(nrm.thy, PSI 緑):
-      - 🚨 **`proj_nrm_argzone_olt`**(914)= 唯一の term-level §1 核: ST arg-zone で proj∘nrm∘translate が olt 保存
-        〔CORE が sigma_argzone_mono を緑化し depth-1 順序同型で seqlex 層 discharge・44850/0/0〕。≡oV_mono_NF≡psi_proj_nonmem(CORE 評価)。
-      - **`tail_zone_ST_PS`**(831)= 構造的 ST_PS 閉包(§1 でない)。攻め筋(STRUCT): oper 帰納・i≤j0 は drop 可換(0/6393)、i>j0(約25%)は nextrel0/le0 谷条件で到達性再導出。
-      - **`keeps_head_ST_PS`**(862)= head 非吸収。y<e 分岐不発(構造)、tied e=y proj比較=§1核(nrmstep の STS_B)のみ残存。
-    - soundness: 偽補題 5件(Cmem_NF/PROJMONO/C1[oV(proj∘nrm)=oV]/旧tail_zone_ST_PS[空]/+既知 acanon_arg_lt/oV_mono_cnf)を
-      深層 closure+5 で破棄(第7・8事件回避)。**🚨 SIG2 の tail_zone_ST_PS 当初文面は偽だった(STRUCT が修正)**。
-    - **次攻**: (1)tail_zone_ST_PS を到達性で閉じる(構造・closable) (2)proj_nrm_argzone_olt を §1 機械化
-      (necessity.thy: oV_order_pres iff + psi_proj/proj_canonical 経由で psi_proj_nonmem に接続)。§1 が live path に再接続する可能性。
+      PSS live path は今や3核のみ(nrm.thy・PSI 緑):
+      - 🚨 **`proj_nrm_argzone_olt`**= 唯一の本質的 §1 核(term-level): ST arg-zone で proj∘nrm∘translate が olt 保存・44850/0/0。
+        ≡oV_mono_NF。**ARGZ 診断: 既存 §1 sorry(psi_value_acanon/psi_proj_nonmem)に綺麗に還元しない**
+        (oV(nrm t)=oV t が必須・それ自体 §1核・oV(nrm BM)が 107/400 non-canonical)⟹ ST arg-zone 不変量を carry した
+        proj∘nrm 順序保存を直接攻める。緑補題 olt_iff_oV_wf3(wf3 上 oV が olt 反映)は nrm_argz_reduction_reference.thy.txt に保存。
+      - **`keeps_head_ST_PS`**= head 非吸収。y<e 不発(構造)、tied e=y proj比較=§1(STS_B)のみ。
+      - **`suffix_oper_witness_residual`**= tail_zone_ST_PS の構造残核(§1でない)。tail_zone/suffix_closure/suffix_oper_witness は
+        SUF/TAIL が緑化、残は no-parent Pred 分岐(ST_PS 不発・全列が最終 index に parent 0/24735)=要 hasParent 存在不変量。
+        緑 index-shift 基盤 nextrel0_drop_iff/hasParent_parent_drop 等を SUF が追加。
+    - soundness: 偽補題 6件(Cmem_NF/PROJMONO/C1[oV(proj∘nrm)=oV]/旧tail_zone_ST_PS[空]/oV(nrm)=oV の eq-case/+既知
+      acanon_arg_lt/oV_mono_cnf)を深層 closure+5 で破棄(第7・8事件回避)。
+    - **次攻**: (1)suffix_oper_witness_residual を hasParent 存在不変量で閉じる(構造・closable→PSS=純§1)
+      (2)proj_nrm_argzone_olt を ST arg-zone 不変量 carry の直接帰納で攻める(§1核・多セッション wall・lean も停滞)。
   - 🗄 §1/psi_proj 路線(続89(21-39)・健全 infra だが live path 外): term_nec/1.4 trio/Cset_eq_Cset_c
     (psi_value_acanon modulo)/B2/wit機構。Buchholz §1 機械化として価値あるが PSS には不要と確定。
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
