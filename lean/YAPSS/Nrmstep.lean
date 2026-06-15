@@ -2194,6 +2194,119 @@ theorem lead_proj_eq_maxsub_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hf : pfire
       omega
   omega
 
+/-! ### Keystone: the leading-`.b`-chain descent of `proj 0`
+
+`proj 0` of a term whose maximal subscript lies on its head argument's own
+leading spine descends to that head argument: `proj 0 (P L x y) = proj 0 x`
+under `1 ≤ L < lead x`, `maxsub x = climb x`, `maxsub y < maxsub x`.  This is
+the term-level engine of the equal-`maxsub` firing comparison; model-verified
+`58803 / 58803` (`tools/probe_keystone_*.py`) and the firing-`NF` chain nodes
+all satisfy its side-conditions (`1764 / 1764`).  The side-conditions are
+essential: it is term-locally FALSE without them (e.g. `x` a sum, or `x`'s max
+off its spine — `maxsub = climb` necessary). -/
+
+/-- **`proj` is the greatest critical (uniqueness form).**  If `g` is self-or-a-
+critical of `b`, dominates every critical of `b`, and `b ≤o g`, then it *is*
+`proj u b`.  (Mutual domination with `proj u b`, the greatest critical.) -/
+theorem proj_eq_of_greatest {u : ℕ} {b g : Three}
+    (hmem : g = b ∨ g ∈ Gterm u b)
+    (hge : ∀ c ∈ Gterm u b, c ≤o g)
+    (hbg : b ≤o g) : proj u b = g := by
+  by_cases hf : pfire u b
+  · -- both `≤o`: `proj u b` greatest critical ⟹ `proj u b ≤o g`; `g ≤o proj u b`.
+    have h1 : proj u b ≤o g := hge _ (proj_mem_Gterm_of_fire hf)
+    have h2 : g ≤o proj u b := by
+      rcases hmem with rfl | hgm
+      · exact proj_ole u g
+      · exact proj_ge_crit hf hgm
+    rcases h1 with h1 | rfl
+    · rcases h2 with h2 | h2
+      · exact absurd (olt_trans h1 h2) (olt_irrefl _)
+      · exact h2.symm
+    · rfl
+  · -- non-firing: `proj u b = b`; show `g = b`.
+    rw [proj_nofire hf]
+    rcases hmem with rfl | hgm
+    · rfl
+    · -- `g ∈ Gterm u b`, non-firing ⟹ `g <o b`; with `b ≤o g` forces `g = b`.
+      have hgb : g <o b := by
+        by_contra h
+        exact hf (pfire_iff.2 ⟨g, hgm, h⟩)
+      rcases hbg with hbg | rfl
+      · exact absurd (olt_trans hbg hgb) (olt_irrefl _)
+      · rfl
+
+/-- **`proj 0 x` leads with at least `maxsub x`** (NF-free, via `maxsub = climb`).
+The lower-bound half of `lead_proj_eq_maxsub_NF`, re-derived under the spine
+hypothesis `maxsub x = climb x` instead of `NF`: `climb_achieved` exposes a
+witness `g` (self or critical) with `lead g = climb x = maxsub x`, and
+`proj 0 x` dominates it (`proj_ole` / `proj_ge_crit`), so `maxsub x ≤ lead (proj 0 x)`. -/
+theorem maxsub_le_lead_proj {x : Three} (hms : maxsub x = climb x) :
+    maxsub x ≤ lead (proj 0 x) := by
+  obtain ⟨g, hg, hgl⟩ := climb_achieved x
+  have hgmax : lead g = maxsub x := by rw [hgl, ← hms]
+  by_cases hf : pfire 0 x
+  · rcases hg with rfl | hgmem
+    · have := lead_le_of_ole (proj_ole 0 g); omega
+    · have := lead_le_of_ole (proj_ge_crit hf hgmem); omega
+  · -- non-firing: proj 0 x = x; the witness must be x itself (criticals are < x).
+    rw [proj_nofire hf]
+    rcases hg with rfl | hgmem
+    · omega
+    · -- g ∈ Gterm 0 x, non-firing ⟹ g <o x ⟹ lead g ≤ lead x
+      have hgx : g <o x := by
+        by_contra h; exact hf (pfire_iff.2 ⟨g, hgmem, h⟩)
+      have := lead_le_of_olt hgx; omega
+
+/-- **The keystone chain descent**: `proj 0 (P L x y) = proj 0 x` when `x`'s max
+subscript is on its leading spine and dominates both the head `L` and the tail
+`y`.  Model-verified `58803 / 58803`. -/
+theorem proj_keystone {L : ℕ} {x y : Three}
+    (hL : 1 ≤ L) (hlt : L < lead x)
+    (hms : maxsub x = climb x) (hy : maxsub y < maxsub x) :
+    proj 0 (P L x y) = proj 0 x := by
+  -- `maxsub x ≤ lead (proj 0 x)`, and `lead x ≤ lead (proj 0 x)` (inflation).
+  have hmsle : maxsub x ≤ lead (proj 0 x) := maxsub_le_lead_proj hms
+  have hxle : lead x ≤ lead (proj 0 x) := lead_le_of_ole (proj_ole 0 x)
+  -- `proj 0 x` is a `P` (its lead ≥ lead x > L ≥ 1 > 0).
+  obtain ⟨e, p, q, hpx⟩ : ∃ e p q, proj 0 x = P e p q := by
+    cases hcx : proj 0 x with
+    | Z => rw [hcx, lead_Z] at hxle; omega
+    | P e p q => exact ⟨e, p, q, rfl⟩
+  have he : L < e := by
+    have : e = lead (proj 0 x) := by rw [hpx]; rfl
+    omega
+  -- Apply `proj_eq_of_greatest` at `b := P L x y`, `g := proj 0 x`.
+  refine proj_eq_of_greatest ?_ ?_ ?_
+  · -- `proj 0 x` is self-or-critical of `P L x y`.
+    by_cases hfx : pfire 0 x
+    · exact Or.inr (mem_Gterm_P.2 (Or.inl ⟨Nat.zero_le _, Or.inr (proj_mem_Gterm_of_fire hfx)⟩))
+    · rw [proj_nofire hfx]
+      exact Or.inr (mem_Gterm_P.2 (Or.inl ⟨Nat.zero_le _, Or.inl rfl⟩))
+  · -- `proj 0 x` dominates every critical of `P L x y`.
+    intro c hc
+    rcases mem_Gterm_P.1 hc with ⟨-, hcx⟩ | hcy
+    · -- c = x or c ∈ Gterm 0 x.
+      rcases hcx with rfl | hcxm
+      · exact proj_ole 0 c
+      · by_cases hfx : pfire 0 x
+        · exact proj_ge_crit hfx hcxm
+        · -- non-firing x: c <o x = proj 0 x.
+          rw [proj_nofire hfx]
+          have : c <o x := by
+            by_contra h; exact hfx (pfire_iff.2 ⟨c, hcxm, h⟩)
+          exact Or.inl this
+    · -- c ∈ Gterm 0 y: dominated by lead.
+      have h1 : lead c ≤ maxsub y := lead_crit_le_maxsub hcy
+      have : lead c < e := by
+        have : e = lead (proj 0 x) := by rw [hpx]; rfl
+        omega
+      rw [hpx]
+      exact Or.inl (olt_P_of_lead_lt p q (Or.inr this))
+  · -- inflation: `P L x y ≤o proj 0 x`.
+    rw [hpx]
+    exact Or.inl (olt_P_P.2 (Or.inl he))
+
 /-- **The smaller projection strictly dominates the larger argument** (a GREEN
 structural fact, model-verified `824970 / 824970` on ALL firing pairs,
 `tools/probe_witrec.py`).  For two firing head-`0` `NF` arguments `b <o f`,
@@ -2269,9 +2382,25 @@ only `154737 / 438666` (`268045` equal-`maxsub`-args, `/tmp` final probe), so it
 is a genuine structural first-difference recursion (the `seqlex` order, but on
 the term side).  The precise remaining obligation is the term-level lead-`k`
 chain-node comparison `olt (chainAt b k)(chainAt f k)` from `olt b f`, via the
-`L ≥ 1` spine descent — formalizable but a multi-lemma `chainAt`/spine
-development with delicate lead-`0`/`Z` side-conditions (the recursion is FALSE
-at lead `0`, `2728 / 4962` general). -/
+`L ≥ 1` spine descent.
+
+**The keystone needs a HEREDITARY spine invariant, not a local condition**
+(pinned this session, `probe_keystone_*.py`).  The descent engine
+`proj 0 (P L x y) = proj 0 x` is term-locally FALSE under every *local* guard
+tried: `1 ≤ L < lead x ∧ maxsub y < maxsub x` is clean only at small subscripts
+(`3195 / 3195` at `ms ≤ 2`) but FAILS at `ms = 4` (`17356 / 17436`, e.g.
+`x = p₂(p₄0)` whose max subscript `4` is OFF its leading chain — a *gapped*
+spine `[…,2,4]`); even adding the whole-term `maxsub t = climb t` fails
+(`41836 / 87210`) because `x` may be a sum (`lead x = 0`).  The firing-`NF`
+chain satisfies it (`1764 / 1764`) *only* because every head arg `b'` is a
+principal (`lead b' = 2`) with its max on its own leading chain
+(`maxsub b' = climb b'`, `1285 / 1285`) **hereditarily** — but `P 0 b' c'` is
+NOT in `NF` (`0 / 1285`), so the existing head-`0`-`NF` predicate does not
+recurse onto `b'`.  Closing this therefore requires a *new* term-level
+hereditary-`NF`-spine predicate (gap-free `inv2` spine + principal heads, all
+the way down) with its closure lemmas and the keystone proved under it — a
+substantial multi-lemma development, the genuine residual.  `maxsub = climb`
+is necessary but NOT sufficient; the gap-free hereditary spine is essential. -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
