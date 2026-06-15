@@ -2112,29 +2112,49 @@ theorem lead_proj_eq_maxsub_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hf : pfire
       omega
   omega
 
-/-- **Both-fire comparison on `NF` arguments** (residual 2).
+/-- **Both-fire, equal-`maxsub` case** (residual 2, narrowed).  When the two
+firing `NF` arguments have the SAME maximal subscript, `proj 0` lands on two
+terms with equal leading subscript (`= maxsub`, by `lead_proj_eq_maxsub_NF`), so
+the comparison descends to their arguments — a recursion on the proj-results'
+arguments that needs the `NF` discipline (the general `proj 0`-monotone is FALSE,
+~25% violations; the strict-`maxsub` case is handled directly by
+`lead_proj_eq_maxsub_NF`).  Empirically exact (0 violations on equal-`maxsub`
+firing pairs). -/
+theorem proj0_bothfire_eqmaxsub_NF {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
+    olt (proj 0 b) (proj 0 f) := by
+  sorry
 
-Structure now pinned down (`fire_shape_NF`, peel audit):
-  • A firing `NF` arg has the shape `P 1 b' c'` (`fire_lead_one_NF`/`fire_shape_NF`).
-  • The peel `proj 0 (P 1 b' c') = proj 0 b'` holds on firing `NF` args and is
-    EXACTLY tail-independent (0/13507 cases where the tail `c'` changes the value),
-    so `proj 0` collapses the firing `p₁` head into its argument.
-  • Hence `b = P 1 b' c', f = P 1 f' g'`, `proj 0 b = proj 0 b'`,
-    `proj 0 f = proj 0 f'`, and (both firing + `olt b f`) `⟹ olt b' f'` with
-    `b' ≠ f'` (0 cases of `b' = f'`, an `NF` uniqueness fact).
+/-- **Both-fire comparison on `NF` arguments** (residual 2) — now reduced to the
+equal-`maxsub` case `proj0_bothfire_eqmaxsub_NF`.
 
-REMAINING obstruction (more than fireprop's single residual): the descent
-`olt b' f' ⟹ olt (proj 0 b')(proj 0 f')` is `proj 0`-monotonicity on the *inner*
-args `b', f'` (head `≥ 2`, NOT `NF` args), so it is NOT `proj0_olt_NF` but a
-general `proj 0`-order-preservation on the `NF`-substructure class — a `tsize`
-recursion combining the peel, fireprop, and bothfire on smaller terms.  Closing
-it needs (a) the peel lemma `proj 0 (P 1 b' c') = proj 0 b' (NF, firing)`,
-(b) the `b' ≠ f'` uniqueness, and (c) the general recursion.  This is the larger
-half of Wall B; fireprop (residual 1) is fully reduced to one clean residual. -/
+The strict-`maxsub` case is PROVED here: by `lead_proj_eq_maxsub_NF` both
+projections lead with their `maxsub`; if `maxsub b < maxsub f` then
+`lead (proj 0 b) = maxsub b < maxsub f = lead (proj 0 f)`, and since the latter
+is positive the projection of `f` is a `P`, so `proj 0 b <o proj 0 f` by
+subscript (`olt_P_of_lead_lt`).  `maxsub`-monotonicity (`maxsub_arg_mono`)
+rules out `maxsub b > maxsub f`. -/
 theorem proj0_bothfire_NF {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) : olt (proj 0 b) (proj 0 f) := by
-  sorry
+  have hmono : maxsub b ≤ maxsub f := maxsub_arg_mono hv hu harg
+  rcases lt_or_eq_of_le hmono with hlt | heq
+  · -- strict maxsub: lead-domination
+    have lb : lead (proj 0 b) = maxsub b := lead_proj_eq_maxsub_NF hv hb
+    have lf : lead (proj 0 f) = maxsub f := lead_proj_eq_maxsub_NF hu hf
+    -- proj 0 f is a P (its lead = maxsub f > 0)
+    obtain ⟨e, f2, g2, hpf⟩ : ∃ e f2 g2, proj 0 f = P e f2 g2 := by
+      cases hcf : proj 0 f with
+      | Z => rw [hcf] at lf; simp [lead] at lf; omega
+      | P e f2 g2 => exact ⟨e, f2, g2, rfl⟩
+    rw [hpf]
+    apply olt_P_of_lead_lt
+    right
+    rw [lb]
+    have : e = maxsub f := by rw [hpf] at lf; simpa [lead] using lf
+    omega
+  · exact proj0_bothfire_eqmaxsub_NF hv hu harg hb hf heq
 
 /-- **The proj-side order crux**, split into the two `NF`-standardness residuals
 via the pure-`olt` `proj_olt_of_fireprop`.  No `wf3` needed. -/
