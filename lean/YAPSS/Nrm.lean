@@ -534,9 +534,25 @@ theorem suffix_diag (v : ℕ) :
   * `N⟦n-1⟧` — the `v0 = 0` tiling sub-case, where the `n` copies become fresh
     top-level siblings and the tail is the last `n-1` copies (Case B,
     `tail N = []`).
-Empirically exact (`tail(N⟦n⟧) ∈ {[], (tail N)⟦n⟧, N⟦n-1⟧}`, 0/11638
-violations).  This is the genuine forest/hydra sub-recursion content; left as the
-single residual feeding `ST_PS_suffix`. -/
+Empirically exact (`tail(N⟦n⟧) ∈ {[], (tail N)⟦n⟧, N⟦n-1⟧}`, 0/11638; over all
+`(N,n)` pairs 0/23444).  This is the genuine forest/hydra sub-recursion content;
+left as the single residual feeding `ST_PS_suffix`.
+
+PROOF PATH (the remaining kernel = `oper`-prefix-commute).  Write `N = (0,0) ::
+FB ++ T` where `FB = N.tail.takeWhile (0 < ·.1)` (first block interior, all
+row-0 `> 0`) and `T = tail N = N.tail.dropWhile (0 < ·.1)` (from the 2nd root).
+  * If `T ≠ []`: `oper` touches only the LAST top-level block, which lies in `T`,
+    so `oper N n = (0,0) :: FB ++ oper T n` (the COMMUTE — needs `parent`/`idx1`/
+    `entry`/`le0` of the last column to be suffix-invariant; the row-0 `= 0`
+    root of `T` blocks any `nextrel0`/`le0` edge from `T` back into `FB`).  Then
+    `dropWhile (0 < ·.1)` strips `FB` (all row-0 `> 0`) and stops at `oper T n`
+    (starts at a row-0 `= 0` root), giving `(tail N)⟦n⟧` — Case A.
+  * If `T = []`: `N = (0,0) :: FB` is a single block; the `v0 = 0` tiling makes
+    the `n` copies fresh roots, tail `= N⟦n-1⟧` — Case B.
+The COMMUTE (`oper (A ++ T) n = A ++ oper T n` when the operative block ⊆ `T`,
+`T` root-anchored) is the deep `oper`-structural kernel; equivalently the `R` of
+`oper_eq_dropLast_append N` equals that of `oper_eq_dropLast_append (tail N)`
+(both are the copies of the shared last block). -/
 theorem oper_tail_cases {N : PairSeq} {n : ℕ} (L : 1 < N.length) (hn : 1 ≤ n)
     {p : ℕ × ℕ} {rest : PairSeq} (hL : p :: rest = N⟦n⟧) :
     rest.dropWhile (fun q => p.1 < q.1) = [] ∨
