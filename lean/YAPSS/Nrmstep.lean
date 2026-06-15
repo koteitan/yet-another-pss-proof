@@ -1991,16 +1991,26 @@ The fact `b` is a HEAD-`0` `NF` argument is positional, not term-local:
   • via `translate.induct`, `Wttone.H0clause_translate` reduces to ONE per-step
     fact: the descendant block `K = takeWhile (p.1 < ·) rest` of a row-`1`-`0`
     column never fires (`¬ pfire 0 (translate K)`) — verified 0/19709;
-  • the right INDUCTIVE CARRIER is RELATIVE `r1ok`: `r1ok` references absolute
-    row-`0`, so it is NOT self-contained on sub-blocks, but `r1ok` relative to
-    the block's own minimum row-`0` (its columns as "roots") IS preserved on
-    descendant blocks (19709/19709) — this is the missing self-contained
-    invariant for the recursion;
-  • the precise forbidden configuration is: a row-`1`-`0` descendant whose own
-    sub-descendant has row-`1` `= 1` — absent in real forms (0/43184), the
-    boundary-spanning `r1ok` climbing fact still to be turned into Lean.
-So: closing this needs the relative-`r1ok` carrier + the boundary-climbing
-no-escape fact; everything reducing TO it is proved. -/
+  • `r1okRel` (relative `r1ok`, now defined+proved above) is the self-contained
+    sub-block carrier: a descendant block of a row-`0`-`v` column satisfies
+    `r1okRel (v+1)` (preserved under `takeWhile`/`dropWhile`, 262077/262077).
+
+KEY NEGATIVE FINDING (corrects the r1ok-suffices premise).  `r1ok` (and even
+`reduced = RedCondA ∧ RedCondB`) is INSUFFICIENT for the per-step non-firing:
+the config `(0,0)(1,0)(2,1)` is `r1ok` AND `reduced`, yet `translate` of it is
+`p₀(p₀(p₁0))` which FIRES — and it is NOT `ST_PS` (unreachable).  What excludes
+it is the ABSOLUTE `inv2` spine anchoring of `nfinv` (`(0,0)(1,0)(2,1)` has
+incpref-subscripts `[0,0,1]`, violating `inv2`'s `s[1] = 1`).  But `nfinv`'s
+`inv2` is anchored at `0`, so it does NOT pass to descendant blocks (their
+incpref-subscripts start at the block's own lead `≥ 1`, e.g. 89378/161831
+descendant blocks violate absolute `inv2`); and the SHIFTED `inv2` that does
+pass is insufficient (`p₀(p₁0)` is shifted-`inv2` + `cnf` yet fires).  So the
+bridge needs the GLOBAL absolute-`inv2` anchoring, which resists the local
+recursive descent — the genuine remaining obstruction.  POSITIVE side: the
+combination `hereditary-absolute-inv2(spine) ∧ cnf ∧ maxsub ≤ 1 ⟹ ¬ pfire 0`
+is empirically exact (0 violations) — a SUFFICIENT term invariant, but absolute
+`inv2` holds only on the lead-`0`-anchored terms, not the lead-`1` args, so it
+discharges only part of the recursion. -/
 theorem not_pfire0_lead1max1_NF {b c : Three}
     (hv : (P 0 b c) ∈ NF) (hl : lead b = 1) (hm : maxsub b = 1) : ¬ pfire 0 b := by
   sorry
