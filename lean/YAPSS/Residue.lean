@@ -266,11 +266,26 @@ the conjunction of two clean canonical-rep facts:
 * `AcanonLtValue` — every `w`-canonical `δ` is strictly below its own value
   `psiSelf δ w`;
 * `CanonWitness` — every ψ-value `psiSelf ζ w` has a `w`-canonical witness.
-Both are α-free, TRUE empirically (0 violations), and are the genuine residual:
-each, by rank induction, hits the *bound-tied* generator step where the element is
-itself a ψ-value — Buchholz's simultaneous transfinite induction.  (Investigated:
-the rank induction on `AcanonLtValue` stalls at the sum/generator sub-case because
-the inner IH would need the summand/arg in its OWN closure, not the ambient one.) -/
+Both are α-free, TRUE empirically (0 violations *where the finite model's value
+table is defined* — see WARNING), and are the genuine residual:  each, by rank
+induction, hits the *bound-tied* generator step where the element is itself a
+ψ-value — Buchholz's simultaneous transfinite induction.  (Investigated: the rank
+induction on `AcanonLtValue` stalls at the sum/generator sub-case because the inner
+IH would need the summand/arg in its OWN closure, not the ambient one.)
+
+**`AcanonLtValue` has a deeper root: the explicit-value formula** (see
+`PsiSelfOpowForm` / `AcanonLtValue_of_form` below).  `psiSelf δ w = ω^(Ω_w + δ)`
+for `w`-canonical `δ` reduces it to the arithmetic `δ < ω^(Ω_w+δ)`; the ε-number
+"fixpoint" obstruction (`Ω_w+δ = δ`) is exactly the NON-canonical case, hence
+vacuous.  The omitted-form formula `Buchholz17.psi_eq_opow_add` is already proven;
+porting it to `psiSelf` (CsetSelf-only, no `psi_eq_psiSelf` bridge) is the deepest
+clean sub-residual.
+
+**WARNING (finite-model caveat).**  The ya-pss finite model returns `None` for
+`psi(δ,w)` outside its value table (e.g. `psi(ω^(ω·2),0)`), making the *model's*
+closure spuriously non-downward-closed there; so "0 violations" only covers δ with
+the model value defined.  In the genuine ordinals `AcanonLtValue` holds (the
+fixpoint exclusion above), but do NOT read the model as a proof for large δ. -/
 
 /-- **Canonical-rep fact 1 (`AcanonLtValue`).**  Every `w`-canonical ordinal is
 strictly below its own value: `δ ∈ CsetSelf (psiResSelf δ) δ w → δ < psiSelf δ w`.
@@ -284,6 +299,34 @@ witness: `∀ ζ w, ∃ δ, psiSelf δ w = psiSelf ζ w ∧ δ ∈ CsetSelf (psi
 def CanonWitness.{u} : Prop :=
   ∀ (ζ : Ordinal.{u}) (w : ℕ), ∃ δ,
     psiSelf δ w = psiSelf ζ w ∧ δ ∈ CsetSelf (psiResSelf δ) δ w
+
+/-- **The deeper root of `AcanonLtValue`: the psiSelf explicit-value formula.**
+`PsiSelfOpowForm`: for a `w`-canonical `δ`, `psiSelf δ w = ω ^ (Ω_w + δ)` — the
+self-form analogue of the proven omitted-form `Buchholz17.psi_eq_opow_add`
+(`psi α v = ω^(Ω_v+α)` for `α < ε_{Ω_v+1}`).  This is Buchholz 1.7's explicit
+value; porting it to `psiSelf` (its proof uses only `CsetSelf` closure lemmas, no
+`psi_eq_psiSelf` bridge) would discharge `AcanonLtValue` — see
+`AcanonLtValue_of_form`.
+
+**Why `AcanonLtValue` is TRUE (and the ε-fixpoint is consistent).**  With the
+formula, `δ < psiSelf δ w = ω^(Ω_w+δ)` whenever `δ < Ω_w + δ` (no left-absorption)
+— which holds exactly in the range `δ < ε_{Ω_w+1}` where the formula is valid.  An
+ε-number `δ = ω^δ ≥ Ω_w` with `Ω_w + δ = δ` would give `psiSelf δ w = δ` (a
+ψ-FIXPOINT) — but then `δ = psiSelf δ w ∉ CsetSelf (psiResSelf δ) δ w`, i.e. `δ` is
+NON-canonical, so it is excluded from `AcanonLtValue`'s hypothesis.  Thus the
+fixpoint case is vacuous, and `AcanonLtValue` is the genuine canonical-rep theorem,
+rooted in the explicit-value formula. -/
+def PsiSelfOpowForm.{u} : Prop :=
+  ∀ (δ : Ordinal.{u}) (w : ℕ),
+    δ ∈ CsetSelf (psiResSelf δ) δ w →
+      psiSelf δ w = (Ordinal.omega0) ^ (Om w + δ) ∧ δ < Om w + δ
+
+/-- `AcanonLtValue` from the explicit-value formula `PsiSelfOpowForm` (GREEN). -/
+theorem AcanonLtValue_of_form (hF : PsiSelfOpowForm.{u}) : AcanonLtValue.{u} := by
+  intro δ w hc
+  obtain ⟨hform, hlt⟩ := hF δ w hc
+  rw [hform]
+  exact lt_of_lt_of_le hlt (Ordinal.right_le_opow _ Ordinal.one_lt_omega0)
 
 /-- **(a) `lwit c w < c` from `AcanonLtValue` + `CanonWitness`** (GREEN).  The
 canonical witness `δ` is `< c` by `AcanonLtValue`, and `lwit ≤ δ` by minimality. -/
