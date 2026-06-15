@@ -2432,8 +2432,8 @@ theorem olt_arg_lt_proj_NF {b c f g : Three}
   have he : e = maxsub b := by rw [hpb] at hlb; simpa [lead] using hlb
   rw [hlf]; omega
 
-/-- **The EQUAL-`maxsub` both-fire witness (THE single irreducible §1 firing
-residual), Lean form.**  For two firing head-`0` `NF` arguments `b <o f` with
+/-! ### The EQUAL-`maxsub` both-fire witness (THE single irreducible §1 firing
+residual), Lean form.  For two firing head-`0` `NF` arguments `b <o f` with
 `maxsub b = maxsub f`, there is a `G₀`-critical `h` of `f` strictly dominating
 `proj 0 b`: `∃ h ∈ Gterm 0 f, olt (proj 0 b) h`.
 
@@ -2623,14 +2623,10 @@ the two precise forest residuals `Rdesc_firing_char` + `Rdesc_hstep`): the entir
 `proj0_olt_of_mvstep_olt`, `Rdesc`, `Rdesc_match`, `Rdesc_hfire`,
 `proj_bothfire_witness_eq_of_Rdesc`) is sorry-free, so this lemma's content is
 EXACTLY `Rdesc_firing_char` (`pfire 0 t ↔ lead t < maxsub t` on descent nodes) +
-`Rdesc_hstep` (strict `mvstep`-monotonicity).  (This `sorry` is the same
-statement as `_final`; the two coexist only because of declaration ordering —
-`_final` and the `mvstep` machinery are stated downstream.) -/
-theorem proj_bothfire_witness_eq {b c f g : Three}
-    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
-    (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
-    ∃ h ∈ Gterm 0 f, olt (proj 0 b) h := by
-  sorry
+`Rdesc_hstep` (strict `mvstep`-monotonicity).  The equal-`maxsub` witness is
+proved as `proj_bothfire_witness_eq_final` downstream (GREEN modulo those two
+residuals); the both-fire/`proj0_olt_NF` chain is wired to it
+(`proj_bothfire_witness` ... `proj0_olt_NF`, all downstream of `_final`). -/
 
 /-- **`proj 0 b ≤o proj 0 f` from the critical embedding.**  GREEN: `proj 0 b` is
 a critical of `b` (`proj_mem_Gterm_of_fire`); the embedding gives a critical `h`
@@ -2870,7 +2866,7 @@ theorem proj_bothfire_witness_eq_of_Rdesc
   exact proj0_olt_of_mvstep_olt hfire (fun x y h hx hy => Rdesc.step h hx hy)
     hstep b f (Rdesc.base hv hu harg heq hb hf) harg
 
-/-- **The both-fire witness (reduced to the equal-`maxsub` core), Lean form.**
+/-! ### The both-fire witness (reduced to the equal-`maxsub` core), Lean form.
 For two firing head-`0` `NF` arguments `b <o f`, there is a `G₀`-critical `h`
 of the larger argument `f` that **strictly dominates** `proj 0 b` (the greatest
 critical of `b`): `∃ h ∈ Gterm 0 f, olt (proj 0 b) h`.
@@ -2902,49 +2898,6 @@ strict-`maxsub` branch is GREEN here via `proj 0 f` as the witness
 `lead_proj_eq_maxsub_NF` + `olt_P_of_lead_lt`).  Only the equal-`maxsub` case —
 where the witness `proj 0 f` ties `proj 0 b` in lead, so `olt (proj 0 b)(proj 0 f)`
 is the genuine equal-lead first-difference comparison — remains. -/
-theorem proj_bothfire_witness {b c f g : Three}
-    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
-    (hb : pfire 0 b) (hf : pfire 0 f) :
-    ∃ h ∈ Gterm 0 f, olt (proj 0 b) h := by
-  have hmono : maxsub b ≤ maxsub f := maxsub_arg_mono hv hu harg
-  rcases lt_or_eq_of_le hmono with hlt | heq
-  · -- strict `maxsub`: the witness is `proj 0 f`, dominating by lead.
-    refine ⟨proj 0 f, proj_mem_Gterm_of_fire hf, ?_⟩
-    have lb : lead (proj 0 b) = maxsub b := lead_proj_eq_maxsub_NF hv hb
-    have lf : lead (proj 0 f) = maxsub f := lead_proj_eq_maxsub_NF hu hf
-    obtain ⟨e, x, y, hpf⟩ : ∃ e x y, proj 0 f = P e x y := by
-      cases hcf : proj 0 f with
-      | Z => rw [hcf] at lf; simp [lead] at lf; omega
-      | P e x y => exact ⟨e, x, y, rfl⟩
-    rw [hpf]
-    apply olt_P_of_lead_lt
-    right
-    have he : e = maxsub f := by rw [hpf] at lf; simpa [lead] using lf
-    rw [lb]; omega
-  · -- equal `maxsub`: the genuine irreducible §1 residual.
-    exact proj_bothfire_witness_eq hv hu harg hb hf heq
-
-/-- **Both-fire comparison on `NF` arguments** (residual 2) — now reduced
-*uniformly* (no eq/strict-`maxsub` split) to the single witness residual
-`proj_bothfire_witness`.  GREEN reduction: the witness `h ∈ Gterm 0 f` with
-`olt (proj 0 b) h`, together with `h ≤o proj 0 f` (`proj_ge_crit`, `proj 0 f` is
-the greatest critical of the firing `f`), closes `olt (proj 0 b) (proj 0 f)` by
-`olt_ole_trans`. -/
-theorem proj0_bothfire_NF {b c f g : Three}
-    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
-    (hb : pfire 0 b) (hf : pfire 0 f) : olt (proj 0 b) (proj 0 f) := by
-  obtain ⟨h, hhG, hlt⟩ := proj_bothfire_witness hv hu harg hb hf
-  exact olt_ole_trans hlt (proj_ge_crit hf hhG)
-
-/-- **The proj-side order crux**, split into the two `NF`-standardness residuals
-via the pure-`olt` `proj_olt_of_fireprop`.  No `wf3` needed. -/
-theorem proj0_olt_NF {b c f g : Three}
-    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
-    olt (proj 0 b) (proj 0 f) :=
-  proj_olt_of_fireprop harg
-    (fun hb => proj0_fireprop_NF hv hu harg hb)
-    (fun hb hf => proj0_bothfire_NF hv hu harg hb hf)
-
 /-! ## The subscript chain: criticals, projections and `nrm` never invent
 subscripts -/
 
@@ -3115,6 +3068,52 @@ theorem proj_bothfire_witness_eq_final {b c f g : Three}
     ∃ h ∈ Gterm 0 f, olt (proj 0 b) h :=
   proj_bothfire_witness_eq_of_Rdesc (Rdesc_hfire Rdesc_firing_char) Rdesc_hstep
     hv hu harg hb hf heq
+
+/-! ### The both-fire / `proj0_olt_NF` chain, wired to `_final`
+
+The proj-side order crux `proj0_olt_NF`, now resting on EXACTLY the two forest
+residuals (`Rdesc_firing_char`, `Rdesc_hstep`) via `proj_bothfire_witness_eq_final`
++ the GREEN fire-propagation `proj0_fireprop_NF`. -/
+
+/-- **The both-fire witness** (strict-`maxsub` GREEN, equal-`maxsub` via `_final`). -/
+theorem proj_bothfire_witness {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) (hf : pfire 0 f) :
+    ∃ h ∈ Gterm 0 f, olt (proj 0 b) h := by
+  have hmono : maxsub b ≤ maxsub f := maxsub_arg_mono hv hu harg
+  rcases lt_or_eq_of_le hmono with hlt | heq
+  · -- strict `maxsub`: the witness is `proj 0 f`, dominating by lead.
+    refine ⟨proj 0 f, proj_mem_Gterm_of_fire hf, ?_⟩
+    have lb : lead (proj 0 b) = maxsub b := lead_proj_eq_maxsub_NF hv hb
+    have lf : lead (proj 0 f) = maxsub f := lead_proj_eq_maxsub_NF hu hf
+    obtain ⟨e, x, y, hpf⟩ : ∃ e x y, proj 0 f = P e x y := by
+      cases hcf : proj 0 f with
+      | Z => rw [hcf] at lf; simp [lead] at lf; omega
+      | P e x y => exact ⟨e, x, y, rfl⟩
+    rw [hpf]
+    apply olt_P_of_lead_lt
+    right
+    have he : e = maxsub f := by rw [hpf] at lf; simpa [lead] using lf
+    rw [lb]; omega
+  · -- equal `maxsub`: via the GREEN `_final` (rests on the two forest residuals).
+    exact proj_bothfire_witness_eq_final hv hu harg hb hf heq
+
+/-- **Both-fire comparison on `NF` arguments**: the witness `h ∈ Gterm 0 f` with
+`olt (proj 0 b) h`, plus `h ≤o proj 0 f` (`proj_ge_crit`), close it. -/
+theorem proj0_bothfire_NF {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) (hf : pfire 0 f) : olt (proj 0 b) (proj 0 f) := by
+  obtain ⟨h, hhG, hlt⟩ := proj_bothfire_witness hv hu harg hb hf
+  exact olt_ole_trans hlt (proj_ge_crit hf hhG)
+
+/-- **The proj-side order crux** — now rests on EXACTLY `{Rdesc_firing_char,
+Rdesc_hstep}` (via `_final`) plus the GREEN fire-propagation `proj0_fireprop_NF`. -/
+theorem proj0_olt_NF {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
+    olt (proj 0 b) (proj 0 f) :=
+  proj_olt_of_fireprop harg
+    (fun hb => proj0_fireprop_NF hv hu harg hb)
+    (fun hb hf => proj0_bothfire_NF hv hu harg hb hf)
 
 theorem proj_subs (u : ℕ) (b : Three) : subs (proj u b) ⊆ subs b := by
   by_cases h : (Glist u b).filter (fun g => ¬ olt g b) = []
