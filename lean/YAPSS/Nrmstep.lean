@@ -2223,7 +2223,36 @@ theorem olt_arg_lt_proj_NF {b c f g : Three}
   have he : e = maxsub b := by rw [hpb] at hlb; simpa [lead] using hlb
   rw [hlf]; omega
 
-/-- **The both-fire witness (THE single §1 firing residual), Lean form.**
+/-- **The EQUAL-`maxsub` both-fire witness (THE single irreducible §1 firing
+residual), Lean form.**  For two firing head-`0` `NF` arguments `b <o f` with
+`maxsub b = maxsub f`, there is a `G₀`-critical `h` of `f` strictly dominating
+`proj 0 b`: `∃ h ∈ Gterm 0 f, olt (proj 0 b) h`.
+
+This is the genuine, irreducible equal-lead first-difference core of the
+Buchholz §1 firing wall.  Model-verified `438747 / 438747` (the equal-`maxsub`
+share of `probe_strict_wit.py` W1; `probe_eqmaxsub_witness.py`).  **Why no
+constructive shortcut breaks the circularity** (all verified, the Lean `Three`
+encoding):
+  • `proj 0 b = chainAt b (maxsub b)` and the witness `= chainAt f (maxsub b)`
+    (the leading-`.b`-chain node at lead `= maxsub b`, `probe_witness_recursion`,
+    `1285 / 1285`); but with `maxsub b = maxsub f` this witness IS
+    `chainAt f (maxsub f) = proj 0 f`, so `olt (proj 0 b) h` *is* the goal
+    `olt (proj 0 b)(proj 0 f)` — **circular** (`/tmp` spinemono probe);
+  • `lead (proj 0 b) = maxsub b = maxsub f = lead (proj 0 f)`, so the comparison
+    is NOT lead-resolvable — it is the equal-lead structural first-difference;
+  • `f <o proj 0 b` (`olt_arg_lt_proj_NF`), so the witness must be a *violator*
+    of `f` above `proj 0 b`, not below `f`;
+  • the naive recursion "firing leading-chain node, `olt b t ⟹ olt (proj 0 b)
+    (proj 0 t)`" is FALSE (299559 / 2031339, `probe_witness_general.py` GL).
+A proof needs the equal-lead spine-alignment of the two NF args' greatest
+criticals under `olt b f` — the deep Buchholz §1 content, isolated here. -/
+theorem proj_bothfire_witness_eq {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
+    ∃ h ∈ Gterm 0 f, olt (proj 0 b) h := by
+  sorry
+
+/-- **The both-fire witness (reduced to the equal-`maxsub` core), Lean form.**
 For two firing head-`0` `NF` arguments `b <o f`, there is a `G₀`-critical `h`
 of the larger argument `f` that **strictly dominates** `proj 0 b` (the greatest
 critical of `b`): `∃ h ∈ Gterm 0 f, olt (proj 0 b) h`.
@@ -2246,16 +2275,36 @@ deep closure 5089 `NF` terms): `824970 / 824970` firing pairs `olt b f` admit
 such a critical `h`; `tools/probe_crit_dom.py` confirms the underlying critical
 embedding (`∀ g ∈ Gterm 0 b, ∃ h ∈ Gterm 0 f, g ≤o h`) is `0`-violation and
 **class-essential** (FALSE on general terms, 3.7M violations,
-`probe_cd_proof.py` E4 — the buried-subscript pattern `NF` excludes).  The
-greatest critical lies on the leading `.b`-chain and depends only on the head
-argument (`probe_strict_embed.py`, `1285 / 1285`), which is the structural
-handle for a future proof.  This is the precise, model-verified residual that
-replaces the opaque equal-`maxsub` sorry. -/
+`probe_cd_proof.py` E4 — the buried-subscript pattern `NF` excludes).
+
+**Now reduced to the EQUAL-`maxsub` sub-case** (`proj_bothfire_witness_eq`): the
+strict-`maxsub` branch is GREEN here via `proj 0 f` as the witness
+(`proj 0 f ∈ Gterm 0 f` by `proj_mem_Gterm_of_fire`, and
+`lead (proj 0 b) = maxsub b < maxsub f = lead (proj 0 f)` by
+`lead_proj_eq_maxsub_NF` + `olt_P_of_lead_lt`).  Only the equal-`maxsub` case —
+where the witness `proj 0 f` ties `proj 0 b` in lead, so `olt (proj 0 b)(proj 0 f)`
+is the genuine equal-lead first-difference comparison — remains. -/
 theorem proj_bothfire_witness {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) :
     ∃ h ∈ Gterm 0 f, olt (proj 0 b) h := by
-  sorry
+  have hmono : maxsub b ≤ maxsub f := maxsub_arg_mono hv hu harg
+  rcases lt_or_eq_of_le hmono with hlt | heq
+  · -- strict `maxsub`: the witness is `proj 0 f`, dominating by lead.
+    refine ⟨proj 0 f, proj_mem_Gterm_of_fire hf, ?_⟩
+    have lb : lead (proj 0 b) = maxsub b := lead_proj_eq_maxsub_NF hv hb
+    have lf : lead (proj 0 f) = maxsub f := lead_proj_eq_maxsub_NF hu hf
+    obtain ⟨e, x, y, hpf⟩ : ∃ e x y, proj 0 f = P e x y := by
+      cases hcf : proj 0 f with
+      | Z => rw [hcf] at lf; simp [lead] at lf; omega
+      | P e x y => exact ⟨e, x, y, rfl⟩
+    rw [hpf]
+    apply olt_P_of_lead_lt
+    right
+    have he : e = maxsub f := by rw [hpf] at lf; simpa [lead] using lf
+    rw [lb]; omega
+  · -- equal `maxsub`: the genuine irreducible §1 residual.
+    exact proj_bothfire_witness_eq hv hu harg hb hf heq
 
 /-- **Both-fire comparison on `NF` arguments** (residual 2) — now reduced
 *uniformly* (no eq/strict-`maxsub` split) to the single witness residual
