@@ -592,6 +592,65 @@ theorem le0_append_right_of (A T : PairSeq) {j0 j1 : ℕ} (h : le0 T j0 j1) :
   exact ⟨by rw [List.length_append]; omega, by rw [List.length_append]; omega,
     rtg_nextrel0_lift A T hrt⟩
 
+/-- `nextrel0` strictly increases the index. -/
+theorem nextrel0_lt {M : PairSeq} {a b : ℕ} (h : nextrel0 M a b) : a < b := h.2.2.1
+
+/-- A `nextrel0`-reachability chain never decreases the index. -/
+theorem rtg_nextrel0_ge {M : PairSeq} {a b : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 M) a b) : a ≤ b := by
+  induction h with
+  | refl => exact le_refl _
+  | @tail c d hcd hde ih => exact le_of_lt (lt_of_le_of_lt ih (nextrel0_lt hde))
+
+/-- A `nextrel0`-reachability chain in `A ++ T` starting at a shifted index
+`|A| + a` stays within `T` (each step increases the index from `≥ |A|`), so it
+mirrors a chain in `T`. -/
+theorem rtg_nextrel0_unlift (A T : PairSeq) {a c : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 (A ++ T)) (A.length + a) c) :
+    ∃ c', c = A.length + c' ∧ Relation.ReflTransGen (nextrel0 T) a c' := by
+  induction h with
+  | refl => exact ⟨a, rfl, Relation.ReflTransGen.refl⟩
+  | @tail d e hde hef ih =>
+    obtain ⟨d', rfl, ihd⟩ := ih
+    have hge : A.length ≤ e :=
+      le_of_lt (lt_of_le_of_lt (Nat.le_add_right _ _) (nextrel0_lt hef))
+    obtain ⟨e', rfl⟩ : ∃ e', e = A.length + e' := ⟨e - A.length, by omega⟩
+    exact ⟨e', rfl, Relation.ReflTransGen.tail ihd ((nextrel0_append_right A T d' e').1 hef)⟩
+
+/-- `le0` is suffix-invariant on shifted indices: forward by `le0_append_right_of`,
+backward because the chain stays in `T` (`rtg_nextrel0_unlift`). -/
+theorem le0_append_right (A T : PairSeq) (j0 j1 : ℕ) :
+    le0 (A ++ T) (A.length + j0) (A.length + j1) ↔ le0 T j0 j1 := by
+  constructor
+  · rintro ⟨hb0, hb1, hrt⟩
+    rw [List.length_append] at hb0 hb1
+    obtain ⟨c', hc', hrtT⟩ := rtg_nextrel0_unlift A T hrt
+    have hjc : j1 = c' := by omega
+    subst hjc
+    exact ⟨by omega, by omega, hrtT⟩
+  · exact le0_append_right_of A T
+
+/-- `nextrel0` blocking: with `T` root-anchored (`entry T 0 0 = 0`) no `nextrel0`
+edge crosses from a prefix index `k < |A|` into a positive-row-0 column at index
+`j ≥ |A|` (the root at `|A|` violates the valley). -/
+theorem nextrel0_no_cross (A T : PairSeq) (hroot : entry T 0 0 = 0)
+    {k j : ℕ} (hk : k < A.length) (hj : A.length ≤ j)
+    (hpos : 0 < entry (A ++ T) 0 j) (hne : nextrel0 (A ++ T) k j) : False := by
+  obtain ⟨h1, h2, h3, h4, h5⟩ := hne
+  have hjne : A.length < j := by
+    rcases Nat.lt_or_ge A.length j with h | h
+    · exact h
+    · -- A.length = j, but entry j > 0 and entry (A.length) = root = 0
+      have : j = A.length := by omega
+      subst this
+      have hz : entry (A ++ T) 0 A.length = 0 := by
+        have := entry_append_right A T 0 0; rw [Nat.add_zero] at this; rw [this, hroot]
+      omega
+  have hval := h5 A.length ⟨by omega, hjne⟩
+  have hz : entry (A ++ T) 0 A.length = 0 := by
+    have := entry_append_right A T 0 0; rw [Nat.add_zero] at this; rw [this, hroot]
+  rw [hz] at hval; omega
+
 /-- **The combinatorial heart of suffix-closure** (pure `oper`/`dropWhile`, no
 `ST_PS`).  For a long list `N` (`1 < |N|`) and `N⟦n⟧ = p :: rest`, the
 `dropWhile`-tail of `N⟦n⟧` is one of three shapes, all of which are `[]` or
