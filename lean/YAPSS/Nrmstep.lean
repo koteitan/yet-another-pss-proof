@@ -1793,16 +1793,160 @@ theorem pfire0_of_lt_climb {t : Three} (h : lead t < climb t) : pfire 0 t := by
   · omega
   · exact pfire0_of_ascent ⟨g, hg, hgt⟩
 
-/-- **THE hard `NF` half** (the genuine `NF`-discipline residual): a firing `NF`
-argument has maximal subscript `≥ 2`.  Empirically exact (0 violations / 13507
-firing `NF` args; firing forces `lead b = 1 ∧ maxsub b ≥ 2`).  The converse
-(`pfire0_of_lt_climb` + `maxsub_arg_eq_climb`) is proved; this direction is the
-`r1ok`/`steps1` subscript-ascent content the project lacks.  FALSE on general
-`cnf` terms (`p₁(0)+p₀(p₁(0)+p₁(0))` is `cnf`, `lead = maxsub = 1`, yet fires),
-so it needs the `NF` sibling discipline, not just `cnf`. -/
+/-- A term whose maximal subscript is `0` has all subscripts `0`. -/
+theorem subs_subset0_of_maxsub0 {t : Three} (h : maxsub t = 0) : subs t ⊆ {0} := by
+  intro x hx
+  induction t with
+  | Z => simp [subs] at hx
+  | P a b c ihb ihc =>
+    rw [maxsub_P] at h
+    simp only [subs, Set.mem_insert_iff, Set.mem_union] at hx
+    simp only [Set.mem_singleton_iff]
+    rcases hx with rfl | hx | hx
+    · omega
+    · exact ihb (by omega) hx
+    · exact ihc (by omega) hx
+
+/-- CNF is inherited by the argument (`Three`-level, available early). -/
+theorem cnf_arg0 {a : ℕ} {b c : Three} (h : cnf (P a b c)) : cnf b := by
+  cases c with | Z => exact h | P e f g => exact h.1
+
+/-- CNF is inherited by the tail (`Three`-level, available early). -/
+theorem cnf_tail0 {a : ℕ} {b c : Three} (h : cnf (P a b c)) : cnf c := by
+  cases c with | Z => trivial | P e f g => exact h.2.2
+
+/-- `maxsub (P a b c) = 0` splits into all three components being `0`. -/
+theorem msub0_P {a : ℕ} {b c : Three} (h : maxsub (P a b c) = 0) :
+    a = 0 ∧ maxsub b = 0 ∧ maxsub c = 0 := by rw [maxsub_P] at h; omega
+
+/-- In an all-`0`-subscript term the argument is strictly below its principal. -/
+theorem olt_arg_msub0 : ∀ {b : Three}, maxsub b = 0 → ∀ c, olt b (P 0 b c) := by
+  intro b
+  induction b with
+  | Z => intro _ c; simp
+  | P f bb bc ihbb _ =>
+    intro h c
+    obtain ⟨hf, hbb, _⟩ := msub0_P h
+    subst hf
+    exact Or.inr (Or.inl ⟨rfl, ihbb hbb bc⟩)
+
+/-- In a CNF principal term the tail is strictly below the whole term. -/
+theorem olt_tail_cnf0 : ∀ {a : ℕ} {b c : Three}, cnf (P a b c) → olt c (P a b c) := by
+  intro a b c
+  induction c generalizing a b with
+  | Z => intro _; simp
+  | P e f g _ ihg =>
+    intro hcnf
+    rw [cnf_P_P] at hcnf
+    obtain ⟨_, ndom, cnfc⟩ := hcnf
+    rw [olt_P_P] at ndom; push_neg at ndom
+    obtain ⟨hea, hbf_imp, _⟩ := ndom
+    rcases Nat.lt_or_ge e a with hlt | hge
+    · exact Or.inl hlt
+    · have heq : a = e := le_antisymm hge hea
+      subst heq
+      rcases olt_total f b with hfb | hfb | hbf
+      · exact Or.inr (Or.inl ⟨rfl, hfb⟩)
+      · subst hfb; exact Or.inr (Or.inr ⟨rfl, rfl, ihg cnfc⟩)
+      · exact absurd hbf (hbf_imp rfl)
+
+/-- **All-`0` OT3** (self-contained, no `Wttbase`): in an all-`0`-subscript CNF
+term every `Gterm 0` critical is strictly below it.  Same shape as
+`Wttbase.OT3all` but keyed on `maxsub = 0` instead of `subs ⊆ {0}`. -/
+theorem OT3all_msub0 : ∀ {t : Three}, cnf t → maxsub t = 0 → ∀ g ∈ Gterm 0 t, olt g t := by
+  intro t
+  induction t with
+  | Z => intro _ _ g hg; simp [Gterm] at hg
+  | P a b c ihb ihc =>
+    intro hcnf h0 g hg
+    obtain ⟨ha, hb0, hc0⟩ := msub0_P h0
+    subst ha
+    have argb : olt b (P 0 b c) := olt_arg_msub0 hb0 c
+    have tailc : olt c (P 0 b c) := olt_tail_cnf0 hcnf
+    rw [mem_Gterm_P] at hg
+    rcases hg with ⟨_, hgb⟩ | hgc
+    · rcases hgb with rfl | hgg
+      · exact argb
+      · exact olt_trans (ihb (cnf_arg0 hcnf) hb0 g hgg) argb
+    · exact olt_trans (ihc (cnf_tail0 hcnf) hc0 g hgc) tailc
+
+/-- An all-`0`-subscript CNF term does not fire at level `0` (`OT3all_msub0`). -/
+theorem not_pfire0_of_maxsub0 {b : Three} (hcnf : cnf b) (h0 : maxsub b = 0) :
+    ¬ pfire 0 b := by
+  intro hf
+  obtain ⟨g, hg, hng⟩ := pfire_iff.1 hf
+  exact hng (OT3all_msub0 hcnf h0 g hg)
+
+/-- **Firing forces head subscript `1`** on `NF` arguments.  If `lead b = 0`
+then (by `lead0_maxsub0_NF`) all of `b`'s subscripts are `0`, so `b` cannot fire
+(`not_pfire0_of_maxsub0`); with `lead b ≤ 1` (`lead_arg_le_one`) this pins
+`lead b = 1`. -/
+theorem lead0_maxsub0_NF {b c : Three} (h : (P 0 b c) ∈ NF) (hl : lead b = 0) :
+    maxsub b = 0 := by
+  have e1 : maxsub b = climb b := maxsub_arg_eq_climb h
+  rw [e1]
+  obtain ⟨M, hM, he⟩ := h
+  have inv : inv2 ((incpref M).map Prod.snd) := (nfinv_ST_PS hM).2
+  have sp : spine (translate M) = (incpref M).map Prod.snd := spine_translate_eq M
+  have hsp : spine (translate M) = 0 :: spine b := by rw [he, spine_P]
+  rw [sp] at hsp
+  set s := (incpref M).map Prod.snd with hs
+  have hcs : cmax s = climb b := by
+    rw [hsp]; unfold climb; rw [cmax_cons, Nat.max_eq_right (Nat.zero_le _)]
+  by_contra hne
+  have hpos : 1 ≤ climb b := by unfold climb at hne ⊢; omega
+  have hc1 : 1 ≤ cmax s := by rw [hcs]; exact hpos
+  have hg : s.getD 1 0 = 1 := (inv 1 hc1).2
+  rw [hsp] at hg
+  simp only [List.getD_cons_succ] at hg
+  cases b with
+  | Z => simp [climb] at hpos
+  | P a bb cc =>
+    rw [spine_P] at hg
+    simp only [List.getD_cons_zero] at hg
+    simp only [lead] at hl
+    omega
+
+theorem cnf_arg_NF {b c : Three} (h : (P 0 b c) ∈ NF) : cnf b :=
+  cnf_arg0 (cnf_NF h)
+
+theorem fire_lead_one_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hb : pfire 0 b) :
+    lead b = 1 := by
+  have hle : lead b ≤ 1 := lead_arg_le_one hv
+  rcases Nat.lt_or_ge 0 (lead b) with h | h
+  · omega
+  · exfalso
+    have hl0 : lead b = 0 := by omega
+    have h0 : maxsub b = 0 := lead0_maxsub0_NF hv hl0
+    exact not_pfire0_of_maxsub0 (cnf_arg_NF hv) h0 hb
+
+/-- **The remaining hard `NF` half** (the genuine `NF`-discipline residual,
+narrowed): a firing `NF` argument with leading subscript `1` does not have
+`maxsub = 1` — equivalently, a `lead = 1, maxsub = 1` `NF` argument does NOT
+fire.  Empirically exact; FALSE on general `cnf` terms
+(`p₁(0)+p₀(p₁(0)+p₁(0))` is `cnf`, `lead = maxsub = 1`, yet fires), so it needs
+the `NF` sibling discipline, not just `cnf`.  This is the maxr1-`≤1` head-`0`
+OT3 wall in pfire form (same content as `Wttone.H0clause_translate`). -/
+theorem not_pfire0_lead1max1_NF {b c : Three}
+    (hv : (P 0 b c) ∈ NF) (hl : lead b = 1) (hm : maxsub b = 1) : ¬ pfire 0 b := by
+  sorry
+
+/-- **THE hard `NF` half**: a firing `NF` argument has maximal subscript `≥ 2`.
+Reduced to the narrowed residual `not_pfire0_lead1max1_NF`: firing forces
+`lead b = 1` (`fire_lead_one_NF`), so `maxsub b ≥ 1`; if `maxsub b = 1` the
+narrowed residual contradicts firing, hence `maxsub b ≥ 2`. -/
 theorem pfire0_maxsub_ge2_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hb : pfire 0 b) :
     2 ≤ maxsub b := by
-  sorry
+  have hl : lead b = 1 := fire_lead_one_NF hv hb
+  have hlm : lead b ≤ maxsub b := by
+    cases b with
+    | Z => simp [lead] at hl
+    | P a bb cc => rw [lead_P, maxsub_P]; omega
+  rcases Nat.lt_or_ge (maxsub b) 2 with h | h
+  · exfalso
+    have hm1 : maxsub b = 1 := by omega
+    exact not_pfire0_lead1max1_NF hv hl hm1 hb
+  · exact h
 
 /-- **Fire-propagation on `NF` arguments** (residual 1) — now reduced to the
 single hard half `pfire0_maxsub_ge2_NF`.  `olt b f → pfire 0 b → pfire 0 f`:
