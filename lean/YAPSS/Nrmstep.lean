@@ -1950,7 +1950,28 @@ narrowed): a firing `NF` argument with leading subscript `1` does not have
 fire.  Empirically exact; FALSE on general `cnf` terms
 (`p₁(0)+p₀(p₁(0)+p₁(0))` is `cnf`, `lead = maxsub = 1`, yet fires), so it needs
 the `NF` sibling discipline, not just `cnf`.  This is the maxr1-`≤1` head-`0`
-OT3 wall in pfire form (same content as `Wttone.H0clause_translate`). -/
+OT3 wall in pfire form (same content as `Wttone.H0clause_translate`).
+
+POSITIONAL-BRIDGE ANALYSIS (this campaign — empirically pinned, proof open).
+The fact `b` is a HEAD-`0` `NF` argument is positional, not term-local:
+  • NOT even `wf3 b ∧ maxsub b ≤ 1 ∧ lead b = 1` implies non-firing — 210/1553
+    such `wf3` terms fire (e.g. `p₁(0)+p₀(p₁(0)+p₁(0))`), and these are exactly
+    the `wf3` terms that are NOT in the `NF` head-`0`-argument image;
+  • non-firing is NOT hereditary on subterms (≈9902/46595 subterms of head-`0`
+    `NF` args fire), so the natural structural induction fails;
+  • via `translate.induct`, `Wttone.H0clause_translate` reduces to ONE per-step
+    fact: the descendant block `K = takeWhile (p.1 < ·) rest` of a row-`1`-`0`
+    column never fires (`¬ pfire 0 (translate K)`) — verified 0/19709;
+  • the right INDUCTIVE CARRIER is RELATIVE `r1ok`: `r1ok` references absolute
+    row-`0`, so it is NOT self-contained on sub-blocks, but `r1ok` relative to
+    the block's own minimum row-`0` (its columns as "roots") IS preserved on
+    descendant blocks (19709/19709) — this is the missing self-contained
+    invariant for the recursion;
+  • the precise forbidden configuration is: a row-`1`-`0` descendant whose own
+    sub-descendant has row-`1` `= 1` — absent in real forms (0/43184), the
+    boundary-spanning `r1ok` climbing fact still to be turned into Lean.
+So: closing this needs the relative-`r1ok` carrier + the boundary-climbing
+no-escape fact; everything reducing TO it is proved. -/
 theorem not_pfire0_lead1max1_NF {b c : Three}
     (hv : (P 0 b c) ∈ NF) (hl : lead b = 1) (hm : maxsub b = 1) : ¬ pfire 0 b := by
   sorry
