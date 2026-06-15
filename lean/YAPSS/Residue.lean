@@ -555,6 +555,23 @@ theorem a_of_CanonWitnessLt (hCW : CanonWitnessLt.{u})
   exact lt_of_le_of_lt
     (csInf_le' (s := {x : Ordinal | psiSelf x w = psiSelf ζ w}) hδv) hδc
 
+/-- **The MAXIMALLY sharp residual for (a): collapse-region surjectivity.**
+`CanonWitnessLtBig`: for `ζ ≥ epsLvl w`, the value `psiSelf ζ w` is *already*
+attained by some `δ < epsLvl w`.  (For `ζ < epsLvl w` the witness `δ = ζ` is
+trivial.)  This is exactly Buchholz's collapse: arguments at or beyond `ε(w)` add
+no new ψ-value.  `CanonWitnessLt` (hence (a)) follows — `CanonWitnessLt_of_big`. -/
+def CanonWitnessLtBig.{u} : Prop :=
+  ∀ (ζ : Ordinal.{u}) (w : ℕ), epsLvl w ≤ ζ →
+    ∃ δ, δ < epsLvl w ∧ psiSelf δ w = psiSelf ζ w
+
+/-- `CanonWitnessLt` from the collapse-region residual (the `ζ < ε(w)` case is the
+trivial witness `δ = ζ`). -/
+theorem CanonWitnessLt_of_big (hbig : CanonWitnessLtBig.{u}) : CanonWitnessLt.{u} := by
+  intro ζ w
+  rcases lt_or_ge ζ (epsLvl w) with h | h
+  · exact ⟨ζ, h, rfl⟩
+  · exact hbig ζ w h
+
 /-- **`PsiValueAcanon` from the two sub-residuals (a) and (c)** (with (b) derived).
 GREEN: given (a) `lwit c w < c` and (c) `lwit c w ∈ C_v(c)`, the least witness is
 canonical at `w` (from (a)), and `CsetSelf_psi_closed` reproduces
