@@ -4730,3 +4730,19 @@ NT_shape/STS_B collapse 機械化に収束**。但し NT_shape/STS_B は nrmstep
 消費点(nrm.thy)から使えない=build-order 障害。次の構造的課題: STS_B/NT_shape を健全に確立し nrm より前に再配置、
 または firing 群を nrmstep へ移す。lean は STS_B 相当を maxsub spine+nfinv inv2 で攻略中(向こうも未閉)。
 **現 live §1(nrm.thy)**: argzone_head_maxviol / argzone_transport / nrm_argzone_olt / keeps_head_ST_PS。oV_mono_NF 同値。
+
+### 続90 末7: MV — argzone_head_maxviol は現インフラで真に既約・obstruction を精密同定(編集なし)
+MV は §1 collapse 核を closable でないと確定し精密 obstruction を報告(NET ZERO sorry・偽補題なし)。
+- **clause2(harg X=最大 violator)の clean 分解**: S_Gviol(全 violator g∈insert hb(Gterm 0 hb)・tail 寄与ゼロ)+
+  T_allGhb(hb=harg X が 0-stable=¬pfire 0 hb)⟹ olt 反射律で clause2。clause1 は head-violator=lead hb=maxsub X + F1。
+- **正確な抵抗点**: hb=proj 1(nrm arg)で lead X=1。proj_G(緑・class-free)は Gterm 1 hb<hb を与えるが、T_allGhb は
+  **Gterm 0 hb<hb** が必要。Gterm 0 hb ⊋ Gterm 1 hb が 82%(subscript-0 で見える hb の部分項=gap criticals 188万・
+  subscript 1 では不可視)。この gap criticals が<hb であることが proj_G の出せない標準形内容。
+- **class-free で閉じない理由**: 「全 subscript≥1 ⟹ proj 0(proj 1 t)=proj 1 t」は class-free 真(0/113910)だが
+  仮説が class で失敗(77% が snd-zero pair⟹subscript-0 principal、hb all-subs≥1 は 23% のみ)。G1 も不足:
+  violator の 513459 が **tied**(lead g=lead hb=maxsub X)で lead-gap は無言、g<o hb は深い標準形構造でのみ成立。
+- **STS_B と同核を確認**: nrmstep STS_B(9664)の proj/hdarg/hdsub on 標準形ブロック = 同じ firing-collapse 内容。
+  片方の核証明が他方を discharge。value 路線は psi_proj_nonmem に、構文路線は proj_G-subscript-gap に帰着。
+- **確定**: argzone_head_maxviol/transport/keeps_head/nrm_argzone_olt/STS_B/oV_mono_NF は全て**同一の既約 §1 collapse**=
+  「標準形 arg-zone の proj-1 head 引数の subscript-0 gap criticals が<hb」。現緑インフラでは閉じない。cross-project wall(lean も未閉)。
+**次セッションの核**: この標準形 firing-collapse(subscript-0 gap criticals<hb)を直接証明する Buchholz §1 補題。多セッション研究課題。
