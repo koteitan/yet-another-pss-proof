@@ -365,55 +365,35 @@ theorem z_takeWhile_cons {p : ℕ × ℕ} {rest : PairSeq} (z : ∀ q ∈ p :: r
   · simp
   · exact z q (List.mem_cons_of_mem _ ((List.takeWhile_sublist _).subset hq))
 
-/-- **The single genuine residual of the maxr1-`≤1` head-`0` wall.**  The
-root-level head-`0` OT3 clause for an `ST_PS`-translate descendant block:
-`(0,0) :: B ∈ ST_PS` (with row-`1` `≤ 1`) ⟹ every coefficient in
-`Gterm 0 (translate B)` is strictly below `translate B`.
+/-- **THE single genuine residual of the maxr1-`≤1` head-`0` wall** (consolidated).
+For a forest node whose descendant block is `B` with `(0,0) :: B ∈ ST_PS` and
+row-`1` `≤ 1`, the `(0,0)`-rooted translate `P 0 (translate B) Z` meets `H0clause`
+— equivalently the head-`0` OT3 clause `∀ x ∈ Gterm 0 (translate B), olt x
+(translate B)` PLUS `H0clause (translate B)`.
 
-This is what `H0clause_translate` needs at every head-`0` node, ABOVE the
-hereditary `H0clause` of the sub-blocks (which it discharges by recursion via
-`ST_PS_desc` / `ST_PS_suffix`).  MODEL-VERIFIED TRUE at every head-`0` node of
-every row-`1`-`≤1` `ST_PS`-translate (**25061 / 25061**, closure+9, via the
-node-relative lift `(0,0) :: (argblock − x) ∈ ST_PS`).
-
-WHY IT IS NOT LOCAL.  The clause splits by `lead (translate B)`: coefficients of
-strictly smaller head are auto-`olt` (verified 18235 / 0); coefficients of EQUAL
-head (`= 1`) are NOT all in `Gterm 1` (head-`0`-nested head-`1` coefficients,
-5609 / 6461) so `OT3all1_head1` does not reach them — their `olt` depends on the
-forest position, i.e. full `ST_PS`-reachability.  Same content as
-`Nrmstep.not_pfire0_lead1max1_NF` (`¬ pfire 0 b ⟺ ∀x∈Gterm 0 b, olt x b`) and
-`Rdesc_hstep`; the documented project-central open problem (the `oper`
-copy/tiling core of `ST_PS_desc`). -/
-theorem root_clause_translate {B : PairSeq} (hB : ST_PS ((0,0) :: B))
-    (z : ∀ q ∈ (0,0) :: B, q.2 ≤ 1) :
-    ∀ x ∈ Gterm 0 (translate B), olt x (translate B) := by
-  sorry
-
-/-- **`H0clause` on descendant-block translates** (the second genuine residual).
-For a descendant block `B` with `(0,0) :: B ∈ ST_PS` and row-`1` `≤ 1`,
-`translate B` itself (the head-`0` *argument* forest, possibly head-`1` at its
-root) meets `H0clause`.  MODEL-VERIFIED TRUE (**1481 / 0** over the
-exhaustively-enumerated z-`ST_PS` descendant blocks, closure+7).
-
-It is NOT reducible to `H0clause_translate` on a smaller `ST_PS` form: the
-descendant block `B`'s translate is generally NOT achievable as `translate M'`
-for any `ST_PS` form `M'` (only **702 / 2845** z-form `translate desc` values are
-realisable as a standard-form translate) — descendant blocks are forest-interior
-copies, not standalone standard forms (a row-`0` shift fixes the order but not
-the row-`1` climbing).  So its proof requires the `oper` copy/tiling structure
-directly (the documented project-central content, same family as
-`Nrmstep.not_pfire0_lead1max1_NF` / `Rdesc_hstep`); it is paired with
-`root_clause_translate` (the head-`0` clause at the node above `B`). -/
-theorem H0clause_desc_block {B : PairSeq} (hB : ST_PS ((0,0) :: B))
-    (z : ∀ q ∈ (0,0) :: B, q.2 ≤ 1) : H0clause (translate B) := by
+This is the documented project-central open problem (= `Nrmstep`'s
+`not_pfire0_lead1max1_NF` (`¬ pfire 0 b ⟺ ∀x∈Gterm 0 b, olt x b`) and
+`Rdesc_hstep`).  MODEL-VERIFIED TRUE (head-`0` clause 25061 / 0 at every head-`0`
+node; descendant `H0clause` 1481 / 0).  NOT local: the clause splits by
+`lead (translate B)` — strictly-smaller-head coefficients are auto-`olt`
+(18235 / 0) but EQUAL-head ones are head-`0`-nested head-`1` coefficients NOT in
+`Gterm 1` (5609 / 6461), so `OT3all1_head1` does not reach them; their `olt`
+depends on the forest position (full `ST_PS`-reachability), i.e. the `oper`
+copy/tiling structure (`oper_bad_blocks`, `d0 = 0 ∧ idx1 = 0` tiling copy
+non-firing).  Descendant blocks are forest-interior copies, not standalone
+standard forms (`translate B` realisable as a standard-form translate only
+702 / 2845), so the proof needs that copy structure directly. -/
+theorem H0clause_oper_step {B : PairSeq} (hB : ST_PS ((0,0) :: B))
+    (z : ∀ q ∈ (0,0) :: B, q.2 ≤ 1) : H0clause (P 0 (translate B) Z) := by
   sorry
 
 theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
     (z : ∀ p ∈ M, p.2 ≤ 1) : H0clause (translate M) := by
-  -- Strong recursion on `tsize (translate M)`: `sib` recurses here (proper
-  -- subterm of `translate M`, strictly smaller `tsize`); the head-`0` root clause
-  -- is `root_clause_translate` and the descendant `H0clause` is `H0clause_desc_block`
-  -- (both on `(0,0) :: desc ∈ ST_PS` via the `ST_PS_desc` descendant closure).
+  -- Strong recursion on `tsize (translate M)`.  `sib` recurses here (proper
+  -- subterm); the head-`0` node's two obligations (root clause + descendant
+  -- `H0clause`) are BOTH supplied by the single residual `H0clause_oper_step`
+  -- applied to the descendant block `(0,0) :: desc ∈ ST_PS` (via `ST_PS_desc`),
+  -- whose translate is `P 0 (translate desc) Z`.
   generalize hsz : tsize (translate M) = N
   induction N using Nat.strong_induction_on generalizing M with
   | _ N IH =>
@@ -435,10 +415,12 @@ theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
   rw [htr]
   have hdescST : ST_PS ((0,0) :: desc) := ST_PS_desc hM
   have hzdesc : ∀ q ∈ (0,0) :: desc, q.2 ≤ 1 := z_takeWhile_cons z
-  refine ⟨?_, ?_, ?_⟩
-  · intro _
-    exact root_clause_translate hdescST hzdesc
-  · exact H0clause_desc_block hdescST hzdesc
+  -- `H0clause (P 0 (translate desc) Z)` gives BOTH the head-`0` root clause and
+  -- `H0clause (translate desc)`.
+  have hdescH : H0clause (P 0 (translate desc) Z) := H0clause_oper_step hdescST hzdesc
+  obtain ⟨hroot, hHd, -⟩ := H0clause_P.1 hdescH
+  refine ⟨?_, hHd, ?_⟩
+  · intro _; exact hroot rfl
   · rcases ST_PS_suffix hM with hempty | hstps
     · rw [hsib, hempty, translate]; exact H0clause_Z
     · have hzsib : ∀ q ∈ sib, q.2 ≤ 1 := z_dropWhile z
