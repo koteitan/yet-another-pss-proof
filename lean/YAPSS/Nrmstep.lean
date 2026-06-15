@@ -2247,15 +2247,31 @@ encoding):
 A proof needs the equal-lead spine-alignment of the two NF args' greatest
 criticals under `olt b f` — the deep Buchholz §1 content, isolated here.
 
-**Structural handle for a future proof** (`probe_witness_recursion.py`, all
-`1285 / 1285` resp. `438747 / 438747`): the leading `.b`-chain of a firing
-`NF` arg realises *consecutive* leads `[1, 2, …, maxsub]` (the `nfinv`/`inv2`
-spine), and `proj 0 b` is its node at lead `maxsub b`.  In the equal-`maxsub`
-case both `b, f` carry the same spine `[0, 1, …, k]`, so the strict order
-`olt (proj 0 b)(proj 0 f)` is driven entirely by the off-spine tail differences
-along the shared chain — a structural induction down the shared spine, with
-`olt b f` (= `seqlex` on the `ST_PS` preimages, `olt_ST_iff_seqlex`) supplying
-the first tail difference.  This is the precise remaining obligation. -/
+**Structural handle for a future proof** (`probe_witness_recursion.py`,
+`probe_seqlex_mech.py`, `probe_descent_step.py`, all `1285 / 1285` resp.
+`438747 / 438747`): the leading `.b`-chain of a firing `NF` arg realises
+*consecutive* leads `[1, 2, …, maxsub]` (the `nfinv`/`inv2` spine), `proj 0 b`
+is its node at lead `maxsub b` (`proj 0 b = chainAt b (maxsub b)`), and
+`olt (chain node L of b)(chain node L of f)` holds at **every** lead `1 ≤ L ≤ k`
+— *arg-resolved* at each `L < k` and resolved at the top `L = k` (the goal).
+The downward step rests on `proj 0 (P L x y) = proj 0 x` when the head arg `x`
+carries the max subscript (`probe_witness_recursion.py`, `1764 / 1764` on the
+`L ≥ 1` spine).
+
+**WHY `olt_ST_iff_seqlex` does NOT directly close it** (verified this session):
+`seqlex` orders the `ST_PS` *preimages* (`PairSeq`), but `proj 0`/greatest-
+critical is a *term-level* (`Three`) operation with **no sound bridge** to the
+preimage structure — the only candidate bridge, the E6 identity
+`proj y B = nrm (translate (msfx S))`, is FALSE on `dseg` arg-zones (4 cters,
+`probe_e6`).  And the term-level descent does **not** terminate on any simple
+numeric measure: in the arg-resolved cases the second-level `maxsub` is strict
+only `154737 / 438666` (`268045` equal-`maxsub`-args, `/tmp` final probe), so it
+is a genuine structural first-difference recursion (the `seqlex` order, but on
+the term side).  The precise remaining obligation is the term-level lead-`k`
+chain-node comparison `olt (chainAt b k)(chainAt f k)` from `olt b f`, via the
+`L ≥ 1` spine descent — formalizable but a multi-lemma `chainAt`/spine
+development with delicate lead-`0`/`Z` side-conditions (the recursion is FALSE
+at lead `0`, `2728 / 4962` general). -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
