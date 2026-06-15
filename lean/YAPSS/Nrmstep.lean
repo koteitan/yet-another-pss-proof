@@ -1661,6 +1661,59 @@ static-domain family) but TRUE on `NF` arguments (audited 79800/79800, zero
 reversals).  Pure `olt` (no ordinals), `wf3`-free.  Via `proj_olt_of_fireprop`
 it splits into the two `NF`-standardness residuals below. -/
 
+/-! #### `maxsub`/`climb` discipline of `NF` arguments
+
+The `NF` spine discipline (`nfinv`: `maxsub = climb`, every subscript lies on
+the leading `.b`-spine) gives the clean lever `pfire 0 b ⟺ lead b < maxsub b`
+on `NF` arguments.  These lemmas extract the reusable `maxsub`/`climb` facts:
+the max subscript of an `NF` argument is on its own spine (`maxsub_arg_eq_climb`),
+the argument dominates the whole term's `maxsub` (`maxsub_arg_dom`), and `maxsub`
+is `olt`-monotone on `NF` arguments (`maxsub_arg_mono`). -/
+
+/-- On `NF`, the maximal subscript lies on the leading spine: `maxsub = climb`. -/
+theorem maxsub_eq_climb_NF {x : Three} (hx : x ∈ NF) : maxsub x = climb x := by
+  obtain ⟨M, hM, rfl⟩ := hx
+  rw [maxsub_eq_climb_iff]
+  exact (nfinv_ST_PS hM).1
+
+/-- The head-`0` principal contributes nothing to the spine maximum. -/
+theorem climb_P0 (b c : Three) : climb (P 0 b c) = climb b := by
+  unfold climb; rw [spine_P]; simp [cmax]
+
+/-- Spine subscripts are a subset of all subscripts, so `climb ≤ maxsub`. -/
+theorem climb_le_maxsub (t : Three) : climb t ≤ maxsub t := by
+  unfold climb
+  induction t with
+  | Z => simp
+  | P a b c ihb ihc => rw [spine_P, cmax_cons, maxsub_P]; omega
+
+/-- The argument of a head-`0` `NF` term has its max subscript on its own
+spine. -/
+theorem maxsub_arg_eq_climb {b c : Three} (h : (P 0 b c) ∈ NF) :
+    maxsub b = climb b := by
+  have e1 : maxsub (P 0 b c) = climb (P 0 b c) := maxsub_eq_climb_NF h
+  rw [climb_P0, maxsub_P] at e1
+  have hcb : climb b ≤ maxsub b := climb_le_maxsub b
+  omega
+
+/-- The argument dominates the whole term's `maxsub` on a head-`0` `NF` term:
+`maxsub (P 0 b c) = maxsub b`.  (The tail `c`'s subscripts are bounded by the
+argument's, by the `NF` spine discipline.) -/
+theorem maxsub_arg_dom {b c : Three} (h : (P 0 b c) ∈ NF) :
+    maxsub (P 0 b c) = maxsub b := by
+  have e1 : maxsub (P 0 b c) = climb (P 0 b c) := maxsub_eq_climb_NF h
+  rw [climb_P0] at e1
+  rw [e1, maxsub_arg_eq_climb h]
+
+/-- `maxsub` is `olt`-monotone on `NF` arguments: `olt b f → maxsub b ≤
+maxsub f` (routed through the whole `NF` terms via `maxsub_mono_NF'` and the
+argument-domination `maxsub_arg_dom`). -/
+theorem maxsub_arg_mono {b c f g : Three} (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF)
+    (harg : olt b f) : maxsub b ≤ maxsub f := by
+  have hlt : (P 0 b c) <o (P 0 f g) := olt_P_P.2 (Or.inr (Or.inl ⟨rfl, harg⟩))
+  have := maxsub_mono_NF' hv hu hlt
+  rwa [maxsub_arg_dom hv, maxsub_arg_dom hu] at this
+
 /-- `olt` is monotone in the leading subscript. -/
 theorem lead_le_of_olt {x y : Three} (h : olt x y) : lead x ≤ lead y := by
   cases x with
