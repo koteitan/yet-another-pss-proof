@@ -784,6 +784,35 @@ theorem parent_append_right (A T : PairSeq) (hroot : entry T 0 0 = 0)
   exact hpM.unique (parent_nextR hpM)
     ((nextR_append_right A T i (parent T i j1) j1).2 (parent_nextR hpT))
 
+/-- `take` at a shifted index splits across the append. -/
+theorem take_append_right (A T : PairSeq) (j : ℕ) :
+    (A ++ T).take (A.length + j) = A ++ T.take j := by
+  rw [List.take_append, List.take_of_length_le (Nat.le_add_right _ _), Nat.add_sub_cancel_left]
+
+/-- A single shifted copy-block reading `entry (A ++ T)` equals the copy-block
+reading `entry T` (all indices land in `T`). -/
+theorem copyblock_append (A T : PairSeq) (a m k d0 d1 : ℕ) :
+    (List.range' (A.length + a) m).map
+      (fun j => (entry (A ++ T) 0 j + k * d0, entry (A ++ T) 1 j + k * d1))
+    = (List.range' a m).map
+      (fun j => (entry T 0 j + k * d0, entry T 1 j + k * d1)) := by
+  have hshift : List.range' (A.length + a) m = (List.range' a m).map (A.length + ·) := by
+    rw [List.range'_eq_map_range, List.range'_eq_map_range, List.map_map]
+    congr 1; funext x; simp; omega
+  rw [hshift, List.map_map]
+  congr 1; funext j
+  simp only [Function.comp_apply]
+  rw [entry_append_right, entry_append_right]
+
+/-- `Pred` splits across the append when `2 ≤ |T|` (both stay in the `dropLast`
+of `T`). -/
+theorem Pred_append_right (A T : PairSeq) (hT : 2 ≤ T.length) :
+    Pred (A ++ T) = A ++ Pred T := by
+  unfold Pred
+  rw [List.length_append, if_neg (by omega), if_neg (by omega),
+      List.dropLast_append_of_ne_nil]
+  intro h; rw [h] at hT; simp at hT
+
 /-- **The combinatorial heart of suffix-closure** (pure `oper`/`dropWhile`, no
 `ST_PS`).  For a long list `N` (`1 < |N|`) and `N⟦n⟧ = p :: rest`, the
 `dropWhile`-tail of `N⟦n⟧` is one of three shapes, all of which are `[]` or
