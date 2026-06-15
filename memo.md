@@ -4658,3 +4658,25 @@ SIG2/STRUCT/CORE の3体で sigma_seqlex_mono を緑のブロック帰納証明�
 oV(nrm)eq-case/PROJMONO_WF3/PROJMONO_GEQ/P_subdom/+既知)。第7・8事件を全回避。
 **残 live §1**: proj_step_argzone_olt(発火 crux)/ nrm_argzone_olt(統一帰納要)/ argzone_val_ge(構造 closable)/
 keeps_head_ST_PS(tied e=y=同核)。oV_mono_NF(意味論同値)。psi_proj_nonmem/psi_value_acanon(necessity.thy・別系統 §1)。
+
+### 続90 末2: argzone_val_ge 緑(VAL)+ proj_step_argzone_olt 緑(FIRE)= §1 wall を発火 witness に縮約
+
+- **VAL**: ST_PS_head_val_zero(全 ST_PS 標準形の head=(0,0)⟹y=0・row0_zero_imp_row1_zero_ST_PS floor 不変量)
+  ⟹ argzone_val_ge は y≤v=0≤v に退化・緑。含意: proj_step の IST 値境界は vacuous(y=0、常に proj 0 発火)。
+  偽補題3件破棄(IST_le0/IST_idx0_floor/parent-step mono)。
+- **FIRE**: proj_step_argzone_olt を発火有無で case split・緑証明。
+  - 非発火(~72%): proj_ole(b≤o proj u b)+ olt_ole_trans で完全緑(残核なし)。
+  - 発火(~28%): proj_step_fire_witness に縮約 = 発火時 proj y B は F の違反 G_y-critical g' に支配される
+    (∃g'. g'∈Gterm y F ∧ ¬olt g' F ∧ olt(proj y B)g')。深層 13861/0(2.21M closure)。
+  - toolkit を nrmstep→nrm へ移動(proj_inflate/proj_ole/maxo_ub/pfire/pfire_filter/proj_nofire/Gterm_trans/
+    maxg_nofire/proj_once)。nrm は nrmstep より前にビルド=これらは E6_value 非依存で緑(健全)。
+  - 🚨 偽補題2件: E6_value 値同一性(proj y B = nrm(translate(msfx aM)))は dseg arg-zone で偽
+    (aM=(1,1)(2,2)(1,1)(2,2)@y=0 で proj 0 B=D2(0) だが nrm(msfx)=D2(0)+D1(D2(0)))=旧7事件 E6_value を回避。
+    naive witness(proj y B∈Gterm y F)偽(3403/3403)=witness g' は proj y B を支配する別の critical。
+  - **健全性注記**: E6_value/E6_G6 は nrmstep 内のみ(放棄ルート・false sorry に乗る)、live path(nrm/ovnf/otembed/
+    proofs/seqlex)は E6_value 不使用。FIRE は E6_value を回避して proj_step を緑証明。live 健全性に影響なし。
+
+**続90 全体の最終状態**: PSS 停止性 = 構造機械化を全 close + §1 を発火 crux witness に縮約。
+**残 live §1**: proj_step_fire_witness(発火 28% witness・concrete)/ nrm_argzone_olt(統一サイズ帰納要)/
+keeps_head_ST_PS(tied e=y 同核)。oV_mono_NF(意味論同値)。psi_proj_nonmem(off-path)。
+偽補題は本セッションで計11件破棄(第7・8事件を全回避)。sub-agent 13体を worktree 分離+ヒープ seed で運用。
