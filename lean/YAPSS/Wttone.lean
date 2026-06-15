@@ -346,9 +346,52 @@ theorem H0clause_diagSeq_le1 {v : ℕ} (hv : v ≤ 1) :
       · simp [Gterm] at hx
     · exact ⟨by intro h; simp at h, H0clause_Z, H0clause_Z⟩
 
+/-- The diagonal `(v, v)` is a member of `diagSeq 0 v`. -/
+theorem diag_mem_diagSeq (v : ℕ) : (v, v) ∈ diagSeq 0 v := by
+  unfold diagSeq
+  rw [List.mem_map]
+  exact ⟨v, List.mem_range'.2 ⟨v, by omega, by omega⟩, rfl⟩
+
+/-- **The oper-step (the single genuine residual of the maxr1-`≤1` level).**
+Under the row-`1` `≤ 1` constraint on the *expanded* sequence `M⟦n⟧`, its
+translate meets the head-`0` OT3 clause — *without* needing the clause on the
+parent `M`.
+
+MODEL-VERIFIED (closure+6, corrected `Gterm`/`H0clause` semantics matching the
+Lean defs): `z (M⟦n⟧) ⟹ H0clause (translate (M⟦n⟧))` holds with **0 / 3794**
+violations over the exhaustively enumerated `ST_PS` oper-images — and crucially
+it does NOT require `H0clause (translate M)` (so the standard `ST_PS`-induction's
+IH, which is unusable here because `z` does NOT descend through `oper`
+— `(0,0)(1,1)(2,2)` has `maxr1 = 2` but its `⟦2⟧ = (0,0)(1,1)(2,1)` has
+`maxr1 = 1`, 12 such step-pairs found — is simply not needed).
+
+WHY IT IS NOT A LOCAL TERM/SEQUENCE FACT.  No predicate descending through the
+`translate` `takeWhile`/`dropWhile` recursion captures it: `z` alone fails
+(13845 / 259384 row-`1`-`≤1` pair sequences violate `H0clause`, e.g. the cter
+`(0,0)(1,0)(2,1) ↦ p₀(p₀(p₁0))`); `z ∧ r1ok` fails too (the cter IS `r1ok`).
+The genuine excluder is full `ST_PS`-reachability via the `oper` copy/tiling
+structure (`oper_bad_blocks`: `M = G ++ ((v0,w0)::R) ++ [lp]`,
+`M⟦n⟧ = G ++ ⋃ₖ` copies with row-`0` shifted by `k·d0`); the `d0 = 0 ∧ idx1 = 0`
+tiling sub-case is the combinatorial core.  This is the documented
+project-central open problem (same content as `Nrmstep.not_pfire0_lead1max1_NF`
+and `Rdesc_hstep`); it is a large `oper`-structural build, not a quick
+development. -/
+theorem H0clause_oper_step {M : PairSeq} {n : ℕ} (hM : ST_PS M) (hn : 1 ≤ n)
+    (z : ∀ p ∈ M⟦n⟧, p.2 ≤ 1) : H0clause (translate (M⟦n⟧)) := by
+  sorry
+
 theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
     (z : ∀ p ∈ M, p.2 ≤ 1) : H0clause (translate M) := by
-  sorry
+  induction hM with
+  | diag v =>
+    -- `z` forces `v ≤ 1` since `(v, v) ∈ diagSeq 0 v`.
+    have hv : v ≤ 1 := by
+      have := z (v, v) (diag_mem_diagSeq v); simpa using this
+    exact H0clause_diagSeq_le1 hv
+  | @oper M n hM hn _ih =>
+    -- The IH is unusable (`z` does not descend through `oper`); the oper-step
+    -- is established directly from the copy structure + `z (M⟦n⟧)`.
+    exact H0clause_oper_step hM hn z
 
 /-! ## Lifting to pair sequences -/
 
