@@ -494,15 +494,65 @@ theorem psi0_oV_lt_of_proj_olt {b f : Three} (wb : wf3 b) (wf : wf3 f)
   psi0_lt_of_proj_lt wb wf
     (oV_order_pres (proj_wf3 wb) (proj_wf3 wf) hproj)
 
+/-- **Tail domination on `NF`, from the uniform §1 head.**  Every spine principal
+`ψ_0(oV b')` of the tail `c` of `P 0 b c` is `< ψ_0(oV f)`.  Each spine argument
+`b'` satisfies `b' ≤o b` (`sargs_le_hd`, `cnf`+zero-tops), so the §1-head family
+`hheadfam` (the non-collapse content `ψ_0(oV x) < ψ_0(oV f)` for every `x ≤o b`)
+applies directly.  This is the pure `cnf` packaging of the tail; the only ordinal
+content is `hheadfam`, which is §1 (the `ψ_0`-non-collapse), not row-1. -/
+theorem allprinc_lt_spine_NF {b c f : Three}
+    (htopsc : ∀ s ∈ tops c, s = 0)
+    (hsle : ∀ x, x ∈ sargs c → x ≤o b)
+    (hheadfam : ∀ x, x ≤o b → psi.{u} (oV x) 0 < psi (oV f) 0) :
+    allprinc_lt (psi.{u} (oV f) 0) c := by
+  induction c with
+  | Z => trivial
+  | P a' b' c' _ ihc =>
+    have a0 : a' = 0 := htopsc a' (by simp)
+    subst a0
+    have hb'b : b' ≤o b := hsle b' (by rw [sargs_P]; exact List.mem_cons_self ..)
+    have hhd : psi.{u} (oV b') 0 < psi (oV f) 0 := hheadfam b' hb'b
+    refine ⟨hhd, ihc ?_ ?_⟩
+    · intro s hs; exact htopsc s (by rw [tops_P]; exact List.mem_cons_of_mem _ hs)
+    · intro x hx; exact hsle x (by rw [sargs_P]; exact List.mem_cons_of_mem _ hx)
+
+/-- **Argument-branch value strict-mono, REDUCED to the §1 head (family form).**
+Given the §1-head family `hheadfam` (`ψ_0(oV x) < ψ_0(oV f)` for every `x ≤o b` —
+the `ψ_0`-non-collapse, the genuine §1 content), the rest is pure additive
+arithmetic: `ψ_0(oV f)` is additive principal (`psi_addprinc`); both the head
+(`x = b`) and the tail `oV c` stay below it (the latter by tail domination
+`allprinc_lt_spine_NF`), so `oV(P 0 b c) = ψ_0(oV b) + oV c < ψ_0(oV f) ≤
+oV(P 0 f g)`.  **No content beyond `hheadfam`** — no separate row-1 bridge. -/
+theorem oV_nf_arg_lt_of_head {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF)
+    (hheadfam : ∀ x, x ≤o b → psi.{u} (oV x) 0 < psi (oV f) 0) :
+    oV.{u} (P 0 b c) < oV (P 0 f g) := by
+  have hcnf : cnf (P 0 b c) := cnf_NF hv
+  have htops : ∀ s ∈ tops (P 0 b c), s = 0 := NF_zerotops hv
+  have htopsc : ∀ s ∈ tops c, s = 0 := fun s hs =>
+    htops s (by rw [tops_P]; exact List.mem_cons_of_mem _ hs)
+  have hsle : ∀ x, x ∈ sargs c → x ≤o b := fun x hx => sargs_le_hd hcnf htops hx
+  have hhead : psi.{u} (oV b) 0 < psi (oV f) 0 := hheadfam b (Or.inr rfl)
+  have hspine : allprinc_lt (psi.{u} (oV f) 0) c :=
+    allprinc_lt_spine_NF htopsc hsle hheadfam
+  have hap : allprinc_lt (psi.{u} (oV f) 0) (P 0 b c) := ⟨hhead, hspine⟩
+  calc oV.{u} (P 0 b c) < psi (oV f) 0 :=
+        oV_lt_of_allprinc (psi_addprinc _ _) hap
+    _ ≤ oV (P 0 f g) := psi_le_oV 0 f g
+
 /-- **Argument-branch core (genuine UBI / row-1 content).**  At the outer
 subscript `0` (forced by `NF_lead0`), a strictly larger argument gives a strictly
-larger value.  The head routes through `proj` (the only working route, see
-above) — needing `psi_proj`, the proj-side order, and tail control.  Off `NF` it
-fails (the `y₂ <o y₁` equal-value counterexample is a non-standard plateau). -/
+larger value.  REDUCED (`oV_nf_arg_lt_of_head`) to the **single §1-head residual**
+`hheadfam`: the `ψ_0`-non-collapse `ψ_0(oV x) < ψ_0(oV f)` for every `x ≤o b`
+(all such `x` are `<o f`, so this is the §1 head over the down-set of `b`).  The
+whole structural remainder — tail domination + additive arithmetic — is proven
+sorry-free.  Off `NF` the head itself fails (the `y₂ <o y₁` equal-value
+plateau).  `hheadfam` is supplied by `oV_nf_order_pres` / the §1 lever. -/
 theorem oV_nf_arg_lt {b c f g : Three}
-    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
-    oV.{u} (P 0 b c) < oV (P 0 f g) := by
-  sorry
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hheadfam : ∀ x, x ≤o b → psi.{u} (oV x) 0 < psi (oV f) 0) :
+    oV.{u} (P 0 b c) < oV (P 0 f g) :=
+  oV_nf_arg_lt_of_head hv hheadfam
 
 /-- Every `ST_PS` list is non-empty (the diagonals have length `v+1`; `oper`
 preserves non-emptiness via `oper_eq_dropLast_append`). -/
@@ -1444,7 +1494,12 @@ theorem oV_nf_order_pres {v u : Three} (hv : v ∈ NF) (hu : u ∈ NF)
         subst he
         rcases olt_P_P.1 h with hsub | ⟨_, harg⟩ | ⟨_, rfl, htail⟩
         · exact absurd hsub (lt_irrefl 0)
-        · exact oV_nf_arg_lt hv hu harg
+        · refine oV_nf_arg_lt hv hu harg ?_
+          -- §1-head family: ψ_0(oV x) < ψ_0(oV f) for every x ≤o b (all x <o f).
+          -- This is the single §1 (ψ_0-non-collapse) residual; supplied by the
+          -- §1 lever (Residue / other agent).  See `oV_nf_arg_lt_of_head`.
+          intro x hxb
+          sorry  -- §1 head over the down-set of b (ψ_0-non-collapse leaf)
         · show psi (oV b) 0 + oV c < psi (oV b) 0 + oV g
           refine add_lt_add_right ?_ _
           by_cases hcZ : c = Z
