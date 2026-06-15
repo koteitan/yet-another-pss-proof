@@ -2049,10 +2049,13 @@ pulled through `translate`) has a firing counterexample:
   • `nrm = id`: false on the firing class (`nrm` collapses, `1285 / 5089`).
 Only GLOBAL `r1ok M` (climbing from the row-`0`-`0` root through the whole
 parent forest) excludes them.  Layer-1 of the bridge is GREEN
-(`Gterm_translate_lead_le`, `maxsub_translate_eq_maxr1`, `subs_translate`); the
-remaining LAYER-2 is the parent-forest positional correspondence + off-spine
-subscript-climbing monotonicity pulled from `r1ok_ST_PS` — the project-central
-construction, NOT a quick development. -/
+(`Gterm_translate_lead_le`, `maxsub_translate_eq_maxr1`, `subs_translate`), and
+Layer-2's POSITIONAL CORRESPONDENCE is now GREEN too (`SubBlock`,
+`Gterm_translate_subblock`: every `Gterm 0` critical of `translate M` is
+`translate K` for a `SubBlock K` of `M`, `2241 / 2241`; `SubBlock_sndSet`).  The
+remaining LAYER-2 carrier is the off-spine subscript-climbing monotonicity
+pulled from `r1ok_ST_PS` through `SubBlock`, restricting to the proj-descent
+positions — the project-central construction, NOT a quick development. -/
 theorem not_pfire0_lead1max1_NF {b c : Three}
     (hv : (P 0 b c) ∈ NF) (hl : lead b = 1) (hm : maxsub b = 1) : ¬ pfire 0 b := by
   sorry
