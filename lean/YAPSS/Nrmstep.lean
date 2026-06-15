@@ -3051,6 +3051,23 @@ theorem Rdesc_match {x y : Three} (h : Rdesc x y) :
     · exact maxsub_climb_mvstep hfx hmcx
     · exact maxsub_climb_mvstep hfy hmcy
 
+/-- A term appearing on either side of an `Rdesc` pair. -/
+def RdescNode (t : Three) : Prop := (∃ u, Rdesc t u) ∨ (∃ u, Rdesc u t)
+
+/-- **`hfire` reduces to the single firing-characterization residual.**  Given
+the characterization `pfire 0 t ↔ lead t < maxsub t` on `RdescNode`s (the precise
+forest fact, FALSE off-class as the cter `p₁(p₀(p₁(p₁0)))` shows), the `Rdesc`
+lead/maxsub-match (`Rdesc_match`) gives the lockstep `pfire x ↔ pfire y`.
+GREEN reduction. -/
+theorem Rdesc_hfire
+    (hchar : ∀ t : Three, RdescNode t → (pfire 0 t ↔ lead t < maxsub t)) :
+    ∀ x y, Rdesc x y → (pfire 0 x ↔ pfire 0 y) := by
+  intro x y hR
+  obtain ⟨hl, hms, _, _⟩ := Rdesc_match hR
+  have hcx := hchar x (Or.inl ⟨y, hR⟩)
+  have hcy := hchar y (Or.inr ⟨x, hR⟩)
+  rw [hcx, hcy, hl, hms]
+
 theorem proj_subs (u : ℕ) (b : Three) : subs (proj u b) ⊆ subs b := by
   by_cases h : (Glist u b).filter (fun g => ¬ olt g b) = []
   · rw [proj_id h]
