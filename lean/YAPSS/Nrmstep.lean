@@ -2194,10 +2194,46 @@ theorem lead_proj_eq_maxsub_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hf : pfire
       omega
   omega
 
+/-- **The smaller projection strictly dominates the larger argument** (a GREEN
+structural fact, model-verified `824970 / 824970` on ALL firing pairs,
+`tools/probe_witrec.py`).  For two firing head-`0` `NF` arguments `b <o f`,
+`f <o proj 0 b`.  Pure lead-domination: the firing `f` leads with `1`
+(`fire_lead_one_NF`) while `proj 0 b` leads with `maxsub b ≥ 2`
+(`lead_proj_eq_maxsub_NF`, `pfire0_maxsub_ge2_NF`), so `lead f = 1 < lead (proj 0 b)`
+and `olt_P_of_lead_lt` closes.  This pins the key structural relation underlying
+the witness (the witness `h` must be a *violator* of `f` exceeding `proj 0 b`,
+since `proj 0 b` already exceeds `f` itself). -/
+theorem olt_arg_lt_proj_NF {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF)
+    (hb : pfire 0 b) (hf : pfire 0 f) : f <o proj 0 b := by
+  -- `f` is a firing `NF` arg, so `f = P 1 f' d'`, `lead f = 1`.
+  have hlf : lead f = 1 := fire_lead_one_NF hu hf
+  -- `proj 0 b` leads with `maxsub b ≥ 2`.
+  have hlb : lead (proj 0 b) = maxsub b := lead_proj_eq_maxsub_NF hv hb
+  have h2 : 2 ≤ maxsub b := pfire0_maxsub_ge2_NF hv hb
+  -- `proj 0 b` is a `P` (its lead is positive).
+  obtain ⟨e, x, y, hpb⟩ : ∃ e x y, proj 0 b = P e x y := by
+    cases hcb : proj 0 b with
+    | Z => rw [hcb] at hlb; simp [lead] at hlb; omega
+    | P e x y => exact ⟨e, x, y, rfl⟩
+  rw [hpb]
+  apply olt_P_of_lead_lt
+  right
+  -- `lead f = 1 < e = maxsub b`.
+  have he : e = maxsub b := by rw [hpb] at hlb; simpa [lead] using hlb
+  rw [hlf]; omega
+
 /-- **The both-fire witness (THE single §1 firing residual), Lean form.**
 For two firing head-`0` `NF` arguments `b <o f`, there is a `G₀`-critical `h`
 of the larger argument `f` that **strictly dominates** `proj 0 b` (the greatest
 critical of `b`): `∃ h ∈ Gterm 0 f, olt (proj 0 b) h`.
+
+Equivalently (`olt_arg_lt_proj_NF`) the witness `h` is a **violator** of `f`
+(`f <o proj 0 b <o h`, so `f <o h`, `¬ olt h f`); model-verified the witness is
+always a node on `f`'s leading `.b`-chain with `lead h = maxsub b = lead (proj 0 b)`
+(`tools/probe_witrec.py`, `probe_witness_recursion.py`) — so the strict order
+`olt (proj 0 b) h` is an **equal-lead first-difference** comparison, the genuine
+irreducible Buchholz §1 firing content (NOT lead-resolvable).
 
 This is the sound Lean port of ya-pss's `argzone_fire_FF` / `proj_step_fire_-
 witness` — the genuine Buchholz §1 firing content — but with the **Lean-correct
