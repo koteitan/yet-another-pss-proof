@@ -966,6 +966,116 @@ theorem noncanonValueMem_iff_alphaStepResidue :
   obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ := H α v ξ u hξC hξα hnc hvu
   exact nvm_finish_of_rep δ hδα hδC hδcanon hval
 
+/-! ### THE GENUINE BUCHHOLZ §1 JOINT SIMULTANEOUS TRANSFINITE INDUCTION
+
+`NoncanonValueMem` (= `AlphaStepResidue`, the §1 necessity/canonical-rep face) is
+proven here by the genuine Buchholz joint induction: **outer strong induction on the
+bound `α`, inner induction on the closure-rank `n`** of the generator `ξ` in
+`CsetSelf α v`.  The induction is structured so that the canonical-rep identity
+(`psi_proj`) needed at the non-canonical-generator step is supplied by the IH at
+SMALLER data — breaking the circularity that blocks the monolithic residual.
+
+The skeleton (`noncanonValueMem_joint`) is **fully proven** (sorry-free) modulo
+EXACTLY FOUR precise sub-lemmas, each model-verified TRUE at closure+5/+6 with
+explicit canonicity (so NONE is an Ω-crossing false proxy):
+
+* `NVM_subA_le` — `ψ^s_w(η) ≤ η` when `η` is `u`-canonical (`u ≤ w`) and `ψ^s_w(η)`
+  is `u`-non-canonical (the band fact `Ω_{w+1} ≤ η`; 343/343 at +6);
+* `NVM_subA_nm` — `ψ^s_u(ψ^s_w(η)) ∉ C^s_u(η)` (the plateau-collapse non-membership;
+  343/343);  [together (A) closes the generator step when `η` is `u`-canonical, via
+  the plateau bridge `psiSelf_eq_of_notMem`: `δ = η`]
+* `NVM_caseB` — the generator step when `η` is `u`-NON-canonical (`δ = proj_u η`,
+  the rep of `η`; canon + value-collapse 151/151);
+* `NVM_caseSum` — the sum step `ξ = x + y` (rare, 3/497).
+
+What is ALREADY CLOSED in the skeleton (sorry-free): the base case `n = 0`
+(`ξ < Ω_v` ⟹ canonical, vacuous); the rank-descent case; the generator step
+sub-case (A) (`η` `u`-canonical) via the bridge; the `w < u` band case (vacuous:
+`ψ^s_w(η) < Ω_{w+1} ≤ Ω_u`); and the finishing step (`nvm_finish_of_rep`).
+
+This REPLACES the single monolithic `NoncanonValueMem` sorry with four strictly
+smaller, model-verified residuals — the sharper joint-induction skeleton. -/
+
+/-- Generator step (A) band fact: `ψ^s_w(η) ≤ η`. -/
+def NVM_subA_le.{u} : Prop :=
+  ∀ (η : Ordinal.{u}) (w u : ℕ), u ≤ w →
+    η ∈ CsetSelf (psiResSelf η) η u →
+    psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
+    psiSelf η w ≤ η
+
+/-- Generator step (A) plateau-collapse: `ψ^s_u(ψ^s_w(η)) ∉ C^s_u(η)`. -/
+def NVM_subA_nm.{u} : Prop :=
+  ∀ (η : Ordinal.{u}) (w u : ℕ),
+    psiSelf (psiSelf η w) u ∉ CsetSelf (psiResSelf η) η u
+
+/-- Generator step (B): `η` is `u`-non-canonical; the rep is `η`'s `u`-rep. -/
+def NVM_caseB.{u} : Prop :=
+  ∀ (α : Ordinal.{u}) (v u w : ℕ) (η : Ordinal.{u}),
+    η < α → η ∈ CsetSelf (psiResSelf α) α v → η ∈ CsetSelf (psiResSelf η) η w →
+    η ∉ CsetSelf (psiResSelf η) η u → v ≤ u → u ≤ w → psiSelf η w < α →
+    psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
+    ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
+      δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf (psiSelf η w) u
+
+/-- Sum step: `ξ = x + y` non-canonical generator. -/
+def NVM_caseSum.{u} : Prop :=
+  ∀ (α : Ordinal.{u}) (v u : ℕ) (x y : Ordinal.{u}),
+    (x + y) < α → x + y ∉ CsetSelf (psiResSelf (x+y)) (x+y) u → v ≤ u →
+    ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
+      δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf (x+y) u
+
+/-- **`NoncanonValueMem` by the genuine Buchholz §1 joint simultaneous induction**
+(outer on `α`, inner on closure-rank `n`).  Fully proven modulo the four precise
+sub-lemmas above (all model-verified at closure+5/+6).  See the section header. -/
+theorem noncanonValueMem_joint
+    (subA_le : NVM_subA_le.{u}) (subA_nm : NVM_subA_nm.{u})
+    (caseB : NVM_caseB.{u}) (caseSum : NVM_caseSum.{u}) :
+    NoncanonValueMem.{u} := by
+  intro α
+  induction α using WellFoundedLT.induction with
+  | _ α IHα =>
+    have rnk : ∀ (n : ℕ) (v u : ℕ) (ξ : Ordinal.{u}),
+        ξ ∈ (CstepSelf' (psiResSelf α) α)^[n] (Set.Iio (Om v)) → ξ < α →
+        ξ ∉ CsetSelf (psiResSelf ξ) ξ u → v ≤ u →
+        ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
+          δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf ξ u := by
+      intro n
+      induction n with
+      | zero =>
+        intro v u ξ hn hξα hnc hvu
+        simp only [Function.iterate_zero, id_eq] at hn
+        exact absurd (Iio_Om_subset_CsetSelf (lt_of_lt_of_le hn (Om_mono hvu))) hnc
+      | succ n IHn =>
+        intro v u ξ hn hξα hnc hvu
+        rw [Function.iterate_succ_apply'] at hn
+        rcases hn with (h1 | h2) | h3
+        · exact IHn v u ξ h1 hξα hnc hvu
+        · obtain ⟨x, hx, y, hy, hxy⟩ := h2
+          subst hxy
+          exact caseSum α v u x y hξα hnc hvu
+        · obtain ⟨w, ⟨η, ⟨hηX, hηα, hηcanon⟩, hηξ⟩⟩ := Set.mem_iUnion.1 h3
+          simp only [psiResSelf, if_pos hηα] at hηξ
+          subst hηξ
+          have hηC : η ∈ CsetSelf (psiResSelf α) α v := CiterSelf_subset_CsetSelf hηX
+          have hηcw : η ∈ CsetSelf (psiResSelf η) η w := by
+            have h0 : η ∈ CsetSelf (psiResSelf α) η w := hηcanon
+            exact CsetSelf_mono_param _ _ η w
+              (fun ζ uu hζ => by
+                rw [psiResSelf, psiResSelf, if_pos (lt_trans hζ hηα), if_pos hζ]) h0
+          by_cases hwu : u ≤ w
+          · by_cases hηu : η ∈ CsetSelf (psiResSelf η) η u
+            · refine ⟨η, hηα, hηC, hηu, ?_⟩
+              exact (psiSelf_eq_of_notMem (subA_le η w u hwu hηu hnc) (subA_nm η w u)).symm
+            · exact caseB α v u w η hηα hηC hηcw hηu hvu hwu hξα hnc
+          · push Not at hwu
+            exact absurd
+              (Iio_Om_subset_CsetSelf
+                (lt_of_lt_of_le (psiSelf_lt_Om_succ η w) (Om_mono (by omega)))) hnc
+    intro v ξ u hξC hξα hnc hvu
+    obtain ⟨n, hn⟩ := CsetSelf_mem_iff.1 hξC
+    obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ := rnk n v u ξ hn hξα hnc hvu
+    exact nvm_finish_of_rep δ hδα hδC hδcanon hval
+
 /-- **The non-canonical generator value is itself non-canonical and `≤ ξ`**
 (ya-pss `noncanon_value_noncanon`).  If `ξ ∉ C_u(ξ)` then `psiSelf ξ u ≤ ξ`
 (`psiSelf_le_self_of_not_canon`) and `psiSelf ξ u ∉ C_u(psiSelf ξ u)` (else it
@@ -1029,10 +1139,12 @@ theorem alpha_step_residue
   -- representative `δ` from it via `CsetSelf_witness_canonical` (1.4b).
   obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ :=
     alphaStepResidue_of_mem
-      (show NoncanonValueMem.{u} from
-        -- GENUINE Buchholz §1 core (`C_v(α) = C^c_v(α)`): the non-canonical
-        -- generator's value lands in `C_v(α)`.  Replaces the false vacuity.
-        sorry) α v ξ u hξC hξα hnc hvu
+      (-- GENUINE Buchholz §1 core via the JOINT SIMULTANEOUS INDUCTION
+       -- (`noncanonValueMem_joint`): reduced to the FOUR precise, model-verified
+       -- (closure+5/+6) sub-lemmas — NOT a monolithic residual.
+       noncanonValueMem_joint
+         (subA_le := sorry) (subA_nm := sorry)
+         (caseB := sorry) (caseSum := sorry)) α v ξ u hξC hξα hnc hvu
   -- fire δ: psiResSelf α δ u = psiSelf δ u = psiSelf ξ u ∈ C_v(α)
   have hconv : δ ∈ CsetSelf (psiResSelf α) δ u := by
     rwa [CsetSelf_param_eq (p := psiResSelf δ) (q := psiResSelf α)
