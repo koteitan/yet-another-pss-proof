@@ -1456,6 +1456,34 @@ theorem ST_PS_suffix {p : ℕ × ℕ} {rest : PairSeq} (hM : ST_PS (p :: rest)) 
       rw [oper_eq_self_short n (by omega)] at hL
       exact ih hL
 
+/-- **`ST_PS`-descendant-closure** (the `takeWhile` dual of `ST_PS_suffix`).
+For an `ST_PS` list `(0,0) :: rest`, prepending the root `(0,0)` to the
+*descendant block* — the leading run `rest.takeWhile (0 < ·.1)` of columns above
+the root, i.e. the first top-level subtree — is again `ST_PS`.
+
+This is the structural fact that lifts the head-`0` argument `translate desc`
+of any `ST_PS` forest node to an `ST_PS`-translate:
+`translate ((0,0) :: desc) = P 0 (translate desc) Z` (since `desc` is all
+row-`0` `> 0`, its own `dropWhile` is empty), so `H0clause`'s root clause +
+`H0clause (translate desc)` are both supplied by `H0clause_translate`
+on `(0,0) :: desc`.
+
+MODEL-VERIFIED TRUE (closure+9): `(0,0) :: rest.takeWhile (0 < ·.1) ∈ ST_PS`
+for **13105 / 13105** `ST_PS` forms `(0,0) :: rest` (and `5214 / 5214` restricted
+to `oper`-images).  Proof path (mirror of `ST_PS_suffix`, `ST_PS`-induction):
+* **diag**: `rest = diagSeq 1 v` is all row-`0` `≥ 1`, so `takeWhile = rest` and
+  `(0,0) :: rest = diagSeq 0 v` (`diagSeq_cons`);
+* **oper, `Pred` branches**: `M⟦n⟧ = M.dropLast`; the descendant block of a
+  `dropLast` is the IH block with its last column dropped;
+* **oper, tiling branch**: the descendant block is the first copy's interior
+  (Case B) or lives inside the prefix `G` (`v0 > 0`) — the `takeWhile` dual of
+  the `dropWhile_rest_*` machinery, the genuine `oper`-structural content.
+This is the minimal isolated copy-structure fact feeding the §1 head-`0` wall
+(`Wttone.H0clause_oper_step`). -/
+theorem ST_PS_desc {rest : PairSeq} (hM : ST_PS ((0,0) :: rest)) :
+    ST_PS ((0,0) :: rest.takeWhile (fun q => (0:ℕ) < q.1)) := by
+  sorry
+
 /-- **Tail-`NF`-closure.**  Reduced to the pure list-level `ST_PS_suffix`: the
 tail `c` of `P 0 b c ∈ NF` is `translate` of the `dropWhile`-tail of the `ST_PS`
 preimage, which (when non-empty, i.e. `c ≠ Z`) is again `ST_PS`. -/

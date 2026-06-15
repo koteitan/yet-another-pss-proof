@@ -352,46 +352,151 @@ theorem diag_mem_diagSeq (v : ℕ) : (v, v) ∈ diagSeq 0 v := by
   rw [List.mem_map]
   exact ⟨v, List.mem_range'.2 ⟨v, by omega, by omega⟩, rfl⟩
 
-/-- **The oper-step (the single genuine residual of the maxr1-`≤1` level).**
-Under the row-`1` `≤ 1` constraint on the *expanded* sequence `M⟦n⟧`, its
-translate meets the head-`0` OT3 clause — *without* needing the clause on the
-parent `M`.
+/-- `z` (row-`1` `≤ 1`) is inherited by the `dropWhile`-tail. -/
+theorem z_dropWhile {p : ℕ × ℕ} {rest : PairSeq} (z : ∀ q ∈ p :: rest, q.2 ≤ 1) :
+    ∀ q ∈ rest.dropWhile (fun r => p.1 < r.1), q.2 ≤ 1 :=
+  fun q hq => z q (List.mem_cons_of_mem _ ((List.dropWhile_sublist _).subset hq))
 
-MODEL-VERIFIED (closure+6, corrected `Gterm`/`H0clause` semantics matching the
-Lean defs): `z (M⟦n⟧) ⟹ H0clause (translate (M⟦n⟧))` holds with **0 / 3794**
-violations over the exhaustively enumerated `ST_PS` oper-images — and crucially
-it does NOT require `H0clause (translate M)` (so the standard `ST_PS`-induction's
-IH, which is unusable here because `z` does NOT descend through `oper`
-— `(0,0)(1,1)(2,2)` has `maxr1 = 2` but its `⟦2⟧ = (0,0)(1,1)(2,1)` has
-`maxr1 = 1`, 12 such step-pairs found — is simply not needed).
+/-- `z` (row-`1` `≤ 1`) is inherited by `(0,0)` prepended to the `takeWhile`-block. -/
+theorem z_takeWhile_cons {p : ℕ × ℕ} {rest : PairSeq} (z : ∀ q ∈ p :: rest, q.2 ≤ 1) :
+    ∀ q ∈ (0,0) :: rest.takeWhile (fun r => p.1 < r.1), q.2 ≤ 1 := by
+  intro q hq
+  rcases List.mem_cons.1 hq with rfl | hq
+  · simp
+  · exact z q (List.mem_cons_of_mem _ ((List.takeWhile_sublist _).subset hq))
 
-WHY IT IS NOT A LOCAL TERM/SEQUENCE FACT.  No predicate descending through the
-`translate` `takeWhile`/`dropWhile` recursion captures it: `z` alone fails
-(13845 / 259384 row-`1`-`≤1` pair sequences violate `H0clause`, e.g. the cter
-`(0,0)(1,0)(2,1) ↦ p₀(p₀(p₁0))`); `z ∧ r1ok` fails too (the cter IS `r1ok`).
-The genuine excluder is full `ST_PS`-reachability via the `oper` copy/tiling
-structure (`oper_bad_blocks`: `M = G ++ ((v0,w0)::R) ++ [lp]`,
-`M⟦n⟧ = G ++ ⋃ₖ` copies with row-`0` shifted by `k·d0`); the `d0 = 0 ∧ idx1 = 0`
-tiling sub-case is the combinatorial core.  This is the documented
-project-central open problem (same content as `Nrmstep.not_pfire0_lead1max1_NF`
-and `Rdesc_hstep`); it is a large `oper`-structural build, not a quick
-development. -/
-theorem H0clause_oper_step {M : PairSeq} {n : ℕ} (hM : ST_PS M) (hn : 1 ≤ n)
-    (z : ∀ p ∈ M⟦n⟧, p.2 ≤ 1) : H0clause (translate (M⟦n⟧)) := by
+/-- **The single genuine residual of the maxr1-`≤1` head-`0` wall.**  The
+root-level head-`0` OT3 clause for an `ST_PS`-translate descendant block:
+`(0,0) :: B ∈ ST_PS` (with row-`1` `≤ 1`) ⟹ every coefficient in
+`Gterm 0 (translate B)` is strictly below `translate B`.
+
+This is what `H0clause_translate` needs at every head-`0` node, ABOVE the
+hereditary `H0clause` of the sub-blocks (which it discharges by recursion via
+`ST_PS_desc` / `ST_PS_suffix`).  MODEL-VERIFIED TRUE at every head-`0` node of
+every row-`1`-`≤1` `ST_PS`-translate (**25061 / 25061**, closure+9, via the
+node-relative lift `(0,0) :: (argblock − x) ∈ ST_PS`).
+
+WHY IT IS NOT LOCAL.  The clause splits by `lead (translate B)`: coefficients of
+strictly smaller head are auto-`olt` (verified 18235 / 0); coefficients of EQUAL
+head (`= 1`) are NOT all in `Gterm 1` (head-`0`-nested head-`1` coefficients,
+5609 / 6461) so `OT3all1_head1` does not reach them — their `olt` depends on the
+forest position, i.e. full `ST_PS`-reachability.  Same content as
+`Nrmstep.not_pfire0_lead1max1_NF` (`¬ pfire 0 b ⟺ ∀x∈Gterm 0 b, olt x b`) and
+`Rdesc_hstep`; the documented project-central open problem (the `oper`
+copy/tiling core of `ST_PS_desc`). -/
+theorem root_clause_translate {B : PairSeq} (hB : ST_PS ((0,0) :: B))
+    (z : ∀ q ∈ (0,0) :: B, q.2 ≤ 1) :
+    ∀ x ∈ Gterm 0 (translate B), olt x (translate B) := by
   sorry
+
+/-- **Node-relative descendant closure** (generalizes `ST_PS_desc` to any forest
+node).  If `(0,0) :: B ∈ ST_PS` and `B = d :: R`, then prepending the root
+`(0,0)` to the descendant block `R.takeWhile (d.1 < ·)` of the node `d` is again
+`ST_PS`.  MODEL-VERIFIED at every head node (25061 / 25061, via the row-`0`-shift
+`(0,0) :: (block − x) ∈ ST_PS`; translate is shift-invariant so
+`translate (block − x) = translate block`).  The genuine `oper`-structural
+content (same family as `ST_PS_desc` / `ST_PS_suffix`). -/
+theorem ST_PS_desc_node {d : ℕ × ℕ} {R : PairSeq} (hB : ST_PS ((0,0) :: d :: R)) :
+    ST_PS ((0,0) :: R.takeWhile (fun r => d.1 < r.1)) := by
+  sorry
+
+/-- **Node-relative sibling closure** (generalizes `ST_PS_suffix` to any node).
+The sibling block `R.dropWhile (d.1 < ·)` of node `d` in `(0,0) :: d :: R ∈ ST_PS`,
+prepended with `(0,0)`, is `ST_PS` (or empty).  Same `oper`-structural family. -/
+theorem ST_PS_sib_node {d : ℕ × ℕ} {R : PairSeq} (hB : ST_PS ((0,0) :: d :: R)) :
+    R.dropWhile (fun r => d.1 < r.1) = [] ∨
+      ST_PS ((0,0) :: R.dropWhile (fun r => d.1 < r.1)) := by
+  sorry
+
+/-- **`H0clause` on descendant-block translates** (the recursion carrier).  For a
+block `B` with `(0,0) :: B ∈ ST_PS` and row-`1` `≤ 1`, `translate B` (a forest,
+possibly head-`1` at the root) meets `H0clause`.  Strong recursion on
+`tsize (translate B)`: at `B = d :: R`, the head-`0` *root clause* (only when
+`d.2 = 0`) is `root_clause_translate`; the hereditary obligations on `translate
+desc` and `translate sib` are *proper subterms* (strictly smaller `tsize`, NO
+single-tree tie) and recurse via the node-relative `ST_PS_desc_node` /
+`ST_PS_sib_node`. -/
+theorem H0clause_translate_block {B : PairSeq} (hB : ST_PS ((0,0) :: B))
+    (z : ∀ q ∈ (0,0) :: B, q.2 ≤ 1) : H0clause (translate B) := by
+  generalize hsz : tsize (translate B) = N
+  induction N using Nat.strong_induction_on generalizing B with
+  | _ N IH =>
+  subst hsz
+  cases hBe : B with
+  | nil => rw [translate]; exact H0clause_Z
+  | cons d R =>
+    subst hBe
+    set desc := R.takeWhile (fun r => d.1 < r.1) with hdesc
+    set sib := R.dropWhile (fun r => d.1 < r.1) with hsib
+    have htr : translate (d :: R) = P d.2 (translate desc) (translate sib) := by
+      rw [translate]
+    rw [htr]
+    have hzR : ∀ q ∈ (0,0) :: R, q.2 ≤ 1 := by
+      intro q hq; rcases List.mem_cons.1 hq with rfl | hq
+      · simp
+      · exact z q (by simp [List.mem_cons_of_mem, hq])
+    -- descendant block lifted to `(0,0) :: desc ∈ ST_PS`.
+    have hdescST : ST_PS ((0,0) :: desc) := ST_PS_desc_node hB
+    have hzdesc : ∀ q ∈ (0,0) :: desc, q.2 ≤ 1 := by
+      intro q hq; rcases List.mem_cons.1 hq with rfl | hq
+      · simp
+      · exact z q (List.mem_cons_of_mem _ (List.mem_cons_of_mem _
+          ((List.takeWhile_sublist _).subset hq)))
+    refine ⟨?_, ?_, ?_⟩
+    · -- head-`0` root clause.
+      intro _
+      exact root_clause_translate hdescST hzdesc
+    · -- `H0clause (translate desc)`: proper subterm, strict `tsize`.
+      have hsz : tsize (translate desc) < tsize (translate (d :: R)) := by
+        rw [htr]; simp only [tsize]; have := tsize_pos (translate sib); omega
+      exact IH (tsize (translate desc)) hsz hdescST hzdesc rfl
+    · -- `H0clause (translate sib)`: proper subterm, strict `tsize`.
+      rcases ST_PS_sib_node hB with hempty | hsibST
+      · rw [hsib, hempty, translate]; exact H0clause_Z
+      · have hzsib : ∀ q ∈ (0,0) :: sib, q.2 ≤ 1 := by
+          intro q hq; rcases List.mem_cons.1 hq with rfl | hq
+          · simp
+          · exact z q (List.mem_cons_of_mem _ (List.mem_cons_of_mem _
+              ((List.dropWhile_sublist _).subset hq)))
+        have hsz : tsize (translate sib) < tsize (translate (d :: R)) := by
+          rw [htr]; simp only [tsize]; have := tsize_pos (translate desc); omega
+        exact IH (tsize (translate sib)) hsz hsibST hzsib rfl
 
 theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
     (z : ∀ p ∈ M, p.2 ≤ 1) : H0clause (translate M) := by
-  induction hM with
-  | diag v =>
-    -- `z` forces `v ≤ 1` since `(v, v) ∈ diagSeq 0 v`.
-    have hv : v ≤ 1 := by
-      have := z (v, v) (diag_mem_diagSeq v); simpa using this
-    exact H0clause_diagSeq_le1 hv
-  | @oper M n hM hn _ih =>
-    -- The IH is unusable (`z` does not descend through `oper`); the oper-step
-    -- is established directly from the copy structure + `z (M⟦n⟧)`.
-    exact H0clause_oper_step hM hn z
+  -- Strong recursion on `tsize (translate M)`; `sib` recurses here (proper
+  -- subterm), `desc` is handled by `H0clause_translate_block`.
+  generalize hsz : tsize (translate M) = N
+  induction N using Nat.strong_induction_on generalizing M with
+  | _ N IH =>
+  subst hsz
+  obtain ⟨rest, hrest⟩ : ∃ rest, M = (0,0) :: rest := by
+    have hp := stps_head hM
+    have hlen := stps_len_pos hM
+    cases M with
+    | nil => simp at hlen
+    | cons q rest =>
+      refine ⟨rest, ?_⟩
+      have : q = (0,0) := by simpa using hp
+      rw [this]
+  subst hrest
+  set desc := rest.takeWhile (fun r => (0:ℕ) < r.1) with hdesc
+  set sib := rest.dropWhile (fun r => (0:ℕ) < r.1) with hsib
+  have htr : translate ((0,0) :: rest) = P 0 (translate desc) (translate sib) := by
+    rw [translate]
+  rw [htr]
+  have hdescST : ST_PS ((0,0) :: desc) := ST_PS_desc hM
+  have hzdesc : ∀ q ∈ (0,0) :: desc, q.2 ≤ 1 := z_takeWhile_cons z
+  refine ⟨?_, ?_, ?_⟩
+  · intro _
+    exact root_clause_translate hdescST hzdesc
+  · exact H0clause_translate_block hdescST hzdesc
+  · rcases ST_PS_suffix hM with hempty | hstps
+    · rw [hsib, hempty, translate]; exact H0clause_Z
+    · have hzsib : ∀ q ∈ sib, q.2 ≤ 1 := z_dropWhile z
+      have hszsib : tsize (translate sib) < tsize (translate ((0,0) :: rest)) := by
+        rw [htr]; simp only [tsize]; have := tsize_pos (translate desc); omega
+      exact IH (tsize (translate sib)) hszsib hstps hzsib rfl
 
 /-! ## Lifting to pair sequences -/
 
