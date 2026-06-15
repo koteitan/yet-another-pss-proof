@@ -29,17 +29,30 @@ The generator step splits exactly as ya-pss's `Cset_c_anygen_closed`:
 From `Cset = CsetSelf` we get `psi = psiSelf` (sInf of equal complements), which
 transports the proven self-collapse machinery to the omitted form.
 
-**On the residue itself (NEW vacuity reduction, mirroring ya-pss).**
-`alpha_step_residue` is reduced GREEN to the strictly sharper, **α-free** residual
-`PsiValueAcanon`: *every ψ-value `psiSelf ζ w` is canonical at every subscript
-`v ≤ w`*.  Given it, `alpha_step_residue` is **vacuous** — a member `ξ < α` of
-`CsetSelf_α` is canonical at `v` (closure-rank induction `CsetSelf_mem_lt_acanon`)
-hence at `u ≥ v` (`acanon_sub_mono`), contradicting the non-canonicity `hnc`.  This
-**supersedes** the prior `CanonWitnessResidue` (canonical-witness existence): no
-witness construction is needed, and the new residual is α-free and quantifier-
-light.  The old wall (least-witness canonicity failing at ψ-fixpoints; `CsetSelf`
-non-downward-closure) is bypassed.  Both routes (lean psiSelf, ya-pss Cset_c) now
-bottom out at the **same** statement `psi_value_acanon` (necessity.thy).
+**On the residue itself (vacuity reduction; SOUND form).**
+`alpha_step_residue` is reduced GREEN to the **α-free** residual `PsiValueAcanon`:
+*every ψ-value `psiSelf ζ w` with a `w`-CANONICAL argument is canonical at every
+`v ≤ w`*.  (The canonicity restriction is a SOUNDNESS FIX — the all-`ζ` form is
+FALSE at ε-fixpoints `psiSelf ε(w) w = ε(w)`, but those `ζ` are non-canonical and
+the closure-rank generator only fires for canonical `ζ`.)  Given it,
+`alpha_step_residue` is **vacuous** — a member `ξ < α` of `CsetSelf_α` is canonical
+at `v` (`CsetSelf_mem_lt_acanon`) hence at `u ≥ v` (`acanon_sub_mono`),
+contradicting `hnc`.
+
+**Progress toward `PsiValueAcanon` (explicit-value formula).**  The witness for the
+value `c = psiSelf ζ w` is `ζ` itself (canonical, and `< c` by `AcanonLtValue`).
+This reduces `PsiValueAcanon` to:
+* `AcanonLtValue` (canonical `δ ⟹ δ < psiSelf δ w`) — **PROVEN below `ε(w)`**
+  (`AcanonLtValue_lt_epsLvl`, from the ported explicit formula
+  `psiSelf δ w = ω^(Ω_w+δ)`); open only for canonical `δ ≥ ε(w)`;
+* the `v < w` membership `ζ ∈ C_v(c)` (`v = w` is free via `below_psiSelf`).
+The **diagonal `v = w` is fully reduced to `AcanonLtValue`** alone
+(`psiValueAcanon_diag_of_AcanonLtValue`), hence PROVEN for sub-`ε` canonical `ζ`.
+Connector: `alpha_step_residue_of_AcanonLtValue` (parametric, sorryAx-free).
+
+The explicit formula also gives the **non-collapse lever** `psi_strict_mono_lt_
+epsLvl` (sub-`ε` `ψ_a` injective), which discharges the §1 head of `oV_nf_arg_lt`
+(`oV_nf_arg_lt_of_lever`) — the DUAL termination leaf.
 
 **On `psi_proj_notmem`.**  ya-pss keeps the §1 core as *two* `sorry`s: the
 necessity-side `alpha_step_residue` (necessity.thy:1139) and the collapse-side
