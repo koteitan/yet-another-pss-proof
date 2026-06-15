@@ -507,21 +507,64 @@ lemma translate_sigma: "translate (sigma M) = nrm (translate M)"
 lemma blockok_sigma: "blockok 0 (sigma M)"
   unfolding sigma_def by (rule blockok_untr)
 
+text \<open>\<^bold>\<open>Definitional unfolding of \<open>\<sigma>\<close> through a translate-block\<close> (green).  Writing
+  the head subscript \<open>y\<close>, argument-zone \<open>aM\<close> (\<open>takeWhile\<close> rows \<open>> 0\<close>) and tail-zone
+  \<open>tM\<close> (\<open>dropWhile\<close>) of a depth-0 sequence, \<open>translate ((0,y)#aM@tM)\<close> reads as the
+  principal \<open>P y (translate aM) (translate tM)\<close>, and \<open>\<sigma>\<close> commutes with @{const nrm}
+  and @{const ins}.  This is the \<^emph>\<open>exact\<close> sequence-side recursion the block
+  induction (\<open>seqlex_arg_or_tail\<close>) walks; the only obstacle to running it is whether
+  the leading @{const ins} \<^emph>\<open>absorbs\<close> the head.  Unconditional in the sequence.\<close>
+
+lemma sigma_block_unfold:
+  "untr 0 (nrm (P y B C))
+     = untr 0 (ins y (proj y (nrm B)) (nrm C))"
+  by simp
+
 text \<open>\<^bold>\<open>The single remaining core\<close> \<open>sigma_seqlex_mono\<close>: on standard forms, the
   sequence normalizer \<open>\<sigma>\<close> is \<^emph>\<open>monotone\<close> for the column lexicographic order.
   This is \<open>nrm_order_pres\<close> transported entirely onto the BMS-native (column,
-  suffix, \<open>seqlex\<close>, \<open>blockok\<close>) side via the \<open>translate\<close> isomorphism, the cleanest
-  attack surface for the residual Buchholz-\<section>1 collapse content.
+  suffix, \<open>seqlex\<close>, \<open>blockok\<close>) side via the \<open>translate\<close> isomorphism.
 
-  \<^bold>\<open>Caveat\<close> (\<open>memo\<close> 続78 / 第7事件): \<open>\<sigma>\<close> must \<^emph>\<open>not\<close> be simplified to a single
-  maximal-suffix step \<open>msfx\<close> (the false \<open>E6_value\<close> core).  Here \<open>\<sigma>\<close> is the full
-  recursive \<open>untr \<circ> nrm \<circ> translate\<close> by definition; the statement below is about
-  that full normalizer.
+  \<^bold>\<open>Where the proof stalls (the genuine irreducible obstruction, mapped 2026-06-15).\<close>
+  The block induction reduces \<open>\<sigma>\<close> on a standard-form block \<open>(0,y)#aM@tM\<close> to the
+  \<^bold>\<open>exact structural recursion\<close> (empirically verified, 0 violations / 10437 blocks,
+  \<open>tools/probe_sigma_struct.py\<close>):
 
-  \<^bold>\<open>Empirical status\<close> (soundness gate, deep closure +5): with closure of size
-  17700 standard forms, \<open>\<sigma>\<close> preserves \<open>blockok 0\<close> (0 bad) and is strictly
-  \<open>seqlex\<close>-monotone (604450 ordered pairs, 0 violations, 0 collapses-to-equal); the
-  earlier calibration was 319600 / 0.  No counterexample at any tested depth.\<close>
+    \<open>\<sigma> M = (0,y) # untr 1 (proj y (nrm (translate aM))) @ \<sigma> tM\<close>       (S)
+
+  Here the tail-zone part is literally \<open>\<sigma> tM\<close> (a strictly shorter block, the
+  block-induction IH applies), and the argument-zone part is \<open>\<sigma>\<^sub>P y aM :=
+  untr 1 (proj y (nrm (translate aM)))\<close>.  Two facts are required:
+
+  \<^item> \<^bold>\<open>Head non-absorption\<close> (\<open>ins\<close> keeps the lead \<open>(0,y)\<close>): empirically \<^bold>\<open>always\<close>
+    holds on \<open>ST_PS\<close> (0 / 10437, \<open>probe_seq_induct.py\<close> T1).  But it is \<^emph>\<open>not\<close>
+    cleanly separable: when the normalized tail head subscript equals \<open>y\<close>, the
+    absorb test \<open>olt (proj y (nrm (translate aM))) f\<close> is itself a \<open>proj\<close>-comparison
+    \<dash> the same core below.
+  \<^item> \<^bold>\<open>Argument-zone monotonicity\<close> of \<open>\<sigma>\<^sub>P y\<close>: this is the genuine residue.  It is
+    \<^bold>\<open>true on the universe it is applied to\<close> (hereditary arguments of \<open>NF\<close>
+    translates: 168350 ordered pairs, 0 reversals, 0 collapses at deep closure
+    1{,}013{,}172, \<open>tools/probe_proj_mono_deep.py\<close> universe A).
+
+  \<^bold>\<open>FALSE generalization ruled out\<close> (8th-incident avoided, soundness gate
+  2026-06-15).  The tempting term-level lemma
+
+    \<open>PROJMONO\<close>:  \<open>olt b f \<Longrightarrow> olt (proj a (nrm b)) (proj a (nrm f))\<close>   \<^bold>\<open>is FALSE\<close>
+
+  on arbitrary \<open>cnf\<close> subterms: at the same closure it has \<^bold>\<open>14739 reversals\<close>
+  (universe B, with the \<open>y\<close>-tower \<open>y\<^sub>k\<^sub>+\<^sub>1 = p\<^bsub>0\<^esub>(p\<^bsub>1\<^esub>(y\<^sub>k))\<close> injected) \<dash> exactly the
+  \<open>oV_mono_cnf\<close> trap of 続89(41).  E.g. with \<open>a=0\<close>,
+  \<open>p\<^bsub>0\<^esub>(p\<^bsub>1\<^esub>(\<dots>)) <o p\<^bsub>1\<^esub>(\<dots>)\<close> but \<open>proj 0 \<circ> nrm\<close> reverses them.  Hence
+  \<open>\<sigma>\<^sub>P\<close>-monotonicity \<^bold>\<open>must\<close> carry the standard-form (\<open>blockok\<close> / row-1 parenthood)
+  invariant of \<open>NF\<close>; it does \<^emph>\<open>not\<close> reduce to any \<open>cnf\<close>/\<open>wf3\<close>/\<open>r1ok\<close> term predicate.
+  This is the same Buchholz \<section>1 collapse content as \<open>oV_mono_NF\<close> (ovnf.thy) and
+  \<open>nrm_order_pres\<close> \<dash> the three are one irreducible fact, all kept as a single
+  honest \<open>sorry\<close>.
+
+  \<^bold>\<open>Empirical status of the target itself\<close> (soundness gate, deep closure):
+  \<open>\<sigma>\<close> preserves \<open>blockok 0\<close> (0 bad / 10437) and is strictly \<open>seqlex\<close>-monotone
+  (979300 ordered NF pairs, 0 violations, 0 collapses; \<open>tools/probe_sigma_core.py\<close>).
+  No counterexample at any tested depth.\<close>
 
 lemma sigma_seqlex_mono:
   assumes "M \<in> ST_PS" and "N \<in> ST_PS" and "seqlex M N"

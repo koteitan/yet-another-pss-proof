@@ -30,15 +30,20 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
-  - 🎯 **★最新(続89(40-41)): PSS 停止性を単一 NF-構造核に縮約・2独立ルート(sub-agent 並列)**
-    > ユーザー指摘「§1 移植しても PSS と繋がらない」は正。§1/psi_proj は live path 外と確定。本当の接続点:
-    - ✅ **(A) nrm ルート緑 assembly**〔nrm.thy・R2〕: nrm_order_pres = olt_ST_iff_seqlex + translate_sigma +
-      seqlex_imp_olt + [核]。green infra: untr/blockok_untr/translate_untr/sigma/translate_sigma/blockok_sigma。
-      🚨 **唯一の live 核 `sigma_seqlex_mono`**: M,N∈ST_PS⟹seqlex M N⟹seqlex(σM)(σN)〔列・組合せ・深層604450/0〕。
-    - ✅ **(B) oV ルート緑**〔ovnf.thy・R1・nrm 非依存の第2ルート〕: wf_Rnf_oV/PSS_terminates_oV/cnf_* 群。
-      🚨 核 `oV_mono_NF`: v,u∈NF⟹olt v u⟹oV v<oV u〔意味論・749525/0〕。
-    - 両核は同一 Buchholz 標準形核(NF=blockok 両 row 本質、cnf/wf3/r1ok 局所述語不可)の双対。**次の本丸**。
-    - soundness: 偽補題 acanon_arg_lt/oV_mono_cnf を深層 probe で破棄(第7事件再演防止)。
+  - 🎯 **★最新(続90): PSS 停止性 = 単一の既約 Buchholz §1 核 `sigma_seqlex_mono`(両ルート収束確定)**
+    > ユーザー指摘「§1 移植しても PSS と繋がらない」は正。§1/psi_proj は live path 外。続89 の「2独立ルート」は
+    > 続90 sub-agent 2並列で**両者が同一の単一義務に収束**と判明(独立でなかった)。
+    - 🚨 **唯一の真の live 核 `sigma_seqlex_mono`**〔nrm.thy〕: M,N∈ST_PS⟹seqlex M N⟹seqlex(σM)(σN)
+      〔列・組合せ・深層979300/0〕。nrm_order_pres ⟸ これ。緑 assembly: olt_ST_iff_seqlex/translate_sigma/
+      seqlex_imp_olt/untr/sigma/sigma_block_unfold(続90 緑追加)。
+    - **核 `oV_mono_NF`**〔ovnf.thy・意味論・3378700/0〕は **sigma_seqlex_mono と同値**: 唯一 TRUE な還元 =
+      oV_nrm(oV∘nrm=oV)+wf3_nrm+oV_order_pres+nrm_order_pres ⟸ sigma_seqlex_mono。standalone sorry のまま維持
+      (将来の global 意味論攻撃の余地)。緑橋は wt-oV に保存(main 非統合=live sorry 増を避ける)。
+    - 🚨 **per-principal/Cmem_NF ルートは偽**で確定(OV agent): NF⊄wf3(2207/10207)・Cmem_NF(93/179 non-canonical)・
+      PROJMONO(14739 reversal)全て深層実測で破棄。**標準形(blockok 両row)不変量が本質**、cnf/wf3/r1ok 局所述語不可。
+    - **具体的次攻**(SIGMA): 構造分解 (S) σM=(0,y)#untr 1(proj y(nrm aM))@σ(tM) 経由で seqlex_imp_olt の
+      ブロック帰納。a=e 交点(head 非吸収判定=proj比較)に §1 collapse content が宿る=分離不可。
+    - soundness: 偽補題 Cmem_NF/PROJMONO(+既知 acanon_arg_lt/oV_mono_cnf)を深層 closure+5 で破棄(第7・8事件回避)。
   - 🗄 §1/psi_proj 路線(続89(21-39)・健全 infra だが live path 外): term_nec/1.4 trio/Cset_eq_Cset_c
     (psi_value_acanon modulo)/B2/wit機構。Buchholz §1 機械化として価値あるが PSS には不要と確定。
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明

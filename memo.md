@@ -4562,3 +4562,37 @@ nrm_order_pres(olt v u⟹olt(nrm v)(nrm u) on NF)で psi_proj は live path 外�
 - **sub-agent 運用知見**: worktree 分離 + isbman ヒープ seed で並列。各 agent に第7事件 soundness 警告
   (深層 closure+5 で反証優先・偽補題 enshrine 厳禁)を渡したことで **2件の偽補題(acanon_arg_lt/oV_mono_cnf)を
   未然に破棄**。git は agent 側 deny→worktree から手動統合(全文を本文に貼らせる)。
+
+### 続90: ★sub-agent 2並列で「両ルートは独立でなく単一義務 sigma_seqlex_mono に収束」を確定
+
+続89(39-41)で「PSS=2独立ルート(A:sigma_seqlex_mono / B:oV_mono_NF)」としたが、本セッションの
+sub-agent 2並列(SIGMA=列側核 / OV=意味論核)で**両者が同一の単一義務に収束**することが判明:
+
+- **🚨 OV agent の最重要発見: per-principal/Cmem_NF ルートは偽**。メモリ nrm-route-status の局所化仮説
+  「Cmem_NF(v∈NF の各主項で oV b∈Cset(a,oV b))を証明すれば oV_order_pres が NF で走る」は**FALSE**。
+  - tools/check_ccnd_NF.py(真の有限 collapse モデル cset_remark_check.py 内): **179 NF principal 中 93 が
+    non-canonical**, 例 a=0, oV b=ω⁴+2 ∉ Cset。⟹ per-principal Cmem 補題は存在し得ない。
+  - tools/check_nf_wf3.py: **NF ⊄ wf3**(2207/10207 が OT3 破れ)。tools/semOT3.py: semantic OT3 on NF も偽(137390/0)。
+  - もし Cmem_NF を補題化していたら第7事件の再演だった。**per-term/per-principal 意味論ルートは確定的に閉鎖**。
+- **OV: 唯一 TRUE な oV_mono_NF 還元** = oV(nrm v)=oV v(oV_nrm, 実測0/17409)+ wf3_nrm(緑) +
+  oV_order_pres(wf3限定・緑, otembed.thy:347)+ nrm_order_pres ⟸ **sigma_seqlex_mono**。
+  - つまり oV_mono_NF も nrm_order_pres も sigma_seqlex_mono も**同一の既約 Buchholz §1 義務の3表現**。
+  - OV は wt-oV で実際に橋(oV_nrm + nrm_hdle[新・構文 sorry, 0/17408] + 配線)を構築し oV_mono_NF を
+    緑化したが、**main には統合せず**: 橋は live sorry を 2(独立)→3(sigma+psi_proj_nonmem+nrm_hdle)に
+    増やし psi_proj_nonmem を §1 経路に引き込むため。oV_mono_NF は standalone sorry のまま維持
+    (将来の global 意味論攻撃の余地を残す)。橋の全文は wt-oV/ord/ovnf.thy に保存。
+- **🚨 SIGMA agent: もう1つの偽 reduction を捕捉**。PROJMONO(olt b f⟹olt(proj a(nrm b))(proj a(nrm f)))は
+  **FALSE**(tools/probe_proj_mono_deep.py: 深層101万項, cnf一般で14739 reversal, y-tower注入=oV_mono_cnf と同型の罠)。
+  NF制限(168350対)でのみ0。⟹ **σ_P 単調性は blockok/row-1 不変量を必須とし cnf/wf3/r1ok 局所述語に還元不可**。
+- **SIGMA: 構造分解 (S)**(実測0/10437): σM = (0,y)#untr 1(proj y(nrm(translate aM)))@σ(tM)。
+  tail部=σ(tM)(短い→ブロック帰納IH)、arg部 σ_P y aM=untr 1(proj y(nrm(translate aM)))が残核。
+  ST_PS 上で head 非吸収(T1: 0/10437)だが a=e 場合で head 非吸収判定自体が proj比較=核そのもの⟹分離不可。
+  緑補題 sigma_block_unfold 追加(nrm.thy)。具体的次攻=(S)経由の seqlex_imp_olt ブロック帰納で
+  「head 非吸収」と「σ_P 単調性(NF不変量 carry)」を同時に進める(a=e 交点に §1 collapse content が宿る)。
+
+**確定した全体像**: PSS停止性 = 単一の既約 Buchholz §1 核 **sigma_seqlex_mono**(≡nrm_order_pres≡oV_mono_NF)。
+標準形(blockok 両row)不変量が本質。per-principal/Cmem・cnf弱化・PROJMONO は全て偽(深層実測で確認)。
+- main の live sorry: sigma_seqlex_mono(nrm.thy, 列側核)/ oV_mono_NF(ovnf.thy, 意味論核, 同値)。
+  §1(psi_proj_nonmem/psi_value_acanon)は両 live path 外。
+- 統合: SIGMA の nrm.thy(sigma_block_unfold 緑+障害マップdoc)+ 両agent の tools(probe_sigma_*/check_*)。
+- **soundness 総括**: 2件の偽補題(Cmem_NF/PROJMONO)を深層 closure+5 実測で未然破棄。第7・8事件を回避。
