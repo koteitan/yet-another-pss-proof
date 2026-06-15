@@ -30,10 +30,10 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
-  - 🎯 **★★★最新(続90): PSS 停止性 = 純粋に Buchholz §1 核のみ(構造機械化を全 close)**
+  - 🎯 **★★★最新(続90): PSS 停止性 = 純粋に Buchholz §1 の発火 wall のみ(構造機械化を全 close)**
     > 多セッション crux `sigma_seqlex_mono` を緑のブロック帰納で証明完成 → 構造的到達性・標準形閉包を全緑化。
-    > 残る live sorry は本質的 §1 内容 2つ(`proj_nrm_argzone_olt` §1核 / `keeps_head_ST_PS` tied e=y)のみ。
-    > 今セッションで偽補題6件を深層実測で破棄(Cmem_NF/PROJMONO/C1/旧tail_zone[空]/oV(nrm)eq-case/+既知)。
+    > 残 live §1: `argzone_fire_FF`(発火2節)/ `nrm_argzone_olt`(統一帰納)/ `keeps_head_ST_PS`(tied e=y)。oV_mono_NF 同値。
+    > 今セッションで偽補題11件を深層実測で破棄(第7事件 E6_value 再演も回避)。sub-agent 14体運用。
     > ユーザー指摘「§1 移植しても PSS と繋がらない」は正。§1/psi_proj は live path 外。続89 の「2独立ルート」は
     > 続90 sub-agent 2並列で**両者が同一の単一義務に収束**と判明(独立でなかった)。
     - 🚨 **唯一の真の live 核 `sigma_seqlex_mono`**〔nrm.thy〕: M,N∈ST_PS⟹seqlex M N⟹seqlex(σM)(σN)
@@ -72,13 +72,10 @@
     - 🚨 **残 §1 wall = `argzone_fire_FF`**(発火 2節命題・FW が proj_step_fire_witness を緑化し更に縮約):
       arg-zone class で olt B F・B 発火 ⟹ (1)pfire y F(F も発火)+(2)olt(proj y B)(proj y F)。∃/maxo なし・6555/0/0。
       witness g'=proj y F(緑)。これ + nrm_argzone_olt(統一帰納)+ keeps_head_ST_PS(tied e=y)が残る全 §1。
-    - 🚨 偽補題(FIRE): E6_value 値同一性(proj y B=nrm(msfx aM))偽=旧7事件系を回避・naive witness(proj y B∈Gterm y F)偽。
-    - **次攻**: proj_step_fire_witness 本体(nrm-image の critical 構造で違反 critical g' を構成)。
-      keeps_head_ST_PS tied e=y / nrm_argzone_olt(統一サイズ帰納)も同核。oV_mono_NF 意味論同値。
-    - soundness: 偽補題 6件(Cmem_NF/PROJMONO/C1[oV(proj∘nrm)=oV]/旧tail_zone_ST_PS[空]/oV(nrm)=oV の eq-case/+既知
-      acanon_arg_lt/oV_mono_cnf)を深層 closure+5 で破棄(第7・8事件回避)。
-    - **次攻**: (1)suffix_oper_witness_residual を hasParent 存在不変量で閉じる(構造・closable→PSS=純§1)
-      (2)proj_nrm_argzone_olt を ST arg-zone 不変量 carry の直接帰納で攻める(§1核・多セッション wall・lean も停滞)。
+    - 🚨 偽補題: 本セッション計11件破棄(Cmem_NF/PROJMONO/C1/旧tail_zone[空]/oV(nrm)eq-case/PROJMONO_WF3/GEQ/
+      P_subdom/E6_value[旧7事件系]/naive witness/+既知 acanon_arg_lt/oV_mono_cnf)。全て arg-zone class guard 脱落が原因。
+    - **次攻**: (1)argzone_fire_FF clause(1)pfire y F(発火単調性・class-guard 必須)→ clause(2) (2)nrm_argzone_olt
+      (深さ一般統一サイズ帰納) (3)keeps_head_ST_PS tied e=y(同核)。oV_mono_NF は意味論側同値。
   - 🗄 §1/psi_proj 路線(続89(21-39)・健全 infra だが live path 外): term_nec/1.4 trio/Cset_eq_Cset_c
     (psi_value_acanon modulo)/B2/wit機構。Buchholz §1 機械化として価値あるが PSS には不要と確定。
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
