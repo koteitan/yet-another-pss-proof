@@ -750,6 +750,27 @@ theorem alpha_step_residue
       hvu)
     hnc
 
+/-- **`alpha_step_residue` reduced to `AcanonLtValue` + the `v < w` membership**
+(GREEN, parametric).  Makes the residual structure legible: `PsiValueAcanon` (the
+sound, canonical form) follows from the canonical-rep core `AcanonLtValue` (PROVEN
+below `ε(w)`; open for canonical `δ ≥ ε(w)`) and the membership residual `hmem`
+(only the `v < w` part is non-trivial — `v = w` is `below_psiSelf`).  So the WHOLE
+necessity face rests on these two, and the diagonal `v = w` is already fully
+reduced to `AcanonLtValue` alone. -/
+theorem alpha_step_residue_of_AcanonLtValue
+    (hALV : AcanonLtValue.{u})
+    (hmem : ∀ (ζ : Ordinal.{u}) (w v : ℕ), v ≤ w → ζ ∈ CsetSelf (psiResSelf ζ) ζ w →
+       ζ < psiSelf ζ w → ζ ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) v)
+    (α : Ordinal.{u}) (v : ℕ)
+    (ξ : Ordinal.{u}) (u : ℕ)
+    (hξC : ξ ∈ CsetSelf (psiResSelf α) α v) (hξα : ξ < α)
+    (hnc : ξ ∉ CsetSelf (psiResSelf ξ) ξ u) (hvu : v ≤ u) :
+    psiSelf.{u} ξ u ∈ CsetSelf (psiResSelf α) α v :=
+  absurd
+    (acanon_sub_mono
+      (CsetSelf_mem_lt_acanon (psiValueAcanon_of_AcanonLtValue hALV hmem) hξC hξα) hvu)
+    hnc
+
 /-! ## The generator step (all three sub-cases), modulo the residue
 
 Lean analogue of ya-pss's `Cset_c_anygen_closed`: every generator with argument
