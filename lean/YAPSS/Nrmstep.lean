@@ -2475,11 +2475,32 @@ characterized (`probe_descok_recursion.py`, `probe_base_nofire.py`):
     (`probe_base_nofire` re-run); so the base case ALSO needs the hereditary
     `descok`/gap-free-spine structure, not just `cnf`.
 
-So `proj_keystone` (the genuinely novel engine) is landed GREEN; closing
-`proj_bothfire_witness_eq` requires formalizing the `descok` predicate, its
-head-descent closure, the `descok`-restricted base lemma, and the `tsize`
-recursion — a substantial but fully-mapped term-structural development.  Helper
-`olt_arg_maxsub_le` is also available (GREEN). -/
+So `proj_keystone` (the genuinely novel engine) is landed GREEN, and the
+`descok` predicate + head-descent (`descok_arg`) + keystone side-condition
+propagation (`descok_arg_maxsub_eq_climb`) are all GREEN (above).  But the
+`descok` recursion does **NOT** bypass the wall — established rigorously this
+session:
+
+  • **Base case** `descok t ∧ lead t = maxsub t ⟹ ¬ pfire 0 t` is FALSE on
+    general `descok` terms: `p₁(p₀(p₁(p₁0)))` is `cnf`, hereditarily
+    `maxsub = climb`, `descok` (top, `lead = maxsub = 1`) yet FIRES (violator
+    `p₁(p₁0)`); it holds only on the *`NF`-image* `descok` nodes (`1285 / 1285`).
+  • **Step arg-resolution** `olt x y ⟹ olt x' y'` (head args, needed to recurse)
+    is FALSE on general `descok` terms: `244493 / 7553142` are *tail*-resolved
+    (`x' = y'`, e.g. `P 0 (p₁0) Z` vs `P 0 (p₁0) (p₀0)`), which would make
+    `proj 0 x = proj 0 x' = proj 0 y' = proj 0 y` and the goal `olt z z` false;
+    it holds only on the `NF`-image nodes (`552273 / 552273`), because "no two
+    distinct firing `NF` args share their `proj`-head `b'`" — an `NF` uniqueness.
+
+Both gaps are the SAME `NF`-global-anchoring (`ST_PS`-reachability /
+`r1ok`/`steps1`) forest core that the project shares: per
+`Wttone.H0clause_translate`, this is *"the SAME open obstruction as
+`proj0_fireprop_NF`/`proj0_bothfire_NF` … the genuine forest core the whole
+project shares, not a quick development."*  No term-local spine predicate
+(`cnf`, `maxsub = climb`, hereditary, `descok`) excludes the firing
+counterexamples — only genuine `NF` membership does.  The keystone reduces the
+witness to this shared core but cannot eliminate it.  Helper `olt_arg_maxsub_le`
+is also available (GREEN). -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
