@@ -57,7 +57,17 @@
       HP が hasParent_last_ST_PS(ST_PS の全列が最終 index に parent・実測 0/190508)を ST_PS.induct で証明し
       最後の構造残核を vacuous close。緑基盤: nextrel0/1/R_drop_iff・parent_unique・le0_row0_floor・
       row0_zero_imp_row1_zero_ST_PS(floor 不変量)・nextrel0/1_exists。
-    - **次攻**: proj_nrm_argzone_olt(§1核・ST arg-zone 不変量 carry 直接帰納・多セッション wall・lean も停滞)。
+    - ✅ **続90末: proj_nrm_argzone_olt を緑化・§1核を proj 発火 crux に分解(CORE2)**。compositional:
+      - `argzone_val_ge`(ST arg-zone 値境界 y≤v・構造・1013167/0・**独立 closable**)
+      - `nrm_argzone_olt`(nrm 単調半=nrm_order_pres one depth down・44850/0/0)
+        🚨**循環注意**: depth-1 にブロック帰納を適用すると depth-2 の proj_nrm_argzone_olt に下りる
+        ⟹ **深さ一般の統一サイズ帰納に再構成**しない限り独立には閉じない(easy win ではない)。
+      - 🚨 `proj_step_argzone_olt` = **唯一の真に既約な §1 wall**(proj y 発火ケース・IST 値境界 carry・61075/0/0)。
+        CORE2 負の結果: 局所 term-level 不変量(wf3/subs≥y/P_subdom)では不十分(各 8万〜18万 reversal で偽)、
+        **firing-28%(fire×sum-vs-nest, memo 続83)が既約**。proj_emb_mono(embedding 順序)は非発火72%のみ閉じる。
+    - **次攻**: (1)argzone_val_ge を ST_PS 帰納で閉じる(構造・closable) (2)sigma_seqlex_mono/nrm_argzone_olt を
+      深さ一般の統一サイズ帰納に再構成し §1 を proj_step_argzone_olt 一点に集約 (3)proj_step_argzone_olt 本体
+      (fire×sum-vs-nest crux・多セッション wall・lean も停滞・proj_emb_mono で非発火部+発火部の項サイズ場合分け)。
       keeps_head_ST_PS の tied e=y も同核。oV_mono_NF は意味論側同値。
     - soundness: 偽補題 6件(Cmem_NF/PROJMONO/C1[oV(proj∘nrm)=oV]/旧tail_zone_ST_PS[空]/oV(nrm)=oV の eq-case/+既知
       acanon_arg_lt/oV_mono_cnf)を深層 closure+5 で破棄(第7・8事件回避)。

@@ -4636,3 +4636,25 @@ SIG2/STRUCT/CORE の3体で sigma_seqlex_mono を緑のブロック帰納証明�
 
 **現 live §1核(最小・self-contained 維持)**: proj_nrm_argzone_olt(term-level・nrm.thy)/ keeps_head_ST_PS(tied e=y)/
   suffix_oper_witness(構造)。 oV_mono_NF(意味論・同値)。§1核は psi_value_acanon とは独立に攻める方針。
+
+### 続90 最末尾: 構造機械化を全 close・§1核を proj 発火 crux に集約(HP/CORE2)
+
+- **HP**: suffix_oper_witness_residual を hasParent_last_ST_PS(ST_PS の全列が最終 index に parent・ST_PS.induct・
+  実測 0/190508)で vacuous close。⟹ **構造的到達性・標準形閉包を全緑化。PSS=純粋 §1 核**。
+  緑基盤 nextrel0/1/R_parent_unique・nextrel0_exists・le0_row0_floor・row0_zero_imp_row1_zero_ST_PS(floor 不変量)・nextrel1_exists。
+- **CORE2**: proj_nrm_argzone_olt を緑化、§1核を nrm/proj seam で compositional 分解:
+  - argzone_val_ge(ST arg-zone 値境界 y≤v・構造・1013167/0・独立 closable)
+  - nrm_argzone_olt(nrm 単調半=nrm_order_pres one depth down・44850/0/0)
+    🚨**循環注意**: ブロック帰納を depth-1 に適用すると depth-2 proj_nrm_argzone_olt に下りる⟹深さ一般統一サイズ帰納が必要。
+  - proj_step_argzone_olt = 唯一の真に既約な §1 wall(proj y 発火・IST carry・61075/0/0)。
+  🚨**偽補題3件**(CORE2): PROJMONO_WF3(wf3 上 proj 単調・84960 rev, p=D0(D1(..)) で proj 0 が D1 に飛び overshoot)/
+  PROJMONO_GEQ(subs≥y 追加でも 177329 rev・y=0 で境界 vacuous)/P_subdom(10144 rev)。
+  **負の結果**: proj に局所 term-level 特徴付けは無い。P_canon(proj 不発火)だけ 0 reversal だが arg-zone 像の 72%(697752/964297)。
+  **firing 28% が既約**(fire×sum-vs-nest crux・memo 続83)。proj_emb_mono(x⊑y⟹ole(proj u x)(proj u y))は非発火 72% を閉じる。
+  (NB: F2-arb=ランダム 700 wf3 で 0 reversal の偽陽性を深層 probe が覆した⟹soundness gate は深く広く取る必要。)
+
+**今セッション総括(続90)**: 多セッション crux sigma_seqlex_mono を緑のブロック帰納で完成→構造機械化を全 close→
+§1核を proj 発火 crux(proj_step_argzone_olt)一点に集約。偽補題を計9件破棄(Cmem_NF/PROJMONO/C1/旧tail_zone[空]/
+oV(nrm)eq-case/PROJMONO_WF3/PROJMONO_GEQ/P_subdom/+既知)。第7・8事件を全回避。
+**残 live §1**: proj_step_argzone_olt(発火 crux)/ nrm_argzone_olt(統一帰納要)/ argzone_val_ge(構造 closable)/
+keeps_head_ST_PS(tied e=y=同核)。oV_mono_NF(意味論同値)。psi_proj_nonmem/psi_value_acanon(necessity.thy・別系統 §1)。
