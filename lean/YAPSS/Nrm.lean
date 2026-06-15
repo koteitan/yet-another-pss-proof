@@ -338,10 +338,19 @@ theorem psi_proj_notmem_of_intervalNoncanon (a : ℕ) (b' g : Three) (wb' : wf3 
 `psi_proj` sorry): at a non-`a`-reduced `b'` with an OT3-violator `g ∈ G_a(b')`
 (`¬ g <o b'`, so `oV b' ≤ oV g`), the principal value `ψ_a(oV b')` is *not* in
 `C_a(oV g)`.  Equivalent (via 1.5 + monotonicity) to `ψ_a(oV b') = ψ_a(oV g)` —
-the Buchholz collapse across the critical point.  This is the genuine necessity
-core (and is exactly where a non-canonical `b'` defeats the `wf3` necessity
-`NEC_of_argExtract`); reduces to interval non-canonicity by
-`psi_proj_notmem_of_intervalNoncanon`; still open. -/
+the Buchholz collapse across the critical point.
+
+**Status: TRUE (closure+6 model-verified, 328/328) but IRREDUCIBLE — the genuine
+Buchholz wall** (see `Residue` "TERM-NEC collapse analysis").  For the `maxo` `g`:
+g is the `a`-canonical proj-target (`proj a g = g`, `proj a b' = g`), so the
+collapse `ψ_a(oV b') = ψ_a(oV g) = ψ_a(oV (proj a b'))` IS `psi_proj` itself.  The
+dual `psi_proj_mem_imp_strict` gives `membership ⟹ strict <`; M1
+(`psi_form_of_mem`) extracts a witness `ξ < oV g` whose only non-circular finish is
+`ξ = oV (proj a b')` (= `psi_proj`); and `collapse_le` is the WRONG tool (the gap
+crosses canonical `Ω_k`, so `IntervalNoncanon` is FALSE — Ω-crossing).  This is
+exactly ya-pss's open `psi_proj_nonmem`.  SOUND partial: `oV b'` non-canonical
+(B2, `Residue.noncanon_of_bad_of_SUFF`).  Rests on `SUFF` (Buchholz 1.9) + the
+irreducible witness-identity. -/
 theorem psi_proj_notmem (a : ℕ) (b' g : Three) (wb' : wf3 b')
     (hg : g ∈ Gterm a b') (hv : ¬ olt g b') :
     psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a := by

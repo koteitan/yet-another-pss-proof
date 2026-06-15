@@ -1274,6 +1274,51 @@ theorem psi_proj_mem_imp_strict {a : ℕ} {b' g : Three}
     psi_form_of_mem hap (Om_le_psi (oV b') a) (psi_lt_Om_succ (oV b') a) hmem
   exact hξeq ▸ psi_strict_mono_mem hξC hξlt
 
+/-! ### TERM-NEC collapse analysis (the SOUND route) — and the precise irreducible
+    circularity (matching ya-pss `psi_proj_nonmem`).
+
+`CollapseResidueMaxo` is TRUE (re-verified at closure+6 via the term value model
+`nrm (P a b' Z) = nrm (P a g Z)`: 328/328 instances collapse, 0 failures).  The
+GENUINE structure of the maxo OT3-violator `g` of a `wf3 b'` (audit
+`audit_collapse_face.py`, closure+5/+6, all 328/328):
+
+* **g is the CANONICAL representative**: `proj a g = g` (g is a-reduced), so
+  `oV g ∈ C_a(oV g)` (g is `a`-canonical, by `Ccond_of_lt`).
+* **g IS the proj-target of b'**: `proj a b' = g`, so `oV g = oV (proj a b')` and
+  the collapse `ψ_a(oV b') = ψ_a(oV g)` is EXACTLY `psi_proj` at one step.
+* **`oV b'` is NON-canonical** (B2, `noncanon_of_bad_of_SUFF` below) — it has the
+  violator `g` with `oV g ≥ oV b'`, defeating `wf3`-necessity at bound `oV b'`.
+
+**The irreducible circularity (PRECISELY, in code).**  The two faces are
+`collapse_iff_eq`-equivalent (`ψ_a(oV b') ∉ C_a(oV g) ⟺ ψ_a(oV b') = ψ_a(oV g)`),
+and the dual `psi_proj_mem_imp_strict` gives `membership ⟹ ψ_a(oV b') < ψ_a(oV g)`
+STRICT.  So the membership-route disproof would need the equality it is proving.
+The structural route fails too: `psi_form_of_mem` (M1) extracts a witness `ξ < oV g`
+with `ψ_a(ξ) = ψ_a(oV b')`, and the only non-circular finish is `ξ = oV (proj a b')
+= oV g` — but `ξ = oV (proj a b')` is `ψ_a(oV b') = ψ_a(oV (proj a b'))`, i.e.
+`psi_proj` itself.  And `Otembed.collapse_le` (all-gap-points non-canonical) is the
+WRONG tool: the gap `[oV b', oV g)` crosses canonical `Ω_k` (Ω-crossing,
+271/271 in-gap instances at closure+6), so `IntervalNoncanon` is FALSE.  This is
+EXACTLY ya-pss's open `psi_proj_nonmem` (the larger-witness `ξ = oV(proj a b') ≥
+oV g` circularity), which stays a `sorry` there even with `term_nec` green.
+
+So the collapse face genuinely rests on `SUFF` (Buchholz 1.9 sufficiency, the
+necessity residual — open) PLUS the irreducible witness-identity (= `psi_proj`).
+The SOUND pieces below are sorry-free; the irreducible step is honestly left. -/
+
+/-- **B2 — `oV b'` is `a`-non-canonical**, from `wf3`-necessity (`NEC_of_suff`,
+modulo `SUFF`).  If `oV b'` were `a`-canonical, necessity would force every
+`x ∈ Gterm a b'` to have `oV x < oV b'`; but the violator `g` has
+`oV b' ≤ oV g` (`oV_le_of_bad`) — contradiction.  (sorry-free given `SUFF`.) -/
+theorem noncanon_of_bad_of_SUFF
+    (SUFF : ∀ (v a : ℕ) (β α : Ordinal.{u}), v ≤ a →
+      β ∈ Cset (psiRes β) β a → β < α → β ∈ Cset (psiRes α) α v)
+    {a : ℕ} {b' g : Three} (wb' : wf3 b') (hg : g ∈ Gterm a b') (hv : ¬ olt g b') :
+    oV.{u} b' ∉ Cset (psiRes (oV b')) (oV b') a := by
+  intro hcanon
+  have hgle : oV.{u} g < oV b' := NEC_of_suff SUFF wb' (v := a) (α := oV b') hcanon g hg
+  exact absurd hgle (not_lt.2 (oV_le_of_bad wb' hg hv))
+
 /-- **The collapse-side residue (self form).**  The `CollapseResidue` content
 phrased in the green self machinery (`psiSelf`/`CsetSelf`), which is where the
 self-collapse tool `collapseSelf_le` lives.  Provided so the residue can be

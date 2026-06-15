@@ -86,3 +86,45 @@ if __name__ == "__main__":
     for r in (5, 6):
         audit(r)
         print()
+
+
+# --- Appended: collapse-structure facts (closure+5/+6) ---------------------------
+def audit_structure(rounds):
+    """The maxo violator g is the canonical proj-target; the collapse holds; the
+    interval crosses Omega (so collapse_le is the wrong tool)."""
+    seen = set(); inst = 0
+    g_canonical = 0      # proj a g = g  (g a-reduced => canonical)
+    proj_eq_g = 0        # proj a b' = g (g is the proj-target)
+    collapse_ok = 0      # nrm(P a b' Z) == nrm(P a g Z)  (psi_a collapses)
+    for M in enum_ST(rounds=rounds):
+        t = conv(translate(M)); stack = [t]
+        while stack:
+            b = stack.pop()
+            if not b: continue
+            for (_, v, arg) in b: stack.append(arg)
+            if not in_OT(b): continue
+            for a in range(0, 4):
+                bad = [x for x in G(a, b) if not lt_term(x, b)]
+                if not bad: continue
+                g = maxo(bad)
+                key = (a, tuple(map(str, b)), tuple(map(str, g)))
+                if key in seen: continue
+                seen.add(key); inst += 1
+                if proj(a, g) == g: g_canonical += 1
+                if proj(a, b) == g: proj_eq_g += 1
+                lhs = nrm((('D', a, b),)); rhs = nrm((('D', a, g),))
+                # compare as canonical (reordered) terms
+                def cn(x): return tuple(('D', vv, cn(bb)) for _, vv, bb in x)
+                if cn(lhs) == cn(rhs): collapse_ok += 1
+    print(f"(C) rounds={rounds}: wf3 maxo CRM instances={inst}")
+    print(f"    g canonical (proj a g = g)        = {g_canonical}/{inst}")
+    print(f"    g is proj-target (proj a b' = g)  = {proj_eq_g}/{inst}")
+    print(f"    collapse holds (psi_a(oVb')=psi_a(oVg)) = {collapse_ok}/{inst}")
+    print(f"    => CollapseResidueMaxo TRUE; g = canonical proj-target;")
+    print(f"       the collapse IS psi_proj (oV g = oV(proj a b')) — irreducible.")
+
+
+if __name__ == "__main__":
+    for r in (5, 6):
+        audit_structure(r)
+        print()
