@@ -2755,9 +2755,26 @@ theorem proj0_olt_of_mvstep_olt {R : Three → Three → Prop}
 firing `NF`-arg pair `(b, f)` (`P 0 b c, P 0 f g ∈ NF`, `olt b f`,
 `maxsub b = maxsub f`) by simultaneous `mvstep`.  This is the carrier on which
 the strict STEP holds (`hpres` is automatic from `base`/`step`).  The two
-remaining residual obligations are `hfire` (lockstep firing, model-verified
-`0 / 877494` mismatch) and `hstep` (the strict STEP, `438747 / 0`, the
-irreducible forest fact). -/
+remaining residual obligations are `hfire` (lockstep firing) and `hstep` (the
+strict STEP).
+
+**Residual structure** (model-verified, the precise forest facts):
+  • `Rdesc` carries `lead x = lead y ∧ maxsub x = maxsub y` (`877494 / 877494`,
+    a structural invariant: base `NF` args lead `1`, eq `maxsub`; `step`
+    preserves both since `lead (mvstep ·) = maxsub ·`);
+  • `hfire` (`pfire 0 x ↔ pfire 0 y`, `877494 / 0`) reduces, via that match, to
+    the firing characterization `pfire 0 t ↔ lead t < maxsub t` on `Rdesc` nodes
+    (`2568 / 2568`) — FALSE off-class (the cter `p₁(p₀(p₁(p₁0)))` has
+    `lead = maxsub = 1` yet fires), so it needs the descent-class forest
+    structure;
+  • `hstep` (`olt x y ⟹ olt (mvstep x) (mvstep y)`, `438747 / 0`) is the
+    irreducible forest core — FALSE on general terms (`929364 / 5753586`); it
+    needs the `SubBlock`/`r1ok_ST_PS`/`stps_head` anchoring carried through the
+    descent.
+Both residuals bottom out in the same forest discipline; the entire recursion
+above them (`proj0_olt_of_mvstep_olt` etc.) is GREEN, so discharging `hfire` +
+`hstep` closes `proj_bothfire_witness_eq` (and, symmetrically, `not_pfire0_-
+lead1max1_NF` via `proj_G`-base + the same firing characterization). -/
 inductive Rdesc : Three → Three → Prop
   | base {b c f g : Three} (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF)
       (harg : olt b f) (heq : maxsub b = maxsub f)
