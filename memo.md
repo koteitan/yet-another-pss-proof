@@ -4596,3 +4596,25 @@ sub-agent 2並列(SIGMA=列側核 / OV=意味論核)で**両者が同一の単�
   §1(psi_proj_nonmem/psi_value_acanon)は両 live path 外。
 - 統合: SIGMA の nrm.thy(sigma_block_unfold 緑+障害マップdoc)+ 両agent の tools(probe_sigma_*/check_*)。
 - **soundness 総括**: 2件の偽補題(Cmem_NF/PROJMONO)を深層 closure+5 実測で未然破棄。第7・8事件を回避。
+
+### 続90後半: sigma_seqlex_mono 緑証明完成・§1核を term-level proj_nrm_argzone_olt に縮約(sub-agent 3体)
+
+SIG2/STRUCT/CORE の3体で sigma_seqlex_mono を緑のブロック帰納証明に完成し、PSS live path を精密局所化:
+- **SIG2**: sigma_seqlex_mono = (S)分解 σM=(0,y)#untr 1(proj y(nrm aM))@σ(tM) 経由で seqlex_imp_olt 流ブロック帰納。
+  緑追加 translate_zone_split/untr_ins_unfold/sigma_struct_rec/seqlex_append_left/head_row0_ST_PS 等。
+  残核を3つに分離: sigma_argzone_mono(§1核)+ tail_zone_ST_PS + keeps_head_ST_PS。
+- **🚨 STRUCT が SIG2 の tail_zone_ST_PS を偽と発見**: 元文面は空 tail-zone で [] ∈ ST_PS を主張するが [] ∉ ST_PS。
+  非空仮説で修正+呼出側 case-split で緑維持。緑追加 oper_nonempty/ST_PS_nonempty/sigma_ST_nonempty。
+  keeps_head_ST_PS 精密化: y<e 不発(構造)、tied e=y proj比較=§1(nrmstep STS_B)のみ。
+  tail_zone 攻め筋: oper 帰納、i≤j0 は drop 可換(0/6393)、i>j0(約25%)が到達性の硬い部分。
+- **CORE が sigma_argzone_mono を緑化**: depth-1 順序同型(olt_iff_seqlex/seqlex_imp_olt/blockok_arg/blockok_untr/
+  translate_untr)で seqlex/untr/blockok 層を完全 discharge。§1核を term-level **proj_nrm_argzone_olt**
+  (ST arg-zone で proj∘nrm∘translate が olt 保存・44850/0/0)に縮約。
+  🚨 偽 C1(oV(proj y(nrm B))=oV B)捕捉: proj は値を厳密に上げる(266594/1013167)。proj_canonical/oV_le_proj/psi_proj と整合。
+  **CORE 評価: proj_nrm_argzone_olt は oV_order_pres(wf3 iff)経由で oV(proj y(nrm B))<oV(proj y(nrm F)) に等価、
+  psi_proj_nonmem(Buchholz 1.9 necessity)に bottom out**。⟹ off-path だった §1 機械化(necessity.thy)が live path に
+  再接続する可能性。標準形不変量が本質(y-tower は非標準=arg-zone に出現せず、universe A 真/universe B 偽の理由)。
+
+**現 live sorry**: nrm.thy: proj_nrm_argzone_olt(§1核)/ tail_zone_ST_PS(構造)/ keeps_head_ST_PS(§1結合)/
+  psi_proj_nonmem(§1・proj_nrm の接続先?)。 ovnf.thy: oV_mono_NF(意味論・同値)。 necessity.thy: psi_value_acanon(§1)。
+**今セッション soundness 総括**: 偽補題を計5件(Cmem_NF/PROJMONO/C1/旧tail_zone_ST_PS/+既知)深層実測で破棄。第7・8事件を全回避。

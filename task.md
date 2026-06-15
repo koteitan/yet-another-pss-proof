@@ -41,9 +41,16 @@
       (将来の global 意味論攻撃の余地)。緑橋は wt-oV に保存(main 非統合=live sorry 増を避ける)。
     - 🚨 **per-principal/Cmem_NF ルートは偽**で確定(OV agent): NF⊄wf3(2207/10207)・Cmem_NF(93/179 non-canonical)・
       PROJMONO(14739 reversal)全て深層実測で破棄。**標準形(blockok 両row)不変量が本質**、cnf/wf3/r1ok 局所述語不可。
-    - **具体的次攻**(SIGMA): 構造分解 (S) σM=(0,y)#untr 1(proj y(nrm aM))@σ(tM) 経由で seqlex_imp_olt の
-      ブロック帰納。a=e 交点(head 非吸収判定=proj比較)に §1 collapse content が宿る=分離不可。
-    - soundness: 偽補題 Cmem_NF/PROJMONO(+既知 acanon_arg_lt/oV_mono_cnf)を深層 closure+5 で破棄(第7・8事件回避)。
+    - ✅ **続90後半: `sigma_seqlex_mono` 緑のブロック帰納証明完成**(SIG2, (S)分解で seqlex_imp_olt 移植)。
+      PSS live path を3つの残核に精密局所化(nrm.thy, PSI 緑):
+      - 🚨 **`proj_nrm_argzone_olt`**(914)= 唯一の term-level §1 核: ST arg-zone で proj∘nrm∘translate が olt 保存
+        〔CORE が sigma_argzone_mono を緑化し depth-1 順序同型で seqlex 層 discharge・44850/0/0〕。≡oV_mono_NF≡psi_proj_nonmem(CORE 評価)。
+      - **`tail_zone_ST_PS`**(831)= 構造的 ST_PS 閉包(§1 でない)。攻め筋(STRUCT): oper 帰納・i≤j0 は drop 可換(0/6393)、i>j0(約25%)は nextrel0/le0 谷条件で到達性再導出。
+      - **`keeps_head_ST_PS`**(862)= head 非吸収。y<e 分岐不発(構造)、tied e=y proj比較=§1核(nrmstep の STS_B)のみ残存。
+    - soundness: 偽補題 5件(Cmem_NF/PROJMONO/C1[oV(proj∘nrm)=oV]/旧tail_zone_ST_PS[空]/+既知 acanon_arg_lt/oV_mono_cnf)を
+      深層 closure+5 で破棄(第7・8事件回避)。**🚨 SIG2 の tail_zone_ST_PS 当初文面は偽だった(STRUCT が修正)**。
+    - **次攻**: (1)tail_zone_ST_PS を到達性で閉じる(構造・closable) (2)proj_nrm_argzone_olt を §1 機械化
+      (necessity.thy: oV_order_pres iff + psi_proj/proj_canonical 経由で psi_proj_nonmem に接続)。§1 が live path に再接続する可能性。
   - 🗄 §1/psi_proj 路線(続89(21-39)・健全 infra だが live path 外): term_nec/1.4 trio/Cset_eq_Cset_c
     (psi_value_acanon modulo)/B2/wit機構。Buchholz §1 機械化として価値あるが PSS には不要と確定。
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
