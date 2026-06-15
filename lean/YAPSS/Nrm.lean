@@ -1499,7 +1499,61 @@ theorem ST_PS_desc_oper {N : PairSeq} {n : ℕ} {rest : PairSeq}
       ST_PS ((0,0) :: rest'.takeWhile (fun q => (0:ℕ) < q.1)))
     (hL : (0,0) :: rest = N⟦n⟧) :
     ST_PS ((0,0) :: rest.takeWhile (fun q => (0:ℕ) < q.1)) := by
-  sorry
+  -- `N = (0,0) :: D` (root via `stps_head`/`h0`).
+  obtain ⟨c, D, hND⟩ : ∃ c D, N = c :: D := by
+    cases N with
+    | nil => simp at L
+    | cons c D => exact ⟨c, D, rfl⟩
+  have hc0 : c = (0,0) := by
+    have hh := stps_head hN; rw [hND] at hh; simpa using hh
+  subst hc0 hND
+  set T := D.dropWhile (fun r => (0:ℕ) < r.1) with hT
+  set FB := D.takeWhile (fun r => (0:ℕ) < r.1) with hFB
+  have hFBall : ∀ x ∈ FB, decide ((0:ℕ) < x.1) = true := by
+    intro x hx; simpa using List.mem_takeWhile_imp hx
+  by_cases hT2 : 2 ≤ T.length
+  · -- ===== Case A (commute): `oper` touches only `T`; first subtree = `FB` =====
+    have hDsplit : FB ++ T = D := List.takeWhile_append_dropWhile
+    have hNN : ((0,0):ℕ×ℕ) :: D = ((0,0) :: FB) ++ T := by rw [← hDsplit]; rfl
+    have hTne : T ≠ [] := by intro h; rw [h] at hT2; simp at hT2
+    have hroot : entry T 0 0 = 0 := by
+      have hfalse := List.head_dropWhile_not (fun r : ℕ × ℕ => (0:ℕ) < r.1) hTne
+      simp only [decide_eq_false_iff_not, not_lt, Nat.le_zero] at hfalse
+      have hTeq : entry T 0 0 = (T.head hTne).1 := by
+        unfold entry; rw [if_pos rfl]
+        rw [show T.getD 0 (0,0) = T.head hTne from by
+          rw [List.head_eq_getElem, List.getD_eq_getElem?_getD,
+            List.getElem?_eq_getElem (by omega), Option.getD_some]]
+      rw [hTeq, hfalse]
+    have hcomm : (((0,0):ℕ×ℕ) :: D)⟦n⟧ = ((0,0) :: FB) ++ T⟦n⟧ := by
+      conv_lhs => rw [hNN]
+      exact oper_append_right ((0,0) :: FB) T n hT2 hroot
+    have hrest : rest = FB ++ T⟦n⟧ := by
+      have hh : ((0,0):ℕ×ℕ) :: rest = ((0,0) :: FB) ++ T⟦n⟧ := by rw [hL, hcomm]
+      simpa using hh
+    -- `takeWhile (0<·.1) (FB ++ T⟦n⟧) = FB` (FB all row-0 `>0`, `T⟦n⟧` head row-0 `=0`).
+    have hTopstart : ¬ (0:ℕ) < ((T⟦n⟧).headD (0,0)).1 := by
+      have hTeq : entry T 0 0 = (T.headD (0,0)).1 := by
+        unfold entry
+        rw [if_pos rfl, List.headD_eq_head?_getD, List.head?_eq_getElem?,
+          List.getD_eq_getElem?_getD]
+      rw [oper_headD T hT2 hn, ← hTeq, hroot]; omega
+    have htkrest : rest.takeWhile (fun q => (0:ℕ) < q.1) = FB := by
+      rw [hrest, List.takeWhile_append, if_pos]
+      · have hnil : (T⟦n⟧).takeWhile (fun q => (0:ℕ) < q.1) = [] := by
+          rw [List.takeWhile_eq_nil_iff]
+          intro hlen
+          have hh : (T⟦n⟧).get ⟨0, hlen⟩ = (T⟦n⟧).headD (0,0) := by
+            rw [List.get_eq_getElem, List.headD_eq_head?_getD, List.head?_eq_getElem?,
+              List.getElem?_eq_getElem hlen, Option.getD_some]
+          rw [hh]; simpa using hTopstart
+        rw [hnil, List.append_nil]
+      · rw [List.takeWhile_eq_self_iff.2 (by simpa using hFBall)]
+    rw [htkrest]
+    -- `(0,0) :: FB = (0,0) :: D.takeWhile (0<·.1)` is `ih` applied to `N = (0,0)::D`.
+    exact ih (rest' := D) rfl
+  · -- ===== Case B (tiling, `|T| ≤ 1`): first subtree = first copy `N.dropLast` =====
+    sorry
 
 theorem ST_PS_desc {rest : PairSeq} (hM : ST_PS ((0,0) :: rest)) :
     ST_PS ((0,0) :: rest.takeWhile (fun q => (0:ℕ) < q.1)) := by
