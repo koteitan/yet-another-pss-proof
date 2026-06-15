@@ -4718,3 +4718,15 @@ untr/sigma/blockok 1 から nrm(translate aM) の head/lead を特徴付けれ�
   off-path(§1・live path 外)だが latent 偽 sorry。§1 を復活させる際は ζ を canonical に制限して再 statement すること。
 - lean 固有資産(参考): psiSelf α v=ω^(Ω_v+α) 明示値式 / psi_strict_mono_lt_epsLvl(sub-ε 域 clean) / W=T diag_acc scaffold /
   crux は厳密に maxr1=2 から / ST_PS_suffix sorry-free / 8 バイパス Lean 反例。
+
+### 続90 末6: SHAPE — 発火 core を2残核に・全 §1 が NT_shape/STS_B に収束
+SHAPE: 発火 4 atomic を argzone_head_maxviol + argzone_transport の2つに縮約(NET -2 sorry)。
+緑 class-free wf3_head_violator_lead_gt(wf3(P a b c)∧¬olt b X⟹a<lead b)で head_lead_gt/dominates を corollary 化。
+maxsub-spine lever を自前検証: F1(pfire⟺lead<maxsub)/F2(lead(proj 0 X)=maxsub X)/SP(maxsub=climb)/T1(olt⟹maxsub≤)
+全て class 上 0 反例だが **class-essential**(off-class F1 59401/F2 18009/SP 90338/T1 549310 fail)。class-free は
+G1(g∈Gterm 0 X⟹maxsub g≤maxsub X)のみ。⟹ maxsub も harg と同じ §1 内容の再表現で floor 下げず。
+**確定: 全 §1 残核(argzone_head_maxviol/argzone_transport/keeps_head[tied e=y]/nrm_argzone_olt)が
+NT_shape/STS_B collapse 機械化に収束**。但し NT_shape/STS_B は nrmstep.thy(nrm を import=下流・STS_B 自体 sorry)で
+消費点(nrm.thy)から使えない=build-order 障害。次の構造的課題: STS_B/NT_shape を健全に確立し nrm より前に再配置、
+または firing 群を nrmstep へ移す。lean は STS_B 相当を maxsub spine+nfinv inv2 で攻略中(向こうも未閉)。
+**現 live §1(nrm.thy)**: argzone_head_maxviol / argzone_transport / nrm_argzone_olt / keeps_head_ST_PS。oV_mono_NF 同値。

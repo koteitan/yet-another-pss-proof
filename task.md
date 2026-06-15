@@ -37,13 +37,12 @@
     - ✅ argzone_val_ge〔VAL・ST_PS_head_val_zero で退化〕
     - ✅ proj_step_argzone_olt〔FIRE・非発火 72% 緑〕
     - ✅ proj_step_fire_witness〔FW・witness g'=proj y F〕
-    - ✅ argzone_fire_FF / argzone_proj_head / argzone_fire_transport〔FF・HEAD〕
-    - 🚨 argzone_head_lead_gt：lead X<lead(harg X)〔nrm.thy〕
-    - 🚨 argzone_head_dominates：head=maximal violator〔nrm.thy〕
-    - 🚨 argzone_F_fires：発火 transport B→F〔nrm.thy〕
-    - 🚨 argzone_harg_olt：olt(harg B)(harg F)〔nrm.thy〕
+    - ✅ argzone_fire_FF / proj_head / fire_transport / head_lead_gt / head_dominates / F_fires / harg_olt〔FF・HEAD・SHAPE〕
+    - ✅ wf3_head_violator_lead_gt〔SHAPE・class-free〕
+    - 🚨 argzone_head_maxviol：発火 head=maximal violator・blocker は NT_shape/STS_B〔nrm.thy〕
+    - 🚨 argzone_transport：発火 transport・blocker は NT_shape/STS_B〔nrm.thy〕
     - 🚨 nrm_argzone_olt：深さ一般統一サイズ帰納が blocker〔nrm.thy〕
-    - 🚨 keeps_head_ST_PS：tied e=y〔nrm.thy〕
+    - 🚨 keeps_head_ST_PS：tied e=y = STS_B〔nrm.thy〕
     - 🚨 oV_mono_NF：意味論同値〔ovnf.thy〕
   - 🗄 §1/psi_proj 路線：live path 外〔term_nec / 1.4 trio / Cset_eq_Cset_c / psi_value_acanon〕
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
