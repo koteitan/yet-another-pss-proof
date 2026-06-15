@@ -2751,6 +2751,7 @@ theorem lead_mvstep_eq_maxsub {b : Three} (hf : pfire 0 b) (hms : maxsub b = cli
 
 /-- **The `≤o` STEP residual** (`olt b f ⟹ mvstep b ≤o mvstep f` on the
 firing descent class, the irreducible `NF`/`ST_PS` forest content).  Stated as a
+firing descent class, the irreducible `NF`/`ST_PS` forest content).  Stated as a
 hypothesis-carrying lemma whose discharge (via the `SubBlock`/`r1ok_ST_PS`
 carrier) closes the witness.  GREEN reduction below: with this STEP, strong
 `tsize` induction gives `proj 0 b ≤o proj 0 f`, and the strict half follows.
@@ -3004,6 +3005,34 @@ theorem maxsub_crit_le {u : ℕ} {g t : Three} (hg : g ∈ Gterm u t) :
   by_cases hgZ : g = Z
   · subst hgZ; simp [maxsub]
   · exact mem_subs_le_maxsub (Gterm_subs hg (maxsub_mem_subs hgZ))
+
+/-- **`maxsub (mvstep b) = maxsub b`** for a firing term with `maxsub = climb`.
+`≤` because `mvstep b` is a critical (`maxsub_crit_le`); `≥` because
+`maxsub b = lead (mvstep b) ≤ maxsub (mvstep b)`. -/
+theorem maxsub_mvstep {b : Three} (hf : pfire 0 b) (hms : maxsub b = climb b) :
+    maxsub (mvstep b) = maxsub b := by
+  have hle : maxsub (mvstep b) ≤ maxsub b := maxsub_crit_le (mvstep_mem_Gterm hf)
+  have hlead : lead (mvstep b) = maxsub b := lead_mvstep_eq_maxsub hf hms
+  have := lead_le_maxsub_self (mvstep b)
+  omega
+
+/-- The leading subscript is `≤` the spine maximum `climb` (it is the first spine
+entry). -/
+theorem lead_le_climb (t : Three) : lead t ≤ climb t := by
+  cases t with
+  | Z => simp [climb]
+  | P a b c => unfold climb; rw [spine_P, cmax_cons, lead_P]; exact le_max_left _ _
+
+/-- **`mvstep` preserves the `maxsub = climb` spine invariant** on firing terms:
+from `lead (mvstep b) = maxsub b = maxsub (mvstep b)` and `lead ≤ climb ≤ maxsub`,
+`climb (mvstep b) = maxsub (mvstep b)`. -/
+theorem maxsub_climb_mvstep {b : Three} (hf : pfire 0 b) (hms : maxsub b = climb b) :
+    maxsub (mvstep b) = climb (mvstep b) := by
+  have hlead : lead (mvstep b) = maxsub b := lead_mvstep_eq_maxsub hf hms
+  have hmeq : maxsub (mvstep b) = maxsub b := maxsub_mvstep hf hms
+  have hlc : lead (mvstep b) ≤ climb (mvstep b) := lead_le_climb (mvstep b)
+  have hcm : climb (mvstep b) ≤ maxsub (mvstep b) := climb_le_maxsub (mvstep b)
+  omega
 
 theorem proj_subs (u : ℕ) (b : Three) : subs (proj u b) ⊆ subs b := by
   by_cases h : (Glist u b).filter (fun g => ¬ olt g b) = []
