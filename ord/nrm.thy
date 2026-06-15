@@ -2575,7 +2575,31 @@ text \<open>\<^bold>\<open>Residual 4a (THE firing-case witness, deeply verified
   genuine \<open>dseg\<close> arg-zones, 4 counterexamples e.g.\ \<open>aM = (1,1)(2,2)(1,1)(2,2)\<close> at
   \<open>y = 0\<close>, \<open>tools/probe_e6_check.py\<close> \<dash> so this route deliberately avoids it.)\<close>
 
-lemma proj_step_fire_witness:
+text \<open>\<^bold>\<open>The sharp arg-zone firing residual\<close> \<open>argzone_fire_FF\<close>.  When the \<^emph>\<open>smaller\<close>
+  image \<open>B = nrm (translate aM)\<close> fires under \<open>proj y\<close> and \<open>olt B F\<close>, then \<^bold>\<open>(1)\<close> the
+  larger image \<open>F = nrm (translate aN)\<close> fires too (\<open>pfire y F\<close>) and \<^bold>\<open>(2)\<close> the
+  projections are strictly ordered (\<open>olt (proj y B) (proj y F)\<close>).  This is the
+  \<^emph>\<open>entire\<close> genuine Buchholz \<section>1 content of the firing case, in its sharpest form:
+  no existential wrapper, no \<open>maxo\<close>/\<open>Glist\<close> plumbing \<dash> just the two facts the
+  witness construction needs.
+
+  \<^bold>\<open>Why this exact shape (class guard rails, verified this session)\<close>.  Each clause
+  is \<^bold>\<open>FALSE off the arg-zone ST-image class\<close>, so neither may be weakened to a
+  general \<open>wf3\<close> statement (the recurring source of the eleven caught false lemmas):
+    \<^item> firing is \<^bold>\<open>not\<close> monotone on general \<open>wf3\<close> (clause 1): \<open>737313 / 1999000\<close>
+      reversals at \<open>y = 0\<close> even on \<open>in_OT\<close> terms (\<open>tools/probe_firemono_raw.py\<close>);
+      it holds \<^bold>\<open>0 / 44850\<close> on the arg-zone class (\<open>tools/probe_fire_mono.py\<close>).
+    \<^item> \<open>proj y\<close> is \<^bold>\<open>not\<close> \<open>olt\<close>-monotone on general \<open>wf3\<close> (clause 2,
+      \<open>PROJMONO_WF3\<close> FALSE); the underlying \<open>maxo (Glist y \<cdot>)\<close> domination is
+      \<^bold>\<open>318342 / 1124250\<close> false at \<open>y = 0\<close> on \<open>in_OT\<close> subterms
+      (\<open>tools/probe_maxo_wf3.py\<close>).
+  \<^bold>\<open>Soundness gate\<close> for the conjunction on the deep arg-zone closure (1.01M ST
+  forms): \<^bold>\<open>6555 firing pairs / 0 AUX1 failures / 0 AUX2 failures\<close>
+  (\<open>tools/probe_argzone_fire_dom.py\<close>).  Also the strict-dominance clause alone is
+  \<open>0 / 3403\<close> via the witness search (\<open>tools/probe_ff_strict.py\<close> S2,
+  \<open>tools/probe_ff_neq.py\<close> P1/N1, \<open>tools/probe_ff_witness_cand.py\<close> C7).\<close>
+
+lemma argzone_fire_FF:
   assumes "(0, y) # r \<in> ST_PS" and "(0, y) # r' \<in> ST_PS"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
@@ -2583,12 +2607,55 @@ lemma proj_step_fire_witness:
              (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
     and "proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
            \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>smaller image fires\<close>
+  shows "pfire y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))
+       \<and> olt (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+             (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))"
+  \<comment> \<open>THE firing-case residual; deeply verified (\<open>probe_argzone_fire_dom.py\<close>, 6555/0/0).\<close>
+  sorry
+
+text \<open>\<^bold>\<open>Residual 4a (THE firing-case witness)\<close> \<open>proj_step_fire_witness\<close>, now \<^emph>\<open>proved\<close>
+  from the sharp residual @{thm [source] argzone_fire_FF} by the explicit
+  construction \<open>g' = proj y F\<close>: since \<open>F\<close> fires, \<open>proj y F\<close> is (by \<open>proj_once\<close> and
+  \<open>maxo_in\<close>) one of the violating \<open>G\<^bsub>y\<^esub>\<close>-criticals of \<open>F\<close> \<dash> hence
+  \<open>proj y F \<in> Gterm y F\<close> and \<open>\<not> olt (proj y F) F\<close> \<dash> and the strict-dominance clause
+  of @{thm [source] argzone_fire_FF} supplies \<open>olt (proj y B) (proj y F)\<close>.  The
+  earlier opaque existential sorry is thereby reduced to the two-clause
+  class-specific @{thm [source] argzone_fire_FF}, with the witness plumbing now
+  fully green.\<close>
+
+lemma proj_step_fire_witness:
+  assumes ST: "(0, y) # r \<in> ST_PS" and ST': "(0, y) # r' \<in> ST_PS"
+    and vbM: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and vbN: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
+    and olt: "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+             (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
+    and fire: "proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>smaller image fires\<close>
   shows "\<exists>g'. g' \<in> Gterm y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))
               \<and> \<not> olt g' (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))
               \<and> olt (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
                     g'"
-  \<comment> \<open>firing-case witness; deeply verified (\<open>probe_ff_strict.py\<close> S2, 3403/0).\<close>
-  sorry
+proof -
+  let ?B = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+  let ?F = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))"
+  \<comment> \<open>the sharp residual: \<open>F\<close> fires, and the projections are strictly ordered\<close>
+  have FF: "pfire y ?F \<and> olt (proj y ?B) (proj y ?F)"
+    by (rule argzone_fire_FF[OF ST ST' vbM vbN olt fire])
+  have Ffire: "pfire y ?F" using FF by blast
+  have dom: "olt (proj y ?B) (proj y ?F)" using FF by blast
+  \<comment> \<open>since \<open>F\<close> fires, the witness \<open>g' = proj y F\<close> is a violating \<open>G\<^bsub>y\<^esub>\<close>-critical of \<open>F\<close>\<close>
+  let ?gs = "filter (\<lambda>g. \<not> olt g ?F) (Glist y ?F)"
+  have ne: "?gs \<noteq> []" using Ffire pfire_filter by blast
+  have pe: "proj y ?F = maxo (hd ?gs) (tl ?gs)"
+    using proj_once[of y ?F] ne by simp
+  have minset: "maxo (hd ?gs) (tl ?gs) \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+  hence g'mem: "proj y ?F \<in> set ?gs" using pe by simp
+  have g'G: "proj y ?F \<in> Gterm y ?F"
+    using g'mem set_Glist by auto
+  have g'viol: "\<not> olt (proj y ?F) ?F"
+    using g'mem by simp
+  show ?thesis using g'G g'viol dom by blast
+qed
 
 lemma proj_step_argzone_olt:
   assumes ST: "(0, y) # r \<in> ST_PS" and ST': "(0, y) # r' \<in> ST_PS"
