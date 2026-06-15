@@ -540,6 +540,58 @@ theorem suffix_diag (v : ℕ) :
   have := fst_in_diagSeq hx
   simp only [decide_eq_true_eq]; omega
 
+/-! ### `oper`-prefix-commute: suffix-invariance of the parent relations
+
+To prove `oper (A ++ T) n = A ++ oper T n` (when the operative last block lies in
+`T` and `T` is root-anchored) we need the parent-relation machinery
+(`entry`/`nextrel0`/`nextrel1`/`le0`/`idx1`/`hasParent`/`parent`) evaluated at
+indices `≥ |A|` to be unaffected by the prefix `A`.  These are concrete unfolding
+lemmas on the relation defs. -/
+
+/-- `getD` reads the right summand on out-of-`A` indices. -/
+theorem getD_app_right (A T : PairSeq) {i : ℕ} (h : A.length ≤ i) :
+    (A ++ T).getD i (0,0) = T.getD (i - A.length) (0,0) := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD, List.getElem?_append_right h]
+
+/-- `entry` is suffix-invariant: `entry (A ++ T) i (|A| + j) = entry T i j`. -/
+theorem entry_append_right (A T : PairSeq) (i j : ℕ) :
+    entry (A ++ T) i (A.length + j) = entry T i j := by
+  unfold entry; rw [getD_app_right A T (Nat.le_add_right _ _), Nat.add_sub_cancel_left]
+
+/-- `nextrel0` is suffix-invariant on shifted indices (the valley between
+`|A|+j0` and `|A|+j1` only sees `T`-indices). -/
+theorem nextrel0_append_right (A T : PairSeq) (j0 j1 : ℕ) :
+    nextrel0 (A ++ T) (A.length + j0) (A.length + j1) ↔ nextrel0 T j0 j1 := by
+  unfold nextrel0; rw [List.length_append]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    rw [entry_append_right, entry_append_right] at h4
+    refine ⟨by omega, by omega, by omega, h4, ?_⟩
+    intro j hj
+    have := h5 (A.length + j) (by omega); rwa [entry_append_right, entry_append_right] at this
+  · rintro ⟨h1, h2, h3, h4, h5⟩
+    refine ⟨by omega, by omega, by omega,
+      by rw [entry_append_right, entry_append_right]; exact h4, ?_⟩
+    intro j hj
+    obtain ⟨j', rfl⟩ : ∃ j', j = A.length + j' := ⟨j - A.length, by omega⟩
+    rw [entry_append_right, entry_append_right]; exact h5 j' (by omega)
+
+/-- `nextrel0`-reachability lifts from `T` to `A ++ T` on shifted indices. -/
+theorem rtg_nextrel0_lift (A T : PairSeq) {j0 c : ℕ}
+    (h : Relation.ReflTransGen (nextrel0 T) j0 c) :
+    Relation.ReflTransGen (nextrel0 (A ++ T)) (A.length + j0) (A.length + c) := by
+  induction h with
+  | refl => exact Relation.ReflTransGen.refl
+  | @tail b c hbc hcd ih =>
+    exact Relation.ReflTransGen.tail ih ((nextrel0_append_right A T b c).2 hcd)
+
+/-- `le0` lifts from `T` to `A ++ T` on shifted indices (forward direction). -/
+theorem le0_append_right_of (A T : PairSeq) {j0 j1 : ℕ} (h : le0 T j0 j1) :
+    le0 (A ++ T) (A.length + j0) (A.length + j1) := by
+  obtain ⟨hb0, hb1, hrt⟩ := h
+  exact ⟨by rw [List.length_append]; omega, by rw [List.length_append]; omega,
+    rtg_nextrel0_lift A T hrt⟩
+
 /-- **The combinatorial heart of suffix-closure** (pure `oper`/`dropWhile`, no
 `ST_PS`).  For a long list `N` (`1 < |N|`) and `N⟦n⟧ = p :: rest`, the
 `dropWhile`-tail of `N⟦n⟧` is one of three shapes, all of which are `[]` or
