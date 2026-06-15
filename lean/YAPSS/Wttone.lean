@@ -258,7 +258,7 @@ theorem wf3_of_cnf_subs1 :
           · exact Or.inr ⟨rfl, Or.inr hfeqb⟩
           · exact absurd hbf (hbf_imp rfl)
 
-/-- **THE SINGLE RESIDUAL of this level.**  Every standard form with row-1
+/-! **THE SINGLE RESIDUAL of this level.**  Every standard form with row-1
 entries `≤ 1` translates to a term meeting the head-`0` OT3 clause.
 
 WHY IT IS TRUE: empirically exact — 0 violations over 2 494 996 standard forms
@@ -318,6 +318,34 @@ argument propagates / descends".  Their audit note records the structural key
 `proj 0 (P 1 b' c') = proj 0 b'` (proj-0 peels an outer `p₁` into the ascent
 source).  Closing any one of these closes the maxr1-`= 1` level; it is the
 genuine forest core the whole project shares, not a quick development. -/
+/-- **Diag base of `H0clause_translate`** (GREEN).  Under the row-`1` `≤ 1`
+constraint a diagonal `diagSeq 0 v` has `v ≤ 1`, so its translate is `P 0 Z Z`
+(`v = 0`) or `P 0 (P 1 Z Z) Z` (`v = 1`); both meet `H0clause` directly (the
+head-`0` clause's only critical at level `0` is `Z`, which is `olt` everything). -/
+theorem H0clause_diagSeq_le1 {v : ℕ} (hv : v ≤ 1) :
+    H0clause (translate (diagSeq 0 v)) := by
+  rcases (show v = 0 ∨ v = 1 by omega) with rfl | rfl
+  · -- v = 0: translate (diagSeq 0 0) = P 0 Z Z.
+    rw [translate_diagSeq (le_refl 0)]
+    have e : diagSeq 1 0 = [] := by
+      unfold diagSeq; rw [show 0 + 1 - 1 = 0 by omega]; rfl
+    rw [e, translate_nil]
+    simp [H0clause]
+  · -- v = 1: translate (diagSeq 0 1) = P 0 (P 1 Z Z) Z.
+    rw [translate_diagSeq (by omega : (0:ℕ) ≤ 1)]
+    have e : diagSeq 1 1 = [(1,1)] := by
+      unfold diagSeq; rw [show 1 + 1 - 1 = 1 by omega]; rfl
+    rw [e, translate_single]
+    -- H0clause (P 0 (P 1 Z Z) Z): head-0 clause needs ∀ x ∈ Gterm 0 (P 1 Z Z), olt x (P 1 Z Z).
+    refine ⟨?_, ?_, H0clause_Z⟩
+    · intro _ x hx
+      rw [mem_Gterm_P] at hx
+      rcases hx with ⟨-, rfl | hx⟩ | hx
+      · exact olt_Z_P 1 Z Z
+      · simp [Gterm] at hx
+      · simp [Gterm] at hx
+    · exact ⟨by intro h; simp at h, H0clause_Z, H0clause_Z⟩
+
 theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
     (z : ∀ p ∈ M, p.2 ≤ 1) : H0clause (translate M) := by
   sorry
