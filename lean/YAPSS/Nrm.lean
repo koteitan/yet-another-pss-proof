@@ -651,6 +651,43 @@ theorem nextrel0_no_cross (A T : PairSeq) (hroot : entry T 0 0 = 0)
     have := entry_append_right A T 0 0; rw [Nat.add_zero] at this; rw [this, hroot]
   rw [hz] at hval; omega
 
+/-- `nextrel1` is suffix-invariant on shifted indices.  The row-1 valley universal
+ranges only over `j > |A| + j0 ≥ |A|` (all in `T`); `le0` is suffix-invariant
+(`le0_append_right`). -/
+theorem nextrel1_append_right (A T : PairSeq) (j0 j1 : ℕ) :
+    nextrel1 (A ++ T) (A.length + j0) (A.length + j1) ↔ nextrel1 T j0 j1 := by
+  unfold nextrel1
+  rw [List.length_append]
+  constructor
+  · rintro ⟨h1, h2, h3, h4, h5, h6⟩
+    rw [entry_append_right, entry_append_right] at h4
+    rw [le0_append_right] at h5
+    refine ⟨by omega, by omega, by omega, h4, h5, ?_⟩
+    intro j hj
+    obtain ⟨hj1, hj2⟩ := hj
+    -- forward: T-valley.  apply M-valley h6 at shifted index |A|+j
+    have := h6 (A.length + j) ⟨by omega, (le0_append_right A T j j1).2 hj2⟩
+    rwa [entry_append_right, entry_append_right] at this
+  · rintro ⟨h1, h2, h3, h4, h5, h6⟩
+    refine ⟨by omega, by omega, by omega,
+      by rw [entry_append_right, entry_append_right]; exact h4,
+      (le0_append_right A T j0 j1).2 h5, ?_⟩
+    intro j hj
+    obtain ⟨hj1, hj2⟩ := hj
+    -- backward: M-valley.  j > |A|+j0 ≥ |A|, so j = |A|+j' in T
+    obtain ⟨j', rfl⟩ : ∃ j', j = A.length + j' := ⟨j - A.length, by omega⟩
+    rw [le0_append_right] at hj2
+    have := h6 j' ⟨by omega, hj2⟩
+    rwa [entry_append_right, entry_append_right]
+
+/-- `nextR` (row-indexed) is suffix-invariant on shifted indices. -/
+theorem nextR_append_right (A T : PairSeq) (i j0 j1 : ℕ) :
+    nextR (A ++ T) i (A.length + j0) (A.length + j1) ↔ nextR T i j0 j1 := by
+  unfold nextR
+  by_cases hi : i = 0
+  · rw [if_pos hi, if_pos hi]; exact nextrel0_append_right A T j0 j1
+  · rw [if_neg hi, if_neg hi]; exact nextrel1_append_right A T j0 j1
+
 /-- **The combinatorial heart of suffix-closure** (pure `oper`/`dropWhile`, no
 `ST_PS`).  For a long list `N` (`1 < |N|`) and `N⟦n⟧ = p :: rest`, the
 `dropWhile`-tail of `N⟦n⟧` is one of three shapes, all of which are `[]` or
