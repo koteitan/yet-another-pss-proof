@@ -1984,6 +1984,63 @@ theorem fire_shape_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hb : pfire 0 b) :
   | Z => simp [lead] at hl
   | P a bb cc => simp only [lead] at hl; exact ⟨bb, cc, by rw [hl]⟩
 
+/-! #### `proj` is one-step on firing terms (general, no `NF`)
+
+The single `maxo` of the violator list already has no violators of its own
+(`maxo_bad_nofire`), so `proj` terminates after exactly one rewrite
+(`proj_eq_maxo_bad`).  This makes the "peel" of the both-fire analysis a
+triviality and is pure-term (no `NF`). -/
+
+/-- The `maxo` of the level-`u` violator list of `b` does not itself fire at
+level `u`: every critical `g` of `maxo` is a critical of `b` (`Gterm_trans`),
+hence either `< b ≤o maxo` (non-violator) or `≤o maxo` and a proper subterm
+(violator), so `< maxo`. -/
+theorem maxo_bad_nofire {u : ℕ} {b : Three}
+    (h : (Glist u b).filter (fun g => ¬ olt g b) ≠ []) :
+    ¬ pfire u (maxo ((Glist u b).filter (fun g => ¬ olt g b)).headI
+                    ((Glist u b).filter (fun g => ¬ olt g b)).tail) := by
+  set bad := (Glist u b).filter (fun g => ¬ olt g b) with hbad
+  set m := maxo bad.headI bad.tail with hm
+  have hmin : m ∈ bad := maxo_hdtl_in h
+  have hmG : m ∈ Gterm u b := mem_filter_Gterm hmin
+  have hmnotolt : ¬ olt m b := mem_filter_not_olt hmin
+  have hbm : b ≤o m := by
+    rcases olt_total b m with h1 | h1 | h1
+    · exact Or.inl h1
+    · exact Or.inr h1
+    · exact absurd h1 hmnotolt
+  rw [pfire_iff]; push_neg
+  intro g hgGm
+  have hgGb : g ∈ Gterm u b := Gterm_trans hgGm hmG
+  have hgsz : tsize g < tsize m := Gterm_tsize hgGm
+  have hgne : g ≠ m := by intro he; rw [he] at hgsz; omega
+  by_cases hgb : olt g b
+  · exact Three.olt_ole_trans hgb hbm
+  · have hgbad : g ∈ bad := by
+      rw [hbad]; exact List.mem_filter.2 ⟨mem_Glist.2 hgGb, by simpa using hgb⟩
+    rcases maxo_ub_mem h g hgbad with h1 | h1
+    · exact h1
+    · exact absurd h1 hgne
+
+/-- **`proj` is one-step on firing terms** (general, no `NF`): when `b` fires,
+`proj u b` equals the single `maxo` of its violator list. -/
+theorem proj_eq_maxo_bad {u : ℕ} {b : Three} (hf : pfire u b) :
+    proj u b = maxo ((Glist u b).filter (fun g => ¬ olt g b)).headI
+                    ((Glist u b).filter (fun g => ¬ olt g b)).tail := by
+  have h : (Glist u b).filter (fun g => ¬ olt g b) ≠ [] := by
+    rw [pfire] at hf; exact hf
+  rw [proj_rec h]
+  exact proj_nofire (maxo_bad_nofire h)
+
+/-- The `proj u b` of a firing term is a critical term of `b` (it is the `maxo`
+of the violator list, all of which are criticals). -/
+theorem proj_mem_Gterm_of_fire {u : ℕ} {b : Three} (hf : pfire u b) :
+    proj u b ∈ Gterm u b := by
+  rw [proj_eq_maxo_bad hf]
+  have h : (Glist u b).filter (fun g => ¬ olt g b) ≠ [] := by
+    rw [pfire] at hf; exact hf
+  exact mem_filter_Gterm (maxo_hdtl_in h)
+
 /-- **Both-fire comparison on `NF` arguments** (residual 2).
 
 Structure now pinned down (`fire_shape_NF`, peel audit):
