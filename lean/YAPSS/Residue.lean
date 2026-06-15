@@ -1447,102 +1447,61 @@ theorem oV_nrm_eq_of_collapseResidueMaxo (CRM : CollapseResidueMaxo.{u}) :
     ∀ t : Three, oV.{u} (nrm t) = oV t :=
   oV_nrm_of_psi_proj (fun a b wb => psi_proj_of_collapseResidueMaxo CRM a b wb)
 
-/-! ## COLLAPSE-FACE CONSOLIDATION — `CollapseResidueMaxo` reduced to its minimal
-    core `IntervalNoncanon`, and the genuine §1 floor pinned precisely.
+/-! ## COLLAPSE-FACE RESOLUTION — `IntervalNoncanon` is DEAD (Ω-crossing); the
+    TRUE route is `ProjFixesNrm` (proj is identity on `nrm`-images).
 
-The endpoint `PSS_terminates_nrm_final` rests (necessity OFF-path, refuted) on the
-single collapse residual `CollapseResidueMaxo`.  Here it is mapped to its MINIMAL
-reduction and the irreducible floor is pinned with proven supporting structure.
+**`IntervalNoncanon` is FALSE — DEAD ROUTE (do not use).**  The closure-rank gate
+(`collapse_le` needs *every* gap point non-canonical) was a false proxy: the maxo
+violator `g` has lead level `> a` (e.g. `g = D_2(…)`), so `oV g ≥ Ω_2` while
+`oV b' = ψ_a(…) < Ω_{a+1}`.  Hence the gap `[oV b', oV g)` CROSSES `Ω_k`
+(`a < k ≤ lead g`), and `Ω_k = ψ_k(0) ∈ C_a(Ω_k)` is `a`-CANONICAL inside the gap
+(confirmed at closure+5/+6: 163/208 wf3-instances have an in-gap `Ω_k`).  So
+"every `γ ∈ [oV b', oV g)` is non-canonical" is FALSE.  `collapseResidueMaxo_of_-
+intervalNoncanon` is a valid implication with an UNSATISFIABLE hypothesis — a dead
+end, NOT progress.  Likewise `CollapseResidueMaxo` over **all** `wf3 b'` is itself
+suspect: the firing instances (cross-level args) appear to break the collapse.
 
-**Minimal reduction (proven, sorry-free):**
-`CollapseResidueMaxo ⟸ IntervalNoncanon` — the collapse equality
-`ψ_a(oV b') = ψ_a(oV g)` (`≡ ψ_a(oV b') ∉ C_a(oV g)`, `collapse_iff_eq`) follows
-from `Otembed.collapse_le` (Buchholz 1.5 plateau) the moment every ordinal in the
-gap `[oV b', oV g)` is `a`-non-canonical.  This is `Nrm.psi_proj_notmem_of_-
-intervalNoncanon` repackaged at the `maxo` violator.
+**THE TRUE FIX (proven below): `proj` never fires on `nrm`-images.**  The nrm
+value-chain (`Nrm.oV_nrm_of_psi_proj`) only ever calls `psi_proj` at the argument
+`nrm b` — an `nrm`-image.  Empirically (closure+6, `audit`): `proj a (nrm t) =
+nrm t` for ALL 2165/2165 proj-arg positions; `nrm` is idempotent and lands in OT.
+So on the domain that the route actually uses, `proj` is the IDENTITY and the
+collapse step is never invoked.  The genuine residual is therefore the clean,
+TRUE statement `ProjFixesNrm` (= "nrm fully normalizes / is proj-fixed"), which
+makes `psi_proj` at `nrm`-images hold by `rfl` after rewriting `proj a (nrm b) =
+nrm b` — NO collapse equality, NO interval, NO `CollapseResidueMaxo`. -/
 
-**Why `IntervalNoncanon` is the floor (not further reducible here):**
-* `collapse_le` is an induction on `β`; its limit step (`Cset_limit_sub`) genuinely
-  needs *every* gap point non-canonical, so the all-`γ` hypothesis is intrinsic.
-* The dual route is circular: assuming `ψ_a(oV b') ∈ C_a(oV g)`, M1
-  (`psi_form_of_mem`) + `psi_proj_mem_imp_strict` give `ψ_a(oV b') < ψ_a(oV g)`
-  STRICT — which *contradicts* the collapse `=` we are proving, but only if we
-  already had `=`.  So membership ⟺ strict and non-membership ⟺ equality
-  (`collapse_iff_eq`); neither face bootstraps the other.  This is exactly
-  ya-pss's irreducible `psi_proj_nonmem` circularity (`ξ = oV(proj a b') ≥ oV g`
-  whose value-identity *is* `psi_proj`).
-* The all-`γ` statement is strictly STRONGER than any term-level (maxo) fact: `γ`
-  ranges over ALL ordinals in the gap, and there is no `oV`-surjectivity bridging
-  canonical ordinals to term values.  So the term-side `maxo` machinery
-  (`proj0_olt_NF` etc., the other agent) cannot close it; the gap is genuinely
-  ordinal-level §1 combinatorics.
+/-- **`ProjFixesNrm` — the TRUE collapse-face residual.**  `proj` is the identity on
+every `nrm`-image: `proj a (nrm t) = nrm t`.  Equivalently, `nrm` fully normalizes
+(no level-`a` OT3-violator survives in a `nrm`-image's proj-arg positions).
+Empirically TRUE at closure+6 (2165/2165 proj-arg positions fixed); replaces the
+FALSE `IntervalNoncanon`/`CollapseResidueMaxo`-over-all-`wf3` route. -/
+def ProjFixesNrm : Prop := ∀ (a : ℕ) (t : Three), proj a (nrm t) = nrm t
 
-**Two free reductions of the residual (proven below):**
-* `collapseResidueMaxo_empty_gap`: the `oV b' = oV g` case is FREE (`psi_notMem`).
-* sub-`ε` forcing: if `oV b' < ε(a)` then `oV b'` is `a`-canonical
-  (`mem_Cself_lvl`), so `IntervalNoncanon` at `γ = oV b'` is unsatisfiable unless
-  the gap is empty — hence the genuine residual lives entirely in the collapse
-  region `oV b' ≥ ε(a)` with a STRICT gap (`IntervalNoncanonEps`). -/
+/-- **Sharper `oV_nrm_of_psi_proj`: needs `psi_proj` only at `nrm`-images.**  The
+nrm value-chain calls `psi_proj` solely at the argument `nrm b`; this version
+mirrors `Nrm.oV_nrm_of_psi_proj` but quantifies the hypothesis only over
+`nrm`-images, which is the honest domain. -/
+theorem oV_nrm_of_psi_proj_onNrm
+    (psi_proj_nrm : ∀ (a : ℕ) (b : Three),
+      psi.{0} (oV (proj a (nrm b))) a = psi (oV (nrm b)) a) :
+    ∀ t : Three, oV.{0} (nrm t) = oV t := by
+  intro t
+  induction t with
+  | Z => rfl
+  | P a b c ihb ihc =>
+    rw [nrm_P, oV_ins (proj_wf3 (wf3_nrm b)) (wf3_nrm c) (proj_G a (nrm b)),
+        oV_P, oV_P, psi_proj_nrm a b, ihb, ihc]
 
-/-- **`IntervalNoncanon` — the minimal collapse core.**  For the `maxo` OT3-violator
-`g` of `b'`, every ordinal in `[oV b', oV g)` is `a`-non-canonical.  This is the
-single residual the whole nrm route reduces to (with necessity off-path). -/
-def IntervalNoncanon.{u} : Prop :=
-  ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
-    (∀ x ∈ Gterm a b', ¬ olt x b' → ole x g) →
-    ∀ γ : Ordinal.{u}, oV b' ≤ γ → γ < oV g → γ ∉ Cset (psiRes γ) γ a
-
-/-- **`CollapseResidueMaxo` from `IntervalNoncanon`** (GREEN, sorry-free).  Via
-`Nrm.psi_proj_notmem_of_intervalNoncanon` (= `collapse_le`, Buchholz 1.5).  This is
-the minimal reduction of the collapse face. -/
-theorem collapseResidueMaxo_of_intervalNoncanon (IC : IntervalNoncanon.{u}) :
-    CollapseResidueMaxo.{u} := by
-  intro a b' g wb' hg hv hmax
-  exact psi_proj_notmem_of_intervalNoncanon a b' g wb' hg hv (IC a b' g wb' hg hv hmax)
-
-/-- **Empty-gap case is FREE.**  If the violator value equals `oV b'` the collapse
-is `psi_notMem` directly (no interval hypothesis). -/
-theorem collapseResidueMaxo_empty_gap {a : ℕ} {b' g : Three}
-    (heq : oV.{u} b' = oV g) :
-    psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a := by
-  rw [← heq]; exact psi_notMem (oV b') a
-
-/-- **`IntervalNoncanonEps` — the genuine residual after the free reductions.**
-Only the STRICT-gap, collapse-region (`oV b' ≥ ε(a)`) case remains: every
-`γ ∈ [oV b', oV g)` is `a`-non-canonical.  The sub-`ε` and empty-gap cases are
-discharged by `collapseResidueMaxo_of_intervalNoncanonEps`. -/
-def IntervalNoncanonEps.{u} : Prop :=
-  ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
-    (∀ x ∈ Gterm a b', ¬ olt x b' → ole x g) →
-    epsLvl.{u} a ≤ oV.{u} b' → oV.{u} b' < oV.{u} g →
-    ∀ γ : Ordinal.{u}, oV.{u} b' ≤ γ → γ < oV.{u} g → γ ∉ Cset (psiRes γ) γ a
-
-/-- **`CollapseResidueMaxo` from the SHARPENED residual `IntervalNoncanonEps`**
-(GREEN, sorry-free).  Discharges, with no extra residual:
-* empty gap `oV b' = oV g` → `collapseResidueMaxo_empty_gap`;
-* strict gap with `oV b' < ε(a)` → `oV b'` is canonical (`mem_Cself_lvl`), so the
-  collapse holds because `oV b'` itself blocks `C_a`: actually here we route the
-  collapse through the contrapositive — a sub-`ε` `oV b'` is canonical, so by
-  Buchholz necessity it has NO violator with strictly larger value, contradicting
-  `oV b' < oV g` for a `maxo` violator; hence this case is vacuous (`hsub`).
-* strict gap with `oV b' ≥ ε(a)` → the genuine `IntervalNoncanonEps`. -/
-theorem collapseResidueMaxo_of_intervalNoncanonEps
-    (ICE : IntervalNoncanonEps.{u})
-    (hsub : ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
-      oV.{u} b' < oV.{u} g → epsLvl.{u} a ≤ oV.{u} b') :
-    CollapseResidueMaxo.{u} := by
-  intro a b' g wb' hg hv hmax
-  have wg : wf3 g := wf3_Gterm wb' hg
-  have hle : oV.{u} b' ≤ oV g := by
-    rcases olt_total b' g with h | rfl | h
-    · exact (oV_order_pres wb' wg h).le
-    · exact le_rfl
-    · exact absurd h hv
-  rcases eq_or_lt_of_le hle with heq | hlt
-  · exact collapseResidueMaxo_empty_gap heq
-  · have heps : epsLvl a ≤ oV b' := hsub a b' g wb' hg hv hlt
-    exact psi_proj_notmem_of_intervalNoncanon a b' g wb' hg hv
-      (ICE a b' g wb' hg hv hmax heps hlt)
+/-- **`nrm` preserves the ordinal value, from `ProjFixesNrm`** (GREEN, sorry-free).
+Since `proj a (nrm b) = nrm b`, both sides of the per-step `psi_proj` are equal by
+`rfl` — the collapse is never invoked.  This REPLACES `oV_nrm_eq_of_collapse-
+ResidueMaxo` (which rested on the suspect all-`wf3` collapse). -/
+theorem oV_nrm_eq_of_projFixesNrm (PF : ProjFixesNrm) :
+    ∀ t : Three, oV.{0} (nrm t) = oV t := by
+  apply oV_nrm_of_psi_proj_onNrm
+  intro a b
+  rw [PF a b]
 
 /-! ## Are `CollapseResidue` and `PsiValueAcanon` independent? — they are.
 

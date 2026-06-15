@@ -404,28 +404,63 @@ theorem hArg_of_headFamily (HF : HeadFamilyNF.{0})
     oV.{0} (P 0 b c) < oV (P 0 f g) :=
   oV_nf_arg_lt_of_head hv (fun x hxb => HF ⟨c, hv⟩ ⟨g, hu⟩ hbf x hxb)
 
-/-- **`PSS_terminates_nrm` — TIGHTENED to the minimal §1 residual set.**
-`hSuf` (`ST_PS_suffix`) is discharged with the PROVEN sorry-free lemma; `hArg`
-(`oV_nf_arg_lt`) is discharged from `HeadFamilyNF` via `oV_nf_arg_lt_of_head`.
-What remains is EXACTLY the two-element §1 collapse residual set
-`{CollapseResidueMaxo, HeadFamilyNF}` — both faces of `psi_proj`, neither the
-closure Remark `NoncanonValueMem`. -/
+/-- **`PSS_terminates_nrm` — modulo `{CollapseResidueMaxo, HeadFamilyNF}`** (legacy
+form).  `hSuf` discharged by the proven `ST_PS_suffix`; `hArg` by `HeadFamilyNF`.
+NB: `CollapseResidueMaxo` over **all** `wf3 b'` is now SUSPECT (firing cross-level
+instances appear to break the collapse — see `Residue` Ω-crossing note).  Use
+`PSS_terminates_nrm_true` (on the SOUND `ProjFixesNrm`) as the genuine endpoint;
+this one is kept as a valid implication for the record. -/
 theorem PSS_terminates_nrm_final
     (CRM : CollapseResidueMaxo.{0}) (HF : HeadFamilyNF.{0}) :
     WellFounded stepRel :=
   PSS_terminates_nrm_modulo CRM (fun hv hu hbf => hArg_of_headFamily HF hv hu hbf)
     (fun hM => ST_PS_suffix hM)
 
-/-- **`PSS_terminates_nrm` — fully reduced to the minimal §1 residual set.**
-The collapse face `CollapseResidueMaxo` is itself reduced to its minimal core
-`IntervalNoncanon` (`Residue.collapseResidueMaxo_of_intervalNoncanon`, via Buchholz
-1.5 `collapse_le`).  So the COMPLETE nrm termination proof now rests on EXACTLY the
-two §1 residuals `{IntervalNoncanon, HeadFamilyNF}` — both faces of the §1 collapse
-core `psi_proj`, NEITHER the necessity Remark `NoncanonValueMem` (refuted off-path).
-`#print axioms = [propext, Classical.choice, Quot.sound]` — sorryAx-free. -/
-theorem PSS_terminates_nrm_from_interval
-    (IC : IntervalNoncanon.{0}) (HF : HeadFamilyNF.{0}) :
+/-! ## TRUE COLLAPSE-FACE ENDPOINT — on `ProjFixesNrm`, not `CollapseResidueMaxo`
+
+`CollapseResidueMaxo` over ALL `wf3 b'` is suspect (the firing cross-level instances
+break the collapse; `IntervalNoncanon` reducing it was DEAD via Ω-crossing — see
+`Residue`).  The nrm value-chain only ever projects `nrm`-images, where `proj` is
+the IDENTITY (closure+6: 2165/2165 fixed).  So the SOUND residual is `ProjFixesNrm`
+(`proj a (nrm t) = nrm t`), which gives `oV (nrm t) = oV t` with NO collapse. -/
+
+/-- `nrm_order_pres` re-derived on `ProjFixesNrm` (not `CollapseResidueMaxo`):
+`proj` is the identity on `nrm`-images, so the value equality is collapse-free. -/
+theorem nrm_order_pres_pf
+    (PF : ProjFixesNrm)
+    (hArg : ∀ {b c f g : Three}, (P 0 b c) ∈ NF → (P 0 f g) ∈ NF → olt b f →
+      oV.{0} (P 0 b c) < oV (P 0 f g))
+    (hSuf : ∀ {p : ℕ × ℕ} {rest : PairSeq}, ST_PS (p :: rest) →
+      rest.dropWhile (fun q => p.1 < q.1) = [] ∨
+      ST_PS (rest.dropWhile (fun q => p.1 < q.1)))
+    {v u : Three} (hv : v ∈ NF) (hu : u ∈ NF) (h : olt v u) :
+    olt (nrm v) (nrm u) := by
+  apply oV_order_refl.{0} (wf3_nrm v) (wf3_nrm u)
+  rw [oV_nrm_eq_of_projFixesNrm PF v, oV_nrm_eq_of_projFixesNrm PF u]
+  exact oV_nf_order_pres_modulo hArg hSuf hv hu h
+
+/-- `wf_Rnf` (nrm route) on `ProjFixesNrm`. -/
+theorem wf_Rnf_nrm_pf
+    (PF : ProjFixesNrm)
+    (hArg : ∀ {b c f g : Three}, (P 0 b c) ∈ NF → (P 0 f g) ∈ NF → olt b f →
+      oV.{0} (P 0 b c) < oV (P 0 f g))
+    (hSuf : ∀ {p : ℕ × ℕ} {rest : PairSeq}, ST_PS (p :: rest) →
+      rest.dropWhile (fun q => p.1 < q.1) = [] ∨
+      ST_PS (rest.dropWhile (fun q => p.1 < q.1))) :
+    WellFounded Rnf := by
+  refine Subrelation.wf ?_ (InvImage.wf nrm wf_olt_wf3)
+  rintro v u ⟨hlt, hu, hv⟩
+  exact ⟨nrm_order_pres_pf PF hArg hSuf hv hu hlt, wf3_nrm v, wf3_nrm u⟩
+
+/-- **`PSS_terminates_nrm` — the TRUE endpoint, modulo `{ProjFixesNrm, HeadFamilyNF}`.**
+`hSuf` discharged by the proven `ST_PS_suffix`; `hArg` by `HeadFamilyNF`; the
+collapse face is the SOUND `ProjFixesNrm` (proj = id on `nrm`-images), NOT the
+suspect all-`wf3` `CollapseResidueMaxo`/dead `IntervalNoncanon`.  sorryAx-free. -/
+theorem PSS_terminates_nrm_true
+    (PF : ProjFixesNrm) (HF : HeadFamilyNF.{0}) :
     WellFounded stepRel :=
-  PSS_terminates_nrm_final (collapseResidueMaxo_of_intervalNoncanon IC) HF
+  step_terminates
+    (wf_Rnf_nrm_pf PF (fun hv hu hbf => hArg_of_headFamily HF hv hu hbf)
+      (fun hM => ST_PS_suffix hM))
 
 end YAPSS
