@@ -2575,7 +2575,23 @@ needs only that the bottom does not fire.  BUT the bottom non-firing
 non-firing for free, but the recursion bottom is a `proj`-comparison at
 `lead = maxsub` where the keystone no longer applies, so it does not terminate
 term-locally.  Hence BOTH routes bottom out in the SAME `NF`-image bottom
-non-firing forest fact — the irreducible core. -/
+non-firing forest fact — the irreducible core.
+
+PRECISE IRREDUCIBLE FACT (pinned, `probe_bottom_seq.py`): the proj-descent
+bottom is `translate K` for a DESCENDANT sub-block `K` (`SubBlock`,
+`Gterm_translate_subblock`) whose head sits at row-`0` `= d ≥ 2` deep in the
+forest (real bottoms: head row-`0` `∈ {2..11}`, head row-`1` `= maxr1 ∈ {2,3,4}`).
+Its row-`1` climbing is ROOT-ANCHORED by the global `ST_PS` parent at row-`0`
+`= d-1` (the `r1ok_ST_PS` climbing from the row-`0`-`0` root).  The fatal
+counterexample `p₁(p₀(p₁(p₁0)))` is `translate [(0,1),(1,0),(2,1),(3,1)]` — an
+`r1ok` (!) block but with head row-`0` `= 0`, row-`1` `= 1`: an UNANCHORED root
+block (head row-`1` `= 1 ≠ 0` violates `ST_PS_head_val_zero`), so it is NOT
+`ST_PS`-reachable and fires.  So the irreducible fact is: **a descendant block
+of an `ST_PS` sequence, with head row-`1` `=` its `maxr1`, does not fire** —
+provable only via the root-anchored `r1ok` climbing pulled through `SubBlock`,
+the project-central construction (`r1ok` ALONE is insufficient: the cter is
+`r1ok`; the missing ingredient is the root-`0`-anchoring / `ST_PS`-reachability
+that excludes head row-`1` `> 0` root blocks). -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
