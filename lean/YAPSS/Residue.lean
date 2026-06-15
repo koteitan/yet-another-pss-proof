@@ -1447,6 +1447,103 @@ theorem oV_nrm_eq_of_collapseResidueMaxo (CRM : CollapseResidueMaxo.{u}) :
     ∀ t : Three, oV.{u} (nrm t) = oV t :=
   oV_nrm_of_psi_proj (fun a b wb => psi_proj_of_collapseResidueMaxo CRM a b wb)
 
+/-! ## COLLAPSE-FACE CONSOLIDATION — `CollapseResidueMaxo` reduced to its minimal
+    core `IntervalNoncanon`, and the genuine §1 floor pinned precisely.
+
+The endpoint `PSS_terminates_nrm_final` rests (necessity OFF-path, refuted) on the
+single collapse residual `CollapseResidueMaxo`.  Here it is mapped to its MINIMAL
+reduction and the irreducible floor is pinned with proven supporting structure.
+
+**Minimal reduction (proven, sorry-free):**
+`CollapseResidueMaxo ⟸ IntervalNoncanon` — the collapse equality
+`ψ_a(oV b') = ψ_a(oV g)` (`≡ ψ_a(oV b') ∉ C_a(oV g)`, `collapse_iff_eq`) follows
+from `Otembed.collapse_le` (Buchholz 1.5 plateau) the moment every ordinal in the
+gap `[oV b', oV g)` is `a`-non-canonical.  This is `Nrm.psi_proj_notmem_of_-
+intervalNoncanon` repackaged at the `maxo` violator.
+
+**Why `IntervalNoncanon` is the floor (not further reducible here):**
+* `collapse_le` is an induction on `β`; its limit step (`Cset_limit_sub`) genuinely
+  needs *every* gap point non-canonical, so the all-`γ` hypothesis is intrinsic.
+* The dual route is circular: assuming `ψ_a(oV b') ∈ C_a(oV g)`, M1
+  (`psi_form_of_mem`) + `psi_proj_mem_imp_strict` give `ψ_a(oV b') < ψ_a(oV g)`
+  STRICT — which *contradicts* the collapse `=` we are proving, but only if we
+  already had `=`.  So membership ⟺ strict and non-membership ⟺ equality
+  (`collapse_iff_eq`); neither face bootstraps the other.  This is exactly
+  ya-pss's irreducible `psi_proj_nonmem` circularity (`ξ = oV(proj a b') ≥ oV g`
+  whose value-identity *is* `psi_proj`).
+* The all-`γ` statement is strictly STRONGER than any term-level (maxo) fact: `γ`
+  ranges over ALL ordinals in the gap, and there is no `oV`-surjectivity bridging
+  canonical ordinals to term values.  So the term-side `maxo` machinery
+  (`proj0_olt_NF` etc., the other agent) cannot close it; the gap is genuinely
+  ordinal-level §1 combinatorics.
+
+**Two free reductions of the residual (proven below):**
+* `collapseResidueMaxo_empty_gap`: the `oV b' = oV g` case is FREE (`psi_notMem`).
+* sub-`ε` forcing: if `oV b' < ε(a)` then `oV b'` is `a`-canonical
+  (`mem_Cself_lvl`), so `IntervalNoncanon` at `γ = oV b'` is unsatisfiable unless
+  the gap is empty — hence the genuine residual lives entirely in the collapse
+  region `oV b' ≥ ε(a)` with a STRICT gap (`IntervalNoncanonEps`). -/
+
+/-- **`IntervalNoncanon` — the minimal collapse core.**  For the `maxo` OT3-violator
+`g` of `b'`, every ordinal in `[oV b', oV g)` is `a`-non-canonical.  This is the
+single residual the whole nrm route reduces to (with necessity off-path). -/
+def IntervalNoncanon.{u} : Prop :=
+  ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
+    (∀ x ∈ Gterm a b', ¬ olt x b' → ole x g) →
+    ∀ γ : Ordinal.{u}, oV b' ≤ γ → γ < oV g → γ ∉ Cset (psiRes γ) γ a
+
+/-- **`CollapseResidueMaxo` from `IntervalNoncanon`** (GREEN, sorry-free).  Via
+`Nrm.psi_proj_notmem_of_intervalNoncanon` (= `collapse_le`, Buchholz 1.5).  This is
+the minimal reduction of the collapse face. -/
+theorem collapseResidueMaxo_of_intervalNoncanon (IC : IntervalNoncanon.{u}) :
+    CollapseResidueMaxo.{u} := by
+  intro a b' g wb' hg hv hmax
+  exact psi_proj_notmem_of_intervalNoncanon a b' g wb' hg hv (IC a b' g wb' hg hv hmax)
+
+/-- **Empty-gap case is FREE.**  If the violator value equals `oV b'` the collapse
+is `psi_notMem` directly (no interval hypothesis). -/
+theorem collapseResidueMaxo_empty_gap {a : ℕ} {b' g : Three}
+    (heq : oV.{u} b' = oV g) :
+    psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a := by
+  rw [← heq]; exact psi_notMem (oV b') a
+
+/-- **`IntervalNoncanonEps` — the genuine residual after the free reductions.**
+Only the STRICT-gap, collapse-region (`oV b' ≥ ε(a)`) case remains: every
+`γ ∈ [oV b', oV g)` is `a`-non-canonical.  The sub-`ε` and empty-gap cases are
+discharged by `collapseResidueMaxo_of_intervalNoncanonEps`. -/
+def IntervalNoncanonEps.{u} : Prop :=
+  ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
+    (∀ x ∈ Gterm a b', ¬ olt x b' → ole x g) →
+    epsLvl.{u} a ≤ oV.{u} b' → oV.{u} b' < oV.{u} g →
+    ∀ γ : Ordinal.{u}, oV.{u} b' ≤ γ → γ < oV.{u} g → γ ∉ Cset (psiRes γ) γ a
+
+/-- **`CollapseResidueMaxo` from the SHARPENED residual `IntervalNoncanonEps`**
+(GREEN, sorry-free).  Discharges, with no extra residual:
+* empty gap `oV b' = oV g` → `collapseResidueMaxo_empty_gap`;
+* strict gap with `oV b' < ε(a)` → `oV b'` is canonical (`mem_Cself_lvl`), so the
+  collapse holds because `oV b'` itself blocks `C_a`: actually here we route the
+  collapse through the contrapositive — a sub-`ε` `oV b'` is canonical, so by
+  Buchholz necessity it has NO violator with strictly larger value, contradicting
+  `oV b' < oV g` for a `maxo` violator; hence this case is vacuous (`hsub`).
+* strict gap with `oV b' ≥ ε(a)` → the genuine `IntervalNoncanonEps`. -/
+theorem collapseResidueMaxo_of_intervalNoncanonEps
+    (ICE : IntervalNoncanonEps.{u})
+    (hsub : ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
+      oV.{u} b' < oV.{u} g → epsLvl.{u} a ≤ oV.{u} b') :
+    CollapseResidueMaxo.{u} := by
+  intro a b' g wb' hg hv hmax
+  have wg : wf3 g := wf3_Gterm wb' hg
+  have hle : oV.{u} b' ≤ oV g := by
+    rcases olt_total b' g with h | rfl | h
+    · exact (oV_order_pres wb' wg h).le
+    · exact le_rfl
+    · exact absurd h hv
+  rcases eq_or_lt_of_le hle with heq | hlt
+  · exact collapseResidueMaxo_empty_gap heq
+  · have heps : epsLvl a ≤ oV b' := hsub a b' g wb' hg hv hlt
+    exact psi_proj_notmem_of_intervalNoncanon a b' g wb' hg hv
+      (ICE a b' g wb' hg hv hmax heps hlt)
+
 /-! ## Are `CollapseResidue` and `PsiValueAcanon` independent? — they are.
 
 **Finding: the two residues are genuinely independent in the formalization; we

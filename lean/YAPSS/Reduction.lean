@@ -416,4 +416,16 @@ theorem PSS_terminates_nrm_final
   PSS_terminates_nrm_modulo CRM (fun hv hu hbf => hArg_of_headFamily HF hv hu hbf)
     (fun hM => ST_PS_suffix hM)
 
+/-- **`PSS_terminates_nrm` — fully reduced to the minimal §1 residual set.**
+The collapse face `CollapseResidueMaxo` is itself reduced to its minimal core
+`IntervalNoncanon` (`Residue.collapseResidueMaxo_of_intervalNoncanon`, via Buchholz
+1.5 `collapse_le`).  So the COMPLETE nrm termination proof now rests on EXACTLY the
+two §1 residuals `{IntervalNoncanon, HeadFamilyNF}` — both faces of the §1 collapse
+core `psi_proj`, NEITHER the necessity Remark `NoncanonValueMem` (refuted off-path).
+`#print axioms = [propext, Classical.choice, Quot.sound]` — sorryAx-free. -/
+theorem PSS_terminates_nrm_from_interval
+    (IC : IntervalNoncanon.{0}) (HF : HeadFamilyNF.{0}) :
+    WellFounded stepRel :=
+  PSS_terminates_nrm_final (collapseResidueMaxo_of_intervalNoncanon IC) HF
+
 end YAPSS
