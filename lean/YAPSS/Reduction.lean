@@ -8,6 +8,22 @@ itself `sorryAx`-FREE (the `sorry`s live only in the upstream non-parametric
 copies).  Nothing upstream is edited (that would create an import cycle); we add
 a fresh assembly layer.
 
+## FINAL STATUS (consolidated endpoint) — see `PROOF-STATUS.md`
+
+**Sound nrm-route endpoint:** `PSS_terminates_nrm_final : CollapseResidueMaxo →
+HeadFamilyNF → WellFounded stepRel`, `sorryAx`-FREE (`#print axioms` = `[propext,
+Classical.choice, Quot.sound]`).  PSS termination now rests on a SINGLE genuine
+residual — the **Buchholz §1 ordinal-collapse**, in two TRUE faces:
+`CollapseResidueMaxo` (the collapse `ψ_a(oV b') = ψ_a(oV (maxo-violator))`, 278/278)
+and `HeadFamilyNF` (its dual non-collapse Ω-band head).  Everything structural is
+proven (`ST_PS_suffix`, the structural NF order, `maxr1 ≤ 1`, sub-`ε`).
+
+**DEAD bypass attempts (rest on DISPROVEN residuals — NOT progress):**
+`PSS_terminates_nrm_true` (`ProjFixesNrm` FALSE: `proj` fires on `nrm`-images,
+`proj 0 (p_1(p_2(0))) ≠ p_1(p_2(0))`) and `PSS_terminates_nrm_via_NFwf3` (`NFwf3` =
+NF⊆wf3 FALSE: `translate (diagSeq 0 2) ∈ NF` is not `wf3`).  Kept as valid
+implications with unsatisfiable hypotheses, clearly labelled DEAD below.
+
 ## The three independent termination routes
 
 `PSS` one-step relation: `stepRel T M := ST_PS M ∧ step M T` (and the identical
@@ -404,28 +420,40 @@ theorem hArg_of_headFamily (HF : HeadFamilyNF.{0})
     oV.{0} (P 0 b c) < oV (P 0 f g) :=
   oV_nf_arg_lt_of_head hv (fun x hxb => HF ⟨c, hv⟩ ⟨g, hu⟩ hbf x hxb)
 
-/-- **`PSS_terminates_nrm` — modulo `{CollapseResidueMaxo, HeadFamilyNF}`** (legacy
-form).  `hSuf` discharged by the proven `ST_PS_suffix`; `hArg` by `HeadFamilyNF`.
-NB: `CollapseResidueMaxo` over **all** `wf3 b'` is now SUSPECT (firing cross-level
-instances appear to break the collapse — see `Residue` Ω-crossing note).  Use
-`PSS_terminates_nrm_true` (on the SOUND `ProjFixesNrm`) as the genuine endpoint;
-this one is kept as a valid implication for the record. -/
+/-- **`PSS_terminates_nrm_final` — THE sound nrm-route endpoint, modulo the single
+genuine Buchholz §1 collapse `{CollapseResidueMaxo, HeadFamilyNF}`.**  `hSuf`
+discharged by the proven `ST_PS_suffix`; `hArg` by `HeadFamilyNF`.  Both residuals
+are TRUE Buchholz §1 ordinal-collapse content (`CollapseResidueMaxo`: the collapse
+face, verified 278/278; `HeadFamilyNF`: the dual non-collapse Ω-band head).  This
+is `sorryAx`-FREE (`#print axioms` = `[propext, Classical.choice, Quot.sound]`).
+Everything else on this route is proven (`ST_PS_suffix`, the structural NF order,
+`maxr1 ≤ 1`, sub-`ε`).  The earlier attempts to discharge the collapse cheaply via
+`ProjFixesNrm` (`PSS_terminates_nrm_true`) and `NFwf3` (`PSS_terminates_nrm_via_-
+NFwf3`) are DEAD — both hypotheses are FALSE (see those docstrings).  So this is the
+honest minimal endpoint: the §1 collapse is irreducible and cannot be bypassed. -/
 theorem PSS_terminates_nrm_final
     (CRM : CollapseResidueMaxo.{0}) (HF : HeadFamilyNF.{0}) :
     WellFounded stepRel :=
   PSS_terminates_nrm_modulo CRM (fun hv hu hbf => hArg_of_headFamily HF hv hu hbf)
     (fun hM => ST_PS_suffix hM)
 
-/-! ## TRUE COLLAPSE-FACE ENDPOINT — on `ProjFixesNrm`, not `CollapseResidueMaxo`
+/-! ## DEAD ROUTE — `ProjFixesNrm` is FALSE (`proj` DOES fire on `nrm`-images)
 
-`CollapseResidueMaxo` over ALL `wf3 b'` is suspect (the firing cross-level instances
-break the collapse; `IntervalNoncanon` reducing it was DEAD via Ω-crossing — see
-`Residue`).  The nrm value-chain only ever projects `nrm`-images, where `proj` is
-the IDENTITY (closure+6: 2165/2165 fixed).  So the SOUND residual is `ProjFixesNrm`
-(`proj a (nrm t) = nrm t`), which gives `oV (nrm t) = oV t` with NO collapse. -/
+⚠️ **DEAD: the hypothesis `ProjFixesNrm` is FALSE.**  The conjecture was that the
+nrm value-chain only projects `nrm`-images where `proj` is the identity.  This is
+DISPROVEN (see `tools/audit_projfix_*.py`): `proj` genuinely fires on `nrm`-images
+at level 0.  Counterexample: `proj 0 (P 1 (P 2 Z Z) Z) = P 2 Z Z ≠ P 1 (P 2 Z Z) Z`
+— i.e. `proj 0 (p_1(p_2(0))) ≠ p_1(p_2(0))`, and `p_1(p_2(0))` is a genuine
+`nrm`-image reached from a valid PSS sequence.  Restricted to the exact P-nodes the
+`oV_nrm` induction reaches, ~5% of nodes fire (314/7108 at closure+8, stable across
+depth).  So `proj a (nrm b) = nrm b` is NOT an identity; the §1 collapse equality
+`ψ_a(oV (proj a (nrm b))) = ψ_a(oV (nrm b))` at these firing nodes is REAL Buchholz
+§1 content and cannot be bypassed.  The theorems below build on `ProjFixesNrm` and
+are kept ONLY as valid implications with an UNSATISFIABLE hypothesis (dead ends, not
+progress).  The sound endpoint is `PSS_terminates_nrm_final` above. -/
 
-/-- `nrm_order_pres` re-derived on `ProjFixesNrm` (not `CollapseResidueMaxo`):
-`proj` is the identity on `nrm`-images, so the value equality is collapse-free. -/
+/-- ⚠️ DEAD (hypothesis `ProjFixesNrm` is FALSE — `proj` fires on `nrm`-images,
+see the section note above).  `nrm_order_pres` re-derived on `ProjFixesNrm`. -/
 theorem nrm_order_pres_pf
     (PF : ProjFixesNrm)
     (hArg : ∀ {b c f g : Three}, (P 0 b c) ∈ NF → (P 0 f g) ∈ NF → olt b f →
@@ -452,10 +480,11 @@ theorem wf_Rnf_nrm_pf
   rintro v u ⟨hlt, hu, hv⟩
   exact ⟨nrm_order_pres_pf PF hArg hSuf hv hu hlt, wf3_nrm v, wf3_nrm u⟩
 
-/-- **`PSS_terminates_nrm` — the TRUE endpoint, modulo `{ProjFixesNrm, HeadFamilyNF}`.**
-`hSuf` discharged by the proven `ST_PS_suffix`; `hArg` by `HeadFamilyNF`; the
-collapse face is the SOUND `ProjFixesNrm` (proj = id on `nrm`-images), NOT the
-suspect all-`wf3` `CollapseResidueMaxo`/dead `IntervalNoncanon`.  sorryAx-free. -/
+/-- ⚠️ **DEAD: rests on the FALSE `ProjFixesNrm`** (`proj` fires on `nrm`-images —
+see `tools/audit_projfix_*.py`; `proj 0 (p_1(p_2(0))) ≠ p_1(p_2(0))`).  The theorem
+itself is `sorryAx`-free as a valid implication, but its hypothesis is UNSATISFIABLE,
+so it is NOT a usable termination route.  Use `PSS_terminates_nrm_final` (modulo the
+TRUE `{CollapseResidueMaxo, HeadFamilyNF}`) as the sound nrm-route endpoint. -/
 theorem PSS_terminates_nrm_true
     (PF : ProjFixesNrm) (HF : HeadFamilyNF.{0}) :
     WellFounded stepRel :=
@@ -485,13 +514,14 @@ So `HeadFamilyNF` is GENUINE Ω-band §1 content (the dual of the collapse that
   the shared crux `{proj0_fireprop_NF, proj0_bothfire_NF}`), avoiding `oV`/`psi`
   entirely — exactly the route the other agent is building.
 
-**The single replacement that removes the head: `NFwf3` (NF ⊆ wf3).**  If every NF
-term is `wf3`, then `oV_nf_order_pres` is just `oV_order_pres` (`oV_nf_order_pres_-
-of_NFwf3` below), so `HeadFamilyNF` is NOT needed at all.  And `NFwf3` reduces to
-"`nrm` is identity on `NF`" via the proven `wf3_nrm` (`NFwf3_of_nrmFixesNF`) — the
-SAME shared crux (`Wttone.H0clause_translate` / `proj0_*_NF`).  NB `nrm t = t` is
-FALSE on translate-images in general (76/299 at closure+6), so `NFwf3` is NOT free;
-it is the genuine residual, identical in content to `HeadFamilyNF`/`ProjFixesNrm`. -/
+**The tempting replacement `NFwf3` (NF ⊆ wf3) is DEAD — `NFwf3` is FALSE.**  If
+every NF term were `wf3`, then `oV_nf_order_pres` would be just `oV_order_pres`
+(`oV_nf_order_pres_of_NFwf3` below) and `HeadFamilyNF` would be unnecessary.  But
+`NFwf3` is DISPROVEN: `translate (diagSeq 0 2) = P 0 (P 1 (P 2 Z Z) Z) Z ∈ NF` is
+NOT `wf3` (`maxr1 = 2` translate-images never satisfy the OT3 clause — 8314/8314
+fail).  Likewise `nrm t = t` on `NF` is false (76/299 at closure+6).  So the head is
+NOT removable this way; the genuine residual stays `HeadFamilyNF` (Ω-band §1, the
+dual of the collapse `CollapseResidueMaxo`).  Endpoint: `PSS_terminates_nrm_final`. -/
 
 /-- **Head trivializes given `NFwf3`.**  If every NF term is `wf3`, the NF order is
 just `oV_order_pres` — no §1 head.  (GREEN, sorry-free.) -/
@@ -508,10 +538,12 @@ theorem NFwf3_of_nrmFixesNF
     ∀ t : Three, t ∈ NF → wf3 t := by
   intro t ht; have := wf3_nrm t; rwa [NrmFix t ht] at this
 
-/-- **`PSS_terminates_nrm` modulo `{ProjFixesNrm, NFwf3}`** — the head `HeadFamilyNF`
-ELIMINATED in favour of `NFwf3` (NF ⊆ wf3), under which the NF order is plain
-`oV_order_pres`.  Both residuals are the SAME shared term-level crux ("`nrm`
-normalizes NF": `proj`-fixes / `nrm`-fixes / OT3-through-translate).  sorryAx-free. -/
+/-- ⚠️ **DEAD: rests on TWO FALSE hypotheses, `ProjFixesNrm` AND `NFwf3` (NF ⊆ wf3).**
+`ProjFixesNrm` is false (`proj` fires on `nrm`-images, see `tools/audit_projfix_*.py`).
+`NFwf3` is ALSO false: `translate (diagSeq 0 2) = P 0 (P 1 (P 2 Z Z) Z) Z ∈ NF` is
+NOT `wf3` (its `maxr1 = 2` translate-images are never `wf3` — 8314/8314 fail the OT3
+clause).  The theorem is a valid implication but both hypotheses are UNSATISFIABLE,
+so it is NOT a usable route.  Use `PSS_terminates_nrm_final`. -/
 theorem PSS_terminates_nrm_via_NFwf3
     (PF : ProjFixesNrm) (NFwf3 : ∀ t : Three, t ∈ NF → wf3 t) :
     WellFounded stepRel := by

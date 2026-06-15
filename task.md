@@ -13,7 +13,7 @@
 > WF は **route A = Buchholz §1-2 を ZFC_in_HOL 順序数上で意味論的に証明**（`ord/psi.thy`, session PSI）。旧 K-dom `ot`(wo/buchholz/embed) は誤変種で破棄予定。
 > 設計詳細・ZFC_in_HOL API・経緯は memo.md / conventionals.md へ。
 > **サマリ (2026-06-14, Lean route)**: 残 3 sorry（nrm_order_pres 経由の psi_proj_notmem / oV_nf_order_pres, および独立路 wf_ArgsA）は全て同一の **Buchholz 崩壊核 CC**（= 論文 Remark p197「omitting condition は C_v(α) を変えない」の collapse 領域, 未証明）に帰着。atomic crux 解明済（bootstrap ⟹ canonical rep は <α に必ず存在 ⟹ CW は真）。NEC(1.9)/CW は `CC_of_collapseCanon`+1.7 で CC 単独に還元済（Buchholz17.lean, 緑）。詳細 memory nrm-campaign-status / nrm_stepdec_design.md。
-> **サマリ (2026-06-15, Lean W=T+endpoint)**: `PSS_terminates_nrm_final` で停止性＝Buchholz §1 `psi_proj` collapse 1点 modulo（残 leaf=`CollapseResidueMaxo`/`HeadFamilyNF`、他全証明・sorryAx-free）。新規 Wtt/Wttbase/Wttone/Residue/Reduction。詳細 memory lean-wtt-route。
+> **サマリ (2026-06-15, Lean 確定 endpoint)**: 停止性 = `PSS_terminates_nrm_final : CollapseResidueMaxo → HeadFamilyNF → WellFounded stepRel`（sorryAx-free, 残 = Buchholz §1 collapse 1点 = `{CollapseResidueMaxo 真278/278, HeadFamilyNF 真Ω帯双対}`、他全証明）。バイパス2件は DEAD = 反例で偽: `ProjFixesNrm`（proj は nrm 像で発火 `proj 0 (p_1(p_2(0)))≠p_1(p_2(0))`）/ `NFwf3`（NF⊄wf3, `translate(diagSeq 0 2)∈NF` は非wf3）。記録 lean/PROOF-STATUS.md。
 - 🚨 定理（標準形ペア数列システムの停止性）〔proofs.thy / embed.thy〕
   - ✅ §5 定式化〔def.thy: 親子関係 nextrel0/1・基本列 oper=M[n]・標準形 ST_PS・step〕
   - ✅ 三分木記法 $p_a(b)+c$〔mechanized.thy〕
