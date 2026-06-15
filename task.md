@@ -30,54 +30,18 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
-  - 🎯 **★★★最新(続90): PSS 停止性 = 純粋に Buchholz §1 の発火 wall のみ(構造機械化を全 close)**
-    > 多セッション crux `sigma_seqlex_mono` を緑のブロック帰納で証明完成 → 構造的到達性・標準形閉包を全緑化。
-    > 残 live §1: `argzone_fire_FF`(発火2節)/ `nrm_argzone_olt`(統一帰納)/ `keeps_head_ST_PS`(tied e=y)。oV_mono_NF 同値。
-    > 今セッションで偽補題11件を深層実測で破棄(第7事件 E6_value 再演も回避)。sub-agent 14体運用。
-    > ユーザー指摘「§1 移植しても PSS と繋がらない」は正。§1/psi_proj は live path 外。続89 の「2独立ルート」は
-    > 続90 sub-agent 2並列で**両者が同一の単一義務に収束**と判明(独立でなかった)。
-    - 🚨 **唯一の真の live 核 `sigma_seqlex_mono`**〔nrm.thy〕: M,N∈ST_PS⟹seqlex M N⟹seqlex(σM)(σN)
-      〔列・組合せ・深層979300/0〕。nrm_order_pres ⟸ これ。緑 assembly: olt_ST_iff_seqlex/translate_sigma/
-      seqlex_imp_olt/untr/sigma/sigma_block_unfold(続90 緑追加)。
-    - **核 `oV_mono_NF`**〔ovnf.thy・意味論・3378700/0〕は **sigma_seqlex_mono と同値**: 唯一 TRUE な還元 =
-      oV_nrm(oV∘nrm=oV)+wf3_nrm+oV_order_pres+nrm_order_pres ⟸ sigma_seqlex_mono。standalone sorry のまま維持
-      (将来の global 意味論攻撃の余地)。緑橋は wt-oV に保存(main 非統合=live sorry 増を避ける)。
-    - 🚨 **per-principal/Cmem_NF ルートは偽**で確定(OV agent): NF⊄wf3(2207/10207)・Cmem_NF(93/179 non-canonical)・
-      PROJMONO(14739 reversal)全て深層実測で破棄。**標準形(blockok 両row)不変量が本質**、cnf/wf3/r1ok 局所述語不可。
-    - ✅ **続90後半: `sigma_seqlex_mono` 緑のブロック帰納証明完成**(SIG2, (S)分解で seqlex_imp_olt 移植)。
-      PSS live path を3つの残核に精密局所化(nrm.thy, PSI 緑):
-      PSS live path は今や3核のみ(nrm.thy・PSI 緑):
-      - 🚨 **`proj_nrm_argzone_olt`**= 唯一の本質的 §1 核(term-level): ST arg-zone で proj∘nrm∘translate が olt 保存・44850/0/0。
-        ≡oV_mono_NF。**ARGZ 診断: 既存 §1 sorry(psi_value_acanon/psi_proj_nonmem)に綺麗に還元しない**
-        (oV(nrm t)=oV t が必須・それ自体 §1核・oV(nrm BM)が 107/400 non-canonical)⟹ ST arg-zone 不変量を carry した
-        proj∘nrm 順序保存を直接攻める。緑補題 olt_iff_oV_wf3(wf3 上 oV が olt 反映)は nrm_argz_reduction_reference.thy.txt に保存。
-      - **`keeps_head_ST_PS`**= head 非吸収。y<e 不発(構造)、tied e=y proj比較=§1(STS_B)のみ。
-    - ✅ **構造的到達性・標準形閉包を全 close**(続90: SIG2/STRUCT/TAIL/SUF/HP):
-      tail_zone_ST_PS / suffix_closure_ST_PS / suffix_oper_witness / suffix_oper_witness_residual 全緑化。
-      HP が hasParent_last_ST_PS(ST_PS の全列が最終 index に parent・実測 0/190508)を ST_PS.induct で証明し
-      最後の構造残核を vacuous close。緑基盤: nextrel0/1/R_drop_iff・parent_unique・le0_row0_floor・
-      row0_zero_imp_row1_zero_ST_PS(floor 不変量)・nextrel0/1_exists。
-    - ✅ **続90末: proj_nrm_argzone_olt を緑化・§1核を proj 発火 crux に分解(CORE2)**。compositional:
-      - `argzone_val_ge`(ST arg-zone 値境界 y≤v・構造・1013167/0・**独立 closable**)
-      - `nrm_argzone_olt`(nrm 単調半=nrm_order_pres one depth down・44850/0/0)
-        🚨**循環注意**: depth-1 にブロック帰納を適用すると depth-2 の proj_nrm_argzone_olt に下りる
-        ⟹ **深さ一般の統一サイズ帰納に再構成**しない限り独立には閉じない(easy win ではない)。
-      - 🚨 `proj_step_argzone_olt` = **唯一の真に既約な §1 wall**(proj y 発火ケース・IST 値境界 carry・61075/0/0)。
-        CORE2 負の結果: 局所 term-level 不変量(wf3/subs≥y/P_subdom)では不十分(各 8万〜18万 reversal で偽)、
-        **firing-28%(fire×sum-vs-nest, memo 続83)が既約**。proj_emb_mono(embedding 順序)は非発火72%のみ閉じる。
-    - ✅ **続90末2: argzone_val_ge 緑(VAL)+ proj_step_argzone_olt 緑(FIRE)**。
-      - VAL: ST_PS_head_val_zero(全標準形の head=(0,0)⟹y=0・floor 不変量)⟹ argzone_val_ge 退化緑。
-      - FIRE: proj_step_argzone_olt を発火有無で case split・緑証明。**非発火 72% は完全緑**(proj_ole+olt_ole_trans)。
-        toolkit を nrmstep→nrm へ移動(proj_inflate/proj_ole/maxo_ub/pfire/proj_once 等・E6_value 非依存で緑)。
-    - 🚨 **残 §1 wall = `argzone_fire_FF`**(発火 2節命題・FW が proj_step_fire_witness を緑化し更に縮約):
-      arg-zone class で olt B F・B 発火 ⟹ (1)pfire y F(F も発火)+(2)olt(proj y B)(proj y F)。∃/maxo なし・6555/0/0。
-      witness g'=proj y F(緑)。これ + nrm_argzone_olt(統一帰納)+ keeps_head_ST_PS(tied e=y)が残る全 §1。
-    - 🚨 偽補題: 本セッション計11件破棄(Cmem_NF/PROJMONO/C1/旧tail_zone[空]/oV(nrm)eq-case/PROJMONO_WF3/GEQ/
-      P_subdom/E6_value[旧7事件系]/naive witness/+既知 acanon_arg_lt/oV_mono_cnf)。全て arg-zone class guard 脱落が原因。
-    - **次攻**: (1)argzone_fire_FF clause(1)pfire y F(発火単調性・class-guard 必須)→ clause(2) (2)nrm_argzone_olt
-      (深さ一般統一サイズ帰納) (3)keeps_head_ST_PS tied e=y(同核)。oV_mono_NF は意味論側同値。
-  - 🗄 §1/psi_proj 路線(続89(21-39)・健全 infra だが live path 外): term_nec/1.4 trio/Cset_eq_Cset_c
-    (psi_value_acanon modulo)/B2/wit機構。Buchholz §1 機械化として価値あるが PSS には不要と確定。
+  - 🎯 **最新(続90)：PSS 停止性 = 純粋 Buchholz §1 発火 wall。構造機械化を全 close。経緯・実測・偽補題は memo 続90へ**
+    - ✅ sigma_seqlex_mono〔nrm.thy・SIG2〕
+    - ✅ 構造的到達性・標準形閉包を全緑化〔tail_zone_ST_PS / suffix_closure_ST_PS / suffix_oper_witness / hasParent_last_ST_PS〕
+    - ✅ proj_nrm_argzone_olt〔CORE2 が発火 crux に compositional 分解〕
+    - ✅ argzone_val_ge〔VAL・ST_PS_head_val_zero で退化〕
+    - ✅ proj_step_argzone_olt〔FIRE・非発火 72% 緑〕
+    - ✅ proj_step_fire_witness〔FW・witness g'=proj y F〕
+    - 🚨 argzone_fire_FF：発火 wall（clause1 pfire y F → clause2）〔nrm.thy〕
+    - 🚨 nrm_argzone_olt：深さ一般統一サイズ帰納が blocker〔nrm.thy〕
+    - 🚨 keeps_head_ST_PS：tied e=y〔nrm.thy〕
+    - 🚨 oV_mono_NF：argzone_fire_FF と意味論同値〔ovnf.thy〕
+  - 🗄 §1/psi_proj 路線：live path 外〔term_nec / 1.4 trio / Cset_eq_Cset_c / psi_value_acanon〕
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
     - ✅ wfimg → 対角 accessibility 還元〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS〕
     - 🚨 **本命＝pure-lex 構文的整礎性（順序数なし, wf.thy, sorry ゼロ・緑）** ［決定 2026-06-10, memory pss-wf-route-purelex-syntactic］
