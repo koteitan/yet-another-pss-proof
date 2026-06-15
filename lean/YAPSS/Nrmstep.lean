@@ -2323,6 +2323,59 @@ theorem proj_keystone {L : ℕ} {x y : Three}
     rw [hpx]
     exact Or.inl (olt_P_P.2 (Or.inl he))
 
+/-! ### `descok`: the consecutive-spine descent predicate
+
+`descok t`: the leading `.b`-chain of `t` descends with *consecutive* leads
+`[lead t, lead t + 1, …, maxsub t]` to the node at lead `= maxsub`, and at each
+non-top node the tail's max subscript is strictly below the head argument's.
+This is the recursion carrier for the equal-`maxsub` firing comparison
+(model-verified: all firing-`NF` args satisfy it, the head-descent preserves it,
+and the main `proj`-order comparison holds `991020 / 991020`). -/
+
+/-- `descok t` (recursive on the leading `.b`-chain). -/
+def descok : Three → Prop
+  | Z => False
+  | P a x y =>
+    a = maxsub (P a x y) ∨
+      (lead x = a + 1 ∧ maxsub y < maxsub x ∧ descok x)
+
+@[simp] theorem descok_Z : ¬ descok Z := id
+
+theorem descok_P {a : ℕ} {x y : Three} :
+    descok (P a x y) ↔
+      a = maxsub (P a x y) ∨
+        (lead x = a + 1 ∧ maxsub y < maxsub x ∧ descok x) := Iff.rfl
+
+/-- **Head-descent of `descok`**: a non-top `descok` node descends to a `descok`
+head argument.  (Direct from the definition.) -/
+theorem descok_arg {a : ℕ} {x y : Three} (h : descok (P a x y))
+    (hnt : a ≠ maxsub (P a x y)) : descok x :=
+  (descok_P.1 h).resolve_left hnt |>.2.2
+
+/-- **`maxsub x = climb x` on a non-top `descok` node's head arg** (the keystone
+side-condition).  At a non-top node `P a x y`, `lead x = a+1` and
+`maxsub y < maxsub x`, and `maxsub (P a x y) = maxsub x` (the head arg carries
+the term's max), so `climb (P a x y) = max a (climb x)` with `a < lead x ≤ climb x`
+forces `maxsub x = climb x` from `maxsub (P a x y) = climb (P a x y)`. -/
+theorem descok_arg_maxsub_eq_climb {a : ℕ} {x y : Three}
+    (hlx : lead x = a + 1) (hyx : maxsub y < maxsub x)
+    (hmc : maxsub (P a x y) = climb (P a x y)) : maxsub x = climb x := by
+  -- `maxsub (P a x y) = max a (max (maxsub x)(maxsub y)) = maxsub x` (since
+  -- `a < lead x ≤ maxsub x` and `maxsub y < maxsub x`).
+  have hlxm : lead x ≤ maxsub x := lead_le_maxsub_self x
+  have hax : a < maxsub x := by omega
+  have hmt : maxsub (P a x y) = maxsub x := by rw [maxsub_P]; omega
+  -- `climb (P a x y) = cmax (a :: spine x) = max a (climb x)`.
+  have hct : climb (P a x y) = max a (climb x) := by
+    unfold climb; rw [spine_P, cmax_cons]
+  -- `a < lead x ≤ climb x` (lead is the first spine entry, ≤ cmax).
+  have hlxc : lead x ≤ climb x := by
+    cases x with
+    | Z => simp [lead] at hlx
+    | P e p q => unfold climb; rw [spine_P, cmax_cons, lead_P]; exact le_max_left _ _
+  have : climb (P a x y) = climb x := by rw [hct]; omega
+  rw [hmt] at hmc; rw [this] at hmc; exact hmc
+
 /-- **The smaller projection strictly dominates the larger argument** (a GREEN
 structural fact, model-verified `824970 / 824970` on ALL firing pairs,
 `tools/probe_witrec.py`).  For two firing head-`0` `NF` arguments `b <o f`,
