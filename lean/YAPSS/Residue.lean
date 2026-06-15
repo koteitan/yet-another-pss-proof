@@ -934,6 +934,38 @@ theorem alphaStepResidue_of_mem (H : NoncanonValueMem.{u}) : AlphaStepResidue.{u
       (fun ζ uu hζ => by rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hδα)]) hδc
   exact ⟨δ, hδα, hδv, hδc_self, heq.symm⟩
 
+/-- **Finishing step of the joint induction (GREEN, sorry-free): canonical rep ⟹
+membership.**  If the value `psiSelf ξ u` has a `u`-canonical representative `δ < α`
+inside `CsetSelf α v` (`psiSelf δ u = psiSelf ξ u`), then `psiSelf ξ u ∈ CsetSelf
+α v` — by `CsetSelf_psi_closed` (δ canonical fires `psiSelf δ u` into the closure)
+and the value rewrite.  This is the *converse* of `alphaStepResidue_of_mem`: together
+they give `NoncanonValueMem ⟺ AlphaStepResidue` (canonical-rep existence).  So the
+joint induction's whole burden is PRODUCING `δ` (= `proj u ξ`, the canonical rep;
+model-verified `δ < α`, `δ ∈ CsetSelf α v`, `δ` canonical, value-equal at
+closure+5/+6, 30001/30001). -/
+theorem nvm_finish_of_rep {α : Ordinal.{u}} {v : ℕ} {ξ : Ordinal.{u}} {u : ℕ}
+    (δ : Ordinal.{u})
+    (hδα : δ < α) (hδC : δ ∈ CsetSelf (psiResSelf α) α v)
+    (hδcanon : δ ∈ CsetSelf (psiResSelf δ) δ u)
+    (hval : psiSelf δ u = psiSelf ξ u) :
+    psiSelf ξ u ∈ CsetSelf (psiResSelf α) α v := by
+  have hconv : δ ∈ CsetSelf (psiResSelf α) δ u :=
+    CsetSelf_mono_param _ _ δ u
+      (fun ζ uu hζ => by rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hδα)]) hδcanon
+  have hfire := CsetSelf_psi_closed hδC hδα u hconv
+  rw [psiResSelf, if_pos hδα, hval] at hfire
+  exact hfire
+
+/-- **`NoncanonValueMem ⟺ AlphaStepResidue`** (both directions GREEN).  Forward is
+`alphaStepResidue_of_mem`; backward feeds the canonical rep through
+`nvm_finish_of_rep`.  Confirms the two §1 faces are the SAME content; the joint
+induction targets either. -/
+theorem noncanonValueMem_iff_alphaStepResidue :
+    NoncanonValueMem.{u} ↔ AlphaStepResidue.{u} := by
+  refine ⟨alphaStepResidue_of_mem, fun H α v ξ u hξC hξα hnc hvu => ?_⟩
+  obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ := H α v ξ u hξC hξα hnc hvu
+  exact nvm_finish_of_rep δ hδα hδC hδcanon hval
+
 /-- **The non-canonical generator value is itself non-canonical and `≤ ξ`**
 (ya-pss `noncanon_value_noncanon`).  If `ξ ∉ C_u(ξ)` then `psiSelf ξ u ≤ ξ`
 (`psiSelf_le_self_of_not_canon`) and `psiSelf ξ u ∉ C_u(psiSelf ξ u)` (else it
