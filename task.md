@@ -69,9 +69,9 @@
       - VAL: ST_PS_head_val_zero(全標準形の head=(0,0)⟹y=0・floor 不変量)⟹ argzone_val_ge 退化緑。
       - FIRE: proj_step_argzone_olt を発火有無で case split・緑証明。**非発火 72% は完全緑**(proj_ole+olt_ole_trans)。
         toolkit を nrmstep→nrm へ移動(proj_inflate/proj_ole/maxo_ub/pfire/proj_once 等・E6_value 非依存で緑)。
-    - 🚨 **残 §1 wall = `proj_step_fire_witness`**(発火 28% の crux・concrete 存在命題):
-      発火時 proj y B は F の違反 G_y-critical g' に支配される(∃g'. g'∈Gterm y F ∧ ¬olt g' F ∧ olt(proj y B)g')。
-      深層 13861/0(2.21M)。これ + nrm_argzone_olt(統一帰納要)+ keeps_head_ST_PS(tied e=y 同核)が残る全 §1 内容。
+    - 🚨 **残 §1 wall = `argzone_fire_FF`**(発火 2節命題・FW が proj_step_fire_witness を緑化し更に縮約):
+      arg-zone class で olt B F・B 発火 ⟹ (1)pfire y F(F も発火)+(2)olt(proj y B)(proj y F)。∃/maxo なし・6555/0/0。
+      witness g'=proj y F(緑)。これ + nrm_argzone_olt(統一帰納)+ keeps_head_ST_PS(tied e=y)が残る全 §1。
     - 🚨 偽補題(FIRE): E6_value 値同一性(proj y B=nrm(msfx aM))偽=旧7事件系を回避・naive witness(proj y B∈Gterm y F)偽。
     - **次攻**: proj_step_fire_witness 本体(nrm-image の critical 構造で違反 critical g' を構成)。
       keeps_head_ST_PS tied e=y / nrm_argzone_olt(統一サイズ帰納)も同核。oV_mono_NF 意味論同値。

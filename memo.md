@@ -4680,3 +4680,12 @@ keeps_head_ST_PS(tied e=y=同核)。oV_mono_NF(意味論同値)。psi_proj_nonme
 **残 live §1**: proj_step_fire_witness(発火 28% witness・concrete)/ nrm_argzone_olt(統一サイズ帰納要)/
 keeps_head_ST_PS(tied e=y 同核)。oV_mono_NF(意味論同値)。psi_proj_nonmem(off-path)。
 偽補題は本セッションで計11件破棄(第7・8事件を全回避)。sub-agent 13体を worktree 分離+ヒープ seed で運用。
+
+### 続90 末3: proj_step_fire_witness 緑(FW)= §1 発火 wall を2節命題 argzone_fire_FF に縮約
+FW: proj_step_fire_witness を witness g'=proj y F で緑化(F 発火時 proj y F=maxo(violating Glist)∈Gterm y F・
+proj_once/maxo_in で自動)。§1 発火 wall を鋭い2節に縮約:
+**argzone_fire_FF**: arg-zone class で olt B F・B 発火 ⟹ (1)pfire y F(F も発火・firing 単調性)+(2)olt(proj y B)(proj y F)。
+∃/maxo wrapper なし・深層 6555/0/0。FW 推奨: clause(1)pfire y F を先に(簡単な方)、(2)は F 発火が構造的に出れば従う。
+🚨 off-class で全偽を再確認(firing-mono 737313/1999000・maxo-mono 318342/1124250・olt(proj y B)F 3403/3403)
+⟹ arg-zone class guard(depth-1 NF block 構造)が本質。これが本セッション偽補題11件の原因(guard 脱落)。
+**残 live §1**: argzone_fire_FF(発火2節)/ nrm_argzone_olt(統一帰納)/ keeps_head_ST_PS(tied e=y)。oV_mono_NF 同値。
