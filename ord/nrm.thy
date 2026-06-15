@@ -708,15 +708,125 @@ lemma head_row0_ST_PS:
   shows "fst (hd M) = 0"
   using blockok_ST_PS[OF assms(1)] assms(2) unfolding blockok_def by simp
 
-text \<open>\<^bold>\<open>Residual 2\<close> \<open>tail_zone_ST_PS\<close>: the tail zone of a standard form is again a
-  standard form.  \<^bold>\<open>Empirically 0 not-in / 10437\<close> (\<open>probe_sigma_residual.py\<close>
-  corpus): \<open>dropWhile (\<lambda>q. 0 < fst q)\<close> of the body of \<open>M \<in> ST_PS\<close> stays in
-  \<open>ST_PS\<close>.  (The \<^emph>\<open>argument\<close> zone does \<^bold>\<open>not\<close>: it is a depth-1 block outside
-  \<open>ST_PS\<close>, which is why the \<open>\<sigma>\<^sub>P\<close> core below carries the \<open>blockok\<close> invariant, not
-  ST membership.)  Localized \<open>sorry\<close>: structural standard-form closure.\<close>
+text \<open>\<^bold>\<open>Nonemptiness of standard forms\<close>.  Every \<open>M \<in> ST_PS\<close> is nonempty: the
+  generators \<open>diagSeq 0 v\<close> have length \<open>Suc v \<ge> 1\<close>, and the expansion \<open>M[n]\<close>
+  never empties a nonempty sequence (its three result shapes are \<open>M\<close>, \<open>Pred M\<close>
+  \<dash> which on length \<open>\<ge> 2\<close> is a nonempty \<open>butlast\<close> \<dash>, and a green prefix
+  followed by a nonempty tiled block).  Proved by induction on \<open>ST_PS\<close>.
+
+  \<^bold>\<open>Soundness note (8th-incident gate).\<close> This nonemptiness fact is exactly what
+  makes the literal \<open>dropWhile \<dots> \<in> ST_PS\<close> tail-zone statement \<^emph>\<open>false\<close> in the
+  edge case where the tail zone is \<^bold>\<open>empty\<close> (e.g. \<open>(0,0)(1,1)\<dots>(v,v)[\<dots>]\<close> whose
+  body, after the leading argument run, contains no further row-0 column): then
+  \<open>dropWhile \<dots> = []\<close>, and \<open>[] \<notin> ST_PS\<close>.  Empirically the only counterexamples to
+  the old \<open>tail_zone_ST_PS\<close> were precisely these empty tail-zones
+  (\<open>tools/probe_struct_close.py\<close>: 0 nonempty / 76114 fail; the \<open>[] \<notin> ST_PS\<close> cases
+  are the apparent failures).  The lemma below is therefore guarded by the
+  hypothesis that the tail zone is nonempty; the call site
+  (\<open>sigma_seqlex_mono\<close>, below) handles the empty tail zone directly via
+  \<open>sigma [] = []\<close>.\<close>
+
+lemma oper_nonempty: "M \<noteq> [] \<Longrightarrow> 1 \<le> n \<Longrightarrow> M[n] \<noteq> []"
+proof -
+  assume Mne: "M \<noteq> []" and n1: "1 \<le> n"
+  define j1 where "j1 = Lng M - 1"
+  show "M[n] \<noteq> []"
+  proof (cases "j1 = 0")
+    case True thus ?thesis using Mne unfolding oper_def Let_def j1_def[symmetric] by simp
+  next
+    case False
+    have len2: "2 \<le> Lng M" using False j1_def by simp
+    have predne: "Pred M \<noteq> []"
+    proof -
+      have bne: "butlast M \<noteq> []" using len2 by (cases M rule: rev_cases) auto
+      have nle: "\<not> Lng M \<le> 1" using len2 by simp
+      have "Pred M = butlast M" unfolding Pred_def using nle by simp
+      thus ?thesis using bne by simp
+    qed
+    show ?thesis
+    proof (cases "entry M 0 j1 = 0 \<and> entry M 1 j1 = 0")
+      case True
+      have "M[n] = Pred M" unfolding oper_def Let_def j1_def[symmetric]
+        using False True by auto
+      thus ?thesis using predne by simp
+    next
+      case Fz: False
+      define i1 where "i1 = idx1 M j1"
+      show ?thesis
+      proof (cases "hasParent M i1 j1")
+        case False2: False
+        have "M[n] = Pred M" unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+          using False Fz False2 by auto
+        thus ?thesis using predne by simp
+      next
+        case hp: True
+        define j0 where "j0 = parent M i1 j1"
+        define d0 where "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+        define d1 where "d1 = (if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0)"
+        define blk where "blk = (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j + k * d1)) [j0..<j1])"
+        have opeq: "M[n] = take j0 M @ concat (map blk [0..<n])"
+          unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+            j0_def[symmetric] d0_def[symmetric] d1_def[symmetric] blk_def
+          using False Fz hp by auto
+        have nR: "nextR M i1 j0 j1" unfolding j0_def by (rule parent_nextR[OF hp])
+        have j0j1: "j0 < j1" using nR by (rule nextR_less)
+        have blk0ne: "blk 0 \<noteq> []" unfolding blk_def using j0j1 by simp
+        have "0 \<in> set [0..<n]" using n1 by simp
+        hence "blk 0 \<in> set (map blk [0..<n])" by simp
+        hence "concat (map blk [0..<n]) \<noteq> []" using blk0ne by auto
+        thus ?thesis using opeq by simp
+      qed
+    qed
+  qed
+qed
+
+lemma ST_PS_nonempty: "M \<in> ST_PS \<Longrightarrow> M \<noteq> []"
+proof (induction M rule: ST_PS.induct)
+  case (diag v) show ?case by (simp add: diagSeq_def)
+next
+  case (oper M n) show ?case using oper_nonempty[OF oper.IH oper.hyps(2)] by simp
+qed
+
+text \<open>\<^bold>\<open>Residual 2\<close> \<open>tail_zone_ST_PS\<close>: the (nonempty) tail zone of a standard form
+  is again a standard form.  \<^bold>\<open>Empirically 0 nonempty-not-in / 76114\<close>
+  (\<open>tools/probe_struct_close.py\<close>): \<open>dropWhile (\<lambda>q. 0 < fst q)\<close> of the body of
+  \<open>M \<in> ST_PS\<close> stays in \<open>ST_PS\<close> \<^emph>\<open>whenever it is nonempty\<close>; the empty tail zone is
+  \<^bold>\<open>not\<close> in \<open>ST_PS\<close> (@{thm [source] ST_PS_nonempty}) and is handled separately at
+  the call site (\<open>sigma_seqlex_mono\<close>, below).  (The \<^emph>\<open>argument\<close> zone does
+  \<^bold>\<open>not\<close> stay in \<open>ST_PS\<close>: it is a
+  depth-1 block, which is why the \<open>\<sigma>\<^sub>P\<close> core below carries the \<open>blockok\<close>
+  invariant, not ST membership.)  Localized \<open>sorry\<close>: the genuine content is
+  \<^bold>\<open>row-0-headed-suffix closure\<close> of \<open>ST_PS\<close> \<dash> every nonempty suffix of an
+  \<open>M \<in> ST_PS\<close> that begins at a row-0 column is itself in \<open>ST_PS\<close>
+  (\<open>tools/probe_struct_close.py\<close> test (A3): 0 not-found / 89777).  This is a
+  structural reachability fact about the \<open>oper\<close> tiling and is independent of the
+  \<section>1 collapse core.
+
+  \<^bold>\<open>Mapped attack (2026-06-15, validated empirically)\<close>.  Prove the strengthened
+  \<^bold>\<open>suffix-closure\<close> lemma by induction on \<open>ST_PS\<close>: \<open>M \<in> ST_PS \<Longrightarrow> i < length M
+  \<Longrightarrow> fst (M ! i) = 0 \<Longrightarrow> drop i M \<in> ST_PS\<close>.
+  \<^item> \<^bold>\<open>diag\<close>: in \<open>diagSeq 0 v\<close> the only row-0 column is index \<open>0\<close>, so \<open>drop 0\<close>
+    is the whole diagonal.
+  \<^item> \<^bold>\<open>oper\<close>: \<open>N = M[n] = take j0 M @ concat (map blk [0..<n])\<close> (the standard
+    decomposition, cf. @{thm [source] blockok_oper}).  For a row-0 index \<open>i\<close> of
+    \<open>N\<close>:
+    \<^enum> \<^bold>\<open>case \<open>i \<le> j0\<close>\<close> (suffix starts in the green prefix): the commutation
+      \<open>drop i N = (drop i M)[n]\<close> holds \<^bold>\<open>exactly\<close> (\<open>tools/probe_oper_commute.py\<close>
+      W1: 0 bad / 6393), with \<open>drop i M\<close> a row-0 suffix of \<open>M\<close> (IH gives
+      \<open>drop i M \<in> ST_PS\<close>, then \<open>oper\<close>).  Needs: \<open>nextR\<close>/\<open>parent\<close> of the last
+      column are invariant under removing a row-0-headed prefix of length
+      \<open>\<le> j0\<close>.
+    \<^enum> \<^bold>\<open>case \<open>i > j0\<close>\<close> (suffix starts inside the tiled region, \<^bold>\<open>\<approx>25%\<close> of tail
+      zones \<dash> \<open>tools/probe_tailzone_idx.py\<close>): \<open>drop i N\<close> is a row-0 suffix of a
+      partial tile run; it equals \<open>(drop i' M)[m]\<close> for a smaller \<open>m\<close> built from
+      the per-tile periodic structure.  This is the harder sub-case and the
+      reason the lemma is left as a \<open>sorry\<close> here (it re-derives reachability
+      through the \<open>nextrel0\<close>/\<open>le0\<close> valley conditions, which are global).
+  The whole route is \<^bold>\<open>independent\<close> of the \<section>1 collapse core.\<close>
 
 lemma tail_zone_ST_PS:
   assumes "(0, y) # r \<in> ST_PS"
+    and "dropWhile (\<lambda>q. 0 < fst q) r \<noteq> []"
   shows "dropWhile (\<lambda>q. 0 < fst q) r \<in> ST_PS"
   sorry
 
@@ -724,12 +834,52 @@ text \<open>\<^bold>\<open>Residual 3\<close> \<open>keeps_head_ST_PS\<close>: o
   in the \<open>\<sigma>\<close> recursion never absorbs the head (\<open>T1\<close>, \<^bold>\<open>0 / 10437\<close>,
   \<open>probe_sigma_residual.py\<close> R-KH).  Not cleanly separable from the core: at a tied
   tail head subscript the absorb test is itself a \<open>proj\<close>-comparison.  Localized
-  \<open>sorry\<close>.\<close>
+  \<open>sorry\<close>.
+
+  \<^bold>\<open>Obstruction mapped (2026-06-15)\<close>.  Writing \<open>M = (0,y) # r\<close>,
+  \<open>aM = takeWhile (0<fst) r\<close>, \<open>tM = dropWhile (0<fst) r\<close>, \<open>A = proj y (nrm
+  (translate aM))\<close>, \<open>C = nrm (translate tM)\<close>: \<open>keeps_head M\<close> is exactly the
+  negation of the @{const ins} absorb-test \<open>y < e \<or> (y = e \<and> olt A f)\<close> for
+  \<open>C = P e f g\<close>.  This is the \<^bold>\<open>depth-0 instance\<close> of the already-green
+  \<open>NT_shape\<close>/\<open>NT_noabsorb\<close> pair (in \<open>nrmstep.thy\<close>), whose recursion
+  bottoms out in \<open>NT_dom\<close> \<dash> but \<open>NT_dom\<close>/\<open>NT_shape\<close> are stated for
+  \<open>fbseg u S\<close> (a \<^emph>\<open>dominated\<close> segment, \<open>\<exists>pp. fst pp < fst (hd S)\<close>), which
+  \<^bold>\<open>fails\<close> for a depth-0 head \<open>(0,y)\<close>.  The required depth-0 analogue of \<open>NT_dom\<close>
+  is precisely the (also sorried) \<open>STS_B\<close> in \<open>nrmstep.thy\<close>, i.e. the \<^bold>\<open>same\<close>
+  \<section>1 collapse content.  Empirically (\<open>tools/probe_keepshead.py\<close>, 25296-corpus):
+  \<^item> the \<open>y < e\<close> disjunct \<^bold>\<open>never\<close> fires (0 / 1537 nonempty-tail cases; in fact
+    \<open>e = hdsub C = snd (hd tM) \<le> y\<close> always) \<dash> this half is the structural
+    subscript bound (no \<section>1 core);
+  \<^item> the only live content is the \<^bold>\<open>tied\<close> case \<open>e = y \<Longrightarrow> \<not> olt A f\<close> (the
+    \<open>proj\<close>-comparison), which is genuinely the Buchholz \<section>1 collapse fact
+    \<open>STS_B\<close>/\<open>sigma_argzone_mono\<close>.
+  Hence the residual cannot be honestly closed here without the \<section>1 core; left
+  as a single localized \<open>sorry\<close>.\<close>
 
 lemma keeps_head_ST_PS:
   assumes "M \<in> ST_PS"
   shows "keeps_head M"
   sorry
+
+text \<open>\<^bold>\<open>Nonemptiness of \<open>\<sigma>\<close> on standard forms\<close>: \<open>\<sigma>\<close> maps a nonempty standard form
+  to a nonempty block (its leading \<open>(0,y)\<close> is preserved by head non-absorption).
+  Used to discharge the empty tail-zone edge case of the block induction.\<close>
+
+lemma sigma_ST_nonempty:
+  assumes "M \<in> ST_PS"
+  shows "sigma M \<noteq> []"
+proof -
+  have ne: "M \<noteq> []" by (rule ST_PS_nonempty[OF assms])
+  obtain q r' where M: "M = q # r'" using ne by (cases M) auto
+  have q0: "fst q = 0" using head_row0_ST_PS[OF assms ne] M by simp
+  obtain yy where q: "q = (0, yy)" using q0 by (cases q) auto
+  have kh: "keeps_head M" by (rule keeps_head_ST_PS[OF assms])
+  have "sigma M = (0, yy)
+          # untr 1 (proj yy (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))
+          @ sigma (dropWhile (\<lambda>q. 0 < fst q) r')"
+    using sigma_struct_rec[of yy r'] kh M q by simp
+  thus ?thesis by simp
+qed
 
 text \<open>\<^bold>\<open>Residual 4 (THE irreducible \<section>1 core)\<close> \<open>sigma_argzone_mono\<close>: the argument-zone
   normalizer \<open>\<sigma>\<^sub>P y a = untr 1 (proj y (nrm (translate a)))\<close> is \<open>seqlex\<close>-monotone on
@@ -836,20 +986,35 @@ proof (induction "length M + length N" arbitrary: M N rule: less_induct)
       thus ?thesis
       proof cases
         case tails
-        \<comment> \<open>argument zones equal \<open>\<Rightarrow>\<close> \<open>\<sigma>\<^sub>P\<close> equal; recurse on the strictly shorter tail.\<close>
-        have tMst: "?tM \<in> ST_PS"
-          using tail_zone_ST_PS[of y r] less.prems(1) Cons p by simp
-        have tNst: "?tN \<in> ST_PS"
-          using tail_zone_ST_PS[of y r'] less.prems(2) N q True by simp
-        have lenM: "length ?tM \<le> length r" by (simp add: length_dropWhile_le)
-        have lenN: "length ?tN \<le> length r'" by (simp add: length_dropWhile_le)
-        have shorter: "length ?tM + length ?tN < length M + length N"
-          using lenM lenN Cons N by simp
-        have ih: "seqlex (sigma ?tM) (sigma ?tN)"
-          by (rule less.hyps[OF shorter tMst tNst tails(2)])
-        have "?SPM = ?SPN" using tails(1) True by simp
-        hence "seqlex (?SPM @ sigma ?tM) (?SPN @ sigma ?tN)"
-          using ih seqlex_append_cancel by simp
+        \<comment> \<open>argument zones equal \<open>\<Rightarrow>\<close> \<open>\<sigma>\<^sub>P\<close> equal; recurse on the strictly shorter
+           tail (or, when the tail zone is empty, decide directly).\<close>
+        have SPeq: "?SPM = ?SPN" using tails(1) True by simp
+        have core: "seqlex (sigma ?tM) (sigma ?tN)"
+        proof (cases "?tM = []")
+          case tMempty: True
+          \<comment> \<open>\<open>seqlex [] ?tN\<close> forces \<open>?tN \<noteq> []\<close>; \<open>\<sigma> [] = []\<close> and \<open>\<sigma> ?tN \<noteq> []\<close>.\<close>
+          have tNne: "?tN \<noteq> []" using tails(2) tMempty by (cases ?tN) auto
+          have tNst: "?tN \<in> ST_PS"
+            using tail_zone_ST_PS[of y r'] less.prems(2) N q True tNne by simp
+          have sNne: "sigma ?tN \<noteq> []" by (rule sigma_ST_nonempty[OF tNst])
+          have "sigma ?tM = []" by (simp add: sigma_def tMempty)
+          thus ?thesis using sNne by (cases "sigma ?tN") auto
+        next
+          case tMne: False
+          obtain a as where tMcons: "?tM = a # as" using tMne by (cases ?tM) auto
+          have tNne: "?tN \<noteq> []" using tails(2) tMcons by (cases ?tN) auto
+          have tMst: "?tM \<in> ST_PS"
+            using tail_zone_ST_PS[of y r] less.prems(1) Cons p tMne by simp
+          have tNst: "?tN \<in> ST_PS"
+            using tail_zone_ST_PS[of y r'] less.prems(2) N q True tNne by simp
+          have lenM: "length ?tM \<le> length r" by (simp add: length_dropWhile_le)
+          have lenN: "length ?tN \<le> length r'" by (simp add: length_dropWhile_le)
+          have shorter: "length ?tM + length ?tN < length M + length N"
+            using lenM lenN Cons N by simp
+          show ?thesis by (rule less.hyps[OF shorter tMst tNst tails(2)])
+        qed
+        have "seqlex (?SPM @ sigma ?tM) (?SPN @ sigma ?tN)"
+          using core SPeq seqlex_append_cancel by simp
         thus ?thesis using sigM sigN True by simp
       next
         case args
