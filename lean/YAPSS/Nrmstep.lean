@@ -1661,18 +1661,29 @@ static-domain family) but TRUE on `NF` arguments (audited 79800/79800, zero
 reversals).  Pure `olt` (no ordinals), `wf3`-free.  Via `proj_olt_of_fireprop`
 it splits into the two `NF`-standardness residuals below.
 
-STATUS (this campaign).  The `maxsub`/`climb`/spine discipline of `NF` arguments
-is now extracted (sorry-free): `maxsub_eq_climb_NF`, `maxsub_arg_eq_climb`,
-`maxsub_arg_dom`, `maxsub_arg_mono`, `lead_arg_le_one`, `climb_achieved`,
-`pfire0_of_lt_climb`, plus the self-contained all-`0` OT3 (`OT3all_msub0`,
-`not_pfire0_of_maxsub0`), `lead0_maxsub0_NF`, `fire_lead_one_NF`, `fire_shape_NF`.
-With these:
-  • **residual 1 `proj0_fireprop_NF` is fully reduced to the SINGLE residual
-    `not_pfire0_lead1max1_NF`** (a `lead = 1, maxsub = 1` `NF` arg does not fire
-    = the maxr1-`≤1` head-`0` OT3 wall, shared with `Wttone.H0clause_translate`);
-  • **residual 2 `proj0_bothfire_NF`** is structurally pinned (peel is
-    tail-independent; reduces to peel + `b' ≠ f'` uniqueness + a general
-    `proj 0`-monotone `tsize`-recursion on inner args). -/
+STATUS (this campaign).  Extracted sorry-free: the `maxsub`/`climb`/spine
+discipline (`maxsub_eq_climb_NF`, `maxsub_arg_eq_climb`, `maxsub_arg_dom`,
+`maxsub_arg_mono`, `lead_arg_le_one`, `climb_achieved`, `pfire0_of_lt_climb`);
+the self-contained all-`0` OT3 (`OT3all_msub0`, `not_pfire0_of_maxsub0`,
+`lead0_maxsub0_NF`, `fire_lead_one_NF`, `fire_shape_NF`); the one-step-`proj`
+facts (`maxo_bad_nofire`, `proj_eq_maxo_bad`, `proj_mem_Gterm_of_fire`,
+`proj_ge_crit` — `proj` is the single `maxo` of the violator list and is the
+GREATEST critical, all pure-term/no-`NF`); and `lead_proj_eq_maxsub_NF`
+(`proj 0` of a firing `NF` arg leads with `maxsub`).  With these BOTH proj-side
+residuals are reduced to clean single leaves:
+  • **`proj0_fireprop_NF` ⟶ `not_pfire0_lead1max1_NF`** (a `lead = 1, maxsub = 1`
+    `NF` arg does not fire = the maxr1-`≤1` head-`0` OT3 wall, shared with
+    `Wttone.H0clause_translate`);
+  • **`proj0_bothfire_NF` ⟶ `proj0_bothfire_eqmaxsub_NF`** (the equal-`maxsub`
+    both-fire comparison; the strict-`maxsub` case is PROVED via
+    `lead_proj_eq_maxsub_NF`).  NB the "peel" is now a triviality
+    (`proj_eq_maxo_bad`: `proj` is one-step); the residual is the
+    equal-`maxsub` greatest-critical comparison, which is genuinely
+    `NF`-discipline-dependent (the general `proj 0`-monotone is ~25% false and
+    the naive arg-recursion reverses at depth — see the lemma docstring).
+
+So Wall B (proj-side) is now exactly TWO `NF`-discipline leaves; everything
+around them is proved. -/
 
 /-! #### `maxsub`/`climb` discipline of `NF` arguments
 
@@ -2113,13 +2124,26 @@ theorem lead_proj_eq_maxsub_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hf : pfire
   omega
 
 /-- **Both-fire, equal-`maxsub` case** (residual 2, narrowed).  When the two
-firing `NF` arguments have the SAME maximal subscript, `proj 0` lands on two
-terms with equal leading subscript (`= maxsub`, by `lead_proj_eq_maxsub_NF`), so
-the comparison descends to their arguments — a recursion on the proj-results'
-arguments that needs the `NF` discipline (the general `proj 0`-monotone is FALSE,
-~25% violations; the strict-`maxsub` case is handled directly by
-`lead_proj_eq_maxsub_NF`).  Empirically exact (0 violations on equal-`maxsub`
-firing pairs). -/
+firing `NF` arguments have the SAME maximal subscript `k`, `proj 0` lands on two
+terms `P k bb cb`, `P k ff cf` with EQUAL leading subscript `k` (`= maxsub`, by
+`lead_proj_eq_maxsub_NF`) and (empirically) tails `≈ Z`, so the comparison
+reduces to `olt bb ff` on the proj-results' arguments.
+
+WHY THIS NEEDS THE `NF` DISCIPLINE (and is NOT a clean general recursion):
+  • the general `proj 0`-monotonicity is FALSE (~25% violations on arbitrary
+    olt-ordered terms; e.g. `b = p₀(p₂0)` has greatest critical `p₂0` exceeding
+    that of a larger `f` whose subscripts are bounded — the "buried high
+    subscript" pattern `NF` excludes);
+  • the naive recursion `olt bb ff ⟹ olt (proj 0 bb)(proj 0 ff)` exhibits
+    REVERSALS at depth (≈ 517/3000 sampled), so it does not self-reduce by
+    repeated `proj 0`-of-argument;
+  • the one-level fact `olt bb ff` IS empirically exact (24655/24655), but its
+    proof needs the `NF`/spine ascent discipline relating the greatest criticals
+    of `olt`-ordered `NF` arguments.
+This is the genuine `NF`-discipline content of `bothfire`, distinct in form from
+the fireprop leaf `not_pfire0_lead1max1_NF` (a non-firing fact) though both are
+"no buried subscript escapes" facts.  Empirically exact: 0 violations / 73933
+equal-`maxsub` firing pairs. -/
 theorem proj0_bothfire_eqmaxsub_NF {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
