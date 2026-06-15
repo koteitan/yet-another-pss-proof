@@ -743,6 +743,35 @@ def r1ok (M : PairSeq) : Prop :=
       ∧ (∀ l, k < l → l < j → (M.getD j (0,0)).1 ≤ (M.getD l (0,0)).1)
       ∧ (M.getD j (0,0)).2 ≤ (M.getD k (0,0)).2 + 1
 
+/-! ### Relative `r1ok` — the self-contained sub-block carrier
+
+The absolute `r1ok` references row-`0` `> 0`, so a column at the *bottom* of a
+sub-block (whose climbing parent lay outside) has no in-block parent and the
+predicate breaks on sub-blocks.  `r1okRel base M` relaxes the threshold: only
+columns with row-`0` `> base` need an in-block climbing parent.  Empirically
+(262077/262077) a **descendant block** `K = takeWhile (v < ·.1) rest` of a
+column with row-`0` `= v` satisfies `r1okRel (v+1) K` — i.e. it is self-contained
+relative to its own minimum row-`0` `= v+1`.  This is the inductive carrier the
+forest bridge needs (absolute `r1ok` is the `base = 0` instance). -/
+def r1okRel (base : ℕ) (M : PairSeq) : Prop :=
+  ∀ j, j < M.length → base < (M.getD j (0,0)).1 →
+    ∃ k, k < j ∧ (M.getD k (0,0)).1 + 1 = (M.getD j (0,0)).1
+      ∧ (∀ l, k < l → l < j → (M.getD j (0,0)).1 ≤ (M.getD l (0,0)).1)
+      ∧ (M.getD j (0,0)).2 ≤ (M.getD k (0,0)).2 + 1
+
+/-- Absolute `r1ok` is `r1okRel` at base `0`. -/
+theorem r1ok_iff_r1okRel0 (M : PairSeq) : r1ok M ↔ r1okRel 0 M := Iff.rfl
+
+/-- `r1okRel` weakens as the base grows (a larger threshold constrains fewer
+columns). -/
+theorem r1okRel_mono {base base' : ℕ} (h : base ≤ base') {M : PairSeq}
+    (hr : r1okRel base M) : r1okRel base' M :=
+  fun j hj hb => hr j hj (lt_of_le_of_lt h hb)
+
+/-- Absolute `r1ok` gives `r1okRel` at any base. -/
+theorem r1okRel_of_r1ok {M : PairSeq} (hr : r1ok M) (base : ℕ) : r1okRel base M :=
+  r1okRel_mono (Nat.zero_le base) ((r1ok_iff_r1okRel0 M).1 hr)
+
 theorem diagSeq0_length (v : ℕ) : (diagSeq 0 v).length = v + 1 := by
   unfold diagSeq
   rw [List.length_map, List.length_range']
