@@ -524,6 +524,28 @@ theorem suffix_diag (v : ℕ) :
   have := fst_in_diagSeq hx
   simp only [decide_eq_true_eq]; omega
 
+/-- **The combinatorial heart of suffix-closure** (pure `oper`/`dropWhile`, no
+`ST_PS`).  For a long list `N` (`1 < |N|`) and `N⟦n⟧ = p :: rest`, the
+`dropWhile`-tail of `N⟦n⟧` is one of three shapes, all of which are `[]` or
+`oper` of a smaller list (hence `ST_PS` once the inputs are):
+  * empty;
+  * `(tail N)⟦n⟧` — `oper` operates only on the last top-level block, which lies
+    inside the tail, so it commutes with taking the tail (Case A, `tail N ≠ []`);
+  * `N⟦n-1⟧` — the `v0 = 0` tiling sub-case, where the `n` copies become fresh
+    top-level siblings and the tail is the last `n-1` copies (Case B,
+    `tail N = []`).
+Empirically exact (`tail(N⟦n⟧) ∈ {[], (tail N)⟦n⟧, N⟦n-1⟧}`, 0/11638
+violations).  This is the genuine forest/hydra sub-recursion content; left as the
+single residual feeding `ST_PS_suffix`. -/
+theorem oper_tail_cases {N : PairSeq} {n : ℕ} (L : 1 < N.length) (hn : 1 ≤ n)
+    {p : ℕ × ℕ} {rest : PairSeq} (hL : p :: rest = N⟦n⟧) :
+    rest.dropWhile (fun q => p.1 < q.1) = [] ∨
+    (∃ q rest', q :: rest' = N ∧
+      rest.dropWhile (fun q => p.1 < q.1)
+        = (rest'.dropWhile (fun r => q.1 < r.1))⟦n⟧) ∨
+    (2 ≤ n ∧ rest.dropWhile (fun q => p.1 < q.1) = N⟦n-1⟧) := by
+  sorry
+
 /-- **`ST_PS`-suffix-closure (the single combinatorial residual).**  For an
 `ST_PS` list `p :: rest`, the `dropWhile`-tail — the columns from the first
 row-0 return to `≤ p.1` onward — is empty or again `ST_PS`.
@@ -550,8 +572,17 @@ theorem ST_PS_suffix {p : ℕ × ℕ} {rest : PairSeq} (hM : ST_PS (p :: rest)) 
     exact Or.inl (suffix_diag v)
   | @oper N n hN hn ih =>
     by_cases L : 1 < N.length
-    · -- N long: N⟦n⟧ = N.dropLast ++ R
-      sorry
+    · -- N long: the tail is [], (tail N)⟦n⟧, or N⟦n-1⟧ (oper_tail_cases)
+      rcases oper_tail_cases L hn hL with hempty | ⟨q, rest', hN, heq⟩ | ⟨hn2, hNm1⟩
+      · exact Or.inl hempty
+      · -- (tail N)⟦n⟧: ST_PS via IH (tail N is [] or ST_PS) + oper rule
+        rw [heq]
+        rcases ih hN with hte | hts
+        · -- tail N empty: ([])⟦n⟧ = []  → left disjunct
+          left; rw [hte]; unfold oper; simp
+        · exact Or.inr (ST_PS.oper hts hn)
+      · -- N⟦n-1⟧ with n ≥ 2: ST_PS via oper rule (n-1 ≥ 1)
+        exact Or.inr (hNm1 ▸ ST_PS.oper hN (by omega))
     · -- N short: N⟦n⟧ = N
       rw [oper_eq_self_short n (by omega)] at hL
       exact ih hL
