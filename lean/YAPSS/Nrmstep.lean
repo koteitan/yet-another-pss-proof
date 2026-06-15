@@ -2720,6 +2720,47 @@ theorem proj0_ole_of_mvstep_ole
       rw [proj_nofire hfx]
       exact Or.inl (olt_ole_trans hxy (proj_ole 0 y))
 
+/-- **The STRICT `mvstep` recursion, class-carrying** (model-verified the strict
+STEP holds with ZERO ties on the descent class, `438747 / 438747`).  Given a
+class `C` that is preserved by `mvstep` (`hpres`) and on which the strict STEP
+holds (`hstep`: `C x → C y → olt x y → olt (mvstep x) (mvstep y)`), strong
+`tsize` induction gives the strict `olt (proj 0 x) (proj 0 y)` for `C`-members
+`olt x y` — NO injectivity needed (the strict STEP already excludes the tie).
+GREEN; isolates the witness to the single strict-STEP residual on `C`. -/
+theorem proj0_olt_of_mvstep_olt {C : Three → Prop}
+    (hpres : ∀ x, C x → pfire 0 x → C (mvstep x))
+    (hstep : ∀ x y, C x → C y → olt x y → olt (mvstep x) (mvstep y)) :
+    ∀ x y, C x → C y → olt x y → olt (proj 0 x) (proj 0 y) := by
+  intro x
+  generalize hs : tsize x = n
+  induction n using Nat.strong_induction_on generalizing x with
+  | _ n IH =>
+    subst hs
+    intro y hCx hCy hxy
+    by_cases hfx : pfire 0 x
+    · -- firing: descend via `mvstep`, smaller `tsize`, strict STEP, `C` preserved.
+      -- `y` must also fire (else `mvstep y = y` and the STEP `olt (mvstep x) y`
+      -- still recurses since IH's `y` is universally quantified — but we need
+      -- `C (mvstep y)`; handle via `hfy`).
+      rw [proj_mvstep x, proj_mvstep y]
+      by_cases hfy : pfire 0 y
+      · exact IH (tsize (mvstep x)) (tsize_mvstep_lt hfx) (mvstep x) rfl
+          (mvstep y) (hpres x hCx hfx) (hpres y hCy hfy) (hstep x y hCx hCy hxy)
+      · -- `y` non-firing: `mvstep y = y`, `proj 0 (mvstep y) = proj 0 y = y`.
+        rw [mvstep_nofire hfy] at *
+        rw [proj_nofire hfy]
+        -- goal `olt (proj 0 (mvstep x)) y`; have `olt (mvstep x) y` (STEP),
+        -- and `proj 0 (mvstep x) = proj 0 x`; recurse needs `olt (proj 0 x) y`.
+        -- Use IH on `(mvstep x, y)`: `olt (proj 0 (mvstep x)) (proj 0 y) = (proj 0 (mvstep x)) y`.
+        have hstepxy := hstep x y hCx hCy hxy
+        rw [mvstep_nofire hfy] at hstepxy
+        have := IH (tsize (mvstep x)) (tsize_mvstep_lt hfx) (mvstep x) rfl y
+          (hpres x hCx hfx) hCy hstepxy
+        rwa [proj_nofire hfy] at this
+    · -- non-firing `x`: `proj 0 x = x <o y ≤o proj 0 y`.
+      rw [proj_nofire hfx]
+      exact olt_ole_trans hxy (proj_ole 0 y)
+
 /-- **The both-fire witness (reduced to the equal-`maxsub` core), Lean form.**
 For two firing head-`0` `NF` arguments `b <o f`, there is a `G₀`-critical `h`
 of the larger argument `f` that **strictly dominates** `proj 0 b` (the greatest
