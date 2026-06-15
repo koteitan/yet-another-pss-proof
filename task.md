@@ -13,8 +13,7 @@
 > WF は **route A = Buchholz §1-2 を ZFC_in_HOL 順序数上で意味論的に証明**（`ord/psi.thy`, session PSI）。旧 K-dom `ot`(wo/buchholz/embed) は誤変種で破棄予定。
 > 設計詳細・ZFC_in_HOL API・経緯は memo.md / conventionals.md へ。
 > **サマリ (2026-06-14, Lean route)**: 残 3 sorry（nrm_order_pres 経由の psi_proj_notmem / oV_nf_order_pres, および独立路 wf_ArgsA）は全て同一の **Buchholz 崩壊核 CC**（= 論文 Remark p197「omitting condition は C_v(α) を変えない」の collapse 領域, 未証明）に帰着。atomic crux 解明済（bootstrap ⟹ canonical rep は <α に必ず存在 ⟹ CW は真）。NEC(1.9)/CW は `CC_of_collapseCanon`+1.7 で CC 単独に還元済（Buchholz17.lean, 緑）。詳細 memory nrm-campaign-status / nrm_stepdec_design.md。
-> **サマリ (2026-06-15, 二壁マップ＋W=T 路線)**: 停止性を **3 独立ルートの sorryAx-free parametric `_modulo` 定理**（`YAPSS/Reduction.lean`）に明示化＝どれか 1 ルートの leaf を埋めれば完成。新規ファイル: `Wtt`/`Wttbase`(maxr1=0,sorry-free)/`Wttone`(maxr1=1)/`Residue`/`Reduction`。詳細 memory lean-wtt-route。
-> **サマリ (2026-06-15, CLEAN ENDPOINT)**: **`PSS_terminates_nrm_final : CollapseResidueMaxo → HeadFamilyNF → WellFounded stepRel`（sorryAx-FREE）**。PSS 停止性＝**Buchholz の唯一の省略 §1 補題 `psi_proj`（subscript-0 collapse `ψ_0(oV(proj 0 b))=ψ_0(oV b)`）modulo**、その2 face {CollapseResidueMaxo（非メンバ面）, HeadFamilyNF（双対非崩壊面）}。構造 leaf（ST_PS_suffix/oV_nf_arg_lt 構造部/maxr1≤1）は全証明、sub-ε は明示値 `ω^(Ω_v+α)` で閉、necessity 面（NoncanonValueMem/psiSelf）は**コードで off-path 確定**。false 形5つを Lean 反例付きで排除。ya-pss `psi_proj_nonmem` も同核 open。残＝`CollapseResidueMaxo`（collapse 核）一点を攻略中。
+> **サマリ (2026-06-15, Lean W=T+endpoint)**: `PSS_terminates_nrm_final` で停止性＝Buchholz §1 `psi_proj` collapse 1点 modulo（残 leaf=`CollapseResidueMaxo`/`HeadFamilyNF`、他全証明・sorryAx-free）。新規 Wtt/Wttbase/Wttone/Residue/Reduction。詳細 memory lean-wtt-route。
 - 🚨 定理（標準形ペア数列システムの停止性）〔proofs.thy / embed.thy〕
   - ✅ §5 定式化〔def.thy: 親子関係 nextrel0/1・基本列 oper=M[n]・標準形 ST_PS・step〕
   - ✅ 三分木記法 $p_a(b)+c$〔mechanized.thy〕
