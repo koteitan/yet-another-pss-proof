@@ -2551,7 +2551,18 @@ below) into TWO minimal forest carriers, each model-verified `824970 / 824970`:
   • `proj`-injectivity: `olt b f` firing `NF` args have `proj 0 b ≠ proj 0 f`
     (≡ the head arg determines the firing `NF` arg — the `r1ok` forest
     uniqueness, `probe_inj.py` `0` collisions).
-`≤o` + `≠` gives the strict `olt`. -/
+`≤o` + `≠` gives the strict `olt`.
+
+`proj`-injectivity further factors (`probe_inj_route.py`, both `0`-multi) into
+  (A) `proj 0 b` determines the head arg `b'` (`b = P 1 b' c'`; via the keystone
+      `proj 0 b = proj 0 b'`), and
+  (B) the head arg `b'` determines the whole firing `NF` arg — the tail `c'` is
+      FORCED by `b'` through the `ST_PS` parent-forest continuation.
+(B) is the irreducible `r1ok`/`ST_PS`-parenthood tail-forcing fact; both `CritEmbed`
+and (B) genuinely need the global forest discipline (no clean head-arg recursion:
+`CritEmbed(b',f')` fails `401715 / 438747`).  These are the precise irreducible
+climbing facts; `SubBlock`/`Gterm_translate_subblock` (above) is the positional
+correspondence into which `r1ok_ST_PS` must be pulled to discharge them. -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
