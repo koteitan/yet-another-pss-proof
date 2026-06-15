@@ -2612,6 +2612,61 @@ fun harg :: "three \<Rightarrow> three" where
 lemma harg_Gterm: "harg (P a b c) \<in> Gterm 0 (P a b c)"
   by simp
 
+text \<open>\<^bold>\<open>Head-arg accessor is a critical at \<open>0\<close>\<close>: unconditionally (\<open>0 \<le> a\<close>) the head
+  argument of a principal sits in @{term "Glist 0"} as its first entry, since
+  @{term "Glist 0 (P a b c) = b # Glist 0 b @ Glist 0 c"}.\<close>
+
+lemma harg_in_Glist0: "t = P a b c \<Longrightarrow> harg t \<in> set (Glist 0 t)"
+  by simp
+
+text \<open>\<^bold>\<open>The green head-arg firing reduction\<close> \<open>head_proj_eq_harg\<close>.  This is the
+  \<^emph>\<open>class-free\<close> algebraic core of \<open>argzone_proj_head\<close>: \<^emph>\<open>given\<close> the two head facts
+  \<dash> the head argument is a violator (\<open>\<not> olt (harg X) X\<close>) and it dominates every
+  violator of \<open>X\<close> (\<open>\<forall>g. g \<in> Gterm 0 X \<and> \<not> olt g X \<longrightarrow> \<not> olt (harg X) g\<close>) \<dash> the firing
+  projection \<open>proj 0 X\<close> \<^emph>\<open>is\<close> the head argument.  Pure \<open>proj_once\<close> / \<open>maxo_ub\<close>
+  algebra: the maxo-selected violator \<open>m = proj 0 X\<close> satisfies \<open>\<not> olt m (harg X)\<close>
+  (it is the \<open>maxo\<close>, hence \<open>\<ge>\<close> the violator \<open>harg X\<close>) and \<open>\<not> olt (harg X) m\<close> (the
+  head dominates the violator \<open>m\<close>), so \<open>m = harg X\<close> by totality.  No \<open>nrm\<close>/\<open>translate\<close>
+  recursion is touched here; the two head facts are the only class content.\<close>
+
+lemma head_proj_eq_harg:
+  assumes ne: "X \<noteq> Z"
+    and viol: "\<not> olt (harg X) X"
+    and dom: "\<And>g. g \<in> Gterm 0 X \<Longrightarrow> \<not> olt g X \<Longrightarrow> \<not> olt (harg X) g"
+    and fire: "proj 0 X \<noteq> X"
+  shows "proj 0 X = harg X"
+proof -
+  let ?gs = "filter (\<lambda>g. \<not> olt g X) (Glist 0 X)"
+  \<comment> \<open>firing: the violator list is nonempty\<close>
+  have nef: "?gs \<noteq> []"
+  proof (rule ccontr)
+    assume "\<not> ?gs \<noteq> []"
+    hence "?gs = []" by simp
+    hence "proj 0 X = X" by (rule proj_id)
+    thus False using fire by simp
+  qed
+  \<comment> \<open>one firing step lands on the \<open>maxo\<close> of the violators\<close>
+  let ?m = "maxo (hd ?gs) (tl ?gs)"
+  have pe: "proj 0 X = ?m" using proj_once[of 0 X] nef by simp
+  \<comment> \<open>the selected violator \<open>m\<close>\<close>
+  have mset: "?m \<in> set ?gs" by (rule maxo_hdtl_in[OF nef])
+  have mG: "?m \<in> Gterm 0 X" using mset set_Glist by auto
+  have mviol: "\<not> olt ?m X" using mset by auto
+  \<comment> \<open>the head argument is itself a violator, hence on the selection list\<close>
+  obtain a b c where Xpbc: "X = P a b c" using ne by (cases X) auto
+  have hbX: "harg X \<in> set (Glist 0 X)" using harg_in_Glist0[OF Xpbc] .
+  have hbgs: "harg X \<in> set ?gs" using hbX viol by simp
+  have hbins: "harg X \<in> insert (hd ?gs) (set (tl ?gs))"
+    using hbgs by (cases ?gs) auto
+  \<comment> \<open>\<open>m = maxo\<close> dominates the violator \<open>harg X\<close>: \<open>\<not> olt m (harg X)\<close>\<close>
+  have m_ge_hb: "\<not> olt ?m (harg X)" using maxo_ub[OF hbins] .
+  \<comment> \<open>the head argument dominates the violator \<open>m\<close>: \<open>\<not> olt (harg X) m\<close>\<close>
+  have hb_ge_m: "\<not> olt (harg X) ?m" by (rule dom[OF mG mviol])
+  \<comment> \<open>both directions: \<open>m = harg X\<close> by totality\<close>
+  have "?m = harg X" using m_ge_hb hb_ge_m olt_total by blast
+  thus ?thesis using pe by simp
+qed
+
 text \<open>\<^bold>\<open>Residual H1 (head-arg firing identity, arg-zone class)\<close> \<open>argzone_proj_head\<close>:
   when an arg-zone image \<open>X = nrm (translate aM)\<close> of a standard form fires under
   \<open>proj y\<close> (here \<open>y = 0\<close>, the forced ST head value), its projection \<^emph>\<open>is\<close> its head
@@ -2625,6 +2680,90 @@ text \<open>\<^bold>\<open>Residual H1 (head-arg firing identity, arg-zone class
   terms, \<open>tools/probe_ff_headfire2.py\<close> T1/T2); do not drop the ST arg-zone
   hypotheses.\<close>
 
+text \<open>\<^bold>\<open>Lead-gap \<Rightarrow> head violator\<close> (green): if a principal's argument has a
+  \<^emph>\<open>strictly larger\<close> leading subscript than the principal itself, the argument is a
+  violator of the whole term.  Pure \<open>olt\<close>-definition unfolding: \<open>olt b (P a b c)\<close>
+  can only hold through \<open>lead b < a\<close> (or equal-subscript refinements), all excluded
+  by \<open>a < lead b\<close>.\<close>
+
+lemma lead_gap_head_violator:
+  assumes "lead (P a b c) < lead b"
+  shows "\<not> olt b (P a b c)"
+proof (cases b)
+  case Z thus ?thesis using assms by simp
+next
+  case (P a' b' c')
+  have "a < a'" using assms P by simp
+  thus ?thesis using P by simp
+qed
+
+text \<open>\<^bold>\<open>Sharp head residual B-lead\<close> \<open>argzone_head_lead_gt\<close>: on a firing arg-zone image
+  \<open>X = P a hb hc\<close> the head argument has a \<^emph>\<open>strictly larger leading subscript\<close> than
+  \<open>X\<close> (\<open>lead X < lead (harg X)\<close>).  This is the sharpest atomic form of the
+  head-violator fact: a pure \<open>nat\<close> inequality on leads.  \<^bold>\<open>Soundness gate\<close>:
+  \<^bold>\<open>266545 firing images / 0\<close> with \<open>lead hb = a\<close> and \<open>0\<close> with \<open>lead hb < a\<close>
+  (\<open>tools/probe_B_lead.py\<close>: \<open>lead hb > a\<close> on all 266545).  \<^bold>\<open>Class-essential\<close>: FALSE
+  off the ST arg-zone class (firing may come from a buried tail critical,
+  \<open>probe_ff_headfire2.py\<close>).\<close>
+
+lemma argzone_head_lead_gt:
+  assumes "(0, y) # r \<in> ST_PS"
+    and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>the image fires (\<open>y = 0\<close>)\<close>
+  shows "lead (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           < lead (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))"
+  \<comment> \<open>head-arg lead strictly dominates; deeply verified (\<open>probe_B_lead.py\<close>, 266545/0).\<close>
+  sorry
+
+text \<open>\<^bold>\<open>Head residual B\<close> \<open>argzone_head_violator\<close> (now \<^emph>\<open>green\<close> from the lead gap): the
+  head argument is a violator.  Clause 2 of H1; derived from \<open>argzone_head_lead_gt\<close>
+  by @{thm [source] lead_gap_head_violator}.  (\<open>probe_head_shape.py\<close> S3, 266545/0.)\<close>
+
+lemma argzone_head_violator:
+  assumes "(0, y) # r \<in> ST_PS"
+    and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>the image fires (\<open>y = 0\<close>)\<close>
+  shows "\<not> olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+              (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))"
+proof -
+  let ?X = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+  have lg: "lead ?X < lead (harg ?X)"
+    by (rule argzone_head_lead_gt[OF assms])
+  \<comment> \<open>firing forces \<open>?X \<noteq> Z\<close>, so \<open>?X = P a (harg ?X) c\<close>\<close>
+  have ne: "?X \<noteq> Z"
+  proof
+    assume "?X = Z"
+    hence "proj 0 ?X = ?X" using proj_id by simp
+    thus False using assms(3) by simp
+  qed
+  obtain a b c where Xpbc: "?X = P a b c" using ne by (cases ?X) auto
+  have "harg ?X = b" using Xpbc by simp
+  hence "lead ?X < lead b" using lg by simp
+  hence "\<not> olt b ?X" using Xpbc lead_gap_head_violator by simp
+  thus ?thesis using \<open>harg ?X = b\<close> by simp
+qed
+
+text \<open>\<^bold>\<open>Sharp head residual C\<close> \<open>argzone_head_dominates\<close>: on a firing arg-zone image
+  the head argument \<^emph>\<open>dominates\<close> every \<open>G\<^bsub>0\<^esub>\<close>-critical violator of the image
+  (\<open>g \<in> Gterm 0 X \<and> \<not> olt g X \<longrightarrow> \<not> olt (harg X) g\<close>): the head argument is the
+  \<^bold>\<open>maximal\<close> violator.  Together with B this forces \<open>proj 0 X = harg X\<close> by the green
+  reduction @{thm [source] head_proj_eq_harg}.  \<^bold>\<open>Soundness gate\<close>: \<^bold>\<open>266545 firing
+  images / 0 violator above \<open>harg X\<close>\<close> (\<open>tools/probe_head_maxo.py\<close> M2).
+  \<^bold>\<open>Class-essential\<close>: FALSE off-class together with B.\<close>
+
+lemma argzone_head_dominates:
+  assumes "(0, y) # r \<in> ST_PS"
+    and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>the image fires (\<open>y = 0\<close>)\<close>
+    and "g \<in> Gterm 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))"
+    and "\<not> olt g (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))"
+  shows "\<not> olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))) g"
+  \<comment> \<open>head arg is the maximal violator; deeply verified (\<open>probe_head_maxo.py\<close> M2, 266545/0).\<close>
+  sorry
+
 lemma argzone_proj_head:
   assumes "(0, y) # r \<in> ST_PS"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
@@ -2635,7 +2774,29 @@ lemma argzone_proj_head:
        \<and> \<not> olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
                 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))"
   \<comment> \<open>head-arg firing identity; deeply verified (\<open>probe_ff_residuals.py\<close> R1, 266545/0/0).\<close>
-  sorry
+proof -
+  let ?X = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+  \<comment> \<open>\<open>y = 0\<close> forced by the standard-form head value floor\<close>
+  have y0: "y = 0" by (rule ST_PS_head_val_zero[OF assms(1)])
+  have fire: "proj 0 ?X \<noteq> ?X" using assms(3) y0 by simp
+  \<comment> \<open>firing forces \<open>?X \<noteq> Z\<close> (else \<open>proj 0 Z = Z\<close>)\<close>
+  have ne: "?X \<noteq> Z"
+  proof
+    assume "?X = Z"
+    hence "proj 0 ?X = ?X" using proj_id by simp
+    thus False using fire by simp
+  qed
+  \<comment> \<open>\<^bold>\<open>Head fact B\<close> (\<open>argzone_head_violator\<close>): the head argument is a violator\<close>
+  have viol: "\<not> olt (harg ?X) ?X"
+    by (rule argzone_head_violator[OF assms(1) assms(2) fire])
+  \<comment> \<open>\<^bold>\<open>Head fact C\<close> (\<open>argzone_head_dominates\<close>): the head argument dominates every violator\<close>
+  have dom: "\<And>g. g \<in> Gterm 0 ?X \<Longrightarrow> \<not> olt g ?X \<Longrightarrow> \<not> olt (harg ?X) g"
+    by (rule argzone_head_dominates[OF assms(1) assms(2) fire])
+  \<comment> \<open>green reduction: \<open>proj 0 X = harg X\<close>\<close>
+  have eq: "proj 0 ?X = harg ?X"
+    by (rule head_proj_eq_harg[OF ne viol dom fire])
+  show ?thesis using eq viol y0 by simp
+qed
 
 text \<open>\<^bold>\<open>Residual H2 (head-arg firing transport, arg-zone class)\<close>
   \<open>argzone_fire_transport\<close>: for two arg-zone images \<open>B \<lessdot> F\<close> with \<open>B\<close> firing,
@@ -2652,20 +2813,82 @@ text \<open>\<^bold>\<open>Residual H2 (head-arg firing transport, arg-zone clas
   (214586 / 161705 / 182097 of 235234, \<open>tools/probe_ff_algebra.py\<close> K1/K2/K3) \<dash>
   the arg-zone shape is what forces them.\<close>
 
-lemma argzone_fire_transport:
+text \<open>\<^bold>\<open>Sharp transport residual T-fire\<close> \<open>argzone_F_fires\<close>: when the smaller arg-zone
+  image \<open>B\<close> fires and \<open>olt B F\<close>, the larger image \<open>F\<close> fires too.  This is the
+  firing-monotonicity content of the transport (\<^bold>\<open>FALSE on general \<open>wf3\<close>\<close>:
+  737313/1999000 reversals, \<open>probe_firemono_raw.py\<close>; \<^bold>\<open>0/44850\<close> on the arg-zone
+  class, \<open>probe_fire_mono.py\<close>).  \<^bold>\<open>Soundness gate\<close>: \<^bold>\<open>6555 firing pairs / 0 F-nofire\<close>
+  (\<open>tools/probe_h2_struct.py\<close> Dfire = \<open>probe_ff_residuals.py\<close> CLAUSE1).\<close>
+
+lemma argzone_F_fires:
   assumes "(0, y) # r \<in> ST_PS" and "(0, y) # r' \<in> ST_PS"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
     and "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
              (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
-    and "proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>smaller image fires (\<open>y = 0\<close>)\<close>
+  shows "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))"
+  \<comment> \<open>firing transports to the larger image; deeply verified (\<open>probe_h2_struct.py\<close> Dfire, 6555/0).\<close>
+  sorry
+
+text \<open>\<^bold>\<open>Sharp transport residual T-ord\<close> \<open>argzone_harg_olt\<close>: under the same firing
+  hypotheses the head arguments are strictly \<open>olt\<close>-ordered \<open>olt (harg B) (harg F)\<close>.
+  This is the genuine head-arg order transport (\<^bold>\<open>FALSE off-class\<close>: head-arg order
+  fails on \<open>161705/235234\<close> random in-bounds pairs, \<open>probe_ff_algebra.py\<close> K2).
+  \<^bold>\<open>Soundness gate\<close>: \<^bold>\<open>6555 firing pairs / 0 reversals\<close>
+  (\<open>tools/probe_h2_struct.py\<close> D1 = \<open>probe_ff_residuals.py\<close> R2b).\<close>
+
+lemma argzone_harg_olt:
+  assumes "(0, y) # r \<in> ST_PS" and "(0, y) # r' \<in> ST_PS"
+    and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
+    and "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+             (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>smaller image fires (\<open>y = 0\<close>)\<close>
+  shows "olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+             (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))"
+  \<comment> \<open>head-arg order transport; deeply verified (\<open>probe_h2_struct.py\<close> D1, 6555/0).\<close>
+  sorry
+
+text \<open>\<^bold>\<open>H2 green from the two transport residuals\<close>.  Clause 1 (\<open>F\<close> head-violating)
+  is the \<^emph>\<open>same\<close> head-violator fact @{thm [source] argzone_head_violator} applied to
+  \<open>F\<close>, which fires by @{thm [source] argzone_F_fires}; clause 2 is exactly
+  @{thm [source] argzone_harg_olt}.  The opaque H2 sorry is thereby factored into two
+  atomic class facts plus the reused head-violator residual.\<close>
+
+lemma argzone_fire_transport:
+  assumes ST: "(0, y) # r \<in> ST_PS" and ST': "(0, y) # r' \<in> ST_PS"
+    and vbM: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and vbN: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
+    and olt: "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+             (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
+    and fire: "proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
            \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>smaller image fires\<close>
   shows "\<not> olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))
                (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))
        \<and> olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
              (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))"
-  \<comment> \<open>head-arg transport; deeply verified (\<open>probe_ff_residuals.py\<close> R2, 6555/0/0).\<close>
-  sorry
+  \<comment> \<open>head-arg transport; green from \<open>argzone_F_fires\<close> + \<open>argzone_head_violator\<close> + \<open>argzone_harg_olt\<close>.\<close>
+proof -
+  let ?F = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))"
+  have y0: "y = 0" by (rule ST_PS_head_val_zero[OF ST])
+  have fire0: "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+                 \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+    using fire y0 by simp
+  \<comment> \<open>\<^bold>\<open>F fires\<close> (transport residual T-fire)\<close>
+  have Ffire: "proj 0 ?F \<noteq> ?F"
+    by (rule argzone_F_fires[OF ST ST' vbM vbN olt fire0])
+  \<comment> \<open>\<^bold>\<open>Clause 1\<close>: \<open>F\<close> head-violating \<dash> the reused head-violator residual on \<open>F\<close>\<close>
+  have Fviol: "\<not> olt (harg ?F) ?F"
+    by (rule argzone_head_violator[OF ST' vbN Ffire])
+  \<comment> \<open>\<^bold>\<open>Clause 2\<close>: head-arg order (transport residual T-ord)\<close>
+  have hbf: "olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))) (harg ?F)"
+    by (rule argzone_harg_olt[OF ST ST' vbM vbN olt fire0])
+  show ?thesis using Fviol hbf by blast
+qed
 
 text \<open>\<^bold>\<open>The sharp firing residual, green from the head-arg factoring\<close>.  Both clauses
   reduce to the head argument: by @{thm [source] argzone_fire_transport} the larger
@@ -3133,3 +3356,4 @@ proof (rule wf_subset[OF wf_inv_image[OF wf_olt_wf3, of "\<lambda>M. nrm (transl
 qed
 
 end
+
