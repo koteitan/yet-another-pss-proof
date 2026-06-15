@@ -2599,7 +2599,60 @@ text \<open>\<^bold>\<open>The sharp arg-zone firing residual\<close> \<open>arg
   \<open>0 / 3403\<close> via the witness search (\<open>tools/probe_ff_strict.py\<close> S2,
   \<open>tools/probe_ff_neq.py\<close> P1/N1, \<open>tools/probe_ff_witness_cand.py\<close> C7).\<close>
 
-lemma argzone_fire_FF:
+text \<open>\<^bold>\<open>The head argument accessor\<close> \<open>harg\<close>: the principal argument \<open>b\<close> of the leading
+  principal of a term (and \<open>Z\<close> on \<open>Z\<close>).  For \<open>y = 0 \<le> a\<close> the head argument is
+  always a \<open>G\<^bsub>0\<^esub>\<close>-critical (\<open>harg_Gterm\<close>); the firing mechanism on the arg-zone
+  image class collapses entirely to the head argument (\<open>argzone_proj_head\<close>,
+  \<open>argzone_fire_transport\<close>).\<close>
+
+fun harg :: "three \<Rightarrow> three" where
+  "harg Z = Z"
+| "harg (P a b c) = b"
+
+lemma harg_Gterm: "harg (P a b c) \<in> Gterm 0 (P a b c)"
+  by simp
+
+text \<open>\<^bold>\<open>Residual H1 (head-arg firing identity, arg-zone class)\<close> \<open>argzone_proj_head\<close>:
+  when an arg-zone image \<open>X = nrm (translate aM)\<close> of a standard form fires under
+  \<open>proj y\<close> (here \<open>y = 0\<close>, the forced ST head value), its projection \<^emph>\<open>is\<close> its head
+  argument and that head argument is a \<^emph>\<open>violating\<close> \<open>G\<^bsub>y\<^esub>\<close>-critical (\<open>\<not> olt (harg X) X\<close>).
+  This is the head-only firing characterization of the image class.
+
+  \<^bold>\<open>Soundness gate\<close>: \<^bold>\<open>266545 firing arg-zone images / 0 \<open>proj \<noteq> harg\<close> / 0 non-violator\<close>
+  (\<open>tools/probe_ff_residuals.py\<close> R1a/R1b).  \<^bold>\<open>Class-essential\<close>: both halves are
+  \<^bold>\<open>FALSE on general \<open>wf3\<close>\<close> \<dash> firing there can come from a buried tail critical, not
+  the head (2223/54737 firing-vs-head mismatches, 152 \<open>proj \<noteq> harg\<close> on random \<open>in_OT\<close>
+  terms, \<open>tools/probe_ff_headfire2.py\<close> T1/T2); do not drop the ST arg-zone
+  hypotheses.\<close>
+
+lemma argzone_proj_head:
+  assumes "(0, y) # r \<in> ST_PS"
+    and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and "proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>the image fires\<close>
+  shows "proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           = harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+       \<and> \<not> olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+                (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))"
+  \<comment> \<open>head-arg firing identity; deeply verified (\<open>probe_ff_residuals.py\<close> R1, 266545/0/0).\<close>
+  sorry
+
+text \<open>\<^bold>\<open>Residual H2 (head-arg firing transport, arg-zone class)\<close>
+  \<open>argzone_fire_transport\<close>: for two arg-zone images \<open>B \<lessdot> F\<close> with \<open>B\<close> firing,
+  the larger image \<open>F\<close> is \<^emph>\<open>head-violating\<close> too (\<open>\<not> olt (harg F) F\<close> \<dash> hence \<open>F\<close>
+  fires) and the head arguments are strictly ordered (\<open>olt (harg B) (harg F)\<close>).
+  Combined with H1 this is the whole firing crux: \<open>proj y B = harg B\<close>,
+  \<open>proj y F = harg F\<close>, so head-arg order \<^emph>\<open>is\<close> projection order.
+
+  \<^bold>\<open>Soundness gate\<close>: \<^bold>\<open>6555 firing pairs / 0 \<open>F\<close>-non-violator / 0 head-arg reversals\<close>
+  (\<open>tools/probe_ff_residuals.py\<close> R2a/R2b; same closure as
+  \<open>probe_argzone_fire_dom.py\<close> 6555/0/0).  \<^bold>\<open>Class-essential\<close>: under the bare
+  hypotheses \<open>olt B F\<close> + \<open>B\<close> head-violating, lead-equality, head-arg order and
+  \<open>F\<close>-violation each FAIL on \<^bold>\<open>>60\%\<close> of random in-bounds pairs
+  (214586 / 161705 / 182097 of 235234, \<open>tools/probe_ff_algebra.py\<close> K1/K2/K3) \<dash>
+  the arg-zone shape is what forces them.\<close>
+
+lemma argzone_fire_transport:
   assumes "(0, y) # r \<in> ST_PS" and "(0, y) # r' \<in> ST_PS"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
@@ -2607,11 +2660,84 @@ lemma argzone_fire_FF:
              (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
     and "proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
            \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>smaller image fires\<close>
+  shows "\<not> olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))
+               (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))
+       \<and> olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+             (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))"
+  \<comment> \<open>head-arg transport; deeply verified (\<open>probe_ff_residuals.py\<close> R2, 6555/0/0).\<close>
+  sorry
+
+text \<open>\<^bold>\<open>The sharp firing residual, green from the head-arg factoring\<close>.  Both clauses
+  reduce to the head argument: by @{thm [source] argzone_fire_transport} the larger
+  image \<open>F\<close> is head-violating, so its head argument \<open>harg F\<close> (a \<open>G\<^bsub>0\<^esub>\<close>-critical by
+  @{thm [source] harg_Gterm}) witnesses \<open>pfire y F\<close> (clause 1); and since both images
+  fire, @{thm [source] argzone_proj_head} gives \<open>proj y B = harg B\<close>,
+  \<open>proj y F = harg F\<close>, so the head-arg order \<open>olt (harg B) (harg F)\<close> from
+  @{thm [source] argzone_fire_transport} \<^emph>\<open>is\<close> the projection order (clause 2).
+  The opaque firing crux is thereby fully assembled from two atomic, individually
+  deep-gated arg-zone facts.\<close>
+
+lemma argzone_fire_FF:
+  assumes ST: "(0, y) # r \<in> ST_PS" and ST': "(0, y) # r' \<in> ST_PS"
+    and vbM: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and vbN: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
+    and olt: "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+             (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
+    and fire: "proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>smaller image fires\<close>
   shows "pfire y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))
        \<and> olt (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
              (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))"
-  \<comment> \<open>THE firing-case residual; deeply verified (\<open>probe_argzone_fire_dom.py\<close>, 6555/0/0).\<close>
-  sorry
+  \<comment> \<open>THE firing-case residual; green from H1+H2 (\<open>probe_argzone_fire_dom.py\<close>, 6555/0/0).\<close>
+proof -
+  let ?B = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+  let ?F = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))"
+  \<comment> \<open>\<open>y = 0\<close> is forced by the standard-form head value floor\<close>
+  have y0: "y = 0" by (rule ST_PS_head_val_zero[OF ST])
+  \<comment> \<open>head-arg transport: \<open>F\<close> is head-violating and the head args are \<open>olt\<close>-ordered\<close>
+  have tr: "\<not> olt (harg ?F) ?F \<and> olt (harg ?B) (harg ?F)"
+    by (rule argzone_fire_transport[OF ST ST' vbM vbN olt fire])
+  have Fviol: "\<not> olt (harg ?F) ?F" using tr by blast
+  have hbf: "olt (harg ?B) (harg ?F)" using tr by blast
+  \<comment> \<open>\<^bold>\<open>Clause 1\<close>: \<open>harg F\<close> is a violating \<open>G\<^bsub>0\<^esub>\<close>-critical of \<open>F\<close>, so \<open>F\<close> fires\<close>
+  have FfireP: "pfire y ?F"
+  proof (cases ?F)
+    case Z
+    \<comment> \<open>impossible: \<open>olt ?B ?F\<close> with \<open>?F = Z\<close> contradicts \<open>not_olt_Z\<close>\<close>
+    have "olt ?B Z" using olt Z by simp
+    thus ?thesis using not_olt_Z by blast
+  next
+    case (P a b c)
+    have hg: "harg ?F \<in> Gterm 0 ?F" using P harg_Gterm by simp
+    have hg': "harg ?F \<in> Gterm y ?F" using hg y0 by simp
+    show ?thesis using hg' Fviol by blast
+  qed
+  \<comment> \<open>\<^bold>\<open>Clause 2\<close>: both images fire, so each projection is its head argument (H1),
+      and the head-arg order is the projection order\<close>
+  have pB: "proj y ?B = harg ?B \<and> \<not> olt (harg ?B) ?B"
+    by (rule argzone_proj_head[OF ST vbM fire])
+  have Bne: "proj y ?B = harg ?B" using pB by blast
+  \<comment> \<open>\<open>F\<close> fires too: \<open>proj y F \<noteq> F\<close>, so H1 applies to \<open>F\<close> as well\<close>
+  have FneP: "proj y ?F \<noteq> ?F"
+  proof
+    assume eq: "proj y ?F = ?F"
+    \<comment> \<open>\<open>F\<close> fires, so its selection list is nonempty and one step lands on a
+        strictly smaller \<open>G\<^bsub>y\<^esub>\<close>-critical \<dash> contradicting \<open>proj y F = F\<close>\<close>
+    let ?gs = "filter (\<lambda>g. \<not> olt g ?F) (Glist y ?F)"
+    have ne: "?gs \<noteq> []" using FfireP pfire_filter by blast
+    have pe: "proj y ?F = maxo (hd ?gs) (tl ?gs)"
+      using proj_once[of y ?F] ne by simp
+    have "maxo (hd ?gs) (tl ?gs) \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+    hence "maxo (hd ?gs) (tl ?gs) \<in> Gterm y ?F" using set_Glist by auto
+    hence "size (maxo (hd ?gs) (tl ?gs)) < size ?F" by (rule Gterm_size)
+    thus False using pe eq by simp
+  qed
+  have pF: "proj y ?F = harg ?F \<and> \<not> olt (harg ?F) ?F"
+    by (rule argzone_proj_head[OF ST' vbN FneP])
+  have Fne: "proj y ?F = harg ?F" using pF by blast
+  have dom: "olt (proj y ?B) (proj y ?F)" using Bne Fne hbf by simp
+  show ?thesis using FfireP dom by blast
+qed
 
 text \<open>\<^bold>\<open>Residual 4a (THE firing-case witness)\<close> \<open>proj_step_fire_witness\<close>, now \<^emph>\<open>proved\<close>
   from the sharp residual @{thm [source] argzone_fire_FF} by the explicit
