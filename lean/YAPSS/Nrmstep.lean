@@ -2028,7 +2028,31 @@ recursive descent — the genuine remaining obstruction.  POSITIVE side: the
 combination `hereditary-absolute-inv2(spine) ∧ cnf ∧ maxsub ≤ 1 ⟹ ¬ pfire 0`
 is empirically exact (0 violations) — a SUFFICIENT term invariant, but absolute
 `inv2` holds only on the lead-`0`-anchored terms, not the lead-`1` args, so it
-discharges only part of the recursion. -/
+discharges only part of the recursion.
+
+COMPLETE SHORTCUT-REFUTATION MAP (this campaign, all closure+5/+6, explicit
+counterexamples).  This is the SAME forest core as `proj_bothfire_witness_eq`
+(both reduce to "an `NF`-image non-firing fact on non-`NF` arg/subterm
+positions").  EVERY candidate carrier short of the GLOBAL `r1ok` (base `0`,
+pulled through `translate`) has a firing counterexample:
+  • term-local `cnf` / `maxsub = climb` / hereditary-`maxsub=climb` / `descok` /
+    `okH`: `p₁(p₀(p₁(p₁0)))` is `cnf` + hereditary-`maxsub=climb` + `descok`
+    (top) yet FIRES; `okH` is `0 / 1285` on the image (false on translate
+    images);
+  • sequence-local `r1okRel(block min row-0)`: firing sub-blocks
+    `(3,1)(4,0)(5,1)(6,1)(7,0)(8,1)…` SATISFY it (`0 / 2002` fail) yet
+    `translate` fires;
+  • `NF`-membership directly: the arg `b` (lead `≥ 1`) and the `descok` base
+    subterms are NOT in `NF` (`0 / 15427` lead-`1`-`maxsub`-`1` args in `NF`),
+    so the clean `t ∈ NF ∧ lead t = maxsub t ⟹ ¬ pfire 0 t` (TRUE, `531 / 531`)
+    does not reach them;
+  • `nrm = id`: false on the firing class (`nrm` collapses, `1285 / 5089`).
+Only GLOBAL `r1ok M` (climbing from the row-`0`-`0` root through the whole
+parent forest) excludes them.  Layer-1 of the bridge is GREEN
+(`Gterm_translate_lead_le`, `maxsub_translate_eq_maxr1`, `subs_translate`); the
+remaining LAYER-2 is the parent-forest positional correspondence + off-spine
+subscript-climbing monotonicity pulled from `r1ok_ST_PS` — the project-central
+construction, NOT a quick development. -/
 theorem not_pfire0_lead1max1_NF {b c : Three}
     (hv : (P 0 b c) ∈ NF) (hl : lead b = 1) (hm : maxsub b = 1) : ¬ pfire 0 b := by
   sorry
