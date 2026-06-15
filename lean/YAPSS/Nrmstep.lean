@@ -2050,12 +2050,31 @@ pulled through `translate`) has a firing counterexample:
 Only GLOBAL `r1ok M` (climbing from the row-`0`-`0` root through the whole
 parent forest) excludes them.  Layer-1 of the bridge is GREEN
 (`Gterm_translate_lead_le`, `maxsub_translate_eq_maxr1`, `subs_translate`), and
-Layer-2's POSITIONAL CORRESPONDENCE is now GREEN too (`SubBlock`,
-`Gterm_translate_subblock`: every `Gterm 0` critical of `translate M` is
-`translate K` for a `SubBlock K` of `M`, `2241 / 2241`; `SubBlock_sndSet`).  The
-remaining LAYER-2 carrier is the off-spine subscript-climbing monotonicity
-pulled from `r1ok_ST_PS` through `SubBlock`, restricting to the proj-descent
-positions — the project-central construction, NOT a quick development. -/
+Layer-2's POSITIONAL CORRESPONDENCE is GREEN (`SubBlock`,
+`Gterm_translate_subblock`, `SubBlock_sndSet`).
+
+**LAYER-1 CARRIER-PREDICATE SEARCH — NO local formulation exists** (this
+campaign, exhaustive closure+5/+6).  A carrier predicate `P` that is (i) TRUE on
+all `ST_PS` `SubBlock`s, (ii) FALSE on the cter block `(0,0)(1,0)(2,1)` (whose
+`translate` `p₀(p₀(p₁0))` fires at a head-`0` node), and (iii) sufficient for
+`H0clause`, was sought and REFUTED for every natural formulation:
+  • `r1ok` + `stps_head` (head `= (0,0)`): INSUFFICIENT — `(0,0)(1,0)(2,1)` is
+    `r1ok` with head `(0,0)` yet its `translate` violates `H0clause`
+    (`669 / 793`);
+  • + whole-term `inv2`(spine)/`nfinv`: still INSUFFICIENT (`669 / 723`) — the
+    firing is in a DESCENDANT block `(1,0)(2,1)` whose own spine is not
+    `inv2`-anchored (`nfinv`'s `inv2` is root-`0`-anchored and does NOT pass to
+    descendants);
+  • "shifted descendant block is `ST_PS`": FALSE — descendant blocks are *copies*
+    with head row-`1` `> 0` (`1409 / 3613`), not standalone standard forms;
+  • root-`0`-anchored-within-`K` `r1ok`: holds only `5089 / 25907` (descendant
+    `K`'s anchor root lies OUTSIDE `K`, in the parent `M`).
+CONCLUSION: the genuine carrier is full `ST_PS`-reachability (the inductive
+`ST_PS`, via the `oper`/diagonal generation) — NOT capturable by any term/spine/
+`r1ok`-local predicate.  The construction is therefore the `ST_PS`-induction
+proving `H0clause_translate` directly (analysing the `oper` copy-structure on the
+parent forest), the documented project-central open problem — NOT a quick
+development.  `Rdesc_hstep` needs the SAME `ST_PS`-reachability carrier. -/
 theorem not_pfire0_lead1max1_NF {b c : Three}
     (hv : (P 0 b c) ∈ NF) (hl : lead b = 1) (hm : maxsub b = 1) : ¬ pfire 0 b := by
   sorry
