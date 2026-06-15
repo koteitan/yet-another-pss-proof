@@ -2817,6 +2817,61 @@ theorem maxsub_translate_eq_maxr1 (S : PairSeq) :
   | nil => simp [maxr1]
   | cons p rest ih => rw [maxr1_cons, List.map_cons, cmax_cons, ih]
 
+/-! ### Forest-bridge layer 2: the positional correspondence
+
+Every `Gterm 0` critical of `translate M` is *itself* `translate K` for a
+sub-block `K` of `M` arising in the `takeWhile`/`dropWhile` recursion — the
+explicit `Gterm`-position ↔ sequence-subblock map (model-verified `2241 / 2241`,
+`tools/probe_poscorr.py`).  This transports the term-level critical structure to
+contiguous sub-blocks, the carrier for pulling `r1ok M`. -/
+
+/-- **Sub-block relation**: `K` is reachable from `M` by iterated
+`takeWhile`/`dropWhile` of the forest recursion.  Reflexive-transitive closure of
+the descendant/sibling step. -/
+inductive SubBlock : PairSeq → PairSeq → Prop
+  | refl (M : PairSeq) : SubBlock M M
+  | desc {M K : PairSeq} {p : ℕ × ℕ} {rest : PairSeq}
+      (hM : M = p :: rest)
+      (h : SubBlock (rest.takeWhile fun q => p.1 < q.1) K) : SubBlock M K
+  | sib {M K : PairSeq} {p : ℕ × ℕ} {rest : PairSeq}
+      (hM : M = p :: rest)
+      (h : SubBlock (rest.dropWhile fun q => p.1 < q.1) K) : SubBlock M K
+
+/-- **`SubBlock` preserves `sndSet ⊆`** (row-1 values of a sub-block are row-1
+values of the parent). -/
+theorem SubBlock_sndSet {M K : PairSeq} (h : SubBlock M K) : sndSet K ⊆ sndSet M := by
+  induction h with
+  | refl M => exact fun _ hx => hx
+  | desc hM _ ih =>
+    subst hM
+    refine ih.trans ?_
+    exact sndSet_mono (fun x hx => List.mem_cons_of_mem _ ((List.takeWhile_sublist _).subset hx))
+  | sib hM _ ih =>
+    subst hM
+    refine ih.trans ?_
+    exact sndSet_mono (fun x hx => List.mem_cons_of_mem _ ((List.dropWhile_sublist _).subset hx))
+
+/-- **The positional correspondence**: every `Gterm 0` critical of `translate M`
+is `translate K` for a `SubBlock K` of `M`.  By `translate.induct`: the head
+principal's argument is `translate desc` (`SubBlock.desc`), and the recursion
+covers `Gterm 0` of the argument and of the sibling `translate sib`
+(`SubBlock.sib`).  Model-verified `2241 / 2241`. -/
+theorem Gterm_translate_subblock {M : PairSeq} {g : Three}
+    (hg : g ∈ Gterm 0 (translate M)) : ∃ K, SubBlock M K ∧ translate K = g := by
+  induction M using translate.induct with
+  | case1 => rw [translate] at hg; simp [Gterm] at hg
+  | case2 p rest ih1 ih2 =>
+    rw [translate, mem_Gterm_P] at hg
+    rcases hg with ⟨-, hgb⟩ | hgc
+    · -- argument branch: g = translate desc, or g ∈ Gterm 0 (translate desc)
+      rcases hgb with rfl | hgg
+      · exact ⟨rest.takeWhile fun q => p.1 < q.1, SubBlock.desc rfl (SubBlock.refl _), rfl⟩
+      · obtain ⟨K, hsub, hKg⟩ := ih1 hgg
+        exact ⟨K, SubBlock.desc rfl hsub, hKg⟩
+    · -- sibling branch: g ∈ Gterm 0 (translate sib)
+      obtain ⟨K, hsub, hKg⟩ := ih2 hgc
+      exact ⟨K, SubBlock.sib rfl hsub, hKg⟩
+
 /-! ## The dominated-segment classes
 
 `dseg u S`: `S` is a nonempty, entirely dominated standard sub-segment whose
