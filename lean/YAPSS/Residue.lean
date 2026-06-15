@@ -165,7 +165,17 @@ so `ε(w) ∉ CsetSelf (psiResSelf ε(w)) ε(w) w` — the conclusion fails.  Bu
 fires for `w`-canonical `ζ` (the `CstepSelf` canonicity side-condition).  So we
 restrict the residual to canonical `ζ` (`hζc`), which excludes the false ε-fixpoint
 cases and is what the vacuity proof actually needs.  (NB: my indexing `Ω_v = ω_v`,
-`Ω_0 = 1`; ya-pss's `Ω_1 = ω` counterexample lives in a different indexing.) -/
+`Ω_0 = 1`; ya-pss's `Ω_1 = ω` counterexample lives in a different indexing.)
+
+**PROOF STATUS (this session).**  The witness for `c = psiSelf ζ w` is NOT `ζ`
+itself in general (`AcanonLtValue` is FALSE — `AcanonLtValue_is_false`,
+counterexample `ζ = Ω_{w+1}`).  Proven so far:
+* the **diagonal `v = w` for `ζ < ε(w)`** (`psiValueAcanon_diag_lt_epsLvl`,
+  sorryAx-free, via the explicit formula).
+Remaining (the genuine §1 core): the canonical-WITNESS existence — for canonical
+`ζ ≥ ε(w)`, a `δ < c` that is `w`-canonical with `psiSelf δ w = c` — plus, for
+`v < w`, the membership `δ ∈ C_v(c)`.  This is Buchholz's canonical-representation
+existence, the irreducible simultaneous-induction step. -/
 def PsiValueAcanon.{u} : Prop :=
   ∀ (ζ : Ordinal.{u}) (w v : ℕ), v ≤ w → ζ ∈ CsetSelf (psiResSelf ζ) ζ w →
     psiSelf ζ w ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) v
@@ -653,6 +663,41 @@ theorem psiValueAcanon_diag_lt_epsLvl
           (fun η uu hη => by rw [psiResSelf, psiResSelf, if_pos hη, if_pos (lt_trans hη hζlt)])] at hζc
   have hfire := CsetSelf_psi_closed hζmem hζlt w hζcanon
   rwa [psiResSelf, if_pos hζlt, ← hcdef] at hfire
+
+/-! ### The GENUINE residual: canonical-representation existence `CanonRep`
+
+The correct witness for `c = psiSelf ζ w` is a `δ < c` (NOT `ζ`, which can exceed
+`c`) that is `w`-canonical with `psiSelf δ w = c` — Buchholz's canonical
+representation.  `CanonRep` states exactly this; it cleanly gives the diagonal
+`v = w` of `PsiValueAcanon` (`diag_of_CanonRep`).  For `ζ < ε(w)` the witness is
+`ζ` itself (`psiValueAcanon_diag_lt_epsLvl`); for `ζ ≥ ε(w)` (the genuine §1 core)
+the existence of `δ < c` is open. -/
+
+/-- **Canonical-representation existence** (`CanonRep`): every value `c = psiSelf ζ w`
+(`ζ` `w`-canonical) has a `w`-canonical witness `δ < c` with `psiSelf δ w = c`.
+The genuine §1 residual (replaces the FALSE `AcanonLtValue` route). -/
+def CanonRep.{u} : Prop :=
+  ∀ (ζ : Ordinal.{u}) (w : ℕ), ζ ∈ CsetSelf (psiResSelf ζ) ζ w →
+    ∃ δ, δ < psiSelf ζ w ∧ δ ∈ CsetSelf (psiResSelf δ) δ w ∧ psiSelf δ w = psiSelf ζ w
+
+/-- **Diagonal `v = w` of `PsiValueAcanon` from `CanonRep`** (GREEN, sorryAx-free).
+The witness `δ < c` (canonical) fires `psiSelf δ w = c` into `C_w(c)`. -/
+theorem diag_of_CanonRep (hCR : CanonRep.{u})
+    {ζ : Ordinal.{u}} {w : ℕ} (hζc : ζ ∈ CsetSelf (psiResSelf ζ) ζ w) :
+    psiSelf ζ w ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) w := by
+  obtain ⟨δ, hδlt, hδc, hδv⟩ := hCR ζ w hζc
+  set c := psiSelf ζ w with hcdef
+  have hcc : c ≤ psiSelf c w := by
+    have : psiSelf δ w ≤ psiSelf c w := psiSelf_mono_arg hδlt.le w
+    rwa [hδv] at this
+  have hδmem : δ ∈ CsetSelf (psiResSelf c) c w :=
+    below_psiSelf_mem_CsetSelf (lt_of_lt_of_le hδlt hcc)
+  have hδcanon : δ ∈ CsetSelf (psiResSelf c) δ w := by
+    rwa [CsetSelf_param_eq (p := psiResSelf δ) (q := psiResSelf c)
+          (fun η uu hη => by rw [psiResSelf, psiResSelf, if_pos hη, if_pos (lt_trans hη hδlt)])] at hδc
+  have hfire := CsetSelf_psi_closed hδmem hδlt w hδcanon
+  rw [psiResSelf, if_pos hδlt, hδv] at hfire
+  exact hfire
 
 /-- **`PsiValueAcanon` from `AcanonLtValue` + the `v < w` membership residual**
 (GREEN).  The witness is the canonical `ζ` itself; `AcanonLtValue` gives `ζ < c`,
