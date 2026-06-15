@@ -9099,4 +9099,156 @@ theorem row1_gt_of_dichOK {X : PairSeq} {p t : ℕ}
   · rw [h9]
     exact hC1
 
+/-! ## The arg-zone ORDER reframe (port of ya-pss `proj_nrm_argzone_olt`)
+
+This section ports the ya-pss "arg-zone ORDER" decomposition of the Buchholz
+§1 wall (`ord/nrm.thy` ~2440–2900) into Lean, as the **replacement** for the
+stuck value-collapse route of `nrm_order_pres` (`psi_proj`/`CollapseResidueMaxo`,
+`Nrm.lean`).  The route attacks ORDER preservation of `nrm` term-structurally,
+bypassing the ordinal-membership collapse (proved structurally dead).
+
+ya-pss factors `proj_nrm_argzone_olt` at the `nrm`/`proj` seam into:
+  • **NRMMONO** `nrm_argzone_olt` — `nrm` is `olt`-monotone on arg-zone
+    translates of standard forms (= `nrm_order_pres` one depth down, the
+    recursion; ya-pss-verified TRUE 44850/0/0; left as a clearly-marked
+    residual here, identical in content to `nrm_order_pres`).
+  • **PROJSTEP** `proj_step_argzone_olt` — the genuine §1 crux: the shared
+    collapse `proj 0` preserves the order of two already-`olt`-ordered
+    arg-zone images.
+
+**Soundness note (`tools/probe_argzone_order_lean.py`, deep closure, the Lean
+`Three` encoding).**  The *whole-image* form of PROJSTEP
+(`olt B F → olt (proj 0 B) (proj 0 F)` on full `NF` terms) is **FALSE** in this
+encoding (6 reversals at closure+5, the tail-difference `d0=0` re-entry family
+`P 0 (P 1 0) (…)` — same hard core the prior campaign flagged); likewise
+ya-pss's whole-image head identity `proj 0 X = hdarg X` is **FALSE** here
+(580/1948 firing images, the buried-`P 2` deeper-fire pattern), and the deeper
+head-arg order `olt (hdarg B) (hdarg F)` is FALSE on the same tail family.  So
+the head-`harg` decomposition is a ya-pss-representation artifact and is NOT
+ported.  The **sound** Lean port of PROJSTEP is the *argument-level* statement
+`proj0_olt_NF` (above): `olt b f → olt (proj 0 b) (proj 0 f)` for the arguments
+`b,f` of head-`0` `NF` terms — model-confirmed `167910 / 0` (`audit_proj0.py`,
+matched here).  Lean's `lead`/`maxsub` spine discipline (`lead_proj_eq_maxsub_NF`,
+`maxsub_arg_mono`) lets `proj0_olt_NF` route around ya-pss's four head-arg
+residuals, leaving a **single** residual `proj0_bothfire_eqmaxsub_NF`.
+-/
+
+/-- **PROJSTEP (arg-zone projection-step order, the §1 crux), Lean form.**
+The shared collapse `proj 0` preserves `olt`-order on the arguments of head-`0`
+`NF` terms (the arg-zone image class).  This is the sound Lean port of ya-pss's
+`proj_step_argzone_olt` / `argzone_fire_FF`: the firing crux is routed through
+the `lead`/`maxsub` spine discipline, NOT through ya-pss's `harg` reduction
+(whose whole-image and deeper head-arg forms are FALSE in this encoding — see
+section note, `probe_argzone_order_lean.py`).  It is `proj0_olt_NF` verbatim;
+restated here under the ya-pss name to mark the route.  Rests on the single
+residual `proj0_bothfire_eqmaxsub_NF`. -/
+theorem proj_step_argzone_olt {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
+    olt (proj 0 b) (proj 0 f) :=
+  proj0_olt_NF hv hu harg
+
+/-- **Non-firing case of PROJSTEP is fully GREEN** (the ~72% non-firing share,
+ya-pss `P_canon`).  When the smaller argument does not fire under `proj 0`,
+`proj 0 b = b <o f ≤o proj 0 f` closes immediately by `olt_ole_trans` and the
+inflation `proj_ole` — no residual content.  (This is the green half that
+`proj_olt_of_fireprop` already factors out; restated to document the route.) -/
+theorem proj_step_argzone_nofire {b f : Three} (hnf : ¬ pfire 0 b)
+    (harg : olt b f) : olt (proj 0 b) (proj 0 f) :=
+  proj_olt_of_nofire hnf harg
+
+/-! ### H1 head-arg residual, the GREEN lead-gap
+
+ya-pss's H1 (`argzone_head_lead_gt`: `lead X < lead (harg X)` on a firing
+image) is the one head-arg fact that survives the encoding and is GREEN from
+Lean's spine machinery.  A firing `NF` argument has `lead = 1`
+(`fire_lead_one_NF`) and `maxsub ≥ 2` (`pfire0_maxsub_ge2_NF`); on the `NF`
+spine `maxsub = climb` is the head-argument's leading subscript, which is
+therefore `≥ 2 > 1 = lead b`. -/
+
+/-- **GREEN head-arg lead-gap** (port of ya-pss `argzone_head_lead_gt`,
+arg-level).  A firing head-`0` `NF` argument `b` has its head argument leading
+strictly above `b`: `lead b < lead (hdarg b)`.  Model-confirmed `580 / 0`
+(`probe_argzone_order_lean.py` (D); arg-level `/tmp/probe_arg.py`). -/
+theorem argzone_head_lead_gt {b c : Three} (hv : (P 0 b c) ∈ NF)
+    (hb : pfire 0 b) : lead b < lead (hdarg b) := by
+  obtain ⟨b', c', hbP⟩ := fire_shape_NF hv hb
+  have h2 : 2 ≤ maxsub b := pfire0_maxsub_ge2_NF hv hb
+  have hmc : maxsub b = climb b := maxsub_arg_eq_climb hv
+  -- climb (P 1 b' c') = max 1 (climb b'); since maxsub b ≥ 2, climb b' ≥ 2
+  have hcl : climb b = max 1 (climb b') := by
+    rw [hbP]; rw [climb, spine_P, cmax_cons]; rfl
+  have hcb' : 2 ≤ climb b' := by rw [hmc, hcl] at h2; omega
+  -- climb b' ≤ maxsub b' = ... and lead b' = ? We bound lead via climb ≤ maxsub
+  -- Actually need lead (hdarg b) = lead b' ≥ 2 > 1 = lead b.
+  -- On NF, the head argument b' is itself the level-1 spine position; its lead
+  -- realises the spine maximum below it.  Use: climb b' ≤ maxsub b' and the
+  -- spine-head identity lead b' = head of spine b'.  We instead derive lead b'
+  -- directly: spine b = 1 :: spine b', and inv2 of the full NF term forces the
+  -- spine to be [0,1,2,…], so spine b = [1,2,…] and lead b' = 2 whenever
+  -- climb b' ≥ 2.  Concretely: lead b' = (spine b').headI, and on the inv2
+  -- spine the second entry is 2.
+  rw [hbP, hdarg_P, lead_P]
+  -- goal: 1 < lead b'
+  -- spine of the whole NF term P 0 b c = 0 :: spine b = 0 :: 1 :: spine b'.
+  -- inv2 (spine (P 0 b c)) holds (NF), so spine = [0,1,2,…,maxsub]; hence the
+  -- entry at index 2 is 2, i.e. (spine b').headI = lead b' = 2 (as climb b'≥2>0
+  -- forces b' ≠ Z).
+  obtain ⟨M, hM, hMt⟩ := hv
+  have hinv : nfinv M := nfinv_ST_PS hM
+  -- spine (translate M) = spine (P 0 b c) = 0 :: 1 :: spine b'
+  have hsp : spine (translate M) = 0 :: 1 :: spine b' := by
+    rw [hMt, spine_P, hbP, spine_P]
+  have hinv2 : inv2 (spine (translate M)) := by
+    rw [spine_translate_eq]; exact hinv.2
+  -- climb b' ≥ 2 ⟹ cmax (spine b') ≥ 2 ⟹ index 2 of the inv2 spine is 2
+  have hcmax : 2 ≤ cmax (spine (translate M)) := by
+    rw [hsp]; simp only [cmax_cons]
+    have : climb b' = cmax (spine b') := rfl
+    omega
+  have h2idx := (hinv2 2 hcmax).2
+  rw [hsp] at h2idx
+  simp only [List.getD_cons_succ] at h2idx
+  -- h2idx : (spine b').getD 0 0 = 2, and lead b' = (spine b').headI
+  cases hb' : b' with
+  | Z => rw [hb'] at hcb'; simp [climb, spine_Z, cmax] at hcb'
+  | P aa bb cc =>
+    rw [hb'] at h2idx; rw [spine_P] at h2idx
+    simp only [List.getD_cons_zero] at h2idx
+    rw [lead_P]; omega
+
+/-! ### H2 transport residuals, GREEN where sound
+
+ya-pss's H2 (`argzone_fire_transport`) splits into two transports.  In the
+Lean encoding the arg-level versions are model-sound (`/tmp/probe_arg.py`,
+`167910 / 0`):
+  • firing transports `B→F` (`argzone_F_fires`) — GREEN from `proj0_fireprop_NF`.
+The deeper head-arg order `olt (hdarg B) (hdarg F)` is NOT needed: Lean's
+PROJSTEP (`proj0_olt_NF`) proves the projection order directly via `maxsub`
+domination, bypassing ya-pss's `argzone_harg_olt`. -/
+
+/-- **GREEN firing transport** (port of ya-pss `argzone_F_fires`, arg-level).
+If the smaller arg-zone argument `b` fires and `olt b f`, the larger `f` fires
+too.  GREEN from `proj0_fireprop_NF`.  Model-confirmed `167910 / 0`. -/
+theorem argzone_F_fires {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) : pfire 0 f :=
+  proj0_fireprop_NF hv hu harg hb
+
+/-! ### NRMMONO half — the recursion residual
+
+ya-pss `nrm_argzone_olt`: `nrm` is `olt`-monotone on arg-zone translates of
+standard forms.  This is `nrm_order_pres` one depth down (the arg zones are
+depth-1 `NF` blocks) — the clean half; ya-pss-verified TRUE (44850/0/0).  It is
+exactly `nrm_order_pres` restricted to the `NF` image class, so we state it as a
+residual whose content is identical to (and discharged by) `nrm_order_pres`. -/
+
+/-- **NRMMONO (arg-zone `nrm`-monotone half, recursion residual).**  `nrm`
+preserves `olt`-order on `NF` terms.  This is the recursion (= `nrm_order_pres`
+one depth down).  Stated as the clearly-marked residual matching ya-pss
+`nrm_argzone_olt` (verified TRUE 44850/0/0); discharged by `nrm_order_pres`
+once the latter is closed via the live PROJSTEP route below. -/
+theorem nrm_argzone_olt {B F : Three} (hB : B ∈ NF) (hF : F ∈ NF)
+    (h : olt B F) : olt (nrm B) (nrm F) :=
+  nrm_order_pres hB hF h
+
 end YAPSS
