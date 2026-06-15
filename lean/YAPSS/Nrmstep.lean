@@ -2015,6 +2015,15 @@ theorem not_pfire0_lead1max1_NF {b c : Three}
     (hv : (P 0 b c) ∈ NF) (hl : lead b = 1) (hm : maxsub b = 1) : ¬ pfire 0 b := by
   sorry
 
+/-- **Lead-`0` head-`0` `NF` arg does not fire** (PROVED).  A head-`0` `NF`
+argument with leading subscript `0` has `maxsub = 0` (`lead0_maxsub0_NF`), hence
+all subscripts `0`, hence no level-`0` critical escapes (`OT3all_msub0`).  This
+discharges the lead-`0` half of the per-step non-firing fact; only the lead-`1`
+case (`not_pfire0_lead1max1_NF`) remains. -/
+theorem not_pfire0_lead0_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hl : lead b = 0) :
+    ¬ pfire 0 b :=
+  not_pfire0_of_maxsub0 (cnf_arg_NF hv) (lead0_maxsub0_NF hv hl)
+
 /-- **THE hard `NF` half**: a firing `NF` argument has maximal subscript `≥ 2`.
 Reduced to the narrowed residual `not_pfire0_lead1max1_NF`: firing forces
 `lead b = 1` (`fire_lead_one_NF`), so `maxsub b ≥ 1`; if `maxsub b = 1` the
