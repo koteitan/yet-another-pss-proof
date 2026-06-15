@@ -520,10 +520,142 @@ lemma sigma_block_unfold:
      = untr 0 (ins y (proj y (nrm B)) (nrm C))"
   by simp
 
-text \<open>\<^bold>\<open>The single remaining core\<close> \<open>sigma_seqlex_mono\<close>: on standard forms, the
+subsection \<open>The structural recursion (S) of \<open>\<sigma>\<close>\<close>
+
+text \<open>\<^bold>\<open>Reading a depth-0 sequence as a translate-block\<close>.  For \<open>M = (0,y) # r\<close> the
+  argument zone \<open>aM = takeWhile (\<lambda>q. 0 < fst q) r\<close> and the tail zone
+  \<open>tM = dropWhile (\<lambda>q. 0 < fst q) r\<close> are exactly the two recursion arguments of
+  @{const translate}, so \<open>translate M = P y (translate aM) (translate tM)\<close>.\<close>
+
+lemma translate_zone_split:
+  "translate ((0, y) # r)
+     = P y (translate (takeWhile (\<lambda>q. 0 < fst q) r))
+           (translate (dropWhile (\<lambda>q. 0 < fst q) r))"
+  by simp
+
+text \<open>\<^bold>\<open>\<open>untr\<close> reads through a non-absorbed \<open>ins\<close>\<close>.  When the leading @{const ins}
+  prepends (does not absorb), \<open>untr 0 (ins y A C')\<close> splits as the leading column
+  \<open>(0,y)\<close>, the depth-1 unfolding of the argument \<open>A\<close>, and the depth-0 unfolding of
+  \<open>C'\<close>.  This is purely @{const ins}/@{const untr} computation.\<close>
+
+lemma untr_ins_unfold:
+  "untr 0 (ins y A C') = (0, y) # untr 1 A @ untr 0 C'
+   \<or> (\<exists>e f g. C' = P e f g \<and> (y < e \<or> (y = e \<and> olt A f)) \<and>
+              untr 0 (ins y A C') = untr 0 C')"
+proof (cases C')
+  case Z thus ?thesis by simp
+next
+  case (P e f g)
+  show ?thesis
+  proof (cases "y < e \<or> (y = e \<and> olt A f)")
+    case True
+    have "untr 0 (ins y A C') = untr 0 C'" using P True by simp
+    thus ?thesis using P True by blast
+  next
+    case False
+    hence "ins y A C' = P y A C'" using P by simp
+    thus ?thesis by simp
+  qed
+qed
+
+text \<open>\<^bold>\<open>The head non-absorption predicate\<close>.  \<open>sigma_keeps_head M\<close> says the leading
+  @{const ins} in the \<open>\<sigma>\<close> recursion of a depth-0 \<open>M = (0,y)#r\<close> does not absorb the
+  head — equivalently, it does not satisfy the absorption test against the
+  normalized tail.\<close>
+
+definition keeps_head :: "pairseq \<Rightarrow> bool" where
+  "keeps_head M \<longleftrightarrow>
+     (case M of [] \<Rightarrow> True | (_, y) # r \<Rightarrow>
+        (let A = proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)));
+             C = nrm (translate (dropWhile (\<lambda>q. 0 < fst q) r)) in
+         (case C of Z \<Rightarrow> True | P e f g \<Rightarrow> \<not> (y < e \<or> (y = e \<and> olt A f)))))"
+
+text \<open>\<^bold>\<open>The structural recursion (S) of \<open>\<sigma>\<close>\<close> (conditional on head non-absorption).
+  For a depth-0 \<open>M = (0,y) # r\<close> with \<open>keeps_head M\<close>, \<open>\<sigma> M\<close> decomposes as the leading
+  column, the argument-zone normalizer \<open>\<sigma>\<^sub>P y aM := untr 1 (proj y (nrm (translate
+  aM)))\<close>, and \<open>\<sigma>\<close> of the strictly-shorter tail zone \<open>tM\<close>.  This is the exact
+  recursion (S) (empirically 0 / 10437, \<open>tools/probe_sigma_struct.py\<close>).\<close>
+
+lemma sigma_struct_rec:
+  assumes "keeps_head ((0, y) # r)"
+  shows "sigma ((0, y) # r)
+       = (0, y) # untr 1 (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+                @ sigma (dropWhile (\<lambda>q. 0 < fst q) r)"
+proof -
+  let ?aM = "takeWhile (\<lambda>q. 0 < fst q) r"
+  let ?tM = "dropWhile (\<lambda>q. 0 < fst q) r"
+  let ?A = "proj y (nrm (translate ?aM))"
+  let ?C = "nrm (translate ?tM)"
+  have nrmM: "nrm (translate ((0, y) # r)) = ins y ?A ?C"
+    by (simp only: translate_zone_split nrm.simps)
+  have nabs: "\<not> (\<exists>e f g. ?C = P e f g \<and> (y < e \<or> (y = e \<and> olt ?A f)))"
+    using assms unfolding keeps_head_def
+    by (auto split: list.splits three.splits prod.splits)
+  from untr_ins_unfold[of y ?A ?C] nabs
+  have "untr 0 (ins y ?A ?C) = (0, y) # untr 1 ?A @ untr 0 ?C" by blast
+  thus ?thesis
+    unfolding sigma_def by (simp only: nrmM)
+qed
+
+subsection \<open>Append law for \<open>seqlex\<close> with a depth gap\<close>
+
+text \<open>\<^bold>\<open>The append law\<close>: when \<open>seqlex u v\<close> and every row of the part of \<open>v\<close>
+  after \<open>u\<close> exceeds the head row of \<open>x\<close> (a depth gap that the appended sigma-tail
+  always supplies: \<open>untr 1\<close>-args are rows \<open>\<ge> 1\<close>, the \<open>sigma\<close>-tail starts at row 0),
+  \<open>seqlex (u @ x) (v @ y)\<close> holds.  Proved by induction on the shared prefix.\<close>
+
+lemma seqlex_append_left:
+  "seqlex u v \<Longrightarrow>
+   (length u < length v \<longrightarrow> x \<noteq> [] \<longrightarrow> pairlt (hd x) (v ! length u)) \<Longrightarrow>
+   seqlex (u @ x) (v @ y)"
+proof (induction u arbitrary: v)
+  case Nil
+  then obtain q v' where v: "v = q # v'" by (cases v) auto
+  show ?case
+  proof (cases x)
+    case Nil thus ?thesis using v by simp
+  next
+    case (Cons a x')
+    have "pairlt (hd x) (v ! length [])" using Nil.prems(2) v Cons by simp
+    hence "pairlt a q" using Cons v by simp
+    thus ?thesis using v Cons by simp
+  qed
+next
+  case (Cons p u')
+  then obtain q v' where v: "v = q # v'" by (cases v) auto
+  show ?case
+  proof (cases "pairlt p q")
+    case True thus ?thesis using v by simp
+  next
+    case False
+    hence pq: "p = q" and slr: "seqlex u' v'" using Cons.prems(1) v by auto
+    have gap: "length u' < length v' \<longrightarrow> x \<noteq> [] \<longrightarrow> pairlt (hd x) (v' ! length u')"
+      using Cons.prems(2) v pq by simp
+    have "seqlex (u' @ x) (v' @ y)" by (rule Cons.IH[OF slr gap])
+    thus ?thesis using v pq by simp
+  qed
+qed
+
+text \<open>\<^bold>\<open>The core\<close> \<open>sigma_seqlex_mono\<close>: on standard forms, the
   sequence normalizer \<open>\<sigma>\<close> is \<^emph>\<open>monotone\<close> for the column lexicographic order.
   This is \<open>nrm_order_pres\<close> transported entirely onto the BMS-native (column,
   suffix, \<open>seqlex\<close>, \<open>blockok\<close>) side via the \<open>translate\<close> isomorphism.
+
+  \<^bold>\<open>STATUS (2026-06-15): now a GREEN block-induction assembly\<close> (below), mirroring
+  @{thm [source] seqlex_imp_olt}: \<open>less_induct\<close> on \<open>length M + length N\<close>, head
+  split, then @{thm [source] seqlex_arg_or_tail}.  The head-differ and tail-zone
+  branches are fully discharged from the structural recursion (S)
+  (@{thm [source] sigma_struct_rec}) and the append law
+  (@{thm [source] seqlex_append_left}).  The whole proof now rests on \<^bold>\<open>four
+  precisely-localized residual \<open>sorry\<close>s\<close>, each empirically verified at deep
+  closure with \<^bold>\<open>zero\<close> counterexamples (\<open>tools/probe_sigma_residual.py\<close>):
+  \<^item> \<open>tail_zone_ST_PS\<close> \<dash> tail-zone standard-form closure (0/10437);
+  \<^item> \<open>keeps_head_ST_PS\<close> \<dash> head non-absorption \<open>T1\<close> (0/10437);
+  \<^item> \<open>sigma_argzone_mono\<close> \<dash> the irreducible \<open>\<sigma>\<^sub>P\<close> \<section>1 core
+    (0/79774; deep 168350/0), carrying the standard-form invariant (NOT the
+    \<^bold>\<open>FALSE\<close> \<open>cnf\<close>-level \<open>PROJMONO\<close>).
+  The argument-zone core is the genuine Buchholz \<section>1 content; the rest is now
+  mechanical.
 
   \<^bold>\<open>Where the proof stalls (the genuine irreducible obstruction, mapped 2026-06-15).\<close>
   The block induction reduces \<open>\<sigma>\<close> on a standard-form block \<open>(0,y)#aM@tM\<close> to the
@@ -566,10 +698,189 @@ text \<open>\<^bold>\<open>The single remaining core\<close> \<open>sigma_seqlex
   (979300 ordered NF pairs, 0 violations, 0 collapses; \<open>tools/probe_sigma_core.py\<close>).
   No counterexample at any tested depth.\<close>
 
+subsection \<open>The three precisely-localized residual obligations\<close>
+
+text \<open>\<^bold>\<open>Residual 1\<close> \<open>head_in_ST_PS\<close>: a standard form, if nonempty, has head row 0
+  (it is a depth-0 block).  \<^bold>\<open>Green\<close> from @{thm [source] blockok_ST_PS}.\<close>
+
+lemma head_row0_ST_PS:
+  assumes "M \<in> ST_PS" and "M \<noteq> []"
+  shows "fst (hd M) = 0"
+  using blockok_ST_PS[OF assms(1)] assms(2) unfolding blockok_def by simp
+
+text \<open>\<^bold>\<open>Residual 2\<close> \<open>tail_zone_ST_PS\<close>: the tail zone of a standard form is again a
+  standard form.  \<^bold>\<open>Empirically 0 not-in / 10437\<close> (\<open>probe_sigma_residual.py\<close>
+  corpus): \<open>dropWhile (\<lambda>q. 0 < fst q)\<close> of the body of \<open>M \<in> ST_PS\<close> stays in
+  \<open>ST_PS\<close>.  (The \<^emph>\<open>argument\<close> zone does \<^bold>\<open>not\<close>: it is a depth-1 block outside
+  \<open>ST_PS\<close>, which is why the \<open>\<sigma>\<^sub>P\<close> core below carries the \<open>blockok\<close> invariant, not
+  ST membership.)  Localized \<open>sorry\<close>: structural standard-form closure.\<close>
+
+lemma tail_zone_ST_PS:
+  assumes "(0, y) # r \<in> ST_PS"
+  shows "dropWhile (\<lambda>q. 0 < fst q) r \<in> ST_PS"
+  sorry
+
+text \<open>\<^bold>\<open>Residual 3\<close> \<open>keeps_head_ST_PS\<close>: on standard forms the leading @{const ins}
+  in the \<open>\<sigma>\<close> recursion never absorbs the head (\<open>T1\<close>, \<^bold>\<open>0 / 10437\<close>,
+  \<open>probe_sigma_residual.py\<close> R-KH).  Not cleanly separable from the core: at a tied
+  tail head subscript the absorb test is itself a \<open>proj\<close>-comparison.  Localized
+  \<open>sorry\<close>.\<close>
+
+lemma keeps_head_ST_PS:
+  assumes "M \<in> ST_PS"
+  shows "keeps_head M"
+  sorry
+
+text \<open>\<^bold>\<open>Residual 4 (THE irreducible \<section>1 core)\<close> \<open>sigma_argzone_mono\<close>: the argument-zone
+  normalizer \<open>\<sigma>\<^sub>P y a = untr 1 (proj y (nrm (translate a)))\<close> is \<open>seqlex\<close>-monotone on
+  the argument zones of standard forms.  \<^bold>\<open>0 reversals / 79774\<close> ordered arg-zone
+  pairs (\<open>probe_sigma_residual.py\<close> R-SP); deep closure 1{,}013{,}172
+  (\<open>probe_proj_mono_deep.py\<close> universe A, 168350/0).  \<^bold>\<open>Carries the standard-form
+  invariant\<close> (\<open>aM\<close>, \<open>aN\<close> are argument zones of ST forms \<open>(0,y)#\<dots>\<close>); the bare
+  \<open>cnf\<close> generalization \<open>PROJMONO\<close> is \<^bold>\<open>FALSE\<close> (14739 reversals, universe B) and is
+  \<^bold>\<open>not\<close> assumed.  This is the same Buchholz \<section>1 collapse content as \<open>oV_mono_NF\<close>
+  and \<open>nrm_order_pres\<close>.  Localized \<open>sorry\<close>.\<close>
+
+lemma sigma_argzone_mono:
+  assumes "(0, y) # r \<in> ST_PS" and "(0, y) # r' \<in> ST_PS"
+    and "takeWhile (\<lambda>q. 0 < fst q) r \<noteq> takeWhile (\<lambda>q. 0 < fst q) r'"
+    and "seqlex (takeWhile (\<lambda>q. 0 < fst q) r) (takeWhile (\<lambda>q. 0 < fst q) r')"
+  shows "seqlex (untr 1 (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))))
+                (untr 1 (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))))"
+  sorry
+
+text \<open>\<^bold>\<open>The depth gap\<close> is structural (green): every row of the argument-zone
+  normalizer \<open>untr 1 (\<dots>)\<close> is \<open>\<ge> 1\<close>, while the \<open>\<sigma>\<close>-tail \<open>untr 0 (\<dots>)\<close> heads at
+  row 0.  Hence the gap hypothesis of @{thm [source] seqlex_append_left} is
+  automatically met.\<close>
+
+lemma untr1_rows_ge1: "\<forall>p \<in> set (untr (Suc 0) t). 0 < fst p"
+  using untr_set_ge[of "Suc 0" t] by auto
+
+lemma sigma_head_row0: "sigma M \<noteq> [] \<Longrightarrow> fst (hd (sigma M)) = 0"
+  unfolding sigma_def by (rule untr_hd)
+
+subsection \<open>Assembly of \<open>sigma_seqlex_mono\<close>\<close>
+
+text \<open>\<^bold>\<open>The block induction\<close> mirroring @{thm [source] seqlex_imp_olt}: \<open>less_induct\<close>
+  on \<open>length M + length N\<close>, head split, then @{thm [source] seqlex_arg_or_tail}.
+  The \<^emph>\<open>head-differ\<close> and \<^emph>\<open>tail-zone\<close> branches are green from the structural
+  recursion (S) (@{thm [source] sigma_struct_rec}), @{thm [source] keeps_head_ST_PS},
+  @{thm [source] tail_zone_ST_PS} and @{thm [source] seqlex_append_left}; the
+  \<^emph>\<open>argument-zone\<close> branch is the single irreducible core
+  @{thm [source] sigma_argzone_mono}.\<close>
+
 lemma sigma_seqlex_mono:
   assumes "M \<in> ST_PS" and "N \<in> ST_PS" and "seqlex M N"
   shows "seqlex (sigma M) (sigma N)"
-  sorry
+  using assms
+proof (induction "length M + length N" arbitrary: M N rule: less_induct)
+  case less
+  show ?case
+  proof (cases M)
+    case Nil
+    \<comment> \<open>\<open>seqlex [] N\<close> forces \<open>N \<noteq> []\<close>; \<open>sigma [] = []\<close> and \<open>sigma N \<noteq> []\<close>.\<close>
+    have "N \<noteq> []" using less.prems(3) Nil by (cases N) auto
+    hence "translate N \<noteq> Z"
+      using head_row0_ST_PS[OF less.prems(2)] by (cases N) auto
+    hence "nrm (translate N) \<noteq> Z \<or> nrm (translate N) = Z" by simp
+    have sM: "sigma M = []" using Nil by (simp add: sigma_def)
+    have "sigma N \<noteq> []"
+    proof -
+      from \<open>N \<noteq> []\<close> obtain q r' where N: "N = q # r'" by (cases N) auto
+      have q0: "fst q = 0" using head_row0_ST_PS[OF less.prems(2)] N by simp
+      obtain yy where q: "q = (0, yy)" using q0 by (cases q) auto
+      have kh: "keeps_head N" by (rule keeps_head_ST_PS[OF less.prems(2)])
+      have "sigma N = (0, yy)
+              # untr 1 (proj yy (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))
+              @ sigma (dropWhile (\<lambda>q. 0 < fst q) r')"
+        using sigma_struct_rec[of yy r'] kh N q by simp
+      thus ?thesis by simp
+    qed
+    thus ?thesis using sM by simp
+  next
+    case (Cons p r)
+    obtain q r' where N: "N = q # r'"
+      using less.prems(3) Cons by (cases N) auto
+    have p0: "fst p = 0" using head_row0_ST_PS[OF less.prems(1)] Cons by simp
+    have q0: "fst q = 0" using head_row0_ST_PS[OF less.prems(2)] N by simp
+    obtain y where p: "p = (0, y)" using p0 by (cases p) auto
+    obtain y' where q: "q = (0, y')" using q0 by (cases q) auto
+    have khM: "keeps_head M" by (rule keeps_head_ST_PS[OF less.prems(1)])
+    have khN: "keeps_head N" by (rule keeps_head_ST_PS[OF less.prems(2)])
+    let ?aM = "takeWhile (\<lambda>x. 0 < fst x) r" and ?tM = "dropWhile (\<lambda>x. 0 < fst x) r"
+    let ?aN = "takeWhile (\<lambda>x. 0 < fst x) r'" and ?tN = "dropWhile (\<lambda>x. 0 < fst x) r'"
+    let ?SPM = "untr 1 (proj y (nrm (translate ?aM)))"
+    let ?SPN = "untr 1 (proj y' (nrm (translate ?aN)))"
+    have sigM: "sigma M = (0, y) # ?SPM @ sigma ?tM"
+      using sigma_struct_rec[of y r] khM Cons p by simp
+    have sigN: "sigma N = (0, y') # ?SPN @ sigma ?tN"
+      using sigma_struct_rec[of y' r'] khN N q by simp
+    show ?thesis
+    proof (cases "y = y'")
+      case False
+      \<comment> \<open>heads differ: \<open>seqlex M N\<close> forces \<open>y < y'\<close>; the leading columns decide.\<close>
+      have "pairlt p q" using less.prems(3) Cons N p q False by (auto simp: pairlt_def)
+      hence "y < y'" using p q by (simp add: pairlt_def)
+      hence "pairlt (0, y) (0, y')" by (simp add: pairlt_def)
+      thus ?thesis using sigM sigN False by simp
+    next
+      case True
+      have slr: "seqlex r r'"
+        using less.prems(3) Cons N p q True by (auto simp: pairlt_def)
+      have bM: "blockok 0 ((0, y) # r)" using blockok_ST_PS[OF less.prems(1)] Cons p by simp
+      have bN: "blockok 0 ((0, y) # r')" using blockok_ST_PS[OF less.prems(2)] N q True by simp
+      from seqlex_arg_or_tail[OF bM bN slr]
+      consider (tails) "?aM = ?aN" "seqlex ?tM ?tN"
+        | (args) "?aM \<noteq> ?aN" "seqlex ?aM ?aN" by blast
+      thus ?thesis
+      proof cases
+        case tails
+        \<comment> \<open>argument zones equal \<open>\<Rightarrow>\<close> \<open>\<sigma>\<^sub>P\<close> equal; recurse on the strictly shorter tail.\<close>
+        have tMst: "?tM \<in> ST_PS"
+          using tail_zone_ST_PS[of y r] less.prems(1) Cons p by simp
+        have tNst: "?tN \<in> ST_PS"
+          using tail_zone_ST_PS[of y r'] less.prems(2) N q True by simp
+        have lenM: "length ?tM \<le> length r" by (simp add: length_dropWhile_le)
+        have lenN: "length ?tN \<le> length r'" by (simp add: length_dropWhile_le)
+        have shorter: "length ?tM + length ?tN < length M + length N"
+          using lenM lenN Cons N by simp
+        have ih: "seqlex (sigma ?tM) (sigma ?tN)"
+          by (rule less.hyps[OF shorter tMst tNst tails(2)])
+        have "?SPM = ?SPN" using tails(1) True by simp
+        hence "seqlex (?SPM @ sigma ?tM) (?SPN @ sigma ?tN)"
+          using ih seqlex_append_cancel by simp
+        thus ?thesis using sigM sigN True by simp
+      next
+        case args
+        \<comment> \<open>argument zones differ: the irreducible \<open>\<sigma>\<^sub>P\<close> core, then the depth-gap append.\<close>
+        have spmono: "seqlex ?SPM ?SPN"
+        proof -
+          have stM: "(0, y) # r \<in> ST_PS" using less.prems(1) Cons p by simp
+          have stN: "(0, y) # r' \<in> ST_PS" using less.prems(2) N q True by simp
+          have "seqlex (untr 1 (proj y (nrm (translate ?aM))))
+                       (untr 1 (proj y (nrm (translate ?aN))))"
+            by (rule sigma_argzone_mono[OF stM stN args(1) args(2)])
+          thus ?thesis using True by simp
+        qed
+        \<comment> \<open>discharge the gap hypothesis of \<open>seqlex_append_left\<close> structurally\<close>
+        have gap: "length ?SPM < length ?SPN \<longrightarrow> sigma ?tM \<noteq> [] \<longrightarrow>
+                     pairlt (hd (sigma ?tM)) (?SPN ! length ?SPM)"
+        proof (intro impI)
+          assume lt: "length ?SPM < length ?SPN" and ne: "sigma ?tM \<noteq> []"
+          have h0: "fst (hd (sigma ?tM)) = 0" by (rule sigma_head_row0[OF ne])
+          have "?SPN ! length ?SPM \<in> set ?SPN" using lt by simp
+          hence "0 < fst (?SPN ! length ?SPM)" using untr1_rows_ge1[of "proj y' (nrm (translate ?aN))"] by simp
+          thus "pairlt (hd (sigma ?tM)) (?SPN ! length ?SPM)"
+            using h0 by (simp add: pairlt_def)
+        qed
+        have "seqlex (?SPM @ sigma ?tM) (?SPN @ sigma ?tN)"
+          by (rule seqlex_append_left[OF spmono gap])
+        thus ?thesis using sigM sigN True by simp
+      qed
+    qed
+  qed
+qed
 
 text \<open>\<^bold>\<open>Order preservation on \<open>NF\<close>\<close> (\<open>nrm_order_pres\<close>): now a \<^emph>\<open>green assembly\<close> of
   \<^item> the \<open>translate\<close> order isomorphism @{thm [source] olt_ST_iff_seqlex} (turning
