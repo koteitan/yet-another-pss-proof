@@ -1424,6 +1424,45 @@ theorem psi_proj_mem_imp_strict {a : ℕ} {b' g : Three}
     psi_form_of_mem hap (Om_le_psi (oV b') a) (psi_lt_Om_succ (oV b') a) hmem
   exact hξeq ▸ psi_strict_mono_mem hξC hξlt
 
+/-! ### Why the JOINT necessity induction cannot carry the collapse face — the
+    polarity obstruction (kernel-checked record of the joint-induction attempt).
+
+The necessity face is proven (mod 4 sub-lemmas) by the joint simultaneous induction
+`noncanonValueMem_joint : NoncanonValueMem`, whose conclusion is a **membership**
+`psiSelf ξ u ∈ CsetSelf (psiResSelf α) α v` (a non-canonical generator value lands
+in the closure).  The collapse face (`CollapseResidueMaxo`) needs the **opposite
+polarity** — a *non-membership* `ψ_a(oV b') ∉ C_a(oV g)`.  A statement whose
+conclusion is a membership cannot prove a non-membership goal (its contrapositive
+only negates hypotheses), so `NoncanonValueMem` / the joint induction is
+structurally unable to discharge the collapse face.  This is recorded once, in
+checked code, so the joint-induction route is not re-attempted for the collapse.
+
+`crm_via_witness_strict` below shows the second half of the obstruction: the M1
+witness `ξ` of a hypothetical membership *already* certifies the strict gap
+`ψ_a(oV b') < ψ_a(oV g)` (= the negation of collapse) **with no use of `ξ`'s
+canonicity** — `psi_strict_mono_mem` needs only `ξ ∈ C_a(oV g)` and `ξ < oV g`,
+both supplied by M1.  Hence the canonical/non-canonical split of `ξ` that powers
+the necessity kernel `argExt_of_kernel` (Buchholz17.lean) gives NO leverage here:
+there is no `ξ`-canonicity hypothesis left to consume.  The only remaining content
+is the **minimality of `oV g`** as a value-realizer — i.e. `oV g ≤ ξ` is forced —
+which is exactly `oV g = oV(proj a b')` = `psi_proj`, the irreducible circularity
+(ya-pss `psi_proj_nonmem`, nrm.thy:351: the larger-witness `ξ = oV(proj a b) ≥ oV m`
+whose value-identity is `psi_proj` itself). -/
+
+/-- **The collapse face IS exactly the bare equality** — no witness structure
+survives.  For the maxo data (`oV b' ≤ oV g` by B1), the non-membership
+`ψ_a(oV b') ∉ C_a(oV g)` holds **iff** `¬ (ψ_a(oV b') < ψ_a(oV g))`, iff the
+collapse equality.  This packages `psi_proj_mem_imp_strict` (the only direction
+with content) with `psi_mono_arg`: every hypothetical M1 witness already gives the
+strict gap unconditionally, so the joint-induction witness-canonicity split is
+vacuous and the face reduces to the bare equality (= `psi_proj`).  Sorry-free. -/
+theorem crm_via_witness_strict {a : ℕ} {b' g : Three}
+    (hle : oV.{u} b' ≤ oV g) :
+    (psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a) ↔
+      psi.{u} (oV b') a = psi (oV g) a := by
+  refine ⟨psi_eq_of_notMem hle, fun he hmem => ?_⟩
+  exact absurd (psi_proj_mem_imp_strict hmem) (by rw [he]; exact lt_irrefl _)
+
 /-! ### TERM-NEC collapse analysis (the SOUND route) — and the precise irreducible
     circularity (matching ya-pss `psi_proj_nonmem`).
 
