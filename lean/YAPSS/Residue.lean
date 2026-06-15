@@ -205,6 +205,66 @@ theorem CsetSelf_mem_lt_acanon (PVA : PsiValueAcanon.{u})
   obtain ⟨N, hN⟩ := CsetSelf_mem_iff.1 hξC
   exact CiterSelf_mem_lt_acanon PVA α v N ξ hN hξα
 
+/-! ### Sharper sub-reduction of `PsiValueAcanon` to `(a) ∧ (c)`
+
+`PsiValueAcanon` (`psiSelf ζ w ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) v`)
+is reduced here to TWO sub-residuals on the **least-argument witness**
+`lwit c w := sInf {d | psiSelf d w = c}` of the value `c = psiSelf ζ w`:
+
+* **(a)** `lwit c w < c` — the least witness is strictly below the value;
+* **(c)** `lwit c w ∈ CsetSelf (psiResSelf c) c v` — it lies in `c`'s `v`-closure.
+
+The third obligation **(b)** *the least witness is canonical at `w`* is **DERIVED
+from (a)** (`psiSelf_le_self_of_not_canon`: a non-canonical witness would have
+`psiSelf (lwit) w ≤ lwit`, i.e. `c ≤ lwit`, contradicting (a)).  Then the
+generator step `CsetSelf_psi_closed` fires `psiSelf (lwit) w = c` into `C_v(c)`.
+
+**Why these are the genuine residual** (empirically verified, 0 violations on the
+ya-pss model — `/tmp/probe_lw.py`, `/tmp/probe_c.py`): (a) is "the least witness
+is below its value" (would fail only at a ψ-fixpoint `psiSelf c w = c`, which a
+ψ-value is conjectured never to be); (c) is itself a `C_v`-membership of a *simpler*
+ordinal `lwit < c` — recursive, the heart of Buchholz's simultaneous transfinite
+induction.  The `below_psiSelf` shortcut does NOT prove (c): for `v < w`,
+`psiSelf c v < c`, so `lwit < c` does not give `lwit < psiSelf c v`. -/
+
+/-- The least argument realizing the value `c` at subscript `w`. -/
+noncomputable def lwit (c : Ordinal.{u}) (w : ℕ) : Ordinal.{u} :=
+  sInf {d : Ordinal | psiSelf d w = c}
+
+/-- For a ψ-value `c = psiSelf ζ w`, the least witness realizes it. -/
+theorem lwit_val (ζ : Ordinal.{u}) (w : ℕ) :
+    psiSelf (lwit (psiSelf ζ w) w) w = psiSelf ζ w :=
+  csInf_mem (s := {d : Ordinal | psiSelf d w = psiSelf ζ w}) ⟨ζ, rfl⟩
+
+/-- **`PsiValueAcanon` from the two sub-residuals (a) and (c)** (with (b) derived).
+GREEN: given (a) `lwit c w < c` and (c) `lwit c w ∈ C_v(c)`, the least witness is
+canonical at `w` (from (a)), and `CsetSelf_psi_closed` reproduces
+`psiSelf (lwit) w = c` inside `C_v(c)`. -/
+theorem psiValueAcanon_of_ac
+    (ha : ∀ (ζ : Ordinal.{u}) (w : ℕ), lwit (psiSelf ζ w) w < psiSelf ζ w)
+    (hc : ∀ (ζ : Ordinal.{u}) (w v : ℕ), v ≤ w →
+       lwit (psiSelf ζ w) w ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) v) :
+    PsiValueAcanon.{u} := by
+  intro ζ w v hvw
+  set c := psiSelf ζ w with hcdef
+  set ξ0 := lwit c w with hξ0
+  have hval : psiSelf ξ0 w = c := lwit_val ζ w
+  have haa : ξ0 < c := ha ζ w
+  -- (b) derived from (a): canonical at w
+  have hbb : ξ0 ∈ CsetSelf (psiResSelf ξ0) ξ0 w := by
+    by_contra hnc
+    have hle : psiSelf ξ0 w ≤ ξ0 := psiSelf_le_self_of_not_canon hnc
+    rw [hval] at hle
+    exact absurd hle (not_le.2 haa)
+  have hcc : ξ0 ∈ CsetSelf (psiResSelf c) c v := hc ζ w v hvw
+  have hconv : ξ0 ∈ CsetSelf (psiResSelf c) ξ0 w := by
+    rwa [CsetSelf_param_eq (p := psiResSelf ξ0) (q := psiResSelf c)
+          (fun ζ' uu hζ' => by
+            rw [psiResSelf, psiResSelf, if_pos hζ', if_pos (lt_trans hζ' haa)])] at hbb
+  have hfire := CsetSelf_psi_closed hcc haa w hconv
+  rw [psiResSelf, if_pos haa, hval] at hfire
+  exact hfire
+
 /-- **`alpha_step_residue` (the residue; now reduced to `PsiValueAcanon` via
 vacuity).**  Lean analogue of ya-pss's `alpha_step_residue` (necessity.thy:1139),
 the non-canonical-generator step of the closure-rank induction carrying the α-IH.
