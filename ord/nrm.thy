@@ -824,11 +824,108 @@ text \<open>\<^bold>\<open>Residual 2\<close> \<open>tail_zone_ST_PS\<close>: th
       through the \<open>nextrel0\<close>/\<open>le0\<close> valley conditions, which are global).
   The whole route is \<^bold>\<open>independent\<close> of the \<section>1 collapse core.\<close>
 
+text \<open>\<^bold>\<open>The single isolated reachability residual\<close> \<open>suffix_oper_witness\<close>.  This is
+  the \<^emph>\<open>genuine\<close> structural-reachability content of \<open>tail_zone_ST_PS\<close>, factored
+  out as one precisely-stated existence obligation.  For \<open>M \<in> ST_PS\<close>, \<open>1 \<le> n\<close>,
+  and \<^emph>\<open>any\<close> row-0 column index \<open>i\<close> of the expansion \<open>M[n]\<close>, there is a row-0
+  column index \<open>i'\<close> of \<open>M\<close> and a copy count \<open>m \<ge> 1\<close> such that the suffix
+  \<open>drop i (M[n])\<close> is exactly the expansion \<open>(drop i' M)[m]\<close> of the corresponding
+  row-0-headed suffix of \<open>M\<close>.  The witness is uniform across the three \<open>oper\<close>
+  branches (\<open>id\<close>/\<open>Pred\<close>/tiling): for the tiling branch with parent \<open>j0\<close>,
+  child \<open>j1\<close>, \<open>L = j1 - j0\<close>, and \<open>off = i - j0\<close> it is given in closed form by
+  \<open>i' = i, m = n\<close> when \<open>off \<le> 0\<close> (green-prefix suffix, the \<^bold>\<open>exact\<close> commutation
+  \<open>drop i (M[n]) = (drop i M)[n]\<close>) and \<open>i' = j0 + off mod L, m = n - off div L\<close>
+  when \<open>off > 0\<close> (tiled-region suffix), and \<open>i' = i, m = n\<close> for the degenerate
+  branches.
+
+  \<^bold>\<open>Empirically verified\<close> at deep closure: \<^bold>\<open>0 failures / 125592\<close> row-0
+  suffixes across the whole ST_PS corpus, all three branches
+  (\<open>tools/probe_residual_exist.py\<close>; the closed-form tiling witness
+  \<open>tools/probe_unified.py\<close>: 0 / 15688; green-prefix commutation
+  \<open>tools/probe_oper_commute.py\<close> W1: 0 / 6393; tiled-region witness
+  \<open>tools/probe_w2_witness.py\<close>: 0 / 7164; \<open>Pred\<close> branch \<open>tools/probe_degen.py\<close>:
+  0 / 8220; parent-invariance under row-0 prefix removal
+  \<open>tools/probe_parent_inv.py\<close>: 0 / 2131).  Proving it in Isabelle requires the
+  \<open>nextrel0\<close>/\<open>le0\<close> valley conditions to be invariant under removing a
+  row-0-headed prefix of length \<open>\<le> j0\<close> \<dash> a \<^emph>\<open>global\<close> row-0 reachability fact \<dash>
+  which is the genuine remaining work; everything else (the strengthened
+  suffix-closure lemma and \<open>tail_zone_ST_PS\<close> itself) is discharged below from
+  this one residual.  Independent of the \<section>1 collapse core.\<close>
+
+lemma suffix_oper_witness:
+  assumes "M \<in> ST_PS" and "1 \<le> n"
+    and "i < length (oper M n)" and "fst (oper M n ! i) = 0"
+  shows "\<exists>i' m. i' < length M \<and> fst (M ! i') = 0 \<and> 1 \<le> m
+                 \<and> drop i (oper M n) = oper (drop i' M) m"
+  sorry
+
+text \<open>\<^bold>\<open>Strengthened suffix-closure\<close> \<open>suffix_closure_ST_PS\<close>: every row-0-headed
+  suffix of a standard form is again a standard form.  Proved by induction on
+  \<open>ST_PS\<close> from the single residual @{thm [source] suffix_oper_witness} above.
+  \<^item> \<^bold>\<open>diag\<close>: in \<open>diagSeq 0 v\<close> the row-0 columns are exactly index \<open>0\<close>
+    (\<open>fst (diagSeq 0 v ! i) = i\<close>), so \<open>drop 0\<close> is the whole diagonal \<open>\<in> ST_PS\<close>.
+  \<^item> \<^bold>\<open>oper\<close>: a row-0 index \<open>i\<close> of \<open>M[n]\<close> yields, by the residual, a row-0 index
+    \<open>i'\<close> of \<open>M\<close> with \<open>drop i (M[n]) = (drop i' M)[m]\<close>; the IH gives
+    \<open>drop i' M \<in> ST_PS\<close>, and \<open>ST_PS.oper\<close> closes it.\<close>
+
+lemma suffix_closure_ST_PS:
+  assumes "M \<in> ST_PS" and "i < length M" and "fst (M ! i) = 0"
+  shows "drop i M \<in> ST_PS"
+  using assms
+proof (induction M arbitrary: i rule: ST_PS.induct)
+  case (diag v)
+  have len: "length (diagSeq 0 v) = Suc v" by (simp add: diagSeq_def)
+  have ilt: "i < Suc v" using diag.prems(1) len by simp
+  have "diagSeq 0 v ! i = (\<lambda>j. (j, j)) ([0..<Suc v] ! i)"
+    unfolding diagSeq_def using ilt by (simp add: nth_map del: upt_Suc)
+  hence "diagSeq 0 v ! i = (i, i)" using ilt by (simp del: upt_Suc add: nth_upt)
+  hence nth: "fst (diagSeq 0 v ! i) = i" by simp
+  have "i = 0" using nth diag.prems(2) by simp
+  thus ?case by (simp add: ST_PS.diag)
+next
+  case (oper M n)
+  obtain i' m where w: "i' < length M" "fst (M ! i') = 0" "1 \<le> m"
+      "drop i (oper M n) = oper (drop i' M) m"
+    using suffix_oper_witness[OF oper.hyps(1) oper.hyps(2) oper.prems(1) oper.prems(2)]
+    by blast
+  have "drop i' M \<in> ST_PS" using oper.IH[OF w(1) w(2)] .
+  hence "oper (drop i' M) m \<in> ST_PS" using ST_PS.oper[OF _ w(3)] by blast
+  thus ?case using w(4) by simp
+qed
+
+text \<open>\<^bold>\<open>Residual 2\<close> \<open>tail_zone_ST_PS\<close> \<dash> now \<^bold>\<open>derived\<close> from the strengthened
+  suffix-closure lemma.  Writing \<open>M = (0,y) # r\<close>, the tail zone
+  \<open>dropWhile (\<lambda>q. 0 < fst q) r\<close> equals \<open>drop i M\<close> at
+  \<open>i = 1 + length (takeWhile (\<lambda>q. 0 < fst q) r)\<close>; its head (when nonempty) has
+  \<open>fst = 0\<close> by the defining property of \<open>dropWhile\<close>, and \<open>i < length M\<close> by
+  nonemptiness, so suffix-closure applies.\<close>
+
 lemma tail_zone_ST_PS:
   assumes "(0, y) # r \<in> ST_PS"
     and "dropWhile (\<lambda>q. 0 < fst q) r \<noteq> []"
   shows "dropWhile (\<lambda>q. 0 < fst q) r \<in> ST_PS"
-  sorry
+proof -
+  define M where "M = (0, y) # r"
+  define i where "i = 1 + length (takeWhile (\<lambda>q. 0 < fst q) r)"
+  have dw: "dropWhile (\<lambda>q. 0 < fst q) r = drop (length (takeWhile (\<lambda>q. 0 < fst q) r)) r"
+    by (simp add: dropWhile_eq_drop)
+  have di: "drop i M = dropWhile (\<lambda>q. 0 < fst q) r"
+    unfolding M_def i_def using dw by simp
+  have ne: "drop i M \<noteq> []" using di assms(2) by simp
+  have ilt: "i < length M" using ne by (cases "i < length M") auto
+  have hd0: "fst (M ! i) = 0"
+  proof -
+    have "M ! i = hd (drop i M)" using ilt by (simp add: hd_drop_conv_nth)
+    also have "\<dots> = hd (dropWhile (\<lambda>q. 0 < fst q) r)" using di by simp
+    finally have "M ! i = hd (dropWhile (\<lambda>q. 0 < fst q) r)" .
+    moreover have "\<not> (0 < fst (hd (dropWhile (\<lambda>q. 0 < fst q) r)))"
+      using assms(2) by (rule hd_dropWhile)
+    ultimately show ?thesis by simp
+  qed
+  have "drop i M \<in> ST_PS"
+    using suffix_closure_ST_PS[OF _ ilt hd0] assms(1) M_def by simp
+  thus ?thesis using di by simp
+qed
 
 text \<open>\<^bold>\<open>Residual 3\<close> \<open>keeps_head_ST_PS\<close>: on standard forms the leading @{const ins}
   in the \<open>\<sigma>\<close> recursion never absorbs the head (\<open>T1\<close>, \<^bold>\<open>0 / 10437\<close>,
