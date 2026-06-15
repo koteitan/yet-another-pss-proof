@@ -881,23 +881,83 @@ proof -
   thus ?thesis by simp
 qed
 
-text \<open>\<^bold>\<open>Residual 4 (THE irreducible \<section>1 core)\<close> \<open>sigma_argzone_mono\<close>: the argument-zone
-  normalizer \<open>\<sigma>\<^sub>P y a = untr 1 (proj y (nrm (translate a)))\<close> is \<open>seqlex\<close>-monotone on
-  the argument zones of standard forms.  \<^bold>\<open>0 reversals / 79774\<close> ordered arg-zone
-  pairs (\<open>probe_sigma_residual.py\<close> R-SP); deep closure 1{,}013{,}172
-  (\<open>probe_proj_mono_deep.py\<close> universe A, 168350/0).  \<^bold>\<open>Carries the standard-form
-  invariant\<close> (\<open>aM\<close>, \<open>aN\<close> are argument zones of ST forms \<open>(0,y)#\<dots>\<close>); the bare
-  \<open>cnf\<close> generalization \<open>PROJMONO\<close> is \<^bold>\<open>FALSE\<close> (14739 reversals, universe B) and is
-  \<^bold>\<open>not\<close> assumed.  This is the same Buchholz \<section>1 collapse content as \<open>oV_mono_NF\<close>
-  and \<open>nrm_order_pres\<close>.  Localized \<open>sorry\<close>.\<close>
+text \<open>\<^bold>\<open>Residual 4, reduced to a term-level core\<close>.  \<open>sigma_argzone_mono\<close> (the
+  argument-zone \<open>seqlex\<close>-monotonicity of \<open>\<sigma>\<^sub>P y a = untr 1 (proj y (nrm (translate a)))\<close>)
+  is now \<^bold>\<open>green\<close>: the \<open>aM\<close>, \<open>aN\<close> are depth-1 blocks (@{thm [source] blockok_arg} on
+  the depth-0 ST block), \<open>untr 1 (\<dots>)\<close> is again a depth-1 block
+  (@{thm [source] blockok_untr}), and through the depth-general order isomorphism
+  @{thm [source] olt_iff_seqlex} / @{thm [source] seqlex_imp_olt} the whole
+  \<open>seqlex\<close>/\<open>untr\<close>/\<open>blockok\<close> scaffolding is discharged, isolating the residue to the
+  single \<^bold>\<open>term-level\<close> obligation \<open>proj_nrm_argzone_olt\<close> below.\<close>
 
-lemma sigma_argzone_mono:
+text \<open>\<^bold>\<open>Residual 4 (THE irreducible \<section>1 core, term level)\<close> \<open>proj_nrm_argzone_olt\<close>:
+  the projection-after-normalization map is \<open>olt\<close>-monotone on the \<^emph>\<open>argument zones of
+  standard forms\<close>.  \<^bold>\<open>Carries the standard-form invariant\<close> (\<open>(0,y)#r\<close>, \<open>(0,y)#r'\<close>
+  are ST forms, so \<open>translate aM\<close>, \<open>translate aN\<close> are translates of depth-1 blocks
+  hereditarily inside \<open>NF\<close>); the bare \<open>cnf\<close>/\<open>wf3\<close> generalization \<open>PROJMONO\<close>
+  (\<open>olt b f \<Longrightarrow> olt (proj a (nrm b)) (proj a (nrm f))\<close>) is \<^bold>\<open>FALSE\<close> (14739 reversals,
+  universe B) and is \<^bold>\<open>not\<close> assumed.  Same Buchholz \<section>1 collapse content as
+  \<open>oV_mono_NF\<close> and \<open>nrm_order_pres\<close>.  Deep closure 168350/0
+  (\<open>probe_proj_mono_deep.py\<close> universe A); arg-zone core 44850/0/0
+  (\<open>probe_argzone_olt_core.py\<close>).  \<^bold>\<open>Soundness gate\<close>: the tempting value-preservation
+  shortcut \<open>oV (proj y (nrm B)) = oV B\<close> is \<^bold>\<open>FALSE\<close> (\<open>proj\<close> strictly grows the term in
+  266594/1013167 cases, \<open>probe_argzone_projid.py\<close>); \<open>proj\<close> raises the value, so the
+  core does not reduce to value-preservation.  Localized \<open>sorry\<close>.\<close>
+
+lemma proj_nrm_argzone_olt:
   assumes "(0, y) # r \<in> ST_PS" and "(0, y) # r' \<in> ST_PS"
     and "takeWhile (\<lambda>q. 0 < fst q) r \<noteq> takeWhile (\<lambda>q. 0 < fst q) r'"
-    and "seqlex (takeWhile (\<lambda>q. 0 < fst q) r) (takeWhile (\<lambda>q. 0 < fst q) r')"
+    and "olt (translate (takeWhile (\<lambda>q. 0 < fst q) r))
+             (translate (takeWhile (\<lambda>q. 0 < fst q) r'))"
+  shows "olt (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+             (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))"
+  sorry
+
+lemma sigma_argzone_mono:
+  assumes ST: "(0, y) # r \<in> ST_PS" and ST': "(0, y) # r' \<in> ST_PS"
+    and ane: "takeWhile (\<lambda>q. 0 < fst q) r \<noteq> takeWhile (\<lambda>q. 0 < fst q) r'"
+    and asl: "seqlex (takeWhile (\<lambda>q. 0 < fst q) r) (takeWhile (\<lambda>q. 0 < fst q) r')"
   shows "seqlex (untr 1 (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))))
                 (untr 1 (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))))"
-  sorry
+proof -
+  let ?aM = "takeWhile (\<lambda>q. 0 < fst q) r"
+  let ?aN = "takeWhile (\<lambda>q. 0 < fst q) r'"
+  let ?X = "proj y (nrm (translate ?aM))"
+  let ?Y = "proj y (nrm (translate ?aN))"
+  \<comment> \<open>argument zones are depth-1 blocks (the ST forms are depth-0 blocks)\<close>
+  have b0M: "blockok 0 ((0, y) # r)" using blockok_ST_PS[OF ST] .
+  have b0N: "blockok 0 ((0, y) # r')" using blockok_ST_PS[OF ST'] .
+  have bA: "blockok (Suc 0) ?aM" using blockok_arg[OF b0M] by simp
+  have bA': "blockok (Suc 0) ?aN" using blockok_arg[OF b0N] by simp
+  \<comment> \<open>(1) lift \<open>seqlex aM aN\<close> to the term order via the depth-1 half-isomorphism\<close>
+  have oltB: "olt (translate ?aM) (translate ?aN)"
+    using seqlex_imp_olt[OF bA bA' asl] .
+  \<comment> \<open>(2) the term-level core (carries the ST invariant)\<close>
+  have oltX: "olt ?X ?Y" by (rule proj_nrm_argzone_olt[OF ST ST' ane oltB])
+  \<comment> \<open>the images are depth-1 blocks under \<open>untr 1\<close>\<close>
+  have bX: "blockok (Suc 0) (untr (Suc 0) ?X)" by (rule blockok_untr)
+  have bY: "blockok (Suc 0) (untr (Suc 0) ?Y)" by (rule blockok_untr)
+  \<comment> \<open>the two normalized images differ (\<open>untr 1\<close> is injective via \<open>translate\<close>)\<close>
+  have xy: "?X \<noteq> ?Y"
+  proof
+    assume "?X = ?Y"
+    hence "olt ?X ?X" using oltX by simp
+    thus False using olt_irrefl by simp
+  qed
+  have une: "untr (Suc 0) ?X \<noteq> untr (Suc 0) ?Y"
+  proof
+    assume "untr (Suc 0) ?X = untr (Suc 0) ?Y"
+    hence "translate (untr (Suc 0) ?X) = translate (untr (Suc 0) ?Y)" by simp
+    hence "?X = ?Y" by (simp add: translate_untr)
+    thus False using xy by simp
+  qed
+  \<comment> \<open>(2') push the term order back through the depth-1 isomorphism\<close>
+  have "olt (translate (untr (Suc 0) ?X)) (translate (untr (Suc 0) ?Y))"
+    using oltX by (simp add: translate_untr)
+  hence "seqlex (untr (Suc 0) ?X) (untr (Suc 0) ?Y)"
+    using olt_iff_seqlex[OF bX bY une] by blast
+  thus ?thesis by simp
+qed
 
 text \<open>\<^bold>\<open>The depth gap\<close> is structural (green): every row of the argument-zone
   normalizer \<open>untr 1 (\<dots>)\<close> is \<open>\<ge> 1\<close>, while the \<open>\<sigma>\<close>-tail \<open>untr 0 (\<dots>)\<close> heads at
