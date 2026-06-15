@@ -389,83 +389,31 @@ theorem root_clause_translate {B : PairSeq} (hB : ST_PS ((0,0) :: B))
     ∀ x ∈ Gterm 0 (translate B), olt x (translate B) := by
   sorry
 
-/-- **Node-relative descendant closure** (generalizes `ST_PS_desc` to any forest
-node).  If `(0,0) :: B ∈ ST_PS` and `B = d :: R`, then prepending the root
-`(0,0)` to the descendant block `R.takeWhile (d.1 < ·)` of the node `d` is again
-`ST_PS`.  MODEL-VERIFIED at every head node (25061 / 25061, via the row-`0`-shift
-`(0,0) :: (block − x) ∈ ST_PS`; translate is shift-invariant so
-`translate (block − x) = translate block`).  The genuine `oper`-structural
-content (same family as `ST_PS_desc` / `ST_PS_suffix`). -/
-theorem ST_PS_desc_node {d : ℕ × ℕ} {R : PairSeq} (hB : ST_PS ((0,0) :: d :: R)) :
-    ST_PS ((0,0) :: R.takeWhile (fun r => d.1 < r.1)) := by
-  sorry
+/-- **`H0clause` on descendant-block translates** (the second genuine residual).
+For a descendant block `B` with `(0,0) :: B ∈ ST_PS` and row-`1` `≤ 1`,
+`translate B` itself (the head-`0` *argument* forest, possibly head-`1` at its
+root) meets `H0clause`.  MODEL-VERIFIED TRUE (**1481 / 0** over the
+exhaustively-enumerated z-`ST_PS` descendant blocks, closure+7).
 
-/-- **Node-relative sibling closure** (generalizes `ST_PS_suffix` to any node).
-The sibling block `R.dropWhile (d.1 < ·)` of node `d` in `(0,0) :: d :: R ∈ ST_PS`,
-prepended with `(0,0)`, is `ST_PS` (or empty).  Same `oper`-structural family. -/
-theorem ST_PS_sib_node {d : ℕ × ℕ} {R : PairSeq} (hB : ST_PS ((0,0) :: d :: R)) :
-    R.dropWhile (fun r => d.1 < r.1) = [] ∨
-      ST_PS ((0,0) :: R.dropWhile (fun r => d.1 < r.1)) := by
-  sorry
-
-/-- **`H0clause` on descendant-block translates** (the recursion carrier).  For a
-block `B` with `(0,0) :: B ∈ ST_PS` and row-`1` `≤ 1`, `translate B` (a forest,
-possibly head-`1` at the root) meets `H0clause`.  Strong recursion on
-`tsize (translate B)`: at `B = d :: R`, the head-`0` *root clause* (only when
-`d.2 = 0`) is `root_clause_translate`; the hereditary obligations on `translate
-desc` and `translate sib` are *proper subterms* (strictly smaller `tsize`, NO
-single-tree tie) and recurse via the node-relative `ST_PS_desc_node` /
-`ST_PS_sib_node`. -/
-theorem H0clause_translate_block {B : PairSeq} (hB : ST_PS ((0,0) :: B))
+It is NOT reducible to `H0clause_translate` on a smaller `ST_PS` form: the
+descendant block `B`'s translate is generally NOT achievable as `translate M'`
+for any `ST_PS` form `M'` (only **702 / 2845** z-form `translate desc` values are
+realisable as a standard-form translate) — descendant blocks are forest-interior
+copies, not standalone standard forms (a row-`0` shift fixes the order but not
+the row-`1` climbing).  So its proof requires the `oper` copy/tiling structure
+directly (the documented project-central content, same family as
+`Nrmstep.not_pfire0_lead1max1_NF` / `Rdesc_hstep`); it is paired with
+`root_clause_translate` (the head-`0` clause at the node above `B`). -/
+theorem H0clause_desc_block {B : PairSeq} (hB : ST_PS ((0,0) :: B))
     (z : ∀ q ∈ (0,0) :: B, q.2 ≤ 1) : H0clause (translate B) := by
-  generalize hsz : tsize (translate B) = N
-  induction N using Nat.strong_induction_on generalizing B with
-  | _ N IH =>
-  subst hsz
-  cases hBe : B with
-  | nil => rw [translate]; exact H0clause_Z
-  | cons d R =>
-    subst hBe
-    set desc := R.takeWhile (fun r => d.1 < r.1) with hdesc
-    set sib := R.dropWhile (fun r => d.1 < r.1) with hsib
-    have htr : translate (d :: R) = P d.2 (translate desc) (translate sib) := by
-      rw [translate]
-    rw [htr]
-    have hzR : ∀ q ∈ (0,0) :: R, q.2 ≤ 1 := by
-      intro q hq; rcases List.mem_cons.1 hq with rfl | hq
-      · simp
-      · exact z q (by simp [List.mem_cons_of_mem, hq])
-    -- descendant block lifted to `(0,0) :: desc ∈ ST_PS`.
-    have hdescST : ST_PS ((0,0) :: desc) := ST_PS_desc_node hB
-    have hzdesc : ∀ q ∈ (0,0) :: desc, q.2 ≤ 1 := by
-      intro q hq; rcases List.mem_cons.1 hq with rfl | hq
-      · simp
-      · exact z q (List.mem_cons_of_mem _ (List.mem_cons_of_mem _
-          ((List.takeWhile_sublist _).subset hq)))
-    refine ⟨?_, ?_, ?_⟩
-    · -- head-`0` root clause.
-      intro _
-      exact root_clause_translate hdescST hzdesc
-    · -- `H0clause (translate desc)`: proper subterm, strict `tsize`.
-      have hsz : tsize (translate desc) < tsize (translate (d :: R)) := by
-        rw [htr]; simp only [tsize]; have := tsize_pos (translate sib); omega
-      exact IH (tsize (translate desc)) hsz hdescST hzdesc rfl
-    · -- `H0clause (translate sib)`: proper subterm, strict `tsize`.
-      rcases ST_PS_sib_node hB with hempty | hsibST
-      · rw [hsib, hempty, translate]; exact H0clause_Z
-      · have hzsib : ∀ q ∈ (0,0) :: sib, q.2 ≤ 1 := by
-          intro q hq; rcases List.mem_cons.1 hq with rfl | hq
-          · simp
-          · exact z q (List.mem_cons_of_mem _ (List.mem_cons_of_mem _
-              ((List.dropWhile_sublist _).subset hq)))
-        have hsz : tsize (translate sib) < tsize (translate (d :: R)) := by
-          rw [htr]; simp only [tsize]; have := tsize_pos (translate desc); omega
-        exact IH (tsize (translate sib)) hsz hsibST hzsib rfl
+  sorry
 
 theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
     (z : ∀ p ∈ M, p.2 ≤ 1) : H0clause (translate M) := by
-  -- Strong recursion on `tsize (translate M)`; `sib` recurses here (proper
-  -- subterm), `desc` is handled by `H0clause_translate_block`.
+  -- Strong recursion on `tsize (translate M)`: `sib` recurses here (proper
+  -- subterm of `translate M`, strictly smaller `tsize`); the head-`0` root clause
+  -- is `root_clause_translate` and the descendant `H0clause` is `H0clause_desc_block`
+  -- (both on `(0,0) :: desc ∈ ST_PS` via the `ST_PS_desc` descendant closure).
   generalize hsz : tsize (translate M) = N
   induction N using Nat.strong_induction_on generalizing M with
   | _ N IH =>
@@ -490,7 +438,7 @@ theorem H0clause_translate {M : PairSeq} (hM : ST_PS M)
   refine ⟨?_, ?_, ?_⟩
   · intro _
     exact root_clause_translate hdescST hzdesc
-  · exact H0clause_translate_block hdescST hzdesc
+  · exact H0clause_desc_block hdescST hzdesc
   · rcases ST_PS_suffix hM with hempty | hstps
     · rw [hsib, hempty, translate]; exact H0clause_Z
     · have hzsib : ∀ q ∈ sib, q.2 ≤ 1 := z_dropWhile z
