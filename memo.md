@@ -4746,3 +4746,22 @@ MV は §1 collapse 核を closable でないと確定し精密 obstruction を�
 - **確定**: argzone_head_maxviol/transport/keeps_head/nrm_argzone_olt/STS_B/oV_mono_NF は全て**同一の既約 §1 collapse**=
   「標準形 arg-zone の proj-1 head 引数の subscript-0 gap criticals が<hb」。現緑インフラでは閉じない。cross-project wall(lean も未閉)。
 **次セッションの核**: この標準形 firing-collapse(subscript-0 gap criticals<hb)を直接証明する Buchholz §1 補題。多セッション研究課題。
+
+### 続90 末8: collapse 核を architect 設計の maxsub-spine で攻略→既約性を確定(INFRA/TIED)
+アーキテクト(本体)が maxsub-spine reduction を設計、サブエージェント2体が実装。結果=**閉じず・wall を最大限 characterize**:
+- **INFRA**: argzone_head_maxviol を緑 assembly 化。但し head 核は**2つの独立 class-essential 残核**に分裂(1つは不可能):
+  - `tied_crit_lt_hb`(tied G_0 critical < hb = hb の 0-canonicity)
+  - `argz_head_spine`(lead X<maxsub X[発火] ∧ lead hb=maxsub X ∧ S_Gviol[violator⊆insert hb(Gterm 0 hb)])
+  非 tied 部は G1(maxsub g≤maxsub X・class-free 緑)+ subscript-first で緑。maxsub 緑インフラ
+  (lead_le_maxsub/maxsub_Gterm_le=G1/olt_asym/Gterm0_harg_subset/nontied_lt_head)。NET +1 sorry。
+  両残核とも random wf3 で fail(class-essential・互いに還元不能)。YAPSS.wf import 要。
+- **🔴 TIED は循環**: tied_crit_lt_hb を argzone_proj_head 経由で「証明」したが、argzone_proj_head⟸argzone_head_dominates
+  ⟸argzone_head_maxviol(=INFRA が tied_crit_lt_hb に reduce する当の sorry)。完全循環=bootstrap 不可・実質進展なし。
+  但し副産物 `proj_idem`(proj u(proj u b)=proj u b・class-free 緑)+ `proj_filter_empty` は独立有用。
+  reformulation: tied 核 = **「hb=harg X が 0-canonical(proj 0 hb=hb)」**。hb=proj 1(nrm b₀) で、これは
+  「proj 0(proj 1 t)=proj 1 t」(class-free 偽 4005/131562・all-subs≥1 でのみ真だが class の 77% が subscript-0)= 同じ class-essential wall。
+- **確定**: head collapse = 2 class-essential 残核(tied=hb 0-canonical / spine)。tied は firing identity と循環し bootstrap 不可。
+  現緑インフラ + maxsub-spine では閉じない。**genuine Buchholz §1 wall**(cross-project・lean も未閉)。
+  **判断: INFRA の +1 split は live 非統合**(閉鎖なき sorry 増・import churn 回避)、main は argzone_head_maxviol 単一 sorry 維持。
+  reduction は nrm_maxsub_reduction_reference.thy.txt に保存。次セッションは hb 0-canonicity を canonical-ζ 順序数路線
+  (necessity.thy・psi_value_acanon を canonical ζ 限定で修正)か NF spine 不変量の base 層構築で攻めるべき。
