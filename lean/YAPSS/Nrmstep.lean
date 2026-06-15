@@ -1734,16 +1734,89 @@ theorem pfire0_of_ascent {b : Three} (h : ∃ g ∈ Gterm 0 b, lead b < lead g) 
   obtain ⟨g, hg, hlt⟩ := h
   exact pfire_iff.2 ⟨g, hg, fun hgb => absurd (lead_le_of_olt hgb) (by omega)⟩
 
-/-- **Fire-propagation on `NF` arguments** (residual 1).  `olt b f → pfire 0 b →
-pfire 0 f`.  Audit: `pfire 0 b ⟺ b has a subscript ascent` (`pfire0_of_ascent` is
-the easy half; the hard half *fire → ascent* needs the bridge below).  The "fn"
-case is absent on all `NF` arg pairs (0 violations) but present on general terms
-(`b=p₀(p₂0)+p₁0`, `f=p₂0`), so the `NF` subscript discipline (`r1ok`/`steps1`,
-the `+1`-step row structure) is exactly what excludes it. -/
+/-- An `NF` argument has leading subscript `≤ 1`: it is the level-`1` position of
+the `inv2` spine `[0,1,2,…]` of the whole `NF` term `P 0 b c`, so `lead b =
+spine[1] ∈ {0,1}`. -/
+theorem lead_arg_le_one {b c : Three} (h : (P 0 b c) ∈ NF) : lead b ≤ 1 := by
+  obtain ⟨M, hM, he⟩ := h
+  have inv : inv2 ((incpref M).map Prod.snd) := (nfinv_ST_PS hM).2
+  have sp : spine (translate M) = (incpref M).map Prod.snd := spine_translate_eq M
+  have hsp : spine (translate M) = 0 :: spine b := by rw [he, spine_P]
+  rw [sp] at hsp
+  set s := (incpref M).map Prod.snd with hs
+  by_cases hc : 1 ≤ cmax s
+  · have hg : s.getD 1 0 = 1 := (inv 1 hc).2
+    rw [hsp] at hg
+    simp only [List.getD_cons_succ] at hg
+    cases b with
+    | Z => simp [lead]
+    | P a bb cc =>
+      rw [spine_P] at hg
+      simp only [List.getD_cons_zero] at hg
+      simp [lead, hg]
+  · push_neg at hc
+    have hc0 : cmax s = 0 := by omega
+    cases b with
+    | Z => simp [lead]
+    | P a bb cc =>
+      have hmem : a ∈ s := by
+        rw [hsp]; right; rw [spine_P]; exact List.mem_cons_self
+      have := cmax_ge hmem
+      simp only [lead]; omega
+
+/-- The spine maximum `climb t` is realized as the leading subscript of either
+`t` itself or some `Gterm 0`-critical subterm (the deepest spine node).  Pure
+structural fact, no `NF`. -/
+theorem climb_achieved : ∀ t : Three, ∃ g, (g = t ∨ g ∈ Gterm 0 t) ∧ lead g = climb t := by
+  intro t
+  induction t with
+  | Z => exact ⟨Z, Or.inl rfl, by simp [climb]⟩
+  | P a b c ihb ihc =>
+    have hcl : climb (P a b c) = max a (climb b) := by unfold climb; rw [spine_P, cmax_cons]
+    by_cases h : climb b ≤ a
+    · exact ⟨P a b c, Or.inl rfl, by rw [hcl, lead_P]; omega⟩
+    · push_neg at h
+      obtain ⟨g, hg, hgl⟩ := ihb
+      refine ⟨g, ?_, by rw [hgl, hcl]; omega⟩
+      rcases hg with rfl | hg
+      · exact Or.inr (by rw [mem_Gterm_P]; exact Or.inl ⟨Nat.zero_le _, Or.inl rfl⟩)
+      · exact Or.inr (by rw [mem_Gterm_P]; exact Or.inl ⟨Nat.zero_le _, Or.inr hg⟩)
+
+/-- **`pfire`-via-spine, easy direction** (pure `olt`, no `NF`): if the spine
+maximum exceeds the leading subscript (`lead t < climb t`), then `t` fires.  The
+spine node achieving `climb t` (`climb_achieved`) is a `Gterm 0`-critical
+ascent. -/
+theorem pfire0_of_lt_climb {t : Three} (h : lead t < climb t) : pfire 0 t := by
+  obtain ⟨g, hg, hgl⟩ := climb_achieved t
+  have hgt : lead t < lead g := by rw [hgl]; exact h
+  rcases hg with rfl | hg
+  · omega
+  · exact pfire0_of_ascent ⟨g, hg, hgt⟩
+
+/-- **THE hard `NF` half** (the genuine `NF`-discipline residual): a firing `NF`
+argument has maximal subscript `≥ 2`.  Empirically exact (0 violations / 13507
+firing `NF` args; firing forces `lead b = 1 ∧ maxsub b ≥ 2`).  The converse
+(`pfire0_of_lt_climb` + `maxsub_arg_eq_climb`) is proved; this direction is the
+`r1ok`/`steps1` subscript-ascent content the project lacks.  FALSE on general
+`cnf` terms (`p₁(0)+p₀(p₁(0)+p₁(0))` is `cnf`, `lead = maxsub = 1`, yet fires),
+so it needs the `NF` sibling discipline, not just `cnf`. -/
+theorem pfire0_maxsub_ge2_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hb : pfire 0 b) :
+    2 ≤ maxsub b := by
+  sorry
+
+/-- **Fire-propagation on `NF` arguments** (residual 1) — now reduced to the
+single hard half `pfire0_maxsub_ge2_NF`.  `olt b f → pfire 0 b → pfire 0 f`:
+firing gives `maxsub b ≥ 2` (hard half), `maxsub`-monotonicity carries it to
+`maxsub f ≥ 2`, and since `lead f ≤ 1 < 2 ≤ maxsub f = climb f`, the easy half
+`pfire0_of_lt_climb` re-fires `f`. -/
 theorem proj0_fireprop_NF {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) : pfire 0 f := by
-  sorry
+  have h2b : 2 ≤ maxsub b := pfire0_maxsub_ge2_NF hv hb
+  have h2f : 2 ≤ maxsub f := le_trans h2b (maxsub_arg_mono hv hu harg)
+  have hlf : lead f ≤ 1 := lead_arg_le_one hu
+  have hcf : maxsub f = climb f := maxsub_arg_eq_climb hu
+  exact pfire0_of_lt_climb (by rw [← hcf]; omega)
 
 /-- **Both-fire comparison on `NF` arguments** (residual 2).  Audit structural
 key: for a firing `NF` arg `P 1 b' c'`, `proj 0 (P 1 b' c') = proj 0 b'`
