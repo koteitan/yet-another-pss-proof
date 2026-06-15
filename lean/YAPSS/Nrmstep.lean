@@ -1703,13 +1703,15 @@ residuals are reduced to clean single leaves:
   • **`proj0_fireprop_NF` ⟶ `not_pfire0_lead1max1_NF`** (a `lead = 1, maxsub = 1`
     `NF` arg does not fire = the maxr1-`≤1` head-`0` OT3 wall, shared with
     `Wttone.H0clause_translate`);
-  • **`proj0_bothfire_NF` ⟶ `proj0_bothfire_eqmaxsub_NF`** (the equal-`maxsub`
-    both-fire comparison; the strict-`maxsub` case is PROVED via
-    `lead_proj_eq_maxsub_NF`).  NB the "peel" is now a triviality
-    (`proj_eq_maxo_bad`: `proj` is one-step); the residual is the
-    equal-`maxsub` greatest-critical comparison, which is genuinely
-    `NF`-discipline-dependent (the general `proj 0`-monotone is ~25% false and
-    the naive arg-recursion reverses at depth — see the lemma docstring).
+  • **`proj0_bothfire_NF` ⟶ `proj_bothfire_witness`** (the single §1 firing
+    witness, *uniform* — no eq/strict-`maxsub` split).  GREEN reduction: a
+    `G₀`-critical `h` of the larger `f` strictly above `proj 0 b`, with
+    `h ≤o proj 0 f` (`proj_ge_crit`) and `olt_ole_trans`, closes
+    `olt (proj 0 b) (proj 0 f)`.  The residual is exactly the witness
+    existence `∃ h ∈ Gterm 0 f, olt (proj 0 b) h`, model-verified
+    `824970 / 0` (`tools/probe_strict_wit.py` W1); the underlying critical
+    embedding is `NF`-discipline-dependent (FALSE on general terms, 3.7M
+    violations, `probe_cd_proof.py` E4).
 
 So Wall B (proj-side) is now exactly TWO `NF`-discipline leaves; everything
 around them is proved. -/
@@ -2192,62 +2194,44 @@ theorem lead_proj_eq_maxsub_NF {b c : Three} (hv : (P 0 b c) ∈ NF) (hf : pfire
       omega
   omega
 
-/-- **Both-fire, equal-`maxsub` case** (residual 2, narrowed).  When the two
-firing `NF` arguments have the SAME maximal subscript `k`, `proj 0` lands on two
-terms `P k bb cb`, `P k ff cf` with EQUAL leading subscript `k` (`= maxsub`, by
-`lead_proj_eq_maxsub_NF`) and (empirically) tails `≈ Z`, so the comparison
-reduces to `olt bb ff` on the proj-results' arguments.
+/-- **The both-fire witness (THE single §1 firing residual), Lean form.**
+For two firing head-`0` `NF` arguments `b <o f`, there is a `G₀`-critical `h`
+of the larger argument `f` that **strictly dominates** `proj 0 b` (the greatest
+critical of `b`): `∃ h ∈ Gterm 0 f, olt (proj 0 b) h`.
 
-WHY THIS NEEDS THE `NF` DISCIPLINE (and is NOT a clean general recursion):
-  • the general `proj 0`-monotonicity is FALSE (~25% violations on arbitrary
-    olt-ordered terms; e.g. `b = p₀(p₂0)` has greatest critical `p₂0` exceeding
-    that of a larger `f` whose subscripts are bounded — the "buried high
-    subscript" pattern `NF` excludes);
-  • the naive recursion `olt bb ff ⟹ olt (proj 0 bb)(proj 0 ff)` exhibits
-    REVERSALS at depth (≈ 517/3000 sampled), so it does not self-reduce by
-    repeated `proj 0`-of-argument;
-  • the one-level fact `olt bb ff` IS empirically exact (24655/24655), but its
-    proof needs the `NF`/spine ascent discipline relating the greatest criticals
-    of `olt`-ordered `NF` arguments.
-This is the genuine `NF`-discipline content of `bothfire`, distinct in form from
-the fireprop leaf `not_pfire0_lead1max1_NF` (a non-firing fact) though both are
-"no buried subscript escapes" facts.  Empirically exact: 0 violations / 73933
-equal-`maxsub` firing pairs. -/
-theorem proj0_bothfire_eqmaxsub_NF {b c f g : Three}
+This is the sound Lean port of ya-pss's `argzone_fire_FF` / `proj_step_fire_-
+witness` — the genuine Buchholz §1 firing content — but with the **Lean-correct
+witness**: `h` is a critical of `f` (NOT necessarily `proj 0 f` and NOT
+`= hdarg`, since `proj 0 X = hdarg X` is FALSE in this encoding); it is the
+greatest critical of `f` on its leading argument chain that overshoots `proj 0 b`.
+
+**Soundness gate** (`tools/probe_strict_wit.py` W1, the Lean `Three` encoding,
+deep closure 5089 `NF` terms): `824970 / 824970` firing pairs `olt b f` admit
+such a critical `h`; `tools/probe_crit_dom.py` confirms the underlying critical
+embedding (`∀ g ∈ Gterm 0 b, ∃ h ∈ Gterm 0 f, g ≤o h`) is `0`-violation and
+**class-essential** (FALSE on general terms, 3.7M violations,
+`probe_cd_proof.py` E4 — the buried-subscript pattern `NF` excludes).  The
+greatest critical lies on the leading `.b`-chain and depends only on the head
+argument (`probe_strict_embed.py`, `1285 / 1285`), which is the structural
+handle for a future proof.  This is the precise, model-verified residual that
+replaces the opaque equal-`maxsub` sorry. -/
+theorem proj_bothfire_witness {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
-    (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
-    olt (proj 0 b) (proj 0 f) := by
+    (hb : pfire 0 b) (hf : pfire 0 f) :
+    ∃ h ∈ Gterm 0 f, olt (proj 0 b) h := by
   sorry
 
-/-- **Both-fire comparison on `NF` arguments** (residual 2) — now reduced to the
-equal-`maxsub` case `proj0_bothfire_eqmaxsub_NF`.
-
-The strict-`maxsub` case is PROVED here: by `lead_proj_eq_maxsub_NF` both
-projections lead with their `maxsub`; if `maxsub b < maxsub f` then
-`lead (proj 0 b) = maxsub b < maxsub f = lead (proj 0 f)`, and since the latter
-is positive the projection of `f` is a `P`, so `proj 0 b <o proj 0 f` by
-subscript (`olt_P_of_lead_lt`).  `maxsub`-monotonicity (`maxsub_arg_mono`)
-rules out `maxsub b > maxsub f`. -/
+/-- **Both-fire comparison on `NF` arguments** (residual 2) — now reduced
+*uniformly* (no eq/strict-`maxsub` split) to the single witness residual
+`proj_bothfire_witness`.  GREEN reduction: the witness `h ∈ Gterm 0 f` with
+`olt (proj 0 b) h`, together with `h ≤o proj 0 f` (`proj_ge_crit`, `proj 0 f` is
+the greatest critical of the firing `f`), closes `olt (proj 0 b) (proj 0 f)` by
+`olt_ole_trans`. -/
 theorem proj0_bothfire_NF {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) : olt (proj 0 b) (proj 0 f) := by
-  have hmono : maxsub b ≤ maxsub f := maxsub_arg_mono hv hu harg
-  rcases lt_or_eq_of_le hmono with hlt | heq
-  · -- strict maxsub: lead-domination
-    have lb : lead (proj 0 b) = maxsub b := lead_proj_eq_maxsub_NF hv hb
-    have lf : lead (proj 0 f) = maxsub f := lead_proj_eq_maxsub_NF hu hf
-    -- proj 0 f is a P (its lead = maxsub f > 0)
-    obtain ⟨e, f2, g2, hpf⟩ : ∃ e f2 g2, proj 0 f = P e f2 g2 := by
-      cases hcf : proj 0 f with
-      | Z => rw [hcf] at lf; simp [lead] at lf; omega
-      | P e f2 g2 => exact ⟨e, f2, g2, rfl⟩
-    rw [hpf]
-    apply olt_P_of_lead_lt
-    right
-    rw [lb]
-    have : e = maxsub f := by rw [hpf] at lf; simpa [lead] using lf
-    omega
-  · exact proj0_bothfire_eqmaxsub_NF hv hu harg hb hf heq
+  obtain ⟨h, hhG, hlt⟩ := proj_bothfire_witness hv hu harg hb hf
+  exact olt_ole_trans hlt (proj_ge_crit hf hhG)
 
 /-- **The proj-side order crux**, split into the two `NF`-standardness residuals
 via the pure-`olt` `proj_olt_of_fireprop`.  No `wf3` needed. -/
@@ -9130,7 +9114,7 @@ ported.  The **sound** Lean port of PROJSTEP is the *argument-level* statement
 `b,f` of head-`0` `NF` terms — model-confirmed `167910 / 0` (`audit_proj0.py`,
 matched here).  Lean's `lead`/`maxsub` spine discipline (`lead_proj_eq_maxsub_NF`,
 `maxsub_arg_mono`) lets `proj0_olt_NF` route around ya-pss's four head-arg
-residuals, leaving a **single** residual `proj0_bothfire_eqmaxsub_NF`.
+residuals, leaving a **single** residual `proj_bothfire_witness`.
 -/
 
 /-- **PROJSTEP (arg-zone projection-step order, the §1 crux), Lean form.**
@@ -9141,7 +9125,7 @@ the `lead`/`maxsub` spine discipline, NOT through ya-pss's `harg` reduction
 (whose whole-image and deeper head-arg forms are FALSE in this encoding — see
 section note, `probe_argzone_order_lean.py`).  It is `proj0_olt_NF` verbatim;
 restated here under the ya-pss name to mark the route.  Rests on the single
-residual `proj0_bothfire_eqmaxsub_NF`. -/
+residual `proj_bothfire_witness`. -/
 theorem proj_step_argzone_olt {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f) :
     olt (proj 0 b) (proj 0 f) :=
