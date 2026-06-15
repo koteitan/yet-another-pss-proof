@@ -312,9 +312,24 @@ closure spuriously non-downward-closed there; so "0 violations" only covers δ w
 the model value defined.  In the genuine ordinals `AcanonLtValue` holds (the
 fixpoint exclusion above), but do NOT read the model as a proof for large δ. -/
 
-/-- **Canonical-rep fact 1 (`AcanonLtValue`).**  Every `w`-canonical ordinal is
-strictly below its own value: `δ ∈ CsetSelf (psiResSelf δ) δ w → δ < psiSelf δ w`.
-The converse of `below_psiSelf_mem_CsetSelf`; TRUE (corrects the old false note). -/
+/-- **`AcanonLtValue`.**  Every `w`-canonical ordinal is strictly below its own
+value: `δ ∈ CsetSelf (psiResSelf δ) δ w → δ < psiSelf δ w`.
+
+**⚠⚠ FALSE — DISPROVEN (`AcanonLtValue_is_false`).**  Counterexample
+`δ = Ω_{w+1} = psiSelf 0 (w+1)`: it is `w`-canonical (it fires in `C_w(Ω_{w+1})`
+as the generator `psiSelf 0 (w+1)`, since `0 < Ω_{w+1}` is canonical), yet
+`psiSelf δ w < Ω_{w+1} = δ` (`psiSelf · w < Ω_{w+1}` always).  Root cause: EVERY
+`δ < Ω_w` is `w`-canonical (it sits in the base `Iio(Ω_w)` of `C_w(δ)`) — and more
+generally generators `psiSelf η u'` with `u' > w` produce `w`-canonical values
+`≥ Ω_{w+1} > psiSelf δ w`.  So the "canonical ⟹ below own value" intuition fails
+for `δ ≥ ε(w)` (it is TRUE only for `δ < ε(w)`, `AcanonLtValue_lt_epsLvl`).
+
+CONSEQUENCE: the `AcanonLtValue`-based reductions below (`psiValueAcanon_of_
+AcanonLtValue`, `psiValueAcanon_diag_of_AcanonLtValue`, `a_of_AcanonLtValue`,
+`alpha_step_residue_of_AcanonLtValue`) are valid *implications* but rest on a FALSE
+hypothesis, so they CANNOT discharge `PsiValueAcanon`.  The genuine residual is the
+canonical-WITNESS existence (`δ < c` canonical with `psiSelf δ w = c`), NOT `ζ`
+itself.  Kept only as documented dead-ends. -/
 def AcanonLtValue.{u} : Prop :=
   ∀ {δ : Ordinal.{u}} {w : ℕ}, δ ∈ CsetSelf (psiResSelf δ) δ w → δ < psiSelf δ w
 
@@ -552,19 +567,52 @@ theorem AcanonLtValue_lt_epsLvl {δ : Ordinal.{u}} {w : ℕ}
       rwa [this] at hδ
     exact AcanonLtValue_lt_eps (Nat.succ_pos k) hδe
 
+/-! ### `AcanonLtValue` is FALSE (the ε-boundary counterexample)
+
+`Ω_{w+1} = psiSelf 0 (w+1)` is `w`-canonical but its value `psiSelf Ω_{w+1} w` is
+`< Ω_{w+1}`.  This disproves `AcanonLtValue` and rules out the "witness = ζ itself"
+route at and above `ε(w)`. -/
+
+/-- `psiSelf 0 (w+1) = Ω_{w+1}` (the explicit formula at argument 0). -/
+theorem psiSelf_zero_eq_Om (w : ℕ) : psiSelf 0 (w+1) = Om (w+1) := by
+  have h := (psiSelf_eq_opow_add (w+1) (Nat.succ_pos w) 0
+    (Ordinal.epsilon_pos (Om (w+1) + 1))).2
+  rw [add_zero, omega_opow_Om (Nat.succ_pos w)] at h
+  exact h
+
+/-- `Ω_{w+1}` is `w`-canonical (it fires as the generator `psiSelf 0 (w+1)`). -/
+theorem Omsucc_canon_at_w (w : ℕ) :
+    Om (w+1) ∈ CsetSelf (psiResSelf (Om (w+1))) (Om (w+1)) w := by
+  have hpos : (0:Ordinal) < Om (w+1) := lt_of_lt_of_le one_pos (one_le_Om _)
+  have h0w : (0:Ordinal) < Om w := lt_of_lt_of_le one_pos (one_le_Om _)
+  have h0canon : (0:Ordinal) ∈ CsetSelf (psiResSelf (Om (w+1))) 0 (w+1) :=
+    Iio_Om_subset_CsetSelf (lt_of_lt_of_le one_pos (one_le_Om _))
+  have h0mem : (0:Ordinal) ∈ CsetSelf (psiResSelf (Om (w+1))) (Om (w+1)) w :=
+    Iio_Om_subset_CsetSelf h0w
+  have hfire := CsetSelf_psi_closed h0mem hpos (w+1) h0canon
+  rw [psiResSelf, if_pos hpos, psiSelf_zero_eq_Om] at hfire
+  exact hfire
+
+/-- **`AcanonLtValue` is FALSE** (Lean-proven).  Witness `δ = Ω_1`, `w = 0`: it is
+`0`-canonical (`Omsucc_canon_at_w`) but `psiSelf Ω_1 0 < Ω_1`.  Rules out the
+entire "witness = ζ itself / canonical ⟹ below value" route for `PsiValueAcanon`. -/
+theorem AcanonLtValue_is_false : ¬ AcanonLtValue.{u} := by
+  intro hALV
+  have hlt : Om (0+1) < psiSelf (Om (0+1)) 0 := hALV (Omsucc_canon_at_w 0)
+  exact absurd (lt_trans hlt (psiSelf_lt_Om_succ (Om (0+1)) 0)) (lt_irrefl _)
+
 /-! ### `PsiValueAcanon` via the canonical argument ITSELF (the clean route)
 
-With the soundness-fixed `PsiValueAcanon` (canonical `ζ` only), the witness for the
-value `c = psiSelf ζ w` is **`ζ` itself** — it is `w`-canonical by hypothesis and
-`< c` by `AcanonLtValue`.  This bypasses the `lwit`/`CanonWitness*` machinery (which
-broke at ε-fixpoints).  Two clean results:
-
-* **diagonal `v = w`**: FULLY reduced to `AcanonLtValue` (`psiValueAcanon_diag_of_
-  AcanonLtValue`), and since `AcanonLtValue` is PROVEN below `ε(w)`
-  (`AcanonLtValue_lt_epsLvl`), the diagonal is PROVEN for sub-`ε` canonical `ζ`;
-* general `v ≤ w`: reduced to `AcanonLtValue` + the residual membership
-  `ζ ∈ C_v(c)` (only the `v < w` part remains — same shape as old (c) but on the
-  canonical `ζ` directly). -/
+**⚠⚠ DEAD ROUTE (this session's finding).**  This route takes the witness for
+`c = psiSelf ζ w` to be **`ζ` itself**, needing `ζ < c` via `AcanonLtValue` — but
+`AcanonLtValue` is **FALSE** (`AcanonLtValue_is_false`: `ζ = Ω_1` is `0`-canonical
+yet `psiSelf Ω_1 0 < Ω_1`).  So `ζ` is NOT always `< c`, and these reductions
+(valid implications) rest on a false hypothesis; they CANNOT discharge
+`PsiValueAcanon`.  They are PROVEN only for `ζ < ε(w)` (where
+`AcanonLtValue_lt_epsLvl` supplies `ζ < c`) — see `psiValueAcanon_diag_lt_epsLvl`
+below for the salvaged sub-`ε` diagonal.  The genuine residual is the
+canonical-WITNESS existence: a `δ < c` (NOT `ζ`) that is `w`-canonical with
+`psiSelf δ w = c`.  Kept as documented dead-ends. -/
 
 /-- **Diagonal `v = w` of `PsiValueAcanon` from `AcanonLtValue`** (GREEN).  For
 `w`-canonical `ζ`, `psiSelf ζ w ∈ C_w(psiSelf ζ w)`: the witness is `ζ` (canonical,
@@ -575,6 +623,27 @@ theorem psiValueAcanon_diag_of_AcanonLtValue (hALV : AcanonLtValue.{u})
     psiSelf ζ w ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) w := by
   set c := psiSelf ζ w with hcdef
   have hζlt : ζ < c := hALV hζc
+  have hcc : c ≤ psiSelf c w := by
+    have := psiSelf_mono_arg hζlt.le w; rwa [hcdef] at this
+  have hζmem : ζ ∈ CsetSelf (psiResSelf c) c w :=
+    below_psiSelf_mem_CsetSelf (lt_of_lt_of_le hζlt hcc)
+  have hζcanon : ζ ∈ CsetSelf (psiResSelf c) ζ w := by
+    rwa [CsetSelf_param_eq (p := psiResSelf ζ) (q := psiResSelf c)
+          (fun η uu hη => by rw [psiResSelf, psiResSelf, if_pos hη, if_pos (lt_trans hη hζlt)])] at hζc
+  have hfire := CsetSelf_psi_closed hζmem hζlt w hζcanon
+  rwa [psiResSelf, if_pos hζlt, ← hcdef] at hfire
+
+/-- **PROVEN (sub-`ε`): diagonal `v = w` of `PsiValueAcanon` for `ζ < ε(w)`.**  No
+false hypothesis: `ζ < ε(w)` gives `ζ < psiSelf ζ w` outright via the explicit
+formula (`AcanonLtValue_lt_epsLvl`), and `ζ` (canonical, `< c`) fires
+`psiSelf ζ w = c` into `C_w(c)`.  This is the genuine sub-`ε` part of the §1 core,
+fully closed.  (The `ζ ≥ ε(w)` diagonal needs a `δ < c` witness — open.) -/
+theorem psiValueAcanon_diag_lt_epsLvl
+    {ζ : Ordinal.{u}} {w : ℕ} (hζe : ζ < epsLvl w)
+    (hζc : ζ ∈ CsetSelf (psiResSelf ζ) ζ w) :
+    psiSelf ζ w ∈ CsetSelf (psiResSelf (psiSelf ζ w)) (psiSelf ζ w) w := by
+  set c := psiSelf ζ w with hcdef
+  have hζlt : ζ < c := AcanonLtValue_lt_epsLvl hζe
   have hcc : c ≤ psiSelf c w := by
     have := psiSelf_mono_arg hζlt.le w; rwa [hcdef] at this
   have hζmem : ζ ∈ CsetSelf (psiResSelf c) c w :=
