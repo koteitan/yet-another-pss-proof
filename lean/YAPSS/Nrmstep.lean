@@ -3040,14 +3040,60 @@ descent class, FALSE off-class (the cter `p₁(p₀(p₁(p₁0)))` satisfies nei
 hypotheses since it is NOT a greatest-violator (`mvstep`)-image of any `NF`
 subterm, `probe_cter_diff.py`).  Discharging both closes the §1 wall. -/
 
-/-- **Forest residual 1 (firing characterization).**  On the descent class, `pfire`
-is exactly `lead < maxsub` (model-verified `2568 / 0`).  The hard `⟹` direction
-(`pfire ⟹ lead < maxsub`) is the root-anchored-`r1ok` content: a descent node is a
-greatest-violator (`mvstep`)-image, so a firing one has `lead < maxsub` (it is a
-non-final descent node); FALSE off-class (cter `lead = maxsub = 1` fires). -/
+/-- `mvstep b` (firing `b`) does not fire — it is the `maxo` of the violators,
+which has no violators of its own (`maxo_bad_nofire`). -/
+theorem mvstep_result_nofire {b : Three} (hf : pfire 0 b) : ¬ pfire 0 (mvstep b) := by
+  have hne : (Glist 0 b).filter (fun g => ¬ olt g b) ≠ [] := by rw [pfire] at hf; exact hf
+  have hmv : mvstep b = maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
+              ((Glist 0 b).filter (fun g => ¬ olt g b)).tail := by
+    unfold mvstep; rw [dif_neg hne]
+  rw [hmv]; exact maxo_bad_nofire hne
+
+/-- **Forest residual 1 — NOW PROVED GREEN** (modulo the existing
+`pfire0_maxsub_ge2_NF` ⊇ `not_pfire0_lead1max1_NF`).  On the descent class,
+`pfire 0 t ↔ lead t < maxsub t`.  By induction on `Rdesc` (both endpoints):
+  • a firing `NF`-arg base `b` (`pfire b`): `lead b = 1` (`fire_lead_one_NF`),
+    `maxsub b ≥ 2` (`pfire0_maxsub_ge2_NF`), so `lead b < maxsub b` — both sides
+    true;
+  • a `mvstep`-step node `mvstep s` (firing `s`): NON-firing
+    (`mvstep_result_nofire`/`maxo_bad_nofire`), and
+    `lead (mvstep s) = maxsub s = maxsub (mvstep s)` (`lead_mvstep_eq_maxsub`,
+    `maxsub_mvstep`), so `¬ (lead < maxsub)` — both sides false.
+So this is no longer a separate forest residual: it folds into the SAME
+`not_pfire0_lead1max1_NF` content (via `pfire0_maxsub_ge2_NF`) plus GREEN
+`mvstep` facts. -/
 theorem Rdesc_firing_char (t : Three) (h : RdescNode t) :
     pfire 0 t ↔ lead t < maxsub t := by
-  sorry
+  -- It suffices to prove the characterization for both endpoints of any `Rdesc`.
+  suffices H : ∀ x y, Rdesc x y →
+      (pfire 0 x ↔ lead x < maxsub x) ∧ (pfire 0 y ↔ lead y < maxsub y) by
+    rcases h with ⟨u, hxy⟩ | ⟨u, huy⟩
+    · exact (H t u hxy).1
+    · exact (H u t huy).2
+  intro x y hR
+  induction hR with
+  | @base b c f g hv hu harg heq hb hf =>
+    constructor
+    · -- firing NF arg `b`: both sides true.
+      have hl : lead b = 1 := fire_lead_one_NF hv hb
+      have hm : 2 ≤ maxsub b := pfire0_maxsub_ge2_NF hv hb
+      exact iff_of_true hb (by omega)
+    · have hl : lead f = 1 := fire_lead_one_NF hu hf
+      have hm : 2 ≤ maxsub f := pfire0_maxsub_ge2_NF hu hf
+      exact iff_of_true hf (by omega)
+  | @step x y hxy hfx hfy _ =>
+    -- step nodes `mvstep x`, `mvstep y` are non-firing; lead = maxsub.
+    have hmcx : maxsub x = climb x := (Rdesc_match hxy).2.2.1
+    have hmcy : maxsub y = climb y := (Rdesc_match hxy).2.2.2
+    refine ⟨?_, ?_⟩
+    · have hnf : ¬ pfire 0 (mvstep x) := mvstep_result_nofire hfx
+      have : lead (mvstep x) = maxsub (mvstep x) := by
+        rw [lead_mvstep_eq_maxsub hfx hmcx, maxsub_mvstep hfx hmcx]
+      exact iff_of_false hnf (by omega)
+    · have hnf : ¬ pfire 0 (mvstep y) := mvstep_result_nofire hfy
+      have : lead (mvstep y) = maxsub (mvstep y) := by
+        rw [lead_mvstep_eq_maxsub hfy hmcy, maxsub_mvstep hfy hmcy]
+      exact iff_of_false hnf (by omega)
 
 /-- **Forest residual 2 (strict STEP).**  On the descent class, `mvstep` (the
 greatest-violator step) is strictly `olt`-monotone (model-verified `438747 / 0`;
