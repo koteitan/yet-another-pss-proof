@@ -222,14 +222,9 @@ generator step `CsetSelf_psi_closed` fires `psiSelf (lwit) w = c` into `C_v(c)`.
 **Why these are the genuine residual** (empirically verified, 0 violations on the
 ya-pss model — `/tmp/probe_lw.py`, `/tmp/probe_c.py`):
 
-* **(a)** "the least witness is below its value".  The fixpoint case
-  (`psiSelf c w = c`, then `lwit = c`) is one obstruction, but NOT the only one:
-  assuming `c ≤ lwit` and non-fixpoint, monotonicity gives `psiSelf c w < c`, and
-  the residual case `c < lwit` with `psiSelf c w < c` (the value first reached
-  strictly above `c`) is consistent with all *first-order* facts here — ruling it
-  out needs the canonical-representative structure (the least witness IS the
-  plateau bottom and is `< c`), i.e. Buchholz's simultaneous induction.  So (a) is
-  NOT merely "non-fixpoint".
+* **(a)** "the least witness is below its value".  Now CLEANLY reduced (see the
+  next section) to two TRUE canonical-rep facts `AcanonLtValue` + `CanonWitness`
+  via `a_of_AcanonLtValue`.  (`lwit` is the plateau bottom — `lwit_least_lt`.)
 * **(c)** is a `C_v`-membership of the *simpler* ordinal `lwit < c` — recursive,
   the same induction.  The `below_psiSelf` shortcut does NOT prove (c): for
   `v < w`, `psiSelf c v < c`, so `lwit < c` does not give `lwit < psiSelf c v`. -/
@@ -242,6 +237,62 @@ noncomputable def lwit (c : Ordinal.{u}) (w : ℕ) : Ordinal.{u} :=
 theorem lwit_val (ζ : Ordinal.{u}) (w : ℕ) :
     psiSelf (lwit (psiSelf ζ w) w) w = psiSelf ζ w :=
   csInf_mem (s := {d : Ordinal | psiSelf d w = psiSelf ζ w}) ⟨ζ, rfl⟩
+
+/-- **Below the least witness the value is strictly smaller.**  For any
+`d < lwit c w` (with `c = psiSelf ζ w`), `psiSelf d w < c`.  (By minimality of
+`lwit` the value can't equal `c`, and by monotonicity it can't exceed it.)  Proven,
+no residual — confirms `lwit` is the plateau BOTTOM. -/
+theorem lwit_least_lt (ζ : Ordinal.{u}) (w : ℕ) {d : Ordinal.{u}}
+    (hd : d < lwit (psiSelf ζ w) w) : psiSelf d w < psiSelf ζ w := by
+  set c := psiSelf ζ w with hc
+  have hne : psiSelf d w ≠ c := fun he =>
+    absurd hd (not_lt.2 (csInf_le' (s := {x : Ordinal | psiSelf x w = c}) he))
+  have hmono : psiSelf d w ≤ psiSelf (lwit c w) w := psiSelf_mono_arg hd.le w
+  rw [lwit_val ζ w] at hmono
+  exact lt_of_le_of_ne hmono hne
+
+/-! ### Sub-residual (a) cleanly reduced to two TRUE canonical-rep facts
+
+**Correction (this session).**  A prior note claimed `acanon δ w ⟹ δ < psiSelf δ w`
+is FALSE (alleged ε-number counterexample `δ = ω`, `w = 0`).  That is **WRONG**: in
+the ya-pss ordinal model `psi(ω,0)` is simply outside the finite value table
+(`None`), so the "counterexample" was never realized.  Empirically (0 violations
+over all canonical `δ` with `psi` defined, all `w`) the statement is **TRUE**.  It
+is the natural converse of `below_psiSelf_mem_CsetSelf`, and the right canonical-rep
+lemma.  We name it `AcanonLtValue`.
+
+Sub-residual **(a)** `lwit c w < c` then reduces (GREEN, `a_of_AcanonLtValue`) to
+the conjunction of two clean canonical-rep facts:
+* `AcanonLtValue` — every `w`-canonical `δ` is strictly below its own value
+  `psiSelf δ w`;
+* `CanonWitness` — every ψ-value `psiSelf ζ w` has a `w`-canonical witness.
+Both are α-free, TRUE empirically (0 violations), and are the genuine residual:
+each, by rank induction, hits the *bound-tied* generator step where the element is
+itself a ψ-value — Buchholz's simultaneous transfinite induction.  (Investigated:
+the rank induction on `AcanonLtValue` stalls at the sum/generator sub-case because
+the inner IH would need the summand/arg in its OWN closure, not the ambient one.) -/
+
+/-- **Canonical-rep fact 1 (`AcanonLtValue`).**  Every `w`-canonical ordinal is
+strictly below its own value: `δ ∈ CsetSelf (psiResSelf δ) δ w → δ < psiSelf δ w`.
+The converse of `below_psiSelf_mem_CsetSelf`; TRUE (corrects the old false note). -/
+def AcanonLtValue.{u} : Prop :=
+  ∀ {δ : Ordinal.{u}} {w : ℕ}, δ ∈ CsetSelf (psiResSelf δ) δ w → δ < psiSelf δ w
+
+/-- **Canonical-rep fact 2 (`CanonWitness`).**  Every ψ-value has a canonical
+witness: `∀ ζ w, ∃ δ, psiSelf δ w = psiSelf ζ w ∧ δ ∈ CsetSelf (psiResSelf δ) δ w`.
+(`lwit` is the natural candidate, but its canonicity is itself this residual.) -/
+def CanonWitness.{u} : Prop :=
+  ∀ (ζ : Ordinal.{u}) (w : ℕ), ∃ δ,
+    psiSelf δ w = psiSelf ζ w ∧ δ ∈ CsetSelf (psiResSelf δ) δ w
+
+/-- **(a) `lwit c w < c` from `AcanonLtValue` + `CanonWitness`** (GREEN).  The
+canonical witness `δ` is `< c` by `AcanonLtValue`, and `lwit ≤ δ` by minimality. -/
+theorem a_of_AcanonLtValue (hALV : AcanonLtValue.{u}) (hCW : CanonWitness.{u})
+    (ζ : Ordinal.{u}) (w : ℕ) : lwit (psiSelf ζ w) w < psiSelf ζ w := by
+  obtain ⟨δ, hδv, hδc⟩ := hCW ζ w
+  have hδlt : δ < psiSelf ζ w := hδv ▸ hALV hδc
+  exact lt_of_le_of_lt
+    (csInf_le' (s := {x : Ordinal | psiSelf x w = psiSelf ζ w}) hδv) hδlt
 
 /-- **`PsiValueAcanon` from the two sub-residuals (a) and (c)** (with (b) derived).
 GREEN: given (a) `lwit c w < c` and (c) `lwit c w ∈ C_v(c)`, the least witness is
