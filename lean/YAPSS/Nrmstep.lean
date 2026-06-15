@@ -1925,6 +1925,22 @@ theorem OT3all_msub0 : ∀ {t : Three}, cnf t → maxsub t = 0 → ∀ g ∈ Gte
       · exact olt_trans (ihb (cnf_arg0 hcnf) hb0 g hgg) argb
     · exact olt_trans (ihc (cnf_tail0 hcnf) hc0 g hgc) tailc
 
+/-- **Arg below a head whose lead bounds the arg's max subscript.**  If
+`maxsub b ≤ a`, the argument `b` is strictly below `P a b c`: descend `b`'s
+leading spine — every leading subscript is `≤ maxsub b ≤ a`. -/
+theorem olt_arg_maxsub_le : ∀ {b : Three} {a : ℕ}, maxsub b ≤ a → ∀ c, olt b (P a b c) := by
+  intro b
+  induction b with
+  | Z => intro a _ c; simp
+  | P f bb bc ihbb _ =>
+    intro a h c
+    rw [maxsub_P] at h
+    rcases Nat.lt_or_ge f a with hlt | hge
+    · exact Or.inl hlt
+    · have hfa : f = a := le_antisymm (by omega) hge
+      subst hfa
+      exact Or.inr (Or.inl ⟨rfl, ihbb (by omega) bc⟩)
+
 /-- An all-`0`-subscript CNF term does not fire at level `0` (`OT3all_msub0`). -/
 theorem not_pfire0_of_maxsub0 {b : Three} (hcnf : cnf b) (h0 : maxsub b = 0) :
     ¬ pfire 0 b := by
@@ -2384,23 +2400,33 @@ the term side).  The precise remaining obligation is the term-level lead-`k`
 chain-node comparison `olt (chainAt b k)(chainAt f k)` from `olt b f`, via the
 `L ≥ 1` spine descent.
 
-**The keystone needs a HEREDITARY spine invariant, not a local condition**
-(pinned this session, `probe_keystone_*.py`).  The descent engine
-`proj 0 (P L x y) = proj 0 x` is term-locally FALSE under every *local* guard
-tried: `1 ≤ L < lead x ∧ maxsub y < maxsub x` is clean only at small subscripts
-(`3195 / 3195` at `ms ≤ 2`) but FAILS at `ms = 4` (`17356 / 17436`, e.g.
-`x = p₂(p₄0)` whose max subscript `4` is OFF its leading chain — a *gapped*
-spine `[…,2,4]`); even adding the whole-term `maxsub t = climb t` fails
-(`41836 / 87210`) because `x` may be a sum (`lead x = 0`).  The firing-`NF`
-chain satisfies it (`1764 / 1764`) *only* because every head arg `b'` is a
-principal (`lead b' = 2`) with its max on its own leading chain
-(`maxsub b' = climb b'`, `1285 / 1285`) **hereditarily** — but `P 0 b' c'` is
-NOT in `NF` (`0 / 1285`), so the existing head-`0`-`NF` predicate does not
-recurse onto `b'`.  Closing this therefore requires a *new* term-level
-hereditary-`NF`-spine predicate (gap-free `inv2` spine + principal heads, all
-the way down) with its closure lemmas and the keystone proved under it — a
-substantial multi-lemma development, the genuine residual.  `maxsub = climb`
-is necessary but NOT sufficient; the gap-free hereditary spine is essential. -/
+**The keystone IS NOW PROVEN** (`proj_keystone`, GREEN): with the right local
+guard `1 ≤ L < lead x ∧ maxsub x = climb x ∧ maxsub y < maxsub x` the descent
+`proj 0 (P L x y) = proj 0 x` holds (model-verified `58803 / 58803`).  The
+remaining gap is the **recursion assembly + base case**, both now precisely
+characterized (`probe_descok_recursion.py`, `probe_base_nofire.py`):
+
+  • **Recursion (verified `991020 / 991020`).**  Define `descok t`: the leading
+    `.b`-chain from `t` descends with *consecutive* leads `[lead t, …, maxsub t]`
+    to the lead-`maxsub` node, each non-top node's tail strictly below its head
+    in `maxsub`.  All firing-`NF` args satisfy `descok`; for `descok x, descok y`
+    with `lead x = lead y`, `maxsub x = maxsub y`, `olt x y`, the keystone gives
+    `proj 0 x = proj 0 x'`, `proj 0 y = proj 0 y'` and the head args satisfy the
+    same invariant at lead `+1` (`552273 / 552273`), so strong `tsize` induction
+    descends to the base.
+  • **Base case (lead `=` maxsub):** the top node does NOT fire
+    (`1285 / 1285` on firing-`NF` chains), so `proj 0 = id` and `olt x y`
+    transports directly.  **CAUTION (caught this session): the clean term-local
+    base lemma `cnf t ∧ lead t = maxsub t ⟹ ¬ pfire 0 t` is FALSE at depth `4`**
+    — `t = p₁(p₀(p₁(p₁0)))` is `cnf` with `lead = maxsub = 1` yet fires
+    (`probe_base_nofire` re-run); so the base case ALSO needs the hereditary
+    `descok`/gap-free-spine structure, not just `cnf`.
+
+So `proj_keystone` (the genuinely novel engine) is landed GREEN; closing
+`proj_bothfire_witness_eq` requires formalizing the `descok` predicate, its
+head-descent closure, the `descok`-restricted base lemma, and the `tsize`
+recursion — a substantial but fully-mapped term-structural development.  Helper
+`olt_arg_maxsub_le` is also available (GREEN). -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
