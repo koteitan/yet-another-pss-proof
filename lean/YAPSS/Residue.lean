@@ -301,12 +301,11 @@ def CanonWitness.{u} : Prop :=
     psiSelf δ w = psiSelf ζ w ∧ δ ∈ CsetSelf (psiResSelf δ) δ w
 
 /-- **The deeper root of `AcanonLtValue`: the psiSelf explicit-value formula.**
-`PsiSelfOpowForm`: for a `w`-canonical `δ`, `psiSelf δ w = ω ^ (Ω_w + δ)` — the
-self-form analogue of the proven omitted-form `Buchholz17.psi_eq_opow_add`
-(`psi α v = ω^(Ω_v+α)` for `α < ε_{Ω_v+1}`).  This is Buchholz 1.7's explicit
-value; porting it to `psiSelf` (its proof uses only `CsetSelf` closure lemmas, no
-`psi_eq_psiSelf` bridge) would discharge `AcanonLtValue` — see
-`AcanonLtValue_of_form`.
+`PsiSelfOpowForm` is the *parametric* form; the formula itself is now **PROVEN**
+in-range as `psiSelf_eq_opow_add` (`psiSelf α v = ω^(Ω_v+α)` for `v ≥ 1`,
+`α < ε_{Ω_v+1}`), a full port of `Buchholz17.psi_eq_opow_add` using only `CsetSelf`
+closure lemmas (no `psi_eq_psiSelf` bridge).  It DISCHARGES `AcanonLtValue` on that
+range — see `AcanonLtValue_lt_eps` (PROVEN, sorryAx-free).
 
 **Why `AcanonLtValue` is TRUE (and the ε-fixpoint is consistent).**  With the
 formula, `δ < psiSelf δ w = ω^(Ω_w+δ)` whenever `δ < Ω_w + δ` (no left-absorption)
@@ -327,6 +326,143 @@ theorem AcanonLtValue_of_form (hF : PsiSelfOpowForm.{u}) : AcanonLtValue.{u} := 
   obtain ⟨hform, hlt⟩ := hF δ w hc
   rw [hform]
   exact lt_of_lt_of_le hlt (Ordinal.right_le_opow _ Ordinal.one_lt_omega0)
+
+/-! ### PROVEN: the psiSelf explicit-value formula `psiSelf δ w = ω^(Ω_w + δ)`
+
+The omitted-form `Buchholz17.psi_eq_opow_add` is here ported to `psiSelf`,
+**fully GREEN** (no `sorry`, no `psi_eq_psiSelf` bridge — pure `CsetSelf` closure
+lemmas), for the range `δ < ε_{Ω_w+1}` and subscript `w ≥ 1`.  This DISCHARGES
+`AcanonLtValue` on that range (`AcanonLtValue_lt_eps`).  The full `AcanonLtValue`
+remains open only at: (i) subscript `w = 0`, and (ii) arguments `δ ≥ ε_{Ω_w+1}`
+(which, by the formula's range, are exactly the ε-number region — but there the
+canonical ones still satisfy the inequality; closing them needs the `w=0` companion
+`psi_zero_eq_opow` ported, and an ε-region argument).  This is concrete, committed
+progress past the previous flat conjecture. -/
+
+open Ordinal in
+/-- `x * n` stays in the self-closure (nat-multiple closure). -/
+theorem CsetSelf_mul_nat {α : Ordinal.{u}} {v : ℕ} {x : Ordinal.{u}}
+    (hx : x ∈ CsetSelf (psiResSelf α) α v) (n : ℕ) :
+    x * (n : Ordinal) ∈ CsetSelf (psiResSelf α) α v := by
+  induction n with
+  | zero =>
+    simp only [Nat.cast_zero, mul_zero]
+    exact Iio_Om_subset_CsetSelf (lt_of_lt_of_le zero_lt_one (one_le_Om v))
+  | succ n IH => rw [Nat.cast_succ, mul_add, mul_one]; exact CsetSelf_add_closed IH hx
+
+open Ordinal in
+/-- `Iio (ω^{β+1}) ⊆ C^s_v(δ)` from `ω^β ∈ C^s` and `Iio(ω^β) ⊆ C^s`
+(self-form port of `Iio_opow_succ_subset`). -/
+theorem Iio_opow_succ_subset_Self {v : ℕ} {δ : Ordinal.{u}} (β : Ordinal.{u})
+    (hω : omega0 ^ β ∈ CsetSelf (psiResSelf δ) δ v)
+    (hbelow : ∀ s, s < omega0 ^ β → s ∈ CsetSelf (psiResSelf δ) δ v) :
+    ∀ γ, γ < omega0 ^ (β + 1) → γ ∈ CsetSelf (psiResSelf δ) δ v := by
+  intro γ hγ
+  rw [show (β + 1) = Order.succ β from (Order.succ_eq_add_one β).symm] at hγ
+  obtain ⟨n, hn⟩ := lt_omega0_opow_succ.1 hγ
+  clear hγ
+  induction n generalizing γ with
+  | zero => simp at hn
+  | succ n IH =>
+    rw [Nat.cast_succ, mul_add, mul_one] at hn
+    rcases lt_or_ge γ (omega0 ^ β * (n : Ordinal)) with hlt | hge
+    · exact IH γ hlt
+    · obtain ⟨s, rfl⟩ := exists_add_of_le hge
+      exact CsetSelf_add_closed (CsetSelf_mul_nat hω n) (hbelow s ((add_lt_add_iff_left _).1 hn))
+
+/-- **M1 for `psiSelf`** (self-form port of `psi_form_of_mem`): a principal
+band-element of `C^s_v(α)` is a generator `psiSelf ξ v` with `ξ < α` in the
+closure.  Uses `CsetSelf_witness_canonical` + the band-forces-subscript argument. -/
+theorem psiSelf_form_of_mem {α δ : Ordinal.{u}} {v : ℕ}
+    (hap : Ordinal.IsPrincipal (· + ·) δ) (hlo : Om v ≤ δ) (hhi : δ < Om (v + 1))
+    (hmem : δ ∈ CsetSelf (psiResSelf α) α v) :
+    ∃ ξ, ξ ∈ CsetSelf (psiResSelf α) α v ∧ ξ < α ∧ psiSelf ξ v = δ := by
+  obtain ⟨u', ξ, heq, hξα, hξmem, hξc⟩ := CsetSelf_witness_canonical hap hlo hmem
+  rw [psiResSelf, if_pos hξα] at heq
+  have hu : u' = v := by
+    have h1 : Om u' ≤ δ := heq ▸ Om_le_psiSelf ξ u'
+    have h2 : δ < Om (u' + 1) := heq ▸ psiSelf_lt_Om_succ ξ u'
+    have hle1 : u' ≤ v := by
+      by_contra hcc; exact absurd (lt_of_le_of_lt h1 hhi) (not_lt.2 (Om_mono (by omega)))
+    have hle2 : v ≤ u' := by
+      by_contra hcc; exact absurd (lt_of_le_of_lt hlo h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  subst hu; exact ⟨ξ, hξmem, hξα, heq.symm⟩
+
+open Ordinal in
+/-- **PROVEN: the psiSelf explicit-value formula** (Buchholz 1.7, self-form).  For
+`v ≥ 1` and `α < ε_{Ω_v+1}`: `α` is `v`-canonical and `psiSelf α v = ω^(Ω_v + α)`.
+Full port of `Buchholz17.psi_eq_opow_add`; no `sorry`, no circular bridge. -/
+theorem psiSelf_eq_opow_add (v : ℕ) (hv : 0 < v) :
+    ∀ α : Ordinal.{u}, α < ε_ (Om v + 1) →
+      α ∈ CsetSelf (psiResSelf α) α v ∧ psiSelf α v = omega0 ^ (Om v + α) := by
+  intro α
+  induction α using WellFoundedLT.induction with
+  | _ α IH =>
+    intro hα
+    have hαΩ : α < Om (v + 1) := hα.trans epsilon_Om_succ_lt_Om
+    have hΩα : Om v + α < Om (v + 1) := (Om_isPrincipal (v + 1)) (Om_lt_succ v) hαΩ
+    have hbandhi : omega0 ^ (Om v + α) < Om (v + 1) := opow_lt_Om_succ hΩα
+    have hbandlo : Om v ≤ omega0 ^ (Om v + α) := by
+      calc Om v = omega0 ^ Om v := (omega_opow_Om hv).symm
+        _ ≤ omega0 ^ (Om v + α) := opow_le_opow_right omega0_pos le_self_add
+    have hsub : ∀ γ, γ < omega0 ^ (Om v + α) → γ ∈ CsetSelf (psiResSelf α) α v := by
+      rcases Ordinal.zero_or_succ_or_isSuccLimit α with rfl | ⟨δ, hδ⟩ | hlim
+      · intro γ hγ
+        rw [add_zero, omega_opow_Om hv] at hγ
+        exact Iio_Om_subset_CsetSelf hγ
+      · obtain ⟨δ, rfl⟩ : ∃ δ', α = δ' + 1 := ⟨δ, by rw [← hδ, Order.succ_eq_add_one]⟩
+        have hδe : δ < ε_ (Om v + 1) := (lt_add_one δ).trans hα
+        obtain ⟨hδc, hδf⟩ := IH δ (lt_add_one δ) hδe
+        have hδc1 : δ ∈ CsetSelf (psiResSelf (δ+1)) (δ+1) v := CCSelf_mono (lt_add_one δ).le v hδc
+        have hδcanon : δ ∈ CsetSelf (psiResSelf (δ+1)) δ v := by
+          rwa [CsetSelf_param_eq (p := psiResSelf δ) (q := psiResSelf (δ+1))
+                (fun ζ uu hζ => by
+                  rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ (lt_add_one δ))])] at hδc
+        have hω : omega0 ^ (Om v + δ) ∈ CsetSelf (psiResSelf (δ + 1)) (δ + 1) v := by
+          have := CsetSelf_psi_closed hδc1 (lt_add_one δ) v hδcanon
+          rwa [psiResSelf, if_pos (lt_add_one δ), hδf] at this
+        have hbelow : ∀ s, s < omega0 ^ (Om v + δ) → s ∈ CsetSelf (psiResSelf (δ + 1)) (δ + 1) v := by
+          intro s hs; rw [← hδf] at hs; exact CCSelf_mono (lt_add_one δ).le v (below_psiSelf_mem_CsetSelf hs)
+        have heq : Om v + (δ + 1) = (Om v + δ) + 1 := by rw [add_assoc]
+        rw [heq]; exact Iio_opow_succ_subset_Self (Om v + δ) hω hbelow
+      · intro γ hγ
+        have hlimΩ : Order.IsSuccLimit (Om v + α) := Ordinal.isSuccLimit_add _ hlim
+        rw [lt_opow_of_isSuccLimit (by simp) hlimΩ] at hγ
+        obtain ⟨β, hβ, hγβ⟩ := hγ
+        rcases lt_or_ge β (Om v) with hβlo | hβhi
+        · have : γ < Om v := by
+            calc γ < omega0 ^ β := hγβ
+              _ < omega0 ^ Om v := (opow_lt_opow_iff_right one_lt_omega0).2 hβlo
+              _ = Om v := omega_opow_Om hv
+          exact Iio_Om_subset_CsetSelf this
+        · obtain ⟨α', rfl⟩ := exists_add_of_le hβhi
+          have hα'α : α' < α := (add_lt_add_iff_left (Om v)).1 hβ
+          obtain ⟨hα'c, hα'f⟩ := IH α' hα'α (hα'α.trans hα)
+          rw [← hα'f] at hγβ
+          exact CCSelf_mono hα'α.le v (below_psiSelf_mem_CsetSelf hγβ)
+    have hle : psiSelf α v ≤ omega0 ^ (Om v + α) := by
+      rw [psiSelf_unfold]; apply csInf_le'; intro hmem
+      obtain ⟨ξ, hξC, hξα, hξeq⟩ := psiSelf_form_of_mem (isPrincipal_add_omega0_opow _) hbandlo hbandhi hmem
+      rw [(IH ξ hξα (hξα.trans hα)).2] at hξeq
+      exact absurd hξeq (ne_of_lt ((opow_lt_opow_iff_right one_lt_omega0).2 ((add_lt_add_iff_left (Om v)).2 hξα)))
+    have hge : omega0 ^ (Om v + α) ≤ psiSelf α v := by
+      by_contra hlt; push Not at hlt; exact psiSelf_notMem α v (hsub _ hlt)
+    have hform : psiSelf α v = omega0 ^ (Om v + α) := le_antisymm hle hge
+    exact ⟨below_psiSelf_mem_CsetSelf (by rw [hform]; exact lt_opow_Om_add hv hα), hform⟩
+
+open Ordinal in
+/-- **`AcanonLtValue` discharged on the range `v ≥ 1`, `δ < ε_{Ω_v+1}`** (PROVEN
+via the formula): there `δ < Ω_v + δ ≤ ω^(Ω_v+δ) = psiSelf δ v`.  The `Ω_v + δ`
+strict bound holds because `Ω_v + δ < ε_{Ω_v+1}` is not an ε-fixpoint of `δ ↦ ω^δ`
+beneath `δ` — concretely `δ < Ω_v + δ` since `δ < ε_{Ω_v+1}` and `Ω_v ≥ 1` give no
+left-absorption below the first ε-number. -/
+theorem AcanonLtValue_lt_eps {δ : Ordinal.{u}} {v : ℕ} (hv : 0 < v)
+    (hδe : δ < ε_ (Om v + 1)) :
+    δ < psiSelf δ v := by
+  obtain ⟨_, hform⟩ := psiSelf_eq_opow_add v hv δ hδe
+  rw [hform]
+  exact lt_opow_Om_add hv hδe
 
 /-- **(a) `lwit c w < c` from `AcanonLtValue` + `CanonWitness`** (GREEN).  The
 canonical witness `δ` is `< c` by `AcanonLtValue`, and `lwit ≤ δ` by minimality. -/
