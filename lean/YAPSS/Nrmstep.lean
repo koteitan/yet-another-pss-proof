@@ -1659,7 +1659,20 @@ This is the genuine residual of the argument-head of `oV_nf_order_pres` (see
 `Nrm.psi0_oV_lt_of_proj_olt`).  FALSE on general `wf3` (7291 reversals, a dead
 static-domain family) but TRUE on `NF` arguments (audited 79800/79800, zero
 reversals).  Pure `olt` (no ordinals), `wf3`-free.  Via `proj_olt_of_fireprop`
-it splits into the two `NF`-standardness residuals below. -/
+it splits into the two `NF`-standardness residuals below.
+
+STATUS (this campaign).  The `maxsub`/`climb`/spine discipline of `NF` arguments
+is now extracted (sorry-free): `maxsub_eq_climb_NF`, `maxsub_arg_eq_climb`,
+`maxsub_arg_dom`, `maxsub_arg_mono`, `lead_arg_le_one`, `climb_achieved`,
+`pfire0_of_lt_climb`, plus the self-contained all-`0` OT3 (`OT3all_msub0`,
+`not_pfire0_of_maxsub0`), `lead0_maxsub0_NF`, `fire_lead_one_NF`, `fire_shape_NF`.
+With these:
+  • **residual 1 `proj0_fireprop_NF` is fully reduced to the SINGLE residual
+    `not_pfire0_lead1max1_NF`** (a `lead = 1, maxsub = 1` `NF` arg does not fire
+    = the maxr1-`≤1` head-`0` OT3 wall, shared with `Wttone.H0clause_translate`);
+  • **residual 2 `proj0_bothfire_NF`** is structurally pinned (peel is
+    tail-independent; reduces to peel + `b' ≠ f'` uniqueness + a general
+    `proj 0`-monotone `tsize`-recursion on inner args). -/
 
 /-! #### `maxsub`/`climb` discipline of `NF` arguments
 
