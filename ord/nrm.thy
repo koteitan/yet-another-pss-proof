@@ -2320,12 +2320,39 @@ text \<open>\<^bold>\<open>ST arg-zone value bound (IST)\<close>: in a standard 
   the collapse point \<open>y\<close> sits below every subscript of the image.  (NB: this bound is
   \<^emph>\<open>necessary\<close> but \<^bold>\<open>not sufficient\<close> for \<open>proj\<close>-monotonicity \<dash> see \<open>PROJMONO_GEQ\<close> above.)\<close>
 
+text \<open>\<^bold>\<open>The head value of a standard form is \<open>0\<close>\<close>.  A standard form \<open>M = (0,y)#r\<close>
+  has \<open>entry M 0 0 = fst (0,y) = 0\<close>, and the \<open>ST_PS\<close> floor invariant
+  @{thm [source] row0_zero_imp_row1_zero_ST_PS} (a row-0 value of \<open>0\<close> forces a
+  row-1 value of \<open>0\<close>) then gives \<open>entry M 1 0 = snd (0,y) = y = 0\<close>.  (Empirically
+  \<^bold>\<open>every\<close> standard form begins with the pair \<open>(0,0)\<close>: the only column with
+  row-0 \<open>= 0\<close> is the head, and the diagonal base / \<open>oper\<close> copies keep its row-1
+  at \<open>0\<close>; deep closure, \<open>probe_ST_argval.py\<close> / \<open>probe_recentzero.py\<close>.)\<close>
+
+lemma ST_PS_head_val_zero:
+  assumes "(0, y) # r \<in> ST_PS"
+  shows "y = 0"
+proof -
+  define M where "M = (0, y) # r"
+  have MST: "M \<in> ST_PS" using assms M_def by simp
+  have len: "0 < Lng M" using M_def by simp
+  have e0: "entry M 0 0 = 0" unfolding M_def entry_def by simp
+  have "entry M 1 0 = 0"
+    using row0_zero_imp_row1_zero_ST_PS[OF MST len e0] .
+  thus ?thesis unfolding M_def entry_def by simp
+qed
+
+text \<open>\<^bold>\<open>ST arg-zone value bound\<close> \<open>argzone_val_ge\<close>: in a standard form \<open>(0,y)#r\<close>
+  every value \<open>v\<close> of the argument zone is \<open>\<ge> y\<close>.  Since the head value is forced
+  to \<open>0\<close> (@{thm [source] ST_PS_head_val_zero}), \<open>y = 0 \<le> v\<close> holds for the natural
+  number \<open>v\<close> outright \<dash> the diagonal/parenthood discipline degenerates to the
+  trivial floor at the \<open>0\<close>-valued head.\<close>
+
 lemma argzone_val_ge:
   assumes "(0, y) # r \<in> ST_PS"
     and "(i, v) \<in> set (takeWhile (\<lambda>q. 0 < fst q) r)"
   shows "y \<le> v"
   \<comment> \<open>structural ST_PS invariant; deeply verified (\<open>probe_ST_argval.py\<close>, 1013167/0).\<close>
-  sorry
+  using ST_PS_head_val_zero[OF assms(1)] by simp
 
 text \<open>\<^bold>\<open>(NRMMONO half, separable, TRUE)\<close> \<open>nrm_argzone_olt\<close>: \<open>nrm\<close> is \<open>olt\<close>-monotone on
   argument-zone translates of standard forms.  This is exactly \<open>nrm_order_pres\<close>
