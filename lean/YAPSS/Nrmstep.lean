@@ -2245,7 +2245,17 @@ encoding):
   • the naive recursion "firing leading-chain node, `olt b t ⟹ olt (proj 0 b)
     (proj 0 t)`" is FALSE (299559 / 2031339, `probe_witness_general.py` GL).
 A proof needs the equal-lead spine-alignment of the two NF args' greatest
-criticals under `olt b f` — the deep Buchholz §1 content, isolated here. -/
+criticals under `olt b f` — the deep Buchholz §1 content, isolated here.
+
+**Structural handle for a future proof** (`probe_witness_recursion.py`, all
+`1285 / 1285` resp. `438747 / 438747`): the leading `.b`-chain of a firing
+`NF` arg realises *consecutive* leads `[1, 2, …, maxsub]` (the `nfinv`/`inv2`
+spine), and `proj 0 b` is its node at lead `maxsub b`.  In the equal-`maxsub`
+case both `b, f` carry the same spine `[0, 1, …, k]`, so the strict order
+`olt (proj 0 b)(proj 0 f)` is driven entirely by the off-spine tail differences
+along the shared chain — a structural induction down the shared spine, with
+`olt b f` (= `seqlex` on the `ST_PS` preimages, `olt_ST_iff_seqlex`) supplying
+the first tail difference.  This is the precise remaining obligation. -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
