@@ -57,35 +57,8 @@ qed
 lemma Rinc_olt: "Rinc x y \<Longrightarrow> olt x y"
   unfolding Rinc_def using lext_olt lflip_olt by blast
 
-subsection \<open>Unconditional \<open>proj\<close> facts\<close>
-
-text \<open>\<open>proj\<close> is inflationary: each firing step moves to a critical term that is
-  not below the current one, hence (being distinct, by size) strictly above.\<close>
-
-lemma proj_inflate: "olt b (proj u b) \<or> proj u b = b"
-proof (induction u b rule: proj.induct)
-  case (1 u b)
-  show ?case
-  proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
-    case True
-    show ?thesis unfolding proj_id[OF True] by simp
-  next
-    case False
-    let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
-    let ?m = "maxo (hd ?gs) (tl ?gs)"
-    have mset: "?m \<in> set ?gs" by (rule maxo_hdtl_in[OF False])
-    hence mG: "?m \<in> Gterm u b" using set_Glist by auto
-    have mne: "?m \<noteq> b" using Gterm_size[OF mG] by auto
-    have mnlt: "\<not> olt ?m b" using mset by auto
-    have step: "olt b ?m" using olt_total mne mnlt by blast
-    have rec: "olt ?m (proj u ?m) \<or> proj u ?m = ?m" by (rule 1(1)[OF refl False])
-    have eq: "proj u b = proj u ?m" using proj_rec[OF False] by simp
-    show ?thesis using rec step eq olt_trans by auto
-  qed
-qed
-
-lemma proj_ole: "b \<le>o proj u b"
-  using proj_inflate[of b u] by auto
+text \<open>\<^bold>\<open>Unconditional \<open>proj\<close> facts\<close> (\<open>proj_inflate\<close>, \<open>proj_ole\<close>) were relocated to
+  theory \<open>nrm\<close> (needed there for the firing crux \<open>proj_step_argzone_olt\<close>).\<close>
 
 subsection \<open>Critical sets under leaf insertion\<close>
 
@@ -330,71 +303,6 @@ next
   qed
 qed
 
-text \<open>The selected maximum is an upper bound (deterministic re-proof; needed
-  for the max-critical correspondence in the both-fire case).\<close>
-
-lemma maxo_ub: "z \<in> insert x (set ys) \<Longrightarrow> \<not> olt (maxo x ys) z"
-proof (induction ys arbitrary: x z)
-  case Nil
-  hence "z = x" by simp
-  thus ?case using olt_irrefl by simp
-next
-  case (Cons y ys)
-  let ?m = "if olt x y then y else x"
-  have ub: "\<And>w. w \<in> insert ?m (set ys) \<Longrightarrow> \<not> olt (maxo ?m ys) w"
-    using Cons.IH by blast
-  have inm: "\<not> olt (maxo ?m ys) ?m" using ub by simp
-  have mx: "\<not> olt (maxo ?m ys) x"
-  proof (cases "olt x y")
-    case True
-    have my: "\<not> olt (maxo y ys) y" using inm True by simp
-    show ?thesis
-    proof
-      assume "olt (maxo ?m ys) x"
-      hence "olt (maxo y ys) x" using True by simp
-      hence "olt (maxo y ys) y" using True olt_trans by blast
-      thus False using my by blast
-    qed
-  next
-    case False
-    thus ?thesis using inm by simp
-  qed
-  have my: "\<not> olt (maxo ?m ys) y"
-  proof (cases "olt x y")
-    case True thus ?thesis using inm by simp
-  next
-    case False
-    have yx: "olt y x \<or> y = x" using False olt_total by blast
-    show ?thesis
-    proof
-      assume a: "olt (maxo ?m ys) y"
-      from yx show False
-      proof
-        assume "olt y x"
-        hence "olt (maxo ?m ys) x" using a olt_trans by blast
-        thus False using mx by blast
-      next
-        assume "y = x"
-        thus False using a mx by simp
-      qed
-    qed
-  qed
-  from Cons.prems show ?case
-  proof (elim insertE)
-    assume "z = x" thus ?thesis using mx by simp
-  next
-    assume "z \<in> set (y # ys)"
-    hence "z = y \<or> z \<in> set ys" by auto
-    thus ?thesis
-    proof
-      assume "z = y" thus ?thesis using my by simp
-    next
-      assume "z \<in> set ys"
-      hence "z \<in> insert ?m (set ys)" by simp
-      thus ?thesis using ub by simp
-    qed
-  qed
-qed
 
 subsection \<open>End-position increase and the gap lemma\<close>
 
@@ -847,80 +755,9 @@ next
   qed
 qed
 
-abbreviation pfire :: "nat \<Rightarrow> three \<Rightarrow> bool" where
-  "pfire u b \<equiv> (\<exists>g \<in> Gterm u b. \<not> olt g b)"
-
-lemma pfire_filter: "pfire u b \<longleftrightarrow> filter (\<lambda>g. \<not> olt g b) (Glist u b) \<noteq> []"
-  using set_Glist by (auto simp: filter_empty_conv)
-
-lemma proj_nofire: "\<not> pfire u b \<Longrightarrow> proj u b = b"
-  using pfire_filter proj_id by blast
-
-subsection \<open>\<open>proj\<close> terminates in one step\<close>
-
-text \<open>Criticals of criticals are criticals; hence the maximal violating critical
-  is itself collapse-free (a violator inside it would be a strictly larger
-  violator of the original term, contradicting maximality by size).  So the
-  projection loop always stops after a single step.\<close>
-
-lemma Gterm_trans: "g \<in> Gterm u t \<Longrightarrow> h \<in> Gterm u g \<Longrightarrow> h \<in> Gterm u t"
-proof (induction t arbitrary: g)
-  case (P a b c)
-  from P.prems(1) consider "u \<le> a" "g = b" | "u \<le> a" "g \<in> Gterm u b" | "g \<in> Gterm u c"
-    by (auto split: if_splits)
-  thus ?case
-  proof cases
-    case 1 thus ?thesis using P.prems(2) by auto
-  next
-    case 2 thus ?thesis using P.IH(1) P.prems(2) by auto
-  next
-    case 3 thus ?thesis using P.IH(2) P.prems(2) by auto
-  qed
-qed simp
-
-lemma maxg_nofire:
-  assumes ne: "filter (\<lambda>g. \<not> olt g b) (Glist u b) \<noteq> []"
-  shows "\<not> pfire u (maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
-                         (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b))))"
-proof
-  let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
-  let ?m = "maxo (hd ?gs) (tl ?gs)"
-  have mset: "?m \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
-  have mG: "?m \<in> Gterm u b" using mset set_Glist by auto
-  have mnb: "\<not> olt ?m b" using mset by auto
-  assume "pfire u ?m"
-  then obtain g where gG: "g \<in> Gterm u ?m" and gnm: "\<not> olt g ?m" by blast
-  have gB: "g \<in> Gterm u b" by (rule Gterm_trans[OF mG gG])
-  have gsz: "size g < size ?m" by (rule Gterm_size[OF gG])
-  have "\<not> olt g b"
-  proof
-    assume "olt g b"
-    have "ole b ?m" using mnb olt_total by blast
-    hence "olt g ?m" using \<open>olt g b\<close> \<open>ole b ?m\<close> olt_ole_trans by blast
-    thus False using gnm by blast
-  qed
-  hence "g \<in> set ?gs" using gB set_Glist by auto
-  hence inseq: "g \<in> insert (hd ?gs) (set (tl ?gs))" by (cases ?gs) auto
-  have "\<not> olt ?m g" using maxo_ub[OF inseq] .
-  hence "g = ?m" using gnm olt_total by blast
-  thus False using gsz by simp
-qed
-
-lemma proj_once:
-  "proj u b = (if filter (\<lambda>g. \<not> olt g b) (Glist u b) = [] then b
-               else maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
-                         (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b))))"
-proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
-  case True thus ?thesis using proj_id by simp
-next
-  case False
-  let ?m = "maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
-                 (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b)))"
-  have "proj u b = proj u ?m" using proj_rec[OF False] by simp
-  also have "proj u ?m = ?m"
-    using maxg_nofire[OF False] proj_nofire by blast
-  finally show ?thesis using False by simp
-qed
+text \<open>\<^bold>\<open>The single-step \<open>proj\<close> facts\<close> (\<open>pfire\<close>, \<open>pfire_filter\<close>,
+  \<open>proj_nofire\<close>, \<open>Gterm_trans\<close>, \<open>maxg_nofire\<close>, \<open>proj_once\<close>) were relocated to
+  theory \<open>nrm\<close> (needed there for the firing crux \<open>proj_step_argzone_olt\<close>).\<close>
 
 text \<open>Prefix monotonicity of the projection: if every critical of \<open>x\<close> is a
   critical of \<open>y\<close> and \<open>x \<le>\<^sub>o y\<close>, the projections stay ordered \<dash> purely from

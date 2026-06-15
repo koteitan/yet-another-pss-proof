@@ -108,6 +108,176 @@ proof (induction u b rule: proj.induct)
   qed
 qed
 
+subsection \<open>One-step projection toolkit (relocated from \<open>nrmstep\<close>)\<close>
+
+text \<open>The basic unconditional \<open>proj\<close> facts (inflation, the \<open>pfire\<close> firing
+  predicate, single-step termination of the loop and the upper-bound property
+  of \<open>maxo\<close>) are needed already here to discharge the firing crux
+  \<open>proj_step_argzone_olt\<close>.  They were previously stated in \<open>nrmstep\<close> (which builds
+  after \<open>nrm\<close>); the proofs are unchanged.\<close>
+
+text \<open>\<open>proj\<close> is inflationary: each firing step moves to a critical term that is
+  not below the current one, hence (being distinct, by size) strictly above.\<close>
+
+lemma proj_inflate: "olt b (proj u b) \<or> proj u b = b"
+proof (induction u b rule: proj.induct)
+  case (1 u b)
+  show ?case
+  proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
+    case True
+    show ?thesis unfolding proj_id[OF True] by simp
+  next
+    case False
+    let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
+    let ?m = "maxo (hd ?gs) (tl ?gs)"
+    have mset: "?m \<in> set ?gs" by (rule maxo_hdtl_in[OF False])
+    hence mG: "?m \<in> Gterm u b" using set_Glist by auto
+    have mne: "?m \<noteq> b" using Gterm_size[OF mG] by auto
+    have mnlt: "\<not> olt ?m b" using mset by auto
+    have step: "olt b ?m" using olt_total mne mnlt by blast
+    have rec: "olt ?m (proj u ?m) \<or> proj u ?m = ?m" by (rule 1(1)[OF refl False])
+    have eq: "proj u b = proj u ?m" using proj_rec[OF False] by simp
+    show ?thesis using rec step eq olt_trans by auto
+  qed
+qed
+
+lemma proj_ole: "b \<le>o proj u b"
+  using proj_inflate[of b u] by auto
+
+text \<open>The selected maximum is an upper bound (deterministic re-proof; needed
+  for the max-critical correspondence in the both-fire case).\<close>
+
+lemma maxo_ub: "z \<in> insert x (set ys) \<Longrightarrow> \<not> olt (maxo x ys) z"
+proof (induction ys arbitrary: x z)
+  case Nil
+  hence "z = x" by simp
+  thus ?case using olt_irrefl by simp
+next
+  case (Cons y ys)
+  let ?m = "if olt x y then y else x"
+  have ub: "\<And>w. w \<in> insert ?m (set ys) \<Longrightarrow> \<not> olt (maxo ?m ys) w"
+    using Cons.IH by blast
+  have inm: "\<not> olt (maxo ?m ys) ?m" using ub by simp
+  have mx: "\<not> olt (maxo ?m ys) x"
+  proof (cases "olt x y")
+    case True
+    have my: "\<not> olt (maxo y ys) y" using inm True by simp
+    show ?thesis
+    proof
+      assume "olt (maxo ?m ys) x"
+      hence "olt (maxo y ys) x" using True by simp
+      hence "olt (maxo y ys) y" using True olt_trans by blast
+      thus False using my by blast
+    qed
+  next
+    case False
+    thus ?thesis using inm by simp
+  qed
+  have my: "\<not> olt (maxo ?m ys) y"
+  proof (cases "olt x y")
+    case True thus ?thesis using inm by simp
+  next
+    case False
+    have yx: "olt y x \<or> y = x" using False olt_total by blast
+    show ?thesis
+    proof
+      assume a: "olt (maxo ?m ys) y"
+      from yx show False
+      proof
+        assume "olt y x"
+        hence "olt (maxo ?m ys) x" using a olt_trans by blast
+        thus False using mx by blast
+      next
+        assume "y = x"
+        thus False using a mx by simp
+      qed
+    qed
+  qed
+  from Cons.prems show ?case
+  proof (elim insertE)
+    assume "z = x" thus ?thesis using mx by simp
+  next
+    assume "z \<in> set (y # ys)"
+    hence "z = y \<or> z \<in> set ys" by auto
+    thus ?thesis
+    proof
+      assume "z = y" thus ?thesis using my by simp
+    next
+      assume "z \<in> set ys"
+      hence "z \<in> insert ?m (set ys)" by simp
+      thus ?thesis using ub by simp
+    qed
+  qed
+qed
+
+abbreviation pfire :: "nat \<Rightarrow> three \<Rightarrow> bool" where
+  "pfire u b \<equiv> (\<exists>g \<in> Gterm u b. \<not> olt g b)"
+
+lemma pfire_filter: "pfire u b \<longleftrightarrow> filter (\<lambda>g. \<not> olt g b) (Glist u b) \<noteq> []"
+  using set_Glist by (auto simp: filter_empty_conv)
+
+lemma proj_nofire: "\<not> pfire u b \<Longrightarrow> proj u b = b"
+  using pfire_filter proj_id by blast
+
+lemma Gterm_trans: "g \<in> Gterm u t \<Longrightarrow> h \<in> Gterm u g \<Longrightarrow> h \<in> Gterm u t"
+proof (induction t arbitrary: g)
+  case (P a b c)
+  from P.prems(1) consider "u \<le> a" "g = b" | "u \<le> a" "g \<in> Gterm u b" | "g \<in> Gterm u c"
+    by (auto split: if_splits)
+  thus ?case
+  proof cases
+    case 1 thus ?thesis using P.prems(2) by auto
+  next
+    case 2 thus ?thesis using P.IH(1) P.prems(2) by auto
+  next
+    case 3 thus ?thesis using P.IH(2) P.prems(2) by auto
+  qed
+qed simp
+
+lemma maxg_nofire:
+  assumes ne: "filter (\<lambda>g. \<not> olt g b) (Glist u b) \<noteq> []"
+  shows "\<not> pfire u (maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
+                         (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b))))"
+proof
+  let ?gs = "filter (\<lambda>g. \<not> olt g b) (Glist u b)"
+  let ?m = "maxo (hd ?gs) (tl ?gs)"
+  have mset: "?m \<in> set ?gs" by (rule maxo_hdtl_in[OF ne])
+  have mG: "?m \<in> Gterm u b" using mset set_Glist by auto
+  have mnb: "\<not> olt ?m b" using mset by auto
+  assume "pfire u ?m"
+  then obtain g where gG: "g \<in> Gterm u ?m" and gnm: "\<not> olt g ?m" by blast
+  have gB: "g \<in> Gterm u b" by (rule Gterm_trans[OF mG gG])
+  have gsz: "size g < size ?m" by (rule Gterm_size[OF gG])
+  have "\<not> olt g b"
+  proof
+    assume "olt g b"
+    have "ole b ?m" using mnb olt_total by blast
+    hence "olt g ?m" using \<open>olt g b\<close> \<open>ole b ?m\<close> olt_ole_trans by blast
+    thus False using gnm by blast
+  qed
+  hence "g \<in> set ?gs" using gB set_Glist by auto
+  hence inseq: "g \<in> insert (hd ?gs) (set (tl ?gs))" by (cases ?gs) auto
+  have "\<not> olt ?m g" using maxo_ub[OF inseq] .
+  hence "g = ?m" using gnm olt_total by blast
+  thus False using gsz by simp
+qed
+
+lemma proj_once:
+  "proj u b = (if filter (\<lambda>g. \<not> olt g b) (Glist u b) = [] then b
+               else maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
+                         (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b))))"
+proof (cases "filter (\<lambda>g. \<not> olt g b) (Glist u b) = []")
+  case True thus ?thesis using proj_id by simp
+next
+  case False
+  let ?m = "maxo (hd (filter (\<lambda>g. \<not> olt g b) (Glist u b)))
+                 (tl (filter (\<lambda>g. \<not> olt g b) (Glist u b)))"
+  have "proj u b = proj u ?m" using proj_rec[OF False] by simp
+  also have "proj u ?m = ?m"
+    using maxg_nofire[OF False] proj_nofire by blast
+  finally show ?thesis using False by simp
+qed
+
 text \<open>\<^bold>\<open>The projection produces an \<open>a\<close>-canonical value\<close>: since every \<open>G\<^bsub>a\<^esub>\<close>-critical
   subterm of \<open>proj a b\<close> is \<open><\<close> it (\<open>proj_G\<close>) and all are well-formed, their values
   drop below \<open>o(proj a b)\<close>, so \<open>o(proj a b) \<in> C\<^bsub>a\<^esub>(o(proj a b))\<close> (Buchholz OT3 \<Rightarrow> C).
@@ -2312,14 +2482,6 @@ text \<open>\<^bold>\<open>Residual 4 (THE irreducible \<section>1 core, term le
     tool: \<open>proj_emb_mono\<close>, \<open>x \<sqsubseteq> y \<Longrightarrow> ole (proj u x) (proj u y)\<close> under the embedding
     order \<open>\<sqsubseteq>\<close>; it closes the non-firing 72\% but not the firing crux.)\<close>
 
-text \<open>\<^bold>\<open>ST arg-zone value bound (IST)\<close>: in a standard form \<open>(0,y)#r\<close> every value \<open>v\<close>
-  of the argument zone is \<open>\<ge> y\<close> (the diagonal/parenthood discipline; the head value
-  \<open>y\<close> is the minimum).  Deep closure \<open>1013167/1013167\<close> (\<open>probe_ST_argval.py\<close>).
-  Via \<open>NT_subs\<close> (\<open>subs (nrm (translate aM)) \<subseteq> snd ` set aM\<close>, in \<open>nrmstep\<close>) and
-  \<open>proj_subs\<close> this gives \<open>subs (proj y (nrm (translate aM))) \<subseteq> {v. y \<le> v}\<close>:
-  the collapse point \<open>y\<close> sits below every subscript of the image.  (NB: this bound is
-  \<^emph>\<open>necessary\<close> but \<^bold>\<open>not sufficient\<close> for \<open>proj\<close>-monotonicity \<dash> see \<open>PROJMONO_GEQ\<close> above.)\<close>
-
 text \<open>\<^bold>\<open>The head value of a standard form is \<open>0\<close>\<close>.  A standard form \<open>M = (0,y)#r\<close>
   has \<open>entry M 0 0 = fst (0,y) = 0\<close>, and the \<open>ST_PS\<close> floor invariant
   @{thm [source] row0_zero_imp_row1_zero_ST_PS} (a row-0 value of \<open>0\<close> forces a
@@ -2381,19 +2543,92 @@ text \<open>\<^bold>\<open>(PROJSTEP half, residual, the genuine \<section>1 cru
   \<open>NT_subs\<close>/\<open>proj_subs\<close>) the collapse point \<open>y\<close> lies below every subscript of both
   images \<dash> the necessary (though not sufficient) anchor distinguishing this class
   from the FALSE general \<open>wf3\<close> case.  Deep closure \<^bold>\<open>61075 / 0 reversals / 0 collapses\<close>
-  (\<open>probe_factor.py\<close> F2-nrm).\<close>
+  (\<open>probe_factor.py\<close> F2-nrm).
 
-lemma proj_step_argzone_olt:
+  \<^bold>\<open>Firing-case factoring (this session)\<close>.  Splitting on whether the \<^emph>\<open>smaller\<close>
+  image \<open>B = nrm (translate aM)\<close> fires under \<open>proj y\<close> reduces the crux to a single
+  \<^emph>\<open>witness\<close> obligation \<open>proj_step_fire_witness\<close> below; the rest is green:
+    \<^item> \<^bold>\<open>\<open>B\<close> does not fire\<close> (\<open>proj y B = B\<close>, \<dash> the non-firing 72\%): \<open>olt B F\<close> and
+      \<open>ole F (proj y F)\<close> (\<open>proj_ole\<close>) give \<open>olt B (proj y F)\<close> at once
+      (\<open>olt_ole_trans\<close>).  No residual content.
+    \<^item> \<^bold>\<open>\<open>B\<close> fires\<close> (\<open>proj y B = maxo \<dots>\<close> by \<open>proj_once\<close>, \<dash> the firing 28\% crux):
+      the only residue is the existence of a \<^emph>\<open>violating critical\<close> \<open>g'\<close> of \<open>F\<close>
+      (\<open>g' \<in> Gterm y F\<close>, \<open>\<not> olt g' F\<close>) that strictly dominates \<open>proj y B\<close>
+      (\<open>olt (proj y B) g'\<close>).  Given that witness, \<open>g'\<close> is then in the selection
+      list of \<open>F\<close> (so \<open>proj y F\<close> fires too, by \<open>proj_once\<close>), \<open>maxo_ub\<close> gives
+      \<open>ole g' (proj y F)\<close>, and \<open>olt_ole_trans\<close> closes \<open>olt (proj y B) (proj y F)\<close>.
+  This is the precise, deeply-verified residual; see \<open>proj_step_fire_witness\<close>.\<close>
+
+text \<open>\<^bold>\<open>Residual 4a (THE firing-case witness, deeply verified TRUE)\<close>
+  \<open>proj_step_fire_witness\<close>: on the ST arg-zone image class, when the smaller image
+  \<open>B\<close> fires under \<open>proj y\<close>, its projection \<open>proj y B\<close> is strictly dominated by some
+  \<open>G\<^bsub>y\<^esub>\<close>-critical of the larger image \<open>F\<close> that is itself a \<^emph>\<open>violator\<close> of \<open>F\<close>
+  (\<open>\<not> olt g' F\<close>).  This is the genuine Buchholz \<section>1 content of the firing case,
+  reduced to a \<^emph>\<open>single existential\<close> with a concrete shape.  \<^bold>\<open>Soundness gate\<close>:
+  verified at deep closure \<^bold>\<open>3403 firing pairs / 0 failures\<close> in the strict form
+  \<open>olt (proj y B) g'\<close> (\<open>tools/probe_ff_strict.py\<close> S2; the dominating-but-equal
+  variant \<open>tools/probe_ff_transport.py\<close> T1 also 0/3403).  The \<^emph>\<open>only\<close> remaining
+  \<open>sorry\<close> of the crux.  (The literal \<open>proj y B \<in> Gterm y F\<close> is \<^bold>\<open>FALSE\<close>, 3403/3403,
+  \<open>probe_ff_invariant.py\<close> H1 \<dash> the witness \<open>g'\<close> is a \<^emph>\<open>different\<close> critical that
+  dominates it, not \<open>proj y B\<close> itself; and the value-side identity
+  \<open>proj y B = nrm (translate (msfx aM))\<close> (the old \<open>E6_value\<close> route) is \<^bold>\<open>FALSE\<close> on
+  genuine \<open>dseg\<close> arg-zones, 4 counterexamples e.g.\ \<open>aM = (1,1)(2,2)(1,1)(2,2)\<close> at
+  \<open>y = 0\<close>, \<open>tools/probe_e6_check.py\<close> \<dash> so this route deliberately avoids it.)\<close>
+
+lemma proj_step_fire_witness:
   assumes "(0, y) # r \<in> ST_PS" and "(0, y) # r' \<in> ST_PS"
-    and "takeWhile (\<lambda>q. 0 < fst q) r \<noteq> takeWhile (\<lambda>q. 0 < fst q) r'"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
     and "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
              (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
+    and "proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"  \<comment> \<open>smaller image fires\<close>
+  shows "\<exists>g'. g' \<in> Gterm y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))
+              \<and> \<not> olt g' (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))
+              \<and> olt (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+                    g'"
+  \<comment> \<open>firing-case witness; deeply verified (\<open>probe_ff_strict.py\<close> S2, 3403/0).\<close>
+  sorry
+
+lemma proj_step_argzone_olt:
+  assumes ST: "(0, y) # r \<in> ST_PS" and ST': "(0, y) # r' \<in> ST_PS"
+    and ane: "takeWhile (\<lambda>q. 0 < fst q) r \<noteq> takeWhile (\<lambda>q. 0 < fst q) r'"
+    and vbM: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and vbN: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
+    and olt: "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+                  (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
   shows "olt (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
              (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))"
-  \<comment> \<open>residual firing crux on the ST image class (carries IST); deeply verified (61075/0/0).\<close>
-  sorry
+proof -
+  let ?B = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+  let ?F = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))"
+  show ?thesis
+  proof (cases "proj y ?B = ?B")
+    case True
+    \<comment> \<open>\<open>B\<close> does not fire: \<open>proj y B = B <\<^sub>o F \<le>\<^sub>o proj y F\<close>.\<close>
+    have "ole ?F (proj y ?F)" by (rule proj_ole)
+    hence "olt ?B (proj y ?F)" using olt olt_ole_trans by blast
+    thus ?thesis using True by simp
+  next
+    case False
+    \<comment> \<open>\<open>B\<close> fires: use the firing witness \<open>g'\<close> of \<open>F\<close>.\<close>
+    obtain g' where g'G: "g' \<in> Gterm y ?F" and g'viol: "\<not> olt g' ?F"
+        and g'dom: "olt (proj y ?B) g'"
+      using proj_step_fire_witness[OF ST ST' vbM vbN olt False] by blast
+    \<comment> \<open>\<open>g'\<close> is a violating critical of \<open>F\<close>, hence in \<open>F\<close>'s selection list \<Rightarrow> \<open>F\<close> fires.\<close>
+    let ?gF = "filter (\<lambda>g. \<not> olt g ?F) (Glist y ?F)"
+    have g'gl: "g' \<in> set (Glist y ?F)" using g'G set_Glist by simp
+    have g'in: "g' \<in> set ?gF" using g'gl g'viol by simp
+    have ne: "?gF \<noteq> []" using g'in by (cases ?gF) auto
+    have pF: "proj y ?F = maxo (hd ?gF) (tl ?gF)"
+      using proj_once[of y ?F] ne by simp
+    have inseq: "g' \<in> insert (hd ?gF) (set (tl ?gF))"
+      using g'in by (cases ?gF) auto
+    have "\<not> olt (maxo (hd ?gF) (tl ?gF)) g'" by (rule maxo_ub[OF inseq])
+    hence "ole g' (proj y ?F)" using pF olt_total by auto
+    thus ?thesis using g'dom olt_ole_trans by blast
+  qed
+qed
 
 text \<open>\<^bold>\<open>The core, green-assembled from the two halves\<close>: \<open>nrm\<close>-monotonicity then the
   shared \<open>proj y\<close> collapse.  This replaces the single opaque \<open>sorry\<close> by a transparent
