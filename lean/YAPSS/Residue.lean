@@ -996,12 +996,16 @@ sub-case (A) (`η` `u`-canonical) via the bridge; the `w < u` band case (vacuous
 This REPLACES the single monolithic `NoncanonValueMem` sorry with four strictly
 smaller, model-verified residuals — the sharper joint-induction skeleton. -/
 
-/-- Generator step (A) band fact: `ψ^s_w(η) ≤ η`. -/
+/-- Generator step (A) BAND fact: `Ω_{w+1} ≤ η` when `η` is `u`-canonical (`u ≤ w`)
+and `ψ^s_w(η)` is `u`-non-canonical.  Sharper than the prior `ψ^s_w(η) ≤ η` (which
+follows by `psiSelf_lt_Om_succ` + this).  Mechanism (model-verified 4892/4892): a
+`u`-canonical `η < Ω_{w+1}` makes `ψ^s_w(η)` `u`-canonical, so non-canonicity forces
+`Ω_{w+1} ≤ η`. -/
 def NVM_subA_le.{u} : Prop :=
   ∀ (η : Ordinal.{u}) (w u : ℕ), u ≤ w →
     η ∈ CsetSelf (psiResSelf η) η u →
     psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
-    psiSelf η w ≤ η
+    Om (w + 1) ≤ η
 
 /-- Generator step (A) plateau-collapse: `ψ^s_u(ψ^s_w(η)) ∉ C^s_u(η)`. -/
 def NVM_subA_nm.{u} : Prop :=
@@ -1065,7 +1069,9 @@ theorem noncanonValueMem_joint
           by_cases hwu : u ≤ w
           · by_cases hηu : η ∈ CsetSelf (psiResSelf η) η u
             · refine ⟨η, hηα, hηC, hηu, ?_⟩
-              exact (psiSelf_eq_of_notMem (subA_le η w u hwu hηu hnc) (subA_nm η w u)).symm
+              have hle : psiSelf η w ≤ η :=
+                le_trans (le_of_lt (psiSelf_lt_Om_succ η w)) (subA_le η w u hwu hηu hnc)
+              exact (psiSelf_eq_of_notMem hle (subA_nm η w u)).symm
             · exact caseB α v u w η hηα hηC hηcw hηu hvu hwu hξα hnc
           · push Not at hwu
             exact absurd
