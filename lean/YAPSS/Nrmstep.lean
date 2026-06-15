@@ -2591,7 +2591,23 @@ of an `ST_PS` sequence, with head row-`1` `=` its `maxr1`, does not fire** —
 provable only via the root-anchored `r1ok` climbing pulled through `SubBlock`,
 the project-central construction (`r1ok` ALONE is insufficient: the cter is
 `r1ok`; the missing ingredient is the root-`0`-anchoring / `ST_PS`-reachability
-that excludes head row-`1` `> 0` root blocks). -/
+that excludes head row-`1` `> 0` root blocks).
+
+EVERY decomposition bottoms out in this SAME forest fact (confirmed by explicit
+counterexamples this session):
+  • `maxoviol`-step recursion (one `proj` step, `tsize`-decreasing `1285 / 1285`):
+    `olt b f ⟹ olt (maxoviol b) (maxoviol f)` holds on `NF` args (`438747 / 0`)
+    but is FALSE on general terms (`929364 / 5753586`) — the step needs `NF` on
+    the criticals, which leave the `NF` class;
+  • `ST_PS`-descendant blocks STILL fire (`1652` real descendant blocks of `ST_PS`
+    sequences fire) — "`ST_PS`-descendant" alone is NOT the predicate; the
+    proj-descent bottoms are the STRICTER greatest-critical-descent subset;
+  • `ST_PS_head_val_zero` (head row-`1` `= 0`) is the anchoring lever but is NOT
+    yet a Lean lemma (only `stps_head`: head `= (0,0)`); `ST_PS_suffix` (the
+    suffix-closure feeding this) is itself an open residual (`Nrm.lean:1411`).
+The criticals/bottoms of the proj-descent leave the `NF`/`ST_PS` class, and
+re-establishing the forest anchoring on them (via `SubBlock` + `r1ok_ST_PS` +
+the `oper`/`translate` parent-forest) is the substantial remaining undertaking. -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
