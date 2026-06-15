@@ -1097,6 +1097,38 @@ def CollapseResidue.{u} : Prop :=
   ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
     psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a
 
+/-! ### ⚠⚠⚠ `CollapseResidue` (arbitrary `g`) IS FALSE — must be MAXO-restricted
+
+**Critical finding (this session).**  `CollapseResidue` / `Nrm.psi_proj_notmem` as
+stated for an ARBITRARY OT3-violator `g` is **FALSE**.  Verified on the ya-pss
+ordinal model (`/tmp/probe_maxo.py`): the collapse `ψ_a(oV b') = ψ_a(oV g)` holds
+for the **maxo** (olt-greatest) violator `278/278`, but for NON-maxo violators only
+`87/972` (~9%).  Concrete counterexample (`/tmp/probe_ce.py`): `a = 0`,
+`b' = D₁(D₂(D₂ 0))`, non-maxo violator `g = D₂ 0` (maxo = `D₂(D₂ 0)`):
+`ψ_0(oV b') ≠ ψ_0(oV g)`, so `ψ_0(oV b') ∈ C_0(oV g)` (membership) — the
+non-membership `CollapseResidue` FAILS there.
+
+Why: by `psi_proj_mem_imp_strict`, membership ⟺ `ψ_a(oV b') < ψ_a(oV g)` strict; a
+non-maxo violator `oV g < oV maxo` leaves a larger violator above, so `ψ_a` has not
+yet collapsed across the full plateau — `ψ_a(oV b') < ψ_a(oV g)` strict (membership).
+Only the maxo violator sits at the plateau top where `ψ_a(oV b') = ψ_a(oV maxo)`.
+
+**This does NOT break `Nrm.psi_proj`**: `psi_proj_of_notmem` only ever uses the
+residual at `g = maxo (Glist a b).filter (¬ olt · b)` — see its proof.  So the
+GENUINE residual is the MAXO-restricted `CollapseResidueMaxo` below, which is TRUE
+(278/278).  `Reduction.lean`'s nrm route should consume `CollapseResidueMaxo`, not
+the false general `CollapseResidue` (which is fed to the general
+`psi_proj_of_notmem` whose premise is thereby unsatisfiable).  -/
+
+/-- **The MAXO-restricted collapse residue (the TRUE one).**  Only the olt-greatest
+OT3-violator `g` (`g ∈ Gterm a b'`, `¬ olt g b'`, and `g` is `ole`-above every
+other violator) — exactly the `g = maxo …` that `proj` selects.  Empirically TRUE
+(278/278); the general `CollapseResidue` is FALSE (non-maxo violators). -/
+def CollapseResidueMaxo.{u} : Prop :=
+  ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
+    (∀ x ∈ Gterm a b', ¬ olt x b' → ole x g) →
+    psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a
+
 /-! ### COLLAPSE-face analysis (omitted form, no self-bridge) — the genuine reduction
 
 `CollapseResidue` (= `Nrm.psi_proj_notmem`) is the COLLAPSE face.  Two clean facts
