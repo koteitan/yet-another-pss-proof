@@ -37,10 +37,12 @@
     - ✅ argzone_val_ge〔VAL・ST_PS_head_val_zero で退化〕
     - ✅ proj_step_argzone_olt〔FIRE・非発火 72% 緑〕
     - ✅ proj_step_fire_witness〔FW・witness g'=proj y F〕
-    - 🚨 argzone_fire_FF：発火 wall（clause1 pfire y F → clause2）〔nrm.thy〕
+    - ✅ argzone_fire_FF〔FF・発火=先頭引数現象 proj 0 X=harg X〕
+    - 🚨 argzone_proj_head：H1 発火 image の head 同定〔nrm.thy〕
+    - 🚨 argzone_fire_transport：H2 head 引数 transport〔nrm.thy〕
     - 🚨 nrm_argzone_olt：深さ一般統一サイズ帰納が blocker〔nrm.thy〕
     - 🚨 keeps_head_ST_PS：tied e=y〔nrm.thy〕
-    - 🚨 oV_mono_NF：argzone_fire_FF と意味論同値〔ovnf.thy〕
+    - 🚨 oV_mono_NF：意味論同値〔ovnf.thy〕
   - 🗄 §1/psi_proj 路線：live path 外〔term_nec / 1.4 trio / Cset_eq_Cset_c / psi_value_acanon〕
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
     - ✅ wfimg → 対角 accessibility 還元〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS〕

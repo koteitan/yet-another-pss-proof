@@ -4689,3 +4689,14 @@ proj_once/maxo_in で自動)。§1 発火 wall を鋭い2節に縮約:
 🚨 off-class で全偽を再確認(firing-mono 737313/1999000・maxo-mono 318342/1124250・olt(proj y B)F 3403/3403)
 ⟹ arg-zone class guard(depth-1 NF block 構造)が本質。これが本セッション偽補題11件の原因(guard 脱落)。
 **残 live §1**: argzone_fire_FF(発火2節)/ nrm_argzone_olt(統一帰納)/ keeps_head_ST_PS(tied e=y)。oV_mono_NF 同値。
+
+### 続90 末4: argzone_fire_FF 緑(FF)= §1 発火 wall を head 引数 2残核に縮約
+FF: argzone_fire_FF を緑化。核心発見=arg-zone ST-image class(y=0)で発火は純粋に先頭引数現象: proj 0 X=harg X
+(harg=先頭引数 P a b c↦b)。clause1 pfire y F は harg F∈Gterm 0 F が violator で従う、clause2 は head 引数順序。
+残核2つ(個別深層 gate): argzone_proj_head(H1: 発火 image で proj y X=harg X∧¬olt(harg X)X・266545/0/0)/
+argzone_fire_transport(H2: B⋖F・B発火⟹¬olt(harg F)F∧olt(harg B)(harg F)・6555/0/0)。harg/harg_Gterm 追加。
+🚨偽: olt(proj y B)F 偽(3403/3403, mB lead 2 > F lead 1 でも mB<proj y F は深い critical 経由)・
+head 諸事実 off-class 偽(K1/K2/K3 各 >60% fail)⟹ class guard 必須。
+構造的鍵(緑予定): lead(nrm(translate aM))=snd(hd aM)(Q1=0, 964297/0)。
+**残 §1 は全て nrm の arg-zone(blockok 1)image head 構造に集約**: H1/H2/nrm_argzone_olt/keeps_head が同 depth。
+untr/sigma/blockok 1 から nrm(translate aM) の head/lead を特徴付ければ一括で閉じる見込み。sub-agent 15体運用。
