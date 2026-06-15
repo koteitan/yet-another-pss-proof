@@ -1588,6 +1588,421 @@ proof -
   show ?thesis using j0len hM0 nqpos eq by blast
 qed
 
+subsection \<open>The \<open>hasParent\<close>-on-\<open>ST_PS\<close> existence invariant\<close>
+
+text \<open>\<^bold>\<open>Parent uniqueness\<close>.  The \<open>nextrel0\<close> / \<open>nextrel1\<close> parent of a fixed child
+  \<open>j1\<close> is unique: if \<open>a\<close> and \<open>b\<close> were two distinct parents, the smaller one's
+  valley condition (\<open>\<forall>j\<close> strictly between \<open>\<ge> child value\<close>) is violated at the
+  larger one, which has a \<^emph>\<open>strictly smaller\<close> value.\<close>
+
+lemma nextrel0_parent_unique:
+  assumes "nextrel0 M a j1" and "nextrel0 M b j1"
+  shows "a = b"
+proof (rule ccontr)
+  assume ne: "a \<noteq> b"
+  have aj: "a < j1" using assms(1) nextrel0_index_less by blast
+  have bj: "b < j1" using assms(2) nextrel0_index_less by blast
+  show False
+  proof (cases "a < b")
+    case True
+    have "entry M 0 b \<ge> entry M 0 j1" using assms(1) True bj by (simp add: nextrel0_def)
+    moreover have "entry M 0 b < entry M 0 j1" using assms(2) by (simp add: nextrel0_def)
+    ultimately show False by simp
+  next
+    case False
+    hence ba: "b < a" using ne by simp
+    have "entry M 0 a \<ge> entry M 0 j1" using assms(2) ba aj by (simp add: nextrel0_def)
+    moreover have "entry M 0 a < entry M 0 j1" using assms(1) by (simp add: nextrel0_def)
+    ultimately show False by simp
+  qed
+qed
+
+lemma nextrel1_parent_unique:
+  assumes "nextrel1 M a j1" and "nextrel1 M b j1"
+  shows "a = b"
+proof (rule ccontr)
+  assume ne: "a \<noteq> b"
+  have al: "le0 M a j1" using assms(1) by (simp add: nextrel1_def)
+  have bl: "le0 M b j1" using assms(2) by (simp add: nextrel1_def)
+  show False
+  proof (cases "a < b")
+    case True
+    have "entry M 1 b \<ge> entry M 1 j1" using assms(1) True bl by (simp add: nextrel1_def)
+    moreover have "entry M 1 b < entry M 1 j1" using assms(2) by (simp add: nextrel1_def)
+    ultimately show False by simp
+  next
+    case False
+    hence ba: "b < a" using ne by simp
+    have "entry M 1 a \<ge> entry M 1 j1" using assms(2) ba al by (simp add: nextrel1_def)
+    moreover have "entry M 1 a < entry M 1 j1" using assms(1) by (simp add: nextrel1_def)
+    ultimately show False by simp
+  qed
+qed
+
+lemma nextR_parent_unique:
+  assumes "nextR M i a j1" and "nextR M i b j1"
+  shows "a = b"
+  using assms nextrel0_parent_unique nextrel1_parent_unique
+  by (cases "i = 0") (simp_all add: nextR_def)
+
+text \<open>\<^bold>\<open>\<open>nextrel0\<close> existence from a smaller row-0 value below\<close>.  If some column
+  \<open>j < j1\<close> has \<open>entry M 0 j < entry M 0 j1\<close>, then \<open>j1\<close> has a \<open>nextrel0\<close>-parent
+  (the \<^emph>\<open>largest\<close> such \<open>j\<close>: every column strictly between it and \<open>j1\<close> then has
+  value \<open>\<ge> entry M 0 j1\<close>).\<close>
+
+lemma nextrel0_exists:
+  assumes j1L: "j1 < Lng M" and wit: "k < j1" and small: "entry M 0 k < entry M 0 j1"
+  shows "\<exists>j0. nextrel0 M j0 j1"
+proof -
+  define S where "S = {j. j < j1 \<and> entry M 0 j < entry M 0 j1}"
+  have kS: "k \<in> S" using wit small S_def by simp
+  have finS: "finite S" using S_def by (simp add: S_def)
+  have neS: "S \<noteq> {}" using kS by auto
+  define j0 where "j0 = Max S"
+  have j0S: "j0 \<in> S" using j0_def finS neS by simp
+  have j0lt: "j0 < j1" using j0S S_def by simp
+  have j0small: "entry M 0 j0 < entry M 0 j1" using j0S S_def by simp
+  have j0L: "j0 < Lng M" using j0lt j1L by simp
+  have valley: "\<And>j. j0 < j \<Longrightarrow> j < j1 \<Longrightarrow> entry M 0 j \<ge> entry M 0 j1"
+  proof -
+    fix j assume gt: "j0 < j" and lt: "j < j1"
+    show "entry M 0 j \<ge> entry M 0 j1"
+    proof (rule ccontr)
+      assume "\<not> entry M 0 j \<ge> entry M 0 j1"
+      hence "entry M 0 j < entry M 0 j1" by simp
+      hence "j \<in> S" using lt S_def by simp
+      hence "j \<le> j0" using j0_def finS by simp
+      thus False using gt by simp
+    qed
+  qed
+  have "nextrel0 M j0 j1"
+    unfolding nextrel0_def using j0L j1L j0lt j0small valley by simp
+  thus ?thesis by blast
+qed
+
+text \<open>\<^bold>\<open>The row-0 floor under \<open>le0\<close>\<close>.  In a depth-0 block (\<open>blockok 0 M\<close>) every
+  column \<open>j1\<close> has a \<open>le0\<close>-ancestor with row-0 value \<open>0\<close>: climb down the
+  \<open>nextrel0\<close>-parent chain (the head \<open>(0,_)\<close> always provides a strictly-smaller
+  witness below a positive column), strictly decreasing the row-0 value, which
+  bottoms out at \<open>0\<close>.\<close>
+
+lemma le0_row0_floor:
+  assumes b: "blockok 0 M" and j1L: "j1 < Lng M"
+  shows "\<exists>m. le0 M m j1 \<and> entry M 0 m = 0"
+  using j1L
+proof (induction "entry M 0 j1" arbitrary: j1 rule: less_induct)
+  case less
+  show ?case
+  proof (cases "entry M 0 j1 = 0")
+    case True
+    have "le0 M j1 j1" unfolding le0_def using less.prems by simp
+    thus ?thesis using True by blast
+  next
+    case False
+    \<comment> \<open>the head provides a strictly smaller row-0 value below \<open>j1\<close>\<close>
+    have Mne: "M \<noteq> []" using less.prems by auto
+    have hd0: "fst (hd M) = 0" using b Mne unfolding blockok_def by simp
+    have e00: "entry M 0 0 = 0" using hd0 Mne by (simp add: entry_def hd_conv_nth)
+    have j1pos: "0 < j1"
+    proof (rule ccontr)
+      assume "\<not> 0 < j1"
+      hence "j1 = 0" by simp
+      thus False using False e00 by simp
+    qed
+    have small0: "entry M 0 0 < entry M 0 j1" using e00 False by simp
+    obtain j0 where nR: "nextrel0 M j0 j1"
+      using nextrel0_exists[OF less.prems j1pos small0] by blast
+    have j0lt: "j0 < j1" using nR nextrel0_index_less by blast
+    have j0L: "j0 < Lng M" using j0lt less.prems by simp
+    have j0small: "entry M 0 j0 < entry M 0 j1" using nR by (simp add: nextrel0_def)
+    obtain m where lm: "le0 M m j0" and em: "entry M 0 m = 0"
+      using less.hyps[OF j0small j0L] by blast
+    \<comment> \<open>extend the \<open>le0\<close>-chain by the new \<open>nextrel0\<close> step\<close>
+    have mcl: "(nextrel0 M)\<^sup>*\<^sup>* m j0" using lm by (simp add: le0_def)
+    have step: "(nextrel0 M)\<^sup>*\<^sup>* m j1"
+      using mcl nR by (simp add: rtranclp.rtrancl_into_rtrancl)
+    have mL: "m < Lng M" using lm le0_bounds by simp
+    have "le0 M m j1" unfolding le0_def using mL less.prems step by simp
+    thus ?thesis using em by blast
+  qed
+qed
+
+text \<open>\<^bold>\<open>The \<open>ST_PS\<close> floor invariant\<close>: a row-0 value of \<open>0\<close> forces a row-1 value of
+  \<open>0\<close>.  The diagonal base \<open>(j,j)\<close> has row-0 \<open>= 0\<close> only at \<open>j = 0\<close>, where row-1 is
+  also \<open>0\<close>; the expansion \<open>M[n]\<close> copies the row-0 \<open>= 0\<close> columns of \<open>M\<close> verbatim
+  (the prefix \<open>take j0 M\<close> and the \<open>k = 0\<close> block copy), keeping row-1 \<open>= 0\<close>; the
+  shifted copies (\<open>k \<ge> 1\<close>) only raise row-0 strictly above \<open>0\<close>.  Proved
+  semantically through the block discipline together with the \<open>oper\<close> shift being
+  \<open>\<ge> 0\<close>.\<close>
+
+lemma row0_zero_imp_row1_zero_oper:
+  assumes IH: "\<And>j. j < Lng M \<Longrightarrow> entry M 0 j = 0 \<Longrightarrow> entry M 1 j = 0"
+    and n1: "1 \<le> n"
+    and j: "j < Lng (oper M n)" and z: "entry (oper M n) 0 j = 0"
+  shows "entry (oper M n) 1 j = 0"
+proof -
+  define j1 where "j1 = Lng M - 1"
+  show ?thesis
+  proof (cases "j1 = 0")
+    case True
+    have "oper M n = M" unfolding oper_def Let_def j1_def[symmetric] using True by simp
+    thus ?thesis using IH j z by simp
+  next
+    case j1nz: False
+    show ?thesis
+    proof (cases "entry M 0 j1 = 0 \<and> entry M 1 j1 = 0")
+      case True
+      have op: "oper M n = Pred M" unfolding oper_def Let_def j1_def[symmetric]
+        using j1nz True by auto
+      have len2: "2 \<le> Lng M" using j1nz j1_def by simp
+      have predeq: "Pred M = butlast M" unfolding Pred_def using len2 by simp
+      have jb: "j < Lng (butlast M)" using j op predeq by simp
+      have jM: "j < Lng M" using jb by simp
+      have e0: "entry (butlast M) 0 j = entry M 0 j"
+        using jb by (simp add: entry_def nth_butlast)
+      have e1: "entry (butlast M) 1 j = entry M 1 j"
+        using jb by (simp add: entry_def nth_butlast)
+      have "entry M 0 j = 0" using z op predeq e0 by simp
+      hence "entry M 1 j = 0" using IH jM by simp
+      thus ?thesis using op predeq e1 by simp
+    next
+      case Fz: False
+      define i1 where "i1 = idx1 M j1"
+      show ?thesis
+      proof (cases "hasParent M i1 j1")
+        case False2: False
+        have op: "oper M n = Pred M" unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+          using j1nz Fz False2 by auto
+        have len2: "2 \<le> Lng M" using j1nz j1_def by simp
+        have predeq: "Pred M = butlast M" unfolding Pred_def using len2 by simp
+        have jb: "j < Lng (butlast M)" using j op predeq by simp
+        have jM: "j < Lng M" using jb by simp
+        have e0: "entry (butlast M) 0 j = entry M 0 j"
+          using jb by (simp add: entry_def nth_butlast)
+        have e1: "entry (butlast M) 1 j = entry M 1 j"
+          using jb by (simp add: entry_def nth_butlast)
+        have "entry M 0 j = 0" using z op predeq e0 by simp
+        hence "entry M 1 j = 0" using IH jM by simp
+        thus ?thesis using op predeq e1 by simp
+      next
+        case hp: True
+        define j0 where "j0 = parent M i1 j1"
+        define d0 where "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+        define d1 where "d1 = (if 1 < i1 then entry M 1 j1 - entry M 1 j0 else 0)"
+        define blk where "blk = (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j + k * d1)) [j0..<j1])"
+        have opeq: "oper M n = take j0 M @ concat (map blk [0..<n])"
+          unfolding oper_def Let_def j1_def[symmetric] i1_def[symmetric]
+            j0_def[symmetric] d0_def[symmetric] d1_def[symmetric] blk_def
+          using j1nz Fz hp by auto
+        have nR: "nextR M i1 j0 j1" unfolding j0_def by (rule parent_nextR[OF hp])
+        have j0j1: "j0 < j1" using nR by (rule nextR_less)
+        have j1L: "j1 < Lng M" using j1nz j1_def by simp
+        have j0L: "j0 < Lng M" using j0j1 j1L by simp
+        \<comment> \<open>each block has the fixed length \<open>j1 - j0\<close>\<close>
+        have blklen: "\<And>k. length (blk k) = j1 - j0" unfolding blk_def by simp
+        have lentk: "length (take j0 M) = j0" using j0L by simp
+        \<comment> \<open>the value of \<open>oper\<close> at index \<open>j\<close>: either in the verbatim prefix or in a copy\<close>
+        show ?thesis
+        proof (cases "j < j0")
+          case True
+          have e0: "entry (oper M n) 0 j = entry M 0 j"
+            using opeq True lentk by (simp add: entry_def nth_append)
+          have e1: "entry (oper M n) 1 j = entry M 1 j"
+            using opeq True lentk by (simp add: entry_def nth_append)
+          have "entry M 0 j = 0" using z e0 by simp
+          hence "entry M 1 j = 0" using IH j0L True by simp
+          thus ?thesis using e1 by simp
+        next
+          case False
+          \<comment> \<open>\<open>j\<close> lands in the concatenated copies\<close>
+          define C where "C = concat (map blk [0..<n])"
+          have opC: "oper M n = take j0 M @ C" using opeq C_def by simp
+          have jge: "j0 \<le> j" using False by simp
+          define r where "r = j - j0"
+          have jr: "j = j0 + r" using r_def jge by simp
+          have rC: "r < length C" using j opC lentk jr by simp
+          \<comment> \<open>decompose \<open>r\<close> into block \<open>k\<close> and offset \<open>s\<close>; each block has length \<open>j1 - j0\<close>\<close>
+          have Clen: "length C = n * (j1 - j0)"
+            unfolding C_def using blklen by (simp add: length_concat comp_def sum_list_triv)
+          have blpos: "0 < j1 - j0" using j0j1 by simp
+          define k where "k = r div (j1 - j0)"
+          define s where "s = r mod (j1 - j0)"
+          have rks: "r = k * (j1 - j0) + s"
+            using k_def s_def by (simp add: mult.commute)
+          have slt: "s < j1 - j0" using s_def blpos by simp
+          have kn: "k < n" using rC Clen rks slt blpos
+            by (metis div_eq_0_iff k_def less_mult_imp_div_less mult.commute mult_0_right nat_neq_iff not_less_zero)
+          have Cnth: "C ! r = blk k ! s"
+          proof -
+            have "C ! (k * (j1 - j0) + s) = blk k ! s"
+              unfolding C_def
+              by (rule concat_map_upt_nth'[OF _ kn slt]) (simp add: blklen)
+            thus ?thesis using rks by simp
+          qed
+          have blkval: "blk k ! s = (entry M 0 (j0 + s) + k * d0, entry M 1 (j0 + s) + k * d1)"
+            unfolding blk_def using slt by (simp add: nth_append)
+          have e0v: "entry (oper M n) 0 j = entry M 0 (j0 + s) + k * d0"
+            using opC lentk jr rC Cnth blkval by (simp add: entry_def nth_append)
+          have e1v: "entry (oper M n) 1 j = entry M 1 (j0 + s) + k * d1"
+            using opC lentk jr rC Cnth blkval by (simp add: entry_def nth_append)
+          have zsum: "entry M 0 (j0 + s) + k * d0 = 0" using z e0v by simp
+          hence z0: "entry M 0 (j0 + s) = 0" by simp
+          have js0L: "j0 + s < Lng M" using slt j0j1 j1L by simp
+          have "entry M 1 (j0 + s) = 0" using IH js0L z0 by simp
+          moreover have "k * d1 = 0"
+          proof (cases "1 < i1")
+            case True
+            \<comment> \<open>only happens when \<open>i1 = 1\<close> is excluded; \<open>idx1\<close> is \<open>\<le> 1\<close>, so this is vacuous\<close>
+            have "i1 \<le> 1" unfolding i1_def idx1_def by simp
+            thus ?thesis using True by simp
+          next
+            case False thus ?thesis using d1_def by simp
+          qed
+          ultimately show ?thesis using e1v by simp
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma row0_zero_imp_row1_zero_ST_PS:
+  assumes "M \<in> ST_PS"
+  shows "\<And>j. j < Lng M \<Longrightarrow> entry M 0 j = 0 \<Longrightarrow> entry M 1 j = 0"
+  using assms
+proof (induction M rule: ST_PS.induct)
+  case (diag v)
+  fix j assume jl: "j < Lng (diagSeq 0 v)" and z: "entry (diagSeq 0 v) 0 j = 0"
+  have len: "length (diagSeq 0 v) = Suc v" by (simp add: diagSeq_def)
+  have nth: "diagSeq 0 v ! j = (j, j)"
+    using jl len by (simp add: diagSeq_def nth_append)
+  have "entry (diagSeq 0 v) 0 j = j" using nth by (simp add: entry_def)
+  hence "j = 0" using z by simp
+  thus "entry (diagSeq 0 v) 1 j = 0" using nth by (simp add: entry_def)
+next
+  case (oper M n)
+  fix j assume jl: "j < Lng (M[n])" and z: "entry (M[n]) 0 j = 0"
+  show "entry (M[n]) 1 j = 0"
+    using row0_zero_imp_row1_zero_oper[OF oper.IH oper.hyps(2) jl z] .
+qed
+
+text \<open>\<^bold>\<open>\<open>nextrel1\<close> existence from a \<open>le0\<close>-ancestor with strictly smaller row-1\<close>.
+  If some \<open>le0\<close>-ancestor \<open>m\<close> of \<open>j1\<close> has \<open>entry M 1 m < entry M 1 j1\<close>, then \<open>j1\<close>
+  has a \<open>nextrel1\<close>-parent: the \<^emph>\<open>largest\<close> such ancestor (every later \<open>le0\<close>-ancestor
+  then has row-1 \<open>\<ge> entry M 1 j1\<close>).\<close>
+
+lemma nextrel1_exists:
+  assumes j1L: "j1 < Lng M" and m: "le0 M k j1" and small: "entry M 1 k < entry M 1 j1"
+  shows "\<exists>j0. nextrel1 M j0 j1"
+proof -
+  define S where "S = {j. le0 M j j1 \<and> entry M 1 j < entry M 1 j1}"
+  have kS: "k \<in> S" using m small S_def by simp
+  have Ssub: "S \<subseteq> {0..j1}" using S_def le0_index_le by force
+  have finS: "finite S" using Ssub finite_subset by blast
+  have neS: "S \<noteq> {}" using kS by auto
+  define j0 where "j0 = Max S"
+  have j0S: "j0 \<in> S" using j0_def finS neS by simp
+  have j0le: "le0 M j0 j1" using j0S S_def by simp
+  have j0small: "entry M 1 j0 < entry M 1 j1" using j0S S_def by simp
+  have j0lt: "j0 < j1"
+  proof -
+    have "j0 \<le> j1" using j0le le0_index_le by blast
+    moreover have "j0 \<noteq> j1" using j0small by auto
+    ultimately show ?thesis by simp
+  qed
+  have j0L: "j0 < Lng M" using j0lt j1L by simp
+  have valley: "\<And>j. j0 < j \<Longrightarrow> le0 M j j1 \<Longrightarrow> entry M 1 j \<ge> entry M 1 j1"
+  proof -
+    fix j assume gt: "j0 < j" and lj: "le0 M j j1"
+    show "entry M 1 j \<ge> entry M 1 j1"
+    proof (rule ccontr)
+      assume "\<not> entry M 1 j \<ge> entry M 1 j1"
+      hence "entry M 1 j < entry M 1 j1" by simp
+      hence "j \<in> S" using lj S_def by simp
+      hence "j \<le> j0" using j0_def finS by simp
+      thus False using gt by simp
+    qed
+  qed
+  have "nextrel1 M j0 j1"
+    unfolding nextrel1_def using j0L j1L j0lt j0small j0le valley by simp
+  thus ?thesis by blast
+qed
+
+text \<open>\<^bold>\<open>The \<open>hasParent\<close>-on-\<open>ST_PS\<close> existence invariant\<close>.  Every standard form of
+  length \<open>> 1\<close> whose last column is \<^bold>\<open>not\<close> the degenerate \<open>(0,0)\<close> base has a
+  parent for that last column.  For \<open>idx1 = 0\<close> (row-1 \<open>= 0\<close>, row-0 \<open>> 0\<close>) the
+  head \<open>(0,_)\<close> provides the \<open>nextrel0\<close> witness; for \<open>idx1 = 1\<close> (row-1 \<open>> 0\<close>) the
+  row-0 floor (@{thm [source] le0_row0_floor}), which by the \<open>ST_PS\<close> floor
+  invariant (@{thm [source] row0_zero_imp_row1_zero_ST_PS}) carries row-1 \<open>= 0\<close>,
+  is the strictly-smaller \<open>le0\<close>-ancestor needed for \<open>nextrel1\<close>.  Uniqueness in
+  both rows (@{thm [source] nextR_parent_unique}) upgrades existence to \<open>\<exists>!\<close>,
+  i.e. \<open>hasParent\<close>.  \<^bold>\<open>Empirically verified\<close>: \<open>tools/probe_hasparent_last.py\<close>
+  reports 0 no-parent / 190508 non-degenerate-last \<open>ST_PS\<close> forms.\<close>
+
+lemma hasParent_last_ST_PS:
+  assumes M: "M \<in> ST_PS" and L: "1 < Lng M"
+    and nz: "\<not> (entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)"
+  shows "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+proof -
+  define j1 where "j1 = Lng M - 1"
+  define i1 where "i1 = idx1 M j1"
+  have j1L: "j1 < Lng M" using L j1_def by simp
+  have b: "blockok 0 M" using blockok_ST_PS[OF M] .
+  have Mne: "M \<noteq> []" using ST_PS_nonempty[OF M] .
+  have hd0: "fst (hd M) = 0" using b Mne unfolding blockok_def by simp
+  have e00: "entry M 0 0 = 0" using hd0 Mne by (simp add: entry_def hd_conv_nth)
+  have nz': "\<not> (entry M 0 j1 = 0 \<and> entry M 1 j1 = 0)" using nz j1_def by simp
+  \<comment> \<open>existence of a \<open>nextR\<close>-parent in either row\<close>
+  have ex: "\<exists>j0. nextR M i1 j0 j1"
+  proof (cases "i1 = 0")
+    case True
+    \<comment> \<open>\<open>idx1 = 0\<close> means row-1 \<open>= 0\<close>; non-degeneracy forces row-0 \<open>> 0\<close>\<close>
+    have idx1z: "idx1 M j1 = (if 0 < entry M 1 j1 then 1 else 0)"
+      by (simp add: idx1_def)
+    have row1z: "entry M 1 j1 = 0"
+    proof (rule ccontr)
+      assume "entry M 1 j1 \<noteq> 0"
+      hence "idx1 M j1 = 1" using idx1z by simp
+      thus False using True i1_def by simp
+    qed
+    have row0pos: "entry M 0 j1 \<noteq> 0" using nz' row1z by simp
+    have j1pos: "0 < j1"
+    proof (rule ccontr)
+      assume "\<not> 0 < j1" hence "j1 = 0" by simp
+      thus False using row0pos e00 by simp
+    qed
+    have small0: "entry M 0 0 < entry M 0 j1" using e00 row0pos by simp
+    obtain j0 where "nextrel0 M j0 j1"
+      using nextrel0_exists[OF j1L j1pos small0] by blast
+    thus ?thesis using True by (auto simp: nextR_def)
+  next
+    case False
+    \<comment> \<open>\<open>idx1 = 1\<close>: row-1 \<open>> 0\<close>; the row-0 floor is a strictly-smaller \<open>le0\<close>-ancestor\<close>
+    have idx1: "idx1 M j1 = (if 0 < entry M 1 j1 then 1 else 0)"
+      by (simp add: idx1_def)
+    have row1pos: "0 < entry M 1 j1"
+    proof (rule ccontr)
+      assume "\<not> 0 < entry M 1 j1"
+      hence "idx1 M j1 = 0" using idx1 by simp
+      thus False using False i1_def by simp
+    qed
+    have i1eq: "i1 = 1" using row1pos idx1 i1_def by simp
+    obtain m where lm: "le0 M m j1" and em0: "entry M 0 m = 0"
+      using le0_row0_floor[OF b j1L] by blast
+    have mL: "m < Lng M" using lm le0_bounds by simp
+    have em1: "entry M 1 m = 0"
+      using row0_zero_imp_row1_zero_ST_PS[OF M mL em0] .
+    have small1: "entry M 1 m < entry M 1 j1" using em1 row1pos by simp
+    obtain j0 where "nextrel1 M j0 j1"
+      using nextrel1_exists[OF j1L lm small1] by blast
+    thus ?thesis using i1eq by (auto simp: nextR_def)
+  qed
+  \<comment> \<open>upgrade existence to uniqueness via the parent-uniqueness lemma\<close>
+  obtain j0 where nR: "nextR M i1 j0 j1" using ex by blast
+  have "\<exists>!j0. nextR M i1 j0 j1"
+    using nR nextR_parent_unique by blast
+  thus ?thesis unfolding hasParent_def i1_def j1_def .
+qed
+
 text \<open>\<^bold>\<open>The remaining residual\<close>: only the \<^emph>\<open>no-parent\<close> \<open>Pred\<close> branch
   (\<open>\<not> hasParent\<close> at the last column).  This branch does \<^bold>\<open>not\<close> occur for any
   standard form in the deep corpus (\<open>tools/probe_resid_split.py\<close>: 0 \<open>pred_np\<close>
@@ -1604,7 +2019,14 @@ lemma suffix_oper_witness_residual:
     and "\<not> hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
   shows "\<exists>i' m. i' < length M \<and> fst (M ! i') = 0 \<and> 1 \<le> m
                  \<and> drop i (oper M n) = oper (drop i' M) m"
-  sorry
+proof -
+  \<comment> \<open>the no-parent hypothesis is contradictory for \<open>ST_PS\<close> forms with a
+     non-degenerate last column (@{thm [source] hasParent_last_ST_PS}), so the
+     conclusion holds vacuously.\<close>
+  have "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+    using hasParent_last_ST_PS[OF assms(1) assms(5) assms(6)] .
+  thus ?thesis using assms(7) by contradiction
+qed
 
 text \<open>\<^bold>\<open>The single isolated reachability residual\<close> \<open>suffix_oper_witness\<close>, now with
   the \<^bold>\<open>W1 (\<open>i \<le> j0\<close>) tiling case discharged\<close> from @{thm [source]
