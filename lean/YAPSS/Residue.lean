@@ -888,6 +888,90 @@ def AlphaStepResidue.{u} : Prop :=
     ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
       δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf ξ u
 
+/-! ### `AlphaStepResidue` SHARPENED to the bare value-membership
+
+The whole `AlphaStepResidue` (canonical-representative existence) is **equivalent**
+to the bare membership `psiSelf ξ u ∈ CsetSelf(psiResSelf α) α v` (= ya-pss's
+`value_in_Cset_c_residue`, the most primitive form of the Buchholz Remark
+`C_v(α) = C^c_v(α)`): given the membership, `CsetSelf_witness_canonical` (1.4b)
+EXTRACTS the canonical generator `δ` (band forces the subscript `u`), so the
+existential is recovered, NOT assumed.  This drops the witness construction. -/
+
+/-- **The sharpest necessity-face residual: `NoncanonValueMem`.**  Every
+non-canonical generator value lands in the closure:
+`psiSelf ξ u ∈ CsetSelf(psiResSelf α) α v`.  Equivalent to `AlphaStepResidue`
+(`canonRep_of_mem`); = ya-pss `value_in_Cset_c_residue` = the Buchholz Remark
+content `C_v(α) = C^c_v(α)`, TRUE. -/
+def NoncanonValueMem.{u} : Prop :=
+  ∀ (α : Ordinal.{u}) (v : ℕ) (ξ : Ordinal.{u}) (u : ℕ),
+    ξ ∈ CsetSelf (psiResSelf α) α v → ξ < α →
+    ξ ∉ CsetSelf (psiResSelf ξ) ξ u → v ≤ u →
+    psiSelf ξ u ∈ CsetSelf (psiResSelf α) α v
+
+/-- **`AlphaStepResidue` from `NoncanonValueMem`** (GREEN): the canonical rep `δ` is
+extracted from the membership by `CsetSelf_witness_canonical` (1.4b), with the band
+forcing its subscript to `u`.  So the existential canonical-rep is recovered, not
+assumed — the witness construction is dropped. -/
+theorem alphaStepResidue_of_mem (H : NoncanonValueMem.{u}) : AlphaStepResidue.{u} := by
+  intro α v ξ u hξC hξα hnc hvu
+  have hmem : psiSelf ξ u ∈ CsetSelf (psiResSelf α) α v := H α v ξ u hξC hξα hnc hvu
+  have hlo : Om v ≤ psiSelf ξ u := le_trans (Om_mono hvu) (Om_le_psiSelf ξ u)
+  have hpr : Ordinal.IsPrincipal (· + ·) (psiSelf ξ u) :=
+    fun {x y} hx hy => (psiSelf_addprinc ξ u).2 x y hx hy
+  obtain ⟨u', δ, heq, hδα, hδv, hδc⟩ := CsetSelf_witness_canonical hpr hlo hmem
+  rw [psiResSelf, if_pos hδα] at heq
+  have hua : u' = u := by
+    have h1 : Om u' ≤ psiSelf ξ u := heq ▸ Om_le_psiSelf δ u'
+    have h2 : psiSelf ξ u < Om (u' + 1) := heq ▸ psiSelf_lt_Om_succ δ u'
+    have hle1 : u' ≤ u := by
+      by_contra hc; exact absurd (lt_of_le_of_lt h1 (psiSelf_lt_Om_succ ξ u)) (not_lt.2 (Om_mono (by omega)))
+    have hle2 : u ≤ u' := by
+      by_contra hc; exact absurd (lt_of_le_of_lt (Om_le_psiSelf ξ u) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  rw [hua] at heq hδc
+  have hδc_self : δ ∈ CsetSelf (psiResSelf δ) δ u :=
+    CsetSelf_mono_param _ _ δ u
+      (fun ζ uu hζ => by rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hδα)]) hδc
+  exact ⟨δ, hδα, hδv, hδc_self, heq.symm⟩
+
+/-- **The non-canonical generator value is itself non-canonical and `≤ ξ`**
+(ya-pss `noncanon_value_noncanon`).  If `ξ ∉ C_u(ξ)` then `psiSelf ξ u ≤ ξ`
+(`psiSelf_le_self_of_not_canon`) and `psiSelf ξ u ∉ C_u(psiSelf ξ u)` (else it
+would lie in its own band-closure `⊆` the `ξ`-closure that excludes it, since
+`psiSelf ξ u ≤ ξ`).  This is why the MINIMAL witness is unusable (it can be the
+non-canonical value itself / a ψ-fixpoint). -/
+theorem noncanon_value_noncanon {ξ : Ordinal.{u}} {u : ℕ}
+    (hnc : ξ ∉ CsetSelf (psiResSelf ξ) ξ u) :
+    psiSelf ξ u ≤ ξ ∧ psiSelf ξ u ∉ CsetSelf (psiResSelf (psiSelf ξ u)) (psiSelf ξ u) u := by
+  have hle : psiSelf ξ u ≤ ξ := psiSelf_le_self_of_not_canon hnc
+  refine ⟨hle, ?_⟩
+  intro hcc
+  -- psiSelf ξ u ∈ C_u(psiSelf ξ u) ⊆ C_u(ξ) (CCSelf_mono, psiSelf ξ u ≤ ξ),
+  -- contradicting psiSelf_notMem ξ u : psiSelf ξ u ∉ C_u(ξ).
+  exact psiSelf_notMem ξ u (CCSelf_mono (α := psiSelf ξ u) (β := ξ) hle u hcc)
+
+/-- **`NoncanonValueMem` reduces to the STRICT case `psiSelf ξ u < ξ`** (GREEN).
+By `noncanon_value_noncanon` the value `c = psiSelf ξ u` satisfies `c ≤ ξ`.  The
+fixpoint case `c = ξ` is FREE: then `psiSelf ξ u = ξ ∈ C_v(α)` is exactly the
+generator hypothesis `hξC`.  So the genuine residual is only the strict subcase
+`c < ξ`, where the value is a brand-new ordinal strictly below the (noncanonical)
+generator — the irreducible Buchholz Remark content.  `NoncanonValueMemStrict`
+assumes the strict band; `nvm_of_strict` lifts it to the full `NoncanonValueMem`. -/
+def NoncanonValueMemStrict.{u} : Prop :=
+  ∀ (α : Ordinal.{u}) (v : ℕ) (ξ : Ordinal.{u}) (u : ℕ),
+    ξ ∈ CsetSelf (psiResSelf α) α v → ξ < α →
+    ξ ∉ CsetSelf (psiResSelf ξ) ξ u → v ≤ u →
+    psiSelf ξ u < ξ →
+    psiSelf ξ u ∈ CsetSelf (psiResSelf α) α v
+
+theorem nvm_of_strict (H : NoncanonValueMemStrict.{u}) : NoncanonValueMem.{u} := by
+  intro α v ξ u hξC hξα hnc hvu
+  have hle : psiSelf ξ u ≤ ξ := psiSelf_le_self_of_not_canon hnc
+  rcases lt_or_eq_of_le hle with hlt | heq
+  · exact H α v ξ u hξC hξα hnc hvu hlt
+  · -- fixpoint: psiSelf ξ u = ξ, so the value IS the generator, already in C_v(α)
+    rw [heq]; exact hξC
+
 /-- **`alpha_step_residue` (re-sound).**  Lean analogue of ya-pss's
 `alpha_step_residue` (necessity.thy:1139), the non-canonical-generator step of the
 closure-rank induction.  GREEN modulo the genuine `AlphaStepResidue` (canonical
@@ -907,12 +991,16 @@ theorem alpha_step_residue
     psi.{u} ξ u ∈ CsetSelf (psiResSelf α) α v := by
   -- transport psi → psiSelf at ξ < α
   rw [IHa ξ hξα u]
-  -- the genuine residual supplies the canonical witness δ
+  -- the genuine residual supplies the canonical witness δ.  We rest on the
+  -- SHARPEST form `NoncanonValueMem` (bare value-membership = ya-pss
+  -- `value_in_Cset_c_residue`); `alphaStepResidue_of_mem` recovers the canonical
+  -- representative `δ` from it via `CsetSelf_witness_canonical` (1.4b).
   obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ :=
-    (show AlphaStepResidue.{u} from
-      -- GENUINE Buchholz §1 core: the non-canonical generator's value has a
-      -- canonical representative δ < α inside C_v(α).  Replaces the false vacuity.
-      sorry) α v ξ u hξC hξα hnc hvu
+    alphaStepResidue_of_mem
+      (show NoncanonValueMem.{u} from
+        -- GENUINE Buchholz §1 core (`C_v(α) = C^c_v(α)`): the non-canonical
+        -- generator's value lands in `C_v(α)`.  Replaces the false vacuity.
+        sorry) α v ξ u hξC hξα hnc hvu
   -- fire δ: psiResSelf α δ u = psiSelf δ u = psiSelf ξ u ∈ C_v(α)
   have hconv : δ ∈ CsetSelf (psiResSelf α) δ u := by
     rwa [CsetSelf_param_eq (p := psiResSelf δ) (q := psiResSelf α)
