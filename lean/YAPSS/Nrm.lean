@@ -1495,7 +1495,124 @@ theorem ST_PS_desc_caseB {D : PairSeq} {n : ℕ} {rest : PairSeq}
     (hN : ST_PS ((0,0) :: D))
     (hL : (0,0) :: rest = ((0,0) :: D)⟦n⟧) :
     ST_PS ((0,0) :: rest.takeWhile (fun q => (0:ℕ) < q.1)) := by
-  sorry
+  set c : ℕ × ℕ := (0,0) with hc
+  have hc1 : c.1 = 0 := rfl
+  -- interior columns of `c :: D` are all row-0 `> 0`.
+  have hint : ∀ j, 1 ≤ j → j < (c :: D).length - 1 → 0 < entry (c :: D) 0 j :=
+    fun j h1 h2 => interior_pos hTle h1 h2
+  have hPred : Pred (c :: D) = (c :: D).dropLast := by
+    unfold Pred; rw [if_neg (by omega)]
+  -- `(c :: D).dropLast = c :: D.dropLast`.
+  have hDl : (c :: D).dropLast = c :: D.dropLast := by
+    cases D with
+    | nil => simp only [List.length_cons, List.length_nil] at L; omega
+    | cons a D' => simp [List.dropLast_cons_cons]
+  -- The descendant block is either the whole `N⟦n⟧` (empty tail) or `N.dropLast`
+  -- (`= N⟦1⟧`); both are `ST_PS` oper-images of `c :: D`.
+  have hlen2 : 2 ≤ (c :: D).length := L
+  set j1 := (c :: D).length - 1 with hj1def
+  have hj1pos : 0 < j1 := by rw [hj1def]; omega
+  -- helper: when `rest`'s `dropWhile` is empty, `takeWhile = rest`, giving `N⟦n⟧`.
+  have whole_case : rest.dropWhile (fun q => (0:ℕ) < q.1) = [] →
+      ST_PS (c :: rest.takeWhile (fun q => (0:ℕ) < q.1)) := by
+    intro hdw
+    have htw : rest.takeWhile (fun q => (0:ℕ) < q.1) = rest := by
+      have := List.takeWhile_append_dropWhile (p := fun q => (0:ℕ) < q.1) (l := rest)
+      rw [hdw, List.append_nil] at this; exact this
+    rw [htw, hL]
+    exact ST_PS.oper hN hn
+  -- helper: in the Pred branches, `c :: D.dropLast = (c :: D)⟦1⟧`, hence `ST_PS`.
+  have dropLast_ST_pred : entry (c :: D) 0 j1 = 0 ∧ entry (c :: D) 1 j1 = 0 →
+      ST_PS (c :: D.dropLast) := by
+    intro hz
+    rw [← hDl, ← hPred, ← oper_eq_pred_of_zero 1 (by omega) hz]; exact ST_PS.oper hN (le_refl 1)
+  have dropLast_ST_noparent : ¬ (entry (c :: D) 0 j1 = 0 ∧ entry (c :: D) 1 j1 = 0) →
+      ¬ hasParent (c :: D) (idx1 (c :: D) j1) j1 → ST_PS (c :: D.dropLast) := by
+    intro hz hp
+    rw [← hDl, ← hPred, ← oper_eq_pred_of_noParent 1 (by omega) hz hp]; exact ST_PS.oper hN (le_refl 1)
+  -- main split (mirror `oper_tail_cases` |tail| ≤ 1).
+  by_cases hz : entry (c :: D) 0 j1 = 0 ∧ entry (c :: D) 1 j1 = 0
+  · -- predzero: `N⟦n⟧ = N.dropLast`, `rest = D.dropLast` all interior → takeWhile = rest.
+    have hLp : (c :: D)⟦n⟧ = (c :: D).dropLast := by
+      rw [oper_eq_pred_of_zero n (by omega) hz, hPred]
+    rw [hLp, hDl] at hL
+    have hrest : rest = D.dropLast := by injection hL
+    have hdw : rest.dropWhile (fun q => (0:ℕ) < q.1) = [] := by
+      rw [hrest, List.dropWhile_eq_nil_iff]
+      intro x hx; simp only [decide_eq_true_eq]; exact dropLast_interior_pos hint hx
+    have htw : rest.takeWhile (fun q => (0:ℕ) < q.1) = D.dropLast := by
+      have := List.takeWhile_append_dropWhile (p := fun q => (0:ℕ) < q.1) (l := rest)
+      rw [hdw, List.append_nil] at this; rw [this, hrest]
+    rw [htw]; exact dropLast_ST_pred hz
+  · by_cases hp : hasParent (c :: D) (idx1 (c :: D) j1) j1
+    · by_cases hd0 : 0 < (if 0 < idx1 (c :: D) j1
+          then entry (c :: D) 0 j1 - entry (c :: D) 0 (parent (c :: D) (idx1 (c :: D) j1) j1)
+          else 0)
+      · exact whole_case (dropWhile_rest_tiling (by omega) hL hint hc1 hz hp (Or.inr hd0))
+      · by_cases hj0 : parent (c :: D) (idx1 (c :: D) j1) j1 = 0
+        · -- Case B: `rest = D.dropLast ++ copies`, takeWhile strips at 2nd copy root.
+          push_neg at hd0
+          have hi1 : idx1 (c :: D) j1 = 0 := by
+            by_contra hne
+            have hipos : 0 < idx1 (c :: D) j1 := by have := idx1_le1 (c :: D) j1; omega
+            rw [if_pos hipos, hj0] at hd0
+            have h0e : entry (c :: D) 0 0 = 0 := by
+              have : entry (c :: D) 0 0 = c.1 := by unfold entry; rfl
+              rw [this, hc1]
+            rw [h0e] at hd0
+            have hj1z : entry (c :: D) 0 j1 = 0 := by omega
+            exact no_hasParent_of_row0_zero hj1z hp
+          have hform := oper_caseB_form (c :: D) n (by omega) hi1 hz hp hj0
+          have hkey : rest.dropWhile (fun q => (0:ℕ) < q.1)
+              = (List.range (n - 1)).flatMap (fun _ => (c :: D).dropLast) :=
+            dropWhile_rest_caseB hn hc1 (by omega) hL hint hform
+          -- peel the first copy out of `rest`.
+          obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+          have hpeel : (List.range (m + 1)).flatMap (fun _ => (c :: D).dropLast)
+              = c :: (D.dropLast ++ (List.range m).flatMap (fun _ => (c :: D).dropLast)) := by
+            rw [List.range_succ_eq_map, List.flatMap_cons, List.flatMap_map, hDl, List.cons_append]
+          rw [hform, hpeel] at hL
+          have hrest : rest = D.dropLast ++ (List.range m).flatMap (fun _ => (c :: D).dropLast) := by
+            injection hL
+          have htw : rest.takeWhile (fun q => (0:ℕ) < q.1) = D.dropLast := by
+            rw [hrest, List.takeWhile_append]
+            have hself : (D.dropLast.takeWhile (fun q => (0:ℕ) < q.1)).length = D.dropLast.length := by
+              rw [List.takeWhile_eq_self_iff.2]
+              intro x hx; simp only [decide_eq_true_eq]; exact dropLast_interior_pos hint hx
+            rw [if_pos hself]
+            -- the copies-tail starts with a root `c` (row-0 = 0), so its `takeWhile` is `[]`.
+            have hcopynil : ((List.range m).flatMap (fun _ => (c :: D).dropLast)).takeWhile
+                (fun q => (0:ℕ) < q.1) = [] := by
+              rcases Nat.eq_zero_or_pos m with hm0 | hmpos
+              · rw [hm0]; simp
+              · obtain ⟨m', rfl⟩ : ∃ m', m = m' + 1 := ⟨m - 1, by omega⟩
+                have hc2 : (List.range (m' + 1)).flatMap (fun _ => (c :: D).dropLast)
+                    = c :: (D.dropLast ++ (List.range m').flatMap (fun _ => (c :: D).dropLast)) := by
+                  rw [List.range_succ_eq_map, List.flatMap_cons, List.flatMap_map, hDl, List.cons_append]
+                rw [hc2, List.takeWhile_cons]
+                simp only [hc1, decide_eq_true_eq, Nat.lt_irrefl, if_false]
+            rw [hcopynil, List.append_nil]
+          rw [htw]
+          -- `c :: D.dropLast = (c :: D)⟦1⟧` (Case-B single copy).
+          have hform1 := oper_caseB_form (c :: D) 1 (by omega) hi1 hz hp hj0
+          rw [show (List.range 1).flatMap (fun _ => (c :: D).dropLast) = (c :: D).dropLast by simp]
+            at hform1
+          rw [← hDl, ← hform1]; exact ST_PS.oper hN (le_refl 1)
+        · push_neg at hd0
+          have hj0ge : 1 ≤ parent (c :: D) (idx1 (c :: D) j1) j1 := by omega
+          exact whole_case (dropWhile_rest_tiling (by omega) hL hint hc1 hz hp (Or.inl hj0ge))
+    · -- noparent: `N⟦n⟧ = N.dropLast`.
+      have hLp : (c :: D)⟦n⟧ = (c :: D).dropLast := by
+        rw [oper_eq_pred_of_noParent n (by omega) hz hp, hPred]
+      rw [hLp, hDl] at hL
+      have hrest : rest = D.dropLast := by injection hL
+      have hdw : rest.dropWhile (fun q => (0:ℕ) < q.1) = [] := by
+        rw [hrest, List.dropWhile_eq_nil_iff]
+        intro x hx; simp only [decide_eq_true_eq]; exact dropLast_interior_pos hint hx
+      have htw : rest.takeWhile (fun q => (0:ℕ) < q.1) = D.dropLast := by
+        have := List.takeWhile_append_dropWhile (p := fun q => (0:ℕ) < q.1) (l := rest)
+        rw [hdw, List.append_nil] at this; rw [this, hrest]
+      rw [htw]; exact dropLast_ST_noparent hz hp
 
 /-- **The oper-case of `ST_PS_desc`** (the isolated `takeWhile`-dual residual).
 For a long `ST_PS` form `N` (root `(0,0)`, `1 < |N|`) whose expansion
