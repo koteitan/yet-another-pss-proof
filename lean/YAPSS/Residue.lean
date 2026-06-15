@@ -1097,6 +1097,63 @@ def CollapseResidue.{u} : Prop :=
   ∀ (a : ℕ) (b' g : Three), wf3 b' → g ∈ Gterm a b' → ¬ olt g b' →
     psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a
 
+/-! ### COLLAPSE-face analysis (omitted form, no self-bridge) — the genuine reduction
+
+`CollapseResidue` (= `Nrm.psi_proj_notmem`) is the COLLAPSE face.  Two clean facts
+(both PROVEN here, sorryAx-free, omitted-form only):
+
+* `oV_le_of_bad` — an OT3-violator `g` (`g ∈ Gterm a b'`, `¬ olt g b'`) has
+  `oV b' ≤ oV g` (Buchholz B1, `bad_imp_oV_ge`);
+* `collapse_iff_eq` — `CollapseResidue` (per step) ⟺ the **collapse equality**
+  `psi (oV b') a = psi (oV g) a` (via `psi_notMem_iff_eq`, since `oV b' ≤ oV g`);
+* `psi_proj_mem_imp_strict` — *membership* `psi (oV b') a ∈ C_a(oV g)` ⟹
+  `psi (oV b') a < psi (oV g) a` STRICT (M1 `psi_form_of_mem` + `psi_strict_mono_mem`).
+
+So `CollapseResidue` ⟺ `psi (oV b') a = psi (oV g) a`, and its DUAL (membership)
+is the strict `<` — exactly the dual of the non-collapse lever `oV_nf_arg_lt`.
+
+**FINDING (this session): the collapse face is ENTANGLED with necessity (B2).**
+Per ya-pss `nrm.thy` (`psi_proj_nonmem`, `oV_noncanon_of_bad`), the membership
+`psi (oV b') a ∈ C_a(oV g)` is, by M1, a generator `psi ξ a` with `ξ < oV g`; the
+case `ξ = oV b'` forces `oV b'` CANONICAL, contradicting **B2** (`oV b'`
+non-canonical — TRUE because an OT3-violator with `oV g ≥ oV b'` violates Buchholz
+1.9 necessity at the bound `oV b'`).  B2 needs the **necessity residual**
+(`NEC_of_argExtract`'s `argExt`/`SUFF`, parametric in `Otembed`/`Buchholz17`) — so
+the collapse face does NOT bypass necessity; it consumes a necessity INSTANCE (B2)
+plus the larger-witness collapse (`ξ = oV(proj a b') ≥ oV g`, circular with
+`psi_proj`).  Sub-`ε` corroboration: if `oV b' < ε(a)` then `oV b'` is canonical
+(`mem_Cself_lvl`), so by necessity it has NO violator with larger value; hence an
+OT3-violator forces `oV b' ≥ ε(a)` (the collapse region) — the dual of the lever's
+"sub-ε ⟹ strict" (which would make `CollapseResidue` FALSE if a sub-ε strict
+violator existed). -/
+
+/-- **B1 (`bad_imp_oV_ge`)**: an OT3-violator has value `≥ oV b'`. -/
+theorem oV_le_of_bad {a : ℕ} {b' g : Three}
+    (wb' : wf3 b') (hg : g ∈ Gterm a b') (hv : ¬ olt g b') : oV.{u} b' ≤ oV g := by
+  have wg : wf3 g := wf3_Gterm wb' hg
+  rcases olt_total b' g with h | rfl | h
+  · exact (oV_order_pres wb' wg h).le
+  · exact le_rfl
+  · exact absurd h hv
+
+/-- **`CollapseResidue` (per step) ⟺ the collapse equality** `ψ_a(oV b') = ψ_a(oV g)`. -/
+theorem collapse_iff_eq {a : ℕ} {b' g : Three}
+    (wb' : wf3 b') (hg : g ∈ Gterm a b') (hv : ¬ olt g b') :
+    psi.{u} (oV b') a ∉ Cset (psiRes (oV g)) (oV g) a ↔ psi.{u} (oV b') a = psi (oV g) a :=
+  psi_notMem_iff_eq (oV_le_of_bad wb' hg hv)
+
+/-- **Membership ⟹ strict** (the DUAL of collapse): if `ψ_a(oV b') ∈ C_a(oV g)`
+then `ψ_a(oV b') < ψ_a(oV g)`.  M1 extracts a generator `ψ_a(ξ)`, `ξ < oV g` in
+`C_a(oV g)`, with value `ψ_a(oV b')`; `psi_strict_mono_mem` gives the strict gap. -/
+theorem psi_proj_mem_imp_strict {a : ℕ} {b' g : Three}
+    (hmem : psi.{u} (oV b') a ∈ Cset (psiRes (oV g)) (oV g) a) :
+    psi.{u} (oV b') a < psi (oV g) a := by
+  have hap : Ordinal.IsPrincipal (· + ·) (psi.{u} (oV b') a) :=
+    fun {x y} hx hy => (psi_addprinc (oV b') a).2 x y hx hy
+  obtain ⟨ξ, hξC, hξlt, hξeq⟩ :=
+    psi_form_of_mem hap (Om_le_psi (oV b') a) (psi_lt_Om_succ (oV b') a) hmem
+  exact hξeq ▸ psi_strict_mono_mem hξC hξlt
+
 /-- **The collapse-side residue (self form).**  The `CollapseResidue` content
 phrased in the green self machinery (`psiSelf`/`CsetSelf`), which is where the
 self-collapse tool `collapseSelf_le` lives.  Provided so the residue can be
