@@ -8,12 +8,7 @@
   - 背景: Towsner §2（絶対系）には WF 証明が無く、§3.2 の WF は polymorphic 系専用。絶対系では `Om n` が「足場ではなく本物の大元」のため構造帰納の底が無く、Acc_n/M_n レベル構築（数百行）が要る。多相系なら §3.2 がほぼ直接移植でき `wf pR` が閉じる。
 
 ## 進捗ツリー
-> **サマリ (2026-06-09, route A 確定)**: PSS 停止性 = `proofs.step_terminates`、残 = `wf Rnf`（NF=translate(ST_PS) 上 lex 整礎性）。
-> 順序は **Buchholz lex**（`mechanized.three`, olt_trans/total/irrefl 緑）＝旧(1)olt_trans 解決済・旧(3)op_NF は three 直用で不要。
-> WF は **route A = Buchholz §1-2 を ZFC_in_HOL 順序数上で意味論的に証明**（`ord/psi.thy`, session PSI）。旧 K-dom `ot`(wo/buchholz/embed) は誤変種で破棄予定。
-> 設計詳細・ZFC_in_HOL API・経緯は memo.md / conventionals.md へ。
-> **サマリ (2026-06-14, Lean route)**: 残 3 sorry（nrm_order_pres 経由の psi_proj_notmem / oV_nf_order_pres, および独立路 wf_ArgsA）は全て同一の **Buchholz 崩壊核 CC**（= 論文 Remark p197「omitting condition は C_v(α) を変えない」の collapse 領域, 未証明）に帰着。atomic crux 解明済（bootstrap ⟹ canonical rep は <α に必ず存在 ⟹ CW は真）。NEC(1.9)/CW は `CC_of_collapseCanon`+1.7 で CC 単独に還元済（Buchholz17.lean, 緑）。詳細 memory nrm-campaign-status / nrm_stepdec_design.md。
-> **サマリ (2026-06-15, Lean 確定 endpoint)**: 停止性 = `PSS_terminates_nrm_final : CollapseResidueMaxo → HeadFamilyNF → WellFounded stepRel`（sorryAx-free, 残 = Buchholz §1 collapse 1点 = `{CollapseResidueMaxo 真278/278, HeadFamilyNF 真Ω帯双対}`、他全証明）。バイパス2件は DEAD = 反例で偽: `ProjFixesNrm`（proj は nrm 像で発火 `proj 0 (p_1(p_2(0)))≠p_1(p_2(0))`）/ `NFwf3`（NF⊄wf3, `translate(diagSeq 0 2)∈NF` は非wf3）。記録 lean/PROOF-STATUS.md。
+> 経緯・サマリは memo.md「進捗サマリ」へ移動。
 - 🚨 定理（標準形ペア数列システムの停止性）〔proofs.thy / embed.thy〕
   - ✅ §5 定式化〔def.thy: 親子関係 nextrel0/1・基本列 oper=M[n]・標準形 ST_PS・step〕
   - ✅ 三分木記法 $p_a(b)+c$〔mechanized.thy〕
