@@ -34,48 +34,51 @@
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
     - ✅ wfimg → 対角 accessibility 還元〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS〕
-    - 🚨 **本命＝pure-lex 構文的整礎性（順序数なし, wf.thy, sorry ゼロ・緑）** ［決定 2026-06-10, memory pss-wf-route-purelex-syntactic］
-      - ✅ maxsub 単調性 on NF：w<o x ⟹ maxsub w ≤ maxsub x〔olt_imp_slex / nfinv / nfinv_ST_PS / maxsub_mono_NF'〕
-      - ✅ CNF：標準形は CNF に翻訳〔cnf / cnf_ST_PS / cnf_oper（i1=0/1 ケース cnf_copies 等）/ cnf_tops_le〕
-      - ✅ wf Rnf を「maxsub レベル内 WF」に還元〔wf_Rnf_from_within_level：Rnf=減少部(自明WF)∪同値部〕
-      - ✅ wfE（レベル内整礎）→ 和の層を剥離〔wfsum.thy: NF=非増加和 p0(b_i)、olt=lex→multiset 拡張、olt_sum_decomp/olt_sum_mult/wf_level_from_args/wfE_from_args〕
-      - ✅ 一般 summand peel＋添字 peel〔summands/olt_summands_mult（cnf だけで非増加）、singdest lex_prod〕
-      - ✅ ladder の底＝レベル0 完全証明〔wf_olt0：cnf∧maxsub=0 クラス、PrSS 流 accp+multp（rA0/accp_multp_olt0/sum_acc/sing0_acc/lvl0_acc）〕
-      - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（崩壊核 = Buchholz CC, 下記 nrm 路と同核）。
-        - 確定：有限 peel では閉じない／純構文クラスは t_k・x_k 連鎖で不成立（生成依存）／LPO 還元不可。
-      - ✅ **柱2: wf_olt_wf3 SORRY-FREE**〔ord/psi.thy+otembed.thy, session PSI〕＝Buchholz Lemma 2.2 自前証明
-        （pure-lex olt は Buchholz OT の順序そのもの；wf3=OT クラス上で oV 埋め込み厳密単調；
-         C_build＋left-size 主帰納で Ccond 解消；x_k・t_k は wf3 違反で排除）
-      - ✅ **柱3: olt_ST_iff_seqlex SORRY-FREE**〔seqlex.thy〕＝標準形上で translate は列 lex からの順序同型
-        （blockok 規律: row0≥d・先頭=d・ステップ≤+1；blockok_ST_PS で全標準形が満たす；
-         wfE ⟺ ST_PS 上の seqlex 整礎性、と BMS ネイティブに言い換え可能に）
-      - 🚨🤖 本丸=(α) 新本線: **値正規化 nrm = NF→OT 順序埋め込み**〔ord/nrm.thy 緑〕
-        - ✅ nrm 定義＋ proj_id/proj_rec/proj_wf3/proj_G/**wf3_nrm**（像⊆OT）全証明済（PSI 3s 緑）
-        - ✅ 実証: 2,643,843 ペア（NF+遺伝ブロック、クロスレベル込）で衝突0・逆転0〔tools/valnorm.py〕
-        - ✅ **PSS_terminates_nrm** = inv_image wf_olt_wf3 (nrm∘translate)（peel/レベル分解不要）
-        - ✅ wf_Rnf_nrm（order_pres⟹wf Rnf）・nrm_step_dec（order_pres から導出）
-        - 🚨 live sorry = nrm_order_pres ただ1つ。【Lean】= psi_proj_notmem + oV_nf_order_pres に分解済、両者とも Buchholz 崩壊核 CC へ還元（psi_proj_notmem→区間非canonical via collapse_le; NEC→CC via 1.7）。攻め筋2段: (弱) nrm_step_dec 直接証明
-          〔E6: proj=首最大row1接尾辞切出し、E7: 第一差分は prefix/sub の2種のみ、oper 機構流用〕
-          / (強) 全ペア保存＝proj-mono（弱単調＋CRUX 単射、A_a 全集合で実証済・衝突0）
-        - 🚨🤖 攻略 nrmstep.thy（Pred ケース）: ✅ olt層（nrm_snoc_seg/ins_olt_mono）
-          ✅ 構造層（einc/eflip・gap補題・fire_transport・nrm_snoc_str・projE骨格・
-          ST_snocokS_gen+INV螺旋・maxo_ub・stepsok）✅ **STS_A 完全証明**（cnf隣接+pre帰納）
-          ✅ **proj_once**（射影=1ステップ; max臨界は自ら無発火）+ **proj_submono**＋Gterm_trans/maxg_nofire
-          ✅ **E6アーキテクチャ移行**（projE系削除→msfx接尾辞定理に再編; maxr1/msfx/NT_single/proj_fire_ne 純粋部品緑;
-          ST_snocokS_gen にインライン配線・長さ帰納で循環なし; 実証 V1-V5 全0違反 = memo続22）
-          ✅ post一般化（segprov/STS_A/ST_snocokS_gen/ST_snocok_int/nrm_snoc_int、内部位置対応・実証8243で0違反）
-          ✅ fbseg（森境界ピース）＋閉包補題3本 / NT_noabsorb / **NT_tail_lt**（nrm和尾部厳密増大）
-          ✅ C1層完成: fbseg_hd_level（blockokレベル固定・drop=0）→NT_dom→NT_shape→NT_hd/NT_tail_lt（memo続24）
-          ✅ **E6_value 本体**（E6_mem/E6_dom_tie 分解のコンビネータ・proj_once+maxo_ub）
-          ✅ **GCAT**（Gカタログ・u一様・E6_value非依存）+ subs連鎖 + NT_msfx_hdsub + 低添字dominance
-          ✅ nrm_snoc_mid/NT_prefix_lt（mid-host）/ msfx_tail / **E6_dom_tie_resolved**（l=j0閉鎖）/
-          **E6_hdom**（排除コア、GCATパターン）— 層化循環は最終組立で同時帰納に（memo続25）
-          ✅ 健全性修正: E6_lpl/E6_dom_deep に可視性前提（旧文面は偽・実証2163逆転をキャッチ）
-          🚨 実効コア4: **E6_lpl**（後続片敗北・可視性付き）/ **E6_dom_deep**（深部タイ）/
-          **E6_mem**（可視鎖メンバーシップ連鎖）/ **NT_tie**（SIB核）
-          🚨 行レベル3: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（NT_tieと同核）
-        - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
+    - 🚨 **本命＝pure-lex 構文的整礎性**（順序数なし, wf.thy）→ **下の独立ツリー「pure-lex 構文的整礎性」を参照**（深ネスト解消のため第一レベルへ移動）
     - 🗑 旧 K-dom ルート（wo/buchholz/embed：absolute, 残 sorry あり・不使用）。oV の「NF 直接埋め込み」は collapse で破棄（wf3 上の埋め込みとして柱2に再生）。
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
+
+- 🚨 **本命＝pure-lex 構文的整礎性（順序数なし, wf.thy, sorry ゼロ・緑）** ［決定 2026-06-10, memory pss-wf-route-purelex-syntactic／lean-wtt-route〕
+  - ✅ maxsub 単調性 on NF：w<o x ⟹ maxsub w ≤ maxsub x〔olt_imp_slex / nfinv / nfinv_ST_PS / maxsub_mono_NF'〕
+  - ✅ CNF：標準形は CNF に翻訳〔cnf / cnf_ST_PS / cnf_oper（i1=0/1 ケース cnf_copies 等）/ cnf_tops_le〕
+  - ✅ wf Rnf を「maxsub レベル内 WF」に還元〔wf_Rnf_from_within_level：Rnf=減少部(自明WF)∪同値部〕
+  - ✅ wfE（レベル内整礎）→ 和の層を剥離〔wfsum.thy: NF=非増加和 p0(b_i)、olt=lex→multiset 拡張、olt_sum_decomp/olt_sum_mult/wf_level_from_args/wfE_from_args〕
+  - ✅ 一般 summand peel＋添字 peel〔summands/olt_summands_mult（cnf だけで非増加）、singdest lex_prod〕
+  - ✅ ladder の底＝レベル0 完全証明〔wf_olt0：cnf∧maxsub=0 クラス、PrSS 流 accp+multp（rA0/accp_multp_olt0/sum_acc/sing0_acc/lvl0_acc）〕
+  - 🚨 ★残ただ1つ＝`wf_ArgsA`：wf on ArgsA m（崩壊核 = Buchholz CC, 下記 nrm 路と同核）。
+    - 確定：有限 peel では閉じない／純構文クラスは t_k・x_k 連鎖で不成立（生成依存）／LPO 還元不可。
+  - ✅ **柱2: wf_olt_wf3 SORRY-FREE**〔ord/psi.thy+otembed.thy, session PSI〕＝Buchholz Lemma 2.2 自前証明
+     （pure-lex olt は Buchholz OT の順序そのもの；wf3=OT クラス上で oV 埋め込み厳密単調；
+     C_build＋left-size 主帰納で Ccond 解消；x_k・t_k は wf3 違反で排除）
+  - ✅ **柱3: olt_ST_iff_seqlex SORRY-FREE**〔seqlex.thy〕＝標準形上で translate は列 lex からの順序同型
+     （blockok 規律: row0≥d・先頭=d・ステップ≤+1；blockok_ST_PS で全標準形が満たす；
+     wfE ⟺ ST_PS 上の seqlex 整礎性、と BMS ネイティブに言い換え可能に）
+  - 🚨🤖 本丸=(α) 新本線: **値正規化 nrm = NF→OT 順序埋め込み**〔ord/nrm.thy 緑〕
+    - ✅ nrm 定義＋ proj_id/proj_rec/proj_wf3/proj_G/**wf3_nrm**（像⊆OT）全証明済（PSI 3s 緑）
+    - ✅ 実証: 2,643,843 ペア（NF+遺伝ブロック、クロスレベル込）で衝突0・逆転0〔tools/valnorm.py〕
+    - ✅ **PSS_terminates_nrm** = inv_image wf_olt_wf3 (nrm∘translate)（peel/レベル分解不要）
+    - ✅ wf_Rnf_nrm（order_pres⟹wf Rnf）・nrm_step_dec（order_pres から導出）
+    - 🚨 live sorry = nrm_order_pres ただ1つ。【Lean】= psi_proj_notmem + oV_nf_order_pres に分解済、両者とも Buchholz 崩壊核 CC へ還元（psi_proj_notmem→区間非canonical via collapse_le; NEC→CC via 1.7）。攻め筋2段: (弱) nrm_step_dec 直接証明
+      〔E6: proj=首最大row1接尾辞切出し、E7: 第一差分は prefix/sub の2種のみ、oper 機構流用〕
+      / (強) 全ペア保存＝proj-mono（弱単調＋CRUX 単射、A_a 全集合で実証済・衝突0）
+    - 🚨🤖 攻略 nrmstep.thy（Pred ケース）: ✅ olt層（nrm_snoc_seg/ins_olt_mono）
+      ✅ 構造層（einc/eflip・gap補題・fire_transport・nrm_snoc_str・projE骨格・
+      ST_snocokS_gen+INV螺旋・maxo_ub・stepsok）✅ **STS_A 完全証明**（cnf隣接+pre帰納）
+      ✅ **proj_once**（射影=1ステップ; max臨界は自ら無発火）+ **proj_submono**＋Gterm_trans/maxg_nofire
+      ✅ **E6アーキテクチャ移行**（projE系削除→msfx接尾辞定理に再編; maxr1/msfx/NT_single/proj_fire_ne 純粋部品緑;
+      ST_snocokS_gen にインライン配線・長さ帰納で循環なし; 実証 V1-V5 全0違反 = memo続22）
+      ✅ post一般化（segprov/STS_A/ST_snocokS_gen/ST_snocok_int/nrm_snoc_int、内部位置対応・実証8243で0違反）
+      ✅ fbseg（森境界ピース）＋閉包補題3本 / NT_noabsorb / **NT_tail_lt**（nrm和尾部厳密増大）
+      ✅ C1層完成: fbseg_hd_level（blockokレベル固定・drop=0）→NT_dom→NT_shape→NT_hd/NT_tail_lt（memo続24）
+      ✅ **E6_value 本体**（E6_mem/E6_dom_tie 分解のコンビネータ・proj_once+maxo_ub）
+      ✅ **GCAT**（Gカタログ・u一様・E6_value非依存）+ subs連鎖 + NT_msfx_hdsub + 低添字dominance
+      ✅ nrm_snoc_mid/NT_prefix_lt（mid-host）/ msfx_tail / **E6_dom_tie_resolved**（l=j0閉鎖）/
+      **E6_hdom**（排除コア、GCATパターン）— 層化循環は最終組立で同時帰納に（memo続25）
+      ✅ 健全性修正: E6_lpl/E6_dom_deep に可視性前提（旧文面は偽・実証2163逆転をキャッチ）
+      🚨 実効コア4: **E6_lpl**（後続片敗北・可視性付き）/ **E6_dom_deep**（深部タイ）/
+      **E6_mem**（可視鎖メンバーシップ連鎖）/ **NT_tie**（SIB核）
+      🚨 行レベル3: E6_qcut_last / E6_iii_singleton / E6_seam ＋ STS_B（NT_tieと同核）
+    - 旧 (β1)Trans級翻訳 / (β2)P進再現 は不要に。wf_ArgsA 路線は凍結（wfsum に残置）
+  - 🟢 **【Lean 2026-06-15】arg-zone ORDER 路線（ya-pss 続90 移植, live path）**: ordinal-membership collapse を回避し nrm_order_pres を proj0_olt_NF へ。keystone `proj_keystone`(sorry-free)・layer-1 forest bridge・SubBlock positional correspondence(`Gterm_translate_subblock`)・carrier decomposition すべて GREEN。残 = `proj_bothfire_witness_eq`+`not_pfire0_lead1max1_NF` = 単一 forest core（global r1ok parent-forest pull-through; (B) tail-forcing+CritEmbed）。詳細 memory lean-wtt-route。
