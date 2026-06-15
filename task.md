@@ -37,9 +37,11 @@
     - ✅ argzone_val_ge〔VAL・ST_PS_head_val_zero で退化〕
     - ✅ proj_step_argzone_olt〔FIRE・非発火 72% 緑〕
     - ✅ proj_step_fire_witness〔FW・witness g'=proj y F〕
-    - ✅ argzone_fire_FF〔FF・発火=先頭引数現象 proj 0 X=harg X〕
-    - 🚨 argzone_proj_head：H1 発火 image の head 同定〔nrm.thy〕
-    - 🚨 argzone_fire_transport：H2 head 引数 transport〔nrm.thy〕
+    - ✅ argzone_fire_FF / argzone_proj_head / argzone_fire_transport〔FF・HEAD〕
+    - 🚨 argzone_head_lead_gt：lead X<lead(harg X)〔nrm.thy〕
+    - 🚨 argzone_head_dominates：head=maximal violator〔nrm.thy〕
+    - 🚨 argzone_F_fires：発火 transport B→F〔nrm.thy〕
+    - 🚨 argzone_harg_olt：olt(harg B)(harg F)〔nrm.thy〕
     - 🚨 nrm_argzone_olt：深さ一般統一サイズ帰納が blocker〔nrm.thy〕
     - 🚨 keeps_head_ST_PS：tied e=y〔nrm.thy〕
     - 🚨 oV_mono_NF：意味論同値〔ovnf.thy〕
