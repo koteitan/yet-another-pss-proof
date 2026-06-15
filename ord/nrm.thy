@@ -838,26 +838,888 @@ text \<open>\<^bold>\<open>The single isolated reachability residual\<close> \<o
   when \<open>off > 0\<close> (tiled-region suffix), and \<open>i' = i, m = n\<close> for the degenerate
   branches.
 
-  \<^bold>\<open>Empirically verified\<close> at deep closure: \<^bold>\<open>0 failures / 125592\<close> row-0
-  suffixes across the whole ST_PS corpus, all three branches
-  (\<open>tools/probe_residual_exist.py\<close>; the closed-form tiling witness
-  \<open>tools/probe_unified.py\<close>: 0 / 15688; green-prefix commutation
-  \<open>tools/probe_oper_commute.py\<close> W1: 0 / 6393; tiled-region witness
-  \<open>tools/probe_w2_witness.py\<close>: 0 / 7164; \<open>Pred\<close> branch \<open>tools/probe_degen.py\<close>:
-  0 / 8220; parent-invariance under row-0 prefix removal
-  \<open>tools/probe_parent_inv.py\<close>: 0 / 2131).  Proving it in Isabelle requires the
-  \<open>nextrel0\<close>/\<open>le0\<close> valley conditions to be invariant under removing a
-  row-0-headed prefix of length \<open>\<le> j0\<close> \<dash> a \<^emph>\<open>global\<close> row-0 reachability fact \<dash>
-  which is the genuine remaining work; everything else (the strengthened
-  suffix-closure lemma and \<open>tail_zone_ST_PS\<close> itself) is discharged below from
-  this one residual.  Independent of the \<section>1 collapse core.\<close>
+  \<^bold>\<open>Status (2026-06-15): PROVED\<close> for every branch reachable by a standard form.
+  The lemma is now discharged by case analysis on the \<open>oper\<close> branch:
+    \<^item> \<^bold>\<open>identity\<close> (\<open>Lng M \<le> 1\<close>): \<open>oper M n = M\<close>, \<open>i = 0\<close>, witness \<open>i' = 0, m = n\<close>.
+    \<^item> \<^bold>\<open>Pred / last column \<open>(0,0)\<close>\<close> (\<open>suffix_oper_witness_pred\<close>):
+      \<open>oper M n = butlast M\<close>, \<open>drop i (butlast M) = butlast (drop i M) = (drop i M)[1]\<close>
+      (the last column is unchanged, still \<open>(0,0)\<close>).  Witness \<open>i' = i, m = 1\<close>.
+    \<^item> \<^bold>\<open>tiling, \<open>i \<le> j0\<close>\<close> (\<open>oper_commute_prefix\<close>): exact prefix
+      commutation \<open>drop i (M[n]) = (drop i M)[n]\<close> via the index-shift transport of
+      \<open>nextrel0/1\<close>, \<open>le0\<close>, \<open>hasParent\<close>, \<open>parent\<close> below.  Witness \<open>i' = i, m = n\<close>.
+    \<^item> \<^bold>\<open>tiling, \<open>i > j0\<close>\<close> (\<open>suffix_oper_witness_tile_gt\<close>): a value-\<open>0\<close>
+      column strictly inside the tiled part forces the exact-copy regime (\<open>i1=0\<close>,
+      \<open>d0=0\<close>, root \<open>entry M 0 j0 = 0\<close>, \<open>i = j0 + q\<cdot>L\<close>), so
+      \<open>drop i (M[n]) = (drop j0 M)[n-q]\<close>.  Witness \<open>i' = j0, m = n - q\<close>.
+  The \<^bold>\<open>only\<close> undischarged case is the \<^emph>\<open>no-parent\<close> \<open>Pred\<close> branch
+  (\<open>suffix_oper_witness_residual\<close>), which never fires for a
+  standard form (every ST_PS column has a parent at its last index \<dash> 0 / 24735);
+  isolating it would only need a \<open>hasParent\<close>-on-\<open>ST_PS\<close> existence invariant.
 
-lemma suffix_oper_witness:
+  \<^bold>\<open>Empirically verified\<close> at deep closure: \<^bold>\<open>0 failures / 125592\<close> row-0
+  suffixes across the whole ST_PS corpus
+  (\<open>tools/probe_residual_exist.py\<close>; closed-form tiling \<open>tools/probe_unified.py\<close>:
+  0 / 15688; W1 commutation \<open>tools/probe_oper_commute.py\<close>: 0 / 6393; tiled-region
+  \<open>tools/probe_w2_simple.py\<close>: 0 / 7164; \<open>Pred\<close> \<open>tools/probe_degen.py\<close>: 0 / 8220;
+  parent-invariance \<open>tools/probe_parent_inv.py\<close>: 0 / 2131; residual split
+  \<open>tools/probe_resid_split.py\<close>: 0 bad / 18124).  Independent of the \<section>1
+  collapse core.\<close>
+
+subsection \<open>Index-shift infrastructure for the \<open>i \<le> j0\<close> commutation case\<close>
+
+text \<open>\<^bold>\<open>Shift lemmas\<close>.  Removing a prefix of length \<open>i \<le> Lng M\<close> shifts all the
+  \<open>oper\<close>-relevant relations (\<open>entry\<close>, \<open>nextrel0\<close>, \<open>nextrel1\<close>, \<open>le0\<close>, \<open>nextR\<close>,
+  \<open>hasParent\<close>, \<open>parent\<close>) by exactly \<open>i\<close>: \<open>nextrel0 (drop i M) a b \<longleftrightarrow>
+  nextrel0 M (a+i) (b+i)\<close>, etc.  These are purely combinatorial (no \<open>\<section>1\<close>
+  content) and verified empirically (\<open>tools/probe_parent_inv.py\<close>: 0 / 2131).\<close>
+
+lemma entry_drop:
+  assumes "i + a < Lng M"
+  shows "entry (drop i M) r a = entry M r (a + i)"
+  using assms by (simp add: entry_def add.commute)
+
+lemma nextrel0_drop_iff:
+  assumes "i \<le> Lng M"
+  shows "nextrel0 (drop i M) a b \<longleftrightarrow> nextrel0 M (a + i) (b + i)"
+proof
+  assume L: "nextrel0 (drop i M) a b"
+  have aL: "a < Lng M - i" and bL: "b < Lng M - i" and ab: "a < b"
+    using L by (simp_all add: nextrel0_def)
+  have eab: "entry (drop i M) 0 a < entry (drop i M) 0 b"
+    using L by (simp add: nextrel0_def)
+  have val: "\<And>j. a < j \<Longrightarrow> j < b \<Longrightarrow> entry (drop i M) 0 j \<ge> entry (drop i M) 0 b"
+    using L by (simp add: nextrel0_def)
+  have e1: "entry (drop i M) 0 a = entry M 0 (a + i)"
+    using aL assms entry_drop[of i a M 0] by simp
+  have e2: "entry (drop i M) 0 b = entry M 0 (b + i)"
+    using bL assms entry_drop[of i b M 0] by simp
+  show "nextrel0 M (a + i) (b + i)"
+    unfolding nextrel0_def
+  proof (intro conjI allI impI)
+    show "a + i < Lng M" using aL assms by simp
+    show "b + i < Lng M" using bL assms by simp
+    show "a + i < b + i" using ab by simp
+    show "entry M 0 (a + i) < entry M 0 (b + i)" using eab e1 e2 by simp
+  next
+    fix j assume jr: "a + i < j \<and> j < b + i"
+    have ji: "i \<le> j" using jr by simp
+    define j' where "j' = j - i"
+    have jeq: "j = j' + i" using ji j'_def by simp
+    have j'r: "a < j'" "j' < b" using jr jeq by simp_all
+    have jL: "j' < Lng M - i" using j'r bL by simp
+    have "entry (drop i M) 0 j' \<ge> entry (drop i M) 0 b" using val j'r by simp
+    moreover have "entry (drop i M) 0 j' = entry M 0 (j' + i)"
+      using jL assms entry_drop[of i j' M 0] by simp
+    ultimately show "entry M 0 (b + i) \<le> entry M 0 j" using e2 jeq by simp
+  qed
+next
+  assume R: "nextrel0 M (a + i) (b + i)"
+  have aL: "a + i < Lng M" and bL: "b + i < Lng M" and ab: "a + i < b + i"
+    using R by (simp_all add: nextrel0_def)
+  have aL': "a < Lng M - i" using aL assms by simp
+  have bL': "b < Lng M - i" using bL assms by simp
+  have eab: "entry M 0 (a + i) < entry M 0 (b + i)"
+    using R by (simp add: nextrel0_def)
+  have val: "\<And>j. a + i < j \<Longrightarrow> j < b + i \<Longrightarrow> entry M 0 j \<ge> entry M 0 (b + i)"
+    using R by (simp add: nextrel0_def)
+  have e1: "entry (drop i M) 0 a = entry M 0 (a + i)"
+    using aL' assms entry_drop[of i a M 0] by simp
+  have e2: "entry (drop i M) 0 b = entry M 0 (b + i)"
+    using bL' assms entry_drop[of i b M 0] by simp
+  show "nextrel0 (drop i M) a b"
+    unfolding nextrel0_def
+  proof (intro conjI allI impI)
+    show "a < Lng (drop i M)" using aL' assms(1) by simp
+    show "b < Lng (drop i M)" using bL' assms(1) by simp
+    show "a < b" using ab by simp
+    show "entry (drop i M) 0 a < entry (drop i M) 0 b" using eab e1 e2 by simp
+  next
+    fix j assume jr: "a < j \<and> j < b"
+    have jL: "j < Lng M - i" using jr bL' by simp
+    have "entry M 0 (j + i) \<ge> entry M 0 (b + i)" using val jr by simp
+    moreover have "entry (drop i M) 0 j = entry M 0 (j + i)"
+      using jL assms entry_drop[of i j M 0] by simp
+    ultimately show "entry (drop i M) 0 b \<le> entry (drop i M) 0 j" using e2 by simp
+  qed
+qed
+
+text \<open>The shifted relation transports along the reflexive-transitive closure.
+  Both directions, using that \<open>nextrel0\<close> never relates an out-of-range index
+  (so the \<open>drop\<close>-side closure stays within \<open>[0, Lng M - i)\<close>).\<close>
+
+lemma nextrel0_rtrancl_drop_fwd:
+  assumes "i \<le> Lng M" and "(nextrel0 (drop i M))\<^sup>*\<^sup>* a b"
+  shows "(nextrel0 M)\<^sup>*\<^sup>* (a + i) (b + i)"
+  using assms(2)
+proof (induction rule: rtranclp_induct)
+  case base show ?case by simp
+next
+  case (step y z)
+  have "nextrel0 M (y + i) (z + i)"
+    using step.hyps(2) nextrel0_drop_iff[OF assms(1)] by simp
+  with step.IH show ?case by simp
+qed
+
+lemma nextrel0_rtrancl_drop_bwd:
+  assumes "i \<le> Lng M" and "(nextrel0 M)\<^sup>*\<^sup>* a b"
+    and "i \<le> a" and "b \<le> Lng M"
+  shows "(nextrel0 (drop i M))\<^sup>*\<^sup>* (a - i) (b - i)"
+  using assms(2,4)
+proof (induction rule: rtranclp_induct)
+  case base show ?case using assms(3) by simp
+next
+  case (step y z)
+  have yz: "nextrel0 M y z" using step.hyps(2) .
+  have ylt: "y < z" using yz by (rule nextrel0_index_less)
+  have ay: "a \<le> y" using step.hyps(1) by (rule nextrel0_rtrancl_index_le)
+  have iy: "i \<le> y" using assms(3) ay by simp
+  have iz: "i \<le> z" using iy ylt by simp
+  have zL: "z < Lng M" using yz by (simp add: nextrel0_def)
+  have "(nextrel0 (drop i M))\<^sup>*\<^sup>* (a - i) (y - i)"
+    using step.IH zL ylt by simp
+  moreover have "nextrel0 (drop i M) (y - i) (z - i)"
+  proof -
+    have "nextrel0 M ((y - i) + i) ((z - i) + i)" using yz iy iz by simp
+    thus ?thesis using nextrel0_drop_iff[OF assms(1)] by simp
+  qed
+  ultimately show ?case by simp
+qed
+
+lemma le0_drop_iff:
+  assumes "i \<le> Lng M" and "i \<le> a" and "a \<le> Lng M" and "i \<le> b" and "b \<le> Lng M"
+  shows "le0 (drop i M) (a - i) (b - i) \<longleftrightarrow> le0 M a b"
+proof
+  assume "le0 (drop i M) (a - i) (b - i)"
+  hence cl: "(nextrel0 (drop i M))\<^sup>*\<^sup>* (a - i) (b - i)"
+    and aL: "a - i < Lng (drop i M)" and bL: "b - i < Lng (drop i M)"
+    by (simp_all add: le0_def)
+  have "(nextrel0 M)\<^sup>*\<^sup>* ((a - i) + i) ((b - i) + i)"
+    using nextrel0_rtrancl_drop_fwd[OF assms(1) cl] .
+  hence cl': "(nextrel0 M)\<^sup>*\<^sup>* a b" using assms(2,4) by simp
+  have "a < Lng M" using aL assms(1) by simp
+  moreover have "b < Lng M" using bL assms(1) by simp
+  ultimately show "le0 M a b" using cl' by (simp add: le0_def)
+next
+  assume "le0 M a b"
+  hence cl: "(nextrel0 M)\<^sup>*\<^sup>* a b" and aL: "a < Lng M" and bL: "b < Lng M"
+    by (simp_all add: le0_def)
+  have cl': "(nextrel0 (drop i M))\<^sup>*\<^sup>* (a - i) (b - i)"
+    using nextrel0_rtrancl_drop_bwd[OF assms(1) cl assms(2)] bL by simp
+  have "a - i < Lng (drop i M)" using aL assms(1,2) by simp
+  moreover have "b - i < Lng (drop i M)" using bL assms(1,4) by simp
+  ultimately show "le0 (drop i M) (a - i) (b - i)" using cl' by (simp add: le0_def)
+qed
+
+lemma le0_index_le: "le0 M a b \<Longrightarrow> a \<le> b"
+  unfolding le0_def by (blast intro: nextrel0_rtrancl_index_le)
+
+lemma le0_bounds: "le0 M a b \<Longrightarrow> a < Lng M \<and> b < Lng M"
+  by (simp add: le0_def)
+
+text \<open>\<open>nextrel1\<close> shifts by \<open>i\<close> just like \<open>nextrel0\<close>: the row-1 comparison and the
+  \<open>le0\<close>-quantified valley condition both transport under \<open>le0_drop_iff\<close>.  We need
+  both endpoints \<open>\<ge> i\<close> (i.e. removing a prefix \<^emph>\<open>before\<close> the parent).\<close>
+
+lemma nextrel1_drop_iff:
+  assumes "i \<le> Lng M" and "i \<le> a" and "i \<le> b"
+  shows "nextrel1 (drop i M) (a - i) (b - i) \<longleftrightarrow> nextrel1 M a b"
+proof
+  assume L: "nextrel1 (drop i M) (a - i) (b - i)"
+  have aL: "a - i < Lng (drop i M)" and bL: "b - i < Lng (drop i M)"
+    and ab: "a - i < b - i" and erow: "entry (drop i M) 1 (a - i) < entry (drop i M) 1 (b - i)"
+    and l0: "le0 (drop i M) (a - i) (b - i)"
+    using L by (simp_all add: nextrel1_def)
+  have aLM: "a < Lng M" using aL assms(1,2) by simp
+  have bLM: "b < Lng M" using bL assms(1,3) by simp
+  have e1: "entry (drop i M) 1 (a - i) = entry M 1 a"
+    using assms(1,2) aLM entry_drop[of i "a - i" M 1] by simp
+  have e2: "entry (drop i M) 1 (b - i) = entry M 1 b"
+    using assms(1,3) bLM entry_drop[of i "b - i" M 1] by simp
+  have l0M: "le0 M a b"
+    using l0 le0_drop_iff[OF assms(1,2) less_imp_le[OF aLM] assms(3) less_imp_le[OF bLM]] by simp
+  have val: "\<And>j. a < j \<Longrightarrow> le0 M j b \<Longrightarrow> entry M 1 j \<ge> entry M 1 b"
+  proof -
+    fix j assume aj: "a < j" and ljb: "le0 M j b"
+    have ij: "i \<le> j" using assms(2) aj by simp
+    have jb: "j \<le> b" using ljb by (rule le0_index_le)
+    have jLM: "j < Lng M" using le0_bounds[OF ljb] by simp
+    have ljb': "le0 (drop i M) (j - i) (b - i)"
+      using ljb le0_drop_iff[OF assms(1) ij less_imp_le[OF jLM] assms(3) less_imp_le[OF bLM]] by simp
+    have ajd: "a - i < j - i" using aj ij assms(2) by simp
+    have "entry (drop i M) 1 (j - i) \<ge> entry (drop i M) 1 (b - i)"
+      using L ajd ljb' by (simp add: nextrel1_def)
+    moreover have "entry (drop i M) 1 (j - i) = entry M 1 j"
+      using assms(1) ij jLM entry_drop[of i "j - i" M 1] by simp
+    ultimately show "entry M 1 j \<ge> entry M 1 b" using e2 by simp
+  qed
+  show "nextrel1 M a b"
+    unfolding nextrel1_def
+  proof (intro conjI allI impI)
+    show "a < Lng M" using aLM .
+    show "b < Lng M" using bLM .
+    show "a < b" using ab assms(2,3) by simp
+    show "entry M 1 a < entry M 1 b" using erow e1 e2 by simp
+    show "le0 M a b" using l0M .
+  next
+    fix j assume "a < j \<and> le0 M j b"
+    thus "entry M 1 b \<le> entry M 1 j" using val by blast
+  qed
+next
+  assume R: "nextrel1 M a b"
+  have aLM: "a < Lng M" and bLM: "b < Lng M" and ab: "a < b"
+    and erow: "entry M 1 a < entry M 1 b" and l0M: "le0 M a b"
+    using R by (simp_all add: nextrel1_def)
+  have e1: "entry (drop i M) 1 (a - i) = entry M 1 a"
+    using assms(1,2) aLM entry_drop[of i "a - i" M 1] by simp
+  have e2: "entry (drop i M) 1 (b - i) = entry M 1 b"
+    using assms(1,3) bLM entry_drop[of i "b - i" M 1] by simp
+  have l0: "le0 (drop i M) (a - i) (b - i)"
+    using l0M le0_drop_iff[OF assms(1,2) less_imp_le[OF aLM] assms(3) less_imp_le[OF bLM]] by simp
+  have val: "\<And>j. a - i < j \<Longrightarrow> le0 (drop i M) j (b - i) \<Longrightarrow>
+                 entry (drop i M) 1 j \<ge> entry (drop i M) 1 (b - i)"
+  proof -
+    fix j assume aj: "a - i < j" and ljb: "le0 (drop i M) j (b - i)"
+    have jb: "j \<le> b - i" using ljb by (rule le0_index_le)
+    have jLd: "j < Lng (drop i M)" using le0_bounds[OF ljb] by simp
+    have jLM: "j + i < Lng M" using jLd assms(1) by simp
+    have ljb': "le0 M (j + i) b"
+      using ljb le0_drop_iff[OF assms(1), of "j + i" b] assms(1,3) jLM less_imp_le[OF jLM] bLM
+      by (simp add: less_imp_le)
+    have ajM: "a < j + i" using aj assms(2) by simp
+    have "entry M 1 (j + i) \<ge> entry M 1 b" using R ajM ljb' by (simp add: nextrel1_def)
+    moreover have "entry (drop i M) 1 j = entry M 1 (j + i)"
+      using assms(1) jLM entry_drop[of i j M 1] by simp
+    ultimately show "entry (drop i M) 1 j \<ge> entry (drop i M) 1 (b - i)" using e2 by simp
+  qed
+  show "nextrel1 (drop i M) (a - i) (b - i)"
+    unfolding nextrel1_def
+  proof (intro conjI allI impI)
+    show "a - i < Lng (drop i M)" using aLM assms(1,2) by simp
+    show "b - i < Lng (drop i M)" using bLM assms(1,3) by simp
+    show "a - i < b - i" using ab assms(2,3) by simp
+    show "entry (drop i M) 1 (a - i) < entry (drop i M) 1 (b - i)"
+      using erow e1 e2 by simp
+    show "le0 (drop i M) (a - i) (b - i)" using l0 .
+  next
+    fix j assume "a - i < j \<and> le0 (drop i M) j (b - i)"
+    thus "entry (drop i M) 1 (b - i) \<le> entry (drop i M) 1 j" using val by blast
+  qed
+qed
+
+lemma idx1_drop:
+  assumes "i + j < Lng M"
+  shows "idx1 (drop i M) j = idx1 M (j + i)"
+  using assms entry_drop[of i j M 1] by (simp add: idx1_def)
+
+text \<open>\<open>nextR\<close> shifts by \<open>i\<close> for indices \<open>\<ge> i\<close>: combine \<open>nextrel0\<close>/\<open>nextrel1\<close>
+  shifts according to the row.\<close>
+
+lemma nextR_drop_iff:
+  assumes "i \<le> Lng M" and "i \<le> a" and "i \<le> b"
+  shows "nextR (drop i M) r (a - i) (b - i) \<longleftrightarrow> nextR M r a b"
+proof (cases "r = 0")
+  case True
+  have "nextR (drop i M) r (a - i) (b - i) \<longleftrightarrow> nextrel0 (drop i M) (a - i) (b - i)"
+    using True by (simp add: nextR_def)
+  also have "\<dots> \<longleftrightarrow> nextrel0 M ((a - i) + i) ((b - i) + i)"
+    using nextrel0_drop_iff[OF assms(1)] .
+  also have "\<dots> \<longleftrightarrow> nextrel0 M a b" using assms(2,3) by simp
+  also have "\<dots> \<longleftrightarrow> nextR M r a b" using True by (simp add: nextR_def)
+  finally show ?thesis .
+next
+  case False
+  have "nextR (drop i M) r (a - i) (b - i) \<longleftrightarrow> nextrel1 (drop i M) (a - i) (b - i)"
+    using False by (simp add: nextR_def)
+  also have "\<dots> \<longleftrightarrow> nextrel1 M a b" using nextrel1_drop_iff[OF assms] .
+  also have "\<dots> \<longleftrightarrow> nextR M r a b" using False by (simp add: nextR_def)
+  finally show ?thesis .
+qed
+
+text \<open>\<^bold>\<open>Parent transport (directed)\<close>.  If \<open>j0\<close> is the (unique) parent of \<open>j1\<close> in
+  \<open>M\<close> and the removed prefix sits weakly before it (\<open>i \<le> j0\<close>), then \<open>j0 - i\<close> is
+  the unique parent of \<open>j1 - i\<close> in \<open>drop i M\<close>.  Uniqueness transports because any
+  \<open>drop\<close>-side parent shifts up to an \<open>M\<close>-side parent \<open>\<ge> i\<close>, which the \<open>\<exists>!\<close> pins.\<close>
+
+lemma hasParent_parent_drop:
+  assumes iLM: "i \<le> Lng M" and hp: "hasParent M i1 j1"
+    and ij0: "i \<le> parent M i1 j1"
+  shows "hasParent (drop i M) i1 (j1 - i)
+       \<and> parent (drop i M) i1 (j1 - i) = parent M i1 j1 - i"
+proof -
+  define j0 where "j0 = parent M i1 j1"
+  have nR: "nextR M i1 j0 j1" unfolding j0_def by (rule parent_nextR[OF hp])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have ij0': "i \<le> j0" using ij0 j0_def by simp
+  have ij1: "i \<le> j1" using ij0' j0j1 by simp
+  \<comment> \<open>existence of the shifted parent\<close>
+  have nRd: "nextR (drop i M) i1 (j0 - i) (j1 - i)"
+    using nR nextR_drop_iff[OF iLM ij0' ij1] by simp
+  \<comment> \<open>uniqueness on the drop side\<close>
+  have uniq: "\<And>c. nextR (drop i M) i1 c (j1 - i) \<Longrightarrow> c = j0 - i"
+  proof -
+    fix c assume nc: "nextR (drop i M) i1 c (j1 - i)"
+    have cj: "c < j1 - i" using nc by (rule nextR_less)
+    have ci: "i \<le> c + i" by simp
+    have cij1: "c + i < j1" using cj ij1 by simp
+    have nM: "nextR M i1 (c + i) j1"
+      using nc nextR_drop_iff[OF iLM ci ij1, where r = i1] by simp
+    have "c + i = j0" using hp nM nR unfolding hasParent_def
+      by (metis j0_def nextR_def parent_def theI')
+    thus "c = j0 - i" by simp
+  qed
+  have ex1: "\<exists>!c. nextR (drop i M) i1 c (j1 - i)"
+    using nRd uniq by blast
+  have hpd: "hasParent (drop i M) i1 (j1 - i)" using ex1 by (simp add: hasParent_def)
+  have pard: "parent (drop i M) i1 (j1 - i) = j0 - i"
+    unfolding parent_def using nRd uniq by (blast intro: the_equality)
+  show ?thesis using hpd pard j0_def by simp
+qed
+
+text \<open>\<^bold>\<open>W1: prefix-commutation\<close>.  In the genuine (bad/tiling) branch of \<open>M[n]\<close>,
+  with parent \<open>j0\<close>, removing a prefix of length \<open>i \<le> j0\<close> commutes with the
+  expansion: \<open>drop i (M[n]) = (drop i M)[n]\<close>.  Both sides decompose by
+  @{thm [source] oper_bad_unfold}; the parent/child/shift transport by
+  @{thm [source] hasParent_parent_drop} / @{thm [source] idx1_drop}, and the
+  block bodies coincide after the index reindexing \<open>j \<mapsto> j + i\<close>.
+  \<^bold>\<open>Empirically\<close> \<open>tools/probe_oper_commute.py\<close> W1: 0 / 6393.\<close>
+
+lemma oper_commute_prefix:
+  assumes L: "1 < Lng M"
+    and nz: "\<not> (entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)"
+    and hp: "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+    and ij0: "i \<le> parent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+  shows "drop i (M[n]) = (drop i M)[n]"
+proof -
+  define j1  where "j1  = Lng M - 1"
+  define i1  where "i1  = idx1 M j1"
+  define j0  where "j0  = parent M i1 j1"
+  define d0  where "d0  = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+  define D   where "D   = drop i M"
+  have j1nz: "j1 \<noteq> 0" using L j1_def by simp
+  have j1len: "j1 < Lng M" using L j1_def by simp
+  have hp': "hasParent M i1 j1" using hp i1_def j1_def by simp
+  have nR: "nextR M i1 j0 j1" unfolding j0_def by (rule parent_nextR[OF hp'])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have ij0': "i \<le> j0" using ij0 j0_def i1_def j1_def by simp
+  have ij1: "i \<le> j1" using ij0' j0j1 by simp
+  have iLM: "i \<le> Lng M" using ij1 j1len by simp
+  \<comment> \<open>M side\<close>
+  have Mn: "M[n] = take j0 M
+       @ concat (map (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    using oper_bad_unfold[OF j1nz[unfolded j1_def] _ _, of n] nz hp
+    unfolding j1_def[symmetric] i1_def[symmetric] j0_def[symmetric] d0_def[symmetric] by simp
+  \<comment> \<open>parameters of the drop side\<close>
+  define j1D where "j1D = Lng D - 1"
+  have LngD: "Lng D = Lng M - i" using D_def by simp
+  have j1Deq: "j1D = j1 - i" using j1D_def LngD j1_def by simp
+  have j1Dnz: "j1D \<noteq> 0" using j1Deq j0j1 ij0' by simp
+  have e_j1: "\<And>r. entry D r j1D = entry M r j1"
+  proof -
+    fix r have "i + j1D < Lng M" using j1Deq ij1 j1len by simp
+    thus "entry D r j1D = entry M r j1"
+      using entry_drop[of i j1D M r] D_def j1Deq ij1 by simp
+  qed
+  have i1Deq: "idx1 D j1D = i1"
+  proof -
+    have "i + j1D < Lng M" using j1Deq ij1 j1len by simp
+    hence "idx1 D j1D = idx1 M (j1D + i)" using idx1_drop[of i j1D M] D_def by simp
+    also have "j1D + i = j1" using j1Deq ij1 by simp
+    finally show ?thesis using i1_def by simp
+  qed
+  have nzD: "\<not> (entry D 0 j1D = 0 \<and> entry D 1 j1D = 0)" using nz e_j1 j1_def by simp
+  have hpD: "hasParent D i1 j1D"
+    using hasParent_parent_drop[OF iLM hp' ij0'[unfolded j0_def]]
+    by (simp add: D_def i1_def j1_def j1Deq)
+  have j0Deq: "parent D i1 j1D = j0 - i"
+    using hasParent_parent_drop[OF iLM hp' ij0'[unfolded j0_def]]
+    by (simp add: D_def i1_def j1_def j0_def j1Deq)
+  define d0D where "d0D = (if 0 < i1 then entry D 0 j1D - entry D 0 (j0 - i) else 0)"
+  have e_j0: "entry D 0 (j0 - i) = entry M 0 j0"
+  proof -
+    have "i + (j0 - i) < Lng M" using ij0' j0j1 j1len by simp
+    thus ?thesis using entry_drop[of i "j0 - i" M 0] D_def ij0' by simp
+  qed
+  have d0Deq: "d0D = d0" using d0D_def d0_def e_j1 e_j0 by simp
+  \<comment> \<open>drop side decomposition\<close>
+  have Dn: "D[n] = take (j0 - i) D
+       @ concat (map (\<lambda>k. map (\<lambda>j. (entry D 0 j + k * d0, entry D 1 j)) [j0 - i..<j1D]) [0..<n])"
+  proof -
+    have LD1: "Lng D - 1 = j1D" using j1D_def by simp
+    have nzD': "\<not> (entry D 0 (Lng D - 1) = 0 \<and> entry D 1 (Lng D - 1) = 0)"
+      using nzD LD1 by simp
+    have hpD': "hasParent D (idx1 D (Lng D - 1)) (Lng D - 1)"
+      using hpD i1Deq LD1 by simp
+    have base: "D[n] = take (parent D (idx1 D (Lng D - 1)) (Lng D - 1)) D
+       @ concat (map (\<lambda>k. map (\<lambda>j. (entry D 0 j + k *
+            (if 0 < idx1 D (Lng D - 1)
+             then entry D 0 (Lng D - 1) - entry D 0 (parent D (idx1 D (Lng D - 1)) (Lng D - 1))
+             else 0),
+            entry D 1 j)) [parent D (idx1 D (Lng D - 1))(Lng D - 1)..<Lng D - 1]) [0..<n])"
+      using oper_bad_unfold[OF _ nzD' hpD', of n] j1Dnz LD1 by simp
+    have idxr: "idx1 D (Lng D - 1) = i1" using i1Deq LD1 by simp
+    have parr: "parent D (idx1 D (Lng D - 1)) (Lng D - 1) = j0 - i"
+      using j0Deq idxr LD1 by simp
+    have shiftr: "(if 0 < idx1 D (Lng D - 1)
+             then entry D 0 (Lng D - 1) - entry D 0 (parent D (idx1 D (Lng D - 1)) (Lng D - 1))
+             else 0) = d0"
+      using idxr parr d0Deq[symmetric] d0D_def LD1 by simp
+    show ?thesis using base parr shiftr LD1 by simp
+  qed
+  \<comment> \<open>the two block-concats are equal (reindex \<open>j \<mapsto> j + i\<close>)\<close>
+  have body: "\<And>k. map (\<lambda>j. (entry D 0 j + k * d0, entry D 1 j)) [j0 - i..<j1D]
+                 = map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]"
+  proof -
+    fix k
+    have rng: "[j0 - i..<j1D] = map (\<lambda>j. j - i) [j0..<j1]"
+    proof (rule nth_equalityI)
+      have leneq: "j1D - (j0 - i) = j1 - j0" using ij0' j0j1 j1Deq by simp
+      show "length [j0 - i..<j1D] = length (map (\<lambda>j. j - i) [j0..<j1])"
+        using leneq by simp
+      fix p assume "p < length [j0 - i..<j1D]"
+      hence pr: "p < j1D - (j0 - i)" by simp
+      have "[j0 - i..<j1D] ! p = (j0 - i) + p" using pr by (simp add: nth_upt)
+      moreover have "map (\<lambda>j. j - i) [j0..<j1] ! p = (j0 + p) - i"
+        using pr leneq by (simp add: nth_upt)
+      ultimately show "[j0 - i..<j1D] ! p = map (\<lambda>j. j - i) [j0..<j1] ! p"
+        using ij0' by simp
+    qed
+    have "map (\<lambda>j. (entry D 0 j + k * d0, entry D 1 j)) [j0 - i..<j1D]
+        = map ((\<lambda>j. (entry D 0 j + k * d0, entry D 1 j)) \<circ> (\<lambda>j. j - i)) [j0..<j1]"
+      using rng by simp
+    also have "\<dots> = map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]"
+    proof (rule map_cong[OF refl])
+      fix j assume "j \<in> set [j0..<j1]"
+      hence jr: "j0 \<le> j" "j < j1" by auto
+      have ij: "i \<le> j" using ij0' jr by simp
+      have "i + (j - i) < Lng M" using jr ij j1len by simp
+      hence "\<And>r. entry D r (j - i) = entry M r j"
+        using entry_drop[of i "j - i" M] D_def ij by simp
+      thus "((\<lambda>j. (entry D 0 j + k * d0, entry D 1 j)) \<circ> (\<lambda>j. j - i)) j
+           = (entry M 0 j + k * d0, entry M 1 j)" by simp
+    qed
+    finally show "map (\<lambda>j. (entry D 0 j + k * d0, entry D 1 j)) [j0 - i..<j1D]
+                = map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]" .
+  qed
+  have concat_eq:
+    "concat (map (\<lambda>k. map (\<lambda>j. (entry D 0 j + k * d0, entry D 1 j)) [j0 - i..<j1D]) [0..<n])
+   = concat (map (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    using body by (simp cong: map_cong)
+  \<comment> \<open>the prefixes: \<open>take (j0-i)(drop i M) = drop i (take j0 M)\<close>\<close>
+  have pref: "take (j0 - i) D = drop i (take j0 M)"
+    using D_def ij0' by (simp add: drop_take)
+  have ilead: "i \<le> length (take j0 M)" using ij0' j0j1 j1len by simp
+  have "drop i (M[n]) = drop i (take j0 M)
+       @ concat (map (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1]) [0..<n])"
+    using Mn ilead by (simp add: drop_append)
+  also have "\<dots> = take (j0 - i) D @ concat (map (\<lambda>k.
+       map (\<lambda>j. (entry D 0 j + k * d0, entry D 1 j)) [j0 - i..<j1D]) [0..<n])"
+    using pref concat_eq by simp
+  also have "\<dots> = D[n]" using Dn by simp
+  finally show ?thesis using D_def by simp
+qed
+
+text \<open>\<^bold>\<open>Pred-branch (last column \<open>(0,0)\<close>) commutation\<close>.  When the last column is
+  doubly-zero, \<open>M[n] = butlast M\<close> regardless of \<open>n\<close>; the same holds for any
+  row-0-headed suffix \<open>drop i M\<close> (its last column is unchanged, still \<open>(0,0)\<close>),
+  so \<open>drop i (M[n]) = butlast (drop i M) = (drop i M)[m]\<close> for any \<open>m \<ge> 1\<close>.
+  \<^bold>\<open>Empirically\<close> \<open>tools/probe_degen.py\<close>: 0 / 8220.\<close>
+
+lemma oper_pred_bothzero:
+  assumes L: "1 < Lng M"
+    and bz: "entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0"
+  shows "M[n] = butlast M"
+proof -
+  have j1: "Lng M - 1 \<noteq> 0" using L by simp
+  have "M[n] = Pred M" using bz j1 by (simp add: oper_def Let_def)
+  thus ?thesis using L by (simp add: Pred_def)
+qed
+
+lemma suffix_oper_witness_pred:
+  assumes L: "1 < Lng M" and bz: "entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0"
+    and i: "i < length (oper M n)" and h0: "fst (oper M n ! i) = 0" and n: "1 \<le> n"
+  shows "\<exists>i' m. i' < length M \<and> fst (M ! i') = 0 \<and> 1 \<le> m
+                 \<and> drop i (oper M n) = oper (drop i' M) m"
+proof -
+  have opn: "oper M n = butlast M" using oper_pred_bothzero[OF L bz] .
+  have ilen1: "i < Lng M - 1" using i opn L by simp
+  have ilen: "i < length M" using ilen1 by simp
+  \<comment> \<open>row-0-headedness transfers: \<open>butlast M ! i = M ! i\<close> for \<open>i < Lng M - 1\<close>\<close>
+  have nthbl: "butlast M ! i = M ! i" using ilen1 by (simp add: nth_butlast)
+  have hM0: "fst (M ! i) = 0" using h0 opn nthbl by simp
+  \<comment> \<open>last column of the suffix is unchanged, still \<open>(0,0)\<close>\<close>
+  define D where "D = drop i M"
+  have LD: "1 < Lng D" using ilen1 D_def by simp
+  have lastidx: "Lng D - 1 = (Lng M - 1) - i" using D_def by simp
+  have e_last: "\<And>r. entry D r (Lng D - 1) = entry M r (Lng M - 1)"
+  proof -
+    fix r
+    have rng: "i + (Lng D - 1) < Lng M" using lastidx ilen1 L by simp
+    have "entry D r (Lng D - 1) = entry M r ((Lng D - 1) + i)"
+      using entry_drop[of i "Lng D - 1" M r] D_def rng by simp
+    moreover have "(Lng D - 1) + i = Lng M - 1" using lastidx ilen1 by simp
+    ultimately show "entry D r (Lng D - 1) = entry M r (Lng M - 1)" by simp
+  qed
+  have bzD: "entry D 0 (Lng D - 1) = 0 \<and> entry D 1 (Lng D - 1) = 0"
+    using bz e_last by simp
+  have opD: "oper D 1 = butlast D" using oper_pred_bothzero[OF LD bzD] .
+  \<comment> \<open>drop i (butlast M) = butlast (drop i M)\<close>
+  have "drop i (oper M n) = drop i (butlast M)" using opn by simp
+  also have "\<dots> = butlast (drop i M)" by (simp add: drop_butlast)
+  also have "\<dots> = oper D 1" using opD D_def by simp
+  finally have eq: "drop i (oper M n) = oper (drop i M) 1" using D_def by simp
+  show ?thesis using ilen hM0 eq by blast
+qed
+
+text \<open>\<^bold>\<open>The remaining residual\<close> \<open>suffix_oper_witness_residual\<close>.  After the W1
+  (\<open>i \<le> j0\<close>) tiling case is discharged by @{thm [source] oper_commute_prefix}
+  and the Pred-bothzero case by @{thm [source] suffix_oper_witness_pred}, the
+  only cases left are:
+    \<^item> the \<^emph>\<open>degenerate\<close> \<open>oper\<close> branches (\<open>Lng M \<le> 1\<close> identity \<dash> impossible for
+      length-\<open>>1\<close> standard forms in practice; and the \<open>Pred\<close> branches, where
+      \<open>M[n] = butlast M\<close> and \<open>drop i (butlast M) = butlast (drop i M)\<close> commutes
+      exactly \<dash> \<open>tools/probe_degen.py\<close>: 0 / 8220, all with an \<open>oper\<close> witness), and
+    \<^item> the \<^emph>\<open>tiled-region\<close> suffix \<open>i > j0\<close> of the genuine branch, where the
+      closed-form witness is \<open>i' = j0 + (i - j0) mod L\<close>, \<open>m = n - (i - j0) div L\<close>
+      (\<open>L = j1 - j0\<close>) \<dash> \<open>tools/probe_w2_witness.py\<close> / \<open>probe_unified.py\<close>: 0 / 7164.
+  Both are independent of the \<section>1 collapse core; the genuine remaining work is
+  re-deriving \<open>oper\<close>'s parent on the \<^emph>\<open>shifted-and-truncated\<close> body, which the
+  W1 index-shift infrastructure above (\<open>nextrel0/1_drop_iff\<close>,
+  \<open>hasParent_parent_drop\<close>) only covers for prefix removals \<open>\<le> j0\<close>.\<close>
+
+text \<open>Local copies of the \<open>concat (map _ [0..<n])\<close> indexing lemmas (the global
+  ones live in \<open>nrmstep\<close>, which imports this theory).\<close>
+
+lemma concat_map_upt_length':
+  assumes "\<And>k. k < n \<Longrightarrow> length (F k) = L"
+  shows "length (concat (map F [0..<n])) = n * L"
+  using assms by (induct n) auto
+
+lemma concat_map_upt_nth':
+  assumes len: "\<And>k. k < n \<Longrightarrow> length (F k) = L"
+    and k: "k < n" and q: "q < L"
+  shows "concat (map F [0..<n]) ! (k * L + q) = F k ! q"
+  using len k
+proof (induct n)
+  case 0 thus ?case by simp
+next
+  case (Suc n)
+  show ?case
+  proof (cases "k < n")
+    case True
+    have ll: "length (concat (map F [0..<n])) = n * L"
+      by (rule concat_map_upt_length') (use Suc.prems(1) in simp)
+    have il: "k * L + q < n * L"
+    proof -
+      have "k * L + q < Suc k * L" using q by simp
+      also have "\<dots> \<le> n * L" using True by (intro mult_le_mono1) simp
+      finally show ?thesis .
+    qed
+    have "concat (map F [0..<Suc n]) ! (k * L + q) = concat (map F [0..<n]) ! (k * L + q)"
+      using il ll by (simp add: nth_append)
+    thus ?thesis using Suc True by simp
+  next
+    case False
+    hence kn: "k = n" using Suc.prems(2) by simp
+    have ll: "length (concat (map F [0..<n])) = n * L"
+      by (rule concat_map_upt_length') (use Suc.prems(1) in simp)
+    have "concat (map F [0..<Suc n]) ! (k * L + q) = (concat (map F [0..<n]) @ F n) ! (n * L + q)"
+      using kn by simp
+    also have "\<dots> = F n ! q" using ll q by (simp add: nth_append)
+    finally show ?thesis using kn by simp
+  qed
+qed
+
+text \<open>When the per-copy shift vanishes (\<open>d0 = 0\<close>, the \<open>i1 = 0\<close> exact-copy case)
+  every block is identical, so the \<open>n\<close>-fold tiling is \<open>replicate n B\<close> and
+  dropping \<open>q\<close> whole blocks yields the \<open>(n-q)\<close>-fold tiling.\<close>
+
+lemma concat_replicate_drop:
+  assumes "q \<le> n"
+  shows "drop (q * length B) (concat (replicate n B)) = concat (replicate (n - q) B)"
+  using assms
+proof (induct q arbitrary: n)
+  case 0 thus ?case by simp
+next
+  case (Suc q)
+  then obtain n' where n': "n = Suc n'" using Suc.prems by (cases n) auto
+  have "concat (replicate n B) = B @ concat (replicate n' B)" using n' by simp
+  hence "drop (Suc q * length B) (concat (replicate n B))
+       = drop (q * length B) (concat (replicate n' B))" by simp
+  also have "\<dots> = concat (replicate (n' - q) B)"
+    using Suc.hyps Suc.prems n' by simp
+  also have "n' - q = n - Suc q" using n' by simp
+  finally show ?case .
+qed
+
+text \<open>\<^bold>\<open>Tiled-region suffix (\<open>i > j0\<close>)\<close> \<open>suffix_oper_witness_tile_gt\<close>.  A row-0
+  (value-\<open>0\<close>) column strictly inside the tiled part forces the exact-copy regime
+  (\<open>i1 = 0\<close>, so \<open>d0 = 0\<close>, the root row-0 \<open>entry M 0 j0 = 0\<close>, and the index sits on
+  a block boundary \<open>i = j0 + q\<cdot>L\<close>); then \<open>drop i (M[n]) = (drop j0 M)[n - q]\<close>.
+  \<^bold>\<open>Empirically\<close> \<open>tools/probe_w2_simple.py\<close>: 0 / 7164 (all exact-copy, all on
+  block boundaries).\<close>
+
+lemma suffix_oper_witness_tile_gt:
+  assumes L: "1 < Lng M"
+    and nz: "\<not> (entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)"
+    and hp: "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+    and igt: "parent M (idx1 M (Lng M - 1)) (Lng M - 1) < i"
+    and i: "i < length (oper M n)" and h0: "fst (oper M n ! i) = 0" and n: "1 \<le> n"
+  shows "\<exists>i' m. i' < length M \<and> fst (M ! i') = 0 \<and> 1 \<le> m
+                 \<and> drop i (oper M n) = oper (drop i' M) m"
+proof -
+  define j1 where "j1 = Lng M - 1"
+  define i1 where "i1 = idx1 M j1"
+  define j0 where "j0 = parent M i1 j1"
+  define d0 where "d0 = (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0)"
+  define L0 where "L0 = j1 - j0"
+  define blk where "blk = (\<lambda>k. map (\<lambda>j. (entry M 0 j + k * d0, entry M 1 j)) [j0..<j1])"
+  have j1nz: "Lng M - 1 \<noteq> 0" using L by simp
+  have hp': "hasParent M i1 j1" using hp i1_def j1_def by simp
+  have j0gt: "j0 < i" using igt j0_def i1_def j1_def by simp
+  have nR: "nextR M i1 j0 j1" unfolding j0_def by (rule parent_nextR[OF hp'])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have j1len: "j1 < Lng M" using L j1_def by simp
+  have j0len: "j0 < Lng M" using j0j1 j1len by simp
+  have Lpos: "0 < L0" using L0_def j0j1 by simp
+  \<comment> \<open>decomposition\<close>
+  have Mn: "oper M n = take j0 M @ concat (map blk [0..<n])"
+    using oper_bad_unfold[OF j1nz nz hp, of n] blk_def
+    unfolding j1_def[symmetric] i1_def[symmetric] j0_def[symmetric] d0_def[symmetric] by simp
+  have lentk: "length (take j0 M) = j0" using j0len by simp
+  have blklen: "\<And>k. length (blk k) = L0" unfolding blk_def L0_def by simp
+  define C where "C = concat (map blk [0..<n])"
+  have Clen: "length C = n * L0" unfolding C_def using blklen by (simp add: concat_map_upt_length')
+  have MnC: "oper M n = take j0 M @ C" using Mn C_def by simp
+  \<comment> \<open>row-0 value at \<open>i\<close> in the tiled region\<close>
+  define p where "p = i - j0"
+  have ppos: "0 < p" using j0gt p_def by simp
+  have ip: "i = j0 + p" using j0gt p_def by simp
+  have iC: "oper M n ! i = C ! p"
+    using MnC lentk ip by (simp add: nth_append)
+  have plt: "p < n * L0" using i Clen MnC lentk ip by simp
+  define q where "q = p div L0"
+  define r where "r = p mod L0"
+  have qr: "p = q * L0 + r" using q_def r_def by simp
+  have rlt: "r < L0" using r_def Lpos by simp
+  have qlt: "q < n" using plt qr rlt Lpos by (metis add.commute div_less_iff_less_mult less_mult_imp_div_less mult.commute q_def)
+  have Cval: "C ! p = blk q ! r"
+    unfolding C_def using concat_map_upt_nth'[OF blklen qlt rlt] qr by simp
+  have blkqr: "blk q ! r = (entry M 0 (j0 + r) + q * d0, entry M 1 (j0 + r))"
+    unfolding blk_def using rlt L0_def by (simp add: nth_upt)
+  have val0: "entry M 0 (j0 + r) + q * d0 = 0"
+    using h0 iC Cval blkqr by simp
+  \<comment> \<open>both summands vanish\<close>
+  have er0: "entry M 0 (j0 + r) = 0" and qd0: "q * d0 = 0" using val0 by simp_all
+  \<comment> \<open>\<open>r = 0\<close>: a strictly-interior body index has row-0 \<open>> entry M 0 j0\<close>\<close>
+  have chain: "(nextrel0 M)\<^sup>*\<^sup>* j0 j1"
+  proof (cases "i1 = 0")
+    case True with nR have "nextrel0 M j0 j1" by (simp add: nextR_def)
+    thus ?thesis by (rule r_into_rtranclp)
+  next
+    case False with nR have "nextrel1 M j0 j1" by (simp add: nextR_def)
+    thus ?thesis by (simp add: nextrel1_def le0_def)
+  qed
+  have iv: "\<And>k. j0 < k \<Longrightarrow> k \<le> j1 \<Longrightarrow> entry M 0 j0 < entry M 0 k"
+    using le0_interval_gt[OF chain] by blast
+  have r0: "r = 0"
+  proof (rule ccontr)
+    assume "r \<noteq> 0"
+    hence "0 < r" by simp
+    hence "j0 < j0 + r" by simp
+    moreover have "j0 + r \<le> j1" using rlt L0_def by simp
+    ultimately have "entry M 0 j0 < entry M 0 (j0 + r)" by (rule iv)
+    thus False using er0 by simp
+  qed
+  have ej0: "entry M 0 j0 = 0" using er0 r0 by simp
+  \<comment> \<open>\<open>d0 = 0\<close>: else \<open>q = 0\<close> and \<open>p = 0\<close>, contradicting \<open>0 < p\<close>\<close>
+  have d0z: "d0 = 0"
+  proof (rule ccontr)
+    assume "d0 \<noteq> 0"
+    hence "q = 0" using qd0 by simp
+    hence "p = 0" using qr r0 by simp
+    thus False using ppos by simp
+  qed
+  have qpos: "0 < q" using qr r0 ppos d0z Lpos by (metis add.right_neutral gr0I mult_is_0)
+  have pqL: "p = q * L0" using qr r0 by simp
+  \<comment> \<open>all blocks are equal to \<open>B = blk 0\<close> (no shift)\<close>
+  define B where "B = blk 0"
+  have blkeq: "\<And>k. blk k = B"
+    unfolding B_def blk_def using d0z by simp
+  have Bne: "B \<noteq> []" unfolding B_def blk_def using j0j1 by simp
+  have BlenL: "length B = L0" using blklen B_def by simp
+  have mapeq: "map blk [0..<n] = replicate n B"
+  proof (rule nth_equalityI)
+    show "length (map blk [0..<n]) = length (replicate n B)" by simp
+    fix p assume "p < length (map blk [0..<n])"
+    thus "map blk [0..<n] ! p = replicate n B ! p" using blkeq by simp
+  qed
+  have Crepl: "C = concat (replicate n B)" unfolding C_def using mapeq by simp
+  \<comment> \<open>drop the first \<open>q\<close> blocks\<close>
+  have drop_i: "drop i (oper M n) = drop p C"
+    using MnC lentk ip by (simp add: drop_append)
+  have "drop p C = drop (q * length B) (concat (replicate n B))"
+    using pqL BlenL Crepl by simp
+  also have "\<dots> = concat (replicate (n - q) B)"
+    using concat_replicate_drop[of q n B] qlt by simp
+  finally have lhs: "drop i (oper M n) = concat (replicate (n - q) B)"
+    using drop_i by simp
+  \<comment> \<open>the witness side: \<open>(drop j0 M)[n - q]\<close>\<close>
+  have ij0: "i \<le> j0 \<Longrightarrow> False" using j0gt by simp
+  have commq: "oper (drop j0 M) (n - q) = drop j0 (oper M (n - q))"
+    using oper_commute_prefix[OF L nz hp, of j0 "n - q"] j0_def i1_def j1_def by simp
+  have nqpos: "1 \<le> n - q" using qlt by simp
+  have MnQ: "oper M (n - q) = take j0 M @ concat (map blk [0..<n - q])"
+    using oper_bad_unfold[OF j1nz nz hp, of "n - q"] blk_def
+    unfolding j1_def[symmetric] i1_def[symmetric] j0_def[symmetric] d0_def[symmetric] by simp
+  have mapeqQ: "map blk [0..<n - q] = replicate (n - q) B"
+  proof (rule nth_equalityI)
+    show "length (map blk [0..<n - q]) = length (replicate (n - q) B)" by simp
+    fix p assume "p < length (map blk [0..<n - q])"
+    thus "map blk [0..<n - q] ! p = replicate (n - q) B ! p" using blkeq by simp
+  qed
+  have "drop j0 (oper M (n - q)) = concat (map blk [0..<n - q])"
+    using MnQ lentk by (simp add: drop_append)
+  also have "\<dots> = concat (replicate (n - q) B)" using mapeqQ by simp
+  finally have rhs: "oper (drop j0 M) (n - q) = concat (replicate (n - q) B)"
+    using commq by simp
+  \<comment> \<open>assemble the witness \<open>i' = j0, m = n - q\<close>\<close>
+  have eq: "drop i (oper M n) = oper (drop j0 M) (n - q)" using lhs rhs by simp
+  have hM0: "fst (M ! j0) = 0" using ej0 by (simp add: entry_def)
+  show ?thesis using j0len hM0 nqpos eq by blast
+qed
+
+text \<open>\<^bold>\<open>The remaining residual\<close>: only the \<^emph>\<open>no-parent\<close> \<open>Pred\<close> branch
+  (\<open>\<not> hasParent\<close> at the last column).  This branch does \<^bold>\<open>not\<close> occur for any
+  standard form in the deep corpus (\<open>tools/probe_resid_split.py\<close>: 0 \<open>pred_np\<close>
+  cases / 18124 residual rows; the residual is 10960 \<open>pred_bz\<close> + 7164
+  \<open>tile-i>j0\<close>, both discharged above), but ruling it out structurally needs a
+  \<open>hasParent\<close>-on-\<open>ST_PS\<close> invariant not yet available; isolated as the single
+  remaining \<open>sorry\<close>.\<close>
+
+lemma suffix_oper_witness_residual:
   assumes "M \<in> ST_PS" and "1 \<le> n"
     and "i < length (oper M n)" and "fst (oper M n ! i) = 0"
+    and "1 < Lng M"
+    and "\<not> (entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)"
+    and "\<not> hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
   shows "\<exists>i' m. i' < length M \<and> fst (M ! i') = 0 \<and> 1 \<le> m
                  \<and> drop i (oper M n) = oper (drop i' M) m"
   sorry
+
+text \<open>\<^bold>\<open>The single isolated reachability residual\<close> \<open>suffix_oper_witness\<close>, now with
+  the \<^bold>\<open>W1 (\<open>i \<le> j0\<close>) tiling case discharged\<close> from @{thm [source]
+  oper_commute_prefix}.  In that case the suffix commutes \<^emph>\<open>exactly\<close> with the
+  expansion: \<open>drop i (M[n]) = (drop i M)[n]\<close>, the witness being \<open>i' = i\<close>,
+  \<open>m = n\<close>; row-0-headedness of \<open>M\<close> at \<open>i\<close> transfers from that of \<open>M[n]\<close> at \<open>i\<close>
+  because the prefix \<open>take j0 M\<close> is copied verbatim and the head of the tiled
+  part is \<open>(entry M 0 j0, _) = M ! j0\<close>.  All other cases are deferred to
+  @{thm [source] suffix_oper_witness_residual}.\<close>
+
+lemma suffix_oper_witness:
+  assumes M: "M \<in> ST_PS" and n: "1 \<le> n"
+    and i: "i < length (oper M n)" and h0: "fst (oper M n ! i) = 0"
+  shows "\<exists>i' m. i' < length M \<and> fst (M ! i') = 0 \<and> 1 \<le> m
+                 \<and> drop i (oper M n) = oper (drop i' M) m"
+proof (cases "1 < Lng M
+            \<and> \<not> (entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)
+            \<and> hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)
+            \<and> i \<le> parent M (idx1 M (Lng M - 1)) (Lng M - 1)")
+  case True
+  define j1 where "j1 = Lng M - 1"
+  define i1 where "i1 = idx1 M j1"
+  define j0 where "j0 = parent M i1 j1"
+  have L: "1 < Lng M" and nz: "\<not> (entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0)"
+    and hp: "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+    and ij0: "i \<le> parent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+    using True by simp_all
+  have hp': "hasParent M i1 j1" using hp i1_def j1_def by simp
+  have ij0': "i \<le> j0" using ij0 j0_def i1_def j1_def by simp
+  have nR: "nextR M i1 j0 j1" unfolding j0_def by (rule parent_nextR[OF hp'])
+  have j0j1: "j0 < j1" using nR by (rule nextR_less)
+  have j1len: "j1 < Lng M" using L j1_def by simp
+  have j0len: "j0 < Lng M" using j0j1 j1len by simp
+  \<comment> \<open>row-0-headedness transfers to \<open>M\<close> at \<open>i\<close>\<close>
+  have j1nz: "Lng M - 1 \<noteq> 0" using L by simp
+  have Mn: "oper M n = take j0 M
+       @ concat (map (\<lambda>k. map (\<lambda>j. (entry M 0 j
+              + k * (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0), entry M 1 j))
+              [j0..<j1]) [0..<n])"
+    using oper_bad_unfold[OF j1nz nz hp, of n]
+    unfolding j1_def[symmetric] i1_def[symmetric] j0_def[symmetric] by simp
+  have ilen: "i < length M" using ij0' j0len by simp
+  have hM0: "fst (M ! i) = 0"
+  proof (cases "i < j0")
+    case True
+    have lt: "length (take j0 M) = j0" using j0len by simp
+    have "oper M n ! i = take j0 M ! i" using Mn True lt by (simp add: nth_append)
+    also have "\<dots> = M ! i" using True by simp
+    finally show ?thesis using h0 by simp
+  next
+    case False
+    hence ij0e: "i = j0" using ij0' by simp
+    define blk where "blk = (\<lambda>k. map (\<lambda>j. (entry M 0 j
+              + k * (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0), entry M 1 j))
+              [j0..<j1])"
+    define C where "C = concat (map blk [0..<n])"
+    have len_tk: "length (take j0 M) = j0" using j0len by simp
+    have blk0ne: "blk 0 \<noteq> []" unfolding blk_def using j0j1 by simp
+    have nlist: "[0..<n] = 0 # [1..<n]" using n by (simp add: upt_conv_Cons)
+    have Cdec: "C = blk 0 @ concat (map blk [1..<n])"
+      unfolding C_def using nlist by simp
+    have cne: "C \<noteq> []" using Cdec blk0ne by simp
+    have MnC: "oper M n = take j0 M @ C" using Mn blk_def C_def by simp
+    have "oper M n ! j0 = C ! 0"
+      using MnC len_tk by (simp add: nth_append)
+    also have "\<dots> = hd C" using cne by (simp add: hd_conv_nth)
+    also have "\<dots> = hd (blk 0)" using Cdec blk0ne by (simp add: hd_append)
+    also have "\<dots> = (entry M 0 j0, entry M 1 j0)"
+      unfolding blk_def using j0j1 by (simp add: hd_map upt_conv_Cons)
+    finally have "fst (oper M n ! j0) = entry M 0 j0" by simp
+    thus ?thesis using h0 ij0e by (simp add: entry_def)
+  qed
+  \<comment> \<open>the commutation gives the \<open>i' = i, m = n\<close> witness\<close>
+  have comm: "drop i (oper M n) = oper (drop i M) n"
+    using oper_commute_prefix[OF L nz hp ij0] by simp
+  have ne: "1 \<le> n" using n .
+  show ?thesis
+    using ilen hM0 ne comm by blast
+next
+  case notW1: False
+  show ?thesis
+  proof (cases "1 < Lng M")
+    case Lle: False
+    \<comment> \<open>identity branch: \<open>Lng M \<le> 1\<close>, so \<open>oper M n = M\<close>\<close>
+    have Mne: "M \<noteq> []" using ST_PS_nonempty[OF M] .
+    have L1: "Lng M = 1" using Lle Mne by (cases M) auto
+    have opid: "oper M n = M" using L1 by (simp add: oper_def Let_def)
+    have i0: "i = 0" using i opid L1 by simp
+    have "fst (M ! 0) = 0" using h0 opid i0 by simp
+    moreover have "drop i (oper M n) = oper (drop 0 M) n" using opid i0 L1 by (simp add: oper_def Let_def)
+    ultimately show ?thesis using Mne n by (metis drop0 length_greater_0_conv)
+  next
+    case Lgt: True
+    show ?thesis
+    proof (cases "entry M 0 (Lng M - 1) = 0 \<and> entry M 1 (Lng M - 1) = 0")
+      case bz: True
+      show ?thesis using suffix_oper_witness_pred[OF Lgt bz i h0 n] .
+    next
+      case nz: False
+      show ?thesis
+      proof (cases "hasParent M (idx1 M (Lng M - 1)) (Lng M - 1)")
+        case hpF: False
+        show ?thesis using suffix_oper_witness_residual[OF M n i h0 Lgt nz hpF] .
+      next
+        case hp: True
+        \<comment> \<open>genuine tiling branch; \<open>\<not> W1\<close> forces \<open>i > j0\<close>\<close>
+        have nle: "\<not> i \<le> parent M (idx1 M (Lng M - 1)) (Lng M - 1)"
+          using notW1 Lgt nz hp by blast
+        have igt: "parent M (idx1 M (Lng M - 1)) (Lng M - 1) < i"
+          using nle by simp
+        show ?thesis using suffix_oper_witness_tile_gt[OF Lgt nz hp igt i h0 n] .
+      qed
+    qed
+  qed
+qed
 
 text \<open>\<^bold>\<open>Strengthened suffix-closure\<close> \<open>suffix_closure_ST_PS\<close>: every row-0-headed
   suffix of a standard form is again a standard form.  Proved by induction on
