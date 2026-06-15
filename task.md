@@ -30,7 +30,10 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
-  - 🎯 **★最新(続90): PSS 停止性 = 単一の既約 Buchholz §1 核 `sigma_seqlex_mono`(両ルート収束確定)**
+  - 🎯 **★★★最新(続90): PSS 停止性 = 純粋に Buchholz §1 核のみ(構造機械化を全 close)**
+    > 多セッション crux `sigma_seqlex_mono` を緑のブロック帰納で証明完成 → 構造的到達性・標準形閉包を全緑化。
+    > 残る live sorry は本質的 §1 内容 2つ(`proj_nrm_argzone_olt` §1核 / `keeps_head_ST_PS` tied e=y)のみ。
+    > 今セッションで偽補題6件を深層実測で破棄(Cmem_NF/PROJMONO/C1/旧tail_zone[空]/oV(nrm)eq-case/+既知)。
     > ユーザー指摘「§1 移植しても PSS と繋がらない」は正。§1/psi_proj は live path 外。続89 の「2独立ルート」は
     > 続90 sub-agent 2並列で**両者が同一の単一義務に収束**と判明(独立でなかった)。
     - 🚨 **唯一の真の live 核 `sigma_seqlex_mono`**〔nrm.thy〕: M,N∈ST_PS⟹seqlex M N⟹seqlex(σM)(σN)
@@ -49,9 +52,13 @@
         (oV(nrm t)=oV t が必須・それ自体 §1核・oV(nrm BM)が 107/400 non-canonical)⟹ ST arg-zone 不変量を carry した
         proj∘nrm 順序保存を直接攻める。緑補題 olt_iff_oV_wf3(wf3 上 oV が olt 反映)は nrm_argz_reduction_reference.thy.txt に保存。
       - **`keeps_head_ST_PS`**= head 非吸収。y<e 不発(構造)、tied e=y proj比較=§1(STS_B)のみ。
-      - **`suffix_oper_witness_residual`**= tail_zone_ST_PS の構造残核(§1でない)。tail_zone/suffix_closure/suffix_oper_witness は
-        SUF/TAIL が緑化、残は no-parent Pred 分岐(ST_PS 不発・全列が最終 index に parent 0/24735)=要 hasParent 存在不変量。
-        緑 index-shift 基盤 nextrel0_drop_iff/hasParent_parent_drop 等を SUF が追加。
+    - ✅ **構造的到達性・標準形閉包を全 close**(続90: SIG2/STRUCT/TAIL/SUF/HP):
+      tail_zone_ST_PS / suffix_closure_ST_PS / suffix_oper_witness / suffix_oper_witness_residual 全緑化。
+      HP が hasParent_last_ST_PS(ST_PS の全列が最終 index に parent・実測 0/190508)を ST_PS.induct で証明し
+      最後の構造残核を vacuous close。緑基盤: nextrel0/1/R_drop_iff・parent_unique・le0_row0_floor・
+      row0_zero_imp_row1_zero_ST_PS(floor 不変量)・nextrel0/1_exists。
+    - **次攻**: proj_nrm_argzone_olt(§1核・ST arg-zone 不変量 carry 直接帰納・多セッション wall・lean も停滞)。
+      keeps_head_ST_PS の tied e=y も同核。oV_mono_NF は意味論側同値。
     - soundness: 偽補題 6件(Cmem_NF/PROJMONO/C1[oV(proj∘nrm)=oV]/旧tail_zone_ST_PS[空]/oV(nrm)=oV の eq-case/+既知
       acanon_arg_lt/oV_mono_cnf)を深層 closure+5 で破棄(第7・8事件回避)。
     - **次攻**: (1)suffix_oper_witness_residual を hasParent 存在不変量で閉じる(構造・closable→PSS=純§1)
