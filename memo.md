@@ -4618,3 +4618,21 @@ SIG2/STRUCT/CORE の3体で sigma_seqlex_mono を緑のブロック帰納証明�
 **現 live sorry**: nrm.thy: proj_nrm_argzone_olt(§1核)/ tail_zone_ST_PS(構造)/ keeps_head_ST_PS(§1結合)/
   psi_proj_nonmem(§1・proj_nrm の接続先?)。 ovnf.thy: oV_mono_NF(意味論・同値)。 necessity.thy: psi_value_acanon(§1)。
 **今セッション soundness 総括**: 偽補題を計5件(Cmem_NF/PROJMONO/C1/旧tail_zone_ST_PS/+既知)深層実測で破棄。第7・8事件を全回避。
+
+### 続90 末尾: 残核の更なる局所化(TAIL/ARGZ)+ §1 reduction の診断
+
+- **TAIL**: tail_zone_ST_PS を緑化(suffix_closure_ST_PS via ST_PS.induct)。到達性核を単一小残核
+  **suffix_oper_witness**(oper 全分岐+両index領域を統一存在witnessで被覆 0/125592、残=nextrel0/le0 谷条件の
+  row-0 prefix 除去不変性・構造的・§1でない・0/2131)に縮約。緑統合済(5b0b29b)。
+- **ARGZ**(診断・live 非統合): proj_nrm_argzone_olt を緑化し ψ形 psi_oV_nrm_argzone_lt(=head ψ値の厳密単調)に
+  還元、緑補題 **olt_iff_oV_wf3**(wf3 上 oV が olt を反映=順序iso)/oV_proj_reflects。**但し live 非統合**:
+  reduction は psi_proj 経由で psi_proj_nonmem を live path に引込み(self-contained term核→ψ核+依存で live §1 sorry 増)、
+  OV 橋と同パターン。
+  🚨**核心診断**: ψ核を既存 §1 sorry(psi_proj_nonmem/psi_value_acanon/oV_mono_NF)へ還元するには oV(nrm t)=oV t
+  (それ自体 §1核・実測11880/0 だが非緑)が必須。**term核 proj_nrm_argzone_olt は既存 §1 機械化に綺麗に還元しない**
+  (oV(nrm BM)が 107/400 で non-canonical⟹proj による canonical化が本質)。⟹ §1核は necessity.thy の psi_value_acanon
+  とは別個に「ST arg-zone 不変量を carry した proj∘nrm の順序保存」を直接攻める必要。reference: nrm_argz_reduction_reference.thy.txt。
+  - 再確認した偽: oV(proj y(nrm B))=oV B 偽(266594/1013167 で proj が項を動かす)。
+
+**現 live §1核(最小・self-contained 維持)**: proj_nrm_argzone_olt(term-level・nrm.thy)/ keeps_head_ST_PS(tied e=y)/
+  suffix_oper_witness(構造)。 oV_mono_NF(意味論・同値)。§1核は psi_value_acanon とは独立に攻める方針。
