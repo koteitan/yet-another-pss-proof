@@ -4700,3 +4700,21 @@ head 諸事実 off-class 偽(K1/K2/K3 各 >60% fail)⟹ class guard 必須。
 構造的鍵(緑予定): lead(nrm(translate aM))=snd(hd aM)(Q1=0, 964297/0)。
 **残 §1 は全て nrm の arg-zone(blockok 1)image head 構造に集約**: H1/H2/nrm_argzone_olt/keeps_head が同 depth。
 untr/sigma/blockok 1 から nrm(translate aM) の head/lead を特徴付ければ一括で閉じる見込み。sub-agent 15体運用。
+
+### 続90 末5: lean-yapss からの cross-project 情報(2026-06-15)+ harg 健全性検証
+ユーザー経由で lean-yapss の port 知見を受領。検証・対応:
+- **🔴 soundness 検証(最重要・解消)**: lean が「ya-pss の `proj 0 X = harg X` は偽(580/1948・埋もれた P2 発火)」と警告。
+  → ya-pss の**実際の** arg-zone class(X=nrm(translate aM), aM=ST_PS body の takeWhile)で直接検証(tools/check_harg_direct.py,
+  深層 1.01M closure・266545 発火 image): **proj 0 X != harg X = 0 / maxo(violators)!=harg = 0**。
+  埋もれた violator は複数ある(S4=204348)が **harg X が常に最大 violator** ⟹ proj 0 X=harg X は**真**。
+  lean の反例は lean の広い NF クラス上で、ya-pss arg-zone image には現れない。**HEAD/FF の harg ベース統合は健全**(第7事件再演でない)。
+- **⭐ lean 推奨ルート(採用検討)**: proj0_olt_NF + NF lead/maxsub spine 規律(lead_arg_le_one[NF arg は lead≤1]/
+  fire_lead_one_NF[発火⟹lead=1]/pfire⟺lead<maxsub/lead_proj_eq_maxsub_NF/fire_shape_NF/proj0_bothfire_eqmaxsub_NF)。
+  これで ya-pss の4 atomic 残核(argzone_head_lead_gt/_dominates/_harg_olt/_F_fires)を1つに縮約でき、
+  lean は argzone_head_lead_gt(lead X<lead(harg X))を証明済。**maxsub-spine が harg 分解より clean**。
+  ⟹ ya-pss でも maxsub spine で攻めると4残核が proj0_bothfire_eqmaxsub_NF 一点に収束する見込み。agent-independence で自前証明する。
+- **🔴 psi_value_acanon flag**: lean で psi_value_acanon(全 ζ で acanon v(psi ζ w))は偽(PsiValueAcanon_is_false, Ω_1/ε-arg 反例)。
+  ya-pss necessity.thy:1157 の現 statement は ζ 無制限=同じく偽の疑い(local probe 56/0 は浅すぎた)。**canonical ζ 限定が必要**。
+  off-path(§1・live path 外)だが latent 偽 sorry。§1 を復活させる際は ζ を canonical に制限して再 statement すること。
+- lean 固有資産(参考): psiSelf α v=ω^(Ω_v+α) 明示値式 / psi_strict_mono_lt_epsLvl(sub-ε 域 clean) / W=T diag_acc scaffold /
+  crux は厳密に maxr1=2 から / ST_PS_suffix sorry-free / 8 バイパス Lean 反例。
