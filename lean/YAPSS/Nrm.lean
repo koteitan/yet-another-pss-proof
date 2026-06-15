@@ -542,7 +542,19 @@ the `ST_PS` derivation):
 theorem ST_PS_suffix {p : ℕ × ℕ} {rest : PairSeq} (hM : ST_PS (p :: rest)) :
     rest.dropWhile (fun q => p.1 < q.1) = [] ∨
     ST_PS (rest.dropWhile (fun q => p.1 < q.1)) := by
-  sorry
+  generalize hL : (p :: rest) = M at hM
+  induction hM generalizing p rest with
+  | diag v =>
+    rw [diagSeq_cons (Nat.zero_le v)] at hL
+    obtain ⟨rfl, rfl⟩ := List.cons.injEq .. ▸ hL
+    exact Or.inl (suffix_diag v)
+  | @oper N n hN hn ih =>
+    by_cases L : 1 < N.length
+    · -- N long: N⟦n⟧ = N.dropLast ++ R
+      sorry
+    · -- N short: N⟦n⟧ = N
+      rw [oper_eq_self_short n (by omega)] at hL
+      exact ih hL
 
 /-- **Tail-`NF`-closure.**  Reduced to the pure list-level `ST_PS_suffix`: the
 tail `c` of `P 0 b c ∈ NF` is `translate` of the `dropWhile`-tail of the `ST_PS`
