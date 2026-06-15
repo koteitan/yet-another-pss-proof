@@ -2691,7 +2691,65 @@ theorem tsize_mvstep_lt {b : Three} (h : pfire 0 b) : tsize (mvstep b) < tsize b
   have hin := maxo_hdtl_in hne
   exact Gterm_tsize (mem_Glist.1 (List.mem_of_mem_filter hin))
 
-/-- **The single STEP residual** (`olt b f ⟹ olt (mvstep b) (mvstep f)` on the
+/-- `mvstep b` (firing) is a `G₀`-critical of `b` (the `maxo` of the violators). -/
+theorem mvstep_mem_Gterm {b : Three} (hf : pfire 0 b) : mvstep b ∈ Gterm 0 b := by
+  have hne : (Glist 0 b).filter (fun g => ¬ olt g b) ≠ [] := by rw [pfire] at hf; exact hf
+  have hmv : mvstep b = maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
+              ((Glist 0 b).filter (fun g => ¬ olt g b)).tail := by
+    unfold mvstep; rw [dif_neg hne]
+  rw [hmv]; exact mem_filter_Gterm (maxo_hdtl_in hne)
+
+/-- `mvstep b` (firing) dominates every `G₀`-critical of `b` (`maxo` = greatest
+violator, like `proj_ge_crit` but for the single step). -/
+theorem mvstep_ge_crit {b : Three} (hf : pfire 0 b) {g : Three}
+    (hg : g ∈ Gterm 0 b) : g ≤o mvstep b := by
+  have hne : (Glist 0 b).filter (fun g => ¬ olt g b) ≠ [] := by rw [pfire] at hf; exact hf
+  have hmv : mvstep b = maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
+              ((Glist 0 b).filter (fun g => ¬ olt g b)).tail := by
+    unfold mvstep; rw [dif_neg hne]
+  rw [hmv]
+  set bad := (Glist 0 b).filter (fun g => ¬ olt g b) with hbad
+  set m := maxo bad.headI bad.tail with hm
+  have hmin : m ∈ bad := maxo_hdtl_in hne
+  have hbm : b ≤o m := by
+    rcases olt_total b m with h1 | h1 | h1
+    · exact Or.inl h1
+    · exact Or.inr h1
+    · exact absurd h1 (mem_filter_not_olt hmin)
+  by_cases hgb : olt g b
+  · exact Or.inl (Three.olt_ole_trans hgb hbm)
+  · exact maxo_ub_mem hne g
+      (by rw [hbad]; exact List.mem_filter.2 ⟨mem_Glist.2 hg, by simpa using hgb⟩)
+
+/-- **`lead (mvstep b) = maxsub b`** for a firing term with `maxsub = climb`
+(one-step analogue of `lead_proj_eq_maxsub_NF`, `NF`-free).  Upper: `mvstep b` is
+a critical (`lead ≤ maxsub`, `lead_crit_le_maxsub`).  Lower: `climb_achieved`
+exposes a witness `g` with `lead g = climb b = maxsub b`, dominated by `mvstep b`
+(`proj_ole`/`mvstep_ge_crit`). -/
+theorem lead_mvstep_eq_maxsub {b : Three} (hf : pfire 0 b) (hms : maxsub b = climb b) :
+    lead (mvstep b) = maxsub b := by
+  have hup : lead (mvstep b) ≤ maxsub b := lead_crit_le_maxsub (mvstep_mem_Gterm hf)
+  obtain ⟨g, hg, hgl⟩ := climb_achieved b
+  have hgmax : lead g = maxsub b := by rw [hgl, ← hms]
+  have hbm : b ≤o mvstep b := by
+    have hne : (Glist 0 b).filter (fun g => ¬ olt g b) ≠ [] := by
+      rw [pfire] at hf; exact hf
+    have hmv : mvstep b = maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
+                ((Glist 0 b).filter (fun g => ¬ olt g b)).tail := by
+      unfold mvstep; rw [dif_neg hne]
+    rw [hmv]
+    rcases olt_total b (maxo _ _) with h1 | h1 | h1
+    · exact Or.inl h1
+    · exact Or.inr h1
+    · exact absurd h1 (mem_filter_not_olt (maxo_hdtl_in hne))
+  have hlow : maxsub b ≤ lead (mvstep b) := by
+    rcases hg with heq | hgmem
+    · -- g = b: lead b = maxsub b ≤ lead (mvstep b) via `b ≤o mvstep b`.
+      have := lead_le_of_ole hbm; rw [heq] at hgmax; omega
+    · have := lead_le_of_ole (mvstep_ge_crit hf hgmem); omega
+  omega
+
+/-- **The `≤o` STEP residual** (`olt b f ⟹ mvstep b ≤o mvstep f` on the
 firing descent class, the irreducible `NF`/`ST_PS` forest content).  Stated as a
 hypothesis-carrying lemma whose discharge (via the `SubBlock`/`r1ok_ST_PS`
 carrier) closes the witness.  GREEN reduction below: with this STEP, strong
@@ -2894,6 +2952,58 @@ theorem Gterm_subs {u : ℕ} {g t : Three} (hg : g ∈ Gterm u t) :
         Set.mem_insert_iff.2 (Or.inr (Set.mem_union_left _ (ihb hgb hx)))
     · exact fun x hx =>
         Set.mem_insert_iff.2 (Or.inr (Set.mem_union_right _ (ihc hgc hx)))
+
+/-- Every subscript is `≤ maxsub`. -/
+theorem mem_subs_le_maxsub {t : Three} {a : ℕ} (h : a ∈ subs t) : a ≤ maxsub t := by
+  induction t with
+  | Z => simp [subs] at h
+  | P e b c ihb ihc =>
+    rw [subs_P'] at h; rw [maxsub_P]
+    rcases Set.mem_insert_iff.1 h with rfl | h
+    · omega
+    · rcases h with hb | hc
+      · have := ihb hb; omega
+      · have := ihc hc; omega
+
+/-- A nonzero term's max subscript is realised in its subscript set.  The max of
+`P a b c` is `a`, or `maxsub b` (if `b ≠ Z` realises it), or `maxsub c`. -/
+theorem maxsub_mem_subs {t : Three} (h : t ≠ Z) : maxsub t ∈ subs t := by
+  induction t with
+  | Z => exact absurd rfl h
+  | P a b c ihb ihc =>
+    rw [subs_P']
+    -- Decide which of `a`, `maxsub b`, `maxsub c` realises `maxsub (P a b c)`.
+    have hbz : b = Z → maxsub b = 0 := fun h => by rw [h, maxsub_Z]
+    have hcz : c = Z → maxsub c = 0 := fun h => by rw [h, maxsub_Z]
+    rcases Nat.le_total (maxsub b) (maxsub c) with hbc | hbc
+    · rcases Nat.le_total a (maxsub c) with ha | ha
+      · -- max realised by `maxsub c`; `c ≠ Z` (else `maxsub c = 0 ≥ a, maxsub b`,
+        -- so all `0` and `a = 0` realises it).
+        by_cases hc : c = Z
+        · have hc0 := hcz hc
+          have : maxsub (P a b c) = a := by rw [maxsub_P]; omega
+          rw [this]; exact Set.mem_insert _ _
+        · have : maxsub (P a b c) = maxsub c := by rw [maxsub_P]; omega
+          rw [this]; exact Set.mem_insert_iff.2 (Or.inr (Set.mem_union_right _ (ihc hc)))
+      · have : maxsub (P a b c) = a := by rw [maxsub_P]; omega
+        rw [this]; exact Set.mem_insert _ _
+    · rcases Nat.le_total a (maxsub b) with ha | ha
+      · by_cases hb : b = Z
+        · have hb0 := hbz hb
+          have : maxsub (P a b c) = a := by rw [maxsub_P]; omega
+          rw [this]; exact Set.mem_insert _ _
+        · have : maxsub (P a b c) = maxsub b := by rw [maxsub_P]; omega
+          rw [this]; exact Set.mem_insert_iff.2 (Or.inr (Set.mem_union_left _ (ihb hb)))
+      · have : maxsub (P a b c) = a := by rw [maxsub_P]; omega
+        rw [this]; exact Set.mem_insert _ _
+
+/-- A `G₀`-critical's max subscript is `≤` the host's (subscripts are inherited,
+`Gterm_subs`). -/
+theorem maxsub_crit_le {u : ℕ} {g t : Three} (hg : g ∈ Gterm u t) :
+    maxsub g ≤ maxsub t := by
+  by_cases hgZ : g = Z
+  · subst hgZ; simp [maxsub]
+  · exact mem_subs_le_maxsub (Gterm_subs hg (maxsub_mem_subs hgZ))
 
 theorem proj_subs (u : ℕ) (b : Three) : subs (proj u b) ⊆ subs b := by
   by_cases h : (Glist u b).filter (fun g => ¬ olt g b) = []
