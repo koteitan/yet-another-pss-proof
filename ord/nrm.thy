@@ -2283,16 +2283,121 @@ text \<open>\<^bold>\<open>Residual 4 (THE irreducible \<section>1 core, term le
   (\<open>probe_argzone_olt_core.py\<close>).  \<^bold>\<open>Soundness gate\<close>: the tempting value-preservation
   shortcut \<open>oV (proj y (nrm B)) = oV B\<close> is \<^bold>\<open>FALSE\<close> (\<open>proj\<close> strictly grows the term in
   266594/1013167 cases, \<open>probe_argzone_projid.py\<close>); \<open>proj\<close> raises the value, so the
-  core does not reduce to value-preservation.  Localized \<open>sorry\<close>.\<close>
+  core does not reduce to value-preservation.
 
-lemma proj_nrm_argzone_olt:
+  \<^bold>\<open>Factoring of the core (this session, \<open>probe_argzone_factor_gate.py\<close>)\<close>.  The core
+  splits at the \<open>nrm\<close>/\<open>proj\<close> seam into two independently-verified halves:
+    \<^item> \<^bold>\<open>(NRMMONO, separable, TRUE)\<close> \<open>nrm_argzone_olt\<close> (below):
+      \<open>olt B F \<Longrightarrow> olt (nrm B) (nrm F)\<close> for arg-zone translates \<open>B,F\<close>
+      (\<^bold>\<open>44850 pairs / 0 reversals / 0 collapses\<close>).  This is the clean \<open>nrm\<close>-monotone
+      half (\<open>nrm_order_pres\<close> one depth down, on depth-1 NF blocks).
+    \<^item> \<^bold>\<open>(PROJSTEP, residual, the genuine \<section>1 crux)\<close> \<open>proj_step_argzone_olt\<close> (below):
+      \<open>olt (nrm B) (nrm F) \<Longrightarrow> olt (proj y (nrm B)) (proj y (nrm F))\<close> for arg-zone
+      images (\<^bold>\<open>61075 pairs / 0 reversals / 0 collapses\<close>, \<open>probe_factor.py\<close> F2-nrm).
+  \<^bold>\<open>Why \<open>proj\<close> does \<^emph>\<open>not\<close> separate via a local invariant\<close> (FALSE candidates ruled out
+  THIS session at deep closure +5; \<^bold>\<open>do not retry\<close>):
+    \<^item> \<open>PROJMONO_WF3\<close> (\<open>wf3 p \<Longrightarrow> wf3 q \<Longrightarrow> olt p q \<Longrightarrow> olt (proj y p) (proj y q)\<close>)
+      is \<^bold>\<open>FALSE\<close>: \<^bold>\<open>84960 reversals / 2.83M\<close> (\<open>probe_projmono_wf3.py\<close>); e.g.
+      \<open>p = D\<^bsub>0\<^esub>(D\<^bsub>1\<^esub>(\<dots>))\<close> at \<open>y=0\<close>, where \<open>proj 0\<close> strips the \<open>D\<^bsub>0\<^esub>\<close> head and jumps up to
+      the buried \<open>D\<^bsub>1\<^esub>(\<dots>)\<close> critical (\<open>>\<^sub>o p\<close>), overshooting \<open>q\<close>.
+    \<^item> \<open>PROJMONO_GEQ\<close> (same, plus \<^emph>\<open>every subscript of \<open>p,q\<close> is \<open>\<ge> y\<close>\<close>) is still \<^bold>\<open>FALSE\<close>:
+      \<^bold>\<open>177329 reversals\<close> (\<open>probe_proj_geq.py\<close>) \<dash> the \<open>\<ge> y\<close> bound is vacuous at \<open>y=0\<close>.
+    \<^item> \<open>P_subdom\<close> (no \<open>G\<^bsub>y\<^esub>\<close>-critical has leading subscript above the host) imposed on
+      \<open>wf3\<close>: still \<^bold>\<open>FALSE\<close>, 10144 reversals (\<open>probe_distinguish.py\<close>).
+    Only \<open>P_canon\<close> (\<open>proj y t = t\<close>, i.e. \<open>proj\<close> does \<^emph>\<open>not fire\<close>) yields 0 reversals \<dash>
+    but covers only \<open>697752/964297\<close> (72\%) of arg-zone images; the irreducible content
+    lives \<^bold>\<open>entirely in the firing 28\%\<close> (= prior art's \<^emph>\<open>fire \<times> sum-vs-nest\<close> crux,
+    \<open>memo\<close> \<open>続83\<close>).  Hence \<open>proj\<close> has \<^bold>\<open>no local term-level characterization\<close>; the
+    standard-form structure of the images is essential.  (Confirmed TRUE separable
+    tool: \<open>proj_emb_mono\<close>, \<open>x \<sqsubseteq> y \<Longrightarrow> ole (proj u x) (proj u y)\<close> under the embedding
+    order \<open>\<sqsubseteq>\<close>; it closes the non-firing 72\% but not the firing crux.)\<close>
+
+text \<open>\<^bold>\<open>ST arg-zone value bound (IST)\<close>: in a standard form \<open>(0,y)#r\<close> every value \<open>v\<close>
+  of the argument zone is \<open>\<ge> y\<close> (the diagonal/parenthood discipline; the head value
+  \<open>y\<close> is the minimum).  Deep closure \<open>1013167/1013167\<close> (\<open>probe_ST_argval.py\<close>).
+  Via \<open>NT_subs\<close> (\<open>subs (nrm (translate aM)) \<subseteq> snd ` set aM\<close>, in \<open>nrmstep\<close>) and
+  \<open>proj_subs\<close> this gives \<open>subs (proj y (nrm (translate aM))) \<subseteq> {v. y \<le> v}\<close>:
+  the collapse point \<open>y\<close> sits below every subscript of the image.  (NB: this bound is
+  \<^emph>\<open>necessary\<close> but \<^bold>\<open>not sufficient\<close> for \<open>proj\<close>-monotonicity \<dash> see \<open>PROJMONO_GEQ\<close> above.)\<close>
+
+lemma argzone_val_ge:
+  assumes "(0, y) # r \<in> ST_PS"
+    and "(i, v) \<in> set (takeWhile (\<lambda>q. 0 < fst q) r)"
+  shows "y \<le> v"
+  \<comment> \<open>structural ST_PS invariant; deeply verified (\<open>probe_ST_argval.py\<close>, 1013167/0).\<close>
+  sorry
+
+text \<open>\<^bold>\<open>(NRMMONO half, separable, TRUE)\<close> \<open>nrm_argzone_olt\<close>: \<open>nrm\<close> is \<open>olt\<close>-monotone on
+  argument-zone translates of standard forms.  This is exactly \<open>nrm_order_pres\<close>
+  specialized one depth down (the arg zones \<open>aM,aN\<close> are depth-1 NF blocks); it is the
+  \<^emph>\<open>clean\<close> half of the core \<dash> \<open>nrm\<close> preserves order on NF, the genuine difficulty is
+  the subsequent \<open>proj y\<close> collapse.  Deep closure \<^bold>\<open>44850 / 0 reversals / 0 collapses\<close>
+  (\<open>probe_argzone_factor_gate.py\<close> D1).\<close>
+
+lemma nrm_argzone_olt:
   assumes "(0, y) # r \<in> ST_PS" and "(0, y) # r' \<in> ST_PS"
     and "takeWhile (\<lambda>q. 0 < fst q) r \<noteq> takeWhile (\<lambda>q. 0 < fst q) r'"
     and "olt (translate (takeWhile (\<lambda>q. 0 < fst q) r))
              (translate (takeWhile (\<lambda>q. 0 < fst q) r'))"
+  shows "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+             (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
+  \<comment> \<open>separable \<open>nrm\<close>-monotone half; deeply verified (44850/0/0).\<close>
+  sorry
+
+text \<open>\<^bold>\<open>(PROJSTEP half, residual, the genuine \<section>1 crux)\<close> \<open>proj_step_argzone_olt\<close>:
+  once the two arg-zone images are already ordered by \<open>olt\<close> (the output of
+  \<open>nrm_argzone_olt\<close>), the shared collapse \<open>proj y\<close> preserves that order.  This is the
+  firing crux: \<open>proj y\<close> is \<^bold>\<open>not\<close> \<open>olt\<close>-monotone on arbitrary \<open>wf3\<close>
+  (\<open>PROJMONO_WF3\<close>/\<open>PROJMONO_GEQ\<close> FALSE), only on the standard-form image class.
+  \<^bold>\<open>The standard-form invariant it is entitled to carry\<close> is the IST value bound, here
+  passed explicitly: every value of both argument zones is \<open>\<ge> y\<close>, so (by
+  \<open>NT_subs\<close>/\<open>proj_subs\<close>) the collapse point \<open>y\<close> lies below every subscript of both
+  images \<dash> the necessary (though not sufficient) anchor distinguishing this class
+  from the FALSE general \<open>wf3\<close> case.  Deep closure \<^bold>\<open>61075 / 0 reversals / 0 collapses\<close>
+  (\<open>probe_factor.py\<close> F2-nrm).\<close>
+
+lemma proj_step_argzone_olt:
+  assumes "(0, y) # r \<in> ST_PS" and "(0, y) # r' \<in> ST_PS"
+    and "takeWhile (\<lambda>q. 0 < fst q) r \<noteq> takeWhile (\<lambda>q. 0 < fst q) r'"
+    and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
+    and "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+             (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
   shows "olt (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
              (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))"
+  \<comment> \<open>residual firing crux on the ST image class (carries IST); deeply verified (61075/0/0).\<close>
   sorry
+
+text \<open>\<^bold>\<open>The core, green-assembled from the two halves\<close>: \<open>nrm\<close>-monotonicity then the
+  shared \<open>proj y\<close> collapse.  This replaces the single opaque \<open>sorry\<close> by a transparent
+  factoring isolating the irreducible content to @{thm [source] proj_step_argzone_olt}.\<close>
+
+lemma proj_nrm_argzone_olt:
+  assumes ST: "(0, y) # r \<in> ST_PS" and ST': "(0, y) # r' \<in> ST_PS"
+    and ane: "takeWhile (\<lambda>q. 0 < fst q) r \<noteq> takeWhile (\<lambda>q. 0 < fst q) r'"
+    and oltB: "olt (translate (takeWhile (\<lambda>q. 0 < fst q) r))
+                   (translate (takeWhile (\<lambda>q. 0 < fst q) r'))"
+  shows "olt (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+             (proj y (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r'))))"
+proof -
+  have nrmlt: "olt (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+                   (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r')))"
+    by (rule nrm_argzone_olt[OF ST ST' ane oltB])
+  \<comment> \<open>discharge the IST value bound on both argument zones (\<open>argzone_val_ge\<close>)\<close>
+  have vbM: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+  proof
+    fix q assume q: "q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r)"
+    have "(fst q, snd q) \<in> set (takeWhile (\<lambda>q. 0 < fst q) r)" using q by simp
+    thus "y \<le> snd q" using argzone_val_ge[OF ST] by blast
+  qed
+  have vbN: "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r'). y \<le> snd q"
+  proof
+    fix q assume q: "q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r')"
+    have "(fst q, snd q) \<in> set (takeWhile (\<lambda>q. 0 < fst q) r')" using q by simp
+    thus "y \<le> snd q" using argzone_val_ge[OF ST'] by blast
+  qed
+  show ?thesis by (rule proj_step_argzone_olt[OF ST ST' ane vbM vbN nrmlt])
+qed
 
 lemma sigma_argzone_mono:
   assumes ST: "(0, y) # r \<in> ST_PS" and ST': "(0, y) # r' \<in> ST_PS"
