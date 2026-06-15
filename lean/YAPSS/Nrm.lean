@@ -515,6 +515,22 @@ theorem stps_len_pos {M : PairSeq} (hM : ST_PS M) : 0 < M.length := by
       rw [hR, List.length_append, List.length_dropLast]; omega
     · rw [oper_eq_self_short n (by omega)]; exact ih
 
+/-- Every `ST_PS` list begins with `(0,0)`: the diagonals start at `(0,0)`, and
+`oper` preserves the head (`N⟦n⟧ = N.dropLast ++ R` keeps `N`'s first column when
+`1 < |N|`).  So for `ST_PS (p :: rest)` the `dropWhile`-threshold is `p.1 = 0`. -/
+theorem stps_head {M : PairSeq} (hM : ST_PS M) : M.headD (0,0) = (0,0) := by
+  induction hM with
+  | diag v => rw [diagSeq_cons (Nat.zero_le v)]; rfl
+  | @oper N n hN hn ih =>
+    by_cases L : 1 < N.length
+    · obtain ⟨R, hR, -⟩ := oper_eq_dropLast_append L hn
+      rw [hR]
+      match N, L with
+      | a :: b :: u, _ =>
+        simp only [List.dropLast_cons_cons, List.cons_append, List.headD_cons]
+        simpa using ih
+    · rw [oper_eq_self_short n (by omega)]; exact ih
+
 /-- The dropWhile-tail of a base diagonal `(0,0) :: diagSeq 1 v` is empty: every
 non-leading column has row-0 `≥ 1 > 0`, so `dropWhile (0 < ·.1)` drops them all. -/
 theorem suffix_diag (v : ℕ) :
