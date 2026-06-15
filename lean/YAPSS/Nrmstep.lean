@@ -2562,7 +2562,20 @@ below) into TWO minimal forest carriers, each model-verified `824970 / 824970`:
 and (B) genuinely need the global forest discipline (no clean head-arg recursion:
 `CritEmbed(b',f')` fails `401715 / 438747`).  These are the precise irreducible
 climbing facts; `SubBlock`/`Gterm_translate_subblock` (above) is the positional
-correspondence into which `r1ok_ST_PS` must be pulled to discharge them. -/
+correspondence into which `r1ok_ST_PS` must be pulled to discharge them.
+
+ALTERNATE `≤o`-route (this session): the `≤o` half (`CritEmbed`, hence
+`proj 0 b ≤o proj 0 f`) recurses CLEANLY via the keystone WITHOUT injectivity —
+`proj 0 b = proj 0 b'` (keystone), `b' ≤o f'` (head descent, `≤o` tolerates the
+tie), terminating at the chain bottom (`lead = maxsub`).  The strict `<o` then
+needs only that the bottom does not fire.  BUT the bottom non-firing
+`lead t = maxsub t = climb t ∧ cnf t ⟹ ¬ pfire 0 t` is FALSE at depth `4`
+(`p₁(p₀(p₁(p₁0)))` has `lead = maxsub = climb = 1`, `cnf`, yet fires); only the
+`NF`-image bottom non-firing holds (`1285 / 1285`).  `proj_G` gives `proj 0 X`
+non-firing for free, but the recursion bottom is a `proj`-comparison at
+`lead = maxsub` where the keystone no longer applies, so it does not terminate
+term-locally.  Hence BOTH routes bottom out in the SAME `NF`-image bottom
+non-firing forest fact — the irreducible core. -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
