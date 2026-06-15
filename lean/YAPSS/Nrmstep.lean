@@ -2541,12 +2541,46 @@ correspondence (`subs_translate`/`Gterm_translate_lead_le` are the layer-1
 entry; `maxsub_translate_eq_maxr1` pins `maxsub = maxr1`), pulling the global
 `r1ok_ST_PS` climbing to the term-position subscripts.  The keystone reduces the
 witness to this shared core but cannot eliminate it.  Helper `olt_arg_maxsub_le`
-and the positional lemmas are available (GREEN). -/
+and the positional lemmas are available (GREEN).
+
+CLEAN CARRIER DECOMPOSITION (this session): the witness `olt (proj 0 b)(proj 0 f)`
+decomposes GREEN (`proj_ole_of_critembed` + `proj_bothfire_witness_eq_of_carrier`,
+below) into TWO minimal forest carriers, each model-verified `824970 / 824970`:
+  • `CritEmbed`: every `G₀`-critical of `b` is `≤o` some critical of `f`
+    (gives `proj 0 b ≤o proj 0 f`, `probe_le_route.py` E1);
+  • `proj`-injectivity: `olt b f` firing `NF` args have `proj 0 b ≠ proj 0 f`
+    (≡ the head arg determines the firing `NF` arg — the `r1ok` forest
+    uniqueness, `probe_inj.py` `0` collisions).
+`≤o` + `≠` gives the strict `olt`. -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
     ∃ h ∈ Gterm 0 f, olt (proj 0 b) h := by
   sorry
+
+/-- **`proj 0 b ≤o proj 0 f` from the critical embedding.**  GREEN: `proj 0 b` is
+a critical of `b` (`proj_mem_Gterm_of_fire`); the embedding gives a critical `h`
+of `f` with `proj 0 b ≤o h`; and `h ≤o proj 0 f` (`proj_ge_crit`). -/
+theorem proj_ole_of_critembed {b f : Three} (hf : pfire 0 b)
+    (hf' : pfire 0 f)
+    (hembed : ∀ g ∈ Gterm 0 b, ∃ h ∈ Gterm 0 f, g ≤o h) :
+    proj 0 b ≤o proj 0 f := by
+  obtain ⟨h, hhG, hle⟩ := hembed (proj 0 b) (proj_mem_Gterm_of_fire hf)
+  exact ole_trans hle (proj_ge_crit hf' hhG)
+
+/-- **The equal-`maxsub` witness, reduced to the two carrier facts** (GREEN
+modulo `CritEmbed` + injectivity).  Witness `h = proj 0 f`; `olt (proj 0 b)
+(proj 0 f)` from `≤o` (`proj_ole_of_critembed`) + `≠` (injectivity). -/
+theorem proj_bothfire_witness_eq_of_carrier {b c f g : Three}
+    (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
+    (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f)
+    (hembed : ∀ x ∈ Gterm 0 b, ∃ h ∈ Gterm 0 f, x ≤o h)
+    (hinj : proj 0 b ≠ proj 0 f) :
+    ∃ h ∈ Gterm 0 f, olt (proj 0 b) h := by
+  refine ⟨proj 0 f, proj_mem_Gterm_of_fire hf, ?_⟩
+  rcases proj_ole_of_critembed hb hf hembed with hlt | heqp
+  · exact hlt
+  · exact absurd heqp hinj
 
 /-- **The both-fire witness (reduced to the equal-`maxsub` core), Lean form.**
 For two firing head-`0` `NF` arguments `b <o f`, there is a `G₀`-critical `h`
