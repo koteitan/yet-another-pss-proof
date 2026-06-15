@@ -2496,11 +2496,25 @@ Both gaps are the SAME `NF`-global-anchoring (`ST_PS`-reachability /
 `r1ok`/`steps1`) forest core that the project shares: per
 `Wttone.H0clause_translate`, this is *"the SAME open obstruction as
 `proj0_fireprop_NF`/`proj0_bothfire_NF` … the genuine forest core the whole
-project shares, not a quick development."*  No term-local spine predicate
-(`cnf`, `maxsub = climb`, hereditary, `descok`) excludes the firing
-counterexamples — only genuine `NF` membership does.  The keystone reduces the
+project shares, not a quick development."*
+
+**The anchoring is GLOBAL `r1ok` (base `0`), not any local relaxation** (pinned
+this session, `probe_r1ok_base.py`/`probe_real_subterm.py`):
+  • term-local predicates (`cnf`, `maxsub = climb`, hereditary, `descok`, `okH`)
+    ALL admit firing counterexamples (`okH` is `0 / 1285` on the image — false);
+  • even **sequence-local** `r1okRel` relative to a sub-block's own minimum
+    row-`0` is insufficient: the firing sub-blocks (e.g.
+    `(3,1)(4,0)(5,1)(6,1)(7,0)(8,1)…`) SATISFY `r1okRel(min)` (`0 / 2002` fail it)
+    yet their `translate` fires;
+  • only the GLOBAL `r1ok M` (base `0`, climbing from the row-`0`-`0` root
+    through the whole parent forest) excludes them: the real `descok` base nodes
+    arising via the chain from a head-`0` `NF` arg never fire (`1285 / 1285`).
+So the bridge genuinely requires the full `r1ok`-through-`translate` forest
+correspondence (`subs_translate`/`Gterm_translate_lead_le` are the layer-1
+entry; `maxsub_translate_eq_maxr1` pins `maxsub = maxr1`), pulling the global
+`r1ok_ST_PS` climbing to the term-position subscripts.  The keystone reduces the
 witness to this shared core but cannot eliminate it.  Helper `olt_arg_maxsub_le`
-is also available (GREEN). -/
+and the positional lemmas are available (GREEN). -/
 theorem proj_bothfire_witness_eq {b c f g : Three}
     (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF) (harg : olt b f)
     (hb : pfire 0 b) (hf : pfire 0 f) (heq : maxsub b = maxsub f) :
