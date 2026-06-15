@@ -728,6 +728,62 @@ theorem nextR_append_right (A T : PairSeq) (i j0 j1 : ℕ) :
   · rw [if_pos hi, if_pos hi]; exact nextrel0_append_right A T j0 j1
   · rw [if_neg hi, if_neg hi]; exact nextrel1_append_right A T j0 j1
 
+/-- `idx1` is suffix-invariant on shifted indices (it only reads the column). -/
+theorem idx1_append_right (A T : PairSeq) (j : ℕ) :
+    idx1 (A ++ T) (A.length + j) = idx1 T j := by
+  unfold idx1; rw [entry_append_right]
+
+/-- A `nextR` edge gives `le0` to its target. -/
+theorem nextR_le0 {M : PairSeq} {i k b : ℕ} (h : nextR M i k b) : le0 M k b := by
+  unfold nextR at h
+  by_cases hi : i = 0
+  · rw [if_pos hi] at h; exact ⟨h.1, h.2.1, Relation.ReflTransGen.single h⟩
+  · rw [if_neg hi] at h; exact h.2.2.2.2.1
+
+/-- A `nextR`-source of a positive-row-0 column at index `|A| + j1` is in `T`
+(via `le0_no_cross`). -/
+theorem nextR_src_in_T (A T : PairSeq) (hroot : entry T 0 0 = 0)
+    {i k j1 : ℕ} (hpos : 0 < entry (A ++ T) 0 (A.length + j1))
+    (h : nextR (A ++ T) i k (A.length + j1)) : A.length ≤ k := by
+  by_contra hlt; push_neg at hlt
+  exact le0_no_cross A T hroot hlt hpos (nextR_le0 h)
+
+/-- `hasParent` is suffix-invariant at a positive-row-0 column `|A| + j1` (the
+parent lies in `T` by `nextR_src_in_T`; uniqueness transfers via
+`nextR_append_right`). -/
+theorem hasParent_append_right (A T : PairSeq) (hroot : entry T 0 0 = 0)
+    {i j1 : ℕ} (hpos : 0 < entry (A ++ T) 0 (A.length + j1)) :
+    hasParent (A ++ T) i (A.length + j1) ↔ hasParent T i j1 := by
+  unfold hasParent
+  constructor
+  · rintro ⟨j0, hj0, huniq⟩
+    have hge := nextR_src_in_T A T hroot hpos hj0
+    obtain ⟨j0', rfl⟩ : ∃ j0', j0 = A.length + j0' := ⟨j0 - A.length, by omega⟩
+    refine ⟨j0', (nextR_append_right A T i j0' j1).1 hj0, ?_⟩
+    intro y hy
+    have : A.length + y = A.length + j0' :=
+      huniq (A.length + y) ((nextR_append_right A T i y j1).2 hy)
+    omega
+  · rintro ⟨j0', hj0', huniq⟩
+    refine ⟨A.length + j0', (nextR_append_right A T i j0' j1).2 hj0', ?_⟩
+    intro y hy
+    have hge := nextR_src_in_T A T hroot hpos hy
+    obtain ⟨y', rfl⟩ : ∃ y', y = A.length + y' := ⟨y - A.length, by omega⟩
+    have := huniq y' ((nextR_append_right A T i y' j1).1 hy)
+    omega
+
+/-- `parent` shifts by `|A|` at a positive-row-0 column (both `parent (A++T)` and
+`|A| + parent T` satisfy the unique `nextR`). -/
+theorem parent_append_right (A T : PairSeq) (hroot : entry T 0 0 = 0)
+    {i j1 : ℕ} (hpos : 0 < entry (A ++ T) 0 (A.length + j1))
+    (hpT : hasParent T i j1) :
+    parent (A ++ T) i (A.length + j1) = A.length + parent T i j1 := by
+  have hpM : hasParent (A ++ T) i (A.length + j1) :=
+    (hasParent_append_right A T hroot hpos).2 hpT
+  -- both `parent (A++T)` and `|A| + parent T` satisfy nextR; conclude equal by uniqueness
+  exact hpM.unique (parent_nextR hpM)
+    ((nextR_append_right A T i (parent T i j1) j1).2 (parent_nextR hpT))
+
 /-- **The combinatorial heart of suffix-closure** (pure `oper`/`dropWhile`, no
 `ST_PS`).  For a long list `N` (`1 < |N|`) and `N⟦n⟧ = p :: rest`, the
 `dropWhile`-tail of `N⟦n⟧` is one of three shapes, all of which are `[]` or
