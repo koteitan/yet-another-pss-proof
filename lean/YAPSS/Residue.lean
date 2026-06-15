@@ -39,16 +39,22 @@ the closure-rank generator only fires for canonical `ζ`.)  Given it,
 at `v` (`CsetSelf_mem_lt_acanon`) hence at `u ≥ v` (`acanon_sub_mono`),
 contradicting `hnc`.
 
-**Progress toward `PsiValueAcanon` (explicit-value formula).**  The witness for the
-value `c = psiSelf ζ w` is `ζ` itself (canonical, and `< c` by `AcanonLtValue`).
-This reduces `PsiValueAcanon` to:
-* `AcanonLtValue` (canonical `δ ⟹ δ < psiSelf δ w`) — **PROVEN below `ε(w)`**
-  (`AcanonLtValue_lt_epsLvl`, from the ported explicit formula
-  `psiSelf δ w = ω^(Ω_w+δ)`); open only for canonical `δ ≥ ε(w)`;
-* the `v < w` membership `ζ ∈ C_v(c)` (`v = w` is free via `below_psiSelf`).
-The **diagonal `v = w` is fully reduced to `AcanonLtValue`** alone
-(`psiValueAcanon_diag_of_AcanonLtValue`), hence PROVEN for sub-`ε` canonical `ζ`.
-Connector: `alpha_step_residue_of_AcanonLtValue` (parametric, sorryAx-free).
+**Progress toward `PsiValueAcanon` (explicit-value formula + corrections).**
+The witness for the value `c = psiSelf ζ w` is a `w`-canonical `δ < c` with
+`psiSelf δ w = c` — Buchholz's canonical representation (`CanonRep`).  Earlier
+sessions tried to use `ζ` itself as the witness, via `AcanonLtValue`
+(canonical `δ ⟹ δ < psiSelf δ w`); but **`AcanonLtValue` is FALSE**
+(`AcanonLtValue_is_false`: `ζ = Ω_{w+1}` is `w`-canonical with `ζ > psiSelf ζ w`),
+so `ζ` need not be `< c`.  That route is a documented dead-end.
+
+Status of `PsiValueAcanon`:
+* **sub-`ε(w)` diagonal `v = w`: PROVEN** (`psiValueAcanon_diag_lt_epsLvl`) — for
+  `ζ < ε(w)`, `ζ < c` via the formula `psiSelf δ w = ω^(Ω_w+δ)`, witness `δ = ζ`;
+* general diagonal `v = w`: reduced to `CanonRep` (`diag_of_CanonRep`);
+* `ζ ≥ ε(w)` (then `c ≥ ε(w)`): the witness `δ ∈ [ε(w), c)` — its existence is
+  the irreducible §1 simultaneous-induction core (`CanonRep`);
+* `v < w`: the value `c` must be canonical at `v` too — a collapse-region
+  membership at level `v` (entangled with `CanonRep` at level `v`).
 
 The explicit formula also gives the **non-collapse lever** `psi_strict_mono_lt_
 epsLvl` (sub-`ε` `ψ_a` injective), which discharges the §1 head of `oV_nf_arg_lt`
