@@ -4823,5 +4823,8 @@ nrm-image vs ST 切り分け(probe_nrm_vs_st.py): hb 0-canon は nrm 性質で�
 - ★maxsub(hb)=lead(hb) は **F2+G1(maxsub_Gterm_le緑)+lead_le_maxsub緑から導出可**(necessary だが不十分)。
 - ★**橋仮説H(probe_prefix_bridge.py 529k/135969発火): tied G_0-critical of hb = NT(arg-zone連続infix) 0/279292**。自己相似=oper コピー痕跡。
   レバー=**NT_prefix_lt(緑 nrmstep.thy:9986): pre@C@D@post∈ST_PS⟹olt(NT C)(NT(C@D))**。
-- 🔴未解決の橋: NT(infix)と harg(NT W)=hb の olt 関係(NT_prefix_lt は NT(C) vs NT(C@D)・harg でない)。probe_prefix_deep2.py で H_prefix/H_infix 深層確認中。
-- ⚠️ H は 529k で 0 だが S1/SP/maxsub は 1M+ で死亡。2.9M で再検証必須。
+- ✅**深層確定(probe_infix_deep.py 1.0M closure/266545発火=危険域266k超え)**: tied G_0-critical of hb = **NT(suffix W[i:]) 0/513459**
+  (prefix は全滅だが suffix 完全成立=より清潔)。olt g hb=0。**3つの死んだ shortcut と違い危険域超えで deep-verified な構造事実**。
+- 🎯**次の標的=bridge**: g=NT(W[i:]) ∧ hb=harg(NT W) ⟹ olt g hb。X=NT(W)=P 1 hb hc(lead X=1)。
+  tied crit は hb 内の deeper コピー=suffix-NT。NT_prefix_lt(緑)+ NT segment 単調性(later suffix is smaller?)で olt を出す路線。
+  未解決: NT(suffix) と harg(NT W) の正確な olt 関係(proj 経由)。次セッションは「NT(W[i:]) の i 増加で <o 減少」+ hb との関係を採掘。
