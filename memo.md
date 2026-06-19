@@ -4828,3 +4828,13 @@ nrm-image vs ST 切り分け(probe_nrm_vs_st.py): hb 0-canon は nrm 性質で�
 - 🎯**次の標的=bridge**: g=NT(W[i:]) ∧ hb=harg(NT W) ⟹ olt g hb。X=NT(W)=P 1 hb hc(lead X=1)。
   tied crit は hb 内の deeper コピー=suffix-NT。NT_prefix_lt(緑)+ NT segment 単調性(later suffix is smaller?)で olt を出す路線。
   未解決: NT(suffix) と harg(NT W) の正確な olt 関係(proj 経由)。次セッションは「NT(W[i:]) の i 増加で <o 減少」+ hb との関係を採掘。
+
+### 続94続: Lemma L 偽・suffix プラトー・route(a) も浅検証で底打ち・tied-attempt agent 投入
+- 🔴 **Lemma L 偽**(probe_tied_suffix_order 2241351/21982363): tied-lead suffix 一般順序は不成立(等値・非subterm)。
+  tied critical に限れば olt g hb 真(=target)。**suffix-ordering 単独はレバーにならず criticality(g が hb の G_0-subterm)が本質**。
+- ✅ 木側純粋採掘プラトー。全残核は同一 §1 核に収束(obligation 切替で escape 不可)。
+- 🔴 **route(a) も浅検証で底打ち**: 意味論唯一 sorry `psi_value_acanon`(necessity.thy:1157)は probe_valcanon_big で **27 checks/0 のみ**
+  (psi が SMALL モデルで 16(ζ,w)しか定義されず)。4回深層偽の教訓で信頼不能。route(a) 生死=要・大順序数モデル検証(未着手)。
+- **両ルート(b/a)とも深く浅検証 obligation で底打ち**=真の多セッション核。
+- tied_crit_lt_hb を全洞察+厳格 soundness gate で Isabelle 形式化試行(tied-attempt agent, worktree)投入中。
+  新事実: maxsub hb=lead hb 導出可(F2+G1+lead_le_maxsub)・lead X=1・buried D_0-critical が wf3(Gterm k)で届かない根。
