@@ -1245,6 +1245,20 @@ theorem caseB_H1_of_cleangap {η : Ordinal.{u}} {w u : ℕ} (δ : Ordinal.{u})
   have h2 : psiSelf (psiSelf η w) u = psiSelf δ u := collapseSelf_le δ (psiSelf η w) hcδ hcleanc
   rw [h1, h2]
 
+/-- **`ψ^s`-fixpoint from downward saturation** (GREEN, the fixpoint lever).  If `c` is
+`u`-non-canonical (`c ∉ C^s_u(c)`) and `C^s_u(c)` is downward-saturated below `c` (every
+`δ < c` is in `C^s_u(c)`), then `ψ^s_u c = c` (`c` is a `ψ_u`-fixpoint).  Direct from the
+`sInf` definition: `c` is the least non-member.  This is the genuine deep-region mechanism
+(`ε_0 = ψ_0 Ω_1` is the base instance); the remaining content is establishing the
+downward-saturation for a deep value, which needs the `ω`-tower / `nfp` structure. -/
+theorem psiSelf_fixpoint_of_below_saturated {c : Ordinal.{u}} {u : ℕ}
+    (hbelow : ∀ δ, δ < c → δ ∈ CsetSelf (psiResSelf c) c u)
+    (hc : c ∉ CsetSelf (psiResSelf c) c u) :
+    psiSelf c u = c := by
+  apply le_antisymm
+  · rw [psiSelf_unfold]; exact csInf_le' hc
+  · by_contra h; push Not at h; exact psiSelf_notMem c u (hbelow _ h)
+
 /-- **Every `ψ^s`-value is an `ω`-power** (GREEN, ALL regions incl. deep `≥ε`).  Since
 `psiSelf α v` is additively principal (`psiSelf_addprinc`) and `≥ Ω_v ≥ 1 > 0`, Mathlib's
 `isPrincipal_add_iff_zero_or_omega0_opow` gives `psiSelf α v = ω^β` for some `β`.  This is
