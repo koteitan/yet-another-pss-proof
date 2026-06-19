@@ -324,6 +324,17 @@ the lead-`0` NF argument family is strictly ψ-ordered (`ψ_0(oV x) < ψ_0(oV f)
 Genuine Ω-band §1 content; per-element it reduces to `CollapseResidueMaxo` + the
 proj-side order (`psi0_head_of_CRM`).
 
+**`HeadFamilyNF` scoping verdict (2026-06-20n): NOT independently dischargeable — hits
+the deep `≥ ε` region.**  Partition: the SUB-`ε` part is GREEN (`headfam_head_of_lever`:
+`oV x < ε_0` ∧ `oV x < oV f` ⟹ head via `psi_strict_mono_lt_epsLvl`); but NF args REACH
+the deep region — `deep_arg_maxr1_le1` (Lean-proven) shows the lead-`1` arg `P 1 Z Z`,
+already at `maxr1 ≤ 1` (the live path), has `oV (P 1 Z Z) = Ω_1 > ε_0`.  There the head IS
+the §1 `ψ_0`-collapse content (= `CollapseResidueMaxo` per element).  So closing
+`HeadFamilyNF` needs `CollapseResidueMaxo`; it does NOT reduce `PSS_terminates_nrm_final`
+below `{CollapseResidueMaxo}` — the two hypotheses SHARE the core.  (And `NF ⊆ wf3` is FALSE
+— `NFwf3` dead-end — so the `psi0_head_of_CRM` route also needs the `maxr1 ≤ 1` `wf3` = the
+open `H0clause_oper_step` sorry.)
+
 **The two faces are dual/sibling.** Face 1 is the term-level statement (the head-`0`
 OT3 clause on `translate`-images, via the `oV` embedding and the forest-position /
 SubBlock structure); Face 2 is the same fact read on the `oV`-values as the
