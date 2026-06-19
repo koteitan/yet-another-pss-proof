@@ -30,7 +30,7 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
-  - 🎯 **最新(続94)：head 残核を単一 head_arg_0_canonical(proj 0 hb=hb)に統一。BMOCF近道なし確定。経緯は memo 続91-94へ**
+  - 🎯 **最新(続94)：PSS停止性=単一load-bearing sorry oV_mono_NF。head壁はST_PS.inductで証明済化。BMOCF近道なし確定。経緯は memo 続91-94へ**
     - ✅ sigma_seqlex_mono〔nrm.thy・SIG2〕
     - ✅ 構造的到達性・標準形閉包を全緑化〔tail_zone_ST_PS / suffix_closure_ST_PS / suffix_oper_witness / hasParent_last_ST_PS〕
     - ✅ proj_nrm_argzone_olt〔CORE2 が発火 crux に compositional 分解〕
@@ -39,16 +39,12 @@
     - ✅ proj_step_fire_witness〔FW・witness g'=proj y F〕
     - ✅ argzone_fire_FF / proj_head / fire_transport / head_lead_gt / head_dominates / F_fires / harg_olt〔FF・HEAD・SHAPE〕
     - ✅ wf3_head_violator_lead_gt〔SHAPE・class-free〕
-    - ✅ argzone_head_maxviol / tied_crit_lt_hb / head_arg_0_canonical〔ST_PS.induct で証明済・続94〕
-    - ✅ maxsub_harg_eq_lead / proj_eq_iff_dom / nrm_translate_diagSeq / diag base〔class-free 緑〕
-    - ✅ nrm_head_acanon〔緑橋: nrm head 引数は自身の添字で a-canonical・構造帰納〕
-    - 🚨 head 核 = inline core `harg g <o harg hb`〔最小形・自己相似発火降下・意味論 oV で閉じる型・nrm.thy:3352〕
-    - 🚨 argz_head_spine：F1lt/F2/S_Gviol maxsub-spine〔nrm.thy〕
-    - 🚨 argzone_transport：発火 transport〔nrm.thy〕
-    - 🚨 nrm_argzone_olt：nrm 単調半〔nrm.thy〕
-    - 🚨 keeps_head_ST_PS：tied e=y〔nrm.thy〕
-    - 🚨 ★oV_mono_NF：**load-bearing 唯一残核**（PSS_terminates_oV⟸wf_Rnf_oV⟸これ1点）〔ovnf.thy:127〕
-  - 🗄 §1/psi_proj 路線：live path 外〔term_nec / 1.4 trio / Cset_eq_Cset_c / psi_value_acanon〕
+    - ✅ argzone_head_maxviol / tied_crit_lt_hb / head_arg_0_canonical〔ST_PS.induct 証明済・続94〕
+    - ✅ nrm_head_acanon / proj_eq_iff_dom / maxsub_harg_eq_lead / nrm_translate_diagSeq / acanon_leadgap_0canon / proj_idem〔緑橋・補助〕
+    - 🚨 ★oV_mono_NF：load-bearing 唯一残核〔PSS_terminates_oV⟸wf_Rnf_oV⟸これ・ovnf.thy:127〕
+    - 🚨 head_arg_0_canonical_oper inline core harg g<o harg hb：代替 nrm route〔nrm.thy:3352〕
+    - 🚨 argz_head_spine / nrm_argzone_olt / keeps_head_ST_PS / argzone_transport：代替 nrm route §1核〔nrm.thy〕
+  - 🗄 psi_value_canon_rep：意味論 necessity 残核・dead scaffolding・非 load-bearing〔necessity.thy:1178〕
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
     - ✅ wfimg → 対角 accessibility 還元〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS〕
     - 🚨 **本命＝pure-lex 構文的整礎性（順序数なし, wf.thy, sorry ゼロ・緑）** ［決定 2026-06-10, memory pss-wf-route-purelex-syntactic］
@@ -66,16 +62,16 @@
       - ✅ **柱3: olt_ST_iff_seqlex SORRY-FREE**〔seqlex.thy〕＝標準形上で translate は列 lex からの順序同型
         （blockok 規律: row0≥d・先頭=d・ステップ≤+1；blockok_ST_PS で全標準形が満たす；
          wfE ⟺ ST_PS 上の seqlex 整礎性、と BMS ネイティブに言い換え可能に）
-      - 🚨🤖 本丸=(α) 新本線: **値正規化 nrm = NF→OT 順序埋め込み** → 下の「## (α) nrm 路線 進捗ツリー」参照
+      - 🚨 本命=単一 load-bearing sorry oV_mono_NF（意味論 wf_Rnf_oV）。nrm 値正規化路線は代替〔下「## (α) nrm 路線」参照〕
     - 🗑 旧 K-dom ルート（wo/buchholz/embed・不使用）〔経緯は memo.md 続30〕
   - ✅ 停止性（wfimg ⟹ 停止、減少は discharge 済み）〔step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed〕
     - ✅ 条件付還元〔step_terminates_cond / no_infinite_expansion_cond〕
     - ✅ step が ST_PS 内に閉じる〔step_in_ST_PS〕
 
-## (α) nrm 路線 進捗ツリー（本丸・ord/nrm.thy + ord/nrmstep.thy）
-> **PSS_terminates_nrm = inv_image wf_olt_wf3 (nrm∘translate)**（peel/レベル分解不要）。
-> live sorry = nrm_order_pres 1点。攻め筋 = (弱) nrm_step_dec 直接証明（nrmstep.thy・現19 sorry 全て実証済文面）。
-> 設計詳細・経緯は memo.md 続19〜続29。
+## (α) nrm 路線 進捗ツリー（代替ルート・ord/nrm.thy + ord/nrmstep.thy）
+> **PSS_terminates_nrm = inv_image wf_olt_wf3 (nrm∘translate)**（peel/レベル分解不要）。本命は意味論 oV_mono_NF。
+> 続94: head 壁を ST_PS.induct で証明済化。残 sorry = head_arg_0_canonical_oper core(harg g<o harg hb) + argz_head_spine + nrm_argzone_olt + keeps_head_ST_PS + argzone_transport。
+> 設計詳細・経緯は memo.md 続19〜続94。
 - ✅ nrm 基盤〔nrm定義・proj_id/rec/wf3/G・wf3_nrm（像⊆OT）・PSI 緑〕
 - ✅ 実証: 2,643,843 ペアで衝突0・逆転0〔tools/valnorm.py〕
 - ✅ PSS_terminates_nrm / wf_Rnf_nrm / nrm_step_dec（order_pres からの導出）
@@ -96,10 +92,9 @@
       oV t∈Cv_c α a⟹∀x∈Gterm a t. oV x<α。Cset_c_add_principal_elim(1.2e/g)で G_u 回避。
     - ✅ **Cset_eq_Cset_c(Buchholz Remark)**〔necessity.thy・sub-agent RM・residue 1 sorry〕
     - ✅ **B2 oV_noncanon_of_bad 緑**〔nrm.thy〕: bad係数⟹非canonical。term_nec+Remark で。
-    - 🚨🤖 ★残核ただ1つ＝**§1 simultaneous induction**（= residue `noncanon_gen_in_Cset_c_residue`
-      〔necessity.thy〕= psi_proj_nonmem〔nrm.thy〕、同一核）。canonical-rep 存在の (α,n)同時超限帰納。
-      Buchholz が "can be shown" と省略・lean も停滞。A2/nonmem は canonical witness=oV(proj a b) の
-      1.4a 同定に A2 自身を要し irreducibly circular。**sub-agent RES が本丸を攻撃中（G_u 構成 or 同時帰納）**。
+    - ✅ §1 simultaneous induction 緑化（alpha_step_residue / Citer_subset_Cset_c_alpha / Cset_eq_Cset_c）〔necessity.thy〕
+    - 🗄 psi_value_canon_rep：意味論残核・dead scaffolding（psi_proj は consumer なし・非 load-bearing）〔necessity.thy:1178〕
+    - 🗄 psi_proj_nonmem：psi_proj と循環・dead scaffolding〔nrm.thy:380〕
   - 🚨 nrm_step_dec 直接証明〔nrmstep.thy〕＝旧値側ルート（凍結・第7事件で偽核含む）
   - 🚨🚨🚨 **健全性第7事件（最重大・続78）**: 旧値側基盤が closure+5/+6 で偽と確定。
     **偽（reachable 反例・モデル検証済）**: E6_value(proj=NT msfx)/E6_mem(msfx∈Gterm)/
