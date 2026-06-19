@@ -996,108 +996,6 @@ sub-case (A) (`η` `u`-canonical) via the bridge; the `w < u` band case (vacuous
 This REPLACES the single monolithic `NoncanonValueMem` sorry with four strictly
 smaller, model-verified residuals — the sharper joint-induction skeleton. -/
 
-/-- Generator step (A) BAND fact: `Ω_{w+1} ≤ η` when `η` is `u`-canonical (`u ≤ w`)
-and `ψ^s_w(η)` is `u`-non-canonical.  Sharper than the prior `ψ^s_w(η) ≤ η` (which
-follows by `psiSelf_lt_Om_succ` + this).  Mechanism (model-verified 4892/4892): a
-`u`-canonical `η < Ω_{w+1}` makes `ψ^s_w(η)` `u`-canonical, so non-canonicity forces
-`Ω_{w+1} ≤ η`. -/
-def NVM_subA_le.{u} : Prop :=
-  ∀ (η : Ordinal.{u}) (w u : ℕ), u ≤ w →
-    η ∈ CsetSelf (psiResSelf η) η u →
-    psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
-    Om (w + 1) ≤ η
-
-/-- Generator step (A) plateau-collapse: `ψ^s_u(ψ^s_w(η)) ∉ C^s_u(η)`. -/
-def NVM_subA_nm.{u} : Prop :=
-  ∀ (η : Ordinal.{u}) (w u : ℕ),
-    psiSelf (psiSelf η w) u ∉ CsetSelf (psiResSelf η) η u
-
-/-- Generator step (B): `η` is `u`-non-canonical; the rep is `η`'s `u`-rep. -/
-def NVM_caseB.{u} : Prop :=
-  ∀ (α : Ordinal.{u}) (v u w : ℕ) (η : Ordinal.{u}),
-    η < α → η ∈ CsetSelf (psiResSelf α) α v → η ∈ CsetSelf (psiResSelf η) η w →
-    η ∉ CsetSelf (psiResSelf η) η u → v ≤ u → u ≤ w → psiSelf η w < α →
-    psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
-    ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
-      δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf (psiSelf η w) u
-
-/-- Sum step: `ξ = x + y` non-canonical generator. -/
-def NVM_caseSum.{u} : Prop :=
-  ∀ (α : Ordinal.{u}) (v u : ℕ) (x y : Ordinal.{u}),
-    (x + y) < α → x + y ∉ CsetSelf (psiResSelf (x+y)) (x+y) u → v ≤ u →
-    ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
-      δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf (x+y) u
-
-/-- **`NoncanonValueMem` by the genuine Buchholz §1 joint simultaneous induction**
-(outer on `α`, inner on closure-rank `n`).  Fully proven modulo the four precise
-sub-lemmas above (all model-verified at closure+5/+6).  See the section header. -/
-theorem noncanonValueMem_joint
-    (subA_le : NVM_subA_le.{u}) (subA_nm : NVM_subA_nm.{u})
-    (caseB : NVM_caseB.{u}) (caseSum : NVM_caseSum.{u}) :
-    NoncanonValueMem.{u} := by
-  intro α
-  induction α using WellFoundedLT.induction with
-  | _ α IHα =>
-    have rnk : ∀ (n : ℕ) (v u : ℕ) (ξ : Ordinal.{u}),
-        ξ ∈ (CstepSelf' (psiResSelf α) α)^[n] (Set.Iio (Om v)) → ξ < α →
-        ξ ∉ CsetSelf (psiResSelf ξ) ξ u → v ≤ u →
-        ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
-          δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf ξ u := by
-      intro n
-      induction n with
-      | zero =>
-        intro v u ξ hn hξα hnc hvu
-        simp only [Function.iterate_zero, id_eq] at hn
-        exact absurd (Iio_Om_subset_CsetSelf (lt_of_lt_of_le hn (Om_mono hvu))) hnc
-      | succ n IHn =>
-        intro v u ξ hn hξα hnc hvu
-        rw [Function.iterate_succ_apply'] at hn
-        rcases hn with (h1 | h2) | h3
-        · exact IHn v u ξ h1 hξα hnc hvu
-        · obtain ⟨x, hx, y, hy, hxy⟩ := h2
-          subst hxy
-          exact caseSum α v u x y hξα hnc hvu
-        · obtain ⟨w, ⟨η, ⟨hηX, hηα, hηcanon⟩, hηξ⟩⟩ := Set.mem_iUnion.1 h3
-          simp only [psiResSelf, if_pos hηα] at hηξ
-          subst hηξ
-          have hηC : η ∈ CsetSelf (psiResSelf α) α v := CiterSelf_subset_CsetSelf hηX
-          have hηcw : η ∈ CsetSelf (psiResSelf η) η w := by
-            have h0 : η ∈ CsetSelf (psiResSelf α) η w := hηcanon
-            exact CsetSelf_mono_param _ _ η w
-              (fun ζ uu hζ => by
-                rw [psiResSelf, psiResSelf, if_pos (lt_trans hζ hηα), if_pos hζ]) h0
-          by_cases hwu : u ≤ w
-          · by_cases hηu : η ∈ CsetSelf (psiResSelf η) η u
-            · refine ⟨η, hηα, hηC, hηu, ?_⟩
-              have hle : psiSelf η w ≤ η :=
-                le_trans (le_of_lt (psiSelf_lt_Om_succ η w)) (subA_le η w u hwu hηu hnc)
-              exact (psiSelf_eq_of_notMem hle (subA_nm η w u)).symm
-            · exact caseB α v u w η hηα hηC hηcw hηu hvu hwu hξα hnc
-          · push Not at hwu
-            exact absurd
-              (Iio_Om_subset_CsetSelf
-                (lt_of_lt_of_le (psiSelf_lt_Om_succ η w) (Om_mono (by omega)))) hnc
-    intro v ξ u hξC hξα hnc hvu
-    obtain ⟨n, hn⟩ := CsetSelf_mem_iff.1 hξC
-    obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ := rnk n v u ξ hn hξα hnc hvu
-    exact nvm_finish_of_rep δ hδα hδC hδcanon hval
-
-/-- **The non-canonical generator value is itself non-canonical and `≤ ξ`**
-(ya-pss `noncanon_value_noncanon`).  If `ξ ∉ C_u(ξ)` then `psiSelf ξ u ≤ ξ`
-(`psiSelf_le_self_of_not_canon`) and `psiSelf ξ u ∉ C_u(psiSelf ξ u)` (else it
-would lie in its own band-closure `⊆` the `ξ`-closure that excludes it, since
-`psiSelf ξ u ≤ ξ`).  This is why the MINIMAL witness is unusable (it can be the
-non-canonical value itself / a ψ-fixpoint). -/
-theorem noncanon_value_noncanon {ξ : Ordinal.{u}} {u : ℕ}
-    (hnc : ξ ∉ CsetSelf (psiResSelf ξ) ξ u) :
-    psiSelf ξ u ≤ ξ ∧ psiSelf ξ u ∉ CsetSelf (psiResSelf (psiSelf ξ u)) (psiSelf ξ u) u := by
-  have hle : psiSelf ξ u ≤ ξ := psiSelf_le_self_of_not_canon hnc
-  refine ⟨hle, ?_⟩
-  intro hcc
-  -- psiSelf ξ u ∈ C_u(psiSelf ξ u) ⊆ C_u(ξ) (CCSelf_mono, psiSelf ξ u ≤ ξ),
-  -- contradicting psiSelf_notMem ξ u : psiSelf ξ u ∉ C_u(ξ).
-  exact psiSelf_notMem ξ u (CCSelf_mono (α := psiSelf ξ u) (β := ξ) hle u hcc)
-
 /-! ### The value-bounded gap collapse — the genuine §1 lever for the Ω-crossing region
 
 `collapseSelf_le` (Buchholz17) requires *every* gap point `γ ∈ [α,β)` to be
@@ -1174,6 +1072,124 @@ theorem subA_nm_of_valuebound {η : Ordinal.{u}} {w u : ℕ}
     collapseSelf_le_valuebounded hle hVB
   rw [hcollapse]
   exact psiSelf_notMem η u
+
+/-- Generator step (A) BAND fact: `Ω_{w+1} ≤ η` when `η` is `u`-canonical (`u ≤ w`)
+and `ψ^s_w(η)` is `u`-non-canonical.  Sharper than the prior `ψ^s_w(η) ≤ η` (which
+follows by `psiSelf_lt_Om_succ` + this).  Mechanism (model-verified 4892/4892): a
+`u`-canonical `η < Ω_{w+1}` makes `ψ^s_w(η)` `u`-canonical, so non-canonicity forces
+`Ω_{w+1} ≤ η`. -/
+def NVM_subA_le.{u} : Prop :=
+  ∀ (η : Ordinal.{u}) (w u : ℕ), u ≤ w →
+    η ∈ CsetSelf (psiResSelf η) η u →
+    psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
+    Om (w + 1) ≤ η
+
+/-- Generator step (A) plateau-collapse, **value-bound form** (the genuine §1 residue).
+The OLD unconditional `ψ^s_u(ψ^s_w(η)) ∉ C^s_u(η)` is **FALSE** (737/1580 model
+violations); the TRUE residue is the gap **value-bound** that
+`collapseSelf_le_valuebounded` consumes to produce the collapse non-membership
+(`subA_nm_of_valuebound`).  It carries the sub-case-A context (η `u`-canonical,
+`u ≤ w`, `ψ^s_w(η)` `u`-non-canonical) and asserts every `u`-canonical gap point
+`γ ∈ [ψ^s_w(η), η)` has `ψ^s_u(γ) < ψ^s_u(ψ^s_w(η))`.  Model-verified 623/623
+@+5/+6/+7 (the BAD `=` case 0/623, load-bearing).  This is the value-identity the
+joint induction's IH must output (η is the minimal `u`-canonical realizer of the
+plateau value, 623/623) — the genuine Buchholz §1 core. -/
+def NVM_subA_nm.{u} : Prop :=
+  ∀ (η : Ordinal.{u}) (w u : ℕ), u ≤ w →
+    η ∈ CsetSelf (psiResSelf η) η u →
+    psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
+    psiSelf η w ≤ η →
+    ∀ γ, psiSelf η w ≤ γ → γ < η →
+      γ ∈ CsetSelf (psiResSelf γ) γ u → psiSelf γ u < psiSelf (psiSelf η w) u
+
+/-- Generator step (B): `η` is `u`-non-canonical; the rep is `η`'s `u`-rep. -/
+def NVM_caseB.{u} : Prop :=
+  ∀ (α : Ordinal.{u}) (v u w : ℕ) (η : Ordinal.{u}),
+    η < α → η ∈ CsetSelf (psiResSelf α) α v → η ∈ CsetSelf (psiResSelf η) η w →
+    η ∉ CsetSelf (psiResSelf η) η u → v ≤ u → u ≤ w → psiSelf η w < α →
+    psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
+    ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
+      δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf (psiSelf η w) u
+
+/-- Sum step: `ξ = x + y` non-canonical generator. -/
+def NVM_caseSum.{u} : Prop :=
+  ∀ (α : Ordinal.{u}) (v u : ℕ) (x y : Ordinal.{u}),
+    (x + y) < α → x + y ∉ CsetSelf (psiResSelf (x+y)) (x+y) u → v ≤ u →
+    ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
+      δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf (x+y) u
+
+/-- **`NoncanonValueMem` by the genuine Buchholz §1 joint simultaneous induction**
+(outer on `α`, inner on closure-rank `n`).  Fully proven modulo the four precise
+sub-lemmas above (all model-verified at closure+5/+6).  See the section header. -/
+theorem noncanonValueMem_joint
+    (subA_le : NVM_subA_le.{u}) (subA_nm : NVM_subA_nm.{u})
+    (caseB : NVM_caseB.{u}) (caseSum : NVM_caseSum.{u}) :
+    NoncanonValueMem.{u} := by
+  intro α
+  induction α using WellFoundedLT.induction with
+  | _ α IHα =>
+    have rnk : ∀ (n : ℕ) (v u : ℕ) (ξ : Ordinal.{u}),
+        ξ ∈ (CstepSelf' (psiResSelf α) α)^[n] (Set.Iio (Om v)) → ξ < α →
+        ξ ∉ CsetSelf (psiResSelf ξ) ξ u → v ≤ u →
+        ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
+          δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf ξ u := by
+      intro n
+      induction n with
+      | zero =>
+        intro v u ξ hn hξα hnc hvu
+        simp only [Function.iterate_zero, id_eq] at hn
+        exact absurd (Iio_Om_subset_CsetSelf (lt_of_lt_of_le hn (Om_mono hvu))) hnc
+      | succ n IHn =>
+        intro v u ξ hn hξα hnc hvu
+        rw [Function.iterate_succ_apply'] at hn
+        rcases hn with (h1 | h2) | h3
+        · exact IHn v u ξ h1 hξα hnc hvu
+        · obtain ⟨x, hx, y, hy, hxy⟩ := h2
+          subst hxy
+          exact caseSum α v u x y hξα hnc hvu
+        · obtain ⟨w, ⟨η, ⟨hηX, hηα, hηcanon⟩, hηξ⟩⟩ := Set.mem_iUnion.1 h3
+          simp only [psiResSelf, if_pos hηα] at hηξ
+          subst hηξ
+          have hηC : η ∈ CsetSelf (psiResSelf α) α v := CiterSelf_subset_CsetSelf hηX
+          have hηcw : η ∈ CsetSelf (psiResSelf η) η w := by
+            have h0 : η ∈ CsetSelf (psiResSelf α) η w := hηcanon
+            exact CsetSelf_mono_param _ _ η w
+              (fun ζ uu hζ => by
+                rw [psiResSelf, psiResSelf, if_pos (lt_trans hζ hηα), if_pos hζ]) h0
+          by_cases hwu : u ≤ w
+          · by_cases hηu : η ∈ CsetSelf (psiResSelf η) η u
+            · refine ⟨η, hηα, hηC, hηu, ?_⟩
+              have hle : psiSelf η w ≤ η :=
+                le_trans (le_of_lt (psiSelf_lt_Om_succ η w)) (subA_le η w u hwu hηu hnc)
+              -- the value-bound residue → collapse non-membership → the value-identity
+              have hnm := subA_nm_of_valuebound hle (subA_nm η w u hwu hηu hnc hle)
+              exact (psiSelf_eq_of_notMem hle hnm).symm
+            · exact caseB α v u w η hηα hηC hηcw hηu hvu hwu hξα hnc
+          · push Not at hwu
+            exact absurd
+              (Iio_Om_subset_CsetSelf
+                (lt_of_lt_of_le (psiSelf_lt_Om_succ η w) (Om_mono (by omega)))) hnc
+    intro v ξ u hξC hξα hnc hvu
+    obtain ⟨n, hn⟩ := CsetSelf_mem_iff.1 hξC
+    obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ := rnk n v u ξ hn hξα hnc hvu
+    exact nvm_finish_of_rep δ hδα hδC hδcanon hval
+
+/-- **The non-canonical generator value is itself non-canonical and `≤ ξ`**
+(ya-pss `noncanon_value_noncanon`).  If `ξ ∉ C_u(ξ)` then `psiSelf ξ u ≤ ξ`
+(`psiSelf_le_self_of_not_canon`) and `psiSelf ξ u ∉ C_u(psiSelf ξ u)` (else it
+would lie in its own band-closure `⊆` the `ξ`-closure that excludes it, since
+`psiSelf ξ u ≤ ξ`).  This is why the MINIMAL witness is unusable (it can be the
+non-canonical value itself / a ψ-fixpoint). -/
+theorem noncanon_value_noncanon {ξ : Ordinal.{u}} {u : ℕ}
+    (hnc : ξ ∉ CsetSelf (psiResSelf ξ) ξ u) :
+    psiSelf ξ u ≤ ξ ∧ psiSelf ξ u ∉ CsetSelf (psiResSelf (psiSelf ξ u)) (psiSelf ξ u) u := by
+  have hle : psiSelf ξ u ≤ ξ := psiSelf_le_self_of_not_canon hnc
+  refine ⟨hle, ?_⟩
+  intro hcc
+  -- psiSelf ξ u ∈ C_u(psiSelf ξ u) ⊆ C_u(ξ) (CCSelf_mono, psiSelf ξ u ≤ ξ),
+  -- contradicting psiSelf_notMem ξ u : psiSelf ξ u ∉ C_u(ξ).
+  exact psiSelf_notMem ξ u (CCSelf_mono (α := psiSelf ξ u) (β := ξ) hle u hcc)
+
 
 /-- **`NoncanonValueMem` reduces to the STRICT case `psiSelf ξ u < ξ`** (GREEN).
 By `noncanon_value_noncanon` the value `c = psiSelf ξ u` satisfies `c ≤ ξ`.  The
