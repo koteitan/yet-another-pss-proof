@@ -1245,6 +1245,44 @@ theorem caseB_H1_of_cleangap {η : Ordinal.{u}} {w u : ℕ} (δ : Ordinal.{u})
   have h2 : psiSelf (psiSelf η w) u = psiSelf δ u := collapseSelf_le δ (psiSelf η w) hcδ hcleanc
   rw [h1, h2]
 
+/-- **GREEN PIECE 7: subA_nm collapse from the NO-REALIZER condition** (the sharpest
+honest §1 residue).  If no `u`-canonical `ζ < η` realizes the value `ψ^s_u(ψ^s_w η)`, then
+`ψ^s_u(ψ^s_w η) = ψ^s_u η` (the sub-case-A collapse).  Proof: membership of `ψ^s_u(ψ^s_w η)`
+in `C^s_u(η)` would, by `CsetSelf_witness_canonical` (1.4b), produce exactly such a
+realizer `ζ < η` (band forces subscript `u`); absent it, `psiSelf_eq_of_notMem` gives the
+collapse.  This is the dual of canonical-rep existence (`CanonRep`) and the genuine
+deep-region core — soundly characterized (the collapse is an EQUALITY, consistent; its
+`≤` half is free `psiSelf_mono_arg`; NOT a false value-bound like the dead `hVB`).  The
+`G_u`/Lemma-1.9 construction in `Crank.lean` localizes the whole §1 residue to exactly
+this condition (deep region); it holds unconditionally sub-`ε` (`AcanonLtValue_lt_epsLvl`). -/
+theorem subA_nm_collapse_of_noRealizer {η : Ordinal.{u}} {w u : ℕ}
+    (hle : psiSelf η w ≤ η)
+    (hno : ∀ ζ : Ordinal.{u}, ζ < η → ζ ∈ CsetSelf (psiResSelf ζ) ζ u →
+       psiSelf ζ u ≠ psiSelf (psiSelf η w) u) :
+    psiSelf (psiSelf η w) u = psiSelf η u := by
+  apply psiSelf_eq_of_notMem hle
+  intro hmem
+  have hlo : Om u ≤ psiSelf (psiSelf η w) u := Om_le_psiSelf _ _
+  have hap : Ordinal.IsPrincipal (· + ·) (psiSelf (psiSelf η w) u) :=
+    fun {x y} hx hy => (psiSelf_addprinc _ _).2 x y hx hy
+  obtain ⟨u', ζ, heq, hζη, hζmem, hζc⟩ := CsetSelf_witness_canonical hap hlo hmem
+  rw [psiResSelf, if_pos hζη] at heq
+  have hu' : u' = u := by
+    have h1 : Om u' ≤ psiSelf (psiSelf η w) u := heq ▸ Om_le_psiSelf ζ u'
+    have h2 : psiSelf (psiSelf η w) u < Om (u' + 1) := heq ▸ psiSelf_lt_Om_succ ζ u'
+    have hle1 : u' ≤ u := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt h1 (psiSelf_lt_Om_succ (psiSelf η w) u)) (not_lt.2 (Om_mono (by omega)))
+    have hle2 : u ≤ u' := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt (Om_le_psiSelf (psiSelf η w) u) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  subst hu'
+  have hζc_self : ζ ∈ CsetSelf (psiResSelf ζ) ζ u' :=
+    CsetSelf_mono_param _ _ ζ u'
+      (fun ρ uu hρ => by rw [psiResSelf, psiResSelf, if_pos hρ, if_pos (lt_trans hρ hζη)]) hζc
+  exact hno ζ hζη hζc_self heq.symm
+
 /-- Generator step (A) BAND fact: `Ω_{w+1} ≤ η` when `η` is `u`-canonical (`u ≤ w`)
 and `ψ^s_w(η)` is `u`-non-canonical.  Sharper than the prior `ψ^s_w(η) ≤ η` (which
 follows by `psiSelf_lt_Om_succ` + this).  Mechanism (model-verified 4892/4892): a
@@ -1256,21 +1294,23 @@ def NVM_subA_le.{u} : Prop :=
     psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
     Om (w + 1) ≤ η
 
-/-- Generator step (A) plateau-collapse, **clean-gap form** (the HONEST §1 residue,
-re-sounded 2026-06-20b).  The prior VALUE-BOUND form was **FALSE in true ordinals**
-(`hVB_is_contradictory`: `psiSelf_mono_arg` flatly contradicts it at any canonical gap
-point; the "623/623" was a `lt_term` term-model artifact, 85356 monotonicity
-violations).  The genuine residue is **gap-cleanness** (Buchholz 1.6(b) plateau): the
-ordinal gap `[ψ^s_w(η), η)` is entirely `u`-non-canonical.  Consumed by
-`subA_nm_of_cleangap` via the clean `collapseSelf_le`.  It carries the sub-case-A
-context (η `u`-canonical, `u ≤ w`, `ψ^s_w(η)` `u`-non-canonical, `ψ^s_w(η) ≤ η`).
-To be established by the `G_u`/Lemma-1.9 device. -/
+/-- Generator step (A) plateau-collapse, **no-realizer form** (the HONEST §1 residue,
+re-sounded 2026-06-20c — sharpest yet).  History: the VALUE-BOUND form was FALSE in true
+ordinals (`hVB_is_contradictory`); the clean-gap form (`subA_nm_of_cleangap`) is TRUE but
+needs full gap-cleanness.  The `G_u`/Lemma-1.9 construction (`Crank.lean`) LOCALIZES the
+residue precisely to the **no-realizer condition**: no `u`-canonical `ζ < η` realizes the
+value `ψ^s_u(ψ^s_w η)` (`Crank.subA_nm_collapse_of_noRealizer` then gives the collapse via
+`CsetSelf_witness_canonical` + `psiSelf_eq_of_notMem`).  This is the dual of canonical-rep
+existence (`CanonRep`) — the genuine deep-region core, soundly characterized: the collapse
+is an EQUALITY (consistent; its `≤` half is free `psiSelf_mono_arg`), NOT a false
+value-bound.  In the sub-ε region it holds (`AcanonLtValue_lt_epsLvl`). -/
 def NVM_subA_nm.{u} : Prop :=
   ∀ (η : Ordinal.{u}) (w u : ℕ), u ≤ w →
     η ∈ CsetSelf (psiResSelf η) η u →
     psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
     psiSelf η w ≤ η →
-    ∀ γ, psiSelf η w ≤ γ → γ < η → γ ∉ CsetSelf (psiResSelf γ) γ u
+    ∀ ζ : Ordinal.{u}, ζ < η → ζ ∈ CsetSelf (psiResSelf ζ) ζ u →
+      psiSelf ζ u ≠ psiSelf (psiSelf η w) u
 
 /-- Generator step (B), **reduced to the subscript-collapse H1** (the genuine residue).
 The full caseB (produce a canonical rep `δ` with `δ < α`, `δ ∈ C^s_v(α)`, `δ`
@@ -1339,9 +1379,8 @@ theorem noncanonValueMem_joint
             · refine ⟨η, hηα, hηC, hηu, ?_⟩
               have hle : psiSelf η w ≤ η :=
                 le_trans (le_of_lt (psiSelf_lt_Om_succ η w)) (subA_le η w u hwu hηu hnc)
-              -- the HONEST clean-gap residue → collapse non-membership → the value-identity
-              have hnm := subA_nm_of_cleangap hle (subA_nm η w u hwu hηu hnc hle)
-              exact (psiSelf_eq_of_notMem hle hnm).symm
+              -- the HONEST no-realizer residue → collapse → the value-identity
+              exact (subA_nm_collapse_of_noRealizer hle (subA_nm η w u hwu hηu hnc hle)).symm
             · -- η `u`-non-canonical: the rank-IH `IHn` at η produces η's canonical rep δ
               -- (`psiSelf δ u = psiSelf η u`); H1 (`caseB`) converts to the caseB target.
               obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ := IHn v u η hηX hηα hηu hvu
