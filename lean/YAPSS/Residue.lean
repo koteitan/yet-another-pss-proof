@@ -1297,6 +1297,64 @@ theorem subA_nm_subeps_vacuous {η : Ordinal.{u}} {w u : ℕ} (hve : psiSelf η 
     (hcnc : psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u) : False :=
   hcnc (mem_CsetSelf_lvl hve)
 
+/-! ### ✅ TRUTH VERDICT on the sub-case-A collapse `ψ_u(ψ_w η) = ψ_u η` (2026-06-20e)
+
+**The collapse is genuinely TRUE** (NOT a false proxy like the dead `hVB`):
+* it is an **EQUALITY** (consistent — its `≤` half is FREE, `psiSelf_mono_arg`, since
+  `ψ_w η ≤ η`); a value-bound/strict-`<` claim would be the false-proxy trap, but this is not.
+* at the simplest deep instance `η = Ω_1, w = u = 0` it is the **ψ-fixpoint**
+  `ψ_0(ε_0) = ε_0` (`ε_0 = ψ_0 Ω_1` is `0`-non-canonical, `psiSelf_Om1_not_canon`; and
+  `ε_0` is closed under `ω^·`, so it has no canonical realizer below it — the value is its
+  own representative).  This is Buchholz's canonical-representation existence at a fixpoint.
+
+**Resolution of the old dead-end tension** (`CanonRep`/`PsiValueAcanon` FALSE):
+* `PsiValueAcanon` ("`ψ_w ζ` is `v`-canonical") is FALSE because non-canonical ψ-values
+  exist (`ψ_0 Ω_1`).  Our collapse is NOT that — sub-case A *assumes* `ψ_w η` is `u`-non-
+  canonical and asserts the *value-equality* `ψ_u(ψ_w η) = ψ_u η`, a different statement.
+* old `CanonRep` (witness `δ < c`, SAME subscript) is FALSE *exactly at ψ-fixpoints*
+  (`ψ_w c = c` ⟹ no `δ < c` with `ψ_w δ = c`).  The collapse handles the fixpoint
+  correctly: there the value IS its own representative (no smaller realizer), which is
+  precisely why `ψ_u(ψ_w η) ∉ C_u(η)` and the collapse holds.
+
+**The collapse ⟺ no-realizer** (`subA_nm_collapse_of_noRealizer`): `ψ_u(ψ_w η) ∉ C_u(η)`
+⟺ no `u`-canonical `ζ < η` realizes `ψ_u(ψ_w η)` (witness extraction); and for canonical
+`ζ < η`, `ψ_u ζ < ψ_u η` strictly (`psiSelf_strict_mono_arg`), so a realizer ⟺ the value is
+NOT a fixpoint.  Hence the collapse is exactly "the value `ψ_u(ψ_w η)` is a ψ-fixpoint".
+
+**Remaining open core** (honest): proving the value `ψ_u(ψ_w η)` is always a ψ-fixpoint
+(no canonical realizer `< η`) under the sub-case-A hypotheses.  This is Buchholz §1
+canonical-representation existence, the deep `≥ε` core; the `G_u`/Lemma-1.9 machinery
+(`Crank.lean`) reduces it to `Gset`-exhaustiveness, whose `hex` is itself this fixpoint
+fact — the genuine residual, requiring the full normal-form construction.  GREEN sub-`ε`
+(`subA_nm_subeps_vacuous`). -/
+
+/-- **Realizer ⟹ rep** (GREEN, reusable): if the value `ψ^s_u ξ ∈ C^s_v(α)` (`v ≤ u`), then
+its canonical realizer `δ < α` (`u`-canonical, `ψ^s_u δ = ψ^s_u ξ`, `δ ∈ C^s_v(α)`) is
+extracted by `CsetSelf_witness_canonical` (1.4b) — the rep for `NoncanonValueMem` in the
+realizer case.  (Reparam of `alphaStepResidue_of_mem`'s extraction.) -/
+theorem rep_of_value_mem {α ξ : Ordinal.{u}} {v u : ℕ} (hvu : v ≤ u)
+    (hmem : psiSelf ξ u ∈ CsetSelf (psiResSelf α) α v) :
+    ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
+      δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf ξ u := by
+  have hlo : Om v ≤ psiSelf ξ u := le_trans (Om_mono hvu) (Om_le_psiSelf _ _)
+  have hap : Ordinal.IsPrincipal (· + ·) (psiSelf ξ u) :=
+    fun {x y} hx hy => (psiSelf_addprinc _ _).2 x y hx hy
+  obtain ⟨u', δ, heq, hδα, hδmem, hδc⟩ := CsetSelf_witness_canonical hap hlo hmem
+  rw [psiResSelf, if_pos hδα] at heq
+  have hu' : u' = u := by
+    have h1 : Om u' ≤ psiSelf ξ u := heq ▸ Om_le_psiSelf δ u'
+    have h2 : psiSelf ξ u < Om (u' + 1) := heq ▸ psiSelf_lt_Om_succ δ u'
+    have hle1 : u' ≤ u := by
+      by_contra hc; exact absurd (lt_of_le_of_lt h1 (psiSelf_lt_Om_succ _ u)) (not_lt.2 (Om_mono (by omega)))
+    have hle2 : u ≤ u' := by
+      by_contra hc; exact absurd (lt_of_le_of_lt (Om_le_psiSelf _ u) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  rw [hu'] at heq hδc
+  have hδc_self : δ ∈ CsetSelf (psiResSelf δ) δ u :=
+    CsetSelf_mono_param _ _ δ u
+      (fun ρ ww hρ => by rw [psiResSelf, psiResSelf, if_pos hρ, if_pos (lt_trans hρ hδα)]) hδc
+  exact ⟨δ, hδα, hδmem, hδc_self, heq.symm⟩
+
 /-- Generator step (A) BAND fact: `Ω_{w+1} ≤ η` when `η` is `u`-canonical (`u ≤ w`)
 and `ψ^s_w(η)` is `u`-non-canonical.  Sharper than the prior `ψ^s_w(η) ≤ η` (which
 follows by `psiSelf_lt_Om_succ` + this).  Mechanism (model-verified 4892/4892): a
