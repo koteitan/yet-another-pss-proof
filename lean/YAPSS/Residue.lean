@@ -1418,6 +1418,43 @@ proves the fixpoint route works in the deep region: `ε_0 = ψ_0(Ω_1)` is the b
 theorem psiSelf_epsLvl_fixpoint {u : ℕ} : psiSelf (epsLvl u : Ordinal.{u}) u = epsLvl u :=
   psiSelf_fixpoint_of_below_saturated epsLvl_below_saturated epsLvl_not_canon
 
+/-- **The deep core, as a clean equivalence** (GREEN): for a `u`-non-canonical `c`,
+`ψ^s_u c = c` (fixpoint) ⟺ `C^s_u(c)` is downward-saturated (every `δ < c` is a member).
+`⟸` is `psiSelf_fixpoint_of_below_saturated`; `⟹` is `below_psiSelf_mem_CsetSelf`. -/
+theorem fixpoint_iff_saturated {c : Ordinal.{u}} {u : ℕ}
+    (hc : c ∉ CsetSelf (psiResSelf c) c u) :
+    psiSelf c u = c ↔ (∀ δ, δ < c → δ ∈ CsetSelf (psiResSelf c) c u) := by
+  constructor
+  · intro hfix δ hδ; apply below_psiSelf_mem_CsetSelf; rw [hfix]; exact hδ
+  · intro hsat; exact psiSelf_fixpoint_of_below_saturated hsat hc
+
+/-! ### ⛔ THE PRECISE WALL: the deep saturation needs Buchholz's NF term system (§2)
+
+The general sub-case-A collapse `ψ_u(ψ_w η) = ψ_u η` ⟺ (no-realizer) ⟺ the value's
+downward-saturation ⟺ (`fixpoint_iff_saturated`) the value is a `ψ`-fixpoint.  The
+`epsLvl`-boundary instance is GREEN (`psiSelf_epsLvl_fixpoint`) because everything below it
+is sub-`ε` hence `u`-canonical (the "epsLvl escape").  The GENERAL case stalls at exactly
+one subcase, pinned this session in genuine ordinals:
+
+* downward-saturation of `C^s_u(c)` (`c = ψ^s_u η`) by induction (crank-at-`η`, ordinal-WF
+  on `δ`, or the outer `α`-induction) reduces every `δ < c` EXCEPT the **deep generators**
+  `δ = ψ^s_u ξ'` with a `u`-canonical argument `ξ' ∈ [c, η)` (`ξ' ≥ c`, yet `ψ^s_u ξ' < c`
+  by strict monotonicity — the deep-region `ξ' ≥ ψ^s_u ξ'` since `AcanonLtValue` is FALSE).
+* For such `δ`, firing needs `ξ' < c` (FALSE), and `δ ∈ C^s_u(c)` via `δ`'s own rep is
+  `CanonRep` for `δ` — circular.  ALL internal measures (crank `crank_arg_lt` needs
+  `ξ' < bound`; ordinal-WF needs `ξ' < δ = ψ^s_u ξ'`, FALSE; outer `α`-IH at bound `c`
+  reaches only args `< c`) recurse back to the same obligation: **fixpoint ⟺ saturation ⟺
+  no-deep-generator are all equivalent** (`fixpoint_iff_saturated` + strict mono), so no
+  ordinal/closure-internal induction breaks the circle.
+
+This is precisely why Buchholz proves it via the NF **term system `T`** (§2): the term
+`D_v a` is structurally smaller than its ordinal value, giving an EXTERNAL primitive-
+recursive well-ordering that descends on the deep generator where every ordinal/C-rank
+measure stalls.  That term-system construction (Buchholz §2, the `(OT,<)` notation system
++ `o : OT → On` order-iso onto `C_0(ε_{Ω_ω+1})`) is the honest remaining scope — a
+foundational build, not a lemma.  GREEN here: the fixpoint route fully realized at the
+`ε`-boundary, the core characterized to the single deep-generator subcase. -/
+
 end EpsLvlFixpoint
 /-! ### ✅ TRUTH VERDICT on the sub-case-A collapse `ψ_u(ψ_w η) = ψ_u η` (2026-06-20e)
 
