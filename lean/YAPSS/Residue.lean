@@ -1455,64 +1455,107 @@ measure stalls.  That term-system construction (Buchholz §2, the `(OT,<)` notat
 foundational build, not a lemma.  GREEN here: the fixpoint route fully realized at the
 `ε`-boundary, the core characterized to the single deep-generator subcase. -/
 
-/-! ### §2 SCOPE VERDICT (2026-06-20h): lean has the EMBEDDING half, needs the SURJECTION
+/-! ### §2 SCOPE VERDICT — CORRECTED (2026-06-20i): the term system does NOT break the core
 
-Does lean's EXISTING term machinery already supply Buchholz §2's external well-ordering for
-the deep-generator subcase?  **Decisive verdict: HALF of it — the embedding `OT → On`; the
-SURJECTION `On → OT` (the genuinely hard half of the order-iso) is ABSENT and is exactly
-what the deep generator needs.**
+**Decisive corrected verdict (cross-checked against ya-pss, read-only): the term system /
+surjectivity does NOT break the deep-generator circularity.  ya-pss has the FULL term system
+and STILL has the SAME single open `sorry`.  The genuine core is the simultaneous transfinite
+induction, which neither project has.**
 
-GREEN already (the embedding half = Buchholz Lemma 2.2):
-* `Otembed.oV : Three → Ordinal` (the order map `o`), `oV_order_pres` (`olt v u → oV v <
-  oV u`, strictly order-PRESERVING, by `tsize` induction);
-* `Otembed.wf_olt_wf3 : WellFounded oltWf3` (`olt` on `wf3` NF terms is WELL-FOUNDED, via
-  the embedding into `Ordinal.lt_wf`);
-* `Otembed.Gterm` (= Buchholz `G_uγ` ON TERMS), `Gterm_tsize` (every `Gterm` member is a
-  `tsize`-smaller structural subterm — the term-structural descent);
-* `Nrm.proj` (the term-level canonical-rep CONSTRUCTOR), and `psi_proj_of_notmem` ALREADY
-  runs a `tsize` strong-induction descending via `Gterm_tsize`.
+What lean's §2 embedding gives (GREEN): `oV`, `oV_order_pres`, `wf_olt_wf3` (Lemma 2.2),
+`Gterm`(=`G_uγ` on terms), `Gterm_tsize`, `Nrm.proj`, `NEC_of_canonWitness` (= ya-pss
+`term_nec`, Buchholz 1.9 necessity for `wf3` terms in the CANONICAL `Cset_c` world),
+`noncanon_of_bad_of_SUFF` (B2).  ya-pss's `term_nec` is likewise GREEN.
 
-THE GAP (why term-`tsize` does NOT yet close the per-step `psi_proj_notmem`): the per-step
-membership `ψ_a(oV b') ∈ C_a(oV g)` yields (M1 `psi_form_of_mem`) a canonical witness `ξ <
-oV g` that is an **arbitrary ORDINAL** in `C_a(oV g)` — NOT a term-value.  To descend on it
-structurally (via `wf_olt_wf3`) one must convert `ξ` into a `wf3` term `X` with `olt X g` —
-i.e. **`oV`-SURJECTIVITY onto the closure** (`OVSurjective`: every `γ ∈ C_a(α)` is `oV X`
-for `wf3 X`).  That surjection is Buchholz's §2 order-iso completeness; it is NOT in lean.
+**`OVSurjective` (last session's hoped-for key) is FALSE** (`OVSurjective_is_false`, 5th
+soundness catch this campaign): `oV` maps onto the COUNTABLE `C_0(ε_{Ω_ω+1})`, a PROPER
+subset of the uncountable down-set `Iio (oV g)` (for `g = P 1 Z Z`, `oV g = Ω_1`, but most
+countable `ξ < Ω_1` are NOT in the countable `oV`-image).  So "every `ξ < oV g` is a
+term-value" is false by cardinality.  Even restricting to `ξ ∈ C_a(oV g)` fails (the base
+band `Iio(Ω_a)` is in the closure and uncountable for `a ≥ 1`).  The term-surjectivity
+route is DEAD.
 
-Distinguished from the rounds-1-8 wall: those attacked the `olt`-DOMINATION clause
-(`H0clause`, an ORDER fact) by `tsize` and found it non-inductive.  The per-step is a
-COLLAPSE/MEMBERSHIP fact, a DIFFERENT use — but it stalls at the SAME structural point:
-the witness is an ordinal, not a subterm, so the embedding-only machinery can't reach it.
+WHY the term system can't close it (ya-pss `psi_proj_nonmem` analysis, nrm.thy:367): the
+per-step membership `ψ_a(oV b) ∈ C_a(oV m)` is (M1) a generator `ψ_a ξ` with `ξ < oV m`
+canonical; injectivity (1.4a) forces either `ξ = oV b` — EXCLUDED by B2/`term_nec`
+(`oV b` non-canonical, `noncanon_of_bad_of_SUFF`) — OR `ξ` a LARGER canonical witness with
+`ξ = oV(proj a b) ≥ oV m`, whose value-identity `ψ_a(oV(proj a b)) = ψ_a(oV b)` IS
+`psi_proj` ITSELF (circular).  Converting `ξ` to a term does NOT help: the term IS
+`proj a b` (the canonical rep), and the circularity is the VALUE-IDENTITY, not the
+representability.  Only Buchholz's simultaneous transfinite induction breaks it.
 
-§2 ROADMAP (the honest remaining build, with the RIGHT substrate identified):
-1. **`OVSurjective` (the order-iso `On → OT`)** — every `γ ∈ C_a(α)` has a `wf3` term.
-   Build by **`crank`-induction** (`Crank.crank_arg_lt`, GREEN): a generator `γ = ψ_{u'} ξ`
-   recurses to `ξ`'s term at strictly smaller `crank` (NOT ordinal order — `ξ ≥ γ` deep).
-   The CANONICAL form requires the SELF-world generators (`CsetSelf`, where the generator
-   test enforces canonicity) — so build it for `CsetSelf`/`psiSelf` (needs an `oVSelf` or the
-   `psi = psiSelf` bridge `alpha_step_residue`).  `crank` + canonical generators are the
-   correct substrate; this is the first concrete §2 piece.
-2. With `OVSurjective`, the per-step witness `ξ` becomes a `wf3` term `X`, `olt X g`; the
-   per-step closes by `wf_olt_wf3` descent (structural, where ordinal/`crank` stalled).
-3. Thread → `psi_proj_notmem` → `psi_proj` → `CollapseResidueMaxo` → `PSS_terminates_nrm_final`.
+UNIFIED CORE (both projects, both faces): the single open obligation is
+`Cset = Cset_c` (omitted-closure = canonical-generator-closure) = lean's
+`NoncanonValueMem`/`alpha_step_residue` = ya-pss's `Cset_eq_Cset_c` Remark = the §1
+simultaneous induction.  lean has reduced it to the 4 leaves of `noncanonValueMem_joint`
+with `subA_nm` = the no-realizer/collapse deep core (`subA_nm_collapse_of_noRealizer`,
+GREEN-modulo).  The deep-generator subcase (`δ = ψ_u ξ'`, `ξ' ∈ [c,η)` canonical) is the
+larger-canonical-witness `= proj` case — circular without the simultaneous induction.
 
-So §2 is NOT mostly-there: the embedding is GREEN, but the SURJECTION (the hard half) plus
-the canonical self-world construction is the genuine foundational build.  The `crank`
-machinery (`Crank.lean`) is the correct measure for it. -/
+So the remaining work is the SIMULTANEOUS TRANSFINITE INDUCTION (carrying the value-identity
+through the deep generators), NOT the term system (which both projects have, and which does
+not suffice).  The `crank`/`Gset`/fixpoint infrastructure (`Crank.lean`, `EpsLvlFixpoint`)
+realizes the BASE (`ε`-boundary) and the structural skeleton; the inductive carrying of the
+value-identity past each deep generator is the genuine multi-session §1 core that remains. -/
 
-/-- **The §2 surjectivity obligation** (`On → OT` order-iso completeness, DOWN-SET form).
-Every ordinal strictly below a `wf3` term-value is itself a `wf3` term-value.  (The naive
-"every `Cset` member is a term-value" is FALSE — the base band `Iio (Ω_u)` is uncountable
-for `u ≥ 1` while `Three` is countable; Buchholz represents `Ω_v` as the ATOM `D_v 0 =
-P v Z Z`, NOT by enumerating below it, and the iso is onto the COUNTABLE `C_0(ε_{Ω_ω+1})` —
-the down-set of a term-value, which is countable.)  With this (+ `wf_olt_wf3` +
-`Crank.crank_arg_lt`) the per-step `Nrm.psi_proj_notmem`'s ordinal witness `ξ < oV g`
-becomes a `wf3` term `X` (`olt X g` by `oV_order_pres` reverse), closing the per-step by
-term-structural descent.  The honest §2 core (Buchholz `(OT,<) ≅ C_0(ε_{Ω_ω+1})`), to be
-built by `crank`-induction in the canonical self-world. -/
+/-- **`OVSurjective` (the down-set surjection `On → OT`).**  Every ordinal `< oV g` (`g`
+`wf3`) is a `wf3` term-value.  **FALSE** (`OVSurjective_is_false`): `oV`'s image is the
+COUNTABLE `C_0(ε_{Ω_ω+1})`, a proper subset of the uncountable `Iio (oV g)`. -/
 def OVSurjective.{u} : Prop :=
   ∀ (g : Three) (ξ : Ordinal.{u}), wf3 g → ξ < oV.{u} g →
     ∃ X : Three, wf3 X ∧ oV.{u} X = ξ
+
+/-- Recursive encoding `Three ↪ ℕ` (Gödel pairing on the structure). -/
+def encThree : Three → ℕ
+  | Three.Z => 0
+  | Three.P a b c => Nat.succ (Nat.pair a (Nat.pair (encThree b) (encThree c)))
+
+theorem encThree_inj : Function.Injective encThree := by
+  intro s t h
+  induction s generalizing t with
+  | Z => cases t with
+    | Z => rfl
+    | P a b c => simp [encThree] at h
+  | P a b c ihb ihc => cases t with
+    | Z => simp [encThree] at h
+    | P a' b' c' =>
+      simp only [encThree, Nat.succ.injEq] at h
+      obtain ⟨ha, hr⟩ := Nat.pair_eq_pair.mp h
+      obtain ⟨hb, hc⟩ := Nat.pair_eq_pair.mp hr
+      rw [ha, ihb hb, ihc hc]
+
+/-- `Three` is countable (via `encThree`). -/
+instance instCountableThree : Countable Three := ⟨encThree, encThree_inj⟩
+
+/-- `oV (P 1 Z Z) = Ω_1` (a term-value reaching the first uncountable). -/
+theorem oV_P1ZZ : oV.{0} (P 1 Three.Z Three.Z) = Om 1 := by
+  show psi (oV.{0} Three.Z) 1 + oV.{0} Three.Z = Om 1
+  rw [oV_Z, add_zero, psi_zero]
+
+/-- `P 1 Z Z` is `wf3`. -/
+theorem wf3_P1ZZ : wf3 (P 1 Three.Z Three.Z) := by
+  rw [wf3_P]; exact ⟨wf3_Z, wf3_Z, by intro x hx; simp [Gterm] at hx, by simp [hdle]⟩
+
+open Cardinal in
+/-- **`OVSurjective` is FALSE** (Lean-proven, 5th soundness catch this campaign).  If it
+held, every `ξ < oV (P 1 Z Z) = Ω_1` would be a `wf3` term-value, so `Iio Ω_1 ⊆ range oV`;
+but `range oV` is COUNTABLE (`Three` countable) while `Iio Ω_1` is UNCOUNTABLE (`Ω_1 =
+(ℵ_1).ord`).  So the term-surjectivity route is DEAD: `oV` maps onto the countable
+`C_0(ε_{Ω_ω+1})`, not the whole down-set. -/
+theorem OVSurjective_is_false : ¬ OVSurjective.{0} := by
+  intro OVS
+  have hsub : Set.Iio (Om.{0} 1) ⊆ Set.range oV.{0} := by
+    intro ξ hξ
+    obtain ⟨X, _, hX⟩ := OVS (P 1 Three.Z Three.Z) ξ wf3_P1ZZ (by rw [oV_P1ZZ]; exact hξ)
+    exact ⟨X, hX⟩
+  have hIcnt : (Set.Iio (Om.{0} 1)).Countable := (Set.countable_range _).mono hsub
+  have hle : Cardinal.mk (Set.Iio (Om.{0} 1)) ≤ ℵ₀ := hIcnt.le_aleph0
+  rw [Cardinal.mk_Iio_ordinal, Om_of_pos one_pos, Cardinal.card_ord] at hle
+  have h01 : ℵ₀ < ℵ_ 1 := by rw [← aleph_zero]; exact aleph_lt_aleph.2 zero_lt_one
+  have h2 : Cardinal.lift.{1,0} (ℵ_ ((1:ℕ):Ordinal)) ≤ Cardinal.lift.{1,0} ℵ₀ := by
+    rwa [Cardinal.lift_aleph0]
+  rw [Cardinal.lift_le, Nat.cast_one] at h2
+  exact absurd h2 (not_le.2 h01)
 
 end EpsLvlFixpoint
 /-! ### ✅ TRUTH VERDICT on the sub-case-A collapse `ψ_u(ψ_w η) = ψ_u η` (2026-06-20e)
