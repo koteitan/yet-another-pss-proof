@@ -1175,6 +1175,66 @@ theorem caseB_H1_of_valuebounds {η : Ordinal.{u}} {w u : ℕ} (δ : Ordinal.{u}
   have h2 : psiSelf (psiSelf η w) u = psiSelf δ u := collapseSelf_le_valuebounded hcδ hVBc
   rw [h1, h2]
 
+/-! ### ⚠⚠⚠ SOUNDNESS CORRECTION — the value-bound `hVB` is FALSE in true ordinals
+
+**The value-bound `hVB`/`hVBη`/`hVBc` (consumed by `subA_nm_of_valuebound` and
+`caseB_H1_of_valuebounds`) is FALSE in the genuine ordinals.**  Proven below
+(`hVB_is_contradictory`, sorryAx-free): `hVB` asserts `psiSelf γ u < psiSelf α u`
+for a gap point `α ≤ γ`, but `psiSelf_mono_arg` gives `psiSelf α u ≤ psiSelf γ u`
+from `α ≤ γ` — a flat contradiction the instant ANY `u`-canonical `γ` exists in the
+**ordinal** interval `[α, β)`.  So `hVB` is satisfiable ONLY when the gap is
+canonical-free — i.e. it adds NOTHING over `collapseSelf_le`'s clean-gap condition.
+
+The prior "`hVB` model-verified 623/623, 884/884 @+5/+6/+7" certifications were a
+**term-model artifact**: they ordered the gap by `lt_term`, which is NOT faithful to
+`psiSelf`'s ordinal order — the term model violates `psiSelf` monotonicity 85356×
+(`tools/probe_mono_check.py`, rounds 7).  This is the recurrence, at the value-bound
+layer, of the "`subA_nm`-was-silently-false" lesson.  `collapseSelf_le_valuebounded`
+itself is SOUND (it just collapses to `collapseSelf_le` on canonical-free gaps), but
+the leaves CANNOT supply `hVB`.
+
+**The HONEST residue** (TRUE, Buchholz 1.6(b) plateau condition): the ordinal gap
+`[ψ^s_w(η), η)` is entirely `u`-non-canonical (`subA_nm_of_cleangap`); the two caseB
+gaps `[η,δ)`, `[c,δ)` likewise (`caseB_H1_of_cleangap`).  These discharge the leaves
+via the GREEN clean `collapseSelf_le` with NO value-bound.  The genuine remaining §1
+content is therefore **gap-cleanness**, established by the `G_u`/Lemma-1.9 device
+(GREEN pieces 1-2 above are its first bridges). -/
+
+/-- **`hVB` is contradictory at any ordinal-gap canonical point** (Lean-proven,
+sorryAx-free).  Discharges the soundness correction: the value-bound form of the
+generator-step residue is FALSE in true ordinals. -/
+theorem hVB_is_contradictory {α β : Ordinal.{u}} {u : ℕ}
+    (hVB : ∀ γ, α ≤ γ → γ < β →
+      γ ∈ CsetSelf (psiResSelf γ) γ u → psiSelf γ u < psiSelf α u)
+    {γ : Ordinal.{u}} (h1 : α ≤ γ) (h2 : γ < β)
+    (hc : γ ∈ CsetSelf (psiResSelf γ) γ u) : False :=
+  absurd (hVB γ h1 h2 hc) (not_lt.2 (psiSelf_mono_arg h1 u))
+
+/-- **GREEN PIECE 3: `subA_nm` from the HONEST clean-gap residue** (sound replacement
+for the FALSE `subA_nm_of_valuebound`).  If the ordinal gap `[ψ^s_w(η), η)` is
+entirely `u`-non-canonical, the clean `collapseSelf_le` gives the plateau collapse
+`ψ^s_u(ψ^s_w(η)) = ψ^s_u(η)`, and `psiSelf_notMem` finishes.  No value-bound. -/
+theorem subA_nm_of_cleangap {η : Ordinal.{u}} {w u : ℕ}
+    (hle : psiSelf η w ≤ η)
+    (hclean : ∀ γ, psiSelf η w ≤ γ → γ < η → γ ∉ CsetSelf (psiResSelf γ) γ u) :
+    psiSelf (psiSelf η w) u ∉ CsetSelf (psiResSelf η) η u := by
+  have hcollapse : psiSelf (psiSelf η w) u = psiSelf η u :=
+    collapseSelf_le η (psiSelf η w) hle hclean
+  rw [hcollapse]; exact psiSelf_notMem η u
+
+/-- **GREEN PIECE 4: caseB H1 from the HONEST clean-gap residue** (sound replacement
+for the FALSE `caseB_H1_of_valuebounds`).  Both caseB gaps `[η,δ)`, `[ψ^s_w(η),δ)`
+entirely `u`-non-canonical ⟹ the shared-rep collapse `ψ^s_u(η) = ψ^s_u(δ) =
+ψ^s_u(ψ^s_w(η))` via clean `collapseSelf_le`.  No value-bound. -/
+theorem caseB_H1_of_cleangap {η : Ordinal.{u}} {w u : ℕ} (δ : Ordinal.{u})
+    (hηδ : η ≤ δ) (hcδ : psiSelf η w ≤ δ)
+    (hcleanη : ∀ γ, η ≤ γ → γ < δ → γ ∉ CsetSelf (psiResSelf γ) γ u)
+    (hcleanc : ∀ γ, psiSelf η w ≤ γ → γ < δ → γ ∉ CsetSelf (psiResSelf γ) γ u) :
+    psiSelf η u = psiSelf (psiSelf η w) u := by
+  have h1 : psiSelf η u = psiSelf δ u := collapseSelf_le δ η hηδ hcleanη
+  have h2 : psiSelf (psiSelf η w) u = psiSelf δ u := collapseSelf_le δ (psiSelf η w) hcδ hcleanc
+  rw [h1, h2]
+
 /-- Generator step (A) BAND fact: `Ω_{w+1} ≤ η` when `η` is `u`-canonical (`u ≤ w`)
 and `ψ^s_w(η)` is `u`-non-canonical.  Sharper than the prior `ψ^s_w(η) ≤ η` (which
 follows by `psiSelf_lt_Om_succ` + this).  Mechanism (model-verified 4892/4892): a
