@@ -81,6 +81,20 @@ Injectivity pins the realizer UNIQUELY but cannot decide `δ`'s POSITION; that d
 value-identity. ya-pss uses injectivity identically (`psi_inj_arg_canonical`) with the same
 non-canonical-`β` precondition failure.
 
+**Set-membership sub-angle (last tested, 2026-06-20k).** `C_u(c)` can contain ordinals `≥ c`
+as set members, so a `u`-canonical `ξ' ∈ [c,η)` might be `∈ C_u(c)`, firing `ψ_u ξ'` directly
+(membership, distinct from value-bound and from `ξ' < c` firing).  VERDICT: it does NOT hold —
+cleanly via Lemma 1.5, not circularly.  `deepgen_arg_not_mem` (GREEN): a `u`-canonical `ξ' ≥ c`
+with `ξ' < Ω_{u+1}` is NOT in `C_u(c)` (Lemma 1.5 forces members `< Ω_{u+1}` to be `< ψ_u c`,
+but `ψ_u c ≤ c ≤ ξ'`).  `deepgen_value_not_mem` (GREEN): the deep-gen value `δ = ψ_u ξ' ≥ ψ_u c`
+(mono) so `δ ∉ C_u(c)` too.  So downward-saturation of `C_u(c)` FAILS at the deep generator
+unless none exists (the fixpoint): `fixpoint ⟺ no-deep-gen ⟺ saturation`, all `⟺` the
+value-identity.  Lemma 1.9⟸ has the same fixpoint gap (a band-`u` principal `γ` with no
+canonical witness `< γ` gives `Gset = ∅` but `γ ∈ C_u(α)` is not derivable).  Lemma 1.6(b)
+(sup-formula) likewise reduces the collapse to "no canonical `ξ ∈ (c,η)`" = the same core; the
+deep-generator exclusion IS the simultaneous-induction content, not supplied by any isolated
+§1 lemma.
+
 **Honest remaining scope:** the simultaneous transfinite induction itself (carry
 `psiSelf δ u = psiSelf ξ u` AND the rep's position `δ ≥ η` through the joint's rank-IH past
 each deep generator) — the genuine multi-month Buchholz §1 formalization at which BOTH
