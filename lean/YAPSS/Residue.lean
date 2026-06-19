@@ -1098,6 +1098,83 @@ theorem noncanon_value_noncanon {ξ : Ordinal.{u}} {u : ℕ}
   -- contradicting psiSelf_notMem ξ u : psiSelf ξ u ∉ C_u(ξ).
   exact psiSelf_notMem ξ u (CCSelf_mono (α := psiSelf ξ u) (β := ξ) hle u hcc)
 
+/-! ### The value-bounded gap collapse — the genuine §1 lever for the Ω-crossing region
+
+`collapseSelf_le` (Buchholz17) requires *every* gap point `γ ∈ [α,β)` to be
+`a`-NON-canonical, so its succ-step `collapseSelf_succ` fires.  In the deep
+ε-collapse region the gap crosses `a`-CANONICAL `Ω_k` points (the Ω-crossing that
+killed `IntervalNoncanon`), so `collapseSelf_le` is inapplicable there.
+
+The genuine §1 generalization admits `a`-canonical gap points **provided their
+value is bounded by the collapse target**: a canonical `γ ∈ [α,β)` contributes its
+generator value `ψ^s_a(γ)` to `C^s_a(β)`, but if `ψ^s_a(γ) < ψ^s_a(α)` that value
+is already below the target and harmless — `ψ^s_a(α)` stays the least non-member.
+
+Proof (no succ-induction; direct via `psiSelf_eq_of_notMem`): suppose
+`ψ^s_a(α) ∈ C^s_a(β)`.  `CsetSelf_witness_canonical` extracts a CANONICAL generator
+`ξ` (band forces subscript `a`) with `ξ < β` and `ψ^s_a(ξ) = ψ^s_a(α)`.  Either
+`ξ < α` (then `psiSelf_strict_mono_arg` gives `ψ^s_a(ξ) < ψ^s_a(α)`, contradiction)
+or `α ≤ ξ < β` (then `ξ` is an `a`-canonical gap point, so the value-bound gives
+`ψ^s_a(ξ) < ψ^s_a(α)`, contradiction).  Either way the membership is impossible.
+
+Model-verified (`tools/probe_vb.py`, closure+5/+6/+7): the value-bound holds 623/623
+in the sub-case-A crux instances (every `a`-canonical `γ ∈ [c,η)` has
+`ψ^s_a(γ) < ψ^s_a(c)`), and the BAD `=` case is 0/623 (load-bearing). -/
+theorem collapseSelf_le_valuebounded {a : ℕ} {α β : Ordinal.{u}} (hαβ : α ≤ β)
+    (hgap : ∀ γ, α ≤ γ → γ < β →
+      γ ∈ CsetSelf (psiResSelf γ) γ a → psiSelf γ a < psiSelf α a) :
+    psiSelf α a = psiSelf β a := by
+  apply psiSelf_eq_of_notMem hαβ
+  intro hmem
+  -- extract the canonical generator witness ξ of the value psiSelf α a
+  have hap : Ordinal.IsPrincipal (· + ·) (psiSelf α a) :=
+    fun {x y} hx hy => (psiSelf_addprinc α a).2 x y hx hy
+  obtain ⟨u', ξ, heq, hξβ, _hξmem, hξc⟩ :=
+    CsetSelf_witness_canonical hap (Om_le_psiSelf α a) hmem
+  rw [psiResSelf, if_pos hξβ] at heq
+  -- band forces the generator subscript u' = a
+  have hu : u' = a := by
+    have h1 : Om u' ≤ psiSelf α a := heq ▸ Om_le_psiSelf ξ u'
+    have h2 : psiSelf α a < Om (u' + 1) := heq ▸ psiSelf_lt_Om_succ ξ u'
+    have hle1 : u' ≤ a := by
+      by_contra hcc
+      exact absurd (lt_of_le_of_lt h1 (psiSelf_lt_Om_succ α a)) (not_lt.2 (Om_mono (by omega)))
+    have hle2 : a ≤ u' := by
+      by_contra hcc
+      exact absurd (lt_of_le_of_lt (Om_le_psiSelf α a) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  subst u'
+  -- convert the witness canonicity from `psiResSelf β`-param to the self-param
+  -- (`psiResSelf ξ`), valid since both agree strictly below the bound `ξ < β`
+  have hξc_self : ξ ∈ CsetSelf (psiResSelf ξ) ξ a :=
+    CsetSelf_mono_param _ _ ξ a
+      (fun ζ uu hζ => by
+        rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hξβ)]) hξc
+  -- ξ is a-canonical with psiSelf ξ a = psiSelf α a; case on ξ < α vs α ≤ ξ
+  rcases lt_or_ge ξ α with hξα | hαξ
+  · -- ξ < α, ξ canonical ⟹ psiSelf ξ a < psiSelf α a, contradicting heq
+    exact absurd heq.symm (ne_of_lt (psiSelf_strict_mono_arg hξα hξc_self))
+  · -- α ≤ ξ < β, ξ a-canonical ⟹ value-bound psiSelf ξ a < psiSelf α a, contra heq
+    exact absurd heq.symm (ne_of_lt (hgap ξ hαξ hξβ hξc_self))
+
+/-- **`subA_nm`'s conclusion from the value-bound** (GREEN, hypothesis-carrying).
+The generator-step (A) plateau-collapse non-membership `ψ^s_u(ψ^s_w(η)) ∉ C^s_u(η)`
+follows from `collapseSelf_le_valuebounded` applied to the gap `[ψ^s_w(η), η]`: the
+collapse gives `ψ^s_u(ψ^s_w(η)) = ψ^s_u(η)`, and `ψ^s_u(η) ∉ C^s_u(η)` is
+`psiSelf_notMem`.  The two carried hypotheses — `hle : ψ^s_w(η) ≤ η` (supplied by
+`subA_le` in the skeleton) and the value-bound `hVB` (the genuine §1 content the
+joint induction must output) — make this `sorry`-free.  This isolates the remaining
+content of `subA_nm` to exactly the value-bound `hVB`. -/
+theorem subA_nm_of_valuebound {η : Ordinal.{u}} {w u : ℕ}
+    (hle : psiSelf η w ≤ η)
+    (hVB : ∀ γ, psiSelf η w ≤ γ → γ < η →
+      γ ∈ CsetSelf (psiResSelf γ) γ u → psiSelf γ u < psiSelf (psiSelf η w) u) :
+    psiSelf (psiSelf η w) u ∉ CsetSelf (psiResSelf η) η u := by
+  have hcollapse : psiSelf (psiSelf η w) u = psiSelf η u :=
+    collapseSelf_le_valuebounded hle hVB
+  rw [hcollapse]
+  exact psiSelf_notMem η u
+
 /-- **`NoncanonValueMem` reduces to the STRICT case `psiSelf ξ u < ξ`** (GREEN).
 By `noncanon_value_noncanon` the value `c = psiSelf ξ u` satisfies `c ≤ ξ`.  The
 fixpoint case `c = ξ` is FREE: then `psiSelf ξ u = ξ ∈ C_v(α)` is exactly the
