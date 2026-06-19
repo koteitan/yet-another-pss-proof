@@ -1500,13 +1500,19 @@ So §2 is NOT mostly-there: the embedding is GREEN, but the SURJECTION (the hard
 the canonical self-world construction is the genuine foundational build.  The `crank`
 machinery (`Crank.lean`) is the correct measure for it. -/
 
-/-- **The §2 surjectivity obligation** (`On → OT` order-iso completeness): every closure
-member is the `oV`-value of a `wf3` term.  With it (+ `wf_olt_wf3` + `Crank.crank_arg_lt`)
-the per-step `Nrm.psi_proj_notmem` closes by term-structural descent.  The honest §2 core
-(Buchholz `(OT,<) ≅ C_0(ε_{Ω_ω+1})`), to be built by `crank`-induction in the self-world. -/
+/-- **The §2 surjectivity obligation** (`On → OT` order-iso completeness, DOWN-SET form).
+Every ordinal strictly below a `wf3` term-value is itself a `wf3` term-value.  (The naive
+"every `Cset` member is a term-value" is FALSE — the base band `Iio (Ω_u)` is uncountable
+for `u ≥ 1` while `Three` is countable; Buchholz represents `Ω_v` as the ATOM `D_v 0 =
+P v Z Z`, NOT by enumerating below it, and the iso is onto the COUNTABLE `C_0(ε_{Ω_ω+1})` —
+the down-set of a term-value, which is countable.)  With this (+ `wf_olt_wf3` +
+`Crank.crank_arg_lt`) the per-step `Nrm.psi_proj_notmem`'s ordinal witness `ξ < oV g`
+becomes a `wf3` term `X` (`olt X g` by `oV_order_pres` reverse), closing the per-step by
+term-structural descent.  The honest §2 core (Buchholz `(OT,<) ≅ C_0(ε_{Ω_ω+1})`), to be
+built by `crank`-induction in the canonical self-world. -/
 def OVSurjective.{u} : Prop :=
-  ∀ (γ α : Ordinal.{u}) (u : ℕ), γ ∈ Cset (psiRes α) α u →
-    ∃ X : Three, wf3 X ∧ oV.{u} X = γ
+  ∀ (g : Three) (ξ : Ordinal.{u}), wf3 g → ξ < oV.{u} g →
+    ∃ X : Three, wf3 X ∧ oV.{u} X = ξ
 
 end EpsLvlFixpoint
 /-! ### ✅ TRUTH VERDICT on the sub-case-A collapse `ψ_u(ψ_w η) = ψ_u η` (2026-06-20e)
