@@ -2942,13 +2942,207 @@ text \<open>\<^bold>\<open>SHARP RESIDUAL\<close> \<open>head_arg_0_canonical\<c
   content is exactly this 0-canonicity, which rests on the \<open>nrm\<close>/\<open>translate\<close>
   standard-form structure of the image, not on \<open>wf3\<close> alone.  \<^bold>\<open>Localized \<open>sorry\<close>\<close>.\<close>
 
+text \<open>\<^bold>\<open>Diag-base infrastructure\<close> for the \<open>ST_PS.induct\<close> route on
+  @{term head_arg_0_canonical}.  On the \<open>diag\<close> base \<open>M = diagSeq 0 v\<close> the arg-zone is
+  \<open>W = diagSeq 1 v = (1,1)\<dots>(v,v)\<close>, whose translate is the nested diagonal
+  \<open>D\<^bsub>1\<^esub>(D\<^bsub>2\<^esub>(\<dots>D\<^bsub>v\<^esub>(0)))\<close> and whose \<open>nrm\<close> \<^emph>\<open>collapses\<close> it to \<open>D\<^bsub>1\<^esub>(D\<^bsub>v\<^esub>(0)) = P 1 (P v Z Z) Z\<close>
+  (deep numeric check \<open>tools/probe_diag_base2.py\<close>, \<open>0\<close> failures \<open>1 \<le> a \<le> v \<le> 59\<close>).  The head
+  argument is then \<open>hb = P v Z Z\<close> (or \<open>Z\<close> for \<open>v \<le> 1\<close>), which is manifestly
+  \<open>0\<close>-canonical (\<open>Gterm 0 (P v Z Z) = {Z}\<close> and \<open>Z <\<^sub>o P v Z Z\<close>).  All lemmas below are
+  green primitive Buchholz-\<open>nrm\<close> computation.\<close>
+
+text \<open>\<^bold>\<open>\<open>Gterm\<close> of a single bare principal\<close>: \<open>Gterm u (P v Z Z) = {Z}\<close> when \<open>u \<le> v\<close>,
+  else \<open>\<emptyset>\<close>.\<close>
+
+lemma Gterm_PvZZ: "Gterm u (P v Z Z) = (if u \<le> v then {Z} else {})"
+  by simp
+
+lemma proj_Z: "proj u Z = Z"
+  by (simp add: proj_eq_iff_dom)
+
+text \<open>\<^bold>\<open>A bare principal is \<open>u\<close>-canonical\<close> for any \<open>u \<le> v\<close>: its only \<open>G\<^bsub>u\<^esub>\<close>-critical is
+  \<open>Z\<close>, which is \<open><\<^sub>o\<close> it.\<close>
+
+lemma proj_PvZZ: "u \<le> v \<Longrightarrow> proj u (P v Z Z) = P v Z Z"
+proof -
+  assume uv: "u \<le> v"
+  have "\<forall>g \<in> Gterm u (P v Z Z). olt g (P v Z Z)"
+    using uv by (simp add: Gterm_PvZZ)
+  thus ?thesis by (simp add: proj_eq_iff_dom)
+qed
+
+text \<open>\<^bold>\<open>Nested-diagonal \<open>nrm\<close>-collapse\<close> (the diag-base core, green): for \<open>a \<le> v\<close>,
+  \<open>nrm (translate (diagSeq a v)) = P a (P v Z Z) Z\<close> when \<open>a < v\<close>, and \<open>= P a Z Z\<close> when
+  \<open>a = v\<close>.  Proof by induction on \<open>v - a\<close> through @{thm [source] translate_diagSeq} and the
+  \<open>nrm\<close>/\<open>proj\<close> recursion.  The inner \<open>proj a\<close> collapses the entire \<open>(a+1)\<close>-tower to its
+  deepest principal \<open>P v Z Z\<close>, because that principal has leading subscript \<open>v > a\<close> and is
+  therefore an \<open>a\<close>-violator of the \<open>(a+1)\<close>-head.\<close>
+
+lemma nrm_translate_diagSeq:
+  "a \<le> v \<Longrightarrow>
+     nrm (translate (diagSeq a v)) = (if a < v then P a (P v Z Z) Z else P a Z Z)"
+proof (induction "v - a" arbitrary: a)
+  case 0
+  hence "a = v" by simp
+  hence "diagSeq (Suc a) v = []" by (simp add: diagSeq_def)
+  hence "nrm (translate (diagSeq a v)) = P a Z Z"
+    using translate_diagSeq[OF \<open>a \<le> v\<close>] by (simp add: proj_Z)
+  thus ?case using \<open>a = v\<close> by simp
+next
+  case (Suc d)
+  from Suc.hyps(2) Suc.prems have av: "a < v" and sav: "Suc a \<le> v" by simp_all
+  have d_eq: "d = v - Suc a" using Suc.hyps(2) by simp
+  have IH: "nrm (translate (diagSeq (Suc a) v))
+              = (if Suc a < v then P (Suc a) (P v Z Z) Z else P (Suc a) Z Z)"
+    using Suc.hyps(1)[OF d_eq sav] .
+  \<comment> \<open>The inner normal form, whichever branch, is \<open>a\<close>-collapsed by \<open>proj a\<close> to \<open>P v Z Z\<close>.\<close>
+  have inner_proj: "proj a (nrm (translate (diagSeq (Suc a) v))) = P v Z Z"
+  proof (cases "Suc a < v")
+    case True
+    \<comment> \<open>inner \<open>= P (Suc a) (P v Z Z) Z\<close>; its \<open>G\<^bsub>a\<^esub>\<close>-criticals are \<open>P v Z Z\<close> and \<open>Z\<close>;
+       \<open>P v Z Z\<close> is an \<open>a\<close>-violator (lead \<open>v > Suc a\<close>), the unique \<open><\<^sub>o\<close>-maximal one.\<close>
+    have inner: "nrm (translate (diagSeq (Suc a) v)) = P (Suc a) (P v Z Z) Z"
+      using IH True by simp
+    have glist: "Glist a (P (Suc a) (P v Z Z) Z) = [P v Z Z, Z]"
+      using True by simp
+    have notlt: "\<not> olt (P v Z Z) (P (Suc a) (P v Z Z) Z)"
+      using True by simp
+    have filt: "filter (\<lambda>g. \<not> olt g (P (Suc a) (P v Z Z) Z))
+                       (Glist a (P (Suc a) (P v Z Z) Z)) = [P v Z Z]"
+      using glist notlt True by simp
+    have "proj a (P (Suc a) (P v Z Z) Z) = proj a (P v Z Z)"
+      using proj_rec[of "P (Suc a) (P v Z Z) Z" a] filt by simp
+    also have "\<dots> = P v Z Z" using av by (simp add: proj_PvZZ)
+    finally show ?thesis using inner by simp
+  next
+    case False
+    hence "Suc a = v" using sav by simp
+    hence inner: "nrm (translate (diagSeq (Suc a) v)) = P v Z Z" using IH by simp
+    show ?thesis using inner av by (simp add: proj_PvZZ)
+  qed
+  \<comment> \<open>Outer \<open>nrm\<close> step: \<open>nrm (P a INNER Z) = ins a (proj a (nrm INNER)) Z = P a (P v Z Z) Z\<close>.\<close>
+  have "nrm (translate (diagSeq a v))
+          = ins a (proj a (nrm (translate (diagSeq (Suc a) v)))) Z"
+    using translate_diagSeq[OF \<open>a \<le> v\<close>] by simp
+  also have "\<dots> = ins a (P v Z Z) Z" using inner_proj by simp
+  also have "\<dots> = P a (P v Z Z) Z" by simp
+  finally show ?case using av by simp
+qed
+
+text \<open>\<^bold>\<open>Diag-base head argument is \<open>0\<close>-canonical\<close> (green): for \<open>M = diagSeq 0 v\<close> the
+  arg-zone is \<open>diagSeq 1 v\<close> (\<open>takeWhile (0 < fst)\<close> keeps all of it), and the head argument of
+  its collapsed image is \<open>P v Z Z\<close> (\<open>v \<ge> 2\<close>) / \<open>Z\<close> (\<open>v \<le> 1\<close>) \<dash> in every case \<open>0\<close>-canonical.\<close>
+
+lemma diagSeq_argzone:
+  "takeWhile (\<lambda>q. 0 < fst q) (diagSeq 1 v) = diagSeq 1 v"
+proof -
+  have "\<forall>q \<in> set (diagSeq 1 v). 0 < fst q"
+    using fst_in_diagSeq[of _ 1 v] by fastforce
+  thus ?thesis by (simp add: takeWhile_eq_all_conv)
+qed
+
+lemma head_arg_0_canonical_diag:
+  "proj 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl (diagSeq 0 v))))))
+     = harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl (diagSeq 0 v)))))"
+proof (cases v)
+  case 0
+  thus ?thesis by (simp add: diagSeq_def proj_Z)
+next
+  case (Suc w)
+  \<comment> \<open>\<open>tl (diagSeq 0 v) = diagSeq 1 v\<close>; arg-zone keeps all of it.\<close>
+  have tl_eq: "tl (diagSeq 0 v) = diagSeq 1 v"
+    using diagSeq_Cons[of 0 v] Suc by simp
+  have azone: "takeWhile (\<lambda>q. 0 < fst q) (tl (diagSeq 0 v)) = diagSeq 1 v"
+    using tl_eq diagSeq_argzone by simp
+  have onele: "(1::nat) \<le> v" using Suc by simp
+  have hb: "nrm (translate (diagSeq 1 v)) = (if 1 < v then P 1 (P v Z Z) Z else P 1 Z Z)"
+    using nrm_translate_diagSeq[OF onele] .
+  show ?thesis
+  proof (cases "1 < v")
+    case True
+    have "harg (nrm (translate (diagSeq 1 v))) = P v Z Z" using hb True by simp
+    moreover have "proj 0 (P v Z Z) = P v Z Z" using True by (simp add: proj_PvZZ)
+    ultimately show ?thesis using azone by simp
+  next
+    case False
+    \<comment> \<open>\<open>v = 1\<close>: image \<open>= P 1 Z Z\<close>, head argument \<open>Z\<close>, \<open>proj 0 Z = Z\<close>.\<close>
+    have "harg (nrm (translate (diagSeq 1 v))) = Z" using hb False by simp
+    thus ?thesis using azone by (simp add: proj_Z)
+  qed
+qed
+
+text \<open>\<^bold>\<open>SOUNDNESS NOTE\<close> (agent-a139, deep recheck closure+5).  The \<^emph>\<open>firing\<close>
+  hypothesis \<open>proj 0 X \<noteq> X\<close> on the image \<open>X = nrm (translate (takeWhile (0<fst) (tl M)))\<close> is
+  \<^bold>\<open>essential\<close> and must be retained.  The unconditional form ``\<open>proj 0 (harg X) = harg X\<close> for
+  \<^emph>\<open>every\<close> standard form'' is \<^bold>\<open>FALSE\<close>: \<open>tools/probe_oper_step_resid.py\<close> finds \<open>324492 / 1 013 172\<close>
+  standard forms (and \<open>12892 / 5 065 855\<close> oper pairs) with \<open>proj 0 (harg X) \<noteq> harg X\<close> on a
+  \<^emph>\<open>non-firing\<close> image (e.g. \<open>X = D\<^bsub>0\<^esub>(\<dots>)\<close> where \<open>harg X\<close> itself does fire even though \<open>X\<close>
+  doesn't).  With the firing restriction the invariant is \<^bold>\<open>true\<close>: \<open>tools/probe_oper_step_resid2.py\<close>
+  INV-PROJ0 = \<open>266545 / 0\<close> over the same closure+5.  Hence the \<open>ST_PS.induct\<close> route below carries
+  the firing hypothesis on the (final) image at every node.\<close>
+
+text \<open>\<^bold>\<open>SHARP RESIDUAL (oper step)\<close> \<open>head_arg_0_canonical_oper\<close>: the \<^emph>\<open>single\<close>
+  irreducible Buchholz \<section>1 collapse fact, isolated to the \<open>oper\<close> branch of the
+  \<open>ST_PS.induct\<close>.  After one fundamental-sequence expansion \<open>N \<mapsto> N[n]\<close> (\<open>n \<ge> 1\<close>), on a
+  \<^emph>\<open>firing\<close> arg-zone image (\<open>proj 0 X \<noteq> X\<close>) the head argument is \<open>0\<close>-canonical.  Empirically
+  \<open>hb(N[n])\<close> is \<open>hb(N)\<close> with its deepest principal replaced by an \<open>n\<close>-fold
+  subscript-decremented \<open>oper\<close>-copy that is \<open><\<^sub>o\<close> the original; the copy descent introduces
+  \<^emph>\<open>no\<close> new \<open>G\<^bsub>0\<^esub>\<close>-critical that dominates the head (\<open>tools/probe_oper_hb.py\<close>; closure+5,
+  INV-PROJ0 \<open>266545 / 0\<close> firing images, \<open>tools/probe_oper_step_resid2.py\<close>).  Class-essential
+  (FALSE on a general \<open>wf3\<close> term, and FALSE without the firing restriction \<dash> see soundness
+  note above); it rests on the \<open>nrm\<close>/\<open>translate\<close> standard-form structure of the \<open>oper\<close>
+  copy-block, not on \<open>wf3\<close> alone, and cannot be reduced to a term-local invariant.
+  \<^bold>\<open>Localized \<open>sorry\<close>\<close>.  (The IH on \<open>N\<close> is carried for completeness; the conclusion is in fact
+  true of \<^emph>\<open>any\<close> firing standard-form image, which is why no IH chaining is required to make
+  the statement sound.)\<close>
+
+lemma head_arg_0_canonical_oper:
+  assumes "N \<in> ST_PS"
+    and "1 \<le> n"
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl (oper N n)))))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl (oper N n))))"
+    \<comment> \<open>IH (firing-conditioned on \<open>N\<close>'s image): the head argument of \<open>N\<close>'s arg-zone image is
+       \<open>0\<close>-canonical whenever that image fires.\<close>
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl N))))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl N)))
+         \<Longrightarrow> proj 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl N)))))
+               = harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl N))))"
+  shows "proj 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl (oper N n))))))
+            = harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl (oper N n)))))"
+  sorry
+
+text \<open>\<^bold>\<open>Standard-form head 0-canonicity\<close> (the \<open>ST_PS\<close> form, by \<open>ST_PS.induct\<close>): every
+  \<^emph>\<open>firing\<close> standard-form image has a \<open>0\<close>-canonical head argument.  \<open>diag\<close> base is green
+  (@{thm [source] head_arg_0_canonical_diag}, in fact unconditional); \<open>oper\<close> step rests on the
+  single residual @{thm [source] head_arg_0_canonical_oper}.\<close>
+
+lemma head_arg_0_canonical_ST:
+  assumes "M \<in> ST_PS"
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl M))))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl M)))"
+  shows "proj 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl M)))))
+            = harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl M))))"
+  using assms
+proof (induction M rule: ST_PS.induct)
+  case (diag v)
+  \<comment> \<open>diag head is \<open>0\<close>-canonical unconditionally; the firing hypothesis is unused (green).\<close>
+  show ?case by (rule head_arg_0_canonical_diag)
+next
+  case (oper N n)
+  show ?case
+    by (rule head_arg_0_canonical_oper[OF oper.hyps(1) oper.hyps(2) oper.prems oper.IH])
+qed
+
+text \<open>\<^bold>\<open>RESIDUAL\<close> \<open>head_arg_0_canonical\<close> (the original \<open>(0,y)#r\<close> statement, firing image):
+  immediate specialization of @{thm [source] head_arg_0_canonical_ST} (\<open>tl ((0,y)#r) = r\<close>).\<close>
+
 lemma head_arg_0_canonical:
   assumes "(0, y) # r \<in> ST_PS"
     and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
            \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
   shows "proj 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
             = harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))"
-  sorry
+  using head_arg_0_canonical_ST[OF assms(1)] assms(2) by simp
 
 text \<open>\<^bold>\<open>SHARED RESIDUAL\<close> \<open>tied_crit_lt_hb\<close> (the sharp tied-critical \<section>1 fact, = task
   ``S3'' restricted to the tied lead): on a firing arg-zone image, a \<open>G\<^bsub>0\<^esub>\<close>-critical
@@ -3774,4 +3968,3 @@ proof (rule wf_subset[OF wf_inv_image[OF wf_olt_wf3, of "\<lambda>M. nrm (transl
 qed
 
 end
-
