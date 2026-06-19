@@ -56,19 +56,34 @@ GREEN) and stalls at the IDENTICAL `psi_proj_nonmem` core.**  Regularity/cofinal
 BAND bound (`ψ_v α < Ω_{v+1}`, GREEN) but not the value-identity.
 
 **GREEN substrate built this campaign** (the base + skeleton of the simultaneous induction,
-all `sorryAx`-free): `Crank.crank`/`crank_arg_lt` (C-rank strict-drop measure),
-`CsetSelf_crank_induction`, `Gset` (= Buchholz `G_uγ`) + `Gset_gen` + Lemma-1.9-generator
-`psiValue_mem_imp_arg_lt`, `psiSelf_eq_opow_some` (ψ-value = ω-power, all regions),
-`psiSelf_fixpoint_of_below_saturated` (the fixpoint lever) + `psiSelf_epsLvl_fixpoint` (the
-first DEEP ψ-fixpoint, `ε`-boundary, via Mathlib `omega0_opow_epsilon`/`right_le_veblen`),
-`fixpoint_iff_saturated`, `subA_nm_collapse_of_noRealizer`, `noncanonValueMem_joint` 4-leaf
-skeleton with `subA_nm` = the no-realizer core.
+all `sorryAx`-free).  The simultaneous-induction substrate (`Crank.lean`):
+`crank`/`crank_arg_lt` (C-rank strict-drop measure), `CsetSelf_crank_induction`, `Gset`
+(= Buchholz `G_uγ`) + `Gset_gen` + `Gset_gen_subeps` + Lemma-1.9-generator
+`psiValue_mem_imp_arg_lt`, `deepgen_arg_not_mem` + `deepgen_value_not_mem` (set-membership
+closure), `psiSelf_w_arg_not_mem` (η `w`-canonical ⟹ `ψ_w η ∉ C_u(η)`).  The fixpoint lever
+(`Residue.lean` `EpsLvlFixpoint`): `psiSelf_eq_opow_some` (ψ-value = ω-power, all regions),
+`psiSelf_fixpoint_of_below_saturated`, `psiSelf_epsLvl_fixpoint` (first DEEP ψ-fixpoint,
+`ε`-boundary, via Mathlib `omega0_opow_epsilon`/`right_le_veblen`/`isPrincipal_add_omega0_opow`),
+`fixpoint_iff_saturated`, `subA_nm_collapse_of_noRealizer`, `realizer_imp_strict` +
+`realizer_eq_rep` (injectivity-verdict lemmas), `mem_CsetSelf_lvl` + `subA_nm_subeps_vacuous`
+(sub-`ε`).  The joint: `noncanonValueMem_joint` 4-leaf skeleton with `subA_nm` = the
+no-realizer core.  The §1 self-lemmas (all GREEN): 1.2c `psiSelf_lt_Om_succ`, 1.2d
+`psiSelf_mono_arg`, 1.3 `psiSelf_strict_mono_arg`, 1.4a `psiSelf_canonical_inj`, 1.4b
+`CsetSelf_witness_canonical`, M1 `psiSelf_form_of_mem`, 1.6a `collapseSelf_succ`/`collapseSelf_le`,
+1.7 `psiSelf_eq_opow_add`, `acanon_sub_mono`, `CsetSelf_lt_psiSelf_of_lt_Om` (1.5).  The §2
+embedding half (`Otembed.lean`, = Buchholz Lemma 2.2): `oV`, `oV_order_pres`, `wf_olt_wf3`,
+`Gterm` (= `G_uγ` on terms), `Gterm_tsize`, `NEC_of_canonWitness` (= ya-pss `term_nec`),
+`Nrm.proj`.
 
-**FIVE soundness catches** (each a Lean-proven `_is_false` / re-sounding — the discipline
-working): `subA_nm`-unconditional FALSE; `hVB` value-bound FALSE (`hVB_is_contradictory`,
-term-model `lt_term` unfaithful, 85356 mono-viol); tower-goal fixpoint-vs-collapse confusion;
-naive `PsiValueAcanon` FALSE; `OVSurjective` term-surjection FALSE (`OVSurjective_is_false`,
-cardinality — `oV` onto countable `C_0(ε)`, not the uncountable down-set).
+**SIX soundness catches** (each a Lean-proven `_is_false` / re-sounding — the discipline
+working): (1) `subA_nm`-unconditional FALSE (re-sounded to the value-bound, then no-realizer);
+(2) `hVB` value-bound FALSE (`hVB_is_contradictory`, term-model `lt_term` unfaithful, 85356
+mono-viol); (3) tower-goal fixpoint-vs-collapse confusion (downward-saturation gives the WRONG
+fixpoint `= ψ_w η`, not the collapse `= ψ_u η`); (4) naive `PsiValueAcanon` FALSE; (5)
+`OVSurjective` term-surjection FALSE (`OVSurjective_is_false`, cardinality — `oV` onto countable
+`C_0(ε)`, not the uncountable down-set); (6) injectivity-in-joint VACUOUS (`psiSelf_canonical_inj`
+already unconditional, pins uniqueness not position — caught before building a strengthened
+joint).  No false `sorry` was ever introduced across the entire campaign.
 
 **Injectivity sub-angle (last tested, 2026-06-20j).** Buchholz's joint carries `ψ_v` mono +
 INJECTIVE + collapse together; the untried move was carrying injectivity in the joint IH.
@@ -108,6 +123,30 @@ circularity:** the canonical rep of `ψ_u(ψ_w η)` is `η` ITSELF (`η` `u`-can
 below.  The joint IH `P(ξ')` is for `ξ' < α` (strict-below), so it cannot supply the deep-gen
 rep `η` (= the current point).  Carrying CanonRep in the joint does NOT break it: the IH gives
 reps strictly below the bound, but the deep generator's rep is AT the bound.
+
+**Single-closure re-architecture — DEAD (scoped 2026-06-20m).** The last distinct structural
+idea was re-architecting to a single canonical closure (Buchholz's `C_v` with canonicity built
+in) instead of lean's two-closure setup (`Cset` omitted + `CsetSelf` canonical).  Decisive
+verdict: it does NOT break rep-at-the-bound.  Reason: **lean's `CsetSelf`/`psiSelf` IS already
+Buchholz's single canonical-closure world** (the `CstepSelf` generator clause has the `ξ ∈
+CsetSelf ξ u` canonicity test built in, = Buchholz's `C_v^{n+1}`), and the collapse `ψ_u(ψ_w η)
+= ψ_u η` (the `subA_nm` leaf) is ALREADY stated in it.  The omitted `Cset`/`psi` world is used
+only by the consuming chain (`oV`), bridged by `alpha_step_residue`; the COLLAPSE itself is
+single-closure.  In ANY closure world, `ψ_u η` never fires into `CsetSelf η u` (generator clause
+needs arg `< η`, but `η ⊀ η`; `psiSelf_notMem`), so the rep `η` is at the bound, unreachable by
+the `< η` IH — single-closure changes nothing.  **Path 2 dead.**
+
+**Novel-idea path — no concrete lead (scoped 2026-06-20m).** Every available tool on the `≥`
+half `ψ_u η ≤ ψ_u(ψ_w η)` gives either `≤` (`psiSelf_mono_arg`, wrong direction, since `ψ_w η
+≤ η`) or strict `<` (`psiSelf_strict_mono_arg` on canonical realizers strictly below `η`).  The
+equality/plateau (`ψ_u` not strictly monotone across `[ψ_w η, η]`) IS the deep-generator
+exclusion = the simultaneous induction's irreducible content.  No tool yields it.
+
+**TERMINAL WORD.** Both remaining paths (single-closure re-arch, novel idea) are closed.  The
+core is genuinely the full Buchholz §1 simultaneous transfinite induction, whose finest
+obstruction is **rep-at-the-bound** (the deep-generator's canonical rep is `η`, at the bound
+`c = ψ_w η` being processed in the collapse, unreachable by the strict-below IH).  No
+sub-reduction below it exists.
 
 **Honest remaining scope:** the simultaneous transfinite induction itself (carry
 `psiSelf δ u = psiSelf ξ u` through the joint's rank-IH) — the genuine multi-month Buchholz §1
