@@ -6,7 +6,7 @@
   - ❌ `✅ 柱3: olt_ST_iff_seqlex SORRY-FREE〔seqlex.thy〕＝標準形上で translate は列 lex からの順序同型（blockok 規律…）`
   - ⭕️ `✅ olt_ST_iff_seqlex`
   - エージェント向けの参照情報（file:line・設計）が要るなら、ソースコードのコメントに task.md アイテムへの対応を書く。task.md には書かない。
-- 凡例: 🚨未証明 / ✅証明済 / 🚨🤖agent作業中 / 🗄dead・off-path / 🗑破棄 / 🎯最新 / ★本丸。
+- 凡例: 🚨未証明 / ✅証明済 / 🚨🤖agent作業中。これ以外のマーカーや例を新たに付け足さない。
 - 設計詳細・経緯は memo.md / proof-ja.md / memory へ。
 
 ## 進捗ツリー
@@ -26,7 +26,7 @@
       - ✅ translate_single_tree / le0_interval_gt
       - ✅ core_i0 / core_i1
       - ✅ oper_bad_unfold
-  - 🎯 続94: PSS停止性 = 単一 ★oV_mono_NF
+  - 🚨 PSS停止性 = 単一 oV_mono_NF
     - ✅ sigma_seqlex_mono
     - ✅ tail_zone_ST_PS / suffix_closure_ST_PS / suffix_oper_witness / hasParent_last_ST_PS
     - ✅ proj_nrm_argzone_olt
@@ -37,10 +37,9 @@
     - ✅ wf3_head_violator_lead_gt
     - ✅ argzone_head_maxviol / tied_crit_lt_hb / head_arg_0_canonical
     - ✅ nrm_head_acanon / proj_eq_iff_dom / maxsub_harg_eq_lead / nrm_translate_diagSeq / acanon_leadgap_0canon / proj_idem
-    - 🚨 ★oV_mono_NF
+    - 🚨 oV_mono_NF
     - 🚨 head_arg_0_canonical_oper
     - 🚨 argz_head_spine / nrm_argzone_olt / keeps_head_ST_PS / argzone_transport
-  - 🗄 psi_value_canon_rep / psi_proj_nonmem
   - 🚨 wfimg
     - ✅ wf_Rnf_from_diag / acc_Rnf_of_ST_PS
     - 🚨 pure-lex 構文的整礎性
@@ -53,8 +52,7 @@
       - 🚨 wf_ArgsA
       - ✅ wf_olt_wf3
       - ✅ olt_ST_iff_seqlex
-      - 🚨 ★oV_mono_NF
-    - 🗑 旧 K-dom ルート
+      - 🚨 oV_mono_NF
   - ✅ step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed
     - ✅ step_terminates_cond / no_infinite_expansion_cond
     - ✅ step_in_ST_PS
@@ -62,20 +60,18 @@
 ## (α) nrm 路線（代替）
 - ✅ nrm 基盤 / wf3_nrm
 - ✅ PSS_terminates_nrm / wf_Rnf_nrm / nrm_step_dec
-- 🔬 W=T 直接路線
+- 🚨 W=T 直接路線
   - ✅ direct_acc_of_ST_PS / PSS_terminates_direct / acc_short / step_level_noninc
   - ✅ acc_subs0
   - 🚨 maxr1=1 base / maxr1≥2 crux
-- 🔬 §1 / psi_proj ルート
+- 🚨 §1 / psi_proj ルート
   - ✅ bad_imp_oV_ge / psi_proj_step / psi_proj
   - ✅ indec_Cset_generator / psi_in_Cset_same_sub_generator / band_lt_psi / psi_eq_of_not_mem / 1.4trio / Cset_c toolkit
   - ✅ term_nec
   - ✅ Cset_eq_Cset_c
   - ✅ oV_noncanon_of_bad
   - ✅ alpha_step_residue / Citer_subset_Cset_c_alpha
-  - 🗄 psi_value_canon_rep / psi_proj_nonmem
-- 🗄 nrm_step_dec 直接証明
-- 🗑 健全性第7事件: 旧 E6_value/E6_mem/ginv 系を全撤回
+  - 🚨 psi_value_canon_rep / psi_proj_nonmem
 - ✅ 健全で残る部品
   - ✅ nrm_snoc_seg / ins_olt_mono / einc / eflip / gap / stepsok
   - ✅ STS_A / proj_once / proj_submono / proj_ole / proj_nofire
@@ -84,8 +80,7 @@
   - ✅ r1ok / r1ok_climb
   - 🚨 NT_tie_resolved / NT_tie_fdlex
   - 🚨 E6_mem_resolved
-- 🔬 proj 単調性ルート
+- 🚨 proj 単調性ルート
   - ✅ proj_emb_mono / emb_imp_ole
   - 🚨 fire×sum-vs-nest crux
   - 🚨 NF-class term-level 特徴づけ
-- 🗑 旧 (β1)Trans / (β2)P進 / wf_ArgsA 凍結
