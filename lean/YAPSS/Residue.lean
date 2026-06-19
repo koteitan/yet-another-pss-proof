@@ -1055,6 +1055,84 @@ theorem collapseSelf_le_valuebounded {a : ℕ} {α β : Ordinal.{u}} (hαβ : α
   · -- α ≤ ξ < β, ξ a-canonical ⟹ value-bound psiSelf ξ a < psiSelf α a, contra heq
     exact absurd heq.symm (ne_of_lt (hgap ξ hαξ hξβ hξc_self))
 
+/-! ### GREEN PIECE 1 (Gset construction, step 1): the self-form Buchholz 1.5
+
+The whole §1 residue (all four leaves of `noncanonValueMem_joint`, the closure
+face `AlphaStepResidue`/`alpha_step_residue` AND the collapse face
+`CollapseResidueMaxo`) bottoms out — via `collapseSelf_le_valuebounded` — at the
+**deep-region value-bound**: every `u`-canonical gap point `γ ∈ [α,β)` has
+`ψ^s_u(γ) < ψ^s_u(α)`.  The minimal construction discharging it is Buchholz's
+`G_uγ` device + Lemma 1.9 (`γ ∈ C_u(α) ⟺ G_uγ ⊆ α`), NOT the full normal-form
+term system T.
+
+This lemma is the FIRST bridge: by Buchholz Lemma 1.5 (self-form), the value-bound
+`ψ^s_u(γ) < ψ^s_u(α)` is *equivalent* to the membership
+`γ ∈ C^s_u(α)` for a `u`-canonical `γ` — because `ψ^s_u(γ) < Ω_{u+1}` always, and
+1.5 says `C^s_u(α) ∩ Ω_{u+1} = ψ^s_u(α)`; so once `γ`'s canonical generators are
+`< α` (the `G_u` content) `CsetSelf_psi_closed` fires `ψ^s_u(γ) ∈ C^s_u(α)` and 1.5
+converts it to the strict bound.  See `psiSelf_lt_of_mem_canon` (the bound from
+membership) immediately below. -/
+
+open Ordinal in
+/-- **Buchholz Lemma 1.5 (self-form, one direction), `C^s_a(α) ∩ Ω_{a+1} = ψ^s_a(α)`.**
+Every member of `C^s_a(α)` that is `< Ω_{a+1}` is `< ψ^s_a(α)`.  Self-form port of
+`Otembed.Cset_lt_psi_of_lt_Om` (clean `CstepSelf'`-stage induction; the
+`ψ`-generator case at `u = a` uses `psiSelf_strict_mono_arg`, no circularity). -/
+theorem CsetSelf_lt_psiSelf_of_lt_Om {α x : Ordinal.{u}} {a : ℕ}
+    (hx : x ∈ CsetSelf (psiResSelf α) α a) (hlt : x < Om (a + 1)) :
+    x < psiSelf α a := by
+  obtain ⟨n, hn⟩ := CsetSelf_mem_iff.1 hx
+  clear hx
+  induction n generalizing x with
+  | zero =>
+    simp only [Function.iterate_zero, id_eq] at hn
+    exact lt_of_lt_of_le hn (Om_le_psiSelf α a)
+  | succ n IH =>
+    rw [Function.iterate_succ_apply'] at hn
+    rcases hn with (h1 | h2) | h3
+    · exact IH hlt h1
+    · obtain ⟨y, hy, z, hz, hyz⟩ := h2
+      have hyx : y ≤ x := hyz ▸ le_self_add
+      have hzx : z ≤ x := hyz ▸ le_add_self
+      have hy' : y < psiSelf α a := IH (lt_of_le_of_lt hyx hlt) hy
+      have hz' : z < psiSelf α a := IH (lt_of_le_of_lt hzx hlt) hz
+      rw [← hyz]
+      exact (psiSelf_addprinc α a).2 y z hy' hz'
+    · obtain ⟨u, ⟨ξ, ⟨hξC, hξα, hξcanon⟩, hξx⟩⟩ := Set.mem_iUnion.1 h3
+      simp only [psiResSelf, if_pos hξα] at hξx
+      subst hξx
+      have hu_le : u ≤ a := by
+        by_contra hc
+        have hau : a + 1 ≤ u := by omega
+        exact absurd (lt_of_lt_of_le hlt (Om_mono hau)) (not_lt.2 (Om_le_psiSelf ξ u))
+      rcases lt_or_eq_of_le hu_le with hua | hua
+      · calc psiSelf ξ u < Om (u + 1) := psiSelf_lt_Om_succ ξ u
+          _ ≤ Om a := Om_mono (by omega)
+          _ ≤ psiSelf α a := Om_le_psiSelf α a
+      · subst hua
+        have hξcanon' : ξ ∈ CsetSelf (psiResSelf ξ) ξ u :=
+          CsetSelf_mono_param _ _ ξ u
+            (fun ζ uu hζ => by
+              rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hξα)]) hξcanon
+        exact psiSelf_strict_mono_arg hξα hξcanon'
+
+/-- **GREEN PIECE 2: the value-bound from canonical membership.**  If a
+`u`-canonical `γ` lies in `C^s_u(α)` and `γ < α`, then `ψ^s_u(γ) < ψ^s_u(α)`.
+This is the bridge consumed by `collapseSelf_le_valuebounded`'s `hgap`: it converts
+the *membership* `γ ∈ C^s_u(α)` (the `G_u γ ⊆ α` content) into the value-bound.
+Proof: `CsetSelf_psi_closed` fires `ψ^s_u(γ) ∈ C^s_u(α)`, then Lemma 1.5
+(`CsetSelf_lt_psiSelf_of_lt_Om`, with `ψ^s_u(γ) < Ω_{u+1}`) gives the strict bound. -/
+theorem psiSelf_lt_of_mem_canon {α γ : Ordinal.{u}} {u : ℕ}
+    (hγα : γ < α) (hγC : γ ∈ CsetSelf (psiResSelf α) α u)
+    (hγcanon : γ ∈ CsetSelf (psiResSelf γ) γ u) :
+    psiSelf γ u < psiSelf α u := by
+  have hconv : γ ∈ CsetSelf (psiResSelf α) γ u :=
+    CsetSelf_mono_param _ _ γ u
+      (fun ζ uu hζ => by rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hγα)]) hγcanon
+  have hfire := CsetSelf_psi_closed hγC hγα u hconv
+  rw [psiResSelf, if_pos hγα] at hfire
+  exact CsetSelf_lt_psiSelf_of_lt_Om hfire (psiSelf_lt_Om_succ γ u)
+
 /-- **`subA_nm`'s conclusion from the value-bound** (GREEN, hypothesis-carrying).
 The generator-step (A) plateau-collapse non-membership `ψ^s_u(ψ^s_w(η)) ∉ C^s_u(η)`
 follows from `collapseSelf_le_valuebounded` applied to the gap `[ψ^s_w(η), η]`: the
