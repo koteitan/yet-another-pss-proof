@@ -4803,3 +4803,15 @@ MV は §1 collapse 核を closable でないと確定し精密 obstruction を�
   循環なし(両残核は独立 sorry)。INFRA(続90末8)と同核だが import churn 解消=改善。main sorry 5→6(opaque→鋭い2)。
 - BMOCF 総括: ≡bms 268/268 で PSS を正しく捉えると独立確認したが壁の近道にはならず(①relocate/②高コスト)。緑インフラ維持確定。
 - 次手: tied_crit_lt_hb(hb 0-canonicity)= 残る本丸。(a)canonical-ζ 順序数 or (b)NF spine 不変量 base 層。BMOCF 探索は終了。
+
+### 続93: route(b) 項レベル簡約不変量を深層検証→SP/I1 偽・I2 のみ生存=核は ST_PS-induction レベル
+2.9M ST closure / 78万発火で tied_crit_lt_hb(hb 0-canonicity)の簡約不変量候補を検証(probe_sp_i2_deep.py):
+- 🔴 (SP) hb 単一主項: **偽** 14955/779999(hb は和になりうる D2(D0(..))+D2(D0(..)))。浅い corpus(889)で 0/889 だった罠。
+- 🔴 (I1) hb は D_0 主項なし: **偽** 87% が D_0 含む(D2(D1(D0(D2(D1(0))))) 型・自己相似入れ子)。
+- ✅ (I2) lead X=1: **真** 0/779999(強固・既知)。hb=proj_1(nrm b')。
+- ✅ hb 0-canonical: 0/779999(壁は真)。
+- **結論**: hb 0-canonicity は**単純な項レベル不変量に還元不能**(hb は和にも D_0 入れ子にもなり、なお 0-canonical)。
+  ∴ route(b) の正しい形 = **項レベルでなく ST_PS-induction レベル**(diag base + oper step)の強化不変量を carry し、
+  発火-collapse を closure で出す。自己相似入れ子は oper のバッドパート n 重コピー痕跡=基本列降下。def.thy oper と接続。
+  これは sigma_seqlex_mono が term-level argzone_head_maxviol に bottom out する所を ST_PS-level invariant で塞ぐこと。
+- 次手: ST_PS.induct で「arg-zone 像の 0-collapse 規律」を oper 互換な不変量として定式化・証明。多セッション核。term-level 簡約は袋小路。
