@@ -4765,3 +4765,19 @@ MV は §1 collapse 核を closable でないと確定し精密 obstruction を�
   **判断: INFRA の +1 split は live 非統合**(閉鎖なき sorry 増・import churn 回避)、main は argzone_head_maxviol 単一 sorry 維持。
   reduction は nrm_maxsub_reduction_reference.thy.txt に保存。次セッションは hb 0-canonicity を canonical-ζ 順序数路線
   (necessity.thy・psi_value_acanon を canonical ζ 限定で修正)か NF spine 不変量の base 層構築で攻めるべき。
+
+### 続91: BMOCF アドバイス訂正(2026-06-19)+ de-risk 数値検証を背景投入
+- アドバイザーが bmocf.md 冒頭に**訂正**を追記し、本体の経験的指摘を全面受容:
+  「nrm/ψ が標準形を over-collapse で同一視」は**偽**(標準形上 nrm/oV 単射・衝突0)、
+  「緑インフラを捨てる」記述を**撤回**、BMOCF は置換でなく**並行検証候補**に降格。
+- 生き残る仮説: BMOCF `Ascend`/`≤_M` が同 collapse を「列の祖先構造による定義」で与え、
+  詰まり(`argzone_head_maxviol`=head=maximal violator transport)を `i_0=max{祖先}` で**定義的に**消せる可能性。
+- アドバイザー数値検証(`buchholz-study/bmocf_fs.py`): cof+t[n]+Ascend を実装し `bms M[n]` と照合
+  → ascension スパイン系は完全一致(38/62)、深層(ネスト Ω・再発火)不一致(24/62、τ 実装バグ公算大)。promising だが断定不可。
+- **本体の対応**: gating step = t[n]==bms 全標準形一致 の確立。背景エージェント bmocf-verify を投入
+  (tools/bmocf_verify/ に複製・標準形を `bms -s` で列挙・τ バグ特定修正・実ギャップ有無を確定)。緑インフラは維持し並行 de-risk。
+- **アーキテクト fork 判断(要・数値確立後)**: BMOCF は壁を「消す」か「移す」か=
+  - 部分 pivot(Ascend で argzone_head_maxviol を nrm 路線内で discharge): obligation を nrm≡Ascend に**移すだけ**の公算大(低価値)。
+  - 全 pivot(WF を COT/Ascend 降下+Towsner distinguished-set で再建・nrm の order-preservation を捨てる): 壁は**消える**が
+    Towsner 多相機構の新規開発が要(wf_ArgsA も同所で停滞)。= 「正しい難しさ」へ移行。
+  どちらも gating(t[n]==bms)が必要前提。確立できたら fork を確定する。
