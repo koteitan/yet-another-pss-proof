@@ -4781,3 +4781,16 @@ MV は §1 collapse 核を closable でないと確定し精密 obstruction を�
   - 全 pivot(WF を COT/Ascend 降下+Towsner distinguished-set で再建・nrm の order-preservation を捨てる): 壁は**消える**が
     Towsner 多相機構の新規開発が要(wf_ArgsA も同所で停滞)。= 「正しい難しさ」へ移行。
   どちらも gating(t[n]==bms)が必要前提。確立できたら fork を確定する。
+
+### 続92: BMOCF≡bms 268/268 確立 + ①parent_index橋へ方針転換(②より低リスク)
+- bmocf-verify→leqM-complete で **t[n]==bms 268/268**(実ギャップ0、全 bms 出力は正当 BMOCF 項)。
+- ★leqM Isabelle 移植性: `≤_M` collapse は**行列上の構造的原始再帰**(`parent_index`=左→右スキャン・無制限探索なし・自明停止)。
+  `next_M`/`le_M` 不動点は線形 `parent_index` と外延的に等しい(corpus検証)。
+- ★**決定的**: 詰まりの `i_0=max{i|(i,0)≤_M(i,j1)}` = **`lnz`(最下非零行)**、cut=`parent_index[last][lnz]`=有限スキャン計算可能。
+  bmocf.md §4「argzone_head_maxviol が定義的になる」を裏付け。「≤_M は ψ-木でなく行列の列に住む」(fmt→matrix で対応)。
+- ★**①再評価**: 先に①を「nrm≡Ascendへ義務移動=低価値」としたが覆る。最大違反子は**行列側 parent_index bad-root で有限計算可能**。
+  詰まった木側 argzone_head_maxviol を translate 経由で計算可能な列側 parent_index 事実へ**輸送**すれば緑インフラのまま完成。
+- **②全pivot(COT-循環crux付き)の前に①parent_index橋を試す**。Towsner ルートは絶対系→de Bruijn 多相移行が必要
+  (conventionals.md:73-74、循環反例 acc(ψ_r 0)↔acc(ψ_p(ψ_r 0)))で高コスト=fallback。
+- 次手: 木側(harg/G_0-violator-maximality of nrm∘translate∘argzone)⟺ 行列側(parent_index bad-root)の正確な辞書を数値確立→Isabelle 橋補題。
+- 成果物: tools/bmocf_verify/{bmocf_fs.py(268/268),compare.py,bmocf_fs_248.py}。
