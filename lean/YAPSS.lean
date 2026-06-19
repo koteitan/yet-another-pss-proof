@@ -14,4 +14,5 @@ import YAPSS.Wtt
 import YAPSS.Wttbase
 import YAPSS.Wttone
 import YAPSS.Gterm0Olt
+import YAPSS.CopyTile
 import YAPSS.Reduction
