@@ -45,6 +45,17 @@ $$\boxed{\ \forall X\in\mathcal N.\quad \mathrm{proj}_0(X)\neq X\ \Longrightarro
 
 「$\mathcal N$ の木 $X$ が（$\mathrm{proj}_0$ で）畳まれるなら、その先頭引数 $\mathrm{harg}\,X$ はもう畳めない（0-正準）」。
 
+## 鋭い還元（2026-06-19, bridge_probe.py 3988/3988 確認）
+
+発火する arg-zone 像 $X$ について、以下が **0 例外**で成立し、命題を $b=\mathrm{harg}\,X$ 単独の構文命題に縮約する:
+
+- **(S1) 単一主項**:$X = P\,L\,b\,Z$（$c$-spine 空）。ゆえに $\mathrm{harg}\,X=b$。
+- **(S2) $G_0$ 分解**:$G_0(X)=\{b\}\cup G_0(b)$（非 head 違反子は全て $G_0(b)$ の元）。
+- **(S3) 壁の本体**:「$\mathrm{harg}\,X$ が最大違反子」$\iff\ \forall g\in G_0(b).\ b<g\ \Longrightarrow\ g<X$（$b$ が自身の $G_0$-spine を $<$ で支配）。
+- 帰結:$\mathrm{proj}_0(X)=\mathrm{harg}\,X=b$。
+
+BMOCF/行列の `parent_index`(=`≤_M`)への輸送は subscript shear で壁を**移すだけ**(行列部分列の正規化は fresh context で別物)。本道は S3 の **木内部 pure-lex 構文帰納**。
+
 ## 備考
 
 - **同値な形（最大違反子）**:$\ \forall g.\ g\in G_0(X)\ \land\ \lnot(g<X)\ \Longrightarrow\ \lnot(\mathrm{harg}\,X<g)$（$\mathrm{harg}\,X$ は $X$ の $0$-違反子のうち $<$-最大）。
