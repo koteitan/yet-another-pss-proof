@@ -354,4 +354,37 @@ theorem deepgen_value_not_mem {c ξ' : Ordinal.{u}} {u : ℕ}
     CsetSelf_lt_psiSelf_of_lt_Om hmem (psiSelf_lt_Om_succ ξ' u)
   exact absurd (psiSelf_mono_arg hcξ' u) (not_le.2 hlt)
 
+/-! ### The generator-value-arg `ψ^s_w η` is not in `C^s_u(η)` — via subscript-canonicity-mono
+
+In sub-case A (`η` `u`-canonical, `u ≤ w`), `acanon_sub_mono` gives `η` `w`-canonical.
+Then the generator's arg-value `ψ^s_w η` is NOT in `C^s_u(η)`: a witness would give
+`ψ^s_w η = ψ^s_w ζ` with `ζ < η` `w`-canonical, and injectivity (`η` `w`-canonical too)
+forces `ζ = η`, contradicting `ζ < η`.  This is a genuine §1 monolith piece.  NOTE it does
+NOT close the value-collapse `ψ^s_u(ψ^s_w η) = ψ^s_u η` (that is about the VALUE `ψ^s_u c`,
+whose realizer `ζ` is `u`-canonical and pairs only with the non-canonical `ψ^s_w η` — the
+irreducible deep-generator value-identity). -/
+theorem psiSelf_w_arg_not_mem {η : Ordinal.{u}} {w u : ℕ} (hwu : u ≤ w)
+    (hηu : η ∈ CsetSelf (psiResSelf η) η u) :
+    psiSelf η w ∉ CsetSelf (psiResSelf η) η u := by
+  have hηw : η ∈ CsetSelf (psiResSelf η) η w := acanon_sub_mono hηu hwu
+  intro hmem
+  have hlo : Om u ≤ psiSelf η w := le_trans (Om_mono hwu) (Om_le_psiSelf η w)
+  have hap : Ordinal.IsPrincipal (·+·) (psiSelf η w) :=
+    fun {x y} hx hy => (psiSelf_addprinc η w).2 x y hx hy
+  obtain ⟨u', ζ, heq, hζη, hζmem, hζc⟩ := CsetSelf_witness_canonical hap hlo hmem
+  rw [psiResSelf, if_pos hζη] at heq
+  have hu' : u' = w := by
+    have h1 : Om u' ≤ psiSelf η w := heq ▸ Om_le_psiSelf ζ u'
+    have h2 : psiSelf η w < Om (u'+1) := heq ▸ psiSelf_lt_Om_succ ζ u'
+    have hle1 : u' ≤ w := by
+      by_contra hc; exact absurd (lt_of_le_of_lt h1 (psiSelf_lt_Om_succ η w)) (not_lt.2 (Om_mono (by omega)))
+    have hle2 : w ≤ u' := by
+      by_contra hc; exact absurd (lt_of_le_of_lt (Om_le_psiSelf η w) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  subst hu'
+  have hζc_self : ζ ∈ CsetSelf (psiResSelf ζ) ζ u' :=
+    CsetSelf_mono_param _ _ ζ u'
+      (fun ρ ww hρ => by rw [psiResSelf, psiResSelf, if_pos hρ, if_pos (lt_trans hρ hζη)]) hζc
+  exact absurd (psiSelf_canonical_inj hζc_self hηw heq.symm) (ne_of_lt hζη)
+
 end YAPSS
