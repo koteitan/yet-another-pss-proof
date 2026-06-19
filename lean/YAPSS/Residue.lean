@@ -1073,6 +1073,30 @@ theorem subA_nm_of_valuebound {η : Ordinal.{u}} {w u : ℕ}
   rw [hcollapse]
   exact psiSelf_notMem η u
 
+/-- **H1 (the caseB residue) from the two shared-rep value-bounds** (GREEN,
+hypothesis-carrying).  The subscript-collapse `ψ^s_u(η) = ψ^s_u(ψ^s_w(η))` is
+assembled from psi_proj at `η` and at `c = ψ^s_w(η)` through their COMMON `u`-rep
+`δ` (model: `proj_u η = proj_u(ψ^s_w η)`, 884/884, and both `≤ δ`):
+
+* `ψ^s_u(η) = ψ^s_u(δ)`  via `collapseSelf_le_valuebounded` (gap `[η,δ)`, bound `hVBη`);
+* `ψ^s_u(c) = ψ^s_u(δ)`  via `collapseSelf_le_valuebounded` (gap `[c,δ)`, bound `hVBc`);
+* compose: `ψ^s_u(η) = ψ^s_u(δ) = ψ^s_u(c)`.
+
+The two value-bounds `hVBη`, `hVBc` (every `u`-canonical gap point has value
+`< ψ^s_u(·)` of the lower endpoint; model 884/884 @+5/+6/+7) are the genuine §1
+value-identity content the joint recursion must supply.  This reduces `NVM_caseB`
+(H1) to exactly those two value-bounds at a shared canonical rep `δ`. -/
+theorem caseB_H1_of_valuebounds {η : Ordinal.{u}} {w u : ℕ} (δ : Ordinal.{u})
+    (hηδ : η ≤ δ) (hcδ : psiSelf η w ≤ δ)
+    (hVBη : ∀ γ, η ≤ γ → γ < δ →
+      γ ∈ CsetSelf (psiResSelf γ) γ u → psiSelf γ u < psiSelf η u)
+    (hVBc : ∀ γ, psiSelf η w ≤ γ → γ < δ →
+      γ ∈ CsetSelf (psiResSelf γ) γ u → psiSelf γ u < psiSelf (psiSelf η w) u) :
+    psiSelf η u = psiSelf (psiSelf η w) u := by
+  have h1 : psiSelf η u = psiSelf δ u := collapseSelf_le_valuebounded hηδ hVBη
+  have h2 : psiSelf (psiSelf η w) u = psiSelf δ u := collapseSelf_le_valuebounded hcδ hVBc
+  rw [h1, h2]
+
 /-- Generator step (A) BAND fact: `Ω_{w+1} ≤ η` when `η` is `u`-canonical (`u ≤ w`)
 and `ψ^s_w(η)` is `u`-non-canonical.  Sharper than the prior `ψ^s_w(η) ≤ η` (which
 follows by `psiSelf_lt_Om_succ` + this).  Mechanism (model-verified 4892/4892): a
