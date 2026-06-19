@@ -1154,9 +1154,88 @@ text \<open>\<^bold>\<open>Helper 1 (the single remaining \<open>sorry\<close>):
   \<^file>\<open>../tools/probe_valcanon_big.py\<close>: 56/0, no counterexample, incl. the
   extended \<open>\<Omega>\<^bsub>3\<^esub>\<close> model).\<close>
 
+text \<open>\<^bold>\<open>Sharpened residue: band-\<open>v\<close> canonical representation of a \<open>\<psi>\<close>-value\<close>.
+  This is the \<^emph>\<open>single irreducible\<close> Buchholz \<section>1 fact, in its sharpest positive
+  form.  The value \<open>c = \<psi>\<^bsub>w\<^esub>(\<zeta>)\<close> has a \<^bold>\<open>representative \<open>\<delta>\<close> strictly below it\<close>
+  that already lies in the band-\<open>v\<close> closure of \<open>c\<close> (\<open>\<delta> \<in> C\<^bsub>v\<^esub>(c)\<close>, \<open>\<delta> < c\<close>) and
+  reproduces the value (\<open>\<psi>\<^bsub>w\<^esub>(\<delta>) = c\<close>).  This is the canonical-representation
+  existence of \<section>1: the natural candidate is the least witness \<open>wit \<zeta> w \<le> \<zeta>\<close>
+  (\<open>wit_spec\<close>), which is canonical at \<open>w\<close> exactly when it is \<open>< c\<close>
+  (\<open>acanon_of_lt_psi\<close>); the genuinely hard instances are the \<open>\<psi>\<close>-fixpoints
+  \<open>\<psi>\<^bsub>w\<^esub>(c) = c\<close> (which first occur at the Bachmann\<dash>Howard level, far above any
+  finite CNF model), where the representative must be extracted from \<open>c\<close>'s own
+  Cantor structure.  \<^bold>\<open>Faithfulness caveat\<close>: the finite-CNF probes
+  (\<^file>\<open>../tools/probe_valcanon_struct.py\<close>, \<^file>\<open>../tools/probe_leastwit_lt.py\<close>)
+  are bounded below \<open>\<omega>\<^bsup>\<omega>\<^sup>2\<^esup>\<close> and so \<^emph>\<open>cannot\<close> exhibit a \<open>\<psi>\<close>-fixpoint (none found:
+  0 fixpoints, every least witness \<open>< c\<close>); they confirm the \<^emph>\<open>shape\<close> but are not
+  evidence at depth.  This residue is the honest locus of the remaining work.\<close>
+
+lemma psi_value_canon_rep:
+  assumes "v \<le> w"
+  shows "\<exists>\<delta>. Ord \<delta> \<and> \<delta> < psi \<zeta> w
+            \<and> \<delta> \<in> elts (Cset (\<lambda>\<eta>\<in>elts (psi \<zeta> w). psi \<eta>) (psi \<zeta> w) v)
+            \<and> psi \<delta> w = psi \<zeta> w"
+  sorry
+
+text \<open>\<^bold>\<open>Helper 1 (now \<^emph>\<open>derived\<close> from the sharp residue): \<open>\<psi>\<close>-values are canonical\<close>.
+  From the band-\<open>v\<close> representative \<open>\<delta> < c\<close> the generator step of \<open>C\<^bsub>v\<^esub>(c)\<close> fires
+  \<open>\<psi>\<^bsub>w\<^esub>(\<delta>) = c\<close> directly (\<open>Cset_psi_closed\<close> with \<open>\<delta> \<in> elts c\<close>), so \<open>c \<in> C\<^bsub>v\<^esub>(c)\<close>,
+  i.e. \<open>acanon v c\<close>.  The reduction \<open>psi_value_acanon \<longleftarrow> psi_value_canon_rep\<close> is
+  green; the whole \<section>1 core is thereby isolated to \<open>psi_value_canon_rep\<close>.\<close>
+
 lemma psi_value_acanon:
   assumes "v \<le> w" shows "acanon v (psi \<zeta> w)"
-  sorry
+proof -
+  let ?c = "psi \<zeta> w"
+  let ?p = "\<lambda>\<eta>\<in>elts ?c. psi \<eta>"
+  obtain \<delta> where \<delta>: "Ord \<delta>" "\<delta> < ?c"
+      "\<delta> \<in> elts (Cset ?p ?c v)" "psi \<delta> w = ?c"
+    using psi_value_canon_rep[OF assms, of \<zeta>] by blast
+  have d_mem: "\<delta> \<in> elts ?c"
+    using \<delta>(1,2) Ord_mem_iff_lt[OF \<delta>(1) Ord_psi] by blast
+  have "?p \<delta> w \<in> elts (Cset ?p ?c v)"
+    by (rule Cset_psi_closed[OF \<delta>(3) d_mem])
+  hence "psi \<delta> w \<in> elts (Cset ?p ?c v)" using d_mem by simp
+  with \<delta>(4) have "?c \<in> elts (Cset ?p ?c v)" by simp
+  thus "acanon v ?c" unfolding acanon_def .
+qed
+
+text \<open>\<^bold>\<open>Faithfulness of the reduction\<close>: the sharp residue \<open>psi_value_canon_rep\<close> is
+  \<^emph>\<open>equivalent\<close> to \<open>psi_value_acanon\<close>, not a strengthening.  The converse just
+  shown is \<open>psi_value_acanon \<Longrightarrow> psi_value_canon_rep\<close>: a canonical value \<open>c\<close> is an
+  indecomposable element of its own band-\<open>v\<close> closure that is \<open>\<notin> \<Omega>\<^sub>v\<close> (as
+  \<open>\<Omega>\<^sub>v \<le> \<Omega>\<^sub>w \<le> c\<close>), hence a generator \<open>\<psi>\<^bsub>u\<^esub>(\<delta>)\<close> (\<open>indec_Cset_generator\<close>) with
+  \<open>\<delta> \<in> C\<^bsub>v\<^esub>(c) \<inter> c\<close>, and \<open>psi_inj_subscript\<close> forces \<open>u = w\<close>.  This confirms the
+  single \<open>sorry\<close> is sound to localize here \<dash> we have not silently traded the
+  obligation for a false-but-stronger one.\<close>
+
+lemma psi_value_canon_rep_of_acanon:
+  assumes vw: "v \<le> w" and ac: "acanon v (psi \<zeta> w)"
+  shows "\<exists>\<delta>. Ord \<delta> \<and> \<delta> < psi \<zeta> w
+            \<and> \<delta> \<in> elts (Cset (\<lambda>\<eta>\<in>elts (psi \<zeta> w). psi \<eta>) (psi \<zeta> w) v)
+            \<and> psi \<delta> w = psi \<zeta> w"
+proof -
+  let ?c = "psi \<zeta> w"
+  let ?p = "\<lambda>\<eta>\<in>elts ?c. psi \<eta>"
+  have ordp: "\<And>\<xi> u. \<xi> \<in> elts ?c \<Longrightarrow> Ord (?p \<xi> u)" by simp
+  have cmem: "?c \<in> elts (Cset ?p ?c v)" using ac unfolding acanon_def .
+  have notOm: "?c \<notin> elts (Om v)"
+  proof
+    assume "?c \<in> elts (Om v)"
+    hence "?c < Om v" using Ord_mem_iff_lt[OF Ord_psi Ord_Om] by blast
+    moreover have "Om v \<le> Om w" using vw by (simp add: Om_mono)
+    moreover have "Om w \<le> ?c" by (rule Om_le_psi)
+    ultimately show False by simp
+  qed
+  from indec_Cset_generator[OF ordp indecomposable_psi notOm cmem]
+  obtain \<delta> u where \<delta>: "\<delta> \<in> elts (Cset ?p ?c v)" "\<delta> \<in> elts ?c" "?c = ?p \<delta> u" by blast
+  have O\<delta>: "Ord \<delta>" using \<delta>(2) Ord_psi Ord_in_Ord by blast
+  have dlt: "\<delta> < ?c" using \<delta>(2) Ord_mem_iff_lt[OF O\<delta> Ord_psi] by blast
+  have val: "?c = psi \<delta> u" using \<delta>(2,3) by simp
+  have "w = u" by (rule psi_inj_subscript[OF val])
+  with val have "psi \<delta> w = ?c" by simp
+  with O\<delta> dlt \<delta>(1) show ?thesis by blast
+qed
 
 text \<open>\<^bold>\<open>Helper 2: \<open>C\<^sub>v(\<alpha>)\<close> is monotone in the subscript\<close> \<open>v\<close> (only the base \<open>\<Omega>\<^sub>v\<close>
   grows; the generator step is subscript-independent).\<close>
