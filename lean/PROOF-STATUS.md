@@ -113,10 +113,15 @@ Consolidated to the single Wttone residual **`H0clause_oper_step`**:
 > `H0clause` — equivalently `∀ x ∈ Gterm 0 (translate B), olt x (translate B)`
 > together with `H0clause (translate B)`.
 
-Via `Gterm_translate_subblock` this is **exactly**:
+Via `Gterm_translate_subblock` each coefficient `x ∈ Gterm 0 (translate B)` is
+`translate K` for the **canonical** witness `K` the recursion produces (a contiguous
+infix `K = B[i:j]`), so the clause is:
 
-> **∀ K, `SubBlock B K` ⟹ `olt (translate K) (translate B)`** — the head-`0`
-> coefficients of an `ST_PS`-translate are all strictly below it.
+> for the canonical `Gterm`-`0` witness `K = B[i:j]`, `olt (translate K) (translate B)`.
+
+(NB the *un-restricted* `∀ K, SubBlock B K ⟹ olt (translate K)(translate B)` is
+**FALSE** — 74 violations at closure+5/+6 over all SubBlocks; only the canonical
+`Gterm`-`0` witnesses are dominated. Do not use the all-SubBlock form.)
 
 It is the SAME content as the two existing Nrmstep residuals, all on the same forest
 core:
@@ -135,6 +140,28 @@ i.e. full `ST_PS`-reachability. Concretely it needs the `oper` copy/tiling struc
 TRUE (head-`0` clause 25061/0 at every head-`0` node; descendant `H0clause` 1481/0;
 whole-image `H0clause(translate M)` on the `maxr1 ≤ 1` fragment 0/671 with the
 Buchholz `Gterm` semantics).
+
+**Seqlex/depth-shift route — investigated, reduces to a non-positional core.**
+The clean engine is `seqlex_imp_olt` (`Seqlex.lean`): `olt (translate K)(translate B)`
+follows from `seqlex (shift K) B` once `K` is shifted (via `translate_shift`) to align
+its head row-0 with `B`'s. The canonical witness is a contiguous infix `K = B[i:j]`
+with `B[i].1 ≥ dB` so the shift `δ = dB − B[i].1 ≤ 0` (model-verified). `seqlex (shift K) B`
+is TRUE at top level (0 viol +5/+6/+7): at the first column where `shift K` and `B`
+differ, `shift K` is strictly lower (row-0 or row-1), never higher — the ascending-copy
+domination (`core_i1` content). **But this divergence-downward fact is NOT capturable
+by any column-local invariant of B**: it is TRUE for `translate`-of-`ST_PS` blocks yet
+FALSE for arbitrary `steps1` sequences (25887 viol), and adding `z0ok` + `row1≤1` +
+`row1-rises-with-row0` still leaves 14174 viol. It needs the full `ST_PS`
+parent/ascent forest-reachability, NOT steps1/per-column data. Every structural
+recursion to prove it (term arg-descent, tsize-x, `translate.induct`, SubBlock
+derivation, strengthen-`Gterm_translate_subblock`) is FALSIFIED — the clause/seqlex
+fact is FALSE at intermediate recursion nodes (e.g. blockok sub-blocks: 169/417/1158
+clause-viol). So the residual is genuinely **non-inductive / globally
+forest-reachability-bound** — the signal that closing it needs heavier machinery
+(`dseg`/`fbseg` full build, or the Towsner distinguished-set route), not a structural
+induction. Deposited GREEN assets toward it: `YAPSS/Gterm0Olt.lean`
+(`translate_take_le : translate (L.take m) ≤o translate L`, `translate_append_ge`,
+`ole_trans`).
 
 ### Face 2 — Buchholz §1 ordinal-collapse (original)
 
