@@ -1102,14 +1102,22 @@ def NVM_subA_nm.{u} : Prop :=
     ∀ γ, psiSelf η w ≤ γ → γ < η →
       γ ∈ CsetSelf (psiResSelf γ) γ u → psiSelf γ u < psiSelf (psiSelf η w) u
 
-/-- Generator step (B): `η` is `u`-non-canonical; the rep is `η`'s `u`-rep. -/
+/-- Generator step (B), **reduced to the subscript-collapse H1** (the genuine residue).
+The full caseB (produce a canonical rep `δ` with `δ < α`, `δ ∈ C^s_v(α)`, `δ`
+`u`-canonical, `ψ^s_u(δ) = ψ^s_u(ψ^s_w(η))`) is **discharged inside the skeleton by
+the rank-IH `IHn` applied to `η`** (η is at rank `n`, `u`-non-canonical, `η < α`,
+`v ≤ u`): `IHn` produces exactly the rep `δ` of `η` with `ψ^s_u(δ) = ψ^s_u(η)`.
+The ONLY genuinely-new residue is then the **subscript collapse H1**
+`ψ^s_u(η) = ψ^s_u(ψ^s_w(η))` (model-verified 884/884 @+5/+6/+7 in the caseB context:
+η `u`-non-canonical, `u ≤ w`, `ψ^s_w(η)` `u`-non-canonical), which converts the
+rep's value-identity to caseB's target.  This is the value-identity the recursion
+must supply (= psi_proj at the value `ψ^s_w(η)`, whose `u`-rep coincides with η's:
+`proj_u(ψ^s_w η) = proj_u η`, 884/884). -/
 def NVM_caseB.{u} : Prop :=
-  ∀ (α : Ordinal.{u}) (v u w : ℕ) (η : Ordinal.{u}),
-    η < α → η ∈ CsetSelf (psiResSelf α) α v → η ∈ CsetSelf (psiResSelf η) η w →
-    η ∉ CsetSelf (psiResSelf η) η u → v ≤ u → u ≤ w → psiSelf η w < α →
+  ∀ (η : Ordinal.{u}) (w u : ℕ),
+    u ≤ w → η ∉ CsetSelf (psiResSelf η) η u →
     psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
-    ∃ δ, δ < α ∧ δ ∈ CsetSelf (psiResSelf α) α v ∧
-      δ ∈ CsetSelf (psiResSelf δ) δ u ∧ psiSelf δ u = psiSelf (psiSelf η w) u
+    psiSelf η u = psiSelf (psiSelf η w) u
 
 /-- Sum step: `ξ = x + y` non-canonical generator. -/
 def NVM_caseSum.{u} : Prop :=
@@ -1164,7 +1172,10 @@ theorem noncanonValueMem_joint
               -- the value-bound residue → collapse non-membership → the value-identity
               have hnm := subA_nm_of_valuebound hle (subA_nm η w u hwu hηu hnc hle)
               exact (psiSelf_eq_of_notMem hle hnm).symm
-            · exact caseB α v u w η hηα hηC hηcw hηu hvu hwu hξα hnc
+            · -- η `u`-non-canonical: the rank-IH `IHn` at η produces η's canonical rep δ
+              -- (`psiSelf δ u = psiSelf η u`); H1 (`caseB`) converts to the caseB target.
+              obtain ⟨δ, hδα, hδC, hδcanon, hval⟩ := IHn v u η hηX hηα hηu hvu
+              exact ⟨δ, hδα, hδC, hδcanon, hval.trans (caseB η w u hwu hηu hnc)⟩
           · push Not at hwu
             exact absurd
               (Iio_Om_subset_CsetSelf
