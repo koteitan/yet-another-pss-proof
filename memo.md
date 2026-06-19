@@ -4848,3 +4848,16 @@ nrm-image vs ST 切り分け(probe_nrm_vs_st.py): hb 0-canon は nrm 性質で�
 - 次手: head_arg_0_canonical_oper を IH + FS-descent(コピーが <o)で。要 oper↔nrm∘translate∘harg 橋(hb(N[n])↔hb(N) 構造関係)。
 - 🔴 route(a) 深層検証は **quick model bump 不可**(COEFF_MAX 8+exp拡張で組合せ爆発 timeout)。psi_value_acanon の真偽確定には
   本格的順序数モデル工学が要る(別タスク)。off-path のため打ち切り。route(a) 生死は未確定のまま。
+
+### 続94確定3(66e0c70+revert): PSS=単一load-bearing sorry oV_mono_NF・cnf 帰納の精密 crux 特定
+- ★**依存確定(semantic-wire)**: PSS_terminates_oV⟸wf_Rnf_oV⟸**単一 sorry oV_mono_NF(ovnf.thy:127)**。
+  PSS 停止性は既に oV_mono_NF 1点で証明可能。head 壁(nrm,5sorry)は代替・necessity/psi_proj は dead scaffolding(psi_proj 無 consumer・循環)。
+- 🔴**健全性 catch(ovmono-attack の統合を拒否・revert)**: agent が oV_mono_NF を cnf で分解し sub/tail 緑化したが、
+  arg 残核 `cnf_Ccond`(cnf(P a' b' c')⟹oV b'∈C_a'(oV b'))を **general cnf で述べ偽**(164/703 cnf CEX、oV_mono_cnf も偽 CEX y2<o y1 両cnf oV等)。
+  偽 sorry(+[simp])は健全性違反 ⟹ 統合せず revert。ovnf.thy は honest oV_mono_NF sorry に復帰。
+- ✅**genuine insight(残す)**: oV_mono_NF の **sub/tail ケースは cnf(hereditary・OT2=cnf_NF: NF⊆cnf 緑可)から緑**、arg ケースのみ
+  C-membership cnf_Ccond が要。cnf_Ccond は **cnf で偽・NF で真**(703/703 C-canonical, projected-arg mono 0/71906)。
+  ⟹ 帰納に必要 = 「**cnf より強く NF が含意する hereditary 不変量 H**」(NF⟹H, H hereditary, H⟹cnf_Ccond)。= 精密 crux=memory が求めた clean NF 特徴づけ。
+  closable 候補: 緑 collapse 機構 psi_eq_of_not_mem/collapse_grow(collapsing.thy)で ψ_a を projection 経由 factor。
+- **次セッション単一標的 = oV_mono_NF、攻め筋 = hereditary NF-不変量 H の発見**(cnf+C-membership を hereditary に保証)。
+  tools/probe_{block_value,ccond_residual,valueOT3_raw}.py に検証記録。
