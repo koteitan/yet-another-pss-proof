@@ -2619,6 +2619,75 @@ text \<open>\<^bold>\<open>Head-arg accessor is a critical at \<open>0\<close>\<
 lemma harg_in_Glist0: "t = P a b c \<Longrightarrow> harg t \<in> set (Glist 0 t)"
   by simp
 
+text \<open>\<^bold>\<open>Class-free maxsub / lead helpers\<close> for the head-residual reduction
+  (ported from \<open>nrm_maxsub_reduction_reference\<close>).  All four are purely structural
+  on the @{const maxsub} / @{const Gterm} recursions; no \<open>nrm\<close>/\<open>proj\<close>/order content.\<close>
+
+text \<open>\<^bold>\<open>\<open>lead \<le> maxsub\<close>\<close>: the leading subscript never exceeds the maximal subscript.\<close>
+
+lemma lead_le_maxsub: "lead t \<le> maxsub t"
+  by (cases t) auto
+
+text \<open>\<^bold>\<open>Asymmetry of \<open><\<^sub>o\<close>\<close>: from transitivity + irreflexivity.\<close>
+
+lemma olt_asym': "olt x y \<Longrightarrow> \<not> olt y x"
+  using olt_trans olt_irrefl by blast
+
+text \<open>\<^bold>\<open>\<open>G1\<close> \<dash> subterm maxsub bound\<close> (class-free): every \<open>G\<^bsub>u\<^esub>\<close>-critical of \<open>t\<close> has
+  maximal subscript \<open>\<le> maxsub t\<close>.  Structural induction; class-free, \<^bold>\<open>0\<close> failures on
+  432306 random \<open>wf3\<close> and 266545 firing arg-zone images
+  (\<open>probe_maxsub_classfree.py\<close> G1 / \<open>probe_argz_infra.py\<close> G1hb).\<close>
+
+lemma maxsub_Gterm_le: "g \<in> Gterm u t \<Longrightarrow> maxsub g \<le> maxsub t"
+proof (induction t arbitrary: g)
+  case Z thus ?case by simp
+next
+  case (P a b c)
+  show ?case
+  proof (cases "u \<le> a")
+    case True
+    have "g \<in> insert b (Gterm u b) \<union> Gterm u c" using P.prems True by simp
+    thus ?thesis
+    proof (elim UnE insertE)
+      assume "g = b" thus ?thesis by simp
+    next
+      assume "g \<in> Gterm u b"
+      hence "maxsub g \<le> maxsub b" by (rule P.IH(1))
+      thus ?thesis by simp
+    next
+      assume "g \<in> Gterm u c"
+      hence "maxsub g \<le> maxsub c" by (rule P.IH(2))
+      thus ?thesis by simp
+    qed
+  next
+    case False
+    have "g \<in> Gterm u c" using P.prems False by simp
+    hence "maxsub g \<le> maxsub c" by (rule P.IH(2))
+    thus ?thesis by simp
+  qed
+qed
+
+text \<open>\<^bold>\<open>\<open>Gterm 0\<close> of the head argument is contained in \<open>Gterm 0\<close> of the principal\<close>
+  (class-free): since \<open>0 \<le> a\<close>, @{term "Gterm 0 (P a b c)"} expands to
+  @{term "insert b (Gterm 0 b) \<union> Gterm 0 c"}.\<close>
+
+lemma Gterm0_harg_subset: "Gterm 0 b \<subseteq> Gterm 0 (P a b c)"
+  by auto
+
+text \<open>\<^bold>\<open>NON-TIED part of \<open>hb\<close>-0-stability\<close> (class-free, subscript-first): a
+  \<open>G\<^bsub>0\<^esub>\<close>-critical \<open>g\<close> of \<open>hb\<close> with a \<^emph>\<open>strictly smaller\<close> leading subscript than \<open>hb\<close>
+  is \<open><\<^sub>o hb\<close>.  Pure @{const olt} definition: \<open>lead g < lead hb\<close> with \<open>hb \<noteq> Z\<close>
+  forces the first \<open>olt\<close>-disjunct.\<close>
+
+lemma nontied_lt_head:
+  assumes "hb \<noteq> Z" and "lead g < lead hb"
+  shows "olt g hb"
+proof -
+  obtain a' b' c' where hb: "hb = P a' b' c'" using assms(1) by (cases hb) auto
+  have "lead g < a'" using assms(2) hb by simp
+  thus ?thesis using olt_P_of_lead_lt[of g a' b' c'] hb by (cases g) auto
+qed
+
 text \<open>\<^bold>\<open>The green head-arg firing reduction\<close> \<open>head_proj_eq_harg\<close>.  This is the
   \<^emph>\<open>class-free\<close> algebraic core of \<open>argzone_proj_head\<close>: \<^emph>\<open>given\<close> the two head facts
   \<dash> the head argument is a violator (\<open>\<not> olt (harg X) X\<close>) and it dominates every
@@ -2766,6 +2835,74 @@ text \<open>\<^bold>\<open>Consolidated head residual\<close> \<open>argzone_hea
   \<^bold>\<open>Single localized \<open>sorry\<close>\<close> \<dash> the irreducible Buchholz \<section>1 collapse content for the
   head argument.\<close>
 
+text \<open>\<^bold>\<open>SOUNDNESS NOTE (S1 c-spine collapse is FALSE)\<close>.  A natural conjectured
+  reduction (task ``S1'') asserted the firing arg-zone image is a \<^emph>\<open>single principal\<close>
+  \<open>X = P L b Z\<close> (empty c-spine).  This is \<^bold>\<open>FALSE\<close>: the genuine ST sequences
+  \<open>(0,0) # [(1,1),(2,2)]\<^sup>k\<close> (\<open>k \<ge> 2\<close>) give firing images
+  \<open>X = P 1 (P 2 Z Z) (P 1 (P 2 Z Z) (\<dots> Z))\<close> with a \<^emph>\<open>repeated\<close> c-spine
+  (\<open>tools\<close> deep probe, \<^bold>\<open>4\<close> counterexamples on \<open>266594\<close> firing images at closure+5).
+  The head-residual is therefore factored \<^bold>\<open>without\<close> any c-spine-collapse claim, via the
+  \<^emph>\<open>maxsub spine\<close> and the \<open>Gterm 0\<close>-of-head identity, both of which survive the repeated
+  spine: \<open>Gterm 0 X = insert (harg X) (Gterm 0 (harg X))\<close> still holds (the repeated
+  principal contributes no \<^emph>\<open>new\<close> \<open>G\<^bsub>0\<^esub>\<close>-criticals), \<^bold>\<open>0/266594\<close> deep-probe failures.\<close>
+
+text \<open>\<^bold>\<open>Consolidated spine residual\<close> \<open>argz_head_spine\<close> (the \<^emph>\<open>maxsub-spine\<close> class
+  content of the head residual; ported from \<open>nrm_maxsub_reduction_reference\<close>).
+  On a firing arg-zone image \<open>X = nrm (translate aM)\<close> three class-essential spine
+  facts hold jointly:
+    \<^item> \<^bold>\<open>F1lt\<close>  \<open>lead X < maxsub X\<close>          (firing lifts the leading subscript strictly
+       below the spine maximum),
+    \<^item> \<^bold>\<open>F2\<close>    \<open>lead (harg X) = maxsub X\<close>  (the head argument's leading subscript \<^emph>\<open>is\<close>
+       the spine maximum),
+    \<^item> \<^bold>\<open>S_Gviol\<close>  every \<open>G\<^bsub>0\<^esub>\<close>-critical violator of \<open>X\<close> lies in
+       \<open>insert (harg X) (Gterm 0 (harg X))\<close>   (the tail contributes no \<^emph>\<open>new\<close> violators
+       \<dash> holds even when the c-spine repeats, \<^bold>\<open>0/266594\<close> deep-probe failures).
+  \<^bold>\<open>All three are class-essential\<close> (NOT class-free; FALSE on random \<open>wf3\<close>,
+  \<open>probe_maxsub_classfree.py\<close> / \<open>probe_argz_infra.py\<close>); they do not reduce to a green
+  fact.  \<^bold>\<open>Localized \<open>sorry\<close>\<close> \<dash> first of the two sharp residuals replacing the former
+  opaque \<open>argzone_head_maxviol\<close> \<open>sorry\<close>.\<close>
+
+lemma argz_head_spine:
+  assumes "(0, y) # r \<in> ST_PS"
+    and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+  shows "lead (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+            < maxsub (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+       \<and> lead (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+            = maxsub (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+       \<and> (\<forall>g. g \<in> Gterm 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+            \<longrightarrow> \<not> olt g (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+            \<longrightarrow> g \<in> insert (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+                          (Gterm 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))))"
+  sorry
+
+text \<open>\<^bold>\<open>SHARED RESIDUAL\<close> \<open>tied_crit_lt_hb\<close> (the sharp tied-critical \<section>1 \<open>sorry\<close>, = task
+  ``S3'' restricted to the tied lead): on a firing arg-zone image, a \<open>G\<^bsub>0\<^esub>\<close>-critical
+  \<open>g\<close> of the head argument \<open>hb = harg X\<close> with the \<^emph>\<open>tied\<close> leading subscript
+  \<open>lead g = lead hb\<close> is \<open><\<^sub>o hb\<close> (\<open>hb\<close> dominates its own tied \<open>G\<^bsub>0\<^esub>\<close>-spine).  This is the
+  irreducible tied-critical content of \<open>hb\<close>-0-stability (\<open>probe_argz_infra.py\<close> TIED /
+  HB0, 513459 tied criticals / \<^bold>\<open>0\<close> failures).  \<^bold>\<open>Localized \<open>sorry\<close>\<close> \<dash> second of the two
+  sharp residuals; the non-tied lead case is green via @{thm [source] nontied_lt_head}.\<close>
+
+lemma tied_crit_lt_hb:
+  assumes "(0, y) # r \<in> ST_PS"
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+    and "g \<in> Gterm 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))"
+    and "lead g = lead (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))"
+  shows "olt g (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))"
+  sorry
+
+text \<open>\<^bold>\<open>Consolidated head residual\<close> \<open>argzone_head_maxviol\<close> (\<^bold>\<open>the single \<section>1 head
+  fact\<close>), now \<^bold>\<open>proven\<close> from the two sharp residuals above: on a firing arg-zone image
+  \<open>X = P a hb hc\<close> the head argument \<open>hb = harg X\<close> is a \<^emph>\<open>violator\<close> of \<open>X\<close> (\<open>\<not> olt hb X\<close>)
+  \<^bold>\<open>and the maximal one\<close> \<dash> it dominates every \<open>G\<^bsub>0\<^esub>\<close>-critical violator
+  (\<open>g \<in> Gterm 0 X \<and> \<not> olt g X \<longrightarrow> \<not> olt hb g\<close>).  \<^bold>\<open>Soundness gate\<close>: \<^bold>\<open>266545 firing
+  images / 0\<close> head-non-violator (\<open>probe_ff_residuals.py\<close> R1) / \<^bold>\<open>0\<close> violator above \<open>hb\<close>
+  (\<open>probe_head_maxo.py\<close> M2).  \<^bold>\<open>Class-essential\<close>: firing off the arg-zone class can come
+  from a buried tail critical with \<open>hb\<close> not the maximal violator.\<close>
+
 lemma argzone_head_maxviol:
   assumes "(0, y) # r \<in> ST_PS"
     and "\<forall>q \<in> set (takeWhile (\<lambda>q. 0 < fst q) r). y \<le> snd q"
@@ -2776,16 +2913,74 @@ lemma argzone_head_maxviol:
        \<and> (\<forall>g. g \<in> Gterm 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
             \<longrightarrow> \<not> olt g (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
             \<longrightarrow> \<not> olt (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))) g)"
-  \<comment> \<open>head arg is the maximal violator; deeply verified (R1 + \<open>probe_head_maxo.py\<close> M2, 266545/0).
-      \<^bold>\<open>Maxsub-spine cross-check\<close> (\<open>tools/probe_maxsub_lever.py\<close>, 266545/0): on this
-      class \<open>proj 0 X = harg X\<close> and \<open>lead (harg X) = lead (proj 0 X) = maxsub X = climb X\<close>,
-      with \<open>pfire 0 X \<longleftrightarrow> lead X < maxsub X\<close>; equivalently the head argument lifts the
-      leading subscript to the spine maximum.  All three maxsub characterizations are
-      themselves \<^bold>\<open>class-essential\<close> (\<open>tools/probe_maxsub_classfree.py\<close>: \<open>F1\<close> 59401, \<open>F2\<close>
-      18009, \<open>SP\<close> 90338 failures on random \<open>wf3\<close>), so the maxsub route re-expresses but
-      does not eliminate this irreducible \<section>1 core; only the subterm bound
-      \<open>g \<in> G\<^bsub>0\<^esub>(X) \<Longrightarrow> maxsub g \<le> maxsub X\<close> is class-free (\<open>G1\<close>, 0 failures).\<close>
-  sorry
+proof -
+  let ?X = "nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+  let ?hb = "harg ?X"
+  have wfX: "wf3 ?X" by (rule wf3_nrm)
+  \<comment> \<open>firing forces \<open>?X \<noteq> Z\<close>, so \<open>?X = P a hb hc\<close>\<close>
+  have ne: "?X \<noteq> Z"
+  proof
+    assume "?X = Z"
+    hence "proj 0 ?X = ?X" using proj_id by simp
+    thus False using assms(3) by simp
+  qed
+  obtain a hc where Xpbc: "?X = P a ?hb hc" using ne by (cases ?X) auto
+  \<comment> \<open>\<^bold>\<open>Class spine levers\<close> (firing arg-zone, \<open>argz_head_spine\<close>):
+      F1lt \<open>lead ?X < maxsub ?X\<close>, F2 \<open>lead ?hb = maxsub ?X\<close>, S_Gviol.\<close>
+  have spine: "lead ?X < maxsub ?X \<and> lead ?hb = maxsub ?X
+       \<and> (\<forall>g. g \<in> Gterm 0 ?X \<longrightarrow> \<not> olt g ?X \<longrightarrow> g \<in> insert ?hb (Gterm 0 ?hb))"
+    by (rule argz_head_spine[OF assms])
+  have F1lt: "lead ?X < maxsub ?X" using spine by blast
+  have F2: "lead ?hb = maxsub ?X" using spine by blast
+  have SGv: "\<And>g. g \<in> Gterm 0 ?X \<Longrightarrow> \<not> olt g ?X \<Longrightarrow> g \<in> insert ?hb (Gterm 0 ?hb)"
+    using spine by blast
+  \<comment> \<open>lead gap: \<open>lead ?X < maxsub ?X = lead hb\<close> (F1lt + F2)\<close>
+  have leadgap: "lead ?X < lead ?hb" using F1lt F2 by simp
+  \<comment> \<open>\<^bold>\<open>Clause 1\<close>: the head argument is a violator (lead gap + @{thm lead_gap_head_violator})\<close>
+  have viol: "\<not> olt ?hb ?X"
+  proof -
+    have "lead (P a ?hb hc) < lead ?hb" using leadgap Xpbc by simp
+    hence "\<not> olt ?hb (P a ?hb hc)" by (rule lead_gap_head_violator)
+    thus ?thesis using Xpbc by simp
+  qed
+  \<comment> \<open>\<^bold>\<open>Clause 2\<close>: \<open>?hb\<close> dominates every \<open>G\<^bsub>0\<^esub>\<close>-critical violator of \<open>?X\<close>.\<close>
+  have clause2: "\<And>g. g \<in> Gterm 0 ?X \<Longrightarrow> \<not> olt g ?X \<Longrightarrow> \<not> olt ?hb g"
+  proof -
+    fix g assume gG: "g \<in> Gterm 0 ?X" and gv: "\<not> olt g ?X"
+    \<comment> \<open>\<^bold>\<open>S_Gviol\<close>: a violator of \<open>?X\<close> lies in \<open>insert ?hb (Gterm 0 ?hb)\<close> (no \<^emph>\<open>new\<close> tail).\<close>
+    have gin: "g \<in> insert ?hb (Gterm 0 ?hb)" by (rule SGv[OF gG gv])
+    show "\<not> olt ?hb g"
+    proof (cases "g = ?hb")
+      case True thus ?thesis using olt_irrefl by simp
+    next
+      case False
+      hence gGhb: "g \<in> Gterm 0 ?hb" using gin by blast
+      \<comment> \<open>\<open>g\<close> is \<open><\<^sub>o ?hb\<close>: lead trichotomy.  \<open>>\<close> ruled out by F2+G1, \<open><\<close> = green, \<open>=\<close> = tied residual.\<close>
+      have lge: "lead g \<le> lead ?hb"
+      proof -
+        have "g \<in> Gterm 0 (P a ?hb hc)" using gGhb Gterm0_harg_subset[of ?hb a hc] by blast
+        hence "g \<in> Gterm 0 ?X" using Xpbc by simp
+        hence "maxsub g \<le> maxsub ?X" by (rule maxsub_Gterm_le)
+        hence "lead g \<le> maxsub ?X" using lead_le_maxsub[of g] by simp
+        thus ?thesis using F2 by simp
+      qed
+      have "olt g ?hb"
+      proof (cases "lead g < lead ?hb")
+        case True
+        \<comment> \<open>\<^bold>\<open>NON-TIED\<close> (green): subscript-first\<close>
+        have hbne: "?hb \<noteq> Z" using Xpbc viol ne by (cases ?hb) auto
+        show ?thesis by (rule nontied_lt_head[OF hbne True])
+      next
+        case False
+        have tied: "lead g = lead ?hb" using lge False by simp
+        \<comment> \<open>\<^bold>\<open>TIED residual\<close> (the sharp tied-critical \<section>1 \<open>sorry\<close>)\<close>
+        show ?thesis by (rule tied_crit_lt_hb[OF assms(1,3) gGhb tied])
+      qed
+      thus ?thesis using olt_asym' by blast
+    qed
+  qed
+  show ?thesis using viol clause2 by blast
+qed
 
 text \<open>\<^bold>\<open>Sharp head residual B-lead\<close> \<open>argzone_head_lead_gt\<close> (now \<^emph>\<open>green\<close>): on a firing
   arg-zone image \<open>X = P a hb hc\<close> the head argument has a \<^emph>\<open>strictly larger leading
