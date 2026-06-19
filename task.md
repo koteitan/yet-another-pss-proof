@@ -30,7 +30,7 @@
       - ✅ 単一木補題〔translate_single_tree〕＋局所性〔le0_interval_gt〕
       - ✅ 抽象コア i1=0（正確複製）〔core_i0〕／ i1=1（上昇単一木）〔core_i1〕
       - ✅ oper bad 分岐 → core 接続〔oper_bad_unfold + drop_eq_map_nth + bookkeeping〕
-  - 🎯 **最新(続90)：PSS 停止性 = 純粋 Buchholz §1 発火 wall。構造機械化を全 close。経緯・実測・偽補題は memo 続90へ**
+  - 🎯 **最新(続94)：head 残核を単一 head_arg_0_canonical(proj 0 hb=hb)に統一。BMOCF近道なし確定。経緯は memo 続91-94へ**
     - ✅ sigma_seqlex_mono〔nrm.thy・SIG2〕
     - ✅ 構造的到達性・標準形閉包を全緑化〔tail_zone_ST_PS / suffix_closure_ST_PS / suffix_oper_witness / hasParent_last_ST_PS〕
     - ✅ proj_nrm_argzone_olt〔CORE2 が発火 crux に compositional 分解〕
@@ -39,10 +39,13 @@
     - ✅ proj_step_fire_witness〔FW・witness g'=proj y F〕
     - ✅ argzone_fire_FF / proj_head / fire_transport / head_lead_gt / head_dominates / F_fires / harg_olt〔FF・HEAD・SHAPE〕
     - ✅ wf3_head_violator_lead_gt〔SHAPE・class-free〕
-    - 🚨 argzone_head_maxviol：発火 head=maximal violator・blocker は NT_shape/STS_B〔nrm.thy〕
-    - 🚨 argzone_transport：発火 transport・blocker は NT_shape/STS_B〔nrm.thy〕
-    - 🚨 nrm_argzone_olt：深さ一般統一サイズ帰納が blocker〔nrm.thy〕
-    - 🚨 keeps_head_ST_PS：tied e=y = STS_B〔nrm.thy〕
+    - ✅ argzone_head_maxviol / tied_crit_lt_hb〔head_arg_0_canonical から証明済・続94〕
+    - ✅ maxsub_harg_eq_lead〔class-free・F2+G1〕
+    - 🚨🤖 head_arg_0_canonical：proj 0 hb=hb（head 0-正準性）〔nrm.thy・oper-induct agent〕
+    - 🚨 argz_head_spine：F1lt/F2/S_Gviol maxsub-spine〔nrm.thy〕
+    - 🚨 argzone_transport：発火 transport〔nrm.thy〕
+    - 🚨 nrm_argzone_olt：nrm 単調半〔nrm.thy〕
+    - 🚨 keeps_head_ST_PS：tied e=y〔nrm.thy〕
     - 🚨 oV_mono_NF：意味論同値〔ovnf.thy〕
   - 🗄 §1/psi_proj 路線：live path 外〔term_nec / 1.4 trio / Cset_eq_Cset_c / psi_value_acanon〕
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
