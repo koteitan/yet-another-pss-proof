@@ -2877,13 +2877,71 @@ lemma argz_head_spine:
                           (Gterm 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))))"
   sorry
 
-text \<open>\<^bold>\<open>SHARED RESIDUAL\<close> \<open>tied_crit_lt_hb\<close> (the sharp tied-critical \<section>1 \<open>sorry\<close>, = task
+text \<open>\<^bold>\<open>Green helper\<close> \<open>maxsub_harg_eq_lead\<close>: from the spine fact \<open>F2\<close>
+  (\<open>lead (harg X) = maxsub X\<close>) the head argument's maximal subscript \<^emph>\<open>is\<close> its leading
+  subscript.  Pure structural chain on the green class-free lemmas
+  @{thm [source] maxsub_Gterm_le} (\<open>G1\<close>) and @{thm [source] lead_le_maxsub}:
+  \<open>maxsub (harg X) \<le> maxsub X = lead (harg X) \<le> maxsub (harg X)\<close>.  No \<open>nrm\<close>/\<open>proj\<close>
+  recursion; entailed by the already-deep-verified \<open>F2\<close> (so no fresh numeric gate).\<close>
+
+lemma maxsub_harg_eq_lead:
+  assumes Xpbc: "X = P a (harg X) hc"
+    and F2: "lead (harg X) = maxsub X"
+  shows "maxsub (harg X) = lead (harg X)"
+proof -
+  have hbG: "harg X \<in> Gterm 0 X"
+  proof -
+    have "harg X \<in> Gterm 0 (P a (harg X) hc)" by simp
+    thus ?thesis using Xpbc by simp
+  qed
+  have le1: "maxsub (harg X) \<le> maxsub X" by (rule maxsub_Gterm_le[OF hbG])
+  have le2: "lead (harg X) \<le> maxsub (harg X)" by (rule lead_le_maxsub)
+  show ?thesis using le1 le2 F2 by simp
+qed
+
+text \<open>\<^bold>\<open>SHARP RESIDUAL\<close> \<open>head_arg_0_canonical\<close> (the single irreducible \<section>1 collapse
+  \<open>sorry\<close>, = the head-arg-0-canonical proposition of \<open>head-arg-0-canonical.md\<close>): on a
+  \<^emph>\<open>firing\<close> arg-zone image \<open>X\<close>, the head argument \<open>hb = harg X\<close> is itself
+  \<open>0\<close>-\<^emph>\<open>canonical\<close> \<dash> it does not fire under \<open>proj 0\<close> (\<open>proj 0 hb = hb\<close>).
+
+  \<^bold>\<open>Why this is the sharp form\<close>: it factors \<^bold>\<open>both\<close> the tied and the non-tied parts of
+  \<open>hb\<close>-0-stability into one fact.  Indeed @{thm [source] proj_G} gives, for \<^emph>\<open>any\<close> term,
+  \<open>\<forall>g \<in> Gterm 0 (proj 0 hb). olt g (proj 0 hb)\<close>; substituting \<open>proj 0 hb = hb\<close>
+  yields \<open>\<forall>g \<in> Gterm 0 hb. olt g hb\<close> outright \<dash> the full \<open>HB0\<close> conclusion, tied lead
+  included.  So \<open>tied_crit_lt_hb\<close> is now \<^bold>\<open>proved\<close> below from this single residual.
+
+  \<^bold>\<open>Soundness gate\<close>: \<^bold>\<open>266545 firing arg-zone images / 0\<close> with \<open>proj 0 hb \<noteq> hb\<close>
+  (\<open>tools/probe_tied_inv3.py\<close> INV-PROJ0, over the deep closure of \<^bold>\<open>1 013 172\<close> ST terms /
+  closure+5).  \<^bold>\<open>Class-essential\<close>: \<^bold>\<open>FALSE\<close> on a general \<open>wf3\<close> term with
+  \<open>maxsub hb = lead hb\<close> \<dash> the witness \<open>hb = D\<^bsub>2\<^esub>(D\<^bsub>1\<^esub>(D\<^bsub>2\<^esub>(D\<^bsub>2\<^esub>(0)+D\<^bsub>2\<^esub>(0)+D\<^bsub>2\<^esub>(0))))\<close>
+  has \<open>wf3 hb\<close>, \<open>maxsub hb = lead hb = 2\<close> and \<open>proj 0 hb \<noteq> hb\<close> (the tied critical
+  \<open>D\<^bsub>2\<^esub>(D\<^bsub>2\<^esub>(0)+D\<^bsub>2\<^esub>(0)+D\<^bsub>2\<^esub>(0))\<close> buried under \<open>D\<^bsub>1\<^esub>\<close> is \<open>\<ge>\<^sub>o hb\<close>,
+  \<open>tools/probe_tied_inv3.py\<close> cex INV-PROJ0 = False).  Numerically, \<^emph>\<open>no\<close> local
+  structural invariant of \<open>hb\<close> provable from \<open>wf3 + maxsub = lead\<close> separates the real
+  \<open>hb\<close> from this witness: every candidate (INV-TOP / INV-ARGLEAD / INV-D0LEAD /
+  INV-PROJL) is either FALSE on real \<open>hb\<close> or TRUE on the witness
+  (\<open>probe_tied_inv.py\<close>, \<open>probe_tied_inv2.py\<close>, \<open>probe_tied_inv3.py\<close>); the genuine
+  content is exactly this 0-canonicity, which rests on the \<open>nrm\<close>/\<open>translate\<close>
+  standard-form structure of the image, not on \<open>wf3\<close> alone.  \<^bold>\<open>Localized \<open>sorry\<close>\<close>.\<close>
+
+lemma head_arg_0_canonical:
+  assumes "(0, y) # r \<in> ST_PS"
+    and "proj 0 (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))
+           \<noteq> nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))"
+  shows "proj 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))
+            = harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))"
+  sorry
+
+text \<open>\<^bold>\<open>SHARED RESIDUAL\<close> \<open>tied_crit_lt_hb\<close> (the sharp tied-critical \<section>1 fact, = task
   ``S3'' restricted to the tied lead): on a firing arg-zone image, a \<open>G\<^bsub>0\<^esub>\<close>-critical
   \<open>g\<close> of the head argument \<open>hb = harg X\<close> with the \<^emph>\<open>tied\<close> leading subscript
   \<open>lead g = lead hb\<close> is \<open><\<^sub>o hb\<close> (\<open>hb\<close> dominates its own tied \<open>G\<^bsub>0\<^esub>\<close>-spine).  This is the
-  irreducible tied-critical content of \<open>hb\<close>-0-stability (\<open>probe_argz_infra.py\<close> TIED /
-  HB0, 513459 tied criticals / \<^bold>\<open>0\<close> failures).  \<^bold>\<open>Localized \<open>sorry\<close>\<close> \<dash> second of the two
-  sharp residuals; the non-tied lead case is green via @{thm [source] nontied_lt_head}.\<close>
+  tied-critical content of \<open>hb\<close>-0-stability (\<open>probe_argz_infra.py\<close> TIED / HB0, 513459
+  tied criticals / \<^bold>\<open>0\<close> failures).  \<^bold>\<open>Now proved\<close> (no longer a \<open>sorry\<close>) from the single
+  sharper residual @{thm [source] head_arg_0_canonical} via the green
+  @{thm [source] proj_G}: \<open>proj 0 hb = hb\<close> makes \<open>proj_G\<close> read \<open>\<forall>g \<in> Gterm 0 hb.
+  olt g hb\<close>, which covers the tied case (and every other) directly; the \<open>tied\<close> and
+  \<open>lead g\<close> hypotheses are not even needed.\<close>
 
 lemma tied_crit_lt_hb:
   assumes "(0, y) # r \<in> ST_PS"
@@ -2892,7 +2950,13 @@ lemma tied_crit_lt_hb:
     and "g \<in> Gterm 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))"
     and "lead g = lead (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))"
   shows "olt g (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r))))"
-  sorry
+proof -
+  let ?hb = "harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) r)))"
+  have can: "proj 0 ?hb = ?hb" by (rule head_arg_0_canonical[OF assms(1,2)])
+  have "\<forall>g \<in> Gterm 0 (proj 0 ?hb). olt g (proj 0 ?hb)" by (rule proj_G)
+  hence "\<forall>g \<in> Gterm 0 ?hb. olt g ?hb" using can by simp
+  thus ?thesis using assms(3) by blast
+qed
 
 text \<open>\<^bold>\<open>Consolidated head residual\<close> \<open>argzone_head_maxviol\<close> (\<^bold>\<open>the single \<section>1 head
   fact\<close>), now \<^bold>\<open>proven\<close> from the two sharp residuals above: on a firing arg-zone image
