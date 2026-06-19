@@ -315,4 +315,43 @@ theorem Gset_gen_subeps {u w : ℕ} {η : Ordinal.{v}} (hlt : η < psiSelf η w)
 /- `subA_nm_collapse_of_noRealizer` lives in `Residue.lean` (it consumes only §1
 machinery, not the C-rank, and `Residue` is imported by — so cannot import — `Crank`). -/
 
+/-! ### SET-MEMBERSHIP framing of the deep generator — DECISIVELY closed (2026-06-20k)
+
+The distinct set-membership path: `C_u(c)` is a closure that CAN contain ordinals `≥ c` as
+set members, so a `u`-canonical `ξ' ∈ [c,η)` (ordinally `≥ c`) might be `∈ C_u(c)`, firing
+`ψ_u ξ' ∈ C_u(c)` directly (membership, not value-bound, not `ξ' < c` firing).  **Verdict:
+it does NOT hold — cleanly (via Lemma 1.5), not circularly.**
+
+`deepgen_arg_not_mem`: a `u`-canonical `ξ' ≥ c` with `ξ' < Ω_{u+1}` is NOT in `C_u(c)`
+(when `c` is `u`-non-canonical).  Reason: Lemma 1.5 (`CsetSelf_lt_psiSelf_of_lt_Om`) forces
+any `C_u(c)`-member `< Ω_{u+1}` to be `< ψ_u c`; but `ψ_u c ≤ c ≤ ξ'` gives `ξ' ≥ ψ_u c`,
+contradiction.  So the deep-generator arg is NOT a closure member — the membership path
+cannot fire it.  And the deep-generator VALUE `δ = ψ_u ξ'` itself: `ξ' ≥ c ⟹ ψ_u ξ' ≥ ψ_u c`
+(mono), so `δ ≥ ψ_u c`, hence `δ ∉ C_u(c)` too (1.5).  Thus `δ < c` but `δ ∉ C_u(c)`: the
+downward-saturation FAILS at the deep generator UNLESS no such `δ` exists (= the fixpoint).
+`fixpoint ⟺ no-deep-gen ⟺ saturation` — the set-membership framing reduces to the SAME
+value-identity core, cleanly.  No separate escape. -/
+theorem deepgen_arg_not_mem {c ξ' : Ordinal.{u}} {u : ℕ}
+    (hcanon_c : c ∉ CsetSelf (psiResSelf c) c u)
+    (hcξ' : c ≤ ξ') (hband : ξ' < Om (u+1)) :
+    ξ' ∉ CsetSelf (psiResSelf c) c u := by
+  intro hmem
+  have hlt : ξ' < psiSelf c u := CsetSelf_lt_psiSelf_of_lt_Om hmem hband
+  have hpc : psiSelf c u ≤ c := psiSelf_le_self_of_not_canon hcanon_c
+  exact absurd (lt_of_lt_of_le hlt (le_trans hpc hcξ')) (lt_irrefl _)
+
+/-- **The deep-generator VALUE is not a closure member either** (GREEN, the saturation-fails
+witness).  `δ = ψ^s_u ξ'` with `ξ' ≥ c` has `δ ≥ ψ^s_u c` (mono), so by Lemma 1.5
+`δ ∉ C^s_u(c)` (when `δ < Ω_{u+1}`) — even though `δ < c` is possible.  So downward-saturation
+of `C^s_u(c)` FAILS at the deep generator unless no such `δ` exists (the fixpoint).  This
+confirms the set-membership framing reduces to the value-identity core. -/
+theorem deepgen_value_not_mem {c ξ' : Ordinal.{u}} {u : ℕ}
+    (hcanon_c : c ∉ CsetSelf (psiResSelf c) c u)
+    (hcξ' : c ≤ ξ') :
+    psiSelf ξ' u ∉ CsetSelf (psiResSelf c) c u := by
+  intro hmem
+  have hlt : psiSelf ξ' u < psiSelf c u :=
+    CsetSelf_lt_psiSelf_of_lt_Om hmem (psiSelf_lt_Om_succ ξ' u)
+  exact absurd (psiSelf_mono_arg hcξ' u) (not_le.2 hlt)
+
 end YAPSS
