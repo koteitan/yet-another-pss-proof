@@ -57,6 +57,32 @@ $$\boxed{\ \forall X\in\mathcal N.\quad \mathrm{proj}_0(X)\neq X\ \Longrightarro
 
 BMOCF/行列 `parent_index`(=`≤_M`)への輸送は subscript shear で壁を**移すだけ**（行列部分列の正規化は fresh context で別物、bridge_probe 3988/0）。本道は `tied_crit_lt_hb` の **木内部 pure-lex 構文帰納**。
 
+## Isabelle 現状（続94, 5dabe46）
+本命題は `ord/nrm.thy` の **`head_arg_0_canonical`**（`proj 0 hb = hb`、live sorry, nrm.thy:2927）として live。
+`tied_crit_lt_hb` はこれから `proj_G` 経由で**証明済**（tied/非tied 両 subsume）。緑 `maxsub_harg_eq_lead`。
+深層 0/266545（closure+5）、wf3 witness `D2(D1(D2(D2(0)+D2(0)+D2(0))))` で **class-essential**（wf3 だけでは偽）。
+
+## 証明戦略の探索結果（続94・このセッションで確定した地図）
+**目標**: 発火 arg-zone 像 `X = NT(W) = P 1 hb hc`（`lead X=1` deep 0/779999）について `proj 0 hb = hb`。
+
+**死んだ近道（深層で反証・再探索無用）**:
+- ❌ S1「X 単一主項」4/266594・SP「hb 単一主項」14955/779999・I1「hb に D_0 なし」87%偽。
+- ❌ Lemma A `wf3 t ∧ maxsub t=lead t ⟹ proj 0 t=t` 11315/100000偽（`D2(D1(D2(D2(0)×3)))`）。
+- ❌ Lemma L「tied-lead later-suffix <o earlier-suffix」2.2M/22M偽。suffix-ordering 単独は lever でない。
+- ❌ BMOCF/行列 parent_index 輸送（subscript shear で relocate のみ）。
+
+**真の構造事実（deep-verified, 危険域 266k 超え）**:
+- `lead hb = maxsub X` ⟹ `maxsub hb = lead hb`（緑 `maxsub_harg_eq_lead`）。tied critical は lead = hb の最大添字。
+- tied G_0-critical `g = NT(W[i:])`（suffix, 0/513459）、`hb = NT(W[i0:])`（0/8354）。← FACT だが lever でない（criticality 本質）。
+- wf3 不足の根: tied critical が `D_0` 下に埋もれ `Gterm k hb` に入らない（`hb=D_k(D_0(g))`）。標準形の suffix=oper コピー構造が本質。
+
+**最有力ルート = ST_PS.induct（oper-step 帰納）**:
+- `proj 0 hb = hb` は項性質に還元不能（agent 確認: 十分な不変量は 0-canonicity 自身と同強度）⟹ 標準形導出を使う必要。
+- oper-step: `hb(M[n])` は `hb(M)` の最深部（bad part）を oper コピー（添字 decrement・n 重）で展開したもの（`hbN <o hbM`、probe_oper_hb.py）。
+- ⟹ 攻め方: 「proj 0 hb(M)=hb(M)」を ST_PS.induct で。diag base 自明、oper step は bad-part-copy が 0-canonicity を保存することを示す。
+  保存の鍵 = oper コピーの添字 decrement が `Gterm 0` 違反子を作らない（コピーは「より早い」=`<o` 子孫）。NT_prefix_lt（緑）系の段階性。
+- 代替 route(a): 意味論 `psi_value_acanon`（27check 浅・要大順序数モデル・off-path）。
+
 ## 備考
 
 - **同値な形（最大違反子）**:$\ \forall g.\ g\in G_0(X)\ \land\ \lnot(g<X)\ \Longrightarrow\ \lnot(\mathrm{harg}\,X<g)$（$\mathrm{harg}\,X$ は $X$ の $0$-違反子のうち $<$-最大）。
