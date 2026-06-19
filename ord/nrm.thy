@@ -2521,6 +2521,25 @@ proof -
   thus ?thesis unfolding M_def entry_def by simp
 qed
 
+text \<open>\<^bold>\<open>Standard-form head is \<open>(0,0)\<close>\<close> \<open>ST_PS_head_00\<close> (green): every \<open>M \<in> ST_PS\<close>
+  is nonempty with head pair \<open>(0,0)\<close>, hence \<open>M = (0,0) # tl M\<close>.  Combines
+  @{thm [source] ST_PS_nonempty}, @{thm [source] head_row0_ST_PS} (row-0 head \<open>= 0\<close>) and
+  the floor invariant @{thm [source] row0_zero_imp_row1_zero_ST_PS} (row-1 head \<open>= 0\<close>).\<close>
+
+lemma ST_PS_head_00:
+  assumes "M \<in> ST_PS"
+  shows "M = (0, 0) # tl M"
+proof -
+  have ne: "M \<noteq> []" by (rule ST_PS_nonempty[OF assms])
+  have f0: "fst (hd M) = 0" by (rule head_row0_ST_PS[OF assms ne])
+  have e00: "entry M 0 0 = 0" using ne f0 by (simp add: entry_def hd_conv_nth)
+  have e10: "entry M 1 0 = 0"
+    using row0_zero_imp_row1_zero_ST_PS[OF assms, of 0] ne e00 by simp
+  have "snd (hd M) = 0" using ne e10 by (simp add: entry_def hd_conv_nth)
+  hence "hd M = (0, 0)" using f0 by (cases "hd M") simp
+  thus ?thesis using ne by (cases M) auto
+qed
+
 text \<open>\<^bold>\<open>ST arg-zone value bound\<close> \<open>argzone_val_ge\<close>: in a standard form \<open>(0,y)#r\<close>
   every value \<open>v\<close> of the argument zone is \<open>\<ge> y\<close>.  Since the head value is forced
   to \<open>0\<close> (@{thm [source] ST_PS_head_val_zero}), \<open>y = 0 \<le> v\<close> holds for the natural
@@ -3081,6 +3100,130 @@ text \<open>\<^bold>\<open>SOUNDNESS NOTE\<close> (agent-a139, deep recheck clos
   INV-PROJ0 = \<open>266545 / 0\<close> over the same closure+5.  Hence the \<open>ST_PS.induct\<close> route below carries
   the firing hypothesis on the (final) image at every node.\<close>
 
+subsection \<open>Head-argument canonicity bridge (green structural infrastructure)\<close>
+
+text \<open>\<^bold>\<open>\<open>proj\<close> is idempotent\<close> (green, class-free): \<open>proj u (proj u b) = proj u b\<close>.
+  The output of one projection is \<open>u\<close>-canonical by @{thm [source] proj_G}, hence a
+  fixpoint of \<open>proj u\<close> by @{thm [source] proj_eq_iff_dom}.\<close>
+
+lemma proj_idem: "proj u (proj u b) = proj u b"
+proof -
+  have "\<forall>g \<in> Gterm u (proj u b). olt g (proj u b)" by (rule proj_G)
+  thus ?thesis by (simp add: proj_eq_iff_dom)
+qed
+
+text \<open>\<^bold>\<open>Head argument of an \<open>ins\<close>\<close> (green): the head argument of \<open>ins a B T\<close> is
+  either the inserted argument \<open>B\<close> (with head subscript \<open>a\<close>), or the head argument of
+  \<open>T\<close> (with head subscript \<open>lead T\<close>) \<dash> the latter only when \<open>T\<close> absorbs \<open>B\<close> into its
+  own head.  Pure case split on @{const ins}.\<close>
+
+lemma harg_lead_ins:
+  "(harg (ins a B T) = B \<and> lead (ins a B T) = a)
+   \<or> (harg (ins a B T) = harg T \<and> lead (ins a B T) = lead T \<and> T \<noteq> Z)"
+proof (cases T)
+  case Z thus ?thesis by simp
+next
+  case (P e f g)
+  show ?thesis
+  proof (cases "a < e \<or> (a = e \<and> olt B f)")
+    case True thus ?thesis using P by simp
+  next
+    case False thus ?thesis using P by simp
+  qed
+qed
+
+text \<open>\<^bold>\<open>General head a-canonicity of \<open>nrm\<close> outputs\<close> (green, the structural bridge):
+  for \<^emph>\<open>any\<close> term \<open>t\<close>, if \<open>nrm t = P a hb hc\<close> then the head argument \<open>hb\<close> is canonical
+  at its own head subscript \<open>a\<close> (\<open>proj a hb = hb\<close>).  This is the \<open>nrm\<close>-side standard-form
+  fact behind head-argument 0-stability: every head argument produced by \<open>nrm\<close> is a
+  projection output (\<open>proj a' (nrm b')\<close> for the immediate principal, or, when the head is
+  absorbed from the tail, recursively the head argument of \<open>nrm c'\<close>), hence a fixpoint of
+  \<open>proj\<close> at its own subscript.  Proof by structural induction on \<open>t\<close> through
+  @{thm [source] harg_lead_ins} and @{thm [source] proj_idem}.  Deeply verified:
+  \<^bold>\<open>0\<close> failures on 776 distinct \<open>nrm\<close>-output subterms (\<open>tools/probe_nrm_head_acanon.py\<close>,
+  closure+ of the ST_PS deep enumeration).\<close>
+
+lemma nrm_head_acanon:
+  "nrm t = P a hb hc \<Longrightarrow> proj a hb = hb"
+proof (induction t arbitrary: a hb hc)
+  case Z thus ?case by simp
+next
+  case (P a' b' c')
+  \<comment> \<open>\<open>nrm (P a' b' c') = ins a' (proj a' (nrm b')) (nrm c')\<close>\<close>
+  let ?B = "proj a' (nrm b')"
+  have nrmP: "nrm (P a' b' c') = ins a' ?B (nrm c')" by simp
+  from harg_lead_ins[of a' ?B "nrm c'"]
+  consider (head) "harg (ins a' ?B (nrm c')) = ?B \<and> lead (ins a' ?B (nrm c')) = a'"
+    | (tail) "harg (ins a' ?B (nrm c')) = harg (nrm c')
+              \<and> lead (ins a' ?B (nrm c')) = lead (nrm c') \<and> nrm c' \<noteq> Z"
+    by blast
+  thus ?case
+  proof cases
+    case head
+    \<comment> \<open>head argument is the inserted \<open>proj a' (nrm b')\<close>, subscript \<open>a'\<close>; \<open>proj\<close>-idempotent.\<close>
+    have ha: "hb = ?B" using head P.prems nrmP by simp
+    have aa: "a = a'" using head P.prems nrmP by simp
+    show ?thesis using ha aa proj_idem[of a' "nrm b'"] by simp
+  next
+    case tail
+    \<comment> \<open>head argument absorbed from the tail \<open>nrm c'\<close>; apply the IH on \<open>c'\<close>.\<close>
+    obtain e f g where ec: "nrm c' = P e f g" using tail by (cases "nrm c'") auto
+    have ha: "hb = harg (nrm c')" using tail P.prems nrmP by simp
+    have aa: "a = lead (nrm c')" using tail P.prems nrmP by simp
+    have "harg (nrm c') = f" and "lead (nrm c') = e" using ec by simp_all
+    hence "nrm c' = P a hb g" using ha aa ec by simp
+    thus ?thesis by (rule P.IH(2))
+  qed
+qed
+
+text \<open>\<^bold>\<open>Head-canonicity \<open>+\<close> lead gap reduce 0-canonicity to the buried-tied residual\<close>
+  (green reduction): if the head argument \<open>hb\<close> of a \<open>nrm\<close>-output principal
+  \<open>X = P a hb hc\<close> is canonical at \<open>a\<close> (\<open>proj a hb = hb\<close>, from
+  @{thm [source] nrm_head_acanon}) and the lead gap \<open>a < lead hb\<close> holds (from the green
+  \<open>argzone_head_lead_gt\<close>, below), then \<open>proj 0 hb = hb\<close> follows \<^bold>\<open>provided\<close>
+  every \<open>G\<^bsub>0\<^esub>\<close>-critical \<open>g\<close> of \<open>hb\<close> that lies \<^emph>\<open>outside\<close> \<open>G\<^bsub>a\<^esub>(hb)\<close> and is \<^emph>\<open>tied\<close>
+  (\<open>lead g = lead hb\<close>) is \<open><\<^sub>o hb\<close> (the \<open>BURIED\<close> residual).  Indeed every \<open>G\<^bsub>0\<^esub>\<close>-critical
+  splits three ways: those in \<open>G\<^bsub>a\<^esub>(hb)\<close> are \<open><\<^sub>o hb\<close> by \<open>a\<close>-canonicity
+  (@{thm [source] proj_eq_iff_dom}); those outside with \<open>lead g < lead hb\<close> are \<open><\<^sub>o hb\<close>
+  by @{thm [source] nontied_lt_head}; the remaining outside-and-tied ones are exactly
+  \<open>BURIED\<close>.  \<^bold>\<open>Numerically\<close> (\<open>tools/probe_tied_in_Ga.py\<close>, 1812 firing images): \<open>a\<close>-canonicity
+  alone kills \<^bold>\<open>3997 / 4833\<close> tied criticals; the \<open>BURIED\<close> residual is the remaining
+  \<^bold>\<open>836\<close> (all under a sub-\<open>a\<close> \<open>D\<^bsub>0\<^esub>\<close> copy-block, the \<section>6.7 oper structure).  This sharpens
+  the irreducible residual from ``all tied criticals'' to ``tied criticals buried under a
+  \<open>D\<^bsub>0\<^esub>\<close>''.\<close>
+
+lemma acanon_leadgap_0canon:
+  assumes acanon: "proj a hb = hb"
+    and gap: "a < lead hb"
+    and buried: "\<And>g. g \<in> Gterm 0 hb \<Longrightarrow> g \<notin> Gterm a hb \<Longrightarrow> lead hb \<le> lead g
+                   \<Longrightarrow> olt g hb"
+  shows "proj 0 hb = hb"
+proof -
+  have hbne: "hb \<noteq> Z" using gap by (cases hb) auto
+  have ac: "\<forall>g \<in> Gterm a hb. olt g hb" using acanon proj_eq_iff_dom by blast
+  have "\<forall>g \<in> Gterm 0 hb. olt g hb"
+  proof
+    fix g assume g0: "g \<in> Gterm 0 hb"
+    show "olt g hb"
+    proof (cases "g \<in> Gterm a hb")
+      case True thus ?thesis using ac by blast
+    next
+      case notGa: False
+      show ?thesis
+      proof (cases "lead g < lead hb")
+        case True thus ?thesis by (rule nontied_lt_head[OF hbne])
+      next
+        case False
+        \<comment> \<open>\<open>lead g \<ge> lead hb\<close>: the \<open>BURIED\<close> residual (a \<open>G\<^bsub>0\<^esub>\<close>-critical outside
+           \<open>G\<^bsub>a\<^esub>(hb)\<close> with subscript \<open>\<ge> lead hb\<close> \<dash> buried under a sub-\<open>a\<close> \<open>D\<^bsub>0\<^esub>\<close>).\<close>
+        have "lead hb \<le> lead g" using False by simp
+        thus ?thesis by (rule buried[OF g0 notGa])
+      qed
+    qed
+  qed
+  thus ?thesis by (simp add: proj_eq_iff_dom)
+qed
+
 text \<open>\<^bold>\<open>SHARP RESIDUAL (oper step)\<close> \<open>head_arg_0_canonical_oper\<close>: the \<^emph>\<open>single\<close>
   irreducible Buchholz \<section>1 collapse fact, isolated to the \<open>oper\<close> branch of the
   \<open>ST_PS.induct\<close>.  After one fundamental-sequence expansion \<open>N \<mapsto> N[n]\<close> (\<open>n \<ge> 1\<close>), on a
@@ -3094,7 +3237,18 @@ text \<open>\<^bold>\<open>SHARP RESIDUAL (oper step)\<close> \<open>head_arg_0_
   copy-block, not on \<open>wf3\<close> alone, and cannot be reduced to a term-local invariant.
   \<^bold>\<open>Localized \<open>sorry\<close>\<close>.  (The IH on \<open>N\<close> is carried for completeness; the conclusion is in fact
   true of \<^emph>\<open>any\<close> firing standard-form image, which is why no IH chaining is required to make
-  the statement sound.)\<close>
+  the statement sound.)
+
+  \<^bold>\<open>SHARPENED (this session)\<close>: the residual is no longer the whole \<open>proj 0 hb = hb\<close>.
+  Using the green bridge @{thm [source] nrm_head_acanon} (head a-canonicity of \<open>nrm\<close>
+  outputs), the spine lead gap (F1lt+F2 of @{thm [source] argz_head_spine}) and
+  @{thm [source] acanon_leadgap_0canon}, the proof reduces 0-canonicity to the single
+  \<^bold>\<open>BURIED-tied\<close> sub-claim: a \<open>G\<^bsub>0\<^esub>\<close>-critical \<open>g\<close> of \<open>hb\<close> \<^emph>\<open>outside\<close> \<open>G\<^bsub>a\<^esub>(hb)\<close>
+  (\<open>a = lead X\<close>) with \<open>lead g \<ge> lead hb\<close> is \<open><\<^sub>o hb\<close>.  This is the genuine \<section>6.7
+  copy-block core: numerically a-canonicity alone discharges \<^bold>\<open>3997 / 4833\<close> tied
+  criticals; only \<^bold>\<open>836\<close> (those buried under a sub-\<open>a\<close> \<open>D\<^bsub>0\<^esub>\<close>) remain
+  (\<open>tools/probe_tied_in_Ga.py\<close>, 1812 firing images, 0 failures; all residual \<open>g\<close> in fact
+  have \<open>lead g = lead hb\<close>).\<close>
 
 lemma head_arg_0_canonical_oper:
   assumes "N \<in> ST_PS"
@@ -3109,7 +3263,65 @@ lemma head_arg_0_canonical_oper:
                = harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl N))))"
   shows "proj 0 (harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl (oper N n))))))
             = harg (nrm (translate (takeWhile (\<lambda>q. 0 < fst q) (tl (oper N n)))))"
-  sorry
+proof -
+  define M where "M = oper N n"
+  define r where "r = tl M"
+  let ?aM = "takeWhile (\<lambda>q. 0 < fst q) r"
+  let ?X = "nrm (translate ?aM)"
+  let ?hb = "harg ?X"
+  \<comment> \<open>\<open>M = oper N n \<in> ST_PS\<close>, and standard forms start with \<open>(0,0)\<close>.\<close>
+  have MST: "M \<in> ST_PS" unfolding M_def using ST_PS.oper[OF assms(1,2)] .
+  have Mhd: "M = (0, 0) # r" unfolding r_def using ST_PS_head_00[OF MST] .
+  hence ST0: "(0, 0) # r \<in> ST_PS" using MST by simp
+  \<comment> \<open>arg-zone value floor (\<open>y = 0\<close>, trivial).\<close>
+  have floor: "\<forall>q \<in> set ?aM. (0::nat) \<le> snd q" by simp
+  \<comment> \<open>firing hypothesis transported to the \<open>r\<close> form.\<close>
+  have fire: "proj 0 ?X \<noteq> ?X"
+    using assms(3) unfolding M_def[symmetric] r_def[symmetric] .
+  \<comment> \<open>firing forces \<open>?X = P a ?hb hc\<close>.\<close>
+  have ne: "?X \<noteq> Z"
+  proof
+    assume "?X = Z"
+    hence "proj 0 ?X = ?X" using proj_id by simp
+    thus False using fire by simp
+  qed
+  obtain a hc where Xpbc: "?X = P a ?hb hc" using ne by (cases ?X) auto
+  \<comment> \<open>\<^bold>\<open>Lead gap\<close> from the (independent, pre-residual) spine levers F1lt + F2 of
+     @{thm [source] argz_head_spine}: \<open>lead ?X < maxsub ?X = lead ?hb\<close>.\<close>
+  have spine: "lead ?X < maxsub ?X \<and> lead ?hb = maxsub ?X
+       \<and> (\<forall>g. g \<in> Gterm 0 ?X \<longrightarrow> \<not> olt g ?X \<longrightarrow> g \<in> insert ?hb (Gterm 0 ?hb))"
+    by (rule argz_head_spine[OF ST0 floor fire])
+  have gap: "a < lead ?hb"
+  proof -
+    have F1lt: "lead ?X < maxsub ?X" using spine by blast
+    have F2: "lead ?hb = maxsub ?X" using spine by blast
+    have lX: "lead ?X = a" by (subst Xpbc) simp
+    show ?thesis using F1lt F2 lX by linarith
+  qed
+  \<comment> \<open>\<^bold>\<open>Head a-canonicity\<close> (green) from @{thm [source] nrm_head_acanon}: \<open>proj a ?hb = ?hb\<close>.\<close>
+  have acanon: "proj a ?hb = ?hb"
+    by (rule nrm_head_acanon[where t = "translate ?aM"], rule Xpbc)
+  \<comment> \<open>\<^bold>\<open>Bridge\<close>: a-canonicity + lead gap reduce 0-canonicity to the \<open>BURIED\<close>-tied residual
+     (@{thm [source] acanon_leadgap_0canon}).\<close>
+  have can: "proj 0 ?hb = ?hb"
+  proof (rule acanon_leadgap_0canon[OF acanon gap])
+    fix g
+    assume g0: "g \<in> Gterm 0 ?hb" and notGa: "g \<notin> Gterm a ?hb" and lge: "lead ?hb \<le> lead g"
+    \<comment> \<open>\<^bold>\<open>SHARP RESIDUAL (BURIED-tied)\<close>: a \<open>G\<^bsub>0\<^esub>\<close>-critical of \<open>?hb\<close> lying \<^emph>\<open>outside\<close>
+       \<open>G\<^bsub>a\<^esub>(?hb)\<close> with subscript \<open>\<ge> lead ?hb\<close> \<dash> i.e. buried under a sub-\<open>a\<close> \<open>D\<^bsub>0\<^esub>\<close>
+       copy-block (the \<section>6.7 oper structure) \<dash> is \<open><\<^sub>o ?hb\<close>.  Numerically the genuine
+       836-case residual after a-canonicity (\<open>tools/probe_tied_in_Ga.py\<close>, 1812 firing
+       images, 0 failures; all such \<open>g\<close> satisfy \<open>lead g = lead ?hb\<close>).  \<^bold>\<open>Deeper structure\<close>
+       (\<open>tools/probe_buried_struct.py\<close>, 836/836): every such \<open>g\<close> in fact lies in
+       \<open>Gterm 0 (harg ?hb)\<close> \<dash> a \<open>G\<^bsub>0\<^esub>\<close>-critical \<^emph>\<open>one level deeper\<close>, under the head
+       argument of \<open>?hb\<close>; the residual is thus genuinely recursive (a self-similar copy
+       of the same head-0-canonicity one depth down), which is why no \<^emph>\<open>non\<close>-recursive
+       term-local lever discharges it.  \<^bold>\<open>Localized \<open>sorry\<close>\<close>.\<close>
+    show "olt g ?hb" sorry
+  qed
+  show ?thesis
+    unfolding M_def[symmetric] r_def[symmetric] using can .
+qed
 
 text \<open>\<^bold>\<open>Standard-form head 0-canonicity\<close> (the \<open>ST_PS\<close> form, by \<open>ST_PS.induct\<close>): every
   \<^emph>\<open>firing\<close> standard-form image has a \<open>0\<close>-canonical head argument.  \<open>diag\<close> base is green
