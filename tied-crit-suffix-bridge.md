@@ -14,13 +14,12 @@
 - **(S-hb)** `hb = NT(W[i0:])` なる suffix start `i0` が存在。 〔probe_suffix_chain 8354/8354〕
 - **(S-crit)** tied G_0-critical `g = NT(W[i:])` なる `i (>i0)` が存在。 〔probe_infix_deep H_suffix 0/513459〕
 
-## bridge を閉じる順序補題（要・深層検証中 = probe_tied_suffix_order, Lemma L）
-- **(L)** 標準ホスト内 `i0<i` で `lead(NT W[i0:]) = lead(NT W[i:]) = k ⟹ olt (NT W[i:]) (NT W[i0:])`。
-  「tied-lead の later-suffix は earlier-suffix より `<o`」。
-
-## 導出（L が真なら）
-`g`（tied G_0-crit, lead g=lead hb=k）について、(S-crit) で `g=NT(W[i:])`、(S-hb) で `hb=NT(W[i0:])`、`i>i0`、
-lead 一致（共に k）。(L) より `olt g hb`。∎ ⟹ `tied_crit_lt_hb` 緑、残核は `argz_head_spine` のみに。
+## bridge を閉じる順序補題（Lemma L）→ ❌ 偽と判明
+- **(L)** 標準ホスト内 `i0<i` で tied-lead `⟹ olt (NT W[i:]) (NT W[i0:])`。
+  🔴 **偽**（probe_tied_suffix_order 2241351/21982363 fail）。tied-lead suffix 一般では成立しない
+  （等しいケース・非subterm関係で破れる）。tied critical に限ると `olt g hb` は真だが = target そのもの。
+  ⟹ **suffix-ordering 単独はレバーにならず。criticality（g が hb の G_0-subterm）が本質**。suffix 特性化は
+  真の FACT だが closing lever を与えない。次は criticality+標準構造を直接使う route か別 obligation。
 
 ## なぜ wf3 では届かないか（class-essential の根）
 tied critical `g`（lead k）は `D_0` 等の低添字主項の下に埋もれ得て `Gterm k hb` に入らない
