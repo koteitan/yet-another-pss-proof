@@ -288,4 +288,65 @@ theorem Gset_gen {u w : ℕ} {ξ γ : Ordinal.{v}} (hpr : Ordinal.IsPrincipal (�
   obtain ⟨hwval, hceq⟩ := psiSelf_rep_unique spec.1 heq spec.2.2 hξc
   rw [hceq, hwval]
 
+/-! ### [D\'] Lemma 1.9 sub-ε generator + the no-realizer reduction of the collapse
+
+`Gset` faithfully reads the canonical generator structure precisely WHERE the canonical
+witness sits below the value (`ξ < γ`).  That holds unconditionally in the sub-ε region
+(`AcanonLtValue_lt_epsLvl`: `η < ψ_u η`), so `Gset_gen` fires there with `ξ = η`.  In the
+DEEP region (`η ≥ ψ_w η`) the witness of the value `ψ_w η` is its canonical REP `< ψ_w η`,
+whose existence is `CanonRep` — the session-1 open core.  So `Gset` cleanly LOCALISES the
+obstruction: it is exactly canonical-representation existence in the deep region.
+
+The subA_nm collapse `ψ_u(ψ_w η) = ψ_u η` therefore reduces (sorry-free) to the
+NO-REALIZER condition below — the genuine, soundly-characterised deep-region core
+(no `u`-canonical `ζ < η` realises the value), the dual of `CanonRep`. -/
+
+open Classical in
+/-- **`Gset` generator case in the sub-ε region** (GREEN, unconditional witness `ξ = η`).
+When `η < psiSelf η w` (`AcanonLtValue`, automatic for `η < epsLvl`), the value's own
+canonical witness IS `η`, so `Gset u (psiSelf η w) = insert η (Gset u η)` (for `u ≤ w`). -/
+theorem Gset_gen_subeps {u w : ℕ} {η : Ordinal.{v}} (hlt : η < psiSelf η w)
+    (hηc : η ∈ CsetSelf (psiResSelf η) η w) (hwu : u ≤ w) :
+    Gset u (psiSelf η w) = insert η (Gset u η) := by
+  have hpr : Ordinal.IsPrincipal (·+·) (psiSelf η w) :=
+    fun {x y} hx hy => (psiSelf_addprinc η w).2 x y hx hy
+  rw [Gset_gen hpr rfl hlt hηc, if_pos hwu]
+
+/-- **subA_nm collapse from the NO-REALIZER condition** (GREEN, the honest §1 reduction).
+If no `u`-canonical `ζ < η` realises the value `ψ_u(ψ_w η)`, then
+`ψ_u(ψ_w η) = ψ_u η` (the subA_nm / sub-case-A collapse).  Proof: membership of
+`ψ_u(ψ_w η)` in `C^s_u(η)` would, by `CsetSelf_witness_canonical` (1.4b), produce exactly
+such a realiser `ζ < η` (band forces its subscript to `u`); absent it,
+`psiSelf_eq_of_notMem` gives the collapse.  This isolates subA_nm to the no-realizer
+condition — the dual of canonical-rep existence, the genuine deep-region core.  (Soundness:
+the collapse is the EQUALITY, consistent — its `≤` half is free `psiSelf_mono_arg`; NOT a
+false value-bound like the dead `hVB`.) -/
+theorem subA_nm_collapse_of_noRealizer {η : Ordinal.{v}} {w u : ℕ}
+    (hle : psiSelf η w ≤ η)
+    (hno : ∀ ζ : Ordinal.{v}, ζ < η → ζ ∈ CsetSelf (psiResSelf ζ) ζ u →
+       psiSelf ζ u ≠ psiSelf (psiSelf η w) u) :
+    psiSelf (psiSelf η w) u = psiSelf η u := by
+  apply psiSelf_eq_of_notMem hle
+  intro hmem
+  have hlo : Om u ≤ psiSelf (psiSelf η w) u := Om_le_psiSelf _ _
+  have hap : Ordinal.IsPrincipal (· + ·) (psiSelf (psiSelf η w) u) :=
+    fun {x y} hx hy => (psiSelf_addprinc _ _).2 x y hx hy
+  obtain ⟨u', ζ, heq, hζη, hζmem, hζc⟩ := CsetSelf_witness_canonical hap hlo hmem
+  rw [psiResSelf, if_pos hζη] at heq
+  have hu' : u' = u := by
+    have h1 : Om u' ≤ psiSelf (psiSelf η w) u := heq ▸ Om_le_psiSelf ζ u'
+    have h2 : psiSelf (psiSelf η w) u < Om (u' + 1) := heq ▸ psiSelf_lt_Om_succ ζ u'
+    have hle1 : u' ≤ u := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt h1 (psiSelf_lt_Om_succ (psiSelf η w) u)) (not_lt.2 (Om_mono (by omega)))
+    have hle2 : u ≤ u' := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt (Om_le_psiSelf (psiSelf η w) u) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  subst hu'
+  have hζc_self : ζ ∈ CsetSelf (psiResSelf ζ) ζ u' :=
+    CsetSelf_mono_param _ _ ζ u'
+      (fun ρ uu hρ => by rw [psiResSelf, psiResSelf, if_pos hρ, if_pos (lt_trans hρ hζη)]) hζc
+  exact hno ζ hζη hζc_self heq.symm
+
 end YAPSS
