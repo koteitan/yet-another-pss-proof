@@ -1455,6 +1455,47 @@ measure stalls.  That term-system construction (Buchholz §2, the `(OT,<)` notat
 foundational build, not a lemma.  GREEN here: the fixpoint route fully realized at the
 `ε`-boundary, the core characterized to the single deep-generator subcase. -/
 
+/-! ### INJECTIVITY-IN-JOINT VERDICT (2026-06-20j): injectivity pins uniqueness, NOT position
+
+The last sharp sub-angle within the simultaneous induction: does carrying `ψ_v`-INJECTIVITY
+in the joint IH close the deep generator?  **Decisive verdict: NO — and injectivity is
+already unconditionally GREEN (`psiSelf_canonical_inj`), so carrying it is VACUOUS.**
+
+The no-realizer (the deep-generator collapse) is: no `u`-canonical `ζ < η` with
+`ψ^s_u ζ = ψ^s_u(ψ^s_w η)`.  Injectivity (`psiSelf_canonical_inj`) needs BOTH arguments
+`u`-canonical.  `ζ` is canonical, but `ψ^s_w η` is `u`-NON-canonical (the sub-case-A
+hypothesis), so injectivity does NOT pair `ζ` with `ψ^s_w η`.  The only canonical partner is
+the canonical REP `δ` of the value (`ψ^s_u δ = ψ^s_u(ψ^s_w η)`, `δ` canonical) — and then
+injectivity gives `ζ = δ` (`realizer_eq_rep`).  So injectivity REDUCES no-realizer to
+"the rep `δ ≥ η`".  But a realizer `ζ < η` ⟺ `ψ^s_u(ψ^s_w η) < ψ^s_u η` STRICT
+(`realizer_imp_strict`, via strict mono), and `δ ≥ η ⟺ ψ^s_u(ψ^s_w η) = ψ^s_u η` — the
+VALUE-IDENTITY itself.  Injectivity pins the realizer UNIQUELY but cannot decide `δ`'s
+position relative to `η`; that decision IS the value-identity = the simultaneous-induction
+output.  This is the FINAL terminal word: no sub-reduction within the joint (mono +
+injectivity, both GREEN) closes the deep generator — the full simultaneous transfinite
+induction (which alone supplies the rep's position) is genuinely required. -/
+
+/-- **A `u`-canonical realizer `< η` forces the strict inequality** (GREEN, the forward
+half).  If a `u`-canonical `ζ < η` realizes `ψ^s_u(ψ^s_w η)`, then
+`ψ^s_u(ψ^s_w η) < ψ^s_u η` (strict mono `psiSelf_strict_mono_arg`).  So a realizer ⟹ the
+collapse FAILS; the collapse ⟺ no realizer (the backward — rep position — is the core). -/
+theorem realizer_imp_strict {η : Ordinal.{u}} {w u : ℕ} {ζ : Ordinal.{u}}
+    (hζη : ζ < η) (hζc : ζ ∈ CsetSelf (psiResSelf ζ) ζ u)
+    (hζv : psiSelf ζ u = psiSelf (psiSelf η w) u) :
+    psiSelf (psiSelf η w) u < psiSelf η u := by
+  rw [← hζv]; exact psiSelf_strict_mono_arg hζη hζc
+
+/-- **Injectivity pins any realizer to the canonical rep** (GREEN, the vacuous-injectivity
+fact).  Any two `u`-canonical realizers of the same value coincide (`psiSelf_canonical_inj`).
+So injectivity reduces no-realizer to the rep's position (`δ ≥ η`) — which is the
+value-identity, NOT decided by injectivity. -/
+theorem realizer_eq_rep {η δ ζ : Ordinal.{u}} {w u : ℕ}
+    (hδc : δ ∈ CsetSelf (psiResSelf δ) δ u) (hζc : ζ ∈ CsetSelf (psiResSelf ζ) ζ u)
+    (hδv : psiSelf δ u = psiSelf (psiSelf η w) u)
+    (hζv : psiSelf ζ u = psiSelf (psiSelf η w) u) :
+    ζ = δ :=
+  psiSelf_canonical_inj hζc hδc (hζv.trans hδv.symm)
+
 /-! ### §2 SCOPE VERDICT — CORRECTED (2026-06-20i): the term system does NOT break the core
 
 **Decisive corrected verdict (cross-checked against ya-pss, read-only): the term system /
