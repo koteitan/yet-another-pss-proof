@@ -160,8 +160,26 @@ clause-viol). So the residual is genuinely **non-inductive / globally
 forest-reachability-bound** — the signal that closing it needs heavier machinery
 (`dseg`/`fbseg` full build, or the Towsner distinguished-set route), not a structural
 induction. Deposited GREEN assets toward it: `YAPSS/Gterm0Olt.lean`
-(`translate_take_le : translate (L.take m) ≤o translate L`, `translate_append_ge`,
-`ole_trans`).
+(`translate_take_le : translate (L.take m) ≤o translate L`, `translate_append_ge`).
+
+**Sibling-direction reduction — GREEN (this cycle).** The clause carrier
+`Q t := ∀ x ∈ Gterm 0 t, olt x t` is **not hereditary** (`Q (P 0 (P 1 Z Z) Z)`
+is FALSE), so naive `tsize`-induction is dead at the argument descent. But the
+clause at a node `P y A S` decomposes (`Gterm 0 (P y A S) = Gterm 0 (P y A Z) ∪
+Gterm 0 S`, `tsize (P y A Z) < tsize (P y A S)` when `S ≠ Z`) and the **sibling**
+half lifts cleanly: `olt_lift_sib : x <o P y A Z → x <o P y A S` (via
+`olt_PyAZ_PyAS`) and `Gterm0_node_cover` (all in `Gterm0Olt.lean`, `sorryAx`-free,
+model-verified 0-viol +5/+6/+7). The sibling-witness lift
+(`x ∈ Gterm 0 S, olt x S → olt x (P y A S)`) is model-verified with the
+**column-local** guard `sib[0].2 ≤ c.2` (row-1 never rises across a forest
+sibling/`dropWhile` boundary — a `steps1`/row-1 discipline fact). The residual
+is therefore now pinned to the **argument** half: for a single-tree `blockok 1`
+`B`, `seqlex (shift canonical-K) B` — a TRUE but non-inductive seqlex-positional
+fact. The `dseg`/`fbseg` level (row-0) conditions cannot supply it: the deciding
+comparison is row-1 (subscript) at equal effective depth, which fbseg does not
+constrain (every fbseg-relative carrier against the `pp`-rooted enclosing tree is
+FALSE, 396/1172/3439 +5/+6/+7). This is the designated Towsner distinguished-set
+pivot signal.
 
 ### Face 2 — Buchholz §1 ordinal-collapse (original)
 
