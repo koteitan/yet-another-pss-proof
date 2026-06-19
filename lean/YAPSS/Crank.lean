@@ -123,4 +123,50 @@ theorem crank_arg_lt {α η : Ordinal.{u}} {v w : ℕ}
     subst this
     exact hη'k
 
+/-- **Crank-strong-induction structural principle for `CsetSelf` members.**  To prove
+a predicate `Q ξ` for every `ξ ∈ CsetSelf (psiResSelf α) α v`, handle each closure
+constructor with the IH available at STRICTLY SMALLER C-rank (iterate stage):
+  - base: `ξ < Om v`;
+  - sum: `ξ = a + b`, both already in the closure (`Q a`, `Q b`);
+  - generator: `ξ = psiSelf η w`, `η < α`, `η` `w`-canonical, in the closure (`Q η`)
+    — the strict drop is the generator's argument appearing one stage earlier
+    (`crank_arg_lt` is the explicit-measure form of this).
+This is the engine for Lemma 1.9 / gap-cleanness, founded on the C-rank (NOT ordinal
+order, which fails in the deep region: `η ≥ ψ_v η` possible there). -/
+theorem CsetSelf_crank_induction {α : Ordinal.{u}} {v : ℕ}
+    (Q : Ordinal.{u} → Prop)
+    (hbase : ∀ ξ, ξ < Om v → Q ξ)
+    (hsum : ∀ a b, a ∈ CsetSelf (psiResSelf α) α v → b ∈ CsetSelf (psiResSelf α) α v →
+      Q a → Q b → Q (a + b))
+    (hgen : ∀ η w, η < α → η ∈ CsetSelf (psiResSelf α) α v →
+      η ∈ CsetSelf (psiResSelf η) η w → Q η → Q (psiSelf η w)) :
+    ∀ ξ, ξ ∈ CsetSelf (psiResSelf α) α v → Q ξ := by
+  intro ξ hξ
+  obtain ⟨N, hN⟩ := CsetSelf_mem_iff.1 hξ
+  clear hξ
+  induction N using Nat.strong_induction_on generalizing ξ with
+  | _ N IH =>
+    cases N with
+    | zero =>
+      simp only [Function.iterate_zero, id_eq] at hN
+      exact hbase ξ hN
+    | succ n =>
+      rw [Function.iterate_succ_apply'] at hN
+      rcases hN with (h1 | h2) | h3
+      · exact IH n (Nat.lt_succ_self n) ξ h1
+      · obtain ⟨a, ha, b, hb, hab⟩ := Set.mem_image2.1 h2
+        subst hab
+        have haC : a ∈ CsetSelf (psiResSelf α) α v := CiterSelf_subset_CsetSelf ha
+        have hbC : b ∈ CsetSelf (psiResSelf α) α v := CiterSelf_subset_CsetSelf hb
+        exact hsum a b haC hbC (IH n (Nat.lt_succ_self n) a ha) (IH n (Nat.lt_succ_self n) b hb)
+      · obtain ⟨w, hu⟩ := Set.mem_iUnion.1 h3
+        obtain ⟨η, ⟨hηn, ⟨hηα, hηc⟩⟩, hηx⟩ := hu
+        simp only [psiResSelf, if_pos hηα] at hηx
+        subst hηx
+        have hηC : η ∈ CsetSelf (psiResSelf α) α v := CiterSelf_subset_CsetSelf hηn
+        have hηc_self : η ∈ CsetSelf (psiResSelf η) η w :=
+          CsetSelf_mono_param _ _ η w
+            (fun ζ uu hζ => by rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hηα)]) hηc
+        exact hgen η w hηα hηC hηc_self (IH n (Nat.lt_succ_self n) η hηn)
+
 end YAPSS
