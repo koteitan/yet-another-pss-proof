@@ -3303,21 +3303,55 @@ proof -
     by (rule nrm_head_acanon[where t = "translate ?aM"], rule Xpbc)
   \<comment> \<open>\<^bold>\<open>Bridge\<close>: a-canonicity + lead gap reduce 0-canonicity to the \<open>BURIED\<close>-tied residual
      (@{thm [source] acanon_leadgap_0canon}).\<close>
+  \<comment> \<open>\<^bold>\<open>Tied-lead reduction\<close> (green): on a firing image the head argument satisfies
+     \<open>maxsub ?hb = lead ?hb\<close> (from spine fact \<open>F2\<close> via @{thm [source] maxsub_harg_eq_lead}),
+     so every \<open>G\<^bsub>0\<^esub>\<close>-critical \<open>g\<close> of \<open>?hb\<close> has \<open>lead g \<le> maxsub g \<le> maxsub ?hb = lead ?hb\<close>
+     (@{thm [source] lead_le_maxsub}, @{thm [source] maxsub_Gterm_le}).  Hence the buried
+     hypothesis \<open>lead ?hb \<le> lead g\<close> \<^emph>\<open>forces\<close> \<open>lead g = lead ?hb\<close>; the false
+     \<open>lead g > lead ?hb\<close> direction (which holds on arbitrary \<open>wf3\<close> but never on a firing
+     image \<dash> \<open>tools/probe_wf3_acanon_deep.py\<close> CEX \<open>D\<^bsub>2\<^esub>(D\<^bsub>0\<^esub>(D\<^bsub>3\<^esub>(0)))\<close>) is thereby
+     soundly eliminated.\<close>
+  have mhb: "maxsub ?hb = lead ?hb"
+  proof -
+    have F2: "lead ?hb = maxsub ?X" using spine by blast
+    show ?thesis by (rule maxsub_harg_eq_lead[OF Xpbc F2])
+  qed
   have can: "proj 0 ?hb = ?hb"
   proof (rule acanon_leadgap_0canon[OF acanon gap])
     fix g
     assume g0: "g \<in> Gterm 0 ?hb" and notGa: "g \<notin> Gterm a ?hb" and lge: "lead ?hb \<le> lead g"
-    \<comment> \<open>\<^bold>\<open>SHARP RESIDUAL (BURIED-tied)\<close>: a \<open>G\<^bsub>0\<^esub>\<close>-critical of \<open>?hb\<close> lying \<^emph>\<open>outside\<close>
-       \<open>G\<^bsub>a\<^esub>(?hb)\<close> with subscript \<open>\<ge> lead ?hb\<close> \<dash> i.e. buried under a sub-\<open>a\<close> \<open>D\<^bsub>0\<^esub>\<close>
-       copy-block (the \<section>6.7 oper structure) \<dash> is \<open><\<^sub>o ?hb\<close>.  Numerically the genuine
-       836-case residual after a-canonicity (\<open>tools/probe_tied_in_Ga.py\<close>, 1812 firing
-       images, 0 failures; all such \<open>g\<close> satisfy \<open>lead g = lead ?hb\<close>).  \<^bold>\<open>Deeper structure\<close>
-       (\<open>tools/probe_buried_struct.py\<close>, 836/836): every such \<open>g\<close> in fact lies in
-       \<open>Gterm 0 (harg ?hb)\<close> \<dash> a \<open>G\<^bsub>0\<^esub>\<close>-critical \<^emph>\<open>one level deeper\<close>, under the head
-       argument of \<open>?hb\<close>; the residual is thus genuinely recursive (a self-similar copy
-       of the same head-0-canonicity one depth down), which is why no \<^emph>\<open>non\<close>-recursive
-       term-local lever discharges it.  \<^bold>\<open>Localized \<open>sorry\<close>\<close>.\<close>
-    show "olt g ?hb" sorry
+    \<comment> \<open>green: \<open>lead g \<le> lead ?hb\<close> from the maxsub bound, hence \<open>lead g = lead ?hb\<close>.\<close>
+    have lgle: "lead g \<le> lead ?hb"
+    proof -
+      have "lead g \<le> maxsub g" by (rule lead_le_maxsub)
+      also have "maxsub g \<le> maxsub ?hb" by (rule maxsub_Gterm_le[OF g0])
+      also have "\<dots> = lead ?hb" by (rule mhb)
+      finally show ?thesis .
+    qed
+    have leadeq: "lead g = lead ?hb" using lge lgle by simp
+    \<comment> \<open>\<open>?hb \<noteq> Z\<close> (the lead gap forces a nonzero leading subscript).\<close>
+    have hbne: "?hb \<noteq> Z" using gap by (cases ?hb) auto
+    obtain L hh ht where hbP: "?hb = P L hh ht" using hbne by (cases ?hb) auto
+    obtain gh gt where gP: "g = P L gh gt"
+    proof -
+      have "g \<noteq> Z" using leadeq gap hbP by (cases g) auto
+      then obtain gl gh gt where "g = P gl gh gt" by (cases g) auto
+      moreover have "gl = L" using \<open>g = P gl gh gt\<close> leadeq hbP by simp
+      ultimately show ?thesis using that by blast
+    qed
+    \<comment> \<open>\<^bold>\<open>SHARP RESIDUAL (BURIED-tied, sharpened)\<close>: the tied critical \<open>g = P L gh gt\<close>
+       of \<open>?hb = P L hh ht\<close> has its \<^emph>\<open>head argument\<close> dominated, \<open>harg g <\<^sub>o harg ?hb\<close>
+       (i.e. \<open>gh <\<^sub>o hh\<close>).  This is the genuine \<section>6.7 copy-block core, now isolated to the
+       single head-argument comparison: numerically \<^bold>\<open>836/836\<close> firing-image residuals
+       satisfy \<open>harg g <\<^sub>o harg ?hb\<close> (\<open>tools/probe_g_vs_hh.py\<close>), and \<open>harg g\<close> itself lies in
+       \<open>Gterm 0 (harg ?hb)\<close> \<dash> a self-similar copy one level deeper
+       (\<open>tools/probe_gh_struct.py\<close>, 836/836).  \<^bold>\<open>Class-essential\<close>: FALSE from
+       \<open>wf3 + a\<dash>canonicity + lead gap\<close> alone (\<open>tools/probe_wf3_acanon_deep.py\<close>,
+       1032/2543 wf3 counterexamples), so it rests on the \<open>nrm\<close>/\<open>translate\<close> firing-image
+       structure, not on \<open>wf3\<close>.  \<^bold>\<open>Localized \<open>sorry\<close>\<close>.\<close>
+    have core: "harg g <o harg ?hb" sorry
+    have "gh <o hh" using core unfolding gP hbP by simp
+    thus "olt g ?hb" unfolding gP hbP by simp
   qed
   show ?thesis
     unfolding M_def[symmetric] r_def[symmetric] using can .
