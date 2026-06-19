@@ -1256,23 +1256,21 @@ def NVM_subA_le.{u} : Prop :=
     psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
     Om (w + 1) ≤ η
 
-/-- Generator step (A) plateau-collapse, **value-bound form** (the genuine §1 residue).
-The OLD unconditional `ψ^s_u(ψ^s_w(η)) ∉ C^s_u(η)` is **FALSE** (737/1580 model
-violations); the TRUE residue is the gap **value-bound** that
-`collapseSelf_le_valuebounded` consumes to produce the collapse non-membership
-(`subA_nm_of_valuebound`).  It carries the sub-case-A context (η `u`-canonical,
-`u ≤ w`, `ψ^s_w(η)` `u`-non-canonical) and asserts every `u`-canonical gap point
-`γ ∈ [ψ^s_w(η), η)` has `ψ^s_u(γ) < ψ^s_u(ψ^s_w(η))`.  Model-verified 623/623
-@+5/+6/+7 (the BAD `=` case 0/623, load-bearing).  This is the value-identity the
-joint induction's IH must output (η is the minimal `u`-canonical realizer of the
-plateau value, 623/623) — the genuine Buchholz §1 core. -/
+/-- Generator step (A) plateau-collapse, **clean-gap form** (the HONEST §1 residue,
+re-sounded 2026-06-20b).  The prior VALUE-BOUND form was **FALSE in true ordinals**
+(`hVB_is_contradictory`: `psiSelf_mono_arg` flatly contradicts it at any canonical gap
+point; the "623/623" was a `lt_term` term-model artifact, 85356 monotonicity
+violations).  The genuine residue is **gap-cleanness** (Buchholz 1.6(b) plateau): the
+ordinal gap `[ψ^s_w(η), η)` is entirely `u`-non-canonical.  Consumed by
+`subA_nm_of_cleangap` via the clean `collapseSelf_le`.  It carries the sub-case-A
+context (η `u`-canonical, `u ≤ w`, `ψ^s_w(η)` `u`-non-canonical, `ψ^s_w(η) ≤ η`).
+To be established by the `G_u`/Lemma-1.9 device. -/
 def NVM_subA_nm.{u} : Prop :=
   ∀ (η : Ordinal.{u}) (w u : ℕ), u ≤ w →
     η ∈ CsetSelf (psiResSelf η) η u →
     psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u →
     psiSelf η w ≤ η →
-    ∀ γ, psiSelf η w ≤ γ → γ < η →
-      γ ∈ CsetSelf (psiResSelf γ) γ u → psiSelf γ u < psiSelf (psiSelf η w) u
+    ∀ γ, psiSelf η w ≤ γ → γ < η → γ ∉ CsetSelf (psiResSelf γ) γ u
 
 /-- Generator step (B), **reduced to the subscript-collapse H1** (the genuine residue).
 The full caseB (produce a canonical rep `δ` with `δ < α`, `δ ∈ C^s_v(α)`, `δ`
@@ -1341,8 +1339,8 @@ theorem noncanonValueMem_joint
             · refine ⟨η, hηα, hηC, hηu, ?_⟩
               have hle : psiSelf η w ≤ η :=
                 le_trans (le_of_lt (psiSelf_lt_Om_succ η w)) (subA_le η w u hwu hηu hnc)
-              -- the value-bound residue → collapse non-membership → the value-identity
-              have hnm := subA_nm_of_valuebound hle (subA_nm η w u hwu hηu hnc hle)
+              -- the HONEST clean-gap residue → collapse non-membership → the value-identity
+              have hnm := subA_nm_of_cleangap hle (subA_nm η w u hwu hηu hnc hle)
               exact (psiSelf_eq_of_notMem hle hnm).symm
             · -- η `u`-non-canonical: the rank-IH `IHn` at η produces η's canonical rep δ
               -- (`psiSelf δ u = psiSelf η u`); H1 (`caseB`) converts to the caseB target.
