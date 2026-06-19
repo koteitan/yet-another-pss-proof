@@ -1133,6 +1133,16 @@ theorem psiSelf_lt_of_mem_canon {α γ : Ordinal.{u}} {u : ℕ}
   rw [psiResSelf, if_pos hγα] at hfire
   exact CsetSelf_lt_psiSelf_of_lt_Om hfire (psiSelf_lt_Om_succ γ u)
 
+/-- **GREEN PIECE 5: full self-form Buchholz 1.5 characterization** (both directions).
+For `x < Ω_{a+1}`: `x ∈ C^s_a(α) ⟺ x < ψ^s_a(α)`.  Forward is
+`CsetSelf_lt_psiSelf_of_lt_Om`; backward is `below_psiSelf_mem_CsetSelf`.  This is the
+clean membership ↔ value-order bridge the `G_u`/Lemma-1.9 gap-cleanness work consumes
+(`ψ^s`-values are `< Ω_{a+1}`, so membership of a value is the same as its value-order
+position). -/
+theorem mem_CsetSelf_iff_lt_psiSelf {α x : Ordinal.{u}} {a : ℕ} (hlt : x < Om (a + 1)) :
+    x ∈ CsetSelf (psiResSelf α) α a ↔ x < psiSelf α a :=
+  ⟨fun hx => CsetSelf_lt_psiSelf_of_lt_Om hx hlt, fun hx => below_psiSelf_mem_CsetSelf hx⟩
+
 /-- **`subA_nm`'s conclusion from the value-bound** (GREEN, hypothesis-carrying).
 The generator-step (A) plateau-collapse non-membership `ψ^s_u(ψ^s_w(η)) ∉ C^s_u(η)`
 follows from `collapseSelf_le_valuebounded` applied to the gap `[ψ^s_w(η), η]`: the
