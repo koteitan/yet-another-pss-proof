@@ -4794,3 +4794,12 @@ MV は §1 collapse 核を closable でないと確定し精密 obstruction を�
   (conventionals.md:73-74、循環反例 acc(ψ_r 0)↔acc(ψ_p(ψ_r 0)))で高コスト=fallback。
 - 次手: 木側(harg/G_0-violator-maximality of nrm∘translate∘argzone)⟺ 行列側(parent_index bad-root)の正確な辞書を数値確立→Isabelle 橋補題。
 - 成果物: tools/bmocf_verify/{bmocf_fs.py(268/268),compare.py,bmocf_fs_248.py}。
+
+### 続92訂正: S1深層偽・maxsub-spine split を統合(argzone_head_maxviol 証明済化)
+- 🔴 S1(発火⟹単一主項)は偽(s1s2-reduce closure+5・1M ST で 4/266594: M=(0,0)(1,1)(2,2)(1,1)(2,2)型⟹X=D1(D2 0)+D1(D2 0)反復主項和)。
+  bridge_probe corpus(16303 ST)が浅く見逃し=第7・8事件型(分析レベル)。エージェントが深層検証で catch・S1 非形式化。
+- ✅ 健全 fallback を統合(PSI green isbman f1acf0・churn なし): opaque argzone_head_maxviol sorry を証明済補題に。
+  5 class-free 緑ヘルパー + argz_head_spine(F1lt/F2/S_Gviol=maxsub-spine)+ tied_crit_lt_hb(tied G_0-critical<hb=hb 0-canonicity)。
+  循環なし(両残核は独立 sorry)。INFRA(続90末8)と同核だが import churn 解消=改善。main sorry 5→6(opaque→鋭い2)。
+- BMOCF 総括: ≡bms 268/268 で PSS を正しく捉えると独立確認したが壁の近道にはならず(①relocate/②高コスト)。緑インフラ維持確定。
+- 次手: tied_crit_lt_hb(hb 0-canonicity)= 残る本丸。(a)canonical-ζ 順序数 or (b)NF spine 不変量 base 層。BMOCF 探索は終了。

@@ -45,16 +45,17 @@ $$\boxed{\ \forall X\in\mathcal N.\quad \mathrm{proj}_0(X)\neq X\ \Longrightarro
 
 「$\mathcal N$ の木 $X$ が（$\mathrm{proj}_0$ で）畳まれるなら、その先頭引数 $\mathrm{harg}\,X$ はもう畳めない（0-正準）」。
 
-## 鋭い還元（2026-06-19, bridge_probe.py 3988/3988 確認）
+## 還元の現状（2026-06-19, maxsub-spine split 統合済・PSI green）
 
-発火する arg-zone 像 $X$ について、以下が **0 例外**で成立し、命題を $b=\mathrm{harg}\,X$ 単独の構文命題に縮約する:
+⚠️ **訂正**:当初の「(S1) 発火像は単一主項 $X=P\,L\,b\,Z$」は **深層で偽**（closure+5・1M ST で 4/266594 反例。$M=(0,0)(1,1)(2,2)(1,1)(2,2)$ 型で $X=D_1(D_2 0)+D_1(D_2 0)$ = 反復主項の和）。bridge_probe の corpus（16303 ST）が浅く見逃した。第7・8事件型。
 
-- **(S1) 単一主項**:$X = P\,L\,b\,Z$（$c$-spine 空）。ゆえに $\mathrm{harg}\,X=b$。
-- **(S2) $G_0$ 分解**:$G_0(X)=\{b\}\cup G_0(b)$（非 head 違反子は全て $G_0(b)$ の元）。
-- **(S3) 壁の本体**:「$\mathrm{harg}\,X$ が最大違反子」$\iff\ \forall g\in G_0(b).\ b<g\ \Longrightarrow\ g<X$（$b$ が自身の $G_0$-spine を $<$ で支配）。
-- 帰結:$\mathrm{proj}_0(X)=\mathrm{harg}\,X=b$。
+**健全な還元**（反復主項でも成立、深層 0/266594 で検証）— `argzone_head_maxviol` は今これで**証明済**:
+- **(S2′ 集合)**:$G_0(X)=\{\mathrm{harg}\,X\}\cup G_0(\mathrm{harg}\,X)$（反復主項は同一ゆえ新 critical を増やさない）。
+- **maxsub-spine**:発火 $\iff \mathrm{lead}\,X<\mathrm{maxsub}\,X$、$\mathrm{lead}(\mathrm{harg}\,X)=\mathrm{maxsub}\,X$。
+- 非 tied 部（$\mathrm{lead}\,g<\mathrm{lead}(\mathrm{harg}\,X)$）は class-free 緑（G1: $g\in G_0(X)\Rightarrow\mathrm{maxsub}\,g\le\mathrm{maxsub}\,X$）。
+- **残る壁 = `tied_crit_lt_hb`**（tied lead の $G_0$-critical $<\mathrm{harg}\,X$ = $\mathrm{harg}\,X$ の 0-正準性）。class-essential。
 
-BMOCF/行列の `parent_index`(=`≤_M`)への輸送は subscript shear で壁を**移すだけ**(行列部分列の正規化は fresh context で別物)。本道は S3 の **木内部 pure-lex 構文帰納**。
+BMOCF/行列 `parent_index`(=`≤_M`)への輸送は subscript shear で壁を**移すだけ**（行列部分列の正規化は fresh context で別物、bridge_probe 3988/0）。本道は `tied_crit_lt_hb` の **木内部 pure-lex 構文帰納**。
 
 ## 備考
 
