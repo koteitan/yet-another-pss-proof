@@ -47,7 +47,7 @@
     - 🚨 argzone_transport：発火 transport〔nrm.thy〕
     - 🚨 nrm_argzone_olt：nrm 単調半〔nrm.thy〕
     - 🚨 keeps_head_ST_PS：tied e=y〔nrm.thy〕
-    - 🚨 oV_mono_NF：意味論同値〔ovnf.thy〕
+    - 🚨 ★oV_mono_NF：**load-bearing 唯一残核**（PSS_terminates_oV⟸wf_Rnf_oV⟸これ1点）〔ovnf.thy:127〕
   - 🗄 §1/psi_proj 路線：live path 外〔term_nec / 1.4 trio / Cset_eq_Cset_c / psi_value_acanon〕
   - 🚨 整礎性 wfimg（NF=translate(ST_PS) 上で <o 整礎）★残る未証明
     - ✅ wfimg → 対角 accessibility 還元〔wf_Rnf_from_diag / acc_Rnf_of_ST_PS〕
