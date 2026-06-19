@@ -1328,6 +1328,97 @@ theorem subA_nm_subeps_vacuous {η : Ordinal.{u}} {w u : ℕ} (hve : psiSelf η 
     (hcnc : psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u) : False :=
   hcnc (mem_CsetSelf_lvl hve)
 
+/-! ### ✅ DEEP ψ-FIXPOINT via the Mathlib fixpoint route (2026-06-20f)
+
+The deep-region core "the value is a ψ-fixpoint" is REALIZED here at the `ε`-boundary
+`epsLvl u` (`ε_0 = ψ_0 Ω_1` is the base instance), using the `ω`-power / `ε`-number
+Mathlib API (`omega0_opow_epsilon`, `isPrincipal_add_omega0_opow`, `right_le_veblen`)
+with the `psiSelf` explicit formula (sub-`ε`) and `psiSelf_fixpoint_of_below_saturated`.
+This PROVES the fixpoint route connects in the deep region: a deep value whose closure is
+downward-saturated IS a `ψ`-fixpoint.  (The general sub-case-A value `ψ_u(ψ_w η)` needs its
+OWN downward-saturation — the remaining `G_u`/simultaneous-induction content for non-`epsLvl`
+values; `epsLvl` is the clean realized instance demonstrating the route.) -/
+
+section EpsLvlFixpoint
+open Ordinal
+
+theorem epsLvl_below_saturated {u : ℕ} : ∀ δ : Ordinal.{u}, δ < epsLvl u →
+    δ ∈ CsetSelf (psiResSelf (epsLvl u)) (epsLvl u) u :=
+  fun δ hδ => CCSelf_mono (le_of_lt hδ) u (mem_CsetSelf_lvl hδ)
+
+theorem epsLvl_isPrincipal {u : ℕ} : Ordinal.IsPrincipal (·+·) (epsLvl u : Ordinal.{u}) := by
+  have h : (epsLvl u : Ordinal.{u}) = ω ^ (epsLvl u) := by
+    cases u with
+    | zero => rw [show (epsLvl 0 : Ordinal.{u}) = ε_ (0:ℕ) by simp [epsLvl]]; exact (omega0_opow_epsilon _).symm
+    | succ k => rw [show (epsLvl (k+1) : Ordinal.{u}) = ε_ (Om (k+1)+1) by simp [epsLvl]]; exact (omega0_opow_epsilon _).symm
+  rw [h]; exact isPrincipal_add_omega0_opow _
+
+theorem epsLvl_lt_Om_succ {u : ℕ} : (epsLvl u : Ordinal.{u}) < Om (u+1) := by
+  cases u with
+  | zero => simpa [epsLvl] using epsilon0_lt_Om_one
+  | succ k => rw [show (epsLvl (k+1) : Ordinal.{u}) = ε_ (Om (k+1)+1) by simp [epsLvl]]; exact epsilon_Om_succ_lt_Om
+
+theorem Om_le_epsLvl {u : ℕ} : Om u ≤ (epsLvl u : Ordinal.{u}) := by
+  cases u with
+  | zero =>
+    rw [Om_zero, show (epsLvl 0 : Ordinal.{u}) = ε_ (0:ℕ) by simp [epsLvl]]
+    exact Order.one_le_iff_pos.2 (epsilon_pos 0)
+  | succ k =>
+    rw [show (epsLvl (k+1) : Ordinal.{u}) = ε_ (Om (k+1)+1) by simp [epsLvl]]
+    calc Om (k+1) ≤ Om (k+1) + 1 := le_self_add
+      _ ≤ ε_ (Om (k+1)+1) := right_le_veblen 1 _
+
+/-- **Sub-`ε` values stay sub-`ε`**: `ξ < epsLvl u → ψ^s_u ξ < epsLvl u`.  Via the explicit
+formula (`ψ^s_u ξ = ω^(Ω_u+ξ)` / `ω^ξ`) and `ε`-closure under `ω^·` and `+`. -/
+theorem psiSelf_lt_epsLvl {u : ℕ} {ξ : Ordinal.{u}} (hξ : ξ < epsLvl u) :
+    psiSelf ξ u < epsLvl u := by
+  cases u with
+  | zero =>
+    have hξ0 : ξ < ε_ 0 := by simpa [epsLvl] using hξ
+    rw [(psiSelf_zero_eq_opow ξ hξ0).2, show (epsLvl 0 : Ordinal.{u}) = ε_ (0:ℕ) by simp [epsLvl]]
+    calc ω ^ ξ < ω ^ ε_ (0:ℕ) := (opow_lt_opow_iff_right one_lt_omega0).2 hξ0
+      _ = ε_ (0:ℕ) := omega0_opow_epsilon _
+  | succ k =>
+    have hξe : ξ < ε_ (Om (k+1) + 1) := by simpa [epsLvl] using hξ
+    rw [(psiSelf_eq_opow_add (k+1) (Nat.succ_pos k) ξ hξe).2,
+        show (epsLvl (k+1) : Ordinal.{u}) = ε_ (Om (k+1)+1) by simp [epsLvl]]
+    have hp : Ordinal.IsPrincipal (·+·) (ε_ (Om (k+1)+1)) := by
+      rw [← omega0_opow_epsilon (Om (k+1)+1)]; exact isPrincipal_add_omega0_opow _
+    have hOmlt : Om (k+1) < ε_ (Om (k+1) + 1) :=
+      lt_of_lt_of_le (lt_add_one (Om (k+1))) (right_le_veblen 1 (Om (k+1) + 1))
+    have hsum : Om (k+1) + ξ < ε_ (Om (k+1) + 1) := hp hOmlt hξe
+    calc ω ^ (Om (k+1) + ξ) < ω ^ ε_ (Om (k+1)+1) := (opow_lt_opow_iff_right one_lt_omega0).2 hsum
+      _ = ε_ (Om (k+1)+1) := omega0_opow_epsilon _
+
+/-- **`epsLvl u` is `u`-non-canonical** (the `ε`-boundary value is not in its own closure):
+a witness `ξ < epsLvl u` (sub-`ε`) would give `ψ^s_u ξ = epsLvl u`, but `ψ^s_u ξ < epsLvl u`
+(`psiSelf_lt_epsLvl`). -/
+theorem epsLvl_not_canon {u : ℕ} :
+    (epsLvl u : Ordinal.{u}) ∉ CsetSelf (psiResSelf (epsLvl u)) (epsLvl u) u := by
+  intro h
+  obtain ⟨w', ξ, heq, hξe, hξmem, hξc⟩ :=
+    CsetSelf_witness_canonical epsLvl_isPrincipal Om_le_epsLvl h
+  rw [psiResSelf, if_pos hξe] at heq
+  have hw' : w' = u := by
+    have h1 : Om w' ≤ (epsLvl u : Ordinal.{u}) := heq ▸ Om_le_psiSelf ξ w'
+    have h2 : (epsLvl u : Ordinal.{u}) < Om (w' + 1) := heq ▸ psiSelf_lt_Om_succ ξ w'
+    have hle1 : w' ≤ u := by
+      by_contra hc; exact absurd (lt_of_le_of_lt h1 epsLvl_lt_Om_succ) (not_lt.2 (Om_mono (by omega)))
+    have hle2 : u ≤ w' := by
+      by_contra hc; exact absurd (lt_of_le_of_lt Om_le_epsLvl h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  subst hw'
+  exact absurd heq.symm (ne_of_lt (psiSelf_lt_epsLvl hξe))
+
+/-- **The `ε`-boundary fixpoint** (GREEN, the first DEEP ψ-fixpoint via the route):
+`ψ^s_u(epsLvl u) = epsLvl u`.  `epsLvl u` is `u`-non-canonical (`epsLvl_not_canon`) and its
+closure is downward-saturated (`epsLvl_below_saturated`: everything below is sub-`ε` hence
+`u`-canonical hence in the closure); `psiSelf_fixpoint_of_below_saturated` concludes.  This
+proves the fixpoint route works in the deep region: `ε_0 = ψ_0(Ω_1)` is the base case. -/
+theorem psiSelf_epsLvl_fixpoint {u : ℕ} : psiSelf (epsLvl u : Ordinal.{u}) u = epsLvl u :=
+  psiSelf_fixpoint_of_below_saturated epsLvl_below_saturated epsLvl_not_canon
+
+end EpsLvlFixpoint
 /-! ### ✅ TRUTH VERDICT on the sub-case-A collapse `ψ_u(ψ_w η) = ψ_u η` (2026-06-20e)
 
 **The collapse is genuinely TRUE** (NOT a false proxy like the dead `hVB`):
