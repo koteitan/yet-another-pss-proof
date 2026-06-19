@@ -4815,3 +4815,13 @@ MV は §1 collapse 核を closable でないと確定し精密 obstruction を�
   発火-collapse を closure で出す。自己相似入れ子は oper のバッドパート n 重コピー痕跡=基本列降下。def.thy oper と接続。
   これは sigma_seqlex_mono が term-level argzone_head_maxviol に bottom out する所を ST_PS-level invariant で塞ぐこと。
 - 次手: ST_PS.induct で「arg-zone 像の 0-collapse 規律」を oper 互換な不変量として定式化・証明。多セッション核。term-level 簡約は袋小路。
+
+### 続94: 自己相似プレフィックス構造を採掘→NT_prefix_lt レバー特定(深層再検証中)
+nrm-image vs ST 切り分け(probe_nrm_vs_st.py): hb 0-canon は nrm 性質でない(非標準 2294/46996 偽)。標準は lead X=1 強制(random 分散)。
+失敗=「埋もれた高 subscript」(D1(D0(D3(0)))・maxsub3>lead1)。標準 hb は maxsub=lead。
+- Lemma A(class-free) wf3 t∧maxsub t=lead t⟹proj0 t=t → **偽 11315/100000**(D2(D1(D2(D2(0)×3)))=引数lead1<2で埋もれtied D2超過)。3つ目shortcut死亡。
+- ★maxsub(hb)=lead(hb) は **F2+G1(maxsub_Gterm_le緑)+lead_le_maxsub緑から導出可**(necessary だが不十分)。
+- ★**橋仮説H(probe_prefix_bridge.py 529k/135969発火): tied G_0-critical of hb = NT(arg-zone連続infix) 0/279292**。自己相似=oper コピー痕跡。
+  レバー=**NT_prefix_lt(緑 nrmstep.thy:9986): pre@C@D@post∈ST_PS⟹olt(NT C)(NT(C@D))**。
+- 🔴未解決の橋: NT(infix)と harg(NT W)=hb の olt 関係(NT_prefix_lt は NT(C) vs NT(C@D)・harg でない)。probe_prefix_deep2.py で H_prefix/H_infix 深層確認中。
+- ⚠️ H は 529k で 0 だが S1/SP/maxsub は 1M+ で死亡。2.9M で再検証必須。
