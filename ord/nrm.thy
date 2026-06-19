@@ -219,6 +219,24 @@ lemma pfire_filter: "pfire u b \<longleftrightarrow> filter (\<lambda>g. \<not> 
 lemma proj_nofire: "\<not> pfire u b \<Longrightarrow> proj u b = b"
   using pfire_filter proj_id by blast
 
+text \<open>\<^bold>\<open>Canonicity \<open><\<dash>>\<close> dominance\<close> (green, class-free): \<open>proj u b = b\<close> (\<open>b\<close> is
+  \<open>u\<close>-canonical) iff every \<open>G\<^bsub>u\<^esub>\<close>-critical of \<open>b\<close> is \<open><\<^sub>o b\<close>.  ``\<open>\<Longleftarrow>\<close>'' is
+  @{thm [source] proj_nofire}; ``\<open>\<Longrightarrow>\<close>'' is @{thm [source] proj_G} read at the
+  fixpoint \<open>proj u b = b\<close>.  This is the exact reframing of the \<section>1 residual
+  \<open>head_arg_0_canonical\<close>: \<open>proj 0 hb = hb\<close> \<^emph>\<open>is\<close> ``no \<open>G\<^bsub>0\<^esub>\<close>-critical of \<open>hb\<close>
+  dominates \<open>hb\<close>'' \<dash> there is no weaker slack to exploit (verified numerically:
+  the goal coincides with full \<open>G\<^bsub>0\<^esub>\<close>-dominance).\<close>
+
+lemma proj_eq_iff_dom: "proj u b = b \<longleftrightarrow> (\<forall>g \<in> Gterm u b. olt g b)"
+proof
+  assume "proj u b = b"
+  with proj_G[of u b] show "\<forall>g \<in> Gterm u b. olt g b" by simp
+next
+  assume "\<forall>g \<in> Gterm u b. olt g b"
+  hence "\<not> pfire u b" by auto
+  thus "proj u b = b" by (rule proj_nofire)
+qed
+
 lemma Gterm_trans: "g \<in> Gterm u t \<Longrightarrow> h \<in> Gterm u g \<Longrightarrow> h \<in> Gterm u t"
 proof (induction t arbitrary: g)
   case (P a b c)
