@@ -39,9 +39,9 @@
     - ✅ proj_step_fire_witness〔FW・witness g'=proj y F〕
     - ✅ argzone_fire_FF / proj_head / fire_transport / head_lead_gt / head_dominates / F_fires / harg_olt〔FF・HEAD・SHAPE〕
     - ✅ wf3_head_violator_lead_gt〔SHAPE・class-free〕
-    - ✅ argzone_head_maxviol / tied_crit_lt_hb〔head_arg_0_canonical から証明済・続94〕
-    - ✅ maxsub_harg_eq_lead〔class-free・F2+G1〕
-    - 🚨🤖 head_arg_0_canonical：proj 0 hb=hb（head 0-正準性）〔nrm.thy・oper-induct agent〕
+    - ✅ argzone_head_maxviol / tied_crit_lt_hb / head_arg_0_canonical〔ST_PS.induct で証明済・続94〕
+    - ✅ maxsub_harg_eq_lead / proj_eq_iff_dom / nrm_translate_diagSeq / diag base〔class-free 緑〕
+    - 🚨 head_arg_0_canonical_oper：oper-step・IH on N・§6.7 copy 構造〔nrm.thy:3112〕
     - 🚨 argz_head_spine：F1lt/F2/S_Gviol maxsub-spine〔nrm.thy〕
     - 🚨 argzone_transport：発火 transport〔nrm.thy〕
     - 🚨 nrm_argzone_olt：nrm 単調半〔nrm.thy〕
