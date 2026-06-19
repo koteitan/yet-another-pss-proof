@@ -42,7 +42,7 @@
     - ✅ argzone_head_maxviol / tied_crit_lt_hb / head_arg_0_canonical〔ST_PS.induct で証明済・続94〕
     - ✅ maxsub_harg_eq_lead / proj_eq_iff_dom / nrm_translate_diagSeq / diag base〔class-free 緑〕
     - ✅ nrm_head_acanon〔緑橋: nrm head 引数は自身の添字で a-canonical・構造帰納〕
-    - 🚨 head_arg_0_canonical_oper の buried-tied 残核：g∈Gterm 0(harg hb) 自己相似・整礎再帰で〔nrm.thy:3320 inline〕
+    - 🚨 head 核 = inline core `harg g <o harg hb`〔最小形・自己相似発火降下・意味論 oV で閉じる型・nrm.thy:3352〕
     - 🚨 argz_head_spine：F1lt/F2/S_Gviol maxsub-spine〔nrm.thy〕
     - 🚨 argzone_transport：発火 transport〔nrm.thy〕
     - 🚨 nrm_argzone_olt：nrm 単調半〔nrm.thy〕
