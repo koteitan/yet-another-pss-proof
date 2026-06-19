@@ -169,4 +169,40 @@ theorem CsetSelf_crank_induction {α : Ordinal.{u}} {v : ℕ}
             (fun ζ uu hζ => by rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hηα)]) hηc
         exact hgen η w hηα hηC hηc_self (IH n (Nat.lt_succ_self n) η hηn)
 
+/-! ### [D] Lemma 1.9 generator case — the bound-checkable membership of a ψ-value -/
+
+/-- **Lemma 1.9 generator-case NECESSITY** (self-form, Buchholz 1.4(c)/1.9): if the
+`u`-canonical value `ψ^s_u η` (`η` `u`-canonical) lies in `CsetSelf (psiResSelf β) β v`
+with `v ≤ u`, then its argument `η < β` and `η ∈ CsetSelf (psiResSelf β) β v`.  This is
+the bound-checkable membership of a ψ-value (the `G_uγ ⊆ α` content at the generator
+node).  Proof: `CsetSelf_witness_canonical` (1.4b) extracts a canonical generator
+`ξ < β` with `ψ_{u'}ξ = ψ_u η`; the band forces `u' = u`; injectivity
+(`psiSelf_canonical_inj`) forces `ξ = η`. -/
+theorem psiValue_mem_imp_arg_lt {β η : Ordinal.{u}} {u v : ℕ} (hvu : v ≤ u)
+    (hηc : η ∈ CsetSelf (psiResSelf η) η u)
+    (hmem : psiSelf η u ∈ CsetSelf (psiResSelf β) β v) :
+    η < β ∧ η ∈ CsetSelf (psiResSelf β) β v := by
+  have hlo : Om v ≤ psiSelf η u := le_trans (Om_mono hvu) (Om_le_psiSelf η u)
+  have hap : Ordinal.IsPrincipal (· + ·) (psiSelf η u) :=
+    fun {x y} hx hy => (psiSelf_addprinc η u).2 x y hx hy
+  obtain ⟨u', ξ, heq, hξβ, hξmem, hξc⟩ := CsetSelf_witness_canonical hap hlo hmem
+  rw [psiResSelf, if_pos hξβ] at heq
+  have hu' : u' = u := by
+    have h1 : Om u' ≤ psiSelf η u := heq ▸ Om_le_psiSelf ξ u'
+    have h2 : psiSelf η u < Om (u' + 1) := heq ▸ psiSelf_lt_Om_succ ξ u'
+    have hle1 : u' ≤ u := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt h1 (psiSelf_lt_Om_succ η u)) (not_lt.2 (Om_mono (by omega)))
+    have hle2 : u ≤ u' := by
+      by_contra hc
+      exact absurd (lt_of_le_of_lt (Om_le_psiSelf η u) h2) (not_lt.2 (Om_mono (by omega)))
+    omega
+  subst hu'
+  have hξc_self : ξ ∈ CsetSelf (psiResSelf ξ) ξ u' :=
+    CsetSelf_mono_param _ _ ξ u'
+      (fun ζ uu hζ => by rw [psiResSelf, psiResSelf, if_pos hζ, if_pos (lt_trans hζ hξβ)]) hξc
+  have hξη : ξ = η := psiSelf_canonical_inj hξc_self hηc heq.symm
+  subst hξη
+  exact ⟨hξβ, hξmem⟩
+
 end YAPSS
