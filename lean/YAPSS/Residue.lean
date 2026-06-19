@@ -1283,6 +1283,20 @@ theorem subA_nm_collapse_of_noRealizer {η : Ordinal.{u}} {w u : ℕ}
       (fun ρ uu hρ => by rw [psiResSelf, psiResSelf, if_pos hρ, if_pos (lt_trans hρ hζη)]) hζc
   exact hno ζ hζη hζc_self heq.symm
 
+/-- **Self-form sub-`ε` canonicity** (GREEN): `δ < epsLvl u → δ ∈ C^s_u(δ)`.  Self-form of
+`mem_Cself_lvl`, via `AcanonLtValue_lt_epsLvl` (`δ < ψ^s_u δ`) + `below_psiSelf_mem_CsetSelf`. -/
+theorem mem_CsetSelf_lvl {u : ℕ} {δ : Ordinal.{u}} (hδ : δ < epsLvl u) :
+    δ ∈ CsetSelf (psiResSelf δ) δ u :=
+  below_psiSelf_mem_CsetSelf (AcanonLtValue_lt_epsLvl hδ)
+
+/-- **Sub-`ε` VACUITY of sub-case A** (GREEN): if the value `ψ^s_w(η) < epsLvl u`, it is
+`u`-canonical (`mem_CsetSelf_lvl`), contradicting the sub-case-A hypothesis that it is
+`u`-non-canonical.  So `NVM_subA_nm` (and the whole sub-case-A residue) holds VACUOUSLY in
+the sub-`ε` region — confirming the genuine open core is strictly DEEP-region (`≥ ε`). -/
+theorem subA_nm_subeps_vacuous {η : Ordinal.{u}} {w u : ℕ} (hve : psiSelf η w < epsLvl u)
+    (hcnc : psiSelf η w ∉ CsetSelf (psiResSelf (psiSelf η w)) (psiSelf η w) u) : False :=
+  hcnc (mem_CsetSelf_lvl hve)
+
 /-- Generator step (A) BAND fact: `Ω_{w+1} ≤ η` when `η` is `u`-canonical (`u ≤ w`)
 and `ψ^s_w(η)` is `u`-non-canonical.  Sharper than the prior `ψ^s_w(η) ≤ η` (which
 follows by `psiSelf_lt_Om_succ` + this).  Mechanism (model-verified 4892/4892): a
