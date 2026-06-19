@@ -95,11 +95,26 @@ canonical witness `< γ` gives `Gset = ∅` but `γ ∈ C_u(α)` is not derivabl
 deep-generator exclusion IS the simultaneous-induction content, not supplied by any isolated
 §1 lemma.
 
+**Monolith measure + the precise circularity (last pinned, 2026-06-20l).** Buchholz's §1
+measure (ya-pss `section1_plan.md`) is lexicographic `(α, n)` — outer transfinite on the bound
+`α`, inner closure-rank `n` — carrying `P(α) = {1.4b canonical-rep for generators firing into
+C_ν(α) (args < α), 1.9-necessity, 1.4a injectivity}`, all RELATIVE to args `< α`.  lean's
+`noncanonValueMem_joint` ALREADY uses this `(α, n)` measure — the measure is NOT the missing
+piece.  New monolith GREEN: `psiSelf_w_arg_not_mem` (via `acanon_sub_mono`: `η` `u`-canonical +
+`u ≤ w` ⟹ `η` `w`-canonical, so `ψ_w η ∉ C_u(η)` by witness + injectivity).  But this closes
+"the ARG `ψ_w η ∉ C_u(η)`", NOT the value-collapse "`ψ_u(ψ_w η) ∉ C_u(η)`".  **The precise
+circularity:** the canonical rep of `ψ_u(ψ_w η)` is `η` ITSELF (`η` `u`-canonical, `ψ_u η =
+ψ_u(ψ_w η)` if the collapse holds, `η ≥ η`) — the rep sits AT the bound `η`, NOT strictly
+below.  The joint IH `P(ξ')` is for `ξ' < α` (strict-below), so it cannot supply the deep-gen
+rep `η` (= the current point).  Carrying CanonRep in the joint does NOT break it: the IH gives
+reps strictly below the bound, but the deep generator's rep is AT the bound.
+
 **Honest remaining scope:** the simultaneous transfinite induction itself (carry
-`psiSelf δ u = psiSelf ξ u` AND the rep's position `δ ≥ η` through the joint's rank-IH past
-each deep generator) — the genuine multi-month Buchholz §1 formalization at which BOTH
-projects stall identically.  Every sub-reduction (term system §2, regularity/cofinality,
-injectivity, mono, fixpoint tower, surjection) has been tested and does NOT suffice.
+`psiSelf δ u = psiSelf ξ u` through the joint's rank-IH) — the genuine multi-month Buchholz §1
+formalization at which BOTH projects stall identically.  Every sub-reduction (term system §2,
+regularity/cofinality, injectivity, mono, fixpoint tower, surjection, set-membership, 1.6b,
+1.9⟸, CanonRep-carried-in-joint) has been tested and does NOT suffice — the deep-generator
+rep-at-the-bound is the irreducible content.
 
 ---
 
