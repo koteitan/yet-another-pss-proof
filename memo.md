@@ -4868,3 +4868,11 @@ nrm-image vs ST 切り分け(probe_nrm_vs_st.py): hb 0-canon は nrm 性質で�
 - 成立すれば**全ルート(構文 head 壁 / 意味論 oV_mono_NF / necessity)が単一 sorry psi_value_canon_rep に統一**し necessity が load-bearing に。
 - 要検証: NF 主項 P a' b' c' で oV b'(和になりうる)が a'-band で acanon か(psi_value_acanon は単一 psi だが C は + で閉)。
   cnf_Ccond は NF で真(703/703)・cnf で偽 ⟹ NF 条件(or 値構造)必須。next: cnf_Ccond on NF ⟸ psi_value_acanon の wiring を試行。
+
+### 続94最終確定(9dff965): unification 失敗・oV_mono_NF は既約(NF⊄wf3 が普遍 blocker)
+- unify-acanon(編集なし・健全): cnf_Ccond=acanon a(oV b) ⟸ psi_value_acanon の接続は**失敗**。C-membership は wf3 必須、
+  NF⊄wf3 ゆえ re-ascent(OT3違反)NF 主項で偽(value-descent V が 3170 non-wf3 NF 主項で失敗、最小 CE b=ψ₁(ψ₂(ψ₁(0))))。
+- ⟹ cnf_Ccond は cnf でも NF でも深層偽(ovmono-attack の 703/703「NF真」は浅い罠・revert 正しい)。oV_mono_NF は psi_value_canon_rep に reduce しない。
+- ★定義的結論: 3ルート(harg g<o harg hb / oV_mono_NF / psi_value_canon_rep)は同一 Buchholz §1 re-ascent canonicalization 核だが
+  green reduction で互いに繋がらない(NF⊄wf3 が普遍 blocker)。**PSS 停止性 = 単一 load-bearing sorry oV_mono_NF(ovnf.thy:127)**。
+- 次セッション: oV_mono_NF を直接 re-ascent 主項を扱う意味論帰納で。新アイデア要(基本列降下 oV(M[n])<oV(M)+seqlex 超限構造、or Towsner 値版)。
