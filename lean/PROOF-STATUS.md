@@ -70,9 +70,22 @@ term-model `lt_term` unfaithful, 85356 mono-viol); tower-goal fixpoint-vs-collap
 naive `PsiValueAcanon` FALSE; `OVSurjective` term-surjection FALSE (`OVSurjective_is_false`,
 cardinality — `oV` onto countable `C_0(ε)`, not the uncountable down-set).
 
+**Injectivity sub-angle (last tested, 2026-06-20j).** Buchholz's joint carries `ψ_v` mono +
+INJECTIVE + collapse together; the untried move was carrying injectivity in the joint IH.
+VERDICT: injectivity (`psiSelf_canonical_inj`) is ALREADY unconditional GREEN, so carrying it
+is VACUOUS, and it does NOT close the deep generator.  It needs BOTH args canonical; `ψ_w η`
+is non-canonical, so it pairs the realizer only with the canonical REP `δ`, giving `ζ = δ`
+(`realizer_eq_rep`).  This reduces no-realizer to "rep `δ ≥ η`" — but `δ ≥ η ⟺` the
+value-identity `ψ_u(ψ_w η) = ψ_u η` (`realizer_imp_strict`: a realizer `< η ⟺` strict `<`).
+Injectivity pins the realizer UNIQUELY but cannot decide `δ`'s POSITION; that decision IS the
+value-identity. ya-pss uses injectivity identically (`psi_inj_arg_canonical`) with the same
+non-canonical-`β` precondition failure.
+
 **Honest remaining scope:** the simultaneous transfinite induction itself (carry
-`psiSelf δ u = psiSelf ξ u` through the joint's rank-IH past each deep generator) — the
-genuine multi-month Buchholz §1 formalization at which BOTH projects stall identically.
+`psiSelf δ u = psiSelf ξ u` AND the rep's position `δ ≥ η` through the joint's rank-IH past
+each deep generator) — the genuine multi-month Buchholz §1 formalization at which BOTH
+projects stall identically.  Every sub-reduction (term system §2, regularity/cofinality,
+injectivity, mono, fixpoint tower, surjection) has been tested and does NOT suffice.
 
 ---
 
