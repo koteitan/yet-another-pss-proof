@@ -4838,3 +4838,5 @@ nrm-image vs ST 切り分け(probe_nrm_vs_st.py): hb 0-canon は nrm 性質で�
 - **両ルート(b/a)とも深く浅検証 obligation で底打ち**=真の多セッション核。
 - tied_crit_lt_hb を全洞察+厳格 soundness gate で Isabelle 形式化試行(tied-attempt agent, worktree)投入中。
   新事実: maxsub hb=lead hb 導出可(F2+G1+lead_le_maxsub)・lead X=1・buried D_0-critical が wf3(Gterm k)で届かない根。
+- 🔴 route(a) 深層検証は **quick model bump 不可**(COEFF_MAX 8+exp拡張で組合せ爆発 timeout)。psi_value_acanon の真偽確定には
+  本格的順序数モデル工学が要る(別タスク)。off-path のため打ち切り。route(a) 生死は未確定のまま。
