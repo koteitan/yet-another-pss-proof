@@ -1455,6 +1455,59 @@ measure stalls.  That term-system construction (Buchholz §2, the `(OT,<)` notat
 foundational build, not a lemma.  GREEN here: the fixpoint route fully realized at the
 `ε`-boundary, the core characterized to the single deep-generator subcase. -/
 
+/-! ### §2 SCOPE VERDICT (2026-06-20h): lean has the EMBEDDING half, needs the SURJECTION
+
+Does lean's EXISTING term machinery already supply Buchholz §2's external well-ordering for
+the deep-generator subcase?  **Decisive verdict: HALF of it — the embedding `OT → On`; the
+SURJECTION `On → OT` (the genuinely hard half of the order-iso) is ABSENT and is exactly
+what the deep generator needs.**
+
+GREEN already (the embedding half = Buchholz Lemma 2.2):
+* `Otembed.oV : Three → Ordinal` (the order map `o`), `oV_order_pres` (`olt v u → oV v <
+  oV u`, strictly order-PRESERVING, by `tsize` induction);
+* `Otembed.wf_olt_wf3 : WellFounded oltWf3` (`olt` on `wf3` NF terms is WELL-FOUNDED, via
+  the embedding into `Ordinal.lt_wf`);
+* `Otembed.Gterm` (= Buchholz `G_uγ` ON TERMS), `Gterm_tsize` (every `Gterm` member is a
+  `tsize`-smaller structural subterm — the term-structural descent);
+* `Nrm.proj` (the term-level canonical-rep CONSTRUCTOR), and `psi_proj_of_notmem` ALREADY
+  runs a `tsize` strong-induction descending via `Gterm_tsize`.
+
+THE GAP (why term-`tsize` does NOT yet close the per-step `psi_proj_notmem`): the per-step
+membership `ψ_a(oV b') ∈ C_a(oV g)` yields (M1 `psi_form_of_mem`) a canonical witness `ξ <
+oV g` that is an **arbitrary ORDINAL** in `C_a(oV g)` — NOT a term-value.  To descend on it
+structurally (via `wf_olt_wf3`) one must convert `ξ` into a `wf3` term `X` with `olt X g` —
+i.e. **`oV`-SURJECTIVITY onto the closure** (`OVSurjective`: every `γ ∈ C_a(α)` is `oV X`
+for `wf3 X`).  That surjection is Buchholz's §2 order-iso completeness; it is NOT in lean.
+
+Distinguished from the rounds-1-8 wall: those attacked the `olt`-DOMINATION clause
+(`H0clause`, an ORDER fact) by `tsize` and found it non-inductive.  The per-step is a
+COLLAPSE/MEMBERSHIP fact, a DIFFERENT use — but it stalls at the SAME structural point:
+the witness is an ordinal, not a subterm, so the embedding-only machinery can't reach it.
+
+§2 ROADMAP (the honest remaining build, with the RIGHT substrate identified):
+1. **`OVSurjective` (the order-iso `On → OT`)** — every `γ ∈ C_a(α)` has a `wf3` term.
+   Build by **`crank`-induction** (`Crank.crank_arg_lt`, GREEN): a generator `γ = ψ_{u'} ξ`
+   recurses to `ξ`'s term at strictly smaller `crank` (NOT ordinal order — `ξ ≥ γ` deep).
+   The CANONICAL form requires the SELF-world generators (`CsetSelf`, where the generator
+   test enforces canonicity) — so build it for `CsetSelf`/`psiSelf` (needs an `oVSelf` or the
+   `psi = psiSelf` bridge `alpha_step_residue`).  `crank` + canonical generators are the
+   correct substrate; this is the first concrete §2 piece.
+2. With `OVSurjective`, the per-step witness `ξ` becomes a `wf3` term `X`, `olt X g`; the
+   per-step closes by `wf_olt_wf3` descent (structural, where ordinal/`crank` stalled).
+3. Thread → `psi_proj_notmem` → `psi_proj` → `CollapseResidueMaxo` → `PSS_terminates_nrm_final`.
+
+So §2 is NOT mostly-there: the embedding is GREEN, but the SURJECTION (the hard half) plus
+the canonical self-world construction is the genuine foundational build.  The `crank`
+machinery (`Crank.lean`) is the correct measure for it. -/
+
+/-- **The §2 surjectivity obligation** (`On → OT` order-iso completeness): every closure
+member is the `oV`-value of a `wf3` term.  With it (+ `wf_olt_wf3` + `Crank.crank_arg_lt`)
+the per-step `Nrm.psi_proj_notmem` closes by term-structural descent.  The honest §2 core
+(Buchholz `(OT,<) ≅ C_0(ε_{Ω_ω+1})`), to be built by `crank`-induction in the self-world. -/
+def OVSurjective.{u} : Prop :=
+  ∀ (γ α : Ordinal.{u}) (u : ℕ), γ ∈ Cset (psiRes α) α u →
+    ∃ X : Three, wf3 X ∧ oV.{u} X = γ
+
 end EpsLvlFixpoint
 /-! ### ✅ TRUTH VERDICT on the sub-case-A collapse `ψ_u(ψ_w η) = ψ_u η` (2026-06-20e)
 
