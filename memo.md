@@ -4838,5 +4838,13 @@ nrm-image vs ST 切り分け(probe_nrm_vs_st.py): hb 0-canon は nrm 性質で�
 - **両ルート(b/a)とも深く浅検証 obligation で底打ち**=真の多セッション核。
 - tied_crit_lt_hb を全洞察+厳格 soundness gate で Isabelle 形式化試行(tied-attempt agent, worktree)投入中。
   新事実: maxsub hb=lead hb 導出可(F2+G1+lead_le_maxsub)・lead X=1・buried D_0-critical が wf3(Gterm k)で届かない根。
+
+### 続94確定2(ae25f28): head_arg_0_canonical を ST_PS.induct 化(diag base緑)・oper-step 核を特性化
+- operstep-build agent: head_arg_0_canonical を **ST_PS.induct で証明済化**。diag base 緑(nrm_translate_diagSeq=nested-diagonal
+  collapse=D1(Dv 0)・Gterm_PvZZ・proj_PvZZ 等・再利用可)。残核= **head_arg_0_canonical_oper(nrm.thy:3112, firing-conditioned, IH on N)**。
+- ★oper-step の hb 変換を特性化(probe_oper_hb_rule/n.py): hb(N[1]) = hb(N) の**最内主項を基本列1ステップ**で書換(D2(0)→D1^{n-1}(0) 等)・<o。
+  **n=1 は局所清潔だが n≥2 は多階層コピー増殖(D0 出現・§6.7 完全構造)**。全コピーは FS-descent で <o hb。= genuine §6.7 collapse 核。
+- 健全性自己修正(agent): firing 仮説必須(非発火偽 324492/1M, firing 266545/0)。diag base 無条件真。
+- 次手: head_arg_0_canonical_oper を IH + FS-descent(コピーが <o)で。要 oper↔nrm∘translate∘harg 橋(hb(N[n])↔hb(N) 構造関係)。
 - 🔴 route(a) 深層検証は **quick model bump 不可**(COEFF_MAX 8+exp拡張で組合せ爆発 timeout)。psi_value_acanon の真偽確定には
   本格的順序数モデル工学が要る(別タスク)。off-path のため打ち切り。route(a) 生死は未確定のまま。
