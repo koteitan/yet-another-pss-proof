@@ -420,6 +420,39 @@ theorem hArg_of_headFamily (HF : HeadFamilyNF.{0})
     oV.{0} (P 0 b c) < oV (P 0 f g) :=
   oV_nf_arg_lt_of_head hv (fun x hxb => HF ⟨c, hv⟩ ⟨g, hu⟩ hbf x hxb)
 
+/-! ### `HeadFamilyNF` scoping VERDICT (2026-06-20n): hits the DEEP region, NOT independent
+
+`HeadFamilyNF`'s per-element head `ψ_0(oV x) < ψ_0(oV f)` was flagged "provable below ε via
+`psi_strict_mono_lt_epsLvl`, secondary".  **Decisive verdict: it hits the deep `≥ ε` region —
+the lever (sub-`ε` only) does NOT close it; it is NOT independent of the §1 collapse core.**
+
+* SUB-`ε` PART — GREEN (`headfam_head_of_lever`): for `oV x < ε_0` and `oV x < oV f`, the head
+  `ψ_0(oV x) < ψ_0(oV f)` closes by `psi_strict_mono_lt_epsLvl` (no collapse, no membership).
+* DEEP PART — the collapse core: NF args reach `oV x ≥ ε_0`.  Witnessed (`deep_arg_maxr1_le1`,
+  Lean-proven): the lead-`1` arg `P 1 Z Z` (already at `maxr1 ≤ 1`, the live path) has
+  `oV (P 1 Z Z) = Ω_1 > ε_0`.  So a `HeadFamilyNF` arg-family `x ≤o b` containing a lead-`1`
+  `x` has `oV x ≥ Ω_1 > ε_0` — DEEP, where the head `ψ_0(oV x) < ψ_0(oV f)` IS the §1
+  `ψ_0`-collapse content (= `CollapseResidueMaxo` per element, `psi0_head_of_CRM`).
+
+So `HeadFamilyNF` is another FACE of the §1 collapse core (the `ψ_0`-non-collapse Ω-band head),
+NOT a separable hypothesis; discharging it needs `CollapseResidueMaxo` (the deep part) — so
+closing it does NOT reduce `PSS_terminates_nrm_final` below `{CollapseResidueMaxo}` (it shares
+the core).  The sub-`ε` part is GREEN; the deep part is the same wall. -/
+
+/-- **The sub-`ε` part of the `HeadFamilyNF` head** (GREEN, the lever-tractable portion).
+For `oV x < ε_0` and `oV x < oV f`: `ψ_0(oV x) < ψ_0(oV f)` via `psi_strict_mono_lt_epsLvl`. -/
+theorem headfam_head_of_lever {x f : Three}
+    (hxe : oV.{0} x < epsLvl 0) (hxf : oV.{0} x < oV f) :
+    psi.{0} (oV x) 0 < psi (oV f) 0 :=
+  psi_strict_mono_lt_epsLvl hxe hxf
+
+open Ordinal in
+/-- **A lead-`1` NF arg already reaches the deep region** (Lean-proven witness): at `maxr1 ≤ 1`
+(the live path), `oV (P 1 Z Z) = Ω_1 > ε_0`.  So `HeadFamilyNF`'s arg-family reaches `oV ≥ ε_0`
+where the sub-`ε` lever fails — the head is the §1 collapse content there. -/
+theorem deep_arg_maxr1_le1 : ε_ 0 < oV.{0} (P 1 Three.Z Three.Z) := by
+  rw [oV_P1ZZ]; exact epsilon0_lt_Om_one
+
 /-- **`PSS_terminates_nrm_final` — THE sound nrm-route endpoint, modulo the single
 genuine Buchholz §1 collapse `{CollapseResidueMaxo, HeadFamilyNF}`.**  `hSuf`
 discharged by the proven `ST_PS_suffix`; `hArg` by `HeadFamilyNF`.  Both residuals
