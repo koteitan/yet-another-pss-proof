@@ -205,4 +205,87 @@ theorem psiValue_mem_imp_arg_lt {β η : Ordinal.{u}} {u v : ℕ} (hvu : v ≤ u
   subst hξη
   exact ⟨hξβ, hξmem⟩
 
+/-! ### [C\'] The bound-free `Gset` (Buchholz `G_uγ`) and Lemma 1.9
+
+`Gset u γ` = Buchholz's `G_uγ` (Def. before 1.9): the finite-support set of canonical
+generator arguments whose values build `γ`, defined bound-FREE.  Well-founded by
+ORDINAL recursion: for a self-canonical principal `γ = psiSelf ξ w` the witness `ξ < γ`
+(`CsetSelf_witness_canonical`), and additive components are `< γ` — so ordinal order
+suffices HERE (the deep-region `η ≥ ψ_v η` failure is at the OUTER bound, not the
+self-bound; `Gset` reads off the self-bound derivation).  Lemma 1.9
+`γ ∈ C_u(α) ⟺ Gset u γ ⊆ Iio α` then makes membership bound-checkable. -/
+
+open Classical in
+/-- **Buchholz `G_uγ`** (bound-free), by ordinal WF recursion.  Principal
+`γ = psiSelf ξ w` (witness `ξ < γ`): `insert ξ (Gset u ξ)` if `u ≤ w` else `∅`.
+Non-principal `γ ≠ 0`: union of the two additive components' `Gset`.  `γ = 0` or no
+witness: `∅`. -/
+noncomputable def Gset (u : ℕ) : Ordinal.{v} → Set Ordinal.{v} :=
+  Ordinal.lt_wf.fix fun γ IH =>
+    if hpr : Ordinal.IsPrincipal (· + ·) γ then
+      if hex : ∃ (w : ℕ) (ξ : Ordinal.{v}), γ = psiSelf ξ w ∧ ξ < γ ∧
+                 ξ ∈ CsetSelf (psiResSelf ξ) ξ w then
+        let pf := hex.choose_spec
+        let pf2 := pf.choose_spec
+        if u ≤ hex.choose then insert pf.choose (IH pf.choose pf2.2.1) else ∅
+      else ∅
+    else
+      if hne : γ ≠ 0 then
+        let dec := Ordinal.exists_lt_add_of_not_isPrincipal_add hpr
+        let pa := dec.choose_spec
+        let pb := pa.2.choose_spec
+        IH dec.choose pa.1 ∪ IH pa.2.choose pb.1
+      else ∅
+
+open Classical in
+theorem Gset_unfold (u : ℕ) (γ : Ordinal.{v}) :
+    Gset u γ =
+    (if hpr : Ordinal.IsPrincipal (· + ·) γ then
+      if hex : ∃ (w : ℕ) (ξ : Ordinal.{v}), γ = psiSelf ξ w ∧ ξ < γ ∧
+                 ξ ∈ CsetSelf (psiResSelf ξ) ξ w then
+        (if u ≤ hex.choose then insert hex.choose_spec.choose (Gset u hex.choose_spec.choose)
+          else ∅)
+      else ∅
+    else
+      if hne : γ ≠ 0 then
+        (let dec := Ordinal.exists_lt_add_of_not_isPrincipal_add hpr
+         Gset u dec.choose ∪ Gset u dec.choose_spec.2.choose)
+      else ∅) := by
+  conv_lhs => rw [Gset, Ordinal.lt_wf.fix_eq]
+  rfl
+
+/-- Uniqueness of the canonical ψ-representation: `psiSelf ξ w = psiSelf ξ' w'` with both
+args self-canonical ⟹ `w = w'` and `ξ = ξ'`. -/
+theorem psiSelf_rep_unique {γ ξ ξ' : Ordinal.{v}} {w w' : ℕ}
+    (h1 : γ = psiSelf ξ w) (h2 : γ = psiSelf ξ' w')
+    (hξc : ξ ∈ CsetSelf (psiResSelf ξ) ξ w) (hξ'c : ξ' ∈ CsetSelf (psiResSelf ξ') ξ' w') :
+    w = w' ∧ ξ = ξ' := by
+  have hval : psiSelf ξ w = psiSelf ξ' w' := by rw [← h1, h2]
+  have hww : w = w' := by
+    have b2 : γ < Om (w+1) := h1 ▸ psiSelf_lt_Om_succ ξ w
+    have b1 : Om w ≤ γ := h1 ▸ Om_le_psiSelf ξ w
+    have b4 : γ < Om (w'+1) := h2 ▸ psiSelf_lt_Om_succ ξ' w'
+    have b3 : Om w' ≤ γ := h2 ▸ Om_le_psiSelf ξ' w'
+    by_contra hne
+    rcases Nat.lt_or_ge w w' with h | h
+    · exact absurd (lt_of_le_of_lt b3 b2) (not_lt.2 (Om_mono (by omega)))
+    · have : w' < w := by omega
+      exact absurd (lt_of_le_of_lt b1 b4) (not_lt.2 (Om_mono (by omega)))
+  subst hww
+  exact ⟨rfl, psiSelf_canonical_inj hξc hξ'c hval⟩
+
+open Classical in
+/-- **`Gset` generator case** (clean): `γ = psiSelf ξ w` principal, `ξ < γ`
+self-canonical ⟹ `Gset u γ = insert ξ (Gset u ξ)` if `u ≤ w`, else `∅`. -/
+theorem Gset_gen {u w : ℕ} {ξ γ : Ordinal.{v}} (hpr : Ordinal.IsPrincipal (·+·) γ)
+    (heq : γ = psiSelf ξ w) (hξγ : ξ < γ) (hξc : ξ ∈ CsetSelf (psiResSelf ξ) ξ w) :
+    Gset u γ = if u ≤ w then insert ξ (Gset u ξ) else ∅ := by
+  rw [Gset_unfold, dif_pos hpr]
+  have hex : ∃ (w : ℕ) (ξ : Ordinal.{v}), γ = psiSelf ξ w ∧ ξ < γ ∧
+               ξ ∈ CsetSelf (psiResSelf ξ) ξ w := ⟨w, ξ, heq, hξγ, hξc⟩
+  rw [dif_pos hex]
+  have spec := hex.choose_spec.choose_spec
+  obtain ⟨hwval, hceq⟩ := psiSelf_rep_unique spec.1 heq spec.2.2 hξc
+  rw [hceq, hwval]
+
 end YAPSS
