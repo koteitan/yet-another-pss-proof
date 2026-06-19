@@ -4861,3 +4861,10 @@ nrm-image vs ST 切り分け(probe_nrm_vs_st.py): hb 0-canon は nrm 性質で�
   closable 候補: 緑 collapse 機構 psi_eq_of_not_mem/collapse_grow(collapsing.thy)で ψ_a を projection 経由 factor。
 - **次セッション単一標的 = oV_mono_NF、攻め筋 = hereditary NF-不変量 H の発見**(cnf+C-membership を hereditary に保証)。
   tools/probe_{block_value,ccond_residual,valueOT3_raw}.py に検証記録。
+
+### 続94確定4: 潜在的 unification lead — cnf_Ccond = acanon a(oV b) ⟸ psi_value_acanon?
+- ★oV_mono_NF の arg 残核 cnf_Ccond(oV b∈C_a(oV b))は **= acanon a(oV b)** で、necessity の **psi_value_acanon(acanon v(psi ζ w), v≤w)と同型**。
+- semantic-wire は psi_proj 経由で necessity を「dead」と判定したが、これは**別経路**: oV_mono_NF→cnf_Ccond(NF条件)→acanon→psi_value_acanon→psi_value_canon_rep。
+- 成立すれば**全ルート(構文 head 壁 / 意味論 oV_mono_NF / necessity)が単一 sorry psi_value_canon_rep に統一**し necessity が load-bearing に。
+- 要検証: NF 主項 P a' b' c' で oV b'(和になりうる)が a'-band で acanon か(psi_value_acanon は単一 psi だが C は + で閉)。
+  cnf_Ccond は NF で真(703/703)・cnf で偽 ⟹ NF 条件(or 値構造)必須。next: cnf_Ccond on NF ⟸ psi_value_acanon の wiring を試行。
