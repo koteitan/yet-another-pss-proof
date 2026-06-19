@@ -30,6 +30,52 @@ The two characterizations of the single core are **dual / sibling**:
 
 ---
 
+## (a0) TERMINAL CHARACTERIZATION of the §1 core (2026-06-20 campaign, authoritative)
+
+A multi-session campaign attacked the §1 collapse core (`CollapseResidueMaxo` /
+`alpha_step_residue` / `subA_nm`) by every lean-native route.  **Definitive result: the
+core is the Buchholz §1 SIMULTANEOUS TRANSFINITE INDUCTION carrying the VALUE-IDENTITY
+through deep generators — irreducible below the full simultaneous induction, and NOT
+closable by the term system (§2).**
+
+**Key structural finding.** Buchholz's `C_v(α)` (1986 §1, def of `C_v^{n+1}`) has the
+canonicity test `ξ ∈ C_u(ξ)` BUILT IN — it IS the canonical closure `C_v^c` (= lean's
+`CsetSelf`).  So Buchholz works in ONE closure and NEVER needs `Cset = Cset_c`; lean's
+`alpha_step_residue` (`Cset = CsetSelf`) is an artifact of lean's two-closure architecture.
+Re-architecting to a single `CsetSelf`/`oVSelf` world would UNIFY the two faces but leaves
+the SAME collapse `ψ_u(ψ_w η) = ψ_u η` (the deep core) — no new traction.
+
+**The deep generator.** The collapse ⟺ no `u`-canonical `ζ < η` realizes `ψ_u(ψ_w η)`
+(no-realizer). Equivalently the value is a ψ-fixpoint. ALL internal measures stall on the
+deep generator `δ = ψ_u ξ'` (`ξ' ∈ [c,η)` canonical, `ξ' ≥ c` yet `ψ_u ξ' < c`): ordinal-WF
+needs `ξ' < ψ_u ξ'` (FALSE deep, `AcanonLtValue` false); `crank_arg_lt` needs `ξ' < bound`;
+the term witness IS `proj a b` so the circularity is the value-identity not representability;
+`fixpoint ⟺ saturation ⟺ no-deep-generator` are all equivalent (no internal induction breaks
+the circle).  **§2/term-system does NOT help: ya-pss has the full term system (`term_nec`
+GREEN) and stalls at the IDENTICAL `psi_proj_nonmem` core.**  Regularity/cofinality gives the
+BAND bound (`ψ_v α < Ω_{v+1}`, GREEN) but not the value-identity.
+
+**GREEN substrate built this campaign** (the base + skeleton of the simultaneous induction,
+all `sorryAx`-free): `Crank.crank`/`crank_arg_lt` (C-rank strict-drop measure),
+`CsetSelf_crank_induction`, `Gset` (= Buchholz `G_uγ`) + `Gset_gen` + Lemma-1.9-generator
+`psiValue_mem_imp_arg_lt`, `psiSelf_eq_opow_some` (ψ-value = ω-power, all regions),
+`psiSelf_fixpoint_of_below_saturated` (the fixpoint lever) + `psiSelf_epsLvl_fixpoint` (the
+first DEEP ψ-fixpoint, `ε`-boundary, via Mathlib `omega0_opow_epsilon`/`right_le_veblen`),
+`fixpoint_iff_saturated`, `subA_nm_collapse_of_noRealizer`, `noncanonValueMem_joint` 4-leaf
+skeleton with `subA_nm` = the no-realizer core.
+
+**FIVE soundness catches** (each a Lean-proven `_is_false` / re-sounding — the discipline
+working): `subA_nm`-unconditional FALSE; `hVB` value-bound FALSE (`hVB_is_contradictory`,
+term-model `lt_term` unfaithful, 85356 mono-viol); tower-goal fixpoint-vs-collapse confusion;
+naive `PsiValueAcanon` FALSE; `OVSurjective` term-surjection FALSE (`OVSurjective_is_false`,
+cardinality — `oV` onto countable `C_0(ε)`, not the uncountable down-set).
+
+**Honest remaining scope:** the simultaneous transfinite induction itself (carry
+`psiSelf δ u = psiSelf ξ u` through the joint's rank-IH past each deep generator) — the
+genuine multi-month Buchholz §1 formalization at which BOTH projects stall identically.
+
+---
+
 ## (a) What is proven
 
 ### Three independent parametric termination routes (each `sorryAx`-free)
@@ -206,7 +252,7 @@ omitted simultaneous induction.
 
 ---
 
-## (c) Disproven bypass / localization attempts — the rigor record (11)
+## (c) Disproven bypass / localization attempts — the rigor record (12)
 
 Each was a proposed way to make the core vacuous, cheap, or term-local. Each is
 **FALSE**, with an explicit counterexample. The ordinal-collapse ones are retained in
@@ -232,6 +278,7 @@ source as valid implications with *unsatisfiable* hypotheses, clearly labelled D
 | 9  | general `proj0`-monotone (without NF discipline)                               | FALSE ~25% (`p₁(0)+p₀(p₁(0)+p₁(0))` is `cnf`, `lead = maxsub = 1`, yet fires). |
 | 10 | relative `r1ok` (block-local minimum-row-0 anchor) suffices for non-firing     | descendant blocks are forest-interior **copies** with positive root row-`1`, not standalone standard forms — the node-relative lift `(0,0)::(argblock − x) ∈ ST_PS` is FALSE (304/13105; even shifted only 702/12801 — the shift fixes the order but not the row-`1` climbing). Only the **root**-threshold lift `(0,0)::takeWhile(0<·)` is `ST_PS` (`ST_PS_desc`, 13105/0). |
 | 11 | `wf3 ⟹ H0clause` (read OT3 well-formedness off as the head-`0` clause)         | FALSE: `wf3 (P a b c)` gives the `Gterm a b` clause, but `H0clause` needs `Gterm 0 b`; the gap is exactly the head-`0`-nested head-`1` coefficients, model-confirmed. |
+| 12 | `OVSurjective` (term-surjection `On → OT`: convert the per-step witness `ξ` to a term, then descend by `wf_olt_wf3`) | FALSE (`OVSurjective_is_false`, Lean-proven, cardinality): `oV` maps onto the COUNTABLE `C_0(ε_{Ω_ω+1})`, a proper subset of the uncountable `Iio (oV g)` (`oV (P 1 Z Z) = Ω_1`). The §2 embedding half is GREEN but the surjection (the hard half) is false as stated; and even with it the witness is `proj a b` → the same value-identity circularity. ya-pss confirms: full term system, identical stall. |
 
 Common shape of all failures: the bypass tries to derive the equality / non-firing
 from closure / canonicity / a term-local invariant, but those only yield the *weak*
