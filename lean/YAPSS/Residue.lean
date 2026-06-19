@@ -1245,6 +1245,23 @@ theorem caseB_H1_of_cleangap {η : Ordinal.{u}} {w u : ℕ} (δ : Ordinal.{u})
   have h2 : psiSelf (psiSelf η w) u = psiSelf δ u := collapseSelf_le δ (psiSelf η w) hcδ hcleanc
   rw [h1, h2]
 
+/-- **Every `ψ^s`-value is an `ω`-power** (GREEN, ALL regions incl. deep `≥ε`).  Since
+`psiSelf α v` is additively principal (`psiSelf_addprinc`) and `≥ Ω_v ≥ 1 > 0`, Mathlib's
+`isPrincipal_add_iff_zero_or_omega0_opow` gives `psiSelf α v = ω^β` for some `β`.  This is
+the bridge from the C-set-defined `ψ^s` to `ω`-power / fixpoint structure that is valid
+even where the explicit formula `ψ^s_v α = ω^(Ω_v+α)` (sub-`ε` only) fails. -/
+theorem psiSelf_eq_opow_some (α : Ordinal.{u}) (v : ℕ) :
+    ∃ β : Ordinal.{u}, psiSelf α v = Ordinal.omega0 ^ β := by
+  have hp : Ordinal.IsPrincipal (·+·) (psiSelf α v) :=
+    fun {x y} hx hy => (psiSelf_addprinc α v).2 x y hx hy
+  rcases (Ordinal.isPrincipal_add_iff_zero_or_omega0_opow).1 hp with h0 | hr
+  · exfalso
+    have h1 : (1:Ordinal) ≤ psiSelf α v := le_trans (one_le_Om v) (Om_le_psiSelf α v)
+    rw [h0] at h1; exact absurd h1 (by simp)
+  · obtain ⟨β, hβ⟩ := hr
+    beta_reduce at hβ
+    exact ⟨β, hβ.symm⟩
+
 /-- **GREEN PIECE 7: subA_nm collapse from the NO-REALIZER condition** (the sharpest
 honest §1 residue).  If no `u`-canonical `ζ < η` realizes the value `ψ^s_u(ψ^s_w η)`, then
 `ψ^s_u(ψ^s_w η) = ψ^s_u η` (the sub-case-A collapse).  Proof: membership of `ψ^s_u(ψ^s_w η)`
