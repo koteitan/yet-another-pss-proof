@@ -18,3 +18,4 @@ import YAPSS.Gterm0Olt
 import YAPSS.CopyTile
 import YAPSS.Reduction
 import YAPSS.CollapseRank
+import YAPSS.CollapseL0
