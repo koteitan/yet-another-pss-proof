@@ -263,4 +263,70 @@ theorem Mn_arg {accLow : Three → Prop} {n : ℕ} {a : ℕ} {b : Three}
   intro β hβ
   exact hcrit β (critSub_arg_subset a b β hβ)
 
+/-! ## Stratified singleton step (Lemma 3.10, `ϑ`-accessibility)
+
+A single principal `P a b Z ∈ Mn accLow n` is `oltMn`-accessible once its
+argument `b` is, PROVIDED every strictly-smaller-head `Mn`-predecessor is already
+accessible (`hlow`).  Model-verified (probe_m3_*): for the NF singletons (all
+head-0) `hlow` is **vacuous** (no `a' < 0`), and the in-stratum predecessors are
+arg-drops (`a' = a`, `b' <o b`) handled by the accessibility induction on `b`. -/
+
+/-- Every summand of an `oltMn`-predecessor `v` of `P a b Z` is `<o P a b Z`. -/
+theorem summand_lt_of_predMn {accLow : Three → Prop} {n a : ℕ} {b v : Three}
+    (cv : cnf v) (vlt : v <o P a b Z) {s : Three} (hs : s ∈ summands v) :
+    s <o P a b Z :=
+  summand_lt_of_pred cv vlt hs
+
+/-- The stratified singleton step.  `hlow` supplies accessibility of any
+strictly-smaller-head `Mn`-predecessor; `hb` is the (lower-stratum) accessibility
+of the argument `b`; the conclusion is accessibility of `P a b Z`. -/
+theorem sing_accMn {accLow : Three → Prop} {n a : ℕ}
+    (hlow : ∀ a' < a, ∀ d : Three, Mn accLow n (P a' d Z) →
+      Acc (oltMn accLow n) (P a' d Z))
+    {b : Three} (hb : Acc (oltMn accLow n) b) (lb : Mn accLow n (P a b Z)) :
+    Acc (oltMn accLow n) (P a b Z) := by
+  induction hb with
+  | intro b _ ih =>
+    refine Acc.intro _ fun v hv => ?_
+    obtain ⟨vlt, lv, _⟩ := hv
+    have summacc : ∀ s ∈ (↑(summands v) : Multiset Three),
+        Acc (oltMn accLow n) s := by
+      intro s hs
+      have sv : s ∈ summands v := by simpa using hs
+      obtain ⟨a', d', he, hd'⟩ := summands_sargs sv
+      have ls : Mn accLow n s := Mn_summands lv s sv
+      have lsP : Mn accLow n (P a' d' Z) := he ▸ ls
+      have slt : s <o P a b Z := summand_lt_of_pred lv.1 vlt sv
+      have hsP : P a' d' Z <o P a b Z := he ▸ slt
+      rw [he]
+      rcases olt_P_P.1 hsP with hlt | ⟨heq, hdb⟩ | ⟨heq, _, hz⟩
+      · exact hlow a' hlt d' lsP
+      · subst heq
+        have lbArg : Mn accLow n b := Mn_arg lb
+        have ld' : Mn accLow n d' := Mn_arg lsP
+        exact ih d' ⟨hdb, ld', lbArg⟩ lsP
+      · exact absurd hz (not_olt_Z _)
+    exact sum_accMn lv (acc_dmlt_of_acc (transp_oltMn accLow n) summacc)
+
+/-! ## The stratum step `Acc_n` (toward Lemma 3.10 + composition)
+
+The main accessibility: a term in `Mn (AccBelow n) n` is `oltMn`-accessible.
+The lower strata `AccBelow n` are accessible by the outer stratum induction; the
+within-stratum structure is closed by `sum_accMn` (DM on summands) and
+`sing_accMn` (arg-induction on a principal).
+
+The genuine remaining obligations are: (i) the singleton `hlow` (smaller-head
+predecessors) — for the head-`0` target this is **vacuous** (no `a' < 0`); (ii)
+the arg accessibility `Acc (oltMn n) b` for a critical (collapse) arg `b` — `b ∈
+AccBelow n` gives `Accn m b` at a lower stratum `m`, which must be **lifted** to
+`oltMn n` accessibility.  The lift is where the head-drop predecessors (`lead v <
+lead b`, all in lower strata or `hlow`-covered) are absorbed. -/
+
+/-- The head-`0` instantiation of the singleton `hlow`: vacuously true, since no
+predecessor head `a' < 0` exists. -/
+theorem sing_accMn_head0 {accLow : Three → Prop} {n : ℕ}
+    {b : Three} (hb : Acc (oltMn accLow n) b) (lb : Mn accLow n (P 0 b Z)) :
+    Acc (oltMn accLow n) (P 0 b Z) :=
+  sing_accMn (fun a' ha' _ _ => absurd ha' (Nat.not_lt_zero a')) hb lb
+
 end YAPSS
