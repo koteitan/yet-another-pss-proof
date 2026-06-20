@@ -1,3 +1,8 @@
+# git rule
+- git commit, git push are allowed.
+- git add -A is prohibited.
+- git add . is prohibited.
+
 # 注意事項
 - isabelle は /isbman という isabelle プロセスマネージャがあるのでそれを使って操作して下さい。
 - 現在同じマシン上で２つの証明エージェントが別の証明をしていますので、kill等は isbmanを通して行ったり、気をつけてください。
