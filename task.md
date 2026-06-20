@@ -22,5 +22,7 @@
     - ✅ 3還元ルート（nrm-order / pure-lex / W=T）— 全て sorryAx-free modulo 核
     - ✅ Buchholz §2 embedding 半分（oV / wf_olt_wf3 / Gterm / proj）
     - ✅ Buchholz §1 substrate（crank / Gset / Lemma 1.9 generator / fixpoint base / 4-leaf joint skeleton）
-    - 🚨 ★残＝単一 Buchholz §1 collapse core（obstruction: rep-at-the-bound）
-      - 同核の全別名: CollapseResidueMaxo / HeadFamilyNF / wf_ArgsA / diag_acc / H0clause_oper_step / psi_proj_notmem
+    - ✅ door1 Towsner ladder（cr_inv / M_n / Acc_n / Lemma 3.8 / ϑ-closure collapse 方向 forest-fact-free）
+    - 🚨 ★残＝単一の既約 forest core（subscript-drop domination, head-1+ arg）
+      - 同核: H0clause_oper_step / CollapseResidueMaxo / wf_ArgsA / diag_acc / Towsner 3.11 cross-stratum / Buchholz 1.9-term
+      - 3 door + 全 lever（rank / critSub / WQO / gap-embed / §1 / fixpoint）収束、shortcut なし確定
