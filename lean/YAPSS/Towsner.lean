@@ -414,6 +414,31 @@ theorem mem_critSub_of_collapse {a : ℕ} {b : Three} (h : a < maxsub b) :
   exact List.mem_append.2 (Or.inl (List.mem_append.2
     (Or.inl (List.mem_singleton.2 rfl))))
 
+/-- `cnf` is hereditary along the critical subterms. -/
+theorem cnf_critSub {t : Three} (hcnf : cnf t) :
+    ∀ β ∈ critSub t, cnf β := by
+  induction t with
+  | Z => intro β hβ; simp at hβ
+  | P a b c ihb ihc =>
+    have cb : cnf b := by
+      cases c with
+      | Z => exact cnf_P_Z.1 hcnf
+      | P e f g => exact (cnf_P_P.1 hcnf).1
+    have cc : cnf c := by
+      cases c with
+      | Z => trivial
+      | P e f g => exact (cnf_P_P.1 hcnf).2.2
+    intro β hβ
+    rw [critSub_P] at hβ
+    rcases List.mem_append.1 hβ with hβ' | hβc
+    · rcases List.mem_append.1 hβ' with hhd | hβb
+      · by_cases hinv : a < maxsub b
+        · rw [if_pos hinv] at hhd
+          rcases List.mem_singleton.1 hhd with rfl; exact cb
+        · rw [if_neg hinv] at hhd; simp at hhd
+      · exact ihb cb β hβb
+    · exact ihc cc β hβc
+
 /-! ## The within-stratum accessibility (Towsner Lemma 3.10, ϑ-closure)
 
 Every `Mn (AccBelow n) n` term is `oltMn`-accessible, given that every lower
