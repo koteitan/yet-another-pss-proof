@@ -160,4 +160,86 @@ theorem asc_acc_of_Accn_zero {t : Three} (h : Accn 0 t) : Acc oltAsc t := by
     funext s t; exact propext (oltMn_zero s t)
   rwa [hrel] at h
 
+/-! ## `M_n` closure under summands (toward Lemma 3.8)
+
+The critical subterms of a summand `P a b Z` of `t` are critical subterms of `t`,
+and `cr_inv (P a b Z) ≤ cr_inv t`.  Hence `Mn accLow n` is closed under taking
+summands — the prerequisite for the Dershowitz–Manna `sum_acc` step. -/
+
+/-- The critical subterms of a summand of `t` are critical subterms of `t`. -/
+theorem critSub_summands {t : Three} {s : Three} (hs : s ∈ summands t) :
+    ∀ β ∈ critSub s, β ∈ critSub t := by
+  induction t with
+  | Z => simp at hs
+  | P a b c ihb ihc =>
+    rw [summands_P] at hs
+    rcases List.mem_cons.1 hs with rfl | hs
+    · -- s = P a b Z : critSub (P a b Z) = (if a<maxsub b then [b]) ++ critSub b ++ []
+      intro β hβ
+      rw [critSub_P, critSub_Z, List.append_nil] at hβ
+      rw [critSub_P]
+      rcases List.mem_append.1 hβ with h1 | h2
+      · exact List.mem_append.2 (Or.inl (List.mem_append.2 (Or.inl h1)))
+      · exact List.mem_append.2 (Or.inl (List.mem_append.2 (Or.inr h2)))
+    · intro β hβ
+      rw [critSub_P]
+      exact List.mem_append.2 (Or.inr (ihc hs β hβ))
+
+/-- `cr_inv` of a summand is bounded by `cr_inv` of the term. -/
+theorem cr_inv_summand_le {t : Three} {s : Three} (hs : s ∈ summands t) :
+    cr_inv s ≤ cr_inv t := by
+  induction t with
+  | Z => simp at hs
+  | P a b c ihb ihc =>
+    rw [summands_P] at hs
+    rcases List.mem_cons.1 hs with rfl | hs
+    · -- s = P a b Z
+      simp only [cr_inv_P, cr_inv_Z]
+      have : cr_inv (P a b c) =
+          max ((if a < maxsub b then 1 else 0) + cr_inv b) (cr_inv c) := cr_inv_P a b c
+      omega
+    · exact le_trans (ihc hs) (cr_inv_sib_le a b c)
+
+/-- `Mn accLow n` is closed under taking summands. -/
+theorem Mn_summands {accLow : Three → Prop} {n : ℕ} {t : Three}
+    (ht : Mn accLow n t) : ∀ s ∈ summands t, Mn accLow n s := by
+  rintro s hs
+  obtain ⟨hcnf, hcr, hcrit⟩ := ht
+  refine ⟨cnf_summands hcnf hs, le_trans (cr_inv_summand_le hs) hcr, ?_⟩
+  intro β hβ
+  exact hcrit β (critSub_summands hs β hβ)
+
+/-! ## Stratified Dershowitz–Manna `sum_acc` (Lemma 3.8, `#`-closure) -/
+
+theorem transp_oltMn (accLow : Three → Prop) (n : ℕ) :
+    ∀ ⦃a b c⦄, oltMn accLow n a b → oltMn accLow n b c → oltMn accLow n a c :=
+  fun _ _ _ h1 h2 => ⟨olt_trans h1.1 h2.1, h1.2.1, h2.2.2⟩
+
+theorem oltMn_summands_dmlt {accLow : Three → Prop} {n : ℕ} {w t : Three}
+    (h : oltMn accLow n w t) :
+    DMLT (oltMn accLow n) ↑(summands w) ↑(summands t) := by
+  obtain ⟨wt, lw, lt'⟩ := h
+  have base : DMLT (oltOn {s | Mn accLow n s}) ↑(summands w) ↑(summands t) :=
+    olt_summands_mult lw.1 wt (Mn_summands lw) (Mn_summands lt')
+  exact base.mono fun a b ⟨hab, ha, hb⟩ => ⟨hab, ha, hb⟩
+
+/-- A sum is `oltMn`-accessible once its summand multiset is `DMLT`-accessible
+(Lemma 3.8 closure under the sum constructor `#`). -/
+theorem sum_accMn {accLow : Three → Prop} {n : ℕ} {v : Three}
+    (lv : Mn accLow n v)
+    (hacc : Acc (DMLT (oltMn accLow n)) (↑(summands v) : Multiset Three)) :
+    Acc (oltMn accLow n) v := by
+  have aux : ∀ M : Multiset Three, Acc (DMLT (oltMn accLow n)) M →
+      ∀ w, Mn accLow n w → ↑(summands w) = M → Acc (oltMn accLow n) w := by
+    intro M hM
+    induction hM with
+    | intro M _ ih =>
+      intro w lw hw
+      refine Acc.intro w fun v hv => ?_
+      have lv' : Mn accLow n v := hv.2.1
+      have step : DMLT (oltMn accLow n) ↑(summands v) M :=
+        hw ▸ oltMn_summands_dmlt hv
+      exact ih _ step v lv' rfl
+  exact aux _ hacc v lv rfl
+
 end YAPSS
