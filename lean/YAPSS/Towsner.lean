@@ -26,6 +26,7 @@ critical-subterm structural facts and the `Acc_0` base, and states the induction
 target precisely.
 -/
 import YAPSS.CollapseL0
+import YAPSS.Nrm
 
 namespace YAPSS
 
@@ -328,5 +329,39 @@ theorem sing_accMn_head0 {accLow : Three → Prop} {n : ℕ}
     {b : Three} (hb : Acc (oltMn accLow n) b) (lb : Mn accLow n (P 0 b Z)) :
     Acc (oltMn accLow n) (P 0 b Z) :=
   sing_accMn (fun a' ha' _ _ => absurd ha' (Nat.not_lt_zero a')) hb lb
+
+/-! ## Every NF term is head-`0` (the subscript-drop killer)
+
+The crucial structural fact that makes the singleton `hlow` **vacuous** on `NF`:
+every nonempty standard form starts with the pair `(0,0)` (`stps_head`), so its
+`translate` has leading subscript `0`.  Hence no NF principal admits a
+strictly-smaller-head predecessor — the off-NF `cnf` counterexample
+`P0(P3(0)) <o P1(P3(0))` cannot occur because `P 1 _ _` is never in `NF`.  This
+is a `GREEN` NF-invariant fact (`stps_head` + `lead_translate`), **not** the
+stuck forest-position core. -/
+
+/-- Every nonempty standard form translates to a head-`0` term. -/
+theorem lead_translate_ST_PS {M : PairSeq} (hM : ST_PS M) (hne : M ≠ []) :
+    lead (translate M) = 0 := by
+  rw [lead_translate]
+  cases M with
+  | nil => exact absurd rfl hne
+  | cons p rest =>
+    have := stps_head hM
+    simp only [List.headD_cons] at this
+    rw [this]
+
+/-- Every nonempty `NF` term is head-`0`. -/
+theorem lead_eq_zero_of_NF {t : Three} (ht : t ∈ NF) (hne : t ≠ Z) :
+    lead t = 0 := by
+  obtain ⟨M, hM, rfl⟩ := ht
+  have hMne : M ≠ [] := by
+    rintro rfl; exact hne (by simp [translate])
+  exact lead_translate_ST_PS hM hMne
+
+/-- An `NF` term that is a principal `P a b c` has head `a = 0`. -/
+theorem head_eq_zero_of_NF {a : ℕ} {b c : Three} (ht : P a b c ∈ NF) : a = 0 := by
+  have := lead_eq_zero_of_NF ht (by simp)
+  simpa using this
 
 end YAPSS
