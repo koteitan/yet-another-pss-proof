@@ -242,4 +242,25 @@ theorem sum_accMn {accLow : Three → Prop} {n : ℕ} {v : Three}
       exact ih _ step v lv' rfl
   exact aux _ hacc v lv rfl
 
+/-! ## `M_n` closure under arguments
+
+For the stratified singleton step we need: the argument `d'` of an `Mn`-principal
+`P a' d' Z` is itself in `Mn`.  Its critical subterms are critical subterms of the
+principal (`critSub d' ⊆ critSub (P a' d' Z)`), and `cr_inv d' ≤ cr_inv (P a' d' Z)`. -/
+
+/-- The critical subterms of the argument `b` are critical subterms of `P a b Z`. -/
+theorem critSub_arg_subset (a : ℕ) (b : Three) :
+    ∀ β ∈ critSub b, β ∈ critSub (P a b Z) := by
+  intro β hβ
+  rw [critSub_P, critSub_Z, List.append_nil]
+  exact List.mem_append.2 (Or.inr hβ)
+
+/-- `Mn accLow n` is closed under taking the argument of a single principal. -/
+theorem Mn_arg {accLow : Three → Prop} {n : ℕ} {a : ℕ} {b : Three}
+    (h : Mn accLow n (P a b Z)) : Mn accLow n b := by
+  obtain ⟨hcnf, hcr, hcrit⟩ := h
+  refine ⟨cnf_P_Z.1 hcnf, le_trans (cr_inv_arg_le a b Z) hcr, ?_⟩
+  intro β hβ
+  exact hcrit β (critSub_arg_subset a b β hβ)
+
 end YAPSS
