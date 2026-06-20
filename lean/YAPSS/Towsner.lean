@@ -414,4 +414,88 @@ theorem mem_critSub_of_collapse {a : ℕ} {b : Three} (h : a < maxsub b) :
   exact List.mem_append.2 (Or.inl (List.mem_append.2
     (Or.inl (List.mem_singleton.2 rfl))))
 
+/-! ## The within-stratum accessibility (Towsner Lemma 3.10, ϑ-closure)
+
+Every `Mn (AccBelow n) n` term is `oltMn`-accessible, given that every lower
+stratum is accessible (`hbelow`).  This is the **impredicative ϑ-closure**: a
+*collapse* argument `b` of `P a b Z` (with `a < maxsub b`) is a critical subterm
+(`cr_inv b < cr_inv (P a b Z)`), so its accessibility is supplied directly by
+`hbelow` via the `Mn`-membership condition `b ∈ critSub ⟹ AccBelow n b` —
+**without** the bare forest fact `olt(translate K)(translate A)`.
+
+Inner strong induction on `(lead t, tsize t)` lexicographically:
+* `hlow` (smaller-head predecessor): strictly smaller `lead`.
+* non-collapse arg `b` (`maxsub b ≤ a`): `lead b ≤ maxsub b ≤ a`, so
+  `(lead b, tsize b)` is lex-below.
+* genuine sum: DM (`sum_accMn`) on summands, each lex-below.
+
+`olt(v, t)` is **given** at every `Acc.intro` — no `H0clause` enumeration. -/
+theorem accMn_within (n : ℕ)
+    (hbelow : ∀ β : Three, AccBelow n β → Acc (oltMn (AccBelow n) n) β) :
+    ∀ t : Three, Mn (AccBelow n) n t → Acc (oltMn (AccBelow n) n) t := by
+  have wflex : WellFounded (Prod.Lex (@LT.lt ℕ _) (@LT.lt ℕ _)) :=
+    WellFounded.prod_lex Nat.lt_wfRel.wf Nat.lt_wfRel.wf
+  have wf : WellFounded (InvImage (Prod.Lex (· < ·) (· < ·))
+      (fun t : Three => (lead t, tsize t))) :=
+    InvImage.wf _ wflex
+  intro t
+  induction t using wf.induction with
+  | _ t iht =>
+    intro lt'
+    cases t with
+    | Z => exact Acc.intro Z fun y hy => absurd hy.1 (not_olt_Z y)
+    | P a b c =>
+      have hlowstep : ∀ a' < a, ∀ d : Three, Mn (AccBelow n) n (P a' d Z) →
+          Acc (oltMn (AccBelow n) n) (P a' d Z) := by
+        intro a' ha' d hd
+        refine iht (P a' d Z) ?_ hd
+        exact Prod.Lex.left _ _ (by simp only [lead_P]; exact ha')
+      cases c with
+      | Z =>
+        have lbArg : Mn (AccBelow n) n b := Mn_arg lt'
+        have hb : Acc (oltMn (AccBelow n) n) b := by
+          by_cases hcol : a < maxsub b
+          · -- collapse arg: `b ∈ critSub`, accessibility from `hbelow` (lower stratum)
+            exact hbelow b (lt'.2.2 b (mem_critSub_of_collapse hcol))
+          · -- non-collapse arg: `lead b ≤ a`, lex-below
+            have hlb : lead b ≤ a := le_trans (lead_le_maxsub b) (by omega)
+            refine iht b ?_ lbArg
+            show Prod.Lex (· < ·) (· < ·) (lead b, tsize b) (lead (P a b Z), tsize (P a b Z))
+            simp only [lead_P]
+            rcases Nat.lt_or_eq_of_le hlb with hlt | heq
+            · exact Prod.Lex.left _ _ hlt
+            · rw [heq]
+              refine Prod.Lex.right _ ?_
+              show tsize b < tsize (P a b Z)
+              simp only [tsize]
+              have : (1:ℕ) ≤ tsize Z := by simp [tsize]
+              omega
+        exact sing_accMn hlowstep hb lt'
+      | P e f g =>
+        refine sum_accMn lt' (acc_dmlt_of_acc (transp_oltMn (AccBelow n) n) ?_)
+        intro s hs
+        have sv : s ∈ summands (P a b (P e f g)) := by simpa using hs
+        have ls : Mn (AccBelow n) n s := Mn_summands lt' s sv
+        refine iht s ?_ ls
+        have hleadS : lead s ≤ a := by
+          have := lead_summand_le lt'.1 sv; simpa using this
+        have hszs : tsize s < tsize (P a b (P e f g)) := by
+          obtain ⟨a', d', he, _⟩ := summands_sargs sv
+          rw [he] at sv ⊢
+          rw [summands_P] at sv
+          rcases List.mem_cons.1 sv with hh | hh
+          · obtain ⟨_, rfl, _⟩ := Three.P.inj hh
+            simp only [tsize]
+            have hf : (1:ℕ) ≤ tsize f := by cases f <;> simp [tsize] <;> omega
+            have hg : (1:ℕ) ≤ tsize g := by cases g <;> simp [tsize] <;> omega
+            omega
+          · have hle : tsize (P a' d' Z) ≤ tsize (P e f g) := tsize_summand_le hh
+            simp only [tsize] at hle ⊢; omega
+        show Prod.Lex (· < ·) (· < ·) (lead s, tsize s)
+          (lead (P a b (P e f g)), tsize (P a b (P e f g)))
+        simp only [lead_P]
+        rcases Nat.lt_or_eq_of_le hleadS with hlt | heq
+        · exact Prod.Lex.left _ _ hlt
+        · rw [heq]; exact Prod.Lex.right _ hszs
+
 end YAPSS
