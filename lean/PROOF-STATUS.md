@@ -344,7 +344,7 @@ omitted simultaneous induction.
 
 ---
 
-## (c) Disproven bypass / localization attempts — the rigor record (12)
+## (c) Disproven bypass / localization attempts — the rigor record (13)
 
 Each was a proposed way to make the core vacuous, cheap, or term-local. Each is
 **FALSE**, with an explicit counterexample. The ordinal-collapse ones are retained in
@@ -371,11 +371,28 @@ source as valid implications with *unsatisfiable* hypotheses, clearly labelled D
 | 10 | relative `r1ok` (block-local minimum-row-0 anchor) suffices for non-firing     | descendant blocks are forest-interior **copies** with positive root row-`1`, not standalone standard forms — the node-relative lift `(0,0)::(argblock − x) ∈ ST_PS` is FALSE (304/13105; even shifted only 702/12801 — the shift fixes the order but not the row-`1` climbing). Only the **root**-threshold lift `(0,0)::takeWhile(0<·)` is `ST_PS` (`ST_PS_desc`, 13105/0). |
 | 11 | `wf3 ⟹ H0clause` (read OT3 well-formedness off as the head-`0` clause)         | FALSE: `wf3 (P a b c)` gives the `Gterm a b` clause, but `H0clause` needs `Gterm 0 b`; the gap is exactly the head-`0`-nested head-`1` coefficients, model-confirmed. |
 | 12 | `OVSurjective` (term-surjection `On → OT`: convert the per-step witness `ξ` to a term, then descend by `wf_olt_wf3`) | FALSE (`OVSurjective_is_false`, Lean-proven, cardinality): `oV` maps onto the COUNTABLE `C_0(ε_{Ω_ω+1})`, a proper subset of the uncountable `Iio (oV g)` (`oV (P 1 Z Z) = Ω_1`). The §2 embedding half is GREEN but the surjection (the hard half) is false as stated; and even with it the witness is `proj a b` → the same value-identity circularity. ya-pss confirms: full term system, identical stall. |
+| 13 | **distinguished-set re-foundation** (Buchholz/Arai §3.1 externally-parameterized `C^α(X)`+`𝒲`-accessibility, to dissolve the forest fact by membership-transport instead of order) | REFUTED via 3 de-risk gates (`Staging1.lean` slice S2 Lean-disproof → A/B/C reduction → finite-level reconcile). Arai §3.1 is **OT(Π₃)** (subscript-descent τ<η); ψ₀(Ω_ω) has finite ℕ subscripts, the collapse arg is ordinally ABOVE η (`olt(P0(P1ZZ)Z)(P1ZZ)`, Lean) so `critSub_olt_of_cnf` is FALSE. `olt` is purely syntactic; its only WF certificate is `wf_olt_wf3` via `oV`/`wf3`, so there is **no per-level-separated forest-free order** — `level_collapse_acc` reduces to `wf3`-membership = `∀ x∈Gterm a b, olt x b` (Otembed.lean:110) = `H0clause_oper_step`. The min-gap lever `below_psiSelf_mem_CsetSelf` is ordinal-side, needs `OVSurjective` (#12, FALSE) to reach terms. door1 IS the faithful term-level distinguished-set method; its wall is intrinsic, not architecture. |
 
 Common shape of all failures: the bypass tries to derive the equality / non-firing
 from closure / canonicity / a term-local invariant, but those only yield the *weak*
 inequality (`oV b' ≤ oV g`) or fail on a forest-position-sensitive instance. The core
 is an extra, genuine §1 fact about the specific maxo gap / forest position.
+
+**TERMINAL (2026-06-20, post bypass #13).** The single residual `H0clause_oper_step`
+(= `wf3`'s clause `∀ x∈Gterm a b, olt x b`, Otembed.lean:110 = `seqlex(shift K,B)`) is now
+confirmed by **5 independent routes** (term-level rounds 1–10, ordinal §1, door1 Towsner
+ladder, Buchholz distinguished-set re-foundation) and is **intrinsically non-inductive**:
+EVERY induction axis is exhausted — term-local, column-local, forest-LEVEL (r5), row-1 (r6),
+oper-derivation (r7), per-level-separated (distinguished-set), and forest-ANCESTOR
+(`probe_ancestor_dist.py`, r10: 438/1459 intermediate viol @+7). Two durable takeaways:
+(i) the WF assembles the INSTANT this one clause is supplied (`wf_olt_wf3` +
+`psiSelf_strict_mono_arg` + `Accn_zero_of_asc`, all GREEN); (ii) **accessibility via
+`wf_olt_wf3` provably RETIRES Face 2** (the §1 simultaneous induction / rep-at-the-bound /
+`CollapseResidueMaxo` — the months-long nvm campaign) for the nrm route — it needs NO
+value-identity, only `wf3`-membership. So the residual is solely the Face-1 forest clause.
+The remaining work is its **frontal multi-month formalization** (full Buchholz 1986 §1–2 or
+Towsner §3.2 port) — a separate research phase, a director resource decision. No shortcut
+exists; `de-risk-first` confirmed this 5-fold before any build.
 
 ---
 
