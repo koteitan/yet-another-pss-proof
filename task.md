@@ -26,3 +26,4 @@
     - 🚨 ★残＝単一の既約 forest core（subscript-drop domination, head-1+ arg）
       - 同核: H0clause_oper_step / CollapseResidueMaxo / wf_ArgsA / diag_acc / Towsner 3.11 cross-stratum / Buchholz 1.9-term
       - 3 door + 全 lever（rank / critSub / WQO / gap-embed / §1 / fixpoint）収束、shortcut なし確定
+      - 🚨🤖 攻略中: Buchholz WF-proof-proper 再 foundation（external-param C^α(X)+𝒲、Arai §3.1）= 壁を membership-transport で回避（de-risk POSITIVE、§21 / memory buchholz-refoundation-route）
