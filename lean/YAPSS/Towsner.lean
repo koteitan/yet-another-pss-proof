@@ -364,4 +364,54 @@ theorem head_eq_zero_of_NF {a : ℕ} {b c : Three} (ht : P a b c ∈ NF) : a = 0
   have := lead_eq_zero_of_NF ht (by simp)
   simpa using this
 
+/-! ## Auxiliary structural lemmas for the main accessibility -/
+
+/-- `lead` of a summand is `≤` `lead` of the term (CNF summands are
+non-increasing in the leading subscript). -/
+theorem lead_summand_le {t s : Three} (hcnf : cnf t) (hs : s ∈ summands t) :
+    lead s ≤ lead t := by
+  cases t with
+  | Z => simp at hs
+  | P a b c =>
+    rw [summands_P] at hs
+    rcases List.mem_cons.1 hs with rfl | hs
+    · simp
+    · have hle : s ≤o P a b Z := summands_le_hd hcnf hs
+      rcases hle with h | h
+      · rcases s with _ | ⟨e, f, g⟩
+        · simp
+        · simp only [lead_P]
+          rcases olt_P_P.1 h with h | ⟨h, _⟩ | ⟨h, _, _⟩ <;> omega
+      · rw [h]; simp
+
+/-- `lead t ≤ maxsub t` — the leading subscript is one of the subscripts. -/
+theorem lead_le_maxsub (t : Three) : lead t ≤ maxsub t := by
+  cases t with
+  | Z => simp
+  | P a b c => simp only [lead_P, maxsub_P]; exact le_max_left _ _
+
+/-- A summand's size is bounded by the term's size. -/
+theorem tsize_summand_le {t s : Three} (hs : s ∈ summands t) :
+    tsize s ≤ tsize t := by
+  induction t with
+  | Z => simp at hs
+  | P a b c ihb ihc =>
+    rw [summands_P] at hs
+    rcases List.mem_cons.1 hs with rfl | hs
+    · show tsize (P a b Z) ≤ tsize (P a b c)
+      simp only [tsize, tsize]
+      have : (1:ℕ) ≤ tsize c := by cases c <;> simp [tsize] <;> omega
+      omega
+    · have hc := ihc hs
+      show tsize s ≤ tsize (P a b c)
+      simp only [tsize]
+      omega
+
+/-- The collapse argument of a principal is in its critical-subterm list. -/
+theorem mem_critSub_of_collapse {a : ℕ} {b : Three} (h : a < maxsub b) :
+    b ∈ critSub (P a b Z) := by
+  rw [critSub_P, if_pos h]
+  exact List.mem_append.2 (Or.inl (List.mem_append.2
+    (Or.inl (List.mem_singleton.2 rfl))))
+
 end YAPSS
