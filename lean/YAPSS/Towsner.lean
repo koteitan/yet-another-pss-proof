@@ -103,27 +103,19 @@ def Mn (accLow : Three → Prop) (n : ℕ) (t : Three) : Prop :=
 def oltMn (accLow : Three → Prop) (n : ℕ) (s t : Three) : Prop :=
   s <o t ∧ Mn accLow n s ∧ Mn accLow n t
 
-/-- `Accn n t`: `t` is in the well-founded part of `M_n` — accessible under the
-stratum-`n` order, where the lower strata `⋃_{i<n} Accn i` are supplied
-recursively.  Defined by strong recursion on `n`: the recursor `rec` supplies
-`Accn i` for every `i < n` as `rec i (proof i < n)`. -/
-def Accn : ℕ → Three → Prop :=
-  fun n => Nat.strongRecOn' n fun n rec t =>
-    Acc (oltMn (fun β => ∃ i, ∃ h : i < n, rec i h β) n) t
+/-- The `accLow` predicate used inside the stratum-`n` order: the **lower
+distinguished set**, given structurally as the CNF terms of strictly smaller
+collapse rank.  By `cr_inv_critSub_lt` every critical subterm of an `Mn`-term
+lands here, so `Mn`'s critical-subterm side-condition is automatic — the
+impredicative `K^{<0}` membership is realised by the structural cr-drop. -/
+def AccBelow (n : ℕ) (β : Three) : Prop := cnf β ∧ cr_inv β < n
 
-/-- The `accLow` predicate used inside `Accn n`: membership in some lower stratum. -/
-def AccBelow (n : ℕ) (β : Three) : Prop := ∃ i, ∃ _ : i < n, Accn i β
+/-- `Accn n t`: `t` is in the well-founded part of `M_n` — `oltMn`-accessible at
+stratum `n` (the lower strata supplied by the structural `AccBelow n`). -/
+def Accn (n : ℕ) (t : Three) : Prop := Acc (oltMn (AccBelow n) n) t
 
-theorem AccBelow_iff (n : ℕ) (β : Three) : AccBelow n β ↔ ∃ i < n, Accn i β := by
-  unfold AccBelow; exact ⟨fun ⟨i, h, ha⟩ => ⟨i, h, ha⟩, fun ⟨i, h, ha⟩ => ⟨i, h, ha⟩⟩
-
-/-- **Unfolding** `Accn n`: it is `Acc` of the stratum-`n` order whose
-critical-subterm side-condition references the lower strata `AccBelow n`. -/
 theorem Accn_eq (n : ℕ) (t : Three) :
-    Accn n t = Acc (oltMn (AccBelow n) n) t := by
-  unfold Accn
-  rw [Nat.strongRecOn'_beta]
-  rfl
+    Accn n t = Acc (oltMn (AccBelow n) n) t := rfl
 
 /-! ## The `Acc_0` base: `Accn 0 = asc`-accessibility (from M2) -/
 
