@@ -37,7 +37,7 @@
     - ✅ wf_olt_wf3
     - ✅ olt_ST_iff_seqlex
     - 🚨 oV_mono_NF
-  - 🚨 9. 新本線 値正規化 nrm/argzone：PSS停止性 = 単一 oV_mono_NF
+  - 🚨 9. 新本線：NF→OT 順序埋め込み（停止性は残り oV_mono_NF 1本）
     - ✅ sigma_seqlex_mono
     - ✅ tail_zone_ST_PS / suffix_closure_ST_PS / suffix_oper_witness / hasParent_last_ST_PS
     - ✅ proj_nrm_argzone_olt
