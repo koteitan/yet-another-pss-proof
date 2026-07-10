@@ -11,11 +11,24 @@
 
 ## 進捗ツリー
 - 🚨 定理: 標準形ペア数列システムの停止性
-  - ✅ §5 定式化
-  - ✅ three
-  - ✅ translate
-  - ✅ m_step_decreases
-  - 🚨 PSS停止性 = 単一 oV_mono_NF
+  - ✅ 1. ペア数列システム（§5 の定式化）
+  - ✅ 2. 三分木記法 `p_a(b)+c`（three）
+  - ✅ 3. 変換 translate
+  - ✅ 4. 展開での減少・減少補題（m_step_decreases）
+  - ✅ 5. 整礎性の還元・還元定理（wf_Rnf_from_diag / acc_Rnf_of_ST_PS）
+  - ✅ 6. 停止性（step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed）
+  - 🚨 7. 整礎性の証明（pure-lex 構文的・順序数なし）
+    - ✅ maxsub_mono_NF'
+    - ✅ cnf / cnf_ST_PS / cnf_oper / cnf_tops_le
+    - ✅ wf_Rnf_from_within_level
+    - ✅ wfE_from_args
+    - ✅ olt_summands_mult / singdest
+    - ✅ wf_olt0
+    - 🚨 wf_ArgsA
+    - ✅ wf_olt_wf3
+    - ✅ olt_ST_iff_seqlex
+    - 🚨 oV_mono_NF
+  - 🚨 9. 新本線 値正規化 nrm/argzone：PSS停止性 = 単一 oV_mono_NF
     - ✅ sigma_seqlex_mono
     - ✅ tail_zone_ST_PS / suffix_closure_ST_PS / suffix_oper_witness / hasParent_last_ST_PS
     - ✅ proj_nrm_argzone_olt
@@ -29,20 +42,6 @@
     - 🚨 oV_mono_NF
     - 🚨 head_arg_0_canonical_oper
     - 🚨 argz_head_spine / nrm_argzone_olt / keeps_head_ST_PS / argzone_transport
-  - 🚨 wfimg
-    - ✅ wf_Rnf_from_diag / acc_Rnf_of_ST_PS
-    - 🚨 pure-lex 構文的整礎性
-      - ✅ maxsub_mono_NF'
-      - ✅ cnf / cnf_ST_PS / cnf_oper / cnf_tops_le
-      - ✅ wf_Rnf_from_within_level
-      - ✅ wfE_from_args
-      - ✅ olt_summands_mult / singdest
-      - ✅ wf_olt0
-      - 🚨 wf_ArgsA
-      - ✅ wf_olt_wf3
-      - ✅ olt_ST_iff_seqlex
-      - 🚨 oV_mono_NF
-  - ✅ step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed
 
 ## (α) nrm 路線（代替）
 - ✅ nrm 基盤 / wf3_nrm
