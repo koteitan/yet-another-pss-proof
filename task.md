@@ -13,19 +13,8 @@
 - 🚨 定理: 標準形ペア数列システムの停止性
   - ✅ §5 定式化
   - ✅ three
-    - ✅ olt / olt_irrefl / olt_trans / olt_total
   - ✅ translate
-    - ✅ subs / subs_translate
   - ✅ m_step_decreases
-    - ✅ translate_snoc_increase
-    - ✅ translate_butlast_decrease
-    - ✅ translate_oper_pred
-    - ✅ olt_P_of_lead_lt
-    - ✅ translate_oper_bad
-      - ✅ translate_ctx_cong
-      - ✅ translate_single_tree / le0_interval_gt
-      - ✅ core_i0 / core_i1
-      - ✅ oper_bad_unfold
   - 🚨 PSS停止性 = 単一 oV_mono_NF
     - ✅ sigma_seqlex_mono
     - ✅ tail_zone_ST_PS / suffix_closure_ST_PS / suffix_oper_witness / hasParent_last_ST_PS
@@ -54,8 +43,6 @@
       - ✅ olt_ST_iff_seqlex
       - 🚨 oV_mono_NF
   - ✅ step_terminates / no_infinite_expansion / step_terminates_from_diag / step_terminates_via_embed
-    - ✅ step_terminates_cond / no_infinite_expansion_cond
-    - ✅ step_in_ST_PS
 
 ## (α) nrm 路線（代替）
 - ✅ nrm 基盤 / wf3_nrm
