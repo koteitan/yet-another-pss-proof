@@ -1,4 +1,4 @@
-# yet-another-pss-proof v1.0.1
+# yet-another-pss-proof v1.0.2
 
 ペア数列システム (Pair Sequence System, PSS) の停止性の証明とその Lean 4 / Mathlib による形式証明。
 **停止性の主定理は無条件・`sorry` なしで完成している**（`lean/YAPSS/Final.lean`、`#print axioms` は
@@ -32,6 +32,7 @@
 | `lean/YAPSS/Wset.lean` | **反復帰納的集合 `W_u`**（Buchholz 1987 §2 の PSS 移植）と可到達性の橋。 |
 | `lean/YAPSS/Final.lean` | **主定理** `PSS_terminates_unconditional`（無条件・`sorry` なし・順序数を用いない）。 |
 | `lean/PROOF-STATUS.md` | 証明の現状と経緯（authoritative）。 |
+| `md/requirement.md` | `md/YAPSS/*.md`（人間向け証明本文）の編集方針。 |
 
 ## ビルド
 
