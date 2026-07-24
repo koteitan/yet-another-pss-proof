@@ -1,3 +1,36 @@
+# ✅ COMPLETE (2026-07-25) — PSS termination is PROVED, unconditionally and ordinal-free
+
+`YAPSS/Final.lean`:
+
+    theorem PSS_terminates_unconditional : WellFounded stepRel
+    theorem no_infinite_expansion_holds :
+        ¬ ∃ S : ℕ → PairSeq, (∀ i, ST_PS (S i)) ∧ ∀ i, step (S i) (S (i + 1))
+
+`#print axioms` on both (verified from a fresh file importing the built olean):
+`[propext, Classical.choice, Quot.sound]` — **no `sorryAx`, no named assumptions**.
+Full project build green (966 jobs).
+
+The chain, all sorryAx-free:
+
+    argDomCore_holds                       AscArg.lean   (the ST_PS-derivation induction)
+      ⟹ PSS Bachmann cofinality            pss_cofinality_of_core
+      ⟹ WF (ST_PS-restricted olt)          Wset.wf_olt_ST_PS_of_cofinality
+      ⟹ WF Rnf                             wf_Rnf_of_wf_PS      (OrdinalFree.lean)
+      ⟹ WF stepRel                         Proofs.step_terminates (via m_step_decreases)
+
+**No ordinal evaluation map `oV`, no Buchholz `OT`/`wf3` embedding, and no
+coefficient-domination (`H0clause`/`Gterm`) fact occurs anywhere on this route.**
+Well-foundedness is certified by Bachmann cofinality plus the iterated inductive set
+`W_u`, transplanted natively to PSS pair sequences from the ordinal-free syntactic
+well-foundedness proof of Buchholz `OT_B` (`~/proofs/pss-proof/.../OTB-well-founded-syntactic/`).
+
+Everything below this banner predates the completion and is kept as the historical
+record — in particular §(c)'s 13 disproven bypasses and the "TERMINAL" note describe the
+**old `oV`/`wf3` route**, whose wall (`H0clause_oper_step`) the ordinal-free route
+bypasses entirely rather than breaks. That old wall is no longer on any live path.
+
+---
+
 # PSS termination — proof status (Lean 4 / Mathlib v4.30.0)
 
 Project `YAPSS`: well-foundedness of the PSS one-step relation
