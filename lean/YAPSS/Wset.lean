@@ -127,29 +127,40 @@ i.e. `translate M ∈ {0, p_0(0)} = {0, 1}`, both of which are in every `W_v`
 --------------------------------------------------------------------------------
 ## STATUS
 
-* GREEN (`sorry`-free): `Wf`/`W`, (A1), (A2), (A2'), level monotonicity,
-  `domT`/`graft` basics, the design-validation theorem `hasParent_one_iff`, and
-  the **bridge** `acc_of_W` (modulo the explicit `hcof` parameter only — no
-  second, `T_m`-indexed cofinality hypothesis is needed).
-* GREEN, and the whole Buchholz 2.4–2.8 membership chain is **assembled**:
-  shift-equivariance (`oper_shift`, `W_shift`), the last-minimum split
-  (`split_lastMin`), prefix commutation (`oper_append_gen`), the additive
-  closure 2.4(a)/(b) (`XA_closed`, `W_add`), `Ω_v ∈ W_v` (`Om_mem_W`),
-  the 2.6 assembly (`Wstar_closed`), 2.7 (`mem_of_Aclosed`), 2.8 (`mem_Wstar`),
-  the level bound (`mem_W_of_bound`, `mem_W_maxr1`) and **`W_membership`**.
-* `sorry` (exactly **five**, all clearly labelled, all believed TRUE, all in one
-  place): the four-case classification of PSS `oper` on a *principal block*
-  `(0,v) :: R` — `hasParent_cons_one`, `oper_cons_nat`, `oper_cons_succ`,
-  `oper_cons_tower`, `domT_cons_of_lt`.  These are pure statements about
-  `oper`/`hasParent`; none mentions `W`, `olt`, `translate`, or any
-  coefficient-domination condition.
-* Derived from the two pillars: `wf_of_cofinality_and_membership`.
+**`sorry`-free.  Zero named assumptions beyond the single explicit `hcof`.**
 
-No `native_decide`, no `admit`.  **§9 at the bottom of the file is the report**.
-Notably, the feared `H0clause`-shaped coefficient domination does **not** appear:
-PSS `Three`-addition is unconditional (`translate` has no CNF side condition
-built in), so the additive closure 2.4(b) needs only the *positional* guard
-`rsum` — see §9.
+```
+#print axioms YAPSS.Wset.wf_olt_ST_PS_of_cofinality
+  -- [propext, Classical.choice, Quot.sound]
+```
+
+i.e. pillar 2 is complete:
+
+    PSS Bachmann cofinality  (hcof, = YAPSS/Cofinality.lean, pillar 1)
+      ⟹  WellFounded (fun a b => ST_PS a ∧ ST_PS b ∧ translate a <o translate b)
+
+The route is the full Buchholz (1987) §2 transplant:
+
+* `Wf` / `W` (iterated stages), (A1), (A2), (A2'), `W_mono`, `W_nil`, `W_atom`;
+* the design-validation theorems `hasParent_one_iff` / `hasParent_zero_iff` /
+  `domT_iff` — PSS's own `hasParent` predicates **are** Buchholz's spine
+  conditions;
+* block algebra: `oper_shift` (row-0-shift equivariance of `oper`), `W_shift`,
+  `split_lastMin`, `oper_append_gen`, `graft_append`, `domT_append`,
+  `hasParent_append_gen`, `le0_cons_zero`;
+* the four-case classification of `oper` on a principal block `(0,v) :: R`:
+  `oper_cons_succ` (A′), `oper_cons_nat` (B′C′), `oper_cons_tower` (D′, the
+  tower `(D_v b)[n] = D_v(b[x_n])`), `domT_cons_of_lt` (E′);
+* **2.4(a)/(b)** `XA_closed` / `W_add`, **2.5** `Om_mem_W`, **2.6**
+  `Wstar_closed`, **2.7** `mem_of_Aclosed`, **2.8** `mem_Wstar`, the level bound
+  `mem_W_of_bound` / `mem_W_maxr1`, and **`W_membership`**;
+* the **bridge** `acc_of_W` and the assembly `wf_of_cofinality_and_membership` /
+  `wf_olt_ST_PS_of_cofinality`.
+
+No `native_decide`, no `admit`.  **§9 at the bottom of the file is the report.**
+Notably the feared `H0clause`-shaped coefficient domination never appeared: PSS
+`Three`-addition is unconditional (`translate` has no CNF side condition built
+in), so the additive closure 2.4(b) needs only the *positional* guard `rsum`.
 -/
 import YAPSS.Nrmstep
 
@@ -1355,9 +1366,97 @@ theorem oper_root_tiling {M : PairSeq} (n : ℕ) (hL : M.length - 1 ≠ 0)
 
 /-- (B′)(C′) Non-collapsing principal step: `p_v(R)[n] = p_v(R[n])`. -/
 theorem oper_cons_nat {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
-    (hp : hasParent R (idx1 R (R.length - 1)) (R.length - 1)) (hn : 1 ≤ n) :
+    (hp : hasParent R (idx1 R (R.length - 1)) (R.length - 1)) :
     ((0, v) :: R)⟦n⟧ = (0, v) :: R⟦n⟧ := by
-  sorry
+  have hRlen : 0 < R.length := List.length_pos_iff.mpr hRne
+  have hnrR := parent_nextR hp
+  have hj0lt : parent R (idx1 R (R.length - 1)) (R.length - 1) < R.length - 1 :=
+    nextR_index_lt hnrR
+  have hLR : R.length - 1 ≠ 0 := by omega
+  have hxpos : 0 < entry R 0 (R.length - 1) := hR _ (entry_pair_mem (B := R) (by omega))
+  have hzR : ¬ (entry R 0 (R.length - 1) = 0 ∧ entry R 1 (R.length - 1) = 0) := by
+    rintro ⟨h1, -⟩; omega
+  have hMlen : ((0, v) :: R).length - 1 = R.length := by simp
+  have hEx : entry ((0, v) :: R) 0 R.length = entry R 0 (R.length - 1) :=
+    entry_cons_last hRne 0
+  have hE1 : entry ((0, v) :: R) 1 R.length = entry R 1 (R.length - 1) :=
+    entry_cons_last hRne 1
+  have hLM : ((0, v) :: R).length - 1 ≠ 0 := by rw [hMlen]; omega
+  have hzM : ¬ (entry ((0, v) :: R) 0 (((0, v) :: R).length - 1) = 0 ∧
+      entry ((0, v) :: R) 1 (((0, v) :: R).length - 1) = 0) := by
+    rw [hMlen]; rintro ⟨h1, -⟩; rw [hEx] at h1; omega
+  have hi1M : idx1 ((0, v) :: R) (((0, v) :: R).length - 1) = idx1 R (R.length - 1) := by
+    rw [hMlen, idx1_cons_last hRne]
+  -- the root is *not* a parent of the last column: `R`'s own parent blocks it
+  have hnoroot : ¬ nextR ((0, v) :: R) (idx1 R (R.length - 1)) 0 R.length := by
+    intro h0
+    by_cases hi : idx1 R (R.length - 1) = 0
+    · have h0' : nextrel0 ((0, v) :: R) 0 R.length := by
+        unfold nextR at h0; rw [if_pos hi] at h0; exact h0
+      have hnr0 : nextrel0 R (parent R (idx1 R (R.length - 1)) (R.length - 1))
+          (R.length - 1) := by
+        have h := hnrR; unfold nextR at h; rw [if_pos hi] at h; exact h
+      have hval := h0'.2.2.2.2 (parent R (idx1 R (R.length - 1)) (R.length - 1) + 1)
+        ⟨by omega, by omega⟩
+      rw [hEx, entry_cons] at hval
+      have := hnr0.2.2.2.1
+      omega
+    · have h0' : nextrel1 ((0, v) :: R) 0 R.length := by
+        unfold nextR at h0; rw [if_neg hi] at h0; exact h0
+      have hnr1 : nextrel1 R (parent R (idx1 R (R.length - 1)) (R.length - 1))
+          (R.length - 1) := by
+        have h := hnrR; unfold nextR at h; rw [if_neg hi] at h; exact h
+      have hle : le0 ((0, v) :: R) (parent R (idx1 R (R.length - 1)) (R.length - 1) + 1)
+          R.length := (le0_cons_last hRne _).mpr hnr1.2.2.2.2.1
+      have hval := h0'.2.2.2.2.2 (parent R (idx1 R (R.length - 1)) (R.length - 1) + 1)
+        ⟨by omega, hle⟩
+      rw [hE1, entry_cons] at hval
+      have := hnr1.2.2.2.1
+      omega
+  have huniq : ∀ y, nextR ((0, v) :: R) (idx1 R (R.length - 1)) y R.length →
+      y = parent R (idx1 R (R.length - 1)) (R.length - 1) + 1 := by
+    intro y hy
+    rcases Nat.eq_zero_or_pos y with rfl | hy0
+    · exact absurd hy hnoroot
+    · obtain ⟨y', rfl⟩ : ∃ y', y = y' + 1 := ⟨y - 1, by omega⟩
+      have hyR := (nextR_cons_last hRne (idx1 R (R.length - 1)) y').mp hy
+      rw [hp.unique hyR hnrR]
+  have hpM : hasParent ((0, v) :: R) (idx1 ((0, v) :: R) (((0, v) :: R).length - 1))
+      (((0, v) :: R).length - 1) := by
+    rw [hi1M, hMlen]
+    exact ⟨parent R (idx1 R (R.length - 1)) (R.length - 1) + 1,
+      (nextR_cons_last hRne _ _).mpr hnrR, huniq⟩
+  have hparM : parent ((0, v) :: R) (idx1 ((0, v) :: R) (((0, v) :: R).length - 1))
+      (((0, v) :: R).length - 1)
+      = parent R (idx1 R (R.length - 1)) (R.length - 1) + 1 := by
+    have heq : parent ((0, v) :: R) (idx1 ((0, v) :: R) (((0, v) :: R).length - 1))
+        (((0, v) :: R).length - 1)
+        = parent ((0, v) :: R) (idx1 R (R.length - 1)) R.length := by rw [hi1M, hMlen]
+    rw [heq]
+    refine huniq _ (parent_nextR ?_)
+    rw [hi1M, hMlen] at hpM; exact hpM
+  have hrange : R.length - (parent R (idx1 R (R.length - 1)) (R.length - 1) + 1)
+      = R.length - 1 - parent R (idx1 R (R.length - 1)) (R.length - 1) := by omega
+  rw [oper_bad_unfold n hLM hzM hpM, oper_bad_unfold n hLR hzR hp,
+    hparM, hi1M, hMlen, hEx, entry_cons, hrange, List.take_succ_cons,
+    List.cons_append]
+  congr 1
+  congr 1
+  refine List.flatMap_congr ?_
+  intro k _
+  have hshift : List.range' (parent R (idx1 R (R.length - 1)) (R.length - 1) + 1)
+      (R.length - 1 - parent R (idx1 R (R.length - 1)) (R.length - 1))
+      = (List.range' (parent R (idx1 R (R.length - 1)) (R.length - 1))
+          (R.length - 1 - parent R (idx1 R (R.length - 1)) (R.length - 1))).map (fun j => j + 1) := by
+    rw [List.range'_eq_map_range, List.range'_eq_map_range, List.map_map]
+    refine List.map_congr_left ?_
+    intro j _
+    simp only [Function.comp_apply]
+    omega
+  rw [hshift, List.map_map]
+  refine List.map_congr_left ?_
+  intro j _
+  simp only [Function.comp_apply, entry_cons]
 
 /-- (A′) Successor case `dom R = {0}`: `p_v(β+1)[n] = p_v(β)·n`. -/
 theorem oper_cons_succ {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
@@ -1464,37 +1563,40 @@ theorem oper_cons_tower {v m n : ℕ} {R : PairSeq}
     cases R with
     | nil => exact absurd rfl hRne
     | cons a b => simp
-  rw [oper_root_tiling n hL hz hp hpar, hi1, hMlen, hEx, hdl]
-  simp only [Nat.lt_irrefl, if_pos (Nat.zero_lt_one), entry, if_pos rfl,
-    List.getD_cons_zero, Nat.sub_zero]
+  have hroot0 : entry ((0, v) :: R) 0 0 = 0 := by simp [entry]
+  rw [oper_root_tiling n hL hz hp hpar, hi1, hMlen, hEx, hroot0, hdl,
+    if_pos Nat.zero_lt_one, Nat.sub_zero]
   -- now: `(range n).flatMap (k ↦ D.map (· + k*x)) = tow v R n`
-  set x := entry R 0 (R.length - 1) with hxdef
-  set D : PairSeq := (0, v) :: R.dropLast with hDdef
+  clear hp hpar hz hL hi1 huniq hp1
   induction n with
   | zero => simp [tow]
   | succ n ih =>
       rw [List.range_succ_eq_map, List.flatMap_cons, List.flatMap_map]
-      have h0 : D.map (fun p => (p.1 + 0 * x, p.2)) = D := by
+      have h0 : ((0, v) :: R.dropLast).map
+          (fun p => (p.1 + 0 * entry R 0 (R.length - 1), p.2)) = (0, v) :: R.dropLast := by
         simp
       rw [h0]
-      have hstep : ((List.range n).flatMap fun k => D.map fun p => (p.1 + k * x, p.2)).map
-          (fun p => (p.1 + x, p.2))
-          = (List.range n).flatMap (fun k => D.map fun p => (p.1 + (k + 1) * x, p.2)) := by
+      have hstep : (((List.range n).flatMap fun k =>
+            ((0, v) :: R.dropLast).map fun p => (p.1 + k * entry R 0 (R.length - 1), p.2)).map
+            (fun p => (p.1 + entry R 0 (R.length - 1), p.2)))
+          = (List.range n).flatMap (fun k => ((0, v) :: R.dropLast).map
+              fun p => (p.1 + (k + 1) * entry R 0 (R.length - 1), p.2)) := by
         rw [List.map_flatMap]
         refine List.flatMap_congr ?_
         intro k _
         rw [List.map_map]
         refine List.map_congr_left ?_
         intro q _
-        simp only [Function.comp_apply, Prod.mk.injEq]
-        constructor
-        · ring
-        · rfl
-      show D ++ (List.range n).flatMap (fun k => D.map fun p => (p.1 + (k + 1) * x, p.2))
+        simp only [Function.comp_apply, Nat.succ_mul, Nat.add_assoc]
+      show ((0, v) :: R.dropLast) ++ (List.range n).flatMap
+          (fun k => ((0, v) :: R.dropLast).map
+            fun p => (p.1 + (k + 1) * entry R 0 (R.length - 1), p.2))
         = tow v R (n + 1)
       rw [← hstep, ih]
-      show D ++ (tow v R n).map (fun p => (p.1 + x, p.2)) = (0, v) :: graft R (tow v R n)
-      rw [hDdef, graft, hxdef]
+      show ((0, v) :: R.dropLast) ++ (tow v R n).map
+          (fun p => (p.1 + entry R 0 (R.length - 1), p.2))
+        = (0, v) :: graft R (tow v R n)
+      rw [graft]
       simp
 
 /-- (E′) Continuous case `dom R = T_m` with `m < v`: `dom (p_v R) = T_m`. -/
@@ -1596,7 +1698,7 @@ theorem Wstar_closed : ∀ (u : ℕ) (M : PairSeq), Aop W u Wstar M → M ∈ Ws
               unfold idx1; rw [if_pos (by omega)]
             rwa [this] at hp
         refine A1_intro (Or.inr (Or.inl ⟨hnatM, fun n hn => ?_⟩))
-        rw [oper_cons_nat hR hRnil hp hn]
+        rw [oper_cons_nat hR hRnil hp]
         exact hop n hn (argOK_oper hR n) v
       · -- no parent: `natDom R` forces the successor case `w = 0`
         have hw0 : entry R 1 (R.length - 1) = 0 := by
@@ -1860,100 +1962,69 @@ theorem wf_olt_ST_PS_of_cofinality
 
 /-! ## 9. REPORT — what is GREEN, what is open, and where the danger is
 
-### GREEN (`sorryAx`-free, checked by the `#print axioms` below)
+Everything in this file is `sorryAx`-free; the `#print axioms` block below is
+the machine check.  What follows records the shape of the completed argument and
+the facts a reader should not have to rediscover.
 
-Pillar-2 core:
+### The two design decisions that made it work
 
-* the whole `A_u` / `W_u` apparatus: `Wf` (iterated stages), `W`, `W_unfold`,
-  (A1), (A2) / (A2'), `A1_intro`, `A1_dest`, `W_mono`, `W_nil`, `W_atom`;
-* the **design validation** `hasParent_one_iff` — PSS's own `hasParent … 1 …`
-  really is Buchholz's spine condition — and its packaging `domT_iff`;
-* `oper_eq_graft_nil_of_domT`;
-* the **bridge** `acc_of_W` and the assembly `wf_of_cofinality_and_membership`,
-  modulo their explicit hypotheses.  The bridge needs `hcof` and **nothing
-  else**.
+1. **`dom = T_m` is PSS's own `¬ hasParent M 1 (|M|-1)`** (`domT`), and the
+   `T_m`-indexed fundamental sequence is the `graft`.  Validated, not asserted:
+   `hasParent_one_iff` proves that `nextrel1` picks the *largest* row-0 ancestor
+   with a smaller row-1 value, so a row-1 parent exists iff *some* strict row-0
+   ancestor breaks Buchholz's `u < v` spine condition.
+2. **The ℕ-branch of `A_u` carries the guard `natDom`** (Buchholz's
+   `dom c ∈ {{0}, ℕ_B}`).  This is load-bearing: without it branch 2 could fire
+   on an `Ω_{m+1}`-cofinal block, where PSS's `oper` degenerates to
+   `graft M []` and carries far too little information to run the 2.6 tower.
 
-Block algebra (all new, all `sorryAx`-free):
+### The engine: `oper_shift`
 
-* `oper_shift` — **`oper` is row-0-shift equivariant**.  This is the enabler for
-  everything else: it turns `Nrm.oper_append_right` (which needs the right
-  summand anchored at depth `0`) into the shift-general `oper_append_gen`.
-* `W_shift` — `W_u` is closed under a uniform row-0 shift (`A_u` is
-  shift-equivariant branch by branch).
-* `split_lastMin` — every nonempty block splits as `A ++ P` with `P` its last
-  top-level tree, anchored at the minimal depth.
-* `oper_append_gen`, `graft_append`, `domT_append`, `natDom_append`,
-  `hasParent_append_gen` — the prefix commutes with every `A_u` branch.
-* `oper_mem_ge`, `graft_mem_ge`, `oper_head_eq`, `graft_head_eq` — depth
-  bookkeeping (`oper`/`graft` never go shallower and keep the anchor).
+`Nrm.oper_append_right` needs the right summand anchored at depth `0`; PSS
+blocks are not.  `oper_shift` (`oper` is row-0-shift equivariant) converts it
+into the shift-general `oper_append_gen`, which is what `split_lastMin` feeds.
+The one non-shift-invariant test inside `oper` — "is the last pair `(0,0)`?" —
+turns out to be **redundant**: a row-0-`0` column has no parent at all, so both
+readings land in the same `Pred` branch.
 
-The Buchholz chain:
+### The tower
 
-* **2.4(a)/(b)** `XA_closed`, `W_add`;
-* **2.5** `Om_mem_W` (`Ω_v = p_v(0) ∈ W_v`), `domT_Om`, `graft_Om`;
-* **2.6** `Wstar_closed` (assembled from the five open `oper_cons_*` facts);
-* **2.7** `mem_of_Aclosed` — induction on block length, `X` universally
-  quantified so the principal step can instantiate it at `W*`;
-* **2.8** `mem_Wstar`; the level bound `mem_W_of_bound` / `mem_W_maxr1`;
-* **`W_membership`** — the deliverable, now `= fun M _ => ⟨maxr1 M, …⟩`.
+`oper_cons_tower` is the PSS form of `(D_v b)[n] = D_v(b[x_n])`.  The proof is
+the recursion `M⟦n+1⟧ = M.dropLast ++ (M⟦n⟧).map (· + d0)` with
+`d0 = entry R 0 (|R|-1)`, matched against
+`tow v R (k+1) = (0,v) :: graft R (tow v R k)`.  The root `(0,v)` is the row-1
+parent of the last column precisely because `v ≤ m` (`hasParent_cons_one`), and
+`argOK R` makes it a row-0 ancestor of everything (`le0_cons_zero`).
 
-### OPEN — five `sorry`s, all in one place
+### The `H0clause` question — answered NO, and structurally
 
-The **four-case classification of `oper` on a principal block** `(0,v) :: R`
-(with `argOK R`), plus the `hasParent` transfer that drives it:
+The worry was Buchholz's additive closure 2.4(b), free in the source only
+because `+` is formed inside `OT_B`, whose *definition* carries the CNF
+condition.  On the PSS side `translate`'s `+` is the third component of
+`P a b c` and carries **no** normal-form condition, so `A ++ B` is
+unconditional at the term level; 2.4(b) needs only the *positional* guard
+`rsum A B` ("`B` is a genuine top-level suffix"), which `split_lastMin` supplies
+for free.  The reason is the one the design answer predicted: the carrier of the
+induction is **W-membership** (`A`-closed by construction), never an
+order-domination clause, so no `olt` comparison — hence no `Gterm` domination —
+is ever needed.  The five `oper_cons_*` lemmas confirm this: they are pure
+statements about `oper`/`hasParent`, and their proofs never mention `translate`.
 
-| lemma | content |
-|---|---|
-| `hasParent_cons_one` | the root `(0,v)` is a row-1 parent of the last column iff `R` has one or `v < ` `R`'s trailing subscript |
-| `oper_cons_nat` | (B′)(C′) `p_v(R)[n] = p_v(R[n])` |
-| `oper_cons_succ` | (A′) `p_v(β+1)[n] = p_v(β)·n` |
-| `oper_cons_tower` | (D′) the **tower** `p_v(R)[n] = tow v R n` |
-| `domT_cons_of_lt` | (E′) `dom R = T_m`, `m < v` ⟹ `dom (p_v R) = T_m` |
+### Facts worth not rediscovering
 
-All five are believed TRUE; §6's table states the classification and why it is
-exhaustive.  Each is a statement about `oper` / `hasParent` on a `cons` — the
-row-0 ancestor chain of `(0,v) :: R`'s last column is `R`'s own chain extended
-by the root, because `argOK R` puts the root strictly below everything.  The
-proofs should follow the pattern of `Nrm.oper_append_right` (the analogous
-`append` transfer), with `hasParent_one_iff` supplying the `hasParent` half.
-
-`oper_cons_tower` is the one with real content: it is the PSS form of
-Buchholz's `(D_v b)[n] = D_v(b[x_n])`, i.e. the `oper_bad_blocks` ascending
-tiling `M⟦n⟧ = G ++ (range n).flatMap (k ↦ body.map (p ↦ (p.1 + k*d0, p.2)))`
-read through `graft`.  The recursion to prove is
-`M⟦n+1⟧ = M.dropLast ++ (M⟦n⟧).map (· + d0)` with `d0 = entry R 0 (|R|-1)`,
-matched against `tow v R (k+1) = (0,v) :: graft R (tow v R k)`.
-
-### DANGER FLAGS
-
-1. **No `H0clause`-shaped coefficient domination appeared — and that looks
-   structural, not lucky.**  The worry was Buchholz's additive closure 2.4(b),
-   which is free in the source only because `+` is formed inside `OT_B` whose
-   *definition* carries the CNF condition.  On the PSS side `translate`'s `+`
-   is the third component of `P a b c` and carries **no** normal-form
-   condition, so `A ++ B` is unconditional at the term level; all that 2.4(b)
-   needs is the *positional* guard `rsum A B` ("`B` is a genuine top-level
-   suffix"), which `split_lastMin` supplies for free.  The reason this route
-   dodges the domination clause is the one the design answer already gives: the
-   carrier of the induction is **W-membership** (`A`-closed by construction),
-   never an order-domination clause, so no `olt` comparison — hence no `Gterm`
-   domination — is ever needed.  **If a future attempt at the five open lemmas
-   finds itself needing an `olt`/`Gterm` fact, that is a red flag: it would mean
-   the classification was mis-stated, since `oper` is defined without reference
-   to the order.**
-2. **The `based z` guard on the `T_m` branch is load-bearing** (§1c
-   machine-checks a concrete failure).  It survived the whole chain: the graft
-   argument in the tower is `tow v R k`, which is `[]` or a `cons` at depth `0`,
-   hence `based`.
-3. **`argOK` vs `based`.**  Two different anchoring notions are needed and they
-   are *not* interchangeable: `based M` ("first column at depth `0`") is what
-   `oper` preserves, while `argOK R` ("all columns strictly below depth `0`") is
-   what makes the root of `(0,v) :: R` an ancestor of everything.  Blocks are
-   **not** closed under "min depth `0`" (`oper` can destroy it), which is why
-   `split_lastMin` + `oper_shift` are used instead of a naive normalisation.
-4. **`ST_PS` forms are never `domT`.**  Still only the weak consequence is used
-   (`stps_head`).  `W_membership` turned out not to need the invariant at all:
-   `mem_W_of_bound` proves membership for *every* block, `ST_PS` or not.
+* **`based` and `argOK` are different and both necessary.**  `based M` ("first
+  column at depth `0`") is what `oper` preserves; `argOK R` ("every column
+  strictly below depth `0`") is what makes the root of `(0,v) :: R` an ancestor
+  of everything.  "Minimum depth `0`" is *not* `oper`-stable, which is why
+  `split_lastMin` + `oper_shift` replace any naive normalisation.
+* **The `based z` guard on the `T_m` branch is load-bearing** — §1c
+  machine-checks a concrete failure (`[(0,0)]` and `[(2,0)]` have the same
+  `translate` but graft differently).  It survived the whole chain because the
+  tower's graft argument `tow v R k` is `[]` or a depth-`0` `cons`.
+* **`ST_PS`-ness is barely used.**  `mem_W_of_bound` proves membership for
+  *every* block, so `W_membership` never needs the invariant "no standard form
+  is `Ω`-cofinal"; the bridge uses only `stps_head` (length-`1` standard forms
+  are `[(0,0)]`).
 -/
 
 #print axioms hasParent_one_iff
@@ -1966,8 +2037,20 @@ matched against `tow v R (k+1) = (0,v) :: graft R (tow v R k)`.
 #print axioms XA_closed
 #print axioms W_add
 #print axioms Om_mem_W
-#print axioms mem_of_Aclosed_aux
+#print axioms hasParent_zero_iff
+#print axioms le0_cons_zero
+#print axioms hasParent_cons_one
+#print axioms domT_cons_of_lt
+#print axioms oper_cons_succ
+#print axioms oper_cons_nat
+#print axioms oper_cons_tower
+#print axioms Wstar_closed
+#print axioms mem_of_Aclosed
+#print axioms mem_Wstar
 #print axioms mem_W_of_bound
+#print axioms mem_W_maxr1
+#print axioms W_membership
+#print axioms wf_olt_ST_PS_of_cofinality
 #print axioms A1
 #print axioms A2'
 #print axioms W_mono

@@ -980,6 +980,25 @@ def AscArgDom : Prop :=
     ∃ m, sle (S.takeWhile fun p => v0 + d0 < p.1)
       (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m))
 
+/-- **`AscArgDom` with an explicit witness.**  The stage `m := |S_hi|` always
+works (model-verified, 0 violations / 140, 294, 692 instances at closure
+`+5/+6/+7`), so the existential can be eliminated.  Note this removes the
+*search* for `m`, not the content: what remains is still the no-overshoot
+comparison, which is decided by a **row-1** inequality in 4047 of 6095 measured
+instances (only 297 by a row-0 drop), so it is not a pure length/prefix fact. -/
+def AscArgDomExplicit : Prop :=
+  ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ},
+    ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
+    ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
+    (∀ x ∈ R, v0 < x.1) → 0 < d0 →
+    sle (S.takeWhile fun p => v0 + d0 < p.1)
+      (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R))
+        (S.takeWhile fun p => v0 + d0 < p.1).length))
+
+theorem ascArgDom_of_explicit (H : AscArgDomExplicit) : AscArgDom := by
+  intro G R S v0 w0 d0 hM hN hR hd
+  exact ⟨_, H hM hN hR hd⟩
+
 theorem shiftr0_append (d : ℕ) (A B : PairSeq) :
     shiftr0 d (A ++ B) = shiftr0 d A ++ shiftr0 d B := List.map_append
 
