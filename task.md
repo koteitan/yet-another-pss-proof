@@ -27,7 +27,8 @@
       - 同核: H0clause_oper_step / CollapseResidueMaxo / wf_ArgsA / diag_acc / Towsner 3.11 cross-stratum / Buchholz 1.9-term
       - 3 door + 全 lever（rank / critSub / WQO / gap-embed / §1 / fixpoint）収束、shortcut なし確定
       - ❌ Buchholz distinguished-set 再 foundation（external-param C^α(X)、Arai §3.1）= 3 gate de-risk で REFUTED（bypass #13、§22）: olt は syntactic、WF certificate は wf_olt_wf3(oV/wf3) のみ ⟹ 壁を wf3_of_cnf=H0clause に relocate するだけ。door1 が faithful な term-level 法、壁は intrinsic。core triply-confirmed
-    - 🚨🤖 ★NEW LIVE: 順序数なし W_u ルート（pss-proof の構文的 OT_B 整礎性を PSS ネイティブ移植）— 旧 terminal の前提「WF certificate は oV/wf3 のみ」が偽と判明。W_u 最小不動点帰納は非構造的（既 exhausted 軸は全て構造帰納）
-      - ✅ PSS Bachmann 共終性が真（0-viol / 79003 pairs、非自明、n≥1）＝ Gterm/支配条件に非依存＝H0clause と別 obligation
-      - 🚨🤖 pss_cofinality の Lean 証明（Cofinality.lean、GREEN の oper_bad_blocks / core_i0 / core_i1 から）
-      - 🚨 A/W 構造 ＋ 主帰納の移植（共終性 ⟹ WF ⟹ 停止性）
+    - ★★ 順序数なし W_u ルート（pss-proof の構文的 OT_B 整礎性を PSS ネイティブ移植）＝ H0clause 壁を迂回、残り1命題
+      - ✅ end-to-end 配線（OrdinalFree.lean）: PSS_terminates_ordinal_free / no_infinite_expansion / stepR 版、全て sorryAx-free
+      - ✅ 第2の柱 W-membership 完全証明（Wset.lean 全体 sorryAx-free、塔恒等式 oper_cons_tower 含む）
+      - ✅ 共終性の全分岐（seqlex 還元 / degenerate / bad 分解 / d0=0 crux）
+      - 🚨🤖 ★残＝単一命題 AscArgDomExplicit（0-viol 検証済・非退化、明示 witness m=|S_hi| 判明、Gterm/支配条件を含まない純組合せ）
