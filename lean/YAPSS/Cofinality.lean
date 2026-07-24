@@ -482,7 +482,8 @@ theorem oper_bad_blocks_all {M : PairSeq} (L : 1 < M.length) (hst : steps1 M)
       (∀ n, 1 ≤ n → M⟦n⟧ = G ++ copies d0 ((v0, w0) :: R) n) ∧
       (∀ x ∈ R, v0 < x.1) ∧ v0 < lp.1 ∧
       ((d0 = 0 ∧ lp.2 = 0 ∧ lp.1 = v0 + 1)
-        ∨ (0 < d0 ∧ lp.2 = w0 + 1 ∧ lp.1 = v0 + d0)) := by
+        ∨ (0 < d0 ∧ lp.2 = w0 + 1 ∧ lp.1 = v0 + d0
+            ∧ nextrel1 M G.length (M.length - 1))) := by
   obtain ⟨G, v0, w0, R, d0, lp, hM1, -, R_gt, lp_gt, disj, hnR⟩ :=
     oper_bad_blocks (n := 1) L hz hp le_rfl
   -- the dropped column is the last column of `M`
@@ -503,7 +504,8 @@ theorem oper_bad_blocks_all {M : PairSeq} (L : 1 < M.length) (hst : steps1 M)
     simpa using h
   -- the `idx1 = 0` branch pins `lp.2 = 0` and `lp.1 = v0 + 1`
   have hdisj' : (d0 = 0 ∧ lp.2 = 0 ∧ lp.1 = v0 + 1)
-      ∨ (0 < d0 ∧ lp.2 = w0 + 1 ∧ lp.1 = v0 + d0) := by
+      ∨ (0 < d0 ∧ lp.2 = w0 + 1 ∧ lp.1 = v0 + d0
+          ∧ nextrel1 M G.length (M.length - 1)) := by
     rcases disj with ⟨h0, hi⟩ | ⟨h1, h2, h3, hn1⟩
     · have hlp2 : lp.2 = 0 := by
         unfold idx1 at hi
@@ -528,7 +530,7 @@ theorem oper_bad_blocks_all {M : PairSeq} (L : 1 < M.length) (hst : steps1 M)
         · rw [← he]
         · exact hn0.2.2.2.2 (G.length + 1) ⟨by omega, hlt⟩
       omega
-    · refine Or.inr ⟨h1, ?_, h3⟩
+    · refine Or.inr ⟨h1, ?_, h3, hn1⟩
       have hs := nextrel1_snd_succ hr hn1
       rw [entry_one, entry_one, ← hlpM, hGd] at hs
       exact hs
@@ -867,6 +869,8 @@ def AscCrux : Prop :=
     ST_PS ((G ++ ((v0, w0) :: R)) ++ q :: S) →
     (∀ x ∈ R, v0 < x.1) →
     0 < d0 → lp.2 = w0 + 1 → lp.1 = v0 + d0 →
+    nextrel1 ((G ++ ((v0, w0) :: R)) ++ [lp]) G.length
+      (G ++ ((v0, w0) :: R)).length →
     pairlt q lp →
     ∃ m, 1 ≤ m ∧ sle (q :: S) (shiftr0 d0 (copies d0 ((v0, w0) :: R) m))
 
@@ -880,6 +884,8 @@ def AscCrux1 : Prop :=
     ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
     ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
     (∀ x ∈ R, v0 < x.1) → 0 < d0 →
+    nextrel1 ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) G.length
+      (G ++ ((v0, w0) :: R)).length →
     ∃ m, 1 ≤ m ∧ sle ((v0 + d0, w0) :: S) (shiftr0 d0 (copies d0 ((v0, w0) :: R) m))
 
 /-! ## Part 6 — the ascending (`d0 > 0`) half: reduction to ONE `≤o`
@@ -977,6 +983,8 @@ def AscArgDom : Prop :=
     ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
     ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
     (∀ x ∈ R, v0 < x.1) → 0 < d0 →
+    nextrel1 ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) G.length
+      (G ++ ((v0, w0) :: R)).length →
     ∃ m, sle (S.takeWhile fun p => v0 + d0 < p.1)
       (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m))
 
@@ -991,13 +999,15 @@ def AscArgDomExplicit : Prop :=
     ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
     ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
     (∀ x ∈ R, v0 < x.1) → 0 < d0 →
+    nextrel1 ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) G.length
+      (G ++ ((v0, w0) :: R)).length →
     sle (S.takeWhile fun p => v0 + d0 < p.1)
       (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R))
         (S.takeWhile fun p => v0 + d0 < p.1).length))
 
 theorem ascArgDom_of_explicit (H : AscArgDomExplicit) : AscArgDom := by
-  intro G R S v0 w0 d0 hM hN hR hd
-  exact ⟨_, H hM hN hR hd⟩
+  intro G R S v0 w0 d0 hM hN hR hd hnr
+  exact ⟨_, H hM hN hR hd hnr⟩
 
 theorem shiftr0_append (d : ℕ) (A B : PairSeq) :
     shiftr0 d (A ++ B) = shiftr0 d A ++ shiftr0 d B := List.map_append
@@ -1011,9 +1021,9 @@ theorem copies_succ_back (d : ℕ) (blk : PairSeq) (n : ℕ) :
 /-- **The ascending branch needs only ONE extra copy beyond the witness**:
 `AscArgDom` at stage `m` closes it at `m + 2` copies. -/
 theorem asc_crux1_of_argdom (H : AscArgDom) : AscCrux1 := by
-  intro G R S v0 w0 d0 hM hN hRgt hd
+  intro G R S v0 w0 d0 hM hN hRgt hd hnr
   classical
-  obtain ⟨m, hdom⟩ := H hM hN hRgt hd
+  obtain ⟨m, hdom⟩ := H hM hN hRgt hd hnr
   set Shi := S.takeWhile (fun p => v0 + d0 < p.1) with hShidef
   set Slo := S.dropWhile (fun p => v0 + d0 < p.1) with hSlodef
   have hSsplit : Shi ++ Slo = S := List.takeWhile_append_dropWhile
@@ -1222,11 +1232,11 @@ theorem le_diag_ST_PS {M : PairSeq} (hM : ST_PS M) {i : ℕ} (hi : i < M.length)
 /-- **The head step of the ascending crux is CLOSED**: only the `q = (v0+d0,w0)`
 case survives. -/
 theorem asc_head_step (H : AscCrux1) : AscCrux := by
-  intro G R S v0 w0 d0 lp q hM hN hRgt hd hlp2 hlp1 hq
+  intro G R S v0 w0 d0 lp q hM hN hRgt hd hlp2 hlp1 hnr hq
   have hlpe : lp = (v0 + d0, w0 + 1) := Prod.ext hlp1 hlp2
   by_cases hqe : q = (v0 + d0, w0)
   · subst hqe
-    exact H (hlpe ▸ hM) hN hRgt hd
+    exact H (hlpe ▸ hM) hN hRgt hd (hlpe ▸ hnr)
   · refine ⟨1, le_rfl, Or.inr ?_⟩
     rw [copies_one, shiftr0_cons]
     refine Or.inl ?_
@@ -1251,10 +1261,15 @@ theorem seqlex_cof_bad (H : AscCrux) {M N : PairSeq} (hM : ST_PS M) (hN : ST_PS 
   · exact ⟨1, le_rfl, by rw [hMn 1 le_rfl, copies_one]; exact hle⟩
   · obtain ⟨m, hm, hsle⟩ : ∃ m, 1 ≤ m ∧
         sle (q :: S) (shiftr0 d0 (copies d0 ((v0, w0) :: R) m)) := by
-      rcases disj with ⟨rfl, hlp2, hlp1⟩ | ⟨hd, hw, hlpe⟩
+      rcases disj with ⟨rfl, hlp2, hlp1⟩ | ⟨hd, hw, hlpe, hn1⟩
       · simp only [shiftr0_zero]
         exact crux_zero (hNeq ▸ hN) R_gt hlp2 hlp1 hq
-      · exact H (hMeq ▸ hM) (hNeq ▸ hN) R_gt hd hw hlpe hq
+      · have hlen : M.length - 1 = (G ++ ((v0, w0) :: R)).length := by
+          rw [hMeq]; simp
+        have hnr : nextrel1 ((G ++ ((v0, w0) :: R)) ++ [lp]) G.length
+            (G ++ ((v0, w0) :: R)).length := by
+          rw [← hlen, ← hMeq]; exact hn1
+        exact H (hMeq ▸ hM) (hNeq ▸ hN) R_gt hd hw hlpe hnr hq
     refine ⟨m + 1, by omega, ?_⟩
     rw [hMn (m + 1) (by omega), copies_succ_front, hNeq, List.append_assoc]
     exact (sle_append_cancel _).2 ((sle_append_cancel _).2 hsle)
