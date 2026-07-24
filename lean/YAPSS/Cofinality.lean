@@ -65,9 +65,24 @@ single residual `AscCrux1`:
 |                                           | (`hasParent_last_ST_PS`, via `hp_last`) |
 | bad, `d0 = 0` (exact copies)              | GREEN `crux_zero` / `copy_dom_zero`     |
 | bad, `d0 > 0` (ascending), head step      | GREEN `asc_head_step`                   |
-| bad, `d0 > 0`, the collapse step          | **OPEN** — `AscCrux1`                   |
+| bad, `d0 > 0`, copy-count bookkeeping      | GREEN `asc_crux1_of_argdom`             |
+| bad, `d0 > 0`, the collapse domination     | **OPEN** — `AscArgDom`                  |
 
-`pss_cofinality_of_crux : AscCrux1 → pss_cofinality`.
+`pss_cofinality_of_argdom : AscArgDom → pss_cofinality`, where the *entire*
+residual is the single `≤lex` inequality (`blk = (v0,w0)::R`,
+`blk' = shiftr0 d0 blk`, `S_hi = S.takeWhile (v0+d0 < ·.1)`):
+
+    ∃ m,  S_hi  ≤lex  shiftr0 d0 (R ++ copies d0 blk' m)
+
+under `ST_PS (G ++ blk ++ [(v0+d0, w0+1)])` and `ST_PS (G ++ blk ++ (v0+d0,w0) :: S)`.
+In words: *the argument of the collapsed node `(v0+d0, w0)` in `N` is dominated
+by the (shifted) argument of the block root in the host expansion `M⟦m+1⟧`* —
+literally the `∃n, e ≤ c[x_n]` step `(*)` of the Buchholz source's collapse
+branch, transposed to BMS copy structure.
+
+Model-verified TRUE: **0 violations** over 6095 / 7969 / 15579 instances at
+closures `(v≤4,d=5)`, `(v≤5,d=5)`, `(v≤4,d=6)` with `m ≤ 12/12/14`
+(`tools/probe_cof_asc.py` + the inline check recorded in the session).
 
 ### Why `d0 = 0` closes but `d0 > 0` does not
 
@@ -749,8 +764,6 @@ theorem crux_zero {G R S : PairSeq} {v0 w0 : ℕ} {lp q : ℕ × ℕ}
       simp only [List.headI]
       omega
 
-/-! ## Part 6 — assembly (modulo the ascending crux) -/
-
 /-- **The residual crux — ascending copies only.**  The `d0 = 0` (exact-copy)
 half is discharged below by `crux_zero`; this is what is left: a standard form
 `N` that agrees with the host `M` on the *whole* good prefix `G` and bad block
@@ -784,6 +797,199 @@ def AscCrux1 : Prop :=
     ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
     (∀ x ∈ R, v0 < x.1) → 0 < d0 →
     ∃ m, 1 ≤ m ∧ sle ((v0 + d0, w0) :: S) (shiftr0 d0 (copies d0 ((v0, w0) :: R) m))
+
+/-! ## Part 6 — the ascending (`d0 > 0`) half: reduction to ONE `≤o`
+
+Because the ascending copies are **nested** (`blk_{k+1}` sits strictly inside
+`blk_k`), matching the first copy already exhausts everything the continuation
+of `N` can reach: the next copy root is at level `v0 + 2*d0`, strictly deeper
+than any column `S` still has after leaving `q`'s subtree.  So — unlike the
+exact-copy branch — there is **no recursion** here: two copies always suffice,
+and the entire branch collapses to the single inequality
+
+    translate (q's descendant block in `N`)  ≤o  translate R
+
+i.e. *the collapsed node's argument is dominated by the original block body*. -/
+
+theorem shiftr0_length (d : ℕ) (X : PairSeq) : (shiftr0 d X).length = X.length := by
+  unfold shiftr0; simp
+
+theorem shiftr0_getD {d : ℕ} {X : PairSeq} {j : ℕ} (hj : j < X.length) :
+    (shiftr0 d X).getD j (0, 0) = ((X.getD j (0, 0)).1 + d, (X.getD j (0, 0)).2) := by
+  unfold shiftr0
+  rw [List.getD_eq_getElem?_getD, List.getElem?_map, List.getElem?_eq_getElem hj,
+    List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hj]
+  rfl
+
+theorem steps1_shiftr0 (d : ℕ) {X : PairSeq} (h : steps1 X) : steps1 (shiftr0 d X) := by
+  rw [steps1_iff] at h ⊢
+  intro j hj
+  rw [shiftr0_length] at hj
+  rw [shiftr0_getD (by omega), shiftr0_getD (by omega)]
+  have := h j hj
+  simp only []
+  omega
+
+theorem headI_shiftr0 {d : ℕ} {X : PairSeq} (hne : X ≠ []) :
+    ((shiftr0 d X).headI).1 = (X.headI).1 + d := by
+  rcases X with _ | ⟨x, X'⟩
+  · exact absurd rfl hne
+  · rfl
+
+theorem mem_shiftr0_le {d : ℕ} (e : ℕ) {X : PairSeq} (h : ∀ x ∈ X, d ≤ x.1) :
+    ∀ x ∈ shiftr0 e X, d + e ≤ x.1 := by
+  intro x hx
+  obtain ⟨p, hp, rfl⟩ := mem_shiftr0.1 hx
+  have := h p hp
+  simp only []
+  omega
+
+theorem blockok_shiftr0 {d e : ℕ} {X : PairSeq} (h : blockok d X) :
+    blockok (d + e) (shiftr0 e X) := by
+  refine ⟨?_, mem_shiftr0_le e h.2.1, steps1_shiftr0 e h.2.2⟩
+  intro hne
+  have hXne : X ≠ [] := by
+    intro he; rw [he] at hne; exact hne rfl
+  rw [headI_shiftr0 hXne, h.1 hXne]
+
+/-- `shiftr0` commutes with the copy tower (shifting all copies = shifting the
+block). -/
+theorem shiftr0_copies (d : ℕ) (blk : PairSeq) (n : ℕ) :
+    shiftr0 d (copies d blk n) = copies d (shiftr0 d blk) n := by
+  unfold copies shiftr0
+  rw [List.map_flatMap]
+  congr 1
+  funext k
+  rw [List.map_map, List.map_map]
+  congr 1
+  funext p
+  simp only [Function.comp_apply, Prod.mk.injEq, and_true]
+  omega
+
+/-- **The residual, in its sharpest form.**  `S_hi := S.takeWhile (v0+d0 < ·.1)`
+is the descendant block of the ascending copy root `q = (v0+d0, w0)` inside `N`,
+and `R ++ copies d0 blk' m` is the descendant block of the *original* block root
+inside the host expansion `M⟦m+1⟧` (`blk' = shiftr0 d0 blk`).  All that is
+missing for PSS Bachmann cofinality is that the *collapsed argument* is
+dominated by the shifted host argument at some stage `m`:
+
+    S_hi  ≤lex  shiftr0 d0 (R ++ copies d0 blk' m).
+
+This is exactly the `∃n, e ≤ c[x_n]` step `(*)` of the Buchholz source's collapse
+branch, transposed to BMS copy structure.
+
+It is genuinely a **two-form** statement: dropping the host `M` makes the
+corresponding fact FALSE (15289 / 115859 violations on the closure — see the
+file header), so it cannot follow from any local invariant of `N` (`blockok`,
+`steps1`, `r1ok`, `z0ok`, `cnf` all hold in the counterexample).
+
+REFUTED variant (do **not** retry): the `m`-free form `S_hi ≤lex shiftr0 d0 R`
+is FALSE — `M = (0,0)(1,1)`, `N = (0,0)(1,0)(2,0) = M⟦3⟧` gives
+`S_hi = [(2,0)]` but `shiftr0 1 R = []` (4390 / 6095 violations).  The reason is
+that `S_hi` is *everything* above level `v0+d0`, hence also covers the later
+copies — the `m` in the statement above is what accounts for them. -/
+def AscArgDom : Prop :=
+  ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ},
+    ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
+    ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
+    (∀ x ∈ R, v0 < x.1) → 0 < d0 →
+    ∃ m, sle (S.takeWhile fun p => v0 + d0 < p.1)
+      (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m))
+
+theorem shiftr0_append (d : ℕ) (A B : PairSeq) :
+    shiftr0 d (A ++ B) = shiftr0 d A ++ shiftr0 d B := List.map_append
+
+theorem copies_succ_back (d : ℕ) (blk : PairSeq) (n : ℕ) :
+    copies d blk (n + 1) = copies d blk n ++ shiftr0 (n * d) blk := by
+  unfold copies
+  rw [List.range_succ, List.flatMap_append]
+  simp
+
+/-- **The ascending branch needs only ONE extra copy beyond the witness**:
+`AscArgDom` at stage `m` closes it at `m + 2` copies. -/
+theorem asc_crux1_of_argdom (H : AscArgDom) : AscCrux1 := by
+  intro G R S v0 w0 d0 hM hN hRgt hd
+  classical
+  obtain ⟨m, hdom⟩ := H hM hN hRgt hd
+  set Shi := S.takeWhile (fun p => v0 + d0 < p.1) with hShidef
+  set Slo := S.dropWhile (fun p => v0 + d0 < p.1) with hSlodef
+  have hSsplit : Shi ++ Slo = S := List.takeWhile_append_dropWhile
+  set blk' := shiftr0 d0 ((v0, w0) :: R) with hblk'
+  have hblk'cons : blk' = (v0 + d0, w0) :: shiftr0 d0 R := by
+    rw [hblk', shiftr0_cons]
+  -- every column of the host argument is strictly above `v0`
+  have hDmGt : ∀ x ∈ R ++ copies d0 blk' m, v0 < x.1 := by
+    intro x hx
+    rcases List.mem_append.1 hx with hx | hx
+    · exact hRgt x hx
+    · rw [hblk'cons] at hx
+      have := copies_v0_le (v0 := v0 + d0) (w0 := w0) (R := shiftr0 d0 R)
+        (mem_shiftr0_le d0 (fun y hy => (hRgt y hy).le)) d0 m x hx
+      omega
+  -- the tail below the copy root
+  have hSloHd : Slo = [] ∨ (Slo.headI).1 ≤ v0 + d0 := by
+    rcases hdd : Slo with _ | ⟨z, Z⟩
+    · exact Or.inl rfl
+    · refine Or.inr ?_
+      have h := List.head?_dropWhile_not (fun p : ℕ × ℕ => decide (v0 + d0 < p.1)) S
+      rw [← hSlodef, hdd] at h
+      simp only [List.head?_cons] at h
+      have : ¬ (v0 + d0 < z.1) := by simpa using h
+      simp only [List.headI]
+      omega
+  refine ⟨m + 2, by omega, ?_⟩
+  -- unfold the target into: copy root, host argument, one further copy
+  have hinner : shiftr0 d0 (copies d0 blk' (m + 1))
+      = shiftr0 d0 (copies d0 blk' m) ++ shiftr0 d0 (shiftr0 (m * d0) blk') := by
+    rw [copies_succ_back, shiftr0_append]
+  have htgt : shiftr0 d0 (copies d0 ((v0, w0) :: R) (m + 2))
+      = (v0 + d0, w0) :: (shiftr0 d0 (R ++ copies d0 blk' m)
+          ++ shiftr0 d0 (shiftr0 (m * d0) blk')) := by
+    rw [shiftr0_copies, ← hblk', copies_succ_front, hinner, shiftr0_append,
+      List.append_assoc]
+    conv_lhs => rw [hblk'cons]
+    rw [List.cons_append, ← hblk'cons]
+  rw [htgt]
+  have hEne : shiftr0 d0 (shiftr0 (m * d0) blk') ≠ [] := by
+    rw [hblk'cons]; simp [shiftr0]
+  have hEhd : ((shiftr0 d0 (shiftr0 (m * d0) blk')).headI).1 = v0 + d0 + m * d0 + d0 := by
+    rw [hblk'cons, shiftr0_cons, shiftr0_cons]
+    simp
+  show sle ([((v0 + d0 : ℕ), (w0 : ℕ))] ++ S)
+    ([((v0 + d0 : ℕ), (w0 : ℕ))] ++ _)
+  rw [sle_append_cancel]
+  rcases hdom with heq | hlt
+  · -- the argument is reproduced verbatim: one further copy dominates the drop
+    have hS : S = shiftr0 d0 (R ++ copies d0 blk' m) ++ Slo := by
+      rw [← hSsplit, heq]
+    rw [hS]
+    refine (sle_append_cancel _).2 ?_
+    rcases hSloHd with h | h
+    · rw [h]; exact Or.inr (by simpa using hEne)
+    · rcases hdd : Slo with _ | ⟨z, Z⟩
+      · exact Or.inr (by simpa using hEne)
+      · rcases hb : shiftr0 d0 (shiftr0 (m * d0) blk') with _ | ⟨b, B⟩
+        · exact absurd hb hEne
+        · refine Or.inr (Or.inl ?_)
+          rw [hdd] at h
+          rw [hb] at hEhd
+          simp only [List.headI] at h hEhd
+          unfold pairlt
+          omega
+  · -- strictly smaller argument: splice the sub-`v0+d0` tail past it
+    refine Or.inr ?_
+    rw [← hSsplit]
+    refine seqlex_splice hlt ?_ _
+    rcases hSloHd with h | h
+    · exact Or.inl h
+    · refine Or.inr (fun x hx => ?_)
+      obtain ⟨y, hy, rfl⟩ := mem_shiftr0.1 hx
+      have := hDmGt y hy
+      unfold pairlt
+      simp only []
+      omega
+
+/-! ## Part 7 — assembly (modulo the ascending crux) -/
 
 /-- **The head step of the ascending crux is CLOSED**: only the `q = (v0+d0,w0)`
 case survives. -/
@@ -860,5 +1066,17 @@ theorem pss_cofinality_of_crux (H : AscCrux1) {M N : PairSeq}
     (hM : ST_PS M) (hN : ST_PS N) (h : translate N <o translate M) :
     ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=
   pss_cofinality_of_seqlex (seqlex_cofinality_of_crux (asc_head_step H)) hM hN h
+
+/-- **PSS Bachmann cofinality from the single `≤o` residual `AscArgDom`.**
+This is the sharpest packaging: everything in `pss_cofinality` reduces to
+
+    translate (S.takeWhile fun p => v0 + d0 < p.1)  ≤o  translate R
+
+for the ascending bad branch.  Feed the result to `YAPSS/Wset.lean`'s `hcof`
+parameter (`acc_of_nat_branch`, `wf_of_cofinality_and_membership`). -/
+theorem pss_cofinality_of_argdom (H : AscArgDom) {M N : PairSeq}
+    (hM : ST_PS M) (hN : ST_PS N) (h : translate N <o translate M) :
+    ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=
+  pss_cofinality_of_crux (asc_crux1_of_argdom H) hM hN h
 
 end YAPSS
