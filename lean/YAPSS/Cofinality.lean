@@ -49,6 +49,58 @@ The GREEN PSS-concrete assets are exactly the right shape here, because they rel
 empty):  `oper_bad_blocks` (Mechanized.lean:836, the oper copy/tile decomposition),
 `core_i0` (:714) and `core_i1` (:737) (ascending-copy domination), together with
 `translate_shift`, `translate_take_le`, `translate_append_ge` (Gterm0Olt.lean).
+
+## STATE (2026-07-24, this file)
+
+The proof is routed through **`olt_ST_iff_seqlex`** (Seqlex.lean:709): on `ST_PS`,
+`translate` is an order isomorphism onto the column-lex order `seqlex`, so the whole
+statement becomes combinatorics on pair sequences.  Everything below is GREEN except a
+single residual `AscCrux1`:
+
+| branch of `oper` on `ST_PS M`             | status                                  |
+|-------------------------------------------|-----------------------------------------|
+| `M.length ≤ 1` (`M⟦n⟧ = M`)               | GREEN `seqlex_cof_short`                |
+| last column `(0,0)` (`M⟦n⟧ = M.dropLast`) | GREEN `seqlex_cof_zero`                 |
+| no unique parent                          | GREEN — **branch is empty** on `ST_PS`  |
+|                                           | (`hasParent_last_ST_PS`, via `hp_last`) |
+| bad, `d0 = 0` (exact copies)              | GREEN `crux_zero` / `copy_dom_zero`     |
+| bad, `d0 > 0` (ascending), head step      | GREEN `asc_head_step`                   |
+| bad, `d0 > 0`, the collapse step          | **OPEN** — `AscCrux1`                   |
+
+`pss_cofinality_of_crux : AscCrux1 → pss_cofinality`.
+
+### Why `d0 = 0` closes but `d0 > 0` does not
+
+The exact-copy branch is driven by **CNF** (`cnf_ST_PS`): the level-`v0` siblings of a
+standard form are `≤o`-non-increasing, so the continuation of `N` after the block either
+drops strictly below it (done) or reproduces it verbatim (recurse; `copy_dom_zero`).
+
+In the ascending branch the copy root `q = (v0+d0, w0)` is a *descendant* of the block
+root, not a sibling of it.  Its preceding sibling `s` at level `v0+d0` (if any) lies
+inside `R`, and CNF **of the host** `M` already forces `s.2 ≥ lp.2 = w0+1 > w0` (`lp` is a
+sibling of `s` in `M`); if `R` has no column at level `v0+d0` then `q` has no preceding
+sibling at all.  Either way the CNF clause at `q` is discharged by the *subscript* alone
+and puts **no** constraint on `q`'s argument.  So a further fact bounding the *argument of
+the collapsed node* is required — i.e. exactly a coefficient/`Gterm`-domination-shaped
+statement (the `G_u(e) < c` hypothesis of the Buchholz source, which is free there only
+because `isOT_BT` is defined by it).  `core_i0`/`core_i1` do not supply it: their `C` is
+*literally the copy list produced by `oper`*, whereas here the continuation of `N` is an
+unknown standard form.
+
+Model-verification of the residual: `tools/probe_cof_asc.py` (fact A3, 6095 instances,
+0 violations at closure `v ≤ 4`, depth 5, `n ≤ 4`) and `tools/probe_cof_seqlex.py`
+(the `seqlex` reformulation itself, 106491 pairs, 0 violations).
+
+**The residual is irreducibly a two-form statement.**  Dropping the host `M` from
+`AscCrux1` — i.e. asking only that *inside one standard form* the continuation after an
+ascending copy root be dominated by the shifted body — is **FALSE**: 15289 violations /
+115859 instances on the same closure (smallest witness
+`N = (0,0)(1,1)(2,1)(3,0)(4,1)(5,1)` at the copy pair `(2,1) … (4,1)`, where the
+continuation `(5,1)` exceeds the shifted body `(5,0)`).  So the constraint really comes
+from the *existence of the companion standard form* `M = G ++ blk ++ [(v0+d0, w0+1)]`,
+which is precisely the shape of a Bachmann/coefficient-domination hypothesis, not of any
+local invariant of `N` (`blockok`, `r1ok`, `z0ok`, `cnf` are all local and all hold in
+that counterexample).
 -/
 import YAPSS.Mechanized
 import YAPSS.Gterm0Olt
@@ -266,39 +318,121 @@ theorem sle_append_cancel (A : PairSeq) {u v : PairSeq} :
     · exact Or.inl rfl
     · exact Or.inr h
 
+theorem getD_append_right' (A B : PairSeq) (i : ℕ) :
+    (A ++ B).getD (A.length + i) (0, 0) = B.getD i (0, 0) := by
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
+    List.getElem?_append_right (Nat.le_add_right _ _)]
+  simp
+
 theorem getD_last_of_snoc (D : PairSeq) (lp : ℕ × ℕ) :
     (D ++ [lp]).getD ((D ++ [lp]).length - 1) (0, 0) = lp := by
   have hl : (D ++ [lp]).length - 1 = D.length := by simp
   rw [hl, List.getD_eq_getElem?_getD, List.getElem?_append_right (le_refl _)]
   simp
 
+/-- **The row-`1` `+1` discipline at the last column.**  If the last column of
+a standard-shaped host has row-`1` parent `j0` (`nextrel1`), then its row-`1`
+value is *exactly* one above the parent's.
+
+Proof: take the first `nextrel0`-step `j0 → c` of the row-`0` ancestor chain
+`le0 M j0 j1`.  `r1ok` at `c` gives `row1 c ≤ row1 (parent₀ c) + 1`, and the
+`nextrel0`-parent is unique, so `parent₀ c = j0`; the `nextrel1` minimality
+gives `row1 j1 ≤ row1 c`.  Together with `row1 j0 < row1 j1` this pins the
+value.  (Model-verified: `tools/probe_cof_asc.py` fact A1, 0 violations.) -/
+theorem nextrel1_snd_succ {M : PairSeq} (hr : r1ok M) {j0 j1 : ℕ}
+    (h : nextrel1 M j0 j1) : entry M 1 j1 = entry M 1 j0 + 1 := by
+  obtain ⟨hj0, hj1, hlt, hincr, hle0, hmin⟩ := h
+  -- the first step of the row-`0` ancestor chain out of `j0`
+  obtain ⟨c, hstep, hchain⟩ :
+      ∃ c, nextrel0 M j0 c ∧ Relation.ReflTransGen (nextrel0 M) c j1 := by
+    rcases Relation.ReflTransGen.cases_head hle0.2.2 with he | h
+    · exact absurd he (by omega)
+    · exact h
+  have hcj0 : j0 < c := hstep.2.2.1
+  have hclen : c < M.length := hstep.2.1
+  have hcj1 : le0 M c j1 := ⟨hclen, hj1, hchain⟩
+  have h1 : entry M 1 j1 ≤ entry M 1 c := hmin c ⟨hcj0, hcj1⟩
+  -- `r1ok` at `c`: its row-`0` climbing parent is the (unique) `nextrel0` parent `j0`
+  have hc0 : 0 < (M.getD c (0, 0)).1 := by
+    have := hstep.2.2.2.1
+    rw [entry_zero, entry_zero] at this
+    omega
+  obtain ⟨k, hkc, hk1, hkmin, hk2⟩ := hr c hclen hc0
+  have hnk : nextrel0 M k c := by
+    refine ⟨by omega, hclen, hkc, ?_, ?_⟩
+    · rw [entry_zero, entry_zero]; omega
+    · intro l hl
+      rw [entry_zero, entry_zero]
+      exact hkmin l hl.1 hl.2
+  have hkj0 : k = j0 := nextrel0_unique hnk hstep
+  have h2 : entry M 1 c ≤ entry M 1 j0 + 1 := by
+    rw [entry_one, entry_one, ← hkj0]
+    exact hk2
+  omega
+
 /-- **The bad-branch decomposition, uniformly in `n`.**  `oper_bad_blocks`
 produces its block data per copy count; the parent is unique (`hasParent`), so
 the data is in fact the same for every `n`.  This packages it once and for all,
 in the `copies`/`shiftr0` form. -/
-theorem oper_bad_blocks_all {M : PairSeq} (L : 1 < M.length)
+theorem oper_bad_blocks_all {M : PairSeq} (L : 1 < M.length) (hst : steps1 M)
+    (hr : r1ok M)
     (hz : ¬ (entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0))
     (hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)) :
     ∃ (G : PairSeq) (v0 w0 : ℕ) (R : PairSeq) (d0 : ℕ) (lp : ℕ × ℕ),
       M = G ++ ((v0, w0) :: R) ++ [lp] ∧
       (∀ n, 1 ≤ n → M⟦n⟧ = G ++ copies d0 ((v0, w0) :: R) n) ∧
       (∀ x ∈ R, v0 < x.1) ∧ v0 < lp.1 ∧
-      ((d0 = 0 ∧ lp.2 = 0) ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0)) := by
+      ((d0 = 0 ∧ lp.2 = 0 ∧ lp.1 = v0 + 1)
+        ∨ (0 < d0 ∧ lp.2 = w0 + 1 ∧ lp.1 = v0 + d0)) := by
   obtain ⟨G, v0, w0, R, d0, lp, hM1, -, R_gt, lp_gt, disj, hnR⟩ :=
     oper_bad_blocks (n := 1) L hz hp le_rfl
   -- the dropped column is the last column of `M`
   have hlpM : lp = M.getD (M.length - 1) (0, 0) := by
     conv_rhs => rw [hM1]
     exact (getD_last_of_snoc _ _).symm
-  -- the `idx1 = 0` branch pins `lp.2 = 0`
-  have hdisj' : (d0 = 0 ∧ lp.2 = 0) ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0) := by
-    rcases disj with ⟨h0, hi⟩ | ⟨h1, h2, h3, -⟩
-    · refine Or.inl ⟨h0, ?_⟩
-      unfold idx1 at hi
-      split at hi
-      · exact absurd hi one_ne_zero
-      · rw [hlpM, ← entry_one]; omega
-    · exact Or.inr ⟨h1, h2, h3⟩
+  -- positional data used by the `idx1 = 0` branch
+  have hM1' : M = G ++ (((v0, w0) :: R) ++ [lp]) := by rw [hM1, List.append_assoc]
+  have hlenM : M.length = G.length + (R.length + 2) := by
+    rw [hM1']; simp
+  have hGd : M.getD G.length (0, 0) = (v0, w0) := by
+    have h := getD_append_right' G (((v0, w0) :: R) ++ [lp]) 0
+    rw [← hM1'] at h
+    simpa using h
+  have hGd1 : M.getD (G.length + 1) (0, 0) = (R ++ [lp]).getD 0 (0, 0) := by
+    have h := getD_append_right' G (((v0, w0) :: R) ++ [lp]) 1
+    rw [← hM1'] at h
+    simpa using h
+  -- the `idx1 = 0` branch pins `lp.2 = 0` and `lp.1 = v0 + 1`
+  have hdisj' : (d0 = 0 ∧ lp.2 = 0 ∧ lp.1 = v0 + 1)
+      ∨ (0 < d0 ∧ lp.2 = w0 + 1 ∧ lp.1 = v0 + d0) := by
+    rcases disj with ⟨h0, hi⟩ | ⟨h1, h2, h3, hn1⟩
+    · have hlp2 : lp.2 = 0 := by
+        unfold idx1 at hi
+        split at hi
+        · exact absurd hi one_ne_zero
+        · rw [hlpM, ← entry_one]; omega
+      refine Or.inl ⟨h0, hlp2, ?_⟩
+      -- the row-`0` parent is at `G.length`, so no column in between dips below `lp.1`
+      have hn0 : nextrel0 M G.length (M.length - 1) := by
+        have := hnR
+        rw [hi, nextR_zero_iff] at this
+        exact this
+      have hj1 : M.length - 1 = G.length + 1 + R.length := by omega
+      have hstep : entry M 0 (G.length + 1) ≤ entry M 0 G.length + 1 := by
+        have := steps1_iff.1 hst G.length (by omega)
+        rw [entry_zero, entry_zero]
+        exact this
+      have hv0 : entry M 0 G.length = v0 := by rw [entry_zero, hGd]
+      have hlp1 : lp.1 = entry M 0 (M.length - 1) := by rw [entry_zero, ← hlpM]
+      have hmin : entry M 0 (M.length - 1) ≤ entry M 0 (G.length + 1) := by
+        rcases Nat.eq_or_lt_of_le (show G.length + 1 ≤ M.length - 1 by omega) with he | hlt
+        · rw [← he]
+        · exact hn0.2.2.2.2 (G.length + 1) ⟨by omega, hlt⟩
+      omega
+    · refine Or.inr ⟨h1, ?_, h3⟩
+      have hs := nextrel1_snd_succ hr hn1
+      rw [entry_one, entry_one, ← hlpM, hGd] at hs
+      exact hs
   refine ⟨G, v0, w0, R, d0, lp, hM1, ?_, R_gt, lp_gt, hdisj'⟩
   intro n hn
   obtain ⟨G', v0', w0', R', d0', lp', hM2, hMn2, -, -, disj', hnR'⟩ :=
@@ -333,39 +467,366 @@ theorem oper_bad_blocks_all {M : PairSeq} (L : 1 < M.length)
   rw [hMn2, hd]
   rfl
 
-/-- **The copy-tiling crux.**  The single residual content of PSS Bachmann
-cofinality: a standard form `N` that agrees with the host `M` on the *whole*
-good prefix `G` and bad block `blk = (v0,w0) :: R`, and then continues with a
-column strictly below the dropped column `lp`, is dominated by finitely many
-shifted copies of `blk`. -/
-def CopyCrux : Prop :=
+/-! ## Part 4 — the exact-copy (`d0 = 0`) half of the crux
+
+Here the copies are *identical* (`shiftr0 0 = id`), so `M⟦n⟧` repeats the block
+`blk = (v0,w0) :: R` verbatim.  The engine is **CNF**: inside a standard form
+the level-`v0` siblings are `≤o`-non-increasing, so every further sibling of
+the `blk` root either drops strictly below `blk` (done at once) or reproduces
+it exactly (recurse on the strictly shorter remainder). -/
+
+/-- **Splice.**  A strictly smaller argument block stays smaller once the
+tails are attached, provided the left tail re-opens at or below the block base
+while every column of the right block is strictly above it. -/
+theorem seqlex_splice : ∀ {A B : PairSeq}, seqlex A B →
+    ∀ {U : PairSeq}, (U = [] ∨ ∀ x ∈ B, pairlt (U.headI) x) →
+    ∀ (C : PairSeq), seqlex (A ++ U) (B ++ C) := by
+  intro A
+  induction A with
+  | nil =>
+    intro B h U hU C
+    rcases B with _ | ⟨b0, B'⟩
+    · exact absurd h (by simp)
+    · rcases U with _ | ⟨u, U'⟩
+      · simp
+      · refine Or.inl ?_
+        rcases hU with h' | h'
+        · exact absurd h' (by simp)
+        · simpa using h' b0 (by simp)
+  | cons a A' ihA =>
+    intro B h U hU C
+    rcases B with _ | ⟨b0, B'⟩
+    · exact absurd h (by simp)
+    · rw [seqlex_cons_cons] at h
+      rcases h with hp | ⟨rfl, hs⟩
+      · exact Or.inl hp
+      · refine Or.inr ⟨rfl, ihA hs ?_ C⟩
+        rcases hU with h' | h'
+        · exact Or.inl h'
+        · exact Or.inr (fun x hx => h' x (List.mem_cons_of_mem _ hx))
+
+/-- The block split at the base level: `R` is exactly the leading run above
+`v0` and `Y` exactly the rest. -/
+theorem split_block {v0 : ℕ} {R Y : PairSeq} (hRgt : ∀ x ∈ R, v0 < x.1)
+    (hYhd : Y = [] ∨ ¬ v0 < (Y.headI).1) :
+    (R ++ Y).takeWhile (fun q => v0 < q.1) = R ∧
+    (R ++ Y).dropWhile (fun q => v0 < q.1) = Y := by
+  have hR' : ∀ x ∈ R, (fun q : ℕ × ℕ => decide (v0 < q.1)) x = true := by
+    intro x hx; simpa using hRgt x hx
+  rcases hYhd with rfl | hY
+  · exact ⟨by simpa using List.takeWhile_eq_self_iff.2 hR',
+      by simpa using List.dropWhile_eq_nil_iff.2 hR'⟩
+  · rcases Y with _ | ⟨y, Y'⟩
+    · exact ⟨by simpa using List.takeWhile_eq_self_iff.2 hR',
+        by simpa using List.dropWhile_eq_nil_iff.2 hR'⟩
+    · simp only [List.headI] at hY
+      exact ⟨by rw [takeWhile_append_all hR']; simp [hY],
+        by rw [dropWhile_append_all hR']; simp [hY]⟩
+
+/-- **Exact-copy domination (`d0 = 0`).**  The level-`v0` remainder `Y` after a
+block `blk = (v0,w0) :: R` of a CNF standard form is dominated by finitely many
+verbatim copies of `blk`. -/
+theorem copy_dom_zero : ∀ (d : ℕ) (Y : PairSeq) (v0 w0 : ℕ) (R : PairSeq),
+    Y.length ≤ d →
+    blockok v0 ((v0, w0) :: (R ++ Y)) →
+    (∀ x ∈ R, v0 < x.1) →
+    (Y = [] ∨ ¬ v0 < (Y.headI).1) →
+    cnf (translate ((v0, w0) :: (R ++ Y))) →
+    ∃ m, 1 ≤ m ∧ sle Y (copies 0 ((v0, w0) :: R) m) := by
+  intro d
+  induction d with
+  | zero =>
+    intro Y v0 w0 R hlen _ _ _ _
+    have hY : Y = [] := by
+      cases Y with
+      | nil => rfl
+      | cons y Y' => simp at hlen
+    subst hY
+    exact ⟨1, le_rfl, Or.inr (by rw [copies_one]; simp)⟩
+  | succ d ih =>
+    intro Y v0 w0 R hlen hbo hRgt hYhd hcnf
+    rcases Y with _ | ⟨y, Y'⟩
+    · exact ⟨1, le_rfl, Or.inr (by rw [copies_one]; simp)⟩
+    -- the head of `Y` sits exactly at level `v0`
+    have hyv : y.1 = v0 := by
+      have h1 : v0 ≤ y.1 := hbo.2.1 y (by simp)
+      have h2 : ¬ v0 < y.1 := by
+        rcases hYhd with h' | h'
+        · exact absurd h' (by simp)
+        · simpa using h'
+      omega
+    have hy : y = (v0, y.2) := Prod.ext hyv rfl
+    -- split `Y'` into the descendant block `R'` and the remainder `Y''`
+    set R' := Y'.takeWhile (fun q => v0 < q.1) with hR'def
+    set Y'' := Y'.dropWhile (fun q => v0 < q.1) with hY''def
+    have hY'split : R' ++ Y'' = Y' := List.takeWhile_append_dropWhile
+    have hR'gt : ∀ x ∈ R', v0 < x.1 := by
+      intro x hx
+      have := List.mem_takeWhile_imp hx
+      simpa using this
+    have hY''hd : Y'' = [] ∨ ¬ v0 < (Y''.headI).1 := by
+      rcases hd : Y'' with _ | ⟨z, Z⟩
+      · exact Or.inl rfl
+      · refine Or.inr ?_
+        have h := List.head?_dropWhile_not (fun q : ℕ × ℕ => decide (v0 < q.1)) Y'
+        rw [← hY''def, hd] at h
+        simpa using h
+    -- the two `translate` shapes
+    have hTy : translate (y :: Y') = P y.2 (translate R') (translate Y'') := by
+      rw [hy]
+      have : ((v0, y.2) :: R') ++ Y'' = (v0, y.2) :: Y' := by
+        rw [List.cons_append, hY'split]
+      rw [← this]
+      exact translate_block_append hR'gt hY''hd
+    have hTall : translate ((v0, w0) :: (R ++ (y :: Y')))
+        = P w0 (translate R) (translate (y :: Y')) := by
+      have : ((v0, w0) :: R) ++ (y :: Y') = (v0, w0) :: (R ++ (y :: Y')) := by
+        rw [List.cons_append]
+      rw [← this]
+      exact translate_block_append hRgt hYhd
+    rw [hTall, hTy] at hcnf
+    obtain ⟨cR, hsib, ctail⟩ := cnf_P_P.1 hcnf
+    -- CNF at the sibling boundary: `y.2 ≤ w0`
+    have hy2 : y.2 ≤ w0 := by
+      by_contra hcon
+      exact hsib (olt_P_P.2 (Or.inl (by omega)))
+    rcases Nat.lt_or_ge y.2 w0 with hlt | hge
+    · -- strictly smaller sibling: one copy already dominates
+      refine ⟨1, le_rfl, Or.inr ?_⟩
+      rw [copies_one, hy]
+      exact Or.inl (by unfold pairlt; omega)
+    · -- equal subscripts: CNF compares the two bodies
+      have hy2eq : y.2 = w0 := by omega
+      have hyw : y = (v0, w0) := by rw [hy, hy2eq]
+      have hnolt : ¬ (translate R <o translate R') := by
+        intro hcon
+        exact hsib (olt_P_P.2 (Or.inr (Or.inl ⟨hy2eq.symm, hcon⟩)))
+      -- the two bodies are depth-`v0+1` blocks
+      have hsp := split_block hRgt hYhd
+      have hboY : blockok v0 (y :: Y') := by
+        have := blockok_tail (d := v0) (y := w0) (r := R ++ (y :: Y')) hbo
+        rwa [hsp.2] at this
+      have hboR : blockok (v0 + 1) R := by
+        have := blockok_arg (d := v0) (y := w0) (r := R ++ (y :: Y')) hbo
+        rwa [hsp.1] at this
+      have hboR' : blockok (v0 + 1) R' := by
+        have hboY' : blockok v0 ((v0, y.2) :: Y') := by rw [← hy]; exact hboY
+        exact blockok_arg hboY'
+      by_cases hRR : R' = R
+      · -- the sibling reproduces the block: recurse on the remainder
+        have hYeq : y :: Y' = ((v0, w0) :: R) ++ Y'' := by
+          rw [hyw, List.cons_append, ← hY'split, hRR]
+        have hlen'' : Y''.length ≤ d := by
+          have h1 : (R' ++ Y'').length = Y'.length := by rw [hY'split]
+          simp only [List.length_append] at h1
+          simp only [List.length_cons] at hlen
+          omega
+        have hbo'' : blockok v0 ((v0, w0) :: (R ++ Y'')) := by
+          rw [← List.cons_append, ← hYeq]; exact hboY
+        have hcnf'' : cnf (translate ((v0, w0) :: (R ++ Y''))) := by
+          rw [← List.cons_append, ← hYeq, hTy]
+          exact ctail
+        obtain ⟨m, hm, hsle⟩ := ih Y'' v0 w0 R hlen'' hbo'' hRgt hY''hd hcnf''
+        refine ⟨m + 1, by omega, ?_⟩
+        rw [copies_succ_cons, shiftr0_zero, hYeq, ← List.cons_append]
+        exact (sle_append_cancel _).2 hsle
+      · -- the sibling body is strictly smaller: two copies suffice
+        have hslR : seqlex R' R := by
+          rcases seqlex_total R' R with he | h | h
+          · exact absurd he hRR
+          · exact h
+          · exact absurd (seqlex_imp_olt (v0 + 1) R R' hboR hboR' h) hnolt
+        refine ⟨2, by omega, Or.inr ?_⟩
+        rw [show (2 : ℕ) = 1 + 1 from rfl, copies_succ_cons, shiftr0_zero, copies_one,
+          hyw]
+        refine Or.inr ⟨rfl, ?_⟩
+        rw [← hY'split]
+        refine seqlex_splice hslR ?_ _
+        rcases hY''hd with h | h
+        · exact Or.inl h
+        · refine Or.inr (fun x hx => ?_)
+          have h1 := hRgt x hx
+          unfold pairlt; omega
+
+/-! ## Part 5 — the `d0 = 0` half of the crux, discharged -/
+
+theorem copies_zero_succ (blk : PairSeq) (m : ℕ) :
+    copies 0 blk (m + 1) = copies 0 blk m ++ blk := by
+  unfold copies
+  rw [List.range_succ, List.flatMap_append]
+  simp
+
+/-- **The exact-copy branch of the crux is CLOSED.**  When `d0 = 0` the dropped
+column is `lp = (v0+1, 0)`, so the continuation `q :: S` of `N` re-opens at or
+below `v0`; `copy_dom_zero` then bounds its level-`v0` part by finitely many
+copies of the block, and the part below `v0` is `pairlt`-smaller than every
+column of the copies. -/
+theorem crux_zero {G R S : PairSeq} {v0 w0 : ℕ} {lp q : ℕ × ℕ}
+    (hN : ST_PS ((G ++ ((v0, w0) :: R)) ++ q :: S))
+    (hRgt : ∀ x ∈ R, v0 < x.1)
+    (hlp2 : lp.2 = 0) (hlp1 : lp.1 = v0 + 1)
+    (hq : pairlt q lp) :
+    ∃ m, 1 ≤ m ∧ sle (q :: S) (copies 0 ((v0, w0) :: R) m) := by
+  classical
+  -- the continuation re-opens at or below `v0`
+  have hqv : q.1 ≤ v0 := by
+    rcases hq with h | ⟨-, h⟩
+    · omega
+    · omega
+  rcases Nat.lt_or_ge q.1 v0 with hlt | hge
+  · exact ⟨1, le_rfl, Or.inr (by
+      rw [copies_one]; exact Or.inl (by unfold pairlt; omega))⟩
+  have hqv0 : q.1 = v0 := by omega
+  -- split the continuation at the first column strictly below `v0`
+  set Y := (q :: S).takeWhile (fun p => v0 ≤ p.1) with hYdef
+  set V := (q :: S).dropWhile (fun p => v0 ≤ p.1) with hVdef
+  have hYV : Y ++ V = q :: S := List.takeWhile_append_dropWhile
+  have hYcons : Y = q :: S.takeWhile (fun p => v0 ≤ p.1) := by
+    rw [hYdef, List.takeWhile_cons_of_pos (by simpa using hqv0.ge)]
+  have hYhead : (Y.headI).1 = v0 := by rw [hYcons]; simpa using hqv0
+  have hYge : ∀ x ∈ Y, v0 ≤ x.1 := by
+    intro x hx
+    have := List.mem_takeWhile_imp hx
+    simpa using this
+  have hVhd : V = [] ∨ ∃ z Z, V = z :: Z ∧ z.1 < v0 := by
+    rcases hd : V with _ | ⟨z, Z⟩
+    · exact Or.inl rfl
+    · refine Or.inr ⟨z, Z, rfl, ?_⟩
+      have h := List.head?_dropWhile_not (fun p : ℕ × ℕ => decide (v0 ≤ p.1)) (q :: S)
+      rw [← hVdef, hd] at h
+      simp only [List.head?_cons] at h
+      have : ¬ (v0 ≤ z.1) := by simpa using h
+      omega
+  -- the level-`v0` window `blk ++ Y` is an infix block of `N`
+  have hNsplit : (G ++ ((v0, w0) :: R)) ++ q :: S
+      = (G ++ (((v0, w0) :: R) ++ Y)) ++ V := by
+    rw [← hYV]; simp
+  have hstN : steps1 ((G ++ ((v0, w0) :: R)) ++ q :: S) := (blockok_ST_PS hN).2.2
+  have hstBY : steps1 (((v0, w0) :: R) ++ Y) := by
+    rw [hNsplit] at hstN
+    exact (steps1_append.1 (steps1_append.1 hstN).1).2.1
+  have hallBY : ∀ x ∈ ((v0, w0) :: R) ++ Y, v0 ≤ x.1 := by
+    intro x hx
+    rcases List.mem_append.1 hx with hx | hx
+    · rcases List.mem_cons.1 hx with rfl | hx
+      · exact le_rfl
+      · exact (hRgt x hx).le
+    · exact hYge x hx
+  have hbo : blockok v0 (((v0, w0) :: R) ++ Y) := ⟨by intro _; rfl, hallBY, hstBY⟩
+  -- CNF of the window: prefix-closure plus `cnf_tail`
+  have hcnfN : cnf (translate ((G ++ ((v0, w0) :: R)) ++ q :: S)) := cnf_ST_PS hN
+  have hcnfW : cnf (translate ((v0, w0) :: (R ++ Y))) := by
+    have h1 : cnf (translate ((G ++ (((v0, w0) :: R) ++ Y)) ++ V)) := by
+      rw [← hNsplit]; exact hcnfN
+    have h2 : cnf (translate (G ++ (((v0, w0) :: R) ++ Y))) := by
+      have := cnf_take h1 (G ++ (((v0, w0) :: R) ++ Y)).length
+      rwa [List.take_left] at this
+    have h3 : cnf (translate (G ++ ((v0, w0) :: (R ++ Y)))) := by
+      rwa [List.cons_append] at h2
+    exact cnf_tail (t := (v0, w0)) (T' := R ++ Y)
+      (fun x hx => hallBY x (by
+        rcases List.mem_append.1 hx with h | h
+        · exact List.mem_append_left _ (List.mem_cons_of_mem _ h)
+        · exact List.mem_append_right _ h)) G h3
+  -- the exact-copy domination
+  obtain ⟨m, hm, hsle⟩ := copy_dom_zero Y.length Y v0 w0 R le_rfl
+    (by rwa [List.cons_append] at hbo) hRgt (Or.inr (by rw [hYhead]; omega))
+    hcnfW
+  refine ⟨m + 1, by omega, Or.inr ?_⟩
+  rw [← hYV, copies_zero_succ]
+  rcases hsle with heq | hlt
+  · rw [← heq, seqlex_append_cancel]
+    rcases hVhd with hV | ⟨z, Z, hV, hz⟩
+    · rw [hV]; simp
+    · rw [hV]; exact Or.inl (by unfold pairlt; omega)
+  · refine seqlex_splice hlt ?_ _
+    rcases hVhd with hV | ⟨z, Z, hV, hz⟩
+    · exact Or.inl hV
+    · refine Or.inr (fun x hx => ?_)
+      have := copies_v0_le (fun y hy => (hRgt y hy).le) 0 m x hx
+      rw [hV]
+      unfold pairlt
+      simp only [List.headI]
+      omega
+
+/-! ## Part 6 — assembly (modulo the ascending crux) -/
+
+/-- **The residual crux — ascending copies only.**  The `d0 = 0` (exact-copy)
+half is discharged below by `crux_zero`; this is what is left: a standard form
+`N` that agrees with the host `M` on the *whole* good prefix `G` and bad block
+`blk = (v0,w0) :: R`, and then continues with a column strictly below the
+dropped column `lp`, is dominated by finitely many **ascending** copies of
+`blk`.
+
+Model-verified (`tools/probe_cof_asc.py`, closure `v ≤ 4`, depth 5, `n ≤ 4`,
+2041 hosts): the two head-level facts
+`lp.2 = w0 + 1` (A1) and `q ≤ (v0+d0, w0)` (A2) hold with 0 violations, and so
+does the recursion step
+`Y' does not exceed shiftr0 d0 R at the first mismatch` (A3, 6095 instances,
+0 violations). -/
+def AscCrux : Prop :=
   ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ} {lp q : ℕ × ℕ},
     ST_PS ((G ++ ((v0, w0) :: R)) ++ [lp]) →
     ST_PS ((G ++ ((v0, w0) :: R)) ++ q :: S) →
-    (∀ x ∈ R, v0 < x.1) → v0 < lp.1 →
-    ((d0 = 0 ∧ lp.2 = 0) ∨ (0 < d0 ∧ w0 < lp.2 ∧ lp.1 = v0 + d0)) →
+    (∀ x ∈ R, v0 < x.1) →
+    0 < d0 → lp.2 = w0 + 1 → lp.1 = v0 + d0 →
     pairlt q lp →
     ∃ m, 1 ≤ m ∧ sle (q :: S) (shiftr0 d0 (copies d0 ((v0, w0) :: R) m))
 
-/-- **Branch `bad`**: modulo the copy-tiling crux, the genuine branch. -/
-theorem seqlex_cof_bad (H : CopyCrux) {M N : PairSeq} (hM : ST_PS M) (hN : ST_PS N)
+/-- **The residual, with the head step taken.**  By `nextrel1_snd_succ` the
+dropped column is `lp = (v0+d0, w0+1)`, so a continuation column `q` with
+`pairlt q lp` satisfies `q ≤ (v0+d0, w0)` — the head of the first ascending
+copy — and the only case that is not immediate is `q = (v0+d0, w0)`.  This is
+what remains open. -/
+def AscCrux1 : Prop :=
+  ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ},
+    ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
+    ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
+    (∀ x ∈ R, v0 < x.1) → 0 < d0 →
+    ∃ m, 1 ≤ m ∧ sle ((v0 + d0, w0) :: S) (shiftr0 d0 (copies d0 ((v0, w0) :: R) m))
+
+/-- **The head step of the ascending crux is CLOSED**: only the `q = (v0+d0,w0)`
+case survives. -/
+theorem asc_head_step (H : AscCrux1) : AscCrux := by
+  intro G R S v0 w0 d0 lp q hM hN hRgt hd hlp2 hlp1 hq
+  have hlpe : lp = (v0 + d0, w0 + 1) := Prod.ext hlp1 hlp2
+  by_cases hqe : q = (v0 + d0, w0)
+  · subst hqe
+    exact H (hlpe ▸ hM) hN hRgt hd
+  · refine ⟨1, le_rfl, Or.inr ?_⟩
+    rw [copies_one, shiftr0_cons]
+    refine Or.inl ?_
+    rw [hlpe] at hq
+    have : q.1 < v0 + d0 ∨ (q.1 = v0 + d0 ∧ q.2 < w0 + 1) := hq
+    have hne : ¬ (q.1 = v0 + d0 ∧ q.2 = w0) := by
+      intro ⟨h1, h2⟩; exact hqe (Prod.ext h1 h2)
+    unfold pairlt
+    simp only []
+    omega
+
+/-- **Branch `bad`**: modulo the *ascending* crux, the genuine branch. -/
+theorem seqlex_cof_bad (H : AscCrux) {M N : PairSeq} (hM : ST_PS M) (hN : ST_PS N)
     (L : 1 < M.length)
     (hz : ¬ (entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0))
     (h : seqlex N M) : ∃ n, 1 ≤ n ∧ sle N (M⟦n⟧) := by
   have hp := hasParent_last_ST_PS hM (by omega) hz
   obtain ⟨G, v0, w0, R, d0, lp, hMeq, hMn, R_gt, lp_gt, disj⟩ :=
-    oper_bad_blocks_all L hz hp
+    oper_bad_blocks_all L (blockok_ST_PS hM).2.2 (r1ok_ST_PS hM) hz hp
   rcases seqlex_snoc_cases (D := G ++ ((v0, w0) :: R)) (lp := lp) (N := N)
       (by rw [← hMeq]; exact h) with hle | ⟨q, S, hNeq, hq⟩
   · exact ⟨1, le_rfl, by rw [hMn 1 le_rfl, copies_one]; exact hle⟩
-  · obtain ⟨m, hm, hsle⟩ :=
-      H (hMeq ▸ hM) (hNeq ▸ hN) R_gt lp_gt disj hq
+  · obtain ⟨m, hm, hsle⟩ : ∃ m, 1 ≤ m ∧
+        sle (q :: S) (shiftr0 d0 (copies d0 ((v0, w0) :: R) m)) := by
+      rcases disj with ⟨rfl, hlp2, hlp1⟩ | ⟨hd, hw, hlpe⟩
+      · simp only [shiftr0_zero]
+        exact crux_zero (hNeq ▸ hN) R_gt hlp2 hlp1 hq
+      · exact H (hMeq ▸ hM) (hNeq ▸ hN) R_gt hd hw hlpe hq
     refine ⟨m + 1, by omega, ?_⟩
     rw [hMn (m + 1) (by omega), copies_succ_front, hNeq, List.append_assoc]
     exact (sle_append_cancel _).2 ((sle_append_cancel _).2 hsle)
 
 /-- Modulo the crux, the `seqlex` form of cofinality holds. -/
-theorem seqlex_cofinality_of_crux (H : CopyCrux) : SeqlexCofinality := by
+theorem seqlex_cofinality_of_crux (H : AscCrux) : SeqlexCofinality := by
   intro M N hM hN h
   by_cases hL : M.length - 1 = 0
   · exact seqlex_cof_short hL h
@@ -384,5 +845,20 @@ theorem pss_cofinality {M N : PairSeq} (hM : ST_PS M) (hN : ST_PS N)
     (h : translate N <o translate M) :
     ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) := by
   sorry
+
+/-- **PSS Bachmann cofinality, modulo the single residual `AscCrux1`.**
+Everything else in the statement is GREEN:
+
+* the reduction to the column-lex order (`pss_cofinality_of_seqlex`),
+* the `self` and `(0,0)`-last branches (`seqlex_cof_short`, `seqlex_cof_zero`),
+* the emptiness of the `noparent` branch on `ST_PS` (`hasParent_last_ST_PS`),
+* the exact-copy (`d0 = 0`) half of the bad branch (`crux_zero`, via the CNF
+  sibling recursion `copy_dom_zero`),
+* the head step of the ascending half (`asc_head_step`, via the row-`1` `+1`
+  discipline `nextrel1_snd_succ`). -/
+theorem pss_cofinality_of_crux (H : AscCrux1) {M N : PairSeq}
+    (hM : ST_PS M) (hN : ST_PS N) (h : translate N <o translate M) :
+    ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=
+  pss_cofinality_of_seqlex (seqlex_cofinality_of_crux (asc_head_step H)) hM hN h
 
 end YAPSS
