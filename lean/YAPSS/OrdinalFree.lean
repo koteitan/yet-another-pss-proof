@@ -24,6 +24,7 @@ confirms the explicit witness `m := |S_hi|` used in its statement (0 violations)
 import YAPSS.Cofinality
 import YAPSS.Wset
 import YAPSS.Proofs
+import YAPSS.Wtt
 
 namespace YAPSS
 open Three
@@ -75,7 +76,47 @@ theorem no_infinite_expansion_ordinal_free (H : AscArgDomExplicit) :
     ¬ ∃ S : ℕ → PairSeq, (∀ i, ST_PS (S i)) ∧ ∀ i, step (S i) (S (i + 1)) :=
   no_infinite_expansion (wf_Rnf_ordinal_free H)
 
+/-- The repo also names this relation `stepR` (`YAPSS/Wtt.lean`, route 3); it is
+definitionally `stepRel`, so the same endpoint serves both naming conventions.
+Together with `PSS_terminates_nrm_final` (`YAPSS/Reduction.lean`, the nrm route,
+modulo the Buchholz §1 ordinal collapse) and `PSS_terminates_modulo_wfArgsA`
+(the pure-lex route), this is a drop-in **third** endpoint for the repository's
+official termination statement — with a purely combinatorial residual. -/
+theorem PSS_terminates_ordinal_free_stepR (H : AscArgDomExplicit) :
+    WellFounded stepR :=
+  PSS_terminates_ordinal_free H
+
+/-! ## What is left
+
+Exactly one obligation, stated in full in `YAPSS/Cofinality.lean`:
+
+```
+def AscArgDomExplicit : Prop :=
+  ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ},
+    ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
+    ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
+    (∀ x ∈ R, v0 < x.1) → 0 < d0 →
+    sle (S.takeWhile fun p => v0 + d0 < p.1)
+      (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R))
+        (S.takeWhile fun p => v0 + d0 < p.1).length))
+```
+
+It is a `≤lex` comparison between two explicit pair-sequence expressions built
+from BMS copy/tiling (`shiftr0`, `copies`, `takeWhile`).  It mentions **no**
+ordinal, no `ψ`/`Ω`, no evaluation map `oV`, and no `olt`.
+
+Everything else on both pillars is proved.  In particular no
+coefficient-domination (`H0clause` / `Gterm`) fact occurs anywhere on this
+route; `YAPSS/Wset.lean` §9 records why that is structural rather than
+accidental (the carrier of the `W_u` induction is *membership*, which is
+`A`-closed by construction, never an order-domination clause). -/
+
+#print axioms acc_Rnf_of_acc_PS
+#print axioms wf_Rnf_of_wf_PS
+#print axioms pss_cofinality_of_explicit
+#print axioms wf_Rnf_ordinal_free
 #print axioms PSS_terminates_ordinal_free
+#print axioms PSS_terminates_ordinal_free_stepR
 #print axioms no_infinite_expansion_ordinal_free
 
 end YAPSS
