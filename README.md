@@ -1,0 +1,83 @@
+[日本語](README-ja.md)
+
+# yet-another-pss-proof
+
+Version: **v1.0.3**
+
+An independent proof that the **pair sequence system** (PSS, the 2-rowed Bashicu matrix
+system) terminates, together with its formalization in Lean 4 / Mathlib.
+
+PSS was devised by Bashicu, and its termination was first proved by P進大好きbot using
+Buchholz's collapsing functions $\psi$. This repository gives a **different proof**: pair
+sequences are translated into a three-branch tree notation $p_a(b)+c$ of our own, and
+termination is derived on that notation.
+
+## Result
+
+**PSS termination is formally proved, with no hypotheses and no `sorry`.**
+
+```lean
+theorem PSS_terminates_unconditional : WellFounded stepRel
+theorem no_infinite_expansion_holds :
+    ¬ ∃ S : ℕ → PairSeq, (∀ i, ST_PS (S i)) ∧ ∀ i, step (S i) (S (i + 1))
+```
+
+Both are in [`lean/YAPSS/Final.lean`](lean/YAPSS/Final.lean), and
+
+```
+#print axioms YAPSS.PSS_terminates_unconditional
+  -- [propext, Classical.choice, Quot.sound]
+```
+
+i.e. no `sorryAx` and no named assumption; `lake build` is green over the whole project.
+
+## How it is proved
+
+1. A pair sequence $M$ is mapped by `translate` to a term of the three-branch notation
+   $p_a(b)+c$, ordered by the subscript-first lexicographic order $\prec$ (`olt`).
+2. Every expansion step strictly decreases that measure:
+   $\mathrm{translate}(M[n]) \prec \mathrm{translate}(M)$.
+3. $\prec$ is well-founded on the image of the standard forms. This is established
+   **without ordinals** and without translating into Buchholz's notation system, by
+   * **Bachmann cofinality** — every standard form strictly below $M$ is bounded by some
+     member $M[n]$ of the fundamental sequence
+     ([`lean/YAPSS/Cofinality.lean`](lean/YAPSS/Cofinality.lean),
+     [`lean/YAPSS/AscArg.lean`](lean/YAPSS/AscArg.lean)), and
+   * the **iterated inductive set** $W_u$ and its least-fixpoint induction, transplanted
+     natively to pair sequences ([`lean/YAPSS/Wset.lean`](lean/YAPSS/Wset.lean)).
+
+No ordinal evaluation map, no embedding into Buchholz's $\mathrm{OT}$, and no
+coefficient-domination condition occurs anywhere in this route.
+
+The proof-theoretic strength of PSS is believed to be $\psi_0(\psi_\omega(0))$
+(the Buchholz ordinal), which corresponds to taking the subscript $a$ of $p_a(b)$ to
+range over the natural numbers.
+
+## Repository layout
+
+| Path | Contents |
+|---|---|
+| [`lean/YAPSS/`](lean/YAPSS/) | The Lean 4 / Mathlib formalization (17 modules) |
+| [`lean/PROOF-STATUS.md`](lean/PROOF-STATUS.md) | Status of the formalization (authoritative) |
+| [`md/`](md/) | Human-readable proof text in Markdown + MathJax (in progress); [`md/requirement.md`](md/requirement.md) is its editing policy |
+| [`proof-ja.md`](proof-ja.md) | Proof text (Japanese) |
+| [`task.md`](task.md) | Progress tree |
+| `tools/` | Python models used to search for counterexamples and to check statements before formalizing them |
+
+## Build
+
+```sh
+cd lean && lake build YAPSS
+```
+
+Lean 4 with Mathlib `v4.30.0`.
+
+## Reference
+
+- Bashicu, "[BASIC 言語による巨大数のまとめ](https://googology.fandom.com/ja/wiki/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%83%96%E3%83%AD%E3%82%B0:BashicuHyudora/BASIC%E8%A8%80%E8%AA%9E%E3%81%AB%E3%82%88%E3%82%8B%E5%B7%A8%E5%A4%A7%E6%95%B0%E3%81%AE%E3%81%BE%E3%81%A8%E3%82%81?oldid=15603&useskin=oasis)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) user blog, 2015.8.21. (the pair sequence system)
+- koteitan, "[バシク行列の亜種ルールの分類](https://googology.fandom.com/ja/wiki/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%83%96%E3%83%AD%E3%82%B0:Koteitan/%E3%83%90%E3%82%B7%E3%82%AF%E8%A1%8C%E5%88%97%E3%81%AE%E4%BA%9C%E7%A8%AE%E3%83%AB%E3%83%BC%E3%83%AB%E3%81%AE%E5%88%86%E9%A1%9E)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) user blog, 2018.6.2. (classification of Bashicu matrix rule variants)
+- P進大好きbot, "[ペア数列の停止性](https://googology.fandom.com/ja/wiki/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%83%96%E3%83%AD%E3%82%B0:P%E9%80%B2%E5%A4%A7%E5%A5%BD%E3%81%8Dbot/%E3%83%9A%E3%82%A2%E6%95%B0%E5%88%97%E3%81%AE%E5%81%9C%E6%AD%A2%E6%80%A7)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) user blog, 2018.11.11. (the first termination proof; the definition of PSS used here follows it)
+- W. Buchholz, "[A new system of proof-theoretic ordinal functions](https://www.sciencedirect.com/science/article/pii/0168007286900527)", Annals of Pure and Applied Logic, Volume 32, 1986, pp. 195–207. (the collapsing functions $\psi_v$ and the notation system $\mathrm{OT}$)
+- W. Buchholz, "[An independence result for $(\Pi^1_1\text{-}\mathrm{CA})+\mathrm{BI}$](https://www.sciencedirect.com/science/article/pii/0168007287900780)", Annals of Pure and Applied Logic, Volume 33, 1987, pp. 131–155. (§2: the iterated inductive sets $W_v$, transplanted here in `Wset.lean`)
+- koteitan, "[pss-proof](https://github.com/koteitan/pss-proof)". (formalization of P進大好きbot's proof; its ordinal-free syntactic well-foundedness proof of $\mathrm{OT}_B$ is the blueprint for the route used here)
+- koteitan, "[prss-proof](https://github.com/koteitan/prss-proof)". (the same strategy applied to the primitive sequence system)
