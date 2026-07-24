@@ -163,8 +163,8 @@ namespace Wset
 /-- `translate` is `Z` only on the empty sequence. -/
 theorem translate_eq_Z_iff {M : PairSeq} : translate M = Z ↔ M = [] := by
   cases M with
-  | nil => simp [translate]
-  | cons p rest => simp
+  | nil => simp
+  | cons p rest => simp [translate]
 
 /-- Nothing but `0` is `<o` the term `p₀(0) = 1`. -/
 theorem eq_Z_of_olt_one {t : Three} (h : t <o P 0 Z Z) : t = Z := by
