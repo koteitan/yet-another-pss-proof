@@ -861,6 +861,82 @@ theorem argDomCoreOn_shiftr0 {W : PairSeq} (d : ℕ) (H : ArgDomCoreOn W) :
   rw [hgoal, ← eB]
   exact (sle_shiftr0 d).2 hcore
 
+/-! ### Positional bookkeeping for the copy tower -/
+
+/-- Split a concatenation against a shorter left factor. -/
+theorem split_prefix_left {C D E F : PairSeq} (h : C ++ D = E ++ F)
+    (hle : E.length ≤ C.length) :
+    C = E ++ C.drop E.length ∧ F = C.drop E.length ++ D := by
+  have hC : C = C.take E.length ++ C.drop E.length := (List.take_append_drop _ _).symm
+  have h' : (C.take E.length) ++ (C.drop E.length ++ D) = E ++ F := by
+    rw [← List.append_assoc, ← hC]; exact h
+  have hlen : (C.take E.length).length = E.length := by
+    rw [List.length_take]; omega
+  obtain ⟨h1, h2⟩ := List.append_inj h' hlen
+  refine ⟨?_, h2.symm⟩
+  calc C = C.take E.length ++ C.drop E.length := hC
+    _ = E ++ C.drop E.length := by rw [h1]
+
+/-- Split a concatenation against a longer left factor. -/
+theorem split_prefix_right {C D E F : PairSeq} (h : C ++ D = E ++ F)
+    (hle : C.length ≤ E.length) :
+    E = C ++ E.drop C.length ∧ D = E.drop C.length ++ F :=
+  split_prefix_left h.symm hle
+
+/-- Every column of a copy tower sits at or above the block base. -/
+theorem mem_copies_ge {v0 d : ℕ} {blk : PairSeq} (hb : ∀ z ∈ blk, v0 ≤ z.1) :
+    ∀ (n : ℕ), ∀ x ∈ copies d blk n, v0 ≤ x.1 := by
+  intro n
+  induction n with
+  | zero => simp
+  | succ m ih =>
+    intro x hx
+    rw [copies_succ_front] at hx
+    rcases List.mem_append.1 hx with h | h
+    · exact hb x h
+    · obtain ⟨y, hy, rfl⟩ := mem_shiftr0.1 h
+      have := ih y hy
+      simp only []; omega
+
+/-- The head of a nonempty copy tower is the block root. -/
+theorem copies_headI {d : ℕ} {blk : PairSeq} (hne : blk ≠ []) {n : ℕ} (hn : 1 ≤ n) :
+    (copies d blk n).headI = blk.headI := by
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  rw [copies_succ_front]
+  rcases blk with _ | ⟨b, blk'⟩
+  · exact absurd rfl hne
+  · simp
+
+/-- The `ArgDomCore` bound, split at the end of the deeper argument.  Everything
+to the right of `P` is invisible to the comparison because `B` is strictly
+shorter than `P`. -/
+theorem argbound_split (e u w : ℕ) (A1 B A2 : PairSeq) :
+    shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2))
+      = (shiftr0 e A1 ++ (u + e + e, w) :: shiftr0 e B) ++ shiftr0 e A2 := by
+  rw [shiftr0_append, shiftr0_cons, shiftr0_append]
+  simp
+
+theorem argbound_len (e u w : ℕ) (A1 B : PairSeq) :
+    B.length < (shiftr0 e A1 ++ (u + e + e, w) :: shiftr0 e B).length := by
+  simp [shiftr0_length]
+  omega
+
+/-- **Transfer.**  An instance whose data `X, (u,w), A1, (u+e,w), B` also occurs
+in another sequence `M` — with possibly *different* trailing material `A2'`,
+`Z'` — is settled by `M`'s instance: the comparison is over by the end of the
+common part `shiftr0 e (A1 ++ [(u+e,w)] ++ B)`, which is strictly longer than
+`B`.  This is what makes the case analysis of the `bad` branch local. -/
+theorem argDomCoreOn_transfer {M : PairSeq} (HM : ArgDomCoreOn M)
+    {X A1 B A2 A2' Z' : PairSeq} {u w e : ℕ}
+    (hMeq : M = (X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2'))) ++ Z')
+    (he : 0 < e) (h1 : ∀ x ∈ A1, u < x.1) (h2 : ∀ x ∈ B, u + e < x.1)
+    (h3 : ∀ x ∈ A2', u < x.1) (h4 : A2' = [] ∨ (A2'.headI).1 ≤ u + e)
+    (h5 : Z' = [] ∨ (Z'.headI).1 ≤ u) (h6 : SpineOK A1 (u + e) w) :
+    sle B (shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2))) := by
+  have hcore := HM hMeq he h1 h2 h3 h4 h5 h6
+  rw [argbound_split] at hcore ⊢
+  exact sle_of_short hcore (le_of_lt (argbound_len e u w A1 B))
+
 /-- 🚨 **THE RESIDUAL** — the `bad` branch of the derivation induction.
 
 `M = G ++ blk ++ [lp]`, `blk = (v0,w0) :: R`, `M⟦n⟧ = G ++ copies d0 blk n`.
