@@ -1,6 +1,6 @@
 [English](README.md)
 
-# yet-another-pss-proof v1.0.3
+# yet-another-pss-proof v1.0.4
 
 ペア数列システム (Pair Sequence System, PSS) の停止性の証明とその Lean 4 / Mathlib による形式証明。
 **停止性の主定理は無条件・`sorry` なしで完成している**（`lean/YAPSS/Final.lean`、`#print axioms` は
@@ -49,4 +49,5 @@ cd lean && lake build YAPSS
 - Bashicu, "[BASIC 言語による巨大数のまとめ](https://googology.fandom.com/ja/wiki/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%83%96%E3%83%AD%E3%82%B0:BashicuHyudora/BASIC%E8%A8%80%E8%AA%9E%E3%81%AB%E3%82%88%E3%82%8B%E5%B7%A8%E5%A4%A7%E6%95%B0%E3%81%AE%E3%81%BE%E3%81%A8%E3%82%81?oldid=15603&useskin=oasis)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) ユーザーブログ, 2015.8.21.（ペア数列システムの考案）
 - P進大好きbot. "[ペア数列の停止性](https://googology.fandom.com/ja/wiki/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%83%96%E3%83%AD%E3%82%B0:P%E9%80%B2%E5%A4%A7%E5%A5%BD%E3%81%8Dbot/%E3%83%9A%E3%82%A2%E6%95%B0%E5%88%97%E3%81%AE%E5%81%9C%E6%AD%A2%E6%80%A7)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) ユーザーブログ, 2018.11.11.（ペア数列の停止性の証明。本リポジトリの PSS 定義もこの論文に倣う）
 - W. Buchholz, "[A new system of proof-theoretic ordinal functions](https://www.sciencedirect.com/science/article/pii/0168007286900527)", Annals of Pure and Applied Logic, Volume 32, 1986, pp. 195–207.（PSS の強さ ψ₀(ψ_ω(0)) ＝ Buchholz ordinal）
-- H. Towsner, "[Polymorphic Ordinal Notations](https://arxiv.org/abs/2504.02131)", arXiv:2504.02131, 2025.（distinguished-set 整礎性証明。旧ルートで参照）
+- W. Buchholz, "[An independence result for (Π¹₁-CA)+BI](https://www.sciencedirect.com/science/article/pii/0168007287900780)", Annals of Pure and Applied Logic, Volume 33, 1987, pp. 131–155.（§2 の反復帰納的集合 $W_v$ と、$\mathrm{OT}_B$ の整礎性の**構文的**証明。本証明の `Wset.lean` / `Cofinality.lean` はこの方法をペア数列へ移したもの）
+- koteitan, "[pss-proof](https://github.com/koteitan/pss-proof)".（P進大好きbot 氏の証明の形式化。その順序数を用いない $\mathrm{OT}_B$ 整礎性の構文的証明が本証明のルートの下敷き）

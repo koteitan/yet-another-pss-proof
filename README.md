@@ -2,7 +2,7 @@
 
 # yet-another-pss-proof
 
-Version: **v1.0.3**
+Version: **v1.0.4**
 
 An independent proof that the **pair sequence system** (PSS, the 2-rowed Bashicu matrix
 system) terminates, together with its formalization in Lean 4 / Mathlib.
@@ -46,6 +46,11 @@ i.e. no `sorryAx` and no named assumption; `lake build` is green over the whole 
    * the **iterated inductive set** $W_u$ and its least-fixpoint induction, transplanted
      natively to pair sequences ([`lean/YAPSS/Wset.lean`](lean/YAPSS/Wset.lean)).
 
+   This is the method of Buchholz (1987) §2: the well-foundedness of Buchholz's notation
+   system $\mathrm{OT}_B$ is obtained there **syntactically**, from the sets $W_v$ and the
+   fundamental sequences, rather than from an evaluation into the ordinals. The route
+   above carries that method over to pair sequences directly.
+
 No ordinal evaluation map, no embedding into Buchholz's $\mathrm{OT}$, and no
 coefficient-domination condition occurs anywhere in this route.
 
@@ -78,6 +83,5 @@ Lean 4 with Mathlib `v4.30.0`.
 - koteitan, "[バシク行列の亜種ルールの分類](https://googology.fandom.com/ja/wiki/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%83%96%E3%83%AD%E3%82%B0:Koteitan/%E3%83%90%E3%82%B7%E3%82%AF%E8%A1%8C%E5%88%97%E3%81%AE%E4%BA%9C%E7%A8%AE%E3%83%AB%E3%83%BC%E3%83%AB%E3%81%AE%E5%88%86%E9%A1%9E)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) user blog, 2018.6.2. (classification of Bashicu matrix rule variants)
 - P進大好きbot, "[ペア数列の停止性](https://googology.fandom.com/ja/wiki/%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%83%96%E3%83%AD%E3%82%B0:P%E9%80%B2%E5%A4%A7%E5%A5%BD%E3%81%8Dbot/%E3%83%9A%E3%82%A2%E6%95%B0%E5%88%97%E3%81%AE%E5%81%9C%E6%AD%A2%E6%80%A7)", [巨大数研究 Wiki](http://ja.googology.wikia.com/) user blog, 2018.11.11. (the first termination proof; the definition of PSS used here follows it)
 - W. Buchholz, "[A new system of proof-theoretic ordinal functions](https://www.sciencedirect.com/science/article/pii/0168007286900527)", Annals of Pure and Applied Logic, Volume 32, 1986, pp. 195–207. (the collapsing functions $\psi_v$ and the notation system $\mathrm{OT}$)
-- W. Buchholz, "[An independence result for $(\Pi^1_1\text{-}\mathrm{CA})+\mathrm{BI}$](https://www.sciencedirect.com/science/article/pii/0168007287900780)", Annals of Pure and Applied Logic, Volume 33, 1987, pp. 131–155. (§2: the iterated inductive sets $W_v$, transplanted here in `Wset.lean`)
+- W. Buchholz, "[An independence result for $(\Pi^1_1\text{-}\mathrm{CA})+\mathrm{BI}$](https://www.sciencedirect.com/science/article/pii/0168007287900780)", Annals of Pure and Applied Logic, Volume 33, 1987, pp. 131–155. (§2: the iterated inductive sets $W_v$ and the **syntactic** well-foundedness proof for $\mathrm{OT}_B$ — the method transplanted here in `Wset.lean` and `Cofinality.lean`)
 - koteitan, "[pss-proof](https://github.com/koteitan/pss-proof)". (formalization of P進大好きbot's proof; its ordinal-free syntactic well-foundedness proof of $\mathrm{OT}_B$ is the blueprint for the route used here)
-- koteitan, "[prss-proof](https://github.com/koteitan/prss-proof)". (the same strategy applied to the primitive sequence system)
