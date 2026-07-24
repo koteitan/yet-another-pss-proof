@@ -637,29 +637,224 @@ theorem argDomCoreOn_snoc_zero {N : PairSeq} {p : ℕ × ℕ} (hp : p.1 = 0)
       · exact absurd hc (by simp)
       · exact hc
 
+
+/-! ### Transfer lemmas for the induction step
+
+`ArgDomCoreOn` never mentions the prefix `X` except through the defining
+equation, so instances are insensitive to what sits to their left, and they
+commute with a uniform row-0 shift.  Together these reduce an instance living
+beyond the first copy of `M⟦n⟧` to one in `M⟦n-1⟧`. -/
+
+/-- Instances do not see the material to their left. -/
+theorem argDomCoreOn_drop_left {P S : PairSeq} (H : ArgDomCoreOn (P ++ S)) :
+    ArgDomCoreOn S := by
+  intro X A1 B A2 Z u w e heq he h1 h2 h3 h4 h5 h6
+  refine H (X := P ++ X) (A1 := A1) (B := B) (A2 := A2) (Z := Z) ?_ he h1 h2 h3 h4 h5 h6
+  rw [heq]; simp [List.append_assoc]
+
+/-- Conversely, an instance of `S` is an instance of `P ++ S` (the prefix is
+absorbed into `X`).  This is the form used to *apply* an inherited instance. -/
+theorem argDomCoreOn_extend_left {S : PairSeq} (H : ArgDomCoreOn S) (P : PairSeq)
+    ⦃X A1 B A2 Z : PairSeq⦄ ⦃u w e : ℕ⦄
+    (heq : P ++ S = ((P ++ X) ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z)
+    (he : 0 < e) (h1 : ∀ x ∈ A1, u < x.1) (h2 : ∀ x ∈ B, u + e < x.1)
+    (h3 : ∀ x ∈ A2, u < x.1) (h4 : A2 = [] ∨ (A2.headI).1 ≤ u + e)
+    (h5 : Z = [] ∨ (Z.headI).1 ≤ u) (h6 : SpineOK A1 (u + e) w) :
+    sle B (shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2))) := by
+  refine H (X := X) (A1 := A1) (B := B) (A2 := A2) (Z := Z) ?_ he h1 h2 h3 h4 h5 h6
+  have : P ++ S = P ++ ((X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z) := by
+    rw [heq]; simp [List.append_assoc]
+  exact List.append_cancel_left this
+
+/-- The left inverse of `shiftr0`. -/
+def shiftl0 (d : ℕ) : PairSeq → PairSeq := List.map fun p => (p.1 - d, p.2)
+
+theorem shiftl0_cons (d : ℕ) (p : ℕ × ℕ) (A : PairSeq) :
+    shiftl0 d (p :: A) = (p.1 - d, p.2) :: shiftl0 d A := rfl
+
+theorem shiftl0_append (d : ℕ) (A B : PairSeq) :
+    shiftl0 d (A ++ B) = shiftl0 d A ++ shiftl0 d B := List.map_append
+
+theorem mem_shiftl0 {d : ℕ} {M : PairSeq} {x : ℕ × ℕ} :
+    x ∈ shiftl0 d M ↔ ∃ p ∈ M, ((p.1 - d, p.2) : ℕ × ℕ) = x := by
+  unfold shiftl0; simp
+
+@[simp] theorem shiftl0_shiftr0 (d : ℕ) (X : PairSeq) : shiftl0 d (shiftr0 d X) = X := by
+  induction X with
+  | nil => rfl
+  | cons p X' ih => rw [shiftr0_cons, shiftl0_cons, ih]; simp
+
+theorem shiftr0_shiftl0 {d : ℕ} {L : PairSeq} (h : ∀ x ∈ L, d ≤ x.1) :
+    shiftr0 d (shiftl0 d L) = L := by
+  induction L with
+  | nil => rfl
+  | cons p L' ih =>
+    have hp : d ≤ p.1 := h p (List.mem_cons_self ..)
+    rw [shiftl0_cons, shiftr0_cons, ih (fun x hx => h x (List.mem_cons_of_mem _ hx))]
+    congr 1
+    exact Prod.ext (by simp only []; omega) rfl
+
+theorem shiftr0_comm (d e : ℕ) (L : PairSeq) :
+    shiftr0 e (shiftr0 d L) = shiftr0 d (shiftr0 e L) := by
+  unfold shiftr0
+  rw [List.map_map, List.map_map]
+  congr 1
+  funext p
+  simp only [Function.comp_apply, Prod.mk.injEq, and_true]
+  omega
+
+/-- Instances commute with a uniform row-0 shift. -/
+theorem argDomCoreOn_shiftr0 {W : PairSeq} (d : ℕ) (H : ArgDomCoreOn W) :
+    ArgDomCoreOn (shiftr0 d W) := by
+  intro X A1 B A2 Z u w e heq he h1 h2 h3 h4 h5 h6
+  -- every column of the decomposition sits at row-0 `≥ d`
+  have hall : ∀ x ∈ (X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z, d ≤ x.1 := by
+    rw [← heq]
+    intro x hx
+    obtain ⟨q, -, rfl⟩ := mem_shiftr0.1 hx
+    simp
+  have hmid : ∀ {L : PairSeq}, (∀ x ∈ L, x ∈ A1 ++ (u + e, w) :: (B ++ A2)) →
+      ∀ x ∈ L, d ≤ x.1 := by
+    intro L hL x hx
+    exact hall x (List.mem_append_left Z (List.mem_append_right X
+      (List.mem_cons_of_mem _ (hL x hx))))
+  have hX : ∀ x ∈ X, d ≤ x.1 := fun x hx =>
+    hall x (List.mem_append_left Z (List.mem_append_left _ hx))
+  have hZ : ∀ x ∈ Z, d ≤ x.1 := fun x hx => hall x (List.mem_append_right _ hx)
+  have hA1 : ∀ x ∈ A1, d ≤ x.1 := hmid (fun x hx => List.mem_append_left _ hx)
+  have hB : ∀ x ∈ B, d ≤ x.1 := hmid (fun x hx =>
+    List.mem_append_right _ (List.mem_cons_of_mem _ (List.mem_append_left _ hx)))
+  have hA2 : ∀ x ∈ A2, d ≤ x.1 := hmid (fun x hx =>
+    List.mem_append_right _ (List.mem_cons_of_mem _ (List.mem_append_right _ hx)))
+  have hu : d ≤ u := hall (u, w) (List.mem_append_left Z (List.mem_append_right X
+    (List.mem_cons_self ..)))
+  -- pull the decomposition back through the shift
+  set X' := shiftl0 d X with hX'
+  set A1' := shiftl0 d A1 with hA1'
+  set B' := shiftl0 d B with hB'
+  set A2' := shiftl0 d A2 with hA2'
+  set Z' := shiftl0 d Z with hZ'
+  have eX : shiftr0 d X' = X := shiftr0_shiftl0 hX
+  have eA1 : shiftr0 d A1' = A1 := shiftr0_shiftl0 hA1
+  have eB : shiftr0 d B' = B := shiftr0_shiftl0 hB
+  have eA2 : shiftr0 d A2' = A2 := shiftr0_shiftl0 hA2
+  have eZ : shiftr0 d Z' = Z := shiftr0_shiftl0 hZ
+  have hWeq : W = (X' ++ (u - d, w) :: (A1' ++ ((u - d) + e, w) :: (B' ++ A2'))) ++ Z' := by
+    have := congrArg (shiftl0 d) heq
+    rw [shiftl0_shiftr0] at this
+    have harith : u + e - d = u - d + e := by omega
+    rw [this, shiftl0_append, shiftl0_append, shiftl0_cons, shiftl0_append,
+      shiftl0_cons, shiftl0_append]
+    simp only [hX', hA1', hB', hA2', hZ', harith]
+  -- transport the side conditions
+  have g1 : ∀ x ∈ A1', u - d < x.1 := by
+    intro x hx
+    obtain ⟨q, hq, rfl⟩ := mem_shiftl0.1 hx
+    have := h1 q hq; have := hA1 q hq
+    simp only []; omega
+  have g2 : ∀ x ∈ B', (u - d) + e < x.1 := by
+    intro x hx
+    obtain ⟨q, hq, rfl⟩ := mem_shiftl0.1 hx
+    have := h2 q hq; have := hB q hq
+    simp only []; omega
+  have g3 : ∀ x ∈ A2', u - d < x.1 := by
+    intro x hx
+    obtain ⟨q, hq, rfl⟩ := mem_shiftl0.1 hx
+    have := h3 q hq; have := hA2 q hq
+    simp only []; omega
+  have g4 : A2' = [] ∨ (A2'.headI).1 ≤ (u - d) + e := by
+    rcases hA2e : A2 with _ | ⟨a, A2''⟩
+    · exact Or.inl (by rw [hA2', hA2e]; rfl)
+    · refine Or.inr ?_
+      have hah : (A2.headI).1 ≤ u + e := by
+        rcases h4 with hc | hc
+        · exact absurd hc (by rw [hA2e]; simp)
+        · exact hc
+      have hage : d ≤ (A2.headI).1 := hA2 A2.headI (by rw [hA2e]; simp)
+      rw [hA2', hA2e, shiftl0_cons]
+      simp only [List.headI]
+      rw [hA2e] at hah hage
+      simp only [List.headI] at hah hage
+      omega
+  have g5 : Z' = [] ∨ (Z'.headI).1 ≤ u - d := by
+    rcases hZe : Z with _ | ⟨z, Z''⟩
+    · exact Or.inl (by rw [hZ', hZe]; rfl)
+    · refine Or.inr ?_
+      have hzh : (Z.headI).1 ≤ u := by
+        rcases h5 with hc | hc
+        · exact absurd hc (by rw [hZe]; simp)
+        · exact hc
+      rw [hZ', hZe, shiftl0_cons]
+      simp only [List.headI]
+      rw [hZe] at hzh
+      simp only [List.headI] at hzh
+      omega
+  have g6 : SpineOK A1' ((u - d) + e) w := by
+    intro U' V' x' hdec hxlt hV'
+    have hdec2 : A1 = shiftr0 d U' ++ (x'.1 + d, x'.2) :: shiftr0 d V' := by
+      rw [← eA1, hdec, shiftr0_append, shiftr0_cons]
+    refine h6 (shiftr0 d U') (shiftr0 d V') (x'.1 + d, x'.2) hdec2 ?_ ?_
+    · simp only []; omega
+    · intro y hy
+      obtain ⟨q, hq, rfl⟩ := mem_shiftr0.1 hy
+      have := hV' q hq
+      simp only []; omega
+  -- apply the inherited instance and un-shift the conclusion
+  have hcore := H (X := X') (A1 := A1') (B := B') (A2 := A2') (Z := Z') hWeq he g1 g2 g3 g4 g5 g6
+  have hgoal : shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2))
+      = shiftr0 d (shiftr0 e (A1' ++ ((u - d) + e, w) :: (B' ++ A2'))) := by
+    rw [← shiftr0_comm, ← eA1, ← eB, ← eA2]
+    congr 1
+    rw [shiftr0_append, shiftr0_cons, shiftr0_append]
+    congr 2
+    exact Prod.ext (by simp only []; omega) rfl
+  rw [hgoal, ← eB]
+  exact (sle_shiftr0 d).2 hcore
+
 /-- 🚨 **THE RESIDUAL** — the `bad` branch of the derivation induction.
 
-`M = G ++ blk ++ [lp]` with `blk = (v0,w0) :: R`, and `M⟦n⟧ = G ++ copies d0 blk n`.
+`M = G ++ blk ++ [lp]`, `blk = (v0,w0) :: R`, `M⟦n⟧ = G ++ copies d0 blk n`.
 Given `ArgDomCoreOn M`, show `ArgDomCoreOn (M⟦n⟧)`.
 
-Plan (positions relative to `p := G.length + blk.length`, `j` = position of the
-deeper marked column, `i` = position of the shallower one):
+The right boundary is `p := G.length + blk.length` (**not** `G.length`): copy `0`
+*is* `blk`, so `M⟦n⟧` and `M` agree on the whole of `M.take (M.length - 1)`.
+With `i`/`j` the positions of the shallower / deeper marked column, the split is
 
-* `j < p`   — both marked columns lie in `G ++ blk`, where `M⟦n⟧` and `M` agree.
-  If the argument of `i` stops before `p`, the instance is literally an instance
-  of `M`: direct IH.  Otherwise the arguments of `i` and of `j` both continue,
-  in `M` into `[lp]` and in `M⟦n⟧` into the copy tower `T`; `T.headI` is
-  `pairlt`-below `lp` in both `oper` sub-branches, and the comparison either was
-  already decided inside the common part (transfer by `sle_of_short`) or reduces
-  to `pairlt T.headI lp ≤ …`, which the IH supplies.
-* `p ≤ i`   — the whole instance lies beyond the first copy; by
-  `copies_succ_front` that region is `shiftr0 d0` of the corresponding region of
-  `M⟦n-1⟧`, so an inner induction on `n` (from the outer IH at `M`) applies,
-  `shiftr0`-equivariantly.
-* `i < p ≤ j` — the cross case: `SpineOK` forces `w ≤ w0` (the copy roots between
-  the two marked columns are right-visible and sit below level `u+e`), and the
-  copy structure of `M⟦n⟧` above position `p` is explicit.  This is the one piece
-  with genuine content left. -/
+| case | census (`tools/probe_badbranch_cases2.py`) |
+|---|---|
+| **B**  `j < p`  — both marked columns inside `G ++ blk` | 50237 |
+| **A1** `p ≤ i`  — both beyond copy 0                    | 9369  |
+| **A2** `i < p ≤ j` — the cross case                     | 26290 |
+
+Three traps, all model-confirmed, that a coarser split walks into:
+
+* Marked columns inside `G` (or inside one copy) do **not** give an instance of
+  `M` (resp. a shift of one) for free: the *arguments* `A`, `B` are cut by the
+  material to the right, which differs.  In case B alone, 29069 of 50237
+  instances have `arg i` running past `p` into the copy tower (only 21168 stay).
+* The cross case A2 exists and is large (26290) — an instance whose shallower
+  column is in `G ++ blk` and whose deeper column is in a later copy.
+* In A1 the two marked columns need **not** be the same column of `blk` repeated:
+  `blk` may carry two different columns with the same row-1 value.  Witness:
+  `M = (0,0)(1,1)(2,0)(1,1)`, `blk = (0,0)(1,1)(2,0)`, `d0 = 1`, `n = 2`, so
+  `M⟦2⟧ = (0,0)(1,1)(2,0)(1,0)(2,1)(3,0)` and the instance `i = 0`, `j = 5`
+  pairs `blk`'s offset-0 column with `blk`'s offset-2 column (502 such instances
+  in the census).
+
+Status of each case:
+
+* **A1** — tooled and routine: `argDomCoreOn_drop_left`, `argDomCoreOn_shiftr0`
+  and `argDomCoreOn_extend_left` (above) turn an instance beyond copy 0 into an
+  instance of `copies d0 blk (n-1)`, hence of `M⟦n-1⟧`, via
+  `copies_succ_front`.  Needs an inner induction on `n` inside the `oper` case
+  (legitimate: prove `∀ n ≥ 1, ArgDomCoreOn (M⟦n⟧)` from `ArgDomCoreOn M`).
+* **B** — worked out on paper: split on whether the common part is a prefix; one
+  branch closes by `sle_of_short`, the other by `pairlt (tower.headI) lp`, which
+  holds in *both* `oper` sub-branches (`(v1+d₁,w1) < (v1+d₁,w1+1)` ascending,
+  `(v1,w1) < (v1+1,0)` exact) and is handed over by the IH.
+* **A2** — the genuinely open piece.  `SpineOK` forces `w ≤ w0` here (the copy
+  roots strictly between the two marked columns are right-visible and sit below
+  level `u+e`), which is the handle to exploit. -/
 theorem argDomCoreOn_bad {M G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
     (hM : ST_PS M) (hMon : ArgDomCoreOn M)
     (hMeq : M = G ++ ((v0, w0) :: R) ++ [lp])
@@ -705,6 +900,9 @@ theorem argDomCore_holds : ArgDomCore :=
 
 #print axioms peel_aux
 #print axioms sle_of_short
+#print axioms argDomCoreOn_drop_left
+#print axioms argDomCoreOn_extend_left
+#print axioms argDomCoreOn_shiftr0
 #print axioms sle_shiftr0
 #print axioms spineOK_of_nextrel1
 #print axioms ascArgDom_of_core
