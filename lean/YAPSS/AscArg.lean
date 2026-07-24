@@ -71,7 +71,17 @@ at the same level, and
 
 so the comparison is decided at the head in 44% of instances, `B` is a prefix in
 20%, and the rest recurse (max observed depth 5).  `S1` is exactly what the
-local-invariant counterexample above violates, so `S1` is a good next milestone.
+local-invariant counterexample above violates, so `S1` also needs the derivation.
+
+## State of this file
+
+Green and `sorryAx`-free except for **one** named residual, `argDomCoreOn_bad`
+(Part F): the `bad` branch of the `ST_PS` derivation induction for `ArgDomCore`.
+Everything else — the reduction `ArgDomCore → AscArgDom → pss_cofinality`, the
+`diag`, `|M| ≤ 1`, `(0,0)`-last and `noparent` branches of that induction, and
+the negative result of Part E — is complete.  `argDomCoreOn_bad`'s docstring
+carries the three-case plan (`j < p`, `p ≤ i`, `i < p ≤ j`) and the tools built
+for it (`sle_of_short`, `sle_shiftr0`, `peel_aux`, `seqlex_of_sle_not_prefix`).
 -/
 import YAPSS.Cofinality
 
@@ -172,6 +182,85 @@ theorem peel_aux (d w : ℕ) : ∀ (n : ℕ) (X Q A2 : PairSeq) (a : ℕ), X.len
         exact hpre ⟨X', by rw [hX']; simp⟩
       have := seqlex_of_sle_not_prefix hW hnp (shiftr0 d Q)
       simpa using this
+
+
+/-- A comparison that is already over by the end of `P` does not see `Y` at all. -/
+theorem sle_take_of_short : ∀ {P X Y : PairSeq}, sle X (P ++ Y) →
+    X.length ≤ P.length → sle X P := by
+  intro P
+  induction P with
+  | nil =>
+    intro X Y _ hlen
+    have : X = [] := List.eq_nil_of_length_eq_zero (by simpa using hlen)
+    exact Or.inl this
+  | cons p P' ih =>
+    intro X Y h hlen
+    rcases X with _ | ⟨x, X''⟩
+    · exact Or.inr (by simp)
+    · simp only [List.length_cons] at hlen
+      rw [List.cons_append] at h
+      rcases h with he | hs
+      · -- `X` reproduces `P ++ Y` verbatim, so `Y` must be empty
+        have hx : x = p := by simpa using congrArg List.headI he
+        have hX'' : X'' = P' ++ Y := by simpa using congrArg List.tail he
+        have hY : Y = [] := by
+          have : X''.length = P'.length + Y.length := by rw [hX'']; simp
+          exact List.eq_nil_of_length_eq_zero (by omega)
+        rw [hY, List.append_nil] at hX''
+        exact Or.inl (by rw [hx, hX''])
+      · rw [seqlex_cons_cons] at hs
+        rcases hs with hp | ⟨rfl, hs'⟩
+        · exact Or.inr (Or.inl hp)
+        · rcases ih (Or.inr hs') (by omega) with he' | hs''
+          · exact Or.inl (by rw [he'])
+          · exact Or.inr (Or.inr ⟨rfl, hs''⟩)
+
+/-- Corollary: the verdict transfers to any other continuation. -/
+theorem sle_of_short {P X Y Y' : PairSeq} (h : sle X (P ++ Y))
+    (hlen : X.length ≤ P.length) : sle X (P ++ Y') :=
+  sle_append_mono (sle_take_of_short h hlen) Y'
+
+/-- `shiftr0 d` is injective. -/
+theorem shiftr0_injective (d : ℕ) {X Y : PairSeq} (h : shiftr0 d X = shiftr0 d Y) : X = Y := by
+  have hinj : Function.Injective (fun p : ℕ × ℕ => (p.1 + d, p.2)) := by
+    intro a b hab
+    rw [Prod.mk.injEq] at hab
+    exact Prod.ext (by omega) hab.2
+  exact List.map_injective_iff.2 hinj h
+
+/-- `shiftr0` is an order isomorphism for `seqlex` (it shifts every row-0 value
+by the same amount, so all column comparisons are unchanged). -/
+theorem seqlex_shiftr0 (d : ℕ) : ∀ {X Y : PairSeq},
+    seqlex (shiftr0 d X) (shiftr0 d Y) ↔ seqlex X Y := by
+  intro X
+  induction X with
+  | nil =>
+    intro Y
+    rcases Y with _ | ⟨y, Y'⟩ <;> simp [shiftr0]
+  | cons x X' ih =>
+    intro Y
+    rcases Y with _ | ⟨y, Y'⟩
+    · simp [shiftr0]
+    · rw [shiftr0_cons, shiftr0_cons, seqlex_cons_cons, seqlex_cons_cons, ih]
+      constructor
+      · rintro (hp | ⟨he, hs⟩)
+        · exact Or.inl (by simp only [pairlt] at hp ⊢; omega)
+        · rw [Prod.mk.injEq] at he
+          exact Or.inr ⟨Prod.ext (by omega) he.2, hs⟩
+      · rintro (hp | ⟨rfl, hs⟩)
+        · exact Or.inl (by simp only [pairlt] at hp ⊢; omega)
+        · exact Or.inr ⟨rfl, hs⟩
+
+theorem sle_shiftr0 (d : ℕ) {X Y : PairSeq} : sle (shiftr0 d X) (shiftr0 d Y) ↔ sle X Y := by
+  unfold sle
+  rw [seqlex_shiftr0 d]
+  constructor
+  · rintro (he | hs)
+    · exact Or.inl (shiftr0_injective d he)
+    · exact Or.inr hs
+  · rintro (rfl | hs)
+    · exact Or.inl rfl
+    · exact Or.inr hs
 
 /-! ## Part B — the side condition, and the host-free core -/
 
@@ -475,11 +564,155 @@ theorem argDomCore_needs_reachability :
     by decide, by decide, by decide, Or.inl rfl, Or.inl rfl,
     locL_spineOK, locL_not_sle⟩
 
+
+/-! ## Part F — the `ST_PS` derivation induction for `ArgDomCore`
+
+Part E rules out every argument from the local invariants, so the proof has to
+descend the derivation.  This section sets up that induction and discharges all
+branches except `bad`, which is isolated as `argDomCoreOn_bad`. -/
+
+/-- Per-sequence form of `ArgDomCore` (the induction carrier). -/
+def ArgDomCoreOn (N : PairSeq) : Prop :=
+  ∀ ⦃X A1 B A2 Z : PairSeq⦄ ⦃u w e : ℕ⦄,
+    N = (X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z →
+    0 < e →
+    (∀ x ∈ A1, u < x.1) →
+    (∀ x ∈ B, u + e < x.1) →
+    (∀ x ∈ A2, u < x.1) →
+    (A2 = [] ∨ (A2.headI).1 ≤ u + e) →
+    (Z = [] ∨ (Z.headI).1 ≤ u) →
+    SpineOK A1 (u + e) w →
+    sle B (shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2)))
+
+theorem argDomCore_of_on (H : ∀ N, ST_PS N → ArgDomCoreOn N) : ArgDomCore := by
+  intro X A1 B A2 Z u w e hST hd h1 h2 h3 h4 h5 h6
+  exact H _ hST rfl hd h1 h2 h3 h4 h5 h6
+
+/-- The two marked columns of an `ArgDomCoreOn` instance, by position. -/
+theorem argdom_pos {N X A1 B A2 Z : PairSeq} {u w e : ℕ}
+    (heq : N = (X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z) :
+    N.getD X.length (0, 0) = (u, w) ∧
+    N.getD (X.length + (A1.length + 1)) (0, 0) = (u + e, w) ∧
+    X.length + (A1.length + 1) < N.length := by
+  have hN : N = X ++ ((u, w) :: ((A1 ++ (u + e, w) :: ((B ++ A2) ++ Z)))) := by
+    rw [heq]; simp [List.append_assoc]
+  refine ⟨?_, ?_, ?_⟩
+  · have h := getD_append_right' X ((u, w) :: (A1 ++ (u + e, w) :: ((B ++ A2) ++ Z))) 0
+    rw [Nat.add_zero] at h
+    rw [hN, h, List.getD_cons_zero]
+  · have h := getD_append_right' X ((u, w) :: (A1 ++ (u + e, w) :: ((B ++ A2) ++ Z)))
+      (A1.length + 1)
+    have h2 := getD_append_right' A1 ((u + e, w) :: ((B ++ A2) ++ Z)) 0
+    rw [Nat.add_zero] at h2
+    rw [hN, h, List.getD_cons_succ, h2, List.getD_cons_zero]
+  · rw [hN]; simp
+
+/-- **Base case**: in a diagonal every column is `(t,t)`, so two columns with the
+same row-1 value are equal — no instance has `0 < e`. -/
+theorem argDomCoreOn_diag (v : ℕ) : ArgDomCoreOn (diagSeq 0 v) := by
+  intro X A1 B A2 Z u w e heq he _ _ _ _ _ _
+  exfalso
+  obtain ⟨hp, hq, hlt⟩ := argdom_pos heq
+  rw [diagSeq0_length] at hlt
+  rw [diagSeq0_getD (by omega)] at hp
+  rw [diagSeq0_getD (by omega)] at hq
+  have h1 : X.length = u := congrArg Prod.fst hp
+  have h2 : X.length = w := congrArg Prod.snd hp
+  have h3 : X.length + (A1.length + 1) = u + e := congrArg Prod.fst hq
+  have h4 : X.length + (A1.length + 1) = w := congrArg Prod.snd hq
+  omega
+
+/-- **`(0,0)`-last branch**: dropping a level-`0` last column changes nothing —
+the extra column can only join the trailing context `Z`, whose only requirement
+is that it re-open at or below `u`. -/
+theorem argDomCoreOn_snoc_zero {N : PairSeq} {p : ℕ × ℕ} (hp : p.1 = 0)
+    (H : ArgDomCoreOn (N ++ [p])) : ArgDomCoreOn N := by
+  intro X A1 B A2 Z u w e heq he h1 h2 h3 h4 h5 h6
+  refine H (X := X) (A1 := A1) (B := B) (A2 := A2) (Z := Z ++ [p]) ?_ he h1 h2 h3 h4 ?_ h6
+  · rw [heq]; simp [List.append_assoc]
+  · rcases Z with _ | ⟨z, Z'⟩
+    · exact Or.inr (by simp [hp])
+    · refine Or.inr ?_
+      rcases h5 with hc | hc
+      · exact absurd hc (by simp)
+      · exact hc
+
+/-- 🚨 **THE RESIDUAL** — the `bad` branch of the derivation induction.
+
+`M = G ++ blk ++ [lp]` with `blk = (v0,w0) :: R`, and `M⟦n⟧ = G ++ copies d0 blk n`.
+Given `ArgDomCoreOn M`, show `ArgDomCoreOn (M⟦n⟧)`.
+
+Plan (positions relative to `p := G.length + blk.length`, `j` = position of the
+deeper marked column, `i` = position of the shallower one):
+
+* `j < p`   — both marked columns lie in `G ++ blk`, where `M⟦n⟧` and `M` agree.
+  If the argument of `i` stops before `p`, the instance is literally an instance
+  of `M`: direct IH.  Otherwise the arguments of `i` and of `j` both continue,
+  in `M` into `[lp]` and in `M⟦n⟧` into the copy tower `T`; `T.headI` is
+  `pairlt`-below `lp` in both `oper` sub-branches, and the comparison either was
+  already decided inside the common part (transfer by `sle_of_short`) or reduces
+  to `pairlt T.headI lp ≤ …`, which the IH supplies.
+* `p ≤ i`   — the whole instance lies beyond the first copy; by
+  `copies_succ_front` that region is `shiftr0 d0` of the corresponding region of
+  `M⟦n-1⟧`, so an inner induction on `n` (from the outer IH at `M`) applies,
+  `shiftr0`-equivariantly.
+* `i < p ≤ j` — the cross case: `SpineOK` forces `w ≤ w0` (the copy roots between
+  the two marked columns are right-visible and sit below level `u+e`), and the
+  copy structure of `M⟦n⟧` above position `p` is explicit.  This is the one piece
+  with genuine content left. -/
+theorem argDomCoreOn_bad {M G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
+    (hM : ST_PS M) (hMon : ArgDomCoreOn M)
+    (hMeq : M = G ++ ((v0, w0) :: R) ++ [lp])
+    (hRgt : ∀ x ∈ R, v0 < x.1) (hlp : v0 < lp.1)
+    (hdisj : (d0 = 0 ∧ lp.2 = 0 ∧ lp.1 = v0 + 1)
+      ∨ (0 < d0 ∧ lp.2 = w0 + 1 ∧ lp.1 = v0 + d0
+          ∧ nextrel1 M G.length (M.length - 1)))
+    (hn : 1 ≤ n) :
+    ArgDomCoreOn (G ++ copies d0 ((v0, w0) :: R) n) := by
+  sorry
+
+/-- The induction step: `ArgDomCoreOn` is preserved by `oper`. -/
+theorem argDomCoreOn_oper {M : PairSeq} (hM : ST_PS M) (hMon : ArgDomCoreOn M)
+    {n : ℕ} (hn : 1 ≤ n) : ArgDomCoreOn (M⟦n⟧) := by
+  by_cases hL : M.length - 1 = 0
+  · rw [oper_eq_self_of_short n hL]; exact hMon
+  · by_cases hz : entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0
+    · rw [oper_eq_pred_of_zero n (by omega) hz]
+      unfold Pred; rw [if_neg (by omega)]
+      have hne : M ≠ [] := by intro he; rw [he] at hL; simp at hL
+      have hlast : M.getD (M.length - 1) (0, 0) = (0, 0) := by
+        rw [entry_zero] at hz; rw [entry_one] at hz
+        exact Prod.ext hz.1 hz.2
+      refine argDomCoreOn_snoc_zero (p := ((0 : ℕ), (0 : ℕ))) rfl ?_
+      have hsp : M.dropLast ++ [((0 : ℕ), (0 : ℕ))] = M := by
+        rw [← hlast]; exact dropLast_snoc_getD hne
+      rw [hsp]; exact hMon
+    · have hpar := hasParent_last_ST_PS hM (by omega) hz
+      obtain ⟨G, v0, w0, R, d0, lp, hMeq, hMn, R_gt, lp_gt, disj⟩ :=
+        oper_bad_blocks_all (by omega) (blockok_ST_PS hM).2.2 (r1ok_ST_PS hM) hz hpar
+      rw [hMn n hn]
+      exact argDomCoreOn_bad hM hMon hMeq R_gt lp_gt disj hn
+
+/-- The derivation induction, modulo the `bad` branch. -/
+theorem argDomCoreOn_ST_PS {N : PairSeq} (hN : ST_PS N) : ArgDomCoreOn N := by
+  induction hN with
+  | diag v => exact argDomCoreOn_diag v
+  | @oper M n hM hn ih => exact argDomCoreOn_oper hM ih hn
+
+/-- `ArgDomCore`, modulo `argDomCoreOn_bad`. -/
+theorem argDomCore_holds : ArgDomCore :=
+  argDomCore_of_on (fun _ h => argDomCoreOn_ST_PS h)
+
 #print axioms peel_aux
+#print axioms sle_of_short
+#print axioms sle_shiftr0
 #print axioms spineOK_of_nextrel1
 #print axioms ascArgDom_of_core
 #print axioms pss_cofinality_of_core
 #print axioms argDomCore_needs_reachability
+#print axioms argDomCoreOn_diag
+#print axioms argDomCoreOn_snoc_zero
+#print axioms argDomCoreOn_oper
 
 end YAPSS
 
