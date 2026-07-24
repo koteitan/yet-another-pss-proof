@@ -33,4 +33,6 @@
       - ✅ 共終性の全分岐（seqlex 還元 / degenerate / bad 分解 / d0=0 crux）
       - ✅ AscArgDom を単一の host-free 核 ArgDomCore へ還元（AscArg.lean、sorryAx-free）
       - ✅ ArgDomCore は局所不変量（blockok/z0ok/r1ok/cnf）からは導けない＝ST_PS 導出帰納が必須（反例を Lean で証明）
-      - 🚨🤖 ★残＝単一命題 ArgDomCore（0-viol/190729 検証済、host 不要、side condition が load-bearing）
+      - ✅ ArgDomCore の ST_PS 導出帰納を配線（diag / 短 / (0,0)-last / noparent の各分岐は証明済）
+      - ✅ bad 分岐の場合分け確定（境界は |G|+|blk|）＋ A1 用の転送補題（prefix 非依存 / shiftr0 同変）を証明
+      - 🚨🤖 ★残＝bad 分岐 argDomCoreOn_bad の1点のみ（B は紙上完了、A2 交差ケースが唯一の未解決）

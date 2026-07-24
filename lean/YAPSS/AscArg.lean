@@ -220,6 +220,56 @@ theorem sle_of_short {P X Y Y' : PairSeq} (h : sle X (P ++ Y))
     (hlen : X.length ≤ P.length) : sle X (P ++ Y') :=
   sle_append_mono (sle_take_of_short h hlen) Y'
 
+theorem sle_trans {A B C : PairSeq} (h1 : sle A B) (h2 : sle B C) : sle A C := by
+  rcases h1 with rfl | h1
+  · exact h2
+  · exact Or.inr (seqlex_sle_trans h1 h2)
+
+/-- Truncating the *smaller* side on the right keeps it below. -/
+theorem sle_of_append_left {X Y W : PairSeq} (h : sle (X ++ Y) W) : sle X W := by
+  refine sle_trans ?_ h
+  rcases Y with _ | ⟨y, Y'⟩
+  · exact Or.inl (by simp)
+  · exact Or.inr (seqlex_prefix (by simp) X)
+
+/-- **The splice at the dropped column.**  If the snoc `X ++ [lp]` is `sle`-below
+`Y` — with `Y` strictly longer than `X`, so the verdict is not merely "`X` ran
+out" — then replacing `lp` by anything strictly smaller keeps the comparison
+strict, whatever is appended on either side.  This is what transfers a bound
+proved in the host `M` (whose material after `X` is the dropped column `lp`) to
+the copy tower (whose material after `X` starts with a copy root `< lp`). -/
+theorem seqlex_of_sle_snoc : ∀ {X Y : PairSeq} {lp q : ℕ × ℕ}, sle (X ++ [lp]) Y →
+    pairlt q lp → X.length < Y.length → ∀ (S' E : PairSeq), seqlex (X ++ q :: S') (Y ++ E) := by
+  intro X
+  induction X with
+  | nil =>
+    intro Y lp q h hq hlen S' E
+    rcases Y with _ | ⟨y, Y'⟩
+    · simp at hlen
+    · refine Or.inl ?_
+      rcases h with he | hs
+      · have : lp = y := by simpa using congrArg List.headI he
+        rw [← this]; exact hq
+      · rw [List.nil_append, seqlex_cons_cons] at hs
+        rcases hs with hp | ⟨he, -⟩
+        · exact pairlt_trans hq hp
+        · rw [← he]; exact hq
+  | cons x X' ih =>
+    intro Y lp q h hq hlen S' E
+    rcases Y with _ | ⟨y, Y'⟩
+    · simp at hlen
+    · simp only [List.length_cons] at hlen
+      rw [List.cons_append] at h ⊢
+      rw [List.cons_append, seqlex_cons_cons]
+      rcases h with he | hs
+      · have hxy : x = y := by simpa using congrArg List.headI he
+        have hrest : X' ++ [lp] = Y' := by simpa using congrArg List.tail he
+        exact Or.inr ⟨hxy, ih (Or.inl hrest) hq (by omega) S' E⟩
+      · rw [seqlex_cons_cons] at hs
+        rcases hs with hp | ⟨rfl, hs'⟩
+        · exact Or.inl hp
+        · exact Or.inr ⟨rfl, ih (Or.inr hs') hq (by omega) S' E⟩
+
 /-- `shiftr0 d` is injective. -/
 theorem shiftr0_injective (d : ℕ) {X Y : PairSeq} (h : shiftr0 d X = shiftr0 d Y) : X = Y := by
   have hinj : Function.Injective (fun p : ℕ × ℕ => (p.1 + d, p.2)) := by
