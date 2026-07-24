@@ -131,16 +131,27 @@ i.e. `translate M ∈ {0, p_0(0)} = {0, 1}`, both of which are in every `W_v`
   `domT`/`graft` basics, the design-validation theorem `hasParent_one_iff`, and
   the **bridge** `acc_of_W` (modulo the explicit `hcof` parameter only — no
   second, `T_m`-indexed cofinality hypothesis is needed).
-* `sorry` (exactly one, clearly labelled, believed TRUE, the remaining
-  mathematical work): `W_membership` — the PSS analogue of Buchholz 2.8.
-* Derived from the two: `wf_of_cofinality_and_membership`.
+* GREEN, and the whole Buchholz 2.4–2.8 membership chain is **assembled**:
+  shift-equivariance (`oper_shift`, `W_shift`), the last-minimum split
+  (`split_lastMin`), prefix commutation (`oper_append_gen`), the additive
+  closure 2.4(a)/(b) (`XA_closed`, `W_add`), `Ω_v ∈ W_v` (`Om_mem_W`),
+  the 2.6 assembly (`Wstar_closed`), 2.7 (`mem_of_Aclosed`), 2.8 (`mem_Wstar`),
+  the level bound (`mem_W_of_bound`, `mem_W_maxr1`) and **`W_membership`**.
+* `sorry` (exactly **five**, all clearly labelled, all believed TRUE, all in one
+  place): the four-case classification of PSS `oper` on a *principal block*
+  `(0,v) :: R` — `hasParent_cons_one`, `oper_cons_nat`, `oper_cons_succ`,
+  `oper_cons_tower`, `domT_cons_of_lt`.  These are pure statements about
+  `oper`/`hasParent`; none mentions `W`, `olt`, `translate`, or any
+  coefficient-domination condition.
+* Derived from the two pillars: `wf_of_cofinality_and_membership`.
 
-No `native_decide`, no `admit`.  **§6 at the bottom of the file is the report**,
-including the flag that an `H0clause`-shaped coefficient-domination condition is
-likely to reappear in the additive-closure step (2.4(b)) of the membership
-route — the bridge itself is free of it.
+No `native_decide`, no `admit`.  **§9 at the bottom of the file is the report**.
+Notably, the feared `H0clause`-shaped coefficient domination does **not** appear:
+PSS `Three`-addition is unconditional (`translate` has no CNF side condition
+built in), so the additive closure 2.4(b) needs only the *positional* guard
+`rsum` — see §9.
 -/
-import YAPSS.Nrm
+import YAPSS.Nrmstep
 
 namespace YAPSS
 open Three
@@ -153,7 +164,7 @@ namespace Wset
 theorem translate_eq_Z_iff {M : PairSeq} : translate M = Z ↔ M = [] := by
   cases M with
   | nil => simp [translate]
-  | cons p rest => simp [translate]
+  | cons p rest => simp
 
 /-- Nothing but `0` is `<o` the term `p₀(0) = 1`. -/
 theorem eq_Z_of_olt_one {t : Three} (h : t <o P 0 Z Z) : t = Z := by
@@ -210,6 +221,30 @@ def based (z : PairSeq) : Prop := entry z 0 0 = 0
 theorem not_domT_nil (m : ℕ) : ¬ domT ([] : PairSeq) m := by
   rintro ⟨h, -⟩
   simp [entry] at h
+
+/-- **`dom(M) ∈ {∅, {0}, ℕ}`** — the negation of `Ω`-cofinality.  This is the
+guard on the ℕ-branch of `A_u`, mirroring Buchholz's `dom c ∈ {{0}, ℕ_B}`.  It is
+load-bearing: without it the `T_m` branch and the ℕ branch could both fire on an
+`Ω_{m+1}`-cofinal block, and the ℕ branch (which PSS truncates to `graft M []`)
+carries far too little information to run the 2.6 tower. -/
+def natDom (M : PairSeq) : Prop := ∀ m : ℕ, ¬ domT M m
+
+@[simp] theorem natDom_nil : natDom ([] : PairSeq) := not_domT_nil
+
+theorem natDom_iff {M : PairSeq} :
+    natDom M ↔ (entry M 1 (M.length - 1) = 0 ∨ hasParent M 1 (M.length - 1)) := by
+  constructor
+  · intro h
+    by_cases hz : entry M 1 (M.length - 1) = 0
+    · exact Or.inl hz
+    · refine Or.inr ?_
+      by_contra hp
+      obtain ⟨m, hm⟩ : ∃ m, entry M 1 (M.length - 1) = m + 1 :=
+        ⟨entry M 1 (M.length - 1) - 1, by omega⟩
+      exact h m ⟨hm, hp⟩
+  · rintro (hz | hp) m ⟨hw, hnp⟩
+    · omega
+    · exact hnp hp
 
 /-- In the `domT` branch PSS's own expansion degenerates to the bottom
 (`z = 0`) element of the `T_m`-indexed family: `M⟦n⟧ = M.dropLast = graft M []`. -/
@@ -384,7 +419,7 @@ fundamental sequence `M⟦n⟧`; branch 3 = the `T_m`-graft branch of the header
 quantifying over the already-built stage `Wf m` for `m < u`. -/
 def Aop (Wfam : ℕ → Set PairSeq) (u : ℕ) (X : Set PairSeq) (M : PairSeq) : Prop :=
   (M.length ≤ 1 ∧ entry M 1 0 = 0) ∨
-  (∀ n : ℕ, 1 ≤ n → M⟦n⟧ ∈ X) ∨
+  (natDom M ∧ ∀ n : ℕ, 1 ≤ n → M⟦n⟧ ∈ X) ∨
   (∃ m : ℕ, m < u ∧ domT M m ∧ ∀ z ∈ Wfam m, based z → graft M z ∈ X)
 
 def Aset (Wfam : ℕ → Set PairSeq) (u : ℕ) (X : Set PairSeq) : Set PairSeq :=
@@ -394,7 +429,7 @@ theorem Aop_mono_X {Wfam : ℕ → Set PairSeq} {u : ℕ} {X Y : Set PairSeq} {M
     (h : Aop Wfam u X M) (hXY : X ⊆ Y) : Aop Wfam u Y M := by
   rcases h with h | h | ⟨m, hm, hd, hop⟩
   · exact Or.inl h
-  · exact Or.inr (Or.inl fun n hn => hXY (h n hn))
+  · exact Or.inr (Or.inl ⟨h.1, fun n hn => hXY (h.2 n hn)⟩)
   · exact Or.inr (Or.inr ⟨m, hm, hd, fun z hz hb => hXY (hop z hz hb)⟩)
 
 theorem Aset_mono (Wfam : ℕ → Set PairSeq) (u : ℕ) : Monotone (Aset Wfam u) := by
@@ -545,7 +580,7 @@ theorem acc_of_W
   by_cases hc : ST_PS c
   · -- `c` is a standard form: examine the three generating branches.
     have hne : c ≠ [] := stps_ne_nil hc
-    rcases A with ⟨hlen, hw⟩ | hnat | ⟨m, -, hd, hgr⟩
+    rcases A with ⟨hlen, hw⟩ | ⟨-, hnat⟩ | ⟨m, -, hd, hgr⟩
     · -- branch 1: `translate c = p₀(0) = 1`; only `0` is below, and `0 ∉ ST_PS`.
       have hlen1 : c.length = 1 := by
         have := stps_len_pos hc; omega
@@ -554,7 +589,7 @@ theorem acc_of_W
         | [p], _ => exact ⟨p, rfl⟩
       have hp2 : p.2 = 0 := by simpa [entry] using hw
       have ht : translate [p] = P 0 Z Z := by
-        rw [translate]; simp [translate, hp2]
+        rw [translate]; simp [hp2]
       refine Acc.intro _ ?_
       intro y hy
       obtain ⟨hyst, -, hlt⟩ := hy
@@ -581,7 +616,899 @@ theorem acc_of_W
   · -- `c` is not a standard form: it has no `Rst`-predecessor.
     exact Acc.intro c fun y hy => absurd hy.2.1 hc
 
-/-! ## 4. Membership — the PSS analogue of Buchholz (1987) 2.8
+/-! ## 4. Block algebra for the membership route (Buchholz 2.4–2.8)
+
+The membership proof needs the PSS analogue of Buchholz's *term algebra*: sums
+(list concatenation of top-level trees) and principal terms (`(c,v) :: R`).  This
+section builds the three tools the source gets for free from `BT`:
+
+* **shift-equivariance** of `oper` / `graft` / `domT` (`translate` never sees a
+  uniform row-0 shift, and neither does `W`);
+* the **last-minimum split** `M = A ++ P` into "everything but the last top-level
+  tree" and "the last top-level tree";
+* the **prefix-commutation** `(A ++ P)⟦n⟧ = A ++ P⟦n⟧` for such a split, which is
+  `Nrm.oper_append_right` transported by the shift. -/
+
+/-- `R` is an *argument block*: every entry sits strictly below depth `0`, i.e.
+`R` is the descendant block of a root at depth `0`. -/
+def argOK (R : PairSeq) : Prop := ∀ p ∈ R, 0 < p.1
+
+/-- `P` is a genuine **top-level suffix** of `A ++ P`: `P`'s first entry sits at
+the minimum row-0 depth of the whole sequence.  This is exactly the hypothesis
+under which `oper`, `graft` and `domT` commute with the prefix `A`. -/
+def rsum (A P : PairSeq) : Prop := ∀ p ∈ A ++ P, entry P 0 0 ≤ p.1
+
+/-! ### 4a. Shift-equivariance -/
+
+/-- `nextR` is row-0-shift invariant. -/
+theorem nextR_shift_iff {S : PairSeq} {d i a b : ℕ} (hb : b < S.length) :
+    nextR (S.map fun p => (p.1 + d, p.2)) i a b ↔ nextR S i a b := by
+  unfold nextR
+  split
+  · exact nextrel0_shift_iff hb
+  · exact nextrel1_shift_iff hb
+
+theorem hasParent_shift {S : PairSeq} {d i b : ℕ} (hb : b < S.length) :
+    hasParent (S.map fun p => (p.1 + d, p.2)) i b ↔ hasParent S i b := by
+  unfold hasParent
+  constructor
+  · rintro ⟨j0, hj0, hu⟩
+    exact ⟨j0, (nextR_shift_iff hb).mp hj0,
+      fun y hy => hu y ((nextR_shift_iff hb).mpr hy)⟩
+  · rintro ⟨j0, hj0, hu⟩
+    exact ⟨j0, (nextR_shift_iff hb).mpr hj0,
+      fun y hy => hu y ((nextR_shift_iff hb).mp hy)⟩
+
+theorem parent_shift {S : PairSeq} {d i b : ℕ} (hb : b < S.length) :
+    parent (S.map fun p => (p.1 + d, p.2)) i b = parent S i b := by
+  unfold parent
+  congr 1
+  funext j0
+  exact propext (nextR_shift_iff hb)
+
+/-- **`oper` is row-0-shift equivariant.**  Every test `oper` performs is either
+shift-invariant (row-1 values, `idx1`, `hasParent`, index arithmetic) or a
+difference of row-0 values (`d0`); the one non-invariant test — "is the last pair
+`(0,0)`?" — is redundant, because a row-0-`0` column has no parent at all
+(`no_hasParent_of_row0_zero`), so both readings land in the same `Pred` branch. -/
+theorem oper_shift (M : PairSeq) (d n : ℕ) :
+    (M.map fun p => (p.1 + d, p.2))⟦n⟧ = (M⟦n⟧).map (fun p => (p.1 + d, p.2)) := by
+  by_cases hL : M.length - 1 = 0
+  · rw [oper_eq_self_of_short n (by simpa using hL), oper_eq_self_of_short n hL]
+  · have hlt : M.length - 1 < M.length := by omega
+    have hlenmap : (M.map fun p => (p.1 + d, p.2)).length - 1 = M.length - 1 := by simp
+    have hLm : (M.map fun p => (p.1 + d, p.2)).length - 1 ≠ 0 := by simpa using hL
+    have hidx : idx1 (M.map fun p => (p.1 + d, p.2)) (M.length - 1)
+        = idx1 M (M.length - 1) := idx1_shift
+    by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
+    · -- bad branch on both sides
+      have hpos : 0 < entry M 0 (M.length - 1) := by
+        by_contra h
+        exact no_hasParent_of_row0_zero (by omega) hp
+      have hz : ¬ (entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0) := by
+        rintro ⟨h1, -⟩; omega
+      have hpM : hasParent (M.map fun p => (p.1 + d, p.2))
+          (idx1 (M.map fun p => (p.1 + d, p.2))
+            ((M.map fun p => (p.1 + d, p.2)).length - 1))
+          ((M.map fun p => (p.1 + d, p.2)).length - 1) := by
+        rw [hlenmap, hidx]; exact (hasParent_shift hlt).mpr hp
+      have hzM : ¬ (entry (M.map fun p => (p.1 + d, p.2)) 0
+            ((M.map fun p => (p.1 + d, p.2)).length - 1) = 0 ∧
+          entry (M.map fun p => (p.1 + d, p.2)) 1
+            ((M.map fun p => (p.1 + d, p.2)).length - 1) = 0) := by
+        rw [hlenmap]
+        rintro ⟨h1, -⟩
+        rw [(entry_shift (d := d) hlt).1] at h1
+        omega
+      rw [oper_bad_unfold n hLm hzM hpM, oper_bad_unfold n hL hz hp,
+        hlenmap, hidx, parent_shift hlt]
+      set j0 := parent M (idx1 M (M.length - 1)) (M.length - 1) with hj0
+      have hj0lt : j0 < M.length - 1 := nextR_index_lt (parent_nextR hp)
+      have hd0 : entry (M.map fun p => (p.1 + d, p.2)) 0 (M.length - 1) -
+            entry (M.map fun p => (p.1 + d, p.2)) 0 j0
+          = entry M 0 (M.length - 1) - entry M 0 j0 := by
+        rw [(entry_shift (d := d) hlt).1, (entry_shift (d := d) (j := j0) (by omega)).1,
+          Nat.add_sub_add_right]
+      rw [hd0, List.map_append, List.map_take, List.map_flatMap]
+      refine congrArg _ (List.flatMap_congr ?_)
+      intro k _
+      rw [List.map_map]
+      refine List.map_congr_left ?_
+      intro j hj
+      have hjlt : j < M.length := by
+        rw [List.mem_range'] at hj
+        omega
+      simp only [Function.comp_apply, (entry_shift (d := d) hjlt).1,
+        (entry_shift (d := d) hjlt).2, Prod.mk.injEq]
+      exact ⟨Nat.add_right_comm _ _ _, trivial⟩
+    · -- `Pred` on both sides
+      have hpM : ¬ hasParent (M.map fun p => (p.1 + d, p.2))
+          (idx1 (M.map fun p => (p.1 + d, p.2))
+            ((M.map fun p => (p.1 + d, p.2)).length - 1))
+          ((M.map fun p => (p.1 + d, p.2)).length - 1) := by
+        rw [hlenmap, hidx]
+        intro hh
+        exact hp ((hasParent_shift hlt).mp hh)
+      have hM : M⟦n⟧ = Pred M := by
+        by_cases hz : entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0
+        · exact oper_eq_pred_of_zero n hL hz
+        · exact oper_eq_pred_of_noParent n hL hz hp
+      have hMm : (M.map fun p => (p.1 + d, p.2))⟦n⟧
+          = Pred (M.map fun p => (p.1 + d, p.2)) := by
+        by_cases hz : entry (M.map fun p => (p.1 + d, p.2)) 0
+              ((M.map fun p => (p.1 + d, p.2)).length - 1) = 0 ∧
+            entry (M.map fun p => (p.1 + d, p.2)) 1
+              ((M.map fun p => (p.1 + d, p.2)).length - 1) = 0
+        · exact oper_eq_pred_of_zero n hLm hz
+        · exact oper_eq_pred_of_noParent n hLm hz hpM
+      rw [hM, hMm]
+      unfold Pred
+      rw [List.length_map, if_neg (by omega), if_neg (by omega), List.map_dropLast]
+
+theorem domT_shift {M : PairSeq} {d m : ℕ} :
+    domT (M.map fun p => (p.1 + d, p.2)) m ↔ domT M m := by
+  rcases M with _ | ⟨p, rest⟩
+  · simp [domT, entry]
+  · have hlt : (p :: rest).length - 1 < (p :: rest).length := by simp
+    unfold domT
+    rw [List.length_map, (entry_shift (d := d) hlt).2, hasParent_shift hlt]
+
+theorem natDom_shift {M : PairSeq} {d : ℕ} :
+    natDom (M.map fun p => (p.1 + d, p.2)) ↔ natDom M :=
+  ⟨fun h m hm => h m (domT_shift.mpr hm), fun h m hm => h m (domT_shift.mp hm)⟩
+
+theorem graft_shift {M : PairSeq} (hM : M ≠ []) (z : PairSeq) (d : ℕ) :
+    graft (M.map fun p => (p.1 + d, p.2)) z
+      = (graft M z).map (fun p => (p.1 + d, p.2)) := by
+  have hlt : M.length - 1 < M.length := by
+    have : 0 < M.length := List.length_pos_iff.mpr hM
+    omega
+  unfold graft
+  rw [List.length_map, (entry_shift (d := d) hlt).1, List.map_append,
+    ← List.map_dropLast, List.map_map]
+  refine congrArg _ (List.map_congr_left ?_)
+  intro q _
+  simp only [Function.comp_apply, Nat.add_assoc]
+
+/-- **`W_u` is row-0-shift closed.**  `A_u` is shift-equivariant branch by
+branch, so this is a one-line `A2'`. -/
+theorem W_shift {u : ℕ} {M : PairSeq} (h : M ∈ W u) (d : ℕ) :
+    (M.map fun p => (p.1 + d, p.2)) ∈ W u := by
+  revert h
+  show M ∈ W u → _
+  have : W u ⊆ {N : PairSeq | (N.map fun p => (p.1 + d, p.2)) ∈ W u} := by
+    refine A2' ?_
+    intro N A
+    refine A1_intro ?_
+    rcases A with ⟨hl, hw⟩ | ⟨hnat, hop⟩ | ⟨m, hm, hd, hgr⟩
+    · refine Or.inl ⟨by simpa using hl, ?_⟩
+      rcases N with _ | ⟨p, rest⟩
+      · simp [entry]
+      · simpa [entry] using hw
+    · exact Or.inr (Or.inl ⟨natDom_shift.mpr hnat, fun n hn => by
+        rw [oper_shift]; exact hop n hn⟩)
+    · refine Or.inr (Or.inr ⟨m, hm, domT_shift.mpr hd, fun z hz hb => ?_⟩)
+      have hne : N ≠ [] := by rintro rfl; exact not_domT_nil m hd
+      rw [graft_shift hne]; exact hgr z hz hb
+  exact fun h => this h
+
+/-! ### 4b. The last-minimum split -/
+
+/-- Every nonempty block splits as `A ++ P` where `P` is its **last top-level
+tree**: `P`'s head sits at the minimum depth of the whole block and everything
+after that head is strictly deeper. -/
+theorem split_lastMin : ∀ {M : PairSeq}, M ≠ [] →
+    ∃ A P, M = A ++ P ∧ P ≠ [] ∧ rsum A P ∧ (∀ p ∈ P.tail, entry P 0 0 < p.1) := by
+  intro M
+  induction M using List.reverseRecOn with
+  | nil => intro h; exact absurd rfl h
+  | append_singleton M' q ih =>
+      intro _
+      by_cases hM' : M' = []
+      · subst hM'
+        refine ⟨[], [q], by simp, by simp, ?_, by simp⟩
+        intro p hp
+        simp only [List.nil_append, List.mem_singleton] at hp
+        subst hp
+        simp [entry]
+      · obtain ⟨A', P', hEq, hPne, hrs, htail⟩ := ih hM'
+        by_cases hq : q.1 ≤ entry P' 0 0
+        · refine ⟨M', [q], by simp, by simp, ?_, by simp⟩
+          intro p hp
+          have hq0 : entry ([q] : PairSeq) 0 0 = q.1 := by simp [entry]
+          rw [hq0]
+          rcases List.mem_append.mp hp with hp | hp
+          · exact le_trans hq (hrs p (by rw [hEq] at hp; exact hp))
+          · simp only [List.mem_singleton] at hp; subst hp; exact le_rfl
+        · push Not at hq
+          refine ⟨A', P' ++ [q], by rw [hEq, List.append_assoc], by simp, ?_, ?_⟩
+          · have hhd : entry (P' ++ [q]) 0 0 = entry P' 0 0 := by
+              rcases P' with _ | ⟨p0, P''⟩
+              · exact absurd rfl hPne
+              · simp [entry]
+            intro p hp
+            rw [hhd]
+            rcases List.mem_append.mp hp with hp | hp
+            · exact hrs p (List.mem_append_left _ hp)
+            · rcases List.mem_append.mp hp with hp | hp
+              · exact hrs p (List.mem_append_right _ hp)
+              · simp only [List.mem_singleton] at hp; subst hp; omega
+          · have hhd : entry (P' ++ [q]) 0 0 = entry P' 0 0 := by
+              rcases P' with _ | ⟨p0, P''⟩
+              · exact absurd rfl hPne
+              · simp [entry]
+            intro p hp
+            rw [hhd]
+            rcases P' with _ | ⟨p0, P''⟩
+            · exact absurd rfl hPne
+            · simp only [List.cons_append, List.tail_cons] at hp
+              rcases List.mem_append.mp hp with hp | hp
+              · exact htail p (by simpa using hp)
+              · simp only [List.mem_singleton] at hp; subst hp; exact hq
+
+/-! ### 4c. Prefix commutation -/
+
+/-- `X.map (· - c) |>.map (· + c) = X` when every depth of `X` is `≥ c`. -/
+theorem map_sub_add {c : ℕ} {X : PairSeq} (h : ∀ p ∈ X, c ≤ p.1) :
+    (X.map fun p => (p.1 - c, p.2)).map (fun p => (p.1 + c, p.2)) = X := by
+  rw [List.map_map]
+  conv_rhs => rw [← List.map_id X]
+  refine List.map_congr_left ?_
+  intro q hq
+  have hc := h q hq
+  have h1 : q.1 - c + c = q.1 := by omega
+  simp only [Function.comp_apply, id_eq, h1]
+
+/-- The shift decomposition of a top-level split: `A ++ P` is the `c`-shift of a
+root-anchored append, where `c = entry P 0 0` is the minimal depth. -/
+theorem rsum_decomp {A P : PairSeq} (h : rsum A P) :
+    ((A.map fun p => (p.1 - entry P 0 0, p.2)) ++
+      (P.map fun p => (p.1 - entry P 0 0, p.2))).map (fun p => (p.1 + entry P 0 0, p.2))
+      = A ++ P := by
+  rw [List.map_append, map_sub_add (fun p hp => h p (List.mem_append_left _ hp)),
+    map_sub_add (fun p hp => h p (List.mem_append_right _ hp))]
+
+theorem entry_sub_zero {P : PairSeq} (hP : P ≠ []) :
+    entry (P.map fun p => (p.1 - entry P 0 0, p.2)) 0 0 = 0 := by
+  rcases P with _ | ⟨p0, P'⟩
+  · exact absurd rfl hP
+  · simp [entry]
+
+/-- **Prefix commutation for a top-level split** (the shift-general form of
+`Nrm.oper_append_right`). -/
+theorem oper_append_gen {A P : PairSeq} (n : ℕ) (hP : 2 ≤ P.length) (h : rsum A P) :
+    (A ++ P)⟦n⟧ = A ++ P⟦n⟧ := by
+  set c := entry P 0 0 with hc
+  set A₀ := A.map (fun p => (p.1 - c, p.2)) with hA0
+  set P₀ := P.map (fun p => (p.1 - c, p.2)) with hP0
+  have hPne : P ≠ [] := by rintro rfl; simp at hP
+  have hroot : entry P₀ 0 0 = 0 := entry_sub_zero hPne
+  have hlen0 : 2 ≤ P₀.length := by rw [hP0, List.length_map]; exact hP
+  have hAP : (A₀ ++ P₀).map (fun p => (p.1 + c, p.2)) = A ++ P := rsum_decomp h
+  have hPP : P₀.map (fun p => (p.1 + c, p.2)) = P :=
+    map_sub_add (fun p hp => h p (List.mem_append_right _ hp))
+  have hAA : A₀.map (fun p => (p.1 + c, p.2)) = A :=
+    map_sub_add (fun p hp => h p (List.mem_append_left _ hp))
+  calc (A ++ P)⟦n⟧ = ((A₀ ++ P₀).map (fun p => (p.1 + c, p.2)))⟦n⟧ := by rw [hAP]
+    _ = ((A₀ ++ P₀)⟦n⟧).map (fun p => (p.1 + c, p.2)) := oper_shift _ _ _
+    _ = (A₀ ++ P₀⟦n⟧).map (fun p => (p.1 + c, p.2)) := by
+          rw [oper_append_right A₀ P₀ n hlen0 hroot]
+    _ = A ++ (P₀⟦n⟧).map (fun p => (p.1 + c, p.2)) := by rw [List.map_append, hAA]
+    _ = A ++ P⟦n⟧ := by rw [← oper_shift, hPP]
+
+theorem graft_append {A P z : PairSeq} (hP : P ≠ []) :
+    graft (A ++ P) z = A ++ graft P z := by
+  have hlen : (A ++ P).length - 1 = A.length + (P.length - 1) := by
+    have : 0 < P.length := List.length_pos_iff.mpr hP
+    rw [List.length_append]; omega
+  unfold graft
+  rw [hlen, entry_append_right, List.dropLast_append_of_ne_nil hP, List.append_assoc]
+
+/-- `hasParent` is invariant under a prefix, for a genuine top-level split. -/
+theorem hasParent_append_gen {A P : PairSeq} {i j : ℕ} (hj : j < P.length)
+    (h : rsum A P) : hasParent (A ++ P) i (A.length + j) ↔ hasParent P i j := by
+  have hPne : P ≠ [] := by rintro rfl; simp at hj
+  set c := entry P 0 0 with hc
+  set A₀ := A.map (fun p => (p.1 - c, p.2)) with hA0
+  set P₀ := P.map (fun p => (p.1 - c, p.2)) with hP0
+  have hroot : entry P₀ 0 0 = 0 := entry_sub_zero hPne
+  have hAP : (A₀ ++ P₀).map (fun p => (p.1 + c, p.2)) = A ++ P := rsum_decomp h
+  have hPP : P₀.map (fun p => (p.1 + c, p.2)) = P :=
+    map_sub_add (fun p hp => h p (List.mem_append_right _ hp))
+  have hlenA : A₀.length = A.length := by rw [hA0, List.length_map]
+  have hlenP : P₀.length = P.length := by rw [hP0, List.length_map]
+  have hbound : A.length + j < (A₀ ++ P₀).length := by
+    rw [List.length_append, hlenA, hlenP]; omega
+  have step1 : hasParent (A ++ P) i (A.length + j) ↔ hasParent (A₀ ++ P₀) i (A₀.length + j) := by
+    rw [hlenA, ← hAP]
+    exact hasParent_shift hbound
+  have step3 : hasParent P₀ i j ↔ hasParent P i j := by
+    rw [← hPP]
+    exact (hasParent_shift (S := P₀) (d := c) (i := i) (b := j)
+      (by rw [hlenP]; exact hj)).symm
+  have step2 : hasParent (A₀ ++ P₀) i (A₀.length + j) ↔ hasParent P₀ i j := by
+    by_cases hz : entry P₀ 0 j = 0
+    · constructor
+      · intro hh
+        exact absurd hh (fun hh' => no_hasParent_of_row0_zero
+          (by rw [entry_append_right]; exact hz) hh')
+      · intro hh
+        exact absurd hh (fun hh' => no_hasParent_of_row0_zero hz hh')
+    · exact hasParent_append_right A₀ P₀ hroot
+        (by rw [entry_append_right]; omega)
+  rw [step1, step2, step3]
+
+theorem domT_append {A P : PairSeq} {m : ℕ} (hP : P ≠ []) (h : rsum A P) :
+    domT (A ++ P) m ↔ domT P m := by
+  have hPlen : 0 < P.length := List.length_pos_iff.mpr hP
+  have hlen : (A ++ P).length - 1 = A.length + (P.length - 1) := by
+    rw [List.length_append]; omega
+  unfold domT
+  rw [hlen, entry_append_right, hasParent_append_gen (by omega) h]
+
+theorem natDom_append {A P : PairSeq} (hP : P ≠ []) (h : rsum A P) :
+    natDom (A ++ P) ↔ natDom P :=
+  ⟨fun hn m hm => hn m ((domT_append hP h).mpr hm),
+   fun hn m hm => hn m ((domT_append hP h).mp hm)⟩
+
+/-! ## 5. Buchholz 2.4 — additive closure
+
+`X⁽ᴬ⁾ = {B | A ++ B ∈ X}`, guarded by `rsum A B` (the PSS side condition that
+`B` really is a top-level suffix; in the source this is free because `+` is only
+formed inside `OT_B`, whose definition already carries it). -/
+
+/-- Buchholz's `X^{(a)}`, with the PSS top-level-suffix guard. -/
+def XA (A : PairSeq) (X : Set PairSeq) : Set PairSeq := {B | rsum A B → A ++ B ∈ X}
+
+/-! ### Depth bookkeeping: `oper` and `graft` never go shallower -/
+
+theorem entry_zero_headD (X : PairSeq) : entry X 0 0 = (X.headD (0, 0)).1 := by
+  cases X <;> simp [entry]
+
+/-- `oper` keeps the head (hence the anchoring depth) for `n ≥ 1`. -/
+theorem oper_head_eq {B : PairSeq} {n : ℕ} (hn : 1 ≤ n) :
+    entry (B⟦n⟧) 0 0 = entry B 0 0 := by
+  by_cases hL : 1 < B.length
+  · rw [entry_zero_headD, entry_zero_headD, oper_headD B hL hn]
+  · rw [oper_eq_self_of_short n (by omega)]
+
+/-- The `j`-th column of `B` really is a member of `B`. -/
+theorem entry_pair_mem {B : PairSeq} {j : ℕ} (hj : j < B.length) :
+    ((entry B 0 j, entry B 1 j) : ℕ × ℕ) ∈ B := by
+  have h : ((entry B 0 j, entry B 1 j) : ℕ × ℕ) = B.getD j (0, 0) := by
+    unfold entry; rw [if_pos rfl, if_neg one_ne_zero]
+  have h2 : B.getD j (0, 0) = B[j]'hj := by
+    rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hj]; rfl
+  rw [h, h2]
+  exact List.getElem_mem hj
+
+/-- `oper` never produces a column shallower than the shallowest column of `B`. -/
+theorem oper_mem_ge {B : PairSeq} {c n : ℕ} (h : ∀ p ∈ B, c ≤ p.1) :
+    ∀ p ∈ B⟦n⟧, c ≤ p.1 := by
+  by_cases hL : B.length - 1 = 0
+  · rw [oper_eq_self_of_short n hL]; exact h
+  · by_cases hp : hasParent B (idx1 B (B.length - 1)) (B.length - 1)
+    · have hpos : 0 < entry B 0 (B.length - 1) := by
+        by_contra hh
+        exact no_hasParent_of_row0_zero (by omega) hp
+      have hz : ¬ (entry B 0 (B.length - 1) = 0 ∧ entry B 1 (B.length - 1) = 0) := by
+        rintro ⟨h1, -⟩; omega
+      rw [oper_bad_unfold n hL hz hp]
+      intro p hp'
+      rcases List.mem_append.mp hp' with hmem | hmem
+      · exact h p (List.mem_of_mem_take hmem)
+      · rw [List.mem_flatMap] at hmem
+        obtain ⟨k, -, hmem2⟩ := hmem
+        rw [List.mem_map] at hmem2
+        obtain ⟨j, hj, rfl⟩ := hmem2
+        rw [List.mem_range'] at hj
+        have hjlt : j < B.length := by omega
+        have := h _ (entry_pair_mem hjlt)
+        simp only []
+        omega
+    · have hB : B⟦n⟧ = Pred B := by
+        by_cases hz : entry B 0 (B.length - 1) = 0 ∧ entry B 1 (B.length - 1) = 0
+        · exact oper_eq_pred_of_zero n hL hz
+        · exact oper_eq_pred_of_noParent n hL hz hp
+      rw [hB]
+      unfold Pred
+      split
+      · exact h
+      · exact fun p hp' => h p (List.dropLast_subset _ hp')
+
+/-- `graft` never produces a column shallower than the shallowest column of `B`
+(the grafted block is re-based at `B`'s deepest column). -/
+theorem graft_mem_ge {B z : PairSeq} {c : ℕ} (hB : B ≠ []) (h : ∀ p ∈ B, c ≤ p.1) :
+    ∀ p ∈ graft B z, c ≤ p.1 := by
+  have hlt : B.length - 1 < B.length := by
+    have : 0 < B.length := List.length_pos_iff.mpr hB
+    omega
+  have hx : c ≤ entry B 0 (B.length - 1) := h _ (entry_pair_mem hlt)
+  intro p hp
+  rcases List.mem_append.mp hp with hmem | hmem
+  · exact h p (List.dropLast_subset _ hmem)
+  · rw [List.mem_map] at hmem
+    obtain ⟨q, -, rfl⟩ := hmem
+    simp only []
+    omega
+
+/-- `graft` keeps the anchoring depth (whenever the result is nonempty). -/
+theorem graft_head_eq {B z : PairSeq} (hB : B ≠ []) (hz : based z)
+    (hne : graft B z ≠ []) : entry (graft B z) 0 0 = entry B 0 0 := by
+  rcases hB2 : B with _ | ⟨b0, B'⟩
+  · exact absurd hB2 hB
+  · rcases B' with _ | ⟨b1, B''⟩
+    · have hgr : graft [b0] z = z.map (fun p => (p.1 + b0.1, p.2)) := by simp [graft, entry]
+      rw [hB2] at hne
+      rw [hgr] at hne ⊢
+      rcases z with _ | ⟨z0, z'⟩
+      · simp at hne
+      · have h0 : entry (z0 :: z') 0 0 = 0 := hz
+        simp [entry] at h0 ⊢
+        omega
+    · simp [graft, entry]
+
+/-- **2.4(a)**: `A_u(X) ⊆ X` and `A ∈ X` imply `A_u(X⁽ᴬ⁾) ⊆ X⁽ᴬ⁾`. -/
+theorem XA_closed {u : ℕ} {X : Set PairSeq}
+    (hX : ∀ M : PairSeq, Aop W u X M → M ∈ X) {A : PairSeq} (hA : A ∈ X) :
+    ∀ M : PairSeq, Aop W u (XA A X) M → M ∈ XA A X := by
+  intro B AB hrs
+  by_cases hBnil : B = []
+  · subst hBnil; simpa using hA
+  · have hBlen : 0 < B.length := List.length_pos_iff.mpr hBnil
+    have hBge : ∀ p ∈ B, entry B 0 0 ≤ p.1 := fun p hp => hrs p (List.mem_append_right _ hp)
+    have hAge : ∀ p ∈ A, entry B 0 0 ≤ p.1 := fun p hp => hrs p (List.mem_append_left _ hp)
+    rcases AB with ⟨hl, hw⟩ | ⟨hnat, hop⟩ | ⟨m, hm, hd, hgr⟩
+    · -- branch 1: `B = [q]` with row-1 `0`; `A ++ [q]` drops back to `A`
+      have hB1 : B.length = 1 := by omega
+      by_cases hAnil : A = []
+      · subst hAnil; simpa using hX B (Or.inl ⟨hl, hw⟩)
+      · have hAlen : 0 < A.length := List.length_pos_iff.mpr hAnil
+        have hlast : (A ++ B).length - 1 = A.length + 0 := by
+          rw [List.length_append]; omega
+        have hnp : ∀ i, ¬ hasParent (A ++ B) i ((A ++ B).length - 1) := by
+          intro i hh
+          rw [hlast] at hh
+          have := (hasParent_append_gen (i := i) (j := 0) (by omega) hrs).mp hh
+          obtain ⟨j0, hj0, -⟩ := this
+          exact absurd (nextR_index_lt hj0) (Nat.not_lt_zero j0)
+        have hw0 : entry (A ++ B) 1 ((A ++ B).length - 1) = 0 := by
+          rw [hlast, entry_append_right]
+          simpa using hw
+        refine hX _ (Or.inr (Or.inl ⟨(natDom_append hBnil hrs).mpr
+          (natDom_iff.mpr (Or.inl (by rw [show B.length - 1 = 0 by omega]; simpa using hw))),
+          fun n hn => ?_⟩))
+        have hpred : (A ++ B)⟦n⟧ = Pred (A ++ B) := by
+          by_cases hzz : entry (A ++ B) 0 ((A ++ B).length - 1) = 0 ∧
+              entry (A ++ B) 1 ((A ++ B).length - 1) = 0
+          · exact oper_eq_pred_of_zero n (by rw [List.length_append]; omega) hzz
+          · exact oper_eq_pred_of_noParent n (by rw [List.length_append]; omega) hzz (hnp _)
+        rw [hpred]
+        unfold Pred
+        rw [if_neg (by rw [List.length_append]; omega),
+          List.dropLast_append_of_ne_nil hBnil]
+        have : B.dropLast = [] := List.eq_nil_of_length_eq_zero (by simp; omega)
+        rw [this]
+        simpa using hA
+    · -- branch 2: the ℕ-branch commutes with the prefix
+      by_cases hB2 : 2 ≤ B.length
+      · refine hX _ (Or.inr (Or.inl ⟨(natDom_append hBnil hrs).mpr hnat, fun n hn => ?_⟩))
+        rw [oper_append_gen n hB2 hrs]
+        refine hop n hn (fun p hp => ?_)
+        rw [oper_head_eq hn]
+        rcases List.mem_append.mp hp with hp | hp
+        · exact hAge p hp
+        · exact oper_mem_ge hBge p hp
+      · -- `|B| = 1`: `B⟦1⟧ = B`, so the branch already gives the goal
+        have hB1 : B⟦1⟧ = B := oper_eq_self_of_short 1 (by omega)
+        have h1 := hop 1 le_rfl
+        rw [hB1] at h1
+        exact h1 hrs
+    · -- branch 3: the `T_m`-graft commutes with the prefix
+      refine hX _ (Or.inr (Or.inr ⟨m, hm, (domT_append hBnil hrs).mpr hd, fun z hz hbz => ?_⟩))
+      rw [graft_append hBnil]
+      refine hgr z hz hbz ?_
+      by_cases hgz : graft B z = []
+      · rw [hgz]; intro p hp; simp [entry]
+      · intro p hp
+        rw [graft_head_eq hBnil hbz hgz]
+        rcases List.mem_append.mp hp with hp | hp
+        · exact hAge p hp
+        · exact graft_mem_ge hBnil hBge p hp
+
+/-- **2.4(b)**: `W_u` is closed under top-level concatenation. -/
+theorem W_add {u : ℕ} {A B : PairSeq} (hA : A ∈ W u) (hB : B ∈ W u)
+    (h : rsum A B) : A ++ B ∈ W u :=
+  A2' (XA_closed (u := u) (X := W u) (fun _ hM => A1_intro hM) hA) hB h
+
+/-! ## 6. Buchholz 2.5/2.6 — the principal step and the tower -/
+
+/-- **2.5**: `Ω_v = p_v(0) = [(0,v)] ∈ W_v`.  For `v = 0` this is the atom `1`;
+for `v > 0` it is the `T_{v-1}` branch with `graft [(0,v)] z = z`. -/
+theorem graft_Om (v : ℕ) (z : PairSeq) : graft [((0 : ℕ), v)] z = z := by
+  simp [graft, entry]
+
+theorem domT_Om (m : ℕ) : domT [((0 : ℕ), m + 1)] m := by
+  refine ⟨by simp [entry], ?_⟩
+  rintro ⟨j0, hj0, -⟩
+  unfold nextR at hj0
+  rw [if_neg (by omega)] at hj0
+  have := hj0.2.2.1
+  simp at this
+
+theorem Om_mem_W (v : ℕ) : [((0 : ℕ), v)] ∈ W v := by
+  rcases v with _ | w
+  · exact A1_intro (Or.inl ⟨by simp, by simp [entry]⟩)
+  · refine A1_intro (Or.inr (Or.inr ⟨w, by omega, domT_Om w, ?_⟩))
+    intro z hz _
+    rw [graft_Om]
+    exact W_mono (Nat.le_succ w) hz
+
+/-- Buchholz's `W* = {x | ∀ u, D_u x ∈ W_u}`, PSS reading: an argument block `R`
+is in `W*` when every principal `p_v(R)` lands in `W_v`. -/
+def Wstar : Set PairSeq := {R | argOK R → ∀ v : ℕ, ((0, v) :: R) ∈ W v}
+
+/-- The **tower**: `t_0 = 0`, `t_{k+1} = p_v(R[t_k])`.  This is Buchholz's
+`x_0 = D_v 0`, `x_{i+1} = D_v(b[x_i])`; on the PSS side it is literally the
+`n`-fold ascending copy/tiling of `oper_bad_blocks`. -/
+def tow (v : ℕ) (R : PairSeq) : ℕ → PairSeq
+  | 0 => []
+  | k + 1 => (0, v) :: graft R (tow v R k)
+
+theorem graft_cons {v : ℕ} {R z : PairSeq} (hRne : R ≠ []) :
+    graft ((0, v) :: R) z = (0, v) :: graft R z := by
+  have h := graft_append (A := [((0 : ℕ), v)]) (P := R) (z := z) hRne
+  simp [List.cons_append] at h
+  exact h
+
+/-- Index shift across a `cons`. -/
+theorem entry_cons (p : ℕ × ℕ) (R : PairSeq) (i j : ℕ) :
+    entry (p :: R) i (j + 1) = entry R i j := by
+  have h := entry_append_right [p] R i j
+  simp only [List.length_singleton] at h
+  rw [Nat.add_comm 1 j] at h
+  exact h
+
+/-! ### The four `oper`-on-a-principal-block cases
+
+`M = (0,v) :: R` with `argOK R`.  Writing `x = entry R 0 (|R|-1) ≥ 1` and
+`w = entry R 1 (|R|-1)`, the row-0 ancestor chain of `M`'s last column is `R`'s
+own chain **extended by the root** `(0,v)` (which is below everything, by
+`argOK`).  Hence exactly four cases, matching Buchholz's case split in 2.6:
+
+| case | condition | `dom` | `oper`|
+|---|---|---|---|
+| (A′) | `w = 0`, no row-0 parent in `R` | successor | `n` exact copies of `p_v(R[0])` |
+| (B′)(C′) | `R`'s last column has a parent in `R` | `ℕ` | `p_v(R⟦n⟧)` |
+| (D′) | `domT R m`, `v ≤ m` | `ℕ` (collapsing) | the **tower** |
+| (E′) | `domT R m`, `m < v` | `T_m` (continuous) | graft through the root |
+
+**OPEN OBLIGATIONS** — the four statements below are the remaining mathematical
+content of `W_membership`.  They are pure facts about PSS `oper`/`hasParent` on
+`(0,v) :: R`; none of them mentions `W`, `olt`, `translate` or any
+coefficient-domination condition. -/
+
+/-- (C′)/(D′) The root `(0,v)` becomes the row-1 parent of `M`'s last column
+whenever `R` has no row-1 parent of its own but `v` is below `R`'s trailing
+subscript — and `R`'s own parent survives the `cons` otherwise. -/
+theorem hasParent_cons_one {v : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
+    (h : hasParent R 1 (R.length - 1) ∨ v < entry R 1 (R.length - 1)) :
+    hasParent ((0, v) :: R) 1 R.length := by
+  sorry
+
+/-- (B′)(C′) Non-collapsing principal step: `p_v(R)[n] = p_v(R[n])`. -/
+theorem oper_cons_nat {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
+    (hp : hasParent R (idx1 R (R.length - 1)) (R.length - 1)) (hn : 1 ≤ n) :
+    ((0, v) :: R)⟦n⟧ = (0, v) :: R⟦n⟧ := by
+  sorry
+
+/-- (A′) Successor case `dom R = {0}`: `p_v(β+1)[n] = p_v(β)·n`. -/
+theorem oper_cons_succ {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
+    (hw : entry R 1 (R.length - 1) = 0)
+    (hnp : ¬ hasParent R 0 (R.length - 1)) :
+    ((0, v) :: R)⟦n⟧ =
+      (List.range n).flatMap (fun _ => ((0, v) :: R.dropLast)) := by
+  sorry
+
+/-- (D′) **The tower identity** — the PSS form of `(D_v b)[n] = D_v(b[x_n])`.
+This is `oper_bad_blocks`' `n`-fold ascending tiling read through `graft`. -/
+theorem oper_cons_tower {v m n : ℕ} {R : PairSeq}
+    (hR : argOK R) (hd : domT R m) (hvm : v ≤ m) :
+    ((0, v) :: R)⟦n⟧ = tow v R n := by
+  sorry
+
+/-- (E′) Continuous case `dom R = T_m` with `m < v`: `dom (p_v R) = T_m`. -/
+theorem domT_cons_of_lt {v m : ℕ} {R : PairSeq} (hR : argOK R) (hd : domT R m)
+    (hmv : m < v) : domT ((0, v) :: R) m := by
+  sorry
+
+/-! ### Assembling 2.6 -/
+
+theorem argOK_oper {R : PairSeq} (hR : argOK R) (n : ℕ) : argOK (R⟦n⟧) :=
+  fun p hp => oper_mem_ge (c := 1) (fun q hq => hR q hq) p hp
+
+theorem argOK_graft {R : PairSeq} (hRne : R ≠ []) (hR : argOK R) (z' : PairSeq) :
+    argOK (graft R z') :=
+  fun p hp => graft_mem_ge (c := 1) hRne (fun q hq => hR q hq) p hp
+
+theorem argOK_dropLast {R : PairSeq} (hR : argOK R) : argOK R.dropLast :=
+  fun p hp => hR p (List.dropLast_subset _ hp)
+
+theorem based_cons (v : ℕ) (R : PairSeq) : based ((0, v) :: R) := by
+  simp [based, entry]
+
+theorem rsum_self_cons (v : ℕ) (R : PairSeq) :
+    ∀ p ∈ ((0, v) :: R), entry ((0, v) :: R) 0 0 ≤ p.1 := by
+  intro p _
+  simp [entry]
+
+/-- `n` copies of a single tree stay in `W u`. -/
+theorem W_flatMap_copies {u : ℕ} {Q : PairSeq} (hQ : Q ∈ W u)
+    (hQr : ∀ p ∈ Q, entry Q 0 0 ≤ p.1) :
+    ∀ n : ℕ, ((List.range n).flatMap fun _ => Q) ∈ W u := by
+  intro n
+  induction n with
+  | zero => simpa using W_nil u
+  | succ n ih =>
+      rw [List.range_succ, List.flatMap_append]
+      have hQ1 : ((List.flatMap fun _ => Q) [n]) = Q := by simp
+      rw [hQ1]
+      refine W_add ih hQ ?_
+      intro p hp
+      rcases List.mem_append.mp hp with hp | hp
+      · rw [List.mem_flatMap] at hp
+        obtain ⟨-, -, hp⟩ := hp
+        exact hQr p hp
+      · exact hQr p hp
+
+/-- **2.6**: `A_ω(W*) ⊆ W*`. -/
+theorem Wstar_closed : ∀ (u : ℕ) (M : PairSeq), Aop W u Wstar M → M ∈ Wstar := by
+  intro u R AR hR v
+  by_cases hRnil : R = []
+  · subst hRnil; simpa using Om_mem_W v
+  · have hRlen : 0 < R.length := List.length_pos_iff.mpr hRnil
+    have hlast : ((0, v) :: R).length - 1 = R.length := by simp
+    have hE1 : entry ((0, v) :: R) 1 (((0, v) :: R).length - 1)
+        = entry R 1 (R.length - 1) := by
+      rw [hlast]
+      conv_lhs => rw [show R.length = (R.length - 1) + 1 by omega]
+      rw [entry_cons]
+    -- `natDom` of the principal block, given a parent for its last column
+    have hnatOf : hasParent ((0, v) :: R) 1 R.length → natDom ((0, v) :: R) := by
+      intro hh; exact natDom_iff.mpr (Or.inr (by rw [hlast]; exact hh))
+    have hnatZero : entry R 1 (R.length - 1) = 0 → natDom ((0, v) :: R) := by
+      intro hz; exact natDom_iff.mpr (Or.inl (by rw [hE1]; exact hz))
+    rcases AR with ⟨hl, hw⟩ | ⟨hnat, hop⟩ | ⟨m, hm, hd, hgr⟩
+    · -- branch 1: `R = [(x,0)]`, so `p_v(R) = p_v(1)`, expansion `p_v(0)·n`
+      have hR1 : R.length = 1 := by omega
+      have hw' : entry R 1 (R.length - 1) = 0 := by rw [hR1]; simpa using hw
+      have hnp : ¬ hasParent R 0 (R.length - 1) := by
+        rw [hR1]
+        rintro ⟨j0, hj0, -⟩
+        exact absurd (nextR_index_lt hj0) (Nat.not_lt_zero j0)
+      have hdl : R.dropLast = [] := List.eq_nil_of_length_eq_zero (by simp; omega)
+      refine A1_intro (Or.inr (Or.inl ⟨hnatZero hw', fun n hn => ?_⟩))
+      rw [oper_cons_succ hR hRnil hw' hnp, hdl]
+      exact W_flatMap_copies (Om_mem_W v) (rsum_self_cons v []) n
+    · -- branch 2: `natDom R`
+      by_cases hp : hasParent R (idx1 R (R.length - 1)) (R.length - 1)
+      · -- (B′)(C′): `p_v(R)[n] = p_v(R[n])`
+        have hnatM : natDom ((0, v) :: R) := by
+          by_cases hz : entry R 1 (R.length - 1) = 0
+          · exact hnatZero hz
+          · refine hnatOf (hasParent_cons_one hR hRnil (Or.inl ?_))
+            have : idx1 R (R.length - 1) = 1 := by
+              unfold idx1; rw [if_pos (by omega)]
+            rwa [this] at hp
+        refine A1_intro (Or.inr (Or.inl ⟨hnatM, fun n hn => ?_⟩))
+        rw [oper_cons_nat hR hRnil hp hn]
+        exact hop n hn (argOK_oper hR n) v
+      · -- no parent: `natDom R` forces the successor case `w = 0`
+        have hw0 : entry R 1 (R.length - 1) = 0 := by
+          by_contra hz
+          obtain ⟨m, hm⟩ : ∃ m, entry R 1 (R.length - 1) = m + 1 :=
+            ⟨entry R 1 (R.length - 1) - 1, by omega⟩
+          refine hnat m ⟨hm, ?_⟩
+          intro hh
+          exact hp (by
+            have : idx1 R (R.length - 1) = 1 := by unfold idx1; rw [if_pos (by omega)]
+            rw [this]; exact hh)
+        have hnp : ¬ hasParent R 0 (R.length - 1) := by
+          intro hh
+          exact hp (by
+            have : idx1 R (R.length - 1) = 0 := by unfold idx1; rw [if_neg (by omega)]
+            rw [this]; exact hh)
+        refine A1_intro (Or.inr (Or.inl ⟨hnatZero hw0, fun n hn => ?_⟩))
+        rw [oper_cons_succ hR hRnil hw0 hnp]
+        refine W_flatMap_copies ?_ (rsum_self_cons v _) n
+        -- `p_v(R[1]) ∈ W v`, and `R[1] = R.dropLast` unless `|R| = 1`
+        by_cases hR2 : 2 ≤ R.length
+        · have hop1 := hop 1 le_rfl
+          have hpred : R⟦1⟧ = R.dropLast := by
+            have hL : R.length - 1 ≠ 0 := by omega
+            have : R⟦1⟧ = Pred R := by
+              by_cases hz : entry R 0 (R.length - 1) = 0 ∧ entry R 1 (R.length - 1) = 0
+              · exact oper_eq_pred_of_zero 1 hL hz
+              · exact oper_eq_pred_of_noParent 1 hL hz hp
+            rw [this]
+            unfold Pred
+            rw [if_neg (by omega)]
+          rw [hpred] at hop1
+          exact hop1 (argOK_dropLast hR) v
+        · have : R.dropLast = [] := List.eq_nil_of_length_eq_zero (by simp; omega)
+          rw [this]
+          simpa using Om_mem_W v
+    · -- branch 3: `domT R m`
+      by_cases hvm : v ≤ m
+      · -- (D′) the tower
+        have htow : ∀ k, tow v R k ∈ W v := by
+          intro k
+          induction k with
+          | zero => simpa [tow] using W_nil v
+          | succ k ihk =>
+              have hbased : based (tow v R k) := by
+                cases k with
+                | zero => simp [tow]
+                | succ k' => simpa [tow] using based_cons v _
+              have hlift : tow v R k ∈ W m := W_mono hvm ihk
+              have := hgr (tow v R k) hlift hbased
+              exact this (argOK_graft hRnil hR _) v
+        refine A1_intro (Or.inr (Or.inl ⟨?_, fun n hn => ?_⟩))
+        · refine hnatOf (hasParent_cons_one hR hRnil (Or.inr ?_))
+          rw [hd.1]; omega
+        · rw [oper_cons_tower hR hd hvm]; exact htow n
+      · -- (E′) continuous: `dom (p_v R) = T_m` with `m < v`
+        push Not at hvm
+        refine A1_intro (Or.inr (Or.inr ⟨m, hvm, domT_cons_of_lt hR hd hvm, ?_⟩))
+        intro z hz hbz
+        rw [graft_cons hRnil]
+        exact hgr z hz hbz (argOK_graft hRnil hR z) v
+
+/-! ## 7. Buchholz 2.7/2.8 — induction on block length -/
+
+/-- The single-tree shift: a tree rooted at depth `c` is the `c`-shift of a tree
+rooted at depth `0`. -/
+theorem tree_shift {p0 : ℕ × ℕ} {R : PairSeq} (hR : ∀ q ∈ R, p0.1 ≤ q.1) :
+    (((0, p0.2) :: R.map (fun q => (q.1 - p0.1, q.2))).map
+      fun q => (q.1 + p0.1, q.2)) = p0 :: R := by
+  rw [List.map_cons, map_sub_add hR]
+  simp
+
+theorem mem_of_Aclosed_aux : ∀ (N : ℕ) (M : PairSeq), M.length ≤ N →
+    ∀ X : Set PairSeq, (∀ (u : ℕ) (M' : PairSeq), Aop W u X M' → M' ∈ X) → M ∈ X := by
+  intro N
+  induction N with
+  | zero =>
+      intro M hM X hX
+      have hnil : M = [] := List.eq_nil_of_length_eq_zero (by omega)
+      subst hnil
+      exact hX 0 [] (Or.inl ⟨by simp, by simp [entry]⟩)
+  | succ N ih =>
+      intro M hM X hX
+      by_cases hMnil : M = []
+      · subst hMnil; exact hX 0 [] (Or.inl ⟨by simp, by simp [entry]⟩)
+      · obtain ⟨A, P, hEq, hPne, hrs, htail⟩ := split_lastMin hMnil
+        subst hEq
+        have hPlen : 0 < P.length := List.length_pos_iff.mpr hPne
+        have hMlen : A.length + P.length ≤ N + 1 := by
+          rw [List.length_append] at hM; exact hM
+        by_cases hAnil : A = []
+        · subst hAnil
+          obtain ⟨p0, R, rfl⟩ : ∃ p0 R, P = p0 :: R := by
+            cases P with
+            | nil => exact absurd rfl hPne
+            | cons a b => exact ⟨a, b, rfl⟩
+          have hRgt : ∀ q ∈ R, p0.1 < q.1 := by
+            intro q hq
+            have := htail q (by simpa using hq)
+            simpa [entry] using this
+          have hargOK : argOK (R.map fun q => (q.1 - p0.1, q.2)) := by
+            intro q hq
+            rw [List.mem_map] at hq
+            obtain ⟨r, hr, rfl⟩ := hq
+            have := hRgt r hr
+            simp only []
+            omega
+          have hWs : (R.map fun q => (q.1 - p0.1, q.2)) ∈ Wstar := by
+            refine ih _ ?_ Wstar Wstar_closed
+            rw [List.length_map]
+            simp only [List.length_cons] at hMlen
+            omega
+          have hmem : ((0, p0.2) :: R.map fun q => (q.1 - p0.1, q.2)) ∈ W p0.2 :=
+            hWs hargOK p0.2
+          have hP : (p0 :: R) ∈ W p0.2 := by
+            rw [← tree_shift (fun q hq => le_of_lt (hRgt q hq))]
+            exact W_shift hmem p0.1
+          simp only [List.nil_append]
+          exact A2' (fun M' h => hX p0.2 M' h) hP
+        · have hAlen : 0 < A.length := List.length_pos_iff.mpr hAnil
+          have hAX : A ∈ X := ih A (by omega) X hX
+          have hPX : P ∈ XA A X := ih P (by omega) (XA A X)
+            (fun u M' h => XA_closed (fun M'' h'' => hX u M'' h'') hAX M' h)
+          exact hPX hrs
+
+/-- **2.7**: every block belongs to every `A`-closed set.  Induction on
+`M.length`: split off the last top-level tree (`split_lastMin`), recombine with
+2.4(a), and handle the principal `(0,v) :: R` by 2.6 applied to `R` (shorter). -/
+theorem mem_of_Aclosed {X : Set PairSeq}
+    (hX : ∀ (u : ℕ) (M : PairSeq), Aop W u X M → M ∈ X) :
+    ∀ M : PairSeq, M ∈ X :=
+  fun M => mem_of_Aclosed_aux M.length M le_rfl X hX
+
+/-- **2.8**: every argument block is in `W*`. -/
+theorem mem_Wstar (R : PairSeq) : R ∈ Wstar :=
+  mem_of_Aclosed Wstar_closed R
+
+/-- **Every block lies in `W u` as soon as `u` bounds its row-1 values.**  The
+top-level trees go into `W` at their own root subscript (2.8 via `Wstar`), are
+lifted by level monotonicity, and are recombined by the additive closure. -/
+theorem mem_W_of_bound_aux : ∀ (N : ℕ) (M : PairSeq), M.length ≤ N →
+    ∀ u : ℕ, (∀ p ∈ M, p.2 ≤ u) → M ∈ W u := by
+  intro N
+  induction N with
+  | zero =>
+      intro M hM u _
+      have hnil : M = [] := List.eq_nil_of_length_eq_zero (by omega)
+      subst hnil
+      exact W_nil u
+  | succ N ih =>
+      intro M hM u hbd
+      by_cases hMnil : M = []
+      · subst hMnil; exact W_nil u
+      · obtain ⟨A, P, hEq, hPne, hrs, htail⟩ := split_lastMin hMnil
+        subst hEq
+        have hPlen : 0 < P.length := List.length_pos_iff.mpr hPne
+        have hMlen : A.length + P.length ≤ N + 1 := by
+          rw [List.length_append] at hM; exact hM
+        obtain ⟨p0, R, hPeq⟩ : ∃ p0 R, P = p0 :: R := by
+          cases P with
+          | nil => exact absurd rfl hPne
+          | cons a b => exact ⟨a, b, rfl⟩
+        subst hPeq
+        have hRgt : ∀ q ∈ R, p0.1 < q.1 := by
+          intro q hq
+          have := htail q (by simpa using hq)
+          simpa [entry] using this
+        have hargOK : argOK (R.map fun q => (q.1 - p0.1, q.2)) := by
+          intro q hq
+          rw [List.mem_map] at hq
+          obtain ⟨r, hr, rfl⟩ := hq
+          have := hRgt r hr
+          simp only []
+          omega
+        have hmem : ((0, p0.2) :: R.map fun q => (q.1 - p0.1, q.2)) ∈ W p0.2 :=
+          mem_Wstar _ hargOK p0.2
+        have hP : (p0 :: R) ∈ W p0.2 := by
+          rw [← tree_shift (fun q hq => le_of_lt (hRgt q hq))]
+          exact W_shift hmem p0.1
+        have hPu : (p0 :: R) ∈ W u :=
+          W_mono (hbd p0 (List.mem_append_right _ List.mem_cons_self)) hP
+        by_cases hAnil : A = []
+        · subst hAnil; simpa using hPu
+        · have hAlen : 0 < A.length := List.length_pos_iff.mpr hAnil
+          have hAu : A ∈ W u :=
+            ih A (by omega) u (fun p hp => hbd p (List.mem_append_left _ hp))
+          exact W_add hAu hPu hrs
+
+theorem mem_W_of_bound (M : PairSeq) (u : ℕ) (h : ∀ p ∈ M, p.2 ≤ u) : M ∈ W u :=
+  mem_W_of_bound_aux M.length M le_rfl u h
+
+theorem le_maxr1 : ∀ {S : PairSeq}, ∀ p ∈ S, p.2 ≤ maxr1 S := by
+  intro S
+  induction S with
+  | nil => intro p hp; simp at hp
+  | cons q S ih =>
+      intro p hp
+      rw [maxr1_cons]
+      rcases List.mem_cons.mp hp with rfl | hp
+      · exact le_max_left _ _
+      · exact le_trans (ih p hp) (le_max_right _ _)
+
+/-- Every block lies in `W u` for `u` its maximal row-1 value. -/
+theorem mem_W_maxr1 (M : PairSeq) : M ∈ W (maxr1 M) :=
+  mem_W_of_bound M (maxr1 M) le_maxr1
+
+/-! ## 8. Membership — the PSS analogue of Buchholz (1987) 2.8
 
 **OPEN OBLIGATION (believed TRUE; the remaining mathematical work).**
 
@@ -608,8 +1535,8 @@ Its PSS reading, with the dictionary of the header:
 
 Every standard form has finitely many row-1 values (`oper_snd_subset`,
 `Mechanized.lean:552`, shows they never increase), so the level `u` exists. -/
-theorem W_membership : ∀ M : PairSeq, ST_PS M → ∃ u : ℕ, M ∈ W u := by
-  sorry
+theorem W_membership : ∀ M : PairSeq, ST_PS M → ∃ u : ℕ, M ∈ W u :=
+  fun M _ => ⟨maxr1 M, mem_W_maxr1 M⟩
 
 /-! ## 5. Assembly -/
 
@@ -636,64 +1563,116 @@ theorem wf_olt_ST_PS_of_cofinality
     WellFounded (fun a b : PairSeq => ST_PS a ∧ ST_PS b ∧ translate a <o translate b) :=
   wf_of_cofinality_and_membership hcof W_membership
 
-/-! ## 6. REPORT — what is GREEN, what is open, and where the danger is
+/-! ## 9. REPORT — what is GREEN, what is open, and where the danger is
 
 ### GREEN (`sorryAx`-free, checked by the `#print axioms` below)
 
+Pillar-2 core:
+
 * the whole `A_u` / `W_u` apparatus: `Wf` (iterated stages), `W`, `W_unfold`,
-  (A1) `A1`, (A2) `A2` / `A2'`, `A1_intro`, `A1_dest`, level monotonicity
-  `W_mono`, the atoms `W_nil` / `W_atom`;
+  (A1), (A2) / (A2'), `A1_intro`, `A1_dest`, `W_mono`, `W_nil`, `W_atom`;
 * the **design validation** `hasParent_one_iff` — PSS's own `hasParent … 1 …`
   really is Buchholz's spine condition — and its packaging `domT_iff`;
-* `oper_eq_graft_nil_of_domT`: in the `T_m` branch PSS's `oper` degenerates to
-  the bottom element `graft M [] = M.dropLast` of the `T_m`-indexed family;
-* the **bridge** `acc_of_W` (deliverable 3) and the assembly
-  `wf_of_cofinality_and_membership` (deliverable 5), modulo their explicit
-  hypotheses.  The bridge needs `hcof` and **nothing else** — in particular no
-  second, `T_m`-indexed cofinality statement.
+* `oper_eq_graft_nil_of_domT`;
+* the **bridge** `acc_of_W` and the assembly `wf_of_cofinality_and_membership`,
+  modulo their explicit hypotheses.  The bridge needs `hcof` and **nothing
+  else**.
 
-### OPEN (the single `sorry`)
+Block algebra (all new, all `sorryAx`-free):
 
-`W_membership` (deliverable 4).  Believed TRUE: it is the transplant of
-Buchholz (1987) 2.8, which is a theorem, and the dictionary above is validated
-piecewise here.  It is *not* circular (header §(c)).
+* `oper_shift` — **`oper` is row-0-shift equivariant**.  This is the enabler for
+  everything else: it turns `Nrm.oper_append_right` (which needs the right
+  summand anchored at depth `0`) into the shift-general `oper_append_gen`.
+* `W_shift` — `W_u` is closed under a uniform row-0 shift (`A_u` is
+  shift-equivariant branch by branch).
+* `split_lastMin` — every nonempty block splits as `A ++ P` with `P` its last
+  top-level tree, anchored at the minimal depth.
+* `oper_append_gen`, `graft_append`, `domT_append`, `natDom_append`,
+  `hasParent_append_gen` — the prefix commutes with every `A_u` branch.
+* `oper_mem_ge`, `graft_mem_ge`, `oper_head_eq`, `graft_head_eq` — depth
+  bookkeeping (`oper`/`graft` never go shallower and keep the anchor).
 
-### DANGER FLAGS — read before attempting `W_membership`
+The Buchholz chain:
 
-1. **`H0clause`-shaped coefficient domination may reappear in 2.4(b).**  The
-   source's additive closure `a, b ∈ W_v ⟹ a + b ∈ W_v` is cheap there because
-   `+` is only ever formed inside `OT_B`, whose *definition* already carries the
-   CNF/coefficient-domination condition (`isOT_BT`).  Natively in PSS the
-   analogue is "`A, B ∈ W_u ⟹ A ++ (B re-based) ∈ W_u`", and the re-basing has
-   a genuine side condition — the appended block's roots must not be swallowed
-   by `A`'s trailing subtree.  That side condition is exactly the shape of the
-   project's open `Wttone.H0clause_oper_step` / `Gterm` domination facts.  **If
-   a `W_u`-additivity lemma is attempted, check first whether its hypothesis is
-   `H0clause` in disguise; if so the route has not gained anything and the
-   membership proof must be re-planned around it.**  (The *bridge* is free of
-   this — flagged so nobody assumes the whole route is.)
-2. **The `based` side condition is load-bearing, not cosmetic.**  §1c above
-   machine-checks a concrete failure: `[(0,0)]` and `[(2,0)]` have the same
-   `translate`, but grafting the second into `M = (0,3)(1,2)(1,1)` produces
-   `p₃(p₂(p₀(0)))` instead of `p₃(p₂(0) + p₀(0))`.  Any strengthening of the
-   `T_m` branch must keep the `based z` guard, or `W_u` collapses to something
-   for which `W_membership` is FALSE.
-3. **`translate (graft M z)` is not yet related to term substitution.**  The
-   membership route needs a lemma of the form "for `domT M m` and `based z`,
-   `translate (graft M z)` is `translate M` with its trailing `Ω_{m+1}` replaced
-   by `translate z`".  It is stated nowhere in this file and is a prerequisite
-   for 2.6.  It should be provable from the `translate_block_append` /
-   `translate_ctx_cong` family in `Mechanized.lean`, but it is real work.
-4. **`ST_PS` forms are never `domT`.**  The bridge only uses the weak
-   consequence "length-1 standard forms are `[(0,0)]`" (`stps_head`).  The
-   stronger invariant — every top-level root of a standard form carries row-1
-   `= 0`, hence `dom(translate M) ∈ {∅, {0}, ℕ}` for every standard form — is
-   true and provable by `ST_PS` induction, and would be worth having if the
-   `T_m` branch ever needs to be used on standard forms.
+* **2.4(a)/(b)** `XA_closed`, `W_add`;
+* **2.5** `Om_mem_W` (`Ω_v = p_v(0) ∈ W_v`), `domT_Om`, `graft_Om`;
+* **2.6** `Wstar_closed` (assembled from the five open `oper_cons_*` facts);
+* **2.7** `mem_of_Aclosed` — induction on block length, `X` universally
+  quantified so the principal step can instantiate it at `W*`;
+* **2.8** `mem_Wstar`; the level bound `mem_W_of_bound` / `mem_W_maxr1`;
+* **`W_membership`** — the deliverable, now `= fun M _ => ⟨maxr1 M, …⟩`.
+
+### OPEN — five `sorry`s, all in one place
+
+The **four-case classification of `oper` on a principal block** `(0,v) :: R`
+(with `argOK R`), plus the `hasParent` transfer that drives it:
+
+| lemma | content |
+|---|---|
+| `hasParent_cons_one` | the root `(0,v)` is a row-1 parent of the last column iff `R` has one or `v < ` `R`'s trailing subscript |
+| `oper_cons_nat` | (B′)(C′) `p_v(R)[n] = p_v(R[n])` |
+| `oper_cons_succ` | (A′) `p_v(β+1)[n] = p_v(β)·n` |
+| `oper_cons_tower` | (D′) the **tower** `p_v(R)[n] = tow v R n` |
+| `domT_cons_of_lt` | (E′) `dom R = T_m`, `m < v` ⟹ `dom (p_v R) = T_m` |
+
+All five are believed TRUE; §6's table states the classification and why it is
+exhaustive.  Each is a statement about `oper` / `hasParent` on a `cons` — the
+row-0 ancestor chain of `(0,v) :: R`'s last column is `R`'s own chain extended
+by the root, because `argOK R` puts the root strictly below everything.  The
+proofs should follow the pattern of `Nrm.oper_append_right` (the analogous
+`append` transfer), with `hasParent_one_iff` supplying the `hasParent` half.
+
+`oper_cons_tower` is the one with real content: it is the PSS form of
+Buchholz's `(D_v b)[n] = D_v(b[x_n])`, i.e. the `oper_bad_blocks` ascending
+tiling `M⟦n⟧ = G ++ (range n).flatMap (k ↦ body.map (p ↦ (p.1 + k*d0, p.2)))`
+read through `graft`.  The recursion to prove is
+`M⟦n+1⟧ = M.dropLast ++ (M⟦n⟧).map (· + d0)` with `d0 = entry R 0 (|R|-1)`,
+matched against `tow v R (k+1) = (0,v) :: graft R (tow v R k)`.
+
+### DANGER FLAGS
+
+1. **No `H0clause`-shaped coefficient domination appeared — and that looks
+   structural, not lucky.**  The worry was Buchholz's additive closure 2.4(b),
+   which is free in the source only because `+` is formed inside `OT_B` whose
+   *definition* carries the CNF condition.  On the PSS side `translate`'s `+`
+   is the third component of `P a b c` and carries **no** normal-form
+   condition, so `A ++ B` is unconditional at the term level; all that 2.4(b)
+   needs is the *positional* guard `rsum A B` ("`B` is a genuine top-level
+   suffix"), which `split_lastMin` supplies for free.  The reason this route
+   dodges the domination clause is the one the design answer already gives: the
+   carrier of the induction is **W-membership** (`A`-closed by construction),
+   never an order-domination clause, so no `olt` comparison — hence no `Gterm`
+   domination — is ever needed.  **If a future attempt at the five open lemmas
+   finds itself needing an `olt`/`Gterm` fact, that is a red flag: it would mean
+   the classification was mis-stated, since `oper` is defined without reference
+   to the order.**
+2. **The `based z` guard on the `T_m` branch is load-bearing** (§1c
+   machine-checks a concrete failure).  It survived the whole chain: the graft
+   argument in the tower is `tow v R k`, which is `[]` or a `cons` at depth `0`,
+   hence `based`.
+3. **`argOK` vs `based`.**  Two different anchoring notions are needed and they
+   are *not* interchangeable: `based M` ("first column at depth `0`") is what
+   `oper` preserves, while `argOK R` ("all columns strictly below depth `0`") is
+   what makes the root of `(0,v) :: R` an ancestor of everything.  Blocks are
+   **not** closed under "min depth `0`" (`oper` can destroy it), which is why
+   `split_lastMin` + `oper_shift` are used instead of a naive normalisation.
+4. **`ST_PS` forms are never `domT`.**  Still only the weak consequence is used
+   (`stps_head`).  `W_membership` turned out not to need the invariant at all:
+   `mem_W_of_bound` proves membership for *every* block, `ST_PS` or not.
 -/
 
 #print axioms hasParent_one_iff
 #print axioms domT_iff
+#print axioms oper_shift
+#print axioms W_shift
+#print axioms split_lastMin
+#print axioms oper_append_gen
+#print axioms domT_append
+#print axioms XA_closed
+#print axioms W_add
+#print axioms Om_mem_W
+#print axioms mem_of_Aclosed_aux
+#print axioms mem_W_of_bound
 #print axioms A1
 #print axioms A2'
 #print axioms W_mono
