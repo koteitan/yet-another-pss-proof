@@ -1,4 +1,4 @@
-# yet-another-pss-proof
+# yet-another-pss-proof v1.0.0
 
 ペア数列システム (Pair Sequence System, PSS) の停止性の証明とその Isabelle/HOL による形式証明。
 
