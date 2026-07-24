@@ -127,11 +127,6 @@ theorem olt_total (x y : Three) : x <o y ∨ x = y ∨ y <o x := by
         · exact Or.inr (Or.inr (by simp [h2]))
       · exact Or.inr (Or.inr (by simp [h1]))
 
-theorem ole_olt_trans {x y z : Three} (hxy : x ≤o y) (hyz : y <o z) : x <o z := by
-  rcases hxy with h | rfl
-  · exact olt_trans h hyz
-  · exact hyz
-
 theorem olt_ole_trans {x y z : Three} (hxy : x <o y) (hyz : y ≤o z) : x <o z := by
   rcases hyz with h | rfl
   · exact olt_trans hxy h
@@ -459,11 +454,6 @@ theorem translate_ctx_cong {z1 z2 : ℕ × ℕ} {T1 T2 : PairSeq}
 
 /-! ## Subscripts and their monotonicity under expansion -/
 
-/-- The set of subscripts occurring in a notation term. -/
-def subs : Three → Set ℕ
-  | Z => ∅
-  | P a b c => insert a (subs b ∪ subs c)
-
 /-- The set of row-1 values of a pair sequence (Isabelle's `snd ` set M`). -/
 def sndSet (M : PairSeq) : Set ℕ := Prod.snd '' {x | x ∈ M}
 
@@ -480,24 +470,6 @@ theorem sndSet_mono {M N : PairSeq} (h : ∀ x ∈ M, x ∈ N) : sndSet M ⊆ sn
   rw [mem_sndSet] at hy ⊢
   obtain ⟨p, hp, rfl⟩ := hy
   exact ⟨p, h p hp, rfl⟩
-
-/-- Every subscript of `translate M` is a row-1 value of `M`: the subscripts
-are exactly the `y`-components used, never invented. -/
-theorem subs_translate (M : PairSeq) : subs (translate M) ⊆ sndSet M := by
-  induction M using translate.induct with
-  | case1 => simp [translate, subs]
-  | case2 p rest ih1 ih2 =>
-    rw [translate]
-    intro y hy
-    rcases Set.mem_insert_iff.1 hy with rfl | hy
-    · exact mem_sndSet.2 ⟨p, by simp, rfl⟩
-    · have step : ∀ {L : PairSeq}, (∀ x ∈ L, x ∈ rest) →
-          y ∈ sndSet L → y ∈ sndSet (p :: rest) := by
-        intro L hL hyL
-        exact sndSet_mono (fun x hx => List.mem_cons_of_mem p (hL x hx)) hyL
-      rcases (Set.mem_union _ _ _).1 hy with hy | hy
-      · exact step (fun x hx => (List.takeWhile_sublist _).subset hx) (ih1 hy)
-      · exact step (fun x hx => (List.dropWhile_sublist _).subset hx) (ih2 hy)
 
 /-- The row index `i1` is at most 1, so the row-1 increment `δ1` is always 0. -/
 theorem idx1_le1 (M : PairSeq) (j : ℕ) : idx1 M j ≤ 1 := by
@@ -544,50 +516,6 @@ theorem oper_bad_unfold {M : PairSeq} (n : ℕ) (hL : M.length - 1 ≠ 0)
   simp only [oper]
   rw [if_neg hL, if_neg hz, if_neg (not_not_intro hp), if_neg d1z]
   simp
-
-/-- One expansion step never introduces a new row-1 value: the bad part is
-copied with row 1 preserved (`δ1 = 0`) and the last pair is dropped.  Hence
-the (finite) set of subscripts is non-increasing under expansion — the
-invariant behind the max-subscript stratification of well-foundedness. -/
-theorem oper_snd_subset (M : PairSeq) (n : ℕ) : sndSet (M⟦n⟧) ⊆ sndSet M := by
-  by_cases hL : M.length - 1 = 0
-  · rw [oper_eq_self_of_short n hL]
-  · have hPred : ∀ x ∈ Pred M, x ∈ M := by
-      intro x hx
-      unfold Pred at hx
-      split at hx
-      · exact hx
-      · exact List.dropLast_subset _ hx
-    by_cases hz : entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0
-    · rw [oper_eq_pred_of_zero n hL hz]
-      exact sndSet_mono hPred
-    · by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
-      · rw [oper_bad_unfold n hL hz hp]
-        intro y hy
-        rw [mem_sndSet] at hy
-        obtain ⟨q, hq, rfl⟩ := hy
-        rcases List.mem_append.1 hq with hq | hq
-        · exact sndSet_mono (fun x hx => List.mem_of_mem_take hx) (mem_sndSet.2 ⟨q, hq, rfl⟩)
-        · obtain ⟨k, -, hk⟩ := List.mem_flatMap.1 hq
-          obtain ⟨j, hj, rfl⟩ := List.mem_map.1 hk
-          have hjlt : j < M.length := by
-            have := List.mem_range'.1 hj
-            omega
-          rw [mem_sndSet]
-          refine ⟨M[j], List.getElem_mem hjlt, ?_⟩
-          simp only [entry]
-          rw [if_neg (by omega : ¬ (1 : ℕ) = 0)]
-          rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hjlt]
-          rfl
-      · rw [oper_eq_pred_of_noParent n hL hz hp]
-        exact sndSet_mono hPred
-
-/-- Consequently the subscripts of the translated expansion are bounded by
-the row-1 values already present in `M`: expansion never raises the maximum
-subscript. -/
-theorem subs_translate_oper (M : PairSeq) (n : ℕ) :
-    subs (translate (M⟦n⟧)) ⊆ sndSet M :=
-  Set.Subset.trans (subs_translate _) (oper_snd_subset M n)
 
 /-! ## Appending a pair strictly increases the measure
 

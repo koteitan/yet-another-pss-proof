@@ -1,6 +1,6 @@
 [English](README.md)
 
-# yet-another-pss-proof v1.0.4
+# yet-another-pss-proof v1.0.5
 
 ペア数列システム (Pair Sequence System, PSS) の停止性の証明とその Lean 4 / Mathlib による形式証明。
 **停止性の主定理は無条件・`sorry` なしで完成している**（`lean/YAPSS/Final.lean`、`#print axioms` は

@@ -13,6 +13,5 @@ import YAPSS.Nrmstep
 import YAPSS.Cofinality
 import YAPSS.AscArg
 import YAPSS.Wset
-import YAPSS.Wtt
 import YAPSS.OrdinalFree
 import YAPSS.Final

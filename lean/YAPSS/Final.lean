@@ -53,15 +53,10 @@ theorem no_infinite_expansion_holds :
     ¬ ∃ S : ℕ → PairSeq, (∀ i, ST_PS (S i)) ∧ ∀ i, step (S i) (S (i + 1)) :=
   no_infinite_expansion wf_Rnf_holds
 
-/-- The same endpoint under the repository's other name for the relation. -/
-theorem PSS_terminates_unconditional_stepR : WellFounded stepR :=
-  PSS_terminates_unconditional
-
 #print axioms pss_cofinality_holds
 #print axioms wf_olt_ST_PS_holds
 #print axioms wf_Rnf_holds
 #print axioms PSS_terminates_unconditional
-#print axioms PSS_terminates_unconditional_stepR
 #print axioms no_infinite_expansion_holds
 
 end YAPSS

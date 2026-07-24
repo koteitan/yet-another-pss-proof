@@ -24,7 +24,6 @@ confirms the explicit witness `m := |S_hi|` used in its statement (0 violations)
 import YAPSS.Cofinality
 import YAPSS.Wset
 import YAPSS.Proofs
-import YAPSS.Wtt
 
 namespace YAPSS
 open Three
@@ -55,37 +54,6 @@ theorem wf_Rnf_of_wf_PS
     exact acc_Rnf_of_acc_PS (h.apply M) hM
   · exact Acc.intro _ (fun v hv => absurd hv.2.1 hu)
 
-/-- **PSS Bachmann cofinality from the explicit form.** -/
-theorem pss_cofinality_of_explicit (H : AscArgDomExplicit) {M N : PairSeq}
-    (hM : ST_PS M) (hN : ST_PS N) (h : translate N <o translate M) :
-    ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=
-  pss_cofinality_of_argdom (ascArgDom_of_explicit H) hM hN h
-
-/-- **Well-foundedness of `Rnf`, ordinal-free**, from the single open obligation. -/
-theorem wf_Rnf_ordinal_free (H : AscArgDomExplicit) : WellFounded Rnf :=
-  wf_Rnf_of_wf_PS
-    (Wset.wf_olt_ST_PS_of_cofinality (fun hM hN h => pss_cofinality_of_explicit H hM hN h))
-
-/-- **PSS termination, ordinal-free.**  The one-step expansion relation on standard
-forms is well-founded, with no appeal to ordinals or to the Buchholz `OT` embedding. -/
-theorem PSS_terminates_ordinal_free (H : AscArgDomExplicit) : WellFounded stepRel :=
-  step_terminates (wf_Rnf_ordinal_free H)
-
-/-- **No infinite expansion sequence**, ordinal-free. -/
-theorem no_infinite_expansion_ordinal_free (H : AscArgDomExplicit) :
-    ¬ ∃ S : ℕ → PairSeq, (∀ i, ST_PS (S i)) ∧ ∀ i, step (S i) (S (i + 1)) :=
-  no_infinite_expansion (wf_Rnf_ordinal_free H)
-
-/-- The repo also names this relation `stepR` (`YAPSS/Wtt.lean`, route 3); it is
-definitionally `stepRel`, so the same endpoint serves both naming conventions.
-Together with `PSS_terminates_nrm_final` (`YAPSS/Reduction.lean`, the nrm route,
-modulo the Buchholz §1 ordinal collapse) and `PSS_terminates_modulo_wfArgsA`
-(the pure-lex route), this is a drop-in **third** endpoint for the repository's
-official termination statement — with a purely combinatorial residual. -/
-theorem PSS_terminates_ordinal_free_stepR (H : AscArgDomExplicit) :
-    WellFounded stepR :=
-  PSS_terminates_ordinal_free H
-
 /-! ## What is left
 
 Exactly one obligation, stated in full in `YAPSS/Cofinality.lean`:
@@ -113,10 +81,5 @@ accidental (the carrier of the `W_u` induction is *membership*, which is
 
 #print axioms acc_Rnf_of_acc_PS
 #print axioms wf_Rnf_of_wf_PS
-#print axioms pss_cofinality_of_explicit
-#print axioms wf_Rnf_ordinal_free
-#print axioms PSS_terminates_ordinal_free
-#print axioms PSS_terminates_ordinal_free_stepR
-#print axioms no_infinite_expansion_ordinal_free
 
 end YAPSS

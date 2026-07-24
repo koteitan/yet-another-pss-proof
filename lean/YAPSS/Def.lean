@@ -31,9 +31,6 @@ namespace YAPSS
 /-- A pair sequence: a list of pairs of naturals. -/
 abbrev PairSeq := List (ℕ × ℕ)
 
-/-- `T_PS`: the nonempty pair sequences. -/
-def T_PS : Set PairSeq := {M | M ≠ []}
-
 /-- `entry M i j` = `M_{i,j}`: the `i`-th component (row) of the `j`-th pair. -/
 def entry (M : PairSeq) (i j : ℕ) : ℕ :=
   if i = 0 then (M.getD j (0, 0)).1 else (M.getD j (0, 0)).2
@@ -58,17 +55,9 @@ def nextrel1 (M : PairSeq) (j0 j1 : ℕ) : Prop :=
   le0 M j0 j1 ∧
   (∀ j, j0 < j ∧ le0 M j j1 → entry M 1 j1 ≤ entry M 1 j)
 
-/-- Row-1 ancestry: reflexive-transitive closure of `nextrel1`. -/
-def le1 (M : PairSeq) (j0 j1 : ℕ) : Prop :=
-  j0 < M.length ∧ j1 < M.length ∧ Relation.ReflTransGen (nextrel1 M) j0 j1
-
 /-- Row-indexed "next" relation. -/
 def nextR (M : PairSeq) (i j0 j1 : ℕ) : Prop :=
   if i = 0 then nextrel0 M j0 j1 else nextrel1 M j0 j1
-
-/-- Row-indexed ancestry. -/
-def leR (M : PairSeq) (i j0 j1 : ℕ) : Prop :=
-  if i = 0 then le0 M j0 j1 else le1 M j0 j1
 
 /-! ### §5.2 前者関数 (Predecessor functions) -/
 

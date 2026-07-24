@@ -192,7 +192,6 @@ theorem peel_aux (d w : ℕ) : ∀ (n : ℕ) (X Q A2 : PairSeq) (a : ℕ), X.len
       have := seqlex_of_sle_not_prefix hW hnp (shiftr0 d Q)
       simpa using this
 
-
 /-- A comparison that is already over by the end of `P` does not see `Y` at all. -/
 theorem sle_take_of_short : ∀ {P X Y : PairSeq}, sle X (P ++ Y) →
     X.length ≤ P.length → sle X P := by
@@ -223,11 +222,6 @@ theorem sle_take_of_short : ∀ {P X Y : PairSeq}, sle X (P ++ Y) →
         · rcases ih (Or.inr hs') (by omega) with he' | hs''
           · exact Or.inl (by rw [he'])
           · exact Or.inr (Or.inr ⟨rfl, hs''⟩)
-
-/-- Corollary: the verdict transfers to any other continuation. -/
-theorem sle_of_short {P X Y Y' : PairSeq} (h : sle X (P ++ Y))
-    (hlen : X.length ≤ P.length) : sle X (P ++ Y') :=
-  sle_append_mono (sle_take_of_short h hlen) Y'
 
 theorem sle_trans {A B C : PairSeq} (h1 : sle A B) (h2 : sle B C) : sle A C := by
   rcases h1 with rfl | h1
@@ -509,7 +503,6 @@ theorem pss_cofinality_of_core (H : ArgDomCore) {M N : PairSeq}
     ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=
   pss_cofinality_of_argdom (ascArgDom_of_core H) hM hN h
 
-
 /-! ## Part E — the core genuinely needs reachability
 
 `ArgDomCore` is **not** a consequence of the local standard-form invariants.
@@ -526,103 +519,6 @@ invariant the file's machinery supplies — yet violates the conclusion of
 and `(3,2) > (3,1)`.  `L ∉ ST_PS` (model-checked over three closures), so the
 proof of `ArgDomCore` **must** descend the `ST_PS` derivation; no argument from
 `blockok / z0ok / r1ok / cnf` alone can work. -/
-
-/-- The local-invariant witness `L = (0,0)(1,1)(2,1)(3,2)(2,1)(3,2)`. -/
-def locL : PairSeq := [(0, 0), (1, 1), (2, 1), (3, 2), (2, 1), (3, 2)]
-
-theorem locL_eq :
-    locL = (([((0:ℕ), (0:ℕ))] ++ (1, 1) :: ([(2, 1), (3, 2)] ++ (1 + 1, 1) ::
-      ([((3:ℕ), (2:ℕ))] ++ []))) ++ []) := by decide
-
-theorem locL_blockok : blockok 0 locL := by
-  refine ⟨fun _ => rfl, by decide, ?_⟩
-  show steps1 locL
-  unfold locL
-  exact ⟨by decide, by decide, by decide, by decide, by decide, trivial⟩
-
-theorem locL_z0ok : z0ok locL := by
-  intro j hj h0
-  have hj6 : j < 6 := by simpa [locL] using hj
-  rcases j with _ | _ | _ | _ | _ | _ | j
-  · revert h0; decide
-  · revert h0; decide
-  · revert h0; decide
-  · revert h0; decide
-  · revert h0; decide
-  · revert h0; decide
-  · omega
-
-theorem locL_r1ok : r1ok locL := by
-  intro j hj hpos
-  have hj6 : j < 6 := by simpa [locL] using hj
-  rcases j with _ | _ | _ | _ | _ | _ | j
-  · exact absurd hpos (by decide)
-  · exact ⟨0, by decide, by decide, by intro l h1 h2; omega, by decide⟩
-  · exact ⟨1, by decide, by decide, by intro l h1 h2; omega, by decide⟩
-  · exact ⟨2, by decide, by decide, by intro l h1 h2; omega, by decide⟩
-  · refine ⟨1, by decide, by decide, ?_, by decide⟩
-    intro l h1 h2
-    rcases l with _ | _ | _ | l
-    · omega
-    · omega
-    · decide
-    · rcases l with _ | l
-      · decide
-      · omega
-  · exact ⟨4, by decide, by decide, by intro l h1 h2; omega, by decide⟩
-  · omega
-
-theorem locL_translate :
-    translate locL = P 0 (P 1 (P 1 (P 2 Z Z) (P 1 (P 2 Z Z) Z)) Z) Z := by
-  unfold locL
-  simp [translate, List.takeWhile, List.dropWhile]
-
-theorem locL_cnf : cnf (translate locL) := by
-  rw [locL_translate]
-  refine cnf_P_Z.2 (cnf_P_Z.2 (cnf_P_P.2 ⟨cnf_P_Z.2 cnf_Z, ?_, cnf_P_Z.2 (cnf_P_Z.2 cnf_Z)⟩))
-  exact olt_irrefl _
-
-/-- `SpineOK` is vacuous here: no column of `A1` sits below level `u + e = 2`. -/
-theorem locL_spineOK : SpineOK [((2:ℕ), (1:ℕ)), (3, 2)] (1 + 1) 1 := by
-  intro U V x hUV hxlt _
-  have hx : x ∈ [((2:ℕ), (1:ℕ)), (3, 2)] := by
-    rw [hUV]; exact List.mem_append_right _ (List.mem_cons_self ..)
-  rcases List.mem_cons.1 hx with rfl | hx
-  · exact absurd hxlt (by decide)
-  · rcases List.mem_cons.1 hx with rfl | hx
-    · exact absurd hxlt (by decide)
-    · simp at hx
-
-/-- 🚨 **The conclusion fails on `locL`**: `(3,2)` exceeds `(3,1)` at the very
-first column. -/
-theorem locL_not_sle :
-    ¬ sle [((3:ℕ), (2:ℕ))]
-        (shiftr0 1 ([((2:ℕ), (1:ℕ)), (3, 2)] ++ (1 + 1, 1) :: ([((3:ℕ), (2:ℕ))] ++ []))) := by
-  have hs : shiftr0 1 ([((2:ℕ), (1:ℕ)), (3, 2)] ++ (1 + 1, 1) :: ([((3:ℕ), (2:ℕ))] ++ []))
-      = ((3 : ℕ), (1 : ℕ)) :: [(4, 2), (3, 1), (4, 2)] := by decide
-  rw [hs]
-  rintro (h | h)
-  · exact absurd h (by decide)
-  · rw [seqlex_cons_cons] at h
-    rcases h with h | ⟨h, -⟩
-    · exact absurd h (by unfold pairlt; simp)
-    · exact absurd h (by decide)
-
-/-- 🚨 **`ArgDomCore` is not implied by `blockok / z0ok / r1ok / cnf`.**  Any
-proof must use the `ST_PS` derivation itself. -/
-theorem argDomCore_needs_reachability :
-    ∃ (N X A1 B A2 Z : PairSeq) (u w e : ℕ),
-      N = (X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z ∧
-      blockok 0 N ∧ z0ok N ∧ r1ok N ∧ cnf (translate N) ∧
-      0 < e ∧ (∀ x ∈ A1, u < x.1) ∧ (∀ x ∈ B, u + e < x.1) ∧ (∀ x ∈ A2, u < x.1) ∧
-      (A2 = [] ∨ (A2.headI).1 ≤ u + e) ∧ (Z = [] ∨ (Z.headI).1 ≤ u) ∧
-      SpineOK A1 (u + e) w ∧
-      ¬ sle B (shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2))) :=
-  ⟨locL, [(0, 0)], [(2, 1), (3, 2)], [(3, 2)], [], [], 1, 1, 1,
-    locL_eq, locL_blockok, locL_z0ok, locL_r1ok, locL_cnf, one_pos,
-    by decide, by decide, by decide, Or.inl rfl, Or.inl rfl,
-    locL_spineOK, locL_not_sle⟩
-
 
 /-! ## Part F — the `ST_PS` derivation induction for `ArgDomCore`
 
@@ -696,7 +592,6 @@ theorem argDomCoreOn_snoc_zero {N : PairSeq} {p : ℕ × ℕ} (hp : p.1 = 0)
       · exact absurd hc (by simp)
       · exact hc
 
-
 /-! ### Transfer lemmas for the induction step
 
 `ArgDomCoreOn` never mentions the prefix `X` except through the defining
@@ -710,20 +605,6 @@ theorem argDomCoreOn_drop_left {P S : PairSeq} (H : ArgDomCoreOn (P ++ S)) :
   intro X A1 B A2 Z u w e heq he h1 h2 h3 h4 h5 h6
   refine H (X := P ++ X) (A1 := A1) (B := B) (A2 := A2) (Z := Z) ?_ he h1 h2 h3 h4 h5 h6
   rw [heq]; simp [List.append_assoc]
-
-/-- Conversely, an instance of `S` is an instance of `P ++ S` (the prefix is
-absorbed into `X`).  This is the form used to *apply* an inherited instance. -/
-theorem argDomCoreOn_extend_left {S : PairSeq} (H : ArgDomCoreOn S) (P : PairSeq)
-    ⦃X A1 B A2 Z : PairSeq⦄ ⦃u w e : ℕ⦄
-    (heq : P ++ S = ((P ++ X) ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z)
-    (he : 0 < e) (h1 : ∀ x ∈ A1, u < x.1) (h2 : ∀ x ∈ B, u + e < x.1)
-    (h3 : ∀ x ∈ A2, u < x.1) (h4 : A2 = [] ∨ (A2.headI).1 ≤ u + e)
-    (h5 : Z = [] ∨ (Z.headI).1 ≤ u) (h6 : SpineOK A1 (u + e) w) :
-    sle B (shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2))) := by
-  refine H (X := X) (A1 := A1) (B := B) (A2 := A2) (Z := Z) ?_ he h1 h2 h3 h4 h5 h6
-  have : P ++ S = P ++ ((X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z) := by
-    rw [heq]; simp [List.append_assoc]
-  exact List.append_cancel_left this
 
 /-- The left inverse of `shiftr0`. -/
 def shiftl0 (d : ℕ) : PairSeq → PairSeq := List.map fun p => (p.1 - d, p.2)
@@ -892,21 +773,6 @@ theorem split_prefix_right {C D E F : PairSeq} (h : C ++ D = E ++ F)
     E = C ++ E.drop C.length ∧ D = E.drop C.length ++ F :=
   split_prefix_left h.symm hle
 
-/-- Every column of a copy tower sits at or above the block base. -/
-theorem mem_copies_ge {v0 d : ℕ} {blk : PairSeq} (hb : ∀ z ∈ blk, v0 ≤ z.1) :
-    ∀ (n : ℕ), ∀ x ∈ copies d blk n, v0 ≤ x.1 := by
-  intro n
-  induction n with
-  | zero => simp
-  | succ m ih =>
-    intro x hx
-    rw [copies_succ_front] at hx
-    rcases List.mem_append.1 hx with h | h
-    · exact hb x h
-    · obtain ⟨y, hy, rfl⟩ := mem_shiftr0.1 h
-      have := ih y hy
-      simp only []; omega
-
 /-- The head of a nonempty copy tower is the block root. -/
 theorem copies_headI {d : ℕ} {blk : PairSeq} (hne : blk ≠ []) {n : ℕ} (hn : 1 ≤ n) :
     (copies d blk n).headI = blk.headI := by
@@ -929,22 +795,6 @@ theorem argbound_len (e u w : ℕ) (A1 B : PairSeq) :
     B.length < (shiftr0 e A1 ++ (u + e + e, w) :: shiftr0 e B).length := by
   simp [shiftr0_length]
   omega
-
-/-- **Transfer.**  An instance whose data `X, (u,w), A1, (u+e,w), B` also occurs
-in another sequence `M` — with possibly *different* trailing material `A2'`,
-`Z'` — is settled by `M`'s instance: the comparison is over by the end of the
-common part `shiftr0 e (A1 ++ [(u+e,w)] ++ B)`, which is strictly longer than
-`B`.  This is what makes the case analysis of the `bad` branch local. -/
-theorem argDomCoreOn_transfer {M : PairSeq} (HM : ArgDomCoreOn M)
-    {X A1 B A2 A2' Z' : PairSeq} {u w e : ℕ}
-    (hMeq : M = (X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2'))) ++ Z')
-    (he : 0 < e) (h1 : ∀ x ∈ A1, u < x.1) (h2 : ∀ x ∈ B, u + e < x.1)
-    (h3 : ∀ x ∈ A2', u < x.1) (h4 : A2' = [] ∨ (A2'.headI).1 ≤ u + e)
-    (h5 : Z' = [] ∨ (Z'.headI).1 ≤ u) (h6 : SpineOK A1 (u + e) w) :
-    sle B (shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2))) := by
-  have hcore := HM hMeq he h1 h2 h3 h4 h5 h6
-  rw [argbound_split] at hcore ⊢
-  exact sle_of_short hcore (le_of_lt (argbound_len e u w A1 B))
 
 /-! ### 🚨 THE RESIDUAL — the `bad` branch, split into its three cases
 
@@ -1418,13 +1268,6 @@ theorem copies_length (d : ℕ) (blk : PairSeq) (n : ℕ) :
 theorem split_append_left {C D E F : PairSeq} (h : C ++ D = E ++ F)
     (hle : E.length ≤ C.length) : ∃ K, C = E ++ K ∧ F = K ++ D :=
   ⟨C.drop E.length, split_prefix_left h hle⟩
-
-/-- A nonempty prefix has the same head. -/
-theorem headI_of_prefix {P L : PairSeq} (h : P <+: L) (hne : P ≠ []) : P.headI = L.headI := by
-  obtain ⟨t, rfl⟩ := h
-  rcases P with _ | ⟨p, P'⟩
-  · exact absurd rfl hne
-  · simp
 
 /-- Prefixes are stable under a common left factor followed by a common column. -/
 theorem prefix_cons_append {P Q : PairSeq} (A : PairSeq) (c : ℕ × ℕ) (h : P <+: Q) :
@@ -2063,15 +1906,12 @@ theorem argDomCore_holds : ArgDomCore :=
   argDomCore_of_on (fun _ h => argDomCoreOn_ST_PS h)
 
 #print axioms peel_aux
-#print axioms sle_of_short
 #print axioms argDomCoreOn_drop_left
-#print axioms argDomCoreOn_extend_left
 #print axioms argDomCoreOn_shiftr0
 #print axioms sle_shiftr0
 #print axioms spineOK_of_nextrel1
 #print axioms ascArgDom_of_core
 #print axioms pss_cofinality_of_core
-#print axioms argDomCore_needs_reachability
 #print axioms argDomCoreOn_diag
 #print axioms argDomCoreOn_snoc_zero
 #print axioms argDomCoreOn_bad_A1
@@ -2087,4 +1927,3 @@ theorem argDomCore_holds : ArgDomCore :=
 #print axioms pss_cofinality_of_core
 
 end YAPSS
-

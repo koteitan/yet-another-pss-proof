@@ -54,36 +54,6 @@ isolates the genuine Buchholz-level (ψ-collapsing) content to the diagonals,
 discharging the whole expansion side via the already-proven decrease lemma.
 -/
 
-theorem acc_Rnf_of_ST_PS
-    (diagacc : ∀ v, Acc Rnf (translate (diagSeq 0 v)))
-    {M : PairSeq} (hM : ST_PS M) :
-    Acc Rnf (translate M) := by
-  induction hM with
-  | diag v => exact diagacc v
-  | @oper M n hM hn ih =>
-    by_cases L : 1 < M.length
-    · have dec : translate (M⟦n⟧) <o translate M := m_step_decreases L hn
-      have mnf : translate M ∈ NF := ⟨M, hM, rfl⟩
-      have mnnf : translate (M⟦n⟧) ∈ NF := ⟨M⟦n⟧, ST_PS.oper hM hn, rfl⟩
-      exact ih.inv ⟨dec, mnf, mnnf⟩
-    · rw [oper_eq_self_short n (by omega)]
-      exact ih
-
-theorem wf_Rnf_from_diag
-    (diagacc : ∀ v, Acc Rnf (translate (diagSeq 0 v))) :
-    WellFounded Rnf := by
-  refine ⟨fun x => ?_⟩
-  by_cases hx : x ∈ NF
-  · obtain ⟨M, hM, rfl⟩ := hx
-    exact acc_Rnf_of_ST_PS diagacc hM
-  · exact Acc.intro x fun y hy => absurd hy.2.1 hx
-
-/-- The expansion step lands inside `ST_PS` (and hence inside `NF`). -/
-theorem step_in_ST_PS {M T : PairSeq} (hM : ST_PS M) (hstep : step M T) :
-    ST_PS T := by
-  cases hstep with
-  | step_oper L hn => exact ST_PS.oper hM hn
-
 /-- The one-step relation on standard forms, as a Lean relation
 (Isabelle's `{(T, M). M ∈ ST_PS ∧ step M T}`). -/
 def stepRel (T M : PairSeq) : Prop := ST_PS M ∧ step M T
@@ -140,15 +110,5 @@ Termination phrased against the residual diagonal-accessibility obligation:
 feeding `wf_Rnf_from_diag` into the termination theorems above turns `wfimg`
 into the single hypothesis `diagacc`.
 -/
-
-theorem step_terminates_from_diag
-    (diagacc : ∀ v, Acc Rnf (translate (diagSeq 0 v))) :
-    WellFounded stepRel :=
-  step_terminates (wf_Rnf_from_diag diagacc)
-
-theorem no_infinite_expansion_from_diag
-    (diagacc : ∀ v, Acc Rnf (translate (diagSeq 0 v))) :
-    ¬ ∃ S : ℕ → PairSeq, (∀ i, ST_PS (S i)) ∧ ∀ i, step (S i) (S (i + 1)) :=
-  no_infinite_expansion (wf_Rnf_from_diag diagacc)
 
 end YAPSS

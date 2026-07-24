@@ -178,15 +178,6 @@ theorem pairlt_trans {p q r : ℕ × ℕ} (h1 : pairlt p q) (h2 : pairlt q r) :
     pairlt p r := by
   unfold pairlt at *; omega
 
-theorem pairlt_irrefl (p : ℕ × ℕ) : ¬ pairlt p p := by
-  unfold pairlt; omega
-
-theorem pairlt_total (p q : ℕ × ℕ) : pairlt p q ∨ p = q ∨ pairlt q p := by
-  rcases p with ⟨a, b⟩; rcases q with ⟨c, d⟩
-  unfold pairlt
-  simp only [Prod.mk.injEq]
-  omega
-
 /-- `seqlex` is transitive. -/
 theorem seqlex_trans : ∀ {A B C : PairSeq}, seqlex A B → seqlex B C → seqlex A C := by
   intro A
@@ -211,41 +202,10 @@ theorem seqlex_trans : ∀ {A B C : PairSeq}, seqlex A B → seqlex B C → seql
     · exact Or.inl p2
     · exact Or.inr ⟨rfl, ih s1 s2⟩
 
-theorem seqlex_irrefl : ∀ (A : PairSeq), ¬ seqlex A A := by
-  intro A
-  induction A with
-  | nil => simp
-  | cons a A' ih =>
-    rw [seqlex_cons_cons]
-    rintro (h | ⟨-, h⟩)
-    · exact pairlt_irrefl a h
-    · exact ih h
-
 /-- `≤` version of `seqlex`. -/
 def sle (M N : PairSeq) : Prop := M = N ∨ seqlex M N
 
 theorem sle_refl (M : PairSeq) : sle M M := Or.inl rfl
-
-/-- `seqlex` is a linear order, so `sle` is exactly the negation of the strict
-order the other way.  (Turns every `sle` goal into a *no-overshoot* goal, which
-is the useful polarity for the copy-tiling arguments: one only ever has to rule
-out that the continuation strictly exceeds the copy word.) -/
-theorem sle_iff_not_seqlex {A B : PairSeq} : sle A B ↔ ¬ seqlex B A := by
-  constructor
-  · rintro (rfl | h) hBA
-    · exact seqlex_irrefl _ hBA
-    · exact seqlex_irrefl _ (seqlex_trans h hBA)
-  · intro h
-    rcases seqlex_total A B with he | hs | hs
-    · exact Or.inl he
-    · exact Or.inr hs
-    · exact absurd hs h
-
-theorem sle_seqlex_trans {A B C : PairSeq} (h1 : sle A B) (h2 : seqlex B C) :
-    seqlex A C := by
-  rcases h1 with rfl | h1
-  · exact h2
-  · exact seqlex_trans h1 h2
 
 theorem seqlex_sle_trans {A B C : PairSeq} (h1 : seqlex A B) (h2 : sle B C) :
     seqlex A C := by
@@ -280,11 +240,6 @@ theorem sle_append_mono {A B : PairSeq} (h : sle A B) (C : PairSeq) :
     · exact Or.inl (by simp)
     · exact Or.inr (seqlex_prefix (by simp) A)
   · exact Or.inr (seqlex_append_mono h C)
-
-/-- Extending on the right strictly increases (`seqlex_prefix`, `≤` form). -/
-theorem sle_append_right {A B : PairSeq} (h : sle A B) (C : PairSeq) (hC : C ≠ []) :
-    seqlex A (B ++ C) :=
-  sle_seqlex_trans h (seqlex_prefix hC B)
 
 /-- **Snoc case analysis.**  A sequence below `D ++ [lp]` either stays `≤ D`,
 or extends `D` by a first column strictly below `lp`.  This is the shape that
@@ -398,12 +353,6 @@ theorem hasParent_last_ST_PS {M : PairSeq} (hM : ST_PS M) (hlen : 0 < M.length)
   exact hz ⟨by rw [entry_zero, he], by rw [entry_one, he]⟩
 
 /-! ## Part 3 — the bad branch: reduction to the copy-tiling crux -/
-
-/-- The `oper_bad_blocks` copy list *is* `Wf.copies` (the `shiftr0`-packaged
-form used by the CNF proofs). -/
-theorem flatMap_eq_copies (blk : PairSeq) (d0 n : ℕ) :
-    (List.range n).flatMap (fun k => blk.map fun p => (p.1 + k * d0, p.2))
-      = copies d0 blk n := rfl
 
 theorem sle_append_cancel (A : PairSeq) {u v : PairSeq} :
     sle (A ++ u) (A ++ v) ↔ sle u v := by
@@ -904,28 +853,6 @@ i.e. *the collapsed node's argument is dominated by the original block body*. -/
 theorem shiftr0_length (d : ℕ) (X : PairSeq) : (shiftr0 d X).length = X.length := by
   unfold shiftr0; simp
 
-theorem shiftr0_getD {d : ℕ} {X : PairSeq} {j : ℕ} (hj : j < X.length) :
-    (shiftr0 d X).getD j (0, 0) = ((X.getD j (0, 0)).1 + d, (X.getD j (0, 0)).2) := by
-  unfold shiftr0
-  rw [List.getD_eq_getElem?_getD, List.getElem?_map, List.getElem?_eq_getElem hj,
-    List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hj]
-  rfl
-
-theorem steps1_shiftr0 (d : ℕ) {X : PairSeq} (h : steps1 X) : steps1 (shiftr0 d X) := by
-  rw [steps1_iff] at h ⊢
-  intro j hj
-  rw [shiftr0_length] at hj
-  rw [shiftr0_getD (by omega), shiftr0_getD (by omega)]
-  have := h j hj
-  simp only []
-  omega
-
-theorem headI_shiftr0 {d : ℕ} {X : PairSeq} (hne : X ≠ []) :
-    ((shiftr0 d X).headI).1 = (X.headI).1 + d := by
-  rcases X with _ | ⟨x, X'⟩
-  · exact absurd rfl hne
-  · rfl
-
 theorem mem_shiftr0_le {d : ℕ} (e : ℕ) {X : PairSeq} (h : ∀ x ∈ X, d ≤ x.1) :
     ∀ x ∈ shiftr0 e X, d + e ≤ x.1 := by
   intro x hx
@@ -933,14 +860,6 @@ theorem mem_shiftr0_le {d : ℕ} (e : ℕ) {X : PairSeq} (h : ∀ x ∈ X, d ≤
   have := h p hp
   simp only []
   omega
-
-theorem blockok_shiftr0 {d e : ℕ} {X : PairSeq} (h : blockok d X) :
-    blockok (d + e) (shiftr0 e X) := by
-  refine ⟨?_, mem_shiftr0_le e h.2.1, steps1_shiftr0 e h.2.2⟩
-  intro hne
-  have hXne : X ≠ [] := by
-    intro he; rw [he] at hne; exact hne rfl
-  rw [headI_shiftr0 hXne, h.1 hXne]
 
 /-- `shiftr0` commutes with the copy tower (shifting all copies = shifting the
 block). -/
@@ -987,27 +906,6 @@ def AscArgDom : Prop :=
       (G ++ ((v0, w0) :: R)).length →
     ∃ m, sle (S.takeWhile fun p => v0 + d0 < p.1)
       (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m))
-
-/-- **`AscArgDom` with an explicit witness.**  The stage `m := |S_hi|` always
-works (model-verified, 0 violations / 140, 294, 692 instances at closure
-`+5/+6/+7`), so the existential can be eliminated.  Note this removes the
-*search* for `m`, not the content: what remains is still the no-overshoot
-comparison, which is decided by a **row-1** inequality in 4047 of 6095 measured
-instances (only 297 by a row-0 drop), so it is not a pure length/prefix fact. -/
-def AscArgDomExplicit : Prop :=
-  ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ},
-    ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
-    ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
-    (∀ x ∈ R, v0 < x.1) → 0 < d0 →
-    nextrel1 ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) G.length
-      (G ++ ((v0, w0) :: R)).length →
-    sle (S.takeWhile fun p => v0 + d0 < p.1)
-      (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R))
-        (S.takeWhile fun p => v0 + d0 < p.1).length))
-
-theorem ascArgDom_of_explicit (H : AscArgDomExplicit) : AscArgDom := by
-  intro G R S v0 w0 d0 hM hN hR hd hnr
-  exact ⟨_, H hM hN hR hd hnr⟩
 
 theorem shiftr0_append (d : ℕ) (A B : PairSeq) :
     shiftr0 d (A ++ B) = shiftr0 d A ++ shiftr0 d B := List.map_append
@@ -1102,130 +1000,12 @@ theorem asc_crux1_of_argdom (H : AscArgDom) : AscCrux1 := by
       simp only []
       omega
 
-/-- **Monotonicity of the copy-tower bound in the stage `m`.**  This is what
-lets a "witness per constituent, then take the max" argument (the shape of the
-source's `(*)` proof) go through: a bound at stage `m` survives at every later
-stage. -/
-theorem argdom_bound_mono {X R : PairSeq} {v0 w0 d0 m : ℕ}
-    (h : sle X (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m))) :
-    sle X (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) (m + 1))) := by
-  have he : shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) (m + 1))
-      = shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m)
-        ++ shiftr0 d0 (shiftr0 (m * d0) (shiftr0 d0 ((v0, w0) :: R))) := by
-    rw [copies_succ_back, ← List.append_assoc, shiftr0_append]
-  rw [he]
-  exact sle_append_mono h _
-
-/-- Iterated form: the bound survives to every later stage. -/
-theorem argdom_bound_mono_le {X R : PairSeq} {v0 w0 d0 m m' : ℕ} (hm : m ≤ m')
-    (h : sle X (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m))) :
-    sle X (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m')) := by
-  obtain ⟨t, rfl⟩ : ∃ t, m' = m + t := ⟨m' - m, by omega⟩
-  induction t with
-  | zero => exact h
-  | succ t ih => exact argdom_bound_mono (ih (by omega))
-
-/-- **The first column of the collapsed argument is pinned.**  The column right
-after the ascending copy root `q = (v0+d0, w0)` that still lies above `q` sits at
-level exactly `v0+d0+1` and carries row-1 at most `w0 + 1`: its `r1ok` climbing
-parent can only be `q` itself (anything earlier would have to pass through `q`,
-whose row-0 is too small).
-
-This is the `k = 0` half of `AscArgDom`: paired with `R.headI.2 ≥ w0 + 1` (CNF of
-the host plus `nextrel1` minimality — NOT yet proved) it settles the first
-column of the comparison. -/
-theorem asc_first_column {G R S : PairSeq} {v0 w0 d0 : ℕ}
-    (hN : ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S))
-    {z : ℕ × ℕ} {Z : PairSeq} (hS : S = z :: Z) (hz : v0 + d0 < z.1) :
-    z.1 = v0 + d0 + 1 ∧ z.2 ≤ w0 + 1 := by
-  set A := G ++ ((v0, w0) :: R) with hA
-  set L := A ++ (v0 + d0, w0) :: S with hL
-  have hq : L.getD A.length (0, 0) = ((v0 + d0 : ℕ), (w0 : ℕ)) := by
-    have h := getD_append_right' A ((v0 + d0, w0) :: S) 0
-    rw [Nat.add_zero] at h
-    rw [hL]
-    exact h
-  have hzg : L.getD (A.length + 1) (0, 0) = z := by
-    have h := getD_append_right' A ((v0 + d0, w0) :: S) 1
-    rw [hS] at h
-    rw [hL, hS]
-    exact h
-  have hLlen : L.length = A.length + (S.length + 1) := by
-    rw [hL, List.length_append]
-    simp
-  have hSlen : S.length = Z.length + 1 := by rw [hS]; simp
-  have hlen : A.length + 1 < L.length := by omega
-  obtain ⟨k, hkl, hk1, hkmin, hk2⟩ :=
-    r1ok_ST_PS hN (A.length + 1) hlen (by rw [hzg]; omega)
-  have hkp : k = A.length := by
-    by_contra hne
-    have hklt : k < A.length := by omega
-    have := hkmin A.length hklt (by omega)
-    rw [hq, hzg] at this
-    simp only [] at this
-    omega
-  subst hkp
-  rw [hq, hzg] at hk1 hk2
-  exact ⟨by simpa using hk1.symm, by simpa using hk2⟩
-
 /-! ## Part 6b — `ST_PS` column discipline (assets for the `N`-side induction)
 
 The remaining residual `AscArgDom` cannot come from a local invariant of `N`
 (see the header), so the next attack has to be an induction along the **`ST_PS`
 derivation of `N`**.  Its base case is `N = diagSeq 0 v`, and the two lemmas
 below are exactly what that base case needs. -/
-
-/-- **Row 1 never exceeds row 0** on a standard form.  Climb the `r1ok` chain:
-each step down lowers row 0 by exactly one and row 1 by at most one, and at
-row 0 `= 0` the column is `(0,0)` (`z0ok`). -/
-theorem snd_le_fst_ST_PS {M : PairSeq} (hM : ST_PS M) :
-    ∀ j, j < M.length → (M.getD j (0, 0)).2 ≤ (M.getD j (0, 0)).1 := by
-  have hr := r1ok_ST_PS hM
-  have hz := z0ok_ST_PS hM
-  suffices H : ∀ (d j : ℕ), j < M.length → (M.getD j (0, 0)).1 ≤ d →
-      (M.getD j (0, 0)).2 ≤ (M.getD j (0, 0)).1 from
-    fun j hj => H _ j hj le_rfl
-  intro d
-  induction d with
-  | zero =>
-    intro j hj h0
-    have h1 : (M.getD j (0, 0)).1 = 0 := by omega
-    have := hz j hj h1
-    omega
-  | succ d ih =>
-    intro j hj hle
-    by_cases h0 : (M.getD j (0, 0)).1 = 0
-    · have := hz j hj h0; omega
-    · obtain ⟨k, hkj, hk1, -, hk2⟩ := hr j hj (by omega)
-      have hklen : k < M.length := by omega
-      have := ih k hklen (by omega)
-      omega
-
-/-- **A standard form never rises above the diagonal.**  If `M` has matched the
-base diagonal on `[0, i)`, then its `i`-th column is `pairlt`-below or equal to
-`(i,i)`: `steps1` caps row 0 by `i`, and `snd_le_fst_ST_PS` caps row 1 by row 0.
-
-Consequence (the base case of an induction along the `ST_PS` derivation of the
-*small* side): `seqlex (diagSeq 0 v) M` forces `diagSeq 0 v` to be a **prefix**
-of `M` — the comparison can never be decided by a strictly larger column. -/
-theorem le_diag_ST_PS {M : PairSeq} (hM : ST_PS M) {i : ℕ} (hi : i < M.length)
-    (hpre : ∀ j, j < i → M.getD j (0, 0) = (j, j)) :
-    ¬ pairlt ((i, i) : ℕ × ℕ) (M.getD i (0, 0)) := by
-  have h2 : (M.getD i (0, 0)).2 ≤ (M.getD i (0, 0)).1 := snd_le_fst_ST_PS hM i hi
-  have h1 : (M.getD i (0, 0)).1 ≤ i := by
-    rcases Nat.eq_zero_or_pos i with rfl | hipos
-    · have hhd : M.headD (0, 0) = (0, 0) := stps_head hM
-      have h0 : M.getD 0 (0, 0) = M.headD (0, 0) := by
-        rcases M with _ | ⟨x, xs⟩ <;> rfl
-      rw [h0, hhd]
-    · obtain ⟨i', rfl⟩ : ∃ i', i = i' + 1 := ⟨i - 1, by omega⟩
-      have hst : steps1 M := (blockok_ST_PS hM).2.2
-      have hup := steps1_iff.1 hst i' hi
-      rw [hpre i' (by omega)] at hup
-      simpa using hup
-  unfold pairlt
-  omega
-
 
 /-! ## Part 7 — assembly (modulo the ascending crux) -/
 

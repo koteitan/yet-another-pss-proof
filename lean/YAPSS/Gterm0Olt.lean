@@ -54,30 +54,4 @@ the leading-tree witnesses (`{A} ∪ Gterm 0 A = Gterm 0 (P y A Z)`) lift via
 (the seqlex-positional / `oper`-tiling core).  The lemmas below are that GREEN
 sibling-direction machinery. -/
 
-/-- The leading single tree `P y A Z` is strictly below the same head with a
-non-empty sibling tail `S`.  (Third-coordinate `olt`: `Z <o S`.) -/
-theorem olt_PyAZ_PyAS {y : ℕ} {A S : Three} (hS : S ≠ Z) :
-    P y A Z <o P y A S := by
-  rcases S with _ | ⟨s, sb, sc⟩
-  · exact absurd rfl hS
-  · exact olt_P_P.2 (Or.inr (Or.inr ⟨rfl, rfl, by simp⟩))
-
-/-- **Leading-tree witness lift (`L_2b`).**  A coefficient dominated by the
-sibling-free tree `P y A Z` is dominated by `P y A S` for any non-empty sibling
-`S` — by `olt_PyAZ_PyAS` and transitivity.  Model-verified 0-viol +5/+6/+7. -/
-theorem olt_lift_sib {x : Three} {y : ℕ} {A S : Three} (hS : S ≠ Z)
-    (h : x <o P y A Z) : x <o P y A S :=
-  olt_trans h (olt_PyAZ_PyAS hS)
-
-/-- `Gterm 0` of a head-`0`-or-positive node decomposes into the leading-tree
-part and the sibling part: `Gterm 0 (P y A S)` is covered by
-`Gterm 0 (P y A Z)` (`= {A} ∪ Gterm 0 A`) together with `Gterm 0 S`.  This is
-the coverage identity used by the clause recursion (set form). -/
-theorem Gterm0_node_cover (y : ℕ) (A S : Three) (x : Three)
-    (hx : x ∈ Gterm 0 (P y A S)) :
-    x ∈ Gterm 0 (P y A Z) ∨ x ∈ Gterm 0 S := by
-  rcases mem_Gterm_P.1 hx with ⟨-, h⟩ | h
-  · exact Or.inl (mem_Gterm_P.2 (Or.inl ⟨Nat.zero_le _, h⟩))
-  · exact Or.inr h
-
 end YAPSS

@@ -521,18 +521,9 @@ theorem A1_intro {u : ℕ} {M : PairSeq} (h : Aop W u (W u) M) : M ∈ W u := by
   have : M ∈ Aset W u (W u) := h
   rwa [A1 u] at this
 
-theorem A1_dest {u : ℕ} {M : PairSeq} (h : M ∈ W u) : Aop W u (W u) M := by
-  have : M ∈ Aset W u (W u) := by rw [A1 u]; exact h
-  exact this
-
 /-- (W1) `0 ∈ W_u`. -/
 theorem W_nil (u : ℕ) : ([] : PairSeq) ∈ W u :=
   A1_intro (Or.inl ⟨by simp, by simp [entry]⟩)
-
-/-- (W1′) the second atom `1 = p₀(0) ∈ W_u`. -/
-theorem W_atom (u : ℕ) {M : PairSeq} (hl : M.length ≤ 1) (hw : entry M 1 0 = 0) :
-    M ∈ W u :=
-  A1_intro (Or.inl ⟨hl, hw⟩)
 
 /-- Level monotonicity `u ≤ v ⟹ W_u ⊆ W_v` (Buchholz (1987) p.137). -/
 theorem W_mono {u v : ℕ} (h : u ≤ v) : W u ⊆ W v :=
@@ -1298,7 +1289,6 @@ theorem le0_cons_zero {v : ℕ} {R : PairSeq} (hR : argOK R) :
           exact ⟨by simp, hbnd, hchain.tail hnk⟩
   intro j hj
   exact key j j le_rfl hj
-
 
 theorem len_succ {R : PairSeq} (hRne : R ≠ []) : R.length = (R.length - 1) + 1 := by
   have : 0 < R.length := List.length_pos_iff.mpr hRne

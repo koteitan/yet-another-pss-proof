@@ -2,7 +2,7 @@
 
 # yet-another-pss-proof
 
-Version: **v1.0.4**
+Version: **v1.0.5**
 
 An independent proof that the **pair sequence system** (PSS, the 2-rowed Bashicu matrix
 system) terminates, together with its formalization in Lean 4 / Mathlib.
@@ -62,7 +62,7 @@ range over the natural numbers.
 
 | Path | Contents |
 |---|---|
-| [`lean/YAPSS/`](lean/YAPSS/) | The Lean 4 / Mathlib formalization (17 modules) |
+| [`lean/YAPSS/`](lean/YAPSS/) | The Lean 4 / Mathlib formalization (16 modules) |
 | [`lean/PROOF-STATUS.md`](lean/PROOF-STATUS.md) | Status of the formalization (authoritative) |
 | [`md/`](md/) | Human-readable proof text in Markdown + MathJax (in progress); [`md/requirement.md`](md/requirement.md) is its editing policy |
 | [`proof-ja.md`](proof-ja.md) | Proof text (Japanese) |

@@ -57,15 +57,6 @@ theorem cmax_ge {z : ℕ} {xs : List ℕ} (h : z ∈ xs) : z ≤ cmax xs := by
       simp only [cmax_cons]
       omega
 
-theorem cmax_le {xs : List ℕ} {b : ℕ} (h : ∀ x ∈ xs, x ≤ b) : cmax xs ≤ b := by
-  induction xs with
-  | nil => simp
-  | cons x xs ih =>
-    have h1 := h x (by simp)
-    have h2 := ih fun x hx => h x (List.mem_cons_of_mem _ hx)
-    simp only [cmax_cons]
-    omega
-
 /-! ## The order `<o` refines the spine lexicographic order -/
 
 /-- `slex xs ys`: lexicographic `≤` on subscript lists, with the empty list (a
@@ -88,122 +79,7 @@ theorem slex_refl (xs : List ℕ) : slex xs xs := by
   | nil => simp
   | cons x xs ih => simp [ih]
 
-theorem olt_imp_slex {w x : Three} (h : w <o x) : slex (spine w) (spine x) := by
-  induction x generalizing w with
-  | Z => exact absurd h (not_olt_Z w)
-  | P e f g ihf ihg =>
-    cases w with
-    | Z => simp
-    | P a b c =>
-      rw [olt_P_P] at h
-      rcases h with h | ⟨rfl, h⟩ | ⟨rfl, rfl, -⟩
-      · simp [h]
-      · simp [ihf h]
-      · simp [slex_refl]
-
 /-! ## From `slex` and the NF invariants to subscript monotonicity -/
-
-/-- If two lists agree on a prefix of length `k` and at position `k` the first
-list is strictly larger (or the second has ended), they are not
-`slex`-below. -/
-theorem not_slex_of_gt {xs ys : List ℕ} {k : ℕ}
-    (htake : xs.take k = ys.take k) (hk : k < xs.length)
-    (hgt : ys.length ≤ k ∨ ys.getD k 0 < xs.getD k 0) :
-    ¬ slex xs ys := by
-  induction k generalizing xs ys with
-  | zero =>
-    obtain ⟨x, xs', rfl⟩ : ∃ x xs', xs = x :: xs' := by
-      cases xs with
-      | nil => simp at hk
-      | cons x xs' => exact ⟨x, xs', rfl⟩
-    cases ys with
-    | nil => simp
-    | cons y ys' =>
-      have : y < x := by simpa using hgt
-      simp only [slex_cons_cons]
-      rintro (h | ⟨rfl, -⟩) <;> omega
-  | succ k ih =>
-    obtain ⟨x, xs', rfl⟩ : ∃ x xs', xs = x :: xs' := by
-      cases xs with
-      | nil => simp at hk
-      | cons x xs' => exact ⟨x, xs', rfl⟩
-    obtain ⟨y, ys', rfl⟩ : ∃ y ys', ys = y :: ys' := by
-      cases ys with
-      | nil =>
-        simp at htake
-      | cons y ys' => exact ⟨y, ys', rfl⟩
-    simp only [List.take_succ_cons, List.cons.injEq] at htake
-    obtain ⟨rfl, htk⟩ := htake
-    have hk' : k < xs'.length := by simpa using hk
-    have hgt' : ys'.length ≤ k ∨ ys'.getD k 0 < xs'.getD k 0 := by
-      simpa using hgt
-    simp only [slex_cons_cons]
-    rintro (h | ⟨-, h⟩)
-    · omega
-    · exact ih htk hk' hgt' h
-
-/-- The NF invariant on a spine `s`: it begins `0,1,…,cmax s`. -/
-def inv2 (s : List ℕ) : Prop := ∀ i ≤ cmax s, i < s.length ∧ s.getD i 0 = i
-
-theorem take_eq_of_inv2 {sw sx : List ℕ} {k : ℕ}
-    (hw : inv2 sw) (hx : inv2 sx)
-    (hkw : k ≤ cmax sw + 1) (hkx : k ≤ cmax sx + 1) :
-    sw.take k = sx.take k := by
-  have lw : k ≤ sw.length := by
-    have := (hw (cmax sw) le_rfl).1
-    omega
-  have lx : k ≤ sx.length := by
-    have := (hx (cmax sx) le_rfl).1
-    omega
-  apply List.ext_getElem
-  · simp [lw, lx]
-  · intro i h1 h2
-    have ik : i < k := by simpa [lw] using h1
-    have hiw := (hw i (by omega)).2
-    have hix := (hx i (by omega)).2
-    rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem (by omega)] at hiw hix
-    simp only [List.getElem_take]
-    simp only [Option.getD_some] at hiw hix
-    rw [hiw, hix]
-
-theorem cmax_le_of_slex {sw sx : List ℕ}
-    (sl : slex sw sx) (iw : inv2 sw) (ix : inv2 sx) :
-    cmax sw ≤ cmax sx := by
-  by_contra hgt
-  push Not at hgt
-  set k := cmax sx + 1 with hk
-  have kw' : k ≤ cmax sw := by omega
-  -- agreement on the common prefix of length `cmax sx + 1`
-  have take_eq : sw.take k = sx.take k :=
-    take_eq_of_inv2 iw ix (by omega) (by omega)
-  -- position `k` exists in `sw` and carries value `k`
-  have inw : k < sw.length ∧ sw.getD k 0 = k := iw k kw'
-  -- in `sx` everything is ≤ `cmax sx < k`
-  have hi : sx.length ≤ k ∨ sx.getD k 0 < sw.getD k 0 := by
-    by_cases hkx : k < sx.length
-    · right
-      have hmem : sx.getD k 0 ∈ sx := by
-        rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hkx]
-        exact List.getElem_mem hkx
-      have : sx.getD k 0 ≤ cmax sx := cmax_ge hmem
-      omega
-    · left; omega
-  exact not_slex_of_gt take_eq inw.1 hi sl
-
-theorem climb_mono {w x : Three} (h : w <o x)
-    (iw : inv2 (spine w)) (ix : inv2 (spine x)) :
-    climb w ≤ climb x :=
-  cmax_le_of_slex (olt_imp_slex h) iw ix
-
-/-- Subscript monotonicity of descent, modulo the NF invariants
-`maxsub = climb` (every subscript is ≤ the spine maximum) and `inv2` (the
-spine begins `0,1,…,maxsub`). -/
-theorem maxsub_mono_cond {w x : Three} (h : w <o x)
-    (mw : maxsub w = climb w) (mx : maxsub x = climb x)
-    (iw : inv2 (spine w)) (ix : inv2 (spine x)) :
-    maxsub w ≤ maxsub x := by
-  rw [mw, mx]
-  exact climb_mono h iw ix
 
 /-! ## The spine as the strictly-increasing-row-0 prefix
 
@@ -239,168 +115,6 @@ theorem takeWhile_fst_nest {a b : ℕ} (hab : a < b) (xs : PairSeq) :
       · simp [hax, hbx]
     · have hbx : ¬ b < x.1 := by omega
       simp [hax, hbx]
-
-theorem incpref_append (M : PairSeq) : ∃ ys, incpref M ++ ys = M := by
-  induction M using incpref.induct with
-  | case1 => exact ⟨[], rfl⟩
-  | case2 p => exact ⟨[], rfl⟩
-  | case3 p q rest h ih =>
-    rw [incpref_cons_cons, if_pos h]
-    obtain ⟨ys, hys⟩ := ih
-    exact ⟨ys, by simp [hys]⟩
-  | case4 p q rest h =>
-    rw [incpref_cons_cons, if_neg h]
-    exact ⟨q :: rest, rfl⟩
-
-/-- `incpref` of a nonempty list starts with its head. -/
-theorem incpref_cons_head (q : ℕ × ℕ) (rest : PairSeq) :
-    ∃ zs, incpref (q :: rest) = q :: zs := by
-  rcases rest with - | ⟨r, rest'⟩
-  · exact ⟨[], rfl⟩
-  · rw [incpref_cons_cons]
-    split
-    · exact ⟨_, rfl⟩
-    · exact ⟨[], rfl⟩
-
-theorem incpref_fst_sorted (M : PairSeq) :
-    (incpref M).Pairwise fun x y => x.1 < y.1 := by
-  induction M using incpref.induct with
-  | case1 => simp
-  | case2 p => simp
-  | case3 p q rest h ih =>
-    rw [incpref_cons_cons, if_pos h]
-    refine List.Pairwise.cons ?_ ih
-    -- every element of `incpref (q :: rest)` has row 0 ≥ `q.1`
-    intro z hz
-    obtain ⟨zs, hzs⟩ := incpref_cons_head q rest
-    have ihz : (q :: zs).Pairwise (fun x y => x.1 < y.1) := hzs ▸ ih
-    rw [hzs] at hz
-    rcases List.mem_cons.1 hz with rfl | hz
-    · exact h
-    · exact lt_of_lt_of_le h ((List.pairwise_cons.1 ihz).1 z hz).le
-  | case4 p q rest h =>
-    rw [incpref_cons_cons, if_neg h]
-    simp
-
-theorem incpref_snoc (ys : PairSeq) (x : ℕ × ℕ) :
-    incpref (ys ++ [x])
-      = if incpref ys = ys ∧ (ys = [] ∨ (ys.getLastD (0, 0)).1 < x.1)
-        then ys ++ [x] else incpref ys := by
-  induction ys using incpref.induct with
-  | case1 => simp
-  | case2 p =>
-    by_cases hpx : p.1 < x.1 <;>
-      simp [incpref_cons_cons, List.getLastD, hpx]
-  | case3 p q rest h ih =>
-    have e : incpref ((p :: q :: rest) ++ [x]) = p :: incpref ((q :: rest) ++ [x]) := by
-      rw [List.cons_append, List.cons_append, incpref_cons_cons, if_pos h,
-        ← List.cons_append]
-    have hLast : (p :: q :: rest).getLastD (0, 0) = (q :: rest).getLastD (0, 0) := by
-      simp
-    by_cases hc : incpref (q :: rest) = q :: rest ∧ ((q :: rest).getLastD (0, 0)).1 < x.1
-    · have hcond1 : incpref (q :: rest) = q :: rest
-          ∧ (q :: rest = [] ∨ ((q :: rest).getLastD (0, 0)).1 < x.1) :=
-        ⟨hc.1, Or.inr hc.2⟩
-      have hcond2 : incpref (p :: q :: rest) = p :: q :: rest
-          ∧ (p :: q :: rest = [] ∨ ((p :: q :: rest).getLastD (0, 0)).1 < x.1) := by
-        refine ⟨?_, Or.inr (hLast ▸ hc.2)⟩
-        rw [incpref_cons_cons, if_pos h, hc.1]
-      rw [e, ih, if_pos hcond1, if_pos hcond2]
-      simp
-    · have hcond1 : ¬ (incpref (q :: rest) = q :: rest
-          ∧ (q :: rest = [] ∨ ((q :: rest).getLastD (0, 0)).1 < x.1)) := by
-        rintro ⟨h1, h2⟩
-        exact hc ⟨h1, h2.resolve_left (by simp)⟩
-      have hcond2 : ¬ (incpref (p :: q :: rest) = p :: q :: rest
-          ∧ (p :: q :: rest = [] ∨ ((p :: q :: rest).getLastD (0, 0)).1 < x.1)) := by
-        rintro ⟨h1, h2⟩
-        rw [incpref_cons_cons, if_pos h] at h1
-        injection h1 with _ h1tail
-        exact hc ⟨h1tail, hLast ▸ h2.resolve_left (by simp)⟩
-      rw [e, ih, if_neg hcond1, if_neg hcond2, incpref_cons_cons, if_pos h]
-  | case4 p q rest h =>
-    have e : incpref ((p :: q :: rest) ++ [x]) = [p] := by
-      rw [List.cons_append, List.cons_append, incpref_cons_cons, if_neg h]
-    have hne : incpref (p :: q :: rest) = [p] := by
-      rw [incpref_cons_cons, if_neg h]
-    have hcond : ¬ (incpref (p :: q :: rest) = p :: q :: rest
-        ∧ (p :: q :: rest = [] ∨ ((p :: q :: rest).getLastD (0, 0)).1 < x.1)) := by
-      rintro ⟨h1, -⟩
-      rw [hne] at h1
-      simp at h1
-    rw [e, if_neg hcond, hne]
-
-theorem incpref_append_stop {ys : PairSeq} (h : incpref ys ≠ ys) (zs : PairSeq) :
-    incpref (ys ++ zs) = incpref ys := by
-  induction ys using incpref.induct with
-  | case1 => simp at h
-  | case2 p => simp at h
-  | case3 p q rest hpq ih =>
-    have ne : incpref (q :: rest) ≠ q :: rest := by
-      intro he
-      exact h (by rw [incpref_cons_cons, if_pos hpq, he])
-    rw [List.cons_append, List.cons_append, incpref_cons_cons, if_pos hpq,
-      ← List.cons_append, ih ne, incpref_cons_cons, if_pos hpq]
-  | case4 p q rest hpq =>
-    rw [List.cons_append, List.cons_append, incpref_cons_cons, if_neg hpq,
-      incpref_cons_cons, if_neg hpq]
-
-theorem incpref_append_full {ys : PairSeq} (h : incpref ys = ys) (zs : PairSeq) :
-    ∃ ws, incpref (ys ++ zs) = ys ++ ws := by
-  induction ys using incpref.induct with
-  | case1 => exact ⟨incpref zs, by simp⟩
-  | case2 p =>
-    rcases zs with - | ⟨z, zs'⟩
-    · exact ⟨[], by simp⟩
-    · by_cases hpz : p.1 < z.1
-      · exact ⟨incpref (z :: zs'), by
-          rw [List.singleton_append, incpref_cons_cons, if_pos hpz]; rfl⟩
-      · exact ⟨[], by
-          rw [List.singleton_append, incpref_cons_cons, if_neg hpz]; rfl⟩
-  | case3 p q rest hpq ih =>
-    have hqr : incpref (q :: rest) = q :: rest := by
-      have h' := h
-      rw [incpref_cons_cons, if_pos hpq] at h'
-      simpa using h'
-    obtain ⟨ws, hws⟩ := ih hqr
-    refine ⟨ws, ?_⟩
-    rw [List.cons_append, List.cons_append, incpref_cons_cons, if_pos hpq,
-      ← List.cons_append, hws]
-    rfl
-  | case4 p q rest hpq =>
-    rw [incpref_cons_cons, if_neg hpq] at h
-    simp at h
-
-theorem incpref_dropLast (M : PairSeq) :
-    incpref M.dropLast = if incpref M = M then M.dropLast else incpref M := by
-  rcases eq_or_ne M [] with rfl | hne
-  · simp
-  · have hM : M.dropLast ++ [M.getLast hne] = M := List.dropLast_append_getLast hne
-    have snoc := incpref_snoc M.dropLast (M.getLast hne)
-    rw [hM] at snoc
-    by_cases hc : incpref M.dropLast = M.dropLast
-        ∧ (M.dropLast = [] ∨ (M.dropLast.getLastD (0, 0)).1 < (M.getLast hne).1)
-    · rw [if_pos hc] at snoc
-      rw [snoc, if_pos rfl]
-      exact hc.1
-    · rw [if_neg hc] at snoc
-      -- `snoc : incpref M = incpref M.dropLast`
-      have hMne : incpref M ≠ M := by
-        intro he
-        have he2 : incpref M.dropLast = M := snoc.symm.trans he
-        have hlt : M.dropLast.length < M.length := by
-          conv_rhs => rw [← hM]
-          simp
-        have hlen : (incpref M.dropLast).length ≤ M.dropLast.length := by
-          obtain ⟨ys, hys⟩ := incpref_append M.dropLast
-          have hsum : (incpref M.dropLast).length + ys.length = M.dropLast.length := by
-            conv_rhs => rw [← hys]
-            simp
-          omega
-        rw [he2] at hlen
-        omega
-      rw [if_neg hMne]
-      exact snoc.symm
 
 theorem spine_translate_eq (M : PairSeq) :
     spine (translate M) = (incpref M).map Prod.snd := by
@@ -472,156 +186,6 @@ theorem maxsub_eq_climb_iff (M : PairSeq) :
 
 /-! ## The pair-sequence normal-form invariant and its closure -/
 
-def nfinv (M : PairSeq) : Prop :=
-  cmax (M.map Prod.snd) = cmax ((incpref M).map Prod.snd)
-    ∧ inv2 ((incpref M).map Prod.snd)
-
-theorem cmax_mem {xs : List ℕ} (h : xs ≠ []) : cmax xs ∈ xs := by
-  induction xs with
-  | nil => simp at h
-  | cons x xs ih =>
-    by_cases hle : cmax xs ≤ x
-    · have : cmax (x :: xs) = x := by simp [cmax_cons]; omega
-      simp [this]
-    · have hne : xs ≠ [] := by
-        intro he
-        rw [he] at hle
-        simp at hle
-      have : cmax (x :: xs) = cmax xs := by simp [cmax_cons]; omega
-      rw [this]
-      exact List.mem_cons_of_mem _ (ih hne)
-
-theorem cmax_dropLast_le (xs : List ℕ) : cmax xs.dropLast ≤ cmax xs :=
-  cmax_le fun _ hx => cmax_ge (List.dropLast_subset _ hx)
-
-theorem inv2_dropLast {xs : List ℕ} (inv : inv2 xs) (ne : xs.dropLast ≠ []) :
-    inv2 xs.dropLast := by
-  have rR : cmax xs.dropLast ≤ cmax xs := cmax_dropLast_le xs
-  have key : cmax xs.dropLast < xs.dropLast.length := by
-    by_contra hle
-    push Not at hle
-    have hmem : cmax xs.dropLast ∈ xs.dropLast := cmax_mem ne
-    obtain ⟨j, hj, hxj⟩ := List.mem_iff_getElem.1 hmem
-    have hjr : j < cmax xs.dropLast := by omega
-    have hjc : j ≤ cmax xs := by omega
-    have h1 : xs.getD j 0 = j := (inv j hjc).2
-    have h2 : xs.dropLast[j] = xs[j]'(by
-      have := List.length_dropLast (xs := xs)
-      omega) := List.getElem_dropLast hj
-    rw [getD_eq_getElem' _ _ (by
-      have := List.length_dropLast (xs := xs)
-      omega)] at h1
-    rw [h2, h1] at hxj
-    omega
-  intro i hi
-  have ir : i ≤ cmax xs := by omega
-  have h1 : xs.getD i 0 = i := (inv i ir).2
-  refine ⟨by omega, ?_⟩
-  have hlt : i < xs.length := by
-    have := List.length_dropLast (xs := xs)
-    omega
-  rw [getD_eq_getElem' _ _ (by omega), List.getElem_dropLast,
-    ← getD_eq_getElem' _ 0 hlt]
-  exact h1
-
-/-- The key closure: appending a block whose row-1 values already occur in
-`ys` preserves `nfinv`. -/
-theorem nfinv_append {ys R : PairSeq} (inv : nfinv ys)
-    (sub : sndSet R ⊆ sndSet ys) :
-    nfinv (ys ++ R) := by
-  have cmax_of_subset : ∀ {L L' : PairSeq}, sndSet L ⊆ sndSet L' →
-      cmax (L.map Prod.snd) ≤ cmax (L'.map Prod.snd) := by
-    intro L L' hsub
-    apply cmax_le
-    intro x hx
-    obtain ⟨p, hp, rfl⟩ := List.mem_map.1 hx
-    obtain ⟨q, hq, hqx⟩ := mem_sndSet.1 (hsub (mem_sndSet.2 ⟨p, hp, rfl⟩))
-    exact hqx ▸ cmax_ge (List.mem_map.2 ⟨q, hq, rfl⟩)
-  have cmaxR : cmax (R.map Prod.snd) ≤ cmax (ys.map Prod.snd) := cmax_of_subset sub
-  have cmax_all : cmax ((ys ++ R).map Prod.snd) = cmax (ys.map Prod.snd) := by
-    rw [List.map_append, cmax_append]
-    omega
-  obtain ⟨A, B⟩ := inv
-  by_cases hys : incpref ys = ys
-  · obtain ⟨ws, hws⟩ := incpref_append_full hys R
-    -- `ws` is a prefix of `R`, so its row-1 values are bounded
-    have wsR : sndSet ws ⊆ sndSet ys := by
-      obtain ⟨zs, hzs⟩ := incpref_append (ys ++ R)
-      rw [hws] at hzs
-      have hwszs : ws ++ zs = R := by
-        have := hzs
-        rw [List.append_assoc] at this
-        exact List.append_cancel_left this
-      have hsub : ∀ x ∈ ws, x ∈ R := fun x hx =>
-        hwszs ▸ List.mem_append_left zs hx
-      exact fun y hy => sub (sndSet_mono hsub hy)
-    have cmws : cmax (ws.map Prod.snd) ≤ cmax (ys.map Prod.snd) :=
-      cmax_of_subset wsR
-    have climb_all : cmax ((incpref (ys ++ R)).map Prod.snd)
-        = cmax (ys.map Prod.snd) := by
-      rw [hws, List.map_append, cmax_append]
-      omega
-    have Bys : inv2 (ys.map Prod.snd) := hys ▸ B
-    have hinv : inv2 ((ys ++ ws).map Prod.snd) := by
-      intro i hi
-      have ic : i ≤ cmax (ys.map Prod.snd) := by
-        rw [List.map_append, cmax_append] at hi
-        omega
-      have ilen : i < ys.length := by
-        have := (Bys i ic).1
-        simpa using this
-      refine ⟨?_, ?_⟩
-      · simp only [List.length_map, List.length_append]
-        omega
-      have b : (ys.map Prod.snd).getD i 0 = i := (Bys i ic).2
-      rw [List.map_append, List.getD_eq_getElem?_getD,
-        List.getElem?_append_left (by simpa using ilen),
-        ← List.getD_eq_getElem?_getD]
-      exact b
-    refine ⟨by rw [cmax_all, A, hys, climb_all], ?_⟩
-    rw [hws]
-    exact hinv
-  · have ip : incpref (ys ++ R) = incpref ys := incpref_append_stop hys R
-    exact ⟨by rw [cmax_all, A, ip], by rw [ip]; exact B⟩
-
-theorem nfinv_dropLast {M : PairSeq} (inv : nfinv M) (ne : M.dropLast ≠ []) :
-    nfinv M.dropLast := by
-  obtain ⟨A, B⟩ := inv
-  by_cases hM : incpref M = M
-  · have ip : incpref M.dropLast = M.dropLast := by
-      rw [incpref_dropLast, if_pos hM]
-    have hinv : inv2 ((M.dropLast).map Prod.snd) := by
-      have h1 : inv2 (M.map Prod.snd) := hM ▸ B
-      have h2 : (M.map Prod.snd).dropLast ≠ [] := by
-        rw [← List.map_dropLast]
-        intro hc
-        exact ne (List.map_eq_nil_iff.1 hc)
-      have := inv2_dropLast h1 h2
-      rwa [List.map_dropLast]
-    exact ⟨by rw [ip], by rw [ip]; exact hinv⟩
-  · have ip : incpref M.dropLast = incpref M := by
-      rw [incpref_dropLast, if_neg hM]
-    obtain ⟨ys, ysM⟩ := incpref_append M
-    have ysne : ys ≠ [] := by
-      intro he
-      rw [he, List.append_nil] at ysM
-      exact hM ysM
-    have preb : M.dropLast = incpref M ++ ys.dropLast := by
-      conv_lhs => rw [← ysM]
-      rw [List.dropLast_append, if_neg (by simpa using ysne)]
-    have le1 : cmax ((incpref M).map Prod.snd) ≤ cmax ((M.dropLast).map Prod.snd) := by
-      apply cmax_le
-      intro x hx
-      apply cmax_ge
-      rw [preb, List.map_append]
-      exact List.mem_append_left _ hx
-    have le2 : cmax ((M.dropLast).map Prod.snd) ≤ cmax (M.map Prod.snd) := by
-      rw [List.map_dropLast]
-      exact cmax_dropLast_le _
-    refine ⟨?_, ip ▸ B⟩
-    rw [ip]
-    omega
-
 /-! ## The bad-case expansion as `dropLast M` followed by ascending copies
 
 In the bad case the `k = 0` copy reproduces the dropped suffix, so the
@@ -629,10 +193,6 @@ expansion is `dropLast M` followed by the (`k ≥ 1`) ascending copies; the
 copies only repeat row-1 values already present in `dropLast M`.  (Isabelle's
 `take_split_map_nth` bookkeeping is subsumed here by reusing
 `oper_bad_blocks`.) -/
-
-theorem parent_less {M : PairSeq} {i j1 : ℕ} (hp : hasParent M i j1) :
-    parent M i j1 < j1 :=
-  nextR_index_lt (parent_nextR hp)
 
 /-- Unifying the three `oper` branches (for `1 < Lng M`): the expansion is
 always `dropLast M` followed by a block whose row-1 values already occur in
@@ -691,112 +251,9 @@ theorem translate_diagSeq {u v : ℕ} (h : u ≤ v) :
     simp only []
     omega
 
-theorem spine_translate_diagSeq_aux (n u : ℕ) :
-    spine (translate (diagSeq u (u + n))) = List.range' u (n + 1) := by
-  induction n generalizing u with
-  | zero =>
-    have e : diagSeq (u + 1) u = [] := by
-      unfold diagSeq
-      rw [show u + 1 - (u + 1) = 0 by omega]
-      rfl
-    rw [show u + 0 = u from rfl, translate_diagSeq le_rfl, e]
-    simp [translate, List.range'_one]
-  | succ n ih =>
-    rw [translate_diagSeq (by omega : u ≤ u + (n + 1)), spine_P]
-    rw [show diagSeq (u + 1) (u + (n + 1)) = diagSeq (u + 1) ((u + 1) + n) by
-      congr 1; omega]
-    rw [ih (u + 1)]
-    exact List.range'_succ.symm
-
-theorem spine_translate_diagSeq {u v : ℕ} (h : u ≤ v) :
-    spine (translate (diagSeq u v)) = List.range' u (v + 1 - u) := by
-  obtain ⟨n, rfl⟩ : ∃ n, v = u + n := ⟨v - u, by omega⟩
-  rw [spine_translate_diagSeq_aux]
-  congr 1
-  omega
-
-theorem cmax_range' (u n : ℕ) : cmax (List.range' u (n + 1)) = u + n := by
-  induction n generalizing u with
-  | zero => simp [List.range'_one]
-  | succ n ih =>
-    rw [List.range'_succ, cmax_cons, ih (u + 1)]
-    omega
-
-/-- For the diagonal towers `D(v) = translate (diagSeq 0 v)` the two NF
-invariants hold: the spine is exactly `[0,1,…,v]`, so `inv2` holds and
-`maxsub = climb = v`. -/
-theorem spine_diagSeq0 (v : ℕ) :
-    spine (translate (diagSeq 0 v)) = List.range' 0 (v + 1) := by
-  rw [spine_translate_diagSeq (Nat.zero_le v)]
-  congr 1
-
-theorem climb_diagSeq0 (v : ℕ) : climb (translate (diagSeq 0 v)) = v := by
-  rw [climb, spine_diagSeq0, cmax_range']
-  omega
-
-theorem inv2_spine_diagSeq0 (v : ℕ) : inv2 (spine (translate (diagSeq 0 v))) := by
-  rw [spine_diagSeq0]
-  intro i hi
-  have hiv : i ≤ v := by
-    have := cmax_range' 0 (v + 1 - 1)
-    simp only [Nat.zero_add] at this
-    rw [show v + 1 - 1 + 1 = v + 1 by omega] at this
-    omega
-  have hilen : i < (List.range' 0 (v + 1)).length := by simp; omega
-  refine ⟨hilen, ?_⟩
-  rw [getD_eq_getElem' _ _ hilen, List.getElem_range']
-  omega
-
 /-! ## The NF invariant holds on all standard forms -/
 
-theorem nfinv_diag (v : ℕ) : nfinv (diagSeq 0 v) := by
-  have espine := spine_translate_eq (diagSeq 0 v)
-  have e1 : (incpref (diagSeq 0 v)).map Prod.snd = List.range' 0 (v + 1) := by
-    rw [← espine, spine_diagSeq0]
-  have e2 : (diagSeq 0 v).map Prod.snd = List.range' 0 (v + 1) := by
-    unfold diagSeq
-    rw [List.map_map, show (Prod.snd ∘ fun j : ℕ => (j, j)) = id from rfl,
-      List.map_id]
-    congr 1
-  constructor
-  · rw [e1, e2]
-  · rw [e1, ← spine_diagSeq0]
-    exact inv2_spine_diagSeq0 v
-
-theorem nfinv_ST_PS {M : PairSeq} (hM : ST_PS M) : nfinv M := by
-  induction hM with
-  | diag v => exact nfinv_diag v
-  | @oper M n hM hn ih =>
-    by_cases L : 1 < M.length
-    · obtain ⟨R, hR, hRsub⟩ := oper_eq_dropLast_append L hn
-      have bne : M.dropLast ≠ [] := by
-        intro he
-        have : M.dropLast.length = 0 := by rw [he]; rfl
-        simp at this
-        omega
-      rw [hR]
-      exact nfinv_append (nfinv_dropLast ih bne) hRsub
-    · rw [oper_eq_self_short n (by omega)]
-      exact ih
-
 /-! ## Subscript-monotonicity of descent on `NF = translate '' ST_PS` -/
-
-theorem maxsub_mono_NF {Mw Mx : PairSeq} (hw : ST_PS Mw) (hx : ST_PS Mx)
-    (h : translate Mw <o translate Mx) :
-    maxsub (translate Mw) ≤ maxsub (translate Mx) := by
-  have nw := nfinv_ST_PS hw
-  have nx := nfinv_ST_PS hx
-  refine maxsub_mono_cond h ?_ ?_ ?_ ?_
-  · exact (maxsub_eq_climb_iff Mw).2 nw.1
-  · exact (maxsub_eq_climb_iff Mx).2 nx.1
-  · rw [spine_translate_eq]; exact nw.2
-  · rw [spine_translate_eq]; exact nx.2
-
-theorem maxsub_mono_NF' {v u : Three} (hv : v ∈ NF) (hu : u ∈ NF)
-    (h : v <o u) : maxsub v ≤ maxsub u := by
-  obtain ⟨Mv, hMv, rfl⟩ := hv
-  obtain ⟨Mu, hMu, rfl⟩ := hu
-  exact maxsub_mono_NF hMv hMu h
 
 /-! ## Cantor normal form: siblings are non-increasing
 
@@ -1354,7 +811,6 @@ theorem cnf_oper_i1eq0 {v0 w0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ} {G : PairSe
   rw [e1n]
   exact key
 
-
 /-! ## CNF preservation, the ascending-copies (`i1 = 1`) oper case
 
 The `i1 = 1` bad step replaces the block `blk = (v0,w0) :: R` followed by the
@@ -1529,7 +985,6 @@ theorem cnf_copies {v0 w0 d0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ}
         ((v0, w0) :: R) (by simpa using cBlp)
       rw [copies_succ_front, z1cons]
       exact key
-
 
 /-- **CNF preservation, the ascending-copies (`i1 = 1`) oper case.**  Like
 `cnf_oper_i1eq0` but for the genuinely ascending copies; the strict decrease
@@ -1734,22 +1189,5 @@ whole `Rnf` is then well-founded as soon as its *equal-maximal-subscript*
 part is (in Lean, via the lexicographic product `(maxsub, ·)` instead of
 Isabelle's `wf_union_compatible`).  This isolates the remaining obligation to
 a single maximal-subscript level (the Buchholz collapsing core). -/
-
-/-- The within-level part of `Rnf`: descent that preserves the maximal
-subscript. -/
-def RnfE (w x : Three) : Prop :=
-  w <o x ∧ x ∈ NF ∧ w ∈ NF ∧ maxsub w = maxsub x
-
-theorem wf_Rnf_from_within_level (wfE : WellFounded RnfE) :
-    WellFounded Rnf := by
-  have wflex : WellFounded (Prod.Lex (· < · : ℕ → ℕ → Prop) RnfE) :=
-    WellFounded.prod_lex wellFounded_lt wfE
-  refine Subrelation.wf ?_ (InvImage.wf (fun x => (maxsub x, x)) wflex)
-  rintro w x ⟨hlt, hx, hw⟩
-  rcases lt_or_eq_of_le (maxsub_mono_NF' hw hx hlt) with hms | hms
-  · exact Prod.Lex.left _ _ hms
-  · show Prod.Lex _ RnfE (maxsub w, w) (maxsub x, x)
-    rw [hms]
-    exact Prod.Lex.right _ ⟨hlt, hx, hw, hms⟩
 
 end YAPSS
