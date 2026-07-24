@@ -31,4 +31,6 @@
       - ✅ end-to-end 配線（OrdinalFree.lean）: PSS_terminates_ordinal_free / no_infinite_expansion / stepR 版、全て sorryAx-free
       - ✅ 第2の柱 W-membership 完全証明（Wset.lean 全体 sorryAx-free、塔恒等式 oper_cons_tower 含む）
       - ✅ 共終性の全分岐（seqlex 還元 / degenerate / bad 分解 / d0=0 crux）
-      - 🚨🤖 ★残＝単一命題 AscArgDomExplicit（0-viol 検証済・非退化、明示 witness m=|S_hi| 判明、Gterm/支配条件を含まない純組合せ）
+      - ✅ AscArgDom を単一の host-free 核 ArgDomCore へ還元（AscArg.lean、sorryAx-free）
+      - ✅ ArgDomCore は局所不変量（blockok/z0ok/r1ok/cnf）からは導けない＝ST_PS 導出帰納が必須（反例を Lean で証明）
+      - 🚨🤖 ★残＝単一命題 ArgDomCore（0-viol/190729 検証済、host 不要、side condition が load-bearing）

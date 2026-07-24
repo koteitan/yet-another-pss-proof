@@ -1,0 +1,485 @@
+/-
+# `AscArgDom` reduced to a single HOST-FREE core (`ArgDomCore`)
+
+`YAPSS/Cofinality.lean` reduces PSS Bachmann cofinality to the ascending
+residual `AscArgDom`: with `blk = (v0,w0) :: R`, `q = (v0+d0,w0)` and
+`S_hi = S.takeWhile (v0+d0 < ·.1)`,
+
+    ST_PS (G ++ blk ++ [(v0+d0, w0+1)]) → ST_PS (G ++ blk ++ q :: S) → …
+      → ∃ m, sle S_hi (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 blk) m)).
+
+That statement mentions **two** standard forms (the host `M` and the small side
+`N`).  This file removes the host: everything reduces to one statement about a
+**single** standard form,
+
+    `ArgDomCore` : inside `N`, the argument of a column `(u+e, w)` that sits
+    inside the argument `A` of an earlier column `(u, w)` is `sle`-dominated by
+    the `e`-shift of `A`, provided every *right-visible* column of the material
+    between them that lies below level `u+e` carries row-1 `≥ w`.
+
+The host `M` is used only to supply that side condition (`SpineOK`): by
+`le0_through_pivot`, a right-visible column of `R` below level `v0+d0` is a
+**row-0 ancestor of the dropped column** `lp`, and the `nextrel1` minimality
+clause — the very clause whose absence made the old statement false — then gives
+its row-1 value `≥ w0 + 1`.
+
+The passage from the single `ArgDomCore` instance to the full copy tower is pure
+list algebra (`peel_aux`): the conclusion of `ArgDomCore` is *self-referential*
+(`A` contains `B`), so one application unfolds into the whole tower, one copy per
+recursion step.  This is also why the explicit witness `m = |S_hi|` of
+`AscArgDomExplicit` works: each unfolding step consumes at least one column of
+`S_hi`.
+
+## Model evidence
+
+* `ArgDomCore` itself (as stated here, with the right-visible side condition):
+  **0 violations** over 965 / 18358 / 190729 instances at closures
+  `(v ≤ 4, n ≤ 3, len ≤ 10, depth 5)`, `(v ≤ 5, n ≤ 5, len ≤ 11, depth 7)`,
+  `(v ≤ 3, n ≤ 5, len ≤ 14, depth 9)` (`tools/probe_k1c4.py`).
+* The side condition is **load-bearing**: dropping it gives 50 violations / 1460
+  already at the smallest closure — the minimal witness is
+  `N = (0,0)(1,1)(2,1)(3,0)(4,1)(5,1)` at the pair `(2,1) … (4,1)`, which is
+  exactly the counterexample recorded in `AscArgDomProof.lean`.
+* The right-visible condition and the `le0`-ancestor condition
+  ("every row-0 ancestor of `j` strictly between carries row-1 `≥ w`") select
+  **exactly** the same instances (0 mismatches over all three closures).
+
+## What remains, and what is ruled out
+
+`ArgDomCore` is the whole residual.  Part E below proves — as a real theorem,
+`argDomCore_needs_reachability` — that it does **not** follow from
+`blockok / z0ok / r1ok / cnf`: the sequence `(0,0)(1,1)(2,1)(3,2)(2,1)(3,2)`
+satisfies all four and refutes the conclusion.  So any proof must descend the
+`ST_PS` derivation itself (the non-structural axis), i.e. induct on
+`ST_PS.diag / ST_PS.oper`:
+
+* `diag`: vacuous — in `diagSeq 0 v` a column is `(t,t)`, so `row1 i = row1 j`
+  forces `i = j`.
+* `oper`, `|N₁| ≤ 1`: `N = N₁` has `≤ 1` column, no instance.
+* `oper`, last column `(0,0)`: `N = N₁.dropLast`, and both arguments and `le0`
+  are unchanged (the `(0,0)` never enters a `takeWhile` at level `> 0`) — direct
+  IH.
+* `oper`, `noparent`: empty on `ST_PS` (`hasParent_last_ST_PS`).
+* `oper`, `bad`: `N = G₁ ++ copies d₁ blk₁ k` — the real case, needing positional
+  bookkeeping between the instance `(i,j)` and the copy decomposition.
+
+Measured shape of the residual comparison (`tools/probe_argcore_stats.py`, 96884
+non-degenerate instances): the *head* columns of `B` and `shiftr0 e A` always sit
+at the same level, and
+
+    S1 :  B.headI.2 ≤ (shiftr0 e A).headI.2   —   0 violations,
+
+so the comparison is decided at the head in 44% of instances, `B` is a prefix in
+20%, and the rest recurse (max observed depth 5).  `S1` is exactly what the
+local-invariant counterexample above violates, so `S1` is a good next milestone.
+-/
+import YAPSS.Cofinality
+
+namespace YAPSS
+
+open Three
+
+/-! ## Part A — list algebra
+
+Two facts about `sle` / `seqlex` that drive the unfolding of one `ArgDomCore`
+instance into the whole copy tower. -/
+
+/-- If `X` is `sle`-below `W ++ Y` but `W` is **not** a prefix of `X`, then the
+comparison is already decided inside `W`: `X` is strictly below `W ++ Y'` for
+*every* continuation `Y'`. -/
+theorem seqlex_of_sle_not_prefix : ∀ {W X Y : PairSeq}, sle X (W ++ Y) →
+    (∀ X', X ≠ W ++ X') → ∀ (Y' : PairSeq), seqlex X (W ++ Y') := by
+  intro W
+  induction W with
+  | nil =>
+    intro X Y _ hnp _
+    exact absurd (by simp : X = [] ++ X) (hnp X)
+  | cons w W' ih =>
+    intro X Y h hnp Y'
+    rcases X with _ | ⟨x, X''⟩
+    · simp
+    · rw [List.cons_append] at h ⊢
+      rcases h with he | hs
+      · exact absurd he (by
+          have := hnp Y
+          rw [List.cons_append] at this
+          exact this)
+      · rw [seqlex_cons_cons] at hs
+        rcases hs with hp | ⟨rfl, hs'⟩
+        · exact Or.inl hp
+        · refine Or.inr ⟨rfl, ih (Y := Y) (Or.inr hs') ?_ Y'⟩
+          intro Z hZ
+          exact hnp Z (by rw [hZ, List.cons_append])
+
+/-- **The peel.**  `ArgDomCore`'s conclusion is self-referential: the bound
+`Q ++ (a,w) :: shiftr0 d (X ++ A2)` mentions `X` itself.  Unfolding it one step
+at a time either decides the comparison inside `Q ++ [(a,w)]` (done, one copy
+suffices) or strips `Q ++ [(a,w)]` off `X` and repeats one level up — which is
+exactly the next copy of the tower.  The recursion terminates because each step
+consumes at least the column `(a,w)`. -/
+theorem peel_aux (d w : ℕ) : ∀ (n : ℕ) (X Q A2 : PairSeq) (a : ℕ), X.length ≤ n →
+    sle X (Q ++ (a, w) :: shiftr0 d (X ++ A2)) →
+    ∃ m, sle X (Q ++ copies d ((a, w) :: shiftr0 d Q) m) := by
+  intro n
+  induction n with
+  | zero =>
+    intro X Q A2 a hlen _
+    have hX : X = [] := List.eq_nil_of_length_eq_zero (by omega)
+    subst hX
+    refine ⟨0, ?_⟩
+    rw [copies_zero, List.append_nil]
+    rcases Q with _ | ⟨q, Q'⟩
+    · exact Or.inl rfl
+    · exact Or.inr (by simp)
+  | succ n ih =>
+    intro X Q A2 a hlen h
+    classical
+    by_cases hpre : ∃ X', X = Q ++ (a, w) :: X'
+    · obtain ⟨X', rfl⟩ := hpre
+      -- strip the common prefix `Q ++ [(a,w)]`
+      have hstep : sle X' (shiftr0 d Q ++ (a + d, w) :: shiftr0 d (X' ++ A2)) := by
+        have h' : sle (Q ++ (a, w) :: X')
+            (Q ++ (a, w) :: shiftr0 d ((Q ++ (a, w) :: X') ++ A2)) := h
+        have hc : sle ((a, w) :: X') ((a, w) :: shiftr0 d ((Q ++ (a, w) :: X') ++ A2)) :=
+          (sle_append_cancel Q).1 h'
+        have hc2 : sle X' (shiftr0 d ((Q ++ (a, w) :: X') ++ A2)) :=
+          (sle_append_cancel [(a, w)]).1 (by simpa using hc)
+        have hrw : shiftr0 d ((Q ++ (a, w) :: X') ++ A2)
+            = shiftr0 d Q ++ (a + d, w) :: shiftr0 d (X' ++ A2) := by
+          rw [List.append_assoc, List.cons_append, shiftr0_append, shiftr0_cons]
+        rwa [hrw] at hc2
+      have hlen' : X'.length ≤ n := by
+        simp only [List.length_append, List.length_cons] at hlen
+        omega
+      obtain ⟨m, hm⟩ := ih X' (shiftr0 d Q) A2 (a + d) hlen' hstep
+      refine ⟨m + 1, ?_⟩
+      have hrw : Q ++ copies d ((a, w) :: shiftr0 d Q) (m + 1)
+          = (Q ++ [(a, w)]) ++
+              (shiftr0 d Q ++ copies d ((a + d, w) :: shiftr0 d (shiftr0 d Q)) m) := by
+        rw [copies_succ_front, shiftr0_copies, shiftr0_cons]
+        simp
+      rw [hrw]
+      have : Q ++ (a, w) :: X' = (Q ++ [(a, w)]) ++ X' := by simp
+      rw [this]
+      exact (sle_append_cancel _).2 hm
+    · -- the comparison is decided inside `Q ++ [(a,w)]`
+      refine ⟨1, Or.inr ?_⟩
+      rw [copies_one]
+      have hW : sle X ((Q ++ [(a, w)]) ++ shiftr0 d (X ++ A2)) := by
+        simpa using h
+      have hnp : ∀ X', X ≠ (Q ++ [(a, w)]) ++ X' := by
+        intro X' hX'
+        exact hpre ⟨X', by rw [hX']; simp⟩
+      have := seqlex_of_sle_not_prefix hW hnp (shiftr0 d Q)
+      simpa using this
+
+/-! ## Part B — the side condition, and the host-free core -/
+
+/-- `SpineOK A L w`: every **right-visible** column of `A` below level `L`
+carries row-1 at least `w`.  "Right-visible" = no later column of `A` sits at or
+below its level; these are exactly the row-0 ancestors that a column at level
+`≥ L` placed after `A` would climb through. -/
+def SpineOK (A : PairSeq) (L w : ℕ) : Prop :=
+  ∀ (U V : PairSeq) (x : ℕ × ℕ), A = U ++ x :: V → x.1 < L →
+    (∀ y ∈ V, x.1 < y.1) → w ≤ x.2
+
+/-- **The host-free core of PSS Bachmann cofinality.**
+
+Inside a *single* standard form, `(u, w)` is a column with argument (descendant
+block) `A = A1 ++ (u+e, w) :: (B ++ A2)`, so that `(u+e, w)` is a strictly deeper
+column carrying the *same* row-1 value `w`, with argument `B`.  Then `B` is
+column-lex dominated by the `e`-shift of `A`.
+
+The side condition `SpineOK A1 (u+e) w` says the row-0 ancestors of `(u+e,w)`
+strictly between the two columns all carry row-1 `≥ w` — equivalently, the two
+columns are **row-1 siblings**.  Without it the statement is false
+(`AscArgDomProof.lean`'s counterexample is the minimal instance). -/
+def ArgDomCore : Prop :=
+  ∀ {X A1 B A2 Z : PairSeq} {u w e : ℕ},
+    ST_PS ((X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z) →
+    0 < e →
+    (∀ x ∈ A1, u < x.1) →
+    (∀ x ∈ B, u + e < x.1) →
+    (∀ x ∈ A2, u < x.1) →
+    (A2 = [] ∨ (A2.headI).1 ≤ u + e) →
+    (Z = [] ∨ (Z.headI).1 ≤ u) →
+    SpineOK A1 (u + e) w →
+    sle B (shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2)))
+
+/-! ## Part C — the host supplies the side condition
+
+This is the *only* place the host `M` is used, and it is exactly where the
+`nextrel1` clause (whose absence made the older statement false, see
+`AscArgDomProof.lean`) pays for itself. -/
+
+/-- **`SpineOK` from the `nextrel1` clause.**  A right-visible column `x` of `R`
+below level `v0+d0` has *every* later column of `M` strictly above it, so
+`le0_through_pivot` promotes the row-0 ancestry `le0 M G.length (M.length-1)`
+supplied by `nextrel1` to `le0 M x (M.length-1)`: `x` is a row-0 ancestor of the
+dropped column.  The `nextrel1` minimality clause then forces
+`x.2 ≥ lp.2 = w0 + 1`. -/
+theorem spineOK_of_nextrel1 {G R : PairSeq} {v0 w0 d0 : ℕ}
+    (hnr : nextrel1 ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) G.length
+      (G ++ ((v0, w0) :: R)).length) :
+    SpineOK R (v0 + d0) w0 := by
+  intro U V x hR hxlt hV
+  obtain ⟨-, -, -, -, hle0, hmin⟩ := hnr
+  set lp : ℕ × ℕ := (v0 + d0, w0 + 1) with hlp
+  set M := (G ++ ((v0, w0) :: R)) ++ [lp] with hMdef
+  set A := G ++ ((v0, w0) :: U) with hAdef
+  have hMeq : M = A ++ (x :: (V ++ [lp])) := by
+    rw [hMdef, hAdef, hR]; simp
+  have hAlen : A.length = G.length + 1 + U.length := by
+    rw [hAdef]; simp; omega
+  have hj1 : (G ++ ((v0, w0) :: R)).length = A.length + 1 + V.length := by
+    rw [hR, hAlen]; simp; omega
+  -- the column at `A.length` is `x`
+  have hgx : M.getD A.length (0, 0) = x := by
+    have h := getD_append_right' A (x :: (V ++ [lp])) 0
+    rw [Nat.add_zero] at h
+    rw [hMeq]; exact h
+  -- every later column of `M`, up to and including `lp`, is strictly above `x`
+  have hpiv : ∀ y, A.length < y → y ≤ (G ++ ((v0, w0) :: R)).length →
+      entry M 0 A.length < entry M 0 y := by
+    intro y hy1 hy2
+    obtain ⟨t, rfl⟩ : ∃ t, y = A.length + (t + 1) := ⟨y - A.length - 1, by omega⟩
+    have hgy : M.getD (A.length + (t + 1)) (0, 0) = (V ++ [lp]).getD t (0, 0) := by
+      have h := getD_append_right' A (x :: (V ++ [lp])) (t + 1)
+      rw [hMeq, h, List.getD_cons_succ]
+    rw [entry_zero, entry_zero, hgx, hgy]
+    rcases Nat.lt_or_ge t V.length with ht | ht
+    · have hmem : V.getD t (0, 0) ∈ V := by
+        rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem ht]
+        exact List.getElem_mem _
+      have : (V ++ [lp]).getD t (0, 0) = V.getD t (0, 0) := by
+        rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
+          List.getElem?_append_left ht]
+      rw [this]
+      exact hV _ hmem
+    · have htv : t = V.length := by omega
+      subst htv
+      have : (V ++ [lp]).getD V.length (0, 0) = lp := by
+        have h := getD_append_right' V [lp] 0
+        rw [Nat.add_zero] at h
+        exact h
+      rw [this, hlp]
+      exact hxlt
+  -- so `x` is a row-0 ancestor of the dropped column
+  have hxle0 : le0 M A.length (G ++ ((v0, w0) :: R)).length :=
+    le0_through_pivot hle0 (by omega) (by omega) hpiv
+  -- and the `nextrel1` minimality clause bounds its row-1 value
+  have hlast : entry M 1 (G ++ ((v0, w0) :: R)).length = w0 + 1 := by
+    have h := getD_append_right' (G ++ ((v0, w0) :: R)) [lp] 0
+    rw [Nat.add_zero] at h
+    rw [entry_one, hMdef, h, List.getD_cons_zero, hlp]
+  have := hmin A.length ⟨by omega, hxle0⟩
+  rw [hlast, entry_one, hgx] at this
+  omega
+
+/-! ## Part D — the reduction -/
+
+/-- **`AscArgDom` follows from the host-free core.**
+
+`ArgDomCore` is applied exactly once, at the block root `(v0,w0)` of `N` against
+the ascending copy root `q = (v0+d0,w0)`; the host `M` enters only through
+`spineOK_of_nextrel1`.  `peel_aux` then unfolds the self-referential bound into
+the copy tower. -/
+theorem ascArgDom_of_core (H : ArgDomCore) : AscArgDom := by
+  intro G R S v0 w0 d0 _ hN hRgt hd hnr
+  classical
+  set Shi := S.takeWhile (fun p => v0 + d0 < p.1) with hShidef
+  set D := S.dropWhile (fun p => v0 + d0 < p.1) with hDdef
+  set A2 := D.takeWhile (fun p => v0 < p.1) with hA2def
+  set Z := D.dropWhile (fun p => v0 < p.1) with hZdef
+  have hSsplit : Shi ++ D = S := List.takeWhile_append_dropWhile
+  have hDsplit : A2 ++ Z = D := List.takeWhile_append_dropWhile
+  have hShigt : ∀ x ∈ Shi, v0 + d0 < x.1 := by
+    intro x hx; simpa using List.mem_takeWhile_imp hx
+  have hA2gt : ∀ x ∈ A2, v0 < x.1 := by
+    intro x hx; simpa using List.mem_takeWhile_imp hx
+  have hDhd : D = [] ∨ (D.headI).1 ≤ v0 + d0 := by
+    rcases hdd : D with _ | ⟨z, Z'⟩
+    · exact Or.inl rfl
+    · refine Or.inr ?_
+      have h := List.head?_dropWhile_not (fun p : ℕ × ℕ => decide (v0 + d0 < p.1)) S
+      rw [← hDdef, hdd] at h
+      simp only [List.head?_cons] at h
+      have : ¬ (v0 + d0 < z.1) := by simpa using h
+      simp only [List.headI]; omega
+  have hA2hd : A2 = [] ∨ (A2.headI).1 ≤ v0 + d0 := by
+    rcases hdd : A2 with _ | ⟨z, Z'⟩
+    · exact Or.inl rfl
+    · refine Or.inr ?_
+      have hDne : D ≠ [] := by
+        intro he; rw [hA2def, he] at hdd; simp at hdd
+      have hhd : A2.headI = D.headI := by
+        rcases hd2 : D with _ | ⟨y, Y⟩
+        · exact absurd hd2 hDne
+        · rw [hA2def, hd2]
+          by_cases hy : v0 < y.1
+          · rw [List.takeWhile_cons_of_pos (by simpa using hy)]; rfl
+          · rw [List.takeWhile_cons_of_neg (by simpa using hy)]
+            rw [hA2def, hd2, List.takeWhile_cons_of_neg (by simpa using hy)] at hdd
+            simp at hdd
+      rw [← hdd, hhd]
+      rcases hDhd with h | h
+      · exact absurd h hDne
+      · exact h
+  have hZhd : Z = [] ∨ (Z.headI).1 ≤ v0 := by
+    rcases hdd : Z with _ | ⟨z, Z'⟩
+    · exact Or.inl rfl
+    · refine Or.inr ?_
+      have h := List.head?_dropWhile_not (fun p : ℕ × ℕ => decide (v0 < p.1)) D
+      rw [← hZdef, hdd] at h
+      simp only [List.head?_cons] at h
+      have : ¬ (v0 < z.1) := by simpa using h
+      simp only [List.headI]; omega
+  -- re-bracket `N` in the shape `ArgDomCore` wants
+  have hNeq : (G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S
+      = (G ++ (v0, w0) :: (R ++ (v0 + d0, w0) :: (Shi ++ A2))) ++ Z := by
+    rw [← hSsplit, ← hDsplit]; simp
+  have hcore := H (X := G) (A1 := R) (B := Shi) (A2 := A2) (Z := Z)
+    (u := v0) (w := w0) (e := d0) (hNeq ▸ hN) hd hRgt hShigt hA2gt hA2hd hZhd
+    (spineOK_of_nextrel1 hnr)
+  -- the bound is self-referential; unfold it into the copy tower
+  have hbnd : shiftr0 d0 (R ++ (v0 + d0, w0) :: (Shi ++ A2))
+      = shiftr0 d0 R ++ (v0 + d0 + d0, w0) :: shiftr0 d0 (Shi ++ A2) := by
+    rw [shiftr0_append, shiftr0_cons]
+  rw [hbnd] at hcore
+  obtain ⟨m, hm⟩ := peel_aux d0 w0 Shi.length Shi (shiftr0 d0 R) A2 (v0 + d0 + d0)
+    le_rfl hcore
+  refine ⟨m, ?_⟩
+  have hgoal : shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m)
+      = shiftr0 d0 R ++ copies d0 ((v0 + d0 + d0, w0) :: shiftr0 d0 (shiftr0 d0 R)) m := by
+    rw [shiftr0_append, shiftr0_copies, shiftr0_cons, shiftr0_cons]
+  rw [hgoal]
+  exact hm
+
+/-- **PSS Bachmann cofinality from the single host-free core.** -/
+theorem pss_cofinality_of_core (H : ArgDomCore) {M N : PairSeq}
+    (hM : ST_PS M) (hN : ST_PS N) (h : translate N <o translate M) :
+    ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=
+  pss_cofinality_of_argdom (ascArgDom_of_core H) hM hN h
+
+
+/-! ## Part E — the core genuinely needs reachability
+
+`ArgDomCore` is **not** a consequence of the local standard-form invariants.
+The sequence
+
+    L = (0,0)(1,1)(2,1)(3,2)(2,1)(3,2)
+
+satisfies `blockok 0`, `z0ok`, `r1ok` **and** `cnf (translate ·)` — every local
+invariant the file's machinery supplies — yet violates the conclusion of
+`ArgDomCore` at `(u,w) = (1,1)`, `e = 1` (where `SpineOK` is vacuous):
+
+    A = (2,1)(3,2)(2,1)(3,2),   B = (3,2),   shiftr0 1 A = (3,1)(4,2)(3,1)(4,2)
+
+and `(3,2) > (3,1)`.  `L ∉ ST_PS` (model-checked over three closures), so the
+proof of `ArgDomCore` **must** descend the `ST_PS` derivation; no argument from
+`blockok / z0ok / r1ok / cnf` alone can work. -/
+
+/-- The local-invariant witness `L = (0,0)(1,1)(2,1)(3,2)(2,1)(3,2)`. -/
+def locL : PairSeq := [(0, 0), (1, 1), (2, 1), (3, 2), (2, 1), (3, 2)]
+
+theorem locL_eq :
+    locL = (([((0:ℕ), (0:ℕ))] ++ (1, 1) :: ([(2, 1), (3, 2)] ++ (1 + 1, 1) ::
+      ([((3:ℕ), (2:ℕ))] ++ []))) ++ []) := by decide
+
+theorem locL_blockok : blockok 0 locL := by
+  refine ⟨fun _ => rfl, by decide, ?_⟩
+  show steps1 locL
+  unfold locL
+  exact ⟨by decide, by decide, by decide, by decide, by decide, trivial⟩
+
+theorem locL_z0ok : z0ok locL := by
+  intro j hj h0
+  have hj6 : j < 6 := by simpa [locL] using hj
+  rcases j with _ | _ | _ | _ | _ | _ | j
+  · revert h0; decide
+  · revert h0; decide
+  · revert h0; decide
+  · revert h0; decide
+  · revert h0; decide
+  · revert h0; decide
+  · omega
+
+theorem locL_r1ok : r1ok locL := by
+  intro j hj hpos
+  have hj6 : j < 6 := by simpa [locL] using hj
+  rcases j with _ | _ | _ | _ | _ | _ | j
+  · exact absurd hpos (by decide)
+  · exact ⟨0, by decide, by decide, by intro l h1 h2; omega, by decide⟩
+  · exact ⟨1, by decide, by decide, by intro l h1 h2; omega, by decide⟩
+  · exact ⟨2, by decide, by decide, by intro l h1 h2; omega, by decide⟩
+  · refine ⟨1, by decide, by decide, ?_, by decide⟩
+    intro l h1 h2
+    rcases l with _ | _ | _ | l
+    · omega
+    · omega
+    · decide
+    · rcases l with _ | l
+      · decide
+      · omega
+  · exact ⟨4, by decide, by decide, by intro l h1 h2; omega, by decide⟩
+  · omega
+
+theorem locL_translate :
+    translate locL = P 0 (P 1 (P 1 (P 2 Z Z) (P 1 (P 2 Z Z) Z)) Z) Z := by
+  unfold locL
+  simp [translate, List.takeWhile, List.dropWhile]
+
+theorem locL_cnf : cnf (translate locL) := by
+  rw [locL_translate]
+  refine cnf_P_Z.2 (cnf_P_Z.2 (cnf_P_P.2 ⟨cnf_P_Z.2 cnf_Z, ?_, cnf_P_Z.2 (cnf_P_Z.2 cnf_Z)⟩))
+  exact olt_irrefl _
+
+/-- `SpineOK` is vacuous here: no column of `A1` sits below level `u + e = 2`. -/
+theorem locL_spineOK : SpineOK [((2:ℕ), (1:ℕ)), (3, 2)] (1 + 1) 1 := by
+  intro U V x hUV hxlt _
+  have hx : x ∈ [((2:ℕ), (1:ℕ)), (3, 2)] := by
+    rw [hUV]; exact List.mem_append_right _ (List.mem_cons_self ..)
+  rcases List.mem_cons.1 hx with rfl | hx
+  · exact absurd hxlt (by decide)
+  · rcases List.mem_cons.1 hx with rfl | hx
+    · exact absurd hxlt (by decide)
+    · simp at hx
+
+/-- 🚨 **The conclusion fails on `locL`**: `(3,2)` exceeds `(3,1)` at the very
+first column. -/
+theorem locL_not_sle :
+    ¬ sle [((3:ℕ), (2:ℕ))]
+        (shiftr0 1 ([((2:ℕ), (1:ℕ)), (3, 2)] ++ (1 + 1, 1) :: ([((3:ℕ), (2:ℕ))] ++ []))) := by
+  have hs : shiftr0 1 ([((2:ℕ), (1:ℕ)), (3, 2)] ++ (1 + 1, 1) :: ([((3:ℕ), (2:ℕ))] ++ []))
+      = ((3 : ℕ), (1 : ℕ)) :: [(4, 2), (3, 1), (4, 2)] := by decide
+  rw [hs]
+  rintro (h | h)
+  · exact absurd h (by decide)
+  · rw [seqlex_cons_cons] at h
+    rcases h with h | ⟨h, -⟩
+    · exact absurd h (by unfold pairlt; simp)
+    · exact absurd h (by decide)
+
+/-- 🚨 **`ArgDomCore` is not implied by `blockok / z0ok / r1ok / cnf`.**  Any
+proof must use the `ST_PS` derivation itself. -/
+theorem argDomCore_needs_reachability :
+    ∃ (N X A1 B A2 Z : PairSeq) (u w e : ℕ),
+      N = (X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z ∧
+      blockok 0 N ∧ z0ok N ∧ r1ok N ∧ cnf (translate N) ∧
+      0 < e ∧ (∀ x ∈ A1, u < x.1) ∧ (∀ x ∈ B, u + e < x.1) ∧ (∀ x ∈ A2, u < x.1) ∧
+      (A2 = [] ∨ (A2.headI).1 ≤ u + e) ∧ (Z = [] ∨ (Z.headI).1 ≤ u) ∧
+      SpineOK A1 (u + e) w ∧
+      ¬ sle B (shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2))) :=
+  ⟨locL, [(0, 0)], [(2, 1), (3, 2)], [(3, 2)], [], [], 1, 1, 1,
+    locL_eq, locL_blockok, locL_z0ok, locL_r1ok, locL_cnf, one_pos,
+    by decide, by decide, by decide, Or.inl rfl, Or.inl rfl,
+    locL_spineOK, locL_not_sle⟩
+
+#print axioms peel_aux
+#print axioms spineOK_of_nextrel1
+#print axioms ascArgDom_of_core
+#print axioms pss_cofinality_of_core
+#print axioms argDomCore_needs_reachability
+
+end YAPSS
+
