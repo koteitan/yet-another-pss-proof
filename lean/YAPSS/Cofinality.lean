@@ -84,6 +84,47 @@ Model-verified TRUE: **0 violations** over 6095 / 7969 / 15579 instances at
 closures `(v≤4,d=5)`, `(v≤5,d=5)`, `(v≤4,d=6)` with `m ≤ 12/12/14`
 (`tools/probe_cof_asc.py` + the inline check recorded in the session).
 
+### Recommended next attack
+
+Since no *local* invariant of `N` can supply `AscArgDom` (the host-free version
+is refuted above), the next route is an induction along the **`ST_PS` derivation
+of `N`** for the whole of `SeqlexCofinality`:
+
+* `N` is never a base diagonal in the ascending configuration (a diagonal has
+  row-0 `=` row-1 in every column, forcing `d0 = 0`), so `N = N'⟦k⟧`;
+* if `seqlex N' M` the IH closes it; if `N' = M` take `m = k`;
+* the only hard case is `seqlex M N'`, i.e. `N'⟦k⟧ <lex M <lex N'`.  There `M`
+  cannot be a prefix of `N'` (that contradicts `N'⟦1⟧ ≤lex N'⟦k⟧`), so writing
+  `N' = (G' ++ blk'') ++ [lp']` the snoc analysis (`seqlex_snoc_cases`) forces
+  `M = (G' ++ blk'') ++ q' :: S'` with `pairlt q' lp'` — the *same* two-form
+  configuration, with the roles of host and small side exchanged.  Also, `N'`
+  is necessarily in the **bad** branch there (the `(0,0)`-last branch makes the
+  case vacuous, and `noparent` is empty on `ST_PS`).
+
+`Part 6b` below supplies the column discipline that this induction's base case
+needs (`snd_le_fst_ST_PS`, `le_diag_ST_PS`).
+
+Running the same derivation induction **directly on `AscArgDom`** (writing
+`N = N₁⟦k⟧`, `p = |G| + |blk|` for the position of the copy root `q`) splits as:
+
+* `N` a base diagonal — impossible (`row-0 = row-1` in a diagonal forces `d0 = 0`);
+* `|N₁| ≤ 1` — impossible (`|N| ≥ p + 1 ≥ 2`);
+* `N₁` in the `noparent` branch — impossible (`hasParent_last_ST_PS`);
+* `N₁` in the `(0,0)`-last branch — `N = N₁.dropLast`, `N₁ = N ++ [(0,0)]`, and
+  `S_hi` is *unchanged* (`(0,0).1 = 0 ≤ v0+d0` stops the `takeWhile` no later),
+  so the IH at `N₁` transfers verbatim;
+* `N₁` in the **bad** branch, `N = G₁ ++ copies d₁ blk₁ k` — the real case.  It
+  subdivides on where `p` sits relative to `|G₁|`; when the `takeWhile` defining
+  `S_hi` stops inside `G₁` the IH at `N₁` again transfers, and what is left is
+  `S_hi` reaching into `N`'s own copy region.  Formalising that last piece is
+  the open work; it needs positional bookkeeping between the two copy
+  decompositions (`N`'s own, and the host's `copies d0 blk'`).
+
+Polarity note: by `sle_iff_not_seqlex` the goal is equivalent to
+`∃ m, ¬ seqlex (shiftr0 d0 (R ++ copies d0 blk' m)) S_hi`, i.e. a pure
+*no-overshoot* statement — the continuation of `N` never strictly exceeds the
+copy word.  That is the shape the positional argument wants.
+
 ### Why `d0 = 0` closes but `d0 > 0` does not
 
 The exact-copy branch is driven by **CNF** (`cnf_ST_PS`): the level-`v0` siblings of a
@@ -185,6 +226,21 @@ def sle (M N : PairSeq) : Prop := M = N ∨ seqlex M N
 
 theorem sle_refl (M : PairSeq) : sle M M := Or.inl rfl
 
+/-- `seqlex` is a linear order, so `sle` is exactly the negation of the strict
+order the other way.  (Turns every `sle` goal into a *no-overshoot* goal, which
+is the useful polarity for the copy-tiling arguments: one only ever has to rule
+out that the continuation strictly exceeds the copy word.) -/
+theorem sle_iff_not_seqlex {A B : PairSeq} : sle A B ↔ ¬ seqlex B A := by
+  constructor
+  · rintro (rfl | h) hBA
+    · exact seqlex_irrefl _ hBA
+    · exact seqlex_irrefl _ (seqlex_trans h hBA)
+  · intro h
+    rcases seqlex_total A B with he | hs | hs
+    · exact Or.inl he
+    · exact Or.inr hs
+    · exact absurd hs h
+
 theorem sle_seqlex_trans {A B C : PairSeq} (h1 : sle A B) (h2 : seqlex B C) :
     seqlex A C := by
   rcases h1 with rfl | h1
@@ -196,6 +252,34 @@ theorem seqlex_sle_trans {A B C : PairSeq} (h1 : seqlex A B) (h2 : sle B C) :
   rcases h2 with rfl | h2
   · exact h1
   · exact seqlex_trans h1 h2
+
+/-- `seqlex` is monotone under extending the *larger* side on the right. -/
+theorem seqlex_append_mono : ∀ {A B : PairSeq}, seqlex A B → ∀ (C : PairSeq),
+    seqlex A (B ++ C) := by
+  intro A
+  induction A with
+  | nil =>
+    intro B h C
+    rcases B with _ | ⟨b, B'⟩
+    · exact absurd h (by simp)
+    · simp
+  | cons a A' ih =>
+    intro B h C
+    rcases B with _ | ⟨b, B'⟩
+    · exact absurd h (by simp)
+    · rw [seqlex_cons_cons] at h
+      rcases h with hp | ⟨rfl, hs⟩
+      · exact Or.inl hp
+      · exact Or.inr ⟨rfl, ih hs C⟩
+
+/-- `sle` version of `seqlex_append_mono`. -/
+theorem sle_append_mono {A B : PairSeq} (h : sle A B) (C : PairSeq) :
+    sle A (B ++ C) := by
+  rcases h with rfl | h
+  · rcases C with _ | ⟨c, C'⟩
+    · exact Or.inl (by simp)
+    · exact Or.inr (seqlex_prefix (by simp) A)
+  · exact Or.inr (seqlex_append_mono h C)
 
 /-- Extending on the right strictly increases (`seqlex_prefix`, `≤` form). -/
 theorem sle_append_right {A B : PairSeq} (h : sle A B) (C : PairSeq) (hC : C ≠ []) :
@@ -988,6 +1072,88 @@ theorem asc_crux1_of_argdom (H : AscArgDom) : AscCrux1 := by
       unfold pairlt
       simp only []
       omega
+
+/-- **Monotonicity of the copy-tower bound in the stage `m`.**  This is what
+lets a "witness per constituent, then take the max" argument (the shape of the
+source's `(*)` proof) go through: a bound at stage `m` survives at every later
+stage. -/
+theorem argdom_bound_mono {X R : PairSeq} {v0 w0 d0 m : ℕ}
+    (h : sle X (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m))) :
+    sle X (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) (m + 1))) := by
+  have he : shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) (m + 1))
+      = shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m)
+        ++ shiftr0 d0 (shiftr0 (m * d0) (shiftr0 d0 ((v0, w0) :: R))) := by
+    rw [copies_succ_back, ← List.append_assoc, shiftr0_append]
+  rw [he]
+  exact sle_append_mono h _
+
+/-- Iterated form: the bound survives to every later stage. -/
+theorem argdom_bound_mono_le {X R : PairSeq} {v0 w0 d0 m m' : ℕ} (hm : m ≤ m')
+    (h : sle X (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m))) :
+    sle X (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R)) m')) := by
+  obtain ⟨t, rfl⟩ : ∃ t, m' = m + t := ⟨m' - m, by omega⟩
+  induction t with
+  | zero => exact h
+  | succ t ih => exact argdom_bound_mono (ih (by omega))
+
+/-! ## Part 6b — `ST_PS` column discipline (assets for the `N`-side induction)
+
+The remaining residual `AscArgDom` cannot come from a local invariant of `N`
+(see the header), so the next attack has to be an induction along the **`ST_PS`
+derivation of `N`**.  Its base case is `N = diagSeq 0 v`, and the two lemmas
+below are exactly what that base case needs. -/
+
+/-- **Row 1 never exceeds row 0** on a standard form.  Climb the `r1ok` chain:
+each step down lowers row 0 by exactly one and row 1 by at most one, and at
+row 0 `= 0` the column is `(0,0)` (`z0ok`). -/
+theorem snd_le_fst_ST_PS {M : PairSeq} (hM : ST_PS M) :
+    ∀ j, j < M.length → (M.getD j (0, 0)).2 ≤ (M.getD j (0, 0)).1 := by
+  have hr := r1ok_ST_PS hM
+  have hz := z0ok_ST_PS hM
+  suffices H : ∀ (d j : ℕ), j < M.length → (M.getD j (0, 0)).1 ≤ d →
+      (M.getD j (0, 0)).2 ≤ (M.getD j (0, 0)).1 from
+    fun j hj => H _ j hj le_rfl
+  intro d
+  induction d with
+  | zero =>
+    intro j hj h0
+    have h1 : (M.getD j (0, 0)).1 = 0 := by omega
+    have := hz j hj h1
+    omega
+  | succ d ih =>
+    intro j hj hle
+    by_cases h0 : (M.getD j (0, 0)).1 = 0
+    · have := hz j hj h0; omega
+    · obtain ⟨k, hkj, hk1, -, hk2⟩ := hr j hj (by omega)
+      have hklen : k < M.length := by omega
+      have := ih k hklen (by omega)
+      omega
+
+/-- **A standard form never rises above the diagonal.**  If `M` has matched the
+base diagonal on `[0, i)`, then its `i`-th column is `pairlt`-below or equal to
+`(i,i)`: `steps1` caps row 0 by `i`, and `snd_le_fst_ST_PS` caps row 1 by row 0.
+
+Consequence (the base case of an induction along the `ST_PS` derivation of the
+*small* side): `seqlex (diagSeq 0 v) M` forces `diagSeq 0 v` to be a **prefix**
+of `M` — the comparison can never be decided by a strictly larger column. -/
+theorem le_diag_ST_PS {M : PairSeq} (hM : ST_PS M) {i : ℕ} (hi : i < M.length)
+    (hpre : ∀ j, j < i → M.getD j (0, 0) = (j, j)) :
+    ¬ pairlt ((i, i) : ℕ × ℕ) (M.getD i (0, 0)) := by
+  have h2 : (M.getD i (0, 0)).2 ≤ (M.getD i (0, 0)).1 := snd_le_fst_ST_PS hM i hi
+  have h1 : (M.getD i (0, 0)).1 ≤ i := by
+    rcases Nat.eq_zero_or_pos i with rfl | hipos
+    · have hhd : M.headD (0, 0) = (0, 0) := stps_head hM
+      have h0 : M.getD 0 (0, 0) = M.headD (0, 0) := by
+        rcases M with _ | ⟨x, xs⟩ <;> rfl
+      rw [h0, hhd]
+    · obtain ⟨i', rfl⟩ : ∃ i', i = i' + 1 := ⟨i - 1, by omega⟩
+      have hst : steps1 M := (blockok_ST_PS hM).2.2
+      have hup := steps1_iff.1 hst i' hi
+      rw [hpre i' (by omega)] at hup
+      simpa using hup
+  unfold pairlt
+  omega
+
 
 /-! ## Part 7 — assembly (modulo the ascending crux) -/
 

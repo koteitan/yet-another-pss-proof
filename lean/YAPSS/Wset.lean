@@ -1183,10 +1183,137 @@ own chain **extended by the root** `(0,v)` (which is below everything, by
 | (D′) | `domT R m`, `v ≤ m` | `ℕ` (collapsing) | the **tower** |
 | (E′) | `domT R m`, `m < v` | `T_m` (continuous) | graft through the root |
 
-**OPEN OBLIGATIONS** — the four statements below are the remaining mathematical
-content of `W_membership`.  They are pure facts about PSS `oper`/`hasParent` on
-`(0,v) :: R`; none of them mentions `W`, `olt`, `translate` or any
-coefficient-domination condition. -/
+All five are pure facts about PSS `oper`/`hasParent`; none of them mentions
+`W`, `olt`, `translate` or any coefficient-domination condition. -/
+
+/-! #### `cons`-transfer of the parent machinery
+
+`Nrm`'s `*_append_right` family is *unconditional* on shifted indices, so with
+the prefix `[p]` it gives every "column `j` of `R` becomes column `j+1` of
+`p :: R`" transfer for free.  Only the **index-`0`** case (the root) needs new
+work, and that is where `argOK` enters. -/
+
+theorem nextR_cons (p : ℕ × ℕ) (R : PairSeq) (i j0 j1 : ℕ) :
+    nextR (p :: R) i (j0 + 1) (j1 + 1) ↔ nextR R i j0 j1 := by
+  have h := nextR_append_right [p] R i j0 j1
+  simp only [List.length_singleton, List.singleton_append] at h
+  rw [Nat.add_comm 1 j0, Nat.add_comm 1 j1] at h
+  exact h
+
+theorem le0_cons (p : ℕ × ℕ) (R : PairSeq) (j0 j1 : ℕ) :
+    le0 (p :: R) (j0 + 1) (j1 + 1) ↔ le0 R j0 j1 := by
+  have h := le0_append_right [p] R j0 j1
+  simp only [List.length_singleton, List.singleton_append] at h
+  rw [Nat.add_comm 1 j0, Nat.add_comm 1 j1] at h
+  exact h
+
+theorem idx1_cons (p : ℕ × ℕ) (R : PairSeq) (j : ℕ) :
+    idx1 (p :: R) (j + 1) = idx1 R j := by
+  have h := idx1_append_right [p] R j
+  simp only [List.length_singleton, List.singleton_append] at h
+  rw [Nat.add_comm 1 j] at h
+  exact h
+
+/-- Row-0 companion of `hasParent_one_iff`: a column has a row-0 parent iff some
+earlier column is strictly shallower. -/
+theorem hasParent_zero_iff {M : PairSeq} {b : ℕ} (hb : b < M.length) :
+    hasParent M 0 b ↔ ∃ k, k < b ∧ entry M 0 k < entry M 0 b := by
+  classical
+  have nR : ∀ k : ℕ, nextR M 0 k b ↔ nextrel0 M k b := by
+    intro k; unfold nextR; rw [if_pos rfl]
+  constructor
+  · rintro ⟨k, hk, -⟩
+    have h := (nR k).mp hk
+    exact ⟨k, h.2.2.1, h.2.2.2.1⟩
+  · rintro ⟨k, hk1, hk2⟩
+    set P : ℕ → Prop := fun t => t < b ∧ entry M 0 t < entry M 0 b with hP
+    have hPg : P (Nat.findGreatest P b) := Nat.findGreatest_spec (m := k) (le_of_lt hk1) ⟨hk1, hk2⟩
+    have hmax : ∀ t, P t → t ≤ Nat.findGreatest P b :=
+      fun t ht => Nat.le_findGreatest (le_of_lt ht.1) ht
+    refine ⟨Nat.findGreatest P b, (nR _).mpr ?_, ?_⟩
+    · refine ⟨by omega, hb, hPg.1, hPg.2, ?_⟩
+      intro l hl
+      by_contra hcon
+      exact absurd (hmax l ⟨hl.2, by omega⟩) (by omega)
+    · intro y hy
+      have hy' : nextrel0 M y b := (nR y).mp hy
+      have hyP : P y := ⟨hy'.2.2.1, hy'.2.2.2.1⟩
+      rcases eq_or_lt_of_le (hmax y hyP) with h | h
+      · exact h
+      · have := hy'.2.2.2.2 (Nat.findGreatest P b) ⟨h, hPg.1⟩
+        have := hPg.2
+        omega
+
+/-- The root of a principal block is a row-0 ancestor of **every** column: by
+`argOK` it is strictly shallower than all of them, so the ancestor chain from any
+column descends all the way to index `0`. -/
+theorem le0_cons_zero {v : ℕ} {R : PairSeq} (hR : argOK R) :
+    ∀ j, j < R.length → le0 ((0, v) :: R) 0 (j + 1) := by
+  have key : ∀ N j, j ≤ N → j < R.length → le0 ((0, v) :: R) 0 (j + 1) := by
+    intro N
+    induction N with
+    | zero =>
+        intro j hj hjR
+        have hj0 : j = 0 := by omega
+        subst hj0
+        refine ⟨by simp, by simp; omega, ?_⟩
+        refine Relation.ReflTransGen.single ?_
+        refine ⟨by simp, by simp; omega, by omega, ?_, ?_⟩
+        · rw [entry_cons]
+          have := hR _ (entry_pair_mem (B := R) (j := 0) (by omega))
+          simpa [entry] using this
+        · intro l hl; omega
+    | succ N ih =>
+        intro j hj hjR
+        have hbnd : j + 1 < ((0, v) :: R).length := by simp; omega
+        have hpos : 0 < entry ((0, v) :: R) 0 (j + 1) := by
+          rw [entry_cons]
+          exact hR _ (entry_pair_mem (B := R) hjR)
+        have hex : ∃ k, k < j + 1 ∧
+            entry ((0, v) :: R) 0 k < entry ((0, v) :: R) 0 (j + 1) := by
+          refine ⟨0, by omega, ?_⟩
+          simpa [entry] using hpos
+        obtain ⟨k, hk, -⟩ := (hasParent_zero_iff hbnd).mpr hex
+        have hnk : nextrel0 ((0, v) :: R) k (j + 1) := by
+          unfold nextR at hk; rwa [if_pos rfl] at hk
+        rcases Nat.eq_zero_or_pos k with hk0 | hk0
+        · subst hk0
+          exact ⟨by simp, hbnd, Relation.ReflTransGen.single hnk⟩
+        · obtain ⟨k', rfl⟩ : ∃ k', k = k' + 1 := ⟨k - 1, by omega⟩
+          have hklt : k' + 1 < j + 1 := hnk.2.2.1
+          have hk'lt : k' < j := by omega
+          have hk'R : k' < R.length := by omega
+          obtain ⟨-, -, hchain⟩ := ih k' (by omega) hk'R
+          exact ⟨by simp, hbnd, hchain.tail hnk⟩
+  intro j hj
+  exact key j j le_rfl hj
+
+
+theorem len_succ {R : PairSeq} (hRne : R ≠ []) : R.length = (R.length - 1) + 1 := by
+  have : 0 < R.length := List.length_pos_iff.mpr hRne
+  omega
+
+theorem entry_cons_last {p : ℕ × ℕ} {R : PairSeq} (hRne : R ≠ []) (i : ℕ) :
+    entry (p :: R) i R.length = entry R i (R.length - 1) := by
+  conv_lhs => rw [len_succ hRne]
+  rw [entry_cons]
+
+theorem le0_cons_last {p : ℕ × ℕ} {R : PairSeq} (hRne : R ≠ []) (j : ℕ) :
+    le0 (p :: R) (j + 1) R.length ↔ le0 R j (R.length - 1) := by
+  conv_lhs => rw [len_succ hRne]
+  rw [le0_cons]
+
+theorem nextR_cons_last {p : ℕ × ℕ} {R : PairSeq} (hRne : R ≠ []) (i j : ℕ) :
+    nextR (p :: R) i (j + 1) R.length ↔ nextR R i j (R.length - 1) := by
+  conv_lhs => rw [len_succ hRne]
+  rw [nextR_cons]
+
+theorem idx1_cons_last {p : ℕ × ℕ} {R : PairSeq} (hRne : R ≠ []) :
+    idx1 (p :: R) R.length = idx1 R (R.length - 1) := by
+  conv_lhs => rw [len_succ hRne]
+  rw [idx1_cons]
+
+theorem cons_len_lt {p : ℕ × ℕ} (R : PairSeq) : R.length < (p :: R).length := by simp
 
 /-- (C′)/(D′) The root `(0,v)` becomes the row-1 parent of `M`'s last column
 whenever `R` has no row-1 parent of its own but `v` is below `R`'s trailing
@@ -1194,7 +1321,19 @@ subscript — and `R`'s own parent survives the `cons` otherwise. -/
 theorem hasParent_cons_one {v : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
     (h : hasParent R 1 (R.length - 1) ∨ v < entry R 1 (R.length - 1)) :
     hasParent ((0, v) :: R) 1 R.length := by
-  sorry
+  have hRlen : 0 < R.length := List.length_pos_iff.mpr hRne
+  rw [hasParent_one_iff (cons_len_lt R)]
+  have hE : entry ((0, v) :: R) 1 R.length = entry R 1 (R.length - 1) :=
+    entry_cons_last hRne 1
+  rcases h with h | h
+  · rw [hasParent_one_iff (by omega)] at h
+    obtain ⟨j', hj1, hj2, hj3⟩ := h
+    refine ⟨j' + 1, by omega, (le0_cons_last hRne j').mpr hj2, ?_⟩
+    rw [hE, entry_cons]
+    exact hj3
+  · exact ⟨0, hRlen, by
+      have := le0_cons_zero (v := v) hR (R.length - 1) (by omega)
+      rwa [← len_succ hRne] at this, by rw [hE]; simpa [entry] using h⟩
 
 /-- (B′)(C′) Non-collapsing principal step: `p_v(R)[n] = p_v(R[n])`. -/
 theorem oper_cons_nat {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
@@ -1220,7 +1359,22 @@ theorem oper_cons_tower {v m n : ℕ} {R : PairSeq}
 /-- (E′) Continuous case `dom R = T_m` with `m < v`: `dom (p_v R) = T_m`. -/
 theorem domT_cons_of_lt {v m : ℕ} {R : PairSeq} (hR : argOK R) (hd : domT R m)
     (hmv : m < v) : domT ((0, v) :: R) m := by
-  sorry
+  have hRne : R ≠ [] := by rintro rfl; exact not_domT_nil m hd
+  have hRlen : 0 < R.length := List.length_pos_iff.mpr hRne
+  have hlast : ((0, v) :: R).length - 1 = R.length := by simp
+  have hE : entry ((0, v) :: R) 1 R.length = entry R 1 (R.length - 1) :=
+    entry_cons_last hRne 1
+  refine ⟨by rw [hlast, hE]; exact hd.1, ?_⟩
+  rw [hlast, hasParent_one_iff (cons_len_lt R)]
+  rintro ⟨j0, hj1, hj2, hj3⟩
+  rw [hE, hd.1] at hj3
+  rcases Nat.eq_zero_or_pos j0 with rfl | hj0
+  · simp [entry] at hj3; omega
+  · obtain ⟨j', rfl⟩ : ∃ j', j0 = j' + 1 := ⟨j0 - 1, by omega⟩
+    rw [entry_cons] at hj3
+    have h1 : entry R 1 (R.length - 1) = m + 1 := hd.1
+    refine hd.2 ((hasParent_one_iff (by omega)).mpr ⟨j', by omega,
+      (le0_cons_last hRne j').mp hj2, by omega⟩)
 
 /-! ### Assembling 2.6 -/
 
