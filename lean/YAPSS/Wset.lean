@@ -1335,6 +1335,24 @@ theorem hasParent_cons_one {v : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ 
       have := le0_cons_zero (v := v) hR (R.length - 1) (by omega)
       rwa [← len_succ hRne] at this, by rw [hE]; simpa [entry] using h⟩
 
+/-- When the parent of the last column is the root (index `0`), `oper` tiles the
+whole of `M.dropLast`. -/
+theorem oper_root_tiling {M : PairSeq} (n : ℕ) (hL : M.length - 1 ≠ 0)
+    (hz : ¬ (entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0))
+    (hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1))
+    (hpar : parent M (idx1 M (M.length - 1)) (M.length - 1) = 0) :
+    M⟦n⟧ = (List.range n).flatMap (fun k =>
+      M.dropLast.map (fun p =>
+        (p.1 + k * (if 0 < idx1 M (M.length - 1)
+          then entry M 0 (M.length - 1) - entry M 0 0 else 0), p.2))) := by
+  rw [oper_bad_unfold n hL hz hp, hpar]
+  simp only [List.take_zero, List.nil_append, Nat.sub_zero]
+  refine List.flatMap_congr ?_
+  intro k _
+  rw [List.dropLast_eq_take, ← map_range_entry_eq_take M (by omega), List.map_map,
+    ← List.range_eq_range']
+  rfl
+
 /-- (B′)(C′) Non-collapsing principal step: `p_v(R)[n] = p_v(R[n])`. -/
 theorem oper_cons_nat {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
     (hp : hasParent R (idx1 R (R.length - 1)) (R.length - 1)) (hn : 1 ≤ n) :
@@ -1347,14 +1365,137 @@ theorem oper_cons_succ {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ []
     (hnp : ¬ hasParent R 0 (R.length - 1)) :
     ((0, v) :: R)⟦n⟧ =
       (List.range n).flatMap (fun _ => ((0, v) :: R.dropLast)) := by
-  sorry
+  have hRlen : 0 < R.length := List.length_pos_iff.mpr hRne
+  have hMlen : ((0, v) :: R).length - 1 = R.length := by simp
+  have hEx : entry ((0, v) :: R) 0 R.length = entry R 0 (R.length - 1) :=
+    entry_cons_last hRne 0
+  have hxpos : 0 < entry R 0 (R.length - 1) := hR _ (entry_pair_mem (B := R) (by omega))
+  have hL : ((0, v) :: R).length - 1 ≠ 0 := by rw [hMlen]; omega
+  have hz : ¬ (entry ((0, v) :: R) 0 (((0, v) :: R).length - 1) = 0 ∧
+      entry ((0, v) :: R) 1 (((0, v) :: R).length - 1) = 0) := by
+    rw [hMlen]; rintro ⟨h1, -⟩; rw [hEx] at h1; omega
+  have hi1 : idx1 ((0, v) :: R) (((0, v) :: R).length - 1) = 0 := by
+    rw [hMlen, idx1_cons_last hRne]
+    unfold idx1; rw [if_neg (by omega)]
+  have hallge : ∀ k, k < R.length - 1 → entry R 0 (R.length - 1) ≤ entry R 0 k := by
+    intro k hk
+    by_contra hcon
+    exact hnp ((hasParent_zero_iff (by omega)).mpr ⟨k, hk, by omega⟩)
+  -- the root is a `nextrel0`-parent of the last column …
+  have hnr : nextrel0 ((0, v) :: R) 0 R.length := by
+    refine ⟨by simp, by simp, hRlen, ?_, ?_⟩
+    · rw [hEx]; simpa [entry] using hxpos
+    · rintro l ⟨hl1, hl2⟩
+      obtain ⟨l', rfl⟩ : ∃ l', l = l' + 1 := ⟨l - 1, by omega⟩
+      rw [hEx, entry_cons]
+      exact hallge l' (by omega)
+  -- … and the only one
+  have huniq : ∀ y, nextR ((0, v) :: R) 0 y R.length → y = 0 := by
+    intro y hy
+    by_contra hy0
+    obtain ⟨y', rfl⟩ : ∃ y', y = y' + 1 := ⟨y - 1, by omega⟩
+    have hyR : nextrel0 R y' (R.length - 1) := (nextR_cons_last hRne 0 y').mp hy
+    have h1 := hallge y' hyR.2.2.1
+    have h2 := hyR.2.2.2.1
+    omega
+  have hp : hasParent ((0, v) :: R) (idx1 ((0, v) :: R) (((0, v) :: R).length - 1))
+      (((0, v) :: R).length - 1) := by
+    rw [hi1, hMlen]
+    exact ⟨0, hnr, huniq⟩
+  have hpar : parent ((0, v) :: R) (idx1 ((0, v) :: R) (((0, v) :: R).length - 1))
+      (((0, v) :: R).length - 1) = 0 := by
+    have hp' : hasParent ((0, v) :: R) 0 R.length := by rw [hi1, hMlen] at hp; exact hp
+    have := parent_nextR hp'
+    have heq : parent ((0, v) :: R) (idx1 ((0, v) :: R) (((0, v) :: R).length - 1))
+        (((0, v) :: R).length - 1) = parent ((0, v) :: R) 0 R.length := by
+      rw [hi1, hMlen]
+    rw [heq]
+    exact huniq _ this
+  rw [oper_root_tiling n hL hz hp hpar, hi1]
+  have hdl : ((0, v) :: R).dropLast = (0, v) :: R.dropLast := by
+    cases R with
+    | nil => exact absurd rfl hRne
+    | cons a b => simp
+  rw [hdl]
+  refine List.flatMap_congr ?_
+  intro k _
+  simp
 
 /-- (D′) **The tower identity** — the PSS form of `(D_v b)[n] = D_v(b[x_n])`.
 This is `oper_bad_blocks`' `n`-fold ascending tiling read through `graft`. -/
 theorem oper_cons_tower {v m n : ℕ} {R : PairSeq}
     (hR : argOK R) (hd : domT R m) (hvm : v ≤ m) :
     ((0, v) :: R)⟦n⟧ = tow v R n := by
-  sorry
+  have hRne : R ≠ [] := by rintro rfl; exact not_domT_nil m hd
+  have hRlen : 0 < R.length := List.length_pos_iff.mpr hRne
+  have hMlen : ((0, v) :: R).length - 1 = R.length := by simp
+  have hEx : entry ((0, v) :: R) 0 R.length = entry R 0 (R.length - 1) :=
+    entry_cons_last hRne 0
+  have hE1 : entry ((0, v) :: R) 1 R.length = entry R 1 (R.length - 1) :=
+    entry_cons_last hRne 1
+  have hxpos : 0 < entry R 0 (R.length - 1) := hR _ (entry_pair_mem (B := R) (by omega))
+  have hw : entry R 1 (R.length - 1) = m + 1 := hd.1
+  have hL : ((0, v) :: R).length - 1 ≠ 0 := by rw [hMlen]; omega
+  have hz : ¬ (entry ((0, v) :: R) 0 (((0, v) :: R).length - 1) = 0 ∧
+      entry ((0, v) :: R) 1 (((0, v) :: R).length - 1) = 0) := by
+    rw [hMlen]; rintro ⟨h1, -⟩; rw [hEx] at h1; omega
+  have hi1 : idx1 ((0, v) :: R) (((0, v) :: R).length - 1) = 1 := by
+    rw [hMlen, idx1_cons_last hRne]
+    unfold idx1; rw [if_pos (by omega)]
+  have huniq : ∀ y, nextR ((0, v) :: R) 1 y R.length → y = 0 := by
+    intro y hy
+    by_contra hy0
+    obtain ⟨y', rfl⟩ : ∃ y', y = y' + 1 := ⟨y - 1, by omega⟩
+    have hyR : nextrel1 R y' (R.length - 1) := (nextR_cons_last hRne 1 y').mp hy
+    exact hd.2 ((hasParent_one_iff (by omega)).mpr
+      ⟨y', hyR.2.2.1, hyR.2.2.2.2.1, hyR.2.2.2.1⟩)
+  have hp1 : hasParent ((0, v) :: R) 1 R.length :=
+    hasParent_cons_one hR hRne (Or.inr (by omega))
+  have hp : hasParent ((0, v) :: R) (idx1 ((0, v) :: R) (((0, v) :: R).length - 1))
+      (((0, v) :: R).length - 1) := by rw [hi1, hMlen]; exact hp1
+  have hpar : parent ((0, v) :: R) (idx1 ((0, v) :: R) (((0, v) :: R).length - 1))
+      (((0, v) :: R).length - 1) = 0 := by
+    have heq : parent ((0, v) :: R) (idx1 ((0, v) :: R) (((0, v) :: R).length - 1))
+        (((0, v) :: R).length - 1) = parent ((0, v) :: R) 1 R.length := by
+      rw [hi1, hMlen]
+    rw [heq]
+    exact huniq _ (parent_nextR hp1)
+  have hdl : ((0, v) :: R).dropLast = (0, v) :: R.dropLast := by
+    cases R with
+    | nil => exact absurd rfl hRne
+    | cons a b => simp
+  rw [oper_root_tiling n hL hz hp hpar, hi1, hMlen, hEx, hdl]
+  simp only [Nat.lt_irrefl, if_pos (Nat.zero_lt_one), entry, if_pos rfl,
+    List.getD_cons_zero, Nat.sub_zero]
+  -- now: `(range n).flatMap (k ↦ D.map (· + k*x)) = tow v R n`
+  set x := entry R 0 (R.length - 1) with hxdef
+  set D : PairSeq := (0, v) :: R.dropLast with hDdef
+  induction n with
+  | zero => simp [tow]
+  | succ n ih =>
+      rw [List.range_succ_eq_map, List.flatMap_cons, List.flatMap_map]
+      have h0 : D.map (fun p => (p.1 + 0 * x, p.2)) = D := by
+        simp
+      rw [h0]
+      have hstep : ((List.range n).flatMap fun k => D.map fun p => (p.1 + k * x, p.2)).map
+          (fun p => (p.1 + x, p.2))
+          = (List.range n).flatMap (fun k => D.map fun p => (p.1 + (k + 1) * x, p.2)) := by
+        rw [List.map_flatMap]
+        refine List.flatMap_congr ?_
+        intro k _
+        rw [List.map_map]
+        refine List.map_congr_left ?_
+        intro q _
+        simp only [Function.comp_apply, Prod.mk.injEq]
+        constructor
+        · ring
+        · rfl
+      show D ++ (List.range n).flatMap (fun k => D.map fun p => (p.1 + (k + 1) * x, p.2))
+        = tow v R (n + 1)
+      rw [← hstep, ih]
+      show D ++ (tow v R n).map (fun p => (p.1 + x, p.2)) = (0, v) :: graft R (tow v R n)
+      rw [hDdef, graft, hxdef]
+      simp
 
 /-- (E′) Continuous case `dom R = T_m` with `m < v`: `dom (p_v R) = T_m`. -/
 theorem domT_cons_of_lt {v m : ℕ} {R : PairSeq} (hR : argOK R) (hd : domT R m)

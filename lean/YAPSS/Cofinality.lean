@@ -1096,6 +1096,49 @@ theorem argdom_bound_mono_le {X R : PairSeq} {v0 w0 d0 m m' : ℕ} (hm : m ≤ m
   | zero => exact h
   | succ t ih => exact argdom_bound_mono (ih (by omega))
 
+/-- **The first column of the collapsed argument is pinned.**  The column right
+after the ascending copy root `q = (v0+d0, w0)` that still lies above `q` sits at
+level exactly `v0+d0+1` and carries row-1 at most `w0 + 1`: its `r1ok` climbing
+parent can only be `q` itself (anything earlier would have to pass through `q`,
+whose row-0 is too small).
+
+This is the `k = 0` half of `AscArgDom`: paired with `R.headI.2 ≥ w0 + 1` (CNF of
+the host plus `nextrel1` minimality — NOT yet proved) it settles the first
+column of the comparison. -/
+theorem asc_first_column {G R S : PairSeq} {v0 w0 d0 : ℕ}
+    (hN : ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S))
+    {z : ℕ × ℕ} {Z : PairSeq} (hS : S = z :: Z) (hz : v0 + d0 < z.1) :
+    z.1 = v0 + d0 + 1 ∧ z.2 ≤ w0 + 1 := by
+  set A := G ++ ((v0, w0) :: R) with hA
+  set L := A ++ (v0 + d0, w0) :: S with hL
+  have hq : L.getD A.length (0, 0) = ((v0 + d0 : ℕ), (w0 : ℕ)) := by
+    have h := getD_append_right' A ((v0 + d0, w0) :: S) 0
+    rw [Nat.add_zero] at h
+    rw [hL]
+    exact h
+  have hzg : L.getD (A.length + 1) (0, 0) = z := by
+    have h := getD_append_right' A ((v0 + d0, w0) :: S) 1
+    rw [hS] at h
+    rw [hL, hS]
+    exact h
+  have hLlen : L.length = A.length + (S.length + 1) := by
+    rw [hL, List.length_append]
+    simp
+  have hSlen : S.length = Z.length + 1 := by rw [hS]; simp
+  have hlen : A.length + 1 < L.length := by omega
+  obtain ⟨k, hkl, hk1, hkmin, hk2⟩ :=
+    r1ok_ST_PS hN (A.length + 1) hlen (by rw [hzg]; omega)
+  have hkp : k = A.length := by
+    by_contra hne
+    have hklt : k < A.length := by omega
+    have := hkmin A.length hklt (by omega)
+    rw [hq, hzg] at this
+    simp only [] at this
+    omega
+  subst hkp
+  rw [hq, hzg] at hk1 hk2
+  exact ⟨by simpa using hk1.symm, by simpa using hk2⟩
+
 /-! ## Part 6b — `ST_PS` column discipline (assets for the `N`-side induction)
 
 The remaining residual `AscArgDom` cannot come from a local invariant of `N`
