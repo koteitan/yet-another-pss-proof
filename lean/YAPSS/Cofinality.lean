@@ -1063,18 +1063,6 @@ theorem seqlex_cofinality_of_crux (H : AscCrux) : SeqlexCofinality := by
     · exact seqlex_cof_zero (by omega) hz h
     · exact seqlex_cof_bad H hM hN (by omega) hz h
 
-/-- **PSS Bachmann cofinality** (the load-bearing statement of the ordinal-free route).
-
-Every standard form strictly `olt`-below `M` is bounded by some expansion of `M`:
-the fundamental sequence `M⟦·⟧` is cofinal below `M`.
-
-Model-verified TRUE: 0 violations / 79003 pairs at closure `+5/+6/+7`, non-degenerate,
-with `n ≥ 1`. -/
-theorem pss_cofinality {M N : PairSeq} (hM : ST_PS M) (hN : ST_PS N)
-    (h : translate N <o translate M) :
-    ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) := by
-  sorry
-
 /-- **PSS Bachmann cofinality, modulo the single residual `AscCrux1`.**
 Everything else in the statement is GREEN:
 
