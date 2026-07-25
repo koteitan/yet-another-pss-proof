@@ -101,9 +101,6 @@ of `N`** for the whole of `SeqlexCofinality`:
   is necessarily in the **bad** branch there (the `(0,0)`-last branch makes the
   case vacuous, and `noparent` is empty on `ST_PS`).
 
-`Part 6b` below supplies the column discipline that this induction's base case
-needs (`snd_le_fst_ST_PS`, `le_diag_ST_PS`).
-
 Running the same derivation induction **directly on `AscArgDom`** (writing
 `N = N₁⟦k⟧`, `p = |G| + |blk|` for the position of the copy root `q`) splits as:
 
@@ -998,13 +995,6 @@ theorem asc_crux1_of_argdom (H : AscArgDom) : AscCrux1 := by
       unfold pairlt
       simp only []
       omega
-
-/-! ## Part 6b — `ST_PS` column discipline (assets for the `N`-side induction)
-
-The remaining residual `AscArgDom` cannot come from a local invariant of `N`
-(see the header), so the next attack has to be an induction along the **`ST_PS`
-derivation of `N`**.  Its base case is `N = diagSeq 0 v`, and the two lemmas
-below are exactly what that base case needs. -/
 
 /-! ## Part 7 — assembly (modulo the ascending crux) -/
 

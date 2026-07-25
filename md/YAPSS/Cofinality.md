@@ -1300,14 +1300,6 @@ $`S = S_{\mathrm{hi}}\mathbin{+\!\!+}S_{\mathrm{lo}} \prec_{\mathrm{lex}} D\math
 
 ---
 
-## Part 6b — $`\mathrm{ST\_PS}`$ の列規律
-
-Lean 側にはこの節見出し（`/-! ## Part 6b ... -/`）が残っているが、その下に宣言は 1 つも置かれていない。
-節見出しのコメントが挙げる 2 つの補題名 `snd_le_fst_ST_PS`, `le_diag_ST_PS` は
-`lean/YAPSS/` のどのファイルにも存在しない。したがって本章として記すべき命題はない。
-
----
-
 ## Part 7 — 組み立て（上昇側の要を仮定して）
 
 <a id="t-asc_head_step"></a>

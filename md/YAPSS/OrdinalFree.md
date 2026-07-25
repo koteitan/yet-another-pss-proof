@@ -6,7 +6,7 @@
 翻訳（[(D.translate)](Mechanized.md#d-translate)）が $`\mathrm{tr}\,a \prec \mathrm{tr}\,b`$
 （[(D.olt)](Mechanized.md#d-olt)）をみたす」が整礎であることを仮定して、
 項側の関係 [(D.Rnf)](Proofs.md#d-Rnf)（$`\prec`$ を [(D.NF)](Proofs.md#d-NF) に制限したもの）の整礎性を導く。
-本章の宣言は 2 個で、いずれも定理である。第 1 の定理は 1 つのペア列 $`M`$ の到達可能性を
+第 1 の定理は 1 つのペア列 $`M`$ の到達可能性を
 項 $`\mathrm{tr}\,M`$ の到達可能性へ移し、第 2 の定理はそれを用いて
 [(D.Three)](Mechanized.md#d-Three) のすべての項の到達可能性を示す。新しい定義は導入しない。
 
@@ -49,7 +49,7 @@ R_{\mathrm{NF}}(v,u) \ :\iff\ v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\ v 
 である。
 
 **引数の順序.** どちらの関係も第 1 引数が「下」である。すなわち $`R_{\mathrm{NF}}(v,u)`$ は
-「$`v`$ は $`u`$ より下」を表し、Isabelle 側の $`(v,u) \in \mathrm{Rnf}`$ に対応する。
+「$`v`$ は $`u`$ より下」を表す。
 
 **到達可能性と整礎性.** $`\mathrm{Acc}`$ は次の 1 つの導入規則で生成される最小の述語である。
 
@@ -196,41 +196,4 @@ $`\mathrm{Acc}`$ の構成規則の前提が空虚に真である。）
 以上 2 つの場合で $`\mathrm{Acc}(R_{\mathrm{NF}}, u)`$ が示されたから $`\mathrm{WF}(R_{\mathrm{NF}})`$ である。∎
 
 **注（用いた古典論理）** 本章の 2 つの証明で古典論理を用いる箇所は、
-[(T.wf_Rnf_of_wf_PS)](#t-wf_Rnf_of_wf_PS) の場合分け $`u \in \mathrm{NF} \vee u \notin \mathrm{NF}`$ のみである
-（Lean の `by_cases`）。Lean ソースは末尾で
-`#print axioms acc_Rnf_of_acc_PS` と `#print axioms wf_Rnf_of_wf_PS` を実行し、
-両定理が依存する公理を機械的に出力する。
-
-## 残っている債務（Lean ソースの `## What is left` 節）
-
-Lean ソース `lean/YAPSS/OrdinalFree.lean` の同名の節は、その節が書かれた時点で
-未証明であった唯一の命題を記録している。それは `AscArgDomExplicit` という名の命題であり、
-[(D.shiftr0)](Wf.md#d-shiftr0) / [(D.copies)](Wf.md#d-copies) / `List.takeWhile` から作られる
-2 つの明示的なペア列の $`\preceq_{\mathrm{lex}}`$（[(D.sle)](Cofinality.md#d-sle)）比較であって、
-順序数・$`\psi`$・$`\Omega`$・順序数評価写像・および $`\prec`$ の
-いずれも含まない、という性質をもつ。
-
-現在の Lean ソースには `AscArgDomExplicit` という名前の**宣言は存在しない**
-（この名前が現れるのは `lean/YAPSS/OrdinalFree.lean` と `lean/YAPSS/AscArg.lean` の
-コメント中のみである）。対応する内容は仮定なしの定理
-[(T.argDomCore_holds)](AscArg.md#t-argDomCore_holds) として証明されている。
-したがって本章の 2 定理を含む次の連鎖には、未証明の仮定は残っていない。
-
-1. [(T.argDomCore_holds)](AscArg.md#t-argDomCore_holds)（[(D.ArgDomCore)](AscArg.md#d-ArgDomCore) の証明）
-2. [(T.pss_cofinality_of_core)](AscArg.md#t-pss_cofinality_of_core) により
-   [(T.pss_cofinality_holds)](Final.md#t-pss_cofinality_holds)（PSS の Bachmann 共終性）
-3. [(T.wf_olt_ST_PS_of_cofinality)](Wset.md#t-wf_olt_ST_PS_of_cofinality) により
-   [(T.wf_olt_ST_PS_holds)](Final.md#t-wf_olt_ST_PS_holds)、すなわち $`\mathrm{WF}(R_{\mathrm{PS}})`$
-4. [(T.wf_Rnf_of_wf_PS)](#t-wf_Rnf_of_wf_PS)（本章）により
-   [(T.wf_Rnf_holds)](Final.md#t-wf_Rnf_holds)、すなわち $`\mathrm{WF}(R_{\mathrm{NF}})`$
-5. [(T.step_terminates)](Proofs.md#t-step_terminates) により
-   [(T.PSS_terminates_unconditional)](Final.md#t-PSS_terminates_unconditional)、
-   すなわち [(D.stepRel)](Proofs.md#d-stepRel) の整礎性
-
-である。この合成を実際に行うのは [`Final.md`](Final.md) である。
-
-なお Lean ソースの冒頭コメントは、この経路が順序数、順序数評価写像、Buchholz の
-OT 整合性述語による埋め込み、および係数優越の事実
-のいずれも用いず、
-Bachmann 共終性（[`Cofinality.md`](Cofinality.md), [`AscArg.md`](AscArg.md)）と
-反復帰納的集合 $`W_u`$（[`Wset.md`](Wset.md)）でこれらを置き換えたものであることを記録している。
+[(T.wf_Rnf_of_wf_PS)](#t-wf_Rnf_of_wf_PS) の場合分け $`u \in \mathrm{NF} \vee u \notin \mathrm{NF}`$ のみである。

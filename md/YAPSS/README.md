@@ -5,22 +5,22 @@
 `lean/YAPSS/*.lean` の各モジュールに 1 対 1 で対応する。編集方針は
 [`../requirement.md`](../requirement.md)。
 
-**基盤 → 結論の順**に並べる。各ファイルは自分より上の行のファイルの定義・命題のみを引用する。
+**基盤 → 結論の順**に並べる。
 
-| # | ファイル | Lean 行数 | 宣言数 | 依存 |
-|---:|---|---:|---:|---|
-| 1 | [`Def.md`](Def.md) | 131 | 12 | — |
-| 2 | [`Mechanized.md`](Mechanized.md) | 970 | 53 | Def |
-| 3 | [`Proofs.md`](Proofs.md) | 114 | 8 | Mechanized |
-| 4 | [`Wf.md`](Wf.md) | 989 | 37 | Proofs |
-| 5 | [`Seqlex.md`](Seqlex.md) | 709 | 33 | Wf |
-| 6 | [`Nrm.md`](Nrm.md) | 415 | 28 | Wf |
-| 7 | [`Nrmstep.md`](Nrmstep.md) | 1099 | 60 | Nrm,Seqlex |
-| 8 | [`Cofinality.md`](Cofinality.md) | 1092 | 40 | Mechanized,Seqlex,Nrmstep |
-| 9 | [`AscArg.md`](AscArg.md) | 1891 | 49 | Cofinality |
-| 10 | [`Wset.md`](Wset.md) | 2054 | 111 | Nrmstep |
-| 11 | [`OrdinalFree.md`](OrdinalFree.md) | 87 | 2 | Cofinality,Wset,Proofs |
-| 12 | [`Final.md`](Final.md) | 65 | 5 | AscArg,OrdinalFree |
+| # | ファイル | 依存 |
+|---:|---|---|
+| 1 | [`Def.md`](Def.md) | — |
+| 2 | [`Mechanized.md`](Mechanized.md) | Def |
+| 3 | [`Proofs.md`](Proofs.md) | Mechanized |
+| 4 | [`Wf.md`](Wf.md) | Proofs |
+| 5 | [`Seqlex.md`](Seqlex.md) | Wf |
+| 6 | [`Nrm.md`](Nrm.md) | Wf |
+| 7 | [`Nrmstep.md`](Nrmstep.md) | Nrm,Seqlex |
+| 8 | [`Cofinality.md`](Cofinality.md) | Mechanized,Seqlex,Nrmstep |
+| 9 | [`AscArg.md`](AscArg.md) | Cofinality |
+| 10 | [`Wset.md`](Wset.md) | Nrmstep |
+| 11 | [`OrdinalFree.md`](OrdinalFree.md) | Cofinality,Wset,Proofs |
+| 12 | [`Final.md`](Final.md) | AscArg,OrdinalFree |
 
 ## 記号の所在
 

@@ -1,5 +1,5 @@
 /-
-Towards `diagacc` (well-foundedness of `<o` on `NF`).  Lean port of `wf.thy`.
+Towards well-foundedness of `<o` on `NF`.
 
 This file develops the *syntactic* core of the subscript-monotonicity of
 descent: along the leftmost argument spine of a term, the subscript-first
@@ -7,7 +7,7 @@ order `<o` refines the lexicographic order on the spine; together with the
 normal-form invariants of `NF` (the spine begins `0,1,…,maxsub`; every
 subscript is ≤ the spine maximum) this yields `w <o x → maxsub w ≤ maxsub x`.
 
-Port conventions: Isabelle's partial `s ! i` is rendered `s.getD i 0` (each
+Indexing is total: `s.getD i 0` (each
 use is guarded by `i < length s`).
 -/
 import YAPSS.Proofs
@@ -33,7 +33,7 @@ theorem getD_eq_getElem' {α : Type*} (l : List α) (d : α) {i : ℕ}
 
 In the bad case the `k = 0` copy reproduces the dropped suffix, so the
 expansion is `dropLast M` followed by the (`k ≥ 1`) ascending copies; the
-copies only repeat row-1 values already present in `dropLast M`.  (Isabelle's
+copies only repeat row-1 values already present in `dropLast M`.  (
 `take_split_map_nth` bookkeeping is subsumed here by reusing
 `oper_bad_blocks`.) -/
 

@@ -388,7 +388,7 @@ theorem oper_append_right (A T : PairSeq) (n : ℕ) (hT : 2 ≤ T.length)
       rw [if_pos hp, if_pos hpAT]
       exact Pred_append_right A T hT
 
-/-! ### Helpers for `oper_tail_cases` -/
+/-! ### Prefix and head helpers -/
 
 /-- `(range j1).map (entry-pair)` is the prefix `N.take j1` (for `j1 ≤ |N|`). -/
 theorem map_range_entry_eq_take (N : PairSeq) {j1 : ℕ} (h : j1 ≤ N.length) :

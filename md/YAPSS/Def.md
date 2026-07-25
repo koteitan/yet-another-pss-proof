@@ -5,7 +5,7 @@
 本章は以降のすべての章が用いる語彙を定める。ペア数列 $`M`$、その成分 $`M_{i,j}`$、行 $`0`$ / 行 $`1`$ の親子関係、
 前者関数 $`\mathrm{Pred}`$、基本列（展開）$`M[n]`$、対角列 $`\Delta_a^b`$、標準形の集合 $`\mathrm{ST\_PS}`$、
 1 ステップ関係 $`\mathrm{step}`$ を導入する。
-本章の宣言は 14 個すべてが定義であり、定理は含まれない。うち 2 個（$`\mathrm{ST\_PS}`$, $`\mathrm{step}`$）は
+本章は定義のみからなり、定理を含まない。このうち $`\mathrm{ST\_PS}`$ と $`\mathrm{step}`$ は
 帰納的述語であるから、導入規則と帰納法原理（場合分け原理）を明示する。
 
 ## 記法
@@ -42,13 +42,6 @@
 - $`\exists! x,\ P(x)`$ は $`\exists x,\ \bigl(P(x) \wedge \forall y,\ P(y) \to y = x\bigr)`$ の略記。
 - $`\varepsilon x.\,P(x)`$ は `Classical.epsilon (fun x => P x)` を表す。その唯一の性質は
   $`(\exists x,\ P(x)) \to P(\varepsilon x.\,P(x))`$ である（`Classical.epsilon_spec`）。
-
----
-
-## §4 記法 (Notation)
-
-Lean 移植では原論文の $`\mathrm{Lng}\,M`$ を `M.length` として直接用いる。本文では $`\mathrm{Lng}\,M`$ と書く。
-この節に宣言はない。
 
 ---
 
@@ -102,7 +95,6 @@ j \ge \mathrm{Lng}\,M \ \Longrightarrow\ M_{0,j} = 0 \ \wedge\ M_{1,j} = 0 .
 ```
 
 実際、$`j \ge \mathrm{Lng}\,M`$ のとき $`M_j = (0,0)`$ であり、$`\pi_1(0,0) = \pi_2(0,0) = 0`$ である。
-以降、$`M_{i,j}`$ を用いる箇所では常に $`j \lt \mathrm{Lng}\,M`$ が保証されるので、この既定値が読まれることはない。
 
 ---
 
@@ -258,7 +250,7 @@ M & (\mathrm{Lng}\,M \le 1) \cr
 （[(D.nextR)](#d-nextR)）。Hilbert の選択作用素 `Classical.epsilon` による定義であり、
 関数としては全域だが計算可能ではない（Lean 側でも `noncomputable`）。
 
-**性質（Isabelle の `THE` との一致）.**
+**性質（$`\mathrm{hasParent}`$ の下での一意性）.**
 $`\mathrm{hasParent}(M, i, j_1)`$（[(D.hasParent)](#d-hasParent)）が成り立つならば、
 
 ```math
@@ -442,8 +434,6 @@ M = \Delta_0^v[n_1][n_2]\cdots[n_m]
 規則 (diag) の基底は $`u = 0`$ から始まる対角列 $`\Delta_0^v`$ のみであり、
 一般の $`\Delta_u^v`$（$`u \gt 0`$）は基底に含めない。$`\Delta_u^v`$（$`u \gt 0`$）を基底に加えると、
 第 $`0`$ 要素が $`(u,u) \ne (0,0)`$ である列も $`\mathrm{ST\_PS}`$ に属することになる。
-ここでは、基底が $`\Delta_0^v`$ に限られているという定義上の事実のみを記録する。
-この選択が後続の章の不変量にどう効くかは、それらの章で個別に示される。
 
 <a id="d-step"></a>
 #### 定義 1 ステップ展開 (D.step)

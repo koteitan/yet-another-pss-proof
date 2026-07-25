@@ -1,24 +1,21 @@
 /-
-**Attack file for `nrm_order_pres` / `nrm_step_dec`** — the independent Lean
-campaign on the remaining core (this file is NOT a port of `ord/nrmstep.thy`;
-it shares the mathematical skeleton discovered there but is developed
-directly in Lean).
+**Positional invariants of the pair sequences of standard forms.**
 
-Layer 1 (this file, pure — no class assumptions):
-  * `maxo_ub`        — `maxo` is an upper bound of its argument list
-  * `Gterm_trans`    — the critical-term relation is transitive
-  * `proj_ole`       — projection is inflationary (`b ≤o proj u b`)
-  * `proj_fire`      — **one-step theorem**: the maximal critical term has no
-    violator of its own, so `proj` terminates after a single rewrite;
-    `proj u b` is either `b` (no fire) or `maxo` of the violators (fire)
-  * fire corollaries — `proj_mem_of_fire`, `olt_proj_of_fire`,
-    `proj_ub_of_fire`
-  * `ins_olt_mono`   — sum insertion is *unconditionally* strictly monotone
-    in the tail (absorption needs no side condition: absorb-left implies
-    absorb-right via `absorb_mono`)
+The two invariants proved here are properties of the *sequence* side, stated
+without any reference to the term notation:
 
-These give the downstream case analyses the clean shape
-`proj u b = if fire then max-violator else b`.
+  * `r1ok`  — the row-1 climbing discipline, preserved by `oper` and holding on
+    every `ST_PS` list (`r1ok_oper`, `r1ok_ST_PS`);
+  * `z0ok`  — the row-0 zero discipline, likewise (`z0ok_oper`, `z0ok_ST_PS`).
+
+Their consequence `hp_last` — a non-zero last column of such a list always has
+a parent — is what rules out the parentless branch of `oper` downstream.
+
+The bulk of the file is the index bookkeeping of the copy expansion
+(`copyExp`, `hostM`, `index_decomp`) needed to push both invariants through the
+tiling branch of `oper`, together with the shift-invariance lemmas
+(`entry_shift`, `nextrel0_shift_iff`, `le0_shift_iff`, `nextrel1_shift_iff`)
+used by `Cofinality.lean` and `Wset.lean`.
 -/
 import YAPSS.Nrm
 import YAPSS.Seqlex
@@ -565,7 +562,7 @@ All branches of the expansion step are wired: identity (short), `Pred`
 (dropLast), and the bad branch through `oper_bad_blocks` → `copyExp`.
 The step facts `hstep`/`hlpstep` come from the `steps1` component of
 `blockok_ST_PS`.  The sole remaining obligation is the class fact
-`climbok` (the `r1ok_climb` of the Isabelle campaign, open there too). -/
+`climbok`. -/
 
 theorem hostM_getD_lp {G B : PairSeq} {lp : ℕ × ℕ} :
     (G ++ B ++ [lp]).getD (G.length + B.length) (0,0) = lp := by

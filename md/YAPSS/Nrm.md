@@ -13,9 +13,6 @@
 
 | Lean | 本文 | 定義場所 |
 |---|---|---|
-| `Three` | $`\mathrm{Three}`$ | [(D.Three)](Mechanized.md#d-Three) |
-| `Z`, `P a b c` | $`\mathsf{Z}`$, $`\mathsf{P}(a,b,c)`$ | [(D.Three)](Mechanized.md#d-Three) |
-| `olt x y` | $`x \prec y`$ | [(D.olt)](Mechanized.md#d-olt) |
 | `PairSeq` | $`\mathrm{PairSeq}`$ | [(D.PairSeq)](Def.md#d-PairSeq) |
 | `M.length` | $`\lvert M\rvert`$ | — |
 | `M.getD j (0,0)` | $`M\langle j\rangle`$ | [(D.entry)](Def.md#d-entry) の規約 |
@@ -40,11 +37,6 @@ $`\mathrm{map}\,f\,L`$ は各要素に $`f`$ を適用した列、$`\mathrm{flat
 $`f`$ の値（列）を $`L`$ の順に連結した列、$`\mathrm{range}(n) = [0,\dots,n-1]`$、
 $`\mathrm{range}'(a,m) = [a,\dots,a+m-1]`$ である。さらに本章では次を用いる。
 
-- $`\mathrm{headI}\,L`$ は $`L`$ の先頭要素、$`L = ()`$ のときは既定値。
-  $`\mathrm{Three}`$ の既定値は構成子の第 1 のもの $`\mathsf{Z}`$ である（Lean の `deriving Inhabited`）。
-- $`\mathrm{tail}\,L`$ は $`L`$ の先頭 1 個を除いた列、$`L = ()`$ のときは $`()`$。
-- $`\mathrm{filter}\,p\,L`$ は $`L`$ のうち $`p`$ が真である要素を、$`L`$ における順序を保って並べた列。
-  その要素判定は $`x \in \mathrm{filter}\,p\,L \iff x \in L \wedge p(x)`$ である。
 - $`L[i]?`$ は位置 $`i`$ の要素をもつなら「その要素」、$`i \ge \lvert L\rvert`$ なら「無し」を返すオプション値。
   $`M\langle j\rangle`$ は $`M[j]?`$ が要素 $`p`$ をもつときは $`p`$、無しのときは $`(0,0)`$ に等しい。
 - 自然数の減法はすべて切り捨て減法である（$`a\lt b`$ のとき $`a-b=0`$）。
@@ -731,7 +723,7 @@ $`\mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i_1,\ \lvert A\rvert+j_1)`$ も成り�
 
 ---
 
-## `oper_tail_cases` のための補助
+## 接頭部と先頭に関する補助
 
 <a id="t-map_range_entry_eq_take"></a>
 ### 定理 成分列は接頭部に等しい (T.map_range_entry_eq_take)

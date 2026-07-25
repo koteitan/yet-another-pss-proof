@@ -1,6 +1,5 @@
 /-
 **The translation is an order isomorphism onto the column-lex order.**
-Lean port of `seqlex.thy`.
 
 On pair sequences whose row-0 values start at the block depth and step up by
 at most one (true of all standard forms and hereditarily of their
@@ -10,8 +9,7 @@ residual well-foundedness obligation in BMS-native terms: no infinite
 column-lex descending chain of standard forms.
 
 Port note: `blockok` is defined via the structural step predicate `steps1`
-(Isabelle's `blockok_via_steps1` is the definition here; the indexed form is
-`steps1_iff`).  The block hypotheses of Isabelle's `seqlex_arg_or_tail` are
+(the indexed form is `steps1_iff`).  The block hypotheses of `seqlex_arg_or_tail` are
 dropped — they are only induction plumbing there.
 -/
 import YAPSS.Wf
@@ -72,7 +70,7 @@ def steps1 : PairSeq → Prop
 
 /-- `blockok d B`: `B` is a depth-`d` block — every row-0 value is `≥ d`, the
 head (if any) sits exactly at `d`, and row 0 increases by at most one at each
-step.  (Isabelle's indexed `blockok`, via `blockok_via_steps1`.) -/
+step. -/
 def blockok (d : ℕ) (B : PairSeq) : Prop :=
   (B ≠ [] → (B.headI).1 = d) ∧ (∀ p ∈ B, d ≤ p.1) ∧ steps1 B
 
@@ -447,7 +445,7 @@ theorem getLastD_append_right {α : Type*} {A B : List α} (h : B ≠ []) (d : �
     exact getLastD_ne_nil_indep h _ _
 
 /-- A fan of nonempty `steps1` blocks whose junctions also step by at most
-one concatenates to a `steps1` list (Isabelle's `steps1_concat_map`). -/
+one concatenates to a `steps1` list. -/
 theorem steps1_flatMap {F : ℕ → PairSeq} {n : ℕ}
     (F1 : ∀ k < n, steps1 (F k)) (Fne : ∀ k < n, F k ≠ [])
     (Fj : ∀ k, k + 1 < n → ((F (k + 1)).headI).1 ≤ ((F k).getLastD (0, 0)).1 + 1) :

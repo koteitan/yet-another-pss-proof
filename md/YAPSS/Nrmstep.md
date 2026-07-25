@@ -1,6 +1,6 @@
 [← 目次](README.md)
 
-# Nrmstep — 射影 $`\mathrm{proj}`$ の一段定理、`ins` の単調性、列側の不変量 $`\mathrm{r1ok}`$ / $`\mathrm{z0ok}`$
+# Nrmstep — 列側の不変量 $`\mathrm{r1ok}`$ / $`\mathrm{z0ok}`$ と親の一意性
 
 本章の内容は、標準形 $`\mathrm{ST\_PS}`$ の列が満たす 2 つの位置的不変量
 $`\mathrm{r1ok}`$（[(T.r1ok_ST_PS)](#t-r1ok_ST_PS)）と $`\mathrm{z0ok}`$（[(T.z0ok_ST_PS)](#t-z0ok_ST_PS)）を
@@ -8,33 +8,16 @@ $`\mathrm{r1ok}`$（[(T.r1ok_ST_PS)](#t-r1ok_ST_PS)）と $`\mathrm{z0ok}`$（[(
 「$`\mathrm{ST\_PS}`$ 型の列の非零な最終列には親が一意に存在する」
 （[(T.hp_last)](#t-hp_last)）を得る。
 
-本章は 60 個の宣言をもつ。
-
 ## 記法
 
 この章で導入する Lean 名と数学記法の対応。
 
 | Lean | 本文 | 意味 |
 |---|---|---|
-| `pfire u b` | $`\mathrm{fire}_u(b)`$ | $`b`$ が水準 $`u`$ で発火する |
-| `(Glist u b).filter (fun g => ¬ olt g b)` | $`\mathrm{Bad}_u(b)`$ | 水準 $`u`$ の違反者リスト |
-| `maxo (Bad).headI (Bad).tail` | $`\mathrm{mx}_u(b)`$ | 違反者リストの $`\mathrm{maxo}`$ |
-| `lext`, `lflip`, `einc`, `eflip` | 同名 | 1 箇所増加の 4 関係 |
-| `snocok C q` | $`\mathrm{snocok}(C,q)`$ | 末尾付加の条件束 |
 | `maxr1 S` | $`\mathrm{maxr1}\,S`$ | 列 $`S`$ の行 1 の最大値 |
 | `r1ok M` | $`\mathrm{r1ok}(M)`$ | 行 1 の登攀規律 |
 | `copyExp G B d0 n` | $`\mathrm{cE}(G,B,d_0,n)`$ | コピー展開の形 |
-| `hdarg t` | $`\mathrm{hdarg}\,t`$ | 先頭引数 |
-| `noabsorb a b t` | $`\mathrm{noabsorb}(a,b,t)`$ | 吸収が起きない条件 |
-| `descok t` | $`\mathrm{descok}(t)`$ | 連続添字降下述語 |
-| `mvstep b` | $`\mathrm{mv}(b)`$ | 射影の 1 段 |
-| `Rdesc x y` | $`\mathrm{Rdesc}(x,y)`$ | 降下対関係 |
-| `SubBlock M K` | $`\mathrm{SubBlock}(M,K)`$ | 部分ブロック関係 |
-| `repB B n` | $`\mathrm{repB}(B,n)`$ | $`B`$ の $`n`$ 回反復 |
 | `z0ok M` | $`\mathrm{z0ok}(M)`$ | 水準 0 の列は $`(0,0)`$ |
-| `sclimb M` | $`\mathrm{sclimb}(M)`$ | 単一登攀規律 |
-| `predGuard N` | $`\mathrm{predGuard}(N)`$ | $`\mathrm{oper}`$ が切り詰める条件 |
-| `predImages M N` | $`\mathrm{predImages}(M,N)`$ | 条件つき切り詰めの反復像 |
 
 他章で定義済みの記号については、[`Mechanized.md`](Mechanized.md) と同じ記法を用いる。
 
@@ -45,24 +28,12 @@ $`\mathrm{r1ok}`$（[(T.r1ok_ST_PS)](#t-r1ok_ST_PS)）と $`\mathrm{z0ok}`$（[(
 | `M.getD j (0,0)` | $`M\langle j\rangle`$ | 第 $`j`$ 対（範囲外なら $`(0,0)`$） |
 | `entry M i j` | $`M_{i,j}`$ | 第 $`j`$ 対の第 $`i`$ 成分 |
 | `M⟦n⟧` | $`M[n]`$ | 展開（コピー数 $`n`$） |
-| `x <o y`, `x ≤o y` | $`x\prec y`$, $`x\preceq y`$ | 添字優先辞書式順序とその広義形 |
 | `translate M` | $`\mathrm{tr}\,M`$ | ペア列の翻訳 |
-| `tsize t` | $`\lVert t\rVert`$ | 項の構造的サイズ |
 | `xs ++ ys`, `x :: xs` | $`xs \mathbin{+\!\!+} ys`$, $`x\mathbin{::}xs`$ | 連結・先頭付加 |
 | `L.take j`, `L.dropLast` | $`\mathrm{take}\,j\,L`$, $`\mathrm{dropLast}\,L`$ | 前 $`j`$ 個、末尾 1 個を除いた列 |
 | `L.headI`, `L.tail` | $`\mathrm{headI}\,L`$, $`\mathrm{tail}\,L`$ | 先頭要素（空列なら既定値）と残り |
 | `List.range n`, `List.range' a m` | $`\mathrm{range}(n)`$, $`\mathrm{range}'(a,m)`$ | $`[0,\dots,n-1]`$, $`[a,\dots,a+m-1]`$ |
 | `L.map f`, `L.flatMap f` | $`\mathrm{map}\,f\,L`$, $`\mathrm{flatMap}\,f\,L`$ | 各要素に $`f`$ を適用（後者は連結） |
-| `L.filter p` | $`\mathrm{filter}\,p\,L`$ | 条件 $`p`$ を満たす要素のみを残した列 |
-
-行 0 の値 $`a`$ を基準とする `takeWhile` / `dropWhile` は [`Mechanized.md`](Mechanized.md) と同じく
-
-```math
-\mathrm{tw}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a < \pi_0 q),\qquad
-  \mathrm{dw}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a < \pi_0 q)
-```
-
-と書く。$`\mathrm{tw}_a L \mathbin{+\!\!+} \mathrm{dw}_a L = L`$ が成り立つ。
 
 自然数の減法はすべて切り捨て減法である（$`a\lt b`$ のとき $`a-b=0`$）。
 
@@ -74,13 +45,6 @@ $`\mathrm{r1ok}`$（[(T.r1ok_ST_PS)](#t-r1ok_ST_PS)）と $`\mathrm{z0ok}`$（[(
 - $`\mathrm{findGreatest\_is\_greatest}`$ : $`\mathrm{findGreatest}\,P\,m \lt l`$ かつ $`l\le m`$ ならば $`\neg P(l)`$。
 
 ---
-
-## 1 箇所増加の関係
-
-Lean の当該節は 4 つの帰納的関係を導入する。これらは
-「標準的な区間に 1 列を付加したとき正規化像に生じる形」を分類するための語彙であり、
-本章の他の宣言はこれらを用いない（下流の章でも本章の他の命題との依存はない）。
-ここでは導入規則と、それに伴う帰納法原理の形だけを記録する。
 
 ## 小さな計算補題
 
@@ -163,11 +127,6 @@ $`M\in\mathrm{PairSeq}`$ に対し
 [(D.nextrel0)](Def.md#d-nextrel0) の条件 3, 4, 5 を満たす。すなわち $`k\to^M_0 j`$ である
 （条件 2 の等式は条件 4 の不等式 $`M_{0,k}\lt M_{0,j}`$ を含意する）。
 条件 4 が「行 1 は行 0 の親に対して高々 1 しか上がらない」という登攀規律である。
-
-### 相対版 $`\mathrm{r1ok}`$ について
-
-Lean の当該節見出しは、部分ブロックに対する相対版 $`\mathrm{r1okRel}`$ の役割を説明する
-コメントであり、宣言を導入しない。以下の 6 つの宣言はこの見出しの直後に置かれている。
 
 <a id="t-diagSeq0_length"></a>
 ### 定理 対角列の長さ (T.diagSeq0_length)
@@ -942,13 +901,7 @@ $`\mathrm{r1ok}(N[n])`$、すなわち $`\Phi(M)`$。∎
 
 ---
 
-## 構造層 : 末尾付加の $`\mathrm{einc}\cup\mathrm{eflip}`$ 特徴づけ
-
-Lean の当該節見出しはこの節の意図（末尾付加が正規化像に対して
-「末端位置の 1 箇所増加」を行うこと）を述べるコメントであり、
-以下の 4 宣言はそのための語彙である。
-
-## 親子関係の `take` 移送
+## 親子関係の基本性質
 
 <a id="t-nextrel0_bound"></a>
 ### 定理 行 0 の親子関係の上界 (T.nextrel0_bound)
@@ -1231,9 +1184,7 @@ $`0\lt M_{1,j_1}`$ か否かで場合分けする。
 
 ---
 
-## 最終列の親が最後のコピー内にある場合
-
-Lean の当該節見出しの直後に置かれているのは、$`\mathrm{z0ok}`$ の展開保存と標準形上の成立である。
+## $`\mathrm{z0ok}`$ の展開保存と標準形上の成立
 
 <a id="t-z0ok_oper"></a>
 ### 定理 $`\mathrm{z0ok}`$ は展開で保たれる (T.z0ok_oper)
@@ -1276,7 +1227,7 @@ Lean の当該節見出しの直後に置かれているのは、$`\mathrm{z0ok}
 
 ---
 
-## `drop` 移送と連鎖のピボット機構
+## 連鎖のピボット機構
 
 <a id="t-rtg_through_pivot"></a>
 ### 定理 連鎖はピボットを通過する (T.rtg_through_pivot)
@@ -1462,12 +1413,3 @@ $`l\le^{S^{+d}}_0 b`$ と同値）なる $`l`$ を取ると、[(T.le0_le)](#t-le
 $`(S^{+d})_{1,b}\le(S^{+d})_{1,l}\iff S_{1,b}\le S_{1,l}`$。
 
 以上より両辺の 6 条件は同値であり、連言も同値である。∎
-
-## 本章の成果のまとめ
-
-本章が下流の章に渡すのは次の 2 つである。
-
-- [(T.r1ok_ST_PS)](#t-r1ok_ST_PS), [(T.z0ok_ST_PS)](#t-z0ok_ST_PS) : 標準形の列は 2 つの位置的不変量を満たす。
-- [(T.hp_last)](#t-hp_last) : $`\mathrm{blockok}\,0`$ かつ $`\mathrm{z0ok}`$ の列で最終列が $`(0,0)`$ でなければ、
-  [(D.oper)](Def.md#d-oper) の分岐 (c)（親をもたない分岐）は起こらない。
-

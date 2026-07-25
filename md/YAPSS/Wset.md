@@ -347,7 +347,7 @@ $`(\Leftarrow)`$ 第 1 条件はそのまま。$`\mathrm{r1cand}(M,\ell_M,j_0)`$
 
 ### 1b. 検証例：1 対からなる列 $`[(x,m+1)]`$
 
-Lean 側に無名の `example` として置かれている計算を記す。
+次の 3 つの計算が成り立つ。
 
 1. $`\mathrm{dom}([(x,m+1)])=T_m`$。
    $`\ell=1-1=0`$、$`[(x,m+1)]_{1,0}=m+1`$ で第 1 条件が成立する。第 2 条件は、
@@ -1405,10 +1405,6 @@ $`M`$ の最終列の行 0 祖先鎖は $`R`$ 自身の鎖に根 $`(0,v)`$ を�
 | (D′) | $`\mathrm{dom}(R)=T_m`$ かつ $`v\le m`$ | $`\mathbb{N}`$ | 塔 $`t^{v,R}_n`$ |
 | (E′) | $`\mathrm{dom}(R)=T_m`$ かつ $`m\lt v`$ | $`T_m`$ | 根を通した graft |
 
-この表は Buchholz (1987) 2.6 の場合分けとの対応を示すものであり、正確な内容は以下の各補題の主張である。
-以下の補題はすべて $`M[n]`$ と $`\mathrm{hasParent}`$ についての主張であり、
-$`W`$、$`\prec`$、$`\mathrm{tr}`$ を含まない。
-
 ### 親の機構の cons への移送
 
 <a id="t-nextR_cons"></a>
@@ -2119,8 +2115,6 @@ $`\lvert M\rvert\le\lvert M\rvert`$ であるから前提はみたされる。�
 
 **主張** $`\forall p\in S,\ \pi_1 p\le\mathrm{maxr1}\,S`$。
 
-（[(T.le_maxr1)](Nrmstep.md#t-le_maxr1) と同一の主張であり、本章の名前空間で再証明されている。）
-
 **証明** $`S`$ の構造に関するリストの帰納法。帰納法の述語は
 ```math
 \Phi(S):\equiv\ \forall p\in S,\ \pi_1 p\le\mathrm{maxr1}\,S .
@@ -2158,9 +2152,7 @@ $`\lvert M\rvert\le\lvert M\rvert`$ であるから前提はみたされる。�
 
 ---
 
-## 5. 組み立て（Assembly）
-
-Lean 側では節番号 5 がここで再び用いられている。本節はこのファイルの結論を与える。
+## 9. 組み立て（Assembly）
 
 <a id="t-wf_of_cofinality_and_membership"></a>
 #### 定理 2 本の柱から整礎性へ (T.wf_of_cofinality_and_membership)
@@ -2192,50 +2184,3 @@ $`M\in\mathrm{ST\_PS}`$ か否かで場合分けする。
 **証明** この関係は [(D.Rst)](#d-Rst) を展開したものである。
 [(T.wf_of_cofinality_and_membership)](#t-wf_of_cofinality_and_membership) に $`\mathrm{hcof}`$ と
 $`\mathrm{hmem}:=`$ [(T.W_membership)](#t-W_membership) を与えればよい。∎
-
----
-
-## 9. 記録
-
-本節に宣言はない。Lean 側の同名の節に対応する記録である。
-
-**設計上の 2 つの選択.**
-
-1. $`\mathrm{dom}(M)=T_m`$ を PSS 自身の $`\neg\,\mathrm{hasParent}(M,1,\ell_M)`$ として読み
-   （[(D.domT)](#d-domT)）、$`T_m`$ 添字の基本列を graft（[(D.graft)](#d-graft)）とした。
-   この読み替えは仮定ではなく定理として検証されている：
-   [(T.hasParent_one_iff)](#t-hasParent_one_iff) は「$`\mathrm{nextrel1}`$ は行 1 の値が真に小さい行 0 祖先のうち
-   **最大**のものを選ぶ」ことを示し、その結果「行 1 の親が存在する $`\iff`$ そのような行 0 祖先が
-   **1 つでも**存在する」が成り立つ。
-2. [(D.Aop)](#d-Aop) の枝 2 には $`\mathrm{natDom}`$（[(D.natDom)](#d-natDom)）が付いている。
-   これがないと、$`\mathrm{dom}(M)=T_m`$ をみたす $`M`$ に対して枝 2 も枝 3 も適用可能になる。
-   枝 2 の側では [(T.oper_eq_graft_nil_of_domT)](#t-oper_eq_graft_nil_of_domT) により
-   $`M[n]=\mathrm{gr}(M,[])`$ となり、[(T.Wstar_closed)](#t-Wstar_closed) の (D′) の場合で用いる塔
-   [(D.tow)](#d-tow) を作ることができない。
-
-**中核の補題.** [(T.oper_shift)](#t-oper_shift) は
-[(T.oper_append_right)](Nrm.md#t-oper_append_right)（右側の列 $`T`$ に $`T_{0,0}=0`$ を要求する）を
-[(T.oper_append_gen)](#t-oper_append_gen)（[(D.rsum)](#d-rsum) のみを要求する）へ一般化する。
-[(T.split_lastMin)](#t-split_lastMin) が与える分割はこの一般形にそのまま適合する。
-
-**加法についての注意.** Buchholz の 2.4(b) は原典では項の正規形条件を伴うが、
-本章の [(T.W_add)](#t-W_add) が要求するのは位置についての条件 [(D.rsum)](#d-rsum) だけである。
-これは $`\mathrm{tr}`$（[(D.translate)](Mechanized.md#d-translate)）の第 3 成分（後続和）に
-正規形条件が課されていないことによる。実際、[(T.oper_cons_succ)](#t-oper_cons_succ)、
-[(T.oper_cons_nat)](#t-oper_cons_nat)、[(T.oper_cons_tower)](#t-oper_cons_tower)、
-[(T.domT_cons_of_lt)](#t-domT_cons_of_lt) の主張と証明には $`\mathrm{tr}`$ も $`\prec`$ も現れない。
-
-**$`\mathrm{based}`$ と $`\mathrm{argOK}`$ の区別.**
-$`\mathrm{based}(z)`$（[(D.based)](#d-based)、$`z_{0,0}=0`$）は [(T.oper_head_eq)](#t-oper_head_eq) が保つ性質、
-$`\mathrm{argOK}(R)`$（[(D.argOK)](#d-argOK)、$`\forall p\in R,\ 0\lt \pi_0 p`$）は
-[(T.le0_cons_zero)](#t-le0_cons_zero) で根が全列の行 0 祖先になるために使う性質であり、両者は異なる。
-[(D.Aop)](#d-Aop) 枝 3 の $`\mathrm{based}(z)`$ が必要であることは §1c の計算例が示している。
-
-**$`\mathrm{ST\_PS}`$ の使用箇所.** [(T.mem_W_of_bound)](#t-mem_W_of_bound) はすべてのペア列について
-所属を与えるから、[(T.W_membership)](#t-W_membership) は $`\mathrm{ST\_PS}`$ を使わない。
-$`\mathrm{ST\_PS}`$ が使われるのは [(T.acc_of_W)](#t-acc_of_W) の枝 1 と、
-[(T.stps_ne_nil)](#t-stps_ne_nil)・[(T.stps_len_one)](#t-stps_len_one) の 2 つの小事実だけである。
-
-**公理.** Lean 側では本章の主要な定理について `#print axioms` が実行されており、
-いずれも `[propext, Classical.choice, Quot.sound]` のみに依存する（`sorryAx` を含まない）。
-

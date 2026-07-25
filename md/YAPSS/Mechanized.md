@@ -302,7 +302,6 @@ $`\mathrm{tw}_{\pi_0 p} L`$ は $`L`$ の部分列だから $`\lvert \mathrm{tw}
 これは $`\lvert M\rvert`$ に関する強帰納法である：$`\lvert M\rvert=0`$ なら $`M=[]`$ で条件 1、
 $`M=p\mathbin{::}L`$ なら $`\mathrm{tw}_{\pi_0 p}L`$ と $`\mathrm{dw}_{\pi_0 p}L`$ の長さは
 上に見たとおり $`\lvert M\rvert`$ より真に小さいので強帰納法の仮定が使え、条件 2 が適用できる。
-Lean ではこの原理は `translate.induct` として自動生成される。
 以下で「$`\mathrm{tr}`$ の再帰に沿う帰納法」と書いたときはこの原理を指す。
 
 <a id="t-lead_translate"></a>
@@ -321,8 +320,7 @@ $`\mathrm{tr}\,M = \mathsf{P}(\pi_1 p, \cdot, \cdot)`$ であり、[(T.lead_P)](
 
 ### 計算例
 
-以下は Lean 側で無名の `example` として検証されている等式である
-（いずれも [(D.translate)](#d-translate) の展開のみで計算できる）。
+以下は [(D.translate)](#d-translate) の展開のみで計算できる等式である。
 
 1. $`\mathrm{tr}[(0,0)] = \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$。
    先頭対 $`p=(0,0)`$、残り $`L=[]`$。$`\mathrm{tw}_0[]=[]`$, $`\mathrm{dw}_0[]=[]`$、$`\mathrm{tr}[]=\mathsf{Z}`$、$`\pi_1 p=0`$。
@@ -613,7 +611,7 @@ $`j_0`$ を固定し、帰納法の述語を
 そのまま添字に用いるからである。$`M[n]`$ の第 3 分岐で作られる昇順コピーは基準ブロックと
 行 0 の一様な平行移動だけ異なるので、すべて同一の項に翻訳される。
 
-## 文脈合同 (BADCTX)
+## 文脈合同
 
 <a id="t-translate_ctx_cong"></a>
 ### 定理 文脈合同 (T.translate_ctx_cong)
@@ -1053,7 +1051,7 @@ $`i\ne 0`$ のときは $`\mathrm{nextrel1}\,M\,j_0\,j_1`$ であり、
 5. $`\bigl(d_0=0 \wedge i_1=0\bigr)\ \vee\ \bigl(0\lt d_0 \wedge w_0\lt \pi_1 lp \wedge \pi_0 lp=v_0+d_0 \wedge \mathrm{nextrel1}\,M\,\lvert G\rvert\,j_1\bigr)`$
 6. $`\mathrm{nextR}\,M\,i_1\,\lvert G\rvert\,j_1`$
 
-（仮定 $`1\le n`$ は以下の証明では使わない。Lean 側でも未使用引数として記されている。）
+（仮定 $`1\le n`$ は以下の証明では使わない。）
 
 **証明** $`j_0 := \mathrm{parent}\,M\,i_1\,j_1`$ とおき、次を証人とする。
 ```math
@@ -1260,6 +1258,4 @@ $`z_1:=(v_0,w_0)`$, $`T_1:=R\mathbin{+\!\!+}C`$, $`z_2:=(v_0,w_0)`$, $`T_2:=R\ma
 - $`\neg(M_{0,j_1}=0\wedge M_{1,j_1}=0)`$ かつ $`\neg\,\mathrm{hasParent}\,M\,i_1\,j_1`$ のとき：
   [(T.translate_oper_pred)](#t-translate_oper_pred) を第 2 選言で適用する。
 
-3 つの場合はすべてを尽くしており、いずれでも $`\mathrm{tr}(M[n])\prec\mathrm{tr}\,M`$ が示された。
-この主張は、コピー数 $`n`$（$`1\le n`$ をみたす限り）の値にも、$`M`$ が標準形
-[(D.ST_PS)](Def.md#d-ST_PS) であるかどうかにもよらない。∎
+3 つの場合はすべてを尽くしており、いずれでも $`\mathrm{tr}(M[n])\prec\mathrm{tr}\,M`$ が示された。∎

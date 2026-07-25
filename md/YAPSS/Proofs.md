@@ -31,14 +31,12 @@ $`\lhd`$ の整礎性（＝標準形の無限展開列の非存在）が従う�
 | `M⟦n⟧` | $`M[n]`$ | 展開（[(D.oper)](Def.md#d-oper)） |
 | `ST_PS M` | $`M \in \mathrm{ST\_PS}`$ | 標準形（[(D.ST_PS)](Def.md#d-ST_PS)） |
 | `step M N` | $`M \Rightarrow N`$ | 1 ステップ展開（[(D.step)](Def.md#d-step)） |
-| `diagSeq 0 v` | $`\Delta_0^v`$ | 対角列（[(D.diagSeq)](Def.md#d-diagSeq)） |
 | `Acc r x` | $`\mathrm{Acc}(r,x)`$ | $`x`$ が $`r`$ について到達可能（下記 [(F.Acc)](#f-Acc)） |
 | `WellFounded r` | $`\mathrm{WF}(r)`$ | $`r`$ が整礎（下記 [(F.WellFounded)](#f-WellFounded)） |
 | `InvImage r f` | $`r^{f}`$ | 写像 $`f`$ による $`r`$ の逆像関係（下記 [(F.InvImage)](#f-InvImage)） |
 
 **引数の向きの規約.** 本章に現れる関係 $`r`$ はすべて「$`r\,y\,x`$ は $`y`$ が $`x`$ の**下**にある」と読む。
-Isabelle 版の $`(y,x)\in r`$ に対応する。したがって $`\lhd`$ と $`\prec_{\mathrm{NF}}`$ の第 1 引数が小さい側、
-第 2 引数が大きい側である。
+したがって $`\lhd`$ と $`\prec_{\mathrm{NF}}`$ の第 1 引数が小さい側、第 2 引数が大きい側である。
 
 ---
 
@@ -205,7 +203,7 @@ v \prec_{\mathrm{NF}} u \ :\iff\ v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\
 ```
 
 （[(D.olt)](Mechanized.md#d-olt), [(D.NF)](#d-NF)）。すなわち $`\prec`$ を $`\mathrm{NF}`$ の内部へ制限した関係である。
-第 1 引数 $`v`$ が小さい側であり、Isabelle 版の $`(v,u)\in R_{\mathrm{NF}}`$ に対応する。
+第 1 引数 $`v`$ が小さい側である。
 
 **注（$`\mathrm{NF}`$ の外では前者が存在しない）.** $`u \notin \mathrm{NF}`$ ならば、
 $`v \prec_{\mathrm{NF}} u`$ をみたす $`v`$ は存在しない。実際、$`v \prec_{\mathrm{NF}} u`$ は連言の第 2 項として
@@ -229,54 +227,9 @@ $`\lvert M\rvert \le 1`$ なる自然数 $`\lvert M\rvert`$ は $`0`$ か $`1`$ 
 $`\lvert M\rvert = 0`$ のとき、切り捨て減法の規約（$`a\lt b`$ のとき $`a-b=0`$）により $`0 - 1 = 0`$。
 $`\lvert M\rvert = 1`$ のとき $`1 - 1 = 0`$。いずれの場合も $`\lvert M\rvert - 1 = 0`$ である。∎
 
-（Lean 側ではこの 2 通りの計算が `omega` に委ねられている。）
-
 ---
 
-## $`\mathrm{wfimg}`$ の対角到達可能性への還元
-
-Lean 原文はこの位置に節見出しコメントを置き、整礎性義務 $`\mathrm{WF}(\prec_{\mathrm{NF}})`$ が
-対角列の到達可能性だけに帰着することを述べている。その内容を主張と証明の形で書いておく。
-以下の**注**は本モジュールの宣言ではなく、この節の見通しを与えるものである。
-
-**注（対角到達可能性 $`\Rightarrow`$ $`\mathrm{wfimg}`$）.**
-
-```math
-\Bigl(\forall v \in \mathbb{N},\ \mathrm{Acc}\bigl(\prec_{\mathrm{NF}},\ \mathrm{tr}\,\Delta_0^v\bigr)\Bigr)
-\ \Longrightarrow\ \mathrm{WF}(\prec_{\mathrm{NF}}).
-```
-
-*証明.* 左辺を仮定する。
-
-第 1 段：$`\forall M,\ M\in\mathrm{ST\_PS} \to \mathrm{Acc}(\prec_{\mathrm{NF}}, \mathrm{tr}\,M)`$ を、
-[(D.ST_PS)](Def.md#d-ST_PS) の帰納法原理で示す。述語を
-$`P(M) :\equiv \mathrm{Acc}(\prec_{\mathrm{NF}}, \mathrm{tr}\,M)`$ とおく。
-
-- 基底段：$`P(\Delta_0^v)`$ は仮定そのものである。
-- 帰納段：$`M \in \mathrm{ST\_PS}`$、$`P(M)`$、$`1 \le n`$ を仮定して $`P(M[n])`$ を示す。
-  $`\lvert M\rvert`$ で場合分けする。
-  - $`\lvert M\rvert \le 1`$ のとき。[(T.oper_eq_self_short)](#t-oper_eq_self_short) より $`M[n] = M`$ であるから
-    $`\mathrm{tr}(M[n]) = \mathrm{tr}\,M`$ であり、$`P(M[n])`$ は $`P(M)`$ に他ならない。
-  - $`1 \lt \lvert M\rvert`$ のとき。[(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) より
-    $`\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M`$。また [(D.ST_PS)](Def.md#d-ST_PS) の規則 (oper) を
-    $`M \in \mathrm{ST\_PS}`$ と $`1\le n`$ に適用して $`M[n] \in \mathrm{ST\_PS}`$ を得るから、
-    [(D.NF)](#d-NF) の導入により $`\mathrm{tr}\,M \in \mathrm{NF}`$ かつ $`\mathrm{tr}(M[n]) \in \mathrm{NF}`$。
-    よって [(D.Rnf)](#d-Rnf) の 3 条件がすべて成立し
-    $`\mathrm{tr}(M[n]) \prec_{\mathrm{NF}} \mathrm{tr}\,M`$。
-    これと $`P(M)`$ に [(F.Acc_inv)](#f-Acc_inv) を適用して $`P(M[n])`$ を得る。
-
-第 2 段：任意の $`u \in \mathrm{Three}`$ について $`\mathrm{Acc}(\prec_{\mathrm{NF}}, u)`$ を示す。
-$`u \in \mathrm{NF}`$ か否かで場合分けする。
-$`u \in \mathrm{NF}`$ ならば [(D.NF)](#d-NF) の除去により $`M \in \mathrm{ST\_PS}`$ と $`\mathrm{tr}\,M = u`$ を
-みたす $`M`$ が取れ、第 1 段から $`\mathrm{Acc}(\prec_{\mathrm{NF}}, u)`$。
-$`u \notin \mathrm{NF}`$ ならば [(D.Rnf)](#d-Rnf) の注により $`\mathrm{Acc}(\prec_{\mathrm{NF}}, u)`$。
-[(F.WellFounded)](#f-WellFounded) より $`\mathrm{WF}(\prec_{\mathrm{NF}})`$ である。$`\square`$
-
-この注の第 1 段の帰納段が示しているのは、$`\mathrm{ST\_PS}`$ の 2 つの生成規則のうち展開規則
-（$`M \mapsto M[n]`$）の側は、すでに証明済みの減少補題
-[(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) だけで処理できる、ということである。
-残るのは基底規則、すなわち対角列 $`\Delta_0^v`$ の翻訳
-$`\mathrm{tr}\,\Delta_0^v`$ の到達可能性のみである。
+## 標準形上の 1 ステップ関係と条件付き停止性
 
 <a id="d-stepRel"></a>
 ### 定義 標準形上の 1 ステップ関係 (D.stepRel)
@@ -287,8 +240,7 @@ $`T, M \in \mathrm{PairSeq}`$ に対し
 T \lhd M \ :\iff\ M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarrow T
 ```
 
-（[(D.ST_PS)](Def.md#d-ST_PS), [(D.step)](Def.md#d-step)）。Isabelle 版の
-$`\{(T,M) \mid M\in\mathrm{ST\_PS} \wedge M \Rightarrow T\}`$ に対応する。
+（[(D.ST_PS)](Def.md#d-ST_PS), [(D.step)](Def.md#d-step)）。
 第 1 引数 $`T`$ が展開後（小さい側）、第 2 引数 $`M`$ が展開前（大きい側）である。
 
 $`\mathrm{WF}(\lhd)`$ が本証明全体の目標である。
@@ -407,9 +359,6 @@ $`S_{i+1} \lhd x`$ が導かれ、これが $`y := S_{i+1}`$ という証拠を�
 
 ## 減少条件 $`\mathrm{dec}`$ の解消
 
-Lean 原文はこの位置に節見出しコメントを置き、証明済みの減少補題によって仮定 (dec) を落とせること、
-その結果として停止性が (wfimg) ただ一つに帰着することを述べている。以下の 2 定理がその内容である。
-
 <a id="t-step_terminates"></a>
 ### 定理 停止性（(wfimg) のみを仮定） (T.step_terminates)
 
@@ -457,15 +406,7 @@ $`\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M`$ を与えるから、これを適用�
 
 ## 残余義務 $`\mathrm{wfimg}`$ の位置づけ
 
-Lean 原文の最後の節見出しコメントは、上の 2 定理へ $`\mathrm{WF}(\prec_{\mathrm{NF}})`$ を供給すれば
-停止性が無条件の主張になることを述べている。**この節に宣言はない。**
-
-<!-- TODO: Lean 原文 (lean/YAPSS/Proofs.lean:110) のこの節見出しコメントは
-     `wf_Rnf_from_diag` という名の補題を経由する計画を述べているが、現在の lean/YAPSS/ に
-     その名の宣言は存在しない。実際に採られた経路は下記のとおりで、コメントの記述が古い。
-     コメント本文の意図するところ以上の内容は md 側に書いていない。 -->
-
-実際に $`\mathrm{WF}(\prec_{\mathrm{NF}})`$ を供給するのは
+$`\mathrm{WF}(\prec_{\mathrm{NF}})`$ を供給するのは
 [(T.wf_Rnf_of_wf_PS)](OrdinalFree.md#t-wf_Rnf_of_wf_PS)（ペア列側の整礎性から像側の整礎性への移送）と
 [(T.wf_Rnf_holds)](Final.md#t-wf_Rnf_holds)（その無条件化）であり、
 本章の [(T.step_terminates)](#t-step_terminates) と

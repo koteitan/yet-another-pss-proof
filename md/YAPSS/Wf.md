@@ -1,10 +1,8 @@
 [← 目次](README.md)
 
-# Wf — スパイン・最大添字・Cantor 標準形条件 $`\mathrm{cnf}`$ と展開によるその保存
+# Wf — Cantor 標準形条件 $`\mathrm{cnf}`$ と展開によるその保存
 
-本章は項の**最左引数スパイン** $`\mathrm{sp}`$、その最大値 $`\mathrm{climb}`$、項に現れる添字の最大値 $`\mathrm{maxsub}`$、
-および添字列の辞書式広義順序 $`\mathrm{slex}`$ を定義し、$`\mathrm{sp}(\mathrm{tr}\,M)`$ と $`\mathrm{maxsub}(\mathrm{tr}\,M)`$ を
-ペア列の言葉に書き直す。続いて Cantor 標準形条件 $`\mathrm{cnf}`$（先頭和に並ぶ主要項の添字優先順序 $`\prec`$ による非増加性）を定義し、
+本章は Cantor 標準形条件 $`\mathrm{cnf}`$（先頭和に並ぶ主要項の添字優先順序 $`\prec`$ による非増加性）を定義し、
 コピー・タイリング $`\mathrm{sh}_d`$, $`\mathrm{cp}_d`$ を用いて展開 $`M[n]`$ のすべての分岐で $`\mathrm{cnf}`$ が保たれること
 [(T.cnf_oper)](#t-cnf_oper) を証明する。
 本章の主結論は [(T.cnf_ST_PS)](#t-cnf_ST_PS)：$`M\in\mathrm{ST\_PS}`$ ならば $`\mathrm{cnf}(\mathrm{tr}\,M)`$ である。
@@ -15,16 +13,9 @@
 
 | Lean | 本文 | 意味 |
 |---|---|---|
-| `spine t` | $`\mathrm{sp}\,t`$ | 最左引数スパイン（添字の有限列） |
-| `cmax xs` | $`\mathrm{cmax}\,xs`$ | 自然数の有限列の最大値（空列では $`0`$） |
-| `climb t` | $`\mathrm{climb}\,t`$ | スパイン最大値 $`\mathrm{cmax}(\mathrm{sp}\,t)`$ |
-| `maxsub t` | $`\mathrm{maxsub}\,t`$ | 項 $`t`$ に現れる添字の最大値 |
-| `slex xs ys` | $`\mathrm{slex}(xs,ys)`$ | 添字列の辞書式広義順序 |
-| `incpref M` | $`\mathrm{inc}\,M`$ | 行 0 が狭義増加する極大な前部分列 |
 | `cnf t` | $`\mathrm{cnf}\,t`$ | Cantor 標準形条件 |
 | `shiftr0 d M` | $`\mathrm{sh}_d M`$ | $`M`$ の行 0 を一様に $`d`$ だけ増やした列 |
 | `copies d blk n` | $`\mathrm{cp}_d(B,n)`$ | ブロック $`B`$ の昇順 $`n`$ コピー |
-| `tops t` | $`\mathrm{tops}\,t`$ | 先頭和に並ぶ主要項の添字の列 |
 
 他章から引き継ぐ記法（[`Def.md`](Def.md), [`Mechanized.md`](Mechanized.md) で定義済み）。
 
@@ -35,7 +26,6 @@
 | `translate M` | $`\mathrm{tr}\,M`$ | ペア列の翻訳 |
 | `M.length` | $`\lvert M\rvert`$ | 長さ |
 | `p.1`, `p.2` | $`\pi_0 p`$, $`\pi_1 p`$ | 対 $`p`$ の第 0・第 1 成分 |
-| `M.getD j (0,0)` | $`M\langle j\rangle`$ | 第 $`j`$ 対（範囲外なら $`(0,0)`$） |
 | `entry M i j` | $`M_{i,j}`$ | 第 $`j`$ 対の第 $`i`$ 成分 |
 | `M⟦n⟧` | $`M[n]`$ | 展開（コピー数 $`n`$） |
 | `diagSeq u v` | $`\Delta_u^v`$ | 対角列 $`((j,j))_{j=u}^{v}`$ |
@@ -57,13 +47,7 @@ $`\mathrm{range}'(a,m) = [a,\dots,a+m-1]`$。さらに本章では
 また $`L[i]`$ は $`i\lt \lvert L\rvert`$ のときの $`L`$ の第 $`i`$ 要素、$`L.\mathrm{getD}\,i\,d`$ は
 $`i\lt \lvert L\rvert`$ なら第 $`i`$ 要素、そうでなければ $`d`$ を返す関数である。
 
-## スパインと行 0 が狭義増加する極大前部分列
-
-Lean 側ではここに次の節見出しが置かれている：
-「`slex` と正規形不変量から添字単調性へ」。この見出しの下に宣言はない。
-
-以下では、$`\mathrm{tr}\,M`$ の最左引数スパインが、
-「$`M`$ の先頭から行 0 の値が狭義に増加する極大な前部分列」の行 1 の値を読み出したものであることを示す。
+## $`\mathrm{getD}`$ と添字アクセスの橋渡し
 
 <a id="t-getD_eq_getElem'"></a>
 ### 定理 $`\mathrm{getD}`$ と添字アクセスの一致 (T.getD_eq_getElem')
@@ -78,9 +62,6 @@ $`(\mathrm{some}\,a).\mathrm{getD}\,d = a`$ は `Option.getD` の定義そのも
 $`l.\mathrm{getD}\,i\,d = l[i]`$。∎
 
 ## 悪い分岐の展開は $`\mathrm{dropLast}\,M`$ と行 1 の値を増やさないブロックの連結
-
-Lean 側ではここに次の節見出しが置かれている：
-「ペア列の正規形不変量とその保存」。この見出しの下に宣言はない。
 
 以下で**悪い分岐**とは、[`Mechanized.md`](Mechanized.md) の
 [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) が扱う場合、すなわち
@@ -215,10 +196,6 @@ $`u+1\le\pi_0 q`$、したがって $`\pi_0 (u,u) = u \lt \pi_0 q`$ である。
 
 ## Cantor 標準形：先頭和の主要項は非増加
 
-Lean 側ではここに次の 2 つの節見出しが置かれている：
-「正規形不変量はすべての標準形で成り立つ」「$`\mathrm{NF}=\mathrm{tr}[\mathrm{ST\_PS}]`$ 上の降下の添字単調性」。
-いずれの見出しの下にも宣言はない。
-
 条件 $`\mathrm{cnf}`$ は、項を主要項の和 $`p_{a_0}(b_0)+p_{a_1}(b_1)+\cdots`$ と読んだとき、
 各主要項 $`p_{a_i}(b_i)`$ が $`\prec`$ について非増加に並んでいることを要求する。
 
@@ -240,9 +217,8 @@ Lean 側ではここに次の 2 つの節見出しが置かれている：
 再帰呼び出しの引数 $`b`$、$`\mathsf{P}(e,f,g)`$ はいずれも被定義項の真部分項であるから、
 この定義は構造帰納として整合的である。
 
-第 3 式の中央の条件は、記法の節の注により
-$`\mathsf{P}(e,f,\mathsf{Z}) \preceq \mathsf{P}(a,b,\mathsf{Z})`$ と同値である。
-すなわち「先頭の主要項 $`p_a(b)`$ は、次の主要項 $`p_e(f)`$ 以上である」という要求である。
+第 3 式の中央の条件は「先頭の主要項 $`p_a(b)`$ が次の主要項 $`p_e(f)`$ より真に小さくはない」、
+すなわち和が先頭から狭義に増加しないという要求である。
 
 <a id="t-cnf_Z"></a>
 ### 定理 $`\mathsf{Z}`$ は $`\mathrm{cnf}`$ (T.cnf_Z)
@@ -1031,7 +1007,7 @@ $`p=(v_0,w_0)`$ なら $`\pi_0 p = v_0`$、$`p\in R`$ なら仮定より $`v_0\l
   $`\forall x\in R,\ v_0\le\pi_0 x`$ が従うので、[(T.copies_v0_le)](#t-copies_v0_le) より $`v_0\le\pi_0 p`$。
   よって $`0\lt d`$ とあわせて $`\pi_0 x = \pi_0 p + d \ge v_0 + d \gt v_0`$。
 
-（仮定 $`1\le n`$ はこの証明では使わない。Lean 側でも未使用引数として記されている。）∎
+（仮定 $`1\le n`$ はこの証明では使わない。）∎
 
 <a id="t-cnf_copies"></a>
 ### 定理 昇順コピー列の $`\mathrm{cnf}`$ (T.cnf_copies)
@@ -1309,19 +1285,3 @@ $`\mathrm{flatten}\ \mathrm{replicate}(n,B)`$ に等しい。∎
   $`\mathrm{cnf}(\mathrm{tr}(M[n]))`$、すなわち $`\Phi(M[n])`$ を得る。
 
 [(D.ST_PS)](Def.md#d-ST_PS) の帰納法原理により、$`\mathrm{ST\_PS}`$ のすべての要素 $`M`$ について $`\Phi(M)`$。∎
-
-## 整礎性の最大添字レベル内への還元
-
-Lean 側ではこの節見出しの下に宣言はない。置かれているのは、以降の章で行う議論の方針を述べたコメントのみである。
-その内容は次の通りである。$`\mathrm{Rnf}`$（[(D.Rnf)](Proofs.md#d-Rnf)、$`\mathrm{NF}`$
-（[(D.NF)](Proofs.md#d-NF)）上に制限した $`\prec`$）の整礎性を、
-$`\mathrm{maxsub}`$ を第 1 成分とする辞書式積に沿って
-「$`\mathrm{maxsub}`$ が真に減る部分」と「$`\mathrm{maxsub}`$ が等しい部分」に分け、後者だけを残った課題とする、というものである。
-
-<!-- 注意（本文の忠実性のため明記する）:
-Lean のこのコメントは識別子 `maxsub_mono_NF'` を引いているが、
-その名前の宣言はリポジトリ内のどの `.lean` ファイルにも存在しない（コメント中にのみ現れる）。
-したがってここでは、そのコメントが述べる命題を本文の定理として掲げることはしない。
-実際の停止性証明が取った経路は本章の下流の章（Cofinality, Wset, AscArg, Final）で与えられる。 -->
-
-この見出しの下に宣言はないので、本章はここで終わる。

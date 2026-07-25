@@ -42,7 +42,7 @@ $`\mathrm{WF}(R_{\mathrm{step}})`$ と、無限展開列の非存在を得る。
 本章の主張はすべて Lean 4 の core に属する 2 つの述語で書かれている。意味を固定しておく。
 
 **関係の向きの規約.** 本証明では、関係 $`R`$ の適用 $`R\,y\,x`$ を「$`y`$ が $`x`$ の下にある」と読む。
-すなわち $`R\,y\,x`$ は Isabelle の $`(y,x)\in R`$ に対応する（[`Proofs.md`](Proofs.md) の移植規約）。
+これは [`Proofs.md`](Proofs.md) の「引数の向きの規約」と同じ読み方である。
 
 **到達可能性 $`\mathrm{Acc}(R,x)`$.** 次の 1 つの導入規則で生成される最小の述語である。
 
@@ -78,7 +78,7 @@ $`P : \alpha \to \mathrm{Prop}`$ について、
   │
 [Mechanized]  tr,  ≺,  ≼ ────────── m_step_decreases ───────────────┐
   │                                                                │
-  ├─[Wf]─[Wfsum]─[Gterm]─[Seqlex]─[Nrm]─[Nrmstep]                   │
+  ├─[Wf]─[Seqlex]─[Nrm]─[Nrmstep]                                   │
   │                │                                               │
   │                ├─[Cofinality]  pss_cofinality_of_argdom        │
   │                │        │                                      │
@@ -201,13 +201,6 @@ $`\forall M \in \mathrm{PairSeq},\ \mathrm{Acc}(R_{\mathrm{ST}}, M)`$。
 である。この仮定は [(T.pss_cofinality_holds)](#t-pss_cofinality_holds) の主張と
 一字一句同じ命題であるから、それを代入して結論を得る。∎
 
-**注意（Lean 側の $`\eta`$ 展開）.** Lean のソースでは
-`Wset.wf_olt_ST_PS_of_cofinality (fun hM hN h => pss_cofinality_holds hM hN h)` と書かれている。
-`pss_cofinality_holds` の $`M, N`$ は暗黙引数 `{M N : PairSeq}` であり、これを引数位置に
-そのまま置くと Lean は暗黙引数をメタ変数として直ちに具体化してしまう。
-`fun hM hN h => …` と $`\eta`$ 展開することで、$`M, N`$ が仮定 `hM hN h` から決まる形に
-再抽象化される。命題としては同一であり、数学的な内容は上の代入に尽きる。
-
 <a id="t-wf_Rnf_holds"></a>
 ### 定理 項側順序 $`R_{\mathrm{nf}}`$ の整礎性（無仮定） (T.wf_Rnf_holds)
 
@@ -294,8 +287,7 @@ $`P(x) :\equiv \forall i,\ S_i = x \to \bot`$ に適用することで行われ�
 
 Lean ファイル `lean/YAPSS/Final.lean` の末尾には、本章の 5 定理に対する `#print axioms`
 コマンドが置かれている。これらは宣言ではなく、証明項が依存する公理を列挙させる指示である。
-実行結果は次の通りであった（本 md の作成時に、ビルド済み `olean` を読み込む別ファイルから
-再実行して確認した）。
+実行結果は次の通りである。
 
 ```
 'YAPSS.pss_cofinality_holds' depends on axioms: [propext, Classical.choice, Quot.sound]
@@ -310,20 +302,9 @@ Lean ファイル `lean/YAPSS/Final.lean` の末尾には、本章の 5 定理�
 - `propext` : 命題外延性。$`\forall p\, q : \mathrm{Prop},\ (p \leftrightarrow q) \to p = q`$。
 - `Classical.choice` : 選択公理。$`\forall \alpha,\ \mathrm{Nonempty}\,\alpha \to \alpha`$。
   たとえば [(D.parent)](Def.md#d-parent) の $`\varepsilon`$ 作用素、および
-  `by_cases` が用いる排中律が、この公理に依存する。
+  排中律が、この公理に依存する。
 - `Quot.sound` : 商の健全性。$`\forall \alpha,\ \forall r : \alpha \to \alpha \to \mathrm{Prop},\ \forall a\, b : \alpha,\ r\,a\,b \to \mathrm{Quot.mk}\,r\,a = \mathrm{Quot.mk}\,r\,b`$。
 
 一覧に `sorryAx` が現れないことが、未証明の穴が存在しないことの機械検査である。
 また、名前付きの仮定（`axiom` 宣言や `variable` として置かれた命題）も現れていない。
 したがって本章の 5 定理は、Lean 4 / Mathlib の標準公理のみに依存する。
-
-**用いていない道具について.** `lean/YAPSS/Final.lean` 冒頭のコメントは、この経路が
-順序数評価写像 `oV`、Buchholz の `OT`/`wf3` 埋め込み、および係数支配の事実
-（`H0clause` / `Gterm` 由来のもの）のいずれも用いないことを記録している。
-ただし上の `#print axioms` が保証するのは、公理と `sorryAx` を使っていないことのみであって、
-この「どの補題を使っていないか」という記述ではない。
-本章はこの記述の検証を行っていない。
-
-<!-- TODO: 「oV / OT / wf3 / H0clause をこの経路が用いない」という Lean 側コメントの主張は、
-     証明項の依存宣言を機械的に列挙して確認するのが本来である（例: 依存グラフの走査）。
-     本章では未検証のまま、出典を明示して引用するにとどめた。 -->

@@ -1,5 +1,5 @@
 /-
-The ternary-tree notation `p_a(b)+c`.  Lean port of `mechanized.thy`.
+The ternary-tree notation `p_a(b)+c`.
 
 The type `Three` is a tree whose nodes carry one natural number and two
 subtrees; it is named after that structure, not after any order (linearity of
@@ -167,7 +167,7 @@ example : translate [(0,0),(1,0),(1,0)] = P 0 (P 0 Z (P 0 Z Z)) Z := by
 example : translate [(0,0),(1,1),(2,2),(3,3)] = P 0 (P 1 (P 2 (P 3 Z Z) Z) Z) Z := by
   simp [translate, List.takeWhile, List.dropWhile]
 
-/-! ### List bookkeeping helpers (Isabelle's `takeWhile_append1/2` etc.) -/
+/-! ### List bookkeeping helpers -/
 
 section ListHelpers
 
@@ -195,7 +195,7 @@ theorem dropWhile_append_not {x : α} (hx : x ∈ xs) (hnx : ¬ p x) :
   exact hnx (List.dropWhile_eq_nil_iff.1 (List.isEmpty_iff.1 hempty) x hx)
 
 /-- A suffix as an index map (helper for the bad-step list bookkeeping;
-Isabelle's `drop_eq_map_nth`, with the partial `!` replaced by `getD`). -/
+indexing via the total `getD`). -/
 theorem drop_eq_map_getD (xs : List α) (a : ℕ) (d : α) :
     xs.drop a = (List.range' a (xs.length - a)).map fun i => xs.getD i d := by
   apply List.ext_getElem
@@ -433,7 +433,7 @@ theorem translate_ctx_cong {z1 z2 : ℕ × ℕ} {T1 T2 : PairSeq}
 
 /-! ## Subscripts and their monotonicity under expansion -/
 
-/-- The set of row-1 values of a pair sequence (Isabelle's `snd ` set M`). -/
+/-- The set of row-1 values of a pair sequence. -/
 def sndSet (M : PairSeq) : Set ℕ := Prod.snd '' {x | x ∈ M}
 
 @[simp] theorem mem_sndSet {y : ℕ} {M : PairSeq} :

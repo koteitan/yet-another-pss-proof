@@ -1,6 +1,6 @@
 /-
 PSS definitions, faithful to P進大好きbot's article "ペア数列の停止性"
-(pss-original-paper.html).  Lean port of `def.thy`.
+(pss-original-paper.html).
 
 This file contains only the definitions needed for the termination proof via
 the p_a(b)+c notation: the §5 formulation (pair sequences, parent relations,
@@ -8,14 +8,13 @@ fundamental sequence `M[n]`) and the §6.7 standard form `ST_PS`.  Variable
 names follow the article.  (The §6 reduction machinery `Red`, `Br`, … used by
 the Buchholz approach is deliberately omitted; it is not needed here.)
 
-Port conventions (Isabelle → Lean):
-  * `pairseq = (nat × nat) list`     → `PairSeq := List (ℕ × ℕ)`
-  * `M ! j` (partial nth)            → `M.getD j (0, 0)` (total, default `(0,0)`;
-    every use is guarded by `j < M.length`, so the default is never read)
-  * `r⇧*⇧*` (rtranclp)               → `Relation.ReflTransGen`
-  * `THE x. P x` (definite descr.)   → `Classical.epsilon` (agrees with `THE`
-    under the `hasParent` uniqueness guard, the only place it is used)
-  * `inductive_set`                  → `inductive … : PairSeq → Prop`
+Representation conventions:
+  * a pair sequence is `PairSeq := List (ℕ × ℕ)`
+  * indexing is total: `M.getD j (0, 0)`, so out-of-range reads give `(0,0)`
+    (this default *is* read — see `idx1_shift` in `Nrmstep.lean`)
+  * the reflexive-transitive closure is `Relation.ReflTransGen`
+  * the definite description is `Classical.epsilon`, used only under the
+    `hasParent` uniqueness guard
 -/
 import Mathlib.Logic.Relation
 import Mathlib.Data.List.Basic
@@ -77,7 +76,7 @@ def hasParent (M : PairSeq) (i j1 : ℕ) : Prop :=
   ∃! j0, nextR M i j0 j1
 
 /-- The parent of `j1` in row `i` (Hilbert choice; under the `hasParent` guard
-this is the unique `j0` with `nextR M i j0 j1`, matching Isabelle's `THE`). -/
+this is the unique `j0` with `nextR M i j0 j1`). -/
 noncomputable def parent (M : PairSeq) (i j1 : ℕ) : ℕ :=
   Classical.epsilon fun j0 => nextR M i j0 j1
 
