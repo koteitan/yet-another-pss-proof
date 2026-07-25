@@ -60,7 +60,7 @@ $`\neg(\mathsf{Z} \prec \mathsf{Z})`$。
 
 ### 証明
 
-[D.olt](#d-olt) の第 1 式により $`\mathsf{Z} \prec \mathsf{Z}`$ は $`\bot`$ と定義により同一の命題である。
+$`\prec`$ の定義（D.olt）の第 1 式により $`\mathsf{Z} \prec \mathsf{Z}`$ は $`\bot`$ と定義により同一の命題である。
 よってその仮定から $`\bot`$ が得られる。∎
 
 <a id="t-olt_Z_P"></a>
@@ -72,7 +72,7 @@ $`\neg(\mathsf{Z} \prec \mathsf{Z})`$。
 
 ### 証明
 
-[D.olt](#d-olt) の第 2 式により $`\mathsf{Z} \prec \mathsf{P}(a,b,c)`$ は $`\top`$ と定義により
+$`\prec`$ の定義（D.olt）の第 2 式により $`\mathsf{Z} \prec \mathsf{P}(a,b,c)`$ は $`\top`$ と定義により
 同一の命題であり、$`\top`$ は成り立つ。∎
 
 <a id="t-olt_P_Z"></a>
@@ -84,7 +84,7 @@ $`\neg(\mathsf{Z} \prec \mathsf{Z})`$。
 
 ### 証明
 
-[D.olt](#d-olt) の第 3 式により $`\mathsf{P}(a,b,c) \prec \mathsf{Z}`$ は $`\bot`$ と定義により
+$`\prec`$ の定義（D.olt）の第 3 式により $`\mathsf{P}(a,b,c) \prec \mathsf{Z}`$ は $`\bot`$ と定義により
 同一の命題である。∎
 
 <a id="t-olt_P_P"></a>
@@ -101,7 +101,7 @@ $`\neg(\mathsf{Z} \prec \mathsf{Z})`$。
 
 ### 証明
 
-[D.olt](#d-olt) の第 4 式そのものであり、両辺は定義により同一の命題である。∎
+$`\prec`$ の定義（D.olt）の第 4 式そのものであり、両辺は定義により同一の命題である。∎
 
 <a id="d-lead"></a>
 ## 定義: 先頭添字 (D.lead)
@@ -119,7 +119,7 @@ $`\mathrm{lead}\,\mathsf{Z} = 0`$。
 
 ### 証明
 
-[D.lead](#d-lead) の第 1 式そのものである。∎
+$`\mathrm{lead}`$ の定義（D.lead）の第 1 式そのものである。∎
 
 <a id="t-lead_P"></a>
 ## 定理: 主要項の先頭添字 (T.lead_P)
@@ -130,7 +130,7 @@ $`\mathrm{lead}\,\mathsf{Z} = 0`$。
 
 ### 証明
 
-[D.lead](#d-lead) の第 2 式そのものである。∎
+$`\mathrm{lead}`$ の定義（D.lead）の第 2 式そのものである。∎
 
 <a id="t-olt_P_of_lead_lt"></a>
 ## 定理: 先頭添字による支配 (T.olt_P_of_lead_lt)
@@ -259,7 +259,7 @@ $`x \prec y`$ かつ $`y \preceq z`$ ならば $`x \prec z`$。
 
 ### 証明
 
-[D.ole](#d-ole) より $`y \preceq z`$ は $`y \prec z`$ か $`y = z`$ である。
+$`\preceq`$ の定義（D.ole）より $`y \preceq z`$ は $`y \prec z`$ か $`y = z`$ である。
 前者のときは [T.olt_trans](#t-olt_trans) を $`x \prec y`$ と $`y \prec z`$ に適用する。
 後者のときは $`z`$ を $`y`$ に書き換えれば仮定 $`x \prec y`$ そのものである。∎
 
@@ -346,10 +346,10 @@ p_2 & (M = p :: L)
 
 $`M`$ の構成子で場合分けする。
 
-- $`M = ()`$：[D.translate](#d-translate) より $`\mathrm{tr}\,() = \mathsf{Z}`$ であり、
+- $`M = ()`$：$`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$ であり、
   [T.lead_Z](#t-lead_Z) より $`\mathrm{lead}\,\mathsf{Z} = 0`$。
 
-- $`M = p :: L`$：[D.translate](#d-translate) より
+- $`M = p :: L`$：$`\mathrm{tr}`$ の定義（D.translate）より
   $`\mathrm{tr}(p :: L) = \mathsf{P}(p_2, \cdot, \cdot)`$ であり、
   [T.lead_P](#t-lead_P) よりその先頭添字は $`p_2`$。∎
 
@@ -364,7 +364,7 @@ $`p`$ を要素上の述語、$`xs, ys`$ を列とする。$`xs`$ のすべて�
 \mathrm{tw}_p(xs \mathbin{+\!\!+} ys) = xs \mathbin{+\!\!+} \mathrm{tw}_p\,ys .
 ```
 
-（ここでは $`\mathrm{tw}_p`$ を一般の述語 $`p`$ について書く。[D.translate](#d-translate) の
+（ここでは $`\mathrm{tw}_p`$ を一般の述語 $`p`$ について書く。$`\mathrm{tr}`$ の定義（D.translate）の
 $`\mathrm{tw}_a`$ は $`p(x) :\equiv a \lt x_1`$ の場合である。）
 
 ### 証明
@@ -585,13 +585,13 @@ $`R`$ のすべての要素 $`x`$ が $`p_1 \lt x_1`$ をみたすならば
 
 仮定より $`R`$ のすべての要素が述語 $`x \mapsto p_1 \lt x_1`$ をみたすから、
 $`\mathrm{tw}_{p_1} R = R`$ かつ $`\mathrm{dw}_{p_1} R = ()`$ である。
-これを [D.translate](#d-translate) の第 2 式に代入して
+これを $`\mathrm{tr}`$ の定義（D.translate）の第 2 式に代入して
 
 ```math
 \mathrm{tr}(p :: R) = \mathsf{P}\bigl(p_2,\ \mathrm{tr}\,R,\ \mathrm{tr}\,()\bigr)
 ```
 
-を得る。さらに [D.translate](#d-translate) の第 1 式より $`\mathrm{tr}\,() = \mathsf{Z}`$。∎
+を得る。さらに $`\mathrm{tr}`$ の定義（D.translate）の第 1 式より $`\mathrm{tr}\,() = \mathsf{Z}`$。∎
 
 <a id="t-translate_block_append"></a>
 ## 定理: ブロックと後続の翻訳 (T.translate_block_append)
@@ -610,7 +610,7 @@ $`T = ()`$ または $`\neg\bigl(v_0 \lt (\mathrm{head}\,T)_1\bigr)`$ ならば
 ### 証明
 
 $`((v_0,w_0) :: R) \mathbin{+\!\!+} T = (v_0,w_0) :: (R \mathbin{+\!\!+} T)`$ であるから、
-[D.translate](#d-translate) の第 2 式より示すべきことは
+$`\mathrm{tr}`$ の定義（D.translate）の第 2 式より示すべきことは
 
 ```math
 \mathrm{tw}_{v_0}(R \mathbin{+\!\!+} T) = R
@@ -677,7 +677,7 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法。帰納法の述語は
   \mathrm{dw}_{p_1 + d}(L^{+d}) = (\mathrm{dw}_{p_1} L)^{+d} .
   ```
 
-  $`(p :: L)^{+d} = (p_1 + d, p_2) :: L^{+d}`$ であるから、[D.translate](#d-translate) より
+  $`(p :: L)^{+d} = (p_1 + d, p_2) :: L^{+d}`$ であるから、$`\mathrm{tr}`$ の定義（D.translate）より
 
   ```math
   \mathrm{tr}\bigl((p :: L)^{+d}\bigr)
@@ -686,7 +686,7 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法。帰納法の述語は
 
   ここに 2 つの帰納法の仮定を適用すると右辺は
   $`\mathsf{P}(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathrm{tr}(\mathrm{dw}_{p_1} L))`$ となり、
-  これは [D.translate](#d-translate) より $`\mathrm{tr}(p :: L)`$ に等しい。
+  これは $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}(p :: L)`$ に等しい。
   第 2 成分 $`p_2`$ は平行移動で変わらないことに注意する。よって $`\Psi(p :: L)`$。∎
 
 <a id="t-translate_ctx_cong"></a>
@@ -737,7 +737,7 @@ $`\lvert G\rvert`$ に関する強帰納法。帰納法の述語は
   \mathrm{dw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_i :: T_i
   ```
 
-  である。よって [D.translate](#d-translate) より
+  である。よって $`\mathrm{tr}`$ の定義（D.translate）より
 
   ```math
   \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
@@ -818,7 +818,7 @@ $`y \in \mathrm{snd}(M) \iff \exists p \in M,\ p_2 = y`$。
 
 ### 証明
 
-[D.sndSet](#d-sndSet) そのものである。∎
+$`\mathrm{snd}`$ の定義（D.sndSet）そのものである。∎
 
 <a id="t-sndSet_nil"></a>
 ## 定理: 空列の行 1 の値の集合 (T.sndSet_nil)
