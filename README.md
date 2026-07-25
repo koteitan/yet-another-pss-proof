@@ -12,7 +12,11 @@ Buchholz's collapsing functions $\psi$. This repository gives a **different proo
 sequences are translated into a three-branch tree notation $p_a(b)+c$ of our own, and
 termination is derived on that notation.
 
-## Result
+The proof-theoretic strength of PSS is believed to be $\psi_0(\psi_\omega(0))$
+(the Buchholz ordinal), which corresponds to taking the subscript $a$ of $p_a(b)$ to
+range over the natural numbers.
+
+## The proof
 
 **PSS termination is formally proved, with no hypotheses and no `sorry`.**
 
@@ -31,7 +35,7 @@ Both are in [`lean/Final.lean`](lean/Final.lean), and
 
 i.e. no `sorryAx` and no named assumption; `lake build` is green over the whole project.
 
-## How it is proved
+It is proved in three steps.
 
 1. A pair sequence $M$ is mapped by `translate` to a term of the three-branch notation
    $p_a(b)+c$, ordered by the subscript-first lexicographic order $\prec$ (`olt`).
@@ -57,9 +61,17 @@ mechanically rather than asserted: after `import Final` the constant `Ordinal`
 does not exist in the Lean environment at all, and no Mathlib ordinal or cardinal
 module is in the import closure.
 
-The proof-theoretic strength of PSS is believed to be $\psi_0(\psi_\omega(0))$
-(the Buchholz ordinal), which corresponds to taking the subscript $a$ of $p_a(b)$ to
-range over the natural numbers.
+**The proof itself is at [`lean/README.md`](lean/README.md)**, which indexes the eleven
+modules in dependency order. Each `lean/<module>.lean` has a `lean/<module>.md` beside it
+carrying the same proof for a human reader; the two are kept in one-to-one correspondence.
+
+## Build
+
+```sh
+cd lean && lake build
+```
+
+Lean 4 with Mathlib `v4.30.0`.
 
 ## Repository layout
 
@@ -86,17 +98,6 @@ tools/                the executable PSS model and the probes that check a state
                       against it before it is formalized
 task.md               progress tree
 ```
-
-Each `lean/<module>.lean` has a `lean/<module>.md` beside it carrying the same
-proof for a human reader; the two are kept in one-to-one correspondence.
-
-## Build
-
-```sh
-cd lean && lake build
-```
-
-Lean 4 with Mathlib `v4.30.0`.
 
 ## Reference
 
