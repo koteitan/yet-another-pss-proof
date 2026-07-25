@@ -27,9 +27,6 @@ well-foundedness of Buchholz's notation system $`\mathrm{OT}_B`$ is obtained **s
 the sets $`W_v`$ and the fundamental sequences, rather than from an evaluation into the ordinals.
 The route above transplants that method directly to pair sequences.
 
-Neither an evaluation map into the ordinals, nor an embedding into Buchholz's $`\mathrm{OT}`$, nor a
-coefficient domination condition occurs anywhere along this route.
-
 ## Structure of the proof
 
 | | What is proved | Text |
