@@ -28,7 +28,7 @@ $`\lvert l\rvert \le i`$ のときは「見つからなかった」という結�
 
 ### 定理
 
-[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq)、$`n \in \mathbb{N}`$ とし、$`1 \lt \lvert M\rvert`$ と
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`n \in \mathbb{N}`$ とし、$`1 \lt \lvert M\rvert`$ と
 $`1 \le n`$ を仮定する。このとき $`R \in \mathrm{PairSeq}`$ が存在して
 
 ```math
@@ -38,13 +38,13 @@ M[n] = \mathrm{dropLast}\,M \mathbin{+\!\!+} R
 ```
 
 が成り立つ。ここで $`\mathrm{dropLast}\,M`$ は $`M`$ の末尾 1 要素を落とした列である
-（[$`M[n]`$](Pss.md#d-oper)、[$`\mathrm{snd}`$](Term.md#d-sndSet)）。
+（$`M[n]`$ [D.oper](Pss.md#d-oper)、$`\mathrm{snd}`$ [D.sndSet](Term.md#d-sndSet)）。
 
 ### 証明
 
-$`j_1 := \lvert M\rvert - 1`$、[$`i_1 := \mathrm{idx}_1(M, j_1)`$](Pss.md#d-idx1) とおく。
+$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）とおく。
 $`1 \lt \lvert M\rvert`$ より $`j_1 \ne 0`$ であり、また $`\neg(\lvert M\rvert \le 1)`$ であるから
-[$`\mathrm{Pred}\,M`$](Pss.md#d-Pred) の定義（D.Pred）の第 2 の場合が選ばれて
+$`\mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）の定義（D.Pred）の第 2 の場合が選ばれて
 
 ```math
 \mathrm{Pred}\,M = \mathrm{dropLast}\,M
@@ -52,7 +52,7 @@ $`1 \lt \lvert M\rvert`$ より $`j_1 \ne 0`$ であり、また $`\neg(\lvert M
 
 である。次の 3 つの場合に分ける。
 
-**(a) [$`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$](Pss.md#d-entry) のとき。**
+**(a) $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
 [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より
 $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と取る。
 第 1 式は $`\mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M`$ により成り立つ。
@@ -60,7 +60,7 @@ $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と�
 空集合は任意の集合の部分集合であるから成り立つ。
 
 **(b) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ
-[$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$](Pss.md#d-hasParent) のとき。**
+$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）のとき。**
 [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
 $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と取る。
 第 1 式は $`\mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M`$ により成り立つ。
@@ -120,7 +120,7 @@ $`y \in \mathrm{snd}(\mathrm{dropLast}\,M)`$ を得る。∎
 
 ### 定理
 
-$`u \le v`$ ならば [$`\Delta_u^v = (u,u) :: \Delta_{u+1}^v`$](Pss.md#d-diagSeq)。
+$`u \le v`$ ならば $`\Delta_u^v = (u,u) :: \Delta_{u+1}^v`$（[D.diagSeq](Pss.md#d-diagSeq)）。
 
 ### 証明
 
@@ -157,7 +157,7 @@ $`u \le v`$ ならば
 \mathrm{tr}(\Delta_u^v) = \mathsf{P}\bigl(u,\ \mathrm{tr}(\Delta_{u+1}^v),\ \mathsf{Z}\bigr)
 ```
 
-（[$`\mathrm{tr}`$](Term.md#d-translate)、[$`\mathsf{Z}`$ と $`\mathsf{P}`$](Term.md#d-Three)）。
+（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\mathsf{Z}`$ と $`\mathsf{P}`$ [D.Three](Term.md#d-Three)）。
 
 ### 証明
 
@@ -193,7 +193,7 @@ $`\mathrm{Three}`$ 上の述語 $`\mathrm{cnf}`$ を、項の構造に関する�
 いずれも与えられた項の真部分項であるから、この定義は整合的である。
 
 第 3 式の第 2 連言子
-[$`\neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)`$](Term.md#d-olt) は、
+$`\neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)`$（[D.olt](Term.md#d-olt)）は、
 後続和の先頭の主要項から後続和を除いた $`\mathsf{P}(e,f,\mathsf{Z})`$ が、
 先頭の主要項から後続和を除いた $`\mathsf{P}(a,b,\mathsf{Z})`$ より真に大きくないことを述べている。
 
@@ -394,7 +394,7 @@ $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすことになり、$`x`$ につ
 である（第 2 式では $`(q :: L_2) \mathbin{+\!\!+} (m) = q :: (L_2 \mathbin{+\!\!+} (m))`$ を使った）。
 以下 $`A := \mathrm{tr}(\mathrm{tw}_{q_1} L_2)`$、$`A' := \mathrm{tr}(\mathrm{tw}_{q_1}(L_2 \mathbin{+\!\!+} (m)))`$ と略記する。
 [T.translate_takeWhile_snoc_le](Decrease.md#t-translate_takeWhile_snoc_le) より
-[$`A \preceq A'`$](Term.md#d-ole) である。
+$`A \preceq A'`$（[D.ole](Term.md#d-ole)）である。
 
 前件は、$`\mathrm{tr}`$ の定義（D.translate）と上の 2 式により
 
@@ -1974,7 +1974,7 @@ $`1 \le n`$（仮定 (n1)）、(cM')（仮定 (cM)）に適用して
 
 ### 定理
 
-[$`M \in \mathrm{ST\_PS}`$](Pss.md#d-ST_PS) ならば $`\mathrm{cnf}(\mathrm{tr}\,M)`$。
+$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`\mathrm{cnf}(\mathrm{tr}\,M)`$。
 
 ### 証明
 

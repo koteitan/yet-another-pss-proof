@@ -5,11 +5,11 @@
 
 ### 定理
 
-[$`W, X, Y \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) とする。
-[$`X \preceq_{\mathrm{lex}} W \mathbin{+\!\!+} Y`$](Cofinality.md#d-sle) であり、かつ任意の
+$`W, X, Y \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とする。
+$`X \preceq_{\mathrm{lex}} W \mathbin{+\!\!+} Y`$（[D.sle](Cofinality.md#d-sle)）であり、かつ任意の
 $`X' \in \mathrm{PairSeq}`$ について $`X \ne W \mathbin{+\!\!+} X'`$ であるならば、任意の
 $`Y' \in \mathrm{PairSeq}`$ について
-[$`X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y'`$](Seqlex.md#d-seqlex)。
+$`X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y'`$（[D.seqlex](Seqlex.md#d-seqlex)）。
 
 ### 証明
 
@@ -47,7 +47,7 @@ $`W`$ の長さに関する帰納法（$`X`$, $`Y`$, $`Y'`$ は全称量化し�
   $`x :: X'' \prec_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y)`$ の場合、
   $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式により次のいずれかが成り立つ。
 
-  - [$`x \prec_{\mathrm{p}} w`$](Seqlex.md#d-pairlt) のとき。
+  - $`x \prec_{\mathrm{p}} w`$（[D.pairlt](Seqlex.md#d-pairlt)）のとき。
     示すべきは $`x :: X'' \prec_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y')`$ であり、
     D.seqlex の第 3 式の右辺の第 1 選言がいまの仮定そのものである。
   - $`x = w`$ かつ $`X'' \prec_{\mathrm{lex}} W' \mathbin{+\!\!+} Y`$ のとき。
@@ -67,9 +67,9 @@ $`W`$ の長さに関する帰納法（$`X`$, $`Y`$, $`Y'`$ は全称量化し�
 
 $`d, w, n, a \in \mathbb{N}`$、$`X, Q, A_2 \in \mathrm{PairSeq}`$ とする。
 $`\lvert X\rvert \le n`$ かつ
-[$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$](Cnf.md#d-shiftr0)
+$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$（[D.shiftr0](Cnf.md#d-shiftr0)）
 ならば、ある $`m \in \mathbb{N}`$ が存在して
-[$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)`$](Cnf.md#d-copies)。
+$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)`$（[D.copies](Cnf.md#d-copies)）。
 
 ### 証明
 
@@ -424,7 +424,7 @@ $`A \in \mathrm{PairSeq}`$、$`L, w \in \mathbb{N}`$ に対し
 $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ と $`u, w, e \in \mathbb{N}`$ について、
 次の 8 条件がすべて成り立つならば結論 (9) が成り立つ、という命題である。
 
-1. [$`\bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z \in \mathrm{ST\_PS}`$](Pss.md#d-ST_PS)
+1. $`\bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）
 2. $`0 \lt e`$
 3. $`\forall x \in A_1,\ u \lt x_1`$
 4. $`\forall x \in B,\ u + e \lt x_1`$
@@ -447,7 +447,7 @@ M := \bigl(G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr) \mathbin{+\!\!+} (\ell), \q
 j := \bigl\lvert G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr\rvert
 ```
 
-とおく。[$`\lvert G\rvert \to^M_1 j`$](Pss.md#d-nextrel1) ならば
+とおく。$`\lvert G\rvert \to^M_1 j`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば
 $`\mathrm{SpineOK}(R,\ v_0 + d_0,\ w_0)`$。
 
 ### 証明
@@ -464,7 +464,7 @@ $`\to^M_1`$ の定義（D.nextrel1）の 6 条件のうち、条件 (5)
 \forall j'\ \bigl(\lvert G\rvert \lt j' \ \wedge\ j' \le^M_0 j \ \to\ M_{1,j} \le M_{1,j'}\bigr)
 ```
 
-を用いる（[$`\le^M_0`$](Pss.md#d-le0)、[$`M_{i,j}`$](Pss.md#d-entry)）。
+を用いる（$`\le^M_0`$ [D.le0](Pss.md#d-le0)、$`M_{i,j}`$ [D.entry](Pss.md#d-entry)）。
 
 $`\mathrm{SpineOK}`$ の定義（D.SpineOK）にしたがい、$`U, V \in \mathrm{PairSeq}`$ と
 $`x \in \mathbb{N}\times\mathbb{N}`$ を取り
@@ -540,7 +540,7 @@ w_0 + 1 = M_{1,j} \le M_{1,\lvert A\rvert} = x_2
 ### 定理
 
 $`\mathrm{ArgDomCore}`$ が成り立つならば
-[$`\mathrm{AscArgDom}`$](Cofinality.md#d-AscArgDom) が成り立つ。
+$`\mathrm{AscArgDom}`$（[D.AscArgDom](Cofinality.md#d-AscArgDom)）が成り立つ。
 
 ### 証明
 
@@ -672,8 +672,8 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
 ### 定理
 
 $`\mathrm{ArgDomCore}`$ が成り立つとする。$`M, N \in \mathrm{ST\_PS}`$ であり
-[$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$](Term.md#d-translate) ならば、ある $`n`$ が存在して
-$`1 \le n`$ かつ [$`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$](Pss.md#d-oper)。
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（[D.translate](Term.md#d-translate)）ならば、ある $`n`$ が存在して
+$`1 \le n`$ かつ $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$（[D.oper](Pss.md#d-oper)）。
 
 ### 証明
 
@@ -782,7 +782,7 @@ $`\lvert X\rvert + (\lvert A_1\rvert + 1) \lt \lvert N\rvert`$ である。∎
 ### 定理
 
 任意の $`v \in \mathbb{N}`$ について
-[$`\mathrm{ArgDomCoreOn}(\Delta_0^v)`$](Pss.md#d-diagSeq)。
+$`\mathrm{ArgDomCoreOn}(\Delta_0^v)`$（[D.diagSeq](Pss.md#d-diagSeq)）。
 
 ### 証明
 
@@ -3001,7 +3001,7 @@ $`j_1 := \lvert M\rvert - 1`$ と書く。$`M[n]`$ の定義（D.oper）の分�
 
 **(b) $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ のとき。**
 [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より
-[$`M[n] = \mathrm{Pred}\,M`$](Pss.md#d-Pred) である。$`j_1 = \lvert M\rvert - 1 \ne 0`$ より
+$`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）である。$`j_1 = \lvert M\rvert - 1 \ne 0`$ より
 $`2 \le \lvert M\rvert`$、すなわち $`\neg(\lvert M\rvert \le 1)`$ であるから、
 $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれて
 $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
@@ -3025,13 +3025,13 @@ $`\mathrm{ArgDomCoreOn}(\mathrm{dropLast}\,M) = \mathrm{ArgDomCoreOn}(M[n])`$ �
 **(c) $`j_1 \ne 0`$ かつ $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ のとき。**
 $`2 \le \lvert M\rvert`$ より $`0 \lt \lvert M\rvert`$ であるから、
 [T.hasParent_last_ST_PS](Cofinality.md#t-hasParent_last_ST_PS) より、探索行
-[$`\mathrm{idx}_1(M,j_1)`$](Pss.md#d-idx1) について
-[$`\mathrm{hasParent}(M, \mathrm{idx}_1(M,j_1), j_1)`$](Pss.md#d-hasParent) が成り立つ。
+$`\mathrm{idx}_1(M,j_1)`$（[D.idx1](Pss.md#d-idx1)）について
+$`\mathrm{hasParent}(M, \mathrm{idx}_1(M,j_1), j_1)`$（[D.hasParent](Pss.md#d-hasParent)）が成り立つ。
 
-[T.blockok_ST_PS](Seqlex.md#t-blockok_ST_PS) より [$`\mathrm{blockok}(0, M)`$](Seqlex.md#d-blockok) であり、
-その第 3 連言子が [$`\mathrm{steps}_1(M)`$](Seqlex.md#d-steps1) である。
+[T.blockok_ST_PS](Seqlex.md#t-blockok_ST_PS) より $`\mathrm{blockok}(0, M)`$（[D.blockok](Seqlex.md#d-blockok)）であり、
+その第 3 連言子が $`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）である。
 また [T.r1ok_ST_PS](Column.md#t-r1ok_ST_PS) より
-[$`\mathrm{r1ok}(M)`$](Column.md#d-r1ok) である。$`1 \lt \lvert M\rvert`$ とこれらに
+$`\mathrm{r1ok}(M)`$（[D.r1ok](Column.md#d-r1ok)）である。$`1 \lt \lvert M\rvert`$ とこれらに
 [T.oper_bad_blocks_all](Cofinality.md#t-oper_bad_blocks_all) を適用して、
 $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$
 であって、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおくと

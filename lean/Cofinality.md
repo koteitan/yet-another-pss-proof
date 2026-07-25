@@ -5,7 +5,7 @@
 
 ### 定理
 
-$`p, q, r \in \mathbb{N}\times\mathbb{N}`$ とする。[$`p \prec_{\mathrm{p}} q`$](Seqlex.md#d-pairlt) かつ
+$`p, q, r \in \mathbb{N}\times\mathbb{N}`$ とする。$`p \prec_{\mathrm{p}} q`$（[D.pairlt](Seqlex.md#d-pairlt)）かつ
 $`q \prec_{\mathrm{p}} r`$ ならば $`p \prec_{\mathrm{p}} r`$。
 
 ### 証明
@@ -46,8 +46,8 @@ x \prec_{\mathrm{p}} y \iff x_1 \lt y_1 \ \vee\ (x_1 = y_1 \wedge x_2 \lt y_2)
 
 ### 定理
 
-[$`A, B, C \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) とする。
-[$`A \prec_{\mathrm{lex}} B`$](Seqlex.md#d-seqlex) かつ $`B \prec_{\mathrm{lex}} C`$ ならば
+$`A, B, C \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とする。
+$`A \prec_{\mathrm{lex}} B`$（[D.seqlex](Seqlex.md#d-seqlex)）かつ $`B \prec_{\mathrm{lex}} C`$ ならば
 $`A \prec_{\mathrm{lex}} C`$。
 
 ### 証明
@@ -263,7 +263,7 @@ $`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化した�
   \to \exists n,\ \bigl(1 \le n \wedge N \preceq_{\mathrm{lex}} M[n]\bigr).
 ```
 
-（[$`\mathrm{ST\_PS}`$](Pss.md#d-ST_PS)、[$`M[n]`$](Pss.md#d-oper)）
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`M[n]`$ [D.oper](Pss.md#d-oper)）
 
 <a id="t-pss_cofinality_of_seqlex"></a>
 ## 定理: 列辞書式形からの共終性 (T.pss_cofinality_of_seqlex)
@@ -271,13 +271,13 @@ $`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化した�
 ### 定理
 
 $`\mathrm{SeqlexCofinality}`$ が成り立つとする。このとき $`M, N \in \mathrm{ST\_PS}`$ が
-[$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$](Term.md#d-translate) をみたすならば
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（[D.translate](Term.md#d-translate)）をみたすならば
 
 ```math
 \exists n,\ \bigl(1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])\bigr).
 ```
 
-（[$`\prec`$](Term.md#d-olt)、[$`\preceq`$](Term.md#d-ole)）
+（$`\prec`$ [D.olt](Term.md#d-olt)、$`\preceq`$ [D.ole](Term.md#d-ole)）
 
 ### 証明
 
@@ -308,7 +308,7 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）で場合分けする。
 ### 定理
 
 任意の $`M \in \mathrm{PairSeq}`$, $`j \in \mathbb{N}`$ に対し
-[$`M_{0,j} = \pi_1\bigl(M\langle j\rangle\bigr)`$](Pss.md#d-entry)。
+$`M_{0,j} = \pi_1\bigl(M\langle j\rangle\bigr)`$（[D.entry](Pss.md#d-entry)）。
 
 ### 証明
 
@@ -391,7 +391,7 @@ $`\pi_1(M\langle j_1\rangle) = M_{0,j_1} = 0`$、$`\pi_2(M\langle j_1\rangle) = 
 
 **第 2 段：$`M[1] = \mathrm{dropLast}\,M`$。**
 [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) を $`j_1 \ne 0`$ と仮定の
-第 2 連言子に適用して [$`M[1] = \mathrm{Pred}\,M`$](Pss.md#d-Pred) を得る。
+第 2 連言子に適用して $`M[1] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）を得る。
 $`1 \lt \lvert M\rvert`$ より $`\neg(\lvert M\rvert \le 1)`$ であるから、
 $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
 
@@ -422,16 +422,16 @@ $`\neg\bigl(M_{0,\lvert M\rvert - 1} = 0 \wedge M_{1,\lvert M\rvert - 1} = 0\big
 \mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, \lvert M\rvert - 1),\ \lvert M\rvert - 1\bigr) .
 ```
 
-（[$`\mathrm{hasParent}`$](Pss.md#d-hasParent)、[$`\mathrm{idx}_1`$](Pss.md#d-idx1)）
+（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)、$`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)）
 
 ### 証明
 
 $`j_1 := \lvert M\rvert - 1`$ とおく。[T.hp_last](Column.md#t-hp_last) を適用する。
 その 4 つの仮定は次のように満たされる。
 
-- [$`\mathrm{blockok}(0, M)`$](Seqlex.md#d-blockok)：
+- $`\mathrm{blockok}(0, M)`$（[D.blockok](Seqlex.md#d-blockok)）：
   [T.blockok_ST_PS](Seqlex.md#t-blockok_ST_PS) による。
-- [$`\mathrm{z0ok}(M)`$](Column.md#d-z0ok)：[T.z0ok_ST_PS](Column.md#t-z0ok_ST_PS) による。
+- $`\mathrm{z0ok}(M)`$（[D.z0ok](Column.md#d-z0ok)）：[T.z0ok_ST_PS](Column.md#t-z0ok_ST_PS) による。
 - $`0 \lt \lvert M\rvert`$：仮定である。
 - $`\neg\bigl(M\langle j_1\rangle = (0,0)\bigr)`$：$`M\langle j_1\rangle = (0,0)`$ と仮定すると、
   [T.entry_zero](#t-entry_zero) より $`M_{0,j_1} = \pi_1((0,0)) = 0`$、
@@ -522,7 +522,7 @@ $`\lvert D \mathbin{+\!\!+} (\ell)\rvert - 1 = \lvert D\rvert`$ である。
 
 ### 定理
 
-[$`\mathrm{r1ok}(M)`$](Column.md#d-r1ok) かつ [$`j_0 \to^M_1 j_1`$](Pss.md#d-nextrel1) ならば
+$`\mathrm{r1ok}(M)`$（[D.r1ok](Column.md#d-r1ok)）かつ $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば
 
 ```math
 M_{1,j_1} = M_{1,j_0} + 1 .
@@ -543,12 +543,12 @@ $`\to^M_1`$ の定義（D.nextrel1）より、仮定は次の 6 つの連言で�
 \end{aligned}
 ```
 
-（[$`\le^M_0`$](Pss.md#d-le0)）
+（$`\le^M_0`$ [D.le0](Pss.md#d-le0)）
 
 **第 1 段：行 $`0`$ の鎖の第 1 歩 $`c`$ を取る。**
 (5) と $`\le^M_0`$ の定義（D.le0）の第 3 条件より $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。
 反射推移閉包は「$`j_0 = j_1`$」か「ある $`c`$ について
-[$`j_0 \to^M_0 c`$](Pss.md#d-nextrel0) かつ $`c \mathbin{(\to^M_0)^{*}} j_1`$」の
+$`j_0 \to^M_0 c`$（[D.nextrel0](Pss.md#d-nextrel0)）かつ $`c \mathbin{(\to^M_0)^{*}} j_1`$」の
 いずれかであるが、前者は (3) の $`j_0 \lt j_1`$ に反する。よって後者の $`c`$ が取れる。
 
 $`\to^M_0`$ の定義（D.nextrel0）の第 3 条件より $`j_0 \lt c`$、第 2 条件より $`c \lt \lvert M\rvert`$ である。
@@ -604,7 +604,7 @@ $`\le`$ の反対称性により $`M_{1,j_1} = M_{1,j_0} + 1`$。∎
 ### 定理
 
 $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$ とおく。
-$`1 \lt \lvert M\rvert`$、[$`\mathrm{steps}_1(M)`$](Seqlex.md#d-steps1)、$`\mathrm{r1ok}(M)`$、
+$`1 \lt \lvert M\rvert`$、$`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）、$`\mathrm{r1ok}(M)`$、
 $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$、$`\mathrm{hasParent}(M, i_1, j_1)`$ を仮定する。
 このとき $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、
 $`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`B := (v_0,w_0) :: R`$ とおくと次の 5 つが成り立つ。
@@ -621,7 +621,7 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`B := (v_0,w_0) :: R`
 \end{aligned}
 ```
 
-（[$`\mathrm{cp}_{d}(B,n)`$](Cnf.md#d-copies)）
+（$`\mathrm{cp}_{d}(B,n)`$ [D.copies](Cnf.md#d-copies)）
 
 ### 証明
 
@@ -641,7 +641,7 @@ $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ のうち初めの 3 つは本
 \end{aligned}
 ```
 
-である（[$`\to^M_i`$](Pss.md#d-nextR)）。
+である（$`\to^M_i`$ [D.nextR](Pss.md#d-nextR)）。
 
 **第 2 段：位置の同定。**
 (1) と連結の結合則より $`M = G \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} (\ell)\bigr)`$ である。
@@ -759,7 +759,7 @@ M[n] = G \mathbin{+\!\!+} B^{+0\cdot d_0} \mathbin{+\!\!+} B^{+1\cdot d_0}
   \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}
 ```
 
-であり（[$`L^{+e}`$](Cnf.md#d-shiftr0) は $`L`$ の各対の第 1 成分に $`e`$ を足した列である）、
+であり（$`L^{+e}`$ [D.shiftr0](Cnf.md#d-shiftr0)は $`L`$ の各対の第 1 成分に $`e`$ を足した列である）、
 右辺の $`B^{+0\cdot d_0} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}`$ は
 $`\mathrm{cp}`$ の定義（D.copies）そのものであるから
 $`\mathrm{cp}_{d_0}(B, n)`$ に等しい。よって (2) を得る。∎
@@ -889,8 +889,8 @@ $`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)\bigr).
 ```
 
-（[$`\mathrm{cnf}`$](Cnf.md#d-cnf)。以下 $`\mathsf{Z}`$ と $`\mathsf{P}`$ は
-[$`\mathrm{Three}`$](Term.md#d-Three) の構成子である。）
+（$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)。以下 $`\mathsf{Z}`$ と $`\mathsf{P}`$ は
+$`\mathrm{Three}`$ [D.Three](Term.md#d-Three)の構成子である。）
 
 ### 証明
 

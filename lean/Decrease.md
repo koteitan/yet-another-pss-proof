@@ -1,14 +1,14 @@
 [← README](README.md)
 
-以下、[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) に対し
-$`j_1 := \lvert M\rvert - 1`$、[$`i_1 := \mathrm{idx}_1(M, j_1)`$](Pss.md#d-idx1) と書く。
+以下、$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
+$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）と書く。
 
 <a id="t-oper_eq_self_of_short"></a>
 ## 定理: 短い列では展開は恒等 (T.oper_eq_self_of_short)
 
 ### 定理
 
-$`j_1 = 0`$ ならば、任意の $`n`$ に対し [$`M[n] = M`$](Pss.md#d-oper)。
+$`j_1 = 0`$ ならば、任意の $`n`$ に対し $`M[n] = M`$（[D.oper](Pss.md#d-oper)）。
 
 ### 証明
 
@@ -19,8 +19,8 @@ $`M[n]`$ の定義（D.oper）の分岐 (a) の条件が仮定そのものであ
 
 ### 定理
 
-$`j_1 \ne 0`$ かつ [$`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$](Pss.md#d-entry) ならば、
-任意の $`n`$ に対し [$`M[n] = \mathrm{Pred}\,M`$](Pss.md#d-Pred)。
+$`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）ならば、
+任意の $`n`$ に対し $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）。
 
 ### 証明
 
@@ -33,7 +33,7 @@ $`M[n]`$ の定義（D.oper）の分岐 (a) の条件は $`j_1 = 0`$ であり�
 ### 定理
 
 $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
-[$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$](Pss.md#d-hasParent) ならば、
+$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）ならば、
 任意の $`n`$ に対し $`M[n] = \mathrm{Pred}\,M`$。
 
 ### 証明
@@ -48,7 +48,7 @@ $`M[n]`$ の定義（D.oper）の分岐 (a), (b) の条件はいずれも仮定�
 
 $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
 $`\mathrm{hasParent}(M, i_1, j_1)`$ とする。
-[$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$](Pss.md#d-parent)、
+$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）、
 
 ```math
 d_0 := \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 \lt i_1) \cr 0 & (i_1 = 0) \end{cases}
@@ -100,7 +100,7 @@ $`j_1 = \lvert M\rvert - 1 = 0`$ である。
 \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m)) .
 ```
 
-（[$`\mathrm{tr}`$](Term.md#d-translate)、[$`\prec`$](Term.md#d-olt)）
+（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）
 
 ### 証明
 
@@ -210,7 +210,7 @@ $`a \in \mathbb{N}`$、$`C \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}\times\mat
 \mathrm{tr}\bigl(\mathrm{tw}_a C\bigr) \preceq \mathrm{tr}\bigl(\mathrm{tw}_a (C \mathbin{+\!\!+} (m))\bigr)
 ```
 
-（[$`\preceq`$](Term.md#d-ole)）。
+（$`\preceq`$ [D.ole](Term.md#d-ole)）。
 
 ### 証明
 
@@ -381,7 +381,7 @@ $`1 \lt \lvert M\rvert`$ に反する）。よって
 ### 定理
 
 $`\mathrm{hasParent}(M, i, j_1)`$ ならば
-$`\mathrm{par}^M_i(j_1)`$ [$`\to^M_i j_1`$](Pss.md#d-nextR)。
+$`\mathrm{par}^M_i(j_1)`$ $`\to^M_i j_1`$（[D.nextR](Pss.md#d-nextR)）。
 
 ### 証明
 

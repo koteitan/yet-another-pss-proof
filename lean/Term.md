@@ -292,7 +292,7 @@ $`=`$ の反射性と仮定により成り立つ。∎
 <a id="d-translate"></a>
 ## 定義: 翻訳 (D.translate)
 
-以下、$`a \in \mathbb{N}`$ と [$`L \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) に対し
+以下、$`a \in \mathbb{N}`$ と $`L \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
 
 ```math
 \mathrm{tw}_a L := \text{（}L\text{ の先頭から、第 1 成分が } a \text{ より大きい要素が続く極大な前部分列）},
@@ -466,8 +466,8 @@ $`a + i \lt \lvert xs\rvert`$ であるから、これは $`xs`$ の第 $`a+i`$ 
 
 ### 定理
 
-[$`j_0 \to^M_0 j_1`$](Pss.md#d-nextrel0) ならば
-[$`M_{0,j_0} \lt M_{0,j_1}`$](Pss.md#d-entry)。
+$`j_0 \to^M_0 j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）ならば
+$`M_{0,j_0} \lt M_{0,j_1}`$（[D.entry](Pss.md#d-entry)）。
 
 ### 証明
 
@@ -478,7 +478,7 @@ $`\to^M_0`$ の定義（D.nextrel0）の第 4 条件そのものである。∎
 
 ### 定理
 
-[$`j_0 \le^M_0 j_1`$](Pss.md#d-le0) ならば $`M_{0,j_0} \le M_{0,j_1}`$。
+$`j_0 \le^M_0 j_1`$（[D.le0](Pss.md#d-le0)）ならば $`M_{0,j_0} \le M_{0,j_1}`$。
 
 ### 証明
 
@@ -839,7 +839,7 @@ $`p`$ が存在することになるが、空列は要素をもたない。よ�
 ### 定理
 
 任意の $`M \in \mathrm{PairSeq}`$, $`j \in \mathbb{N}`$ に対し
-[$`\mathrm{idx}_1(M,j) \le 1`$](Pss.md#d-idx1)。
+$`\mathrm{idx}_1(M,j) \le 1`$（[D.idx1](Pss.md#d-idx1)）。
 
 ### 証明
 

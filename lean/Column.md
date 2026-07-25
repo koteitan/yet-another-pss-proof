@@ -5,7 +5,7 @@
 
 ### 定理
 
-[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) が [$`M \in \mathrm{ST\_PS}`$](Pss.md#d-ST_PS)
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）が $`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）
 をみたすならば $`0 \lt \lvert M\rvert`$。
 
 ### 証明
@@ -19,7 +19,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 **基底段（規則 diag）$`M = \Delta_0^v`$。**
 [T.diagSeq_cons](Cnf.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$ とし、
 仮定 $`0 \le v`$ のもとで適用すると
-[$`\Delta_0^v = (0,0) :: \Delta_1^v`$](Pss.md#d-diagSeq) である。
+$`\Delta_0^v = (0,0) :: \Delta_1^v`$（[D.diagSeq](Pss.md#d-diagSeq)）である。
 よって $`\lvert \Delta_0^v\rvert = 1 + \lvert \Delta_1^v\rvert`$ であり $`0 \lt \lvert \Delta_0^v\rvert`$。
 
 **帰納段（規則 oper）$`M = N[n]`$（$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
@@ -28,7 +28,7 @@ $`\lvert N\rvert`$ で場合分けする。
 
 **(a) $`1 \lt \lvert N\rvert`$ のとき。**
 [T.oper_eq_dropLast_append](Cnf.md#t-oper_eq_dropLast_append) より、ある $`R \in \mathrm{PairSeq}`$ が存在して
-[$`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$](Pss.md#d-oper) である。ここで $`\mathrm{dropLast}\,N`$ は
+$`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$（[D.oper](Pss.md#d-oper)）である。ここで $`\mathrm{dropLast}\,N`$ は
 $`N`$ の末尾 1 要素を落とした列であり $`\lvert \mathrm{dropLast}\,N\rvert = \lvert N\rvert - 1`$ である。よって
 
 ```math
@@ -99,7 +99,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`i \in \mathbb{N}`$ とし $`\lvert A\rvert \le
 (A \mathbin{+\!\!+} T)\langle i\rangle = T\langle i - \lvert A\rvert\rangle
 ```
 
-（[$`M\langle j\rangle`$](Pss.md#d-entry) は範囲外で $`(0,0)`$ を返す読み出しである）。
+（$`M\langle j\rangle`$ [D.entry](Pss.md#d-entry)は範囲外で $`(0,0)`$ を返す読み出しである）。
 
 ### 証明
 
@@ -154,7 +154,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \to^{T}_0 j_1
 ```
 
-（[$`\to^M_0`$](Pss.md#d-nextrel0)）。
+（$`\to^M_0`$ [D.nextrel0](Pss.md#d-nextrel0)）。
 
 ### 証明
 
@@ -197,7 +197,7 @@ $`\to^M_0`$ の定義（D.nextrel0）の 5 条件を左右で対応させる。
 ### 定理
 
 $`A, T \in \mathrm{PairSeq}`$、$`j_0, c \in \mathbb{N}`$ とする。
-[$`j_0 \mathbin{(\to^{T}_0)^{*}} c`$](Pss.md#d-le0) ならば
+$`j_0 \mathbin{(\to^{T}_0)^{*}} c`$（[D.le0](Pss.md#d-le0)）ならば
 
 ```math
 \lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + c .
@@ -466,7 +466,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \to^{T}_1 j_1
 ```
 
-（[$`\to^M_1`$](Pss.md#d-nextrel1)）。
+（$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)）。
 
 ### 証明
 
@@ -523,7 +523,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`i, j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \to^{T}_i j_1
 ```
 
-（[$`\to^M_i`$](Pss.md#d-nextR)）。
+（$`\to^M_i`$ [D.nextR](Pss.md#d-nextR)）。
 
 ### 証明
 
@@ -547,7 +547,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`j \in \mathbb{N}`$ に対し
 \mathrm{idx}_1(A \mathbin{+\!\!+} T,\ \lvert A\rvert + j) = \mathrm{idx}_1(T, j)
 ```
 
-（[$`\mathrm{idx}_1`$](Pss.md#d-idx1)）。
+（$`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)）。
 
 ### 証明
 
@@ -606,7 +606,7 @@ $`i, j_1 \in \mathbb{N}`$ が $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert +
 \mathrm{hasParent}(T,\ i,\ j_1)
 ```
 
-（[$`\mathrm{hasParent}`$](Pss.md#d-hasParent)）。
+（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)）。
 
 ### 証明
 
@@ -644,7 +644,7 @@ $`\mathrm{hasParent}(T, i, j_1)`$ をみたすとする。このとき
 \mathrm{par}^{A \mathbin{+\!\!+} T}_i(\lvert A\rvert + j_1) = \lvert A\rvert + \mathrm{par}^{T}_i(j_1)
 ```
 
-（[$`\mathrm{par}^M_i`$](Pss.md#d-parent)）。
+（$`\mathrm{par}^M_i`$ [D.parent](Pss.md#d-parent)）。
 
 ### 証明
 
@@ -739,7 +739,7 @@ $`A, T \in \mathrm{PairSeq}`$ が $`2 \le \lvert T\rvert`$ をみたすならば
 \mathrm{Pred}\,(A \mathbin{+\!\!+} T) = A \mathbin{+\!\!+} \mathrm{Pred}\,T
 ```
 
-（[$`\mathrm{Pred}`$](Pss.md#d-Pred)）。
+（$`\mathrm{Pred}`$ [D.Pred](Pss.md#d-Pred)）。
 
 ### 証明
 
@@ -961,7 +961,7 @@ N[n] = a :: \bigl(\mathrm{dropLast}\,(b :: u) \mathbin{+\!\!+} R\bigr)
 
 ### 定理
 
-[$`\mathrm{tr}\,()`$](Term.md#d-translate) は [$`\mathsf{Z}`$](Term.md#d-Three) に等しい。
+$`\mathrm{tr}\,()`$（[D.translate](Term.md#d-translate)）は $`\mathsf{Z}`$（[D.Three](Term.md#d-Three)）に等しい。
 
 ### 証明
 
@@ -2060,7 +2060,7 @@ w_0 \lt \ell_2 \le B_{1,r'} \le B_{1,r'} + 1 . \qquad \blacksquare
 
 ### 定理
 
-$`1 \le n`$、$`\mathrm{r1ok}(M)`$、[$`\mathrm{steps}_1(M)`$](Seqlex.md#d-steps1) ならば
+$`1 \le n`$、$`\mathrm{r1ok}(M)`$、$`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）ならば
 $`\mathrm{r1ok}(M[n])`$。
 
 ### 証明
@@ -2201,7 +2201,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 - **帰納段**（規則 (oper)）：$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$ とする。帰納法の仮定は
   $`\Phi(N)`$、すなわち $`\mathrm{r1ok}(N)`$ であり、示すべきは $`\mathrm{r1ok}(N[n])`$ である。
   [T.blockok_ST_PS](Seqlex.md#t-blockok_ST_PS) を $`N \in \mathrm{ST\_PS}`$ に適用して
-  [$`\mathrm{blockok}(0, N)`$](Seqlex.md#d-blockok) を得る。$`\mathrm{blockok}`$ の定義（D.blockok）は
+  $`\mathrm{blockok}(0, N)`$（[D.blockok](Seqlex.md#d-blockok)）を得る。$`\mathrm{blockok}`$ の定義（D.blockok）は
   3 つの連言であり、その第 3 連言子は $`\mathrm{steps}_1(N)`$ である。
   [T.r1ok_oper](#t-r1ok_oper) を $`1 \le n`$、$`\mathrm{r1ok}(N)`$、$`\mathrm{steps}_1(N)`$ に
   適用すれば $`\mathrm{r1ok}(N[n])`$ を得る。∎

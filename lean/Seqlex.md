@@ -15,7 +15,7 @@ p \prec_{\mathrm{p}} q :\iff p_1 \lt q_1 \ \vee\ \bigl(p_1 = q_1 \wedge p_2 \lt 
 <a id="d-seqlex"></a>
 ## 定義: 列の辞書式順序 (D.seqlex)
 
-[$`M, N \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) に対し、関係
+$`M, N \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し、関係
 $`M \prec_{\mathrm{lex}} N`$ を両引数の構成子による場合分けで定める。
 以下 $`()`$ は空列、$`p :: M`$ は列 $`M`$ の先頭に対 $`p`$ を付けた列である。
 
@@ -246,7 +246,7 @@ $`\mathrm{blockok}(d, B)`$ が成り立つとき $`B`$ を**深さ $`d`$ のブ�
 ### 定理
 
 $`B \in \mathrm{PairSeq}`$、$`j \in \mathbb{N}`$ に対し
-[$`B\langle j\rangle`$](Pss.md#d-entry) を $`B`$ の第 $`j`$ 要素
+$`B\langle j\rangle`$（[D.entry](Pss.md#d-entry)）を $`B`$ の第 $`j`$ 要素
 （$`j \ge \lvert B\rvert`$ のときは $`(0,0)`$）とする。このとき
 
 ```math
@@ -501,7 +501,7 @@ $`(\mathrm{head}\,B)_1 = d`$、すなわち $`x_1 = d`$ を得る。∎
 
 $`d, y \in \mathbb{N}`$、$`r \in \mathrm{PairSeq}`$ とする。
 $`\mathrm{blockok}\bigl(d, (d,y) :: r\bigr)`$ ならば
-[$`\mathrm{blockok}\bigl(d+1,\ \mathrm{tw}_d r\bigr)`$](Term.md#d-translate)。
+$`\mathrm{blockok}\bigl(d+1,\ \mathrm{tw}_d r\bigr)`$（[D.translate](Term.md#d-translate)）。
 
 ### 証明
 
@@ -773,7 +773,7 @@ $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式により $`() \prec
 同一の命題であり、$`=`$ の反射性に矛盾する。よって前件が偽である。
 
 **(2) $`M = ()`$、$`N = q :: N'`$ のとき。**
-$`\mathrm{tr}`$ の定義（D.translate）の第 1 式より [$`\mathrm{tr}\,() = \mathsf{Z}`$](Term.md#d-Three) であり、
+$`\mathrm{tr}`$ の定義（D.translate）の第 1 式より $`\mathrm{tr}\,() = \mathsf{Z}`$（[D.Three](Term.md#d-Three)）であり、
 第 2 式より $`\mathrm{tr}(q :: N') = \mathsf{P}\bigl(q_2, \mathrm{tr}(\mathrm{tw}_{q_1}N'), \mathrm{tr}(\mathrm{dw}_{q_1}N')\bigr)`$
 である。[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathsf{P}(\cdot,\cdot,\cdot)`$。
 
@@ -1289,7 +1289,7 @@ $`\mathrm{steps}_1\bigl(((s+1+i,s+1+i))_{i=0}^{m-1}\bigr)`$ を、上の先頭�
 
 ### 定理
 
-任意の $`v \in \mathbb{N}`$ に対し [$`\mathrm{blockok}(0, \Delta_0^v)`$](Pss.md#d-diagSeq)。
+任意の $`v \in \mathbb{N}`$ に対し $`\mathrm{blockok}(0, \Delta_0^v)`$（[D.diagSeq](Pss.md#d-diagSeq)）。
 
 ### 証明
 
@@ -1313,11 +1313,11 @@ $`0`$ から始まる長さ $`v + 1 - 0`$ の連続整数の列の各要素 $`j`
 ### 定理
 
 $`M \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とする。
-$`\mathrm{blockok}(0, M)`$ かつ $`1 \le n`$ ならば [$`\mathrm{blockok}(0, M[n])`$](Pss.md#d-oper)。
+$`\mathrm{blockok}(0, M)`$ かつ $`1 \le n`$ ならば $`\mathrm{blockok}(0, M[n])`$（[D.oper](Pss.md#d-oper)）。
 
 ### 証明
 
-以下 $`j_1 := \lvert M\rvert - 1`$、[$`i_1 := \mathrm{idx}_1(M, j_1)`$](Pss.md#d-idx1) と書く。
+以下 $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）と書く。
 $`j_1 = 0`$ かどうかで場合分けする。
 
 **(A) $`j_1 = 0`$ のとき。**
@@ -1326,7 +1326,7 @@ $`j_1 = 0`$ かどうかで場合分けする。
 
 **(B) $`j_1 \ne 0`$ のとき。**
 $`j_1 = \lvert M\rvert - 1 \ne 0`$ より $`1 \lt \lvert M\rvert`$ であり、とくに $`M \ne ()`$ である。
-また [$`\mathrm{Pred}\,M`$](Pss.md#d-Pred) の定義（D.Pred）の場合分けで $`\lvert M\rvert \le 1`$ が偽であるから
+また $`\mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）の定義（D.Pred）の場合分けで $`\lvert M\rvert \le 1`$ が偽であるから
 
 ```math
 \mathrm{Pred}\,M = \mathrm{dropLast}\,M
@@ -1340,14 +1340,14 @@ $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
 [T.blockok_dropLast](#t-blockok_dropLast) を $`\mathrm{blockok}(0,M)`$ に適用すればよい。
 
 **(B-2) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ
-[$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$](Pss.md#d-hasParent) のとき。**
+$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）のとき。**
 [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
 $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
 [T.blockok_dropLast](#t-blockok_dropLast) を適用すればよい。
 
 **(B-3) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-[T.parent_nextR](Decrease.md#t-parent_nextR) より、[$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$](Pss.md#d-parent) とおくと
-[$`j_0 \to^M_{i_1} j_1`$](Pss.md#d-nextR) である。[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より
+[T.parent_nextR](Decrease.md#t-parent_nextR) より、$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）とおくと
+$`j_0 \to^M_{i_1} j_1`$（[D.nextR](Pss.md#d-nextR)）である。[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より
 $`j_0 \lt j_1`$ である。さらに
 
 ```math
@@ -1381,7 +1381,7 @@ M_{0,j_1} \le M_{0,j_1 - 1} + 1
 を得る。$`i_1`$ が $`0`$ かどうかで分ける。
 
 **$`0 \lt i_1`$ のとき。** $`\to^M_{i}`$ の定義（D.nextR）の第 2 式より
-$`j_0 \to^M_{i_1} j_1`$ は [$`j_0 \to^M_1 j_1`$](Pss.md#d-nextrel1) である。
+$`j_0 \to^M_{i_1} j_1`$ は $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）である。
 $`\to^M_1`$ の定義（D.nextrel1）の第 5 条件は $`j_0 \le^M_0 j_1`$ であり、
 [T.le0_entry0_mono](Term.md#t-le0_entry0_mono) より $`M_{0,j_0} \le M_{0,j_1}`$ である。
 $`d_0`$ の定義の第 1 式より $`d_0 = M_{0,j_1} - M_{0,j_0}`$ であり、切り捨て減法は
@@ -1394,7 +1394,7 @@ M_{0,j_0} + d_0 = M_{0,j_0} + (M_{0,j_1} - M_{0,j_0}) = M_{0,j_1}
 をみたす。これと上の式を合わせて $`M_{0,j_0} + d_0 \le M_{0,j_1-1} + 1`$ を得る。
 
 **$`i_1 = 0`$ のとき。** $`\to^M_{i}`$ の定義（D.nextR）の第 1 式より
-[$`j_0 \to^M_0 j_1`$](Pss.md#d-nextrel0) である。[T.nextrel0_entry0_less](Term.md#t-nextrel0_entry0_less) より
+$`j_0 \to^M_0 j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）である。[T.nextrel0_entry0_less](Term.md#t-nextrel0_entry0_less) より
 $`M_{0,j_0} \lt M_{0,j_1}`$ である。$`d_0`$ の定義の第 2 式より $`d_0 = 0`$ であるから
 
 ```math
@@ -1564,7 +1564,7 @@ $`\mathrm{steps}_1(\mathrm{take}_{j_0} M)`$、$`\mathrm{steps}_1(\mathrm{cat}_n 
 
 ### 定理
 
-[$`M \in \mathrm{ST\_PS}`$](Pss.md#d-ST_PS) ならば $`\mathrm{blockok}(0, M)`$。
+$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`\mathrm{blockok}(0, M)`$。
 
 ### 証明
 

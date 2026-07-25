@@ -5,14 +5,14 @@
 
 ### 定理
 
-[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) 上の関係 [$`R_{\mathrm{st}}`$](Wset.md#d-Rst) の定義（D.Rst）は
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）上の関係 $`R_{\mathrm{st}}`$（[D.Rst](Wset.md#d-Rst)）の定義（D.Rst）は
 
 ```math
 a \mathbin{R_{\mathrm{st}}} b :\iff
   a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b
 ```
 
-である（[$`\mathrm{ST\_PS}`$](Pss.md#d-ST_PS)、[$`\mathrm{tr}`$](Term.md#d-translate)、[$`\prec`$](Term.md#d-olt)）。
+である（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）。
 
 関係 $`R`$ に対する $`\mathrm{Acc}_R`$ の定義、その最小性（$`\mathrm{Acc}_R`$ の導出に関する帰納法）、
 および $`R`$ が整礎であることの定義は、[T.step_terminates_cond](Reduction.md#t-step_terminates_cond)
@@ -21,7 +21,7 @@ a \mathbin{R_{\mathrm{st}}} b :\iff
 このとき、任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ かつ
 $`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ である。
 
-（[$`R_{\mathrm{NF}}`$](Reduction.md#d-Rnf)）
+（$`R_{\mathrm{NF}}`$ [D.Rnf](Reduction.md#d-Rnf)）
 
 ### 証明
 
@@ -48,7 +48,7 @@ $`\mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を示す。$`\mathrm{Ac
   v \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M_0 \to v \in \mathrm{Acc}_{R_{\mathrm{NF}}}
 ```
 
-を示せばよい（[$`\mathrm{Three}`$](Term.md#d-Three)）。
+を示せばよい（$`\mathrm{Three}`$ [D.Three](Term.md#d-Three)）。
 $`v \in \mathrm{Three}`$ を取り $`v \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M_0`$ とする。
 $`R_{\mathrm{NF}}`$ の定義（D.Rnf）より次の 3 つが成り立つ。
 
@@ -58,7 +58,7 @@ v \prec \mathrm{tr}\,M_0, \qquad
 v \in \mathrm{NF} .
 ```
 
-（[$`\mathrm{NF}`$](Reduction.md#d-NF)）第 2 の連言子 $`\mathrm{tr}\,M_0 \in \mathrm{NF}`$ は以下で用いない。
+（$`\mathrm{NF}`$ [D.NF](Reduction.md#d-NF)）第 2 の連言子 $`\mathrm{tr}\,M_0 \in \mathrm{NF}`$ は以下で用いない。
 
 第 3 の連言子 $`v \in \mathrm{NF}`$ に $`\mathrm{NF}`$ の定義（D.NF）を適用すると、
 $`N \in \mathrm{PairSeq}`$ が存在して
@@ -123,12 +123,12 @@ $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ ならば
 \exists n \in \mathbb{N},\ 1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n]) .
 ```
 
-（[$`M[n]`$](Pss.md#d-oper)、[$`\preceq`$](Term.md#d-ole)）
+（$`M[n]`$ [D.oper](Pss.md#d-oper)、$`\preceq`$ [D.ole](Term.md#d-ole)）
 
 ### 証明
 
 [T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) は、命題
-[$`\mathrm{ArgDomCore}`$](ArgDom.md#d-ArgDomCore) を仮定として、任意の $`M, N \in \mathrm{PairSeq}`$ について $`M \in \mathrm{ST\_PS}`$、
+$`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom.md#d-ArgDomCore)）を仮定として、任意の $`M, N \in \mathrm{PairSeq}`$ について $`M \in \mathrm{ST\_PS}`$、
 $`N \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ の 3 つから本定理の結論を導く。
 
 その仮定 $`\mathrm{ArgDomCore}`$ は [T.argDomCore_holds](ArgDom.md#t-argDomCore_holds) であり、
@@ -181,7 +181,7 @@ $`R_{\mathrm{NF}}`$ の整礎性を導く。その仮定は [T.wf_olt_ST_PS_hold
 
 $`R_{\mathrm{PS}}`$ は整礎である。
 
-（[$`R_{\mathrm{PS}}`$](Reduction.md#d-stepRel)）
+（$`R_{\mathrm{PS}}`$ [D.stepRel](Reduction.md#d-stepRel)）
 
 ### 証明
 
@@ -203,7 +203,7 @@ $`R_{\mathrm{PS}}`$ の整礎性を導く。その仮定は [T.wf_Rnf_holds](#t-
 \forall i \in \mathbb{N},\ S_i \Rightarrow S_{i+1} .
 ```
 
-ここで $`S_i`$ は $`S`$ の $`i`$ における値である（[$`M \Rightarrow N`$](Pss.md#d-step)）。
+ここで $`S_i`$ は $`S`$ の $`i`$ における値である（$`M \Rightarrow N`$ [D.step](Pss.md#d-step)）。
 
 ### 証明
 

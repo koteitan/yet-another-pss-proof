@@ -5,14 +5,14 @@
 
 ### 定理
 
-[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) に対し
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
 
 ```math
 \mathrm{tr}\,M = \mathsf{Z} \iff M = () .
 ```
 
-ここで [$`\mathrm{tr}`$](Term.md#d-translate) は翻訳であり、$`\mathsf{Z}`$ は
-[$`\mathrm{Three}`$](Term.md#d-Three) の第 1 の構成子である。
+ここで $`\mathrm{tr}`$（[D.translate](Term.md#d-translate)）は翻訳であり、$`\mathsf{Z}`$ は
+$`\mathrm{Three}`$（[D.Three](Term.md#d-Three)）の第 1 の構成子である。
 
 ### 証明
 
@@ -34,7 +34,7 @@ $`M`$ の構成子で場合分けする。
 
 ### 定理
 
-$`t \in \mathrm{Three}`$ が [$`t \prec \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$](Term.md#d-olt) を
+$`t \in \mathrm{Three}`$ が $`t \prec \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$（[D.olt](Term.md#d-olt)）を
 みたすならば $`t = \mathsf{Z}`$。
 
 ### 証明
@@ -59,7 +59,7 @@ $`t`$ の構成子で場合分けする。
 
 ### 定理
 
-[$`M \in \mathrm{ST\_PS}`$](Pss.md#d-ST_PS) ならば $`M \ne ()`$。
+$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`M \ne ()`$。
 
 ### 証明
 
@@ -91,8 +91,8 @@ $`M \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}`$ に対し
 M_{1,\lvert M\rvert-1} = m+1 \ \wedge\ \neg\,\mathrm{hasParent}(M, 1, \lvert M\rvert-1)
 ```
 
-とおく。ここで [$`M_{i,j}`$](Pss.md#d-entry) は成分、
-[$`\mathrm{hasParent}(M,i,j)`$](Pss.md#d-hasParent) は親の存在であり、
+とおく。ここで $`M_{i,j}`$（[D.entry](Pss.md#d-entry)）は成分、
+$`\mathrm{hasParent}(M,i,j)`$（[D.hasParent](Pss.md#d-hasParent)）は親の存在であり、
 $`\lvert M\rvert - 1`$ の減法は切り捨て減法である（$`M = ()`$ のとき $`\lvert M\rvert - 1 = 0`$）。
 
 <a id="d-graft"></a>
@@ -214,7 +214,7 @@ $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ を仮定して矛盾を導けばよい。
 ### 定理
 
 $`1 \lt \lvert M\rvert`$ かつ $`\mathrm{domT}(M,m)`$ ならば、任意の $`n \in \mathbb{N}`$ に対し
-[$`M[n] = \mathrm{graft}(M,())`$](Pss.md#d-oper)。
+$`M[n] = \mathrm{graft}(M,())`$（[D.oper](Pss.md#d-oper)）。
 
 ### 証明
 
@@ -224,7 +224,7 @@ $`M_{1,j_1} = m+1`$ と $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ が成り立つ。
 1. $`j_1 \ne 0`$。$`1 \lt \lvert M\rvert`$ より $`j_1 = \lvert M\rvert - 1 \ge 1`$ である。
 
 2. $`\mathrm{idx}_1(M,j_1) = 1`$。$`M_{1,j_1} = m+1`$ であり自然数について $`0 \lt m+1`$ で
-   あるから、[$`\mathrm{idx}_1`$](Pss.md#d-idx1) の定義（D.idx1）の第 1 の場合が選ばれる。
+   あるから、$`\mathrm{idx}_1`$（[D.idx1](Pss.md#d-idx1)）の定義（D.idx1）の第 1 の場合が選ばれる。
 
 3. $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$。この連言が成り立つとすると
    第 2 連言子から $`m+1 = 0`$ となり、$`m+1 \ne 0`$ に矛盾する。
@@ -234,7 +234,7 @@ $`M_{1,j_1} = m+1`$ と $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ が成り立つ。
    $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ そのものである。1, 3 とこれに
    [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) を適用する。
 
-5. $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$。[$`\mathrm{Pred}`$](Pss.md#d-Pred) の
+5. $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$。$`\mathrm{Pred}`$（[D.Pred](Pss.md#d-Pred)）の
    定義（D.Pred）は $`\lvert M\rvert \le 1`$ かどうかで分岐する。仮定 $`1 \lt \lvert M\rvert`$ より
    $`\lvert M\rvert \le 1`$ は偽であるから第 2 の場合が選ばれ、末尾 1 列を落とした列になる。
 
@@ -251,7 +251,7 @@ $`M \in \mathrm{PairSeq}`$、$`j_1, j_0 \in \mathbb{N}`$ に対し
 j_0 \lt j_1 \ \wedge\ j_0 \le^M_0 j_1 \ \wedge\ M_{1,j_0} \lt M_{1,j_1}
 ```
 
-とおく。ここで [$`j_0 \le^M_0 j_1`$](Pss.md#d-le0) は行 $`0`$ の祖先関係である。
+とおく。ここで $`j_0 \le^M_0 j_1`$（[D.le0](Pss.md#d-le0)）は行 $`0`$ の祖先関係である。
 
 <a id="t-hasParent_one_iff"></a>
 ## 定理: 行 $`1`$ の親の存在条件 (T.hasParent_one_iff)
@@ -266,9 +266,9 @@ $`j_1 \lt \lvert M\rvert`$ ならば
 
 ### 証明
 
-[$`\to^M_i`$](Pss.md#d-nextR) の定義（D.nextR）は $`i = 0`$ かどうかで分岐する。
+$`\to^M_i`$（[D.nextR](Pss.md#d-nextR)）の定義（D.nextR）は $`i = 0`$ かどうかで分岐する。
 $`i = 1 \ne 0`$ であるから、任意の $`j_0`$ について $`j_0 \to^M_i j_1`$ は
-行 $`1`$ の親子関係 [$`j_0 \to^M_1 j_1`$](Pss.md#d-nextrel1) そのものである。以下これを用いる。
+行 $`1`$ の親子関係 $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）そのものである。以下これを用いる。
 
 **($`\Rightarrow`$)** $`\mathrm{hasParent}`$ の定義（D.hasParent）より、
 $`j_0 \to^M_1 j_1`$ をみたす $`j_0`$ が存在する。D.nextrel1 の条件 (3), (5), (4) は
@@ -301,7 +301,7 @@ P(g), \qquad \forall k,\ \bigl(k \le j_1 \wedge P(k)\bigr) \to k \le g .
 - (6) 任意の $`j`$ について $`g \lt j`$ かつ $`j \le^M_0 j_1`$ ならば
   $`M_{1,j_1} \le M_{1,j}`$：背理法で示す。$`M_{1,j} \lt M_{1,j_1}`$ と仮定する。
   $`\le^M_0`$ の定義（D.le0）の条件 (3) より
-  [$`j \mathbin{(\to^M_0)^{*}} j_1`$](Pss.md#d-nextrel0) であるから、
+  $`j \mathbin{(\to^M_0)^{*}} j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）であるから、
   [T.nextrel0_rtrancl_index_le](Term.md#t-nextrel0_rtrancl_index_le) より $`j \le j_1`$。
   $`j = j_1`$ とすると $`M_{1,j_1} \lt M_{1,j_1}`$ となり $`\lt`$ の非反射性に矛盾する。
   $`j \lt j_1`$ のときは、$`j \lt j_1`$、$`j \le^M_0 j_1`$、$`M_{1,j} \lt M_{1,j_1}`$ の
@@ -830,7 +830,7 @@ $`b \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$ の連言で
   \exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])\bigr)
 ```
 
-ここで [$`\preceq`$](Term.md#d-ole) は広義順序である。このとき、$`c \in \mathrm{ST\_PS}`$ であり
+ここで $`\preceq`$（[D.ole](Term.md#d-ole)）は広義順序である。このとき、$`c \in \mathrm{ST\_PS}`$ であり
 $`1 \le n`$ なるすべての $`n`$ について $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ が成り立つ
 ならば、$`\mathrm{Acc}(R_{\mathrm{st}},c)`$。
 
@@ -1025,7 +1025,7 @@ $`y = j_0`$ である。よって $`S^{+d}`$ の側でも存在と一意性が�
 ### 定理
 
 $`b \lt \lvert S\rvert`$ ならば
-[$`\mathrm{par}^{S^{+d}}_i(b) = \mathrm{par}^{S}_i(b)`$](Pss.md#d-parent)。
+$`\mathrm{par}^{S^{+d}}_i(b) = \mathrm{par}^{S}_i(b)`$（[D.parent](Pss.md#d-parent)）。
 
 ### 証明
 
@@ -3346,7 +3346,7 @@ $`\forall p \in M,\ p_2 \le u`$ を仮定すると $`M \in W_u`$。
 
 ### 定理
 
-任意の $`S \in \mathrm{PairSeq}`$ と $`p \in S`$ に対し [$`p_2 \le \mathrm{maxr}_1(S)`$](Column.md#d-maxr1)。
+任意の $`S \in \mathrm{PairSeq}`$ と $`p \in S`$ に対し $`p_2 \le \mathrm{maxr}_1(S)`$（[D.maxr1](Column.md#d-maxr1)）。
 
 ### 証明
 
