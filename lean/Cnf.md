@@ -603,16 +603,15 @@ $`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}
 
 ```math
 \begin{aligned}
-&\text{(cZ1)}\quad \mathrm{cnf}\bigl(\mathrm{tr}(z_1 :: T_1)\bigr), \cr
-&\text{(decr)}\quad \mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2), \cr
-&\text{(root)}\quad (z_1)_1 = (z_2)_1, \cr
-&\text{(leadle)}\quad \exists\, a_1, b_1, c_1, a_2, b_2, c_2,\ \bigl[\
-   \mathrm{tr}(z_1 :: T_1) = \mathsf{P}(a_1,b_1,c_1)
-   \ \wedge\ \mathrm{tr}(z_2 :: T_2) = \mathsf{P}(a_2,b_2,c_2) \cr
-&\hphantom{\text{(leadle)}\quad \exists\, a_1, b_1, c_1, a_2, b_2, c_2,\ \bigl[\ }
-   \ \wedge\ \mathsf{P}(a_1,b_1,\mathsf{Z}) \preceq \mathsf{P}(a_2,b_2,\mathsf{Z})\ \bigr], \cr
-&\text{(r1)}\quad \forall x \in T_1,\ (z_1)_1 \le x_1, \cr
-&\text{(r2)}\quad \forall x \in T_2,\ (z_2)_1 \le x_1 .
+&\text{(cZ1)}\quad   &&\mathrm{cnf}\bigl(\mathrm{tr}(z_1 :: T_1)\bigr), \cr
+&\text{(decr)}\quad  &&\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2), \cr
+&\text{(root)}\quad  &&(z_1)_1 = (z_2)_1, \cr
+&\text{(leadle)}\quad&&\exists\, a_1, b_1, c_1, a_2, b_2, c_2,\ \bigl[\
+   \mathrm{tr}(z_1 :: T_1) = \mathsf{P}(a_1,b_1,c_1) \cr
+& &&\qquad\ \wedge\ \mathrm{tr}(z_2 :: T_2) = \mathsf{P}(a_2,b_2,c_2) \cr
+& &&\qquad\ \wedge\ \mathsf{P}(a_1,b_1,\mathsf{Z}) \preceq \mathsf{P}(a_2,b_2,\mathsf{Z})\ \bigr], \cr
+&\text{(r1)}\quad    &&\forall x \in T_1,\ (z_1)_1 \le x_1, \cr
+&\text{(r2)}\quad    &&\forall x \in T_2,\ (z_2)_1 \le x_1 .
 \end{aligned}
 ```
 

@@ -3405,11 +3405,10 @@ $`M \in W_{\mathrm{maxr}_1(M)}`$ は [T.mem_W_maxr1](#t-mem_W_maxr1) である�
 
 ```math
 \begin{aligned}
-&\text{(cof)}\quad \forall M, N \in \mathrm{PairSeq},\
+&\text{(cof)}\quad &&\forall M, N \in \mathrm{PairSeq},\
   M \in \mathrm{ST\_PS} \wedge N \in \mathrm{ST\_PS} \wedge \mathrm{tr}\,N \prec \mathrm{tr}\,M \cr
-&\phantom{\text{(cof)}\quad}
-  \longrightarrow\ \exists n,\ 1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n]), \cr
-&\text{(mem)}\quad \forall M \in \mathrm{PairSeq},\
+& &&\longrightarrow\ \exists n,\ 1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n]), \cr
+&\text{(mem)}\quad &&\forall M \in \mathrm{PairSeq},\
   M \in \mathrm{ST\_PS} \to \exists u \in \mathbb{N},\ M \in W_u .
 \end{aligned}
 ```

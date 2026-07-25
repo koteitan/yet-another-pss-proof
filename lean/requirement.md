@@ -202,6 +202,15 @@ GitHub は数式を KaTeX で描画し、その手前で Markdown のエスケ�
   `\text{\$x\$}` として届き、KaTeX が text mode で数式コマンドを拒否する。
   数式は `\text{}` の外に出す。
 - **インライン数式を改行にまたがらせない。** 長い式は ```` ```math ```` にする。
+- **`\hphantom` / `\phantom` を使わない。** GitHub は KaTeX を独自の**マクロ許可リスト**の
+  後ろで動かしており、`The following macros are not allowed: hphantom` と言って式全体を
+  拒否する。素の KaTeX は通すので**ローカルの検査にも `check-github.js` にも映らない**
+  （拒否はブラウザの中で起きるので、配信される文字列は正常に見える）。
+  同族の `\vphantom` / `\smash`、定義系の `\def` / `\newcommand` / `\let` / `\gdef`、
+  `\htmlClass` などもこの類である。
+  桁を揃えたいときは `\begin{aligned}` の**第 2 の整列点** `&&` を使う。
+  ```` &\text{(cZ1)}\quad &&\ldots \cr &\text{(decr)}\quad &&\ldots ````
+  継続行は `& &&\qquad \ldots` と書けばよい。
 - **数式をリンクの中に入れない。** `[$`a+b`$](Foo.md#d-x)` と書くと、GitHub は
   リンクの中に `<math-renderer>` を作らない。行に数式がそれ 1 つだけなら
   `$<code>a+b</code>$` のまま出て**数式に見えない**。同じ段落に別の数式が続くと、

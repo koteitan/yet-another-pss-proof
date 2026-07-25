@@ -1138,7 +1138,7 @@ $`n`$ に関する自然数の帰納法。$`F`$ は固定する。帰納法の�
 &\to\ \mathrm{steps}_1(\mathrm{cat}_n F) \wedge \Bigl(0 \lt n \to
    \bigl(\mathrm{cat}_n F \ne ()
    \wedge \mathrm{head}(\mathrm{cat}_n F) = \mathrm{head}\,F(0) \cr
-&\hphantom{\to\ \mathrm{steps}_1(\mathrm{cat}_n F) \wedge \Bigl(0 \lt n \to \bigl(}
+&\qquad\qquad\qquad
    \wedge \mathrm{last}_{(0,0)}(\mathrm{cat}_n F) = \mathrm{last}_{(0,0)} F(n-1)\bigr)\Bigr) .
 \end{aligned}
 ```
