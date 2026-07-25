@@ -25,7 +25,7 @@ Buchholz's notation system. Only the following two ingredients are used.
   to $`W_u`$ for some $`u`$.
 
 Combining these two yields well-foundedness. This is the method of Buchholz (1987) §2, where the
-well-foundedness of Buchholz's notation system $`\mathrm{OT}_B`$ is obtained **syntactically** from
+well-foundedness of Buchholz's notation system $`\mathrm{OT}`$ is obtained **syntactically** from
 the sets $`W_v`$ and the fundamental sequences, rather than from an evaluation into the ordinals.
 The route above transplants that method directly to pair sequences.
 
