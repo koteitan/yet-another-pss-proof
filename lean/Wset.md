@@ -456,7 +456,7 @@ $`M \in \mathrm{PairSeq}`$ とする。次の 3 つの命題を考える。
 \mathrm{Aop}(\mathcal{W},u,X,M) :\iff (1) \ \vee\ (2) \ \vee\ (3)
 ```
 
-と定める。以下、この 3 つをそれぞれ**分岐 (1)**、**分岐 (2)**、**分岐 (3)** と呼ぶ。
+と定める。以下、この 3 つをそれぞれ**分岐 (1) **、**分岐 (2) **、**分岐 (3) ** と呼ぶ。
 
 <a id="d-Aset"></a>
 ## 定義: 作用素 $`A_u`$ の集合形 (D.Aset)
@@ -477,14 +477,14 @@ $`\mathrm{Aop}(\mathcal{W},u,Y,M)`$。
 
 $`\mathrm{Aop}`$ の定義（D.Aop）の 3 つの選言で場合分けする。
 
-- **分岐 (1)** のとき。$`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$ には $`X`$ が現れないから、
+- **分岐 (1) ** のとき。$`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$ には $`X`$ が現れないから、
   そのまま $`\mathrm{Aop}(\mathcal{W},u,Y,M)`$ の分岐 (1) が成り立つ。
 
-- **分岐 (2)** のとき。第 1 連言子 $`\mathrm{natDom}(M)`$ はそのまま成り立つ。
+- **分岐 (2) ** のとき。第 1 連言子 $`\mathrm{natDom}(M)`$ はそのまま成り立つ。
   第 2 連言子については、$`1 \le n`$ なる各 $`n`$ について $`M[n] \in X`$ であり、
   $`X \subseteq Y`$ より $`M[n] \in Y`$。よって分岐 (2) が成り立つ。
 
-- **分岐 (3)** のとき。$`m \lt u`$ と $`\mathrm{domT}(M,m)`$ はそのまま成り立つ。
+- **分岐 (3) ** のとき。$`m \lt u`$ と $`\mathrm{domT}(M,m)`$ はそのまま成り立つ。
   第 3 連言子については、$`z \in \mathcal{W}(m)`$ かつ $`\mathrm{based}(z)`$ なる各 $`z`$ に
   ついて $`\mathrm{graft}(M,z) \in X`$ であり、$`X \subseteq Y`$ より
   $`\mathrm{graft}(M,z) \in Y`$。よって同じ $`m`$ で分岐 (3) が成り立つ。∎
@@ -517,9 +517,9 @@ $`\mathrm{Aop}(\mathcal{W},v,X,M)`$。
 
 $`\mathrm{Aop}`$ の定義（D.Aop）の 3 つの選言で場合分けする。
 
-- **分岐 (1)** のとき。$`u`$ が現れないから、そのまま成り立つ。
-- **分岐 (2)** のとき。$`u`$ が現れないから、そのまま成り立つ。
-- **分岐 (3)** のとき。$`m \lt u`$ なる $`m`$ が取れている。$`u \le v`$ と合わせて
+- **分岐 (1) ** のとき。$`u`$ が現れないから、そのまま成り立つ。
+- **分岐 (2) ** のとき。$`u`$ が現れないから、そのまま成り立つ。
+- **分岐 (3) ** のとき。$`m \lt u`$ なる $`m`$ が取れている。$`u \le v`$ と合わせて
   $`m \lt v`$ であり、残りの 2 つの連言子 $`\mathrm{domT}(M,m)`$ と
   $`\forall z \in \mathcal{W}(m),\ \mathrm{based}(z) \to \mathrm{graft}(M,z) \in X`$ は
   $`u`$ にも $`v`$ にも依らないからそのまま成り立つ。∎
@@ -542,10 +542,10 @@ $`\mathcal{W}`$, $`\mathcal{V}`$ を族とし、$`\forall m \lt u,\ \mathcal{W}(
 
 **($`\Rightarrow`$)** $`\mathrm{Aop}(\mathcal{W},u,X,M)`$ の 3 つの選言で場合分けする。
 
-- **分岐 (1)** のとき。族が現れないから、$`\mathrm{Aop}(\mathcal{V},u,X,M)`$ の分岐 (1) が
+- **分岐 (1) ** のとき。族が現れないから、$`\mathrm{Aop}(\mathcal{V},u,X,M)`$ の分岐 (1) が
   そのまま成り立つ。
-- **分岐 (2)** のとき。族が現れないから、分岐 (2) がそのまま成り立つ。
-- **分岐 (3)** のとき。$`m \lt u`$、$`\mathrm{domT}(M,m)`$、および
+- **分岐 (2) ** のとき。族が現れないから、分岐 (2) がそのまま成り立つ。
+- **分岐 (3) ** のとき。$`m \lt u`$、$`\mathrm{domT}(M,m)`$、および
   $`\forall z \in \mathcal{W}(m),\ \mathrm{based}(z) \to \mathrm{graft}(M,z) \in X`$ が
   取れている。同じ $`m`$ で $`\mathrm{Aop}(\mathcal{V},u,X,M)`$ の分岐 (3) を示す。
   $`m \lt u`$ と $`\mathrm{domT}(M,m)`$ はそのままである。$`z \in \mathcal{V}(m)`$ かつ
@@ -555,10 +555,10 @@ $`\mathcal{W}`$, $`\mathcal{V}`$ を族とし、$`\forall m \lt u,\ \mathcal{W}(
 
 **($`\Leftarrow`$)** $`\mathrm{Aop}(\mathcal{V},u,X,M)`$ の 3 つの選言で場合分けする。
 
-- **分岐 (1)** のとき。族が現れないから、$`\mathrm{Aop}(\mathcal{W},u,X,M)`$ の分岐 (1) が
+- **分岐 (1) ** のとき。族が現れないから、$`\mathrm{Aop}(\mathcal{W},u,X,M)`$ の分岐 (1) が
   そのまま成り立つ。
-- **分岐 (2)** のとき。族が現れないから、分岐 (2) がそのまま成り立つ。
-- **分岐 (3)** のとき。$`m \lt u`$、$`\mathrm{domT}(M,m)`$、および
+- **分岐 (2) ** のとき。族が現れないから、分岐 (2) がそのまま成り立つ。
+- **分岐 (3) ** のとき。$`m \lt u`$、$`\mathrm{domT}(M,m)`$、および
   $`\forall z \in \mathcal{V}(m),\ \mathrm{based}(z) \to \mathrm{graft}(M,z) \in X`$ が
   取れている。同じ $`m`$ で $`\mathrm{Aop}(\mathcal{W},u,X,M)`$ の分岐 (3) を示す。
   $`m \lt u`$ と $`\mathrm{domT}(M,m)`$ はそのままである。$`z \in \mathcal{W}(m)`$ かつ
@@ -594,7 +594,10 @@ $`u \in \mathbb{N}`$ に対し
 W_u := \mathrm{Wf}(u+1,\ u).
 ```
 
-以下、$`W`$ を族 $`m \mapsto W_m`$ そのものを表す記号としても用いる。
+以下、$`W`$ を族 $`m \mapsto W_m`$ そのものを表す記号としても用いる。また
+$`u \in \mathbb{N}`$、$`X \subseteq \mathrm{PairSeq}`$ に対し
+$`A_u(X) := \mathrm{Aset}(W,u,X)`$ と略記する。$`\mathrm{Aset}`$ の定義（D.Aset）により
+$`M \in A_u(X)`$ は $`\mathrm{Aop}(W,u,X,M)`$ を表す。
 
 <a id="t-Wf_coh"></a>
 ## 定理: 段の族の整合性 (T.Wf_coh)
@@ -976,9 +979,6 @@ $`S \in \mathrm{PairSeq}`$、$`d, i, a, b \in \mathbb{N}`$ とし、$`b \lt \lve
 a \to^{S^{+d}}_i b \iff a \to^S_i b .
 ```
 
-ここで $`S^{+d}`$ は $`S`$ の各対の第 1 成分に一様に $`d`$ を足した列である
-（[T.translate_shift](Term.md#t-translate_shift) の記法）。
-
 ### 証明
 
 $`\to^{\cdot}_i`$ の定義（D.nextR）は $`i = 0`$ か否かの場合分けである。
@@ -1025,7 +1025,7 @@ $`y = j_0`$ である。よって $`S^{+d}`$ の側でも存在と一意性が�
 ### 定理
 
 $`b \lt \lvert S\rvert`$ ならば
-$`\mathrm{par}^{S^{+d}}_i(b) = \mathrm{par}^{S}_i(b)`$。
+[$`\mathrm{par}^{S^{+d}}_i(b) = \mathrm{par}^{S}_i(b)`$](Pss.md#d-parent)。
 
 ### 証明
 
@@ -1251,19 +1251,19 @@ Y := \{\, N \in \mathrm{PairSeq} \mid N^{+d} \in W_u \,\}
 [T.A1_intro](#t-A1_intro) によりこれは $`N^{+d} \in A_u(W_u)`$ に帰着する。
 $`A_u`$ の定義（D.Aop）の 3 分岐で場合分けする。
 
-**(1) 第 1 分岐 $`\lvert N\rvert \le 1 \wedge N_{1,0} = 0`$ のとき。**
+**分岐 (1)：$`\lvert N\rvert \le 1 \wedge N_{1,0} = 0`$ のとき。**
 $`\lvert N^{+d}\rvert = \lvert N\rvert \le 1`$ である。また $`(N^{+d})_{1,0} = N_{1,0} = 0`$ である。
 実際 $`N = ()`$ なら $`N^{+d} = ()`$ で両辺とも $`0`$（D.entry の範囲外の読み）、
 $`N = p :: L`$ なら $`N^{+d}`$ の先頭は $`(p_1 + d,\ p_2)`$ でその第 2 成分は $`p_2 = N_{1,0}`$ である。
-よって $`N^{+d}`$ は第 1 分岐をみたす。
+よって $`N^{+d}`$ は分岐 (1) をみたす。
 
-**(2) 第 2 分岐 $`\mathrm{natDom}(N) \wedge \forall n \ge 1,\ N[n] \in Y`$ のとき。**
+**分岐 (2)：$`\mathrm{natDom}(N) \wedge \forall n \ge 1,\ N[n] \in Y`$ のとき。**
 [T.natDom_shift](#t-natDom_shift) より $`\mathrm{natDom}(N^{+d})`$ である。
 $`n \ge 1`$ を取ると [T.oper_shift](#t-oper_shift) より
 $`(N^{+d})[n] = (N[n])^{+d}`$ であり、$`N[n] \in Y`$ すなわち $`(N[n])^{+d} \in W_u`$ である。
-よって $`N^{+d}`$ は第 2 分岐をみたす。
+よって $`N^{+d}`$ は分岐 (2) をみたす。
 
-**(3) 第 3 分岐、すなわち $`m \lt u`$、$`\mathrm{domT}(N,m)`$、
+**分岐 (3)、すなわち $`m \lt u`$、$`\mathrm{domT}(N,m)`$、
 $`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(N,z) \in Y`$ をみたす $`m`$ があるとき。**
 [T.domT_shift](#t-domT_shift) より $`\mathrm{domT}(N^{+d}, m)`$ である。
 また $`N \ne ()`$ である（$`N = ()`$ なら [T.not_domT_nil](#t-not_domT_nil) が
@@ -1275,7 +1275,7 @@ $`\mathrm{domT}(N,m)`$ に矛盾する）。$`z \in W_m`$ が $`\mathrm{based}(z
 ```
 
 であり、$`\mathrm{graft}(N,z) \in Y`$ よりこれは $`W_u`$ の元である。
-よって $`N^{+d}`$ は同じ $`m`$ で第 3 分岐をみたす。
+よって $`N^{+d}`$ は同じ $`m`$ で分岐 (3) をみたす。
 
 以上により $`W_u \subseteq Y`$ であり、$`M \in W_u`$ から $`M^{+d} \in W_u`$ を得る。∎
 
@@ -1428,15 +1428,15 @@ $`2 \le \lvert P\rvert`$ かつ $`\mathrm{rsum}(A,P)`$ ならば、任意の $`n
 
 ### 証明
 
-$`c := P_{0,0}`$、$`A_0 := A^{-c}`$、$`P_0 := P^{-c}`$ とおく。
+$`c := P_{0,0}`$、$`\hat A := A^{-c}`$、$`\hat P := P^{-c}`$ とおく。
 $`2 \le \lvert P\rvert`$ より $`P \ne ()`$ であり、次の 5 つが成り立つ。
 
-1. $`(P_0)_{0,0} = 0`$。[T.entry_sub_zero](#t-entry_sub_zero) による。
-2. $`2 \le \lvert P_0\rvert`$。平行移動は長さを変えないから $`\lvert P_0\rvert = \lvert P\rvert`$ である。
-3. $`(A_0 \mathbin{+\!\!+} P_0)^{+c} = A \mathbin{+\!\!+} P`$。[T.rsum_decomp](#t-rsum_decomp) による。
-4. $`(P_0)^{+c} = P`$。$`\mathrm{rsum}(A,P)`$ より $`\forall p \in P,\ c \le p_1`$ であるから
+1. $`(\hat P)_{0,0} = 0`$。[T.entry_sub_zero](#t-entry_sub_zero) による。
+2. $`2 \le \lvert \hat P\rvert`$。平行移動は長さを変えないから $`\lvert \hat P\rvert = \lvert P\rvert`$ である。
+3. $`(\hat A \mathbin{+\!\!+} \hat P)^{+c} = A \mathbin{+\!\!+} P`$。[T.rsum_decomp](#t-rsum_decomp) による。
+4. $`(\hat P)^{+c} = P`$。$`\mathrm{rsum}(A,P)`$ より $`\forall p \in P,\ c \le p_1`$ であるから
    [T.map_sub_add](#t-map_sub_add) による。
-5. $`(A_0)^{+c} = A`$。$`\mathrm{rsum}(A,P)`$ より $`\forall p \in A,\ c \le p_1`$ であるから
+5. $`(\hat A)^{+c} = A`$。$`\mathrm{rsum}(A,P)`$ より $`\forall p \in A,\ c \le p_1`$ であるから
    [T.map_sub_add](#t-map_sub_add) による。
 
 これらを用いて計算する。
@@ -1444,19 +1444,19 @@ $`2 \le \lvert P\rvert`$ より $`P \ne ()`$ であり、次の 5 つが成り�
 ```math
 \begin{aligned}
 (A \mathbin{+\!\!+} P)[n]
-  &= \Bigl(\bigl(A_0 \mathbin{+\!\!+} P_0\bigr)^{+c}\Bigr)[n] && (3) \cr
-  &= \Bigl(\bigl(A_0 \mathbin{+\!\!+} P_0\bigr)[n]\Bigr)^{+c} && (6) \cr
-  &= \bigl(A_0 \mathbin{+\!\!+} P_0[n]\bigr)^{+c} && (7) \cr
-  &= (A_0)^{+c} \mathbin{+\!\!+} \bigl(P_0[n]\bigr)^{+c} && (8) \cr
-  &= A \mathbin{+\!\!+} \bigl(P_0[n]\bigr)^{+c} && (5) \cr
-  &= A \mathbin{+\!\!+} \bigl((P_0)^{+c}\bigr)[n] && (6) \cr
+  &= \Bigl(\bigl(\hat A \mathbin{+\!\!+} \hat P\bigr)^{+c}\Bigr)[n] && (3) \cr
+  &= \Bigl(\bigl(\hat A \mathbin{+\!\!+} \hat P\bigr)[n]\Bigr)^{+c} && (6) \cr
+  &= \bigl(\hat A \mathbin{+\!\!+} \hat P[n]\bigr)^{+c} && (7) \cr
+  &= (\hat A)^{+c} \mathbin{+\!\!+} \bigl(\hat P[n]\bigr)^{+c} && (8) \cr
+  &= A \mathbin{+\!\!+} \bigl(\hat P[n]\bigr)^{+c} && (5) \cr
+  &= A \mathbin{+\!\!+} \bigl((\hat P)^{+c}\bigr)[n] && (6) \cr
   &= A \mathbin{+\!\!+} P[n] . && (4)
 \end{aligned}
 ```
 
 ここで (6) は [T.oper_shift](#t-oper_shift)（第 2 行では左から右へ、第 6 行では右から左へ）、
 (7) は [T.oper_append_right](Column.md#t-oper_append_right) であり、その 2 つの仮定
-$`2 \le \lvert P_0\rvert`$ と $`(P_0)_{0,0} = 0`$ は (2) と (1) である。
+$`2 \le \lvert \hat P\rvert`$ と $`(\hat P)_{0,0} = 0`$ は (2) と (1) である。
 (8) は平行移動が連結と交換することによる。∎
 
 <a id="t-graft_append"></a>
@@ -1512,48 +1512,48 @@ $`j \lt \lvert P\rvert`$ かつ $`\mathrm{rsum}(A,P)`$ ならば
 ### 証明
 
 $`j \lt \lvert P\rvert`$ より $`P \ne ()`$ である。
-$`c := P_{0,0}`$、$`A_0 := A^{-c}`$、$`P_0 := P^{-c}`$ とおく。
-平行移動は長さを変えないから $`\lvert A_0\rvert = \lvert A\rvert`$、$`\lvert P_0\rvert = \lvert P\rvert`$ である。
-[T.entry_sub_zero](#t-entry_sub_zero) より $`(P_0)_{0,0} = 0`$、
-[T.rsum_decomp](#t-rsum_decomp) より $`(A_0 \mathbin{+\!\!+} P_0)^{+c} = A \mathbin{+\!\!+} P`$、
-[T.map_sub_add](#t-map_sub_add) より $`(P_0)^{+c} = P`$ である。3 段に分ける。
+$`c := P_{0,0}`$、$`\hat A := A^{-c}`$、$`\hat P := P^{-c}`$ とおく。
+平行移動は長さを変えないから $`\lvert \hat A\rvert = \lvert A\rvert`$、$`\lvert \hat P\rvert = \lvert P\rvert`$ である。
+[T.entry_sub_zero](#t-entry_sub_zero) より $`(\hat P)_{0,0} = 0`$、
+[T.rsum_decomp](#t-rsum_decomp) より $`(\hat A \mathbin{+\!\!+} \hat P)^{+c} = A \mathbin{+\!\!+} P`$、
+[T.map_sub_add](#t-map_sub_add) より $`(\hat P)^{+c} = P`$ である。3 段に分ける。
 
 **第 1 段。** 次を示す。
 
 ```math
 \mathrm{hasParent}(A \mathbin{+\!\!+} P,\ i,\ \lvert A\rvert + j)
-\iff \mathrm{hasParent}(A_0 \mathbin{+\!\!+} P_0,\ i,\ \lvert A_0\rvert + j).
+\iff \mathrm{hasParent}(\hat A \mathbin{+\!\!+} \hat P,\ i,\ \lvert \hat A\rvert + j).
 ```
 
-$`\lvert A_0 \mathbin{+\!\!+} P_0\rvert = \lvert A\rvert + \lvert P\rvert`$ であり
-$`j \lt \lvert P\rvert`$ であるから $`\lvert A\rvert + j \lt \lvert A_0 \mathbin{+\!\!+} P_0\rvert`$ である。
-$`(A_0 \mathbin{+\!\!+} P_0)^{+c} = A \mathbin{+\!\!+} P`$ であるから、
-[T.hasParent_shift](#t-hasParent_shift) を $`S := A_0 \mathbin{+\!\!+} P_0`$、$`d := c`$、
-$`b := \lvert A\rvert + j`$ に適用すればよい（$`\lvert A_0\rvert = \lvert A\rvert`$）。
+$`\lvert \hat A \mathbin{+\!\!+} \hat P\rvert = \lvert A\rvert + \lvert P\rvert`$ であり
+$`j \lt \lvert P\rvert`$ であるから $`\lvert A\rvert + j \lt \lvert \hat A \mathbin{+\!\!+} \hat P\rvert`$ である。
+$`(\hat A \mathbin{+\!\!+} \hat P)^{+c} = A \mathbin{+\!\!+} P`$ であるから、
+[T.hasParent_shift](#t-hasParent_shift) を $`S := \hat A \mathbin{+\!\!+} \hat P`$、$`d := c`$、
+$`b := \lvert A\rvert + j`$ に適用すればよい（$`\lvert \hat A\rvert = \lvert A\rvert`$）。
 
 **第 2 段。** 次を示す。
 
 ```math
-\mathrm{hasParent}(A_0 \mathbin{+\!\!+} P_0,\ i,\ \lvert A_0\rvert + j)
-\iff \mathrm{hasParent}(P_0,\ i,\ j).
+\mathrm{hasParent}(\hat A \mathbin{+\!\!+} \hat P,\ i,\ \lvert \hat A\rvert + j)
+\iff \mathrm{hasParent}(\hat P,\ i,\ j).
 ```
 
-$`(P_0)_{0,j}`$ が $`0`$ か否かで場合分けする。
+$`(\hat P)_{0,j}`$ が $`0`$ か否かで場合分けする。
 
-**$`(P_0)_{0,j} = 0`$ のとき。** [T.entry_append_right](Column.md#t-entry_append_right) より
-$`(A_0 \mathbin{+\!\!+} P_0)_{0,\lvert A_0\rvert + j} = (P_0)_{0,j} = 0`$ である。
+**$`(\hat P)_{0,j} = 0`$ のとき。** [T.entry_append_right](Column.md#t-entry_append_right) より
+$`(\hat A \mathbin{+\!\!+} \hat P)_{0,\lvert \hat A\rvert + j} = (\hat P)_{0,j} = 0`$ である。
 [T.no_hasParent_of_row0_zero](Column.md#t-no_hasParent_of_row0_zero) を
-$`A_0 \mathbin{+\!\!+} P_0`$ に適用すると左辺は偽であり、同じ定理を $`P_0`$ に適用すると
+$`\hat A \mathbin{+\!\!+} \hat P`$ に適用すると左辺は偽であり、同じ定理を $`\hat P`$ に適用すると
 右辺も偽である。よって同値である。
 
-**$`(P_0)_{0,j} \ne 0`$ のとき。** 上と同じ等式より
-$`0 \lt (A_0 \mathbin{+\!\!+} P_0)_{0,\lvert A_0\rvert + j}`$ である。
-$`(P_0)_{0,0} = 0`$ と合わせて
+**$`(\hat P)_{0,j} \ne 0`$ のとき。** 上と同じ等式より
+$`0 \lt (\hat A \mathbin{+\!\!+} \hat P)_{0,\lvert \hat A\rvert + j}`$ である。
+$`(\hat P)_{0,0} = 0`$ と合わせて
 [T.hasParent_append_right](Column.md#t-hasParent_append_right) が適用でき、同値を得る。
 
-**第 3 段：$`\mathrm{hasParent}(P_0, i, j) \iff \mathrm{hasParent}(P, i, j)`$。**
-$`j \lt \lvert P\rvert = \lvert P_0\rvert`$ であり $`(P_0)^{+c} = P`$ であるから、
-[T.hasParent_shift](#t-hasParent_shift) を $`S := P_0`$、$`d := c`$、$`b := j`$ に適用すればよい。
+**第 3 段：$`\mathrm{hasParent}(\hat P, i, j) \iff \mathrm{hasParent}(P, i, j)`$。**
+$`j \lt \lvert P\rvert = \lvert \hat P\rvert`$ であり $`(\hat P)^{+c} = P`$ であるから、
+[T.hasParent_shift](#t-hasParent_shift) を $`S := \hat P`$、$`d := c`$、$`b := j`$ に適用すればよい。
 
 3 段をつなげば結論を得る。∎
 
@@ -1837,10 +1837,10 @@ $`B = ()`$ のときは $`A \mathbin{+\!\!+} () = A \in X`$ である。以下 $
 
 が成り立つ。$`A_u`$ の定義（D.Aop）の 3 分岐で場合分けする。
 
-**(1) 第 1 分岐 $`\lvert B\rvert \le 1 \wedge B_{1,0} = 0`$ のとき。**
+**分岐 (1)：$`\lvert B\rvert \le 1 \wedge B_{1,0} = 0`$ のとき。**
 $`0 \lt \lvert B\rvert`$ と合わせて $`\lvert B\rvert = 1`$ である。$`A`$ が空か否かで分ける。
 
-**$`A = ()`$ のとき。** 仮定より $`B \in A_u(X)`$（第 1 分岐そのもの）であるから
+**$`A = ()`$ のとき。** 仮定より $`B \in A_u(X)`$（分岐 (1) そのもの）であるから
 $`B \in X`$ であり、$`A \mathbin{+\!\!+} B = B \in X`$ である。
 
 **$`A \ne ()`$ のとき。** $`0 \lt \lvert A\rvert`$ である。
@@ -1881,10 +1881,10 @@ $`B \ne ()`$ より
 である（$`\lvert B\rvert = 1`$ より $`\mathrm{dropLast}\,B = ()`$）。よって
 $`(A \mathbin{+\!\!+} B)[n] = A \in X`$ である。
 
-以上により $`A \mathbin{+\!\!+} B`$ は $`A_u`$ の定義（D.Aop）の第 2 分岐をみたす。
+以上により $`A \mathbin{+\!\!+} B`$ は $`A_u`$ の定義（D.Aop）の分岐 (2) をみたす。
 すなわち $`A \mathbin{+\!\!+} B \in A_u(X)`$ であり、仮定より $`A \mathbin{+\!\!+} B \in X`$ である。
 
-**(2) 第 2 分岐 $`\mathrm{natDom}(B) \wedge \forall n \ge 1,\ B[n] \in X^{(A)}`$ のとき。**
+**分岐 (2)：$`\mathrm{natDom}(B) \wedge \forall n \ge 1,\ B[n] \in X^{(A)}`$ のとき。**
 $`2 \le \lvert B\rvert`$ か否かで分ける。
 
 **$`2 \le \lvert B\rvert`$ のとき。** [T.natDom_append](#t-natDom_append) より
@@ -1902,15 +1902,15 @@ $`p \in A \mathbin{+\!\!+} B[n]`$ を取ると、$`p \in A`$ のときは $`(\as
 $`B_{0,0} \le p_1`$、$`p \in B[n]`$ のときは $`(\ast)`$ と
 [T.oper_mem_ge](#t-oper_mem_ge)（$`c := B_{0,0}`$）より $`B_{0,0} \le p_1`$ である。
 よって $`\mathrm{rsum}(A, B[n])`$ が成り立ち、$`(A \mathbin{+\!\!+} B)[n] \in X`$ である。
-すなわち $`A \mathbin{+\!\!+} B`$ は第 2 分岐をみたすから、仮定より $`A \mathbin{+\!\!+} B \in X`$ である。
+すなわち $`A \mathbin{+\!\!+} B`$ は分岐 (2) をみたすから、仮定より $`A \mathbin{+\!\!+} B \in X`$ である。
 
 **$`\neg(2 \le \lvert B\rvert)`$ のとき。** $`\lvert B\rvert \le 1`$ すなわち $`\lvert B\rvert - 1 = 0`$ であるから
 [T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`B[1] = B`$ である。
-第 2 分岐の第 2 連言子を $`n := 1`$ に適用すると $`B[1] \in X^{(A)}`$、すなわち
+分岐 (2) の第 2 連言子を $`n := 1`$ に適用すると $`B[1] \in X^{(A)}`$、すなわち
 $`B \in X^{(A)}`$ である。仮定 $`\mathrm{rsum}(A,B)`$ をこれに適用して
 $`A \mathbin{+\!\!+} B \in X`$ を得る。
 
-**(3) 第 3 分岐、すなわち $`m \lt u`$、$`\mathrm{domT}(B,m)`$、
+**分岐 (3)、すなわち $`m \lt u`$、$`\mathrm{domT}(B,m)`$、
 $`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(B,z) \in X^{(A)}`$ をみたす $`m`$ があるとき。**
 [T.domT_append](#t-domT_append) より $`\mathrm{domT}(A \mathbin{+\!\!+} B,\ m)`$ である。
 $`z \in W_m`$ が $`\mathrm{based}(z)`$ をみたすとする。
@@ -1933,7 +1933,7 @@ $`\mathrm{rsum}\bigl(A,\ \mathrm{graft}(B,z)\bigr)`$ を確かめればよい。
   $`B_{0,0} \le p_1`$、$`p \in \mathrm{graft}(B,z)`$ のときは $`(\ast)`$ と
   [T.graft_mem_ge](#t-graft_mem_ge)（$`c := B_{0,0}`$）より $`B_{0,0} \le p_1`$ である。
 
-よって $`A \mathbin{+\!\!+} B`$ は同じ $`m`$ で $`A_u`$ の第 3 分岐をみたし、
+よって $`A \mathbin{+\!\!+} B`$ は同じ $`m`$ で $`A_u`$ の分岐 (3) をみたし、
 仮定より $`A \mathbin{+\!\!+} B \in X`$ である。∎
 
 <a id="t-W_add"></a>
@@ -2010,16 +2010,16 @@ $`v`$ が $`0`$ か後続数かで場合分けする。
 
 **(a) $`v = 0`$ のとき。** $`\lvert \bigl((0,0)\bigr)\rvert = 1 \le 1`$ であり、
 $`M_{i,j}`$ の定義（D.entry）より $`\bigl((0,0)\bigr)_{1,0} = 0`$ である。
-よって $`A_0`$ の定義（D.Aop）の第 1 分岐が成り立ち、
+よって $`A_0`$ の定義（D.Aop）の分岐 (1) が成り立ち、
 [T.A1_intro](#t-A1_intro) より $`\bigl((0,0)\bigr) \in W_0`$ である。
 
-**(b) $`v = w + 1`$ のとき。** $`A_{w+1}`$ の定義（D.Aop）の第 3 分岐を $`m := w`$ で示す。
+**(b) $`v = w + 1`$ のとき。** $`A_{w+1}`$ の定義（D.Aop）の分岐 (3) を $`m := w`$ で示す。
 $`w \lt w+1`$ である。[T.domT_Om](#t-domT_Om) より
 $`\mathrm{domT}\bigl(\bigl((0,w+1)\bigr),\ w\bigr)`$ である。
 $`z \in W_w`$ を取ると（$`\mathrm{based}(z)`$ は使わない）、
 [T.graft_Om](#t-graft_Om) より $`\mathrm{graft}\bigl(\bigl((0,w+1)\bigr),\ z\bigr) = z`$ であり、
 [T.W_mono](#t-W_mono) を $`w \le w+1`$ に適用して $`z \in W_{w+1}`$ を得る。
-よって第 3 分岐が成り立ち、[T.A1_intro](#t-A1_intro) より
+よって分岐 (3) が成り立ち、[T.A1_intro](#t-A1_intro) より
 $`\bigl((0,w+1)\bigr) \in W_{w+1}`$ である。∎
 
 <a id="d-Wstar"></a>
@@ -2457,9 +2457,6 @@ M[n] = \bigl(\mathrm{dropLast}\,M\bigr)^{+0\cdot e} \mathbin{+\!\!+}
        \bigl(\mathrm{dropLast}\,M\bigr)^{+(n-1)e} .
 ```
 
-ここで $`L^{+d}`$ は $`L`$ の各対の第 1 成分に $`d`$ を足した列、
-$`\mathrm{dropLast}\,M`$ は $`M`$ の末尾 1 要素を落とした列である。
-
 ### 証明
 
 仮定 (1)(2)(3) により [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) が適用できる。
@@ -2697,7 +2694,7 @@ $`v, m, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とする。
 $`\mathrm{argOK}(R)`$、$`\mathrm{domT}(R, m)`$、$`v \le m`$ ならば
 
 ```math
-\bigl((0,v) :: R\bigr)[n] = \mathrm{tow}(v, R, n) .
+\bigl((0,v) :: R\bigr)[n] = \mathrm{tow}_v(R,n) .
 ```
 
 ### 証明
@@ -2754,15 +2751,15 @@ $`D := (0,v) :: \mathrm{dropLast}\,R`$ とおくと
 M[n] = D^{+0\cdot x} \mathbin{+\!\!+} D^{+1\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} .
 ```
 
-**第 5 段：右辺が $`\mathrm{tow}(v,R,n)`$ に等しいこと。**
+**第 5 段：右辺が $`\mathrm{tow}_v(R,n)`$ に等しいこと。**
 $`n`$ に関する帰納法。帰納法の述語は
 
 ```math
-\Phi(n) :\equiv D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} = \mathrm{tow}(v,R,n) .
+\Phi(n) :\equiv D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} = \mathrm{tow}_v(R,n) .
 ```
 
 - **基底段** $`n = 0`$：左辺は空の連結すなわち $`()`$ であり、
-  $`\mathrm{tow}`$ の定義（D.tow）の第 1 式より $`\mathrm{tow}(v,R,0) = ()`$ である。
+  $`\mathrm{tow}`$ の定義（D.tow）の第 1 式より $`\mathrm{tow}_v(R,0) = ()`$ である。
 
 - **帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$ である。
   左辺の先頭ブロックを切り出すと、$`D^{+0\cdot x} = D`$ であり、
@@ -2778,19 +2775,19 @@ D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+n x}
 
 ```math
 D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+n x}
-  = D \mathbin{+\!\!+} \bigl(\mathrm{tow}(v,R,n)\bigr)^{+x}
+  = D \mathbin{+\!\!+} \bigl(\mathrm{tow}_v(R,n)\bigr)^{+x}
 ```
 
   を得る。一方 $`\mathrm{tow}`$ の定義（D.tow）の第 2 式と
   $`\mathrm{graft}`$ の定義（D.graft）より
 
 ```math
-\mathrm{tow}(v,R,n+1) = (0,v) :: \mathrm{graft}\bigl(R, \mathrm{tow}(v,R,n)\bigr)
-  = (0,v) :: \Bigl(\mathrm{dropLast}\,R \mathbin{+\!\!+} \bigl(\mathrm{tow}(v,R,n)\bigr)^{+R_{0,\lvert R\rvert-1}}\Bigr)
+\mathrm{tow}_v(R,n+1) = (0,v) :: \mathrm{graft}\bigl(R, \mathrm{tow}_v(R,n)\bigr)
+  = (0,v) :: \Bigl(\mathrm{dropLast}\,R \mathbin{+\!\!+} \bigl(\mathrm{tow}_v(R,n)\bigr)^{+R_{0,\lvert R\rvert-1}}\Bigr)
 ```
 
   であり、$`R_{0,\lvert R\rvert-1} = x`$、$`(0,v) :: \mathrm{dropLast}\,R = D`$ であるから
-  右辺は $`D \mathbin{+\!\!+} (\mathrm{tow}(v,R,n))^{+x}`$ に等しい。よって $`\Phi(n+1)`$。∎
+  右辺は $`D \mathbin{+\!\!+} (\mathrm{tow}_v(R,n))^{+x}`$ に等しい。よって $`\Phi(n+1)`$。∎
 
 <a id="t-domT_cons_of_lt"></a>
 ## 定理: 連続の場合の $`\mathrm{dom}`$ の継承 (T.domT_cons_of_lt)
@@ -2980,7 +2977,7 @@ $`N_{1,\lvert N\rvert-1} = N_{1,\lvert R\rvert} = R_{1,k_1}`$ である。
 
 仮定 $`R \in A_u(W^{*})`$ について、$`A_u`$ の定義（D.Aop）の 3 分岐で場合分けする。
 
-**分岐 1：$`\lvert R\rvert \le 1`$ かつ $`R_{1,0} = 0`$ のとき。**
+**分岐 (1)：$`\lvert R\rvert \le 1`$ かつ $`R_{1,0} = 0`$ のとき。**
 $`R \ne ()`$ より $`\lvert R\rvert = 1`$、したがって $`k_1 = 0`$ であり $`R_{1,k_1} = 0`$ である。
 また $`\neg\,\mathrm{hasParent}(R, 0, k_1)`$ である。実際
 $`j_0 \to^R_0 0`$ なる $`j_0`$ があれば
@@ -2989,7 +2986,7 @@ $`j_0 \to^R_0 0`$ なる $`j_0`$ があれば
 $`\mathrm{dropLast}\,R = ()`$ である。
 
 [T.A1_intro](#t-A1_intro) により $`N \in A_v(W_v)`$ を示せばよい。
-$`A_v`$ の定義（D.Aop）の第 2 分岐を取る。
+$`A_v`$ の定義（D.Aop）の分岐 (2) を取る。
 $`\mathrm{natDom}(N)`$ は (D2) による。$`n \ge 1`$ に対する $`N[n] \in W_v`$ は、
 [T.oper_cons_succ](#t-oper_cons_succ) より
 
@@ -3002,7 +2999,7 @@ N[n] = \bigl((0,v) :: \mathrm{dropLast}\,R\bigr)^{\frown n} = \bigl((0,v) :: ()\
 $`\forall p \in (0,v) :: (),\ \bigl((0,v) :: ()\bigr)_{0,0} \le p_1`$ であるから、
 [T.W_flatMap_copies](#t-W_flatMap_copies) が $`N[n] \in W_v`$ を与える。
 
-**分岐 2：$`\mathrm{natDom}(R)`$ かつ $`\forall n \ge 1,\ R[n] \in W^{*}`$ のとき。**
+**分岐 (2)：$`\mathrm{natDom}(R)`$ かつ $`\forall n \ge 1,\ R[n] \in W^{*}`$ のとき。**
 $`\mathrm{hasParent}\bigl(R, \mathrm{idx}_1(R,k_1), k_1\bigr)`$ が成り立つかどうかで場合分けする。
 
 **(2a) $`\mathrm{hasParent}\bigl(R, \mathrm{idx}_1(R,k_1), k_1\bigr)`$ のとき。**
@@ -3012,9 +3009,9 @@ $`\mathrm{idx}_1(R,k_1) = 1`$ であるから、いまの仮定は $`\mathrm{has
 [T.hasParent_cons_one](#t-hasParent_cons_one) を第 1 選言で適用して
 $`\mathrm{hasParent}(N, 1, \lvert R\rvert)`$ を得、(D1) を使う。
 
-[T.A1_intro](#t-A1_intro) により $`N \in A_v(W_v)`$ を、その第 2 分岐で示す。
+[T.A1_intro](#t-A1_intro) により $`N \in A_v(W_v)`$ を、その分岐 (2) で示す。
 $`n \ge 1`$ とすると [T.oper_cons_nat](#t-oper_cons_nat) より
-$`N[n] = (0,v) :: R[n]`$ である。分岐 2 の仮定より $`R[n] \in W^{*}`$ であり、
+$`N[n] = (0,v) :: R[n]`$ である。分岐 (2) の仮定より $`R[n] \in W^{*}`$ であり、
 [T.argOK_oper](#t-argOK_oper) より $`\mathrm{argOK}(R[n])`$ であるから、
 $`W^{*}`$ の定義（D.Wstar）を $`v`$ に適用して $`(0,v) :: R[n] \in W_v`$ を得る。
 
@@ -3030,7 +3027,7 @@ $`\neg\,\mathrm{domT}(R,m)`$ であり、$`\mathrm{domT}`$ の定義（D.domT）
 $`R_{1,k_1} = 0`$ より $`\mathrm{idx}_1(R,k_1) = 0`$ であるから、
 これもいまの場合分けの仮定に矛盾する。
 
-[T.A1_intro](#t-A1_intro) により $`N \in A_v(W_v)`$ を、その第 2 分岐で示す。
+[T.A1_intro](#t-A1_intro) により $`N \in A_v(W_v)`$ を、その分岐 (2) で示す。
 $`\mathrm{natDom}(N)`$ は (D2) による。$`n \ge 1`$ に対しては
 [T.oper_cons_succ](#t-oper_cons_succ) より
 
@@ -3051,7 +3048,7 @@ $`(0,v) :: \mathrm{dropLast}\,R \in W_v`$ を示せば十分である。$`\lvert
   $`R[1] = \mathrm{Pred}\,R`$ である。さらに $`\neg(\lvert R\rvert \le 1)`$ であるから
   $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ
   $`R[1] = \mathrm{dropLast}\,R`$ である。
-  分岐 2 の仮定を $`n := 1`$ に適用して $`\mathrm{dropLast}\,R \in W^{*}`$ を得る。
+  分岐 (2) の仮定を $`n := 1`$ に適用して $`\mathrm{dropLast}\,R \in W^{*}`$ を得る。
   [T.argOK_dropLast](#t-argOK_dropLast) より
   $`\mathrm{argOK}(\mathrm{dropLast}\,R)`$ であるから、
   $`W^{*}`$ の定義（D.Wstar）を $`v`$ に適用して
@@ -3061,55 +3058,55 @@ $`(0,v) :: \mathrm{dropLast}\,R \in W_v`$ を示せば十分である。$`\lvert
   $`(0,v) :: \mathrm{dropLast}\,R = (0,v) :: ()`$ であり、
   [T.Om_mem_W](#t-Om_mem_W) より $`W_v`$ に属する。
 
-**分岐 3：$`m \lt u`$、$`\mathrm{domT}(R,m)`$、かつ**
+**分岐 (3)：$`m \lt u`$、$`\mathrm{domT}(R,m)`$、かつ**
 $`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(R,z) \in W^{*}`$ **のとき。**
 $`v \le m`$ か否かで場合分けする。
 
 **(3a) $`v \le m`$ のとき。**
-まず $`\forall k \in \mathbb{N},\ \mathrm{tow}(v,R,k) \in W_v`$ を $`k`$ に関する帰納法で示す。
-帰納法の述語は $`\Psi(k) :\equiv \mathrm{tow}(v,R,k) \in W_v`$ である。
+まず $`\forall k \in \mathbb{N},\ \mathrm{tow}_v(R,k) \in W_v`$ を $`k`$ に関する帰納法で示す。
+帰納法の述語は $`\Psi(k) :\equiv \mathrm{tow}_v(R,k) \in W_v`$ である。
 
 - **基底段** $`k = 0`$：$`\mathrm{tow}`$ の定義（D.tow）の第 1 式より
-  $`\mathrm{tow}(v,R,0) = ()`$ であり、[T.W_nil](#t-W_nil) より $`() \in W_v`$。
+  $`\mathrm{tow}_v(R,0) = ()`$ であり、[T.W_nil](#t-W_nil) より $`() \in W_v`$。
 
 - **帰納段** $`k \to k+1`$：帰納法の仮定は $`\Psi(k)`$ である。
-  まず $`\mathrm{based}(\mathrm{tow}(v,R,k))`$ を示す。$`k = 0`$ のときは
-  $`\mathrm{tow}(v,R,0) = ()`$ であり [T.based_nil](#t-based_nil) による。
+  まず $`\mathrm{based}(\mathrm{tow}_v(R,k))`$ を示す。$`k = 0`$ のときは
+  $`\mathrm{tow}_v(R,0) = ()`$ であり [T.based_nil](#t-based_nil) による。
   $`k = k' + 1`$ のときは $`\mathrm{tow}`$ の定義（D.tow）の第 2 式より
-  $`\mathrm{tow}(v,R,k) = (0,v) :: \mathrm{graft}(R, \mathrm{tow}(v,R,k'))`$ であり、
+  $`\mathrm{tow}_v(R,k) = (0,v) :: \mathrm{graft}(R, \mathrm{tow}_v(R,k'))`$ であり、
   [T.based_cons](#t-based_cons) による。
   次に $`v \le m`$ と [T.W_mono](#t-W_mono) を $`\Psi(k)`$ に適用して
-  $`\mathrm{tow}(v,R,k) \in W_m`$ を得る。分岐 3 の仮定を
-  $`z := \mathrm{tow}(v,R,k)`$ に適用すると
-  $`\mathrm{graft}(R, \mathrm{tow}(v,R,k)) \in W^{*}`$ である。
+  $`\mathrm{tow}_v(R,k) \in W_m`$ を得る。分岐 (3) の仮定を
+  $`z := \mathrm{tow}_v(R,k)`$ に適用すると
+  $`\mathrm{graft}(R, \mathrm{tow}_v(R,k)) \in W^{*}`$ である。
   $`R \ne ()`$（[T.not_domT_nil](#t-not_domT_nil) と $`\mathrm{domT}(R,m)`$ による）と
   [T.argOK_graft](#t-argOK_graft) より
-  $`\mathrm{argOK}\bigl(\mathrm{graft}(R,\mathrm{tow}(v,R,k))\bigr)`$ であるから、
+  $`\mathrm{argOK}\bigl(\mathrm{graft}(R,\mathrm{tow}_v(R,k))\bigr)`$ であるから、
   $`W^{*}`$ の定義（D.Wstar）を $`v`$ に適用して
 
 ```math
-\mathrm{tow}(v,R,k+1) = (0,v) :: \mathrm{graft}\bigl(R, \mathrm{tow}(v,R,k)\bigr) \in W_v
+\mathrm{tow}_v(R,k+1) = (0,v) :: \mathrm{graft}\bigl(R, \mathrm{tow}_v(R,k)\bigr) \in W_v
 ```
 
   を得る。すなわち $`\Psi(k+1)`$。
 
-[T.A1_intro](#t-A1_intro) により $`N \in A_v(W_v)`$ を、その第 2 分岐で示す。
+[T.A1_intro](#t-A1_intro) により $`N \in A_v(W_v)`$ を、その分岐 (2) で示す。
 $`\mathrm{natDom}(N)`$ は次のように得る。$`\mathrm{domT}(R,m)`$ の第 1 連言子より
 $`R_{1,k_1} = m + 1`$ であり、$`v \le m \lt m+1`$ であるから
 [T.hasParent_cons_one](#t-hasParent_cons_one) を第 2 選言で適用して
 $`\mathrm{hasParent}(N,1,\lvert R\rvert)`$ を得、(D1) を使う。
 $`n \ge 1`$ に対しては [T.oper_cons_tower](#t-oper_cons_tower) より
-$`N[n] = \mathrm{tow}(v,R,n)`$ であり、いま示した $`\Psi(n)`$ よりこれは $`W_v`$ に属する。
+$`N[n] = \mathrm{tow}_v(R,n)`$ であり、いま示した $`\Psi(n)`$ よりこれは $`W_v`$ に属する。
 
 **(3b) $`\neg(v \le m)`$ すなわち $`m \lt v`$ のとき。**
-[T.A1_intro](#t-A1_intro) により $`N \in A_v(W_v)`$ を、その第 3 分岐で示す。
-第 3 分岐の 3 つの成分を確かめる。
+[T.A1_intro](#t-A1_intro) により $`N \in A_v(W_v)`$ を、その分岐 (3) で示す。
+分岐 (3) の 3 つの成分を確かめる。
 
 - $`m \lt v`$：いまの場合分けの仮定である。
 - $`\mathrm{domT}(N, m)`$：[T.domT_cons_of_lt](#t-domT_cons_of_lt) による。
 - $`z \in W_m`$ かつ $`\mathrm{based}(z)`$ ならば $`\mathrm{graft}(N,z) \in W_v`$：
   $`R \ne ()`$ であるから [T.graft_cons](#t-graft_cons) より
-  $`\mathrm{graft}(N,z) = (0,v) :: \mathrm{graft}(R,z)`$ である。分岐 3 の仮定より
+  $`\mathrm{graft}(N,z) = (0,v) :: \mathrm{graft}(R,z)`$ である。分岐 (3) の仮定より
   $`\mathrm{graft}(R,z) \in W^{*}`$ であり、[T.argOK_graft](#t-argOK_graft) より
   $`\mathrm{argOK}(\mathrm{graft}(R,z))`$ であるから、
   $`W^{*}`$ の定義（D.Wstar）を $`v`$ に適用して
@@ -3126,8 +3123,6 @@ $`\forall r \in R,\ x \le r_1`$ を仮定する。このとき
 ```math
 \Bigl((0,y) :: R^{-x}\Bigr)^{+x} = (x,y) :: R .
 ```
-
-ここで $`L^{-c}`$ は $`L`$ の各対の第 1 成分から $`c`$ を引いた（切り捨て減法）列である。
 
 ### 証明
 
@@ -3166,7 +3161,7 @@ $`N`$ に関する帰納法。帰納法の述語は
 ```
 
 - **基底段** $`N = 0`$：$`\lvert M\rvert \le 0`$ より $`M = ()`$ である。
-  $`A_0`$ の定義（D.Aop）の第 1 分岐 $`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$ は、
+  $`A_0`$ の定義（D.Aop）の分岐 (1) $`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$ は、
   $`\lvert ()\rvert = 0 \le 1`$ と、$`M_{i,j}`$ の定義（D.entry）により添字が範囲外の読みが
   $`(0,0)`$ であることから $`()_{1,0} = 0`$ であることにより成り立つ。
   よって $`() \in A_0(X)`$ であり、$`\mathrm{(Acl)}`$ を $`u := 0`$、$`M' := ()`$ に適用して
@@ -3351,7 +3346,7 @@ $`\forall p \in M,\ p_2 \le u`$ を仮定すると $`M \in W_u`$。
 
 ### 定理
 
-任意の $`S \in \mathrm{PairSeq}`$ と $`p \in S`$ に対し $`p_2 \le \mathrm{maxr}_1(S)`$。
+任意の $`S \in \mathrm{PairSeq}`$ と $`p \in S`$ に対し [$`p_2 \le \mathrm{maxr}_1(S)`$](Column.md#d-maxr1)。
 
 ### 証明
 
@@ -3430,21 +3425,21 @@ a \mathbin{R_{\mathrm{st}}} b :\iff a \in \mathrm{ST\_PS} \wedge b \in \mathrm{S
   \wedge \mathrm{tr}\,a \prec \mathrm{tr}\,b
 ```
 
-である。整礎性は $`\forall M,\ \mathrm{Acc}_{R_{\mathrm{st}}}(M)`$ と同値であるから、
-$`M`$ を任意に取り $`\mathrm{Acc}_{R_{\mathrm{st}}}(M)`$ を示す。
+である。整礎性は $`\forall M,\ \mathrm{Acc}(R_{\mathrm{st}},M)`$ と同値であるから、
+$`M`$ を任意に取り $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ を示す。
 $`M \in \mathrm{ST\_PS}`$ か否かで場合分けする。
 
 - **$`M \in \mathrm{ST\_PS}`$ のとき。** 仮定 (mem) により $`M \in W_u`$ なる $`u`$ を取る。
   [T.acc_of_W](#t-acc_of_W) を仮定 (cof) と $`u`$、$`M`$ に適用して
-  $`\mathrm{Acc}_{R_{\mathrm{st}}}(M)`$ を得る。
+  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ を得る。
 
-- **$`M \notin \mathrm{ST\_PS}`$ のとき。** $`\mathrm{Acc}`$ の導入規則
-  $`\bigl(\forall y,\ y \mathbin{R} x \to \mathrm{Acc}_R(y)\bigr) \to \mathrm{Acc}_R(x)`$ により、
+- **$`M \notin \mathrm{ST\_PS}`$ のとき。** $`\mathrm{Acc}`$ の生成規則
+  $`\bigl(\forall y,\ y \mathbin{R} a \to \mathrm{Acc}(R,y)\bigr) \to \mathrm{Acc}(R,a)`$ により、
   $`y \mathbin{R_{\mathrm{st}}} M`$ なるすべての $`y`$ について
-  $`\mathrm{Acc}_{R_{\mathrm{st}}}(y)`$ を示せばよい。ところが
+  $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を示せばよい。ところが
   $`y \mathbin{R_{\mathrm{st}}} M`$ の第 2 連言子は $`M \in \mathrm{ST\_PS}`$ であり、
   いまの場合分けの仮定に矛盾する。よって前件をみたす $`y`$ は存在せず、
-  $`\mathrm{Acc}_{R_{\mathrm{st}}}(M)`$ が成り立つ。∎
+  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ が成り立つ。∎
 
 <a id="t-wf_olt_ST_PS_of_cofinality"></a>
 ## 定理: 共終性から標準形上の順序の整礎性へ (T.wf_olt_ST_PS_of_cofinality)

@@ -62,8 +62,10 @@ $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と�
 **(b) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ
 [$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$](Pss.md#d-hasParent) のとき。**
 [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
-$`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と取れば (a) と同じ議論で
-2 つの式が成り立つ。
+$`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と取る。
+第 1 式は $`\mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M`$ により成り立つ。
+第 2 式は [T.sndSet_nil](Term.md#t-sndSet_nil) より $`\mathrm{snd}(()) = \emptyset`$ であり、
+空集合は任意の集合の部分集合であるから成り立つ。
 
 **(c) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
 [T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を適用して
@@ -255,18 +257,18 @@ $`n`$ に関する帰納法を行う（$`u`$ は全称量化したまま動か�
 \Phi(n) :\equiv \forall u \in \mathbb{N},\ \mathrm{cnf}\bigl(\mathrm{tr}(\Delta_u^{u+n})\bigr).
 ```
 
-- **基底段** $`n = 0`$：$`u`$ を取る。$`u + 0 = u`$ である。
-  [T.translate_diagSeq](#t-translate_diagSeq) を $`u \le u`$ に適用して
+**基底段** $`n = 0`$：$`u`$ を取る。$`u + 0 = u`$ である。
+[T.translate_diagSeq](#t-translate_diagSeq) を $`u \le u`$ に適用して
 
 ```math
 \mathrm{tr}(\Delta_u^u) = \mathsf{P}\bigl(u,\ \mathrm{tr}(\Delta_{u+1}^u),\ \mathsf{Z}\bigr)
 ```
 
-  を得る。$`\Delta_{u+1}^u`$ は $`\Delta_a^b`$ の定義（D.diagSeq）より長さ
-  $`u + 1 - (u + 1) = 0`$ の列、すなわち $`()`$ である。$`\mathrm{tr}`$ の定義（D.translate）より
-  $`\mathrm{tr}\,() = \mathsf{Z}`$ であるから $`\mathrm{tr}(\Delta_u^u) = \mathsf{P}(u, \mathsf{Z}, \mathsf{Z})`$
-  である。[T.cnf_P_Z](#t-cnf_P_Z) よりこれが条件をみたすことは $`\mathrm{cnf}(\mathsf{Z})`$ と同値であり、
-  それは [T.cnf_Z](#t-cnf_Z) である。よって $`\Phi(0)`$。
+を得る。$`\Delta_{u+1}^u`$ は $`\Delta_a^b`$ の定義（D.diagSeq）より長さ
+$`u + 1 - (u + 1) = 0`$ の列、すなわち $`()`$ である。$`\mathrm{tr}`$ の定義（D.translate）より
+$`\mathrm{tr}\,() = \mathsf{Z}`$ であるから $`\mathrm{tr}(\Delta_u^u) = \mathsf{P}(u, \mathsf{Z}, \mathsf{Z})`$
+である。[T.cnf_P_Z](#t-cnf_P_Z) よりこれが条件をみたすことは $`\mathrm{cnf}(\mathsf{Z})`$ と同値であり、
+それは [T.cnf_Z](#t-cnf_Z) である。よって $`\Phi(0)`$。
 
 **帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち
 $`\forall u,\ \mathrm{cnf}(\mathrm{tr}(\Delta_u^{u+n}))`$ である。$`u`$ を取る。
@@ -313,9 +315,9 @@ $`m`$ を固定し、$`\mathrm{tr}`$ の再帰に沿う帰納法を行う。帰�
 \Psi(D) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr) \to \mathrm{cnf}(\mathrm{tr}\,D).
 ```
 
-- **基底段** $`D = ()`$：結論は $`\mathrm{cnf}(\mathrm{tr}\,())`$ である。
-  $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$ であり、
-  [T.cnf_Z](#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ（前件は使わない）。
+**基底段** $`D = ()`$：結論は $`\mathrm{cnf}(\mathrm{tr}\,())`$ である。
+$`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$ であり、
+[T.cnf_Z](#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ（前件は使わない）。
 
 **帰納段** $`D = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と $`\Psi(\mathrm{dw}_{p_1} L)`$ である。
 前件 $`\mathrm{cnf}\bigl(\mathrm{tr}((p :: L) \mathbin{+\!\!+} (m))\bigr)`$ を仮定する。
@@ -490,9 +492,9 @@ $`d`$ に関する帰納法を行う（$`k`$ は全称量化したまま動か�
   \to \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr).
 ```
 
-- **基底段** $`d = 0`$：$`k`$ を取り $`\lvert M\rvert - k = 0`$ とする。自然数の減法は切り捨て減法であるから
-  これは $`\lvert M\rvert \le k`$ を意味し、$`\mathrm{take}_k M = M`$ である。
-  結論は仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ そのものである。
+**基底段** $`d = 0`$：$`k`$ を取り $`\lvert M\rvert - k = 0`$ とする。自然数の減法は切り捨て減法であるから
+これは $`\lvert M\rvert \le k`$ を意味し、$`\mathrm{take}_k M = M`$ である。
+結論は仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ そのものである。
 
 **帰納段** $`d \to d+1`$：帰納法の仮定は $`\Xi(d)`$ である。$`k`$ を取り
 $`\lvert M\rvert - k = d + 1`$ とする。$`\lvert M\rvert - k \ne 0`$ であるから $`k \lt \lvert M\rvert`$、
@@ -519,32 +521,33 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr)`$ を得る。よって
 
 $`v_0, w_0 \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とし、
 $`\forall x \in R,\ v_0 \lt x_1`$ と $`\mathrm{cnf}(\mathrm{tr}\,R)`$ を仮定する。
-$`B := (v_0,w_0) :: R`$ とおき、$`B`$ を $`n`$ 個連結した列を
+$`B := (v_0,w_0) :: R`$ とおく。また列 $`L`$ と $`k \in \mathbb{N}`$ に対し、$`L`$ を $`k`$ 個連結した
+列を $`L^{\ast k}`$ と書く。すなわち
 
 ```math
-B^{(0)} := (), \qquad B^{(k+1)} := B \mathbin{+\!\!+} B^{(k)}
+L^{\ast 0} := (), \qquad L^{\ast(k+1)} := L \mathbin{+\!\!+} L^{\ast k} .
 ```
 
-で定める。このとき任意の $`n \in \mathbb{N}`$ に対し $`\mathrm{cnf}\bigl(\mathrm{tr}(B^{(n)})\bigr)`$。
+このとき任意の $`n \in \mathbb{N}`$ に対し $`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast n})\bigr)`$。
 
 ### 証明
 
 はじめに、任意の $`k \in \mathbb{N}`$ について
 
 ```math
-(\ast)\qquad B^{(k)} = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,B^{(k)})_1\bigr)
+(\ast)\qquad B^{\ast k} = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,B^{\ast k})_1\bigr)
 ```
 
-が成り立つことを見る。$`k = 0`$ のときは $`B^{(0)} = ()`$ であり第 1 選言が成り立つ。
-$`k = k' + 1`$ のときは $`B^{(k'+1)} = B \mathbin{+\!\!+} B^{(k')}`$ の先頭は $`B`$ の先頭 $`(v_0,w_0)`$ であり、
+が成り立つことを見る。$`k = 0`$ のときは $`B^{\ast 0} = ()`$ であり第 1 選言が成り立つ。
+$`k = k' + 1`$ のときは $`B^{\ast(k'+1)} = B \mathbin{+\!\!+} B^{\ast k'}`$ の先頭は $`B`$ の先頭 $`(v_0,w_0)`$ であり、
 $`\neg(v_0 \lt v_0)`$ であるから第 2 選言が成り立つ。
 
 したがって [T.translate_block_append](Term.md#t-translate_block_append) を
-$`T := B^{(k)}`$ として適用でき、任意の $`k`$ について
+$`T := B^{\ast k}`$ として適用でき、任意の $`k`$ について
 
 ```math
-(\ast\ast)\qquad \mathrm{tr}\bigl(B^{(k+1)}\bigr)
-  = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}(B^{(k)})\bigr)
+(\ast\ast)\qquad \mathrm{tr}\bigl(B^{\ast(k+1)}\bigr)
+  = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}(B^{\ast k})\bigr)
 ```
 
 が成り立つ（第 1 の仮定が $`\forall x \in R,\ v_0 \lt x_1`$ である）。
@@ -552,19 +555,19 @@ $`T := B^{(k)}`$ として適用でき、任意の $`k`$ について
 $`n`$ に関する帰納法を行う。帰納法の述語は
 
 ```math
-\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(B^{(n)})\bigr).
+\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast n})\bigr).
 ```
 
-- **基底段** $`n = 0`$：$`B^{(0)} = ()`$ であり、$`\mathrm{tr}`$ の定義（D.translate）より
-  $`\mathrm{tr}\,() = \mathsf{Z}`$ である。[T.cnf_Z](#t-cnf_Z) より $`\Phi(0)`$。
+**基底段** $`n = 0`$：$`B^{\ast 0} = ()`$ であり、$`\mathrm{tr}`$ の定義（D.translate）より
+$`\mathrm{tr}\,() = \mathsf{Z}`$ である。[T.cnf_Z](#t-cnf_Z) より $`\Phi(0)`$。
 
 **帰納段** $`n = m + 1`$：帰納法の仮定は $`\Phi(m)`$、すなわち
-$`\mathrm{cnf}\bigl(\mathrm{tr}(B^{(m)})\bigr)`$ である。$`m`$ で場合分けする。
+$`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast m})\bigr)`$ である。$`m`$ で場合分けする。
 
 **$`m = 0`$ のとき。** $`(\ast\ast)`$ を $`k := 0`$ として使うと
 
 ```math
-\mathrm{tr}(B^{(1)}) = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,()\bigr)
+\mathrm{tr}(B^{\ast 1}) = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,()\bigr)
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathsf{Z}\bigr)
 ```
 
@@ -575,9 +578,9 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(B^{(m)})\bigr)`$ である。$`m`$ で場合分�
 **$`m = m' + 1`$ のとき。** $`(\ast\ast)`$ を $`k := m`$ と $`k := m'`$ として使うと
 
 ```math
-\mathrm{tr}\bigl(B^{(m+1)}\bigr)
+\mathrm{tr}\bigl(B^{\ast(m+1)}\bigr)
   = \mathsf{P}\Bigl(w_0,\ \mathrm{tr}\,R,\
-      \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}(B^{(m')})\bigr)\Bigr)
+      \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}(B^{\ast m'})\bigr)\Bigr)
 ```
 
 である。[T.cnf_P_P](#t-cnf_P_P) により、これが条件をみたすためには次の 3 つを示せばよい。
@@ -585,8 +588,8 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(B^{(m)})\bigr)`$ である。$`m`$ で場合分�
 1. $`\mathrm{cnf}(\mathrm{tr}\,R)`$：仮定である。
 2. $`\neg\bigl(\mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z}) \prec \mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z})\bigr)`$：
    [T.olt_irrefl](Term.md#t-olt_irrefl) である。
-3. $`\mathrm{cnf}\bigl(\mathsf{P}(w_0, \mathrm{tr}\,R, \mathrm{tr}(B^{(m')}))\bigr)`$：
-   $`(\ast\ast)`$ を $`k := m'`$ として使うとこの項は $`\mathrm{tr}(B^{(m'+1)}) = \mathrm{tr}(B^{(m)})`$ であり、
+3. $`\mathrm{cnf}\bigl(\mathsf{P}(w_0, \mathrm{tr}\,R, \mathrm{tr}(B^{\ast m'}))\bigr)`$：
+   $`(\ast\ast)`$ を $`k := m'`$ として使うとこの項は $`\mathrm{tr}(B^{\ast(m'+1)}) = \mathrm{tr}(B^{\ast m})`$ であり、
    主張は帰納法の仮定 $`\Phi(m)`$ である。
 
 よって $`\Phi(m+1)`$。∎
@@ -603,10 +606,10 @@ $`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}
 &\text{(cZ1)}\quad \mathrm{cnf}\bigl(\mathrm{tr}(z_1 :: T_1)\bigr), \cr
 &\text{(decr)}\quad \mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2), \cr
 &\text{(root)}\quad (z_1)_1 = (z_2)_1, \cr
-&\text{(lead)}\quad \exists\, a_1, b_1, c_1, a_2, b_2, c_2,\ \bigl[\
+&\text{(leadle)}\quad \exists\, a_1, b_1, c_1, a_2, b_2, c_2,\ \bigl[\
    \mathrm{tr}(z_1 :: T_1) = \mathsf{P}(a_1,b_1,c_1)
    \ \wedge\ \mathrm{tr}(z_2 :: T_2) = \mathsf{P}(a_2,b_2,c_2) \cr
-&\hphantom{\text{(lead)}\quad \exists\, a_1, b_1, c_1, a_2, b_2, c_2,\ \bigl[\ }
+&\hphantom{\text{(leadle)}\quad \exists\, a_1, b_1, c_1, a_2, b_2, c_2,\ \bigl[\ }
    \ \wedge\ \mathsf{P}(a_1,b_1,\mathsf{Z}) \preceq \mathsf{P}(a_2,b_2,\mathsf{Z})\ \bigr], \cr
 &\text{(r1)}\quad \forall x \in T_1,\ (z_1)_1 \le x_1, \cr
 &\text{(r2)}\quad \forall x \in T_2,\ (z_2)_1 \le x_1 .
@@ -627,7 +630,7 @@ $`z_1, z_2, T_1, T_2`$ と 6 つの仮定を固定し、$`\lvert G\rvert`$ に�
 ```
 
 であり、帰納法の仮定は「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$」である。
-以下、(lead) の $`a_1, b_1, c_1, a_2, b_2, c_2`$ を取り、
+以下、(leadle) の $`a_1, b_1, c_1, a_2, b_2, c_2`$ を取り、
 
 ```math
 \mathrm{tr}(z_1 :: T_1) = \mathsf{P}(a_1,b_1,c_1), \quad
@@ -637,7 +640,7 @@ $`z_1, z_2, T_1, T_2`$ と 6 つの仮定を固定し、$`\lvert G\rvert`$ に�
 
 と書く。
 
-- **$`G = ()`$ のとき**：$`() \mathbin{+\!\!+} z_1 :: T_1 = z_1 :: T_1`$ であるから、結論は (cZ1) そのものである。
+**$`G = ()`$ のとき。** $`() \mathbin{+\!\!+} z_1 :: T_1 = z_1 :: T_1`$ であるから、結論は (cZ1) そのものである。
 
 **$`G = g :: G'`$ のとき。** $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたすかどうかで場合分けする。
 
@@ -752,7 +755,8 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$�
 **(b) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`g_1 \lt (z_1)_1`$ のとき。**
 (root) より $`g_1 \lt (z_2)_1`$ でもある。(r1) より $`T_1`$ の任意の要素 $`x`$ について
 $`g_1 \lt (z_1)_1 \le x_1`$ であるから、$`z_1 :: T_1`$ の全要素が $`g_1 \lt x_1`$ をみたす。
-$`z_2 :: T_2`$ についても (r2) から同様である。よって $`G' \mathbin{+\!\!+} z_i :: T_i`$ の全要素が
+また (r2) より $`T_2`$ の任意の要素 $`x`$ について $`g_1 \lt (z_2)_1 \le x_1`$ であるから、
+$`z_2 :: T_2`$ の全要素も $`g_1 \lt x_1`$ をみたす。よって $`G' \mathbin{+\!\!+} z_i :: T_i`$ の全要素が
 $`g_1 \lt x_1`$ をみたし、[T.translate_single_tree](Term.md#t-translate_single_tree) より
 $`i = 1, 2`$ のいずれでも
 
@@ -781,7 +785,7 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$ �
 
 であり、先頭の $`z_i`$ が述語を破るから $`\mathrm{tw}_{g_1}(z_i :: T_i) = ()`$、
 $`\mathrm{dw}_{g_1}(z_i :: T_i) = z_i :: T_i`$ である。よって $`\mathrm{tr}`$ の定義（D.translate）と
-(lead) の 2 つの等式より
+(leadle) の 2 つの等式より
 
 ```math
 \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
@@ -800,7 +804,7 @@ $`\mathrm{dw}_{g_1}(z_i :: T_i) = z_i :: T_i`$ である。よって $`\mathrm{t
 \neg\bigl(\mathsf{P}(g_2,\ \mathrm{tr}\,G',\ \mathsf{Z}) \prec \mathsf{P}(a_1,b_1,\mathsf{Z})\bigr)
 ```
 
-を示す。内側が成り立つとすると、(lead) の
+を示す。内側が成り立つとすると、(leadle) の
 $`\mathsf{P}(a_1,b_1,\mathsf{Z}) \preceq \mathsf{P}(a_2,b_2,\mathsf{Z})`$ と
 [T.olt_ole_trans](Term.md#t-olt_ole_trans) より
 $`\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{Z}) \prec \mathsf{P}(a_2,b_2,\mathsf{Z})`$ となり、2 に矛盾する。
@@ -834,7 +838,7 @@ $`t, T'`$ と仮定 $`\forall x \in T',\ t_1 \le x_1`$ を固定し、$`\lvert G
 
 であり、帰納法の仮定は「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Psi(G')`$」である。
 
-- **$`G = ()`$ のとき**：$`() \mathbin{+\!\!+} t :: T' = t :: T'`$ であるから、結論は前件そのものである。
+**$`G = ()`$ のとき。** $`() \mathbin{+\!\!+} t :: T' = t :: T'`$ であるから、結論は前件そのものである。
 
 **$`G = g :: G'`$ のとき。** $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたすかどうかで場合分けする。
 
@@ -921,13 +925,8 @@ $`\mathrm{cnf}\bigl(\mathsf{P}(t_2, \mathrm{tr}(\mathrm{tw}_{t_1} T'), \mathrm{t
 ### 定理
 
 $`v_0, w_0 \in \mathbb{N}`$、$`R, G \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$、
-$`n \in \mathbb{N}`$ とする。以下 $`B := (v_0,w_0) :: R`$ とおく。
-また列 $`L`$ と $`k \in \mathbb{N}`$ に対し、$`L`$ を $`k`$ 個連結した列を $`L^{\ast k}`$ と書く。すなわち
-
-```math
-L^{\ast 0} := (), \qquad L^{\ast(k+1)} := L \mathbin{+\!\!+} L^{\ast k} .
-```
-
+$`n \in \mathbb{N}`$ とする。以下 $`B := (v_0,w_0) :: R`$ とおき、列を $`k`$ 個連結する記法
+$`L^{\ast k}`$ は [T.cnf_replicate_block](#t-cnf_replicate_block) のものを用いる。
 次の 4 つを仮定する。
 
 ```math
@@ -1127,10 +1126,10 @@ z_2 := (v_0,w_0),\quad T_2 := R \mathbin{+\!\!+} (\ell),\quad G := G
 ## 定義: 行 0 の平行移動 (D.shiftr0)
 
 $`d \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ に対し、$`M`$ の各対の第 1 成分に一様に $`d`$ を
-足した列を $`M^{+d}`$ と書く。すなわち $`M = (p^{(0)}, \dots, p^{(X-1)})`$、$`X = \lvert M\rvert`$ のとき
+足した列を $`M^{+d}`$ と書く。すなわち $`M = (M_0, \dots, M_{X-1})`$、$`X = \lvert M\rvert`$ のとき
 
 ```math
-M^{+d} := \bigl(\,(p^{(0)}_1 + d,\ p^{(0)}_2),\ \dots,\ (p^{(X-1)}_1 + d,\ p^{(X-1)}_2)\,\bigr).
+M^{+d} := \bigl(\,(M_{0,0} + d,\ M_{1,0}),\ \dots,\ (M_{0,X-1} + d,\ M_{1,X-1})\,\bigr).
 ```
 
 <a id="d-copies"></a>
@@ -1156,8 +1155,8 @@ $`d, n \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$ に対し
 
 ### 証明
 
-$`M^{+d}`$ の定義（D.shiftr0）より $`M^{+0}`$ の第 $`i`$ 要素は $`(p^{(i)}_1 + 0,\ p^{(i)}_2)`$ である。
-$`\mathbb{N}`$ において $`p^{(i)}_1 + 0 = p^{(i)}_1`$ であるから、これは $`(p^{(i)}_1, p^{(i)}_2) = p^{(i)}`$、
+$`M^{+d}`$ の定義（D.shiftr0）より $`M^{+0}`$ の第 $`i`$ 要素は $`(M_{0,i} + 0,\ M_{1,i})`$ である。
+$`\mathbb{N}`$ において $`M_{0,i} + 0 = M_{0,i}`$ であるから、これは $`(M_{0,i},\ M_{1,i}) = M_i`$、
 すなわち $`M`$ の第 $`i`$ 要素に等しい。長さも $`\lvert M^{+0}\rvert = \lvert M\rvert`$ で一致する。∎
 
 <a id="t-shiftr0_nil"></a>
@@ -1440,12 +1439,12 @@ $`n`$ に関する自然数の帰納法。帰納法の述語は
 \Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{cp}_{d_0}(B, n))\bigr).
 ```
 
-**基底段 $`n = 0`$。**
+**基底段** $`n = 0`$。
 [T.copies_zero](#t-copies_zero) より $`\mathrm{cp}_{d_0}(B,0) = ()`$ であり、
 $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$ である。
 [T.cnf_Z](#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ。よって $`\Phi(0)`$。
 
-**帰納段 $`n \to n+1`$。** 帰納法の仮定は $`\Phi(n)`$、すなわち
+**帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち
 $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B,n)))`$ である。$`n`$ で場合分けする。
 
 **(i) $`n = 0`$ のとき。** 示すべきは $`\Phi(1)`$ である。
@@ -1854,8 +1853,8 @@ $`B \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ に対し
 \mathrm{cp}_0(B, n) = B^{\ast n}
 ```
 
-である。ここで $`B^{\ast n}`$ は [T.cnf_oper_i1eq0](#t-cnf_oper_i1eq0) と同じく $`B`$ を $`n`$ 個
-連結した列である。
+である。ここで $`B^{\ast n}`$ は [T.cnf_replicate_block](#t-cnf_replicate_block) と同じく $`B`$ を
+$`n`$ 個連結した列である。
 
 ### 証明
 
@@ -1975,7 +1974,7 @@ $`1 \le n`$（仮定 (n1)）、(cM')（仮定 (cM)）に適用して
 
 ### 定理
 
-$`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{cnf}(\mathrm{tr}\,M)`$。
+[$`M \in \mathrm{ST\_PS}`$](Pss.md#d-ST_PS) ならば $`\mathrm{cnf}(\mathrm{tr}\,M)`$。
 
 ### 証明
 

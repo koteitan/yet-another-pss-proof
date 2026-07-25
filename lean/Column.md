@@ -127,8 +127,6 @@ $`A, T \in \mathrm{PairSeq}`$、$`i, j \in \mathbb{N}`$ に対し
 (A \mathbin{+\!\!+} T)_{i,\,\lvert A\rvert + j} = T_{i,j}
 ```
 
-（[$`M_{i,j}`$](Pss.md#d-entry)）。
-
 ### 証明
 
 $`\lvert A\rvert \le \lvert A\rvert + j`$ であるから [T.getD_app_right](#t-getD_app_right) を
@@ -182,7 +180,8 @@ $`\to^M_0`$ の定義（D.nextrel0）の 5 条件を左右で対応させる。
 
 - (1) (1') $`j_0 \lt \lvert T\rvert`$ に $`\lvert A\rvert`$ を足して
   $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$。
-- (2) (2') から同様に $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$。
+- (2) (2') $`j_1 \lt \lvert T\rvert`$ に $`\lvert A\rvert`$ を足して
+  $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$。
 - (3) (3') $`j_0 \lt j_1`$ から $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$。
 - (4) [T.entry_append_right](#t-entry_append_right) で書き換えれば (4') そのものである。
 - (5) $`j`$ を $`\lvert A\rvert + j_0 \lt j`$ かつ $`j \lt \lvert A\rvert + j_1`$ なる自然数とする。
@@ -206,7 +205,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`j_0, c \in \mathbb{N}`$ とする。
 
 ### 証明
 
-鎖 $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$ の長さに関する帰納法。$`A`$、$`T`$、$`j_0`$ は固定し、
+鎖 $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$ の構成に関する帰納法。$`A`$、$`T`$、$`j_0`$ は固定し、
 帰納法の述語は
 
 ```math
@@ -231,7 +230,7 @@ $`\lvert A\rvert + b \to^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + c`$ を得る
 ### 定理
 
 $`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ とする。
-[$`j_0 \le^{T}_0 j_1`$](Pss.md#d-le0) ならば
+$`j_0 \le^{T}_0 j_1`$ ならば
 $`\lvert A\rvert + j_0 \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$。
 
 ### 証明
@@ -240,7 +239,8 @@ $`\le^M_0`$ の定義（D.le0）の 3 条件を示す。仮定の 3 条件を (1
 
 - (1) $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$ であり、(1') $`j_0 \lt \lvert T\rvert`$ から
   $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$。
-- (2) 同様に (2') から $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$。
+- (2) $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$ であり、(2') $`j_1 \lt \lvert T\rvert`$ から
+  $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$。
 - (3) (3') は $`j_0 \mathbin{(\to^{T}_0)^{*}} j_1`$ であり、
   [T.rtg_nextrel0_lift](#t-rtg_nextrel0_lift) を適用すれば
   $`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + j_1`$。∎
@@ -270,7 +270,7 @@ c = \lvert A\rvert + c' \qquad\text{かつ}\qquad a \mathbin{(\to^{T}_0)^{*}} c'
 
 ### 証明
 
-鎖 $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ の長さに関する帰納法。
+鎖 $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ の構成に関する帰納法。
 $`A`$、$`T`$、$`a`$ は固定し、帰納法の述語は
 
 ```math
@@ -421,7 +421,7 @@ $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ が成り立つから�
 $`e := \lvert A\rvert + j_1`$ に適用して $`\lvert A\rvert \le k`$ を得る。
 これは仮定 $`k \lt \lvert A\rvert`$ に矛盾する。
 
-(H) を鎖 $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} e`$ の長さに関する帰納法で示す。
+(H) を鎖 $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} e`$ の構成に関する帰納法で示す。
 $`A`$、$`T`$、$`k`$ は固定し、帰納法の述語は
 
 ```math
@@ -496,7 +496,8 @@ $`\to^M_1`$ の定義（D.nextrel1）の 6 条件を左右で対応させる。
 **（$`\Leftarrow`$）** 右辺の 6 条件を (1')–(6') とする。
 
 - (1) (1') $`j_0 \lt \lvert T\rvert`$ から $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$。
-- (2) (2') から同様。
+- (2) (2') $`j_1 \lt \lvert T\rvert`$ に $`\lvert A\rvert`$ を足して
+  $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$。
 - (3) (3') $`j_0 \lt j_1`$ から $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$。
 - (4) [T.entry_append_right](#t-entry_append_right) で書き換えれば (4') そのものである。
 - (5) [T.le0_append_right](#t-le0_append_right) の（$`\Leftarrow`$）を (5') に適用する。
@@ -745,7 +746,8 @@ $`A, T \in \mathrm{PairSeq}`$ が $`2 \le \lvert T\rvert`$ をみたすならば
 $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert \ge \lvert T\rvert \ge 2`$ であるから
 $`\neg\bigl(\lvert A \mathbin{+\!\!+} T\rvert \le 1\bigr)`$ であり、$`\mathrm{Pred}`$ の定義（D.Pred）の
 第 2 の場合により $`\mathrm{Pred}\,(A \mathbin{+\!\!+} T) = \mathrm{dropLast}\,(A \mathbin{+\!\!+} T)`$ である。
-同様に $`\neg\bigl(\lvert T\rvert \le 1\bigr)`$ であるから
+また仮定 $`2 \le \lvert T\rvert`$ から $`\neg\bigl(\lvert T\rvert \le 1\bigr)`$ であり、
+$`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合により
 $`\mathrm{Pred}\,T = \mathrm{dropLast}\,T`$ である。
 
 $`2 \le \lvert T\rvert`$ より $`T \ne ()`$ であるから、$`A \mathbin{+\!\!+} T`$ の末尾要素は $`T`$ の末尾要素であり、
@@ -1077,8 +1079,7 @@ $`(\Delta_0^v)_{1,j} \le (\Delta_0^v)_{1,j-1} + 1`$。∎
 
 ### 定理
 
-$`M \in \mathrm{PairSeq}`$、$`m, j \in \mathbb{N}`$ とし、$`\mathrm{take}_m M`$ を $`M`$ の先頭
-$`m`$ 要素からなる列とする。$`j \lt m`$ ならば
+$`M \in \mathrm{PairSeq}`$、$`m, j \in \mathbb{N}`$ とする。$`j \lt m`$ ならば
 
 ```math
 (\mathrm{take}_m M)\langle j\rangle = M\langle j\rangle .
@@ -1208,7 +1209,8 @@ $`B \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ に対し
 
 と書く。ここで $`f_k := f(k)`$ であり、$`\mathrm{map}(g, B)`$ は $`B`$ の各要素 $`x`$ を
 $`g(x)`$ に置き換えた列である。$`n = 0`$ のとき $`\mathrm{cp}(B,f,0) = ()`$ である。
-定義から直ちに
+$`\mathrm{cp}(B,f,n+1)`$ は $`k = 0, 1, \dots, n`$ の各 $`k`$ に対する $`\mathrm{map}(f_k, B)`$ を
+左から順に連結した列であり、その最後の 1 個を分離すると
 
 ```math
 \mathrm{cp}(B,f,n+1) = \mathrm{cp}(B,f,n) \mathbin{+\!\!+} \mathrm{map}(f_n, B)
@@ -2058,7 +2060,7 @@ w_0 \lt \ell_2 \le B_{1,r'} \le B_{1,r'} + 1 . \qquad \blacksquare
 
 ### 定理
 
-$`1 \le n`$、$`\mathrm{r1ok}(M)`$、$`\mathrm{steps1}(M)`$ ならば
+$`1 \le n`$、$`\mathrm{r1ok}(M)`$、[$`\mathrm{steps}_1(M)`$](Seqlex.md#d-steps1) ならば
 $`\mathrm{r1ok}(M[n])`$。
 
 ### 証明
@@ -2082,7 +2084,9 @@ $`M[n] = \mathrm{Pred}\,M`$ であり、[T.r1ok_Pred](#t-r1ok_Pred) を適用す
 
 **(d) $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
 $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-$`j_1 = \lvert M\rvert - 1 \ne 0`$ より $`1 \lt \lvert M\rvert`$ である。
+$`1 \lt \lvert M\rvert`$ である。実際 $`\lvert M\rvert \le 1`$ とすると、自然数の減法は
+$`0`$ で切り捨てるから $`j_1 = \lvert M\rvert - 1 = 0`$ となり、この場合の仮定
+$`j_1 \ne 0`$ に反する。
 [T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を適用して、
 $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ で
 次をみたすものを得る。$`B := (v_0,w_0) :: R`$ とおく。
@@ -2090,7 +2094,7 @@ $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \m
 ```math
 \begin{aligned}
 &\text{(1)}\ M = G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell), \cr
-&\text{(2)}\ M[n] = G \mathbin{+\!\!+} B^{+0 d_0} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}, \cr
+&\text{(2)}\ M[n] = G \mathbin{+\!\!+} B^{+0\cdot d_0} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}, \cr
 &\text{(3)}\ \forall x \in R,\ v_0 \lt x_1, \cr
 &\text{(5)}\ \bigl(d_0 = 0 \wedge i_1 = 0\bigr) \ \vee\
    \bigl(0 \lt d_0 \wedge w_0 \lt \ell_2 \wedge \ell_1 = v_0 + d_0
@@ -2102,7 +2106,7 @@ $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \m
 以下で用いる 4 つを同じ番号で挙げた。また $`\mathrm{copyExp}`$ の定義（D.copyExp）により
 (2) の右辺は $`\mathrm{copyExp}(G,B,d_0,n)`$ である。）
 (1) より $`\mathrm{r1ok}(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$ と
-$`\mathrm{steps1}(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$ が仮定から従う。
+$`\mathrm{steps}_1(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$ が仮定から従う。
 
 **段差条件。** $`r + 1 \lt \lvert B\rvert`$ をみたす $`r`$ に対し
 $`B_{0,r+1} \le B_{0,r} + 1`$ を示す。
@@ -2197,9 +2201,9 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 - **帰納段**（規則 (oper)）：$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$ とする。帰納法の仮定は
   $`\Phi(N)`$、すなわち $`\mathrm{r1ok}(N)`$ であり、示すべきは $`\mathrm{r1ok}(N[n])`$ である。
   [T.blockok_ST_PS](Seqlex.md#t-blockok_ST_PS) を $`N \in \mathrm{ST\_PS}`$ に適用して
-  $`\mathrm{blockok}(0, N)`$ を得る。$`\mathrm{blockok}`$ の定義（D.blockok）は 3 つの連言で
-  あり、その第 3 連言子は $`\mathrm{steps1}(N)`$ である。
-  [T.r1ok_oper](#t-r1ok_oper) を $`1 \le n`$、$`\mathrm{r1ok}(N)`$、$`\mathrm{steps1}(N)`$ に
+  [$`\mathrm{blockok}(0, N)`$](Seqlex.md#d-blockok) を得る。$`\mathrm{blockok}`$ の定義（D.blockok）は
+  3 つの連言であり、その第 3 連言子は $`\mathrm{steps}_1(N)`$ である。
+  [T.r1ok_oper](#t-r1ok_oper) を $`1 \le n`$、$`\mathrm{r1ok}(N)`$、$`\mathrm{steps}_1(N)`$ に
   適用すれば $`\mathrm{r1ok}(N[n])`$ を得る。∎
 
 <a id="t-nextrel0_bound"></a>
@@ -2223,7 +2227,7 @@ $`a \le^M_0 b`$ ならば $`a \le b`$。
 ### 証明
 
 $`\le^M_0`$ の定義（D.le0）の第 3 条件により $`a \mathbin{(\to^M_0)^{*}} b`$ である。
-この反射推移閉包の構成に関する帰納法を行う。帰納法の述語は
+鎖 $`a \mathbin{(\to^M_0)^{*}} b`$ の構成に関する帰納法。帰納法の述語は
 
 ```math
 \Phi(j) :\equiv a \le j .
@@ -2726,7 +2730,9 @@ $`M[n] = \mathrm{Pred}\,M`$ であり、[T.z0ok_Pred](#t-z0ok_Pred) を適用す
 
 **(d) $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
 $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-$`j_1 = \lvert M\rvert - 1 \ne 0`$ と切り捨て減法より $`1 \lt \lvert M\rvert`$ である。
+$`1 \lt \lvert M\rvert`$ である。実際 $`\lvert M\rvert \le 1`$ とすると、自然数の減法は
+$`0`$ で切り捨てるから $`j_1 = \lvert M\rvert - 1 = 0`$ となり、この場合の仮定
+$`j_1 \ne 0`$ に反する。
 [T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を
 $`1 \lt \lvert M\rvert`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、
 $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ に適用して
@@ -2736,7 +2742,7 @@ $`G, v_0, w_0, R, d_0, \ell`$ を取る。その (1) と (2) は
 M = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr) \mathbin{+\!\!+} (\ell),
 ```
 ```math
-M[n] = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr)^{+0 \cdot d_0}
+M[n] = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr)^{+0\cdot d_0}
   \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr)^{+(n-1)d_0}
 ```
 
@@ -2789,7 +2795,7 @@ a \mathbin{(\to^M_0)^{*}} b, \qquad a \lt \rho, \qquad \rho \le b, \qquad
 
 ### 証明
 
-$`a`$ を固定し、鎖 $`a \mathbin{(\to^M_0)^{*}} b`$ の構成に関する帰納法を行う。
+$`a`$ を固定し、鎖 $`a \mathbin{(\to^M_0)^{*}} b`$ の構成に関する帰納法。
 帰納法の述語は
 
 ```math
@@ -2864,8 +2870,7 @@ $`a \lt \lvert M\rvert`$、$`b \lt \lvert M\rvert`$、$`a \mathbin{(\to^M_0)^{*}
 
 ### 定理
 
-$`S \in \mathrm{PairSeq}`$、$`d, j \in \mathbb{N}`$ とし、$`S^{+d}`$ で $`S`$ の各対の
-第 1 成分に一様に $`d`$ を足した列を表す。$`j \lt \lvert S\rvert`$ ならば
+$`S \in \mathrm{PairSeq}`$、$`d, j \in \mathbb{N}`$ とする。$`j \lt \lvert S\rvert`$ ならば
 
 ```math
 (S^{+d})_{0,j} = S_{0,j} + d
@@ -2875,8 +2880,9 @@ $`S \in \mathrm{PairSeq}`$、$`d, j \in \mathbb{N}`$ とし、$`S^{+d}`$ で $`S
 
 ### 証明
 
-$`S^{+d}`$ は $`S`$ の各要素を写したものであるから $`\lvert S^{+d}\rvert = \lvert S\rvert`$ で
-あり、仮定 $`j \lt \lvert S\rvert`$ よりどちらの列でも第 $`j`$ 要素が存在する。
+$`L^{+e}`$ の定義（D.copyExp）より $`S^{+d}`$ は $`S`$ の各要素を写したものであるから
+$`\lvert S^{+d}\rvert = \lvert S\rvert`$ であり、仮定 $`j \lt \lvert S\rvert`$ より
+どちらの列でも第 $`j`$ 要素が存在する。
 [T.getD_eq_getElem'](Cnf.md#t-getD_eq_getElem') より
 
 ```math

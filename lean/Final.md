@@ -5,28 +5,28 @@
 
 ### 定理
 
-[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) 上の関係 $`R_{\mathrm{ST}}`$ を次で定める。
+[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) 上の関係 [$`R_{\mathrm{st}}`$](Wset.md#d-Rst) の定義（D.Rst）は
 
 ```math
-a \mathbin{R_{\mathrm{ST}}} b :\iff
-  a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b .
+a \mathbin{R_{\mathrm{st}}} b :\iff
+  a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b
 ```
 
-（[$`\mathrm{ST\_PS}`$](Pss.md#d-ST_PS)、[$`\mathrm{tr}`$](Term.md#d-translate)、[$`\prec`$](Term.md#d-olt)）
+である（[$`\mathrm{ST\_PS}`$](Pss.md#d-ST_PS)、[$`\mathrm{tr}`$](Term.md#d-translate)、[$`\prec`$](Term.md#d-olt)）。
 
 関係 $`R`$ に対する $`\mathrm{Acc}_R`$ の定義、その最小性（$`\mathrm{Acc}_R`$ の導出に関する帰納法）、
 および $`R`$ が整礎であることの定義は、[T.step_terminates_cond](Reduction.md#t-step_terminates_cond)
 の定理文で与えたものをそのまま用いる。
 
-このとき、任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{Acc}_{R_{\mathrm{ST}}}`$ かつ
+このとき、任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ かつ
 $`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ である。
 
 （[$`R_{\mathrm{NF}}`$](Reduction.md#d-Rnf)）
 
 ### 証明
 
-$`M \in \mathrm{PairSeq}`$ と $`M \in \mathrm{Acc}_{R_{\mathrm{ST}}}`$ を取り、
-$`\mathrm{Acc}_{R_{\mathrm{ST}}}`$ の導出に関する帰納法を行う。帰納法の述語は
+$`M \in \mathrm{PairSeq}`$ と $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を取り、
+$`\mathrm{Acc}_{R_{\mathrm{st}}}`$ の導出に関する帰納法を行う。帰納法の述語は
 
 ```math
 \Phi(M_0) :\equiv M_0 \in \mathrm{ST\_PS} \to \mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}} .
@@ -35,11 +35,11 @@ $`\mathrm{Acc}_{R_{\mathrm{ST}}}`$ の導出に関する帰納法を行う。帰
 **帰納段**：$`M_0 \in \mathrm{PairSeq}`$ を取り、帰納法の仮定
 
 ```math
-\forall N \in \mathrm{PairSeq},\ N \mathbin{R_{\mathrm{ST}}} M_0 \to \Phi(N)
+\forall N \in \mathrm{PairSeq},\ N \mathbin{R_{\mathrm{st}}} M_0 \to \Phi(N)
 ```
 
 を仮定する（規則のもう一方の前提
-$`\forall N,\ N \mathbin{R_{\mathrm{ST}}} M_0 \to N \in \mathrm{Acc}_{R_{\mathrm{ST}}}`$
+$`\forall N,\ N \mathbin{R_{\mathrm{st}}} M_0 \to N \in \mathrm{Acc}_{R_{\mathrm{st}}}`$
 も同時に使えるが、以下では用いない）。$`M_0 \in \mathrm{ST\_PS}`$ を仮定して
 $`\mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を示す。$`\mathrm{Acc}`$ の規則により、
 
@@ -70,21 +70,21 @@ N \in \mathrm{ST\_PS}, \qquad \mathrm{tr}\,N = v
 が成り立つ。以下 $`v`$ を $`\mathrm{tr}\,N`$ で置き換える。第 1 の連言子は
 $`\mathrm{tr}\,N \prec \mathrm{tr}\,M_0`$ となる。
 
-$`R_{\mathrm{ST}}`$ の定義の 3 つの連言子は、いま得た $`N \in \mathrm{ST\_PS}`$、
+$`R_{\mathrm{st}}`$ の定義（D.Rst）の 3 つの連言子は、いま得た $`N \in \mathrm{ST\_PS}`$、
 帰納段の仮定 $`M_0 \in \mathrm{ST\_PS}`$、および $`\mathrm{tr}\,N \prec \mathrm{tr}\,M_0`$ であるから、
-$`N \mathbin{R_{\mathrm{ST}}} M_0`$ が成り立つ。帰納法の仮定をこれに適用して $`\Phi(N)`$ を得、
+$`N \mathbin{R_{\mathrm{st}}} M_0`$ が成り立つ。帰納法の仮定をこれに適用して $`\Phi(N)`$ を得、
 さらに $`\Phi(N)`$ を $`N \in \mathrm{ST\_PS}`$ に適用して
 $`\mathrm{tr}\,N \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を得る。これは $`v \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ である。
 
 よって $`\Phi(M_0)`$ が成り立つ。帰納法により
-$`\forall M \in \mathrm{Acc}_{R_{\mathrm{ST}}},\ \Phi(M)`$ である。∎
+$`\forall M \in \mathrm{Acc}_{R_{\mathrm{st}}},\ \Phi(M)`$ である。∎
 
 <a id="t-wf_Rnf_of_wf_PS"></a>
 ## 定理: 整礎性の項側への移送 (T.wf_Rnf_of_wf_PS)
 
 ### 定理
 
-$`R_{\mathrm{ST}}`$ が整礎ならば $`R_{\mathrm{NF}}`$ は整礎である。
+$`R_{\mathrm{st}}`$ が整礎ならば $`R_{\mathrm{NF}}`$ は整礎である。
 
 ### 証明
 
@@ -93,8 +93,8 @@ $`u \in \mathrm{Three}`$ を取り、$`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ �
 
 **(a) $`u \in \mathrm{NF}`$ のとき。** $`\mathrm{NF}`$ の定義（D.NF）より
 $`M \in \mathrm{PairSeq}`$ が存在して $`M \in \mathrm{ST\_PS}`$ かつ $`\mathrm{tr}\,M = u`$ である。
-以下 $`u`$ を $`\mathrm{tr}\,M`$ で置き換える。本定理の仮定「$`R_{\mathrm{ST}}`$ は整礎」を
-$`M`$ に適用して $`M \in \mathrm{Acc}_{R_{\mathrm{ST}}}`$ を得る。これと $`M \in \mathrm{ST\_PS}`$ を
+以下 $`u`$ を $`\mathrm{tr}\,M`$ で置き換える。本定理の仮定「$`R_{\mathrm{st}}`$ は整礎」を
+$`M`$ に適用して $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を得る。これと $`M \in \mathrm{ST\_PS}`$ を
 [T.acc_Rnf_of_acc_PS](#t-acc_Rnf_of_acc_PS) に与えて
 $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$、すなわち $`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を得る。
 
@@ -142,7 +142,7 @@ $`N \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ の 3 つか
 
 ### 定理
 
-$`R_{\mathrm{ST}}`$ は整礎である。
+$`R_{\mathrm{st}}`$ は整礎である。
 
 ### 証明
 
@@ -154,7 +154,7 @@ $`R_{\mathrm{ST}}`$ は整礎である。
   \to \exists n,\ 1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])
 ```
 
-から $`R_{\mathrm{ST}}`$ の整礎性を導く。この仮定は
+から $`R_{\mathrm{st}}`$ の整礎性を導く。この仮定は
 [T.pss_cofinality_holds](#t-pss_cofinality_holds) を $`M`$ と $`N`$ について全称量化したもの
 そのものである。よってこれを
 [T.wf_olt_ST_PS_of_cofinality](Wset.md#t-wf_olt_ST_PS_of_cofinality) に与えればよい。∎
@@ -168,7 +168,7 @@ $`R_{\mathrm{NF}}`$ は整礎である。
 
 ### 証明
 
-[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) は $`R_{\mathrm{ST}}`$ の整礎性を仮定として
+[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) は $`R_{\mathrm{st}}`$ の整礎性を仮定として
 $`R_{\mathrm{NF}}`$ の整礎性を導く。その仮定は [T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds)
 であり、これは仮定を持たない。よって
 [T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds) を

@@ -67,9 +67,9 @@ $`W`$ の長さに関する帰納法（$`X`$, $`Y`$, $`Y'`$ は全称量化し�
 
 $`d, w, n, a \in \mathbb{N}`$、$`X, Q, A_2 \in \mathrm{PairSeq}`$ とする。
 $`\lvert X\rvert \le n`$ かつ
-[$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: \mathrm{shr}_d (X \mathbin{+\!\!+} A_2)`$](Cnf.md#d-shiftr0)
+[$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$](Cnf.md#d-shiftr0)
 ならば、ある $`m \in \mathbb{N}`$ が存在して
-[$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: \mathrm{shr}_d Q,\ m\bigr)`$](Cnf.md#d-copies)。
+[$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)`$](Cnf.md#d-copies)。
 
 ### 証明
 
@@ -79,8 +79,8 @@ $`n`$ に関する自然数の帰納法（$`X`$, $`Q`$, $`A_2`$, $`a`$ は全称
 ```math
 \Psi(n) :\equiv \forall X, Q, A_2 \in \mathrm{PairSeq},\ \forall a \in \mathbb{N},\
   \lvert X\rvert \le n
-  \ \to\ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: \mathrm{shr}_d (X \mathbin{+\!\!+} A_2)
-  \ \to\ \exists m,\ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: \mathrm{shr}_d Q,\ m\bigr) .
+  \ \to\ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}
+  \ \to\ \exists m,\ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr) .
 ```
 
 - **基底段** $`n = 0`$：$`\lvert X\rvert \le 0`$ より $`X = ()`$ である。
@@ -93,8 +93,9 @@ $`n`$ に関する自然数の帰納法（$`X`$, $`Q`$, $`A_2`$, $`a`$ は全称
 
 - **帰納段** $`n \to n+1`$：帰納法の仮定は $`\Psi(n)`$ である。
   $`X`$, $`Q`$, $`A_2`$, $`a`$ を取り、$`\lvert X\rvert \le n+1`$ と
-  $`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: \mathrm{shr}_d (X \mathbin{+\!\!+} A_2)`$ を仮定する。
-  $`X`$ が $`Q \mathbin{+\!\!+} [(a,w)]`$ を前部分列として持つかどうかで場合分けする。
+  $`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$ を仮定する。
+  $`X`$ が $`Q \mathbin{+\!\!+} ((a,w))`$ を前部分列として持つかどうかで場合分けする
+  （以下、$`(x)`$ は要素 $`x`$ ただ 1 つからなる長さ $`1`$ の列を表す）。
 
 **(a) ある $`X'`$ について $`X = Q \mathbin{+\!\!+} (a,w) :: X'`$ であるとき。**
 仮定の $`X`$ をこの形に書き換えると
@@ -102,14 +103,14 @@ $`n`$ に関する自然数の帰納法（$`X`$, $`Q`$, $`A_2`$, $`a`$ は全称
 ```math
 Q \mathbin{+\!\!+} (a,w) :: X'
   \ \preceq_{\mathrm{lex}}\
-Q \mathbin{+\!\!+} (a,w) :: \mathrm{shr}_d \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)
+Q \mathbin{+\!\!+} (a,w) :: \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)^{+d}
 ```
 
 である。[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) を $`Q`$ について、
-続いて $`[(a,w)]`$ について適用すると
+続いて $`((a,w))`$ について適用すると
 
 ```math
-X' \preceq_{\mathrm{lex}} \mathrm{shr}_d \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)
+X' \preceq_{\mathrm{lex}} \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)^{+d}
 ```
 
 を得る。ここで結合則により
@@ -118,52 +119,52 @@ $`(Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2 = Q \mathbin{+\!\!+} (a,
 [T.shiftr0_cons](Cnf.md#t-shiftr0_cons) により
 
 ```math
-\mathrm{shr}_d \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)
-  = \mathrm{shr}_d Q \mathbin{+\!\!+} (a+d,\ w) :: \mathrm{shr}_d (X' \mathbin{+\!\!+} A_2)
+\bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)^{+d}
+  = Q^{+d} \mathbin{+\!\!+} (a+d,\ w) :: (X' \mathbin{+\!\!+} A_2)^{+d}
 ```
 
 であり、したがって
 
 ```math
-X' \preceq_{\mathrm{lex}} \mathrm{shr}_d Q \mathbin{+\!\!+} (a+d,\ w) :: \mathrm{shr}_d (X' \mathbin{+\!\!+} A_2) .
+X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+} (a+d,\ w) :: (X' \mathbin{+\!\!+} A_2)^{+d} .
 ```
 
 また $`\lvert X\rvert = \lvert Q\rvert + 1 + \lvert X'\rvert \le n+1`$ から
 $`\lvert X'\rvert \le n`$ である。よって帰納法の仮定 $`\Psi(n)`$ を
-$`X := X'`$, $`Q := \mathrm{shr}_d Q`$, $`A_2 := A_2`$, $`a := a+d`$ に適用でき、ある $`m`$ について
+$`X := X'`$, $`Q := Q^{+d}`$, $`A_2 := A_2`$, $`a := a+d`$ に適用でき、ある $`m`$ について
 
 ```math
-X' \preceq_{\mathrm{lex}} \mathrm{shr}_d Q \mathbin{+\!\!+}
-  \mathrm{copies}_d\bigl((a+d,\ w) :: \mathrm{shr}_d (\mathrm{shr}_d Q),\ m\bigr)
+X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+}
+  \mathrm{copies}_d\bigl((a+d,\ w) :: (Q^{+d})^{+d},\ m\bigr)
 ```
 
 が成り立つ。求める $`m`$ として $`m+1`$ を取る。
 [T.copies_succ_front](Cnf.md#t-copies_succ_front) により
 
 ```math
-\mathrm{copies}_d\bigl((a,w) :: \mathrm{shr}_d Q,\ m+1\bigr)
-  = \bigl((a,w) :: \mathrm{shr}_d Q\bigr) \mathbin{+\!\!+}
-    \mathrm{shr}_d \Bigl(\mathrm{copies}_d\bigl((a,w) :: \mathrm{shr}_d Q,\ m\bigr)\Bigr)
+\mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m+1\bigr)
+  = \bigl((a,w) :: Q^{+d}\bigr) \mathbin{+\!\!+}
+    \Bigl(\mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)\Bigr)^{+d}
 ```
 
 であり、[T.shiftr0_copies](Cofinality.md#t-shiftr0_copies) と [T.shiftr0_cons](Cnf.md#t-shiftr0_cons) により
 
 ```math
-\mathrm{shr}_d \Bigl(\mathrm{copies}_d\bigl((a,w) :: \mathrm{shr}_d Q,\ m\bigr)\Bigr)
-  = \mathrm{copies}_d\bigl((a+d,\ w) :: \mathrm{shr}_d(\mathrm{shr}_d Q),\ m\bigr)
+\Bigl(\mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)\Bigr)^{+d}
+  = \mathrm{copies}_d\bigl((a+d,\ w) :: (Q^{+d})^{+d},\ m\bigr)
 ```
 
 である。したがって結合則により
 
 ```math
-Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: \mathrm{shr}_d Q,\ m+1\bigr)
-  = \bigl(Q \mathbin{+\!\!+} [(a,w)]\bigr) \mathbin{+\!\!+}
-    \Bigl(\mathrm{shr}_d Q \mathbin{+\!\!+}
-      \mathrm{copies}_d\bigl((a+d,\ w) :: \mathrm{shr}_d(\mathrm{shr}_d Q),\ m\bigr)\Bigr)
+Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m+1\bigr)
+  = \bigl(Q \mathbin{+\!\!+} ((a,w))\bigr) \mathbin{+\!\!+}
+    \Bigl(Q^{+d} \mathbin{+\!\!+}
+      \mathrm{copies}_d\bigl((a+d,\ w) :: (Q^{+d})^{+d},\ m\bigr)\Bigr)
 ```
 
-であり、また $`X = Q \mathbin{+\!\!+} (a,w) :: X' = (Q \mathbin{+\!\!+} [(a,w)]) \mathbin{+\!\!+} X'`$ である。
-両辺が共通の前部分列 $`Q \mathbin{+\!\!+} [(a,w)]`$ を持つから、
+であり、また $`X = Q \mathbin{+\!\!+} (a,w) :: X' = (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X'`$ である。
+両辺が共通の前部分列 $`Q \mathbin{+\!\!+} ((a,w))`$ を持つから、
 [T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) を逆向きに用いて、上で得た $`X'`$ についての比較から
 求める比較が従う。
 
@@ -172,23 +173,23 @@ $`m := 1`$ を取る。[T.copies_one](Cnf.md#t-copies_one) より
 $`\mathrm{copies}_d(B, 1) = B`$ であるから、示すべきは
 
 ```math
-X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \bigl((a,w) :: \mathrm{shr}_d Q\bigr)
-  = \bigl(Q \mathbin{+\!\!+} [(a,w)]\bigr) \mathbin{+\!\!+} \mathrm{shr}_d Q
+X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \bigl((a,w) :: Q^{+d}\bigr)
+  = \bigl(Q \mathbin{+\!\!+} ((a,w))\bigr) \mathbin{+\!\!+} Q^{+d}
 ```
 
-である。仮定を同じく括り直すと
+である。仮定も結合則で括り直すと
 
 ```math
-X \preceq_{\mathrm{lex}} \bigl(Q \mathbin{+\!\!+} [(a,w)]\bigr) \mathbin{+\!\!+} \mathrm{shr}_d (X \mathbin{+\!\!+} A_2)
+X \preceq_{\mathrm{lex}} \bigl(Q \mathbin{+\!\!+} ((a,w))\bigr) \mathbin{+\!\!+} (X \mathbin{+\!\!+} A_2)^{+d}
 ```
 
 であり、場合の仮定は「任意の $`X'`$ について
-$`X \ne (Q \mathbin{+\!\!+} [(a,w)]) \mathbin{+\!\!+} X'`$」と同値である
-（$`(Q \mathbin{+\!\!+} [(a,w)]) \mathbin{+\!\!+} X' = Q \mathbin{+\!\!+} (a,w) :: X'`$ だからである）。
+$`X \ne (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X'`$」と同値である
+（$`(Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X' = Q \mathbin{+\!\!+} (a,w) :: X'`$ だからである）。
 よって [T.seqlex_of_sle_not_prefix](#t-seqlex_of_sle_not_prefix) を
-$`W := Q \mathbin{+\!\!+} [(a,w)]`$、$`Y := \mathrm{shr}_d (X \mathbin{+\!\!+} A_2)`$、
-$`Y' := \mathrm{shr}_d Q`$ に適用して
-$`X \prec_{\mathrm{lex}} (Q \mathbin{+\!\!+} [(a,w)]) \mathbin{+\!\!+} \mathrm{shr}_d Q`$ を得る。
+$`W := Q \mathbin{+\!\!+} ((a,w))`$、$`Y := (X \mathbin{+\!\!+} A_2)^{+d}`$、
+$`Y' := Q^{+d}`$ に適用して
+$`X \prec_{\mathrm{lex}} (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} Q^{+d}`$ を得る。
 D.sle の第 2 選言によりこれが求める比較である。∎
 
 <a id="t-sle_take_of_short"></a>
@@ -285,7 +286,7 @@ $`X \mathbin{+\!\!+} Y \preceq_{\mathrm{lex}} W`$ に [T.sle_trans](#t-sle_trans
 
 ### 定理
 
-$`d \in \mathbb{N}`$ とする。$`\mathrm{shr}_d X = \mathrm{shr}_d Y`$ ならば $`X = Y`$。
+$`d \in \mathbb{N}`$ とする。$`X^{+d} = Y^{+d}`$ ならば $`X = Y`$。
 
 ### 証明
 
@@ -295,9 +296,9 @@ $`d \in \mathbb{N}`$ とする。$`\mathrm{shr}_d X = \mathrm{shr}_d Y`$ なら�
 対の成分を比べて $`p_1 + d = q_1 + d`$ かつ $`p_2 = q_2`$ である。
 前者から $`p_1 = q_1`$ が従うので $`p = q`$ である。
 
-$`\mathrm{shr}_d`$ の定義（D.shiftr0）は $`f`$ による各要素の写像であり、
+$`(\cdot)^{+d}`$ の定義（D.shiftr0）は $`f`$ による各要素の写像であり、
 単射な写像による列の各要素の写像は列について単射である。すなわち
-$`\mathrm{shr}_d X = \mathrm{shr}_d Y`$ から $`X = Y`$ が従う。∎
+$`X^{+d} = Y^{+d}`$ から $`X = Y`$ が従う。∎
 
 <a id="t-seqlex_shiftr0"></a>
 ## 定理: 行 0 の右シフトは狭義比較を保つ (T.seqlex_shiftr0)
@@ -307,7 +308,7 @@ $`\mathrm{shr}_d X = \mathrm{shr}_d Y`$ から $`X = Y`$ が従う。∎
 $`d \in \mathbb{N}`$ とする。任意の $`X, Y \in \mathrm{PairSeq}`$ について
 
 ```math
-\mathrm{shr}_d X \prec_{\mathrm{lex}} \mathrm{shr}_d Y \iff X \prec_{\mathrm{lex}} Y .
+X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y .
 ```
 
 ### 証明
@@ -316,39 +317,39 @@ $`X`$ の長さに関する帰納法（$`Y`$ は全称量化したまま動か�
 
 ```math
 \Theta(X) :\equiv \forall Y \in \mathrm{PairSeq},\
-  \bigl(\mathrm{shr}_d X \prec_{\mathrm{lex}} \mathrm{shr}_d Y \iff X \prec_{\mathrm{lex}} Y\bigr).
+  \bigl(X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y\bigr).
 ```
 
-- **基底段** $`X = ()`$：$`\mathrm{shr}_d () = ()`$ である。$`Y`$ の形で場合分けする。
-  $`Y = ()`$ のときは $`\mathrm{shr}_d Y = ()`$ であり、D.seqlex の第 1 式により
+- **基底段** $`X = ()`$：$`()^{+d} = ()`$ である。$`Y`$ の形で場合分けする。
+  $`Y = ()`$ のときは $`Y^{+d} = ()`$ であり、D.seqlex の第 1 式により
   両辺とも $`() \ne ()`$、すなわちともに偽である。
-  $`Y = y :: Y'`$ のときは $`\mathrm{shr}_d Y = (y_1+d,\ y_2) :: \mathrm{shr}_d Y'`$ であり、
+  $`Y = y :: Y'`$ のときは $`Y^{+d} = (y_1+d,\ y_2) :: Y'^{+d}`$ であり、
   D.seqlex の第 1 式により両辺とも空列でない列についての条件であり、ともに真である。
 
 - **帰納段** $`X = x :: X'`$：帰納法の仮定は $`\Theta(X')`$ である。$`Y`$ の形で場合分けする。
 
-  **(a) $`Y = ()`$ のとき。** $`\mathrm{shr}_d Y = ()`$、
-  $`\mathrm{shr}_d X = (x_1+d,\ x_2) :: \mathrm{shr}_d X'`$ であり、
+  **(a) $`Y = ()`$ のとき。** $`Y^{+d} = ()`$、
+  $`X^{+d} = (x_1+d,\ x_2) :: X'^{+d}`$ であり、
   D.seqlex の第 2 式により両辺とも偽である。
 
   **(b) $`Y = y :: Y'`$ のとき。** [T.shiftr0_cons](Cnf.md#t-shiftr0_cons) により
 
 ```math
-\mathrm{shr}_d X = (x_1+d,\ x_2) :: \mathrm{shr}_d X', \qquad
-\mathrm{shr}_d Y = (y_1+d,\ y_2) :: \mathrm{shr}_d Y'
+X^{+d} = (x_1+d,\ x_2) :: X'^{+d}, \qquad
+Y^{+d} = (y_1+d,\ y_2) :: Y'^{+d}
 ```
 
   である。D.seqlex の第 3 式を両辺に適用すると、示すべきことは
 
 ```math
 \Bigl((x_1+d,\ x_2) \prec_{\mathrm{p}} (y_1+d,\ y_2)
-  \ \vee\ \bigl((x_1+d,\ x_2) = (y_1+d,\ y_2) \wedge \mathrm{shr}_d X' \prec_{\mathrm{lex}} \mathrm{shr}_d Y'\bigr)\Bigr)
+  \ \vee\ \bigl((x_1+d,\ x_2) = (y_1+d,\ y_2) \wedge X'^{+d} \prec_{\mathrm{lex}} Y'^{+d}\bigr)\Bigr)
 \iff
 \Bigl(x \prec_{\mathrm{p}} y \ \vee\ (x = y \wedge X' \prec_{\mathrm{lex}} Y')\Bigr)
 ```
 
   である。帰納法の仮定 $`\Theta(X')`$ を $`Y := Y'`$ に適用すると
-  $`\mathrm{shr}_d X' \prec_{\mathrm{lex}} \mathrm{shr}_d Y' \iff X' \prec_{\mathrm{lex}} Y'`$
+  $`X'^{+d} \prec_{\mathrm{lex}} Y'^{+d} \iff X' \prec_{\mathrm{lex}} Y'`$
   であるから、残るのは次の 2 点である。
 
   第 1 に、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より
@@ -376,7 +377,7 @@ $`X`$ の長さに関する帰納法（$`Y`$ は全称量化したまま動か�
 $`d \in \mathbb{N}`$ とする。任意の $`X, Y \in \mathrm{PairSeq}`$ について
 
 ```math
-\mathrm{shr}_d X \preceq_{\mathrm{lex}} \mathrm{shr}_d Y \iff X \preceq_{\mathrm{lex}} Y .
+X^{+d} \preceq_{\mathrm{lex}} Y^{+d} \iff X \preceq_{\mathrm{lex}} Y .
 ```
 
 ### 証明
@@ -384,17 +385,17 @@ $`d \in \mathbb{N}`$ とする。任意の $`X, Y \in \mathrm{PairSeq}`$ につ�
 $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）により、示すべきことは
 
 ```math
-\bigl(\mathrm{shr}_d X = \mathrm{shr}_d Y \vee \mathrm{shr}_d X \prec_{\mathrm{lex}} \mathrm{shr}_d Y\bigr)
+\bigl(X^{+d} = Y^{+d} \vee X^{+d} \prec_{\mathrm{lex}} Y^{+d}\bigr)
 \iff \bigl(X = Y \vee X \prec_{\mathrm{lex}} Y\bigr)
 ```
 
 である。第 2 選言どうしは [T.seqlex_shiftr0](#t-seqlex_shiftr0) により同値であるから、
 第 1 選言どうしが対応することを見ればよい。
 
-- 左から右：$`\mathrm{shr}_d X = \mathrm{shr}_d Y`$ ならば
+- 左から右：$`X^{+d} = Y^{+d}`$ ならば
   [T.shiftr0_injective](#t-shiftr0_injective) より $`X = Y`$。
-- 右から左：$`X = Y`$ ならば、両辺に $`\mathrm{shr}_d`$ を施して
-  $`\mathrm{shr}_d X = \mathrm{shr}_d Y`$。∎
+- 右から左：$`X = Y`$ ならば、両辺に $`(\cdot)^{+d}`$ を施して
+  $`X^{+d} = Y^{+d}`$。∎
 
 <a id="d-SpineOK"></a>
 ## 定義: 右可視列の行 1 の下界 (D.SpineOK)
@@ -416,8 +417,8 @@ $`A \in \mathrm{PairSeq}`$、$`L, w \in \mathbb{N}`$ に対し
 <a id="d-ArgDomCore"></a>
 ## 定義: 引数支配の中核 (D.ArgDomCore)
 
-以下、$`L \in \mathrm{PairSeq}`$ に対し $`\mathrm{hd}\,L`$ を $`L`$ の先頭要素とする
-（$`L = ()`$ のときは $`\mathrm{hd}\,L := (0,0)`$ とする）。
+以下、$`L \in \mathrm{PairSeq}`$ に対し $`\mathrm{head}\,L`$ を $`L`$ の先頭要素とする
+（$`L = ()`$ のときは $`\mathrm{head}\,L := (0,0)`$ とする）。
 
 命題 $`\mathrm{ArgDomCore}`$ を次で定める。すなわち、任意の
 $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ と $`u, w, e \in \mathbb{N}`$ について、
@@ -428,10 +429,10 @@ $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ と $`u, w, e \in \mathbb{N}`$ につ
 3. $`\forall x \in A_1,\ u \lt x_1`$
 4. $`\forall x \in B,\ u + e \lt x_1`$
 5. $`\forall x \in A_2,\ u \lt x_1`$
-6. $`A_2 = () \ \vee\ (\mathrm{hd}\,A_2)_1 \le u + e`$
-7. $`Z = () \ \vee\ (\mathrm{hd}\,Z)_1 \le u`$
+6. $`A_2 = () \ \vee\ (\mathrm{head}\,A_2)_1 \le u + e`$
+7. $`Z = () \ \vee\ (\mathrm{head}\,Z)_1 \le u`$
 8. $`\mathrm{SpineOK}(A_1,\ u+e,\ w)`$
-9. $`B \preceq_{\mathrm{lex}} \mathrm{shr}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)`$
+9. $`B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}`$
 
 <a id="t-spineOK_of_nextrel1"></a>
 ## 定理: 行 1 の親子関係から SpineOK を得る (T.spineOK_of_nextrel1)
@@ -548,7 +549,7 @@ $`L`$ の先頭から第 1 成分が $`a`$ より大きい要素が続く極大�
 $`\mathrm{dw}_a L`$ をその残りの列とする。すなわち
 $`\mathrm{tw}_a L \mathbin{+\!\!+} \mathrm{dw}_a L = L`$ であり、$`\mathrm{tw}_a L`$ の各要素 $`x`$ は
 $`a \lt x_1`$ をみたし、$`\mathrm{dw}_a L \ne ()`$ ならば
-$`\neg\bigl(a \lt (\mathrm{hd}(\mathrm{dw}_a L))_1\bigr)`$ である。
+$`\neg\bigl(a \lt (\mathrm{head}(\mathrm{dw}_a L))_1\bigr)`$ である。
 
 $`\mathrm{AscArgDom}`$ の定義（D.AscArgDom）にしたがい、
 $`G, R, S \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$ を取り、次を仮定する。
@@ -569,7 +570,7 @@ $`G, R, S \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$ を取り、
 
 ```math
 \mathrm{tw}_{v_0+d_0} S \ \preceq_{\mathrm{lex}}\
-  \mathrm{shr}_{d_0}\Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}\bigl(\mathrm{shr}_{d_0}((v_0,w_0) :: R),\ m\bigr)\Bigr)
+  \Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}\bigl(((v_0,w_0) :: R)^{+d_0},\ m\bigr)\Bigr)^{+d_0}
 ```
 
 が成り立つことである。
@@ -583,22 +584,22 @@ $`S_{\mathrm{hi}} \mathbin{+\!\!+} D = S`$ および $`A_2 \mathbin{+\!\!+} Z = 
 **(i) $`\forall x \in S_{\mathrm{hi}},\ v_0 + d_0 \lt x_1`$。**
 $`\mathrm{tw}_{v_0+d_0} S`$ の要素は述語「第 1 成分が $`v_0+d_0`$ より大きい」をみたすからである。
 
-**(ii) $`\forall x \in A_2,\ v_0 \lt x_1`$。** 同様に $`\mathrm{tw}_{v_0} D`$ の要素は
-述語「第 1 成分が $`v_0`$ より大きい」をみたすからである。
+**(ii) $`\forall x \in A_2,\ v_0 \lt x_1`$。**
+$`\mathrm{tw}_{v_0} D`$ の要素は述語「第 1 成分が $`v_0`$ より大きい」をみたすからである。
 
-**(iii) $`D = () \ \vee\ (\mathrm{hd}\,D)_1 \le v_0 + d_0`$。**
+**(iii) $`D = () \ \vee\ (\mathrm{head}\,D)_1 \le v_0 + d_0`$。**
 $`D = \mathrm{dw}_{v_0+d_0} S`$ が空でなければ、その先頭は述語をみたさない最初の要素であり、
-$`\neg(v_0 + d_0 \lt (\mathrm{hd}\,D)_1)`$、すなわち $`(\mathrm{hd}\,D)_1 \le v_0 + d_0`$ である。
+$`\neg(v_0 + d_0 \lt (\mathrm{head}\,D)_1)`$、すなわち $`(\mathrm{head}\,D)_1 \le v_0 + d_0`$ である。
 
-**(iv) $`A_2 = () \ \vee\ (\mathrm{hd}\,A_2)_1 \le v_0 + d_0`$。**
+**(iv) $`A_2 = () \ \vee\ (\mathrm{head}\,A_2)_1 \le v_0 + d_0`$。**
 $`A_2 \ne ()`$ とする。$`A_2 = \mathrm{tw}_{v_0} D`$ が空でないので $`D \ne ()`$ であり、
 $`\mathrm{tw}_{v_0} D`$ は $`D`$ の先頭から取った前部分列で空でないから
-$`\mathrm{hd}\,A_2 = \mathrm{hd}\,D`$ である。(iii) の第 1 選言は $`D \ne ()`$ により偽であるから
-第 2 選言が成り立ち、$`(\mathrm{hd}\,A_2)_1 = (\mathrm{hd}\,D)_1 \le v_0 + d_0`$。
+$`\mathrm{head}\,A_2 = \mathrm{head}\,D`$ である。(iii) の第 1 選言は $`D \ne ()`$ により偽であるから
+第 2 選言が成り立ち、$`(\mathrm{head}\,A_2)_1 = (\mathrm{head}\,D)_1 \le v_0 + d_0`$。
 
-**(v) $`Z = () \ \vee\ (\mathrm{hd}\,Z)_1 \le v_0`$。**
+**(v) $`Z = () \ \vee\ (\mathrm{head}\,Z)_1 \le v_0`$。**
 $`Z = \mathrm{dw}_{v_0} D`$ が空でなければ、その先頭は述語
-「第 1 成分が $`v_0`$ より大きい」をみたさないから $`(\mathrm{hd}\,Z)_1 \le v_0`$ である。
+「第 1 成分が $`v_0`$ より大きい」をみたさないから $`(\mathrm{head}\,Z)_1 \le v_0`$ である。
 
 **中核の適用。** $`S = S_{\mathrm{hi}} \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)`$ を代入し、結合則で括り直すと
 
@@ -626,28 +627,28 @@ D.ArgDomCore の 8 条件は次のように与えられる。
 
 ```math
 S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
-  \mathrm{shr}_{d_0}\bigl(R \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: (S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)\bigr)
+  \bigl(R \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: (S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)\bigr)^{+d_0}
 ```
 
 を得る。[T.shiftr0_append](Cofinality.md#t-shiftr0_append) と [T.shiftr0_cons](Cnf.md#t-shiftr0_cons) により右辺は
 
 ```math
-\mathrm{shr}_{d_0} R \mathbin{+\!\!+} (v_0+d_0+d_0,\ w_0) :: \mathrm{shr}_{d_0}(S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)
+R^{+d_0} \mathbin{+\!\!+} (v_0+d_0+d_0,\ w_0) :: (S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)^{+d_0}
 ```
 
 に等しい。
 
 **コピー塔への展開。** [T.peel_aux](#t-peel_aux) を
 $`d := d_0`$, $`w := w_0`$, $`n := \lvert S_{\mathrm{hi}}\rvert`$,
-$`X := S_{\mathrm{hi}}`$, $`Q := \mathrm{shr}_{d_0} R`$, $`A_2 := A_2`$,
+$`X := S_{\mathrm{hi}}`$, $`Q := R^{+d_0}`$, $`A_2 := A_2`$,
 $`a := v_0+d_0+d_0`$ に適用する。長さの条件
 $`\lvert S_{\mathrm{hi}}\rvert \le \lvert S_{\mathrm{hi}}\rvert`$ は $`\le`$ の反射性で成り立つ。
 よってある $`m`$ について
 
 ```math
 S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
-  \mathrm{shr}_{d_0} R \mathbin{+\!\!+}
-  \mathrm{copies}_{d_0}\bigl((v_0+d_0+d_0,\ w_0) :: \mathrm{shr}_{d_0}(\mathrm{shr}_{d_0} R),\ m\bigr)
+  R^{+d_0} \mathbin{+\!\!+}
+  \mathrm{copies}_{d_0}\bigl((v_0+d_0+d_0,\ w_0) :: (R^{+d_0})^{+d_0},\ m\bigr)
 ```
 
 が成り立つ。この $`m`$ が求めるものである。実際、[T.shiftr0_append](Cofinality.md#t-shiftr0_append)、[T.shiftr0_copies](Cofinality.md#t-shiftr0_copies)、
@@ -655,11 +656,11 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
 
 ```math
 \begin{aligned}
-\mathrm{shr}_{d_0}\Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}\bigl(\mathrm{shr}_{d_0}((v_0,w_0) :: R),\ m\bigr)\Bigr)
-&= \mathrm{shr}_{d_0} R \mathbin{+\!\!+}
-   \mathrm{copies}_{d_0}\bigl(\mathrm{shr}_{d_0}(\mathrm{shr}_{d_0}((v_0,w_0) :: R)),\ m\bigr) \cr
-&= \mathrm{shr}_{d_0} R \mathbin{+\!\!+}
-   \mathrm{copies}_{d_0}\bigl((v_0+d_0+d_0,\ w_0) :: \mathrm{shr}_{d_0}(\mathrm{shr}_{d_0} R),\ m\bigr)
+\Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}\bigl(((v_0,w_0) :: R)^{+d_0},\ m\bigr)\Bigr)^{+d_0}
+&= R^{+d_0} \mathbin{+\!\!+}
+   \mathrm{copies}_{d_0}\bigl((((v_0,w_0) :: R)^{+d_0})^{+d_0},\ m\bigr) \cr
+&= R^{+d_0} \mathbin{+\!\!+}
+   \mathrm{copies}_{d_0}\bigl((v_0+d_0+d_0,\ w_0) :: (R^{+d_0})^{+d_0},\ m\bigr)
 \end{aligned}
 ```
 
@@ -694,10 +695,10 @@ $`N \in \mathrm{PairSeq}`$ に対し、命題 $`\mathrm{ArgDomCoreOn}(N)`$ を�
 3. $`\forall x \in A_1,\ u \lt x_1`$
 4. $`\forall x \in B,\ u + e \lt x_1`$
 5. $`\forall x \in A_2,\ u \lt x_1`$
-6. $`A_2 = () \ \vee\ (\mathrm{hd}\,A_2)_1 \le u + e`$
-7. $`Z = () \ \vee\ (\mathrm{hd}\,Z)_1 \le u`$
+6. $`A_2 = () \ \vee\ (\mathrm{head}\,A_2)_1 \le u + e`$
+7. $`Z = () \ \vee\ (\mathrm{head}\,Z)_1 \le u`$
 8. $`\mathrm{SpineOK}(A_1,\ u+e,\ w)`$
-9. $`B \preceq_{\mathrm{lex}} \mathrm{shr}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)`$
+9. $`B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}`$
 
 <a id="t-argDomCore_of_on"></a>
 ## 定理: 列ごとの形から中核へ (T.argDomCore_of_on)
@@ -842,17 +843,17 @@ N \mathbin{+\!\!+} (p)
 
   である。
 - 条件 (2) から (6)、および条件 (8)：$`N`$ についてのものと同一である。
-- 条件 (7)：$`Z \mathbin{+\!\!+} (p) = () \vee (\mathrm{hd}(Z \mathbin{+\!\!+} (p)))_1 \le u`$ を示す。
+- 条件 (7)：$`Z \mathbin{+\!\!+} (p) = () \vee (\mathrm{head}(Z \mathbin{+\!\!+} (p)))_1 \le u`$ を示す。
   $`Z = ()`$ のときは $`Z \mathbin{+\!\!+} (p) = (p)`$ であり、
-  $`(\mathrm{hd}(p))_1 = p_1 = 0 \le u`$ であるから第 2 選言が成り立つ。
-  $`Z = z :: Z'`$ のときは $`\mathrm{hd}(Z \mathbin{+\!\!+} (p)) = \mathrm{hd}\,Z`$ であり、
+  $`(\mathrm{head}(p))_1 = p_1 = 0 \le u`$ であるから第 2 選言が成り立つ。
+  $`Z = z :: Z'`$ のときは $`\mathrm{head}(Z \mathbin{+\!\!+} (p)) = \mathrm{head}\,Z`$ であり、
   $`N`$ についての条件 (7) の第 1 選言 $`Z = ()`$ は偽であるから第 2 選言
-  $`(\mathrm{hd}\,Z)_1 \le u`$ が成り立ち、これが求めるものである。
+  $`(\mathrm{head}\,Z)_1 \le u`$ が成り立ち、これが求めるものである。
 
 よって結論 (9)
 
 ```math
-B \preceq_{\mathrm{lex}} \mathrm{shr}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)
+B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 ```
 
 が得られる。これは $`N`$ についての結論 (9) と同一である。∎
@@ -885,13 +886,12 @@ P \mathbin{+\!\!+} S
 <a id="d-shiftl0"></a>
 ## 定義: 行 0 の左シフト (D.shiftl0)
 
-$`d \in \mathbb{N}`$ と $`L \in \mathrm{PairSeq}`$ に対し、$`\mathrm{shl}_d L`$ を
-$`L`$ の各要素 $`p`$ を $`(p_1 - d,\ p_2)`$ に置き換えた列と定める。
+$`d \in \mathbb{N}`$、$`L \in \mathrm{PairSeq}`$ に対し、$`L`$ の各対の第 1 成分から一様に $`d`$ を
+引いた列を $`L^{-d}`$ と書く。すなわち $`L = (L_0, \dots, L_{\lvert L\rvert - 1})`$ のとき
 
 ```math
-\mathrm{shl}_d\bigl(L_0, \dots, L_{\lvert L\rvert - 1}\bigr)
-  := \Bigl((L_0)_1 - d,\ (L_0)_2\Bigr), \dots,
-     \Bigl((L_{\lvert L\rvert - 1})_1 - d,\ (L_{\lvert L\rvert - 1})_2\Bigr)
+L^{-d} := \Bigl(\,\bigl((L_0)_1 - d,\ (L_0)_2\bigr),\ \dots,\
+  \bigl((L_{\lvert L\rvert - 1})_1 - d,\ (L_{\lvert L\rvert - 1})_2\bigr)\,\Bigr).
 ```
 
 ここで $`-`$ は自然数の切り捨て減法である。
@@ -904,13 +904,13 @@ $`L`$ の各要素 $`p`$ を $`(p_1 - d,\ p_2)`$ に置き換えた列と定め�
 $`d \in \mathbb{N}`$、$`p \in \mathbb{N}\times\mathbb{N}`$、$`A \in \mathrm{PairSeq}`$ に対し
 
 ```math
-\mathrm{shl}_d (p :: A) = (p_1 - d,\ p_2) :: \mathrm{shl}_d A .
+(p :: A)^{-d} = (p_1 - d,\ p_2) :: A^{-d} .
 ```
 
 ### 証明
 
-$`\mathrm{shl}_d`$ の定義（D.shiftl0）は各要素への写像であり、
-先頭要素の像が $`(p_1-d,\ p_2)`$、残りの像が $`\mathrm{shl}_d A`$ であるから、
+$`(\cdot)^{-d}`$ の定義（D.shiftl0）は各要素への写像であり、
+先頭要素の像が $`(p_1-d,\ p_2)`$、残りの像が $`A^{-d}`$ であるから、
 両辺は定義により同一の列である。∎
 
 <a id="t-shiftl0_append"></a>
@@ -921,7 +921,7 @@ $`\mathrm{shl}_d`$ の定義（D.shiftl0）は各要素への写像であり、
 $`d \in \mathbb{N}`$、$`A, B \in \mathrm{PairSeq}`$ に対し
 
 ```math
-\mathrm{shl}_d (A \mathbin{+\!\!+} B) = \mathrm{shl}_d A \mathbin{+\!\!+} \mathrm{shl}_d B .
+(A \mathbin{+\!\!+} B)^{-d} = A^{-d} \mathbin{+\!\!+} B^{-d} .
 ```
 
 ### 証明
@@ -937,12 +937,12 @@ $`A`$ の各要素の像を並べた列と $`B`$ の各要素の像を並べた�
 $`d \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$、$`x \in \mathbb{N}\times\mathbb{N}`$ に対し
 
 ```math
-x \in \mathrm{shl}_d M \iff \exists p \in M,\ (p_1 - d,\ p_2) = x .
+x \in M^{-d} \iff \exists p \in M,\ (p_1 - d,\ p_2) = x .
 ```
 
 ### 証明
 
-$`\mathrm{shl}_d M`$ は $`M`$ の各要素 $`p`$ を $`(p_1-d,\ p_2)`$ に置き換えた列であるから
+$`M^{-d}`$ は $`M`$ の各要素 $`p`$ を $`(p_1-d,\ p_2)`$ に置き換えた列であるから
 （D.shiftl0）、その要素であることは、$`M`$ のある要素 $`p`$ の像であることと同値である。∎
 
 <a id="t-shiftl0_shiftr0"></a>
@@ -951,31 +951,31 @@ $`\mathrm{shl}_d M`$ は $`M`$ の各要素 $`p`$ を $`(p_1-d,\ p_2)`$ に置�
 ### 定理
 
 $`d \in \mathbb{N}`$、$`X \in \mathrm{PairSeq}`$ に対し
-$`\mathrm{shl}_d (\mathrm{shr}_d X) = X`$。
+$`(X^{+d})^{-d} = X`$。
 
 ### 証明
 
 $`X`$ の長さに関する帰納法。帰納法の述語は
 
 ```math
-\Lambda(X) :\equiv \mathrm{shl}_d (\mathrm{shr}_d X) = X .
+\Lambda(X) :\equiv (X^{+d})^{-d} = X .
 ```
 
-- **基底段** $`X = ()`$：$`\mathrm{shr}_d () = ()`$、$`\mathrm{shl}_d () = ()`$ であるから
+- **基底段** $`X = ()`$：$`()^{+d} = ()`$、$`()^{-d} = ()`$ であるから
   両辺は $`()`$ である。
 
 - **帰納段** $`X = p :: X'`$：帰納法の仮定は $`\Lambda(X')`$、すなわち
-  $`\mathrm{shl}_d (\mathrm{shr}_d X') = X'`$ である。[T.shiftr0_cons](Cnf.md#t-shiftr0_cons) と
+  $`(X'^{+d})^{-d} = X'`$ である。[T.shiftr0_cons](Cnf.md#t-shiftr0_cons) と
   [T.shiftl0_cons](#t-shiftl0_cons) により
 
 ```math
-\mathrm{shl}_d \bigl(\mathrm{shr}_d (p :: X')\bigr)
-  = \mathrm{shl}_d \bigl((p_1 + d,\ p_2) :: \mathrm{shr}_d X'\bigr)
-  = \bigl((p_1 + d) - d,\ p_2\bigr) :: \mathrm{shl}_d (\mathrm{shr}_d X')
+\bigl((p :: X')^{+d}\bigr)^{-d}
+  = \bigl((p_1 + d,\ p_2) :: X'^{+d}\bigr)^{-d}
+  = \bigl((p_1 + d) - d,\ p_2\bigr) :: (X'^{+d})^{-d}
 ```
 
   である。$`(p_1 + d) - d = p_1`$ であり、帰納法の仮定より
-  $`\mathrm{shl}_d (\mathrm{shr}_d X') = X'`$ であるから、右辺は
+  $`(X'^{+d})^{-d} = X'`$ であるから、右辺は
   $`(p_1,\ p_2) :: X' = p :: X'`$ に等しい。∎
 
 <a id="t-shiftr0_shiftl0"></a>
@@ -984,7 +984,7 @@ $`X`$ の長さに関する帰納法。帰納法の述語は
 ### 定理
 
 $`d \in \mathbb{N}`$、$`L \in \mathrm{PairSeq}`$ とし、$`\forall x \in L,\ d \le x_1`$ とする。
-このとき $`\mathrm{shr}_d (\mathrm{shl}_d L) = L`$。
+このとき $`(L^{-d})^{+d} = L`$。
 
 ### 証明
 
@@ -992,27 +992,27 @@ $`L`$ の長さに関する帰納法。帰納法の述語は
 
 ```math
 \Upsilon(L) :\equiv
-  \bigl(\forall x \in L,\ d \le x_1\bigr) \to \mathrm{shr}_d (\mathrm{shl}_d L) = L .
+  \bigl(\forall x \in L,\ d \le x_1\bigr) \to (L^{-d})^{+d} = L .
 ```
 
-- **基底段** $`L = ()`$：$`\mathrm{shl}_d () = ()`$、$`\mathrm{shr}_d () = ()`$ であるから
+- **基底段** $`L = ()`$：$`()^{-d} = ()`$、$`()^{+d} = ()`$ であるから
   両辺は $`()`$ である。
 
 - **帰納段** $`L = p :: L'`$：帰納法の仮定は $`\Upsilon(L')`$ である。
   仮定 $`\forall x \in p :: L',\ d \le x_1`$ から、$`p`$ を取って $`d \le p_1`$ が、
   $`L'`$ の各要素を取って $`\forall x \in L',\ d \le x_1`$ が従う。
   後者に帰納法の仮定 $`\Upsilon(L')`$ を適用して
-  $`\mathrm{shr}_d (\mathrm{shl}_d L') = L'`$ を得る。
+  $`(L'^{-d})^{+d} = L'`$ を得る。
   [T.shiftl0_cons](#t-shiftl0_cons) と [T.shiftr0_cons](Cnf.md#t-shiftr0_cons) により
 
 ```math
-\mathrm{shr}_d \bigl(\mathrm{shl}_d (p :: L')\bigr)
-  = \mathrm{shr}_d \bigl((p_1 - d,\ p_2) :: \mathrm{shl}_d L'\bigr)
-  = \bigl((p_1 - d) + d,\ p_2\bigr) :: \mathrm{shr}_d (\mathrm{shl}_d L')
+\bigl((p :: L')^{-d}\bigr)^{+d}
+  = \bigl((p_1 - d,\ p_2) :: L'^{-d}\bigr)^{+d}
+  = \bigl((p_1 - d) + d,\ p_2\bigr) :: (L'^{-d})^{+d}
 ```
 
   である。$`d \le p_1`$ であるから切り捨て減法について $`(p_1 - d) + d = p_1`$ であり、
-  また $`\mathrm{shr}_d (\mathrm{shl}_d L') = L'`$ であるから、右辺は
+  また $`(L'^{-d})^{+d} = L'`$ であるから、右辺は
   $`(p_1,\ p_2) :: L' = p :: L'`$ に等しい。∎
 
 <a id="t-shiftr0_comm"></a>
@@ -1023,12 +1023,12 @@ $`L`$ の長さに関する帰納法。帰納法の述語は
 $`d, e \in \mathbb{N}`$、$`L \in \mathrm{PairSeq}`$ に対し
 
 ```math
-\mathrm{shr}_e (\mathrm{shr}_d L) = \mathrm{shr}_d (\mathrm{shr}_e L) .
+(L^{+d})^{+e} = (L^{+e})^{+d} .
 ```
 
 ### 証明
 
-$`\mathrm{shr}`$ の定義（D.shiftr0）より、左辺は $`L`$ の各要素 $`p`$ を
+$`(\cdot)^{+d}`$ の定義（D.shiftr0）より、左辺は $`L`$ の各要素 $`p`$ を
 $`\bigl((p_1 + d) + e,\ p_2\bigr)`$ に置き換えた列であり、右辺は各要素 $`p`$ を
 $`\bigl((p_1 + e) + d,\ p_2\bigr)`$ に置き換えた列である。
 自然数の加法の結合律と交換律より $`(p_1 + d) + e = (p_1 + e) + d`$ であるから、
@@ -1040,24 +1040,24 @@ $`\bigl((p_1 + e) + d,\ p_2\bigr)`$ に置き換えた列である。
 ### 定理
 
 $`W \in \mathrm{PairSeq}`$、$`d \in \mathbb{N}`$ とする。$`\mathrm{ArgDomCoreOn}(W)`$ ならば
-$`\mathrm{ArgDomCoreOn}(\mathrm{shr}_d W)`$。
+$`\mathrm{ArgDomCoreOn}(W^{+d})`$。
 
 ### 証明
 
 D.ArgDomCoreOn にしたがい $`X, A_1, B, A_2, Z`$ と $`u, w, e`$ を取り、
-$`\mathrm{shr}_d W`$ についての条件 (1) から (8) を仮定する。すなわち
+$`W^{+d}`$ についての条件 (1) から (8) を仮定する。すなわち
 
 ```math
-\mathrm{shr}_d W
+W^{+d}
   = \bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z
 ```
 
 であり、$`0 \lt e`$、$`\forall x \in A_1,\ u \lt x_1`$、$`\forall x \in B,\ u+e \lt x_1`$、
-$`\forall x \in A_2,\ u \lt x_1`$、$`A_2 = () \vee (\mathrm{hd}\,A_2)_1 \le u+e`$、
-$`Z = () \vee (\mathrm{hd}\,Z)_1 \le u`$、$`\mathrm{SpineOK}(A_1,\ u+e,\ w)`$ が成り立つ。
+$`\forall x \in A_2,\ u \lt x_1`$、$`A_2 = () \vee (\mathrm{head}\,A_2)_1 \le u+e`$、
+$`Z = () \vee (\mathrm{head}\,Z)_1 \le u`$、$`\mathrm{SpineOK}(A_1,\ u+e,\ w)`$ が成り立つ。
 
 **すべての列の行 0 は $`d`$ 以上である。** 条件 (1) の右辺の任意の要素 $`x`$ は
-$`\mathrm{shr}_d W`$ の要素であるから、[T.mem_shiftr0](Cnf.md#t-mem_shiftr0) により
+$`W^{+d}`$ の要素であるから、[T.mem_shiftr0](Cnf.md#t-mem_shiftr0) により
 $`W`$ のある要素 $`q`$ について $`x = (q_1 + d,\ q_2)`$ であり、$`d \le x_1`$ である。
 $`X`$, $`A_1`$, $`B`$, $`A_2`$, $`Z`$ の各要素と列 $`(u,w)`$ はいずれも右辺の要素であるから、
 
@@ -1075,18 +1075,18 @@ d \le u
 **分解をシフトの手前へ引き戻す。**
 
 ```math
-X' := \mathrm{shl}_d X, \quad A_1' := \mathrm{shl}_d A_1, \quad B' := \mathrm{shl}_d B, \quad
-A_2' := \mathrm{shl}_d A_2, \quad Z' := \mathrm{shl}_d Z
+X' := X^{-d}, \quad A_1' := A_1^{-d}, \quad B' := B^{-d}, \quad
+A_2' := A_2^{-d}, \quad Z' := Z^{-d}
 ```
 
 とおく。いま示した行 0 の下界と [T.shiftr0_shiftl0](#t-shiftr0_shiftl0) により
 
 ```math
-\mathrm{shr}_d X' = X, \quad \mathrm{shr}_d A_1' = A_1, \quad \mathrm{shr}_d B' = B, \quad
-\mathrm{shr}_d A_2' = A_2, \quad \mathrm{shr}_d Z' = Z
+X'^{+d} = X, \quad A_1'^{+d} = A_1, \quad B'^{+d} = B, \quad
+A_2'^{+d} = A_2, \quad Z'^{+d} = Z
 ```
 
-である。条件 (1) の両辺に $`\mathrm{shl}_d`$ を施すと、左辺は
+である。条件 (1) の両辺に $`(\cdot)^{-d}`$ を施すと、左辺は
 [T.shiftl0_shiftr0](#t-shiftl0_shiftr0) により $`W`$ であり、右辺は
 [T.shiftl0_append](#t-shiftl0_append) と [T.shiftl0_cons](#t-shiftl0_cons) により
 
@@ -1111,26 +1111,28 @@ W = \bigl(X' \mathbin{+\!\!+} (u-d,\ w) :: (A_1' \mathbin{+\!\!+} ((u-d)+e,\ w) 
 $`x = (q_1 - d,\ q_2)`$ である。$`u \lt q_1`$ かつ $`d \le q_1`$ かつ $`d \le u`$ であるから、
 切り捨て減法について $`u - d \lt q_1 - d`$、すなわち $`u' \lt x_1`$ である。
 
-**(4)** $`\forall x \in B',\ u' + e \lt x_1`$。同様に $`B`$ のある要素 $`q`$ について
+**(4)** $`\forall x \in B',\ u' + e \lt x_1`$。$`x \in B'`$ とすると
+[T.mem_shiftl0](#t-mem_shiftl0) により $`B`$ のある要素 $`q`$ について
 $`x = (q_1 - d,\ q_2)`$ であり、$`u + e \lt q_1`$、$`d \le q_1`$、$`d \le u`$ から
 $`u' + e = u + e - d \lt q_1 - d = x_1`$ である。
 
-**(5)** $`\forall x \in A_2',\ u' \lt x_1`$。同様に $`A_2`$ のある要素 $`q`$ について
+**(5)** $`\forall x \in A_2',\ u' \lt x_1`$。$`x \in A_2'`$ とすると
+[T.mem_shiftl0](#t-mem_shiftl0) により $`A_2`$ のある要素 $`q`$ について
 $`x = (q_1 - d,\ q_2)`$ であり、$`u \lt q_1`$、$`d \le q_1`$、$`d \le u`$ から
 $`u' \lt x_1`$ である。
 
-**(6)** $`A_2' = () \vee (\mathrm{hd}\,A_2')_1 \le u' + e`$。
-$`A_2 = ()`$ のときは $`A_2' = \mathrm{shl}_d () = ()`$ であり第 1 選言が成り立つ。
+**(6)** $`A_2' = () \vee (\mathrm{head}\,A_2')_1 \le u' + e`$。
+$`A_2 = ()`$ のときは $`A_2' = ()^{-d} = ()`$ であり第 1 選言が成り立つ。
 $`A_2 = a :: A_2''`$ のときは、条件 (6) の第 1 選言が偽であるから
-$`(\mathrm{hd}\,A_2)_1 = a_1 \le u + e`$ である。また $`d \le a_1`$ である。
-[T.shiftl0_cons](#t-shiftl0_cons) より $`\mathrm{hd}\,A_2' = (a_1 - d,\ a_2)`$ であり、
+$`(\mathrm{head}\,A_2)_1 = a_1 \le u + e`$ である。また $`d \le a_1`$ である。
+[T.shiftl0_cons](#t-shiftl0_cons) より $`\mathrm{head}\,A_2' = (a_1 - d,\ a_2)`$ であり、
 $`d \le u`$ と合わせて $`a_1 - d \le u + e - d = u' + e`$ である。
 
-**(7)** $`Z' = () \vee (\mathrm{hd}\,Z')_1 \le u'`$。
+**(7)** $`Z' = () \vee (\mathrm{head}\,Z')_1 \le u'`$。
 $`Z = ()`$ のときは $`Z' = ()`$ であり第 1 選言が成り立つ。
 $`Z = z :: Z''`$ のときは、条件 (7) の第 1 選言が偽であるから
-$`(\mathrm{hd}\,Z)_1 = z_1 \le u`$ である。[T.shiftl0_cons](#t-shiftl0_cons) より
-$`\mathrm{hd}\,Z' = (z_1 - d,\ z_2)`$ であり、$`z_1 - d \le u - d = u'`$ である。
+$`(\mathrm{head}\,Z)_1 = z_1 \le u`$ である。[T.shiftl0_cons](#t-shiftl0_cons) より
+$`\mathrm{head}\,Z' = (z_1 - d,\ z_2)`$ であり、$`z_1 - d \le u - d = u'`$ である。
 
 **(8)** $`\mathrm{SpineOK}(A_1',\ u' + e,\ w)`$。D.SpineOK にしたがい
 $`U', V' \in \mathrm{PairSeq}`$ と $`x' \in \mathbb{N}\times\mathbb{N}`$ を取り、
@@ -1139,20 +1141,20 @@ $`U', V' \in \mathrm{PairSeq}`$ と $`x' \in \mathbb{N}\times\mathbb{N}`$ を取
 A_1' = U' \mathbin{+\!\!+} x' :: V', \qquad x'_1 \lt u' + e, \qquad \forall y \in V',\ x'_1 \lt y_1
 ```
 
-を仮定して $`w \le x'_2`$ を示す。この分解の両辺に $`\mathrm{shr}_d`$ を施すと、
-左辺は $`\mathrm{shr}_d A_1' = A_1`$ であり、右辺は [T.shiftr0_append](Cofinality.md#t-shiftr0_append) と [T.shiftr0_cons](Cnf.md#t-shiftr0_cons) により
+を仮定して $`w \le x'_2`$ を示す。この分解の両辺に $`(\cdot)^{+d}`$ を施すと、
+左辺は $`A_1'^{+d} = A_1`$ であり、右辺は [T.shiftr0_append](Cofinality.md#t-shiftr0_append) と [T.shiftr0_cons](Cnf.md#t-shiftr0_cons) により
 
 ```math
-A_1 = \mathrm{shr}_d U' \mathbin{+\!\!+} (x'_1 + d,\ x'_2) :: \mathrm{shr}_d V'
+A_1 = U'^{+d} \mathbin{+\!\!+} (x'_1 + d,\ x'_2) :: V'^{+d}
 ```
 
 である。$`\mathrm{SpineOK}(A_1,\ u+e,\ w)`$ を
-$`U := \mathrm{shr}_d U'`$、$`V := \mathrm{shr}_d V'`$、$`x := (x'_1 + d,\ x'_2)`$ に適用する。
+$`U := U'^{+d}`$、$`V := V'^{+d}`$、$`x := (x'_1 + d,\ x'_2)`$ に適用する。
 その 3 条件は次のようにみたされる。
 
 - 分解式は上で得たものである。
 - $`x'_1 + d \lt u + e`$：$`x'_1 \lt u' + e = u + e - d`$ と $`d \le u \le u + e`$ から従う。
-- $`\forall y \in \mathrm{shr}_d V',\ x'_1 + d \lt y_1`$：[T.mem_shiftr0](Cnf.md#t-mem_shiftr0) により
+- $`\forall y \in V'^{+d},\ x'_1 + d \lt y_1`$：[T.mem_shiftr0](Cnf.md#t-mem_shiftr0) により
   $`V'`$ のある要素 $`q`$ について $`y = (q_1 + d,\ q_2)`$ であり、
   仮定より $`x'_1 \lt q_1`$ であるから $`x'_1 + d \lt q_1 + d = y_1`$ である。
 
@@ -1163,32 +1165,32 @@ $`X := X'`$, $`A_1 := A_1'`$, $`B := B'`$, $`A_2 := A_2'`$, $`Z := Z'`$,
 $`u := u'`$、およびもとの $`w`$, $`e`$ に適用すると、結論 (9)
 
 ```math
-B' \preceq_{\mathrm{lex}} \mathrm{shr}_e\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)
+B' \preceq_{\mathrm{lex}} \bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+e}
 ```
 
 を得る。ここで [T.shiftr0_comm](#t-shiftr0_comm) と
-$`\mathrm{shr}_d A_1' = A_1`$、$`\mathrm{shr}_d B' = B`$、$`\mathrm{shr}_d A_2' = A_2`$、
+$`A_1'^{+d} = A_1`$、$`B'^{+d} = B`$、$`A_2'^{+d} = A_2`$、
 および $`(u'+e)+d = u+e`$（$`d \le u`$ による）を用いると
 
 ```math
 \begin{aligned}
-\mathrm{shr}_d\Bigl(\mathrm{shr}_e\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)\Bigr)
-&= \mathrm{shr}_e\Bigl(\mathrm{shr}_d\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)\Bigr) \cr
-&= \mathrm{shr}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,\ w) :: (B \mathbin{+\!\!+} A_2)\bigr)
+\Bigl(\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+e}\Bigr)^{+d}
+&= \Bigl(\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+d}\Bigr)^{+e} \cr
+&= \bigl(A_1 \mathbin{+\!\!+} (u+e,\ w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 \end{aligned}
 ```
 
 である。したがって示すべき結論 (9)
 
 ```math
-B \preceq_{\mathrm{lex}} \mathrm{shr}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,\ w) :: (B \mathbin{+\!\!+} A_2)\bigr)
+B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,\ w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 ```
 
-は、$`B = \mathrm{shr}_d B'`$ を代入すると
+は、$`B = B'^{+d}`$ を代入すると
 
 ```math
-\mathrm{shr}_d B' \preceq_{\mathrm{lex}}
-  \mathrm{shr}_d\Bigl(\mathrm{shr}_e\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)\Bigr)
+B'^{+d} \preceq_{\mathrm{lex}}
+  \Bigl(\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+e}\Bigr)^{+d}
 ```
 
 と同じ主張である。[T.sle_shiftr0](#t-sle_shiftr0) の右から左により、
@@ -1292,8 +1294,6 @@ $`\mathrm{blk} \ne ()`$ かつ $`1 \le n`$ ならば
 ```math
 \mathrm{head}\bigl(\mathrm{copies}_d(\mathrm{blk}, n)\bigr) = \mathrm{head}\,\mathrm{blk} .
 ```
-
-ここで $`\mathrm{head}\,L`$ は $`L \ne ()`$ ならばその先頭要素、$`L = ()`$ ならば $`(0,0)`$ である。
 
 ### 証明
 
@@ -1529,8 +1529,8 @@ $`E`$ の構成子に関する帰納法（$`L`$ は固定する）。帰納法�
 ```
 
 - **基底段** $`E = ()`$：$`B_p := ()`$、$`R_p := ()`$ と取る。
-  $`() = () \mathbin{+\!\!+} ()`$ である。$`B_p = ()`$ は要素をもたないから第 2 の連言子の前件が偽で成り立つ。
-  第 3 の連言子は第 1 選言 $`R_p = ()`$ が成り立つ。
+  $`() = () \mathbin{+\!\!+} ()`$ である。$`B_p = ()`$ は要素をもたないから第 2 連言子の前件が偽で成り立つ。
+  第 3 連言子は第 1 選言 $`R_p = ()`$ が成り立つ。
 
 - **帰納段** $`E = a :: E'`$：帰納法の仮定は $`\Phi(E')`$ である。$`L \lt a_1`$ かどうかで場合分けする。
 
@@ -1538,13 +1538,13 @@ $`E`$ の構成子に関する帰納法（$`L`$ は固定する）。帰納法�
     $`B_p := a :: B_p'`$、$`R_p := R_p'`$ と置く。
     $`a :: E' = a :: (B_p' \mathbin{+\!\!+} R_p') = (a :: B_p') \mathbin{+\!\!+} R_p'`$ である。
     $`x \in a :: B_p'`$ ならば $`x = a`$ か $`x \in B_p'`$ であり、前者は本場合の仮定 $`L \lt a_1`$、
-    後者は $`\Phi(E')`$ の第 2 の連言子により $`L \lt x_1`$。
-    第 3 の連言子は $`\Phi(E')`$ のものをそのまま用いる。
+    後者は $`\Phi(E')`$ の第 2 連言子により $`L \lt x_1`$。
+    第 3 連言子は $`\Phi(E')`$ のものをそのまま用いる。
 
   - $`\neg(L \lt a_1)`$ のとき。$`B_p := ()`$、$`R_p := a :: E'`$ と置く。
     $`a :: E' = () \mathbin{+\!\!+} (a :: E')`$ である。$`B_p = ()`$ は要素をもたない。
     $`\mathrm{head}\,R_p = a`$ であり、$`\neg(L \lt a_1)`$ は $`\mathbb{N}`$ において $`a_1 \le L`$ と
-    同値であるから第 3 の連言子の第 2 選言が成り立つ。∎
+    同値であるから第 3 連言子の第 2 選言が成り立つ。∎
 
 <a id="t-seqlex_of_sle_snoc'"></a>
 ## 定理: 末尾列の差し替え、上界相対形 (T.seqlex_of_sle_snoc')
@@ -1555,7 +1555,7 @@ $`X, V, E \in \mathrm{PairSeq}`$、$`\ell, q \in \mathbb{N}\times\mathbb{N}`$ �
 
 ```math
 X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E,
-\qquad q \prec_{\mathrm{pair}} \ell,
+\qquad q \prec_{\mathrm{p}} \ell,
 \qquad \lvert X\rvert \lt \lvert V\rvert
 ```
 
@@ -1573,26 +1573,26 @@ $`X`$ の構成子に関する帰納法（$`V, E, \ell, q, S', E'`$ は全称量
 ```math
 \Phi(X) :\equiv \forall V, E, \ell, q,\
   \bigl(X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E
-   \wedge q \prec_{\mathrm{pair}} \ell \wedge \lvert X\rvert \lt \lvert V\rvert\bigr)
+   \wedge q \prec_{\mathrm{p}} \ell \wedge \lvert X\rvert \lt \lvert V\rvert\bigr)
   \to \forall S', E',\ X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
 ```
 
 **基底段** $`X = ()`$。$`\lvert V\rvert \gt 0`$ であるから $`V = v :: V'`$ と書ける
 （$`V = ()`$ なら $`\lvert V\rvert = 0`$ となり $`0 \lt \lvert V\rvert`$ に反する）。
 示すべきことは $`q :: S' \prec_{\mathrm{lex}} v :: (V' \mathbin{+\!\!+} E')`$ であり、
-$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式によりその第 1 選言 $`q \prec_{\mathrm{pair}} v`$ を
+$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式によりその第 1 選言 $`q \prec_{\mathrm{p}} v`$ を
 示せば十分である。仮定は $`(\ell) \preceq_{\mathrm{lex}} v :: (V' \mathbin{+\!\!+} E)`$ であり、
 $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）で場合分けする。
 
 - $`(\ell) = v :: (V' \mathbin{+\!\!+} E)`$ のとき。両辺の先頭要素を比べて $`\ell = v`$ である。
-  仮定 $`q \prec_{\mathrm{pair}} \ell`$ がそのまま $`q \prec_{\mathrm{pair}} v`$ を与える。
+  仮定 $`q \prec_{\mathrm{p}} \ell`$ がそのまま $`q \prec_{\mathrm{p}} v`$ を与える。
 
 - $`(\ell) \prec_{\mathrm{lex}} v :: (V' \mathbin{+\!\!+} E)`$ のとき。$`(\ell) = \ell :: ()`$ であるから
-  D.seqlex の第 3 式より、$`\ell \prec_{\mathrm{pair}} v`$ または
+  D.seqlex の第 3 式より、$`\ell \prec_{\mathrm{p}} v`$ または
   $`\ell = v \wedge () \prec_{\mathrm{lex}} V' \mathbin{+\!\!+} E`$ である。
   前者のときは [T.pairlt_trans](Cofinality.md#t-pairlt_trans) を
-  $`q \prec_{\mathrm{pair}} \ell`$ と $`\ell \prec_{\mathrm{pair}} v`$ に適用して $`q \prec_{\mathrm{pair}} v`$。
-  後者のときは $`\ell = v`$ を $`q \prec_{\mathrm{pair}} \ell`$ に代入して $`q \prec_{\mathrm{pair}} v`$。
+  $`q \prec_{\mathrm{p}} \ell`$ と $`\ell \prec_{\mathrm{p}} v`$ に適用して $`q \prec_{\mathrm{p}} v`$。
+  後者のときは $`\ell = v`$ を $`q \prec_{\mathrm{p}} \ell`$ に代入して $`q \prec_{\mathrm{p}} v`$。
 
 **帰納段** $`X = x :: X'`$。帰納法の仮定は $`\Phi(X')`$ である。
 $`\lvert x :: X'\rvert \lt \lvert V\rvert`$ より $`V \ne ()`$ であるから $`V = v :: V'`$ と書け、
@@ -1608,7 +1608,7 @@ $`x :: (X' \mathbin{+\!\!+} q :: S') \prec_{\mathrm{lex}} v :: (V' \mathbin{+\!\
 すなわち D.seqlex の第 3 式により
 
 ```math
-x \prec_{\mathrm{pair}} v
+x \prec_{\mathrm{p}} v
 \quad\text{または}\quad
 \bigl(x = v \wedge X' \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V' \mathbin{+\!\!+} E'\bigr)
 ```
@@ -1620,17 +1620,20 @@ x \prec_{\mathrm{pair}} v
   後者は D.sle の第 1 選言により
   $`X' \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V' \mathbin{+\!\!+} E`$ を与える。
   帰納法の仮定 $`\Phi(X')`$ を $`V', E, \ell, q`$ に適用する（残りの仮定は
-  $`q \prec_{\mathrm{pair}} \ell`$ と $`\lvert X'\rvert \lt \lvert V'\rvert`$）と
-  $`X' \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V' \mathbin{+\!\!+} E'`$ が得られ、第 2 の選言が成り立つ。
+  $`q \prec_{\mathrm{p}} \ell`$ と $`\lvert X'\rvert \lt \lvert V'\rvert`$）と
+  $`X' \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V' \mathbin{+\!\!+} E'`$ が得られ、第 2 選言が成り立つ。
 
 - $`x :: (X' \mathbin{+\!\!+} (\ell)) \prec_{\mathrm{lex}} v :: (V' \mathbin{+\!\!+} E)`$ のとき。
   D.seqlex の第 3 式より 2 つに分かれる。
 
-  - $`x \prec_{\mathrm{pair}} v`$ のとき。これが第 1 の選言そのものである。
+  - $`x \prec_{\mathrm{p}} v`$ のとき。これが第 1 選言そのものである。
   - $`x = v \wedge X' \mathbin{+\!\!+} (\ell) \prec_{\mathrm{lex}} V' \mathbin{+\!\!+} E`$ のとき。
     後半は D.sle の第 2 選言により
-    $`X' \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V' \mathbin{+\!\!+} E`$ を与えるから、
-    前の場合と同じく帰納法の仮定 $`\Phi(X')`$ を適用して第 2 の選言を得る。∎
+    $`X' \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V' \mathbin{+\!\!+} E`$ を与える。
+    帰納法の仮定 $`\Phi(X')`$ を $`V', E, \ell, q`$ に適用する（残りの仮定は
+    $`q \prec_{\mathrm{p}} \ell`$ と $`\lvert X'\rvert \lt \lvert V'\rvert`$）と
+    $`X' \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V' \mathbin{+\!\!+} E'`$ が得られ、
+    $`x = v`$ と合わせて第 2 選言が成り立つ。∎
 
 <a id="t-argDomCoreOn_bad_B"></a>
 ## 定理: 展開の第 4 分岐の場合 B (T.argDomCoreOn_bad_B)
@@ -1665,8 +1668,7 @@ T := \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0},
 C_p := X \mathbin{+\!\!+} (u,w) :: \bigl(A_1 \mathbin{+\!\!+} ((u+e,w))\bigr)
 ```
 
-とおく。ここで $`\bigl((u+e,w)\bigr)`$ は対 $`(u+e,w)`$ のみからなる長さ $`1`$ の列である。
-$`C_p`$ は分解の先頭から深い方の印付き列 $`(u+e,w)`$ までを含む部分であり、
+とおく。$`C_p`$ は分解の先頭から深い方の印付き列 $`(u+e,w)`$ までを含む部分であり、
 $`\lvert C_p\rvert = \lvert X\rvert + 1 + (\lvert A_1\rvert + 1)`$ である。
 
 **第 1 段：共通部分で切る。**
@@ -1716,9 +1718,9 @@ M = (G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} (\ell)
   = C_p \mathbin{+\!\!+} \bigl(D \mathbin{+\!\!+} (\ell)\bigr)
 ```
 
-を得る。すなわちホスト $`M`$ は $`C_p`$ の右に $`D \mathbin{+\!\!+} (\ell)`$ を続けたものである。
+を得る。すなわち $`M`$ は $`C_p`$ の右に $`D \mathbin{+\!\!+} (\ell)`$ を続けたものである。
 
-**第 2 段（key）：ホストの判定。**
+**第 2 段：$`M`$ の分解に (hMon) を適用する。**
 次を示す。$`B', A_2', Z' \in \mathrm{PairSeq}`$ が
 
 ```math
@@ -1762,7 +1764,7 @@ B' \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B' \mathbin{+\!
 $`\lvert B'\rvert \le \lvert A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B'^{+e}\rvert`$ である。
 [T.sle_take_of_short](#t-sle_take_of_short) を適用して主張を得る。
 
-**第 3 段（goal_of）：結論を同じ形に直す。**
+**第 3 段：結論を同じ形に直す。**
 
 ```math
 B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: B^{+e}
@@ -1880,8 +1882,8 @@ $`B_2 = q :: B_2'`$ のとき、次の 2 つが成り立つ。
   $`q_1 = v_0 + d_0 = v_0 \le v_0 + 1 = \ell_1`$。
   第 2 選言のときは $`\ell_1 = v_0 + d_0 = q_1`$。
 
-- $`q \prec_{\mathrm{pair}} \ell`$。(hdisj) の第 1 選言のときは
-  $`q_1 = v_0 \lt v_0 + 1 = \ell_1`$ であり、$`\prec_{\mathrm{pair}}`$ の定義（D.pairlt）の第 1 選言が成り立つ。
+- $`q \prec_{\mathrm{p}} \ell`$。(hdisj) の第 1 選言のときは
+  $`q_1 = v_0 \lt v_0 + 1 = \ell_1`$ であり、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言が成り立つ。
   第 2 選言のときは $`q_1 = v_0 + d_0 = \ell_1`$ かつ $`q_2 = w_0 \lt w_0 + 1 = \ell_2`$ であり、
   D.pairlt の第 2 選言が成り立つ。
 
@@ -1922,7 +1924,7 @@ $`B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B^{+e}`$ そ�
 **$`B_2 = q :: B_2'`$ のとき。** $`\lvert D\rvert \lt \lvert A_1\rvert + 1 + \lvert D\rvert = \lvert V\rvert`$ である。
 [T.seqlex_of_sle_snoc'](#t-seqlex_of_sle_snoc') を、その主張に現れる列と対に
 $`D`$、$`V`$、$`(\ell)^{+e}`$、$`\ell`$、$`q`$ をこの順に対応させて適用する。
-3 つの仮定は $`(\dagger)`$、補助 2 の $`q \prec_{\mathrm{pair}} \ell`$、いま示した $`\lvert D\rvert \lt \lvert V\rvert`$ である。
+3 つの仮定は $`(\dagger)`$、補助 2 の $`q \prec_{\mathrm{p}} \ell`$、いま示した $`\lvert D\rvert \lt \lvert V\rvert`$ である。
 結論の 2 つの全称量化された列を $`B_2'`$ と $`(q_1+e,\ q_2) :: B_2'^{+e}`$ に取ると
 
 ```math
@@ -2280,35 +2282,35 @@ w_0 + 1 = M_{1,j_1} \le M_{1,\lvert A\rvert} = x_2 . \qquad \blacksquare
 ### 定理
 
 $`M, G, R, X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0, n, u, w, e \in \mathbb{N}`$、
-$`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\beta := (v_0,w_0) :: R`$ とおく。
-次の (1)–(19) を仮定する。
+$`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。
+次を仮定する。
 
 ```math
 \begin{aligned}
-&(1)\ M \in \mathrm{ST\_PS}, \cr
-&(2)\ \mathrm{ArgDomCoreOn}(M), \cr
-&(3)\ M = G \mathbin{+\!\!+} \beta \mathbin{+\!\!+} (\ell), \cr
-&(4)\ \forall x \in R,\ v_0 \lt x_1, \cr
-&(5)\ v_0 \lt \ell_1, \cr
-&(6)\ \bigl(d_0 = 0 \wedge \ell_2 = 0 \wedge \ell_1 = v_0 + 1\bigr)
-   \ \vee\ \bigl(0 \lt d_0 \wedge \ell_2 = w_0 + 1 \wedge \ell_1 = v_0 + d_0
+&\text{(hM)}\quad M \in \mathrm{ST\_PS}, \cr
+&\text{(hMon)}\quad \mathrm{ArgDomCoreOn}(M), \cr
+&\text{(hMeq)}\quad M = G \mathbin{+\!\!+} \mathrm{blk} \mathbin{+\!\!+} (\ell), \cr
+&\text{(hRgt)}\quad \forall x \in R,\ v_0 \lt x_1, \cr
+&\text{(hlp)}\quad v_0 \lt \ell_1, \cr
+&\text{(hdisj)}\quad \bigl(d_0 = 0 \wedge \ell_2 = 0 \wedge \ell_1 = v_0 + 1\bigr) \cr
+&\qquad\qquad\quad\ \vee\ \bigl(0 \lt d_0 \wedge \ell_2 = w_0 + 1 \wedge \ell_1 = v_0 + d_0
      \wedge \lvert G\rvert \to^M_1 (\lvert M\rvert - 1)\bigr), \cr
-&(7)\ \forall m,\ 1 \le m \to G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m) \in \mathrm{ST\_PS}, \cr
-&(8)\ \forall m,\ 1 \le m \to m \lt n \to
-   \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)\bigr), \cr
-&(9)\ 1 \le n, \cr
-&(10)\ G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, n)
+&\text{(hSTn)}\quad \forall m,\ 1 \le m \to G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m) \in \mathrm{ST\_PS}, \cr
+&\text{(hIH)}\quad \forall m,\ 1 \le m \to m \lt n \to
+   \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr), \cr
+&\text{(hn)}\quad 1 \le n, \cr
+&\text{(heq)}\quad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n)
    = \bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr)
      \mathbin{+\!\!+} Z, \cr
-&(11)\ 0 \lt e, \cr
-&(12)\ \forall x \in A_1,\ u \lt x_1, \cr
-&(13)\ \forall x \in B,\ u + e \lt x_1, \cr
-&(14)\ \forall x \in A_2,\ u \lt x_1, \cr
-&(15)\ A_2 = () \ \vee\ (\mathrm{head}\,A_2)_1 \le u + e, \cr
-&(16)\ Z = () \ \vee\ (\mathrm{head}\,Z)_1 \le u, \cr
-&(17)\ \mathrm{SpineOK}(A_1,\ u+e,\ w), \cr
-&(18)\ \lvert X\rvert \lt \lvert G\rvert + (\lvert R\rvert + 1), \cr
-&(19)\ \lvert G\rvert + (\lvert R\rvert + 1) \le \lvert X\rvert + (\lvert A_1\rvert + 1).
+&\text{(he)}\quad 0 \lt e, \cr
+&\text{(h1)}\quad \forall x \in A_1,\ u \lt x_1, \cr
+&\text{(h2)}\quad \forall x \in B,\ u + e \lt x_1, \cr
+&\text{(h3)}\quad \forall x \in A_2,\ u \lt x_1, \cr
+&\text{(h4)}\quad A_2 = () \ \vee\ (\mathrm{head}\,A_2)_1 \le u + e, \cr
+&\text{(h5)}\quad Z = () \ \vee\ (\mathrm{head}\,Z)_1 \le u, \cr
+&\text{(h6)}\quad \mathrm{SpineOK}(A_1,\ u+e,\ w), \cr
+&\text{(hcaseL)}\quad \lvert X\rvert \lt \lvert G\rvert + (\lvert R\rvert + 1), \cr
+&\text{(hcaseR)}\quad \lvert G\rvert + (\lvert R\rvert + 1) \le \lvert X\rvert + (\lvert A_1\rvert + 1).
 \end{aligned}
 ```
 
@@ -2324,72 +2326,71 @@ B \preceq_{\mathrm{lex}}
 **記法.** 以下
 
 ```math
-L := \lvert R\rvert + 1 = \lvert\beta\rvert, \quad
+L := \lvert R\rvert + 1 = \lvert\mathrm{blk}\rvert, \quad
 p := \lvert G\rvert + L, \quad
-N := G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, n), \quad
+N := G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n), \quad
 i := \lvert X\rvert, \quad
 j := \lvert X\rvert + (\lvert A_1\rvert + 1)
 ```
 
-と書く。仮定 (18) は $`i \lt p`$、仮定 (19) は $`p \le j`$ である。
-また $`((u,w))`$ は $`(u,w)`$ ただ 1 つからなる列を表す。
+と書く。仮定 (hcaseL) は $`i \lt p`$、仮定 (hcaseR) は $`p \le j`$ である。
 
 **第 0 段：$`2 \le n`$。**
-[T.argdom_pos](#t-argdom_pos) を (10) に適用すると $`j \lt \lvert N\rvert`$ を得る。
+[T.argdom_pos](#t-argdom_pos) を (heq) に適用すると $`j \lt \lvert N\rvert`$ を得る。
 一方 [T.copies_length](#t-copies_length) より
-$`\lvert \mathrm{copies}_{d_0}(\beta, n)\rvert = n \cdot L`$ であるから
+$`\lvert \mathrm{copies}_{d_0}(\mathrm{blk}, n)\rvert = n \cdot L`$ であるから
 
 ```math
 \lvert N\rvert = \lvert G\rvert + n \cdot L .
 ```
 
 もし $`n = 1`$ ならば $`\lvert N\rvert = \lvert G\rvert + L = p`$ であり、$`j \lt p`$ となって
-(19) の $`p \le j`$ に反する。(9) より $`1 \le n`$ であったから $`2 \le n`$ である。
+(hcaseR) の $`p \le j`$ に反する。(hn) より $`1 \le n`$ であったから $`2 \le n`$ である。
 以下 $`n = m + 1`$、$`1 \le m`$ と書く。
 
 **第 1 段：コピー $`0`$ を剥がし、境界 $`p`$ で切る。**
 [T.copies_succ_front](Cnf.md#t-copies_succ_front) より
 
 ```math
-N = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m+1)
-  = (G \mathbin{+\!\!+} \beta) \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)^{+d_0}
+N = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
+  = (G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}
 ```
 
-である。これと (10) を結合し、結合律で括り直すと
+である。これと (heq) を結合し、結合律で括り直すと
 
 ```math
 (\ast)\qquad
-(G \mathbin{+\!\!+} \beta) \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)^{+d_0}
+(G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}
  = \bigl(X \mathbin{+\!\!+} ((u,w))\bigr)
    \mathbin{+\!\!+} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))\bigr)
 ```
 
-を得る。(18) より $`\lvert X \mathbin{+\!\!+} ((u,w))\rvert = i + 1 \le p = \lvert G \mathbin{+\!\!+} \beta\rvert`$
+を得る。(hcaseL) より $`\lvert X \mathbin{+\!\!+} ((u,w))\rvert = i + 1 \le p = \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert`$
 であるから、[T.split_append_left](#t-split_append_left) を $`(\ast)`$ に適用して
 $`C \in \mathrm{PairSeq}`$ を得る。
 
 ```math
-\text{(C1)}\ G \mathbin{+\!\!+} \beta = \bigl(X \mathbin{+\!\!+} ((u,w))\bigr) \mathbin{+\!\!+} C,
+\text{(C1)}\ G \mathbin{+\!\!+} \mathrm{blk} = \bigl(X \mathbin{+\!\!+} ((u,w))\bigr) \mathbin{+\!\!+} C,
 \qquad
 \text{(C2)}\ A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))
-  = C \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)^{+d_0} .
+  = C \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0} .
 ```
 
 (C1) の両辺の長さを比べて $`\lvert C\rvert = p - (i+1)`$ である。
-(19) は $`p \le i + \lvert A_1\rvert + 1`$、すなわち $`\lvert C\rvert \le \lvert A_1\rvert`$ を与えるから、
+(hcaseR) は $`p \le i + \lvert A_1\rvert + 1`$、すなわち $`\lvert C\rvert \le \lvert A_1\rvert`$ を与えるから、
 ふたたび [T.split_append_left](#t-split_append_left) を (C2) に適用して $`D \in \mathrm{PairSeq}`$ を得る。
 
 ```math
 \text{(D1)}\ A_1 = C \mathbin{+\!\!+} D,
 \qquad
-\text{(D2)}\ \mathrm{copies}_{d_0}(\beta, m)^{+d_0}
+\text{(D2)}\ \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}
   = D \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)) .
 ```
 
 (D1) の長さから $`\lvert A_1\rvert = \lvert C\rvert + \lvert D\rvert`$ である。
 
 $`d_0`$ シフトされた列の要素はすべて第 1 成分が $`d_0`$ 以上である。実際、
-$`y \in \mathrm{copies}_{d_0}(\beta, m)^{+d_0}`$ ならば
+$`y \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}`$ ならば
 [T.mem_shiftr0](Cnf.md#t-mem_shiftr0) より $`y = (z_1 + d_0,\ z_2)`$ の形であり
 $`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e,w)`$ に適用して
 
@@ -2400,34 +2401,32 @@ $`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e
 を得る。同じ理由で $`\forall y \in D,\ d_0 \le y_1`$ である。
 
 **第 2 段：逆シフトして小さい塔を書く。**
-$`L^{-d}`$ を $`L`$ の各対の第 1 成分から $`d`$ を（切り捨て減法で）引いた列とする。
 (D2) の両辺に $`(\cdot)^{-d_0}`$ を施し、[T.shiftl0_shiftr0](#t-shiftl0_shiftr0) と
 [T.shiftl0_append](#t-shiftl0_append)、[T.shiftl0_cons](#t-shiftl0_cons) を使うと
 
 ```math
-\text{(S)}\qquad \mathrm{copies}_{d_0}(\beta, m)
+\text{(S)}\qquad \mathrm{copies}_{d_0}(\mathrm{blk}, m)
   = D^{-d_0} \mathbin{+\!\!+} (u+e-d_0,\ w) ::
       \bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr)
 ```
 
 を得る。
 
-**第 3 段：$`\lvert X\rvert`$ と $`\lvert G\rvert + \lvert D\rvert`$ の三分法。**
+**第 3 段：$`\lvert X\rvert`$ と $`\lvert G\rvert + \lvert D\rvert`$ の三分律。**
 自然数の三分律により、次の 3 つのいずれかがちょうど 1 つ成り立つ。
 
 **(a) $`\lvert X\rvert \lt \lvert G\rvert + \lvert D\rvert`$ のとき。**
 $`1 \le m`$ であるから $`m = m'' + 1`$ と書ける。
 [T.copies_succ_front](Cnf.md#t-copies_succ_front) より
-$`\mathrm{copies}_{d_0}(\beta, m) = \beta \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m'')^{+d_0}`$
-であるから $`\beta \sqsubseteq \mathrm{copies}_{d_0}(\beta, m)`$ である
-（ここで $`P \sqsubseteq Q`$ は $`\exists T,\ Q = P \mathbin{+\!\!+} T`$ を表す）。
-また (S) より $`D^{-d_0} \sqsubseteq \mathrm{copies}_{d_0}(\beta, m)`$ であり、
+$`\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{blk} \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m'')^{+d_0}`$
+であるから $`\mathrm{blk} \sqsubseteq \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ である。
+また (S) より $`D^{-d_0} \sqsubseteq \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ であり、
 $`\lvert D^{-d_0}\rvert = \lvert D\rvert`$ である。
 
-(C1) より $`X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} \beta`$ であり、
+(C1) より $`X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} \mathrm{blk}`$ であり、
 [T.prefix_append_left](#t-prefix_append_left) より
-$`G \mathbin{+\!\!+} \beta \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)`$ かつ
-$`G \mathbin{+\!\!+} D^{-d_0} \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)`$ である。
+$`G \mathbin{+\!\!+} \mathrm{blk} \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ かつ
+$`G \mathbin{+\!\!+} D^{-d_0} \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ である。
 同一の列の 2 つの前部分列は、長さの短い方が長い方の前部分列である。いまの場合の長さは
 $`i + 1 \le \lvert G\rvert + \lvert D\rvert`$（場合 (a) の条件）であるから
 
@@ -2445,7 +2444,7 @@ X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} D^{-d_0}
 となる。(S) と (A1') を合わせると、小さい塔は
 
 ```math
-\text{(Nm)}\qquad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)
+\text{(Nm)}\qquad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)
   = \bigl((X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} A_1'\bigr) \mathbin{+\!\!+} (u+e-d_0,\ w) ::
       \bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr)
 ```
@@ -2455,8 +2454,8 @@ X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} D^{-d_0}
 一方 [T.copies_succ_back](Cofinality.md#t-copies_succ_back) より
 
 ```math
-G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m+1)
-  = \bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)\bigr) \mathbin{+\!\!+} \beta^{+(m d_0)}
+G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
+  = \bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr) \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}
 ```
 
 である。これと (Nm)、および $`(\ast)`$ を合わせると、左因子 $`X \mathbin{+\!\!+} ((u,w))`$ を共有する
@@ -2467,7 +2466,7 @@ G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m+1)
 A_1 \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 = A_1' \mathbin{+\!\!+} (u+e-d_0,\ w) ::
    \Bigl(\bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr)
-     \mathbin{+\!\!+} \beta^{+(m d_0)}\Bigr)
+     \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}\Bigr)
 ```
 
 を得る。$`\lvert A_1'\rvert \le \lvert A_1\rvert`$ であるから
@@ -2487,7 +2486,7 @@ $`W_0 = (u+e-d_0,\ w)`$、残りを比べて
 
 ```math
 \text{(W)}\qquad
-\bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr) \mathbin{+\!\!+} \beta^{+(m d_0)}
+\bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr) \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}
  = W' \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
@@ -2497,15 +2496,13 @@ $`W_0 = (u+e-d_0,\ w)`$、残りを比べて
 \text{(A1dec)}\qquad A_1 = A_1' \mathbin{+\!\!+} (u+e-d_0,\ w) :: W' .
 ```
 
-$`(u+e-d_0,\ w) \in A_1`$ であるから (12) より $`u \lt u+e-d_0`$、すなわち
+$`(u+e-d_0,\ w) \in A_1`$ であるから (h1) より $`u \lt u+e-d_0`$、すなわち
 
 ```math
 (\ddagger)\qquad d_0 \lt e, \qquad u + e - d_0 = u + (e - d_0) .
 ```
 
-**(a-1) 小さい塔における実例。**
-$`\mathrm{tw}_u`$、$`\mathrm{dw}_u`$ をそれぞれ「第 1 成分が $`u`$ より大きい要素が先頭から続く極大な
-前部分列」およびその残りとし
+**(a-1) 小さい塔についての分解。**
 
 ```math
 A_2' := \mathrm{tw}_u\bigl(A_2^{-d_0}\bigr), \qquad
@@ -2516,40 +2513,40 @@ Z_2 := \mathrm{dw}_u\bigl(A_2^{-d_0}\bigr) \mathbin{+\!\!+} Z^{-d_0}
 
 - $`A_2' \mathbin{+\!\!+} Z_2 = A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0}`$：
   $`\mathrm{tw}_u`$ と $`\mathrm{dw}_u`$ の連結が元の列であることによる。
-- $`A_2' \sqsubseteq A_2^{-d_0}`$：$`\mathrm{tw}_u`$ は前部分列である。
-- $`\forall x \in A_2',\ u \lt x_1`$：$`\mathrm{tw}_u`$ の要素は述語をみたす。
+- $`A_2' \sqsubseteq A_2^{-d_0}`$：$`\mathrm{tw}_u L`$ は $`L`$ の前部分列であることによる。
+- $`\forall x \in A_2',\ u \lt x_1`$：$`\mathrm{tw}_u L`$ の各要素 $`x`$ が $`u \lt x_1`$ をみたすことによる。
 - $`A_2' = () \vee (\mathrm{head}\,A_2')_1 \le u + (e-d_0)`$：
   $`A_2 = ()`$ なら $`A_2^{-d_0} = ()`$ で $`A_2' = ()`$。
-  $`A_2 = a :: A_2''`$ なら (15) の第 2 選言より $`a_1 \le u+e`$ であり、
+  $`A_2 = a :: A_2''`$ なら (h4) の第 2 選言より $`a_1 \le u+e`$ であり、
   $`A_2^{-d_0} = (a_1 - d_0,\ a_2) :: (A_2'')^{-d_0}`$ である。
   $`u \lt a_1 - d_0`$ ならば $`A_2'`$ の先頭は $`(a_1-d_0,\ a_2)`$ であって
   $`a_1 - d_0 \le u + e - d_0 = u + (e-d_0)`$（$`(\ddagger)`$ による）。
   $`\neg(u \lt a_1 - d_0)`$ ならば $`A_2' = ()`$。
 - $`Z_2 = () \vee (\mathrm{head}\,Z_2)_1 \le u`$：
-  $`\mathrm{dw}_u(A_2^{-d_0}) = z :: Z''`$ ならば $`\mathrm{dw}_u`$ の先頭は述語を破るので $`z_1 \le u`$。
+  $`\mathrm{dw}_u(A_2^{-d_0}) = z :: Z''`$ ならば $`\mathrm{dw}`$ の定義より $`\neg(u \lt z_1)`$、すなわち $`z_1 \le u`$。
   $`\mathrm{dw}_u(A_2^{-d_0}) = ()`$ ならば $`Z_2 = Z^{-d_0}`$ であり、$`Z = ()`$ なら $`Z_2 = ()`$、
-  $`Z = z :: Z''`$ なら (16) の第 2 選言より $`z_1 \le u`$ であるから $`z_1 - d_0 \le u`$。
+  $`Z = z :: Z''`$ なら (h5) の第 2 選言より $`z_1 \le u`$ であるから $`z_1 - d_0 \le u`$。
 
 これと (Nm) から
 
 ```math
-\text{(eq')}\qquad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)
+\text{(eq')}\qquad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)
  = \Bigl(X \mathbin{+\!\!+} (u,w) :: \bigl(A_1' \mathbin{+\!\!+} (u + (e-d_0),\ w) ::
      (B^{-d_0} \mathbin{+\!\!+} A_2')\bigr)\Bigr) \mathbin{+\!\!+} Z_2
 ```
 
-が成り立つ。(8) を $`m`$ に適用する（$`1 \le m`$ かつ $`m \lt m+1 = n`$）ために、
+が成り立つ。(hIH) を $`m`$ に適用する（$`1 \le m`$ かつ $`m \lt m+1 = n`$）ために、
 $`\mathrm{ArgDomCoreOn}`$ の残りの仮定を確かめる。
 
 - $`0 \lt e - d_0`$：$`(\ddagger)`$ による。
-- $`\forall x \in A_1',\ u \lt x_1`$：(A1dec) より $`A_1'`$ の要素は $`A_1`$ の要素であり、(12) による。
+- $`\forall x \in A_1',\ u \lt x_1`$：(A1dec) より $`A_1'`$ の要素は $`A_1`$ の要素であり、(h1) による。
 - $`\forall x \in B^{-d_0},\ u + (e-d_0) \lt x_1`$：$`x = (y_1 - d_0,\ y_2)`$（$`y \in B`$）と書ける。
-  (13) より $`u + e \lt y_1`$ であり、$`(\dagger)`$ の $`d_0 \le u+e`$ と合わせて
+  (h2) より $`u + e \lt y_1`$ であり、$`(\dagger)`$ の $`d_0 \le u+e`$ と合わせて
   $`y_1 - d_0 \gt u + e - d_0 = u + (e-d_0)`$。
 - $`\forall x \in A_2',\ u \lt x_1`$、$`A_2' = () \vee (\mathrm{head}\,A_2')_1 \le u+(e-d_0)`$、
   $`Z_2 = () \vee (\mathrm{head}\,Z_2)_1 \le u`$：上に示した。
 
-**(a-2) 降下した $`\mathrm{SpineOK}`$。**
+**(a-2) 小さい塔についての $`\mathrm{SpineOK}`$。**
 残るのは $`\mathrm{SpineOK}(A_1',\ u+(e-d_0),\ w)`$ である。
 $`U, V \in \mathrm{PairSeq}`$、$`x \in \mathbb{N}\times\mathbb{N}`$ が
 
@@ -2576,18 +2573,18 @@ G = \bigl(Y \mathbin{+\!\!+} (x)\bigr) \mathbin{+\!\!+} V_3, \qquad V = V_3 \mat
 これを (C1) に代入し、共通の左因子 $`X \mathbin{+\!\!+} ((u,w))`$ を消去すると
 
 ```math
-C = \bigl(U \mathbin{+\!\!+} (x)\bigr) \mathbin{+\!\!+} \bigl(V_3 \mathbin{+\!\!+} \beta\bigr)
+C = \bigl(U \mathbin{+\!\!+} (x)\bigr) \mathbin{+\!\!+} \bigl(V_3 \mathbin{+\!\!+} \mathrm{blk}\bigr)
 ```
 
 であり、(D1) と合わせて
 
 ```math
-A_1 = U \mathbin{+\!\!+} x :: \bigl((V_3 \mathbin{+\!\!+} \beta) \mathbin{+\!\!+} D\bigr)
+A_1 = U \mathbin{+\!\!+} x :: \bigl((V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D\bigr)
 ```
 
-を得る。次に $`x_1 \lt v_0`$ を示す。$`\beta \ne ()`$ かつ $`1 \le m`$ であるから
+を得る。次に $`x_1 \lt v_0`$ を示す。$`\mathrm{blk} \ne ()`$ かつ $`1 \le m`$ であるから
 [T.copies_headI](#t-copies_headI) より
-$`\mathrm{head}\,\mathrm{copies}_{d_0}(\beta, m) = \mathrm{head}\,\beta = (v_0,w_0)`$ である。
+$`\mathrm{head}\,\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{head}\,\mathrm{blk} = (v_0,w_0)`$ である。
 (S) の右辺の先頭で場合分けする。
 
 - $`D^{-d_0} = ()`$ のとき。(S) の右辺の先頭は $`(u+e-d_0,\ w)`$ であるから
@@ -2597,17 +2594,17 @@ $`\mathrm{head}\,\mathrm{copies}_{d_0}(\beta, m) = \mathrm{head}\,\beta = (v_0,w
   $`V = V_3 \mathbin{+\!\!+} D^{-d_0}`$ より $`s \in V`$ であり、仮定 $`\forall y \in V,\ x_1 \lt y_1`$ から
   $`x_1 \lt s_1 = v_0`$。
 
-そこで (17) を $`U`$、$`(V_3 \mathbin{+\!\!+} \beta) \mathbin{+\!\!+} D`$、$`x`$ に適用する。3 つの条件を確かめる。
+そこで (h6) を $`U`$、$`(V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D`$、$`x`$ に適用する。3 つの条件を確かめる。
 
-- 分解 $`A_1 = U \mathbin{+\!\!+} x :: ((V_3 \mathbin{+\!\!+} \beta) \mathbin{+\!\!+} D)`$：上に示した。
+- 分解 $`A_1 = U \mathbin{+\!\!+} x :: ((V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D)`$：上に示した。
 - $`x_1 \lt u + e`$：$`x_1 \lt u + (e-d_0) \le u + e`$。
-- $`\forall y \in (V_3 \mathbin{+\!\!+} \beta) \mathbin{+\!\!+} D,\ x_1 \lt y_1`$：$`y`$ の属する部分で分ける。
+- $`\forall y \in (V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D,\ x_1 \lt y_1`$：$`y`$ の属する部分で分ける。
   $`y \in V_3`$ なら $`y \in V`$ であるから仮定による。
   $`y = (v_0,w_0)`$ なら $`x_1 \lt v_0 = y_1`$。
-  $`y \in R`$ なら (4) より $`v_0 \lt y_1`$ であり、$`x_1 \lt v_0`$ と合わせて $`x_1 \lt y_1`$。
-  $`y \in D`$ なら (D2) より $`y \in \mathrm{copies}_{d_0}(\beta, m)^{+d_0}`$ であるから
+  $`y \in R`$ なら (hRgt) より $`v_0 \lt y_1`$ であり、$`x_1 \lt v_0`$ と合わせて $`x_1 \lt y_1`$。
+  $`y \in D`$ なら (D2) より $`y \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}`$ であるから
   [T.mem_shiftr0](Cnf.md#t-mem_shiftr0) より $`y = (z_1+d_0,\ z_2)`$、
-  $`z \in \mathrm{copies}_{d_0}(\beta, m)`$ と書ける。(4) より $`\forall x \in R,\ v_0 \le x_1`$ であるから
+  $`z \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ と書ける。(hRgt) より $`\forall x \in R,\ v_0 \le x_1`$ であるから
   [T.copies_v0_le](Cnf.md#t-copies_v0_le) が使えて $`v_0 \le z_1 \le z_1 + d_0 = y_1`$、
   したがって $`x_1 \lt v_0 \le y_1`$。
 
@@ -2630,7 +2627,7 @@ $`\forall y \in D,\ d_0 \le y_1`$ は第 1 段で示したから、
 D = U_2^{+d_0} \mathbin{+\!\!+} (x_1 + d_0,\ x_2) :: V^{+d_0}
 ```
 
-を得る。(17) を $`C \mathbin{+\!\!+} U_2^{+d_0}`$、$`V^{+d_0}`$、$`(x_1+d_0,\ x_2)`$ に適用する。
+を得る。(h6) を $`C \mathbin{+\!\!+} U_2^{+d_0}`$、$`V^{+d_0}`$、$`(x_1+d_0,\ x_2)`$ に適用する。
 
 - 分解：(D1) より
   $`A_1 = C \mathbin{+\!\!+} D = (C \mathbin{+\!\!+} U_2^{+d_0}) \mathbin{+\!\!+} (x_1+d_0,\ x_2) :: V^{+d_0}`$。
@@ -2643,7 +2640,7 @@ D = U_2^{+d_0} \mathbin{+\!\!+} (x_1 + d_0,\ x_2) :: V^{+d_0}
 $`\mathrm{SpineOK}(A_1',\ u+(e-d_0),\ w)`$ が示された。
 
 **(a-3) 結論の持ち上げ。**
-(8) を $`m`$ に適用し、(eq') と (a-1)(a-2) で確かめた仮定を与えると
+(hIH) を $`m`$ に適用し、(eq') と (a-1)(a-2) で確かめた仮定を与えると
 
 ```math
 \text{(core)}\qquad B^{-d_0} \preceq_{\mathrm{lex}}
@@ -2660,7 +2657,7 @@ B^{-d_0} \mathbin{+\!\!+} A_2' \ \sqsubseteq\ W' \mathbin{+\!\!+} (u+e,w) :: (B 
 
 ```math
 \bigl(B^{-d_0} \mathbin{+\!\!+} A_2'\bigr) \mathbin{+\!\!+}
-  \bigl(Z_2 \mathbin{+\!\!+} \beta^{+(m d_0)}\bigr)
+  \bigl(Z_2 \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}\bigr)
  = W' \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
@@ -2699,7 +2696,7 @@ B^{-d_0} \preceq_{\mathrm{lex}}
   \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+(e-d_0)}
 ```
 
-を得る。(13) と $`(\dagger)`$ から $`\forall x \in B,\ d_0 \le u + e \lt x_1`$ であるから、
+を得る。(h2) と $`(\dagger)`$ から $`\forall x \in B,\ d_0 \le u + e \lt x_1`$ であるから、
 [T.shiftr0_shiftl0](#t-shiftr0_shiftl0) より $`(B^{-d_0})^{+d_0} = B`$ である。
 [T.sle_shiftr0](#t-sle_shiftr0) を $`d_0`$ について適用し、
 [T.shiftr0_add](#t-shiftr0_add) と $`d_0 + (e-d_0) = e`$（$`(\ddagger)`$ による）を使うと
@@ -2714,7 +2711,7 @@ B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!
 (S) より
 
 ```math
-\text{(Nm)}\qquad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)
+\text{(Nm)}\qquad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)
   = \bigl(G \mathbin{+\!\!+} D^{-d_0}\bigr) \mathbin{+\!\!+} (u+e-d_0,\ w) ::
       \bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr)
 ```
@@ -2722,8 +2719,8 @@ B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!
 であり、[T.copies_succ_back](Cofinality.md#t-copies_succ_back) より
 
 ```math
-G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m+1)
-  = \bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)\bigr) \mathbin{+\!\!+} \beta^{+(m d_0)}
+G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
+  = \bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr) \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}
 ```
 
 である。これらと $`(\ast)`$ から
@@ -2733,7 +2730,7 @@ G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m+1)
 \bigl(X \mathbin{+\!\!+} ((u,w))\bigr) \mathbin{+\!\!+}
   \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))\bigr)
 = \bigl(G \mathbin{+\!\!+} D^{-d_0}\bigr) \mathbin{+\!\!+}
-  \Bigl((u+e-d_0,\ w) :: \bigl(\Sigma \mathbin{+\!\!+} \beta^{+(m d_0)}\bigr)\Bigr)
+  \Bigl((u+e-d_0,\ w) :: \bigl(\Sigma \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}\bigr)\Bigr)
 ```
 
 を得る。ここで
@@ -2750,7 +2747,7 @@ $`\Sigma := B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})`$ �
 ```math
 X \mathbin{+\!\!+} ((u,w)) = \bigl(G \mathbin{+\!\!+} D^{-d_0}\bigr) \mathbin{+\!\!+} K,
 \qquad
-(u+e-d_0,\ w) :: \bigl(\Sigma \mathbin{+\!\!+} \beta^{+(m d_0)}\bigr)
+(u+e-d_0,\ w) :: \bigl(\Sigma \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}\bigr)
  = K \mathbin{+\!\!+} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))\bigr).
 ```
 
@@ -2768,7 +2765,7 @@ $`u = u + e - d_0`$ であり、$`(\dagger)`$ の $`d_0 \le u+e`$ と合わせ�
 第 2 式の残りを比べると
 
 ```math
-\text{(RW)}\qquad \Sigma \mathbin{+\!\!+} \beta^{+(m d_0)}
+\text{(RW)}\qquad \Sigma \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}
  = A_1 \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
@@ -2793,7 +2790,7 @@ $`\lvert B^{-d_0}\rvert = \lvert B\rvert \le \lvert A_1\rvert + 1 + \lvert B\rve
 B^{-d_0} \ \sqsubseteq\ A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)
 ```
 
-を得る。(13) と $`(\dagger)`$ から $`\forall x \in B,\ d_0 \le x_1`$ であり、$`e = d_0`$ であるから
+を得る。(h2) と $`(\dagger)`$ から $`\forall x \in B,\ d_0 \le x_1`$ であり、$`e = d_0`$ であるから
 [T.shiftr0_shiftl0](#t-shiftr0_shiftl0) より $`(B^{-d_0})^{+e} = B`$ である。
 [T.shiftr0_prefix](#t-shiftr0_prefix) を $`e`$ について適用すると
 
@@ -2808,17 +2805,17 @@ B \ \sqsubseteq\ \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\
 
 **(c-1) $`(u,w)`$ は $`R`$ の内部にある。**
 (C1) を左右入れ替えた
-$`(X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} C = G \mathbin{+\!\!+} \beta`$ に、
+$`(X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} C = G \mathbin{+\!\!+} \mathrm{blk}`$ に、
 $`\lvert G\rvert \le \lvert X\rvert \lt \lvert X \mathbin{+\!\!+} ((u,w))\rvert`$ のもとで
 [T.split_append_left](#t-split_append_left) を適用して $`K`$ を得る。
 
 ```math
-X \mathbin{+\!\!+} ((u,w)) = G \mathbin{+\!\!+} K, \qquad \beta = K \mathbin{+\!\!+} C .
+X \mathbin{+\!\!+} ((u,w)) = G \mathbin{+\!\!+} K, \qquad \mathrm{blk} = K \mathbin{+\!\!+} C .
 ```
 
 $`\lvert K\rvert = \lvert X\rvert + 1 - \lvert G\rvert`$ であり、場合 (c) の条件から
 $`\lvert G\rvert \lt \lvert X\rvert`$ なので $`\lvert K\rvert \ge 2 \gt 0`$、すなわち
-$`K = k_0 :: K_1`$ と書ける。$`\beta = (v_0,w_0) :: R`$ の尾を比べて $`R = K_1 \mathbin{+\!\!+} C`$ を得る。
+$`K = k_0 :: K_1`$ と書ける。$`\mathrm{blk} = (v_0,w_0) :: R`$ の尾を比べて $`R = K_1 \mathbin{+\!\!+} C`$ を得る。
 第 1 式は $`X \mathbin{+\!\!+} ((u,w)) = (G \mathbin{+\!\!+} (k_0)) \mathbin{+\!\!+} K_1`$ と書き直せ、
 $`\lvert G \mathbin{+\!\!+} (k_0)\rvert = \lvert G\rvert + 1 \le \lvert X\rvert`$ であるから、
 ふたたび [T.split_append_left](#t-split_append_left) を適用して $`T`$ を得る。
@@ -2833,40 +2830,40 @@ X = \bigl(G \mathbin{+\!\!+} (k_0)\bigr) \mathbin{+\!\!+} T, \qquad K_1 = T \mat
 \text{(Rdec)}\qquad R = T \mathbin{+\!\!+} (u,w) :: C
 ```
 
-である。$`(u,w) \in R`$ であるから (4) より $`v_0 \lt u`$ である。
+である。$`(u,w) \in R`$ であるから (hRgt) より $`v_0 \lt u`$ である。
 
-**(c-2) コピー $`1`$ の根から $`u \lt v_0 + d_0`$ と $`w \le w_0`$ を得る。**
+**(c-2) コピー $`1`$ の先頭から $`u \lt v_0 + d_0`$ と $`w \le w_0`$ を得る。**
 [T.copies_succ_cons](Cnf.md#t-copies_succ_cons) と
 [T.shiftr0_cons](Cnf.md#t-shiftr0_cons) より
 
 ```math
-\text{(SC)}\qquad \mathrm{copies}_{d_0}(\beta, m'+1)^{+d_0}
- = (v_0+d_0,\ w_0) :: \Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m')^{+d_0}\Bigr)^{+d_0}
+\text{(SC)}\qquad \mathrm{copies}_{d_0}(\mathrm{blk}, m'+1)^{+d_0}
+ = (v_0+d_0,\ w_0) :: \Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m')^{+d_0}\Bigr)^{+d_0}
 ```
 
 である。(D2) の左辺はこれであるから、$`D`$ で場合分けする。
 
 **$`D = ()`$ のとき。** (D2) と (SC) の先頭を比べて
 $`(v_0+d_0,\ w_0) = (u+e,\ w)`$、すなわち $`v_0 + d_0 = u + e`$ かつ $`w_0 = w`$ である。
-(11) の $`0 \lt e`$ より $`u \lt u + e = v_0 + d_0`$ であり、$`w \le w_0`$ も成り立つ。
+(he) の $`0 \lt e`$ より $`u \lt u + e = v_0 + d_0`$ であり、$`w \le w_0`$ も成り立つ。
 
 **$`D = d_1 :: D'`$ のとき。** (D2) と (SC) の先頭を比べて $`d_1 = (v_0+d_0,\ w_0)`$、
 残りを比べて
 
 ```math
 \text{(rest)}\qquad
-\Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m')^{+d_0}\Bigr)^{+d_0}
+\Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m')^{+d_0}\Bigr)^{+d_0}
  = D' \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
 を得る。(D1) より $`A_1 = C \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: D'`$ である。
-$`(v_0+d_0,\ w_0) \in A_1`$ に (12) を適用して $`u \lt v_0 + d_0`$ を得る。
+$`(v_0+d_0,\ w_0) \in A_1`$ に (h1) を適用して $`u \lt v_0 + d_0`$ を得る。
 これと (c-1) の $`v_0 \lt u`$ から $`0 \lt d_0`$ である。
-(4) と $`0 \lt d_0`$ と $`1 \le m'+1`$ に
+(hRgt) と $`0 \lt d_0`$ と $`1 \le m'+1`$ に
 [T.copies_tl_gt](Cnf.md#t-copies_tl_gt) を適用すると
 
 ```math
-\forall y \in R \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m')^{+d_0},\ v_0 \lt y_1
+\forall y \in R \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m')^{+d_0},\ v_0 \lt y_1
 ```
 
 であり、[T.mem_shiftr0](Cnf.md#t-mem_shiftr0) より、この列を $`d_0`$ だけシフトした列
@@ -2877,27 +2874,27 @@ $`(v_0+d_0,\ w_0) \in A_1`$ に (12) を適用して $`u \lt v_0 + d_0`$ を得�
 v_0 + d_0 \lt u + e, \qquad \forall y \in D',\ v_0 + d_0 \lt y_1
 ```
 
-である。よって (17) を $`C`$、$`D'`$、$`(v_0+d_0,\ w_0)`$ に適用でき
+である。よって (h6) を $`C`$、$`D'`$、$`(v_0+d_0,\ w_0)`$ に適用でき
 （分解は $`A_1 = C \mathbin{+\!\!+} (v_0+d_0,w_0) :: D'`$）、$`w \le w_0`$ を得る。
 
 いずれの場合も $`u \lt v_0 + d_0`$ かつ $`w \le w_0`$ である。
 (c-1) の $`v_0 \lt u`$ と合わせて $`0 \lt d_0`$ である。
 
 **(c-3) 極小性条件との矛盾。**
-(6) で場合分けする。第 1 選言は $`d_0 = 0`$ を含み、(c-2) の $`0 \lt d_0`$ に反する。
+(hdisj) で場合分けする。第 1 選言は $`d_0 = 0`$ を含み、(c-2) の $`0 \lt d_0`$ に反する。
 第 2 選言のとき、$`\ell_1 = v_0 + d_0`$ と $`\ell_2 = w_0 + 1`$ より
-$`\ell = (v_0+d_0,\ w_0+1)`$ である。(3) より
-$`\lvert M\rvert - 1 = \lvert G \mathbin{+\!\!+} \beta\rvert`$ であるから、第 2 選言の第 4 連言子は
+$`\ell = (v_0+d_0,\ w_0+1)`$ である。(hMeq) より
+$`\lvert M\rvert - 1 = \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert`$ であるから、第 2 選言の第 4 連言子は
 
 ```math
-\lvert G\rvert \to^{(G \mathbin{+\!\!+} \beta) \mathbin{+\!\!+} ((v_0+d_0,\,w_0+1))}_1
-  \lvert G \mathbin{+\!\!+} \beta\rvert
+\lvert G\rvert \to^{(G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} ((v_0+d_0,\,w_0+1))}_1
+  \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert
 ```
 
 と書ける。これに [T.spineOK_of_nextrel1_strict](#t-spineOK_of_nextrel1_strict) を適用すると
 $`\mathrm{SpineOK}(R,\ v_0+d_0,\ w_0+1)`$ を得る。これを (Rdec) の分解
 $`R = T \mathbin{+\!\!+} (u,w) :: C`$、$`u \lt v_0+d_0`$（(c-2)）、および
-$`\forall y \in C,\ u \lt y_1`$（(D1) より $`C`$ の要素は $`A_1`$ の要素であり (12) による）に
+$`\forall y \in C,\ u \lt y_1`$（(D1) より $`C`$ の要素は $`A_1`$ の要素であり (h1) による）に
 適用して $`w_0 + 1 \le w`$ を得る。これは (c-2) の $`w \le w_0`$ に反する。
 
 したがって場合 (c) は起こらない。∎
@@ -2908,24 +2905,26 @@ $`\forall y \in C,\ u \lt y_1`$（(D1) より $`C`$ の要素は $`A_1`$ の要�
 ### 定理
 
 $`M, G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0, n \in \mathbb{N}`$、
-$`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\beta := (v_0,w_0) :: R`$ とおく。
-[T.argDomCoreOn_bad_A2](#t-argDomCoreOn_bad_A2) の仮定 (1)–(7) と (9)、すなわち
+$`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。
+[T.argDomCoreOn_bad_A2](#t-argDomCoreOn_bad_A2) の仮定 (hM) から (hSTn) までと (hn)、すなわち
 
 ```math
 \begin{aligned}
-&(1)\ M \in \mathrm{ST\_PS}, \quad (2)\ \mathrm{ArgDomCoreOn}(M), \quad
- (3)\ M = G \mathbin{+\!\!+} \beta \mathbin{+\!\!+} (\ell), \cr
-&(4)\ \forall x \in R,\ v_0 \lt x_1, \quad (5)\ v_0 \lt \ell_1, \cr
-&(6)\ \bigl(d_0 = 0 \wedge \ell_2 = 0 \wedge \ell_1 = v_0 + 1\bigr)
+&\text{(hM)}\quad M \in \mathrm{ST\_PS}, \qquad
+ \text{(hMon)}\quad \mathrm{ArgDomCoreOn}(M), \cr
+&\text{(hMeq)}\quad M = G \mathbin{+\!\!+} \mathrm{blk} \mathbin{+\!\!+} (\ell), \cr
+&\text{(hRgt)}\quad \forall x \in R,\ v_0 \lt x_1, \qquad
+ \text{(hlp)}\quad v_0 \lt \ell_1, \cr
+&\text{(hdisj)}\quad \bigl(d_0 = 0 \wedge \ell_2 = 0 \wedge \ell_1 = v_0 + 1\bigr)
    \ \vee\ \bigl(0 \lt d_0 \wedge \ell_2 = w_0 + 1 \wedge \ell_1 = v_0 + d_0
      \wedge \lvert G\rvert \to^M_1 (\lvert M\rvert - 1)\bigr), \cr
-&(7)\ \forall m,\ 1 \le m \to G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m) \in \mathrm{ST\_PS},
- \quad (9)\ 1 \le n
+&\text{(hSTn)}\quad \forall m,\ 1 \le m \to G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m) \in \mathrm{ST\_PS}, \cr
+&\text{(hn)}\quad 1 \le n
 \end{aligned}
 ```
 
 を仮定する。このとき
-$`\mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, n)\bigr)`$。
+$`\mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n)\bigr)`$。
 
 ### 証明
 
@@ -2933,7 +2932,7 @@ $`n`$ に関する完全帰納法による。帰納法の述語は
 
 ```math
 \Phi(n) :\equiv \Bigl(1 \le n \to
-  \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, n)\bigr)\Bigr)
+  \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n)\bigr)\Bigr)
 ```
 
 である（結論の $`1 \le n`$ を前件に戻して量化する）。完全帰納法の帰納段は
@@ -2945,12 +2944,12 @@ $`\Phi(0)`$ が成り立つ場合として含まれている。
 
 ```math
 \text{(IH)}\qquad \forall m,\ m \lt n \to
-  \Bigl(1 \le m \to \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)\bigr)\Bigr)
+  \Bigl(1 \le m \to \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)\Bigr)
 ```
 
 をおく。$`1 \le n`$ とし、$`\mathrm{ArgDomCoreOn}`$ の定義に従って
 $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$、$`u, w, e \in \mathbb{N}`$ と
-[T.argDomCoreOn_bad_A2](#t-argDomCoreOn_bad_A2) の仮定 (10)–(17) を与えられたとして
+[T.argDomCoreOn_bad_A2](#t-argDomCoreOn_bad_A2) の仮定 (heq) から (h6) までを与えられたとして
 
 ```math
 B \preceq_{\mathrm{lex}}
@@ -2958,11 +2957,11 @@ B \preceq_{\mathrm{lex}}
 ```
 
 を示す。(IH) を書き直すと、これは
-[T.argDomCoreOn_bad_A2](#t-argDomCoreOn_bad_A2) の仮定 (8)
+[T.argDomCoreOn_bad_A2](#t-argDomCoreOn_bad_A2) の仮定 (hIH)
 
 ```math
 \forall m,\ 1 \le m \to m \lt n \to
-  \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, m)\bigr)
+  \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)
 ```
 
 そのものである。
@@ -2973,11 +2972,14 @@ $`j \lt p`$ または $`p \le j`$ であり、後者の場合さらに $`i \lt p
 この 3 通りは互いに排反で、かつすべての場合を尽くす。
 
 - $`j \lt p`$ のとき。[T.argDomCoreOn_bad_B](#t-argDomCoreOn_bad_B) を
-  (1)–(7)、(8)、(9)、(10)–(17) と判別条件 $`j \lt p`$ に適用する。
+  (hM) から (hSTn) まで、(hIH)、(hn)、(heq) から (h6) まで、および
+  その判別条件 (hcase) $`j \lt p`$ に適用する。
 - $`p \le j`$ かつ $`i \lt p`$ のとき。[T.argDomCoreOn_bad_A2](#t-argDomCoreOn_bad_A2) を
-  (1)–(7)、(8)、(9)、(10)–(17) と判別条件 (18) $`i \lt p`$、(19) $`p \le j`$ に適用する。
+  (hM) から (hSTn) まで、(hIH)、(hn)、(heq) から (h6) まで、および
+  その判別条件 (hcaseL) $`i \lt p`$、(hcaseR) $`p \le j`$ に適用する。
 - $`p \le j`$ かつ $`p \le i`$ のとき。[T.argDomCoreOn_bad_A1](#t-argDomCoreOn_bad_A1) を
-  (1)–(7)、(8)、(9)、(10)–(17) と判別条件 $`p \le i`$ に適用する。
+  (hM) から (hSTn) まで、(hIH)、(hn)、(heq) から (h6) まで、および
+  その判別条件 (hcase) $`p \le i`$ に適用する。
 
 いずれの場合も結論が得られた。∎
 
@@ -2999,7 +3001,7 @@ $`j_1 := \lvert M\rvert - 1`$ と書く。$`M[n]`$ の定義（D.oper）の分�
 
 **(b) $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ のとき。**
 [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より
-$`M[n] = \mathrm{Pred}\,M`$ である。$`j_1 = \lvert M\rvert - 1 \ne 0`$ より
+[$`M[n] = \mathrm{Pred}\,M`$](Pss.md#d-Pred) である。$`j_1 = \lvert M\rvert - 1 \ne 0`$ より
 $`2 \le \lvert M\rvert`$、すなわち $`\neg(\lvert M\rvert \le 1)`$ であるから、
 $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれて
 $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
@@ -3022,20 +3024,22 @@ $`\mathrm{ArgDomCoreOn}(\mathrm{dropLast}\,M) = \mathrm{ArgDomCoreOn}(M[n])`$ �
 
 **(c) $`j_1 \ne 0`$ かつ $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ のとき。**
 $`2 \le \lvert M\rvert`$ より $`0 \lt \lvert M\rvert`$ であるから、
-[T.hasParent_last_ST_PS](Cofinality.md#t-hasParent_last_ST_PS) より
-$`\mathrm{hasParent}(M, \mathrm{idx}_1(M,j_1), j_1)`$ が成り立つ。
+[T.hasParent_last_ST_PS](Cofinality.md#t-hasParent_last_ST_PS) より、探索行
+[$`\mathrm{idx}_1(M,j_1)`$](Pss.md#d-idx1) について
+[$`\mathrm{hasParent}(M, \mathrm{idx}_1(M,j_1), j_1)`$](Pss.md#d-hasParent) が成り立つ。
 
-[T.blockok_ST_PS](Seqlex.md#t-blockok_ST_PS) より $`\mathrm{blockok}(0, M)`$ であり、その第 3 連言子が
-$`\mathrm{steps1}\,M`$ である。また [T.r1ok_ST_PS](Column.md#t-r1ok_ST_PS) より
-$`\mathrm{r1ok}\,M`$ である。$`1 \lt \lvert M\rvert`$ とこれらに
+[T.blockok_ST_PS](Seqlex.md#t-blockok_ST_PS) より [$`\mathrm{blockok}(0, M)`$](Seqlex.md#d-blockok) であり、
+その第 3 連言子が [$`\mathrm{steps}_1(M)`$](Seqlex.md#d-steps1) である。
+また [T.r1ok_ST_PS](Column.md#t-r1ok_ST_PS) より
+[$`\mathrm{r1ok}(M)`$](Column.md#d-r1ok) である。$`1 \lt \lvert M\rvert`$ とこれらに
 [T.oper_bad_blocks_all](Cofinality.md#t-oper_bad_blocks_all) を適用して、
 $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$
-であって、$`\beta := (v_0,w_0) :: R`$ とおくと
+であって、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおくと
 
 ```math
 \begin{aligned}
-&M = G \mathbin{+\!\!+} \beta \mathbin{+\!\!+} (\ell), \cr
-&\forall k,\ 1 \le k \to M[k] = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, k), \cr
+&M = G \mathbin{+\!\!+} \mathrm{blk} \mathbin{+\!\!+} (\ell), \cr
+&\forall k,\ 1 \le k \to M[k] = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, k), \cr
 &\forall x \in R,\ v_0 \lt x_1, \qquad v_0 \lt \ell_1, \cr
 &\bigl(d_0 = 0 \wedge \ell_2 = 0 \wedge \ell_1 = v_0 + 1\bigr)
    \ \vee\ \bigl(0 \lt d_0 \wedge \ell_2 = w_0 + 1 \wedge \ell_1 = v_0 + d_0
@@ -3046,15 +3050,15 @@ $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \m
 をみたすものを取る。
 
 各 $`k \ge 1`$ について
-$`G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, k) = M[k]`$ であり、
+$`G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, k) = M[k]`$ であり、
 $`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の構成子 $`\mathrm{oper}`$ を $`M \in \mathrm{ST\_PS}`$ と
 $`1 \le k`$ に適用すると $`M[k] \in \mathrm{ST\_PS}`$ であるから
 
 ```math
-\forall k,\ 1 \le k \to G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, k) \in \mathrm{ST\_PS}
+\forall k,\ 1 \le k \to G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, k) \in \mathrm{ST\_PS}
 ```
 
-が成り立つ。最後に $`M[n] = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\beta, n)`$ と書き直し、
+が成り立つ。最後に $`M[n] = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n)`$ と書き直し、
 [T.argDomCoreOn_bad](#t-argDomCoreOn_bad) を適用すればよい。∎
 
 <a id="t-argDomCoreOn_ST_PS"></a>
@@ -3075,9 +3079,9 @@ $`N \in \mathrm{ST\_PS}`$ の導出に関する帰納法による（$`\mathrm{ST
 
 である。構成子は 2 つであるから、次の 2 段を示せばよい。
 
-**基底段（構成子 $`\mathrm{diag}`$）。** $`N = \mathrm{diagSeq}(0,v)`$ の場合である。
+**基底段（構成子 $`\mathrm{diag}`$）。** $`N = \Delta_0^v`$ の場合である。
 [T.argDomCoreOn_diag](#t-argDomCoreOn_diag) がそのまま
-$`\Phi(\mathrm{diagSeq}(0,v))`$ である。
+$`\Phi(\Delta_0^v)`$ である。
 
 **帰納段（構成子 $`\mathrm{oper}`$）。** $`N = M[n]`$ であって、
 $`M \in \mathrm{ST\_PS}`$ と $`1 \le n`$ からこの構成子で導出された場合である。

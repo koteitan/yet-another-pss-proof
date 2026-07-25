@@ -52,7 +52,7 @@ $`A \prec_{\mathrm{lex}} C`$。
 
 ### 証明
 
-$`A`$ の構成子（空列か cons か）に関する帰納法を行う（$`B`$, $`C`$ は全称量化したまま動かす）。
+$`A`$ の構成子（$`()`$ か $`::`$ か）に関する帰納法を行う（$`B`$, $`C`$ は全称量化したまま動かす）。
 帰納法の述語は
 
 ```math
@@ -70,8 +70,9 @@ $`A`$ の構成子（空列か cons か）に関する帰納法を行う（$`B`$
 - **帰納段** $`A = a :: A'`$：帰納法の仮定は $`\Phi(A')`$ である。
   $`B`$, $`C`$ を取り $`a :: A' \prec_{\mathrm{lex}} B`$、$`B \prec_{\mathrm{lex}} C`$ とする。
   $`B = ()`$ とすると定義（D.seqlex）の第 2 式より第 1 の仮定が $`\bot`$ になるから
-  $`B = b :: B'`$ と書ける。同様に $`C = ()`$ とすると第 2 の仮定が $`\bot`$ になるから
-  $`C = c :: C'`$ と書ける。定義（D.seqlex）の第 3 式より第 1 の仮定は次のいずれかである。
+  $`B = b :: B'`$ と書ける。$`C = ()`$ とするとやはり定義（D.seqlex）の第 2 式より
+  第 2 の仮定が $`\bot`$ になるから $`C = c :: C'`$ と書ける。
+  定義（D.seqlex）の第 3 式より第 1 の仮定は次のいずれかである。
 
   - (1) $`a \prec_{\mathrm{p}} b`$
   - (2) $`a = b \wedge A' \prec_{\mathrm{lex}} B'`$
@@ -506,7 +507,8 @@ $`D \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ に対し
 
 $`\lvert D \mathbin{+\!\!+} (\ell)\rvert = \lvert D\rvert + 1`$ であるから
 $`\lvert D \mathbin{+\!\!+} (\ell)\rvert - 1 = \lvert D\rvert`$ である。
-[T.getD_append_right'](#t-getD_append_right') を $`A := D`$、$`B := (\ell)`$、$`i := 0`$ に適用すると
+[T.getD_append_right'](#t-getD_append_right') を、左側の列を $`D`$、右側の列を $`(\ell)`$、
+添字を $`0`$ として適用すると
 
 ```math
 \bigl(D \mathbin{+\!\!+} (\ell)\bigr)\langle \lvert D\rvert + 0\rangle = (\ell)\langle 0\rangle
@@ -605,12 +607,12 @@ $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$ とおく。
 $`1 \lt \lvert M\rvert`$、[$`\mathrm{steps}_1(M)`$](Seqlex.md#d-steps1)、$`\mathrm{r1ok}(M)`$、
 $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$、$`\mathrm{hasParent}(M, i_1, j_1)`$ を仮定する。
 このとき $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、
-$`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`K := (v_0,w_0) :: R`$ とおくと次の 5 つが成り立つ。
+$`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`B := (v_0,w_0) :: R`$ とおくと次の 5 つが成り立つ。
 
 ```math
 \begin{aligned}
-&(1)\ M = G \mathbin{+\!\!+} K \mathbin{+\!\!+} (\ell), \cr
-&(2)\ \forall n,\ 1 \le n \to M[n] = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(K, n), \cr
+&(1)\ M = G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell), \cr
+&(2)\ \forall n,\ 1 \le n \to M[n] = G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B, n), \cr
 &(3)\ \forall x \in R,\ v_0 \lt x_1, \cr
 &(4)\ v_0 \lt \ell_1, \cr
 &(5)\ \bigl(d_0 = 0 \wedge \ell_2 = 0 \wedge \ell_1 = v_0 + 1\bigr) \ \vee\
@@ -619,7 +621,7 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`K := (v_0,w_0) :: R`
 \end{aligned}
 ```
 
-（[$`\mathrm{copies}_{d}(K,n)`$](Cnf.md#d-copies)）
+（[$`\mathrm{cp}_{d}(B,n)`$](Cnf.md#d-copies)）
 
 ### 証明
 
@@ -642,24 +644,24 @@ $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ のうち初めの 3 つは本
 である（[$`\to^M_i`$](Pss.md#d-nextR)）。
 
 **第 2 段：位置の同定。**
-(1) と連結の結合則より $`M = G \mathbin{+\!\!+} \bigl(K \mathbin{+\!\!+} (\ell)\bigr)`$ である。
+(1) と連結の結合則より $`M = G \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} (\ell)\bigr)`$ である。
 したがって
 
 ```math
 \lvert M\rvert = \lvert G\rvert + \bigl(\lvert R\rvert + 2\bigr)
 ```
 
-である（$`\lvert K\rvert = \lvert R\rvert + 1`$ による）。次の 2 つを示す。
+である（$`\lvert B\rvert = \lvert R\rvert + 1`$ による）。次の 2 つを示す。
 
 - $`M\langle \lvert G\rvert\rangle = (v_0,w_0)`$。
-  [T.getD_append_right'](#t-getD_append_right') を $`A := G`$、$`B := K \mathbin{+\!\!+} (\ell)`$、
-  $`i := 0`$ に適用すると
-  $`M\langle \lvert G\rvert + 0\rangle = \bigl(K \mathbin{+\!\!+} (\ell)\bigr)\langle 0\rangle`$ であり、
-  $`K \mathbin{+\!\!+} (\ell)`$ の先頭要素は $`(v_0,w_0)`$ である。
+  [T.getD_append_right'](#t-getD_append_right') を、左側の列を $`G`$、右側の列を
+  $`B \mathbin{+\!\!+} (\ell)`$、添字を $`0`$ として適用すると
+  $`M\langle \lvert G\rvert + 0\rangle = \bigl(B \mathbin{+\!\!+} (\ell)\bigr)\langle 0\rangle`$ であり、
+  $`B \mathbin{+\!\!+} (\ell)`$ の先頭要素は $`(v_0,w_0)`$ である。
 
 - $`\ell = M\langle j_1\rangle`$。
-  (1) を $`M = \bigl(G \mathbin{+\!\!+} K\bigr) \mathbin{+\!\!+} (\ell)`$ と見て
-  [T.getD_last_of_snoc](#t-getD_last_of_snoc) を $`D := G \mathbin{+\!\!+} K`$ に適用すると
+  (1) を $`M = \bigl(G \mathbin{+\!\!+} B\bigr) \mathbin{+\!\!+} (\ell)`$ と見て
+  [T.getD_last_of_snoc](#t-getD_last_of_snoc) を $`D := G \mathbin{+\!\!+} B`$ に適用すると
   $`M\langle \lvert M\rvert - 1\rangle = \ell`$、すなわち $`M\langle j_1\rangle = \ell`$ である。
 
 **第 3 段：$`(5')`$ から (5) を導く。**
@@ -710,7 +712,7 @@ $`0 \lt d_0`$、$`\ell_1 = v_0 + d_0`$、$`\lvert G\rvert \to^M_1 j_1`$ はそ�
 **第 4 段：(2) — 分解が $`n`$ によらないこと。**
 $`n`$ を取り $`1 \le n`$ とする。[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を
 この $`n`$ で適用し、$`G', v_0', w_0', R', d_0', \ell'`$ とその主張 $`(1_n)`$–$`(6_n)`$ を得る。
-$`K' := (v_0',w_0') :: R'`$ とおく。
+$`B' := (v_0',w_0') :: R'`$ とおく。
 
 **(i) $`\lvert G'\rvert = \lvert G\rvert`$。**
 $`(6_n)`$ は $`\lvert G'\rvert \to^M_{i_1} j_1`$、(6) は $`\lvert G\rvert \to^M_{i_1} j_1`$ である。
@@ -721,14 +723,14 @@ $`j_0`$ の一意存在であるから、$`\lvert G'\rvert = \lvert G\rvert`$。
 $`(1_n)`$ と (1) より
 
 ```math
-\bigl(G' \mathbin{+\!\!+} K'\bigr) \mathbin{+\!\!+} (\ell') = M = \bigl(G \mathbin{+\!\!+} K\bigr) \mathbin{+\!\!+} (\ell)
+\bigl(G' \mathbin{+\!\!+} B'\bigr) \mathbin{+\!\!+} (\ell') = M = \bigl(G \mathbin{+\!\!+} B\bigr) \mathbin{+\!\!+} (\ell)
 ```
 
 である。末尾の 2 つの列 $`(\ell')`$ と $`(\ell)`$ は長さが等しく $`1`$ であるから、
 両辺を末尾から $`1`$ 要素ずつ比べて $`(\ell') = (\ell)`$、すなわち $`\ell' = \ell`$ を得、
-残りから $`G' \mathbin{+\!\!+} K' = G \mathbin{+\!\!+} K`$ を得る。さらに $`\lvert G'\rvert = \lvert G\rvert`$ で
-あるから、両辺を先頭から $`\lvert G\rvert`$ 要素ずつ比べて $`G' = G`$ と $`K' = K`$ を得る。
-$`K' = K`$ は $`(v_0',w_0') :: R' = (v_0,w_0) :: R`$ であるから、先頭を比べて
+残りから $`G' \mathbin{+\!\!+} B' = G \mathbin{+\!\!+} B`$ を得る。さらに $`\lvert G'\rvert = \lvert G\rvert`$ で
+あるから、両辺を先頭から $`\lvert G\rvert`$ 要素ずつ比べて $`G' = G`$ と $`B' = B`$ を得る。
+$`B' = B`$ は $`(v_0',w_0') :: R' = (v_0,w_0) :: R`$ であるから、先頭を比べて
 $`v_0' = v_0`$、$`w_0' = w_0`$、尾を比べて $`R' = R`$ である。
 
 **(iii) $`d_0' = d_0`$。**
@@ -743,24 +745,24 @@ $`(5')`$ と $`(5'_n)`$ の選言について 4 通りを尽くす。
 - $`(5')`$ が第 1 選言、$`(5'_n)`$ が第 2 選言のとき。前者から $`i_1 = 0`$、後者から
   $`\lvert G'\rvert \to^M_1 j_1`$ であり、補助の主張を $`e := \lvert G'\rvert`$ に適用すると
   $`i_1 \ne 0`$ となって矛盾する。よってこの場合は起こらない。
-- $`(5')`$ が第 2 選言、$`(5'_n)`$ が第 1 選言のとき。同様に、後者から $`i_1 = 0`$、
-  前者から $`\lvert G\rvert \to^M_1 j_1`$ であり、補助の主張を $`e := \lvert G\rvert`$ に適用して
-  矛盾する。よってこの場合は起こらない。
+- $`(5')`$ が第 2 選言、$`(5'_n)`$ が第 1 選言のとき。後者から $`i_1 = 0`$、
+  前者から $`\lvert G\rvert \to^M_1 j_1`$ であり、補助の主張を $`e := \lvert G\rvert`$ に適用すると
+  $`i_1 \ne 0`$ となって矛盾する。よってこの場合は起こらない。
 - 両方とも第 2 選言のとき。$`\ell_1 = v_0 + d_0`$ と $`\ell'_1 = v_0' + d_0'`$ であり、
   $`\ell' = \ell`$、$`v_0' = v_0`$ であるから $`v_0 + d_0 = v_0 + d_0'`$、すなわち $`d_0' = d_0`$。
 
-以上より $`(2_n)`$ の右辺の $`G', K', d_0'`$ をすべて $`G, K, d_0`$ に書き換えてよい。
+以上より $`(2_n)`$ の右辺の $`G', B', d_0'`$ をすべて $`G, B, d_0`$ に書き換えてよい。
 $`(2_n)`$ は
 
 ```math
-M[n] = G \mathbin{+\!\!+} K^{+0\cdot d_0} \mathbin{+\!\!+} K^{+1\cdot d_0}
-  \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} K^{+(n-1)d_0}
+M[n] = G \mathbin{+\!\!+} B^{+0\cdot d_0} \mathbin{+\!\!+} B^{+1\cdot d_0}
+  \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}
 ```
 
 であり（[$`L^{+e}`$](Cnf.md#d-shiftr0) は $`L`$ の各対の第 1 成分に $`e`$ を足した列である）、
-右辺の $`K^{+0\cdot d_0} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} K^{+(n-1)d_0}`$ は
-$`\mathrm{copies}`$ の定義（D.copies）そのものであるから
-$`\mathrm{copies}_{d_0}(K, n)`$ に等しい。よって (2) を得る。∎
+右辺の $`B^{+0\cdot d_0} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}`$ は
+$`\mathrm{cp}`$ の定義（D.copies）そのものであるから
+$`\mathrm{cp}_{d_0}(B, n)`$ に等しい。よって (2) を得る。∎
 
 <a id="t-seqlex_splice"></a>
 ## 定理: 接合 (T.seqlex_splice)
@@ -842,8 +844,9 @@ Y = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,Y)_1\bigr)
 \mathrm{dw}_{v_0}(R \mathbin{+\!\!+} Y) = Y .
 ```
 
-ここで $`\mathrm{tw}_a`$, $`\mathrm{dw}_a`$ は $`\mathrm{tr}`$ の定義（D.translate）の記法、
-すなわち述語 $`x \mapsto a \lt x_1`$ についての takeWhile と dropWhile である。
+ここで $`\mathrm{tw}_a L`$ は $`L`$ の先頭から第 1 成分が $`a`$ より大きい要素が続く極大な
+前部分列、$`\mathrm{dw}_a L`$ は $`L`$ から $`\mathrm{tw}_a L`$ を取り除いた残りの列であり、
+どちらも $`\mathrm{tr}`$ の定義（D.translate）の記法である。
 
 ### 証明
 
@@ -858,9 +861,9 @@ Y = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,Y)_1\bigr)
   [T.takeWhile_append_all](Term.md#t-takeWhile_append_all) を $`xs := R`$、$`ys := Y`$ に
   適用して $`\mathrm{tw}_{v_0}(R \mathbin{+\!\!+} Y) = R \mathbin{+\!\!+} \mathrm{tw}_{v_0} Y`$ を得る。
   $`Y`$ の先頭 $`y`$ が述語を破るから $`\mathrm{tw}_{v_0} Y = ()`$ であり、右辺は $`R`$ である。
-  同様に [T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
-  $`\mathrm{dw}_{v_0}(R \mathbin{+\!\!+} Y) = \mathrm{dw}_{v_0} Y`$ であり、$`y`$ が述語を破るから
-  $`\mathrm{dw}_{v_0} Y = Y`$ である。∎
+  [T.dropWhile_append_all](Term.md#t-dropWhile_append_all) を同じく $`xs := R`$、$`ys := Y`$ に
+  適用して $`\mathrm{dw}_{v_0}(R \mathbin{+\!\!+} Y) = \mathrm{dw}_{v_0} Y`$ を得る。
+  $`Y`$ の先頭 $`y`$ が述語を破るから $`\mathrm{dw}_{v_0} Y = Y`$ である。∎
 
 <a id="t-copy_dom_zero"></a>
 ## 定理: 完全コピーによる支配 (T.copy_dom_zero)
@@ -868,7 +871,7 @@ Y = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,Y)_1\bigr)
 ### 定理
 
 $`d \in \mathbb{N}`$、$`Y, R \in \mathrm{PairSeq}`$、$`v_0, w_0 \in \mathbb{N}`$ とし、
-$`K := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
+$`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 
 ```math
 \begin{aligned}
@@ -883,7 +886,7 @@ $`K := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 このとき
 
 ```math
-\exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{copies}_0(K, m)\bigr).
+\exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)\bigr).
 ```
 
 （[$`\mathrm{cnf}`$](Cnf.md#d-cnf)。以下 $`\mathsf{Z}`$ と $`\mathsf{P}`$ は
@@ -896,17 +899,17 @@ $`K := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 ```math
 \Phi(d) :\equiv \forall Y, v_0, w_0, R,\
   \bigl(\text{(len)} \wedge \text{(blk)} \wedge \text{(R)} \wedge \text{(hd)} \wedge \text{(cnf)}\bigr)
-  \to \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{copies}_0(K, m)\bigr).
+  \to \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)\bigr).
 ```
 
 ここで (len), (blk), (R), (hd), (cnf) は定理の 5 つの仮定であり、$`Y, v_0, w_0, R`$ は
-$`\Phi(d)`$ の束縛変数である（$`K = (v_0,w_0) :: R`$ もそれに従って動く）。
+$`\Phi(d)`$ の束縛変数である（$`B = (v_0,w_0) :: R`$ もそれに従って動く）。
 
 - **基底段** $`d = 0`$：(len) は $`\lvert Y\rvert \le 0`$、すなわち $`\lvert Y\rvert = 0`$ であるから
   $`Y = ()`$ である。$`m := 1`$ と取る。[T.copies_one](Cnf.md#t-copies_one) より
-  $`\mathrm{copies}_0(K, 1) = K = (v_0,w_0) :: R \ne ()`$ であるから、
+  $`\mathrm{cp}_0(B, 1) = B = (v_0,w_0) :: R \ne ()`$ であるから、
   $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式より
-  $`() \prec_{\mathrm{lex}} \mathrm{copies}_0(K,1)`$ であり、
+  $`() \prec_{\mathrm{lex}} \mathrm{cp}_0(B,1)`$ であり、
   $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言が成り立つ。
 
 **帰納段** $`d + 1`$：帰納法の仮定は $`\Phi(d)`$ である。$`Y`$ の構成子で場合分けする。
@@ -949,8 +952,13 @@ $`v_0 := v_0`$、$`w_0 := y_2`$、$`R := R'`$、$`T := Y''`$ として適用す�
 \mathrm{tr}(y :: Y') = \mathsf{P}\bigl(y_2,\ \mathrm{tr}\,R',\ \mathrm{tr}\,Y''\bigr) .
 ```
 
-同様に $`\bigl((v_0,w_0) :: R\bigr) \mathbin{+\!\!+} (y :: Y') = (v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ であり、
-(R) と (hd) が [T.translate_block_append](Term.md#t-translate_block_append) の仮定であるから
+また $`Y = y :: Y'`$ により
+$`\bigl((v_0,w_0) :: R\bigr) \mathbin{+\!\!+} (y :: Y') = (v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ である。
+[T.translate_block_append](Term.md#t-translate_block_append) を
+$`v_0 := v_0`$、$`w_0 := w_0`$、$`R := R`$、$`T := y :: Y'`$ として適用する。
+その 2 つの仮定「$`R`$ の全要素 $`x`$ が $`v_0 \lt x_1`$」と
+「$`y :: Y' = ()`$ または $`\neg\bigl(v_0 \lt (\mathrm{head}\,(y :: Y'))_1\bigr)`$」は
+それぞれ (R) と (hd) である。こうして
 
 ```math
 \mathrm{tr}\bigl((v_0,w_0) :: (R \mathbin{+\!\!+} Y)\bigr)
@@ -983,7 +991,7 @@ $`\mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z}) \prec \mathsf{P}(y_2, \mathrm{tr}\
 
 **第 6 段：$`y_2 \lt w_0`$ のとき。**
 $`m := 1`$ と取る。[T.copies_one](Cnf.md#t-copies_one) より
-$`\mathrm{copies}_0(K, 1) = (v_0,w_0) :: R`$ である。第 1 段より $`y = (v_0,y_2)`$ であり、
+$`\mathrm{cp}_0(B, 1) = (v_0,w_0) :: R`$ である。第 1 段より $`y = (v_0,y_2)`$ であり、
 $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 2 選言（$`v_0 = v_0`$ かつ $`y_2 \lt w_0`$）により
 $`y \prec_{\mathrm{p}} (v_0,w_0)`$ である。$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の
 第 1 選言により $`y :: Y' \prec_{\mathrm{lex}} (v_0,w_0) :: R`$ であり、
@@ -1016,7 +1024,7 @@ $`R' = R`$ か否かでさらに場合分けする。
 
 ```math
 y :: Y' = (v_0,w_0) :: (R' \mathbin{+\!\!+} Y'') = \bigl((v_0,w_0) :: R\bigr) \mathbin{+\!\!+} Y''
-  = K \mathbin{+\!\!+} Y''
+  = B \mathbin{+\!\!+} Y''
 ```
 
 である。帰納法の仮定 $`\Phi(d)`$ を $`Y := Y''`$、$`v_0, w_0, R`$ はそのままとして適用する。
@@ -1025,27 +1033,27 @@ y :: Y' = (v_0,w_0) :: (R' \mathbin{+\!\!+} Y'') = \bigl((v_0,w_0) :: R\bigr) \m
 - (len)：$`\lvert R'\rvert + \lvert Y''\rvert = \lvert Y'\rvert`$ であり、いまの (len) は
   $`\lvert y :: Y'\rvert = \lvert Y'\rvert + 1 \le d + 1`$、すなわち $`\lvert Y'\rvert \le d`$ である。
   よって $`\lvert Y''\rvert \le \lvert Y'\rvert \le d`$。
-- (blk)：$`(v_0,w_0) :: (R \mathbin{+\!\!+} Y'') = K \mathbin{+\!\!+} Y'' = y :: Y'`$ であるから、
+- (blk)：$`(v_0,w_0) :: (R \mathbin{+\!\!+} Y'') = B \mathbin{+\!\!+} Y'' = y :: Y'`$ であるから、
   第 7 段の 2 そのものである。
 - (R)：いまの (R) そのものである。
 - (hd)：第 2 段で示した $`Y''`$ についての選言である。
 - (cnf)：$`\mathrm{tr}\bigl((v_0,w_0) :: (R \mathbin{+\!\!+} Y'')\bigr) = \mathrm{tr}(y :: Y')`$ であり、
   第 3 段よりこれは $`\mathsf{P}(y_2, \mathrm{tr}\,R', \mathrm{tr}\,Y'')`$ であるから (c3) である。
 
-こうして $`1 \le m`$ かつ $`Y'' \preceq_{\mathrm{lex}} \mathrm{copies}_0(K, m)`$ なる $`m`$ が得られる。
+こうして $`1 \le m`$ かつ $`Y'' \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ なる $`m`$ が得られる。
 求める添字として $`m + 1`$ を取る。$`1 \le m + 1`$ である。
 [T.copies_succ_cons](Cnf.md#t-copies_succ_cons) と
 [T.shiftr0_zero](Cnf.md#t-shiftr0_zero) より
 
 ```math
-\mathrm{copies}_0(K, m+1) = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} \mathrm{copies}_0(K, m)^{+0}\bigr)
-  = K \mathbin{+\!\!+} \mathrm{copies}_0(K, m)
+\mathrm{cp}_0(B, m+1) = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} \mathrm{cp}_0(B, m)^{+0}\bigr)
+  = B \mathbin{+\!\!+} \mathrm{cp}_0(B, m)
 ```
 
 である。したがって示すべきことは
-$`K \mathbin{+\!\!+} Y'' \preceq_{\mathrm{lex}} K \mathbin{+\!\!+} \mathrm{copies}_0(K, m)`$ であり、
+$`B \mathbin{+\!\!+} Y'' \preceq_{\mathrm{lex}} B \mathbin{+\!\!+} \mathrm{cp}_0(B, m)`$ であり、
 [T.sle_append_cancel](#t-sle_append_cancel) によりこれは
-$`Y'' \preceq_{\mathrm{lex}} \mathrm{copies}_0(K, m)`$ と同値である。これは得られたものである。
+$`Y'' \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ と同値である。これは得られたものである。
 
 **第 9 段：$`R' \ne R`$ のとき。**
 まず $`R' \prec_{\mathrm{lex}} R`$ を示す。[T.seqlex_total](Seqlex.md#t-seqlex_total) より
@@ -1060,20 +1068,21 @@ $`m := 2`$ と取る。$`1 \le 2`$ である。
 [T.copies_one](Cnf.md#t-copies_one) より
 
 ```math
-\mathrm{copies}_0(K, 2) = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} \mathrm{copies}_0(K,1)^{+0}\bigr)
-  = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} K\bigr)
+\mathrm{cp}_0(B, 2) = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} \mathrm{cp}_0(B,1)^{+0}\bigr)
+  = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} B\bigr)
 ```
 
 である。第 1 段と $`y_2 = w_0`$ より $`y :: Y' = (v_0,w_0) :: Y'`$ であるから、
 $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の第 2 選言により、示すべきことは
 
 ```math
-Y' \prec_{\mathrm{lex}} R \mathbin{+\!\!+} K
+Y' \prec_{\mathrm{lex}} R \mathbin{+\!\!+} B
 ```
 
 である。$`Y' = R' \mathbin{+\!\!+} Y''`$ であるから、
-[T.seqlex_splice](#t-seqlex_splice) を $`A := R'`$、$`B := R`$、$`U := Y''`$、$`C := K`$ として
-適用すればよい。その 2 つの仮定は次のように満たされる。
+[T.seqlex_splice](#t-seqlex_splice) を、小さい側の列を $`R'`$、大きい側の列を $`R`$、
+小さい側に付ける列を $`Y''`$、大きい側に付ける列を $`B`$ として適用すればよい。
+その 2 つの仮定は次のように満たされる。
 
 - $`R' \prec_{\mathrm{lex}} R`$：いま示した。
 - $`Y'' = () \vee \forall x \in R,\ \mathrm{head}\,Y'' \prec_{\mathrm{p}} x`$：
@@ -1083,7 +1092,7 @@ Y' \prec_{\mathrm{lex}} R \mathbin{+\!\!+} K
   $`(\mathrm{head}\,Y'')_1 \lt x_1`$ であり、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の
   第 1 選言により $`\mathrm{head}\,Y'' \prec_{\mathrm{p}} x`$ である。
 
-以上で $`Y' \prec_{\mathrm{lex}} R \mathbin{+\!\!+} K`$ が得られ、
+以上で $`Y' \prec_{\mathrm{lex}} R \mathbin{+\!\!+} B`$ が得られ、
 $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言が成り立つ。∎
 
 <a id="t-copies_zero_succ"></a>
@@ -1094,15 +1103,15 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言が成り立つ。
 $`B \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}`$ に対し
 
 ```math
-\mathrm{copies}_0(B, m+1) = \mathrm{copies}_0(B, m) \mathbin{+\!\!+} B .
+\mathrm{cp}_0(B, m+1) = \mathrm{cp}_0(B, m) \mathbin{+\!\!+} B .
 ```
 
 ### 証明
 
-$`\mathrm{copies}`$ の定義（D.copies）より
+$`\mathrm{cp}`$ の定義（D.copies）より
 
 ```math
-\mathrm{copies}_d(B, n) = B^{+0 \cdot d} \mathbin{+\!\!+} B^{+1 \cdot d}
+\mathrm{cp}_d(B, n) = B^{+0 \cdot d} \mathbin{+\!\!+} B^{+1 \cdot d}
   \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d}
 ```
 
@@ -1111,7 +1120,7 @@ $`\mathrm{copies}`$ の定義（D.copies）より
 $`m`$ を付けたものであるから、連結は
 
 ```math
-\mathrm{copies}_d(B, m+1) = \mathrm{copies}_d(B, m) \mathbin{+\!\!+} B^{+m d}
+\mathrm{cp}_d(B, m+1) = \mathrm{cp}_d(B, m) \mathbin{+\!\!+} B^{+m d}
 ```
 
 と分かれる。$`d := 0`$ とすると $`m \cdot 0 = 0`$ であり、
@@ -1130,7 +1139,7 @@ $`B := (v_0, w_0) :: R`$ とおく。次の 4 つを仮定する。
 &(1)\ (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S \in \mathrm{ST\_PS}, \cr
 &(2)\ \forall x \in R,\ v_0 \lt x_1, \cr
 &(3)\ \ell_2 = 0 \ \wedge\ \ell_1 = v_0 + 1, \cr
-&(4)\ \mathrm{pairlt}(q, \ell) .
+&(4)\ q \prec_{\mathrm{p}} \ell .
 \end{aligned}
 ```
 
@@ -1146,7 +1155,7 @@ q :: S \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m) .
 $`L`$ の先頭から $`p`$ をみたす要素が続く極大な前部分列、$`\mathrm{dw}_p L`$ はその残りである）。
 
 **第 1 段：$`q_1 \le v_0`$。**
-$`\mathrm{pairlt}`$ の定義（D.pairlt）より、仮定 (4) は
+$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より、仮定 (4) は
 $`q_1 \lt \ell_1`$ または（$`q_1 = \ell_1`$ かつ $`q_2 \lt \ell_2`$）である。
 後者のとき、仮定 (3) の $`\ell_2 = 0`$ より $`q_2 \lt 0`$ となるが、自然数に $`0`$ より小さいものは
 ないから矛盾であり、この場合は起こらない。前者のとき、仮定 (3) の $`\ell_1 = v_0 + 1`$ より
@@ -1154,8 +1163,8 @@ $`q_1 \lt v_0 + 1`$、すなわち $`q_1 \le v_0`$ である。
 
 **第 2 段：$`q_1 \lt v_0`$ の場合。**
 $`m := 1`$ と取る。[T.copies_one](Cnf.md#t-copies_one) より $`\mathrm{cp}_0(B, 1) = B = (v_0,w_0) :: R`$ である。
-$`q_1 \lt v_0`$ であるから $`\mathrm{pairlt}`$ の定義（D.pairlt）の第 1 選言により
-$`\mathrm{pairlt}\bigl(q, (v_0,w_0)\bigr)`$ が成り立ち、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の
+$`q_1 \lt v_0`$ であるから $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
+$`q \prec_{\mathrm{p}} (v_0,w_0)`$ が成り立ち、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の
 第 3 式の第 1 選言により $`q :: S \prec_{\mathrm{lex}} B`$ を得る。
 $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言により結論を得る。
 
@@ -1181,7 +1190,7 @@ $`(\mathrm{head}\,Y)_1 = q_1 = v_0`$ である。
 実際 $`V \ne ()`$ ならばその先頭要素 $`z`$ は $`\neg p(z)`$、すなわち $`\neg(v_0 \le z_1)`$ を
 みたすから $`z_1 \lt v_0`$ である。
 
-**第 4 段：窓 $`B \mathbin{+\!\!+} Y`$ の分解。**
+**第 4 段：$`B \mathbin{+\!\!+} Y`$ を用いた分解。**
 (i) と結合律により
 
 ```math
@@ -1205,7 +1214,7 @@ $`\mathrm{blockok}`$ の定義（D.blockok）の 3 つの連言子を確かめ�
 $`x = (v_0,w_0)`$ なら $`x_1 = v_0`$、$`x \in R`$ なら仮定 (2) より $`v_0 \lt x_1`$、
 $`x \in Y`$ なら (iii) より $`v_0 \le x_1`$ である。第 3 連言子は第 5 段である。
 
-**第 7 段：窓の $`\mathrm{cnf}`$。**
+**第 7 段：$`(v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ の $`\mathrm{cnf}`$。**
 仮定 (1) と [T.cnf_ST_PS](Cnf.md#t-cnf_ST_PS) より $`\mathrm{cnf}(\mathrm{tr}\,N)`$ である。
 第 4 段の分解によりこれは
 $`\mathrm{cnf}\bigl(\mathrm{tr}\bigl((G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y)) \mathbin{+\!\!+} V\bigr)\bigr)`$ である。
@@ -1241,7 +1250,7 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}\,(G \mathbin{+\!\!+} ((v_0,w_0) :: (R \mathbin{+
 こうして $`1 \le m`$ なる $`m`$ と $`Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ を得る。
 
 **第 9 段：結論。**
-求める witness として $`m + 1`$ を取る（$`1 \le m + 1`$）。
+求める添字として $`m + 1`$ を取る（$`1 \le m + 1`$）。
 [T.copies_zero_succ](#t-copies_zero_succ) より
 $`\mathrm{cp}_0(B, m+1) = \mathrm{cp}_0(B, m) \mathbin{+\!\!+} B`$ であり、(i) より $`q :: S = Y \mathbin{+\!\!+} V`$
 であるから、示すべきは
@@ -1260,22 +1269,22 @@ $`V \prec_{\mathrm{lex}} B`$ を示せばよい。(iv) で場合分けする。
 
 - $`V = ()`$ のとき。$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式により
   $`B \ne ()`$ を示せばよく、$`B = (v_0,w_0) :: R`$ は空でない。
-- $`V = z :: Z`$ かつ $`z_1 \lt v_0`$ のとき。$`\mathrm{pairlt}`$ の定義（D.pairlt）の第 1 選言により
-  $`\mathrm{pairlt}\bigl(z, (v_0,w_0)\bigr)`$ であり、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の
+- $`V = z :: Z`$ かつ $`z_1 \lt v_0`$ のとき。$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
+  $`z \prec_{\mathrm{p}} (v_0,w_0)`$ であり、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の
   第 3 式の第 1 選言により $`z :: Z \prec_{\mathrm{lex}} (v_0,w_0) :: R`$ を得る。
 
 **(b) $`Y \prec_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ のとき。**
 [T.seqlex_splice](#t-seqlex_splice) を、小さい側の列を $`Y`$、大きい側の列を $`\mathrm{cp}_0(B, m)`$、
 小さい側に付ける列を $`V`$、大きい側に付ける列を $`B`$ として適用する。
-残る仮定は「$`V = ()`$、または $`\forall x \in \mathrm{cp}_0(B,m),\ \mathrm{pairlt}(\mathrm{head}\,V,\ x)`$」
+残る仮定は「$`V = ()`$、または $`\forall x \in \mathrm{cp}_0(B,m),\ \mathrm{head}\,V \prec_{\mathrm{p}} x`$」
 である。(iv) で場合分けする。
 
 - $`V = ()`$ のとき。第 1 選言である。
 - $`V = z :: Z`$ かつ $`z_1 \lt v_0`$ のとき。仮定 (2) より $`R`$ の各要素 $`y`$ は
   $`v_0 \le y_1`$ をみたすから、[T.copies_v0_le](Cnf.md#t-copies_v0_le) を $`d := 0`$、$`n := m`$ として
   適用して $`\forall x \in \mathrm{cp}_0(B, m),\ v_0 \le x_1`$ を得る。
-  $`\mathrm{head}\,V = z`$ であり $`z_1 \lt v_0 \le x_1`$ であるから、$`\mathrm{pairlt}`$ の定義（D.pairlt）の
-  第 1 選言により $`\mathrm{pairlt}(z, x)`$ が成り立つ。
+  $`\mathrm{head}\,V = z`$ であり $`z_1 \lt v_0 \le x_1`$ であるから、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の
+  第 1 選言により $`z \prec_{\mathrm{p}} x`$ が成り立つ。
 
 いずれの場合も $`Y \mathbin{+\!\!+} V \prec_{\mathrm{lex}} \mathrm{cp}_0(B,m) \mathbin{+\!\!+} B`$ が得られた。∎
 
@@ -1294,7 +1303,7 @@ $`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)`$ と略記する（$`(\el
 &\quad \to\ \bigl(\forall x \in R,\ v_0 \lt x_1\bigr)
   \ \to\ 0 \lt d_0 \ \to\ \ell_2 = w_0 + 1 \ \to\ \ell_1 = v_0 + d_0 \cr
 &\quad \to\ \lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert
-  \ \to\ \mathrm{pairlt}(q, \ell) \cr
+  \ \to\ q \prec_{\mathrm{p}} \ell \cr
 &\quad \to\ \exists m,\ 1 \le m \ \wedge\
    q :: S \preceq_{\mathrm{lex}} \bigl(\mathrm{cp}_{d_0}(B, m)\bigr)^{+d_0} .
 \end{aligned}
@@ -1389,8 +1398,7 @@ $`\bigl(B^{+d}\bigr)^{+kd}`$ の対応する要素は $`(x_1 + d + kd,\ x_2)`$ �
 ## 定義: 上昇コピーの引数支配 (D.AscArgDom)
 
 命題 $`\mathrm{AscArgDom}`$ を次で定める。ここで $`B := (v_0,w_0) :: R`$、
-$`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0+1)\bigr)`$ と略記し、
-$`\mathrm{tw}_a S`$ は $`S`$ の先頭から第 1 成分が $`a`$ より大きい要素が続く極大な前部分列である。
+$`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0+1)\bigr)`$ と略記する。
 
 ```math
 \begin{aligned}
@@ -1498,7 +1506,7 @@ $`S_{\mathrm{lo}} = \mathrm{dw}_{v_0+d_0} S`$ が空でなければ、その先�
 すなわち $`\neg(v_0 + d_0 \lt z_1)`$ をみたすから $`z_1 \le v_0 + d_0`$ である。
 
 **第 3 段：目標の展開。**
-求める witness として $`m + 2`$ を取る（$`1 \le m+2`$）。
+求める添字として $`m + 2`$ を取る（$`1 \le m+2`$）。
 $`E := \bigl((B')^{+m d_0}\bigr)^{+d_0}`$ とおく。
 
 ```math
@@ -1565,8 +1573,8 @@ $`S_{\mathrm{lo}} \preceq_{\mathrm{lex}} E`$ を示せばよい。第 2 段で�
 - $`S_{\mathrm{lo}} = z :: Z`$ かつ $`z_1 \le v_0 + d_0`$ のとき。第 4 段より $`E \ne ()`$ だから
   $`E = e :: E'`$ と書け、$`e_1 = v_0 + d_0 + m d_0 + d_0`$ である。
   (4) の $`0 \lt d_0`$ より $`v_0 + d_0 \lt v_0 + d_0 + m d_0 + d_0`$ であるから
-  $`z_1 \le v_0 + d_0 \lt e_1`$ であり、$`\mathrm{pairlt}`$ の定義（D.pairlt）の第 1 選言により
-  $`\mathrm{pairlt}(z, e)`$、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の第 1 選言により
+  $`z_1 \le v_0 + d_0 \lt e_1`$ であり、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
+  $`z \prec_{\mathrm{p}} e`$、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の第 1 選言により
   $`z :: Z \prec_{\mathrm{lex}} e :: E'`$ を得る。
 
 **(b) $`S_{\mathrm{hi}} \prec_{\mathrm{lex}} \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0}`$ のとき。**
@@ -1579,7 +1587,7 @@ $`S_{\mathrm{lo}} \preceq_{\mathrm{lex}} E`$ を示せばよい。第 2 段で�
 S_{\mathrm{lo}} = ()
  \quad\vee\quad
 \forall x \in \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B',m)\bigr)^{+d_0},\
- \mathrm{pairlt}(\mathrm{head}\,S_{\mathrm{lo}},\ x)
+ \mathrm{head}\,S_{\mathrm{lo}} \prec_{\mathrm{p}} x
 ```
 
 第 2 段で場合分けする。
@@ -1590,8 +1598,8 @@ S_{\mathrm{lo}} = ()
   [T.mem_shiftr0](Cnf.md#t-mem_shiftr0) よりある $`y \in R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B',m)`$ が
   存在して $`x = (y_1 + d_0,\ y_2)`$ である。第 1 段より $`v_0 \lt y_1`$ であるから
   $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0 \lt y_1 + d_0 = x_1`$ であり、
-  $`\mathrm{pairlt}`$ の定義（D.pairlt）の第 1 選言により
-  $`\mathrm{pairlt}(\mathrm{head}\,S_{\mathrm{lo}},\ x)`$ が成り立つ。
+  $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
+  $`\mathrm{head}\,S_{\mathrm{lo}} \prec_{\mathrm{p}} x`$ が成り立つ。
 
 こうして
 
@@ -1625,7 +1633,7 @@ $`\mathrm{AscCrux}`$ の 8 つの仮定
 &(5)\ \ell_2 = w_0 + 1, \qquad
  (6)\ \ell_1 = v_0 + d_0, \cr
 &(7)\ \lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert, \qquad
- (8)\ \mathrm{pairlt}(q, \ell)
+ (8)\ q \prec_{\mathrm{p}} \ell
 \end{aligned}
 ```
 
@@ -1650,8 +1658,8 @@ B^{+d_0} = (v_0 + d_0,\ w_0) :: R^{+d_0}
 ```
 
 である。よって $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の第 1 選言により
-$`\mathrm{pairlt}\bigl(q,\ (v_0+d_0,\ w_0)\bigr)`$ を示せばよい。
-$`\ell = (v_0+d_0,\ w_0+1)`$ を (8) に代入すると、$`\mathrm{pairlt}`$ の定義（D.pairlt）より
+$`q \prec_{\mathrm{p}} (v_0+d_0,\ w_0)`$ を示せばよい。
+$`\ell = (v_0+d_0,\ w_0+1)`$ を (8) に代入すると、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より
 
 ```math
 q_1 \lt v_0 + d_0 \quad\text{または}\quad \bigl(q_1 = v_0 + d_0 \ \wedge\ q_2 \lt w_0 + 1\bigr)
@@ -1660,10 +1668,10 @@ q_1 \lt v_0 + d_0 \quad\text{または}\quad \bigl(q_1 = v_0 + d_0 \ \wedge\ q_2
 である。また $`q \ne (v_0+d_0,\ w_0)`$ は、対の相等が成分ごとの相等であることから
 $`\neg\bigl(q_1 = v_0 + d_0 \ \wedge\ q_2 = w_0\bigr)`$ と同値である。場合分けする。
 
-- $`q_1 \lt v_0 + d_0`$ のとき。$`\mathrm{pairlt}`$ の定義（D.pairlt）の第 1 選言が成り立つ。
+- $`q_1 \lt v_0 + d_0`$ のとき。$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言が成り立つ。
 - $`q_1 = v_0 + d_0`$ かつ $`q_2 \lt w_0 + 1`$ のとき。$`q_2 \le w_0`$ である。
   もし $`q_2 = w_0`$ なら $`q_1 = v_0 + d_0`$ と合わせて上の否定に反するから $`q_2 \ne w_0`$、
-  よって $`q_2 \lt w_0`$ である。$`\mathrm{pairlt}`$ の定義（D.pairlt）の第 2 選言が成り立つ。
+  よって $`q_2 \lt w_0`$ である。$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 2 選言が成り立つ。
 
 いずれの場合も $`q :: S \prec_{\mathrm{lex}} \bigl(\mathrm{cp}_{d_0}(B,1)\bigr)^{+d_0}`$ であり、
 $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言により結論を得る。∎
@@ -1723,7 +1731,7 @@ $`n := 1`$ と取る。(2) と [T.copies_one](Cnf.md#t-copies_one) より
 $`M[1] = G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B,1) = G \mathbin{+\!\!+} B`$ であるから、
 仮定がそのまま結論である。
 
-**(b) $`N = (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S`$ かつ $`\mathrm{pairlt}(q, \ell)`$ なる
+**(b) $`N = (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S`$ かつ $`q \prec_{\mathrm{p}} \ell`$ なる
 $`q, S`$ が存在するとき。**
 まず、$`1 \le m`$ なる $`m`$ で
 
@@ -1739,7 +1747,7 @@ $`(\dagger)`$ は $`q :: S \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ と同�
 [T.crux_zero](#t-crux_zero) を、その仮定 (1) として
 $`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S = N \in \mathrm{ST\_PS}`$、
 仮定 (2) として本証明の (3)、仮定 (3) として $`\ell_2 = 0 \wedge \ell_1 = v_0+1`$、
-仮定 (4) として $`\mathrm{pairlt}(q,\ell)`$ を与えて適用すればよい。
+仮定 (4) として $`q \prec_{\mathrm{p}} \ell`$ を与えて適用すればよい。
 
 **(b-2) $`0 \lt d_0`$、$`\ell_2 = w_0 + 1`$、$`\ell_1 = v_0 + d_0`$、
 $`\lvert G\rvert \to^M_1 j_1`$ のとき。**
@@ -1755,7 +1763,7 @@ $`\lvert G\rvert \to^M_1 j_1`$ は
 と同じ主張である。$`\mathrm{AscCrux}`$ を、その 8 つの仮定として
 $`H = M \in \mathrm{ST\_PS}`$、$`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S = N \in \mathrm{ST\_PS}`$、
 本証明の (3)、$`0 \lt d_0`$、$`\ell_2 = w_0+1`$、$`\ell_1 = v_0+d_0`$、
-いま書き換えた $`\lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert`$、$`\mathrm{pairlt}(q,\ell)`$ を
+いま書き換えた $`\lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert`$、$`q \prec_{\mathrm{p}} \ell`$ を
 与えて適用すると $`(\dagger)`$ を得る。
 
 **第 3 段：結論。**

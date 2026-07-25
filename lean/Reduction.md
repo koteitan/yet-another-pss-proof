@@ -36,8 +36,8 @@ T \mathbin{R_{\mathrm{PS}}} M :\iff M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarro
 
 （[$`M \Rightarrow T`$](Pss.md#d-step)）
 
-第 1 引数 $`T`$ が展開の結果、第 2 引数 $`M`$ が展開の元である。すなわち
-$`R_{\mathrm{NF}}`$ と同じく、第 1 引数が小さい側に来る向きに書く。
+第 1 引数 $`T`$ が展開の結果、第 2 引数 $`M`$ が展開の元である。$`R_{\mathrm{NF}}`$ の定義（D.Rnf）で
+第 1 引数 $`v`$ が $`v \prec u`$ の左辺に置かれるのと同じ引数の順である。
 
 <a id="t-step_terminates_cond"></a>
 ## 定理: 条件付きの停止性 (T.step_terminates_cond)
@@ -56,8 +56,8 @@ $`R_{\mathrm{NF}}`$ と同じく、第 1 引数が小さい側に来る向きに
 
 ```math
 \forall x \in A,\
-  \Bigl(\bigl(\forall y,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
-  \wedge \bigl(\forall y,\ y \mathbin{R} x \to \Phi(y)\bigr)\Bigr)
+  \Bigl(\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
+  \wedge \bigl(\forall y \in A,\ y \mathbin{R} x \to \Phi(y)\bigr)\Bigr)
   \to \Phi(x)
 ```
 
@@ -128,15 +128,15 @@ $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ の導出に関する帰納法を行う。帰
 **帰納段**：$`t \in \mathrm{Three}`$ を取り、帰納法の仮定
 
 ```math
-\forall s,\ s \mathbin{R_{\mathrm{NF}}} t \to \Phi(s)
+\forall s \in \mathrm{Three},\ s \mathbin{R_{\mathrm{NF}}} t \to \Phi(s)
 ```
 
-を仮定する（規則の前提 $`\forall s,\ s \mathbin{R_{\mathrm{NF}}} t \to s \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$
+を仮定する（規則の前提 $`\forall s \in \mathrm{Three},\ s \mathbin{R_{\mathrm{NF}}} t \to s \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$
 も同時に使えるが、以下では用いない）。$`M \in \mathrm{PairSeq}`$ を $`\mathrm{tr}\,M = t`$ なる列とする。
 $`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ を示すには、$`\mathrm{Acc}`$ の規則により
 
 ```math
-\forall N,\ N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M \to N \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}
+\forall N \in \mathrm{PairSeq},\ N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M \to N \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}
 ```
 
 を示せばよい。$`N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$ とすると、逆像の定義より
@@ -162,7 +162,7 @@ $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ の導出に関する帰納法�
 **帰納段**：$`M \in \mathrm{PairSeq}`$ を取り、帰納法の仮定
 
 ```math
-\forall N,\ N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M \to \Psi(N)
+\forall N \in \mathrm{PairSeq},\ N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M \to \Psi(N)
 ```
 
 を仮定する。$`T \mathbin{R_{\mathrm{PS}}} M`$ なる任意の $`T`$ について、第 1 段より
@@ -170,14 +170,14 @@ $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$ であるから、帰納法の�
 $`T \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$ である。よって
 
 ```math
-\forall T,\ T \mathbin{R_{\mathrm{PS}}} M \to T \in \mathrm{Acc}_{R_{\mathrm{PS}}}
+\forall T \in \mathrm{PairSeq},\ T \mathbin{R_{\mathrm{PS}}} M \to T \in \mathrm{Acc}_{R_{\mathrm{PS}}}
 ```
 
 が成り立ち、$`\mathrm{Acc}`$ の規則より $`M \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$、すなわち $`\Psi(M)`$。
 
 以上より $`\forall M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}},\ \Psi(M)`$ である。第 2 段より
 任意の $`M \in \mathrm{PairSeq}`$ が $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ に属するから、
-$`\forall M,\ \Psi(M)`$、すなわち $`R_{\mathrm{PS}}`$ は整礎である。∎
+$`\forall M \in \mathrm{PairSeq},\ \Psi(M)`$、すなわち $`R_{\mathrm{PS}}`$ は整礎である。∎
 
 <a id="t-no_infinite_expansion_cond"></a>
 ## 定理: 条件付きの無限展開列の非存在 (T.no_infinite_expansion_cond)
@@ -221,7 +221,7 @@ $`\mathrm{Acc}_{R_{\mathrm{PS}}}`$ の導出に関する帰納法を行う。帰
 **帰納段**：$`x \in \mathrm{PairSeq}`$ を取り、帰納法の仮定
 
 ```math
-\forall y,\ y \mathbin{R_{\mathrm{PS}}} x \to \Theta(y)
+\forall y \in \mathrm{PairSeq},\ y \mathbin{R_{\mathrm{PS}}} x \to \Theta(y)
 ```
 
 を仮定する。$`i \in \mathbb{N}`$ を取り $`S_i = x`$ とする。$`(\ast)`$ より

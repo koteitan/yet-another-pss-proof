@@ -223,8 +223,10 @@ $`\mathrm{steps}_1`$ の定義（D.steps1）の第 3 式そのものであり、
 <a id="d-blockok"></a>
 ## 定義: 深さ $`d`$ のブロック (D.blockok)
 
-$`B \in \mathrm{PairSeq}`$ の先頭要素を $`\mathrm{head}\,B`$ と書く
-（$`B = ()`$ のときは $`(0,0)`$ とする）。$`d \in \mathbb{N}`$ に対し
+型 $`\alpha`$ の有限列 $`L`$ の先頭要素を $`\mathrm{head}\,L`$ と書く。すなわち $`L \ne ()`$ のとき
+$`\mathrm{head}\,L := L_0`$ であり、$`L = ()`$ のときは型 $`\alpha`$ ごとに定めた既定値をとる
+（$`\alpha = \mathbb{N}\times\mathbb{N}`$ のとき既定値は $`(0,0)`$ である）。
+$`B \in \mathrm{PairSeq}`$、$`d \in \mathbb{N}`$ に対し
 
 ```math
 \mathrm{blockok}(d, B) :\iff
@@ -343,14 +345,19 @@ $`r`$ の構成子で場合分けする。
 
 ### 定理
 
-$`B \in \mathrm{PairSeq}`$ の最後の要素を $`\mathrm{last}\,B`$ と書く
-（$`B = ()`$ のときは $`(0,0)`$ とする）。$`A, B \in \mathrm{PairSeq}`$ に対し
+型 $`\alpha`$ の有限列 $`L`$ と $`d \in \alpha`$ に対し
+
+```math
+\mathrm{last}_d\,L := \begin{cases} d & (L = ()) \cr L_{\lvert L\rvert - 1} & (L \ne ()) \end{cases}
+```
+
+とおく（減法は自然数の切り捨て減法である）。$`A, B \in \mathrm{PairSeq}`$ に対し
 
 ```math
 \mathrm{steps}_1(A \mathbin{+\!\!+} B) \iff
   \mathrm{steps}_1(A) \ \wedge\ \mathrm{steps}_1(B) \ \wedge\
   \Bigl(A = () \ \vee\ B = () \ \vee\
-    (\mathrm{head}\,B)_1 \le (\mathrm{last}\,A)_1 + 1\Bigr).
+    (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A)_1 + 1\Bigr).
 ```
 
 ### 証明
@@ -361,7 +368,7 @@ $`A`$ のリスト構造に関する帰納法（$`B`$ は固定する）。帰�
 \Phi(A) :\equiv \Bigl(\mathrm{steps}_1(A \mathbin{+\!\!+} B) \iff
   \mathrm{steps}_1(A) \wedge \mathrm{steps}_1(B) \wedge
   \bigl(A = () \vee B = () \vee
-    (\mathrm{head}\,B)_1 \le (\mathrm{last}\,A)_1 + 1\bigr)\Bigr).
+    (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A)_1 + 1\bigr)\Bigr).
 ```
 
 - **基底段** $`A = ()`$：$`() \mathbin{+\!\!+} B = B`$ であるから左辺は $`\mathrm{steps}_1(B)`$ で
@@ -371,7 +378,7 @@ $`A`$ のリスト構造に関する帰納法（$`B`$ は固定する）。帰�
 **帰納段** $`A = p :: A'`$：帰納法の仮定は $`\Phi(A')`$ である。$`A'`$ で場合分けする。
 
 **(a) $`A' = ()`$ のとき。** $`A = (p)`$、$`A \mathbin{+\!\!+} B = p :: B`$ であり、
-$`\mathrm{last}\,A = p`$、$`A = ()`$ は偽である。さらに $`B`$ で場合分けする。
+$`\mathrm{last}_{(0,0)} A = p`$、$`A = ()`$ は偽である。さらに $`B`$ で場合分けする。
 
 **(a-1) $`B = ()`$ のとき。** 左辺は $`\mathrm{steps}_1((p))`$ であり
 [T.steps1_single](#t-steps1_single) により成り立つ。右辺は、第 1 の連言子が
@@ -392,7 +399,7 @@ $`q_1 \le p_1 + 1 \wedge \mathrm{steps}_1(B)`$ と同値であり、両辺は同
 ```math
 A \mathbin{+\!\!+} B = p :: (A' \mathbin{+\!\!+} B),\qquad
 A' \mathbin{+\!\!+} B = p' :: (A'' \mathbin{+\!\!+} B),\qquad
-\mathrm{last}\,A = \mathrm{last}\,A'
+\mathrm{last}_{(0,0)} A = \mathrm{last}_{(0,0)} A'
 ```
 
 である（第 3 の等式は $`A' \ne ()`$ による。$`A = p :: A'`$ の最後の要素は $`A'`$ の
@@ -412,11 +419,11 @@ A' \mathbin{+\!\!+} B = p' :: (A'' \mathbin{+\!\!+} B),\qquad
 ```math
 p'_1 \le p_1 + 1 \ \wedge\ \Bigl(\mathrm{steps}_1(A') \wedge \mathrm{steps}_1(B) \wedge
   \bigl(A' = () \vee B = () \vee
-    (\mathrm{head}\,B)_1 \le (\mathrm{last}\,A')_1 + 1\bigr)\Bigr)
+    (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A')_1 + 1\bigr)\Bigr)
 ```
 
 と同値である。実際、$`A = ()`$ と $`A' = ()`$ がともに偽であるから第 3 の連言子の
-選言の並びは一致し、$`\mathrm{last}\,A = \mathrm{last}\,A'`$ から第 3 選言も一致する。
+選言の並びは一致し、$`\mathrm{last}_{(0,0)} A = \mathrm{last}_{(0,0)} A'`$ から第 3 選言も一致する。
 あとは連言の結合順序を組み替えただけである。大きい括弧の中は帰納法の仮定 $`\Phi(A')`$ により
 $`\mathrm{steps}_1(A' \mathbin{+\!\!+} B)`$ と同値であるから、右辺は
 
@@ -555,9 +562,10 @@ $`(\mathrm{head}\,(\mathrm{dw}_d r))_1 = d`$ を得る。
 **第 2 の連言子。** $`q \in \mathrm{dw}_d r`$ とする。$`\mathrm{dw}_d r`$ は $`r`$ の部分列で
 あるから $`q \in r`$、したがって $`q \in (d,y) :: r`$ であり、仮定より $`d \le q_1`$。
 
-**第 3 の連言子。** [T.blockok_arg](#t-blockok_arg) の第 3 の連言子の証明と同じく、
-$`\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r = r`$ と
-[T.steps1_tail](#t-steps1_tail) から
+**第 3 の連言子。** $`\mathrm{tw}`$ と $`\mathrm{dw}`$ の定義（D.translate）より
+$`\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r = r`$ である。
+[T.steps1_tail](#t-steps1_tail) を $`\mathrm{steps}_1\bigl((d,y) :: r\bigr)`$ に適用して
+$`\mathrm{steps}_1(r)`$ を得るから、
 $`\mathrm{steps}_1\bigl(\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r\bigr)`$ が成り立つ。
 [T.steps1_append](#t-steps1_append) の $`\to`$ 向きを適用すると、その第 2 の連言子が
 $`\mathrm{steps}_1(\mathrm{dw}_d r)`$ である。∎
@@ -765,7 +773,7 @@ $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式により $`() \prec
 同一の命題であり、$`=`$ の反射性に矛盾する。よって前件が偽である。
 
 **(2) $`M = ()`$、$`N = q :: N'`$ のとき。**
-$`\mathrm{tr}`$ の定義（D.translate）の第 1 式より $`\mathrm{tr}\,() = \mathsf{Z}`$ であり、
+$`\mathrm{tr}`$ の定義（D.translate）の第 1 式より [$`\mathrm{tr}\,() = \mathsf{Z}`$](Term.md#d-Three) であり、
 第 2 式より $`\mathrm{tr}(q :: N') = \mathsf{P}\bigl(q_2, \mathrm{tr}(\mathrm{tw}_{q_1}N'), \mathrm{tr}(\mathrm{dw}_{q_1}N')\bigr)`$
 である。[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathsf{P}(\cdot,\cdot,\cdot)`$。
 
@@ -774,7 +782,9 @@ $`\mathrm{tr}`$ の定義（D.translate）の第 1 式より $`\mathrm{tr}\,() =
 
 **(4) $`M = p :: r`$、$`N = q :: r'`$ のとき。**
 $`\mathrm{blockok}(d, p :: r)`$ の第 1 の連言子を $`p :: r \ne ()`$ に適用すると
-$`\bigl(\mathrm{head}(p :: r)\bigr)_1 = d`$、すなわち $`p_1 = d`$ を得る。同様に $`q_1 = d`$ である。
+$`\bigl(\mathrm{head}(p :: r)\bigr)_1 = d`$、すなわち $`p_1 = d`$ を得る。
+$`\mathrm{blockok}(d, q :: r')`$ の第 1 の連言子を $`q :: r' \ne ()`$ に適用すると
+$`\bigl(\mathrm{head}(q :: r')\bigr)_1 = d`$、すなわち $`q_1 = d`$ を得る。
 そこで $`y := p_2`$、$`y' := q_2`$ とおけば $`p = (d, y)`$、$`q = (d, y')`$ と書ける。
 $`\mathrm{tr}`$ の定義（D.translate）の第 2 式より
 
@@ -791,8 +801,8 @@ $`\mathrm{tr}`$ の定義（D.translate）の第 2 式より
 
 **(4a) $`y = y'`$ のとき。**
 [T.seqlex_cons_cons](#t-seqlex_cons_cons) より、仮定 $`(d,y) :: r \prec_{\mathrm{lex}} (d,y) :: r'`$ は
-$`(d,y) \prec_{\mathrm{pair}} (d,y)`$ または $`\bigl((d,y) = (d,y) \wedge r \prec_{\mathrm{lex}} r'\bigr)`$ である。
-第 1 の選言は $`\prec_{\mathrm{pair}}`$ の定義（D.pairlt）より $`d \lt d`$ または
+$`(d,y) \prec_{\mathrm{p}} (d,y)`$ または $`\bigl((d,y) = (d,y) \wedge r \prec_{\mathrm{lex}} r'\bigr)`$ である。
+第 1 の選言は $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より $`d \lt d`$ または
 $`(d = d \wedge y \lt y)`$ であり、$`\lt`$ の非反射性によりいずれも偽である。
 よって $`r \prec_{\mathrm{lex}} r'`$ が成り立つ。
 
@@ -804,8 +814,11 @@ $`(d = d \wedge y \lt y)`$ であり、$`\lt`$ の非反射性によりいずれ
 
 **(i) のとき。**[T.blockok_tail](#t-blockok_tail) を $`\mathrm{blockok}(d, (d,y) :: r)`$ と
 $`\mathrm{blockok}(d, (d,y) :: r')`$ に適用すると $`\mathrm{blockok}(d, \mathrm{dw}_d\,r)`$ と
-$`\mathrm{blockok}(d, \mathrm{dw}_d\,r')`$ を得る。$`\mathrm{dw}_d\,r`$ は $`r`$ の部分列だから
-$`\lvert \mathrm{dw}_d\,r\rvert \le \lvert r\rvert`$、同様に $`\lvert \mathrm{dw}_d\,r'\rvert \le \lvert r'\rvert`$ であり、
+$`\mathrm{blockok}(d, \mathrm{dw}_d\,r')`$ を得る。$`\mathrm{tw}`$ と $`\mathrm{dw}`$ の定義（D.translate）より
+$`\mathrm{tw}_d\,r \mathbin{+\!\!+} \mathrm{dw}_d\,r = r`$ であるから
+$`\lvert \mathrm{dw}_d\,r\rvert \le \lvert \mathrm{tw}_d\,r\rvert + \lvert \mathrm{dw}_d\,r\rvert = \lvert r\rvert`$ であり、
+同じ等式を $`r'`$ について用いて
+$`\lvert \mathrm{dw}_d\,r'\rvert \le \lvert \mathrm{tw}_d\,r'\rvert + \lvert \mathrm{dw}_d\,r'\rvert = \lvert r'\rvert`$ である。よって
 
 ```math
 \lvert \mathrm{dw}_d\,r\rvert + \lvert \mathrm{dw}_d\,r'\rvert
@@ -826,8 +839,11 @@ $`y = y \wedge \mathrm{tr}(\mathrm{tw}_d r) = \mathrm{tr}(\mathrm{tw}_d r') \wed
 
 **(ii) のとき。**[T.blockok_arg](#t-blockok_arg) を同じ 2 つの仮定に適用すると
 $`\mathrm{blockok}(d+1, \mathrm{tw}_d\,r)`$ と $`\mathrm{blockok}(d+1, \mathrm{tw}_d\,r')`$ を得る。
-$`\mathrm{tw}_d\,r`$ は $`r`$ の部分列だから $`\lvert \mathrm{tw}_d\,r\rvert \le \lvert r\rvert`$、
-同様に $`\lvert \mathrm{tw}_d\,r'\rvert \le \lvert r'\rvert`$ であり、
+$`\mathrm{tw}`$ と $`\mathrm{dw}`$ の定義（D.translate）より
+$`\mathrm{tw}_d\,r \mathbin{+\!\!+} \mathrm{dw}_d\,r = r`$ であるから
+$`\lvert \mathrm{tw}_d\,r\rvert \le \lvert \mathrm{tw}_d\,r\rvert + \lvert \mathrm{dw}_d\,r\rvert = \lvert r\rvert`$ であり、
+同じ等式を $`r'`$ について用いて
+$`\lvert \mathrm{tw}_d\,r'\rvert \le \lvert \mathrm{tw}_d\,r'\rvert + \lvert \mathrm{dw}_d\,r'\rvert = \lvert r'\rvert`$ である。よって
 
 ```math
 \lvert \mathrm{tw}_d\,r\rvert + \lvert \mathrm{tw}_d\,r'\rvert
@@ -846,9 +862,9 @@ $`y = y \wedge \mathrm{tr}(\mathrm{tw}_d r) \prec \mathrm{tr}(\mathrm{tw}_d r')`
 
 **(4b) $`y \ne y'`$ のとき。**
 [T.seqlex_cons_cons](#t-seqlex_cons_cons) より、仮定は
-$`(d,y) \prec_{\mathrm{pair}} (d,y')`$ または $`\bigl((d,y) = (d,y') \wedge r \prec_{\mathrm{lex}} r'\bigr)`$ である。
+$`(d,y) \prec_{\mathrm{p}} (d,y')`$ または $`\bigl((d,y) = (d,y') \wedge r \prec_{\mathrm{lex}} r'\bigr)`$ である。
 第 2 の選言が成り立つとすると、対の構成子の単射性より $`y = y'`$ となり仮定に矛盾する。
-よって $`(d,y) \prec_{\mathrm{pair}} (d,y')`$ であり、$`\prec_{\mathrm{pair}}`$ の定義（D.pairlt）より
+よって $`(d,y) \prec_{\mathrm{p}} (d,y')`$ であり、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より
 $`d \lt d`$ または $`(d = d \wedge y \lt y')`$ である。前者は $`\lt`$ の非反射性に反するから
 $`y \lt y'`$ である。[T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 1 選言がこれであるから、
 上に書いた 2 つの翻訳の式と合わせて結論が従う。∎
@@ -866,7 +882,7 @@ M = N \ \vee\ M \prec_{\mathrm{lex}} N \ \vee\ N \prec_{\mathrm{lex}} M .
 
 ### 証明
 
-$`M`$ の列としての構造に関する帰納法を行う（$`N`$ は全称量化したまま動かす）。帰納法の述語は
+$`M`$ のリスト構造に関する帰納法を行う（$`N`$ は全称量化したまま動かす）。帰納法の述語は
 
 ```math
 \Phi(M) :\equiv \forall N \in \mathrm{PairSeq},\
@@ -894,28 +910,30 @@ $`N`$ の構成子で場合分けする。
 - $`M' = N'`$ のとき。$`p = q`$ と合わせて $`p :: M' = q :: N'`$（第 1 選言）。
 - $`M' \prec_{\mathrm{lex}} N'`$ のとき。[T.seqlex_cons_cons](#t-seqlex_cons_cons) の右辺の第 2 選言
   $`p = q \wedge M' \prec_{\mathrm{lex}} N'`$ が成り立つから $`p :: M' \prec_{\mathrm{lex}} q :: N'`$（第 2 選言）。
-- $`N' \prec_{\mathrm{lex}} M'`$ のとき。同じく第 2 選言により
+- $`N' \prec_{\mathrm{lex}} M'`$ のとき。[T.seqlex_cons_cons](#t-seqlex_cons_cons) の右辺の第 2 選言
+  $`q = p \wedge N' \prec_{\mathrm{lex}} M'`$ が成り立つから
   $`q :: N' \prec_{\mathrm{lex}} p :: M'`$（第 3 選言）。
 
 **$`p \ne q`$ のとき。** まず
-$`p \prec_{\mathrm{pair}} q \vee q \prec_{\mathrm{pair}} p`$ を示す。
+$`p \prec_{\mathrm{p}} q \vee q \prec_{\mathrm{p}} p`$ を示す。
 $`\mathbb{N}`$ の $`\lt`$ の三分律を $`p_1`$ と $`q_1`$ に適用して 3 通りに分ける。
 
-- $`p_1 \lt q_1`$ のとき。$`\prec_{\mathrm{pair}}`$ の定義（D.pairlt）の第 1 選言により
-  $`p \prec_{\mathrm{pair}} q`$。
+- $`p_1 \lt q_1`$ のとき。$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
+  $`p \prec_{\mathrm{p}} q`$。
 - $`p_1 = q_1`$ のとき。さらに $`\mathbb{N}`$ の $`\lt`$ の三分律を $`p_2`$ と $`q_2`$ に適用する。
-  - $`p_2 \lt q_2`$ のとき。$`\prec_{\mathrm{pair}}`$ の定義（D.pairlt）の第 2 選言
-    $`p_1 = q_1 \wedge p_2 \lt q_2`$ により $`p \prec_{\mathrm{pair}} q`$。
+  - $`p_2 \lt q_2`$ のとき。$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 2 選言
+    $`p_1 = q_1 \wedge p_2 \lt q_2`$ により $`p \prec_{\mathrm{p}} q`$。
   - $`p_2 = q_2`$ のとき。$`p_1 = q_1`$ と $`p_2 = q_2`$ から対の外延性により $`p = q`$ となり、
     仮定 $`p \ne q`$ に矛盾する。
-  - $`q_2 \lt p_2`$ のとき。$`q_1 = p_1`$ と合わせて $`\prec_{\mathrm{pair}}`$ の定義（D.pairlt）の
-    第 2 選言により $`q \prec_{\mathrm{pair}} p`$。
-- $`q_1 \lt p_1`$ のとき。$`\prec_{\mathrm{pair}}`$ の定義（D.pairlt）の第 1 選言により
-  $`q \prec_{\mathrm{pair}} p`$。
+  - $`q_2 \lt p_2`$ のとき。$`q_1 = p_1`$ と合わせて $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の
+    第 2 選言により $`q \prec_{\mathrm{p}} p`$。
+- $`q_1 \lt p_1`$ のとき。$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
+  $`q \prec_{\mathrm{p}} p`$。
 
-いずれの場合も $`p \prec_{\mathrm{pair}} q`$ か $`q \prec_{\mathrm{pair}} p`$ が得られた。
-前者のときは [T.seqlex_cons_cons](#t-seqlex_cons_cons) の右辺の第 1 選言により
-$`p :: M' \prec_{\mathrm{lex}} q :: N'`$（第 2 選言）、後者のときは同じく
+いずれの場合も $`p \prec_{\mathrm{p}} q`$ か $`q \prec_{\mathrm{p}} p`$ が得られた。
+前者のときは [T.seqlex_cons_cons](#t-seqlex_cons_cons) の右辺の第 1 選言 $`p \prec_{\mathrm{p}} q`$ により
+$`p :: M' \prec_{\mathrm{lex}} q :: N'`$（第 2 選言）であり、後者のときは
+[T.seqlex_cons_cons](#t-seqlex_cons_cons) の右辺の第 1 選言 $`q \prec_{\mathrm{p}} p`$ により
 $`q :: N' \prec_{\mathrm{lex}} p :: M'`$（第 3 選言）である。∎
 
 <a id="t-olt_iff_seqlex"></a>
@@ -964,24 +982,23 @@ $`M \prec_{\mathrm{lex}} N`$ が成り立たないと仮定して矛盾を導く
 ここで
 
 ```math
-\mathrm{last}_d\,l := \begin{cases} d & (l = ()) \cr l_{\lvert l\rvert - 1} & (l \ne ()) \end{cases}
-\qquad
 l\langle i\rangle_d := \begin{cases} l_i & (i \lt \lvert l\rvert) \cr d & (i \ge \lvert l\rvert) \end{cases}
 ```
 
-であり、減法は自然数の切り捨て減法である。
+であり、減法は自然数の切り捨て減法である。$`\alpha = \mathbb{N}\times\mathbb{N}`$ かつ $`d = (0,0)`$ のときの
+$`l\langle i\rangle_{(0,0)}`$ が、$`M_{i,j}`$ の定義（D.entry）の $`l\langle i\rangle`$ である。
 
 ### 証明
 
 $`l`$ が空かどうかで場合分けする。
 
-- $`l = ()`$ のとき。左辺は $`\mathrm{last}`$ の定義の第 1 式より $`d`$ である。
+- $`l = ()`$ のとき。左辺は $`\mathrm{last}_d`$ の定義の第 1 式より $`d`$ である。
   右辺は $`\lvert l\rvert - 1 = 0 - 1 = 0`$ であり、$`0 \lt \lvert l\rvert = 0`$ は偽だから
   $`\langle\cdot\rangle_d`$ の定義の第 2 式より $`d`$ である。
 
 - $`l \ne ()`$ のとき。$`1 \le \lvert l\rvert`$ であるから $`\lvert l\rvert - 1 \lt \lvert l\rvert`$ であり、
   右辺は $`\langle\cdot\rangle_d`$ の定義の第 1 式より $`l_{\lvert l\rvert - 1}`$ である。
-  左辺も $`\mathrm{last}`$ の定義の第 2 式より $`l_{\lvert l\rvert - 1}`$ である。∎
+  左辺も $`\mathrm{last}_d`$ の定義の第 2 式より $`l_{\lvert l\rvert - 1}`$ である。∎
 
 <a id="t-getLastD_ne_nil_indep"></a>
 ## 定理: 空でない列の末尾要素は既定値に依らない (T.getLastD_ne_nil_indep)
@@ -1000,13 +1017,8 @@ $`B`$ の構成子で場合分けする。
 
 - $`B = ()`$ のとき。仮定 $`B \ne ()`$ に矛盾する。
 
-- $`B = b :: bs`$ のとき。$`\mathrm{last}`$ の定義の第 2 式より、両辺とも
+- $`B = b :: bs`$ のとき。$`\mathrm{last}_d`$ の定義の第 2 式より、両辺とも
   $`(b :: bs)_{\lvert b :: bs\rvert - 1}`$ に等しい。この値は $`d`$ にも $`d'`$ にも依らない。∎
-
-> 以下ではこの命題を、$`bs`$ が空かどうかで分けた次の形でも用いる。
-> $`\mathrm{last}_d(b :: bs) = \mathrm{last}_b\,bs`$。
-> 実際 $`bs = ()`$ なら左辺は $`b`$、右辺も $`\mathrm{last}`$ の定義の第 1 式より $`b`$ であり、
-> $`bs \ne ()`$ なら両辺とも $`bs`$ の最後の要素 $`bs_{\lvert bs\rvert - 1}`$ である。
 
 <a id="t-headI_append_left"></a>
 ## 定理: 左が空でない連結の先頭 (T.headI_append_left)
@@ -1018,9 +1030,6 @@ $`B`$ の構成子で場合分けする。
 ```math
 \mathrm{head}(A \mathbin{+\!\!+} B) = \mathrm{head}\,A .
 ```
-
-ここで $`\mathrm{head}\,l`$ は $`l \ne ()`$ のとき $`l_0`$、$`l = ()`$ のとき型 $`\alpha`$ の既定値である
-（$`\alpha = \mathbb{N}\times\mathbb{N}`$ のとき既定値は $`(0,0)`$）。
 
 ### 証明
 
@@ -1044,7 +1053,7 @@ $`A`$ の構成子で場合分けする。
 
 ### 証明
 
-$`A`$ の列としての構造に関する帰納法を行う（$`d`$ は全称量化したまま動かす）。帰納法の述語は
+$`A`$ のリスト構造に関する帰納法を行う（$`d`$ は全称量化したまま動かす）。帰納法の述語は
 
 ```math
 \Phi(A) :\equiv \forall d \in \alpha,\ \mathrm{last}_d(A \mathbin{+\!\!+} B) = \mathrm{last}_d\,B .
@@ -1054,8 +1063,24 @@ $`A`$ の列としての構造に関する帰納法を行う（$`d`$ は全称�
 
 **帰納段 $`A = a :: A'`$。** 帰納法の仮定は $`\Phi(A')`$、すなわち
 $`\forall d,\ \mathrm{last}_d(A' \mathbin{+\!\!+} B) = \mathrm{last}_d\,B`$ である。
-$`(a :: A') \mathbin{+\!\!+} B = a :: (A' \mathbin{+\!\!+} B)`$ であるから、
-[T.getLastD_ne_nil_indep](#t-getLastD_ne_nil_indep) の下に置いた式により
+まず、任意の $`b \in \alpha`$ と型 $`\alpha`$ の有限列 $`bs`$ に対し
+
+```math
+\mathrm{last}_d(b :: bs) = \mathrm{last}_b\,bs
+```
+
+が成り立つことを示す。$`bs = ()`$ のとき、$`b :: bs = (b) \ne ()`$ であるから
+$`\mathrm{last}_d`$ の定義の第 2 式より左辺は $`(b)_{\lvert (b)\rvert - 1} = (b)_0 = b`$ であり、
+右辺は $`\mathrm{last}_b\,()`$ であって同じ定義の第 1 式より $`b`$ である。
+$`bs \ne ()`$ のとき、$`b :: bs \ne ()`$ でもあるから
+$`\mathrm{last}_d`$ の定義の第 2 式を両辺に用いて、左辺は
+$`(b :: bs)_{\lvert b :: bs\rvert - 1} = (b :: bs)_{\lvert bs\rvert}`$、右辺は
+$`bs_{\lvert bs\rvert - 1}`$ である。$`\lvert bs\rvert \ge 1`$ であるから
+$`b :: bs`$ の第 $`\lvert bs\rvert`$ 要素は $`bs`$ の第 $`\lvert bs\rvert - 1`$ 要素であり、
+両辺は等しい。
+
+$`(a :: A') \mathbin{+\!\!+} B = a :: (A' \mathbin{+\!\!+} B)`$ であるから、この式を
+$`b := a`$、$`bs := A' \mathbin{+\!\!+} B`$ に適用して
 
 ```math
 \mathrm{last}_d\bigl(a :: (A' \mathbin{+\!\!+} B)\bigr) = \mathrm{last}_a(A' \mathbin{+\!\!+} B)
@@ -1264,7 +1289,7 @@ $`\mathrm{steps}_1\bigl(((s+1+i,s+1+i))_{i=0}^{m-1}\bigr)`$ を、上の先頭�
 
 ### 定理
 
-任意の $`v \in \mathbb{N}`$ に対し $`\mathrm{blockok}(0, \Delta_0^v)`$。
+任意の $`v \in \mathbb{N}`$ に対し [$`\mathrm{blockok}(0, \Delta_0^v)`$](Pss.md#d-diagSeq)。
 
 ### 証明
 
@@ -1288,11 +1313,11 @@ $`0`$ から始まる長さ $`v + 1 - 0`$ の連続整数の列の各要素 $`j`
 ### 定理
 
 $`M \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とする。
-$`\mathrm{blockok}(0, M)`$ かつ $`1 \le n`$ ならば $`\mathrm{blockok}(0, M[n])`$。
+$`\mathrm{blockok}(0, M)`$ かつ $`1 \le n`$ ならば [$`\mathrm{blockok}(0, M[n])`$](Pss.md#d-oper)。
 
 ### 証明
 
-以下 $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$ と書く。
+以下 $`j_1 := \lvert M\rvert - 1`$、[$`i_1 := \mathrm{idx}_1(M, j_1)`$](Pss.md#d-idx1) と書く。
 $`j_1 = 0`$ かどうかで場合分けする。
 
 **(A) $`j_1 = 0`$ のとき。**
@@ -1301,7 +1326,7 @@ $`j_1 = 0`$ かどうかで場合分けする。
 
 **(B) $`j_1 \ne 0`$ のとき。**
 $`j_1 = \lvert M\rvert - 1 \ne 0`$ より $`1 \lt \lvert M\rvert`$ であり、とくに $`M \ne ()`$ である。
-また $`\mathrm{Pred}`$ の定義（D.Pred）の場合分けで $`\lvert M\rvert \le 1`$ が偽であるから
+また [$`\mathrm{Pred}\,M`$](Pss.md#d-Pred) の定義（D.Pred）の場合分けで $`\lvert M\rvert \le 1`$ が偽であるから
 
 ```math
 \mathrm{Pred}\,M = \mathrm{dropLast}\,M
@@ -1314,14 +1339,15 @@ $`j_1 = \lvert M\rvert - 1 \ne 0`$ より $`1 \lt \lvert M\rvert`$ であり、�
 $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
 [T.blockok_dropLast](#t-blockok_dropLast) を $`\mathrm{blockok}(0,M)`$ に適用すればよい。
 
-**(B-2) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ $`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
+**(B-2) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ
+[$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$](Pss.md#d-hasParent) のとき。**
 [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
 $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
 [T.blockok_dropLast](#t-blockok_dropLast) を適用すればよい。
 
 **(B-3) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-[T.parent_nextR](Decrease.md#t-parent_nextR) より、$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$ とおくと
-$`j_0 \to^M_{i_1} j_1`$ である。[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より
+[T.parent_nextR](Decrease.md#t-parent_nextR) より、[$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$](Pss.md#d-parent) とおくと
+[$`j_0 \to^M_{i_1} j_1`$](Pss.md#d-nextR) である。[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より
 $`j_0 \lt j_1`$ である。さらに
 
 ```math
@@ -1355,7 +1381,7 @@ M_{0,j_1} \le M_{0,j_1 - 1} + 1
 を得る。$`i_1`$ が $`0`$ かどうかで分ける。
 
 **$`0 \lt i_1`$ のとき。** $`\to^M_{i}`$ の定義（D.nextR）の第 2 式より
-$`j_0 \to^M_{i_1} j_1`$ は $`j_0 \to^M_1 j_1`$ である。
+$`j_0 \to^M_{i_1} j_1`$ は [$`j_0 \to^M_1 j_1`$](Pss.md#d-nextrel1) である。
 $`\to^M_1`$ の定義（D.nextrel1）の第 5 条件は $`j_0 \le^M_0 j_1`$ であり、
 [T.le0_entry0_mono](Term.md#t-le0_entry0_mono) より $`M_{0,j_0} \le M_{0,j_1}`$ である。
 $`d_0`$ の定義の第 1 式より $`d_0 = M_{0,j_1} - M_{0,j_0}`$ であり、切り捨て減法は
@@ -1368,7 +1394,7 @@ M_{0,j_0} + d_0 = M_{0,j_0} + (M_{0,j_1} - M_{0,j_0}) = M_{0,j_1}
 をみたす。これと上の式を合わせて $`M_{0,j_0} + d_0 \le M_{0,j_1-1} + 1`$ を得る。
 
 **$`i_1 = 0`$ のとき。** $`\to^M_{i}`$ の定義（D.nextR）の第 1 式より
-$`j_0 \to^M_0 j_1`$ である。[T.nextrel0_entry0_less](Term.md#t-nextrel0_entry0_less) より
+[$`j_0 \to^M_0 j_1`$](Pss.md#d-nextrel0) である。[T.nextrel0_entry0_less](Term.md#t-nextrel0_entry0_less) より
 $`M_{0,j_0} \lt M_{0,j_1}`$ である。$`d_0`$ の定義の第 2 式より $`d_0 = 0`$ であるから
 
 ```math
@@ -1538,7 +1564,7 @@ $`\mathrm{steps}_1(\mathrm{take}_{j_0} M)`$、$`\mathrm{steps}_1(\mathrm{cat}_n 
 
 ### 定理
 
-$`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{blockok}(0, M)`$。
+[$`M \in \mathrm{ST\_PS}`$](Pss.md#d-ST_PS) ならば $`\mathrm{blockok}(0, M)`$。
 
 ### 証明
 
