@@ -122,9 +122,11 @@ def settle(dead, label):
         if code == 0:
             print(f'{label}: GREEN, {n} declarations removed', flush=True)
             return True
-        shorts = {b.split('.')[-1] for b in
-                  set(re.findall(r"Unknown (?:identifier|constant) `([^`]+)`", out))
-                  | set(re.findall(r"The identifier `([^`]+)` is unknown", out))}
+        # 復活は完全修飾名で判定する。短い名前で照合すると、別の名前空間にある
+        # 同名の宣言（`YAPSS.le_maxr1` と `YAPSS.Wset.le_maxr1`）が巻き添えで戻る。
+        broken = (set(re.findall(r"Unknown (?:identifier|constant) `([^`]+)`", out))
+                  | set(re.findall(r"The identifier `([^`]+)` is unknown", out)))
+        shorts = {b.split('.')[-1] for b in broken}
         failing = set(re.findall(r'YAPSS/(\w+)\.lean:', out))
         for mod in failing:
             src = strip_comments(open(os.path.join(LEAN, mod + '.lean')).read())
@@ -134,10 +136,12 @@ def settle(dead, label):
                     pat = r'(?<![A-Za-z0-9_.\'])' + re.escape(short) + r'(?![A-Za-z0-9_\'])'
                     if re.search(pat, src):
                         shorts.add(short)
+        # 完全修飾名が壊れたと報告されたものは、その名前だけを戻す
+        exact = {b for b in broken if '.' in b}
         rescued = set()
         for names in dead.values():
             for full in list(names):
-                if full.split('.')[-1] in shorts:
+                if full in exact or full.split('.')[-1] in shorts:
                     names.discard(full); rescued.add(full)
         print(f'{label} round {attempt}: restored {len(rescued)} {sorted(rescued)}', flush=True)
         if not rescued:

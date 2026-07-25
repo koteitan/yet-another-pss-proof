@@ -1,2 +1,0 @@
-firing desc of row-1=0 roots: 0 (should be 0)
-firing desc of row-1=1 roots: 4163/6986

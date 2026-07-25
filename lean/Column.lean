@@ -431,16 +431,6 @@ def maxr1 (S : PairSeq) : ℕ := S.foldr (fun c m => max c.2 m) 0
 theorem maxr1_cons (c : ℕ × ℕ) (S : PairSeq) :
     maxr1 (c :: S) = max c.2 (maxr1 S) := rfl
 
-theorem le_maxr1 {S : PairSeq} : ∀ c ∈ S, c.2 ≤ maxr1 S := by
-  induction S with
-  | nil => simp
-  | cons d S ih =>
-    intro c hc
-    rw [maxr1_cons]
-    rcases List.mem_cons.1 hc with rfl | hc
-    · exact le_max_left ..
-    · exact le_trans (ih c hc) (le_max_right ..)
-
 /-! ## Row-1 discipline `r1ok`
 
 Every column at positive level has a row-0 parent (the nearest preceding

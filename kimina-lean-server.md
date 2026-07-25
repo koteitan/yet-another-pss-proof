@@ -1,6 +1,6 @@
 # kimina-lean-server の使い方（本リポジトリ向け）
 
-YAPSS の Lean 4 証明（`lean/YAPSS/*.lean`）をサーバ経由で大量・並列にチェックするための
+YAPSS の Lean 4 証明（`lean/*.lean`）をサーバ経由で大量・並列にチェックするための
 [kimina-lean-server](https://github.com/project-numina/kimina-lean-server) の運用メモ。
 主にサブエージェントから Lean snippet を検証する用途で使う。
 

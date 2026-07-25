@@ -42,8 +42,7 @@ lean/                 Lean 4 / Mathlib による形式証明
   lakefile.toml       11 モジュールを依存順に roots として列挙
   tools/              DeadCode.lean — 証明項が到達しない宣言の検出
 md/                   旧世代の証明本文（lean/*.md へ移行中）
-tools/                形式化前に反例を探すための Python モデル
-proof-ja.md           証明本文（人間向け）
+tools/                実行可能な PSS モデルと、形式化前に主張を反例探索で確かめる probe
 task.md               作業ツリー
 ```
 

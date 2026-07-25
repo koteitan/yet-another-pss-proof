@@ -82,8 +82,8 @@ lean/                 the Lean 4 / Mathlib formalization
   lakefile.toml       the eleven modules as roots, in dependency order
   tools/              DeadCode.lean — declarations no proof term reaches
 md/                   the previous generation of the proof text (being replaced by lean/*.md)
-tools/                Python models used to look for counterexamples before formalizing
-proof-ja.md           proof text (Japanese)
+tools/                the executable PSS model and the probes that check a statement
+                      against it before it is formalized
 task.md               progress tree
 ```
 
