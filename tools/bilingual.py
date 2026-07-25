@@ -12,7 +12,7 @@
 import os, re, sys, glob
 
 LEAN = 'lean'
-SKIP = {'task.md'}                       # 作業用の文書。証明本文ではないので対象外
+SKIP = set()                             # 対訳にしないファイルがあればここに書く
 MODULES = ['Pss', 'Term', 'Decrease', 'Reduction', 'Cnf', 'Seqlex',
            'Column', 'Cofinality', 'ArgDom', 'Wset', 'Final']
 
