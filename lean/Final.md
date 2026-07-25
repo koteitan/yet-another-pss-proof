@@ -131,10 +131,10 @@ $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ ならば
 $`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom.md#d-ArgDomCore)）を仮定として、任意の $`M, N \in \mathrm{PairSeq}`$ について $`M \in \mathrm{ST\_PS}`$、
 $`N \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ の 3 つから本定理の結論を導く。
 
-その仮定 $`\mathrm{ArgDomCore}`$ は [T.argDomCore_holds](ArgDom.md#t-argDomCore_holds) であり、
+その仮定 $`\mathrm{ArgDomCore}`$ は [T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds) であり、
 これは仮定を持たない。よって
 [T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) に
-[T.argDomCore_holds](ArgDom.md#t-argDomCore_holds) と本定理の 3 つの仮定を与えれば、
+[T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds) と本定理の 3 つの仮定を与えれば、
 求める $`n`$ が得られる。∎
 
 <a id="t-wf_olt_ST_PS_holds"></a>
@@ -146,7 +146,7 @@ $`R_{\mathrm{st}}`$ は整礎である。
 
 ### 証明
 
-[T.wf_olt_ST_PS_of_cofinality](Wset.md#t-wf_olt_ST_PS_of_cofinality) は、仮定
+[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality) は、仮定
 
 ```math
 \forall M, N \in \mathrm{PairSeq},\
@@ -157,7 +157,7 @@ $`R_{\mathrm{st}}`$ は整礎である。
 から $`R_{\mathrm{st}}`$ の整礎性を導く。この仮定は
 [T.pss_cofinality_holds](#t-pss_cofinality_holds) を $`M`$ と $`N`$ について全称量化したもの
 そのものである。よってこれを
-[T.wf_olt_ST_PS_of_cofinality](Wset.md#t-wf_olt_ST_PS_of_cofinality) に与えればよい。∎
+[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality) に与えればよい。∎
 
 <a id="t-wf_Rnf_holds"></a>
 ## 定理: 正規形上の順序の整礎性 (T.wf_Rnf_holds)
