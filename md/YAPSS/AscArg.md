@@ -454,7 +454,7 @@ $`M\langle \lvert A\rvert\rangle = x`$ である。
 
 **$`x`$ より後ろの列はすべて $`x`$ より行 0 が真に大きい。** すなわち
 ```math
-\forall y,\ \lvert A\rvert < y \le j_1 \ \Longrightarrow\ M_{0,\lvert A\rvert} < M_{0,y} . \tag{$\ast$}
+\forall y,\ \lvert A\rvert < y \le j_1 \ \Longrightarrow\ M_{0,\lvert A\rvert} < M_{0,y} . \tag{*}
 ```
 実際、$`y = \lvert A\rvert + (t+1)`$ と書くと
 [(T.getD_append_right')](Cofinality.md#t-getD_append_right') より
@@ -1474,7 +1474,7 @@ $`\lvert A_1'\rvert = \lvert G\rvert + \lvert D\rvert - (i+1)`$。これと (S) 
 ```math
 G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m)
 = \bigl((X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} A_1'\bigr) \mathbin{+\!\!+} (u+e-d_0,\ w) \mathbin{::}
- \Bigl(\mathrm{sh}^{-}_{d_0} B \mathbin{+\!\!+} (\mathrm{sh}^{-}_{d_0} A_2 \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} Z)\Bigr) \tag{N$'$}
+ \Bigl(\mathrm{sh}^{-}_{d_0} B \mathbin{+\!\!+} (\mathrm{sh}^{-}_{d_0} A_2 \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} Z)\Bigr) \tag{N'}
 ```
 と書ける。
 

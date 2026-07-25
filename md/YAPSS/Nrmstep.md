@@ -1247,7 +1247,7 @@ w_0\le\pi_1(H\langle p\rangle)+1
 
 ```math
 \pi_0(G\langle p\rangle)+1=v_0,\qquad w_0\le\pi_1(G\langle p\rangle)+1 .
-\tag{$\ast$}
+\tag{*}
 ```
 
 この $`p`$ が求める証人である。

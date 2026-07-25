@@ -267,7 +267,7 @@ $`\mathrm{maxo}(\mathrm{headI}\,gs,\ \mathrm{tail}\,gs) \in gs`$。
 と書く（$`\mathrm{filter}`$ の述語判定は [(D.oltDecidable)](#d-oltDecidable) による）。
 $`\mathrm{filter}`$ の要素判定より
 ```math
-g \in \mathrm{bad}_u(b) \iff \bigl(g \in \mathrm{Glist}_u(b) \ \wedge\ \neg(g\prec b)\bigr) \tag{$\ast$}
+g \in \mathrm{bad}_u(b) \iff \bigl(g \in \mathrm{Glist}_u(b) \ \wedge\ \neg(g\prec b)\bigr) \tag{*}
 ```
 が成り立つ。特に $`\mathrm{bad}_u(b) = ()`$ は
 「$`\forall g\in\mathrm{Glist}_u(b),\ g\prec b`$」と同値である。

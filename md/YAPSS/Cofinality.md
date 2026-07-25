@@ -566,7 +566,7 @@ $`G, v_0, w_0, R, d_0, lp`$ の存在であって
 主張 1 の右辺に [(T.getD_last_of_snoc)](#t-getD_last_of_snoc) を $`D := G \mathbin{+\!\!+} \mathrm{blk}`$ で適用して
 
 ```math
-lp = M\langle j_1\rangle . \tag{$\ast$}
+lp = M\langle j_1\rangle . \tag{*}
 ```
 
 **(c) ブロック根の位置。** 主張 1 と連結の結合律より $`M = G \mathbin{+\!\!+} (\mathrm{blk} \mathbin{+\!\!+} [lp])`$
@@ -574,7 +574,7 @@ lp = M\langle j_1\rangle . \tag{$\ast$}
 [(T.getD_append_right')](#t-getD_append_right') を $`i := 0`$ に適用して
 
 ```math
-M\langle \lvert G\rvert\rangle = (\mathrm{blk} \mathbin{+\!\!+} [lp])\langle 0\rangle = (v_0,w_0). \tag{$\ast\ast$}
+M\langle \lvert G\rvert\rangle = (\mathrm{blk} \mathbin{+\!\!+} [lp])\langle 0\rangle = (v_0,w_0). \tag{**}
 ```
 
 **(d) 主張 5 の証明。** $`\mathrm{disj}`$ の 2 つの場合に分ける。
@@ -639,7 +639,7 @@ $`\mathrm{blk}' = \mathrm{blk}`$ の先頭要素を比べて $`(v_0',w_0') = (v_
 *$`d_0' = d_0`$。* まず補助事実として、任意の $`e`$ について
 
 ```math
-e \to^M_1 j_1 \ \Longrightarrow\ i_1 \ne 0 \tag{$\dagger$}
+e \to^M_1 j_1 \ \Longrightarrow\ i_1 \ne 0 \tag{†}
 ```
 
 を示す。$`e \to^M_1 j_1`$ の条件 4 は $`M_{1,e} \lt M_{1,j_1}`$ であるから $`0 \lt M_{1,j_1}`$、
@@ -1379,7 +1379,7 @@ $`M[1] = G\mathbin{+\!\!+}\mathrm{cop}_{d_0}(\mathrm{blk},1) = G\mathbin{+\!\!+}
 まず
 
 ```math
-\exists m,\ \Bigl(1\le m \wedge q\mathbin{::}S \preceq_{\mathrm{lex}} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},m)\bigr)\Bigr) \tag{$\sharp$}
+\exists m,\ \Bigl(1\le m \wedge q\mathbin{::}S \preceq_{\mathrm{lex}} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},m)\bigr)\Bigr) \tag{\#}
 ```
 
 を示す。[(T.oper_bad_blocks_all)](#t-oper_bad_blocks_all) の結論 5 で分ける。
