@@ -465,12 +465,6 @@ def sndSet (M : PairSeq) : Set ℕ := Prod.snd '' {x | x ∈ M}
   ext y
   simp
 
-theorem sndSet_mono {M N : PairSeq} (h : ∀ x ∈ M, x ∈ N) : sndSet M ⊆ sndSet N := by
-  intro y hy
-  rw [mem_sndSet] at hy ⊢
-  obtain ⟨p, hp, rfl⟩ := hy
-  exact ⟨p, h p hp, rfl⟩
-
 /-- The row index `i1` is at most 1, so the row-1 increment `δ1` is always 0. -/
 theorem idx1_le1 (M : PairSeq) (j : ℕ) : idx1 M j ≤ 1 := by
   unfold idx1; split <;> simp

@@ -20,64 +20,7 @@ open Three
 
 /-! ## Leftmost spine, its maximum, and the maximal subscript -/
 
-/-- The leftmost argument spine: the subscripts along the first arguments. -/
-def spine : Three → List ℕ
-  | Z => []
-  | P a b _ => a :: spine b
-
-@[simp] theorem spine_Z : spine Z = [] := rfl
-@[simp] theorem spine_P (a : ℕ) (b c : Three) : spine (P a b c) = a :: spine b := rfl
-
-/-- Maximum of a list of naturals (`0` for the empty list). -/
-def cmax (xs : List ℕ) : ℕ := xs.foldr max 0
-
-/-- The spine maximum. -/
-def climb (t : Three) : ℕ := cmax (spine t)
-
-/-- The maximal subscript occurring anywhere in a term. -/
-def maxsub : Three → ℕ
-  | Z => 0
-  | P a b c => max a (max (maxsub b) (maxsub c))
-
-@[simp] theorem maxsub_Z : maxsub Z = 0 := rfl
-@[simp] theorem maxsub_P (a : ℕ) (b c : Three) :
-    maxsub (P a b c) = max a (max (maxsub b) (maxsub c)) := rfl
-
-@[simp] theorem cmax_nil : cmax [] = 0 := rfl
-
-@[simp] theorem cmax_cons (x : ℕ) (xs : List ℕ) : cmax (x :: xs) = max x (cmax xs) := rfl
-
-theorem cmax_ge {z : ℕ} {xs : List ℕ} (h : z ∈ xs) : z ≤ cmax xs := by
-  induction xs with
-  | nil => simp at h
-  | cons x xs ih =>
-    rcases List.mem_cons.1 h with rfl | h
-    · simp
-    · have := ih h
-      simp only [cmax_cons]
-      omega
-
 /-! ## The order `<o` refines the spine lexicographic order -/
-
-/-- `slex xs ys`: lexicographic `≤` on subscript lists, with the empty list (a
-spine that has ended) counted as smallest, i.e. a proper prefix is smaller. -/
-def slex : List ℕ → List ℕ → Prop
-  | [], _ => True
-  | _ :: _, [] => False
-  | x :: xs, y :: ys => x < y ∨ (x = y ∧ slex xs ys)
-
-@[simp] theorem slex_nil (ys : List ℕ) : slex [] ys := trivial
-
-@[simp] theorem slex_cons_nil (x : ℕ) (xs : List ℕ) : ¬ slex (x :: xs) [] :=
-  fun h => h
-
-@[simp] theorem slex_cons_cons {x y : ℕ} {xs ys : List ℕ} :
-    slex (x :: xs) (y :: ys) ↔ x < y ∨ (x = y ∧ slex xs ys) := Iff.rfl
-
-theorem slex_refl (xs : List ℕ) : slex xs xs := by
-  induction xs with
-  | nil => simp
-  | cons x xs ih => simp [ih]
 
 /-! ## From `slex` and the NF invariants to subscript monotonicity -/
 
@@ -92,97 +35,7 @@ theorem getD_eq_getElem' {α : Type*} (l : List α) (d : α) {i : ℕ}
   rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem h]
   rfl
 
-def incpref : PairSeq → PairSeq
-  | [] => []
-  | [p] => [p]
-  | p :: q :: rest => if p.1 < q.1 then p :: incpref (q :: rest) else [p]
-
-@[simp] theorem incpref_nil : incpref [] = [] := rfl
-@[simp] theorem incpref_single (p : ℕ × ℕ) : incpref [p] = [p] := rfl
-theorem incpref_cons_cons (p q : ℕ × ℕ) (rest : PairSeq) :
-    incpref (p :: q :: rest)
-      = if p.1 < q.1 then p :: incpref (q :: rest) else [p] := rfl
-
-theorem takeWhile_fst_nest {a b : ℕ} (hab : a < b) (xs : PairSeq) :
-    (xs.takeWhile fun x => a < x.1).takeWhile (fun x => b < x.1)
-      = xs.takeWhile fun x => b < x.1 := by
-  induction xs with
-  | nil => rfl
-  | cons x xs ih =>
-    by_cases hax : a < x.1
-    · by_cases hbx : b < x.1
-      · simp [hax, hbx, ih]
-      · simp [hax, hbx]
-    · have hbx : ¬ b < x.1 := by omega
-      simp [hax, hbx]
-
-theorem spine_translate_eq (M : PairSeq) :
-    spine (translate M) = (incpref M).map Prod.snd := by
-  induction M using incpref.induct with
-  | case1 => simp [translate]
-  | case2 p => simp [translate, List.takeWhile, List.dropWhile]
-  | case3 p q rest hpq ih =>
-    have tw : (q :: rest).takeWhile (fun x => p.1 < x.1)
-        = q :: rest.takeWhile (fun x => p.1 < x.1) := by
-      simp [hpq]
-    have nest := takeWhile_fst_nest hpq rest
-    have e1 : translate (p :: q :: rest)
-        = P p.2 (translate ((q :: rest).takeWhile fun x => p.1 < x.1))
-            (translate ((q :: rest).dropWhile fun x => p.1 < x.1)) := by
-      rw [translate]
-    have e2 : translate (q :: rest.takeWhile (fun x => p.1 < x.1))
-        = P q.2 (translate ((rest.takeWhile (fun x => p.1 < x.1)).takeWhile
-              fun x => q.1 < x.1))
-            (translate ((rest.takeWhile (fun x => p.1 < x.1)).dropWhile
-              fun x => q.1 < x.1)) := by
-      rw [translate]
-    have e3 : translate (q :: rest)
-        = P q.2 (translate (rest.takeWhile fun x => q.1 < x.1))
-            (translate (rest.dropWhile fun x => q.1 < x.1)) := by
-      rw [translate]
-    rw [e1, tw, e2, nest, spine_P, spine_P]
-    rw [e3, spine_P] at ih
-    rw [incpref_cons_cons, if_pos hpq, List.map_cons, ← ih]
-  | case4 p q rest hpq =>
-    have tw : (q :: rest).takeWhile (fun x => p.1 < x.1) = [] := by
-      simp [hpq]
-    have e1 : translate (p :: q :: rest)
-        = P p.2 (translate ((q :: rest).takeWhile fun x => p.1 < x.1))
-            (translate ((q :: rest).dropWhile fun x => p.1 < x.1)) := by
-      rw [translate]
-    rw [e1, tw, incpref_cons_cons, if_neg hpq]
-    simp [translate]
-
 /-! ## The maximal subscript is the maximal row-1 value -/
-
-theorem cmax_append (xs ys : List ℕ) : cmax (xs ++ ys) = max (cmax xs) (cmax ys) := by
-  induction xs with
-  | nil => simp
-  | cons x xs ih =>
-    simp only [List.cons_append, cmax_cons, ih]
-    omega
-
-theorem maxsub_translate (M : PairSeq) :
-    maxsub (translate M) = cmax (M.map Prod.snd) := by
-  induction M using translate.induct with
-  | case1 => simp [translate]
-  | case2 p rest ih1 ih2 =>
-    have key : cmax (rest.map Prod.snd)
-        = max (cmax ((rest.takeWhile fun q => p.1 < q.1).map Prod.snd))
-              (cmax ((rest.dropWhile fun q => p.1 < q.1).map Prod.snd)) := by
-      conv_lhs => rw [← List.takeWhile_append_dropWhile
-        (p := fun q : ℕ × ℕ => decide (p.1 < q.1)) (l := rest)]
-      rw [List.map_append, cmax_append]
-    rw [translate, maxsub_P, ih1, ih2, List.map_cons, cmax_cons, key]
-
-/-- So the maximal-subscript invariant `maxsub = climb` is the pair-sequence
-statement `cmax (map snd M) = cmax (map snd (incpref M))`: the maximal row-1
-value of `M` is attained already within its strictly-increasing-row-0
-prefix. -/
-theorem maxsub_eq_climb_iff (M : PairSeq) :
-    maxsub (translate M) = climb (translate M)
-      ↔ cmax (M.map Prod.snd) = cmax ((incpref M).map Prod.snd) := by
-  rw [maxsub_translate, climb, spine_translate_eq]
 
 /-! ## The pair-sequence normal-form invariant and its closure -/
 
@@ -867,12 +720,6 @@ theorem copies_succ_front (d : ℕ) (blk : PairSeq) (n : ℕ) :
   rw [copies_succ_front]
   simp
 
-theorem copies_nonempty {blk : PairSeq} (hne : blk ≠ []) {n : ℕ} (n1 : 1 ≤ n) (d : ℕ) :
-    copies d blk n ≠ [] := by
-  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
-  rw [copies_succ_front]
-  simp [hne]
-
 /-- `copies` of a cons block, exposed in cons form. -/
 theorem copies_succ_cons (d v0 w0 : ℕ) (R : PairSeq) (n : ℕ) :
     copies d ((v0, w0) :: R) (n + 1)
@@ -1152,34 +999,6 @@ theorem cnf_ST_PS {M : PairSeq} (hM : ST_PS M) : cnf (translate M) := by
   induction hM with
   | diag v => exact cnf_diag v
   | oper hM hn ih => exact cnf_oper hn ih
-
-/-- The top-level sibling subscripts of a term (its `+`-chain of
-principals). -/
-def tops : Three → List ℕ
-  | Z => []
-  | P a _ c => a :: tops c
-
-@[simp] theorem tops_Z : tops Z = [] := rfl
-@[simp] theorem tops_P (a : ℕ) (b c : Three) : tops (P a b c) = a :: tops c := rfl
-
-/-- In a CNF term the leading subscript caps every sibling subscript: the
-`+`-chain is non-increasing in the subscripts.  This is what lets the leading
-principal of the embedding dominate the whole tail in the order-preservation
-argument. -/
-theorem cnf_tops_le {a : ℕ} {b c : Three} (h : cnf (P a b c)) :
-    ∀ s ∈ tops c, s ≤ a := by
-  induction c generalizing a b with
-  | Z => simp
-  | P e f g ihf ihg =>
-    obtain ⟨-, nlt, cg⟩ := cnf_P_P.1 h
-    have ea : e ≤ a := by
-      by_contra hea
-      exact nlt (olt_P_P.2 (Or.inl (by omega)))
-    intro s hs
-    rw [tops_P] at hs
-    rcases List.mem_cons.1 hs with rfl | hs
-    · exact ea
-    · exact le_trans (ihg cg s hs) ea
 
 /-! ## Reduction of well-foundedness to within-maxsub-level
 

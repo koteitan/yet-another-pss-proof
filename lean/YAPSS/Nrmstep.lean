@@ -23,6 +23,7 @@ These give the downstream case analyses the clean shape
 import YAPSS.Nrm
 import YAPSS.Seqlex
 import Mathlib.Data.Nat.Find
+import Mathlib.Algebra.NeZero
 
 namespace YAPSS
 
@@ -30,165 +31,15 @@ open Three
 
 /-! ## `maxo` is an upper bound -/
 
-theorem maxo_ub {x : Three} {ys : List Three} : ∀ y ∈ x :: ys, y ≤o maxo x ys := by
-  induction ys generalizing x with
-  | nil =>
-    intro y hy
-    rcases List.mem_singleton.1 hy with rfl
-    exact Or.inr rfl
-  | cons z zs ih =>
-    intro y hy
-    rw [maxo_cons]
-    by_cases h : olt x z
-    · rw [if_pos h]
-      rcases List.mem_cons.1 hy with rfl | hy'
-      · exact ole_trans (Or.inl h) (ih z (List.mem_cons_self ..))
-      · exact ih y hy'
-    · rw [if_neg h]
-      rcases List.mem_cons.1 hy with rfl | hy'
-      · exact ih y (List.mem_cons_self ..)
-      · rcases List.mem_cons.1 hy' with rfl | hy''
-        · have hyx : y ≤o x := by
-            rcases olt_total y x with h1 | h1 | h1
-            · exact Or.inl h1
-            · exact Or.inr h1
-            · exact absurd h1 h
-          exact ole_trans hyx (ih x (List.mem_cons_self ..))
-        · exact ih y (List.mem_cons_of_mem _ hy'')
-
-theorem maxo_ub_mem {gs : List Three} (h : gs ≠ []) :
-    ∀ y ∈ gs, y ≤o maxo gs.headI gs.tail := by
-  cases gs with
-  | nil => exact absurd rfl h
-  | cons g gs =>
-    intro y hy
-    simpa using maxo_ub y (by simpa using hy)
-
 /-! ## Transitivity of the critical-term relation -/
 
-theorem Gterm_trans {u : ℕ} {x g t : Three} (hx : x ∈ Gterm u g)
-    (hg : g ∈ Gterm u t) : x ∈ Gterm u t := by
-  induction t with
-  | Z => simp at hg
-  | P a b c ihb ihc =>
-    rcases mem_Gterm_P.1 hg with ⟨ha, rfl | hgb⟩ | hgc
-    · exact mem_Gterm_P.2 (Or.inl ⟨ha, Or.inr hx⟩)
-    · exact mem_Gterm_P.2 (Or.inl ⟨ha, Or.inr (ihb hgb)⟩)
-    · exact mem_Gterm_P.2 (Or.inr (ihc hgc))
-
 /-! ## Projection is inflationary -/
-
-/-- Members of the violator list are critical terms of `b`. -/
-theorem mem_filter_Gterm {u : ℕ} {b g : Three}
-    (h : g ∈ (Glist u b).filter (fun g => ¬ olt g b)) : g ∈ Gterm u b :=
-  mem_Glist.1 (List.mem_of_mem_filter h)
-
-/-- Members of the violator list do not lie below `b`. -/
-theorem mem_filter_not_olt {u : ℕ} {b g : Three}
-    (h : g ∈ (Glist u b).filter (fun g => ¬ olt g b)) : ¬ g <o b := by
-  have := List.of_mem_filter h
-  simpa using this
-
-theorem proj_ole (u : ℕ) (b : Three) : b ≤o proj u b := by
-  generalize hs : tsize b = n
-  induction n using Nat.strong_induction_on generalizing b with
-  | _ n IH =>
-    subst hs
-    by_cases h : (Glist u b).filter (fun g => ¬ olt g b) = []
-    · rw [proj_id h]
-      exact Or.inr rfl
-    · rw [proj_rec h]
-      have hin := maxo_hdtl_in h
-      have hG : maxo ((Glist u b).filter (fun g => ¬ olt g b)).headI
-          ((Glist u b).filter (fun g => ¬ olt g b)).tail ∈ Gterm u b :=
-        mem_filter_Gterm hin
-      have hble : b ≤o maxo ((Glist u b).filter (fun g => ¬ olt g b)).headI
-          ((Glist u b).filter (fun g => ¬ olt g b)).tail := by
-        rcases olt_total b _ with h1 | h1 | h1
-        · exact Or.inl h1
-        · exact Or.inr h1
-        · exact absurd h1 (mem_filter_not_olt hin)
-      exact ole_trans hble (IH (tsize _) (Gterm_tsize hG) _ rfl)
 
 /-! ## The one-step theorem -/
 
 /-! ## The firing predicate and projection submonotonicity -/
 
-/-- `pfire u b`: `b` has a critical term not below itself, so `proj` rewrites. -/
-def pfire (u : ℕ) (b : Three) : Prop :=
-  (Glist u b).filter (fun g => ¬ olt g b) ≠ []
-
-theorem pfire_iff {u : ℕ} {b : Three} :
-    pfire u b ↔ ∃ g ∈ Gterm u b, ¬ g <o b := by
-  constructor
-  · intro h
-    obtain ⟨g, hg⟩ := List.exists_mem_of_ne_nil _ h
-    exact ⟨g, mem_filter_Gterm hg, mem_filter_not_olt hg⟩
-  · rintro ⟨g, hG, hng⟩ he
-    have hmem : g ∈ (Glist u b).filter (fun g => ¬ olt g b) :=
-      List.mem_filter.2 ⟨mem_Glist.2 hG, by simpa using hng⟩
-    rw [he] at hmem
-    simp at hmem
-
-theorem proj_nofire {u : ℕ} {b : Three} (h : ¬ pfire u b) : proj u b = b :=
-  proj_id (not_not.1 h)
-
-theorem olt_ole_trans {x y z : Three} (h1 : x <o y) (h2 : y ≤o z) : x <o z := by
-  rcases h2 with h2 | rfl
-  · exact olt_trans h1 h2
-  · exact h1
-
 /-! ## Unconditional strict monotonicity of `ins` in the tail -/
-
-/-- Absorb-left implies absorb-right along `<o`: if the head of `t` already
-absorbs `(a, b)` and `t <o t'`, then the head of `t'` absorbs it too. -/
-theorem absorb_mono {a e e' : ℕ} {b f f' g g' : Three}
-    (habs : a < e ∨ (a = e ∧ b <o f)) (h : P e f g <o P e' f' g') :
-    a < e' ∨ (a = e' ∧ b <o f') := by
-  rcases olt_P_P.1 h with h2 | ⟨rfl, h2⟩ | ⟨rfl, rfl, h2⟩
-  · rcases habs with h1 | ⟨rfl, h1⟩
-    · exact Or.inl (h1.trans h2)
-    · exact Or.inl h2
-  · rcases habs with h1 | ⟨rfl, h1⟩
-    · exact Or.inl h1
-    · exact Or.inr ⟨rfl, olt_trans h1 h2⟩
-  · exact habs
-
-/-- **`ins` is strictly monotone in the tail, with no side condition.**
-If absorption fires on the left it fires on the right (`absorb_mono`); if it
-fires only on the right, the right head already dominates `(a, b)`; if on
-neither, the comparison descends to the tails. -/
-theorem ins_olt_mono {a : ℕ} {b t t' : Three} (h : t <o t') :
-    ins a b t <o ins a b t' := by
-  cases t with
-  | Z =>
-    cases t' with
-    | Z => exact absurd h olt_Z_Z
-    | P e f g =>
-      rw [ins_Z, ins_P]
-      by_cases habs : a < e ∨ (a = e ∧ b <o f)
-      · rw [if_pos habs]
-        rcases habs with h1 | ⟨rfl, h2⟩
-        · exact olt_P_P.2 (Or.inl h1)
-        · exact olt_P_P.2 (Or.inr (Or.inl ⟨rfl, h2⟩))
-      · rw [if_neg habs]
-        exact olt_P_P.2 (Or.inr (Or.inr ⟨rfl, rfl, by simp⟩))
-  | P e f g =>
-    cases t' with
-    | Z => exact absurd h (not_olt_Z _)
-    | P e' f' g' =>
-      rw [ins_P, ins_P]
-      by_cases h1 : a < e ∨ (a = e ∧ b <o f)
-      · rw [if_pos h1, if_pos (absorb_mono h1 h)]
-        exact h
-      · rw [if_neg h1]
-        by_cases h2 : a < e' ∨ (a = e' ∧ b <o f')
-        · rw [if_pos h2]
-          rcases h2 with h3 | ⟨rfl, h3⟩
-          · exact olt_P_P.2 (Or.inl h3)
-          · exact olt_P_P.2 (Or.inr (Or.inl ⟨rfl, h3⟩))
-        · rw [if_neg h2]
-          exact olt_P_P.2 (Or.inr (Or.inr ⟨rfl, rfl, h⟩))
 
 /-! ## One-position increase relations
 
@@ -197,26 +48,6 @@ argument).  `lflip`: one leaf's subscript incremented.  `einc`/`eflip` are
 the *end-position* restrictions: along tails to the last summand, then (only
 when the tail is already `Z`) into its argument.  These are the shapes
 actually produced by appending one column to a standard segment. -/
-
-inductive lext : Three → Three → Prop
-  | end_ (w : ℕ) : lext Z (P w Z Z)
-  | tail {c c' : Three} (a : ℕ) (b : Three) : lext c c' → lext (P a b c) (P a b c')
-  | arg {b b' : Three} (a : ℕ) (c : Three) : lext b b' → lext (P a b c) (P a b' c)
-
-inductive lflip : Three → Three → Prop
-  | leaf {w w' : ℕ} : w < w' → lflip (P w Z Z) (P w' Z Z)
-  | tail {c c' : Three} (a : ℕ) (b : Three) : lflip c c' → lflip (P a b c) (P a b c')
-  | arg {b b' : Three} (a : ℕ) (c : Three) : lflip b b' → lflip (P a b c) (P a b' c)
-
-inductive einc : Three → Three → Prop
-  | end_ (w : ℕ) : einc Z (P w Z Z)
-  | tail {c c' : Three} (a : ℕ) (b : Three) : einc c c' → einc (P a b c) (P a b c')
-  | argZ {b b' : Three} (a : ℕ) : einc b b' → einc (P a b Z) (P a b' Z)
-
-inductive eflip : Three → Three → Prop
-  | leaf {w w' : ℕ} : w < w' → eflip (P w Z Z) (P w' Z Z)
-  | tail {c c' : Three} (a : ℕ) (b : Three) : eflip c c' → eflip (P a b c) (P a b c')
-  | argZ {b b' : Three} (a : ℕ) : eflip b b' → eflip (P a b Z) (P a b' Z)
 
 /-! ## The gap lemmas
 
@@ -241,20 +72,6 @@ critical term of `x'`. -/
 
 @[simp] theorem translate_nil : translate [] = Z := by rw [translate]
 
-theorem translate_cons (p : ℕ × ℕ) (rest : PairSeq) :
-    translate (p :: rest) =
-      P p.2 (translate (rest.takeWhile fun r => p.1 < r.1))
-            (translate (rest.dropWhile fun r => p.1 < r.1)) := by
-  rw [translate]
-
-theorem translate_single (q : ℕ × ℕ) : translate [q] = P q.2 Z Z := by
-  simp [translate]
-
-@[simp] theorem proj_Z (u : ℕ) : proj u Z = Z := proj_id (by simp)
-
-theorem nrm_leaf (w : ℕ) : nrm (P w Z Z) = P w Z Z := by
-  rw [nrm_P, nrm_Z, proj_Z, ins_Z]
-
 /-! ## The snoc condition bundle and main induction
 
 `snocok C q`: the conditions along the recursive decomposition of `C` under
@@ -263,103 +80,6 @@ which appending `q` strictly increases the normalized image.  Thanks to
 dominated run: when `q` extends the argument (`p.1 < q.1`), the projected
 argument must strictly increase.  Deriving the bundle from standardness of
 the host is the remaining class obligation (`ST_snocok`, future work). -/
-
-def snocok : PairSeq → ℕ × ℕ → Prop
-  | [], _ => False
-  | p :: rest, q =>
-    if (rest.dropWhile fun r => p.1 < r.1) = [] then
-      p.1 < q.1 →
-        proj p.2 (nrm (translate rest)) <o proj p.2 (nrm (translate (rest ++ [q])))
-    else snocok (rest.dropWhile fun r => p.1 < r.1) q
-  termination_by C _ => C.length
-  decreasing_by
-    exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
-
-@[simp] theorem snocok_nil (q : ℕ × ℕ) : ¬ snocok [] q := by
-  rw [snocok]
-  exact id
-
-theorem snocok_cons (p : ℕ × ℕ) (rest : PairSeq) (q : ℕ × ℕ) :
-    snocok (p :: rest) q =
-      (if (rest.dropWhile fun r => p.1 < r.1) = [] then
-        p.1 < q.1 →
-          proj p.2 (nrm (translate rest)) <o proj p.2 (nrm (translate (rest ++ [q])))
-      else snocok (rest.dropWhile fun r => p.1 < r.1) q) := by
-  rw [snocok]
-
-/-- **Snoc main induction**: under the condition bundle, appending one column
-strictly increases the normalized image.  Case (A) (new summand) is an
-instance of `ins_olt_mono` with `Z <o` a leaf; case (B) (tail extension)
-is `ins_olt_mono` on the recursive call; case (C) (argument extension)
-is the bundled condition itself. -/
-theorem nrm_snoc_seg : ∀ {C : PairSeq} {q : ℕ × ℕ}, snocok C q → C ≠ [] →
-    nrm (translate C) <o nrm (translate (C ++ [q]))
-  | [], _, _, hne => absurd rfl hne
-  | p :: rest, q, hsok, _ => by
-    by_cases hT : (rest.dropWhile fun r => p.1 < r.1) = []
-    · have Kall : (rest.takeWhile fun r => p.1 < r.1) = rest :=
-        List.takeWhile_eq_self_iff.2 (List.dropWhile_eq_nil_iff.1 hT)
-      have nCs : nrm (translate (p :: rest))
-          = P p.2 (proj p.2 (nrm (translate rest))) Z := by
-        rw [translate_cons, Kall, hT, translate_nil, nrm_P, nrm_Z, ins_Z]
-      rw [snocok_cons, if_pos hT] at hsok
-      by_cases qd : p.1 < q.1
-      · -- (C) argument extension
-        have tw' : ((rest ++ [q]).takeWhile fun r => p.1 < r.1) = rest ++ [q] := by
-          rw [takeWhile_append_all (List.dropWhile_eq_nil_iff.1 hT)]
-          simp [qd]
-        have dw' : ((rest ++ [q]).dropWhile fun r => p.1 < r.1) = [] := by
-          rw [dropWhile_append_all (List.dropWhile_eq_nil_iff.1 hT)]
-          simp [qd]
-        have nC' : nrm (translate ((p :: rest) ++ [q]))
-            = P p.2 (proj p.2 (nrm (translate (rest ++ [q])))) Z := by
-          rw [List.cons_append, translate_cons, tw', dw', translate_nil,
-              nrm_P, nrm_Z, ins_Z]
-        rw [nCs, nC']
-        exact olt_P_b p.2 Z Z (hsok qd)
-      · -- (A) new summand
-        have tw' : ((rest ++ [q]).takeWhile fun r => p.1 < r.1) = rest := by
-          rw [takeWhile_append_all (List.dropWhile_eq_nil_iff.1 hT)]
-          simp [qd]
-        have dw' : ((rest ++ [q]).dropWhile fun r => p.1 < r.1) = [q] := by
-          rw [dropWhile_append_all (List.dropWhile_eq_nil_iff.1 hT)]
-          simp [qd]
-        have nC' : nrm (translate ((p :: rest) ++ [q]))
-            = ins p.2 (proj p.2 (nrm (translate rest))) (P q.2 Z Z) := by
-          rw [List.cons_append, translate_cons, tw', dw', translate_single,
-              nrm_P, nrm_leaf]
-        have nCz : nrm (translate (p :: rest))
-            = ins p.2 (proj p.2 (nrm (translate rest))) Z := by
-          rw [translate_cons, Kall, hT, translate_nil, nrm_P, nrm_Z]
-        rw [nCz, nC']
-        exact ins_olt_mono (by simp)
-    · -- (B) tail extension
-      obtain ⟨w, win, wnp⟩ : ∃ w ∈ rest, ¬ p.1 < w.1 := by
-        by_contra hall
-        push Not at hall
-        exact hT (List.dropWhile_eq_nil_iff.2 (by
-          intro x hx
-          simpa using hall x hx))
-      have tw' : ((rest ++ [q]).takeWhile fun r => p.1 < r.1)
-          = rest.takeWhile fun r => p.1 < r.1 :=
-        takeWhile_append_not win (by simpa using wnp)
-      have dw' : ((rest ++ [q]).dropWhile fun r => p.1 < r.1)
-          = (rest.dropWhile fun r => p.1 < r.1) ++ [q] :=
-        dropWhile_append_not win (by simpa using wnp)
-      have nC : nrm (translate (p :: rest))
-          = ins p.2 (proj p.2 (nrm (translate (rest.takeWhile fun r => p.1 < r.1))))
-                (nrm (translate (rest.dropWhile fun r => p.1 < r.1))) := by
-        rw [translate_cons, nrm_P]
-      have nC' : nrm (translate ((p :: rest) ++ [q]))
-          = ins p.2 (proj p.2 (nrm (translate (rest.takeWhile fun r => p.1 < r.1))))
-                (nrm (translate ((rest.dropWhile fun r => p.1 < r.1) ++ [q]))) := by
-        rw [List.cons_append, translate_cons, tw', dw', nrm_P]
-      rw [snocok_cons, if_neg hT] at hsok
-      rw [nC, nC']
-      exact ins_olt_mono (nrm_snoc_seg hsok hT)
-  termination_by C _ _ _ => C.length
-  decreasing_by
-    exact Nat.lt_succ_of_le (List.length_dropWhile_le _ rest)
 
 /-! ## The max-row1 suffix (sequence side of the E6 machinery)
 
@@ -370,8 +90,6 @@ This section provides the pure sequence laws of `maxr1`/`msfx`. -/
 
 /-- Maximal row-1 value of a segment (`0` on the empty segment). -/
 def maxr1 (S : PairSeq) : ℕ := S.foldr (fun c m => max c.2 m) 0
-
-@[simp] theorem maxr1_nil : maxr1 [] = 0 := rfl
 
 theorem maxr1_cons (c : ℕ × ℕ) (S : PairSeq) :
     maxr1 (c :: S) = max c.2 (maxr1 S) := rfl
@@ -1040,18 +758,6 @@ end-position increase on the normalized image.  This is the input to
 `pfire_transport` (a base-side fire survives the append), which excludes the
 "base fires, extension does not" case of `ST_snoc_C`. -/
 
-/-- Head argument of a term (`Z` on `Z`). -/
-def hdarg : Three → Three
-  | Z => Z
-  | P _ b _ => b
-
-@[simp] theorem hdarg_Z : hdarg Z = Z := rfl
-@[simp] theorem hdarg_P (a : ℕ) (b c : Three) : hdarg (P a b c) = b := rfl
-
-/-- The no-absorption condition for `ins a b t`. -/
-def noabsorb (a : ℕ) (b t : Three) : Prop :=
-  ¬ (a < lead t ∨ (a = lead t ∧ b <o hdarg t))
-
 /-! ## Both-fire reduction and the subscript chain -/
 
 /-! ### `proj0_olt_NF`: proj-side order on `NF` arguments (the argument-head residual)
@@ -1105,47 +811,6 @@ The single `maxo` of the violator list already has no violators of its own
 (`proj_eq_maxo_bad`).  This makes the "peel" of the both-fire analysis a
 triviality and is pure-term (no `NF`). -/
 
-/-- The `maxo` of the level-`u` violator list of `b` does not itself fire at
-level `u`: every critical `g` of `maxo` is a critical of `b` (`Gterm_trans`),
-hence either `< b ≤o maxo` (non-violator) or `≤o maxo` and a proper subterm
-(violator), so `< maxo`. -/
-theorem maxo_bad_nofire {u : ℕ} {b : Three}
-    (h : (Glist u b).filter (fun g => ¬ olt g b) ≠ []) :
-    ¬ pfire u (maxo ((Glist u b).filter (fun g => ¬ olt g b)).headI
-                    ((Glist u b).filter (fun g => ¬ olt g b)).tail) := by
-  set bad := (Glist u b).filter (fun g => ¬ olt g b) with hbad
-  set m := maxo bad.headI bad.tail with hm
-  have hmin : m ∈ bad := maxo_hdtl_in h
-  have hmG : m ∈ Gterm u b := mem_filter_Gterm hmin
-  have hmnotolt : ¬ olt m b := mem_filter_not_olt hmin
-  have hbm : b ≤o m := by
-    rcases olt_total b m with h1 | h1 | h1
-    · exact Or.inl h1
-    · exact Or.inr h1
-    · exact absurd h1 hmnotolt
-  rw [pfire_iff]; push_neg
-  intro g hgGm
-  have hgGb : g ∈ Gterm u b := Gterm_trans hgGm hmG
-  have hgsz : tsize g < tsize m := Gterm_tsize hgGm
-  have hgne : g ≠ m := by intro he; rw [he] at hgsz; omega
-  by_cases hgb : olt g b
-  · exact Three.olt_ole_trans hgb hbm
-  · have hgbad : g ∈ bad := by
-      rw [hbad]; exact List.mem_filter.2 ⟨mem_Glist.2 hgGb, by simpa using hgb⟩
-    rcases maxo_ub_mem h g hgbad with h1 | h1
-    · exact h1
-    · exact absurd h1 hgne
-
-/-- **`proj` is one-step on firing terms** (general, no `NF`): when `b` fires,
-`proj u b` equals the single `maxo` of its violator list. -/
-theorem proj_eq_maxo_bad {u : ℕ} {b : Three} (hf : pfire u b) :
-    proj u b = maxo ((Glist u b).filter (fun g => ¬ olt g b)).headI
-                    ((Glist u b).filter (fun g => ¬ olt g b)).tail := by
-  have h : (Glist u b).filter (fun g => ¬ olt g b) ≠ [] := by
-    rw [pfire] at hf; exact hf
-  rw [proj_rec h]
-  exact proj_nofire (maxo_bad_nofire h)
-
 /-! ### Keystone: the leading-`.b`-chain descent of `proj 0`
 
 `proj 0` of a term whose maximal subscript lies on its head argument's own
@@ -1165,20 +830,6 @@ non-top node the tail's max subscript is strictly below the head argument's.
 This is the recursion carrier for the equal-`maxsub` firing comparison
 (model-verified: all firing-`NF` args satisfy it, the head-descent preserves it,
 and the main `proj`-order comparison holds `991020 / 991020`). -/
-
-/-- `descok t` (recursive on the leading `.b`-chain). -/
-def descok : Three → Prop
-  | Z => False
-  | P a x y =>
-    a = maxsub (P a x y) ∨
-      (lead x = a + 1 ∧ maxsub y < maxsub x ∧ descok x)
-
-@[simp] theorem descok_Z : ¬ descok Z := id
-
-theorem descok_P {a : ℕ} {x y : Three} :
-    descok (P a x y) ↔
-      a = maxsub (P a x y) ∨
-        (lead x = a + 1 ∧ maxsub y < maxsub x ∧ descok x) := Iff.rfl
 
 /-! ### The EQUAL-`maxsub` both-fire witness (THE single irreducible §1 firing
 residual), Lean form.  For two firing head-`0` `NF` arguments `b <o f` with
@@ -1387,102 +1038,6 @@ descent class `Pdesc`.  Model-verified `438747 / 438747` on the descent class;
 FALSE on general terms (`929364 / 5753586`) — it carries the `NF`/`ST_PS` forest
 structure, the irreducible content. -/
 
-/-- One `proj`-step: the `maxo` of the level-`0` violators (`= b` if `b` doesn't
-fire). -/
-def mvstep (b : Three) : Three :=
-  if h : (Glist 0 b).filter (fun g => ¬ olt g b) = [] then b
-  else maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
-            ((Glist 0 b).filter (fun g => ¬ olt g b)).tail
-
-/-- `mvstep b = b` when `b` doesn't fire. -/
-theorem mvstep_nofire {b : Three} (h : ¬ pfire 0 b) : mvstep b = b := by
-  unfold mvstep; rw [dif_pos (by rw [pfire] at h; exact not_not.1 h)]
-
-/-- `proj 0 b = proj 0 (mvstep b)`: `proj` factors through one step. -/
-theorem proj_mvstep (b : Three) : proj 0 b = proj 0 (mvstep b) := by
-  by_cases h : pfire 0 b
-  · -- firing: `mvstep b = maxo …`, which doesn't fire (`maxo_bad_nofire`), so
-    -- `proj 0 (mvstep b) = mvstep b = proj 0 b`.
-    have hne : (Glist 0 b).filter (fun g => ¬ olt g b) ≠ [] := by rw [pfire] at h; exact h
-    have hmv : mvstep b = maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
-                ((Glist 0 b).filter (fun g => ¬ olt g b)).tail := by
-      unfold mvstep; rw [dif_neg hne]
-    rw [hmv, proj_nofire (maxo_bad_nofire hne), ← proj_eq_maxo_bad h]
-  · rw [mvstep_nofire h]
-
-/-- `mvstep` strictly shrinks a firing term (it lands on a critical, a proper
-subterm). -/
-theorem tsize_mvstep_lt {b : Three} (h : pfire 0 b) : tsize (mvstep b) < tsize b := by
-  have hne : (Glist 0 b).filter (fun g => ¬ olt g b) ≠ [] := by rw [pfire] at h; exact h
-  have hmv : mvstep b = maxo ((Glist 0 b).filter (fun g => ¬ olt g b)).headI
-              ((Glist 0 b).filter (fun g => ¬ olt g b)).tail := by
-    unfold mvstep; rw [dif_neg hne]
-  rw [hmv]
-  have hin := maxo_hdtl_in hne
-  exact Gterm_tsize (mem_Glist.1 (List.mem_of_mem_filter hin))
-
-/-- **The STRICT `mvstep` recursion, relation-carrying** (model-verified the
-strict STEP holds with ZERO ties on the matched descent class, `438747 / 438747`).
-Given a binary relation `R` on the descent pairs that is preserved by `mvstep`
-on both sides when both fire (`hpres`) and on which the strict STEP holds
-(`hstep`: `R x y → olt x y → olt (mvstep x) (mvstep y)`), strong `tsize`
-induction gives the strict `olt (proj 0 x) (proj 0 y)` for `R`-pairs with
-`olt x y` — NO injectivity needed (the strict STEP already excludes the tie).
-`R` carries exactly what the forest STEP needs (same lead + eq `maxsub` + the
-`SubBlock`/`ST_PS` anchoring); GREEN, isolating the witness to that single
-strict-STEP residual. -/
-theorem proj0_olt_of_mvstep_olt {R : Three → Three → Prop}
-    (hfire : ∀ x y, R x y → (pfire 0 x ↔ pfire 0 y))
-    (hpres : ∀ x y, R x y → pfire 0 x → pfire 0 y → R (mvstep x) (mvstep y))
-    (hstep : ∀ x y, R x y → olt x y → olt (mvstep x) (mvstep y)) :
-    ∀ x y, R x y → olt x y → olt (proj 0 x) (proj 0 y) := by
-  intro x
-  generalize hs : tsize x = n
-  induction n using Nat.strong_induction_on generalizing x with
-  | _ n IH =>
-    subst hs
-    intro y hR hxy
-    by_cases hfx : pfire 0 x
-    · -- firing `x` ⟹ firing `y` (lockstep, `hfire`); descend via `mvstep`.
-      have hfy : pfire 0 y := (hfire x y hR).1 hfx
-      rw [proj_mvstep x, proj_mvstep y]
-      exact IH (tsize (mvstep x)) (tsize_mvstep_lt hfx) (mvstep x) rfl
-        (mvstep y) (hpres x y hR hfx hfy) (hstep x y hR hxy)
-    · -- non-firing `x`: `proj 0 x = x <o y ≤o proj 0 y`.
-      rw [proj_nofire hfx]
-      exact olt_ole_trans hxy (proj_ole 0 y)
-
-/-- **The descent-pair relation** `Rdesc x y`: `(x, y)` is reachable from a
-firing `NF`-arg pair `(b, f)` (`P 0 b c, P 0 f g ∈ NF`, `olt b f`,
-`maxsub b = maxsub f`) by simultaneous `mvstep`.  This is the carrier on which
-the strict STEP holds (`hpres` is automatic from `base`/`step`).  The two
-remaining residual obligations are `hfire` (lockstep firing) and `hstep` (the
-strict STEP).
-
-**Residual structure** (model-verified, the precise forest facts):
-  • `Rdesc` carries `lead x = lead y ∧ maxsub x = maxsub y` (`877494 / 877494`,
-    a structural invariant: base `NF` args lead `1`, eq `maxsub`; `step`
-    preserves both since `lead (mvstep ·) = maxsub ·`);
-  • `hfire` (`pfire 0 x ↔ pfire 0 y`, `877494 / 0`) reduces, via that match, to
-    the firing characterization `pfire 0 t ↔ lead t < maxsub t` on `Rdesc` nodes
-    (`2568 / 2568`) — FALSE off-class (the cter `p₁(p₀(p₁(p₁0)))` has
-    `lead = maxsub = 1` yet fires), so it needs the descent-class forest
-    structure;
-  • `hstep` (`olt x y ⟹ olt (mvstep x) (mvstep y)`, `438747 / 0`) is the
-    irreducible forest core — FALSE on general terms (`929364 / 5753586`); it
-    needs the `SubBlock`/`r1ok_ST_PS`/`stps_head` anchoring carried through the
-    descent.
-Both residuals bottom out in the same forest discipline; the entire recursion
-above them (`proj0_olt_of_mvstep_olt` etc.) is GREEN, so discharging `hfire` +
-`hstep` closes `proj_bothfire_witness_eq` (and, symmetrically, `not_pfire0_-
-lead1max1_NF` via `proj_G`-base + the same firing characterization). -/
-inductive Rdesc : Three → Three → Prop
-  | base {b c f g : Three} (hv : (P 0 b c) ∈ NF) (hu : (P 0 f g) ∈ NF)
-      (harg : olt b f) (heq : maxsub b = maxsub f)
-      (hb : pfire 0 b) (hf : pfire 0 f) : Rdesc b f
-  | step {x y : Three} (h : Rdesc x y) (hfx : pfire 0 x) (hfy : pfire 0 y) :
-      Rdesc (mvstep x) (mvstep y)
-
 /-! ### The both-fire witness (reduced to the equal-`maxsub` core), Lean form.
 For two firing head-`0` `NF` arguments `b <o f`, there is a `G₀`-critical `h`
 of the larger argument `f` that **strictly dominates** `proj 0 b` (the greatest
@@ -1554,18 +1109,6 @@ explicit `Gterm`-position ↔ sequence-subblock map (model-verified `2241 / 2241
 `tools/probe_poscorr.py`).  This transports the term-level critical structure to
 contiguous sub-blocks, the carrier for pulling `r1ok M`. -/
 
-/-- **Sub-block relation**: `K` is reachable from `M` by iterated
-`takeWhile`/`dropWhile` of the forest recursion.  Reflexive-transitive closure of
-the descendant/sibling step. -/
-inductive SubBlock : PairSeq → PairSeq → Prop
-  | refl (M : PairSeq) : SubBlock M M
-  | desc {M K : PairSeq} {p : ℕ × ℕ} {rest : PairSeq}
-      (hM : M = p :: rest)
-      (h : SubBlock (rest.takeWhile fun q => p.1 < q.1) K) : SubBlock M K
-  | sib {M K : PairSeq} {p : ℕ × ℕ} {rest : PairSeq}
-      (hM : M = p :: rest)
-      (h : SubBlock (rest.dropWhile fun q => p.1 < q.1) K) : SubBlock M K
-
 /-! ## The dominated-segment classes
 
 `dseg u S`: `S` is a nonempty, entirely dominated standard sub-segment whose
@@ -1586,14 +1129,6 @@ This is the engine behind the no-absorption facts of the C1 chain. -/
 /-! ## Dominated runs by position (toward `SIB_prefix`) -/
 
 /-! ## The constant-copy region and its drop decomposition -/
-
-/-- The constant-copy region (`d0 = 0`): `n` literal repetitions of `B`. -/
-def repB (B : PairSeq) : ℕ → PairSeq
-  | 0 => []
-  | n + 1 => B ++ repB B n
-
-@[simp] theorem repB_zero (B : PairSeq) : repB B 0 = [] := rfl
-theorem repB_succ (B : PairSeq) (n : ℕ) : repB B (n + 1) = B ++ repB B n := rfl
 
 /-! ## Runs are blockok segments -/
 
@@ -1912,22 +1447,6 @@ theorem z0ok_ST_PS {M : PairSeq} (hM : ST_PS M) : z0ok M := by
 
 /-! ## The single-climb discipline -/
 
-/-- **The single-climb discipline** (anchored form; mined exact over all
-infixes of all hosts, 87,690/87,690): in a row-1 parented segment whose
-parent edge is anchored at the segment head, no column strictly between the
-head and the last column's row-0 parent reaches within one of the last
-column's level. -/
-def sclimb (M : PairSeq) : Prop :=
-  ∀ r' r, 1 < M.length →
-    nextR M (idx1 M (M.length - 1)) 0 (M.length - 1) →
-    idx1 M (M.length - 1) = 1 →
-    0 < r' → r' + 1 < M.length →
-    (M.getD r' (0,0)).1 + 1 = (M.getD (M.length - 1) (0,0)).1 →
-    (∀ l, r' < l → l + 1 < M.length →
-      (M.getD (M.length - 1) (0,0)).1 ≤ (M.getD l (0,0)).1) →
-    0 < r → r < r' →
-    (M.getD r (0,0)).1 + 1 < (M.getD (M.length - 1) (0,0)).1
-
 /-! ## Drop transfer and chain-pivot machinery -/
 
 /-- A row-0 chain cannot jump a strict floor: if every column in `(ρ, b]`
@@ -2058,18 +1577,6 @@ theorem nextrel1_shift_iff {S : PairSeq} {d a b : ℕ} (hb : b < S.length) :
       have hlb : l ≤ b := le0_le hl0
       have h7 := h6 l ⟨hl.1, hl0⟩
       rwa [(entry_shift hb).2, (entry_shift (by omega)).2]
-
-/-- The guard under which `oper` truncates: zero last column or no unique
-parent. -/
-def predGuard (N : PairSeq) : Prop :=
-  (entry N 0 (N.length - 1) = 0 ∧ entry N 1 (N.length - 1) = 0) ∨
-  ¬ hasParent N (idx1 N (N.length - 1)) (N.length - 1)
-
-/-- Guarded truncation images. -/
-inductive predImages : PairSeq → PairSeq → Prop
-  | refl (M : PairSeq) : predImages M M
-  | step {M N : PairSeq} (h : predImages M N) (hg : predGuard N) :
-      predImages M (Pred N)
 
 /-! ## The arg-zone ORDER reframe (port of ya-pss `proj_nrm_argzone_olt`)
 

@@ -242,8 +242,6 @@ load-bearing: without it the `T_m` branch and the ℕ branch could both fire on 
 carries far too little information to run the 2.6 tower. -/
 def natDom (M : PairSeq) : Prop := ∀ m : ℕ, ¬ domT M m
 
-@[simp] theorem natDom_nil : natDom ([] : PairSeq) := not_domT_nil
-
 theorem natDom_iff {M : PairSeq} :
     natDom M ↔ (entry M 1 (M.length - 1) = 0 ∨ hasParent M 1 (M.length - 1)) := by
   constructor

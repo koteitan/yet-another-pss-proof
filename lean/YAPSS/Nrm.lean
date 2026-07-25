@@ -11,7 +11,7 @@ Only the *syntactic* content survives in the termination proof: the auxiliary
 lemmas about `nextrel0` / `le0` / `nextR` on appended pair sequences, proved at
 the end of this module, are what `Nrmstep.lean` and `Cofinality.lean` use.
 -/
-import YAPSS.Gterm
+import YAPSS.Wf
 
 namespace YAPSS
 
@@ -19,129 +19,11 @@ open Three
 
 /-! ## Decidability of `olt` -/
 
-instance oltDecidable : ∀ x y : Three, Decidable (olt x y)
-  | Z, Z => isFalse (fun h => h)
-  | Z, P _ _ _ => isTrue trivial
-  | P _ _ _, Z => isFalse (fun h => h)
-  | P _ b c, P _ f g =>
-    haveI := oltDecidable b f
-    haveI := oltDecidable c g
-    decidable_of_iff _ olt_P_P.symm
-
 /-! ## Executable critical-term collection -/
-
-def Glist (u : ℕ) : Three → List Three
-  | Z => []
-  | P a b c => (if u ≤ a then b :: Glist u b else []) ++ Glist u c
-
-@[simp] theorem Glist_Z (u : ℕ) : Glist u Z = [] := rfl
-theorem Glist_P (u a : ℕ) (b c : Three) :
-    Glist u (P a b c) = (if u ≤ a then b :: Glist u b else []) ++ Glist u c := rfl
-
-theorem mem_Glist {u : ℕ} {t x : Three} : x ∈ Glist u t ↔ x ∈ Gterm u t := by
-  induction t with
-  | Z => simp
-  | P a b c ihb ihc =>
-    rw [Glist_P, mem_Gterm_P]
-    by_cases h : u ≤ a <;> simp [h, ihb, ihc, or_assoc]
-
-def maxo : Three → List Three → Three
-  | x, [] => x
-  | x, y :: ys => maxo (if olt x y then y else x) ys
-
-@[simp] theorem maxo_nil (x : Three) : maxo x [] = x := rfl
-theorem maxo_cons (x y : Three) (ys : List Three) :
-    maxo x (y :: ys) = maxo (if olt x y then y else x) ys := rfl
-
-theorem maxo_in (x : Three) (ys : List Three) : maxo x ys ∈ x :: ys := by
-  induction ys generalizing x with
-  | nil => simp
-  | cons y ys ih =>
-    rw [maxo_cons]
-    by_cases h : olt x y
-    · rw [if_pos h]
-      rcases List.mem_cons.1 (ih y) with he | hm
-      · rw [he]
-        simp
-      · simp [hm]
-    · rw [if_neg h]
-      rcases List.mem_cons.1 (ih x) with he | hm
-      · rw [he]
-        simp
-      · simp [hm]
-
-theorem maxo_hdtl_in {gs : List Three} (h : gs ≠ []) :
-    maxo gs.headI gs.tail ∈ gs := by
-  cases gs with
-  | nil => exact absurd rfl h
-  | cons g gs => exact maxo_in g gs
 
 /-! ## Projection at a collapse point -/
 
-def proj (u : ℕ) (b : Three) : Three :=
-  let gs := (Glist u b).filter fun g => ¬ olt g b
-  if gs = [] then b else proj u (maxo gs.headI gs.tail)
-  termination_by tsize b
-  decreasing_by
-    rename_i h
-    have hin : maxo gs.headI gs.tail ∈ gs := maxo_hdtl_in h
-    have hG : maxo gs.headI gs.tail ∈ Gterm u b := by
-      have := List.mem_of_mem_filter (hin : _ ∈ (Glist u b).filter _)
-      exact mem_Glist.1 this
-    exact Gterm_tsize hG
-
-theorem proj_id {u : ℕ} {b : Three}
-    (h : (Glist u b).filter (fun g => ¬ olt g b) = []) : proj u b = b := by
-  rw [proj]
-  simp only [h]
-  rfl
-
-theorem proj_rec {u : ℕ} {b : Three}
-    (h : (Glist u b).filter (fun g => ¬ olt g b) ≠ []) :
-    proj u b = proj u (maxo ((Glist u b).filter (fun g => ¬ olt g b)).headI
-                          ((Glist u b).filter (fun g => ¬ olt g b)).tail) := by
-  rw [proj]
-  simp only [if_neg h]
-
-theorem proj_G (u : ℕ) (b : Three) : ∀ g ∈ Gterm u (proj u b), olt g (proj u b) := by
-  generalize hs : tsize b = n
-  induction n using Nat.strong_induction_on generalizing b with
-  | _ n IH =>
-    subst hs
-    by_cases h : (Glist u b).filter (fun g => ¬ olt g b) = []
-    · rw [proj_id h]
-      intro g hg
-      have hmem : g ∈ Glist u b := mem_Glist.2 hg
-      by_contra hng
-      have hmem2 : g ∈ (Glist u b).filter (fun g => ¬ olt g b) :=
-        List.mem_filter.2 ⟨hmem, by simpa using hng⟩
-      rw [h] at hmem2
-      simp at hmem2
-    · rw [proj_rec h]
-      have hin := maxo_hdtl_in h
-      have hG : maxo ((Glist u b).filter (fun g => ¬ olt g b)).headI
-          ((Glist u b).filter (fun g => ¬ olt g b)).tail ∈ Gterm u b :=
-        mem_Glist.1 (List.mem_of_mem_filter hin)
-      exact IH (tsize _) (Gterm_tsize hG) _ rfl
-
 /-! ## Sum insertion with absorption, and `nrm` -/
-
-def ins (a : ℕ) (b : Three) : Three → Three
-  | Z => P a b Z
-  | P e f g => if a < e ∨ (a = e ∧ olt b f) then P e f g else P a b (P e f g)
-
-@[simp] theorem ins_Z (a : ℕ) (b : Three) : ins a b Z = P a b Z := rfl
-theorem ins_P (a : ℕ) (b : Three) (e : ℕ) (f g : Three) :
-    ins a b (P e f g)
-      = if a < e ∨ (a = e ∧ olt b f) then P e f g else P a b (P e f g) := rfl
-
-def nrm : Three → Three
-  | Z => Z
-  | P a b c => ins a (proj a (nrm b)) (nrm c)
-
-@[simp] theorem nrm_Z : nrm Z = Z := rfl
-theorem nrm_P (a : ℕ) (b c : Three) :
-    nrm (P a b c) = ins a (proj a (nrm b)) (nrm c) := rfl
 
 /-- Every `ST_PS` list is non-empty (the diagonals have length `v+1`; `oper`
 preserves non-emptiness via `oper_eq_dropLast_append`). -/

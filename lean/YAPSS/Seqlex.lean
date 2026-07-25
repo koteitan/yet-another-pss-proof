@@ -76,9 +76,6 @@ step.  (Isabelle's indexed `blockok`, via `blockok_via_steps1`.) -/
 def blockok (d : ℕ) (B : PairSeq) : Prop :=
   (B ≠ [] → (B.headI).1 = d) ∧ (∀ p ∈ B, d ≤ p.1) ∧ steps1 B
 
-@[simp] theorem blockok_nil (d : ℕ) : blockok d [] :=
-  ⟨fun h => absurd rfl h, by simp, trivial⟩
-
 /-- The indexed characterisation of `steps1`. -/
 theorem steps1_iff {B : PairSeq} :
     steps1 B ↔ ∀ j, j + 1 < B.length →

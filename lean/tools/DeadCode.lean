@@ -67,8 +67,10 @@ elab "#deadcode" : command => do
   let mut rows : Array (Name × Name × Nat) := #[]      -- (module, decl, line)
   let mut total : Std.HashMap Name Nat := {}
   let mut dead  : Std.HashMap Name Nat := {}
-  for (n, _) in env.constants.toList do
+  for (n, ci) in env.constants.toList do
     if DeadCode.isGenerated n then continue
+    -- 構成子は単独では消せない（`inductive` ごと消えるときに一緒に消える）
+    if ci matches .ctorInfo _ | .recInfo _ | .inductInfo _ then continue
     let some idx := env.getModuleIdxFor? n | continue
     let m := mods[idx.toNat]!
     unless m.getRoot == `YAPSS do continue
