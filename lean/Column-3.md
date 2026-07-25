@@ -154,20 +154,21 @@ $`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,d_0,n)`$ とおく。次�
 
 ```math
 \begin{aligned}
-&\text{(hdom)}\quad \forall x \in R,\ v_0 \lt x_1, \cr
-&\text{(hd0)}\quad 0 \lt d_0, \cr
-&\text{(hlp)}\quad \ell_1 = v_0 + d_0, \cr
-&\text{(hstep)}\quad \forall r,\ r + 1 \lt \lvert B\rvert \to B_{0,r+1} \le B_{0,r} + 1, \cr
-&\text{(hlpstep)}\quad \ell_1 \le B_{0,\lvert B\rvert - 1} + 1, \cr
-&\text{(hclimb)}\quad \forall r' \lt \lvert B\rvert,\
-   \Bigl(B_{0,r'} = v_0 + d_0 - 1
-   \wedge \bigl(\forall rr,\ r' \lt rr \wedge rr \lt \lvert B\rvert \to v_0 + d_0 \le B_{0,rr}\bigr)\Bigr)
-   \to w_0 \le B_{1,r'} + 1, \cr
-&\text{(hk1)}\quad 0 \lt k, \qquad
+&\text{(hdom)}\quad     &&\forall x \in R,\ v_0 \lt x_1, \cr
+&\text{(hd0)}\quad      &&0 \lt d_0, \cr
+&\text{(hlp)}\quad      &&\ell_1 = v_0 + d_0, \cr
+&\text{(hstep)}\quad    &&\forall r,\ r + 1 \lt \lvert B\rvert \to B_{0,r+1} \le B_{0,r} + 1, \cr
+&\text{(hlpstep)}\quad  &&\ell_1 \le B_{0,\lvert B\rvert - 1} + 1, \cr
+&\text{(hclimb)}\quad   &&\forall r' \lt \lvert B\rvert,\
+   \Bigl(B_{0,r'} = v_0 + d_0 - 1 \cr
+& &&\qquad \wedge \bigl(\forall rr,\ r' \lt rr \wedge rr \lt \lvert B\rvert
+   \to v_0 + d_0 \le B_{0,rr}\bigr)\Bigr) \cr
+& &&\qquad \to w_0 \le B_{1,r'} + 1, \cr
+&\text{(hk1)}\quad      &&0 \lt k, \qquad
  \text{(hk)}\quad k \lt n, \qquad
  \text{(hq)}\quad q \lt \lvert B\rvert, \cr
-&\text{(hPM)}\quad \forall r \lt q,\ B_{0,q} \le B_{0,r}, \cr
-&\text{(hpos)}\quad 0 \lt B_{0,q} + k d_0 .
+&\text{(hPM)}\quad      &&\forall r \lt q,\ B_{0,q} \le B_{0,r}, \cr
+&\text{(hpos)}\quad     &&0 \lt B_{0,q} + k d_0 .
 \end{aligned}
 ```
 

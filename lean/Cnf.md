@@ -183,8 +183,8 @@ $`\mathrm{Three}`$ 上の述語 $`\mathrm{cnf}`$ を、項の構造に関する�
 \mathrm{cnf}\bigl(\mathsf{P}(a,b,\mathsf{Z})\bigr) &:\iff \mathrm{cnf}(b), \cr
 \mathrm{cnf}\bigl(\mathsf{P}(a,b,\mathsf{P}(e,f,g))\bigr) &:\iff
   \mathrm{cnf}(b)
-  \ \wedge\ \neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)
-  \ \wedge\ \mathrm{cnf}\bigl(\mathsf{P}(e,f,g)\bigr).
+  \ \wedge\ \neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr) \cr
+&\qquad \ \wedge\ \mathrm{cnf}\bigl(\mathsf{P}(e,f,g)\bigr).
 \end{aligned}
 ```
 
@@ -233,10 +233,12 @@ $`\mathrm{cnf}`$ の定義（D.cnf）の第 2 式そのものであり、両辺�
 任意の $`a, e \in \mathbb{N}`$, $`b, f, g \in \mathrm{Three}`$ に対し
 
 ```math
-\mathrm{cnf}\bigl(\mathsf{P}(a,b,\mathsf{P}(e,f,g))\bigr) \iff
+\begin{aligned}
+\mathrm{cnf}\bigl(\mathsf{P}(a,b,\mathsf{P}(e,f,g))\bigr) &\iff
   \mathrm{cnf}(b)
-  \ \wedge\ \neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)
-  \ \wedge\ \mathrm{cnf}\bigl(\mathsf{P}(e,f,g)\bigr).
+  \ \wedge\ \neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr) \cr
+&\qquad \ \wedge\ \mathrm{cnf}\bigl(\mathsf{P}(e,f,g)\bigr).
+\end{aligned}
 ```
 
 ### 証明

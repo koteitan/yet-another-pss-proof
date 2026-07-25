@@ -77,10 +77,13 @@ $`n`$ に関する自然数の帰納法（$`X`$, $`Q`$, $`A_2`$, $`a`$ は全称
 帰納法の述語は
 
 ```math
-\Psi(n) :\equiv \forall X, Q, A_2 \in \mathrm{PairSeq},\ \forall a \in \mathbb{N},\
-  \lvert X\rvert \le n
-  \ \to\ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}
-  \ \to\ \exists m,\ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr) .
+\begin{aligned}
+&\Psi(n) :\equiv \forall X, Q, A_2 \in \mathrm{PairSeq},\ \forall a \in \mathbb{N},\
+  \lvert X\rvert \le n \cr
+&\qquad \ \to\ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d} \cr
+&\qquad \ \to\ \exists m,\ X \preceq_{\mathrm{lex}}
+  Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr) .
+\end{aligned}
 ```
 
 - **基底段** $`n = 0`$：$`\lvert X\rvert \le 0`$ より $`X = ()`$ である。
@@ -157,10 +160,12 @@ X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+}
 である。したがって結合則により
 
 ```math
-Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m+1\bigr)
-  = \bigl(Q \mathbin{+\!\!+} ((a,w))\bigr) \mathbin{+\!\!+}
+\begin{aligned}
+&Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m+1\bigr) \cr
+&\qquad = \bigl(Q \mathbin{+\!\!+} ((a,w))\bigr) \mathbin{+\!\!+}
     \Bigl(Q^{+d} \mathbin{+\!\!+}
       \mathrm{copies}_d\bigl((a+d,\ w) :: (Q^{+d})^{+d},\ m\bigr)\Bigr)
+\end{aligned}
 ```
 
 であり、また $`X = Q \mathbin{+\!\!+} (a,w) :: X' = (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X'`$ である。
@@ -342,10 +347,13 @@ Y^{+d} = (y_1+d,\ y_2) :: Y'^{+d}
   である。D.seqlex の第 3 式を両辺に適用すると、示すべきことは
 
 ```math
-\Bigl((x_1+d,\ x_2) \prec_{\mathrm{p}} (y_1+d,\ y_2)
-  \ \vee\ \bigl((x_1+d,\ x_2) = (y_1+d,\ y_2) \wedge X'^{+d} \prec_{\mathrm{lex}} Y'^{+d}\bigr)\Bigr)
-\iff
+\begin{aligned}
+&\Bigl((x_1+d,\ x_2) \prec_{\mathrm{p}} (y_1+d,\ y_2) \cr
+&\qquad \ \vee\ \bigl((x_1+d,\ x_2) = (y_1+d,\ y_2)
+  \wedge X'^{+d} \prec_{\mathrm{lex}} Y'^{+d}\bigr)\Bigr) \cr
+&\qquad \iff
 \Bigl(x \prec_{\mathrm{p}} y \ \vee\ (x = y \wedge X' \prec_{\mathrm{lex}} Y')\Bigr)
+\end{aligned}
 ```
 
   である。帰納法の仮定 $`\Theta(X')`$ を $`Y := Y'`$ に適用すると
@@ -403,11 +411,13 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）により、示すべきことは
 $`A \in \mathrm{PairSeq}`$、$`L, w \in \mathbb{N}`$ に対し
 
 ```math
-\mathrm{SpineOK}(A, L, w) :\iff
-\forall U, V \in \mathrm{PairSeq},\ \forall x \in \mathbb{N} \times \mathbb{N},\
-\Bigl(A = U \mathbin{+\!\!+} x :: V \ \wedge\ x_1 \lt L
-  \ \wedge\ \bigl(\forall y \in V,\ x_1 \lt y_1\bigr)\Bigr)
-\ \longrightarrow\ w \le x_2 .
+\begin{aligned}
+&\mathrm{SpineOK}(A, L, w) :\iff
+\forall U, V \in \mathrm{PairSeq},\ \forall x \in \mathbb{N} \times \mathbb{N},\ \cr
+&\qquad \Bigl(A = U \mathbin{+\!\!+} x :: V \ \wedge\ x_1 \lt L
+  \ \wedge\ \bigl(\forall y \in V,\ x_1 \lt y_1\bigr)\Bigr) \cr
+&\qquad \ \longrightarrow\ w \le x_2 .
+\end{aligned}
 ```
 
 すなわち、$`A`$ の列 $`x`$ であって行 0 の値が $`L`$ より小さく、かつ $`A`$ の中で $`x`$ より
@@ -604,8 +614,12 @@ $`Z = \mathrm{dw}_{v_0} D`$ が空でなければ、その先頭は述語
 **中核の適用。** $`S = S_{\mathrm{hi}} \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)`$ を代入し、結合則で括り直すと
 
 ```math
-\bigl(G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr) \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: S
- = \Bigl(G \mathbin{+\!\!+} (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: (S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)\bigr)\Bigr) \mathbin{+\!\!+} Z
+\begin{aligned}
+&\bigl(G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr) \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: S \cr
+&\qquad = \Bigl(G \mathbin{+\!\!+} (v_0,w_0) ::
+  \bigl(R \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: (S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)\bigr)\Bigr)
+  \mathbin{+\!\!+} Z
+\end{aligned}
 ```
 
 である。$`\mathrm{ArgDomCore}`$ を
@@ -656,10 +670,10 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
 
 ```math
 \begin{aligned}
-\Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}\bigl(((v_0,w_0) :: R)^{+d_0},\ m\bigr)\Bigr)^{+d_0}
-&= R^{+d_0} \mathbin{+\!\!+}
+&\Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}\bigl(((v_0,w_0) :: R)^{+d_0},\ m\bigr)\Bigr)^{+d_0} \cr
+&\qquad = R^{+d_0} \mathbin{+\!\!+}
    \mathrm{copies}_{d_0}\bigl((((v_0,w_0) :: R)^{+d_0})^{+d_0},\ m\bigr) \cr
-&= R^{+d_0} \mathbin{+\!\!+}
+&\qquad = R^{+d_0} \mathbin{+\!\!+}
    \mathrm{copies}_{d_0}\bigl((v_0+d_0+d_0,\ w_0) :: (R^{+d_0})^{+d_0},\ m\bigr)
 \end{aligned}
 ```

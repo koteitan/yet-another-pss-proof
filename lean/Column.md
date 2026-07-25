@@ -697,9 +697,11 @@ $`\mathrm{take}_{p}\,A = A`$ であり、また $`p - \lvert A\rvert = j`$ で�
 $`A, T \in \mathrm{PairSeq}`$、$`a, m, k, d_0, d_1 \in \mathbb{N}`$ に対し
 
 ```math
-\Bigl(\bigl((A \mathbin{+\!\!+} T)_{0,j} + k\,d_0,\ (A \mathbin{+\!\!+} T)_{1,j} + k\,d_1\bigr)\Bigr)_{j = \lvert A\rvert + a}^{\lvert A\rvert + a + m - 1}
-=
-\Bigl(\bigl(T_{0,j} + k\,d_0,\ T_{1,j} + k\,d_1\bigr)\Bigr)_{j = a}^{a + m - 1} .
+\begin{aligned}
+&\Bigl(\bigl((A \mathbin{+\!\!+} T)_{0,j} + k\,d_0,\ \cr
+&\qquad (A \mathbin{+\!\!+} T)_{1,j} + k\,d_1\bigr)\Bigr)_{j = \lvert A\rvert + a}^{\lvert A\rvert + a + m - 1} \cr
+&= \Bigl(\bigl(T_{0,j} + k\,d_0,\ T_{1,j} + k\,d_1\bigr)\Bigr)_{j = a}^{a + m - 1} .
+\end{aligned}
 ```
 
 ここで $`\bigl(f(j)\bigr)_{j = b}^{b + m - 1}`$ は添字 $`j`$ を $`b`$ から 1 ずつ増やして走らせた

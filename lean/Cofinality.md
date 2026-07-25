@@ -257,10 +257,13 @@ $`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化した�
 命題 $`\mathrm{SeqlexCofinality}`$ を次で定める。
 
 ```math
-\mathrm{SeqlexCofinality} :\equiv
-\forall M, N \in \mathrm{PairSeq},\
-  \bigl(M \in \mathrm{ST\_PS} \wedge N \in \mathrm{ST\_PS} \wedge N \prec_{\mathrm{lex}} M\bigr)
-  \to \exists n,\ \bigl(1 \le n \wedge N \preceq_{\mathrm{lex}} M[n]\bigr).
+\begin{aligned}
+&\mathrm{SeqlexCofinality} :\equiv
+  \forall M, N \in \mathrm{PairSeq},\ \cr
+&\qquad \bigl(M \in \mathrm{ST\_PS} \wedge N \in \mathrm{ST\_PS}
+  \wedge N \prec_{\mathrm{lex}} M\bigr) \cr
+&\qquad \to \exists n,\ \bigl(1 \le n \wedge N \preceq_{\mathrm{lex}} M[n]\bigr).
+\end{aligned}
 ```
 
 （$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`M[n]`$ [D.oper](Pss.md#d-oper)）

@@ -107,10 +107,14 @@ $`(\lvert A\rvert + j_1) - (\lvert A\rvert + j_0) = j_1 - j_0`$ の列
 以上より、共通のブロックを $`B_0, \dots, B_{n-1}`$ と書くと
 
 ```math
+\begin{aligned}
 (A \mathbin{+\!\!+} T)[n]
- = \bigl(A \mathbin{+\!\!+} \mathrm{take}_{j_0}\,T\bigr) \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1}
- = A \mathbin{+\!\!+} \bigl(\mathrm{take}_{j_0}\,T \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1}\bigr)
- = A \mathbin{+\!\!+} T[n]
+ &= \bigl(A \mathbin{+\!\!+} \mathrm{take}_{j_0}\,T\bigr)
+    \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1} \cr
+ &= A \mathbin{+\!\!+} \bigl(\mathrm{take}_{j_0}\,T
+    \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1}\bigr) \cr
+ &= A \mathbin{+\!\!+} T[n]
+\end{aligned}
 ```
 
 である（中央の等号は連結の結合律）。

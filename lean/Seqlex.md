@@ -365,10 +365,13 @@ $`r`$ の構成子で場合分けする。
 $`A`$ のリスト構造に関する帰納法（$`B`$ は固定する）。帰納法の述語は
 
 ```math
-\Phi(A) :\equiv \Bigl(\mathrm{steps}_1(A \mathbin{+\!\!+} B) \iff
-  \mathrm{steps}_1(A) \wedge \mathrm{steps}_1(B) \wedge
-  \bigl(A = () \vee B = () \vee
+\begin{aligned}
+\Phi(A) :\equiv \Bigl(
+  &\mathrm{steps}_1(A \mathbin{+\!\!+} B) \iff
+    \mathrm{steps}_1(A) \wedge \mathrm{steps}_1(B) \cr
+  &\qquad \wedge \bigl(A = () \vee B = () \vee
     (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A)_1 + 1\bigr)\Bigr).
+\end{aligned}
 ```
 
 - **基底段** $`A = ()`$：$`() \mathbin{+\!\!+} B = B`$ であるから左辺は $`\mathrm{steps}_1(B)`$ で
@@ -635,11 +638,13 @@ $`\mathrm{tw}_d\,() = ()`$ と仮定 $`\mathrm{tw}_d r' \ne ()`$ から得られ
 **帰納段** $`r = p :: rr`$：帰納法の仮定は $`\Phi(rr)`$、すなわち
 
 ```math
-\forall r'',\ rr \prec_{\mathrm{lex}} r'' \to
-  \Bigl(\bigl(\mathrm{tw}_d rr = \mathrm{tw}_d r'' \wedge
-    \mathrm{dw}_d rr \prec_{\mathrm{lex}} \mathrm{dw}_d r''\bigr) \vee
-  \bigl(\mathrm{tw}_d rr \ne \mathrm{tw}_d r'' \wedge
+\begin{aligned}
+\forall r'',\ rr \prec_{\mathrm{lex}} r'' \to \Bigl(
+  &\bigl(\mathrm{tw}_d rr = \mathrm{tw}_d r'' \wedge
+    \mathrm{dw}_d rr \prec_{\mathrm{lex}} \mathrm{dw}_d r''\bigr) \cr
+  &\vee \bigl(\mathrm{tw}_d rr \ne \mathrm{tw}_d r'' \wedge
     \mathrm{tw}_d rr \prec_{\mathrm{lex}} \mathrm{tw}_d r''\bigr)\Bigr)
+\end{aligned}
 ```
 
 である。$`r'`$ を取り $`(p :: rr) \prec_{\mathrm{lex}} r'`$ とする。

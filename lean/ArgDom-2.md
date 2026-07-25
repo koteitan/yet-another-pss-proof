@@ -454,9 +454,9 @@ $`A_1'^{+d} = A_1`$、$`B'^{+d} = B`$、$`A_2'^{+d} = A_2`$、
 
 ```math
 \begin{aligned}
-\Bigl(\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+e}\Bigr)^{+d}
-&= \Bigl(\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+d}\Bigr)^{+e} \cr
-&= \bigl(A_1 \mathbin{+\!\!+} (u+e,\ w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
+&\Bigl(\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+e}\Bigr)^{+d} \cr
+&\qquad = \Bigl(\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+d}\Bigr)^{+e} \cr
+&\qquad = \bigl(A_1 \mathbin{+\!\!+} (u+e,\ w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 \end{aligned}
 ```
 
@@ -684,16 +684,16 @@ $`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。次を仮定する。
 
 ```math
 \begin{aligned}
-&\text{(heq)}\quad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n)
-   = \bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z, \cr
-&\text{(he)}\quad 0 \lt e, \cr
-&\text{(h1)}\quad \forall x \in A_1,\ u \lt x_1, \cr
-&\text{(h2)}\quad \forall x \in B,\ u + e \lt x_1, \cr
-&\text{(h3)}\quad \forall x \in A_2,\ u \lt x_1, \cr
-&\text{(h4)}\quad A_2 = () \ \vee\ (\mathrm{head}\,A_2)_1 \le u + e, \cr
-&\text{(h5)}\quad Z = () \ \vee\ (\mathrm{head}\,Z)_1 \le u, \cr
-&\text{(h6)}\quad \mathrm{SpineOK}(A_1,\ u+e,\ w), \cr
-&\text{(hcase)}\quad \lvert G\rvert + (\lvert R\rvert + 1) \le \lvert X\rvert .
+&\text{(heq)}\quad   &&G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n) \cr
+& &&\qquad = \bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z, \cr
+&\text{(he)}\quad    &&0 \lt e, \cr
+&\text{(h1)}\quad    &&\forall x \in A_1,\ u \lt x_1, \cr
+&\text{(h2)}\quad    &&\forall x \in B,\ u + e \lt x_1, \cr
+&\text{(h3)}\quad    &&\forall x \in A_2,\ u \lt x_1, \cr
+&\text{(h4)}\quad    &&A_2 = () \ \vee\ (\mathrm{head}\,A_2)_1 \le u + e, \cr
+&\text{(h5)}\quad    &&Z = () \ \vee\ (\mathrm{head}\,Z)_1 \le u, \cr
+&\text{(h6)}\quad    &&\mathrm{SpineOK}(A_1,\ u+e,\ w), \cr
+&\text{(hcase)}\quad &&\lvert G\rvert + (\lvert R\rvert + 1) \le \lvert X\rvert .
 \end{aligned}
 ```
 
@@ -711,16 +711,20 @@ B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!
 [T.copies_succ_front](Cnf-3.md#t-copies_succ_front) と連結の結合律より
 
 ```math
-G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
- = G \mathbin{+\!\!+} \Bigl(\mathrm{blk} \mathbin{+\!\!+} \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0}\Bigr)
- = (G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0}
+\begin{aligned}
+&G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1) \cr
+&\qquad = G \mathbin{+\!\!+} \Bigl(\mathrm{blk} \mathbin{+\!\!+} \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0}\Bigr) \cr
+&\qquad = (G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0}
+\end{aligned}
 ```
 
 である。また (heq) の右辺も結合律で並べ替えられるから
 
 ```math
-(G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0}
- = X \mathbin{+\!\!+} \Bigl(\bigl((u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z\Bigr)
+\begin{aligned}
+&(G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0} \cr
+&\qquad = X \mathbin{+\!\!+} \Bigl(\bigl((u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z\Bigr)
+\end{aligned}
 ```
 
 が成り立つ。

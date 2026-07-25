@@ -90,10 +90,12 @@ N = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
 である。これと (heq) を結合し、結合律で括り直すと
 
 ```math
-(\ast)\qquad
-(G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}
- = \bigl(X \mathbin{+\!\!+} ((u,w))\bigr)
+\begin{aligned}
+&(\ast)\qquad
+  &&(G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0} \cr
+& &&= \bigl(X \mathbin{+\!\!+} ((u,w))\bigr)
    \mathbin{+\!\!+} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))\bigr)
+\end{aligned}
 ```
 
 を得る。(hcaseL) より $`\lvert X \mathbin{+\!\!+} ((u,w))\rvert = i + 1 \le p = \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert`$
@@ -101,10 +103,12 @@ N = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
 $`C \in \mathrm{PairSeq}`$ を得る。
 
 ```math
-\text{(C1)}\ G \mathbin{+\!\!+} \mathrm{blk} = \bigl(X \mathbin{+\!\!+} ((u,w))\bigr) \mathbin{+\!\!+} C,
-\qquad
-\text{(C2)}\ A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))
-  = C \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0} .
+\begin{aligned}
+&\text{(C1)}\ &&G \mathbin{+\!\!+} \mathrm{blk} = \bigl(X \mathbin{+\!\!+} ((u,w))\bigr) \mathbin{+\!\!+} C,
+\qquad \cr
+&\text{(C2)}\ &&A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)) \cr
+& &&= C \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0} .
+\end{aligned}
 ```
 
 (C1) の両辺の長さを比べて $`\lvert C\rvert = p - (i+1)`$ である。
@@ -175,9 +179,12 @@ X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} D^{-d_0}
 となる。(S) と (A1') を合わせると、小さい塔は
 
 ```math
-\text{(Nm)}\qquad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)
-  = \bigl((X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} A_1'\bigr) \mathbin{+\!\!+} (u+e-d_0,\ w) ::
+\begin{aligned}
+&\text{(Nm)}\qquad &&G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m) \cr
+& &&= \bigl((X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} A_1'\bigr) \mathbin{+\!\!+} (u+e-d_0,\ w) \cr
+& &&\qquad ::
       \bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr)
+\end{aligned}
 ```
 
 と書ける。
@@ -193,11 +200,14 @@ G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
 2 つの表示が得られる。左因子を消去して
 
 ```math
-\text{(K)}\qquad
-A_1 \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
-= A_1' \mathbin{+\!\!+} (u+e-d_0,\ w) ::
+\begin{aligned}
+&\text{(K)}\qquad
+  &&A_1 \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr) \cr
+& &&= A_1' \mathbin{+\!\!+} (u+e-d_0,\ w) \cr
+& &&\qquad ::
    \Bigl(\bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr)
      \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}\Bigr)
+\end{aligned}
 ```
 
 を得る。$`\lvert A_1'\rvert \le \lvert A_1\rvert`$ であるから
@@ -261,9 +271,12 @@ Z_2 := \mathrm{dw}_u\bigl(A_2^{-d_0}\bigr) \mathbin{+\!\!+} Z^{-d_0}
 これと (Nm) から
 
 ```math
-\text{(eq')}\qquad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)
- = \Bigl(X \mathbin{+\!\!+} (u,w) :: \bigl(A_1' \mathbin{+\!\!+} (u + (e-d_0),\ w) ::
+\begin{aligned}
+&\text{(eq')}\qquad &&G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m) \cr
+& &&= \Bigl(X \mathbin{+\!\!+} (u,w) :: \bigl(A_1' \mathbin{+\!\!+} (u + (e-d_0),\ w) \cr
+& &&\qquad ::
      (B^{-d_0} \mathbin{+\!\!+} A_2')\bigr)\Bigr) \mathbin{+\!\!+} Z_2
+\end{aligned}
 ```
 
 が成り立つ。(hIH) を $`m`$ に適用する（$`1 \le m`$ かつ $`m \lt m+1 = n`$）ために、
@@ -415,9 +428,11 @@ A_1' \mathbin{+\!\!+} (u+(e-d_0),\ w) :: (B^{-d_0} \mathbin{+\!\!+} A_2')
 $`(\cdot)^{+(e-d_0)}`$ で保たれるから、ある $`T`$ について
 
 ```math
-\bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+(e-d_0)}
- = \bigl(A_1' \mathbin{+\!\!+} (u+(e-d_0),\ w) :: (B^{-d_0} \mathbin{+\!\!+} A_2')\bigr)^{+(e-d_0)}
+\begin{aligned}
+&\bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+(e-d_0)} \cr
+&\qquad = \bigl(A_1' \mathbin{+\!\!+} (u+(e-d_0),\ w) :: (B^{-d_0} \mathbin{+\!\!+} A_2')\bigr)^{+(e-d_0)}
    \mathbin{+\!\!+} T
+\end{aligned}
 ```
 
 である。(core) に [T.sle_append_mono](Cofinality.md#t-sle_append_mono) を適用して
@@ -442,9 +457,12 @@ B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!
 (S) より
 
 ```math
-\text{(Nm)}\qquad G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)
-  = \bigl(G \mathbin{+\!\!+} D^{-d_0}\bigr) \mathbin{+\!\!+} (u+e-d_0,\ w) ::
+\begin{aligned}
+&\text{(Nm)}\qquad &&G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m) \cr
+& &&= \bigl(G \mathbin{+\!\!+} D^{-d_0}\bigr) \mathbin{+\!\!+} (u+e-d_0,\ w) \cr
+& &&\qquad ::
       \bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr)
+\end{aligned}
 ```
 
 であり、[T.copies_succ_back](Cofinality-3.md#t-copies_succ_back) より
@@ -457,11 +475,13 @@ G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
 である。これらと $`(\ast)`$ から
 
 ```math
-\text{(key)}\qquad
-\bigl(X \mathbin{+\!\!+} ((u,w))\bigr) \mathbin{+\!\!+}
-  \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))\bigr)
-= \bigl(G \mathbin{+\!\!+} D^{-d_0}\bigr) \mathbin{+\!\!+}
+\begin{aligned}
+&\text{(key)}\qquad
+  &&\bigl(X \mathbin{+\!\!+} ((u,w))\bigr) \mathbin{+\!\!+}
+  \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))\bigr) \cr
+& &&= \bigl(G \mathbin{+\!\!+} D^{-d_0}\bigr) \mathbin{+\!\!+}
   \Bigl((u+e-d_0,\ w) :: \bigl(\Sigma \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}\bigr)\Bigr)
+\end{aligned}
 ```
 
 を得る。ここで
@@ -476,10 +496,12 @@ $`\Sigma := B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})`$ �
 であるから、[T.split_append_left](ArgDom-3.md#t-split_append_left) を (key) に適用して $`K`$ を得る。
 
 ```math
-X \mathbin{+\!\!+} ((u,w)) = \bigl(G \mathbin{+\!\!+} D^{-d_0}\bigr) \mathbin{+\!\!+} K,
-\qquad
-(u+e-d_0,\ w) :: \bigl(\Sigma \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}\bigr)
- = K \mathbin{+\!\!+} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))\bigr).
+\begin{aligned}
+&X \mathbin{+\!\!+} ((u,w)) = \bigl(G \mathbin{+\!\!+} D^{-d_0}\bigr) \mathbin{+\!\!+} K,
+\qquad \cr
+&(u+e-d_0,\ w) :: \bigl(\Sigma \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}\bigr) \cr
+&\qquad = K \mathbin{+\!\!+} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))\bigr).
+\end{aligned}
 ```
 
 第 1 式の長さから $`\lvert K\rvert = (\lvert X\rvert + 1) - (\lvert G\rvert + \lvert D\rvert) = 1`$

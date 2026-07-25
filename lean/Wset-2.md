@@ -115,10 +115,13 @@ M[n] = (M_0,\dots,M_{j_0-1}) \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mathb
 B_k = \bigl(\,(M_{0,j} + k\,d_0,\ M_{1,j})\,\bigr)_{j=j_0}^{j_1-1},
 ```
 ```math
+\begin{aligned}
 \bigl(M^{+d}\bigr)[n]
-  = \bigl((M^{+d})_0,\dots,(M^{+d})_{j_0-1}\bigr) \mathbin{+\!\!+} B'_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B'_{n-1},
-\qquad
-B'_k = \bigl(\,((M^{+d})_{0,j} + k\,d_0,\ (M^{+d})_{1,j})\,\bigr)_{j=j_0}^{j_1-1}
+  &= \bigl((M^{+d})_0,\dots,(M^{+d})_{j_0-1}\bigr) \mathbin{+\!\!+} B'_0
+     \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B'_{n-1}, \qquad \cr
+B'_k
+  &= \bigl(\,((M^{+d})_{0,j} + k\,d_0,\ (M^{+d})_{1,j})\,\bigr)_{j=j_0}^{j_1-1}
+\end{aligned}
 ```
 
 である。前部分については $`\bigl((M^{+d})_0,\dots,(M^{+d})_{j_0-1}\bigr) = (M_0,\dots,M_{j_0-1})^{+d}`$
@@ -509,10 +512,12 @@ $`\mathrm{dropLast}(A \mathbin{+\!\!+} P) = A \mathbin{+\!\!+} \mathrm{dropLast}
 よって $`\mathrm{graft}`$ の定義（D.graft）より
 
 ```math
+\begin{aligned}
 \mathrm{graft}(A \mathbin{+\!\!+} P, z)
-  = \bigl(A \mathbin{+\!\!+} \mathrm{dropLast}\,P\bigr) \mathbin{+\!\!+} z^{+P_{0,\lvert P\rvert-1}}
-  = A \mathbin{+\!\!+} \bigl(\mathrm{dropLast}\,P \mathbin{+\!\!+} z^{+P_{0,\lvert P\rvert-1}}\bigr)
-  = A \mathbin{+\!\!+} \mathrm{graft}(P,z)
+  &= \bigl(A \mathbin{+\!\!+} \mathrm{dropLast}\,P\bigr) \mathbin{+\!\!+} z^{+P_{0,\lvert P\rvert-1}} \cr
+  &= A \mathbin{+\!\!+} \bigl(\mathrm{dropLast}\,P \mathbin{+\!\!+} z^{+P_{0,\lvert P\rvert-1}}\bigr) \cr
+  &= A \mathbin{+\!\!+} \mathrm{graft}(P,z)
+\end{aligned}
 ```
 
 である（中央の等号は連結の結合律による）。∎

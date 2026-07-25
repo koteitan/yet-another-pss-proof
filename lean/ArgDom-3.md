@@ -29,10 +29,13 @@ $`X`$ の構成子に関する帰納法（$`V, E, \ell, q, S', E'`$ は全称量
 帰納法の述語は
 
 ```math
-\Phi(X) :\equiv \forall V, E, \ell, q,\
-  \bigl(X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E
-   \wedge q \prec_{\mathrm{p}} \ell \wedge \lvert X\rvert \lt \lvert V\rvert\bigr)
-  \to \forall S', E',\ X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
+\begin{aligned}
+&\Phi(X) :\equiv \forall V, E, \ell, q,\
+  \bigl(X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E \cr
+&\qquad \wedge q \prec_{\mathrm{p}} \ell \wedge \lvert X\rvert \lt \lvert V\rvert\bigr) \cr
+&\qquad \to \forall S', E',\
+  X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
+\end{aligned}
 ```
 
 **基底段** $`X = ()`$。$`\lvert V\rvert \gt 0`$ であるから $`V = v :: V'`$ と書ける
@@ -399,9 +402,12 @@ D \mathbin{+\!\!+} q :: B_2'
 [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) と結合律により
 
 ```math
-V \mathbin{+\!\!+} \bigl((q_1+e,\ q_2) :: B_2'^{+e}\bigr)
- = A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: \bigl(D^{+e} \mathbin{+\!\!+} (q_1+e,\ q_2) :: B_2'^{+e}\bigr)
- = A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: B^{+e}
+\begin{aligned}
+&V \mathbin{+\!\!+} \bigl((q_1+e,\ q_2) :: B_2'^{+e}\bigr) \cr
+&\qquad = A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) \cr
+&\qquad\qquad :: \bigl(D^{+e} \mathbin{+\!\!+} (q_1+e,\ q_2) :: B_2'^{+e}\bigr) \cr
+&\qquad = A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: B^{+e}
+\end{aligned}
 ```
 
 に等しい。よって $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言により

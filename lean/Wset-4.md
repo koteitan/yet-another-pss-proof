@@ -187,8 +187,12 @@ D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+n x}
   $`\mathrm{graft}`$ の定義（[D.graft](Wset.md#d-graft)）より
 
 ```math
-\mathrm{tow}_v(R,n+1) = (0,v) :: \mathrm{graft}\bigl(R, \mathrm{tow}_v(R,n)\bigr)
-  = (0,v) :: \Bigl(\mathrm{dropLast}\,R \mathbin{+\!\!+} \bigl(\mathrm{tow}_v(R,n)\bigr)^{+R_{0,\lvert R\rvert-1}}\Bigr)
+\begin{aligned}
+\mathrm{tow}_v(R,n+1)
+  &= (0,v) :: \mathrm{graft}\bigl(R, \mathrm{tow}_v(R,n)\bigr) \cr
+  &= (0,v) :: \Bigl(\mathrm{dropLast}\,R
+       \mathbin{+\!\!+} \bigl(\mathrm{tow}_v(R,n)\bigr)^{+R_{0,\lvert R\rvert-1}}\Bigr)
+\end{aligned}
 ```
 
   であり、$`R_{0,\lvert R\rvert-1} = x`$、$`(0,v) :: \mathrm{dropLast}\,R = D`$ であるから

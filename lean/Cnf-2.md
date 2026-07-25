@@ -43,9 +43,11 @@ $`z_1, z_2, T_1, T_2`$ と 6 つの仮定を固定し、$`\lvert G\rvert`$ に�
 以下、(leadle) の $`a_1, b_1, c_1, a_2, b_2, c_2`$ を取り、
 
 ```math
-\mathrm{tr}(z_1 :: T_1) = \mathsf{P}(a_1,b_1,c_1), \quad
-\mathrm{tr}(z_2 :: T_2) = \mathsf{P}(a_2,b_2,c_2), \quad
-\mathsf{P}(a_1,b_1,\mathsf{Z}) \preceq \mathsf{P}(a_2,b_2,\mathsf{Z})
+\begin{aligned}
+\mathrm{tr}(z_1 :: T_1) &= \mathsf{P}(a_1,b_1,c_1), \quad \cr
+\mathrm{tr}(z_2 :: T_2) &= \mathsf{P}(a_2,b_2,c_2), \quad \cr
+\mathsf{P}(a_1,b_1,\mathsf{Z}) &\preceq \mathsf{P}(a_2,b_2,\mathsf{Z})
+\end{aligned}
 ```
 
 と書く。
@@ -80,10 +82,12 @@ $`i = 1, 2`$ のいずれでも
 ふたたび定義より
 
 ```math
+\begin{aligned}
 \mathrm{tr}\bigl((d :: D') \mathbin{+\!\!+} z_i :: T_i\bigr)
-  = \mathsf{P}\bigl(d_2,\ A_i,\ \mathrm{tr}(\mathrm{dw}_{d_1}(D' \mathbin{+\!\!+} z_i :: T_i))\bigr),
-\qquad
-A_i := \mathrm{tr}\bigl(\mathrm{tw}_{d_1}(D' \mathbin{+\!\!+} z_i :: T_i)\bigr)
+  &= \mathsf{P}\bigl(d_2,\ A_i,\ \mathrm{tr}(\mathrm{dw}_{d_1}(D' \mathbin{+\!\!+} z_i :: T_i))\bigr),
+\qquad \cr
+A_i &:= \mathrm{tr}\bigl(\mathrm{tw}_{d_1}(D' \mathbin{+\!\!+} z_i :: T_i)\bigr)
+\end{aligned}
 ```
 
 である。
