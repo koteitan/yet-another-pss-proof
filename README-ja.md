@@ -11,6 +11,13 @@ PSS は Bashicu 氏が考案し、その停止性は P進大好きbot 氏が Buc
 用いて最初に証明した。本リポジトリはそれとは**別の証明**を与える。ペア数列を
 $p_a(b)+c$ という独自の三分木記法へ翻訳し、その記法の上で停止性を導く。
 
+停止性の主定理は無条件・`sorry` なしで完成している。
+`#print axioms YAPSS.PSS_terminates_unconditional` は
+`[propext, Classical.choice, Quot.sound]` のみを返し、`lake build` はプロジェクト
+全体で通る。経路のどこにも順序数は現れず、これは主張ではなく機械的に確認できる。
+`import Final` した Lean の環境には定数 `Ordinal` がそもそも存在せず、Mathlib の
+順序数・濃度のモジュールは 1 つも import 閉包に入らない。
+
 数列を整礎な記法へ写し、展開の 1 段で測度が真に減少することを示す、という戦略そのものは
 原始数列システム（Primitive Sequence System, PrSS）の停止証明
 （[`prss-proof`](https://github.com/koteitan/prss-proof)）と同じである。

@@ -12,6 +12,14 @@ Buchholz's collapsing functions $\psi$. This repository gives a **different proo
 sequences are translated into a three-branch tree notation $p_a(b)+c$ of our own, and
 termination is derived on that notation.
 
+The termination theorem is complete: no hypotheses and no `sorry`.
+`#print axioms YAPSS.PSS_terminates_unconditional` reports
+`[propext, Classical.choice, Quot.sound]`, and `lake build` is green over the whole
+project. No ordinals occur anywhere in the route, and this is checked mechanically
+rather than asserted: after `import Final` the constant `Ordinal` does not exist in
+the Lean environment at all, and no Mathlib ordinal or cardinal module is in the
+import closure.
+
 The proof-theoretic strength of PSS is believed to be $\psi_0(\psi_\omega(0))$
 (the Buchholz ordinal), which corresponds to taking the subscript $a$ of $p_a(b)$ to
 range over the natural numbers.
