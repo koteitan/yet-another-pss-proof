@@ -3,7 +3,7 @@
 # yet-another-pss-proof v1.2.0
 
 ペア数列システム (Pair Sequence System, PSS) の停止性の証明とその Lean 4 / Mathlib による形式証明。
-**停止性の主定理は無条件・`sorry` なしで完成している**（`lean/YAPSS/Final.lean`、`#print axioms` は
+**停止性の主定理は無条件・`sorry` なしで完成している**（`lean/Final.lean`、`#print axioms` は
 `propext` / `Classical.choice` / `Quot.sound` のみ）。順序数も Buchholz 記法への翻訳も用いない。
 これは主張ではなく機械的に確認できる：`import YAPSS.Final` した環境には定数 `Ordinal` が
 そもそも存在せず、Mathlib の順序数・濃度のモジュールは 1 つも import 閉包に入らない。
@@ -28,13 +28,17 @@
 | `README-ja.md` | このファイル。リポジトリ内ファイルの説明。 |
 | `proof-ja.md` | markdown + MathJax による**完成した証明本文**（上位・人間向け）。Isabelle に変換できる証明のみを記し、経験的・未証明事項は書かない（循環論法防止）。 |
 | `memo.md` | 証明完成のための作業メモ（経験的観察・戦略・未解決の核の分析）。証明本文ではない。 |
-| `lean/YAPSS/Def.lean` | Bashicu 氏のペア数列システムの定義（`ST_PS`・基本列 `M⟦n⟧`・`step`）。P進大好きbot 氏の論文（下記出典）に倣い、論文に忠実な変数名を用いる。 |
-| `lean/YAPSS/Mechanized.lean` | 記法 `p_a(b)+c`（`Three`）、添字優先順序 `olt`、変換 `translate`、展開の分解 `oper_bad_blocks`。 |
-| `lean/YAPSS/Proofs.lean` | 停止性の還元（整礎性 ⟹ `WellFounded stepRel`）。 |
-| `lean/YAPSS/Cofinality.lean` | **PSS Bachmann 共終性**（基本列が limit の下に共終）。 |
-| `lean/YAPSS/AscArg.lean` | 共終性の核 `ArgDomCore` を `ST_PS` 導出への帰納で証明。 |
-| `lean/YAPSS/Wset.lean` | **反復帰納的集合 `W_u`**（Buchholz 1987 §2 の PSS 移植）と可到達性の橋。 |
-| `lean/YAPSS/Final.lean` | **主定理** `PSS_terminates_unconditional`（無条件・`sorry` なし・順序数を用いない）。 |
+| `lean/Pss.lean` | Bashicu 氏のペア数列システムの定義（`ST_PS`・基本列 `M⟦n⟧`・`step`）。P進大好きbot 氏の論文（下記出典）に倣い、論文に忠実な変数名を用いる。 |
+| `lean/Term.lean` | 記法 `p_a(b)+c`（`Three`）、添字優先順序 `olt`、変換 `translate`。 |
+| `lean/Decrease.lean` | 展開の分解 `oper_bad_blocks` と測度減少 `m_step_decreases`。 |
+| `lean/Reduction.lean` | 停止性の還元（整礎性 ⟹ `WellFounded stepRel`）。 |
+| `lean/Cnf.lean` | Cantor 標準形条件 `cnf` と、コピー分解 `shiftr0` / `copies`。 |
+| `lean/Seqlex.lean` | `translate` が列辞書式順序への順序同型であること。 |
+| `lean/Column.lean` | ペア列の接頭辞不変性と、位置的不変量 `r1ok` / `z0ok`。 |
+| `lean/Cofinality.lean` | **PSS Bachmann 共終性**（基本列が limit の下に共終）。 |
+| `lean/ArgDom.lean` | 共終性の核 `ArgDomCore` を `ST_PS` 導出への帰納で証明。 |
+| `lean/Wset.lean` | **反復帰納的集合 `W_u`**（Buchholz 1987 §2 の PSS 移植）と可到達性の橋。 |
+| `lean/Final.lean` | **主定理** `PSS_terminates_unconditional`（無条件・`sorry` なし・順序数を用いない）。 |
 | `lean/PROOF-STATUS.md` | 証明の現状と経緯（authoritative）。 |
 | `md/requirement.md` | `md/YAPSS/*.md`（人間向け証明本文）の編集方針。 |
 

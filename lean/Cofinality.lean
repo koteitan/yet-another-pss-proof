@@ -155,9 +155,9 @@ which is precisely the shape of a Bachmann/coefficient-domination hypothesis, no
 local invariant of `N` (`blockok`, `r1ok`, `z0ok`, `cnf` are all local and all hold in
 that counterexample).
 -/
-import YAPSS.Mechanized
-import YAPSS.Seqlex
-import YAPSS.Nrmstep
+import Term
+import Seqlex
+import Column
 
 namespace YAPSS
 open Three

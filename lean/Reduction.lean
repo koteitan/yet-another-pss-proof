@@ -13,7 +13,7 @@ hinges on `wfimg` alone.
 
 In `WellFounded R` the arguments read `R y x` = "`y` below `x`".
 -/
-import YAPSS.Mechanized
+import Decrease
 
 namespace YAPSS
 
@@ -25,10 +25,6 @@ def NF : Set Three := {t | ∃ M, ST_PS M ∧ translate M = t}
 /-- `Rnf`: the order `<o` restricted to `NF` (as a relation; `Rnf v u` reads
 "`v` below `u`"). -/
 def Rnf (v u : Three) : Prop := v <o u ∧ u ∈ NF ∧ v ∈ NF
-
-theorem oper_eq_self_short {M : PairSeq} (n : ℕ) (h : M.length ≤ 1) :
-    M⟦n⟧ = M :=
-  oper_eq_self_of_short n (by omega)
 
 /-- The one-step relation on standard forms, as a Lean relation
 (the pair `(T, M)` with `M ∈ ST_PS` and `step M T`). -/

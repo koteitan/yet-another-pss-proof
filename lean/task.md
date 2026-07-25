@@ -49,10 +49,10 @@ precise irreducible content: rep-at-the-bound, unreachable by the strict-below I
 tower-goal, naive `PsiValueAcanon`, `OVSurjective`, injectivity-vacuity.
 
 ## GREEN substrate (the simultaneous-induction base + skeleton, `sorryAx`-free)
-`YAPSS/Crank.lean`: `crank` + `crank_arg_lt` (C-rank strict-drop), `CsetSelf_crank_induction`,
+`Crank.lean`: `crank` + `crank_arg_lt` (C-rank strict-drop), `CsetSelf_crank_induction`,
 `Gset` (= Buchholz `G_uγ`) + `Gset_gen` + `Gset_gen_subeps`, `psiValue_mem_imp_arg_lt` (Lemma
 1.9 generator), `deepgen_arg_not_mem` + `deepgen_value_not_mem` + `psiSelf_w_arg_not_mem`.
-`YAPSS/Residue.lean` (`EpsLvlFixpoint` + skeleton): `psiSelf_eq_opow_some`,
+`Residue.lean` (`EpsLvlFixpoint` + skeleton): `psiSelf_eq_opow_some`,
 `psiSelf_fixpoint_of_below_saturated`, `psiSelf_epsLvl_fixpoint` (first deep ψ-fixpoint,
 `ε`-boundary), `fixpoint_iff_saturated`, `subA_nm_collapse_of_noRealizer`, `realizer_imp_strict`
 + `realizer_eq_rep`, `mem_CsetSelf_lvl` + `subA_nm_subeps_vacuous`, `noncanonValueMem_joint`

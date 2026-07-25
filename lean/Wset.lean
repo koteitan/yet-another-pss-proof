@@ -162,7 +162,7 @@ Notably the feared `H0clause`-shaped coefficient domination never appeared: PSS
 `Three`-addition is unconditional (`translate` has no CNF side condition built
 in), so the additive closure 2.4(b) needs only the *positional* guard `rsum`.
 -/
-import YAPSS.Nrmstep
+import Column
 import Mathlib.Data.Set.Lattice
 import Mathlib.Data.List.Induction
 

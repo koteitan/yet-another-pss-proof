@@ -92,7 +92,7 @@ complete.  Tools built for the three cases: `sle_of_short`, `sle_shiftr0`,
 `peel_aux`, `seqlex_of_sle_not_prefix`, `argDomCoreOn_transfer`,
 `argDomCoreOn_drop_left` / `_extend_left` / `_shiftr0`.
 -/
-import YAPSS.Cofinality
+import Cofinality
 
 namespace YAPSS
 

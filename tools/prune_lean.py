@@ -106,7 +106,7 @@ def main():
 
     total = 0
     for mod, names in sorted(dead.items()):
-        path = os.path.join(LEAN, 'YAPSS', mod + '.lean')
+        path = os.path.join(LEAN, mod + '.lean')
         lines = open(path).read().split('\n')
         keep = [True] * len(lines)
         hit = []

@@ -46,14 +46,14 @@ def load(dead_path):
 
 
 def pristine():
-    subprocess.run(['git', 'checkout', '--', 'lean/YAPSS'], cwd=ROOT, check=True)
+    subprocess.run(['git', 'checkout', '--', 'lean'], cwd=ROOT, check=True)
 
 
 def apply(dead):
     pristine()
     removed = 0
     for mod, names in dead.items():
-        path = os.path.join(LEAN, 'YAPSS', mod + '.lean')
+        path = os.path.join(LEAN, mod + '.lean')
         lines = open(path).read().split('\n')
         keep = [True] * len(lines)
         for kind, a, b, name in blocks(lines):
@@ -70,8 +70,8 @@ def rescue_by_name(dead):
     total = 0
     while True:
         apply(dead)
-        srcs = [strip_comments(open(os.path.join(LEAN, 'YAPSS', p)).read())
-                for p in os.listdir(os.path.join(LEAN, 'YAPSS'))]
+        srcs = [strip_comments(open(os.path.join(LEAN, p)).read())
+                for p in os.listdir(LEAN)]
         rescued = 0
         for names in dead.values():
             for full in list(names):
@@ -91,7 +91,7 @@ def elaboration_used(dead):
     pristine()
     out = {}
     for mod, names in dead.items():
-        lines = open(os.path.join(LEAN, 'YAPSS', mod + '.lean')).read().split('\n')
+        lines = open(os.path.join(LEAN, mod + '.lean')).read().split('\n')
         for kind, a, b, name in blocks(lines):
             if kind != 'decl' or name is None: continue
             full = '.'.join(namespace_at(lines, a) + [name])
@@ -127,7 +127,7 @@ def settle(dead, label):
                   | set(re.findall(r"The identifier `([^`]+)` is unknown", out))}
         failing = set(re.findall(r'YAPSS/(\w+)\.lean:', out))
         for mod in failing:
-            src = strip_comments(open(os.path.join(LEAN, 'YAPSS', mod + '.lean')).read())
+            src = strip_comments(open(os.path.join(LEAN, mod + '.lean')).read())
             for names in dead.values():
                 for full in names:
                     short = full.split('.')[-1]

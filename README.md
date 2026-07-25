@@ -22,7 +22,7 @@ theorem no_infinite_expansion_holds :
     ¬ ∃ S : ℕ → PairSeq, (∀ i, ST_PS (S i)) ∧ ∀ i, step (S i) (S (i + 1))
 ```
 
-Both are in [`lean/YAPSS/Final.lean`](lean/YAPSS/Final.lean), and
+Both are in [`lean/Final.lean`](lean/Final.lean), and
 
 ```
 #print axioms YAPSS.PSS_terminates_unconditional
@@ -41,10 +41,10 @@ i.e. no `sorryAx` and no named assumption; `lake build` is green over the whole 
    **without ordinals** and without translating into Buchholz's notation system, by
    * **Bachmann cofinality** — every standard form strictly below $M$ is bounded by some
      member $M[n]$ of the fundamental sequence
-     ([`lean/YAPSS/Cofinality.lean`](lean/YAPSS/Cofinality.lean),
-     [`lean/YAPSS/AscArg.lean`](lean/YAPSS/AscArg.lean)), and
+     ([`lean/Cofinality.lean`](lean/Cofinality.lean),
+     [`lean/ArgDom.lean`](lean/ArgDom.lean)), and
    * the **iterated inductive set** $W_u$ and its least-fixpoint induction, transplanted
-     natively to pair sequences ([`lean/YAPSS/Wset.lean`](lean/YAPSS/Wset.lean)).
+     natively to pair sequences ([`lean/Wset.lean`](lean/Wset.lean)).
 
    This is the method of Buchholz (1987) §2: the well-foundedness of Buchholz's notation
    system $\mathrm{OT}_B$ is obtained there **syntactically**, from the sets $W_v$ and the
@@ -65,7 +65,7 @@ range over the natural numbers.
 
 | Path | Contents |
 |---|---|
-| [`lean/YAPSS/`](lean/YAPSS/) | The Lean 4 / Mathlib formalization (16 modules) |
+| [`lean/`](lean/) | The Lean 4 / Mathlib formalization (11 modules) |
 | [`lean/PROOF-STATUS.md`](lean/PROOF-STATUS.md) | Status of the formalization (authoritative) |
 | [`md/YAPSS/`](md/YAPSS/) | Human-readable proof text in Markdown + MathJax, one file per Lean module, covering all 594 declarations; [`md/requirement.md`](md/requirement.md) is its editing policy |
 | [`proof-ja.md`](proof-ja.md) | Proof text (Japanese) |

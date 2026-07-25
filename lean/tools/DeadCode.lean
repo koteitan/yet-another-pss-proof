@@ -1,7 +1,7 @@
 /-
 # 未使用宣言の検出
 
-`YAPSS/Final.lean` の 5 定理を根として、**カーネルの証明項を辿って**到達可能な定数の
+`Final.lean` の 5 定理を根として、**カーネルの証明項を辿って**到達可能な定数の
 集合を求め、`YAPSS/*.lean` に書かれた宣言のうちそこに入らないものを列挙する。
 
 証明項そのものを辿るので、記法（`<o` = `olt`）・`@[simp]` による暗黙の使用・`omega` や
@@ -13,7 +13,7 @@
 注意: 定理の証明項は `ConstantInfo.value? (allowOpaque := true)` でないと取れない
 （`allowOpaque := false` は `.thmInfo` に対して `none` を返す）。
 -/
-import YAPSS.Final
+import Final
 
 open Lean Elab Command
 
@@ -63,6 +63,10 @@ elab "#deadcode" : command => do
      ``YAPSS.pss_cofinality_holds, ``YAPSS.wf_olt_ST_PS_holds, ``YAPSS.wf_Rnf_holds]
   let reach := roots.foldl (fun s r => DeadCode.visit env r s) (∅ : Std.HashSet Name)
   -- 本リポジトリのモジュールに属する宣言だけを対象にする
+  -- 本リポジトリのモジュール（`lakefile.toml` の roots と同じ）
+  let ours : List Name :=
+    [`Pss, `Term, `Decrease, `Reduction, `Cnf, `Seqlex, `Column,
+     `Cofinality, `ArgDom, `Wset, `Final]
   let mods := env.header.moduleNames
   let mut rows : Array (Name × Name × Nat) := #[]      -- (module, decl, line)
   let mut total : Std.HashMap Name Nat := {}
@@ -73,7 +77,7 @@ elab "#deadcode" : command => do
     if ci matches .ctorInfo _ | .recInfo _ | .inductInfo _ then continue
     let some idx := env.getModuleIdxFor? n | continue
     let m := mods[idx.toNat]!
-    unless m.getRoot == `YAPSS do continue
+    unless ours.contains m do continue
     total := total.insert m ((total.getD m 0) + 1)
     if reach.contains n then continue
     dead := dead.insert m ((dead.getD m 0) + 1)
@@ -88,7 +92,7 @@ elab "#deadcode" : command => do
     out := out ++ s!"  {m}:{line}  {n}\n"
   out := out ++ "\nモジュール別（未使用 / 全体）\n"
   for m in mods do
-    if m.getRoot == `YAPSS then
+    if ours.contains m then
       let t := total.getD m 0
       if t > 0 then out := out ++ s!"  {m}: {dead.getD m 0} / {t}\n"
   logInfo out

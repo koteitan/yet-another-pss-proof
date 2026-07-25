@@ -12,7 +12,7 @@ Port note: `blockok` is defined via the structural step predicate `steps1`
 (the indexed form is `steps1_iff`).  The block hypotheses of `seqlex_arg_or_tail` are
 dropped — they are only induction plumbing there.
 -/
-import YAPSS.Wf
+import Cnf
 
 namespace YAPSS
 

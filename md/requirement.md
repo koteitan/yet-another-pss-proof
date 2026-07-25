@@ -2,7 +2,7 @@
 
 # `md/YAPSS/*.md` 編集方針
 
-`lean/YAPSS/*.lean` の形式証明に 1 対 1 で対応する、**人間が読むための証明本文**を
+`lean/*.lean` の形式証明に 1 対 1 で対応する、**人間が読むための証明本文**を
 `md/YAPSS/*.md` に書く。Markdown + MathJax。言語は日本語。
 
 ---
@@ -48,7 +48,7 @@ Lean 側に存在する命題は、対応する `md` に**命題と証明の両�
 | 定理・補題 | `定理 <内容の名前> (T.<Lean識別子>)` | `定理 基本列の共終性 (T.pss_cofinality_holds)` |
 | 定義 | `定義 <内容の名前> (D.<Lean識別子>)` | `定義 標準形 (D.ST_PS)` |
 
-`<Lean識別子>` は `lean/YAPSS/*.lean` 中の宣言名をそのまま用いる
+`<Lean識別子>` は `lean/*.lean` 中の宣言名をそのまま用いる
 （`pss_cofinality_holds`, `ST_PS` など）。名前空間 `YAPSS.` は付けない。
 
 見出しと**明示アンカー**を対で置く。アンカー名は `t-<Lean識別子>` / `d-<Lean識別子>`
@@ -82,7 +82,7 @@ Lean 側に存在する命題は、対応する `md` に**命題と証明の両�
 
 ### 3.1 対応関係
 
-`lean/YAPSS/Foo.lean` ↔ `md/YAPSS/Foo.md`。
+`lean/Foo.lean` ↔ `md/YAPSS/Foo.md`。
 
 Lean 側のファイルが大きい場合は**分割してよい**（例 `Nrmstep`）。分割したときは
 `lean` 側も同じ単位に分割し、対応を 1 対 1 に保つ。
@@ -95,8 +95,8 @@ Lean 側のファイルが大きい場合は**分割してよい**（例 `Nrmste
 停止性証明の依存順（下位が先）:
 
 ```
-Def → Mechanized → Proofs → Wf → Seqlex → Nrm → Nrmstep
-    → Cofinality → AscArg → Wset → OrdinalFree → Final
+Pss → Term → Decrease → Reduction → Cnf → Seqlex → Column
+    → Cofinality → ArgDom → Wset → Final
 ```
 
 `md/YAPSS/README.md` にこの順で目次を置く。

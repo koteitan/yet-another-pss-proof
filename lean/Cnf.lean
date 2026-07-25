@@ -10,7 +10,7 @@ subscript is ≤ the spine maximum) this yields `w <o x → maxsub w ≤ maxsub 
 Indexing is total: `s.getD i 0` (each
 use is guarded by `i < length s`).
 -/
-import YAPSS.Proofs
+import Decrease
 import Mathlib.Order.WellFounded
 import Mathlib.Data.Prod.Lex
 
