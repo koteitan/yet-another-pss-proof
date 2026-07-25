@@ -4,7 +4,7 @@
 
 三分岐記法 $`\mathrm{Three}`$（[(D.Three)](Mechanized.md#d-Three)）の項を Buchholz の崩壊関数
 $`\psi_v`$（[(D.psi)](Psi.md#d-psi)）で順序数へ写す値写像 $`\mathrm{oV}`$ を定義し、その値の上界を与える
-述語 $`\mathrm{allprinc}_{<d}`$、スパイン添字の上界 $`\mathrm{spinesub}_{\le m}`$、Buchholz の係数集合 $`G_u`$、
+述語 $`\mathrm{allprinc}_{\lt d}`$、スパイン添字の上界 $`\mathrm{spinesub}_{\le m}`$、Buchholz の係数集合 $`G_u`$、
 頭部比較 $`\sqsubseteq`$、および Buchholz OT の整合性述語 $`\mathrm{wf3}`$ を導入する。
 本章の 29 個の宣言のうち 7 個は定義、22 個は定理である。定理のうち 4 個、すなわち
 [(T.oV_lt_of_allprinc)](#t-oV_lt_of_allprinc)、[(T.spinesub_le_mono)](#t-spinesub_le_mono)、
@@ -24,7 +24,7 @@ $`\mathrm{wf3}`$ にも依存しない）。
 | Lean | 本文 | 意味 |
 |---|---|---|
 | `oV t` | $`\mathrm{oV}\,t`$ | 項 $`t`$ の順序数値 |
-| `allprinc_lt d t` | $`\mathrm{allprinc}_{<d}(t)`$ | $`t`$ のスパイン上の主要項がすべて $`<d`$ |
+| `allprinc_lt d t` | $`\mathrm{allprinc}_{\lt d}(t)`$ | $`t`$ のスパイン上の主要項がすべて $`\lt d`$ |
 | `spinesub_le m t` | $`\mathrm{spinesub}_{\le m}(t)`$ | $`t`$ のスパイン上の添字がすべて $`\le m`$ |
 | `Gterm u t` | $`G_u(t)`$ | Buchholz の係数集合（項の集合） |
 | `hdle x y` | $`x \sqsubseteq y`$ | $`x`$ の頭部主要項が $`y`$ の頭部主要項以下 |
@@ -48,8 +48,8 @@ $`\mathrm{wf3}`$ にも依存しない）。
 
 - $`\alpha + \beta`$ は順序数の加法、$`0`$ は最小の順序数。
 - $`\alpha \le \alpha + \beta`$（Mathlib の `le_self_add`）。
-- $`\mathrm{addprinc}(\delta)`$ は $`0 < \delta`$ かつ
-  $`\forall \beta\,\gamma,\ \beta<\delta \to \gamma<\delta \to \beta+\gamma<\delta`$ である
+- $`\mathrm{addprinc}(\delta)`$ は $`0 \lt \delta`$ かつ
+  $`\forall \beta\,\gamma,\ \beta\lt \delta \to \gamma\lt \delta \to \beta+\gamma\lt \delta`$ である
   （[(D.addprinc)](Psi.md#d-addprinc)）。
 
 集合については、$`\mathrm{Three}`$ の部分集合を $`\mathrm{Set}\ \mathrm{Three}`$ と書き、
@@ -125,7 +125,7 @@ Lean 側の節見出し *Additive-principal sums and the subscript bound* に対
 <a id="d-allprinc_lt"></a>
 ### 定義 スパイン上の主要項の上界 (D.allprinc_lt)
 
-$`d \in \mathrm{Ord}`$ に対し、述語 $`\mathrm{allprinc}_{<d} : \mathrm{Three}\to\mathrm{Prop}`$ を
+$`d \in \mathrm{Ord}`$ に対し、述語 $`\mathrm{allprinc}_{\lt d} : \mathrm{Three}\to\mathrm{Prop}`$ を
 項の構造に関する再帰で定める。
 
 ```math
@@ -147,10 +147,10 @@ $`t = \mathsf{P}(a_1,b_1,\mathsf{P}(a_2,b_2,\dots\mathsf{P}(a_k,b_k,\mathsf{Z})\
 <a id="t-allprinc_lt_Z"></a>
 ### 定理 $`\mathsf{Z}`$ の場合 (T.allprinc_lt_Z)
 
-**主張** 任意の $`d\in\mathrm{Ord}`$ に対し $`\mathrm{allprinc}_{<d}(\mathsf{Z})`$。
+**主張** 任意の $`d\in\mathrm{Ord}`$ に対し $`\mathrm{allprinc}_{\lt d}(\mathsf{Z})`$。
 
 **証明** [(D.allprinc_lt)](#d-allprinc_lt) の第 1 式により
-$`\mathrm{allprinc}_{<d}(\mathsf{Z})`$ は $`\top`$ と定義により同一であり、$`\top`$ は成り立つ。∎
+$`\mathrm{allprinc}_{\lt d}(\mathsf{Z})`$ は $`\top`$ と定義により同一であり、$`\top`$ は成り立つ。∎
 
 <a id="t-allprinc_lt_P"></a>
 ### 定理 主要項の場合 (T.allprinc_lt_P)
@@ -166,7 +166,7 @@ $`\mathrm{allprinc}_{<d}(\mathsf{Z})`$ は $`\top`$ と定義により同一で�
 ### 定理 加法主要な上界の下での値の上界 (T.oV_lt_of_allprinc)
 
 **主張** $`d\in\mathrm{Ord}`$ が $`\mathrm{addprinc}(d)`$ をみたし、$`t\in\mathrm{Three}`$ が
-$`\mathrm{allprinc}_{<d}(t)`$ をみたすならば $`\mathrm{oV}\,t < d`$。
+$`\mathrm{allprinc}_{\lt d}(t)`$ をみたすならば $`\mathrm{oV}\,t \lt d`$。
 
 **証明** $`d`$ と仮定 $`\mathrm{addprinc}(d)`$ を固定し、$`t`$ の構造に関する帰納法を行う。
 帰納法の述語は
@@ -176,19 +176,19 @@ $`\mathrm{allprinc}_{<d}(t)`$ をみたすならば $`\mathrm{oV}\,t < d`$。
 ```
 
 - **基底段** $`t=\mathsf{Z}`$：[(T.oV_Z)](#t-oV_Z) より $`\mathrm{oV}\,\mathsf{Z} = 0`$ である。
-  $`\mathrm{addprinc}(d)`$（[(D.addprinc)](Psi.md#d-addprinc)）の第 1 連言子は $`0<d`$ であるから
-  $`\mathrm{oV}\,\mathsf{Z} < d`$。よって前提によらず $`\Phi(\mathsf{Z})`$ が成り立つ。
+  $`\mathrm{addprinc}(d)`$（[(D.addprinc)](Psi.md#d-addprinc)）の第 1 連言子は $`0\lt d`$ であるから
+  $`\mathrm{oV}\,\mathsf{Z} \lt d`$。よって前提によらず $`\Phi(\mathsf{Z})`$ が成り立つ。
 
 - **帰納段** $`t=\mathsf{P}(a,b,c)`$：帰納法の仮定は $`\Phi(b)`$ と $`\Phi(c)`$ の 2 つである
   （以下で用いるのは $`\Phi(c)`$ のみ）。
-  前提 $`\mathrm{allprinc}_{<d}(\mathsf{P}(a,b,c))`$ を仮定する。
+  前提 $`\mathrm{allprinc}_{\lt d}(\mathsf{P}(a,b,c))`$ を仮定する。
   [(T.allprinc_lt_P)](#t-allprinc_lt_P) によりこれは
-  $`h : \psi_a(\mathrm{oV}\,b)<d`$ と $`h' : \mathrm{allprinc}_{<d}(c)`$ の連言である。
-  帰納法の仮定 $`\Phi(c)`$ を $`h'`$ に適用して $`\mathrm{oV}\,c < d`$ を得る。
+  $`h : \psi_a(\mathrm{oV}\,b)\lt d`$ と $`h' : \mathrm{allprinc}_{\lt d}(c)`$ の連言である。
+  帰納法の仮定 $`\Phi(c)`$ を $`h'`$ に適用して $`\mathrm{oV}\,c \lt d`$ を得る。
   $`\mathrm{addprinc}(d)`$ の第 2 連言子
-  $`\forall\beta\,\gamma,\ \beta<d\to\gamma<d\to\beta+\gamma<d`$ を
+  $`\forall\beta\,\gamma,\ \beta\lt d\to\gamma\lt d\to\beta+\gamma\lt d`$ を
   $`\beta := \psi_a(\mathrm{oV}\,b)`$, $`\gamma := \mathrm{oV}\,c`$ に適用し、
-  $`h`$ と $`\mathrm{oV}\,c<d`$ を渡すと
+  $`h`$ と $`\mathrm{oV}\,c\lt d`$ を渡すと
   ```math
   \psi_a(\mathrm{oV}\,b) + \mathrm{oV}\,c < d
   ```
@@ -287,7 +287,7 @@ G_u(c) & (u>a)
 \end{cases}
 ```
 
-である（$`u>a`$ の場合は $`\emptyset\cup G_u(c)=G_u(c)`$ による）。
+である（$`u\gt a`$ の場合は $`\emptyset\cup G_u(c)=G_u(c)`$ による）。
 再帰呼び出しの引数 $`b`$, $`c`$ はいずれも $`\mathsf{P}(a,b,c)`$ の真部分項であるから、
 この定義は構造帰納として整合的である。
 条件式の中の再帰呼び出しの添字は $`u`$ のままであって $`a`$ ではないことに注意する
@@ -472,7 +472,7 @@ $`\mathrm{spinesub}_{\le \mathrm{lead}\,t}(t)`$。
     ```math
     a'<a \ \vee\ \bigl(a'=a \ \wedge\ (b'\prec b \ \vee\ b'=b)\bigr)
     ```
-    である。第 1 選言のときは $`a'<a`$ から $`a'\le a`$、第 2 選言のときは $`a'=a`$ から $`a'\le a`$
+    である。第 1 選言のときは $`a'\lt a`$ から $`a'\le a`$、第 2 選言のときは $`a'=a`$ から $`a'\le a`$
     が従う（Lean ではこの 2 通りの初等的な導出を `omega` が行う）。いずれにせよ
     ```math
     a' \le a .
@@ -553,7 +553,7 @@ $`\mathrm{headle}_{\mathrm{bnd}}(\mathsf{Z})`$ は $`\top`$ と定義により�
 
 Lean 側の節見出し *Order preservation on the Buchholz class (Buchholz Lemma 2.2(c))* に対応する。
 この見出しの下に宣言は 1 つも置かれていない。順序保存
-（$`\mathrm{wf3}`$ をみたす $`x,y`$ について $`x\prec y \Rightarrow \mathrm{oV}\,x<\mathrm{oV}\,y`$）は
+（$`\mathrm{wf3}`$ をみたす $`x,y`$ について $`x\prec y \Rightarrow \mathrm{oV}\,x\lt \mathrm{oV}\,y`$）は
 本モジュールでは述べられも証明されもしない。
 
 ## Buchholz 崩壊モジュール（値ルート）
@@ -563,7 +563,7 @@ Lean 側の節見出し *Buchholz collapsing module (value route)* に対応す�
 対応する宣言は本モジュールに存在しない。ここでは記録のためだけに引用する）。
 
 > (M1) $`C_v(\alpha)`$ の加法主要な元でレベル $`v`$ の帯 $`[\Omega_v,\Omega_{v+1})`$ に属するものは、
-> ある $`\xi\in C_v(\alpha)`$, $`\xi<\alpha`$ について $`\psi_v(\xi)`$ の形である。
+> ある $`\xi\in C_v(\alpha)`$, $`\xi\lt \alpha`$ について $`\psi_v(\xi)`$ の形である。
 > レベルが $`v`$ に定まるのは $`\psi_u(\xi)\in[\Omega_u,\Omega_{u+1})`$ であってこれらの帯が
 > 互いに交わらないことによる。
 
@@ -574,7 +574,7 @@ Lean 側の節見出し *Buchholz collapsing module (value route)* に対応す�
 ### 定理 係数は構造サイズを真に減らす (T.Gterm_tsize)
 
 **主張** $`t,x\in\mathrm{Three}`$, $`v\in\mathbb{N}`$ とする。
-$`x\in G_v(t)`$ ならば $`\lVert x\rVert < \lVert t\rVert`$。
+$`x\in G_v(t)`$ ならば $`\lVert x\rVert \lt \lVert t\rVert`$。
 
 ここで $`\lVert\cdot\rVert`$ は [(D.tsize)](Wfsum.md#d-tsize) の構造サイズ、すなわち
 $`\lVert\mathsf{Z}\rVert = 1`$、$`\lVert\mathsf{P}(a,b,c)\rVert = \lVert b\rVert+\lVert c\rVert+1`$ である。
@@ -591,20 +591,20 @@ $`\lVert\mathsf{Z}\rVert = 1`$、$`\lVert\mathsf{P}(a,b,c)\rVert = \lVert b\rVer
 - **帰納段** $`t=\mathsf{P}(a,b,c)`$：帰納法の仮定は $`\Phi(b)`$ と $`\Phi(c)`$ の 2 つである。
   前提 $`x\in G_v(\mathsf{P}(a,b,c))`$ を仮定し、[(T.mem_Gterm_P)](#t-mem_Gterm_P) を適用して
   次の 3 つの場合に分ける。
-  結論は $`\lVert x\rVert < \lVert \mathsf{P}(a,b,c)\rVert = \lVert b\rVert+\lVert c\rVert+1`$ である。
+  結論は $`\lVert x\rVert \lt \lVert \mathsf{P}(a,b,c)\rVert = \lVert b\rVert+\lVert c\rVert+1`$ である。
 
-  1. $`v\le a`$ かつ $`x=b`$ のとき。示すべきは $`\lVert b\rVert < \lVert b\rVert+\lVert c\rVert+1`$ である。
-     $`\lVert c\rVert \ge 0`$ であるから $`\lVert b\rVert+\lVert c\rVert+1 \ge \lVert b\rVert+1 > \lVert b\rVert`$。
+  1. $`v\le a`$ かつ $`x=b`$ のとき。示すべきは $`\lVert b\rVert \lt \lVert b\rVert+\lVert c\rVert+1`$ である。
+     $`\lVert c\rVert \ge 0`$ であるから $`\lVert b\rVert+\lVert c\rVert+1 \ge \lVert b\rVert+1 \gt \lVert b\rVert`$。
 
   2. $`v\le a`$ かつ $`x\in G_v(b)`$ のとき。帰納法の仮定 $`\Phi(b)`$ を適用して
-     $`\lVert x\rVert < \lVert b\rVert`$ を得る。
-     また 1 と同じ計算で $`\lVert b\rVert < \lVert b\rVert+\lVert c\rVert+1`$ であるから、
-     $`\mathbb{N}`$ の $`<`$ の推移律により $`\lVert x\rVert < \lVert b\rVert+\lVert c\rVert+1`$。
+     $`\lVert x\rVert \lt \lVert b\rVert`$ を得る。
+     また 1 と同じ計算で $`\lVert b\rVert \lt \lVert b\rVert+\lVert c\rVert+1`$ であるから、
+     $`\mathbb{N}`$ の $`\lt `$ の推移律により $`\lVert x\rVert \lt \lVert b\rVert+\lVert c\rVert+1`$。
 
   3. $`x\in G_v(c)`$ のとき。帰納法の仮定 $`\Phi(c)`$ を適用して
-     $`\lVert x\rVert < \lVert c\rVert`$ を得る。
-     $`\lVert b\rVert\ge 0`$ より $`\lVert c\rVert \le \lVert b\rVert+\lVert c\rVert < \lVert b\rVert+\lVert c\rVert+1`$
-     であるから、$`\lVert x\rVert < \lVert b\rVert+\lVert c\rVert+1`$。
+     $`\lVert x\rVert \lt \lVert c\rVert`$ を得る。
+     $`\lVert b\rVert\ge 0`$ より $`\lVert c\rVert \le \lVert b\rVert+\lVert c\rVert \lt \lVert b\rVert+\lVert c\rVert+1`$
+     であるから、$`\lVert x\rVert \lt \lVert b\rVert+\lVert c\rVert+1`$。
 
   （1–3 の自然数の不等式計算を Lean では `omega` が行っている。）
   いずれの場合も結論が得られたので $`\Phi(\mathsf{P}(a,b,c))`$。∎

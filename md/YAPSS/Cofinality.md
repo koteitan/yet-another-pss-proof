@@ -7,7 +7,7 @@
 本章は、この主張を桁優先辞書式順序 $`\prec_{\mathrm{lex}}`$ 上の組合せ的主張へ還元し、
 [(D.oper)](Def.md#d-oper) の 4 つの分岐（長さ $`\le 1`$／末尾 $`(0,0)`$／親なし／それ以外）を個別に処理する。
 最後の分岐はコピー幅 $`d_0`$ が $`0`$ か正かで分かれ、$`d_0=0`$ の側は本章で仮定なしに証明され、
-$`d_0>0`$ の側は単一の残余命題 $`\mathrm{AscArgDom}`$ へ還元される（それは [`AscArg.md`](AscArg.md) で証明される）。
+$`d_0\gt 0`$ の側は単一の残余命題 $`\mathrm{AscArgDom}`$ へ還元される（それは [`AscArg.md`](AscArg.md) で証明される）。
 
 ## 記法
 
@@ -32,7 +32,7 @@ $`d_0>0`$ の側は単一の残余命題 $`\mathrm{AscArgDom}`$ へ還元され�
 | `M⟦n⟧` | $`M[n]`$ | [(D.oper)](Def.md#d-oper) |
 | `x <o y`, `x ≤o y` | $`x \prec y`$, $`x \preceq y`$ | [(D.olt)](Mechanized.md#d-olt), [(D.ole)](Mechanized.md#d-ole) |
 | `translate M` | $`\mathrm{tr}\,M`$ | [(D.translate)](Mechanized.md#d-translate) |
-| `pairlt p q` | $`p <_{\mathrm{p}} q`$ | [(D.pairlt)](Seqlex.md#d-pairlt) |
+| `pairlt p q` | $`p \lt _{\mathrm{p}} q`$ | [(D.pairlt)](Seqlex.md#d-pairlt) |
 | `seqlex M N` | $`M \prec_{\mathrm{lex}} N`$ | [(D.seqlex)](Seqlex.md#d-seqlex) |
 | `shiftr0 d X` | $`\sigma_d X`$ | [(D.shiftr0)](Wf.md#d-shiftr0) |
 | `copies d B n` | $`\mathrm{cop}_d(B,n)`$ | [(D.copies)](Wf.md#d-copies) |
@@ -100,19 +100,19 @@ $`\prec_{\mathrm{lex}}`$ から $`\prec`$ への順序同型である。した�
 リスト水準の性質を集める。
 
 <a id="t-pairlt_trans"></a>
-### 定理 $`<_{\mathrm{p}}`$ の推移律 (T.pairlt_trans)
+### 定理 $`\lt _{\mathrm{p}}`$ の推移律 (T.pairlt_trans)
 
-**主張** $`p <_{\mathrm{p}} q`$ かつ $`q <_{\mathrm{p}} r`$ ならば $`p <_{\mathrm{p}} r`$。
+**主張** $`p \lt _{\mathrm{p}} q`$ かつ $`q \lt _{\mathrm{p}} r`$ ならば $`p \lt _{\mathrm{p}} r`$。
 
 **証明** [(D.pairlt)](Seqlex.md#d-pairlt) の定義を両仮定に展開して 4 通りに場合分けする。
 
-1. $`\pi_0 p < \pi_0 q`$ かつ $`\pi_0 q < \pi_0 r`$：$`\mathbb{N}`$ の $`<`$ の推移律から $`\pi_0 p < \pi_0 r`$、第 1 選言。
-2. $`\pi_0 p < \pi_0 q`$ かつ $`(\pi_0 q = \pi_0 r \wedge \pi_1 q < \pi_1 r)`$：$`\pi_0 p < \pi_0 q = \pi_0 r`$、第 1 選言。
-3. $`(\pi_0 p = \pi_0 q \wedge \pi_1 p < \pi_1 q)`$ かつ $`\pi_0 q < \pi_0 r`$：$`\pi_0 p = \pi_0 q < \pi_0 r`$、第 1 選言。
-4. $`(\pi_0 p = \pi_0 q \wedge \pi_1 p < \pi_1 q)`$ かつ $`(\pi_0 q = \pi_0 r \wedge \pi_1 q < \pi_1 r)`$：
-   $`\pi_0 p = \pi_0 r`$ かつ $`\pi_1 p < \pi_1 q < \pi_1 r`$ より $`\pi_1 p < \pi_1 r`$、第 2 選言。
+1. $`\pi_0 p \lt \pi_0 q`$ かつ $`\pi_0 q \lt \pi_0 r`$：$`\mathbb{N}`$ の $`\lt `$ の推移律から $`\pi_0 p \lt \pi_0 r`$、第 1 選言。
+2. $`\pi_0 p \lt \pi_0 q`$ かつ $`(\pi_0 q = \pi_0 r \wedge \pi_1 q \lt \pi_1 r)`$：$`\pi_0 p \lt \pi_0 q = \pi_0 r`$、第 1 選言。
+3. $`(\pi_0 p = \pi_0 q \wedge \pi_1 p \lt \pi_1 q)`$ かつ $`\pi_0 q \lt \pi_0 r`$：$`\pi_0 p = \pi_0 q \lt \pi_0 r`$、第 1 選言。
+4. $`(\pi_0 p = \pi_0 q \wedge \pi_1 p \lt \pi_1 q)`$ かつ $`(\pi_0 q = \pi_0 r \wedge \pi_1 q \lt \pi_1 r)`$：
+   $`\pi_0 p = \pi_0 r`$ かつ $`\pi_1 p \lt \pi_1 q \lt \pi_1 r`$ より $`\pi_1 p \lt \pi_1 r`$、第 2 選言。
 
-いずれの場合も $`p <_{\mathrm{p}} r`$。∎
+いずれの場合も $`p \lt _{\mathrm{p}} r`$。∎
 
 <a id="t-seqlex_trans"></a>
 ### 定理 $`\prec_{\mathrm{lex}}`$ の推移律 (T.seqlex_trans)
@@ -146,9 +146,9 @@ $`\prec_{\mathrm{lex}}`$ から $`\prec`$ への順序同型である。した�
 
   4 通りに場合分けし、いずれも $`a \mathbin{::} A' \prec_{\mathrm{lex}} c \mathbin{::} C'`$ を示す。
 
-  1. $`a <_{\mathrm{p}} b`$ かつ $`b <_{\mathrm{p}} c`$：[(T.pairlt_trans)](#t-pairlt_trans) より $`a <_{\mathrm{p}} c`$、第 1 選言。
-  2. $`a <_{\mathrm{p}} b`$ かつ $`b = c`$：$`a <_{\mathrm{p}} c`$、第 1 選言。
-  3. $`a = b`$ かつ $`b <_{\mathrm{p}} c`$：$`a <_{\mathrm{p}} c`$、第 1 選言。
+  1. $`a \lt _{\mathrm{p}} b`$ かつ $`b \lt _{\mathrm{p}} c`$：[(T.pairlt_trans)](#t-pairlt_trans) より $`a \lt _{\mathrm{p}} c`$、第 1 選言。
+  2. $`a \lt _{\mathrm{p}} b`$ かつ $`b = c`$：$`a \lt _{\mathrm{p}} c`$、第 1 選言。
+  3. $`a = b`$ かつ $`b \lt _{\mathrm{p}} c`$：$`a \lt _{\mathrm{p}} c`$、第 1 選言。
   4. $`a = b`$, $`A' \prec_{\mathrm{lex}} B'`$, $`b = c`$, $`B' \prec_{\mathrm{lex}} C'`$：$`a = c`$ であり、
      帰納法の仮定 $`\Phi(A')`$ を $`B := B'`$, $`C := C'`$ に適用して $`A' \prec_{\mathrm{lex}} C'`$。第 2 選言。
 
@@ -197,9 +197,9 @@ $`A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$。
 - **帰納段 $`A = a \mathbin{::} A'`$。** 帰納法の仮定は $`\Phi(A')`$。
   仮定 $`a \mathbin{::} A' \prec_{\mathrm{lex}} B`$ より $`B \ne []`$（$`B = []`$ なら第 2 式で $`\bot`$）、
   $`B = b \mathbin{::} B'`$ とおく。[(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) より
-  $`a <_{\mathrm{p}} b`$ または $`(a = b \wedge A' \prec_{\mathrm{lex}} B')`$。
+  $`a \lt _{\mathrm{p}} b`$ または $`(a = b \wedge A' \prec_{\mathrm{lex}} B')`$。
   $`B \mathbin{+\!\!+} C = b \mathbin{::} (B' \mathbin{+\!\!+} C)`$ であるから、
-  - $`a <_{\mathrm{p}} b`$ のときは第 1 選言により
+  - $`a \lt _{\mathrm{p}} b`$ のときは第 1 選言により
     $`a \mathbin{::} A' \prec_{\mathrm{lex}} b \mathbin{::} (B' \mathbin{+\!\!+} C)`$、
   - $`a = b`$, $`A' \prec_{\mathrm{lex}} B'`$ のときは帰納法の仮定 $`\Phi(A')`$ を $`B := B'`$, $`C := C`$ に適用して
     $`A' \prec_{\mathrm{lex}} B' \mathbin{+\!\!+} C`$ を得、第 2 選言により結論。
@@ -242,23 +242,23 @@ N \preceq_{\mathrm{lex}} D
 - **基底段 $`D = []`$。** $`D \mathbin{+\!\!+} [lp] = [lp]`$ である。
   - $`N = []`$ のとき：[(T.sle_refl)](#t-sle_refl) より $`[] \preceq_{\mathrm{lex}} []= D`$、第 1 の場合。
   - $`N = q \mathbin{::} S`$ のとき：[(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) より
-    $`q <_{\mathrm{p}} lp`$ または $`(q = lp \wedge S \prec_{\mathrm{lex}} [])`$。
+    $`q \lt _{\mathrm{p}} lp`$ または $`(q = lp \wedge S \prec_{\mathrm{lex}} [])`$。
     後者の $`S \prec_{\mathrm{lex}} []`$ は、$`S = []`$ なら $`[] \ne []`$ で偽、$`S`$ が非空なら $`\bot`$ で偽。
-    よって $`q <_{\mathrm{p}} lp`$ であり、$`N = [] \mathbin{+\!\!+} q \mathbin{::} S`$ だから第 2 の場合。
+    よって $`q \lt _{\mathrm{p}} lp`$ であり、$`N = [] \mathbin{+\!\!+} q \mathbin{::} S`$ だから第 2 の場合。
 - **帰納段 $`D = d \mathbin{::} D'`$。** 帰納法の仮定は $`\Phi(D')`$。
   $`D \mathbin{+\!\!+} [lp] = d \mathbin{::} (D' \mathbin{+\!\!+} [lp])`$ である。
   - $`N = []`$ のとき：$`D = d\mathbin{::}D' \ne []`$ であるから $`[] \prec_{\mathrm{lex}} D`$、
     よって $`N \preceq_{\mathrm{lex}} D`$、第 1 の場合。
   - $`N = q \mathbin{::} S`$ のとき：[(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) より
-    $`q <_{\mathrm{p}} d`$ または $`(q = d \wedge S \prec_{\mathrm{lex}} D' \mathbin{+\!\!+} [lp])`$。
-    - $`q <_{\mathrm{p}} d`$：第 1 選言により $`q\mathbin{::}S \prec_{\mathrm{lex}} d\mathbin{::}D' = D`$、
+    $`q \lt _{\mathrm{p}} d`$ または $`(q = d \wedge S \prec_{\mathrm{lex}} D' \mathbin{+\!\!+} [lp])`$。
+    - $`q \lt _{\mathrm{p}} d`$：第 1 選言により $`q\mathbin{::}S \prec_{\mathrm{lex}} d\mathbin{::}D' = D`$、
       よって $`N \preceq_{\mathrm{lex}} D`$。
     - $`q = d`$ かつ $`S \prec_{\mathrm{lex}} D' \mathbin{+\!\!+} [lp]`$：帰納法の仮定 $`\Phi(D')`$ を
       $`lp := lp`$, $`N := S`$ に適用する。
       - $`S \preceq_{\mathrm{lex}} D'`$ が出た場合：$`S = D'`$ なら $`N = d\mathbin{::}D' = D`$ で第 1 選言、
         $`S \prec_{\mathrm{lex}} D'`$ なら $`d = d`$ と第 2 選言により
         $`d\mathbin{::}S \prec_{\mathrm{lex}} d\mathbin{::}D'`$。いずれも $`N \preceq_{\mathrm{lex}} D`$。
-      - $`S = D' \mathbin{+\!\!+} q'\mathbin{::}S' \wedge q' <_{\mathrm{p}} lp`$ が出た場合：
+      - $`S = D' \mathbin{+\!\!+} q'\mathbin{::}S' \wedge q' \lt _{\mathrm{p}} lp`$ が出た場合：
         $`N = d \mathbin{::} (D' \mathbin{+\!\!+} q'\mathbin{::}S') = (d\mathbin{::}D') \mathbin{+\!\!+} q'\mathbin{::}S' = D \mathbin{+\!\!+} q'\mathbin{::}S'`$ であり、第 2 の場合。
 
   よって $`\Phi(d \mathbin{::} D')`$。∎
@@ -344,7 +344,7 @@ $`1 \le n`$ かつ $`N \preceq_{\mathrm{lex}} M[n]`$ なる $`n`$ を得る。�
 \mathrm{dropLast}\,M \mathbin{+\!\!+} \bigl[\,M\langle \lvert M\rvert - 1\rangle\,\bigr] = M .
 ```
 
-**証明** $`M \ne []`$ より $`0 < \lvert M\rvert`$、したがって $`\lvert M\rvert - 1 < \lvert M\rvert`$ である。
+**証明** $`M \ne []`$ より $`0 \lt \lvert M\rvert`$、したがって $`\lvert M\rvert - 1 \lt \lvert M\rvert`$ である。
 `getD` の定義（添字が範囲内なら該当要素、範囲外なら既定値）より
 
 ```math
@@ -370,34 +370,34 @@ $`\lvert M\rvert - 1 = 0`$ に適用して $`M[1] = M`$。
 <a id="t-seqlex_cof_zero"></a>
 ### 定理 分岐 zero の共終性 (T.seqlex_cof_zero)
 
-**主張** $`1 < \lvert M\rvert`$、$`M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0`$、
+**主張** $`1 \lt \lvert M\rvert`$、$`M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0`$、
 $`N \prec_{\mathrm{lex}} M`$ ならば $`\exists n,\ (1 \le n \wedge N \preceq_{\mathrm{lex}} M[n])`$。
 
 **証明** $`lp := M\langle \lvert M\rvert - 1\rangle`$ とおく。
 
-1. $`M \ne []`$。$`M = []`$ なら $`\lvert M\rvert = 0`$ となり $`1 < 0`$ で矛盾。
+1. $`M \ne []`$。$`M = []`$ なら $`\lvert M\rvert = 0`$ となり $`1 \lt 0`$ で矛盾。
 2. $`lp = (0,0)`$。[(T.entry_zero)](#t-entry_zero) より $`\pi_0 lp = M_{0,\lvert M\rvert-1} = 0`$、
    [(T.entry_one)](#t-entry_one) より $`\pi_1 lp = M_{1,\lvert M\rvert-1} = 0`$。
    対は成分で決まるから $`lp = (0,0)`$。
 3. $`\mathrm{dropLast}\,M \mathbin{+\!\!+} [lp] = M`$。[(T.dropLast_snoc_getD)](#t-dropLast_snoc_getD)。
-4. $`M[1] = \mathrm{dropLast}\,M`$。$`1 < \lvert M\rvert`$ より $`\lvert M\rvert - 1 \ne 0`$ であるから
+4. $`M[1] = \mathrm{dropLast}\,M`$。$`1 \lt \lvert M\rvert`$ より $`\lvert M\rvert - 1 \ne 0`$ であるから
    [(T.oper_eq_pred_of_zero)](Mechanized.md#t-oper_eq_pred_of_zero) が使えて $`M[1] = \mathrm{Pred}\,M`$。
    [(D.Pred)](Def.md#d-Pred) は $`\mathrm{Pred}\,M = \mathrm{if}\ \lvert M\rvert \le 1\ \mathrm{then}\ M\ \mathrm{else}\ \mathrm{dropLast}\,M`$
-   であり、$`1 < \lvert M\rvert`$ より条件 $`\lvert M\rvert \le 1`$ は偽、よって $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$。
+   であり、$`1 \lt \lvert M\rvert`$ より条件 $`\lvert M\rvert \le 1`$ は偽、よって $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$。
 
 $`n := 1`$ とする。3 により仮定は $`N \prec_{\mathrm{lex}} \mathrm{dropLast}\,M \mathbin{+\!\!+} [lp]`$ と書ける。
 [(T.seqlex_snoc_cases)](#t-seqlex_snoc_cases) を $`D := \mathrm{dropLast}\,M`$ に適用して 2 つに分ける。
 
 - $`N \preceq_{\mathrm{lex}} \mathrm{dropLast}\,M`$：4 によりこれが $`N \preceq_{\mathrm{lex}} M[1]`$ である。
-- $`N = \mathrm{dropLast}\,M \mathbin{+\!\!+} q \mathbin{::} S`$ かつ $`q <_{\mathrm{p}} lp`$：
-  2 より $`lp = (0,0)`$ であるから $`q <_{\mathrm{p}} (0,0)`$、すなわち
-  $`\pi_0 q < 0`$ または $`(\pi_0 q = 0 \wedge \pi_1 q < 0)`$。
+- $`N = \mathrm{dropLast}\,M \mathbin{+\!\!+} q \mathbin{::} S`$ かつ $`q \lt _{\mathrm{p}} lp`$：
+  2 より $`lp = (0,0)`$ であるから $`q \lt _{\mathrm{p}} (0,0)`$、すなわち
+  $`\pi_0 q \lt 0`$ または $`(\pi_0 q = 0 \wedge \pi_1 q \lt 0)`$。
   $`\mathbb{N}`$ には $`0`$ より小さい元がないからいずれも偽であり、この場合は起こらない。∎
 
 <a id="t-hasParent_last_ST_PS"></a>
 ### 定理 分岐 noparent は $`\mathrm{ST\_PS}`$ 上で空 (T.hasParent_last_ST_PS)
 
-**主張** $`M \in \mathrm{ST\_PS}`$、$`0 < \lvert M\rvert`$、
+**主張** $`M \in \mathrm{ST\_PS}`$、$`0 \lt \lvert M\rvert`$、
 $`\neg\bigl(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0\bigr)`$ ならば
 
 ```math
@@ -407,7 +407,7 @@ $`\neg\bigl(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0\bigr)`$
 （[(D.hasParent)](Def.md#d-hasParent), [(D.idx1)](Def.md#d-idx1)）。
 
 **証明** [(T.hp_last)](Nrmstep.md#t-hp_last) を適用する。その仮定は
-$`\mathrm{blockok}(0,M)`$、$`\mathrm{z0ok}\,M`$、$`0 < \lvert M\rvert`$、
+$`\mathrm{blockok}(0,M)`$、$`\mathrm{z0ok}\,M`$、$`0 \lt \lvert M\rvert`$、
 $`M\langle \lvert M\rvert-1\rangle \ne (0,0)`$ の 4 つである。
 第 1 は [(T.blockok_ST_PS)](Seqlex.md#t-blockok_ST_PS)、第 2 は
 [(T.z0ok_ST_PS)](Nrmstep.md#t-z0ok_ST_PS)、第 3 は仮定である。
@@ -472,28 +472,28 @@ M_{1,j_1} = M_{1,j_0} + 1 .
 ```
 
 **証明** [(D.nextrel1)](Def.md#d-nextrel1) の 6 条件を
-$`h_{j_0} : j_0 < \lvert M\rvert`$、$`h_{j_1} : j_1 < \lvert M\rvert`$、$`h_{<} : j_0 < j_1`$、
-$`h_{\mathrm{inc}} : M_{1,j_0} < M_{1,j_1}`$、$`h_{\le 0} : j_0 \le^M_0 j_1`$、
-$`h_{\min} : \forall j,\ (j_0 < j \wedge j \le^M_0 j_1) \to M_{1,j_1} \le M_{1,j}`$ と名付ける。
+$`h_{j_0} : j_0 \lt \lvert M\rvert`$、$`h_{j_1} : j_1 \lt \lvert M\rvert`$、$`h_{\lt } : j_0 \lt j_1`$、
+$`h_{\mathrm{inc}} : M_{1,j_0} \lt M_{1,j_1}`$、$`h_{\le 0} : j_0 \le^M_0 j_1`$、
+$`h_{\min} : \forall j,\ (j_0 \lt j \wedge j \le^M_0 j_1) \to M_{1,j_1} \le M_{1,j}`$ と名付ける。
 
 **(i) 行 0 の祖先鎖の最初の 1 歩を取る。**
 $`h_{\le 0}`$ の第 3 成分は $`\mathrm{ReflTransGen}(\to^M_0)\,j_0\,j_1`$ である。
 反射推移閉包の先頭場合分け（$`\mathrm{ReflTransGen}\ r\ a\ b`$ ならば $`a = b`$、または
 ある $`c`$ が存在して $`r\,a\,c`$ かつ $`\mathrm{ReflTransGen}\ r\ c\ b`$）を適用する。
-$`j_0 = j_1`$ は $`h_{<}`$（$`j_0 < j_1`$）に矛盾する。
+$`j_0 = j_1`$ は $`h_{\lt }`$（$`j_0 \lt j_1`$）に矛盾する。
 よってある $`c`$ について $`j_0 \to^M_0 c`$ かつ $`\mathrm{ReflTransGen}(\to^M_0)\,c\,j_1`$ である。
-[(D.nextrel0)](Def.md#d-nextrel0) の条件 3, 2 より $`j_0 < c`$ かつ $`c < \lvert M\rvert`$、
+[(D.nextrel0)](Def.md#d-nextrel0) の条件 3, 2 より $`j_0 \lt c`$ かつ $`c \lt \lvert M\rvert`$、
 したがって [(D.le0)](Def.md#d-le0) より $`c \le^M_0 j_1`$。
 
-**(ii) 上からの評価。** $`h_{\min}`$ を $`j := c`$ に適用する（前提 $`j_0 < c`$ と $`c \le^M_0 j_1`$ は (i)）。
+**(ii) 上からの評価。** $`h_{\min}`$ を $`j := c`$ に適用する（前提 $`j_0 \lt c`$ と $`c \le^M_0 j_1`$ は (i)）。
 
 ```math
 M_{1,j_1} \le M_{1,c}. \tag{1}
 ```
 
-**(iii) $`c`$ の行 0 の値は正。** $`j_0 \to^M_0 c`$ の条件 4 は $`M_{0,j_0} < M_{0,c}`$ であり、
-[(T.entry_zero)](#t-entry_zero) によりこれは $`\pi_0(M\langle j_0\rangle) < \pi_0(M\langle c\rangle)`$。
-よって $`0 < \pi_0(M\langle c\rangle)`$。
+**(iii) $`c`$ の行 0 の値は正。** $`j_0 \to^M_0 c`$ の条件 4 は $`M_{0,j_0} \lt M_{0,c}`$ であり、
+[(T.entry_zero)](#t-entry_zero) によりこれは $`\pi_0(M\langle j_0\rangle) \lt \pi_0(M\langle c\rangle)`$。
+よって $`0 \lt \pi_0(M\langle c\rangle)`$。
 
 **(iv) $`\mathrm{r1ok}`$ を $`c`$ に適用する。** [(D.r1ok)](Nrmstep.md#d-r1ok) は
 
@@ -504,13 +504,13 @@ M_{1,j_1} \le M_{1,c}. \tag{1}
  \ \wedge\ \pi_1(M\langle j\rangle) \le \pi_1(M\langle k\rangle) + 1\Bigr)
 ```
 
-である。$`j := c`$（$`c < \lvert M\rvert`$ は (i)、$`0 < \pi_0(M\langle c\rangle)`$ は (iii)）に適用して
+である。$`j := c`$（$`c \lt \lvert M\rvert`$ は (i)、$`0 \lt \pi_0(M\langle c\rangle)`$ は (iii)）に適用して
 $`k`$ を得る。
 
 **(v) $`k = j_0`$。** $`k \to^M_0 c`$ を [(D.nextrel0)](Def.md#d-nextrel0) の 5 条件で確認する。
-条件 1 は $`k < c < \lvert M\rvert`$、条件 2 は $`c < \lvert M\rvert`$、条件 3 は $`k < c`$、
+条件 1 は $`k \lt c \lt \lvert M\rvert`$、条件 2 は $`c \lt \lvert M\rvert`$、条件 3 は $`k \lt c`$、
 条件 4 は $`\pi_0(M\langle k\rangle) + 1 = \pi_0(M\langle c\rangle)`$ より
-$`M_{0,k} < M_{0,c}`$（[(T.entry_zero)](#t-entry_zero)）、
+$`M_{0,k} \lt M_{0,c}`$（[(T.entry_zero)](#t-entry_zero)）、
 条件 5 は $`\mathrm{r1ok}`$ の第 3 成分そのもの（[(T.entry_zero)](#t-entry_zero) で $`M_{0,\cdot}`$ に読み替える）。
 一方 (i) より $`j_0 \to^M_0 c`$ でもあるから、
 [(T.nextrel0_unique)](Nrmstep.md#t-nextrel0_unique) より $`k = j_0`$。
@@ -528,24 +528,24 @@ M_{1,c} \le M_{1,j_0} + 1. \tag{2}
 M_{1,j_0} < M_{1,j_1} \le M_{1,c} \le M_{1,j_0} + 1 .
 ```
 
-$`\mathbb{N}`$ において $`a < b`$ かつ $`b \le a+1`$ ならば $`b = a+1`$ であるから
+$`\mathbb{N}`$ において $`a \lt b`$ かつ $`b \le a+1`$ ならば $`b = a+1`$ であるから
 $`M_{1,j_1} = M_{1,j_0}+1`$。∎
 
 <a id="t-oper_bad_blocks_all"></a>
 ### 定理 分岐 bad の分解（$`n`$ について一様） (T.oper_bad_blocks_all)
 
-**主張** $`1 < \lvert M\rvert`$、$`\mathrm{steps}_1 M`$、$`\mathrm{r1ok}\,M`$、
+**主張** $`1 \lt \lvert M\rvert`$、$`\mathrm{steps}_1 M`$、$`\mathrm{r1ok}\,M`$、
 $`\neg\bigl(M_{0,\lvert M\rvert-1}=0 \wedge M_{1,\lvert M\rvert-1}=0\bigr)`$、
 $`\mathrm{hasParent}(M, \mathrm{idx}_1(M,\lvert M\rvert-1), \lvert M\rvert-1)`$ を仮定する。
 このとき $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`lp \in \mathbb{N}\times\mathbb{N}`$ が存在して
 
 1. $`M = \bigl(G \mathbin{+\!\!+} ((v_0,w_0)\mathbin{::}R)\bigr) \mathbin{+\!\!+} [lp]`$、
 2. $`\forall n \ge 1,\ M[n] = G \mathbin{+\!\!+} \mathrm{cop}_{d_0}\bigl((v_0,w_0)\mathbin{::}R,\ n\bigr)`$、
-3. $`\forall x \in R,\ v_0 < \pi_0 x`$、
-4. $`v_0 < \pi_0 lp`$、
+3. $`\forall x \in R,\ v_0 \lt \pi_0 x`$、
+4. $`v_0 \lt \pi_0 lp`$、
 5. 次のいずれか：
    - $`d_0 = 0 \ \wedge\ \pi_1 lp = 0 \ \wedge\ \pi_0 lp = v_0+1`$、
-   - $`0 < d_0 \ \wedge\ \pi_1 lp = w_0+1 \ \wedge\ \pi_0 lp = v_0+d_0 \ \wedge\ \lvert G\rvert \to^M_1 (\lvert M\rvert-1)`$。
+   - $`0 \lt d_0 \ \wedge\ \pi_1 lp = w_0+1 \ \wedge\ \pi_0 lp = v_0+d_0 \ \wedge\ \lvert G\rvert \to^M_1 (\lvert M\rvert-1)`$。
 
 **証明** 以下 $`\mathrm{blk} := (v_0,w_0)\mathbin{::}R`$、$`j_1 := \lvert M\rvert-1`$、$`i_1 := \mathrm{idx}_1(M,j_1)`$ と書く。
 
@@ -555,8 +555,8 @@ $`G, v_0, w_0, R, d_0, lp`$ の存在であって
 
 - $`M = (G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} [lp]`$、
 - $`M[1] = G \mathbin{+\!\!+} \mathrm{flatMap}(\lambda k.\ \mathrm{map}\,(\lambda p.\ (\pi_0 p + k d_0, \pi_1 p))\,\mathrm{blk})\,\mathrm{range}(1)`$、
-- $`\forall x\in R,\ v_0 < \pi_0 x`$、$`v_0 < \pi_0 lp`$、
-- $`\bigl(d_0 = 0 \wedge i_1 = 0\bigr) \ \vee\ \bigl(0<d_0 \wedge w_0 < \pi_1 lp \wedge \pi_0 lp = v_0+d_0 \wedge \lvert G\rvert \to^M_1 j_1\bigr)`$、
+- $`\forall x\in R,\ v_0 \lt \pi_0 x`$、$`v_0 \lt \pi_0 lp`$、
+- $`\bigl(d_0 = 0 \wedge i_1 = 0\bigr) \ \vee\ \bigl(0\lt d_0 \wedge w_0 \lt \pi_1 lp \wedge \pi_0 lp = v_0+d_0 \wedge \lvert G\rvert \to^M_1 j_1\bigr)`$、
 - $`\lvert G\rvert \to^M_{i_1} j_1`$（[(D.nextR)](Def.md#d-nextR)）
 
 を満たすもの。これで主張 1, 3, 4 が得られた。以下、この分解の選言を $`\mathrm{disj}`$、
@@ -582,23 +582,23 @@ M\langle \lvert G\rvert\rangle = (\mathrm{blk} \mathbin{+\!\!+} [lp])\langle 0\r
 **場合 1：$`d_0 = 0`$ かつ $`i_1 = 0`$。**
 
 *$`\pi_1 lp = 0`$。* [(D.idx1)](Def.md#d-idx1) より
-$`i_1 = \mathrm{if}\ 0 < M_{1,j_1}\ \mathrm{then}\ 1\ \mathrm{else}\ 0`$ である。
-条件 $`0 < M_{1,j_1}`$ が真ならば $`i_1 = 1`$ となり $`i_1 = 0`$ に矛盾する（$`1 \ne 0`$）。
+$`i_1 = \mathrm{if}\ 0 \lt M_{1,j_1}\ \mathrm{then}\ 1\ \mathrm{else}\ 0`$ である。
+条件 $`0 \lt M_{1,j_1}`$ が真ならば $`i_1 = 1`$ となり $`i_1 = 0`$ に矛盾する（$`1 \ne 0`$）。
 よって条件は偽、すなわち $`M_{1,j_1} = 0`$。$`(\ast)`$ と [(T.entry_one)](#t-entry_one) より
 $`\pi_1 lp = \pi_1(M\langle j_1\rangle) = M_{1,j_1} = 0`$。
 
 *$`\pi_0 lp = v_0 + 1`$。* $`i_1 = 0`$ と [(T.nextR_zero_iff)](Nrmstep.md#t-nextR_zero_iff) により
 $`h_{nR}`$ は $`\lvert G\rvert \to^M_0 j_1`$ である。(c) より $`j_1 = \lvert G\rvert + 1 + \lvert R\rvert`$ であり、
-特に $`\lvert G\rvert + 1 \le j_1 < \lvert M\rvert`$。次の 3 つを合わせる。
+特に $`\lvert G\rvert + 1 \le j_1 \lt \lvert M\rvert`$。次の 3 つを合わせる。
 
 - $`\mathrm{steps}_1 M`$ に [(T.steps1_iff)](Seqlex.md#t-steps1_iff) を適用し $`j := \lvert G\rvert`$
-  （$`\lvert G\rvert + 1 < \lvert M\rvert`$ は $`\lvert M\rvert = \lvert G\rvert+\lvert R\rvert+2`$ による）とすると
+  （$`\lvert G\rvert + 1 \lt \lvert M\rvert`$ は $`\lvert M\rvert = \lvert G\rvert+\lvert R\rvert+2`$ による）とすると
   ```math
   M_{0,\lvert G\rvert+1} \le M_{0,\lvert G\rvert}+1 .
   ```
 - $`(\ast\ast)`$ と [(T.entry_zero)](#t-entry_zero) より $`M_{0,\lvert G\rvert} = v_0`$。
 - $`M_{0,j_1} \le M_{0,\lvert G\rvert+1}`$。実際 $`\lvert G\rvert+1 = j_1`$ ならば等号、
-  $`\lvert G\rvert+1 < j_1`$ ならば $`\lvert G\rvert \to^M_0 j_1`$ の条件 5
+  $`\lvert G\rvert+1 \lt j_1`$ ならば $`\lvert G\rvert \to^M_0 j_1`$ の条件 5
   （[(D.nextrel0)](Def.md#d-nextrel0)）を $`j := \lvert G\rvert+1`$ に適用して得られる。
 
 $`(\ast)`$ と [(T.entry_zero)](#t-entry_zero) より $`\pi_0 lp = M_{0,j_1}`$ であるから、上の 3 つより
@@ -607,10 +607,10 @@ $`(\ast)`$ と [(T.entry_zero)](#t-entry_zero) より $`\pi_0 lp = M_{0,j_1}`$ �
 \pi_0 lp = M_{0,j_1} \le M_{0,\lvert G\rvert+1} \le M_{0,\lvert G\rvert}+1 = v_0+1 .
 ```
 
-一方、主張 4 より $`v_0 < \pi_0 lp`$。$`\mathbb{N}`$ において $`v_0 < x \le v_0+1`$ ならば $`x = v_0+1`$ であるから
+一方、主張 4 より $`v_0 \lt \pi_0 lp`$。$`\mathbb{N}`$ において $`v_0 \lt x \le v_0+1`$ ならば $`x = v_0+1`$ であるから
 $`\pi_0 lp = v_0+1`$。これで主張 5 の第 1 の場合が成立する。
 
-**場合 2：$`0<d_0`$、$`w_0 < \pi_1 lp`$、$`\pi_0 lp = v_0+d_0`$、$`\lvert G\rvert \to^M_1 j_1`$。**
+**場合 2：$`0\lt d_0`$、$`w_0 \lt \pi_1 lp`$、$`\pi_0 lp = v_0+d_0`$、$`\lvert G\rvert \to^M_1 j_1`$。**
 [(T.nextrel1_snd_succ)](#t-nextrel1_snd_succ) を $`\mathrm{r1ok}\,M`$ と $`\lvert G\rvert \to^M_1 j_1`$ に適用して
 $`M_{1,j_1} = M_{1,\lvert G\rvert}+1`$。
 $`(\ast)`$ と [(T.entry_one)](#t-entry_one) より左辺は $`\pi_1 lp`$、
@@ -642,7 +642,7 @@ $`\mathrm{blk}' = \mathrm{blk}`$ の先頭要素を比べて $`(v_0',w_0') = (v_
 e \to^M_1 j_1 \ \Longrightarrow\ i_1 \ne 0 \tag{$\dagger$}
 ```
 
-を示す。$`e \to^M_1 j_1`$ の条件 4 は $`M_{1,e} < M_{1,j_1}`$ であるから $`0 < M_{1,j_1}`$、
+を示す。$`e \to^M_1 j_1`$ の条件 4 は $`M_{1,e} \lt M_{1,j_1}`$ であるから $`0 \lt M_{1,j_1}`$、
 よって [(D.idx1)](Def.md#d-idx1) の条件が真となり $`i_1 = 1 \ne 0`$。
 $`\mathrm{disj}`$ と $`\mathrm{disj}'`$ の 4 通りを見る。
 
@@ -685,7 +685,7 @@ $`\neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)`$ 
 （[(T.cnf_P_P)](Wf.md#t-cnf_P_P)）から、深さ $`v_0`$ で $`\mathrm{blk}`$ の根の直後に来る列
 $`y`$ の作る項 $`\mathsf{P}(\pi_1 y, \mathrm{tr}\,R', \cdot)`$ は
 $`\mathsf{P}(w_0, \mathrm{tr}\,R, \cdot)`$ を超えない。
-これを $`\pi_1 y < w_0`$ / $`\pi_1 y = w_0`$ の 2 通りに分けて使うのが
+これを $`\pi_1 y \lt w_0`$ / $`\pi_1 y = w_0`$ の 2 通りに分けて使うのが
 [(T.copy_dom_zero)](#t-copy_dom_zero) である。
 
 <a id="t-seqlex_splice"></a>
@@ -714,17 +714,17 @@ $`A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$。
     $`b_0 \mathbin{::} (B'\mathbin{+\!\!+}C) \ne []`$ だから $`[] \prec_{\mathrm{lex}} B\mathbin{+\!\!+}C`$。
   - $`U = u \mathbin{::} U'`$：$`[] \mathbin{+\!\!+} U = u \mathbin{::} U'`$ である。
     $`U \ne []`$ であるから仮定の第 1 選言は成立せず、第 2 選言
-    $`\forall x\in B,\ \mathrm{headI}\,U <_{\mathrm{p}} x`$ が成り立つ。
-    $`\mathrm{headI}(u\mathbin{::}U') = u`$ であり $`b_0 \in B`$ であるから $`u <_{\mathrm{p}} b_0`$。
+    $`\forall x\in B,\ \mathrm{headI}\,U \lt _{\mathrm{p}} x`$ が成り立つ。
+    $`\mathrm{headI}(u\mathbin{::}U') = u`$ であり $`b_0 \in B`$ であるから $`u \lt _{\mathrm{p}} b_0`$。
     [(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 1 選言により
     $`u\mathbin{::}U' \prec_{\mathrm{lex}} b_0 \mathbin{::} (B'\mathbin{+\!\!+}C)`$。
 - **帰納段 $`A = a \mathbin{::} A'`$。** 帰納法の仮定は $`\Phi(A')`$。
   $`a\mathbin{::}A' \prec_{\mathrm{lex}} B`$ より $`B \ne []`$、$`B = b_0\mathbin{::}B'`$ とおく。
   [(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) より
-  $`a <_{\mathrm{p}} b_0`$ または $`(a = b_0 \wedge A' \prec_{\mathrm{lex}} B')`$。
+  $`a \lt _{\mathrm{p}} b_0`$ または $`(a = b_0 \wedge A' \prec_{\mathrm{lex}} B')`$。
   $`A \mathbin{+\!\!+} U = a \mathbin{::} (A' \mathbin{+\!\!+} U)`$、
   $`B \mathbin{+\!\!+} C = b_0 \mathbin{::} (B' \mathbin{+\!\!+} C)`$ である。
-  - $`a <_{\mathrm{p}} b_0`$：第 1 選言により結論。
+  - $`a \lt _{\mathrm{p}} b_0`$：第 1 選言により結論。
   - $`a = b_0`$ かつ $`A' \prec_{\mathrm{lex}} B'`$：$`U`$ についての仮定を $`B'`$ 用に落とす。
     $`U = []`$ ならそのまま。そうでなければ $`\forall x\in B = b_0\mathbin{::}B'`$ が成り立つので、
     特に $`\forall x \in B'`$（$`x \in B'`$ ならば $`x \in b_0\mathbin{::}B'`$）。
@@ -737,14 +737,14 @@ $`A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$。
 <a id="t-split_block"></a>
 ### 定理 基準深さでのブロック分割 (T.split_block)
 
-**主張** $`\forall x \in R,\ v_0 < \pi_0 x`$ かつ
-$`\bigl(Y = [] \vee \neg\,(v_0 < \pi_0(\mathrm{headI}\,Y))\bigr)`$ ならば
+**主張** $`\forall x \in R,\ v_0 \lt \pi_0 x`$ かつ
+$`\bigl(Y = [] \vee \neg\,(v_0 \lt \pi_0(\mathrm{headI}\,Y))\bigr)`$ ならば
 
 ```math
 \mathrm{tw}_{v_0}(R \mathbin{+\!\!+} Y) = R \qquad\text{かつ}\qquad \mathrm{dw}_{v_0}(R \mathbin{+\!\!+} Y) = Y .
 ```
 
-**証明** 述語 $`p := (\lambda q.\ v_0 < \pi_0 q)`$ とおく。第 1 仮定は $`\forall x\in R,\ p\,x`$ である。
+**証明** 述語 $`p := (\lambda q.\ v_0 \lt \pi_0 q)`$ とおく。第 1 仮定は $`\forall x\in R,\ p\,x`$ である。
 
 - $`Y = []`$ のとき：$`R \mathbin{+\!\!+} [] = R`$ であり、(L4) より
   $`\mathrm{takeWhile}\,p\,R = R`$、$`\mathrm{dropWhile}\,p\,R = [] = Y`$。
@@ -764,8 +764,8 @@ $`Y, R \in \mathrm{PairSeq}`$、$`v_0, w_0 \in \mathbb{N}`$ が
 
 - $`\lvert Y\rvert \le d`$、
 - $`\mathrm{blockok}\bigl(v_0,\ (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y)\bigr)`$、
-- $`\forall x\in R,\ v_0 < \pi_0 x`$、
-- $`Y = [] \ \vee\ \neg\,(v_0 < \pi_0(\mathrm{headI}\,Y))`$、
+- $`\forall x\in R,\ v_0 \lt \pi_0 x`$、
+- $`Y = [] \ \vee\ \neg\,(v_0 \lt \pi_0(\mathrm{headI}\,Y))`$、
 - $`\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y))\bigr)`$
 
 を満たすならば、$`\exists m,\ \bigl(1 \le m \ \wedge\ Y \preceq_{\mathrm{lex}} \mathrm{cop}_0((v_0,w_0)\mathbin{::}R,\ m)\bigr)`$。
@@ -791,16 +791,16 @@ $`Y = []`$ のときは基底段と同じく $`m := 1`$ でよい。以下 $`Y =
 **(i) $`\pi_0 y = v_0`$。** $`\mathrm{blockok}`$ の第 2 成分（[(D.blockok)](Seqlex.md#d-blockok)）は
 $`\forall p \in \mathrm{blk}\mathbin{+\!\!+}(y\mathbin{::}Y')`$ の形で $`v_0 \le \pi_0 p`$ を与える。
 $`y`$ はこの列の要素だから $`v_0 \le \pi_0 y`$。
-第 4 仮定は $`Y \ne []`$ より $`\neg\,(v_0 < \pi_0(\mathrm{headI}\,Y)) = \neg\,(v_0 < \pi_0 y)`$、
+第 4 仮定は $`Y \ne []`$ より $`\neg\,(v_0 \lt \pi_0(\mathrm{headI}\,Y)) = \neg\,(v_0 \lt \pi_0 y)`$、
 すなわち $`\pi_0 y \le v_0`$。よって $`\pi_0 y = v_0`$、すなわち $`y = (v_0, \pi_1 y)`$。
 
 **(ii) $`Y'`$ を分割する。** $`R' := \mathrm{tw}_{v_0}Y'`$、$`Y'' := \mathrm{dw}_{v_0}Y'`$ とおく。
 (L1) より $`R' \mathbin{+\!\!+} Y'' = Y'`$。
-(L2) より $`\forall x\in R',\ v_0 < \pi_0 x`$。
-(L3) より $`Y'' = []`$ または $`\neg\,(v_0 < \pi_0(\mathrm{headI}\,Y''))`$。
+(L2) より $`\forall x\in R',\ v_0 \lt \pi_0 x`$。
+(L3) より $`Y'' = []`$ または $`\neg\,(v_0 \lt \pi_0(\mathrm{headI}\,Y''))`$。
 
 **(iii) 2 つの翻訳の形。** [(T.translate_block_append)](Mechanized.md#t-translate_block_append) は
-「$`\forall x\in A,\ a < \pi_0 x`$ かつ $`T = [] \vee \neg(a<\pi_0(\mathrm{headI}\,T))`$ ならば
+「$`\forall x\in A,\ a \lt \pi_0 x`$ かつ $`T = [] \vee \neg(a\lt \pi_0(\mathrm{headI}\,T))`$ ならば
 $`\mathrm{tr}(((a,b)\mathbin{::}A)\mathbin{+\!\!+}T) = \mathsf{P}(b, \mathrm{tr}\,A, \mathrm{tr}\,T)`$」である。
 これを 2 度使う。
 
@@ -829,15 +829,15 @@ h_{\mathrm{sib}} : \neg\bigl(\mathsf{P}(w_0,\mathrm{tr}\,R,\mathsf{Z}) \prec \ma
 c_{\mathrm{tail}} : \mathrm{cnf}\bigl(\mathsf{P}(\pi_1 y,\mathrm{tr}\,R',\mathrm{tr}\,Y'')\bigr).
 ```
 
-**(v) $`\pi_1 y \le w_0`$。** $`w_0 < \pi_1 y`$ と仮定すると
+**(v) $`\pi_1 y \le w_0`$。** $`w_0 \lt \pi_1 y`$ と仮定すると
 [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言により
 $`\mathsf{P}(w_0,\mathrm{tr}\,R,\mathsf{Z}) \prec \mathsf{P}(\pi_1 y,\mathrm{tr}\,R',\mathsf{Z})`$ となり
 $`h_{\mathrm{sib}}`$ に矛盾する。
 
-**(vi) 場合 $`\pi_1 y < w_0`$。** $`m := 1`$ とする。
+**(vi) 場合 $`\pi_1 y \lt w_0`$。** $`m := 1`$ とする。
 [(T.copies_one)](Wf.md#t-copies_one) より $`\mathrm{cop}_0(\mathrm{blk},1) = \mathrm{blk} = (v_0,w_0)\mathbin{::}R`$。
-(i) より $`y = (v_0,\pi_1 y)`$ であり $`\pi_0 y = v_0 = \pi_0 (v_0,w_0)`$、$`\pi_1 y < w_0`$ だから
-$`y <_{\mathrm{p}} (v_0,w_0)`$。[(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 1 選言より
+(i) より $`y = (v_0,\pi_1 y)`$ であり $`\pi_0 y = v_0 = \pi_0 (v_0,w_0)`$、$`\pi_1 y \lt w_0`$ だから
+$`y \lt _{\mathrm{p}} (v_0,w_0)`$。[(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 1 選言より
 $`y\mathbin{::}Y' \prec_{\mathrm{lex}} \mathrm{blk}`$。
 
 **(vii) 場合 $`\pi_1 y = w_0`$。** このとき $`y = (v_0,w_0)`$ である。
@@ -875,8 +875,8 @@ y\mathbin{::}Y' = (v_0,w_0)\mathbin{::}(R'\mathbin{+\!\!+}Y'') = (v_0,w_0)\mathb
   $`\lvert Y''\rvert \le \lvert Y'\rvert \le d`$。
 - $`\mathrm{blockok}(v_0,\ (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y''))`$：これは上式により
   $`\mathrm{blockok}(v_0,\ y\mathbin{::}Y')`$ と同じ命題であり、既に得ている。
-- $`\forall x\in R,\ v_0<\pi_0 x`$：第 3 仮定。
-- $`Y'' = [] \vee \neg(v_0<\pi_0(\mathrm{headI}\,Y''))`$：(ii)。
+- $`\forall x\in R,\ v_0\lt \pi_0 x`$：第 3 仮定。
+- $`Y'' = [] \vee \neg(v_0\lt \pi_0(\mathrm{headI}\,Y''))`$：(ii)。
 - $`\mathrm{cnf}(\mathrm{tr}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y'')))`$：これは上式と (iii) により
   $`\mathrm{cnf}(\mathsf{P}(\pi_1 y,\mathrm{tr}\,R',\mathrm{tr}\,Y''))`$ と同じ命題であり、
   (iv) の $`c_{\mathrm{tail}}`$ である。
@@ -915,9 +915,9 @@ $`Y' \prec_{\mathrm{lex}} R \mathbin{+\!\!+} \mathrm{blk}`$ を示せばよい�
 $`Y' = R' \mathbin{+\!\!+} Y''`$ であるから、[(T.seqlex_splice)](#t-seqlex_splice) を
 $`A := R'`$, $`B := R`$, $`U := Y''`$, $`C := \mathrm{blk}`$ に適用する。
 $`U`$ についての仮定は次のように確認する：(ii) より $`Y'' = []`$ か、
-$`\neg(v_0 < \pi_0(\mathrm{headI}\,Y''))`$ すなわち $`\pi_0(\mathrm{headI}\,Y'') \le v_0`$。
-後者の場合、$`x \in R`$ なら第 3 仮定より $`v_0 < \pi_0 x`$ だから
-$`\pi_0(\mathrm{headI}\,Y'') \le v_0 < \pi_0 x`$、よって $`\mathrm{headI}\,Y'' <_{\mathrm{p}} x`$。
+$`\neg(v_0 \lt \pi_0(\mathrm{headI}\,Y''))`$ すなわち $`\pi_0(\mathrm{headI}\,Y'') \le v_0`$。
+後者の場合、$`x \in R`$ なら第 3 仮定より $`v_0 \lt \pi_0 x`$ だから
+$`\pi_0(\mathrm{headI}\,Y'') \le v_0 \lt \pi_0 x`$、よって $`\mathrm{headI}\,Y'' \lt _{\mathrm{p}} x`$。
 [(T.seqlex_splice)](#t-seqlex_splice) より
 $`R'\mathbin{+\!\!+}Y'' \prec_{\mathrm{lex}} R\mathbin{+\!\!+}\mathrm{blk}`$、これが求めるものである。
 
@@ -948,7 +948,7 @@ $`m \cdot 0 = 0`$ であり [(T.shiftr0_zero)](Wf.md#t-shiftr0_zero) より $`\s
 ### 定理 完全一致コピー分岐の要 (T.crux_zero)
 
 **主張** $`\bigl(G \mathbin{+\!\!+} ((v_0,w_0)\mathbin{::}R)\bigr) \mathbin{+\!\!+} q\mathbin{::}S \in \mathrm{ST\_PS}`$、
-$`\forall x\in R,\ v_0<\pi_0 x`$、$`\pi_1 lp = 0`$、$`\pi_0 lp = v_0+1`$、$`q <_{\mathrm{p}} lp`$ ならば
+$`\forall x\in R,\ v_0\lt \pi_0 x`$、$`\pi_1 lp = 0`$、$`\pi_0 lp = v_0+1`$、$`q \lt _{\mathrm{p}} lp`$ ならば
 
 ```math
 \exists m,\ \bigl(1 \le m \ \wedge\ q\mathbin{::}S \preceq_{\mathrm{lex}} \mathrm{cop}_0((v_0,w_0)\mathbin{::}R,\ m)\bigr).
@@ -956,14 +956,14 @@ $`\forall x\in R,\ v_0<\pi_0 x`$、$`\pi_1 lp = 0`$、$`\pi_0 lp = v_0+1`$、$`q
 
 **証明** $`\mathrm{blk} := (v_0,w_0)\mathbin{::}R`$、$`N := (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}q\mathbin{::}S`$ と書く。
 
-**(i) $`\pi_0 q \le v_0`$。** $`q <_{\mathrm{p}} lp`$ は
-$`\pi_0 q < \pi_0 lp`$ または $`(\pi_0 q = \pi_0 lp \wedge \pi_1 q < \pi_1 lp)`$ である。
-第 1 の場合は $`\pi_0 q < v_0+1`$ より $`\pi_0 q \le v_0`$。
-第 2 の場合は $`\pi_1 q < \pi_1 lp = 0`$ となり $`\mathbb{N}`$ で不可能であるから、この場合は起こらない。
+**(i) $`\pi_0 q \le v_0`$。** $`q \lt _{\mathrm{p}} lp`$ は
+$`\pi_0 q \lt \pi_0 lp`$ または $`(\pi_0 q = \pi_0 lp \wedge \pi_1 q \lt \pi_1 lp)`$ である。
+第 1 の場合は $`\pi_0 q \lt v_0+1`$ より $`\pi_0 q \le v_0`$。
+第 2 の場合は $`\pi_1 q \lt \pi_1 lp = 0`$ となり $`\mathbb{N}`$ で不可能であるから、この場合は起こらない。
 
-**(ii) $`\pi_0 q < v_0`$ のとき。** $`m := 1`$ とする。
+**(ii) $`\pi_0 q \lt v_0`$ のとき。** $`m := 1`$ とする。
 [(T.copies_one)](Wf.md#t-copies_one) より $`\mathrm{cop}_0(\mathrm{blk},1) = \mathrm{blk}`$ であり、
-$`\pi_0 q < v_0`$ より $`q <_{\mathrm{p}} (v_0,w_0)`$、よって
+$`\pi_0 q \lt v_0`$ より $`q \lt _{\mathrm{p}} (v_0,w_0)`$、よって
 [(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 1 選言により
 $`q\mathbin{::}S \prec_{\mathrm{lex}} \mathrm{blk}`$。以下 $`\pi_0 q = v_0`$ とする。
 
@@ -973,7 +973,7 @@ $`Y := \mathrm{tw}^{\ge}_{v_0}(q\mathbin{::}S)`$、$`V := \mathrm{dw}^{\ge}_{v_0
 $`v_0 \le \pi_0 q`$ であるから `takeWhile` の先頭段が通り
 $`Y = q \mathbin{::} \mathrm{tw}^{\ge}_{v_0}S`$、特に $`\pi_0(\mathrm{headI}\,Y) = \pi_0 q = v_0`$。
 (L2) より $`\forall x\in Y,\ v_0 \le \pi_0 x`$。
-(L3) より、$`V = []`$ であるか、$`V = z\mathbin{::}Z`$ と書けて $`\neg(v_0 \le \pi_0 z)`$、すなわち $`\pi_0 z < v_0`$。
+(L3) より、$`V = []`$ であるか、$`V = z\mathbin{::}Z`$ と書けて $`\neg(v_0 \le \pi_0 z)`$、すなわち $`\pi_0 z \lt v_0`$。
 
 **(iv) $`N`$ の 2 通りの分解。** (iii) より
 
@@ -987,7 +987,7 @@ N = (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}(Y\mathbin{+\!\!+}V)
 
 - 先頭条件：$`\mathrm{headI}(\mathrm{blk}\mathbin{+\!\!+}Y) = (v_0,w_0)`$ であり $`\pi_0(v_0,w_0) = v_0`$。
 - 下界条件：$`x \in \mathrm{blk}\mathbin{+\!\!+}Y`$ とする。$`x \in \mathrm{blk}`$ なら
-  $`x = (v_0,w_0)`$（$`v_0 \le v_0`$）か $`x \in R`$（$`v_0 < \pi_0 x`$）。
+  $`x = (v_0,w_0)`$（$`v_0 \le v_0`$）か $`x \in R`$（$`v_0 \lt \pi_0 x`$）。
   $`x \in Y`$ なら (iii) より $`v_0 \le \pi_0 x`$。
 - $`\mathrm{steps}_1`$：[(T.blockok_ST_PS)](Seqlex.md#t-blockok_ST_PS) を $`N \in \mathrm{ST\_PS}`$ に適用して
   $`\mathrm{blockok}(0,N)`$、その第 3 成分が $`\mathrm{steps}_1 N`$ である。
@@ -1019,8 +1019,8 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(G\mathbin{+\!\!+}((v_0,w_0)\mathbin{::}(R\mathbi
 
 - $`\lvert Y\rvert \le \lvert Y\rvert`$、
 - $`\mathrm{blockok}(v_0,(v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y))`$：(v)（$`\mathrm{blk}\mathbin{+\!\!+}Y = (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y)`$）、
-- $`\forall x\in R,\ v_0<\pi_0 x`$：仮定、
-- $`Y = [] \vee \neg(v_0 < \pi_0(\mathrm{headI}\,Y))`$：(iii) より $`\pi_0(\mathrm{headI}\,Y) = v_0`$ であり $`\neg(v_0<v_0)`$、
+- $`\forall x\in R,\ v_0\lt \pi_0 x`$：仮定、
+- $`Y = [] \vee \neg(v_0 \lt \pi_0(\mathrm{headI}\,Y))`$：(iii) より $`\pi_0(\mathrm{headI}\,Y) = v_0`$ であり $`\neg(v_0\lt v_0)`$、
 - $`\mathrm{cnf}`$ 条件：(vi)
 
 であり、$`m \ge 1`$ と $`Y \preceq_{\mathrm{lex}} \mathrm{cop}_0(\mathrm{blk},m)`$ を得る。
@@ -1040,15 +1040,15 @@ Y \mathbin{+\!\!+} V \ \prec_{\mathrm{lex}}\ \mathrm{cop}_0(\mathrm{blk},m) \mat
   [(T.seqlex_append_cancel)](Seqlex.md#t-seqlex_append_cancel) により
   $`V \prec_{\mathrm{lex}} \mathrm{blk}`$ を示せばよい。
   (iii) より $`V = []`$ ならば $`\mathrm{blk} \ne []`$ から従う。
-  $`V = z\mathbin{::}Z`$ ($`\pi_0 z < v_0`$) ならば $`z <_{\mathrm{p}} (v_0,w_0)`$ であり
+  $`V = z\mathbin{::}Z`$ ($`\pi_0 z \lt v_0`$) ならば $`z \lt _{\mathrm{p}} (v_0,w_0)`$ であり
   [(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 1 選言により従う。
 - $`Y \prec_{\mathrm{lex}} \mathrm{cop}_0(\mathrm{blk},m)`$ のとき：
   [(T.seqlex_splice)](#t-seqlex_splice) を $`A := Y`$, $`B := \mathrm{cop}_0(\mathrm{blk},m)`$,
   $`U := V`$, $`C := \mathrm{blk}`$ に適用する。$`U`$ についての仮定は次による。
-  $`V = []`$ ならそのまま。$`V = z\mathbin{::}Z`$（$`\pi_0 z < v_0`$）のとき、
+  $`V = []`$ ならそのまま。$`V = z\mathbin{::}Z`$（$`\pi_0 z \lt v_0`$）のとき、
   [(T.copies_v0_le)](Wf.md#t-copies_v0_le)（$`\forall y\in R,\ v_0\le\pi_0 y`$ を仮定として）より
   $`\forall x\in\mathrm{cop}_0(\mathrm{blk},m),\ v_0 \le \pi_0 x`$ であるから
-  $`\pi_0(\mathrm{headI}\,V) = \pi_0 z < v_0 \le \pi_0 x`$、よって $`\mathrm{headI}\,V <_{\mathrm{p}} x`$。∎
+  $`\pi_0(\mathrm{headI}\,V) = \pi_0 z \lt v_0 \le \pi_0 x`$、よって $`\mathrm{headI}\,V \lt _{\mathrm{p}} x`$。∎
 
 <a id="d-AscCrux"></a>
 ### 定義 上昇コピー分岐の要 (D.AscCrux)
@@ -1061,12 +1061,12 @@ $`\mathrm{AscCrux}`$ とは、これらすべてについて次が成り立つ�
 
 1. $`H \in \mathrm{ST\_PS}`$、
 2. $`(G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}q\mathbin{::}S \in \mathrm{ST\_PS}`$、
-3. $`\forall x\in R,\ v_0<\pi_0 x`$、
-4. $`0<d_0`$、
+3. $`\forall x\in R,\ v_0\lt \pi_0 x`$、
+4. $`0\lt d_0`$、
 5. $`\pi_1 lp = w_0+1`$、
 6. $`\pi_0 lp = v_0+d_0`$、
 7. $`\lvert G\rvert \to^{H}_1 \lvert G\mathbin{+\!\!+}\mathrm{blk}\rvert`$、
-8. $`q <_{\mathrm{p}} lp`$
+8. $`q \lt _{\mathrm{p}} lp`$
 
 の下で
 
@@ -1090,8 +1090,8 @@ $`\mathrm{AscCrux}_1`$ とは、これらすべてについて次が成り立つ
 
 1. $`H_1 \in \mathrm{ST\_PS}`$、
 2. $`(G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}(v_0+d_0,\ w_0)\mathbin{::}S \in \mathrm{ST\_PS}`$、
-3. $`\forall x\in R,\ v_0<\pi_0 x`$、
-4. $`0<d_0`$、
+3. $`\forall x\in R,\ v_0\lt \pi_0 x`$、
+4. $`0\lt d_0`$、
 5. $`\lvert G\rvert \to^{H_1}_1 \lvert G\mathbin{+\!\!+}\mathrm{blk}\rvert`$
 
 の下で
@@ -1108,7 +1108,7 @@ $`\mathrm{AscCrux}`$ との違いは、落とされる列 $`lp`$ が
 
 ---
 
-## Part 6 — 上昇コピー（$`d_0>0`$）側：単一の $`\preceq`$ への還元
+## Part 6 — 上昇コピー（$`d_0\gt 0`$）側：単一の $`\preceq`$ への還元
 
 上昇コピーは入れ子である：第 $`k`$ コピーの根は深さ $`v_0+k\,d_0`$ にあり、$`k`$ が増えると深くなる。
 そのため、完全一致コピーの場合と異なりコピー数についての再帰は生じず、
@@ -1219,15 +1219,15 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}} \sigma_{d_0}\bigl(R \mathbin{+\!\!+} \mat
 
 **(i) 宿主側引数の各列は深さ $`v_0`$ より真に深い。**
 $`x \in R \mathbin{+\!\!+} \mathrm{cop}_{d_0}(\mathrm{blk}',m)`$ とする。
-$`x\in R`$ なら条件 3 より $`v_0 < \pi_0 x`$。
+$`x\in R`$ なら条件 3 より $`v_0 \lt \pi_0 x`$。
 $`x \in \mathrm{cop}_{d_0}(\mathrm{blk}',m)`$ のときは、(1) と
 [(T.copies_v0_le)](Wf.md#t-copies_v0_le) を基準深さ $`v_0+d_0`$、本体 $`\sigma_{d_0}R`$ に適用する。
 その仮定 $`\forall y \in \sigma_{d_0}R,\ v_0+d_0 \le \pi_0 y`$ は
 [(T.mem_shiftr0_le)](#t-mem_shiftr0_le) を $`\forall y\in R,\ v_0\le\pi_0 y`$（条件 3）に適用して得られる。
-よって $`v_0+d_0 \le \pi_0 x`$、条件 4（$`0<d_0`$）より $`v_0 < \pi_0 x`$。
+よって $`v_0+d_0 \le \pi_0 x`$、条件 4（$`0\lt d_0`$）より $`v_0 \lt \pi_0 x`$。
 
 **(ii) $`S_{\mathrm{lo}}`$ の先頭。** (L3) より $`S_{\mathrm{lo}} = []`$ であるか、
-$`S_{\mathrm{lo}} = z\mathbin{::}Z`$ と書けて $`\neg(v_0+d_0 < \pi_0 z)`$、すなわち
+$`S_{\mathrm{lo}} = z\mathbin{::}Z`$ と書けて $`\neg(v_0+d_0 \lt \pi_0 z)`$、すなわち
 $`\pi_0(\mathrm{headI}\,S_{\mathrm{lo}}) \le v_0+d_0`$。
 
 **(iii) 答は $`m+2`$。** 目標の右辺を展開する。
@@ -1285,7 +1285,7 @@ $`S_{\mathrm{lo}} = z\mathbin{::}Z`$、$`E = b\mathbin{::}B`$ のときは、(ii
 \pi_0 z \le v_0+d_0 < v_0+d_0+m\,d_0+d_0 = \pi_0 b
 ```
 
-（最後の狭義不等号は $`0 < d_0`$ による）。よって $`z <_{\mathrm{p}} b`$ であり
+（最後の狭義不等号は $`0 \lt d_0`$ による）。よって $`z \lt _{\mathrm{p}} b`$ であり
 [(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 1 選言により $`S_{\mathrm{lo}} \prec_{\mathrm{lex}} E`$。
 
 *場合 $`S_{\mathrm{hi}} \prec_{\mathrm{lex}} D`$。* [(T.seqlex_splice)](#t-seqlex_splice) を
@@ -1293,8 +1293,8 @@ $`A := S_{\mathrm{hi}}`$, $`B := D`$, $`U := S_{\mathrm{lo}}`$, $`C := E`$ に�
 $`U`$ についての仮定は次による。$`S_{\mathrm{lo}} = []`$ ならそのまま。
 そうでなければ $`x \in D`$ とすると、[(T.mem_shiftr0)](Wf.md#t-mem_shiftr0) よりある
 $`y \in R\mathbin{+\!\!+}\mathrm{cop}_{d_0}(\mathrm{blk}',m)`$ について $`x = (\pi_0 y + d_0, \pi_1 y)`$ であり、
-(i) より $`v_0 < \pi_0 y`$ だから $`\pi_0 x = \pi_0 y + d_0 > v_0 + d_0 \ge \pi_0(\mathrm{headI}\,S_{\mathrm{lo}})`$（(ii)）。
-よって $`\mathrm{headI}\,S_{\mathrm{lo}} <_{\mathrm{p}} x`$。
+(i) より $`v_0 \lt \pi_0 y`$ だから $`\pi_0 x = \pi_0 y + d_0 \gt v_0 + d_0 \ge \pi_0(\mathrm{headI}\,S_{\mathrm{lo}})`$（(ii)）。
+よって $`\mathrm{headI}\,S_{\mathrm{lo}} \lt _{\mathrm{p}} x`$。
 [(T.seqlex_splice)](#t-seqlex_splice) より
 $`S = S_{\mathrm{hi}}\mathbin{+\!\!+}S_{\mathrm{lo}} \prec_{\mathrm{lex}} D\mathbin{+\!\!+}E`$、これが (3) である。∎
 
@@ -1337,7 +1337,7 @@ $`q = (v_0+d_0,w_0)`$ か否かで分ける。
   ```
 
   [(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 1 選言により
-  $`q <_{\mathrm{p}} (v_0+d_0,w_0)`$ を示せばよい。
+  $`q \lt _{\mathrm{p}} (v_0+d_0,w_0)`$ を示せばよい。
   条件 8 と (1) より
 
   ```math
@@ -1345,22 +1345,22 @@ $`q = (v_0+d_0,w_0)`$ か否かで分ける。
   ```
 
   また $`q \ne (v_0+d_0,w_0)`$ より $`\neg\bigl(\pi_0 q = v_0+d_0 \wedge \pi_1 q = w_0\bigr)`$ である。
-  第 1 の場合はそのまま $`q <_{\mathrm{p}} (v_0+d_0,w_0)`$ の第 1 選言。
+  第 1 の場合はそのまま $`q \lt _{\mathrm{p}} (v_0+d_0,w_0)`$ の第 1 選言。
   第 2 の場合は $`\pi_1 q \le w_0`$ であり、$`\pi_1 q = w_0`$ とすると
-  $`\pi_0 q = v_0+d_0 \wedge \pi_1 q = w_0`$ となって上の否定に反する。よって $`\pi_1 q < w_0`$、
-  $`q <_{\mathrm{p}} (v_0+d_0,w_0)`$ の第 2 選言。∎
+  $`\pi_0 q = v_0+d_0 \wedge \pi_1 q = w_0`$ となって上の否定に反する。よって $`\pi_1 q \lt w_0`$、
+  $`q \lt _{\mathrm{p}} (v_0+d_0,w_0)`$ の第 2 選言。∎
 
 <a id="t-seqlex_cof_bad"></a>
 ### 定理 分岐 bad の共終性 (T.seqlex_cof_bad)
 
-**主張** $`\mathrm{AscCrux}`$ を仮定する。$`M, N \in \mathrm{ST\_PS}`$、$`1 < \lvert M\rvert`$、
+**主張** $`\mathrm{AscCrux}`$ を仮定する。$`M, N \in \mathrm{ST\_PS}`$、$`1 \lt \lvert M\rvert`$、
 $`\neg\bigl(M_{0,\lvert M\rvert-1}=0 \wedge M_{1,\lvert M\rvert-1}=0\bigr)`$、
 $`N \prec_{\mathrm{lex}} M`$ ならば
 $`\exists n,\ (1\le n \wedge N \preceq_{\mathrm{lex}} M[n])`$。
 
 **証明** [(T.hasParent_last_ST_PS)](#t-hasParent_last_ST_PS) を $`M`$ に適用して
 $`\mathrm{hasParent}(M,\mathrm{idx}_1(M,\lvert M\rvert-1),\lvert M\rvert-1)`$ を得る
-（$`0<\lvert M\rvert`$ は $`1<\lvert M\rvert`$ から）。
+（$`0\lt \lvert M\rvert`$ は $`1\lt \lvert M\rvert`$ から）。
 [(T.oper_bad_blocks_all)](#t-oper_bad_blocks_all) を、$`\mathrm{steps}_1 M`$ として
 [(T.blockok_ST_PS)](Seqlex.md#t-blockok_ST_PS) の第 3 成分を、$`\mathrm{r1ok}\,M`$ として
 [(T.r1ok_ST_PS)](Nrmstep.md#t-r1ok_ST_PS) を用いて適用し、
@@ -1375,7 +1375,7 @@ $`n := 1`$ とする。結論 2（$`n=1`$）と [(T.copies_one)](Wf.md#t-copies_
 $`M[1] = G\mathbin{+\!\!+}\mathrm{cop}_{d_0}(\mathrm{blk},1) = G\mathbin{+\!\!+}\mathrm{blk}`$ であり、
 これがそのまま $`N \preceq_{\mathrm{lex}} M[1]`$ を与える。
 
-**場合 2：$`N = (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}q\mathbin{::}S`$ かつ $`q <_{\mathrm{p}} lp`$。**
+**場合 2：$`N = (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}q\mathbin{::}S`$ かつ $`q \lt _{\mathrm{p}} lp`$。**
 まず
 
 ```math
@@ -1388,13 +1388,13 @@ $`M[1] = G\mathbin{+\!\!+}\mathrm{cop}_{d_0}(\mathrm{blk},1) = G\mathbin{+\!\!+}
   [(T.shiftr0_zero)](Wf.md#t-shiftr0_zero) より $`\sigma_0`$ は恒等であるから、
   $`(\sharp)`$ は [(T.crux_zero)](#t-crux_zero) そのものである。
   その仮定 $`N \in \mathrm{ST\_PS}`$ は $`N`$ の上の表示に書き換えたもの、
-  $`\forall x\in R,\ v_0<\pi_0 x`$ は結論 3、残りはこの場合の条件である。
-- 第 2 の場合（$`0<d_0`$、$`\pi_1 lp = w_0+1`$、$`\pi_0 lp = v_0+d_0`$、$`\lvert G\rvert \to^M_1 (\lvert M\rvert-1)`$）：
+  $`\forall x\in R,\ v_0\lt \pi_0 x`$ は結論 3、残りはこの場合の条件である。
+- 第 2 の場合（$`0\lt d_0`$、$`\pi_1 lp = w_0+1`$、$`\pi_0 lp = v_0+d_0`$、$`\lvert G\rvert \to^M_1 (\lvert M\rvert-1)`$）：
   結論 1 より $`\lvert M\rvert-1 = \lvert G\mathbin{+\!\!+}\mathrm{blk}\rvert`$ であり、
   $`M = (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}[lp]`$ であるから、
   行 1 の親子関係は [(D.AscCrux)](#d-AscCrux) の条件 7 の形に書き換えられる。
   $`\mathrm{AscCrux}`$ を条件 1（$`M\in\mathrm{ST\_PS}`$ の書き換え）、条件 2（$`N\in\mathrm{ST\_PS}`$ の書き換え）、
-  条件 3（結論 3）、条件 4–6（この場合の条件）、条件 7、条件 8（$`q<_{\mathrm{p}}lp`$）に適用して $`(\sharp)`$ を得る。
+  条件 3（結論 3）、条件 4–6（この場合の条件）、条件 7、条件 8（$`q\lt _{\mathrm{p}}lp`$）に適用して $`(\sharp)`$ を得る。
 
 $`(\sharp)`$ の $`m`$ に対し $`n := m+1`$ とする。結論 2 と
 [(T.copies_succ_front)](Wf.md#t-copies_succ_front) より
@@ -1418,7 +1418,7 @@ M[m+1] = G \mathbin{+\!\!+} \mathrm{cop}_{d_0}(\mathrm{blk},m+1)
 $`\lvert M\rvert - 1 = 0`$ か否かで分ける。
 
 - $`\lvert M\rvert-1 = 0`$：[(T.seqlex_cof_short)](#t-seqlex_cof_short)。
-- $`\lvert M\rvert-1 \ne 0`$：このとき $`\lvert M\rvert \ge 2`$、すなわち $`1 < \lvert M\rvert`$ である
+- $`\lvert M\rvert-1 \ne 0`$：このとき $`\lvert M\rvert \ge 2`$、すなわち $`1 \lt \lvert M\rvert`$ である
   （$`\lvert M\rvert \le 1`$ ならば切り捨て減法により $`\lvert M\rvert-1 = 0`$）。
   さらに $`M_{0,\lvert M\rvert-1}=0 \wedge M_{1,\lvert M\rvert-1}=0`$ か否かで分ける。
   - 成り立つとき：[(T.seqlex_cof_zero)](#t-seqlex_cof_zero)。

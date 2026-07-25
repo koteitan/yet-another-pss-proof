@@ -4,7 +4,7 @@
 
 本章は Buchholz 1986 §1 の崩壊関数 $`\psi_v`$ を Mathlib の順序数型 `Ordinal` の上に移植する。
 基数 $`\Omega_v`$、生成作用素 $`\mathrm{Cstep}`$ とその有限反復 $`\mathrm{Citer}`$、その可算合併 $`\mathrm{Cset}`$、
-そして $`<`$ に関する整礎再帰で定義される $`\psi`$、および加法主性の述語 $`\mathrm{addprinc}`$ を導入する。
+そして $`\lt `$ に関する整礎再帰で定義される $`\psi`$、および加法主性の述語 $`\mathrm{addprinc}`$ を導入する。
 宣言は 9 個で、うち定義が 7 個、定理が 2 個である。本章は順序数を使う唯一の章であり、
 ここで定義した記号は [(D.oV)](Otembed.md#d-oV) が用いるが、停止性の最終結論
 [(T.PSS_terminates_unconditional)](Final.md#t-PSS_terminates_unconditional) に至る経路は順序数を用いない。
@@ -20,7 +20,7 @@
 | `ℵ_ v` | $`\aleph_v`$ | `Cardinal.aleph` の $`v`$ 番目の値（$`v:\mathbb{N}`$ を順序数とみなして適用） |
 | `c.ord` | $`\mathrm{ord}(c)`$ | 濃度 $`c`$ をもつ最小の順序数 |
 | `Om v` | $`\Omega_v`$ | 本章で定める基数（[(D.Om)](#d-Om)） |
-| `Set.Iio α` | $`\mathrm{Iio}(\alpha)`$ | $`\{\xi\in\mathrm{Ord}\mid \xi<\alpha\}`$ |
+| `Set.Iio α` | $`\mathrm{Iio}(\alpha)`$ | $`\{\xi\in\mathrm{Ord}\mid \xi\lt \alpha\}`$ |
 | `Set.image2 (· + ·) X X` | $`\{\beta+\gamma \mid \beta\in X,\ \gamma\in X\}`$ | $`X`$ の 2 元の和全体 |
 | `f '' A` | $`f\,''A`$ | $`\{f(x)\mid x\in A\}`$ |
 | `⋃ u : ℕ, S u` | $`\bigcup_{u\in\mathbb{N}} S_u`$ | 可算合併 |
@@ -35,18 +35,18 @@
 
 以下で用いる順序数側の約束を固定しておく。
 
-- $`\mathrm{Ord}`$ 上の $`<`$ は整礎である（Mathlib の `Ordinal.lt_wf`）。すなわち
-  $`\mathrm{WellFounded}\,(<)`$ が成り立つ。
+- $`\mathrm{Ord}`$ 上の $`\lt `$ は整礎である（Mathlib の `Ordinal.lt_wf`）。すなわち
+  $`\mathrm{WellFounded}\,(\lt )`$ が成り立つ。
 - $`+`$ は順序数の加法であり、可換ではない。
 - $`0`$ は $`\mathrm{Ord}`$ の最小元であり、$`1`$ は $`0`$ の後続である。したがって
-  $`\xi<1 \iff \xi = 0`$、すなわち $`\mathrm{Iio}(1)=\{0\}`$ である。
+  $`\xi\lt 1 \iff \xi = 0`$、すなわち $`\mathrm{Iio}(1)=\{0\}`$ である。
 - 集合演算の記号は Mathlib の `Set` のものであり、$`X\subseteq Y`$ は
   $`\forall \delta,\ \delta\in X \to \delta\in Y`$ を意味する。
 - Lean の `p : Ordinal → ℕ → Ordinal` はカリー化された 2 引数関数である。本文では
   $`p(\xi,u)`$ と書く。
 
 Lean ファイル冒頭の移植規約（Isabelle の `ord/psi.thy` からの移植）は次の通りである。
-集合論の $`V`$ を順序数型 `Ordinal.{0}` に、$`x\in\mathrm{elts}\,\alpha`$ を $`x<\alpha`$ に、
+集合論の $`V`$ を順序数型 `Ordinal.{0}` に、$`x\in\mathrm{elts}\,\alpha`$ を $`x\lt \alpha`$ に、
 順序数の $`V`$-集合を `Set Ordinal` に、超限再帰 `transrec` を `WellFounded.fix Ordinal.lt_wf` に、
 `LEAST` を `sInf` に対応させる。
 
@@ -97,10 +97,10 @@ $`0 = 0`$ であり真であるから、`if` 式は第 1 分岐の値 $`1`$ に�
 <a id="t-Om_of_pos"></a>
 ### 定理 正の添字での $`\Omega_v`$ (T.Om_of_pos)
 
-**主張** $`v\in\mathbb{N}`$ が $`0<v`$ をみたすならば $`\Omega_v = \mathrm{ord}(\aleph_v)`$。
+**主張** $`v\in\mathbb{N}`$ が $`0\lt v`$ をみたすならば $`\Omega_v = \mathrm{ord}(\aleph_v)`$。
 
-**証明** まず $`\mathbb{N}`$ において $`0<v`$ から $`v\ne 0`$ が従う。実際、$`v=0`$ と仮定すると
-$`0<v`$ は $`0<0`$ となり、$`<`$ の非反射性に反する（Lean 側の `Nat.pos_iff_ne_zero.1 hv` がこの含意である）。
+**証明** まず $`\mathbb{N}`$ において $`0\lt v`$ から $`v\ne 0`$ が従う。実際、$`v=0`$ と仮定すると
+$`0\lt v`$ は $`0\lt 0`$ となり、$`\lt `$ の非反射性に反する（Lean 側の `Nat.pos_iff_ne_zero.1 hv` がこの含意である）。
 よって [(D.Om)](#d-Om) の場合分けの条件 $`v=0`$ は偽であり、`if` 式は第 2 分岐の値
 $`\mathrm{ord}(\aleph_v)`$ に簡約される。∎
 
@@ -109,7 +109,7 @@ $`\mathrm{ord}(\aleph_v)`$ に簡約される。∎
 ## 集合 $`C_v(\alpha)`$ と崩壊関数 $`\psi_v(\alpha)`$（Buchholz §1）
 
 Lean ファイルのこの節のコメントは、$`C_v(\alpha)`$ を
-「$`\mathrm{Iio}(\Omega_v)`$ を含み、$`+`$ と $`\xi\mapsto \psi_u(\xi)`$（$`\xi<\alpha`$, $`u\in\mathbb{N}`$）で
+「$`\mathrm{Iio}(\Omega_v)`$ を含み、$`+`$ と $`\xi\mapsto \psi_u(\xi)`$（$`\xi\lt \alpha`$, $`u\in\mathbb{N}`$）で
 生成される最小の集合」と述べ、それを $`\mathrm{Iio}(\Omega_v)`$ から出発する有限反復の可算合併として
 構成すると述べている（Buchholz の付加条件 $`\xi\in C_u(\xi)`$ は彼の Remark に従って落とす）。
 以下の 3 つの定義がこの構成であり、[(D.Cset)](#d-Cset) の補足 2・補足 3 でこの「最小性」を
@@ -151,7 +151,7 @@ $`\delta\in A\cup B \iff \delta\in A \vee \delta\in B`$、
 $`\delta\in \mathrm{image2}\ f\ X\ Y \iff \exists \beta\,\gamma,\ \beta\in X\wedge\gamma\in Y\wedge f(\beta,\gamma)=\delta`$、
 $`\delta\in\bigcup_{u} S_u \iff \exists u,\ \delta\in S_u`$、
 $`\delta\in f\,''A \iff \exists \xi,\ \xi\in A \wedge f(\xi)=\delta`$、
-$`\xi\in X\cap\mathrm{Iio}(\alpha) \iff \xi\in X \wedge \xi<\alpha`$。
+$`\xi\in X\cap\mathrm{Iio}(\alpha) \iff \xi\in X \wedge \xi\lt \alpha`$。
 これらを合成すると右辺の 3 選言が得られる。$`\square`$
 
 **補足 2（$`X`$ は自分自身の像に含まれる）.** $`X \subseteq \mathrm{Cstep}_{p,\alpha}(X)`$。
@@ -164,19 +164,19 @@ $`\mathrm{Cstep}_{p,\alpha}(X)\subseteq \mathrm{Cstep}_{p,\alpha}(Y)`$。
 *証明.* $`\delta\in\mathrm{Cstep}_{p,\alpha}(X)`$ とし、補足 1 の 3 選言で場合分けする。
 第 1 の場合、$`\delta\in X\subseteq Y`$ より第 1 選言が $`Y`$ について成立する。
 第 2 の場合、$`\beta,\gamma\in X\subseteq Y`$ かつ $`\delta=\beta+\gamma`$ であるから第 2 選言が成立する。
-第 3 の場合、$`\xi\in X\subseteq Y`$、$`\xi<\alpha`$、$`\delta=p(\xi,u)`$ であるから第 3 選言が成立する。
+第 3 の場合、$`\xi\in X\subseteq Y`$、$`\xi\lt \alpha`$、$`\delta=p(\xi,u)`$ であるから第 3 選言が成立する。
 いずれの場合も補足 1 により $`\delta\in\mathrm{Cstep}_{p,\alpha}(Y)`$。$`\square`$
 
 **補足 4（$`p`$ は $`\mathrm{Iio}(\alpha)`$ 上の値でしか効かない）.**
 $`p, q : \mathrm{Ord}\to\mathbb{N}\to\mathrm{Ord}`$ が
-$`\forall \xi,\ \xi<\alpha \to \forall u\in\mathbb{N},\ p(\xi,u)=q(\xi,u)`$ をみたすならば、
+$`\forall \xi,\ \xi\lt \alpha \to \forall u\in\mathbb{N},\ p(\xi,u)=q(\xi,u)`$ をみたすならば、
 すべての $`X`$ について $`\mathrm{Cstep}_{p,\alpha}(X)=\mathrm{Cstep}_{q,\alpha}(X)`$。
 
-*証明.* 補足 1 の第 1・第 2 選言は $`p`$ を含まない。第 3 選言に現れる $`\xi`$ は $`\xi<\alpha`$ を
+*証明.* 補足 1 の第 1・第 2 選言は $`p`$ を含まない。第 3 選言に現れる $`\xi`$ は $`\xi\lt \alpha`$ を
 みたすものに限られるから、仮定より $`\delta=p(\xi,u)`$ と $`\delta=q(\xi,u)`$ は同値である。
 よって 3 選言の全体が同値であり、外延性から 2 つの集合は等しい。$`\square`$
 
-この補足 4 は [(D.psi)](#d-psi) で使う。そこでは $`p`$ として「$`\xi<\alpha`$ のとき $`\psi_u(\xi)`$、
+この補足 4 は [(D.psi)](#d-psi) で使う。そこでは $`p`$ として「$`\xi\lt \alpha`$ のとき $`\psi_u(\xi)`$、
 そうでないとき $`0`$」という切り詰めた関数が現れるが、補足 4 により切り詰めの外側の値 $`0`$ は
 結果に影響しない。
 
@@ -257,7 +257,7 @@ $`k`$ に関する自然数の帰納法で示す。
 $`m\le n`$ ならば $`k := n-m`$ とおくと $`m+k=n`$ であるから、$`\Theta(k)`$ が結論を与える。$`\square`$
 
 **補足 3（$`p`$ の切り詰めに依らない）.**
-$`p,q`$ が $`\forall \xi,\ \xi<\alpha\to\forall u\in\mathbb{N},\ p(\xi,u)=q(\xi,u)`$ をみたすならば、
+$`p,q`$ が $`\forall \xi,\ \xi\lt \alpha\to\forall u\in\mathbb{N},\ p(\xi,u)=q(\xi,u)`$ をみたすならば、
 すべての $`n`$ について $`C^{(n)}_{p,\alpha,v} = C^{(n)}_{q,\alpha,v}`$。
 
 *証明.* $`\Xi(n) :\equiv C^{(n)}_{p,\alpha,v}=C^{(n)}_{q,\alpha,v}`$ を $`n`$ に関する自然数の帰納法で示す。
@@ -316,7 +316,7 @@ $`\delta\in C^p_v(\alpha) \iff \exists n\in\mathbb{N},\ \delta\in C^{(n)}_{p,\al
    [(D.Cstep)](#d-Cstep) の補足 1 の第 2 選言により
    $`\beta+\gamma\in\mathrm{Cstep}_{p,\alpha}(C^{(k)}) = C^{(k+1)}`$
    （最後の等号は [(D.Citer)](#d-Citer) の補足 1）。再び本項の補足 1 より $`\beta+\gamma\in C^p_v(\alpha)`$。
-3. $`u\in\mathbb{N}`$、$`\xi\in C^p_v(\alpha)`$、$`\xi<\alpha`$ とする。本項の補足 1 より $`\xi\in C^{(n)}`$ なる
+3. $`u\in\mathbb{N}`$、$`\xi\in C^p_v(\alpha)`$、$`\xi\lt \alpha`$ とする。本項の補足 1 より $`\xi\in C^{(n)}`$ なる
    $`n`$ が取れる。[(D.Cstep)](#d-Cstep) の補足 1 の第 3 選言により
    $`p(\xi,u)\in\mathrm{Cstep}_{p,\alpha}(C^{(n)})=C^{(n+1)}`$（[(D.Citer)](#d-Citer) の補足 1）
    であり、本項の補足 1 より $`p(\xi,u)\in C^p_v(\alpha)`$。$`\square`$
@@ -334,7 +334,7 @@ $`C^p_v(\alpha)\subseteq Y`$。
   - $`\delta\in C^{(n)}`$ の場合：$`\Lambda(n)`$ より $`\delta\in Y`$。
   - $`\delta=\beta+\gamma`$、$`\beta,\gamma\in C^{(n)}`$ の場合：$`\Lambda(n)`$ より $`\beta,\gamma\in Y`$、
     $`\mathrm{Cl}_{p,\alpha,v}(Y)`$ の第 2 連言子より $`\beta+\gamma\in Y`$。
-  - $`\delta=p(\xi,u)`$、$`\xi\in C^{(n)}`$、$`\xi<\alpha`$ の場合：$`\Lambda(n)`$ より $`\xi\in Y`$、
+  - $`\delta=p(\xi,u)`$、$`\xi\in C^{(n)}`$、$`\xi\lt \alpha`$ の場合：$`\Lambda(n)`$ より $`\xi\in Y`$、
     $`\mathrm{Cl}_{p,\alpha,v}(Y)`$ の第 3 連言子より $`p(\xi,u)\in Y`$。
 
   よって $`\Lambda(n+1)`$。
@@ -343,13 +343,13 @@ $`C^p_v(\alpha)\subseteq Y`$。
 $`C^p_v(\alpha)\subseteq Y`$。$`\square`$
 
 補足 2 と補足 3 が、Lean のコメントにいう「$`\mathrm{Iio}(\Omega_v)`$ を含み、$`+`$ と
-$`\xi\mapsto p(\xi,u)`$（$`\xi<\alpha`$）で生成される最小の集合」の内容である。有限反復の可算合併がこれを与えるのは、条件
+$`\xi\mapsto p(\xi,u)`$（$`\xi\lt \alpha`$）で生成される最小の集合」の内容である。有限反復の可算合併がこれを与えるのは、条件
 $`\mathrm{Cl}_{p,\alpha,v}`$ の生成規則がいずれも有限個（2 個または 1 個）の要素からの生成であり、
 $`C^p_v(\alpha)`$ の元はすべて有限回の生成で得られるからである（補足 2 の証明の 2, 3 で
 $`\max(m,n)`$ と $`n+1`$ を取った箇所がこの有限性の使用である）。
 
 **補足 4（$`p`$ の切り詰めに依らない）.**
-$`p,q`$ が $`\forall\xi,\ \xi<\alpha\to\forall u\in\mathbb{N},\ p(\xi,u)=q(\xi,u)`$ をみたすならば
+$`p,q`$ が $`\forall\xi,\ \xi\lt \alpha\to\forall u\in\mathbb{N},\ p(\xi,u)=q(\xi,u)`$ をみたすならば
 $`C^p_v(\alpha)=C^q_v(\alpha)`$。
 
 *証明.* [(D.Citer)](#d-Citer) の補足 3 よりすべての $`n`$ で
@@ -371,7 +371,7 @@ Lean ファイルのこの節見出し（`/-! ### Smallness -/`）の下に宣�
 <a id="d-psi"></a>
 ### 定義 崩壊関数 $`\psi`$ (D.psi)
 
-$`\mathrm{Ord}`$ 上の $`<`$ に関する整礎再帰で、関数 $`\psi : \mathrm{Ord}\to\mathbb{N}\to\mathrm{Ord}`$ を定める。
+$`\mathrm{Ord}`$ 上の $`\lt `$ に関する整礎再帰で、関数 $`\psi : \mathrm{Ord}\to\mathbb{N}\to\mathrm{Ord}`$ を定める。
 Lean では
 
 ```lean
@@ -391,7 +391,7 @@ $`F : \forall x,\ (\forall y,\ r\,y\,x \to C(y)) \to C(x)`$ から作る作用�
 ```
 
 （Lean の `WellFounded.fix_eq`）である。本定義では
-$`r`$ は $`\mathrm{Ord}`$ 上の $`<`$（整礎性は `Ordinal.lt_wf`）、$`C(x)`$ は $`\mathbb{N}\to\mathrm{Ord}`$、
+$`r`$ は $`\mathrm{Ord}`$ 上の $`\lt `$（整礎性は `Ordinal.lt_wf`）、$`C(x)`$ は $`\mathbb{N}\to\mathrm{Ord}`$、
 $`F`$ は
 
 ```math
@@ -401,7 +401,7 @@ p_{\alpha,g}(\xi,u) := \begin{cases} g(\xi)(u) & (\xi<\alpha)\cr 0 & (\xi\not<\a
 ```
 
 である（[(D.Cset)](#d-Cset)）。Lean の `if h : ξ < α then IH ξ h u else 0` は依存条件分岐であり、
-真の分岐では条件の証明 $`h : \xi<\alpha`$ が `IH` に渡される。これが「$`\xi<\alpha`$ でのみ再帰呼び出しをしてよい」
+真の分岐では条件の証明 $`h : \xi\lt \alpha`$ が `IH` に渡される。これが「$`\xi\lt \alpha`$ でのみ再帰呼び出しをしてよい」
 という整礎再帰の制約の実現である。
 
 **補足 1（不動点方程式）.** 任意の $`\alpha\in\mathrm{Ord}`$、$`v\in\mathbb{N}`$ について
@@ -423,13 +423,13 @@ p_\alpha(\xi,u) = \begin{cases}\psi_u(\xi) & (\xi<\alpha)\cr 0 & (\xi\not<\alpha
 を得る。両辺を $`v`$ に適用すると、$`F`$ の定義より右辺は
 $`\inf\{\gamma\mid\gamma\notin C^{\,p_{\alpha,g}}_v(\alpha)\}`$（ただし $`g := \lambda\xi\,\_.\ \psi(\xi)`$）である。
 この $`g`$ に対して
-$`p_{\alpha,g}(\xi,u) = g(\xi)(u) = \psi(\xi)(u) = \psi_u(\xi)`$（$`\xi<\alpha`$ のとき）、
-$`p_{\alpha,g}(\xi,u)=0`$（$`\xi\not<\alpha`$ のとき）であるから、$`p_{\alpha,g}=p_\alpha`$ である。$`\square`$
+$`p_{\alpha,g}(\xi,u) = g(\xi)(u) = \psi(\xi)(u) = \psi_u(\xi)`$（$`\xi\lt \alpha`$ のとき）、
+$`p_{\alpha,g}(\xi,u)=0`$（$`\xi\not\lt \alpha`$ のとき）であるから、$`p_{\alpha,g}=p_\alpha`$ である。$`\square`$
 
 **補足 2（切り詰めの除去）.** $`\bar\psi(\xi,u):=\psi_u(\xi)`$ とおくと
 $`C^{\,p_\alpha}_v(\alpha) = C^{\,\bar\psi}_v(\alpha)`$ である。
 
-*証明.* $`\xi<\alpha`$ なるすべての $`\xi`$ と $`u`$ について $`p_\alpha(\xi,u)=\psi_u(\xi)=\bar\psi(\xi,u)`$
+*証明.* $`\xi\lt \alpha`$ なるすべての $`\xi`$ と $`u`$ について $`p_\alpha(\xi,u)=\psi_u(\xi)=\bar\psi(\xi,u)`$
 であるから、[(D.Cset)](#d-Cset) の補足 4 が適用できる。$`\square`$
 
 そこで
@@ -527,7 +527,7 @@ $`\psi_v(\alpha)`$ がそれをみたすという主張は現在の Lean ファ�
 
 ---
 
-## 濃度評価（Buchholz 補題 1.2(c)）：$`\psi_v(\alpha) < \Omega_{v+1}`$
+## 濃度評価（Buchholz 補題 1.2(c)）：$`\psi_v(\alpha) \lt \Omega_{v+1}`$
 
 Lean ファイルのこの節見出しの下に宣言はない。この節のコメントは、
 「`|C_v(α)| ≤ Ω_v ⊔ ω < Ω_{v+1}`（$`C_v(\alpha)`$ は
@@ -559,17 +559,17 @@ def addprinc (δ : Ordinal) : Prop :=
 ```
 
 である。第 2 連言子は Mathlib の `Ordinal.IsPrincipal (· + ·) δ`
-（$`\forall \beta\,\gamma,\ \beta<\delta\to\gamma<\delta\to\beta+\gamma<\delta`$）と同じ主張であり、
-$`\mathrm{addprinc}`$ はそれに $`0<\delta`$ を加えたものである（Mathlib の `IsPrincipal` は $`\delta=0`$ を
+（$`\forall \beta\,\gamma,\ \beta\lt \delta\to\gamma\lt \delta\to\beta+\gamma\lt \delta`$）と同じ主張であり、
+$`\mathrm{addprinc}`$ はそれに $`0\lt \delta`$ を加えたものである（Mathlib の `IsPrincipal` は $`\delta=0`$ を
 除外しない規約を採っている）。
 
 順序数の加法は可換ではないが、この条件は $`\beta`$ と $`\gamma`$ の両方を全称量化しているから、
-$`\beta+\gamma<\delta`$ と $`\gamma+\beta<\delta`$ の双方を含意する。
+$`\beta+\gamma\lt \delta`$ と $`\gamma+\beta\lt \delta`$ の双方を含意する。
 
 この述語は [(T.oV_lt_of_allprinc)](Otembed.md#t-oV_lt_of_allprinc) の仮定として使われる。
 そこでは、項 $`t \in \mathrm{Three}`$（[(D.Three)](Mechanized.md#d-Three)。構成子は $`\mathsf{Z}`$ と
-$`\mathsf{P}(a,b,c)`$）の主要項の値がすべて $`\delta`$ 未満ならば $`oV\,t<\delta`$ であることが、
-$`\mathrm{addprinc}(\delta)`$ の第 1 連言子（$`t=\mathsf{Z}`$ の場合、$`oV\,\mathsf{Z}=0<\delta`$）と
+$`\mathsf{P}(a,b,c)`$）の主要項の値がすべて $`\delta`$ 未満ならば $`oV\,t\lt \delta`$ であることが、
+$`\mathrm{addprinc}(\delta)`$ の第 1 連言子（$`t=\mathsf{Z}`$ の場合、$`oV\,\mathsf{Z}=0\lt \delta`$）と
 第 2 連言子（$`t=\mathsf{P}(a,b,c)`$ の場合、$`oV\,t = \psi_a(oV\,b)+oV\,c`$ の 2 項がともに $`\delta`$ 未満）
 から従う形で使われる。
 

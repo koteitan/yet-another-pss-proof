@@ -226,7 +226,7 @@ $`\mathrm{Acc}(\prec_{\mathrm{NF}}, u)`$ が成り立つ。
 $`\lvert M\rvert - 1 = 0`$（切り捨て減法）から $`M[n] = M`$ を与える。よって
 $`\lvert M\rvert \le 1 \Rightarrow \lvert M\rvert - 1 = 0`$ を示せばよい。
 $`\lvert M\rvert \le 1`$ なる自然数 $`\lvert M\rvert`$ は $`0`$ か $`1`$ である。
-$`\lvert M\rvert = 0`$ のとき、切り捨て減法の規約（$`a<b`$ のとき $`a-b=0`$）により $`0 - 1 = 0`$。
+$`\lvert M\rvert = 0`$ のとき、切り捨て減法の規約（$`a\lt b`$ のとき $`a-b=0`$）により $`0 - 1 = 0`$。
 $`\lvert M\rvert = 1`$ のとき $`1 - 1 = 0`$。いずれの場合も $`\lvert M\rvert - 1 = 0`$ である。∎
 
 （Lean 側ではこの 2 通りの計算が `omega` に委ねられている。）
@@ -257,7 +257,7 @@ $`P(M) :\equiv \mathrm{Acc}(\prec_{\mathrm{NF}}, \mathrm{tr}\,M)`$ とおく。
   $`\lvert M\rvert`$ で場合分けする。
   - $`\lvert M\rvert \le 1`$ のとき。[(T.oper_eq_self_short)](#t-oper_eq_self_short) より $`M[n] = M`$ であるから
     $`\mathrm{tr}(M[n]) = \mathrm{tr}\,M`$ であり、$`P(M[n])`$ は $`P(M)`$ に他ならない。
-  - $`1 < \lvert M\rvert`$ のとき。[(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) より
+  - $`1 \lt \lvert M\rvert`$ のとき。[(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) より
     $`\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M`$。また [(D.ST_PS)](Def.md#d-ST_PS) の規則 (oper) を
     $`M \in \mathrm{ST\_PS}`$ と $`1\le n`$ に適用して $`M[n] \in \mathrm{ST\_PS}`$ を得るから、
     [(D.NF)](#d-NF) の導入により $`\mathrm{tr}\,M \in \mathrm{NF}`$ かつ $`\mathrm{tr}(M[n]) \in \mathrm{NF}`$。
@@ -329,7 +329,7 @@ $`T \lhd M`$ を仮定して $`\mathrm{tr}\,T \prec_{\mathrm{NF}} \mathrm{tr}\,M
 が成り立つ。以下 $`T`$ を $`M[n]`$ で置き換える。[(D.Rnf)](#d-Rnf) の 3 条件を順に確かめる。
 
 1. $`\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M`$：仮定 (dec) を $`M`$, $`n`$, $`M\in\mathrm{ST\_PS}`$,
-   $`1<\lvert M\rvert`$, $`1\le n`$ に適用して得られる。
+   $`1\lt \lvert M\rvert`$, $`1\le n`$ に適用して得られる。
 2. $`\mathrm{tr}\,M \in \mathrm{NF}`$：[(D.NF)](#d-NF) の導入を $`M \in \mathrm{ST\_PS}`$ に適用する。
 3. $`\mathrm{tr}(M[n]) \in \mathrm{NF}`$：[(D.ST_PS)](Def.md#d-ST_PS) の規則 (oper) を
    $`M\in\mathrm{ST\_PS}`$ と $`1\le n`$ に適用して $`M[n] \in \mathrm{ST\_PS}`$ を得、
@@ -422,8 +422,8 @@ Lean 原文はこの位置に節見出しコメントを置き、証明済みの
  \mathrm{tr}(M[n]) \prec \mathrm{tr}\,M
 ```
 
-を示す。$`M`$, $`n`$ をとり、$`M\in\mathrm{ST\_PS}`$、$`1<\lvert M\rvert`$、$`1\le n`$ を仮定する。
-[(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) は $`1<\lvert M\rvert`$ と $`1\le n`$ の 2 つのみから
+を示す。$`M`$, $`n`$ をとり、$`M\in\mathrm{ST\_PS}`$、$`1\lt \lvert M\rvert`$、$`1\le n`$ を仮定する。
+[(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) は $`1\lt \lvert M\rvert`$ と $`1\le n`$ の 2 つのみから
 $`\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M`$ を与えるから、これを適用すればよい
 （仮定 $`M \in \mathrm{ST\_PS}`$ は使わない。減少は標準形であることに依らない）。
 こうして得た (dec) と仮定 $`\mathrm{WF}(\prec_{\mathrm{NF}})`$ を
@@ -446,8 +446,8 @@ $`\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M`$ を与えるから、これを適用�
  \mathrm{tr}(M[n]) \prec \mathrm{tr}\,M
 ```
 
-を示す。$`M`$, $`n`$ をとり、$`M\in\mathrm{ST\_PS}`$、$`1<\lvert M\rvert`$、$`1\le n`$ を仮定する。
-[(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) は $`1<\lvert M\rvert`$ と $`1\le n`$ の 2 つのみから
+を示す。$`M`$, $`n`$ をとり、$`M\in\mathrm{ST\_PS}`$、$`1\lt \lvert M\rvert`$、$`1\le n`$ を仮定する。
+[(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) は $`1\lt \lvert M\rvert`$ と $`1\le n`$ の 2 つのみから
 $`\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M`$ を与えるから、これを適用すればよい
 （仮定 $`M \in \mathrm{ST\_PS}`$ は使わない）。
 こうして得た (dec) と仮定 $`\mathrm{WF}(\prec_{\mathrm{NF}})`$ を

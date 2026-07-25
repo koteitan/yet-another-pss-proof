@@ -84,14 +84,14 @@ $`\mathrm{Bad}_u(b)`$ を **$`b`$ の水準 $`u`$ における違反者リスト
 $`\mathrm{Glist}_u(b)`$ の要素のうち $`g\prec b`$ が成り立たないものだけを、$`\mathrm{Glist}_u(b)`$ での
 出現順に残した列である。
 
-自然数の減法はすべて切り捨て減法である（$`a<b`$ のとき $`a-b=0`$）。
+自然数の減法はすべて切り捨て減法である（$`a\lt b`$ のとき $`a-b=0`$）。
 
 `Nat.findGreatest P m` は「$`P(k)`$ かつ $`k\le m`$ なる最大の $`k`$、そのような $`k`$ が無ければ $`0`$」を表す。
 本章で用いるその性質は次の 3 つである。
 
 - $`\mathrm{findGreatest\_le}`$ : $`\mathrm{findGreatest}\,P\,m \le m`$。
 - $`\mathrm{findGreatest\_spec}`$ : $`k\le m`$ かつ $`P(k)`$ ならば $`P(\mathrm{findGreatest}\,P\,m)`$。
-- $`\mathrm{findGreatest\_is\_greatest}`$ : $`\mathrm{findGreatest}\,P\,m < l`$ かつ $`l\le m`$ ならば $`\neg P(l)`$。
+- $`\mathrm{findGreatest\_is\_greatest}`$ : $`\mathrm{findGreatest}\,P\,m \lt l`$ かつ $`l\le m`$ ならば $`\neg P(l)`$。
 
 ---
 
@@ -225,7 +225,7 @@ $`\neg(g\prec b)`$ が成り立つ。∎
 \Phi(n) :\equiv \forall b\in\mathrm{Three},\ \lVert b\rVert=n\ \to\ b\preceq\mathrm{proj}_u(b).
 ```
 
-$`n`$ を固定し、帰納法の仮定として $`\forall m<n,\ \Phi(m)`$ を仮定する。
+$`n`$ を固定し、帰納法の仮定として $`\forall m\lt n,\ \Phi(m)`$ を仮定する。
 $`\lVert b\rVert=n`$ なる $`b`$ を取り、$`\mathrm{Bad}_u(b)`$ が空か否かで場合分けする。
 
 - **$`\mathrm{Bad}_u(b)=[]`$ のとき。** [(T.proj_id)](Nrm.md#t-proj_id) より
@@ -245,7 +245,7 @@ $`\lVert b\rVert=n`$ なる $`b`$ を取り、$`\mathrm{Bad}_u(b)`$ が空か否
   ```
 
   一方 [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) を $`\mathrm{mx}_u(b)\in G_u(b)`$ に適用して
-  $`\lVert\mathrm{mx}_u(b)\rVert<\lVert b\rVert=n`$。帰納法の仮定 $`\Phi(\lVert\mathrm{mx}_u(b)\rVert)`$ より
+  $`\lVert\mathrm{mx}_u(b)\rVert\lt \lVert b\rVert=n`$。帰納法の仮定 $`\Phi(\lVert\mathrm{mx}_u(b)\rVert)`$ より
 
   ```math
   \mathrm{mx}_u(b)\preceq\mathrm{proj}_u(\mathrm{mx}_u(b))=\mathrm{proj}_u(b).
@@ -331,9 +331,9 @@ $`\prec`$ と $`\preceq`$ を混ぜて推移させる箇所ではこのどちら
 
 **証明** [(T.olt_P_P)](Mechanized.md#t-olt_P_P) により、第 2 の仮定は次の 3 つのいずれかである。
 
-- **(i) $`e<e'`$。** 第 1 の仮定が $`a<e`$ ならば $`a<e<e'`$ より $`a<e'`$。
-  第 1 の仮定が $`a=e\wedge b\prec f`$ ならば $`a=e<e'`$ より $`a<e'`$。どちらも左選言。
-- **(ii) $`e=e'`$ かつ $`f\prec f'`$。** 第 1 の仮定が $`a<e`$ ならば $`a<e=e'`$ より左選言。
+- **(i) $`e\lt e'`$。** 第 1 の仮定が $`a\lt e`$ ならば $`a\lt e\lt e'`$ より $`a\lt e'`$。
+  第 1 の仮定が $`a=e\wedge b\prec f`$ ならば $`a=e\lt e'`$ より $`a\lt e'`$。どちらも左選言。
+- **(ii) $`e=e'`$ かつ $`f\prec f'`$。** 第 1 の仮定が $`a\lt e`$ ならば $`a\lt e=e'`$ より左選言。
   第 1 の仮定が $`a=e\wedge b\prec f`$ ならば $`a=e=e'`$ であり、
   [(T.olt_trans)](Mechanized.md#t-olt_trans) より $`b\prec f\prec f'`$、すなわち $`b\prec f'`$。
   よって右選言 $`a=e'\wedge b\prec f'`$。
@@ -352,11 +352,11 @@ $`\prec`$ と $`\preceq`$ を混ぜて推移させる箇所ではこのどちら
   [(T.olt_Z_Z)](Mechanized.md#t-olt_Z_Z) に反するので、この場合は起こらない。
 - **$`t=\mathsf Z`$、$`t'=\mathsf P(e,f,g)`$。**
   [(T.ins_Z)](Nrm.md#t-ins_Z) より $`\mathrm{ins}_a(b,\mathsf Z)=\mathsf P(a,b,\mathsf Z)`$。
-  [(T.ins_P)](Nrm.md#t-ins_P) より、$`A:\equiv\bigl(a<e\vee(a=e\wedge b\prec f)\bigr)`$ とおくと
+  [(T.ins_P)](Nrm.md#t-ins_P) より、$`A:\equiv\bigl(a\lt e\vee(a=e\wedge b\prec f)\bigr)`$ とおくと
   $`\mathrm{ins}_a(b,\mathsf P(e,f,g))`$ は $`A`$ のとき $`\mathsf P(e,f,g)`$、そうでないとき
   $`\mathsf P(a,b,\mathsf P(e,f,g))`$ である。
   - $`A`$ のとき。目標は $`\mathsf P(a,b,\mathsf Z)\prec\mathsf P(e,f,g)`$。
-    $`a<e`$ ならば [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言、
+    $`a\lt e`$ ならば [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言、
     $`a=e\wedge b\prec f`$ ならば第 2 選言により成立。
   - $`\neg A`$ のとき。目標は $`\mathsf P(a,b,\mathsf Z)\prec\mathsf P(a,b,\mathsf P(e,f,g))`$。
     [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 3 選言（$`a=a`$、$`b=b`$、
@@ -365,14 +365,14 @@ $`\prec`$ と $`\preceq`$ を混ぜて推移させる箇所ではこのどちら
 - **$`t=\mathsf P(e,f,g)`$、$`t'=\mathsf Z`$。** 仮定 $`\mathsf P(e,f,g)\prec\mathsf Z`$ は
   [(T.not_olt_Z)](Mechanized.md#t-not_olt_Z) に反するので、この場合は起こらない。
 - **$`t=\mathsf P(e,f,g)`$、$`t'=\mathsf P(e',f',g')`$。**
-  $`A:\equiv\bigl(a<e\vee(a=e\wedge b\prec f)\bigr)`$、
-  $`A':\equiv\bigl(a<e'\vee(a=e'\wedge b\prec f')\bigr)`$ とおく。
+  $`A:\equiv\bigl(a\lt e\vee(a=e\wedge b\prec f)\bigr)`$、
+  $`A':\equiv\bigl(a\lt e'\vee(a=e'\wedge b\prec f')\bigr)`$ とおく。
   - $`A`$ のとき。[(T.absorb_mono)](#t-absorb_mono) を仮定 $`A`$ と $`t\prec t'`$ に適用して $`A'`$ を得る。
     このとき [(T.ins_P)](Nrm.md#t-ins_P) より
     $`\mathrm{ins}_a(b,t)=\mathsf P(e,f,g)=t`$、$`\mathrm{ins}_a(b,t')=\mathsf P(e',f',g')=t'`$
     であるから、目標は仮定 $`t\prec t'`$ そのものである。
   - $`\neg A`$ かつ $`A'`$ のとき。$`\mathrm{ins}_a(b,t)=\mathsf P(a,b,\mathsf P(e,f,g))`$、
-    $`\mathrm{ins}_a(b,t')=\mathsf P(e',f',g')`$。$`A'`$ の第 1 選言 $`a<e'`$ ならば
+    $`\mathrm{ins}_a(b,t')=\mathsf P(e',f',g')`$。$`A'`$ の第 1 選言 $`a\lt e'`$ ならば
     [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言、
     第 2 選言 $`a=e'\wedge b\prec f'`$ ならば第 2 選言により成立。
   - $`\neg A`$ かつ $`\neg A'`$ のとき。$`\mathrm{ins}_a(b,t)=\mathsf P(a,b,\mathsf P(e,f,g))`$、
@@ -542,7 +542,7 @@ $`\lvert C\rvert`$ に関する再帰で定める。
 
 再帰が停止することは、`dropWhile` が長さを増やさないこと
 $`\lvert\mathrm{dw}_{\pi_0 p}\mathit{rest}\rvert\le\lvert \mathit{rest}\rvert`$ と
-$`\lvert \mathit{rest}\rvert<\lvert p\mathbin{::}\mathit{rest}\rvert`$ から従う。
+$`\lvert \mathit{rest}\rvert\lt \lvert p\mathbin{::}\mathit{rest}\rvert`$ から従う。
 
 すなわち $`\mathrm{snocok}(C,q)`$ は、$`C`$ を $`\mathrm{dw}`$ で辿って得られる最内の支配区間
 （$`\mathrm{dw}`$ が空になる位置）において、引数側の射影が狭義に増加することを要求する条件である。
@@ -578,9 +578,9 @@ $`\lvert \mathit{rest}\rvert<\lvert p\mathbin{::}\mathit{rest}\rvert`$ から従
 \mathrm{nrm}(\mathrm{tr}\,C)\prec\mathrm{nrm}(\mathrm{tr}(C\mathbin{+\!\!+}[q])).
 ```
 
-帰納法の仮定は「$`\lvert C'\rvert<\lvert C\rvert`$ なるすべての $`C'`$ について $`\Psi(C')`$」であり、
+帰納法の仮定は「$`\lvert C'\rvert\lt \lvert C\rvert`$ なるすべての $`C'`$ について $`\Psi(C')`$」であり、
 以下では $`C=p\mathbin{::}\mathit{rest}`$、$`C':=\mathrm{dw}_{\pi_0 p}\mathit{rest}`$ の 1 箇所でのみ用いる。
-このとき $`\lvert C'\rvert\le\lvert \mathit{rest}\rvert<\lvert p\mathbin{::}\mathit{rest}\rvert=\lvert C\rvert`$
+このとき $`\lvert C'\rvert\le\lvert \mathit{rest}\rvert\lt \lvert p\mathbin{::}\mathit{rest}\rvert=\lvert C\rvert`$
 であるから、帰納法の仮定が適用できる。
 
 **$`C=[]`$ の場合。** 仮定 $`C\ne[]`$ に反するので、この場合は起こらない。
@@ -616,13 +616,13 @@ a<\pi_0 q\ \to\
 \tag{I.2}
 ```
 
-である。$`a<\pi_0 q`$ か否かでさらに分ける。
+である。$`a\lt \pi_0 q`$ か否かでさらに分ける。
 
-- **場合 I-(C)（引数側の延長）: $`a<\pi_0 q`$。**
+- **場合 I-(C)（引数側の延長）: $`a\lt \pi_0 q`$。**
   [(T.takeWhile_append_all)](Mechanized.md#t-takeWhile_append_all) を
   「$`\mathit{rest}`$ の全要素が述語を満たす」に適用すると
   $`\mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=\mathit{rest}\mathbin{+\!\!+}\mathrm{tw}_a[q]`$ であり、
-  $`a<\pi_0 q`$ より $`\mathrm{tw}_a[q]=[q]`$、よって
+  $`a\lt \pi_0 q`$ より $`\mathrm{tw}_a[q]=[q]`$、よって
 
   ```math
   \mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=\mathit{rest}\mathbin{+\!\!+}[q].
@@ -637,10 +637,10 @@ a<\pi_0 q\ \to\
   ```
 
   (I.1) と合わせ、[(T.olt_P_b)](Mechanized.md#t-olt_P_b) を (I.2) の結論に適用すれば主張を得る。
-- **場合 I-(A)（新しい和項）: $`\neg(a<\pi_0 q)`$。**
+- **場合 I-(A)（新しい和項）: $`\neg(a\lt \pi_0 q)`$。**
   [(T.takeWhile_append_all)](Mechanized.md#t-takeWhile_append_all) と
   [(T.dropWhile_append_all)](Mechanized.md#t-dropWhile_append_all) を同じく適用する。
-  今度は $`\neg(a<\pi_0 q)`$ より $`\mathrm{tw}_a[q]=[]`$、$`\mathrm{dw}_a[q]=[q]`$ であるから
+  今度は $`\neg(a\lt \pi_0 q)`$ より $`\mathrm{tw}_a[q]=[]`$、$`\mathrm{dw}_a[q]=[q]`$ であるから
 
   ```math
   \mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=\mathit{rest},\qquad
@@ -661,8 +661,8 @@ a<\pi_0 q\ \to\
 
 **場合 II : $`T\ne[]`$（尾部側の延長）。**
 $`T\ne[]`$ より、$`\mathit{rest}`$ の要素で述語を満たさないものが存在する。実際、
-すべての $`x\in\mathit{rest}`$ が $`a<\pi_0 x`$ を満たすなら $`T=[]`$ となるからである。
-そのような要素を $`x_0\in\mathit{rest}`$、$`\neg(a<\pi_0 x_0)`$ とする。
+すべての $`x\in\mathit{rest}`$ が $`a\lt \pi_0 x`$ を満たすなら $`T=[]`$ となるからである。
+そのような要素を $`x_0\in\mathit{rest}`$、$`\neg(a\lt \pi_0 x_0)`$ とする。
 [(T.takeWhile_append_not)](Mechanized.md#t-takeWhile_append_not) と
 [(T.dropWhile_append_not)](Mechanized.md#t-dropWhile_append_not) より
 
@@ -760,19 +760,19 @@ $`M\in\mathrm{PairSeq}`$ に対し
 \end{aligned}
 ```
 
-言い換えると、$`\pi_0(M\langle j\rangle)>0`$ なるすべての位置 $`j`$ に対して、
+言い換えると、$`\pi_0(M\langle j\rangle)\gt 0`$ なるすべての位置 $`j`$ に対して、
 次の 4 条件を満たす位置 $`k`$ が存在するということである。
 
-1. $`k<j`$；
+1. $`k\lt j`$；
 2. $`\pi_0(M\langle k\rangle)+1=\pi_0(M\langle j\rangle)`$（行 0 の値がちょうど 1 小さい）；
-3. $`k<l<j`$ なるすべての $`l`$ で $`\pi_0(M\langle j\rangle)\le\pi_0(M\langle l\rangle)`$
+3. $`k\lt l\lt j`$ なるすべての $`l`$ で $`\pi_0(M\langle j\rangle)\le\pi_0(M\langle l\rangle)`$
    （$`k`$ と $`j`$ の間に行 0 の値が $`\pi_0(M\langle j\rangle)`$ を下回る位置がない）；
 4. $`\pi_1(M\langle j\rangle)\le\pi_1(M\langle k\rangle)+1`$
    （行 1 の値は位置 $`k`$ のそれを高々 1 しか超えない）。
 
 条件 1, 2, 3 は、$`k`$ と $`j`$ がともに $`M`$ の添字範囲にあるとき
 [(D.nextrel0)](Def.md#d-nextrel0) の条件 3, 4, 5 を満たす。すなわち $`k\to^M_0 j`$ である
-（条件 2 の等式は条件 4 の不等式 $`M_{0,k}<M_{0,j}`$ を含意する）。
+（条件 2 の等式は条件 4 の不等式 $`M_{0,k}\lt M_{0,j}`$ を含意する）。
 条件 4 が「行 1 は行 0 の親に対して高々 1 しか上がらない」という登攀規律である。
 
 ### 相対版 $`\mathrm{r1ok}`$ について
@@ -792,9 +792,9 @@ $`\lvert\Delta_0^v\rvert=v+1-0=v+1`$。∎
 <a id="t-diagSeq0_getD"></a>
 ### 定理 対角列の成分 (T.diagSeq0_getD)
 
-**主張** $`i<v+1`$ ならば $`\Delta_0^v\langle i\rangle=(i,i)`$。
+**主張** $`i\lt v+1`$ ならば $`\Delta_0^v\langle i\rangle=(i,i)`$。
 
-**証明** $`\mathrm{range}'(0,v+1)`$ の第 $`i`$ 要素は、$`i<v+1`$ のとき $`0+i=i`$ である
+**証明** $`\mathrm{range}'(0,v+1)`$ の第 $`i`$ 要素は、$`i\lt v+1`$ のとき $`0+i=i`$ である
 （`List.getElem?_range'`）。`map` は要素ごとに $`j\mapsto(j,j)`$ を適用するから、
 $`\Delta_0^v`$ の第 $`i`$ 要素は $`(i,i)`$ である。$`i`$ は範囲内であるから
 $`\mathrm{getD}`$ は既定値 $`(0,0)`$ を返さず、$`\Delta_0^v\langle i\rangle=(i,i)`$。∎
@@ -805,25 +805,25 @@ $`\mathrm{getD}`$ は既定値 $`(0,0)`$ を返さず、$`\Delta_0^v\langle i\ra
 **主張** $`\mathrm{r1ok}(\Delta_0^v)`$。
 
 **証明** [(T.diagSeq0_length)](#t-diagSeq0_length) より $`\lvert\Delta_0^v\rvert=v+1`$。
-$`j<v+1`$ かつ $`0<\pi_0(\Delta_0^v\langle j\rangle)`$ とする。
-[(T.diagSeq0_getD)](#t-diagSeq0_getD) より $`\pi_0(\Delta_0^v\langle j\rangle)=j`$ であるから $`0<j`$。
-$`k:=j-1`$ を取る。$`0<j`$ より $`j-1<v+1`$ でもあるから、
+$`j\lt v+1`$ かつ $`0\lt \pi_0(\Delta_0^v\langle j\rangle)`$ とする。
+[(T.diagSeq0_getD)](#t-diagSeq0_getD) より $`\pi_0(\Delta_0^v\langle j\rangle)=j`$ であるから $`0\lt j`$。
+$`k:=j-1`$ を取る。$`0\lt j`$ より $`j-1\lt v+1`$ でもあるから、
 [(T.diagSeq0_getD)](#t-diagSeq0_getD) は $`k`$ にも適用でき $`\Delta_0^v\langle j-1\rangle=(j-1,j-1)`$。
 
-- $`k<j`$ : $`0<j`$ より $`j-1<j`$。
-- $`\pi_0(\Delta_0^v\langle k\rangle)+1=(j-1)+1=j=\pi_0(\Delta_0^v\langle j\rangle)`$（$`0<j`$ による）。
-- 第 3 条項 : $`j-1<l`$ かつ $`l<j`$ なる自然数 $`l`$ は存在しない
-  （$`j-1<l`$ から $`j\le l`$、これと $`l<j`$ は両立しない）。よって前件が偽であり成立する。
+- $`k\lt j`$ : $`0\lt j`$ より $`j-1\lt j`$。
+- $`\pi_0(\Delta_0^v\langle k\rangle)+1=(j-1)+1=j=\pi_0(\Delta_0^v\langle j\rangle)`$（$`0\lt j`$ による）。
+- 第 3 条項 : $`j-1\lt l`$ かつ $`l\lt j`$ なる自然数 $`l`$ は存在しない
+  （$`j-1\lt l`$ から $`j\le l`$、これと $`l\lt j`$ は両立しない）。よって前件が偽であり成立する。
 - 第 4 条項 : $`\pi_1(\Delta_0^v\langle j\rangle)=j`$、$`\pi_1(\Delta_0^v\langle k\rangle)+1=(j-1)+1=j`$
   であるから $`j\le j`$。∎
 
 <a id="t-getD_take"></a>
 ### 定理 `take` の成分 (T.getD_take)
 
-**主張** $`j<m`$ ならば $`(\mathrm{take}\,m\,M)\langle j\rangle=M\langle j\rangle`$。
+**主張** $`j\lt m`$ ならば $`(\mathrm{take}\,m\,M)\langle j\rangle=M\langle j\rangle`$。
 
 **証明** `List.getElem?_take` により、$`(\mathrm{take}\,m\,M)`$ の第 $`j`$ 要素（オプション値）は
-$`j<m`$ のとき $`M`$ の第 $`j`$ 要素（オプション値）に一致する。
+$`j\lt m`$ のとき $`M`$ の第 $`j`$ 要素（オプション値）に一致する。
 $`\mathrm{getD}`$ はこのオプション値に同じ既定値 $`(0,0)`$ を与えたものであるから、
 両者は等しい。∎
 
@@ -832,11 +832,11 @@ $`\mathrm{getD}`$ はこのオプション値に同じ既定値 $`(0,0)`$ を与
 
 **主張** $`\mathrm{r1ok}(M)`$ ならば $`\mathrm{r1ok}(\mathrm{take}\,m\,M)`$。
 
-**証明** $`j<\lvert\mathrm{take}\,m\,M\rvert=\min(m,\lvert M\rvert)`$ とすると $`j<m`$ かつ $`j<\lvert M\rvert`$。
+**証明** $`j\lt \lvert\mathrm{take}\,m\,M\rvert=\min(m,\lvert M\rvert)`$ とすると $`j\lt m`$ かつ $`j\lt \lvert M\rvert`$。
 [(T.getD_take)](#t-getD_take) より $`(\mathrm{take}\,m\,M)\langle j\rangle=M\langle j\rangle`$ であるから、
-仮定 $`0<\pi_0((\mathrm{take}\,m\,M)\langle j\rangle)`$ は $`0<\pi_0(M\langle j\rangle)`$ と同じである。
-$`\mathrm{r1ok}(M)`$ を $`j`$ に適用して $`k<j`$ と 3 つの条項を得る。
-$`k<j<m`$ および（第 3 条項に現れる）$`l<j<m`$ であるから、
+仮定 $`0\lt \pi_0((\mathrm{take}\,m\,M)\langle j\rangle)`$ は $`0\lt \pi_0(M\langle j\rangle)`$ と同じである。
+$`\mathrm{r1ok}(M)`$ を $`j`$ に適用して $`k\lt j`$ と 3 つの条項を得る。
+$`k\lt j\lt m`$ および（第 3 条項に現れる）$`l\lt j\lt m`$ であるから、
 $`k`$、$`l`$、$`j`$ のいずれの位置でも [(T.getD_take)](#t-getD_take) が使え、
 3 つの条項はそのまま $`\mathrm{take}\,m\,M`$ の成分に関する主張に書き換わる。∎
 
@@ -855,9 +855,9 @@ $`k`$、$`l`$、$`j`$ のいずれの位置でも [(T.getD_take)](#t-getD_take) 
 <a id="t-getD_append_left"></a>
 ### 定理 連結の左側成分 (T.getD_append_left)
 
-**主張** $`i<\lvert G\rvert`$ ならば $`(G\mathbin{+\!\!+}X)\langle i\rangle=G\langle i\rangle`$。
+**主張** $`i\lt \lvert G\rvert`$ ならば $`(G\mathbin{+\!\!+}X)\langle i\rangle=G\langle i\rangle`$。
 
-**証明** `List.getElem?_append_left` により、$`i<\lvert G\rvert`$ のとき
+**証明** `List.getElem?_append_left` により、$`i\lt \lvert G\rvert`$ のとき
 $`(G\mathbin{+\!\!+}X)`$ の第 $`i`$ 要素（オプション値）は $`G`$ の第 $`i`$ 要素に一致する。
 $`\mathrm{getD}`$ は同じ既定値を与えたものだから等しい。∎
 
@@ -872,13 +872,13 @@ $`(G\mathbin{+\!\!+}X)`$ の第 $`i`$ 要素（オプション値）は $`X`$ �
 <a id="t-index_decomp"></a>
 ### 定理 添字の商・剰余分解 (T.index_decomp)
 
-**主張** $`0<L`$ かつ $`i<n\,L`$ ならば、$`k<n`$、$`q<L`$、$`i=k\,L+q`$ なる $`k,q`$ が存在する。
+**主張** $`0\lt L`$ かつ $`i\lt n\,L`$ ならば、$`k\lt n`$、$`q\lt L`$、$`i=k\,L+q`$ なる $`k,q`$ が存在する。
 
 **証明** $`k:=i\ \mathrm{div}\ L`$、$`q:=i\bmod L`$ とおく。
 
-- $`k<n`$ : $`0<L`$ のもとで $`i\ \mathrm{div}\ L<n\iff i<n\,L`$（`Nat.div_lt_iff_lt_mul`）であり、
-  仮定 $`i<n\,L`$ より従う。
-- $`q<L`$ : $`0<L`$ のとき $`i\bmod L<L`$（`Nat.mod_lt`）。
+- $`k\lt n`$ : $`0\lt L`$ のもとで $`i\ \mathrm{div}\ L\lt n\iff i\lt n\,L`$（`Nat.div_lt_iff_lt_mul`）であり、
+  仮定 $`i\lt n\,L`$ より従う。
+- $`q\lt L`$ : $`0\lt L`$ のとき $`i\bmod L\lt L`$（`Nat.mod_lt`）。
 - $`i=k\,L+q`$ : 除法の等式 $`i=L\cdot(i\ \mathrm{div}\ L)+i\bmod L`$ の右辺の積を交換して
   $`i=(i\ \mathrm{div}\ L)\cdot L+i\bmod L=k\,L+q`$。∎
 
@@ -921,23 +921,23 @@ n\lvert B\rvert+\lvert B\rvert=(n+1)\lvert B\rvert .
 <a id="t-copies_map_getD"></a>
 ### 定理 コピー列の成分 (T.copies_map_getD)
 
-**主張** $`k<n`$ かつ $`q<\lvert B\rvert`$ ならば
+**主張** $`k\lt n`$ かつ $`q\lt \lvert B\rvert`$ ならば
 
 ```math
 \Bigl(\mathrm{flatMap}\bigl(k\mapsto\mathrm{map}(f\,k)B\bigr)(\mathrm{range}(n))\Bigr)\bigl\langle k\lvert B\rvert+q\bigr\rangle
 = f\,k\,(B\langle q\rangle).
 ```
 
-**証明** $`n`$ に関する帰納法（$`k`$ に関する仮定 $`k<n`$ ごと一般化する）。帰納法の述語は
+**証明** $`n`$ に関する帰納法（$`k`$ に関する仮定 $`k\lt n`$ ごと一般化する）。帰納法の述語は
 
 ```math
 \Phi(n):\equiv \Bigl(k<n\ \to\
 \bigl(\mathrm{flatMap}(\cdots)(\mathrm{range}(n))\bigr)\langle k\lvert B\rvert+q\rangle=f\,k\,(B\langle q\rangle)\Bigr)
 ```
 
-（$`q`$ と $`q<\lvert B\rvert`$ は固定）。
+（$`q`$ と $`q\lt \lvert B\rvert`$ は固定）。
 
-**基底段** $`n=0`$。前件 $`k<0`$ は偽であるから成立する。
+**基底段** $`n=0`$。前件 $`k\lt 0`$ は偽であるから成立する。
 
 **帰納段** $`n\to n+1`$。帰納法の仮定は $`\Phi(n)`$。
 $`F_n:=\mathrm{flatMap}(\cdots)(\mathrm{range}(n))`$ とおく。
@@ -949,9 +949,9 @@ $`\mathrm{flatMap}`$ が連結を連結に写すことから
 ```
 
 かつ [(T.copies_map_length)](#t-copies_map_length) より $`\lvert F_n\rvert=n\lvert B\rvert`$。
-$`k<n+1`$ を仮定し、$`k<n`$ か $`k=n`$ かで分ける。
+$`k\lt n+1`$ を仮定し、$`k\lt n`$ か $`k=n`$ かで分ける。
 
-- **$`k<n`$ のとき。** 添字は左側に入る。実際
+- **$`k\lt n`$ のとき。** 添字は左側に入る。実際
 
   ```math
   k\lvert B\rvert+q<k\lvert B\rvert+\lvert B\rvert=(k+1)\lvert B\rvert\le n\lvert B\rvert=\lvert F_n\rvert
@@ -963,7 +963,7 @@ $`k<n+1`$ を仮定し、$`k<n`$ か $`k=n`$ かで分ける。
 - **$`k=n`$ のとき。** 添字は $`n\lvert B\rvert+q\ge\lvert F_n\rvert`$ であるから
   [(T.getD_append_right)](#t-getD_append_right) により値は
   $`(\mathrm{map}(f\,n)B)\langle n\lvert B\rvert+q-n\lvert B\rvert\rangle=(\mathrm{map}(f\,n)B)\langle q\rangle`$。
-  $`q<\lvert B\rvert=\lvert\mathrm{map}(f\,n)B\rvert`$ であるから、これは $`f\,n\,(B\langle q\rangle)`$ である。∎
+  $`q\lt \lvert B\rvert=\lvert\mathrm{map}(f\,n)B\rvert`$ であるから、これは $`f\,n\,(B\langle q\rangle)`$ である。∎
 
 ---
 
@@ -991,14 +991,14 @@ $`M[n]`$ の形（前置部 $`G`$ の後ろにブロック $`B`$ の $`n`$ 個�
 <a id="t-copyExp_getD_pre"></a>
 ### 定理 前置部の成分 (T.copyExp_getD_pre)
 
-**主張** $`i<\lvert G\rvert`$ ならば $`\mathrm{cE}(G,B,d_0,n)\langle i\rangle=G\langle i\rangle`$。
+**主張** $`i\lt \lvert G\rvert`$ ならば $`\mathrm{cE}(G,B,d_0,n)\langle i\rangle=G\langle i\rangle`$。
 
 **証明** [(T.getD_append_left)](#t-getD_append_left) そのものである。∎
 
 <a id="t-copyExp_getD_copy"></a>
 ### 定理 コピー部の成分 (T.copyExp_getD_copy)
 
-**主張** $`k<n`$ かつ $`q<\lvert B\rvert`$ ならば
+**主張** $`k\lt n`$ かつ $`q\lt \lvert B\rvert`$ ならば
 
 ```math
 \mathrm{cE}(G,B,d_0,n)\bigl\langle \lvert G\rvert+(k\lvert B\rvert+q)\bigr\rangle
@@ -1018,19 +1018,19 @@ $`f:=\bigl(k\mapsto p\mapsto(\pi_0 p+k\,d_0,\pi_1 p)\bigr)`$ に適用すれば
 <a id="t-hostM_getD_pre"></a>
 ### 定理 ホストの前置部成分 (T.hostM_getD_pre)
 
-**主張** $`i<\lvert G\rvert`$ ならば $`(G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp])\langle i\rangle=G\langle i\rangle`$。
+**主張** $`i\lt \lvert G\rvert`$ ならば $`(G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp])\langle i\rangle=G\langle i\rangle`$。
 
-**証明** $`i<\lvert G\rvert\le\lvert G\rvert+\lvert B\rvert=\lvert G\mathbin{+\!\!+}B\rvert`$ であるから
+**証明** $`i\lt \lvert G\rvert\le\lvert G\rvert+\lvert B\rvert=\lvert G\mathbin{+\!\!+}B\rvert`$ であるから
 [(T.getD_append_left)](#t-getD_append_left) により値は $`(G\mathbin{+\!\!+}B)\langle i\rangle`$ に等しく、
-再び同じ補題（$`i<\lvert G\rvert`$）により $`G\langle i\rangle`$ に等しい。∎
+再び同じ補題（$`i\lt \lvert G\rvert`$）により $`G\langle i\rangle`$ に等しい。∎
 
 <a id="t-hostM_getD_blk"></a>
 ### 定理 ホストのブロック成分 (T.hostM_getD_blk)
 
-**主張** $`q<\lvert B\rvert`$ ならば
+**主張** $`q\lt \lvert B\rvert`$ ならば
 $`(G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp])\langle\lvert G\rvert+q\rangle=B\langle q\rangle`$。
 
-**証明** $`\lvert G\rvert+q<\lvert G\rvert+\lvert B\rvert=\lvert G\mathbin{+\!\!+}B\rvert`$ であるから
+**証明** $`\lvert G\rvert+q\lt \lvert G\rvert+\lvert B\rvert=\lvert G\mathbin{+\!\!+}B\rvert`$ であるから
 [(T.getD_append_left)](#t-getD_append_left) により値は $`(G\mathbin{+\!\!+}B)\langle\lvert G\rvert+q\rangle`$。
 $`\lvert G\rvert\le\lvert G\rvert+q`$ であるから
 [(T.getD_append_right)](#t-getD_append_right) によりこれは
@@ -1049,9 +1049,9 @@ $`B\langle\lvert G\rvert+q-\lvert G\rvert\rangle=B\langle q\rangle`$。∎
 **主張** 次の 2 条件を仮定する。
 
 1. $`\mathrm{r1ok}(G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp])`$。
-2. （$`\mathrm{hmin}`$）$`\forall k\,q`$ について、$`0<k`$、$`k<n`$、$`q<\lvert B\rvert`$、
-   $`\bigl(\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)\bigr)`$、
-   $`0<\pi_0(B\langle q\rangle)+k\,d_0`$ が成り立つならば、$`p`$ が存在して
+2. （$`\mathrm{hmin}`$）$`\forall k\,q`$ について、$`0\lt k`$、$`k\lt n`$、$`q\lt \lvert B\rvert`$、
+   $`\bigl(\forall r\lt q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)\bigr)`$、
+   $`0\lt \pi_0(B\langle q\rangle)+k\,d_0`$ が成り立つならば、$`p`$ が存在して
 
    ```math
    \begin{aligned}
@@ -1067,9 +1067,9 @@ $`B\langle\lvert G\rvert+q-\lvert G\rvert\rangle=B\langle q\rangle`$。∎
 
 **証明** 以下 $`E:=\mathrm{cE}(G,B,d_0,n)`$、$`H:=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp]`$ と書く。
 [(T.copyExp_length)](#t-copyExp_length) より $`\lvert E\rvert=\lvert G\rvert+n\lvert B\rvert`$。
-$`j<\lvert E\rvert`$ かつ $`0<\pi_0(E\langle j\rangle)`$ を仮定し、$`j<\lvert G\rvert+\lvert B\rvert`$ か否かで分ける。
+$`j\lt \lvert E\rvert`$ かつ $`0\lt \pi_0(E\langle j\rangle)`$ を仮定し、$`j\lt \lvert G\rvert+\lvert B\rvert`$ か否かで分ける。
 
-**場合 1 : $`j<\lvert G\rvert+\lvert B\rvert`$（移送領域）。**
+**場合 1 : $`j\lt \lvert G\rvert+\lvert B\rvert`$（移送領域）。**
 
 まず次を示す。
 
@@ -1080,11 +1080,11 @@ $`j<\lvert E\rvert`$ かつ $`0<\pi_0(E\langle j\rangle)`$ を仮定し、$`j<\l
 
 $`i\le j`$ を取る。
 
-- $`i<\lvert G\rvert`$ のとき。[(T.copyExp_getD_pre)](#t-copyExp_getD_pre) より $`E\langle i\rangle=G\langle i\rangle`$、
+- $`i\lt \lvert G\rvert`$ のとき。[(T.copyExp_getD_pre)](#t-copyExp_getD_pre) より $`E\langle i\rangle=G\langle i\rangle`$、
   [(T.hostM_getD_pre)](#t-hostM_getD_pre) より $`H\langle i\rangle=G\langle i\rangle`$。
-- $`\lvert G\rvert\le i`$ のとき。$`i\le j<\lvert G\rvert+\lvert B\rvert`$ より $`i-\lvert G\rvert<\lvert B\rvert`$。
-  また $`0<n`$ である。実際 $`n=0`$ ならば $`\lvert E\rvert=\lvert G\rvert`$ となり
-  $`\lvert G\rvert\le i\le j<\lvert G\rvert`$ という矛盾が生じる。
+- $`\lvert G\rvert\le i`$ のとき。$`i\le j\lt \lvert G\rvert+\lvert B\rvert`$ より $`i-\lvert G\rvert\lt \lvert B\rvert`$。
+  また $`0\lt n`$ である。実際 $`n=0`$ ならば $`\lvert E\rvert=\lvert G\rvert`$ となり
+  $`\lvert G\rvert\le i\le j\lt \lvert G\rvert`$ という矛盾が生じる。
   $`i=\lvert G\rvert+(0\cdot\lvert B\rvert+(i-\lvert G\rvert))`$ と書き
   [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) を $`k:=0`$ に適用すると
 
@@ -1096,37 +1096,37 @@ $`i\le j`$ を取る。
   一方 [(T.hostM_getD_blk)](#t-hostM_getD_blk) より $`H\langle i\rangle=B\langle i-\lvert G\rvert\rangle`$。
 
 これで (1.1) が示された。[(T.hostM_length)](#t-hostM_length) より
-$`j<\lvert G\rvert+\lvert B\rvert<\lvert H\rvert`$、また (1.1) を $`i:=j`$ に用いて
-$`0<\pi_0(H\langle j\rangle)`$。仮定 1 の $`\mathrm{r1ok}(H)`$ を $`j`$ に適用して
-$`p<j`$ と 3 つの条項を得る。$`p<j`$ および第 3 条項に現れる $`l<j`$ に対して (1.1) が使えるから、
+$`j\lt \lvert G\rvert+\lvert B\rvert\lt \lvert H\rvert`$、また (1.1) を $`i:=j`$ に用いて
+$`0\lt \pi_0(H\langle j\rangle)`$。仮定 1 の $`\mathrm{r1ok}(H)`$ を $`j`$ に適用して
+$`p\lt j`$ と 3 つの条項を得る。$`p\lt j`$ および第 3 条項に現れる $`l\lt j`$ に対して (1.1) が使えるから、
 3 条項はそのまま $`E`$ の成分についての主張に書き換わり、$`p`$ が求める証人である。
 
 **場合 2 : $`\lvert G\rvert+\lvert B\rvert\le j`$（コピー領域）。**
 
-まず $`0<\lvert B\rvert`$ である。実際 $`\lvert B\rvert=0`$ ならば
-$`\lvert E\rvert=\lvert G\rvert`$ となり $`\lvert G\rvert\le j<\lvert G\rvert`$ という矛盾が生じる。
-$`j-\lvert G\rvert<n\lvert B\rvert`$ であるから
-[(T.index_decomp)](#t-index_decomp) により $`k<n`$、$`q<\lvert B\rvert`$、
+まず $`0\lt \lvert B\rvert`$ である。実際 $`\lvert B\rvert=0`$ ならば
+$`\lvert E\rvert=\lvert G\rvert`$ となり $`\lvert G\rvert\le j\lt \lvert G\rvert`$ という矛盾が生じる。
+$`j-\lvert G\rvert\lt n\lvert B\rvert`$ であるから
+[(T.index_decomp)](#t-index_decomp) により $`k\lt n`$、$`q\lt \lvert B\rvert`$、
 $`j-\lvert G\rvert=k\lvert B\rvert+q`$ なる $`k,q`$ が取れる。
-$`k=0`$ とすると $`j-\lvert G\rvert=q<\lvert B\rvert`$ より $`j<\lvert G\rvert+\lvert B\rvert`$ となって
-場合 2 の仮定に反するから $`0<k`$。したがって $`j=\lvert G\rvert+(k\lvert B\rvert+q)`$ であり、
+$`k=0`$ とすると $`j-\lvert G\rvert=q\lt \lvert B\rvert`$ より $`j\lt \lvert G\rvert+\lvert B\rvert`$ となって
+場合 2 の仮定に反するから $`0\lt k`$。したがって $`j=\lvert G\rvert+(k\lvert B\rvert+q)`$ であり、
 [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
 
 ```math
 E\langle j\rangle=\bigl(\pi_0(B\langle q\rangle)+k\,d_0,\ \pi_1(B\langle q\rangle)\bigr).
 ```
 
-$`\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$ が成り立つか否かで分ける。
+$`\forall r\lt q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$ が成り立つか否かで分ける。
 
 - **場合 2-(a)（水準最小）: 成り立つとき。** 仮定 2（$`\mathrm{hmin}`$）を
   $`k,q`$ に適用すればそのまま結論を得る。
 - **場合 2-(b)（ブロック内の窪み）: 成り立たないとき。**
-  $`r<q`$ かつ $`\pi_0(B\langle r\rangle)<\pi_0(B\langle q\rangle)`$ なる $`r`$ が取れる。
-  特に $`0<\pi_0(B\langle q\rangle)`$。
-  [(T.hostM_length)](#t-hostM_length) より $`\lvert G\rvert+q<\lvert H\rvert`$ であり、
+  $`r\lt q`$ かつ $`\pi_0(B\langle r\rangle)\lt \pi_0(B\langle q\rangle)`$ なる $`r`$ が取れる。
+  特に $`0\lt \pi_0(B\langle q\rangle)`$。
+  [(T.hostM_length)](#t-hostM_length) より $`\lvert G\rvert+q\lt \lvert H\rvert`$ であり、
   [(T.hostM_getD_blk)](#t-hostM_getD_blk) より $`H\langle\lvert G\rvert+q\rangle=B\langle q\rangle`$
-  であるから $`0<\pi_0(H\langle\lvert G\rvert+q\rangle)`$。
-  仮定 1 の $`\mathrm{r1ok}(H)`$ を位置 $`\lvert G\rvert+q`$ に適用して $`p<\lvert G\rvert+q`$ と
+  であるから $`0\lt \pi_0(H\langle\lvert G\rvert+q\rangle)`$。
+  仮定 1 の $`\mathrm{r1ok}(H)`$ を位置 $`\lvert G\rvert+q`$ に適用して $`p\lt \lvert G\rvert+q`$ と
 
   ```math
   \pi_0(H\langle p\rangle)+1=\pi_0(B\langle q\rangle),\qquad
@@ -1136,12 +1136,12 @@ $`\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$ が成り�
   \pi_1(B\langle q\rangle)\le\pi_1(H\langle p\rangle)+1
   ```
 
-  を得る。ここで $`\lvert G\rvert+r\le p`$ である。実際 $`p<\lvert G\rvert+r`$ とすると、
+  を得る。ここで $`\lvert G\rvert+r\le p`$ である。実際 $`p\lt \lvert G\rvert+r`$ とすると、
   $`\lvert G\rvert+r`$ は $`p`$ と $`\lvert G\rvert+q`$ の間にあるから第 2 条項が適用でき、
   [(T.hostM_getD_blk)](#t-hostM_getD_blk) と合わせて
   $`\pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$ となり、$`r`$ の取り方に反する。
   よって $`\lvert G\rvert\le p`$ であり、$`p=\lvert G\rvert+r'`$ と書ける。
-  $`p<\lvert G\rvert+q`$ より $`r'<q<\lvert B\rvert`$ であり、
+  $`p\lt \lvert G\rvert+q`$ より $`r'\lt q\lt \lvert B\rvert`$ であり、
   [(T.hostM_getD_blk)](#t-hostM_getD_blk) により上の 3 式は
 
   ```math
@@ -1152,12 +1152,12 @@ $`\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$ が成り�
   と、区間 $`(\lvert G\rvert+r',\ \lvert G\rvert+q)`$ 上の条項に書き換わる。
   そこで証人を $`p^\ast:=\lvert G\rvert+(k\lvert B\rvert+r')`$ とする。
 
-  - $`p^\ast<j`$ : $`r'<q`$ による。
+  - $`p^\ast\lt j`$ : $`r'\lt q`$ による。
   - [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
     $`\pi_0(E\langle p^\ast\rangle)+1=\pi_0(B\langle r'\rangle)+k\,d_0+1 =\pi_0(B\langle q\rangle)+k\,d_0=\pi_0(E\langle j\rangle)`$。
-  - 第 3 条項 : $`p^\ast<l<j`$ とすると
-    $`\lvert G\rvert+k\lvert B\rvert+r'<l<\lvert G\rvert+k\lvert B\rvert+q`$ であるから、
-    $`rr:=l-\lvert G\rvert-k\lvert B\rvert`$ とおくと $`r'<rr<q`$ かつ
+  - 第 3 条項 : $`p^\ast\lt l\lt j`$ とすると
+    $`\lvert G\rvert+k\lvert B\rvert+r'\lt l\lt \lvert G\rvert+k\lvert B\rvert+q`$ であるから、
+    $`rr:=l-\lvert G\rvert-k\lvert B\rvert`$ とおくと $`r'\lt rr\lt q`$ かつ
     $`l=\lvert G\rvert+(k\lvert B\rvert+rr)`$。
     [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
     $`\pi_0(E\langle l\rangle)=\pi_0(B\langle rr\rangle)+k\,d_0`$。
@@ -1178,21 +1178,21 @@ $`\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$ が成り�
 <a id="t-getD_mem"></a>
 ### 定理 範囲内の成分は要素である (T.getD_mem)
 
-**主張** $`i<\lvert l\rvert`$ ならば $`l\langle i\rangle\in l`$。
+**主張** $`i\lt \lvert l\rvert`$ ならば $`l\langle i\rangle\in l`$。
 
-**証明** $`i<\lvert l\rvert`$ のとき $`\mathrm{getD}`$ は既定値を返さず、$`l`$ の第 $`i`$ 要素を返す。
+**証明** $`i\lt \lvert l\rvert`$ のとき $`\mathrm{getD}`$ は既定値を返さず、$`l`$ の第 $`i`$ 要素を返す。
 第 $`i`$ 要素はリストの要素である（`List.getElem_mem`）。∎
 
 <a id="t-dominated_PM_zero"></a>
 ### 定理 支配ブロックでは水準最小位置は $`0`$ のみ (T.dominated_PM_zero)
 
-**主張** $`B:=(v_0,w_0)\mathbin{::}R`$ とし、$`\forall x\in R,\ v_0<\pi_0 x`$ を仮定する。
-$`q<\lvert B\rvert`$ かつ $`\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$ ならば $`q=0`$。
+**主張** $`B:=(v_0,w_0)\mathbin{::}R`$ とし、$`\forall x\in R,\ v_0\lt \pi_0 x`$ を仮定する。
+$`q\lt \lvert B\rvert`$ かつ $`\forall r\lt q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$ ならば $`q=0`$。
 
 **証明** $`q\ne0`$ と仮定して矛盾を導く。$`q=q'+1`$ と書ける。
-$`q<\lvert B\rvert=\lvert R\rvert+1`$ より $`q'<\lvert R\rvert`$ であるから、
+$`q\lt \lvert B\rvert=\lvert R\rvert+1`$ より $`q'\lt \lvert R\rvert`$ であるから、
 [(T.getD_mem)](#t-getD_mem) より $`R\langle q'\rangle\in R`$、
-したがって仮定より $`v_0<\pi_0(R\langle q'\rangle)`$。
+したがって仮定より $`v_0\lt \pi_0(R\langle q'\rangle)`$。
 一方、水準最小性の仮定を $`r:=0`$ に適用すると
 $`\pi_0(B\langle q\rangle)\le\pi_0(B\langle 0\rangle)`$ であり、
 $`B\langle 0\rangle=(v_0,w_0)`$、$`B\langle q'+1\rangle=R\langle q'\rangle`$ であるから
@@ -1201,16 +1201,16 @@ $`B\langle 0\rangle=(v_0,w_0)`$、$`B\langle q'+1\rangle=R\langle q'\rangle`$ �
 \pi_0(R\langle q'\rangle)\le v_0 .
 ```
 
-これは $`v_0<\pi_0(R\langle q'\rangle)`$ と矛盾する。∎
+これは $`v_0\lt \pi_0(R\langle q'\rangle)`$ と矛盾する。∎
 
 <a id="t-r1ok_min_d0zero"></a>
 ### 定理 $`d_0=0`$ の場合の前コピー証人 (T.r1ok_min_d0zero)
 
-**主張** $`B=(v_0,w_0)\mathbin{::}R`$、$`\forall x\in R,\ v_0<\pi_0 x`$、
+**主張** $`B=(v_0,w_0)\mathbin{::}R`$、$`\forall x\in R,\ v_0\lt \pi_0 x`$、
 $`\mathrm{r1ok}(G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp])`$ を仮定する。
-さらに $`0<k`$、$`k<n`$、$`q<\lvert B\rvert`$、
-$`\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$、
-$`0<\pi_0(B\langle q\rangle)+k\cdot0`$ を仮定する。
+さらに $`0\lt k`$、$`k\lt n`$、$`q\lt \lvert B\rvert`$、
+$`\forall r\lt q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$、
+$`0\lt \pi_0(B\langle q\rangle)+k\cdot0`$ を仮定する。
 このとき [(T.r1ok_copyExp)](#t-r1ok_copyExp) の仮定 2 の結論（$`d_0:=0`$ とした形）が成り立つ。
 すなわち $`p`$ が存在して
 
@@ -1226,13 +1226,13 @@ $`0<\pi_0(B\langle q\rangle)+k\cdot0`$ を仮定する。
 
 **証明** $`E:=\mathrm{cE}(G,B,0,n)`$、$`H:=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp]`$ とおく。
 [(T.dominated_PM_zero)](#t-dominated_PM_zero) より $`q=0`$。
-$`B\langle0\rangle=(v_0,w_0)`$ であるから、仮定 $`0<\pi_0(B\langle0\rangle)+k\cdot0=v_0`$ より $`0<v_0`$。
+$`B\langle0\rangle=(v_0,w_0)`$ であるから、仮定 $`0\lt \pi_0(B\langle0\rangle)+k\cdot0=v_0`$ より $`0\lt v_0`$。
 
 [(T.hostM_getD_blk)](#t-hostM_getD_blk) を $`q:=0`$ に適用して
 $`H\langle\lvert G\rvert\rangle=B\langle0\rangle=(v_0,w_0)`$。
-[(T.hostM_length)](#t-hostM_length) より $`\lvert G\rvert<\lvert H\rvert`$、
-かつ $`0<\pi_0(H\langle\lvert G\rvert\rangle)=v_0`$。
-$`\mathrm{r1ok}(H)`$ を位置 $`\lvert G\rvert`$ に適用して $`p<\lvert G\rvert`$ と
+[(T.hostM_length)](#t-hostM_length) より $`\lvert G\rvert\lt \lvert H\rvert`$、
+かつ $`0\lt \pi_0(H\langle\lvert G\rvert\rangle)=v_0`$。
+$`\mathrm{r1ok}(H)`$ を位置 $`\lvert G\rvert`$ に適用して $`p\lt \lvert G\rvert`$ と
 
 ```math
 \pi_0(H\langle p\rangle)+1=v_0,\qquad
@@ -1240,7 +1240,7 @@ $`\mathrm{r1ok}(H)`$ を位置 $`\lvert G\rvert`$ に適用して $`p<\lvert G\r
 w_0\le\pi_1(H\langle p\rangle)+1
 ```
 
-を得る。$`p<\lvert G\rvert`$ であるから
+を得る。$`p\lt \lvert G\rvert`$ であるから
 [(T.hostM_getD_pre)](#t-hostM_getD_pre) より $`H\langle p\rangle=G\langle p\rangle`$、
 [(T.copyExp_getD_pre)](#t-copyExp_getD_pre) より $`E\langle p\rangle=G\langle p\rangle`$。
 すなわち
@@ -1252,21 +1252,21 @@ w_0\le\pi_1(H\langle p\rangle)+1
 
 この $`p`$ が求める証人である。
 
-- $`p<\lvert G\rvert\le\lvert G\rvert+(k\lvert B\rvert+0)`$。
+- $`p\lt \lvert G\rvert\le\lvert G\rvert+(k\lvert B\rvert+0)`$。
 - $`\pi_0(E\langle p\rangle)+1=\pi_0(G\langle p\rangle)+1=v_0=v_0+k\cdot0`$（$`(\ast)`$）。
-- 第 3 条項 : $`p<l<\lvert G\rvert+k\lvert B\rvert`$ とし、$`v_0+k\cdot0=v_0\le\pi_0(E\langle l\rangle)`$ を示す。
-  - $`l<\lvert G\rvert`$ のとき。ホスト側の第 2 条項と
+- 第 3 条項 : $`p\lt l\lt \lvert G\rvert+k\lvert B\rvert`$ とし、$`v_0+k\cdot0=v_0\le\pi_0(E\langle l\rangle)`$ を示す。
+  - $`l\lt \lvert G\rvert`$ のとき。ホスト側の第 2 条項と
     [(T.hostM_getD_pre)](#t-hostM_getD_pre) より $`v_0\le\pi_0(G\langle l\rangle)`$、
     [(T.copyExp_getD_pre)](#t-copyExp_getD_pre) より $`\pi_0(E\langle l\rangle)=\pi_0(G\langle l\rangle)`$。
-  - $`\lvert G\rvert\le l`$ のとき。$`k<n`$ より $`k\lvert B\rvert\le n\lvert B\rvert`$ であるから
-    $`l-\lvert G\rvert<k\lvert B\rvert\le n\lvert B\rvert`$。
-    [(T.index_decomp)](#t-index_decomp)（$`0<\lvert B\rvert`$ は $`B=(v_0,w_0)\mathbin{::}R`$ による）
-    により $`k'<n`$、$`r<\lvert B\rvert`$、$`l=\lvert G\rvert+(k'\lvert B\rvert+r)`$ と書ける。
+  - $`\lvert G\rvert\le l`$ のとき。$`k\lt n`$ より $`k\lvert B\rvert\le n\lvert B\rvert`$ であるから
+    $`l-\lvert G\rvert\lt k\lvert B\rvert\le n\lvert B\rvert`$。
+    [(T.index_decomp)](#t-index_decomp)（$`0\lt \lvert B\rvert`$ は $`B=(v_0,w_0)\mathbin{::}R`$ による）
+    により $`k'\lt n`$、$`r\lt \lvert B\rvert`$、$`l=\lvert G\rvert+(k'\lvert B\rvert+r)`$ と書ける。
     [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
     $`\pi_0(E\langle l\rangle)=\pi_0(B\langle r\rangle)+k'\cdot0=\pi_0(B\langle r\rangle)`$。
     $`r=0`$ のとき $`\pi_0(B\langle0\rangle)=v_0`$、$`r=r''+1`$ のとき
     $`B\langle r\rangle=R\langle r''\rangle\in R`$（[(T.getD_mem)](#t-getD_mem)）より
-    $`v_0<\pi_0(B\langle r\rangle)`$。いずれも $`v_0\le\pi_0(E\langle l\rangle)`$。
+    $`v_0\lt \pi_0(B\langle r\rangle)`$。いずれも $`v_0\le\pi_0(E\langle l\rangle)`$。
 - 第 4 条項 : $`\pi_1(B\langle0\rangle)=w_0`$、$`\pi_1(E\langle p\rangle)=\pi_1(G\langle p\rangle)`$ であるから、
   $`(\ast)`$ の第 2 式がそのまま $`w_0\le\pi_1(E\langle p\rangle)+1`$ を与える。∎
 
@@ -1275,16 +1275,16 @@ w_0\le\pi_1(H\langle p\rangle)+1
 
 **主張** 次を仮定する。
 
-- $`B=(v_0,w_0)\mathbin{::}R`$、$`\forall x\in R,\ v_0<\pi_0 x`$；
-- $`0<d_0`$、$`\pi_0\,lp=v_0+d_0`$；
-- （$`\mathrm{hstep}`$）$`\forall r,\ r+1<\lvert B\rvert\to\pi_0(B\langle r+1\rangle)\le\pi_0(B\langle r\rangle)+1`$；
+- $`B=(v_0,w_0)\mathbin{::}R`$、$`\forall x\in R,\ v_0\lt \pi_0 x`$；
+- $`0\lt d_0`$、$`\pi_0\,lp=v_0+d_0`$；
+- （$`\mathrm{hstep}`$）$`\forall r,\ r+1\lt \lvert B\rvert\to\pi_0(B\langle r+1\rangle)\le\pi_0(B\langle r\rangle)+1`$；
 - （$`\mathrm{hlpstep}`$）$`\pi_0\,lp\le\pi_0(B\langle\lvert B\rvert-1\rangle)+1`$；
-- （$`\mathrm{hclimb}`$）$`\forall r'<\lvert B\rvert`$ について、$`\pi_0(B\langle r'\rangle)=v_0+d_0-1`$ かつ
-  $`\bigl(\forall rr,\ r'<rr<\lvert B\rvert\to v_0+d_0\le\pi_0(B\langle rr\rangle)\bigr)`$ ならば
+- （$`\mathrm{hclimb}`$）$`\forall r'\lt \lvert B\rvert`$ について、$`\pi_0(B\langle r'\rangle)=v_0+d_0-1`$ かつ
+  $`\bigl(\forall rr,\ r'\lt rr\lt \lvert B\rvert\to v_0+d_0\le\pi_0(B\langle rr\rangle)\bigr)`$ ならば
   $`w_0\le\pi_1(B\langle r'\rangle)+1`$；
-- $`0<k`$、$`k<n`$、$`q<\lvert B\rvert`$、
-  $`\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$、
-  $`0<\pi_0(B\langle q\rangle)+k\,d_0`$。
+- $`0\lt k`$、$`k\lt n`$、$`q\lt \lvert B\rvert`$、
+  $`\forall r\lt q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)`$、
+  $`0\lt \pi_0(B\langle q\rangle)+k\,d_0`$。
 
 このとき [(T.r1ok_copyExp)](#t-r1ok_copyExp) の仮定 2 の結論が成り立つ。すなわち $`p`$ が存在して
 
@@ -1300,10 +1300,10 @@ w_0\le\pi_1(H\langle p\rangle)+1
 
 **証明** $`E:=\mathrm{cE}(G,B,d_0,n)`$ とおく。
 [(T.dominated_PM_zero)](#t-dominated_PM_zero) より $`q=0`$。
-$`B=(v_0,w_0)\mathbin{::}R`$ より $`0<\lvert B\rvert`$ かつ $`B\langle0\rangle=(v_0,w_0)`$。
+$`B=(v_0,w_0)\mathbin{::}R`$ より $`0\lt \lvert B\rvert`$ かつ $`B\langle0\rangle=(v_0,w_0)`$。
 
 **証人位置の選択.** 述語 $`P(r):\iff \pi_0(B\langle r\rangle)\le v_0+d_0-1`$ を考える。
-$`\pi_0(B\langle0\rangle)=v_0\le v_0+d_0-1`$（$`0<d_0`$ による）であるから $`P(0)`$。
+$`\pi_0(B\langle0\rangle)=v_0\le v_0+d_0-1`$（$`0\lt d_0`$ による）であるから $`P(0)`$。
 $`r':=\mathrm{findGreatest}\,P\,(\lvert B\rvert-1)`$ とおくと、$`0\le\lvert B\rvert-1`$ と $`P(0)`$ から
 $`P(r')`$、また $`r'\le\lvert B\rvert-1`$、さらに
 
@@ -1311,7 +1311,7 @@ $`P(r')`$、また $`r'\le\lvert B\rvert-1`$、さらに
 \forall rr,\ r'<rr\le\lvert B\rvert-1\ \Rightarrow\ \neg P(rr).
 ```
 
-$`\neg P(rr)`$ は $`v_0+d_0-1<\pi_0(B\langle rr\rangle)`$ であり、$`0<d_0`$ より
+$`\neg P(rr)`$ は $`v_0+d_0-1\lt \pi_0(B\langle rr\rangle)`$ であり、$`0\lt d_0`$ より
 $`v_0+d_0-1+1=v_0+d_0`$ であるから
 
 ```math
@@ -1322,9 +1322,9 @@ $`v_0+d_0-1+1=v_0+d_0`$ であるから
 **水準の一致.** $`\pi_0(B\langle r'\rangle)=v_0+d_0-1`$ を示す。$`P(r')`$ より
 $`\pi_0(B\langle r'\rangle)\le v_0+d_0-1`$ である。逆向きを示す。
 
-- $`r'<\lvert B\rvert-1`$ のとき。$`\neg P(r'+1)`$ より $`v_0+d_0-1<\pi_0(B\langle r'+1\rangle)`$。
+- $`r'\lt \lvert B\rvert-1`$ のとき。$`\neg P(r'+1)`$ より $`v_0+d_0-1\lt \pi_0(B\langle r'+1\rangle)`$。
   $`\mathrm{hstep}`$ を $`r:=r'`$ に適用して $`\pi_0(B\langle r'+1\rangle)\le\pi_0(B\langle r'\rangle)+1`$。
-  合わせて $`v_0+d_0-1<\pi_0(B\langle r'\rangle)+1`$、すなわち
+  合わせて $`v_0+d_0-1\lt \pi_0(B\langle r'\rangle)+1`$、すなわち
   $`v_0+d_0-1\le\pi_0(B\langle r'\rangle)`$。
 - $`r'=\lvert B\rvert-1`$ のとき。$`\mathrm{hlpstep}`$ と $`\pi_0\,lp=v_0+d_0`$ より
   $`v_0+d_0\le\pi_0(B\langle\lvert B\rvert-1\rangle)+1`$、すなわち
@@ -1332,39 +1332,39 @@ $`\pi_0(B\langle r'\rangle)\le v_0+d_0-1`$ である。逆向きを示す。
 
 いずれの場合も $`\pi_0(B\langle r'\rangle)=v_0+d_0-1`$。 $`(2.2)`$ とおく。
 
-**乗算の整理.** $`0<k`$ であるから
+**乗算の整理.** $`0\lt k`$ であるから
 
 ```math
 k\lvert B\rvert=(k-1)\lvert B\rvert+\lvert B\rvert,\qquad k\,d_0=(k-1)d_0+d_0,\qquad k-1<n .
 ```
 
-（$`k=m+1`$ と書けば $`(m+1)L=mL+L`$ による。$`k-1<k<n`$。）
-また $`r'\le\lvert B\rvert-1`$ と $`0<\lvert B\rvert`$ より $`r'<\lvert B\rvert`$。
+（$`k=m+1`$ と書けば $`(m+1)L=mL+L`$ による。$`k-1\lt k\lt n`$。）
+また $`r'\le\lvert B\rvert-1`$ と $`0\lt \lvert B\rvert`$ より $`r'\lt \lvert B\rvert`$。
 
 **証人.** $`p^\ast:=\lvert G\rvert+((k-1)\lvert B\rvert+r')`$ とする。
 
-- $`p^\ast<\lvert G\rvert+(k\lvert B\rvert+0)`$ : $`r'<\lvert B\rvert`$ より
-  $`(k-1)\lvert B\rvert+r'<(k-1)\lvert B\rvert+\lvert B\rvert=k\lvert B\rvert`$。
-- [(T.copyExp_getD_copy)](#t-copyExp_getD_copy)（$`k-1<n`$、$`r'<\lvert B\rvert`$）と $`(2.2)`$ より
+- $`p^\ast\lt \lvert G\rvert+(k\lvert B\rvert+0)`$ : $`r'\lt \lvert B\rvert`$ より
+  $`(k-1)\lvert B\rvert+r'\lt (k-1)\lvert B\rvert+\lvert B\rvert=k\lvert B\rvert`$。
+- [(T.copyExp_getD_copy)](#t-copyExp_getD_copy)（$`k-1\lt n`$、$`r'\lt \lvert B\rvert`$）と $`(2.2)`$ より
 
   ```math
   \pi_0(E\langle p^\ast\rangle)+1=\pi_0(B\langle r'\rangle)+(k-1)d_0+1
   =(v_0+d_0-1)+(k-1)d_0+1=v_0+d_0+(k-1)d_0=v_0+k\,d_0,
   ```
 
-  これは $`\pi_0(B\langle 0\rangle)+k\,d_0`$ に等しい（$`0<d_0`$ より $`v_0+d_0-1+1=v_0+d_0`$）。
-- 第 3 条項 : $`p^\ast<l<\lvert G\rvert+k\lvert B\rvert`$ とする。
-  $`k<n`$ より $`l-\lvert G\rvert<k\lvert B\rvert\le n\lvert B\rvert`$ であるから
-  [(T.index_decomp)](#t-index_decomp) により $`k''<n`$、$`rr<\lvert B\rvert`$、
+  これは $`\pi_0(B\langle 0\rangle)+k\,d_0`$ に等しい（$`0\lt d_0`$ より $`v_0+d_0-1+1=v_0+d_0`$）。
+- 第 3 条項 : $`p^\ast\lt l\lt \lvert G\rvert+k\lvert B\rvert`$ とする。
+  $`k\lt n`$ より $`l-\lvert G\rvert\lt k\lvert B\rvert\le n\lvert B\rvert`$ であるから
+  [(T.index_decomp)](#t-index_decomp) により $`k''\lt n`$、$`rr\lt \lvert B\rvert`$、
   $`l-\lvert G\rvert=k''\lvert B\rvert+rr`$ と書ける。まず $`k''=k-1`$ を示す。
-  - $`k''<k-1`$ とすると $`k''+1\le k-1`$ より $`(k''+1)\lvert B\rvert\le(k-1)\lvert B\rvert`$、
+  - $`k''\lt k-1`$ とすると $`k''+1\le k-1`$ より $`(k''+1)\lvert B\rvert\le(k-1)\lvert B\rvert`$、
     すなわち $`k''\lvert B\rvert+\lvert B\rvert\le(k-1)\lvert B\rvert`$。
-    したがって $`l-\lvert G\rvert=k''\lvert B\rvert+rr<k''\lvert B\rvert+\lvert B\rvert\le(k-1)\lvert B\rvert\le(k-1)\lvert B\rvert+r'`$
-    となり、$`p^\ast<l`$ に反する。
-  - $`k-1<k''`$ とすると $`k\le k''`$ より $`k\lvert B\rvert\le k''\lvert B\rvert\le l-\lvert G\rvert`$ となり、
-    $`l<\lvert G\rvert+k\lvert B\rvert`$ に反する。
+    したがって $`l-\lvert G\rvert=k''\lvert B\rvert+rr\lt k''\lvert B\rvert+\lvert B\rvert\le(k-1)\lvert B\rvert\le(k-1)\lvert B\rvert+r'`$
+    となり、$`p^\ast\lt l`$ に反する。
+  - $`k-1\lt k''`$ とすると $`k\le k''`$ より $`k\lvert B\rvert\le k''\lvert B\rvert\le l-\lvert G\rvert`$ となり、
+    $`l\lt \lvert G\rvert+k\lvert B\rvert`$ に反する。
 
-  よって $`k''=k-1`$ であり、$`p^\ast<l`$ から $`r'<rr`$。
+  よって $`k''=k-1`$ であり、$`p^\ast\lt l`$ から $`r'\lt rr`$。
   [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
   $`\pi_0(E\langle l\rangle)=\pi_0(B\langle rr\rangle)+(k-1)d_0`$。
   $`(2.1)`$ を $`rr`$ に適用して $`v_0+d_0\le\pi_0(B\langle rr\rangle)`$、よって
@@ -1375,7 +1375,7 @@ k\lvert B\rvert=(k-1)\lvert B\rvert+\lvert B\rvert,\qquad k\,d_0=(k-1)d_0+d_0,\q
   ```
 - 第 4 条項 : [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
   $`\pi_1(E\langle p^\ast\rangle)=\pi_1(B\langle r'\rangle)`$、また $`\pi_1(B\langle0\rangle)=w_0`$。
-  $`\mathrm{hclimb}`$ を $`r'`$（$`r'<\lvert B\rvert`$、$`(2.2)`$、$`(2.1)`$）に適用して
+  $`\mathrm{hclimb}`$ を $`r'`$（$`r'\lt \lvert B\rvert`$、$`(2.2)`$、$`(2.1)`$）に適用して
   $`w_0\le\pi_1(B\langle r'\rangle)+1`$、すなわち
   $`\pi_1(B\langle 0\rangle)\le\pi_1(E\langle p^\ast\rangle)+1`$。∎
 
@@ -1399,7 +1399,7 @@ $`[lp]\langle\lvert G\rvert+\lvert B\rvert-(\lvert G\rvert+\lvert B\rvert)\rangl
 
 **証明** [(D.Pred)](Def.md#d-Pred) の定義により場合分けする。
 $`\lvert M\rvert\le1`$ のとき $`\mathrm{Pred}\,M=M`$ であるから仮定そのもの。
-$`\lvert M\rvert>1`$ のとき $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$ であるから
+$`\lvert M\rvert\gt 1`$ のとき $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$ であるから
 [(T.r1ok_dropLast)](#t-r1ok_dropLast) による。∎
 
 <a id="t-climb_bound"></a>
@@ -1407,19 +1407,19 @@ $`\lvert M\rvert>1`$ のとき $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$ であ�
 
 **主張** $`M=G\mathbin{+\!\!+}((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]`$、$`B:=(v_0,w_0)\mathbin{::}R`$ とし、
 
-- $`0<d_0`$、$`\pi_0\,lp=v_0+d_0`$、$`w_0<\pi_1\,lp`$、
+- $`0\lt d_0`$、$`\pi_0\,lp=v_0+d_0`$、$`w_0\lt \pi_1\,lp`$、
 - $`\mathrm{nextrel1}\,M\,\lvert G\rvert\,(\lvert M\rvert-1)`$、すなわち
   $`\lvert G\rvert\to^M_1(\lvert M\rvert-1)`$（[(D.nextrel1)](Def.md#d-nextrel1)）、
-- $`r'<\lvert B\rvert`$、$`\pi_0(B\langle r'\rangle)=v_0+d_0-1`$、
-- $`\forall rr,\ r'<rr<\lvert B\rvert\to v_0+d_0\le\pi_0(B\langle rr\rangle)`$
+- $`r'\lt \lvert B\rvert`$、$`\pi_0(B\langle r'\rangle)=v_0+d_0-1`$、
+- $`\forall rr,\ r'\lt rr\lt \lvert B\rvert\to v_0+d_0\le\pi_0(B\langle rr\rangle)`$
 
 を仮定する。このとき $`w_0\le\pi_1(B\langle r'\rangle)+1`$。
 
-**証明** $`r'=0`$ か $`r'>0`$ かで分ける。
+**証明** $`r'=0`$ か $`r'\gt 0`$ かで分ける。
 
 **$`r'=0`$ のとき。** $`B\langle0\rangle=(v_0,w_0)`$ であるから目標は $`w_0\le w_0+1`$ であり、成り立つ。
 
-**$`0<r'`$ のとき。** [(T.hostM_length)](#t-hostM_length) より
+**$`0\lt r'`$ のとき。** [(T.hostM_length)](#t-hostM_length) より
 $`\lvert M\rvert=\lvert G\rvert+\lvert B\rvert+1`$、したがって
 $`j_1:=\lvert M\rvert-1=\lvert G\rvert+\lvert B\rvert`$。
 [(D.entry)](Def.md#d-entry)、[(T.hostM_getD_blk)](#t-hostM_getD_blk)、
@@ -1434,12 +1434,12 @@ M_{0,\ j_1}=\pi_0\,lp=v_0+d_0 .
 **主張 A : $`(\lvert G\rvert+r')\to^M_0 j_1`$**（[(D.nextrel0)](Def.md#d-nextrel0)）。
 5 つの条件を順に確かめる。
 
-1. $`\lvert G\rvert+r'<\lvert M\rvert`$ : $`r'<\lvert B\rvert`$ と $`\lvert M\rvert=\lvert G\rvert+\lvert B\rvert+1`$ による。
-2. $`j_1<\lvert M\rvert`$ : $`j_1=\lvert M\rvert-1`$ と $`\lvert M\rvert\ge1`$ による。
-3. $`\lvert G\rvert+r'<j_1=\lvert G\rvert+\lvert B\rvert`$ : $`r'<\lvert B\rvert`$ による。
-4. $`M_{0,\lvert G\rvert+r'}<M_{0,j_1}`$ : $`(3.1)`$ と $`0<d_0`$ より $`v_0+d_0-1<v_0+d_0`$。
-5. $`\lvert G\rvert+r'<j<j_1`$ なる $`j`$ について $`M_{0,j_1}\le M_{0,j}`$ :
-   そのような $`j`$ は $`j=\lvert G\rvert+rr`$（$`r'<rr<\lvert B\rvert`$）と書け、
+1. $`\lvert G\rvert+r'\lt \lvert M\rvert`$ : $`r'\lt \lvert B\rvert`$ と $`\lvert M\rvert=\lvert G\rvert+\lvert B\rvert+1`$ による。
+2. $`j_1\lt \lvert M\rvert`$ : $`j_1=\lvert M\rvert-1`$ と $`\lvert M\rvert\ge1`$ による。
+3. $`\lvert G\rvert+r'\lt j_1=\lvert G\rvert+\lvert B\rvert`$ : $`r'\lt \lvert B\rvert`$ による。
+4. $`M_{0,\lvert G\rvert+r'}\lt M_{0,j_1}`$ : $`(3.1)`$ と $`0\lt d_0`$ より $`v_0+d_0-1\lt v_0+d_0`$。
+5. $`\lvert G\rvert+r'\lt j\lt j_1`$ なる $`j`$ について $`M_{0,j_1}\le M_{0,j}`$ :
+   そのような $`j`$ は $`j=\lvert G\rvert+rr`$（$`r'\lt rr\lt \lvert B\rvert`$）と書け、
    [(T.hostM_getD_blk)](#t-hostM_getD_blk) より $`M_{0,j}=\pi_0(B\langle rr\rangle)`$。
    仮定の最後の条項より $`v_0+d_0\le\pi_0(B\langle rr\rangle)`$ であり、$`(3.1)`$ より
    $`M_{0,j_1}=v_0+d_0`$。
@@ -1449,7 +1449,7 @@ M_{0,\ j_1}=\pi_0\,lp=v_0+d_0 .
 
 **結論.** 仮定 $`\lvert G\rvert\to^M_1 j_1`$ の第 6 条項（[(D.nextrel1)](Def.md#d-nextrel1) の
 最大性条項）を $`j:=\lvert G\rvert+r'`$ に適用する。その前提は
-$`\lvert G\rvert<\lvert G\rvert+r'`$（$`0<r'`$ による）と主張 B であり、結論は
+$`\lvert G\rvert\lt \lvert G\rvert+r'`$（$`0\lt r'`$ による）と主張 B であり、結論は
 
 ```math
 M_{1,j_1}\le M_{1,\ \lvert G\rvert+r'} .
@@ -1463,7 +1463,7 @@ $`M_{1,j_1}=\pi_1\,lp`$、$`M_{1,\lvert G\rvert+r'}=\pi_1(B\langle r'\rangle)`$ 
 \pi_1\,lp\le\pi_1(B\langle r'\rangle).
 ```
 
-仮定 $`w_0<\pi_1\,lp`$ と合わせて $`w_0<\pi_1(B\langle r'\rangle)`$、
+仮定 $`w_0\lt \pi_1\,lp`$ と合わせて $`w_0\lt \pi_1(B\langle r'\rangle)`$、
 したがって $`w_0\le\pi_1(B\langle r'\rangle)+1`$。∎
 
 <a id="t-r1ok_oper"></a>
@@ -1483,7 +1483,7 @@ $`\mathrm{r1ok}(M[n])`$。
   $`\neg\,\mathrm{hasParent}(M,\mathrm{idx}_1(M,j_1),j_1)`$。**
   [(T.oper_eq_pred_of_noParent)](Mechanized.md#t-oper_eq_pred_of_noParent) より
   $`M[n]=\mathrm{Pred}\,M`$ であり、[(T.r1ok_Pred)](#t-r1ok_Pred) による。
-- **分岐 (d) : 残りの場合。** $`j_1\ne0`$ より $`1<\lvert M\rvert`$。
+- **分岐 (d) : 残りの場合。** $`j_1\ne0`$ より $`1\lt \lvert M\rvert`$。
   [(T.oper_bad_blocks)](Mechanized.md#t-oper_bad_blocks) を適用して
   $`G,v_0,w_0,R,d_0,lp`$ を取る。$`B:=(v_0,w_0)\mathbin{::}R`$ とおくと
 
@@ -1504,9 +1504,9 @@ $`\mathrm{r1ok}(M[n])`$。
 
   仮定 $`\mathrm{r1ok}(M)`$、$`\mathrm{steps1}(M)`$ を $`M=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp]`$ の形に書き換える。
 
-  **$`\mathrm{hstep}`$ の導出.** $`r+1<\lvert B\rvert`$ とする。
+  **$`\mathrm{hstep}`$ の導出.** $`r+1\lt \lvert B\rvert`$ とする。
   [(T.steps1_iff)](Seqlex.md#t-steps1_iff) をホストと添字 $`\lvert G\rvert+r`$ に適用する。
-  適用条件 $`\lvert G\rvert+r+1<\lvert M\rvert=\lvert G\rvert+\lvert B\rvert+1`$ は $`r+1<\lvert B\rvert`$ による。
+  適用条件 $`\lvert G\rvert+r+1\lt \lvert M\rvert=\lvert G\rvert+\lvert B\rvert+1`$ は $`r+1\lt \lvert B\rvert`$ による。
   結論は $`\pi_0(M\langle\lvert G\rvert+r+1\rangle)\le\pi_0(M\langle\lvert G\rvert+r\rangle)+1`$ であり、
   $`\lvert G\rvert+r+1=\lvert G\rvert+(r+1)`$ と [(T.hostM_getD_blk)](#t-hostM_getD_blk) により
 
@@ -1515,8 +1515,8 @@ $`\mathrm{r1ok}(M[n])`$。
   ```
 
   **$`\mathrm{hlpstep}`$ の導出.** [(T.steps1_iff)](Seqlex.md#t-steps1_iff) を添字
-  $`\lvert G\rvert+(\lvert B\rvert-1)`$ に適用する。$`0<\lvert B\rvert`$ であるから
-  $`\lvert G\rvert+(\lvert B\rvert-1)+1=\lvert G\rvert+\lvert B\rvert<\lvert M\rvert`$。
+  $`\lvert G\rvert+(\lvert B\rvert-1)`$ に適用する。$`0\lt \lvert B\rvert`$ であるから
+  $`\lvert G\rvert+(\lvert B\rvert-1)+1=\lvert G\rvert+\lvert B\rvert\lt \lvert M\rvert`$。
   結論の左辺は [(T.hostM_getD_lp)](#t-hostM_getD_lp) により $`\pi_0\,lp`$、
   右辺は [(T.hostM_getD_blk)](#t-hostM_getD_blk) により
   $`\pi_0(B\langle\lvert B\rvert-1\rangle)+1`$ である。
@@ -1525,9 +1525,9 @@ $`\mathrm{r1ok}(M[n])`$。
   仮定 2（$`\mathrm{hmin}`$）は上の選言で分けて与える。
 
   - 第 1 選言（$`d_0=0`$）のとき : [(T.r1ok_min_d0zero)](#t-r1ok_min_d0zero) による。
-  - 第 2 選言（$`0<d_0`$）のとき : [(T.r1ok_min_d0pos)](#t-r1ok_min_d0pos) による。
+  - 第 2 選言（$`0\lt d_0`$）のとき : [(T.r1ok_min_d0pos)](#t-r1ok_min_d0pos) による。
     その仮定 $`\mathrm{hclimb}`$ は [(T.climb_bound)](#t-climb_bound) が与える
-    （$`M=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp]`$、$`0<d_0`$、$`\pi_0\,lp=v_0+d_0`$、$`w_0<\pi_1\,lp`$、
+    （$`M=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp]`$、$`0\lt d_0`$、$`\pi_0\,lp=v_0+d_0`$、$`w_0\lt \pi_1\,lp`$、
     $`\lvert G\rvert\to^M_1 j_1`$ はすべて第 2 選言に含まれている）。∎
 
 <a id="t-r1ok_ST_PS"></a>
@@ -1591,10 +1591,10 @@ Lean の当該節見出しはこの節の意図（末尾付加が正規化像に
 （[(D.lead)](Mechanized.md#d-lead), [(D.hdarg)](#d-hdarg)）。
 $`t=\mathsf P(e,f,g)`$ のとき $`\mathrm{lead}\,t=e`$、$`\mathrm{hdarg}\,t=f`$ であるから、
 これは [(D.ins)](Nrm.md#d-ins) の分岐条件
-$`\bigl(a<e\vee(a=e\wedge b\prec f)\bigr)`$ の否定に一致する。すなわち
+$`\bigl(a\lt e\vee(a=e\wedge b\prec f)\bigr)`$ の否定に一致する。すなわち
 $`\mathrm{noabsorb}(a,b,t)`$ のとき $`\mathrm{ins}_a(b,t)=\mathsf P(a,b,t)`$ である
 （$`t=\mathsf Z`$ のときは $`\mathrm{lead}\,\mathsf Z=0`$、$`\mathrm{hdarg}\,\mathsf Z=\mathsf Z`$ であるから
-$`a<0`$ も $`b\prec\mathsf Z`$ も成り立たず、$`\mathrm{noabsorb}(a,b,\mathsf Z)`$ は常に真であり、
+$`a\lt 0`$ も $`b\prec\mathsf Z`$ も成り立たず、$`\mathrm{noabsorb}(a,b,\mathsf Z)`$ は常に真であり、
 [(T.ins_Z)](Nrm.md#t-ins_Z) より $`\mathrm{ins}_a(b,\mathsf Z)=\mathsf P(a,b,\mathsf Z)`$）。
 本章の他の宣言はこの述語を用いない。
 
@@ -1624,7 +1624,7 @@ $`\forall g\in G_u(m),\ g\prec m`$ である。$`g\in G_u(m)`$ を取る。
 
 - [(T.Gterm_trans)](#t-Gterm_trans) を $`g\in G_u(m)`$ と $`m\in G_u(b)`$ に適用して $`g\in G_u(b)`$。
 - [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) を $`g\in G_u(m)`$ に適用して
-  $`\lVert g\rVert<\lVert m\rVert`$。したがって $`g\ne m`$（$`g=m`$ なら $`\lVert m\rVert<\lVert m\rVert`$）。
+  $`\lVert g\rVert\lt \lVert m\rVert`$。したがって $`g\ne m`$（$`g=m`$ なら $`\lVert m\rVert\lt \lVert m\rVert`$）。
 
 $`g\prec b`$ か否かで分ける。
 
@@ -1728,13 +1728,13 @@ $`\mathrm{Bad}_0(b)=[]`$。[(D.mvstep)](#d-mvstep) の第 1 分岐である。�
 <a id="t-tsize_mvstep_lt"></a>
 ### 定理 一段はサイズを真に減らす (T.tsize_mvstep_lt)
 
-**主張** $`\mathrm{fire}_0(b)`$ ならば $`\lVert\mathrm{mv}(b)\rVert<\lVert b\rVert`$。
+**主張** $`\mathrm{fire}_0(b)`$ ならば $`\lVert\mathrm{mv}(b)\rVert\lt \lVert b\rVert`$。
 
 **証明** $`\mathrm{Bad}_0(b)\ne[]`$ であるから $`\mathrm{mv}(b)=\mathrm{mx}_0(b)`$。
 [(T.maxo_hdtl_in)](Nrm.md#t-maxo_hdtl_in) より $`\mathrm{mx}_0(b)\in\mathrm{Bad}_0(b)`$、
 したがって [(T.mem_filter_Gterm)](#t-mem_filter_Gterm) より $`\mathrm{mx}_0(b)\in G_0(b)`$。
 [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) により
-$`\lVert\mathrm{mx}_0(b)\rVert<\lVert b\rVert`$。∎
+$`\lVert\mathrm{mx}_0(b)\rVert\lt \lVert b\rVert`$。∎
 
 <a id="t-proj0_olt_of_mvstep_olt"></a>
 ### 定理 一段の狭義単調性から射影の狭義単調性へ (T.proj0_olt_of_mvstep_olt)
@@ -1754,7 +1754,7 @@ $`\lVert\mathrm{mx}_0(b)\rVert<\lVert b\rVert`$。∎
 \mathrm{proj}_0(x)\prec\mathrm{proj}_0(y).
 ```
 
-$`n`$ を固定し、帰納法の仮定として $`\forall m<n,\ \Phi(m)`$ を仮定する。
+$`n`$ を固定し、帰納法の仮定として $`\forall m\lt n,\ \Phi(m)`$ を仮定する。
 $`\lVert x\rVert=n`$ なる $`x`$ と $`y`$ を取り、$`R\,x\,y`$、$`x\prec y`$ を仮定する。
 $`\mathrm{fire}_0(x)`$ か否かで分ける。
 
@@ -1762,7 +1762,7 @@ $`\mathrm{fire}_0(x)`$ か否かで分ける。
   [(T.proj_mvstep)](#t-proj_mvstep) より
   $`\mathrm{proj}_0(x)=\mathrm{proj}_0(\mathrm{mv}(x))`$、$`\mathrm{proj}_0(y)=\mathrm{proj}_0(\mathrm{mv}(y))`$
   であるから、示すべきは $`\mathrm{proj}_0(\mathrm{mv}(x))\prec\mathrm{proj}_0(\mathrm{mv}(y))`$。
-  [(T.tsize_mvstep_lt)](#t-tsize_mvstep_lt) より $`\lVert\mathrm{mv}(x)\rVert<\lVert x\rVert=n`$、
+  [(T.tsize_mvstep_lt)](#t-tsize_mvstep_lt) より $`\lVert\mathrm{mv}(x)\rVert\lt \lVert x\rVert=n`$、
   $`\mathrm{hpres}`$ より $`R\,(\mathrm{mv}(x))\,(\mathrm{mv}(y))`$、
   $`\mathrm{hstep}`$ より $`\mathrm{mv}(x)\prec\mathrm{mv}(y)`$。
   帰納法の仮定 $`\Phi(\lVert\mathrm{mv}(x)\rVert)`$ を適用して結論を得る。
@@ -1861,7 +1861,7 @@ $`M`$ から $`K`$ に到達できることを表す。本章の他の宣言は�
 <a id="t-nextrel0_bound"></a>
 ### 定理 行 0 の親子関係の上界 (T.nextrel0_bound)
 
-**主張** $`a\to^M_0 b`$ ならば $`b<\lvert M\rvert`$。
+**主張** $`a\to^M_0 b`$ ならば $`b\lt \lvert M\rvert`$。
 
 **証明** [(D.nextrel0)](Def.md#d-nextrel0) の第 2 条件そのものである。∎
 
@@ -1883,7 +1883,7 @@ $`M`$ から $`K`$ に到達できることを表す。本章の他の宣言は�
 
 **帰納段（tail）** $`\mathrm{ReflTransGen}(\to^M_0)\,a\,y`$ と $`y\to^M_0 z`$ から
 $`\mathrm{ReflTransGen}(\to^M_0)\,a\,z`$ が導かれた場合。帰納法の仮定は $`\Psi(y)`$、すなわち $`a\le y`$。
-[(T.nextrel0_lt)](Nrm.md#t-nextrel0_lt) より $`y<z`$ であるから $`a\le y\le z`$、
+[(T.nextrel0_lt)](Nrm.md#t-nextrel0_lt) より $`y\lt z`$ であるから $`a\le y\le z`$、
 すなわち $`\Psi(z)`$。∎
 
 ---
@@ -1903,7 +1903,7 @@ $`\mathrm{ReflTransGen}(\to^M_0)\,a\,z`$ が導かれた場合。帰納法の仮
 **主張** $`\mathrm{z0ok}(\Delta_0^v)`$。
 
 **証明** [(T.diagSeq0_length)](#t-diagSeq0_length) より $`\lvert\Delta_0^v\rvert=v+1`$。
-$`j<v+1`$ とすると [(T.diagSeq0_getD)](#t-diagSeq0_getD) より $`\Delta_0^v\langle j\rangle=(j,j)`$。
+$`j\lt v+1`$ とすると [(T.diagSeq0_getD)](#t-diagSeq0_getD) より $`\Delta_0^v\langle j\rangle=(j,j)`$。
 仮定 $`\pi_0(\Delta_0^v\langle j\rangle)=j=0`$ より $`\pi_1(\Delta_0^v\langle j\rangle)=j=0`$。∎
 
 <a id="t-z0ok_take"></a>
@@ -1911,7 +1911,7 @@ $`j<v+1`$ とすると [(T.diagSeq0_getD)](#t-diagSeq0_getD) より $`\Delta_0^v
 
 **主張** $`\mathrm{z0ok}(M)`$ ならば $`\mathrm{z0ok}(\mathrm{take}\,m\,M)`$。
 
-**証明** $`j<\lvert\mathrm{take}\,m\,M\rvert=\min(m,\lvert M\rvert)`$ とすると $`j<m`$ かつ $`j<\lvert M\rvert`$。
+**証明** $`j\lt \lvert\mathrm{take}\,m\,M\rvert=\min(m,\lvert M\rvert)`$ とすると $`j\lt m`$ かつ $`j\lt \lvert M\rvert`$。
 [(T.getD_take)](#t-getD_take) より $`(\mathrm{take}\,m\,M)\langle j\rangle=M\langle j\rangle`$ であるから、
 仮定と結論はいずれも $`M\langle j\rangle`$ についての主張に書き換わり、$`\mathrm{z0ok}(M)`$ を
 $`j`$ に適用すればよい。∎
@@ -1923,7 +1923,7 @@ $`j`$ に適用すればよい。∎
 
 **証明** [(D.Pred)](Def.md#d-Pred) の定義により場合分けする。
 $`\lvert M\rvert\le1`$ のとき $`\mathrm{Pred}\,M=M`$ であるから仮定そのもの。
-$`\lvert M\rvert>1`$ のとき $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M=\mathrm{take}\,(\lvert M\rvert-1)\,M`$
+$`\lvert M\rvert\gt 1`$ のとき $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M=\mathrm{take}\,(\lvert M\rvert-1)\,M`$
 であるから [(T.z0ok_take)](#t-z0ok_take) による。∎
 
 <a id="t-z0ok_copyExp"></a>
@@ -1933,17 +1933,17 @@ $`\lvert M\rvert>1`$ のとき $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M=\mathrm{t
 
 **証明** $`E:=\mathrm{cE}(G,B,d_0,n)`$、$`H:=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp]`$ とおく。
 [(T.copyExp_length)](#t-copyExp_length) より $`\lvert E\rvert=\lvert G\rvert+n\lvert B\rvert`$。
-$`j<\lvert E\rvert`$、$`\pi_0(E\langle j\rangle)=0`$ とし、$`\pi_1(E\langle j\rangle)=0`$ を示す。
+$`j\lt \lvert E\rvert`$、$`\pi_0(E\langle j\rangle)=0`$ とし、$`\pi_1(E\langle j\rangle)=0`$ を示す。
 
-- **$`j<\lvert G\rvert`$ のとき。**
+- **$`j\lt \lvert G\rvert`$ のとき。**
   [(T.copyExp_getD_pre)](#t-copyExp_getD_pre) より $`E\langle j\rangle=G\langle j\rangle`$、
   [(T.hostM_getD_pre)](#t-hostM_getD_pre) より $`H\langle j\rangle=G\langle j\rangle`$。
-  [(T.hostM_length)](#t-hostM_length) より $`j<\lvert H\rvert`$ であるから、
+  [(T.hostM_length)](#t-hostM_length) より $`j\lt \lvert H\rvert`$ であるから、
   仮定 $`\mathrm{z0ok}(H)`$ を $`j`$ に適用して結論を得る。
-- **$`\lvert G\rvert\le j`$ のとき。** まず $`0<\lvert B\rvert`$ である。実際 $`\lvert B\rvert=0`$ ならば
-  $`\lvert E\rvert=\lvert G\rvert`$ となり $`\lvert G\rvert\le j<\lvert G\rvert`$ という矛盾が生じる。
-  $`j-\lvert G\rvert<n\lvert B\rvert`$ であるから [(T.index_decomp)](#t-index_decomp) により
-  $`k<n`$、$`q<\lvert B\rvert`$、$`j=\lvert G\rvert+(k\lvert B\rvert+q)`$ と書ける。
+- **$`\lvert G\rvert\le j`$ のとき。** まず $`0\lt \lvert B\rvert`$ である。実際 $`\lvert B\rvert=0`$ ならば
+  $`\lvert E\rvert=\lvert G\rvert`$ となり $`\lvert G\rvert\le j\lt \lvert G\rvert`$ という矛盾が生じる。
+  $`j-\lvert G\rvert\lt n\lvert B\rvert`$ であるから [(T.index_decomp)](#t-index_decomp) により
+  $`k\lt n`$、$`q\lt \lvert B\rvert`$、$`j=\lvert G\rvert+(k\lvert B\rvert+q)`$ と書ける。
   [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
 
   ```math
@@ -1953,7 +1953,7 @@ $`j<\lvert E\rvert`$、$`\pi_0(E\langle j\rangle)=0`$ とし、$`\pi_1(E\langle 
   仮定 $`\pi_0(E\langle j\rangle)=0`$ は $`\pi_0(B\langle q\rangle)+k\,d_0=0`$ であり、
   自然数の和が $`0`$ であることから $`\pi_0(B\langle q\rangle)=0`$。
   [(T.hostM_getD_blk)](#t-hostM_getD_blk) より $`H\langle\lvert G\rvert+q\rangle=B\langle q\rangle`$ であり、
-  [(T.hostM_length)](#t-hostM_length) より $`\lvert G\rvert+q<\lvert H\rvert`$ であるから、
+  [(T.hostM_length)](#t-hostM_length) より $`\lvert G\rvert+q\lt \lvert H\rvert`$ であるから、
   仮定 $`\mathrm{z0ok}(H)`$ を位置 $`\lvert G\rvert+q`$ に適用して $`\pi_1(B\langle q\rangle)=0`$。
   これは $`\pi_1(E\langle j\rangle)=0`$ である。∎
 
@@ -1968,13 +1968,13 @@ $`j<\lvert E\rvert`$、$`\pi_0(E\langle j\rangle)=0`$ とし、$`\pi_1(E\langle 
 
 **証明** $`k_1`$ と $`k_2`$ の三分律で場合分けする。
 
-- **$`k_1<k_2`$ のとき。** $`k_1\to^M_0 j`$ の第 5 条件（[(D.nextrel0)](Def.md#d-nextrel0)）を
-  $`j:=k_2`$ に適用する。前提は $`k_1<k_2`$（仮定）と $`k_2<j`$（$`k_2\to^M_0 j`$ の第 3 条件）であり、
-  結論は $`M_{0,j}\le M_{0,k_2}`$。一方 $`k_2\to^M_0 j`$ の第 4 条件は $`M_{0,k_2}<M_{0,j}`$ である。
+- **$`k_1\lt k_2`$ のとき。** $`k_1\to^M_0 j`$ の第 5 条件（[(D.nextrel0)](Def.md#d-nextrel0)）を
+  $`j:=k_2`$ に適用する。前提は $`k_1\lt k_2`$（仮定）と $`k_2\lt j`$（$`k_2\to^M_0 j`$ の第 3 条件）であり、
+  結論は $`M_{0,j}\le M_{0,k_2}`$。一方 $`k_2\to^M_0 j`$ の第 4 条件は $`M_{0,k_2}\lt M_{0,j}`$ である。
   この 2 つは両立しない。
 - **$`k_1=k_2`$ のとき。** 結論そのもの。
-- **$`k_2<k_1`$ のとき。** $`k_2\to^M_0 j`$ の第 5 条件を $`j:=k_1`$ に適用すると
-  $`M_{0,j}\le M_{0,k_1}`$、$`k_1\to^M_0 j`$ の第 4 条件は $`M_{0,k_1}<M_{0,j}`$ であり、両立しない。∎
+- **$`k_2\lt k_1`$ のとき。** $`k_2\to^M_0 j`$ の第 5 条件を $`j:=k_1`$ に適用すると
+  $`M_{0,j}\le M_{0,k_1}`$、$`k_1\to^M_0 j`$ の第 4 条件は $`M_{0,k_1}\lt M_{0,j}`$ であり、両立しない。∎
 
 <a id="t-nextrel1_unique"></a>
 ### 定理 行 1 の親は一意 (T.nextrel1_unique)
@@ -1983,21 +1983,21 @@ $`j<\lvert E\rvert`$、$`\pi_0(E\langle j\rangle)=0`$ とし、$`\pi_1(E\langle 
 
 **証明** $`k_1`$ と $`k_2`$ の三分律で場合分けする。
 
-- **$`k_1<k_2`$ のとき。** $`k_1\to^M_1 j`$ の第 6 条件（[(D.nextrel1)](Def.md#d-nextrel1) の最大性条項）を
-  $`j:=k_2`$ に適用する。前提は $`k_1<k_2`$（仮定）と $`k_2\le^M_0 j`$（$`k_2\to^M_1 j`$ の第 5 条件）であり、
-  結論は $`M_{1,j}\le M_{1,k_2}`$。一方 $`k_2\to^M_1 j`$ の第 4 条件は $`M_{1,k_2}<M_{1,j}`$ である。
+- **$`k_1\lt k_2`$ のとき。** $`k_1\to^M_1 j`$ の第 6 条件（[(D.nextrel1)](Def.md#d-nextrel1) の最大性条項）を
+  $`j:=k_2`$ に適用する。前提は $`k_1\lt k_2`$（仮定）と $`k_2\le^M_0 j`$（$`k_2\to^M_1 j`$ の第 5 条件）であり、
+  結論は $`M_{1,j}\le M_{1,k_2}`$。一方 $`k_2\to^M_1 j`$ の第 4 条件は $`M_{1,k_2}\lt M_{1,j}`$ である。
   この 2 つは両立しない。
 - **$`k_1=k_2`$ のとき。** 結論そのもの。
-- **$`k_2<k_1`$ のとき。** $`k_2\to^M_1 j`$ の第 6 条件を $`j:=k_1`$ に適用すると
-  $`M_{1,j}\le M_{1,k_1}`$、$`k_1\to^M_1 j`$ の第 4 条件は $`M_{1,k_1}<M_{1,j}`$ であり、両立しない。∎
+- **$`k_2\lt k_1`$ のとき。** $`k_2\to^M_1 j`$ の第 6 条件を $`j:=k_1`$ に適用すると
+  $`M_{1,j}\le M_{1,k_1}`$、$`k_1\to^M_1 j`$ の第 4 条件は $`M_{1,k_1}\lt M_{1,j}`$ であり、両立しない。∎
 
 <a id="t-blockok_head_zero"></a>
 ### 定理 深さ 0 ブロックの先頭は水準 0 (T.blockok_head_zero)
 
-**主張** $`\mathrm{blockok}\,0\,M`$（[(D.blockok)](Seqlex.md#d-blockok)）かつ $`0<\lvert M\rvert`$ ならば
+**主張** $`\mathrm{blockok}\,0\,M`$（[(D.blockok)](Seqlex.md#d-blockok)）かつ $`0\lt \lvert M\rvert`$ ならば
 $`\pi_0(M\langle0\rangle)=0`$。
 
-**証明** $`0<\lvert M\rvert`$ より $`M=m_0\mathbin{::}M'`$ と書ける。
+**証明** $`0\lt \lvert M\rvert`$ より $`M=m_0\mathbin{::}M'`$ と書ける。
 このとき $`M\langle0\rangle=m_0`$ かつ $`\mathrm{headI}\,M=m_0`$。
 [(D.blockok)](Seqlex.md#d-blockok) の第 1 成分は「$`M\ne[]`$ ならば $`\pi_0(\mathrm{headI}\,M)=0`$」であり、
 $`M=m_0\mathbin{::}M'\ne[]`$ であるから $`\pi_0(m_0)=0`$。∎
@@ -2005,24 +2005,24 @@ $`M=m_0\mathbin{::}M'\ne[]`$ であるから $`\pi_0(m_0)=0`$。∎
 <a id="t-parent0_exists"></a>
 ### 定理 行 0 の親の存在 (T.parent0_exists)
 
-**主張** $`\mathrm{blockok}\,0\,M`$、$`j<\lvert M\rvert`$、$`0<M_{0,j}`$ ならば
+**主張** $`\mathrm{blockok}\,0\,M`$、$`j\lt \lvert M\rvert`$、$`0\lt M_{0,j}`$ ならば
 $`\exists k,\ k\to^M_0 j`$。
 
-**証明** まず $`0<j`$ である。実際 $`j=0`$ とすると
+**証明** まず $`0\lt j`$ である。実際 $`j=0`$ とすると
 [(T.blockok_head_zero)](#t-blockok_head_zero) より $`M_{0,0}=\pi_0(M\langle0\rangle)=0`$ となり、
-仮定 $`0<M_{0,j}=M_{0,0}`$ に反する。
+仮定 $`0\lt M_{0,j}=M_{0,0}`$ に反する。
 
-述語 $`P(k):\iff M_{0,k}<M_{0,j}`$ を考える。$`M_{0,0}=0<M_{0,j}`$ より $`P(0)`$ が成り立つ。
+述語 $`P(k):\iff M_{0,k}\lt M_{0,j}`$ を考える。$`M_{0,0}=0\lt M_{0,j}`$ より $`P(0)`$ が成り立つ。
 $`k:=\mathrm{findGreatest}\,P\,(j-1)`$ とおく。$`0\le j-1`$ と $`P(0)`$ から $`P(k)`$、また $`k\le j-1`$。
 この $`k`$ が [(D.nextrel0)](Def.md#d-nextrel0) の 5 条件を満たすことを示す。
 
-1. $`k<\lvert M\rvert`$ : $`k\le j-1<j<\lvert M\rvert`$（$`0<j`$ による）。
-2. $`j<\lvert M\rvert`$ : 仮定。
-3. $`k<j`$ : $`k\le j-1`$ と $`0<j`$。
-4. $`M_{0,k}<M_{0,j}`$ : $`P(k)`$ そのもの。
-5. $`k<l<j`$ なる $`l`$ について $`M_{0,j}\le M_{0,l}`$ :
+1. $`k\lt \lvert M\rvert`$ : $`k\le j-1\lt j\lt \lvert M\rvert`$（$`0\lt j`$ による）。
+2. $`j\lt \lvert M\rvert`$ : 仮定。
+3. $`k\lt j`$ : $`k\le j-1`$ と $`0\lt j`$。
+4. $`M_{0,k}\lt M_{0,j}`$ : $`P(k)`$ そのもの。
+5. $`k\lt l\lt j`$ なる $`l`$ について $`M_{0,j}\le M_{0,l}`$ :
    $`l\le j-1`$ であるから $`\mathrm{findGreatest\_is\_greatest}`$ により $`\neg P(l)`$、
-   すなわち $`\neg(M_{0,l}<M_{0,j})`$、したがって $`M_{0,j}\le M_{0,l}`$。∎
+   すなわち $`\neg(M_{0,l}\lt M_{0,j})`$、したがって $`M_{0,j}\le M_{0,l}`$。∎
 
 ---
 
@@ -2032,7 +2032,7 @@ $`k:=\mathrm{findGreatest}\,P\,(j-1)`$ とおく。$`0\le j-1`$ と $`P(0)`$ か
 ### 定理 水準 0 への連鎖 (T.chain_to_zero)
 
 **主張** $`\mathrm{blockok}\,0\,M`$ ならば、任意の $`lev,j`$ について
-$`M_{0,j}=lev`$ かつ $`j<\lvert M\rvert`$ ならば
+$`M_{0,j}=lev`$ かつ $`j\lt \lvert M\rvert`$ ならば
 
 ```math
 \exists r,\ r\le j\ \wedge\ M_{0,r}=0\ \wedge\ \mathrm{ReflTransGen}(\to^M_0)\,r\,j .
@@ -2045,49 +2045,49 @@ $`M_{0,j}=lev`$ かつ $`j<\lvert M\rvert`$ ならば
 \exists r,\ r\le j\wedge M_{0,r}=0\wedge\mathrm{ReflTransGen}(\to^M_0)\,r\,j .
 ```
 
-$`lev`$ を固定し、帰納法の仮定として $`\forall lev'<lev,\ \Phi(lev')`$ を仮定する。
-$`M_{0,j}=lev`$、$`j<\lvert M\rvert`$ なる $`j`$ を取る。
+$`lev`$ を固定し、帰納法の仮定として $`\forall lev'\lt lev,\ \Phi(lev')`$ を仮定する。
+$`M_{0,j}=lev`$、$`j\lt \lvert M\rvert`$ なる $`j`$ を取る。
 
 - **$`M_{0,j}=0`$ のとき。** $`r:=j`$ とすればよい。$`j\le j`$、$`M_{0,j}=0`$、
   反射推移閉包の反射性により $`\mathrm{ReflTransGen}(\to^M_0)\,j\,j`$。
-- **$`M_{0,j}\ne0`$、すなわち $`0<M_{0,j}`$ のとき。**
+- **$`M_{0,j}\ne0`$、すなわち $`0\lt M_{0,j}`$ のとき。**
   [(T.parent0_exists)](#t-parent0_exists) により $`k\to^M_0 j`$ なる $`k`$ が取れる。
-  [(D.nextrel0)](Def.md#d-nextrel0) の第 4 条件より $`M_{0,k}<M_{0,j}=lev`$、
-  第 1 条件より $`k<\lvert M\rvert`$、第 3 条件より $`k<j`$。
-  帰納法の仮定を $`lev':=M_{0,k}`$（$`<lev`$）と $`j:=k`$ に適用して、
+  [(D.nextrel0)](Def.md#d-nextrel0) の第 4 条件より $`M_{0,k}\lt M_{0,j}=lev`$、
+  第 1 条件より $`k\lt \lvert M\rvert`$、第 3 条件より $`k\lt j`$。
+  帰納法の仮定を $`lev':=M_{0,k}`$（$`\lt lev`$）と $`j:=k`$ に適用して、
   $`r\le k`$、$`M_{0,r}=0`$、$`\mathrm{ReflTransGen}(\to^M_0)\,r\,k`$ なる $`r`$ を得る。
   この連鎖の末尾に 1 歩 $`k\to^M_0 j`$ を継ぎ足せば $`\mathrm{ReflTransGen}(\to^M_0)\,r\,j`$、
-  また $`r\le k<j`$ より $`r\le j`$。∎
+  また $`r\le k\lt j`$ より $`r\le j`$。∎
 
 <a id="t-parent1_exists"></a>
 ### 定理 行 1 の親の存在 (T.parent1_exists)
 
-**主張** $`\mathrm{blockok}\,0\,M`$、$`\mathrm{z0ok}(M)`$、$`j<\lvert M\rvert`$、$`0<M_{1,j}`$ ならば
+**主張** $`\mathrm{blockok}\,0\,M`$、$`\mathrm{z0ok}(M)`$、$`j\lt \lvert M\rvert`$、$`0\lt M_{1,j}`$ ならば
 $`\exists k,\ k\to^M_1 j`$。
 
 **証明** [(T.chain_to_zero)](#t-chain_to_zero) を $`lev:=M_{0,j}`$ に適用して、
 $`r\le j`$、$`M_{0,r}=0`$、$`\mathrm{ReflTransGen}(\to^M_0)\,r\,j`$ なる $`r`$ を得る。
-$`r\le j<\lvert M\rvert`$ であるから $`\mathrm{z0ok}(M)`$ を $`r`$ に適用でき、
+$`r\le j\lt \lvert M\rvert`$ であるから $`\mathrm{z0ok}(M)`$ を $`r`$ に適用でき、
 $`\pi_0(M\langle r\rangle)=M_{0,r}=0`$ より $`\pi_1(M\langle r\rangle)=0`$、すなわち $`M_{1,r}=0`$。
-仮定 $`0<M_{1,j}`$ より $`M_{1,r}\ne M_{1,j}`$、したがって $`r\ne j`$、よって $`r<j`$。
+仮定 $`0\lt M_{1,j}`$ より $`M_{1,r}\ne M_{1,j}`$、したがって $`r\ne j`$、よって $`r\lt j`$。
 
-述語 $`P(k):\iff \bigl(k\le^M_0 j\ \wedge\ M_{1,k}<M_{1,j}\bigr)`$ を考える。
-$`P(r)`$ が成り立つ。実際 $`r<\lvert M\rvert`$、$`j<\lvert M\rvert`$、上の連鎖より $`r\le^M_0 j`$ であり、
-$`M_{1,r}=0<M_{1,j}`$。
+述語 $`P(k):\iff \bigl(k\le^M_0 j\ \wedge\ M_{1,k}\lt M_{1,j}\bigr)`$ を考える。
+$`P(r)`$ が成り立つ。実際 $`r\lt \lvert M\rvert`$、$`j\lt \lvert M\rvert`$、上の連鎖より $`r\le^M_0 j`$ であり、
+$`M_{1,r}=0\lt M_{1,j}`$。
 
-$`k:=\mathrm{findGreatest}\,P\,(j-1)`$ とおく。$`r\le j-1`$（$`r<j`$ による）と $`P(r)`$ から $`P(k)`$、
+$`k:=\mathrm{findGreatest}\,P\,(j-1)`$ とおく。$`r\le j-1`$（$`r\lt j`$ による）と $`P(r)`$ から $`P(k)`$、
 また $`k\le j-1`$。この $`k`$ が [(D.nextrel1)](Def.md#d-nextrel1) の 6 条件を満たすことを示す。
 
-1. $`k<\lvert M\rvert`$ : $`k\le j-1<j<\lvert M\rvert`$（$`r<j`$ より $`0<j`$）。
-2. $`j<\lvert M\rvert`$ : 仮定。
-3. $`k<j`$ : $`k\le j-1`$ と $`0<j`$。
-4. $`M_{1,k}<M_{1,j}`$ : $`P(k)`$ の第 2 成分。
+1. $`k\lt \lvert M\rvert`$ : $`k\le j-1\lt j\lt \lvert M\rvert`$（$`r\lt j`$ より $`0\lt j`$）。
+2. $`j\lt \lvert M\rvert`$ : 仮定。
+3. $`k\lt j`$ : $`k\le j-1`$ と $`0\lt j`$。
+4. $`M_{1,k}\lt M_{1,j}`$ : $`P(k)`$ の第 2 成分。
 5. $`k\le^M_0 j`$ : $`P(k)`$ の第 1 成分。
-6. $`k<j'`$ かつ $`j'\le^M_0 j`$ なる $`j'`$ について $`M_{1,j}\le M_{1,j'}`$ :
+6. $`k\lt j'`$ かつ $`j'\le^M_0 j`$ なる $`j'`$ について $`M_{1,j}\le M_{1,j'}`$ :
    [(T.le0_le)](#t-le0_le) より $`j'\le j`$。
    - $`j'=j`$ のとき $`M_{1,j}\le M_{1,j}`$。
-   - $`j'<j`$ のとき、$`M_{1,j'}<M_{1,j}`$ と仮定すると $`P(j')`$ が成り立ち、
-     $`k<j'\le j-1`$ であるから $`\mathrm{findGreatest\_is\_greatest}`$ に反する。
+   - $`j'\lt j`$ のとき、$`M_{1,j'}\lt M_{1,j}`$ と仮定すると $`P(j')`$ が成り立ち、
+     $`k\lt j'\le j-1`$ であるから $`\mathrm{findGreatest\_is\_greatest}`$ に反する。
      よって $`M_{1,j}\le M_{1,j'}`$。∎
 
 <a id="t-nextR_one_iff"></a>
@@ -2108,7 +2108,7 @@ $`1\ne0`$ であるから $`\to^M_1`$ の分岐が選ばれる。∎
 <a id="t-hp_last"></a>
 ### 定理 非零な最終列には一意な親が存在する (T.hp_last)
 
-**主張** $`\mathrm{blockok}\,0\,M`$、$`\mathrm{z0ok}(M)`$、$`0<\lvert M\rvert`$、
+**主張** $`\mathrm{blockok}\,0\,M`$、$`\mathrm{z0ok}(M)`$、$`0\lt \lvert M\rvert`$、
 $`M\langle\lvert M\rvert-1\rangle\ne(0,0)`$ ならば
 
 ```math
@@ -2117,10 +2117,10 @@ $`M\langle\lvert M\rvert-1\rangle\ne(0,0)`$ ならば
 
 （[(D.hasParent)](Def.md#d-hasParent), [(D.idx1)](Def.md#d-idx1)）。
 
-**証明** $`j_1:=\lvert M\rvert-1`$ とおく。$`0<\lvert M\rvert`$ より $`j_1<\lvert M\rvert`$。
-$`0<M_{1,j_1}`$ か否かで場合分けする。
+**証明** $`j_1:=\lvert M\rvert-1`$ とおく。$`0\lt \lvert M\rvert`$ より $`j_1\lt \lvert M\rvert`$。
+$`0\lt M_{1,j_1}`$ か否かで場合分けする。
 
-- **$`0<M_{1,j_1}`$ のとき。** [(D.idx1)](Def.md#d-idx1) より $`\mathrm{idx}_1(M,j_1)=1`$。
+- **$`0\lt M_{1,j_1}`$ のとき。** [(D.idx1)](Def.md#d-idx1) より $`\mathrm{idx}_1(M,j_1)=1`$。
   [(T.parent1_exists)](#t-parent1_exists) により $`k\to^M_1 j_1`$ なる $`k`$ が取れる。
   [(T.nextR_one_iff)](#t-nextR_one_iff) よりこれは $`\mathrm{nextR}\,M\,1\,k\,j_1`$、
   すなわち $`\mathrm{nextR}\,M\,(\mathrm{idx}_1(M,j_1))\,k\,j_1`$ である。
@@ -2128,7 +2128,7 @@ $`0<M_{1,j_1}`$ か否かで場合分けする。
   $`\mathrm{idx}_1(M,j_1)=1`$ と [(T.nextR_one_iff)](#t-nextR_one_iff) より $`y\to^M_1 j_1`$、
   [(T.nextrel1_unique)](#t-nextrel1_unique) より $`y=k`$。
   よって [(D.hasParent)](Def.md#d-hasParent) の $`\exists!`$ が成り立つ。
-- **$`M_{1,j_1}=0`$ のとき。** このとき $`0<M_{0,j_1}`$ である。実際 $`M_{0,j_1}=0`$ と仮定すると、
+- **$`M_{1,j_1}=0`$ のとき。** このとき $`0\lt M_{0,j_1}`$ である。実際 $`M_{0,j_1}=0`$ と仮定すると、
   [(D.entry)](Def.md#d-entry) より $`\pi_0(M\langle j_1\rangle)=0`$ かつ $`\pi_1(M\langle j_1\rangle)=0`$、
   すなわち $`M\langle j_1\rangle=(0,0)`$ となり仮定に反する。
   [(D.idx1)](Def.md#d-idx1) より $`\mathrm{idx}_1(M,j_1)=0`$。
@@ -2158,7 +2158,7 @@ Lean の当該節見出しの直後に置かれているのは、$`\mathrm{z0ok}
 - **分岐 (c) : 親をもたない場合。**
   [(T.oper_eq_pred_of_noParent)](Mechanized.md#t-oper_eq_pred_of_noParent) より
   $`M[n]=\mathrm{Pred}\,M`$、[(T.z0ok_Pred)](#t-z0ok_Pred) による。
-- **分岐 (d) : 残りの場合。** $`j_1\ne0`$ より $`1<\lvert M\rvert`$。
+- **分岐 (d) : 残りの場合。** $`j_1\ne0`$ より $`1\lt \lvert M\rvert`$。
   [(T.oper_bad_blocks)](Mechanized.md#t-oper_bad_blocks) により
   $`M=G\mathbin{+\!\!+}((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]`$ かつ
   $`M[n]=\mathrm{cE}(G,(v_0,w_0)\mathbin{::}R,d_0,n)`$ なる分解が得られる。
@@ -2205,7 +2205,7 @@ Lean の当該節見出しの直後に置かれているのは、$`\mathrm{z0ok}
 ```
 
 すなわち、行 1 の親辺が先頭（位置 $`0`$）に固定された列において、
-先頭と最終列の行 0 の親 $`r'`$ の間にある位置 $`r`$（$`0<r<r'`$）の行 0 の値は、
+先頭と最終列の行 0 の親 $`r'`$ の間にある位置 $`r`$（$`0\lt r\lt r'`$）の行 0 の値は、
 最終列の行 0 の値より 2 以上小さい。本章の他の宣言はこの述語を用いない。
 
 ---
@@ -2215,7 +2215,7 @@ Lean の当該節見出しの直後に置かれているのは、$`\mathrm{z0ok}
 <a id="t-rtg_through_pivot"></a>
 ### 定理 連鎖はピボットを通過する (T.rtg_through_pivot)
 
-**主張** $`\rho\in\mathbb{N}`$ とする。$`\mathrm{ReflTransGen}(\to^M_0)\,a\,b`$、$`a<\rho`$、$`\rho\le b`$、
+**主張** $`\rho\in\mathbb{N}`$ とする。$`\mathrm{ReflTransGen}(\to^M_0)\,a\,b`$、$`a\lt \rho`$、$`\rho\le b`$、
 および
 
 ```math
@@ -2233,36 +2233,36 @@ $`b`$ と 3 つの仮定は帰納法の述語の内側に置く）。帰納法�
 \mathrm{ReflTransGen}(\to^M_0)\,\rho\,b .
 ```
 
-**基底段（refl）** $`b=a`$。仮定 $`a<\rho`$ と $`\rho\le b=a`$ から $`a<a`$ となり、前提が偽である。
+**基底段（refl）** $`b=a`$。仮定 $`a\lt \rho`$ と $`\rho\le b=a`$ から $`a\lt a`$ となり、前提が偽である。
 よって $`\Psi(a)`$ が成り立つ。
 
 **帰納段（tail）** $`\mathrm{ReflTransGen}(\to^M_0)\,a\,y`$ と $`y\to^M_0 z`$ から
 $`\mathrm{ReflTransGen}(\to^M_0)\,a\,z`$ が導かれた場合。帰納法の仮定は $`\Psi(y)`$ である。
-$`a<\rho`$、$`\rho\le z`$、および $`(\rho,z]`$ 上のピボット条件 $`\mathrm{hpiv}`$ を仮定する。
+$`a\lt \rho`$、$`\rho\le z`$、および $`(\rho,z]`$ 上のピボット条件 $`\mathrm{hpiv}`$ を仮定する。
 
-- **$`\rho\le y`$ のとき。** [(T.nextrel0_lt)](Nrm.md#t-nextrel0_lt) より $`y<z`$、
+- **$`\rho\le y`$ のとき。** [(T.nextrel0_lt)](Nrm.md#t-nextrel0_lt) より $`y\lt z`$、
   したがって $`y\le z`$。ピボット条件を $`(\rho,y]`$ に制限すると
-  ($`\rho<y'\le y\le z`$ より) $`\mathrm{hpiv}`$ が使えるから、$`\Psi(y)`$ を
-  $`a<\rho`$、$`\rho\le y`$、制限したピボット条件に適用して
+  ($`\rho\lt y'\le y\le z`$ より) $`\mathrm{hpiv}`$ が使えるから、$`\Psi(y)`$ を
+  $`a\lt \rho`$、$`\rho\le y`$、制限したピボット条件に適用して
   $`\mathrm{ReflTransGen}(\to^M_0)\,\rho\,y`$ を得る。
   この連鎖の末尾に 1 歩 $`y\to^M_0 z`$ を継ぎ足して $`\mathrm{ReflTransGen}(\to^M_0)\,\rho\,z`$。
-- **$`y<\rho`$ のとき。** $`\rho\le z`$ をさらに $`\rho=z`$ と $`\rho<z`$ に分ける。
+- **$`y\lt \rho`$ のとき。** $`\rho\le z`$ をさらに $`\rho=z`$ と $`\rho\lt z`$ に分ける。
   - $`\rho=z`$ のとき、目標は $`\mathrm{ReflTransGen}(\to^M_0)\,\rho\,\rho`$ であり、反射性による。
-  - $`\rho<z`$ のとき、$`y\to^M_0 z`$ の第 5 条件（[(D.nextrel0)](Def.md#d-nextrel0)）を $`j:=\rho`$ に
-    適用する。前提は $`y<\rho`$ と $`\rho<z`$ であり、結論は $`M_{0,z}\le M_{0,\rho}`$。
-    一方 $`\mathrm{hpiv}`$ を $`y:=z`$（$`\rho<z\le z`$）に適用すると $`M_{0,\rho}<M_{0,z}`$。
+  - $`\rho\lt z`$ のとき、$`y\to^M_0 z`$ の第 5 条件（[(D.nextrel0)](Def.md#d-nextrel0)）を $`j:=\rho`$ に
+    適用する。前提は $`y\lt \rho`$ と $`\rho\lt z`$ であり、結論は $`M_{0,z}\le M_{0,\rho}`$。
+    一方 $`\mathrm{hpiv}`$ を $`y:=z`$（$`\rho\lt z\le z`$）に適用すると $`M_{0,\rho}\lt M_{0,z}`$。
     この 2 つは両立しないから、この場合は起こらない。∎
 
 <a id="t-le0_through_pivot"></a>
 ### 定理 祖先関係はピボットを通過する (T.le0_through_pivot)
 
-**主張** $`a\le^M_0 b`$、$`a<\rho`$、$`\rho\le b`$、
-$`\forall y,\ \rho<y\to y\le b\to M_{0,\rho}<M_{0,y}`$ ならば $`\rho\le^M_0 b`$。
+**主張** $`a\le^M_0 b`$、$`a\lt \rho`$、$`\rho\le b`$、
+$`\forall y,\ \rho\lt y\to y\le b\to M_{0,\rho}\lt M_{0,y}`$ ならば $`\rho\le^M_0 b`$。
 
 **証明** [(D.le0)](Def.md#d-le0) より $`a\le^M_0 b`$ は
-「$`a<\lvert M\rvert`$ かつ $`b<\lvert M\rvert`$ かつ $`\mathrm{ReflTransGen}(\to^M_0)\,a\,b`$」である。
-結論の 3 条件を確かめる。$`\rho<\lvert M\rvert`$ は $`\rho\le b<\lvert M\rvert`$ による。
-$`b<\lvert M\rvert`$ はそのまま。連鎖は [(T.rtg_through_pivot)](#t-rtg_through_pivot) による。∎
+「$`a\lt \lvert M\rvert`$ かつ $`b\lt \lvert M\rvert`$ かつ $`\mathrm{ReflTransGen}(\to^M_0)\,a\,b`$」である。
+結論の 3 条件を確かめる。$`\rho\lt \lvert M\rvert`$ は $`\rho\le b\lt \lvert M\rvert`$ による。
+$`b\lt \lvert M\rvert`$ はそのまま。連鎖は [(T.rtg_through_pivot)](#t-rtg_through_pivot) による。∎
 
 ---
 
@@ -2274,13 +2274,13 @@ $`b<\lvert M\rvert`$ はそのまま。連鎖は [(T.rtg_through_pivot)](#t-rtg_
 <a id="t-entry_shift"></a>
 ### 定理 平行移動後の成分 (T.entry_shift)
 
-**主張** $`j<\lvert S\rvert`$ ならば
+**主張** $`j\lt \lvert S\rvert`$ ならば
 
 ```math
 (S^{+d})_{0,j}=S_{0,j}+d\qquad\text{かつ}\qquad (S^{+d})_{1,j}=S_{1,j}.
 ```
 
-**証明** $`\lvert S^{+d}\rvert=\lvert S\rvert`$ であるから $`j<\lvert S^{+d}\rvert`$ であり、
+**証明** $`\lvert S^{+d}\rvert=\lvert S\rvert`$ であるから $`j\lt \lvert S^{+d}\rvert`$ であり、
 [(T.getD_eq_getElem')](Wf.md#t-getD_eq_getElem') により $`\mathrm{getD}`$ は既定値を返さず
 第 $`j`$ 要素そのものである。`map` の第 $`j`$ 要素は写像の値であるから
 
@@ -2294,19 +2294,19 @@ $`(S^{+d})_{1,j}`$ は第 1 成分であるから、主張の 2 式を得る。�
 <a id="t-nextrel0_shift_iff"></a>
 ### 定理 行 0 の親子関係は平行移動不変 (T.nextrel0_shift_iff)
 
-**主張** $`b<\lvert S\rvert`$ ならば $`\bigl(a\to^{S^{+d}}_0 b\iff a\to^S_0 b\bigr)`$。
+**主張** $`b\lt \lvert S\rvert`$ ならば $`\bigl(a\to^{S^{+d}}_0 b\iff a\to^S_0 b\bigr)`$。
 
 **証明** $`\lvert S^{+d}\rvert=\lvert S\rvert`$ であるから、
 [(D.nextrel0)](Def.md#d-nextrel0) の第 1・2・3 条件は両辺で同一の命題である。
 
-第 4 条件。第 3 条件 $`a<b`$ と $`b<\lvert S\rvert`$ より $`a<\lvert S\rvert`$ であるから
+第 4 条件。第 3 条件 $`a\lt b`$ と $`b\lt \lvert S\rvert`$ より $`a\lt \lvert S\rvert`$ であるから
 [(T.entry_shift)](#t-entry_shift) が $`a`$ と $`b`$ の双方に適用でき、
 
 ```math
 (S^{+d})_{0,a}<(S^{+d})_{0,b}\iff S_{0,a}+d<S_{0,b}+d\iff S_{0,a}<S_{0,b}.
 ```
 
-第 5 条件。$`a<l<b`$ なる $`l`$ は $`l<b<\lvert S\rvert`$ を満たすから
+第 5 条件。$`a\lt l\lt b`$ なる $`l`$ は $`l\lt b\lt \lvert S\rvert`$ を満たすから
 [(T.entry_shift)](#t-entry_shift) が $`l`$ と $`b`$ に適用でき、
 
 ```math
@@ -2331,7 +2331,7 @@ $`(S^{+d})_{1,j}`$ は第 1 成分であるから、主張の 2 式を得る。�
 **帰納段（tail）** $`\mathrm{ReflTransGen}(\to^{S^{+d}}_0)\,a\,c`$ と $`c\to^{S^{+d}}_0 e`$ の場合。
 帰納法の仮定は $`\Psi(c)`$、すなわち $`\mathrm{ReflTransGen}(\to^S_0)\,a\,c`$。
 [(T.nextrel0_bound)](#t-nextrel0_bound) を $`c\to^{S^{+d}}_0 e`$ に適用して
-$`e<\lvert S^{+d}\rvert=\lvert S\rvert`$。
+$`e\lt \lvert S^{+d}\rvert=\lvert S\rvert`$。
 [(T.nextrel0_shift_iff)](#t-nextrel0_shift_iff) により $`c\to^S_0 e`$。
 連鎖の末尾にこの 1 歩を継ぎ足して $`\Psi(e)`$。∎
 
@@ -2349,7 +2349,7 @@ $`e<\lvert S^{+d}\rvert=\lvert S\rvert`$。
 **基底段（refl）** $`b=a`$。反射性による。
 
 **帰納段（tail）** $`\mathrm{ReflTransGen}(\to^{S}_0)\,a\,c`$ と $`c\to^{S}_0 e`$ の場合。
-帰納法の仮定は $`\Psi(c)`$。[(T.nextrel0_bound)](#t-nextrel0_bound) より $`e<\lvert S\rvert`$ であるから
+帰納法の仮定は $`\Psi(c)`$。[(T.nextrel0_bound)](#t-nextrel0_bound) より $`e\lt \lvert S\rvert`$ であるから
 [(T.nextrel0_shift_iff)](#t-nextrel0_shift_iff) により $`c\to^{S^{+d}}_0 e`$。
 連鎖の末尾にこの 1 歩を継ぎ足して $`\Psi(e)`$。∎
 
@@ -2371,7 +2371,7 @@ $`\lvert S^{+d}\rvert=\lvert S\rvert`$ により両辺で同一である。
 **証明** [(D.idx1)](Def.md#d-idx1) は $`S_{1,j}`$ が正か否かで値が決まるから、
 $`(S^{+d})_{1,j}=S_{1,j}`$ を示せばよい。
 
-- $`j<\lvert S\rvert`$ のとき。[(T.entry_shift)](#t-entry_shift) の第 2 式による。
+- $`j\lt \lvert S\rvert`$ のとき。[(T.entry_shift)](#t-entry_shift) の第 2 式による。
 - $`j\ge\lvert S\rvert`$ のとき。$`\lvert S^{+d}\rvert=\lvert S\rvert`$ であるから
   $`j`$ は両列の範囲外であり、$`\mathrm{getD}`$ はいずれも既定値 $`(0,0)`$ を返す。
   よって [(D.entry)](Def.md#d-entry) より $`(S^{+d})_{1,j}=0=S_{1,j}`$。∎
@@ -2379,19 +2379,19 @@ $`(S^{+d})_{1,j}=S_{1,j}`$ を示せばよい。
 <a id="t-nextrel1_shift_iff"></a>
 ### 定理 行 1 の親子関係は平行移動不変 (T.nextrel1_shift_iff)
 
-**主張** $`b<\lvert S\rvert`$ ならば $`\bigl(a\to^{S^{+d}}_1 b\iff a\to^S_1 b\bigr)`$。
+**主張** $`b\lt \lvert S\rvert`$ ならば $`\bigl(a\to^{S^{+d}}_1 b\iff a\to^S_1 b\bigr)`$。
 
 **証明** $`\lvert S^{+d}\rvert=\lvert S\rvert`$ であるから
 [(D.nextrel1)](Def.md#d-nextrel1) の第 1・2・3 条件は両辺で同一である。
 
-第 4 条件。第 3 条件 $`a<b`$ と $`b<\lvert S\rvert`$ より $`a<\lvert S\rvert`$ であるから
+第 4 条件。第 3 条件 $`a\lt b`$ と $`b\lt \lvert S\rvert`$ より $`a\lt \lvert S\rvert`$ であるから
 [(T.entry_shift)](#t-entry_shift) の第 2 式が $`a`$ と $`b`$ に適用でき、
 $`(S^{+d})_{1,a}=S_{1,a}`$、$`(S^{+d})_{1,b}=S_{1,b}`$。よって両辺は同一の命題である。
 
 第 5 条件。[(T.le0_shift_iff)](#t-le0_shift_iff) による。
 
-第 6 条件。$`a<l`$ かつ $`l\le^S_0 b`$（[(T.le0_shift_iff)](#t-le0_shift_iff) により
-$`l\le^{S^{+d}}_0 b`$ と同値）なる $`l`$ を取ると、[(T.le0_le)](#t-le0_le) より $`l\le b<\lvert S\rvert`$ で
+第 6 条件。$`a\lt l`$ かつ $`l\le^S_0 b`$（[(T.le0_shift_iff)](#t-le0_shift_iff) により
+$`l\le^{S^{+d}}_0 b`$ と同値）なる $`l`$ を取ると、[(T.le0_le)](#t-le0_le) より $`l\le b\lt \lvert S\rvert`$ で
 あるから [(T.entry_shift)](#t-entry_shift) の第 2 式が $`l`$ と $`b`$ に適用でき、
 $`(S^{+d})_{1,b}\le(S^{+d})_{1,l}\iff S_{1,b}\le S_{1,l}`$。
 

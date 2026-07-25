@@ -56,7 +56,7 @@ $`\mathrm{tsize}`$ は [(D.tsize)](Wfsum.md#d-tsize)。
 これは $`\lvert D\rvert`$ に関する強帰納法である。実際、$`D = []`$ なら条件 1 が結論そのものであり、
 $`D \ne []`$ なら標準ライブラリの `List.dropLast_append_getLast` により
 $`D = \mathrm{dropLast}\,D \mathbin{+\!\!+} [\,\mathrm{getLast}\,D\,]`$ と書け、
-$`\lvert \mathrm{dropLast}\,D\rvert = \lvert D\rvert - 1 < \lvert D\rvert`$ であるから
+$`\lvert \mathrm{dropLast}\,D\rvert = \lvert D\rvert - 1 \lt \lvert D\rvert`$ であるから
 $`D' := \mathrm{dropLast}\,D`$ に強帰納法の仮定 $`\Psi(D')`$ が使え、条件 2 が適用できる。
 
 ---
@@ -190,18 +190,18 @@ Q(t) :\equiv \forall x \in \mathrm{Gterm}\,0\,t,\ x \prec t
    ```math
    b \prec t \iff 1 < 0 \ \vee\ (1 = 0 \wedge \mathsf{Z} \prec b) \ \vee\ (1 = 0 \wedge \mathsf{Z} = b \wedge \mathsf{Z} \prec \mathsf{Z})
    ```
-   であり、$`1 < 0`$ は偽、$`1 = 0`$ も偽であるから 3 つの選言肢すべてが偽、すなわち $`\neg(b \prec t)`$ である。
+   であり、$`1 \lt 0`$ は偽、$`1 = 0`$ も偽であるから 3 つの選言肢すべてが偽、すなわち $`\neg(b \prec t)`$ である。
    よって $`Q(t)`$ は偽である。
 5. 項の大きさ $`\mathrm{tsize}`$（[(D.tsize)](Wfsum.md#d-tsize)）で測っても同じことが起こる。
    $`\mathrm{tsize}\,\mathsf{Z} = 0`$、$`\mathrm{tsize}\,\mathsf{P}(a,x,y) = \mathrm{tsize}\,x + \mathrm{tsize}\,y + 1`$ であるから
    $`\mathrm{tsize}\,b = 0 + 0 + 1 = 1`$、$`\mathrm{tsize}\,t = 1 + 0 + 1 = 2`$ である。
-   $`\mathrm{tsize}\,s < 2`$ をみたす項 $`s`$ は $`\mathsf{Z}`$ と $`\mathsf{P}(a,\mathsf{Z},\mathsf{Z})`$（$`a \in \mathbb{N}`$）に限る。
+   $`\mathrm{tsize}\,s \lt 2`$ をみたす項 $`s`$ は $`\mathsf{Z}`$ と $`\mathsf{P}(a,\mathsf{Z},\mathsf{Z})`$（$`a \in \mathbb{N}`$）に限る。
    $`Q(\mathsf{Z})`$ は 1 より真であり、任意の $`a`$ について
    [(T.Gterm_P)](Otembed.md#t-Gterm_P) より
    $`\mathrm{Gterm}\,0\,\mathsf{P}(a,\mathsf{Z},\mathsf{Z}) = \{\mathsf{Z}\}`$（$`0 \le a`$ は任意の $`a`$ で真）であり、
    [(T.olt_Z_P)](Mechanized.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathsf{P}(a,\mathsf{Z},\mathsf{Z})`$ だから
    $`Q(\mathsf{P}(a,\mathsf{Z},\mathsf{Z}))`$ も真である。
-   すなわち $`\mathrm{tsize}\,s < \mathrm{tsize}\,t`$ なるすべての項 $`s`$ で $`Q(s)`$ が成り立つが、4 より $`Q(t)`$ は偽である。
+   すなわち $`\mathrm{tsize}\,s \lt \mathrm{tsize}\,t`$ なるすべての項 $`s`$ で $`Q(s)`$ が成り立つが、4 より $`Q(t)`$ は偽である。
 
 したがって、$`Q`$ 自身を帰納法の述語とする項の構造に関する帰納法（3, 4 による）も、
 $`\mathrm{tsize}`$ に関する強帰納法（5 による）も、$`Q`$ の証明には使えない。

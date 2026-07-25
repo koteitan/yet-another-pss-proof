@@ -119,7 +119,7 @@ $`\mathrm{sargs}\,S_i=[b_{i+1},b_{i+2},\dots,b_k]`$。特に $`\mathrm{sargs}\,S
 - 基底段 $`m=0`$：$`S_k=\mathsf{Z}`$ であり、$`\mathrm{sargs}\,\mathsf{Z}=[]`$（[(T.sargs_Z)](#t-sargs_Z)）。
   右辺 $`[b_{k+1},\dots,b_k]`$ は要素を 1 つも持たない列、すなわち $`[]`$ である。よって $`\Psi(0)`$。
 - 帰納段 $`m+1\le k`$：帰納法の仮定は $`\Psi(m)`$、すなわち $`\mathrm{sargs}\,S_{k-m}=[b_{k-m+1},\dots,b_k]`$。
-  $`i:=k-(m+1)`$ と置くと $`0\le i<k`$ かつ $`i+1=k-m`$ だから、定義より $`S_i=\mathsf{P}(a_{i+1},b_{i+1},S_{i+1})`$ であり、
+  $`i:=k-(m+1)`$ と置くと $`0\le i\lt k`$ かつ $`i+1=k-m`$ だから、定義より $`S_i=\mathsf{P}(a_{i+1},b_{i+1},S_{i+1})`$ であり、
   [(T.sargs_P)](#t-sargs_P) より
   ```math
   \mathrm{sargs}\,S_i=b_{i+1}\mathbin{::}\mathrm{sargs}\,S_{i+1}
@@ -195,7 +195,7 @@ Lean の節注釈によれば、この節は「（添字が $`0`$ であると�
 [(D.Three)](Mechanized.md#d-Three) の読み方では $`\mathsf{P}(a,b,\mathsf{Z})`$ は $`p_a(b)+0`$、すなわち単項の和 $`p_a(b)`$ を表す。
 
 **補足（和鎖表示の上での $`\mathrm{summands}`$ の値）.**
-[(D.sargs)](#d-sargs) の補足で定めた和鎖表示 $`S_k=\mathsf{Z}`$、$`S_i=\mathsf{P}(a_{i+1},b_{i+1},S_{i+1})`$（$`0\le i<k`$）
+[(D.sargs)](#d-sargs) の補足で定めた和鎖表示 $`S_k=\mathsf{Z}`$、$`S_i=\mathsf{P}(a_{i+1},b_{i+1},S_{i+1})`$（$`0\le i\lt k`$）
 のもとで、$`0\le i\le k`$ なるすべての $`i`$ について
 
 ```math
@@ -210,7 +210,7 @@ Lean の節注釈によれば、この節は「（添字が $`0`$ であると�
 
 - 基底段 $`m=0`$：$`S_k=\mathsf{Z}`$ であり $`\mathrm{summands}\,\mathsf{Z}=[]`$（[(T.summands_Z)](#t-summands_Z)）。
   右辺は要素を 1 つも持たない列 $`[]`$ である。よって $`\Xi(0)`$。
-- 帰納段 $`m+1\le k`$：帰納法の仮定は $`\Xi(m)`$。$`i:=k-(m+1)`$ と置くと $`0\le i<k`$ かつ $`i+1=k-m`$ であるから、
+- 帰納段 $`m+1\le k`$：帰納法の仮定は $`\Xi(m)`$。$`i:=k-(m+1)`$ と置くと $`0\le i\lt k`$ かつ $`i+1=k-m`$ であるから、
   $`S_i=\mathsf{P}(a_{i+1},b_{i+1},S_{i+1})`$ であり、[(T.summands_P)](#t-summands_P) より
   ```math
   \mathrm{summands}\,S_i=\mathsf{P}(a_{i+1},b_{i+1},\mathsf{Z})\mathbin{::}\mathrm{summands}\,S_{i+1}
@@ -307,14 +307,14 @@ $`\mathrm{tsize}\,\mathsf{P}(a,b,c)`$ の値は $`a`$ に依存しない。
 
 $`\mathrm{tsize}`$ は本章では他に用いられないが、後続の章で再帰の停止を保証する測度として使われる。すなわち
 [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) が、[(D.Gterm)](Otembed.md#d-Gterm) について
-$`x\in\mathrm{Gterm}\,v\,t\ \Rightarrow\ \mathrm{tsize}\,x<\mathrm{tsize}\,t`$
+$`x\in\mathrm{Gterm}\,v\,t\ \Rightarrow\ \mathrm{tsize}\,x\lt \mathrm{tsize}\,t`$
 という真の減少を与え、これにより [(D.proj)](Nrm.md#d-proj) の再帰が停止する（Lean の `termination_by tsize b`）。
 
 ## 残余核（2 段目）（The residual core, two levels in）
 
 この節に属する宣言は、現在の `lean/YAPSS/Wfsum.lean` には存在しない。
 Lean の節注釈によれば、この節には準位 $`m`$ の和の引数（添字は任意）の上の $`\prec`$ の整礎性が置かれる予定であり、
-その帰納段（準位 $`m`$ の場合を準位 $`<m`$ の場合から得る段）は注釈中で "the Buchholz-collapse core" と呼ばれ、
+その帰納段（準位 $`m`$ の場合を準位 $`\lt m`$ の場合から得る段）は注釈中で "the Buchholz-collapse core" と呼ばれ、
 `sorry` のまま残されていた。本証明はこの経路を採らず、値の正規化
 [(D.nrm)](Nrm.md#d-nrm) を経由する経路（[`Nrm.md`](Nrm.md) 以降）を採る。
 

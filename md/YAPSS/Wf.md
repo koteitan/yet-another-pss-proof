@@ -54,8 +54,8 @@ $`\mathrm{range}'(a,m) = [a,\dots,a+m-1]`$。さらに本章では
 ```
 
 を用いる（Lean の `List.replicate`, `List.flatten`）。
-また $`L[i]`$ は $`i<\lvert L\rvert`$ のときの $`L`$ の第 $`i`$ 要素、$`L.\mathrm{getD}\,i\,d`$ は
-$`i<\lvert L\rvert`$ なら第 $`i`$ 要素、そうでなければ $`d`$ を返す関数である。
+また $`L[i]`$ は $`i\lt \lvert L\rvert`$ のときの $`L`$ の第 $`i`$ 要素、$`L.\mathrm{getD}\,i\,d`$ は
+$`i\lt \lvert L\rvert`$ なら第 $`i`$ 要素、そうでなければ $`d`$ を返す関数である。
 
 **注（$`\neg(x\prec y)`$ の言い換え）.** 以下でくり返し使うので、ここで一度だけ示しておく。
 任意の $`x,y\in\mathrm{Three}`$ について
@@ -74,7 +74,7 @@ $`x\prec x`$、$`y=x`$ の場合は $`x\prec y=x`$ となり、どちらも [(T.
 <a id="d-spine"></a>
 ### 定義 最左引数スパイン (D.spine)
 
-$`\mathrm{sp}:\mathrm{Three}\to\mathbb{N}^{<\omega}`$ を項の構造帰納で定める。
+$`\mathrm{sp}:\mathrm{Three}\to\mathbb{N}^{\lt \omega}`$ を項の構造帰納で定める。
 
 ```math
 \mathrm{sp}\,\mathsf{Z} := [],\qquad
@@ -200,7 +200,7 @@ $`\mathrm{foldr}\ \max\ 0\ (x\mathbin{::}xs) = \max(x,\ \mathrm{foldr}\ \max\ 0\
 <a id="d-slex"></a>
 ### 定義 添字列の辞書式広義順序 (D.slex)
 
-$`\mathrm{slex}\subseteq \mathbb{N}^{<\omega}\times\mathbb{N}^{<\omega}`$ を第 1 引数に関する構造帰納で定める。
+$`\mathrm{slex}\subseteq \mathbb{N}^{\lt \omega}\times\mathbb{N}^{\lt \omega}`$ を第 1 引数に関する構造帰納で定める。
 
 ```math
 \begin{aligned}
@@ -251,7 +251,7 @@ $`\mathrm{slex}\subseteq \mathbb{N}^{<\omega}\times\mathbb{N}^{<\omega}`$ を第
 - 基底段 $`xs=[]`$：[(T.slex_nil)](#t-slex_nil) より $`\mathrm{slex}([],[])`$、すなわち $`\Phi([])`$。
 - 帰納段 $`xs = x\mathbin{::}xs'`$：帰納法の仮定は $`\Phi(xs')`$、すなわち $`\mathrm{slex}(xs',xs')`$ である。
   [(T.slex_cons_cons)](#t-slex_cons_cons) より $`\mathrm{slex}(x\mathbin{::}xs',x\mathbin{::}xs')`$ は
-  $`x<x \vee (x=x \wedge \mathrm{slex}(xs',xs'))`$ と同値であり、第 2 選言は
+  $`x\lt x \vee (x=x \wedge \mathrm{slex}(xs',xs'))`$ と同値であり、第 2 選言は
   $`x=x`$（等号の反射性）と帰納法の仮定によりみたされる。よって $`\Phi(x\mathbin{::}xs')`$。∎
 
 ## スパインと行 0 が狭義増加する極大前部分列
@@ -265,12 +265,12 @@ Lean 側ではここに次の節見出しが置かれている：
 <a id="t-getD_eq_getElem'"></a>
 ### 定理 $`\mathrm{getD}`$ と添字アクセスの一致 (T.getD_eq_getElem')
 
-**主張** 任意の型 $`\alpha`$、リスト $`l : \alpha^{<\omega}`$、既定値 $`d:\alpha`$、$`i\in\mathbb{N}`$ について
-$`i<\lvert l\rvert`$ ならば $`l.\mathrm{getD}\,i\,d = l[i]`$。
+**主張** 任意の型 $`\alpha`$、リスト $`l : \alpha^{\lt \omega}`$、既定値 $`d:\alpha`$、$`i\in\mathbb{N}`$ について
+$`i\lt \lvert l\rvert`$ ならば $`l.\mathrm{getD}\,i\,d = l[i]`$。
 
 **証明** 標準ライブラリの `List.getD_eq_getElem?_getD` より
 $`l.\mathrm{getD}\,i\,d = (l[i]?).\mathrm{getD}\,d`$ である。
-$`i<\lvert l\rvert`$ のとき `List.getElem?_eq_getElem` より $`l[i]? = \mathrm{some}\,l[i]`$ であり、
+$`i\lt \lvert l\rvert`$ のとき `List.getElem?_eq_getElem` より $`l[i]? = \mathrm{some}\,l[i]`$ であり、
 $`(\mathrm{some}\,a).\mathrm{getD}\,d = a`$ は `Option.getD` の定義そのものであるから
 $`l.\mathrm{getD}\,i\,d = l[i]`$。∎
 
@@ -295,8 +295,8 @@ $`\mathrm{inc}:\mathrm{PairSeq}\to\mathrm{PairSeq}`$ を次で定める。
 
 1. $`\Phi([])`$
 2. 任意の対 $`p`$ について $`\Phi([p])`$
-3. 任意の対 $`p,q`$、ペア列 $`L`$ について、$`\pi_0 p<\pi_0 q`$ かつ $`\Phi(q\mathbin{::}L)`$ ならば $`\Phi(p\mathbin{::}q\mathbin{::}L)`$
-4. 任意の対 $`p,q`$、ペア列 $`L`$ について、$`\neg(\pi_0 p<\pi_0 q)`$ ならば $`\Phi(p\mathbin{::}q\mathbin{::}L)`$
+3. 任意の対 $`p,q`$、ペア列 $`L`$ について、$`\pi_0 p\lt \pi_0 q`$ かつ $`\Phi(q\mathbin{::}L)`$ ならば $`\Phi(p\mathbin{::}q\mathbin{::}L)`$
+4. 任意の対 $`p,q`$、ペア列 $`L`$ について、$`\neg(\pi_0 p\lt \pi_0 q)`$ ならば $`\Phi(p\mathbin{::}q\mathbin{::}L)`$
 
 をみたすなら、任意のペア列 $`M`$ について $`\Phi(M)`$ が成り立つ。これは $`\lvert M\rvert`$ に関する強帰納法である。
 Lean ではこの原理は `incpref.induct` として自動生成される。
@@ -331,10 +331,10 @@ Lean ではこの原理は `incpref.induct` として自動生成される。
 <a id="t-takeWhile_fst_nest"></a>
 ### 定理 $`\mathrm{tw}`$ の入れ子 (T.takeWhile_fst_nest)
 
-**主張** $`a<b`$ ならば、任意のペア列 $`xs`$ に対し
+**主張** $`a\lt b`$ ならば、任意のペア列 $`xs`$ に対し
 $`\mathrm{tw}_b(\mathrm{tw}_a xs) = \mathrm{tw}_b\,xs`$。
 
-**証明** $`a<b`$ を固定し、$`xs`$ の構造に関する帰納法。帰納法の述語は
+**証明** $`a\lt b`$ を固定し、$`xs`$ の構造に関する帰納法。帰納法の述語は
 
 ```math
 \Phi(xs) :\equiv \mathrm{tw}_b(\mathrm{tw}_a xs) = \mathrm{tw}_b\,xs .
@@ -342,16 +342,16 @@ $`\mathrm{tw}_b(\mathrm{tw}_a xs) = \mathrm{tw}_b\,xs`$。
 
 - 基底段 $`xs=[]`$：$`\mathrm{tw}_a[]=[]`$、$`\mathrm{tw}_b[]=[]`$ であり、両辺とも $`[]`$。
 - 帰納段 $`xs = x\mathbin{::}xs'`$：帰納法の仮定は $`\Phi(xs')`$ である。3 つの場合に分ける。
-  - $`a<\pi_0 x`$ かつ $`b<\pi_0 x`$：`List.takeWhile` の定義より
+  - $`a\lt \pi_0 x`$ かつ $`b\lt \pi_0 x`$：`List.takeWhile` の定義より
     $`\mathrm{tw}_a(x\mathbin{::}xs') = x\mathbin{::}\mathrm{tw}_a xs'`$、
     さらに $`\mathrm{tw}_b(x\mathbin{::}\mathrm{tw}_a xs') = x\mathbin{::}\mathrm{tw}_b(\mathrm{tw}_a xs')`$。
     帰納法の仮定より $`\mathrm{tw}_b(\mathrm{tw}_a xs') = \mathrm{tw}_b xs'`$ だから左辺は
     $`x\mathbin{::}\mathrm{tw}_b xs'`$。右辺も $`\mathrm{tw}_b(x\mathbin{::}xs') = x\mathbin{::}\mathrm{tw}_b xs'`$。
-  - $`a<\pi_0 x`$ かつ $`\neg(b<\pi_0 x)`$：左辺は
-    $`\mathrm{tw}_b(x\mathbin{::}\mathrm{tw}_a xs') = []`$（先頭 $`x`$ が述語 $`b<\pi_0(\cdot)`$ をみたさない）。
+  - $`a\lt \pi_0 x`$ かつ $`\neg(b\lt \pi_0 x)`$：左辺は
+    $`\mathrm{tw}_b(x\mathbin{::}\mathrm{tw}_a xs') = []`$（先頭 $`x`$ が述語 $`b\lt \pi_0(\cdot)`$ をみたさない）。
     右辺も $`\mathrm{tw}_b(x\mathbin{::}xs') = []`$。
-  - $`\neg(a<\pi_0 x)`$：このとき $`\neg(b<\pi_0 x)`$ である。実際 $`b<\pi_0 x`$ なら
-    $`a<b<\pi_0 x`$ より $`a<\pi_0 x`$ となり仮定に反する。
+  - $`\neg(a\lt \pi_0 x)`$：このとき $`\neg(b\lt \pi_0 x)`$ である。実際 $`b\lt \pi_0 x`$ なら
+    $`a\lt b\lt \pi_0 x`$ より $`a\lt \pi_0 x`$ となり仮定に反する。
     左辺は $`\mathrm{tw}_a(x\mathbin{::}xs')=[]`$ ゆえ $`\mathrm{tw}_b[]=[]`$、右辺も $`\mathrm{tw}_b(x\mathbin{::}xs')=[]`$。
 
   3 つの場合はすべてを尽くしており、いずれでも $`\Phi(x\mathbin{::}xs')`$ が成り立つ。∎
@@ -377,10 +377,10 @@ $`\mathrm{tw}_b(\mathrm{tw}_a xs) = \mathrm{tw}_b\,xs`$。
   $`\mathrm{tr}[p] = \mathsf{P}(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}[]),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 p}[])) = \mathsf{P}(\pi_1 p,\mathsf{Z},\mathsf{Z})`$。
   [(T.spine_P)](#t-spine_P) と [(T.spine_Z)](#t-spine_Z) より左辺は $`[\pi_1 p]`$。
   [(T.incpref_single)](#t-incpref_single) より $`\mathrm{inc}[p]=[p]`$ だから右辺も $`[\pi_1 p]`$。
-- **場合 3** $`M = p\mathbin{::}q\mathbin{::}L`$ かつ $`\pi_0 p<\pi_0 q`$：帰納法の仮定は $`\Phi(q\mathbin{::}L)`$、すなわち
+- **場合 3** $`M = p\mathbin{::}q\mathbin{::}L`$ かつ $`\pi_0 p\lt \pi_0 q`$：帰納法の仮定は $`\Phi(q\mathbin{::}L)`$、すなわち
   $`\mathrm{sp}(\mathrm{tr}(q\mathbin{::}L)) = \mathrm{map}\ \pi_1\ (\mathrm{inc}(q\mathbin{::}L))`$ である。
 
-  まず $`\pi_0 p<\pi_0 q`$ より、`List.takeWhile` の定義から
+  まず $`\pi_0 p\lt \pi_0 q`$ より、`List.takeWhile` の定義から
   ```math
   \mathrm{tw}_{\pi_0 p}(q\mathbin{::}L) = q\mathbin{::}\mathrm{tw}_{\pi_0 p}L. \tag{tw}
   ```
@@ -413,13 +413,13 @@ $`\mathrm{tw}_b(\mathrm{tw}_a xs) = \mathrm{tw}_b\,xs`$。
    = \pi_1 p \mathbin{::} \mathrm{map}\ \pi_1\ (\mathrm{inc}(q\mathbin{::}L))
   ```
   （最後の等号は帰納法の仮定）。
-  他方 [(T.incpref_cons_cons)](#t-incpref_cons_cons) と $`\pi_0 p<\pi_0 q`$ より
+  他方 [(T.incpref_cons_cons)](#t-incpref_cons_cons) と $`\pi_0 p\lt \pi_0 q`$ より
   $`\mathrm{inc}(p\mathbin{::}q\mathbin{::}L) = p\mathbin{::}\mathrm{inc}(q\mathbin{::}L)`$ であり、
   $`\mathrm{map}`$ は先頭付加と交換するから
   $`\mathrm{map}\ \pi_1\ (\mathrm{inc}(p\mathbin{::}q\mathbin{::}L)) = \pi_1 p\mathbin{::}\mathrm{map}\ \pi_1\ (\mathrm{inc}(q\mathbin{::}L))`$。
   両辺が一致したので $`\Phi(p\mathbin{::}q\mathbin{::}L)`$。
-- **場合 4** $`M = p\mathbin{::}q\mathbin{::}L`$ かつ $`\neg(\pi_0 p<\pi_0 q)`$：
-  先頭 $`q`$ が述語 $`\pi_0 p<\pi_0(\cdot)`$ をみたさないので $`\mathrm{tw}_{\pi_0 p}(q\mathbin{::}L)=[]`$。
+- **場合 4** $`M = p\mathbin{::}q\mathbin{::}L`$ かつ $`\neg(\pi_0 p\lt \pi_0 q)`$：
+  先頭 $`q`$ が述語 $`\pi_0 p\lt \pi_0(\cdot)`$ をみたさないので $`\mathrm{tw}_{\pi_0 p}(q\mathbin{::}L)=[]`$。
   よって [(D.translate)](Mechanized.md#d-translate) より
   ```math
   \mathrm{tr}(p\mathbin{::}q\mathbin{::}L)
@@ -545,7 +545,7 @@ j_1\ne0 \ \wedge\ \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr)\ \wedge\ \mathrm
 <a id="t-oper_eq_dropLast_append"></a>
 ### 定理 展開は $`\mathrm{dropLast}`$ への追記 (T.oper_eq_dropLast_append)
 
-**主張** $`1<\lvert M\rvert`$ かつ $`1\le n`$ ならば、あるペア列 $`R`$ が存在して
+**主張** $`1\lt \lvert M\rvert`$ かつ $`1\le n`$ ならば、あるペア列 $`R`$ が存在して
 ```math
 M[n] = \mathrm{dropLast}\,M \mathbin{+\!\!+} R
 \qquad\text{かつ}\qquad
@@ -553,9 +553,9 @@ M[n] = \mathrm{dropLast}\,M \mathbin{+\!\!+} R
 ```
 （[(D.oper)](Def.md#d-oper), [(D.sndSet)](Mechanized.md#d-sndSet)）。
 
-**証明** $`1<\lvert M\rvert`$ より $`\neg(\lvert M\rvert\le 1)`$ であるから、[(D.Pred)](Def.md#d-Pred) より
+**証明** $`1\lt \lvert M\rvert`$ より $`\neg(\lvert M\rvert\le 1)`$ であるから、[(D.Pred)](Def.md#d-Pred) より
 $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`j_1 := \lvert M\rvert-1`$ とおき、
-[(D.oper)](Def.md#d-oper) の分岐で場合分けする（$`1<\lvert M\rvert`$ より $`j_1\ne 0`$）。
+[(D.oper)](Def.md#d-oper) の分岐で場合分けする（$`1\lt \lvert M\rvert`$ より $`j_1\ne 0`$）。
 
 - **$`M_{0,j_1}=0 \wedge M_{1,j_1}=0`$ のとき。** $`R:=[]`$ とおく。
   [(T.oper_eq_pred_of_zero)](Mechanized.md#t-oper_eq_pred_of_zero) より
@@ -643,7 +643,7 @@ v+1-u = \bigl(v+1-(u+1)\bigr)+1
 **証明** [(D.diagSeq)](Def.md#d-diagSeq) より
 $`\Delta_a^b = \mathrm{map}\ (\lambda j.\ (j,j))\ \mathrm{range}'(a,\ b+1-a)`$ であるから、
 `List.mem_map` によりある $`j\in\mathrm{range}'(a,b+1-a)`$ について $`q=(j,j)`$ である。
-`List.mem_range'` によりある $`i<b+1-a`$ について $`j = a+i`$ である。
+`List.mem_range'` によりある $`i\lt b+1-a`$ について $`j = a+i`$ である。
 よって $`\pi_0 q = j = a+i \ge a`$。∎
 
 <a id="t-translate_diagSeq"></a>
@@ -656,7 +656,7 @@ $`\Delta_a^b = \mathrm{map}\ (\lambda j.\ (j,j))\ \mathrm{range}'(a,\ b+1-a)`$ �
 
 **証明** [(T.diagSeq_cons)](#t-diagSeq_cons) より $`\Delta_u^v = (u,u)\mathbin{::}\Delta_{u+1}^v`$ である。
 $`\Delta_{u+1}^v`$ の任意の要素 $`q`$ について、[(T.fst_in_diagSeq)](#t-fst_in_diagSeq)（$`a:=u+1`$）より
-$`u+1\le\pi_0 q`$、したがって $`\pi_0 (u,u) = u < \pi_0 q`$ である。
+$`u+1\le\pi_0 q`$、したがって $`\pi_0 (u,u) = u \lt \pi_0 q`$ である。
 よって [(T.translate_single_tree)](Mechanized.md#t-translate_single_tree) を $`p:=(u,u)`$, $`R:=\Delta_{u+1}^v`$ に適用して
 ```math
 \mathrm{tr}\bigl((u,u)\mathbin{::}\Delta_{u+1}^v\bigr)
@@ -783,14 +783,14 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(D\mathbin{+\!\!+}[m])\bigr)`$ ならば $`\mathr
   $`h : \mathrm{cnf}\bigl(\mathrm{tr}((p\mathbin{::}L)\mathbin{+\!\!+}[m])\bigr)`$ を仮定する。
   $`(p\mathbin{::}L)\mathbin{+\!\!+}[m] = p\mathbin{::}(L\mathbin{+\!\!+}[m])`$ に注意して 3 つの場合に分ける。
 
-  **場合 A1** $`\forall x\in L,\ \pi_0 p<\pi_0 x`$ かつ $`\pi_0 p<\pi_0 m`$。
+  **場合 A1** $`\forall x\in L,\ \pi_0 p\lt \pi_0 x`$ かつ $`\pi_0 p\lt \pi_0 m`$。
   `List.takeWhile_eq_self_iff` より $`\mathrm{tw}_{\pi_0 p}L=L`$、
   `List.dropWhile_eq_nil_iff` より $`\mathrm{dw}_{\pi_0 p}L=[]`$ であるから
   [(D.translate)](Mechanized.md#d-translate) より
   ```math
   \mathrm{tr}(p\mathbin{::}L) = \mathsf{P}\bigl(\pi_1 p,\ \mathrm{tr}\,L,\ \mathsf{Z}\bigr). \tag{A1-1}
   ```
-  また $`L\mathbin{+\!\!+}[m]`$ の全要素 $`x`$ が $`\pi_0 p<\pi_0 x`$ をみたす（$`x\in L`$ なら仮定、$`x=m`$ なら $`\pi_0 p<\pi_0 m`$）ので、
+  また $`L\mathbin{+\!\!+}[m]`$ の全要素 $`x`$ が $`\pi_0 p\lt \pi_0 x`$ をみたす（$`x\in L`$ なら仮定、$`x=m`$ なら $`\pi_0 p\lt \pi_0 m`$）ので、
   同様に $`\mathrm{tw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = L\mathbin{+\!\!+}[m]`$、$`\mathrm{dw}_{\pi_0 p}(L\mathbin{+\!\!+}[m])=[]`$ であり
   ```math
   \mathrm{tr}\bigl(p\mathbin{::}(L\mathbin{+\!\!+}[m])\bigr)
@@ -801,11 +801,11 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(D\mathbin{+\!\!+}[m])\bigr)`$ ならば $`\mathr
   $`\mathrm{cnf}(\mathrm{tr}(L\mathbin{+\!\!+}[m]))\to\mathrm{cnf}(\mathrm{tr}\,L)`$ と同じ命題であるから、
   $`\mathrm{cnf}(\mathrm{tr}\,L)`$ を得る。(A1-1) と [(T.cnf_P_Z)](#t-cnf_P_Z) より $`\mathrm{cnf}(\mathrm{tr}(p\mathbin{::}L))`$。
 
-  **場合 A2** $`\forall x\in L,\ \pi_0 p<\pi_0 x`$ かつ $`\neg(\pi_0 p<\pi_0 m)`$。
+  **場合 A2** $`\forall x\in L,\ \pi_0 p\lt \pi_0 x`$ かつ $`\neg(\pi_0 p\lt \pi_0 m)`$。
   (A1-1) は場合 A1 と同じ理由で成り立つ。
   [(T.takeWhile_append_all)](Mechanized.md#t-takeWhile_append_all)（$`xs:=L`$, $`ys:=[m]`$）より
   $`\mathrm{tw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = L\mathbin{+\!\!+}\mathrm{tw}_{\pi_0 p}[m] = L\mathbin{+\!\!+}[] = L`$
-  （$`\neg(\pi_0 p<\pi_0 m)`$ ゆえ $`\mathrm{tw}_{\pi_0 p}[m]=[]`$）、
+  （$`\neg(\pi_0 p\lt \pi_0 m)`$ ゆえ $`\mathrm{tw}_{\pi_0 p}[m]=[]`$）、
   [(T.dropWhile_append_all)](Mechanized.md#t-dropWhile_append_all) より
   $`\mathrm{dw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = \mathrm{dw}_{\pi_0 p}[m] = [m]`$。よって
   ```math
@@ -817,8 +817,8 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(D\mathbin{+\!\!+}[m])\bigr)`$ ならば $`\mathr
   $`h`$ に [(T.cnf_P_P)](#t-cnf_P_P) を適用するとその第 1 成分が $`\mathrm{cnf}(\mathrm{tr}\,L)`$ である。
   (A1-1) と [(T.cnf_P_Z)](#t-cnf_P_Z) より $`\mathrm{cnf}(\mathrm{tr}(p\mathbin{::}L))`$。
 
-  **場合 B** $`\neg(\forall x\in L,\ \pi_0 p<\pi_0 x)`$。
-  $`x\in L`$ で $`\neg(\pi_0 p<\pi_0 x)`$ なるものを取る。
+  **場合 B** $`\neg(\forall x\in L,\ \pi_0 p\lt \pi_0 x)`$。
+  $`x\in L`$ で $`\neg(\pi_0 p\lt \pi_0 x)`$ なるものを取る。
   [(T.takeWhile_append_not)](Mechanized.md#t-takeWhile_append_not) と
   [(T.dropWhile_append_not)](Mechanized.md#t-dropWhile_append_not) より
   ```math
@@ -826,8 +826,8 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(D\mathbin{+\!\!+}[m])\bigr)`$ ならば $`\mathr
     \mathrm{dw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = (\mathrm{dw}_{\pi_0 p}L)\mathbin{+\!\!+}[m].
   ```
   また $`\mathrm{dw}_{\pi_0 p}L\ne[]`$ である。実際 $`\mathrm{dw}_{\pi_0 p}L=[]`$ なら
-  `List.dropWhile_eq_nil_iff` より $`L`$ の全要素が述語 $`\pi_0 p<\pi_0(\cdot)`$ をみたし、
-  $`x`$ に適用して $`\pi_0 p<\pi_0 x`$ となり仮定に反する。
+  `List.dropWhile_eq_nil_iff` より $`L`$ の全要素が述語 $`\pi_0 p\lt \pi_0(\cdot)`$ をみたし、
+  $`x`$ に適用して $`\pi_0 p\lt \pi_0 x`$ となり仮定に反する。
   そこで $`\mathrm{dw}_{\pi_0 p}L = q\mathbin{::}L_2`$ と書く。[(D.translate)](Mechanized.md#d-translate) より
   ```math
   \mathrm{tr}(\mathrm{dw}_{\pi_0 p}L)
@@ -905,13 +905,13 @@ $`\Psi(\lvert M\rvert-k)`$ を適用すれば主張が得られる。
 - 基底段 $`d=0`$：$`k`$ を取り $`\lvert M\rvert-k=0`$ とする。切り捨て減法より $`\lvert M\rvert\le k`$ であり、
   `List.take_of_length_le` より $`\mathrm{take}\,k\,M = M`$。よって結論は仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ そのものである。
 - 帰納段 $`d+1`$：帰納法の仮定は $`\Psi(d)`$ である。$`k`$ を取り $`\lvert M\rvert-k=d+1`$ とする。
-  切り捨て減法より $`\lvert M\rvert-k\ge1`$、すなわち $`k<\lvert M\rvert`$ である。
+  切り捨て減法より $`\lvert M\rvert-k\ge1`$、すなわち $`k\lt \lvert M\rvert`$ である。
   また $`\lvert M\rvert-(k+1) = (\lvert M\rvert-k)-1 = d`$ であるから、帰納法の仮定 $`\Psi(d)`$ を $`k+1`$ に適用して
   ```math
   \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}\,(k+1)\,M)\bigr)
   ```
-  を得る。ここで $`k<\lvert M\rvert`$ すなわち $`k+1\le\lvert M\rvert`$ より
-  $`\lvert\mathrm{take}\,(k+1)\,M\rvert = \min(k+1,\lvert M\rvert) = k+1 > 0`$ であるから
+  を得る。ここで $`k\lt \lvert M\rvert`$ すなわち $`k+1\le\lvert M\rvert`$ より
+  $`\lvert\mathrm{take}\,(k+1)\,M\rvert = \min(k+1,\lvert M\rvert) = k+1 \gt 0`$ であるから
   $`\mathrm{take}\,(k+1)\,M \ne []`$。
   さらに `List.dropLast_eq_take`（$`l`$ の $`\mathrm{dropLast}`$ は $`\mathrm{take}\,(\lvert l\rvert-1)\,l`$）と
   `List.take_take`（$`\mathrm{take}\,m\,(\mathrm{take}\,n\,l) = \mathrm{take}\,(\min(m,n))\,l`$）より
@@ -927,7 +927,7 @@ $`\Psi(\lvert M\rvert-k)`$ を適用すれば主張が得られる。
 ### 定理 完全コピーの $`\mathrm{cnf}`$ (T.cnf_replicate_block)
 
 **主張** $`v_0,w_0\in\mathbb{N}`$、ペア列 $`R`$ が
-$`\forall x\in R,\ v_0<\pi_0 x`$ と $`\mathrm{cnf}(\mathrm{tr}\,R)`$ をみたすならば、任意の $`n\in\mathbb{N}`$ に対し
+$`\forall x\in R,\ v_0\lt \pi_0 x`$ と $`\mathrm{cnf}(\mathrm{tr}\,R)`$ をみたすならば、任意の $`n\in\mathbb{N}`$ に対し
 ```math
 \mathrm{cnf}\Bigl(\mathrm{tr}\bigl(\mathrm{flatten}\ \mathrm{replicate}(n,\ (v_0,w_0)\mathbin{::}R)\bigr)\Bigr).
 ```
@@ -954,12 +954,12 @@ T_m = [] \ \vee\ \neg\bigl(v_0 < \pi_0(\mathrm{headI}\,T_m)\bigr) \tag{cond}
 が成り立つ。実際 $`m=0`$ なら $`T_0 = []`$（左の選言）。$`m=m'+1`$ なら (rep) より
 $`T_m = B\mathbin{+\!\!+}T_{m'}`$ であり $`B`$ の先頭は $`(v_0,w_0)`$ だから
 $`\mathrm{headI}\,T_m = (v_0,w_0)`$、$`\pi_0(\mathrm{headI}\,T_m)=v_0`$ であり
-$`\neg(v_0<v_0)`$（$`<`$ の非反射性）。
+$`\neg(v_0\lt v_0)`$（$`\lt `$ の非反射性）。
 
 - 基底段 $`n=0`$：$`T_0=[]`$ であり $`\mathrm{tr}\,[]=\mathsf{Z}`$、[(T.cnf_Z)](#t-cnf_Z) より $`\Phi(0)`$。
 - 帰納段 $`n=m+1`$：帰納法の仮定は $`\Phi(m)`$、すなわち $`\mathrm{cnf}(\mathrm{tr}\,T_m)`$ である。
   (rep) と (cond) により [(T.translate_block_append)](Mechanized.md#t-translate_block_append)
-  （仮定 $`\forall x\in R,\ v_0<\pi_0 x`$ と (cond) を用いる）を $`T:=T_m`$ に適用して
+  （仮定 $`\forall x\in R,\ v_0\lt \pi_0 x`$ と (cond) を用いる）を $`T:=T_m`$ に適用して
   ```math
   \mathrm{tr}\,T_{m+1} = \mathrm{tr}(B\mathbin{+\!\!+}T_m)
    = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,T_m\bigr). \tag{tb}
@@ -1016,7 +1016,7 @@ lZ_1 : \mathrm{tr}(z_1\mathbin{::}T_1)=\mathsf{P}(a_1,b_1,c_1),\quad
  \to \mathrm{cnf}\bigl(\mathrm{tr}(G\mathbin{+\!\!+}z_1\mathbin{::}T_1)\bigr)
 ```
 
-であり、$`\lvert G'\rvert<\lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$ を仮定して $`\Phi(G)`$ を示す。
+であり、$`\lvert G'\rvert\lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$ を仮定して $`\Phi(G)`$ を示す。
 $`G`$ の形で分ける。
 
 **$`G=[]`$ のとき。** $`[]\mathbin{+\!\!+}z_i\mathbin{::}T_i = z_i\mathbin{::}T_i`$ であるから、
@@ -1025,23 +1025,23 @@ $`G`$ の形で分ける。
 **$`G=g\mathbin{::}G'`$ のとき。** $`hG_2 : \mathrm{cnf}(\mathrm{tr}(G\mathbin{+\!\!+}z_2\mathbin{::}T_2))`$ を仮定し、
 $`g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i)`$ に注意して 3 つの場合に分ける。
 
-- **場合 (b)** $`\forall x\in G',\ \pi_0 g<\pi_0 x`$ かつ $`\pi_0 g<\pi_0 z_1`$。
-  このとき $`G'\mathbin{+\!\!+}z_1\mathbin{::}T_1`$ の全要素 $`x`$ が $`\pi_0 g<\pi_0 x`$ をみたす。実際、
-  $`x\in G'`$ なら仮定、$`x=z_1`$ なら $`\pi_0 g<\pi_0 z_1`$、$`x\in T_1`$ なら $`r_1`$ から
-  $`\pi_0 g<\pi_0 z_1\le\pi_0 x`$ である。
-  root より $`\pi_0 z_2 = \pi_0 z_1 > \pi_0 g`$ であるから、同じ論法（$`r_2`$ を用いる）で
-  $`G'\mathbin{+\!\!+}z_2\mathbin{::}T_2`$ の全要素 $`x`$ も $`\pi_0 g<\pi_0 x`$ をみたす。
+- **場合 (b)** $`\forall x\in G',\ \pi_0 g\lt \pi_0 x`$ かつ $`\pi_0 g\lt \pi_0 z_1`$。
+  このとき $`G'\mathbin{+\!\!+}z_1\mathbin{::}T_1`$ の全要素 $`x`$ が $`\pi_0 g\lt \pi_0 x`$ をみたす。実際、
+  $`x\in G'`$ なら仮定、$`x=z_1`$ なら $`\pi_0 g\lt \pi_0 z_1`$、$`x\in T_1`$ なら $`r_1`$ から
+  $`\pi_0 g\lt \pi_0 z_1\le\pi_0 x`$ である。
+  root より $`\pi_0 z_2 = \pi_0 z_1 \gt \pi_0 g`$ であるから、同じ論法（$`r_2`$ を用いる）で
+  $`G'\mathbin{+\!\!+}z_2\mathbin{::}T_2`$ の全要素 $`x`$ も $`\pi_0 g\lt \pi_0 x`$ をみたす。
   よって [(T.translate_single_tree)](Mechanized.md#t-translate_single_tree) を $`p:=g`$ として 2 回用いて（$`i=1,2`$）
   ```math
   \mathrm{tr}\bigl(g\mathbin{::}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i)\bigr)
    = \mathsf{P}\bigl(\pi_1 g,\ \mathrm{tr}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i),\ \mathsf{Z}\bigr).
   ```
   $`hG_2`$ に [(T.cnf_P_Z)](#t-cnf_P_Z) を適用して $`\mathrm{cnf}(\mathrm{tr}(G'\mathbin{+\!\!+}z_2\mathbin{::}T_2))`$、
-  $`\lvert G'\rvert<\lvert g\mathbin{::}G'\rvert`$ より帰納法の仮定 $`\Phi(G')`$ を適用して
+  $`\lvert G'\rvert\lt \lvert g\mathbin{::}G'\rvert`$ より帰納法の仮定 $`\Phi(G')`$ を適用して
   $`\mathrm{cnf}(\mathrm{tr}(G'\mathbin{+\!\!+}z_1\mathbin{::}T_1))`$、
   再び [(T.cnf_P_Z)](#t-cnf_P_Z) より $`\mathrm{cnf}(\mathrm{tr}(g\mathbin{::}(G'\mathbin{+\!\!+}z_1\mathbin{::}T_1)))`$ を得る。
-- **場合 (c)** $`\forall x\in G',\ \pi_0 g<\pi_0 x`$ かつ $`\neg(\pi_0 g<\pi_0 z_1)`$。
-  root より $`\neg(\pi_0 g<\pi_0 z_2)`$ でもある。
+- **場合 (c)** $`\forall x\in G',\ \pi_0 g\lt \pi_0 x`$ かつ $`\neg(\pi_0 g\lt \pi_0 z_1)`$。
+  root より $`\neg(\pi_0 g\lt \pi_0 z_2)`$ でもある。
   [(T.takeWhile_append_all)](Mechanized.md#t-takeWhile_append_all) より（$`i=1,2`$）
   ```math
   \mathrm{tw}_{\pi_0 g}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i)
@@ -1073,8 +1073,8 @@ $`g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+
   $`\mathsf{P}(\pi_1 g,\mathrm{tr}\,G',\mathsf{Z}) \prec \mathsf{P}(a_2,b_2,\mathsf{Z})`$ となり $`b_2^{\ast}`$ に矛盾する。
   第 3 条件 $`\mathrm{cnf}\,\mathsf{P}(a_1,b_1,c_1)`$ は $`lZ_1`$ により $`cZ_1`$ と同じ命題である。
   よって [(T.cnf_P_P)](#t-cnf_P_P) に $`c_{tg}`$, $`b_1^{\ast}`$, $`cZ_1`$ を与えて結論を得る。
-- **場合 (a)** $`\neg(\forall x\in G',\ \pi_0 g<\pi_0 x)`$。
-  $`x\in G'`$ で $`\neg(\pi_0 g<\pi_0 x)`$ なるものを取る。
+- **場合 (a)** $`\neg(\forall x\in G',\ \pi_0 g\lt \pi_0 x)`$。
+  $`x\in G'`$ で $`\neg(\pi_0 g\lt \pi_0 x)`$ なるものを取る。
   [(T.takeWhile_append_not)](Mechanized.md#t-takeWhile_append_not) と
   [(T.dropWhile_append_not)](Mechanized.md#t-dropWhile_append_not) より（$`i=1,2`$）
   ```math
@@ -1105,7 +1105,7 @@ $`g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+
    \prec \mathrm{tr}\bigl((d\mathbin{::}D')\mathbin{+\!\!+}z_2\mathbin{::}T_2\bigr)
   ```
   であり、上の $`\mathsf{P}`$ 表示と [(T.olt_P_P)](Mechanized.md#t-olt_P_P) より次の 3 つのいずれかが成り立つ。
-  $`\pi_1 d<\pi_1 d`$（自然数の $`<`$ の非反射性により偽）、
+  $`\pi_1 d\lt \pi_1 d`$（自然数の $`\lt `$ の非反射性により偽）、
   $`(\pi_1 d=\pi_1 d \wedge \mathrm{arg}_1\prec\mathrm{arg}_2)`$、
   $`(\pi_1 d=\pi_1 d \wedge \mathrm{arg}_1=\mathrm{arg}_2 \wedge \mathrm{tl}_1\prec\mathrm{tl}_2)`$。
   したがって
@@ -1117,7 +1117,7 @@ $`g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+
   $`c_{tw} : \mathrm{cnf}(\mathrm{tr}(\mathrm{tw}_{\pi_0 g}G'))`$、
   $`b_2^{\ast} : \neg\bigl(\mathsf{P}(\pi_1 g,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 g}G'),\ \mathsf{Z}) \prec \mathsf{P}(\pi_1 d,\ \mathrm{arg}_2,\ \mathsf{Z})\bigr)`$、
   $`cD_2 : \mathrm{cnf}\bigl(\mathsf{P}(\pi_1 d,\mathrm{arg}_2,\mathrm{tl}_2)\bigr) = \mathrm{cnf}\bigl(\mathrm{tr}((d\mathbin{::}D')\mathbin{+\!\!+}z_2\mathbin{::}T_2)\bigr)`$ を得る。
-  $`\lvert d\mathbin{::}D'\rvert = \lvert\mathrm{dw}_{\pi_0 g}G'\rvert \le \lvert G'\rvert < \lvert g\mathbin{::}G'\rvert`$
+  $`\lvert d\mathbin{::}D'\rvert = \lvert\mathrm{dw}_{\pi_0 g}G'\rvert \le \lvert G'\rvert \lt \lvert g\mathbin{::}G'\rvert`$
   （`List.length_dropWhile_le`）だから帰納法の仮定 $`\Phi(d\mathbin{::}D')`$ が使え、$`cD_2`$ から
   ```math
   cD_1 : \mathrm{cnf}\bigl(\mathrm{tr}((d\mathbin{::}D')\mathbin{+\!\!+}z_1\mathbin{::}T_1)\bigr)
@@ -1130,7 +1130,7 @@ $`g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+
    \prec \mathsf{P}(\pi_1 d,\ \mathrm{arg}_1,\ \mathsf{Z})\bigr)
   ```
   を示す。左の $`\prec`$ が成り立つとして [(T.olt_P_P)](Mechanized.md#t-olt_P_P) で 3 つに分ける。
-  - $`\pi_1 g<\pi_1 d`$：このとき [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言により
+  - $`\pi_1 g\lt \pi_1 d`$：このとき [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言により
     $`\mathsf{P}(\pi_1 g,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 g}G'),\ \mathsf{Z}) \prec \mathsf{P}(\pi_1 d,\mathrm{arg}_2,\mathsf{Z})`$ となり
     $`b_2^{\ast}`$ に矛盾する。
   - $`\pi_1 g=\pi_1 d`$ かつ $`\mathrm{tr}(\mathrm{tw}_{\pi_0 g}G')\prec\mathrm{arg}_1`$：(argle) で分ける。
@@ -1164,24 +1164,24 @@ $`g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+
  \to \mathrm{cnf}\bigl(\mathrm{tr}(t\mathbin{::}T')\bigr)
 ```
 
-であり、$`\lvert G'\rvert<\lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$ を仮定して $`\Phi(G)`$ を示す。
+であり、$`\lvert G'\rvert\lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$ を仮定して $`\Phi(G)`$ を示す。
 
 **$`G=[]`$ のとき。** $`[]\mathbin{+\!\!+}t\mathbin{::}T' = t\mathbin{::}T'`$ であるから、仮定がそのまま結論である。
 
 **$`G=g\mathbin{::}G'`$ のとき。** $`hGT : \mathrm{cnf}(\mathrm{tr}(g\mathbin{::}(G'\mathbin{+\!\!+}t\mathbin{::}T')))`$ を仮定し、
 3 つの場合に分ける。
 
-- **場合 (b)** $`\forall x\in G',\ \pi_0 g<\pi_0 x`$ かつ $`\pi_0 g<\pi_0 t`$。
-  $`G'\mathbin{+\!\!+}t\mathbin{::}T'`$ の全要素 $`x`$ が $`\pi_0 g<\pi_0 x`$ をみたす（$`x\in G'`$ なら仮定、$`x=t`$ なら
-  $`\pi_0 g<\pi_0 t`$、$`x\in T'`$ なら $`r_T`$ より $`\pi_0 g<\pi_0 t\le\pi_0 x`$）。
+- **場合 (b)** $`\forall x\in G',\ \pi_0 g\lt \pi_0 x`$ かつ $`\pi_0 g\lt \pi_0 t`$。
+  $`G'\mathbin{+\!\!+}t\mathbin{::}T'`$ の全要素 $`x`$ が $`\pi_0 g\lt \pi_0 x`$ をみたす（$`x\in G'`$ なら仮定、$`x=t`$ なら
+  $`\pi_0 g\lt \pi_0 t`$、$`x\in T'`$ なら $`r_T`$ より $`\pi_0 g\lt \pi_0 t\le\pi_0 x`$）。
   よって [(T.translate_single_tree)](Mechanized.md#t-translate_single_tree) より
   ```math
   \mathrm{tr}\bigl(g\mathbin{::}(G'\mathbin{+\!\!+}t\mathbin{::}T')\bigr)
    = \mathsf{P}\bigl(\pi_1 g,\ \mathrm{tr}(G'\mathbin{+\!\!+}t\mathbin{::}T'),\ \mathsf{Z}\bigr)
   ```
   であり、$`hGT`$ に [(T.cnf_P_Z)](#t-cnf_P_Z) を適用して $`\mathrm{cnf}(\mathrm{tr}(G'\mathbin{+\!\!+}t\mathbin{::}T'))`$ を得る。
-  $`\lvert G'\rvert<\lvert g\mathbin{::}G'\rvert`$ より帰納法の仮定 $`\Phi(G')`$ を適用して結論を得る。
-- **場合 (c)** $`\forall x\in G',\ \pi_0 g<\pi_0 x`$ かつ $`\neg(\pi_0 g<\pi_0 t)`$。
+  $`\lvert G'\rvert\lt \lvert g\mathbin{::}G'\rvert`$ より帰納法の仮定 $`\Phi(G')`$ を適用して結論を得る。
+- **場合 (c)** $`\forall x\in G',\ \pi_0 g\lt \pi_0 x`$ かつ $`\neg(\pi_0 g\lt \pi_0 t)`$。
   [(T.takeWhile_append_all)](Mechanized.md#t-takeWhile_append_all) より
   $`\mathrm{tw}_{\pi_0 g}(G'\mathbin{+\!\!+}t\mathbin{::}T') = G'\mathbin{+\!\!+}\mathrm{tw}_{\pi_0 g}(t\mathbin{::}T') = G'`$
   （先頭 $`t`$ が述語をみたさない）、
@@ -1196,8 +1196,8 @@ $`g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+
   $`\mathrm{tr}(t\mathbin{::}T') = \mathsf{P}\bigl(\pi_1 t,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 t}T'),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 t}T')\bigr)`$
   である。これは第 3 引数が $`\mathsf{P}`$ の形であるから、$`hGT`$ に [(T.cnf_P_P)](#t-cnf_P_P) を適用でき、
   その第 3 成分がまさに $`\mathrm{cnf}(\mathrm{tr}(t\mathbin{::}T'))`$ である。
-- **場合 (a)** $`\neg(\forall x\in G',\ \pi_0 g<\pi_0 x)`$。
-  $`x\in G'`$ で $`\neg(\pi_0 g<\pi_0 x)`$ なるものを取る。
+- **場合 (a)** $`\neg(\forall x\in G',\ \pi_0 g\lt \pi_0 x)`$。
+  $`x\in G'`$ で $`\neg(\pi_0 g\lt \pi_0 x)`$ なるものを取る。
   [(T.takeWhile_append_not)](Mechanized.md#t-takeWhile_append_not) と
   [(T.dropWhile_append_not)](Mechanized.md#t-dropWhile_append_not) より
   ```math
@@ -1219,7 +1219,7 @@ $`g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+
   ```
   第 3 引数が $`\mathsf{P}`$ の形であるから $`hGT`$ に [(T.cnf_P_P)](#t-cnf_P_P) を適用でき、
   その第 3 成分は $`\mathrm{cnf}\bigl(\mathrm{tr}((d\mathbin{::}D')\mathbin{+\!\!+}t\mathbin{::}T')\bigr)`$ である。
-  $`\lvert d\mathbin{::}D'\rvert = \lvert\mathrm{dw}_{\pi_0 g}G'\rvert \le \lvert G'\rvert < \lvert g\mathbin{::}G'\rvert`$
+  $`\lvert d\mathbin{::}D'\rvert = \lvert\mathrm{dw}_{\pi_0 g}G'\rvert \le \lvert G'\rvert \lt \lvert g\mathbin{::}G'\rvert`$
   （`List.length_dropWhile_le`）だから帰納法の仮定 $`\Phi(d\mathbin{::}D')`$ が使え、結論を得る。
 
 3 つの場合はすべてを尽くしており、帰納法で用いた $`G'`$ と $`d\mathbin{::}D'`$ の長さは
@@ -1242,7 +1242,7 @@ $`g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+
 $`1\le n`$ より $`n=m+1`$ と書ける。
 
 **(1) 2 つの列の形.**
-$`R\mathbin{+\!\!+}[lp]`$ の全要素 $`x`$ は $`v_0<\pi_0 x`$ をみたす（$`x\in R`$ なら第 1 の仮定、$`x=lp`$ なら第 2 の仮定）。
+$`R\mathbin{+\!\!+}[lp]`$ の全要素 $`x`$ は $`v_0\lt \pi_0 x`$ をみたす（$`x\in R`$ なら第 1 の仮定、$`x=lp`$ なら第 2 の仮定）。
 よって [(T.translate_single_tree)](Mechanized.md#t-translate_single_tree) より
 ```math
 \mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}[lp])\bigr)
@@ -1296,8 +1296,8 @@ $`b_2=\mathrm{tr}(R\mathbin{+\!\!+}[lp])`$, $`c_2=\mathsf{Z}`$、および (tZ1)
 **(4) 側条件 $`r_1`$.** $`T_m`$ の任意の要素は $`B`$ の要素である。実際 $`T_m`$ は
 $`\mathrm{replicate}(m,B)`$ の要素をすべて連結したものであり、`List.eq_of_mem_replicate` より
 その各要素は $`B`$ に等しいからである。したがって $`x\in R\mathbin{+\!\!+}T_m`$ ならば、
-$`x\in R`$ の場合は第 1 の仮定より $`v_0<\pi_0 x`$、
-$`x\in T_m`$ の場合は $`x\in B=(v_0,w_0)\mathbin{::}R`$ であり $`x=(v_0,w_0)`$ なら $`\pi_0 x=v_0`$、$`x\in R`$ なら $`v_0<\pi_0 x`$。
+$`x\in R`$ の場合は第 1 の仮定より $`v_0\lt \pi_0 x`$、
+$`x\in T_m`$ の場合は $`x\in B=(v_0,w_0)\mathbin{::}R`$ であり $`x=(v_0,w_0)`$ なら $`\pi_0 x=v_0`$、$`x\in R`$ なら $`v_0\lt \pi_0 x`$。
 いずれにせよ
 ```math
 r_1 : \forall x\in R\mathbin{+\!\!+}T_m,\ v_0\le\pi_0 x .
@@ -1316,7 +1316,7 @@ leadle は (3)、$`r_1`$ は (4)、$`r_2`$ は $`r_T`$、$`G:=G`$、$`hG_2 := cM
 
 $`i_1=1`$ の悪い分岐は、ブロック $`B=(v_0,w_0)\mathbin{::}R`$ とその後に落とされる対 $`lp`$ を、
 $`B`$ の**昇順コピー** $`n`$ 個に置き換える：第 $`k`$ コピーは $`B`$ の行 0 の値をすべて $`k\,d_0`$ だけ増やしたものである
-（$`d_0>0`$）。このコピー列を $`\mathrm{cp}_{d_0}(B,n)`$ と書く。
+（$`d_0\gt 0`$）。このコピー列を $`\mathrm{cp}_{d_0}(B,n)`$ と書く。
 
 <a id="d-shiftr0"></a>
 ### 定義 行 0 の平行移動 (D.shiftr0)
@@ -1478,19 +1478,19 @@ $`p=(v_0,w_0)`$ なら $`\pi_0 p = v_0`$、$`p\in R`$ なら仮定より $`v_0\l
 <a id="t-copies_tl_gt"></a>
 ### 定理 コピー列の尾部の行 0 の狭義下界 (T.copies_tl_gt)
 
-**主張** $`\forall x\in R,\ v_0<\pi_0 x`$、$`0<d`$、$`1\le n`$ ならば
+**主張** $`\forall x\in R,\ v_0\lt \pi_0 x`$、$`0\lt d`$、$`1\le n`$ ならば
 ```math
 \forall x\in R\mathbin{+\!\!+}\mathrm{sh}_d\bigl(\mathrm{cp}_d((v_0,w_0)\mathbin{::}R,\ n-1)\bigr),\ v_0<\pi_0 x .
 ```
 
 **証明** $`x`$ を取り、連結の 2 つの部分で分ける。
 
-- $`x\in R`$ のとき：仮定より $`v_0<\pi_0 x`$。
+- $`x\in R`$ のとき：仮定より $`v_0\lt \pi_0 x`$。
 - $`x\in\mathrm{sh}_d\bigl(\mathrm{cp}_d((v_0,w_0)\mathbin{::}R,\ n-1)\bigr)`$ のとき：
   [(T.mem_shiftr0)](#t-mem_shiftr0) によりある $`p\in\mathrm{cp}_d((v_0,w_0)\mathbin{::}R,\ n-1)`$ について
-  $`x = (\pi_0 p+d,\ \pi_1 p)`$ である。仮定 $`\forall x\in R,\ v_0<\pi_0 x`$ から
+  $`x = (\pi_0 p+d,\ \pi_1 p)`$ である。仮定 $`\forall x\in R,\ v_0\lt \pi_0 x`$ から
   $`\forall x\in R,\ v_0\le\pi_0 x`$ が従うので、[(T.copies_v0_le)](#t-copies_v0_le) より $`v_0\le\pi_0 p`$。
-  よって $`0<d`$ とあわせて $`\pi_0 x = \pi_0 p + d \ge v_0 + d > v_0`$。
+  よって $`0\lt d`$ とあわせて $`\pi_0 x = \pi_0 p + d \ge v_0 + d \gt v_0`$。
 
 （仮定 $`1\le n`$ はこの証明では使わない。Lean 側でも未使用引数として記されている。）∎
 
@@ -1553,7 +1553,7 @@ $`\mathrm{cnf}\Bigl(\mathrm{tr}\bigl(\mathrm{cp}_{d_0}((v_0,w_0)\mathbin{::}R,\ 
     - $`cZ_1`$：(z1) と [(T.translate_shiftr0)](#t-translate_shiftr0) より
       $`\mathrm{tr}(z_1\mathbin{::}T_1) = \mathrm{tr}(\mathrm{cp}_{d_0}(B,m+1))`$ であり、
       これは帰納法の仮定 $`\Phi(m+1)`$ が $`\mathrm{cnf}`$ を主張する項である。
-    - decr：(tZ1) と $`\mathrm{tr}[lp]=\mathsf{P}(\pi_1 lp,\mathsf{Z},\mathsf{Z})`$、および仮定 $`w_0<\pi_1 lp`$ に
+    - decr：(tZ1) と $`\mathrm{tr}[lp]=\mathsf{P}(\pi_1 lp,\mathsf{Z},\mathsf{Z})`$、および仮定 $`w_0\lt \pi_1 lp`$ に
       [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言を用いて
       $`\mathrm{tr}(z_1\mathbin{::}T_1) \prec \mathrm{tr}(lp\mathbin{::}[])`$。
     - root：$`\pi_0 z_1 = v_0+d_0 = \pi_0 lp`$（仮定 $`\pi_0 lp = v_0+d_0`$）。
@@ -1561,7 +1561,7 @@ $`\mathrm{cnf}\Bigl(\mathrm{tr}\bigl(\mathrm{cp}_{d_0}((v_0,w_0)\mathbin{::}R,\ 
       $`a_2:=\pi_1 lp`$, $`b_2:=\mathsf{Z}`$, $`c_2:=\mathsf{Z}`$ とすると、
       2 つの等式は (tZ1) と $`\mathrm{tr}[lp]=\mathsf{P}(\pi_1 lp,\mathsf{Z},\mathsf{Z})`$ であり、
       $`\mathsf{P}(w_0,\mathrm{tr}\,S_m,\mathsf{Z}) \preceq \mathsf{P}(\pi_1 lp,\mathsf{Z},\mathsf{Z})`$ は
-      $`w_0<\pi_1 lp`$ と [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言による。
+      $`w_0\lt \pi_1 lp`$ と [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言による。
     - $`r_1`$：$`x\in\mathrm{sh}_{d_0}S_m`$ とすると [(T.mem_shiftr0)](#t-mem_shiftr0) よりある $`p\in S_m`$ について
       $`x=(\pi_0 p+d_0,\ \pi_1 p)`$ であり、(tlgt) より $`v_0\le\pi_0 p`$、したがって
       $`\pi_0 z_1 = v_0+d_0 \le \pi_0 p+d_0 = \pi_0 x`$。
@@ -1594,11 +1594,11 @@ $`\mathrm{cnf}\Bigl(\mathrm{tr}\bigl(\mathrm{cp}_{d_0}((v_0,w_0)\mathbin{::}R,\ 
 ```
 
 **証明** $`B:=(v_0,w_0)\mathbin{::}R`$ とおく。$`1\le n`$ より $`n=m+1`$ と書ける。
-$`0<d_0`$ と $`\pi_0 lp = v_0+d_0`$ より
+$`0\lt d_0`$ と $`\pi_0 lp = v_0+d_0`$ より
 ```math
 lpv : v_0 < \pi_0 lp .
 ```
-また $`R\mathbin{+\!\!+}[lp]`$ の全要素 $`x`$ は $`v_0<\pi_0 x`$ をみたす（$`x\in R`$ なら仮定、$`x=lp`$ なら $`lpv`$）。
+また $`R\mathbin{+\!\!+}[lp]`$ の全要素 $`x`$ は $`v_0\lt \pi_0 x`$ をみたす（$`x\in R`$ なら仮定、$`x=lp`$ なら $`lpv`$）。
 以下 $`S_m := R\mathbin{+\!\!+}\mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(B,m))`$ と書く。
 
 **(1) 悪い分岐の核による減少.** 次を示す。
@@ -1621,21 +1621,21 @@ $`m`$ の形で分ける。
   ここで [(T.core_i1)](Mechanized.md#t-core_i1) を
   $`R:=R`$, $`c:=(v_0+d_0,\ w_0)`$, $`C':=\mathrm{sh}_{d_0}S_{m'}`$, $`lp:=lp`$ として適用する。
   その 5 つの仮定は次のように満たされる。
-  - $`\forall x\in R,\ v_0<\pi_0 x`$：本定理の仮定。
+  - $`\forall x\in R,\ v_0\lt \pi_0 x`$：本定理の仮定。
   - $`\forall x\in C',\ \pi_0 c\le\pi_0 x`$：$`x\in\mathrm{sh}_{d_0}S_{m'}`$ なら
     [(T.mem_shiftr0)](#t-mem_shiftr0) よりある $`p\in S_{m'}`$ について $`x=(\pi_0 p+d_0,\pi_1 p)`$ であり、
-    [(T.copies_tl_gt)](#t-copies_tl_gt)（$`n:=m'+1`$）より $`v_0<\pi_0 p`$、
+    [(T.copies_tl_gt)](#t-copies_tl_gt)（$`n:=m'+1`$）より $`v_0\lt \pi_0 p`$、
     したがって $`\pi_0 c = v_0+d_0 \le \pi_0 p+d_0 = \pi_0 x`$。
   - $`\pi_0 c=\pi_0 lp`$：$`\pi_0 c = v_0+d_0 = \pi_0 lp`$。
-  - $`v_0<\pi_0 lp`$：$`lpv`$。
-  - $`\pi_1 c<\pi_1 lp`$：$`\pi_1 c = w_0`$ と仮定 $`w_0<\pi_1 lp`$。
+  - $`v_0\lt \pi_0 lp`$：$`lpv`$。
+  - $`\pi_1 c\lt \pi_1 lp`$：$`\pi_1 c = w_0`$ と仮定 $`w_0\lt \pi_1 lp`$。
 
   結論は $`\mathrm{tr}\bigl(B\mathbin{+\!\!+}(c\mathbin{::}C')\bigr) \prec \mathrm{tr}(B\mathbin{+\!\!+}[lp])`$ であり、
   (e) によりこれが (decr) である。
 
 **(2) 2 つの列の $`\mathsf{P}`$ 表示.**
 [(T.copies_succ_cons)](#t-copies_succ_cons) より $`\mathrm{cp}_{d_0}(B,m+1) = (v_0,w_0)\mathbin{::}S_m`$ であり、
-[(T.copies_tl_gt)](#t-copies_tl_gt)（$`n:=m+1`$）より $`\forall x\in S_m,\ v_0<\pi_0 x`$。
+[(T.copies_tl_gt)](#t-copies_tl_gt)（$`n:=m+1`$）より $`\forall x\in S_m,\ v_0\lt \pi_0 x`$。
 [(T.translate_single_tree)](Mechanized.md#t-translate_single_tree) より
 ```math
 \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B,m+1)\bigr) = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,S_m,\ \mathsf{Z}\bigr), \tag{st1}
@@ -1661,7 +1661,7 @@ cC : \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{cp}_{d_0}(B,m+1))\bigr).
 
 **(4) 引数どうしの比較.** (decr) を (st1), (st2) で書き換え、
 [(T.olt_P_P)](Mechanized.md#t-olt_P_P) で 3 つに分ける。
-第 1 の場合は $`w_0<w_0`$ で自然数の $`<`$ の非反射性により偽、
+第 1 の場合は $`w_0\lt w_0`$ で自然数の $`\lt `$ の非反射性により偽、
 第 3 の場合は $`\mathsf{Z}\prec\mathsf{Z}`$ を含み [(T.not_olt_Z)](Mechanized.md#t-not_olt_Z) に反する。
 よって第 2 の場合が成り立ち
 ```math
@@ -1715,7 +1715,7 @@ $`\mathrm{flatten}\ \mathrm{replicate}(n,B)`$ に等しい。∎
 **$`j_1=0`$ のとき。** [(T.oper_eq_self_of_short)](Mechanized.md#t-oper_eq_self_of_short) より $`M[n]=M`$ であり、
 結論は仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ そのものである。
 
-**$`j_1\ne0`$ のとき。** 切り捨て減法より $`\lvert M\rvert-1\ne0`$ は $`1<\lvert M\rvert`$ を意味する。
+**$`j_1\ne0`$ のとき。** 切り捨て減法より $`\lvert M\rvert-1\ne0`$ は $`1\lt \lvert M\rvert`$ を意味する。
 とくに $`M\ne[]`$ であり、[(D.Pred)](Def.md#d-Pred) より $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$ である。
 [(D.oper)](Def.md#d-oper) の残り 3 分岐で場合分けする。
 
@@ -1731,9 +1731,9 @@ $`\mathrm{flatten}\ \mathrm{replicate}(n,B)`$ に等しい。∎
 
   1. $`M = G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp]`$
   2. $`M[n] = G\mathbin{+\!\!+}\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda p.\ (\pi_0 p+k\,d_0,\ \pi_1 p))\ B\bigr)\ \mathrm{range}(n)`$
-  3. $`\forall x\in R,\ v_0<\pi_0 x`$
-  4. $`v_0<\pi_0 lp`$
-  5. $`\bigl(d_0=0\wedge i_1=0\bigr)\ \vee\ \bigl(0<d_0\wedge w_0<\pi_1 lp\wedge \pi_0 lp=v_0+d_0\wedge\cdots\bigr)`$
+  3. $`\forall x\in R,\ v_0\lt \pi_0 x`$
+  4. $`v_0\lt \pi_0 lp`$
+  5. $`\bigl(d_0=0\wedge i_1=0\bigr)\ \vee\ \bigl(0\lt d_0\wedge w_0\lt \pi_1 lp\wedge \pi_0 lp=v_0+d_0\wedge\cdots\bigr)`$
 
   である。ここで条件 2 の $`\mathrm{flatMap}`$ の被関数は
   $`\lambda k.\ \mathrm{map}\ \sigma_{k\,d_0}\ B = \lambda k.\ \mathrm{sh}_{k\,d_0}B`$ であるから、
@@ -1747,7 +1747,7 @@ $`\mathrm{flatten}\ \mathrm{replicate}(n,B)`$ に等しい。∎
   - $`d_0=0`$（かつ $`i_1=0`$）のとき：[(T.copies_replicate)](#t-copies_replicate) より
     $`\mathrm{cp}_0(B,n) = \mathrm{flatten}\ \mathrm{replicate}(n,B)`$ であり、
     [(T.cnf_oper_i1eq0)](#t-cnf_oper_i1eq0) を条件 3、条件 4、$`1\le n`$、$`cM'`$ に適用して結論を得る。
-  - $`0<d_0`$、$`w_0<\pi_1 lp`$、$`\pi_0 lp=v_0+d_0`$ のとき：
+  - $`0\lt d_0`$、$`w_0\lt \pi_1 lp`$、$`\pi_0 lp=v_0+d_0`$ のとき：
     [(T.cnf_oper_i1eq1)](#t-cnf_oper_i1eq1) を条件 3、これら 3 つ、$`1\le n`$、$`cM'`$ に適用して結論を得る。
 
 3 つの場合は（$`j_1\ne0`$ の下で）[(D.oper)](Def.md#d-oper) の全分岐を尽くしている。∎
@@ -1774,7 +1774,7 @@ $`\mathrm{flatten}\ \mathrm{replicate}(n,B)`$ に等しい。∎
 <a id="d-tops"></a>
 ### 定義 先頭和の添字列 (D.tops)
 
-$`\mathrm{tops}:\mathrm{Three}\to\mathbb{N}^{<\omega}`$ を項の構造帰納で定める。
+$`\mathrm{tops}:\mathrm{Three}\to\mathbb{N}^{\lt \omega}`$ を項の構造帰納で定める。
 
 ```math
 \mathrm{tops}\,\mathsf{Z} := [],\qquad \mathrm{tops}\,\mathsf{P}(a,b,c) := a\mathbin{::}\mathrm{tops}\,c .
@@ -1819,7 +1819,7 @@ $`\mathrm{sp}`$（[(D.spine)](#d-spine)）が第 2 引数（引数）をたど�
     \text{nlt} : \neg\bigl(\mathsf{P}(a,b,\mathsf{Z})\prec\mathsf{P}(e,f,\mathsf{Z})\bigr),\qquad
     cg : \mathrm{cnf}\,\mathsf{P}(e,f,g)
   ```
-  が得られる。まず $`e\le a`$ を示す。$`e\le a`$ でないとすると $`a<e`$ であり、
+  が得られる。まず $`e\le a`$ を示す。$`e\le a`$ でないとすると $`a\lt e`$ であり、
   [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言により
   $`\mathsf{P}(a,b,\mathsf{Z})\prec\mathsf{P}(e,f,\mathsf{Z})`$ となって nlt に矛盾する。よって
   ```math

@@ -37,8 +37,8 @@
 - `List.dropLast M` は $`M`$ の末尾 1 要素を除いた列。
 - `(L.map f)` は各要素に $`f`$ を適用した列、`(L.flatMap f)` は $`f`$ の値（列）を $`L`$ の順に連結した列。
 - `Relation.ReflTransGen r` は関係 $`r`$ の反射推移閉包。すなわち $`\mathrm{ReflTransGen}\ r\ a\ b`$ とは、
-  ある $`m \ge 0`$ と列 $`a = k_0, k_1, \dots, k_m = b`$ が存在して $`\forall t < m,\ r\ k_t\ k_{t+1}`$ が成り立つこと。
-- 自然数の減法 $`a - b`$ はすべて切り捨て減法である。すなわち $`a < b`$ のとき $`a - b = 0`$。
+  ある $`m \ge 0`$ と列 $`a = k_0, k_1, \dots, k_m = b`$ が存在して $`\forall t \lt m,\ r\ k_t\ k_{t+1}`$ が成り立つこと。
+- 自然数の減法 $`a - b`$ はすべて切り捨て減法である。すなわち $`a \lt b`$ のとき $`a - b = 0`$。
 - $`\exists! x,\ P(x)`$ は $`\exists x,\ \bigl(P(x) \wedge \forall y,\ P(y) \to y = x\bigr)`$ の略記。
 - $`\varepsilon x.\,P(x)`$ は `Classical.epsilon (fun x => P x)` を表す。その唯一の性質は
   $`(\exists x,\ P(x)) \to P(\varepsilon x.\,P(x))`$ である（`Classical.epsilon_spec`）。
@@ -102,7 +102,7 @@ j \ge \mathrm{Lng}\,M \ \Longrightarrow\ M_{0,j} = 0 \ \wedge\ M_{1,j} = 0 .
 ```
 
 実際、$`j \ge \mathrm{Lng}\,M`$ のとき $`M_j = (0,0)`$ であり、$`\pi_1(0,0) = \pi_2(0,0) = 0`$ である。
-以降、$`M_{i,j}`$ を用いる箇所では常に $`j < \mathrm{Lng}\,M`$ が保証されるので、この既定値が読まれることはない。
+以降、$`M_{i,j}`$ を用いる箇所では常に $`j \lt \mathrm{Lng}\,M`$ が保証されるので、この既定値が読まれることはない。
 
 ---
 
@@ -113,11 +113,11 @@ j \ge \mathrm{Lng}\,M \ \Longrightarrow\ M_{0,j} = 0 \ \wedge\ M_{1,j} = 0 .
 
 $`M \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し、$`j_0 \to^M_0 j_1`$ を次の 5 条件の連言と定める。
 
-1. $`j_0 < \mathrm{Lng}\,M`$
-2. $`j_1 < \mathrm{Lng}\,M`$
-3. $`j_0 < j_1`$
-4. $`M_{0,j_0} < M_{0,j_1}`$
-5. $`\forall j,\ \bigl(j_0 < j \ \wedge\ j < j_1\bigr) \to M_{0,j_1} \le M_{0,j}`$
+1. $`j_0 \lt \mathrm{Lng}\,M`$
+2. $`j_1 \lt \mathrm{Lng}\,M`$
+3. $`j_0 \lt j_1`$
+4. $`M_{0,j_0} \lt M_{0,j_1}`$
+5. $`\forall j,\ \bigl(j_0 \lt j \ \wedge\ j \lt j_1\bigr) \to M_{0,j_1} \le M_{0,j}`$
 
 （[(D.entry)](#d-entry) の $`M_{0,\cdot}`$ を用いている。）
 
@@ -127,11 +127,11 @@ $`M \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し、$`j_0 \to^M
 M_{0,j_1} = \min\{\, M_{0,j} \mid j_0 < j \le j_1 \,\} \quad\text{かつ}\quad M_{0,j_0} < M_{0,j_1}
 ```
 
-と同値である。実際、条件 3 より $`j_1`$ 自身が添字集合 $`\{ j \mid j_0 < j \le j_1 \}`$ に属する。
-条件 5 は「$`j_0 < j < j_1`$ なるすべての $`j`$ で $`M_{0,j_1} \le M_{0,j}`$」であり、
+と同値である。実際、条件 3 より $`j_1`$ 自身が添字集合 $`\{ j \mid j_0 \lt j \le j_1 \}`$ に属する。
+条件 5 は「$`j_0 \lt j \lt j_1`$ なるすべての $`j`$ で $`M_{0,j_1} \le M_{0,j}`$」であり、
 $`j = j_1`$ については $`\le`$ の反射性から $`M_{0,j_1} \le M_{0,j_1}`$ が成り立つ。
-よって $`M_{0,j_1}`$ は集合 $`\{M_{0,j} \mid j_0 < j \le j_1\}`$ の下界であり、かつ $`j = j_1`$ でその値を取るから、
-最小値である。逆に、この最小性から条件 5（$`j_0 < j < j_1`$ の場合）が従う。
+よって $`M_{0,j_1}`$ は集合 $`\{M_{0,j} \mid j_0 \lt j \le j_1\}`$ の下界であり、かつ $`j = j_1`$ でその値を取るから、
+最小値である。逆に、この最小性から条件 5（$`j_0 \lt j \lt j_1`$ の場合）が従う。
 なお最小値を取る $`j`$ は $`j_1`$ 以外にも存在しうる（条件 5 は等号を許す）。
 
 <a id="d-le0"></a>
@@ -143,28 +143,28 @@ j_0 < \mathrm{Lng}\,M \ \wedge\ j_1 < \mathrm{Lng}\,M \ \wedge\ \mathrm{ReflTran
 ```
 
 すなわち、$`j_0`$ と $`j_1`$ がともに $`M`$ の添字範囲にあり、かつある $`m \ge 0`$ と列
-$`j_0 = k_0, k_1, \dots, k_m = j_1`$ が存在して $`\forall t < m,\ k_t \to^M_0 k_{t+1}`$
+$`j_0 = k_0, k_1, \dots, k_m = j_1`$ が存在して $`\forall t \lt m,\ k_t \to^M_0 k_{t+1}`$
 （[(D.nextrel0)](#d-nextrel0)）が成り立つこと。
 
 長さの条件 1, 2 は反射推移閉包とは独立に課されている。したがって $`m = 0`$（$`j_0 = j_1`$）の場合でも
-$`j_0 \le^M_0 j_0`$ が成り立つのは $`j_0 < \mathrm{Lng}\,M`$ のときに限る。
+$`j_0 \le^M_0 j_0`$ が成り立つのは $`j_0 \lt \mathrm{Lng}\,M`$ のときに限る。
 
 <a id="d-nextrel1"></a>
 #### 定義 行 1 の直接親子関係 (D.nextrel1)
 
 $`M \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し、$`j_0 \to^M_1 j_1`$ を次の 6 条件の連言と定める。
 
-1. $`j_0 < \mathrm{Lng}\,M`$
-2. $`j_1 < \mathrm{Lng}\,M`$
-3. $`j_0 < j_1`$
-4. $`M_{1,j_0} < M_{1,j_1}`$
+1. $`j_0 \lt \mathrm{Lng}\,M`$
+2. $`j_1 \lt \mathrm{Lng}\,M`$
+3. $`j_0 \lt j_1`$
+4. $`M_{1,j_0} \lt M_{1,j_1}`$
 5. $`j_0 \le^M_0 j_1`$（[(D.le0)](#d-le0)）
-6. $`\forall j,\ \bigl(j_0 < j \ \wedge\ j \le^M_0 j_1\bigr) \to M_{1,j_1} \le M_{1,j}`$
+6. $`\forall j,\ \bigl(j_0 \lt j \ \wedge\ j \le^M_0 j_1\bigr) \to M_{1,j_1} \le M_{1,j}`$
 
 条件 5 により、行 $`1`$ の親は必ず行 $`0`$ の祖先である。
-条件 6 で $`j`$ が動く範囲は「$`j_0 < j`$ かつ $`j`$ が $`j_1`$ の行 $`0`$ 祖先」であり、
+条件 6 で $`j`$ が動く範囲は「$`j_0 \lt j`$ かつ $`j`$ が $`j_1`$ の行 $`0`$ 祖先」であり、
 [(D.nextrel0)](#d-nextrel0) の条件 5（区間 $`(j_0,j_1)`$ 全体）とは範囲が異なる。
-$`j = j_1`$ は条件 6 の前提を満たす（$`j_0 < j_1`$ は条件 3、$`j_1 \le^M_0 j_1`$ は条件 2 と
+$`j = j_1`$ は条件 6 の前提を満たす（$`j_0 \lt j_1`$ は条件 3、$`j_1 \le^M_0 j_1`$ は条件 2 と
 $`\mathrm{ReflTransGen}`$ の反射性から従う）が、そのときの結論 $`M_{1,j_1} \le M_{1,j_1}`$ は
 $`\le`$ の反射性から成り立つので、条件 6 の内容は $`j \ne j_1`$ の場合に尽きる。
 
@@ -334,12 +334,12 @@ $`n = 0`$ のときは $`B_k`$ が 1 つも現れず $`M[0] = M \upharpoonright 
 Lean の記法 `M⟦n⟧` は `oper M n` の略記である。
 
 **補足 1（$`d_1`$ は常に $`0`$）.**
-[(D.idx1)](#d-idx1) より $`i_1 = \mathrm{idx}_1(M, j_1) \in \{0, 1\}`$ である。よって条件 $`1 < i_1`$ は
+[(D.idx1)](#d-idx1) より $`i_1 = \mathrm{idx}_1(M, j_1) \in \{0, 1\}`$ である。よって条件 $`1 \lt i_1`$ は
 偽であり、分岐 (d) では常に $`d_1 = 0`$ である。したがって $`B_k`$ の第 2 成分は $`M_{1,j}`$ そのもの、
 すなわちコピーによって増加するのは行 $`0`$ の値のみである。
 
 **補足 2（$`d_0`$ の 2 つの場合）.**
-$`i_1 = 1`$ のとき（すなわち $`M_{1,j_1} > 0`$ のとき）、[(D.nextR)](#d-nextR) より
+$`i_1 = 1`$ のとき（すなわち $`M_{1,j_1} \gt 0`$ のとき）、[(D.nextR)](#d-nextR) より
 $`j_0 \to^M_{i_1} j_1`$ は $`j_0 \to^M_1 j_1`$ であり、[(D.nextrel1)](#d-nextrel1) の条件 5 から
 $`j_0 \le^M_0 j_1`$ が成り立つ。このとき $`d_0 = M_{0,j_1} - M_{0,j_0}`$ である。
 $`i_1 = 0`$ のとき（すなわち $`M_{1,j_1} = 0`$ のとき）は $`d_0 = 0`$ であり、補足 1 と合わせて
@@ -349,9 +349,9 @@ $`d_0 = d_1 = 0`$ だから、すべての $`k`$ について
 B_k = \bigl(\,(M_{0,j},\ M_{1,j})\,\bigr)_{j=j_0}^{j_1-1} = (M_{j_0}, M_{j_0+1}, \dots, M_{j_1-1})
 ```
 
-である（最後の等号は、$`j < \mathrm{Lng}\,M`$ のとき [(D.entry)](#d-entry) より
+である（最後の等号は、$`j \lt \mathrm{Lng}\,M`$ のとき [(D.entry)](#d-entry) より
 $`(M_{0,j}, M_{1,j}) = (\pi_1(M_j), \pi_2(M_j)) = M_j`$ であることによる。分岐 (d) では
-$`j_0 \le j < j_1 < \mathrm{Lng}\,M`$）。すなわち $`M[n]`$ は
+$`j_0 \le j \lt j_1 \lt \mathrm{Lng}\,M`$）。すなわち $`M[n]`$ は
 $`M \upharpoonright j_0`$ の後ろに区間 $`[j_0, j_1)`$ の要素をそのまま $`n`$ 回並べた列である。
 
 **補足 3（長さ）.** 分岐 (d) において
@@ -361,7 +361,7 @@ $`M \upharpoonright j_0`$ の後ろに区間 $`[j_0, j_1)`$ の要素をその�
 ```
 
 *証明.* 分岐 (d) では $`\mathrm{hasParent}(M, i_1, j_1)`$ が成り立つから、[(D.parent)](#d-parent) の性質より
-$`j_0 \to^M_{i_1} j_1`$、したがって [(D.nextR)](#d-nextR) の後の注意により $`j_0 < j_1 < \mathrm{Lng}\,M`$ である。
+$`j_0 \to^M_{i_1} j_1`$、したがって [(D.nextR)](#d-nextR) の後の注意により $`j_0 \lt j_1 \lt \mathrm{Lng}\,M`$ である。
 よって $`\mathrm{Lng}(M \upharpoonright j_0) = \min(j_0, \mathrm{Lng}\,M) = j_0`$。
 各 $`B_k`$ は $`[j_0, \dots, j_1-1]`$ に写像を施した列だから $`\mathrm{Lng}\,B_k = j_1 - j_0`$。
 連結の長さは長さの和だから、全体の長さは $`j_0 + n(j_1-j_0)`$ である。$`\square`$
@@ -391,7 +391,7 @@ $`b + 1 - a`$ である。したがって
 \mathrm{Lng}\,\Delta_a^b = \begin{cases} b + 1 - a & (a \le b) \cr 0 & (a > b) \end{cases}
 ```
 
-であり、$`a > b`$ のとき $`\Delta_a^b`$ は空列である。特に
+であり、$`a \gt b`$ のとき $`\Delta_a^b`$ は空列である。特に
 
 ```math
 \Delta_0^v = \bigl((0,0), (1,1), \dots, (v,v)\bigr), \qquad \mathrm{Lng}\,\Delta_0^v = v + 1 .
@@ -440,7 +440,7 @@ M = \Delta_0^v[n_1][n_2]\cdots[n_m]
 
 **基底を $`\Delta_0^v`$ に限ることについて.**
 規則 (diag) の基底は $`u = 0`$ から始まる対角列 $`\Delta_0^v`$ のみであり、
-一般の $`\Delta_u^v`$（$`u > 0`$）は基底に含めない。$`\Delta_u^v`$（$`u > 0`$）を基底に加えると、
+一般の $`\Delta_u^v`$（$`u \gt 0`$）は基底に含めない。$`\Delta_u^v`$（$`u \gt 0`$）を基底に加えると、
 第 $`0`$ 要素が $`(u,u) \ne (0,0)`$ である列も $`\mathrm{ST\_PS}`$ に属することになる。
 ここでは、基底が $`\Delta_0^v`$ に限られているという定義上の事実のみを記録する。
 この選択が後続の章の不変量にどう効くかは、それらの章で個別に示される。
@@ -465,10 +465,10 @@ M \Rightarrow N \quad\Longleftrightarrow\quad \exists n,\ \bigl(1 < \mathrm{Lng}
 
 $`(\Leftarrow)`$ は規則 (step\_oper) そのもの。$`(\Rightarrow)`$ は Lean の `step.rec`（唯一の構成子に対する場合分け）である。
 
-**補足（長さ制限 $`1 < \mathrm{Lng}\,M`$ の役割）.**
+**補足（長さ制限 $`1 \lt \mathrm{Lng}\,M`$ の役割）.**
 $`\mathrm{Lng}\,M \le 1`$ ならば $`j_1 = \mathrm{Lng}\,M - 1 = 0`$（切り捨て減法。$`\mathrm{Lng}\,M = 0`$ のときも
 $`0 - 1 = 0`$）であるから、[(D.oper)](#d-oper) の分岐 (a) により、任意の $`n`$ について $`M[n] = M`$ である。
-導入規則の前提 $`1 < \mathrm{Lng}\,M`$ は、この $`M \Rightarrow M`$ という形の対を $`\Rightarrow`$ から除いている。
+導入規則の前提 $`1 \lt \mathrm{Lng}\,M`$ は、この $`M \Rightarrow M`$ という形の対を $`\Rightarrow`$ から除いている。
 
 この $`\Rightarrow`$ に無限前進列が存在しないことが、本証明全体の目標である
 （[(T.no_infinite_expansion_holds)](Final.md#t-no_infinite_expansion_holds)、

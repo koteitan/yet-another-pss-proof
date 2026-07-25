@@ -23,10 +23,10 @@
 | `lfpS f` | $`\mathrm{lfp}\,f`$ | 単調作用素 $`f`$ の最小不動点 |
 | `Aop Wfam u X M` | $`M\in A^{\mathcal F}_u(X)`$ | 作用素 $`A_u`$（族パラメータ $`\mathcal F`$） |
 | `Aset Wfam u X` | $`A^{\mathcal F}_u(X)`$ | 同上（集合として） |
-| `Wf n m` | $`W^{(n)}_m`$ | 段階族（$`m<n`$ でのみ意味をもつ） |
+| `Wf n m` | $`W^{(n)}_m`$ | 段階族（$`m\lt n`$ でのみ意味をもつ） |
 | `W u` | $`W_u`$ | 反復帰納的集合 |
 | `Rst a b` | $`a \mathrel{R} b`$ | 目標関係（標準形上の $`\prec`$） |
-| `argOK R` | $`\mathrm{argOK}(R)`$ | $`\forall p\in R,\ 0<\pi_0 p`$ |
+| `argOK R` | $`\mathrm{argOK}(R)`$ | $`\forall p\in R,\ 0\lt \pi_0 p`$ |
 | `rsum A P` | $`\mathrm{rsum}(A,P)`$ | $`P`$ が $`A\mathbin{+\!\!+}P`$ の最上位末尾ブロックである |
 | `XA A X` | $`X^{(A)}`$ | $`\{B \mid \mathrm{rsum}(A,B)\to A\mathbin{+\!\!+}B\in X\}`$ |
 | `Wstar` | $`W^{*}`$ | 引数ブロックの集合 |
@@ -125,7 +125,7 @@ $`t=\mathsf{P}(a,b,c)`$ とすると、[(T.olt_P_P)](Mechanized.md#t-olt_P_P) �
 ```math
 a<0 \ \vee\ (a=0\wedge b\prec\mathsf{Z})\ \vee\ (a=0\wedge b=\mathsf{Z}\wedge c\prec\mathsf{Z})
 ```
-と同値である。第 1 選言は $`\mathbb{N}`$ において $`a<0`$ が偽であるから成立しない。
+と同値である。第 1 選言は $`\mathbb{N}`$ において $`a\lt 0`$ が偽であるから成立しない。
 第 2 選言の $`b\prec\mathsf{Z}`$ と第 3 選言の $`c\prec\mathsf{Z}`$ は
 [(T.not_olt_Z)](Mechanized.md#t-not_olt_Z) により成立しない。よって $`t=\mathsf{P}(a,b,c)`$ の場合は起こらない。∎
 
@@ -134,8 +134,8 @@ a<0 \ \vee\ (a=0\wedge b\prec\mathsf{Z})\ \vee\ (a=0\wedge b=\mathsf{Z}\wedge c\
 
 **主張** $`M\in\mathrm{ST\_PS}`$ ならば $`M\ne[]`$。
 
-**証明** [(T.stps_len_pos)](Nrm.md#t-stps_len_pos) より $`0<\lvert M\rvert`$。
-もし $`M=[]`$ ならば $`\lvert M\rvert=0`$ となり $`0<0`$ を得るが、これは $`<`$ の非反射性に反する。∎
+**証明** [(T.stps_len_pos)](Nrm.md#t-stps_len_pos) より $`0\lt \lvert M\rvert`$。
+もし $`M=[]`$ ならば $`\lvert M\rvert=0`$ となり $`0\lt 0`$ を得るが、これは $`\lt `$ の非反射性に反する。∎
 
 <a id="t-stps_len_one"></a>
 #### 定理 長さ 1 の標準形は $`[(0,0)]`$ (T.stps_len_one)
@@ -244,12 +244,12 @@ $`\neg\,\mathrm{hasParent}(M,1,\ell_M)`$ と仮定して矛盾を導く。
 <a id="t-oper_eq_graft_nil_of_domT"></a>
 #### 定理 $`\mathrm{dom}=T_m`$ の枝で $`M[n]`$ は最下段の graft (T.oper_eq_graft_nil_of_domT)
 
-**主張** $`1<\lvert M\rvert`$ かつ $`\mathrm{dom}(M)=T_m`$ ならば、任意の $`n`$ に対し $`M[n]=\mathrm{gr}(M,[])`$。
+**主張** $`1\lt \lvert M\rvert`$ かつ $`\mathrm{dom}(M)=T_m`$ ならば、任意の $`n`$ に対し $`M[n]=\mathrm{gr}(M,[])`$。
 
 **証明** [(D.domT)](#d-domT) より $`M_{1,\ell_M}=m+1`$ と $`\neg\,\mathrm{hasParent}(M,1,\ell_M)`$ を得る。
 
-1. $`1<\lvert M\rvert`$ より $`\lvert M\rvert\ge 2`$、よって $`\ell_M=\lvert M\rvert-1\ne 0`$。
-2. $`M_{1,\ell_M}=m+1\ge 1>0`$ であるから、[(D.idx1)](Def.md#d-idx1) より $`\mathrm{idx}_1(M,\ell_M)=1`$。
+1. $`1\lt \lvert M\rvert`$ より $`\lvert M\rvert\ge 2`$、よって $`\ell_M=\lvert M\rvert-1\ne 0`$。
+2. $`M_{1,\ell_M}=m+1\ge 1\gt 0`$ であるから、[(D.idx1)](Def.md#d-idx1) より $`\mathrm{idx}_1(M,\ell_M)=1`$。
 3. $`\neg\bigl(M_{0,\ell_M}=0 \wedge M_{1,\ell_M}=0\bigr)`$：第 2 連言項は $`m+1=0`$ を要求するが $`m+1\ge 1`$。
 4. 2 により $`\neg\,\mathrm{hasParent}(M,\mathrm{idx}_1(M,\ell_M),\ell_M)`$ は
    $`\neg\,\mathrm{hasParent}(M,1,\ell_M)`$ に一致する。
@@ -276,7 +276,7 @@ $`\lvert M\rvert\ge 2`$ であるから $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`
 <a id="t-hasParent_one_iff"></a>
 #### 定理 行 1 親の存在判定 (T.hasParent_one_iff)
 
-**主張** $`j_1<\lvert M\rvert`$ ならば
+**主張** $`j_1\lt \lvert M\rvert`$ ならば
 ```math
 \mathrm{hasParent}(M,1,j_1) \iff \exists j_0,\ \mathrm{r1cand}(M,j_1,j_0).
 ```
@@ -290,18 +290,18 @@ $`\lvert M\rvert\ge 2`$ であるから $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`
 
 $`(\Rightarrow)`$ $`\mathrm{hasParent}(M,1,j_1)`$ は $`\exists!\,j_0,\ j_0\to^M_1 j_1`$ であるから、
 特に $`j_0\to^M_1 j_1`$ なる $`j_0`$ が存在する。[(D.nextrel1)](Def.md#d-nextrel1) の条件 3, 5, 4 はそれぞれ
-$`j_0<j_1`$、$`j_0\le^M_0 j_1`$、$`M_{1,j_0}<M_{1,j_1}`$ であるから、$`\mathrm{r1cand}(M,j_1,j_0)`$ が成り立つ。
+$`j_0\lt j_1`$、$`j_0\le^M_0 j_1`$、$`M_{1,j_0}\lt M_{1,j_1}`$ であるから、$`\mathrm{r1cand}(M,j_1,j_0)`$ が成り立つ。
 
 $`(\Leftarrow)`$ $`\mathrm{r1cand}(M,j_1,j_0)`$ なる $`j_0`$ を取る。述語
 ```math
 P(k)\ :\equiv\ \mathrm{r1cand}(M,j_1,k)
 ```
-に対し $`g:=\mathrm{fg}(P,j_1)`$ とおく。$`j_0<j_1`$ より $`j_0\le j_1`$ であり $`P(j_0)`$ が成り立つから、
+に対し $`g:=\mathrm{fg}(P,j_1)`$ とおく。$`j_0\lt j_1`$ より $`j_0\le j_1`$ であり $`P(j_0)`$ が成り立つから、
 `Nat.findGreatest_spec` より $`P(g)`$、すなわち
 ```math
 g<j_1,\qquad g\le^M_0 j_1,\qquad M_{1,g}<M_{1,j_1}
 ```
-が成り立つ。また $`P(k)`$ をみたす任意の $`k`$ について $`k<j_1`$ すなわち $`k\le j_1`$ であるから、
+が成り立つ。また $`P(k)`$ をみたす任意の $`k`$ について $`k\lt j_1`$ すなわち $`k\le j_1`$ であるから、
 `Nat.le_findGreatest` より
 ```math
 (\dagger)\qquad \forall k,\ P(k)\to k\le g .
@@ -310,23 +310,23 @@ g<j_1,\qquad g\le^M_0 j_1,\qquad M_{1,g}<M_{1,j_1}
 $`g`$ が求める一意の親であることを示す。まず $`g\to^M_1 j_1`$、すなわち
 [(D.nextrel1)](Def.md#d-nextrel1) の 6 条件を確かめる。
 
-1. $`g<\lvert M\rvert`$：$`g<j_1`$ と $`j_1<\lvert M\rvert`$ の推移性による。
-2. $`j_1<\lvert M\rvert`$：仮定。
-3. $`g<j_1`$：$`P(g)`$ の第 1 成分。
-4. $`M_{1,g}<M_{1,j_1}`$：$`P(g)`$ の第 3 成分。
+1. $`g\lt \lvert M\rvert`$：$`g\lt j_1`$ と $`j_1\lt \lvert M\rvert`$ の推移性による。
+2. $`j_1\lt \lvert M\rvert`$：仮定。
+3. $`g\lt j_1`$：$`P(g)`$ の第 1 成分。
+4. $`M_{1,g}\lt M_{1,j_1}`$：$`P(g)`$ の第 3 成分。
 5. $`g\le^M_0 j_1`$：$`P(g)`$ の第 2 成分。
-6. $`\forall j,\ (g<j \wedge j\le^M_0 j_1)\to M_{1,j_1}\le M_{1,j}`$：
-   $`g<j`$ かつ $`j\le^M_0 j_1`$ とし、結論を否定して $`M_{1,j}<M_{1,j_1}`$ と仮定する。
+6. $`\forall j,\ (g\lt j \wedge j\le^M_0 j_1)\to M_{1,j_1}\le M_{1,j}`$：
+   $`g\lt j`$ かつ $`j\le^M_0 j_1`$ とし、結論を否定して $`M_{1,j}\lt M_{1,j_1}`$ と仮定する。
    $`j\le^M_0 j_1`$ の第 3 成分は $`\mathrm{ReflTransGen}(\to^M_0)\ j\ j_1`$ であるから、
    [(T.nextrel0_rtrancl_index_le)](Mechanized.md#t-nextrel0_rtrancl_index_le) より $`j\le j_1`$。
-   - $`j=j_1`$ の場合：$`M_{1,j_1}<M_{1,j_1}`$ となり $`<`$ の非反射性に反する。
-   - $`j<j_1`$ の場合：$`j<j_1`$、$`j\le^M_0 j_1`$、$`M_{1,j}<M_{1,j_1}`$ より $`P(j)`$ が成り立つ。
-     $`(\dagger)`$ より $`j\le g`$ となるが、これは $`g<j`$ に矛盾する。
+   - $`j=j_1`$ の場合：$`M_{1,j_1}\lt M_{1,j_1}`$ となり $`\lt `$ の非反射性に反する。
+   - $`j\lt j_1`$ の場合：$`j\lt j_1`$、$`j\le^M_0 j_1`$、$`M_{1,j}\lt M_{1,j_1}`$ より $`P(j)`$ が成り立つ。
+     $`(\dagger)`$ より $`j\le g`$ となるが、これは $`g\lt j`$ に矛盾する。
 
 次に一意性を示す。$`y\to^M_1 j_1`$ とする。[(D.nextrel1)](Def.md#d-nextrel1) の条件 3, 5, 4 より $`P(y)`$、
-よって $`(\dagger)`$ から $`y\le g`$。$`y=g`$ ならば示すべきことはない。$`y<g`$ と仮定すると、
-$`y`$ についての条件 6 を $`j:=g`$ に適用できる（$`y<g`$ は仮定、$`g\le^M_0 j_1`$ は $`P(g)`$ の第 2 成分）。
-これより $`M_{1,j_1}\le M_{1,g}`$ を得るが、$`P(g)`$ の第 3 成分は $`M_{1,g}<M_{1,j_1}`$ であり矛盾する。
+よって $`(\dagger)`$ から $`y\le g`$。$`y=g`$ ならば示すべきことはない。$`y\lt g`$ と仮定すると、
+$`y`$ についての条件 6 を $`j:=g`$ に適用できる（$`y\lt g`$ は仮定、$`g\le^M_0 j_1`$ は $`P(g)`$ の第 2 成分）。
+これより $`M_{1,j_1}\le M_{1,g}`$ を得るが、$`P(g)`$ の第 3 成分は $`M_{1,g}\lt M_{1,j_1}`$ であり矛盾する。
 よって $`y=g`$。以上より $`\exists!\,j_0,\ j_0\to^M_1 j_1`$、すなわち $`\mathrm{hasParent}(M,1,j_1)`$。∎
 
 <a id="t-domT_iff"></a>
@@ -337,7 +337,7 @@ $`y`$ についての条件 6 を $`j:=g`$ に適用できる（$`y<g`$ は仮�
 \mathrm{dom}(M)=T_m \iff \Bigl(M_{1,\ell_M}=m+1 \ \wedge\ \forall j_0,\ j_0<\ell_M \to j_0\le^M_0 \ell_M \to m+1\le M_{1,j_0}\Bigr).
 ```
 
-**証明** $`M\ne[]`$ より $`0<\lvert M\rvert`$、よって $`\ell_M=\lvert M\rvert-1<\lvert M\rvert`$。
+**証明** $`M\ne[]`$ より $`0\lt \lvert M\rvert`$、よって $`\ell_M=\lvert M\rvert-1\lt \lvert M\rvert`$。
 したがって [(T.hasParent_one_iff)](#t-hasParent_one_iff) を $`j_1:=\ell_M`$ に適用でき、
 [(D.domT)](#d-domT) の第 2 条件は
 ```math
@@ -345,13 +345,13 @@ $`y`$ についての条件 6 を $`j:=g`$ に適用できる（$`y<g`$ は仮�
 ```
 と同値である。
 
-$`(\Rightarrow)`$ 第 1 条件 $`M_{1,\ell_M}=m+1`$ はそのまま。$`j_0<\ell_M`$ かつ $`j_0\le^M_0\ell_M`$ とし、
-結論 $`m+1\le M_{1,j_0}`$ を否定して $`M_{1,j_0}<m+1=M_{1,\ell_M}`$ と仮定すると、
+$`(\Rightarrow)`$ 第 1 条件 $`M_{1,\ell_M}=m+1`$ はそのまま。$`j_0\lt \ell_M`$ かつ $`j_0\le^M_0\ell_M`$ とし、
+結論 $`m+1\le M_{1,j_0}`$ を否定して $`M_{1,j_0}\lt m+1=M_{1,\ell_M}`$ と仮定すると、
 $`\mathrm{r1cand}(M,\ell_M,j_0)`$ が成り立ち、上の否定に矛盾する。
 
 $`(\Leftarrow)`$ 第 1 条件はそのまま。$`\mathrm{r1cand}(M,\ell_M,j_0)`$ なる $`j_0`$ が存在したとすると、
 右辺の全称条件を $`j_0`$ に適用して $`m+1\le M_{1,j_0}`$ を得る。一方 $`\mathrm{r1cand}`$ の第 3 成分と
-第 1 条件より $`M_{1,j_0}<M_{1,\ell_M}=m+1`$。両者から $`m+1\le M_{1,j_0}<m+1`$ となり矛盾する。∎
+第 1 条件より $`M_{1,j_0}\lt M_{1,\ell_M}=m+1`$。両者から $`m+1\le M_{1,j_0}\lt m+1`$ となり矛盾する。∎
 
 ### 1b. 検証例：1 対からなる列 $`[(x,m+1)]`$
 
@@ -359,7 +359,7 @@ Lean 側に無名の `example` として置かれている計算を記す。
 
 1. $`\mathrm{dom}([(x,m+1)])=T_m`$。
    $`\ell=1-1=0`$、$`[(x,m+1)]_{1,0}=m+1`$ で第 1 条件が成立する。第 2 条件は、
-   もし $`j_0\to^M_1 0`$ なる $`j_0`$ が存在すれば [(D.nextrel1)](Def.md#d-nextrel1) の条件 3 より $`j_0<0`$ となり、
+   もし $`j_0\to^M_1 0`$ なる $`j_0`$ が存在すれば [(D.nextrel1)](Def.md#d-nextrel1) の条件 3 より $`j_0\lt 0`$ となり、
    $`\mathbb{N}`$ では偽であることによる。
 2. $`\mathrm{gr}([(x,m+1)],z) = \mathrm{map}\,(\lambda p.\,(\pi_0 p+x,\pi_1 p))\,z`$。
    $`\mathrm{dropLast}[(x,m+1)]=[]`$ かつ $`[(x,m+1)]_{0,0}=x`$ による。とくに $`x=0`$ のときは
@@ -371,20 +371,20 @@ Lean 側に無名の `example` として置かれている計算を記す。
 $`M=[(0,3),(1,2),(1,1)]`$ とする。
 
 4. $`\mathrm{dom}(M)=T_0`$。[(T.domT_iff)](#t-domT_iff) を用いる。$`\ell_M=2`$、$`M_{1,2}=1=0+1`$ で第 1 条件が成立。
-   第 2 条件は $`j_0<2`$ すなわち $`j_0\in\{0,1\}`$ について $`0+1\le M_{1,j_0}`$ を要求するが、
+   第 2 条件は $`j_0\lt 2`$ すなわち $`j_0\in\{0,1\}`$ について $`0+1\le M_{1,j_0}`$ を要求するが、
    $`M_{1,0}=3\ge 1`$、$`M_{1,1}=2\ge 1`$ である。
 5. $`\mathrm{tr}[(0,0)]=\mathrm{tr}[(2,0)]=\mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$。
    どちらも [(D.translate)](Mechanized.md#d-translate) で残りが空列であり、行 1 の値が $`0`$ である。
 6. $`\mathrm{gr}(M,[(0,0)])=[(0,3),(1,2),(1,0)]`$。
    $`\mathrm{dropLast}\,M=[(0,3),(1,2)]`$、$`M_{0,2}=1`$ であるから $`[(0,0)]`$ は $`[(0+1,0)]=[(1,0)]`$ に移る。
 7. $`\mathrm{tr}[(0,3),(1,2),(1,0)]=\mathsf{P}(3,\mathsf{P}(2,\mathsf{Z},\mathsf{P}(0,\mathsf{Z},\mathsf{Z})),\mathsf{Z})`$。
-   先頭対 $`(0,3)`$、残り $`[(1,2),(1,0)]`$ はどちらも行 0 が $`1>0`$ だから全体が引数側に入る。
-   次に $`[(1,2),(1,0)]`$：先頭 $`(1,2)`$ に対し残り $`[(1,0)]`$ の行 0 は $`1`$ で $`1<1`$ は偽、
+   先頭対 $`(0,3)`$、残り $`[(1,2),(1,0)]`$ はどちらも行 0 が $`1\gt 0`$ だから全体が引数側に入る。
+   次に $`[(1,2),(1,0)]`$：先頭 $`(1,2)`$ に対し残り $`[(1,0)]`$ の行 0 は $`1`$ で $`1\lt 1`$ は偽、
    よって引数は空、後続和が $`\mathrm{tr}[(1,0)]=\mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$。
 8. $`\mathrm{gr}(M,[(2,0)])=[(0,3),(1,2),(3,0)]`$（$`2+1=3`$）。
 9. $`\mathrm{tr}[(0,3),(1,2),(3,0)]=\mathsf{P}(3,\mathsf{P}(2,\mathsf{P}(0,\mathsf{Z},\mathsf{Z}),\mathsf{Z}),\mathsf{Z})`$。
-   先頭対 $`(0,3)`$ の後は行 0 が $`1,3`$ でどちらも $`>0`$。次に $`[(1,2),(3,0)]`$：先頭 $`(1,2)`$ に対し
-   残り $`[(3,0)]`$ の行 0 は $`3`$ で $`1<3`$ が真、よって $`(3,0)`$ は引数側に入る。
+   先頭対 $`(0,3)`$ の後は行 0 が $`1,3`$ でどちらも $`\gt 0`$。次に $`[(1,2),(3,0)]`$：先頭 $`(1,2)`$ に対し
+   残り $`[(3,0)]`$ の行 0 は $`3`$ で $`1\lt 3`$ が真、よって $`(3,0)`$ は引数側に入る。
 
 6 と 8 は同じ $`\mathrm{tr}`$ 値をもつ 2 つのブロック（項目 5）を graft した結果であり、
 項目 7 と 9 の $`\mathrm{tr}`$ 値は異なる。したがって [(D.graft)](#d-graft) を「$`\mathrm{tr}\,z`$ の代入」として
@@ -477,7 +477,7 @@ A^{\mathcal F}_u(X) := \{\,M \mid M\in A^{\mathcal F}_u(X)\,\}
 
 - 枝 1：条件 $`\lvert M\rvert\le 1\wedge M_{1,0}=0`$ は $`X`$ を含まないから、そのまま枝 1 が成立する。
 - 枝 2：$`\mathrm{natDom}(M)`$ はそのまま。各 $`n\ge 1`$ について $`M[n]\in X\subseteq Y`$ より $`M[n]\in Y`$。
-- 枝 3：$`m`$、$`m<u`$、$`\mathrm{dom}(M)=T_m`$ はそのまま。各 $`z\in\mathcal F(m)`$ で $`\mathrm{based}(z)`$ なるものについて
+- 枝 3：$`m`$、$`m\lt u`$、$`\mathrm{dom}(M)=T_m`$ はそのまま。各 $`z\in\mathcal F(m)`$ で $`\mathrm{based}(z)`$ なるものについて
   $`\mathrm{gr}(M,z)\in X\subseteq Y`$ より $`\mathrm{gr}(M,z)\in Y`$。∎
 
 <a id="t-Aset_mono"></a>
@@ -493,21 +493,21 @@ A^{\mathcal F}_u(X) := \{\,M \mid M\in A^{\mathcal F}_u(X)\,\}
 
 **主張** $`u\le v`$ かつ $`M\in A^{\mathcal F}_u(X)`$ ならば $`M\in A^{\mathcal F}_v(X)`$。
 
-**証明** [(D.Aop)](#d-Aop) で $`u`$ が現れるのは枝 3 の条件 $`m<u`$ のみである。
+**証明** [(D.Aop)](#d-Aop) で $`u`$ が現れるのは枝 3 の条件 $`m\lt u`$ のみである。
 
 - 枝 1、枝 2：条件に $`u`$ が現れないからそのまま成立する。
-- 枝 3：$`m<u`$ と $`u\le v`$ より $`m<v`$。他の条件は変わらない。∎
+- 枝 3：$`m\lt u`$ と $`u\le v`$ より $`m\lt v`$。他の条件は変わらない。∎
 
 <a id="t-Aop_cong"></a>
 #### 定理 $`A_u`$ は族の $`u`$ 未満の段階しか読まない (T.Aop_cong)
 
-**主張** $`\forall m,\ m<u\to\mathcal F(m)=\mathcal G(m)`$ ならば
+**主張** $`\forall m,\ m\lt u\to\mathcal F(m)=\mathcal G(m)`$ ならば
 ```math
 M\in A^{\mathcal F}_u(X) \iff M\in A^{\mathcal G}_u(X).
 ```
 
 **証明** 両方向とも [(D.Aop)](#d-Aop) の 3 選言で場合分けする。枝 1 と枝 2 には $`\mathcal F`$ が現れないから、
-そのまま移る。枝 3 の場合、証人 $`m`$ は $`m<u`$ をみたすから仮定より $`\mathcal F(m)=\mathcal G(m)`$ であり、
+そのまま移る。枝 3 の場合、証人 $`m`$ は $`m\lt u`$ をみたすから仮定より $`\mathcal F(m)=\mathcal G(m)`$ であり、
 量化域 $`z\in\mathcal F(m)`$ と $`z\in\mathcal G(m)`$ は同一の条件である。よって枝 3 の条件も両向きに移る。∎
 
 <a id="d-Wf"></a>
@@ -532,27 +532,27 @@ W_u := W^{(u+1)}_u .
 <a id="t-Wf_coh"></a>
 #### 定理 段階族の整合性 (T.Wf_coh)
 
-**主張** $`m<n`$ ならば $`W^{(n)}_m = W^{(m+1)}_m`$。
+**主張** $`m\lt n`$ ならば $`W^{(n)}_m = W^{(m+1)}_m`$。
 
 **証明** $`n`$ に関する自然数の帰納法。帰納法の述語は
 ```math
 \Phi(n) :\equiv \forall m,\ m<n \to W^{(n)}_m = W^{(m+1)}_m .
 ```
 
-- 基底段 $`n=0`$：前提 $`m<0`$ は $`\mathbb{N}`$ において偽であるから $`\Phi(0)`$ は成立する。
-- 帰納段 $`n=v+1`$：帰納法の仮定は $`\Phi(v)`$、すなわち $`\forall m,\ m<v\to W^{(v)}_m=W^{(m+1)}_m`$ である。
-  $`m<v+1`$ なる $`m`$ を取る。
+- 基底段 $`n=0`$：前提 $`m\lt 0`$ は $`\mathbb{N}`$ において偽であるから $`\Phi(0)`$ は成立する。
+- 帰納段 $`n=v+1`$：帰納法の仮定は $`\Phi(v)`$、すなわち $`\forall m,\ m\lt v\to W^{(v)}_m=W^{(m+1)}_m`$ である。
+  $`m\lt v+1`$ なる $`m`$ を取る。
   - $`m=v`$ の場合：[(D.Wf)](#d-Wf) より $`W^{(v+1)}_v`$ は $`m=v`$ の分岐であり
     $`\mathrm{lfp}(X\mapsto A^{W^{(v)}}_v(X))`$。一方 $`W^{(m+1)}_m`$ は $`m=v`$ を代入すると同じ式である。
     よって両辺は定義により同一である。
-  - $`m\ne v`$ の場合：$`m<v+1`$ と $`m\ne v`$ より $`m<v`$。[(D.Wf)](#d-Wf) の第 2 分岐より
+  - $`m\ne v`$ の場合：$`m\lt v+1`$ と $`m\ne v`$ より $`m\lt v`$。[(D.Wf)](#d-Wf) の第 2 分岐より
     $`W^{(v+1)}_m = W^{(v)}_m`$ であり、帰納法の仮定 $`\Phi(v)`$ を $`m`$ に適用して
     $`W^{(v)}_m = W^{(m+1)}_m`$。∎
 
 <a id="t-Wf_eq_W"></a>
 #### 定理 段階族と $`W`$ の一致 (T.Wf_eq_W)
 
-**主張** $`m<n`$ ならば $`W^{(n)}_m = W_m`$。
+**主張** $`m\lt n`$ ならば $`W^{(n)}_m = W_m`$。
 
 **証明** [(D.W)](#d-W) より $`W_m = W^{(m+1)}_m`$ であり、これは [(T.Wf_coh)](#t-Wf_coh) の結論そのものである。∎
 
@@ -566,7 +566,7 @@ W_u := W^{(u+1)}_u .
 1. [(D.W)](#d-W) と [(D.Wf)](#d-Wf) より
    $`W_u = W^{(u+1)}_u`$ であり、$`W^{(u+1)}_u`$ は $`m=u`$、$`v=u`$ の分岐であるから
    $`W_u = \mathrm{lfp}\bigl(X\mapsto A^{W^{(u)}}_u(X)\bigr)`$。
-2. $`m<u`$ なる任意の $`m`$ について [(T.Wf_eq_W)](#t-Wf_eq_W) より $`W^{(u)}_m = W_m`$。
+2. $`m\lt u`$ なる任意の $`m`$ について [(T.Wf_eq_W)](#t-Wf_eq_W) より $`W^{(u)}_m = W_m`$。
 3. よって任意の $`X`$ について [(T.Aop_cong)](#t-Aop_cong)（$`\mathcal F:=W^{(u)}`$, $`\mathcal G:=W`$）より
    $`A^{W^{(u)}}_u(X) = A^{W}_u(X)`$。$`X`$ は任意であったから、関数の外延性により
    2 つの作用素 $`X\mapsto A^{W^{(u)}}_u(X)`$ と $`X\mapsto A^{W}_u(X)`$ は等しい。
@@ -704,7 +704,7 @@ $`c`$ を取り、$`c\in A^W_u(\{M\mid \mathrm{Acc}\,R\,M\})`$ とする。$`c\i
 [(D.Aop)](#d-Aop) の 3 つの枝で場合分けする。
 
 - **枝 1**：$`\lvert c\rvert\le 1`$ かつ $`c_{1,0}=0`$。
-  [(T.stps_len_pos)](Nrm.md#t-stps_len_pos) より $`0<\lvert c\rvert`$ であるから $`\lvert c\rvert=1`$、
+  [(T.stps_len_pos)](Nrm.md#t-stps_len_pos) より $`0\lt \lvert c\rvert`$ であるから $`\lvert c\rvert=1`$、
   すなわち $`c=[p]`$ と書ける。$`c_{1,0}=\pi_1 p`$ であるから $`\pi_1 p=0`$。
   [(D.translate)](Mechanized.md#d-translate) より、残りの列が空であることから
   ```math
@@ -717,9 +717,9 @@ $`c`$ を取り、$`c\in A^W_u(\{M\mid \mathrm{Acc}\,R\,M\})`$ とする。$`c\i
   [(T.stps_ne_nil)](#t-stps_ne_nil) より $`y\ne[]`$。矛盾であるから $`y`$ は存在せず、$`\mathrm{Acc}\,R\,c`$。
 - **枝 2**：$`\forall n\ge 1,\ c[n]\in\{M\mid\mathrm{Acc}\,R\,M\}`$。
   これは [(T.acc_of_nat_branch)](#t-acc_of_nat_branch) の仮定そのものであり、$`\mathrm{Acc}\,R\,c`$ を得る。
-- **枝 3**：$`m<u`$、$`\mathrm{dom}(c)=T_m`$、$`\forall z\in W_m,\ \mathrm{based}(z)\to\mathrm{gr}(c,z)`$ が可到達。
-  $`1<\lvert c\rvert`$ か否かで場合分けする。
-  - $`1<\lvert c\rvert`$ の場合：$`z:=[]`$ を取る。[(T.W_nil)](#t-W_nil) より $`[]\in W_m`$、
+- **枝 3**：$`m\lt u`$、$`\mathrm{dom}(c)=T_m`$、$`\forall z\in W_m,\ \mathrm{based}(z)\to\mathrm{gr}(c,z)`$ が可到達。
+  $`1\lt \lvert c\rvert`$ か否かで場合分けする。
+  - $`1\lt \lvert c\rvert`$ の場合：$`z:=[]`$ を取る。[(T.W_nil)](#t-W_nil) より $`[]\in W_m`$、
     [(T.based_nil)](#t-based_nil) より $`\mathrm{based}([])`$。よって $`\mathrm{Acc}\,R\,(\mathrm{gr}(c,[]))`$。
     各 $`n\ge 1`$ について [(T.oper_eq_graft_nil_of_domT)](#t-oper_eq_graft_nil_of_domT) より
     $`c[n]=\mathrm{gr}(c,[])`$ であるから $`\mathrm{Acc}\,R\,(c[n])`$。
@@ -758,7 +758,7 @@ $`c`$ を取り、$`c\in A^W_u(\{M\mid \mathrm{Acc}\,R\,M\})`$ とする。$`c\i
 
 以下 $`\mathrm{sh}_d M := \mathrm{map}\,(\lambda p.\,(\pi_0 p+d,\ \pi_1 p))\,M`$ と書く。
 $`\mathrm{map}`$ は長さを変えないから $`\lvert\mathrm{sh}_d M\rvert=\lvert M\rvert`$ である。
-また $`j<\lvert S\rvert`$ のとき [(T.entry_shift)](Nrmstep.md#t-entry_shift) より
+また $`j\lt \lvert S\rvert`$ のとき [(T.entry_shift)](Nrmstep.md#t-entry_shift) より
 ```math
 (\mathrm{sh}_d S)_{0,j}=S_{0,j}+d,\qquad (\mathrm{sh}_d S)_{1,j}=S_{1,j}.
 ```
@@ -766,7 +766,7 @@ $`\mathrm{map}`$ は長さを変えないから $`\lvert\mathrm{sh}_d M\rvert=\l
 <a id="t-nextR_shift_iff"></a>
 #### 定理 $`\mathrm{nextR}`$ の平行移動不変性 (T.nextR_shift_iff)
 
-**主張** $`b<\lvert S\rvert`$ ならば
+**主張** $`b\lt \lvert S\rvert`$ ならば
 ```math
 a\to^{\mathrm{sh}_d S}_i b \iff a\to^{S}_i b .
 ```
@@ -780,7 +780,7 @@ $`i\ne 0`$ のときは両辺が $`\mathrm{nextrel1}`$ であり
 <a id="t-hasParent_shift"></a>
 #### 定理 $`\mathrm{hasParent}`$ の平行移動不変性 (T.hasParent_shift)
 
-**主張** $`b<\lvert S\rvert`$ ならば
+**主張** $`b\lt \lvert S\rvert`$ ならば
 $`\mathrm{hasParent}(\mathrm{sh}_d S,i,b) \iff \mathrm{hasParent}(S,i,b)`$。
 
 **証明** [(D.hasParent)](Def.md#d-hasParent) より両辺は $`\exists!\,j_0,\ j_0\to^{\cdot}_i b`$ の形である。
@@ -797,7 +797,7 @@ $`y\to^{\mathrm{sh}_d S}_i b`$ から $`y\to^{S}_i b`$、よって $`y=j_0`$ を
 <a id="t-parent_shift"></a>
 #### 定理 $`\mathrm{par}`$ の平行移動不変性 (T.parent_shift)
 
-**主張** $`b<\lvert S\rvert`$ ならば $`\mathrm{par}^{\mathrm{sh}_d S}_i(b)=\mathrm{par}^{S}_i(b)`$。
+**主張** $`b\lt \lvert S\rvert`$ ならば $`\mathrm{par}^{\mathrm{sh}_d S}_i(b)=\mathrm{par}^{S}_i(b)`$。
 
 **証明** [(D.parent)](Def.md#d-parent) より両辺は
 $`\varepsilon j_0.\,(j_0\to^{\mathrm{sh}_d S}_i b)`$ と $`\varepsilon j_0.\,(j_0\to^{S}_i b)`$ である。
@@ -816,25 +816,25 @@ $`\varepsilon`$ を同一の関数に適用した値どうしであるから等�
 [(T.oper_eq_self_of_short)](Mechanized.md#t-oper_eq_self_of_short) を両辺に適用すると
 左辺 $`=\mathrm{sh}_d M`$、右辺 $`=\mathrm{sh}_d M`$。
 
-**場合 2：$`\ell_M\ne 0`$.** このとき $`\ell_M<\lvert M\rvert`$ である。
+**場合 2：$`\ell_M\ne 0`$.** このとき $`\ell_M\lt \lvert M\rvert`$ である。
 [(T.idx1_shift)](Nrmstep.md#t-idx1_shift) より
 $`\mathrm{idx}_1(\mathrm{sh}_d M,\ell_M)=\mathrm{idx}_1(M,\ell_M)=:i_1`$。
 $`\mathrm{hasParent}(M,i_1,\ell_M)`$ が成り立つか否かで再び場合分けする。
 
 **場合 2a：$`\mathrm{hasParent}(M,i_1,\ell_M)`$ が成り立つ.**
 
-- $`0<M_{0,\ell_M}`$：もし $`M_{0,\ell_M}=0`$ ならば
+- $`0\lt M_{0,\ell_M}`$：もし $`M_{0,\ell_M}=0`$ ならば
   [(T.no_hasParent_of_row0_zero)](Nrm.md#t-no_hasParent_of_row0_zero) により
   $`\mathrm{hasParent}(M,i_1,\ell_M)`$ から矛盾が導かれる。
 - よって $`\neg(M_{0,\ell_M}=0\wedge M_{1,\ell_M}=0)`$。
 - 平行移動側でも $`\mathrm{hasParent}(\mathrm{sh}_d M,i_1,\ell_M)`$ が成り立つ（[(T.hasParent_shift)](#t-hasParent_shift)）。
-- $`(\mathrm{sh}_d M)_{0,\ell_M}=M_{0,\ell_M}+d>0`$ であるから、平行移動側でも
+- $`(\mathrm{sh}_d M)_{0,\ell_M}=M_{0,\ell_M}+d\gt 0`$ であるから、平行移動側でも
   $`\neg\bigl((\mathrm{sh}_d M)_{0,\ell_M}=0\wedge(\mathrm{sh}_d M)_{1,\ell_M}=0\bigr)`$。
 
 以上より両辺に [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) が適用できる。
 [(T.parent_shift)](#t-parent_shift) より 2 つの親添字は一致するから、これを $`j_0`$ とおく。
 また [(T.parent_nextR)](Mechanized.md#t-parent_nextR) と
-[(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0<\ell_M`$、とくに $`j_0<\lvert M\rvert`$。
+[(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0\lt \ell_M`$、とくに $`j_0\lt \lvert M\rvert`$。
 コピー差分は
 ```math
 (\mathrm{sh}_d M)_{0,\ell_M}-(\mathrm{sh}_d M)_{0,j_0}
@@ -860,7 +860,7 @@ $`\mathrm{hasParent}(M,i_1,\ell_M)`$ が成り立つか否かで再び場合分�
 \mathrm{take}\,j_0\,(\mathrm{sh}_d M)\mathbin{+\!\!+}
 \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda j.\,(M_{0,j}+k\delta+d,\ M_{1,j}))\,\mathrm{range}'(j_0,\ell_M-j_0)\bigr)\,\mathrm{range}(n)
 ```
-に等しい。各 $`k`$、各 $`j\in\mathrm{range}'(j_0,\ell_M-j_0)`$ について $`j<\lvert M\rvert`$ であるから
+に等しい。各 $`k`$、各 $`j\in\mathrm{range}'(j_0,\ell_M-j_0)`$ について $`j\lt \lvert M\rvert`$ であるから
 [(T.entry_shift)](Nrmstep.md#t-entry_shift) が使え、左辺の被写像は
 $`((M_{0,j}+d)+k\delta,\ M_{1,j})`$、右辺の被写像は $`((M_{0,j}+k\delta)+d,\ M_{1,j})`$ であり、
 自然数の加法の交換・結合律により $`(M_{0,j}+d)+k\delta=(M_{0,j}+k\delta)+d`$。
@@ -885,7 +885,7 @@ $`\ell_M\ne 0`$ より $`\lvert M\rvert\ge 2`$ かつ $`\lvert\mathrm{sh}_d M\rv
 
 - $`M=[]`$：$`\mathrm{sh}_d[]=[]`$ であるから両辺は同一の命題である。
 - $`M=p\mathbin{::}\mathrm{rest}`$：$`\lvert\mathrm{sh}_d M\rvert=\lvert M\rvert`$ より $`\ell_{\mathrm{sh}_d M}=\ell_M`$ であり、
-  $`M\ne[]`$ より $`\ell_M<\lvert M\rvert`$。よって [(T.entry_shift)](Nrmstep.md#t-entry_shift) の行 1 の等式から
+  $`M\ne[]`$ より $`\ell_M\lt \lvert M\rvert`$。よって [(T.entry_shift)](Nrmstep.md#t-entry_shift) の行 1 の等式から
   $`(\mathrm{sh}_d M)_{1,\ell_M}=M_{1,\ell_M}`$、また [(T.hasParent_shift)](#t-hasParent_shift) より
   $`\mathrm{hasParent}(\mathrm{sh}_d M,1,\ell_M)\iff\mathrm{hasParent}(M,1,\ell_M)`$。
   [(D.domT)](#d-domT) の 2 条件がそれぞれ同値であるから、全体も同値である。∎
@@ -905,7 +905,7 @@ $`(\Leftarrow)`$：$`\mathrm{dom}(\mathrm{sh}_d M)=T_m`$ とすると同じ同�
 
 **主張** $`M\ne[]`$ ならば $`\mathrm{gr}(\mathrm{sh}_d M,z)=\mathrm{sh}_d\bigl(\mathrm{gr}(M,z)\bigr)`$。
 
-**証明** $`M\ne[]`$ より $`\ell_M<\lvert M\rvert`$。[(D.graft)](#d-graft) を両辺で展開する。
+**証明** $`M\ne[]`$ より $`\ell_M\lt \lvert M\rvert`$。[(D.graft)](#d-graft) を両辺で展開する。
 $`\lvert\mathrm{sh}_d M\rvert=\lvert M\rvert`$ と [(T.entry_shift)](Nrmstep.md#t-entry_shift) より
 $`(\mathrm{sh}_d M)_{0,\ell_M}=M_{0,\ell_M}+d`$ であるから、
 ```math
@@ -938,7 +938,7 @@ $`(\mathrm{sh}_d M)_{0,\ell_M}=M_{0,\ell_M}+d`$ であるから、
 - **枝 2**：$`\mathrm{natDom}(N)`$ と $`\forall n\ge 1,\ \mathrm{sh}_d(N[n])\in W_u`$ を仮定する。
   [(T.natDom_shift)](#t-natDom_shift) より $`\mathrm{natDom}(\mathrm{sh}_d N)`$。
   また [(T.oper_shift)](#t-oper_shift) より $`(\mathrm{sh}_d N)[n]=\mathrm{sh}_d(N[n])\in W_u`$。
-- **枝 3**：$`m<u`$、$`\mathrm{dom}(N)=T_m`$、$`\forall z\in W_m,\ \mathrm{based}(z)\to\mathrm{sh}_d(\mathrm{gr}(N,z))\in W_u`$
+- **枝 3**：$`m\lt u`$、$`\mathrm{dom}(N)=T_m`$、$`\forall z\in W_m,\ \mathrm{based}(z)\to\mathrm{sh}_d(\mathrm{gr}(N,z))\in W_u`$
   を仮定する。[(T.domT_shift)](#t-domT_shift) より $`\mathrm{dom}(\mathrm{sh}_d N)=T_m`$。
   $`\mathrm{dom}(N)=T_m`$ と [(T.not_domT_nil)](#t-not_domT_nil) より $`N\ne[]`$ であるから
   [(T.graft_shift)](#t-graft_shift) が使え、$`z\in W_m`$ で $`\mathrm{based}(z)`$ なるものについて
@@ -968,24 +968,24 @@ M=A\mathbin{+\!\!+}P,\qquad P\ne[],\qquad \mathrm{rsum}(A,P),\qquad \forall p\in
     $`\mathrm{rsum}([],[q])`$：$`[q]_{0,0}=\pi_0 q`$ であり、$`p\in[]\mathbin{+\!\!+}[q]=[q]`$ なら $`p=q`$ で
     $`\pi_0 q\le\pi_0 q`$。末尾条件：$`[q].\mathrm{tail}=[]`$ であるから前提をみたす $`p`$ が存在せず成立する。
   - **$`M'\ne[]`$ の場合**：帰納法の仮定より $`A',P'`$ が取れて
-    $`M'=A'\mathbin{+\!\!+}P'`$、$`P'\ne[]`$、$`\mathrm{rsum}(A',P')`$、$`\forall p\in P'.\mathrm{tail},\ P'_{0,0}<\pi_0 p`$。
+    $`M'=A'\mathbin{+\!\!+}P'`$、$`P'\ne[]`$、$`\mathrm{rsum}(A',P')`$、$`\forall p\in P'.\mathrm{tail},\ P'_{0,0}\lt \pi_0 p`$。
     $`\pi_0 q\le P'_{0,0}`$ か否かで場合分けする。
     - **$`\pi_0 q\le P'_{0,0}`$ の場合**：$`A:=M'`$、$`P:=[q]`$ とする。$`M=M'\mathbin{+\!\!+}[q]`$、$`[q]\ne[]`$。
       $`\mathrm{rsum}(M',[q])`$：$`[q]_{0,0}=\pi_0 q`$。$`p\in M'\mathbin{+\!\!+}[q]`$ とすると、
       $`p\in M'=A'\mathbin{+\!\!+}P'`$ の場合は $`\mathrm{rsum}(A',P')`$ より $`P'_{0,0}\le\pi_0 p`$、
       場合分けの仮定と合わせて $`\pi_0 q\le P'_{0,0}\le\pi_0 p`$。$`p=q`$ の場合は $`\pi_0 q\le\pi_0 q`$。
       末尾条件は $`[q].\mathrm{tail}=[]`$ より成立する。
-    - **$`P'_{0,0}<\pi_0 q`$ の場合**：$`A:=A'`$、$`P:=P'\mathbin{+\!\!+}[q]`$ とする。
+    - **$`P'_{0,0}\lt \pi_0 q`$ の場合**：$`A:=A'`$、$`P:=P'\mathbin{+\!\!+}[q]`$ とする。
       $`M=A'\mathbin{+\!\!+}(P'\mathbin{+\!\!+}[q])`$ は連結の結合律による。$`P'\ne[]`$ より $`P\ne[]`$。
       $`P'=p_0\mathbin{::}P''`$ と書けるから $`P=p_0\mathbin{::}(P''\mathbin{+\!\!+}[q])`$ であり、
       ```math
       P_{0,0}=\pi_0 p_0=P'_{0,0}.
       ```
       $`\mathrm{rsum}(A',P)`$：$`p\in A'\mathbin{+\!\!+}P'\mathbin{+\!\!+}[q]`$ とする。$`p\in A'`$ または $`p\in P'`$ なら
-      $`\mathrm{rsum}(A',P')`$ より $`P'_{0,0}\le\pi_0 p`$。$`p=q`$ なら場合分けの仮定 $`P'_{0,0}<\pi_0 q`$ より
+      $`\mathrm{rsum}(A',P')`$ より $`P'_{0,0}\le\pi_0 p`$。$`p=q`$ なら場合分けの仮定 $`P'_{0,0}\lt \pi_0 q`$ より
       $`P'_{0,0}\le\pi_0 q`$。
       末尾条件：$`P.\mathrm{tail}=P''\mathbin{+\!\!+}[q]`$ であり、$`p\in P''=P'.\mathrm{tail}`$ なら
-      帰納法の仮定の末尾条件より $`P'_{0,0}<\pi_0 p`$、$`p=q`$ なら場合分けの仮定そのものである。∎
+      帰納法の仮定の末尾条件より $`P'_{0,0}\lt \pi_0 p`$、$`p=q`$ なら場合分けの仮定そのものである。∎
 
 ### 4c. 前置ブロックとの可換性
 
@@ -1057,7 +1057,7 @@ $`\mathrm{sh}_c(P_0[n])=(\mathrm{sh}_c P_0)[n]`$。
 
 **主張** $`P\ne[]`$ ならば $`\mathrm{gr}(A\mathbin{+\!\!+}P,z)=A\mathbin{+\!\!+}\mathrm{gr}(P,z)`$。
 
-**証明** $`P\ne[]`$ より $`0<\lvert P\rvert`$ であるから
+**証明** $`P\ne[]`$ より $`0\lt \lvert P\rvert`$ であるから
 ```math
 \ell_{A+\!\!+P}=\lvert A\rvert+\lvert P\rvert-1=\lvert A\rvert+(\lvert P\rvert-1)=\lvert A\rvert+\ell_P .
 ```
@@ -1075,12 +1075,12 @@ $`\mathrm{dropLast}(A\mathbin{+\!\!+}P)=A\mathbin{+\!\!+}\mathrm{dropLast}\,P`$�
 <a id="t-hasParent_append_gen"></a>
 #### 定理 $`\mathrm{hasParent}`$ の前置不変性 (T.hasParent_append_gen)
 
-**主張** $`j<\lvert P\rvert`$ かつ $`\mathrm{rsum}(A,P)`$ ならば
+**主張** $`j\lt \lvert P\rvert`$ かつ $`\mathrm{rsum}(A,P)`$ ならば
 ```math
 \mathrm{hasParent}(A\mathbin{+\!\!+}P,\ i,\ \lvert A\rvert+j) \iff \mathrm{hasParent}(P,i,j).
 ```
 
-**証明** $`j<\lvert P\rvert`$ より $`P\ne[]`$。$`c:=P_{0,0}`$、$`A_0:=\mathrm{sh}^{-}_c A`$、$`P_0:=\mathrm{sh}^{-}_c P`$ とおくと、
+**証明** $`j\lt \lvert P\rvert`$ より $`P\ne[]`$。$`c:=P_{0,0}`$、$`A_0:=\mathrm{sh}^{-}_c A`$、$`P_0:=\mathrm{sh}^{-}_c P`$ とおくと、
 $`\lvert A_0\rvert=\lvert A\rvert`$、$`\lvert P_0\rvert=\lvert P\rvert`$、
 $`(P_0)_{0,0}=0`$（[(T.entry_sub_zero)](#t-entry_sub_zero)）、
 $`\mathrm{sh}_c(A_0\mathbin{+\!\!+}P_0)=A\mathbin{+\!\!+}P`$、$`\mathrm{sh}_c P_0=P`$ である。3 段の同値を合成する。
@@ -1091,7 +1091,7 @@ $`\mathrm{sh}_c(A_0\mathbin{+\!\!+}P_0)=A\mathbin{+\!\!+}P`$、$`\mathrm{sh}_c P
 \iff\mathrm{hasParent}(A_0\mathbin{+\!\!+}P_0,i,\lvert A_0\rvert+j).
 ```
 $`A\mathbin{+\!\!+}P=\mathrm{sh}_c(A_0\mathbin{+\!\!+}P_0)`$ であり、
-$`\lvert A\rvert+j=\lvert A_0\rvert+j<\lvert A_0\mathbin{+\!\!+}P_0\rvert`$ であるから
+$`\lvert A\rvert+j=\lvert A_0\rvert+j\lt \lvert A_0\mathbin{+\!\!+}P_0\rvert`$ であるから
 [(T.hasParent_shift)](#t-hasParent_shift) が適用できる。
 
 **第 2 段** $`\mathrm{hasParent}(A_0\mathbin{+\!\!+}P_0,i,\lvert A_0\rvert+j)\iff\mathrm{hasParent}(P_0,i,j)`$：
@@ -1099,11 +1099,11 @@ $`(P_0)_{0,j}=0`$ か否かで場合分けする。
 - $`(P_0)_{0,j}=0`$ のとき：[(T.entry_append_right)](Nrm.md#t-entry_append_right) より
   $`(A_0\mathbin{+\!\!+}P_0)_{0,\lvert A_0\rvert+j}=(P_0)_{0,j}=0`$。
   [(T.no_hasParent_of_row0_zero)](Nrm.md#t-no_hasParent_of_row0_zero) により両辺とも偽であるから同値である。
-- $`(P_0)_{0,j}\ne 0`$ のとき：$`0<(A_0\mathbin{+\!\!+}P_0)_{0,\lvert A_0\rvert+j}`$ であり、
+- $`(P_0)_{0,j}\ne 0`$ のとき：$`0\lt (A_0\mathbin{+\!\!+}P_0)_{0,\lvert A_0\rvert+j}`$ であり、
   $`(P_0)_{0,0}=0`$ と合わせて [(T.hasParent_append_right)](Nrm.md#t-hasParent_append_right) が適用できる。
 
 **第 3 段** $`\mathrm{hasParent}(P_0,i,j)\iff\mathrm{hasParent}(P,i,j)`$：
-$`P=\mathrm{sh}_c P_0`$ かつ $`j<\lvert P_0\rvert`$ であるから
+$`P=\mathrm{sh}_c P_0`$ かつ $`j\lt \lvert P_0\rvert`$ であるから
 [(T.hasParent_shift)](#t-hasParent_shift) による。∎
 
 <a id="t-domT_append"></a>
@@ -1112,11 +1112,11 @@ $`P=\mathrm{sh}_c P_0`$ かつ $`j<\lvert P_0\rvert`$ であるから
 **主張** $`P\ne[]`$ かつ $`\mathrm{rsum}(A,P)`$ ならば
 $`\mathrm{dom}(A\mathbin{+\!\!+}P)=T_m \iff \mathrm{dom}(P)=T_m`$。
 
-**証明** $`P\ne[]`$ より $`0<\lvert P\rvert`$、よって $`\ell_{A+\!\!+P}=\lvert A\rvert+\ell_P`$ かつ $`\ell_P<\lvert P\rvert`$。
+**証明** $`P\ne[]`$ より $`0\lt \lvert P\rvert`$、よって $`\ell_{A+\!\!+P}=\lvert A\rvert+\ell_P`$ かつ $`\ell_P\lt \lvert P\rvert`$。
 [(D.domT)](#d-domT) の 2 条件をそれぞれ移す。
 第 1 条件は [(T.entry_append_right)](Nrm.md#t-entry_append_right) より
 $`(A\mathbin{+\!\!+}P)_{1,\lvert A\rvert+\ell_P}=P_{1,\ell_P}`$、
-第 2 条件は [(T.hasParent_append_gen)](#t-hasParent_append_gen)（$`j:=\ell_P<\lvert P\rvert`$）より
+第 2 条件は [(T.hasParent_append_gen)](#t-hasParent_append_gen)（$`j:=\ell_P\lt \lvert P\rvert`$）より
 $`\mathrm{hasParent}(A\mathbin{+\!\!+}P,1,\lvert A\rvert+\ell_P)\iff\mathrm{hasParent}(P,1,\ell_P)`$。∎
 
 <a id="t-natDom_append"></a>
@@ -1158,9 +1158,9 @@ $`X=p\mathbin{::}L`$ のとき、$`X_{0,0}=\pi_0 p`$ であり $`X.\mathrm{headD
 
 **主張** $`1\le n`$ ならば $`(B[n])_{0,0}=B_{0,0}`$。
 
-**証明** $`1<\lvert B\rvert`$ か否かで場合分けする。
+**証明** $`1\lt \lvert B\rvert`$ か否かで場合分けする。
 
-- $`1<\lvert B\rvert`$ の場合：[(T.entry_zero_headD)](#t-entry_zero_headD) を両辺に適用すると、示すべきは
+- $`1\lt \lvert B\rvert`$ の場合：[(T.entry_zero_headD)](#t-entry_zero_headD) を両辺に適用すると、示すべきは
   $`\pi_0\bigl((B[n]).\mathrm{headD}(0,0)\bigr)=\pi_0\bigl(B.\mathrm{headD}(0,0)\bigr)`$ であり、
   [(T.oper_headD)](Nrm.md#t-oper_headD) より $`(B[n]).\mathrm{headD}(0,0)=B.\mathrm{headD}(0,0)`$。
 - $`\lvert B\rvert\le 1`$ の場合：$`\ell_B=0`$ であるから
@@ -1169,10 +1169,10 @@ $`X=p\mathbin{::}L`$ のとき、$`X_{0,0}=\pi_0 p`$ であり $`X.\mathrm{headD
 <a id="t-entry_pair_mem"></a>
 #### 定理 第 $`j`$ 列は $`B`$ の要素 (T.entry_pair_mem)
 
-**主張** $`j<\lvert B\rvert`$ ならば $`(B_{0,j},\,B_{1,j})\in B`$。
+**主張** $`j\lt \lvert B\rvert`$ ならば $`(B_{0,j},\,B_{1,j})\in B`$。
 
 **証明** [(D.entry)](Def.md#d-entry) より $`B_{0,j}=\pi_0(B\langle j\rangle)`$、$`B_{1,j}=\pi_1(B\langle j\rangle)`$ であるから
-$`(B_{0,j},B_{1,j})=B\langle j\rangle`$。$`j<\lvert B\rvert`$ より $`B\langle j\rangle`$ は既定値ではなく
+$`(B_{0,j},B_{1,j})=B\langle j\rangle`$。$`j\lt \lvert B\rvert`$ より $`B\langle j\rangle`$ は既定値ではなく
 $`B`$ の第 $`j`$ 要素であり、リストの要素はリストに属する。∎
 
 <a id="t-oper_mem_ge"></a>
@@ -1184,7 +1184,7 @@ $`B`$ の第 $`j`$ 要素であり、リストの要素はリストに属する�
 
 - $`\ell_B=0`$ の場合：[(T.oper_eq_self_of_short)](Mechanized.md#t-oper_eq_self_of_short) より $`B[n]=B`$ であり、仮定そのもの。
 - $`\ell_B\ne 0`$ の場合：$`\mathrm{hasParent}(B,\mathrm{idx}_1(B,\ell_B),\ell_B)`$ が成り立つか否かで場合分けする。
-  - 成り立つ場合：まず $`0<B_{0,\ell_B}`$ である（$`B_{0,\ell_B}=0`$ ならば
+  - 成り立つ場合：まず $`0\lt B_{0,\ell_B}`$ である（$`B_{0,\ell_B}=0`$ ならば
     [(T.no_hasParent_of_row0_zero)](Nrm.md#t-no_hasParent_of_row0_zero) により矛盾）。
     よって $`\neg(B_{0,\ell_B}=0\wedge B_{1,\ell_B}=0)`$ であり、
     [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) が適用でき
@@ -1195,7 +1195,7 @@ $`B`$ の第 $`j`$ 要素であり、リストの要素はリストに属する�
     （$`j_0`$ は親、$`\delta`$ は係数）。$`p\in B[n]`$ を取り、連結のどちらに属するかで場合分けする。
     - $`p\in\mathrm{take}\,j_0\,B`$：前部の要素は $`B`$ の要素であるから仮定より $`c\le\pi_0 p`$。
     - $`p`$ が `flatMap` 側：ある $`k`$ と $`j\in\mathrm{range}'(j_0,\ell_B-j_0)`$ について
-      $`p=(B_{0,j}+k\delta,\ B_{1,j})`$ である。$`j<\ell_B<\lvert B\rvert`$ であるから
+      $`p=(B_{0,j}+k\delta,\ B_{1,j})`$ である。$`j\lt \ell_B\lt \lvert B\rvert`$ であるから
       [(T.entry_pair_mem)](#t-entry_pair_mem) より $`(B_{0,j},B_{1,j})\in B`$、仮定より $`c\le B_{0,j}`$。
       よって $`c\le B_{0,j}\le B_{0,j}+k\delta=\pi_0 p`$。
   - 成り立たない場合：$`B_{0,\ell_B}=0\wedge B_{1,\ell_B}=0`$ なら
@@ -1210,7 +1210,7 @@ $`B`$ の第 $`j`$ 要素であり、リストの要素はリストに属する�
 
 **主張** $`B\ne[]`$ かつ $`\forall p\in B,\ c\le\pi_0 p`$ ならば $`\forall p\in\mathrm{gr}(B,z),\ c\le\pi_0 p`$。
 
-**証明** $`B\ne[]`$ より $`\ell_B<\lvert B\rvert`$ であるから、[(T.entry_pair_mem)](#t-entry_pair_mem) より
+**証明** $`B\ne[]`$ より $`\ell_B\lt \lvert B\rvert`$ であるから、[(T.entry_pair_mem)](#t-entry_pair_mem) より
 $`(B_{0,\ell_B},B_{1,\ell_B})\in B`$、よって仮定より $`c\le B_{0,\ell_B}`$。
 $`p\in\mathrm{gr}(B,z)`$ を取り、[(D.graft)](#d-graft) の連結のどちらに属するかで場合分けする。
 
@@ -1247,22 +1247,22 @@ $`\bigl(\mathrm{gr}(B,z)\bigr)_{0,0}=B_{0,0}`$。
 
 **証明** $`B`$ を取り、$`B\in A^W_u(X^{(A)})`$ と $`\mathrm{rsum}(A,B)`$ を仮定して $`A\mathbin{+\!\!+}B\in X`$ を示す。
 
-$`B=[]`$ の場合、$`A\mathbin{+\!\!+}[]=A\in X`$ である。以下 $`B\ne[]`$、すなわち $`0<\lvert B\rvert`$ とする。
+$`B=[]`$ の場合、$`A\mathbin{+\!\!+}[]=A\in X`$ である。以下 $`B\ne[]`$、すなわち $`0\lt \lvert B\rvert`$ とする。
 [(D.rsum)](#d-rsum) より
 ```math
 \forall p\in B,\ B_{0,0}\le\pi_0 p \qquad\text{および}\qquad \forall p\in A,\ B_{0,0}\le\pi_0 p
 ```
 が成り立つ。[(D.Aop)](#d-Aop) の 3 つの枝で場合分けする。
 
-**枝 1**：$`\lvert B\rvert\le 1`$ かつ $`B_{1,0}=0`$。$`0<\lvert B\rvert`$ と合わせて $`\lvert B\rvert=1`$。
+**枝 1**：$`\lvert B\rvert\le 1`$ かつ $`B_{1,0}=0`$。$`0\lt \lvert B\rvert`$ と合わせて $`\lvert B\rvert=1`$。
 
 - $`A=[]`$ の場合：$`A\mathbin{+\!\!+}B=B`$ であり、$`B`$ 自身が枝 1 をみたすから仮定より $`B\in X`$。
 - $`A\ne[]`$ の場合：$`\lvert A\mathbin{+\!\!+}B\rvert=\lvert A\rvert+1\ge 2`$ であり
   $`\ell_{A+\!\!+B}=\lvert A\rvert+0`$。
   - 任意の $`i`$ について $`\neg\,\mathrm{hasParent}(A\mathbin{+\!\!+}B,i,\lvert A\rvert)`$：
-    [(T.hasParent_append_gen)](#t-hasParent_append_gen)（$`j:=0<\lvert B\rvert`$）より
+    [(T.hasParent_append_gen)](#t-hasParent_append_gen)（$`j:=0\lt \lvert B\rvert`$）より
     これは $`\mathrm{hasParent}(B,i,0)`$ と同値であるが、その証人 $`j_0`$ は
-    [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0<0`$ をみたすことになり、$`\mathbb{N}`$ では偽である。
+    [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0\lt 0`$ をみたすことになり、$`\mathbb{N}`$ では偽である。
   - $`(A\mathbin{+\!\!+}B)_{1,\lvert A\rvert}=B_{1,0}=0`$（[(T.entry_append_right)](Nrm.md#t-entry_append_right)）。
   - $`\mathrm{natDom}(B)`$：$`\ell_B=0`$ であり $`B_{1,\ell_B}=B_{1,0}=0`$ であるから
     [(T.natDom_iff)](#t-natDom_iff) の第 1 選言による。よって
@@ -1297,7 +1297,7 @@ $`B=[]`$ の場合、$`A\mathbin{+\!\!+}[]=A\in X`$ である。以下 $`B\ne[]`
   [(T.oper_eq_self_of_short)](Mechanized.md#t-oper_eq_self_of_short) より $`B[1]=B`$。
   $`n:=1`$ として $`B\in X^{(A)}`$ を得、これに $`\mathrm{rsum}(A,B)`$ を適用して $`A\mathbin{+\!\!+}B\in X`$。
 
-**枝 3**：$`m<u`$、$`\mathrm{dom}(B)=T_m`$、$`\forall z\in W_m,\ \mathrm{based}(z)\to\mathrm{gr}(B,z)\in X^{(A)}`$。
+**枝 3**：$`m\lt u`$、$`\mathrm{dom}(B)=T_m`$、$`\forall z\in W_m,\ \mathrm{based}(z)\to\mathrm{gr}(B,z)\in X^{(A)}`$。
 $`A\mathbin{+\!\!+}B`$ について枝 3 を同じ $`m`$ で用いる。
 $`\mathrm{dom}(A\mathbin{+\!\!+}B)=T_m`$ は [(T.domT_append)](#t-domT_append) による。
 $`z\in W_m`$ で $`\mathrm{based}(z)`$ なるものを取ると、[(T.graft_append)](#t-graft_append) より
@@ -1346,7 +1346,7 @@ $`[(0,v)]_{0,0}=0`$ であるから
 
 **証明** [(D.domT)](#d-domT) の第 1 条件は $`[(0,m+1)]_{1,0}=m+1`$ であり成立する。
 第 2 条件：$`j_0\to^{[(0,m+1)]}_1 0`$ なる $`j_0`$ が存在したとすると、
-[(D.nextR)](Def.md#d-nextR)（$`1\ne 0`$ より $`\mathrm{nextrel1}`$ の側）の条件 3 より $`j_0<0`$ となり、
+[(D.nextR)](Def.md#d-nextR)（$`1\ne 0`$ より $`\mathrm{nextrel1}`$ の側）の条件 3 より $`j_0\lt 0`$ となり、
 $`\mathbb{N}`$ では偽である。よって $`\neg\,\mathrm{hasParent}([(0,m+1)],1,0)`$。∎
 
 <a id="t-Om_mem_W"></a>
@@ -1359,7 +1359,7 @@ $`\mathbb{N}`$ では偽である。よって $`\neg\,\mathrm{hasParent}([(0,m+1
 - $`v=0`$：[(T.A1_intro)](#t-A1_intro) の枝 1 を用いる。$`\lvert[(0,0)]\rvert=1\le 1`$ であり
   $`[(0,0)]_{1,0}=0`$。
 - $`v=w+1`$：[(T.A1_intro)](#t-A1_intro) の枝 3 を $`m:=w`$ で用いる。
-  $`w<w+1`$ であり、$`\mathrm{dom}([(0,w+1)])=T_w`$ は [(T.domT_Om)](#t-domT_Om) である。
+  $`w\lt w+1`$ であり、$`\mathrm{dom}([(0,w+1)])=T_w`$ は [(T.domT_Om)](#t-domT_Om) である。
   $`z\in W_w`$ で $`\mathrm{based}(z)`$ なるものについて、[(T.graft_Om)](#t-graft_Om) より
   $`\mathrm{gr}([(0,w+1)],z)=z`$ であり、[(T.W_mono)](#t-W_mono)（$`w\le w+1`$）より $`z\in W_{w+1}`$。∎
 
@@ -1411,7 +1411,7 @@ $`M`$ の最終列の行 0 祖先鎖は $`R`$ 自身の鎖に根 $`(0,v)`$ を�
 | (A′) | $`w=0`$ かつ $`R`$ 内に行 0 の親がない | 後続 | $`(0,v)\mathbin{::}\mathrm{dropLast}\,R`$ の $`n`$ 個の複製 |
 | (B′)(C′) | $`R`$ の最終列が $`R`$ 内に親をもつ | $`\mathbb{N}`$ | $`(0,v)\mathbin{::}R[n]`$ |
 | (D′) | $`\mathrm{dom}(R)=T_m`$ かつ $`v\le m`$ | $`\mathbb{N}`$ | 塔 $`t^{v,R}_n`$ |
-| (E′) | $`\mathrm{dom}(R)=T_m`$ かつ $`m<v`$ | $`T_m`$ | 根を通した graft |
+| (E′) | $`\mathrm{dom}(R)=T_m`$ かつ $`m\lt v`$ | $`T_m`$ | 根を通した graft |
 
 この表は Buchholz (1987) 2.6 の場合分けとの対応を示すものであり、正確な内容は以下の各補題の主張である。
 以下の補題はすべて $`M[n]`$ と $`\mathrm{hasParent}`$ についての主張であり、
@@ -1447,7 +1447,7 @@ $`[p]\mathbin{+\!\!+}R=p\mathbin{::}R`$ と $`1+j=j+1`$ で書き換える。∎
 <a id="t-hasParent_zero_iff"></a>
 #### 定理 行 0 親の存在判定 (T.hasParent_zero_iff)
 
-**主張** $`b<\lvert M\rvert`$ ならば
+**主張** $`b\lt \lvert M\rvert`$ ならば
 ```math
 \mathrm{hasParent}(M,0,b) \iff \exists k,\ \bigl(k<b \ \wedge\ M_{0,k}<M_{0,b}\bigr).
 ```
@@ -1456,36 +1456,36 @@ $`[p]\mathbin{+\!\!+}R=p\mathbin{::}R`$ と $`1+j=j+1`$ で書き換える。∎
 $`k\to^M_0 b`$（$`\mathrm{nextR}`$ の意味）と $`k\to^M_0 b`$（$`\mathrm{nextrel0}`$ の意味）は同値であり、以下同一視する。
 
 $`(\Rightarrow)`$ 親 $`k`$ を取ると、[(D.nextrel0)](Def.md#d-nextrel0) の条件 3, 4 より
-$`k<b`$ と $`M_{0,k}<M_{0,b}`$。
+$`k\lt b`$ と $`M_{0,k}\lt M_{0,b}`$。
 
 $`(\Leftarrow)`$ 条件をみたす $`k`$ を取る。述語
 ```math
 P(t):\equiv\ t<b \ \wedge\ M_{0,t}<M_{0,b}
 ```
-に対し $`g:=\mathrm{fg}(P,b)`$ とおく。$`k<b`$ より $`k\le b`$、$`P(k)`$ が成り立つから
-`Nat.findGreatest_spec` より $`P(g)`$、すなわち $`g<b`$ かつ $`M_{0,g}<M_{0,b}`$。
-また $`P(t)`$ をみたす $`t`$ は $`t<b`$ すなわち $`t\le b`$ をみたすから、`Nat.le_findGreatest` より
+に対し $`g:=\mathrm{fg}(P,b)`$ とおく。$`k\lt b`$ より $`k\le b`$、$`P(k)`$ が成り立つから
+`Nat.findGreatest_spec` より $`P(g)`$、すなわち $`g\lt b`$ かつ $`M_{0,g}\lt M_{0,b}`$。
+また $`P(t)`$ をみたす $`t`$ は $`t\lt b`$ すなわち $`t\le b`$ をみたすから、`Nat.le_findGreatest` より
 ```math
 (\dagger)\qquad\forall t,\ P(t)\to t\le g .
 ```
 
 $`g\to^M_0 b`$、すなわち [(D.nextrel0)](Def.md#d-nextrel0) の 5 条件を確かめる。
 
-1. $`g<\lvert M\rvert`$：$`g<b`$ と $`b<\lvert M\rvert`$ の推移性。
-2. $`b<\lvert M\rvert`$：仮定。
-3. $`g<b`$：$`P(g)`$ の第 1 成分。
-4. $`M_{0,g}<M_{0,b}`$：$`P(g)`$ の第 2 成分。
-5. $`\forall l,\ (g<l\wedge l<b)\to M_{0,b}\le M_{0,l}`$：結論を否定して $`M_{0,l}<M_{0,b}`$ とすると、
-   $`l<b`$ と合わせて $`P(l)`$ が成り立ち、$`(\dagger)`$ より $`l\le g`$ となって $`g<l`$ に矛盾する。
+1. $`g\lt \lvert M\rvert`$：$`g\lt b`$ と $`b\lt \lvert M\rvert`$ の推移性。
+2. $`b\lt \lvert M\rvert`$：仮定。
+3. $`g\lt b`$：$`P(g)`$ の第 1 成分。
+4. $`M_{0,g}\lt M_{0,b}`$：$`P(g)`$ の第 2 成分。
+5. $`\forall l,\ (g\lt l\wedge l\lt b)\to M_{0,b}\le M_{0,l}`$：結論を否定して $`M_{0,l}\lt M_{0,b}`$ とすると、
+   $`l\lt b`$ と合わせて $`P(l)`$ が成り立ち、$`(\dagger)`$ より $`l\le g`$ となって $`g\lt l`$ に矛盾する。
 
 一意性：$`y\to^M_0 b`$ とすると条件 3, 4 より $`P(y)`$、$`(\dagger)`$ より $`y\le g`$。
-$`y<g`$ と仮定すると、$`y`$ についての条件 5 を $`l:=g`$ に適用でき（$`y<g`$、$`g<b`$）、
-$`M_{0,b}\le M_{0,g}`$ を得るが、これは $`P(g)`$ の第 2 成分 $`M_{0,g}<M_{0,b}`$ に矛盾する。よって $`y=g`$。∎
+$`y\lt g`$ と仮定すると、$`y`$ についての条件 5 を $`l:=g`$ に適用でき（$`y\lt g`$、$`g\lt b`$）、
+$`M_{0,b}\le M_{0,g}`$ を得るが、これは $`P(g)`$ の第 2 成分 $`M_{0,g}\lt M_{0,b}`$ に矛盾する。よって $`y=g`$。∎
 
 <a id="t-le0_cons_zero"></a>
 #### 定理 主要ブロックの根はすべての列の行 0 祖先 (T.le0_cons_zero)
 
-**主張** $`\mathrm{argOK}(R)`$ ならば、$`j<\lvert R\rvert`$ なる任意の $`j`$ について
+**主張** $`\mathrm{argOK}(R)`$ ならば、$`j\lt \lvert R\rvert`$ なる任意の $`j`$ について
 $`0\le^{(0,v)::R}_0 (j+1)`$。
 
 **証明** $`M:=(0,v)\mathbin{::}R`$ とおく。まず補助命題
@@ -1494,28 +1494,28 @@ $`0\le^{(0,v)::R}_0 (j+1)`$。
 ```
 を $`N`$ に関する自然数の帰納法で示す。帰納法の述語は $`\mathrm{key}(N)`$ である。
 
-- **基底段 $`N=0`$**：$`j\le 0`$ より $`j=0`$。$`j<\lvert R\rvert`$ より $`0<\lvert R\rvert`$、
-  よって $`\lvert M\rvert=\lvert R\rvert+1\ge 2`$ であり $`0<\lvert M\rvert`$、$`1<\lvert M\rvert`$。
+- **基底段 $`N=0`$**：$`j\le 0`$ より $`j=0`$。$`j\lt \lvert R\rvert`$ より $`0\lt \lvert R\rvert`$、
+  よって $`\lvert M\rvert=\lvert R\rvert+1\ge 2`$ であり $`0\lt \lvert M\rvert`$、$`1\lt \lvert M\rvert`$。
   [(D.le0)](Def.md#d-le0) の 3 条件のうち長さの 2 条件はこれで満たされる。
   残りは $`\mathrm{ReflTransGen}(\to^M_0)\ 0\ 1`$ であり、1 段の $`0\to^M_0 1`$ を示せばよい。
   [(D.nextrel0)](Def.md#d-nextrel0) の 5 条件は次のとおり。
-  1. $`0<\lvert M\rvert`$、2. $`1<\lvert M\rvert`$、3. $`0<1`$。
-  4. $`M_{0,0}<M_{0,1}`$：$`M_{0,0}=0`$ であり、[(T.entry_cons)](#t-entry_cons) より $`M_{0,1}=R_{0,0}`$。
-     $`0<\lvert R\rvert`$ より [(T.entry_pair_mem)](#t-entry_pair_mem) から $`(R_{0,0},R_{1,0})\in R`$、
-     $`\mathrm{argOK}(R)`$ より $`0<R_{0,0}`$。
-  5. $`\forall l,\ (0<l\wedge l<1)\to\cdots`$：前提をみたす $`l`$ は存在しない。
-- **帰納段 $`N\to N+1`$**：帰納法の仮定は $`\mathrm{key}(N)`$ である。$`j\le N+1`$、$`j<\lvert R\rvert`$ とする。
-  $`j+1<\lvert M\rvert`$ である。[(T.entry_cons)](#t-entry_cons) と
+  1. $`0\lt \lvert M\rvert`$、2. $`1\lt \lvert M\rvert`$、3. $`0\lt 1`$。
+  4. $`M_{0,0}\lt M_{0,1}`$：$`M_{0,0}=0`$ であり、[(T.entry_cons)](#t-entry_cons) より $`M_{0,1}=R_{0,0}`$。
+     $`0\lt \lvert R\rvert`$ より [(T.entry_pair_mem)](#t-entry_pair_mem) から $`(R_{0,0},R_{1,0})\in R`$、
+     $`\mathrm{argOK}(R)`$ より $`0\lt R_{0,0}`$。
+  5. $`\forall l,\ (0\lt l\wedge l\lt 1)\to\cdots`$：前提をみたす $`l`$ は存在しない。
+- **帰納段 $`N\to N+1`$**：帰納法の仮定は $`\mathrm{key}(N)`$ である。$`j\le N+1`$、$`j\lt \lvert R\rvert`$ とする。
+  $`j+1\lt \lvert M\rvert`$ である。[(T.entry_cons)](#t-entry_cons) と
   [(T.entry_pair_mem)](#t-entry_pair_mem)、$`\mathrm{argOK}(R)`$ より
   ```math
   M_{0,j+1}=R_{0,j}>0=M_{0,0},
   ```
-  よって $`k:=0`$ が $`k<j+1`$ かつ $`M_{0,k}<M_{0,j+1}`$ をみたす。
+  よって $`k:=0`$ が $`k\lt j+1`$ かつ $`M_{0,k}\lt M_{0,j+1}`$ をみたす。
   [(T.hasParent_zero_iff)](#t-hasParent_zero_iff) より $`\mathrm{hasParent}(M,0,j+1)`$ であり、
   その親を $`k`$ とすると $`k\to^M_0 (j+1)`$。
   - $`k=0`$ の場合：1 段の $`\mathrm{ReflTransGen}`$ で $`0\le^M_0 (j+1)`$。
-  - $`k=k'+1`$（$`k>0`$）の場合：$`\mathrm{nextrel0}`$ の条件 3 より $`k'+1<j+1`$、すなわち $`k'<j`$。
-    $`j\le N+1`$ より $`k'\le N`$ であり、$`k'<j<\lvert R\rvert`$ より $`k'<\lvert R\rvert`$。
+  - $`k=k'+1`$（$`k\gt 0`$）の場合：$`\mathrm{nextrel0}`$ の条件 3 より $`k'+1\lt j+1`$、すなわち $`k'\lt j`$。
+    $`j\le N+1`$ より $`k'\le N`$ であり、$`k'\lt j\lt \lvert R\rvert`$ より $`k'\lt \lvert R\rvert`$。
     帰納法の仮定 $`\mathrm{key}(N)`$ を $`k'`$ に適用して $`0\le^M_0 (k'+1)`$、
     とくにその第 3 成分の鎖に 1 段 $` (k'+1)\to^M_0 (j+1)`$ を継ぎ足して
     $`\mathrm{ReflTransGen}(\to^M_0)\ 0\ (j+1)`$ を得る。長さの 2 条件も上で確認済みである。
@@ -1527,7 +1527,7 @@ $`0\le^{(0,v)::R}_0 (j+1)`$。
 
 **主張** $`R\ne[]`$ ならば $`\lvert R\rvert=(\lvert R\rvert-1)+1`$。
 
-**証明** $`R\ne[]`$ より $`0<\lvert R\rvert`$。$`\lvert R\rvert\ge 1`$ の自然数については
+**証明** $`R\ne[]`$ より $`0\lt \lvert R\rvert`$。$`\lvert R\rvert\ge 1`$ の自然数については
 切り捨て減法でも $`(\lvert R\rvert-1)+1=\lvert R\rvert`$ が成り立つ。∎
 
 <a id="t-entry_cons_last"></a>
@@ -1565,9 +1565,9 @@ $`0\le^{(0,v)::R}_0 (j+1)`$。
 <a id="t-cons_len_lt"></a>
 #### 定理 cons は長さを増やす (T.cons_len_lt)
 
-**主張** $`\lvert R\rvert<\lvert p\mathbin{::}R\rvert`$。
+**主張** $`\lvert R\rvert\lt \lvert p\mathbin{::}R\rvert`$。
 
-**証明** $`\lvert p\mathbin{::}R\rvert=\lvert R\rvert+1`$ であり $`\lvert R\rvert<\lvert R\rvert+1`$。∎
+**証明** $`\lvert p\mathbin{::}R\rvert=\lvert R\rvert+1`$ であり $`\lvert R\rvert\lt \lvert R\rvert+1`$。∎
 
 <a id="t-hasParent_cons_one"></a>
 #### 定理 (C′)(D′) 根が行 1 の親になる場合 (T.hasParent_cons_one)
@@ -1578,27 +1578,27 @@ $`0\le^{(0,v)::R}_0 (j+1)`$。
 ```
 のいずれかが成り立つならば、$`\mathrm{hasParent}((0,v)\mathbin{::}R,\ 1,\ \lvert R\rvert)`$。
 
-**証明** $`M:=(0,v)\mathbin{::}R`$ とおく。$`R\ne[]`$ より $`0<\lvert R\rvert`$、また
-[(T.cons_len_lt)](#t-cons_len_lt) より $`\lvert R\rvert<\lvert M\rvert`$。
+**証明** $`M:=(0,v)\mathbin{::}R`$ とおく。$`R\ne[]`$ より $`0\lt \lvert R\rvert`$、また
+[(T.cons_len_lt)](#t-cons_len_lt) より $`\lvert R\rvert\lt \lvert M\rvert`$。
 [(T.hasParent_one_iff)](#t-hasParent_one_iff) により、$`\mathrm{r1cand}(M,\lvert R\rvert,j_0)`$ なる $`j_0`$ の存在を示せばよい。
 [(T.entry_cons_last)](#t-entry_cons_last) より $`M_{1,\lvert R\rvert}=R_{1,\lvert R\rvert-1}`$ である。
 仮定の 2 つの選言で場合分けする。
 
-- **$`\mathrm{hasParent}(R,1,\lvert R\rvert-1)`$ の場合**：$`\lvert R\rvert-1<\lvert R\rvert`$ であるから
+- **$`\mathrm{hasParent}(R,1,\lvert R\rvert-1)`$ の場合**：$`\lvert R\rvert-1\lt \lvert R\rvert`$ であるから
   [(T.hasParent_one_iff)](#t-hasParent_one_iff) より $`j'`$ が取れて
   ```math
   j'<\lvert R\rvert-1,\qquad j'\le^R_0(\lvert R\rvert-1),\qquad R_{1,j'}<R_{1,\lvert R\rvert-1}.
   ```
-  $`j_0:=j'+1`$ とする。$`j'<\lvert R\rvert-1`$ より $`j'+1<\lvert R\rvert`$。
+  $`j_0:=j'+1`$ とする。$`j'\lt \lvert R\rvert-1`$ より $`j'+1\lt \lvert R\rvert`$。
   [(T.le0_cons_last)](#t-le0_cons_last) より $`(j'+1)\le^M_0\lvert R\rvert`$。
   [(T.entry_cons)](#t-entry_cons) より $`M_{1,j'+1}=R_{1,j'}`$ であり、
-  $`M_{1,\lvert R\rvert}=R_{1,\lvert R\rvert-1}`$ と合わせて $`M_{1,j'+1}<M_{1,\lvert R\rvert}`$。
+  $`M_{1,\lvert R\rvert}=R_{1,\lvert R\rvert-1}`$ と合わせて $`M_{1,j'+1}\lt M_{1,\lvert R\rvert}`$。
   よって $`\mathrm{r1cand}(M,\lvert R\rvert,j'+1)`$。
-- **$`v<R_{1,\lvert R\rvert-1}`$ の場合**：$`j_0:=0`$ とする。$`0<\lvert R\rvert`$。
-  [(T.le0_cons_zero)](#t-le0_cons_zero) を $`j:=\lvert R\rvert-1`$（$`<\lvert R\rvert`$）に適用すると
+- **$`v\lt R_{1,\lvert R\rvert-1}`$ の場合**：$`j_0:=0`$ とする。$`0\lt \lvert R\rvert`$。
+  [(T.le0_cons_zero)](#t-le0_cons_zero) を $`j:=\lvert R\rvert-1`$（$`\lt \lvert R\rvert`$）に適用すると
   $`0\le^M_0((\lvert R\rvert-1)+1)`$ であり、[(T.len_succ)](#t-len_succ) より
   $`(\lvert R\rvert-1)+1=\lvert R\rvert`$ であるから $`0\le^M_0\lvert R\rvert`$。
-  また $`M_{1,0}=v<R_{1,\lvert R\rvert-1}=M_{1,\lvert R\rvert}`$。
+  また $`M_{1,0}=v\lt R_{1,\lvert R\rvert-1}=M_{1,\lvert R\rvert}`$。
   よって $`\mathrm{r1cand}(M,\lvert R\rvert,0)`$。∎
 
 <a id="t-oper_root_tiling"></a>
@@ -1638,12 +1638,12 @@ $`\mathrm{map}\,(\lambda j.\,(M_{0,j}+k\delta,\ M_{1,j}))\,\mathrm{range}(\ell_M
 ```
 
 **証明** $`M:=(0,v)\mathbin{::}R`$、$`i_1:=\mathrm{idx}_1(R,\ell_R)`$、
-$`j_0:=\mathrm{par}^R_{i_1}(\ell_R)`$ とおく。$`R\ne[]`$ より $`0<\lvert R\rvert`$、
+$`j_0:=\mathrm{par}^R_{i_1}(\ell_R)`$ とおく。$`R\ne[]`$ より $`0\lt \lvert R\rvert`$、
 $`\lvert M\rvert=\lvert R\rvert+1`$、$`\ell_M=\lvert R\rvert`$ である。
 
 **準備.** [(T.parent_nextR)](Mechanized.md#t-parent_nextR) より $`j_0\to^R_{i_1}\ell_R`$、
-[(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0<\ell_R`$、とくに $`\ell_R\ne 0`$。
-$`\mathrm{argOK}(R)`$ と [(T.entry_pair_mem)](#t-entry_pair_mem) より $`0<R_{0,\ell_R}`$、
+[(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0\lt \ell_R`$、とくに $`\ell_R\ne 0`$。
+$`\mathrm{argOK}(R)`$ と [(T.entry_pair_mem)](#t-entry_pair_mem) より $`0\lt R_{0,\ell_R}`$、
 よって $`\neg(R_{0,\ell_R}=0\wedge R_{1,\ell_R}=0)`$。
 [(T.entry_cons_last)](#t-entry_cons_last) より
 ```math
@@ -1655,16 +1655,16 @@ M_{0,\lvert R\rvert}=R_{0,\ell_R},\qquad M_{1,\lvert R\rvert}=R_{1,\ell_R},
 **根は $`M`$ の最終列の親ではない.** $`0\to^M_{i_1}\lvert R\rvert`$ を仮定して矛盾を導く。
 
 - $`i_1=0`$ の場合：これは $`0\to^M_0\lvert R\rvert`$、すなわち $`\mathrm{nextrel0}`$ である。
-  その条件 5 を $`j:=j_0+1`$ に適用する（$`0<j_0+1`$ であり、$`j_0<\ell_R=\lvert R\rvert-1`$ より $`j_0+1<\lvert R\rvert`$）。
+  その条件 5 を $`j:=j_0+1`$ に適用する（$`0\lt j_0+1`$ であり、$`j_0\lt \ell_R=\lvert R\rvert-1`$ より $`j_0+1\lt \lvert R\rvert`$）。
   得られるのは $`M_{0,\lvert R\rvert}\le M_{0,j_0+1}`$、すなわち
   [(T.entry_cons)](#t-entry_cons) により $`R_{0,\ell_R}\le R_{0,j_0}`$。
-  一方 $`j_0\to^R_0\ell_R`$（$`i_1=0`$ の場合の $`\mathrm{nextrel0}`$）の条件 4 は $`R_{0,j_0}<R_{0,\ell_R}`$ である。矛盾。
+  一方 $`j_0\to^R_0\ell_R`$（$`i_1=0`$ の場合の $`\mathrm{nextrel0}`$）の条件 4 は $`R_{0,j_0}\lt R_{0,\ell_R}`$ である。矛盾。
 - $`i_1\ne 0`$ の場合：これは $`\mathrm{nextrel1}`$ である。
   $`j_0\to^R_1\ell_R`$ の条件 5 より $`j_0\le^R_0\ell_R`$、よって
   [(T.le0_cons_last)](#t-le0_cons_last) より $`(j_0+1)\le^M_0\lvert R\rvert`$。
-  $`0\to^M_1\lvert R\rvert`$ の条件 6 を $`j:=j_0+1`$ に適用すると（$`0<j_0+1`$ と上の $`\le^M_0`$）
+  $`0\to^M_1\lvert R\rvert`$ の条件 6 を $`j:=j_0+1`$ に適用すると（$`0\lt j_0+1`$ と上の $`\le^M_0`$）
   $`M_{1,\lvert R\rvert}\le M_{1,j_0+1}`$、すなわち $`R_{1,\ell_R}\le R_{1,j_0}`$。
-  一方 $`j_0\to^R_1\ell_R`$ の条件 4 は $`R_{1,j_0}<R_{1,\ell_R}`$ である。矛盾。
+  一方 $`j_0\to^R_1\ell_R`$ の条件 4 は $`R_{1,j_0}\lt R_{1,\ell_R}`$ である。矛盾。
 
 **$`M`$ の最終列の親は $`j_0+1`$ でありそれのみ.** $`y\to^M_{i_1}\lvert R\rvert`$ とする。
 $`y=0`$ は上で否定した。$`y=y'+1`$ と書くと [(T.nextR_cons_last)](#t-nextR_cons_last) より
@@ -1705,10 +1705,10 @@ M[n]=(0,v)\mathbin{::}\Bigl(\mathrm{take}\,j_0\,R\mathbin{+\!\!+}
 \bigl((0,v)\mathbin{::}R\bigr)[n]=\mathrm{flatMap}\bigl(\lambda \_.\ (0,v)\mathbin{::}\mathrm{dropLast}\,R\bigr)\,\mathrm{range}(n).
 ```
 
-**証明** $`M:=(0,v)\mathbin{::}R`$ とおく。$`R\ne[]`$ より $`0<\lvert R\rvert`$、$`\ell_M=\lvert R\rvert`$。
+**証明** $`M:=(0,v)\mathbin{::}R`$ とおく。$`R\ne[]`$ より $`0\lt \lvert R\rvert`$、$`\ell_M=\lvert R\rvert`$。
 
 **準備.** [(T.entry_cons_last)](#t-entry_cons_last) より $`M_{0,\lvert R\rvert}=R_{0,\ell_R}`$ であり、
-$`\mathrm{argOK}(R)`$ と [(T.entry_pair_mem)](#t-entry_pair_mem) より $`0<R_{0,\ell_R}`$。
+$`\mathrm{argOK}(R)`$ と [(T.entry_pair_mem)](#t-entry_pair_mem) より $`0\lt R_{0,\ell_R}`$。
 よって $`\ell_M=\lvert R\rvert\ne 0`$ かつ $`\neg(M_{0,\ell_M}=0\wedge M_{1,\ell_M}=0)`$。
 [(T.idx1_cons_last)](#t-idx1_cons_last) と $`R_{1,\ell_R}=0`$、[(D.idx1)](Def.md#d-idx1) より
 $`\mathrm{idx}_1(M,\ell_M)=\mathrm{idx}_1(R,\ell_R)=0`$。
@@ -1717,20 +1717,20 @@ $`\mathrm{idx}_1(M,\ell_M)=\mathrm{idx}_1(R,\ell_R)=0`$。
 ```math
 (\ast)\qquad \forall k,\ k<\ell_R\to R_{0,\ell_R}\le R_{0,k}.
 ```
-実際、ある $`k<\ell_R`$ で $`R_{0,k}<R_{0,\ell_R}`$ ならば
+実際、ある $`k\lt \ell_R`$ で $`R_{0,k}\lt R_{0,\ell_R}`$ ならば
 [(T.hasParent_zero_iff)](#t-hasParent_zero_iff) より $`\mathrm{hasParent}(R,0,\ell_R)`$ となり仮定に反する。
 
 **根が最終列の行 0 の親であり、それのみ.** まず $`0\to^M_0\lvert R\rvert`$ を
 [(D.nextrel0)](Def.md#d-nextrel0) の 5 条件で確かめる。
-1. $`0<\lvert M\rvert`$、2. $`\lvert R\rvert<\lvert M\rvert`$、3. $`0<\lvert R\rvert`$。
-4. $`M_{0,0}=0<R_{0,\ell_R}=M_{0,\lvert R\rvert}`$。
-5. $`0<l<\lvert R\rvert`$ なる $`l`$ は $`l=l'+1`$ と書け、$`l'<\lvert R\rvert-1=\ell_R`$ であるから
+1. $`0\lt \lvert M\rvert`$、2. $`\lvert R\rvert\lt \lvert M\rvert`$、3. $`0\lt \lvert R\rvert`$。
+4. $`M_{0,0}=0\lt R_{0,\ell_R}=M_{0,\lvert R\rvert}`$。
+5. $`0\lt l\lt \lvert R\rvert`$ なる $`l`$ は $`l=l'+1`$ と書け、$`l'\lt \lvert R\rvert-1=\ell_R`$ であるから
    [(T.entry_cons)](#t-entry_cons) と $`(\ast)`$ より
    $`M_{0,\lvert R\rvert}=R_{0,\ell_R}\le R_{0,l'}=M_{0,l}`$。
 
 一意性：$`y\to^M_0\lvert R\rvert`$ で $`y\ne 0`$ とすると $`y=y'+1`$ と書け、
 [(T.nextR_cons_last)](#t-nextR_cons_last) より $`y'\to^R_0\ell_R`$。
-その条件 3, 4 より $`y'<\ell_R`$ かつ $`R_{0,y'}<R_{0,\ell_R}`$ であるが、$`(\ast)`$ は $`R_{0,\ell_R}\le R_{0,y'}`$ を与える。矛盾。
+その条件 3, 4 より $`y'\lt \ell_R`$ かつ $`R_{0,y'}\lt R_{0,\ell_R}`$ であるが、$`(\ast)`$ は $`R_{0,\ell_R}\le R_{0,y'}`$ を与える。矛盾。
 よって $`\mathrm{hasParent}(M,0,\lvert R\rvert)`$ が成り立ち、$`\mathrm{par}^M_0(\lvert R\rvert)=0`$。
 
 **展開形.** [(T.oper_root_tiling)](#t-oper_root_tiling) が適用でき、
@@ -1751,16 +1751,16 @@ M[n]=\mathrm{flatMap}\bigl(\lambda\_. \ (0,v)\mathbin{::}\mathrm{dropLast}\,R\bi
 ```
 
 **証明** $`M:=(0,v)\mathbin{::}R`$、$`x:=R_{0,\ell_R}`$ とおく。
-[(T.not_domT_nil)](#t-not_domT_nil) より $`R\ne[]`$、よって $`0<\lvert R\rvert`$、$`\ell_M=\lvert R\rvert`$。
+[(T.not_domT_nil)](#t-not_domT_nil) より $`R\ne[]`$、よって $`0\lt \lvert R\rvert`$、$`\ell_M=\lvert R\rvert`$。
 
 **準備.** [(T.entry_cons_last)](#t-entry_cons_last) より $`M_{0,\lvert R\rvert}=x`$、
 $`M_{1,\lvert R\rvert}=R_{1,\ell_R}`$。[(D.domT)](#d-domT) より $`R_{1,\ell_R}=m+1`$。
-$`\mathrm{argOK}(R)`$ と [(T.entry_pair_mem)](#t-entry_pair_mem) より $`0<x`$、
+$`\mathrm{argOK}(R)`$ と [(T.entry_pair_mem)](#t-entry_pair_mem) より $`0\lt x`$、
 よって $`\ell_M\ne 0`$ かつ $`\neg(M_{0,\ell_M}=0\wedge M_{1,\ell_M}=0)`$。
-[(T.idx1_cons_last)](#t-idx1_cons_last) と $`m+1>0`$、[(D.idx1)](Def.md#d-idx1) より
+[(T.idx1_cons_last)](#t-idx1_cons_last) と $`m+1\gt 0`$、[(D.idx1)](Def.md#d-idx1) より
 $`\mathrm{idx}_1(M,\ell_M)=\mathrm{idx}_1(R,\ell_R)=1`$。
 
-**親は根 $`0`$ であり、それのみ.** $`v\le m<m+1=R_{1,\ell_R}`$ であるから
+**親は根 $`0`$ であり、それのみ.** $`v\le m\lt m+1=R_{1,\ell_R}`$ であるから
 [(T.hasParent_cons_one)](#t-hasParent_cons_one) の第 2 選言が使え、
 $`\mathrm{hasParent}(M,1,\lvert R\rvert)`$。
 一意性のために $`y\to^M_1\lvert R\rvert`$ で $`y\ne 0`$ と仮定すると、$`y=y'+1`$ と書け
@@ -1771,7 +1771,7 @@ $`\mathrm{hasParent}(M,1,\lvert R\rvert)`$。
 $`\mathrm{par}^M_1(\lvert R\rvert)=0`$。
 
 **展開形.** $`M_{0,0}=0`$ であるから、[(T.oper_root_tiling)](#t-oper_root_tiling) の係数は
-$`\delta=M_{0,\ell_M}-M_{0,0}=x-0=x`$（$`0<\mathrm{idx}_1(M,\ell_M)=1`$）。
+$`\delta=M_{0,\ell_M}-M_{0,0}=x-0=x`$（$`0\lt \mathrm{idx}_1(M,\ell_M)=1`$）。
 $`R\ne[]`$ より $`\mathrm{dropLast}\,M=(0,v)\mathbin{::}\mathrm{dropLast}\,R=:D`$ であるから
 ```math
 M[n]=\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+kx,\ \pi_1 p))\,D\bigr)\,\mathrm{range}(n).
@@ -1811,25 +1811,25 @@ M[n]=\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+kx,\ \p
 <a id="t-domT_cons_of_lt"></a>
 #### 定理 (E′) 連続の場合 (T.domT_cons_of_lt)
 
-**主張** $`\mathrm{argOK}(R)`$、$`\mathrm{dom}(R)=T_m`$、$`m<v`$ ならば
+**主張** $`\mathrm{argOK}(R)`$、$`\mathrm{dom}(R)=T_m`$、$`m\lt v`$ ならば
 $`\mathrm{dom}\bigl((0,v)\mathbin{::}R\bigr)=T_m`$。
 
 **証明** $`M:=(0,v)\mathbin{::}R`$ とおく。[(T.not_domT_nil)](#t-not_domT_nil) より $`R\ne[]`$、
-$`0<\lvert R\rvert`$、$`\ell_M=\lvert R\rvert`$。
+$`0\lt \lvert R\rvert`$、$`\ell_M=\lvert R\rvert`$。
 
 第 1 条件：[(T.entry_cons_last)](#t-entry_cons_last) より
 $`M_{1,\ell_M}=M_{1,\lvert R\rvert}=R_{1,\ell_R}=m+1`$（最後の等号は $`\mathrm{dom}(R)=T_m`$ の第 1 条件）。
 
-第 2 条件：$`\lvert R\rvert<\lvert M\rvert`$（[(T.cons_len_lt)](#t-cons_len_lt)）より
+第 2 条件：$`\lvert R\rvert\lt \lvert M\rvert`$（[(T.cons_len_lt)](#t-cons_len_lt)）より
 [(T.hasParent_one_iff)](#t-hasParent_one_iff) が使える。
 $`\mathrm{r1cand}(M,\lvert R\rvert,j_0)`$ なる $`j_0`$ が存在したとして矛盾を導く。
-すなわち $`j_0<\lvert R\rvert`$、$`j_0\le^M_0\lvert R\rvert`$、$`M_{1,j_0}<M_{1,\lvert R\rvert}=m+1`$ とする。
+すなわち $`j_0\lt \lvert R\rvert`$、$`j_0\le^M_0\lvert R\rvert`$、$`M_{1,j_0}\lt M_{1,\lvert R\rvert}=m+1`$ とする。
 
-- $`j_0=0`$ の場合：$`M_{1,0}=v`$ であるから $`v<m+1`$、すなわち $`v\le m`$。これは $`m<v`$ に矛盾する。
-- $`j_0=j'+1`$ の場合：[(T.entry_cons)](#t-entry_cons) より $`M_{1,j'+1}=R_{1,j'}<m+1`$。
-  $`j'+1<\lvert R\rvert`$ より $`j'<\lvert R\rvert-1=\ell_R`$。
+- $`j_0=0`$ の場合：$`M_{1,0}=v`$ であるから $`v\lt m+1`$、すなわち $`v\le m`$。これは $`m\lt v`$ に矛盾する。
+- $`j_0=j'+1`$ の場合：[(T.entry_cons)](#t-entry_cons) より $`M_{1,j'+1}=R_{1,j'}\lt m+1`$。
+  $`j'+1\lt \lvert R\rvert`$ より $`j'\lt \lvert R\rvert-1=\ell_R`$。
   [(T.le0_cons_last)](#t-le0_cons_last) より $`j'\le^R_0\ell_R`$。
-  $`R_{1,\ell_R}=m+1`$ であるから $`R_{1,j'}<R_{1,\ell_R}`$ であり、$`\mathrm{r1cand}(R,\ell_R,j')`$ が成り立つ。
+  $`R_{1,\ell_R}=m+1`$ であるから $`R_{1,j'}\lt R_{1,\ell_R}`$ であり、$`\mathrm{r1cand}(R,\ell_R,j')`$ が成り立つ。
   [(T.hasParent_one_iff)](#t-hasParent_one_iff) より $`\mathrm{hasParent}(R,1,\ell_R)`$ となるが、
   これは $`\mathrm{dom}(R)=T_m`$ の第 2 条件に矛盾する。∎
 
@@ -1841,7 +1841,7 @@ $`\mathrm{r1cand}(M,\lvert R\rvert,j_0)`$ なる $`j_0`$ が存在したとし�
 **主張** $`\mathrm{argOK}(R)`$ ならば $`\mathrm{argOK}(R[n])`$。
 
 **証明** [(D.argOK)](#d-argOK) は「すべての対の行 0 の値が $`1`$ 以上」と同値である
-（$`0<a`$ と $`1\le a`$ は自然数において同値）。よって
+（$`0\lt a`$ と $`1\le a`$ は自然数において同値）。よって
 [(T.oper_mem_ge)](#t-oper_mem_ge) を $`c:=1`$、$`B:=R`$ に適用すればよい。∎
 
 <a id="t-argOK_graft"></a>
@@ -1849,7 +1849,7 @@ $`\mathrm{r1cand}(M,\lvert R\rvert,j_0)`$ なる $`j_0`$ が存在したとし�
 
 **主張** $`R\ne[]`$ かつ $`\mathrm{argOK}(R)`$ ならば $`\mathrm{argOK}(\mathrm{gr}(R,z'))`$。
 
-**証明** [(T.graft_mem_ge)](#t-graft_mem_ge) を $`c:=1`$、$`B:=R`$ に適用する（$`0<a\iff 1\le a`$）。∎
+**証明** [(T.graft_mem_ge)](#t-graft_mem_ge) を $`c:=1`$、$`B:=R`$ に適用する（$`0\lt a\iff 1\le a`$）。∎
 
 <a id="t-argOK_dropLast"></a>
 #### 定理 $`\mathrm{argOK}`$ は末尾削除で保たれる (T.argOK_dropLast)
@@ -1908,7 +1908,7 @@ $`\mathrm{r1cand}(M,\lvert R\rvert,j_0)`$ なる $`j_0`$ が存在したとし�
 $`M:=(0,v)\mathbin{::}R`$ とおく。
 
 $`R=[]`$ の場合、$`M=[(0,v)]`$ であり [(T.Om_mem_W)](#t-Om_mem_W) より $`M\in W_v`$。
-以下 $`R\ne[]`$、すなわち $`0<\lvert R\rvert`$ とする。このとき $`\ell_M=\lvert R\rvert`$ であり、
+以下 $`R\ne[]`$、すなわち $`0\lt \lvert R\rvert`$ とする。このとき $`\ell_M=\lvert R\rvert`$ であり、
 [(T.entry_cons_last)](#t-entry_cons_last) より $`M_{1,\ell_M}=R_{1,\ell_R}`$。
 [(T.natDom_iff)](#t-natDom_iff) から次の 2 つを準備しておく。
 
@@ -1917,10 +1917,10 @@ $`R=[]`$ の場合、$`M=[(0,v)]`$ であり [(T.Om_mem_W)](#t-Om_mem_W) より 
 
 [(D.Aop)](#d-Aop) の 3 つの枝で場合分けする。
 
-**枝 1**：$`\lvert R\rvert\le 1`$ かつ $`R_{1,0}=0`$。$`0<\lvert R\rvert`$ と合わせて $`\lvert R\rvert=1`$、
+**枝 1**：$`\lvert R\rvert\le 1`$ かつ $`R_{1,0}=0`$。$`0\lt \lvert R\rvert`$ と合わせて $`\lvert R\rvert=1`$、
 よって $`\ell_R=0`$ かつ $`R_{1,\ell_R}=0`$、また $`\mathrm{dropLast}\,R=[]`$。
 $`\neg\,\mathrm{hasParent}(R,0,\ell_R)`$：親 $`j_0`$ が存在すれば
-[(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0<\ell_R=0`$ となり $`\mathbb{N}`$ では偽。
+[(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0\lt \ell_R=0`$ となり $`\mathbb{N}`$ では偽。
 [(T.A1_intro)](#t-A1_intro) の枝 2 を用いる。$`\mathrm{natDom}(M)`$ は $`(\mathrm{n}_2)`$ による。
 各 $`n\ge 1`$ について [(T.oper_cons_succ)](#t-oper_cons_succ) より
 ```math
@@ -1963,7 +1963,7 @@ $`\mathrm{hasParent}(R,\mathrm{idx}_1(R,\ell_R),\ell_R)`$ が成り立つか否�
   - $`\lvert R\rvert=1`$ の場合：$`\mathrm{dropLast}\,R=[]`$ であり
     $`(0,v)\mathbin{::}[]=[(0,v)]\in W_v`$（[(T.Om_mem_W)](#t-Om_mem_W)）。
 
-**枝 3**：$`m<u`$、$`\mathrm{dom}(R)=T_m`$、$`\forall z\in W_m,\ \mathrm{based}(z)\to\mathrm{gr}(R,z)\in W^{*}`$。
+**枝 3**：$`m\lt u`$、$`\mathrm{dom}(R)=T_m`$、$`\forall z\in W_m,\ \mathrm{based}(z)\to\mathrm{gr}(R,z)\in W^{*}`$。
 $`v\le m`$ か否かで場合分けする。
 
 - **$`v\le m`$ の場合 (D′)**：まず
@@ -1982,13 +1982,13 @@ $`v\le m`$ か否かで場合分けする。
     $`(0,v)\mathbin{::}\mathrm{gr}(R,t^{v,R}_k)=t^{v,R}_{k+1}\in W_v`$。
 
   [(T.A1_intro)](#t-A1_intro) の枝 2 を用いる。$`\mathrm{natDom}(M)`$：
-  $`\mathrm{dom}(R)=T_m`$ より $`R_{1,\ell_R}=m+1`$ であり $`v\le m<m+1`$ であるから
+  $`\mathrm{dom}(R)=T_m`$ より $`R_{1,\ell_R}=m+1`$ であり $`v\le m\lt m+1`$ であるから
   [(T.hasParent_cons_one)](#t-hasParent_cons_one) の第 2 選言より
   $`\mathrm{hasParent}(M,1,\lvert R\rvert)`$、よって $`(\mathrm{n}_1)`$。
   各 $`n\ge 1`$ について [(T.oper_cons_tower)](#t-oper_cons_tower) より $`M[n]=t^{v,R}_n`$ であり、
   $`(\mathrm{t})`$ より $`W_v`$ に属する。
-- **$`m<v`$ の場合 (E′)**：[(T.A1_intro)](#t-A1_intro) の枝 3 を同じ $`m`$ で用いる。
-  $`m<v`$ であり、$`\mathrm{dom}(M)=T_m`$ は [(T.domT_cons_of_lt)](#t-domT_cons_of_lt) による。
+- **$`m\lt v`$ の場合 (E′)**：[(T.A1_intro)](#t-A1_intro) の枝 3 を同じ $`m`$ で用いる。
+  $`m\lt v`$ であり、$`\mathrm{dom}(M)=T_m`$ は [(T.domT_cons_of_lt)](#t-domT_cons_of_lt) による。
   $`z\in W_m`$ で $`\mathrm{based}(z)`$ なるものについて、[(T.graft_cons)](#t-graft_cons) より
   $`\mathrm{gr}(M,z)=(0,v)\mathbin{::}\mathrm{gr}(R,z)`$ であり、
   枝 3 の条件より $`\mathrm{gr}(R,z)\in W^{*}`$、これに
@@ -2034,15 +2034,15 @@ $`v\le m`$ か否かで場合分けする。
   $`\bigl(\forall u\,M',\ M'\in A^W_u(X)\to M'\in X\bigr)`$ を取る。
   $`M=[]`$ ならば基底段と同じ議論で $`M\in X`$。以下 $`M\ne[]`$ とする。
   [(T.split_lastMin)](#t-split_lastMin) より $`M=A\mathbin{+\!\!+}P`$、$`P\ne[]`$、$`\mathrm{rsum}(A,P)`$、
-  $`\forall p\in P.\mathrm{tail},\ P_{0,0}<\pi_0 p`$ なる $`A,P`$ を取る。
-  $`0<\lvert P\rvert`$ であり、$`\lvert A\rvert+\lvert P\rvert=\lvert M\rvert\le N+1`$。
+  $`\forall p\in P.\mathrm{tail},\ P_{0,0}\lt \pi_0 p`$ なる $`A,P`$ を取る。
+  $`0\lt \lvert P\rvert`$ であり、$`\lvert A\rvert+\lvert P\rvert=\lvert M\rvert\le N+1`$。
   $`A=[]`$ か否かで場合分けする。
 
   - **$`A=[]`$ の場合**：$`M=P`$ であり、$`P\ne[]`$ より $`P=p_0\mathbin{::}R`$ と書ける。
-    - $`\forall q\in R,\ \pi_0 p_0<\pi_0 q`$：$`R=P.\mathrm{tail}`$ であり $`P_{0,0}=\pi_0 p_0`$ であるから、
+    - $`\forall q\in R,\ \pi_0 p_0\lt \pi_0 q`$：$`R=P.\mathrm{tail}`$ であり $`P_{0,0}=\pi_0 p_0`$ であるから、
       末尾条件そのものである。
     - $`\mathrm{argOK}\bigl(\mathrm{sh}^{-}_{\pi_0 p_0}R\bigr)`$：その要素は $`(\pi_0 q-\pi_0 p_0,\ \pi_1 q)`$
-      （$`q\in R`$）の形であり、$`\pi_0 p_0<\pi_0 q`$ より $`0<\pi_0 q-\pi_0 p_0`$。
+      （$`q\in R`$）の形であり、$`\pi_0 p_0\lt \pi_0 q`$ より $`0\lt \pi_0 q-\pi_0 p_0`$。
     - $`\lvert\mathrm{sh}^{-}_{\pi_0 p_0}R\rvert=\lvert R\rvert=\lvert P\rvert-1\le N`$
       （$`\lvert P\rvert\le N+1`$ による）。よって帰納法の仮定 $`\Phi(N)`$ を
       $`M:=\mathrm{sh}^{-}_{\pi_0 p_0}R`$、$`X:=W^{*}`$ とし、$`\forall u\,M',\ M'\in A^W_u(W^{*})\to M'\in W^{*}`$ として
@@ -2055,7 +2055,7 @@ $`v\le m`$ か否かで場合分けする。
     - 最後に [(T.A2')](#t-A2') による $`W_{\pi_1 p_0}`$ の最小不動点帰納法（帰納法の述語は
       $`\Phi'(M'):\equiv M'\in X`$、前提は上の仮定を $`u:=\pi_1 p_0`$ に固定したもの）から
       $`W_{\pi_1 p_0}\subseteq X`$、よって $`M=p_0\mathbin{::}R\in X`$。
-  - **$`A\ne[]`$ の場合**：$`0<\lvert A\rvert`$ と $`0<\lvert P\rvert`$ と $`\lvert A\rvert+\lvert P\rvert\le N+1`$ より
+  - **$`A\ne[]`$ の場合**：$`0\lt \lvert A\rvert`$ と $`0\lt \lvert P\rvert`$ と $`\lvert A\rvert+\lvert P\rvert\le N+1`$ より
     $`\lvert A\rvert\le N`$ かつ $`\lvert P\rvert\le N`$。
     - 帰納法の仮定 $`\Phi(N)`$ を $`M:=A`$、$`X:=X`$ に適用して $`A\in X`$。
     - 各 $`u`$ について、上の仮定を $`u`$ に固定したもの（$`\forall M',\ M'\in A^W_u(X)\to M'\in X`$）と
@@ -2095,11 +2095,11 @@ $`\lvert M\rvert\le\lvert M\rvert`$ であるから前提はみたされる。�
 - **帰納段 $`N\to N+1`$**：帰納法の仮定は $`\Phi(N)`$ である。$`\lvert M\rvert\le N+1`$、
   $`\forall p\in M,\ \pi_1 p\le u`$ とする。$`M=[]`$ なら [(T.W_nil)](#t-W_nil)。以下 $`M\ne[]`$ とする。
   [(T.split_lastMin)](#t-split_lastMin) より $`M=A\mathbin{+\!\!+}P`$、$`P\ne[]`$、$`\mathrm{rsum}(A,P)`$、
-  $`\forall p\in P.\mathrm{tail},\ P_{0,0}<\pi_0 p`$ を得る。$`P=p_0\mathbin{::}R`$ と書く。
+  $`\forall p\in P.\mathrm{tail},\ P_{0,0}\lt \pi_0 p`$ を得る。$`P=p_0\mathbin{::}R`$ と書く。
 
-  - $`\forall q\in R,\ \pi_0 p_0<\pi_0 q`$：末尾条件と $`P_{0,0}=\pi_0 p_0`$ による。
+  - $`\forall q\in R,\ \pi_0 p_0\lt \pi_0 q`$：末尾条件と $`P_{0,0}=\pi_0 p_0`$ による。
   - $`\mathrm{argOK}\bigl(\mathrm{sh}^{-}_{\pi_0 p_0}R\bigr)`$：要素は $`(\pi_0 q-\pi_0 p_0,\pi_1 q)`$ の形であり
-    $`\pi_0 p_0<\pi_0 q`$ より第 0 成分は $`0`$ より大きい。
+    $`\pi_0 p_0\lt \pi_0 q`$ より第 0 成分は $`0`$ より大きい。
   - [(T.mem_Wstar)](#t-mem_Wstar) より $`\mathrm{sh}^{-}_{\pi_0 p_0}R\in W^{*}`$、
     これに $`\mathrm{argOK}`$ と $`v:=\pi_1 p_0`$ を適用して
     $`(0,\pi_1 p_0)\mathbin{::}\mathrm{sh}^{-}_{\pi_0 p_0}R\in W_{\pi_1 p_0}`$。
@@ -2109,7 +2109,7 @@ $`\lvert M\rvert\le\lvert M\rvert`$ であるから前提はみたされる。�
 
   $`A=[]`$ か否かで場合分けする。
   - $`A=[]`$ の場合：$`M=P=p_0\mathbin{::}R\in W_u`$。
-  - $`A\ne[]`$ の場合：$`0<\lvert A\rvert`$ と $`0<\lvert P\rvert`$、$`\lvert A\rvert+\lvert P\rvert\le N+1`$ より
+  - $`A\ne[]`$ の場合：$`0\lt \lvert A\rvert`$ と $`0\lt \lvert P\rvert`$、$`\lvert A\rvert+\lvert P\rvert\le N+1`$ より
     $`\lvert A\rvert\le N`$。$`p\in A`$ ならば $`p\in A\mathbin{+\!\!+}P`$ であるから $`\pi_1 p\le u`$ であり、
     帰納法の仮定 $`\Phi(N)`$ より $`A\in W_u`$。
     [(T.W_add)](#t-W_add) を $`A`$、$`P`$、$`\mathrm{rsum}(A,P)`$ に適用して $`M=A\mathbin{+\!\!+}P\in W_u`$。∎
@@ -2235,7 +2235,7 @@ $`\mathrm{hmem}:=`$ [(T.W_membership)](#t-W_membership) を与えればよい。
 
 **$`\mathrm{based}`$ と $`\mathrm{argOK}`$ の区別.**
 $`\mathrm{based}(z)`$（[(D.based)](#d-based)、$`z_{0,0}=0`$）は [(T.oper_head_eq)](#t-oper_head_eq) が保つ性質、
-$`\mathrm{argOK}(R)`$（[(D.argOK)](#d-argOK)、$`\forall p\in R,\ 0<\pi_0 p`$）は
+$`\mathrm{argOK}(R)`$（[(D.argOK)](#d-argOK)、$`\forall p\in R,\ 0\lt \pi_0 p`$）は
 [(T.le0_cons_zero)](#t-le0_cons_zero) で根が全列の行 0 祖先になるために使う性質であり、両者は異なる。
 [(D.Aop)](#d-Aop) 枝 3 の $`\mathrm{based}(z)`$ が必要であることは §1c の計算例が示している。
 

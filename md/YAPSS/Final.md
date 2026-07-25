@@ -111,7 +111,7 @@ $`P : \alpha \to \mathrm{Prop}`$ について、
 
 | 名前 | 所在 | 役割 |
 |---|---|---|
-| [(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) | Mechanized | $`1<\lvert M\rvert`$, $`1\le n`$ ならば $`\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M`$ |
+| [(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) | Mechanized | $`1\lt \lvert M\rvert`$, $`1\le n`$ ならば $`\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M`$ |
 | [(D.ArgDomCore)](AscArg.md#d-ArgDomCore) | AscArg | 単一標準形の内部で述べた引数支配の命題 |
 | [(T.argDomCore_holds)](AscArg.md#t-argDomCore_holds) | AscArg | $`\mathrm{ArgDomCore}`$ が成り立つ |
 | [(T.ascArgDom_of_core)](AscArg.md#t-ascArgDom_of_core) | AscArg | $`\mathrm{ArgDomCore} \to \mathrm{AscArgDom}`$（[(D.AscArgDom)](Cofinality.md#d-AscArgDom)） |
@@ -169,7 +169,7 @@ $`\mathrm{ArgDomCore}`$ という命題そのものの証明であるから、�
 $`\mathrm{tr}\,N \preceq \mathrm{tr}(M[n])`$ をみたす基本列の項 $`M[n]`$ が $`n \ge 1`$ の範囲に存在することを
 述べている。$`n \ge 1`$ という制限は [(D.ST_PS)](Def.md#d-ST_PS) の規則 (oper) の前提そのものであるから、
 $`M \in \mathrm{ST\_PS}`$ と合わせて $`M[n] \in \mathrm{ST\_PS}`$ が従う。
-さらに $`1 < \lvert M\rvert`$ であれば [(D.step)](Def.md#d-step) の規則 (step\_oper) の前提も満たされ、
+さらに $`1 \lt \lvert M\rvert`$ であれば [(D.step)](Def.md#d-step) の規則 (step\_oper) の前提も満たされ、
 $`M \Rightarrow M[n]`$ が成り立つ。
 この命題が $`W_u`$ 側の到達可能性の議論
 [(T.acc_of_W)](Wset.md#t-acc_of_W) の唯一の外部入力である。

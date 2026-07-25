@@ -5,7 +5,7 @@
 本章は 2 つの部分からなる。前半では、臨界項の集合 $`G_u`$ を列として計算する $`\mathrm{Glist}_u`$、
 その列の $`\prec`$ に関する走査最大元 $`\mathrm{maxo}`$、条件 $`\forall g\in G_u(t),\ g\prec t`$ が
 成り立つまで最大臨界項へ移る反復 $`\mathrm{proj}_u`$、吸収付き挿入 $`\mathrm{ins}`$、および正規化 $`\mathrm{nrm}`$ を定義する。
-後半では、標準形の長さと先頭に関する 2 つの事実（$`0<\lvert M\rvert`$ と $`M`$ の先頭が $`(0,0)`$）と、
+後半では、標準形の長さと先頭に関する 2 つの事実（$`0\lt \lvert M\rvert`$ と $`M`$ の先頭が $`(0,0)`$）と、
 展開の接頭辞可換性 $`(A\mathbin{+\!\!+}T)[n] = A\mathbin{+\!\!+}T[n]`$（$`2\le\lvert T\rvert`$ かつ $`T_{0,0}=0`$ のとき）を証明する。
 後者は、親子関係 $`\to_0`$, $`\to_1`$, $`\le_0`$, $`\mathrm{hasParent}`$, $`\mathrm{par}`$ のすべてが
 接尾辞不変であること（接頭辞 $`A`$ を付けても添字をずらせば変わらないこと）に帰着する。
@@ -64,7 +64,7 @@ $`\mathrm{range}'(a,m) = [a,\dots,a+m-1]`$ である。さらに本章では次�
   その要素判定は $`x \in \mathrm{filter}\,p\,L \iff x \in L \wedge p(x)`$ である。
 - $`L[i]?`$ は位置 $`i`$ の要素をもつなら「その要素」、$`i \ge \lvert L\rvert`$ なら「無し」を返すオプション値。
   $`M\langle j\rangle`$ は $`M[j]?`$ が要素 $`p`$ をもつときは $`p`$、無しのときは $`(0,0)`$ に等しい。
-- 自然数の減法はすべて切り捨て減法である（$`a<b`$ のとき $`a-b=0`$）。
+- 自然数の減法はすべて切り捨て減法である（$`a\lt b`$ のとき $`a-b=0`$）。
 
 ---
 
@@ -85,7 +85,7 @@ $`x`$ と $`y`$ の構造に関する同時再帰で定義する。
 - $`(x,y) = (\mathsf{P}(a,b,c),\mathsf{Z})`$：$`\neg(\mathsf{P}(a,b,c)\prec\mathsf{Z})`$ を返す。
   [(T.olt_P_Z)](Mechanized.md#t-olt_P_Z) による。
 - $`(x,y) = (\mathsf{P}(a,b,c),\mathsf{P}(e,f,g))`$：再帰呼び出しにより $`b\prec f`$ の決定手続きと
-  $`c\prec g`$ の決定手続きを得る。$`a<e`$ と $`a=e`$ は自然数上で決定可能である。
+  $`c\prec g`$ の決定手続きを得る。$`a\lt e`$ と $`a=e`$ は自然数上で決定可能である。
   [(T.olt_P_P)](Mechanized.md#t-olt_P_P) より
   ```math
   \mathsf{P}(a,b,c)\prec\mathsf{P}(e,f,g)\iff a<e \vee (a=e \wedge b\prec f) \vee (a=e\wedge b=f\wedge c\prec g)
@@ -294,7 +294,7 @@ $`(\ast)`$ より $`m \in \mathrm{Glist}_u(b)`$、[(T.mem_Glist)](#t-mem_Glist) 
 ```math
 \mathrm{tsize}\,m < \mathrm{tsize}\,b .
 ```
-したがって再帰は $`\mathrm{tsize}`$ を真に減少させ、$`\mathbb{N}`$ の $`<`$ が整礎であるからこの定義は整合的である。
+したがって再帰は $`\mathrm{tsize}`$ を真に減少させ、$`\mathbb{N}`$ の $`\lt `$ が整礎であるからこの定義は整合的である。
 
 <a id="t-proj_id"></a>
 ### 定理 $`\mathrm{proj}`$ の停止条件 (T.proj_id)
@@ -328,7 +328,7 @@ $`(\ast)`$ より $`m \in \mathrm{Glist}_u(b)`$、[(T.mem_Glist)](#t-mem_Glist) 
 \Psi(n) :\equiv \forall b\in\mathrm{Three},\ \bigl(\mathrm{tsize}\,b = n \to
   \forall g \in G_u(\mathrm{proj}_u b),\ g \prec \mathrm{proj}_u b\bigr),
 ```
-帰納法の仮定は $`\forall m<n,\ \Psi(m)`$ である（強帰納法であるから基底段は $`n=0`$ の特別扱いを要さず、
+帰納法の仮定は $`\forall m\lt n,\ \Psi(m)`$ である（強帰納法であるから基底段は $`n=0`$ の特別扱いを要さず、
 $`n`$ より真に小さいすべての $`m`$ について $`\Psi(m)`$ を仮定して $`\Psi(n)`$ を示す）。
 
 $`b`$ を $`\mathrm{tsize}\,b = n`$ なるものとし、$`\mathrm{bad}_u(b)`$ が空か否かで場合分けする。
@@ -343,8 +343,8 @@ $`b`$ を $`\mathrm{tsize}\,b = n`$ なるものとし、$`\mathrm{bad}_u(b)`$ �
   [(T.proj_rec)](#t-proj_rec) より $`\mathrm{proj}_u b = \mathrm{proj}_u m`$ である。
   [(T.maxo_hdtl_in)](#t-maxo_hdtl_in) より $`m \in \mathrm{bad}_u(b)`$、$`(\ast)`$ より
   $`m \in \mathrm{Glist}_u(b)`$、[(T.mem_Glist)](#t-mem_Glist) より $`m \in G_u(b)`$、
-  [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) より $`\mathrm{tsize}\,m < \mathrm{tsize}\,b = n`$。
-  $`\mathrm{tsize}\,m < n`$ であるから帰納法の仮定を自然数 $`\mathrm{tsize}\,m`$ に適用でき、
+  [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) より $`\mathrm{tsize}\,m \lt \mathrm{tsize}\,b = n`$。
+  $`\mathrm{tsize}\,m \lt n`$ であるから帰納法の仮定を自然数 $`\mathrm{tsize}\,m`$ に適用でき、
   得られた $`\Psi(\mathrm{tsize}\,m)`$ を項 $`m`$（$`\mathrm{tsize}\,m = \mathrm{tsize}\,m`$ による）に用いて
   ```math
   \forall g \in G_u(\mathrm{proj}_u m),\ g \prec \mathrm{proj}_u m
@@ -371,7 +371,7 @@ $`a\in\mathbb{N}`$、$`b\in\mathrm{Three}`$ に対し $`\mathrm{ins}(a,b,\cdot) 
 \end{cases}
 ```
 
-条件 $`a<e \vee (a=e\wedge b\prec f)`$ は、[(T.olt_P_P)](Mechanized.md#t-olt_P_P) の右辺の
+条件 $`a\lt e \vee (a=e\wedge b\prec f)`$ は、[(T.olt_P_P)](Mechanized.md#t-olt_P_P) の右辺の
 第 1・第 2 選言肢であり、主要項どうしの比較 $`\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,g)`$ を
 先頭添字と引数だけで判定したものである。この条件が成り立つとき挿入すべき主要項は
 先頭の主要項に吸収され、$`\mathrm{ins}`$ は第 3 引数をそのまま返す。
@@ -451,7 +451,7 @@ Lean 側のソースには、この位置に 5 つの注記ブロック
 <a id="t-stps_len_pos"></a>
 ### 定理 標準形は空でない (T.stps_len_pos)
 
-**主張** $`M \in \mathrm{ST\_PS}`$ ならば $`0 < \lvert M\rvert`$。
+**主張** $`M \in \mathrm{ST\_PS}`$ ならば $`0 \lt \lvert M\rvert`$。
 
 **証明** [(D.ST_PS)](Def.md#d-ST_PS) の導出に関する帰納法。帰納法の述語は
 ```math
@@ -465,20 +465,20 @@ P(M) :\equiv 0 < \lvert M\rvert .
   ```
   よって $`P(\Delta_0^v)`$。
 - 帰納段（規則 (oper)）：$`N\in\mathrm{ST\_PS}`$、$`1\le n`$ とし、帰納法の仮定
-  $`P(N) :\equiv 0<\lvert N\rvert`$ の下で $`P(N[n]) :\equiv 0<\lvert N[n]\rvert`$ を示す。
-  $`1<\lvert N\rvert`$ か否かで場合分けする。
+  $`P(N) :\equiv 0\lt \lvert N\rvert`$ の下で $`P(N[n]) :\equiv 0\lt \lvert N[n]\rvert`$ を示す。
+  $`1\lt \lvert N\rvert`$ か否かで場合分けする。
 
-  - $`1 < \lvert N\rvert`$ のとき：[(T.oper_eq_dropLast_append)](Wf.md#t-oper_eq_dropLast_append) より、
+  - $`1 \lt \lvert N\rvert`$ のとき：[(T.oper_eq_dropLast_append)](Wf.md#t-oper_eq_dropLast_append) より、
     ある $`R`$ が存在して $`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$。よって
     ```math
     \lvert N[n]\rvert = \lvert \mathrm{dropLast}\,N\rvert + \lvert R\rvert
       = (\lvert N\rvert - 1) + \lvert R\rvert .
     ```
-    $`1<\lvert N\rvert`$ すなわち $`\lvert N\rvert \ge 2`$ より $`\lvert N\rvert - 1 \ge 1`$ であるから
-    $`\lvert N[n]\rvert \ge 1 > 0`$。
-  - $`\neg(1<\lvert N\rvert)`$ のとき：$`\lvert N\rvert \le 1`$ であるから
+    $`1\lt \lvert N\rvert`$ すなわち $`\lvert N\rvert \ge 2`$ より $`\lvert N\rvert - 1 \ge 1`$ であるから
+    $`\lvert N[n]\rvert \ge 1 \gt 0`$。
+  - $`\neg(1\lt \lvert N\rvert)`$ のとき：$`\lvert N\rvert \le 1`$ であるから
     [(T.oper_eq_self_short)](Proofs.md#t-oper_eq_self_short) より $`N[n] = N`$ であり、
-    帰納法の仮定 $`0<\lvert N\rvert`$ がそのまま $`0<\lvert N[n]\rvert`$ を与える。
+    帰納法の仮定 $`0\lt \lvert N\rvert`$ がそのまま $`0\lt \lvert N[n]\rvert`$ を与える。
 
   よって $`P(N[n])`$。∎
 
@@ -497,9 +497,9 @@ Q(M) :\equiv \bigl(M \text{ の先頭要素（既定値 }(0,0)\text{）} = (0,0)
   [(T.diagSeq_cons)](Wf.md#t-diagSeq_cons) から $`\Delta_0^v = (0,0)\mathbin{::}\Delta_1^v`$ であり、
   先頭付加された列の先頭要素は付加された要素そのものであるから $`(0,0)`$ である。よって $`Q(\Delta_0^v)`$。
 - 帰納段（規則 (oper)）：$`N\in\mathrm{ST\_PS}`$、$`1\le n`$、帰納法の仮定 $`Q(N)`$ の下で $`Q(N[n])`$ を示す。
-  $`1<\lvert N\rvert`$ か否かで場合分けする。
+  $`1\lt \lvert N\rvert`$ か否かで場合分けする。
 
-  - $`1<\lvert N\rvert`$ のとき：[(T.oper_eq_dropLast_append)](Wf.md#t-oper_eq_dropLast_append) より
+  - $`1\lt \lvert N\rvert`$ のとき：[(T.oper_eq_dropLast_append)](Wf.md#t-oper_eq_dropLast_append) より
     ある $`R`$ が存在して $`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$。
     $`\lvert N\rvert \ge 2`$ であるから $`N`$ は $`N = p \mathbin{::} q \mathbin{::} u`$ の形に書ける。
     $`\mathrm{dropLast}`$ の定義（要素 2 個以上の列では
@@ -509,7 +509,7 @@ Q(M) :\equiv \bigl(M \text{ の先頭要素（既定値 }(0,0)\text{）} = (0,0)
            = p \mathbin{::} \bigl(\mathrm{dropLast}(q\mathbin{::}u) \mathbin{+\!\!+} R\bigr)
     ```
     であり、先頭要素は $`p`$。帰納法の仮定 $`Q(N)`$ は $`N`$ の先頭要素が $`(0,0)`$、すなわち $`p=(0,0)`$ を与える。
-  - $`\neg(1<\lvert N\rvert)`$ のとき：$`\lvert N\rvert\le 1`$ より
+  - $`\neg(1\lt \lvert N\rvert)`$ のとき：$`\lvert N\rvert\le 1`$ より
     [(T.oper_eq_self_short)](Proofs.md#t-oper_eq_self_short) から $`N[n]=N`$ であり、
     帰納法の仮定 $`Q(N)`$ がそのまま $`Q(N[n])`$ を与える。
 
@@ -578,29 +578,29 @@ $`\lvert A\mathbin{+\!\!+}T\rvert = \lvert A\rvert + \lvert T\rvert`$ である�
 
 $`(\Rightarrow)`$ 左辺の 5 条件を $`h_1,\dots,h_5`$ とする。
 
-1. $`h_1 : \lvert A\rvert+j_0 < \lvert A\rvert+\lvert T\rvert`$ の両辺から $`\lvert A\rvert`$ を消去して $`j_0<\lvert T\rvert`$。
-2. $`h_2 : \lvert A\rvert+j_1 < \lvert A\rvert+\lvert T\rvert`$ の両辺から $`\lvert A\rvert`$ を消去して $`j_1<\lvert T\rvert`$。
-3. $`h_3 : \lvert A\rvert+j_0 < \lvert A\rvert+j_1`$ から $`j_0<j_1`$。
-4. $`h_4 : (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_0} < (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ を
-   [(T.entry_append_right)](#t-entry_append_right) で書き換えて $`T_{0,j_0}<T_{0,j_1}`$。
-5. $`j`$ を $`j_0<j<j_1`$ なる任意の自然数とする。すると
-   $`\lvert A\rvert+j_0 < \lvert A\rvert+j < \lvert A\rvert+j_1`$ であるから、$`h_5`$ を
+1. $`h_1 : \lvert A\rvert+j_0 \lt \lvert A\rvert+\lvert T\rvert`$ の両辺から $`\lvert A\rvert`$ を消去して $`j_0\lt \lvert T\rvert`$。
+2. $`h_2 : \lvert A\rvert+j_1 \lt \lvert A\rvert+\lvert T\rvert`$ の両辺から $`\lvert A\rvert`$ を消去して $`j_1\lt \lvert T\rvert`$。
+3. $`h_3 : \lvert A\rvert+j_0 \lt \lvert A\rvert+j_1`$ から $`j_0\lt j_1`$。
+4. $`h_4 : (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_0} \lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ を
+   [(T.entry_append_right)](#t-entry_append_right) で書き換えて $`T_{0,j_0}\lt T_{0,j_1}`$。
+5. $`j`$ を $`j_0\lt j\lt j_1`$ なる任意の自然数とする。すると
+   $`\lvert A\rvert+j_0 \lt \lvert A\rvert+j \lt \lvert A\rvert+j_1`$ であるから、$`h_5`$ を
    添字 $`\lvert A\rvert+j`$ に適用して
    $`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1} \le (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j}`$、
    [(T.entry_append_right)](#t-entry_append_right) で書き換えて $`T_{0,j_1}\le T_{0,j}`$。
 
 $`(\Leftarrow)`$ 右辺の 5 条件を $`h_1,\dots,h_5`$ とする。
 
-1. $`j_0<\lvert T\rvert`$ の両辺に $`\lvert A\rvert`$ を加えて
-   $`\lvert A\rvert+j_0 < \lvert A\rvert+\lvert T\rvert = \lvert A\mathbin{+\!\!+}T\rvert`$。
-2. $`j_1<\lvert T\rvert`$ の両辺に $`\lvert A\rvert`$ を加えて
-   $`\lvert A\rvert+j_1 < \lvert A\rvert+\lvert T\rvert = \lvert A\mathbin{+\!\!+}T\rvert`$。
-3. $`j_0<j_1`$ から $`\lvert A\rvert+j_0<\lvert A\rvert+j_1`$。
-4. $`T_{0,j_0}<T_{0,j_1}`$ を [(T.entry_append_right)](#t-entry_append_right) で
-   $`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_0} < (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ に書き換える。
-5. $`j`$ を $`\lvert A\rvert+j_0 < j < \lvert A\rvert+j_1`$ なる任意の自然数とする。
-   $`j > \lvert A\rvert+j_0 \ge \lvert A\rvert`$ であるから $`j' := j-\lvert A\rvert`$ とおけば
-   $`j = \lvert A\rvert+j'`$ と書け、$`j_0<j'<j_1`$ が成り立つ。$`h_5`$ を $`j'`$ に適用して
+1. $`j_0\lt \lvert T\rvert`$ の両辺に $`\lvert A\rvert`$ を加えて
+   $`\lvert A\rvert+j_0 \lt \lvert A\rvert+\lvert T\rvert = \lvert A\mathbin{+\!\!+}T\rvert`$。
+2. $`j_1\lt \lvert T\rvert`$ の両辺に $`\lvert A\rvert`$ を加えて
+   $`\lvert A\rvert+j_1 \lt \lvert A\rvert+\lvert T\rvert = \lvert A\mathbin{+\!\!+}T\rvert`$。
+3. $`j_0\lt j_1`$ から $`\lvert A\rvert+j_0\lt \lvert A\rvert+j_1`$。
+4. $`T_{0,j_0}\lt T_{0,j_1}`$ を [(T.entry_append_right)](#t-entry_append_right) で
+   $`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_0} \lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ に書き換える。
+5. $`j`$ を $`\lvert A\rvert+j_0 \lt j \lt \lvert A\rvert+j_1`$ なる任意の自然数とする。
+   $`j \gt \lvert A\rvert+j_0 \ge \lvert A\rvert`$ であるから $`j' := j-\lvert A\rvert`$ とおけば
+   $`j = \lvert A\rvert+j'`$ と書け、$`j_0\lt j'\lt j_1`$ が成り立つ。$`h_5`$ を $`j'`$ に適用して
    $`T_{0,j_1}\le T_{0,j'}`$、[(T.entry_append_right)](#t-entry_append_right) で書き換えて
    $`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1} \le (A\mathbin{+\!\!+}T)_{0,j}`$。∎
 
@@ -632,10 +632,10 @@ $`\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+j_0)\,(\lvert A\rvert
 **主張** $`j_0 \le^T_0 j_1`$ ならば $`\lvert A\rvert+j_0 \le^{A+\!\!+T}_0 \lvert A\rvert+j_1`$。
 
 **証明** [(D.le0)](Def.md#d-le0) より仮定は 3 条件
-$`j_0<\lvert T\rvert`$、$`j_1<\lvert T\rvert`$、$`\mathrm{ReflTransGen}(\to^T_0)\,j_0\,j_1`$ の連言である。
+$`j_0\lt \lvert T\rvert`$、$`j_1\lt \lvert T\rvert`$、$`\mathrm{ReflTransGen}(\to^T_0)\,j_0\,j_1`$ の連言である。
 $`\lvert A\mathbin{+\!\!+}T\rvert = \lvert A\rvert+\lvert T\rvert`$ であるから、
 第 1・第 2 条件の両辺に $`\lvert A\rvert`$ を加えて
-$`\lvert A\rvert+j_0 < \lvert A\mathbin{+\!\!+}T\rvert`$、$`\lvert A\rvert+j_1 < \lvert A\mathbin{+\!\!+}T\rvert`$ を得る。
+$`\lvert A\rvert+j_0 \lt \lvert A\mathbin{+\!\!+}T\rvert`$、$`\lvert A\rvert+j_1 \lt \lvert A\mathbin{+\!\!+}T\rvert`$ を得る。
 第 3 条件からは [(T.rtg_nextrel0_lift)](#t-rtg_nextrel0_lift) により
 $`\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+j_0)\,(\lvert A\rvert+j_1)`$ を得る。
 3 条件がそろったので [(D.le0)](Def.md#d-le0) の結論が成り立つ。∎
@@ -643,7 +643,7 @@ $`\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+j_0)\,(\lvert A\rvert
 <a id="t-nextrel0_lt"></a>
 ### 定理 行 0 の辺は添字を増やす (T.nextrel0_lt)
 
-**主張** $`a \to^M_0 b`$ ならば $`a<b`$。
+**主張** $`a \to^M_0 b`$ ならば $`a\lt b`$。
 
 **証明** [(D.nextrel0)](Def.md#d-nextrel0) の第 3 条件そのものである。∎
 
@@ -666,8 +666,8 @@ c = \lvert A\rvert + c' \quad\text{かつ}\quad \mathrm{ReflTransGen}(\to^T_0)\,
 - 帰納段 (tail)：$`\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+a)\,d`$ と
   $`d \to^{A+\!\!+T}_0 e`$ が与えられ、帰納法の仮定は $`\Phi(d)`$ である。
   $`\Phi(d)`$ から $`d' `$ を取り $`d=\lvert A\rvert+d'`$ かつ $`\mathrm{ReflTransGen}(\to^T_0)\,a\,d'`$ とする。
-  [(T.nextrel0_lt)](#t-nextrel0_lt) を $`d \to^{A+\!\!+T}_0 e`$ に適用して $`d<e`$、
-  $`\lvert A\rvert \le \lvert A\rvert+d' = d < e`$ より $`\lvert A\rvert \le e`$ であるから、
+  [(T.nextrel0_lt)](#t-nextrel0_lt) を $`d \to^{A+\!\!+T}_0 e`$ に適用して $`d\lt e`$、
+  $`\lvert A\rvert \le \lvert A\rvert+d' = d \lt e`$ より $`\lvert A\rvert \le e`$ であるから、
   $`e' := e-\lvert A\rvert`$ とおけば $`e = \lvert A\rvert+e'`$ と書ける。
   [(T.nextrel0_append_right)](#t-nextrel0_append_right) の $`(\Rightarrow)`$ を
   $`\lvert A\rvert+d' \to^{A+\!\!+T}_0 \lvert A\rvert+e'`$ に適用して $`d'\to^T_0 e'`$ を得る。
@@ -684,9 +684,9 @@ c = \lvert A\rvert + c' \quad\text{かつ}\quad \mathrm{ReflTransGen}(\to^T_0)\,
 
 **証明**
 $`(\Rightarrow)`$ [(D.le0)](Def.md#d-le0) より仮定は
-$`\lvert A\rvert+j_0 < \lvert A\rvert+\lvert T\rvert`$、$`\lvert A\rvert+j_1 < \lvert A\rvert+\lvert T\rvert`$、
+$`\lvert A\rvert+j_0 \lt \lvert A\rvert+\lvert T\rvert`$、$`\lvert A\rvert+j_1 \lt \lvert A\rvert+\lvert T\rvert`$、
 $`\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+j_0)\,(\lvert A\rvert+j_1)`$ の連言である。
-前 2 者から $`j_0<\lvert T\rvert`$、$`j_1<\lvert T\rvert`$。
+前 2 者から $`j_0\lt \lvert T\rvert`$、$`j_1\lt \lvert T\rvert`$。
 第 3 者に [(T.rtg_nextrel0_unlift)](#t-rtg_nextrel0_unlift) を適用して $`c'`$ を取ると、
 $`\lvert A\rvert+j_1 = \lvert A\rvert+c'`$ すなわち $`j_1=c'`$ であり、
 $`\mathrm{ReflTransGen}(\to^T_0)\,j_0\,c' = \mathrm{ReflTransGen}(\to^T_0)\,j_0\,j_1`$ を得る。
@@ -698,7 +698,7 @@ $`(\Leftarrow)`$ [(T.le0_append_right_of)](#t-le0_append_right_of) そのもの�
 ### 定理 行 0 の辺は境界を越えない (T.nextrel0_no_cross)
 
 **主張** $`A,T\in\mathrm{PairSeq}`$ が $`T_{0,0}=0`$ を満たすとする。
-$`k<\lvert A\rvert`$、$`\lvert A\rvert \le j`$、$`0<(A\mathbin{+\!\!+}T)_{0,j}`$ のとき
+$`k\lt \lvert A\rvert`$、$`\lvert A\rvert \le j`$、$`0\lt (A\mathbin{+\!\!+}T)_{0,j}`$ のとき
 $`k \to^{A+\!\!+T}_0 j`$ は成り立たない。
 
 **証明** $`k \to^{A+\!\!+T}_0 j`$ を仮定して矛盾を導く。
@@ -710,17 +710,17 @@ $`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+0} = T_{0,0}`$ であり、$`\lvert A\r
 (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert} = 0 . \tag{1}
 ```
 
-次に $`\lvert A\rvert < j`$ を示す。$`\lvert A\rvert \ge j`$ と仮定すると、$`\lvert A\rvert \le j`$ と合わせて $`j=\lvert A\rvert`$ となり、
-$`(1)`$ より $`(A\mathbin{+\!\!+}T)_{0,j}=0`$ であるが、これは仮定 $`0<(A\mathbin{+\!\!+}T)_{0,j}`$ に矛盾する。
-よって $`\lvert A\rvert<j`$。
+次に $`\lvert A\rvert \lt j`$ を示す。$`\lvert A\rvert \ge j`$ と仮定すると、$`\lvert A\rvert \le j`$ と合わせて $`j=\lvert A\rvert`$ となり、
+$`(1)`$ より $`(A\mathbin{+\!\!+}T)_{0,j}=0`$ であるが、これは仮定 $`0\lt (A\mathbin{+\!\!+}T)_{0,j}`$ に矛盾する。
+よって $`\lvert A\rvert\lt j`$。
 
-$`k<\lvert A\rvert`$ と $`\lvert A\rvert<j`$ より、添字 $`\lvert A\rvert`$ は $`h_5`$ の前提 $`k<\lvert A\rvert \wedge \lvert A\rvert<j`$ を満たす。
+$`k\lt \lvert A\rvert`$ と $`\lvert A\rvert\lt j`$ より、添字 $`\lvert A\rvert`$ は $`h_5`$ の前提 $`k\lt \lvert A\rvert \wedge \lvert A\rvert\lt j`$ を満たす。
 $`h_5`$ を適用して
 ```math
 (A\mathbin{+\!\!+}T)_{0,j} \le (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert} = 0
 ```
 （最後の等号は $`(1)`$）。$`\mathbb{N}`$ において $`x\le 0`$ は $`x=0`$ を意味するから $`(A\mathbin{+\!\!+}T)_{0,j}=0`$ となり、
-仮定 $`0<(A\mathbin{+\!\!+}T)_{0,j}`$ に矛盾する。∎
+仮定 $`0\lt (A\mathbin{+\!\!+}T)_{0,j}`$ に矛盾する。∎
 
 <a id="t-nextrel0_no_pred_zero"></a>
 ### 定理 行 0 の値 $`0`$ の列には行 0 の親がない (T.nextrel0_no_pred_zero)
@@ -728,7 +728,7 @@ $`h_5`$ を適用して
 **主張** $`M_{0,b}=0`$ ならば、いかなる $`a`$ についても $`a\to^M_0 b`$ は成り立たない。
 
 **証明** $`a\to^M_0 b`$ を仮定する。[(D.nextrel0)](Def.md#d-nextrel0) の第 4 条件は
-$`M_{0,a}<M_{0,b}`$ である。仮定 $`M_{0,b}=0`$ を代入すると $`M_{0,a}<0`$ となるが、
+$`M_{0,a}\lt M_{0,b}`$ である。仮定 $`M_{0,b}=0`$ を代入すると $`M_{0,a}\lt 0`$ となるが、
 $`\mathbb{N}`$ には $`0`$ より小さい元がないから矛盾である。∎
 
 <a id="t-rtg_to_root"></a>
@@ -748,7 +748,7 @@ $`\mathbb{N}`$ には $`0`$ より小さい元がないから矛盾である。�
 ### 定理 行 0 祖先の鎖は境界を越えない (T.le0_no_cross)
 
 **主張** $`A,T\in\mathrm{PairSeq}`$ が $`T_{0,0}=0`$ を満たすとする。
-$`k<\lvert A\rvert`$ かつ $`0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ のとき
+$`k\lt \lvert A\rvert`$ かつ $`0\lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ のとき
 $`k \le^{A+\!\!+T}_0 \lvert A\rvert+j_1`$ は成り立たない。
 
 **証明** $`k\le^{A+\!\!+T}_0 \lvert A\rvert+j_1`$ を仮定すると、[(D.le0)](Def.md#d-le0) の第 3 条件から
@@ -769,18 +769,18 @@ $`H`$ を、$`k`$ を固定した反射推移閉包の導出に関する帰納�
 
 - 基底段 (refl)：$`e=k`$。前提として $`\lvert A\rvert\le e=k`$ が与えられるから、結論 $`\lvert A\rvert\le k`$ が直ちに従う。
 - 帰納段 (tail)：$`\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,k\,c`$ と $`c\to^{A+\!\!+T}_0 d`$ が与えられ、
-  帰納法の仮定は $`\Phi(c)`$ である。$`\lvert A\rvert\le d`$ と $`0<(A\mathbin{+\!\!+}T)_{0,d}`$ を仮定して
+  帰納法の仮定は $`\Phi(c)`$ である。$`\lvert A\rvert\le d`$ と $`0\lt (A\mathbin{+\!\!+}T)_{0,d}`$ を仮定して
   $`\lvert A\rvert\le k`$ を示す。
 
-  まず $`\lvert A\rvert\le c`$ を示す。$`c<\lvert A\rvert`$ と仮定すると、
+  まず $`\lvert A\rvert\le c`$ を示す。$`c\lt \lvert A\rvert`$ と仮定すると、
   [(T.nextrel0_no_cross)](#t-nextrel0_no_cross) を
-  $`k:=c`$, $`j:=d`$（前提は $`c<\lvert A\rvert`$、$`\lvert A\rvert\le d`$、$`0<(A\mathbin{+\!\!+}T)_{0,d}`$、
+  $`k:=c`$, $`j:=d`$（前提は $`c\lt \lvert A\rvert`$、$`\lvert A\rvert\le d`$、$`0\lt (A\mathbin{+\!\!+}T)_{0,d}`$、
   および辺 $`c\to^{A+\!\!+T}_0 d`$）に適用して矛盾を得る。よって $`\lvert A\rvert\le c`$。
 
   次に $`(A\mathbin{+\!\!+}T)_{0,c}`$ が正か否かで場合分けする。
-  - $`0<(A\mathbin{+\!\!+}T)_{0,c}`$ のとき：帰納法の仮定 $`\Phi(c)`$ に $`\lvert A\rvert\le c`$ と
+  - $`0\lt (A\mathbin{+\!\!+}T)_{0,c}`$ のとき：帰納法の仮定 $`\Phi(c)`$ に $`\lvert A\rvert\le c`$ と
     この正値性を与えて $`\lvert A\rvert\le k`$ を得る。
-  - $`\neg\bigl(0<(A\mathbin{+\!\!+}T)_{0,c}\bigr)`$ のとき：$`\mathbb{N}`$ ではこれは
+  - $`\neg\bigl(0\lt (A\mathbin{+\!\!+}T)_{0,c}\bigr)`$ のとき：$`\mathbb{N}`$ ではこれは
     $`(A\mathbin{+\!\!+}T)_{0,c}=0`$ を意味する。
     [(T.rtg_to_root)](#t-rtg_to_root) を鎖 $`\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,k\,c`$ に
     適用して $`k=c`$ を得る。$`\lvert A\rvert\le c=k`$ である。
@@ -788,8 +788,8 @@ $`H`$ を、$`k`$ を固定した反射推移閉包の導出に関する帰納�
   いずれの場合も $`\lvert A\rvert\le k`$ であり、$`\Phi(d)`$ が示された。
 
 $`H`$ を $`e:=\lvert A\rvert+j_1`$、鎖 $`h`$、$`\lvert A\rvert\le\lvert A\rvert+j_1`$、
-仮定 $`0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ に適用すると $`\lvert A\rvert\le k`$ を得るが、
-これは仮定 $`k<\lvert A\rvert`$ に矛盾する。∎
+仮定 $`0\lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ に適用すると $`\lvert A\rvert\le k`$ を得るが、
+これは仮定 $`k\lt \lvert A\rvert`$ に矛盾する。∎
 
 <a id="t-nextrel1_append_right"></a>
 ### 定理 行 1 直接親子関係の接尾辞不変性 (T.nextrel1_append_right)
@@ -804,15 +804,15 @@ $`\lvert A\mathbin{+\!\!+}T\rvert = \lvert A\rvert+\lvert T\rvert`$ を用いる
 
 $`(\Rightarrow)`$ 左辺の 6 条件を $`h_1,\dots,h_6`$ とする。
 
-1. $`h_1 : \lvert A\rvert+j_0 < \lvert A\rvert+\lvert T\rvert`$ の両辺から $`\lvert A\rvert`$ を消去して $`j_0<\lvert T\rvert`$。
-2. $`h_2 : \lvert A\rvert+j_1 < \lvert A\rvert+\lvert T\rvert`$ の両辺から $`\lvert A\rvert`$ を消去して $`j_1<\lvert T\rvert`$。
-3. $`h_3 : \lvert A\rvert+j_0 < \lvert A\rvert+j_1`$ から $`j_0<j_1`$。
-4. $`h_4 : (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_0} < (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1}`$ を
-   [(T.entry_append_right)](#t-entry_append_right) で書き換えて $`T_{1,j_0}<T_{1,j_1}`$。
+1. $`h_1 : \lvert A\rvert+j_0 \lt \lvert A\rvert+\lvert T\rvert`$ の両辺から $`\lvert A\rvert`$ を消去して $`j_0\lt \lvert T\rvert`$。
+2. $`h_2 : \lvert A\rvert+j_1 \lt \lvert A\rvert+\lvert T\rvert`$ の両辺から $`\lvert A\rvert`$ を消去して $`j_1\lt \lvert T\rvert`$。
+3. $`h_3 : \lvert A\rvert+j_0 \lt \lvert A\rvert+j_1`$ から $`j_0\lt j_1`$。
+4. $`h_4 : (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_0} \lt (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1}`$ を
+   [(T.entry_append_right)](#t-entry_append_right) で書き換えて $`T_{1,j_0}\lt T_{1,j_1}`$。
 5. $`h_5 : \lvert A\rvert+j_0 \le^{A+\!\!+T}_0 \lvert A\rvert+j_1`$ に
    [(T.le0_append_right)](#t-le0_append_right) の $`(\Rightarrow)`$ を適用して $`j_0\le^T_0 j_1`$。
-6. $`j`$ を $`j_0<j`$ かつ $`j\le^T_0 j_1`$ なる任意の自然数とする。
-   $`\lvert A\rvert+j_0<\lvert A\rvert+j`$ であり、[(T.le0_append_right)](#t-le0_append_right) の
+6. $`j`$ を $`j_0\lt j`$ かつ $`j\le^T_0 j_1`$ なる任意の自然数とする。
+   $`\lvert A\rvert+j_0\lt \lvert A\rvert+j`$ であり、[(T.le0_append_right)](#t-le0_append_right) の
    $`(\Leftarrow)`$ より $`\lvert A\rvert+j \le^{A+\!\!+T}_0 \lvert A\rvert+j_1`$ であるから、
    $`h_6`$ を添字 $`\lvert A\rvert+j`$ に適用して
    $`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1} \le (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j}`$、
@@ -820,16 +820,16 @@ $`(\Rightarrow)`$ 左辺の 6 条件を $`h_1,\dots,h_6`$ とする。
 
 $`(\Leftarrow)`$ 右辺の 6 条件を $`h_1,\dots,h_6`$ とする。
 
-1. $`j_0<\lvert T\rvert`$ の両辺に $`\lvert A\rvert`$ を加えて $`\lvert A\rvert+j_0<\lvert A\rvert+\lvert T\rvert=\lvert A\mathbin{+\!\!+}T\rvert`$。
-2. $`j_1<\lvert T\rvert`$ の両辺に $`\lvert A\rvert`$ を加えて $`\lvert A\rvert+j_1<\lvert A\rvert+\lvert T\rvert=\lvert A\mathbin{+\!\!+}T\rvert`$。
-3. $`j_0<j_1`$ から $`\lvert A\rvert+j_0<\lvert A\rvert+j_1`$。
-4. $`T_{1,j_0}<T_{1,j_1}`$ を [(T.entry_append_right)](#t-entry_append_right) で
-   $`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_0} < (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1}`$ に書き換える。
+1. $`j_0\lt \lvert T\rvert`$ の両辺に $`\lvert A\rvert`$ を加えて $`\lvert A\rvert+j_0\lt \lvert A\rvert+\lvert T\rvert=\lvert A\mathbin{+\!\!+}T\rvert`$。
+2. $`j_1\lt \lvert T\rvert`$ の両辺に $`\lvert A\rvert`$ を加えて $`\lvert A\rvert+j_1\lt \lvert A\rvert+\lvert T\rvert=\lvert A\mathbin{+\!\!+}T\rvert`$。
+3. $`j_0\lt j_1`$ から $`\lvert A\rvert+j_0\lt \lvert A\rvert+j_1`$。
+4. $`T_{1,j_0}\lt T_{1,j_1}`$ を [(T.entry_append_right)](#t-entry_append_right) で
+   $`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_0} \lt (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1}`$ に書き換える。
 5. $`j_0\le^T_0 j_1`$ に [(T.le0_append_right)](#t-le0_append_right) の $`(\Leftarrow)`$ を適用する。
-6. $`j`$ を $`\lvert A\rvert+j_0<j`$ かつ $`j\le^{A+\!\!+T}_0 \lvert A\rvert+j_1`$ なる任意の自然数とする。
-   $`j>\lvert A\rvert+j_0\ge\lvert A\rvert`$ であるから $`j'=j-\lvert A\rvert`$ とおいて $`j=\lvert A\rvert+j'`$ と書ける。
+6. $`j`$ を $`\lvert A\rvert+j_0\lt j`$ かつ $`j\le^{A+\!\!+T}_0 \lvert A\rvert+j_1`$ なる任意の自然数とする。
+   $`j\gt \lvert A\rvert+j_0\ge\lvert A\rvert`$ であるから $`j'=j-\lvert A\rvert`$ とおいて $`j=\lvert A\rvert+j'`$ と書ける。
    [(T.le0_append_right)](#t-le0_append_right) の $`(\Rightarrow)`$ より $`j'\le^T_0 j_1`$、
-   また $`\lvert A\rvert+j_0<\lvert A\rvert+j'`$ から $`j_0<j'`$。
+   また $`\lvert A\rvert+j_0\lt \lvert A\rvert+j'`$ から $`j_0\lt j'`$。
    $`h_6`$ を $`j'`$ に適用して $`T_{1,j_1}\le T_{1,j'}`$、
    [(T.entry_append_right)](#t-entry_append_right) で書き換えて
    $`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1} \le (A\mathbin{+\!\!+}T)_{1,j}`$。∎
@@ -857,10 +857,10 @@ $`(\Leftarrow)`$ 右辺の 6 条件を $`h_1,\dots,h_6`$ とする。
 **主張** $`\mathrm{idx}_1(A\mathbin{+\!\!+}T,\ \lvert A\rvert+j) = \mathrm{idx}_1(T,j)`$。
 
 **証明** [(D.idx1)](Def.md#d-idx1) より
-$`\mathrm{idx}_1(M,j)`$ は $`0<M_{1,j}`$ ならば $`1`$、さもなくば $`0`$ である。
+$`\mathrm{idx}_1(M,j)`$ は $`0\lt M_{1,j}`$ ならば $`1`$、さもなくば $`0`$ である。
 [(T.entry_append_right)](#t-entry_append_right) より
-$`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j} = T_{1,j}`$ であるから、条件 $`0<(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j}`$ と
-条件 $`0<T_{1,j}`$ は同一の命題であり、両辺の値は一致する。∎
+$`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j} = T_{1,j}`$ であるから、条件 $`0\lt (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j}`$ と
+条件 $`0\lt T_{1,j}`$ は同一の命題であり、両辺の値は一致する。∎
 
 <a id="t-nextR_le0"></a>
 ### 定理 行付きの辺は行 0 の祖先関係を与える (T.nextR_le0)
@@ -870,7 +870,7 @@ $`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j} = T_{1,j}`$ であるから、条件
 **証明** [(D.nextR)](Def.md#d-nextR) の場合分けによる。
 
 - $`i=0`$ のとき：仮定は $`k\to^M_0 b`$ である。[(D.nextrel0)](Def.md#d-nextrel0) の第 1・第 2 条件から
-  $`k<\lvert M\rvert`$ と $`b<\lvert M\rvert`$、また 1 歩の辺から
+  $`k\lt \lvert M\rvert`$ と $`b\lt \lvert M\rvert`$、また 1 歩の辺から
   $`\mathrm{ReflTransGen}(\to^M_0)\,k\,b`$（長さ 1 の鎖）が得られる。
   3 条件がそろうので [(D.le0)](Def.md#d-le0) より $`k\le^M_0 b`$。
 - $`i\ne0`$ のとき：仮定は $`k\to^M_1 b`$ である。[(D.nextrel1)](Def.md#d-nextrel1) の第 5 条件が
@@ -880,19 +880,19 @@ $`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j} = T_{1,j}`$ であるから、条件
 ### 定理 親の位置は $`T`$ の側にある (T.nextR_src_in_T)
 
 **主張** $`A,T\in\mathrm{PairSeq}`$ が $`T_{0,0}=0`$ を満たすとする。
-$`0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ かつ $`k \to^{A+\!\!+T}_i \lvert A\rvert+j_1`$ ならば
+$`0\lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ かつ $`k \to^{A+\!\!+T}_i \lvert A\rvert+j_1`$ ならば
 $`\lvert A\rvert \le k`$。
 
-**証明** $`\lvert A\rvert\le k`$ を否定して $`k<\lvert A\rvert`$ と仮定する。
+**証明** $`\lvert A\rvert\le k`$ を否定して $`k\lt \lvert A\rvert`$ と仮定する。
 [(T.nextR_le0)](#t-nextR_le0) より $`k \le^{A+\!\!+T}_0 \lvert A\rvert+j_1`$ が成り立つ。
-これは [(T.le0_no_cross)](#t-le0_no_cross)（前提 $`T_{0,0}=0`$、$`k<\lvert A\rvert`$、
-$`0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$）に矛盾する。∎
+これは [(T.le0_no_cross)](#t-le0_no_cross)（前提 $`T_{0,0}=0`$、$`k\lt \lvert A\rvert`$、
+$`0\lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$）に矛盾する。∎
 
 <a id="t-hasParent_append_right"></a>
 ### 定理 親の一意存在の接尾辞不変性 (T.hasParent_append_right)
 
 **主張** $`A,T\in\mathrm{PairSeq}`$ が $`T_{0,0}=0`$ を満たし、
-$`0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ とする。このとき
+$`0\lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ とする。このとき
 ```math
 \mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i,\ \lvert A\rvert+j_1) \iff \mathrm{hasParent}(T,i,j_1).
 ```
@@ -923,7 +923,7 @@ $`y' := y-\lvert A\rvert`$ とおいて $`y=\lvert A\rvert+y'`$ と書ける。
 ### 定理 親の位置のずれ (T.parent_append_right)
 
 **主張** $`A,T\in\mathrm{PairSeq}`$ が $`T_{0,0}=0`$ を満たし、
-$`0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ かつ $`\mathrm{hasParent}(T,i,j_1)`$ とする。このとき
+$`0\lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ かつ $`\mathrm{hasParent}(T,i,j_1)`$ とする。このとき
 ```math
 \mathrm{par}^{A+\!\!+T}_i(\lvert A\rvert+j_1) = \lvert A\rvert + \mathrm{par}^T_i(j_1).
 ```
@@ -995,7 +995,7 @@ $`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j} = T_{0,j}`$ かつ $`(A\mathbin{+\!\
 $`\lvert A\mathbin{+\!\!+}T\rvert = \lvert A\rvert+\lvert T\rvert \ge \lvert T\rvert \ge 2`$ であるから
 $`\neg(\lvert A\mathbin{+\!\!+}T\rvert\le1)`$、また仮定より $`\neg(\lvert T\rvert\le1)`$。
 よって両辺はそれぞれ $`\mathrm{dropLast}(A\mathbin{+\!\!+}T)`$ と $`A\mathbin{+\!\!+}\mathrm{dropLast}\,T`$ である。
-$`\lvert T\rvert\ge2>0`$ より $`T\ne()`$ であり、$`T\ne()`$ のとき連結の末尾要素は $`T`$ の末尾要素であるから
+$`\lvert T\rvert\ge2\gt 0`$ より $`T\ne()`$ であり、$`T\ne()`$ のとき連結の末尾要素は $`T`$ の末尾要素であるから
 ```math
 \mathrm{dropLast}(A\mathbin{+\!\!+}T) = A \mathbin{+\!\!+} \mathrm{dropLast}\,T
 ```
@@ -1011,8 +1011,8 @@ $`\lvert T\rvert\ge2>0`$ より $`T\ne()`$ であり、$`T\ne()`$ のとき連�
 [(T.nextR_le0)](#t-nextR_le0) より $`j_0\le^M_0 j_1`$、その第 3 条件から
 $`\mathrm{ReflTransGen}(\to^M_0)\,j_0\,j_1`$ が得られる。
 仮定 $`M_{0,j_1}=0`$ の下で [(T.rtg_to_root)](#t-rtg_to_root) を適用すると $`j_0=j_1`$。
-一方 [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0<j_1`$ であり、
-$`j_0=j_1`$ と $`j_0<j_1`$ は両立しない。矛盾である。∎
+一方 [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0\lt j_1`$ であり、
+$`j_0=j_1`$ と $`j_0\lt j_1`$ は両立しない。矛盾である。∎
 
 <a id="t-oper_append_right"></a>
 ### 定理 展開の接頭辞可換性 (T.oper_append_right)
@@ -1054,9 +1054,9 @@ $`\mathrm{idx}_1(A\mathbin{+\!\!+}T,\ \lvert A\rvert+j_1) = \mathrm{idx}_1(T,j_1
 **分岐 (c)/(d) の判定.** $`\mathrm{hasParent}(T,i_1,j_1)`$ の真偽で場合分けする。
 
 **(i) $`\mathrm{hasParent}(T,i_1,j_1)`$ が成り立つ場合.**
-まず $`0<T_{0,j_1}`$ を示す。$`T_{0,j_1}=0`$ と仮定すると
+まず $`0\lt T_{0,j_1}`$ を示す。$`T_{0,j_1}=0`$ と仮定すると
 [(T.no_hasParent_of_row0_zero)](#t-no_hasParent_of_row0_zero)（$`M:=T`$）により
-$`\mathrm{hasParent}(T,i_1,j_1)`$ が成り立たず、仮定に矛盾する。よって $`0<T_{0,j_1}`$、
+$`\mathrm{hasParent}(T,i_1,j_1)`$ が成り立たず、仮定に矛盾する。よって $`0\lt T_{0,j_1}`$、
 $`(4)`$ により
 ```math
 0 < (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}. \tag{5}
@@ -1072,18 +1072,18 @@ $`j_0 := \mathrm{par}^T_{i_1}(j_1)`$ とおく。$`(5)`$ と [(T.parent_append_r
 
 分岐 (d) の 4 つの構成要素を照合する。
 
-1. **増分 $`d_0`$.** $`A\mathbin{+\!\!+}T`$ 側の $`d_0`$ は、$`0<i_1`$ のとき
+1. **増分 $`d_0`$.** $`A\mathbin{+\!\!+}T`$ 側の $`d_0`$ は、$`0\lt i_1`$ のとき
    $`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1} - (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_0}`$、
    $`i_1=0`$ のとき $`0`$ である（$`(6)`$ により親の添字は $`\lvert A\rvert+j_0`$）。
    $`(4)`$ と [(T.entry_append_right)](#t-entry_append_right) より
    $`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_0} = T_{0,j_0}`$ であるから、この値は
-   $`0<i_1`$ のとき $`T_{0,j_1}-T_{0,j_0}`$、$`i_1=0`$ のとき $`0`$ であり、$`T`$ 側の $`d_0`$ と一致する。
-2. **増分 $`d_1`$.** $`A\mathbin{+\!\!+}T`$ 側の $`d_1`$ は、$`1<i_1`$ のとき
+   $`0\lt i_1`$ のとき $`T_{0,j_1}-T_{0,j_0}`$、$`i_1=0`$ のとき $`0`$ であり、$`T`$ 側の $`d_0`$ と一致する。
+2. **増分 $`d_1`$.** $`A\mathbin{+\!\!+}T`$ 側の $`d_1`$ は、$`1\lt i_1`$ のとき
    $`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1} - (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_0}`$、
    $`i_1\le1`$ のとき $`0`$ である。$`(4)`$ と [(T.entry_append_right)](#t-entry_append_right) より
    $`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1} = T_{1,j_1}`$、
    $`(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_0} = T_{1,j_0}`$ であるから、この値は
-   $`1<i_1`$ のとき $`T_{1,j_1}-T_{1,j_0}`$、$`i_1\le1`$ のとき $`0`$ であり、$`T`$ 側の $`d_1`$ と一致する。
+   $`1\lt i_1`$ のとき $`T_{1,j_1}-T_{1,j_0}`$、$`i_1\le1`$ のとき $`0`$ であり、$`T`$ 側の $`d_1`$ と一致する。
 3. **接頭部.** [(T.take_append_right)](#t-take_append_right) より
    $`\mathrm{take}\,(\lvert A\rvert+j_0)\,(A\mathbin{+\!\!+}T) = A\mathbin{+\!\!+}\mathrm{take}\,j_0\,T`$。
 4. **コピーブロック.** 項目 1, 2 により両側の増分は同じ値であるから、以下ではその共通の値を
@@ -1111,10 +1111,10 @@ $`j_0 := \mathrm{par}^T_{i_1}(j_1)`$ とおく。$`(5)`$ と [(T.parent_append_r
 $`\mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i_1,\ \lvert A\rvert+j_1)`$ も成り立たないことを示す。
 これが成り立つと仮定し、$`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ が正か否かで場合分けする。
 
-- $`0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ のとき：
+- $`0\lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}`$ のとき：
   [(T.hasParent_append_right)](#t-hasParent_append_right) の $`(\Rightarrow)`$ より
   $`\mathrm{hasParent}(T,i_1,j_1)`$ となり、この場合の仮定に矛盾する。
-- $`\neg\bigl(0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}\bigr)`$ のとき：
+- $`\neg\bigl(0\lt (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}\bigr)`$ のとき：
   $`\mathbb{N}`$ ではこれは $`(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}=0`$ を意味する。
   [(T.no_hasParent_of_row0_zero)](#t-no_hasParent_of_row0_zero)（$`M := A\mathbin{+\!\!+}T`$）より
   $`\mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i_1,\ \lvert A\rvert+j_1)`$ は成り立たず、矛盾する。
@@ -1139,29 +1139,29 @@ $`\mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i_1,\ \lvert A\rvert+j_1)`$ も成り�
 **長さ.** 左辺の長さは $`\lvert\mathrm{range}(j_1)\rvert = j_1`$。
 右辺の長さは $`\min(j_1,\lvert N\rvert)`$ であり、仮定 $`j_1\le\lvert N\rvert`$ より $`j_1`$ である。
 
-**各位置.** $`i<j_1`$ とする。$`\mathrm{range}(j_1)`$ の第 $`i`$ 要素は $`i`$ であるから、左辺の第 $`i`$ 要素は
-$`(N_{0,i},\ N_{1,i})`$ である。また $`i<j_1\le\lvert N\rvert`$ より $`i<\lvert N\rvert`$ であるから
+**各位置.** $`i\lt j_1`$ とする。$`\mathrm{range}(j_1)`$ の第 $`i`$ 要素は $`i`$ であるから、左辺の第 $`i`$ 要素は
+$`(N_{0,i},\ N_{1,i})`$ である。また $`i\lt j_1\le\lvert N\rvert`$ より $`i\lt \lvert N\rvert`$ であるから
 $`N\langle i\rangle`$ は $`N`$ の第 $`i`$ 要素そのものであり、
 [(D.entry)](Def.md#d-entry) より
 ```math
 N_{0,i} = \pi_0(N\langle i\rangle),\qquad N_{1,i} = \pi_1(N\langle i\rangle)
 ```
 である。対 $`p`$ について $`(\pi_0 p,\ \pi_1 p) = p`$ であるから、左辺の第 $`i`$ 要素は $`N`$ の第 $`i`$ 要素に等しい。
-一方 $`\mathrm{take}\,j_1\,N`$ の第 $`i`$ 要素（$`i<j_1`$）も $`N`$ の第 $`i`$ 要素である。よって一致する。
+一方 $`\mathrm{take}\,j_1\,N`$ の第 $`i`$ 要素（$`i\lt j_1`$）も $`N`$ の第 $`i`$ 要素である。よって一致する。
 
 長さと全位置の要素が一致するから両辺は等しい。∎
 
 <a id="t-oper_headD"></a>
 ### 定理 展開は先頭を保つ (T.oper_headD)
 
-**主張** $`N\in\mathrm{PairSeq}`$、$`1<\lvert N\rvert`$、$`1\le n`$ のとき、$`N[n]`$ の先頭要素と $`N`$ の先頭要素は
+**主張** $`N\in\mathrm{PairSeq}`$、$`1\lt \lvert N\rvert`$、$`1\le n`$ のとき、$`N[n]`$ の先頭要素と $`N`$ の先頭要素は
 等しい（いずれも既定値 $`(0,0)`$ の下で読む）。
 
 **証明** [(T.oper_eq_dropLast_append)](Wf.md#t-oper_eq_dropLast_append) より、ある $`R`$ が存在して
 ```math
 N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R .
 ```
-$`1<\lvert N\rvert`$ すなわち $`\lvert N\rvert\ge2`$ であるから $`N`$ は $`N = p\mathbin{::}q\mathbin{::}u`$ の形に書ける。
+$`1\lt \lvert N\rvert`$ すなわち $`\lvert N\rvert\ge2`$ であるから $`N`$ は $`N = p\mathbin{::}q\mathbin{::}u`$ の形に書ける。
 要素 2 個以上の列に対する $`\mathrm{dropLast}`$ の計算則
 $`\mathrm{dropLast}(p\mathbin{::}q\mathbin{::}u) = p\mathbin{::}\mathrm{dropLast}(q\mathbin{::}u)`$ と、
 先頭付加と連結の関係 $`(p\mathbin{::}L)\mathbin{+\!\!+}R = p\mathbin{::}(L\mathbin{+\!\!+}R)`$ より

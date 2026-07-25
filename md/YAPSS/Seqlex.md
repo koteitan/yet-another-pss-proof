@@ -16,7 +16,7 @@ $`\mathrm{tr}\,M\prec\mathrm{tr}\,N \iff M\prec_{\mathrm{lex}}N`$ を得る。
 
 | Lean | 本文 | 意味 |
 |---|---|---|
-| `pairlt p q` | $`p <_{\mathrm p} q`$ | 対の辞書式順序（行 0 優先） |
+| `pairlt p q` | $`p \lt _{\mathrm p} q`$ | 対の辞書式順序（行 0 優先） |
 | `seqlex M N` | $`M \prec_{\mathrm{lex}} N`$ | 列辞書式順序 |
 | `steps1 B` | $`\mathrm{steps}_1(B)`$ | 行 0 が隣接段で高々 1 しか増えない |
 | `blockok d B` | $`\mathrm{blockok}(d,B)`$ | $`B`$ は深さ $`d`$ のブロックである |
@@ -81,10 +81,10 @@ $`M_{0,j}=\pi_0(M\langle j\rangle)`$、$`M_{1,j}=\pi_1(M\langle j\rangle)`$ で�
 - `List.dropLast_subset`：$`\mathrm{dropLast}\,l`$ の要素は $`l`$ の要素である
 - `List.dropLast_append_getLast`：$`l\ne[]`$ ならば $`\mathrm{dropLast}\,l \mathbin{+\!\!+} [\mathrm{getLast}\,l] = l`$
 - `List.length_take`：$`\lvert\mathrm{take}\,k\,l\rvert = \min(k,\lvert l\rvert)`$
-- `List.getElem_take`：$`i<\lvert\mathrm{take}\,k\,l\rvert`$ のとき $`(\mathrm{take}\,k\,l)[i] = l[i]`$
+- `List.getElem_take`：$`i\lt \lvert\mathrm{take}\,k\,l\rvert`$ のとき $`(\mathrm{take}\,k\,l)[i] = l[i]`$
 - `List.range_succ`：$`\mathrm{range}(m+1) = \mathrm{range}(m)\mathbin{+\!\!+}[m]`$
 - `List.range'_succ`：$`\mathrm{range}'(a,m+1) = a\mathbin{::}\mathrm{range}'(a+1,m)`$
-- `List.getElem_range'`：$`i<m`$ のとき $`\mathrm{range}'(a,m)[i] = a+i`$
+- `List.getElem_range'`：$`i\lt m`$ のとき $`\mathrm{range}'(a,m)[i] = a+i`$
 - `List.flatMap_append`：$`\mathrm{flatMap}\,f\,(l_1\mathbin{+\!\!+}l_2) = \mathrm{flatMap}\,f\,l_1 \mathbin{+\!\!+} \mathrm{flatMap}\,f\,l_2`$
 - `List.append_eq_nil_iff`：$`l_1\mathbin{+\!\!+}l_2 = [] \iff l_1=[] \wedge l_2=[]`$
 
@@ -119,7 +119,7 @@ p <_{\mathrm p} q \ :\iff\ \pi_0 p<\pi_0 q \ \vee\ \bigl(\pi_0 p=\pi_0 q \wedge 
 （[(D.pairlt)](#d-pairlt)。）第 3 式の再帰呼び出し $`M\prec_{\mathrm{lex}}N`$ の第 1 引数 $`M`$ は
 $`p\mathbin{::}M`$ の尾部、すなわち構成子 $`\mathbin{::}`$ の直下の引数であるから、
 この定義は第 1 引数に関する構造帰納として整合的である。
-先頭から順に対を比べ、最初に相違した位置の $`<_{\mathrm p}`$ で大小を決める順序であり、
+先頭から順に対を比べ、最初に相違した位置の $`\lt _{\mathrm p}`$ で大小を決める順序であり、
 $`v\ne[\,]`$ のとき $`u\prec_{\mathrm{lex}}(u\mathbin{+\!\!+}v)`$ が成り立つ（[(T.seqlex_prefix)](#t-seqlex_prefix)）。
 
 <a id="t-seqlex_nil_iff"></a>
@@ -168,9 +168,9 @@ $`v\ne[\,]`$ のとき $`u\prec_{\mathrm{lex}}(u\mathbin{+\!\!+}v)`$ が成り�
   a<_{\mathrm p}a \ \vee\ \bigl(a=a \wedge (A'\mathbin{+\!\!+}u)\prec_{\mathrm{lex}}(A'\mathbin{+\!\!+}v)\bigr)
   ```
   と同値である。
-  - ($`\Rightarrow`$) 第 1 選言 $`a<_{\mathrm p}a`$ は、[(D.pairlt)](#d-pairlt) より
-    $`\pi_0 a<\pi_0 a`$ または $`(\pi_0 a=\pi_0 a \wedge \pi_1 a<\pi_1 a)`$ であるが、
-    $`\mathbb{N}`$ の $`<`$ の非反射性によりどちらも偽である。よって第 2 選言が成り立ち、
+  - ($`\Rightarrow`$) 第 1 選言 $`a\lt _{\mathrm p}a`$ は、[(D.pairlt)](#d-pairlt) より
+    $`\pi_0 a\lt \pi_0 a`$ または $`(\pi_0 a=\pi_0 a \wedge \pi_1 a\lt \pi_1 a)`$ であるが、
+    $`\mathbb{N}`$ の $`\lt `$ の非反射性によりどちらも偽である。よって第 2 選言が成り立ち、
     その第 2 成分に帰納法の仮定 $`\Phi(A')`$ の $`(\Rightarrow)`$ 方向を適用して $`u\prec_{\mathrm{lex}}v`$ を得る。
   - ($`\Leftarrow`$) $`u\prec_{\mathrm{lex}}v`$ から帰納法の仮定 $`\Phi(A')`$ の $`(\Leftarrow)`$ 方向で
     $`(A'\mathbin{+\!\!+}u)\prec_{\mathrm{lex}}(A'\mathbin{+\!\!+}v)`$ を得、$`a=a`$ とあわせて第 2 選言が成り立つ。∎
@@ -274,10 +274,10 @@ $`d\in\mathbb{N}`$、ペア列 $`B`$ に対し
 ```
 
 - 基底段 $`B=[\,]`$：左辺は [(T.steps1_nil)](#t-steps1_nil) より真。
-  右辺は、$`\lvert[\,]\rvert=0`$ より前件 $`j+1<0`$ がすべての $`j`$ で偽だから空虚に真。よって両辺とも真であり $`\Phi([\,])`$。
+  右辺は、$`\lvert[\,]\rvert=0`$ より前件 $`j+1\lt 0`$ がすべての $`j`$ で偽だから空虚に真。よって両辺とも真であり $`\Phi([\,])`$。
 - 帰納段 $`B=p\mathbin{::}B'`$：帰納法の仮定は $`\Phi(B')`$ である。$`B'`$ の形で 2 つに分ける。
   - $`B'=[\,]`$、すなわち $`B=[p]`$：左辺は [(T.steps1_single)](#t-steps1_single) より真。
-    右辺は $`\lvert[p]\rvert=1`$ より前件 $`j+1<1`$ がすべての $`j`$ で偽（$`j+1\ge1`$）だから空虚に真。
+    右辺は $`\lvert[p]\rvert=1`$ より前件 $`j+1\lt 1`$ がすべての $`j`$ で偽（$`j+1\ge1`$）だから空虚に真。
   - $`B'=q\mathbin{::}r`$、すなわち $`B=p\mathbin{::}q\mathbin{::}r`$：このとき帰納法の仮定 $`\Phi(q\mathbin{::}r)`$ は
     ```math
     \mathrm{steps}_1(q\mathbin{::}r) \iff \forall j,\ j+1<\lvert r\rvert+1 \to \pi_0((q\mathbin{::}r)\langle j+1\rangle)\le\pi_0((q\mathbin{::}r)\langle j\rangle)+1
@@ -292,18 +292,18 @@ $`d\in\mathbb{N}`$、ペア列 $`B`$ に対し
     ```
     の同値である。ここで添字の対応 $`(p\mathbin{::}L)\langle k+1\rangle = L\langle k\rangle`$ および
     $`(p\mathbin{::}L)\langle 0\rangle = p`$ を用いる。
-    - ($`\Rightarrow`$) 前者を $`\langle h,\ h_{\mathrm{s}}\rangle`$ とし、$`j+1<\lvert r\rvert+2`$ なる $`j`$ を取る。
+    - ($`\Rightarrow`$) 前者を $`\langle h,\ h_{\mathrm{s}}\rangle`$ とし、$`j+1\lt \lvert r\rvert+2`$ なる $`j`$ を取る。
       - $`j=0`$ のとき：示すべきは $`\pi_0((p\mathbin{::}q\mathbin{::}r)\langle 1\rangle)\le\pi_0((p\mathbin{::}q\mathbin{::}r)\langle 0\rangle)+1`$、
         すなわち $`\pi_0 q\le\pi_0 p+1`$ であり、これは $`h`$ である。
-      - $`j=j'+1`$ のとき：$`j'+2<\lvert r\rvert+2`$ より $`j'+1<\lvert r\rvert+1`$ であるから
+      - $`j=j'+1`$ のとき：$`j'+2\lt \lvert r\rvert+2`$ より $`j'+1\lt \lvert r\rvert+1`$ であるから
         $`h_{\mathrm{s}}\,j'`$ が使え、
         $`\pi_0((q\mathbin{::}r)\langle j'+1\rangle)\le\pi_0((q\mathbin{::}r)\langle j'\rangle)+1`$ を得る。
         添字の対応により、これは
         $`\pi_0((p\mathbin{::}q\mathbin{::}r)\langle j'+2\rangle)\le\pi_0((p\mathbin{::}q\mathbin{::}r)\langle j'+1\rangle)+1`$ に等しい。
     - ($`\Leftarrow`$) 後者を $`h`$ とする。
-      - 第 1 成分：$`h\,0`$ を $`0+1<\lvert r\rvert+2`$（$`1<\lvert r\rvert+2`$ は $`\lvert r\rvert\ge0`$ より成立）に適用すると
+      - 第 1 成分：$`h\,0`$ を $`0+1\lt \lvert r\rvert+2`$（$`1\lt \lvert r\rvert+2`$ は $`\lvert r\rvert\ge0`$ より成立）に適用すると
         $`\pi_0((p\mathbin{::}q\mathbin{::}r)\langle 1\rangle)\le\pi_0((p\mathbin{::}q\mathbin{::}r)\langle 0\rangle)+1`$、すなわち $`\pi_0 q\le\pi_0 p+1`$。
-      - 第 2 成分：$`j+1<\lvert r\rvert+1`$ なる $`j`$ に対し $`j+2<\lvert r\rvert+2`$ であるから $`h\,(j+1)`$ が使え、
+      - 第 2 成分：$`j+1\lt \lvert r\rvert+1`$ なる $`j`$ に対し $`j+2\lt \lvert r\rvert+2`$ であるから $`h\,(j+1)`$ が使え、
         $`\pi_0((p\mathbin{::}q\mathbin{::}r)\langle j+2\rangle)\le\pi_0((p\mathbin{::}q\mathbin{::}r)\langle j+1\rangle)+1`$、
         すなわち $`\pi_0((q\mathbin{::}r)\langle j+1\rangle)\le\pi_0((q\mathbin{::}r)\langle j\rangle)+1`$ を得る。∎
 
@@ -430,18 +430,18 @@ $`h_{\mathrm{s}}`$（増分条件）に分ける。
 
 - **先頭条件**：$`\mathrm{tw}_d r\ne[\,]`$ と仮定し、$`\pi_0(\mathrm{headI}(\mathrm{tw}_d r))=d+1`$ を示す。
   $`\mathrm{tw}_d r = a\mathbin{::}as`$ と書く。$`r=[\,]`$ なら $`\mathrm{tw}_d[\,]=[\,]`$ となり矛盾するので、$`r=p'\mathbin{::}r'`$ と書ける。
-  ここで $`d<\pi_0 p'`$ である。実際 $`\neg(d<\pi_0 p')`$ ならば `List.takeWhile_cons_of_neg` より
+  ここで $`d\lt \pi_0 p'`$ である。実際 $`\neg(d\lt \pi_0 p')`$ ならば `List.takeWhile_cons_of_neg` より
   $`\mathrm{tw}_d(p'\mathbin{::}r')=[\,]`$ となり $`a\mathbin{::}as`$ と等しくなり得ない。
   すると `List.takeWhile_cons_of_pos` より $`\mathrm{tw}_d(p'\mathbin{::}r') = p'\mathbin{::}\mathrm{tw}_d r'`$ であり、
   $`a\mathbin{::}as`$ との比較（先頭付加の単射性）から $`a=p'`$。
   一方 $`h_{\mathrm{s}}`$ は $`\mathrm{steps}_1((d,y)\mathbin{::}p'\mathbin{::}r')`$ であるから、
   [(T.steps1_cons_cons)](#t-steps1_cons_cons) の第 1 成分より
   $`\pi_0 p'\le\pi_0(d,y)+1 = d+1`$。
-  $`d<\pi_0 p'`$ と $`\pi_0 p'\le d+1`$ から、$`\mathbb{N}`$ において $`d+1\le\pi_0 p'\le d+1`$、すなわち $`\pi_0 p'=d+1`$。
+  $`d\lt \pi_0 p'`$ と $`\pi_0 p'\le d+1`$ から、$`\mathbb{N}`$ において $`d+1\le\pi_0 p'\le d+1`$、すなわち $`\pi_0 p'=d+1`$。
   $`\mathrm{headI}(\mathrm{tw}_d r)=a=p'`$ だから、$`\pi_0(\mathrm{headI}(\mathrm{tw}_d r))=d+1`$。
 - **下界条件**：$`q\in\mathrm{tw}_d r`$ とする。`List.mem_takeWhile_imp` より、$`\mathrm{tw}_d`$ の定義に現れる述語
-  $`\lambda q.\ d<\pi_0 q`$ が $`q`$ で成り立つ、すなわち $`d<\pi_0 q`$。
-  $`\mathbb{N}`$ では $`d<\pi_0 q`$ と $`d+1\le\pi_0 q`$ は同値だから $`d+1\le\pi_0 q`$。
+  $`\lambda q.\ d\lt \pi_0 q`$ が $`q`$ で成り立つ、すなわち $`d\lt \pi_0 q`$。
+  $`\mathbb{N}`$ では $`d\lt \pi_0 q`$ と $`d+1\le\pi_0 q`$ は同値だから $`d+1\le\pi_0 q`$。
 - **増分条件**：`List.takeWhile_append_dropWhile` より $`\mathrm{tw}_d r\mathbin{+\!\!+}\mathrm{dw}_d r = r`$ であり、
   [(T.steps1_tail)](#t-steps1_tail) を $`h_{\mathrm{s}}`$ に適用して $`\mathrm{steps}_1(r)`$ を得る。
   よって $`\mathrm{steps}_1(\mathrm{tw}_d r\mathbin{+\!\!+}\mathrm{dw}_d r)`$ が成り立ち、
@@ -455,10 +455,10 @@ $`h_{\mathrm{s}}`$（増分条件）に分ける。
 **証明** 仮定を成分 $`h_{\mathrm{set}}`$（下界条件）、$`h_{\mathrm{s}}`$（増分条件）に分ける。
 
 - **先頭条件**：$`\mathrm{dw}_d r\ne[\,]`$ と仮定し、$`\mathrm{dw}_d r = a\mathbin{::}as`$ と書く。
-  `List.head?_dropWhile_not` より、$`\mathrm{dw}_d r`$ の先頭要素は述語をみたさない、すなわち $`\neg(d<\pi_0 a)`$。
+  `List.head?_dropWhile_not` より、$`\mathrm{dw}_d r`$ の先頭要素は述語をみたさない、すなわち $`\neg(d\lt \pi_0 a)`$。
   他方 `List.dropWhile_sublist` より $`a\in r`$、よって $`a\in(d,y)\mathbin{::}r`$ であり
   $`h_{\mathrm{set}}\,a`$ から $`d\le\pi_0 a`$。
-  $`\mathbb{N}`$ において $`\neg(d<\pi_0 a)`$ は $`\pi_0 a\le d`$ と同値だから、$`d\le\pi_0 a\le d`$、すなわち $`\pi_0 a=d`$。
+  $`\mathbb{N}`$ において $`\neg(d\lt \pi_0 a)`$ は $`\pi_0 a\le d`$ と同値だから、$`d\le\pi_0 a\le d`$、すなわち $`\pi_0 a=d`$。
   $`\mathrm{headI}(\mathrm{dw}_d r)=a`$ だから先頭条件が成り立つ。
 - **下界条件**：$`q\in\mathrm{dw}_d r`$ ならば `List.dropWhile_sublist` より $`q\in r`$、
   よって $`q\in(d,y)\mathbin{::}r`$ であり $`h_{\mathrm{set}}\,q`$ から $`d\le\pi_0 q`$。
@@ -498,8 +498,8 @@ $`\mathrm{tw}_d r\prec_{\mathrm{lex}}\mathrm{tw}_d r'`$ が得られる。
   なお $`\mathrm{tw}_d[\,]=[\,]`$、$`\mathrm{dw}_d[\,]=[\,]`$ である。$`\mathrm{tw}_d r'`$ が空かどうかで分ける。
   - $`\mathrm{tw}_d r'=[\,]`$ のとき：第 1 選言を示す。第 1 成分は $`\mathrm{tw}_d[\,]=[\,]=\mathrm{tw}_d r'`$。
     第 2 成分のために $`\mathrm{dw}_d r'=r'`$ を示す。$`r'\ne[\,]`$ より $`r'=q\mathbin{::}t`$ と書ける。
-    もし $`d<\pi_0 q`$ ならば `List.takeWhile_cons_of_pos` より $`\mathrm{tw}_d r' = q\mathbin{::}\mathrm{tw}_d t \ne[\,]`$ となり
-    仮定に反するから $`\neg(d<\pi_0 q)`$。よって `List.dropWhile_cons_of_neg` より $`\mathrm{dw}_d r' = q\mathbin{::}t = r'`$。
+    もし $`d\lt \pi_0 q`$ ならば `List.takeWhile_cons_of_pos` より $`\mathrm{tw}_d r' = q\mathbin{::}\mathrm{tw}_d t \ne[\,]`$ となり
+    仮定に反するから $`\neg(d\lt \pi_0 q)`$。よって `List.dropWhile_cons_of_neg` より $`\mathrm{dw}_d r' = q\mathbin{::}t = r'`$。
     したがって $`\mathrm{dw}_d r' = r' \ne[\,]`$ であり、[(T.seqlex_nil_iff)](#t-seqlex_nil_iff) より
     $`[\,]\prec_{\mathrm{lex}}\mathrm{dw}_d r'`$、すなわち $`\mathrm{dw}_d[\,]\prec_{\mathrm{lex}}\mathrm{dw}_d r'`$。
   - $`\mathrm{tw}_d r'\ne[\,]`$ のとき：第 2 選言を示す。第 1 成分は $`[\,]\ne\mathrm{tw}_d r'`$（仮定の左右反転）。
@@ -508,10 +508,10 @@ $`\mathrm{tw}_d r\prec_{\mathrm{lex}}\mathrm{tw}_d r'`$ が得られる。
   $`r'=[\,]`$ ならば $`(p\mathbin{::}rr)\prec_{\mathrm{lex}}[\,]`$ は [(T.not_seqlex_nil)](#t-not_seqlex_nil) に反するから、
   $`r'=q\mathbin{::}rr'`$ と書ける。$`p=q`$ かどうかで分ける。
   - **$`p=q`$ のとき**：[(T.seqlex_cons_cons)](#t-seqlex_cons_cons) より仮定は
-    $`p<_{\mathrm p}p`$ または $`(p=p \wedge rr\prec_{\mathrm{lex}}rr')`$ である。
-    前者は [(D.pairlt)](#d-pairlt) より $`\pi_0 p<\pi_0 p`$ または $`(\pi_0 p=\pi_0 p \wedge \pi_1 p<\pi_1 p)`$ であり、
-    $`\mathbb{N}`$ の $`<`$ の非反射性によりどちらも偽。よって $`rr\prec_{\mathrm{lex}}rr'`$ が成り立つ。これを $`sl_r`$ とおく。
-    - $`d<\pi_0 p`$ のとき：`List.takeWhile_cons_of_pos` と `List.dropWhile_cons_of_pos` より
+    $`p\lt _{\mathrm p}p`$ または $`(p=p \wedge rr\prec_{\mathrm{lex}}rr')`$ である。
+    前者は [(D.pairlt)](#d-pairlt) より $`\pi_0 p\lt \pi_0 p`$ または $`(\pi_0 p=\pi_0 p \wedge \pi_1 p\lt \pi_1 p)`$ であり、
+    $`\mathbb{N}`$ の $`\lt `$ の非反射性によりどちらも偽。よって $`rr\prec_{\mathrm{lex}}rr'`$ が成り立つ。これを $`sl_r`$ とおく。
+    - $`d\lt \pi_0 p`$ のとき：`List.takeWhile_cons_of_pos` と `List.dropWhile_cons_of_pos` より
       ```math
       \mathrm{tw}_d(p\mathbin{::}rr)=p\mathbin{::}\mathrm{tw}_d rr,\quad \mathrm{dw}_d(p\mathbin{::}rr)=\mathrm{dw}_d rr,\quad
         \mathrm{tw}_d(p\mathbin{::}rr')=p\mathbin{::}\mathrm{tw}_d rr',\quad \mathrm{dw}_d(p\mathbin{::}rr')=\mathrm{dw}_d rr'.
@@ -525,7 +525,7 @@ $`\mathrm{tw}_d r\prec_{\mathrm{lex}}\mathrm{tw}_d r'`$ が得られる。
         先頭付加の単射性から $`\mathrm{tw}_d rr=\mathrm{tw}_d rr'`$ となり仮定に反する、から従う。
         第 2 成分は [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) の右辺第 2 選言
         $`p=p \wedge \mathrm{tw}_d rr\prec_{\mathrm{lex}}\mathrm{tw}_d rr'`$ による。
-    - $`\neg(d<\pi_0 p)`$ のとき：`List.takeWhile_cons_of_neg` と `List.dropWhile_cons_of_neg` より
+    - $`\neg(d\lt \pi_0 p)`$ のとき：`List.takeWhile_cons_of_neg` と `List.dropWhile_cons_of_neg` より
       ```math
       \mathrm{tw}_d(p\mathbin{::}rr)=[\,],\quad \mathrm{tw}_d(p\mathbin{::}rr')=[\,],\quad
         \mathrm{dw}_d(p\mathbin{::}rr)=p\mathbin{::}rr,\quad \mathrm{dw}_d(p\mathbin{::}rr')=p\mathbin{::}rr'.
@@ -533,19 +533,19 @@ $`\mathrm{tw}_d r\prec_{\mathrm{lex}}\mathrm{tw}_d r'`$ が得られる。
       第 1 選言を示す。第 1 成分は $`[\,]=[\,]`$、第 2 成分は仮定
       $`(p\mathbin{::}rr)\prec_{\mathrm{lex}}(p\mathbin{::}rr')`$ そのものである。
   - **$`p\ne q`$ のとき**：[(T.seqlex_cons_cons)](#t-seqlex_cons_cons) より仮定は
-    $`p<_{\mathrm p}q`$ または $`(p=q \wedge \cdots)`$ であり、後者は $`p\ne q`$ に反する。よって $`p<_{\mathrm p}q`$。
-    - $`d<\pi_0 p`$ のとき：[(D.pairlt)](#d-pairlt) より $`\pi_0 p<\pi_0 q`$ か $`\pi_0 p=\pi_0 q`$ であるから、
-      いずれにせよ $`\pi_0 p\le\pi_0 q`$、よって $`d<\pi_0 p\le\pi_0 q`$ より $`d<\pi_0 q`$。
+    $`p\lt _{\mathrm p}q`$ または $`(p=q \wedge \cdots)`$ であり、後者は $`p\ne q`$ に反する。よって $`p\lt _{\mathrm p}q`$。
+    - $`d\lt \pi_0 p`$ のとき：[(D.pairlt)](#d-pairlt) より $`\pi_0 p\lt \pi_0 q`$ か $`\pi_0 p=\pi_0 q`$ であるから、
+      いずれにせよ $`\pi_0 p\le\pi_0 q`$、よって $`d\lt \pi_0 p\le\pi_0 q`$ より $`d\lt \pi_0 q`$。
       `List.takeWhile_cons_of_pos` を両側に適用して
       $`\mathrm{tw}_d(p\mathbin{::}rr)=p\mathbin{::}\mathrm{tw}_d rr`$、$`\mathrm{tw}_d(q\mathbin{::}rr')=q\mathbin{::}\mathrm{tw}_d rr'`$。
       第 2 選言を示す。第 1 成分は、$`p\mathbin{::}\mathrm{tw}_d rr = q\mathbin{::}\mathrm{tw}_d rr'`$ とすると
       先頭付加の単射性から $`p=q`$ となり仮定に反する、から従う。
-      第 2 成分は [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) の右辺第 1 選言 $`p<_{\mathrm p}q`$ による。
-    - $`\neg(d<\pi_0 p)`$ かつ $`d<\pi_0 q`$ のとき：
+      第 2 成分は [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) の右辺第 1 選言 $`p\lt _{\mathrm p}q`$ による。
+    - $`\neg(d\lt \pi_0 p)`$ かつ $`d\lt \pi_0 q`$ のとき：
       $`\mathrm{tw}_d(p\mathbin{::}rr)=[\,]`$、$`\mathrm{tw}_d(q\mathbin{::}rr')=q\mathbin{::}\mathrm{tw}_d rr'`$。
       第 2 選言を示す。第 1 成分は $`[\,]\ne q\mathbin{::}\mathrm{tw}_d rr'`$（空列と先頭付加は異なる）。
       第 2 成分は [(T.seqlex_nil_iff)](#t-seqlex_nil_iff) より $`q\mathbin{::}\mathrm{tw}_d rr'\ne[\,]`$ と同値で、これは真。
-    - $`\neg(d<\pi_0 p)`$ かつ $`\neg(d<\pi_0 q)`$ のとき：
+    - $`\neg(d\lt \pi_0 p)`$ かつ $`\neg(d\lt \pi_0 q)`$ のとき：
       $`\mathrm{tw}_d(p\mathbin{::}rr)=[\,]`$、$`\mathrm{tw}_d(q\mathbin{::}rr')=[\,]`$、
       $`\mathrm{dw}_d(p\mathbin{::}rr)=p\mathbin{::}rr`$、$`\mathrm{dw}_d(q\mathbin{::}rr')=q\mathbin{::}rr'`$。
       第 1 選言を示す。第 1 成分は $`[\,]=[\,]`$、第 2 成分は仮定
@@ -588,9 +588,9 @@ $`M,N`$ の形で 4 つに分ける。
   $`\pi_0(\mathrm{headI}\,N)=\pi_0 q=d`$。
   よって $`y:=\pi_1 p`$, $`y':=\pi_1 q`$ とおけば $`p=(d,y)`$, $`q=(d,y')`$ である。$`y=y'`$ かどうかで分ける。
   - **$`y=y'`$ のとき**（すなわち $`p=q=(d,y)`$）：
-    [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) より仮定は $`(d,y)<_{\mathrm p}(d,y)`$ または
+    [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) より仮定は $`(d,y)\lt _{\mathrm p}(d,y)`$ または
     $`((d,y)=(d,y) \wedge r\prec_{\mathrm{lex}}r')`$ である。前者は [(D.pairlt)](#d-pairlt) より
-    $`d<d`$ または $`(d=d \wedge y<y)`$ であり、$`\mathbb{N}`$ の $`<`$ の非反射性によりどちらも偽。
+    $`d\lt d`$ または $`(d=d \wedge y\lt y)`$ であり、$`\mathbb{N}`$ の $`\lt `$ の非反射性によりどちらも偽。
     よって $`r\prec_{\mathrm{lex}}r'`$（これを $`sl_r`$ とおく）。
     [(D.translate)](Mechanized.md#d-translate) より
     ```math
@@ -623,13 +623,13 @@ $`M,N`$ の形で 4 つに分ける。
       [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の右辺第 2 選言（添字は両辺とも $`y`$）が成り立つので
       $`\mathrm{tr}\,M\prec\mathrm{tr}\,N`$。
   - **$`y\ne y'`$ のとき**：[(T.seqlex_cons_cons)](#t-seqlex_cons_cons) より仮定は
-    $`(d,y)<_{\mathrm p}(d,y')`$ または $`(d,y)=(d,y')`$ である。
+    $`(d,y)\lt _{\mathrm p}(d,y')`$ または $`(d,y)=(d,y')`$ である。
     後者は第 2 成分を比べて $`y=y'`$ を与え、仮定に反する。よって前者であり、
-    [(D.pairlt)](#d-pairlt) より $`d<d`$（$`\mathbb{N}`$ の $`<`$ の非反射性により偽）または
-    $`(d=d \wedge y<y')`$ であるから $`y<y'`$。
+    [(D.pairlt)](#d-pairlt) より $`d\lt d`$（$`\mathbb{N}`$ の $`\lt `$ の非反射性により偽）または
+    $`(d=d \wedge y\lt y')`$ であるから $`y\lt y'`$。
     [(D.translate)](Mechanized.md#d-translate) より
     $`\mathrm{tr}\,M = \mathsf{P}(y,\cdot,\cdot)`$、$`\mathrm{tr}\,N = \mathsf{P}(y',\cdot,\cdot)`$ であり、
-    [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の右辺第 1 選言 $`y<y'`$ が成り立つので $`\mathrm{tr}\,M\prec\mathrm{tr}\,N`$。∎
+    [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の右辺第 1 選言 $`y\lt y'`$ が成り立つので $`\mathrm{tr}\,M\prec\mathrm{tr}\,N`$。∎
 
 <a id="t-seqlex_total"></a>
 ### 定理 列辞書式順序の三分律 (T.seqlex_total)
@@ -658,18 +658,18 @@ M=N \ \vee\ M\prec_{\mathrm{lex}}N \ \vee\ N\prec_{\mathrm{lex}}M.
       - $`N'\prec_{\mathrm{lex}}M_1`$：[(T.seqlex_cons_cons)](#t-seqlex_cons_cons) の右辺第 2 選言
         $`q=q \wedge N'\prec_{\mathrm{lex}}M_1`$（$`p=q`$ より $`M=q\mathbin{::}M_1`$）より
         $`N\prec_{\mathrm{lex}}M`$、第 3 選言。
-    - $`p\ne q`$：まず $`p<_{\mathrm p}q \vee q<_{\mathrm p}p`$ を示す。
+    - $`p\ne q`$：まず $`p\lt _{\mathrm p}q \vee q\lt _{\mathrm p}p`$ を示す。
       $`\mathbb{N}`$ の三分律で $`\pi_0 p`$ と $`\pi_0 q`$ を比べる。
-      - $`\pi_0 p<\pi_0 q`$：[(D.pairlt)](#d-pairlt) の第 1 選言より $`p<_{\mathrm p}q`$。
+      - $`\pi_0 p\lt \pi_0 q`$：[(D.pairlt)](#d-pairlt) の第 1 選言より $`p\lt _{\mathrm p}q`$。
       - $`\pi_0 p=\pi_0 q`$：$`\mathbb{N}`$ の三分律で $`\pi_1 p`$ と $`\pi_1 q`$ を比べる。
-        - $`\pi_1 p<\pi_1 q`$：[(D.pairlt)](#d-pairlt) の第 2 選言より $`p<_{\mathrm p}q`$。
+        - $`\pi_1 p\lt \pi_1 q`$：[(D.pairlt)](#d-pairlt) の第 2 選言より $`p\lt _{\mathrm p}q`$。
         - $`\pi_1 p=\pi_1 q`$：両成分が等しいから対として $`p=q`$ となり、仮定 $`p\ne q`$ に反する。
-        - $`\pi_1 q<\pi_1 p`$：$`\pi_0 q=\pi_0 p`$ とあわせて [(D.pairlt)](#d-pairlt) の第 2 選言より $`q<_{\mathrm p}p`$。
-      - $`\pi_0 q<\pi_0 p`$：[(D.pairlt)](#d-pairlt) の第 1 選言より $`q<_{\mathrm p}p`$。
+        - $`\pi_1 q\lt \pi_1 p`$：$`\pi_0 q=\pi_0 p`$ とあわせて [(D.pairlt)](#d-pairlt) の第 2 選言より $`q\lt _{\mathrm p}p`$。
+      - $`\pi_0 q\lt \pi_0 p`$：[(D.pairlt)](#d-pairlt) の第 1 選言より $`q\lt _{\mathrm p}p`$。
 
-      $`p<_{\mathrm p}q`$ の場合は [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) の右辺第 1 選言より
+      $`p\lt _{\mathrm p}q`$ の場合は [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) の右辺第 1 選言より
       $`(p\mathbin{::}M_1)\prec_{\mathrm{lex}}(q\mathbin{::}N')`$、すなわち $`M\prec_{\mathrm{lex}}N`$（第 2 選言）。
-      $`q<_{\mathrm p}p`$ の場合は [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) の右辺第 1 選言より
+      $`q\lt _{\mathrm p}p`$ の場合は [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) の右辺第 1 選言より
       $`(q\mathbin{::}N')\prec_{\mathrm{lex}}(p\mathbin{::}M_1)`$、すなわち $`N\prec_{\mathrm{lex}}M`$（第 3 選言）。∎
 
 <a id="t-olt_iff_seqlex"></a>
@@ -756,9 +756,9 @@ $`A=a\mathbin{::}as`$ のとき $`(a\mathbin{::}as)\mathbin{+\!\!+}B = a\mathbin
 
 **主張** ブロックの族 $`F:\mathbb{N}\to\mathrm{PairSeq}`$ と $`n\in\mathbb{N}`$ が
 
-1. $`\forall k<n,\ \mathrm{steps}_1(F_k)`$
-2. $`\forall k<n,\ F_k\ne[\,]`$
-3. $`\forall k,\ k+1<n \to \pi_0(\mathrm{headI}\,F_{k+1}) \le \pi_0(\mathrm{lastD}(F_k,(0,0)))+1`$
+1. $`\forall k\lt n,\ \mathrm{steps}_1(F_k)`$
+2. $`\forall k\lt n,\ F_k\ne[\,]`$
+3. $`\forall k,\ k+1\lt n \to \pi_0(\mathrm{headI}\,F_{k+1}) \le \pi_0(\mathrm{lastD}(F_k,(0,0)))+1`$
 
 をみたすとする。$`C_n := \mathrm{flatMap}\,F\,\mathrm{range}(n)`$ とおくと
 
@@ -784,7 +784,7 @@ $`A=a\mathbin{::}as`$ のとき $`(a\mathbin{::}as)\mathbin{+\!\!+}B = a\mathbin
 とする（$`F`$ は固定）。
 
 - **基底段 $`m=0`$**：$`\mathrm{range}(0)=[\,]`$ より $`C_0=[\,]`$。
-  [(T.steps1_nil)](#t-steps1_nil) より第 1 成分が成り立ち、第 2 成分は前件 $`0<0`$ が偽だから空虚に成り立つ。
+  [(T.steps1_nil)](#t-steps1_nil) より第 1 成分が成り立ち、第 2 成分は前件 $`0\lt 0`$ が偽だから空虚に成り立つ。
 - **帰納段 $`m+1`$**：帰納法の仮定は $`\Phi(m)`$ である。まず分解式
   ```math
   (\ast)\qquad C_{m+1} = C_m \mathbin{+\!\!+} F_m
@@ -794,14 +794,14 @@ $`A=a\mathbin{::}as`$ のとき $`(a\mathbin{::}as)\mathbin{+\!\!+}B = a\mathbin
   $`C_{m+1} = C_m \mathbin{+\!\!+} \mathrm{flatMap}\,F\,[m] = C_m\mathbin{+\!\!+}(F_m\mathbin{+\!\!+}[\,]) = C_m\mathbin{+\!\!+}F_m`$。
   $`m=0`$ かどうかで分ける。
   - **$`m=0`$ のとき**：$`C_1 = C_0\mathbin{+\!\!+}F_0 = [\,]\mathbin{+\!\!+}F_0 = F_0`$。
-    第 1 成分は仮定 1 を $`k:=0<1`$ に適用して $`\mathrm{steps}_1(F_0)`$。
-    第 2 成分は、$`C_1\ne[\,]`$ が仮定 2 を $`k:=0<1`$ に適用して得られ、
+    第 1 成分は仮定 1 を $`k:=0\lt 1`$ に適用して $`\mathrm{steps}_1(F_0)`$。
+    第 2 成分は、$`C_1\ne[\,]`$ が仮定 2 を $`k:=0\lt 1`$ に適用して得られ、
     $`\mathrm{headI}\,C_1=\mathrm{headI}\,F_0`$ と $`\mathrm{lastD}(C_1,(0,0))=\mathrm{lastD}(F_{1-1},(0,0))=\mathrm{lastD}(F_0,(0,0))`$ は
     $`C_1=F_0`$ と $`1-1=0`$ から同一の項である。
   - **$`m\ne0`$（すなわち $`1\le m`$）のとき**：
-    $`k<m`$ ならば $`k<m+1`$、また $`k+1<m`$ ならば $`k+1<m+1`$ であるから、
+    $`k\lt m`$ ならば $`k\lt m+1`$、また $`k+1\lt m`$ ならば $`k+1\lt m+1`$ であるから、
     仮定 1–3 は $`m`$ に対する仮定 1–3 を含意する。$`\Phi(m)`$ を適用して
-    $`h_{\mathrm{s}} : \mathrm{steps}_1(C_m)`$ と第 2 成分を得、$`0<m`$ より
+    $`h_{\mathrm{s}} : \mathrm{steps}_1(C_m)`$ と第 2 成分を得、$`0\lt m`$ より
     ```math
     c_{\ne} : C_m\ne[\,],\qquad c_{\mathrm{hd}} : \mathrm{headI}\,C_m=\mathrm{headI}\,F_0,\qquad
       c_{\mathrm{last}} : \mathrm{lastD}(C_m,(0,0))=\mathrm{lastD}(F_{m-1},(0,0))
@@ -811,12 +811,12 @@ $`A=a\mathbin{::}as`$ のとき $`(a\mathbin{::}as)\mathbin{+\!\!+}B = a\mathbin
     \pi_0(\mathrm{headI}\,F_m) \le \pi_0(\mathrm{lastD}(C_m,(0,0)))+1
     ```
     を示す。$`c_{\mathrm{last}}`$ により右辺は $`\pi_0(\mathrm{lastD}(F_{m-1},(0,0)))+1`$ に等しい。
-    仮定 3 を $`k:=m-1`$ に適用する。前件は $`(m-1)+1<m+1`$ であり、$`1\le m`$ より $`(m-1)+1=m`$ だから $`m<m+1`$ で成立する。
+    仮定 3 を $`k:=m-1`$ に適用する。前件は $`(m-1)+1\lt m+1`$ であり、$`1\le m`$ より $`(m-1)+1=m`$ だから $`m\lt m+1`$ で成立する。
     結論は $`\pi_0(\mathrm{headI}\,F_{(m-1)+1})\le\pi_0(\mathrm{lastD}(F_{m-1},(0,0)))+1`$ であり、
     $`(m-1)+1=m`$ よりこれが求める評価である。
-    また仮定 2 を $`k:=m<m+1`$ に適用して $`F_m\ne[\,]`$ を得る。以上から 4 つの結論を示す。
+    また仮定 2 を $`k:=m\lt m+1`$ に適用して $`F_m\ne[\,]`$ を得る。以上から 4 つの結論を示す。
     - $`\mathrm{steps}_1(C_{m+1})`$：$`(\ast)`$ と [(T.steps1_append)](#t-steps1_append) の $`(\Leftarrow)`$ 方向による。
-      第 1 成分は $`h_{\mathrm{s}}`$、第 2 成分は仮定 1 を $`k:=m<m+1`$ に適用した $`\mathrm{steps}_1(F_m)`$、
+      第 1 成分は $`h_{\mathrm{s}}`$、第 2 成分は仮定 1 を $`k:=m\lt m+1`$ に適用した $`\mathrm{steps}_1(F_m)`$、
       第 3 成分は継ぎ目の評価（第 3 選言）である。
     - $`C_{m+1}\ne[\,]`$：$`(\ast)`$ より $`C_{m+1}=[\,]`$ とすると `List.append_eq_nil_iff` から $`C_m=[\,]`$ となり
       $`c_{\ne}`$ に反する。
@@ -894,7 +894,7 @@ $`A=a\mathbin{::}as`$ のとき $`(a\mathbin{::}as)\mathbin{+\!\!+}B = a\mathbin
 **(I) $`\lvert M\rvert-1=0`$ のとき**：[(T.oper_eq_self_of_short)](Mechanized.md#t-oper_eq_self_of_short) より
 $`M[n]=M`$ であるから、$`b`$ そのものが結論である。
 
-**(II) $`\lvert M\rvert-1\ne0`$ のとき**：このとき $`1<\lvert M\rvert`$ である（$`\lvert M\rvert\le1`$ なら切り捨て減法で $`\lvert M\rvert-1=0`$）。
+**(II) $`\lvert M\rvert-1\ne0`$ のとき**：このとき $`1\lt \lvert M\rvert`$ である（$`\lvert M\rvert\le1`$ なら切り捨て減法で $`\lvert M\rvert-1=0`$）。
 とくに $`M\ne[\,]`$。また $`\lvert M\rvert\le1`$ が偽だから [(D.Pred)](Def.md#d-Pred) より
 $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$。以下 $`j_1:=\lvert M\rvert-1`$、$`i_1:=\mathrm{idx}_1(M,j_1)`$
 （[(D.idx1)](Def.md#d-idx1)）と書く。3 つの場合に分ける。
@@ -911,7 +911,7 @@ $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$。以下 $`j_1:=\lvert M\rvert-1`$、$
 - **(II-c) $`\neg(M_{0,j_1}=0 \wedge M_{1,j_1}=0)`$ かつ $`\mathrm{hasParent}(M,i_1,j_1)`$ のとき**：
   これが本補題の主要部である。$`j_0:=\mathrm{par}^M_{i_1}(j_1)`$（[(D.parent)](Def.md#d-parent)）とおく。
   [(T.parent_nextR)](Mechanized.md#t-parent_nextR) より $`j_0\to^M_{i_1}j_1`$（[(D.nextR)](Def.md#d-nextR)）、
-  よって [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0<j_1`$ である。さらに
+  よって [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0\lt j_1`$ である。さらに
   ```math
   D := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\cr 0 & (i_1=0)\end{cases}
   ```
@@ -925,14 +925,14 @@ $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$。以下 $`j_1:=\lvert M\rvert-1`$、$
   を得る（[(D.entry)](Def.md#d-entry) より $`M_{0,j}=\pi_0(M\langle j\rangle)`$）。
 
   **(2) 継ぎ目の評価** $`M_{0,j_0}+D \le M_{0,j_1-1}+1`$。
-  まず $`1<\lvert M\rvert`$ より $`j_1=\lvert M\rvert-1<\lvert M\rvert`$、また $`j_0<j_1`$ より $`1\le j_1`$ である。
-  よって $`(j_1-1)+1=j_1<\lvert M\rvert`$ であり、
+  まず $`1\lt \lvert M\rvert`$ より $`j_1=\lvert M\rvert-1\lt \lvert M\rvert`$、また $`j_0\lt j_1`$ より $`1\le j_1`$ である。
+  よって $`(j_1-1)+1=j_1\lt \lvert M\rvert`$ であり、
   $`(\mathrm{e}0)`$ を $`j:=j_1-1`$ に適用して
   ```math
   (\mathrm{e}0')\qquad M_{0,j_1}\le M_{0,j_1-1}+1.
   ```
-  $`0<i_1`$ かどうかで分ける。
-  - $`0<i_1`$ のとき：$`i_1\ne0`$ だから [(D.nextR)](Def.md#d-nextR) より $`j_0\to^M_{i_1}j_1`$ は
+  $`0\lt i_1`$ かどうかで分ける。
+  - $`0\lt i_1`$ のとき：$`i_1\ne0`$ だから [(D.nextR)](Def.md#d-nextR) より $`j_0\to^M_{i_1}j_1`$ は
     $`j_0\to^M_1 j_1`$（[(D.nextrel1)](Def.md#d-nextrel1)）である。その第 5 成分は $`j_0\le^M_0 j_1`$
     （[(D.le0)](Def.md#d-le0)）であるから、[(T.le0_entry0_mono)](Mechanized.md#t-le0_entry0_mono) より
     $`M_{0,j_0}\le M_{0,j_1}`$。このとき $`D=M_{0,j_1}-M_{0,j_0}`$ であり、切り捨て減法は
@@ -940,8 +940,8 @@ $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$。以下 $`j_1:=\lvert M\rvert-1`$、$
     $`M_{0,j_0}+D = M_{0,j_0}+(M_{0,j_1}-M_{0,j_0}) = M_{0,j_1}`$ を与える。
     $`(\mathrm{e}0')`$ とあわせて $`M_{0,j_0}+D\le M_{0,j_1-1}+1`$。
   - $`i_1=0`$ のとき：[(D.nextR)](Def.md#d-nextR) より $`j_0\to^M_0 j_1`$（[(D.nextrel0)](Def.md#d-nextrel0)）であり、
-    [(T.nextrel0_entry0_less)](Mechanized.md#t-nextrel0_entry0_less) より $`M_{0,j_0}<M_{0,j_1}`$。
-    このとき $`D=0`$ だから $`M_{0,j_0}+D = M_{0,j_0} < M_{0,j_1} \le M_{0,j_1-1}+1`$。
+    [(T.nextrel0_entry0_less)](Mechanized.md#t-nextrel0_entry0_less) より $`M_{0,j_0}\lt M_{0,j_1}`$。
+    このとき $`D=0`$ だから $`M_{0,j_0}+D = M_{0,j_0} \lt M_{0,j_1} \le M_{0,j_1-1}+1`$。
 
   **(3) 展開形.** [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) より
   ```math
@@ -950,7 +950,7 @@ $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$。以下 $`j_1:=\lvert M\rvert-1`$、$
     F_k := \mathrm{map}\bigl(\lambda j.\ (M_{0,j}+kD,\ M_{1,j})\bigr)\ \mathrm{range}'(j_0,\ j_1-j_0).
   ```
 
-  **(4) 各ブロック $`F_k`$ の性質.** $`j_0<j_1`$ より $`j_1-j_0\ge1`$ であるから、`List.range'_succ` により
+  **(4) 各ブロック $`F_k`$ の性質.** $`j_0\lt j_1`$ より $`j_1-j_0\ge1`$ であるから、`List.range'_succ` により
   ```math
   (\mathrm{sp})\qquad \mathrm{range}'(j_0,\ j_1-j_0) = j_0\mathbin{::}\mathrm{range}'(j_0+1,\ j_1-j_0-1).
   ```
@@ -962,29 +962,29 @@ $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$。以下 $`j_1:=\lvert M\rvert-1`$、$
   - $`F_k\ne[\,]`$：右辺は先頭付加の形であり、空列ではない。
   - $`\mathrm{headI}\,F_k = (M_{0,j_0}+kD,\ M_{1,j_0})`$：右辺の先頭要素である。
   - $`\lvert F_k\rvert = j_1-j_0`$：$`\mathrm{map}`$ は長さを変えず、$`\lvert\mathrm{range}'(j_0,j_1-j_0)\rvert = j_1-j_0`$。
-  - $`j<j_1-j_0`$ のとき $`F_k\langle j\rangle = (M_{0,j_0+j}+kD,\ M_{1,j_0+j})`$：
+  - $`j\lt j_1-j_0`$ のとき $`F_k\langle j\rangle = (M_{0,j_0+j}+kD,\ M_{1,j_0+j})`$：
     [(T.getD_eq_getElem')](Wf.md#t-getD_eq_getElem') で $`\mathrm{getD}`$ を $`[\,\cdot\,]`$ に直し、
     `List.getElem_map` と `List.getElem_range'`（$`\mathrm{range}'(j_0,m)[j]=j_0+j`$）による。
   - $`\mathrm{lastD}(F_k,(0,0)) = (M_{0,j_1-1}+kD,\ M_{1,j_1-1})`$：
     [(T.getLastD_eq_getD)](#t-getLastD_eq_getD) より
     $`\mathrm{lastD}(F_k,(0,0)) = F_k\langle \lvert F_k\rvert-1\rangle = F_k\langle j_1-j_0-1\rangle`$
-    であり、$`j_1-j_0-1<j_1-j_0`$ だから直前の等式が使えて
+    であり、$`j_1-j_0-1\lt j_1-j_0`$ だから直前の等式が使えて
     $`(M_{0,j_0+(j_1-j_0-1)}+kD,\ M_{1,j_0+(j_1-j_0-1)})`$、
-    ここで $`j_0<j_1`$ より $`j_0+(j_1-j_0-1)=j_1-1`$。
+    ここで $`j_0\lt j_1`$ より $`j_0+(j_1-j_0-1)=j_1-1`$。
   - $`\mathrm{steps}_1(F_k)`$：[(T.steps1_iff)](#t-steps1_iff) の $`(\Leftarrow)`$ 方向を使う。
-    $`j+1<\lvert F_k\rvert = j_1-j_0`$ なる $`j`$ を取る。上の等式より
+    $`j+1\lt \lvert F_k\rvert = j_1-j_0`$ なる $`j`$ を取る。上の等式より
     $`\pi_0(F_k\langle j+1\rangle) = M_{0,j_0+(j+1)}+kD`$、$`\pi_0(F_k\langle j\rangle) = M_{0,j_0+j}+kD`$ である。
-    $`j_0+j+1 < j_0+(j_1-j_0) = j_1 < \lvert M\rvert`$ であるから $`(\mathrm{e}0)`$ を $`j:=j_0+j`$ に適用でき、
+    $`j_0+j+1 \lt j_0+(j_1-j_0) = j_1 \lt \lvert M\rvert`$ であるから $`(\mathrm{e}0)`$ を $`j:=j_0+j`$ に適用でき、
     $`M_{0,j_0+(j+1)}\le M_{0,j_0+j}+1`$。両辺に $`kD`$ を加えて求める不等式を得る。
-  - $`k+1<n`$ のとき $`\pi_0(\mathrm{headI}\,F_{k+1}) \le \pi_0(\mathrm{lastD}(F_k,(0,0)))+1`$：
+  - $`k+1\lt n`$ のとき $`\pi_0(\mathrm{headI}\,F_{k+1}) \le \pi_0(\mathrm{lastD}(F_k,(0,0)))+1`$：
     左辺は $`M_{0,j_0}+(k+1)D`$、右辺は $`M_{0,j_1-1}+kD+1`$ である。
     $`(k+1)D = kD+D`$ であるから、示すべきは $`M_{0,j_0}+D+kD \le M_{0,j_1-1}+1+kD`$、
     すなわち (2) の継ぎ目の評価に $`kD`$ を加えたものである。
 
   **(5) 連結部 $`C_n`$.** (4) で示した $`\mathrm{steps}_1(F_k)`$、$`F_k\ne[\,]`$ はすべての $`k`$ について、
-  継ぎ目の評価は $`k+1<n`$ なるすべての $`k`$ について成り立つので、
+  継ぎ目の評価は $`k+1\lt n`$ なるすべての $`k`$ について成り立つので、
   [(T.steps1_flatMap)](#t-steps1_flatMap) の仮定 1–3 がみたされる。これを適用して
-  $`\mathrm{steps}_1(C_n)`$ を得る。また $`1\le n`$ より $`0<n`$ であるから、
+  $`\mathrm{steps}_1(C_n)`$ を得る。また $`1\le n`$ より $`0\lt n`$ であるから、
   $`C_n\ne[\,]`$ と $`\mathrm{headI}\,C_n=\mathrm{headI}\,F_0`$ も得る。
   $`\mathrm{headI}\,F_0 = (M_{0,j_0}+0\cdot D,\ M_{1,j_0}) = (M_{0,j_0},\ M_{1,j_0})`$ だから
   ```math
@@ -993,9 +993,9 @@ $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$。以下 $`j_1:=\lvert M\rvert-1`$、$
 
   **(6) 前部 $`\mathrm{take}\,j_0\,M`$ の増分条件.**
   [(T.steps1_iff)](#t-steps1_iff) の $`(\Leftarrow)`$ 方向を使う。
-  $`j+1<\lvert\mathrm{take}\,j_0\,M\rvert`$ なる $`j`$ を取る。`List.length_take` より
-  $`\lvert\mathrm{take}\,j_0\,M\rvert=\min(j_0,\lvert M\rvert)`$ であるから、$`j+1<\lvert M\rvert`$ かつ $`j+1<j_0`$、
-  とくに $`j<j_0`$ かつ $`j<\lvert M\rvert`$ である。
+  $`j+1\lt \lvert\mathrm{take}\,j_0\,M\rvert`$ なる $`j`$ を取る。`List.length_take` より
+  $`\lvert\mathrm{take}\,j_0\,M\rvert=\min(j_0,\lvert M\rvert)`$ であるから、$`j+1\lt \lvert M\rvert`$ かつ $`j+1\lt j_0`$、
+  とくに $`j\lt j_0`$ かつ $`j\lt \lvert M\rvert`$ である。
   よって [(T.getD_eq_getElem')](Wf.md#t-getD_eq_getElem') で両辺の $`\mathrm{getD}`$ を $`[\,\cdot\,]`$ に直したうえで
   `List.getElem_take` を用いると
   $`(\mathrm{take}\,j_0\,M)\langle j\rangle = M\langle j\rangle`$、
@@ -1008,15 +1008,15 @@ $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$。以下 $`j_1:=\lvert M\rvert-1`$、$
     \pi_0(\mathrm{headI}\,C_n)\le\pi_0(\mathrm{lastD}(\mathrm{take}\,j_0\,M,(0,0)))+1.
   ```
   - $`j_0=0`$ のとき：$`\mathrm{take}\,0\,M=[\,]`$ より第 1 選言。
-  - $`j_0\ne0`$ のとき：第 3 選言を示す。$`j_0<j_1<\lvert M\rvert`$ より
+  - $`j_0\ne0`$ のとき：第 3 選言を示す。$`j_0\lt j_1\lt \lvert M\rvert`$ より
     $`\lvert\mathrm{take}\,j_0\,M\rvert = \min(j_0,\lvert M\rvert) = j_0`$ であるから、
     [(T.getLastD_eq_getD)](#t-getLastD_eq_getD) より
     $`\mathrm{lastD}(\mathrm{take}\,j_0\,M,(0,0)) = (\mathrm{take}\,j_0\,M)\langle j_0-1\rangle`$ であり、
-    $`j_0-1<j_0`$ かつ $`j_0-1<\lvert M\rvert`$ だから、
+    $`j_0-1\lt j_0`$ かつ $`j_0-1\lt \lvert M\rvert`$ だから、
     [(T.getD_eq_getElem')](Wf.md#t-getD_eq_getElem') と `List.getElem_take` により
     これは $`M\langle j_0-1\rangle`$ に等しい。
     他方 $`(\mathrm{hd})`$ より $`\pi_0(\mathrm{headI}\,C_n)=M_{0,j_0}`$ である。
-    $`1\le j_0`$ より $`(j_0-1)+1=j_0<\lvert M\rvert`$ であるから $`(\mathrm{e}0)`$ を $`j:=j_0-1`$ に適用して
+    $`1\le j_0`$ より $`(j_0-1)+1=j_0\lt \lvert M\rvert`$ であるから $`(\mathrm{e}0)`$ を $`j:=j_0-1`$ に適用して
     $`M_{0,j_0}\le M_{0,j_0-1}+1`$、これが求める不等式である。
 
   **(8) 結論.** $`M[n]=\mathrm{take}\,j_0\,M\mathbin{+\!\!+}C_n`$ について

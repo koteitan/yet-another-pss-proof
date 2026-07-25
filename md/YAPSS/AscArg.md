@@ -51,7 +51,7 @@ $`\mathrm{AscArgDom}`$ にまで還元した。本章はまずこれを、**単�
 | `shiftr0 d X` | $`\mathrm{sh}_d X`$ | 行 0 の値を $`d`$ だけ増やす（[(D.shiftr0)](Wf.md#d-shiftr0)） |
 | `copies d blk n` | $`\mathrm{cp}_d(\mathit{blk},n)`$ | $`n`$ 個のコピー塔（[(D.copies)](Wf.md#d-copies)） |
 | `AscArgDom` | $`\mathrm{AscArgDom}`$ | 昇順コピーの残余（[(D.AscArgDom)](Cofinality.md#d-AscArgDom)） |
-| `L.takeWhile p`, `L.dropWhile p` | $`\mathrm{tw}_a L`$, $`\mathrm{dw}_a L`$ | 述語 $`\lambda q.\ a < \pi_0 q`$ による前部・後部 |
+| `L.takeWhile p`, `L.dropWhile p` | $`\mathrm{tw}_a L`$, $`\mathrm{dw}_a L`$ | 述語 $`\lambda q.\ a \lt \pi_0 q`$ による前部・後部 |
 
 $`\prec_{\mathrm{c}}`$、$`\prec_{\mathrm{lex}}`$、$`\preceq_{\mathrm{lex}}`$、$`\mathrm{sh}_d`$、$`\mathrm{cp}_d`$ の定義を、
 本章で繰り返し使うので再掲する（いずれも他ファイルの定義であり、ここでは参照の便宜のためだけに書く）。
@@ -91,7 +91,7 @@ x \prec_{\mathrm{c}} y \ \vee\ (x = y \wedge X' \prec_{\mathrm{lex}} Y') & (X = 
 - `List.IsPrefix.length_le`：$`X \sqsubseteq Y \to \lvert X\rvert \le \lvert Y\rvert`$
 - `List.eq_nil_of_length_eq_zero`：$`\lvert L\rvert = 0 \to L = []`$
 
-自然数の減法はすべて切り捨て減法である（$`a < b`$ のとき $`a - b = 0`$）。
+自然数の減法はすべて切り捨て減法である（$`a \lt b`$ のとき $`a - b = 0`$）。
 
 ---
 
@@ -291,7 +291,7 @@ X \mathbin{+\!\!+} [\mathit{lp}] \preceq_{\mathrm{lex}} Y \quad\wedge\quad q \pr
 \ \Longrightarrow\ \forall S', E,\ X \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} Y \mathbin{+\!\!+} E .
 ```
 
-長さの条件 $`\lvert X\rvert < \lvert Y\rvert`$ は「$`X`$ が尽きたから小さい」という判定を排除するためのものである。
+長さの条件 $`\lvert X\rvert \lt \lvert Y\rvert`$ は「$`X`$ が尽きたから小さい」という判定を排除するためのものである。
 
 **証明** $`X`$ に関するリストの構造帰納法。帰納法の述語は
 ```math
@@ -300,21 +300,21 @@ X \mathbin{+\!\!+} [\mathit{lp}] \preceq_{\mathrm{lex}} Y \to q \prec_{\mathrm{c
 \forall S', E,\ X \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} Y \mathbin{+\!\!+} E .
 ```
 
-- 基底段 $`X = []`$：$`0 < \lvert Y\rvert`$ より $`Y = y \mathbin{::} Y'`$。目標は
+- 基底段 $`X = []`$：$`0 \lt \lvert Y\rvert`$ より $`Y = y \mathbin{::} Y'`$。目標は
   $`q \mathbin{::} S' \prec_{\mathrm{lex}} y \mathbin{::} (Y' \mathbin{+\!\!+} E)`$ であり、$`q \prec_{\mathrm{c}} y`$ を示せば十分である。
   仮定 $`[\mathit{lp}] \preceq_{\mathrm{lex}} y \mathbin{::} Y'`$ の 2 選言で場合分けする。
   - 等号 $`[\mathit{lp}] = y \mathbin{::} Y'`$：先頭を比べて $`\mathit{lp} = y`$ であるから、$`q \prec_{\mathrm{c}} \mathit{lp}`$ が $`q \prec_{\mathrm{c}} y`$。
   - $`[\mathit{lp}] \prec_{\mathrm{lex}} y \mathbin{::} Y'`$：$`\mathit{lp} \prec_{\mathrm{c}} y`$ ならば
     [(T.pairlt_trans)](Cofinality.md#t-pairlt_trans) より $`q \prec_{\mathrm{c}} y`$。
     $`\mathit{lp} = y`$（かつ尾部の比較）ならば直ちに $`q \prec_{\mathrm{c}} y`$。
-- 帰納段 $`X = x \mathbin{::} X'`$：帰納法の仮定は $`\Theta(X')`$。$`\lvert x \mathbin{::} X'\rvert < \lvert Y\rvert`$ より $`Y = y \mathbin{::} Y'`$ で
-  $`\lvert X'\rvert < \lvert Y'\rvert`$。仮定は $`x \mathbin{::} (X' \mathbin{+\!\!+} [\mathit{lp}]) \preceq_{\mathrm{lex}} y \mathbin{::} Y'`$、
+- 帰納段 $`X = x \mathbin{::} X'`$：帰納法の仮定は $`\Theta(X')`$。$`\lvert x \mathbin{::} X'\rvert \lt \lvert Y\rvert`$ より $`Y = y \mathbin{::} Y'`$ で
+  $`\lvert X'\rvert \lt \lvert Y'\rvert`$。仮定は $`x \mathbin{::} (X' \mathbin{+\!\!+} [\mathit{lp}]) \preceq_{\mathrm{lex}} y \mathbin{::} Y'`$、
   目標は $`x \mathbin{::} (X' \mathbin{+\!\!+} q \mathbin{::} S') \prec_{\mathrm{lex}} y \mathbin{::} (Y' \mathbin{+\!\!+} E)`$ である。
   - 等号のとき：$`x = y`$ かつ $`X' \mathbin{+\!\!+} [\mathit{lp}] = Y'`$。後者は
     $`X' \mathbin{+\!\!+} [\mathit{lp}] \preceq_{\mathrm{lex}} Y'`$（第 1 選言）を与えるから、$`\Theta(X')`$ より
     $`X' \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} Y' \mathbin{+\!\!+} E`$。目標の第 2 選言が成り立つ。
   - $`\prec_{\mathrm{lex}}`$ のとき：$`x \prec_{\mathrm{c}} y`$ ならば目標の第 1 選言。
-    $`x = y`$ かつ $`X' \mathbin{+\!\!+} [\mathit{lp}] \prec_{\mathrm{lex}} Y'`$ ならば、$`\Theta(X')`$（第 2 選言と $`\lvert X'\rvert < \lvert Y'\rvert`$）より
+    $`x = y`$ かつ $`X' \mathbin{+\!\!+} [\mathit{lp}] \prec_{\mathrm{lex}} Y'`$ ならば、$`\Theta(X')`$（第 2 選言と $`\lvert X'\rvert \lt \lvert Y'\rvert`$）より
     $`X' \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} Y' \mathbin{+\!\!+} E`$ であり、目標の第 2 選言が成り立つ。∎
 
 <a id="t-shiftr0_injective"></a>
@@ -351,7 +351,7 @@ $`\mathrm{sh}_d = \mathrm{map}\,f`$ であるから主張を得る。∎
     \ \vee\ \bigl((\pi_0 x + d, \pi_1 x) = (\pi_0 y + d, \pi_1 y) \wedge \mathrm{sh}_d X' \prec_{\mathrm{lex}} \mathrm{sh}_d Y'\bigr),
     ```
     右辺は $`x \prec_{\mathrm{c}} y \vee (x = y \wedge X' \prec_{\mathrm{lex}} Y')`$ である。
-    $`\pi_0 x + d < \pi_0 y + d \iff \pi_0 x < \pi_0 y`$ および
+    $`\pi_0 x + d \lt \pi_0 y + d \iff \pi_0 x \lt \pi_0 y`$ および
     $`\pi_0 x + d = \pi_0 y + d \iff \pi_0 x = \pi_0 y`$ であるから、第 1 選言どうし・
     ペアの等号どうしが同値であり、尾部の同値は $`\Lambda(X')`$ による。∎
 
@@ -382,7 +382,7 @@ $`A \in \mathrm{PairSeq}`$、$`L, w \in \mathbb{N}`$ に対し
  \bigl(\forall y \in V,\ \pi_0 x < \pi_0 y\bigr)\Bigr) \to w \le \pi_1 x .
 ```
 
-条件 $`\forall y \in V,\ \pi_0 x < \pi_0 y`$ を「$`x`$ は $`A`$ の中で**右から見える**」と呼ぶ
+条件 $`\forall y \in V,\ \pi_0 x \lt \pi_0 y`$ を「$`x`$ は $`A`$ の中で**右から見える**」と呼ぶ
 （$`x`$ より後ろに $`x`$ の行 0 の値以下の列が 1 つも無い、という意味であり、この語はこの式の略記としてのみ用いる）。
 $`\mathrm{SpineOK}(A,L,w)`$ は「$`A`$ の右から見える列のうち行 0 の値が $`L`$ 未満のものはすべて行 1 の値が $`w`$ 以上である」
 という言明である。
@@ -440,8 +440,8 @@ $`\mathit{lp} := (v_0+d_0,\ w_0+1)`$、$`M := \bigl(G \mathbin{+\!\!+} ((v_0,w_0
 ```
 を用いる。
 
-$`\mathrm{SpineOK}`$ の定義に従い、$`R = U \mathbin{+\!\!+} x \mathbin{::} V`$、$`\pi_0 x < v_0 + d_0`$、
-$`\forall y \in V,\ \pi_0 x < \pi_0 y`$ を仮定して $`w_0 \le \pi_1 x`$ を示す。
+$`\mathrm{SpineOK}`$ の定義に従い、$`R = U \mathbin{+\!\!+} x \mathbin{::} V`$、$`\pi_0 x \lt v_0 + d_0`$、
+$`\forall y \in V,\ \pi_0 x \lt \pi_0 y`$ を仮定して $`w_0 \le \pi_1 x`$ を示す。
 $`A := G \mathbin{+\!\!+} ((v_0,w_0) \mathbin{::} U)`$ とおくと、$`R`$ の分解から
 ```math
 M = A \mathbin{+\!\!+} \bigl(x \mathbin{::} (V \mathbin{+\!\!+} [\mathit{lp}])\bigr),\qquad
@@ -460,17 +460,17 @@ $`M\langle \lvert A\rvert\rangle = x`$ である。
 [(T.getD_append_right')](Cofinality.md#t-getD_append_right') より
 $`M\langle \lvert A\rvert + (t+1)\rangle = (V \mathbin{+\!\!+} [\mathit{lp}])\langle t\rangle`$ である。
 $`y \le j_1 = \lvert A\rvert + 1 + \lvert V\rvert`$ より $`t \le \lvert V\rvert`$ であるから、2 つの場合がある。
-- $`t < \lvert V\rvert`$：$`(V \mathbin{+\!\!+} [\mathit{lp}])\langle t\rangle = V\langle t\rangle \in V`$ であり、
-  仮定 $`\forall y \in V,\ \pi_0 x < \pi_0 y`$ から $`\pi_0 x < \pi_0(V\langle t\rangle)`$。
+- $`t \lt \lvert V\rvert`$：$`(V \mathbin{+\!\!+} [\mathit{lp}])\langle t\rangle = V\langle t\rangle \in V`$ であり、
+  仮定 $`\forall y \in V,\ \pi_0 x \lt \pi_0 y`$ から $`\pi_0 x \lt \pi_0(V\langle t\rangle)`$。
 - $`t = \lvert V\rvert`$：$`(V \mathbin{+\!\!+} [\mathit{lp}])\langle \lvert V\rvert\rangle = \mathit{lp}`$ であり、
-  仮定 $`\pi_0 x < v_0 + d_0 = \pi_0 \mathit{lp}`$ から結論を得る。
+  仮定 $`\pi_0 x \lt v_0 + d_0 = \pi_0 \mathit{lp}`$ から結論を得る。
 
-**$`x`$ は落とされる列の行 0 祖先である。** $`\lvert G\rvert < \lvert A\rvert \le j_1`$（前者は
+**$`x`$ は落とされる列の行 0 祖先である。** $`\lvert G\rvert \lt \lvert A\rvert \le j_1`$（前者は
 $`\lvert A\rvert = \lvert G\rvert + 1 + \lvert U\rvert`$ から、後者は $`j_1 = \lvert A\rvert + 1 + \lvert V\rvert`$ から）
 と $`(\ast)`$ に [(T.le0_through_pivot)](Nrmstep.md#t-le0_through_pivot) を適用すると、
 第 5 条件 $`\lvert G\rvert \le^M_0 j_1`$ から $`\lvert A\rvert \le^M_0 j_1`$ が得られる。
 
-**最小性条項の適用。** 第 6 条件を $`j := \lvert A\rvert`$ に適用する。前提 $`\lvert G\rvert < \lvert A\rvert`$ と
+**最小性条項の適用。** 第 6 条件を $`j := \lvert A\rvert`$ に適用する。前提 $`\lvert G\rvert \lt \lvert A\rvert`$ と
 $`\lvert A\rvert \le^M_0 j_1`$ はいま示した。結論は $`M_{1,j_1} \le M_{1,\lvert A\rvert}`$ である。
 ここで $`M\langle j_1\rangle = \mathit{lp}`$（$`M`$ は長さ $`j_1`$ の列に $`[\mathit{lp}]`$ を継いだものである）であるから
 [(T.entry_one)](Cofinality.md#t-entry_one) より $`M_{1,j_1} = \pi_1 \mathit{lp} = w_0 + 1`$、
@@ -488,8 +488,8 @@ $`\mathrm{AscArgDom}`$（[(D.AscArgDom)](Cofinality.md#d-AscArgDom)）が成り�
 
 **証明** $`\mathrm{AscArgDom}`$ の仮定を与える。すなわち $`G, R, S \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$ と
 - $`h_N`$：$`\bigl(G \mathbin{+\!\!+} ((v_0,w_0) \mathbin{::} R)\bigr) \mathbin{+\!\!+} (v_0+d_0,w_0) \mathbin{::} S \in \mathrm{ST\_PS}`$
-- $`h_{Rgt}`$：$`\forall x \in R,\ v_0 < \pi_0 x`$
-- $`h_d`$：$`0 < d_0`$
+- $`h_{Rgt}`$：$`\forall x \in R,\ v_0 \lt \pi_0 x`$
+- $`h_d`$：$`0 \lt d_0`$
 - $`h_{nr}`$：$`\lvert G\rvert \to^{M}_1 \lvert G \mathbin{+\!\!+} ((v_0,w_0)\mathbin{::}R)\rvert`$。ここで
   $`M := \bigl(G \mathbin{+\!\!+} ((v_0,w_0) \mathbin{::} R)\bigr) \mathbin{+\!\!+} [(v_0+d_0,\ w_0+1)]`$ は宿主である
 
@@ -509,10 +509,10 @@ $`S_{hi} \mathbin{+\!\!+} D = S`$ かつ $`A_2 \mathbin{+\!\!+} Z = D`$。`List.
 ```
 
 **先頭の条件.** まず $`D = [] \vee \pi_0(\mathrm{headI}\,D) \le v_0+d_0`$：$`D \ne []`$ のとき、
-`List.head?_dropWhile_not` より $`D`$ の先頭は述語 $`\lambda p.\ v_0+d_0 < \pi_0 p`$ をみたさない、
+`List.head?_dropWhile_not` より $`D`$ の先頭は述語 $`\lambda p.\ v_0+d_0 \lt \pi_0 p`$ をみたさない、
 すなわち $`\pi_0(\mathrm{headI}\,D) \le v_0+d_0`$。
 次に $`A_2 = [] \vee \pi_0(\mathrm{headI}\,A_2) \le v_0+d_0`$：$`A_2 \ne []`$ とすると $`D \ne []`$ であり、
-$`D = y \mathbin{::} Y`$ と書くと、$`v_0 < \pi_0 y`$ の場合は $`A_2 = y \mathbin{::} \mathrm{tw}_{v_0} Y`$ で
+$`D = y \mathbin{::} Y`$ と書くと、$`v_0 \lt \pi_0 y`$ の場合は $`A_2 = y \mathbin{::} \mathrm{tw}_{v_0} Y`$ で
 $`\mathrm{headI}\,A_2 = y = \mathrm{headI}\,D`$、$`v_0 \ge \pi_0 y`$ の場合は $`A_2 = []`$ となって仮定に反する。
 よって $`\mathrm{headI}\,A_2 = \mathrm{headI}\,D`$ であり、上の $`D`$ の評価が使える。
 最後に $`Z = [] \vee \pi_0(\mathrm{headI}\,Z) \le v_0`$：$`D`$ の場合と同じく `List.head?_dropWhile_not` による。
@@ -527,9 +527,9 @@ $`\mathrm{headI}\,A_2 = y = \mathrm{headI}\,D`$、$`v_0 \ge \pi_0 y`$ の場合�
 ```math
 X := G,\quad u := v_0,\quad w := w_0,\quad A_1 := R,\quad e := d_0,\quad B := S_{hi},\quad A_2 := A_2,\quad Z := Z
 ```
-として適用する。標準形の仮定は上の括り直しにより $`h_N`$ そのもの、$`0 < e`$ は $`h_d`$、
-$`\forall x \in A_1,\ u < \pi_0 x`$ は $`h_{Rgt}`$、$`\forall x \in B,\ u+e < \pi_0 x`$ と
-$`\forall x \in A_2,\ u < \pi_0 x`$ と 2 つの先頭条件は上で示したもの、
+として適用する。標準形の仮定は上の括り直しにより $`h_N`$ そのもの、$`0 \lt e`$ は $`h_d`$、
+$`\forall x \in A_1,\ u \lt \pi_0 x`$ は $`h_{Rgt}`$、$`\forall x \in B,\ u+e \lt \pi_0 x`$ と
+$`\forall x \in A_2,\ u \lt \pi_0 x`$ と 2 つの先頭条件は上で示したもの、
 $`\mathrm{SpineOK}(R, v_0+d_0, w_0)`$ は [(T.spineOK_of_nextrel1)](#t-spineOK_of_nextrel1) を $`h_{nr}`$ に適用したものである。
 結論は
 ```math
@@ -591,16 +591,16 @@ X := [(0,0)],\quad A_1 := [],\quad B := [(3,2)],\quad A_2 := [(2,1),(3,2)],\quad
 = (0,0)\,(1,1)\,(2,1)\,(3,2)\,(2,1)\,(3,2) = L
 ```
 であり、[(D.ArgDomCore)](#d-ArgDomCore) の側条件はすべて成り立つ。実際
-$`0 < e`$；$`A_1 = []`$ なので $`\forall x \in A_1,\ u < \pi_0 x`$ は空虚に真、
+$`0 \lt e`$；$`A_1 = []`$ なので $`\forall x \in A_1,\ u \lt \pi_0 x`$ は空虚に真、
 かつ $`\mathrm{SpineOK}([], 2, 1)`$ も $`[] = U \mathbin{+\!\!+} x \mathbin{::} V`$ となる分解が存在しないので空虚に真；
-$`B`$ の唯一の列は $`(3,2)`$ で $`u+e = 2 < 3`$；$`A_2`$ の列は $`(2,1),(3,2)`$ でともに $`u = 1 < \pi_0`$；
+$`B`$ の唯一の列は $`(3,2)`$ で $`u+e = 2 \lt 3`$；$`A_2`$ の列は $`(2,1),(3,2)`$ でともに $`u = 1 \lt \pi_0`$；
 $`\pi_0(\mathrm{headI}\,A_2) = 2 \le 2 = u+e`$；$`Z = []`$。
 一方、結論は
 ```math
 [(3,2)] \preceq_{\mathrm{lex}} \mathrm{sh}_1\bigl((2,1)\,(3,2)\,(2,1)\,(3,2)\bigr) = (3,1)\,(4,2)\,(3,1)\,(4,2)
 ```
 であるが、先頭を比べると $`(3,2) \prec_{\mathrm{c}} (3,1)`$ は
-$`3 < 3`$ も $`(3 = 3 \wedge 2 < 1)`$ も成り立たないので偽、また $`(3,2) \ne (3,1)`$ であるから
+$`3 \lt 3`$ も $`(3 = 3 \wedge 2 \lt 1)`$ も成り立たないので偽、また $`(3,2) \ne (3,1)`$ であるから
 $`\prec_{\mathrm{lex}}`$ の第 3 の場合の 2 選言がともに偽であり、$`[(3,2)] \prec_{\mathrm{lex}} (3,1)(4,2)(3,1)(4,2)`$ は偽。
 等号も長さが違うので偽。よって結論は成り立たない。
 
@@ -614,8 +614,8 @@ $`\prec_{\mathrm{lex}}`$ の第 3 の場合の 2 選言がともに偽であり�
 - $`\mathrm{z0ok}\,L`$：行 0 の値が $`0`$ の列は第 $`0`$ 列 $`(0,0)`$ のみで、その行 1 の値は $`0`$ である。
 - $`\mathrm{r1ok}\,L`$：行 0 の値が正の各 $`j`$ について、
   $`\pi_0(L\langle k\rangle) + 1 = \pi_0(L\langle j\rangle)`$、
-  $`\forall l\ (k < l < j \to \pi_0(L\langle j\rangle) \le \pi_0(L\langle l\rangle))`$、
-  $`\pi_1(L\langle j\rangle) \le \pi_1(L\langle k\rangle) + 1`$ をみたす $`k < j`$ を挙げる。
+  $`\forall l\ (k \lt l \lt j \to \pi_0(L\langle j\rangle) \le \pi_0(L\langle l\rangle))`$、
+  $`\pi_1(L\langle j\rangle) \le \pi_1(L\langle k\rangle) + 1`$ をみたす $`k \lt j`$ を挙げる。
   $`j=1`$ に $`k=0`$（$`0+1=1`$、間に列なし、$`1 \le 0+1`$）、
   $`j=2`$ に $`k=1`$（$`1+1=2`$、間に列なし、$`1 \le 1+1`$）、
   $`j=3`$ に $`k=2`$（$`2+1=3`$、間に列なし、$`2 \le 1+1`$）、
@@ -702,7 +702,7 @@ $`(P \mathbin{+\!\!+} Q)\langle \lvert P\rvert + t\rangle = Q\langle t\rangle`$ 
   $`N\langle \lvert X\rvert + (\lvert A_1\rvert+1)\rangle = \bigl((u,w) \mathbin{::} (A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} \cdots)\bigr)\langle \lvert A_1\rvert+1\rangle = \bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} \cdots\bigr)\langle \lvert A_1\rvert\rangle`$
   であり、再び同じ補題（$`P := A_1`$、$`t := 0`$）を使って $`(u+e,w)`$。
 - 長さ：$`\lvert N\rvert = \lvert X\rvert + 1 + \bigl(\lvert A_1\rvert + 1 + (\lvert B\rvert + \lvert A_2\rvert + \lvert Z\rvert)\bigr)`$
-  であるから $`\lvert X\rvert + \lvert A_1\rvert + 1 < \lvert N\rvert`$。∎
+  であるから $`\lvert X\rvert + \lvert A_1\rvert + 1 \lt \lvert N\rvert`$。∎
 
 <a id="t-argDomCoreOn_diag"></a>
 ### 定理 基底段：対角列 (T.argDomCoreOn_diag)
@@ -715,16 +715,16 @@ $`(P \mathbin{+\!\!+} Q)\langle \lvert P\rvert + t\rangle = Q\langle t\rangle`$ 
 ```math
 \Delta_0^v\langle i\rangle = (u,w), \qquad \Delta_0^v\langle j\rangle = (u+e,w), \qquad j < \lvert \Delta_0^v\rvert .
 ```
-[(T.diagSeq0_length)](Nrmstep.md#t-diagSeq0_length) より $`\lvert \Delta_0^v\rvert = v+1`$ であるから $`j < v+1`$、
-また $`i < j`$ より $`i < v+1`$。よって [(T.diagSeq0_getD)](Nrmstep.md#t-diagSeq0_getD) が両方の位置で使えて
+[(T.diagSeq0_length)](Nrmstep.md#t-diagSeq0_length) より $`\lvert \Delta_0^v\rvert = v+1`$ であるから $`j \lt v+1`$、
+また $`i \lt j`$ より $`i \lt v+1`$。よって [(T.diagSeq0_getD)](Nrmstep.md#t-diagSeq0_getD) が両方の位置で使えて
 ```math
 \Delta_0^v\langle i\rangle = (i,i), \qquad \Delta_0^v\langle j\rangle = (j,j) .
 ```
 第 2 成分を比べると $`i = w`$ かつ $`j = w`$、したがって $`i = j`$。
-しかし $`j = i + (\lvert A_1\rvert + 1) \ge i+1 > i`$ であり矛盾する。∎
+しかし $`j = i + (\lvert A_1\rvert + 1) \ge i+1 \gt i`$ であり矛盾する。∎
 
 これが「対角列では行 1 の値が等しい 2 つの列は同一の列である」という基底段の内容である
-（$`0 < e`$ すら使っていない）。
+（$`0 \lt e`$ すら使っていない）。
 
 <a id="t-argDomCoreOn_snoc_zero"></a>
 ### 定理 末尾に $`(0,\cdot)`$ を付けても変わらない (T.argDomCoreOn_snoc_zero)
@@ -874,25 +874,25 @@ W = \Bigl(X' \mathbin{+\!\!+} (u-d,\ w) \mathbin{::} \bigl(A_1' \mathbin{+\!\!+}
 ここで深い方の列については $`u+e-d = (u-d)+e`$ を使った（$`d \le u`$ による）。
 
 **(3) 側条件の移送。**
-- $`\forall x \in A_1',\ u-d < \pi_0 x`$：$`x = (\pi_0 q - d, \pi_1 q)`$（$`q \in A_1`$）と書けて、
-  $`h_1`$ より $`u < \pi_0 q`$、(1) より $`d \le \pi_0 q`$、$`d \le u`$。よって $`u - d < \pi_0 q - d`$。
-- $`\forall x \in B',\ (u-d)+e < \pi_0 x`$：同様に $`u+e < \pi_0 q`$、$`d \le u`$ から
-  $`(u-d)+e = u+e-d < \pi_0 q - d`$。
-- $`\forall x \in A_2',\ u-d < \pi_0 x`$：同様。
+- $`\forall x \in A_1',\ u-d \lt \pi_0 x`$：$`x = (\pi_0 q - d, \pi_1 q)`$（$`q \in A_1`$）と書けて、
+  $`h_1`$ より $`u \lt \pi_0 q`$、(1) より $`d \le \pi_0 q`$、$`d \le u`$。よって $`u - d \lt \pi_0 q - d`$。
+- $`\forall x \in B',\ (u-d)+e \lt \pi_0 x`$：同様に $`u+e \lt \pi_0 q`$、$`d \le u`$ から
+  $`(u-d)+e = u+e-d \lt \pi_0 q - d`$。
+- $`\forall x \in A_2',\ u-d \lt \pi_0 x`$：同様。
 - $`A_2' = [] \vee \pi_0(\mathrm{headI}\,A_2') \le (u-d)+e`$：$`A_2 = []`$ なら $`A_2' = []`$。
   $`A_2 = a \mathbin{::} A_2''`$ なら $`h_4`$ の第 2 選言より $`\pi_0 a \le u+e`$、(1) より $`d \le \pi_0 a`$、
   $`\mathrm{headI}\,A_2' = (\pi_0 a - d, \pi_1 a)`$ であるから $`\pi_0 a - d \le u+e-d = (u-d)+e`$。
 - $`Z' = [] \vee \pi_0(\mathrm{headI}\,Z') \le u-d`$：同様に $`h_5`$ から。
-- $`\mathrm{SpineOK}(A_1', (u-d)+e, w)`$：$`A_1' = U' \mathbin{+\!\!+} x' \mathbin{::} V'`$、$`\pi_0 x' < (u-d)+e`$、
-  $`\forall y \in V',\ \pi_0 x' < \pi_0 y`$ を仮定する。両辺に $`\mathrm{sh}_d`$ を施すと
+- $`\mathrm{SpineOK}(A_1', (u-d)+e, w)`$：$`A_1' = U' \mathbin{+\!\!+} x' \mathbin{::} V'`$、$`\pi_0 x' \lt (u-d)+e`$、
+  $`\forall y \in V',\ \pi_0 x' \lt \pi_0 y`$ を仮定する。両辺に $`\mathrm{sh}_d`$ を施すと
   ```math
   A_1 = \mathrm{sh}_d A_1' = \mathrm{sh}_d U' \mathbin{+\!\!+} (\pi_0 x' + d,\ \pi_1 x') \mathbin{::} \mathrm{sh}_d V'
   ```
   である。$`h_6 = \mathrm{SpineOK}(A_1, u+e, w)`$ を
   $`U := \mathrm{sh}_d U'`$、$`V := \mathrm{sh}_d V'`$、$`x := (\pi_0 x' + d, \pi_1 x')`$ に適用する。
-  行 0 の条件は $`\pi_0 x' + d < u+e`$（$`\pi_0 x' < (u-d)+e = u+e-d`$ と $`d \le u`$ から）、
+  行 0 の条件は $`\pi_0 x' + d \lt u+e`$（$`\pi_0 x' \lt (u-d)+e = u+e-d`$ と $`d \le u`$ から）、
   右から見える条件は、$`\mathrm{sh}_d V'`$ の要素 $`(\pi_0 q + d, \pi_1 q)`$（$`q \in V'`$）について
-  $`\pi_0 x' < \pi_0 q`$ から $`\pi_0 x' + d < \pi_0 q + d`$。
+  $`\pi_0 x' \lt \pi_0 q`$ から $`\pi_0 x' + d \lt \pi_0 q + d`$。
   結論は $`w \le \pi_1 (\pi_0 x' + d, \pi_1 x') = \pi_1 x'`$ であり、これが求めるものである。
 
 **(4) 適用と結論の戻し。** $`\mathrm{ArgDomCoreOn}(W)`$ を (2) の分解と (3) の側条件に適用して
@@ -968,7 +968,7 @@ $`\mathit{blk} = b \mathbin{::} \mathit{blk}'`$ と書けるから、この列�
 <a id="t-argbound_len"></a>
 ### 定理 上界の前半は $`B`$ より長い (T.argbound_len)
 
-**主張** $`\lvert B\rvert < \bigl\lvert \mathrm{sh}_e A_1 \mathbin{+\!\!+} (u+e+e,w) \mathbin{::} \mathrm{sh}_e B\bigr\rvert`$。
+**主張** $`\lvert B\rvert \lt \bigl\lvert \mathrm{sh}_e A_1 \mathbin{+\!\!+} (u+e+e,w) \mathbin{::} \mathrm{sh}_e B\bigr\rvert`$。
 
 **証明** [(T.shiftr0_length)](Cofinality.md#t-shiftr0_length) より
 $`\lvert \mathrm{sh}_e A_1\rvert = \lvert A_1\rvert`$、$`\lvert \mathrm{sh}_e B\rvert = \lvert B\rvert`$ であるから、
@@ -992,16 +992,16 @@ p := \lvert G\rvert + \lvert \mathit{blk}\rvert = \lvert G\rvert + (\lvert R\rve
 ```
 である（$`\lvert G\rvert`$ ではない）。$`\mathrm{ArgDomCoreOn}(N)`$ の実例の 2 つの印付き列の位置は
 [(T.argdom_pos)](#t-argdom_pos) により $`i = \lvert X\rvert`$ と $`j = \lvert X\rvert + (\lvert A_1\rvert+1)`$ で、
-つねに $`i < j`$ である。場合分けは $`i, j`$ と $`p`$ の位置関係で行う。
+つねに $`i \lt j`$ である。場合分けは $`i, j`$ と $`p`$ の位置関係で行う。
 
 | 名前 | 判別条件 | 位置の読み |
 |---|---|---|
-| **B** | $`\lvert X\rvert + (\lvert A_1\rvert+1) < \lvert G\rvert + (\lvert R\rvert+1)`$ | $`j < p`$ |
-| **A2** | $`\lvert X\rvert < \lvert G\rvert + (\lvert R\rvert+1)`$ かつ $`\lvert G\rvert + (\lvert R\rvert+1) \le \lvert X\rvert + (\lvert A_1\rvert+1)`$ | $`i < p \le j`$ |
+| **B** | $`\lvert X\rvert + (\lvert A_1\rvert+1) \lt \lvert G\rvert + (\lvert R\rvert+1)`$ | $`j \lt p`$ |
+| **A2** | $`\lvert X\rvert \lt \lvert G\rvert + (\lvert R\rvert+1)`$ かつ $`\lvert G\rvert + (\lvert R\rvert+1) \le \lvert X\rvert + (\lvert A_1\rvert+1)`$ | $`i \lt p \le j`$ |
 | **A1** | $`\lvert G\rvert + (\lvert R\rvert+1) \le \lvert X\rvert`$ | $`p \le i`$ |
 
 **網羅性.** この 3 つは互いに排反で、すべての実例を尽くす。実際、自然数の 2 分律を 2 回使うだけでよい。
-$`j < p`$ でなければ $`p \le j`$ であり、そのとき $`i < p`$（場合 A2）か $`p \le i`$（場合 A1）のいずれかである。
+$`j \lt p`$ でなければ $`p \le j`$ であり、そのとき $`i \lt p`$（場合 A2）か $`p \le i`$（場合 A1）のいずれかである。
 $`i`$ と $`j`$ の関係は一切使わないので、実例を取りこぼすことはない。この振り分けを行うのが
 [(T.argDomCoreOn_bad)](#t-argDomCoreOn_bad) である。
 
@@ -1017,11 +1017,11 @@ $`i`$ と $`j`$ の関係は一切使わないので、実例を取りこぼす�
 **主張** $`M, G, R \in \mathrm{PairSeq}`$、$`v_0,w_0,d_0,n \in \mathbb{N}`$、$`\mathit{lp} \in \mathbb{N}\times\mathbb{N}`$ が
 - $`h_M`$：$`M \in \mathrm{ST\_PS}`$、$`h_{Mon}`$：$`\mathrm{ArgDomCoreOn}(M)`$
 - $`h_{Meq}`$：$`M = G \mathbin{+\!\!+} ((v_0,w_0) \mathbin{::} R) \mathbin{+\!\!+} [\mathit{lp}]`$
-- $`h_{Rgt}`$：$`\forall x \in R,\ v_0 < \pi_0 x`$、$`h_{lp}`$：$`v_0 < \pi_0 \mathit{lp}`$
+- $`h_{Rgt}`$：$`\forall x \in R,\ v_0 \lt \pi_0 x`$、$`h_{lp}`$：$`v_0 \lt \pi_0 \mathit{lp}`$
 - $`h_{disj}`$：$`\bigl(d_0 = 0 \wedge \pi_1 \mathit{lp} = 0 \wedge \pi_0 \mathit{lp} = v_0+1\bigr)`$ または
-  $`\bigl(0 < d_0 \wedge \pi_1 \mathit{lp} = w_0+1 \wedge \pi_0 \mathit{lp} = v_0+d_0 \wedge \lvert G\rvert \to^M_1 (\lvert M\rvert - 1)\bigr)`$
+  $`\bigl(0 \lt d_0 \wedge \pi_1 \mathit{lp} = w_0+1 \wedge \pi_0 \mathit{lp} = v_0+d_0 \wedge \lvert G\rvert \to^M_1 (\lvert M\rvert - 1)\bigr)`$
 - $`h_{STn}`$：$`\forall m \ge 1,\ G \mathbin{+\!\!+} \mathrm{cp}_{d_0}((v_0,w_0) \mathbin{::} R,\ m) \in \mathrm{ST\_PS}`$
-- $`h_{IH}`$：$`\forall m,\ 1 \le m < n \to \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}((v_0,w_0)\mathbin{::}R,\ m)\bigr)`$
+- $`h_{IH}`$：$`\forall m,\ 1 \le m \lt n \to \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}((v_0,w_0)\mathbin{::}R,\ m)\bigr)`$
 - $`h_n`$：$`1 \le n`$
 
 をみたすとする。さらに $`G \mathbin{+\!\!+} \mathrm{cp}_{d_0}((v_0,w_0)\mathbin{::}R,\ n)`$ の分解
@@ -1056,9 +1056,9 @@ $`h_{case}`$ は $`\lvert P\rvert \le \lvert X\rvert`$ であるから
 **$`m = 0`$ の場合。** [(T.copies_zero)](Wf.md#t-copies_zero) と
 [(T.shiftr0_nil)](Wf.md#t-shiftr0_nil) より左辺は $`[]`$ である。しかし右辺は列 $`(u,w)`$ を含むので長さが $`1`$ 以上であり、
 長さを比べて矛盾する。これは「$`n = 1`$ のとき塔の長さはちょうど $`p`$ であるのに
-$`p \le i < j < \lvert N\rvert = p`$ が要求される」という空虚性の内容である。
+$`p \le i \lt j \lt \lvert N\rvert = p`$ が要求される」という空虚性の内容である。
 
-**$`m \ge 1`$ の場合。** $`h_{IH}`$ を $`m`$（$`1 \le m < m+1 = n`$）に適用して
+**$`m \ge 1`$ の場合。** $`h_{IH}`$ を $`m`$（$`1 \le m \lt m+1 = n`$）に適用して
 $`\mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m)\bigr)`$ を得る。
 [(T.argDomCoreOn_drop_left)](#t-argDomCoreOn_drop_left)（$`P := G`$）で $`G`$ を落とし、
 [(T.argDomCoreOn_shiftr0)](#t-argDomCoreOn_shiftr0)（$`d := d_0`$）でシフトを付け直すと
@@ -1086,12 +1086,12 @@ R_p = [] \ \vee\ \pi_0(\mathrm{headI}\,R_p) \le L .
 
 - 基底段 $`E = []`$：$`B_p := []`$、$`R_p := []`$ と取る。3 条件はいずれも成り立つ
   （$`\forall x \in [],\ \cdots`$ は空虚に真、$`R_p = []`$）。
-- 帰納段 $`E = a \mathbin{::} E'`$：帰納法の仮定は $`\Pi(E')`$ である。$`L < \pi_0 a`$ か否かで場合分けする。
-  - $`L < \pi_0 a`$ のとき：$`\Pi(E')`$ の与える $`B_p, R_p`$ に対し $`(a \mathbin{::} B_p,\ R_p)`$ と取る。
+- 帰納段 $`E = a \mathbin{::} E'`$：帰納法の仮定は $`\Pi(E')`$ である。$`L \lt \pi_0 a`$ か否かで場合分けする。
+  - $`L \lt \pi_0 a`$ のとき：$`\Pi(E')`$ の与える $`B_p, R_p`$ に対し $`(a \mathbin{::} B_p,\ R_p)`$ と取る。
     $`a \mathbin{::} E' = a \mathbin{::} (B_p \mathbin{+\!\!+} R_p) = (a \mathbin{::} B_p) \mathbin{+\!\!+} R_p`$ であり、
     $`a \mathbin{::} B_p`$ の要素は $`a`$ か $`B_p`$ の要素であって、いずれも行 0 が $`L`$ より大きい。
     第 3 条件は $`\Pi(E')`$ のものをそのまま使う。
-  - $`\neg(L < \pi_0 a)`$ のとき：$`([],\ a \mathbin{::} E')`$ と取る。第 1 条件は
+  - $`\neg(L \lt \pi_0 a)`$ のとき：$`([],\ a \mathbin{::} E')`$ と取る。第 1 条件は
     $`a \mathbin{::} E' = [] \mathbin{+\!\!+} (a \mathbin{::} E')`$、第 2 条件は $`\forall x \in [],\ \cdots`$ が空虚に真であること、
     第 3 条件は $`\mathrm{headI}(a \mathbin{::} E') = a`$ と $`\pi_0 a \le L`$ による。∎
 
@@ -1115,15 +1115,15 @@ X \mathbin{+\!\!+} [\mathit{lp}] \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E \to
 \forall S', E',\ X \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
 ```
 
-- 基底段 $`X = []`$：$`0 < \lvert V\rvert`$ より $`V = v \mathbin{::} V'`$。
+- 基底段 $`X = []`$：$`0 \lt \lvert V\rvert`$ より $`V = v \mathbin{::} V'`$。
   目標 $`q \mathbin{::} S' \prec_{\mathrm{lex}} v \mathbin{::} (V' \mathbin{+\!\!+} E')`$ には $`q \prec_{\mathrm{c}} v`$ を示せば十分。
   仮定 $`[\mathit{lp}] \preceq_{\mathrm{lex}} v \mathbin{::} (V' \mathbin{+\!\!+} E)`$ の 2 選言で場合分けする。
   - 等号のとき：先頭を比べて $`\mathit{lp} = v`$、よって $`q \prec_{\mathrm{c}} v`$。
   - $`\prec_{\mathrm{lex}}`$ のとき：$`\mathit{lp} \prec_{\mathrm{c}} v`$ ならば
     [(T.pairlt_trans)](Cofinality.md#t-pairlt_trans) で $`q \prec_{\mathrm{c}} v`$、
     $`\mathit{lp} = v`$ ならば直ちに $`q \prec_{\mathrm{c}} v`$。
-- 帰納段 $`X = x \mathbin{::} X'`$：帰納法の仮定は $`\Theta'(X')`$。$`\lvert X\rvert < \lvert V\rvert`$ より
-  $`V = v \mathbin{::} V'`$ で $`\lvert X'\rvert < \lvert V'\rvert`$。
+- 帰納段 $`X = x \mathbin{::} X'`$：帰納法の仮定は $`\Theta'(X')`$。$`\lvert X\rvert \lt \lvert V\rvert`$ より
+  $`V = v \mathbin{::} V'`$ で $`\lvert X'\rvert \lt \lvert V'\rvert`$。
   仮定は $`x \mathbin{::} (X' \mathbin{+\!\!+} [\mathit{lp}]) \preceq_{\mathrm{lex}} v \mathbin{::} (V' \mathbin{+\!\!+} E)`$、
   目標は $`x \mathbin{::} (X' \mathbin{+\!\!+} q \mathbin{::} S') \prec_{\mathrm{lex}} v \mathbin{::} (V' \mathbin{+\!\!+} E')`$。
   - 等号のとき：$`x = v`$ かつ $`X' \mathbin{+\!\!+} [\mathit{lp}] = V' \mathbin{+\!\!+} E`$。後者は $`\preceq_{\mathrm{lex}}`$ の
@@ -1156,7 +1156,7 @@ C_p := X \mathbin{+\!\!+} (u,w) \mathbin{::} \bigl(A_1 \mathbin{+\!\!+} [(u+e,w)
 P \mathbin{+\!\!+} \mathrm{sh}_{d_0}\bigl(\mathrm{cp}_{d_0}(\mathit{blk},m)\bigr) = C_p \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 と書ける。$`\lvert C_p\rvert = \lvert X\rvert + 1 + \lvert A_1\rvert + 1 = j+1 \le p = \lvert P\rvert`$
-（$`h_{case}`$ は $`j < p`$）であるから [(T.split_prefix_left)](#t-split_prefix_left) が使えて、$`D`$ が存在して
+（$`h_{case}`$ は $`j \lt p`$）であるから [(T.split_prefix_left)](#t-split_prefix_left) が使えて、$`D`$ が存在して
 ```math
 P = C_p \mathbin{+\!\!+} D, \qquad
 B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z) = D \mathbin{+\!\!+} \mathrm{sh}_{d_0}\bigl(\mathrm{cp}_{d_0}(\mathit{blk},m)\bigr) .
@@ -1183,8 +1183,8 @@ B' \preceq_{\mathrm{lex}} \mathrm{sh}_e A_1 \mathbin{+\!\!+} (u+e+e,\ w) \mathbi
 ```math
 M = \Bigl(X \mathbin{+\!\!+} (u,w) \mathbin{::} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B' \mathbin{+\!\!+} A_2')\bigr)\Bigr) \mathbin{+\!\!+} Z'
 ```
-であり、$`h_{Mon} = \mathrm{ArgDomCoreOn}(M)`$ をこれに適用できる。側条件のうち $`0 < e`$、
-$`\forall x \in A_1,\ u < \pi_0 x`$、$`\mathrm{SpineOK}(A_1,u+e,w)`$ は実例のもの（$`A_1, u, w, e`$ は共通）をそのまま使い、
+であり、$`h_{Mon} = \mathrm{ArgDomCoreOn}(M)`$ をこれに適用できる。側条件のうち $`0 \lt e`$、
+$`\forall x \in A_1,\ u \lt \pi_0 x`$、$`\mathrm{SpineOK}(A_1,u+e,w)`$ は実例のもの（$`A_1, u, w, e`$ は共通）をそのまま使い、
 残りは仮定である。結論
 $`B' \preceq_{\mathrm{lex}} \mathrm{sh}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B' \mathbin{+\!\!+} A_2')\bigr)`$ を
 [(T.argbound_split)](#t-argbound_split) で
@@ -1200,12 +1200,12 @@ $`\bigl(\mathrm{sh}_e A_1 \mathbin{+\!\!+} (u+e+e,w) \mathbin{::} \mathrm{sh}_e 
 [(T.sle_append_mono)](Cofinality.md#t-sle_append_mono) を適用して目標が得られる。
 以下、この形の主張を示す。$`\lvert B\rvert`$ と $`\lvert D\rvert`$ の 2 分律で場合分けする。
 
-**(a) $`\lvert B\rvert < \lvert D\rvert`$ のとき。** [(T.split_prefix_right)](#t-split_prefix_right) を
+**(a) $`\lvert B\rvert \lt \lvert D\rvert`$ のとき。** [(T.split_prefix_right)](#t-split_prefix_right) を
 $`B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z) = D \mathbin{+\!\!+} \mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(\mathit{blk},m))`$ に適用して $`D_r`$ を得る：
 ```math
 D = B \mathbin{+\!\!+} D_r, \qquad A_2 \mathbin{+\!\!+} Z = D_r \mathbin{+\!\!+} \mathrm{sh}_{d_0}\bigl(\mathrm{cp}_{d_0}(\mathit{blk},m)\bigr) .
 ```
-$`D_r = []`$ とすると $`D = B`$ となり $`\lvert B\rvert < \lvert D\rvert`$ に反するから $`D_r \ne []`$、
+$`D_r = []`$ とすると $`D = B`$ となり $`\lvert B\rvert \lt \lvert D\rvert`$ に反するから $`D_r \ne []`$、
 したがって $`A_2 \mathbin{+\!\!+} Z \ne []`$ であり
 [(T.headI_append_left)](Seqlex.md#t-headI_append_left) より
 $`\mathrm{headI}(A_2 \mathbin{+\!\!+} Z) = \mathrm{headI}\,D_r`$。
@@ -1215,18 +1215,18 @@ $`A_2 \ne []`$ ならば $`\mathrm{headI}(A_2 \mathbin{+\!\!+} Z) = \mathrm{head
 $`\pi_0(\mathrm{headI}\,A_2) \le u+e`$。
 
 [(T.arg_split)](#t-arg_split) を $`L := u`$、$`E := D_r \mathbin{+\!\!+} [\mathit{lp}]`$ に適用して $`A_2', Z'`$ を得る：
-$`D_r \mathbin{+\!\!+} [\mathit{lp}] = A_2' \mathbin{+\!\!+} Z'`$、$`\forall x \in A_2',\ u < \pi_0 x`$、
+$`D_r \mathbin{+\!\!+} [\mathit{lp}] = A_2' \mathbin{+\!\!+} Z'`$、$`\forall x \in A_2',\ u \lt \pi_0 x`$、
 $`Z' = [] \vee \pi_0(\mathrm{headI}\,Z') \le u`$。さらに
 $`A_2' = [] \vee \pi_0(\mathrm{headI}\,A_2') \le u+e`$ も成り立つ：$`A_2' \ne []`$ ならば
 $`\mathrm{headI}\,A_2' = \mathrm{headI}(D_r \mathbin{+\!\!+} [\mathit{lp}]) = \mathrm{headI}\,D_r`$ であり、上の評価が使える。
 最後に $`D \mathbin{+\!\!+} [\mathit{lp}] = (B \mathbin{+\!\!+} D_r) \mathbin{+\!\!+} [\mathit{lp}] = B \mathbin{+\!\!+} (A_2' \mathbin{+\!\!+} Z')`$ であるから、
-(key) を $`B' := B`$（側条件は実例の $`\forall x \in B,\ u+e < \pi_0 x`$）に適用でき、goal_of で終わる。
+(key) を $`B' := B`$（側条件は実例の $`\forall x \in B,\ u+e \lt \pi_0 x`$）に適用でき、goal_of で終わる。
 
 **(b) $`\lvert D\rvert \le \lvert B\rvert`$ のとき。** [(T.split_prefix_left)](#t-split_prefix_left) より $`B_2`$ が存在して
 ```math
 B = D \mathbin{+\!\!+} B_2, \qquad \mathrm{sh}_{d_0}\bigl(\mathrm{cp}_{d_0}(\mathit{blk},m)\bigr) = B_2 \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z) .
 ```
-$`D \subseteq B`$ であるから $`\forall x \in D,\ u+e < \pi_0 x`$。
+$`D \subseteq B`$ であるから $`\forall x \in D,\ u+e \lt \pi_0 x`$。
 
 *次のコピーの根.* $`B_2 = q \mathbin{::} B_2'`$ と書けるならば $`q = (v_0+d_0,\ w_0)`$ である。実際、$`m = 0`$ なら
 $`\mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(\mathit{blk},0)) = []`$ となって $`B_2 \ne []`$ に反するから $`m = m'+1`$ であり、
@@ -1238,13 +1238,13 @@ $`\mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(\mathit{blk},m'+1))`$ の先頭は $`(v_0+
 \pi_0 q \le \pi_0 \mathit{lp} \qquad\text{かつ}\qquad q \prec_{\mathrm{c}} \mathit{lp}
 ```
 が成り立つ。実際、第 1 選言（$`d_0 = 0`$、$`\pi_1\mathit{lp} = 0`$、$`\pi_0\mathit{lp} = v_0+1`$）では
-$`q = (v_0, w_0)`$ で $`v_0 < v_0+1`$ だから $`\pi_0 q < \pi_0 \mathit{lp}`$（$`\prec_{\mathrm{c}}`$ の第 1 選言）。
-第 2 選言（$`0 < d_0`$、$`\pi_1\mathit{lp} = w_0+1`$、$`\pi_0\mathit{lp} = v_0+d_0`$）では
-$`\pi_0 q = v_0+d_0 = \pi_0\mathit{lp}`$ かつ $`\pi_1 q = w_0 < w_0+1 = \pi_1\mathit{lp}`$（$`\prec_{\mathrm{c}}`$ の第 2 選言）。
+$`q = (v_0, w_0)`$ で $`v_0 \lt v_0+1`$ だから $`\pi_0 q \lt \pi_0 \mathit{lp}`$（$`\prec_{\mathrm{c}}`$ の第 1 選言）。
+第 2 選言（$`0 \lt d_0`$、$`\pi_1\mathit{lp} = w_0+1`$、$`\pi_0\mathit{lp} = v_0+d_0`$）では
+$`\pi_0 q = v_0+d_0 = \pi_0\mathit{lp}`$ かつ $`\pi_1 q = w_0 \lt w_0+1 = \pi_1\mathit{lp}`$（$`\prec_{\mathrm{c}}`$ の第 2 選言）。
 
-さらに $`u+e < \pi_0\mathit{lp}`$ か否かで場合分けする。
+さらに $`u+e \lt \pi_0\mathit{lp}`$ か否かで場合分けする。
 
-**(b-1) $`u+e < \pi_0 \mathit{lp}`$ のとき。** $`\forall x \in D \mathbin{+\!\!+} [\mathit{lp}],\ u+e < \pi_0 x`$ が成り立つ
+**(b-1) $`u+e \lt \pi_0 \mathit{lp}`$ のとき。** $`\forall x \in D \mathbin{+\!\!+} [\mathit{lp}],\ u+e \lt \pi_0 x`$ が成り立つ
 （$`D`$ の要素は上で、$`\mathit{lp}`$ はいまの仮定で）。(key) を
 $`B' := D \mathbin{+\!\!+} [\mathit{lp}]`$、$`A_2' := []`$、$`Z' := []`$ に適用すると
 ```math
@@ -1266,15 +1266,15 @@ $`V_b \mathbin{+\!\!+} \mathrm{sh}_e[\mathit{lp}]`$、$`V_b := \mathrm{sh}_e A_1
   [(T.seqlex_of_sle_snoc')](#t-seqlex_of_sle_snoc') を
   $`X := D`$、$`V := V_b`$、$`E := \mathrm{sh}_e[\mathit{lp}]`$、$`q := q`$、$`S' := B_2'`$、
   $`E' := (\pi_0 q + e, \pi_1 q) \mathbin{::} \mathrm{sh}_e B_2'`$ として適用する。前提は上の $`\preceq_{\mathrm{lex}}`$、
-  $`q \prec_{\mathrm{c}} \mathit{lp}`$、$`\lvert D\rvert < \lvert V_b\rvert`$ である。結論がそのまま目標
+  $`q \prec_{\mathrm{c}} \mathit{lp}`$、$`\lvert D\rvert \lt \lvert V_b\rvert`$ である。結論がそのまま目標
   （$`\prec_{\mathrm{lex}}`$ なので $`\preceq_{\mathrm{lex}}`$ の第 2 選言）である。
 
 **(b-2) $`\pi_0 \mathit{lp} \le u+e`$ のとき。** このとき $`B_2 = []`$ である。実際 $`B_2 = q \mathbin{::} B_2'`$ ならば
-$`q \in B`$ より $`u+e < \pi_0 q`$、他方 $`\pi_0 q \le \pi_0\mathit{lp} \le u+e`$ となって矛盾する。
-よって $`B = D`$。$`u < \pi_0\mathit{lp}`$ か否かでさらに分ける。
-- $`u < \pi_0 \mathit{lp}`$：(key) を $`B' := B`$、$`A_2' := [\mathit{lp}]`$、$`Z' := []`$ に適用する。
+$`q \in B`$ より $`u+e \lt \pi_0 q`$、他方 $`\pi_0 q \le \pi_0\mathit{lp} \le u+e`$ となって矛盾する。
+よって $`B = D`$。$`u \lt \pi_0\mathit{lp}`$ か否かでさらに分ける。
+- $`u \lt \pi_0 \mathit{lp}`$：(key) を $`B' := B`$、$`A_2' := [\mathit{lp}]`$、$`Z' := []`$ に適用する。
   $`D \mathbin{+\!\!+} [\mathit{lp}] = B \mathbin{+\!\!+} ([\mathit{lp}] \mathbin{+\!\!+} [])`$、
-  $`\forall x \in [\mathit{lp}],\ u < \pi_0 x`$（いまの仮定）、
+  $`\forall x \in [\mathit{lp}],\ u \lt \pi_0 x`$（いまの仮定）、
   $`\pi_0(\mathrm{headI}[\mathit{lp}]) = \pi_0\mathit{lp} \le u+e`$（(b-2) の仮定）である。
 - $`\pi_0 \mathit{lp} \le u`$：(key) を $`B' := B`$、$`A_2' := []`$、$`Z' := [\mathit{lp}]`$ に適用する。
   $`\pi_0(\mathrm{headI}[\mathit{lp}]) = \pi_0\mathit{lp} \le u`$ である。
@@ -1367,12 +1367,12 @@ $`\mathit{lp} := (v_0+d_0,\ w_0+1)`$、$`M := \bigl(G \mathbin{+\!\!+} ((v_0,w_0
 ```
 
 [(T.spineOK_of_nextrel1)](#t-spineOK_of_nextrel1) が $`w_0 \le \pi_1 x`$ を与えるのに対し、こちらは
-$`w_0 + 1 \le \pi_1 x`$（すなわち $`w_0 < \pi_1 x`$）を与える。場合 A2 の第 3 の場合を反証するのに必要である。
+$`w_0 + 1 \le \pi_1 x`$（すなわち $`w_0 \lt \pi_1 x`$）を与える。場合 A2 の第 3 の場合を反証するのに必要である。
 
 **証明** $`j_1 := \lvert G \mathbin{+\!\!+} ((v_0,w_0) \mathbin{::} R)\rvert`$ とおき、仮定を
 [(D.nextrel1)](Def.md#d-nextrel1) の 6 条件に分解して、第 5 条件 $`\lvert G\rvert \le^M_0 j_1`$ と
 第 6 条件（最小性）を使う。
-$`R = U \mathbin{+\!\!+} x \mathbin{::} V`$、$`\pi_0 x < v_0+d_0`$、$`\forall y \in V,\ \pi_0 x < \pi_0 y`$ を仮定して
+$`R = U \mathbin{+\!\!+} x \mathbin{::} V`$、$`\pi_0 x \lt v_0+d_0`$、$`\forall y \in V,\ \pi_0 x \lt \pi_0 y`$ を仮定して
 $`w_0 + 1 \le \pi_1 x`$ を示す。$`A := G \mathbin{+\!\!+} ((v_0,w_0) \mathbin{::} U)`$ とおくと
 ```math
 M = A \mathbin{+\!\!+} \bigl(x \mathbin{::} (V \mathbin{+\!\!+} [\mathit{lp}])\bigr),\quad
@@ -1380,14 +1380,14 @@ M = A \mathbin{+\!\!+} \bigl(x \mathbin{::} (V \mathbin{+\!\!+} [\mathit{lp}])\b
 ```
 であり、[(T.getD_append_right')](Cofinality.md#t-getD_append_right') より
 $`M\langle \lvert A\rvert\rangle = x`$ である。
-また、$`\lvert A\rvert < y \le j_1`$ なる $`y`$ を $`y = \lvert A\rvert + (t+1)`$ と書くと
-$`M\langle y\rangle = (V \mathbin{+\!\!+} [\mathit{lp}])\langle t\rangle`$ であり、$`t < \lvert V\rvert`$ のときはこれは $`V`$ の要素で
+また、$`\lvert A\rvert \lt y \le j_1`$ なる $`y`$ を $`y = \lvert A\rvert + (t+1)`$ と書くと
+$`M\langle y\rangle = (V \mathbin{+\!\!+} [\mathit{lp}])\langle t\rangle`$ であり、$`t \lt \lvert V\rvert`$ のときはこれは $`V`$ の要素で
 $`\pi_0 x`$ より行 0 が真に大きく、$`t = \lvert V\rvert`$ のときはこれは $`\mathit{lp}`$ で
-$`\pi_0 x < v_0+d_0 = \pi_0\mathit{lp}`$ である。よって
+$`\pi_0 x \lt v_0+d_0 = \pi_0\mathit{lp}`$ である。よって
 ```math
 \forall y,\ \lvert A\rvert < y \le j_1 \Rightarrow M_{0,\lvert A\rvert} < M_{0,y} .
 ```
-$`\lvert G\rvert < \lvert A\rvert \le j_1`$ とこれに
+$`\lvert G\rvert \lt \lvert A\rvert \le j_1`$ とこれに
 [(T.le0_through_pivot)](Nrmstep.md#t-le0_through_pivot) を適用して $`\lvert A\rvert \le^M_0 j_1`$。
 最小性条項を $`j := \lvert A\rvert`$ に適用すると $`M_{1,j_1} \le M_{1,\lvert A\rvert}`$ であり、
 $`M\langle j_1\rangle = \mathit{lp}`$ より [(T.entry_one)](Cofinality.md#t-entry_one) を用いて
@@ -1407,10 +1407,10 @@ $`B \preceq_{\mathrm{lex}} \mathrm{sh}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,w) \math
 **証明** $`\mathit{blk} := (v_0,w_0) \mathbin{::} R`$、$`L := \lvert \mathit{blk}\rvert = \lvert R\rvert+1`$、$`p := \lvert G\rvert + L`$ とおく。
 $`i = \lvert X\rvert`$、$`j = \lvert X\rvert + (\lvert A_1\rvert+1)`$ である。
 
-**Step 0（$`n \ge 2`$）.** [(T.argdom_pos)](#t-argdom_pos) より $`j < \lvert N\rvert`$ であり、
+**Step 0（$`n \ge 2`$）.** [(T.argdom_pos)](#t-argdom_pos) より $`j \lt \lvert N\rvert`$ であり、
 [(T.copies_length)](#t-copies_length) より $`\lvert N\rvert = \lvert G\rvert + n \cdot L`$ である。
 もし $`n = 1`$ ならば $`\lvert N\rvert = \lvert G\rvert + L = p`$ となり、$`h_{caseR}`$ の $`p \le j`$ と合わせて
-$`p \le j < p`$ となって矛盾する。よって $`2 \le n`$ であり、$`n = m+1`$、$`1 \le m`$ と書ける。
+$`p \le j \lt p`$ となって矛盾する。よって $`2 \le n`$ であり、$`n = m+1`$、$`1 \le m`$ と書ける。
 
 **Step 1（境界 $`p`$ で切る）.** [(T.copies_succ_front)](Wf.md#t-copies_succ_front) より
 $`N = (G \mathbin{+\!\!+} \mathit{blk}) \mathbin{+\!\!+} \mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(\mathit{blk},m))`$ である。
@@ -1455,7 +1455,7 @@ $`\mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(\mathit{blk},m))`$ の要素はすべて�
 
 ---
 
-**(a) $`\lvert X\rvert < \lvert G\rvert + \lvert D\rvert`$（$`i < j-L`$）：1 周期の降下.**
+**(a) $`\lvert X\rvert \lt \lvert G\rvert + \lvert D\rvert`$（$`i \lt j-L`$）：1 周期の降下.**
 
 $`m \ge 1`$ より $`m = m''+1`$ と書ける。
 [(T.copies_succ_front)](Wf.md#t-copies_succ_front) より $`\mathit{blk} \sqsubseteq \mathrm{cp}_{d_0}(\mathit{blk},m)`$、
@@ -1502,7 +1502,7 @@ $`\lvert A_1\rvert - \lvert A_1'\rvert = (p - \lvert G\rvert) = L \ge 1`$ であ
 = W_{tl} \mathbin{+\!\!+} (u+e,w) \mathbin{::} \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr) \tag{W}
 ```
 であり、$`A_1 = A_1' \mathbin{+\!\!+} (u+e-d_0,w) \mathbin{::} W_{tl}`$。
-この列 $`(u+e-d_0,w)`$ は $`A_1`$ の要素だから側条件より $`u < u+e-d_0`$、すなわち $`d_0 < e`$ であり、
+この列 $`(u+e-d_0,w)`$ は $`A_1`$ の要素だから側条件より $`u \lt u+e-d_0`$、すなわち $`d_0 \lt e`$ であり、
 とくに $`u+e-d_0 = u + (e-d_0)`$。
 
 *小さい実例の末尾.* $`A_2' := \mathrm{tw}_u(\mathrm{sh}^{-}_{d_0} A_2)`$、
@@ -1515,10 +1515,10 @@ A_2' \sqsubseteq \mathrm{sh}^{-}_{d_0} A_2, \qquad \forall x \in A_2',\ u < \pi_
 第 3 は `List.mem_takeWhile_imp`）。さらに
 - $`A_2' = [] \vee \pi_0(\mathrm{headI}\,A_2') \le u+(e-d_0)`$：$`A_2 = []`$ なら $`A_2' = []`$。
   $`A_2 = a \mathbin{::} A_2''`$ なら $`\mathrm{sh}^{-}_{d_0} A_2`$ の先頭は $`(\pi_0 a - d_0,\ \pi_1 a)`$ であり、
-  $`u < \pi_0 a - d_0`$ ならば $`A_2'`$ の先頭がそれで、側条件 $`\pi_0 a \le u+e`$ より
+  $`u \lt \pi_0 a - d_0`$ ならば $`A_2'`$ の先頭がそれで、側条件 $`\pi_0 a \le u+e`$ より
   $`\pi_0 a - d_0 \le u+e-d_0 = u+(e-d_0)`$。$`u \ge \pi_0 a - d_0`$ ならば $`A_2' = []`$。
 - $`Z_2 = [] \vee \pi_0(\mathrm{headI}\,Z_2) \le u`$：$`\mathrm{dw}_u(\mathrm{sh}^{-}_{d_0} A_2)`$ が空でなければ、
-  その先頭は述語 $`\lambda q.\ u < \pi_0 q`$ をみたさない（`List.head?_dropWhile_not`）から行 0 は $`u`$ 以下。
+  その先頭は述語 $`\lambda q.\ u \lt \pi_0 q`$ をみたさない（`List.head?_dropWhile_not`）から行 0 は $`u`$ 以下。
   空のときは $`Z_2 = \mathrm{sh}^{-}_{d_0} Z`$ であり、$`Z = []`$ なら $`Z_2 = []`$、
   $`Z = z \mathbin{::} Z''`$ なら側条件 $`\pi_0 z \le u`$ より $`\pi_0 z - d_0 \le u`$。
 
@@ -1528,24 +1528,24 @@ G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m)
 = \Bigl(X \mathbin{+\!\!+} (u,w) \mathbin{::} \bigl(A_1' \mathbin{+\!\!+} (u+(e-d_0),\ w) \mathbin{::} (\mathrm{sh}^{-}_{d_0} B \mathbin{+\!\!+} A_2')\bigr)\Bigr) \mathbin{+\!\!+} Z_2
 ```
 であり、これは $`\mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m)\bigr)`$ の分解の形である。
-$`h_{IH}`$（$`1 \le m < m+1 = n`$）を適用するために側条件を確かめる。
-- $`0 < e-d_0`$：上で示した $`d_0 < e`$。
-- $`\forall x \in A_1',\ u < \pi_0 x`$：$`A_1' \subseteq A_1`$（$`A_1 = A_1' \mathbin{+\!\!+} \cdots`$）と実例の側条件。
-- $`\forall x \in \mathrm{sh}^{-}_{d_0} B,\ u+(e-d_0) < \pi_0 x`$：
-  $`x = (\pi_0 y - d_0,\ \pi_1 y)`$（$`y \in B`$）と書けて、実例の側条件 $`u+e < \pi_0 y`$ と $`d_0 < e`$ から
-  $`u + (e-d_0) = u+e-d_0 < \pi_0 y - d_0`$。
+$`h_{IH}`$（$`1 \le m \lt m+1 = n`$）を適用するために側条件を確かめる。
+- $`0 \lt e-d_0`$：上で示した $`d_0 \lt e`$。
+- $`\forall x \in A_1',\ u \lt \pi_0 x`$：$`A_1' \subseteq A_1`$（$`A_1 = A_1' \mathbin{+\!\!+} \cdots`$）と実例の側条件。
+- $`\forall x \in \mathrm{sh}^{-}_{d_0} B,\ u+(e-d_0) \lt \pi_0 x`$：
+  $`x = (\pi_0 y - d_0,\ \pi_1 y)`$（$`y \in B`$）と書けて、実例の側条件 $`u+e \lt \pi_0 y`$ と $`d_0 \lt e`$ から
+  $`u + (e-d_0) = u+e-d_0 \lt \pi_0 y - d_0`$。
 - 残り 3 つは上で構成したもの。
 - $`\mathrm{SpineOK}(A_1',\ u+(e-d_0),\ w)`$：これが実質的な点であり、次に示す。
 
-*降下した側条件.* $`A_1' = U \mathbin{+\!\!+} x \mathbin{::} V`$、$`\pi_0 x < u+(e-d_0)`$、
-$`\forall y \in V,\ \pi_0 x < \pi_0 y`$ を仮定して $`w \le \pi_1 x`$ を示す。
+*降下した側条件.* $`A_1' = U \mathbin{+\!\!+} x \mathbin{::} V`$、$`\pi_0 x \lt u+(e-d_0)`$、
+$`\forall y \in V,\ \pi_0 x \lt \pi_0 y`$ を仮定して $`w \le \pi_1 x`$ を示す。
 $`G \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} D = (X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} A_1'`$ であったから
 ```math
 \bigl((X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} U\bigr) \mathbin{+\!\!+} x \mathbin{::} V = G \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} D .
 ```
 $`\lvert (X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} U\rvert`$ と $`\lvert G\rvert`$ の 2 分律で場合分けする。
 
-- **(i) $`x`$ が $`G`$ の内部にあるとき**（$`\lvert (X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} U\rvert < \lvert G\rvert`$）。
+- **(i) $`x`$ が $`G`$ の内部にあるとき**（$`\lvert (X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} U\rvert \lt \lvert G\rvert`$）。
   [(T.split_append_left)](#t-split_append_left) より $`V_3`$ が存在して
   ```math
   G = \Bigl(\bigl((X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} U\bigr) \mathbin{+\!\!+} [x]\Bigr) \mathbin{+\!\!+} V_3,
@@ -1555,24 +1555,24 @@ $`\lvert (X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} U\rvert`$ と $`\lvert G\
   ```math
   C = (U \mathbin{+\!\!+} [x]) \mathbin{+\!\!+} (V_3 \mathbin{+\!\!+} \mathit{blk}) .
   ```
-  ここで $`\pi_0 x < v_0`$ を示す。[(T.copies_headI)](#t-copies_headI)（$`\mathit{blk} \ne []`$、$`1 \le m`$）より
+  ここで $`\pi_0 x \lt v_0`$ を示す。[(T.copies_headI)](#t-copies_headI)（$`\mathit{blk} \ne []`$、$`1 \le m`$）より
   $`\mathrm{headI}\,\mathrm{cp}_{d_0}(\mathit{blk},m) = (v_0,w_0)`$ である。(S) の右辺の先頭を見ると、
   - $`\mathrm{sh}^{-}_{d_0} D = []`$ のとき：先頭は $`(u+e-d_0,\ w)`$ であるから $`v_0 = u+e-d_0 = u+(e-d_0)`$ であり、
-    仮定 $`\pi_0 x < u+(e-d_0)`$ から $`\pi_0 x < v_0`$。
+    仮定 $`\pi_0 x \lt u+(e-d_0)`$ から $`\pi_0 x \lt v_0`$。
   - $`\mathrm{sh}^{-}_{d_0} D = s \mathbin{::} S'`$ のとき：先頭は $`s`$ であるから $`s = (v_0,w_0)`$ であり、
-    $`s \in V`$（$`V = V_3 \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} D`$）だから仮定より $`\pi_0 x < \pi_0 s = v_0`$。
+    $`s \in V`$（$`V = V_3 \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} D`$）だから仮定より $`\pi_0 x \lt \pi_0 s = v_0`$。
 
   そこで実例の側条件 $`h_6 = \mathrm{SpineOK}(A_1, u+e, w)`$ を
   $`U := U`$、$`V := (V_3 \mathbin{+\!\!+} \mathit{blk}) \mathbin{+\!\!+} D`$、$`x := x`$ に適用する。
   - 分解：$`A_1 = C \mathbin{+\!\!+} D = U \mathbin{+\!\!+} x \mathbin{::} \bigl((V_3 \mathbin{+\!\!+} \mathit{blk}) \mathbin{+\!\!+} D\bigr)`$。
-  - 水準：$`\pi_0 x < u+(e-d_0) \le u+e`$。
-  - 右から見える条件：$`y \in V_3`$ なら $`V_3 \subseteq V`$ より $`\pi_0 x < \pi_0 y`$。
-    $`y \in \mathit{blk}`$ なら $`y = (v_0,w_0)`$ か $`y \in R`$ であり、前者は $`\pi_0 x < v_0`$、
-    後者は $`h_{Rgt}`$ より $`v_0 < \pi_0 y`$ と合わせて $`\pi_0 x < \pi_0 y`$。
+  - 水準：$`\pi_0 x \lt u+(e-d_0) \le u+e`$。
+  - 右から見える条件：$`y \in V_3`$ なら $`V_3 \subseteq V`$ より $`\pi_0 x \lt \pi_0 y`$。
+    $`y \in \mathit{blk}`$ なら $`y = (v_0,w_0)`$ か $`y \in R`$ であり、前者は $`\pi_0 x \lt v_0`$、
+    後者は $`h_{Rgt}`$ より $`v_0 \lt \pi_0 y`$ と合わせて $`\pi_0 x \lt \pi_0 y`$。
     $`y \in D`$ なら $`y \in \mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(\mathit{blk},m))`$（Step 1 の第 2 の等式）であるから
     $`y = (\pi_0 z + d_0,\ \pi_1 z)`$（$`z \in \mathrm{cp}_{d_0}(\mathit{blk},m)`$）と書け、
     $`h_{Rgt}`$ から $`\forall x \in R,\ v_0 \le \pi_0 x`$ であるので
-    [(T.copies_v0_le)](Wf.md#t-copies_v0_le) より $`v_0 \le \pi_0 z`$、よって $`\pi_0 x < v_0 \le \pi_0 y`$。
+    [(T.copies_v0_le)](Wf.md#t-copies_v0_le) より $`v_0 \le \pi_0 z`$、よって $`\pi_0 x \lt v_0 \le \pi_0 y`$。
 
   結論は $`w \le \pi_1 x`$ である。
 - **(ii) $`x`$ がシフト前の窓の内部にあるとき**（$`\lvert G\rvert \le \lvert (X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} U\rvert`$）。
@@ -1587,9 +1587,9 @@ $`\lvert (X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} U\rvert`$ と $`\lvert G\
   $`h_6`$ を $`U := C \mathbin{+\!\!+} \mathrm{sh}_{d_0} U_2`$、$`V := \mathrm{sh}_{d_0} V`$、
   $`x := (\pi_0 x + d_0,\ \pi_1 x)`$ に適用する。
   - 分解：$`A_1 = C \mathbin{+\!\!+} D`$ に上の $`D`$ を代入したもの。
-  - 水準：$`\pi_0 x < u+(e-d_0) = u+e-d_0`$ と $`d_0 < e`$ より $`\pi_0 x + d_0 < u+e`$。
+  - 水準：$`\pi_0 x \lt u+(e-d_0) = u+e-d_0`$ と $`d_0 \lt e`$ より $`\pi_0 x + d_0 \lt u+e`$。
   - 右から見える条件：$`\mathrm{sh}_{d_0} V`$ の要素は $`(\pi_0 z + d_0,\ \pi_1 z)`$（$`z \in V`$）であり、
-    $`\pi_0 x < \pi_0 z`$ から $`\pi_0 x + d_0 < \pi_0 z + d_0`$。
+    $`\pi_0 x \lt \pi_0 z`$ から $`\pi_0 x + d_0 \lt \pi_0 z + d_0`$。
 
   結論は $`w \le \pi_1(\pi_0 x + d_0,\ \pi_1 x) = \pi_1 x`$ である。
 
@@ -1622,7 +1622,7 @@ A_1' \mathbin{+\!\!+} (u+(e-d_0),w) \mathbin{::} \bigl(\mathrm{sh}^{-}_{d_0} B \
 \mathrm{sh}^{-}_{d_0} B \preceq_{\mathrm{lex}} \mathrm{sh}_{e-d_0}\bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2)\bigr) .
 ```
 最後に [(T.sle_shiftr0)](#t-sle_shiftr0) の $`(\Leftarrow)`$ 方向（$`d := d_0`$）を適用する。
-$`B`$ の要素 $`x`$ は実例の側条件より $`u+e < \pi_0 x`$ をみたし、Step 1 の $`d_0 \le u+e`$ と合わせて
+$`B`$ の要素 $`x`$ は実例の側条件より $`u+e \lt \pi_0 x`$ をみたし、Step 1 の $`d_0 \le u+e`$ と合わせて
 $`d_0 \le \pi_0 x`$ であるから、
 [(T.shiftr0_shiftl0)](#t-shiftr0_shiftl0) より $`\mathrm{sh}_{d_0}(\mathrm{sh}^{-}_{d_0} B) = B`$、
 また [(T.shiftr0_add)](#t-shiftr0_add) と $`d_0 + (e-d_0) = e`$（$`d_0 \le e`$）より
@@ -1670,7 +1670,7 @@ $`\lvert \mathrm{sh}^{-}_{d_0} B\rvert = \lvert B\rvert \le \lvert A_1\rvert + 1
 \mathrm{sh}^{-}_{d_0} B \sqsubseteq A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2) .
 ```
 [(T.shiftr0_prefix)](#t-shiftr0_prefix)（$`d := e`$）を施すと、$`e = d_0`$ と
-$`\forall x \in B,\ d_0 \le \pi_0 x`$（実例の側条件 $`u+e < \pi_0 x`$ と Step 1 の $`d_0 \le u+e`$ による）から
+$`\forall x \in B,\ d_0 \le \pi_0 x`$（実例の側条件 $`u+e \lt \pi_0 x`$ と Step 1 の $`d_0 \le u+e`$ による）から
 [(T.shiftr0_shiftl0)](#t-shiftr0_shiftl0) により
 $`\mathrm{sh}_e(\mathrm{sh}^{-}_{d_0} B) = B`$ であるから
 ```math
@@ -1680,16 +1680,16 @@ B \sqsubseteq \mathrm{sh}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \m
 
 ---
 
-**(c) $`\lvert G\rvert + \lvert D\rvert < \lvert X\rvert`$（$`i > j-L`$）：起こりえない.**
+**(c) $`\lvert G\rvert + \lvert D\rvert \lt \lvert X\rvert`$（$`i \gt j-L`$）：起こりえない.**
 
 矛盾を導く。Step 0 の $`1 \le m`$ より $`m = m'+1`$ と書ける。
 
 **(c-1) $`(u,w)`$ はブロック $`R`$ の内部にある.** Step 1 の第 1 の等式
 $`G \mathbin{+\!\!+} \mathit{blk} = (X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} C`$ に
 [(T.split_append_left)](#t-split_append_left) を適用する（$`\lvert G\rvert \le \lvert X\rvert + 1`$ は
-$`\lvert G\rvert \le \lvert G\rvert + \lvert D\rvert < \lvert X\rvert`$ から）。$`K`$ が得られて
+$`\lvert G\rvert \le \lvert G\rvert + \lvert D\rvert \lt \lvert X\rvert`$ から）。$`K`$ が得られて
 $`X \mathbin{+\!\!+} [(u,w)] = G \mathbin{+\!\!+} K`$ かつ $`\mathit{blk} = K \mathbin{+\!\!+} C`$。
-$`K = []`$ とすると $`\lvert X\rvert + 1 = \lvert G\rvert`$ となるが $`\lvert G\rvert < \lvert X\rvert`$ に反するから
+$`K = []`$ とすると $`\lvert X\rvert + 1 = \lvert G\rvert`$ となるが $`\lvert G\rvert \lt \lvert X\rvert`$ に反するから
 $`K = k_0 \mathbin{::} K_1`$ であり、$`\mathit{blk} = (v_0,w_0) \mathbin{::} R`$ の尾部を比べて $`R = K_1 \mathbin{+\!\!+} C`$。
 さらに $`X \mathbin{+\!\!+} [(u,w)] = (G \mathbin{+\!\!+} [k_0]) \mathbin{+\!\!+} K_1`$ に
 [(T.split_append_left)](#t-split_append_left) を適用して（$`\lvert G\rvert + 1 \le \lvert X\rvert`$）$`T`$ を得る：
@@ -1697,9 +1697,9 @@ $`X = (G \mathbin{+\!\!+} [k_0]) \mathbin{+\!\!+} T`$ かつ $`K_1 = T \mathbin{
 ```math
 R = T \mathbin{+\!\!+} (u,w) \mathbin{::} C .
 ```
-とくに $`(u,w) \in R`$ であるから $`h_{Rgt}`$ より $`v_0 < u`$。
+とくに $`(u,w) \in R`$ であるから $`h_{Rgt}`$ より $`v_0 \lt u`$。
 
-**(c-2) 第 1 コピーの根が $`u < v_0+d_0`$ と $`w \le w_0`$ を与える.**
+**(c-2) 第 1 コピーの根が $`u \lt v_0+d_0`$ と $`w \le w_0`$ を与える.**
 [(T.copies_succ_cons)](Wf.md#t-copies_succ_cons) と [(T.shiftr0_cons)](Wf.md#t-shiftr0_cons) より
 ```math
 \mathrm{sh}_{d_0}\bigl(\mathrm{cp}_{d_0}(\mathit{blk},\ m'+1)\bigr)
@@ -1709,23 +1709,23 @@ R = T \mathbin{+\!\!+} (u,w) \mathbin{::} C .
 $`\mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(\mathit{blk},m)) = D \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))`$
 と比べる。
 - $`D = []`$ のとき：先頭を比べて $`(v_0+d_0,w_0) = (u+e,w)`$、すなわち $`v_0+d_0 = u+e`$ かつ $`w_0 = w`$。
-  $`0 < e`$ より $`u < u+e = v_0+d_0`$ であり、また $`w \le w_0`$。
+  $`0 \lt e`$ より $`u \lt u+e = v_0+d_0`$ であり、また $`w \le w_0`$。
 - $`D = d_1 \mathbin{::} D'`$ のとき：先頭を比べて $`d_1 = (v_0+d_0,w_0)`$、尾部を比べて
   ```math
   \mathrm{sh}_{d_0}\Bigl(R \mathbin{+\!\!+} \mathrm{sh}_{d_0}\bigl(\mathrm{cp}_{d_0}(\mathit{blk},m')\bigr)\Bigr)
   = D' \mathbin{+\!\!+} (u+e,w) \mathbin{::} \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr) .
   ```
-  $`A_1 = C \mathbin{+\!\!+} D = C \mathbin{+\!\!+} (v_0+d_0,w_0) \mathbin{::} D'`$ であるから、実例の側条件より $`u < v_0+d_0`$。
-  (c-1) の $`v_0 < u`$ と合わせて $`0 < d_0`$。
+  $`A_1 = C \mathbin{+\!\!+} D = C \mathbin{+\!\!+} (v_0+d_0,w_0) \mathbin{::} D'`$ であるから、実例の側条件より $`u \lt v_0+d_0`$。
+  (c-1) の $`v_0 \lt u`$ と合わせて $`0 \lt d_0`$。
   [(T.copies_tl_gt)](Wf.md#t-copies_tl_gt) より
-  $`\forall x \in R \mathbin{+\!\!+} \mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(\mathit{blk},m')),\ v_0 < \pi_0 x`$、
+  $`\forall x \in R \mathbin{+\!\!+} \mathrm{sh}_{d_0}(\mathrm{cp}_{d_0}(\mathit{blk},m')),\ v_0 \lt \pi_0 x`$、
   したがって上の $`\mathrm{sh}_{d_0}(\cdots)`$ の要素はすべて行 0 が $`v_0+d_0`$ より大きい。
   そこで実例の側条件 $`h_6 = \mathrm{SpineOK}(A_1,u+e,w)`$ を
   $`U := C`$、$`V := D'`$、$`x := (v_0+d_0,w_0)`$ に適用する。
-  分解は上の $`A_1`$ の形、水準の条件 $`v_0+d_0 < u+e`$ は $`(u+e,w)`$ がその $`\mathrm{sh}_{d_0}(\cdots)`$ の要素であることから、
+  分解は上の $`A_1`$ の形、水準の条件 $`v_0+d_0 \lt u+e`$ は $`(u+e,w)`$ がその $`\mathrm{sh}_{d_0}(\cdots)`$ の要素であることから、
   右から見える条件は $`D'`$ の要素も同じ列の要素であることから従う。結論は $`w \le w_0`$。
 
-**(c-3) 強形の最小性条項.** (c-1)(c-2) より $`v_0 < u < v_0 + d_0`$、とくに $`0 < d_0`$ である。
+**(c-3) 強形の最小性条項.** (c-1)(c-2) より $`v_0 \lt u \lt v_0 + d_0`$、とくに $`0 \lt d_0`$ である。
 $`h_{disj}`$ の第 1 選言は $`d_0 = 0`$ を含むので成り立たない。よって第 2 選言が成り立ち、
 $`\mathit{lp} = (v_0+d_0,\ w_0+1)`$ かつ $`\lvert G\rvert \to^M_1 (\lvert M\rvert - 1)`$ である。
 $`h_{Meq}`$ により $`M = (G \mathbin{+\!\!+} \mathit{blk}) \mathbin{+\!\!+} [(v_0+d_0,w_0+1)]`$、
@@ -1733,8 +1733,8 @@ $`\lvert M\rvert - 1 = \lvert G \mathbin{+\!\!+} \mathit{blk}\rvert`$ である�
 [(T.spineOK_of_nextrel1_strict)](#t-spineOK_of_nextrel1_strict) の仮定である。
 その結論 $`\mathrm{SpineOK}(R,\ v_0+d_0,\ w_0+1)`$ を
 $`U := T`$、$`V := C`$、$`x := (u,w)`$ に適用する。分解は (c-1) の $`R = T \mathbin{+\!\!+} (u,w) \mathbin{::} C`$、
-水準の条件は (c-2) の $`u < v_0+d_0`$、右から見える条件は $`C \subseteq A_1`$（$`A_1 = C \mathbin{+\!\!+} D`$）と
-実例の側条件 $`\forall y \in A_1,\ u < \pi_0 y`$ から従う。結論は $`w_0 + 1 \le w`$ である。
+水準の条件は (c-2) の $`u \lt v_0+d_0`$、右から見える条件は $`C \subseteq A_1`$（$`A_1 = C \mathbin{+\!\!+} D`$）と
+実例の側条件 $`\forall y \in A_1,\ u \lt \pi_0 y`$ から従う。結論は $`w_0 + 1 \le w`$ である。
 これは (c-2) の $`w \le w_0`$ と矛盾する。∎
 
 $`h_{Mon}`$ と $`h_{STn}`$ はこの場合では使わない。交差の場合は、塔自身の周期性と
@@ -1753,7 +1753,7 @@ $`h_M, h_{Mon}, h_{Meq}, h_{Rgt}, h_{lp}, h_{disj}, h_{STn}`$ と $`1 \le n`$ �
 ```math
 \Omega(n) :\equiv 1 \le n \to \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}((v_0,w_0)\mathbin{::}R,\ n)\bigr)
 ```
-であり、強帰納法の仮定は $`\forall k < n,\ \Omega(k)`$ である。これは
+であり、強帰納法の仮定は $`\forall k \lt n,\ \Omega(k)`$ である。これは
 ```math
 h_{IH} : \forall m,\ 1 \le m \to m < n \to
  \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}((v_0,w_0)\mathbin{::}R,\ m)\bigr)
@@ -1765,10 +1765,10 @@ $`\mathrm{ArgDomCoreOn}(M)`$ から $`\forall n \ge 1,\ \mathrm{ArgDomCoreOn}(M[
 $`\Omega(n)`$ を示す。$`1 \le n`$ と塔の分解 $`X, A_1, B, A_2, Z, u, w, e`$ と 7 つの側条件を与える。
 自然数の 2 分律を 2 回使って場合分けする。
 
-- $`\lvert X\rvert + (\lvert A_1\rvert+1) < \lvert G\rvert + (\lvert R\rvert+1)`$ のとき：
+- $`\lvert X\rvert + (\lvert A_1\rvert+1) \lt \lvert G\rvert + (\lvert R\rvert+1)`$ のとき：
   [(T.argDomCoreOn_bad_B)](#t-argDomCoreOn_bad_B) を適用する。
 - そうでない（$`\lvert G\rvert + (\lvert R\rvert+1) \le \lvert X\rvert + (\lvert A_1\rvert+1)`$）とき、さらに
-  - $`\lvert X\rvert < \lvert G\rvert + (\lvert R\rvert+1)`$ ならば
+  - $`\lvert X\rvert \lt \lvert G\rvert + (\lvert R\rvert+1)`$ ならば
     [(T.argDomCoreOn_bad_A2)](#t-argDomCoreOn_bad_A2) を適用する。
   - $`\lvert G\rvert + (\lvert R\rvert+1) \le \lvert X\rvert`$ ならば
     [(T.argDomCoreOn_bad_A1)](#t-argDomCoreOn_bad_A1) を適用する。
@@ -1800,13 +1800,13 @@ $`M\langle \lvert M\rvert-1\rangle = (0,0)`$ を意味する。$`M \ne []`$（$`
 [(T.argDomCoreOn_snoc_zero)](#t-argDomCoreOn_snoc_zero) を $`p := (0,0)`$（$`\pi_0 p = 0`$）に適用して
 $`\mathrm{ArgDomCoreOn}(\mathrm{dropLast}\,M) = \mathrm{ArgDomCoreOn}(M[n])`$ を得る。
 
-**分岐 (c)（親が存在しない場合）.** $`M \in \mathrm{ST\_PS}`$ かつ $`0 < \lvert M\rvert`$ かつ末尾が $`(0,0)`$ でないとき、
+**分岐 (c)（親が存在しない場合）.** $`M \in \mathrm{ST\_PS}`$ かつ $`0 \lt \lvert M\rvert`$ かつ末尾が $`(0,0)`$ でないとき、
 [(T.hasParent_last_ST_PS)](Cofinality.md#t-hasParent_last_ST_PS) より
 $`\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M,\lvert M\rvert-1),\ \lvert M\rvert-1\bigr)`$ が成り立つ。
 すなわち標準形に対して分岐 (c) は起こらない。
 
 **分岐 (d)（bad 枝）.** [(T.oper_bad_blocks_all)](Cofinality.md#t-oper_bad_blocks_all) を、
-$`1 < \lvert M\rvert`$、$`\mathrm{steps1}\,M`$（[(T.blockok_ST_PS)](Seqlex.md#t-blockok_ST_PS) の第 3 成分）、
+$`1 \lt \lvert M\rvert`$、$`\mathrm{steps1}\,M`$（[(T.blockok_ST_PS)](Seqlex.md#t-blockok_ST_PS) の第 3 成分）、
 $`\mathrm{r1ok}\,M`$（[(T.r1ok_ST_PS)](Nrmstep.md#t-r1ok_ST_PS)）、末尾が $`(0,0)`$ でないこと、
 上の $`\mathrm{hasParent}`$ に適用すると、$`G, v_0, w_0, R, d_0, \mathit{lp}`$ が得られて
 ```math
