@@ -12,7 +12,7 @@
 import os, re, sys, glob
 
 LEAN = 'lean'
-SKIP = {'PROOF-STATUS.md', 'task.md'}     # 作業用の文書。証明本文ではないので対象外
+SKIP = {'task.md'}                       # 作業用の文書。証明本文ではないので対象外
 MODULES = ['Pss', 'Term', 'Decrease', 'Reduction', 'Cnf', 'Seqlex',
            'Column', 'Cofinality', 'ArgDom', 'Wset', 'Final']
 

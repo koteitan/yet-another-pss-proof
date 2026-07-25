@@ -18,7 +18,6 @@ The Buchholz §1 **simultaneous transfinite induction** carrying the **value-ide
 guises (all the same content): `CollapseResidueMaxo` / `Nrm.psi_proj_notmem` (collapse
 face), `Residue.alpha_step_residue` / `NoncanonValueMem` 4 leaves (necessity face, `subA_nm`
 = the no-realizer deep core), the live-path `Wttone.H0clause_oper_step` forest clause.
-See `PROOF-STATUS.md` §(a0) for the terminal characterization.
 
 ## The finest obstruction: REP-AT-THE-BOUND
 The collapse `ψ_u(ψ_w η) = ψ_u η` needs the `≥` half `ψ_u η ≤ ψ_u(ψ_w η)` (the `≤` is free

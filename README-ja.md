@@ -58,7 +58,6 @@ lean/                 Lean 4 / Mathlib による形式証明
   ArgDom.lean/.md     その宿主に依らない核
   Wset.lean/.md       反復帰納的集合 W_u
   Final.lean/.md      主定理
-  PROOF-STATUS.md     証明の現状と経緯（authoritative）
   lakefile.toml       11 モジュールを依存順に roots として列挙
   memo/               証明の一部ではない検査用コード
   tools/              DeadCode.lean — 証明項が到達しない宣言の検出

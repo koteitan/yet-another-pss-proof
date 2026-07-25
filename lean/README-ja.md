@@ -47,8 +47,7 @@ Buchholz の記法系 $`\mathrm{OT}`$ の整礎性が、順序数への評価で
 数式の多い節は 2 以降に続く。GitHub は 1 ページの数式が一定量を超えるとそれ以降を
 描画しないので、その手前で切ってある。
 
-証明の現状と経緯は [`PROOF-STATUS.md`](PROOF-STATUS.md)、本文の編集方針は
-[`requirement.md`](requirement-ja.md)。
+本文の編集方針は [`requirement.md`](requirement-ja.md)。
 
 ## Lean との対応
 

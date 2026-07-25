@@ -50,8 +50,7 @@ The table can be read from top to bottom. Each section uses only what the preced
 Sections with many formulas continue in a part 2 and beyond. GitHub stops rendering the formulas of
 a page once their total exceeds a certain amount, so each file is cut before that point.
 
-For the current state and the history of the proof see [`PROOF-STATUS.md`](PROOF-STATUS.md); for the
-editorial policy of the text see [`requirement.md`](requirement.md).
+For the editorial policy of the text see [`requirement.md`](requirement.md).
 
 ## Correspondence with Lean
 
