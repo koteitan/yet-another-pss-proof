@@ -1,17 +1,3 @@
-/-
-**The translation is an order isomorphism onto the column-lex order.**
-
-On pair sequences whose row-0 values start at the block depth and step up by
-at most one (true of all standard forms and hereditarily of their
-sub-blocks), the pure-lex order `<o` on translations coincides with the
-*column lexicographic* order on the sequences themselves.  This recasts the
-residual well-foundedness obligation in BMS-native terms: no infinite
-column-lex descending chain of standard forms.
-
-Port note: `blockok` is defined via the structural step predicate `steps1`
-(the indexed form is `steps1_iff`).  The block hypotheses of `seqlex_arg_or_tail` are
-dropped — they are only induction plumbing there.
--/
 import Cnf
 
 namespace YAPSS
@@ -401,8 +387,6 @@ theorem seqlex_total (M N : PairSeq) : M = N ∨ seqlex M N ∨ seqlex N M := by
         · exact Or.inr (Or.inl (Or.inl h))
         · exact Or.inr (Or.inr (Or.inl h))
 
-/-- With totality on both sides, the implication upgrades to an
-isomorphism. -/
 theorem olt_iff_seqlex {d : ℕ} {M N : PairSeq}
     (bM : blockok d M) (bN : blockok d N) (hne : M ≠ N) :
     (translate M <o translate N ↔ seqlex M N) := by
@@ -540,7 +524,6 @@ theorem blockok_oper {M : PairSeq} {n : ℕ} (b : blockok 0 M) (n1 : 1 ≤ n) :
         set i1 := idx1 M j1 with hi1
         set j0 := parent M i1 j1 with hj0
         set D := (if 0 < i1 then entry M 0 j1 - entry M 0 j0 else 0) with hD
-        -- row-0 steps of `M`, in `entry` form (definitionally `getD`-based)
         have e0step : ∀ j, j + 1 < M.length → entry M 0 (j + 1) ≤ entry M 0 j + 1 :=
           fun j hj => steps1_iff.1 b.2.2 j hj
         -- the junction bound

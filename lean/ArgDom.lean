@@ -1,60 +1,8 @@
-/-
-# `AscArgDom` reduced to a single HOST-FREE core (`ArgDomCore`)
-
-`YAPSS/Cofinality.lean` reduces PSS Bachmann cofinality to the ascending
-residual `AscArgDom`: with `blk = (v0,w0) :: R`, `q = (v0+d0,w0)` and
-`S_hi = S.takeWhile (v0+d0 < ·.1)`,
-
-    ST_PS (G ++ blk ++ [(v0+d0, w0+1)]) → ST_PS (G ++ blk ++ q :: S) → …
-      → ∃ m, sle S_hi (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 blk) m)).
-
-That statement mentions **two** standard forms (the host `M` and the small side
-`N`).  This file removes the host: everything reduces to one statement about a
-**single** standard form,
-
-    `ArgDomCore` : inside `N`, the argument of a column `(u+e, w)` that sits
-    inside the argument `A` of an earlier column `(u, w)` is `sle`-dominated by
-    the `e`-shift of `A`, provided every *right-visible* column of the material
-    between them that lies below level `u+e` carries row-1 `≥ w`.
-
-The host `M` is used only to supply that side condition (`SpineOK`): by
-`le0_through_pivot`, a right-visible column of `R` below level `v0+d0` is a
-**row-0 ancestor of the dropped column** `lp`, and the `nextrel1` minimality
-clause — the very clause whose absence made the old statement false — then gives
-its row-1 value `≥ w0 + 1`.
-
-The passage from the single `ArgDomCore` instance to the full copy tower is pure
-list algebra (`peel_aux`): the conclusion of `ArgDomCore` is *self-referential*
-(`A` contains `B`), so one application unfolds into the whole tower, one copy per
-recursion step.  This is also why the explicit witness `m = |S_hi|` of
-`AscArgDomExplicit` works: each unfolding step consumes at least one column of
-`S_hi`.
-
-## 証明の構造
-
-`ArgDomCore` は `blockok` / `z0ok` / `r1ok` / `cnf` からは従わない
-（`argDomCore_needs_reachability`）。したがって証明は `ST_PS` の導出そのものに沿った
-帰納法になる。その分岐は次の通りである。
-
-* `diag`：`diagSeq 0 v` の列は `(t,t)` なので `row1 i = row1 j` から `i = j` となり、
-  インスタンスが存在しない。
-* `oper`, `|N₁| ≤ 1`：`N = N₁` は列が 1 本以下でインスタンスが無い。
-* `oper`, 末尾が `(0,0)`：`N = N₁.dropLast` で引数も `le0` も変わらない。
-* `oper`, 親なし：`hasParent_last_ST_PS` により `ST_PS` 上では空。
-* `oper`, コピー分岐：インスタンスの 2 本の印付き列とコピー分解との位置関係で
-  3 つに分かれる（`argDomCoreOn_bad_A1` / `_B` / `_A2`）。
-
--/
 import Cofinality
 
 namespace YAPSS
 
 open Three
-
-/-! ## Part A — list algebra
-
-Two facts about `sle` / `seqlex` that drive the unfolding of one `ArgDomCore`
-instance into the whole copy tower. -/
 
 /-- If `X` is `sle`-below `W ++ Y` but `W` is **not** a prefix of `X`, then the
 comparison is already decided inside `W`: `X` is strictly below `W ++ Y'` for
@@ -83,12 +31,6 @@ theorem seqlex_of_sle_not_prefix : ∀ {W X Y : PairSeq}, sle X (W ++ Y) →
           intro Z hZ
           exact hnp Z (by rw [hZ, List.cons_append])
 
-/-- **The peel.**  `ArgDomCore`'s conclusion is self-referential: the bound
-`Q ++ (a,w) :: shiftr0 d (X ++ A2)` mentions `X` itself.  Unfolding it one step
-at a time either decides the comparison inside `Q ++ [(a,w)]` (done, one copy
-suffices) or strips `Q ++ [(a,w)]` off `X` and repeats one level up — which is
-exactly the next copy of the tower.  The recursion terminates because each step
-consumes at least the column `(a,w)`. -/
 theorem peel_aux (d w : ℕ) : ∀ (n : ℕ) (X Q A2 : PairSeq) (a : ℕ), X.length ≤ n →
     sle X (Q ++ (a, w) :: shiftr0 d (X ++ A2)) →
     ∃ m, sle X (Q ++ copies d ((a, w) :: shiftr0 d Q) m) := by
@@ -230,12 +172,9 @@ theorem sle_shiftr0 (d : ℕ) {X Y : PairSeq} : sle (shiftr0 d X) (shiftr0 d Y) 
     · exact Or.inl rfl
     · exact Or.inr hs
 
-/-! ## Part B — the side condition, and the host-free core -/
-
 /-- `SpineOK A L w`: every **right-visible** column of `A` below level `L`
 carries row-1 at least `w`.  "Right-visible" = no later column of `A` sits at or
-below its level; these are exactly the row-0 ancestors that a column at level
-`≥ L` placed after `A` would climb through. -/
+below its level. -/
 def SpineOK (A : PairSeq) (L w : ℕ) : Prop :=
   ∀ (U V : PairSeq) (x : ℕ × ℕ), A = U ++ x :: V → x.1 < L →
     (∀ y ∈ V, x.1 < y.1) → w ≤ x.2
@@ -249,8 +188,7 @@ column-lex dominated by the `e`-shift of `A`.
 
 The side condition `SpineOK A1 (u+e) w` says the row-0 ancestors of `(u+e,w)`
 strictly between the two columns all carry row-1 `≥ w` — equivalently, the two
-columns are **row-1 siblings**.  Without it the statement is false
-(the counterexample above is the minimal instance). -/
+columns are **row-1 siblings**. -/
 def ArgDomCore : Prop :=
   ∀ {X A1 B A2 Z : PairSeq} {u w e : ℕ},
     ST_PS ((X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z) →
@@ -262,12 +200,6 @@ def ArgDomCore : Prop :=
     (Z = [] ∨ (Z.headI).1 ≤ u) →
     SpineOK A1 (u + e) w →
     sle B (shiftr0 e (A1 ++ (u + e, w) :: (B ++ A2)))
-
-/-! ## Part C — the host supplies the side condition
-
-This is the *only* place the host `M` is used, and it is exactly where the
-`nextrel1` clause (whose absence made the older statement false, see
-the counterexample above) pays for itself. -/
 
 /-- **`SpineOK` from the `nextrel1` clause.**  A right-visible column `x` of `R`
 below level `v0+d0` has *every* later column of `M` strictly above it, so
@@ -333,14 +265,7 @@ theorem spineOK_of_nextrel1 {G R : PairSeq} {v0 w0 d0 : ℕ}
   rw [hlast, entry_one, hgx] at this
   omega
 
-/-! ## Part D — the reduction -/
-
-/-- **`AscArgDom` follows from the host-free core.**
-
-`ArgDomCore` is applied exactly once, at the block root `(v0,w0)` of `N` against
-the ascending copy root `q = (v0+d0,w0)`; the host `M` enters only through
-`spineOK_of_nextrel1`.  `peel_aux` then unfolds the self-referential bound into
-the copy tower. -/
+/-- **`AscArgDom` follows from the host-free core.** -/
 theorem ascArgDom_of_core (H : ArgDomCore) : AscArgDom := by
   intro G R S v0 w0 d0 _ hN hRgt hd hnr
   classical
@@ -418,12 +343,6 @@ theorem pss_cofinality_of_core (H : ArgDomCore) {M N : PairSeq}
     ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=
   pss_cofinality_of_argdom (ascArgDom_of_core H) hM hN h
 
-/-! ## Part F — the `ST_PS` derivation induction for `ArgDomCore`
-
-Part E rules out every argument from the local invariants, so the proof has to
-descend the derivation.  This section sets up that induction and discharges all
-branches except `bad`, which is isolated as `argDomCoreOn_bad`. -/
-
 /-- Per-sequence form of `ArgDomCore` (the induction carrier). -/
 def ArgDomCoreOn (N : PairSeq) : Prop :=
   ∀ ⦃X A1 B A2 Z : PairSeq⦄ ⦃u w e : ℕ⦄,
@@ -489,13 +408,6 @@ theorem argDomCoreOn_snoc_zero {N : PairSeq} {p : ℕ × ℕ} (hp : p.1 = 0)
       rcases h5 with hc | hc
       · exact absurd hc (by simp)
       · exact hc
-
-/-! ### Transfer lemmas for the induction step
-
-`ArgDomCoreOn` never mentions the prefix `X` except through the defining
-equation, so instances are insensitive to what sits to their left, and they
-commute with a uniform row-0 shift.  Together these reduce an instance living
-beyond the first copy of `M⟦n⟧` to one in `M⟦n-1⟧`. -/
 
 /-- Instances do not see the material to their left. -/
 theorem argDomCoreOn_drop_left {P S : PairSeq} (H : ArgDomCoreOn (P ++ S)) :
@@ -649,8 +561,6 @@ theorem argDomCoreOn_shiftr0 {W : PairSeq} (d : ℕ) (H : ArgDomCoreOn W) :
   rw [hgoal, ← eB]
   exact (sle_shiftr0 d).2 hcore
 
-/-! ### Positional bookkeeping for the copy tower -/
-
 /-- Split a concatenation against a shorter left factor. -/
 theorem split_prefix_left {C D E F : PairSeq} (h : C ++ D = E ++ F)
     (hle : E.length ≤ C.length) :
@@ -694,109 +604,7 @@ theorem argbound_len (e u w : ℕ) (A1 B : PairSeq) :
   simp [shiftr0_length]
   omega
 
-/-! ### The `bad` branch, split into its three cases
-
-Fix the `oper_bad_blocks` data: `M = G ++ blk ++ [lp]` with `blk = (v0,w0) :: R`,
-so the expanded sequence is
-
-    N := G ++ copies d0 blk n        (`= M⟦n⟧` for `n ≥ 1`).
-
-Copy `0` of the tower **is** `blk` (`copies d blk n = concat_{k<n} shiftr0 (k*d) blk`),
-so `N` and `M` agree on the whole of `M.take (M.length - 1)` and the right
-boundary of the shared part is
-
-    p := G.length + blk.length = G.length + (R.length + 1)
-
-— **not** `G.length`.
-
-An `ArgDomCoreOn N` instance is a decomposition
-`N = (X ++ (u,w) :: (A1 ++ (u+e,w) :: (B ++ A2))) ++ Z`.  By `argdom_pos` its two
-marked columns sit at the positions
-
-    i := X.length                     -- the shallower column `(u,w)`
-    j := X.length + (A1.length + 1)   -- the deeper column `(u+e,w)`
-
-and `i < j` holds by construction.  The case split is on where `i`, `j` fall
-relative to `p`, phrased purely in the decomposition data:
-
-| name | discriminator | position reading |
-|---|---|---|
-| **B**  | `X.length + (A1.length + 1) < G.length + (R.length + 1)` | `j < p` |
-| **A2** | `X.length < G.length + (R.length + 1)` and `G.length + (R.length + 1) ≤ X.length + (A1.length + 1)` | `i < p ≤ j` |
-| **A1** | `G.length + (R.length + 1) ≤ X.length` | `p ≤ i` |
-
-
-**Coverage** (the point of this split): the three are pairwise exclusive and
-exhaust every instance, by two applications of `Nat.lt_or_ge` and nothing else —
-if `¬ (j < p)` then `p ≤ j`, and then either `i < p` (case A2) or `p ≤ i`
-(case A1).  In particular the argument needs no relation between `i` and `j`, so
-it cannot silently drop an instance.  `argDomCoreOn_bad` below performs exactly
-this dispatch.
-
-Three traps, all model-confirmed, that a coarser split walks into:
-
-* Marked columns inside `G` (or inside one copy) do **not** give an instance of
-  `M` (resp. a shift of one) for free: the *arguments* `A`, `B` are cut by the
-  material to the right, which differs.  In case B alone, 29069 of 50237
-  instances have `arg i` running past `p` into the copy tower (only 21168 stay).
-* The cross case A2 exists and is large (26290) — an instance whose shallower
-  column is in `G ++ blk` and whose deeper column is in a later copy.
-* In A1 the two marked columns need **not** be the same column of `blk` repeated:
-  `blk` may carry two different columns with the same row-1 value.  Witness:
-  `M = (0,0)(1,1)(2,0)(1,1)`, `blk = (0,0)(1,1)(2,0)`, `d0 = 1`, `n = 2`, so
-  `M⟦2⟧ = (0,0)(1,1)(2,0)(1,0)(2,1)(3,0)` and the instance `i = 0`, `j = 5`
-  pairs `blk`'s offset-0 column with `blk`'s offset-2 column (502 such instances
-  ).
-
-**Shared context.**  Each of the three case lemmas repeats the *entire* context,
-so that it is self-contained and provable in isolation:
-
-* `hM`, `hMon` — the host's derivation and its inherited `ArgDomCoreOn`;
-* `hMeq`, `hRgt`, `hlp`, `hdisj` — the full `oper_bad_blocks_all` package
-  (`hdisj` carries the `nextrel1` clause, which is load-bearing: without it the
-  statement is false);
-* `hSTn : ∀ m, 1 ≤ m → ST_PS (G ++ copies d0 blk m)` — the expanded sequences are
-  themselves standard forms, so `blockok_ST_PS / z0ok_ST_PS / r1ok_ST_PS / cnf`
-  are available *on the tower*, not just on `M`;
-* `hIH : ∀ m, 1 ≤ m → m < n → ArgDomCoreOn (G ++ copies d0 blk m)` — the strong
-  induction hypothesis over **smaller copy counts**.  `argDomCoreOn_bad` runs the
-  inner strong induction on `n` and hands this to all three cases.  Case A1 is
-  the intended consumer: `copies_succ_front` peels copy `0`, leaving the instance
-  inside `shiftr0 d0 (copies d0 blk (n-1))`, which `argDomCoreOn_drop_left`,
-  `argDomCoreOn_shiftr0` and `argDomCoreOn_extend_left` reduce to `hIH (n-1)`.
-  Cases B and A2 receive it too, for free;
-* `hn : 1 ≤ n` and the eight side conditions `heq, he, h1 … h6` of the instance;
-* the case's own discriminator, last.
- -/
-
-/-- **Case A1** — both marked columns lie beyond copy `0`: `p ≤ i` (hence
-`p ≤ j` as well, since `i < j`).
-
-Proof.  Write `n = m + 1`.  `copies_succ_front` peels copy `0`,
-
-    G ++ copies d0 blk (m+1) = (G ++ blk) ++ shiftr0 d0 (copies d0 blk m),
-
-and the discriminator `p ≤ i` says the prefix `G ++ blk` — whose length is
-exactly `p` — is consumed by `X`.  So `split_prefix_right` splits the instance
-across that boundary and re-exhibits it *verbatim* inside the tail
-`shiftr0 d0 (copies d0 blk m)`, with `X` replaced by `X.drop p` and **all eight
-side conditions unchanged** (they never mention the prefix).
-
-* `m = 0` (i.e. `n = 1`): the tail is `[]`, but the re-exhibited decomposition
-  contains the column `(u,w)` — contradiction on lengths.  This is the "vacuous"
-  reading: the tower has length exactly `p` while `p ≤ i < j < N.length = p`.
-* `m ≥ 1`: `hIH m` gives `ArgDomCoreOn (G ++ copies d0 blk m)`;
-  `argDomCoreOn_drop_left` discards `G` and `argDomCoreOn_shiftr0` puts the
-  `d0`-shift back on, yielding `ArgDomCoreOn (shiftr0 d0 (copies d0 blk m))`,
-  which the re-exhibited instance closes directly.
-
-Only `hIH` is used: `hM`, `hMon`, `hMeq`, `hRgt`, `hlp`, `hdisj` and `hSTn` are
-not needed in this case.
-
-⚠ Trap 3 is handled automatically: the argument never identifies the two marked
-columns with columns of `blk`, so it does not care that they may be *different*
-columns of `blk` carrying the same row-1 value (see the section docstring for the
-witness). -/
+/-- **Case A1** — both marked columns lie beyond copy `0`. -/
 theorem argDomCoreOn_bad_A1 {M G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
     (hM : ST_PS M) (hMon : ArgDomCoreOn M)
     (hMeq : M = G ++ ((v0, w0) :: R) ++ [lp])
@@ -856,13 +664,9 @@ theorem arg_split (L : ℕ) : ∀ (E : PairSeq),
       · exact hBp x hx
     · exact ⟨[], a :: E', rfl, by simp, Or.inr (by simp; omega)⟩
 
-/-- **The splice at the dropped column, bound-relative form.**  Strengthening of
-`seqlex_of_sle_snoc`: the hypothesis only has to bound `X ++ [lp]` by *some*
-continuation of `V`, and the conclusion is then valid for *every* continuation of
-`V`.  (`seqlex_of_sle_snoc` is the special case `E = []`.)  This is what
-transfers a bound proved in the host `M` — whose material after `X` is the
-dropped column `lp` — to the copy tower, whose material after `X` starts with a
-copy root `< lp` and then continues completely differently. -/
+/-- **The splice at the dropped column, bound-relative form.**  The hypothesis
+only has to bound `X ++ [lp]` by *some* continuation of `V`, and the conclusion
+is then valid for *every* continuation of `V`. -/
 theorem seqlex_of_sle_snoc' : ∀ {X V E : PairSeq} {lp q : ℕ × ℕ}, sle (X ++ [lp]) (V ++ E) →
     pairlt q lp → X.length < V.length → ∀ (S' E' : PairSeq), seqlex (X ++ q :: S') (V ++ E') := by
   intro X
@@ -897,39 +701,7 @@ theorem seqlex_of_sle_snoc' : ∀ {X V E : PairSeq} {lp q : ℕ × ℕ}, sle (X 
         · exact Or.inl hp
         · exact Or.inr ⟨rfl, ih (Or.inr hs') hq (by omega) S' E'⟩
 
-/-- **Case B** — both marked columns lie inside `G ++ blk`, i.e. `j < p`.
-
-`G ++ blk = M.take (M.length - 1)` is a common prefix of the host `M` (which
-continues with the dropped column `lp`) and of the tower `N = G ++ copies d0 blk n`
-(which continues with copy `1`), so the two marked columns and the whole of `A1`
-occur *identically* in `M`, whose instance `hMon` is available.  Since `j < p`,
-the prefix `Cp := X ++ (u,w) :: A1 ++ [(u+e,w)]` up to and including the deeper
-marked column is a prefix of `G ++ blk`; write `G ++ blk = Cp ++ D`, so that
-`M = Cp ++ (D ++ [lp])` while `B ++ A2 ++ Z = D ++ T` with `T` the rest of the
-tower.  The local `key` then supplies the host's verdict for *any* admissible
-splitting of the host's remainder `D ++ [lp]`, in the truncated form
-`sle B' (shiftr0 e A1 ++ (u+e+e,w) :: shiftr0 e B')` — the comparison is settled
-inside that prefix, `argbound_split` / `argbound_len` — and `goal_of` puts the
-goal in the same form.  Three leaves:
-
-* `|B| < |D|`: the tower's argument stops strictly inside the shared part, so it
-  *is* the host's argument — the next column `Dr.headI = (A2 ++ Z).headI`
-  re-opens at or below `u + e` by `h4` / `h5`.  `arg_split` supplies `A2'`, `Z'`
-  and `key B` closes it.
-* `|D| ≤ |B|` and `u + e < lp.1`: the host's argument is `D ++ [lp]` — this is
-  ⚠ Trap 1 (29069 of the 50237 instances have `B` running past `p`, so `B` is
-  *not* a sub-list of `M`).  If `B = D` the extra column is dropped by
-  `sle_of_append_left` + `sle_take_of_short`; otherwise `B = D ++ q :: B2'` with
-  `q = (v0+d0, w0)` the root of copy `1`, and `seqlex_of_sle_snoc'` replaces
-  `lp` by `q` — legitimate because `pairlt q lp` holds in *both* `oper`
-  sub-branches of `hdisj` (`(v0+d0,w0) < (v0+d0,w0+1)` ascending,
-  `(v0,w0) < (v0+1,0)` exact).
-* `|D| ≤ |B|` and `lp.1 ≤ u + e`: then `B` cannot reach copy `1` at all (its
-  root would satisfy `u + e < q.1 ≤ lp.1`), so `B = D` and `key B` closes it
-  with `lp` pushed into `A2'` or `Z'`.
-
-Only `hMon` and `hdisj` are used; `hM`, `hRgt`, `hlp`, `hSTn`, `hIH` are not
-needed in this case. -/
+/-- **Case B** — both marked columns lie inside `G ++ blk`. -/
 theorem argDomCoreOn_bad_B {M G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
     (hM : ST_PS M) (hMon : ArgDomCoreOn M)
     (hMeq : M = G ++ ((v0, w0) :: R) ++ [lp])
@@ -1114,14 +886,6 @@ theorem argDomCoreOn_bad_B {M G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ
       · refine goal_of (key B [] [lp] (by simp) h2 (by simp) (Or.inl rfl) (Or.inr ?_))
         · simp; omega
 
-/-! ### Tooling for case A2 (the cross case)
-
-The cross case is closed by a *one-period descent*: an instance whose deeper
-column sits at least one full block-length above the shallower one is the exact
-`d0`-shift of an instance of the **smaller** tower `G ++ copies d0 blk (n-1)`,
-which the strong induction hypothesis `hIH` settles.  The lemmas below supply
-the list algebra for that descent. -/
-
 /-- `shiftr0` composes. -/
 theorem shiftr0_add (a b : ℕ) (X : PairSeq) :
     shiftr0 (a + b) X = shiftr0 a (shiftr0 b X) := by
@@ -1173,9 +937,7 @@ theorem prefix_cons_append {P Q : PairSeq} (A : PairSeq) (c : ℕ × ℕ) (h : P
 /-- **Sharp form of `spineOK_of_nextrel1`.**  The `nextrel1` minimality clause
 actually forces the *strict* bound `w0 < x.2` on every right-visible column `x`
 of `R` below level `v0+d0` — the dropped column carries row-1 `w0 + 1`, and a
-row-0 ancestor of it cannot carry less.  Case A2 needs this sharpened form to
-refute the configuration where the shallower marked column sits strictly inside
-the block. -/
+row-0 ancestor of it cannot carry less. -/
 theorem spineOK_of_nextrel1_strict {G R : PairSeq} {v0 w0 d0 : ℕ}
     (hnr : nextrel1 ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) G.length
       (G ++ ((v0, w0) :: R)).length) :
@@ -1231,44 +993,7 @@ theorem spineOK_of_nextrel1_strict {G R : PairSeq} {v0 w0 d0 : ℕ}
   omega
 
 /-- **Case A2** — the cross case: the shallower marked column is inside
-`G ++ blk` and the deeper one is in a later copy, `i < p ≤ j`.  This case is
-not vacuous.
-
-**The one-period descent.**  Write `L = |blk| = R.length + 1`.  For `n = 1` the
-case is empty (the tower stops at `p`, but `j ≥ p`), so `n ≥ 2` and the smaller
-tower `N' = G ++ copies d0 blk (n-1)` is available through `hIH`.  Cutting the
-instance at `p` gives `G ++ blk = X ++ (u,w) :: C`, `A1 = C ++ D` and
-`shiftr0 d0 (copies d0 blk (n-1)) = D ++ (u+e,w) :: (B ++ A2 ++ Z)`; un-shifting
-the latter exhibits `N'` cut at the column `j - L`, whose row-1 value is again
-`w`.  Three cases, comparing `i` with `j - L = G.length + |D|`:
-
-* `i < j - L` — the instance **descends**: `X`, `(u,w)`, `A1'`, `(u+e-d0,w)`,
-  `shiftl0 d0 B` is an instance of `N'` (its trailing `A2`/`Z` produced by
-  `takeWhile`/`dropWhile` at level `u`), `hIH` settles it, and the conclusion is
-  transported back up by `shiftr0 d0`: `B = shiftr0 d0 (shiftl0 d0 B)` because
-  every column of `B` sits at row-0 `> u+e ≥ d0`, and the smaller bound is a
-  *prefix* of the bigger one.  The one real point is `SpineOK` for the descended
-  gap: a right-visible column `x` of `A1'` either sits in `G` — where the head
-  of the tower forces `x.1 < v0`, so every column of `blk ++ D` is above `x` and
-  `x` is right-visible in `A1` too — or sits in the un-shifted window, where its
-  `d0`-shifted twin one period up is right-visible in `A1` and carries the same
-  row-1 value.  Either way `h6` applies.
-* `i = j - L` — then `e = d0` and `shiftl0 d0 B` is a prefix of
-  `A1 ++ (u+e,w) :: (B ++ A2)`, so the goal is a pure prefix comparison; `hIH`
-  is not needed.
-* `i > j - L` — **impossible**.  The shallower column then lies strictly inside
-  the block, hence is a right-visible column of `R` below level `v0+d0`, and the
-  sharpened minimality clause `spineOK_of_nextrel1_strict` (from the `nextrel1`
-  clause of `hdisj` — load-bearing) gives `w0 < w`; while the copy root sitting
-  inside `A1` (or being the deeper column itself) gives `w ≤ w0` by `h6`.
-
-Neither `hMon` nor `hSTn` is needed: the cross case is settled by the copy
-tower's own periodicity plus the induction hypothesis on the copy count.
-
-Model check (`tools/probe_badbranch_cases2.py` closures `(4,(1,2,3),10,6)` and
-`(5,(1,2,3,4,5),11,7)`): of the 26290 cross instances, 24308 descend and 1982
-are the base case; **no** instance falls in the refuted third case, and the
-descended `SpineOK` holds in all 24308. -/
+`G ++ blk` and the deeper one is in a later copy. -/
 theorem argDomCoreOn_bad_A2 {M G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
     (hM : ST_PS M) (hMon : ArgDomCoreOn M)
     (hMeq : M = G ++ ((v0, w0) :: R) ++ [lp])
@@ -1726,17 +1451,10 @@ theorem argDomCoreOn_bad_A2 {M G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × �
             (fun y hy => h1 y (by rw [hD1]; exact List.mem_append_left _ hy))
         omega
 
-/-- **The `bad` branch of the derivation induction**, assembled from the three
-cases above.
+/-- **The `bad` branch of the derivation induction.**
 
 `M = G ++ blk ++ [lp]`, `blk = (v0,w0) :: R`, `M⟦n⟧ = G ++ copies d0 blk n`.
-Given `ArgDomCoreOn M`, show `ArgDomCoreOn (M⟦n⟧)`.
-
-The proof is the inner strong induction on the copy count `n` (legitimate: we
-prove `∀ n ≥ 1, ArgDomCoreOn (M⟦n⟧)` from `ArgDomCoreOn M`, and case A1 consumes
-the induction hypothesis) followed by the exhaustive three-way dispatch on the
-position of the two marked columns relative to `p = G.length + blk.length`.  See
-the section docstring above for the coverage argument. -/
+Given `ArgDomCoreOn M`, show `ArgDomCoreOn (M⟦n⟧)`. -/
 theorem argDomCoreOn_bad {M G R : PairSeq} {v0 w0 d0 n : ℕ} {lp : ℕ × ℕ}
     (hM : ST_PS M) (hMon : ArgDomCoreOn M)
     (hMeq : M = G ++ ((v0, w0) :: R) ++ [lp])
@@ -1790,35 +1508,13 @@ theorem argDomCoreOn_oper {M : PairSeq} (hM : ST_PS M) (hMon : ArgDomCoreOn M)
       rw [hMn n hn]
       exact argDomCoreOn_bad hM hMon hMeq R_gt lp_gt disj hSTn hn
 
-/-- The derivation induction, modulo the `bad` branch. -/
+/-- The derivation induction. -/
 theorem argDomCoreOn_ST_PS {N : PairSeq} (hN : ST_PS N) : ArgDomCoreOn N := by
   induction hN with
   | diag v => exact argDomCoreOn_diag v
   | @oper M n hM hn ih => exact argDomCoreOn_oper hM ih hn
 
-/-- `ArgDomCore`, modulo `argDomCoreOn_bad`. -/
 theorem argDomCore_holds : ArgDomCore :=
   argDomCore_of_on (fun _ h => argDomCoreOn_ST_PS h)
-
-#print axioms peel_aux
-#print axioms argDomCoreOn_drop_left
-#print axioms argDomCoreOn_shiftr0
-#print axioms sle_shiftr0
-#print axioms spineOK_of_nextrel1
-#print axioms ascArgDom_of_core
-#print axioms pss_cofinality_of_core
-#print axioms argDomCoreOn_diag
-#print axioms argDomCoreOn_snoc_zero
-#print axioms argDomCoreOn_bad_A1
-#print axioms argDomCoreOn_oper
-
-#print axioms argDomCoreOn_bad_A1
-#print axioms argDomCoreOn_bad_B
-#print axioms argDomCoreOn_bad_A2
-#print axioms argDomCoreOn_bad
-#print axioms argDomCoreOn_ST_PS
-#print axioms argDomCore_holds
-#print axioms ascArgDom_of_core
-#print axioms pss_cofinality_of_core
 
 end YAPSS

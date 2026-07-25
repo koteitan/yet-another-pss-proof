@@ -1,14 +1,3 @@
-/-
-**Pair-sequence bookkeeping and the positional invariants of standard forms.**
-
-Two layers.  First, suffix invariance: the parent relations
-(`entry`/`nextrel0`/`nextrel1`/`le0`/`idx1`/`hasParent`/`parent`) and `oper`
-itself are unchanged by a prefix, which is what lets an expansion be analysed
-inside a block.  Second, the invariants `r1ok` (row-1 climbing) and `z0ok`
-(row-0 zeros), proved to survive every branch of `oper` and hence to hold on
-all of `ST_PS`, together with their consequence `hp_last`: a non-zero last
-column always has a parent.
--/
 import Cnf
 import Seqlex
 import Mathlib.Data.Nat.Find
@@ -17,8 +6,6 @@ import Mathlib.Algebra.NeZero
 namespace YAPSS
 
 open Three
-
-/-! ## Sum insertion with absorption, and `nrm` -/
 
 /-- Every `ST_PS` list is non-empty (the diagonals have length `v+1`; `oper`
 preserves non-emptiness via `oper_eq_dropLast_append`). -/
@@ -33,7 +20,7 @@ theorem stps_len_pos {M : PairSeq} (hM : ST_PS M) : 0 < M.length := by
 
 /-- Every `ST_PS` list begins with `(0,0)`: the diagonals start at `(0,0)`, and
 `oper` preserves the head (`N⟦n⟧ = N.dropLast ++ R` keeps `N`'s first column when
-`1 < |N|`).  So for `ST_PS (p :: rest)` the `dropWhile`-threshold is `p.1 = 0`. -/
+`1 < |N|`). -/
 theorem stps_head {M : PairSeq} (hM : ST_PS M) : M.headD (0,0) = (0,0) := by
   induction hM with
   | diag v => rw [diagSeq_cons (Nat.zero_le v)]; rfl
@@ -47,13 +34,7 @@ theorem stps_head {M : PairSeq} (hM : ST_PS M) : M.headD (0,0) = (0,0) := by
         simpa using ih
     · rw [oper_eq_self_short n (by omega)]; exact ih
 
-/-! ### `oper`-prefix-commute: suffix-invariance of the parent relations
-
-To prove `oper (A ++ T) n = A ++ oper T n` (when the operative last block lies in
-`T` and `T` is root-anchored) we need the parent-relation machinery
-(`entry`/`nextrel0`/`nextrel1`/`le0`/`idx1`/`hasParent`/`parent`) evaluated at
-indices `≥ |A|` to be unaffected by the prefix `A`.  These are concrete unfolding
-lemmas on the relation defs. -/
+/-! ### `oper`-prefix-commute: suffix-invariance of the parent relations -/
 
 /-- `getD` reads the right summand on out-of-`A` indices. -/
 theorem getD_app_right (A T : PairSeq) {i : ℕ} (h : A.length ≤ i) :
@@ -165,7 +146,7 @@ theorem rtg_to_root {M : PairSeq} {k b : ℕ} (hz : entry M 0 b = 0)
   | refl => rfl
   | tail _ hlast => exact absurd hlast (fun hh => nextrel0_no_pred_zero hz hh)
 
-/-- **`le0` blocking** (the key cross-boundary fact): with `T` root-anchored, no
+/-- **`le0` blocking**: with `T` root-anchored, no
 `le0`-chain crosses from a prefix index `k < |A|` into a positive-row-0 column at
 index `|A| + j1`.  Induction on the chain: each step into a positive column has
 its source `≥ |A|` (`nextrel0_no_cross`); a root source would have no predecessor
@@ -314,15 +295,14 @@ theorem Pred_append_right (A T : PairSeq) (hT : 2 ≤ T.length) :
   intro h; rw [h] at hT; simp at hT
 
 /-- A row-0-`0` column has no parent (its only `le0`-predecessor would be itself,
-but `nextR` is strict).  So in the `oper` tiling branch the last column has
-positive row-0. -/
+but `nextR` is strict). -/
 theorem no_hasParent_of_row0_zero {M : PairSeq} {i j1 : ℕ}
     (hz : entry M 0 j1 = 0) (hp : hasParent M i j1) : False := by
   obtain ⟨j0, hj0, -⟩ := hp
   obtain ⟨-, -, hrt⟩ := nextR_le0 hj0
   exact absurd (rtg_to_root hz hrt) (Nat.ne_of_lt (nextR_index_lt hj0))
 
-/-- **`oper`-prefix-commute** — the central kernel.  When `2 ≤ |T|` and `T` is
+/-- **`oper`-prefix-commute**.  When `2 ≤ |T|` and `T` is
 root-anchored (`entry T 0 0 = 0`), `oper` operates only on the last top-level
 block (inside `T`), so it commutes with the prefix `A`:
 `oper (A ++ T) n = A ++ oper T n`.  Proof: unfold `oper` on both; the last index
@@ -418,13 +398,6 @@ theorem oper_headD (N : PairSeq) {n : ℕ} (L : 1 < N.length) (hn : 1 ≤ n) :
 
 @[simp] theorem translate_nil : translate [] = Z := by rw [translate]
 
-/-! ## The max-row1 suffix (sequence side of the E6 machinery)
-
-`msfx S` is the suffix of `S` starting at the *first* column whose row-1
-value is maximal.  Empirically (E6): on standard dominated segments the
-host-level projection, when it fires, evaluates to `nrm (translate (msfx S))`.
-This section provides the pure sequence laws of `maxr1`/`msfx`. -/
-
 /-- Maximal row-1 value of a segment (`0` on the empty segment). -/
 def maxr1 (S : PairSeq) : ℕ := S.foldr (fun c m => max c.2 m) 0
 
@@ -435,9 +408,7 @@ theorem maxr1_cons (c : ℕ × ℕ) (S : PairSeq) :
 
 Every column at positive level has a row-0 parent (the nearest preceding
 column one level below, with no dip in between) whose row-1 value it exceeds
-by at most one.  Empirically exact on all standard hosts (14,558 columns).
-This is the foundation for arithmetizing the row-level facts of the E6
-campaign. -/
+by at most one. -/
 
 def r1ok (M : PairSeq) : Prop :=
   ∀ j, j < M.length → 0 < (M.getD j (0,0)).1 →
@@ -445,16 +416,6 @@ def r1ok (M : PairSeq) : Prop :=
       ∧ (∀ l, k < l → l < j → (M.getD j (0,0)).1 ≤ (M.getD l (0,0)).1)
       ∧ (M.getD j (0,0)).2 ≤ (M.getD k (0,0)).2 + 1
 
-/-! ### Relative `r1ok` — the self-contained sub-block carrier
-
-The absolute `r1ok` references row-`0` `> 0`, so a column at the *bottom* of a
-sub-block (whose climbing parent lay outside) has no in-block parent and the
-predicate breaks on sub-blocks.  `r1okRel base M` relaxes the threshold: only
-columns with row-`0` `> base` need an in-block climbing parent.  Empirically
-(262077/262077) a **descendant block** `K = takeWhile (v < ·.1) rest` of a
-column with row-`0` `= v` satisfies `r1okRel (v+1) K` — i.e. it is self-contained
-relative to its own minimum row-`0` `= v+1`.  This is the inductive carrier the
-forest bridge needs (absolute `r1ok` is the `base = 0` instance). -/
 theorem diagSeq0_length (v : ℕ) : (diagSeq 0 v).length = v + 1 := by
   unfold diagSeq
   rw [List.length_map, List.length_range']
@@ -507,11 +468,7 @@ theorem r1ok_dropLast {M : PairSeq} (h : r1ok M) : r1ok M.dropLast := by
   rw [List.dropLast_eq_take]
   exact r1ok_take h _
 
-/-! ## Index bookkeeping for the copy decomposition
-
-`oper_bad_blocks` presents the expansion as `G ++ (range n).flatMap (copy k)`;
-these lemmas convert positions `k * |B| + q` of the flat copy region to the
-source block, and decompose an arbitrary region index. -/
+/-! ## Index bookkeeping for the copy decomposition -/
 
 theorem getD_append_left {G X : PairSeq} {i : ℕ} (h : i < G.length) :
     (G ++ X).getD i (0,0) = G.getD i (0,0) := by
@@ -564,14 +521,7 @@ theorem copies_map_getD {B : PairSeq} {n k q : ℕ} {f : ℕ → ℕ × ℕ → 
       rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hq]
       rfl
 
-/-! ## Row-1 discipline under the copy expansion
-
-`copyExp G B d0 n` abstracts the bad branch of `oper` (`oper_bad_blocks`):
-prefix `G` followed by `n` copies of the block `B`, the `k`-th copy shifted
-in row 0 by `k * d0`.  `r1ok_copyExp` proves the three unconditional witness
-cases (prefix transfer, identity copy, same-copy translation); the
-level-minimal case (witness in the previous copy, the `r1ok_climb` core) is
-the explicit hypothesis `hmin`. -/
+/-! ## Row-1 discipline under the copy expansion -/
 
 /-- The copy expansion shape produced by the bad branch of `oper`. -/
 def copyExp (G B : PairSeq) (d0 n : ℕ) : PairSeq :=
@@ -724,12 +674,7 @@ theorem r1ok_copyExp {G B : PairSeq} {lp : ℕ × ℕ} {n d0 : ℕ}
         show (B.getD q (0,0)).2 ≤ (B.getD r' (0,0)).2 + 1
         exact hs
 
-/-! ## The previous-copy witness: `q = 0` degeneration and the `d0 = 0` case
-
-In `oper_bad_blocks` the block is *strictly* dominated (every later element
-exceeds the root level `v0`), so the only level-minimal offset is the block
-root itself (`dominated_PM_zero`).  For exact copies (`d0 = 0`) the host
-witness of the root serves every copy unchanged. -/
+/-! ## The previous-copy witness: `q = 0` degeneration and the `d0 = 0` case -/
 
 theorem getD_mem {l : List (ℕ × ℕ)} {i : ℕ} (h : i < l.length) :
     l.getD i (0,0) ∈ l := by
@@ -821,7 +766,7 @@ theorem r1ok_min_d0zero {G B : PairSeq} {lp : ℕ × ℕ} {n v0 w0 : ℕ} {R : P
 /-- The previous-copy witness case for `d0 ≥ 1`: the witness is the *last*
 block offset at level `v0 + d0 - 1` in the previous copy.  Exactness of the
 level and the no-dip property are forced by the `≤ +1` step discipline and
-maximality; only the row-1 bound (`hclimb`) is a class fact. -/
+maximality. -/
 theorem r1ok_min_d0pos {G B : PairSeq} {lp : ℕ × ℕ} {n v0 w0 d0 : ℕ} {R : PairSeq}
     (hB : B = (v0, w0) :: R) (hdom : ∀ x ∈ R, v0 < x.1)
     (hd0 : 0 < d0) (hlp : lp.1 = v0 + d0)
@@ -934,13 +879,7 @@ theorem r1ok_min_d0pos {G B : PairSeq} {lp : ℕ × ℕ} {n v0 w0 d0 : ℕ} {R :
     rw [hB0]
     exact hclimb r' hr'B rexact hgreat'
 
-/-! ## Assembly: `r1ok` is preserved by `oper`, hence holds on `ST_PS`
-
-All branches of the expansion step are wired: identity (short), `Pred`
-(dropLast), and the bad branch through `oper_bad_blocks` → `copyExp`.
-The step facts `hstep`/`hlpstep` come from the `steps1` component of
-`blockok_ST_PS`.  The sole remaining obligation is the class fact
-`climbok`. -/
+/-! ## Assembly: `r1ok` is preserved by `oper`, hence holds on `ST_PS` -/
 
 theorem hostM_getD_lp {G B : PairSeq} {lp : ℕ × ℕ} :
     (G ++ B ++ [lp]).getD (G.length + B.length) (0,0) = lp := by
@@ -960,9 +899,7 @@ theorem r1ok_Pred {M : PairSeq} (h : r1ok M) : r1ok (Pred M) := by
 ascending copies (`d0 ≥ 1`, so the parent is in row 1), the last block column
 `r'` at the parent level `v0 + d0 - 1` is a row-0 ancestor of the last
 column; the maximality clause of `nextrel1` therefore forces its row-1 value
-to be at least `lp.2 > w0`.  (This closes the `r1ok_climb` core: the `q = 0`
-reduction `dominated_PM_zero` ties the witness to the *parent structure* of
-the last column, where row-1 parenthood is decisive.) -/
+to be at least `lp.2 > w0`. -/
 theorem climb_bound {M G : PairSeq} {v0 w0 d0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ}
     (hM : M = G ++ ((v0,w0) :: R) ++ [lp])
     (hd0 : 0 < d0) (hlp1 : lp.1 = v0 + d0) (hwlt : w0 < lp.2)
@@ -1072,8 +1009,6 @@ theorem r1ok_ST_PS {M : PairSeq} (hM : ST_PS M) : r1ok M := by
   induction hM with
   | diag v => exact r1ok_diagSeq v
   | oper hN hn ih => exact r1ok_oper hn ih (blockok_ST_PS hN).2.2
-
-/-! ## Take-transfer for the parent relations -/
 
 theorem nextrel0_bound {M : PairSeq} {a b : ℕ} (h : nextrel0 M a b) :
     b < M.length := h.2.1
@@ -1209,7 +1144,7 @@ theorem parent0_exists {M : PairSeq} (hb : blockok 0 M) {j : ℕ}
     push Not at hnl
     exact hnl
 
-/-! ## Parent existence: the no-parent branch is empty on the class -/
+/-! ## Parent existence -/
 
 theorem chain_to_zero {M : PairSeq} (hb : blockok 0 M) :
     ∀ lev j, entry M 0 j = lev → j < M.length →
@@ -1271,7 +1206,7 @@ theorem nextR_zero_iff {M : PairSeq} {k j : ℕ} :
   rw [if_pos rfl]
 
 /-- **Every nonzero final column of a standard-shaped host has a unique
-parent** — the no-parent `Pred` branch is empty on the class. -/
+parent.** -/
 theorem hp_last {M : PairSeq} (hb : blockok 0 M) (hz : z0ok M)
     (hlen : 0 < M.length)
     (hzz : ¬ M.getD (M.length - 1) (0,0) = (0,0)) :
@@ -1315,8 +1250,6 @@ theorem hp_last {M : PairSeq} (hb : blockok 0 M) (hz : z0ok M)
       rw [hi, nextR_zero_iff] at hy'
       exact nextrel0_unique hy' hk
 
-/-! ## Final-column instances with a parent inside the last copy -/
-
 theorem z0ok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (h : z0ok M) :
     z0ok (M⟦n⟧) := by
   by_cases hL0 : M.length - 1 = 0
@@ -1336,13 +1269,13 @@ theorem z0ok_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (h : z0ok M) :
     show z0ok (copyExp G ((v0,w0) :: R) d0 n)
     exact z0ok_copyExp (hMeq ▸ h)
 
-/-- **Level-0 columns of standard hosts are `(0,0)`** — unconditional. -/
+/-- **Level-0 columns of standard hosts are `(0,0)`.** -/
 theorem z0ok_ST_PS {M : PairSeq} (hM : ST_PS M) : z0ok M := by
   induction hM with
   | diag v => exact z0ok_diagSeq v
   | oper hN hn ih => exact z0ok_oper hn ih
 
-/-! ## Drop transfer and chain-pivot machinery -/
+/-! ## Chain-pivot -/
 
 /-- A row-0 chain cannot jump a strict floor: if every column in `(ρ, b]`
 sits strictly above `ρ`, any chain into `b` from before `ρ` passes

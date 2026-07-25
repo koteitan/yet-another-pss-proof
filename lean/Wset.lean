@@ -1,167 +1,3 @@
-/-
-# `W_u` — the PSS iterated inductive set (pillar 2 of the ordinal-free route)
-
-Companion of `YAPSS/Cofinality.lean` (pillar 1, `pss_cofinality`).  This file
-transplants Buchholz (1987) §2 — the iterated inductive set `W_v = lfp(A_v)`
-and its induction principle (A2) — to PSS pair sequences, and proves the
-**bridge**
-
-    (A/W least-fixpoint induction)  +  Bachmann cofinality  ⟹  `Acc` for `olt`
-                                                                on `ST_PS` images.
-
-Cofinality is taken as an explicit hypothesis (`hcof`); this file deliberately
-does **not** import `YAPSS/Cofinality.lean`.
-
---------------------------------------------------------------------------------
-## THE DESIGN PROBLEM AND ITS ANSWER
-
-Buchholz's operator has three branches
-
-    c ∈ A_v(X) ⟺ c = 0
-               ∨ (dom c ∈ {{0}, ℕ_B} ∧ ∀ n, c[n̄] ∈ X)
-               ∨ (∃ m < v, dom c = T_m ∧ ∀ z ∈ W_m, c[z] ∈ X)
-
-and the **third branch is the entire engine**.  Without it `W = lfp(A)` is
-literally the accessible part of the fundamental-sequence relation, so
-"`M ∈ W`" *is* "the expansion tree below `M` is well-founded" — i.e. PSS
-termination itself.  Any design that keeps only the ℕ-branch is therefore
-CIRCULAR, and this is a real danger in PSS because **every** PSS expansion
-`M⟦n⟧` is ℕ-indexed (`oper`, `YAPSS/Def.lean:100`; `ST_PS.oper` needs `1 ≤ n`).
-
-### (a) What indexes `W_u`: the **row-1 (ψ-subscript) level**
-
-`translate`'s principal subscript is the pair's row-1 value
-(`lead_translate`, `Mechanized.lean:160`): `translate (p :: rest) = P p.2 _ _`,
-i.e. `p_{p.2}(…)`.  So row-1 plays the role of Buchholz's `ψ`-subscript `v`,
-a pair `(x, w)` with `w > 0` and no descendants plays the role of `Ω_w = D_w 0`,
-and `T_m` = "all top-level principal subscripts `≤ m`" becomes "all top-level
-forest roots carry row-1 `≤ m`".  `W_u` is indexed by that row-1 level `u`,
-exactly as in the source, and the family is built by **iterated** induction on
-`u : ℕ` (`Wset.Wf` below), because the `T_m`-branch mentions `W_m` in a
-non-monotone parameter position.
-
-### (b) What the `T_m` branch becomes: the **row-1-orphan / graft** branch
-
-Read `dom` off the *rightmost spine* of the term, exactly as Buchholz does:
-
-    dom(a + b) = dom(b),   dom(D_v b) = T_u  iff  dom(b) = T_u with u < v,
-    dom(D_{m+1} 0) = T_m.
-
-Under `translate`, the rightmost spine of `translate M` is the **row-0 ancestor
-chain of the LAST pair of `M`** (the last summand is the last top-level tree,
-its argument is that tree's descendant block, and so on; the bottom of the
-spine is the last list entry).  Therefore, writing `j1 = |M| - 1`:
-
-    dom(M) = T_m   ⟺   `entry M 1 j1 = m + 1`   (the spine bottoms out at `Ω_{m+1}`)
-                   ∧   every strict row-0 ancestor of `j1` carries row-1 `> m`
-                       (each `D_v` step on the way up must satisfy `u < v`).
-
-and the second clause is **literally PSS's own `¬ hasParent M 1 j1`**: `nextrel1`
-picks the *largest* row-0 ancestor with row-1 strictly below `entry M 1 j1`, so
-such a parent exists iff *some* strict row-0 ancestor has a strictly smaller
-row-1 value.  Hence
-
-    `domT M m  :=  entry M 1 (|M|-1) = m + 1  ∧  ¬ hasParent M 1 (|M|-1)`
-
-("the last pair is a **row-1 orphan** of level `m+1`") is the PSS `dom = T_m`.
-The corresponding `T_m`-indexed fundamental sequence substitutes a level-`≤ m`
-forest for that `Ω_{m+1}` leaf, i.e. it is the **graft**
-
-    `graft M z  :=  M.dropLast ++ z.map (fun p => (p.1 + entry M 0 (|M|-1), p.2))`
-
-(re-base the block `z` at the depth the dropped `Ω_{m+1}` occupied).  It is the
-faithful reading of `(a' + D_v(… D_{m+1} 0 …))[z] = a' + D_v(… z …)`.
-
-**Side condition (`based`).**  For `graft M z` to *be* that substitution the
-block `z` must be given in normalised (depth-`0`-anchored) form, i.e.
-`entry z 0 0 = 0`: only then does `z`'s first root land at exactly the row-0
-depth the `Ω_{m+1}` leaf occupied, so that (i) the block attaches to the same
-parent, (ii) `z`'s own roots stay roots, and (iii) the uniform shift — which
-`translate` cannot see, since it compares row-0 values only pairwise — carries
-`translate z` unchanged.  Without it, e.g. `M = (0,3)(1,2)(1,1)` (`domT M 0`)
-and `z = (2,0)` would give `M.dropLast ++ [(3,0)]`, in which the grafted node
-becomes a *child* of `(1,2)` instead of its sibling — a structurally wrong
-graft.  The `T_m` branch therefore quantifies over `z ∈ W_m` with
-`entry z 0 0 = 0`; `z = 0` (`[]`) satisfies it, which is all the bridge needs.
-
-Note `graft M [] = M.dropLast`, and PSS's own `oper` in exactly this branch
-returns `Pred M = M.dropLast` (`oper_eq_pred_of_noParent`): **PSS truncates the
-`T_m`-indexed fundamental sequence to its bottom element `z = 0`.**  That is the
-precise sense in which the level hierarchy is invisible to `oper` and has to be
-re-introduced by hand.
-
-### (c) Why this is not circular
-
-Three independent reasons, all inherited from the source:
-
-1. The `T_m`-branch quantifies over `W_m` for `m < u`, a set built at an
-   **earlier stage** of the `ℕ`-recursion `Wf`.  So `W_u` is a genuine iterated
-   inductive definition, not a self-reference.
-2. The intended membership proof (the 2.6–2.8 analogue, `W_membership` below)
-   runs by induction on the **length of the pair sequence** — a syntactic
-   measure — and never descends the expansion tree.  It is the `T_m` branch
-   that makes that possible: it lets `A` see the *argument* structure of a term
-   rather than only its ℕ-indexed expansion.
-3. `domT` is **never satisfied by an `ST_PS` standard form** of length `> 1` in
-   a load-bearing way: for those, `graft M [] = M.dropLast = M⟦n⟧`, so the
-   `T_m` branch *implies* the ℕ branch and the bridge closes with `hcof` alone
-   (see `acc_of_W`).  The `T_m` branch does its real work on the *sub-blocks*
-   (`Ω_{m+1}`-cofinal, hence non-`ST_PS`) that the membership induction
-   traverses.  This is why the bridge below needs **no** extra cofinality
-   hypothesis beyond the ℕ-indexed `hcof` the companion file proves.
-
-### (d) Branch 1
-
-Buchholz's first branch is `c = 0`.  In PSS `oper` is the identity on sequences
-of length `≤ 1` (`oper_eq_self_of_short`), so those are *terminal* states of the
-system and must be handled as atoms; the honest atom set is
-
-    `|M| ≤ 1  ∧  entry M 1 0 = 0`,
-
-i.e. `translate M ∈ {0, p_0(0)} = {0, 1}`, both of which are in every `W_v`
-(`0` by (W1) and `1 = D_0 0` by `dom = {0}`, `1[0] = 0`).  A single pair
-`(x, w)` with `w > 0` is *not* an atom: it is `Ω_w`, and it enters `W_u`
-(`u ≥ w`) through the `T_{w-1}` branch — `domT [(x,w)] (w-1)` holds, and
-`graft [(x,w)] z = z` re-based, which is exactly `Ω_w[z] = z`.
-
---------------------------------------------------------------------------------
-## STATUS
-
-**`sorry`-free.  Zero named assumptions beyond the single explicit `hcof`.**
-
-```
-#print axioms YAPSS.Wset.wf_olt_ST_PS_of_cofinality
-  -- [propext, Classical.choice, Quot.sound]
-```
-
-i.e. pillar 2 is complete:
-
-    PSS Bachmann cofinality  (hcof, = YAPSS/Cofinality.lean, pillar 1)
-      ⟹  WellFounded (fun a b => ST_PS a ∧ ST_PS b ∧ translate a <o translate b)
-
-The route is the full Buchholz (1987) §2 transplant:
-
-* `Wf` / `W` (iterated stages), (A1), (A2), (A2'), `W_mono`, `W_nil`, `W_atom`;
-* the design-validation theorems `hasParent_one_iff` / `hasParent_zero_iff` /
-  `domT_iff` — PSS's own `hasParent` predicates **are** Buchholz's spine
-  conditions;
-* block algebra: `oper_shift` (row-0-shift equivariance of `oper`), `W_shift`,
-  `split_lastMin`, `oper_append_gen`, `graft_append`, `domT_append`,
-  `hasParent_append_gen`, `le0_cons_zero`;
-* the four-case classification of `oper` on a principal block `(0,v) :: R`:
-  `oper_cons_succ` (A′), `oper_cons_nat` (B′C′), `oper_cons_tower` (D′, the
-  tower `(D_v b)[n] = D_v(b[x_n])`), `domT_cons_of_lt` (E′);
-* **2.4(a)/(b)** `XA_closed` / `W_add`, **2.5** `Om_mem_W`, **2.6**
-  `Wstar_closed`, **2.7** `mem_of_Aclosed`, **2.8** `mem_Wstar`, the level bound
-  `mem_W_of_bound` / `mem_W_maxr1`, and **`W_membership`**;
-* the **bridge** `acc_of_W` and the assembly `wf_of_cofinality_and_membership` /
-  `wf_olt_ST_PS_of_cofinality`.
-
-No `native_decide`, no `admit`.  **§9 at the bottom of the file is the report.**
-Notably the feared `H0clause`-shaped coefficient domination never appeared: PSS
-`Three`-addition is unconditional (`translate` has no CNF side condition built
-in), so the additive closure 2.4(b) needs only the *positional* guard `rsum`.
--/
 import Column
 import Mathlib.Data.Set.Lattice
 import Mathlib.Data.List.Induction
@@ -170,8 +6,6 @@ namespace YAPSS
 open Three
 
 namespace Wset
-
-/-! ## 0. Small facts about `translate`, `ST_PS` and `oper` -/
 
 /-- `translate` is `Z` only on the empty sequence. -/
 theorem translate_eq_Z_iff {M : PairSeq} : translate M = Z ↔ M = [] := by
@@ -202,27 +36,20 @@ theorem stps_len_one {M : PairSeq} (hM : ST_PS M) (h : M.length = 1) : M = [(0, 
   match M, h with
   | [p], _ => simpa [List.headD_cons] using congrArg (fun q => [q]) hh
 
-/-! ## 1. `dom = T_m` and the `T_m`-indexed fundamental sequence (the graft)
-
-See the design discussion (b) in the file header. -/
-
-/-- **PSS `dom(M) = T_m`**: the last pair of `M` is a *row-1 orphan* of level
-`m+1` — its row-1 value is `m+1 > 0` and it has no row-1 parent, i.e. every
-strict row-0 ancestor carries a row-1 value `> m`.  This is exactly Buchholz's
-`dom(a) = T_m` read off the rightmost spine of `translate M`. -/
+/-- The last pair of `M` is a *row-1 orphan* of level `m+1`: its row-1 value is
+`m+1 > 0` and it has no row-1 parent, i.e. every strict row-0 ancestor carries a
+row-1 value `> m`. -/
 def domT (M : PairSeq) (m : ℕ) : Prop :=
   entry M 1 (M.length - 1) = m + 1 ∧ ¬ hasParent M 1 (M.length - 1)
 
 /-- **The `T_m`-indexed fundamental sequence `M[z]`**: replace the trailing
 `Ω_{m+1}` leaf by the forest `z`, re-based at the depth (row-0 value) that leaf
-occupied.  Only meaningful for `based z` (see `based`). -/
+occupied. -/
 def graft (M z : PairSeq) : PairSeq :=
   M.dropLast ++ z.map (fun p => (p.1 + entry M 0 (M.length - 1), p.2))
 
 /-- A block is in normalised (depth-`0`-anchored) form: its first entry sits at
-row-0 depth `0`.  Since row-0 values are naturals, this makes index `0` a
-minimum, hence a top-level root, hence `graft M z` really is the substitution
-of `translate z` for the `Ω_{m+1}` leaf of `translate M`.  See the header. -/
+row-0 depth `0`. -/
 def based (z : PairSeq) : Prop := entry z 0 0 = 0
 
 @[simp] theorem based_nil : based ([] : PairSeq) := by simp [based, entry]
@@ -235,11 +62,6 @@ theorem not_domT_nil (m : ℕ) : ¬ domT ([] : PairSeq) m := by
   rintro ⟨h, -⟩
   simp [entry] at h
 
-/-- **`dom(M) ∈ {∅, {0}, ℕ}`** — the negation of `Ω`-cofinality.  This is the
-guard on the ℕ-branch of `A_u`, mirroring Buchholz's `dom c ∈ {{0}, ℕ_B}`.  It is
-load-bearing: without it the `T_m` branch and the ℕ branch could both fire on an
-`Ω_{m+1}`-cofinal block, and the ℕ branch (which PSS truncates to `graft M []`)
-carries far too little information to run the 2.6 tower. -/
 def natDom (M : PairSeq) : Prop := ∀ m : ℕ, ¬ domT M m
 
 theorem natDom_iff {M : PairSeq} :
@@ -257,8 +79,6 @@ theorem natDom_iff {M : PairSeq} :
     · omega
     · exact hnp hp
 
-/-- In the `domT` branch PSS's own expansion degenerates to the bottom
-(`z = 0`) element of the `T_m`-indexed family: `M⟦n⟧ = M.dropLast = graft M []`. -/
 theorem oper_eq_graft_nil_of_domT {M : PairSeq} {m n : ℕ}
     (hL : 1 < M.length) (hd : domT M m) : M⟦n⟧ = graft M [] := by
   obtain ⟨hw, hp⟩ := hd
@@ -272,17 +92,13 @@ theorem oper_eq_graft_nil_of_domT {M : PairSeq} {m n : ℕ}
   unfold Pred
   rw [if_neg (by omega)]
 
-/-! ### 1a. `r1cand` -/
-
-/-- A strict row-0 ancestor of `j1` carrying a strictly smaller row-1 value —
-i.e. a `D_v` step on the rightmost spine with `v ≤ m`, which is exactly what
-breaks Buchholz's `T_m` propagation `dom(D_v b) = T_u  ⟸  u < v`. -/
+/-- A strict row-0 ancestor of `j1` carrying a strictly smaller row-1 value. -/
 def r1cand (M : PairSeq) (j1 j0 : ℕ) : Prop :=
   j0 < j1 ∧ le0 M j0 j1 ∧ entry M 1 j0 < entry M 1 j1
 
-/-- **Design validation.**  `hasParent M 1 j1` holds iff *some* strict row-0
-ancestor of `j1` carries a smaller row-1 value: `nextrel1` selects the
-**largest** such ancestor, and that choice is automatically the unique one. -/
+/-- `hasParent M 1 j1` holds iff *some* strict row-0 ancestor of `j1` carries a
+smaller row-1 value: `nextrel1` selects the **largest** such ancestor, and that
+choice is automatically the unique one. -/
 theorem hasParent_one_iff {M : PairSeq} {j1 : ℕ} (hj1 : j1 < M.length) :
     hasParent M 1 j1 ↔ ∃ j0, r1cand M j1 j0 := by
   classical
@@ -316,9 +132,6 @@ theorem hasParent_one_iff {M : PairSeq} {j1 : ℕ} (hj1 : j1 < M.length) :
         have := hPg.2.2
         omega
 
-/-- `domT` spelled out as Buchholz's spine condition: the rightmost spine of
-`translate M` bottoms out at `Ω_{m+1}` and every `D_v` on the way up has
-`v > m`. -/
 theorem domT_iff {M : PairSeq} {m : ℕ} (hne : M ≠ []) :
     domT M m ↔ (entry M 1 (M.length - 1) = m + 1 ∧
       ∀ j0, j0 < M.length - 1 → le0 M j0 (M.length - 1) → m + 1 ≤ entry M 1 j0) := by
@@ -338,12 +151,7 @@ theorem domT_iff {M : PairSeq} {m : ℕ} (hne : M ≠ []) :
     have := hall j0 h1 h2
     omega
 
-/-! ## 2. The operator `A_u` and the iterated inductive set `W_u`
-
-Faithful transplant of Buchholz (1987) p.138 (1)(2), with the design answer of
-the header substituted for the two PSS-specific branches. -/
-
-/-- Least fixpoint on `Set PairSeq` (only the two Knaster–Tarski faces we use). -/
+/-- Least fixpoint on `Set PairSeq`. -/
 def lfpS (f : Set PairSeq → Set PairSeq) : Set PairSeq := ⋂₀ {Y | f Y ⊆ Y}
 
 theorem lfpS_lowerbound {f : Set PairSeq → Set PairSeq} {Y : Set PairSeq}
@@ -362,10 +170,7 @@ theorem lfpS_unfold {f : Set PairSeq → Set PairSeq} (hm : Monotone f) :
     f (lfpS f) = lfpS f :=
   Set.Subset.antisymm (lfpS_unfold_le hm) (lfpS_unfold_ge hm)
 
-/-- **The PSS operator `A_u`.**  Branch 1 = the atoms `{0, 1}` (PSS's terminal
-states, on which `oper` is the identity); branch 2 = the ℕ-indexed PSS
-fundamental sequence `M⟦n⟧`; branch 3 = the `T_m`-graft branch of the header,
-quantifying over the already-built stage `Wf m` for `m < u`. -/
+/-- The operator `A_u`. -/
 def Aop (Wfam : ℕ → Set PairSeq) (u : ℕ) (X : Set PairSeq) (M : PairSeq) : Prop :=
   (M.length ≤ 1 ∧ entry M 1 0 = 0) ∨
   (natDom M ∧ ∀ n : ℕ, 1 ≤ n → M⟦n⟧ ∈ X) ∨
@@ -385,7 +190,7 @@ theorem Aset_mono (Wfam : ℕ → Set PairSeq) (u : ℕ) : Monotone (Aset Wfam u
   intro X Y hXY M hM
   exact Aop_mono_X (Wfam := Wfam) (u := u) hM hXY
 
-/-- `A_u(X) ⊆ A_v(X)` for `u ≤ v` (only the third branch sees `u`). -/
+/-- `A_u(X) ⊆ A_v(X)` for `u ≤ v`. -/
 theorem Aop_mono_level {Wfam : ℕ → Set PairSeq} {u v : ℕ} {X : Set PairSeq} {M : PairSeq}
     (le : u ≤ v) (h : Aop Wfam u X M) : Aop Wfam v X M := by
   rcases h with h | h | ⟨m, hm, hd, hop⟩
@@ -407,7 +212,7 @@ theorem Aop_cong {Wfam Wgam : ℕ → Set PairSeq} {u : ℕ} {X : Set PairSeq} {
     · exact Or.inr (Or.inl h)
     · exact Or.inr (Or.inr ⟨m, hm, hd, fun z hz => hop z ((e m hm).symm ▸ hz)⟩)
 
-/-- Stage family: `Wf n m` is the honest `W_m` for `m < n` (and `∅` above). -/
+/-- Stage family: `Wf n m` is `W_m` for `m < n` (and `∅` above). -/
 def Wf : ℕ → ℕ → Set PairSeq
   | 0 => fun _ => ∅
   | v + 1 => fun m => if m = v then lfpS (Aset (Wf v) v) else Wf v m
@@ -463,17 +268,11 @@ theorem A1_intro {u : ℕ} {M : PairSeq} (h : Aop W u (W u) M) : M ∈ W u := by
 theorem W_nil (u : ℕ) : ([] : PairSeq) ∈ W u :=
   A1_intro (Or.inl ⟨by simp, by simp [entry]⟩)
 
-/-- Level monotonicity `u ≤ v ⟹ W_u ⊆ W_v` (Buchholz (1987) p.137). -/
+/-- Level monotonicity `u ≤ v ⟹ W_u ⊆ W_v`. -/
 theorem W_mono {u v : ℕ} (h : u ≤ v) : W u ⊆ W v :=
   A2' (fun _ A => A1_intro (Aop_mono_level h A))
 
-/-! ## 3. The bridge: `W_u ⊆ Acc` under Bachmann cofinality
-
-Mirror of `acc_of_W_wfe` in the source
-(`pss-proof/git/lean/OTB-well-founded-syntactic/OTB-well-founded-syntactic-main.lean:151`).
-Cofinality enters only through the explicit hypothesis `hcof`. -/
-
-/-- The target relation: strict `olt` on `translate`-images of standard forms. -/
+/-- Strict `olt` on `translate`-images of standard forms. -/
 def Rst : PairSeq → PairSeq → Prop :=
   fun a b => ST_PS a ∧ ST_PS b ∧ translate a <o translate b
 
@@ -482,8 +281,8 @@ theorem acc_of_translate_eq {a b : PairSeq} (ha : ST_PS a)
     (e : translate b = translate a) (h : Acc Rst a) : Acc Rst b :=
   Acc.intro b fun y hy => h.inv ⟨hy.1, ha, by rw [← e]; exact hy.2.2⟩
 
-/-- The ℕ-branch step of the bridge: if all PSS expansions of a standard form
-are accessible, so is the form itself.  This is where cofinality is used. -/
+/-- If all PSS expansions of a standard form are accessible, so is the form
+itself. -/
 theorem acc_of_nat_branch
     (hcof : ∀ {M N : PairSeq}, ST_PS M → ST_PS N → translate N <o translate M →
       ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧))
@@ -499,17 +298,8 @@ theorem acc_of_nat_branch
   · exact hacc.inv ⟨hbst, hst, hlt'⟩
   · exact acc_of_translate_eq hst heq hacc
 
-/-- **The bridge.**  Under Bachmann cofinality every member of `W_u` is
-accessible for the `ST_PS`-restricted `olt` order.
-
-Mirrors `acc_of_W_wfe`; the three `A_u` branches are handled as follows.
-
-* branch 1 (atoms): `translate M ∈ {0, 1}`, and nothing `ST_PS` is `<o 1`;
-* branch 2 (ℕ): `hcof` (`acc_of_nat_branch`);
-* branch 3 (`T_m`-graft): for `|M| > 1` this *implies* branch 2, because PSS's
-  own `oper` degenerates to `graft M [] = M.dropLast` there
-  (`oper_eq_graft_nil_of_domT`) and `[] ∈ W m`; for `|M| ≤ 1` a standard form is
-  `[(0,0)]`, whose last pair has row-1 `= 0 ≠ m+1`, contradicting `domT`. -/
+/-- Under Bachmann cofinality every member of `W_u` is accessible for the
+`ST_PS`-restricted `olt` order. -/
 theorem acc_of_W
     (hcof : ∀ {M N : PairSeq}, ST_PS M → ST_PS N → translate N <o translate M →
       ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧))
@@ -556,29 +346,13 @@ theorem acc_of_W
   · -- `c` is not a standard form: it has no `Rst`-predecessor.
     exact Acc.intro c fun y hy => absurd hy.2.1 hc
 
-/-! ## 4. Block algebra for the membership route (Buchholz 2.4–2.8)
-
-The membership proof needs the PSS analogue of Buchholz's *term algebra*: sums
-(list concatenation of top-level trees) and principal terms (`(c,v) :: R`).  This
-section builds the three tools the source gets for free from `BT`:
-
-* **shift-equivariance** of `oper` / `graft` / `domT` (`translate` never sees a
-  uniform row-0 shift, and neither does `W`);
-* the **last-minimum split** `M = A ++ P` into "everything but the last top-level
-  tree" and "the last top-level tree";
-* the **prefix-commutation** `(A ++ P)⟦n⟧ = A ++ P⟦n⟧` for such a split, which is
-  `Nrm.oper_append_right` transported by the shift. -/
-
 /-- `R` is an *argument block*: every entry sits strictly below depth `0`, i.e.
 `R` is the descendant block of a root at depth `0`. -/
 def argOK (R : PairSeq) : Prop := ∀ p ∈ R, 0 < p.1
 
 /-- `P` is a genuine **top-level suffix** of `A ++ P`: `P`'s first entry sits at
-the minimum row-0 depth of the whole sequence.  This is exactly the hypothesis
-under which `oper`, `graft` and `domT` commute with the prefix `A`. -/
+the minimum row-0 depth of the whole sequence. -/
 def rsum (A P : PairSeq) : Prop := ∀ p ∈ A ++ P, entry P 0 0 ≤ p.1
-
-/-! ### 4a. Shift-equivariance -/
 
 /-- `nextR` is row-0-shift invariant. -/
 theorem nextR_shift_iff {S : PairSeq} {d i a b : ℕ} (hb : b < S.length) :
@@ -606,11 +380,7 @@ theorem parent_shift {S : PairSeq} {d i b : ℕ} (hb : b < S.length) :
   funext j0
   exact propext (nextR_shift_iff hb)
 
-/-- **`oper` is row-0-shift equivariant.**  Every test `oper` performs is either
-shift-invariant (row-1 values, `idx1`, `hasParent`, index arithmetic) or a
-difference of row-0 values (`d0`); the one non-invariant test — "is the last pair
-`(0,0)`?" — is redundant, because a row-0-`0` column has no parent at all
-(`no_hasParent_of_row0_zero`), so both readings land in the same `Pred` branch. -/
+/-- `oper` is row-0-shift equivariant. -/
 theorem oper_shift (M : PairSeq) (d n : ℕ) :
     (M.map fun p => (p.1 + d, p.2))⟦n⟧ = (M⟦n⟧).map (fun p => (p.1 + d, p.2)) := by
   by_cases hL : M.length - 1 = 0
@@ -710,8 +480,7 @@ theorem graft_shift {M : PairSeq} (hM : M ≠ []) (z : PairSeq) (d : ℕ) :
   intro q _
   simp only [Function.comp_apply, Nat.add_assoc]
 
-/-- **`W_u` is row-0-shift closed.**  `A_u` is shift-equivariant branch by
-branch, so this is a one-line `A2'`. -/
+/-- `W_u` is row-0-shift closed. -/
 theorem W_shift {u : ℕ} {M : PairSeq} (h : M ∈ W u) (d : ℕ) :
     (M.map fun p => (p.1 + d, p.2)) ∈ W u := by
   revert h
@@ -731,8 +500,6 @@ theorem W_shift {u : ℕ} {M : PairSeq} (h : M ∈ W u) (d : ℕ) :
       have hne : N ≠ [] := by rintro rfl; exact not_domT_nil m hd
       rw [graft_shift hne]; exact hgr z hz hb
   exact fun h => this h
-
-/-! ### 4b. The last-minimum split -/
 
 /-- Every nonempty block splits as `A ++ P` where `P` is its **last top-level
 tree**: `P`'s head sits at the minimum depth of the whole block and everything
@@ -786,8 +553,6 @@ theorem split_lastMin : ∀ {M : PairSeq}, M ≠ [] →
               · exact htail p (by simpa using hp)
               · simp only [List.mem_singleton] at hp; subst hp; exact hq
 
-/-! ### 4c. Prefix commutation -/
-
 /-- `X.map (· - c) |>.map (· + c) = X` when every depth of `X` is `≥ c`. -/
 theorem map_sub_add {c : ℕ} {X : PairSeq} (h : ∀ p ∈ X, c ≤ p.1) :
     (X.map fun p => (p.1 - c, p.2)).map (fun p => (p.1 + c, p.2)) = X := by
@@ -814,8 +579,7 @@ theorem entry_sub_zero {P : PairSeq} (hP : P ≠ []) :
   · exact absurd rfl hP
   · simp [entry]
 
-/-- **Prefix commutation for a top-level split** (the shift-general form of
-`Nrm.oper_append_right`). -/
+/-- Prefix commutation for a top-level split. -/
 theorem oper_append_gen {A P : PairSeq} (n : ℕ) (hP : 2 ≤ P.length) (h : rsum A P) :
     (A ++ P)⟦n⟧ = A ++ P⟦n⟧ := by
   set c := entry P 0 0 with hc
@@ -891,16 +655,7 @@ theorem natDom_append {A P : PairSeq} (hP : P ≠ []) (h : rsum A P) :
   ⟨fun hn m hm => hn m ((domT_append hP h).mpr hm),
    fun hn m hm => hn m ((domT_append hP h).mp hm)⟩
 
-/-! ## 5. Buchholz 2.4 — additive closure
-
-`X⁽ᴬ⁾ = {B | A ++ B ∈ X}`, guarded by `rsum A B` (the PSS side condition that
-`B` really is a top-level suffix; in the source this is free because `+` is only
-formed inside `OT_B`, whose definition already carries it). -/
-
-/-- Buchholz's `X^{(a)}`, with the PSS top-level-suffix guard. -/
 def XA (A : PairSeq) (X : Set PairSeq) : Set PairSeq := {B | rsum A B → A ++ B ∈ X}
-
-/-! ### Depth bookkeeping: `oper` and `graft` never go shallower -/
 
 theorem entry_zero_headD (X : PairSeq) : entry X 0 0 = (X.headD (0, 0)).1 := by
   cases X <;> simp [entry]
@@ -988,7 +743,7 @@ theorem graft_head_eq {B z : PairSeq} (hB : B ≠ []) (hz : based z)
         omega
     · simp [graft, entry]
 
-/-- **2.4(a)**: `A_u(X) ⊆ X` and `A ∈ X` imply `A_u(X⁽ᴬ⁾) ⊆ X⁽ᴬ⁾`. -/
+/-- `A_u(X) ⊆ X` and `A ∈ X` imply `A_u(X⁽ᴬ⁾) ⊆ X⁽ᴬ⁾`. -/
 theorem XA_closed {u : ℕ} {X : Set PairSeq}
     (hX : ∀ M : PairSeq, Aop W u X M → M ∈ X) {A : PairSeq} (hA : A ∈ X) :
     ∀ M : PairSeq, Aop W u (XA A X) M → M ∈ XA A X := by
@@ -1056,15 +811,11 @@ theorem XA_closed {u : ℕ} {X : Set PairSeq}
         · exact hAge p hp
         · exact graft_mem_ge hBnil hBge p hp
 
-/-- **2.4(b)**: `W_u` is closed under top-level concatenation. -/
+/-- `W_u` is closed under top-level concatenation. -/
 theorem W_add {u : ℕ} {A B : PairSeq} (hA : A ∈ W u) (hB : B ∈ W u)
     (h : rsum A B) : A ++ B ∈ W u :=
   A2' (XA_closed (u := u) (X := W u) (fun _ hM => A1_intro hM) hA) hB h
 
-/-! ## 6. Buchholz 2.5/2.6 — the principal step and the tower -/
-
-/-- **2.5**: `Ω_v = p_v(0) = [(0,v)] ∈ W_v`.  For `v = 0` this is the atom `1`;
-for `v > 0` it is the `T_{v-1}` branch with `graft [(0,v)] z = z`. -/
 theorem graft_Om (v : ℕ) (z : PairSeq) : graft [((0 : ℕ), v)] z = z := by
   simp [graft, entry]
 
@@ -1084,13 +835,11 @@ theorem Om_mem_W (v : ℕ) : [((0 : ℕ), v)] ∈ W v := by
     rw [graft_Om]
     exact W_mono (Nat.le_succ w) hz
 
-/-- Buchholz's `W* = {x | ∀ u, D_u x ∈ W_u}`, PSS reading: an argument block `R`
-is in `W*` when every principal `p_v(R)` lands in `W_v`. -/
+/-- An argument block `R` is in `W*` when every principal `p_v(R)` lands in
+`W_v`. -/
 def Wstar : Set PairSeq := {R | argOK R → ∀ v : ℕ, ((0, v) :: R) ∈ W v}
 
-/-- The **tower**: `t_0 = 0`, `t_{k+1} = p_v(R[t_k])`.  This is Buchholz's
-`x_0 = D_v 0`, `x_{i+1} = D_v(b[x_i])`; on the PSS side it is literally the
-`n`-fold ascending copy/tiling of `oper_bad_blocks`. -/
+/-- The **tower**: `t_0 = 0`, `t_{k+1} = p_v(R[t_k])`. -/
 def tow (v : ℕ) (R : PairSeq) : ℕ → PairSeq
   | 0 => []
   | k + 1 => (0, v) :: graft R (tow v R k)
@@ -1108,30 +857,6 @@ theorem entry_cons (p : ℕ × ℕ) (R : PairSeq) (i j : ℕ) :
   simp only [List.length_singleton] at h
   rw [Nat.add_comm 1 j] at h
   exact h
-
-/-! ### The four `oper`-on-a-principal-block cases
-
-`M = (0,v) :: R` with `argOK R`.  Writing `x = entry R 0 (|R|-1) ≥ 1` and
-`w = entry R 1 (|R|-1)`, the row-0 ancestor chain of `M`'s last column is `R`'s
-own chain **extended by the root** `(0,v)` (which is below everything, by
-`argOK`).  Hence exactly four cases, matching Buchholz's case split in 2.6:
-
-| case | condition | `dom` | `oper`|
-|---|---|---|---|
-| (A′) | `w = 0`, no row-0 parent in `R` | successor | `n` exact copies of `p_v(R[0])` |
-| (B′)(C′) | `R`'s last column has a parent in `R` | `ℕ` | `p_v(R⟦n⟧)` |
-| (D′) | `domT R m`, `v ≤ m` | `ℕ` (collapsing) | the **tower** |
-| (E′) | `domT R m`, `m < v` | `T_m` (continuous) | graft through the root |
-
-All five are pure facts about PSS `oper`/`hasParent`; none of them mentions
-`W`, `olt`, `translate` or any coefficient-domination condition. -/
-
-/-! #### `cons`-transfer of the parent machinery
-
-`Nrm`'s `*_append_right` family is *unconditional* on shifted indices, so with
-the prefix `[p]` it gives every "column `j` of `R` becomes column `j+1` of
-`p :: R`" transfer for free.  Only the **index-`0`** case (the root) needs new
-work, and that is where `argOK` enters. -/
 
 theorem nextR_cons (p : ℕ × ℕ) (R : PairSeq) (i j0 j1 : ℕ) :
     nextR (p :: R) i (j0 + 1) (j1 + 1) ↔ nextR R i j0 j1 := by
@@ -1184,9 +909,7 @@ theorem hasParent_zero_iff {M : PairSeq} {b : ℕ} (hb : b < M.length) :
         have := hPg.2
         omega
 
-/-- The root of a principal block is a row-0 ancestor of **every** column: by
-`argOK` it is strictly shallower than all of them, so the ancestor chain from any
-column descends all the way to index `0`. -/
+/-- The root of a principal block is a row-0 ancestor of **every** column. -/
 theorem le0_cons_zero {v : ℕ} {R : PairSeq} (hR : argOK R) :
     ∀ j, j < R.length → le0 ((0, v) :: R) 0 (j + 1) := by
   have key : ∀ N j, j ≤ N → j < R.length → le0 ((0, v) :: R) 0 (j + 1) := by
@@ -1254,9 +977,9 @@ theorem idx1_cons_last {p : ℕ × ℕ} {R : PairSeq} (hRne : R ≠ []) :
 
 theorem cons_len_lt {p : ℕ × ℕ} (R : PairSeq) : R.length < (p :: R).length := by simp
 
-/-- (C′)/(D′) The root `(0,v)` becomes the row-1 parent of `M`'s last column
-whenever `R` has no row-1 parent of its own but `v` is below `R`'s trailing
-subscript — and `R`'s own parent survives the `cons` otherwise. -/
+/-- The root `(0,v)` becomes the row-1 parent of `M`'s last column whenever `R`
+has no row-1 parent of its own but `v` is below `R`'s trailing subscript — and
+`R`'s own parent survives the `cons` otherwise. -/
 theorem hasParent_cons_one {v : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
     (h : hasParent R 1 (R.length - 1) ∨ v < entry R 1 (R.length - 1)) :
     hasParent ((0, v) :: R) 1 R.length := by
@@ -1292,7 +1015,7 @@ theorem oper_root_tiling {M : PairSeq} (n : ℕ) (hL : M.length - 1 ≠ 0)
     ← List.range_eq_range']
   rfl
 
-/-- (B′)(C′) Non-collapsing principal step: `p_v(R)[n] = p_v(R[n])`. -/
+/-- Non-collapsing principal step: `p_v(R)[n] = p_v(R[n])`. -/
 theorem oper_cons_nat {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
     (hp : hasParent R (idx1 R (R.length - 1)) (R.length - 1)) :
     ((0, v) :: R)⟦n⟧ = (0, v) :: R⟦n⟧ := by
@@ -1386,7 +1109,7 @@ theorem oper_cons_nat {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
   intro j _
   simp only [Function.comp_apply, entry_cons]
 
-/-- (A′) Successor case `dom R = {0}`: `p_v(β+1)[n] = p_v(β)·n`. -/
+/-- Successor case `dom R = {0}`: `p_v(β+1)[n] = p_v(β)·n`. -/
 theorem oper_cons_succ {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ [])
     (hw : entry R 1 (R.length - 1) = 0)
     (hnp : ¬ hasParent R 0 (R.length - 1)) :
@@ -1448,8 +1171,7 @@ theorem oper_cons_succ {v n : ℕ} {R : PairSeq} (hR : argOK R) (hRne : R ≠ []
   intro k _
   simp
 
-/-- (D′) **The tower identity** — the PSS form of `(D_v b)[n] = D_v(b[x_n])`.
-This is `oper_bad_blocks`' `n`-fold ascending tiling read through `graft`. -/
+/-- The tower identity. -/
 theorem oper_cons_tower {v m n : ℕ} {R : PairSeq}
     (hR : argOK R) (hd : domT R m) (hvm : v ≤ m) :
     ((0, v) :: R)⟦n⟧ = tow v R n := by
@@ -1527,7 +1249,7 @@ theorem oper_cons_tower {v m n : ℕ} {R : PairSeq}
       rw [graft]
       simp
 
-/-- (E′) Continuous case `dom R = T_m` with `m < v`: `dom (p_v R) = T_m`. -/
+/-- Continuous case `dom R = T_m` with `m < v`: `dom (p_v R) = T_m`. -/
 theorem domT_cons_of_lt {v m : ℕ} {R : PairSeq} (hR : argOK R) (hd : domT R m)
     (hmv : m < v) : domT ((0, v) :: R) m := by
   have hRne : R ≠ [] := by rintro rfl; exact not_domT_nil m hd
@@ -1546,8 +1268,6 @@ theorem domT_cons_of_lt {v m : ℕ} {R : PairSeq} (hR : argOK R) (hd : domT R m)
     have h1 : entry R 1 (R.length - 1) = m + 1 := hd.1
     refine hd.2 ((hasParent_one_iff (by omega)).mpr ⟨j', by omega,
       (le0_cons_last hRne j').mp hj2, by omega⟩)
-
-/-! ### Assembling 2.6 -/
 
 theorem argOK_oper {R : PairSeq} (hR : argOK R) (n : ℕ) : argOK (R⟦n⟧) :=
   fun p hp => oper_mem_ge (c := 1) (fun q hq => hR q hq) p hp
@@ -1586,7 +1306,7 @@ theorem W_flatMap_copies {u : ℕ} {Q : PairSeq} (hQ : Q ∈ W u)
         exact hQr p hp
       · exact hQr p hp
 
-/-- **2.6**: `A_ω(W*) ⊆ W*`. -/
+/-- `A_ω(W*) ⊆ W*`. -/
 theorem Wstar_closed : ∀ (u : ℕ) (M : PairSeq), Aop W u Wstar M → M ∈ Wstar := by
   intro u R AR hR v
   by_cases hRnil : R = []
@@ -1617,7 +1337,7 @@ theorem Wstar_closed : ∀ (u : ℕ) (M : PairSeq), Aop W u Wstar M → M ∈ Ws
       exact W_flatMap_copies (Om_mem_W v) (rsum_self_cons v []) n
     · -- branch 2: `natDom R`
       by_cases hp : hasParent R (idx1 R (R.length - 1)) (R.length - 1)
-      · -- (B′)(C′): `p_v(R)[n] = p_v(R[n])`
+      · -- `p_v(R)[n] = p_v(R[n])`
         have hnatM : natDom ((0, v) :: R) := by
           by_cases hz : entry R 1 (R.length - 1) = 0
           · exact hnatZero hz
@@ -1665,7 +1385,7 @@ theorem Wstar_closed : ∀ (u : ℕ) (M : PairSeq), Aop W u Wstar M → M ∈ Ws
           simpa using Om_mem_W v
     · -- branch 3: `domT R m`
       by_cases hvm : v ≤ m
-      · -- (D′) the tower
+      · -- the tower
         have htow : ∀ k, tow v R k ∈ W v := by
           intro k
           induction k with
@@ -1682,14 +1402,12 @@ theorem Wstar_closed : ∀ (u : ℕ) (M : PairSeq), Aop W u Wstar M → M ∈ Ws
         · refine hnatOf (hasParent_cons_one hR hRnil (Or.inr ?_))
           rw [hd.1]; omega
         · rw [oper_cons_tower hR hd hvm]; exact htow n
-      · -- (E′) continuous: `dom (p_v R) = T_m` with `m < v`
+      · -- continuous: `dom (p_v R) = T_m` with `m < v`
         push Not at hvm
         refine A1_intro (Or.inr (Or.inr ⟨m, hvm, domT_cons_of_lt hR hd hvm, ?_⟩))
         intro z hz hbz
         rw [graft_cons hRnil]
         exact hgr z hz hbz (argOK_graft hRnil hR z) v
-
-/-! ## 7. Buchholz 2.7/2.8 — induction on block length -/
 
 /-- The single-tree shift: a tree rooted at depth `c` is the `c`-shift of a tree
 rooted at depth `0`. -/
@@ -1752,21 +1470,17 @@ theorem mem_of_Aclosed_aux : ∀ (N : ℕ) (M : PairSeq), M.length ≤ N →
             (fun u M' h => XA_closed (fun M'' h'' => hX u M'' h'') hAX M' h)
           exact hPX hrs
 
-/-- **2.7**: every block belongs to every `A`-closed set.  Induction on
-`M.length`: split off the last top-level tree (`split_lastMin`), recombine with
-2.4(a), and handle the principal `(0,v) :: R` by 2.6 applied to `R` (shorter). -/
+/-- Every block belongs to every `A`-closed set. -/
 theorem mem_of_Aclosed {X : Set PairSeq}
     (hX : ∀ (u : ℕ) (M : PairSeq), Aop W u X M → M ∈ X) :
     ∀ M : PairSeq, M ∈ X :=
   fun M => mem_of_Aclosed_aux M.length M le_rfl X hX
 
-/-- **2.8**: every argument block is in `W*`. -/
+/-- Every argument block is in `W*`. -/
 theorem mem_Wstar (R : PairSeq) : R ∈ Wstar :=
   mem_of_Aclosed Wstar_closed R
 
-/-- **Every block lies in `W u` as soon as `u` bounds its row-1 values.**  The
-top-level trees go into `W` at their own root subscript (2.8 via `Wstar`), are
-lifted by level monotonicity, and are recombined by the additive closure. -/
+/-- **Every block lies in `W u` as soon as `u` bounds its row-1 values.** -/
 theorem mem_W_of_bound_aux : ∀ (N : ℕ) (M : PairSeq), M.length ≤ N →
     ∀ u : ℕ, (∀ p ∈ M, p.2 ≤ u) → M ∈ W u := by
   intro N
@@ -1833,42 +1547,11 @@ theorem le_maxr1 : ∀ {S : PairSeq}, ∀ p ∈ S, p.2 ≤ maxr1 S := by
 theorem mem_W_maxr1 (M : PairSeq) : M ∈ W (maxr1 M) :=
   mem_W_of_bound M (maxr1 M) le_maxr1
 
-/-! ## 8. Membership — the PSS analogue of Buchholz (1987) 2.8
-
-**OPEN OBLIGATION (believed TRUE; the remaining mathematical work).**
-
-The source route is 2.4(b) (additive closure) → 2.5 → 2.6 (`A_ω(W*) ⊆ W*` with
-`W* = {x | ∀ u, D_u x ∈ W_u}`, core case `dom b = T_u`, `v ≤ u`, via the tower
-`x_0 = D_v 0`, `x_{i+1} = D_v(b[x_i])` and `(D_v b)[n] = D_v(b[x_n])`) → 2.7
-(induction on **term length**) → 2.8.
-
-Its PSS reading, with the dictionary of the header:
-
-* `D_u x` = "prepend the pair `(0,u)` to the block `x` pushed one row-0 level
-  down"; `W* = {x | ∀ u, that sequence ∈ W_u}`;
-* the tower `x_0, x_1, …` is the **BMS ascending copy/tiling**:
-  `oper_bad_blocks` (`Mechanized.lean:836`) gives
-  `M⟦n⟧ = G ++ (List.range n).flatMap (fun k => body.map (p ↦ (p.1 + k*d0, p.2)))`,
-  i.e. the `n`-fold nesting of the block — literally `(D_v b)[n] = D_v(b[x_n])`,
-  with `w0 < lp.2` (the `i1 = 1` clause of `oper_bad_blocks`) supplying the
-  strict subscript drop that makes the tower land in `W_{u}` for the *lower*
-  level `u`;
-* 2.7's induction on term length becomes induction on `M.length`, the additive
-  closure 2.4(b) becomes closure of `W_u` under list concatenation of blocks,
-  and `T_m ⊆ W_m` (the source's `y3_TBv_dfree_W`) becomes "every pair sequence
-  all of whose top-level roots carry row-1 `≤ m` is in `W_m`".
-
-Every standard form has finitely many row-1 values (`oper_snd_subset`,
-`Mechanized.lean:552`, shows they never increase), so the level `u` exists. -/
 theorem W_membership : ∀ M : PairSeq, ST_PS M → ∃ u : ℕ, M ∈ W u :=
   fun M _ => ⟨maxr1 M, mem_W_maxr1 M⟩
 
-/-! ## 5. Assembly -/
-
-/-- **From the two pillars to well-foundedness.**  Cofinality (pillar 1,
-`YAPSS/Cofinality.lean`) plus `W`-membership (pillar 2, `W_membership`) give
-well-foundedness of `olt` restricted to `ST_PS` images — the statement the whole
-ordinal-free route is aiming at. -/
+/-- Cofinality plus `W`-membership give well-foundedness of `olt` restricted to
+`ST_PS` images. -/
 theorem wf_of_cofinality_and_membership
     (hcof : ∀ {M N : PairSeq}, ST_PS M → ST_PS N → translate N <o translate M →
       ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧))
@@ -1880,45 +1563,12 @@ theorem wf_of_cofinality_and_membership
     exact acc_of_W hcof u M hu
   · exact Acc.intro M fun y hy => absurd hy.2.1 hM
 
-/-- The same statement with both pillars in their intended final form: the goal
-relation written out. -/
+/-- The same statement with the relation written out. -/
 theorem wf_olt_ST_PS_of_cofinality
     (hcof : ∀ {M N : PairSeq}, ST_PS M → ST_PS N → translate N <o translate M →
       ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧)) :
     WellFounded (fun a b : PairSeq => ST_PS a ∧ ST_PS b ∧ translate a <o translate b) :=
   wf_of_cofinality_and_membership hcof W_membership
-
-#print axioms hasParent_one_iff
-#print axioms domT_iff
-#print axioms oper_shift
-#print axioms W_shift
-#print axioms split_lastMin
-#print axioms oper_append_gen
-#print axioms domT_append
-#print axioms XA_closed
-#print axioms W_add
-#print axioms Om_mem_W
-#print axioms hasParent_zero_iff
-#print axioms le0_cons_zero
-#print axioms hasParent_cons_one
-#print axioms domT_cons_of_lt
-#print axioms oper_cons_succ
-#print axioms oper_cons_nat
-#print axioms oper_cons_tower
-#print axioms Wstar_closed
-#print axioms mem_of_Aclosed
-#print axioms mem_Wstar
-#print axioms mem_W_of_bound
-#print axioms mem_W_maxr1
-#print axioms W_membership
-#print axioms wf_olt_ST_PS_of_cofinality
-#print axioms A1
-#print axioms A2'
-#print axioms W_mono
-#print axioms W_nil
-#print axioms oper_eq_graft_nil_of_domT
-#print axioms acc_of_W
-#print axioms wf_of_cofinality_and_membership
 
 end Wset
 

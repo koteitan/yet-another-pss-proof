@@ -3,10 +3,6 @@
 
 標準形 `M`, `N` について `translate N <o translate M` ならば、基本列のどれかが `N` を
 上から抑える：ある `n ≥ 1` で `translate N ≤o translate (M⟦n⟧)`。
-
-証明は `olt_ST_iff_seqlex` により列辞書式順序 `seqlex` の側へ移し、`oper` の各分岐に
-ついて共終性を示す形をとる。コピー分岐のうち上昇コピー (`d0 > 0`) の場合だけが
-`AscArgDom` に還元され、それが `ArgDom.lean` の対象である。
 -/
 import Term
 import Seqlex
@@ -15,13 +11,7 @@ import Column
 namespace YAPSS
 open Three
 
-/-! ## Part 0 — `seqlex` plumbing
-
-`olt_ST_iff_seqlex` (Seqlex.lean:709) turns the whole statement into a purely
-combinatorial one about the *column-lexicographic* order on pair sequences.
-This section collects the list-level facts about `seqlex` that the reduction
-needs (they are absent from `Seqlex.lean`, which only needed the two
-directions of the iso). -/
+/-! ## Part 0 — `seqlex` plumbing -/
 
 theorem pairlt_trans {p q r : ℕ × ℕ} (h1 : pairlt p q) (h2 : pairlt q r) :
     pairlt p r := by
@@ -91,8 +81,7 @@ theorem sle_append_mono {A B : PairSeq} (h : sle A B) (C : PairSeq) :
   · exact Or.inr (seqlex_append_mono h C)
 
 /-- **Snoc case analysis.**  A sequence below `D ++ [lp]` either stays `≤ D`,
-or extends `D` by a first column strictly below `lp`.  This is the shape that
-drives every branch of the cofinality proof. -/
+or extends `D` by a first column strictly below `lp`. -/
 theorem seqlex_snoc_cases : ∀ {D : PairSeq} {lp : ℕ × ℕ} {N : PairSeq},
     seqlex N (D ++ [lp]) →
     sle N D ∨ ∃ q S, N = D ++ q :: S ∧ pairlt q lp := by
@@ -192,8 +181,8 @@ theorem seqlex_cof_zero {M N : PairSeq} (hL : 1 < M.length)
   · rw [hlpz] at hq
     exact absurd hq (by simp [pairlt])
 
-/-- **The `noparent` branch is empty on `ST_PS`** (`hp_last`, Nrmstep.lean:5990):
-every standard form whose last column is not `(0,0)` does have a unique parent. -/
+/-- **The `noparent` branch is empty on `ST_PS`**: every standard form whose
+last column is not `(0,0)` does have a unique parent. -/
 theorem hasParent_last_ST_PS {M : PairSeq} (hM : ST_PS M) (hlen : 0 < M.length)
     (hz : ¬ (entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0)) :
     hasParent M (idx1 M (M.length - 1)) (M.length - 1) := by
@@ -235,7 +224,7 @@ Proof: take the first `nextrel0`-step `j0 → c` of the row-`0` ancestor chain
 `le0 M j0 j1`.  `r1ok` at `c` gives `row1 c ≤ row1 (parent₀ c) + 1`, and the
 `nextrel0`-parent is unique, so `parent₀ c = j0`; the `nextrel1` minimality
 gives `row1 j1 ≤ row1 c`.  Together with `row1 j0 < row1 j1` this pins the
-value.  (Model-verified: `tools/probe_cof_asc.py` fact A1, 0 violations.) -/
+value. -/
 theorem nextrel1_snd_succ {M : PairSeq} (hr : r1ok M) {j0 j1 : ℕ}
     (h : nextrel1 M j0 j1) : entry M 1 j1 = entry M 1 j0 + 1 := by
   obtain ⟨hj0, hj1, hlt, hincr, hle0, hmin⟩ := h
@@ -267,10 +256,8 @@ theorem nextrel1_snd_succ {M : PairSeq} (hr : r1ok M) {j0 j1 : ℕ}
     exact hk2
   omega
 
-/-- **The bad-branch decomposition, uniformly in `n`.**  `oper_bad_blocks`
-produces its block data per copy count; the parent is unique (`hasParent`), so
-the data is in fact the same for every `n`.  This packages it once and for all,
-in the `copies`/`shiftr0` form. -/
+/-- **The bad-branch decomposition, uniformly in `n`.**  The parent is unique
+(`hasParent`), so the block data is the same for every `n`. -/
 theorem oper_bad_blocks_all {M : PairSeq} (L : 1 < M.length) (hst : steps1 M)
     (hr : r1ok M)
     (hz : ¬ (entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0))
@@ -547,7 +534,7 @@ theorem copy_dom_zero : ∀ (d : ℕ) (Y : PairSeq) (v0 w0 : ℕ) (R : PairSeq),
           have h1 := hRgt x hx
           unfold pairlt; omega
 
-/-! ## Part 5 — the `d0 = 0` half of the crux, discharged -/
+/-! ## Part 5 — the `d0 = 0` half of the crux -/
 
 theorem copies_zero_succ (blk : PairSeq) (m : ℕ) :
     copies 0 blk (m + 1) = copies 0 blk m ++ blk := by
@@ -555,11 +542,10 @@ theorem copies_zero_succ (blk : PairSeq) (m : ℕ) :
   rw [List.range_succ, List.flatMap_append]
   simp
 
-/-- **The exact-copy branch of the crux is CLOSED.**  When `d0 = 0` the dropped
-column is `lp = (v0+1, 0)`, so the continuation `q :: S` of `N` re-opens at or
-below `v0`; `copy_dom_zero` then bounds its level-`v0` part by finitely many
-copies of the block, and the part below `v0` is `pairlt`-smaller than every
-column of the copies. -/
+/-- When `d0 = 0` the dropped column is `lp = (v0+1, 0)`, so the continuation
+`q :: S` of `N` re-opens at or below `v0`; `copy_dom_zero` then bounds its
+level-`v0` part by finitely many copies of the block, and the part below `v0`
+is `pairlt`-smaller than every column of the copies. -/
 theorem crux_zero {G R S : PairSeq} {v0 w0 : ℕ} {lp q : ℕ × ℕ}
     (hN : ST_PS ((G ++ ((v0, w0) :: R)) ++ q :: S))
     (hRgt : ∀ x ∈ R, v0 < x.1)
@@ -648,19 +634,10 @@ theorem crux_zero {G R S : PairSeq} {v0 w0 : ℕ} {lp q : ℕ × ℕ}
       simp only [List.headI]
       omega
 
-/-- **The residual crux — ascending copies only.**  The `d0 = 0` (exact-copy)
-half is discharged below by `crux_zero`; this is what is left: a standard form
-`N` that agrees with the host `M` on the *whole* good prefix `G` and bad block
-`blk = (v0,w0) :: R`, and then continues with a column strictly below the
-dropped column `lp`, is dominated by finitely many **ascending** copies of
-`blk`.
-
-Model-verified (`tools/probe_cof_asc.py`, closure `v ≤ 4`, depth 5, `n ≤ 4`,
-2041 hosts): the two head-level facts
-`lp.2 = w0 + 1` (A1) and `q ≤ (v0+d0, w0)` (A2) hold with 0 violations, and so
-does the recursion step
-`Y' does not exceed shiftr0 d0 R at the first mismatch` (A3, 6095 instances,
-0 violations). -/
+/-- A standard form `N` that agrees with the host `M` on the *whole* good
+prefix `G` and bad block `blk = (v0,w0) :: R`, and then continues with a column
+strictly below the dropped column `lp`, is dominated by finitely many
+**ascending** copies of `blk`. -/
 def AscCrux : Prop :=
   ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ} {lp q : ℕ × ℕ},
     ST_PS ((G ++ ((v0, w0) :: R)) ++ [lp]) →
@@ -672,11 +649,9 @@ def AscCrux : Prop :=
     pairlt q lp →
     ∃ m, 1 ≤ m ∧ sle (q :: S) (shiftr0 d0 (copies d0 ((v0, w0) :: R) m))
 
-/-- **The residual, with the head step taken.**  By `nextrel1_snd_succ` the
-dropped column is `lp = (v0+d0, w0+1)`, so a continuation column `q` with
-`pairlt q lp` satisfies `q ≤ (v0+d0, w0)` — the head of the first ascending
-copy — and the only case that is not immediate is `q = (v0+d0, w0)`.  This is
-what remains open. -/
+/-- By `nextrel1_snd_succ` the dropped column is `lp = (v0+d0, w0+1)`, so a
+continuation column `q` with `pairlt q lp` satisfies `q ≤ (v0+d0, w0)` — the
+head of the first ascending copy. -/
 def AscCrux1 : Prop :=
   ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ},
     ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
@@ -691,13 +666,7 @@ def AscCrux1 : Prop :=
 Because the ascending copies are **nested** (`blk_{k+1}` sits strictly inside
 `blk_k`), matching the first copy already exhausts everything the continuation
 of `N` can reach: the next copy root is at level `v0 + 2*d0`, strictly deeper
-than any column `S` still has after leaving `q`'s subtree.  So — unlike the
-exact-copy branch — there is **no recursion** here: two copies always suffice,
-and the entire branch collapses to the single inequality
-
-    translate (q's descendant block in `N`)  ≤o  translate R
-
-i.e. *the collapsed node's argument is dominated by the original block body*. -/
+than any column `S` still has after leaving `q`'s subtree. -/
 
 theorem shiftr0_length (d : ℕ) (X : PairSeq) : (shiftr0 d X).length = X.length := by
   unfold shiftr0; simp
@@ -724,28 +693,13 @@ theorem shiftr0_copies (d : ℕ) (blk : PairSeq) (n : ℕ) :
   simp only [Function.comp_apply, Prod.mk.injEq, and_true]
   omega
 
-/-- **The residual, in its sharpest form.**  `S_hi := S.takeWhile (v0+d0 < ·.1)`
-is the descendant block of the ascending copy root `q = (v0+d0, w0)` inside `N`,
-and `R ++ copies d0 blk' m` is the descendant block of the *original* block root
-inside the host expansion `M⟦m+1⟧` (`blk' = shiftr0 d0 blk`).  All that is
-missing for PSS Bachmann cofinality is that the *collapsed argument* is
-dominated by the shifted host argument at some stage `m`:
+/-- `S_hi := S.takeWhile (v0+d0 < ·.1)` is the descendant block of the ascending
+copy root `q = (v0+d0, w0)` inside `N`, and `R ++ copies d0 blk' m` is the
+descendant block of the *original* block root inside the host expansion `M⟦m+1⟧`
+(`blk' = shiftr0 d0 blk`).  The *collapsed argument* is dominated by the shifted
+host argument at some stage `m`:
 
-    S_hi  ≤lex  shiftr0 d0 (R ++ copies d0 blk' m).
-
-This is exactly the `∃n, e ≤ c[x_n]` step `(*)` of the Buchholz source's collapse
-branch, transposed to BMS copy structure.
-
-It is genuinely a **two-form** statement: dropping the host `M` makes the
-corresponding fact FALSE (15289 / 115859 violations on the closure — see the
-file header), so it cannot follow from any local invariant of `N` (`blockok`,
-`steps1`, `r1ok`, `z0ok`, `cnf` all hold in the counterexample).
-
-REFUTED variant (do **not** retry): the `m`-free form `S_hi ≤lex shiftr0 d0 R`
-is FALSE — `M = (0,0)(1,1)`, `N = (0,0)(1,0)(2,0) = M⟦3⟧` gives
-`S_hi = [(2,0)]` but `shiftr0 1 R = []` (4390 / 6095 violations).  The reason is
-that `S_hi` is *everything* above level `v0+d0`, hence also covers the later
-copies — the `m` in the statement above is what accounts for them. -/
+    S_hi  ≤lex  shiftr0 d0 (R ++ copies d0 blk' m). -/
 def AscArgDom : Prop :=
   ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ},
     ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
@@ -849,10 +803,10 @@ theorem asc_crux1_of_argdom (H : AscArgDom) : AscCrux1 := by
       simp only []
       omega
 
-/-! ## Part 7 — assembly (modulo the ascending crux) -/
+/-! ## Part 7 — assembly -/
 
-/-- **The head step of the ascending crux is CLOSED**: only the `q = (v0+d0,w0)`
-case survives. -/
+/-- **The head step of the ascending crux**: only the `q = (v0+d0,w0)` case
+survives. -/
 theorem asc_head_step (H : AscCrux1) : AscCrux := by
   intro G R S v0 w0 d0 lp q hM hN hRgt hd hlp2 hlp1 hnr hq
   have hlpe : lp = (v0 + d0, w0 + 1) := Prod.ext hlp1 hlp2
@@ -870,7 +824,7 @@ theorem asc_head_step (H : AscCrux1) : AscCrux := by
     simp only []
     omega
 
-/-- **Branch `bad`**: modulo the *ascending* crux, the genuine branch. -/
+/-- **Branch `bad`**. -/
 theorem seqlex_cof_bad (H : AscCrux) {M N : PairSeq} (hM : ST_PS M) (hN : ST_PS N)
     (L : 1 < M.length)
     (hz : ¬ (entry M 0 (M.length - 1) = 0 ∧ entry M 1 (M.length - 1) = 0))
@@ -905,28 +859,13 @@ theorem seqlex_cofinality_of_crux (H : AscCrux) : SeqlexCofinality := by
     · exact seqlex_cof_zero (by omega) hz h
     · exact seqlex_cof_bad H hM hN (by omega) hz h
 
-/-- **PSS Bachmann cofinality, modulo the single residual `AscCrux1`.**
-Everything else in the statement is GREEN:
-
-* the reduction to the column-lex order (`pss_cofinality_of_seqlex`),
-* the `self` and `(0,0)`-last branches (`seqlex_cof_short`, `seqlex_cof_zero`),
-* the emptiness of the `noparent` branch on `ST_PS` (`hasParent_last_ST_PS`),
-* the exact-copy (`d0 = 0`) half of the bad branch (`crux_zero`, via the CNF
-  sibling recursion `copy_dom_zero`),
-* the head step of the ascending half (`asc_head_step`, via the row-`1` `+1`
-  discipline `nextrel1_snd_succ`). -/
+/-- **PSS Bachmann cofinality, modulo `AscCrux1`.** -/
 theorem pss_cofinality_of_crux (H : AscCrux1) {M N : PairSeq}
     (hM : ST_PS M) (hN : ST_PS N) (h : translate N <o translate M) :
     ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=
   pss_cofinality_of_seqlex (seqlex_cofinality_of_crux (asc_head_step H)) hM hN h
 
-/-- **PSS Bachmann cofinality from the single `≤o` residual `AscArgDom`.**
-This is the sharpest packaging: everything in `pss_cofinality` reduces to
-
-    translate (S.takeWhile fun p => v0 + d0 < p.1)  ≤o  translate R
-
-for the ascending bad branch.  Feed the result to `YAPSS/Wset.lean`'s `hcof`
-parameter (`acc_of_nat_branch`, `wf_of_cofinality_and_membership`). -/
+/-- **PSS Bachmann cofinality from `AscArgDom`.** -/
 theorem pss_cofinality_of_argdom (H : AscArgDom) {M N : PairSeq}
     (hM : ST_PS M) (hN : ST_PS N) (h : translate N <o translate M) :
     ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=

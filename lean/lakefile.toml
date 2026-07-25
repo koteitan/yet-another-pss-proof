@@ -8,10 +8,10 @@ rev = "v4.30.0"
 
 [[lean_lib]]
 name = "YAPSS"
-# 依存順（下位が先）。md/requirement.md §3.2 と同じ順序。
+# 依存順（下位が先）。requirement.md と同じ順序。
 roots = [
   "Pss", "Term", "Decrease", "Reduction", "Cnf", "Seqlex", "Column",
   "Cofinality", "ArgDom", "Wset", "Final",
   # 証明の一部ではない検査用コード（requirement.md §1.3）
-  "memo.Sanity",
+  "memo.Sanity", "memo.Axioms",
 ]

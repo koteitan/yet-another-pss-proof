@@ -1,15 +1,3 @@
-/-
-Towards well-foundedness of `<o` on `NF`.
-
-This file develops the *syntactic* core of the subscript-monotonicity of
-descent: along the leftmost argument spine of a term, the subscript-first
-order `<o` refines the lexicographic order on the spine; together with the
-normal-form invariants of `NF` (the spine begins `0,1,…,maxsub`; every
-subscript is ≤ the spine maximum) this yields `w <o x → maxsub w ≤ maxsub x`.
-
-Indexing is total: `s.getD i 0` (each
-use is guarded by `i < length s`).
--/
 import Decrease
 import Mathlib.Order.WellFounded
 import Mathlib.Data.Prod.Lex
@@ -18,28 +6,12 @@ namespace YAPSS
 
 open Three
 
-/-! ## The spine as the strictly-increasing-row-0 prefix
-
-The leftmost argument spine of `translate M` reads off the row-1 values of
-the maximal prefix of `M` along which row 0 (`.1`) strictly increases. -/
-
-/-- A `getD`/`getElem` bridge used throughout this file. -/
+/-- A `getD`/`getElem` bridge. -/
 theorem getD_eq_getElem' {α : Type*} (l : List α) (d : α) {i : ℕ}
     (h : i < l.length) : l.getD i d = l[i] := by
   rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem h]
   rfl
 
-/-! ## The bad-case expansion as `dropLast M` followed by ascending copies
-
-In the bad case the `k = 0` copy reproduces the dropped suffix, so the
-expansion is `dropLast M` followed by the (`k ≥ 1`) ascending copies; the
-copies only repeat row-1 values already present in `dropLast M`.  (
-`take_split_map_nth` bookkeeping is subsumed here by reusing
-`oper_bad_blocks`.) -/
-
-/-- Unifying the three `oper` branches (for `1 < Lng M`): the expansion is
-always `dropLast M` followed by a block whose row-1 values already occur in
-`dropLast M`. -/
 theorem oper_eq_dropLast_append {M : PairSeq} {n : ℕ} (L : 1 < M.length)
     (n1 : 1 ≤ n) :
     ∃ R, M⟦n⟧ = M.dropLast ++ R ∧ sndSet R ⊆ sndSet M.dropLast := by
@@ -50,7 +22,7 @@ theorem oper_eq_dropLast_append {M : PairSeq} {n : ℕ} (L : 1 < M.length)
   · refine ⟨[], ?_, by simp⟩
     rw [oper_eq_pred_of_zero n (by omega) hz, hPred, List.append_nil]
   · by_cases hp : hasParent M (idx1 M (M.length - 1)) (M.length - 1)
-    · -- bad case, via the block decomposition
+    · -- bad case
       obtain ⟨G, v0, w0, R0, d0, lp, hM, hMn, -, -, -, -⟩ :=
         oper_bad_blocks L hz hp n1
       have hdrop : M.dropLast = G ++ (v0, w0) :: R0 := by
@@ -73,8 +45,6 @@ theorem oper_eq_dropLast_append {M : PairSeq} {n : ℕ} (L : 1 < M.length)
     · refine ⟨[], ?_, by simp⟩
       rw [oper_eq_pred_of_noParent n (by omega) hz hp, hPred, List.append_nil]
 
-/-! ## The NF invariants for the diagonal towers (base case) -/
-
 theorem diagSeq_cons {u v : ℕ} (h : u ≤ v) :
     diagSeq u v = (u, u) :: diagSeq (u + 1) v := by
   unfold diagSeq
@@ -93,13 +63,6 @@ theorem translate_diagSeq {u v : ℕ} (h : u ≤ v) :
     have := fst_in_diagSeq hq
     simp only []
     omega
-
-/-! ## Cantor normal form: siblings are non-increasing
-
-The within-level order is not well-founded on `nfinv` terms alone (e.g.
-`p₀(0) + p₀(p₀(0))` has increasing siblings yet satisfies `nfinv`); the
-genuine standard forms additionally have *non-increasing* sibling sums
-(CNF). -/
 
 def cnf : Three → Prop
   | Z => True
@@ -135,11 +98,7 @@ theorem cnf_diag (v : ℕ) : cnf (translate (diagSeq 0 v)) := by
   rwa [Nat.zero_add] at this
 
 /-- `cnf` is preserved by dropping the last pair: if `translate (D ++ [m])`
-is in CNF then so is `translate D`.  The interesting case appends `m` deep
-inside the last sibling block; the leading two-principal comparison is
-preserved because the earlier sibling's argument only grows
-(`translate_takeWhile_snoc_le`) and `olt_ole_trans`.  This discharges the
-`Pred` case of `cnf` preservation under `oper`. -/
+is in CNF then so is `translate D`. -/
 theorem cnf_snoc {D : PairSeq} {m : ℕ × ℕ}
     (h : cnf (translate (D ++ [m]))) : cnf (translate D) := by
   induction D using translate.induct with
@@ -248,7 +207,7 @@ theorem cnf_dropLast {C : PairSeq} (ne : C ≠ []) (h : cnf (translate C)) :
   apply cnf_snoc (m := C.getLast ne)
   rwa [List.dropLast_append_getLast ne]
 
-/-- `cnf` is preserved by any prefix `take k` (iterated `cnf_dropLast`). -/
+/-- `cnf` is preserved by any prefix `take k`. -/
 theorem cnf_take {M : PairSeq} (h : cnf (translate M)) (k : ℕ) :
     cnf (translate (M.take k)) := by
   suffices H : ∀ d k, M.length - k = d → cnf (translate (M.take k)) from H _ k rfl
@@ -277,9 +236,8 @@ theorem cnf_take {M : PairSeq} (h : cnf (translate M)) (k : ℕ) :
     rw [← e]
     exact cnf_dropLast ne ihk
 
-/-- CNF core, the exact-copy (`i1 = 0`) case: `n` identical copies of a block
-`(v0,w0) :: R` translate to a CNF term — the equal sibling blocks are
-non-increasing by irreflexivity of `<o`. -/
+/-- `n` identical copies of a block `(v0,w0) :: R` translate to a CNF
+term. -/
 theorem cnf_replicate_block {v0 w0 : ℕ} {R : PairSeq}
     (hR : ∀ x ∈ R, v0 < x.1) (cR : cnf (translate R)) (n : ℕ) :
     cnf (translate (List.replicate n ((v0, w0) :: R)).flatten) := by
@@ -332,9 +290,7 @@ theorem cnf_replicate_block {v0 w0 : ℕ} {R : PairSeq}
 /-- **CNF context congruence.**  If `Z1 = z1 :: T1`, `Z2 = z2 :: T2` share
 their leading row-0 (`z1.1 = z2.1`), `translate Z1 <o translate Z2`, and
 `translate Z1` is CNF, then a common good part `G` preserves CNF:
-`cnf (translate (G ++ Z2))` implies `cnf (translate (G ++ Z1))`.  The
-sibling-boundary that `G` creates is preserved because the leading argument
-only shrinks (`P a1 b1 Z ≤o P a2 b2 Z`) and `<o` is transitive. -/
+`cnf (translate (G ++ Z2))` implies `cnf (translate (G ++ Z1))`. -/
 theorem cnf_ctx_cong {z1 z2 : ℕ × ℕ} {T1 T2 : PairSeq}
     (cZ1 : cnf (translate (z1 :: T1)))
     (decr : translate (z1 :: T1) <o translate (z2 :: T2))
@@ -572,7 +528,7 @@ theorem cnf_tail {t : ℕ × ℕ} {T' : PairSeq}
     simp only [List.length_cons] at hle ⊢
     omega
 
-/-- **CNF preservation, the exact-copy (`i1 = 0`) oper case (abstract).**
+/-- **CNF preservation, the exact-copy (`i1 = 0`) oper case.**
 Replacing a block `(v0,w0) :: R` followed by the dropped descendant `lp`
 (which nests, `v0 < lp.1`) by `n` exact copies of the block preserves CNF. -/
 theorem cnf_oper_i1eq0 {v0 w0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ} {G : PairSeq} {n : ℕ}
@@ -649,13 +605,6 @@ theorem cnf_oper_i1eq0 {v0 w0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ} {G : PairSe
         Or.inl (olt_P_b _ _ _ RltRlp)⟩
   rw [e1n]
   exact key
-
-/-! ## CNF preservation, the ascending-copies (`i1 = 1`) oper case
-
-The `i1 = 1` bad step replaces the block `blk = (v0,w0) :: R` followed by the
-dropped descendant `lp` by `n` *ascending* copies of `blk`: the `k`-th copy is
-`blk` with every row-0 entry shifted up by `k * d0` (`d0 > 0`).  We package
-the copy list as `copies d0 blk n`. -/
 
 def shiftr0 (d : ℕ) : PairSeq → PairSeq := List.map fun p => (p.1 + d, p.2)
 
@@ -738,11 +687,7 @@ theorem copies_tl_gt {v0 w0 : ℕ} {R : PairSeq}
     simp only []
     omega
 
-/-- The core induction: `n` ascending copies of a CNF block translate to a
-CNF term.  Each new copy is grafted by `cnf_ctx_cong` against the dropped
-tail `[lp]`; its leading subscript `w0` is strictly below `lp.2` (the row-1
-increase of the `i1 = 1` parent), so the leading principal does not increase
-and the boundary is preserved. -/
+/-- `n` ascending copies of a CNF block translate to a CNF term. -/
 theorem cnf_copies {v0 w0 d0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ}
     (hR : ∀ x ∈ R, v0 < x.1)
     (d0pos : 0 < d0)
@@ -819,12 +764,7 @@ theorem cnf_copies {v0 w0 d0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ}
       rw [copies_succ_front, z1cons]
       exact key
 
-/-- **CNF preservation, the ascending-copies (`i1 = 1`) oper case.**  Like
-`cnf_oper_i1eq0` but for the genuinely ascending copies; the strict decrease
-`translate (copies d0 blk n) <o translate (blk ++ [lp])` (the bad-step core,
-derived internally from `core_i1`) lifts the block's CNF through the good
-part `G` via `cnf_ctx_cong`, while `cnf_copies` furnishes CNF of the copies
-themselves. -/
+/-- **CNF preservation, the ascending-copies (`i1 = 1`) oper case.** -/
 theorem cnf_oper_i1eq1 {v0 w0 d0 : ℕ} {R : PairSeq} {lp : ℕ × ℕ} {G : PairSeq} {n : ℕ}
     (hR : ∀ x ∈ R, v0 < x.1)
     (d0pos : 0 < d0)
@@ -941,11 +881,7 @@ theorem copies_replicate (blk : PairSeq) (n : ℕ) :
     rw [Nat.mul_zero, shiftr0_zero]
   rw [h, List.flatMap_def, List.map_const', List.length_range]
 
-/-- **CNF is preserved by one expansion step.**  The degenerate (`Pred`)
-branches drop the last pair (`cnf_dropLast`) or leave `M` unchanged; the
-genuine (bad) branch is discharged by `cnf_oper_i1eq0` (exact copies,
-`d0 = 0`) or `cnf_oper_i1eq1` (ascending copies, `d0 > 0`), fed by the
-decomposition `oper_bad_blocks`. -/
+/-- **CNF is preserved by one expansion step.** -/
 theorem cnf_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (cM : cnf (translate M)) :
     cnf (translate (M⟦n⟧)) := by
   by_cases hL : M.length - 1 = 0
@@ -978,9 +914,7 @@ theorem cnf_oper {M : PairSeq} {n : ℕ} (hn : 1 ≤ n) (cM : cnf (translate M))
       · rw [oper_eq_pred_of_noParent n hL hz hp, hPred]
         exact cnf_dropLast Mne cM
 
-/-- **Every standard-form sequence translates to a CNF term.**  Induction
-over the generation of `ST_PS`: the diagonal seeds are CNF (`cnf_diag`) and
-each expansion step preserves CNF (`cnf_oper`). -/
+/-- **Every standard-form sequence translates to a CNF term.** -/
 theorem cnf_ST_PS {M : PairSeq} (hM : ST_PS M) : cnf (translate M) := by
   induction hM with
   | diag v => exact cnf_diag v
