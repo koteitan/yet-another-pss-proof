@@ -21,26 +21,34 @@
 ペア数列へ一般化したものである。PSS の強さは ψ₀(ψ_ω(0))（Buchholz ordinal）と
 考えられており、添字 `a` を自然数（0,1,2,… とその上限 ω）に取ることに対応する。
 
-## バージョン管理内ファイル
+## ディレクトリ構造
 
-| ファイル | 役割 |
-|---|---|
-| `README-ja.md` | このファイル。リポジトリ内ファイルの説明。 |
-| `proof-ja.md` | markdown + MathJax による**完成した証明本文**（上位・人間向け）。Isabelle に変換できる証明のみを記し、経験的・未証明事項は書かない（循環論法防止）。 |
-| `memo.md` | 証明完成のための作業メモ（経験的観察・戦略・未解決の核の分析）。証明本文ではない。 |
-| `lean/Pss.lean` | Bashicu 氏のペア数列システムの定義（`ST_PS`・基本列 `M⟦n⟧`・`step`）。P進大好きbot 氏の論文（下記出典）に倣い、論文に忠実な変数名を用いる。 |
-| `lean/Term.lean` | 記法 `p_a(b)+c`（`Three`）、添字優先順序 `olt`、変換 `translate`。 |
-| `lean/Decrease.lean` | 展開の分解 `oper_bad_blocks` と測度減少 `m_step_decreases`。 |
-| `lean/Reduction.lean` | 停止性の還元（整礎性 ⟹ `WellFounded stepRel`）。 |
-| `lean/Cnf.lean` | Cantor 標準形条件 `cnf` と、コピー分解 `shiftr0` / `copies`。 |
-| `lean/Seqlex.lean` | `translate` が列辞書式順序への順序同型であること。 |
-| `lean/Column.lean` | ペア列の接頭辞不変性と、位置的不変量 `r1ok` / `z0ok`。 |
-| `lean/Cofinality.lean` | **PSS Bachmann 共終性**（基本列が limit の下に共終）。 |
-| `lean/ArgDom.lean` | 共終性の核 `ArgDomCore` を `ST_PS` 導出への帰納で証明。 |
-| `lean/Wset.lean` | **反復帰納的集合 `W_u`**（Buchholz 1987 §2 の PSS 移植）と可到達性の橋。 |
-| `lean/Final.lean` | **主定理** `PSS_terminates_unconditional`（無条件・`sorry` なし・順序数を用いない）。 |
-| `lean/PROOF-STATUS.md` | 証明の現状と経緯（authoritative）。 |
-| `md/requirement.md` | `md/YAPSS/*.md`（人間向け証明本文）の編集方針。 |
+```
+lean/                 Lean 4 / Mathlib による形式証明
+  README.md           11 モジュールの索引（依存順）
+  requirement.md      lean/*.md の編集方針
+  Pss.lean/.md        ペア数列システムの定義
+  Term.lean/.md       記法 p_a(b)+c、順序、翻訳
+  Decrease.lean/.md   展開の 1 段が測度を真に減らすこと
+  Reduction.lean/.md  停止性の整礎性への還元
+  Cnf.lean/.md        Cantor 標準形条件とコピー分解
+  Seqlex.lean/.md     翻訳が列辞書式順序への順序同型であること
+  Column.lean/.md     接頭辞不変性と標準形の位置的不変量
+  Cofinality.lean/.md Bachmann 共終性
+  ArgDom.lean/.md     その宿主に依らない核
+  Wset.lean/.md       反復帰納的集合 W_u
+  Final.lean/.md      主定理
+  PROOF-STATUS.md     証明の現状と経緯（authoritative）
+  lakefile.toml       11 モジュールを依存順に roots として列挙
+  tools/              DeadCode.lean — 証明項が到達しない宣言の検出
+md/                   旧世代の証明本文（lean/*.md へ移行中）
+tools/                形式化前に反例を探すための Python モデル
+proof-ja.md           証明本文（人間向け）
+task.md               作業ツリー
+```
+
+`lean/<module>.lean` の隣に同名の `lean/<module>.md` を置き、同じ証明を人間向けに書く。
+両者は 1 対 1 に保つ。
 
 ## ビルド
 

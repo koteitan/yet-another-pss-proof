@@ -53,7 +53,7 @@ i.e. no `sorryAx` and no named assumption; `lake build` is green over the whole 
 
 No ordinal evaluation map, no embedding into Buchholz's $\mathrm{OT}$, and no
 coefficient-domination condition occurs anywhere in this route. This is checked
-mechanically rather than asserted: after `import YAPSS.Final` the constant `Ordinal`
+mechanically rather than asserted: after `import Final` the constant `Ordinal`
 does not exist in the Lean environment at all, and no Mathlib ordinal or cardinal
 module is in the import closure.
 
@@ -63,19 +63,37 @@ range over the natural numbers.
 
 ## Repository layout
 
-| Path | Contents |
-|---|---|
-| [`lean/`](lean/) | The Lean 4 / Mathlib formalization (11 modules) |
-| [`lean/PROOF-STATUS.md`](lean/PROOF-STATUS.md) | Status of the formalization (authoritative) |
-| [`md/YAPSS/`](md/YAPSS/) | Human-readable proof text in Markdown + MathJax, one file per Lean module, covering all 594 declarations; [`md/requirement.md`](md/requirement.md) is its editing policy |
-| [`proof-ja.md`](proof-ja.md) | Proof text (Japanese) |
-| [`task.md`](task.md) | Progress tree |
-| `tools/` | Python models used to search for counterexamples and to check statements before formalizing them |
+```
+lean/                 the Lean 4 / Mathlib formalization
+  README.md           index of the 11 modules, in dependency order
+  requirement.md      editing policy for lean/*.md
+  Pss.lean/.md        the pair sequence system itself
+  Term.lean/.md       the notation p_a(b)+c, the order, the translation
+  Decrease.lean/.md   every expansion step strictly decreases the measure
+  Reduction.lean/.md  termination reduced to well-foundedness
+  Cnf.lean/.md        the Cantor normal form condition and the copy decomposition
+  Seqlex.lean/.md     the translation is an order isomorphism onto the column-lex order
+  Column.lean/.md     prefix invariance and the positional invariants of standard forms
+  Cofinality.lean/.md Bachmann cofinality
+  ArgDom.lean/.md     its host-free core
+  Wset.lean/.md       the iterated inductive set W_u
+  Final.lean/.md      the main theorems
+  PROOF-STATUS.md     status of the formalization (authoritative)
+  lakefile.toml       the eleven modules as roots, in dependency order
+  tools/              DeadCode.lean — declarations no proof term reaches
+md/                   the previous generation of the proof text (being replaced by lean/*.md)
+tools/                Python models used to look for counterexamples before formalizing
+proof-ja.md           proof text (Japanese)
+task.md               progress tree
+```
+
+Each `lean/<module>.lean` has a `lean/<module>.md` beside it carrying the same
+proof for a human reader; the two are kept in one-to-one correspondence.
 
 ## Build
 
 ```sh
-cd lean && lake build YAPSS
+cd lean && lake build
 ```
 
 Lean 4 with Mathlib `v4.30.0`.
