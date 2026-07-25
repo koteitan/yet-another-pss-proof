@@ -19,8 +19,10 @@ Buchholz's notation system. Only the following two ingredients are used.
 
 - **Bachmann cofinality** — every standard form strictly below $`M`$ is bounded above by some
   term $`M[n]`$ of the fundamental sequence.
-- **The iterated inductive set** $`W_u`$ — defined as a least fixpoint; by its induction principle,
-  every standard form belongs to $`W_u`$.
+- **The iterated inductive set** $`W_u`$ — the set $`W_u`$ of pair sequences is defined, by
+  recursion on $`u`$, as the least fixpoint of an operator built from the earlier $`W_v`$. Its
+  minimality gives an induction principle, and by that principle every standard form belongs
+  to $`W_u`$ for some $`u`$.
 
 Combining these two yields well-foundedness. This is the method of Buchholz (1987) §2, where the
 well-foundedness of Buchholz's notation system $`\mathrm{OT}_B`$ is obtained **syntactically** from
@@ -40,7 +42,7 @@ The route above transplants that method directly to pair sequences.
 | | prefix invariance of the parent relation, and the positional invariants $`\mathrm{r1ok}`$ / $`\mathrm{z0ok}`$ | [Column invariants](Column.md) [2](Column-2.md) [3](Column-3.md) [4](Column-4.md) |
 | Stage 3 | if $`N \prec M`$, then $`N \preceq M[n]`$ for some $`n`$ | [Bachmann cofinality](Cofinality.md) [2](Cofinality-2.md) [3](Cofinality-3.md) |
 | | reducing cofinality to the host-free core $`\mathrm{ArgDomCore}`$, and proving that core | [The core of cofinality](ArgDom.md) [2](ArgDom-2.md) [3](ArgDom-3.md) [4](ArgDom-4.md) [5](ArgDom-5.md) |
-| | the least fixpoint $`W_u`$ and its induction principle; that every standard form belongs to $`W_u`$ | [Iterated inductive set](Wset.md) [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md) |
+| | the least fixpoint $`W_u`$ and its induction principle; that every standard form belongs to $`W_u`$ for some $`u`$ | [Iterated inductive set](Wset.md) [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md) |
 | Conclusion | well-foundedness of the expansion relation, and non-existence of infinite expansion sequences | [Main theorem](Final.md) |
 
 The table can be read from top to bottom. Each section uses only what the preceding sections prove.
