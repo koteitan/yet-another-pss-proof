@@ -82,9 +82,6 @@ theorem olt_irrefl (x : Three) : ¬ x <o x := by
 @[simp] theorem not_olt_Z (x : Three) : ¬ x <o Z := by
   cases x <;> simp
 
-theorem olt_Z_iff {x y : Three} (h : x <o y) : y ≠ Z := by
-  rintro rfl; exact not_olt_Z x h
-
 theorem olt_trans {x y z : Three} (hxy : x <o y) (hyz : y <o z) : x <o z := by
   induction z generalizing x y with
   | Z => exact absurd hyz (not_olt_Z y)
@@ -108,24 +105,6 @@ theorem olt_trans {x y z : Three} (hxy : x <o y) (hyz : y <o z) : x <o z := by
       · exact Or.inl h2
       · exact Or.inr (Or.inl ⟨rfl, h2⟩)
       · exact Or.inr (Or.inr ⟨rfl, rfl, ih3 h1 h2⟩)
-
-theorem olt_total (x y : Three) : x <o y ∨ x = y ∨ y <o x := by
-  induction x generalizing y with
-  | Z => cases y <;> simp
-  | P a1 a2 a3 ih2 ih3 =>
-    cases y with
-    | Z => simp
-    | P e1 e2 e3 =>
-      rcases Nat.lt_trichotomy a1 e1 with h1 | rfl | h1
-      · exact Or.inl (by simp [h1])
-      · rcases ih2 e2 with h2 | rfl | h2
-        · exact Or.inl (by simp [h2])
-        · rcases ih3 e3 with h3 | rfl | h3
-          · exact Or.inl (by simp [h3])
-          · exact Or.inr (Or.inl rfl)
-          · exact Or.inr (Or.inr (by simp [h3]))
-        · exact Or.inr (Or.inr (by simp [h2]))
-      · exact Or.inr (Or.inr (by simp [h1]))
 
 theorem olt_ole_trans {x y z : Three} (hxy : x <o y) (hyz : y ≤o z) : x <o z := by
   rcases hyz with h | rfl

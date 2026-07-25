@@ -420,7 +420,6 @@ theorem olt_iff_seqlex {d : ℕ} {M N : PairSeq}
     exact olt_irrefl _ (olt_trans o this)
   · exact seqlex_imp_olt d M N bM bN
 
-
 /-! ## Adjacent-step composition over a fan of blocks -/
 
 theorem getLastD_eq_getD {α : Type*} (l : List α) (d : α) :
@@ -514,7 +513,6 @@ theorem blockok_diagSeq (v : ℕ) : blockok 0 (diagSeq 0 v) := by
     exact Nat.zero_le _
   · unfold diagSeq
     exact steps1_diag_range _ _
-
 
 theorem blockok_oper {M : PairSeq} {n : ℕ} (b : blockok 0 M) (n1 : 1 ≤ n) :
     blockok 0 (M⟦n⟧) := by

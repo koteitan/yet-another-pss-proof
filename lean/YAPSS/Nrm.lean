@@ -17,12 +17,6 @@ namespace YAPSS
 
 open Three
 
-/-! ## Decidability of `olt` -/
-
-/-! ## Executable critical-term collection -/
-
-/-! ## Projection at a collapse point -/
-
 /-! ## Sum insertion with absorption, and `nrm` -/
 
 /-- Every `ST_PS` list is non-empty (the diagonals have length `v+1`; `oper`

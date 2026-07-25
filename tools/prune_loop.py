@@ -84,26 +84,6 @@ def rescue_by_name(dead):
             return total
 
 
-def drop_constructors(dead):
-    """Constructors of an inductive are not separately deletable: either the
-    whole `inductive` block goes (then the constructor goes with it) or it
-    stays.  Remove them from the candidate set."""
-    pristine()
-    dropped = 0
-    for mod, names in dead.items():
-        lines = open(os.path.join(LEAN, 'YAPSS', mod + '.lean')).read().split('\n')
-        types = set()
-        for kind, a, b, name in blocks(lines):
-            if kind == 'decl' and name and re.match(r'^\s*(?:inductive|structure)\b', lines[a] if not lines[a].startswith('/--') else lines[b-1]):
-                types.add('.'.join(namespace_at(lines, a) + [name]))
-            if kind == 'decl' and name and any(re.match(r'^(?:inductive|structure)\b', l) for l in lines[a:b]):
-                types.add('.'.join(namespace_at(lines, a) + [name]))
-        for full in list(names):
-            if full.rsplit('.', 1)[0] in types:
-                names.discard(full); dropped += 1
-    return dropped
-
-
 def elaboration_used(dead):
     """Dead candidates that elaboration can use without the term citing them:
     `@[simp]` lemmas (a bare `simp` may fire them) and `instance`s (type-class
@@ -168,7 +148,6 @@ def settle(dead, label):
 def main():
     dead = load(sys.argv[1])
     print(f'candidates: {sum(len(v) for v in dead.values())}', flush=True)
-    print(f'constructors dropped: {drop_constructors(dead)}', flush=True)
 
     if settle(dead, 'all at once'):
         kept = {m: sorted(v) for m, v in dead.items() if v}

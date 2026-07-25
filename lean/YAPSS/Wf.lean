@@ -18,12 +18,6 @@ namespace YAPSS
 
 open Three
 
-/-! ## Leftmost spine, its maximum, and the maximal subscript -/
-
-/-! ## The order `<o` refines the spine lexicographic order -/
-
-/-! ## From `slex` and the NF invariants to subscript monotonicity -/
-
 /-! ## The spine as the strictly-increasing-row-0 prefix
 
 The leftmost argument spine of `translate M` reads off the row-1 values of
@@ -34,10 +28,6 @@ theorem getD_eq_getElem' {α : Type*} (l : List α) (d : α) {i : ℕ}
     (h : i < l.length) : l.getD i d = l[i] := by
   rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem h]
   rfl
-
-/-! ## The maximal subscript is the maximal row-1 value -/
-
-/-! ## The pair-sequence normal-form invariant and its closure -/
 
 /-! ## The bad-case expansion as `dropLast M` followed by ascending copies
 
@@ -103,10 +93,6 @@ theorem translate_diagSeq {u v : ℕ} (h : u ≤ v) :
     have := fst_in_diagSeq hq
     simp only []
     omega
-
-/-! ## The NF invariant holds on all standard forms -/
-
-/-! ## Subscript-monotonicity of descent on `NF = translate '' ST_PS` -/
 
 /-! ## Cantor normal form: siblings are non-increasing
 
@@ -999,14 +985,5 @@ theorem cnf_ST_PS {M : PairSeq} (hM : ST_PS M) : cnf (translate M) := by
   induction hM with
   | diag v => exact cnf_diag v
   | oper hM hn ih => exact cnf_oper hn ih
-
-/-! ## Reduction of well-foundedness to within-maxsub-level
-
-Since `<o`-descent on `NF` is subscript-monotone (`maxsub_mono_NF\'`), the
-maximal-subscript-decreasing part of `Rnf` is well-founded outright; the
-whole `Rnf` is then well-founded as soon as its *equal-maximal-subscript*
-part is (in Lean, via the lexicographic product `(maxsub, ·)` instead of
-Isabelle's `wf_union_compatible`).  This isolates the remaining obligation to
-a single maximal-subscript level (the Buchholz collapsing core). -/
 
 end YAPSS
