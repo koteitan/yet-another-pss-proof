@@ -48,7 +48,7 @@ The GREEN PSS-concrete assets are exactly the right shape here, because they rel
 **expansion to its original** (unlike the cross-level order-lift, where their domain was
 empty):  `oper_bad_blocks` (Mechanized.lean:836, the oper copy/tile decomposition),
 `core_i0` (:714) and `core_i1` (:737) (ascending-copy domination), together with
-`translate_shift`, `translate_take_le`, `translate_append_ge` (Gterm0Olt.lean).
+`translate_shift` (Mechanized.lean).
 
 ## STATE (2026-07-24, this file)
 
@@ -159,7 +159,6 @@ local invariant of `N` (`blockok`, `r1ok`, `z0ok`, `cnf` are all local and all h
 that counterexample).
 -/
 import YAPSS.Mechanized
-import YAPSS.Gterm0Olt
 import YAPSS.Seqlex
 import YAPSS.Nrmstep
 

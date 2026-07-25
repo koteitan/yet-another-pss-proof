@@ -160,7 +160,7 @@ $`gs=g\mathbin{::}gs'`$ のときは $`\mathrm{headI}\,gs=g`$、$`\mathrm{tail}\
 ### 定理 臨界項関係の推移性 (T.Gterm_trans)
 
 **主張** $`x\in G_u(g)`$ かつ $`g\in G_u(t)`$ ならば $`x\in G_u(t)`$
-（[(D.Gterm)](Otembed.md#d-Gterm)）。
+（[(D.Gterm)](Gterm.md#d-Gterm)）。
 
 **証明** 項 $`t`$ の構造に関する帰納法（$`u`$, $`x`$, $`g`$ と仮定 $`x\in G_u(g)`$ は固定）。
 帰納法の述語は
@@ -173,7 +173,7 @@ $`gs=g\mathbin{::}gs'`$ のときは $`\mathrm{headI}\,gs=g`$、$`\mathrm{tail}\
 $`\Phi(\mathsf Z)`$ が成り立つ。
 
 **帰納段** $`t=\mathsf P(a,b,c)`$。帰納法の仮定は $`\Phi(b)`$ と $`\Phi(c)`$ である。
-$`g\in G_u(\mathsf P(a,b,c))`$ を仮定する。[(T.mem_Gterm_P)](Otembed.md#t-mem_Gterm_P) より、これは
+$`g\in G_u(\mathsf P(a,b,c))`$ を仮定する。[(T.mem_Gterm_P)](Gterm.md#t-mem_Gterm_P) より、これは
 
 ```math
 \bigl(u\le a\ \wedge\ (g=b\ \vee\ g\in G_u(b))\bigr)\ \vee\ g\in G_u(c)
@@ -182,13 +182,13 @@ $`g\in G_u(\mathsf P(a,b,c))`$ を仮定する。[(T.mem_Gterm_P)](Otembed.md#t-
 と同値である。
 
 - $`u\le a`$ かつ $`g=b`$ のとき。固定した仮定 $`x\in G_u(g)`$ は $`x\in G_u(b)`$ である。
-  [(T.mem_Gterm_P)](Otembed.md#t-mem_Gterm_P) の右辺の第 1 選言（$`u\le a`$、$`x\in G_u(b)`$）が
+  [(T.mem_Gterm_P)](Gterm.md#t-mem_Gterm_P) の右辺の第 1 選言（$`u\le a`$、$`x\in G_u(b)`$）が
   成り立つので $`x\in G_u(\mathsf P(a,b,c))`$。
 - $`u\le a`$ かつ $`g\in G_u(b)`$ のとき。$`\Phi(b)`$ より $`x\in G_u(b)`$。
-  [(T.mem_Gterm_P)](Otembed.md#t-mem_Gterm_P) の右辺の第 1 選言（$`u\le a`$、$`x\in G_u(b)`$）により
+  [(T.mem_Gterm_P)](Gterm.md#t-mem_Gterm_P) の右辺の第 1 選言（$`u\le a`$、$`x\in G_u(b)`$）により
   $`x\in G_u(\mathsf P(a,b,c))`$。
 - $`g\in G_u(c)`$ のとき。$`\Phi(c)`$ より $`x\in G_u(c)`$。
-  [(T.mem_Gterm_P)](Otembed.md#t-mem_Gterm_P) の右辺の第 2 選言により $`x\in G_u(\mathsf P(a,b,c))`$。∎
+  [(T.mem_Gterm_P)](Gterm.md#t-mem_Gterm_P) の右辺の第 2 選言により $`x\in G_u(\mathsf P(a,b,c))`$。∎
 
 ---
 
@@ -244,7 +244,7 @@ $`\lVert b\rVert=n`$ なる $`b`$ を取り、$`\mathrm{Bad}_u(b)`$ が空か否
   b\preceq\mathrm{mx}_u(b).
   ```
 
-  一方 [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) を $`\mathrm{mx}_u(b)\in G_u(b)`$ に適用して
+  一方 [(T.Gterm_tsize)](Gterm.md#t-Gterm_tsize) を $`\mathrm{mx}_u(b)\in G_u(b)`$ に適用して
   $`\lVert\mathrm{mx}_u(b)\rVert\lt \lVert b\rVert=n`$。帰納法の仮定 $`\Phi(\lVert\mathrm{mx}_u(b)\rVert)`$ より
 
   ```math
@@ -1623,7 +1623,7 @@ b\preceq m .
 $`\forall g\in G_u(m),\ g\prec m`$ である。$`g\in G_u(m)`$ を取る。
 
 - [(T.Gterm_trans)](#t-Gterm_trans) を $`g\in G_u(m)`$ と $`m\in G_u(b)`$ に適用して $`g\in G_u(b)`$。
-- [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) を $`g\in G_u(m)`$ に適用して
+- [(T.Gterm_tsize)](Gterm.md#t-Gterm_tsize) を $`g\in G_u(m)`$ に適用して
   $`\lVert g\rVert\lt \lVert m\rVert`$。したがって $`g\ne m`$（$`g=m`$ なら $`\lVert m\rVert\lt \lVert m\rVert`$）。
 
 $`g\prec b`$ か否かで分ける。
@@ -1733,7 +1733,7 @@ $`\mathrm{Bad}_0(b)=[]`$。[(D.mvstep)](#d-mvstep) の第 1 分岐である。�
 **証明** $`\mathrm{Bad}_0(b)\ne[]`$ であるから $`\mathrm{mv}(b)=\mathrm{mx}_0(b)`$。
 [(T.maxo_hdtl_in)](Nrm.md#t-maxo_hdtl_in) より $`\mathrm{mx}_0(b)\in\mathrm{Bad}_0(b)`$、
 したがって [(T.mem_filter_Gterm)](#t-mem_filter_Gterm) より $`\mathrm{mx}_0(b)\in G_0(b)`$。
-[(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) により
+[(T.Gterm_tsize)](Gterm.md#t-Gterm_tsize) により
 $`\lVert\mathrm{mx}_0(b)\rVert\lt \lVert b\rVert`$。∎
 
 <a id="t-proj0_olt_of_mvstep_olt"></a>

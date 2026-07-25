@@ -22,6 +22,7 @@ These give the downstream case analyses the clean shape
 -/
 import YAPSS.Nrm
 import YAPSS.Seqlex
+import Mathlib.Data.Nat.Find
 
 namespace YAPSS
 

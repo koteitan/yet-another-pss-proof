@@ -1,22 +1,17 @@
 /-
-**Value normalization `nrm`**: a small syntactic projection sending an
-arbitrary term to a Buchholz OT term (`wf3`) of the same `ψ`-value.
-Lean port of `ord/nrm.thy`.
+**Term normalization `nrm`** and the coefficient projection `proj`: purely
+syntactic rewritings of `Three` terms.
 
-At a principal `D_a(b)` whose argument violates the OT3 condition (some
-`g ∈ G_a(b)` with `¬ g <o b`), the value `ψ_a` is constant on the interval up
-to the offending critical value, so the name may be rewritten to
-`D_a(max G_a(b))` without changing the value; iterating yields the OT-normal
-name.  Sums absorb principals dominated by a later one (ordinal addition).
+At a principal `P a b c` whose argument `b` has a coefficient
+`g ∈ Gterm a b` with `¬ g <o b`, `proj a` replaces `b` by the largest such `g`
+and repeats; `ins` inserts a principal into a sum, dropping it when a later
+principal already dominates it; `nrm` applies both recursively.
 
-The route to `wf Rnf`:
-  * `wf3_nrm`: every `nrm`-image is an OT term             (proved below)
-  * `nrm_order_pres`: on `NF`, `v <o u → nrm v <o nrm u`   (THE remaining
-    core, `sorry` exactly as in the Isabelle source; validated empirically
-    on 2.6 million pairs, zero violations)
-  * `wf_olt_wf3`: `<o` is well-founded on OT terms         (proved, Otembed)
+Only the *syntactic* content survives in the termination proof: the auxiliary
+lemmas about `nextrel0` / `le0` / `nextR` on appended pair sequences, proved at
+the end of this module, are what `Nrmstep.lean` and `Cofinality.lean` use.
 -/
-import YAPSS.Otembed
+import YAPSS.Gterm
 
 namespace YAPSS
 
@@ -147,94 +142,6 @@ def nrm : Three → Three
 @[simp] theorem nrm_Z : nrm Z = Z := rfl
 theorem nrm_P (a : ℕ) (b c : Three) :
     nrm (P a b c) = ins a (proj a (nrm b)) (nrm c) := rfl
-
-/-! ## Value preservation of `ins` (value route — see git/nrm_stepdec_design.md)
-
-`ins a b c = oV (P a b c)`: in the absorbing branch the inserted principal
-`ψ_a(oV b)` is `< ψ_e(oV f)` (the leading additive-principal term of `oV c`),
-so it is swallowed.  The argument-equal subcase uses Buchholz strict
-monotonicity 1.3, which needs `oV b ∈ C_a(oV b)` — supplied by the OT3 condition
-`hGb` at level `a` (in the `nrm` use this is exactly `proj_G`). -/
-/-! ## The remaining core: order preservation on `NF`
-
-Validated empirically on 2,643,843 pairs of (hereditary blocks of)
-standard-form translates: zero collapses, zero reversals.  The counterexample
-outside `NF` is `y₂ = p₀(p₁(y₁)) <o y₁ = p₀(p₁(p₁(0)))` with
-`nrm y₂ = nrm y₁`; its pair sequence `(0,0)(1,1)(2,0)(3,1)(4,1)` is not
-standard, so the standardness discipline (row-1 parenthood) is what the proof
-must exploit. -/
-
-/-! ### Reduction of `oV_nf_order_pres` to its two genuine standardness cores
-
-The `wf3`-route value-order proof `oV_order_pres` splits `olt` into three
-branches (subscript `a<e`, argument `a=e, b<f`, tail `a=e,b=f,c<g`).  On `NF`
-that proof does **not** port, because each branch needs a `wf3` fact that is
-*false* on `NF`: the subscript branch needs `spinesub_le` (the row-1 spine
-bound — false on `NF`, 15745 violations at closure+8), and the argument branch
-needs the C-membership `oV b ∈ C_a(oV b)` (false on `NF`, 10185 violations even
-when the resulting `ψ`-inequality is true).  So a direct port is blocked.
-
-Two structural `NF` facts repair the split:
-
-* `NF_lead0`: every `NF` term's outer subscript is `0`.  Hence comparing two
-  `NF` terms, the **subscript branch cannot occur at the top** (`0 < 0` is
-  absurd) — it is eliminated unconditionally.
-* The remaining argument and tail branches are isolated as the two cores below.
-
-The tail branch is discharged by `tsize`-strong-induction inside
-`oV_nf_order_pres` itself, using tail-`NF`-closure `NF_tail` (the *tail* is again
-an `NF` term, verified hereditarily); the argument-branch core
-`oV_nf_arg_lt` is the genuine UBI/row-1 content (C-membership-free, see the
-design notes — collapse is excluded by `r1ok`, the dual of `psi_proj_notmem`). -/
-
-/-! ### The argument-branch head, via the collapsing core `psi_proj`
-
-The direct C-membership routes for `ψ_0(oV b) < ψ_0(oV f)` are all **blocked on
-`NF`** (kernel-verified on the minimal example `b = p₁(p₂0)`, `f = p₁(p₂(p₃0))`):
-
-* `psi_strict_mono_arg` needs `oV b ∈ C_0(oV b)` — false (the inner `ψ₂0` lies
-  in the band `[Ω₂,Ω₃)` above `oV b ∈ [Ω₁,Ω₂)`, so `oV b ∉ C_0(oV b)`);
-* `psi_strict_mono_mem` needs `oV b ∈ C_0(oV f)` — also false: by `M1`
-  (`psi_form_of_mem`) + `Cset_level_mono` + `psi_arg_lt_of_mem` membership would
-  force `oV(p₂0) < oV f`, but band-disjointness gives `oV f < oV(p₂0)`.
-
-The repair is to route through the **collapsing core** `psi_proj`: `proj 0 b` is
-`0`-reduced (`proj_G`), so its value sits in its **own** `C_0` (`proj_oV_mem_C`,
-already proven), and `psi_proj` identifies `ψ_0(oV(proj 0 b)) = ψ_0(oV b)`.  Then
-Buchholz strict monotonicity `psi_strict_mono_arg` applies at `proj 0 b`.  Thus
-the argument head reduces to the **proj-side value order**
-`oV(proj 0 b) < oV(proj 0 f)` — and to `psi_proj` itself.  This pins the precise
-dependency: **the argument core needs the collapsing core** (the two are the two
-faces of the same Buchholz content, as the memory note warned). -/
-
-/-! ### Why the argument head needs `proj` (the three routes, all kernel-checked)
-
-The argument head `ψ_0(oV b) < ψ_0(oV f)` (`olt b f`, both `NF` arguments) has
-exactly three candidate routes, and on the minimal example `b=p₁(p₂0)`,
-`f=p₁(p₂(p₃0))` we settled all three in kernel:
-
-1. **Sufficiency witness** (`psi0_lt_of_canon_between`): a `0`-canonical `γ ∈
-   [oV b, oV f)`.  But `canon_witness_of_psi_ne` shows the witness exists **iff**
-   the head is strict (`collapse_le` converse) — so the witness search is the
-   head, not a cheaper lever.  No shortcut.
-
-2. **Direct C-membership** (`psi_strict_mono_arg`/`psi_strict_mono_mem`): needs
-   `oV b ∈ C_0(oV b)` or `oV b ∈ C_0(oV f)`.  **Both false** (kernel: the inner
-   `ψ₂0 ∈ [Ω₂,Ω₃)` sits above `oV b ∈ [Ω₁,Ω₂)` — a *subscript ascent*, which
-   `NF` arguments structurally contain).  `nrm` does not help (it leaves
-   `b=p₁(p₂0)` unchanged).
-
-3. **`proj` route** (`psi0_lt_of_proj_lt`): `proj 0` *collapses the subscript
-   ascent* — kernel `#eval`: `proj 0 b = p₂0`, `proj 0 f = p₃0`, and
-   `olt (proj 0 b) (proj 0 f)`.  This is the **only** working route.  It needs
-   (i) `psi_proj` (the collapsing core), (ii) the proj-side order
-   `olt (proj 0 b) (proj 0 f)`, (iii) `wf3 (proj 0 b)`.
-
-So the argument core is **inseparable from the collapsing core** `psi_proj`.
-The remaining genuine content is the proj-side order — `proj 0`-monotonicity,
-which is **false on general `wf3`** (7291 reversals) but **true on `NF`
-arguments** (audited: 79800/79800, zero reversals) — a real structural fact of
-standardness, not a static anchor. -/
 
 /-- Every `ST_PS` list is non-empty (the diagonals have length `v+1`; `oper`
 preserves non-emptiness via `oper_eq_dropLast_append`). -/
@@ -628,40 +535,5 @@ theorem oper_headD (N : PairSeq) {n : ℕ} (L : 1 < N.length) (hn : 1 ≤ n) :
   match N, L with
   | a :: b :: u, _ =>
     simp only [List.dropLast_cons_cons, List.cons_append, List.headD_cons]
-
-/-! **`ST_PS`-descendant-closure** (`ST_PS_desc`, the `takeWhile` dual of
-`ST_PS_suffix`).
-For an `ST_PS` list `(0,0) :: rest`, prepending the root `(0,0)` to the
-*descendant block* — the leading run `rest.takeWhile (0 < ·.1)` of columns above
-the root, i.e. the first top-level subtree — is again `ST_PS`.
-
-This is the structural fact that lifts the head-`0` argument `translate desc`
-of any `ST_PS` forest node to an `ST_PS`-translate:
-`translate ((0,0) :: desc) = P 0 (translate desc) Z` (since `desc` is all
-row-`0` `> 0`, its own `dropWhile` is empty), so `H0clause`'s root clause +
-`H0clause (translate desc)` are both supplied by `H0clause_translate`
-on `(0,0) :: desc`.
-
-MODEL-VERIFIED TRUE (closure+9): `(0,0) :: rest.takeWhile (0 < ·.1) ∈ ST_PS`
-for **13105 / 13105** `ST_PS` forms `(0,0) :: rest` (and `5214 / 5214` restricted
-to `oper`-images).  Proof path (mirror of `ST_PS_suffix`, `ST_PS`-induction):
-* **diag**: `rest = diagSeq 1 v` is all row-`0` `≥ 1`, so `takeWhile = rest` and
-  `(0,0) :: rest = diagSeq 0 v` (`diagSeq_cons`);
-* **oper, `Pred` branches**: `M⟦n⟧ = M.dropLast`; the descendant block of a
-  `dropLast` is the IH block with its last column dropped;
-* **oper, tiling branch**: the descendant block is the first copy's interior
-  (Case B) or lives inside the prefix `G` (`v0 > 0`) — the `takeWhile` dual of
-  the `dropWhile_rest_*` machinery, the genuine `oper`-structural content.
-This is the minimal isolated copy-structure fact feeding the §1 head-`0` wall
-(`Wttone.H0clause_translate`). -/
-
-/-! ## Well-foundedness of `<o` on `NF`, and PSS termination -/
-
-/-! ## Step decrease: the weaker (live) obligation
-
-For termination alone, only the expansion-step pairs must decrease — a
-single-host statement, amenable to induction over the `oper` case analysis
-together with the sequence-side characterization of `proj`.
-`nrm_order_pres` subsumes this lemma via `m_step_decreases`. -/
 
 end YAPSS

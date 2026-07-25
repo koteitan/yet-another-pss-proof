@@ -12,10 +12,12 @@ remaining obligation.
       ⟹ WellFounded `Rnf`                              `wf_Rnf_of_wf_PS` (below)
       ⟹ WellFounded `stepRel` / no infinite expansion   `step_terminates`
 
-Nothing here uses the ordinal evaluation map `oV`, the Buchholz `OT`/`wf3`
-embedding, or `H0clause`: the route replaces the coefficient-domination certificate
-by Bachmann cofinality plus the iterated inductive set `W_u` (`Wset.lean`, which is
-fully `sorryAx`-free).
+Nothing here uses ordinals: the route replaces the coefficient-domination
+certificate by Bachmann cofinality plus the iterated inductive set `W_u`
+(`Wset.lean`, which is fully `sorryAx`-free).  The ordinal modules that the
+abandoned route needed (`Psi.lean`, and the evaluation map `oV` together with the
+Buchholz `OT` predicate `wf3` in `Otembed.lean`) have been deleted from the
+repository; `Gterm.lean` keeps only the syntactic coefficient set `Gterm`.
 
 `AscArgDomExplicit` is model-verified: `tools/probe_argdom.py` gives 0 violations over
 140 / 294 / 692 instances at closure `+5/+6/+7`, and `tools/probe_argdom_witness.py`
@@ -71,10 +73,10 @@ def AscArgDomExplicit : Prop :=
 
 It is a `≤lex` comparison between two explicit pair-sequence expressions built
 from BMS copy/tiling (`shiftr0`, `copies`, `takeWhile`).  It mentions **no**
-ordinal, no `ψ`/`Ω`, no evaluation map `oV`, and no `olt`.
+ordinal, no `ψ`/`Ω`, no evaluation map, and no `olt`.
 
 Everything else on both pillars is proved.  In particular no
-coefficient-domination (`H0clause` / `Gterm`) fact occurs anywhere on this
+coefficient-domination (`Gterm`) fact occurs anywhere on this
 route; `YAPSS/Wset.lean` §9 records why that is structural rather than
 accidental (the carrier of the `W_u` induction is *membership*, which is
 `A`-closed by construction, never an order-domination clause). -/

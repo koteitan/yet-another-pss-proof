@@ -44,9 +44,8 @@ Lean ファイル冒頭のモジュール注釈が述べるとおり、本モジ
 引数の上の $`\prec`$ の整礎性へ帰着させる」経路のために書かれたものである。
 その経路は放棄され（[`../requirement.md`](../requirement.md) §3.3 により、停止性証明に使われない宣言は Lean 側から削除される）、
 現在の `lean/YAPSS/Wfsum.lean` に残っているのは以下の 10 宣言のみである。
-このうち他モジュールから参照されるのは $`\mathrm{tsize}`$（[(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) と
-[(D.proj)](Nrm.md#d-proj) の再帰の停止測度）と [(T.ole_trans)](#t-ole_trans)（[(T.translate_append_ge)](Gterm0Olt.md#t-translate_append_ge)、
-および [`Nrmstep.md`](Nrmstep.md) の複数箇所）であり、
+このうち他モジュールから参照されるのは $`\mathrm{tsize}`$（[(T.Gterm_tsize)](Gterm.md#t-Gterm_tsize) と
+[(D.proj)](Nrm.md#d-proj) の再帰の停止測度）と [(T.ole_trans)](#t-ole_trans)（[`Nrmstep.md`](Nrmstep.md) の複数箇所）であり、
 $`\mathrm{sargs}`$, $`\mathrm{margs}`$, $`\mathrm{summands}`$, [(T.summands_shape)](#t-summands_shape) を参照する宣言は
 `lean/YAPSS/` の他のどのファイルにも存在しない。
 
@@ -306,7 +305,7 @@ $`\mathrm{tsize}\,\mathsf{P}(a,b,c)`$ の値は $`a`$ に依存しない。
   自然数の加法について $`0\le \mathrm{tsize}\,b+\mathrm{tsize}\,c`$ だから $`1\le \mathrm{tsize}\,b+\mathrm{tsize}\,c+1`$。$`\square`$
 
 $`\mathrm{tsize}`$ は本章では他に用いられないが、後続の章で再帰の停止を保証する測度として使われる。すなわち
-[(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) が、[(D.Gterm)](Otembed.md#d-Gterm) について
+[(T.Gterm_tsize)](Gterm.md#t-Gterm_tsize) が、[(D.Gterm)](Gterm.md#d-Gterm) について
 $`x\in\mathrm{Gterm}\,v\,t\ \Rightarrow\ \mathrm{tsize}\,x\lt \mathrm{tsize}\,t`$
 という真の減少を与え、これにより [(D.proj)](Nrm.md#d-proj) の再帰が停止する（Lean の `termination_by tsize b`）。
 

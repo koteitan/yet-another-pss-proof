@@ -78,7 +78,7 @@ $`P : \alpha \to \mathrm{Prop}`$ について、
   │
 [Mechanized]  tr,  ≺,  ≼ ────────── m_step_decreases ───────────────┐
   │                                                                │
-  ├─[Wf]─[Wfsum]─[Otembed]─[Gterm0Olt]─[Seqlex]─[Nrm]─[Nrmstep]     │
+  ├─[Wf]─[Wfsum]─[Gterm]─[Seqlex]─[Nrm]─[Nrmstep]                   │
   │                │                                               │
   │                ├─[Cofinality]  pss_cofinality_of_argdom        │
   │                │        │                                      │

@@ -12,8 +12,11 @@ all**.
       ⟹ WellFounded `Rnf`           `wf_Rnf_of_wf_PS`                  (OrdinalFree.lean)
       ⟹ WellFounded `stepRel`       `step_terminates`                  (Proofs.lean)
 
-The route uses **no ordinal evaluation map `oV`, no Buchholz `OT`/`wf3` embedding, and
-no coefficient-domination (`H0clause` / `Gterm`) fact anywhere**.  Well-foundedness is
+The route uses **no ordinals at all**: after importing this file the constant `Ordinal`
+is not even present in the environment.  There is no ordinal evaluation map, no
+Buchholz `OT`/`wf3` embedding, and no coefficient-domination fact anywhere; the modules
+that carried them (`Psi.lean`, the ordinal half of `Otembed.lean`) have been deleted,
+and `Gterm.lean` keeps only the syntactic coefficient set.  Well-foundedness is
 certified instead by Bachmann cofinality (`Cofinality.lean`, `AscArg.lean`) together
 with the iterated inductive set `W_u` (`Wset.lean`), transplanted natively to PSS pair
 sequences from the syntactic proof of `OT_B`'s well-foundedness.

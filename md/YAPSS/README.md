@@ -7,24 +7,22 @@
 
 **基盤 → 結論の順**に並べる。各ファイルは自分より上の行のファイルの定義・命題のみを引用する。
 
-| # | ファイル | 行数 | 宣言数 | 依存 |
+| # | ファイル | Lean 行数 | 宣言数 | 依存 |
 |---:|---|---:|---:|---|
-| 1 | [`Def.md`](Def.md) | 132 | 14 | — |
-| 2 | [`Mechanized.md`](Mechanized.md) | 998 | 56 | Def |
-| 3 | [`Psi.md`](Psi.md) | 124 | 9 | — |
-| 4 | [`Proofs.md`](Proofs.md) | 115 | 8 | Mechanized |
-| 5 | [`Wf.md`](Wf.md) | 1194 | 67 | Proofs |
-| 6 | [`Wfsum.md`](Wfsum.md) | 98 | 10 | Wf |
-| 7 | [`Otembed.md`](Otembed.md) | 163 | 29 | Psi,Wfsum |
-| 8 | [`Gterm0Olt.md`](Gterm0Olt.md) | 58 | 2 | Mechanized,Otembed |
-| 9 | [`Seqlex.md`](Seqlex.md) | 715 | 34 | Wf |
-| 10 | [`Nrm.md`](Nrm.md) | 668 | 48 | Otembed |
-| 11 | [`Nrmstep.md`](Nrmstep.md) | 2135 | 107 | Nrm,Seqlex |
-| 12 | [`Cofinality.md`](Cofinality.md) | 1106 | 41 | Mechanized,Gterm0Olt,Seqlex,Nrmstep |
-| 13 | [`AscArg.md`](AscArg.md) | 1930 | 50 | Cofinality |
-| 14 | [`Wset.md`](Wset.md) | 2055 | 113 | Nrmstep |
-| 15 | [`OrdinalFree.md`](OrdinalFree.md) | 86 | 2 | Cofinality,Wset,Proofs |
-| 16 | [`Final.md`](Final.md) | 63 | 5 | AscArg,OrdinalFree |
+| 1 | [`Def.md`](Def.md) | 131 | 14 | — |
+| 2 | [`Mechanized.md`](Mechanized.md) | 997 | 56 | Def |
+| 3 | [`Proofs.md`](Proofs.md) | 114 | 8 | Mechanized |
+| 4 | [`Wf.md`](Wf.md) | 1193 | 67 | Proofs |
+| 5 | [`Wfsum.md`](Wfsum.md) | 97 | 10 | Wf |
+| 6 | [`Gterm.md`](Gterm.md) | 53 | 5 | Wfsum |
+| 7 | [`Seqlex.md`](Seqlex.md) | 714 | 34 | Wf |
+| 8 | [`Nrm.md`](Nrm.md) | 539 | 48 | Gterm |
+| 9 | [`Nrmstep.md`](Nrmstep.md) | 2135 | 107 | Nrm,Seqlex |
+| 10 | [`Cofinality.md`](Cofinality.md) | 1092 | 40 | Mechanized,Seqlex,Nrmstep |
+| 11 | [`AscArg.md`](AscArg.md) | 1929 | 50 | Cofinality |
+| 12 | [`Wset.md`](Wset.md) | 2056 | 113 | Nrmstep |
+| 13 | [`OrdinalFree.md`](OrdinalFree.md) | 87 | 2 | Cofinality,Wset,Proofs |
+| 14 | [`Final.md`](Final.md) | 65 | 5 | AscArg,OrdinalFree |
 
 ## 記号の所在
 
@@ -36,18 +34,14 @@ Def:
    PairSeq entry nextrel0 le0 nextrel1 nextR Pred idx1 hasParent parent oper diagSeq ST_PS step
 Mechanized:
    Three olt ole olt_Z_Z olt_Z_P olt_P_Z olt_P_P lead lead_Z lead_P olt_P_of_lead_lt olt_irrefl not_olt_Z olt_Z_iff olt_trans olt_total olt_ole_trans olt_P_b olt_P_c translate lead_translate takeWhile_append_all dropWhile_append_all takeWhile_append_not dropWhile_append_not drop_eq_map_getD nextrel0_entry0_less le0_entry0_mono nextrel0_index_less nextrel0_rtrancl_index_le le0_interval_gt translate_single_tree translate_block_append translate_shift translate_ctx_cong sndSet mem_sndSet sndSet_nil sndSet_mono idx1_le1 oper_eq_self_of_short oper_eq_pred_of_zero oper_eq_pred_of_noParent oper_bad_unfold translate_snoc_increase translate_dropLast_decrease translate_takeWhile_snoc_le core_i0 core_i1 translate_oper_pred parent_nextR nextR_index_lt nextR_chain0 oper_bad_blocks translate_oper_bad m_step_decreases
-Psi:
-   Om Om_zero Om_of_pos Cstep Citer Cset psi Psi addprinc
 Proofs:
    NF Rnf oper_eq_self_short stepRel step_terminates_cond no_infinite_expansion_cond step_terminates no_infinite_expansion
 Wf:
    spine spine_Z spine_P cmax climb maxsub maxsub_Z maxsub_P cmax_nil cmax_cons cmax_ge slex slex_nil slex_cons_nil slex_cons_cons slex_refl getD_eq_getElem' incpref incpref_nil incpref_single incpref_cons_cons takeWhile_fst_nest spine_translate_eq cmax_append maxsub_translate maxsub_eq_climb_iff oper_eq_dropLast_append diagSeq_cons fst_in_diagSeq translate_diagSeq cnf cnf_Z cnf_P_Z cnf_P_P cnf_translate_diagSeq_aux cnf_diag cnf_snoc cnf_dropLast cnf_take cnf_replicate_block cnf_ctx_cong cnf_tail cnf_oper_i1eq0 shiftr0 copies shiftr0_zero shiftr0_nil shiftr0_eq_nil translate_shiftr0 shiftr0_cons mem_shiftr0 copies_zero copies_succ_front copies_one copies_nonempty copies_succ_cons copies_v0_le copies_tl_gt cnf_copies cnf_oper_i1eq1 copies_replicate cnf_oper cnf_ST_PS tops tops_Z tops_P cnf_tops_le
 Wfsum:
    sargs sargs_Z sargs_P margs ole_trans summands summands_Z summands_P summands_shape tsize
-Otembed:
-   oV oV_Z oV_P psi_le_oV allprinc_lt allprinc_lt_Z allprinc_lt_P oV_lt_of_allprinc spinesub_le spinesub_le_Z spinesub_le_P spinesub_le_mono Gterm Gterm_Z Gterm_P mem_Gterm_P hdle hdle_Z hdle_P_Z hdle_P_P wf3 wf3_Z wf3_P wf3_spinesub_le headle_all headle_all_Z headle_all_P hdle_head_ignores_tail Gterm_tsize
-Gterm0Olt:
-   translate_append_ge translate_take_le
+Gterm:
+   Gterm Gterm_Z Gterm_P mem_Gterm_P Gterm_tsize
 Seqlex:
    pairlt seqlex seqlex_nil_iff not_seqlex_nil seqlex_cons_cons seqlex_append_cancel seqlex_prefix steps1 steps1_nil steps1_single steps1_cons_cons blockok blockok_nil steps1_iff steps1_tail steps1_append steps1_dropLast blockok_dropLast blockok_arg blockok_tail seqlex_arg_or_tail seqlex_imp_olt seqlex_total olt_iff_seqlex getLastD_eq_getD getLastD_ne_nil_indep headI_append_left getLastD_append_right steps1_flatMap steps1_diag_range blockok_diagSeq blockok_oper blockok_ST_PS olt_ST_iff_seqlex
 Nrm:

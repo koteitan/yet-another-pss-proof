@@ -1,10 +1,12 @@
 [English](README.md)
 
-# yet-another-pss-proof v1.1.5
+# yet-another-pss-proof v1.2.0
 
 ペア数列システム (Pair Sequence System, PSS) の停止性の証明とその Lean 4 / Mathlib による形式証明。
 **停止性の主定理は無条件・`sorry` なしで完成している**（`lean/YAPSS/Final.lean`、`#print axioms` は
 `propext` / `Classical.choice` / `Quot.sound` のみ）。順序数も Buchholz 記法への翻訳も用いない。
+これは主張ではなく機械的に確認できる：`import YAPSS.Final` した環境には定数 `Ordinal` が
+そもそも存在せず、Mathlib の順序数・濃度のモジュールは 1 つも import 閉包に入らない。
 
 ## 経緯と本証明の位置づけ
 **ペア数列システム** (PSS) は Bashicu 氏が考案した。

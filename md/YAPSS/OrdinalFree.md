@@ -207,7 +207,7 @@ Lean ソース `lean/YAPSS/OrdinalFree.lean` の同名の節は、その節が�
 未証明であった唯一の命題を記録している。それは `AscArgDomExplicit` という名の命題であり、
 [(D.shiftr0)](Wf.md#d-shiftr0) / [(D.copies)](Wf.md#d-copies) / `List.takeWhile` から作られる
 2 つの明示的なペア列の $`\preceq_{\mathrm{lex}}`$（[(D.sle)](Cofinality.md#d-sle)）比較であって、
-順序数・$`\psi`$・$`\Omega`$・順序数評価写像 [(D.oV)](Otembed.md#d-oV)・および $`\prec`$ の
+順序数・$`\psi`$・$`\Omega`$・順序数評価写像・および $`\prec`$ の
 いずれも含まない、という性質をもつ。
 
 現在の Lean ソースには `AscArgDomExplicit` という名前の**宣言は存在しない**
@@ -229,9 +229,8 @@ Lean ソース `lean/YAPSS/OrdinalFree.lean` の同名の節は、その節が�
 
 である。この合成を実際に行うのは [`Final.md`](Final.md) である。
 
-なお Lean ソースの冒頭コメントは、この経路が順序数評価写像 `oV`、Buchholz の
-[(D.wf3)](Otembed.md#d-wf3) 埋め込み、および係数優越の事実（[(D.Gterm)](Otembed.md#d-Gterm) を用いる形の命題。
-コメント中で `H0clause` と呼ばれているものは、現在の Lean ソースには宣言として存在しない）
+なお Lean ソースの冒頭コメントは、この経路が順序数、順序数評価写像、Buchholz の
+OT 整合性述語による埋め込み、および係数優越の事実（[(D.Gterm)](Gterm.md#d-Gterm) を用いる形の命題）
 のいずれも用いず、
 Bachmann 共終性（[`Cofinality.md`](Cofinality.md), [`AscArg.md`](AscArg.md)）と
 反復帰納的集合 $`W_u`$（[`Wset.md`](Wset.md)）でこれらを置き換えたものであることを記録している。

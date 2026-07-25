@@ -2,7 +2,7 @@
 
 # yet-another-pss-proof
 
-Version: **v1.1.5**
+Version: **v1.2.0**
 
 An independent proof that the **pair sequence system** (PSS, the 2-rowed Bashicu matrix
 system) terminates, together with its formalization in Lean 4 / Mathlib.
@@ -52,7 +52,10 @@ i.e. no `sorryAx` and no named assumption; `lake build` is green over the whole 
    above carries that method over to pair sequences directly.
 
 No ordinal evaluation map, no embedding into Buchholz's $\mathrm{OT}$, and no
-coefficient-domination condition occurs anywhere in this route.
+coefficient-domination condition occurs anywhere in this route. This is checked
+mechanically rather than asserted: after `import YAPSS.Final` the constant `Ordinal`
+does not exist in the Lean environment at all, and no Mathlib ordinal or cardinal
+module is in the import closure.
 
 The proof-theoretic strength of PSS is believed to be $\psi_0(\psi_\omega(0))$
 (the Buchholz ordinal), which corresponds to taking the subscript $a$ of $p_a(b)$ to

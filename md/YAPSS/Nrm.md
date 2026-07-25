@@ -31,7 +31,7 @@
 | `Three` | $`\mathrm{Three}`$ | [(D.Three)](Mechanized.md#d-Three) |
 | `Z`, `P a b c` | $`\mathsf{Z}`$, $`\mathsf{P}(a,b,c)`$ | [(D.Three)](Mechanized.md#d-Three) |
 | `olt x y` | $`x \prec y`$ | [(D.olt)](Mechanized.md#d-olt) |
-| `Gterm u t` | $`G_u(t)`$ | [(D.Gterm)](Otembed.md#d-Gterm) |
+| `Gterm u t` | $`G_u(t)`$ | [(D.Gterm)](Gterm.md#d-Gterm) |
 | `tsize t` | $`\mathrm{tsize}\,t`$ | [(D.tsize)](Wfsum.md#d-tsize) |
 | `PairSeq` | $`\mathrm{PairSeq}`$ | [(D.PairSeq)](Def.md#d-PairSeq) |
 | `M.length` | $`\lvert M\rvert`$ | — |
@@ -117,7 +117,7 @@ $`\mathrm{Glist}_u`$ を、引数の構造に関する再帰で定める。
 ```
 
 再帰呼び出しの引数 $`b`$, $`c`$ は $`\mathsf{P}(a,b,c)`$ の真部分項であるから、この定義は整合的である。
-これは集合値の $`G_u`$（[(D.Gterm)](Otembed.md#d-Gterm)）を列として計算するものであり、
+これは集合値の $`G_u`$（[(D.Gterm)](Gterm.md#d-Gterm)）を列として計算するものであり、
 両者が同じ要素をもつことは [(T.mem_Glist)](#t-mem_Glist) で示す。
 
 <a id="t-Glist_Z"></a>
@@ -153,14 +153,14 @@ x \in \mathrm{Glist}_u(t) \iff x \in G_u(t).
 ```
 
 - 基底段 $`t=\mathsf{Z}`$：[(T.Glist_Z)](#t-Glist_Z) より $`\mathrm{Glist}_u(\mathsf{Z}) = ()`$ であり、
-  空列は要素をもたないから左辺は偽。[(T.Gterm_Z)](Otembed.md#t-Gterm_Z) より $`G_u(\mathsf{Z}) = \emptyset`$ であり、
+  空列は要素をもたないから左辺は偽。[(T.Gterm_Z)](Gterm.md#t-Gterm_Z) より $`G_u(\mathsf{Z}) = \emptyset`$ であり、
   右辺も偽。偽どうしは同値であるから $`\Phi(\mathsf{Z})`$。
 - 帰納段 $`t=\mathsf{P}(a,b,c)`$：帰納法の仮定は
   ```math
   \Phi(b) :\equiv \bigl(x \in \mathrm{Glist}_u(b) \iff x \in G_u(b)\bigr),\qquad
     \Phi(c) :\equiv \bigl(x \in \mathrm{Glist}_u(c) \iff x \in G_u(c)\bigr)
   ```
-  である。[(T.Glist_P)](#t-Glist_P) と [(T.mem_Gterm_P)](Otembed.md#t-mem_Gterm_P)
+  である。[(T.Glist_P)](#t-Glist_P) と [(T.mem_Gterm_P)](Gterm.md#t-mem_Gterm_P)
   ```math
   x \in G_u(\mathsf{P}(a,b,c)) \iff \bigl(u\le a \wedge (x=b \vee x\in G_u(b))\bigr) \vee x \in G_u(c)
   ```
@@ -290,7 +290,7 @@ b & \bigl(\mathrm{bad}_u(b) = ()\bigr) \cr[2pt]
 $`m := \mathrm{maxo}(\mathrm{headI}\,\mathrm{bad}_u(b),\ \mathrm{tail}\,\mathrm{bad}_u(b))`$ とおくと、
 [(T.maxo_hdtl_in)](#t-maxo_hdtl_in)（$`\mathrm{bad}_u(b)\ne()`$ による）より $`m \in \mathrm{bad}_u(b)`$。
 $`(\ast)`$ より $`m \in \mathrm{Glist}_u(b)`$、[(T.mem_Glist)](#t-mem_Glist) より $`m \in G_u(b)`$、
-よって [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) より
+よって [(T.Gterm_tsize)](Gterm.md#t-Gterm_tsize) より
 ```math
 \mathrm{tsize}\,m < \mathrm{tsize}\,b .
 ```
@@ -343,7 +343,7 @@ $`b`$ を $`\mathrm{tsize}\,b = n`$ なるものとし、$`\mathrm{bad}_u(b)`$ �
   [(T.proj_rec)](#t-proj_rec) より $`\mathrm{proj}_u b = \mathrm{proj}_u m`$ である。
   [(T.maxo_hdtl_in)](#t-maxo_hdtl_in) より $`m \in \mathrm{bad}_u(b)`$、$`(\ast)`$ より
   $`m \in \mathrm{Glist}_u(b)`$、[(T.mem_Glist)](#t-mem_Glist) より $`m \in G_u(b)`$、
-  [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) より $`\mathrm{tsize}\,m \lt \mathrm{tsize}\,b = n`$。
+  [(T.Gterm_tsize)](Gterm.md#t-Gterm_tsize) より $`\mathrm{tsize}\,m \lt \mathrm{tsize}\,b = n`$。
   $`\mathrm{tsize}\,m \lt n`$ であるから帰納法の仮定を自然数 $`\mathrm{tsize}\,m`$ に適用でき、
   得られた $`\Psi(\mathrm{tsize}\,m)`$ を項 $`m`$（$`\mathrm{tsize}\,m = \mathrm{tsize}\,m`$ による）に用いて
   ```math
@@ -429,24 +429,9 @@ $`\mathrm{nrm}\,\mathsf{P}(a,b,c) = \mathrm{ins}(a,\ \mathrm{proj}_a(\mathrm{nrm
 
 ---
 
-## 宣言を含まない注記節
-
-Lean 側のソースには、この位置に 5 つの注記ブロック
-（`## Value preservation of ins`、`## The remaining core: order preservation on NF`、
-`### Reduction of oV_nf_order_pres …`、`### The argument-branch head …`、
-`### Why the argument head needs proj …`）が置かれている。
-これらはいずれもコメントのみであり、宣言（定義・定理）を 1 つも含まない。
-記述内容は、本停止性証明では採用されなかった経路（順序数値 $`\mathrm{oV}`$ を経由する
-順序保存 `nrm_order_pres`）に関する設計上の記録である。
-[`requirement.md`](../requirement.md) §3.3 により、停止性証明に使われない命題は本文の対象外であるから、
-ここでは節の存在のみを記録する。
-
----
-
 ## 標準形の長さと先頭
 
-次の 2 つの定理は、上記の注記ブロックの直後に置かれた宣言である。
-いずれも [(D.ST_PS)](Def.md#d-ST_PS) の導出に関する帰納法で証明される。
+次の 2 つの定理は、いずれも [(D.ST_PS)](Def.md#d-ST_PS) の導出に関する帰納法で証明される。
 
 <a id="t-stps_len_pos"></a>
 ### 定理 標準形は空でない (T.stps_len_pos)
@@ -1170,13 +1155,3 @@ N[n] = p \mathbin{::} \bigl(\mathrm{dropLast}(q\mathbin{::}u)\mathbin{+\!\!+}R\b
 ```
 先頭付加された列の先頭要素は付加された要素であるから、$`N[n]`$ の先頭要素は $`p`$ であり、
 $`N = p\mathbin{::}q\mathbin{::}u`$ の先頭要素も $`p`$ である。∎
-
----
-
-## 末尾の注記節（宣言なし）
-
-Lean 側のソースの末尾には、さらに 3 つの注記ブロック
-（`ST_PS`-descendant-closure に関する注、
-`## Well-foundedness of <o on NF, and PSS termination`、
-`## Step decrease: the weaker (live) obligation`）が置かれている。
-いずれもコメントのみであり、宣言（定義・定理）を含まない。したがって本文で扱う命題はない。

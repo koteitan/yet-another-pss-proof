@@ -95,9 +95,8 @@ Lean 側のファイルが大きい場合は**分割してよい**（例 `Nrmste
 停止性証明の依存順（下位が先）:
 
 ```
-Def → Mechanized → Psi → Proofs → Wf → Wfsum → Otembed → Gterm0Olt
-    → Seqlex → Nrm → Nrmstep → Cofinality → AscArg → Wset → Wtt
-    → OrdinalFree → Final
+Def → Mechanized → Proofs → Wf → Wfsum → Gterm → Seqlex → Nrm → Nrmstep
+    → Cofinality → AscArg → Wset → OrdinalFree → Final
 ```
 
 `md/YAPSS/README.md` にこの順で目次を置く。
