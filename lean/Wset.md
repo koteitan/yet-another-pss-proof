@@ -1,445 +1,447 @@
-[← README](README.md) ｜ Wset **1** [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md)
+[← README](README.md) | [English](Wset.md) | [Japanese](Wset-ja.md) | Wset **1** [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md)
 
 <a id="t-translate_eq_Z_iff"></a>
-## 定理: 翻訳が $`\mathsf{Z}`$ になるのは空列に限る (T.translate_eq_Z_iff)
+## Theorem: the translation is $`\mathsf{Z}`$ only for the empty sequence (T.translate_eq_Z_iff)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
+For $`M \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)),
 
 ```math
 \mathrm{tr}\,M = \mathsf{Z} \iff M = () .
 ```
 
-ここで $`\mathrm{tr}`$（[D.translate](Term.md#d-translate)）は翻訳であり、$`\mathsf{Z}`$ は
-$`\mathrm{Three}`$（[D.Three](Term.md#d-Three)）の第 1 の構成子である。
+Here $`\mathrm{tr}`$ ([D.translate](Term.md#d-translate)) is the translation, and $`\mathsf{Z}`$ is
+the first constructor of $`\mathrm{Three}`$ ([D.Three](Term.md#d-Three)).
 
-### 証明
+### Proof
 
-$`M`$ の構成子で場合分けする。
+Distinguish cases on the constructor of $`M`$.
 
-- $`M = ()`$ のとき。$`\mathrm{tr}`$ の定義（D.translate）の第 1 式より
-  $`\mathrm{tr}\,() = \mathsf{Z}`$ であるから左辺の等式は成り立つ。右辺の等式 $`() = ()`$ も
-  $`=`$ の反射性により成り立つ。よって両辺は同値である。
+- $`M = ()`$. By the first clause of the definition of $`\mathrm{tr}`$ (D.translate) we have
+  $`\mathrm{tr}\,() = \mathsf{Z}`$, so the equality on the left holds. The equality on the right,
+  $`() = ()`$, holds by reflexivity of $`=`$. Hence the two sides are equivalent.
 
-- $`M = p :: L`$ のとき。$`\mathrm{tr}`$ の定義（D.translate）の第 2 式より
-  $`\mathrm{tr}(p :: L) = \mathsf{P}\bigl(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr)`$
-  である。$`\mathrm{Three}`$ の構成子の像は互いに交わらない（D.Three）から
-  $`\mathsf{P}(\cdot,\cdot,\cdot) \ne \mathsf{Z}`$ であり、左辺の等式は偽である。
-  また $`p :: L`$ の長さは $`1`$ 以上であり $`\lvert()\rvert = 0`$ であるから
-  $`p :: L \ne ()`$ であり、右辺の等式も偽である。よって両辺は同値である。∎
+- $`M = p :: L`$. By the second clause of the definition of $`\mathrm{tr}`$ (D.translate),
+  $`\mathrm{tr}(p :: L) = \mathsf{P}\bigl(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr)`$.
+  The images of the constructors of $`\mathrm{Three}`$ are pairwise disjoint (D.Three), so
+  $`\mathsf{P}(\cdot,\cdot,\cdot) \ne \mathsf{Z}`$ and the equality on the left is false.
+  Moreover the length of $`p :: L`$ is at least $`1`$ while $`\lvert()\rvert = 0`$, so
+  $`p :: L \ne ()`$ and the equality on the right is false as well. Hence the two sides are
+  equivalent. ∎
 
 <a id="t-eq_Z_of_olt_one"></a>
-## 定理: $`\mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$ より小さい項は $`\mathsf{Z}`$ のみ (T.eq_Z_of_olt_one)
+## Theorem: $`\mathsf{Z}`$ is the only term below $`\mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$ (T.eq_Z_of_olt_one)
 
-### 定理
+### Theorem
 
-$`t \in \mathrm{Three}`$ が $`t \prec \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$（[D.olt](Term.md#d-olt)）を
-みたすならば $`t = \mathsf{Z}`$。
+If $`t \in \mathrm{Three}`$ satisfies $`t \prec \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$ ([D.olt](Term.md#d-olt)),
+then $`t = \mathsf{Z}`$.
 
-### 証明
+### Proof
 
-$`t`$ の構成子で場合分けする。
+Distinguish cases on the constructor of $`t`$.
 
-- $`t = \mathsf{Z}`$ のとき。示すべき $`\mathsf{Z} = \mathsf{Z}`$ は $`=`$ の反射性による。
+- $`t = \mathsf{Z}`$. The goal $`\mathsf{Z} = \mathsf{Z}`$ holds by reflexivity of $`=`$.
 
-- $`t = \mathsf{P}(a,b,c)`$ のとき。[T.olt_P_P](Term.md#t-olt_P_P) を
-  $`e := 0`$、$`f := \mathsf{Z}`$、$`g := \mathsf{Z}`$ として適用すると、仮定は次の 3 つの
-  いずれかである。
-  - $`a \lt 0`$。自然数に $`0`$ より小さいものはないから偽である。
-  - $`a = 0 \wedge b \prec \mathsf{Z}`$。[T.not_olt_Z](Term.md#t-not_olt_Z) より
-    $`b \prec \mathsf{Z}`$ は偽である。
-  - $`a = 0 \wedge b = \mathsf{Z} \wedge c \prec \mathsf{Z}`$。同じく
-    [T.not_olt_Z](Term.md#t-not_olt_Z) より $`c \prec \mathsf{Z}`$ は偽である。
+- $`t = \mathsf{P}(a,b,c)`$. Applying [T.olt_P_P](Term.md#t-olt_P_P) with
+  $`e := 0`$, $`f := \mathsf{Z}`$ and $`g := \mathsf{Z}`$, the hypothesis becomes one of the
+  following three.
+  - $`a \lt 0`$. No natural number is below $`0`$, so this is false.
+  - $`a = 0 \wedge b \prec \mathsf{Z}`$. By [T.not_olt_Z](Term.md#t-not_olt_Z),
+    $`b \prec \mathsf{Z}`$ is false.
+  - $`a = 0 \wedge b = \mathsf{Z} \wedge c \prec \mathsf{Z}`$. Likewise by
+    [T.not_olt_Z](Term.md#t-not_olt_Z), $`c \prec \mathsf{Z}`$ is false.
 
-  3 つとも偽であるから、この場合は起こらない。∎
+  All three are false, so this case does not occur. ∎
 
 <a id="t-stps_ne_nil"></a>
-## 定理: 標準形は空でない (T.stps_ne_nil)
+## Theorem: a standard form is not the empty sequence (T.stps_ne_nil)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`M \ne ()`$。
+If $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)) then $`M \ne ()`$.
 
-### 証明
+### Proof
 
-$`M = ()`$ と仮定する。[T.stps_len_pos](Column.md#t-stps_len_pos) より $`0 \lt \lvert M\rvert`$ で
-あるが、仮定を代入すると $`\lvert()\rvert = 0`$ であるから $`0 \lt 0`$ となり、
-$`\lt`$ の非反射性に矛盾する。∎
+Suppose $`M = ()`$. By [T.stps_len_pos](Column.md#t-stps_len_pos) we have $`0 \lt \lvert M\rvert`$,
+but substituting the hypothesis gives $`\lvert()\rvert = 0`$, hence $`0 \lt 0`$, which contradicts
+irreflexivity of $`\lt`$. ∎
 
 <a id="t-stps_len_one"></a>
-## 定理: 長さ $`1`$ の標準形 (T.stps_len_one)
+## Theorem: standard forms of length $`1`$ (T.stps_len_one)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{ST\_PS}`$ かつ $`\lvert M\rvert = 1`$ ならば $`M = \bigl((0,0)\bigr)`$。
+If $`M \in \mathrm{ST\_PS}`$ and $`\lvert M\rvert = 1`$, then $`M = \bigl((0,0)\bigr)`$.
 
-### 証明
+### Proof
 
-$`\lvert M\rvert = 1`$ であるから $`M = (p)`$ なる対 $`p`$ が取れる。
-[T.stps_head](Column.md#t-stps_head) は「$`M`$ の先頭要素（$`M`$ が空列のときは $`(0,0)`$）が
-$`(0,0)`$ に等しい」ことを言う。$`M = (p)`$ の先頭要素は $`p`$ であるから $`p = (0,0)`$ であり、
-$`M = \bigl((0,0)\bigr)`$。∎
+Since $`\lvert M\rvert = 1`$, there is a pair $`p`$ with $`M = (p)`$.
+[T.stps_head](Column.md#t-stps_head) states that the first element of $`M`$ (read as $`(0,0)`$ when
+$`M`$ is the empty sequence) equals $`(0,0)`$. The first element of $`M = (p)`$ is $`p`$, so
+$`p = (0,0)`$ and $`M = \bigl((0,0)\bigr)`$. ∎
 
 <a id="d-domT"></a>
-## 定義: 行 $`1`$ の孤児 (D.domT)
+## Definition: orphan in row $`1`$ (D.domT)
 
-$`M \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}`$ に対し
+For $`M \in \mathrm{PairSeq}`$ and $`m \in \mathbb{N}`$ put
 
 ```math
 \mathrm{domT}(M,m) :\iff
 M_{1,\lvert M\rvert-1} = m+1 \ \wedge\ \neg\,\mathrm{hasParent}(M, 1, \lvert M\rvert-1)
 ```
 
-とおく。ここで $`M_{i,j}`$（[D.entry](Pss.md#d-entry)）は成分、
-$`\mathrm{hasParent}(M,i,j)`$（[D.hasParent](Pss.md#d-hasParent)）は親の存在であり、
-$`\lvert M\rvert - 1`$ の減法は切り捨て減法である（$`M = ()`$ のとき $`\lvert M\rvert - 1 = 0`$）。
+Here $`M_{i,j}`$ ([D.entry](Pss.md#d-entry)) is the entry,
+$`\mathrm{hasParent}(M,i,j)`$ ([D.hasParent](Pss.md#d-hasParent)) is the existence of a parent, and
+the subtraction in $`\lvert M\rvert - 1`$ is truncated subtraction ($`\lvert M\rvert - 1 = 0`$ when
+$`M = ()`$).
 
 <a id="d-graft"></a>
-## 定義: 接ぎ木 (D.graft)
+## Definition: grafting (D.graft)
 
-$`L \in \mathrm{PairSeq}`$、$`e \in \mathbb{N}`$ に対し、$`L`$ の各対の第 1 成分に $`e`$ を
-足した列を $`L^{+e}`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）と書く（[T.translate_shift](Term.md#t-translate_shift) の記法）。
-また $`\mathrm{dropLast}\,M`$ を $`M`$ の末尾 1 要素を落とした列とする
-（$`M = ()`$ のときは $`()`$）。$`M, z \in \mathrm{PairSeq}`$ に対し
+For $`L \in \mathrm{PairSeq}`$ and $`e \in \mathbb{N}`$, write $`L^{+e}`$
+([D.shiftr0](Cnf-2.md#d-shiftr0)) for the sequence obtained from $`L`$ by adding $`e`$ to the first
+entry of each pair (the notation of [T.translate_shift](Term.md#t-translate_shift)).
+Let $`\mathrm{dropLast}\,M`$ be $`M`$ with its last element removed ($`()`$ when $`M = ()`$).
+For $`M, z \in \mathrm{PairSeq}`$ put
 
 ```math
 \mathrm{graft}(M, z) := \mathrm{dropLast}\,M \mathbin{+\!\!+} z^{+M_{0,\lvert M\rvert-1}}
 ```
 
-とおく。
-
 <a id="d-based"></a>
-## 定義: 深さ $`0`$ への錨づけ (D.based)
+## Definition: anchoring at depth $`0`$ (D.based)
 
-$`z \in \mathrm{PairSeq}`$ に対し
+For $`z \in \mathrm{PairSeq}`$,
 
 ```math
 \mathrm{based}(z) :\iff z_{0,0} = 0 .
 ```
 
 <a id="t-based_nil"></a>
-## 定理: 空列は深さ $`0`$ に錨づけられている (T.based_nil)
+## Theorem: the empty sequence is anchored at depth $`0`$ (T.based_nil)
 
-### 定理
+### Theorem
 
-$`\mathrm{based}(())`$。
+$`\mathrm{based}(())`$.
 
-### 証明
+### Proof
 
-$`M_{i,j}`$ の定義（D.entry）により、$`0 \ge \lvert()\rvert = 0`$ であるから
-$`()\langle 0\rangle = (0,0)`$ であり、その第 1 成分をとって $`()_{0,0} = 0`$。
-これが $`\mathrm{based}`$ の定義（D.based）の右辺である。∎
+By the definition of $`M_{i,j}`$ (D.entry), since $`0 \ge \lvert()\rvert = 0`$ we have
+$`()\langle 0\rangle = (0,0)`$, and taking its first entry gives $`()_{0,0} = 0`$.
+This is exactly the right-hand side of the definition of $`\mathrm{based}`$ (D.based). ∎
 
 <a id="t-graft_nil"></a>
-## 定理: 空ブロックの接ぎ木 (T.graft_nil)
+## Theorem: grafting the empty block (T.graft_nil)
 
-### 定理
+### Theorem
 
-任意の $`M \in \mathrm{PairSeq}`$ に対し $`\mathrm{graft}(M, ()) = \mathrm{dropLast}\,M`$。
+For every $`M \in \mathrm{PairSeq}`$, $`\mathrm{graft}(M, ()) = \mathrm{dropLast}\,M`$.
 
-### 証明
+### Proof
 
-空列の各対の第 1 成分に $`e`$ を足しても要素は増えないから $`()^{+e} = ()`$ である。
-よって $`\mathrm{graft}`$ の定義（D.graft）より
+Adding $`e`$ to the first entry of each pair of the empty sequence produces no elements, so
+$`()^{+e} = ()`$. Hence the definition of $`\mathrm{graft}`$ (D.graft) gives
 
 ```math
 \mathrm{graft}(M,()) = \mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M . \qquad \blacksquare
 ```
 
 <a id="t-not_domT_nil"></a>
-## 定理: 空列は孤児条件をみたさない (T.not_domT_nil)
+## Theorem: the empty sequence does not satisfy the orphan condition (T.not_domT_nil)
 
-### 定理
+### Theorem
 
-任意の $`m \in \mathbb{N}`$ に対し $`\neg\,\mathrm{domT}((), m)`$。
+For every $`m \in \mathbb{N}`$, $`\neg\,\mathrm{domT}((), m)`$.
 
-### 証明
+### Proof
 
-$`\mathrm{domT}((),m)`$ を仮定する。$`\mathrm{domT}`$ の定義（D.domT）の第 1 連言子は
-$`()_{1,\lvert()\rvert-1} = m+1`$ である。$`\lvert()\rvert - 1 = 0`$（切り捨て減法）であり、
-$`M_{i,j}`$ の定義（D.entry）より $`()_{1,0} = 0`$ であるから、この等式は $`0 = m+1`$ となる。
-自然数において $`m + 1 \ne 0`$ であるから矛盾である。∎
+Suppose $`\mathrm{domT}((),m)`$. The first conjunct of the definition of $`\mathrm{domT}`$ (D.domT) is
+$`()_{1,\lvert()\rvert-1} = m+1`$. Since $`\lvert()\rvert - 1 = 0`$ (truncated subtraction) and
+$`()_{1,0} = 0`$ by the definition of $`M_{i,j}`$ (D.entry), this equality reads $`0 = m+1`$.
+In the natural numbers $`m + 1 \ne 0`$, a contradiction. ∎
 
 <a id="d-natDom"></a>
-## 定義: 孤児条件の否定 (D.natDom)
+## Definition: negation of the orphan condition (D.natDom)
 
-$`M \in \mathrm{PairSeq}`$ に対し
+For $`M \in \mathrm{PairSeq}`$,
 
 ```math
 \mathrm{natDom}(M) :\iff \forall m \in \mathbb{N},\ \neg\,\mathrm{domT}(M,m).
 ```
 
 <a id="t-natDom_iff"></a>
-## 定理: 孤児条件の否定の言い換え (T.natDom_iff)
+## Theorem: restatement of the negation of the orphan condition (T.natDom_iff)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$ に対し、$`j_1 := \lvert M\rvert - 1`$ と書くと
+For $`M \in \mathrm{PairSeq}`$, writing $`j_1 := \lvert M\rvert - 1`$,
 
 ```math
 \mathrm{natDom}(M) \iff
 \bigl(M_{1,j_1} = 0 \ \vee\ \mathrm{hasParent}(M,1,j_1)\bigr).
 ```
 
-### 証明
+### Proof
 
-両方向を示す。
+We prove both directions.
 
-**($`\Rightarrow`$)** $`\mathrm{natDom}(M)`$ を仮定する。$`M_{1,j_1} = 0`$ が成り立つかどうかで
-場合分けする。
+**($`\Rightarrow`$)** Suppose $`\mathrm{natDom}(M)`$. Distinguish cases according to whether
+$`M_{1,j_1} = 0`$.
 
-- $`M_{1,j_1} = 0`$ のとき。右辺の第 1 選言そのものである。
+- $`M_{1,j_1} = 0`$. This is the first disjunct on the right-hand side itself.
 
-- $`M_{1,j_1} \ne 0`$ のとき。右辺の第 2 選言 $`\mathrm{hasParent}(M,1,j_1)`$ を背理法で示す。
-  $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ と仮定する。$`M_{1,j_1} \ne 0`$ であるから
-  $`m := M_{1,j_1} - 1`$ とおけば $`M_{1,j_1} = m+1`$ である。よって $`\mathrm{domT}`$ の
-  定義（D.domT）の 2 つの連言子がともに成り立ち $`\mathrm{domT}(M,m)`$ となるが、
-  $`\mathrm{natDom}`$ の定義（D.natDom）をこの $`m`$ に適用した
-  $`\neg\,\mathrm{domT}(M,m)`$ に矛盾する。
+- $`M_{1,j_1} \ne 0`$. We prove the second disjunct $`\mathrm{hasParent}(M,1,j_1)`$ by
+  contradiction. Suppose $`\neg\,\mathrm{hasParent}(M,1,j_1)`$. Since $`M_{1,j_1} \ne 0`$, putting
+  $`m := M_{1,j_1} - 1`$ gives $`M_{1,j_1} = m+1`$. Hence the two conjuncts of the definition of
+  $`\mathrm{domT}`$ (D.domT) both hold and $`\mathrm{domT}(M,m)`$, which contradicts
+  $`\neg\,\mathrm{domT}(M,m)`$, the definition of $`\mathrm{natDom}`$ (D.natDom) applied to this
+  $`m`$.
 
-**($`\Leftarrow`$)** 右辺を仮定する。$`\mathrm{natDom}`$ の定義（D.natDom）により、$`m`$ を
-取り $`\mathrm{domT}(M,m)`$ すなわち $`M_{1,j_1} = m+1`$ と
-$`\neg\,\mathrm{hasParent}(M,1,j_1)`$ を仮定して矛盾を導けばよい。右辺の選言で場合分けする。
+**($`\Leftarrow`$)** Suppose the right-hand side. By the definition of $`\mathrm{natDom}`$
+(D.natDom) it suffices to take $`m`$, to assume $`\mathrm{domT}(M,m)`$, that is
+$`M_{1,j_1} = m+1`$ and $`\neg\,\mathrm{hasParent}(M,1,j_1)`$, and to derive a contradiction.
+Distinguish cases on the disjunction on the right-hand side.
 
-- $`M_{1,j_1} = 0`$ のとき。$`m + 1 = M_{1,j_1} = 0`$ となるが、自然数において
-  $`m+1 \ne 0`$ であるから矛盾である。
+- $`M_{1,j_1} = 0`$. Then $`m + 1 = M_{1,j_1} = 0`$, but $`m+1 \ne 0`$ in the natural numbers,
+  a contradiction.
 
-- $`\mathrm{hasParent}(M,1,j_1)`$ のとき。$`\mathrm{domT}(M,m)`$ の第 2 連言子
-  $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ に矛盾する。∎
+- $`\mathrm{hasParent}(M,1,j_1)`$. This contradicts the second conjunct
+  $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ of $`\mathrm{domT}(M,m)`$. ∎
 
 <a id="t-oper_eq_graft_nil_of_domT"></a>
-## 定理: 孤児条件の下での展開 (T.oper_eq_graft_nil_of_domT)
+## Theorem: expansion under the orphan condition (T.oper_eq_graft_nil_of_domT)
 
-### 定理
+### Theorem
 
-$`1 \lt \lvert M\rvert`$ かつ $`\mathrm{domT}(M,m)`$ ならば、任意の $`n \in \mathbb{N}`$ に対し
-$`M[n] = \mathrm{graft}(M,())`$（[D.oper](Pss.md#d-oper)）。
+If $`1 \lt \lvert M\rvert`$ and $`\mathrm{domT}(M,m)`$, then for every $`n \in \mathbb{N}`$ we have
+$`M[n] = \mathrm{graft}(M,())`$ ([D.oper](Pss.md#d-oper)).
 
-### 証明
+### Proof
 
-$`j_1 := \lvert M\rvert - 1`$ と書く。$`\mathrm{domT}`$ の定義（D.domT）より
-$`M_{1,j_1} = m+1`$ と $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ が成り立つ。次の 5 つを順に示す。
+Write $`j_1 := \lvert M\rvert - 1`$. The definition of $`\mathrm{domT}`$ (D.domT) gives
+$`M_{1,j_1} = m+1`$ and $`\neg\,\mathrm{hasParent}(M,1,j_1)`$. We prove the following five
+statements in turn.
 
-1. $`j_1 \ne 0`$。$`1 \lt \lvert M\rvert`$ より $`j_1 = \lvert M\rvert - 1 \ge 1`$ である。
+1. $`j_1 \ne 0`$. From $`1 \lt \lvert M\rvert`$ we get $`j_1 = \lvert M\rvert - 1 \ge 1`$.
 
-2. $`\mathrm{idx}_1(M,j_1) = 1`$。$`M_{1,j_1} = m+1`$ であり自然数について $`0 \lt m+1`$ で
-   あるから、$`\mathrm{idx}_1`$（[D.idx1](Pss.md#d-idx1)）の定義（D.idx1）の第 1 の場合が選ばれる。
+2. $`\mathrm{idx}_1(M,j_1) = 1`$. Since $`M_{1,j_1} = m+1`$ and $`0 \lt m+1`$ for natural numbers,
+   the first case in the definition of $`\mathrm{idx}_1`$ ([D.idx1](Pss.md#d-idx1)) is selected.
 
-3. $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$。この連言が成り立つとすると
-   第 2 連言子から $`m+1 = 0`$ となり、$`m+1 \ne 0`$ に矛盾する。
+3. $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$. If this conjunction held, its second
+   conjunct would give $`m+1 = 0`$, contradicting $`m+1 \ne 0`$.
 
-4. $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）。2 により $`\mathrm{idx}_1(M,j_1) = 1`$ であるから、
-   $`\neg\,\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M,j_1), j_1\bigr)`$ は仮定
-   $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ そのものである。1, 3 とこれに
-   [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) を適用する。
+4. $`M[n] = \mathrm{Pred}\,M`$ ([D.Pred](Pss.md#d-Pred)). By 2 we have
+   $`\mathrm{idx}_1(M,j_1) = 1`$, so
+   $`\neg\,\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M,j_1), j_1\bigr)`$ is exactly the hypothesis
+   $`\neg\,\mathrm{hasParent}(M,1,j_1)`$. Apply
+   [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) to 1, 3 and this.
 
-5. $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$。$`\mathrm{Pred}`$ の
-   定義（D.Pred）は $`\lvert M\rvert \le 1`$ かどうかで分岐する。仮定 $`1 \lt \lvert M\rvert`$ より
-   $`\lvert M\rvert \le 1`$ は偽であるから第 2 の場合が選ばれ、末尾 1 列を落とした列になる。
+5. $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$. The definition of $`\mathrm{Pred}`$ (D.Pred)
+   branches according to whether $`\lvert M\rvert \le 1`$. By the hypothesis
+   $`1 \lt \lvert M\rvert`$ the condition $`\lvert M\rvert \le 1`$ is false, so the second case is
+   selected, which is the sequence with its last column removed.
 
-最後に [T.graft_nil](#t-graft_nil) より $`\mathrm{graft}(M,()) = \mathrm{dropLast}\,M`$ である。
-4, 5 とこれを合わせて $`M[n] = \mathrm{graft}(M,())`$ を得る。∎
+Finally, [T.graft_nil](#t-graft_nil) gives $`\mathrm{graft}(M,()) = \mathrm{dropLast}\,M`$.
+Combining 4, 5 and this we obtain $`M[n] = \mathrm{graft}(M,())`$. ∎
 
 <a id="d-r1cand"></a>
-## 定義: 行 $`1`$ の親候補 (D.r1cand)
+## Definition: parent candidate in row $`1`$ (D.r1cand)
 
-$`M \in \mathrm{PairSeq}`$、$`j_1, j_0 \in \mathbb{N}`$ に対し
+For $`M \in \mathrm{PairSeq}`$ and $`j_1, j_0 \in \mathbb{N}`$ put
 
 ```math
 \mathrm{r1cand}(M,j_1,j_0) :\iff
 j_0 \lt j_1 \ \wedge\ j_0 \le^M_0 j_1 \ \wedge\ M_{1,j_0} \lt M_{1,j_1}
 ```
 
-とおく。ここで $`j_0 \le^M_0 j_1`$（[D.le0](Pss.md#d-le0)）は行 $`0`$ の祖先関係である。
+Here $`j_0 \le^M_0 j_1`$ ([D.le0](Pss.md#d-le0)) is the ancestor relation of row $`0`$.
 
 <a id="t-hasParent_one_iff"></a>
-## 定理: 行 $`1`$ の親の存在条件 (T.hasParent_one_iff)
+## Theorem: criterion for the existence of a parent in row $`1`$ (T.hasParent_one_iff)
 
-### 定理
+### Theorem
 
-$`j_1 \lt \lvert M\rvert`$ ならば
+If $`j_1 \lt \lvert M\rvert`$ then
 
 ```math
 \mathrm{hasParent}(M,1,j_1) \iff \exists j_0,\ \mathrm{r1cand}(M,j_1,j_0).
 ```
 
-### 証明
+### Proof
 
-$`\to^M_i`$（[D.nextR](Pss.md#d-nextR)）の定義（D.nextR）は $`i = 0`$ かどうかで分岐する。
-$`i = 1 \ne 0`$ であるから、任意の $`j_0`$ について $`j_0 \to^M_i j_1`$ は
-行 $`1`$ の親子関係 $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）そのものである。以下これを用いる。
+The definition of $`\to^M_i`$ ([D.nextR](Pss.md#d-nextR)) branches according to whether $`i = 0`$.
+Since $`i = 1 \ne 0`$, for every $`j_0`$ the statement $`j_0 \to^M_i j_1`$ is exactly the parent
+relation of row $`1`$, that is $`j_0 \to^M_1 j_1`$ ([D.nextrel1](Pss.md#d-nextrel1)). We use this
+below.
 
-**($`\Rightarrow`$)** $`\mathrm{hasParent}`$ の定義（D.hasParent）より、
-$`j_0 \to^M_1 j_1`$ をみたす $`j_0`$ が存在する。D.nextrel1 の条件 (3), (5), (4) は
-それぞれ $`j_0 \lt j_1`$、$`j_0 \le^M_0 j_1`$、$`M_{1,j_0} \lt M_{1,j_1}`$ であり、これは
-$`\mathrm{r1cand}`$ の定義（D.r1cand）の 3 つの連言子である。よって
-$`\mathrm{r1cand}(M,j_1,j_0)`$。
+**($`\Rightarrow`$)** By the definition of $`\mathrm{hasParent}`$ (D.hasParent) there exists $`j_0`$
+with $`j_0 \to^M_1 j_1`$. Conditions (3), (5), (4) of D.nextrel1 are $`j_0 \lt j_1`$,
+$`j_0 \le^M_0 j_1`$ and $`M_{1,j_0} \lt M_{1,j_1}`$ respectively, and these are the three conjuncts
+of the definition of $`\mathrm{r1cand}`$ (D.r1cand). Hence $`\mathrm{r1cand}(M,j_1,j_0)`$.
 
-**($`\Leftarrow`$)** $`\mathrm{r1cand}(M,j_1,j_0)`$ なる $`j_0`$ を取る。述語 $`P`$ を
+**($`\Leftarrow`$)** Take $`j_0`$ with $`\mathrm{r1cand}(M,j_1,j_0)`$. Define the predicate $`P`$ by
 
 ```math
 P(k) :\equiv \mathrm{r1cand}(M,j_1,k)
 ```
 
-で定める。$`\{\,k \mid k \le j_1 \wedge P(k)\,\}`$ は有限集合であり、
-$`\mathrm{r1cand}`$ の第 1 連言子より $`j_0 \lt j_1`$、したがって $`j_0 \le j_1`$ であるから
-$`j_0`$ を元にもち空でない。その最大元を $`g`$ とおく。すなわち
+The set $`\{\,k \mid k \le j_1 \wedge P(k)\,\}`$ is finite, and by the first conjunct of
+$`\mathrm{r1cand}`$ we have $`j_0 \lt j_1`$, hence $`j_0 \le j_1`$; therefore the set contains
+$`j_0`$ and is non-empty. Let $`g`$ be its largest element, that is,
 
 ```math
 P(g), \qquad \forall k,\ \bigl(k \le j_1 \wedge P(k)\bigr) \to k \le g .
 ```
 
-**第 1 段：$`g \to^M_1 j_1`$。** D.nextrel1 の 6 条件を順に確かめる。
+**Step 1: $`g \to^M_1 j_1`$.** We check the six conditions of D.nextrel1 in turn.
 
-- (1) $`g \lt \lvert M\rvert`$：$`P(g)`$ の第 1 連言子より $`g \lt j_1`$ であり、仮定
-  $`j_1 \lt \lvert M\rvert`$ と $`\lt`$ の推移律による。
-- (2) $`j_1 \lt \lvert M\rvert`$：仮定そのものである。
-- (3) $`g \lt j_1`$：$`P(g)`$ の第 1 連言子である。
-- (4) $`M_{1,g} \lt M_{1,j_1}`$：$`P(g)`$ の第 3 連言子である。
-- (5) $`g \le^M_0 j_1`$：$`P(g)`$ の第 2 連言子である。
-- (6) 任意の $`j`$ について $`g \lt j`$ かつ $`j \le^M_0 j_1`$ ならば
-  $`M_{1,j_1} \le M_{1,j}`$：背理法で示す。$`M_{1,j} \lt M_{1,j_1}`$ と仮定する。
-  $`\le^M_0`$ の定義（D.le0）の条件 (3) より
-  $`j \mathbin{(\to^M_0)^{*}} j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）であるから、
-  [T.nextrel0_rtrancl_index_le](Term.md#t-nextrel0_rtrancl_index_le) より $`j \le j_1`$。
-  $`j = j_1`$ とすると $`M_{1,j_1} \lt M_{1,j_1}`$ となり $`\lt`$ の非反射性に矛盾する。
-  $`j \lt j_1`$ のときは、$`j \lt j_1`$、$`j \le^M_0 j_1`$、$`M_{1,j} \lt M_{1,j_1}`$ の
-  3 つがそろうから $`P(j)`$ が成り立ち、$`j \le j_1`$ と最大性から $`j \le g`$ となって、
-  いま仮定した $`g \lt j`$ に矛盾する。
+- (1) $`g \lt \lvert M\rvert`$: the first conjunct of $`P(g)`$ gives $`g \lt j_1`$, and the claim
+  follows from the hypothesis $`j_1 \lt \lvert M\rvert`$ by transitivity of $`\lt`$.
+- (2) $`j_1 \lt \lvert M\rvert`$: this is the hypothesis itself.
+- (3) $`g \lt j_1`$: this is the first conjunct of $`P(g)`$.
+- (4) $`M_{1,g} \lt M_{1,j_1}`$: this is the third conjunct of $`P(g)`$.
+- (5) $`g \le^M_0 j_1`$: this is the second conjunct of $`P(g)`$.
+- (6) For every $`j`$, if $`g \lt j`$ and $`j \le^M_0 j_1`$ then $`M_{1,j_1} \le M_{1,j}`$: we argue
+  by contradiction. Suppose $`M_{1,j} \lt M_{1,j_1}`$. Condition (3) of the definition of
+  $`\le^M_0`$ (D.le0) gives $`j \mathbin{(\to^M_0)^{*}} j_1`$
+  ([D.nextrel0](Pss.md#d-nextrel0)), so [T.nextrel0_rtrancl_index_le](Term.md#t-nextrel0_rtrancl_index_le)
+  gives $`j \le j_1`$. If $`j = j_1`$ then $`M_{1,j_1} \lt M_{1,j_1}`$, contradicting
+  irreflexivity of $`\lt`$. If $`j \lt j_1`$, then $`j \lt j_1`$, $`j \le^M_0 j_1`$ and
+  $`M_{1,j} \lt M_{1,j_1}`$ all hold, so $`P(j)`$ holds; from $`j \le j_1`$ and maximality we get
+  $`j \le g`$, which contradicts the assumption $`g \lt j`$.
 
-**第 2 段：一意性。** $`y \to^M_1 j_1`$ とする。D.nextrel1 の条件 (3), (5), (4) より
-$`P(y)`$ が成り立ち、条件 (3) より $`y \lt j_1`$ すなわち $`y \le j_1`$ であるから、
-最大性より $`y \le g`$ である。$`y = g`$ でないとすると $`y \lt g`$ である。
-$`y \to^M_1 j_1`$ の条件 (6) を $`j := g`$ に適用する。その前件 $`y \lt g`$ は
-いまの仮定であり、$`g \le^M_0 j_1`$ は第 1 段の (5) であるから、
-$`M_{1,j_1} \le M_{1,g}`$ を得る。一方、第 1 段の (4) は $`M_{1,g} \lt M_{1,j_1}`$ で
-あるから $`M_{1,j_1} \lt M_{1,j_1}`$ となり、$`\lt`$ の非反射性に矛盾する。よって $`y = g`$。
+**Step 2: uniqueness.** Let $`y \to^M_1 j_1`$. Conditions (3), (5), (4) of D.nextrel1 give
+$`P(y)`$, and condition (3) gives $`y \lt j_1`$, hence $`y \le j_1`$, so maximality yields
+$`y \le g`$. Suppose $`y \ne g`$; then $`y \lt g`$. Apply condition (6) of $`y \to^M_1 j_1`$ with
+$`j := g`$. Its antecedent $`y \lt g`$ is the present assumption, and $`g \le^M_0 j_1`$ is (5) of
+Step 1, so we obtain $`M_{1,j_1} \le M_{1,g}`$. On the other hand (4) of Step 1 is
+$`M_{1,g} \lt M_{1,j_1}`$, so $`M_{1,j_1} \lt M_{1,j_1}`$, contradicting irreflexivity of $`\lt`$.
+Hence $`y = g`$.
 
-第 1 段と第 2 段により、$`j_0 \to^M_1 j_1`$ をみたす $`j_0`$ は存在し一意である。
-$`\mathrm{hasParent}`$ の定義（D.hasParent）よりこれが $`\mathrm{hasParent}(M,1,j_1)`$ である。∎
+By Steps 1 and 2, a $`j_0`$ with $`j_0 \to^M_1 j_1`$ exists and is unique. By the definition of
+$`\mathrm{hasParent}`$ (D.hasParent) this is $`\mathrm{hasParent}(M,1,j_1)`$. ∎
 
 <a id="t-domT_iff"></a>
-## 定理: 孤児条件の脊柱による言い換え (T.domT_iff)
+## Theorem: restatement of the orphan condition along the spine (T.domT_iff)
 
-### 定理
+### Theorem
 
-$`M \ne ()`$ とし $`j_1 := \lvert M\rvert - 1`$ と書く。このとき
+Let $`M \ne ()`$ and write $`j_1 := \lvert M\rvert - 1`$. Then
 
 ```math
 \mathrm{domT}(M,m) \iff \Bigl(M_{1,j_1} = m+1 \ \wedge\
   \forall j_0,\ \bigl(j_0 \lt j_1 \wedge j_0 \le^M_0 j_1\bigr) \to m+1 \le M_{1,j_0}\Bigr).
 ```
 
-### 証明
+### Proof
 
-$`M \ne ()`$ より $`0 \lt \lvert M\rvert`$ であり、切り捨て減法により
-$`j_1 = \lvert M\rvert - 1 \lt \lvert M\rvert`$ である。よって
-[T.hasParent_one_iff](#t-hasParent_one_iff) が使えて
+From $`M \ne ()`$ we get $`0 \lt \lvert M\rvert`$, and by truncated subtraction
+$`j_1 = \lvert M\rvert - 1 \lt \lvert M\rvert`$. Hence [T.hasParent_one_iff](#t-hasParent_one_iff)
+applies and gives
 
 ```math
 \mathrm{hasParent}(M,1,j_1) \iff \exists j_0,\ \mathrm{r1cand}(M,j_1,j_0)
 ```
 
-である。$`\mathrm{domT}`$ の定義（D.domT）は $`M_{1,j_1} = m+1`$ と
-$`\neg\,\mathrm{hasParent}(M,1,j_1)`$ の連言であるから、両辺の第 1 連言子は共通であり、
-示すべきことは $`M_{1,j_1} = m+1`$ を仮定した上での
+The definition of $`\mathrm{domT}`$ (D.domT) is the conjunction of $`M_{1,j_1} = m+1`$ and
+$`\neg\,\mathrm{hasParent}(M,1,j_1)`$, so the first conjunct is common to both sides, and it remains
+to prove, under the assumption $`M_{1,j_1} = m+1`$, that
 
 ```math
 \neg\,\exists j_0,\ \mathrm{r1cand}(M,j_1,j_0)
 \iff \forall j_0,\ \bigl(j_0 \lt j_1 \wedge j_0 \le^M_0 j_1\bigr) \to m+1 \le M_{1,j_0}
 ```
 
-である。
+**($`\Rightarrow`$)** Suppose the left-hand side. Take $`j_0`$ with $`j_0 \lt j_1`$ and
+$`j_0 \le^M_0 j_1`$, and prove $`m+1 \le M_{1,j_0}`$ by contradiction. If
+$`M_{1,j_0} \lt m+1`$, then, since $`M_{1,j_1} = m+1`$, we get $`M_{1,j_0} \lt M_{1,j_1}`$.
+Together with $`j_0 \lt j_1`$ and $`j_0 \le^M_0 j_1`$ this supplies the three conjuncts of the
+definition of $`\mathrm{r1cand}`$ (D.r1cand), so $`\mathrm{r1cand}(M,j_1,j_0)`$, contradicting the
+left-hand side.
 
-**($`\Rightarrow`$)** 左辺を仮定する。$`j_0`$ を取り $`j_0 \lt j_1`$ かつ
-$`j_0 \le^M_0 j_1`$ とし、$`m+1 \le M_{1,j_0}`$ を背理法で示す。
-$`M_{1,j_0} \lt m+1`$ とすると、$`M_{1,j_1} = m+1`$ であるから
-$`M_{1,j_0} \lt M_{1,j_1}`$ である。これと $`j_0 \lt j_1`$、$`j_0 \le^M_0 j_1`$ を
-合わせると $`\mathrm{r1cand}`$ の定義（D.r1cand）の 3 連言子がそろい
-$`\mathrm{r1cand}(M,j_1,j_0)`$ となって、左辺に矛盾する。
-
-**($`\Leftarrow`$)** 右辺を仮定し、$`\mathrm{r1cand}(M,j_1,j_0)`$ なる $`j_0`$ が
-存在したとして矛盾を導く。その第 1 連言子 $`j_0 \lt j_1`$ と第 2 連言子
-$`j_0 \le^M_0 j_1`$ に右辺を適用して $`m+1 \le M_{1,j_0}`$ を得る。第 3 連言子は
-$`M_{1,j_0} \lt M_{1,j_1} = m+1`$ である。合わせて $`m+1 \le M_{1,j_0} \lt m+1`$ となり、
-$`\lt`$ の非反射性に矛盾する。∎
+**($`\Leftarrow`$)** Suppose the right-hand side, and derive a contradiction from the existence of
+$`j_0`$ with $`\mathrm{r1cand}(M,j_1,j_0)`$. Applying the right-hand side to its first conjunct
+$`j_0 \lt j_1`$ and its second conjunct $`j_0 \le^M_0 j_1`$ gives $`m+1 \le M_{1,j_0}`$.
+Its third conjunct is $`M_{1,j_0} \lt M_{1,j_1} = m+1`$. Together these give
+$`m+1 \le M_{1,j_0} \lt m+1`$, contradicting irreflexivity of $`\lt`$. ∎
 
 <a id="d-lfpS"></a>
-## 定義: 最小不動点 (D.lfpS)
+## Definition: least fixpoint (D.lfpS)
 
-$`f`$ を $`\mathrm{PairSeq}`$ の部分集合から $`\mathrm{PairSeq}`$ の部分集合への写像とする。
+Let $`f`$ be a map from subsets of $`\mathrm{PairSeq}`$ to subsets of $`\mathrm{PairSeq}`$. Put
 
 ```math
 \mathrm{lfp}(f) := \bigcap\,\bigl\{\, Y \subseteq \mathrm{PairSeq} \ \bigm|\ f(Y) \subseteq Y \,\bigr\}
 ```
 
-とおく。すなわち $`x \in \mathrm{lfp}(f)`$ は、$`f(Y) \subseteq Y`$ をみたす**すべての**
-$`Y \subseteq \mathrm{PairSeq}`$ について $`x \in Y`$ であることを言う。
+That is, $`x \in \mathrm{lfp}(f)`$ says that $`x \in Y`$ for **every**
+$`Y \subseteq \mathrm{PairSeq}`$ with $`f(Y) \subseteq Y`$.
 
 <a id="t-lfpS_lowerbound"></a>
-## 定理: 最小不動点は前不動点の下界 (T.lfpS_lowerbound)
+## Theorem: the least fixpoint is a lower bound of the prefixpoints (T.lfpS_lowerbound)
 
-### 定理
+### Theorem
 
-$`f(Y) \subseteq Y`$ ならば $`\mathrm{lfp}(f) \subseteq Y`$。
+If $`f(Y) \subseteq Y`$ then $`\mathrm{lfp}(f) \subseteq Y`$.
 
-### 証明
+### Proof
 
-$`x \in \mathrm{lfp}(f)`$ とする。$`\mathrm{lfp}`$ の定義（D.lfpS）より、$`x`$ は
-$`f(Z) \subseteq Z`$ をみたすすべての $`Z`$ に属する。仮定より $`Y`$ はそのような $`Z`$ の
-1 つであるから $`x \in Y`$。∎
+Let $`x \in \mathrm{lfp}(f)`$. By the definition of $`\mathrm{lfp}`$ (D.lfpS), $`x`$ belongs to every
+$`Z`$ with $`f(Z) \subseteq Z`$. By hypothesis $`Y`$ is one such $`Z`$, so $`x \in Y`$. ∎
 
 <a id="t-lfpS_unfold_le"></a>
-## 定理: 最小不動点の展開（$`\subseteq`$ 向き） (T.lfpS_unfold_le)
+## Theorem: unfolding the least fixpoint (the $`\subseteq`$ direction) (T.lfpS_unfold_le)
 
-### 定理
+### Theorem
 
-$`f`$ が単調、すなわち $`X \subseteq Y`$ ならば $`f(X) \subseteq f(Y)`$ であるとする。
-このとき $`f(\mathrm{lfp}(f)) \subseteq \mathrm{lfp}(f)`$。
+Suppose $`f`$ is monotone, that is, $`X \subseteq Y`$ implies $`f(X) \subseteq f(Y)`$.
+Then $`f(\mathrm{lfp}(f)) \subseteq \mathrm{lfp}(f)`$.
 
-### 証明
+### Proof
 
-$`x \in f(\mathrm{lfp}(f))`$ とする。$`\mathrm{lfp}`$ の定義（D.lfpS）より、
-$`f(Y) \subseteq Y`$ をみたす任意の $`Y`$ について $`x \in Y`$ を示せばよい。
-[T.lfpS_lowerbound](#t-lfpS_lowerbound) より $`\mathrm{lfp}(f) \subseteq Y`$ であり、
-$`f`$ の単調性より $`f(\mathrm{lfp}(f)) \subseteq f(Y)`$。よって $`x \in f(Y)`$ であり、
-仮定 $`f(Y) \subseteq Y`$ より $`x \in Y`$。∎
+Let $`x \in f(\mathrm{lfp}(f))`$. By the definition of $`\mathrm{lfp}`$ (D.lfpS) it suffices to show
+$`x \in Y`$ for every $`Y`$ with $`f(Y) \subseteq Y`$.
+By [T.lfpS_lowerbound](#t-lfpS_lowerbound) we have $`\mathrm{lfp}(f) \subseteq Y`$, and
+monotonicity of $`f`$ gives $`f(\mathrm{lfp}(f)) \subseteq f(Y)`$. Hence $`x \in f(Y)`$, and the
+hypothesis $`f(Y) \subseteq Y`$ gives $`x \in Y`$. ∎
 
 <a id="t-lfpS_unfold_ge"></a>
-## 定理: 最小不動点の展開（$`\supseteq`$ 向き） (T.lfpS_unfold_ge)
+## Theorem: unfolding the least fixpoint (the $`\supseteq`$ direction) (T.lfpS_unfold_ge)
 
-### 定理
+### Theorem
 
-$`f`$ が単調ならば $`\mathrm{lfp}(f) \subseteq f(\mathrm{lfp}(f))`$。
+If $`f`$ is monotone then $`\mathrm{lfp}(f) \subseteq f(\mathrm{lfp}(f))`$.
 
-### 証明
+### Proof
 
-[T.lfpS_lowerbound](#t-lfpS_lowerbound) を $`Y := f(\mathrm{lfp}(f))`$ に適用する。
-その仮定は $`f\bigl(f(\mathrm{lfp}(f))\bigr) \subseteq f(\mathrm{lfp}(f))`$ であり、
-これは [T.lfpS_unfold_le](#t-lfpS_unfold_le) の結論
-$`f(\mathrm{lfp}(f)) \subseteq \mathrm{lfp}(f)`$ に $`f`$ の単調性を適用して得られる。∎
+Apply [T.lfpS_lowerbound](#t-lfpS_lowerbound) with $`Y := f(\mathrm{lfp}(f))`$.
+Its hypothesis is $`f\bigl(f(\mathrm{lfp}(f))\bigr) \subseteq f(\mathrm{lfp}(f))`$, which is obtained
+by applying monotonicity of $`f`$ to the conclusion
+$`f(\mathrm{lfp}(f)) \subseteq \mathrm{lfp}(f)`$ of [T.lfpS_unfold_le](#t-lfpS_unfold_le). ∎
 
 <a id="t-lfpS_unfold"></a>
-## 定理: 最小不動点は不動点 (T.lfpS_unfold)
+## Theorem: the least fixpoint is a fixpoint (T.lfpS_unfold)
 
-### 定理
+### Theorem
 
-$`f`$ が単調ならば $`f(\mathrm{lfp}(f)) = \mathrm{lfp}(f)`$。
+If $`f`$ is monotone then $`f(\mathrm{lfp}(f)) = \mathrm{lfp}(f)`$.
 
-### 証明
+### Proof
 
-[T.lfpS_unfold_le](#t-lfpS_unfold_le) より $`f(\mathrm{lfp}(f)) \subseteq \mathrm{lfp}(f)`$ で
-あり、[T.lfpS_unfold_ge](#t-lfpS_unfold_ge) より
-$`\mathrm{lfp}(f) \subseteq f(\mathrm{lfp}(f))`$ である。$`\subseteq`$ の反対称性により
-両者は等しい。∎
+By [T.lfpS_unfold_le](#t-lfpS_unfold_le) we have $`f(\mathrm{lfp}(f)) \subseteq \mathrm{lfp}(f)`$,
+and by [T.lfpS_unfold_ge](#t-lfpS_unfold_ge) we have
+$`\mathrm{lfp}(f) \subseteq f(\mathrm{lfp}(f))`$. By antisymmetry of $`\subseteq`$ the two are
+equal. ∎
 
 <a id="d-Aop"></a>
-## 定義: 作用素 $`A_u`$ (D.Aop)
+## Definition: the operator $`A_u`$ (D.Aop)
 
-$`\mathcal{W}`$ を、各 $`m \in \mathbb{N}`$ に $`\mathrm{PairSeq}`$ の部分集合
-$`\mathcal{W}(m)`$ を与える族とし、$`u \in \mathbb{N}`$、$`X \subseteq \mathrm{PairSeq}`$、
-$`M \in \mathrm{PairSeq}`$ とする。次の 3 つの命題を考える。
+Let $`\mathcal{W}`$ be a family assigning to each $`m \in \mathbb{N}`$ a subset
+$`\mathcal{W}(m)`$ of $`\mathrm{PairSeq}`$, and let $`u \in \mathbb{N}`$,
+$`X \subseteq \mathrm{PairSeq}`$ and $`M \in \mathrm{PairSeq}`$. Consider the following three
+statements.
 
 ```math
 \begin{aligned}
@@ -450,127 +452,128 @@ $`M \in \mathrm{PairSeq}`$ とする。次の 3 つの命題を考える。
 \end{aligned}
 ```
 
-これらを用いて
+Using these, define
 
 ```math
 \mathrm{Aop}(\mathcal{W},u,X,M) :\iff (1) \ \vee\ (2) \ \vee\ (3)
 ```
 
-と定める。以下、この 3 つをそれぞれ**分岐 (1) **、**分岐 (2) **、**分岐 (3) ** と呼ぶ。
+Below we call these three **branch (1)**, **branch (2)** and **branch (3)** respectively.
 
 <a id="d-Aset"></a>
-## 定義: 作用素 $`A_u`$ の集合形 (D.Aset)
+## Definition: the set form of the operator $`A_u`$ (D.Aset)
 
 ```math
 \mathrm{Aset}(\mathcal{W},u,X) := \bigl\{\, M \in \mathrm{PairSeq} \ \bigm|\ \mathrm{Aop}(\mathcal{W},u,X,M) \,\bigr\} .
 ```
 
 <a id="t-Aop_mono_X"></a>
-## 定理: $`A_u`$ の第 3 引数についての単調性 (T.Aop_mono_X)
+## Theorem: monotonicity of $`A_u`$ in its third argument (T.Aop_mono_X)
 
-### 定理
+### Theorem
 
-$`\mathrm{Aop}(\mathcal{W},u,X,M)`$ かつ $`X \subseteq Y`$ ならば
-$`\mathrm{Aop}(\mathcal{W},u,Y,M)`$。
+If $`\mathrm{Aop}(\mathcal{W},u,X,M)`$ and $`X \subseteq Y`$, then
+$`\mathrm{Aop}(\mathcal{W},u,Y,M)`$.
 
-### 証明
+### Proof
 
-$`\mathrm{Aop}`$ の定義（D.Aop）の 3 つの選言で場合分けする。
+Distinguish cases on the three disjuncts of the definition of $`\mathrm{Aop}`$ (D.Aop).
 
-- **分岐 (1) ** のとき。$`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$ には $`X`$ が現れないから、
-  そのまま $`\mathrm{Aop}(\mathcal{W},u,Y,M)`$ の分岐 (1) が成り立つ。
+- **Branch (1).** Since $`X`$ does not occur in $`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$,
+  branch (1) of $`\mathrm{Aop}(\mathcal{W},u,Y,M)`$ holds as it stands.
 
-- **分岐 (2) ** のとき。第 1 連言子 $`\mathrm{natDom}(M)`$ はそのまま成り立つ。
-  第 2 連言子については、$`1 \le n`$ なる各 $`n`$ について $`M[n] \in X`$ であり、
-  $`X \subseteq Y`$ より $`M[n] \in Y`$。よって分岐 (2) が成り立つ。
+- **Branch (2).** The first conjunct $`\mathrm{natDom}(M)`$ holds as it stands. As for the second
+  conjunct, for each $`n`$ with $`1 \le n`$ we have $`M[n] \in X`$, and $`X \subseteq Y`$ gives
+  $`M[n] \in Y`$. Hence branch (2) holds.
 
-- **分岐 (3) ** のとき。$`m \lt u`$ と $`\mathrm{domT}(M,m)`$ はそのまま成り立つ。
-  第 3 連言子については、$`z \in \mathcal{W}(m)`$ かつ $`\mathrm{based}(z)`$ なる各 $`z`$ に
-  ついて $`\mathrm{graft}(M,z) \in X`$ であり、$`X \subseteq Y`$ より
-  $`\mathrm{graft}(M,z) \in Y`$。よって同じ $`m`$ で分岐 (3) が成り立つ。∎
+- **Branch (3).** Both $`m \lt u`$ and $`\mathrm{domT}(M,m)`$ hold as they stand. As for the third
+  conjunct, for each $`z`$ with $`z \in \mathcal{W}(m)`$ and $`\mathrm{based}(z)`$ we have
+  $`\mathrm{graft}(M,z) \in X`$, and $`X \subseteq Y`$ gives $`\mathrm{graft}(M,z) \in Y`$.
+  Hence branch (3) holds with the same $`m`$. ∎
 
 <a id="t-Aset_mono"></a>
-## 定理: $`A_u`$ は単調 (T.Aset_mono)
+## Theorem: $`A_u`$ is monotone (T.Aset_mono)
 
-### 定理
+### Theorem
 
-任意の $`\mathcal{W}`$, $`u`$ について、写像 $`X \mapsto \mathrm{Aset}(\mathcal{W},u,X)`$ は
-単調である。すなわち $`X \subseteq Y`$ ならば
-$`\mathrm{Aset}(\mathcal{W},u,X) \subseteq \mathrm{Aset}(\mathcal{W},u,Y)`$。
+For every $`\mathcal{W}`$ and $`u`$ the map $`X \mapsto \mathrm{Aset}(\mathcal{W},u,X)`$ is
+monotone; that is, $`X \subseteq Y`$ implies
+$`\mathrm{Aset}(\mathcal{W},u,X) \subseteq \mathrm{Aset}(\mathcal{W},u,Y)`$.
 
-### 証明
+### Proof
 
-$`X \subseteq Y`$ とし $`M \in \mathrm{Aset}(\mathcal{W},u,X)`$ とする。
-$`\mathrm{Aset}`$ の定義（D.Aset）よりこれは $`\mathrm{Aop}(\mathcal{W},u,X,M)`$ である。
-[T.Aop_mono_X](#t-Aop_mono_X) より $`\mathrm{Aop}(\mathcal{W},u,Y,M)`$ であり、
-ふたたび D.Aset より $`M \in \mathrm{Aset}(\mathcal{W},u,Y)`$。∎
+Let $`X \subseteq Y`$ and $`M \in \mathrm{Aset}(\mathcal{W},u,X)`$. By the definition of
+$`\mathrm{Aset}`$ (D.Aset) this is $`\mathrm{Aop}(\mathcal{W},u,X,M)`$.
+By [T.Aop_mono_X](#t-Aop_mono_X) we get $`\mathrm{Aop}(\mathcal{W},u,Y,M)`$, and again by D.Aset,
+$`M \in \mathrm{Aset}(\mathcal{W},u,Y)`$. ∎
 
 <a id="t-Aop_mono_level"></a>
-## 定理: $`A_u`$ の段についての単調性 (T.Aop_mono_level)
+## Theorem: monotonicity of $`A_u`$ in the level (T.Aop_mono_level)
 
-### 定理
+### Theorem
 
-$`u \le v`$ かつ $`\mathrm{Aop}(\mathcal{W},u,X,M)`$ ならば
-$`\mathrm{Aop}(\mathcal{W},v,X,M)`$。
+If $`u \le v`$ and $`\mathrm{Aop}(\mathcal{W},u,X,M)`$, then $`\mathrm{Aop}(\mathcal{W},v,X,M)`$.
 
-### 証明
+### Proof
 
-$`\mathrm{Aop}`$ の定義（D.Aop）の 3 つの選言で場合分けする。
+Distinguish cases on the three disjuncts of the definition of $`\mathrm{Aop}`$ (D.Aop).
 
-- **分岐 (1) ** のとき。$`u`$ が現れないから、そのまま成り立つ。
-- **分岐 (2) ** のとき。$`u`$ が現れないから、そのまま成り立つ。
-- **分岐 (3) ** のとき。$`m \lt u`$ なる $`m`$ が取れている。$`u \le v`$ と合わせて
-  $`m \lt v`$ であり、残りの 2 つの連言子 $`\mathrm{domT}(M,m)`$ と
-  $`\forall z \in \mathcal{W}(m),\ \mathrm{based}(z) \to \mathrm{graft}(M,z) \in X`$ は
-  $`u`$ にも $`v`$ にも依らないからそのまま成り立つ。∎
+- **Branch (1).** Since $`u`$ does not occur, the statement holds as it stands.
+- **Branch (2).** Since $`u`$ does not occur, the statement holds as it stands.
+- **Branch (3).** We have some $`m`$ with $`m \lt u`$. Together with $`u \le v`$ this gives
+  $`m \lt v`$, and the remaining two conjuncts $`\mathrm{domT}(M,m)`$ and
+  $`\forall z \in \mathcal{W}(m),\ \mathrm{based}(z) \to \mathrm{graft}(M,z) \in X`$ depend on
+  neither $`u`$ nor $`v`$, so they hold as they stand. ∎
 
 <a id="t-Aop_cong"></a>
-## 定理: $`A_u`$ は $`u`$ 未満の段しか読まない (T.Aop_cong)
+## Theorem: $`A_u`$ reads only the levels below $`u`$ (T.Aop_cong)
 
-### 定理
+### Theorem
 
-$`\mathcal{W}`$, $`\mathcal{V}`$ を族とし、$`\forall m \lt u,\ \mathcal{W}(m) = \mathcal{V}(m)`$ と
-する。このとき
+Let $`\mathcal{W}`$ and $`\mathcal{V}`$ be families with
+$`\forall m \lt u,\ \mathcal{W}(m) = \mathcal{V}(m)`$. Then
 
 ```math
 \mathrm{Aop}(\mathcal{W},u,X,M) \iff \mathrm{Aop}(\mathcal{V},u,X,M).
 ```
 
-### 証明
+### Proof
 
-両方向を示す。
+We prove both directions.
 
-**($`\Rightarrow`$)** $`\mathrm{Aop}(\mathcal{W},u,X,M)`$ の 3 つの選言で場合分けする。
+**($`\Rightarrow`$)** Distinguish cases on the three disjuncts of
+$`\mathrm{Aop}(\mathcal{W},u,X,M)`$.
 
-- **分岐 (1) ** のとき。族が現れないから、$`\mathrm{Aop}(\mathcal{V},u,X,M)`$ の分岐 (1) が
-  そのまま成り立つ。
-- **分岐 (2) ** のとき。族が現れないから、分岐 (2) がそのまま成り立つ。
-- **分岐 (3) ** のとき。$`m \lt u`$、$`\mathrm{domT}(M,m)`$、および
-  $`\forall z \in \mathcal{W}(m),\ \mathrm{based}(z) \to \mathrm{graft}(M,z) \in X`$ が
-  取れている。同じ $`m`$ で $`\mathrm{Aop}(\mathcal{V},u,X,M)`$ の分岐 (3) を示す。
-  $`m \lt u`$ と $`\mathrm{domT}(M,m)`$ はそのままである。$`z \in \mathcal{V}(m)`$ かつ
-  $`\mathrm{based}(z)`$ とすると、仮定を $`m \lt u`$ に適用した等式
-  $`\mathcal{W}(m) = \mathcal{V}(m)`$ により $`z \in \mathcal{W}(m)`$ であるから、
-  取れている連言子を適用して $`\mathrm{graft}(M,z) \in X`$。
+- **Branch (1).** No family occurs, so branch (1) of $`\mathrm{Aop}(\mathcal{V},u,X,M)`$ holds as it
+  stands.
+- **Branch (2).** No family occurs, so branch (2) holds as it stands.
+- **Branch (3).** We have $`m \lt u`$, $`\mathrm{domT}(M,m)`$ and
+  $`\forall z \in \mathcal{W}(m),\ \mathrm{based}(z) \to \mathrm{graft}(M,z) \in X`$.
+  We prove branch (3) of $`\mathrm{Aop}(\mathcal{V},u,X,M)`$ with the same $`m`$.
+  Both $`m \lt u`$ and $`\mathrm{domT}(M,m)`$ carry over unchanged. Let $`z \in \mathcal{V}(m)`$
+  with $`\mathrm{based}(z)`$. By the equality $`\mathcal{W}(m) = \mathcal{V}(m)`$, obtained by
+  applying the hypothesis to $`m \lt u`$, we have $`z \in \mathcal{W}(m)`$, so applying the
+  conjunct we have gives $`\mathrm{graft}(M,z) \in X`$.
 
-**($`\Leftarrow`$)** $`\mathrm{Aop}(\mathcal{V},u,X,M)`$ の 3 つの選言で場合分けする。
+**($`\Leftarrow`$)** Distinguish cases on the three disjuncts of
+$`\mathrm{Aop}(\mathcal{V},u,X,M)`$.
 
-- **分岐 (1) ** のとき。族が現れないから、$`\mathrm{Aop}(\mathcal{W},u,X,M)`$ の分岐 (1) が
-  そのまま成り立つ。
-- **分岐 (2) ** のとき。族が現れないから、分岐 (2) がそのまま成り立つ。
-- **分岐 (3) ** のとき。$`m \lt u`$、$`\mathrm{domT}(M,m)`$、および
-  $`\forall z \in \mathcal{V}(m),\ \mathrm{based}(z) \to \mathrm{graft}(M,z) \in X`$ が
-  取れている。同じ $`m`$ で $`\mathrm{Aop}(\mathcal{W},u,X,M)`$ の分岐 (3) を示す。
-  $`m \lt u`$ と $`\mathrm{domT}(M,m)`$ はそのままである。$`z \in \mathcal{W}(m)`$ かつ
-  $`\mathrm{based}(z)`$ とすると、等式 $`\mathcal{W}(m) = \mathcal{V}(m)`$ を逆向きに
-  用いて $`z \in \mathcal{V}(m)`$ であるから、取れている連言子を適用して
-  $`\mathrm{graft}(M,z) \in X`$。∎
+- **Branch (1).** No family occurs, so branch (1) of $`\mathrm{Aop}(\mathcal{W},u,X,M)`$ holds as it
+  stands.
+- **Branch (2).** No family occurs, so branch (2) holds as it stands.
+- **Branch (3).** We have $`m \lt u`$, $`\mathrm{domT}(M,m)`$ and
+  $`\forall z \in \mathcal{V}(m),\ \mathrm{based}(z) \to \mathrm{graft}(M,z) \in X`$.
+  We prove branch (3) of $`\mathrm{Aop}(\mathcal{W},u,X,M)`$ with the same $`m`$.
+  Both $`m \lt u`$ and $`\mathrm{domT}(M,m)`$ carry over unchanged. Let $`z \in \mathcal{W}(m)`$
+  with $`\mathrm{based}(z)`$. Using the equality $`\mathcal{W}(m) = \mathcal{V}(m)`$ in the
+  opposite direction we have $`z \in \mathcal{V}(m)`$, so applying the conjunct we have gives
+  $`\mathrm{graft}(M,z) \in X`$. ∎
 
 <a id="d-Wf"></a>
-## 定義: 段の族 (D.Wf)
+## Definition: the family of levels (D.Wf)
 
-$`\mathrm{Wf}`$ を、2 つの自然数 $`v, m`$ に $`\mathrm{PairSeq}`$ の部分集合
-$`\mathrm{Wf}(v,m)`$ を与える写像として、第 1 引数についての再帰で定める。
+Define $`\mathrm{Wf}`$, the map assigning to two natural numbers $`v, m`$ a subset
+$`\mathrm{Wf}(v,m)`$ of $`\mathrm{PairSeq}`$, by recursion on the first argument.
 
 ```math
 \mathrm{Wf}(0, m) := \emptyset, \qquad
@@ -580,200 +583,199 @@ $`\mathrm{Wf}(v,m)`$ を与える写像として、第 1 引数についての�
 \end{cases}
 ```
 
-ここで $`\mathrm{Wf}(v,-)`$ は $`m \mapsto \mathrm{Wf}(v,m)`$ なる族であり、
-$`\mathrm{Aset}(\mathrm{Wf}(v,-),v)`$ は $`X \mapsto \mathrm{Aset}(\mathrm{Wf}(v,-),v,X)`$ なる
-写像である。再帰呼び出しの第 1 引数は $`v+1`$ に対して $`v`$ であり構造的に減少するから、
-この定義は整合的である。
+Here $`\mathrm{Wf}(v,-)`$ is the family $`m \mapsto \mathrm{Wf}(v,m)`$, and
+$`\mathrm{Aset}(\mathrm{Wf}(v,-),v)`$ is the map
+$`X \mapsto \mathrm{Aset}(\mathrm{Wf}(v,-),v,X)`$. The first argument of the recursive call is
+$`v`$ for $`v+1`$ and hence decreases structurally, so this definition is well defined.
 
 <a id="d-W"></a>
-## 定義: 反復帰納的集合 $`W_u`$ (D.W)
+## Definition: the iterated inductive set $`W_u`$ (D.W)
 
-$`u \in \mathbb{N}`$ に対し
+For $`u \in \mathbb{N}`$,
 
 ```math
 W_u := \mathrm{Wf}(u+1,\ u).
 ```
 
-以下、$`W`$ を族 $`m \mapsto W_m`$ そのものを表す記号としても用いる。また
-$`u \in \mathbb{N}`$、$`X \subseteq \mathrm{PairSeq}`$ に対し
-$`A_u(X) := \mathrm{Aset}(W,u,X)`$ と略記する。$`\mathrm{Aset}`$ の定義（D.Aset）により
-$`M \in A_u(X)`$ は $`\mathrm{Aop}(W,u,X,M)`$ を表す。
+Below we also use $`W`$ as a symbol denoting the family $`m \mapsto W_m`$ itself. Moreover, for
+$`u \in \mathbb{N}`$ and $`X \subseteq \mathrm{PairSeq}`$ we abbreviate
+$`A_u(X) := \mathrm{Aset}(W,u,X)`$. By the definition of $`\mathrm{Aset}`$ (D.Aset),
+$`M \in A_u(X)`$ denotes $`\mathrm{Aop}(W,u,X,M)`$.
 
 <a id="t-Wf_coh"></a>
-## 定理: 段の族の整合性 (T.Wf_coh)
+## Theorem: coherence of the family of levels (T.Wf_coh)
 
-### 定理
+### Theorem
 
-$`m \lt n`$ ならば $`\mathrm{Wf}(n,m) = \mathrm{Wf}(m+1,m)`$。
+If $`m \lt n`$ then $`\mathrm{Wf}(n,m) = \mathrm{Wf}(m+1,m)`$.
 
-### 証明
+### Proof
 
-$`n`$ に関する自然数の帰納法（$`m`$ は固定する）。帰納法の述語は
+Induction on the natural number $`n`$ (with $`m`$ fixed). The induction predicate is
 
 ```math
 \Phi(n) :\equiv m \lt n \to \mathrm{Wf}(n,m) = \mathrm{Wf}(m+1,m).
 ```
 
-- **基底段** $`n = 0`$：前件 $`m \lt 0`$ は偽であるから $`\Phi(0)`$ が成り立つ。
+- **Base case** $`n = 0`$: the antecedent $`m \lt 0`$ is false, so $`\Phi(0)`$ holds.
 
-- **帰納段** $`n = v+1`$：帰納法の仮定は $`\Phi(v)`$、すなわち
-  $`m \lt v \to \mathrm{Wf}(v,m) = \mathrm{Wf}(m+1,m)`$ である。$`m \lt v+1`$ を仮定し、
-  $`m = v`$ かどうかで場合分けする。
+- **Inductive step** $`n = v+1`$: the induction hypothesis is $`\Phi(v)`$, that is,
+  $`m \lt v \to \mathrm{Wf}(v,m) = \mathrm{Wf}(m+1,m)`$. Assume $`m \lt v+1`$ and distinguish cases
+  according to whether $`m = v`$.
 
-  - $`m = v`$ のとき。示すべき等式は $`\mathrm{Wf}(v+1,v) = \mathrm{Wf}(v+1,v)`$ であり、
-    $`=`$ の反射性により成り立つ。
+  - $`m = v`$. The equality to be shown is $`\mathrm{Wf}(v+1,v) = \mathrm{Wf}(v+1,v)`$, which holds
+    by reflexivity of $`=`$.
 
-  - $`m \ne v`$ のとき。$`m \lt v+1`$ より $`m \le v`$ であり、$`m \ne v`$ と合わせて
-    $`m \lt v`$ である。$`\mathrm{Wf}`$ の定義（D.Wf）の第 2 式は $`m = v`$ かどうかで
-    分岐し、いまは $`m \ne v`$ であるから $`\mathrm{Wf}(v+1,m) = \mathrm{Wf}(v,m)`$ で
-    ある。帰納法の仮定 $`\Phi(v)`$ を $`m \lt v`$ に適用して
-    $`\mathrm{Wf}(v,m) = \mathrm{Wf}(m+1,m)`$ を得る。合わせて
-    $`\mathrm{Wf}(v+1,m) = \mathrm{Wf}(m+1,m)`$。∎
+  - $`m \ne v`$. From $`m \lt v+1`$ we get $`m \le v`$, and together with $`m \ne v`$ this gives
+    $`m \lt v`$. The second clause of the definition of $`\mathrm{Wf}`$ (D.Wf) branches according
+    to whether $`m = v`$, and here $`m \ne v`$, so $`\mathrm{Wf}(v+1,m) = \mathrm{Wf}(v,m)`$.
+    Applying the induction hypothesis $`\Phi(v)`$ to $`m \lt v`$ gives
+    $`\mathrm{Wf}(v,m) = \mathrm{Wf}(m+1,m)`$. Combining,
+    $`\mathrm{Wf}(v+1,m) = \mathrm{Wf}(m+1,m)`$. ∎
 
 <a id="t-Wf_eq_W"></a>
-## 定理: 段の族と $`W`$ の一致 (T.Wf_eq_W)
+## Theorem: the family of levels agrees with $`W`$ (T.Wf_eq_W)
 
-### 定理
+### Theorem
 
-$`m \lt n`$ ならば $`\mathrm{Wf}(n,m) = W_m`$。
+If $`m \lt n`$ then $`\mathrm{Wf}(n,m) = W_m`$.
 
-### 証明
+### Proof
 
-$`W_m`$ の定義（D.W）より $`W_m = \mathrm{Wf}(m+1,m)`$ である。
-[T.Wf_coh](#t-Wf_coh) の結論がそのままこれである。∎
+By the definition of $`W_m`$ (D.W) we have $`W_m = \mathrm{Wf}(m+1,m)`$.
+This is exactly the conclusion of [T.Wf_coh](#t-Wf_coh). ∎
 
 <a id="t-W_unfold"></a>
-## 定理: $`W_u`$ の定義方程式 (T.W_unfold)
+## Theorem: the defining equation of $`W_u`$ (T.W_unfold)
 
-### 定理
+### Theorem
 
-任意の $`u \in \mathbb{N}`$ に対し
+For every $`u \in \mathbb{N}`$,
 
 ```math
 W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr).
 ```
 
-### 証明
+### Proof
 
-3 段に分ける。
+We proceed in three steps.
 
-**第 1 段：$`W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(\mathrm{Wf}(u,-),u)\bigr)`$。**
-$`W`$ の定義（D.W）より $`W_u = \mathrm{Wf}(u+1,u)`$ である。$`\mathrm{Wf}`$ の
-定義（D.Wf）の第 2 式を $`v := u`$、$`m := u`$ で読むと、条件 $`m = v`$ が
-$`u = u`$ として成り立つから第 1 の場合が選ばれ、値は
-$`\mathrm{lfp}\bigl(\mathrm{Aset}(\mathrm{Wf}(u,-),u)\bigr)`$ である。
+**Step 1: $`W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(\mathrm{Wf}(u,-),u)\bigr)`$.**
+By the definition of $`W`$ (D.W) we have $`W_u = \mathrm{Wf}(u+1,u)`$. Reading the second clause of
+the definition of $`\mathrm{Wf}`$ (D.Wf) with $`v := u`$ and $`m := u`$, the condition $`m = v`$
+holds as $`u = u`$, so the first case is selected and the value is
+$`\mathrm{lfp}\bigl(\mathrm{Aset}(\mathrm{Wf}(u,-),u)\bigr)`$.
 
-**第 2 段：$`\forall m \lt u,\ \mathrm{Wf}(u,m) = W_m`$。**
-[T.Wf_eq_W](#t-Wf_eq_W) を $`n := u`$ として適用する。
+**Step 2: $`\forall m \lt u,\ \mathrm{Wf}(u,m) = W_m`$.**
+Apply [T.Wf_eq_W](#t-Wf_eq_W) with $`n := u`$.
 
-**第 3 段：2 つの写像が等しい。** 任意の $`X \subseteq \mathrm{PairSeq}`$ について
-$`\mathrm{Aset}(\mathrm{Wf}(u,-),u,X) = \mathrm{Aset}(W,u,X)`$ を示す。
-$`\mathrm{Aset}`$ の定義（D.Aset）より、左辺の元は
-$`\mathrm{Aop}(\mathrm{Wf}(u,-),u,X,M)`$ をみたす $`M`$、右辺の元は
-$`\mathrm{Aop}(W,u,X,M)`$ をみたす $`M`$ である。第 2 段と
-[T.Aop_cong](#t-Aop_cong)（$`\mathcal{W} := \mathrm{Wf}(u,-)`$、$`\mathcal{V} := W`$）より
-この 2 つの命題は同値であるから、両辺は同じ元をもち等しい。よって写像
-$`X \mapsto \mathrm{Aset}(\mathrm{Wf}(u,-),u,X)`$ と $`X \mapsto \mathrm{Aset}(W,u,X)`$ は
-各点で等しく、写像として等しい。
+**Step 3: the two maps are equal.** We show
+$`\mathrm{Aset}(\mathrm{Wf}(u,-),u,X) = \mathrm{Aset}(W,u,X)`$ for every
+$`X \subseteq \mathrm{PairSeq}`$. By the definition of $`\mathrm{Aset}`$ (D.Aset), the elements of
+the left-hand side are the $`M`$ satisfying $`\mathrm{Aop}(\mathrm{Wf}(u,-),u,X,M)`$, and the
+elements of the right-hand side are the $`M`$ satisfying $`\mathrm{Aop}(W,u,X,M)`$. By Step 2 and
+[T.Aop_cong](#t-Aop_cong) (with $`\mathcal{W} := \mathrm{Wf}(u,-)`$ and $`\mathcal{V} := W`$) these
+two statements are equivalent, so the two sides have the same elements and are equal. Hence the maps
+$`X \mapsto \mathrm{Aset}(\mathrm{Wf}(u,-),u,X)`$ and $`X \mapsto \mathrm{Aset}(W,u,X)`$ agree
+pointwise and are equal as maps.
 
-第 3 段の等式を第 1 段の右辺に代入して結論を得る。∎
+Substituting the equality of Step 3 into the right-hand side of Step 1 yields the conclusion. ∎
 
 <a id="t-A1"></a>
-## 定理: 不動点方程式 (A1) (T.A1)
+## Theorem: the fixpoint equation (A1) (T.A1)
 
-### 定理
+### Theorem
 
-任意の $`u \in \mathbb{N}`$ に対し $`\mathrm{Aset}(W,u,W_u) = W_u`$。
+For every $`u \in \mathbb{N}`$, $`\mathrm{Aset}(W,u,W_u) = W_u`$.
 
-### 証明
+### Proof
 
-[T.W_unfold](#t-W_unfold) より $`W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr)`$ である。
-[T.Aset_mono](#t-Aset_mono) より写像 $`X \mapsto \mathrm{Aset}(W,u,X)`$ は単調であるから、
-[T.lfpS_unfold](#t-lfpS_unfold) を $`f := \mathrm{Aset}(W,u)`$ に適用して
+By [T.W_unfold](#t-W_unfold) we have $`W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr)`$.
+By [T.Aset_mono](#t-Aset_mono) the map $`X \mapsto \mathrm{Aset}(W,u,X)`$ is monotone, so applying
+[T.lfpS_unfold](#t-lfpS_unfold) with $`f := \mathrm{Aset}(W,u)`$ gives
 
 ```math
 \mathrm{Aset}\bigl(W,u,\mathrm{lfp}(\mathrm{Aset}(W,u))\bigr) = \mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr)
 ```
 
-を得る。両辺の $`\mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr)`$ を $`W_u`$ に書き換えればよい。∎
+It remains to rewrite $`\mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr)`$ as $`W_u`$ on both sides. ∎
 
 <a id="t-A2"></a>
-## 定理: 帰納法の原理 (A2) (T.A2)
+## Theorem: the induction principle (A2) (T.A2)
 
-### 定理
+### Theorem
 
-$`\mathrm{Aset}(W,u,Y) \subseteq Y`$ ならば $`W_u \subseteq Y`$。
+If $`\mathrm{Aset}(W,u,Y) \subseteq Y`$ then $`W_u \subseteq Y`$.
 
-### 証明
+### Proof
 
-[T.W_unfold](#t-W_unfold) より $`W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr)`$ である。
-仮定に [T.lfpS_lowerbound](#t-lfpS_lowerbound) を $`f := \mathrm{Aset}(W,u)`$ として適用すると
-$`\mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr) \subseteq Y`$ を得る。左辺を $`W_u`$ に
-書き換えればよい。∎
+By [T.W_unfold](#t-W_unfold) we have $`W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr)`$.
+Applying [T.lfpS_lowerbound](#t-lfpS_lowerbound) with $`f := \mathrm{Aset}(W,u)`$ to the hypothesis
+gives $`\mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr) \subseteq Y`$. It remains to rewrite the
+left-hand side as $`W_u`$. ∎
 
 <a id="t-A2'"></a>
-## 定理: 帰納法の原理の各点形 (A2′) (T.A2')
+## Theorem: the pointwise form of the induction principle (A2′) (T.A2')
 
-### 定理
+### Theorem
 
-すべての $`M \in \mathrm{PairSeq}`$ について $`\mathrm{Aop}(W,u,Y,M) \to M \in Y`$ が
-成り立つならば、$`W_u \subseteq Y`$。
+If $`\mathrm{Aop}(W,u,Y,M) \to M \in Y`$ holds for every $`M \in \mathrm{PairSeq}`$, then
+$`W_u \subseteq Y`$.
 
-### 証明
+### Proof
 
-$`\mathrm{Aset}`$ の定義（D.Aset）より、$`M \in \mathrm{Aset}(W,u,Y)`$ と
-$`\mathrm{Aop}(W,u,Y,M)`$ は同一の命題である。したがって仮定は
-$`\mathrm{Aset}(W,u,Y) \subseteq Y`$ と同一の命題であり、
-[T.A2](#t-A2) を適用して $`W_u \subseteq Y`$ を得る。∎
+By the definition of $`\mathrm{Aset}`$ (D.Aset), $`M \in \mathrm{Aset}(W,u,Y)`$ and
+$`\mathrm{Aop}(W,u,Y,M)`$ are the same proposition. Hence the hypothesis is the same proposition as
+$`\mathrm{Aset}(W,u,Y) \subseteq Y`$, and applying [T.A2](#t-A2) gives $`W_u \subseteq Y`$. ∎
 
 <a id="t-A1_intro"></a>
-## 定理: $`W_u`$ への導入 (T.A1_intro)
+## Theorem: introduction into $`W_u`$ (T.A1_intro)
 
-### 定理
+### Theorem
 
-$`\mathrm{Aop}(W,u,W_u,M)`$ ならば $`M \in W_u`$。
+If $`\mathrm{Aop}(W,u,W_u,M)`$ then $`M \in W_u`$.
 
-### 証明
+### Proof
 
-$`\mathrm{Aset}`$ の定義（D.Aset）より、仮定は $`M \in \mathrm{Aset}(W,u,W_u)`$ と
-同一の命題である。[T.A1](#t-A1) の等式 $`\mathrm{Aset}(W,u,W_u) = W_u`$ でこれを
-書き換えて $`M \in W_u`$ を得る。∎
+By the definition of $`\mathrm{Aset}`$ (D.Aset), the hypothesis is the same proposition as
+$`M \in \mathrm{Aset}(W,u,W_u)`$. Rewriting it with the equality
+$`\mathrm{Aset}(W,u,W_u) = W_u`$ of [T.A1](#t-A1) gives $`M \in W_u`$. ∎
 
 <a id="t-W_nil"></a>
-## 定理: 空列は $`W_u`$ に属する (W1) (T.W_nil)
+## Theorem: the empty sequence belongs to $`W_u`$ (W1) (T.W_nil)
 
-### 定理
+### Theorem
 
-任意の $`u \in \mathbb{N}`$ に対し $`() \in W_u`$。
+For every $`u \in \mathbb{N}`$, $`() \in W_u`$.
 
-### 証明
+### Proof
 
-[T.A1_intro](#t-A1_intro) を $`M := ()`$ に適用すればよいから、
-$`\mathrm{Aop}(W,u,W_u,())`$ を示す。$`\mathrm{Aop}`$ の定義（D.Aop）の分岐 (1) を選ぶ。
-その 2 つの連言子は次のように成り立つ。
+It suffices to apply [T.A1_intro](#t-A1_intro) with $`M := ()`$, so we show
+$`\mathrm{Aop}(W,u,W_u,())`$. Choose branch (1) of the definition of $`\mathrm{Aop}`$ (D.Aop).
+Its two conjuncts hold as follows.
 
-- $`\lvert()\rvert \le 1`$：$`\lvert()\rvert = 0`$ である。
-- $`()_{1,0} = 0`$：$`M_{i,j}`$ の定義（D.entry）により $`0 \ge \lvert()\rvert = 0`$ で
-  あるから $`()\langle 0\rangle = (0,0)`$ であり、その第 2 成分は $`0`$ である。∎
+- $`\lvert()\rvert \le 1`$: indeed $`\lvert()\rvert = 0`$.
+- $`()_{1,0} = 0`$: by the definition of $`M_{i,j}`$ (D.entry), since $`0 \ge \lvert()\rvert = 0`$
+  we have $`()\langle 0\rangle = (0,0)`$, whose second entry is $`0`$. ∎
 
 <a id="t-W_mono"></a>
-## 定理: $`W_u`$ の段についての単調性 (T.W_mono)
+## Theorem: monotonicity of $`W_u`$ in the level (T.W_mono)
 
-### 定理
+### Theorem
 
-$`u \le v`$ ならば $`W_u \subseteq W_v`$。
+If $`u \le v`$ then $`W_u \subseteq W_v`$.
 
-### 証明
+### Proof
 
-[T.A2'](#t-A2') を $`Y := W_v`$ として適用する。その仮定を確かめればよい。
-$`M \in \mathrm{PairSeq}`$ を取り $`\mathrm{Aop}(W,u,W_v,M)`$ とする。
-[T.Aop_mono_level](#t-Aop_mono_level) を $`u \le v`$ に適用して
-$`\mathrm{Aop}(W,v,W_v,M)`$ を得る。[T.A1_intro](#t-A1_intro) より $`M \in W_v`$。∎
+Apply [T.A2'](#t-A2') with $`Y := W_v`$; it remains to check its hypothesis.
+Take $`M \in \mathrm{PairSeq}`$ and assume $`\mathrm{Aop}(W,u,W_v,M)`$.
+Applying [T.Aop_mono_level](#t-Aop_mono_level) to $`u \le v`$ gives
+$`\mathrm{Aop}(W,v,W_v,M)`$, and [T.A1_intro](#t-A1_intro) gives $`M \in W_v`$. ∎
 
 <a id="d-Rst"></a>
-## 定義: 標準形上の目標関係 (D.Rst)
+## Definition: the target relation on standard forms (D.Rst)
 
-$`a, b \in \mathrm{PairSeq}`$ に対し
+For $`a, b \in \mathrm{PairSeq}`$,
 
 ```math
 a \mathbin{R_{\mathrm{st}}} b :\iff
@@ -781,48 +783,49 @@ a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \
 ```
 
 <a id="t-acc_of_translate_eq"></a>
-## 定理: 到達可能性は翻訳のみに依る (T.acc_of_translate_eq)
+## Theorem: accessibility depends only on the translation (T.acc_of_translate_eq)
 
-### 定理
+### Theorem
 
-以下、$`\mathrm{PairSeq}`$ 上の二項関係 $`R`$ と $`a \in \mathrm{PairSeq}`$ に対し、
-$`\mathrm{Acc}(R,a)`$ を次の 1 つの規則で生成される最小の述語とする。
+In what follows, for a binary relation $`R`$ on $`\mathrm{PairSeq}`$ and $`a \in \mathrm{PairSeq}`$,
+let $`\mathrm{Acc}(R,a)`$ be the least predicate generated by the single rule
 
 ```math
 \bigl(\forall y,\ y \mathbin{R} a \to \mathrm{Acc}(R,y)\bigr)
 \ \Longrightarrow\ \mathrm{Acc}(R,a).
 ```
 
-規則がこの 1 つだけであるから、逆に $`\mathrm{Acc}(R,a)`$ が成り立つときはその前提が
-取り出せる。すなわち $`\mathrm{Acc}(R,a)`$ かつ $`y \mathbin{R} a`$ ならば
-$`\mathrm{Acc}(R,y)`$ である。以下ではこれを**取り出し**と呼ぶ。
+Since this is the only rule, conversely, whenever $`\mathrm{Acc}(R,a)`$ holds its premise can be
+recovered: if $`\mathrm{Acc}(R,a)`$ and $`y \mathbin{R} a`$ then $`\mathrm{Acc}(R,y)`$.
+We call this **extraction** below.
 
-主張は次である。$`a \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,b = \mathrm{tr}\,a`$、
-$`\mathrm{Acc}(R_{\mathrm{st}},a)`$ ならば $`\mathrm{Acc}(R_{\mathrm{st}},b)`$。
+The claim is the following. If $`a \in \mathrm{ST\_PS}`$, $`\mathrm{tr}\,b = \mathrm{tr}\,a`$ and
+$`\mathrm{Acc}(R_{\mathrm{st}},a)`$, then $`\mathrm{Acc}(R_{\mathrm{st}},b)`$.
 
-### 証明
+### Proof
 
-$`\mathrm{Acc}`$ の生成規則により、$`y \mathbin{R_{\mathrm{st}}} b`$ なる任意の $`y`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を示せばよい。$`R_{\mathrm{st}}`$ の
-定義（D.Rst）より、$`y \mathbin{R_{\mathrm{st}}} b`$ は $`y \in \mathrm{ST\_PS}`$、
-$`b \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$ の連言である。
+By the generating rule for $`\mathrm{Acc}`$ it suffices to show
+$`\mathrm{Acc}(R_{\mathrm{st}},y)`$ for every $`y`$ with $`y \mathbin{R_{\mathrm{st}}} b`$.
+By the definition of $`R_{\mathrm{st}}`$ (D.Rst), $`y \mathbin{R_{\mathrm{st}}} b`$ is the
+conjunction of $`y \in \mathrm{ST\_PS}`$, $`b \in \mathrm{ST\_PS}`$ and
+$`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$.
 
-ここから $`y \mathbin{R_{\mathrm{st}}} a`$ を得る。3 つの連言子は次のように成り立つ。
+From this we obtain $`y \mathbin{R_{\mathrm{st}}} a`$. Its three conjuncts hold as follows.
 
-- $`y \in \mathrm{ST\_PS}`$：いま得た第 1 連言子である。
-- $`a \in \mathrm{ST\_PS}`$：仮定である。
-- $`\mathrm{tr}\,y \prec \mathrm{tr}\,a`$：仮定の等式 $`\mathrm{tr}\,b = \mathrm{tr}\,a`$ を
-  $`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$ に代入したものである。
+- $`y \in \mathrm{ST\_PS}`$: this is the first conjunct just obtained.
+- $`a \in \mathrm{ST\_PS}`$: this is a hypothesis.
+- $`\mathrm{tr}\,y \prec \mathrm{tr}\,a`$: substitute the hypothesised equality
+  $`\mathrm{tr}\,b = \mathrm{tr}\,a`$ into $`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$.
 
-仮定 $`\mathrm{Acc}(R_{\mathrm{st}},a)`$ と $`y \mathbin{R_{\mathrm{st}}} a`$ に取り出しを
-適用して $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を得る。∎
+Applying extraction to the hypothesis $`\mathrm{Acc}(R_{\mathrm{st}},a)`$ and
+$`y \mathbin{R_{\mathrm{st}}} a`$ gives $`\mathrm{Acc}(R_{\mathrm{st}},y)`$. ∎
 
 <a id="t-acc_of_nat_branch"></a>
-## 定理: $`\mathbb{N}`$ 分岐の橋渡し (T.acc_of_nat_branch)
+## Theorem: the bridge for the $`\mathbb{N}`$ branch (T.acc_of_nat_branch)
 
-### 定理
+### Theorem
 
-次の仮定をおく。
+We make the following hypothesis.
 
 ```math
 \text{(hcof)}\quad
@@ -830,163 +833,163 @@ $`b \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$ の連言で
   \exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])\bigr)
 ```
 
-ここで $`\preceq`$（[D.ole](Term.md#d-ole)）は広義順序である。このとき、$`c \in \mathrm{ST\_PS}`$ であり
-$`1 \le n`$ なるすべての $`n`$ について $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ が成り立つ
-ならば、$`\mathrm{Acc}(R_{\mathrm{st}},c)`$。
+Here $`\preceq`$ ([D.ole](Term.md#d-ole)) is the non-strict order. Then, if
+$`c \in \mathrm{ST\_PS}`$ and $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ holds for every $`n`$ with
+$`1 \le n`$, then $`\mathrm{Acc}(R_{\mathrm{st}},c)`$.
 
-### 証明
+### Proof
 
-$`\mathrm{Acc}`$ の生成規則により、$`b \mathbin{R_{\mathrm{st}}} c`$ なる任意の $`b`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},b)`$ を示せばよい。$`R_{\mathrm{st}}`$ の
-定義（D.Rst）より $`b \in \mathrm{ST\_PS}`$、$`c \in \mathrm{ST\_PS}`$、
-$`\mathrm{tr}\,b \prec \mathrm{tr}\,c`$ である。
+By the generating rule for $`\mathrm{Acc}`$ it suffices to show
+$`\mathrm{Acc}(R_{\mathrm{st}},b)`$ for every $`b`$ with $`b \mathbin{R_{\mathrm{st}}} c`$.
+By the definition of $`R_{\mathrm{st}}`$ (D.Rst) we have $`b \in \mathrm{ST\_PS}`$,
+$`c \in \mathrm{ST\_PS}`$ and $`\mathrm{tr}\,b \prec \mathrm{tr}\,c`$.
 
-(hcof) を $`M := c`$、$`N := b`$ に適用して、$`1 \le n`$ かつ
-$`\mathrm{tr}\,b \preceq \mathrm{tr}\,(c[n])`$ なる $`n`$ を取る。次の 2 つを用意する。
+Applying (hcof) with $`M := c`$ and $`N := b`$, take $`n`$ with $`1 \le n`$ and
+$`\mathrm{tr}\,b \preceq \mathrm{tr}\,(c[n])`$. We prepare the following two facts.
 
-- $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$：仮定を $`n`$ に適用したものである。
-- $`c[n] \in \mathrm{ST\_PS}`$：$`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の規則 (oper) を
-  $`c \in \mathrm{ST\_PS}`$ と $`1 \le n`$ に適用したものである。
+- $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$: this is the hypothesis applied to $`n`$.
+- $`c[n] \in \mathrm{ST\_PS}`$: this is rule (oper) of the definition of $`\mathrm{ST\_PS}`$
+  (D.ST_PS) applied to $`c \in \mathrm{ST\_PS}`$ and $`1 \le n`$.
 
-$`\preceq`$ の定義（D.ole）により $`\mathrm{tr}\,b \preceq \mathrm{tr}\,(c[n])`$ は
-次の 2 つの場合に分かれる。
+By the definition of $`\preceq`$ (D.ole), $`\mathrm{tr}\,b \preceq \mathrm{tr}\,(c[n])`$ splits into
+the following two cases.
 
-- $`\mathrm{tr}\,b \prec \mathrm{tr}\,(c[n])`$ のとき。$`b \mathbin{R_{\mathrm{st}}} c[n]`$ が
-  成り立つ（3 つの連言子は $`b \in \mathrm{ST\_PS}`$、$`c[n] \in \mathrm{ST\_PS}`$、
-  いまの狭義不等式である）。$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ に取り出しを適用して
-  $`\mathrm{Acc}(R_{\mathrm{st}},b)`$。
+- $`\mathrm{tr}\,b \prec \mathrm{tr}\,(c[n])`$. Then $`b \mathbin{R_{\mathrm{st}}} c[n]`$ holds
+  (its three conjuncts are $`b \in \mathrm{ST\_PS}`$, $`c[n] \in \mathrm{ST\_PS}`$ and the present
+  strict inequality). Applying extraction to $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ gives
+  $`\mathrm{Acc}(R_{\mathrm{st}},b)`$.
 
-- $`\mathrm{tr}\,b = \mathrm{tr}\,(c[n])`$ のとき。
-  [T.acc_of_translate_eq](#t-acc_of_translate_eq) を $`a := c[n]`$、$`b := b`$ として
-  適用する。その 3 つの仮定 $`c[n] \in \mathrm{ST\_PS}`$、
-  $`\mathrm{tr}\,b = \mathrm{tr}\,(c[n])`$、$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ は
-  いずれもいま得ている。結論が $`\mathrm{Acc}(R_{\mathrm{st}},b)`$ である。∎
+- $`\mathrm{tr}\,b = \mathrm{tr}\,(c[n])`$. Apply
+  [T.acc_of_translate_eq](#t-acc_of_translate_eq) with $`a := c[n]`$ and $`b := b`$.
+  Its three hypotheses $`c[n] \in \mathrm{ST\_PS}`$, $`\mathrm{tr}\,b = \mathrm{tr}\,(c[n])`$ and
+  $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ are all available, and its conclusion is
+  $`\mathrm{Acc}(R_{\mathrm{st}},b)`$. ∎
 
 <a id="t-acc_of_W"></a>
-## 定理: 橋渡し（$`W_u`$ の元は到達可能） (T.acc_of_W)
+## Theorem: the bridge (elements of $`W_u`$ are accessible) (T.acc_of_W)
 
-### 定理
+### Theorem
 
-(hcof) を仮定する。このとき任意の $`u \in \mathbb{N}`$ と任意の $`M \in W_u`$ について
-$`\mathrm{Acc}(R_{\mathrm{st}},M)`$。
+Assume (hcof). Then $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ for every $`u \in \mathbb{N}`$ and every
+$`M \in W_u`$.
 
-### 証明
+### Proof
 
-$`Y := \{\, M \in \mathrm{PairSeq} \mid \mathrm{Acc}(R_{\mathrm{st}},M) \,\}`$ とおくと、
-示すべきことは $`W_u \subseteq Y`$ である。[T.A2'](#t-A2') を適用するので、
-$`c \in \mathrm{PairSeq}`$ を取り $`\mathrm{Aop}(W,u,Y,c)`$ を仮定して
-$`\mathrm{Acc}(R_{\mathrm{st}},c)`$ を示せばよい。$`c \in \mathrm{ST\_PS}`$ かどうかで
-場合分けする。
+Put $`Y := \{\, M \in \mathrm{PairSeq} \mid \mathrm{Acc}(R_{\mathrm{st}},M) \,\}`$; then the claim
+to be shown is $`W_u \subseteq Y`$. We apply [T.A2'](#t-A2'), so it suffices to take
+$`c \in \mathrm{PairSeq}`$, assume $`\mathrm{Aop}(W,u,Y,c)`$ and show
+$`\mathrm{Acc}(R_{\mathrm{st}},c)`$. Distinguish cases according to whether
+$`c \in \mathrm{ST\_PS}`$.
 
-**(I) $`c \notin \mathrm{ST\_PS}`$ のとき。**
-$`\mathrm{Acc}`$ の生成規則により、$`y \mathbin{R_{\mathrm{st}}} c`$ なる任意の $`y`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を示せばよい。ところが $`R_{\mathrm{st}}`$ の
-定義（D.Rst）の第 2 連言子は $`c \in \mathrm{ST\_PS}`$ であり、いまの場合の仮定に
-反する。よってそのような $`y`$ は存在せず、前件が偽であるから
-$`\mathrm{Acc}(R_{\mathrm{st}},c)`$ が成り立つ。
+**(I) $`c \notin \mathrm{ST\_PS}`$.**
+By the generating rule for $`\mathrm{Acc}`$ it suffices to show
+$`\mathrm{Acc}(R_{\mathrm{st}},y)`$ for every $`y`$ with $`y \mathbin{R_{\mathrm{st}}} c`$.
+But the second conjunct of the definition of $`R_{\mathrm{st}}`$ (D.Rst) is
+$`c \in \mathrm{ST\_PS}`$, contrary to the assumption of the present case. Hence no such $`y`$
+exists, the antecedent is false, and $`\mathrm{Acc}(R_{\mathrm{st}},c)`$ holds.
 
-**(II) $`c \in \mathrm{ST\_PS}`$ のとき。**
-$`\mathrm{Aop}(W,u,Y,c)`$ を $`\mathrm{Aop}`$ の定義（D.Aop）の 3 つの選言で場合分けする。
+**(II) $`c \in \mathrm{ST\_PS}`$.**
+Distinguish cases on the three disjuncts of the definition of $`\mathrm{Aop}`$ (D.Aop) applied to
+$`\mathrm{Aop}(W,u,Y,c)`$.
 
-**分岐 (1)：$`\lvert c\rvert \le 1`$ かつ $`c_{1,0} = 0`$ のとき。**
-[T.stps_len_pos](Column.md#t-stps_len_pos) より $`0 \lt \lvert c\rvert`$ であり、
-$`\lvert c\rvert \le 1`$ と合わせて $`\lvert c\rvert = 1`$ である。よって $`c = (p)`$ なる
-対 $`p = (p_1,p_2)`$ が取れる。$`M_{i,j}`$ の定義（D.entry）より
-$`c_{1,0} = p_2`$ であるから $`p_2 = 0`$ である。
+**Branch (1): $`\lvert c\rvert \le 1`$ and $`c_{1,0} = 0`$.**
+By [T.stps_len_pos](Column.md#t-stps_len_pos) we have $`0 \lt \lvert c\rvert`$, and together with
+$`\lvert c\rvert \le 1`$ this gives $`\lvert c\rvert = 1`$. Hence there is a pair
+$`p = (p_1,p_2)`$ with $`c = (p)`$. By the definition of $`M_{i,j}`$ (D.entry) we have
+$`c_{1,0} = p_2`$, so $`p_2 = 0`$.
 
-$`\mathrm{tr}\,c`$ を計算する。[T.translate_single_tree](Term.md#t-translate_single_tree) を
-$`p := p`$、$`R := ()`$ として適用する（その仮定「$`R`$ のすべての要素 $`x`$ が
-$`p_1 \lt x_1`$ をみたす」は $`R = ()`$ が要素をもたないから成り立つ）と
+We compute $`\mathrm{tr}\,c`$. Apply [T.translate_single_tree](Term.md#t-translate_single_tree) with
+$`p := p`$ and $`R := ()`$ (its hypothesis, that every element $`x`$ of $`R`$ satisfies
+$`p_1 \lt x_1`$, holds because $`R = ()`$ has no elements), which gives
 
 ```math
 \mathrm{tr}\,(p) = \mathsf{P}\bigl(p_2,\ \mathrm{tr}\,(),\ \mathsf{Z}\bigr)
 = \mathsf{P}(0,\mathsf{Z},\mathsf{Z})
 ```
 
-である（$`\mathrm{tr}\,() = \mathsf{Z}`$ は $`\mathrm{tr}`$ の定義（D.translate）の
-第 1 式、$`p_2 = 0`$ は上で示した）。
+(here $`\mathrm{tr}\,() = \mathsf{Z}`$ is the first clause of the definition of $`\mathrm{tr}`$
+(D.translate), and $`p_2 = 0`$ was shown above).
 
-$`\mathrm{Acc}`$ の生成規則により、$`y \mathbin{R_{\mathrm{st}}} c`$ なる任意の $`y`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を示せばよい。$`R_{\mathrm{st}}`$ の
-定義（D.Rst）より $`y \in \mathrm{ST\_PS}`$ と
-$`\mathrm{tr}\,y \prec \mathrm{tr}\,c = \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$ が得られる。
-[T.eq_Z_of_olt_one](#t-eq_Z_of_olt_one) より $`\mathrm{tr}\,y = \mathsf{Z}`$ であり、
-[T.translate_eq_Z_iff](#t-translate_eq_Z_iff) より $`y = ()`$ である。一方
-[T.stps_ne_nil](#t-stps_ne_nil) を $`y \in \mathrm{ST\_PS}`$ に適用すると $`y \ne ()`$ で
-あり、矛盾する。よってそのような $`y`$ は存在せず、前件が偽であるから
-$`\mathrm{Acc}(R_{\mathrm{st}},c)`$ が成り立つ。
+By the generating rule for $`\mathrm{Acc}`$ it suffices to show
+$`\mathrm{Acc}(R_{\mathrm{st}},y)`$ for every $`y`$ with $`y \mathbin{R_{\mathrm{st}}} c`$.
+The definition of $`R_{\mathrm{st}}`$ (D.Rst) gives $`y \in \mathrm{ST\_PS}`$ and
+$`\mathrm{tr}\,y \prec \mathrm{tr}\,c = \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$.
+By [T.eq_Z_of_olt_one](#t-eq_Z_of_olt_one) we have $`\mathrm{tr}\,y = \mathsf{Z}`$, and by
+[T.translate_eq_Z_iff](#t-translate_eq_Z_iff) we have $`y = ()`$. On the other hand, applying
+[T.stps_ne_nil](#t-stps_ne_nil) to $`y \in \mathrm{ST\_PS}`$ gives $`y \ne ()`$, a contradiction.
+Hence no such $`y`$ exists, the antecedent is false, and $`\mathrm{Acc}(R_{\mathrm{st}},c)`$ holds.
 
-**分岐 (2)：$`\mathrm{natDom}(c)`$ かつ $`\forall n \ge 1,\ c[n] \in Y`$ のとき。**
-$`Y`$ の定義より第 2 連言子は「$`1 \le n`$ なるすべての $`n`$ について
-$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$」である。これと $`c \in \mathrm{ST\_PS}`$ に
-[T.acc_of_nat_branch](#t-acc_of_nat_branch) を適用して
-$`\mathrm{Acc}(R_{\mathrm{st}},c)`$ を得る。
+**Branch (2): $`\mathrm{natDom}(c)`$ and $`\forall n \ge 1,\ c[n] \in Y`$.**
+By the definition of $`Y`$, the second conjunct says that $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$
+holds for every $`n`$ with $`1 \le n`$. Applying
+[T.acc_of_nat_branch](#t-acc_of_nat_branch) to this and to $`c \in \mathrm{ST\_PS}`$ gives
+$`\mathrm{Acc}(R_{\mathrm{st}},c)`$.
 
-**分岐 (3)：ある $`m \lt u`$ について $`\mathrm{domT}(c,m)`$ かつ
-$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(c,z) \in Y`$ のとき。**
-$`1 \lt \lvert c\rvert`$ かどうかでさらに場合分けする。
+**Branch (3): for some $`m \lt u`$, $`\mathrm{domT}(c,m)`$ and
+$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(c,z) \in Y`$.**
+Distinguish further cases according to whether $`1 \lt \lvert c\rvert`$.
 
-**(3a) $`1 \lt \lvert c\rvert`$ のとき。**
-[T.acc_of_nat_branch](#t-acc_of_nat_branch) を適用するので、$`1 \le n`$ なる各 $`n`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ を示せばよい。
-[T.W_nil](#t-W_nil) より $`() \in W_m`$ であり、[T.based_nil](#t-based_nil) より
-$`\mathrm{based}(())`$ であるから、分岐 (3) の第 3 連言子を $`z := ()`$ に適用して
-$`\mathrm{graft}(c,()) \in Y`$ を得る。また
-[T.oper_eq_graft_nil_of_domT](#t-oper_eq_graft_nil_of_domT) を
-$`1 \lt \lvert c\rvert`$ と $`\mathrm{domT}(c,m)`$ に適用して
-$`c[n] = \mathrm{graft}(c,())`$ を得る。合わせて $`c[n] \in Y`$、すなわち
-$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ である。
+**(3a) $`1 \lt \lvert c\rvert`$.**
+We apply [T.acc_of_nat_branch](#t-acc_of_nat_branch), so it suffices to show
+$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ for each $`n`$ with $`1 \le n`$.
+By [T.W_nil](#t-W_nil) we have $`() \in W_m`$, and by [T.based_nil](#t-based_nil) we have
+$`\mathrm{based}(())`$, so applying the third conjunct of branch (3) with $`z := ()`$ gives
+$`\mathrm{graft}(c,()) \in Y`$. Moreover, applying
+[T.oper_eq_graft_nil_of_domT](#t-oper_eq_graft_nil_of_domT) to
+$`1 \lt \lvert c\rvert`$ and $`\mathrm{domT}(c,m)`$ gives
+$`c[n] = \mathrm{graft}(c,())`$. Together these give $`c[n] \in Y`$, that is,
+$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$.
 
-**(3b) $`\neg\bigl(1 \lt \lvert c\rvert\bigr)`$ のとき。**
-[T.stps_len_pos](Column.md#t-stps_len_pos) より $`0 \lt \lvert c\rvert`$ であるから
-$`\lvert c\rvert = 1`$ である。[T.stps_len_one](#t-stps_len_one) より
-$`c = \bigl((0,0)\bigr)`$ である。$`\mathrm{domT}(c,m)`$ の第 1 連言子（D.domT）は
-$`c_{1,\lvert c\rvert-1} = m+1`$ であり、$`\lvert c\rvert - 1 = 0`$ と
-$`M_{i,j}`$ の定義（D.entry）より $`c_{1,0} = 0`$ であるから $`0 = m+1`$ となる。
-自然数において $`m+1 \ne 0`$ であるから矛盾であり、この場合は起こらない。∎
+**(3b) $`\neg\bigl(1 \lt \lvert c\rvert\bigr)`$.**
+By [T.stps_len_pos](Column.md#t-stps_len_pos) we have $`0 \lt \lvert c\rvert`$, hence
+$`\lvert c\rvert = 1`$. By [T.stps_len_one](#t-stps_len_one) we have
+$`c = \bigl((0,0)\bigr)`$. The first conjunct of $`\mathrm{domT}(c,m)`$ (D.domT) is
+$`c_{1,\lvert c\rvert-1} = m+1`$, and since $`\lvert c\rvert - 1 = 0`$ and
+$`c_{1,0} = 0`$ by the definition of $`M_{i,j}`$ (D.entry), this reads $`0 = m+1`$.
+In the natural numbers $`m+1 \ne 0`$, a contradiction, so this case does not occur. ∎
 
 <a id="d-argOK"></a>
-## 定義: 引数ブロック (D.argOK)
+## Definition: argument block (D.argOK)
 
-$`R \in \mathrm{PairSeq}`$ に対し
+For $`R \in \mathrm{PairSeq}`$,
 
 ```math
 \mathrm{argOK}(R) :\iff \forall p \in R,\ 0 \lt p_1 .
 ```
 
-すなわち $`R`$ のすべての対の第 1 成分が $`0`$ より真に大きい。
+That is, the first entry of every pair of $`R`$ is strictly greater than $`0`$.
 
 <a id="d-rsum"></a>
-## 定義: 先頭が最小の後置ブロック (D.rsum)
+## Definition: trailing block with minimal head (D.rsum)
 
-$`A, P \in \mathrm{PairSeq}`$ に対し
+For $`A, P \in \mathrm{PairSeq}`$,
 
 ```math
 \mathrm{rsum}(A,P) :\iff \forall p \in A \mathbin{+\!\!+} P,\ P_{0,0} \le p_1 .
 ```
 
-すなわち $`P`$ の先頭の対の第 1 成分が、連結列 $`A \mathbin{+\!\!+} P`$ の全要素の第 1 成分の
-下界になっている。
+That is, the first entry of the head pair of $`P`$ is a lower bound for the first entries of all
+elements of the concatenation $`A \mathbin{+\!\!+} P`$.
 
 <a id="t-nextR_shift_iff"></a>
-## 定理: 親子関係は行 0 の平行移動で不変 (T.nextR_shift_iff)
+## Theorem: the parent relation is invariant under a shift of row 0 (T.nextR_shift_iff)
 
-### 定理
+### Theorem
 
-$`S \in \mathrm{PairSeq}`$、$`d, i, a, b \in \mathbb{N}`$ とし、$`b \lt \lvert S\rvert`$ とする。このとき
+Let $`S \in \mathrm{PairSeq}`$ and $`d, i, a, b \in \mathbb{N}`$, and suppose $`b \lt \lvert S\rvert`$. Then
 
 ```math
 a \to^{S^{+d}}_i b \iff a \to^S_i b .
 ```
 
-### 証明
+### Proof
 
-$`\to^{\cdot}_i`$ の定義（D.nextR）は $`i = 0`$ か否かの場合分けである。
+The definition of $`\to^{\cdot}_i`$ (D.nextR) is a case distinction according to whether $`i = 0`$.
 
-- $`i = 0`$ のとき。両辺はそれぞれ $`a \to^{S^{+d}}_0 b`$ と $`a \to^S_0 b`$ であり、
-  仮定 $`b \lt \lvert S\rvert`$ のもとで
-  [T.nextrel0_shift_iff](Column-4.md#t-nextrel0_shift_iff) がこの同値を与える。
+- $`i = 0`$. The two sides are $`a \to^{S^{+d}}_0 b`$ and $`a \to^S_0 b`$ respectively, and under
+  the hypothesis $`b \lt \lvert S\rvert`$ this equivalence is given by
+  [T.nextrel0_shift_iff](Column-4.md#t-nextrel0_shift_iff).
 
-- $`i \ne 0`$ のとき。両辺はそれぞれ $`a \to^{S^{+d}}_1 b`$ と $`a \to^S_1 b`$ であり、
-  仮定 $`b \lt \lvert S\rvert`$ のもとで
-  [T.nextrel1_shift_iff](Column-4.md#t-nextrel1_shift_iff) がこの同値を与える。∎
+- $`i \ne 0`$. The two sides are $`a \to^{S^{+d}}_1 b`$ and $`a \to^S_1 b`$ respectively, and under
+  the hypothesis $`b \lt \lvert S\rvert`$ this equivalence is given by
+  [T.nextrel1_shift_iff](Column-4.md#t-nextrel1_shift_iff). ∎

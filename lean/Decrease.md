@@ -1,60 +1,62 @@
-[← README](README.md)
+[← README](README.md) | [English](Decrease.md) | [Japanese](Decrease-ja.md)
 
-以下、$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
-$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）と書く。
+Throughout, for $`M \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) we write
+$`j_1 := \lvert M\rvert - 1`$ and $`i_1 := \mathrm{idx}_1(M, j_1)`$ ([D.idx1](Pss.md#d-idx1)).
 
 <a id="t-oper_eq_self_of_short"></a>
-## 定理: 短い列では展開は恒等 (T.oper_eq_self_of_short)
+## Theorem: expansion is the identity on short sequences (T.oper_eq_self_of_short)
 
-### 定理
+### Theorem
 
-$`j_1 = 0`$ ならば、任意の $`n`$ に対し $`M[n] = M`$（[D.oper](Pss.md#d-oper)）。
+If $`j_1 = 0`$, then $`M[n] = M`$ ([D.oper](Pss.md#d-oper)) for every $`n`$.
 
-### 証明
+### Proof
 
-$`M[n]`$ の定義（D.oper）の分岐 (a) の条件が仮定そのものである。∎
+The condition of branch (a) in the definition of $`M[n]`$ (D.oper) is exactly the hypothesis. ∎
 
 <a id="t-oper_eq_pred_of_zero"></a>
-## 定理: 末尾が $`(0,0)`$ のときの展開 (T.oper_eq_pred_of_zero)
+## Theorem: expansion when the last column is $`(0,0)`$ (T.oper_eq_pred_of_zero)
 
-### 定理
+### Theorem
 
-$`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）ならば、
-任意の $`n`$ に対し $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）。
+If $`j_1 \ne 0`$ and $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ ([D.entry](Pss.md#d-entry)), then
+$`M[n] = \mathrm{Pred}\,M`$ ([D.Pred](Pss.md#d-Pred)) for every $`n`$.
 
-### 証明
+### Proof
 
-$`M[n]`$ の定義（D.oper）の分岐 (a) の条件は $`j_1 = 0`$ であり、仮定によりこれは偽である。
-分岐 (b) の条件が仮定の第 2 の連言子そのものであるから、分岐 (b) が選ばれる。∎
+The condition of branch (a) in the definition of $`M[n]`$ (D.oper) is $`j_1 = 0`$, which is false
+by hypothesis. The condition of branch (b) is exactly the second conjunct of the hypothesis, so
+branch (b) is taken. ∎
 
 <a id="t-oper_eq_pred_of_noParent"></a>
-## 定理: 親がないときの展開 (T.oper_eq_pred_of_noParent)
+## Theorem: expansion when there is no parent (T.oper_eq_pred_of_noParent)
 
-### 定理
+### Theorem
 
-$`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
-$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）ならば、
-任意の $`n`$ に対し $`M[n] = \mathrm{Pred}\,M`$。
+If $`j_1 \ne 0`$, $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ and
+$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ ([D.hasParent](Pss.md#d-hasParent)), then
+$`M[n] = \mathrm{Pred}\,M`$ for every $`n`$.
 
-### 証明
+### Proof
 
-$`M[n]`$ の定義（D.oper）の分岐 (a), (b) の条件はいずれも仮定により偽である。
-分岐 (c) の条件が仮定の第 3 の連言子そのものであるから、分岐 (c) が選ばれる。∎
+The conditions of branches (a) and (b) in the definition of $`M[n]`$ (D.oper) are both false by
+hypothesis. The condition of branch (c) is exactly the third conjunct of the hypothesis, so
+branch (c) is taken. ∎
 
 <a id="t-oper_bad_unfold"></a>
-## 定理: 展開の第 4 分岐の展開形 (T.oper_bad_unfold)
+## Theorem: unfolded form of the fourth branch of expansion (T.oper_bad_unfold)
 
-### 定理
+### Theorem
 
-$`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
-$`\mathrm{hasParent}(M, i_1, j_1)`$ とする。
-$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）、
+Suppose $`j_1 \ne 0`$, $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ and
+$`\mathrm{hasParent}(M, i_1, j_1)`$. Put $`j_0 := \mathrm{par}^M_{i_1}(j_1)`$
+([D.parent](Pss.md#d-parent)) and
 
 ```math
 d_0 := \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 \lt i_1) \cr 0 & (i_1 = 0) \end{cases}
 ```
 
-とおくと、任意の $`n`$ に対し
+Then for every $`n`$
 
 ```math
 M[n] = (M_0, \dots, M_{j_0-1}) \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1},
@@ -62,98 +64,100 @@ M[n] = (M_0, \dots, M_{j_0-1}) \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mat
 B_k = \bigl(\,(M_{0,j} + k\,d_0,\ M_{1,j})\,\bigr)_{j=j_0}^{j_1-1} .
 ```
 
-すなわち **$`B_k`$ の第 2 成分には $`k`$ に依る項が現れない**。
+That is, **no term depending on $`k`$ occurs in the second entry of $`B_k`$**.
 
-### 証明
+### Proof
 
-$`M[n]`$ の定義（D.oper）の分岐 (a), (b), (c) の条件はいずれも仮定により偽であるから、
-分岐 (d) が選ばれる。その定義の $`B_k`$ は第 2 成分が $`M_{1,j} + k\,d_1`$ であり、
+The conditions of branches (a), (b), (c) in the definition of $`M[n]`$ (D.oper) are all false by
+hypothesis, so branch (d) is taken. In that definition the second entry of $`B_k`$ is
+$`M_{1,j} + k\,d_1`$, where
 
 ```math
 d_1 = \begin{cases} M_{1,j_1} - M_{1,j_0} & (1 \lt i_1) \cr 0 & (i_1 \le 1) \end{cases}
 ```
 
-であった。[T.idx1_le1](Term.md#t-idx1_le1) より $`i_1 \le 1`$ であるから条件 $`1 \lt i_1`$ は
-偽であり、$`d_1 = 0`$ である。したがって第 2 成分は $`M_{1,j} + k\cdot 0 = M_{1,j}`$ である。∎
+By [T.idx1_le1](Term.md#t-idx1_le1) we have $`i_1 \le 1`$, so the condition $`1 \lt i_1`$ is false
+and $`d_1 = 0`$. Hence the second entry is $`M_{1,j} + k\cdot 0 = M_{1,j}`$. ∎
 
 <a id="t-oper_eq_self_short"></a>
-## 定理: 長さ 1 以下では展開は恒等 (T.oper_eq_self_short)
+## Theorem: expansion is the identity for length at most 1 (T.oper_eq_self_short)
 
-### 定理
+### Theorem
 
-$`\lvert M\rvert \le 1`$ ならば、任意の $`n`$ に対し $`M[n] = M`$。
+If $`\lvert M\rvert \le 1`$, then $`M[n] = M`$ for every $`n`$.
 
-### 証明
+### Proof
 
-自然数の減法は切り捨て減法であるから、$`\lvert M\rvert \le 1`$ のとき
-$`j_1 = \lvert M\rvert - 1 = 0`$ である。
-[T.oper_eq_self_of_short](#t-oper_eq_self_of_short) を適用する。∎
+Subtraction on the natural numbers is truncated subtraction, so $`\lvert M\rvert \le 1`$ gives
+$`j_1 = \lvert M\rvert - 1 = 0`$.
+Apply [T.oper_eq_self_of_short](#t-oper_eq_self_of_short). ∎
 
 <a id="t-translate_snoc_increase"></a>
-## 定理: 末尾への 1 列の付加は翻訳を真に増やす (T.translate_snoc_increase)
+## Theorem: appending one column at the end strictly increases the translation (T.translate_snoc_increase)
 
-### 定理
+### Theorem
 
-任意の $`C \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}\times\mathbb{N}`$ に対し
+For all $`C \in \mathrm{PairSeq}`$ and $`m \in \mathbb{N}\times\mathbb{N}`$,
 
 ```math
 \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m)) .
 ```
 
-（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）
+($`\mathrm{tr}`$ [D.translate](Term.md#d-translate), $`\prec`$ [D.olt](Term.md#d-olt))
 
-### 証明
+### Proof
 
-$`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定しない：帰納法の述語を $`m`$ について
-全称量化しておく）。帰納法の述語は
+Induction along the recursion of $`\mathrm{tr}`$ ($`m`$ is not fixed: the induction predicate is
+universally quantified over $`m`$). The induction predicate is
 
 ```math
 \Psi(C) :\equiv \forall m,\ \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m)) .
 ```
 
-- **基底段** $`C = ()`$：左辺は $`\mathsf{Z}`$（[D.Three](Term.md#d-Three)）、右辺は $`\mathrm{tr}\,(m)`$ である。
-  $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$
-  であるから、[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$。
+- **Base case** $`C = ()`$: the left-hand side is $`\mathsf{Z}`$ ([D.Three](Term.md#d-Three)) and the right-hand side is $`\mathrm{tr}\,(m)`$.
+  By the definition of $`\mathrm{tr}`$ (D.translate) we have $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$,
+  so [T.olt_Z_P](Term.md#t-olt_Z_P) gives $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$.
 
-**帰納段** $`C = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と
-$`\Psi(\mathrm{dw}_{p_1} L)`$ である。$`L`$ の全要素が $`p_1 \lt x_1`$ をみたすかどうかで
-場合分けする。
+**Inductive step** $`C = p :: L`$: the induction hypotheses are $`\Psi(\mathrm{tw}_{p_1} L)`$ and
+$`\Psi(\mathrm{dw}_{p_1} L)`$. We distinguish cases according to whether every element of $`L`$
+satisfies $`p_1 \lt x_1`$.
 
-**(a) $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすとき。**
-このとき $`\mathrm{tw}_{p_1} L = L`$、$`\mathrm{dw}_{p_1} L = ()`$ であり、
-[T.translate_single_tree](Term.md#t-translate_single_tree) より
-$`\mathrm{tr}(p :: L) = \mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})`$ である。
-さらに $`m`$ が述語をみたすかどうかで分ける。
+**(a) Every element of $`L`$ satisfies $`p_1 \lt x_1`$.**
+Then $`\mathrm{tw}_{p_1} L = L`$ and $`\mathrm{dw}_{p_1} L = ()`$, and
+[T.translate_single_tree](Term.md#t-translate_single_tree) gives
+$`\mathrm{tr}(p :: L) = \mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})`$.
+We distinguish further according to whether $`m`$ satisfies the predicate.
 
-**$`p_1 \lt m_1`$ のとき。** $`L \mathbin{+\!\!+} (m)`$ の全要素も $`p_1 \lt x_1`$ をみたすから、
-ふたたび [T.translate_single_tree](Term.md#t-translate_single_tree) より
+**Case $`p_1 \lt m_1`$.** Every element of $`L \mathbin{+\!\!+} (m)`$ also satisfies $`p_1 \lt x_1`$,
+so [T.translate_single_tree](Term.md#t-translate_single_tree) again gives
 
 ```math
 \mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
   = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(L \mathbin{+\!\!+} (m)),\ \mathsf{Z}\bigr).
 ```
 
-帰納法の仮定 $`\Psi(\mathrm{tw}_{p_1} L) = \Psi(L)`$ を $`m`$ に適用して
-$`\mathrm{tr}\,L \prec \mathrm{tr}(L \mathbin{+\!\!+} (m))`$ を得る。
-これに [T.olt_P_b](Term.md#t-olt_P_b) を適用すればよい。
+Applying the induction hypothesis $`\Psi(\mathrm{tw}_{p_1} L) = \Psi(L)`$ to $`m`$ yields
+$`\mathrm{tr}\,L \prec \mathrm{tr}(L \mathbin{+\!\!+} (m))`$.
+It suffices to apply [T.olt_P_b](Term.md#t-olt_P_b) to this.
 
-**$`\neg(p_1 \lt m_1)`$ のとき。**[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
-[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
-$`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$、$`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = (m)`$
-であるから、$`\mathrm{tr}`$ の定義（D.translate）より
+**Case $`\neg(p_1 \lt m_1)`$.** By [T.takeWhile_append_all](Term.md#t-takeWhile_append_all) and
+[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) we have
+$`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$ and $`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = (m)`$,
+so the definition of $`\mathrm{tr}`$ (D.translate) gives
 
 ```math
 \mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
   = \mathsf{P}\bigl(p_2,\ \mathrm{tr}\,L,\ \mathrm{tr}\,(m)\bigr).
 ```
 
-左辺の後続和は $`\mathsf{Z}`$、右辺の後続和は $`\mathrm{tr}\,(m) = \mathsf{P}(m_2,\mathsf{Z},\mathsf{Z})`$
-であり、[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$ である。
-これに [T.olt_P_c](Term.md#t-olt_P_c) を適用すればよい。
+The successor sum on the left-hand side is $`\mathsf{Z}`$, the successor sum on the right-hand side
+is $`\mathrm{tr}\,(m) = \mathsf{P}(m_2,\mathsf{Z},\mathsf{Z})`$,
+and [T.olt_Z_P](Term.md#t-olt_Z_P) gives $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$.
+It suffices to apply [T.olt_P_c](Term.md#t-olt_P_c) to this.
 
-**(b) $`L`$ のある要素 $`x`$ が $`\neg(p_1 \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
-[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) より
+**(b) Some element $`x`$ of $`L`$ satisfies $`\neg(p_1 \lt x_1)`$.**
+By [T.takeWhile_append_not](Term.md#t-takeWhile_append_not) and
+[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) we have
 
 ```math
 \mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{tw}_{p_1} L,
@@ -161,7 +165,7 @@ $`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$、$`\mathrm{dw}_{p_1}(L \mathb
 \mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m)
 ```
 
-であるから、$`\mathrm{tr}`$ の定義（D.translate）より両辺は
+so, by the definition of $`\mathrm{tr}`$ (D.translate), the two sides are
 
 ```math
 \mathrm{tr}(p :: L) = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\ \mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr),
@@ -171,28 +175,29 @@ $`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$、$`\mathrm{dw}_{p_1}(L \mathb
   = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\ \mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))\bigr)
 ```
 
-であり、添字と引数が共通である。帰納法の仮定 $`\Psi(\mathrm{dw}_{p_1} L)`$ を $`m`$ に適用して
-$`\mathrm{tr}(\mathrm{dw}_{p_1} L) \prec \mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))`$ を得る。
-これに [T.olt_P_c](Term.md#t-olt_P_c) を適用すればよい。∎
+and the subscript and the argument are common to both. Applying the induction hypothesis
+$`\Psi(\mathrm{dw}_{p_1} L)`$ to $`m`$ yields
+$`\mathrm{tr}(\mathrm{dw}_{p_1} L) \prec \mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))`$.
+It suffices to apply [T.olt_P_c](Term.md#t-olt_P_c) to this. ∎
 
 <a id="t-translate_dropLast_decrease"></a>
-## 定理: 末尾の 1 列を落とすと翻訳は真に減る (T.translate_dropLast_decrease)
+## Theorem: dropping the last column strictly decreases the translation (T.translate_dropLast_decrease)
 
-### 定理
+### Theorem
 
-$`C \ne ()`$ ならば $`\mathrm{tr}\,(\mathrm{dropLast}\,C) \prec \mathrm{tr}\,C`$。
-ここで $`\mathrm{dropLast}\,C`$ は $`C`$ の末尾 1 要素を落とした列である。
+If $`C \ne ()`$, then $`\mathrm{tr}\,(\mathrm{dropLast}\,C) \prec \mathrm{tr}\,C`$.
+Here $`\mathrm{dropLast}\,C`$ is the sequence obtained from $`C`$ by dropping its last element.
 
-### 証明
+### Proof
 
-$`C \ne ()`$ であるから、$`C`$ の最後の要素を $`\ell`$ とすると
+Since $`C \ne ()`$, writing $`\ell`$ for the last element of $`C`$ we have
 
 ```math
 C = \mathrm{dropLast}\,C \mathbin{+\!\!+} (\ell)
 ```
 
-である。[T.translate_snoc_increase](#t-translate_snoc_increase) を
-$`C := \mathrm{dropLast}\,C`$、$`m := \ell`$ に適用すると
+Applying [T.translate_snoc_increase](#t-translate_snoc_increase) with
+$`C := \mathrm{dropLast}\,C`$ and $`m := \ell`$ gives
 
 ```math
 \mathrm{tr}(\mathrm{dropLast}\,C) \prec \mathrm{tr}\bigl(\mathrm{dropLast}\,C \mathbin{+\!\!+} (\ell)\bigr)
@@ -200,46 +205,46 @@ $`C := \mathrm{dropLast}\,C`$、$`m := \ell`$ に適用すると
 ```
 
 <a id="t-translate_takeWhile_snoc_le"></a>
-## 定理: 先頭ブロックは末尾付加で減らない (T.translate_takeWhile_snoc_le)
+## Theorem: the leading block does not decrease under appending at the end (T.translate_takeWhile_snoc_le)
 
-### 定理
+### Theorem
 
-$`a \in \mathbb{N}`$、$`C \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}\times\mathbb{N}`$ に対し
+For $`a \in \mathbb{N}`$, $`C \in \mathrm{PairSeq}`$ and $`m \in \mathbb{N}\times\mathbb{N}`$,
 
 ```math
 \mathrm{tr}\bigl(\mathrm{tw}_a C\bigr) \preceq \mathrm{tr}\bigl(\mathrm{tw}_a (C \mathbin{+\!\!+} (m))\bigr)
 ```
 
-（$`\preceq`$ [D.ole](Term.md#d-ole)）。
+($`\preceq`$ [D.ole](Term.md#d-ole)).
 
-### 証明
+### Proof
 
-$`C`$ の全要素が $`a \lt x_1`$ をみたすかどうかで場合分けする。
+We distinguish cases according to whether every element of $`C`$ satisfies $`a \lt x_1`$.
 
-**(a) 全要素がみたすとき。** $`\mathrm{tw}_a C = C`$ である。$`m`$ について分ける。
+**(a) Every element satisfies it.** Then $`\mathrm{tw}_a C = C`$. We distinguish cases on $`m`$.
 
-- $`a \lt m_1`$ のとき。$`C \mathbin{+\!\!+} (m)`$ の全要素も述語をみたすから
-  $`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = C \mathbin{+\!\!+} (m)`$ である。
-  [T.translate_snoc_increase](#t-translate_snoc_increase) より
-  $`\mathrm{tr}\,C \prec \mathrm{tr}(C \mathbin{+\!\!+} (m))`$ であり、$`\preceq`$ の定義（D.ole）の
-  第 1 選言が成り立つ。
+- Case $`a \lt m_1`$. Every element of $`C \mathbin{+\!\!+} (m)`$ also satisfies the predicate, so
+  $`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = C \mathbin{+\!\!+} (m)`$.
+  By [T.translate_snoc_increase](#t-translate_snoc_increase),
+  $`\mathrm{tr}\,C \prec \mathrm{tr}(C \mathbin{+\!\!+} (m))`$, so the first disjunct of the definition
+  of $`\preceq`$ (D.ole) holds.
 
-- $`\neg(a \lt m_1)`$ のとき。[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) より
-  $`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = C \mathbin{+\!\!+} \mathrm{tw}_a\,(m) = C`$ である
-  （$`m`$ が述語を破るので $`\mathrm{tw}_a\,(m) = ()`$）。よって両辺は同一の項であり、
-  $`\preceq`$ の定義（D.ole）の第 2 選言が成り立つ。
+- Case $`\neg(a \lt m_1)`$. By [T.takeWhile_append_all](Term.md#t-takeWhile_append_all),
+  $`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = C \mathbin{+\!\!+} \mathrm{tw}_a\,(m) = C`$
+  (since $`m`$ violates the predicate, $`\mathrm{tw}_a\,(m) = ()`$). Hence the two sides are the
+  same term, and the second disjunct of the definition of $`\preceq`$ (D.ole) holds.
 
-**(b) ある要素 $`x`$ が $`\neg(a \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) より
-$`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = \mathrm{tw}_a C`$ である。よって両辺は同一の項であり、
-$`\preceq`$ の定義（D.ole）の第 2 選言が成り立つ。∎
+**(b) Some element $`x`$ satisfies $`\neg(a \lt x_1)`$.**
+By [T.takeWhile_append_not](Term.md#t-takeWhile_append_not),
+$`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = \mathrm{tw}_a C`$. Hence the two sides are the same term, and
+the second disjunct of the definition of $`\preceq`$ (D.ole) holds. ∎
 
 <a id="t-core_i0"></a>
-## 定理: 完全コピーの核 (T.core_i0)
+## Theorem: core of the complete copy (T.core_i0)
 
-### 定理
+### Theorem
 
-$`v_0, w_0 \in \mathbb{N}`$、$`R, T \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、
+Let $`v_0, w_0 \in \mathbb{N}`$, $`R, T \in \mathrm{PairSeq}`$ and $`\ell \in \mathbb{N}\times\mathbb{N}`$, and assume
 
 ```math
 \forall x \in R,\ v_0 \lt x_1,
@@ -247,24 +252,24 @@ $`v_0, w_0 \in \mathbb{N}`$、$`R, T \in \mathrm{PairSeq}`$、$`\ell \in \mathbb
 \qquad T = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,T)_1\bigr)
 ```
 
-を仮定する。このとき
+Then
 
 ```math
 \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} T\bigr)
   \prec \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} (\ell)\bigr).
 ```
 
-### 証明
+### Proof
 
-左辺は [T.translate_block_append](Term.md#t-translate_block_append) により
+By [T.translate_block_append](Term.md#t-translate_block_append), the left-hand side is
 
 ```math
 \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} T\bigr) = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,T\bigr)
 ```
 
-である。右辺については、$`R \mathbin{+\!\!+} (\ell)`$ の全要素が $`v_0 \lt x_1`$ をみたす
-（$`R`$ の要素は第 1 の仮定、$`\ell`$ は第 2 の仮定による）から、
-[T.translate_single_tree](Term.md#t-translate_single_tree) により
+For the right-hand side, every element of $`R \mathbin{+\!\!+} (\ell)`$ satisfies $`v_0 \lt x_1`$
+(for the elements of $`R`$ by the first hypothesis, for $`\ell`$ by the second), so
+[T.translate_single_tree](Term.md#t-translate_single_tree) gives
 
 ```math
 \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} (\ell)\bigr)
@@ -272,18 +277,18 @@ $`v_0, w_0 \in \mathbb{N}`$、$`R, T \in \mathrm{PairSeq}`$、$`\ell \in \mathbb
 = \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-である。両者は添字が共通の $`w_0`$ であり、引数は
-[T.translate_snoc_increase](#t-translate_snoc_increase) により
-$`\mathrm{tr}\,R \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$ をみたす。
-[T.olt_P_b](Term.md#t-olt_P_b) を適用すればよい。∎
+The two have the common subscript $`w_0`$, and their arguments satisfy
+$`\mathrm{tr}\,R \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$ by
+[T.translate_snoc_increase](#t-translate_snoc_increase).
+It suffices to apply [T.olt_P_b](Term.md#t-olt_P_b). ∎
 
 <a id="t-core_i1"></a>
-## 定理: 上昇コピーの核 (T.core_i1)
+## Theorem: core of the ascending copy (T.core_i1)
 
-### 定理
+### Theorem
 
-$`v_0, w_0 \in \mathbb{N}`$、$`R, C' \in \mathrm{PairSeq}`$、
-$`c, \ell \in \mathbb{N}\times\mathbb{N}`$ とし、
+Let $`v_0, w_0 \in \mathbb{N}`$, $`R, C' \in \mathrm{PairSeq}`$ and
+$`c, \ell \in \mathbb{N}\times\mathbb{N}`$, and assume
 
 ```math
 \forall x \in R,\ v_0 \lt x_1,
@@ -293,43 +298,44 @@ $`c, \ell \in \mathbb{N}\times\mathbb{N}`$ とし、
 \qquad c_2 \lt \ell_2
 ```
 
-を仮定する。このとき
+Then
 
 ```math
 \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} (c :: C')\bigr)
   \prec \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} (\ell)\bigr).
 ```
 
-### 証明
+### Proof
 
-3 段に分ける。
+We proceed in three steps.
 
-**第 1 段：$`\mathrm{tr}(c :: C') \prec \mathrm{tr}\,(\ell)`$。**
-[T.lead_translate](Term.md#t-lead_translate) より
-$`\mathrm{lead}\,\mathrm{tr}(c :: C') = c_2`$（[D.lead](Term.md#d-lead)）であり、
-仮定より $`c_2 \lt \ell_2`$ である。
-一方 $`\mathrm{tr}`$ の定義（D.translate）より
-$`\mathrm{tr}\,(\ell) = \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$ である。
-[T.olt_P_of_lead_lt](Term.md#t-olt_P_of_lead_lt) を
-$`t := \mathrm{tr}(c :: C')`$、$`w := \ell_2`$ に適用して第 1 段を得る。
+**Step 1: $`\mathrm{tr}(c :: C') \prec \mathrm{tr}\,(\ell)`$.**
+By [T.lead_translate](Term.md#t-lead_translate) we have
+$`\mathrm{lead}\,\mathrm{tr}(c :: C') = c_2`$ ([D.lead](Term.md#d-lead)), and
+$`c_2 \lt \ell_2`$ by hypothesis.
+On the other hand, the definition of $`\mathrm{tr}`$ (D.translate) gives
+$`\mathrm{tr}\,(\ell) = \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$.
+Applying [T.olt_P_of_lead_lt](Term.md#t-olt_P_of_lead_lt) with
+$`t := \mathrm{tr}(c :: C')`$ and $`w := \ell_2`$ yields Step 1.
 
-**第 2 段：$`\mathrm{tr}(R \mathbin{+\!\!+} c :: C') \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$。**
-[T.translate_ctx_cong](Term.md#t-translate_ctx_cong) を
-$`z_1 := c`$、$`T_1 := C'`$、$`z_2 := \ell`$、$`T_2 := ()`$、$`G := R`$ として適用する。
-4 つの仮定は次のように満たされる。
+**Step 2: $`\mathrm{tr}(R \mathbin{+\!\!+} c :: C') \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$.**
+Apply [T.translate_ctx_cong](Term.md#t-translate_ctx_cong) with
+$`z_1 := c`$, $`T_1 := C'`$, $`z_2 := \ell`$, $`T_2 := ()`$, $`G := R`$.
+Its four hypotheses are met as follows.
 
-- (base)：第 1 段。
-- (root)：$`c_1 = \ell_1`$ は仮定である。
-- (r1)：$`\forall x \in C',\ c_1 \le x_1`$ は仮定である。
-- (r2)：$`T_2 = ()`$ は要素をもたないから前件が偽であり、成り立つ。
+- (base): Step 1.
+- (root): $`c_1 = \ell_1`$ is a hypothesis.
+- (r1): $`\forall x \in C',\ c_1 \le x_1`$ is a hypothesis.
+- (r2): $`T_2 = ()`$ has no element, so the antecedent is false and it holds.
 
-**第 3 段：根 $`(v_0,w_0)`$ を被せる。**
-$`R \mathbin{+\!\!+} c :: C'`$ の全要素 $`x`$ が $`v_0 \lt x_1`$ をみたすことを示す。
-$`x \in R`$ のときは仮定による。$`x = c`$ のときは $`c_1 = \ell_1`$ と $`v_0 \lt \ell_1`$ から
-$`v_0 \lt c_1`$。$`x \in C'`$ のときは、いま示した $`v_0 \lt c_1`$ と仮定 $`c_1 \le x_1`$ から
-$`v_0 \lt x_1`$。同様に $`R \mathbin{+\!\!+} (\ell)`$ の全要素も $`v_0 \lt x_1`$ をみたす。
+**Step 3: putting the root $`(v_0,w_0)`$ on top.**
+We show that every element $`x`$ of $`R \mathbin{+\!\!+} c :: C'`$ satisfies $`v_0 \lt x_1`$.
+For $`x \in R`$ this is a hypothesis. For $`x = c`$, $`c_1 = \ell_1`$ and $`v_0 \lt \ell_1`$ give
+$`v_0 \lt c_1`$. For $`x \in C'`$, the $`v_0 \lt c_1`$ just proved and the hypothesis
+$`c_1 \le x_1`$ give $`v_0 \lt x_1`$. In the same way every element of $`R \mathbin{+\!\!+} (\ell)`$
+satisfies $`v_0 \lt x_1`$.
 
-したがって [T.translate_single_tree](Term.md#t-translate_single_tree) により
+Hence [T.translate_single_tree](Term.md#t-translate_single_tree) gives
 
 ```math
 \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} (c :: C')\bigr)
@@ -340,99 +346,100 @@ $`v_0 \lt x_1`$。同様に $`R \mathbin{+\!\!+} (\ell)`$ の全要素も $`v_0 
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-である。第 2 段と [T.olt_P_b](Term.md#t-olt_P_b) から結論が従う。∎
+and the conclusion follows from Step 2 and [T.olt_P_b](Term.md#t-olt_P_b). ∎
 
 <a id="t-translate_oper_pred"></a>
-## 定理: 前者分岐での減少 (T.translate_oper_pred)
+## Theorem: decrease in the predecessor branch (T.translate_oper_pred)
 
-### 定理
+### Theorem
 
-$`1 \lt \lvert M\rvert`$ とし、
+Let $`1 \lt \lvert M\rvert`$ and assume
 
 ```math
 \bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr) \ \vee\ \neg\,\mathrm{hasParent}(M, i_1, j_1)
 ```
 
-を仮定する。このとき任意の $`n`$ に対し $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$。
+Then $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$ for every $`n`$.
 
-### 証明
+### Proof
 
-$`1 \lt \lvert M\rvert`$ より $`j_1 = \lvert M\rvert - 1 \ne 0`$ である。
+From $`1 \lt \lvert M\rvert`$ we get $`j_1 = \lvert M\rvert - 1 \ne 0`$.
 
-まず $`M[n] = \mathrm{Pred}\,M`$ を示す。仮定の選言で場合分けする。第 1 選言のときは
-[T.oper_eq_pred_of_zero](#t-oper_eq_pred_of_zero) による。第 2 選言のときは、
-$`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ が成り立つかどうかでさらに分け、成り立つならふたたび
-[T.oper_eq_pred_of_zero](#t-oper_eq_pred_of_zero)、成り立たないなら
-[T.oper_eq_pred_of_noParent](#t-oper_eq_pred_of_noParent) による。
+First we show $`M[n] = \mathrm{Pred}\,M`$. We distinguish cases on the disjunction in the
+hypothesis. For the first disjunct this is
+[T.oper_eq_pred_of_zero](#t-oper_eq_pred_of_zero). For the second disjunct we distinguish further
+according to whether $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ holds: if it does, again
+[T.oper_eq_pred_of_zero](#t-oper_eq_pred_of_zero); if it does not,
+[T.oper_eq_pred_of_noParent](#t-oper_eq_pred_of_noParent).
 
-次に $`1 \lt \lvert M\rvert`$ より $`\neg(\lvert M\rvert \le 1)`$ であるから、
-$`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
+Next, $`1 \lt \lvert M\rvert`$ gives $`\neg(\lvert M\rvert \le 1)`$, so the second case of the
+definition of $`\mathrm{Pred}`$ (D.Pred) is taken and $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$.
 
-最後に $`M \ne ()`$ である（$`M = ()`$ なら $`\lvert M\rvert = 0`$ となり
-$`1 \lt \lvert M\rvert`$ に反する）。よって
-[T.translate_dropLast_decrease](#t-translate_dropLast_decrease) が適用できて
+Finally $`M \ne ()`$ (if $`M = ()`$ then $`\lvert M\rvert = 0`$, contradicting
+$`1 \lt \lvert M\rvert`$). Hence
+[T.translate_dropLast_decrease](#t-translate_dropLast_decrease) applies and
 
 ```math
 \mathrm{tr}\,(M[n]) = \mathrm{tr}(\mathrm{dropLast}\,M) \prec \mathrm{tr}\,M . \qquad \blacksquare
 ```
 
 <a id="t-parent_nextR"></a>
-## 定理: 親は親子関係をみたす (T.parent_nextR)
+## Theorem: the parent satisfies the parent relation (T.parent_nextR)
 
-### 定理
+### Theorem
 
-$`\mathrm{hasParent}(M, i, j_1)`$ ならば
-$`\mathrm{par}^M_i(j_1)`$ $`\to^M_i j_1`$（[D.nextR](Pss.md#d-nextR)）。
+If $`\mathrm{hasParent}(M, i, j_1)`$, then
+$`\mathrm{par}^M_i(j_1)`$ $`\to^M_i j_1`$ ([D.nextR](Pss.md#d-nextR)).
 
-### 証明
+### Proof
 
-$`\mathrm{hasParent}`$ の定義（D.hasParent）より、$`j_0 \to^M_i j_1`$ をみたす $`j_0`$ が存在する。
-$`\mathrm{par}`$ の定義（D.parent）の $`\varepsilon`$ は、その条件をみたす値が存在するとき
-条件をみたす値を返す。∎
+By the definition of $`\mathrm{hasParent}`$ (D.hasParent) there exists $`j_0`$ with
+$`j_0 \to^M_i j_1`$. The $`\varepsilon`$ in the definition of $`\mathrm{par}`$ (D.parent) returns a
+value satisfying the condition whenever a value satisfying it exists. ∎
 
 <a id="t-nextR_index_lt"></a>
-## 定理: 親子では添字が増える (T.nextR_index_lt)
+## Theorem: the index increases along the parent relation (T.nextR_index_lt)
 
-### 定理
+### Theorem
 
-$`j_0 \to^M_i j_1`$ ならば $`j_0 \lt j_1`$。
+If $`j_0 \to^M_i j_1`$, then $`j_0 \lt j_1`$.
 
-### 証明
+### Proof
 
-$`\to^M_i`$ の定義（D.nextR）の場合分けによる。$`i = 0`$ のときは
-$`j_0 \to^M_0 j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）であり、
-$`\to^M_0`$ の定義（D.nextrel0）の第 3 条件が $`j_0 \lt j_1`$ である。
-$`i \ne 0`$ のときは $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）であり、
-$`\to^M_1`$ の定義（D.nextrel1）の第 3 条件が $`j_0 \lt j_1`$ である。∎
+By the case distinction in the definition of $`\to^M_i`$ (D.nextR). If $`i = 0`$, then
+$`j_0 \to^M_0 j_1`$ ([D.nextrel0](Pss.md#d-nextrel0)), and the third condition of the definition of
+$`\to^M_0`$ (D.nextrel0) is $`j_0 \lt j_1`$.
+If $`i \ne 0`$, then $`j_0 \to^M_1 j_1`$ ([D.nextrel1](Pss.md#d-nextrel1)), and the third condition
+of the definition of $`\to^M_1`$ (D.nextrel1) is $`j_0 \lt j_1`$. ∎
 
 <a id="t-nextR_chain0"></a>
-## 定理: 親子は行 0 の祖先の鎖を与える (T.nextR_chain0)
+## Theorem: the parent relation gives a chain of ancestors in row 0 (T.nextR_chain0)
 
-### 定理
+### Theorem
 
-$`j_0 \to^M_i j_1`$ ならば $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$。
+If $`j_0 \to^M_i j_1`$, then $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$.
 
-### 証明
+### Proof
 
-$`\to^M_i`$ の定義（D.nextR）の場合分けによる。
+By the case distinction in the definition of $`\to^M_i`$ (D.nextR).
 
-- $`i = 0`$ のとき。$`j_0 \to^M_0 j_1`$ であるから、長さ $`1`$ の鎖として
-  $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ が成り立つ。
+- Case $`i = 0`$. Since $`j_0 \to^M_0 j_1`$, the relation
+  $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ holds as a chain of length $`1`$.
 
-- $`i \ne 0`$ のとき。$`j_0 \to^M_1 j_1`$ であり、$`\to^M_1`$ の定義（D.nextrel1）の
-  第 5 条件は $`j_0 \le^M_0 j_1`$（[D.le0](Pss.md#d-le0)）である。
-  $`\le^M_0`$ の定義（D.le0）の第 3 条件が
-  $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。∎
+- Case $`i \ne 0`$. Then $`j_0 \to^M_1 j_1`$, and the fifth condition of the definition of
+  $`\to^M_1`$ (D.nextrel1) is $`j_0 \le^M_0 j_1`$ ([D.le0](Pss.md#d-le0)).
+  The third condition of the definition of $`\le^M_0`$ (D.le0) is
+  $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$. ∎
 
 <a id="t-oper_bad_blocks"></a>
-## 定理: 第 4 分岐のブロック分解 (T.oper_bad_blocks)
+## Theorem: block decomposition of the fourth branch (T.oper_bad_blocks)
 
-### 定理
+### Theorem
 
-$`1 \lt \lvert M\rvert`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、
-$`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ を仮定する。
-このとき $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、
-$`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して次の 6 つが成り立つ。
+Assume $`1 \lt \lvert M\rvert`$, $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$,
+$`\mathrm{hasParent}(M, i_1, j_1)`$ and $`1 \le n`$.
+Then there exist $`G, R \in \mathrm{PairSeq}`$, $`v_0, w_0, d_0 \in \mathbb{N}`$ and
+$`\ell \in \mathbb{N}\times\mathbb{N}`$ for which the following six statements hold.
 
 ```math
 \begin{aligned}
@@ -448,23 +455,23 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して次の 6 つが成り立�
 \end{aligned}
 ```
 
-ここで $`L^{+e}`$ は $`L`$ の各対の第 1 成分に $`e`$ を足した列である
-（[T.translate_shift](Term.md#t-translate_shift) の記法）。
+Here $`L^{+e}`$ is the sequence obtained from $`L`$ by adding $`e`$ to the first entry of each pair
+(the notation of [T.translate_shift](Term.md#t-translate_shift)).
 
-### 証明
+### Proof
 
-$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$ とおく。
-[T.parent_nextR](#t-parent_nextR) より $`j_0 \to^M_{i_1} j_1`$ であり、
-[T.nextR_index_lt](#t-nextR_index_lt) より $`j_0 \lt j_1`$、
-[T.nextR_chain0](#t-nextR_chain0) より $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。
-最後の事実に [T.le0_interval_gt](Term.md#t-le0_interval_gt) を適用して
+Put $`j_0 := \mathrm{par}^M_{i_1}(j_1)`$.
+By [T.parent_nextR](#t-parent_nextR) we have $`j_0 \to^M_{i_1} j_1`$, by
+[T.nextR_index_lt](#t-nextR_index_lt) we have $`j_0 \lt j_1`$, and by
+[T.nextR_chain0](#t-nextR_chain0) we have $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$.
+Applying [T.le0_interval_gt](Term.md#t-le0_interval_gt) to the last of these gives
 
 ```math
 (\ast)\qquad \forall k,\ \bigl(j_0 \lt k \wedge k \le j_1\bigr) \to M_{0,j_0} \lt M_{0,k}
 ```
 
-を得る。$`d_0`$ を [T.oper_bad_unfold](#t-oper_bad_unfold) と同じ式で定める。
-求める対象を次のように取る。
+Define $`d_0`$ by the same formula as in [T.oper_bad_unfold](#t-oper_bad_unfold).
+The required objects are taken as follows.
 
 ```math
 G := (M_0,\dots,M_{j_0-1}), \quad
@@ -476,27 +483,27 @@ R := \bigl(\,(M_{0,j},\ M_{1,j})\,\bigr)_{j=j_0+1}^{j_1-1}, \quad
 \ell := M\langle j_1\rangle .
 ```
 
-$`\lvert G\rvert = j_0`$ である（$`j_0 \lt j_1 \lt \lvert M\rvert`$ なので先頭 $`j_0`$ 要素が
-ちょうど取れる）。以下 6 つを順に示す。
+Here $`\lvert G\rvert = j_0`$ (since $`j_0 \lt j_1 \lt \lvert M\rvert`$, the first $`j_0`$ elements
+can be taken exactly). We prove the six statements in turn.
 
-**(1)** $`M`$ を位置 $`j_0`$ で切ると $`M = G \mathbin{+\!\!+} \mathrm{drop}_{j_0} M`$ である。
-[T.drop_eq_map_getD](Term.md#t-drop_eq_map_getD) より
+**(1)** Cutting $`M`$ at position $`j_0`$ gives $`M = G \mathbin{+\!\!+} \mathrm{drop}_{j_0} M`$.
+By [T.drop_eq_map_getD](Term.md#t-drop_eq_map_getD),
 
 ```math
 \mathrm{drop}_{j_0} M = \bigl(M\langle j_0\rangle,\ M\langle j_0+1\rangle,\ \dots,\ M\langle j_1\rangle\bigr)
 ```
 
-であり（$`\lvert M\rvert - j_0 = (j_1 - j_0) + 1`$ による）、
-$`j \le j_1 \lt \lvert M\rvert`$ の範囲では $`M\langle j\rangle = (M_{0,j}, M_{1,j})`$ である
-（$`M_{i,j}`$ の定義 D.entry）。先頭を切り出し末尾を切り出せば
+(using $`\lvert M\rvert - j_0 = (j_1 - j_0) + 1`$), and in the range
+$`j \le j_1 \lt \lvert M\rvert`$ we have $`M\langle j\rangle = (M_{0,j}, M_{1,j})`$
+(definition of $`M_{i,j}`$, D.entry). Cutting off the first element and the last element gives
 
 ```math
 \mathrm{drop}_{j_0} M = \bigl((v_0,w_0) :: R\bigr) \mathbin{+\!\!+} (\ell)
 ```
 
-となり、(1) を得る。
+which is (1).
 
-**(2)** [T.oper_bad_unfold](#t-oper_bad_unfold) より
+**(2)** By [T.oper_bad_unfold](#t-oper_bad_unfold),
 
 ```math
 M[n] = G \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1},
@@ -504,55 +511,57 @@ M[n] = G \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1},
 B_k = \bigl(\,(M_{0,j} + k\,d_0,\ M_{1,j})\,\bigr)_{j=j_0}^{j_1-1}
 ```
 
-である。添字 $`j`$ の範囲 $`[j_0, j_1)`$ を先頭 $`j_0`$ とそれ以降に分ければ、
-$`B_k`$ の第 1 要素は $`(v_0 + k\,d_0,\ w_0)`$、残りは $`R`$ の各対の第 1 成分に
-$`k\,d_0`$ を足したものである。すなわち $`B_k = ((v_0,w_0) :: R)^{+k\,d_0}`$ であり、(2) を得る。
+Splitting the range $`[j_0, j_1)`$ of the index $`j`$ into its first value $`j_0`$ and the rest,
+the first element of $`B_k`$ is $`(v_0 + k\,d_0,\ w_0)`$ and the remainder is obtained from $`R`$
+by adding $`k\,d_0`$ to the first entry of each pair. That is,
+$`B_k = ((v_0,w_0) :: R)^{+k\,d_0}`$, which is (2).
 
-**(3)** $`R`$ の要素は $`j_0 \lt j \lt j_1`$ なる $`j`$ について $`(M_{0,j}, M_{1,j})`$ の形である。
-$`(\ast)`$ を $`k := j`$ に適用すると $`v_0 = M_{0,j_0} \lt M_{0,j}`$ を得る。
+**(3)** The elements of $`R`$ are of the form $`(M_{0,j}, M_{1,j})`$ for the $`j`$ with
+$`j_0 \lt j \lt j_1`$. Applying $`(\ast)`$ with $`k := j`$ gives
+$`v_0 = M_{0,j_0} \lt M_{0,j}`$.
 
-**(4)** $`(\ast)`$ を $`k := j_1`$ に適用する（$`j_0 \lt j_1`$ かつ $`j_1 \le j_1`$）。
-$`\ell_1 = M_{0,j_1}`$ であるから $`v_0 \lt \ell_1`$。
+**(4)** Apply $`(\ast)`$ with $`k := j_1`$ (we have $`j_0 \lt j_1`$ and $`j_1 \le j_1`$).
+Since $`\ell_1 = M_{0,j_1}`$, we get $`v_0 \lt \ell_1`$.
 
-**(5)** $`i_1`$ で場合分けする。
+**(5)** We distinguish cases on $`i_1`$.
 
-- $`i_1 = 0`$ のとき。$`d_0`$ の定義の条件 $`0 \lt i_1`$ が偽であるから $`d_0 = 0`$ であり、
-  第 1 選言が成り立つ。
+- Case $`i_1 = 0`$. The condition $`0 \lt i_1`$ in the definition of $`d_0`$ is false, so
+  $`d_0 = 0`$ and the first disjunct holds.
 
-- $`0 \lt i_1`$ のとき。$`\to^M_i`$ の定義（D.nextR）より $`j_0 \to^M_{i_1} j_1`$ は
-  $`j_0 \to^M_1 j_1`$ である。$`d_0 = M_{0,j_1} - M_{0,j_0}`$ であり、(4) の証明で得た
-  $`M_{0,j_0} \lt M_{0,j_1}`$ から $`0 \lt d_0`$ および
-  $`M_{0,j_1} = M_{0,j_0} + d_0`$、すなわち $`\ell_1 = v_0 + d_0`$ を得る。
-  また $`\to^M_1`$ の定義（D.nextrel1）の第 4 条件は $`M_{1,j_0} \lt M_{1,j_1}`$、
-  すなわち $`w_0 \lt \ell_2`$ である。$`\lvert G\rvert = j_0`$ であったから
-  $`\lvert G\rvert \to^M_1 j_1`$ も成り立つ。よって第 2 選言が成り立つ。
+- Case $`0 \lt i_1`$. By the definition of $`\to^M_i`$ (D.nextR), $`j_0 \to^M_{i_1} j_1`$ is
+  $`j_0 \to^M_1 j_1`$. Here $`d_0 = M_{0,j_1} - M_{0,j_0}`$, and the
+  $`M_{0,j_0} \lt M_{0,j_1}`$ obtained in the proof of (4) gives $`0 \lt d_0`$ and
+  $`M_{0,j_1} = M_{0,j_0} + d_0`$, that is, $`\ell_1 = v_0 + d_0`$.
+  Moreover the fourth condition of the definition of $`\to^M_1`$ (D.nextrel1) is
+  $`M_{1,j_0} \lt M_{1,j_1}`$, that is, $`w_0 \lt \ell_2`$. Since $`\lvert G\rvert = j_0`$,
+  $`\lvert G\rvert \to^M_1 j_1`$ holds as well. Hence the second disjunct holds.
 
-**(6)** $`\lvert G\rvert = j_0`$ であり、$`j_0 \to^M_{i_1} j_1`$ は最初に示した。∎
+**(6)** We have $`\lvert G\rvert = j_0`$, and $`j_0 \to^M_{i_1} j_1`$ was shown at the outset. ∎
 
 <a id="t-translate_oper_bad"></a>
-## 定理: 第 4 分岐での減少 (T.translate_oper_bad)
+## Theorem: decrease in the fourth branch (T.translate_oper_bad)
 
-### 定理
+### Theorem
 
-$`1 \lt \lvert M\rvert`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、
-$`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ を仮定すると
-$`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$。
+Assume $`1 \lt \lvert M\rvert`$, $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$,
+$`\mathrm{hasParent}(M, i_1, j_1)`$ and $`1 \le n`$; then
+$`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$.
 
-### 証明
+### Proof
 
-[T.oper_bad_blocks](#t-oper_bad_blocks) により $`G, v_0, w_0, R, d_0, \ell`$ を取る。
-$`(v_0,w_0) :: R`$ を **基本ブロック**と呼ぶ。
+Take $`G, v_0, w_0, R, d_0, \ell`$ by [T.oper_bad_blocks](#t-oper_bad_blocks).
+We call $`(v_0,w_0) :: R`$ the **basic block**.
 
-**第 1 段：両辺を同じ形に整える。**
-(2) の $`k = 0`$ の項は $`((v_0,w_0) :: R)^{+0} = (v_0,w_0) :: R`$ であるから、
-$`k \ge 1`$ の項をまとめて
+**Step 1: putting the two sides into the same shape.**
+The $`k = 0`$ term of (2) is $`((v_0,w_0) :: R)^{+0} = (v_0,w_0) :: R`$, so collecting the terms
+with $`k \ge 1`$ into
 
 ```math
 C := \bigl((v_0,w_0) :: R\bigr)^{+1\cdot d_0} \mathbin{+\!\!+} \cdots
       \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr)^{+(n-1)d_0}
 ```
 
-とおくと、(1)(2) は
+we can write (1) and (2) as
 
 ```math
 M[n] = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: (R \mathbin{+\!\!+} C)\bigr),
@@ -560,21 +569,19 @@ M[n] = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: (R \mathbin{+\!\!+} C)\bigr),
 M = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))\bigr)
 ```
 
-と書ける。
+**Step 2: every element of $`C`$ has row 0 at least $`v_0`$.**
+Let $`x \in C`$. Then $`x = (p_1 + k\,d_0,\ p_2)`$ for some $`k \ge 1`$ and some element $`p`$ of
+the basic block. If $`p = (v_0,w_0)`$ then $`p_1 = v_0`$; if $`p \in R`$ then $`v_0 \lt p_1`$
+by (3); in either case $`v_0 \le p_1`$.
+Hence $`v_0 \le p_1 \le p_1 + k\,d_0 = x_1`$.
 
-**第 2 段：$`C`$ の要素はすべて行 0 が $`v_0`$ 以上。**
-$`x \in C`$ とすると、ある $`k \ge 1`$ と基本ブロックの要素 $`p`$ について
-$`x = (p_1 + k\,d_0,\ p_2)`$ である。$`p = (v_0,w_0)`$ なら $`p_1 = v_0`$、
-$`p \in R`$ なら (3) より $`v_0 \lt p_1`$ であるから、いずれにせよ $`v_0 \le p_1`$。
-したがって $`v_0 \le p_1 \le p_1 + k\,d_0 = x_1`$。
+**Step 3 (the core): $`\mathrm{tr}(((v_0,w_0) :: R) \mathbin{+\!\!+} C) \prec \mathrm{tr}(((v_0,w_0) :: R) \mathbin{+\!\!+} (\ell))`$.**
+We distinguish cases on $`n`$.
 
-**第 3 段（核）：$`\mathrm{tr}(((v_0,w_0) :: R) \mathbin{+\!\!+} C) \prec \mathrm{tr}(((v_0,w_0) :: R) \mathbin{+\!\!+} (\ell))`$。**
-$`n`$ で場合分けする。
+- **Case $`n = 1`$.** $`C`$ is an empty concatenation, so $`C = ()`$.
+  Apply [T.core_i0](#t-core_i0) with $`T := ()`$ (the first disjunct of its third hypothesis).
 
-- **$`n = 1`$ のとき。** $`C`$ は空の連結であり $`C = ()`$ である。
-  [T.core_i0](#t-core_i0) を $`T := ()`$ として適用する（第 3 の仮定の第 1 選言）。
-
-**$`n \ge 2`$ のとき。** $`C`$ の先頭ブロックを取り出すと
+**Case $`n \ge 2`$.** Extracting the leading block of $`C`$ gives
 
 ```math
 C = (v_0 + d_0,\ w_0) :: \Bigl(R^{+d_0} \mathbin{+\!\!+}
@@ -582,58 +589,58 @@ C = (v_0 + d_0,\ w_0) :: \Bigl(R^{+d_0} \mathbin{+\!\!+}
       \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr)^{+(n-1)d_0}\Bigr)
 ```
 
-である。(5) の選言で場合分けする。
+We distinguish cases on the disjunction (5).
 
-- **$`d_0 = 0`$（完全コピー）のとき。** $`C`$ の先頭は $`(v_0 + 0,\ w_0) = (v_0, w_0)`$ で
-  あるから $`\neg\bigl(v_0 \lt (\mathrm{head}\,C)_1\bigr)`$ である。
-  [T.core_i0](#t-core_i0) を $`T := C`$ として適用する（第 3 の仮定の第 2 選言）。
+- **Case $`d_0 = 0`$ (complete copy).** The head of $`C`$ is $`(v_0 + 0,\ w_0) = (v_0, w_0)`$,
+  so $`\neg\bigl(v_0 \lt (\mathrm{head}\,C)_1\bigr)`$.
+  Apply [T.core_i0](#t-core_i0) with $`T := C`$ (the second disjunct of its third hypothesis).
 
-- **$`0 \lt d_0`$（上昇コピー）のとき。**
-  [T.core_i1](#t-core_i1) を $`c := (v_0 + d_0,\ w_0)`$、$`C' := C`$ の残り、として適用する。
-  5 つの仮定を確認する。
-  - $`\forall x \in R,\ v_0 \lt x_1`$：(3) である。
-  - $`\forall x \in C',\ c_1 \le x_1`$：$`x`$ が $`R^{+d_0}`$ の要素なら、(3) より
-    $`v_0 \lt p_1`$ なる $`p`$ について $`x_1 = p_1 + d_0 \ge v_0 + d_0 = c_1`$。
-    $`x`$ が $`k \ge 2`$ のブロックの要素なら、第 2 段と同じ議論で $`v_0 \le p_1`$ であり、
-    $`d_0 \le k\,d_0`$ であるから $`x_1 = p_1 + k\,d_0 \ge v_0 + d_0 = c_1`$。
-  - $`c_1 = \ell_1`$：$`c_1 = v_0 + d_0`$ であり、(5) の第 2 選言に $`\ell_1 = v_0 + d_0`$ がある。
-  - $`v_0 \lt \ell_1`$：(4) である。
-  - $`c_2 \lt \ell_2`$：$`c_2 = w_0`$ であり、(5) の第 2 選言に $`w_0 \lt \ell_2`$ がある。
+- **Case $`0 \lt d_0`$ (ascending copy).**
+  Apply [T.core_i1](#t-core_i1) with $`c := (v_0 + d_0,\ w_0)`$ and $`C' := C`$ with its head removed.
+  We check the five hypotheses.
+  - $`\forall x \in R,\ v_0 \lt x_1`$: this is (3).
+  - $`\forall x \in C',\ c_1 \le x_1`$: if $`x`$ is an element of $`R^{+d_0}`$, then for the $`p`$
+    with $`v_0 \lt p_1`$ given by (3) we have $`x_1 = p_1 + d_0 \ge v_0 + d_0 = c_1`$.
+    If $`x`$ is an element of a block with $`k \ge 2`$, then $`v_0 \le p_1`$ by the same argument
+    as in Step 2, and $`d_0 \le k\,d_0`$, so $`x_1 = p_1 + k\,d_0 \ge v_0 + d_0 = c_1`$.
+  - $`c_1 = \ell_1`$: here $`c_1 = v_0 + d_0`$, and the second disjunct of (5) contains $`\ell_1 = v_0 + d_0`$.
+  - $`v_0 \lt \ell_1`$: this is (4).
+  - $`c_2 \lt \ell_2`$: here $`c_2 = w_0`$, and the second disjunct of (5) contains $`w_0 \lt \ell_2`$.
 
-**第 4 段：良い部分 $`G`$ を通して持ち上げる。**
-[T.translate_ctx_cong](Term.md#t-translate_ctx_cong) を
-$`z_1 := (v_0,w_0)`$、$`T_1 := R \mathbin{+\!\!+} C`$、
-$`z_2 := (v_0,w_0)`$、$`T_2 := R \mathbin{+\!\!+} (\ell)`$、$`G := G`$ として適用する。
-4 つの仮定は次のように満たされる。
+**Step 4: lifting through the good part $`G`$.**
+Apply [T.translate_ctx_cong](Term.md#t-translate_ctx_cong) with
+$`z_1 := (v_0,w_0)`$, $`T_1 := R \mathbin{+\!\!+} C`$,
+$`z_2 := (v_0,w_0)`$, $`T_2 := R \mathbin{+\!\!+} (\ell)`$, $`G := G`$.
+Its four hypotheses are met as follows.
 
-- (base)：第 3 段の結論を、$`((v_0,w_0) :: R) \mathbin{+\!\!+} X = (v_0,w_0) :: (R \mathbin{+\!\!+} X)`$
-  と書き換えたものである。
-- (root)：両辺の根は同一の $`(v_0,w_0)`$ であるから $`v_0 = v_0`$。
-- (r1)：$`x \in R`$ なら (3) より $`v_0 \lt x_1`$、$`x \in C`$ なら第 2 段より $`v_0 \le x_1`$。
-- (r2)：$`x \in R`$ なら同上、$`x = \ell`$ なら (4) より $`v_0 \lt \ell_1`$。
+- (base): this is the conclusion of Step 3 rewritten by
+  $`((v_0,w_0) :: R) \mathbin{+\!\!+} X = (v_0,w_0) :: (R \mathbin{+\!\!+} X)`$.
+- (root): the roots of the two sides are the same $`(v_0,w_0)`$, so $`v_0 = v_0`$.
+- (r1): if $`x \in R`$ then $`v_0 \lt x_1`$ by (3); if $`x \in C`$ then $`v_0 \le x_1`$ by Step 2.
+- (r2): if $`x \in R`$ the same as above; if $`x = \ell`$ then $`v_0 \lt \ell_1`$ by (4).
 
-得られる結論は第 1 段の書き換えにより $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$ である。∎
+By the rewriting of Step 1, the conclusion obtained is $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$. ∎
 
 <a id="t-m_step_decreases"></a>
-## 定理: 展開は測度を真に減らす (T.m_step_decreases)
+## Theorem: expansion strictly decreases the measure (T.m_step_decreases)
 
-### 定理
+### Theorem
 
-$`1 \lt \lvert M\rvert`$ かつ $`1 \le n`$ ならば
-$`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$。
+If $`1 \lt \lvert M\rvert`$ and $`1 \le n`$, then
+$`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$.
 
-### 証明
+### Proof
 
-$`M[n]`$ の定義（D.oper）の分岐に沿って場合分けする。$`1 \lt \lvert M\rvert`$ より
-$`j_1 \ne 0`$ であるから、分岐 (a) は起こらない。
+We distinguish cases along the branches of the definition of $`M[n]`$ (D.oper). From
+$`1 \lt \lvert M\rvert`$ we get $`j_1 \ne 0`$, so branch (a) does not occur.
 
-- $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ のとき。
-  [T.translate_oper_pred](#t-translate_oper_pred) を第 1 選言で適用する。
+- Case $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$.
+  Apply [T.translate_oper_pred](#t-translate_oper_pred) with the first disjunct.
 
-- そうでなく $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。
-  [T.translate_oper_bad](#t-translate_oper_bad) を適用する。
+- Otherwise, case $`\mathrm{hasParent}(M, i_1, j_1)`$.
+  Apply [T.translate_oper_bad](#t-translate_oper_bad).
 
-- そうでなく $`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ のとき。
-  [T.translate_oper_pred](#t-translate_oper_pred) を第 2 選言で適用する。
+- Otherwise, case $`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$.
+  Apply [T.translate_oper_pred](#t-translate_oper_pred) with the second disjunct.
 
-いずれの場合も結論が得られた。∎
+In each case the conclusion is obtained. ∎

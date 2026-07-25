@@ -1,19 +1,19 @@
-[← README](README.md) ｜ ArgDom **1** [2](ArgDom-2.md) [3](ArgDom-3.md) [4](ArgDom-4.md) [5](ArgDom-5.md)
+[← README](README.md) | [English](ArgDom.md) | [Japanese](ArgDom-ja.md) | ArgDom **1** [2](ArgDom-2.md) [3](ArgDom-3.md) [4](ArgDom-4.md) [5](ArgDom-5.md)
 
 <a id="t-seqlex_of_sle_not_prefix"></a>
-## 定理: 前部分列でないときの狭義比較 (T.seqlex_of_sle_not_prefix)
+## Theorem: strict comparison when one side is not a prefix (T.seqlex_of_sle_not_prefix)
 
-### 定理
+### Theorem
 
-$`W, X, Y \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とする。
-$`X \preceq_{\mathrm{lex}} W \mathbin{+\!\!+} Y`$（[D.sle](Cofinality.md#d-sle)）であり、かつ任意の
-$`X' \in \mathrm{PairSeq}`$ について $`X \ne W \mathbin{+\!\!+} X'`$ であるならば、任意の
-$`Y' \in \mathrm{PairSeq}`$ について
-$`X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y'`$（[D.seqlex](Seqlex.md#d-seqlex)）。
+Let $`W, X, Y \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)).
+If $`X \preceq_{\mathrm{lex}} W \mathbin{+\!\!+} Y`$ ([D.sle](Cofinality.md#d-sle)) and
+$`X \ne W \mathbin{+\!\!+} X'`$ for every $`X' \in \mathrm{PairSeq}`$, then
+$`X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y'`$ ([D.seqlex](Seqlex.md#d-seqlex))
+for every $`Y' \in \mathrm{PairSeq}`$.
 
-### 証明
+### Proof
 
-$`W`$ の長さに関する帰納法（$`X`$, $`Y`$, $`Y'`$ は全称量化したまま動かす）。帰納法の述語は
+Induction on the length of $`W`$ (with $`X`$, $`Y`$, $`Y'`$ left universally quantified). The induction predicate is
 
 ```math
 \Phi(W) :\equiv \forall X, Y \in \mathrm{PairSeq},\
@@ -22,59 +22,59 @@ $`W`$ の長さに関する帰納法（$`X`$, $`Y`$, $`Y'`$ は全称量化し�
   \ \to\ \forall Y',\ X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y' .
 ```
 
-- **基底段** $`W = ()`$：第 2 の仮定を $`X' := X`$ に適用すると
-  $`X \ne () \mathbin{+\!\!+} X`$、すなわち $`X \ne X`$ が得られ、$`=`$ の反射性に矛盾する。
-  よって前件が偽であり $`\Phi(())`$ が成り立つ。
+- **Base case** $`W = ()`$: applying the second hypothesis with $`X' := X`$ yields
+  $`X \ne () \mathbin{+\!\!+} X`$, that is $`X \ne X`$, which contradicts reflexivity of $`=`$.
+  Hence the antecedent is false and $`\Phi(())`$ holds.
 
-- **帰納段** $`W = w :: W'`$：帰納法の仮定は $`\Phi(W')`$ である。
-  $`X`$, $`Y`$ を取り、$`X \preceq_{\mathrm{lex}} (w :: W') \mathbin{+\!\!+} Y`$ と
-  $`\forall X',\ X \ne (w :: W') \mathbin{+\!\!+} X'`$ を仮定し、$`Y'`$ を取る。
-  $`X`$ の形で場合分けする。
+- **Inductive step** $`W = w :: W'`$: the induction hypothesis is $`\Phi(W')`$.
+  Take $`X`$, $`Y`$, assume $`X \preceq_{\mathrm{lex}} (w :: W') \mathbin{+\!\!+} Y`$ and
+  $`\forall X',\ X \ne (w :: W') \mathbin{+\!\!+} X'`$, and take $`Y'`$.
+  Distinguish cases on the shape of $`X`$.
 
-  **(a) $`X = ()`$ のとき。**
-  $`(w :: W') \mathbin{+\!\!+} Y' = w :: (W' \mathbin{+\!\!+} Y')`$ は空列でない。
-  $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式により
-  $`() \prec_{\mathrm{lex}} L`$ は $`L \ne ()`$ と同一の命題であるから、結論が成り立つ。
+  **(a) The case $`X = ()`$.**
+  The sequence $`(w :: W') \mathbin{+\!\!+} Y' = w :: (W' \mathbin{+\!\!+} Y')`$ is not empty.
+  By the first clause of the definition of $`\prec_{\mathrm{lex}}`$ (D.seqlex),
+  $`() \prec_{\mathrm{lex}} L`$ is the same proposition as $`L \ne ()`$ by definition, so the conclusion holds.
 
-  **(b) $`X = x :: X''`$ のとき。**
-  仮定は $`x :: X'' \preceq_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y)`$ である。
-  $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）より、これは等号の場合と
-  $`\prec_{\mathrm{lex}}`$ の場合に分かれる。
+  **(b) The case $`X = x :: X''`$.**
+  The hypothesis reads $`x :: X'' \preceq_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y)`$.
+  By the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle) this splits into the case of equality
+  and the case of $`\prec_{\mathrm{lex}}`$.
 
-  等号の場合、$`X = w :: (W' \mathbin{+\!\!+} Y) = (w :: W') \mathbin{+\!\!+} Y`$ となり、
-  第 2 の仮定を $`X' := Y`$ に適用したものに矛盾する。
+  In the case of equality, $`X = w :: (W' \mathbin{+\!\!+} Y) = (w :: W') \mathbin{+\!\!+} Y`$,
+  which contradicts the second hypothesis applied with $`X' := Y`$.
 
-  $`x :: X'' \prec_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y)`$ の場合、
-  $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式により次のいずれかが成り立つ。
+  In the case $`x :: X'' \prec_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y)`$,
+  the third clause of the definition of $`\prec_{\mathrm{lex}}`$ (D.seqlex) gives one of the following.
 
-  - $`x \prec_{\mathrm{p}} w`$（[D.pairlt](Seqlex.md#d-pairlt)）のとき。
-    示すべきは $`x :: X'' \prec_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y')`$ であり、
-    D.seqlex の第 3 式の右辺の第 1 選言がいまの仮定そのものである。
-  - $`x = w`$ かつ $`X'' \prec_{\mathrm{lex}} W' \mathbin{+\!\!+} Y`$ のとき。
-    まず $`X'' \preceq_{\mathrm{lex}} W' \mathbin{+\!\!+} Y`$ である（D.sle の第 2 選言）。
-    次に、任意の $`Z`$ について $`X'' \ne W' \mathbin{+\!\!+} Z`$ である。実際
-    $`X'' = W' \mathbin{+\!\!+} Z`$ とすると、$`x = w`$ より
-    $`X = x :: X'' = w :: (W' \mathbin{+\!\!+} Z) = (w :: W') \mathbin{+\!\!+} Z`$ となり、
-    第 2 の仮定を $`X' := Z`$ に適用したものに矛盾する。
-    よって帰納法の仮定 $`\Phi(W')`$ を $`X := X''`$, $`Y := Y`$, $`Y' := Y'`$ に適用でき、
-    $`X'' \prec_{\mathrm{lex}} W' \mathbin{+\!\!+} Y'`$ を得る。
-    $`x = w`$ と合わせて D.seqlex の第 3 式の右辺の第 2 選言が成り立つ。∎
+  - The case $`x \prec_{\mathrm{p}} w`$ ([D.pairlt](Seqlex.md#d-pairlt)).
+    What is to be shown is $`x :: X'' \prec_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y')`$,
+    and the first disjunct on the right-hand side of the third clause of D.seqlex is exactly the present hypothesis.
+  - The case $`x = w`$ and $`X'' \prec_{\mathrm{lex}} W' \mathbin{+\!\!+} Y`$.
+    First, $`X'' \preceq_{\mathrm{lex}} W' \mathbin{+\!\!+} Y`$ (the second disjunct of D.sle).
+    Next, $`X'' \ne W' \mathbin{+\!\!+} Z`$ for every $`Z`$. Indeed, if
+    $`X'' = W' \mathbin{+\!\!+} Z`$, then $`x = w`$ gives
+    $`X = x :: X'' = w :: (W' \mathbin{+\!\!+} Z) = (w :: W') \mathbin{+\!\!+} Z`$,
+    which contradicts the second hypothesis applied with $`X' := Z`$.
+    Hence the induction hypothesis $`\Phi(W')`$ applies with $`X := X''`$, $`Y := Y`$, $`Y' := Y'`$, and yields
+    $`X'' \prec_{\mathrm{lex}} W' \mathbin{+\!\!+} Y'`$.
+    Together with $`x = w`$, the second disjunct on the right-hand side of the third clause of D.seqlex holds. ∎
 
 <a id="t-peel_aux"></a>
-## 定理: 自己言及的な上界の剥がし (T.peel_aux)
+## Theorem: peeling off a self-referential upper bound (T.peel_aux)
 
-### 定理
+### Theorem
 
-$`d, w, n, a \in \mathbb{N}`$、$`X, Q, A_2 \in \mathrm{PairSeq}`$ とする。
-$`\lvert X\rvert \le n`$ かつ
-$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）
-ならば、ある $`m \in \mathbb{N}`$ が存在して
-$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)`$（[D.copies](Cnf-2.md#d-copies)）。
+Let $`d, w, n, a \in \mathbb{N}`$ and $`X, Q, A_2 \in \mathrm{PairSeq}`$.
+If $`\lvert X\rvert \le n`$ and
+$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$ ([D.shiftr0](Cnf-2.md#d-shiftr0)),
+then there exists $`m \in \mathbb{N}`$ such that
+$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)`$ ([D.copies](Cnf-2.md#d-copies)).
 
-### 証明
+### Proof
 
-$`n`$ に関する自然数の帰納法（$`X`$, $`Q`$, $`A_2`$, $`a`$ は全称量化したまま動かす）。
-帰納法の述語は
+Induction on the natural number $`n`$ (with $`X`$, $`Q`$, $`A_2`$, $`a`$ left universally quantified).
+The induction predicate is
 
 ```math
 \begin{aligned}
@@ -86,22 +86,22 @@ $`n`$ に関する自然数の帰納法（$`X`$, $`Q`$, $`A_2`$, $`a`$ は全称
 \end{aligned}
 ```
 
-- **基底段** $`n = 0`$：$`\lvert X\rvert \le 0`$ より $`X = ()`$ である。
-  $`m := 0`$ とすると、$`\mathrm{copies}`$ の定義（D.copies）より
-  $`\mathrm{copies}_d(B, 0) = ()`$ であるから、示すべきは
-  $`() \preceq_{\mathrm{lex}} Q`$ である。$`Q = ()`$ のときは
-  $`() = Q`$ であり、D.sle の第 1 選言が成り立つ。$`Q = q :: Q'`$ のときは
-  $`Q \ne ()`$ であり、D.seqlex の第 1 式より $`() \prec_{\mathrm{lex}} Q`$、
-  すなわち D.sle の第 2 選言が成り立つ。
+- **Base case** $`n = 0`$: from $`\lvert X\rvert \le 0`$ we get $`X = ()`$.
+  Take $`m := 0`$; by the definition of $`\mathrm{copies}`$ (D.copies) we have
+  $`\mathrm{copies}_d(B, 0) = ()`$, so what is to be shown is
+  $`() \preceq_{\mathrm{lex}} Q`$. If $`Q = ()`$ then
+  $`() = Q`$ and the first disjunct of D.sle holds. If $`Q = q :: Q'`$ then
+  $`Q \ne ()`$, so the first clause of D.seqlex gives $`() \prec_{\mathrm{lex}} Q`$,
+  that is, the second disjunct of D.sle holds.
 
-- **帰納段** $`n \to n+1`$：帰納法の仮定は $`\Psi(n)`$ である。
-  $`X`$, $`Q`$, $`A_2`$, $`a`$ を取り、$`\lvert X\rvert \le n+1`$ と
-  $`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$ を仮定する。
-  $`X`$ が $`Q \mathbin{+\!\!+} ((a,w))`$ を前部分列として持つかどうかで場合分けする
-  （以下、$`(x)`$ は要素 $`x`$ ただ 1 つからなる長さ $`1`$ の列を表す）。
+- **Inductive step** $`n \to n+1`$: the induction hypothesis is $`\Psi(n)`$.
+  Take $`X`$, $`Q`$, $`A_2`$, $`a`$ and assume $`\lvert X\rvert \le n+1`$ and
+  $`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$.
+  Distinguish cases according to whether $`X`$ has $`Q \mathbin{+\!\!+} ((a,w))`$ as a prefix
+  (below, $`(x)`$ denotes the sequence of length $`1`$ consisting of the single element $`x`$).
 
-**(a) ある $`X'`$ について $`X = Q \mathbin{+\!\!+} (a,w) :: X'`$ であるとき。**
-仮定の $`X`$ をこの形に書き換えると
+**(a) The case $`X = Q \mathbin{+\!\!+} (a,w) :: X'`$ for some $`X'`$.**
+Rewriting $`X`$ in the hypothesis into this shape gives
 
 ```math
 Q \mathbin{+\!\!+} (a,w) :: X'
@@ -109,40 +109,40 @@ Q \mathbin{+\!\!+} (a,w) :: X'
 Q \mathbin{+\!\!+} (a,w) :: \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)^{+d}
 ```
 
-である。[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) を $`Q`$ について、
-続いて $`((a,w))`$ について適用すると
+Applying [T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) first with $`Q`$
+and then with $`((a,w))`$ yields
 
 ```math
 X' \preceq_{\mathrm{lex}} \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)^{+d}
 ```
 
-を得る。ここで結合則により
-$`(Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2 = Q \mathbin{+\!\!+} (a,w) :: (X' \mathbin{+\!\!+} A_2)`$
-であるから、[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) と
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+Here associativity gives
+$`(Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2 = Q \mathbin{+\!\!+} (a,w) :: (X' \mathbin{+\!\!+} A_2)`$,
+so by [T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) and
+[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons)
 
 ```math
 \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)^{+d}
   = Q^{+d} \mathbin{+\!\!+} (a+d,\ w) :: (X' \mathbin{+\!\!+} A_2)^{+d}
 ```
 
-であり、したがって
+and therefore
 
 ```math
 X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+} (a+d,\ w) :: (X' \mathbin{+\!\!+} A_2)^{+d} .
 ```
 
-また $`\lvert X\rvert = \lvert Q\rvert + 1 + \lvert X'\rvert \le n+1`$ から
-$`\lvert X'\rvert \le n`$ である。よって帰納法の仮定 $`\Psi(n)`$ を
-$`X := X'`$, $`Q := Q^{+d}`$, $`A_2 := A_2`$, $`a := a+d`$ に適用でき、ある $`m`$ について
+Moreover $`\lvert X\rvert = \lvert Q\rvert + 1 + \lvert X'\rvert \le n+1`$ gives
+$`\lvert X'\rvert \le n`$. Hence the induction hypothesis $`\Psi(n)`$ applies with
+$`X := X'`$, $`Q := Q^{+d}`$, $`A_2 := A_2`$, $`a := a+d`$, and for some $`m`$
 
 ```math
 X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+}
   \mathrm{copies}_d\bigl((a+d,\ w) :: (Q^{+d})^{+d},\ m\bigr)
 ```
 
-が成り立つ。求める $`m`$ として $`m+1`$ を取る。
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) により
+holds. Take $`m+1`$ as the required $`m`$.
+By [T.copies_succ_front](Cnf-3.md#t-copies_succ_front)
 
 ```math
 \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m+1\bigr)
@@ -150,14 +150,14 @@ X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+}
     \Bigl(\mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)\Bigr)^{+d}
 ```
 
-であり、[T.shiftr0_copies](Cofinality-2.md#t-shiftr0_copies) と [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+and by [T.shiftr0_copies](Cofinality-2.md#t-shiftr0_copies) and [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons)
 
 ```math
 \Bigl(\mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)\Bigr)^{+d}
   = \mathrm{copies}_d\bigl((a+d,\ w) :: (Q^{+d})^{+d},\ m\bigr)
 ```
 
-である。したがって結合則により
+Hence associativity gives
 
 ```math
 \begin{aligned}
@@ -168,46 +168,46 @@ X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+}
 \end{aligned}
 ```
 
-であり、また $`X = Q \mathbin{+\!\!+} (a,w) :: X' = (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X'`$ である。
-両辺が共通の前部分列 $`Q \mathbin{+\!\!+} ((a,w))`$ を持つから、
-[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) を逆向きに用いて、上で得た $`X'`$ についての比較から
-求める比較が従う。
+and moreover $`X = Q \mathbin{+\!\!+} (a,w) :: X' = (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X'`$.
+Both sides carry the common prefix $`Q \mathbin{+\!\!+} ((a,w))`$, so using
+[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) in the reverse direction,
+the required comparison follows from the comparison for $`X'`$ obtained above.
 
-**(b) どの $`X'`$ についても $`X \ne Q \mathbin{+\!\!+} (a,w) :: X'`$ であるとき。**
-$`m := 1`$ を取る。[T.copies_one](Cnf-3.md#t-copies_one) より
-$`\mathrm{copies}_d(B, 1) = B`$ であるから、示すべきは
+**(b) The case $`X \ne Q \mathbin{+\!\!+} (a,w) :: X'`$ for every $`X'`$.**
+Take $`m := 1`$. By [T.copies_one](Cnf-3.md#t-copies_one) we have
+$`\mathrm{copies}_d(B, 1) = B`$, so what is to be shown is
 
 ```math
 X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \bigl((a,w) :: Q^{+d}\bigr)
   = \bigl(Q \mathbin{+\!\!+} ((a,w))\bigr) \mathbin{+\!\!+} Q^{+d}
 ```
 
-である。仮定も結合則で括り直すと
+Regrouping the hypothesis by associativity as well gives
 
 ```math
 X \preceq_{\mathrm{lex}} \bigl(Q \mathbin{+\!\!+} ((a,w))\bigr) \mathbin{+\!\!+} (X \mathbin{+\!\!+} A_2)^{+d}
 ```
 
-であり、場合の仮定は「任意の $`X'`$ について
-$`X \ne (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X'`$」と同値である
-（$`(Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X' = Q \mathbin{+\!\!+} (a,w) :: X'`$ だからである）。
-よって [T.seqlex_of_sle_not_prefix](#t-seqlex_of_sle_not_prefix) を
-$`W := Q \mathbin{+\!\!+} ((a,w))`$、$`Y := (X \mathbin{+\!\!+} A_2)^{+d}`$、
-$`Y' := Q^{+d}`$ に適用して
-$`X \prec_{\mathrm{lex}} (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} Q^{+d}`$ を得る。
-D.sle の第 2 選言によりこれが求める比較である。∎
+and the case hypothesis is equivalent to: for every $`X'`$,
+$`X \ne (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X'`$
+(because $`(Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X' = Q \mathbin{+\!\!+} (a,w) :: X'`$).
+Hence applying [T.seqlex_of_sle_not_prefix](#t-seqlex_of_sle_not_prefix) with
+$`W := Q \mathbin{+\!\!+} ((a,w))`$, $`Y := (X \mathbin{+\!\!+} A_2)^{+d}`$ and
+$`Y' := Q^{+d}`$ yields
+$`X \prec_{\mathrm{lex}} (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} Q^{+d}`$.
+By the second disjunct of D.sle this is the required comparison. ∎
 
 <a id="t-sle_take_of_short"></a>
-## 定理: 短い側の比較は前半で決まる (T.sle_take_of_short)
+## Theorem: the shorter side is decided by the front part (T.sle_take_of_short)
 
-### 定理
+### Theorem
 
-$`P, X, Y \in \mathrm{PairSeq}`$ とする。$`X \preceq_{\mathrm{lex}} P \mathbin{+\!\!+} Y`$ かつ
-$`\lvert X\rvert \le \lvert P\rvert`$ ならば $`X \preceq_{\mathrm{lex}} P`$。
+Let $`P, X, Y \in \mathrm{PairSeq}`$. If $`X \preceq_{\mathrm{lex}} P \mathbin{+\!\!+} Y`$ and
+$`\lvert X\rvert \le \lvert P\rvert`$, then $`X \preceq_{\mathrm{lex}} P`$.
 
-### 証明
+### Proof
 
-$`P`$ の長さに関する帰納法（$`X`$, $`Y`$ は全称量化したまま動かす）。帰納法の述語は
+Induction on the length of $`P`$ (with $`X`$, $`Y`$ left universally quantified). The induction predicate is
 
 ```math
 \Xi(P) :\equiv \forall X, Y \in \mathrm{PairSeq},\
@@ -215,136 +215,137 @@ $`P`$ の長さに関する帰納法（$`X`$, $`Y`$ は全称量化したまま�
   \to X \preceq_{\mathrm{lex}} P .
 ```
 
-- **基底段** $`P = ()`$：$`\lvert X\rvert \le 0`$ より $`X = ()`$ であり、
-  $`X = P`$ であるから D.sle の第 1 選言が成り立つ。
+- **Base case** $`P = ()`$: from $`\lvert X\rvert \le 0`$ we get $`X = ()`$, hence
+  $`X = P`$ and the first disjunct of D.sle holds.
 
-- **帰納段** $`P = p :: P'`$：帰納法の仮定は $`\Xi(P')`$ である。
-  $`X`$, $`Y`$ を取り、$`X \preceq_{\mathrm{lex}} p :: (P' \mathbin{+\!\!+} Y)`$ と
-  $`\lvert X\rvert \le \lvert P'\rvert + 1`$ を仮定する。$`X`$ の形で場合分けする。
+- **Inductive step** $`P = p :: P'`$: the induction hypothesis is $`\Xi(P')`$.
+  Take $`X`$, $`Y`$ and assume $`X \preceq_{\mathrm{lex}} p :: (P' \mathbin{+\!\!+} Y)`$ and
+  $`\lvert X\rvert \le \lvert P'\rvert + 1`$. Distinguish cases on the shape of $`X`$.
 
-  **(a) $`X = ()`$ のとき。** $`p :: P'`$ は空列でないから、D.seqlex の第 1 式より
-  $`() \prec_{\mathrm{lex}} p :: P'`$ であり、D.sle の第 2 選言が成り立つ。
+  **(a) The case $`X = ()`$.** The sequence $`p :: P'`$ is not empty, so the first clause of D.seqlex gives
+  $`() \prec_{\mathrm{lex}} p :: P'`$, and the second disjunct of D.sle holds.
 
-  **(b) $`X = x :: X''`$ のとき。** 仮定の長さ条件は $`\lvert X''\rvert \le \lvert P'\rvert`$ である。
-  $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）により、等号の場合と
-  $`\prec_{\mathrm{lex}}`$ の場合に分かれる。
+  **(b) The case $`X = x :: X''`$.** The length hypothesis reads $`\lvert X''\rvert \le \lvert P'\rvert`$.
+  By the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle) this splits into the case of equality
+  and the case of $`\prec_{\mathrm{lex}}`$.
 
-  等号 $`x :: X'' = p :: (P' \mathbin{+\!\!+} Y)`$ の場合、対の列の先頭と後続を比べて
-  $`x = p`$ および $`X'' = P' \mathbin{+\!\!+} Y`$ を得る。
-  長さを取ると $`\lvert X''\rvert = \lvert P'\rvert + \lvert Y\rvert`$ であり、
-  $`\lvert X''\rvert \le \lvert P'\rvert`$ と合わせて $`\lvert Y\rvert = 0`$、すなわち $`Y = ()`$ である。
-  よって $`X'' = P'`$ となり $`X = p :: P' = P`$、D.sle の第 1 選言が成り立つ。
+  In the case of equality $`x :: X'' = p :: (P' \mathbin{+\!\!+} Y)`$, comparing the head and the tail
+  of the pair sequences yields $`x = p`$ and $`X'' = P' \mathbin{+\!\!+} Y`$.
+  Taking lengths gives $`\lvert X''\rvert = \lvert P'\rvert + \lvert Y\rvert`$, which together with
+  $`\lvert X''\rvert \le \lvert P'\rvert`$ forces $`\lvert Y\rvert = 0`$, that is $`Y = ()`$.
+  Hence $`X'' = P'`$, so $`X = p :: P' = P`$, and the first disjunct of D.sle holds.
 
-  $`x :: X'' \prec_{\mathrm{lex}} p :: (P' \mathbin{+\!\!+} Y)`$ の場合、D.seqlex の第 3 式により
-  次のいずれかである。
+  In the case $`x :: X'' \prec_{\mathrm{lex}} p :: (P' \mathbin{+\!\!+} Y)`$, the third clause of D.seqlex
+  gives one of the following.
 
-  - $`x \prec_{\mathrm{p}} p`$ のとき。D.seqlex の第 3 式の右辺の第 1 選言により
-    $`x :: X'' \prec_{\mathrm{lex}} p :: P'`$ であり、D.sle の第 2 選言が成り立つ。
-  - $`x = p`$ かつ $`X'' \prec_{\mathrm{lex}} P' \mathbin{+\!\!+} Y`$ のとき。
-    D.sle の第 2 選言より $`X'' \preceq_{\mathrm{lex}} P' \mathbin{+\!\!+} Y`$ であり、
-    $`\lvert X''\rvert \le \lvert P'\rvert`$ であるから帰納法の仮定 $`\Xi(P')`$ が適用でき、
-    $`X'' \preceq_{\mathrm{lex}} P'`$ を得る。これがさらに 2 つに分かれる。
-    $`X'' = P'`$ ならば $`X = p :: P' = P`$ で D.sle の第 1 選言。
-    $`X'' \prec_{\mathrm{lex}} P'`$ ならば、$`x = p`$ と合わせて D.seqlex の第 3 式の
-    右辺の第 2 選言により $`x :: X'' \prec_{\mathrm{lex}} p :: P'`$ であり、
-    D.sle の第 2 選言が成り立つ。∎
+  - The case $`x \prec_{\mathrm{p}} p`$. By the first disjunct on the right-hand side of the third clause of D.seqlex,
+    $`x :: X'' \prec_{\mathrm{lex}} p :: P'`$, and the second disjunct of D.sle holds.
+  - The case $`x = p`$ and $`X'' \prec_{\mathrm{lex}} P' \mathbin{+\!\!+} Y`$.
+    By the second disjunct of D.sle we have $`X'' \preceq_{\mathrm{lex}} P' \mathbin{+\!\!+} Y`$, and
+    $`\lvert X''\rvert \le \lvert P'\rvert`$, so the induction hypothesis $`\Xi(P')`$ applies and yields
+    $`X'' \preceq_{\mathrm{lex}} P'`$. This splits further into two cases.
+    If $`X'' = P'`$ then $`X = p :: P' = P`$ and the first disjunct of D.sle holds.
+    If $`X'' \prec_{\mathrm{lex}} P'`$ then, together with $`x = p`$, the second disjunct on the
+    right-hand side of the third clause of D.seqlex gives $`x :: X'' \prec_{\mathrm{lex}} p :: P'`$,
+    and the second disjunct of D.sle holds. ∎
 
 <a id="t-sle_trans"></a>
-## 定理: 広義比較の推移律 (T.sle_trans)
+## Theorem: transitivity of the non-strict comparison (T.sle_trans)
 
-### 定理
+### Theorem
 
-$`A \preceq_{\mathrm{lex}} B`$ かつ $`B \preceq_{\mathrm{lex}} C`$ ならば $`A \preceq_{\mathrm{lex}} C`$。
+If $`A \preceq_{\mathrm{lex}} B`$ and $`B \preceq_{\mathrm{lex}} C`$, then $`A \preceq_{\mathrm{lex}} C`$.
 
-### 証明
+### Proof
 
-$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）により、$`A \preceq_{\mathrm{lex}} B`$ は
-$`A = B`$ か $`A \prec_{\mathrm{lex}} B`$ である。
+By the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle), $`A \preceq_{\mathrm{lex}} B`$ means
+$`A = B`$ or $`A \prec_{\mathrm{lex}} B`$.
 
-- $`A = B`$ のとき。$`B`$ を $`A`$ に書き換えれば第 2 の仮定そのものである。
-- $`A \prec_{\mathrm{lex}} B`$ のとき。
-  [T.seqlex_sle_trans](Cofinality.md#t-seqlex_sle_trans) を
-  $`A \prec_{\mathrm{lex}} B`$ と $`B \preceq_{\mathrm{lex}} C`$ に適用して
-  $`A \prec_{\mathrm{lex}} C`$ を得る。D.sle の第 2 選言によりこれが結論である。∎
+- The case $`A = B`$. Rewriting $`B`$ as $`A`$ turns the second hypothesis into the conclusion itself.
+- The case $`A \prec_{\mathrm{lex}} B`$.
+  Applying [T.seqlex_sle_trans](Cofinality.md#t-seqlex_sle_trans) to
+  $`A \prec_{\mathrm{lex}} B`$ and $`B \preceq_{\mathrm{lex}} C`$ yields
+  $`A \prec_{\mathrm{lex}} C`$. By the second disjunct of D.sle this is the conclusion. ∎
 
 <a id="t-sle_of_append_left"></a>
-## 定理: 小さい側の右切り詰め (T.sle_of_append_left)
+## Theorem: truncating the smaller side on the right (T.sle_of_append_left)
 
-### 定理
+### Theorem
 
-$`X \mathbin{+\!\!+} Y \preceq_{\mathrm{lex}} W`$ ならば $`X \preceq_{\mathrm{lex}} W`$。
+If $`X \mathbin{+\!\!+} Y \preceq_{\mathrm{lex}} W`$, then $`X \preceq_{\mathrm{lex}} W`$.
 
-### 証明
+### Proof
 
-まず $`X \preceq_{\mathrm{lex}} X \mathbin{+\!\!+} Y`$ を示す。$`Y`$ の形で場合分けする。
+First we show $`X \preceq_{\mathrm{lex}} X \mathbin{+\!\!+} Y`$. Distinguish cases on the shape of $`Y`$.
 
-- $`Y = ()`$ のとき。$`X \mathbin{+\!\!+} () = X`$ であるから D.sle の第 1 選言が成り立つ。
-- $`Y = y :: Y'`$ のとき。$`Y \ne ()`$ であるから
-  [T.seqlex_prefix](Seqlex.md#t-seqlex_prefix) より
-  $`X \prec_{\mathrm{lex}} X \mathbin{+\!\!+} Y`$ であり、D.sle の第 2 選言が成り立つ。
+- The case $`Y = ()`$. Then $`X \mathbin{+\!\!+} () = X`$, so the first disjunct of D.sle holds.
+- The case $`Y = y :: Y'`$. Then $`Y \ne ()`$, so
+  [T.seqlex_prefix](Seqlex.md#t-seqlex_prefix) gives
+  $`X \prec_{\mathrm{lex}} X \mathbin{+\!\!+} Y`$, and the second disjunct of D.sle holds.
 
-得られた $`X \preceq_{\mathrm{lex}} X \mathbin{+\!\!+} Y`$ と仮定
-$`X \mathbin{+\!\!+} Y \preceq_{\mathrm{lex}} W`$ に [T.sle_trans](#t-sle_trans) を適用すればよい。∎
+It remains to apply [T.sle_trans](#t-sle_trans) to the resulting
+$`X \preceq_{\mathrm{lex}} X \mathbin{+\!\!+} Y`$ and the hypothesis
+$`X \mathbin{+\!\!+} Y \preceq_{\mathrm{lex}} W`$. ∎
 
 <a id="t-shiftr0_injective"></a>
-## 定理: 行 0 の右シフトは単射 (T.shiftr0_injective)
+## Theorem: the right shift of row 0 is injective (T.shiftr0_injective)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$ とする。$`X^{+d} = Y^{+d}`$ ならば $`X = Y`$。
+Let $`d \in \mathbb{N}`$. If $`X^{+d} = Y^{+d}`$, then $`X = Y`$.
 
-### 証明
+### Proof
 
-以下、対 $`p \in \mathbb{N} \times \mathbb{N}`$ の第 1 成分を $`p_1`$、第 2 成分を $`p_2`$ と書く。
+Below we write $`p_1`$ for the first entry and $`p_2`$ for the second entry of a pair $`p \in \mathbb{N} \times \mathbb{N}`$.
 
-写像 $`f : p \mapsto (p_1 + d,\ p_2)`$ が単射であることを示す。$`f(p) = f(q)`$ とすると、
-対の成分を比べて $`p_1 + d = q_1 + d`$ かつ $`p_2 = q_2`$ である。
-前者から $`p_1 = q_1`$ が従うので $`p = q`$ である。
+We show that the map $`f : p \mapsto (p_1 + d,\ p_2)`$ is injective. Suppose $`f(p) = f(q)`$; comparing
+the entries of the pairs gives $`p_1 + d = q_1 + d`$ and $`p_2 = q_2`$.
+The former yields $`p_1 = q_1`$, hence $`p = q`$.
 
-$`(\cdot)^{+d}`$ の定義（D.shiftr0）は $`f`$ による各要素の写像であり、
-単射な写像による列の各要素の写像は列について単射である。すなわち
-$`X^{+d} = Y^{+d}`$ から $`X = Y`$ が従う。∎
+The definition of $`(\cdot)^{+d}`$ (D.shiftr0) is the application of $`f`$ to each element, and
+applying an injective map to each element of a sequence is injective on sequences. That is,
+$`X^{+d} = Y^{+d}`$ implies $`X = Y`$. ∎
 
 <a id="t-seqlex_shiftr0"></a>
-## 定理: 行 0 の右シフトは狭義比較を保つ (T.seqlex_shiftr0)
+## Theorem: the right shift of row 0 preserves the strict comparison (T.seqlex_shiftr0)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$ とする。任意の $`X, Y \in \mathrm{PairSeq}`$ について
+Let $`d \in \mathbb{N}`$. For all $`X, Y \in \mathrm{PairSeq}`$,
 
 ```math
 X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y .
 ```
 
-### 証明
+### Proof
 
-$`X`$ の長さに関する帰納法（$`Y`$ は全称量化したまま動かす）。帰納法の述語は
+Induction on the length of $`X`$ (with $`Y`$ left universally quantified). The induction predicate is
 
 ```math
 \Theta(X) :\equiv \forall Y \in \mathrm{PairSeq},\
   \bigl(X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y\bigr).
 ```
 
-- **基底段** $`X = ()`$：$`()^{+d} = ()`$ である。$`Y`$ の形で場合分けする。
-  $`Y = ()`$ のときは $`Y^{+d} = ()`$ であり、D.seqlex の第 1 式により
-  両辺とも $`() \ne ()`$、すなわちともに偽である。
-  $`Y = y :: Y'`$ のときは $`Y^{+d} = (y_1+d,\ y_2) :: Y'^{+d}`$ であり、
-  D.seqlex の第 1 式により両辺とも空列でない列についての条件であり、ともに真である。
+- **Base case** $`X = ()`$: here $`()^{+d} = ()`$. Distinguish cases on the shape of $`Y`$.
+  If $`Y = ()`$ then $`Y^{+d} = ()`$, and by the first clause of D.seqlex
+  both sides read $`() \ne ()`$, so both are false.
+  If $`Y = y :: Y'`$ then $`Y^{+d} = (y_1+d,\ y_2) :: Y'^{+d}`$, and by
+  the first clause of D.seqlex both sides are conditions on sequences that are not empty, so both are true.
 
-- **帰納段** $`X = x :: X'`$：帰納法の仮定は $`\Theta(X')`$ である。$`Y`$ の形で場合分けする。
+- **Inductive step** $`X = x :: X'`$: the induction hypothesis is $`\Theta(X')`$. Distinguish cases on the shape of $`Y`$.
 
-  **(a) $`Y = ()`$ のとき。** $`Y^{+d} = ()`$、
-  $`X^{+d} = (x_1+d,\ x_2) :: X'^{+d}`$ であり、
-  D.seqlex の第 2 式により両辺とも偽である。
+  **(a) The case $`Y = ()`$.** Here $`Y^{+d} = ()`$ and
+  $`X^{+d} = (x_1+d,\ x_2) :: X'^{+d}`$, so by
+  the second clause of D.seqlex both sides are false.
 
-  **(b) $`Y = y :: Y'`$ のとき。** [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+  **(b) The case $`Y = y :: Y'`$.** By [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons)
 
 ```math
 X^{+d} = (x_1+d,\ x_2) :: X'^{+d}, \qquad
 Y^{+d} = (y_1+d,\ y_2) :: Y'^{+d}
 ```
 
-  である。D.seqlex の第 3 式を両辺に適用すると、示すべきことは
+  Applying the third clause of D.seqlex to both sides, what is to be shown is
 
 ```math
 \begin{aligned}
@@ -356,59 +357,59 @@ Y^{+d} = (y_1+d,\ y_2) :: Y'^{+d}
 \end{aligned}
 ```
 
-  である。帰納法の仮定 $`\Theta(X')`$ を $`Y := Y'`$ に適用すると
-  $`X'^{+d} \prec_{\mathrm{lex}} Y'^{+d} \iff X' \prec_{\mathrm{lex}} Y'`$
-  であるから、残るのは次の 2 点である。
+  Applying the induction hypothesis $`\Theta(X')`$ with $`Y := Y'`$ gives
+  $`X'^{+d} \prec_{\mathrm{lex}} Y'^{+d} \iff X' \prec_{\mathrm{lex}} Y'`$,
+  so two points remain.
 
-  第 1 に、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より
+  First, by the definition of $`\prec_{\mathrm{p}}`$ (D.pairlt)
 
 ```math
 (x_1+d,\ x_2) \prec_{\mathrm{p}} (y_1+d,\ y_2)
   \iff x_1 + d \lt y_1 + d \ \vee\ (x_1 + d = y_1 + d \wedge x_2 \lt y_2)
 ```
 
-  であり、$`x_1 + d \lt y_1 + d \iff x_1 \lt y_1`$ および
-  $`x_1 + d = y_1 + d \iff x_1 = y_1`$ であるから、右辺は
-  $`x_1 \lt y_1 \vee (x_1 = y_1 \wedge x_2 \lt y_2)`$、すなわち $`x \prec_{\mathrm{p}} y`$ と同値である。
+  and since $`x_1 + d \lt y_1 + d \iff x_1 \lt y_1`$ and
+  $`x_1 + d = y_1 + d \iff x_1 = y_1`$, the right-hand side is equivalent to
+  $`x_1 \lt y_1 \vee (x_1 = y_1 \wedge x_2 \lt y_2)`$, that is, to $`x \prec_{\mathrm{p}} y`$.
 
-  第 2 に、$`(x_1+d,\ x_2) = (y_1+d,\ y_2)`$ は
-  $`x_1 + d = y_1 + d`$ かつ $`x_2 = y_2`$ と同値であり、
-  $`x_1 + d = y_1 + d \iff x_1 = y_1`$ であるから $`x = y`$ と同値である。
+  Second, $`(x_1+d,\ x_2) = (y_1+d,\ y_2)`$ is equivalent to
+  $`x_1 + d = y_1 + d`$ and $`x_2 = y_2`$, and since
+  $`x_1 + d = y_1 + d \iff x_1 = y_1`$ it is equivalent to $`x = y`$.
 
-  以上により両辺の 2 つの選言が対応し、同値が成り立つ。∎
+  Thus the two disjuncts on either side correspond, and the equivalence holds. ∎
 
 <a id="t-sle_shiftr0"></a>
-## 定理: 行 0 の右シフトは広義比較を保つ (T.sle_shiftr0)
+## Theorem: the right shift of row 0 preserves the non-strict comparison (T.sle_shiftr0)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$ とする。任意の $`X, Y \in \mathrm{PairSeq}`$ について
+Let $`d \in \mathbb{N}`$. For all $`X, Y \in \mathrm{PairSeq}`$,
 
 ```math
 X^{+d} \preceq_{\mathrm{lex}} Y^{+d} \iff X \preceq_{\mathrm{lex}} Y .
 ```
 
-### 証明
+### Proof
 
-$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）により、示すべきことは
+By the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle), what is to be shown is
 
 ```math
 \bigl(X^{+d} = Y^{+d} \vee X^{+d} \prec_{\mathrm{lex}} Y^{+d}\bigr)
 \iff \bigl(X = Y \vee X \prec_{\mathrm{lex}} Y\bigr)
 ```
 
-である。第 2 選言どうしは [T.seqlex_shiftr0](#t-seqlex_shiftr0) により同値であるから、
-第 1 選言どうしが対応することを見ればよい。
+The second disjuncts are equivalent by [T.seqlex_shiftr0](#t-seqlex_shiftr0), so it suffices to see
+that the first disjuncts correspond.
 
-- 左から右：$`X^{+d} = Y^{+d}`$ ならば
-  [T.shiftr0_injective](#t-shiftr0_injective) より $`X = Y`$。
-- 右から左：$`X = Y`$ ならば、両辺に $`(\cdot)^{+d}`$ を施して
-  $`X^{+d} = Y^{+d}`$。∎
+- From left to right: if $`X^{+d} = Y^{+d}`$ then
+  [T.shiftr0_injective](#t-shiftr0_injective) gives $`X = Y`$.
+- From right to left: if $`X = Y`$, applying $`(\cdot)^{+d}`$ to both sides gives
+  $`X^{+d} = Y^{+d}`$. ∎
 
 <a id="d-SpineOK"></a>
-## 定義: 右可視列の行 1 の下界 (D.SpineOK)
+## Definition: lower bound on row 1 of the right-visible columns (D.SpineOK)
 
-$`A \in \mathrm{PairSeq}`$、$`L, w \in \mathbb{N}`$ に対し
+For $`A \in \mathrm{PairSeq}`$ and $`L, w \in \mathbb{N}`$,
 
 ```math
 \begin{aligned}
@@ -420,21 +421,21 @@ $`A \in \mathrm{PairSeq}`$、$`L, w \in \mathbb{N}`$ に対し
 \end{aligned}
 ```
 
-すなわち、$`A`$ の列 $`x`$ であって行 0 の値が $`L`$ より小さく、かつ $`A`$ の中で $`x`$ より
-後ろのどの列も行 0 の値が $`x_1`$ より大きいもの（これを $`x`$ が**右可視**であるという）は、
-すべて行 1 の値が $`w`$ 以上である、という条件である。
+That is, the condition says that every column $`x`$ of $`A`$ whose row-0 value is smaller than $`L`$ and
+such that every column of $`A`$ situated after $`x`$ has row-0 value greater than $`x_1`$
+(such an $`x`$ is called **right-visible**) has row-1 value at least $`w`$.
 
 <a id="d-ArgDomCore"></a>
-## 定義: 引数支配の中核 (D.ArgDomCore)
+## Definition: the core of argument domination (D.ArgDomCore)
 
-以下、$`L \in \mathrm{PairSeq}`$ に対し $`\mathrm{head}\,L`$ を $`L`$ の先頭要素とする
-（$`L = ()`$ のときは $`\mathrm{head}\,L := (0,0)`$ とする）。
+Below, for $`L \in \mathrm{PairSeq}`$ let $`\mathrm{head}\,L`$ denote the first element of $`L`$
+(with $`\mathrm{head}\,L := (0,0)`$ when $`L = ()`$).
 
-命題 $`\mathrm{ArgDomCore}`$ を次で定める。すなわち、任意の
-$`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ と $`u, w, e \in \mathbb{N}`$ について、
-次の 8 条件がすべて成り立つならば結論 (9) が成り立つ、という命題である。
+The proposition $`\mathrm{ArgDomCore}`$ is defined as follows. It is the proposition that for all
+$`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ and $`u, w, e \in \mathbb{N}`$,
+if the following 8 conditions all hold then the conclusion (9) holds.
 
-1. $`\bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）
+1. $`\bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS))
 2. $`0 \lt e`$
 3. $`\forall x \in A_1,\ u \lt x_1`$
 4. $`\forall x \in B,\ u + e \lt x_1`$
@@ -445,11 +446,11 @@ $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ と $`u, w, e \in \mathbb{N}`$ につ
 9. $`B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}`$
 
 <a id="t-spineOK_of_nextrel1"></a>
-## 定理: 行 1 の親子関係から SpineOK を得る (T.spineOK_of_nextrel1)
+## Theorem: SpineOK from the row-1 parent relation (T.spineOK_of_nextrel1)
 
-### 定理
+### Theorem
 
-$`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$ とし、
+Let $`G, R \in \mathrm{PairSeq}`$ and $`v_0, w_0, d_0 \in \mathbb{N}`$, and put
 
 ```math
 \ell := (v_0 + d_0,\ w_0 + 1), \qquad
@@ -457,34 +458,34 @@ M := \bigl(G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr) \mathbin{+\!\!+} (\ell), \q
 j := \bigl\lvert G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr\rvert
 ```
 
-とおく。$`\lvert G\rvert \to^M_1 j`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば
-$`\mathrm{SpineOK}(R,\ v_0 + d_0,\ w_0)`$。
+If $`\lvert G\rvert \to^M_1 j`$ ([D.nextrel1](Pss.md#d-nextrel1)), then
+$`\mathrm{SpineOK}(R,\ v_0 + d_0,\ w_0)`$.
 
-### 証明
+### Proof
 
-$`\to^M_1`$ の定義（D.nextrel1）の 6 条件のうち、条件 (5)
+Of the 6 conditions in the definition of $`\to^M_1`$ (D.nextrel1), we use condition (5)
 
 ```math
 \lvert G\rvert \le^M_0 j
 ```
 
-と条件 (6)
+and condition (6)
 
 ```math
 \forall j'\ \bigl(\lvert G\rvert \lt j' \ \wedge\ j' \le^M_0 j \ \to\ M_{1,j} \le M_{1,j'}\bigr)
 ```
 
-を用いる（$`\le^M_0`$ [D.le0](Pss.md#d-le0)、$`M_{i,j}`$ [D.entry](Pss.md#d-entry)）。
+($`\le^M_0`$ [D.le0](Pss.md#d-le0), $`M_{i,j}`$ [D.entry](Pss.md#d-entry)).
 
-$`\mathrm{SpineOK}`$ の定義（D.SpineOK）にしたがい、$`U, V \in \mathrm{PairSeq}`$ と
-$`x \in \mathbb{N}\times\mathbb{N}`$ を取り
+Following the definition of $`\mathrm{SpineOK}`$ (D.SpineOK), take $`U, V \in \mathrm{PairSeq}`$ and
+$`x \in \mathbb{N}\times\mathbb{N}`$, assume
 
 ```math
 R = U \mathbin{+\!\!+} x :: V, \qquad x_1 \lt v_0 + d_0, \qquad \forall y \in V,\ x_1 \lt y_1
 ```
 
-を仮定して $`w_0 \le x_2`$ を示す。$`A := G \mathbin{+\!\!+} ((v_0,w_0) :: U)`$ とおくと、
-$`R`$ の分解を代入して
+and show $`w_0 \le x_2`$. Put $`A := G \mathbin{+\!\!+} ((v_0,w_0) :: U)`$; substituting the
+decomposition of $`R`$ gives
 
 ```math
 M = A \mathbin{+\!\!+} \bigl(x :: (V \mathbin{+\!\!+} (\ell))\bigr), \qquad
@@ -492,77 +493,75 @@ M = A \mathbin{+\!\!+} \bigl(x :: (V \mathbin{+\!\!+} (\ell))\bigr), \qquad
 j = \lvert A\rvert + 1 + \lvert V\rvert
 ```
 
-である。[T.getD_append_right'](Cofinality.md#t-getD_append_right') を
-$`A`$ と $`x :: (V \mathbin{+\!\!+} (\ell))`$、添字 $`0`$ に適用すると
+Applying [T.getD_append_right'](Cofinality.md#t-getD_append_right') to
+$`A`$ and $`x :: (V \mathbin{+\!\!+} (\ell))`$ with index $`0`$ gives
 
 ```math
 M\langle \lvert A\rvert \rangle = x
 ```
 
-であり、同じ補題を添字 $`t+1`$ に適用すると
+and applying the same lemma with index $`t+1`$ gives
 
 ```math
 M\bigl\langle \lvert A\rvert + (t+1) \bigr\rangle = (V \mathbin{+\!\!+} (\ell))\langle t \rangle
 ```
 
-である。また $`j = \lvert G \mathbin{+\!\!+} ((v_0,w_0) :: R)\rvert`$ は $`M`$ における $`\ell`$ の位置であり、
-同じ補題を $`G \mathbin{+\!\!+} ((v_0,w_0) :: R)`$ と $`(\ell)`$、添字 $`0`$ に適用して
-$`M\langle j\rangle = \ell`$ を得る。
+Moreover $`j = \lvert G \mathbin{+\!\!+} ((v_0,w_0) :: R)\rvert`$ is the position of $`\ell`$ in $`M`$, so
+applying the same lemma to $`G \mathbin{+\!\!+} ((v_0,w_0) :: R)`$ and $`(\ell)`$ with index $`0`$ gives
+$`M\langle j\rangle = \ell`$.
 
-**行 0 の値についての中間評価。** 任意の $`y`$ について
-$`\lvert A\rvert \lt y`$ かつ $`y \le j`$ ならば $`M_{0,\lvert A\rvert} \lt M_{0,y}`$ であることを示す。
-$`\lvert A\rvert \lt y`$ より $`y = \lvert A\rvert + (t+1)`$ と書ける。
-$`y \le j = \lvert A\rvert + 1 + \lvert V\rvert`$ より $`t \le \lvert V\rvert`$ である。
-[T.entry_zero](Cofinality.md#t-entry_zero) より
-$`M_{0,\lvert A\rvert} = x_1`$、$`M_{0,y} = \bigl((V \mathbin{+\!\!+} (\ell))\langle t\rangle\bigr)_1`$ である。
+**An intermediate estimate on the row-0 values.** We show that for every $`y`$, if
+$`\lvert A\rvert \lt y`$ and $`y \le j`$, then $`M_{0,\lvert A\rvert} \lt M_{0,y}`$.
+From $`\lvert A\rvert \lt y`$ we may write $`y = \lvert A\rvert + (t+1)`$.
+From $`y \le j = \lvert A\rvert + 1 + \lvert V\rvert`$ we get $`t \le \lvert V\rvert`$.
+By [T.entry_zero](Cofinality.md#t-entry_zero) we have
+$`M_{0,\lvert A\rvert} = x_1`$ and $`M_{0,y} = \bigl((V \mathbin{+\!\!+} (\ell))\langle t\rangle\bigr)_1`$.
 
-- $`t \lt \lvert V\rvert`$ のとき。$`(V \mathbin{+\!\!+} (\ell))\langle t\rangle = V\langle t\rangle`$ であり、
-  これは $`V`$ の要素である。仮定 $`\forall y \in V,\ x_1 \lt y_1`$ より
-  $`x_1 \lt \bigl(V\langle t\rangle\bigr)_1`$。
-- $`t = \lvert V\rvert`$ のとき。$`(V \mathbin{+\!\!+} (\ell))\langle \lvert V\rvert\rangle = \ell`$ であり、
-  $`\ell_1 = v_0 + d_0`$ であるから、仮定 $`x_1 \lt v_0 + d_0`$ より $`x_1 \lt \ell_1`$。
+- The case $`t \lt \lvert V\rvert`$. Then $`(V \mathbin{+\!\!+} (\ell))\langle t\rangle = V\langle t\rangle`$,
+  which is an element of $`V`$. The hypothesis $`\forall y \in V,\ x_1 \lt y_1`$ gives
+  $`x_1 \lt \bigl(V\langle t\rangle\bigr)_1`$.
+- The case $`t = \lvert V\rvert`$. Then $`(V \mathbin{+\!\!+} (\ell))\langle \lvert V\rvert\rangle = \ell`$ and
+  $`\ell_1 = v_0 + d_0`$, so the hypothesis $`x_1 \lt v_0 + d_0`$ gives $`x_1 \lt \ell_1`$.
 
-**行 0 の祖先関係の持ち上げ。** $`\lvert G\rvert \lt \lvert A\rvert`$ かつ
-$`\lvert A\rvert \le j`$ であり、いま示した中間評価が成り立つので、
-条件 (5) に [T.le0_through_pivot](Column-4.md#t-le0_through_pivot) を適用して
+**Lifting the row-0 ancestor relation.** We have $`\lvert G\rvert \lt \lvert A\rvert`$ and
+$`\lvert A\rvert \le j`$, and the intermediate estimate just shown holds, so applying
+[T.le0_through_pivot](Column-4.md#t-le0_through_pivot) to condition (5) yields
 
 ```math
 \lvert A\rvert \le^M_0 j
 ```
 
-を得る。
-
-**行 1 の最小性からの結論。** [T.entry_one](Cofinality.md#t-entry_one) と
-$`M\langle j\rangle = \ell`$ より $`M_{1,j} = \ell_2 = w_0 + 1`$ であり、
-$`M\langle \lvert A\rvert\rangle = x`$ より $`M_{1,\lvert A\rvert} = x_2`$ である。
-条件 (6) を $`j' := \lvert A\rvert`$ に適用すると、
-$`\lvert G\rvert \lt \lvert A\rvert`$ と $`\lvert A\rvert \le^M_0 j`$ から
+**Conclusion from minimality on row 1.** By [T.entry_one](Cofinality.md#t-entry_one) and
+$`M\langle j\rangle = \ell`$ we have $`M_{1,j} = \ell_2 = w_0 + 1`$, and from
+$`M\langle \lvert A\rvert\rangle = x`$ we have $`M_{1,\lvert A\rvert} = x_2`$.
+Applying condition (6) with $`j' := \lvert A\rvert`$, from
+$`\lvert G\rvert \lt \lvert A\rvert`$ and $`\lvert A\rvert \le^M_0 j`$ we obtain
 
 ```math
 w_0 + 1 = M_{1,j} \le M_{1,\lvert A\rvert} = x_2
 ```
 
-が従う。とくに $`w_0 \le x_2`$ である。∎
+In particular $`w_0 \le x_2`$. ∎
 
 <a id="t-ascArgDom_of_core"></a>
-## 定理: 中核から昇順引数支配へ (T.ascArgDom_of_core)
+## Theorem: from the core to ascending argument domination (T.ascArgDom_of_core)
 
-### 定理
+### Theorem
 
-$`\mathrm{ArgDomCore}`$ が成り立つならば
-$`\mathrm{AscArgDom}`$（[D.AscArgDom](Cofinality-3.md#d-AscArgDom)）が成り立つ。
+If $`\mathrm{ArgDomCore}`$ holds, then
+$`\mathrm{AscArgDom}`$ ([D.AscArgDom](Cofinality-3.md#d-AscArgDom)) holds.
 
-### 証明
+### Proof
 
-以下、$`a \in \mathbb{N}`$ と $`L \in \mathrm{PairSeq}`$ に対し、$`\mathrm{tw}_a L`$ を
-$`L`$ の先頭から第 1 成分が $`a`$ より大きい要素が続く極大な前部分列、
-$`\mathrm{dw}_a L`$ をその残りの列とする。すなわち
-$`\mathrm{tw}_a L \mathbin{+\!\!+} \mathrm{dw}_a L = L`$ であり、$`\mathrm{tw}_a L`$ の各要素 $`x`$ は
-$`a \lt x_1`$ をみたし、$`\mathrm{dw}_a L \ne ()`$ ならば
-$`\neg\bigl(a \lt (\mathrm{head}(\mathrm{dw}_a L))_1\bigr)`$ である。
+Below, for $`a \in \mathbb{N}`$ and $`L \in \mathrm{PairSeq}`$, let $`\mathrm{tw}_a L`$ be
+the maximal prefix of $`L`$ along which, from the front on, every element has first entry greater than $`a`$,
+and let $`\mathrm{dw}_a L`$ be the remaining sequence. That is,
+$`\mathrm{tw}_a L \mathbin{+\!\!+} \mathrm{dw}_a L = L`$, every element $`x`$ of $`\mathrm{tw}_a L`$ satisfies
+$`a \lt x_1`$, and if $`\mathrm{dw}_a L \ne ()`$ then
+$`\neg\bigl(a \lt (\mathrm{head}(\mathrm{dw}_a L))_1\bigr)`$.
 
-$`\mathrm{AscArgDom}`$ の定義（D.AscArgDom）にしたがい、
-$`G, R, S \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$ を取り、次を仮定する。
+Following the definition of $`\mathrm{AscArgDom}`$ (D.AscArgDom), take
+$`G, R, S \in \mathrm{PairSeq}`$ and $`v_0, w_0, d_0 \in \mathbb{N}`$, and assume the following.
 
 ```math
 \bigl(G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr) \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0+1)\bigr) \in \mathrm{ST\_PS},
@@ -575,43 +574,46 @@ $`G, R, S \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$ を取り、
 \lvert G\rvert \to^{M}_1 \bigl\lvert G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr\rvert
 ```
 
-ここで $`M := (G \mathbin{+\!\!+} ((v_0,w_0) :: R)) \mathbin{+\!\!+} ((v_0+d_0,\ w_0+1))`$ である。
-示すべきは、ある $`m`$ について
+Here $`M := (G \mathbin{+\!\!+} ((v_0,w_0) :: R)) \mathbin{+\!\!+} ((v_0+d_0,\ w_0+1))`$.
+What is to be shown is that for some $`m`$
 
 ```math
 \mathrm{tw}_{v_0+d_0} S \ \preceq_{\mathrm{lex}}\
   \Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}\bigl(((v_0,w_0) :: R)^{+d_0},\ m\bigr)\Bigr)^{+d_0}
 ```
 
-が成り立つことである。
+holds.
 
-**列の分割。** $`S_{\mathrm{hi}} := \mathrm{tw}_{v_0+d_0} S`$、
-$`D := \mathrm{dw}_{v_0+d_0} S`$、$`A_2 := \mathrm{tw}_{v_0} D`$、$`Z := \mathrm{dw}_{v_0} D`$ とおく。
-$`\mathrm{tw}`$ と $`\mathrm{dw}`$ の定義より
-$`S_{\mathrm{hi}} \mathbin{+\!\!+} D = S`$ および $`A_2 \mathbin{+\!\!+} Z = D`$ である。
-さらに次の 5 つが成り立つ。
+**Splitting the sequence.** Put $`S_{\mathrm{hi}} := \mathrm{tw}_{v_0+d_0} S`$,
+$`D := \mathrm{dw}_{v_0+d_0} S`$, $`A_2 := \mathrm{tw}_{v_0} D`$, $`Z := \mathrm{dw}_{v_0} D`$.
+By the definitions of $`\mathrm{tw}`$ and $`\mathrm{dw}`$ we have
+$`S_{\mathrm{hi}} \mathbin{+\!\!+} D = S`$ and $`A_2 \mathbin{+\!\!+} Z = D`$.
+Moreover the following five statements hold.
 
-**(i) $`\forall x \in S_{\mathrm{hi}},\ v_0 + d_0 \lt x_1`$。**
-$`\mathrm{tw}_{v_0+d_0} S`$ の要素は述語「第 1 成分が $`v_0+d_0`$ より大きい」をみたすからである。
+**(i) $`\forall x \in S_{\mathrm{hi}},\ v_0 + d_0 \lt x_1`$.**
+This holds because the elements of $`\mathrm{tw}_{v_0+d_0} S`$ satisfy the predicate that the first entry
+is greater than $`v_0+d_0`$.
 
-**(ii) $`\forall x \in A_2,\ v_0 \lt x_1`$。**
-$`\mathrm{tw}_{v_0} D`$ の要素は述語「第 1 成分が $`v_0`$ より大きい」をみたすからである。
+**(ii) $`\forall x \in A_2,\ v_0 \lt x_1`$.**
+This holds because the elements of $`\mathrm{tw}_{v_0} D`$ satisfy the predicate that the first entry
+is greater than $`v_0`$.
 
-**(iii) $`D = () \ \vee\ (\mathrm{head}\,D)_1 \le v_0 + d_0`$。**
-$`D = \mathrm{dw}_{v_0+d_0} S`$ が空でなければ、その先頭は述語をみたさない最初の要素であり、
-$`\neg(v_0 + d_0 \lt (\mathrm{head}\,D)_1)`$、すなわち $`(\mathrm{head}\,D)_1 \le v_0 + d_0`$ である。
+**(iii) $`D = () \ \vee\ (\mathrm{head}\,D)_1 \le v_0 + d_0`$.**
+If $`D = \mathrm{dw}_{v_0+d_0} S`$ is not empty, its first element is the first element failing the predicate,
+so $`\neg(v_0 + d_0 \lt (\mathrm{head}\,D)_1)`$, that is $`(\mathrm{head}\,D)_1 \le v_0 + d_0`$.
 
-**(iv) $`A_2 = () \ \vee\ (\mathrm{head}\,A_2)_1 \le v_0 + d_0`$。**
-$`A_2 \ne ()`$ とする。$`A_2 = \mathrm{tw}_{v_0} D`$ が空でないので $`D \ne ()`$ であり、
-$`\mathrm{tw}_{v_0} D`$ は $`D`$ の先頭から取った前部分列で空でないから
-$`\mathrm{head}\,A_2 = \mathrm{head}\,D`$ である。(iii) の第 1 選言は $`D \ne ()`$ により偽であるから
-第 2 選言が成り立ち、$`(\mathrm{head}\,A_2)_1 = (\mathrm{head}\,D)_1 \le v_0 + d_0`$。
+**(iv) $`A_2 = () \ \vee\ (\mathrm{head}\,A_2)_1 \le v_0 + d_0`$.**
+Suppose $`A_2 \ne ()`$. Since $`A_2 = \mathrm{tw}_{v_0} D`$ is not empty, $`D \ne ()`$, and since
+$`\mathrm{tw}_{v_0} D`$ is a non-empty prefix taken from the front of $`D`$, we have
+$`\mathrm{head}\,A_2 = \mathrm{head}\,D`$. The first disjunct of (iii) is false because $`D \ne ()`$, so
+the second disjunct holds and $`(\mathrm{head}\,A_2)_1 = (\mathrm{head}\,D)_1 \le v_0 + d_0`$.
 
-**(v) $`Z = () \ \vee\ (\mathrm{head}\,Z)_1 \le v_0`$。**
-$`Z = \mathrm{dw}_{v_0} D`$ が空でなければ、その先頭は述語
-「第 1 成分が $`v_0`$ より大きい」をみたさないから $`(\mathrm{head}\,Z)_1 \le v_0`$ である。
+**(v) $`Z = () \ \vee\ (\mathrm{head}\,Z)_1 \le v_0`$.**
+If $`Z = \mathrm{dw}_{v_0} D`$ is not empty, its first element fails the predicate that the first entry
+is greater than $`v_0`$, so $`(\mathrm{head}\,Z)_1 \le v_0`$.
 
-**中核の適用。** $`S = S_{\mathrm{hi}} \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)`$ を代入し、結合則で括り直すと
+**Applying the core.** Substituting $`S = S_{\mathrm{hi}} \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)`$
+and regrouping by associativity gives
 
 ```math
 \begin{aligned}
@@ -622,42 +624,40 @@ $`Z = \mathrm{dw}_{v_0} D`$ が空でなければ、その先頭は述語
 \end{aligned}
 ```
 
-である。$`\mathrm{ArgDomCore}`$ を
+Apply $`\mathrm{ArgDomCore}`$ with
 $`X := G`$, $`A_1 := R`$, $`B := S_{\mathrm{hi}}`$, $`A_2 := A_2`$, $`Z := Z`$,
-$`u := v_0`$, $`w := w_0`$, $`e := d_0`$ に適用する。
-D.ArgDomCore の 8 条件は次のように与えられる。
+$`u := v_0`$, $`w := w_0`$, $`e := d_0`$.
+The 8 conditions of D.ArgDomCore are supplied as follows.
 
-- 条件 (1)：いま書き換えた第 2 の $`\mathrm{ST\_PS}`$ の仮定そのものである。
-- 条件 (2)：仮定 $`0 \lt d_0`$。
-- 条件 (3)：仮定 $`\forall x \in R,\ v_0 \lt x_1`$。
-- 条件 (4)：(i)。
-- 条件 (5)：(ii)。
-- 条件 (6)：(iv)。
-- 条件 (7)：(v)。
-- 条件 (8)：$`\mathrm{SpineOK}(R,\ v_0+d_0,\ w_0)`$ であり、
-  [T.spineOK_of_nextrel1](#t-spineOK_of_nextrel1) を第 5 の仮定に適用して得られる。
+- Condition (1): exactly the second $`\mathrm{ST\_PS}`$ hypothesis, as just rewritten.
+- Condition (2): the hypothesis $`0 \lt d_0`$.
+- Condition (3): the hypothesis $`\forall x \in R,\ v_0 \lt x_1`$.
+- Condition (4): (i).
+- Condition (5): (ii).
+- Condition (6): (iv).
+- Condition (7): (v).
+- Condition (8): $`\mathrm{SpineOK}(R,\ v_0+d_0,\ w_0)`$, obtained by applying
+  [T.spineOK_of_nextrel1](#t-spineOK_of_nextrel1) to the fifth hypothesis.
 
-よって結論 (9)
+We therefore obtain the conclusion (9)
 
 ```math
 S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
   \bigl(R \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: (S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)\bigr)^{+d_0}
 ```
 
-を得る。[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) と [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により右辺は
+By [T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) and [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) the right-hand side equals
 
 ```math
 R^{+d_0} \mathbin{+\!\!+} (v_0+d_0+d_0,\ w_0) :: (S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)^{+d_0}
 ```
 
-に等しい。
-
-**コピー塔への展開。** [T.peel_aux](#t-peel_aux) を
+**Expansion into the tower of copies.** Apply [T.peel_aux](#t-peel_aux) with
 $`d := d_0`$, $`w := w_0`$, $`n := \lvert S_{\mathrm{hi}}\rvert`$,
 $`X := S_{\mathrm{hi}}`$, $`Q := R^{+d_0}`$, $`A_2 := A_2`$,
-$`a := v_0+d_0+d_0`$ に適用する。長さの条件
-$`\lvert S_{\mathrm{hi}}\rvert \le \lvert S_{\mathrm{hi}}\rvert`$ は $`\le`$ の反射性で成り立つ。
-よってある $`m`$ について
+$`a := v_0+d_0+d_0`$. The length condition
+$`\lvert S_{\mathrm{hi}}\rvert \le \lvert S_{\mathrm{hi}}\rvert`$ holds by reflexivity of $`\le`$.
+Hence for some $`m`$
 
 ```math
 S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
@@ -665,8 +665,8 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
   \mathrm{copies}_{d_0}\bigl((v_0+d_0+d_0,\ w_0) :: (R^{+d_0})^{+d_0},\ m\bigr)
 ```
 
-が成り立つ。この $`m`$ が求めるものである。実際、[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append)、[T.shiftr0_copies](Cofinality-2.md#t-shiftr0_copies)、
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+holds. This $`m`$ is the required one. Indeed, by [T.shiftr0_append](Cofinality-3.md#t-shiftr0_append), [T.shiftr0_copies](Cofinality-2.md#t-shiftr0_copies) and
+[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons)
 
 ```math
 \begin{aligned}
@@ -678,31 +678,31 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
 \end{aligned}
 ```
 
-であり、いま得た比較の右辺と一致する。∎
+which coincides with the right-hand side of the comparison just obtained. ∎
 
 <a id="t-pss_cofinality_of_core"></a>
-## 定理: 中核から PSS の共終性へ (T.pss_cofinality_of_core)
+## Theorem: from the core to cofinality for PSS (T.pss_cofinality_of_core)
 
-### 定理
+### Theorem
 
-$`\mathrm{ArgDomCore}`$ が成り立つとする。$`M, N \in \mathrm{ST\_PS}`$ であり
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）ならば、ある $`n`$ が存在して
-$`1 \le n`$ かつ $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$（$`M[n]`$ [D.oper](Pss.md#d-oper)、$`\preceq`$ [D.ole](Term.md#d-ole)）。
+Assume $`\mathrm{ArgDomCore}`$. If $`M, N \in \mathrm{ST\_PS}`$ and
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ ($`\mathrm{tr}`$ [D.translate](Term.md#d-translate), $`\prec`$ [D.olt](Term.md#d-olt)), then there exists $`n`$ such that
+$`1 \le n`$ and $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$ ($`M[n]`$ [D.oper](Pss.md#d-oper), $`\preceq`$ [D.ole](Term.md#d-ole)).
 
-### 証明
+### Proof
 
-[T.ascArgDom_of_core](#t-ascArgDom_of_core) を仮定 $`\mathrm{ArgDomCore}`$ に適用して
-$`\mathrm{AscArgDom}`$ を得る。これと、仮定 $`M \in \mathrm{ST\_PS}`$、$`N \in \mathrm{ST\_PS}`$、
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ を
-[T.pss_cofinality_of_argdom](Cofinality-3.md#t-pss_cofinality_of_argdom) に与えると、
-$`1 \le n`$ かつ $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$ をみたす $`n`$ が得られる。∎
+Applying [T.ascArgDom_of_core](#t-ascArgDom_of_core) to the hypothesis $`\mathrm{ArgDomCore}`$ yields
+$`\mathrm{AscArgDom}`$. Feeding this, together with the hypotheses $`M \in \mathrm{ST\_PS}`$, $`N \in \mathrm{ST\_PS}`$ and
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$, into
+[T.pss_cofinality_of_argdom](Cofinality-3.md#t-pss_cofinality_of_argdom) produces an $`n`$ satisfying
+$`1 \le n`$ and $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$. ∎
 
 <a id="d-ArgDomCoreOn"></a>
-## 定義: 中核の列ごとの形 (D.ArgDomCoreOn)
+## Definition: the per-sequence form of the core (D.ArgDomCoreOn)
 
-$`N \in \mathrm{PairSeq}`$ に対し、命題 $`\mathrm{ArgDomCoreOn}(N)`$ を次で定める。
-すなわち、任意の $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ と $`u, w, e \in \mathbb{N}`$ について、
-次の 8 条件がすべて成り立つならば結論 (9) が成り立つ、という命題である。
+For $`N \in \mathrm{PairSeq}`$, the proposition $`\mathrm{ArgDomCoreOn}(N)`$ is defined as follows.
+It is the proposition that for all $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ and $`u, w, e \in \mathbb{N}`$,
+if the following 8 conditions all hold then the conclusion (9) holds.
 
 1. $`N = \bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z`$
 2. $`0 \lt e`$
@@ -715,26 +715,25 @@ $`N \in \mathrm{PairSeq}`$ に対し、命題 $`\mathrm{ArgDomCoreOn}(N)`$ を�
 9. $`B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}`$
 
 <a id="t-argDomCore_of_on"></a>
-## 定理: 列ごとの形から中核へ (T.argDomCore_of_on)
+## Theorem: from the per-sequence form to the core (T.argDomCore_of_on)
 
-### 定理
+### Theorem
 
-任意の $`N \in \mathrm{PairSeq}`$ について
-$`N \in \mathrm{ST\_PS} \to \mathrm{ArgDomCoreOn}(N)`$ が成り立つならば、
-$`\mathrm{ArgDomCore}`$ が成り立つ。
+If $`N \in \mathrm{ST\_PS} \to \mathrm{ArgDomCoreOn}(N)`$ holds for every $`N \in \mathrm{PairSeq}`$,
+then $`\mathrm{ArgDomCore}`$ holds.
 
-### 証明
+### Proof
 
-D.ArgDomCore にしたがい $`X, A_1, B, A_2, Z`$ と $`u, w, e`$ を取り、条件 (1) から (8) を仮定する。
+Following D.ArgDomCore, take $`X, A_1, B, A_2, Z`$ and $`u, w, e`$, and assume conditions (1) to (8). Put
 
 ```math
 N := \bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z
 ```
 
-とおくと、条件 (1) は $`N \in \mathrm{ST\_PS}`$ である。仮定をこの $`N`$ に適用して
-$`\mathrm{ArgDomCoreOn}(N)`$ を得る。
+Then condition (1) says $`N \in \mathrm{ST\_PS}`$. Applying the hypothesis to this $`N`$ yields
+$`\mathrm{ArgDomCoreOn}(N)`$.
 
-$`\mathrm{ArgDomCoreOn}(N)`$ を同じ $`X, A_1, B, A_2, Z, u, w, e`$ に適用する。
-D.ArgDomCoreOn の条件 (1) は $`N = N`$ であり、$`=`$ の反射性で成り立つ。
-条件 (2) から (8) は D.ArgDomCore の条件 (2) から (8) と同一である。
-よって結論 (9) が得られ、これは D.ArgDomCore の結論 (9) と同一である。∎
+Apply $`\mathrm{ArgDomCoreOn}(N)`$ to the same $`X, A_1, B, A_2, Z, u, w, e`$.
+Condition (1) of D.ArgDomCoreOn reads $`N = N`$, which holds by reflexivity of $`=`$.
+Conditions (2) to (8) are identical with conditions (2) to (8) of D.ArgDomCore.
+We therefore obtain the conclusion (9), and this is identical with the conclusion (9) of D.ArgDomCore. ∎

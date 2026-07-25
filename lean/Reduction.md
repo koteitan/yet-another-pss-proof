@@ -1,58 +1,60 @@
-[← README](README.md)
+[← README](README.md) | [English](Reduction.md) | [Japanese](Reduction-ja.md)
 
 <a id="d-NF"></a>
-## 定義: 正規形の集合 (D.NF)
+## Definition: the set of normal forms (D.NF)
 
-$`\mathrm{Three}`$（[D.Three](Term.md#d-Three)）の部分集合 $`\mathrm{NF}`$ を、
-$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）なる
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）の
-$`\mathrm{tr}`$（[D.translate](Term.md#d-translate)）による像として定める。
+Define the subset $`\mathrm{NF}`$ of $`\mathrm{Three}`$ ([D.Three](Term.md#d-Three)) to be the image
+under $`\mathrm{tr}`$ ([D.translate](Term.md#d-translate)) of those
+$`M \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) with
+$`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)).
 
 ```math
 \mathrm{NF} := \{\, t \in \mathrm{Three} \mid \exists M,\ M \in \mathrm{ST\_PS} \wedge \mathrm{tr}\,M = t \,\} .
 ```
 
-$`\mathrm{NF}`$ の元を**正規形**と呼ぶ。
+The elements of $`\mathrm{NF}`$ are called **normal forms**.
 
 <a id="d-Rnf"></a>
-## 定義: 正規形上の順序 (D.Rnf)
+## Definition: the order on normal forms (D.Rnf)
 
-$`u, v \in \mathrm{Three}`$ に対し、関係 $`R_{\mathrm{NF}}`$ を次で定める。
+For $`u, v \in \mathrm{Three}`$, define the relation $`R_{\mathrm{NF}}`$ by
 
 ```math
 v \mathbin{R_{\mathrm{NF}}} u :\iff v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\ v \in \mathrm{NF} .
 ```
 
-（$`\prec`$ [D.olt](Term.md#d-olt)）
+($`\prec`$ [D.olt](Term.md#d-olt))
 
 <a id="d-stepRel"></a>
-## 定義: 標準形上の 1 段展開関係 (D.stepRel)
+## Definition: the one-step expansion relation on standard forms (D.stepRel)
 
-$`T, M \in \mathrm{PairSeq}`$ に対し、関係 $`R_{\mathrm{PS}}`$ を次で定める。
+For $`T, M \in \mathrm{PairSeq}`$, define the relation $`R_{\mathrm{PS}}`$ by
 
 ```math
 T \mathbin{R_{\mathrm{PS}}} M :\iff M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarrow T .
 ```
 
-（$`M \Rightarrow T`$ [D.step](Pss.md#d-step)）
+($`M \Rightarrow T`$ [D.step](Pss.md#d-step))
 
-第 1 引数 $`T`$ が展開の結果、第 2 引数 $`M`$ が展開の元である。$`R_{\mathrm{NF}}`$ の定義（D.Rnf）で
-第 1 引数 $`v`$ が $`v \prec u`$ の左辺に置かれるのと同じ引数の順である。
+The first argument $`T`$ is the result of the expansion, and the second argument $`M`$ is what is
+expanded. This is the same order of the arguments as in the definition of $`R_{\mathrm{NF}}`$ (D.Rnf),
+where the first argument $`v`$ is placed on the left-hand side of $`v \prec u`$.
 
 <a id="t-step_terminates_cond"></a>
-## 定理: 条件付きの停止性 (T.step_terminates_cond)
+## Theorem: conditional termination (T.step_terminates_cond)
 
-### 定理
+### Theorem
 
-集合 $`A`$ 上の関係 $`R \subseteq A \times A`$ に対し、$`\mathrm{Acc}_R \subseteq A`$ を
-次の 1 つの規則で閉じた最小の集合として定める。
+For a relation $`R \subseteq A \times A`$ on a set $`A`$, define $`\mathrm{Acc}_R \subseteq A`$ as the
+least set closed under the following single rule.
 
 ```math
 \bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
 \ \Longrightarrow\ x \in \mathrm{Acc}_R .
 ```
 
-最小性は次の帰納法の原理として使う。$`A`$ 上の述語 $`\Phi`$ が
+Minimality is used in the form of the following induction principle. If a predicate $`\Phi`$ on
+$`A`$ satisfies
 
 ```math
 \forall x \in A,\
@@ -61,131 +63,130 @@ T \mathbin{R_{\mathrm{PS}}} M :\iff M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarro
   \to \Phi(x)
 ```
 
-をみたすならば $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ が成り立つ。以下ではこれを
-「$`\mathrm{Acc}_R`$ の導出に関する帰納法」と呼ぶ。規則が 1 つしかないので、この帰納法に
-基底段はない。$`R`$ が**整礎**であるとは $`\forall x \in A,\ x \in \mathrm{Acc}_R`$ が
-成り立つことをいう。
+then $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ holds. Below we call this the induction on the
+derivation of $`\mathrm{Acc}_R`$. Since there is only one rule, this induction has no base case.
+The relation $`R`$ is **well-founded** if $`\forall x \in A,\ x \in \mathrm{Acc}_R`$ holds.
 
-さて、次の 2 つを仮定する。
+Now assume the following two hypotheses.
 
-**(dec)** 任意の $`M \in \mathrm{PairSeq}`$ と $`n \in \mathbb{N}`$ に対し、
-$`M \in \mathrm{ST\_PS}`$ かつ $`1 \lt \lvert M\rvert`$ かつ $`1 \le n`$ ならば
+**(dec)** For all $`M \in \mathrm{PairSeq}`$ and $`n \in \mathbb{N}`$, if
+$`M \in \mathrm{ST\_PS}`$, $`1 \lt \lvert M\rvert`$ and $`1 \le n`$, then
 
 ```math
 \mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M .
 ```
 
-（$`M[n]`$ [D.oper](Pss.md#d-oper)）
+($`M[n]`$ [D.oper](Pss.md#d-oper))
 
-**(wfimg)** $`R_{\mathrm{NF}}`$ は整礎である。
+**(wfimg)** $`R_{\mathrm{NF}}`$ is well-founded.
 
-このとき $`R_{\mathrm{PS}}`$ は整礎である。
+Then $`R_{\mathrm{PS}}`$ is well-founded.
 
-### 証明
+### Proof
 
-$`\mathrm{tr}`$ による $`R_{\mathrm{NF}}`$ の逆像を
+Write the inverse image of $`R_{\mathrm{NF}}`$ under $`\mathrm{tr}`$ as
 
 ```math
 T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M :\iff \mathrm{tr}\,T \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M
 ```
 
-と書く。3 段に分ける。
+The proof is in three steps.
 
-**第 1 段：$`T \mathbin{R_{\mathrm{PS}}} M`$ ならば $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$。**
+**Step 1: if $`T \mathbin{R_{\mathrm{PS}}} M`$ then $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$.**
 
-$`T \mathbin{R_{\mathrm{PS}}} M`$ とする。$`R_{\mathrm{PS}}`$ の定義（D.stepRel）より
-$`M \in \mathrm{ST\_PS}`$ かつ $`M \Rightarrow T`$ である。$`\Rightarrow`$ の定義（D.step）は
-規則 (step_oper) ただ 1 つからなるから、$`n \in \mathbb{N}`$ が存在して
+Suppose $`T \mathbin{R_{\mathrm{PS}}} M`$. By the definition of $`R_{\mathrm{PS}}`$ (D.stepRel) we have
+$`M \in \mathrm{ST\_PS}`$ and $`M \Rightarrow T`$. The definition of $`\Rightarrow`$ (D.step) consists of the
+single rule (step_oper), so there is an $`n \in \mathbb{N}`$ with
 
 ```math
 1 \lt \lvert M\rvert, \qquad 1 \le n, \qquad T = M[n]
 ```
 
-が成り立つ。$`R_{\mathrm{NF}}`$ の定義（D.Rnf）の 3 つの連言子を順に示す。
+We verify the three conjuncts of the definition of $`R_{\mathrm{NF}}`$ (D.Rnf) in turn.
 
-1. $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$：仮定 (dec) を $`M`$ と $`n`$ に適用する。
-   その 3 つの前件 $`M \in \mathrm{ST\_PS}`$、$`1 \lt \lvert M\rvert`$、$`1 \le n`$ は
-   いま得たものである。
-2. $`\mathrm{tr}\,M \in \mathrm{NF}`$：$`\mathrm{NF}`$ の定義（D.NF）の存在量化子を
-   $`M`$ 自身で満たす。実際 $`M \in \mathrm{ST\_PS}`$ であり $`\mathrm{tr}\,M = \mathrm{tr}\,M`$ である。
-3. $`\mathrm{tr}\,(M[n]) \in \mathrm{NF}`$：$`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の規則 (oper) を
-   $`M \in \mathrm{ST\_PS}`$ と $`1 \le n`$ に適用して $`M[n] \in \mathrm{ST\_PS}`$ を得る。
-   $`\mathrm{NF}`$ の定義の存在量化子を $`M[n]`$ で満たせばよい。
+1. $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$: apply hypothesis (dec) with $`M`$ and $`n`$.
+   Its three antecedents $`M \in \mathrm{ST\_PS}`$, $`1 \lt \lvert M\rvert`$ and $`1 \le n`$ are
+   exactly what we have just obtained.
+2. $`\mathrm{tr}\,M \in \mathrm{NF}`$: satisfy the existential quantifier in the definition of
+   $`\mathrm{NF}`$ (D.NF) with $`M`$ itself. Indeed $`M \in \mathrm{ST\_PS}`$ and $`\mathrm{tr}\,M = \mathrm{tr}\,M`$.
+3. $`\mathrm{tr}\,(M[n]) \in \mathrm{NF}`$: applying rule (oper) of the definition of
+   $`\mathrm{ST\_PS}`$ (D.ST_PS) to $`M \in \mathrm{ST\_PS}`$ and $`1 \le n`$ gives $`M[n] \in \mathrm{ST\_PS}`$.
+   It then suffices to satisfy the existential quantifier in the definition of $`\mathrm{NF}`$ with $`M[n]`$.
 
-すなわち $`\mathrm{tr}\,(M[n]) \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M`$ である。
-$`T = M[n]`$ であるから、これは $`\mathrm{tr}\,T \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M`$、
-すなわち $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$ である。
+That is, $`\mathrm{tr}\,(M[n]) \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M`$.
+Since $`T = M[n]`$, this is $`\mathrm{tr}\,T \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M`$,
+that is, $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$.
 
-**第 2 段：$`R^{\mathrm{tr}}_{\mathrm{NF}}`$ は整礎である。**
+**Step 2: $`R^{\mathrm{tr}}_{\mathrm{NF}}`$ is well-founded.**
 
-$`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ の導出に関する帰納法を行う。帰納法の述語は
+We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$. The induction predicate is
 
 ```math
 \Phi(t) :\equiv \forall M \in \mathrm{PairSeq},\
   \mathrm{tr}\,M = t \to M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}} .
 ```
 
-**帰納段**：$`t \in \mathrm{Three}`$ を取り、帰納法の仮定
+**Inductive step.** Let $`t \in \mathrm{Three}`$ and assume the induction hypothesis
 
 ```math
 \forall s \in \mathrm{Three},\ s \mathbin{R_{\mathrm{NF}}} t \to \Phi(s)
 ```
 
-を仮定する（規則の前提 $`\forall s \in \mathrm{Three},\ s \mathbin{R_{\mathrm{NF}}} t \to s \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$
-も同時に使えるが、以下では用いない）。$`M \in \mathrm{PairSeq}`$ を $`\mathrm{tr}\,M = t`$ なる列とする。
-$`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ を示すには、$`\mathrm{Acc}`$ の規則により
+(the premise of the rule, $`\forall s \in \mathrm{Three},\ s \mathbin{R_{\mathrm{NF}}} t \to s \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$,
+is available at the same time, but it is not used below). Let $`M \in \mathrm{PairSeq}`$ be a sequence with $`\mathrm{tr}\,M = t`$.
+To show $`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ it suffices, by the rule for $`\mathrm{Acc}`$, to show
 
 ```math
 \forall N \in \mathrm{PairSeq},\ N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M \to N \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}
 ```
 
-を示せばよい。$`N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$ とすると、逆像の定義より
-$`\mathrm{tr}\,N \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M`$ であり、$`\mathrm{tr}\,M = t`$ であるから
-$`\mathrm{tr}\,N \mathbin{R_{\mathrm{NF}}} t`$ である。帰納法の仮定を $`s := \mathrm{tr}\,N`$ に適用して
-$`\Phi(\mathrm{tr}\,N)`$ を得、これを $`N`$ と $`\mathrm{tr}\,N = \mathrm{tr}\,N`$ に適用して
-$`N \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ を得る。よって $`\Phi(t)`$ が成り立つ。
+So suppose $`N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$. By the definition of the inverse image,
+$`\mathrm{tr}\,N \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M`$, and since $`\mathrm{tr}\,M = t`$ this reads
+$`\mathrm{tr}\,N \mathbin{R_{\mathrm{NF}}} t`$. Applying the induction hypothesis with $`s := \mathrm{tr}\,N`$ gives
+$`\Phi(\mathrm{tr}\,N)`$, and applying that to $`N`$ and $`\mathrm{tr}\,N = \mathrm{tr}\,N`$ gives
+$`N \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$. Hence $`\Phi(t)`$ holds.
 
-以上より $`\forall t \in \mathrm{Acc}_{R_{\mathrm{NF}}},\ \Phi(t)`$ である。仮定 (wfimg) より
-任意の $`t \in \mathrm{Three}`$ が $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ に属するから、任意の
-$`M \in \mathrm{PairSeq}`$ について $`\Phi(\mathrm{tr}\,M)`$ が成り立ち、これを $`M`$ と
-$`\mathrm{tr}\,M = \mathrm{tr}\,M`$ に適用して $`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ を得る。
-すなわち $`R^{\mathrm{tr}}_{\mathrm{NF}}`$ は整礎である。
+Therefore $`\forall t \in \mathrm{Acc}_{R_{\mathrm{NF}}},\ \Phi(t)`$. By hypothesis (wfimg) every
+$`t \in \mathrm{Three}`$ belongs to $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$, so $`\Phi(\mathrm{tr}\,M)`$ holds for every
+$`M \in \mathrm{PairSeq}`$, and applying it to $`M`$ and
+$`\mathrm{tr}\,M = \mathrm{tr}\,M`$ gives $`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$.
+That is, $`R^{\mathrm{tr}}_{\mathrm{NF}}`$ is well-founded.
 
-**第 3 段：$`R_{\mathrm{PS}}`$ は整礎である。**
+**Step 3: $`R_{\mathrm{PS}}`$ is well-founded.**
 
-$`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ の導出に関する帰納法を行う。帰納法の述語は
+We argue by induction on the derivation of $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$. The induction predicate is
 
 ```math
 \Psi(M) :\equiv M \in \mathrm{Acc}_{R_{\mathrm{PS}}} .
 ```
 
-**帰納段**：$`M \in \mathrm{PairSeq}`$ を取り、帰納法の仮定
+**Inductive step.** Let $`M \in \mathrm{PairSeq}`$ and assume the induction hypothesis
 
 ```math
 \forall N \in \mathrm{PairSeq},\ N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M \to \Psi(N)
 ```
 
-を仮定する。$`T \mathbin{R_{\mathrm{PS}}} M`$ なる任意の $`T`$ について、第 1 段より
-$`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$ であるから、帰納法の仮定より $`\Psi(T)`$、すなわち
-$`T \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$ である。よって
+For an arbitrary $`T`$ with $`T \mathbin{R_{\mathrm{PS}}} M`$, Step 1 gives
+$`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$, so the induction hypothesis yields $`\Psi(T)`$, that is,
+$`T \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$. Hence
 
 ```math
 \forall T \in \mathrm{PairSeq},\ T \mathbin{R_{\mathrm{PS}}} M \to T \in \mathrm{Acc}_{R_{\mathrm{PS}}}
 ```
 
-が成り立ち、$`\mathrm{Acc}`$ の規則より $`M \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$、すなわち $`\Psi(M)`$。
+holds, and the rule for $`\mathrm{Acc}`$ gives $`M \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$, that is, $`\Psi(M)`$.
 
-以上より $`\forall M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}},\ \Psi(M)`$ である。第 2 段より
-任意の $`M \in \mathrm{PairSeq}`$ が $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ に属するから、
-$`\forall M \in \mathrm{PairSeq},\ \Psi(M)`$、すなわち $`R_{\mathrm{PS}}`$ は整礎である。∎
+Therefore $`\forall M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}},\ \Psi(M)`$. By Step 2 every
+$`M \in \mathrm{PairSeq}`$ belongs to $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$, so
+$`\forall M \in \mathrm{PairSeq},\ \Psi(M)`$, that is, $`R_{\mathrm{PS}}`$ is well-founded. ∎
 
 <a id="t-no_infinite_expansion_cond"></a>
-## 定理: 条件付きの無限展開列の非存在 (T.no_infinite_expansion_cond)
+## Theorem: conditional non-existence of infinite expansion sequences (T.no_infinite_expansion_cond)
 
-### 定理
+### Theorem
 
-[T.step_terminates_cond](#t-step_terminates_cond) と同じ 2 つの仮定 (dec), (wfimg) を置く。
-このとき、次の 2 条件をみたす $`S : \mathbb{N} \to \mathrm{PairSeq}`$ は存在しない。
+Assume the same two hypotheses (dec) and (wfimg) as in [T.step_terminates_cond](#t-step_terminates_cond).
+Then there is no $`S : \mathbb{N} \to \mathrm{PairSeq}`$ satisfying the following two conditions.
 
 ```math
 \forall i \in \mathbb{N},\ S_i \in \mathrm{ST\_PS},
@@ -193,73 +194,73 @@ $`\forall M \in \mathrm{PairSeq},\ \Psi(M)`$、すなわち $`R_{\mathrm{PS}}`$ 
 \forall i \in \mathbb{N},\ S_i \Rightarrow S_{i+1} .
 ```
 
-ここで $`S_i`$ は $`S`$ の $`i`$ における値である。
+Here $`S_i`$ is the value of $`S`$ at $`i`$.
 
-### 証明
+### Proof
 
-2 条件をみたす $`S`$ が存在したとして矛盾を導く。
+Suppose such an $`S`$ exists, and derive a contradiction.
 
-まず [T.step_terminates_cond](#t-step_terminates_cond) を仮定 (dec), (wfimg) に適用して、
-$`R_{\mathrm{PS}}`$ が整礎であることを得る。
+First, applying [T.step_terminates_cond](#t-step_terminates_cond) to the hypotheses (dec) and (wfimg)
+shows that $`R_{\mathrm{PS}}`$ is well-founded.
 
-次に、任意の $`i \in \mathbb{N}`$ について
+Next, for every $`i \in \mathbb{N}`$,
 
 ```math
 (\ast)\qquad S_{i+1} \mathbin{R_{\mathrm{PS}}} S_i
 ```
 
-が成り立つ。実際 $`R_{\mathrm{PS}}`$ の定義（D.stepRel）の 2 つの連言子は、$`S`$ の第 1 の条件を
-$`i`$ に適用した $`S_i \in \mathrm{ST\_PS}`$ と、第 2 の条件を $`i`$ に適用した
-$`S_i \Rightarrow S_{i+1}`$ そのものである。
+holds. Indeed, the two conjuncts of the definition of $`R_{\mathrm{PS}}`$ (D.stepRel) are exactly
+$`S_i \in \mathrm{ST\_PS}`$, the first condition on $`S`$ applied to $`i`$, and
+$`S_i \Rightarrow S_{i+1}`$, the second condition on $`S`$ applied to $`i`$.
 
-$`\mathrm{Acc}_{R_{\mathrm{PS}}}`$ の導出に関する帰納法を行う。帰納法の述語は
+We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{PS}}}`$. The induction predicate is
 
 ```math
 \Theta(x) :\equiv \forall i \in \mathbb{N},\ S_i = x \to \bot .
 ```
 
-**帰納段**：$`x \in \mathrm{PairSeq}`$ を取り、帰納法の仮定
+**Inductive step.** Let $`x \in \mathrm{PairSeq}`$ and assume the induction hypothesis
 
 ```math
 \forall y \in \mathrm{PairSeq},\ y \mathbin{R_{\mathrm{PS}}} x \to \Theta(y)
 ```
 
-を仮定する。$`i \in \mathbb{N}`$ を取り $`S_i = x`$ とする。$`(\ast)`$ より
-$`S_{i+1} \mathbin{R_{\mathrm{PS}}} S_i`$ であり、$`S_i = x`$ を代入して
-$`S_{i+1} \mathbin{R_{\mathrm{PS}}} x`$ を得る。帰納法の仮定を $`y := S_{i+1}`$ に適用して
-$`\Theta(S_{i+1})`$ を得、これを $`i + 1`$ と $`S_{i+1} = S_{i+1}`$ に適用して $`\bot`$ を得る。
-よって $`\Theta(x)`$ が成り立つ。
+Let $`i \in \mathbb{N}`$ and suppose $`S_i = x`$. By $`(\ast)`$ we have
+$`S_{i+1} \mathbin{R_{\mathrm{PS}}} S_i`$, and substituting $`S_i = x`$ gives
+$`S_{i+1} \mathbin{R_{\mathrm{PS}}} x`$. Applying the induction hypothesis with $`y := S_{i+1}`$ gives
+$`\Theta(S_{i+1})`$, and applying that to $`i + 1`$ and $`S_{i+1} = S_{i+1}`$ gives $`\bot`$.
+Hence $`\Theta(x)`$ holds.
 
-以上より $`\forall x \in \mathrm{Acc}_{R_{\mathrm{PS}}},\ \Theta(x)`$ である。$`R_{\mathrm{PS}}`$ は
-整礎であるから $`S_0 \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$ であり、$`\Theta(S_0)`$ を $`0`$ と
-$`S_0 = S_0`$ に適用して $`\bot`$ を得る。これが求める矛盾である。∎
+Therefore $`\forall x \in \mathrm{Acc}_{R_{\mathrm{PS}}},\ \Theta(x)`$. Since $`R_{\mathrm{PS}}`$ is
+well-founded, $`S_0 \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$, and applying $`\Theta(S_0)`$ to $`0`$ and
+$`S_0 = S_0`$ gives $`\bot`$. This is the required contradiction. ∎
 
 <a id="t-step_terminates"></a>
-## 定理: 停止性 (T.step_terminates)
+## Theorem: termination (T.step_terminates)
 
-### 定理
+### Theorem
 
-$`R_{\mathrm{NF}}`$ が整礎ならば $`R_{\mathrm{PS}}`$ は整礎である。
+If $`R_{\mathrm{NF}}`$ is well-founded, then $`R_{\mathrm{PS}}`$ is well-founded.
 
-### 証明
+### Proof
 
-[T.step_terminates_cond](#t-step_terminates_cond) の仮定 (dec) を示す。
-$`M \in \mathrm{PairSeq}`$ と $`n \in \mathbb{N}`$ を取り、$`M \in \mathrm{ST\_PS}`$、
-$`1 \lt \lvert M\rvert`$、$`1 \le n`$ を仮定する。
-[T.m_step_decreases](Decrease.md#t-m_step_decreases) は $`1 \lt \lvert M\rvert`$ と $`1 \le n`$ の
-2 つのみを前件とし、$`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$ を結論とする。よって仮定
-$`M \in \mathrm{ST\_PS}`$ を用いずに結論が得られ、(dec) が成り立つ。
+We verify hypothesis (dec) of [T.step_terminates_cond](#t-step_terminates_cond).
+Let $`M \in \mathrm{PairSeq}`$ and $`n \in \mathbb{N}`$, and assume $`M \in \mathrm{ST\_PS}`$,
+$`1 \lt \lvert M\rvert`$ and $`1 \le n`$.
+The antecedents of [T.m_step_decreases](Decrease.md#t-m_step_decreases) are only the two conditions
+$`1 \lt \lvert M\rvert`$ and $`1 \le n`$, and its conclusion is $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$.
+Hence the conclusion is obtained without using the hypothesis $`M \in \mathrm{ST\_PS}`$, and (dec) holds.
 
-これと本定理の仮定 $`R_{\mathrm{NF}}`$ の整礎性を (wfimg) として
-[T.step_terminates_cond](#t-step_terminates_cond) に与えればよい。∎
+It then suffices to give this, together with the well-foundedness of $`R_{\mathrm{NF}}`$ assumed in
+the present theorem as (wfimg), to [T.step_terminates_cond](#t-step_terminates_cond). ∎
 
 <a id="t-no_infinite_expansion"></a>
-## 定理: 無限展開列の非存在 (T.no_infinite_expansion)
+## Theorem: non-existence of infinite expansion sequences (T.no_infinite_expansion)
 
-### 定理
+### Theorem
 
-$`R_{\mathrm{NF}}`$ が整礎ならば、次の 2 条件をみたす $`S : \mathbb{N} \to \mathrm{PairSeq}`$ は
-存在しない。
+If $`R_{\mathrm{NF}}`$ is well-founded, then there is no $`S : \mathbb{N} \to \mathrm{PairSeq}`$
+satisfying the following two conditions.
 
 ```math
 \forall i \in \mathbb{N},\ S_i \in \mathrm{ST\_PS},
@@ -267,14 +268,14 @@ $`R_{\mathrm{NF}}`$ が整礎ならば、次の 2 条件をみたす $`S : \math
 \forall i \in \mathbb{N},\ S_i \Rightarrow S_{i+1} .
 ```
 
-### 証明
+### Proof
 
-[T.no_infinite_expansion_cond](#t-no_infinite_expansion_cond) の仮定 (dec) を示す。
-$`M \in \mathrm{PairSeq}`$ と $`n \in \mathbb{N}`$ を取り、$`M \in \mathrm{ST\_PS}`$、
-$`1 \lt \lvert M\rvert`$、$`1 \le n`$ を仮定する。
-[T.m_step_decreases](Decrease.md#t-m_step_decreases) は $`1 \lt \lvert M\rvert`$ と $`1 \le n`$ の
-2 つのみを前件とし、$`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$ を結論とする。よって仮定
-$`M \in \mathrm{ST\_PS}`$ を用いずに結論が得られ、(dec) が成り立つ。
+We verify hypothesis (dec) of [T.no_infinite_expansion_cond](#t-no_infinite_expansion_cond).
+Let $`M \in \mathrm{PairSeq}`$ and $`n \in \mathbb{N}`$, and assume $`M \in \mathrm{ST\_PS}`$,
+$`1 \lt \lvert M\rvert`$ and $`1 \le n`$.
+The antecedents of [T.m_step_decreases](Decrease.md#t-m_step_decreases) are only the two conditions
+$`1 \lt \lvert M\rvert`$ and $`1 \le n`$, and its conclusion is $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$.
+Hence the conclusion is obtained without using the hypothesis $`M \in \mathrm{ST\_PS}`$, and (dec) holds.
 
-これと本定理の仮定 $`R_{\mathrm{NF}}`$ の整礎性を (wfimg) として
-[T.no_infinite_expansion_cond](#t-no_infinite_expansion_cond) に与えればよい。∎
+It then suffices to give this, together with the well-foundedness of $`R_{\mathrm{NF}}`$ assumed in
+the present theorem as (wfimg), to [T.no_infinite_expansion_cond](#t-no_infinite_expansion_cond). ∎

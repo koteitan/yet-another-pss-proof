@@ -1,23 +1,24 @@
-[← README](README.md) ｜ Seqlex **1** [2](Seqlex-2.md)
+[← README](README.md) | [English](Seqlex.md) | [Japanese](Seqlex-ja.md) | Seqlex **1** [2](Seqlex-2.md)
 
 <a id="d-pairlt"></a>
-## 定義: 対の辞書式順序 (D.pairlt)
+## Definition: lexicographic order on pairs (D.pairlt)
 
-$`p, q \in \mathbb{N}\times\mathbb{N}`$ に対し
+For $`p, q \in \mathbb{N}\times\mathbb{N}`$ put
 
 ```math
 p \prec_{\mathrm{p}} q :\iff p_1 \lt q_1 \ \vee\ \bigl(p_1 = q_1 \wedge p_2 \lt q_2\bigr).
 ```
 
-ここで $`p = (p_1, p_2)`$、$`q = (q_1, q_2)`$ である。すなわち $`\prec_{\mathrm{p}}`$ は、
-対を第 1 成分、第 2 成分の順に比べる辞書式順序である。
+Here $`p = (p_1, p_2)`$ and $`q = (q_1, q_2)`$. Thus $`\prec_{\mathrm{p}}`$ is the lexicographic
+order that compares pairs by the first entry and then by the second entry.
 
 <a id="d-seqlex"></a>
-## 定義: 列の辞書式順序 (D.seqlex)
+## Definition: lexicographic order on sequences (D.seqlex)
 
-$`M, N \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し、関係
-$`M \prec_{\mathrm{lex}} N`$ を両引数の構成子による場合分けで定める。
-以下 $`()`$ は空列、$`p :: M`$ は列 $`M`$ の先頭に対 $`p`$ を付けた列である。
+For $`M, N \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) the relation
+$`M \prec_{\mathrm{lex}} N`$ is defined by case distinction on the constructors of both arguments.
+Below, $`()`$ is the empty sequence and $`p :: M`$ is the sequence obtained by prepending the
+pair $`p`$ to the sequence $`M`$.
 
 ```math
 \begin{aligned}
@@ -28,143 +29,145 @@ $`M \prec_{\mathrm{lex}} N`$ を両引数の構成子による場合分けで定
 \end{aligned}
 ```
 
-第 3 式の右辺の再帰呼び出しは $`M \prec_{\mathrm{lex}} N`$ であり、$`M`$, $`N`$ は
-それぞれ $`p :: M`$, $`q :: N`$ より長さが $`1`$ 短いから、この定義は整合的である。
+The recursive call on the right-hand side of the third clause is $`M \prec_{\mathrm{lex}} N`$, and
+$`M`$, $`N`$ are shorter by $`1`$ than $`p :: M`$, $`q :: N`$ respectively, so this definition
+is well defined.
 
-すなわち $`\prec_{\mathrm{lex}}`$ は、列を先頭から 1 列ずつ $`\prec_{\mathrm{p}}`$ で比べる
-辞書式順序である。第 1 式は空列が空でないすべての列より小さいこと、第 2 式は
-空列より小さい列が存在しないことを言う。
+Thus $`\prec_{\mathrm{lex}}`$ is the lexicographic order that compares sequences one column at a
+time from the front by $`\prec_{\mathrm{p}}`$. The first clause says that the empty sequence is
+smaller than every non-empty sequence, and the second clause says that no sequence is smaller
+than the empty sequence.
 
 <a id="t-seqlex_nil_iff"></a>
-## 定理: 空列を左辺とする比較 (T.seqlex_nil_iff)
+## Theorem: comparison with the empty sequence on the left (T.seqlex_nil_iff)
 
-### 定理
+### Theorem
 
-$`N \in \mathrm{PairSeq}`$ に対し $`() \prec_{\mathrm{lex}} N \iff N \ne ()`$。
+For $`N \in \mathrm{PairSeq}`$ we have $`() \prec_{\mathrm{lex}} N \iff N \ne ()`$.
 
-### 証明
+### Proof
 
-$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式により、左辺と右辺は定義により
-同一の命題である。∎
+By the first clause of the definition of $`\prec_{\mathrm{lex}}`$ (D.seqlex), the left-hand side
+and the right-hand side are the same proposition by definition. ∎
 
 <a id="t-not_seqlex_nil"></a>
-## 定理: 空列を右辺とする比較 (T.not_seqlex_nil)
+## Theorem: comparison with the empty sequence on the right (T.not_seqlex_nil)
 
-### 定理
+### Theorem
 
-$`p \in \mathbb{N}\times\mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ に対し
-$`\neg\bigl((p :: M) \prec_{\mathrm{lex}} ()\bigr)`$。
+For $`p \in \mathbb{N}\times\mathbb{N}`$ and $`M \in \mathrm{PairSeq}`$ we have
+$`\neg\bigl((p :: M) \prec_{\mathrm{lex}} ()\bigr)`$.
 
-### 証明
+### Proof
 
-$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 2 式により
-$`(p :: M) \prec_{\mathrm{lex}} ()`$ は $`\bot`$ と定義により同一の命題である。
-よってその仮定から $`\bot`$ が得られる。∎
+By the second clause of the definition of $`\prec_{\mathrm{lex}}`$ (D.seqlex),
+$`(p :: M) \prec_{\mathrm{lex}} ()`$ is the same proposition as $`\bot`$ by definition.
+Hence that hypothesis yields $`\bot`$. ∎
 
 <a id="t-seqlex_cons_cons"></a>
-## 定理: 先頭を付けた列どうしの比較 (T.seqlex_cons_cons)
+## Theorem: comparison of two sequences with a head prepended (T.seqlex_cons_cons)
 
-### 定理
+### Theorem
 
-$`p, q \in \mathbb{N}\times\mathbb{N}`$、$`M, N \in \mathrm{PairSeq}`$ に対し
+For $`p, q \in \mathbb{N}\times\mathbb{N}`$ and $`M, N \in \mathrm{PairSeq}`$,
 
 ```math
 (p :: M) \prec_{\mathrm{lex}} (q :: N) \iff
   p \prec_{\mathrm{p}} q \ \vee\ \bigl(p = q \wedge M \prec_{\mathrm{lex}} N\bigr).
 ```
 
-### 証明
+### Proof
 
-$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式そのものであり、両辺は定義により
-同一の命題である。∎
+This is exactly the third clause of the definition of $`\prec_{\mathrm{lex}}`$ (D.seqlex), and
+both sides are the same proposition by definition. ∎
 
 <a id="t-seqlex_append_cancel"></a>
-## 定理: 共通の前置列の消去 (T.seqlex_append_cancel)
+## Theorem: cancellation of a common prefix (T.seqlex_append_cancel)
 
-### 定理
+### Theorem
 
-$`A, u, v \in \mathrm{PairSeq}`$ に対し
+For $`A, u, v \in \mathrm{PairSeq}`$,
 
 ```math
 (A \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A \mathbin{+\!\!+} v) \iff u \prec_{\mathrm{lex}} v .
 ```
 
-### 証明
+### Proof
 
-$`A`$ のリスト構造に関する帰納法（$`u`$, $`v`$ は固定する）。帰納法の述語は
+By induction on the list structure of $`A`$ (with $`u`$, $`v`$ fixed). The induction predicate is
 
 ```math
 \Phi(A) :\equiv \Bigl((A \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A \mathbin{+\!\!+} v)
   \iff u \prec_{\mathrm{lex}} v\Bigr).
 ```
 
-- **基底段** $`A = ()`$：$`() \mathbin{+\!\!+} u = u`$、$`() \mathbin{+\!\!+} v = v`$ であるから、
-  両辺は同一の命題である。
+- **Base case** $`A = ()`$: since $`() \mathbin{+\!\!+} u = u`$ and $`() \mathbin{+\!\!+} v = v`$,
+  the two sides are the same proposition.
 
-**帰納段** $`A = a :: A'`$：帰納法の仮定は $`\Phi(A')`$、すなわち
+**Inductive step** $`A = a :: A'`$: the induction hypothesis is $`\Phi(A')`$, that is,
 
 ```math
 (A' \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A' \mathbin{+\!\!+} v) \iff u \prec_{\mathrm{lex}} v
 ```
 
-である。$`(a :: A') \mathbin{+\!\!+} u = a :: (A' \mathbin{+\!\!+} u)`$、
-$`(a :: A') \mathbin{+\!\!+} v = a :: (A' \mathbin{+\!\!+} v)`$ であるから、
-[T.seqlex_cons_cons](#t-seqlex_cons_cons) により示すべき左辺は
+Since $`(a :: A') \mathbin{+\!\!+} u = a :: (A' \mathbin{+\!\!+} u)`$ and
+$`(a :: A') \mathbin{+\!\!+} v = a :: (A' \mathbin{+\!\!+} v)`$, by
+[T.seqlex_cons_cons](#t-seqlex_cons_cons) the left-hand side to be proved is equivalent to
 
 ```math
 a \prec_{\mathrm{p}} a \ \vee\ \bigl(a = a \wedge
   (A' \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A' \mathbin{+\!\!+} v)\bigr)
 ```
 
-と同値である。ここで $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より
-$`a \prec_{\mathrm{p}} a`$ は $`a_1 \lt a_1`$ または
-$`a_1 = a_1 \wedge a_2 \lt a_2`$ であり、$`\mathbb{N}`$ の $`\lt`$ の非反射性により
-どちらも偽であるから、$`\neg(a \prec_{\mathrm{p}} a)`$ である。よって両方向を示す。
+Here, by the definition of $`\prec_{\mathrm{p}}`$ (D.pairlt), $`a \prec_{\mathrm{p}} a`$ means
+$`a_1 \lt a_1`$ or $`a_1 = a_1 \wedge a_2 \lt a_2`$, and both are false by irreflexivity of
+$`\lt`$ on $`\mathbb{N}`$; hence $`\neg(a \prec_{\mathrm{p}} a)`$. We prove both directions.
 
-- ($`\to`$) 左辺を仮定すると、第 1 選言は $`\neg(a \prec_{\mathrm{p}} a)`$ に反するから
-  第 2 選言が成り立ち、
-  $`(A' \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A' \mathbin{+\!\!+} v)`$ を得る。
-  帰納法の仮定 $`\Phi(A')`$ の $`\to`$ 向きにより $`u \prec_{\mathrm{lex}} v`$。
+- ($`\to`$) Assume the left-hand side. The first disjunct contradicts
+  $`\neg(a \prec_{\mathrm{p}} a)`$, so the second disjunct holds and we obtain
+  $`(A' \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A' \mathbin{+\!\!+} v)`$.
+  The $`\to`$ direction of the induction hypothesis $`\Phi(A')`$ gives $`u \prec_{\mathrm{lex}} v`$.
 
-- ($`\leftarrow`$) $`u \prec_{\mathrm{lex}} v`$ を仮定すると、帰納法の仮定 $`\Phi(A')`$ の
-  $`\leftarrow`$ 向きにより
-  $`(A' \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A' \mathbin{+\!\!+} v)`$ を得る。
-  $`a = a`$ と合わせて第 2 選言が成り立つ。
+- ($`\leftarrow`$) Assume $`u \prec_{\mathrm{lex}} v`$. The $`\leftarrow`$ direction of the
+  induction hypothesis $`\Phi(A')`$ gives
+  $`(A' \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A' \mathbin{+\!\!+} v)`$.
+  Together with $`a = a`$, the second disjunct holds.
 
-よって $`\Phi(a :: A')`$。∎
+Hence $`\Phi(a :: A')`$. ∎
 
 <a id="t-seqlex_prefix"></a>
-## 定理: 真の前部分列は小さい (T.seqlex_prefix)
+## Theorem: a proper prefix is smaller (T.seqlex_prefix)
 
-### 定理
+### Theorem
 
-$`v \ne ()`$ ならば、任意の $`u \in \mathrm{PairSeq}`$ に対し
-$`u \prec_{\mathrm{lex}} (u \mathbin{+\!\!+} v)`$。
+If $`v \ne ()`$ then, for every $`u \in \mathrm{PairSeq}`$,
+$`u \prec_{\mathrm{lex}} (u \mathbin{+\!\!+} v)`$.
 
-### 証明
+### Proof
 
-$`u`$ のリスト構造に関する帰納法（$`v`$ と仮定 $`v \ne ()`$ は固定する）。帰納法の述語は
+By induction on the list structure of $`u`$ (with $`v`$ and the hypothesis $`v \ne ()`$ fixed).
+The induction predicate is
 
 ```math
 \Phi(u) :\equiv u \prec_{\mathrm{lex}} (u \mathbin{+\!\!+} v).
 ```
 
-- **基底段** $`u = ()`$：$`() \mathbin{+\!\!+} v = v`$ であり、
-  [T.seqlex_nil_iff](#t-seqlex_nil_iff) より $`() \prec_{\mathrm{lex}} v`$ は
-  $`v \ne ()`$ と同値である。これは仮定である。
+- **Base case** $`u = ()`$: we have $`() \mathbin{+\!\!+} v = v`$, and by
+  [T.seqlex_nil_iff](#t-seqlex_nil_iff) the statement $`() \prec_{\mathrm{lex}} v`$ is equivalent
+  to $`v \ne ()`$, which is the hypothesis.
 
-- **帰納段** $`u = a :: u'`$：帰納法の仮定は $`\Phi(u')`$、すなわち
-  $`u' \prec_{\mathrm{lex}} (u' \mathbin{+\!\!+} v)`$ である。
-  $`(a :: u') \mathbin{+\!\!+} v = a :: (u' \mathbin{+\!\!+} v)`$ であるから、
-  [T.seqlex_cons_cons](#t-seqlex_cons_cons) の右辺の第 2 選言
-  $`a = a \wedge u' \prec_{\mathrm{lex}} (u' \mathbin{+\!\!+} v)`$ が、$`=`$ の反射性と
-  帰納法の仮定により成り立つ。よって $`\Phi(a :: u')`$。∎
+- **Inductive step** $`u = a :: u'`$: the induction hypothesis is $`\Phi(u')`$, that is,
+  $`u' \prec_{\mathrm{lex}} (u' \mathbin{+\!\!+} v)`$.
+  Since $`(a :: u') \mathbin{+\!\!+} v = a :: (u' \mathbin{+\!\!+} v)`$, the second disjunct
+  $`a = a \wedge u' \prec_{\mathrm{lex}} (u' \mathbin{+\!\!+} v)`$ on the right-hand side of
+  [T.seqlex_cons_cons](#t-seqlex_cons_cons) holds by reflexivity of $`=`$ and the induction
+  hypothesis. Hence $`\Phi(a :: u')`$. ∎
 
 <a id="d-steps1"></a>
-## 定義: 行 0 の隣接段差 1 以下 (D.steps1)
+## Definition: adjacent row 0 steps are at most 1 (D.steps1)
 
-$`B \in \mathrm{PairSeq}`$ に対し述語 $`\mathrm{steps}_1(B)`$ を、
-先頭 2 要素の有無による場合分けで定める。
+For $`B \in \mathrm{PairSeq}`$ the predicate $`\mathrm{steps}_1(B)`$ is defined by case
+distinction on whether the first two elements are present.
 
 ```math
 \begin{aligned}
@@ -174,59 +177,59 @@ $`B \in \mathrm{PairSeq}`$ に対し述語 $`\mathrm{steps}_1(B)`$ を、
 \end{aligned}
 ```
 
-第 3 式の右辺の再帰呼び出しの引数 $`q :: r`$ は $`p :: q :: r`$ より長さが $`1`$ 短いから、
-この定義は整合的である。
+The argument $`q :: r`$ of the recursive call on the right-hand side of the third clause is
+shorter by $`1`$ than $`p :: q :: r`$, so this definition is well defined.
 
-すなわち $`\mathrm{steps}_1(B)`$ は、隣り合う 2 列について、右の列の行 $`0`$ の値が
-左の列の行 $`0`$ の値に $`1`$ を足した値以下であることを言う。
+Thus $`\mathrm{steps}_1(B)`$ says that, for any two adjacent columns, the row $`0`$ value of the
+right column is at most the row $`0`$ value of the left column plus $`1`$.
 
 <a id="t-steps1_nil"></a>
-## 定理: 空列の隣接段差 (T.steps1_nil)
+## Theorem: adjacent steps of the empty sequence (T.steps1_nil)
 
-### 定理
+### Theorem
 
-$`\mathrm{steps}_1(())`$。
+$`\mathrm{steps}_1(())`$.
 
-### 証明
+### Proof
 
-$`\mathrm{steps}_1`$ の定義（D.steps1）の第 1 式により $`\mathrm{steps}_1(())`$ は
-$`\top`$ と定義により同一の命題であり、$`\top`$ は成り立つ。∎
+By the first clause of the definition of $`\mathrm{steps}_1`$ (D.steps1), $`\mathrm{steps}_1(())`$
+is the same proposition as $`\top`$ by definition, and $`\top`$ holds. ∎
 
 <a id="t-steps1_single"></a>
-## 定理: 1 列だけの列の隣接段差 (T.steps1_single)
+## Theorem: adjacent steps of a sequence with a single column (T.steps1_single)
 
-### 定理
+### Theorem
 
-任意の $`p \in \mathbb{N}\times\mathbb{N}`$ に対し $`\mathrm{steps}_1((p))`$。
+For every $`p \in \mathbb{N}\times\mathbb{N}`$ we have $`\mathrm{steps}_1((p))`$.
 
-### 証明
+### Proof
 
-$`\mathrm{steps}_1`$ の定義（D.steps1）の第 2 式により $`\mathrm{steps}_1((p))`$ は
-$`\top`$ と定義により同一の命題であり、$`\top`$ は成り立つ。∎
+By the second clause of the definition of $`\mathrm{steps}_1`$ (D.steps1),
+$`\mathrm{steps}_1((p))`$ is the same proposition as $`\top`$ by definition, and $`\top`$ holds. ∎
 
 <a id="t-steps1_cons_cons"></a>
-## 定理: 先頭 2 要素での分解 (T.steps1_cons_cons)
+## Theorem: decomposition at the first two elements (T.steps1_cons_cons)
 
-### 定理
+### Theorem
 
-$`p, q \in \mathbb{N}\times\mathbb{N}`$、$`r \in \mathrm{PairSeq}`$ に対し
+For $`p, q \in \mathbb{N}\times\mathbb{N}`$ and $`r \in \mathrm{PairSeq}`$,
 
 ```math
 \mathrm{steps}_1(p :: q :: r) \iff q_1 \le p_1 + 1 \ \wedge\ \mathrm{steps}_1(q :: r).
 ```
 
-### 証明
+### Proof
 
-$`\mathrm{steps}_1`$ の定義（D.steps1）の第 3 式そのものであり、両辺は定義により
-同一の命題である。∎
+This is exactly the third clause of the definition of $`\mathrm{steps}_1`$ (D.steps1), and both
+sides are the same proposition by definition. ∎
 
 <a id="d-blockok"></a>
-## 定義: 深さ $`d`$ のブロック (D.blockok)
+## Definition: block of depth $`d`$ (D.blockok)
 
-型 $`\alpha`$ の有限列 $`L`$ の先頭要素を $`\mathrm{head}\,L`$ と書く。すなわち $`L \ne ()`$ のとき
-$`\mathrm{head}\,L := L_0`$ であり、$`L = ()`$ のときは型 $`\alpha`$ ごとに定めた既定値をとる
-（$`\alpha = \mathbb{N}\times\mathbb{N}`$ のとき既定値は $`(0,0)`$ である）。
-$`B \in \mathrm{PairSeq}`$、$`d \in \mathbb{N}`$ に対し
+Write $`\mathrm{head}\,L`$ for the first element of a finite sequence $`L`$ of type $`\alpha`$;
+that is, $`\mathrm{head}\,L := L_0`$ when $`L \ne ()`$, and the default value fixed for the type
+$`\alpha`$ when $`L = ()`$ (for $`\alpha = \mathbb{N}\times\mathbb{N}`$ the default value is
+$`(0,0)`$). For $`B \in \mathrm{PairSeq}`$ and $`d \in \mathbb{N}`$ put
 
 ```math
 \mathrm{blockok}(d, B) :\iff
@@ -235,19 +238,20 @@ $`B \in \mathrm{PairSeq}`$、$`d \in \mathbb{N}`$ に対し
   \ \wedge\ \mathrm{steps}_1(B).
 ```
 
-$`\mathrm{blockok}(d, B)`$ が成り立つとき $`B`$ を**深さ $`d`$ のブロック**と呼ぶ。
-第 1 の連言子は「$`B`$ が空でなければその先頭の行 $`0`$ の値はちょうど $`d`$」、
-第 2 の連言子は「$`B`$ のすべての列の行 $`0`$ の値が $`d`$ 以上」、
-第 3 の連言子は $`\mathrm{steps}_1`$ の定義（D.steps1）の内容である。
+When $`\mathrm{blockok}(d, B)`$ holds we call $`B`$ a **block of depth $`d`$**.
+The first conjunct says that if $`B`$ is non-empty then the row $`0`$ value of its head is
+exactly $`d`$, the second conjunct says that the row $`0`$ value of every column of $`B`$ is at
+least $`d`$, and the third conjunct is the content of the definition of $`\mathrm{steps}_1`$
+(D.steps1).
 
 <a id="t-steps1_iff"></a>
-## 定理: 隣接段差の添字による特徴づけ (T.steps1_iff)
+## Theorem: characterization of the adjacent steps by indices (T.steps1_iff)
 
-### 定理
+### Theorem
 
-$`B \in \mathrm{PairSeq}`$、$`j \in \mathbb{N}`$ に対し
-$`B\langle j\rangle`$（[D.entry](Pss.md#d-entry)）を $`B`$ の第 $`j`$ 要素
-（$`j \ge \lvert B\rvert`$ のときは $`(0,0)`$）とする。このとき
+For $`B \in \mathrm{PairSeq}`$ and $`j \in \mathbb{N}`$, let
+$`B\langle j\rangle`$ ([D.entry](Pss.md#d-entry)) be the $`j`$-th element of $`B`$
+(equal to $`(0,0)`$ when $`j \ge \lvert B\rvert`$). Then
 
 ```math
 \mathrm{steps}_1(B) \iff
@@ -255,9 +259,9 @@ $`B\langle j\rangle`$（[D.entry](Pss.md#d-entry)）を $`B`$ の第 $`j`$ 要�
     (B\langle j+1\rangle)_1 \le (B\langle j\rangle)_1 + 1\Bigr).
 ```
 
-### 証明
+### Proof
 
-$`B`$ のリスト構造に関する帰納法。帰納法の述語は
+By induction on the list structure of $`B`$. The induction predicate is
 
 ```math
 \Phi(B) :\equiv \Bigl(\mathrm{steps}_1(B) \iff
@@ -265,17 +269,19 @@ $`B`$ のリスト構造に関する帰納法。帰納法の述語は
     (B\langle j+1\rangle)_1 \le (B\langle j\rangle)_1 + 1\bigr)\Bigr).
 ```
 
-- **基底段** $`B = ()`$：左辺は [T.steps1_nil](#t-steps1_nil) により成り立つ。
-  右辺は $`\lvert B\rvert = 0`$ であるから前件 $`j + 1 \lt 0`$ をみたす $`j`$ が存在せず、
-  成り立つ。両辺とも成り立つので同値である。
+- **Base case** $`B = ()`$: the left-hand side holds by [T.steps1_nil](#t-steps1_nil).
+  As for the right-hand side, $`\lvert B\rvert = 0`$, so no $`j`$ satisfies the antecedent
+  $`j + 1 \lt 0`$ and it holds. Both sides hold, hence they are equivalent.
 
-**帰納段** $`B = p :: B'`$：帰納法の仮定は $`\Phi(B')`$ である。$`B'`$ で場合分けする。
+**Inductive step** $`B = p :: B'`$: the induction hypothesis is $`\Phi(B')`$. We distinguish
+cases on $`B'`$.
 
-**(a) $`B' = ()`$ のとき。** 左辺 $`\mathrm{steps}_1((p))`$ は
-[T.steps1_single](#t-steps1_single) により成り立つ。右辺は $`\lvert B\rvert = 1`$ であるから
-前件 $`j + 1 \lt 1`$ をみたす $`j`$ が存在せず、成り立つ。両辺とも成り立つので同値である。
+**(a) $`B' = ()`$.** The left-hand side $`\mathrm{steps}_1((p))`$ holds by
+[T.steps1_single](#t-steps1_single). As for the right-hand side, $`\lvert B\rvert = 1`$, so no
+$`j`$ satisfies the antecedent $`j + 1 \lt 1`$ and it holds. Both sides hold, hence they are
+equivalent.
 
-**(b) $`B' = q :: r`$ のとき。** このとき
+**(b) $`B' = q :: r`$.** In this case
 
 ```math
 \lvert B\rvert = \lvert B'\rvert + 1,\qquad
@@ -284,17 +290,17 @@ B\langle j+1\rangle = B'\langle j\rangle \quad (\forall j),\qquad
 B'\langle 0\rangle = q
 ```
 
-である。第 1 の等式は $`B = p :: B'`$ による。第 2 と第 4 の等式は $`B`$, $`B'`$ の
-第 $`0`$ 要素がそれぞれ $`p`$, $`q`$ であることによる。第 3 の等式は、
-$`j \lt \lvert B'\rvert`$ のときは $`B`$ の第 $`j+1`$ 要素が $`B'`$ の第 $`j`$ 要素で
-あること、$`j \ge \lvert B'\rvert`$ のときは $`j + 1 \ge \lvert B\rvert`$ であり両辺とも
-$`(0,0)`$ であることによる。[T.steps1_cons_cons](#t-steps1_cons_cons) により左辺は
+The first equality holds because $`B = p :: B'`$. The second and fourth hold because the
+$`0`$-th elements of $`B`$ and $`B'`$ are $`p`$ and $`q`$ respectively. The third holds because,
+for $`j \lt \lvert B'\rvert`$, the element of $`B`$ at index $`j+1`$ is the element of $`B'`$ at
+index $`j`$, while for $`j \ge \lvert B'\rvert`$ we have $`j + 1 \ge \lvert B\rvert`$ and both
+sides equal $`(0,0)`$. By [T.steps1_cons_cons](#t-steps1_cons_cons) the left-hand side is equivalent to
 
 ```math
 q_1 \le p_1 + 1 \ \wedge\ \mathrm{steps}_1(B')
 ```
 
-と同値であり、帰納法の仮定 $`\Phi(B')`$ によりこれはさらに
+and by the induction hypothesis $`\Phi(B')`$ this is in turn equivalent to
 
 ```math
 q_1 \le p_1 + 1 \ \wedge\
@@ -302,56 +308,57 @@ q_1 \le p_1 + 1 \ \wedge\
     (B'\langle j+1\rangle)_1 \le (B'\langle j\rangle)_1 + 1\bigr)
 ```
 
-と同値である。これが右辺と同値であることを両方向に示す。
+We show that this is equivalent to the right-hand side, in both directions.
 
-- ($`\to`$) 上の連言を仮定し、$`j + 1 \lt \lvert B\rvert`$ なる $`j`$ を取る。
-  $`j = 0`$ のとき、示すべきは $`(B\langle 1\rangle)_1 \le (B\langle 0\rangle)_1 + 1`$、
-  すなわち $`q_1 \le p_1 + 1`$ であり、これは第 1 の連言子である。
-  $`j = j' + 1`$ のとき、示すべきは
-  $`(B'\langle j'+1\rangle)_1 \le (B'\langle j'\rangle)_1 + 1`$ である。
-  $`j' + 2 \lt \lvert B\rvert = \lvert B'\rvert + 1`$ より $`j' + 1 \lt \lvert B'\rvert`$ で
-  あるから、第 2 の連言子を $`j'`$ に適用すればよい。
+- ($`\to`$) Assume the above conjunction and take $`j`$ with $`j + 1 \lt \lvert B\rvert`$.
+  For $`j = 0`$, what has to be shown is
+  $`(B\langle 1\rangle)_1 \le (B\langle 0\rangle)_1 + 1`$, that is, $`q_1 \le p_1 + 1`$, which is
+  the first conjunct. For $`j = j' + 1`$, what has to be shown is
+  $`(B'\langle j'+1\rangle)_1 \le (B'\langle j'\rangle)_1 + 1`$. From
+  $`j' + 2 \lt \lvert B\rvert = \lvert B'\rvert + 1`$ we get $`j' + 1 \lt \lvert B'\rvert`$, so it
+  suffices to apply the second conjunct to $`j'`$.
 
-- ($`\leftarrow`$) 右辺を仮定する。第 1 の連言子については、
-  $`\lvert B\rvert = \lvert B'\rvert + 1 \ge 2`$ より $`0 + 1 \lt \lvert B\rvert`$ であるから、
-  右辺を $`j := 0`$ に適用して
-  $`(B\langle 1\rangle)_1 \le (B\langle 0\rangle)_1 + 1`$、すなわち $`q_1 \le p_1 + 1`$ を得る。
-  第 2 の連言子については、$`j + 1 \lt \lvert B'\rvert`$ なる $`j`$ を取ると
-  $`(j+1) + 1 \lt \lvert B'\rvert + 1 = \lvert B\rvert`$ であるから、右辺を $`j + 1`$ に
-  適用して $`(B\langle j+2\rangle)_1 \le (B\langle j+1\rangle)_1 + 1`$、すなわち
-  $`(B'\langle j+1\rangle)_1 \le (B'\langle j\rangle)_1 + 1`$ を得る。
+- ($`\leftarrow`$) Assume the right-hand side. For the first conjunct, from
+  $`\lvert B\rvert = \lvert B'\rvert + 1 \ge 2`$ we get $`0 + 1 \lt \lvert B\rvert`$, so applying
+  the right-hand side with $`j := 0`$ gives
+  $`(B\langle 1\rangle)_1 \le (B\langle 0\rangle)_1 + 1`$, that is, $`q_1 \le p_1 + 1`$.
+  For the second conjunct, take $`j`$ with $`j + 1 \lt \lvert B'\rvert`$; then
+  $`(j+1) + 1 \lt \lvert B'\rvert + 1 = \lvert B\rvert`$, so applying the right-hand side to
+  $`j + 1`$ gives $`(B\langle j+2\rangle)_1 \le (B\langle j+1\rangle)_1 + 1`$, that is,
+  $`(B'\langle j+1\rangle)_1 \le (B'\langle j\rangle)_1 + 1`$.
 
-よって $`\Phi(p :: B')`$。∎
+Hence $`\Phi(p :: B')`$. ∎
 
 <a id="t-steps1_tail"></a>
-## 定理: 尾部の隣接段差 (T.steps1_tail)
+## Theorem: adjacent steps of the tail (T.steps1_tail)
 
-### 定理
+### Theorem
 
-$`\mathrm{steps}_1(p :: r)`$ ならば $`\mathrm{steps}_1(r)`$。
+If $`\mathrm{steps}_1(p :: r)`$ then $`\mathrm{steps}_1(r)`$.
 
-### 証明
+### Proof
 
-$`r`$ の構成子で場合分けする。
+We distinguish cases on the constructor of $`r`$.
 
-- $`r = ()`$ のとき。[T.steps1_nil](#t-steps1_nil) による。
+- Case $`r = ()`$. By [T.steps1_nil](#t-steps1_nil).
 
-- $`r = q :: r'`$ のとき。仮定は $`\mathrm{steps}_1(p :: q :: r')`$ であり、
-  [T.steps1_cons_cons](#t-steps1_cons_cons) の右辺の第 2 の連言子が
-  $`\mathrm{steps}_1(q :: r') = \mathrm{steps}_1(r)`$ である。∎
+- Case $`r = q :: r'`$. The hypothesis is $`\mathrm{steps}_1(p :: q :: r')`$, and the second
+  conjunct on the right-hand side of [T.steps1_cons_cons](#t-steps1_cons_cons) is
+  $`\mathrm{steps}_1(q :: r') = \mathrm{steps}_1(r)`$. ∎
 
 <a id="t-steps1_append"></a>
-## 定理: 連結の隣接段差 (T.steps1_append)
+## Theorem: adjacent steps of a concatenation (T.steps1_append)
 
-### 定理
+### Theorem
 
-型 $`\alpha`$ の有限列 $`L`$ と $`d \in \alpha`$ に対し
+For a finite sequence $`L`$ of type $`\alpha`$ and $`d \in \alpha`$ put
 
 ```math
 \mathrm{last}_d\,L := \begin{cases} d & (L = ()) \cr L_{\lvert L\rvert - 1} & (L \ne ()) \end{cases}
 ```
 
-とおく（減法は自然数の切り捨て減法である）。$`A, B \in \mathrm{PairSeq}`$ に対し
+(the subtraction is truncated subtraction of natural numbers). Then, for
+$`A, B \in \mathrm{PairSeq}`$,
 
 ```math
 \mathrm{steps}_1(A \mathbin{+\!\!+} B) \iff
@@ -360,9 +367,9 @@ $`r`$ の構成子で場合分けする。
     (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A)_1 + 1\Bigr).
 ```
 
-### 証明
+### Proof
 
-$`A`$ のリスト構造に関する帰納法（$`B`$ は固定する）。帰納法の述語は
+By induction on the list structure of $`A`$ (with $`B`$ fixed). The induction predicate is
 
 ```math
 \begin{aligned}
@@ -374,30 +381,32 @@ $`A`$ のリスト構造に関する帰納法（$`B`$ は固定する）。帰�
 \end{aligned}
 ```
 
-- **基底段** $`A = ()`$：$`() \mathbin{+\!\!+} B = B`$ であるから左辺は $`\mathrm{steps}_1(B)`$ で
-  ある。右辺の第 1 の連言子は [T.steps1_nil](#t-steps1_nil) により成り立ち、第 3 の連言子は
-  その第 1 選言 $`A = ()`$ により成り立つから、右辺も $`\mathrm{steps}_1(B)`$ と同値である。
+- **Base case** $`A = ()`$: since $`() \mathbin{+\!\!+} B = B`$, the left-hand side is
+  $`\mathrm{steps}_1(B)`$. On the right-hand side the first conjunct holds by
+  [T.steps1_nil](#t-steps1_nil) and the third conjunct holds by its first disjunct $`A = ()`$,
+  so the right-hand side is also equivalent to $`\mathrm{steps}_1(B)`$.
 
-**帰納段** $`A = p :: A'`$：帰納法の仮定は $`\Phi(A')`$ である。$`A'`$ で場合分けする。
+**Inductive step** $`A = p :: A'`$: the induction hypothesis is $`\Phi(A')`$. We distinguish
+cases on $`A'`$.
 
-**(a) $`A' = ()`$ のとき。** $`A = (p)`$、$`A \mathbin{+\!\!+} B = p :: B`$ であり、
-$`\mathrm{last}_{(0,0)} A = p`$、$`A = ()`$ は偽である。さらに $`B`$ で場合分けする。
+**(a) $`A' = ()`$.** Then $`A = (p)`$ and $`A \mathbin{+\!\!+} B = p :: B`$, and
+$`\mathrm{last}_{(0,0)} A = p`$, while $`A = ()`$ is false. We distinguish further cases on $`B`$.
 
-**(a-1) $`B = ()`$ のとき。** 左辺は $`\mathrm{steps}_1((p))`$ であり
-[T.steps1_single](#t-steps1_single) により成り立つ。右辺は、第 1 の連言子が
-[T.steps1_single](#t-steps1_single)、第 2 の連言子が [T.steps1_nil](#t-steps1_nil)、
-第 3 の連言子がその第 2 選言 $`B = ()`$ によりそれぞれ成り立つ。
-両辺とも成り立つので同値である。
+**(a-1) $`B = ()`$.** The left-hand side is $`\mathrm{steps}_1((p))`$, which holds by
+[T.steps1_single](#t-steps1_single). On the right-hand side the first conjunct holds by
+[T.steps1_single](#t-steps1_single), the second conjunct by [T.steps1_nil](#t-steps1_nil), and
+the third conjunct by its second disjunct $`B = ()`$. Both sides hold, hence they are equivalent.
 
-**(a-2) $`B = q :: B'`$ のとき。** $`\mathrm{head}\,B = q`$ である。
-[T.steps1_cons_cons](#t-steps1_cons_cons) により左辺は
-$`q_1 \le p_1 + 1 \wedge \mathrm{steps}_1(B)`$ と同値である。
-右辺は、第 1 の連言子が [T.steps1_single](#t-steps1_single) により成り立ち、
-第 3 の連言子は第 1 選言 $`A = ()`$ も第 2 選言 $`B = ()`$ も偽であるから
-第 3 選言 $`q_1 \le p_1 + 1`$ と同値である。よって右辺も
-$`q_1 \le p_1 + 1 \wedge \mathrm{steps}_1(B)`$ と同値であり、両辺は同値である。
+**(a-2) $`B = q :: B'`$.** Here $`\mathrm{head}\,B = q`$. By
+[T.steps1_cons_cons](#t-steps1_cons_cons) the left-hand side is equivalent to
+$`q_1 \le p_1 + 1 \wedge \mathrm{steps}_1(B)`$.
+On the right-hand side the first conjunct holds by [T.steps1_single](#t-steps1_single), and the
+third conjunct is equivalent to its third disjunct $`q_1 \le p_1 + 1`$ because both the first
+disjunct $`A = ()`$ and the second disjunct $`B = ()`$ are false. Hence the right-hand side is
+also equivalent to $`q_1 \le p_1 + 1 \wedge \mathrm{steps}_1(B)`$, and the two sides are
+equivalent.
 
-**(b) $`A' = p' :: A''`$ のとき。** このとき
+**(b) $`A' = p' :: A''`$.** In this case
 
 ```math
 A \mathbin{+\!\!+} B = p :: (A' \mathbin{+\!\!+} B),\qquad
@@ -405,9 +414,9 @@ A' \mathbin{+\!\!+} B = p' :: (A'' \mathbin{+\!\!+} B),\qquad
 \mathrm{last}_{(0,0)} A = \mathrm{last}_{(0,0)} A'
 ```
 
-である（第 3 の等式は $`A' \ne ()`$ による。$`A = p :: A'`$ の最後の要素は $`A'`$ の
-最後の要素である）。また $`A = ()`$ と $`A' = ()`$ はいずれも偽である。
-[T.steps1_cons_cons](#t-steps1_cons_cons) を 2 回用いて
+(the third equality holds because $`A' \ne ()`$: the last element of $`A = p :: A'`$ is the last
+element of $`A'`$). Moreover both $`A = ()`$ and $`A' = ()`$ are false. Applying
+[T.steps1_cons_cons](#t-steps1_cons_cons) twice gives
 
 ```math
 \mathrm{steps}_1(A \mathbin{+\!\!+} B) \iff
@@ -417,7 +426,7 @@ A' \mathbin{+\!\!+} B = p' :: (A'' \mathbin{+\!\!+} B),\qquad
 \mathrm{steps}_1(A) \iff p'_1 \le p_1 + 1 \ \wedge\ \mathrm{steps}_1(A')
 ```
 
-を得る。したがって右辺は
+Consequently the right-hand side is equivalent to
 
 ```math
 p'_1 \le p_1 + 1 \ \wedge\ \Bigl(\mathrm{steps}_1(A') \wedge \mathrm{steps}_1(B) \wedge
@@ -425,161 +434,163 @@ p'_1 \le p_1 + 1 \ \wedge\ \Bigl(\mathrm{steps}_1(A') \wedge \mathrm{steps}_1(B)
     (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A')_1 + 1\bigr)\Bigr)
 ```
 
-と同値である。実際、$`A = ()`$ と $`A' = ()`$ がともに偽であるから第 3 の連言子の
-選言の並びは一致し、$`\mathrm{last}_{(0,0)} A = \mathrm{last}_{(0,0)} A'`$ から第 3 選言も一致する。
-あとは連言の結合順序を組み替えただけである。大きい括弧の中は帰納法の仮定 $`\Phi(A')`$ により
-$`\mathrm{steps}_1(A' \mathbin{+\!\!+} B)`$ と同値であるから、右辺は
+Indeed, since $`A = ()`$ and $`A' = ()`$ are both false, the lists of disjuncts in the third
+conjunct agree, and the third disjuncts agree as well because
+$`\mathrm{last}_{(0,0)} A = \mathrm{last}_{(0,0)} A'`$. Everything else is just a rearrangement of
+the association of the conjunction. By the induction hypothesis $`\Phi(A')`$, the expression
+inside the large parentheses is equivalent to $`\mathrm{steps}_1(A' \mathbin{+\!\!+} B)`$, so the
+right-hand side is equivalent to
 
 ```math
 p'_1 \le p_1 + 1 \ \wedge\ \mathrm{steps}_1(A' \mathbin{+\!\!+} B)
 ```
 
-と同値であり、これは上の第 1 の同値により左辺と同値である。よって $`\Phi(p :: A')`$。∎
+which by the first of the equivalences above is equivalent to the left-hand side. Hence
+$`\Phi(p :: A')`$. ∎
 
 <a id="t-steps1_dropLast"></a>
-## 定理: 末尾を落としても隣接段差は保たれる (T.steps1_dropLast)
+## Theorem: dropping the last element preserves the adjacent steps (T.steps1_dropLast)
 
-### 定理
+### Theorem
 
-$`\mathrm{steps}_1(B)`$ ならば $`\mathrm{steps}_1(\mathrm{dropLast}\,B)`$。
-ここで $`\mathrm{dropLast}\,B`$ は $`B`$ の末尾 1 要素を落とした列である
-（$`B = ()`$ のときは $`()`$）。
+If $`\mathrm{steps}_1(B)`$ then $`\mathrm{steps}_1(\mathrm{dropLast}\,B)`$.
+Here $`\mathrm{dropLast}\,B`$ is the sequence obtained from $`B`$ by dropping its last element
+($`()`$ when $`B = ()`$).
 
-### 証明
+### Proof
 
-$`B = ()`$ かどうかで場合分けする。
+We distinguish cases according to whether $`B = ()`$.
 
-**(a) $`B = ()`$ のとき。** $`\mathrm{dropLast}\,() = ()`$ であり、
-[T.steps1_nil](#t-steps1_nil) による。
+**(a) $`B = ()`$.** Then $`\mathrm{dropLast}\,() = ()`$, and the claim follows by
+[T.steps1_nil](#t-steps1_nil).
 
-**(b) $`B \ne ()`$ のとき。** $`B`$ の最後の要素を $`\ell`$ とすると
+**(b) $`B \ne ()`$.** Let $`\ell`$ be the last element of $`B`$; then
 
 ```math
 B = \mathrm{dropLast}\,B \mathbin{+\!\!+} (\ell)
 ```
 
-である。仮定 $`\mathrm{steps}_1(B)`$ にこの書き換えを行い、
-[T.steps1_append](#t-steps1_append) の $`\to`$ 向きを
-$`A := \mathrm{dropLast}\,B`$、$`B := (\ell)`$ として適用すると、その第 1 の連言子が
-$`\mathrm{steps}_1(\mathrm{dropLast}\,B)`$ である。∎
+Rewriting the hypothesis $`\mathrm{steps}_1(B)`$ accordingly and applying the $`\to`$ direction of
+[T.steps1_append](#t-steps1_append) with $`A := \mathrm{dropLast}\,B`$ and $`B := (\ell)`$, its
+first conjunct is $`\mathrm{steps}_1(\mathrm{dropLast}\,B)`$. ∎
 
 <a id="t-blockok_dropLast"></a>
-## 定理: 末尾を落としてもブロックである (T.blockok_dropLast)
+## Theorem: dropping the last element preserves being a block (T.blockok_dropLast)
 
-### 定理
+### Theorem
 
-$`\mathrm{blockok}(d, B)`$ ならば $`\mathrm{blockok}(d, \mathrm{dropLast}\,B)`$。
+If $`\mathrm{blockok}(d, B)`$ then $`\mathrm{blockok}(d, \mathrm{dropLast}\,B)`$.
 
-### 証明
+### Proof
 
-$`\mathrm{blockok}`$ の定義（D.blockok）の 3 つの連言子を順に示す。仮定から
-$`B \ne () \to (\mathrm{head}\,B)_1 = d`$、$`\forall p \in B,\ d \le p_1`$、
-$`\mathrm{steps}_1(B)`$ が得られている。
+We prove in turn the three conjuncts of the definition of $`\mathrm{blockok}`$ (D.blockok). From
+the hypothesis we have $`B \ne () \to (\mathrm{head}\,B)_1 = d`$,
+$`\forall p \in B,\ d \le p_1`$ and $`\mathrm{steps}_1(B)`$.
 
-**第 3 の連言子。** [T.steps1_dropLast](#t-steps1_dropLast) を $`\mathrm{steps}_1(B)`$ に
-適用する。
+**Third conjunct.** Apply [T.steps1_dropLast](#t-steps1_dropLast) to $`\mathrm{steps}_1(B)`$.
 
-**第 2 の連言子。** $`p \in \mathrm{dropLast}\,B`$ とする。$`B = ()`$ なら
-$`\mathrm{dropLast}\,B = ()`$ は要素をもたないから、$`B \ne ()`$ であり、その最後の要素を
-$`\ell`$ とすると $`B = \mathrm{dropLast}\,B \mathbin{+\!\!+} (\ell)`$ である。よって
-$`p \in B`$ であり、仮定より $`d \le p_1`$。
+**Second conjunct.** Let $`p \in \mathrm{dropLast}\,B`$. If $`B = ()`$ then
+$`\mathrm{dropLast}\,B = ()`$ has no element, so $`B \ne ()`$; letting $`\ell`$ be its last
+element we have $`B = \mathrm{dropLast}\,B \mathbin{+\!\!+} (\ell)`$. Hence $`p \in B`$, and the
+hypothesis gives $`d \le p_1`$.
 
-**第 1 の連言子。** $`\mathrm{dropLast}\,B \ne ()`$ とする。$`B = ()`$ なら
-$`\mathrm{dropLast}\,B = ()`$ となり仮定に反するから $`B \ne ()`$ であり、
-$`B = x :: xs`$ と書ける。ここで $`xs \ne ()`$ である。実際 $`xs = ()`$ とすると
-$`B = (x)`$ であり $`\mathrm{dropLast}\,B = ()`$ となって仮定に反する。
-$`xs \ne ()`$ のとき $`\mathrm{dropLast}(x :: xs) = x :: \mathrm{dropLast}\,xs`$ であるから
+**First conjunct.** Assume $`\mathrm{dropLast}\,B \ne ()`$. If $`B = ()`$ then
+$`\mathrm{dropLast}\,B = ()`$, contradicting this assumption; so $`B \ne ()`$ and we may write
+$`B = x :: xs`$. Here $`xs \ne ()`$: indeed, if $`xs = ()`$ then $`B = (x)`$ and
+$`\mathrm{dropLast}\,B = ()`$, contradicting the assumption. Since
+$`\mathrm{dropLast}(x :: xs) = x :: \mathrm{dropLast}\,xs`$ when $`xs \ne ()`$, we have
 
 ```math
 \mathrm{head}\,(\mathrm{dropLast}\,B) = x = \mathrm{head}\,B
 ```
 
-であり、$`B \ne ()`$ に仮定の第 1 の連言子を適用して
-$`(\mathrm{head}\,B)_1 = d`$、すなわち $`x_1 = d`$ を得る。∎
+and applying the first conjunct of the hypothesis to $`B \ne ()`$ gives
+$`(\mathrm{head}\,B)_1 = d`$, that is, $`x_1 = d`$. ∎
 
 <a id="t-blockok_arg"></a>
-## 定理: 行 0 の値が $`d`$ より大きい極大な前部分列はブロック (T.blockok_arg)
+## Theorem: the maximal prefix whose row 0 values are greater than $`d`$ is a block (T.blockok_arg)
 
-### 定理
+### Theorem
 
-$`d, y \in \mathbb{N}`$、$`r \in \mathrm{PairSeq}`$ とする。
-$`\mathrm{blockok}\bigl(d, (d,y) :: r\bigr)`$ ならば
-$`\mathrm{blockok}\bigl(d+1,\ \mathrm{tw}_d r\bigr)`$（[D.translate](Term.md#d-translate)）。
+Let $`d, y \in \mathbb{N}`$ and $`r \in \mathrm{PairSeq}`$.
+If $`\mathrm{blockok}\bigl(d, (d,y) :: r\bigr)`$ then
+$`\mathrm{blockok}\bigl(d+1,\ \mathrm{tw}_d r\bigr)`$ ([D.translate](Term.md#d-translate)).
 
-### 証明
+### Proof
 
-仮定から $`\forall p \in (d,y) :: r,\ d \le p_1`$ と
-$`\mathrm{steps}_1\bigl((d,y) :: r\bigr)`$ が得られている。
-$`\mathrm{blockok}`$ の定義（D.blockok）の 3 つの連言子を順に示す。
+From the hypothesis we have $`\forall p \in (d,y) :: r,\ d \le p_1`$ and
+$`\mathrm{steps}_1\bigl((d,y) :: r\bigr)`$.
+We prove in turn the three conjuncts of the definition of $`\mathrm{blockok}`$ (D.blockok).
 
-**第 1 の連言子。** $`\mathrm{tw}_d r \ne ()`$ とする。$`\mathrm{tw}`$ の定義（D.translate）より
-$`\mathrm{tw}_d\,() = ()`$ であるから $`r \ne ()`$ であり、$`r = p' :: r'`$ と書ける。
-$`\mathrm{tw}`$ の定義（D.translate）より、$`\neg(d \lt p'_1)`$ ならば
-$`\mathrm{tw}_d(p' :: r') = ()`$ となって仮定に反する。よって $`d \lt p'_1`$ であり、
-このとき $`\mathrm{tw}_d(p' :: r') = p' :: \mathrm{tw}_d r'`$ であるから
+**First conjunct.** Assume $`\mathrm{tw}_d r \ne ()`$. By the definition of $`\mathrm{tw}`$
+(D.translate) we have $`\mathrm{tw}_d\,() = ()`$, so $`r \ne ()`$ and we may write
+$`r = p' :: r'`$. By the definition of $`\mathrm{tw}`$ (D.translate), if $`\neg(d \lt p'_1)`$
+then $`\mathrm{tw}_d(p' :: r') = ()`$, contradicting the assumption. Hence $`d \lt p'_1`$, and in
+that case $`\mathrm{tw}_d(p' :: r') = p' :: \mathrm{tw}_d r'`$, so
 
 ```math
 \mathrm{head}\,(\mathrm{tw}_d r) = p' .
 ```
 
-一方 $`\mathrm{steps}_1\bigl((d,y) :: p' :: r'\bigr)`$ に
-[T.steps1_cons_cons](#t-steps1_cons_cons) を適用すると、その第 1 の連言子は
-$`p'_1 \le d + 1`$ である。$`d \lt p'_1`$ は $`d + 1 \le p'_1`$ であるから、
-$`\le`$ の反対称性により $`p'_1 = d + 1`$ を得る。
+On the other hand, applying [T.steps1_cons_cons](#t-steps1_cons_cons) to
+$`\mathrm{steps}_1\bigl((d,y) :: p' :: r'\bigr)`$, its first conjunct is
+$`p'_1 \le d + 1`$. Since $`d \lt p'_1`$ means $`d + 1 \le p'_1`$, antisymmetry of $`\le`$ gives
+$`p'_1 = d + 1`$.
 
-**第 2 の連言子。** $`q \in \mathrm{tw}_d r`$ とする。$`\mathrm{tw}`$ の定義（D.translate）より
-$`\mathrm{tw}_d r`$ の要素はすべて述語 $`d \lt x_1`$ をみたすから $`d \lt q_1`$、
-すなわち $`d + 1 \le q_1`$ である。
+**Second conjunct.** Let $`q \in \mathrm{tw}_d r`$. By the definition of $`\mathrm{tw}`$
+(D.translate), every element of $`\mathrm{tw}_d r`$ satisfies the predicate $`d \lt x_1`$, so
+$`d \lt q_1`$, that is, $`d + 1 \le q_1`$.
 
-**第 3 の連言子。** $`\mathrm{tw}`$ と $`\mathrm{dw}`$ の定義（D.translate）より
-$`\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r = r`$ である。
-[T.steps1_tail](#t-steps1_tail) を $`\mathrm{steps}_1\bigl((d,y) :: r\bigr)`$ に適用して
-$`\mathrm{steps}_1(r)`$ を得るから、
-$`\mathrm{steps}_1\bigl(\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r\bigr)`$ が成り立つ。
-[T.steps1_append](#t-steps1_append) の $`\to`$ 向きを適用すると、その第 1 の連言子が
-$`\mathrm{steps}_1(\mathrm{tw}_d r)`$ である。∎
+**Third conjunct.** By the definitions of $`\mathrm{tw}`$ and $`\mathrm{dw}`$ (D.translate) we
+have $`\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r = r`$.
+Applying [T.steps1_tail](#t-steps1_tail) to $`\mathrm{steps}_1\bigl((d,y) :: r\bigr)`$ gives
+$`\mathrm{steps}_1(r)`$, hence
+$`\mathrm{steps}_1\bigl(\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r\bigr)`$ holds.
+Applying the $`\to`$ direction of [T.steps1_append](#t-steps1_append), its first conjunct is
+$`\mathrm{steps}_1(\mathrm{tw}_d r)`$. ∎
 
 <a id="t-blockok_tail"></a>
-## 定理: その前部分列を除いた残りもブロック (T.blockok_tail)
+## Theorem: the remainder after removing that prefix is also a block (T.blockok_tail)
 
-### 定理
+### Theorem
 
-$`d, y \in \mathbb{N}`$、$`r \in \mathrm{PairSeq}`$ とする。
-$`\mathrm{blockok}\bigl(d, (d,y) :: r\bigr)`$ ならば
-$`\mathrm{blockok}\bigl(d,\ \mathrm{dw}_d r\bigr)`$。
+Let $`d, y \in \mathbb{N}`$ and $`r \in \mathrm{PairSeq}`$.
+If $`\mathrm{blockok}\bigl(d, (d,y) :: r\bigr)`$ then
+$`\mathrm{blockok}\bigl(d,\ \mathrm{dw}_d r\bigr)`$.
 
-### 証明
+### Proof
 
-仮定から $`\forall p \in (d,y) :: r,\ d \le p_1`$ と
-$`\mathrm{steps}_1\bigl((d,y) :: r\bigr)`$ が得られている。
-$`\mathrm{blockok}`$ の定義（D.blockok）の 3 つの連言子を順に示す。
+From the hypothesis we have $`\forall p \in (d,y) :: r,\ d \le p_1`$ and
+$`\mathrm{steps}_1\bigl((d,y) :: r\bigr)`$.
+We prove in turn the three conjuncts of the definition of $`\mathrm{blockok}`$ (D.blockok).
 
-**第 1 の連言子。** $`\mathrm{dw}_d r \ne ()`$ とし、その先頭要素を $`a`$ とする。
-$`\mathrm{dw}`$ の定義（D.translate）より、$`\mathrm{dw}_d r`$ が空でなければその先頭要素は
-述語 $`d \lt x_1`$ を破るから $`\neg(d \lt a_1)`$、すなわち $`a_1 \le d`$ である。
-また $`\mathrm{dw}_d r`$ は $`r`$ の部分列であるから $`a \in r`$ であり、
-$`a \in (d,y) :: r`$ である。仮定の第 2 の連言子より $`d \le a_1`$。
-$`\le`$ の反対称性により $`a_1 = d`$、すなわち
-$`(\mathrm{head}\,(\mathrm{dw}_d r))_1 = d`$ を得る。
+**First conjunct.** Assume $`\mathrm{dw}_d r \ne ()`$ and let $`a`$ be its first element.
+By the definition of $`\mathrm{dw}`$ (D.translate), if $`\mathrm{dw}_d r`$ is non-empty then its
+first element violates the predicate $`d \lt x_1`$, so $`\neg(d \lt a_1)`$, that is,
+$`a_1 \le d`$. Moreover $`\mathrm{dw}_d r`$ is a sublist of $`r`$, so $`a \in r`$ and hence
+$`a \in (d,y) :: r`$. The second conjunct of the hypothesis gives $`d \le a_1`$.
+By antisymmetry of $`\le`$ we obtain $`a_1 = d`$, that is,
+$`(\mathrm{head}\,(\mathrm{dw}_d r))_1 = d`$.
 
-**第 2 の連言子。** $`q \in \mathrm{dw}_d r`$ とする。$`\mathrm{dw}_d r`$ は $`r`$ の部分列で
-あるから $`q \in r`$、したがって $`q \in (d,y) :: r`$ であり、仮定より $`d \le q_1`$。
+**Second conjunct.** Let $`q \in \mathrm{dw}_d r`$. Since $`\mathrm{dw}_d r`$ is a sublist of
+$`r`$, we have $`q \in r`$ and therefore $`q \in (d,y) :: r`$, so the hypothesis gives
+$`d \le q_1`$.
 
-**第 3 の連言子。** $`\mathrm{tw}`$ と $`\mathrm{dw}`$ の定義（D.translate）より
-$`\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r = r`$ である。
-[T.steps1_tail](#t-steps1_tail) を $`\mathrm{steps}_1\bigl((d,y) :: r\bigr)`$ に適用して
-$`\mathrm{steps}_1(r)`$ を得るから、
-$`\mathrm{steps}_1\bigl(\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r\bigr)`$ が成り立つ。
-[T.steps1_append](#t-steps1_append) の $`\to`$ 向きを適用すると、その第 2 の連言子が
-$`\mathrm{steps}_1(\mathrm{dw}_d r)`$ である。∎
+**Third conjunct.** By the definitions of $`\mathrm{tw}`$ and $`\mathrm{dw}`$ (D.translate) we
+have $`\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r = r`$.
+Applying [T.steps1_tail](#t-steps1_tail) to $`\mathrm{steps}_1\bigl((d,y) :: r\bigr)`$ gives
+$`\mathrm{steps}_1(r)`$, hence
+$`\mathrm{steps}_1\bigl(\mathrm{tw}_d r \mathbin{+\!\!+} \mathrm{dw}_d r\bigr)`$ holds.
+Applying the $`\to`$ direction of [T.steps1_append](#t-steps1_append), its second conjunct is
+$`\mathrm{steps}_1(\mathrm{dw}_d r)`$. ∎
 
 <a id="t-seqlex_arg_or_tail"></a>
-## 定理: 最初の差は前部分列側か残り側のどちらかに現れる (T.seqlex_arg_or_tail)
+## Theorem: the first difference occurs either on the prefix side or on the remainder side (T.seqlex_arg_or_tail)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$、$`r, r' \in \mathrm{PairSeq}`$ とする。
-$`r \prec_{\mathrm{lex}} r'`$ ならば、次の 2 つのいずれかが成り立つ。
+Let $`d \in \mathbb{N}`$ and $`r, r' \in \mathrm{PairSeq}`$.
+If $`r \prec_{\mathrm{lex}} r'`$ then one of the following two statements holds.
 
 ```math
 \begin{aligned}
@@ -590,52 +601,51 @@ $`r \prec_{\mathrm{lex}} r'`$ ならば、次の 2 つのいずれかが成り�
 \end{aligned}
 ```
 
-### 証明
+### Proof
 
-$`r`$ のリスト構造に関する帰納法（$`r'`$ は全称量化したまま動かす）。帰納法の述語は
+By induction on the list structure of $`r`$ (with $`r'`$ kept universally quantified).
+The induction predicate is
 
 ```math
 \Phi(r) :\equiv \forall r' \in \mathrm{PairSeq},\
   r \prec_{\mathrm{lex}} r' \to \bigl(\text{(T)} \vee \text{(A)}\bigr).
 ```
 
-以下、$`\mathrm{tw}`$ と $`\mathrm{dw}`$ の定義（D.translate）から従う次の 4 つの等式を用いる。
-$`d \lt p_1`$ のとき
+In what follows we use the following four equalities, which follow from the definitions of
+$`\mathrm{tw}`$ and $`\mathrm{dw}`$ (D.translate). If $`d \lt p_1`$ then
 
 ```math
 \mathrm{tw}_d(p :: L) = p :: \mathrm{tw}_d L, \qquad
 \mathrm{dw}_d(p :: L) = \mathrm{dw}_d L
 ```
 
-であり、$`\neg(d \lt p_1)`$ のとき
+and if $`\neg(d \lt p_1)`$ then
 
 ```math
 \mathrm{tw}_d(p :: L) = (), \qquad
 \mathrm{dw}_d(p :: L) = p :: L
 ```
 
-である。
+**Base case** $`r = ()`$: take $`r'`$ and assume $`() \prec_{\mathrm{lex}} r'`$.
+By [T.seqlex_nil_iff](#t-seqlex_nil_iff) we have $`r' \ne ()`$.
+By the definitions of $`\mathrm{tw}`$ and $`\mathrm{dw}`$ (D.translate) we have
+$`\mathrm{tw}_d\,() = ()`$ and $`\mathrm{dw}_d\,() = ()`$.
+We distinguish cases according to whether $`\mathrm{tw}_d r'`$ is empty.
 
-**基底段** $`r = ()`$：$`r'`$ を取り $`() \prec_{\mathrm{lex}} r'`$ とする。
-[T.seqlex_nil_iff](#t-seqlex_nil_iff) より $`r' \ne ()`$ である。
-$`\mathrm{tw}`$ と $`\mathrm{dw}`$ の定義（D.translate）より
-$`\mathrm{tw}_d\,() = ()`$、$`\mathrm{dw}_d\,() = ()`$ である。
-$`\mathrm{tw}_d r'`$ が空かどうかで場合分けする。
+**(i) $`\mathrm{tw}_d r' = ()`$.** We show (T). The first conjunct is
+$`\mathrm{tw}_d\,() = () = \mathrm{tw}_d r'`$. For the second conjunct, we first show
+$`\mathrm{dw}_d r' = r'`$. Since $`r' \ne ()`$ we may write $`r' = q :: t`$.
+If $`d \lt q_1`$ then $`\mathrm{tw}_d r' = q :: \mathrm{tw}_d t \ne ()`$, contradicting the
+assumption; hence $`\neg(d \lt q_1)`$ and $`\mathrm{dw}_d(q :: t) = q :: t = r'`$.
+Therefore what has to be shown is $`() \prec_{\mathrm{lex}} r'`$, which follows from
+[T.seqlex_nil_iff](#t-seqlex_nil_iff) and $`r' \ne ()`$.
 
-**(i) $`\mathrm{tw}_d r' = ()`$ のとき。** (T) を示す。第 1 の連言子は
-$`\mathrm{tw}_d\,() = () = \mathrm{tw}_d r'`$ である。第 2 の連言子については、
-まず $`\mathrm{dw}_d r' = r'`$ を示す。$`r' \ne ()`$ より $`r' = q :: t`$ と書ける。
-$`d \lt q_1`$ とすると $`\mathrm{tw}_d r' = q :: \mathrm{tw}_d t \ne ()`$ となり
-仮定に反するから $`\neg(d \lt q_1)`$ であり、$`\mathrm{dw}_d(q :: t) = q :: t = r'`$ である。
-したがって示すべきは $`() \prec_{\mathrm{lex}} r'`$ であり、
-[T.seqlex_nil_iff](#t-seqlex_nil_iff) と $`r' \ne ()`$ による。
+**(ii) $`\mathrm{tw}_d r' \ne ()`$.** We show (A). The first conjunct follows from
+$`\mathrm{tw}_d\,() = ()`$ and the assumption $`\mathrm{tw}_d r' \ne ()`$.
+The second conjunct $`() \prec_{\mathrm{lex}} \mathrm{tw}_d r'`$ follows from
+[T.seqlex_nil_iff](#t-seqlex_nil_iff) and the assumption $`\mathrm{tw}_d r' \ne ()`$.
 
-**(ii) $`\mathrm{tw}_d r' \ne ()`$ のとき。** (A) を示す。第 1 の連言子は
-$`\mathrm{tw}_d\,() = ()`$ と仮定 $`\mathrm{tw}_d r' \ne ()`$ から得られる。
-第 2 の連言子 $`() \prec_{\mathrm{lex}} \mathrm{tw}_d r'`$ は
-[T.seqlex_nil_iff](#t-seqlex_nil_iff) と仮定 $`\mathrm{tw}_d r' \ne ()`$ による。
-
-**帰納段** $`r = p :: rr`$：帰納法の仮定は $`\Phi(rr)`$、すなわち
+**Inductive step** $`r = p :: rr`$: the induction hypothesis is $`\Phi(rr)`$, that is,
 
 ```math
 \begin{aligned}
@@ -647,19 +657,19 @@ $`\mathrm{tw}_d\,() = ()`$ と仮定 $`\mathrm{tw}_d r' \ne ()`$ から得られ
 \end{aligned}
 ```
 
-である。$`r'`$ を取り $`(p :: rr) \prec_{\mathrm{lex}} r'`$ とする。
-$`r' = ()`$ とすると [T.not_seqlex_nil](#t-not_seqlex_nil) に反するから
-$`r' = q :: rr'`$ と書ける。$`p = q`$ かどうかで場合分けする。
+Take $`r'`$ and assume $`(p :: rr) \prec_{\mathrm{lex}} r'`$.
+If $`r' = ()`$ this contradicts [T.not_seqlex_nil](#t-not_seqlex_nil), so we may write
+$`r' = q :: rr'`$. We distinguish cases according to whether $`p = q`$.
 
-**(a) $`p = q`$ のとき。** 以下 $`q`$ を $`p`$ に書き換える。すなわち $`r' = p :: rr'`$ で
-ある。[T.seqlex_cons_cons](#t-seqlex_cons_cons) より
-$`p \prec_{\mathrm{p}} p`$ または $`p = p \wedge rr \prec_{\mathrm{lex}} rr'`$ である。
-$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より $`p \prec_{\mathrm{p}} p`$ は
-$`p_1 \lt p_1`$ または $`p_1 = p_1 \wedge p_2 \lt p_2`$ であり、$`\mathbb{N}`$ の $`\lt`$ の
-非反射性によりどちらも偽である。よって $`rr \prec_{\mathrm{lex}} rr'`$ を得る。
-さらに $`d \lt p_1`$ かどうかで場合分けする。
+**(a) $`p = q`$.** In what follows we rewrite $`q`$ as $`p`$, so that $`r' = p :: rr'`$.
+By [T.seqlex_cons_cons](#t-seqlex_cons_cons) we have
+$`p \prec_{\mathrm{p}} p`$ or $`p = p \wedge rr \prec_{\mathrm{lex}} rr'`$.
+By the definition of $`\prec_{\mathrm{p}}`$ (D.pairlt), $`p \prec_{\mathrm{p}} p`$ means
+$`p_1 \lt p_1`$ or $`p_1 = p_1 \wedge p_2 \lt p_2`$, and both are false by irreflexivity of
+$`\lt`$ on $`\mathbb{N}`$. Hence we obtain $`rr \prec_{\mathrm{lex}} rr'`$.
+We distinguish further cases according to whether $`d \lt p_1`$.
 
-**(a-1) $`d \lt p_1`$ のとき。** このとき
+**(a-1) $`d \lt p_1`$.** In this case
 
 ```math
 \mathrm{tw}_d(p :: rr) = p :: \mathrm{tw}_d rr, \qquad
@@ -670,25 +680,26 @@ $`p_1 \lt p_1`$ または $`p_1 = p_1 \wedge p_2 \lt p_2`$ であり、$`\mathbb
 \mathrm{dw}_d(p :: rr') = \mathrm{dw}_d rr'
 ```
 
-である。帰納法の仮定を $`r'' := rr'`$ と $`rr \prec_{\mathrm{lex}} rr'`$ に適用し、
-その結論の選言で場合分けする。
+Apply the induction hypothesis with $`r'' := rr'`$ to $`rr \prec_{\mathrm{lex}} rr'`$, and
+distinguish cases on the disjunction in its conclusion.
 
-- (T) が成り立つとき、すなわち $`\mathrm{tw}_d rr = \mathrm{tw}_d rr'`$ かつ
-  $`\mathrm{dw}_d rr \prec_{\mathrm{lex}} \mathrm{dw}_d rr'`$ のとき。
-  結論の (T) を示す。第 1 の連言子は
-  $`p :: \mathrm{tw}_d rr = p :: \mathrm{tw}_d rr'`$ であり、
-  $`\mathrm{tw}_d rr = \mathrm{tw}_d rr'`$ から従う。第 2 の連言子は
-  $`\mathrm{dw}_d rr \prec_{\mathrm{lex}} \mathrm{dw}_d rr'`$ そのものである。
+- Case (T) holds, that is, $`\mathrm{tw}_d rr = \mathrm{tw}_d rr'`$ and
+  $`\mathrm{dw}_d rr \prec_{\mathrm{lex}} \mathrm{dw}_d rr'`$.
+  We show (T) in the conclusion. The first conjunct is
+  $`p :: \mathrm{tw}_d rr = p :: \mathrm{tw}_d rr'`$, which follows from
+  $`\mathrm{tw}_d rr = \mathrm{tw}_d rr'`$. The second conjunct is exactly
+  $`\mathrm{dw}_d rr \prec_{\mathrm{lex}} \mathrm{dw}_d rr'`$.
 
-- (A) が成り立つとき、すなわち $`\mathrm{tw}_d rr \ne \mathrm{tw}_d rr'`$ かつ
-  $`\mathrm{tw}_d rr \prec_{\mathrm{lex}} \mathrm{tw}_d rr'`$ のとき。
-  結論の (A) を示す。第 1 の連言子は、
-  $`p :: \mathrm{tw}_d rr = p :: \mathrm{tw}_d rr'`$ と仮定すると構成子 $`::`$ の単射性より
-  $`\mathrm{tw}_d rr = \mathrm{tw}_d rr'`$ となって矛盾することによる。
-  第 2 の連言子は、[T.seqlex_cons_cons](#t-seqlex_cons_cons) の右辺の第 2 選言
-  $`p = p \wedge \mathrm{tw}_d rr \prec_{\mathrm{lex}} \mathrm{tw}_d rr'`$ による。
+- Case (A) holds, that is, $`\mathrm{tw}_d rr \ne \mathrm{tw}_d rr'`$ and
+  $`\mathrm{tw}_d rr \prec_{\mathrm{lex}} \mathrm{tw}_d rr'`$.
+  We show (A) in the conclusion. For the first conjunct, assuming
+  $`p :: \mathrm{tw}_d rr = p :: \mathrm{tw}_d rr'`$, injectivity of the constructor $`::`$ gives
+  $`\mathrm{tw}_d rr = \mathrm{tw}_d rr'`$, a contradiction.
+  The second conjunct follows from the second disjunct
+  $`p = p \wedge \mathrm{tw}_d rr \prec_{\mathrm{lex}} \mathrm{tw}_d rr'`$ on the right-hand side
+  of [T.seqlex_cons_cons](#t-seqlex_cons_cons).
 
-**(a-2) $`\neg(d \lt p_1)`$ のとき。** このとき
+**(a-2) $`\neg(d \lt p_1)`$.** In this case
 
 ```math
 \mathrm{tw}_d(p :: rr) = () = \mathrm{tw}_d(p :: rr'), \qquad
@@ -696,41 +707,42 @@ $`p_1 \lt p_1`$ または $`p_1 = p_1 \wedge p_2 \lt p_2`$ であり、$`\mathbb
 \mathrm{dw}_d(p :: rr') = p :: rr'
 ```
 
-である。結論の (T) を示す。第 1 の連言子は上の等式である。第 2 の連言子
-$`(p :: rr) \prec_{\mathrm{lex}} (p :: rr')`$ は仮定
-$`(p :: rr) \prec_{\mathrm{lex}} r'`$ そのものである。
+We show (T) in the conclusion. The first conjunct is the equality above. The second conjunct
+$`(p :: rr) \prec_{\mathrm{lex}} (p :: rr')`$ is exactly the hypothesis
+$`(p :: rr) \prec_{\mathrm{lex}} r'`$.
 
-**(b) $`p \ne q`$ のとき。** [T.seqlex_cons_cons](#t-seqlex_cons_cons) より
-$`p \prec_{\mathrm{p}} q`$ または $`p = q \wedge rr \prec_{\mathrm{lex}} rr'`$ であり、
-第 2 選言は $`p \ne q`$ に反するから $`p \prec_{\mathrm{p}} q`$ である。
-$`d \lt p_1`$ と $`d \lt q_1`$ の成否で場合分けする。
+**(b) $`p \ne q`$.** By [T.seqlex_cons_cons](#t-seqlex_cons_cons) we have
+$`p \prec_{\mathrm{p}} q`$ or $`p = q \wedge rr \prec_{\mathrm{lex}} rr'`$, and the second
+disjunct contradicts $`p \ne q`$, so $`p \prec_{\mathrm{p}} q`$.
+We distinguish cases according to whether $`d \lt p_1`$ and $`d \lt q_1`$ hold.
 
-**(b-1) $`d \lt p_1`$ のとき。** $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より
-$`p_1 \lt q_1`$ または $`p_1 = q_1`$ であり、いずれの場合も $`p_1 \le q_1`$ であるから
-$`d \lt p_1 \le q_1`$、すなわち $`d \lt q_1`$ である。よって
+**(b-1) $`d \lt p_1`$.** By the definition of $`\prec_{\mathrm{p}}`$ (D.pairlt) we have
+$`p_1 \lt q_1`$ or $`p_1 = q_1`$; in either case $`p_1 \le q_1`$, so
+$`d \lt p_1 \le q_1`$, that is, $`d \lt q_1`$. Therefore
 
 ```math
 \mathrm{tw}_d(p :: rr) = p :: \mathrm{tw}_d rr, \qquad
 \mathrm{tw}_d(q :: rr') = q :: \mathrm{tw}_d rr'
 ```
 
-である。結論の (A) を示す。第 1 の連言子は、
-$`p :: \mathrm{tw}_d rr = q :: \mathrm{tw}_d rr'`$ と仮定すると構成子 $`::`$ の単射性より
-$`p = q`$ となって $`p \ne q`$ に矛盾することによる。第 2 の連言子は、
-[T.seqlex_cons_cons](#t-seqlex_cons_cons) の右辺の第 1 選言 $`p \prec_{\mathrm{p}} q`$ による。
+We show (A) in the conclusion. For the first conjunct, assuming
+$`p :: \mathrm{tw}_d rr = q :: \mathrm{tw}_d rr'`$, injectivity of the constructor $`::`$ gives
+$`p = q`$, contradicting $`p \ne q`$. The second conjunct follows from the first disjunct
+$`p \prec_{\mathrm{p}} q`$ on the right-hand side of
+[T.seqlex_cons_cons](#t-seqlex_cons_cons).
 
-**(b-2) $`\neg(d \lt p_1)`$ かつ $`d \lt q_1`$ のとき。** このとき
+**(b-2) $`\neg(d \lt p_1)`$ and $`d \lt q_1`$.** In this case
 
 ```math
 \mathrm{tw}_d(p :: rr) = (), \qquad
 \mathrm{tw}_d(q :: rr') = q :: \mathrm{tw}_d rr'
 ```
 
-である。結論の (A) を示す。第 1 の連言子は、$`q :: \mathrm{tw}_d rr'`$ が空でないことによる。
-第 2 の連言子 $`() \prec_{\mathrm{lex}} (q :: \mathrm{tw}_d rr')`$ は
-[T.seqlex_nil_iff](#t-seqlex_nil_iff) と $`q :: \mathrm{tw}_d rr' \ne ()`$ による。
+We show (A) in the conclusion. The first conjunct holds because $`q :: \mathrm{tw}_d rr'`$ is
+non-empty. The second conjunct $`() \prec_{\mathrm{lex}} (q :: \mathrm{tw}_d rr')`$ follows from
+[T.seqlex_nil_iff](#t-seqlex_nil_iff) and $`q :: \mathrm{tw}_d rr' \ne ()`$.
 
-**(b-3) $`\neg(d \lt p_1)`$ かつ $`\neg(d \lt q_1)`$ のとき。** このとき
+**(b-3) $`\neg(d \lt p_1)`$ and $`\neg(d \lt q_1)`$.** In this case
 
 ```math
 \mathrm{tw}_d(p :: rr) = () = \mathrm{tw}_d(q :: rr'), \qquad
@@ -738,9 +750,9 @@ $`p = q`$ となって $`p \ne q`$ に矛盾することによる。第 2 の連
 \mathrm{dw}_d(q :: rr') = q :: rr'
 ```
 
-である。結論の (T) を示す。第 1 の連言子は上の等式である。第 2 の連言子
-$`(p :: rr) \prec_{\mathrm{lex}} (q :: rr')`$ は仮定
-$`(p :: rr) \prec_{\mathrm{lex}} r'`$ そのものである。
+We show (T) in the conclusion. The first conjunct is the equality above. The second conjunct
+$`(p :: rr) \prec_{\mathrm{lex}} (q :: rr')`$ is exactly the hypothesis
+$`(p :: rr) \prec_{\mathrm{lex}} r'`$.
 
-以上で (a-1), (a-2), (b-1), (b-2), (b-3) のすべての場合に (T) か (A) が示されたので
-$`\Phi(p :: rr)`$。∎
+Since (T) or (A) has now been established in every one of the cases (a-1), (a-2), (b-1), (b-2),
+(b-3), we obtain $`\Phi(p :: rr)`$. ∎

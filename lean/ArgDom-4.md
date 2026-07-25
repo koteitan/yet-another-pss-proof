@@ -1,14 +1,14 @@
-[← README](README.md) ｜ ArgDom [1](ArgDom.md) [2](ArgDom-2.md) [3](ArgDom-3.md) **4** [5](ArgDom-5.md)
+[← README](README.md) | [English](ArgDom-4.md) | [Japanese](ArgDom-4-ja.md) | ArgDom [1](ArgDom.md) [2](ArgDom-2.md) [3](ArgDom-3.md) **4** [5](ArgDom-5.md)
 
 <a id="t-argDomCoreOn_bad_A2"></a>
-## 定理: 第 4 分岐の場合 A2（交差の場合） (T.argDomCoreOn_bad_A2)
+## Theorem: case A2 of the fourth branch (the cross case) (T.argDomCoreOn_bad_A2)
 
-### 定理
+### Theorem
 
-$`M, G, R, X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、
-$`v_0, w_0, d_0, n, u, w, e \in \mathbb{N}`$、
-$`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。
-次を仮定する。
+Let $`M, G, R, X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)),
+$`v_0, w_0, d_0, n, u, w, e \in \mathbb{N}`$ and
+$`\ell \in \mathbb{N}\times\mathbb{N}`$, and put $`\mathrm{blk} := (v_0,w_0) :: R`$.
+Assume the following.
 
 ```math
 \begin{aligned}
@@ -39,22 +39,22 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: 
 \end{aligned}
 ```
 
-（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn)、
-$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)、$`\mathrm{copies}_{d_0}`$ [D.copies](Cnf-2.md#d-copies)、
-$`\mathrm{SpineOK}`$ [D.SpineOK](ArgDom.md#d-SpineOK)）
+($`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS), $`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn),
+$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1), $`\mathrm{copies}_{d_0}`$ [D.copies](Cnf-2.md#d-copies),
+$`\mathrm{SpineOK}`$ [D.SpineOK](ArgDom.md#d-SpineOK))
 
-このとき
+Then
 
 ```math
 B \preceq_{\mathrm{lex}}
   \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e} .
 ```
 
-（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、$`L^{+e}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+($`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle), $`L^{+e}`$ [D.shiftr0](Cnf-2.md#d-shiftr0))
 
-### 証明
+### Proof
 
-**記法.** 以下
+**Notation.** In what follows we write
 
 ```math
 L := \lvert R\rvert + 1 = \lvert\mathrm{blk}\rvert, \quad
@@ -64,30 +64,30 @@ i := \lvert X\rvert, \quad
 j := \lvert X\rvert + (\lvert A_1\rvert + 1)
 ```
 
-と書く。仮定 (hcaseL) は $`i \lt p`$、仮定 (hcaseR) は $`p \le j`$ である。
+Hypothesis (hcaseL) reads $`i \lt p`$, and hypothesis (hcaseR) reads $`p \le j`$.
 
-**第 0 段：$`2 \le n`$。**
-[T.argdom_pos](ArgDom-2.md#t-argdom_pos) を (heq) に適用すると $`j \lt \lvert N\rvert`$ を得る。
-一方 [T.copies_length](ArgDom-3.md#t-copies_length) より
-$`\lvert \mathrm{copies}_{d_0}(\mathrm{blk}, n)\rvert = n \cdot L`$ であるから
+**Step 0: $`2 \le n`$.**
+Applying [T.argdom_pos](ArgDom-2.md#t-argdom_pos) to (heq) gives $`j \lt \lvert N\rvert`$.
+On the other hand, [T.copies_length](ArgDom-3.md#t-copies_length) gives
+$`\lvert \mathrm{copies}_{d_0}(\mathrm{blk}, n)\rvert = n \cdot L`$, so
 
 ```math
 \lvert N\rvert = \lvert G\rvert + n \cdot L .
 ```
 
-もし $`n = 1`$ ならば $`\lvert N\rvert = \lvert G\rvert + L = p`$ であり、$`j \lt p`$ となって
-(hcaseR) の $`p \le j`$ に反する。(hn) より $`1 \le n`$ であったから $`2 \le n`$ である。
-以下 $`n = m + 1`$、$`1 \le m`$ と書く。
+If $`n = 1`$, then $`\lvert N\rvert = \lvert G\rvert + L = p`$, hence $`j \lt p`$, which
+contradicts $`p \le j`$ from (hcaseR). Since $`1 \le n`$ by (hn), we get $`2 \le n`$.
+From now on we write $`n = m + 1`$ with $`1 \le m`$.
 
-**第 1 段：コピー $`0`$ を剥がし、境界 $`p`$ で切る。**
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) より
+**Step 1: peel off copy $`0`$ and cut at the boundary $`p`$.**
+By [T.copies_succ_front](Cnf-3.md#t-copies_succ_front),
 
 ```math
 N = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
   = (G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}
 ```
 
-である。これと (heq) を結合し、結合律で括り直すと
+Combining this with (heq) and re-bracketing by associativity gives
 
 ```math
 \begin{aligned}
@@ -98,9 +98,9 @@ N = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
 \end{aligned}
 ```
 
-を得る。(hcaseL) より $`\lvert X \mathbin{+\!\!+} ((u,w))\rvert = i + 1 \le p = \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert`$
-であるから、[T.split_append_left](ArgDom-3.md#t-split_append_left) を $`(\ast)`$ に適用して
-$`C \in \mathrm{PairSeq}`$ を得る。
+By (hcaseL) we have $`\lvert X \mathbin{+\!\!+} ((u,w))\rvert = i + 1 \le p = \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert`$,
+so applying [T.split_append_left](ArgDom-3.md#t-split_append_left) to $`(\ast)`$ yields
+$`C \in \mathrm{PairSeq}`$ with
 
 ```math
 \begin{aligned}
@@ -111,9 +111,9 @@ $`C \in \mathrm{PairSeq}`$ を得る。
 \end{aligned}
 ```
 
-(C1) の両辺の長さを比べて $`\lvert C\rvert = p - (i+1)`$ である。
-(hcaseR) は $`p \le i + \lvert A_1\rvert + 1`$、すなわち $`\lvert C\rvert \le \lvert A_1\rvert`$ を与えるから、
-ふたたび [T.split_append_left](ArgDom-3.md#t-split_append_left) を (C2) に適用して $`D \in \mathrm{PairSeq}`$ を得る。
+Comparing the lengths of the two sides of (C1) gives $`\lvert C\rvert = p - (i+1)`$.
+Hypothesis (hcaseR) says $`p \le i + \lvert A_1\rvert + 1`$, that is, $`\lvert C\rvert \le \lvert A_1\rvert`$, so
+applying [T.split_append_left](ArgDom-3.md#t-split_append_left) to (C2) again yields $`D \in \mathrm{PairSeq}`$ with
 
 ```math
 \text{(D1)}\ A_1 = C \mathbin{+\!\!+} D,
@@ -122,22 +122,22 @@ $`C \in \mathrm{PairSeq}`$ を得る。
   = D \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)) .
 ```
 
-(D1) の長さから $`\lvert A_1\rvert = \lvert C\rvert + \lvert D\rvert`$ である。
+Comparing the lengths in (D1) gives $`\lvert A_1\rvert = \lvert C\rvert + \lvert D\rvert`$.
 
-$`d_0`$ シフトされた列の要素はすべて第 1 成分が $`d_0`$ 以上である。実際、
-$`y \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}`$ ならば
-[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より $`y = (z_1 + d_0,\ z_2)`$ の形であり
-$`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e,w)`$ に適用して
+Every element of a $`d_0`$-shifted sequence has first entry at least $`d_0`$. Indeed, if
+$`y \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}`$, then by
+[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) it has the form $`y = (z_1 + d_0,\ z_2)`$, whence
+$`d_0 \le z_1 + d_0 = y_1`$. Applying this to the element $`(u+e,w)`$ of the right-hand side of (D2) gives
 
 ```math
 (\dagger)\qquad d_0 \le u + e
 ```
 
-を得る。同じ理由で $`\forall y \in D,\ d_0 \le y_1`$ である。
+For the same reason, $`\forall y \in D,\ d_0 \le y_1`$.
 
-**第 2 段：逆シフトして小さい塔を書く。**
-(D2) の両辺に $`(\cdot)^{-d_0}`$（[D.shiftl0](ArgDom-2.md#d-shiftl0)）を施し、[T.shiftl0_shiftr0](ArgDom-2.md#t-shiftl0_shiftr0) と
-[T.shiftl0_append](ArgDom-2.md#t-shiftl0_append)、[T.shiftl0_cons](ArgDom-2.md#t-shiftl0_cons) を使うと
+**Step 2: shift back and write down the smaller tower.**
+Applying $`(\cdot)^{-d_0}`$ ([D.shiftl0](ArgDom-2.md#d-shiftl0)) to both sides of (D2) and using [T.shiftl0_shiftr0](ArgDom-2.md#t-shiftl0_shiftr0),
+[T.shiftl0_append](ArgDom-2.md#t-shiftl0_append) and [T.shiftl0_cons](ArgDom-2.md#t-shiftl0_cons) gives
 
 ```math
 \text{(S)}\qquad \mathrm{copies}_{d_0}(\mathrm{blk}, m)
@@ -145,38 +145,36 @@ $`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e
       \bigl(B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})\bigr)
 ```
 
-を得る。
+**Step 3: trichotomy between $`\lvert X\rvert`$ and $`\lvert G\rvert + \lvert D\rvert`$.**
+By trichotomy for the natural numbers, exactly one of the following three cases holds.
 
-**第 3 段：$`\lvert X\rvert`$ と $`\lvert G\rvert + \lvert D\rvert`$ の三分律。**
-自然数の三分律により、次の 3 つのいずれかがちょうど 1 つ成り立つ。
+**(a) The case $`\lvert X\rvert \lt \lvert G\rvert + \lvert D\rvert`$.**
+Since $`1 \le m`$, we may write $`m = m'' + 1`$.
+By [T.copies_succ_front](Cnf-3.md#t-copies_succ_front),
+$`\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{blk} \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m'')^{+d_0}`$,
+so $`\mathrm{blk} \sqsubseteq \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$.
+Also (S) gives $`D^{-d_0} \sqsubseteq \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$, and
+$`\lvert D^{-d_0}\rvert = \lvert D\rvert`$.
 
-**(a) $`\lvert X\rvert \lt \lvert G\rvert + \lvert D\rvert`$ のとき。**
-$`1 \le m`$ であるから $`m = m'' + 1`$ と書ける。
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) より
-$`\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{blk} \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m'')^{+d_0}`$
-であるから $`\mathrm{blk} \sqsubseteq \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ である。
-また (S) より $`D^{-d_0} \sqsubseteq \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ であり、
-$`\lvert D^{-d_0}\rvert = \lvert D\rvert`$ である。
-
-(C1) より $`X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} \mathrm{blk}`$ であり、
-[T.prefix_append_left](ArgDom-3.md#t-prefix_append_left) より
-$`G \mathbin{+\!\!+} \mathrm{blk} \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ かつ
-$`G \mathbin{+\!\!+} D^{-d_0} \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ である。
-同一の列の 2 つの前部分列は、長さの短い方が長い方の前部分列である。いまの場合の長さは
-$`i + 1 \le \lvert G\rvert + \lvert D\rvert`$（場合 (a) の条件）であるから
+By (C1), $`X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} \mathrm{blk}`$, and by
+[T.prefix_append_left](ArgDom-3.md#t-prefix_append_left) both
+$`G \mathbin{+\!\!+} \mathrm{blk} \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ and
+$`G \mathbin{+\!\!+} D^{-d_0} \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ hold.
+Of two prefixes of one and the same sequence, the shorter one is a prefix of the longer one. Here the lengths
+satisfy $`i + 1 \le \lvert G\rvert + \lvert D\rvert`$ (the condition of case (a)), so
 
 ```math
 X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} D^{-d_0}
 ```
 
-であり、$`A_1' \in \mathrm{PairSeq}`$ が存在して
+and hence there is $`A_1' \in \mathrm{PairSeq}`$ with
 
 ```math
 \text{(A1')}\qquad G \mathbin{+\!\!+} D^{-d_0} = \bigl(X \mathbin{+\!\!+} ((u,w))\bigr) \mathbin{+\!\!+} A_1',
 \qquad \lvert A_1'\rvert = \lvert G\rvert + \lvert D\rvert - (i+1)
 ```
 
-となる。(S) と (A1') を合わせると、小さい塔は
+Combining (S) with (A1'), the smaller tower can be written as
 
 ```math
 \begin{aligned}
@@ -187,17 +185,15 @@ X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} D^{-d_0}
 \end{aligned}
 ```
 
-と書ける。
-
-一方 [T.copies_succ_back](Cofinality-3.md#t-copies_succ_back) より
+On the other hand, [T.copies_succ_back](Cofinality-3.md#t-copies_succ_back) gives
 
 ```math
 G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
   = \bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr) \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}
 ```
 
-である。これと (Nm)、および $`(\ast)`$ を合わせると、左因子 $`X \mathbin{+\!\!+} ((u,w))`$ を共有する
-2 つの表示が得られる。左因子を消去して
+Combining this with (Nm) and with $`(\ast)`$ gives two presentations that share the left factor
+$`X \mathbin{+\!\!+} ((u,w))`$. Cancelling that left factor gives
 
 ```math
 \begin{aligned}
@@ -210,10 +206,10 @@ G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
 \end{aligned}
 ```
 
-を得る。$`\lvert A_1'\rvert \le \lvert A_1\rvert`$ であるから
-（$`\lvert A_1\rvert = \lvert C\rvert + \lvert D\rvert`$、$`\lvert C\rvert = p - (i+1)`$、
-$`\lvert A_1'\rvert = \lvert G\rvert + \lvert D\rvert - (i+1)`$ と $`\lvert G\rvert \le p`$ による）、
-[T.split_append_left](ArgDom-3.md#t-split_append_left) を (K) に適用して $`W`$ を得る。
+Now $`\lvert A_1'\rvert \le \lvert A_1\rvert`$
+(by $`\lvert A_1\rvert = \lvert C\rvert + \lvert D\rvert`$, $`\lvert C\rvert = p - (i+1)`$,
+$`\lvert A_1'\rvert = \lvert G\rvert + \lvert D\rvert - (i+1)`$ and $`\lvert G\rvert \le p`$), so
+applying [T.split_append_left](ArgDom-3.md#t-split_append_left) to (K) yields $`W`$ with
 
 ```math
 A_1 = A_1' \mathbin{+\!\!+} W,
@@ -221,9 +217,9 @@ A_1 = A_1' \mathbin{+\!\!+} W,
 (u+e-d_0,\ w) :: \Bigl(\cdots\Bigr) = W \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr).
 ```
 
-長さを比べると $`\lvert W\rvert = \lvert A_1\rvert - \lvert A_1'\rvert = L`$ であり、$`1 \le L`$ であるから
-$`W \ne ()`$、すなわち $`W = W_0 :: W'`$ と書ける。第 2 式の先頭を比べて
-$`W_0 = (u+e-d_0,\ w)`$、残りを比べて
+Comparing lengths gives $`\lvert W\rvert = \lvert A_1\rvert - \lvert A_1'\rvert = L`$, and $`1 \le L`$, so
+$`W \ne ()`$, that is, $`W = W_0 :: W'`$. Comparing the heads of the second equation gives
+$`W_0 = (u+e-d_0,\ w)`$, and comparing the remainders gives
 
 ```math
 \text{(W)}\qquad
@@ -231,44 +227,44 @@ $`W_0 = (u+e-d_0,\ w)`$、残りを比べて
  = W' \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
-を得る。したがって
+Therefore
 
 ```math
 \text{(A1dec)}\qquad A_1 = A_1' \mathbin{+\!\!+} (u+e-d_0,\ w) :: W' .
 ```
 
-$`(u+e-d_0,\ w) \in A_1`$ であるから (h1) より $`u \lt u+e-d_0`$、すなわち
+Since $`(u+e-d_0,\ w) \in A_1`$, (h1) gives $`u \lt u+e-d_0`$, that is,
 
 ```math
 (\ddagger)\qquad d_0 \lt e, \qquad u + e - d_0 = u + (e - d_0) .
 ```
 
-**(a-1) 小さい塔についての分解。**
+**(a-1) The decomposition for the smaller tower.** Put
 
 ```math
 A_2' := \mathrm{tw}_u\bigl(A_2^{-d_0}\bigr), \qquad
 Z_2 := \mathrm{dw}_u\bigl(A_2^{-d_0}\bigr) \mathbin{+\!\!+} Z^{-d_0}
 ```
 
-とおく。次の 5 つが成り立つ。
+The following five statements hold.
 
-- $`A_2' \mathbin{+\!\!+} Z_2 = A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0}`$：
-  $`\mathrm{tw}_u`$ と $`\mathrm{dw}_u`$ の連結が元の列であることによる。
-- $`A_2' \sqsubseteq A_2^{-d_0}`$：$`\mathrm{tw}_u L`$ は $`L`$ の前部分列であることによる。
-- $`\forall x \in A_2',\ u \lt x_1`$：$`\mathrm{tw}_u L`$ の各要素 $`x`$ が $`u \lt x_1`$ をみたすことによる。
-- $`A_2' = () \vee (\mathrm{head}\,A_2')_1 \le u + (e-d_0)`$：
-  $`A_2 = ()`$ なら $`A_2^{-d_0} = ()`$ で $`A_2' = ()`$。
-  $`A_2 = a :: A_2''`$ なら (h4) の第 2 選言より $`a_1 \le u+e`$ であり、
-  $`A_2^{-d_0} = (a_1 - d_0,\ a_2) :: (A_2'')^{-d_0}`$ である。
-  $`u \lt a_1 - d_0`$ ならば $`A_2'`$ の先頭は $`(a_1-d_0,\ a_2)`$ であって
-  $`a_1 - d_0 \le u + e - d_0 = u + (e-d_0)`$（$`(\ddagger)`$ による）。
-  $`\neg(u \lt a_1 - d_0)`$ ならば $`A_2' = ()`$。
-- $`Z_2 = () \vee (\mathrm{head}\,Z_2)_1 \le u`$：
-  $`\mathrm{dw}_u(A_2^{-d_0}) = z :: Z''`$ ならば $`\mathrm{dw}`$ の定義より $`\neg(u \lt z_1)`$、すなわち $`z_1 \le u`$。
-  $`\mathrm{dw}_u(A_2^{-d_0}) = ()`$ ならば $`Z_2 = Z^{-d_0}`$ であり、$`Z = ()`$ なら $`Z_2 = ()`$、
-  $`Z = z :: Z''`$ なら (h5) の第 2 選言より $`z_1 \le u`$ であるから $`z_1 - d_0 \le u`$。
+- $`A_2' \mathbin{+\!\!+} Z_2 = A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0}`$:
+  the concatenation of $`\mathrm{tw}_u`$ and $`\mathrm{dw}_u`$ is the original sequence.
+- $`A_2' \sqsubseteq A_2^{-d_0}`$: $`\mathrm{tw}_u L`$ is a prefix of $`L`$.
+- $`\forall x \in A_2',\ u \lt x_1`$: every element $`x`$ of $`\mathrm{tw}_u L`$ satisfies $`u \lt x_1`$.
+- $`A_2' = () \vee (\mathrm{head}\,A_2')_1 \le u + (e-d_0)`$:
+  if $`A_2 = ()`$ then $`A_2^{-d_0} = ()`$ and $`A_2' = ()`$.
+  If $`A_2 = a :: A_2''`$ then the second disjunct of (h4) gives $`a_1 \le u+e`$, and
+  $`A_2^{-d_0} = (a_1 - d_0,\ a_2) :: (A_2'')^{-d_0}`$.
+  If $`u \lt a_1 - d_0`$ then the head of $`A_2'`$ is $`(a_1-d_0,\ a_2)`$ and
+  $`a_1 - d_0 \le u + e - d_0 = u + (e-d_0)`$ (by $`(\ddagger)`$).
+  If $`\neg(u \lt a_1 - d_0)`$ then $`A_2' = ()`$.
+- $`Z_2 = () \vee (\mathrm{head}\,Z_2)_1 \le u`$:
+  if $`\mathrm{dw}_u(A_2^{-d_0}) = z :: Z''`$ then the definition of $`\mathrm{dw}`$ gives $`\neg(u \lt z_1)`$, that is, $`z_1 \le u`$.
+  If $`\mathrm{dw}_u(A_2^{-d_0}) = ()`$ then $`Z_2 = Z^{-d_0}`$; if $`Z = ()`$ then $`Z_2 = ()`$, and
+  if $`Z = z :: Z''`$ then the second disjunct of (h5) gives $`z_1 \le u`$, whence $`z_1 - d_0 \le u`$.
 
-これと (Nm) から
+Together with (Nm) this gives
 
 ```math
 \begin{aligned}
@@ -279,125 +275,125 @@ Z_2 := \mathrm{dw}_u\bigl(A_2^{-d_0}\bigr) \mathbin{+\!\!+} Z^{-d_0}
 \end{aligned}
 ```
 
-が成り立つ。(hIH) を $`m`$ に適用する（$`1 \le m`$ かつ $`m \lt m+1 = n`$）ために、
-$`\mathrm{ArgDomCoreOn}`$ の残りの仮定を確かめる。
+In order to apply (hIH) to $`m`$ (note $`1 \le m`$ and $`m \lt m+1 = n`$), we check the remaining
+hypotheses of $`\mathrm{ArgDomCoreOn}`$.
 
-- $`0 \lt e - d_0`$：$`(\ddagger)`$ による。
-- $`\forall x \in A_1',\ u \lt x_1`$：(A1dec) より $`A_1'`$ の要素は $`A_1`$ の要素であり、(h1) による。
-- $`\forall x \in B^{-d_0},\ u + (e-d_0) \lt x_1`$：$`x = (y_1 - d_0,\ y_2)`$（$`y \in B`$）と書ける。
-  (h2) より $`u + e \lt y_1`$ であり、$`(\dagger)`$ の $`d_0 \le u+e`$ と合わせて
-  $`y_1 - d_0 \gt u + e - d_0 = u + (e-d_0)`$。
-- $`\forall x \in A_2',\ u \lt x_1`$、$`A_2' = () \vee (\mathrm{head}\,A_2')_1 \le u+(e-d_0)`$、
-  $`Z_2 = () \vee (\mathrm{head}\,Z_2)_1 \le u`$：上に示した。
+- $`0 \lt e - d_0`$: by $`(\ddagger)`$.
+- $`\forall x \in A_1',\ u \lt x_1`$: by (A1dec) every element of $`A_1'`$ is an element of $`A_1`$, so this is (h1).
+- $`\forall x \in B^{-d_0},\ u + (e-d_0) \lt x_1`$: such an $`x`$ is of the form $`x = (y_1 - d_0,\ y_2)`$ with $`y \in B`$.
+  By (h2), $`u + e \lt y_1`$, and together with $`d_0 \le u+e`$ from $`(\dagger)`$ this gives
+  $`y_1 - d_0 \gt u + e - d_0 = u + (e-d_0)`$.
+- $`\forall x \in A_2',\ u \lt x_1`$, $`A_2' = () \vee (\mathrm{head}\,A_2')_1 \le u+(e-d_0)`$ and
+  $`Z_2 = () \vee (\mathrm{head}\,Z_2)_1 \le u`$: shown above.
 
-**(a-2) 小さい塔についての $`\mathrm{SpineOK}`$。**
-残るのは $`\mathrm{SpineOK}(A_1',\ u+(e-d_0),\ w)`$ である。
-$`U, V \in \mathrm{PairSeq}`$、$`x \in \mathbb{N}\times\mathbb{N}`$ が
+**(a-2) $`\mathrm{SpineOK}`$ for the smaller tower.**
+It remains to prove $`\mathrm{SpineOK}(A_1',\ u+(e-d_0),\ w)`$.
+Let $`U, V \in \mathrm{PairSeq}`$ and $`x \in \mathbb{N}\times\mathbb{N}`$ satisfy
 
 ```math
 A_1' = U \mathbin{+\!\!+} x :: V, \qquad x_1 \lt u + (e-d_0), \qquad \forall y \in V,\ x_1 \lt y_1
 ```
 
-をみたすとし、$`w \le x_2`$ を示す。$`Y := (X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} U`$ とおくと、(A1') より
+We must show $`w \le x_2`$. Put $`Y := (X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} U`$; then (A1') gives
 
 ```math
 \text{(GSD)}\qquad Y \mathbin{+\!\!+} x :: V = G \mathbin{+\!\!+} D^{-d_0}
 ```
 
-である。$`\lvert Y\rvert`$ と $`\lvert G\rvert`$ の大小で場合分けする。
+We distinguish cases according to how $`\lvert Y\rvert`$ and $`\lvert G\rvert`$ compare.
 
-**$`\lvert Y\rvert \lt \lvert G\rvert`$ のとき。**
-このとき $`\lvert Y \mathbin{+\!\!+} (x)\rvert \le \lvert G\rvert`$ であるから、
-[T.split_append_left](ArgDom-3.md#t-split_append_left) を (GSD) に適用して $`V_3`$ を得る。
+**The case $`\lvert Y\rvert \lt \lvert G\rvert`$.**
+Here $`\lvert Y \mathbin{+\!\!+} (x)\rvert \le \lvert G\rvert`$, so applying
+[T.split_append_left](ArgDom-3.md#t-split_append_left) to (GSD) yields $`V_3`$ with
 
 ```math
 G = \bigl(Y \mathbin{+\!\!+} (x)\bigr) \mathbin{+\!\!+} V_3, \qquad V = V_3 \mathbin{+\!\!+} D^{-d_0} .
 ```
 
-これを (C1) に代入し、共通の左因子 $`X \mathbin{+\!\!+} ((u,w))`$ を消去すると
+Substituting this into (C1) and cancelling the common left factor $`X \mathbin{+\!\!+} ((u,w))`$ gives
 
 ```math
 C = \bigl(U \mathbin{+\!\!+} (x)\bigr) \mathbin{+\!\!+} \bigl(V_3 \mathbin{+\!\!+} \mathrm{blk}\bigr)
 ```
 
-であり、(D1) と合わせて
+and together with (D1) this gives
 
 ```math
 A_1 = U \mathbin{+\!\!+} x :: \bigl((V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D\bigr)
 ```
 
-を得る。次に $`x_1 \lt v_0`$ を示す。$`\mathrm{blk} \ne ()`$ かつ $`1 \le m`$ であるから
-[T.copies_headI](ArgDom-2.md#t-copies_headI) より
-$`\mathrm{head}\,\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{head}\,\mathrm{blk} = (v_0,w_0)`$ である。
-(S) の右辺の先頭で場合分けする。
+Next we show $`x_1 \lt v_0`$. Since $`\mathrm{blk} \ne ()`$ and $`1 \le m`$,
+[T.copies_headI](ArgDom-2.md#t-copies_headI) gives
+$`\mathrm{head}\,\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{head}\,\mathrm{blk} = (v_0,w_0)`$.
+We distinguish cases according to the head of the right-hand side of (S).
 
-- $`D^{-d_0} = ()`$ のとき。(S) の右辺の先頭は $`(u+e-d_0,\ w)`$ であるから
-  $`u + e - d_0 = v_0`$ である。$`(\ddagger)`$ より $`u+(e-d_0) = v_0`$ であり、
-  仮定 $`x_1 \lt u+(e-d_0)`$ から $`x_1 \lt v_0`$。
-- $`D^{-d_0} = s :: S'`$ のとき。(S) の右辺の先頭は $`s`$ であるから $`s = (v_0,w_0)`$ である。
-  $`V = V_3 \mathbin{+\!\!+} D^{-d_0}`$ より $`s \in V`$ であり、仮定 $`\forall y \in V,\ x_1 \lt y_1`$ から
-  $`x_1 \lt s_1 = v_0`$。
+- The case $`D^{-d_0} = ()`$. The head of the right-hand side of (S) is $`(u+e-d_0,\ w)`$, so
+  $`u + e - d_0 = v_0`$. By $`(\ddagger)`$, $`u+(e-d_0) = v_0`$, and the hypothesis
+  $`x_1 \lt u+(e-d_0)`$ gives $`x_1 \lt v_0`$.
+- The case $`D^{-d_0} = s :: S'`$. The head of the right-hand side of (S) is $`s`$, so $`s = (v_0,w_0)`$.
+  From $`V = V_3 \mathbin{+\!\!+} D^{-d_0}`$ we get $`s \in V`$, and the hypothesis $`\forall y \in V,\ x_1 \lt y_1`$
+  gives $`x_1 \lt s_1 = v_0`$.
 
-そこで (h6) を $`U`$、$`(V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D`$、$`x`$ に適用する。3 つの条件を確かめる。
+We now apply (h6) with $`U`$, $`(V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D`$ and $`x`$. Its three conditions are checked as follows.
 
-- 分解 $`A_1 = U \mathbin{+\!\!+} x :: ((V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D)`$：上に示した。
-- $`x_1 \lt u + e`$：$`x_1 \lt u + (e-d_0) \le u + e`$。
-- $`\forall y \in (V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D,\ x_1 \lt y_1`$：$`y`$ の属する部分で分ける。
-  $`y \in V_3`$ なら $`y \in V`$ であるから仮定による。
-  $`y = (v_0,w_0)`$ なら $`x_1 \lt v_0 = y_1`$。
-  $`y \in R`$ なら (hRgt) より $`v_0 \lt y_1`$ であり、$`x_1 \lt v_0`$ と合わせて $`x_1 \lt y_1`$。
-  $`y \in D`$ なら (D2) より $`y \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}`$ であるから
-  [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より $`y = (z_1+d_0,\ z_2)`$、
-  $`z \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ と書ける。(hRgt) より $`\forall x \in R,\ v_0 \le x_1`$ であるから
-  [T.copies_v0_le](Cnf-3.md#t-copies_v0_le) が使えて $`v_0 \le z_1 \le z_1 + d_0 = y_1`$、
-  したがって $`x_1 \lt v_0 \le y_1`$。
+- The decomposition $`A_1 = U \mathbin{+\!\!+} x :: ((V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D)`$: shown above.
+- $`x_1 \lt u + e`$: $`x_1 \lt u + (e-d_0) \le u + e`$.
+- $`\forall y \in (V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} D,\ x_1 \lt y_1`$: distinguish cases according to the part $`y`$ lies in.
+  If $`y \in V_3`$ then $`y \in V`$, so this is the hypothesis.
+  If $`y = (v_0,w_0)`$ then $`x_1 \lt v_0 = y_1`$.
+  If $`y \in R`$ then (hRgt) gives $`v_0 \lt y_1`$, which together with $`x_1 \lt v_0`$ gives $`x_1 \lt y_1`$.
+  If $`y \in D`$ then (D2) gives $`y \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}`$, so by
+  [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) we may write $`y = (z_1+d_0,\ z_2)`$ with
+  $`z \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$. Since (hRgt) gives $`\forall x \in R,\ v_0 \le x_1`$,
+  [T.copies_v0_le](Cnf-3.md#t-copies_v0_le) applies and yields $`v_0 \le z_1 \le z_1 + d_0 = y_1`$,
+  hence $`x_1 \lt v_0 \le y_1`$.
 
-よって $`w \le x_2`$ を得る。
+This gives $`w \le x_2`$.
 
-**$`\lvert G\rvert \le \lvert Y\rvert`$ のとき。**
-[T.split_append_left](ArgDom-3.md#t-split_append_left) を (GSD) に適用して $`U_2`$ を得る。
+**The case $`\lvert G\rvert \le \lvert Y\rvert`$.**
+Applying [T.split_append_left](ArgDom-3.md#t-split_append_left) to (GSD) yields $`U_2`$ with
 
 ```math
 Y = G \mathbin{+\!\!+} U_2, \qquad D^{-d_0} = U_2 \mathbin{+\!\!+} x :: V .
 ```
 
-$`\forall y \in D,\ d_0 \le y_1`$ は第 1 段で示したから、
-[T.shiftr0_shiftl0](ArgDom-2.md#t-shiftr0_shiftl0) より $`(D^{-d_0})^{+d_0} = D`$ である。
-第 2 式の両辺に $`(\cdot)^{+d_0}`$ を施し、
-[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) と
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) を使って
+Step 1 showed $`\forall y \in D,\ d_0 \le y_1`$, so
+[T.shiftr0_shiftl0](ArgDom-2.md#t-shiftr0_shiftl0) gives $`(D^{-d_0})^{+d_0} = D`$.
+Applying $`(\cdot)^{+d_0}`$ to both sides of the second equation and using
+[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) and
+[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) gives
 
 ```math
 D = U_2^{+d_0} \mathbin{+\!\!+} (x_1 + d_0,\ x_2) :: V^{+d_0}
 ```
 
-を得る。(h6) を $`C \mathbin{+\!\!+} U_2^{+d_0}`$、$`V^{+d_0}`$、$`(x_1+d_0,\ x_2)`$ に適用する。
+We apply (h6) with $`C \mathbin{+\!\!+} U_2^{+d_0}`$, $`V^{+d_0}`$ and $`(x_1+d_0,\ x_2)`$.
 
-- 分解：(D1) より
-  $`A_1 = C \mathbin{+\!\!+} D = (C \mathbin{+\!\!+} U_2^{+d_0}) \mathbin{+\!\!+} (x_1+d_0,\ x_2) :: V^{+d_0}`$。
-- $`x_1 + d_0 \lt u+e`$：$`x_1 \lt u+(e-d_0)`$ と $`(\ddagger)`$ の $`d_0 \lt e`$ から
-  $`x_1 + d_0 \lt u + (e-d_0) + d_0 = u + e`$。
-- $`\forall y \in V^{+d_0},\ x_1 + d_0 \lt y_1`$：$`y = (z_1+d_0,\ z_2)`$（$`z \in V`$）と書け、
-  仮定 $`x_1 \lt z_1`$ から $`x_1 + d_0 \lt z_1 + d_0 = y_1`$。
+- The decomposition: by (D1),
+  $`A_1 = C \mathbin{+\!\!+} D = (C \mathbin{+\!\!+} U_2^{+d_0}) \mathbin{+\!\!+} (x_1+d_0,\ x_2) :: V^{+d_0}`$.
+- $`x_1 + d_0 \lt u+e`$: from $`x_1 \lt u+(e-d_0)`$ and $`d_0 \lt e`$ of $`(\ddagger)`$ we get
+  $`x_1 + d_0 \lt u + (e-d_0) + d_0 = u + e`$.
+- $`\forall y \in V^{+d_0},\ x_1 + d_0 \lt y_1`$: such a $`y`$ is of the form $`y = (z_1+d_0,\ z_2)`$ with $`z \in V`$, and
+  the hypothesis $`x_1 \lt z_1`$ gives $`x_1 + d_0 \lt z_1 + d_0 = y_1`$.
 
-よって $`w \le (x_1+d_0,\ x_2)_2 = x_2`$ を得る。以上で
-$`\mathrm{SpineOK}(A_1',\ u+(e-d_0),\ w)`$ が示された。
+This gives $`w \le (x_1+d_0,\ x_2)_2 = x_2`$. This completes the proof of
+$`\mathrm{SpineOK}(A_1',\ u+(e-d_0),\ w)`$.
 
-**(a-3) 結論の持ち上げ。**
-(hIH) を $`m`$ に適用し、(eq') と (a-1)(a-2) で確かめた仮定を与えると
+**(a-3) Lifting the conclusion.**
+Applying (hIH) to $`m`$ and supplying (eq') together with the hypotheses checked in (a-1) and (a-2) gives
 
 ```math
 \text{(core)}\qquad B^{-d_0} \preceq_{\mathrm{lex}}
   \bigl(A_1' \mathbin{+\!\!+} (u+(e-d_0),\ w) :: (B^{-d_0} \mathbin{+\!\!+} A_2')\bigr)^{+(e-d_0)}
 ```
 
-を得る。まず
+We first show
 
 ```math
 B^{-d_0} \mathbin{+\!\!+} A_2' \ \sqsubseteq\ W' \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)
 ```
 
-を示す。(W) と $`A_2' \mathbin{+\!\!+} Z_2 = A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0}`$ より
+By (W) and $`A_2' \mathbin{+\!\!+} Z_2 = A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0}`$,
 
 ```math
 \bigl(B^{-d_0} \mathbin{+\!\!+} A_2'\bigr) \mathbin{+\!\!+}
@@ -405,10 +401,10 @@ B^{-d_0} \mathbin{+\!\!+} A_2' \ \sqsubseteq\ W' \mathbin{+\!\!+} (u+e,w) :: (B 
  = W' \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
-であるから $`B^{-d_0} \mathbin{+\!\!+} A_2'`$ は右辺の前部分列である。また
-$`W' \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)`$ も
-$`W' \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))`$ の前部分列である。長さは
-$`\lvert A_2'\rvert \le \lvert A_2^{-d_0}\rvert = \lvert A_2\rvert`$ より
+so $`B^{-d_0} \mathbin{+\!\!+} A_2'`$ is a prefix of the right-hand side. Moreover
+$`W' \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)`$ is a prefix of
+$`W' \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))`$. As for the lengths,
+$`\lvert A_2'\rvert \le \lvert A_2^{-d_0}\rvert = \lvert A_2\rvert`$ gives
 
 ```math
 \lvert B^{-d_0} \mathbin{+\!\!+} A_2'\rvert = \lvert B\rvert + \lvert A_2'\rvert
@@ -416,16 +412,16 @@ $`\lvert A_2'\rvert \le \lvert A_2^{-d_0}\rvert = \lvert A_2\rvert`$ より
  = \lvert W' \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\rvert
 ```
 
-であり、同一の列の 2 つの前部分列のうち短い方が長い方の前部分列であることから主張を得る。
-これに (A1dec) と $`(\ddagger)`$ を使い [T.prefix_cons_append](ArgDom-3.md#t-prefix_cons_append) を適用すると
+and since of two prefixes of one and the same sequence the shorter one is a prefix of the longer one, the claim follows.
+Using (A1dec) and $`(\ddagger)`$ and applying [T.prefix_cons_append](ArgDom-3.md#t-prefix_cons_append) to this, we obtain
 
 ```math
 A_1' \mathbin{+\!\!+} (u+(e-d_0),\ w) :: (B^{-d_0} \mathbin{+\!\!+} A_2')
  \ \sqsubseteq\ A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)
 ```
 
-である。[T.shiftr0_prefix](ArgDom-3.md#t-shiftr0_prefix) を $`e-d_0`$ について適用すると、この前部分列関係は
-$`(\cdot)^{+(e-d_0)}`$ で保たれるから、ある $`T`$ について
+Applying [T.shiftr0_prefix](ArgDom-3.md#t-shiftr0_prefix) with $`e-d_0`$, this prefix relation is preserved by
+$`(\cdot)^{+(e-d_0)}`$, so for some $`T`$
 
 ```math
 \begin{aligned}
@@ -435,26 +431,26 @@ $`(\cdot)^{+(e-d_0)}`$ で保たれるから、ある $`T`$ について
 \end{aligned}
 ```
 
-である。(core) に [T.sle_append_mono](Cofinality.md#t-sle_append_mono) を適用して
+Applying [T.sle_append_mono](Cofinality.md#t-sle_append_mono) to (core) gives
 
 ```math
 B^{-d_0} \preceq_{\mathrm{lex}}
   \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+(e-d_0)}
 ```
 
-を得る。(h2) と $`(\dagger)`$ から $`\forall x \in B,\ d_0 \le u + e \lt x_1`$ であるから、
-[T.shiftr0_shiftl0](ArgDom-2.md#t-shiftr0_shiftl0) より $`(B^{-d_0})^{+d_0} = B`$ である。
-[T.sle_shiftr0](ArgDom.md#t-sle_shiftr0) を $`d_0`$ について適用し、
-[T.shiftr0_add](ArgDom-3.md#t-shiftr0_add) と $`d_0 + (e-d_0) = e`$（$`(\ddagger)`$ による）を使うと
+By (h2) and $`(\dagger)`$ we have $`\forall x \in B,\ d_0 \le u + e \lt x_1`$, so
+[T.shiftr0_shiftl0](ArgDom-2.md#t-shiftr0_shiftl0) gives $`(B^{-d_0})^{+d_0} = B`$.
+Applying [T.sle_shiftr0](ArgDom.md#t-sle_shiftr0) with $`d_0`$ and using
+[T.shiftr0_add](ArgDom-3.md#t-shiftr0_add) together with $`d_0 + (e-d_0) = e`$ (by $`(\ddagger)`$) gives
 
 ```math
 B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 ```
 
-を得る。これが求める結論である。
+This is the desired conclusion.
 
-**(b) $`\lvert X\rvert = \lvert G\rvert + \lvert D\rvert`$ のとき。**
-(S) より
+**(b) The case $`\lvert X\rvert = \lvert G\rvert + \lvert D\rvert`$.**
+By (S),
 
 ```math
 \begin{aligned}
@@ -465,14 +461,14 @@ B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!
 \end{aligned}
 ```
 
-であり、[T.copies_succ_back](Cofinality-3.md#t-copies_succ_back) より
+and [T.copies_succ_back](Cofinality-3.md#t-copies_succ_back) gives
 
 ```math
 G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
   = \bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr) \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}
 ```
 
-である。これらと $`(\ast)`$ から
+Together with $`(\ast)`$, these give
 
 ```math
 \begin{aligned}
@@ -484,16 +480,15 @@ G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
 \end{aligned}
 ```
 
-を得る。ここで
-$`\Sigma := B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})`$ と略記した。
-場合 (b) の条件より
+Here we abbreviate $`\Sigma := B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})`$.
+By the condition of case (b),
 
 ```math
 \lvert G \mathbin{+\!\!+} D^{-d_0}\rvert = \lvert G\rvert + \lvert D\rvert = \lvert X\rvert
  \le \lvert X \mathbin{+\!\!+} ((u,w))\rvert
 ```
 
-であるから、[T.split_append_left](ArgDom-3.md#t-split_append_left) を (key) に適用して $`K`$ を得る。
+so applying [T.split_append_left](ArgDom-3.md#t-split_append_left) to (key) yields $`K`$ with
 
 ```math
 \begin{aligned}
@@ -504,104 +499,104 @@ $`\Sigma := B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})`$ �
 \end{aligned}
 ```
 
-第 1 式の長さから $`\lvert K\rvert = (\lvert X\rvert + 1) - (\lvert G\rvert + \lvert D\rvert) = 1`$
-であるから $`K = (k)`$ と書ける。第 1 式は左右の長さの一致
-$`\lvert X\rvert = \lvert G \mathbin{+\!\!+} D^{-d_0}\rvert`$ をもつので、両辺を長さ $`\lvert X\rvert`$ の
-部分とその後の 1 要素に分けて比べると
+From the length of the first equation, $`\lvert K\rvert = (\lvert X\rvert + 1) - (\lvert G\rvert + \lvert D\rvert) = 1`$,
+so we may write $`K = (k)`$. The two sides of the first equation agree in the length
+$`\lvert X\rvert = \lvert G \mathbin{+\!\!+} D^{-d_0}\rvert`$, so splitting both sides into the part of length
+$`\lvert X\rvert`$ and the single element after it and comparing them gives
 
 ```math
 X = G \mathbin{+\!\!+} D^{-d_0}, \qquad k = (u,w)
 ```
 
-を得る。第 2 式の先頭を比べると $`k = (u+e-d_0,\ w)`$ である。第 1 成分を比べて
-$`u = u + e - d_0`$ であり、$`(\dagger)`$ の $`d_0 \le u+e`$ と合わせて $`e = d_0`$ を得る。
-第 2 式の残りを比べると
+Comparing the heads of the second equation gives $`k = (u+e-d_0,\ w)`$. Comparing first entries gives
+$`u = u + e - d_0`$, which together with $`d_0 \le u+e`$ from $`(\dagger)`$ gives $`e = d_0`$.
+Comparing the remainders of the second equation gives
 
 ```math
 \text{(RW)}\qquad \Sigma \mathbin{+\!\!+} \mathrm{blk}^{+(m d_0)}
  = A_1 \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
-である。$`B^{-d_0}`$ は $`\Sigma`$ の前部分列であるから (RW) より
+Since $`B^{-d_0}`$ is a prefix of $`\Sigma`$, (RW) gives
 
 ```math
 B^{-d_0} \ \sqsubseteq\ A_1 \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
-である。また
+Moreover
 
 ```math
 A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)
  \ \sqsubseteq\ A_1 \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
-であり、長さは
-$`\lvert B^{-d_0}\rvert = \lvert B\rvert \le \lvert A_1\rvert + 1 + \lvert B\rvert + \lvert A_2\rvert`$
-をみたす。同一の列の 2 つの前部分列のうち短い方が長い方の前部分列であるから
+and the lengths satisfy
+$`\lvert B^{-d_0}\rvert = \lvert B\rvert \le \lvert A_1\rvert + 1 + \lvert B\rvert + \lvert A_2\rvert`$.
+Since of two prefixes of one and the same sequence the shorter one is a prefix of the longer one, we obtain
 
 ```math
 B^{-d_0} \ \sqsubseteq\ A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)
 ```
 
-を得る。(h2) と $`(\dagger)`$ から $`\forall x \in B,\ d_0 \le x_1`$ であり、$`e = d_0`$ であるから
-[T.shiftr0_shiftl0](ArgDom-2.md#t-shiftr0_shiftl0) より $`(B^{-d_0})^{+e} = B`$ である。
-[T.shiftr0_prefix](ArgDom-3.md#t-shiftr0_prefix) を $`e`$ について適用すると
+By (h2) and $`(\dagger)`$ we have $`\forall x \in B,\ d_0 \le x_1`$, and $`e = d_0`$, so
+[T.shiftr0_shiftl0](ArgDom-2.md#t-shiftr0_shiftl0) gives $`(B^{-d_0})^{+e} = B`$.
+Applying [T.shiftr0_prefix](ArgDom-3.md#t-shiftr0_prefix) with $`e`$ gives
 
 ```math
 B \ \sqsubseteq\ \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 ```
 
-となり、[T.sle_of_prefix](ArgDom-3.md#t-sle_of_prefix) から結論を得る。
+and [T.sle_of_prefix](ArgDom-3.md#t-sle_of_prefix) yields the conclusion.
 
-**(c) $`\lvert G\rvert + \lvert D\rvert \lt \lvert X\rvert`$ のとき。**
-この場合は起こらないことを示す。$`1 \le m`$ より $`m = m' + 1`$ と書ける。
+**(c) The case $`\lvert G\rvert + \lvert D\rvert \lt \lvert X\rvert`$.**
+We show that this case cannot occur. Since $`1 \le m`$, we may write $`m = m' + 1`$.
 
-**(c-1) $`(u,w)`$ は $`R`$ の内部にある。**
-(C1) を左右入れ替えた
-$`(X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} C = G \mathbin{+\!\!+} \mathrm{blk}`$ に、
-$`\lvert G\rvert \le \lvert X\rvert \lt \lvert X \mathbin{+\!\!+} ((u,w))\rvert`$ のもとで
-[T.split_append_left](ArgDom-3.md#t-split_append_left) を適用して $`K`$ を得る。
+**(c-1) $`(u,w)`$ lies inside $`R`$.**
+Interchanging the two sides of (C1) gives
+$`(X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} C = G \mathbin{+\!\!+} \mathrm{blk}`$; applying
+[T.split_append_left](ArgDom-3.md#t-split_append_left) to it under
+$`\lvert G\rvert \le \lvert X\rvert \lt \lvert X \mathbin{+\!\!+} ((u,w))\rvert`$ yields $`K`$ with
 
 ```math
 X \mathbin{+\!\!+} ((u,w)) = G \mathbin{+\!\!+} K, \qquad \mathrm{blk} = K \mathbin{+\!\!+} C .
 ```
 
-$`\lvert K\rvert = \lvert X\rvert + 1 - \lvert G\rvert`$ であり、場合 (c) の条件から
-$`\lvert G\rvert \lt \lvert X\rvert`$ なので $`\lvert K\rvert \ge 2 \gt 0`$、すなわち
-$`K = k_0 :: K_1`$ と書ける。$`\mathrm{blk} = (v_0,w_0) :: R`$ の尾を比べて $`R = K_1 \mathbin{+\!\!+} C`$ を得る。
-第 1 式は $`X \mathbin{+\!\!+} ((u,w)) = (G \mathbin{+\!\!+} (k_0)) \mathbin{+\!\!+} K_1`$ と書き直せ、
-$`\lvert G \mathbin{+\!\!+} (k_0)\rvert = \lvert G\rvert + 1 \le \lvert X\rvert`$ であるから、
-ふたたび [T.split_append_left](ArgDom-3.md#t-split_append_left) を適用して $`T`$ を得る。
+Here $`\lvert K\rvert = \lvert X\rvert + 1 - \lvert G\rvert`$, and the condition of case (c) gives
+$`\lvert G\rvert \lt \lvert X\rvert`$, so $`\lvert K\rvert \ge 2 \gt 0`$, that is, $`K = k_0 :: K_1`$.
+Comparing the tails in $`\mathrm{blk} = (v_0,w_0) :: R`$ gives $`R = K_1 \mathbin{+\!\!+} C`$.
+The first equation can be rewritten as $`X \mathbin{+\!\!+} ((u,w)) = (G \mathbin{+\!\!+} (k_0)) \mathbin{+\!\!+} K_1`$, and
+$`\lvert G \mathbin{+\!\!+} (k_0)\rvert = \lvert G\rvert + 1 \le \lvert X\rvert`$, so applying
+[T.split_append_left](ArgDom-3.md#t-split_append_left) again yields $`T`$ with
 
 ```math
 X = \bigl(G \mathbin{+\!\!+} (k_0)\bigr) \mathbin{+\!\!+} T, \qquad K_1 = T \mathbin{+\!\!+} ((u,w)) .
 ```
 
-したがって
+Hence
 
 ```math
 \text{(Rdec)}\qquad R = T \mathbin{+\!\!+} (u,w) :: C
 ```
 
-である。$`(u,w) \in R`$ であるから (hRgt) より $`v_0 \lt u`$ である。
+Since $`(u,w) \in R`$, (hRgt) gives $`v_0 \lt u`$.
 
-**(c-2) コピー $`1`$ の先頭から $`u \lt v_0 + d_0`$ と $`w \le w_0`$ を得る。**
-[T.copies_succ_cons](Cnf-3.md#t-copies_succ_cons) と
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) より
+**(c-2) The head of copy $`1`$ gives $`u \lt v_0 + d_0`$ and $`w \le w_0`$.**
+By [T.copies_succ_cons](Cnf-3.md#t-copies_succ_cons) and
+[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons),
 
 ```math
 \text{(SC)}\qquad \mathrm{copies}_{d_0}(\mathrm{blk}, m'+1)^{+d_0}
  = (v_0+d_0,\ w_0) :: \Bigl(R \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m')^{+d_0}\Bigr)^{+d_0}
 ```
 
-である。(D2) の左辺はこれであるから、$`D`$ で場合分けする。
+This is the left-hand side of (D2), so we distinguish cases on $`D`$.
 
-**$`D = ()`$ のとき。** (D2) と (SC) の先頭を比べて
-$`(v_0+d_0,\ w_0) = (u+e,\ w)`$、すなわち $`v_0 + d_0 = u + e`$ かつ $`w_0 = w`$ である。
-(he) の $`0 \lt e`$ より $`u \lt u + e = v_0 + d_0`$ であり、$`w \le w_0`$ も成り立つ。
+**The case $`D = ()`$.** Comparing the heads of (D2) and (SC) gives
+$`(v_0+d_0,\ w_0) = (u+e,\ w)`$, that is, $`v_0 + d_0 = u + e`$ and $`w_0 = w`$.
+From $`0 \lt e`$ of (he) we get $`u \lt u + e = v_0 + d_0`$, and $`w \le w_0`$ holds as well.
 
-**$`D = d_1 :: D'`$ のとき。** (D2) と (SC) の先頭を比べて $`d_1 = (v_0+d_0,\ w_0)`$、
-残りを比べて
+**The case $`D = d_1 :: D'`$.** Comparing the heads of (D2) and (SC) gives $`d_1 = (v_0+d_0,\ w_0)`$,
+and comparing the remainders gives
 
 ```math
 \text{(rest)}\qquad
@@ -609,45 +604,45 @@ $`(v_0+d_0,\ w_0) = (u+e,\ w)`$、すなわち $`v_0 + d_0 = u + e`$ かつ $`w_
  = D' \mathbin{+\!\!+} (u+e,w) :: \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 ```
 
-を得る。(D1) より $`A_1 = C \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: D'`$ である。
-$`(v_0+d_0,\ w_0) \in A_1`$ に (h1) を適用して $`u \lt v_0 + d_0`$ を得る。
-これと (c-1) の $`v_0 \lt u`$ から $`0 \lt d_0`$ である。
-(hRgt) と $`0 \lt d_0`$ と $`1 \le m'+1`$ に
-[T.copies_tl_gt](Cnf-3.md#t-copies_tl_gt) を適用すると
+By (D1), $`A_1 = C \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: D'`$.
+Applying (h1) to $`(v_0+d_0,\ w_0) \in A_1`$ gives $`u \lt v_0 + d_0`$, which together with
+$`v_0 \lt u`$ from (c-1) gives $`0 \lt d_0`$.
+Applying [T.copies_tl_gt](Cnf-3.md#t-copies_tl_gt) to (hRgt), $`0 \lt d_0`$ and $`1 \le m'+1`$
+gives
 
 ```math
 \forall y \in R \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m')^{+d_0},\ v_0 \lt y_1
 ```
 
-であり、[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、この列を $`d_0`$ だけシフトした列
-（すなわち (rest) の左辺）の要素 $`y`$ はすべて $`v_0 + d_0 \lt y_1`$ をみたす。
-(rest) の右辺には $`(u+e,w)`$ と $`D'`$ の全要素が現れるから
+and by [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) every element $`y`$ of the sequence obtained by shifting
+this one by $`d_0`$ (that is, of the left-hand side of (rest)) satisfies $`v_0 + d_0 \lt y_1`$.
+The right-hand side of (rest) contains $`(u+e,w)`$ and all elements of $`D'`$, so
 
 ```math
 v_0 + d_0 \lt u + e, \qquad \forall y \in D',\ v_0 + d_0 \lt y_1
 ```
 
-である。よって (h6) を $`C`$、$`D'`$、$`(v_0+d_0,\ w_0)`$ に適用でき
-（分解は $`A_1 = C \mathbin{+\!\!+} (v_0+d_0,w_0) :: D'`$）、$`w \le w_0`$ を得る。
+Hence (h6) applies with $`C`$, $`D'`$ and $`(v_0+d_0,\ w_0)`$
+(the decomposition being $`A_1 = C \mathbin{+\!\!+} (v_0+d_0,w_0) :: D'`$), and gives $`w \le w_0`$.
 
-いずれの場合も $`u \lt v_0 + d_0`$ かつ $`w \le w_0`$ である。
-(c-1) の $`v_0 \lt u`$ と合わせて $`0 \lt d_0`$ である。
+In either case $`u \lt v_0 + d_0`$ and $`w \le w_0`$.
+Together with $`v_0 \lt u`$ from (c-1) this gives $`0 \lt d_0`$.
 
-**(c-3) 極小性条件との矛盾。**
-(hdisj) で場合分けする。第 1 選言は $`d_0 = 0`$ を含み、(c-2) の $`0 \lt d_0`$ に反する。
-第 2 選言のとき、$`\ell_1 = v_0 + d_0`$ と $`\ell_2 = w_0 + 1`$ より
-$`\ell = (v_0+d_0,\ w_0+1)`$ である。(hMeq) より
-$`\lvert M\rvert - 1 = \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert`$ であるから、第 2 選言の第 4 連言子は
+**(c-3) Contradiction with the minimality condition.**
+We distinguish cases on (hdisj). The first disjunct contains $`d_0 = 0`$, which contradicts $`0 \lt d_0`$ from (c-2).
+In the case of the second disjunct, $`\ell_1 = v_0 + d_0`$ and $`\ell_2 = w_0 + 1`$ give
+$`\ell = (v_0+d_0,\ w_0+1)`$. By (hMeq), $`\lvert M\rvert - 1 = \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert`$,
+so the fourth conjunct of the second disjunct reads
 
 ```math
 \lvert G\rvert \to^{(G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} ((v_0+d_0,\,w_0+1))}_1
   \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert
 ```
 
-と書ける。これに [T.spineOK_of_nextrel1_strict](ArgDom-3.md#t-spineOK_of_nextrel1_strict) を適用すると
-$`\mathrm{SpineOK}(R,\ v_0+d_0,\ w_0+1)`$ を得る。これを (Rdec) の分解
-$`R = T \mathbin{+\!\!+} (u,w) :: C`$、$`u \lt v_0+d_0`$（(c-2)）、および
-$`\forall y \in C,\ u \lt y_1`$（(D1) より $`C`$ の要素は $`A_1`$ の要素であり (h1) による）に
-適用して $`w_0 + 1 \le w`$ を得る。これは (c-2) の $`w \le w_0`$ に反する。
+Applying [T.spineOK_of_nextrel1_strict](ArgDom-3.md#t-spineOK_of_nextrel1_strict) to it gives
+$`\mathrm{SpineOK}(R,\ v_0+d_0,\ w_0+1)`$. Applying this to the decomposition
+$`R = T \mathbin{+\!\!+} (u,w) :: C`$ of (Rdec), to $`u \lt v_0+d_0`$ ((c-2)) and to
+$`\forall y \in C,\ u \lt y_1`$ (by (D1) every element of $`C`$ is an element of $`A_1`$, so this is (h1))
+gives $`w_0 + 1 \le w`$. This contradicts $`w \le w_0`$ from (c-2).
 
-したがって場合 (c) は起こらない。∎
+Hence case (c) cannot occur. ∎

@@ -1,152 +1,152 @@
-[← README](README.md) ｜ Column **1** [2](Column-2.md) [3](Column-3.md) [4](Column-4.md)
+[← README](README.md) | [English](Column.md) | [Japanese](Column-ja.md) | Column **1** [2](Column-2.md) [3](Column-3.md) [4](Column-4.md)
 
 <a id="t-stps_len_pos"></a>
-## 定理: 標準形は空でない (T.stps_len_pos)
+## Theorem: standard forms are non-empty (T.stps_len_pos)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）が $`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）
-をみたすならば $`0 \lt \lvert M\rvert`$。
+If $`M \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) satisfies $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)),
+then $`0 \lt \lvert M\rvert`$.
 
-### 証明
+### Proof
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
+Induction on the derivation of $`\mathrm{ST\_PS}`$. The induction predicate is
 
 ```math
 \Phi(M) :\equiv 0 \lt \lvert M\rvert .
 ```
 
-**基底段（規則 diag）$`M = \Delta_0^v`$（[D.diagSeq](Pss.md#d-diagSeq)）。**
-[T.diagSeq_cons](Cnf.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$ とし、
-仮定 $`0 \le v`$ のもとで適用すると
-$`\Delta_0^v = (0,0) :: \Delta_1^v`$ である。
-よって $`\lvert \Delta_0^v\rvert = 1 + \lvert \Delta_1^v\rvert`$ であり $`0 \lt \lvert \Delta_0^v\rvert`$。
+**Base case (rule diag), $`M = \Delta_0^v`$ ([D.diagSeq](Pss.md#d-diagSeq)).**
+Applying [T.diagSeq_cons](Cnf.md#t-diagSeq_cons) with $`u := 0`$ and $`v := v`$
+under the hypothesis $`0 \le v`$ yields
+$`\Delta_0^v = (0,0) :: \Delta_1^v`$.
+Hence $`\lvert \Delta_0^v\rvert = 1 + \lvert \Delta_1^v\rvert`$, so $`0 \lt \lvert \Delta_0^v\rvert`$.
 
-**帰納段（規則 oper）$`M = N[n]`$（[D.oper](Pss.md#d-oper)、$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
-帰納法の仮定は $`\Phi(N)`$、すなわち $`0 \lt \lvert N\rvert`$ である。
-$`\lvert N\rvert`$ で場合分けする。
+**Inductive step (rule oper), $`M = N[n]`$ ([D.oper](Pss.md#d-oper), $`N \in \mathrm{ST\_PS}`$, $`1 \le n`$).**
+The induction hypothesis is $`\Phi(N)`$, that is, $`0 \lt \lvert N\rvert`$.
+Distinguish cases on $`\lvert N\rvert`$.
 
-**(a) $`1 \lt \lvert N\rvert`$ のとき。**
-[T.oper_eq_dropLast_append](Cnf.md#t-oper_eq_dropLast_append) より、ある $`R \in \mathrm{PairSeq}`$ が存在して
-$`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$ である。ここで $`\mathrm{dropLast}\,N`$ は
-$`N`$ の末尾 1 要素を落とした列であり $`\lvert \mathrm{dropLast}\,N\rvert = \lvert N\rvert - 1`$ である。よって
+**(a) $`1 \lt \lvert N\rvert`$.**
+By [T.oper_eq_dropLast_append](Cnf.md#t-oper_eq_dropLast_append) there is $`R \in \mathrm{PairSeq}`$ with
+$`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$. Here $`\mathrm{dropLast}\,N`$ is
+$`N`$ with its last element removed, so $`\lvert \mathrm{dropLast}\,N\rvert = \lvert N\rvert - 1`$. Hence
 
 ```math
 \lvert N[n]\rvert = (\lvert N\rvert - 1) + \lvert R\rvert \ge \lvert N\rvert - 1 \ge 1
 ```
 
-であり $`0 \lt \lvert N[n]\rvert`$。
+and therefore $`0 \lt \lvert N[n]\rvert`$.
 
-**(b) $`\neg(1 \lt \lvert N\rvert)`$ のとき。**
-$`\lvert N\rvert \le 1`$ であるから [T.oper_eq_self_short](Decrease.md#t-oper_eq_self_short) より
-$`N[n] = N`$ である。$`\Phi(N[n])`$ は帰納法の仮定 $`\Phi(N)`$ そのものである。∎
+**(b) $`\neg(1 \lt \lvert N\rvert)`$.**
+Then $`\lvert N\rvert \le 1`$, so [T.oper_eq_self_short](Decrease.md#t-oper_eq_self_short) gives
+$`N[n] = N`$. Thus $`\Phi(N[n])`$ is exactly the induction hypothesis $`\Phi(N)`$. ∎
 
 <a id="t-stps_head"></a>
-## 定理: 標準形の先頭は $`(0,0)`$ (T.stps_head)
+## Theorem: a standard form begins with $`(0,0)`$ (T.stps_head)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{head}\,M = (0,0)`$。
-ここで $`\mathrm{head}\,M`$ は $`M`$ の先頭要素であり、$`M = ()`$ のときは $`(0,0)`$ と読む。
+If $`M \in \mathrm{ST\_PS}`$ then $`\mathrm{head}\,M = (0,0)`$.
+Here $`\mathrm{head}\,M`$ is the first element of $`M`$, read as $`(0,0)`$ when $`M = ()`$.
 
-### 証明
+### Proof
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
+Induction on the derivation of $`\mathrm{ST\_PS}`$. The induction predicate is
 
 ```math
 \Phi(M) :\equiv \mathrm{head}\,M = (0,0) .
 ```
 
-**基底段（規則 diag）$`M = \Delta_0^v`$。**
-[T.diagSeq_cons](Cnf.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$、仮定 $`0 \le v`$ に適用して
-$`\Delta_0^v = (0,0) :: \Delta_1^v`$ を得る。先頭要素は $`(0,0)`$ である。
+**Base case (rule diag), $`M = \Delta_0^v`$.**
+Applying [T.diagSeq_cons](Cnf.md#t-diagSeq_cons) with $`u := 0`$, $`v := v`$ and the hypothesis $`0 \le v`$ yields
+$`\Delta_0^v = (0,0) :: \Delta_1^v`$. Its first element is $`(0,0)`$.
 
-**帰納段（規則 oper）$`M = N[n]`$（$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
-帰納法の仮定は $`\Phi(N)`$、すなわち $`\mathrm{head}\,N = (0,0)`$ である。
-$`\lvert N\rvert`$ で場合分けする。
+**Inductive step (rule oper), $`M = N[n]`$ ($`N \in \mathrm{ST\_PS}`$, $`1 \le n`$).**
+The induction hypothesis is $`\Phi(N)`$, that is, $`\mathrm{head}\,N = (0,0)`$.
+Distinguish cases on $`\lvert N\rvert`$.
 
-**(a) $`1 \lt \lvert N\rvert`$ のとき。**
-[T.oper_eq_dropLast_append](Cnf.md#t-oper_eq_dropLast_append) より、ある $`R`$ について
-$`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$ である。
-$`1 \lt \lvert N\rvert`$ であるから $`N`$ は少なくとも 2 要素をもち、
-$`N = a :: b :: u`$ と書ける。このとき
+**(a) $`1 \lt \lvert N\rvert`$.**
+By [T.oper_eq_dropLast_append](Cnf.md#t-oper_eq_dropLast_append) there is $`R`$ with
+$`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$.
+Since $`1 \lt \lvert N\rvert`$, the sequence $`N`$ has at least two elements
+and can be written $`N = a :: b :: u`$. In this case
 
 ```math
 \mathrm{dropLast}\,(a :: b :: u) = a :: \mathrm{dropLast}\,(b :: u)
 ```
 
-であるから
+so that
 
 ```math
 N[n] = a :: \bigl(\mathrm{dropLast}\,(b :: u) \mathbin{+\!\!+} R\bigr)
 ```
 
-であり、$`\mathrm{head}\,(N[n]) = a = \mathrm{head}\,N`$ である。
-帰納法の仮定より $`\mathrm{head}\,N = (0,0)`$。
+and hence $`\mathrm{head}\,(N[n]) = a = \mathrm{head}\,N`$.
+By the induction hypothesis $`\mathrm{head}\,N = (0,0)`$.
 
-**(b) $`\neg(1 \lt \lvert N\rvert)`$ のとき。**
-$`\lvert N\rvert \le 1`$ であるから [T.oper_eq_self_short](Decrease.md#t-oper_eq_self_short) より
-$`N[n] = N`$ であり、$`\Phi(N[n])`$ は帰納法の仮定そのものである。∎
+**(b) $`\neg(1 \lt \lvert N\rvert)`$.**
+Then $`\lvert N\rvert \le 1`$, so [T.oper_eq_self_short](Decrease.md#t-oper_eq_self_short) gives
+$`N[n] = N`$, and $`\Phi(N[n])`$ is exactly the induction hypothesis. ∎
 
 <a id="t-getD_app_right"></a>
-## 定理: 連結列の右側の読み出し (T.getD_app_right)
+## Theorem: reading the right summand of a concatenation (T.getD_app_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`i \in \mathbb{N}`$ とし $`\lvert A\rvert \le i`$ とする。このとき
+Let $`A, T \in \mathrm{PairSeq}`$ and $`i \in \mathbb{N}`$ with $`\lvert A\rvert \le i`$. Then
 
 ```math
 (A \mathbin{+\!\!+} T)\langle i\rangle = T\langle i - \lvert A\rvert\rangle
 ```
 
-（$`M\langle j\rangle`$ [D.entry](Pss.md#d-entry)は範囲外で $`(0,0)`$ を返す読み出しである）。
+(here $`M\langle j\rangle`$ [D.entry](Pss.md#d-entry) is the read that returns $`(0,0)`$ out of range).
 
-### 証明
+### Proof
 
-$`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$ である。$`i`$ の大きさで場合分けする。
+We have $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$. Distinguish cases on the size of $`i`$.
 
-**(a) $`i \lt \lvert A\rvert + \lvert T\rvert`$ のとき。**
-$`i \lt \lvert A \mathbin{+\!\!+} T\rvert`$ であるから、$`M\langle j\rangle`$ の定義（D.entry）の第 1 の場合により
-左辺は $`(A \mathbin{+\!\!+} T)_i`$ である。連結列の第 $`i`$ 要素は、$`\lvert A\rvert \le i`$ のとき
-$`T_{i - \lvert A\rvert}`$ である。一方 $`i - \lvert A\rvert \lt \lvert T\rvert`$ であるから、
-ふたたび D.entry の第 1 の場合により右辺も $`T_{i - \lvert A\rvert}`$ である。
+**(a) $`i \lt \lvert A\rvert + \lvert T\rvert`$.**
+Then $`i \lt \lvert A \mathbin{+\!\!+} T\rvert`$, so by the first case of the definition of $`M\langle j\rangle`$ (D.entry)
+the left-hand side is $`(A \mathbin{+\!\!+} T)_i`$. Since $`\lvert A\rvert \le i`$, the $`i`$-th element of the
+concatenation is $`T_{i - \lvert A\rvert}`$. On the other hand $`i - \lvert A\rvert \lt \lvert T\rvert`$, so
+by the first case of D.entry again the right-hand side is $`T_{i - \lvert A\rvert}`$ as well.
 
-**(b) $`\lvert A\rvert + \lvert T\rvert \le i`$ のとき。**
-$`\lvert A \mathbin{+\!\!+} T\rvert \le i`$ であるから D.entry の第 2 の場合により左辺は $`(0,0)`$ である。
-また $`\lvert A\rvert \le i`$ と $`\lvert A\rvert + \lvert T\rvert \le i`$ から $`\lvert T\rvert \le i - \lvert A\rvert`$
-であり、右辺も $`(0,0)`$ である。∎
+**(b) $`\lvert A\rvert + \lvert T\rvert \le i`$.**
+Then $`\lvert A \mathbin{+\!\!+} T\rvert \le i`$, so by the second case of D.entry the left-hand side is $`(0,0)`$.
+Moreover $`\lvert A\rvert \le i`$ together with $`\lvert A\rvert + \lvert T\rvert \le i`$ gives $`\lvert T\rvert \le i - \lvert A\rvert`$,
+so the right-hand side is $`(0,0)`$ as well. ∎
 
 <a id="t-entry_append_right"></a>
-## 定理: 成分は前置に不変 (T.entry_append_right)
+## Theorem: entries are prefix-invariant (T.entry_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`i, j \in \mathbb{N}`$ に対し
+For $`A, T \in \mathrm{PairSeq}`$ and $`i, j \in \mathbb{N}`$,
 
 ```math
 (A \mathbin{+\!\!+} T)_{i,\,\lvert A\rvert + j} = T_{i,j}
 ```
 
-### 証明
+### Proof
 
-$`\lvert A\rvert \le \lvert A\rvert + j`$ であるから [T.getD_app_right](#t-getD_app_right) を
-$`i := \lvert A\rvert + j`$ に適用して
+Since $`\lvert A\rvert \le \lvert A\rvert + j`$, applying [T.getD_app_right](#t-getD_app_right) with
+$`i := \lvert A\rvert + j`$ yields
 
 ```math
 (A \mathbin{+\!\!+} T)\langle \lvert A\rvert + j\rangle
  = T\langle (\lvert A\rvert + j) - \lvert A\rvert\rangle = T\langle j\rangle
 ```
 
-を得る。$`M_{i,j}`$ の定義（D.entry）により、$`i = 0`$ のとき両辺はそれぞれ
-$`\pi_1\bigl((A \mathbin{+\!\!+} T)\langle \lvert A\rvert + j\rangle\bigr)`$ と $`\pi_1\bigl(T\langle j\rangle\bigr)`$、
-$`i \ne 0`$ のとき $`\pi_2`$ をとったものである。いずれの場合も同じ対の同じ成分であるから等しい。∎
+By the definition of $`M_{i,j}`$ (D.entry), for $`i = 0`$ the two sides are
+$`\pi_1\bigl((A \mathbin{+\!\!+} T)\langle \lvert A\rvert + j\rangle\bigr)`$ and $`\pi_1\bigl(T\langle j\rangle\bigr)`$ respectively,
+and for $`i \ne 0`$ they are the corresponding $`\pi_2`$. In either case they are the same entry of the same pair, hence equal. ∎
 
 <a id="t-nextrel0_append_right"></a>
-## 定理: 行 0 の親子関係は前置に不変 (T.nextrel0_append_right)
+## Theorem: the row-0 parent relation is prefix-invariant (T.nextrel0_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
+For $`A, T \in \mathrm{PairSeq}`$ and $`j_0, j_1 \in \mathbb{N}`$,
 
 ```math
 \lvert A\rvert + j_0 \to^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1
@@ -154,151 +154,152 @@ $`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \to^{T}_0 j_1
 ```
 
-（$`\to^M_0`$ [D.nextrel0](Pss.md#d-nextrel0)）。
+($`\to^M_0`$ [D.nextrel0](Pss.md#d-nextrel0)).
 
-### 証明
+### Proof
 
-$`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$ に注意し、
-$`\to^M_0`$ の定義（D.nextrel0）の 5 条件を左右で対応させる。
+Note that $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$, and match up
+the five conditions of the definition of $`\to^M_0`$ (D.nextrel0) on the two sides.
 
-**（$`\Rightarrow`$）** 左辺の 5 条件を (1)–(5) とする。
+**($`\Rightarrow`$)** Write (1)–(5) for the five conditions on the left-hand side.
 
-- (1) $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$ から $`j_0 \lt \lvert T\rvert`$。
-- (2) $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$ から $`j_1 \lt \lvert T\rvert`$。
-- (3) $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$ から $`j_0 \lt j_1`$。
-- (4) [T.entry_append_right](#t-entry_append_right) より
-  $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_0} = T_{0,j_0}`$ かつ
-  $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} = T_{0,j_1}`$ であるから、
-  (4) は $`T_{0,j_0} \lt T_{0,j_1}`$ である。
-- (5) $`j`$ を $`j_0 \lt j`$ かつ $`j \lt j_1`$ なる自然数とする。
-  このとき $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j \lt \lvert A\rvert + j_1`$ であるから
-  (5) を $`\lvert A\rvert + j`$ に適用でき、
-  $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} \le (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j}`$ を得る。
-  [T.entry_append_right](#t-entry_append_right) で両辺を書き換えて $`T_{0,j_1} \le T_{0,j}`$。
+- (1) From $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$ we get $`j_0 \lt \lvert T\rvert`$.
+- (2) From $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$ we get $`j_1 \lt \lvert T\rvert`$.
+- (3) From $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$ we get $`j_0 \lt j_1`$.
+- (4) By [T.entry_append_right](#t-entry_append_right) we have
+  $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_0} = T_{0,j_0}`$ and
+  $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} = T_{0,j_1}`$, so
+  (4) reads $`T_{0,j_0} \lt T_{0,j_1}`$.
+- (5) Let $`j`$ be a natural number with $`j_0 \lt j`$ and $`j \lt j_1`$.
+  Then $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j \lt \lvert A\rvert + j_1`$, so
+  (5) applies to $`\lvert A\rvert + j`$ and gives
+  $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} \le (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j}`$.
+  Rewriting both sides by [T.entry_append_right](#t-entry_append_right) gives $`T_{0,j_1} \le T_{0,j}`$.
 
-**（$`\Leftarrow`$）** 右辺の 5 条件を (1')–(5') とする。
+**($`\Leftarrow`$)** Write (1')–(5') for the five conditions on the right-hand side.
 
-- (1) (1') $`j_0 \lt \lvert T\rvert`$ に $`\lvert A\rvert`$ を足して
-  $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$。
-- (2) (2') $`j_1 \lt \lvert T\rvert`$ に $`\lvert A\rvert`$ を足して
-  $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$。
-- (3) (3') $`j_0 \lt j_1`$ から $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$。
-- (4) [T.entry_append_right](#t-entry_append_right) で書き換えれば (4') そのものである。
-- (5) $`j`$ を $`\lvert A\rvert + j_0 \lt j`$ かつ $`j \lt \lvert A\rvert + j_1`$ なる自然数とする。
-  $`\lvert A\rvert \le \lvert A\rvert + j_0 \lt j`$ であるから $`j' := j - \lvert A\rvert`$ とおくと
-  $`j = \lvert A\rvert + j'`$ であり、$`j_0 \lt j' \lt j_1`$ である。
-  (5') を $`j'`$ に適用して $`T_{0,j_1} \le T_{0,j'}`$ を得、
-  [T.entry_append_right](#t-entry_append_right) で書き換えれば
-  $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} \le (A \mathbin{+\!\!+} T)_{0,j}`$。∎
+- (1) Adding $`\lvert A\rvert`$ to (1') $`j_0 \lt \lvert T\rvert`$ gives
+  $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$.
+- (2) Adding $`\lvert A\rvert`$ to (2') $`j_1 \lt \lvert T\rvert`$ gives
+  $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$.
+- (3) From (3') $`j_0 \lt j_1`$ we get $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$.
+- (4) Rewriting by [T.entry_append_right](#t-entry_append_right) gives exactly (4').
+- (5) Let $`j`$ be a natural number with $`\lvert A\rvert + j_0 \lt j`$ and $`j \lt \lvert A\rvert + j_1`$.
+  Since $`\lvert A\rvert \le \lvert A\rvert + j_0 \lt j`$, setting $`j' := j - \lvert A\rvert`$ gives
+  $`j = \lvert A\rvert + j'`$ and $`j_0 \lt j' \lt j_1`$.
+  Applying (5') to $`j'`$ gives $`T_{0,j_1} \le T_{0,j'}`$, and
+  rewriting by [T.entry_append_right](#t-entry_append_right) gives
+  $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} \le (A \mathbin{+\!\!+} T)_{0,j}`$. ∎
 
 <a id="t-rtg_nextrel0_lift"></a>
-## 定理: 行 0 の鎖の持ち上げ (T.rtg_nextrel0_lift)
+## Theorem: lifting a row-0 chain (T.rtg_nextrel0_lift)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`j_0, c \in \mathbb{N}`$ とする。
-$`j_0 \mathbin{(\to^{T}_0)^{*}} c`$（[D.le0](Pss.md#d-le0)）ならば
+Let $`A, T \in \mathrm{PairSeq}`$ and $`j_0, c \in \mathbb{N}`$.
+If $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$ ([D.le0](Pss.md#d-le0)), then
 
 ```math
 \lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + c .
 ```
 
-### 証明
+### Proof
 
-鎖 $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$ の構成に関する帰納法。$`A`$、$`T`$、$`j_0`$ は固定し、
-帰納法の述語は
+Induction on the construction of the chain $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$. Fix $`A`$, $`T`$ and $`j_0`$;
+the induction predicate is
 
 ```math
 \Phi(c) :\equiv \lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + c .
 ```
 
-**基底段（長さ $`0`$ の鎖、$`c = j_0`$）。**
-$`\lvert A\rvert + j_0`$ から $`\lvert A\rvert + j_0`$ への長さ $`0`$ の鎖が $`\Phi(j_0)`$ を与える。
+**Base case (chain of length $`0`$, $`c = j_0`$).**
+The chain of length $`0`$ from $`\lvert A\rvert + j_0`$ to $`\lvert A\rvert + j_0`$ gives $`\Phi(j_0)`$.
 
-**帰納段（長さ $`k+1`$ の鎖）。**
-鎖は長さ $`k`$ の鎖 $`j_0 \mathbin{(\to^{T}_0)^{*}} b`$ と最後の 1 段 $`b \to^{T}_0 c`$ に分かれる。
-帰納法の仮定は $`\Phi(b)`$、すなわち
-$`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + b`$ である。
-[T.nextrel0_append_right](#t-nextrel0_append_right) の（$`\Leftarrow`$）を
-$`b \to^{T}_0 c`$ に適用して
-$`\lvert A\rvert + b \to^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + c`$ を得る。
-これを帰納法の仮定の鎖の末尾に継ぎ足せば $`\Phi(c)`$ を得る。∎
+**Inductive step (chain of length $`k+1`$).**
+The chain splits into a chain $`j_0 \mathbin{(\to^{T}_0)^{*}} b`$ of length $`k`$ and a final step $`b \to^{T}_0 c`$.
+The induction hypothesis is $`\Phi(b)`$, that is,
+$`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + b`$.
+Applying the ($`\Leftarrow`$) direction of [T.nextrel0_append_right](#t-nextrel0_append_right) to
+$`b \to^{T}_0 c`$ gives
+$`\lvert A\rvert + b \to^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + c`$.
+Appending this to the end of the chain of the induction hypothesis yields $`\Phi(c)`$. ∎
 
 <a id="t-le0_append_right_of"></a>
-## 定理: 行 0 の祖先関係の持ち上げ (T.le0_append_right_of)
+## Theorem: lifting the row-0 ancestor relation (T.le0_append_right_of)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ とする。
-$`j_0 \le^{T}_0 j_1`$ ならば
-$`\lvert A\rvert + j_0 \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$。
+Let $`A, T \in \mathrm{PairSeq}`$ and $`j_0, j_1 \in \mathbb{N}`$.
+If $`j_0 \le^{T}_0 j_1`$ then
+$`\lvert A\rvert + j_0 \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$.
 
-### 証明
+### Proof
 
-$`\le^M_0`$ の定義（D.le0）の 3 条件を示す。仮定の 3 条件を (1')(2')(3') とする。
+We verify the three conditions of the definition of $`\le^M_0`$ (D.le0).
+Write (1')(2')(3') for the three conditions of the hypothesis.
 
-- (1) $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$ であり、(1') $`j_0 \lt \lvert T\rvert`$ から
-  $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$。
-- (2) $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$ であり、(2') $`j_1 \lt \lvert T\rvert`$ から
-  $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$。
-- (3) (3') は $`j_0 \mathbin{(\to^{T}_0)^{*}} j_1`$ であり、
-  [T.rtg_nextrel0_lift](#t-rtg_nextrel0_lift) を適用すれば
-  $`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + j_1`$。∎
+- (1) $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$, and (1') $`j_0 \lt \lvert T\rvert`$ gives
+  $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$.
+- (2) $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$, and (2') $`j_1 \lt \lvert T\rvert`$ gives
+  $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$.
+- (3) (3') is $`j_0 \mathbin{(\to^{T}_0)^{*}} j_1`$, and
+  applying [T.rtg_nextrel0_lift](#t-rtg_nextrel0_lift) gives
+  $`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + j_1`$. ∎
 
 <a id="t-nextrel0_lt"></a>
-## 定理: 行 0 の親子では添字が増える (T.nextrel0_lt)
+## Theorem: a row-0 parent edge increases the index (T.nextrel0_lt)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$、$`a, b \in \mathbb{N}`$ とする。$`a \to^{M}_0 b`$ ならば $`a \lt b`$。
+Let $`M \in \mathrm{PairSeq}`$ and $`a, b \in \mathbb{N}`$. If $`a \to^{M}_0 b`$ then $`a \lt b`$.
 
-### 証明
+### Proof
 
-$`\to^M_0`$ の定義（D.nextrel0）の第 3 条件が $`a \lt b`$ そのものである。∎
+The third condition of the definition of $`\to^M_0`$ (D.nextrel0) is exactly $`a \lt b`$. ∎
 
 <a id="t-rtg_nextrel0_unlift"></a>
-## 定理: 行 0 の鎖の引き戻し (T.rtg_nextrel0_unlift)
+## Theorem: pulling back a row-0 chain (T.rtg_nextrel0_unlift)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`a, c \in \mathbb{N}`$ とする。
-$`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ ならば、ある $`c'`$ が存在して
+Let $`A, T \in \mathrm{PairSeq}`$ and $`a, c \in \mathbb{N}`$.
+If $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$, then there is $`c'`$ with
 
 ```math
-c = \lvert A\rvert + c' \qquad\text{かつ}\qquad a \mathbin{(\to^{T}_0)^{*}} c' .
+c = \lvert A\rvert + c' \qquad\text{and}\qquad a \mathbin{(\to^{T}_0)^{*}} c' .
 ```
 
-### 証明
+### Proof
 
-鎖 $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ の構成に関する帰納法。
-$`A`$、$`T`$、$`a`$ は固定し、帰納法の述語は
+Induction on the construction of the chain $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$.
+Fix $`A`$, $`T`$ and $`a`$; the induction predicate is
 
 ```math
 \Phi(c) :\equiv \exists c',\ c = \lvert A\rvert + c' \wedge a \mathbin{(\to^{T}_0)^{*}} c' .
 ```
 
-**基底段（長さ $`0`$ の鎖、$`c = \lvert A\rvert + a`$）。**
-$`c' := a`$ とおけば $`c = \lvert A\rvert + a`$ であり、$`a`$ から $`a`$ への長さ $`0`$ の鎖がある。
+**Base case (chain of length $`0`$, $`c = \lvert A\rvert + a`$).**
+Take $`c' := a`$; then $`c = \lvert A\rvert + a`$, and there is a chain of length $`0`$ from $`a`$ to $`a`$.
 
-**帰納段（長さ $`k+1`$ の鎖）。**
-鎖は長さ $`k`$ の鎖 $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} d`$ と
-最後の 1 段 $`d \to^{A \mathbin{+\!\!+} T}_0 e`$ に分かれる（$`c = e`$）。
-帰納法の仮定は $`\Phi(d)`$ であり、$`d = \lvert A\rvert + d'`$ かつ
-$`a \mathbin{(\to^{T}_0)^{*}} d'`$ なる $`d'`$ をとる。
-[T.nextrel0_lt](#t-nextrel0_lt) を最後の 1 段に適用して $`d \lt e`$、すなわち
-$`\lvert A\rvert + d' \lt e`$ を得る。とくに $`\lvert A\rvert \le e`$ であるから
-$`e' := e - \lvert A\rvert`$ とおけば $`e = \lvert A\rvert + e'`$ である。
-[T.nextrel0_append_right](#t-nextrel0_append_right) の（$`\Rightarrow`$）を
-$`\lvert A\rvert + d' \to^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + e'`$ に適用して
-$`d' \to^{T}_0 e'`$ を得る。これを帰納法の仮定の鎖の末尾に継ぎ足して
-$`a \mathbin{(\to^{T}_0)^{*}} e'`$ を得る。$`c' := e'`$ が $`\Phi(e)`$ を与える。∎
+**Inductive step (chain of length $`k+1`$).**
+The chain splits into a chain $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} d`$ of length $`k`$ and
+a final step $`d \to^{A \mathbin{+\!\!+} T}_0 e`$ (with $`c = e`$).
+The induction hypothesis is $`\Phi(d)`$; take $`d'`$ with $`d = \lvert A\rvert + d'`$ and
+$`a \mathbin{(\to^{T}_0)^{*}} d'`$.
+Applying [T.nextrel0_lt](#t-nextrel0_lt) to the final step gives $`d \lt e`$, that is,
+$`\lvert A\rvert + d' \lt e`$. In particular $`\lvert A\rvert \le e`$, so setting
+$`e' := e - \lvert A\rvert`$ gives $`e = \lvert A\rvert + e'`$.
+Applying the ($`\Rightarrow`$) direction of [T.nextrel0_append_right](#t-nextrel0_append_right) to
+$`\lvert A\rvert + d' \to^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + e'`$ gives
+$`d' \to^{T}_0 e'`$. Appending this to the end of the chain of the induction hypothesis gives
+$`a \mathbin{(\to^{T}_0)^{*}} e'`$. Thus $`c' := e'`$ gives $`\Phi(e)`$. ∎
 
 <a id="t-le0_append_right"></a>
-## 定理: 行 0 の祖先関係は前置に不変 (T.le0_append_right)
+## Theorem: the row-0 ancestor relation is prefix-invariant (T.le0_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
+For $`A, T \in \mathrm{PairSeq}`$ and $`j_0, j_1 \in \mathbb{N}`$,
 
 ```math
 \lvert A\rvert + j_0 \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1
@@ -306,26 +307,26 @@ $`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \le^{T}_0 j_1 .
 ```
 
-### 証明
+### Proof
 
-**（$`\Rightarrow`$）** 左辺の 3 条件を (1)(2)(3) とする。
-$`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$ であるから、
-(1) から $`j_0 \lt \lvert T\rvert`$、(2) から $`j_1 \lt \lvert T\rvert`$ である。
-(3) は $`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + j_1`$ であるから、
-[T.rtg_nextrel0_unlift](#t-rtg_nextrel0_unlift) より $`c'`$ が存在して
-$`\lvert A\rvert + j_1 = \lvert A\rvert + c'`$ かつ $`j_0 \mathbin{(\to^{T}_0)^{*}} c'`$ である。
-第 1 の等式から $`j_1 = c'`$ であり、$`j_0 \mathbin{(\to^{T}_0)^{*}} j_1`$ を得る。
-これで $`\le^M_0`$ の定義（D.le0）の 3 条件がそろった。
+**($`\Rightarrow`$)** Write (1)(2)(3) for the three conditions on the left-hand side.
+Since $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$,
+(1) gives $`j_0 \lt \lvert T\rvert`$ and (2) gives $`j_1 \lt \lvert T\rvert`$.
+Condition (3) is $`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + j_1`$, so
+by [T.rtg_nextrel0_unlift](#t-rtg_nextrel0_unlift) there is $`c'`$ with
+$`\lvert A\rvert + j_1 = \lvert A\rvert + c'`$ and $`j_0 \mathbin{(\to^{T}_0)^{*}} c'`$.
+The first equation gives $`j_1 = c'`$, hence $`j_0 \mathbin{(\to^{T}_0)^{*}} j_1`$.
+This completes the three conditions of the definition of $`\le^M_0`$ (D.le0).
 
-**（$`\Leftarrow`$）** [T.le0_append_right_of](#t-le0_append_right_of) そのものである。∎
+**($`\Leftarrow`$)** This is exactly [T.le0_append_right_of](#t-le0_append_right_of). ∎
 
 <a id="t-nextrel0_no_cross"></a>
-## 定理: 行 0 の親子は境界を越えない (T.nextrel0_no_cross)
+## Theorem: a row-0 parent edge does not cross the boundary (T.nextrel0_no_cross)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$ が $`T_{0,0} = 0`$ をみたすとする。
-$`k, j \in \mathbb{N}`$ が
+Let $`A, T \in \mathrm{PairSeq}`$ satisfy $`T_{0,0} = 0`$.
+If $`k, j \in \mathbb{N}`$ satisfy
 
 ```math
 k \lt \lvert A\rvert, \qquad
@@ -334,67 +335,67 @@ k \lt \lvert A\rvert, \qquad
 k \to^{A \mathbin{+\!\!+} T}_0 j
 ```
 
-をみたすならば矛盾する。
+then a contradiction follows.
 
-### 証明
+### Proof
 
-まず $`\lvert A\rvert \lt j`$ を示す。仮定 $`\lvert A\rvert \le j`$ より $`j = \lvert A\rvert`$ か
-$`\lvert A\rvert \lt j`$ のいずれかである。$`j = \lvert A\rvert`$ とすると、
-[T.entry_append_right](#t-entry_append_right) を $`i := 0`$、$`j := 0`$ に適用して
+First we show $`\lvert A\rvert \lt j`$. By the hypothesis $`\lvert A\rvert \le j`$, either $`j = \lvert A\rvert`$ or
+$`\lvert A\rvert \lt j`$. Suppose $`j = \lvert A\rvert`$. Applying
+[T.entry_append_right](#t-entry_append_right) with $`i := 0`$ and $`j := 0`$ gives
 
 ```math
 (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert} = T_{0,0} = 0
 ```
 
-であり、仮定 $`0 \lt (A \mathbin{+\!\!+} T)_{0,j}`$ に矛盾する。よって $`\lvert A\rvert \lt j`$ である。
+which contradicts the hypothesis $`0 \lt (A \mathbin{+\!\!+} T)_{0,j}`$. Hence $`\lvert A\rvert \lt j`$.
 
-次に $`k \to^{A \mathbin{+\!\!+} T}_0 j`$ の条件 (5)（D.nextrel0）を $`\lvert A\rvert`$ に適用する。
-$`k \lt \lvert A\rvert`$ かつ $`\lvert A\rvert \lt j`$ であるから条件を満たし、
+Next apply condition (5) (D.nextrel0) of $`k \to^{A \mathbin{+\!\!+} T}_0 j`$ to $`\lvert A\rvert`$.
+Since $`k \lt \lvert A\rvert`$ and $`\lvert A\rvert \lt j`$, the condition is met and we obtain
 
 ```math
 (A \mathbin{+\!\!+} T)_{0,j} \le (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert} = 0
 ```
 
-を得る。これは仮定 $`0 \lt (A \mathbin{+\!\!+} T)_{0,j}`$ に矛盾する。∎
+which contradicts the hypothesis $`0 \lt (A \mathbin{+\!\!+} T)_{0,j}`$. ∎
 
 <a id="t-nextrel0_no_pred_zero"></a>
-## 定理: 行 0 の値が $`0`$ の列に親はない (T.nextrel0_no_pred_zero)
+## Theorem: a column with row-0 value $`0`$ has no row-0 parent (T.nextrel0_no_pred_zero)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$、$`a, b \in \mathbb{N}`$ とする。
-$`M_{0,b} = 0`$ かつ $`a \to^{M}_0 b`$ ならば矛盾する。
+Let $`M \in \mathrm{PairSeq}`$ and $`a, b \in \mathbb{N}`$.
+If $`M_{0,b} = 0`$ and $`a \to^{M}_0 b`$, then a contradiction follows.
 
-### 証明
+### Proof
 
-$`\to^M_0`$ の定義（D.nextrel0）の第 4 条件は $`M_{0,a} \lt M_{0,b}`$ である。
-$`M_{0,b} = 0`$ を代入すると $`M_{0,a} \lt 0`$ となるが、自然数に $`0`$ より小さいものはない。∎
+The fourth condition of the definition of $`\to^M_0`$ (D.nextrel0) is $`M_{0,a} \lt M_{0,b}`$.
+Substituting $`M_{0,b} = 0`$ gives $`M_{0,a} \lt 0`$, but no natural number is smaller than $`0`$. ∎
 
 <a id="t-rtg_to_root"></a>
-## 定理: 行 0 の値が $`0`$ の列で終わる鎖は自明 (T.rtg_to_root)
+## Theorem: a chain ending at a column with row-0 value $`0`$ is trivial (T.rtg_to_root)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$、$`k, b \in \mathbb{N}`$ とする。
-$`M_{0,b} = 0`$ かつ $`k \mathbin{(\to^{M}_0)^{*}} b`$ ならば $`k = b`$。
+Let $`M \in \mathrm{PairSeq}`$ and $`k, b \in \mathbb{N}`$.
+If $`M_{0,b} = 0`$ and $`k \mathbin{(\to^{M}_0)^{*}} b`$ then $`k = b`$.
 
-### 証明
+### Proof
 
-鎖の長さで場合分けする。
+Distinguish cases on the length of the chain.
 
-- **長さ $`0`$ のとき。** 鎖の両端は同一であり $`k = b`$ である。
-- **長さが $`1`$ 以上のとき。** 鎖は $`k \mathbin{(\to^{M}_0)^{*}} c`$ と最後の 1 段
-  $`c \to^{M}_0 b`$ に分かれる。$`M_{0,b} = 0`$ であるから
-  [T.nextrel0_no_pred_zero](#t-nextrel0_no_pred_zero) により矛盾する。
-  よってこの場合は起こらない。∎
+- **Length $`0`$.** The two ends of the chain coincide, so $`k = b`$.
+- **Length at least $`1`$.** The chain splits into $`k \mathbin{(\to^{M}_0)^{*}} c`$ and a final step
+  $`c \to^{M}_0 b`$. Since $`M_{0,b} = 0`$,
+  [T.nextrel0_no_pred_zero](#t-nextrel0_no_pred_zero) yields a contradiction.
+  Hence this case does not occur. ∎
 
 <a id="t-le0_no_cross"></a>
-## 定理: 行 0 の祖先関係は境界を越えない (T.le0_no_cross)
+## Theorem: the row-0 ancestor relation does not cross the boundary (T.le0_no_cross)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$ が $`T_{0,0} = 0`$ をみたすとする。
-$`k, j_1 \in \mathbb{N}`$ が
+Let $`A, T \in \mathrm{PairSeq}`$ satisfy $`T_{0,0} = 0`$.
+If $`k, j_1 \in \mathbb{N}`$ satisfy
 
 ```math
 k \lt \lvert A\rvert, \qquad
@@ -402,11 +403,11 @@ k \lt \lvert A\rvert, \qquad
 k \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1
 ```
 
-をみたすならば矛盾する。
+then a contradiction follows.
 
-### 証明
+### Proof
 
-次の命題 (H) を示せば十分である。
+It suffices to prove the following statement (H).
 
 ```math
 (H)\quad \forall e,\ \Bigl(k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} e
@@ -414,51 +415,51 @@ k \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1
  \to \lvert A\rvert \le k .
 ```
 
-実際、仮定 $`k \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$ の第 3 条件（D.le0）は
-$`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + j_1`$ であり、
-$`\lvert A\rvert \le \lvert A\rvert + j_1`$ と
-$`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ が成り立つから、(H) を
-$`e := \lvert A\rvert + j_1`$ に適用して $`\lvert A\rvert \le k`$ を得る。
-これは仮定 $`k \lt \lvert A\rvert`$ に矛盾する。
+Indeed, the third condition (D.le0) of the hypothesis $`k \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$ is
+$`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + j_1`$, and both
+$`\lvert A\rvert \le \lvert A\rvert + j_1`$ and
+$`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ hold, so applying (H) with
+$`e := \lvert A\rvert + j_1`$ gives $`\lvert A\rvert \le k`$.
+This contradicts the hypothesis $`k \lt \lvert A\rvert`$.
 
-(H) を鎖 $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} e`$ の構成に関する帰納法で示す。
-$`A`$、$`T`$、$`k`$ は固定し、帰納法の述語は
+We prove (H) by induction on the construction of the chain $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} e`$.
+Fix $`A`$, $`T`$ and $`k`$; the induction predicate is
 
 ```math
 \Phi(e) :\equiv \bigl(\lvert A\rvert \le e \wedge 0 \lt (A \mathbin{+\!\!+} T)_{0,e}\bigr)
  \to \lvert A\rvert \le k .
 ```
 
-**基底段（長さ $`0`$ の鎖、$`e = k`$）。**
-前件の第 1 連言子が $`\lvert A\rvert \le k`$ そのものであるから結論が得られる。
+**Base case (chain of length $`0`$, $`e = k`$).**
+The first conjunct of the antecedent is exactly $`\lvert A\rvert \le k`$, which is the conclusion.
 
-**帰納段（長さ $`m+1`$ の鎖）。**
-鎖は長さ $`m`$ の鎖 $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ と
-最後の 1 段 $`c \to^{A \mathbin{+\!\!+} T}_0 d`$ に分かれる（$`e = d`$）。
-帰納法の仮定は $`\Phi(c)`$ である。
-前件 $`\lvert A\rvert \le d`$ と $`0 \lt (A \mathbin{+\!\!+} T)_{0,d}`$ を仮定する。
+**Inductive step (chain of length $`m+1`$).**
+The chain splits into a chain $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ of length $`m`$ and
+a final step $`c \to^{A \mathbin{+\!\!+} T}_0 d`$ (with $`e = d`$).
+The induction hypothesis is $`\Phi(c)`$.
+Assume the antecedent $`\lvert A\rvert \le d`$ and $`0 \lt (A \mathbin{+\!\!+} T)_{0,d}`$.
 
-まず $`\lvert A\rvert \le c`$ を示す。$`c \lt \lvert A\rvert`$ とすると、
-[T.nextrel0_no_cross](#t-nextrel0_no_cross) を $`k := c`$、$`j := d`$ として適用でき
-（4 つの仮定はそれぞれ $`c \lt \lvert A\rvert`$、$`\lvert A\rvert \le d`$、
-$`0 \lt (A \mathbin{+\!\!+} T)_{0,d}`$、$`c \to^{A \mathbin{+\!\!+} T}_0 d`$ である）、矛盾する。
+First we show $`\lvert A\rvert \le c`$. Suppose $`c \lt \lvert A\rvert`$. Then
+[T.nextrel0_no_cross](#t-nextrel0_no_cross) applies with $`k := c`$ and $`j := d`$
+(its four hypotheses are $`c \lt \lvert A\rvert`$, $`\lvert A\rvert \le d`$,
+$`0 \lt (A \mathbin{+\!\!+} T)_{0,d}`$ and $`c \to^{A \mathbin{+\!\!+} T}_0 d`$), a contradiction.
 
-次に $`(A \mathbin{+\!\!+} T)_{0,c}`$ で場合分けする。
+Next distinguish cases on $`(A \mathbin{+\!\!+} T)_{0,c}`$.
 
-- $`0 \lt (A \mathbin{+\!\!+} T)_{0,c}`$ のとき。
-  帰納法の仮定 $`\Phi(c)`$ に $`\lvert A\rvert \le c`$ とこの不等式を与えて
-  $`\lvert A\rvert \le k`$ を得る。
-- $`(A \mathbin{+\!\!+} T)_{0,c} = 0`$ のとき。
-  [T.rtg_to_root](#t-rtg_to_root) を $`M := A \mathbin{+\!\!+} T`$、$`b := c`$ とし、
-  鎖 $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ に適用して $`k = c`$ を得る。
-  すでに示した $`\lvert A\rvert \le c`$ と合わせて $`\lvert A\rvert \le k`$。∎
+- $`0 \lt (A \mathbin{+\!\!+} T)_{0,c}`$.
+  Feeding $`\lvert A\rvert \le c`$ and this inequality to the induction hypothesis $`\Phi(c)`$ gives
+  $`\lvert A\rvert \le k`$.
+- $`(A \mathbin{+\!\!+} T)_{0,c} = 0`$.
+  Applying [T.rtg_to_root](#t-rtg_to_root) with $`M := A \mathbin{+\!\!+} T`$ and $`b := c`$
+  to the chain $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ gives $`k = c`$.
+  Together with $`\lvert A\rvert \le c`$ shown above, $`\lvert A\rvert \le k`$. ∎
 
 <a id="t-nextrel1_append_right"></a>
-## 定理: 行 1 の親子関係は前置に不変 (T.nextrel1_append_right)
+## Theorem: the row-1 parent relation is prefix-invariant (T.nextrel1_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
+For $`A, T \in \mathrm{PairSeq}`$ and $`j_0, j_1 \in \mathbb{N}`$,
 
 ```math
 \lvert A\rvert + j_0 \to^{A \mathbin{+\!\!+} T}_1 \lvert A\rvert + j_1
@@ -466,56 +467,56 @@ $`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \to^{T}_1 j_1
 ```
 
-（$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)）。
+($`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)).
 
-### 証明
+### Proof
 
-$`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$ に注意し、
-$`\to^M_1`$ の定義（D.nextrel1）の 6 条件を左右で対応させる。
+Note that $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert`$, and match up
+the six conditions of the definition of $`\to^M_1`$ (D.nextrel1) on the two sides.
 
-**（$`\Rightarrow`$）** 左辺の 6 条件を (1)–(6) とする。
+**($`\Rightarrow`$)** Write (1)–(6) for the six conditions on the left-hand side.
 
-- (1) $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$ から $`j_0 \lt \lvert T\rvert`$。
-- (2) $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$ から $`j_1 \lt \lvert T\rvert`$。
-- (3) $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$ から $`j_0 \lt j_1`$。
-- (4) [T.entry_append_right](#t-entry_append_right) より
-  $`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j_0} = T_{1,j_0}`$ かつ
-  $`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j_1} = T_{1,j_1}`$ であるから、
-  (4) は $`T_{1,j_0} \lt T_{1,j_1}`$ である。
-- (5) [T.le0_append_right](#t-le0_append_right) の（$`\Rightarrow`$）を (5) に適用して
-  $`j_0 \le^{T}_0 j_1`$。
-- (6) $`j`$ を $`j_0 \lt j`$ かつ $`j \le^{T}_0 j_1`$ なる自然数とする。
-  $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j`$ であり、
-  [T.le0_append_right](#t-le0_append_right) の（$`\Leftarrow`$）より
-  $`\lvert A\rvert + j \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$ である。
-  よって (6) を $`\lvert A\rvert + j`$ に適用でき、
-  $`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j_1} \le (A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j}`$、
-  すなわち [T.entry_append_right](#t-entry_append_right) による書き換えで
-  $`T_{1,j_1} \le T_{1,j}`$ を得る。
+- (1) From $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$ we get $`j_0 \lt \lvert T\rvert`$.
+- (2) From $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$ we get $`j_1 \lt \lvert T\rvert`$.
+- (3) From $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$ we get $`j_0 \lt j_1`$.
+- (4) By [T.entry_append_right](#t-entry_append_right) we have
+  $`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j_0} = T_{1,j_0}`$ and
+  $`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j_1} = T_{1,j_1}`$, so
+  (4) reads $`T_{1,j_0} \lt T_{1,j_1}`$.
+- (5) Applying the ($`\Rightarrow`$) direction of [T.le0_append_right](#t-le0_append_right) to (5) gives
+  $`j_0 \le^{T}_0 j_1`$.
+- (6) Let $`j`$ be a natural number with $`j_0 \lt j`$ and $`j \le^{T}_0 j_1`$.
+  Then $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j`$, and by the ($`\Leftarrow`$) direction of
+  [T.le0_append_right](#t-le0_append_right) we have
+  $`\lvert A\rvert + j \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$.
+  Hence (6) applies to $`\lvert A\rvert + j`$ and gives
+  $`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j_1} \le (A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j}`$,
+  that is, rewriting by [T.entry_append_right](#t-entry_append_right),
+  $`T_{1,j_1} \le T_{1,j}`$.
 
-**（$`\Leftarrow`$）** 右辺の 6 条件を (1')–(6') とする。
+**($`\Leftarrow`$)** Write (1')–(6') for the six conditions on the right-hand side.
 
-- (1) (1') $`j_0 \lt \lvert T\rvert`$ から $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$。
-- (2) (2') $`j_1 \lt \lvert T\rvert`$ に $`\lvert A\rvert`$ を足して
-  $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$。
-- (3) (3') $`j_0 \lt j_1`$ から $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$。
-- (4) [T.entry_append_right](#t-entry_append_right) で書き換えれば (4') そのものである。
-- (5) [T.le0_append_right](#t-le0_append_right) の（$`\Leftarrow`$）を (5') に適用する。
-- (6) $`j`$ を $`\lvert A\rvert + j_0 \lt j`$ かつ
-  $`j \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$ なる自然数とする。
-  $`\lvert A\rvert \le \lvert A\rvert + j_0 \lt j`$ であるから $`j' := j - \lvert A\rvert`$ とおくと
-  $`j = \lvert A\rvert + j'`$ であり $`j_0 \lt j'`$ である。
-  [T.le0_append_right](#t-le0_append_right) の（$`\Rightarrow`$）より $`j' \le^{T}_0 j_1`$ であるから、
-  (6') を $`j'`$ に適用して $`T_{1,j_1} \le T_{1,j'}`$ を得る。
-  [T.entry_append_right](#t-entry_append_right) で書き換えれば
-  $`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j_1} \le (A \mathbin{+\!\!+} T)_{1,j}`$。∎
+- (1) From (1') $`j_0 \lt \lvert T\rvert`$ we get $`\lvert A\rvert + j_0 \lt \lvert A\rvert + \lvert T\rvert`$.
+- (2) Adding $`\lvert A\rvert`$ to (2') $`j_1 \lt \lvert T\rvert`$ gives
+  $`\lvert A\rvert + j_1 \lt \lvert A\rvert + \lvert T\rvert`$.
+- (3) From (3') $`j_0 \lt j_1`$ we get $`\lvert A\rvert + j_0 \lt \lvert A\rvert + j_1`$.
+- (4) Rewriting by [T.entry_append_right](#t-entry_append_right) gives exactly (4').
+- (5) Apply the ($`\Leftarrow`$) direction of [T.le0_append_right](#t-le0_append_right) to (5').
+- (6) Let $`j`$ be a natural number with $`\lvert A\rvert + j_0 \lt j`$ and
+  $`j \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$.
+  Since $`\lvert A\rvert \le \lvert A\rvert + j_0 \lt j`$, setting $`j' := j - \lvert A\rvert`$ gives
+  $`j = \lvert A\rvert + j'`$ and $`j_0 \lt j'`$.
+  By the ($`\Rightarrow`$) direction of [T.le0_append_right](#t-le0_append_right) we have $`j' \le^{T}_0 j_1`$, so
+  applying (6') to $`j'`$ gives $`T_{1,j_1} \le T_{1,j'}`$.
+  Rewriting by [T.entry_append_right](#t-entry_append_right) gives
+  $`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j_1} \le (A \mathbin{+\!\!+} T)_{1,j}`$. ∎
 
 <a id="t-nextR_append_right"></a>
-## 定理: 行つき親子関係は前置に不変 (T.nextR_append_right)
+## Theorem: the row-indexed parent relation is prefix-invariant (T.nextR_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`i, j_0, j_1 \in \mathbb{N}`$ に対し
+For $`A, T \in \mathrm{PairSeq}`$ and $`i, j_0, j_1 \in \mathbb{N}`$,
 
 ```math
 \lvert A\rvert + j_0 \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1
@@ -523,82 +524,82 @@ $`A, T \in \mathrm{PairSeq}`$、$`i, j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \to^{T}_i j_1
 ```
 
-（$`\to^M_i`$ [D.nextR](Pss.md#d-nextR)）。
+($`\to^M_i`$ [D.nextR](Pss.md#d-nextR)).
 
-### 証明
+### Proof
 
-$`\to^M_i`$ の定義（D.nextR）の場合分けによる。
+By the case distinction in the definition of $`\to^M_i`$ (D.nextR).
 
-- $`i = 0`$ のとき。両辺はそれぞれ
-  $`\lvert A\rvert + j_0 \to^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$ と $`j_0 \to^{T}_0 j_1`$ であり、
-  [T.nextrel0_append_right](#t-nextrel0_append_right) が主張そのものである。
-- $`i \ne 0`$ のとき。両辺はそれぞれ
-  $`\lvert A\rvert + j_0 \to^{A \mathbin{+\!\!+} T}_1 \lvert A\rvert + j_1`$ と $`j_0 \to^{T}_1 j_1`$ であり、
-  [T.nextrel1_append_right](#t-nextrel1_append_right) が主張そのものである。∎
+- $`i = 0`$. The two sides are
+  $`\lvert A\rvert + j_0 \to^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$ and $`j_0 \to^{T}_0 j_1`$ respectively,
+  and [T.nextrel0_append_right](#t-nextrel0_append_right) is exactly the claim.
+- $`i \ne 0`$. The two sides are
+  $`\lvert A\rvert + j_0 \to^{A \mathbin{+\!\!+} T}_1 \lvert A\rvert + j_1`$ and $`j_0 \to^{T}_1 j_1`$ respectively,
+  and [T.nextrel1_append_right](#t-nextrel1_append_right) is exactly the claim. ∎
 
 <a id="t-idx1_append_right"></a>
-## 定理: 探索行は前置に不変 (T.idx1_append_right)
+## Theorem: the search row is prefix-invariant (T.idx1_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`j \in \mathbb{N}`$ に対し
+For $`A, T \in \mathrm{PairSeq}`$ and $`j \in \mathbb{N}`$,
 
 ```math
 \mathrm{idx}_1(A \mathbin{+\!\!+} T,\ \lvert A\rvert + j) = \mathrm{idx}_1(T, j)
 ```
 
-（$`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)）。
+($`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)).
 
-### 証明
+### Proof
 
-$`\mathrm{idx}_1`$ の定義（D.idx1）は $`M_{1,j_1}`$ の正負のみによる場合分けである。
-[T.entry_append_right](#t-entry_append_right) より
-$`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j} = T_{1,j}`$ であるから、
-条件 $`0 \lt (A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j}`$ と $`0 \lt T_{1,j}`$ は同一の命題であり、
-どちらの場合が選ばれるかも一致する。∎
+The definition of $`\mathrm{idx}_1`$ (D.idx1) is a case distinction that depends only on the sign of $`M_{1,j_1}`$.
+By [T.entry_append_right](#t-entry_append_right) we have
+$`(A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j} = T_{1,j}`$, so
+the conditions $`0 \lt (A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j}`$ and $`0 \lt T_{1,j}`$ are the same proposition,
+and the same case is selected on both sides. ∎
 
 <a id="t-nextR_le0"></a>
-## 定理: 親子関係は祖先関係を導く (T.nextR_le0)
+## Theorem: the parent relation implies the ancestor relation (T.nextR_le0)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$、$`i, k, b \in \mathbb{N}`$ とする。
-$`k \to^{M}_i b`$ ならば $`k \le^{M}_0 b`$。
+Let $`M \in \mathrm{PairSeq}`$ and $`i, k, b \in \mathbb{N}`$.
+If $`k \to^{M}_i b`$ then $`k \le^{M}_0 b`$.
 
-### 証明
+### Proof
 
-$`\to^M_i`$ の定義（D.nextR）の場合分けによる。
+By the case distinction in the definition of $`\to^M_i`$ (D.nextR).
 
-- $`i = 0`$ のとき。$`k \to^{M}_0 b`$ である。$`\le^M_0`$ の定義（D.le0）の 3 条件のうち、
-  (1) $`k \lt \lvert M\rvert`$ と (2) $`b \lt \lvert M\rvert`$ は $`\to^M_0`$ の定義（D.nextrel0）の
-  第 1・第 2 条件そのものであり、(3) は $`k \to^{M}_0 b`$ を 1 段だけもつ鎖である。
-- $`i \ne 0`$ のとき。$`k \to^{M}_1 b`$ であり、$`\to^M_1`$ の定義（D.nextrel1）の
-  第 5 条件が $`k \le^{M}_0 b`$ そのものである。∎
+- $`i = 0`$. Then $`k \to^{M}_0 b`$. Among the three conditions of the definition of $`\le^M_0`$ (D.le0),
+  (1) $`k \lt \lvert M\rvert`$ and (2) $`b \lt \lvert M\rvert`$ are exactly the first and second conditions of
+  the definition of $`\to^M_0`$ (D.nextrel0), and (3) is the chain consisting of the single step $`k \to^{M}_0 b`$.
+- $`i \ne 0`$. Then $`k \to^{M}_1 b`$, and the fifth condition of the definition of $`\to^M_1`$ (D.nextrel1)
+  is exactly $`k \le^{M}_0 b`$. ∎
 
 <a id="t-nextR_src_in_T"></a>
-## 定理: 親は後半に属する (T.nextR_src_in_T)
+## Theorem: the parent lies in the right summand (T.nextR_src_in_T)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$ が $`T_{0,0} = 0`$ をみたすとする。
-$`i, k, j_1 \in \mathbb{N}`$ が $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ かつ
-$`k \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$ をみたすならば $`\lvert A\rvert \le k`$。
+Let $`A, T \in \mathrm{PairSeq}`$ satisfy $`T_{0,0} = 0`$.
+If $`i, k, j_1 \in \mathbb{N}`$ satisfy $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ and
+$`k \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$, then $`\lvert A\rvert \le k`$.
 
-### 証明
+### Proof
 
-$`\lvert A\rvert \le k`$ を否定して $`k \lt \lvert A\rvert`$ と仮定する。
-[T.nextR_le0](#t-nextR_le0) より $`k \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$ である。
-[T.le0_no_cross](#t-le0_no_cross) の 3 つの仮定
-$`k \lt \lvert A\rvert`$、$`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$、
-$`k \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$ がそろうから矛盾する。∎
+Negate $`\lvert A\rvert \le k`$ and assume $`k \lt \lvert A\rvert`$.
+By [T.nextR_le0](#t-nextR_le0) we have $`k \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$.
+The three hypotheses of [T.le0_no_cross](#t-le0_no_cross), namely
+$`k \lt \lvert A\rvert`$, $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ and
+$`k \le^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + j_1`$, are now all available, so we get a contradiction. ∎
 
 <a id="t-hasParent_append_right"></a>
-## 定理: 親の存在は前置に不変 (T.hasParent_append_right)
+## Theorem: existence of a parent is prefix-invariant (T.hasParent_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$ が $`T_{0,0} = 0`$ をみたし、
-$`i, j_1 \in \mathbb{N}`$ が $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ をみたすとする。このとき
+Let $`A, T \in \mathrm{PairSeq}`$ satisfy $`T_{0,0} = 0`$, and let
+$`i, j_1 \in \mathbb{N}`$ satisfy $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$. Then
 
 ```math
 \mathrm{hasParent}(A \mathbin{+\!\!+} T,\ i,\ \lvert A\rvert + j_1)
@@ -606,95 +607,96 @@ $`i, j_1 \in \mathbb{N}`$ が $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert +
 \mathrm{hasParent}(T,\ i,\ j_1)
 ```
 
-（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)）。
+($`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)).
 
-### 証明
+### Proof
 
-$`\mathrm{hasParent}`$ の定義（D.hasParent）は、条件をみたす添字の存在と一意性である。
+The definition of $`\mathrm{hasParent}`$ (D.hasParent) asserts the existence and the uniqueness of an index
+satisfying the condition.
 
-**（$`\Rightarrow`$）** $`j_0`$ を $`j_0 \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$ をみたす一意の添字とする。
-[T.nextR_src_in_T](#t-nextR_src_in_T) より $`\lvert A\rvert \le j_0`$ であるから、
-$`j_0' := j_0 - \lvert A\rvert`$ とおけば $`j_0 = \lvert A\rvert + j_0'`$ である。
-[T.nextR_append_right](#t-nextR_append_right) の（$`\Rightarrow`$）より
-$`j_0' \to^{T}_i j_1`$ を得る（存在）。
-一意性を示す。$`y`$ が $`y \to^{T}_i j_1`$ をみたすとすると、
-[T.nextR_append_right](#t-nextR_append_right) の（$`\Leftarrow`$）より
-$`\lvert A\rvert + y \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$ であるから、
-$`j_0`$ の一意性により $`\lvert A\rvert + y = \lvert A\rvert + j_0'`$、すなわち $`y = j_0'`$ である。
+**($`\Rightarrow`$)** Let $`j_0`$ be the unique index with $`j_0 \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$.
+By [T.nextR_src_in_T](#t-nextR_src_in_T) we have $`\lvert A\rvert \le j_0`$, so setting
+$`j_0' := j_0 - \lvert A\rvert`$ gives $`j_0 = \lvert A\rvert + j_0'`$.
+The ($`\Rightarrow`$) direction of [T.nextR_append_right](#t-nextR_append_right) gives
+$`j_0' \to^{T}_i j_1`$ (existence).
+For uniqueness, suppose $`y`$ satisfies $`y \to^{T}_i j_1`$. Then
+the ($`\Leftarrow`$) direction of [T.nextR_append_right](#t-nextR_append_right) gives
+$`\lvert A\rvert + y \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$, so
+by the uniqueness of $`j_0`$ we get $`\lvert A\rvert + y = \lvert A\rvert + j_0'`$, that is, $`y = j_0'`$.
 
-**（$`\Leftarrow`$）** $`j_0'`$ を $`j_0' \to^{T}_i j_1`$ をみたす一意の添字とする。
-[T.nextR_append_right](#t-nextR_append_right) の（$`\Leftarrow`$）より
-$`\lvert A\rvert + j_0' \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$ である（存在）。
-一意性を示す。$`y`$ が $`y \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$ をみたすとすると、
-[T.nextR_src_in_T](#t-nextR_src_in_T) より $`\lvert A\rvert \le y`$ であるから
-$`y' := y - \lvert A\rvert`$ とおけば $`y = \lvert A\rvert + y'`$ である。
-[T.nextR_append_right](#t-nextR_append_right) の（$`\Rightarrow`$）より $`y' \to^{T}_i j_1`$ であり、
-$`j_0'`$ の一意性から $`y' = j_0'`$、すなわち $`y = \lvert A\rvert + j_0'`$ である。∎
+**($`\Leftarrow`$)** Let $`j_0'`$ be the unique index with $`j_0' \to^{T}_i j_1`$.
+The ($`\Leftarrow`$) direction of [T.nextR_append_right](#t-nextR_append_right) gives
+$`\lvert A\rvert + j_0' \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$ (existence).
+For uniqueness, suppose $`y`$ satisfies $`y \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$. Then
+by [T.nextR_src_in_T](#t-nextR_src_in_T) we have $`\lvert A\rvert \le y`$, so setting
+$`y' := y - \lvert A\rvert`$ gives $`y = \lvert A\rvert + y'`$.
+The ($`\Rightarrow`$) direction of [T.nextR_append_right](#t-nextR_append_right) gives $`y' \to^{T}_i j_1`$, so
+by the uniqueness of $`j_0'`$ we get $`y' = j_0'`$, that is, $`y = \lvert A\rvert + j_0'`$. ∎
 
 <a id="t-parent_append_right"></a>
-## 定理: 親は前置の長さだけずれる (T.parent_append_right)
+## Theorem: the parent shifts by the length of the prefix (T.parent_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$ が $`T_{0,0} = 0`$ をみたし、
-$`i, j_1 \in \mathbb{N}`$ が $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ と
-$`\mathrm{hasParent}(T, i, j_1)`$ をみたすとする。このとき
+Let $`A, T \in \mathrm{PairSeq}`$ satisfy $`T_{0,0} = 0`$, and let
+$`i, j_1 \in \mathbb{N}`$ satisfy $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ and
+$`\mathrm{hasParent}(T, i, j_1)`$. Then
 
 ```math
 \mathrm{par}^{A \mathbin{+\!\!+} T}_i(\lvert A\rvert + j_1) = \lvert A\rvert + \mathrm{par}^{T}_i(j_1)
 ```
 
-（$`\mathrm{par}^M_i`$ [D.parent](Pss.md#d-parent)）。
+($`\mathrm{par}^M_i`$ [D.parent](Pss.md#d-parent)).
 
-### 証明
+### Proof
 
-[T.hasParent_append_right](#t-hasParent_append_right) の（$`\Leftarrow`$）より
-$`\mathrm{hasParent}(A \mathbin{+\!\!+} T, i, \lvert A\rvert + j_1)`$ が成り立つ。
-すなわち $`x \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$ をみたす $`x`$ は一意である。
-次の 2 つがともにこの条件をみたす。
+By the ($`\Leftarrow`$) direction of [T.hasParent_append_right](#t-hasParent_append_right),
+$`\mathrm{hasParent}(A \mathbin{+\!\!+} T, i, \lvert A\rvert + j_1)`$ holds;
+that is, the $`x`$ with $`x \to^{A \mathbin{+\!\!+} T}_i \lvert A\rvert + j_1`$ is unique.
+Both of the following satisfy this condition.
 
-- $`x := \mathrm{par}^{A \mathbin{+\!\!+} T}_i(\lvert A\rvert + j_1)`$。
-  [T.parent_nextR](Decrease.md#t-parent_nextR) を
-  $`\mathrm{hasParent}(A \mathbin{+\!\!+} T, i, \lvert A\rvert + j_1)`$ に適用すればよい。
-- $`x := \lvert A\rvert + \mathrm{par}^{T}_i(j_1)`$。
-  [T.parent_nextR](Decrease.md#t-parent_nextR) を $`\mathrm{hasParent}(T, i, j_1)`$ に適用すると
-  $`\mathrm{par}^{T}_i(j_1) \to^{T}_i j_1`$ であり、
-  [T.nextR_append_right](#t-nextR_append_right) の（$`\Leftarrow`$）を適用すればよい。
+- $`x := \mathrm{par}^{A \mathbin{+\!\!+} T}_i(\lvert A\rvert + j_1)`$.
+  Apply [T.parent_nextR](Decrease.md#t-parent_nextR) to
+  $`\mathrm{hasParent}(A \mathbin{+\!\!+} T, i, \lvert A\rvert + j_1)`$.
+- $`x := \lvert A\rvert + \mathrm{par}^{T}_i(j_1)`$.
+  Applying [T.parent_nextR](Decrease.md#t-parent_nextR) to $`\mathrm{hasParent}(T, i, j_1)`$ gives
+  $`\mathrm{par}^{T}_i(j_1) \to^{T}_i j_1`$; now apply
+  the ($`\Leftarrow`$) direction of [T.nextR_append_right](#t-nextR_append_right).
 
-一意性より両者は等しい。∎
+By uniqueness the two are equal. ∎
 
 <a id="t-take_append_right"></a>
-## 定理: 前部分列は連結を分ける (T.take_append_right)
+## Theorem: prefixes split across a concatenation (T.take_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`j \in \mathbb{N}`$ に対し
+For $`A, T \in \mathrm{PairSeq}`$ and $`j \in \mathbb{N}`$,
 
 ```math
 \mathrm{take}_{\lvert A\rvert + j}\,(A \mathbin{+\!\!+} T) = A \mathbin{+\!\!+} \mathrm{take}_{j}\,T .
 ```
 
-ここで $`\mathrm{take}_m M`$ は $`M`$ の先頭 $`m`$ 要素からなる列であり、
-$`\lvert M\rvert \le m`$ のときは $`M`$ 自身である（長さは $`\min(m, \lvert M\rvert)`$）。
+Here $`\mathrm{take}_m M`$ is the sequence of the first $`m`$ elements of $`M`$, and equals
+$`M`$ itself when $`\lvert M\rvert \le m`$ (its length is $`\min(m, \lvert M\rvert)`$).
 
-### 証明
+### Proof
 
-連結列の前部分列は
+A prefix of a concatenation satisfies
 
 ```math
 \mathrm{take}_{p}\,(A \mathbin{+\!\!+} T)
  = \mathrm{take}_{p}\,A \mathbin{+\!\!+} \mathrm{take}_{p - \lvert A\rvert}\,T
 ```
 
-をみたす。$`p := \lvert A\rvert + j`$ とおくと $`\lvert A\rvert \le p`$ であるから
-$`\mathrm{take}_{p}\,A = A`$ であり、また $`p - \lvert A\rvert = j`$ である。∎
+Setting $`p := \lvert A\rvert + j`$, we have $`\lvert A\rvert \le p`$, hence
+$`\mathrm{take}_{p}\,A = A`$, and moreover $`p - \lvert A\rvert = j`$. ∎
 
 <a id="t-copyblock_append"></a>
-## 定理: コピーブロックは前置に不変 (T.copyblock_append)
+## Theorem: the copy block is prefix-invariant (T.copyblock_append)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$、$`a, m, k, d_0, d_1 \in \mathbb{N}`$ に対し
+For $`A, T \in \mathrm{PairSeq}`$ and $`a, m, k, d_0, d_1 \in \mathbb{N}`$,
 
 ```math
 \begin{aligned}
@@ -704,23 +706,23 @@ $`A, T \in \mathrm{PairSeq}`$、$`a, m, k, d_0, d_1 \in \mathbb{N}`$ に対し
 \end{aligned}
 ```
 
-ここで $`\bigl(f(j)\bigr)_{j = b}^{b + m - 1}`$ は添字 $`j`$ を $`b`$ から 1 ずつ増やして走らせた
-長さ $`m`$ の列であり、$`m = 0`$ のときは空列である。
+Here $`\bigl(f(j)\bigr)_{j = b}^{b + m - 1}`$ is the sequence of length $`m`$ obtained by letting
+the index $`j`$ run from $`b`$ upwards in steps of 1, and it is the empty sequence when $`m = 0`$.
 
-### 証明
+### Proof
 
-両辺はともに長さ $`m`$ の列であるから、$`p \lt m`$ なる各 $`p`$ について第 $`p`$ 要素が
-一致することを示せばよい。左辺の第 $`p`$ 要素は $`j = \lvert A\rvert + a + p`$ に対する
+Both sides are sequences of length $`m`$, so it suffices to show that, for each $`p`$ with $`p \lt m`$,
+their $`p`$-th elements agree. The $`p`$-th element of the left-hand side is, for $`j = \lvert A\rvert + a + p`$,
 
 ```math
 \bigl((A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + a + p} + k\,d_0,\ (A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + a + p} + k\,d_1\bigr)
 ```
 
-であり、右辺の第 $`p`$ 要素は $`j = a + p`$ に対する
-$`\bigl(T_{0,a+p} + k\,d_0,\ T_{1,a+p} + k\,d_1\bigr)`$ である。
-$`\lvert A\rvert + a + p = \lvert A\rvert + (a + p)`$ であるから、
-[T.entry_append_right](#t-entry_append_right) を $`i := 0`$、$`j := a + p`$ および
-$`i := 1`$、$`j := a + p`$ に適用して
+and the $`p`$-th element of the right-hand side is, for $`j = a + p`$,
+$`\bigl(T_{0,a+p} + k\,d_0,\ T_{1,a+p} + k\,d_1\bigr)`$.
+Since $`\lvert A\rvert + a + p = \lvert A\rvert + (a + p)`$, applying
+[T.entry_append_right](#t-entry_append_right) with $`i := 0`$, $`j := a + p`$ and with
+$`i := 1`$, $`j := a + p`$ gives
 
 ```math
 (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + a + p} = T_{0,a+p},
@@ -728,49 +730,49 @@ $`i := 1`$、$`j := a + p`$ に適用して
 (A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + a + p} = T_{1,a+p}
 ```
 
-を得る。よって両辺の第 $`p`$ 要素は一致する。∎
+Hence the $`p`$-th elements of the two sides agree. ∎
 
 <a id="t-Pred_append_right"></a>
-## 定理: 前者は連結を分ける (T.Pred_append_right)
+## Theorem: the predecessor splits across a concatenation (T.Pred_append_right)
 
-### 定理
+### Theorem
 
-$`A, T \in \mathrm{PairSeq}`$ が $`2 \le \lvert T\rvert`$ をみたすならば
+If $`A, T \in \mathrm{PairSeq}`$ satisfy $`2 \le \lvert T\rvert`$, then
 
 ```math
 \mathrm{Pred}\,(A \mathbin{+\!\!+} T) = A \mathbin{+\!\!+} \mathrm{Pred}\,T
 ```
 
-（$`\mathrm{Pred}`$ [D.Pred](Pss.md#d-Pred)）。
+($`\mathrm{Pred}`$ [D.Pred](Pss.md#d-Pred)).
 
-### 証明
+### Proof
 
-$`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert \ge \lvert T\rvert \ge 2`$ であるから
-$`\neg\bigl(\lvert A \mathbin{+\!\!+} T\rvert \le 1\bigr)`$ であり、$`\mathrm{Pred}`$ の定義（D.Pred）の
-第 2 の場合により $`\mathrm{Pred}\,(A \mathbin{+\!\!+} T) = \mathrm{dropLast}\,(A \mathbin{+\!\!+} T)`$ である。
-また仮定 $`2 \le \lvert T\rvert`$ から $`\neg\bigl(\lvert T\rvert \le 1\bigr)`$ であり、
-$`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合により
-$`\mathrm{Pred}\,T = \mathrm{dropLast}\,T`$ である。
+Since $`\lvert A \mathbin{+\!\!+} T\rvert = \lvert A\rvert + \lvert T\rvert \ge \lvert T\rvert \ge 2`$, we have
+$`\neg\bigl(\lvert A \mathbin{+\!\!+} T\rvert \le 1\bigr)`$, so by the second case of the definition of
+$`\mathrm{Pred}`$ (D.Pred) we get $`\mathrm{Pred}\,(A \mathbin{+\!\!+} T) = \mathrm{dropLast}\,(A \mathbin{+\!\!+} T)`$.
+Likewise the hypothesis $`2 \le \lvert T\rvert`$ gives $`\neg\bigl(\lvert T\rvert \le 1\bigr)`$, so
+by the second case of the definition of $`\mathrm{Pred}`$ (D.Pred) we get
+$`\mathrm{Pred}\,T = \mathrm{dropLast}\,T`$.
 
-$`2 \le \lvert T\rvert`$ より $`T \ne ()`$ であるから、$`A \mathbin{+\!\!+} T`$ の末尾要素は $`T`$ の末尾要素であり、
-それを落とした列は $`A`$ に $`\mathrm{dropLast}\,T`$ を連結したものである。すなわち
+Since $`2 \le \lvert T\rvert`$ gives $`T \ne ()`$, the last element of $`A \mathbin{+\!\!+} T`$ is the last element of $`T`$,
+and dropping it leaves $`A`$ concatenated with $`\mathrm{dropLast}\,T`$. That is,
 
 ```math
 \mathrm{dropLast}\,(A \mathbin{+\!\!+} T) = A \mathbin{+\!\!+} \mathrm{dropLast}\,T . \qquad \blacksquare
 ```
 
 <a id="t-no_hasParent_of_row0_zero"></a>
-## 定理: 行 0 の値が $`0`$ の列は親をもたない (T.no_hasParent_of_row0_zero)
+## Theorem: a column with row-0 value $`0`$ has no parent (T.no_hasParent_of_row0_zero)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$、$`i, j_1 \in \mathbb{N}`$ とする。
-$`M_{0,j_1} = 0`$ かつ $`\mathrm{hasParent}(M, i, j_1)`$ ならば矛盾する。
+Let $`M \in \mathrm{PairSeq}`$ and $`i, j_1 \in \mathbb{N}`$.
+If $`M_{0,j_1} = 0`$ and $`\mathrm{hasParent}(M, i, j_1)`$, then a contradiction follows.
 
-### 証明
+### Proof
 
-$`\mathrm{hasParent}`$ の定義（D.hasParent）より $`j_0 \to^{M}_i j_1`$ をみたす $`j_0`$ が存在する。
-[T.nextR_le0](#t-nextR_le0) より $`j_0 \le^{M}_0 j_1`$ であり、その第 3 条件（D.le0）は
-$`j_0 \mathbin{(\to^{M}_0)^{*}} j_1`$ である。
-$`M_{0,j_1} = 0`$ であるから [T.rtg_to_root](#t-rtg_to_root) を適用して $`j_0 = j_1`$ を得る。
-一方 [T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より $`j_0 \lt j_1`$ であり、矛盾する。∎
+By the definition of $`\mathrm{hasParent}`$ (D.hasParent) there is $`j_0`$ with $`j_0 \to^{M}_i j_1`$.
+By [T.nextR_le0](#t-nextR_le0) we have $`j_0 \le^{M}_0 j_1`$, whose third condition (D.le0) is
+$`j_0 \mathbin{(\to^{M}_0)^{*}} j_1`$.
+Since $`M_{0,j_1} = 0`$, applying [T.rtg_to_root](#t-rtg_to_root) gives $`j_0 = j_1`$.
+On the other hand [T.nextR_index_lt](Decrease.md#t-nextR_index_lt) gives $`j_0 \lt j_1`$, a contradiction. ∎

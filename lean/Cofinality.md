@@ -1,213 +1,217 @@
-[← README](README.md) ｜ Cofinality **1** [2](Cofinality-2.md) [3](Cofinality-3.md)
+[← README](README.md) | [English](Cofinality.md) | [Japanese](Cofinality-ja.md) | Cofinality **1** [2](Cofinality-2.md) [3](Cofinality-3.md)
 
 <a id="t-pairlt_trans"></a>
-## 定理: 対の順序の推移律 (T.pairlt_trans)
+## Theorem: transitivity of the order on pairs (T.pairlt_trans)
 
-### 定理
+### Theorem
 
-$`p, q, r \in \mathbb{N}\times\mathbb{N}`$ とする。$`p \prec_{\mathrm{p}} q`$（[D.pairlt](Seqlex.md#d-pairlt)）かつ
-$`q \prec_{\mathrm{p}} r`$ ならば $`p \prec_{\mathrm{p}} r`$。
+Let $`p, q, r \in \mathbb{N}\times\mathbb{N}`$. If $`p \prec_{\mathrm{p}} q`$ ([D.pairlt](Seqlex.md#d-pairlt)) and
+$`q \prec_{\mathrm{p}} r`$, then $`p \prec_{\mathrm{p}} r`$.
 
-### 証明
+### Proof
 
-$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）は
+The definition of $`\prec_{\mathrm{p}}`$ (D.pairlt) is
 
 ```math
 x \prec_{\mathrm{p}} y \iff x_1 \lt y_1 \ \vee\ (x_1 = y_1 \wedge x_2 \lt y_2)
 ```
 
-である。仮定 $`p \prec_{\mathrm{p}} q`$ は次のいずれかである。
+The hypothesis $`p \prec_{\mathrm{p}} q`$ is one of the following.
 
 - (1) $`p_1 \lt q_1`$
 - (2) $`p_1 = q_1 \wedge p_2 \lt q_2`$
 
-仮定 $`q \prec_{\mathrm{p}} r`$ は次のいずれかである。
+The hypothesis $`q \prec_{\mathrm{p}} r`$ is one of the following.
 
 - (I) $`q_1 \lt r_1`$
 - (II) $`q_1 = r_1 \wedge q_2 \lt r_2`$
 
-4 通りすべてについて、$`p \prec_{\mathrm{p}} r`$ の右辺のどの選言が成り立つかを示す。
+For each of the four cases we show which disjunct on the right-hand side of $`p \prec_{\mathrm{p}} r`$ holds.
 
 | | (I) | (II) |
 |---|---|---|
 | **(1)** | $`p_1 \lt r_1`$ | $`p_1 \lt r_1`$ |
 | **(2)** | $`p_1 \lt r_1`$ | $`p_1 = r_1 \wedge p_2 \lt r_2`$ |
 
-各欄の根拠は次の通りである。
+The entries are justified as follows.
 
-- **(1)(I)**：$`p_1 \lt q_1`$ と $`q_1 \lt r_1`$ に $`\mathbb{N}`$ の $`\lt`$ の推移律を適用する。
-- **(1)(II)**：$`q_1 = r_1`$ を $`p_1 \lt q_1`$ に代入して $`p_1 \lt r_1`$。
-- **(2)(I)**：$`p_1 = q_1`$ を $`q_1 \lt r_1`$ に代入して $`p_1 \lt r_1`$。
-- **(2)(II)**：$`p_1 = q_1 = r_1`$ であり、$`p_2 \lt q_2`$ と $`q_2 \lt r_2`$ に $`\mathbb{N}`$ の $`\lt`$ の
-  推移律を適用して $`p_2 \lt r_2`$。∎
+- **(1)(I)**: apply transitivity of $`\lt`$ on $`\mathbb{N}`$ to $`p_1 \lt q_1`$ and $`q_1 \lt r_1`$.
+- **(1)(II)**: substituting $`q_1 = r_1`$ into $`p_1 \lt q_1`$ gives $`p_1 \lt r_1`$.
+- **(2)(I)**: substituting $`p_1 = q_1`$ into $`q_1 \lt r_1`$ gives $`p_1 \lt r_1`$.
+- **(2)(II)**: here $`p_1 = q_1 = r_1`$, and applying transitivity of $`\lt`$ on $`\mathbb{N}`$ to
+  $`p_2 \lt q_2`$ and $`q_2 \lt r_2`$ gives $`p_2 \lt r_2`$. ∎
 
 <a id="t-seqlex_trans"></a>
-## 定理: 列辞書式順序の推移律 (T.seqlex_trans)
+## Theorem: transitivity of the column-lex order (T.seqlex_trans)
 
-### 定理
+### Theorem
 
-$`A, B, C \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とする。
-$`A \prec_{\mathrm{lex}} B`$（[D.seqlex](Seqlex.md#d-seqlex)）かつ $`B \prec_{\mathrm{lex}} C`$ ならば
-$`A \prec_{\mathrm{lex}} C`$。
+Let $`A, B, C \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)).
+If $`A \prec_{\mathrm{lex}} B`$ ([D.seqlex](Seqlex.md#d-seqlex)) and $`B \prec_{\mathrm{lex}} C`$, then
+$`A \prec_{\mathrm{lex}} C`$.
 
-### 証明
+### Proof
 
-$`A`$ の構成子（$`()`$ か $`::`$ か）に関する帰納法を行う（$`B`$, $`C`$ は全称量化したまま動かす）。
-帰納法の述語は
+We argue by induction on the constructor of $`A`$ ($`()`$ or $`::`$), keeping $`B`$ and $`C`$ universally quantified.
+The induction predicate is
 
 ```math
 \Phi(A) :\equiv \forall B, C \in \mathrm{PairSeq},\
   \bigl(A \prec_{\mathrm{lex}} B \wedge B \prec_{\mathrm{lex}} C\bigr) \to A \prec_{\mathrm{lex}} C .
 ```
 
-- **基底段** $`A = ()`$：$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式より、示すべきことは
-  $`C \ne ()`$ である。$`C = ()`$ と仮定して矛盾を導く。仮定 $`B \prec_{\mathrm{lex}} ()`$ について
-  $`B`$ の構成子で分ける。$`B = ()`$ なら定義（D.seqlex）の第 1 式より
-  $`B \prec_{\mathrm{lex}} ()`$ は $`() \ne ()`$ であり偽である。$`B = b :: B'`$ なら
-  定義（D.seqlex）の第 2 式より $`B \prec_{\mathrm{lex}} ()`$ は $`\bot`$ である。
-  いずれも矛盾であるから $`C \ne ()`$。
+- **Base case** $`A = ()`$: by the first clause of the definition of $`\prec_{\mathrm{lex}}`$ (D.seqlex),
+  what has to be shown is $`C \ne ()`$. Suppose $`C = ()`$ and derive a contradiction.
+  Distinguish cases on the constructor of $`B`$ in the hypothesis $`B \prec_{\mathrm{lex}} ()`$.
+  If $`B = ()`$, then by the first clause of the definition (D.seqlex) the statement
+  $`B \prec_{\mathrm{lex}} ()`$ is $`() \ne ()`$, which is false. If $`B = b :: B'`$, then by
+  the second clause of the definition (D.seqlex) the statement $`B \prec_{\mathrm{lex}} ()`$ is $`\bot`$.
+  Both cases are contradictory, hence $`C \ne ()`$.
 
-- **帰納段** $`A = a :: A'`$：帰納法の仮定は $`\Phi(A')`$ である。
-  $`B`$, $`C`$ を取り $`a :: A' \prec_{\mathrm{lex}} B`$、$`B \prec_{\mathrm{lex}} C`$ とする。
-  $`B = ()`$ とすると定義（D.seqlex）の第 2 式より第 1 の仮定が $`\bot`$ になるから
-  $`B = b :: B'`$ と書ける。$`C = ()`$ とするとやはり定義（D.seqlex）の第 2 式より
-  第 2 の仮定が $`\bot`$ になるから $`C = c :: C'`$ と書ける。
-  定義（D.seqlex）の第 3 式より第 1 の仮定は次のいずれかである。
+- **Inductive step** $`A = a :: A'`$: the induction hypothesis is $`\Phi(A')`$.
+  Take $`B`$ and $`C`$ with $`a :: A' \prec_{\mathrm{lex}} B`$ and $`B \prec_{\mathrm{lex}} C`$.
+  If $`B = ()`$, the second clause of the definition (D.seqlex) turns the first hypothesis into $`\bot`$,
+  so $`B = b :: B'`$. If $`C = ()`$, the second clause of the definition (D.seqlex) likewise turns
+  the second hypothesis into $`\bot`$, so $`C = c :: C'`$.
+  By the third clause of the definition (D.seqlex), the first hypothesis is one of the following.
 
   - (1) $`a \prec_{\mathrm{p}} b`$
   - (2) $`a = b \wedge A' \prec_{\mathrm{lex}} B'`$
 
-  同じく第 2 の仮定は次のいずれかである。
+  Likewise the second hypothesis is one of the following.
 
   - (I) $`b \prec_{\mathrm{p}} c`$
   - (II) $`b = c \wedge B' \prec_{\mathrm{lex}} C'`$
 
-  4 通りすべてについて、定義（D.seqlex）の第 3 式の右辺のどの選言が成り立つかを示す。
+  For each of the four cases we show which disjunct on the right-hand side of the third clause of
+  the definition (D.seqlex) holds.
 
   | | (I) | (II) |
   |---|---|---|
   | **(1)** | $`a \prec_{\mathrm{p}} c`$ | $`a \prec_{\mathrm{p}} c`$ |
   | **(2)** | $`a \prec_{\mathrm{p}} c`$ | $`a = c \wedge A' \prec_{\mathrm{lex}} C'`$ |
 
-  各欄の根拠は次の通りである。
+  The entries are justified as follows.
 
-  - **(1)(I)**：[T.pairlt_trans](#t-pairlt_trans) を $`a \prec_{\mathrm{p}} b`$ と
-    $`b \prec_{\mathrm{p}} c`$ に適用する。
-  - **(1)(II)**：$`b = c`$ を $`a \prec_{\mathrm{p}} b`$ に代入する。
-  - **(2)(I)**：$`a = b`$ を $`b \prec_{\mathrm{p}} c`$ に代入する。
-  - **(2)(II)**：$`a = b = c`$ であり、$`A' \prec_{\mathrm{lex}} B'`$ と $`B' \prec_{\mathrm{lex}} C'`$ に
-    帰納法の仮定 $`\Phi(A')`$ を適用して $`A' \prec_{\mathrm{lex}} C'`$ を得る。
+  - **(1)(I)**: apply [T.pairlt_trans](#t-pairlt_trans) to $`a \prec_{\mathrm{p}} b`$ and
+    $`b \prec_{\mathrm{p}} c`$.
+  - **(1)(II)**: substitute $`b = c`$ into $`a \prec_{\mathrm{p}} b`$.
+  - **(2)(I)**: substitute $`a = b`$ into $`b \prec_{\mathrm{p}} c`$.
+  - **(2)(II)**: here $`a = b = c`$, and applying the induction hypothesis $`\Phi(A')`$ to
+    $`A' \prec_{\mathrm{lex}} B'`$ and $`B' \prec_{\mathrm{lex}} C'`$ gives $`A' \prec_{\mathrm{lex}} C'`$.
 
-  いずれの場合も $`a :: A' \prec_{\mathrm{lex}} c :: C'`$ が得られたので $`\Phi(a :: A')`$。∎
+  In every case $`a :: A' \prec_{\mathrm{lex}} c :: C'`$ is obtained, hence $`\Phi(a :: A')`$. ∎
 
 <a id="d-sle"></a>
-## 定義: 列辞書式広義順序 (D.sle)
+## Definition: non-strict column-lex order (D.sle)
 
-$`M, N \in \mathrm{PairSeq}`$ に対し
+For $`M, N \in \mathrm{PairSeq}`$,
 
 ```math
 M \preceq_{\mathrm{lex}} N :\iff M = N \ \vee\ M \prec_{\mathrm{lex}} N .
 ```
 
 <a id="t-sle_refl"></a>
-## 定理: 列辞書式広義順序の反射性 (T.sle_refl)
+## Theorem: reflexivity of the non-strict column-lex order (T.sle_refl)
 
-### 定理
+### Theorem
 
-任意の $`M \in \mathrm{PairSeq}`$ に対し $`M \preceq_{\mathrm{lex}} M`$。
+For every $`M \in \mathrm{PairSeq}`$, $`M \preceq_{\mathrm{lex}} M`$.
 
-### 証明
+### Proof
 
-$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 1 選言 $`M = M`$ が $`=`$ の反射性により成り立つ。∎
+The first disjunct $`M = M`$ of the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle) holds by reflexivity of $`=`$. ∎
 
 <a id="t-seqlex_sle_trans"></a>
-## 定理: 狭義と広義の合成 (T.seqlex_sle_trans)
+## Theorem: composing the strict and the non-strict order (T.seqlex_sle_trans)
 
-### 定理
+### Theorem
 
-$`A \prec_{\mathrm{lex}} B`$ かつ $`B \preceq_{\mathrm{lex}} C`$ ならば $`A \prec_{\mathrm{lex}} C`$。
+If $`A \prec_{\mathrm{lex}} B`$ and $`B \preceq_{\mathrm{lex}} C`$, then $`A \prec_{\mathrm{lex}} C`$.
 
-### 証明
+### Proof
 
-$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）より $`B \preceq_{\mathrm{lex}} C`$ は $`B = C`$ か
-$`B \prec_{\mathrm{lex}} C`$ である。前者のときは $`C`$ を $`B`$ に書き換えれば仮定
-$`A \prec_{\mathrm{lex}} B`$ そのものである。後者のときは [T.seqlex_trans](#t-seqlex_trans) を
-$`A \prec_{\mathrm{lex}} B`$ と $`B \prec_{\mathrm{lex}} C`$ に適用する。∎
+By the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle), $`B \preceq_{\mathrm{lex}} C`$ means $`B = C`$ or
+$`B \prec_{\mathrm{lex}} C`$. In the former case, rewriting $`C`$ as $`B`$ turns the goal into the hypothesis
+$`A \prec_{\mathrm{lex}} B`$ itself. In the latter case, apply [T.seqlex_trans](#t-seqlex_trans) to
+$`A \prec_{\mathrm{lex}} B`$ and $`B \prec_{\mathrm{lex}} C`$. ∎
 
 <a id="t-seqlex_append_mono"></a>
-## 定理: 大きい側への後置は順序を保つ (T.seqlex_append_mono)
+## Theorem: appending on the larger side preserves the order (T.seqlex_append_mono)
 
-### 定理
+### Theorem
 
-$`A \prec_{\mathrm{lex}} B`$ ならば、任意の $`C \in \mathrm{PairSeq}`$ に対し
-$`A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$。
+If $`A \prec_{\mathrm{lex}} B`$, then $`A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$ for every
+$`C \in \mathrm{PairSeq}`$.
 
-### 証明
+### Proof
 
-$`A`$ の構成子に関する帰納法。帰納法の述語は
+Induction on the constructor of $`A`$. The induction predicate is
 
 ```math
 \Phi(A) :\equiv \forall B \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \to
   \forall C \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C .
 ```
 
-- **基底段** $`A = ()`$：$`B = ()`$ とすると、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式より
-  仮定 $`() \prec_{\mathrm{lex}} ()`$ は $`() \ne ()`$ であり偽である。よって $`B = b :: B'`$ と書け、
-  $`B \mathbin{+\!\!+} C = b :: (B' \mathbin{+\!\!+} C) \ne ()`$ である。
-  ふたたび定義（D.seqlex）の第 1 式より $`() \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$。
+- **Base case** $`A = ()`$: if $`B = ()`$, then by the first clause of the definition of
+  $`\prec_{\mathrm{lex}}`$ (D.seqlex) the hypothesis $`() \prec_{\mathrm{lex}} ()`$ is $`() \ne ()`$,
+  which is false. Hence $`B = b :: B'`$, and
+  $`B \mathbin{+\!\!+} C = b :: (B' \mathbin{+\!\!+} C) \ne ()`$.
+  By the first clause of the definition (D.seqlex) again, $`() \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$.
 
-- **帰納段** $`A = a :: A'`$：帰納法の仮定は $`\Phi(A')`$ である。
-  $`B = ()`$ とすると定義（D.seqlex）の第 2 式より仮定が $`\bot`$ になるから
-  $`B = b :: B'`$ と書ける。定義（D.seqlex）の第 3 式より仮定は次のいずれかである。
+- **Inductive step** $`A = a :: A'`$: the induction hypothesis is $`\Phi(A')`$.
+  If $`B = ()`$, the second clause of the definition (D.seqlex) turns the hypothesis into $`\bot`$,
+  so $`B = b :: B'`$. By the third clause of the definition (D.seqlex), the hypothesis is one of the following.
 
-  - $`a \prec_{\mathrm{p}} b`$ のとき。
-    $`(a :: A') \mathbin{+\!\!+} C = a :: (A' \mathbin{+\!\!+} C)`$、
-    $`(b :: B') \mathbin{+\!\!+} C = b :: (B' \mathbin{+\!\!+} C)`$ であるから、
-    定義（D.seqlex）の第 3 式の右辺の第 1 選言がそのまま成り立つ。
+  - Case $`a \prec_{\mathrm{p}} b`$.
+    Since $`(a :: A') \mathbin{+\!\!+} C = a :: (A' \mathbin{+\!\!+} C)`$ and
+    $`(b :: B') \mathbin{+\!\!+} C = b :: (B' \mathbin{+\!\!+} C)`$,
+    the first disjunct on the right-hand side of the third clause of the definition (D.seqlex) holds as it stands.
 
-  - $`a = b \wedge A' \prec_{\mathrm{lex}} B'`$ のとき。帰納法の仮定 $`\Phi(A')`$ を
-    $`B'`$ と $`C`$ に適用して $`A' \prec_{\mathrm{lex}} B' \mathbin{+\!\!+} C`$ を得る。
-    これと $`a = b`$ により定義（D.seqlex）の第 3 式の右辺の第 2 選言が成り立つ。∎
+  - Case $`a = b \wedge A' \prec_{\mathrm{lex}} B'`$. Applying the induction hypothesis $`\Phi(A')`$ to
+    $`B'`$ and $`C`$ gives $`A' \prec_{\mathrm{lex}} B' \mathbin{+\!\!+} C`$.
+    Together with $`a = b`$, the second disjunct on the right-hand side of the third clause of the
+    definition (D.seqlex) holds. ∎
 
 <a id="t-sle_append_mono"></a>
-## 定理: 広義版の後置単調性 (T.sle_append_mono)
+## Theorem: monotonicity under appending, non-strict version (T.sle_append_mono)
 
-### 定理
+### Theorem
 
-$`A \preceq_{\mathrm{lex}} B`$ ならば、任意の $`C \in \mathrm{PairSeq}`$ に対し
-$`A \preceq_{\mathrm{lex}} B \mathbin{+\!\!+} C`$。
+If $`A \preceq_{\mathrm{lex}} B`$, then $`A \preceq_{\mathrm{lex}} B \mathbin{+\!\!+} C`$ for every
+$`C \in \mathrm{PairSeq}`$.
 
-### 証明
+### Proof
 
-$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の選言で場合分けする。
+Distinguish cases according to the disjunction in the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle).
 
-- $`A = B`$ のとき。$`C`$ の構成子で分ける。
-  - $`C = ()`$ のとき。$`B \mathbin{+\!\!+} () = B = A`$ であるから、定義（D.sle）の第 1 選言が成り立つ。
-  - $`C = c :: C'`$ のとき。$`C \ne ()`$ であるから
-    [T.seqlex_prefix](Seqlex.md#t-seqlex_prefix) を $`u := A`$、$`v := C`$ に適用して
-    $`A \prec_{\mathrm{lex}} A \mathbin{+\!\!+} C = B \mathbin{+\!\!+} C`$ を得る。
-    定義（D.sle）の第 2 選言が成り立つ。
+- Case $`A = B`$. Distinguish cases on the constructor of $`C`$.
+  - Case $`C = ()`$. Since $`B \mathbin{+\!\!+} () = B = A`$, the first disjunct of the definition (D.sle) holds.
+  - Case $`C = c :: C'`$. Here $`C \ne ()`$, so applying
+    [T.seqlex_prefix](Seqlex.md#t-seqlex_prefix) with $`u := A`$ and $`v := C`$ gives
+    $`A \prec_{\mathrm{lex}} A \mathbin{+\!\!+} C = B \mathbin{+\!\!+} C`$.
+    Thus the second disjunct of the definition (D.sle) holds.
 
-- $`A \prec_{\mathrm{lex}} B`$ のとき。[T.seqlex_append_mono](#t-seqlex_append_mono) より
-  $`A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$ であり、定義（D.sle）の第 2 選言が成り立つ。∎
+- Case $`A \prec_{\mathrm{lex}} B`$. By [T.seqlex_append_mono](#t-seqlex_append_mono) we have
+  $`A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$, so the second disjunct of the definition (D.sle) holds. ∎
 
 <a id="t-seqlex_snoc_cases"></a>
-## 定理: 末尾に 1 列を付けた列の下側の場合分け (T.seqlex_snoc_cases)
+## Theorem: case distinction below a sequence with one column appended (T.seqlex_snoc_cases)
 
-### 定理
+### Theorem
 
-$`D, N \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ とする。
-$`N \prec_{\mathrm{lex}} D \mathbin{+\!\!+} (\ell)`$ ならば
+Let $`D, N \in \mathrm{PairSeq}`$ and $`\ell \in \mathbb{N}\times\mathbb{N}`$.
+If $`N \prec_{\mathrm{lex}} D \mathbin{+\!\!+} (\ell)`$, then
 
 ```math
 N \preceq_{\mathrm{lex}} D
-\qquad\text{または}\qquad
+\qquad\text{or}\qquad
 \exists q, S,\ \bigl(N = D \mathbin{+\!\!+} q :: S \wedge q \prec_{\mathrm{p}} \ell\bigr).
 ```
 
-### 証明
+### Proof
 
-$`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化したまま動かす）。帰納法の述語は
+Induction on the constructor of $`D`$, keeping $`\ell`$ and $`N`$ universally quantified. The induction predicate is
 
 ```math
 \Phi(D) :\equiv \forall \ell, N,\ N \prec_{\mathrm{lex}} D \mathbin{+\!\!+} (\ell) \to
@@ -215,46 +219,46 @@ $`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化した�
     \exists q, S,\ \bigl(N = D \mathbin{+\!\!+} q :: S \wedge q \prec_{\mathrm{p}} \ell\bigr)\Bigr).
 ```
 
-- **基底段** $`D = ()`$：$`D \mathbin{+\!\!+} (\ell) = (\ell)`$ である。$`N`$ の構成子で分ける。
-  - $`N = ()`$ のとき。[T.sle_refl](#t-sle_refl) より $`() \preceq_{\mathrm{lex}} ()`$ であり、
-    第 1 の選言が成り立つ。
-  - $`N = q :: S`$ のとき。$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式より仮定は
-    $`q \prec_{\mathrm{p}} \ell`$ か $`(q = \ell \wedge S \prec_{\mathrm{lex}} ())`$ である。
-    後者の第 2 連言子は、$`S = ()`$ なら定義（D.seqlex）の第 1 式より $`() \ne ()`$、
-    $`S = s :: S'`$ なら定義（D.seqlex）の第 2 式より $`\bot`$ であり、どちらも偽である。
-    よって $`q \prec_{\mathrm{p}} \ell`$ であり、$`N = () \mathbin{+\!\!+} q :: S`$ であるから
-    第 2 の選言が成り立つ。
+- **Base case** $`D = ()`$: here $`D \mathbin{+\!\!+} (\ell) = (\ell)`$. Distinguish cases on the constructor of $`N`$.
+  - Case $`N = ()`$. By [T.sle_refl](#t-sle_refl) we have $`() \preceq_{\mathrm{lex}} ()`$, so
+    the first disjunct holds.
+  - Case $`N = q :: S`$. By the third clause of the definition of $`\prec_{\mathrm{lex}}`$ (D.seqlex),
+    the hypothesis is $`q \prec_{\mathrm{p}} \ell`$ or $`(q = \ell \wedge S \prec_{\mathrm{lex}} ())`$.
+    The second conjunct of the latter is false: if $`S = ()`$ it reads $`() \ne ()`$ by the first clause of
+    the definition (D.seqlex), and if $`S = s :: S'`$ it is $`\bot`$ by the second clause of the definition (D.seqlex).
+    Hence $`q \prec_{\mathrm{p}} \ell`$, and since $`N = () \mathbin{+\!\!+} q :: S`$,
+    the second disjunct holds.
 
-- **帰納段** $`D = d :: D'`$：帰納法の仮定は $`\Phi(D')`$ である。
-  $`(d :: D') \mathbin{+\!\!+} (\ell) = d :: (D' \mathbin{+\!\!+} (\ell))`$ である。$`N`$ の構成子で分ける。
+- **Inductive step** $`D = d :: D'`$: the induction hypothesis is $`\Phi(D')`$.
+  Here $`(d :: D') \mathbin{+\!\!+} (\ell) = d :: (D' \mathbin{+\!\!+} (\ell))`$. Distinguish cases on the constructor of $`N`$.
 
-  - $`N = ()`$ のとき。$`d :: D' \ne ()`$ であるから定義（D.seqlex）の第 1 式より
-    $`() \prec_{\mathrm{lex}} d :: D'`$ であり、定義（D.sle）の第 2 選言により
-    $`N \preceq_{\mathrm{lex}} D`$。第 1 の選言が成り立つ。
+  - Case $`N = ()`$. Since $`d :: D' \ne ()`$, the first clause of the definition (D.seqlex) gives
+    $`() \prec_{\mathrm{lex}} d :: D'`$, and the second disjunct of the definition (D.sle) gives
+    $`N \preceq_{\mathrm{lex}} D`$. Thus the first disjunct holds.
 
-  - $`N = q :: S`$ のとき。定義（D.seqlex）の第 3 式より仮定は次のいずれかである。
+  - Case $`N = q :: S`$. By the third clause of the definition (D.seqlex), the hypothesis is one of the following.
 
-    - $`q \prec_{\mathrm{p}} d`$ のとき。定義（D.seqlex）の第 3 式の第 1 選言により
-      $`q :: S \prec_{\mathrm{lex}} d :: D'`$ であるから、定義（D.sle）の第 2 選言により
-      $`N \preceq_{\mathrm{lex}} D`$。第 1 の選言が成り立つ。
+    - Case $`q \prec_{\mathrm{p}} d`$. The first disjunct of the third clause of the definition (D.seqlex) gives
+      $`q :: S \prec_{\mathrm{lex}} d :: D'`$, and the second disjunct of the definition (D.sle) gives
+      $`N \preceq_{\mathrm{lex}} D`$. Thus the first disjunct holds.
 
-    - $`q = d \wedge S \prec_{\mathrm{lex}} D' \mathbin{+\!\!+} (\ell)`$ のとき。
-      帰納法の仮定 $`\Phi(D')`$ を $`\ell`$ と $`S`$ に適用する。
+    - Case $`q = d \wedge S \prec_{\mathrm{lex}} D' \mathbin{+\!\!+} (\ell)`$.
+      Apply the induction hypothesis $`\Phi(D')`$ to $`\ell`$ and $`S`$.
 
-      - $`S \preceq_{\mathrm{lex}} D'`$ が得られたとき。定義（D.sle）で分ける。
-        $`S = D'`$ なら $`N = d :: S = d :: D' = D`$ であり、定義（D.sle）の第 1 選言が成り立つ。
-        $`S \prec_{\mathrm{lex}} D'`$ なら、$`q = d`$ と合わせて定義（D.seqlex）の第 3 式の
-        第 2 選言により $`N = d :: S \prec_{\mathrm{lex}} d :: D' = D`$ であり、
-        定義（D.sle）の第 2 選言が成り立つ。いずれも第 1 の選言である。
+      - If $`S \preceq_{\mathrm{lex}} D'`$ is obtained, distinguish cases according to the definition (D.sle).
+        If $`S = D'`$, then $`N = d :: S = d :: D' = D`$ and the first disjunct of the definition (D.sle) holds.
+        If $`S \prec_{\mathrm{lex}} D'`$, then together with $`q = d`$ the second disjunct of the third clause of
+        the definition (D.seqlex) gives $`N = d :: S \prec_{\mathrm{lex}} d :: D' = D`$, so
+        the second disjunct of the definition (D.sle) holds. In both cases this is the first disjunct.
 
-      - $`S = D' \mathbin{+\!\!+} q' :: S'`$ かつ $`q' \prec_{\mathrm{p}} \ell`$ が得られたとき。
-        $`N = d :: S = (d :: D') \mathbin{+\!\!+} q' :: S' = D \mathbin{+\!\!+} q' :: S'`$ であるから、
-        第 2 の選言が成り立つ。∎
+      - If $`S = D' \mathbin{+\!\!+} q' :: S'`$ with $`q' \prec_{\mathrm{p}} \ell`$ is obtained, then
+        $`N = d :: S = (d :: D') \mathbin{+\!\!+} q' :: S' = D \mathbin{+\!\!+} q' :: S'`$, so
+        the second disjunct holds. ∎
 
 <a id="d-SeqlexCofinality"></a>
-## 定義: 共終性の列辞書式形 (D.SeqlexCofinality)
+## Definition: the column-lex form of cofinality (D.SeqlexCofinality)
 
-命題 $`\mathrm{SeqlexCofinality}`$ を次で定める。
+Define the proposition $`\mathrm{SeqlexCofinality}`$ by
 
 ```math
 \begin{aligned}
@@ -266,274 +270,276 @@ $`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化した�
 \end{aligned}
 ```
 
-（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`M[n]`$ [D.oper](Pss.md#d-oper)）
+($`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS), $`M[n]`$ [D.oper](Pss.md#d-oper))
 
 <a id="t-pss_cofinality_of_seqlex"></a>
-## 定理: 列辞書式形からの共終性 (T.pss_cofinality_of_seqlex)
+## Theorem: cofinality from the column-lex form (T.pss_cofinality_of_seqlex)
 
-### 定理
+### Theorem
 
-$`\mathrm{SeqlexCofinality}`$ が成り立つとする。このとき $`M, N \in \mathrm{ST\_PS}`$ が
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（[D.translate](Term.md#d-translate)）をみたすならば
+Suppose $`\mathrm{SeqlexCofinality}`$ holds. If $`M, N \in \mathrm{ST\_PS}`$ satisfy
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ ([D.translate](Term.md#d-translate)), then
 
 ```math
 \exists n,\ \bigl(1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])\bigr).
 ```
 
-（$`\prec`$ [D.olt](Term.md#d-olt)、$`\preceq`$ [D.ole](Term.md#d-ole)）
+($`\prec`$ [D.olt](Term.md#d-olt), $`\preceq`$ [D.ole](Term.md#d-ole))
 
-### 証明
+### Proof
 
-まず $`N \ne M`$ である。$`N = M`$ とすると仮定は $`\mathrm{tr}\,M \prec \mathrm{tr}\,M`$ となり、
-[T.olt_irrefl](Term.md#t-olt_irrefl) に反する。
+First, $`N \ne M`$. Indeed, if $`N = M`$ the hypothesis becomes $`\mathrm{tr}\,M \prec \mathrm{tr}\,M`$,
+contradicting [T.olt_irrefl](Term.md#t-olt_irrefl).
 
-$`N \ne M`$ と $`N, M \in \mathrm{ST\_PS}`$ により
-[T.olt_ST_iff_seqlex](Seqlex-2.md#t-olt_ST_iff_seqlex) が使えて、仮定から
-$`N \prec_{\mathrm{lex}} M`$ を得る。これに $`\mathrm{SeqlexCofinality}`$ を適用して、
-$`1 \le n`$ かつ $`N \preceq_{\mathrm{lex}} M[n]`$ なる $`n`$ を取る。この $`n`$ について
-$`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$ を示せばよい。
-$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）で場合分けする。
+By $`N \ne M`$ and $`N, M \in \mathrm{ST\_PS}`$,
+[T.olt_ST_iff_seqlex](Seqlex-2.md#t-olt_ST_iff_seqlex) applies, and the hypothesis gives
+$`N \prec_{\mathrm{lex}} M`$. Applying $`\mathrm{SeqlexCofinality}`$ to this, take $`n`$ with
+$`1 \le n`$ and $`N \preceq_{\mathrm{lex}} M[n]`$. It remains to show
+$`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$ for this $`n`$.
+Distinguish cases according to the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle).
 
-- $`N = M[n]`$ のとき。両辺の翻訳が同一の項であるから、$`\preceq`$ の定義（D.ole）の
-  第 2 選言が成り立つ。
+- Case $`N = M[n]`$. The translations of the two sides are the same term, so the second disjunct of
+  the definition of $`\preceq`$ (D.ole) holds.
 
-- $`N \prec_{\mathrm{lex}} M[n]`$ のとき。さらに $`N = M[n]`$ か否かで分ける。
-  - $`N = M[n]`$ のとき。上と同じく $`\preceq`$ の定義（D.ole）の第 2 選言が成り立つ。
-  - $`N \ne M[n]`$ のとき。$`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の規則 (oper) を
-    $`M \in \mathrm{ST\_PS}`$ と $`1 \le n`$ に適用して $`M[n] \in \mathrm{ST\_PS}`$ を得る。
-    [T.olt_ST_iff_seqlex](Seqlex-2.md#t-olt_ST_iff_seqlex) を $`N`$ と $`M[n]`$ に適用して
-    $`\mathrm{tr}\,N \prec \mathrm{tr}\,(M[n])`$ を得るから、$`\preceq`$ の定義（D.ole）の
-    第 1 選言が成り立つ。∎
+- Case $`N \prec_{\mathrm{lex}} M[n]`$. Distinguish further according to whether $`N = M[n]`$.
+  - Case $`N = M[n]`$. As above, the second disjunct of the definition of $`\preceq`$ (D.ole) holds.
+  - Case $`N \ne M[n]`$. Applying the rule (oper) of the definition of $`\mathrm{ST\_PS}`$ (D.ST_PS) to
+    $`M \in \mathrm{ST\_PS}`$ and $`1 \le n`$ gives $`M[n] \in \mathrm{ST\_PS}`$.
+    Applying [T.olt_ST_iff_seqlex](Seqlex-2.md#t-olt_ST_iff_seqlex) to $`N`$ and $`M[n]`$ gives
+    $`\mathrm{tr}\,N \prec \mathrm{tr}\,(M[n])`$, so the first disjunct of the definition of
+    $`\preceq`$ (D.ole) holds. ∎
 
 <a id="t-entry_zero"></a>
-## 定理: 行 0 の成分 (T.entry_zero)
+## Theorem: the entry in row 0 (T.entry_zero)
 
-### 定理
+### Theorem
 
-任意の $`M \in \mathrm{PairSeq}`$, $`j \in \mathbb{N}`$ に対し
-$`M_{0,j} = \pi_1\bigl(M\langle j\rangle\bigr)`$（[D.entry](Pss.md#d-entry)）。
+For every $`M \in \mathrm{PairSeq}`$ and $`j \in \mathbb{N}`$,
+$`M_{0,j} = \pi_1\bigl(M\langle j\rangle\bigr)`$ ([D.entry](Pss.md#d-entry)).
 
-### 証明
+### Proof
 
-$`M_{i,j}`$ の定義（D.entry）の場合分けの条件 $`i = 0`$ が $`i := 0`$ で成り立つから、
-第 1 の場合が選ばれる。∎
+The side condition $`i = 0`$ of the case distinction in the definition of $`M_{i,j}`$ (D.entry) holds for
+$`i := 0`$, so the first case is selected. ∎
 
 <a id="t-entry_one"></a>
-## 定理: 行 1 の成分 (T.entry_one)
+## Theorem: the entry in row 1 (T.entry_one)
 
-### 定理
+### Theorem
 
-任意の $`M \in \mathrm{PairSeq}`$, $`j \in \mathbb{N}`$ に対し
-$`M_{1,j} = \pi_2\bigl(M\langle j\rangle\bigr)`$。
+For every $`M \in \mathrm{PairSeq}`$ and $`j \in \mathbb{N}`$,
+$`M_{1,j} = \pi_2\bigl(M\langle j\rangle\bigr)`$.
 
-### 証明
+### Proof
 
-$`M_{i,j}`$ の定義（D.entry）の場合分けの条件 $`i = 0`$ は $`i := 1`$ のとき $`1 = 0`$ であり
-偽である。よって第 2 の場合が選ばれる。∎
+For $`i := 1`$ the side condition $`i = 0`$ of the case distinction in the definition of $`M_{i,j}`$ (D.entry)
+reads $`1 = 0`$, which is false. Hence the second case is selected. ∎
 
 <a id="t-dropLast_snoc_getD"></a>
-## 定理: 末尾の 1 列の切り出し (T.dropLast_snoc_getD)
+## Theorem: splitting off the last column (T.dropLast_snoc_getD)
 
-### 定理
+### Theorem
 
-$`M \ne ()`$ ならば
+If $`M \ne ()`$, then
 
 ```math
 \mathrm{dropLast}\,M \mathbin{+\!\!+} \bigl(M\langle \lvert M\rvert - 1\rangle\bigr) = M .
 ```
 
-### 証明
+### Proof
 
-$`M \ne ()`$ より $`0 \lt \lvert M\rvert`$ であるから $`\lvert M\rvert - 1 \lt \lvert M\rvert`$ であり、
-$`M\langle j\rangle`$ の定義（D.entry）の第 1 の場合により
-$`M\langle \lvert M\rvert - 1\rangle = M_{\lvert M\rvert - 1}`$、すなわち $`M`$ の最後の要素である。
-$`\mathrm{dropLast}\,M`$ は $`M`$ から最後の要素を除いた列であるから、これに最後の要素を
-後置すれば $`M`$ に戻る。∎
+From $`M \ne ()`$ we get $`0 \lt \lvert M\rvert`$, hence $`\lvert M\rvert - 1 \lt \lvert M\rvert`$, so
+the first case of the definition of $`M\langle j\rangle`$ (D.entry) gives
+$`M\langle \lvert M\rvert - 1\rangle = M_{\lvert M\rvert - 1}`$, that is, the last element of $`M`$.
+Since $`\mathrm{dropLast}\,M`$ is $`M`$ with its last element removed, appending that last element to it
+gives back $`M`$. ∎
 
 <a id="t-seqlex_cof_short"></a>
-## 定理: 長さ 1 以下の分岐での共終性 (T.seqlex_cof_short)
+## Theorem: cofinality in the branch where the length is at most 1 (T.seqlex_cof_short)
 
-### 定理
+### Theorem
 
-$`\lvert M\rvert - 1 = 0`$ かつ $`N \prec_{\mathrm{lex}} M`$ ならば
+If $`\lvert M\rvert - 1 = 0`$ and $`N \prec_{\mathrm{lex}} M`$, then
 
 ```math
 \exists n,\ \bigl(1 \le n \wedge N \preceq_{\mathrm{lex}} M[n]\bigr).
 ```
 
-### 証明
+### Proof
 
-$`n := 1`$ と取る。$`1 \le 1`$ である。
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) を仮定
-$`\lvert M\rvert - 1 = 0`$ と $`n := 1`$ に適用して $`M[1] = M`$ を得るから、
-示すべきことは $`N \preceq_{\mathrm{lex}} M`$ である。
-仮定 $`N \prec_{\mathrm{lex}} M`$ により $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の
-第 2 選言が成り立つ。∎
+Take $`n := 1`$; indeed $`1 \le 1`$.
+Applying [T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) to the hypothesis
+$`\lvert M\rvert - 1 = 0`$ with $`n := 1`$ gives $`M[1] = M`$, so what has to be shown is
+$`N \preceq_{\mathrm{lex}} M`$. By the hypothesis $`N \prec_{\mathrm{lex}} M`$, the second disjunct of
+the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle) holds. ∎
 
 <a id="t-seqlex_cof_zero"></a>
-## 定理: 末尾が $`(0,0)`$ の分岐での共終性 (T.seqlex_cof_zero)
+## Theorem: cofinality in the branch whose last column is $`(0,0)`$ (T.seqlex_cof_zero)
 
-### 定理
+### Theorem
 
-$`1 \lt \lvert M\rvert`$、$`M_{0,\lvert M\rvert - 1} = 0 \wedge M_{1,\lvert M\rvert - 1} = 0`$、
-かつ $`N \prec_{\mathrm{lex}} M`$ ならば
+If $`1 \lt \lvert M\rvert`$, $`M_{0,\lvert M\rvert - 1} = 0 \wedge M_{1,\lvert M\rvert - 1} = 0`$
+and $`N \prec_{\mathrm{lex}} M`$, then
 
 ```math
 \exists n,\ \bigl(1 \le n \wedge N \preceq_{\mathrm{lex}} M[n]\bigr).
 ```
 
-### 証明
+### Proof
 
-$`j_1 := \lvert M\rvert - 1`$ とおく。$`1 \lt \lvert M\rvert`$ より $`M \ne ()`$ であり、
-$`j_1 \ne 0`$ である。
+Put $`j_1 := \lvert M\rvert - 1`$. From $`1 \lt \lvert M\rvert`$ we get $`M \ne ()`$ and
+$`j_1 \ne 0`$.
 
-**第 1 段：$`M\langle j_1\rangle = (0,0)`$。**
-[T.entry_zero](#t-entry_zero) と [T.entry_one](#t-entry_one) より
-$`\pi_1(M\langle j_1\rangle) = M_{0,j_1} = 0`$、$`\pi_2(M\langle j_1\rangle) = M_{1,j_1} = 0`$ である。
-対は両成分で決まるから $`M\langle j_1\rangle = (0,0)`$。
+**Step 1: $`M\langle j_1\rangle = (0,0)`$.**
+By [T.entry_zero](#t-entry_zero) and [T.entry_one](#t-entry_one) we have
+$`\pi_1(M\langle j_1\rangle) = M_{0,j_1} = 0`$ and $`\pi_2(M\langle j_1\rangle) = M_{1,j_1} = 0`$.
+A pair is determined by its two entries, hence $`M\langle j_1\rangle = (0,0)`$.
 
-**第 2 段：$`M[1] = \mathrm{dropLast}\,M`$。**
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) を $`j_1 \ne 0`$ と仮定の
-第 2 連言子に適用して $`M[1] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）を得る。
-$`1 \lt \lvert M\rvert`$ より $`\neg(\lvert M\rvert \le 1)`$ であるから、
-$`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
+**Step 2: $`M[1] = \mathrm{dropLast}\,M`$.**
+Applying [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) to $`j_1 \ne 0`$ and the second
+conjunct of the hypothesis gives $`M[1] = \mathrm{Pred}\,M`$ ([D.Pred](Pss.md#d-Pred)).
+From $`1 \lt \lvert M\rvert`$ we get $`\neg(\lvert M\rvert \le 1)`$, so
+the second case of the definition of $`\mathrm{Pred}`$ (D.Pred) is selected and
+$`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$.
 
-**第 3 段：$`N \preceq_{\mathrm{lex}} \mathrm{dropLast}\,M`$。**
-[T.dropLast_snoc_getD](#t-dropLast_snoc_getD) より
-$`\mathrm{dropLast}\,M \mathbin{+\!\!+} (M\langle j_1\rangle) = M`$ であるから、仮定
-$`N \prec_{\mathrm{lex}} M`$ は $`N \prec_{\mathrm{lex}} \mathrm{dropLast}\,M \mathbin{+\!\!+} (M\langle j_1\rangle)`$
-に他ならない。[T.seqlex_snoc_cases](#t-seqlex_snoc_cases) を
-$`D := \mathrm{dropLast}\,M`$、$`\ell := M\langle j_1\rangle`$ として適用する。
+**Step 3: $`N \preceq_{\mathrm{lex}} \mathrm{dropLast}\,M`$.**
+By [T.dropLast_snoc_getD](#t-dropLast_snoc_getD) we have
+$`\mathrm{dropLast}\,M \mathbin{+\!\!+} (M\langle j_1\rangle) = M`$, so the hypothesis
+$`N \prec_{\mathrm{lex}} M`$ is exactly $`N \prec_{\mathrm{lex}} \mathrm{dropLast}\,M \mathbin{+\!\!+} (M\langle j_1\rangle)`$.
+Apply [T.seqlex_snoc_cases](#t-seqlex_snoc_cases) with
+$`D := \mathrm{dropLast}\,M`$ and $`\ell := M\langle j_1\rangle`$.
 
-- 第 1 の選言 $`N \preceq_{\mathrm{lex}} \mathrm{dropLast}\,M`$ が得られたときは、これが目標である。
-- 第 2 の選言が得られたときは、$`q \prec_{\mathrm{p}} M\langle j_1\rangle = (0,0)`$ なる $`q`$ が
-  存在することになる。$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）よりこれは
-  $`q_1 \lt 0`$ または $`(q_1 = 0 \wedge q_2 \lt 0)`$ であり、$`\mathbb{N}`$ には $`0`$ より小さい元が
-  ないからどちらも偽である。よってこの場合は起こらない。
+- If the first disjunct $`N \preceq_{\mathrm{lex}} \mathrm{dropLast}\,M`$ is obtained, this is the goal.
+- If the second disjunct is obtained, there exists $`q`$ with
+  $`q \prec_{\mathrm{p}} M\langle j_1\rangle = (0,0)`$. By the definition of $`\prec_{\mathrm{p}}`$ (D.pairlt)
+  this means $`q_1 \lt 0`$ or $`(q_1 = 0 \wedge q_2 \lt 0)`$, and both are false since $`\mathbb{N}`$ has
+  no element smaller than $`0`$. Hence this case does not occur.
 
-$`n := 1`$ と取れば、第 2 段と第 3 段により $`N \preceq_{\mathrm{lex}} M[1]`$ である。∎
+Taking $`n := 1`$, Steps 2 and 3 give $`N \preceq_{\mathrm{lex}} M[1]`$. ∎
 
 <a id="t-hasParent_last_ST_PS"></a>
-## 定理: 標準形の末尾列は必ず親をもつ (T.hasParent_last_ST_PS)
+## Theorem: the last column of a standard form always has a parent (T.hasParent_last_ST_PS)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{ST\_PS}`$、$`0 \lt \lvert M\rvert`$、かつ
-$`\neg\bigl(M_{0,\lvert M\rvert - 1} = 0 \wedge M_{1,\lvert M\rvert - 1} = 0\bigr)`$ ならば
+If $`M \in \mathrm{ST\_PS}`$, $`0 \lt \lvert M\rvert`$ and
+$`\neg\bigl(M_{0,\lvert M\rvert - 1} = 0 \wedge M_{1,\lvert M\rvert - 1} = 0\bigr)`$, then
 
 ```math
 \mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, \lvert M\rvert - 1),\ \lvert M\rvert - 1\bigr) .
 ```
 
-（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)、$`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)）
+($`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent), $`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1))
 
-### 証明
+### Proof
 
-$`j_1 := \lvert M\rvert - 1`$ とおく。[T.hp_last](Column-4.md#t-hp_last) を適用する。
-その 4 つの仮定は次のように満たされる。
+Put $`j_1 := \lvert M\rvert - 1`$ and apply [T.hp_last](Column-4.md#t-hp_last).
+Its four hypotheses are met as follows.
 
-- $`\mathrm{blockok}(0, M)`$（[D.blockok](Seqlex.md#d-blockok)）：
-  [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) による。
-- $`\mathrm{z0ok}(M)`$（[D.z0ok](Column-3.md#d-z0ok)）：[T.z0ok_ST_PS](Column-4.md#t-z0ok_ST_PS) による。
-- $`0 \lt \lvert M\rvert`$：仮定である。
-- $`\neg\bigl(M\langle j_1\rangle = (0,0)\bigr)`$：$`M\langle j_1\rangle = (0,0)`$ と仮定すると、
-  [T.entry_zero](#t-entry_zero) より $`M_{0,j_1} = \pi_1((0,0)) = 0`$、
-  [T.entry_one](#t-entry_one) より $`M_{1,j_1} = \pi_2((0,0)) = 0`$ となり、
-  仮定の第 3 のものに矛盾する。∎
+- $`\mathrm{blockok}(0, M)`$ ([D.blockok](Seqlex.md#d-blockok)):
+  by [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS).
+- $`\mathrm{z0ok}(M)`$ ([D.z0ok](Column-3.md#d-z0ok)): by [T.z0ok_ST_PS](Column-4.md#t-z0ok_ST_PS).
+- $`0 \lt \lvert M\rvert`$: this is a hypothesis.
+- $`\neg\bigl(M\langle j_1\rangle = (0,0)\bigr)`$: suppose $`M\langle j_1\rangle = (0,0)`$; then
+  [T.entry_zero](#t-entry_zero) gives $`M_{0,j_1} = \pi_1((0,0)) = 0`$ and
+  [T.entry_one](#t-entry_one) gives $`M_{1,j_1} = \pi_2((0,0)) = 0`$,
+  contradicting the third hypothesis. ∎
 
 <a id="t-sle_append_cancel"></a>
-## 定理: 共通の前置列の消去 (T.sle_append_cancel)
+## Theorem: cancelling a common prefix (T.sle_append_cancel)
 
-### 定理
+### Theorem
 
-$`A, u, v \in \mathrm{PairSeq}`$ に対し
+For $`A, u, v \in \mathrm{PairSeq}`$,
 
 ```math
 A \mathbin{+\!\!+} u \preceq_{\mathrm{lex}} A \mathbin{+\!\!+} v \iff u \preceq_{\mathrm{lex}} v .
 ```
 
-### 証明
+### Proof
 
-$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）より、左辺は
+By the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle), the left-hand side is
 
 ```math
 A \mathbin{+\!\!+} u = A \mathbin{+\!\!+} v \ \vee\ A \mathbin{+\!\!+} u \prec_{\mathrm{lex}} A \mathbin{+\!\!+} v
 ```
 
-である。第 2 選言は [T.seqlex_append_cancel](Seqlex.md#t-seqlex_append_cancel) により
-$`u \prec_{\mathrm{lex}} v`$ と同値である。第 1 選言については、連結の左からの消去、すなわち
+The second disjunct is equivalent to $`u \prec_{\mathrm{lex}} v`$ by
+[T.seqlex_append_cancel](Seqlex.md#t-seqlex_append_cancel). As for the first disjunct,
+concatenation cancels on the left, that is,
 
 ```math
 A \mathbin{+\!\!+} u = A \mathbin{+\!\!+} v \iff u = v
 ```
 
-が成り立つ（$`\Leftarrow`$ は両辺に $`A`$ を前置するだけであり、$`\Rightarrow`$ は両列から
-先頭 $`\lvert A\rvert`$ 要素を落とせばよい）。したがって左辺は $`u = v \vee u \prec_{\mathrm{lex}} v`$、
-すなわち定義（D.sle）により $`u \preceq_{\mathrm{lex}} v`$ と同値である。∎
+holds ($`\Leftarrow`$ is just prepending $`A`$ to both sides, and for $`\Rightarrow`$ it suffices to drop
+the first $`\lvert A\rvert`$ elements of both sequences). Hence the left-hand side is equivalent to
+$`u = v \vee u \prec_{\mathrm{lex}} v`$, that is, by the definition (D.sle), to $`u \preceq_{\mathrm{lex}} v`$. ∎
 
 <a id="t-getD_append_right'"></a>
-## 定理: 連結列の後半の添字表示 (T.getD_append_right')
+## Theorem: indexing into the right part of a concatenation (T.getD_append_right')
 
-### 定理
+### Theorem
 
-$`A, B \in \mathrm{PairSeq}`$、$`i \in \mathbb{N}`$ に対し
+For $`A, B \in \mathrm{PairSeq}`$ and $`i \in \mathbb{N}`$,
 
 ```math
 (A \mathbin{+\!\!+} B)\langle \lvert A\rvert + i\rangle = B\langle i\rangle .
 ```
 
-### 証明
+### Proof
 
-$`\lvert A \mathbin{+\!\!+} B\rvert = \lvert A\rvert + \lvert B\rvert`$ である。$`i`$ と $`\lvert B\rvert`$ で
-場合分けする。
+We have $`\lvert A \mathbin{+\!\!+} B\rvert = \lvert A\rvert + \lvert B\rvert`$. Distinguish cases according to
+$`i`$ and $`\lvert B\rvert`$.
 
-- $`i \lt \lvert B\rvert`$ のとき。$`\lvert A\rvert + i \lt \lvert A\rvert + \lvert B\rvert = \lvert A \mathbin{+\!\!+} B\rvert`$
-  であるから、$`M\langle j\rangle`$ の定義（D.entry）の第 1 の場合により両辺とも実際の要素を読む。
-  連結列 $`A \mathbin{+\!\!+} B`$ の第 $`\lvert A\rvert + i`$ 要素は、添字が $`\lvert A\rvert`$ 以上であるから
-  $`B`$ の第 $`(\lvert A\rvert + i) - \lvert A\rvert = i`$ 要素である。よって両辺は等しい。
+- Case $`i \lt \lvert B\rvert`$. Here $`\lvert A\rvert + i \lt \lvert A\rvert + \lvert B\rvert = \lvert A \mathbin{+\!\!+} B\rvert`$,
+  so by the first case of the definition of $`M\langle j\rangle`$ (D.entry) both sides read an actual element.
+  The element of the concatenation $`A \mathbin{+\!\!+} B`$ at index $`\lvert A\rvert + i`$ is, this index being
+  at least $`\lvert A\rvert`$, the element of $`B`$ at index $`(\lvert A\rvert + i) - \lvert A\rvert = i`$.
+  Hence the two sides are equal.
 
-- $`\lvert B\rvert \le i`$ のとき。$`\lvert A \mathbin{+\!\!+} B\rvert = \lvert A\rvert + \lvert B\rvert \le \lvert A\rvert + i`$
-  であるから、$`M\langle j\rangle`$ の定義（D.entry）の第 2 の場合により両辺とも $`(0,0)`$ である。∎
+- Case $`\lvert B\rvert \le i`$. Here $`\lvert A \mathbin{+\!\!+} B\rvert = \lvert A\rvert + \lvert B\rvert \le \lvert A\rvert + i`$,
+  so by the second case of the definition of $`M\langle j\rangle`$ (D.entry) both sides are $`(0,0)`$. ∎
 
 <a id="t-getD_last_of_snoc"></a>
-## 定理: 末尾に付けた 1 列の読み出し (T.getD_last_of_snoc)
+## Theorem: reading back the column appended at the end (T.getD_last_of_snoc)
 
-### 定理
+### Theorem
 
-$`D \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ に対し
+For $`D \in \mathrm{PairSeq}`$ and $`\ell \in \mathbb{N}\times\mathbb{N}`$,
 
 ```math
 \bigl(D \mathbin{+\!\!+} (\ell)\bigr)\bigl\langle \lvert D \mathbin{+\!\!+} (\ell)\rvert - 1\bigr\rangle = \ell .
 ```
 
-### 証明
+### Proof
 
-$`\lvert D \mathbin{+\!\!+} (\ell)\rvert = \lvert D\rvert + 1`$ であるから
-$`\lvert D \mathbin{+\!\!+} (\ell)\rvert - 1 = \lvert D\rvert`$ である。
-[T.getD_append_right'](#t-getD_append_right') を、左側の列を $`D`$、右側の列を $`(\ell)`$、
-添字を $`0`$ として適用すると
+Since $`\lvert D \mathbin{+\!\!+} (\ell)\rvert = \lvert D\rvert + 1`$, we have
+$`\lvert D \mathbin{+\!\!+} (\ell)\rvert - 1 = \lvert D\rvert`$.
+Applying [T.getD_append_right'](#t-getD_append_right') with left sequence $`D`$, right sequence $`(\ell)`$
+and index $`0`$ gives
 
 ```math
 \bigl(D \mathbin{+\!\!+} (\ell)\bigr)\langle \lvert D\rvert + 0\rangle = (\ell)\langle 0\rangle
 ```
 
-であり、$`0 \lt 1 = \lvert (\ell)\rvert`$ であるから $`M\langle j\rangle`$ の定義（D.entry）の
-第 1 の場合により $`(\ell)\langle 0\rangle = \ell`$ である。∎
+and since $`0 \lt 1 = \lvert (\ell)\rvert`$, the first case of the definition of $`M\langle j\rangle`$ (D.entry)
+gives $`(\ell)\langle 0\rangle = \ell`$. ∎
 
 <a id="t-nextrel1_snd_succ"></a>
-## 定理: 行 1 の親子では行 1 がちょうど 1 増える (T.nextrel1_snd_succ)
+## Theorem: row 1 increases by exactly 1 along the row-1 parent relation (T.nextrel1_snd_succ)
 
-### 定理
+### Theorem
 
-$`\mathrm{r1ok}(M)`$（[D.r1ok](Column-2.md#d-r1ok)）かつ $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば
+If $`\mathrm{r1ok}(M)`$ ([D.r1ok](Column-2.md#d-r1ok)) and $`j_0 \to^M_1 j_1`$ ([D.nextrel1](Pss.md#d-nextrel1)), then
 
 ```math
 M_{1,j_1} = M_{1,j_0} + 1 .
 ```
 
-### 証明
+### Proof
 
-$`\to^M_1`$ の定義（D.nextrel1）より、仮定は次の 6 つの連言である。
+By the definition of $`\to^M_1`$ (D.nextrel1), the hypothesis is the conjunction of the following six statements.
 
 ```math
 \begin{aligned}
@@ -546,27 +552,27 @@ $`\to^M_1`$ の定義（D.nextrel1）より、仮定は次の 6 つの連言で�
 \end{aligned}
 ```
 
-（$`\le^M_0`$ [D.le0](Pss.md#d-le0)）
+($`\le^M_0`$ [D.le0](Pss.md#d-le0))
 
-**第 1 段：行 $`0`$ の鎖の第 1 歩 $`c`$ を取る。**
-(5) と $`\le^M_0`$ の定義（D.le0）の第 3 条件より
-$`j_0 \mathbin{(\to^M_0)^{*}} j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）である。
-反射推移閉包は「$`j_0 = j_1`$」か「ある $`c`$ について
-$`j_0 \to^M_0 c`$ かつ $`c \mathbin{(\to^M_0)^{*}} j_1`$」の
-いずれかであるが、前者は (3) の $`j_0 \lt j_1`$ に反する。よって後者の $`c`$ が取れる。
+**Step 1: take the first step $`c`$ of the chain in row $`0`$.**
+From (5) and the third condition of the definition of $`\le^M_0`$ (D.le0) we get
+$`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ ([D.nextrel0](Pss.md#d-nextrel0)).
+The reflexive transitive closure gives either $`j_0 = j_1`$, or, for some $`c`$,
+$`j_0 \to^M_0 c`$ and $`c \mathbin{(\to^M_0)^{*}} j_1`$;
+the former contradicts $`j_0 \lt j_1`$ from (3). Hence $`c`$ as in the latter can be taken.
 
-$`\to^M_0`$ の定義（D.nextrel0）の第 3 条件より $`j_0 \lt c`$、第 2 条件より $`c \lt \lvert M\rvert`$ である。
-これと (2)、および $`c \mathbin{(\to^M_0)^{*}} j_1`$ から、$`\le^M_0`$ の定義（D.le0）の 3 条件が
-そろって $`c \le^M_0 j_1`$ を得る。
+By the third condition of the definition of $`\to^M_0`$ (D.nextrel0) we have $`j_0 \lt c`$, and by
+the second condition $`c \lt \lvert M\rvert`$. Together with (2) and $`c \mathbin{(\to^M_0)^{*}} j_1`$,
+all three conditions of the definition of $`\le^M_0`$ (D.le0) are met, giving $`c \le^M_0 j_1`$.
 
-**第 2 段：$`M_{1,j_1} \le M_{1,c}`$。**
-(6) を $`j := c`$ に適用する。前件は第 1 段の $`j_0 \lt c`$ と $`c \le^M_0 j_1`$ である。
+**Step 2: $`M_{1,j_1} \le M_{1,c}`$.**
+Apply (6) with $`j := c`$. Its antecedent consists of $`j_0 \lt c`$ and $`c \le^M_0 j_1`$ from Step 1.
 
-**第 3 段：$`\mathrm{r1ok}(M)`$ を $`c`$ に適用する。**
-$`\to^M_0`$ の定義（D.nextrel0）の第 4 条件より $`M_{0,j_0} \lt M_{0,c}`$ であり、
-[T.entry_zero](#t-entry_zero) によりこれは $`\pi_1(M\langle j_0\rangle) \lt \pi_1(M\langle c\rangle)`$ である。
-とくに $`0 \lt \pi_1(M\langle c\rangle)`$ である。$`c \lt \lvert M\rvert`$ と合わせて
-$`\mathrm{r1ok}(M)`$ を $`j := c`$ に適用すると、次の 4 つをみたす $`k`$ が得られる。
+**Step 3: apply $`\mathrm{r1ok}(M)`$ to $`c`$.**
+By the fourth condition of the definition of $`\to^M_0`$ (D.nextrel0) we have $`M_{0,j_0} \lt M_{0,c}`$,
+which by [T.entry_zero](#t-entry_zero) reads $`\pi_1(M\langle j_0\rangle) \lt \pi_1(M\langle c\rangle)`$.
+In particular $`0 \lt \pi_1(M\langle c\rangle)`$. Together with $`c \lt \lvert M\rvert`$,
+applying $`\mathrm{r1ok}(M)`$ with $`j := c`$ yields $`k`$ satisfying the following four conditions.
 
 ```math
 \begin{aligned}
@@ -577,41 +583,41 @@ $`\mathrm{r1ok}(M)`$ を $`j := c`$ に適用すると、次の 4 つをみた�
 \end{aligned}
 ```
 
-**第 4 段：$`k = j_0`$。**
-$`k \to^M_0 c`$ を示す。$`\to^M_0`$ の定義（D.nextrel0）の 5 条件を順に確かめる。
+**Step 4: $`k = j_0`$.**
+We show $`k \to^M_0 c`$ by checking the five conditions of the definition of $`\to^M_0`$ (D.nextrel0) in turn.
 
-- (1) $`k \lt \lvert M\rvert`$：(i) の $`k \lt c`$ と $`c \lt \lvert M\rvert`$ による。
-- (2) $`c \lt \lvert M\rvert`$：第 1 段で得た。
-- (3) $`k \lt c`$：(i) である。
-- (4) $`M_{0,k} \lt M_{0,c}`$：[T.entry_zero](#t-entry_zero) によりこれは
-  $`\pi_1(M\langle k\rangle) \lt \pi_1(M\langle c\rangle)`$ であり、(ii) から従う。
-- (5) $`\forall l\ (k \lt l \wedge l \lt c \to M_{0,c} \le M_{0,l})`$：
-  [T.entry_zero](#t-entry_zero) により (iii) そのものである。
+- (1) $`k \lt \lvert M\rvert`$: from $`k \lt c`$ in (i) and $`c \lt \lvert M\rvert`$.
+- (2) $`c \lt \lvert M\rvert`$: obtained in Step 1.
+- (3) $`k \lt c`$: this is (i).
+- (4) $`M_{0,k} \lt M_{0,c}`$: by [T.entry_zero](#t-entry_zero) this reads
+  $`\pi_1(M\langle k\rangle) \lt \pi_1(M\langle c\rangle)`$, which follows from (ii).
+- (5) $`\forall l\ (k \lt l \wedge l \lt c \to M_{0,c} \le M_{0,l})`$:
+  by [T.entry_zero](#t-entry_zero) this is exactly (iii).
 
-第 1 段で $`j_0 \to^M_0 c`$ も得ているから、
-[T.nextrel0_unique](Column-4.md#t-nextrel0_unique) より $`k = j_0`$ である。
+Since Step 1 also gives $`j_0 \to^M_0 c`$,
+[T.nextrel0_unique](Column-4.md#t-nextrel0_unique) yields $`k = j_0`$.
 
-**第 5 段：結論。**
-(iv) に $`k = j_0`$ を代入し、[T.entry_one](#t-entry_one) で書き直すと
+**Step 5: conclusion.**
+Substituting $`k = j_0`$ into (iv) and rewriting with [T.entry_one](#t-entry_one) gives
 
 ```math
 M_{1,c} \le M_{1,j_0} + 1
 ```
 
-である。第 2 段と合わせて $`M_{1,j_1} \le M_{1,c} \le M_{1,j_0} + 1`$ を得る。
-一方 (4) より $`M_{1,j_0} \lt M_{1,j_1}`$、すなわち $`M_{1,j_0} + 1 \le M_{1,j_1}`$ である。
-$`\le`$ の反対称性により $`M_{1,j_1} = M_{1,j_0} + 1`$。∎
+Together with Step 2 this gives $`M_{1,j_1} \le M_{1,c} \le M_{1,j_0} + 1`$.
+On the other hand (4) gives $`M_{1,j_0} \lt M_{1,j_1}`$, that is, $`M_{1,j_0} + 1 \le M_{1,j_1}`$.
+By antisymmetry of $`\le`$ we conclude $`M_{1,j_1} = M_{1,j_0} + 1`$. ∎
 
 <a id="t-oper_bad_blocks_all"></a>
-## 定理: 第 4 分岐のブロック分解（$`n`$ に一様） (T.oper_bad_blocks_all)
+## Theorem: block decomposition for the fourth branch (uniform in $`n`$) (T.oper_bad_blocks_all)
 
-### 定理
+### Theorem
 
-$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$ とおく。
-$`1 \lt \lvert M\rvert`$、$`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）、$`\mathrm{r1ok}(M)`$、
-$`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$、$`\mathrm{hasParent}(M, i_1, j_1)`$ を仮定する。
-このとき $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、
-$`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`B := (v_0,w_0) :: R`$ とおくと次の 5 つが成り立つ。
+Put $`j_1 := \lvert M\rvert - 1`$ and $`i_1 := \mathrm{idx}_1(M, j_1)`$.
+Assume $`1 \lt \lvert M\rvert`$, $`\mathrm{steps}_1(M)`$ ([D.steps1](Seqlex.md#d-steps1)), $`\mathrm{r1ok}(M)`$,
+$`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$ and $`\mathrm{hasParent}(M, i_1, j_1)`$.
+Then there exist $`G, R \in \mathrm{PairSeq}`$, $`v_0, w_0, d_0 \in \mathbb{N}`$ and
+$`\ell \in \mathbb{N}\times\mathbb{N}`$ such that, putting $`B := (v_0,w_0) :: R`$, the following five statements hold.
 
 ```math
 \begin{aligned}
@@ -625,16 +631,16 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`B := (v_0,w_0) :: R`
 \end{aligned}
 ```
 
-（$`\mathrm{cp}_{d}(B,n)`$ [D.copies](Cnf-2.md#d-copies)）
+($`\mathrm{cp}_{d}(B,n)`$ [D.copies](Cnf-2.md#d-copies))
 
-### 証明
+### Proof
 
-**第 1 段：$`n = 1`$ でブロック分解を取る。**
-[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を $`n := 1`$ として適用する。
-その 4 つの仮定 $`1 \lt \lvert M\rvert`$、$`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$、
-$`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ のうち初めの 3 つは本定理の仮定であり、
-最後のものは $`1 \le 1`$ である。こうして $`G, v_0, w_0, R, d_0, \ell`$ を得る。
-得られる主張のうち (1), (3), (4) は上の (1), (3), (4) そのものであり、残りは
+**Step 1: take the block decomposition at $`n = 1`$.**
+Apply [T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) with $`n := 1`$.
+Of its four hypotheses $`1 \lt \lvert M\rvert`$, $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$,
+$`\mathrm{hasParent}(M, i_1, j_1)`$ and $`1 \le n`$, the first three are hypotheses of the present theorem
+and the last is $`1 \le 1`$. This yields $`G, v_0, w_0, R, d_0, \ell`$.
+Among the statements obtained, (1), (3) and (4) are exactly (1), (3) and (4) above, and the remaining ones are
 
 ```math
 \begin{aligned}
@@ -645,125 +651,125 @@ $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ のうち初めの 3 つは本
 \end{aligned}
 ```
 
-である（$`\to^M_i`$ [D.nextR](Pss.md#d-nextR)）。
+($`\to^M_i`$ [D.nextR](Pss.md#d-nextR)).
 
-**第 2 段：位置の同定。**
-(1) と連結の結合則より $`M = G \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} (\ell)\bigr)`$ である。
-したがって
+**Step 2: identifying the positions.**
+By (1) and associativity of concatenation, $`M = G \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} (\ell)\bigr)`$.
+Hence
 
 ```math
 \lvert M\rvert = \lvert G\rvert + \bigl(\lvert R\rvert + 2\bigr)
 ```
 
-である（$`\lvert B\rvert = \lvert R\rvert + 1`$ による）。次の 2 つを示す。
+using $`\lvert B\rvert = \lvert R\rvert + 1`$. We show the following two facts.
 
-- $`M\langle \lvert G\rvert\rangle = (v_0,w_0)`$。
-  [T.getD_append_right'](#t-getD_append_right') を、左側の列を $`G`$、右側の列を
-  $`B \mathbin{+\!\!+} (\ell)`$、添字を $`0`$ として適用すると
-  $`M\langle \lvert G\rvert + 0\rangle = \bigl(B \mathbin{+\!\!+} (\ell)\bigr)\langle 0\rangle`$ であり、
-  $`B \mathbin{+\!\!+} (\ell)`$ の先頭要素は $`(v_0,w_0)`$ である。
+- $`M\langle \lvert G\rvert\rangle = (v_0,w_0)`$.
+  Applying [T.getD_append_right'](#t-getD_append_right') with left sequence $`G`$, right sequence
+  $`B \mathbin{+\!\!+} (\ell)`$ and index $`0`$ gives
+  $`M\langle \lvert G\rvert + 0\rangle = \bigl(B \mathbin{+\!\!+} (\ell)\bigr)\langle 0\rangle`$, and
+  the first element of $`B \mathbin{+\!\!+} (\ell)`$ is $`(v_0,w_0)`$.
 
-- $`\ell = M\langle j_1\rangle`$。
-  (1) を $`M = \bigl(G \mathbin{+\!\!+} B\bigr) \mathbin{+\!\!+} (\ell)`$ と見て
-  [T.getD_last_of_snoc](#t-getD_last_of_snoc) を $`D := G \mathbin{+\!\!+} B`$ に適用すると
-  $`M\langle \lvert M\rvert - 1\rangle = \ell`$、すなわち $`M\langle j_1\rangle = \ell`$ である。
+- $`\ell = M\langle j_1\rangle`$.
+  Reading (1) as $`M = \bigl(G \mathbin{+\!\!+} B\bigr) \mathbin{+\!\!+} (\ell)`$ and applying
+  [T.getD_last_of_snoc](#t-getD_last_of_snoc) with $`D := G \mathbin{+\!\!+} B`$ gives
+  $`M\langle \lvert M\rvert - 1\rangle = \ell`$, that is, $`M\langle j_1\rangle = \ell`$.
 
-**第 3 段：$`(5')`$ から (5) を導く。**
-$`(5')`$ の選言で場合分けする。
+**Step 3: deriving (5) from $`(5')`$.**
+Distinguish cases according to the disjunction in $`(5')`$.
 
-**(a) $`d_0 = 0 \wedge i_1 = 0`$ のとき。**
-まず $`\ell_2 = 0`$ を示す。$`\mathrm{idx}_1`$ の定義（D.idx1）は $`0 \lt M_{1,j_1}`$ のとき $`1`$、
-$`M_{1,j_1} = 0`$ のとき $`0`$ である。いま $`i_1 = 0`$ であり $`1 \ne 0`$ であるから
-第 1 の場合ではない。よって $`M_{1,j_1} = 0`$ であり、
-[T.entry_one](#t-entry_one) と第 2 段の $`\ell = M\langle j_1\rangle`$ より
-$`\ell_2 = \pi_2(M\langle j_1\rangle) = M_{1,j_1} = 0`$。
+**(a) The case $`d_0 = 0 \wedge i_1 = 0`$.**
+First we show $`\ell_2 = 0`$. The definition of $`\mathrm{idx}_1`$ (D.idx1) is $`1`$ when $`0 \lt M_{1,j_1}`$
+and $`0`$ when $`M_{1,j_1} = 0`$. Here $`i_1 = 0`$ and $`1 \ne 0`$, so the first case is not the one selected.
+Hence $`M_{1,j_1} = 0`$, and by [T.entry_one](#t-entry_one) together with $`\ell = M\langle j_1\rangle`$
+from Step 2, $`\ell_2 = \pi_2(M\langle j_1\rangle) = M_{1,j_1} = 0`$.
 
-次に $`\ell_1 = v_0 + 1`$ を示す。次の 5 つを用意する。
+Next we show $`\ell_1 = v_0 + 1`$. We prepare the following five facts.
 
-1. $`\lvert G\rvert \to^M_0 j_1`$。(6) に $`i_1 = 0`$ を代入し、
-   [T.nextR_zero_iff](Column-4.md#t-nextR_zero_iff) を使う。
-2. $`j_1 = \lvert G\rvert + 1 + \lvert R\rvert`$。第 2 段の長さの式と $`j_1 = \lvert M\rvert - 1`$ による。
-3. $`M_{0,\lvert G\rvert + 1} \le M_{0,\lvert G\rvert} + 1`$。
-   [T.steps1_iff](Seqlex.md#t-steps1_iff) を $`\mathrm{steps}_1(M)`$ と $`j := \lvert G\rvert`$ に
-   適用する（前件 $`\lvert G\rvert + 1 \lt \lvert M\rvert`$ は第 2 段の長さの式による）。
-   得られる不等式を [T.entry_zero](#t-entry_zero) で書き直したものである。
-4. $`M_{0,\lvert G\rvert} = v_0`$。[T.entry_zero](#t-entry_zero) と第 2 段の
-   $`M\langle \lvert G\rvert\rangle = (v_0,w_0)`$ による。
-5. $`\ell_1 = M_{0,j_1}`$。[T.entry_zero](#t-entry_zero) と第 2 段の $`\ell = M\langle j_1\rangle`$ による。
+1. $`\lvert G\rvert \to^M_0 j_1`$. Substitute $`i_1 = 0`$ into (6) and use
+   [T.nextR_zero_iff](Column-4.md#t-nextR_zero_iff).
+2. $`j_1 = \lvert G\rvert + 1 + \lvert R\rvert`$. From the length identity in Step 2 and $`j_1 = \lvert M\rvert - 1`$.
+3. $`M_{0,\lvert G\rvert + 1} \le M_{0,\lvert G\rvert} + 1`$.
+   Apply [T.steps1_iff](Seqlex.md#t-steps1_iff) to $`\mathrm{steps}_1(M)`$ with $`j := \lvert G\rvert`$
+   (its antecedent $`\lvert G\rvert + 1 \lt \lvert M\rvert`$ follows from the length identity in Step 2).
+   This is the resulting inequality rewritten with [T.entry_zero](#t-entry_zero).
+4. $`M_{0,\lvert G\rvert} = v_0`$. From [T.entry_zero](#t-entry_zero) and
+   $`M\langle \lvert G\rvert\rangle = (v_0,w_0)`$ in Step 2.
+5. $`\ell_1 = M_{0,j_1}`$. From [T.entry_zero](#t-entry_zero) and $`\ell = M\langle j_1\rangle`$ in Step 2.
 
-さらに $`M_{0,j_1} \le M_{0,\lvert G\rvert + 1}`$ を示す。2 より $`\lvert G\rvert + 1 \le j_1`$ であるから、
-$`\lvert G\rvert + 1 = j_1`$ か $`\lvert G\rvert + 1 \lt j_1`$ である。前者なら両辺は同一である。
-後者なら 1 の $`\to^M_0`$ の定義（D.nextrel0）の第 5 条件を $`j := \lvert G\rvert + 1`$ に適用する
-（前件は $`\lvert G\rvert \lt \lvert G\rvert + 1`$ と $`\lvert G\rvert + 1 \lt j_1`$）。
+We further show $`M_{0,j_1} \le M_{0,\lvert G\rvert + 1}`$. By 2 we have $`\lvert G\rvert + 1 \le j_1`$, so
+either $`\lvert G\rvert + 1 = j_1`$ or $`\lvert G\rvert + 1 \lt j_1`$. In the former case the two sides are identical.
+In the latter case, apply the fifth condition of the definition of $`\to^M_0`$ (D.nextrel0) in 1 with
+$`j := \lvert G\rvert + 1`$
+(its antecedent consists of $`\lvert G\rvert \lt \lvert G\rvert + 1`$ and $`\lvert G\rvert + 1 \lt j_1`$).
 
-以上を合わせると
+Putting all of this together,
 
 ```math
 \ell_1 = M_{0,j_1} \le M_{0,\lvert G\rvert + 1} \le M_{0,\lvert G\rvert} + 1 = v_0 + 1
 ```
 
-である。一方 (4) より $`v_0 \lt \ell_1`$、すなわち $`v_0 + 1 \le \ell_1`$ であるから
-$`\ell_1 = v_0 + 1`$。よって (5) の第 1 選言が成り立つ。
+On the other hand (4) gives $`v_0 \lt \ell_1`$, that is, $`v_0 + 1 \le \ell_1`$, whence
+$`\ell_1 = v_0 + 1`$. Thus the first disjunct of (5) holds.
 
-**(b) $`0 \lt d_0 \wedge w_0 \lt \ell_2 \wedge \ell_1 = v_0 + d_0 \wedge \lvert G\rvert \to^M_1 j_1`$ のとき。**
-[T.nextrel1_snd_succ](#t-nextrel1_snd_succ) を $`\mathrm{r1ok}(M)`$ と
-$`\lvert G\rvert \to^M_1 j_1`$ に適用して $`M_{1,j_1} = M_{1,\lvert G\rvert} + 1`$ を得る。
-[T.entry_one](#t-entry_one) で両辺を書き直し、第 2 段の $`M\langle j_1\rangle = \ell`$ と
-$`M\langle \lvert G\rvert\rangle = (v_0,w_0)`$ を代入すると $`\ell_2 = w_0 + 1`$ である。
-$`0 \lt d_0`$、$`\ell_1 = v_0 + d_0`$、$`\lvert G\rvert \to^M_1 j_1`$ はそのままであるから、
-(5) の第 2 選言が成り立つ。
+**(b) The case $`0 \lt d_0 \wedge w_0 \lt \ell_2 \wedge \ell_1 = v_0 + d_0 \wedge \lvert G\rvert \to^M_1 j_1`$.**
+Applying [T.nextrel1_snd_succ](#t-nextrel1_snd_succ) to $`\mathrm{r1ok}(M)`$ and
+$`\lvert G\rvert \to^M_1 j_1`$ gives $`M_{1,j_1} = M_{1,\lvert G\rvert} + 1`$.
+Rewriting both sides with [T.entry_one](#t-entry_one) and substituting $`M\langle j_1\rangle = \ell`$ and
+$`M\langle \lvert G\rvert\rangle = (v_0,w_0)`$ from Step 2 gives $`\ell_2 = w_0 + 1`$.
+Since $`0 \lt d_0`$, $`\ell_1 = v_0 + d_0`$ and $`\lvert G\rvert \to^M_1 j_1`$ are unchanged,
+the second disjunct of (5) holds.
 
-**第 4 段：(2) — 分解が $`n`$ によらないこと。**
-$`n`$ を取り $`1 \le n`$ とする。[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を
-この $`n`$ で適用し、$`G', v_0', w_0', R', d_0', \ell'`$ とその主張 $`(1_n)`$–$`(6_n)`$ を得る。
-$`B' := (v_0',w_0') :: R'`$ とおく。
+**Step 4: (2) — the decomposition does not depend on $`n`$.**
+Take $`n`$ with $`1 \le n`$. Applying [T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks)
+with this $`n`$ yields $`G', v_0', w_0', R', d_0', \ell'`$ and its statements $`(1_n)`$–$`(6_n)`$.
+Put $`B' := (v_0',w_0') :: R'`$.
 
-**(i) $`\lvert G'\rvert = \lvert G\rvert`$。**
-$`(6_n)`$ は $`\lvert G'\rvert \to^M_{i_1} j_1`$、(6) は $`\lvert G\rvert \to^M_{i_1} j_1`$ である。
-$`\mathrm{hasParent}(M, i_1, j_1)`$ の定義（D.hasParent）は $`j_0 \to^M_{i_1} j_1`$ をみたす
-$`j_0`$ の一意存在であるから、$`\lvert G'\rvert = \lvert G\rvert`$。
+**(i) $`\lvert G'\rvert = \lvert G\rvert`$.**
+$`(6_n)`$ reads $`\lvert G'\rvert \to^M_{i_1} j_1`$ and (6) reads $`\lvert G\rvert \to^M_{i_1} j_1`$.
+The definition of $`\mathrm{hasParent}(M, i_1, j_1)`$ (D.hasParent) is the unique existence of
+$`j_0`$ with $`j_0 \to^M_{i_1} j_1`$, hence $`\lvert G'\rvert = \lvert G\rvert`$.
 
-**(ii) $`G' = G`$、$`v_0' = v_0`$、$`w_0' = w_0`$、$`R' = R`$、$`\ell' = \ell`$。**
-$`(1_n)`$ と (1) より
+**(ii) $`G' = G`$, $`v_0' = v_0`$, $`w_0' = w_0`$, $`R' = R`$, $`\ell' = \ell`$.**
+From $`(1_n)`$ and (1),
 
 ```math
 \bigl(G' \mathbin{+\!\!+} B'\bigr) \mathbin{+\!\!+} (\ell') = M = \bigl(G \mathbin{+\!\!+} B\bigr) \mathbin{+\!\!+} (\ell)
 ```
 
-である。末尾の 2 つの列 $`(\ell')`$ と $`(\ell)`$ は長さが等しく $`1`$ であるから、
-両辺を末尾から $`1`$ 要素ずつ比べて $`(\ell') = (\ell)`$、すなわち $`\ell' = \ell`$ を得、
-残りから $`G' \mathbin{+\!\!+} B' = G \mathbin{+\!\!+} B`$ を得る。さらに $`\lvert G'\rvert = \lvert G\rvert`$ で
-あるから、両辺を先頭から $`\lvert G\rvert`$ 要素ずつ比べて $`G' = G`$ と $`B' = B`$ を得る。
-$`B' = B`$ は $`(v_0',w_0') :: R' = (v_0,w_0) :: R`$ であるから、先頭を比べて
-$`v_0' = v_0`$、$`w_0' = w_0`$、尾を比べて $`R' = R`$ である。
+The two trailing sequences $`(\ell')`$ and $`(\ell)`$ have the same length $`1`$, so comparing
+the last $`1`$ element of each side gives $`(\ell') = (\ell)`$, that is, $`\ell' = \ell`$, and
+what remains gives $`G' \mathbin{+\!\!+} B' = G \mathbin{+\!\!+} B`$. Since moreover $`\lvert G'\rvert = \lvert G\rvert`$,
+comparing the first $`\lvert G\rvert`$ elements of each side gives $`G' = G`$ and $`B' = B`$.
+Now $`B' = B`$ reads $`(v_0',w_0') :: R' = (v_0,w_0) :: R`$, so comparing the heads gives
+$`v_0' = v_0`$ and $`w_0' = w_0`$, and comparing the tails gives $`R' = R`$.
 
-**(iii) $`d_0' = d_0`$。**
-まず補助的に次を示す。任意の $`e`$ について $`e \to^M_1 j_1`$ ならば $`i_1 \ne 0`$ である。
-実際 $`\to^M_1`$ の定義（D.nextrel1）の第 4 条件より $`M_{1,e} \lt M_{1,j_1}`$ であるから
-$`0 \lt M_{1,j_1}`$ であり、$`\mathrm{idx}_1`$ の定義（D.idx1）の第 1 の場合が選ばれて
-$`i_1 = 1 \ne 0`$ である。
+**(iii) $`d_0' = d_0`$.**
+First we prove the following auxiliary claim: for every $`e`$, if $`e \to^M_1 j_1`$ then $`i_1 \ne 0`$.
+Indeed, the fourth condition of the definition of $`\to^M_1`$ (D.nextrel1) gives $`M_{1,e} \lt M_{1,j_1}`$,
+hence $`0 \lt M_{1,j_1}`$, so the first case of the definition of $`\mathrm{idx}_1`$ (D.idx1) is selected and
+$`i_1 = 1 \ne 0`$.
 
-$`(5')`$ と $`(5'_n)`$ の選言について 4 通りを尽くす。
+We exhaust the four combinations of the disjunctions in $`(5')`$ and $`(5'_n)`$.
 
-- 両方とも第 1 選言のとき。$`d_0 = 0`$ かつ $`d_0' = 0`$ であるから $`d_0' = d_0`$。
-- $`(5')`$ が第 1 選言、$`(5'_n)`$ が第 2 選言のとき。前者から $`i_1 = 0`$、後者から
-  $`\lvert G'\rvert \to^M_1 j_1`$ であり、補助の主張を $`e := \lvert G'\rvert`$ に適用すると
-  $`i_1 \ne 0`$ となって矛盾する。よってこの場合は起こらない。
-- $`(5')`$ が第 2 選言、$`(5'_n)`$ が第 1 選言のとき。後者から $`i_1 = 0`$、
-  前者から $`\lvert G\rvert \to^M_1 j_1`$ であり、補助の主張を $`e := \lvert G\rvert`$ に適用すると
-  $`i_1 \ne 0`$ となって矛盾する。よってこの場合は起こらない。
-- 両方とも第 2 選言のとき。$`\ell_1 = v_0 + d_0`$ と $`\ell'_1 = v_0' + d_0'`$ であり、
-  $`\ell' = \ell`$、$`v_0' = v_0`$ であるから $`v_0 + d_0 = v_0 + d_0'`$、すなわち $`d_0' = d_0`$。
+- Both are the first disjunct. Then $`d_0 = 0`$ and $`d_0' = 0`$, hence $`d_0' = d_0`$.
+- $`(5')`$ is the first disjunct and $`(5'_n)`$ the second. The former gives $`i_1 = 0`$ and the latter
+  $`\lvert G'\rvert \to^M_1 j_1`$; applying the auxiliary claim with $`e := \lvert G'\rvert`$ gives
+  $`i_1 \ne 0`$, a contradiction. Hence this case does not occur.
+- $`(5')`$ is the second disjunct and $`(5'_n)`$ the first. The latter gives $`i_1 = 0`$ and the former
+  $`\lvert G\rvert \to^M_1 j_1`$; applying the auxiliary claim with $`e := \lvert G\rvert`$ gives
+  $`i_1 \ne 0`$, a contradiction. Hence this case does not occur.
+- Both are the second disjunct. Then $`\ell_1 = v_0 + d_0`$ and $`\ell'_1 = v_0' + d_0'`$, and since
+  $`\ell' = \ell`$ and $`v_0' = v_0`$, we get $`v_0 + d_0 = v_0 + d_0'`$, that is, $`d_0' = d_0`$.
 
-以上より $`(2_n)`$ の右辺の $`G', B', d_0'`$ をすべて $`G, B, d_0`$ に書き換えてよい。
-$`(2_n)`$ は
+Consequently $`G'`$, $`B'`$ and $`d_0'`$ on the right-hand side of $`(2_n)`$ may all be rewritten as
+$`G`$, $`B`$ and $`d_0`$. Thus $`(2_n)`$ reads
 
 ```math
 M[n] = G \mathbin{+\!\!+} B^{+0\cdot d_0} \mathbin{+\!\!+} B^{+1\cdot d_0}
   \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}
 ```
 
-であり（$`L^{+e}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)は $`L`$ の各対の第 1 成分に $`e`$ を足した列である）、
-右辺の $`B^{+0\cdot d_0} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}`$ は
-$`\mathrm{cp}`$ の定義（D.copies）そのものであるから
-$`\mathrm{cp}_{d_0}(B, n)`$ に等しい。よって (2) を得る。∎
+where $`L^{+e}`$ [D.shiftr0](Cnf-2.md#d-shiftr0) is the sequence obtained from $`L`$ by adding $`e`$ to
+the first entry of each pair, and the part $`B^{+0\cdot d_0} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}`$
+of the right-hand side is exactly the definition of $`\mathrm{cp}`$ (D.copies), hence equals
+$`\mathrm{cp}_{d_0}(B, n)`$. This gives (2). ∎

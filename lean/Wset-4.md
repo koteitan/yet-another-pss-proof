@@ -1,190 +1,190 @@
-[← README](README.md) ｜ Wset [1](Wset.md) [2](Wset-2.md) [3](Wset-3.md) **4**
+[← README](README.md) | [English](Wset-4.md) | [Japanese](Wset-4-ja.md) | Wset [1](Wset.md) [2](Wset-2.md) [3](Wset-3.md) **4**
 
 <a id="t-oper_cons_succ"></a>
-## 定理: 後続子の主要ステップ (T.oper_cons_succ)
+## Theorem: the principal step for a successor (T.oper_cons_succ)
 
-### 定理
+### Theorem
 
-$`v, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とし、
-$`k_1 := \lvert R\rvert - 1`$ とおく。
-$`\mathrm{argOK}(R)`$（[D.argOK](Wset.md#d-argOK)）、$`R \ne ()`$、
-$`R_{1,k_1} = 0`$（[D.entry](Pss.md#d-entry)）、
-$`\neg\,\mathrm{hasParent}(R, 0, k_1)`$（[D.hasParent](Pss.md#d-hasParent)）
-を仮定すると
+Let $`v, n \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)), and put
+$`k_1 := \lvert R\rvert - 1`$.
+Assume $`\mathrm{argOK}(R)`$ ([D.argOK](Wset.md#d-argOK)), $`R \ne ()`$,
+$`R_{1,k_1} = 0`$ ([D.entry](Pss.md#d-entry)) and
+$`\neg\,\mathrm{hasParent}(R, 0, k_1)`$ ([D.hasParent](Pss.md#d-hasParent)).
+Then
 
 ```math
 \bigl((0,v) :: R\bigr)[n] = \bigl((0,v) :: \mathrm{dropLast}\,R\bigr)^{\frown n} .
 ```
 
-（$`M[n]`$ [D.oper](Pss.md#d-oper)）
+($`M[n]`$ [D.oper](Pss.md#d-oper))
 
-ここで列 $`Q`$ に対し $`Q^{\frown n}`$ を $`Q`$ を $`n`$ 個連結した列とする。すなわち
+Here, for a sequence $`Q`$, let $`Q^{\frown n}`$ denote the concatenation of $`n`$ copies of $`Q`$; that is,
 
 ```math
 Q^{\frown 0} := (), \qquad Q^{\frown (n+1)} := Q^{\frown n} \mathbin{+\!\!+} Q .
 ```
 
-### 証明
+### Proof
 
-$`M := (0,v) :: R`$ と書く。$`R \ne ()`$ より $`0 \lt \lvert R\rvert`$ であり、
-$`\lvert M\rvert - 1 = \lvert R\rvert`$ である。
-[T.entry_cons_last](Wset-3.md#t-entry_cons_last) より $`M_{0,\lvert R\rvert} = R_{0,k_1}`$ である。
+Write $`M := (0,v) :: R`$. From $`R \ne ()`$ we get $`0 \lt \lvert R\rvert`$, hence
+$`\lvert M\rvert - 1 = \lvert R\rvert`$.
+By [T.entry_cons_last](Wset-3.md#t-entry_cons_last) we have $`M_{0,\lvert R\rvert} = R_{0,k_1}`$.
 
-**第 1 段：$`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 0`$（[D.idx1](Pss.md#d-idx1)）。**
-[T.idx1_cons_last](Wset-3.md#t-idx1_cons_last) より
-$`\mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1)`$ であり、
-仮定 $`R_{1,k_1} = 0`$ と $`\mathrm{idx}_1`$ の定義（D.idx1）の第 2 の場合により
-$`\mathrm{idx}_1(R, k_1) = 0`$ である。
+**Step 1: $`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 0`$ ([D.idx1](Pss.md#d-idx1)).**
+By [T.idx1_cons_last](Wset-3.md#t-idx1_cons_last) we have
+$`\mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1)`$, and the hypothesis $`R_{1,k_1} = 0`$
+together with the second case of the definition of $`\mathrm{idx}_1`$ (D.idx1) gives
+$`\mathrm{idx}_1(R, k_1) = 0`$.
 
-**第 2 段：$`\forall k \lt k_1,\ R_{0,k_1} \le R_{0,k}`$。**
-$`k \lt k_1`$ かつ $`R_{0,k} \lt R_{0,k_1}`$ なる $`k`$ が存在したとすると、
-$`k_1 \lt \lvert R\rvert`$ であるから [T.hasParent_zero_iff](Wset-3.md#t-hasParent_zero_iff) より
-$`\mathrm{hasParent}(R, 0, k_1)`$ となり、仮定に反する。
+**Step 2: $`\forall k \lt k_1,\ R_{0,k_1} \le R_{0,k}`$.**
+Suppose there were a $`k`$ with $`k \lt k_1`$ and $`R_{0,k} \lt R_{0,k_1}`$. Since
+$`k_1 \lt \lvert R\rvert`$, [T.hasParent_zero_iff](Wset-3.md#t-hasParent_zero_iff) would give
+$`\mathrm{hasParent}(R, 0, k_1)`$, contrary to the hypothesis.
 
-**第 3 段：$`0 \to^M_0 \lvert R\rvert`$（[D.nextrel0](Pss.md#d-nextrel0)）。**
-$`\to^M_0`$ の定義（D.nextrel0）の 5 条件を確かめる。
+**Step 3: $`0 \to^M_0 \lvert R\rvert`$ ([D.nextrel0](Pss.md#d-nextrel0)).**
+We verify the five conditions of the definition of $`\to^M_0`$ (D.nextrel0).
 
-- (1) $`0 \lt \lvert M\rvert`$：$`\lvert M\rvert = \lvert R\rvert + 1 \ge 1`$。
-- (2) $`\lvert R\rvert \lt \lvert M\rvert`$：同上。
-- (3) $`0 \lt \lvert R\rvert`$：$`R \ne ()`$ による。
-- (4) $`M_{0,0} \lt M_{0,\lvert R\rvert}`$：$`M`$ の第 $`0`$ 列は $`(0,v)`$ であるから
-  $`M_{0,0} = 0`$ である。一方 $`k_1 \lt \lvert R\rvert`$ と
-  [T.entry_pair_mem](Wset-2.md#t-entry_pair_mem) より対 $`(R_{0,k_1}, R_{1,k_1})`$ は $`R`$ の要素だから、
-  $`\mathrm{argOK}`$ の定義（D.argOK）より $`M_{0,\lvert R\rvert} = R_{0,k_1} \gt 0`$ である。
-- (5) $`\forall l,\ (0 \lt l \wedge l \lt \lvert R\rvert) \to M_{0,\lvert R\rvert} \le M_{0,l}`$：
-  $`l = l' + 1`$ と書けて $`l' \lt k_1`$ である。[T.entry_cons](Wset-3.md#t-entry_cons) より
-  $`M_{0,l'+1} = R_{0,l'}`$ であり、第 2 段が $`R_{0,k_1} \le R_{0,l'}`$ を与える。
+- (1) $`0 \lt \lvert M\rvert`$: indeed $`\lvert M\rvert = \lvert R\rvert + 1 \ge 1`$.
+- (2) $`\lvert R\rvert \lt \lvert M\rvert`$: likewise.
+- (3) $`0 \lt \lvert R\rvert`$: this is because $`R \ne ()`$.
+- (4) $`M_{0,0} \lt M_{0,\lvert R\rvert}`$: column $`0`$ of $`M`$ is $`(0,v)`$, so
+  $`M_{0,0} = 0`$. On the other hand, $`k_1 \lt \lvert R\rvert`$ and
+  [T.entry_pair_mem](Wset-2.md#t-entry_pair_mem) show that the pair $`(R_{0,k_1}, R_{1,k_1})`$ is an element of $`R`$, so
+  the definition of $`\mathrm{argOK}`$ (D.argOK) gives $`M_{0,\lvert R\rvert} = R_{0,k_1} \gt 0`$.
+- (5) $`\forall l,\ (0 \lt l \wedge l \lt \lvert R\rvert) \to M_{0,\lvert R\rvert} \le M_{0,l}`$:
+  such an $`l`$ can be written $`l = l' + 1`$ with $`l' \lt k_1`$. By [T.entry_cons](Wset-3.md#t-entry_cons) we have
+  $`M_{0,l'+1} = R_{0,l'}`$, and Step 2 gives $`R_{0,k_1} \le R_{0,l'}`$.
 
-**第 4 段：$`y \to^M_0 \lvert R\rvert`$ ならば $`y = 0`$。**
-$`y \ne 0`$ とすると $`y = y' + 1`$ と書け、[T.nextR_cons_last](Wset-3.md#t-nextR_cons_last) より
-$`y' \to^R_0 k_1`$ である。その定義（D.nextrel0）の条件 (3) より $`y' \lt k_1`$、
-条件 (4) より $`R_{0,y'} \lt R_{0,k_1}`$ である。ところが第 2 段は
-$`R_{0,k_1} \le R_{0,y'}`$ を与えるから矛盾である。
+**Step 4: if $`y \to^M_0 \lvert R\rvert`$ then $`y = 0`$.**
+Suppose $`y \ne 0`$. Then $`y = y' + 1`$ for some $`y'`$, and by [T.nextR_cons_last](Wset-3.md#t-nextR_cons_last) we have
+$`y' \to^R_0 k_1`$. Condition (3) of its definition (D.nextrel0) gives $`y' \lt k_1`$, and
+condition (4) gives $`R_{0,y'} \lt R_{0,k_1}`$. But Step 2 gives
+$`R_{0,k_1} \le R_{0,y'}`$, a contradiction.
 
-**第 5 段：展開の適用。**
-第 3 段と第 4 段より $`\mathrm{hasParent}(M, 0, \lvert R\rvert)`$ が成り立ち、
-第 1 段と合わせて
-$`\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M, \lvert M\rvert-1), \lvert M\rvert-1\bigr)`$ である。
-また [T.parent_nextR](Decrease.md#t-parent_nextR) と第 4 段より
-$`\mathrm{par}^M_0(\lvert R\rvert) = 0`$（[D.parent](Pss.md#d-parent)）である。
-$`\lvert M\rvert - 1 = \lvert R\rvert \ne 0`$ であり、
-$`M_{0,\lvert R\rvert} = R_{0,k_1} \gt 0`$ より
-$`\neg(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0)`$ である。
-よって [T.oper_root_tiling](Wset-3.md#t-oper_root_tiling) が適用できる。第 1 段により
-$`\mathrm{idx}_1(M, \lvert M\rvert-1) = 0`$ であるから、そこに現れる $`e`$ は
-$`0 \lt \mathrm{idx}_1(M,\lvert M\rvert-1)`$ が偽であることにより $`e = 0`$ であり、
-各ブロックは $`(\mathrm{dropLast}\,M)^{+k\cdot 0} = \mathrm{dropLast}\,M`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）である。
-したがって
+**Step 5: applying the expansion.**
+By Steps 3 and 4 we have $`\mathrm{hasParent}(M, 0, \lvert R\rvert)`$, and together with
+Step 1 this is
+$`\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M, \lvert M\rvert-1), \lvert M\rvert-1\bigr)`$.
+Moreover [T.parent_nextR](Decrease.md#t-parent_nextR) and Step 4 give
+$`\mathrm{par}^M_0(\lvert R\rvert) = 0`$ ([D.parent](Pss.md#d-parent)).
+We have $`\lvert M\rvert - 1 = \lvert R\rvert \ne 0`$, and
+$`M_{0,\lvert R\rvert} = R_{0,k_1} \gt 0`$ gives
+$`\neg(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0)`$.
+Hence [T.oper_root_tiling](Wset-3.md#t-oper_root_tiling) applies. By Step 1 we have
+$`\mathrm{idx}_1(M, \lvert M\rvert-1) = 0`$, so the $`e`$ occurring there is $`e = 0`$, because
+$`0 \lt \mathrm{idx}_1(M,\lvert M\rvert-1)`$ is false, and
+each block is $`(\mathrm{dropLast}\,M)^{+k\cdot 0} = \mathrm{dropLast}\,M`$ ([D.shiftr0](Cnf-2.md#d-shiftr0)).
+Therefore
 
 ```math
 M[n] = \bigl(\mathrm{dropLast}\,M\bigr)^{\frown n} .
 ```
 
-最後に $`R \ne ()`$ より、$`M = (0,v) :: R`$ の末尾要素は $`R`$ の末尾要素であるから
+Finally, since $`R \ne ()`$, the last element of $`M = (0,v) :: R`$ is the last element of $`R`$, so
 
 ```math
 \mathrm{dropLast}\,M = \mathrm{dropLast}\bigl((0,v) :: R\bigr) = (0,v) :: \mathrm{dropLast}\,R
 ```
 
-である。∎
+as required. ∎
 
 <a id="t-oper_cons_tower"></a>
-## 定理: 塔の等式 (T.oper_cons_tower)
+## Theorem: the tower equation (T.oper_cons_tower)
 
-### 定理
+### Theorem
 
-$`v, m, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とする。
-$`\mathrm{argOK}(R)`$、$`\mathrm{domT}(R, m)`$（[D.domT](Wset.md#d-domT)）、$`v \le m`$ ならば
+Let $`v, m, n \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$.
+If $`\mathrm{argOK}(R)`$, $`\mathrm{domT}(R, m)`$ ([D.domT](Wset.md#d-domT)) and $`v \le m`$, then
 
 ```math
 \bigl((0,v) :: R\bigr)[n] = \mathrm{tow}_v(R,n) .
 ```
 
-（$`\mathrm{tow}_v(R,n)`$ [D.tow](Wset-3.md#d-tow)）
+($`\mathrm{tow}_v(R,n)`$ [D.tow](Wset-3.md#d-tow))
 
-### 証明
+### Proof
 
-$`M := (0,v) :: R`$、$`k_1 := \lvert R\rvert - 1`$、$`x := R_{0,k_1}`$ と書く。
+Write $`M := (0,v) :: R`$, $`k_1 := \lvert R\rvert - 1`$ and $`x := R_{0,k_1}`$.
 
-まず $`R \ne ()`$ である。実際 $`R = ()`$ とすると
-[T.not_domT_nil](Wset.md#t-not_domT_nil) が $`\mathrm{domT}(R,m)`$ に反する。
-したがって $`0 \lt \lvert R\rvert`$ であり $`\lvert M\rvert - 1 = \lvert R\rvert`$ である。
-[T.entry_cons_last](Wset-3.md#t-entry_cons_last) より
-$`M_{0,\lvert R\rvert} = R_{0,k_1} = x`$、$`M_{1,\lvert R\rvert} = R_{1,k_1}`$ である。
-$`\mathrm{domT}`$ の定義（D.domT）の第 1 連言子より $`R_{1,k_1} = m + 1`$、
-第 2 連言子より $`\neg\,\mathrm{hasParent}(R, 1, k_1)`$ である。
-また $`k_1 \lt \lvert R\rvert`$ と [T.entry_pair_mem](Wset-2.md#t-entry_pair_mem)、
-$`\mathrm{argOK}`$ の定義（D.argOK）より $`0 \lt x`$ である。
+First, $`R \ne ()`$. Indeed, if $`R = ()`$ then
+[T.not_domT_nil](Wset.md#t-not_domT_nil) contradicts $`\mathrm{domT}(R,m)`$.
+Hence $`0 \lt \lvert R\rvert`$ and $`\lvert M\rvert - 1 = \lvert R\rvert`$.
+By [T.entry_cons_last](Wset-3.md#t-entry_cons_last) we have
+$`M_{0,\lvert R\rvert} = R_{0,k_1} = x`$ and $`M_{1,\lvert R\rvert} = R_{1,k_1}`$.
+The first conjunct of the definition of $`\mathrm{domT}`$ (D.domT) gives $`R_{1,k_1} = m + 1`$, and
+the second conjunct gives $`\neg\,\mathrm{hasParent}(R, 1, k_1)`$.
+Moreover $`k_1 \lt \lvert R\rvert`$, [T.entry_pair_mem](Wset-2.md#t-entry_pair_mem) and
+the definition of $`\mathrm{argOK}`$ (D.argOK) give $`0 \lt x`$.
 
-**第 1 段：$`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 1`$。**
-[T.idx1_cons_last](Wset-3.md#t-idx1_cons_last) より
-$`\mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1)`$ であり、
-$`R_{1,k_1} = m + 1 \gt 0`$ と $`\mathrm{idx}_1`$ の定義（D.idx1）の第 1 の場合により
-その値は $`1`$ である。
+**Step 1: $`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 1`$.**
+By [T.idx1_cons_last](Wset-3.md#t-idx1_cons_last) we have
+$`\mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1)`$, and
+$`R_{1,k_1} = m + 1 \gt 0`$ together with the first case of the definition of $`\mathrm{idx}_1`$ (D.idx1)
+shows that this value is $`1`$.
 
-**第 2 段：$`y \to^M_1 \lvert R\rvert`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば $`y = 0`$。**
-$`y \ne 0`$ とすると $`y = y' + 1`$ と書け、[T.nextR_cons_last](Wset-3.md#t-nextR_cons_last) より
-$`y' \to^R_1 k_1`$ である。$`\to^R_1`$ の定義（D.nextrel1）の条件 (3)(4)(5) はそれぞれ
-$`y' \lt k_1`$、$`R_{1,y'} \lt R_{1,k_1}`$、$`y' \le^R_0 k_1`$（[D.le0](Pss.md#d-le0)）であり、これは
-$`\mathrm{r1cand}(R, k_1, y')`$（[D.r1cand](Wset.md#d-r1cand)）にほかならない。$`k_1 \lt \lvert R\rvert`$ であるから
-[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) より $`\mathrm{hasParent}(R, 1, k_1)`$ となり、
-上で見た $`\neg\,\mathrm{hasParent}(R,1,k_1)`$ に矛盾する。
+**Step 2: if $`y \to^M_1 \lvert R\rvert`$ ([D.nextrel1](Pss.md#d-nextrel1)) then $`y = 0`$.**
+Suppose $`y \ne 0`$. Then $`y = y' + 1`$ for some $`y'`$, and by [T.nextR_cons_last](Wset-3.md#t-nextR_cons_last) we have
+$`y' \to^R_1 k_1`$. Conditions (3), (4) and (5) of the definition of $`\to^R_1`$ (D.nextrel1) read
+$`y' \lt k_1`$, $`R_{1,y'} \lt R_{1,k_1}`$ and $`y' \le^R_0 k_1`$ ([D.le0](Pss.md#d-le0)) respectively, and these are
+exactly $`\mathrm{r1cand}(R, k_1, y')`$ ([D.r1cand](Wset.md#d-r1cand)). Since $`k_1 \lt \lvert R\rvert`$,
+[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) gives $`\mathrm{hasParent}(R, 1, k_1)`$, which
+contradicts the $`\neg\,\mathrm{hasParent}(R,1,k_1)`$ obtained above.
 
-**第 3 段：$`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ と $`\mathrm{par}^M_1(\lvert R\rvert) = 0`$。**
-$`v \le m \lt m + 1 = R_{1,k_1}`$ であるから、
-[T.hasParent_cons_one](Wset-3.md#t-hasParent_cons_one) を第 2 選言で適用して
-$`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ を得る。
-[T.parent_nextR](Decrease.md#t-parent_nextR) より
-$`\mathrm{par}^M_1(\lvert R\rvert) \to^M_1 \lvert R\rvert`$ であるから、第 2 段より
-$`\mathrm{par}^M_1(\lvert R\rvert) = 0`$ である。
+**Step 3: $`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ and $`\mathrm{par}^M_1(\lvert R\rvert) = 0`$.**
+Since $`v \le m \lt m + 1 = R_{1,k_1}`$, applying
+[T.hasParent_cons_one](Wset-3.md#t-hasParent_cons_one) with the second disjunct gives
+$`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$.
+By [T.parent_nextR](Decrease.md#t-parent_nextR) we have
+$`\mathrm{par}^M_1(\lvert R\rvert) \to^M_1 \lvert R\rvert`$, so Step 2 gives
+$`\mathrm{par}^M_1(\lvert R\rvert) = 0`$.
 
-**第 4 段：敷き詰めの形。**
-$`\lvert M\rvert - 1 = \lvert R\rvert \ne 0`$ であり、$`M_{0,\lvert R\rvert} = x \gt 0`$ より
-$`\neg(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0)`$ である。
-第 1 段・第 3 段と合わせて [T.oper_root_tiling](Wset-3.md#t-oper_root_tiling) が適用できる。
-第 1 段より $`\mathrm{idx}_1(M,\lvert M\rvert-1) = 1 \gt 0`$ であるから、そこに現れる $`e`$ は
+**Step 4: the shape of the tiling.**
+We have $`\lvert M\rvert - 1 = \lvert R\rvert \ne 0`$, and $`M_{0,\lvert R\rvert} = x \gt 0`$ gives
+$`\neg(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0)`$.
+Together with Steps 1 and 3, [T.oper_root_tiling](Wset-3.md#t-oper_root_tiling) applies.
+By Step 1 we have $`\mathrm{idx}_1(M,\lvert M\rvert-1) = 1 \gt 0`$, so the $`e`$ occurring there is
 
 ```math
 e = M_{0,\lvert M\rvert-1} - M_{0,0} = x - 0 = x
 ```
 
-である（$`M`$ の第 $`0`$ 列は $`(0,v)`$ だから $`M_{0,0} = 0`$）。また
-$`R \ne ()`$ より $`\mathrm{dropLast}\,M = (0,v) :: \mathrm{dropLast}\,R`$ である。
-$`D := (0,v) :: \mathrm{dropLast}\,R`$ とおくと
+(column $`0`$ of $`M`$ is $`(0,v)`$, so $`M_{0,0} = 0`$). Moreover
+$`R \ne ()`$ gives $`\mathrm{dropLast}\,M = (0,v) :: \mathrm{dropLast}\,R`$.
+Putting $`D := (0,v) :: \mathrm{dropLast}\,R`$, we get
 
 ```math
 M[n] = D^{+0\cdot x} \mathbin{+\!\!+} D^{+1\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} .
 ```
 
-**第 5 段：右辺が $`\mathrm{tow}_v(R,n)`$ に等しいこと。**
-$`n`$ に関する帰納法。帰納法の述語は
+**Step 5: the right-hand side equals $`\mathrm{tow}_v(R,n)`$.**
+By induction on $`n`$. The induction predicate is
 
 ```math
 \Phi(n) :\equiv D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} = \mathrm{tow}_v(R,n) .
 ```
 
-- **基底段** $`n = 0`$：左辺は空の連結すなわち $`()`$ であり、
-  $`\mathrm{tow}`$ の定義（D.tow）の第 1 式より $`\mathrm{tow}_v(R,0) = ()`$ である。
+- **Base case** $`n = 0`$: the left-hand side is the empty concatenation, that is $`()`$, and
+  the first clause of the definition of $`\mathrm{tow}`$ (D.tow) gives $`\mathrm{tow}_v(R,0) = ()`$.
 
-- **帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$ である。
-  左辺の先頭ブロックを切り出すと、$`D^{+0\cdot x} = D`$ であり、
-  残りは各ブロックの添字を 1 ずつずらしたものだから
+- **Inductive step** $`n \to n+1`$: the induction hypothesis is $`\Phi(n)`$.
+  Splitting off the first block of the left-hand side, we have $`D^{+0\cdot x} = D`$, and
+  the remaining blocks are those of the left-hand side with each index shifted by one, so
 
 ```math
 D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+n x}
   = D \mathbin{+\!\!+} \Bigl(D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x}\Bigr)^{+x}
 ```
 
-  である（$`(L^{+a})^{+b} = L^{+(a+b)}`$ と $`k\,x + x = (k+1)x`$ による）。
-  帰納法の仮定 $`\Phi(n)`$ を右辺の括弧の中に適用すると
+  (this uses $`(L^{+a})^{+b} = L^{+(a+b)}`$ and $`k\,x + x = (k+1)x`$).
+  Applying the induction hypothesis $`\Phi(n)`$ inside the parentheses on the right-hand side gives
 
 ```math
 D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+n x}
   = D \mathbin{+\!\!+} \bigl(\mathrm{tow}_v(R,n)\bigr)^{+x}
 ```
 
-  を得る。一方 $`\mathrm{tow}`$ の定義（D.tow）の第 2 式と
-  $`\mathrm{graft}`$ の定義（[D.graft](Wset.md#d-graft)）より
+  On the other hand, the second clause of the definition of $`\mathrm{tow}`$ (D.tow) and
+  the definition of $`\mathrm{graft}`$ ([D.graft](Wset.md#d-graft)) give
 
 ```math
 \begin{aligned}
@@ -195,629 +195,627 @@ D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+n x}
 \end{aligned}
 ```
 
-  であり、$`R_{0,\lvert R\rvert-1} = x`$、$`(0,v) :: \mathrm{dropLast}\,R = D`$ であるから
-  右辺は $`D \mathbin{+\!\!+} (\mathrm{tow}_v(R,n))^{+x}`$ に等しい。よって $`\Phi(n+1)`$。∎
+  and since $`R_{0,\lvert R\rvert-1} = x`$ and $`(0,v) :: \mathrm{dropLast}\,R = D`$, the
+  right-hand side equals $`D \mathbin{+\!\!+} (\mathrm{tow}_v(R,n))^{+x}`$. Hence $`\Phi(n+1)`$. ∎
 
 <a id="t-domT_cons_of_lt"></a>
-## 定理: 連続の場合の $`\mathrm{dom}`$ の継承 (T.domT_cons_of_lt)
+## Theorem: inheritance of $`\mathrm{dom}`$ in the continuing case (T.domT_cons_of_lt)
 
-### 定理
+### Theorem
 
-$`v, m \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とする。
-$`\mathrm{argOK}(R)`$、$`\mathrm{domT}(R, m)`$、$`m \lt v`$ ならば
-$`\mathrm{domT}\bigl((0,v) :: R,\ m\bigr)`$。
+Let $`v, m \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$.
+If $`\mathrm{argOK}(R)`$, $`\mathrm{domT}(R, m)`$ and $`m \lt v`$, then
+$`\mathrm{domT}\bigl((0,v) :: R,\ m\bigr)`$.
 
-### 証明
+### Proof
 
-$`M := (0,v) :: R`$、$`k_1 := \lvert R\rvert - 1`$ と書く。
-[T.not_domT_nil](Wset.md#t-not_domT_nil) より $`R \ne ()`$ であり、
-$`0 \lt \lvert R\rvert`$、$`\lvert M\rvert - 1 = \lvert R\rvert`$ である。
-[T.entry_cons_last](Wset-3.md#t-entry_cons_last) より $`M_{1,\lvert R\rvert} = R_{1,k_1}`$ である。
+Write $`M := (0,v) :: R`$ and $`k_1 := \lvert R\rvert - 1`$.
+By [T.not_domT_nil](Wset.md#t-not_domT_nil) we have $`R \ne ()`$, hence
+$`0 \lt \lvert R\rvert`$ and $`\lvert M\rvert - 1 = \lvert R\rvert`$.
+By [T.entry_cons_last](Wset-3.md#t-entry_cons_last) we have $`M_{1,\lvert R\rvert} = R_{1,k_1}`$.
 
-$`\mathrm{domT}`$ の定義（D.domT）の 2 つの連言子を示す。
+We prove the two conjuncts of the definition of $`\mathrm{domT}`$ (D.domT).
 
-**第 1 連言子 $`M_{1,\lvert M\rvert - 1} = m + 1`$。**
-$`M_{1,\lvert M\rvert-1} = M_{1,\lvert R\rvert} = R_{1,k_1}`$ であり、
-仮定 $`\mathrm{domT}(R,m)`$ の第 1 連言子より $`R_{1,k_1} = m + 1`$ である。
+**First conjunct $`M_{1,\lvert M\rvert - 1} = m + 1`$.**
+We have $`M_{1,\lvert M\rvert-1} = M_{1,\lvert R\rvert} = R_{1,k_1}`$, and the first conjunct of
+the hypothesis $`\mathrm{domT}(R,m)`$ gives $`R_{1,k_1} = m + 1`$.
 
-**第 2 連言子 $`\neg\,\mathrm{hasParent}(M, 1, \lvert M\rvert - 1)`$。**
-$`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ を仮定して矛盾を導く。
-[T.cons_len_lt](Wset-3.md#t-cons_len_lt) より $`\lvert R\rvert \lt \lvert M\rvert`$ であるから
-[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) が使えて、
+**Second conjunct $`\neg\,\mathrm{hasParent}(M, 1, \lvert M\rvert - 1)`$.**
+Assume $`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ and derive a contradiction.
+By [T.cons_len_lt](Wset-3.md#t-cons_len_lt) we have $`\lvert R\rvert \lt \lvert M\rvert`$, so
+[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) applies and yields a $`j_0`$ satisfying
 
 ```math
 j_0 \lt \lvert R\rvert, \qquad j_0 \le^M_0 \lvert R\rvert, \qquad M_{1,j_0} \lt M_{1,\lvert R\rvert} = m+1
 ```
 
-をみたす $`j_0`$ が取れる。$`j_0`$ で場合分けする。
+We distinguish cases on $`j_0`$.
 
-- **$`j_0 = 0`$ のとき。** $`M`$ の第 $`0`$ 列は $`(0,v)`$ であるから $`M_{1,0} = v`$ であり、
-  $`v \lt m + 1`$ すなわち $`v \le m`$ となる。これは仮定 $`m \lt v`$ に矛盾する。
+- **The case $`j_0 = 0`$.** Column $`0`$ of $`M`$ is $`(0,v)`$, so $`M_{1,0} = v`$ and hence
+  $`v \lt m + 1`$, that is $`v \le m`$. This contradicts the hypothesis $`m \lt v`$.
 
-- **$`j_0 = j' + 1`$ のとき。** [T.entry_cons](Wset-3.md#t-entry_cons) より
-  $`M_{1,j'+1} = R_{1,j'}`$ であるから $`R_{1,j'} \lt m + 1 = R_{1,k_1}`$ である。
-  また $`j' + 1 \lt \lvert R\rvert`$ より $`j' \lt \lvert R\rvert - 1 = k_1`$ であり、
-  $`j' + 1 \le^M_0 \lvert R\rvert`$ と [T.le0_cons_last](Wset-3.md#t-le0_cons_last) より
-  $`j' \le^R_0 k_1`$ である。
-  これら 3 つは $`\mathrm{r1cand}(R, k_1, j')`$ にほかならないから、
-  $`k_1 \lt \lvert R\rvert`$ と [T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) より
-  $`\mathrm{hasParent}(R, 1, k_1)`$ を得る。これは仮定 $`\mathrm{domT}(R,m)`$ の
-  第 2 連言子に矛盾する。∎
+- **The case $`j_0 = j' + 1`$.** By [T.entry_cons](Wset-3.md#t-entry_cons) we have
+  $`M_{1,j'+1} = R_{1,j'}`$, hence $`R_{1,j'} \lt m + 1 = R_{1,k_1}`$.
+  Moreover $`j' + 1 \lt \lvert R\rvert`$ gives $`j' \lt \lvert R\rvert - 1 = k_1`$, and
+  $`j' + 1 \le^M_0 \lvert R\rvert`$ together with [T.le0_cons_last](Wset-3.md#t-le0_cons_last) gives
+  $`j' \le^R_0 k_1`$.
+  These three are exactly $`\mathrm{r1cand}(R, k_1, j')`$, so
+  $`k_1 \lt \lvert R\rvert`$ and [T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) give
+  $`\mathrm{hasParent}(R, 1, k_1)`$. This contradicts the second conjunct of the hypothesis
+  $`\mathrm{domT}(R,m)`$. ∎
 
 <a id="t-argOK_oper"></a>
-## 定理: 引数ブロックは展開で保たれる (T.argOK_oper)
+## Theorem: the argument block is preserved under expansion (T.argOK_oper)
 
-### 定理
+### Theorem
 
-$`\mathrm{argOK}(R)`$ ならば、任意の $`n`$ に対し $`\mathrm{argOK}(R[n])`$。
+If $`\mathrm{argOK}(R)`$, then $`\mathrm{argOK}(R[n])`$ for every $`n`$.
 
-### 証明
+### Proof
 
-$`\mathrm{argOK}`$ の定義（D.argOK）より、仮定は $`\forall p \in R,\ 0 \lt p_1`$、
-すなわち $`\forall p \in R,\ 1 \le p_1`$ である。
-[T.oper_mem_ge](Wset-2.md#t-oper_mem_ge) を $`c := 1`$、$`B := R`$ として適用すると
-$`\forall p \in R[n],\ 1 \le p_1`$、すなわち $`\forall p \in R[n],\ 0 \lt p_1`$ を得る。∎
+By the definition of $`\mathrm{argOK}`$ (D.argOK), the hypothesis reads $`\forall p \in R,\ 0 \lt p_1`$,
+that is $`\forall p \in R,\ 1 \le p_1`$.
+Applying [T.oper_mem_ge](Wset-2.md#t-oper_mem_ge) with $`c := 1`$ and $`B := R`$ gives
+$`\forall p \in R[n],\ 1 \le p_1`$, that is $`\forall p \in R[n],\ 0 \lt p_1`$. ∎
 
 <a id="t-argOK_graft"></a>
-## 定理: 引数ブロックは接ぎ木で保たれる (T.argOK_graft)
+## Theorem: the argument block is preserved under grafting (T.argOK_graft)
 
-### 定理
+### Theorem
 
-$`R \ne ()`$ かつ $`\mathrm{argOK}(R)`$ ならば、任意の $`z' \in \mathrm{PairSeq}`$ に対し
-$`\mathrm{argOK}\bigl(\mathrm{graft}(R, z')\bigr)`$。
+If $`R \ne ()`$ and $`\mathrm{argOK}(R)`$, then for every $`z' \in \mathrm{PairSeq}`$ we have
+$`\mathrm{argOK}\bigl(\mathrm{graft}(R, z')\bigr)`$.
 
-### 証明
+### Proof
 
-仮定は $`\forall p \in R,\ 1 \le p_1`$ と同値である。
-[T.graft_mem_ge](Wset-2.md#t-graft_mem_ge) を $`c := 1`$、$`B := R`$、$`z := z'`$ として適用すると
-$`\forall p \in \mathrm{graft}(R,z'),\ 1 \le p_1`$、すなわち
-$`\forall p \in \mathrm{graft}(R,z'),\ 0 \lt p_1`$ を得る。∎
+The hypothesis is equivalent to $`\forall p \in R,\ 1 \le p_1`$.
+Applying [T.graft_mem_ge](Wset-2.md#t-graft_mem_ge) with $`c := 1`$, $`B := R`$ and $`z := z'`$ gives
+$`\forall p \in \mathrm{graft}(R,z'),\ 1 \le p_1`$, that is
+$`\forall p \in \mathrm{graft}(R,z'),\ 0 \lt p_1`$. ∎
 
 <a id="t-argOK_dropLast"></a>
-## 定理: 引数ブロックは末尾切りで保たれる (T.argOK_dropLast)
+## Theorem: the argument block is preserved under dropLast (T.argOK_dropLast)
 
-### 定理
+### Theorem
 
-$`\mathrm{argOK}(R)`$ ならば $`\mathrm{argOK}(\mathrm{dropLast}\,R)`$。
+If $`\mathrm{argOK}(R)`$ then $`\mathrm{argOK}(\mathrm{dropLast}\,R)`$.
 
-### 証明
+### Proof
 
-$`p \in \mathrm{dropLast}\,R`$ とする。$`\mathrm{dropLast}\,R`$ は $`R`$ の前部分列であるから
-$`p \in R`$ であり、$`\mathrm{argOK}`$ の定義（D.argOK）より $`0 \lt p_1`$。∎
+Let $`p \in \mathrm{dropLast}\,R`$. Since $`\mathrm{dropLast}\,R`$ is a prefix of $`R`$, we have
+$`p \in R`$, and the definition of $`\mathrm{argOK}`$ (D.argOK) gives $`0 \lt p_1`$. ∎
 
 <a id="t-based_cons"></a>
-## 定理: 主要ブロックは正規化形 (T.based_cons)
+## Theorem: the principal block is in normalized form (T.based_cons)
 
-### 定理
+### Theorem
 
-任意の $`v \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ に対し
-$`\mathrm{based}\bigl((0,v) :: R\bigr)`$（[D.based](Wset.md#d-based)）。
+For all $`v \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$,
+$`\mathrm{based}\bigl((0,v) :: R\bigr)`$ ([D.based](Wset.md#d-based)).
 
-### 証明
+### Proof
 
-$`\mathrm{based}`$ の定義（D.based）より示すべきことは
-$`\bigl((0,v) :: R\bigr)_{0,0} = 0`$ である。
-$`(0,v) :: R`$ の第 $`0`$ 列は $`(0,v)`$ であるから、
-$`M_{i,j}`$ の定義（D.entry）よりその行 $`0`$ の値は $`0`$ である。∎
+By the definition of $`\mathrm{based}`$ (D.based), what is to be shown is
+$`\bigl((0,v) :: R\bigr)_{0,0} = 0`$.
+Column $`0`$ of $`(0,v) :: R`$ is $`(0,v)`$, so by
+the definition of $`M_{i,j}`$ (D.entry) its row $`0`$ value is $`0`$. ∎
 
 <a id="t-rsum_self_cons"></a>
-## 定理: 主要ブロックの根は最小の深さをもつ (T.rsum_self_cons)
+## Theorem: the root of the principal block has minimal depth (T.rsum_self_cons)
 
-### 定理
+### Theorem
 
-任意の $`v \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ に対し
+For all $`v \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$,
 
 ```math
 \forall p \in (0,v) :: R,\ \bigl((0,v) :: R\bigr)_{0,0} \le p_1 .
 ```
 
-### 証明
+### Proof
 
-$`(0,v) :: R`$ の第 $`0`$ 列は $`(0,v)`$ であるから
-$`\bigl((0,v) :: R\bigr)_{0,0} = 0`$ である（$`M_{i,j}`$ の定義 D.entry）。
-$`p_1`$ は自然数であるから $`0 \le p_1`$ である。∎
+Column $`0`$ of $`(0,v) :: R`$ is $`(0,v)`$, so
+$`\bigl((0,v) :: R\bigr)_{0,0} = 0`$ (definition of $`M_{i,j}`$, D.entry).
+Since $`p_1`$ is a natural number, $`0 \le p_1`$. ∎
 
 <a id="t-W_flatMap_copies"></a>
-## 定理: 同一の木の複製も $`W_u`$ に属する (T.W_flatMap_copies)
+## Theorem: repeated copies of the same tree also belong to $`W_u`$ (T.W_flatMap_copies)
 
-### 定理
+### Theorem
 
-$`Q \in W_u`$（[D.W](Wset.md#d-W)）かつ $`\forall p \in Q,\ Q_{0,0} \le p_1`$ ならば、
-任意の $`n \in \mathbb{N}`$ に対し
-$`Q^{\frown n} \in W_u`$。
+If $`Q \in W_u`$ ([D.W](Wset.md#d-W)) and $`\forall p \in Q,\ Q_{0,0} \le p_1`$, then
+$`Q^{\frown n} \in W_u`$ for every $`n \in \mathbb{N}`$.
 
-### 証明
+### Proof
 
-$`n`$ に関する帰納法。帰納法の述語は
+By induction on $`n`$. The induction predicate is
 
 ```math
 \Phi(n) :\equiv Q^{\frown n} \in W_u .
 ```
 
-- **基底段** $`n = 0`$：$`Q^{\frown 0} = ()`$ であり、
-  [T.W_nil](Wset.md#t-W_nil) より $`() \in W_u`$ である。
+- **Base case** $`n = 0`$: $`Q^{\frown 0} = ()`$, and
+  [T.W_nil](Wset.md#t-W_nil) gives $`() \in W_u`$.
 
-- **帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち $`Q^{\frown n} \in W_u`$ である。
-  $`Q^{\frown(n+1)} = Q^{\frown n} \mathbin{+\!\!+} Q`$ であるから、
-  [T.W_add](Wset-3.md#t-W_add) を $`A := Q^{\frown n}`$、$`B := Q`$ として適用すればよい。
-  その仮定 $`\mathrm{rsum}(Q^{\frown n}, Q)`$（[D.rsum](Wset.md#d-rsum)）、すなわち
+- **Inductive step** $`n \to n+1`$: the induction hypothesis is $`\Phi(n)`$, that is $`Q^{\frown n} \in W_u`$.
+  Since $`Q^{\frown(n+1)} = Q^{\frown n} \mathbin{+\!\!+} Q`$, it suffices to apply
+  [T.W_add](Wset-3.md#t-W_add) with $`A := Q^{\frown n}`$ and $`B := Q`$.
+  We verify its hypothesis $`\mathrm{rsum}(Q^{\frown n}, Q)`$ ([D.rsum](Wset.md#d-rsum)), that is
 
 ```math
 \forall p \in Q^{\frown n} \mathbin{+\!\!+} Q,\ Q_{0,0} \le p_1
 ```
 
-  を確かめる。$`p \in Q^{\frown n} \mathbin{+\!\!+} Q`$ とすると、
-  $`p \in Q^{\frown n}`$ か $`p \in Q`$ である。後者のときは仮定そのものである。
-  前者のとき、$`Q^{\frown n}`$ は $`Q`$ を $`n`$ 個連結した列であるから $`p \in Q`$ であり、
-  やはり仮定が $`Q_{0,0} \le p_1`$ を与える。よって $`\Phi(n+1)`$。∎
+  Let $`p \in Q^{\frown n} \mathbin{+\!\!+} Q`$. Then
+  $`p \in Q^{\frown n}`$ or $`p \in Q`$. In the latter case this is the hypothesis itself.
+  In the former case, since $`Q^{\frown n}`$ is the concatenation of $`n`$ copies of $`Q`$, we have $`p \in Q`$,
+  and again the hypothesis gives $`Q_{0,0} \le p_1`$. Hence $`\Phi(n+1)`$. ∎
 
 <a id="t-Wstar_closed"></a>
-## 定理: $`A_u(W^{*}) \subseteq W^{*}`$ (T.Wstar_closed)
+## Theorem: $`A_u(W^{*}) \subseteq W^{*}`$ (T.Wstar_closed)
 
-### 定理
+### Theorem
 
-任意の $`u \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ に対し、
-$`M \in A_u(W^{*})`$（$`A_u`$ [D.Aop](Wset.md#d-Aop)、$`W^{*}`$ [D.Wstar](Wset-3.md#d-Wstar)）ならば
-$`M \in W^{*}`$。
+For all $`u \in \mathbb{N}`$ and $`M \in \mathrm{PairSeq}`$, if
+$`M \in A_u(W^{*})`$ ($`A_u`$ [D.Aop](Wset.md#d-Aop), $`W^{*}`$ [D.Wstar](Wset-3.md#d-Wstar)) then
+$`M \in W^{*}`$.
 
-### 証明
+### Proof
 
-定理の主張の $`M`$ を、以下 $`R`$ と書く。$`W^{*}`$ の定義（D.Wstar）より、示すべきことは
+In what follows we write $`R`$ for the $`M`$ of the statement. By the definition of $`W^{*}`$ (D.Wstar), what is to be shown is
 
 ```math
 \mathrm{argOK}(R) \ \longrightarrow\ \forall v \in \mathbb{N},\ (0,v) :: R \in W_v
 ```
 
-である。そこで $`\mathrm{argOK}(R)`$ と $`v`$ を仮定する。
-$`N := (0,v) :: R`$、$`k_1 := \lvert R\rvert - 1`$ と書く。
+So assume $`\mathrm{argOK}(R)`$ and fix $`v`$.
+Write $`N := (0,v) :: R`$ and $`k_1 := \lvert R\rvert - 1`$.
 
-**$`R = ()`$ のとき。** $`N = (0,v) :: ()`$ であり、
-[T.Om_mem_W](Wset-3.md#t-Om_mem_W) より $`N \in W_v`$ である。
+**The case $`R = ()`$.** Here $`N = (0,v) :: ()`$, and
+[T.Om_mem_W](Wset-3.md#t-Om_mem_W) gives $`N \in W_v`$.
 
-以下 $`R \ne ()`$ とする。$`0 \lt \lvert R\rvert`$、$`\lvert N\rvert - 1 = \lvert R\rvert`$ であり、
-[T.entry_cons_last](Wset-3.md#t-entry_cons_last) より
-$`N_{1,\lvert N\rvert-1} = N_{1,\lvert R\rvert} = R_{1,k_1}`$ である。
-次の 2 つを用意する。
+From now on assume $`R \ne ()`$. Then $`0 \lt \lvert R\rvert`$ and $`\lvert N\rvert - 1 = \lvert R\rvert`$, and
+[T.entry_cons_last](Wset-3.md#t-entry_cons_last) gives
+$`N_{1,\lvert N\rvert-1} = N_{1,\lvert R\rvert} = R_{1,k_1}`$.
+We record the following two facts.
 
-- **(D1)** $`\mathrm{hasParent}(N, 1, \lvert R\rvert)`$ ならば
-  $`\mathrm{natDom}(N)`$（[D.natDom](Wset.md#d-natDom)）。
-  [T.natDom_iff](Wset.md#t-natDom_iff) の右辺の第 2 選言が
-  $`\mathrm{hasParent}(N, 1, \lvert N\rvert - 1)`$ であり、
-  $`\lvert N\rvert - 1 = \lvert R\rvert`$ だからである。
-- **(D2)** $`R_{1,k_1} = 0`$ ならば $`\mathrm{natDom}(N)`$。
-  [T.natDom_iff](Wset.md#t-natDom_iff) の右辺の第 1 選言が $`N_{1,\lvert N\rvert-1} = 0`$ であり、
-  これは $`R_{1,k_1} = 0`$ に等しいからである。
+- **(D1)** If $`\mathrm{hasParent}(N, 1, \lvert R\rvert)`$ then
+  $`\mathrm{natDom}(N)`$ ([D.natDom](Wset.md#d-natDom)).
+  Indeed, the second disjunct of the right-hand side of [T.natDom_iff](Wset.md#t-natDom_iff) is
+  $`\mathrm{hasParent}(N, 1, \lvert N\rvert - 1)`$, and
+  $`\lvert N\rvert - 1 = \lvert R\rvert`$.
+- **(D2)** If $`R_{1,k_1} = 0`$ then $`\mathrm{natDom}(N)`$.
+  Indeed, the first disjunct of the right-hand side of [T.natDom_iff](Wset.md#t-natDom_iff) is $`N_{1,\lvert N\rvert-1} = 0`$,
+  and this is the same as $`R_{1,k_1} = 0`$.
 
-仮定 $`R \in A_u(W^{*})`$ について、$`A_u`$ の定義（D.Aop）の 3 分岐で場合分けする。
+We distinguish cases on the hypothesis $`R \in A_u(W^{*})`$ according to the three branches of the definition of $`A_u`$ (D.Aop).
 
-**分岐 (1)：$`\lvert R\rvert \le 1`$ かつ $`R_{1,0} = 0`$ のとき。**
-$`R \ne ()`$ より $`\lvert R\rvert = 1`$、したがって $`k_1 = 0`$ であり $`R_{1,k_1} = 0`$ である。
-また $`\neg\,\mathrm{hasParent}(R, 0, k_1)`$ である。実際
-$`j_0 \to^R_0 0`$ なる $`j_0`$ があれば
-[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より $`j_0 \lt 0`$ となり、
-自然数についてこれは不可能である。さらに $`\lvert R\rvert = 1`$ より
-$`\mathrm{dropLast}\,R = ()`$ である。
+**Branch (1): the case $`\lvert R\rvert \le 1`$ and $`R_{1,0} = 0`$.**
+From $`R \ne ()`$ we get $`\lvert R\rvert = 1`$, hence $`k_1 = 0`$ and $`R_{1,k_1} = 0`$.
+Also $`\neg\,\mathrm{hasParent}(R, 0, k_1)`$: indeed, if there were a $`j_0`$ with
+$`j_0 \to^R_0 0`$, then
+[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) would give $`j_0 \lt 0`$, which is
+impossible for a natural number. Furthermore $`\lvert R\rvert = 1`$ gives
+$`\mathrm{dropLast}\,R = ()`$.
 
-[T.A1_intro](Wset.md#t-A1_intro) により $`N \in A_v(W_v)`$ を示せばよい。
-$`A_v`$ の定義（D.Aop）の分岐 (2) を取る。
-$`\mathrm{natDom}(N)`$ は (D2) による。$`n \ge 1`$ に対する $`N[n] \in W_v`$ は、
-[T.oper_cons_succ](#t-oper_cons_succ) より
+By [T.A1_intro](Wset.md#t-A1_intro) it suffices to show $`N \in A_v(W_v)`$.
+We take branch (2) of the definition of $`A_v`$ (D.Aop).
+Here $`\mathrm{natDom}(N)`$ holds by (D2). As for $`N[n] \in W_v`$ for $`n \ge 1`$,
+[T.oper_cons_succ](#t-oper_cons_succ) gives
 
 ```math
 N[n] = \bigl((0,v) :: \mathrm{dropLast}\,R\bigr)^{\frown n} = \bigl((0,v) :: ()\bigr)^{\frown n}
 ```
 
-であり、[T.Om_mem_W](Wset-3.md#t-Om_mem_W) より $`(0,v) :: () \in W_v`$、
-[T.rsum_self_cons](#t-rsum_self_cons) より
-$`\forall p \in (0,v) :: (),\ \bigl((0,v) :: ()\bigr)_{0,0} \le p_1`$ であるから、
-[T.W_flatMap_copies](#t-W_flatMap_copies) が $`N[n] \in W_v`$ を与える。
+and since [T.Om_mem_W](Wset-3.md#t-Om_mem_W) gives $`(0,v) :: () \in W_v`$ and
+[T.rsum_self_cons](#t-rsum_self_cons) gives
+$`\forall p \in (0,v) :: (),\ \bigl((0,v) :: ()\bigr)_{0,0} \le p_1`$,
+[T.W_flatMap_copies](#t-W_flatMap_copies) yields $`N[n] \in W_v`$.
 
-**分岐 (2)：$`\mathrm{natDom}(R)`$ かつ $`\forall n \ge 1,\ R[n] \in W^{*}`$ のとき。**
-$`\mathrm{hasParent}\bigl(R, \mathrm{idx}_1(R,k_1), k_1\bigr)`$ が成り立つかどうかで場合分けする。
+**Branch (2): the case $`\mathrm{natDom}(R)`$ and $`\forall n \ge 1,\ R[n] \in W^{*}`$.**
+We distinguish cases according to whether $`\mathrm{hasParent}\bigl(R, \mathrm{idx}_1(R,k_1), k_1\bigr)`$ holds.
 
-**(2a) $`\mathrm{hasParent}\bigl(R, \mathrm{idx}_1(R,k_1), k_1\bigr)`$ のとき。**
-まず $`\mathrm{natDom}(N)`$ を示す。$`R_{1,k_1} = 0`$ ならば (D2) による。
-$`R_{1,k_1} \ne 0`$ ならば、$`\mathrm{idx}_1`$ の定義（D.idx1）の第 1 の場合より
-$`\mathrm{idx}_1(R,k_1) = 1`$ であるから、いまの仮定は $`\mathrm{hasParent}(R,1,k_1)`$ である。
-[T.hasParent_cons_one](Wset-3.md#t-hasParent_cons_one) を第 1 選言で適用して
-$`\mathrm{hasParent}(N, 1, \lvert R\rvert)`$ を得、(D1) を使う。
+**(2a) The case $`\mathrm{hasParent}\bigl(R, \mathrm{idx}_1(R,k_1), k_1\bigr)`$.**
+First we show $`\mathrm{natDom}(N)`$. If $`R_{1,k_1} = 0`$, this holds by (D2).
+If $`R_{1,k_1} \ne 0`$, then the first case of the definition of $`\mathrm{idx}_1`$ (D.idx1) gives
+$`\mathrm{idx}_1(R,k_1) = 1`$, so the hypothesis of the present case reads $`\mathrm{hasParent}(R,1,k_1)`$;
+applying [T.hasParent_cons_one](Wset-3.md#t-hasParent_cons_one) with the first disjunct gives
+$`\mathrm{hasParent}(N, 1, \lvert R\rvert)`$, and we use (D1).
 
-[T.A1_intro](Wset.md#t-A1_intro) により $`N \in A_v(W_v)`$ を、その分岐 (2) で示す。
-$`n \ge 1`$ とすると [T.oper_cons_nat](Wset-3.md#t-oper_cons_nat) より
-$`N[n] = (0,v) :: R[n]`$ である。分岐 (2) の仮定より $`R[n] \in W^{*}`$ であり、
-[T.argOK_oper](#t-argOK_oper) より $`\mathrm{argOK}(R[n])`$ であるから、
-$`W^{*}`$ の定義（D.Wstar）を $`v`$ に適用して $`(0,v) :: R[n] \in W_v`$ を得る。
+By [T.A1_intro](Wset.md#t-A1_intro) we show $`N \in A_v(W_v)`$, taking its branch (2).
+Let $`n \ge 1`$. Then [T.oper_cons_nat](Wset-3.md#t-oper_cons_nat) gives
+$`N[n] = (0,v) :: R[n]`$. The hypothesis of branch (2) gives $`R[n] \in W^{*}`$, and
+[T.argOK_oper](#t-argOK_oper) gives $`\mathrm{argOK}(R[n])`$, so applying
+the definition of $`W^{*}`$ (D.Wstar) with $`v`$ gives $`(0,v) :: R[n] \in W_v`$.
 
-**(2b) $`\neg\,\mathrm{hasParent}\bigl(R, \mathrm{idx}_1(R,k_1), k_1\bigr)`$ のとき。**
-まず $`R_{1,k_1} = 0`$ を示す。$`R_{1,k_1} \ne 0`$ とすると
-$`R_{1,k_1} = m + 1`$ と書ける。$`\mathrm{natDom}(R)`$ の定義（D.natDom）より
-$`\neg\,\mathrm{domT}(R,m)`$ であり、$`\mathrm{domT}`$ の定義（D.domT）の第 1 連言子は
-いま成り立っているから、第 2 連言子が破れて $`\mathrm{hasParent}(R,1,k_1)`$ である。
-ところが $`R_{1,k_1} \gt 0`$ より $`\mathrm{idx}_1(R,k_1) = 1`$ であるから、
-これはいまの場合分けの仮定に矛盾する。
+**(2b) The case $`\neg\,\mathrm{hasParent}\bigl(R, \mathrm{idx}_1(R,k_1), k_1\bigr)`$.**
+First we show $`R_{1,k_1} = 0`$. Suppose $`R_{1,k_1} \ne 0`$; then we can write
+$`R_{1,k_1} = m + 1`$. By the definition of $`\mathrm{natDom}`$ (D.natDom) we have
+$`\neg\,\mathrm{domT}(R,m)`$, and since the first conjunct of the definition of $`\mathrm{domT}`$ (D.domT)
+holds here, the second conjunct fails, that is $`\mathrm{hasParent}(R,1,k_1)`$.
+But $`R_{1,k_1} \gt 0`$ gives $`\mathrm{idx}_1(R,k_1) = 1`$, so
+this contradicts the hypothesis of the present case.
 
-次に $`\neg\,\mathrm{hasParent}(R, 0, k_1)`$ を示す。$`\mathrm{hasParent}(R,0,k_1)`$ とすると、
-$`R_{1,k_1} = 0`$ より $`\mathrm{idx}_1(R,k_1) = 0`$ であるから、
-これもいまの場合分けの仮定に矛盾する。
+Next we show $`\neg\,\mathrm{hasParent}(R, 0, k_1)`$. Suppose $`\mathrm{hasParent}(R,0,k_1)`$. Since
+$`R_{1,k_1} = 0`$ gives $`\mathrm{idx}_1(R,k_1) = 0`$,
+this too contradicts the hypothesis of the present case.
 
-[T.A1_intro](Wset.md#t-A1_intro) により $`N \in A_v(W_v)`$ を、その分岐 (2) で示す。
-$`\mathrm{natDom}(N)`$ は (D2) による。$`n \ge 1`$ に対しては
-[T.oper_cons_succ](#t-oper_cons_succ) より
+By [T.A1_intro](Wset.md#t-A1_intro) we show $`N \in A_v(W_v)`$, taking its branch (2).
+Here $`\mathrm{natDom}(N)`$ holds by (D2). For $`n \ge 1`$,
+[T.oper_cons_succ](#t-oper_cons_succ) gives
 
 ```math
 N[n] = \bigl((0,v) :: \mathrm{dropLast}\,R\bigr)^{\frown n}
 ```
 
-である。[T.rsum_self_cons](#t-rsum_self_cons) と
-[T.W_flatMap_copies](#t-W_flatMap_copies) により、
-$`(0,v) :: \mathrm{dropLast}\,R \in W_v`$ を示せば十分である。$`\lvert R\rvert`$ で場合分けする。
+By [T.rsum_self_cons](#t-rsum_self_cons) and
+[T.W_flatMap_copies](#t-W_flatMap_copies), it suffices to show
+$`(0,v) :: \mathrm{dropLast}\,R \in W_v`$. We distinguish cases on $`\lvert R\rvert`$.
 
-- **$`2 \le \lvert R\rvert`$ のとき。** $`k_1 = \lvert R\rvert - 1 \ne 0`$ である。
-  いまの場合分けの仮定 $`\neg\,\mathrm{hasParent}\bigl(R,\mathrm{idx}_1(R,k_1),k_1\bigr)`$ により、
-  $`R_{0,k_1} = 0 \wedge R_{1,k_1} = 0`$ が成り立つときは
-  [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero)、
-  成り立たないときは
-  [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) により
-  $`R[1] = \mathrm{Pred}\,R`$（[D.Pred](Pss.md#d-Pred)）である。
-  さらに $`\neg(\lvert R\rvert \le 1)`$ であるから
-  $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ
-  $`R[1] = \mathrm{dropLast}\,R`$ である。
-  分岐 (2) の仮定を $`n := 1`$ に適用して $`\mathrm{dropLast}\,R \in W^{*}`$ を得る。
-  [T.argOK_dropLast](#t-argOK_dropLast) より
-  $`\mathrm{argOK}(\mathrm{dropLast}\,R)`$ であるから、
-  $`W^{*}`$ の定義（D.Wstar）を $`v`$ に適用して
-  $`(0,v) :: \mathrm{dropLast}\,R \in W_v`$ を得る。
+- **The case $`2 \le \lvert R\rvert`$.** Here $`k_1 = \lvert R\rvert - 1 \ne 0`$.
+  By the hypothesis $`\neg\,\mathrm{hasParent}\bigl(R,\mathrm{idx}_1(R,k_1),k_1\bigr)`$ of the present case,
+  $`R[1] = \mathrm{Pred}\,R`$ ([D.Pred](Pss.md#d-Pred)): when
+  $`R_{0,k_1} = 0 \wedge R_{1,k_1} = 0`$ holds this is
+  [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero), and when it does not this is
+  [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent).
+  Furthermore $`\neg(\lvert R\rvert \le 1)`$, so
+  the second case of the definition of $`\mathrm{Pred}`$ (D.Pred) is selected and
+  $`R[1] = \mathrm{dropLast}\,R`$.
+  Applying the hypothesis of branch (2) with $`n := 1`$ gives $`\mathrm{dropLast}\,R \in W^{*}`$.
+  Since [T.argOK_dropLast](#t-argOK_dropLast) gives
+  $`\mathrm{argOK}(\mathrm{dropLast}\,R)`$,
+  applying the definition of $`W^{*}`$ (D.Wstar) with $`v`$ gives
+  $`(0,v) :: \mathrm{dropLast}\,R \in W_v`$.
 
-- **$`\lvert R\rvert = 1`$ のとき。** $`\mathrm{dropLast}\,R = ()`$ であるから
-  $`(0,v) :: \mathrm{dropLast}\,R = (0,v) :: ()`$ であり、
-  [T.Om_mem_W](Wset-3.md#t-Om_mem_W) より $`W_v`$ に属する。
+- **The case $`\lvert R\rvert = 1`$.** Here $`\mathrm{dropLast}\,R = ()`$, so
+  $`(0,v) :: \mathrm{dropLast}\,R = (0,v) :: ()`$, which belongs to $`W_v`$ by
+  [T.Om_mem_W](Wset-3.md#t-Om_mem_W).
 
-**分岐 (3)：$`m \lt u`$、$`\mathrm{domT}(R,m)`$、かつ**
-$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(R,z) \in W^{*}`$ **のとき。**
-$`v \le m`$ か否かで場合分けする。
+**Branch (3): the case where $`m \lt u`$, $`\mathrm{domT}(R,m)`$ and**
+$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(R,z) \in W^{*}`$ **hold.**
+We distinguish cases according to whether $`v \le m`$ or not.
 
-**(3a) $`v \le m`$ のとき。**
-まず $`\forall k \in \mathbb{N},\ \mathrm{tow}_v(R,k) \in W_v`$ を $`k`$ に関する帰納法で示す。
-帰納法の述語は $`\Psi(k) :\equiv \mathrm{tow}_v(R,k) \in W_v`$ である。
+**(3a) The case $`v \le m`$.**
+First we show $`\forall k \in \mathbb{N},\ \mathrm{tow}_v(R,k) \in W_v`$ by induction on $`k`$.
+The induction predicate is $`\Psi(k) :\equiv \mathrm{tow}_v(R,k) \in W_v`$.
 
-- **基底段** $`k = 0`$：$`\mathrm{tow}`$ の定義（D.tow）の第 1 式より
-  $`\mathrm{tow}_v(R,0) = ()`$ であり、[T.W_nil](Wset.md#t-W_nil) より $`() \in W_v`$。
+- **Base case** $`k = 0`$: the first clause of the definition of $`\mathrm{tow}`$ (D.tow) gives
+  $`\mathrm{tow}_v(R,0) = ()`$, and [T.W_nil](Wset.md#t-W_nil) gives $`() \in W_v`$.
 
-- **帰納段** $`k \to k+1`$：帰納法の仮定は $`\Psi(k)`$ である。
-  まず $`\mathrm{based}(\mathrm{tow}_v(R,k))`$ を示す。$`k = 0`$ のときは
-  $`\mathrm{tow}_v(R,0) = ()`$ であり [T.based_nil](Wset.md#t-based_nil) による。
-  $`k = k' + 1`$ のときは $`\mathrm{tow}`$ の定義（D.tow）の第 2 式より
-  $`\mathrm{tow}_v(R,k) = (0,v) :: \mathrm{graft}(R, \mathrm{tow}_v(R,k'))`$ であり、
-  [T.based_cons](#t-based_cons) による。
-  次に $`v \le m`$ と [T.W_mono](Wset.md#t-W_mono) を $`\Psi(k)`$ に適用して
-  $`\mathrm{tow}_v(R,k) \in W_m`$ を得る。分岐 (3) の仮定を
-  $`z := \mathrm{tow}_v(R,k)`$ に適用すると
-  $`\mathrm{graft}(R, \mathrm{tow}_v(R,k)) \in W^{*}`$ である。
-  $`R \ne ()`$（[T.not_domT_nil](Wset.md#t-not_domT_nil) と $`\mathrm{domT}(R,m)`$ による）と
-  [T.argOK_graft](#t-argOK_graft) より
-  $`\mathrm{argOK}\bigl(\mathrm{graft}(R,\mathrm{tow}_v(R,k))\bigr)`$ であるから、
-  $`W^{*}`$ の定義（D.Wstar）を $`v`$ に適用して
+- **Inductive step** $`k \to k+1`$: the induction hypothesis is $`\Psi(k)`$.
+  First we show $`\mathrm{based}(\mathrm{tow}_v(R,k))`$. For $`k = 0`$ we have
+  $`\mathrm{tow}_v(R,0) = ()`$, and this is [T.based_nil](Wset.md#t-based_nil).
+  For $`k = k' + 1`$, the second clause of the definition of $`\mathrm{tow}`$ (D.tow) gives
+  $`\mathrm{tow}_v(R,k) = (0,v) :: \mathrm{graft}(R, \mathrm{tow}_v(R,k'))`$, and this is
+  [T.based_cons](#t-based_cons).
+  Next, applying $`v \le m`$ and [T.W_mono](Wset.md#t-W_mono) to $`\Psi(k)`$ gives
+  $`\mathrm{tow}_v(R,k) \in W_m`$. Applying the hypothesis of branch (3) with
+  $`z := \mathrm{tow}_v(R,k)`$ gives
+  $`\mathrm{graft}(R, \mathrm{tow}_v(R,k)) \in W^{*}`$.
+  Since $`R \ne ()`$ (by [T.not_domT_nil](Wset.md#t-not_domT_nil) and $`\mathrm{domT}(R,m)`$) and
+  [T.argOK_graft](#t-argOK_graft) give
+  $`\mathrm{argOK}\bigl(\mathrm{graft}(R,\mathrm{tow}_v(R,k))\bigr)`$,
+  applying the definition of $`W^{*}`$ (D.Wstar) with $`v`$ gives
 
 ```math
 \mathrm{tow}_v(R,k+1) = (0,v) :: \mathrm{graft}\bigl(R, \mathrm{tow}_v(R,k)\bigr) \in W_v
 ```
 
-  を得る。すなわち $`\Psi(k+1)`$。
+  That is, $`\Psi(k+1)`$.
 
-[T.A1_intro](Wset.md#t-A1_intro) により $`N \in A_v(W_v)`$ を、その分岐 (2) で示す。
-$`\mathrm{natDom}(N)`$ は次のように得る。$`\mathrm{domT}(R,m)`$ の第 1 連言子より
-$`R_{1,k_1} = m + 1`$ であり、$`v \le m \lt m+1`$ であるから
-[T.hasParent_cons_one](Wset-3.md#t-hasParent_cons_one) を第 2 選言で適用して
-$`\mathrm{hasParent}(N,1,\lvert R\rvert)`$ を得、(D1) を使う。
-$`n \ge 1`$ に対しては [T.oper_cons_tower](#t-oper_cons_tower) より
-$`N[n] = \mathrm{tow}_v(R,n)`$ であり、いま示した $`\Psi(n)`$ よりこれは $`W_v`$ に属する。
+By [T.A1_intro](Wset.md#t-A1_intro) we show $`N \in A_v(W_v)`$, taking its branch (2).
+We obtain $`\mathrm{natDom}(N)`$ as follows. The first conjunct of $`\mathrm{domT}(R,m)`$ gives
+$`R_{1,k_1} = m + 1`$, and $`v \le m \lt m+1`$, so applying
+[T.hasParent_cons_one](Wset-3.md#t-hasParent_cons_one) with the second disjunct gives
+$`\mathrm{hasParent}(N,1,\lvert R\rvert)`$, and we use (D1).
+For $`n \ge 1`$, [T.oper_cons_tower](#t-oper_cons_tower) gives
+$`N[n] = \mathrm{tow}_v(R,n)`$, which belongs to $`W_v`$ by the $`\Psi(n)`$ just proved.
 
-**(3b) $`\neg(v \le m)`$ すなわち $`m \lt v`$ のとき。**
-[T.A1_intro](Wset.md#t-A1_intro) により $`N \in A_v(W_v)`$ を、その分岐 (3) で示す。
-分岐 (3) の 3 つの成分を確かめる。
+**(3b) The case $`\neg(v \le m)`$, that is $`m \lt v`$.**
+By [T.A1_intro](Wset.md#t-A1_intro) we show $`N \in A_v(W_v)`$, taking its branch (3).
+We verify the three components of branch (3).
 
-- $`m \lt v`$：いまの場合分けの仮定である。
-- $`\mathrm{domT}(N, m)`$：[T.domT_cons_of_lt](#t-domT_cons_of_lt) による。
-- $`z \in W_m`$ かつ $`\mathrm{based}(z)`$ ならば $`\mathrm{graft}(N,z) \in W_v`$：
-  $`R \ne ()`$ であるから [T.graft_cons](Wset-3.md#t-graft_cons) より
-  $`\mathrm{graft}(N,z) = (0,v) :: \mathrm{graft}(R,z)`$ である。分岐 (3) の仮定より
-  $`\mathrm{graft}(R,z) \in W^{*}`$ であり、[T.argOK_graft](#t-argOK_graft) より
-  $`\mathrm{argOK}(\mathrm{graft}(R,z))`$ であるから、
-  $`W^{*}`$ の定義（D.Wstar）を $`v`$ に適用して
-  $`(0,v) :: \mathrm{graft}(R,z) \in W_v`$ を得る。∎
+- $`m \lt v`$: this is the hypothesis of the present case.
+- $`\mathrm{domT}(N, m)`$: this is [T.domT_cons_of_lt](#t-domT_cons_of_lt).
+- if $`z \in W_m`$ and $`\mathrm{based}(z)`$ then $`\mathrm{graft}(N,z) \in W_v`$:
+  since $`R \ne ()`$, [T.graft_cons](Wset-3.md#t-graft_cons) gives
+  $`\mathrm{graft}(N,z) = (0,v) :: \mathrm{graft}(R,z)`$. The hypothesis of branch (3) gives
+  $`\mathrm{graft}(R,z) \in W^{*}`$, and [T.argOK_graft](#t-argOK_graft) gives
+  $`\mathrm{argOK}(\mathrm{graft}(R,z))`$, so
+  applying the definition of $`W^{*}`$ (D.Wstar) with $`v`$ gives
+  $`(0,v) :: \mathrm{graft}(R,z) \in W_v`$. ∎
 
 <a id="t-tree_shift"></a>
-## 定理: 単一の木の平行移動 (T.tree_shift)
+## Theorem: shifting a single tree (T.tree_shift)
 
-### 定理
+### Theorem
 
-$`(x,y) \in \mathbb{N}\times\mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とし、
-$`\forall r \in R,\ x \le r_1`$ を仮定する。このとき
+Let $`(x,y) \in \mathbb{N}\times\mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$, and assume
+$`\forall r \in R,\ x \le r_1`$. Then
 
 ```math
 \Bigl((0,y) :: R^{-x}\Bigr)^{+x} = (x,y) :: R .
 ```
 
-（$`R^{-x}`$ [D.shiftl0](ArgDom-2.md#d-shiftl0)）
+($`R^{-x}`$ [D.shiftl0](ArgDom-2.md#d-shiftl0))
 
-### 証明
+### Proof
 
-平行移動 $`(\cdot)^{+x}`$ は各対の第 1 成分に $`x`$ を足す操作であるから、
-先頭要素と残りに分けて
+The shift $`(\cdot)^{+x}`$ adds $`x`$ to the first entry of each pair, so splitting the head element
+off from the rest we get
 
 ```math
 \Bigl((0,y) :: R^{-x}\Bigr)^{+x} = (0 + x,\ y) :: \bigl(R^{-x}\bigr)^{+x}
 ```
 
-である。$`0 + x = x`$ であり、仮定 $`\forall r \in R,\ x \le r_1`$ のもとで
-[T.map_sub_add](Wset-2.md#t-map_sub_add) が $`\bigl(R^{-x}\bigr)^{+x} = R`$ を与える。∎
+Now $`0 + x = x`$, and under the hypothesis $`\forall r \in R,\ x \le r_1`$
+[T.map_sub_add](Wset-2.md#t-map_sub_add) gives $`\bigl(R^{-x}\bigr)^{+x} = R`$. ∎
 
 <a id="t-mem_of_Aclosed_aux"></a>
-## 定理: 長さに関する帰納法による所属（補題） (T.mem_of_Aclosed_aux)
+## Theorem: membership by induction on the length (lemma) (T.mem_of_Aclosed_aux)
 
-### 定理
+### Theorem
 
-任意の $`N \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ に対し、
-$`\lvert M\rvert \le N`$ ならば、条件
+For all $`N \in \mathbb{N}`$ and $`M \in \mathrm{PairSeq}`$ with
+$`\lvert M\rvert \le N`$, and for every $`X \subseteq \mathrm{PairSeq}`$ satisfying the condition
 
 ```math
 \mathrm{(Acl)}\qquad \forall u \in \mathbb{N},\ \forall M' \in \mathrm{PairSeq},\
   M' \in A_u(X) \to M' \in X
 ```
 
-をみたす任意の $`X \subseteq \mathrm{PairSeq}`$ について $`M \in X`$ である。
+we have $`M \in X`$.
 
-### 証明
+### Proof
 
-$`N`$ に関する帰納法。帰納法の述語は
+By induction on $`N`$. The induction predicate is
 
 ```math
 \Phi(N) :\equiv \forall M,\ \lvert M\rvert \le N \to
   \forall X,\ \mathrm{(Acl)} \to M \in X .
 ```
 
-- **基底段** $`N = 0`$：$`\lvert M\rvert \le 0`$ より $`M = ()`$ である。
-  $`A_0`$ の定義（D.Aop）の分岐 (1) $`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$ は、
-  $`\lvert ()\rvert = 0 \le 1`$ と、$`M_{i,j}`$ の定義（D.entry）により添字が範囲外の読みが
-  $`(0,0)`$ であることから $`()_{1,0} = 0`$ であることにより成り立つ。
-  よって $`() \in A_0(X)`$ であり、$`\mathrm{(Acl)}`$ を $`u := 0`$、$`M' := ()`$ に適用して
-  $`() \in X`$ を得る。
+- **Base case** $`N = 0`$: from $`\lvert M\rvert \le 0`$ we get $`M = ()`$.
+  Branch (1) of the definition of $`A_0`$ (D.Aop), namely $`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$, holds:
+  we have $`\lvert ()\rvert = 0 \le 1`$, and $`()_{1,0} = 0`$ because by the definition of $`M_{i,j}`$ (D.entry)
+  an out-of-range index reads as $`(0,0)`$.
+  Hence $`() \in A_0(X)`$, and applying $`\mathrm{(Acl)}`$ with $`u := 0`$ and $`M' := ()`$ gives
+  $`() \in X`$.
 
-**帰納段** $`N \to N+1`$：帰納法の仮定は $`\Phi(N)`$ である。
-$`\lvert M\rvert \le N+1`$ なる $`M`$ と $`\mathrm{(Acl)}`$ をみたす $`X`$ を取る。
+**Inductive step** $`N \to N+1`$: the induction hypothesis is $`\Phi(N)`$.
+Take $`M`$ with $`\lvert M\rvert \le N+1`$ and $`X`$ satisfying $`\mathrm{(Acl)}`$.
 
-$`M = ()`$ のときは、基底段で見たとおり $`() \in A_0(X)`$ であるから、
-$`\mathrm{(Acl)}`$ を $`u := 0`$、$`M' := ()`$ に適用して $`M \in X`$ を得る。
-以下 $`M \ne ()`$ とする。
-[T.split_lastMin](Wset-2.md#t-split_lastMin) により
+If $`M = ()`$, then as seen in the base case $`() \in A_0(X)`$, so applying
+$`\mathrm{(Acl)}`$ with $`u := 0`$ and $`M' := ()`$ gives $`M \in X`$.
+From now on assume $`M \ne ()`$.
+By [T.split_lastMin](Wset-2.md#t-split_lastMin) we take $`A, P`$ with
 
 ```math
 M = A \mathbin{+\!\!+} P, \qquad P \ne (), \qquad \mathrm{rsum}(A,P), \qquad
 \forall p \in \mathrm{tail}\,P,\ P_{0,0} \lt p_1
 ```
 
-なる $`A, P`$ を取る。$`0 \lt \lvert P\rvert`$ であり、
-$`\lvert A\rvert + \lvert P\rvert = \lvert M\rvert \le N+1`$ である。$`A`$ で場合分けする。
+Then $`0 \lt \lvert P\rvert`$ and
+$`\lvert A\rvert + \lvert P\rvert = \lvert M\rvert \le N+1`$. We distinguish cases on $`A`$.
 
-**(a) $`A = ()`$ のとき。** $`M = P`$ である。$`P \ne ()`$ より
-$`P = (x,y) :: R`$ と書ける。$`P_{0,0} = x`$ であり、$`\mathrm{tail}\,P = R`$ であるから、
-上の第 4 の性質は
+**(a) The case $`A = ()`$.** Then $`M = P`$. From $`P \ne ()`$ we can write
+$`P = (x,y) :: R`$. Since $`P_{0,0} = x`$ and $`\mathrm{tail}\,P = R`$,
+the fourth property above reads
 
 ```math
 \forall r \in R,\ x \lt r_1
 ```
 
-である。ここから $`\mathrm{argOK}\bigl(R^{-x}\bigr)`$ が従う。実際
-$`R^{-x}`$ の要素は $`r \in R`$ に対する $`(r_1 - x,\ r_2)`$ の形であり、
-$`x \lt r_1`$ より $`0 \lt r_1 - x`$ である。
+From this $`\mathrm{argOK}\bigl(R^{-x}\bigr)`$ follows. Indeed, the elements of
+$`R^{-x}`$ are of the form $`(r_1 - x,\ r_2)`$ for $`r \in R`$, and
+$`x \lt r_1`$ gives $`0 \lt r_1 - x`$.
 
-$`\lvert R^{-x}\rvert = \lvert R\rvert = \lvert P\rvert - 1 \le N`$ であるから、
-帰納法の仮定 $`\Phi(N)`$ を $`M := R^{-x}`$、$`X := W^{*}`$ に適用できる。
-$`W^{*}`$ が $`\mathrm{(Acl)}`$ をみたすことは [T.Wstar_closed](#t-Wstar_closed) である。
-よって $`R^{-x} \in W^{*}`$ を得る。$`\mathrm{argOK}(R^{-x})`$ と合わせ、
-$`W^{*}`$ の定義（D.Wstar）を $`y`$ に適用して
+Since $`\lvert R^{-x}\rvert = \lvert R\rvert = \lvert P\rvert - 1 \le N`$, the
+induction hypothesis $`\Phi(N)`$ can be applied with $`M := R^{-x}`$ and $`X := W^{*}`$.
+That $`W^{*}`$ satisfies $`\mathrm{(Acl)}`$ is [T.Wstar_closed](#t-Wstar_closed).
+Hence $`R^{-x} \in W^{*}`$. Together with $`\mathrm{argOK}(R^{-x})`$,
+applying the definition of $`W^{*}`$ (D.Wstar) with $`y`$ gives
 
 ```math
 (0,y) :: R^{-x} \in W_y
 ```
 
-を得る。[T.W_shift](Wset-2.md#t-W_shift) を $`d := x`$ として適用すると
-$`\bigl((0,y) :: R^{-x}\bigr)^{+x} \in W_y`$ であり、
-$`\forall r \in R,\ x \le r_1`$ のもとで [T.tree_shift](#t-tree_shift) より
-この列は $`(x,y) :: R = P = M`$ に等しい。すなわち $`M \in W_y`$ である。
+Applying [T.W_shift](Wset-2.md#t-W_shift) with $`d := x`$ gives
+$`\bigl((0,y) :: R^{-x}\bigr)^{+x} \in W_y`$, and under
+$`\forall r \in R,\ x \le r_1`$ this sequence equals $`(x,y) :: R = P = M`$ by
+[T.tree_shift](#t-tree_shift). That is, $`M \in W_y`$.
 
-最後に [T.A2'](Wset.md#t-A2') を $`u := y`$、$`Y := X`$ として適用する。その仮定
-「$`\forall M',\ M' \in A_y(X) \to M' \in X`$」は $`\mathrm{(Acl)}`$ を $`u := y`$ に
-特殊化したものである。よって $`W_y \subseteq X`$ であり $`M \in X`$。
+Finally we apply [T.A2'](Wset.md#t-A2') with $`u := y`$ and $`Y := X`$. Its hypothesis
+$`\forall M',\ M' \in A_y(X) \to M' \in X`$ is $`\mathrm{(Acl)}`$ specialized to
+$`u := y`$. Hence $`W_y \subseteq X`$ and $`M \in X`$.
 
-**(b) $`A \ne ()`$ のとき。** $`0 \lt \lvert A\rvert`$ かつ $`0 \lt \lvert P\rvert`$ であり、
-$`\lvert A\rvert + \lvert P\rvert \le N+1`$ であるから
-$`\lvert A\rvert \le N`$ かつ $`\lvert P\rvert \le N`$ である。
+**(b) The case $`A \ne ()`$.** Here $`0 \lt \lvert A\rvert`$ and $`0 \lt \lvert P\rvert`$, and
+$`\lvert A\rvert + \lvert P\rvert \le N+1`$, so
+$`\lvert A\rvert \le N`$ and $`\lvert P\rvert \le N`$.
 
-帰納法の仮定 $`\Phi(N)`$ を $`M := A`$、$`X := X`$ に適用して $`A \in X`$ を得る。
-次に [T.XA_closed](Wset-3.md#t-XA_closed) を、$`\mathrm{(Acl)}`$ を $`u`$ に特殊化したものと
-$`A \in X`$ に適用すると、任意の $`u`$ について
+Applying the induction hypothesis $`\Phi(N)`$ with $`M := A`$ and $`X := X`$ gives $`A \in X`$.
+Next, applying [T.XA_closed](Wset-3.md#t-XA_closed) to $`\mathrm{(Acl)}`$ specialized to $`u`$ and to
+$`A \in X`$, we obtain, for every $`u`$,
 
 ```math
 \forall M',\ M' \in A_u\bigl(X^{(A)}\bigr) \to M' \in X^{(A)}
 ```
 
-が成り立つ。すなわち $`X^{(A)}`$（[D.XA](Wset-2.md#d-XA)）も $`\mathrm{(Acl)}`$ をみたす。
-そこで帰納法の仮定 $`\Phi(N)`$ を $`M := P`$、$`X := X^{(A)}`$ に適用して
-$`P \in X^{(A)}`$ を得る。$`X^{(A)}`$ の定義（D.XA）より
-$`P \in X^{(A)}`$ は $`\mathrm{rsum}(A,P) \to A \mathbin{+\!\!+} P \in X`$ であり、
-$`\mathrm{rsum}(A,P)`$ は上で取った通りであるから $`M = A \mathbin{+\!\!+} P \in X`$。∎
+That is, $`X^{(A)}`$ ([D.XA](Wset-2.md#d-XA)) satisfies $`\mathrm{(Acl)}`$ as well.
+So applying the induction hypothesis $`\Phi(N)`$ with $`M := P`$ and $`X := X^{(A)}`$ gives
+$`P \in X^{(A)}`$. By the definition of $`X^{(A)}`$ (D.XA),
+$`P \in X^{(A)}`$ is $`\mathrm{rsum}(A,P) \to A \mathbin{+\!\!+} P \in X`$, and
+$`\mathrm{rsum}(A,P)`$ is as taken above, so $`M = A \mathbin{+\!\!+} P \in X`$. ∎
 
 <a id="t-mem_of_Aclosed"></a>
-## 定理: 条件 (Acl) をみたす集合はすべての列を含む (T.mem_of_Aclosed)
+## Theorem: a set satisfying condition (Acl) contains every sequence (T.mem_of_Aclosed)
 
-### 定理
+### Theorem
 
-$`X \subseteq \mathrm{PairSeq}`$ が
+If $`X \subseteq \mathrm{PairSeq}`$ satisfies
 
 ```math
 \forall u \in \mathbb{N},\ \forall M \in \mathrm{PairSeq},\ M \in A_u(X) \to M \in X
 ```
 
-をみたすならば、任意の $`M \in \mathrm{PairSeq}`$ に対し $`M \in X`$。
+then $`M \in X`$ for every $`M \in \mathrm{PairSeq}`$.
 
-### 証明
+### Proof
 
-[T.mem_of_Aclosed_aux](#t-mem_of_Aclosed_aux) を $`N := \lvert M\rvert`$ として適用する。
-その仮定 $`\lvert M\rvert \le N`$ は $`\le`$ の反射性による。∎
+Apply [T.mem_of_Aclosed_aux](#t-mem_of_Aclosed_aux) with $`N := \lvert M\rvert`$.
+Its hypothesis $`\lvert M\rvert \le N`$ holds by reflexivity of $`\le`$. ∎
 
 <a id="t-mem_Wstar"></a>
-## 定理: すべての列が $`W^{*}`$ に属する (T.mem_Wstar)
+## Theorem: every sequence belongs to $`W^{*}`$ (T.mem_Wstar)
 
-### 定理
+### Theorem
 
-任意の $`R \in \mathrm{PairSeq}`$ に対し $`R \in W^{*}`$。
+For every $`R \in \mathrm{PairSeq}`$ we have $`R \in W^{*}`$.
 
-### 証明
+### Proof
 
-[T.mem_of_Aclosed](#t-mem_of_Aclosed) を $`X := W^{*}`$ として適用する。
-その仮定は [T.Wstar_closed](#t-Wstar_closed) そのものである。∎
+Apply [T.mem_of_Aclosed](#t-mem_of_Aclosed) with $`X := W^{*}`$.
+Its hypothesis is exactly [T.Wstar_closed](#t-Wstar_closed). ∎
 
 <a id="t-mem_W_of_bound_aux"></a>
-## 定理: 行 1 の上界による所属（補題） (T.mem_W_of_bound_aux)
+## Theorem: membership from an upper bound on row 1 (lemma) (T.mem_W_of_bound_aux)
 
-### 定理
+### Theorem
 
-任意の $`N \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$、$`u \in \mathbb{N}`$ に対し、
-$`\lvert M\rvert \le N`$ かつ $`\forall p \in M,\ p_2 \le u`$ ならば $`M \in W_u`$。
+For all $`N \in \mathbb{N}`$, $`M \in \mathrm{PairSeq}`$ and $`u \in \mathbb{N}`$, if
+$`\lvert M\rvert \le N`$ and $`\forall p \in M,\ p_2 \le u`$, then $`M \in W_u`$.
 
-### 証明
+### Proof
 
-$`N`$ に関する帰納法。帰納法の述語は
+By induction on $`N`$. The induction predicate is
 
 ```math
 \Phi(N) :\equiv \forall M,\ \lvert M\rvert \le N \to
   \forall u,\ \bigl(\forall p \in M,\ p_2 \le u\bigr) \to M \in W_u .
 ```
 
-- **基底段** $`N = 0`$：$`\lvert M\rvert \le 0`$ より $`M = ()`$ であり、
-  [T.W_nil](Wset.md#t-W_nil) より $`() \in W_u`$。
+- **Base case** $`N = 0`$: from $`\lvert M\rvert \le 0`$ we get $`M = ()`$, and
+  [T.W_nil](Wset.md#t-W_nil) gives $`() \in W_u`$.
 
-**帰納段** $`N \to N+1`$：帰納法の仮定は $`\Phi(N)`$ である。
-$`\lvert M\rvert \le N+1`$ なる $`M`$、$`u`$、および
-$`\forall p \in M,\ p_2 \le u`$ を取る。
+**Inductive step** $`N \to N+1`$: the induction hypothesis is $`\Phi(N)`$.
+Take $`M`$ with $`\lvert M\rvert \le N+1`$, take $`u`$, and take
+$`\forall p \in M,\ p_2 \le u`$.
 
-$`M = ()`$ のときは [T.W_nil](Wset.md#t-W_nil) による。以下 $`M \ne ()`$ とする。
-[T.split_lastMin](Wset-2.md#t-split_lastMin) により
+If $`M = ()`$, this holds by [T.W_nil](Wset.md#t-W_nil). From now on assume $`M \ne ()`$.
+By [T.split_lastMin](Wset-2.md#t-split_lastMin) we take $`A, P`$ with
 
 ```math
 M = A \mathbin{+\!\!+} P, \qquad P \ne (), \qquad \mathrm{rsum}(A,P), \qquad
 \forall p \in \mathrm{tail}\,P,\ P_{0,0} \lt p_1
 ```
 
-なる $`A, P`$ を取る。$`0 \lt \lvert P\rvert`$ であり
-$`\lvert A\rvert + \lvert P\rvert \le N+1`$ である。
-$`P \ne ()`$ より $`P = (x,y) :: R`$ と書け、$`P_{0,0} = x`$、$`\mathrm{tail}\,P = R`$ であるから
+Then $`0 \lt \lvert P\rvert`$ and
+$`\lvert A\rvert + \lvert P\rvert \le N+1`$.
+From $`P \ne ()`$ we can write $`P = (x,y) :: R`$, and since $`P_{0,0} = x`$ and $`\mathrm{tail}\,P = R`$,
 
 ```math
 \forall r \in R,\ x \lt r_1
 ```
 
-である。ここから $`\mathrm{argOK}\bigl(R^{-x}\bigr)`$ が従う。実際
-$`R^{-x}`$ の要素は $`r \in R`$ に対する $`(r_1 - x,\ r_2)`$ の形であり、
-$`x \lt r_1`$ より $`0 \lt r_1 - x`$ である。
+From this $`\mathrm{argOK}\bigl(R^{-x}\bigr)`$ follows. Indeed, the elements of
+$`R^{-x}`$ are of the form $`(r_1 - x,\ r_2)`$ for $`r \in R`$, and
+$`x \lt r_1`$ gives $`0 \lt r_1 - x`$.
 
-[T.mem_Wstar](#t-mem_Wstar) より $`R^{-x} \in W^{*}`$ であるから、
-$`W^{*}`$ の定義（D.Wstar）を $`\mathrm{argOK}(R^{-x})`$ と $`y`$ に適用して
-$`(0,y) :: R^{-x} \in W_y`$ を得る。[T.W_shift](Wset-2.md#t-W_shift) を $`d := x`$ として適用し、
-$`\forall r \in R,\ x \le r_1`$ のもとで [T.tree_shift](#t-tree_shift) を使うと
+By [T.mem_Wstar](#t-mem_Wstar) we have $`R^{-x} \in W^{*}`$, so applying
+the definition of $`W^{*}`$ (D.Wstar) to $`\mathrm{argOK}(R^{-x})`$ and $`y`$ gives
+$`(0,y) :: R^{-x} \in W_y`$. Applying [T.W_shift](Wset-2.md#t-W_shift) with $`d := x`$ and
+using [T.tree_shift](#t-tree_shift) under $`\forall r \in R,\ x \le r_1`$, we get
 
 ```math
 (x,y) :: R = \Bigl((0,y) :: R^{-x}\Bigr)^{+x} \in W_y
 ```
 
-である。$`(x,y) \in A \mathbin{+\!\!+} P = M`$ であるから仮定より $`y \le u`$ であり、
-[T.W_mono](Wset.md#t-W_mono) より $`(x,y) :: R \in W_u`$、すなわち $`P \in W_u`$ である。
+Since $`(x,y) \in A \mathbin{+\!\!+} P = M`$, the hypothesis gives $`y \le u`$, and
+[T.W_mono](Wset.md#t-W_mono) gives $`(x,y) :: R \in W_u`$, that is $`P \in W_u`$.
 
-$`A`$ で場合分けする。
+We distinguish cases on $`A`$.
 
-- **$`A = ()`$ のとき。** $`M = P \in W_u`$ である。
+- **The case $`A = ()`$.** Then $`M = P \in W_u`$.
 
-- **$`A \ne ()`$ のとき。** $`0 \lt \lvert A\rvert`$ かつ $`0 \lt \lvert P\rvert`$ であるから
-  $`\lvert A\rvert \le N`$ である。$`A`$ の要素は $`M`$ の要素であるから
-  $`\forall p \in A,\ p_2 \le u`$ であり、帰納法の仮定 $`\Phi(N)`$ を $`A`$ に適用して
-  $`A \in W_u`$ を得る。$`\mathrm{rsum}(A,P)`$ と合わせて
-  [T.W_add](Wset-3.md#t-W_add) より $`M = A \mathbin{+\!\!+} P \in W_u`$。∎
+- **The case $`A \ne ()`$.** Since $`0 \lt \lvert A\rvert`$ and $`0 \lt \lvert P\rvert`$, we have
+  $`\lvert A\rvert \le N`$. The elements of $`A`$ are elements of $`M`$, so
+  $`\forall p \in A,\ p_2 \le u`$, and applying the induction hypothesis $`\Phi(N)`$ to $`A`$ gives
+  $`A \in W_u`$. Together with $`\mathrm{rsum}(A,P)`$,
+  [T.W_add](Wset-3.md#t-W_add) gives $`M = A \mathbin{+\!\!+} P \in W_u`$. ∎
 
 <a id="t-mem_W_of_bound"></a>
-## 定理: 行 1 の上界による所属 (T.mem_W_of_bound)
+## Theorem: membership from an upper bound on row 1 (T.mem_W_of_bound)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$、$`u \in \mathbb{N}`$ とし
-$`\forall p \in M,\ p_2 \le u`$ を仮定すると $`M \in W_u`$。
+Let $`M \in \mathrm{PairSeq}`$ and $`u \in \mathbb{N}`$. If
+$`\forall p \in M,\ p_2 \le u`$, then $`M \in W_u`$.
 
-### 証明
+### Proof
 
-[T.mem_W_of_bound_aux](#t-mem_W_of_bound_aux) を $`N := \lvert M\rvert`$ として適用する。
-その仮定 $`\lvert M\rvert \le N`$ は $`\le`$ の反射性による。∎
+Apply [T.mem_W_of_bound_aux](#t-mem_W_of_bound_aux) with $`N := \lvert M\rvert`$.
+Its hypothesis $`\lvert M\rvert \le N`$ holds by reflexivity of $`\le`$. ∎
 
 <a id="t-le_maxr1"></a>
-## 定理: 行 1 の値は最大値以下 (T.le_maxr1)
+## Theorem: the values in row 1 are at most the maximum (T.le_maxr1)
 
-### 定理
+### Theorem
 
-任意の $`S \in \mathrm{PairSeq}`$ と $`p \in S`$ に対し $`p_2 \le \mathrm{maxr}_1(S)`$（[D.maxr1](Column-2.md#d-maxr1)）。
+For every $`S \in \mathrm{PairSeq}`$ and every $`p \in S`$ we have $`p_2 \le \mathrm{maxr}_1(S)`$ ([D.maxr1](Column-2.md#d-maxr1)).
 
-### 証明
+### Proof
 
-$`S`$ の構造に関する帰納法。帰納法の述語は
+By induction on the structure of $`S`$. The induction predicate is
 
 ```math
 \Phi(S) :\equiv \forall p \in S,\ p_2 \le \mathrm{maxr}_1(S) .
 ```
 
-- **基底段** $`S = ()`$：空列は要素をもたないから前件が偽であり、$`\Phi(())`$ が成り立つ。
+- **Base case** $`S = ()`$: the empty sequence has no elements, so the antecedent is false and $`\Phi(())`$ holds.
 
-- **帰納段** $`S = q :: S'`$：帰納法の仮定は $`\Phi(S')`$ である。
-  [T.maxr1_cons](Column-2.md#t-maxr1_cons) より
-  $`\mathrm{maxr}_1(q :: S') = \max\bigl(q_2,\ \mathrm{maxr}_1(S')\bigr)`$ である。
-  自然数の $`\max`$ については $`a \le \max(a,b)`$ かつ $`b \le \max(a,b)`$ が成り立つ。
-  $`p \in q :: S'`$ とすると $`p = q`$ か $`p \in S'`$ である。
-  - $`p = q`$ のとき。$`p_2 = q_2 \le \max\bigl(q_2, \mathrm{maxr}_1(S')\bigr)`$。
-  - $`p \in S'`$ のとき。帰納法の仮定より $`p_2 \le \mathrm{maxr}_1(S')`$ であり、
-    $`\mathrm{maxr}_1(S') \le \max\bigl(q_2, \mathrm{maxr}_1(S')\bigr)`$ と $`\le`$ の推移律により
-    $`p_2 \le \max\bigl(q_2, \mathrm{maxr}_1(S')\bigr)`$。
+- **Inductive step** $`S = q :: S'`$: the induction hypothesis is $`\Phi(S')`$.
+  By [T.maxr1_cons](Column-2.md#t-maxr1_cons) we have
+  $`\mathrm{maxr}_1(q :: S') = \max\bigl(q_2,\ \mathrm{maxr}_1(S')\bigr)`$.
+  For $`\max`$ on natural numbers, $`a \le \max(a,b)`$ and $`b \le \max(a,b)`$ hold.
+  Let $`p \in q :: S'`$; then $`p = q`$ or $`p \in S'`$.
+  - The case $`p = q`$. Then $`p_2 = q_2 \le \max\bigl(q_2, \mathrm{maxr}_1(S')\bigr)`$.
+  - The case $`p \in S'`$. The induction hypothesis gives $`p_2 \le \mathrm{maxr}_1(S')`$, and
+    together with $`\mathrm{maxr}_1(S') \le \max\bigl(q_2, \mathrm{maxr}_1(S')\bigr)`$ and transitivity of $`\le`$ we get
+    $`p_2 \le \max\bigl(q_2, \mathrm{maxr}_1(S')\bigr)`$.
 
-  いずれの場合も $`p_2 \le \mathrm{maxr}_1(q :: S')`$ であるから $`\Phi(q :: S')`$。∎
+  In either case $`p_2 \le \mathrm{maxr}_1(q :: S')`$, hence $`\Phi(q :: S')`$. ∎
 
 <a id="t-mem_W_maxr1"></a>
-## 定理: 行 1 の最大値の段での所属 (T.mem_W_maxr1)
+## Theorem: membership at the stage given by the maximum of row 1 (T.mem_W_maxr1)
 
-### 定理
+### Theorem
 
-任意の $`M \in \mathrm{PairSeq}`$ に対し $`M \in W_{\mathrm{maxr}_1(M)}`$。
+For every $`M \in \mathrm{PairSeq}`$ we have $`M \in W_{\mathrm{maxr}_1(M)}`$.
 
-### 証明
+### Proof
 
-[T.mem_W_of_bound](#t-mem_W_of_bound) を $`u := \mathrm{maxr}_1(M)`$ として適用する。
-その仮定 $`\forall p \in M,\ p_2 \le \mathrm{maxr}_1(M)`$ は
-[T.le_maxr1](#t-le_maxr1) である。∎
+Apply [T.mem_W_of_bound](#t-mem_W_of_bound) with $`u := \mathrm{maxr}_1(M)`$.
+Its hypothesis $`\forall p \in M,\ p_2 \le \mathrm{maxr}_1(M)`$ is
+[T.le_maxr1](#t-le_maxr1). ∎
 
 <a id="t-W_membership"></a>
-## 定理: 標準形は或る段に属する (T.W_membership)
+## Theorem: a standard form belongs to some stage (T.W_membership)
 
-### 定理
+### Theorem
 
-任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば
-$`M \in W_u`$ なる $`u \in \mathbb{N}`$ が存在する。
+For every $`M \in \mathrm{PairSeq}`$, if $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)) then
+there exists $`u \in \mathbb{N}`$ with $`M \in W_u`$.
 
-### 証明
+### Proof
 
-$`u := \mathrm{maxr}_1(M)`$ を取ればよい。
-$`M \in W_{\mathrm{maxr}_1(M)}`$ は [T.mem_W_maxr1](#t-mem_W_maxr1) である。∎
+Take $`u := \mathrm{maxr}_1(M)`$.
+Then $`M \in W_{\mathrm{maxr}_1(M)}`$ is [T.mem_W_maxr1](#t-mem_W_maxr1). ∎
 
 <a id="t-wf_of_cofinality_and_membership"></a>
-## 定理: 共終性と所属から整礎性へ (T.wf_of_cofinality_and_membership)
+## Theorem: from cofinality and membership to well-foundedness (T.wf_of_cofinality_and_membership)
 
-### 定理
+### Theorem
 
-次の 2 つを仮定する。
+Assume the following two statements.
 
 ```math
 \begin{aligned}
@@ -829,41 +827,41 @@ $`M \in W_{\mathrm{maxr}_1(M)}`$ は [T.mem_W_maxr1](#t-mem_W_maxr1) である�
 \end{aligned}
 ```
 
-（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)、$`\preceq`$ [D.ole](Term.md#d-ole)）
+($`\mathrm{tr}`$ [D.translate](Term.md#d-translate), $`\prec`$ [D.olt](Term.md#d-olt), $`\preceq`$ [D.ole](Term.md#d-ole))
 
-このとき関係 $`R_{\mathrm{st}}`$（[D.Rst](Wset.md#d-Rst)）は整礎である。
+Then the relation $`R_{\mathrm{st}}`$ ([D.Rst](Wset.md#d-Rst)) is well-founded.
 
-### 証明
+### Proof
 
-$`R_{\mathrm{st}}`$ の定義（D.Rst）より
+By the definition of $`R_{\mathrm{st}}`$ (D.Rst),
 
 ```math
 a \mathbin{R_{\mathrm{st}}} b :\iff a \in \mathrm{ST\_PS} \wedge b \in \mathrm{ST\_PS}
   \wedge \mathrm{tr}\,a \prec \mathrm{tr}\,b
 ```
 
-である。整礎性は $`\forall M,\ \mathrm{Acc}(R_{\mathrm{st}},M)`$ と同値であるから、
-$`M`$ を任意に取り $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ を示す。
-$`M \in \mathrm{ST\_PS}`$ か否かで場合分けする。
+Well-foundedness is equivalent to $`\forall M,\ \mathrm{Acc}(R_{\mathrm{st}},M)`$, so we
+take an arbitrary $`M`$ and show $`\mathrm{Acc}(R_{\mathrm{st}},M)`$.
+We distinguish cases according to whether $`M \in \mathrm{ST\_PS}`$.
 
-- **$`M \in \mathrm{ST\_PS}`$ のとき。** 仮定 (mem) により $`M \in W_u`$ なる $`u`$ を取る。
-  [T.acc_of_W](Wset.md#t-acc_of_W) を仮定 (cof) と $`u`$、$`M`$ に適用して
-  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ を得る。
+- **The case $`M \in \mathrm{ST\_PS}`$.** By hypothesis (mem) take $`u`$ with $`M \in W_u`$.
+  Applying [T.acc_of_W](Wset.md#t-acc_of_W) to hypothesis (cof), to $`u`$ and to $`M`$ gives
+  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$.
 
-- **$`M \notin \mathrm{ST\_PS}`$ のとき。** $`\mathrm{Acc}`$ の生成規則
-  $`\bigl(\forall y,\ y \mathbin{R} a \to \mathrm{Acc}(R,y)\bigr) \to \mathrm{Acc}(R,a)`$ により、
-  $`y \mathbin{R_{\mathrm{st}}} M`$ なるすべての $`y`$ について
-  $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を示せばよい。ところが
-  $`y \mathbin{R_{\mathrm{st}}} M`$ の第 2 連言子は $`M \in \mathrm{ST\_PS}`$ であり、
-  いまの場合分けの仮定に矛盾する。よって前件をみたす $`y`$ は存在せず、
-  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ が成り立つ。∎
+- **The case $`M \notin \mathrm{ST\_PS}`$.** By the generating rule of $`\mathrm{Acc}`$,
+  namely $`\bigl(\forall y,\ y \mathbin{R} a \to \mathrm{Acc}(R,y)\bigr) \to \mathrm{Acc}(R,a)`$,
+  it suffices to show $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ for every $`y`$ with
+  $`y \mathbin{R_{\mathrm{st}}} M`$. But
+  the second conjunct of $`y \mathbin{R_{\mathrm{st}}} M`$ is $`M \in \mathrm{ST\_PS}`$, which
+  contradicts the hypothesis of the present case. Hence no $`y`$ satisfies the antecedent, and
+  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ holds. ∎
 
 <a id="t-wf_olt_ST_PS_of_cofinality"></a>
-## 定理: 共終性から標準形上の順序の整礎性へ (T.wf_olt_ST_PS_of_cofinality)
+## Theorem: from cofinality to well-foundedness of the order on standard forms (T.wf_olt_ST_PS_of_cofinality)
 
-### 定理
+### Theorem
 
-仮定 (cof)、すなわち
+Under hypothesis (cof), that is,
 
 ```math
 \begin{aligned}
@@ -873,18 +871,18 @@ $`M \in \mathrm{ST\_PS}`$ か否かで場合分けする。
 \end{aligned}
 ```
 
-のもとで、関係
+the relation
 
 ```math
 a \mathbin{\rho} b :\iff a \in \mathrm{ST\_PS} \wedge b \in \mathrm{ST\_PS}
   \wedge \mathrm{tr}\,a \prec \mathrm{tr}\,b
 ```
 
-は整礎である。
+is well-founded.
 
-### 証明
+### Proof
 
-$`\rho`$ は $`R_{\mathrm{st}}`$ の定義（D.Rst）の右辺を書き下したものであり、
-両者は定義により同一の関係である。
-[T.wf_of_cofinality_and_membership](#t-wf_of_cofinality_and_membership) を、
-仮定 (cof) と、(mem) として [T.W_membership](#t-W_membership) を取って適用すればよい。∎
+The relation $`\rho`$ is the right-hand side of the definition of $`R_{\mathrm{st}}`$ (D.Rst) written out, so
+the two are the same relation by definition.
+It suffices to apply [T.wf_of_cofinality_and_membership](#t-wf_of_cofinality_and_membership) to
+hypothesis (cof) and, as (mem), to [T.W_membership](#t-W_membership). ∎
