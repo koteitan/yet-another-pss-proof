@@ -1,11 +1,11 @@
-[← README](README.md) | [English](Cnf-2.md) | [Japanese](Cnf-2-ja.md) | Cnf [1](Cnf.md) **2** [3](Cnf-3.md)
+[← README](README-ja.md) | [English](Cnf-2.md) | [Japanese](Cnf-2-ja.md) | Cnf [1](Cnf-ja.md) **2** [3](Cnf-3-ja.md)
 
 <a id="t-cnf_ctx_cong"></a>
 ## 定理: 条件の文脈による合同 (T.cnf_ctx_cong)
 
 ### 定理
 
-$`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とし、
+$`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）とし、
 次の 6 つを仮定する。
 
 ```math
@@ -22,9 +22,9 @@ $`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}
 \end{aligned}
 ```
 
-（$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)、$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、
-$`\prec`$ [D.olt](Term.md#d-olt)、$`\mathsf{P}`$ と $`\mathsf{Z}`$ [D.Three](Term.md#d-Three)、
-$`\preceq`$ [D.ole](Term.md#d-ole)）
+（$`\mathrm{cnf}`$ [D.cnf](Cnf-ja.md#d-cnf)、$`\mathrm{tr}`$ [D.translate](Term-ja.md#d-translate)、
+$`\prec`$ [D.olt](Term-ja.md#d-olt)、$`\mathsf{P}`$ と $`\mathsf{Z}`$ [D.Three](Term-ja.md#d-Three)、
+$`\preceq`$ [D.ole](Term-ja.md#d-ole)）
 
 このとき $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)\bigr)`$ ならば
 $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$。
@@ -57,8 +57,8 @@ $`z_1, z_2, T_1, T_2`$ と 6 つの仮定を固定し、$`\lvert G\rvert`$ に�
 **$`G = g :: G'`$ のとき。** $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたすかどうかで場合分けする。
 
 **(a) $`G'`$ のある要素 $`x`$ が $`\neg(g_1 \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
-[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) を $`xs := G'`$、$`ys := z_i :: T_i`$ に
+[T.takeWhile_append_not](Term-ja.md#t-takeWhile_append_not) と
+[T.dropWhile_append_not](Term-ja.md#t-dropWhile_append_not) を $`xs := G'`$、$`ys := z_i :: T_i`$ に
 適用すると、$`i = 1, 2`$ のいずれでも
 
 ```math
@@ -92,7 +92,7 @@ A_i &:= \mathrm{tr}\bigl(\mathrm{tw}_{d_1}(D' \mathbin{+\!\!+} z_i :: T_i)\bigr)
 
 である。
 
-[T.translate_ctx_cong](Term.md#t-translate_ctx_cong) を仮定 (decr), (root), (r1), (r2) と
+[T.translate_ctx_cong](Term-ja.md#t-translate_ctx_cong) を仮定 (decr), (root), (r1), (r2) と
 $`G := d :: D'`$ に適用すると
 
 ```math
@@ -100,7 +100,7 @@ $`G := d :: D'`$ に適用すると
   \prec \mathrm{tr}\bigl((d :: D') \mathbin{+\!\!+} z_2 :: T_2\bigr)
 ```
 
-を得る。両辺を上の形に書き換えて [T.olt_P_P](Term.md#t-olt_P_P) を使うと、
+を得る。両辺を上の形に書き換えて [T.olt_P_P](Term-ja.md#t-olt_P_P) を使うと、
 次の 3 つのいずれかが成り立つ。
 
 - $`d_2 \lt d_2`$。$`\lt`$ の非反射性によりこれは起こらない。
@@ -116,7 +116,7 @@ $`G := d :: D'`$ に適用すると
 である。
 
 次に前件 $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_2 :: T_2))\bigr)`$ を上の形に書き換え、
-[T.cnf_P_P](Cnf.md#t-cnf_P_P) を使うと次の 3 つを得る。
+[T.cnf_P_P](Cnf-ja.md#t-cnf_P_P) を使うと次の 3 つを得る。
 
 1. $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{tw}_{g_1} G')\bigr)`$。
 2. $`\neg\bigl(\mathsf{P}(g_2, \mathrm{tr}(\mathrm{tw}_{g_1} G'), \mathsf{Z}) \prec \mathsf{P}(d_2, A_2, \mathsf{Z})\bigr)`$。
@@ -140,19 +140,19 @@ $`G' := d :: D'`$ に適用できる。3 とあわせて
   \prec \mathsf{P}(d_2,\ A_1,\ \mathsf{Z})\bigr)
 ```
 
-を示す。内側が成り立つとすると [T.olt_P_P](Term.md#t-olt_P_P) より次の 3 つのいずれかである。
+を示す。内側が成り立つとすると [T.olt_P_P](Term-ja.md#t-olt_P_P) より次の 3 つのいずれかである。
 
-- $`g_2 \lt d_2`$。このとき [T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 1 選言により
+- $`g_2 \lt d_2`$。このとき [T.olt_P_P](Term-ja.md#t-olt_P_P) の右辺の第 1 選言により
   $`\mathsf{P}(g_2, \mathrm{tr}(\mathrm{tw}_{g_1} G'), \mathsf{Z}) \prec \mathsf{P}(d_2, A_2, \mathsf{Z})`$
   であり、2 に矛盾する。
 - $`g_2 = d_2 \wedge \mathrm{tr}(\mathrm{tw}_{g_1} G') \prec A_1`$。$`(\ast)`$ で場合分けする。
-  $`A_1 \prec A_2`$ のときは [T.olt_trans](Term.md#t-olt_trans) より
+  $`A_1 \prec A_2`$ のときは [T.olt_trans](Term-ja.md#t-olt_trans) より
   $`\mathrm{tr}(\mathrm{tw}_{g_1} G') \prec A_2`$。$`A_1 = A_2`$ のときは書き換えて同じ結論を得る。
-  いずれの場合も [T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 2 選言により
+  いずれの場合も [T.olt_P_P](Term-ja.md#t-olt_P_P) の右辺の第 2 選言により
   $`\mathsf{P}(g_2, \mathrm{tr}(\mathrm{tw}_{g_1} G'), \mathsf{Z}) \prec \mathsf{P}(d_2, A_2, \mathsf{Z})`$
   であり、2 に矛盾する。
 - $`g_2 = d_2 \wedge \mathrm{tr}(\mathrm{tw}_{g_1} G') = A_1 \wedge \mathsf{Z} \prec \mathsf{Z}`$。
-  [T.not_olt_Z](Term.md#t-not_olt_Z) に矛盾する。
+  [T.not_olt_Z](Term-ja.md#t-not_olt_Z) に矛盾する。
 
 最後に、$`i = 1`$ についての上の 2 つの式より
 
@@ -162,7 +162,7 @@ $`G' := d :: D'`$ に適用できる。3 とあわせて
       \mathsf{P}\bigl(d_2,\ A_1,\ \mathrm{tr}(\mathrm{dw}_{d_1}(D' \mathbin{+\!\!+} z_1 :: T_1))\bigr)\Bigr)
 ```
 
-であるから、[T.cnf_P_P](Cnf.md#t-cnf_P_P) に 1、いま示した否定、および帰納法の仮定から得た
+であるから、[T.cnf_P_P](Cnf-ja.md#t-cnf_P_P) に 1、いま示した否定、および帰納法の仮定から得た
 $`\mathrm{cnf}\bigl(\mathrm{tr}((d :: D') \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$ を与えると
 $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$、すなわち $`\Phi(g :: G')`$ の結論を得る。
 
@@ -171,7 +171,7 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$�
 $`g_1 \lt (z_1)_1 \le x_1`$ であるから、$`z_1 :: T_1`$ の全要素が $`g_1 \lt x_1`$ をみたす。
 また (r2) より $`T_2`$ の任意の要素 $`x`$ について $`g_1 \lt (z_2)_1 \le x_1`$ であるから、
 $`z_2 :: T_2`$ の全要素も $`g_1 \lt x_1`$ をみたす。よって $`G' \mathbin{+\!\!+} z_i :: T_i`$ の全要素が
-$`g_1 \lt x_1`$ をみたし、[T.translate_single_tree](Term.md#t-translate_single_tree) より
+$`g_1 \lt x_1`$ をみたし、[T.translate_single_tree](Term-ja.md#t-translate_single_tree) より
 $`i = 1, 2`$ のいずれでも
 
 ```math
@@ -179,17 +179,17 @@ $`i = 1, 2`$ のいずれでも
   = \mathsf{P}\bigl(g_2,\ \mathrm{tr}(G' \mathbin{+\!\!+} z_i :: T_i),\ \mathsf{Z}\bigr)
 ```
 
-である。前件をこの形に書き換え [T.cnf_P_Z](Cnf.md#t-cnf_P_Z) を使うと
+である。前件をこの形に書き換え [T.cnf_P_Z](Cnf-ja.md#t-cnf_P_Z) を使うと
 $`\mathrm{cnf}\bigl(\mathrm{tr}(G' \mathbin{+\!\!+} z_2 :: T_2)\bigr)`$ を得る。
 $`\lvert G'\rvert \lt \lvert g :: G'\rvert`$ であるから帰納法の仮定を $`G'`$ に適用して
 $`\mathrm{cnf}\bigl(\mathrm{tr}(G' \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$ を得る。
-ふたたび [T.cnf_P_Z](Cnf.md#t-cnf_P_Z) より
+ふたたび [T.cnf_P_Z](Cnf-ja.md#t-cnf_P_Z) より
 $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$ が成り立つ。
 
 **(c) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`\neg\bigl(g_1 \lt (z_1)_1\bigr)`$ のとき。**
 (root) より $`\neg\bigl(g_1 \lt (z_2)_1\bigr)`$ でもある。
-[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
-[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より、$`i = 1, 2`$ のいずれでも
+[T.takeWhile_append_all](Term-ja.md#t-takeWhile_append_all) と
+[T.dropWhile_append_all](Term-ja.md#t-dropWhile_append_all) より、$`i = 1, 2`$ のいずれでも
 
 ```math
 \mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = G' \mathbin{+\!\!+} \mathrm{tw}_{g_1}(z_i :: T_i),
@@ -206,7 +206,7 @@ $`\mathrm{dw}_{g_1}(z_i :: T_i) = z_i :: T_i`$ である。よって $`\mathrm{t
   = \mathsf{P}\bigl(g_2,\ \mathrm{tr}\,G',\ \mathsf{P}(a_i,b_i,c_i)\bigr)
 ```
 
-である。前件をこの形（$`i = 2`$）に書き換え [T.cnf_P_P](Cnf.md#t-cnf_P_P) を使うと次の 3 つを得る。
+である。前件をこの形（$`i = 2`$）に書き換え [T.cnf_P_P](Cnf-ja.md#t-cnf_P_P) を使うと次の 3 つを得る。
 
 1. $`\mathrm{cnf}(\mathrm{tr}\,G')`$。
 2. $`\neg\bigl(\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{Z}) \prec \mathsf{P}(a_2,b_2,\mathsf{Z})\bigr)`$。
@@ -220,12 +220,12 @@ $`\mathrm{dw}_{g_1}(z_i :: T_i) = z_i :: T_i`$ である。よって $`\mathrm{t
 
 を示す。内側が成り立つとすると、(leadle) の
 $`\mathsf{P}(a_1,b_1,\mathsf{Z}) \preceq \mathsf{P}(a_2,b_2,\mathsf{Z})`$ と
-[T.olt_ole_trans](Term.md#t-olt_ole_trans) より
+[T.olt_ole_trans](Term-ja.md#t-olt_ole_trans) より
 $`\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{Z}) \prec \mathsf{P}(a_2,b_2,\mathsf{Z})`$ となり、2 に矛盾する。
 
 また (cZ1) と $`\mathrm{tr}(z_1 :: T_1) = \mathsf{P}(a_1,b_1,c_1)`$ より
 $`\mathrm{cnf}\bigl(\mathsf{P}(a_1,b_1,c_1)\bigr)`$ である。
-[T.cnf_P_P](Cnf.md#t-cnf_P_P) に 1、いま示した否定、およびこれを与えると
+[T.cnf_P_P](Cnf-ja.md#t-cnf_P_P) に 1、いま示した否定、およびこれを与えると
 $`\mathrm{cnf}\bigl(\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{P}(a_1,b_1,c_1))\bigr)`$、
 すなわち $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$ を得る。
 
@@ -257,8 +257,8 @@ $`t, T'`$ と仮定 $`\forall x \in T',\ t_1 \le x_1`$ を固定し、$`\lvert G
 **$`G = g :: G'`$ のとき。** $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたすかどうかで場合分けする。
 
 **(a) $`G'`$ のある要素 $`x`$ が $`\neg(g_1 \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
-[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) を $`xs := G'`$、$`ys := t :: T'`$ に
+[T.takeWhile_append_not](Term-ja.md#t-takeWhile_append_not) と
+[T.dropWhile_append_not](Term-ja.md#t-dropWhile_append_not) を $`xs := G'`$、$`ys := t :: T'`$ に
 適用して
 
 ```math
@@ -283,7 +283,7 @@ $`t, T'`$ と仮定 $`\forall x \in T',\ t_1 \le x_1`$ を固定し、$`\lvert G
 ```
 
 である（第 2 式では $`(d :: D') \mathbin{+\!\!+} t :: T' = d :: (D' \mathbin{+\!\!+} t :: T')`$ を使った）。
-前件をこの形に書き換え [T.cnf_P_P](Cnf.md#t-cnf_P_P) を使うと、その右辺の第 3 連言子として
+前件をこの形に書き換え [T.cnf_P_P](Cnf-ja.md#t-cnf_P_P) を使うと、その右辺の第 3 連言子として
 $`\mathrm{cnf}\bigl(\mathrm{tr}((d :: D') \mathbin{+\!\!+} t :: T')\bigr)`$ を得る。
 $`d :: D' = \mathrm{dw}_{g_1} G'`$ は $`G'`$ の部分列であるから
 $`\lvert d :: D'\rvert \le \lvert G'\rvert \lt \lvert g :: G'\rvert`$ であり、帰納法の仮定を
@@ -293,21 +293,21 @@ $`G' := d :: D'`$ に適用して $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)
 仮定 $`\forall x \in T',\ t_1 \le x_1`$ より、$`T'`$ の任意の要素 $`x`$ について
 $`g_1 \lt t_1 \le x_1`$ であるから、$`t :: T'`$ の全要素が $`g_1 \lt x_1`$ をみたす。
 よって $`G' \mathbin{+\!\!+} t :: T'`$ の全要素が $`g_1 \lt x_1`$ をみたし、
-[T.translate_single_tree](Term.md#t-translate_single_tree) より
+[T.translate_single_tree](Term-ja.md#t-translate_single_tree) より
 
 ```math
 \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} t :: T')\bigr)
   = \mathsf{P}\bigl(g_2,\ \mathrm{tr}(G' \mathbin{+\!\!+} t :: T'),\ \mathsf{Z}\bigr)
 ```
 
-である。前件をこの形に書き換え [T.cnf_P_Z](Cnf.md#t-cnf_P_Z) を使うと
+である。前件をこの形に書き換え [T.cnf_P_Z](Cnf-ja.md#t-cnf_P_Z) を使うと
 $`\mathrm{cnf}\bigl(\mathrm{tr}(G' \mathbin{+\!\!+} t :: T')\bigr)`$ を得る。
 $`\lvert G'\rvert \lt \lvert g :: G'\rvert`$ であるから帰納法の仮定を $`G'`$ に適用して
 $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$ を得る。
 
 **(c) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`\neg(g_1 \lt t_1)`$ のとき。**
-[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
-[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
+[T.takeWhile_append_all](Term-ja.md#t-takeWhile_append_all) と
+[T.dropWhile_append_all](Term-ja.md#t-dropWhile_append_all) より
 
 ```math
 \mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} t :: T') = G' \mathbin{+\!\!+} \mathrm{tw}_{g_1}(t :: T'),
@@ -327,7 +327,7 @@ $`\mathrm{dw}_{g_1}(t :: T') = t :: T'`$ である。よって $`\mathrm{tr}`$ �
   = \mathsf{P}\bigl(t_2,\ \mathrm{tr}(\mathrm{tw}_{t_1} T'),\ \mathrm{tr}(\mathrm{dw}_{t_1} T')\bigr)
 ```
 
-である。前件をこの形に書き換え [T.cnf_P_P](Cnf.md#t-cnf_P_P) を使うと、その右辺の第 3 連言子が
+である。前件をこの形に書き換え [T.cnf_P_P](Cnf-ja.md#t-cnf_P_P) を使うと、その右辺の第 3 連言子が
 $`\mathrm{cnf}\bigl(\mathsf{P}(t_2, \mathrm{tr}(\mathrm{tw}_{t_1} T'), \mathrm{tr}(\mathrm{dw}_{t_1} T'))\bigr)`$、
 すなわち $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$ である。
 
@@ -340,7 +340,7 @@ $`\mathrm{cnf}\bigl(\mathsf{P}(t_2, \mathrm{tr}(\mathrm{tw}_{t_1} T'), \mathrm{t
 
 $`v_0, w_0 \in \mathbb{N}`$、$`R, G \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$、
 $`n \in \mathbb{N}`$ とする。以下 $`B := (v_0,w_0) :: R`$ とおき、列を $`k`$ 個連結する記法
-$`L^{\ast k}`$ は [T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block) のものを用いる。
+$`L^{\ast k}`$ は [T.cnf_replicate_block](Cnf-ja.md#t-cnf_replicate_block) のものを用いる。
 次の 4 つを仮定する。
 
 ```math
@@ -367,7 +367,7 @@ $`L^{\ast k}`$ は [T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block) のも�
 
 まず $`R \mathbin{+\!\!+} (\ell)`$ の全要素 $`x`$ が $`v_0 \lt x_1`$ をみたす。実際、
 $`x \in R`$ のときは (hR)、$`x = \ell`$ のときは (lpv) による。よって
-[T.translate_single_tree](Term.md#t-translate_single_tree) を $`p := (v_0,w_0)`$、
+[T.translate_single_tree](Term-ja.md#t-translate_single_tree) を $`p := (v_0,w_0)`$、
 $`R := R \mathbin{+\!\!+} (\ell)`$ に適用して
 
 ```math
@@ -396,7 +396,7 @@ $`m = m' + 1`$ のときは $`T = B \mathbin{+\!\!+} B^{\ast m'}`$ であって�
 $`B`$ の先頭要素 $`(v_0,w_0)`$ であるから $`(\mathrm{head}\,T)_1 = v_0`$ であり、
 $`\lt`$ の非反射性より $`\neg(v_0 \lt v_0)`$、すなわち第 2 選言が成り立つ。
 
-(hR) と (C) に [T.translate_block_append](Term.md#t-translate_block_append) を適用して
+(hR) と (C) に [T.translate_block_append](Term-ja.md#t-translate_block_append) を適用して
 
 ```math
 \text{(D)}\qquad
@@ -432,13 +432,13 @@ G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0
 ```
 
 を得る。ここに (A) を代入すると $`\mathrm{cnf}\bigl(\mathsf{P}(w_0, \mathrm{tr}(R \mathbin{+\!\!+} (\ell)), \mathsf{Z})\bigr)`$
-であり、[T.cnf_P_Z](Cnf.md#t-cnf_P_Z) より
+であり、[T.cnf_P_Z](Cnf-ja.md#t-cnf_P_Z) より
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}(R \mathbin{+\!\!+} (\ell))\bigr)
 ```
 
-を得る。これに [T.cnf_snoc](Cnf.md#t-cnf_snoc) を $`D := R`$、$`m := \ell`$ として適用して
+を得る。これに [T.cnf_snoc](Cnf-ja.md#t-cnf_snoc) を $`D := R`$、$`m := \ell`$ として適用して
 
 ```math
 \text{(cR)}\qquad \mathrm{cnf}\bigl(\mathrm{tr}\,R\bigr)
@@ -448,7 +448,7 @@ G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0
 
 **第 3 段：コピー列そのものの CNF。**
 
-[T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block) を (hR)、(cR)、$`n := m+1`$ に適用して
+[T.cnf_replicate_block](Cnf-ja.md#t-cnf_replicate_block) を (hR)、(cR)、$`n := m+1`$ に適用して
 
 ```math
 \text{(cZ1)}\qquad \mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast(m+1)})\bigr)
@@ -458,14 +458,14 @@ G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0
 
 **第 4 段：狭義減少と先頭主要項の比較。**
 
-[T.translate_snoc_increase](Decrease.md#t-translate_snoc_increase) を $`C := R`$、$`m := \ell`$ に
+[T.translate_snoc_increase](Decrease-ja.md#t-translate_snoc_increase) を $`C := R`$、$`m := \ell`$ に
 適用して
 
 ```math
 \text{(E)}\qquad \mathrm{tr}\,R \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))
 ```
 
-を得る。(E) に [T.olt_P_b](Term.md#t-olt_P_b) を $`a := w_0`$、$`c_1 := \mathrm{tr}\,T`$、
+を得る。(E) に [T.olt_P_b](Term-ja.md#t-olt_P_b) を $`a := w_0`$、$`c_1 := \mathrm{tr}\,T`$、
 $`c_2 := \mathsf{Z}`$ として適用すると
 
 ```math
@@ -481,7 +481,7 @@ $`c_2 := \mathsf{Z}`$ として適用すると
   \prec \mathrm{tr}\bigl((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))\bigr)
 ```
 
-を得る。同じく (E) に [T.olt_P_b](Term.md#t-olt_P_b) を $`c_1 := \mathsf{Z}`$、$`c_2 := \mathsf{Z}`$
+を得る。同じく (E) に [T.olt_P_b](Term-ja.md#t-olt_P_b) を $`c_1 := \mathsf{Z}`$、$`c_2 := \mathsf{Z}`$
 として適用すると
 
 ```math
@@ -612,7 +612,7 @@ $`\mathrm{tr}\,(M^{+d}) = \mathrm{tr}\,M`$。
 
 ### 証明
 
-[T.translate_shift](Term.md#t-translate_shift) そのものである。∎
+[T.translate_shift](Term-ja.md#t-translate_shift) そのものである。∎
 
 <a id="t-shiftr0_cons"></a>
 ## 定理: 先頭付き列の平行移動 (T.shiftr0_cons)

@@ -1,11 +1,11 @@
-[← README](README.md) | [English](ArgDom-4.md) | [Japanese](ArgDom-4-ja.md) | ArgDom [1](ArgDom.md) [2](ArgDom-2.md) [3](ArgDom-3.md) **4** [5](ArgDom-5.md)
+[← README](README-ja.md) | [English](ArgDom-4.md) | [Japanese](ArgDom-4-ja.md) | ArgDom [1](ArgDom-ja.md) [2](ArgDom-2-ja.md) [3](ArgDom-3-ja.md) **4** [5](ArgDom-5-ja.md)
 
 <a id="t-argDomCoreOn_bad_A2"></a>
 ## 定理: 第 4 分岐の場合 A2（交差の場合） (T.argDomCoreOn_bad_A2)
 
 ### 定理
 
-$`M, G, R, X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、
+$`M, G, R, X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）、
 $`v_0, w_0, d_0, n, u, w, e \in \mathbb{N}`$、
 $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。
 次を仮定する。
@@ -39,9 +39,9 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: 
 \end{aligned}
 ```
 
-（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn)、
-$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)、$`\mathrm{copies}_{d_0}`$ [D.copies](Cnf-2.md#d-copies)、
-$`\mathrm{SpineOK}`$ [D.SpineOK](ArgDom.md#d-SpineOK)）
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss-ja.md#d-ST_PS)、$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom-ja.md#d-ArgDomCoreOn)、
+$`\to^M_1`$ [D.nextrel1](Pss-ja.md#d-nextrel1)、$`\mathrm{copies}_{d_0}`$ [D.copies](Cnf-2-ja.md#d-copies)、
+$`\mathrm{SpineOK}`$ [D.SpineOK](ArgDom-ja.md#d-SpineOK)）
 
 このとき
 
@@ -50,7 +50,7 @@ B \preceq_{\mathrm{lex}}
   \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e} .
 ```
 
-（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、$`L^{+e}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality-ja.md#d-sle)、$`L^{+e}`$ [D.shiftr0](Cnf-2-ja.md#d-shiftr0)）
 
 ### 証明
 
@@ -67,8 +67,8 @@ j := \lvert X\rvert + (\lvert A_1\rvert + 1)
 と書く。仮定 (hcaseL) は $`i \lt p`$、仮定 (hcaseR) は $`p \le j`$ である。
 
 **第 0 段：$`2 \le n`$。**
-[T.argdom_pos](ArgDom-2.md#t-argdom_pos) を (heq) に適用すると $`j \lt \lvert N\rvert`$ を得る。
-一方 [T.copies_length](ArgDom-3.md#t-copies_length) より
+[T.argdom_pos](ArgDom-2-ja.md#t-argdom_pos) を (heq) に適用すると $`j \lt \lvert N\rvert`$ を得る。
+一方 [T.copies_length](ArgDom-3-ja.md#t-copies_length) より
 $`\lvert \mathrm{copies}_{d_0}(\mathrm{blk}, n)\rvert = n \cdot L`$ であるから
 
 ```math
@@ -80,7 +80,7 @@ $`\lvert \mathrm{copies}_{d_0}(\mathrm{blk}, n)\rvert = n \cdot L`$ であるか
 以下 $`n = m + 1`$、$`1 \le m`$ と書く。
 
 **第 1 段：コピー $`0`$ を剥がし、境界 $`p`$ で切る。**
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) より
+[T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) より
 
 ```math
 N = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
@@ -99,7 +99,7 @@ N = G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
 ```
 
 を得る。(hcaseL) より $`\lvert X \mathbin{+\!\!+} ((u,w))\rvert = i + 1 \le p = \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert`$
-であるから、[T.split_append_left](ArgDom-3.md#t-split_append_left) を $`(\ast)`$ に適用して
+であるから、[T.split_append_left](ArgDom-3-ja.md#t-split_append_left) を $`(\ast)`$ に適用して
 $`C \in \mathrm{PairSeq}`$ を得る。
 
 ```math
@@ -113,7 +113,7 @@ $`C \in \mathrm{PairSeq}`$ を得る。
 
 (C1) の両辺の長さを比べて $`\lvert C\rvert = p - (i+1)`$ である。
 (hcaseR) は $`p \le i + \lvert A_1\rvert + 1`$、すなわち $`\lvert C\rvert \le \lvert A_1\rvert`$ を与えるから、
-ふたたび [T.split_append_left](ArgDom-3.md#t-split_append_left) を (C2) に適用して $`D \in \mathrm{PairSeq}`$ を得る。
+ふたたび [T.split_append_left](ArgDom-3-ja.md#t-split_append_left) を (C2) に適用して $`D \in \mathrm{PairSeq}`$ を得る。
 
 ```math
 \text{(D1)}\ A_1 = C \mathbin{+\!\!+} D,
@@ -126,7 +126,7 @@ $`C \in \mathrm{PairSeq}`$ を得る。
 
 $`d_0`$ シフトされた列の要素はすべて第 1 成分が $`d_0`$ 以上である。実際、
 $`y \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}`$ ならば
-[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より $`y = (z_1 + d_0,\ z_2)`$ の形であり
+[T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) より $`y = (z_1 + d_0,\ z_2)`$ の形であり
 $`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e,w)`$ に適用して
 
 ```math
@@ -136,8 +136,8 @@ $`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e
 を得る。同じ理由で $`\forall y \in D,\ d_0 \le y_1`$ である。
 
 **第 2 段：逆シフトして小さい塔を書く。**
-(D2) の両辺に $`(\cdot)^{-d_0}`$（[D.shiftl0](ArgDom-2.md#d-shiftl0)）を施し、[T.shiftl0_shiftr0](ArgDom-2.md#t-shiftl0_shiftr0) と
-[T.shiftl0_append](ArgDom-2.md#t-shiftl0_append)、[T.shiftl0_cons](ArgDom-2.md#t-shiftl0_cons) を使うと
+(D2) の両辺に $`(\cdot)^{-d_0}`$（[D.shiftl0](ArgDom-2-ja.md#d-shiftl0)）を施し、[T.shiftl0_shiftr0](ArgDom-2-ja.md#t-shiftl0_shiftr0) と
+[T.shiftl0_append](ArgDom-2-ja.md#t-shiftl0_append)、[T.shiftl0_cons](ArgDom-2-ja.md#t-shiftl0_cons) を使うと
 
 ```math
 \text{(S)}\qquad \mathrm{copies}_{d_0}(\mathrm{blk}, m)
@@ -152,14 +152,14 @@ $`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e
 
 **(a) $`\lvert X\rvert \lt \lvert G\rvert + \lvert D\rvert`$ のとき。**
 $`1 \le m`$ であるから $`m = m'' + 1`$ と書ける。
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) より
+[T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) より
 $`\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{blk} \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m'')^{+d_0}`$
 であるから $`\mathrm{blk} \sqsubseteq \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ である。
 また (S) より $`D^{-d_0} \sqsubseteq \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ であり、
 $`\lvert D^{-d_0}\rvert = \lvert D\rvert`$ である。
 
 (C1) より $`X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} \mathrm{blk}`$ であり、
-[T.prefix_append_left](ArgDom-3.md#t-prefix_append_left) より
+[T.prefix_append_left](ArgDom-3-ja.md#t-prefix_append_left) より
 $`G \mathbin{+\!\!+} \mathrm{blk} \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ かつ
 $`G \mathbin{+\!\!+} D^{-d_0} \sqsubseteq G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ である。
 同一の列の 2 つの前部分列は、長さの短い方が長い方の前部分列である。いまの場合の長さは
@@ -189,7 +189,7 @@ X \mathbin{+\!\!+} ((u,w)) \sqsubseteq G \mathbin{+\!\!+} D^{-d_0}
 
 と書ける。
 
-一方 [T.copies_succ_back](Cofinality-3.md#t-copies_succ_back) より
+一方 [T.copies_succ_back](Cofinality-3-ja.md#t-copies_succ_back) より
 
 ```math
 G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
@@ -213,7 +213,7 @@ G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
 を得る。$`\lvert A_1'\rvert \le \lvert A_1\rvert`$ であるから
 （$`\lvert A_1\rvert = \lvert C\rvert + \lvert D\rvert`$、$`\lvert C\rvert = p - (i+1)`$、
 $`\lvert A_1'\rvert = \lvert G\rvert + \lvert D\rvert - (i+1)`$ と $`\lvert G\rvert \le p`$ による）、
-[T.split_append_left](ArgDom-3.md#t-split_append_left) を (K) に適用して $`W`$ を得る。
+[T.split_append_left](ArgDom-3-ja.md#t-split_append_left) を (K) に適用して $`W`$ を得る。
 
 ```math
 A_1 = A_1' \mathbin{+\!\!+} W,
@@ -308,7 +308,7 @@ A_1' = U \mathbin{+\!\!+} x :: V, \qquad x_1 \lt u + (e-d_0), \qquad \forall y \
 
 **$`\lvert Y\rvert \lt \lvert G\rvert`$ のとき。**
 このとき $`\lvert Y \mathbin{+\!\!+} (x)\rvert \le \lvert G\rvert`$ であるから、
-[T.split_append_left](ArgDom-3.md#t-split_append_left) を (GSD) に適用して $`V_3`$ を得る。
+[T.split_append_left](ArgDom-3-ja.md#t-split_append_left) を (GSD) に適用して $`V_3`$ を得る。
 
 ```math
 G = \bigl(Y \mathbin{+\!\!+} (x)\bigr) \mathbin{+\!\!+} V_3, \qquad V = V_3 \mathbin{+\!\!+} D^{-d_0} .
@@ -327,7 +327,7 @@ A_1 = U \mathbin{+\!\!+} x :: \bigl((V_3 \mathbin{+\!\!+} \mathrm{blk}) \mathbin
 ```
 
 を得る。次に $`x_1 \lt v_0`$ を示す。$`\mathrm{blk} \ne ()`$ かつ $`1 \le m`$ であるから
-[T.copies_headI](ArgDom-2.md#t-copies_headI) より
+[T.copies_headI](ArgDom-2-ja.md#t-copies_headI) より
 $`\mathrm{head}\,\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{head}\,\mathrm{blk} = (v_0,w_0)`$ である。
 (S) の右辺の先頭で場合分けする。
 
@@ -347,25 +347,25 @@ $`\mathrm{head}\,\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{head}\,\mathrm
   $`y = (v_0,w_0)`$ なら $`x_1 \lt v_0 = y_1`$。
   $`y \in R`$ なら (hRgt) より $`v_0 \lt y_1`$ であり、$`x_1 \lt v_0`$ と合わせて $`x_1 \lt y_1`$。
   $`y \in D`$ なら (D2) より $`y \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)^{+d_0}`$ であるから
-  [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より $`y = (z_1+d_0,\ z_2)`$、
+  [T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) より $`y = (z_1+d_0,\ z_2)`$、
   $`z \in \mathrm{copies}_{d_0}(\mathrm{blk}, m)`$ と書ける。(hRgt) より $`\forall x \in R,\ v_0 \le x_1`$ であるから
-  [T.copies_v0_le](Cnf-3.md#t-copies_v0_le) が使えて $`v_0 \le z_1 \le z_1 + d_0 = y_1`$、
+  [T.copies_v0_le](Cnf-3-ja.md#t-copies_v0_le) が使えて $`v_0 \le z_1 \le z_1 + d_0 = y_1`$、
   したがって $`x_1 \lt v_0 \le y_1`$。
 
 よって $`w \le x_2`$ を得る。
 
 **$`\lvert G\rvert \le \lvert Y\rvert`$ のとき。**
-[T.split_append_left](ArgDom-3.md#t-split_append_left) を (GSD) に適用して $`U_2`$ を得る。
+[T.split_append_left](ArgDom-3-ja.md#t-split_append_left) を (GSD) に適用して $`U_2`$ を得る。
 
 ```math
 Y = G \mathbin{+\!\!+} U_2, \qquad D^{-d_0} = U_2 \mathbin{+\!\!+} x :: V .
 ```
 
 $`\forall y \in D,\ d_0 \le y_1`$ は第 1 段で示したから、
-[T.shiftr0_shiftl0](ArgDom-2.md#t-shiftr0_shiftl0) より $`(D^{-d_0})^{+d_0} = D`$ である。
+[T.shiftr0_shiftl0](ArgDom-2-ja.md#t-shiftr0_shiftl0) より $`(D^{-d_0})^{+d_0} = D`$ である。
 第 2 式の両辺に $`(\cdot)^{+d_0}`$ を施し、
-[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) と
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) を使って
+[T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append) と
+[T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) を使って
 
 ```math
 D = U_2^{+d_0} \mathbin{+\!\!+} (x_1 + d_0,\ x_2) :: V^{+d_0}
@@ -417,14 +417,14 @@ $`\lvert A_2'\rvert \le \lvert A_2^{-d_0}\rvert = \lvert A_2\rvert`$ より
 ```
 
 であり、同一の列の 2 つの前部分列のうち短い方が長い方の前部分列であることから主張を得る。
-これに (A1dec) と $`(\ddagger)`$ を使い [T.prefix_cons_append](ArgDom-3.md#t-prefix_cons_append) を適用すると
+これに (A1dec) と $`(\ddagger)`$ を使い [T.prefix_cons_append](ArgDom-3-ja.md#t-prefix_cons_append) を適用すると
 
 ```math
 A_1' \mathbin{+\!\!+} (u+(e-d_0),\ w) :: (B^{-d_0} \mathbin{+\!\!+} A_2')
  \ \sqsubseteq\ A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)
 ```
 
-である。[T.shiftr0_prefix](ArgDom-3.md#t-shiftr0_prefix) を $`e-d_0`$ について適用すると、この前部分列関係は
+である。[T.shiftr0_prefix](ArgDom-3-ja.md#t-shiftr0_prefix) を $`e-d_0`$ について適用すると、この前部分列関係は
 $`(\cdot)^{+(e-d_0)}`$ で保たれるから、ある $`T`$ について
 
 ```math
@@ -435,7 +435,7 @@ $`(\cdot)^{+(e-d_0)}`$ で保たれるから、ある $`T`$ について
 \end{aligned}
 ```
 
-である。(core) に [T.sle_append_mono](Cofinality.md#t-sle_append_mono) を適用して
+である。(core) に [T.sle_append_mono](Cofinality-ja.md#t-sle_append_mono) を適用して
 
 ```math
 B^{-d_0} \preceq_{\mathrm{lex}}
@@ -443,9 +443,9 @@ B^{-d_0} \preceq_{\mathrm{lex}}
 ```
 
 を得る。(h2) と $`(\dagger)`$ から $`\forall x \in B,\ d_0 \le u + e \lt x_1`$ であるから、
-[T.shiftr0_shiftl0](ArgDom-2.md#t-shiftr0_shiftl0) より $`(B^{-d_0})^{+d_0} = B`$ である。
-[T.sle_shiftr0](ArgDom.md#t-sle_shiftr0) を $`d_0`$ について適用し、
-[T.shiftr0_add](ArgDom-3.md#t-shiftr0_add) と $`d_0 + (e-d_0) = e`$（$`(\ddagger)`$ による）を使うと
+[T.shiftr0_shiftl0](ArgDom-2-ja.md#t-shiftr0_shiftl0) より $`(B^{-d_0})^{+d_0} = B`$ である。
+[T.sle_shiftr0](ArgDom-ja.md#t-sle_shiftr0) を $`d_0`$ について適用し、
+[T.shiftr0_add](ArgDom-3-ja.md#t-shiftr0_add) と $`d_0 + (e-d_0) = e`$（$`(\ddagger)`$ による）を使うと
 
 ```math
 B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
@@ -465,7 +465,7 @@ B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!
 \end{aligned}
 ```
 
-であり、[T.copies_succ_back](Cofinality-3.md#t-copies_succ_back) より
+であり、[T.copies_succ_back](Cofinality-3-ja.md#t-copies_succ_back) より
 
 ```math
 G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1)
@@ -493,7 +493,7 @@ $`\Sigma := B^{-d_0} \mathbin{+\!\!+} (A_2^{-d_0} \mathbin{+\!\!+} Z^{-d_0})`$ �
  \le \lvert X \mathbin{+\!\!+} ((u,w))\rvert
 ```
 
-であるから、[T.split_append_left](ArgDom-3.md#t-split_append_left) を (key) に適用して $`K`$ を得る。
+であるから、[T.split_append_left](ArgDom-3-ja.md#t-split_append_left) を (key) に適用して $`K`$ を得る。
 
 ```math
 \begin{aligned}
@@ -544,14 +544,14 @@ B^{-d_0} \ \sqsubseteq\ A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)
 ```
 
 を得る。(h2) と $`(\dagger)`$ から $`\forall x \in B,\ d_0 \le x_1`$ であり、$`e = d_0`$ であるから
-[T.shiftr0_shiftl0](ArgDom-2.md#t-shiftr0_shiftl0) より $`(B^{-d_0})^{+e} = B`$ である。
-[T.shiftr0_prefix](ArgDom-3.md#t-shiftr0_prefix) を $`e`$ について適用すると
+[T.shiftr0_shiftl0](ArgDom-2-ja.md#t-shiftr0_shiftl0) より $`(B^{-d_0})^{+e} = B`$ である。
+[T.shiftr0_prefix](ArgDom-3-ja.md#t-shiftr0_prefix) を $`e`$ について適用すると
 
 ```math
 B \ \sqsubseteq\ \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 ```
 
-となり、[T.sle_of_prefix](ArgDom-3.md#t-sle_of_prefix) から結論を得る。
+となり、[T.sle_of_prefix](ArgDom-3-ja.md#t-sle_of_prefix) から結論を得る。
 
 **(c) $`\lvert G\rvert + \lvert D\rvert \lt \lvert X\rvert`$ のとき。**
 この場合は起こらないことを示す。$`1 \le m`$ より $`m = m' + 1`$ と書ける。
@@ -560,7 +560,7 @@ B \ \sqsubseteq\ \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\
 (C1) を左右入れ替えた
 $`(X \mathbin{+\!\!+} ((u,w))) \mathbin{+\!\!+} C = G \mathbin{+\!\!+} \mathrm{blk}`$ に、
 $`\lvert G\rvert \le \lvert X\rvert \lt \lvert X \mathbin{+\!\!+} ((u,w))\rvert`$ のもとで
-[T.split_append_left](ArgDom-3.md#t-split_append_left) を適用して $`K`$ を得る。
+[T.split_append_left](ArgDom-3-ja.md#t-split_append_left) を適用して $`K`$ を得る。
 
 ```math
 X \mathbin{+\!\!+} ((u,w)) = G \mathbin{+\!\!+} K, \qquad \mathrm{blk} = K \mathbin{+\!\!+} C .
@@ -571,7 +571,7 @@ $`\lvert G\rvert \lt \lvert X\rvert`$ なので $`\lvert K\rvert \ge 2 \gt 0`$�
 $`K = k_0 :: K_1`$ と書ける。$`\mathrm{blk} = (v_0,w_0) :: R`$ の尾を比べて $`R = K_1 \mathbin{+\!\!+} C`$ を得る。
 第 1 式は $`X \mathbin{+\!\!+} ((u,w)) = (G \mathbin{+\!\!+} (k_0)) \mathbin{+\!\!+} K_1`$ と書き直せ、
 $`\lvert G \mathbin{+\!\!+} (k_0)\rvert = \lvert G\rvert + 1 \le \lvert X\rvert`$ であるから、
-ふたたび [T.split_append_left](ArgDom-3.md#t-split_append_left) を適用して $`T`$ を得る。
+ふたたび [T.split_append_left](ArgDom-3-ja.md#t-split_append_left) を適用して $`T`$ を得る。
 
 ```math
 X = \bigl(G \mathbin{+\!\!+} (k_0)\bigr) \mathbin{+\!\!+} T, \qquad K_1 = T \mathbin{+\!\!+} ((u,w)) .
@@ -586,8 +586,8 @@ X = \bigl(G \mathbin{+\!\!+} (k_0)\bigr) \mathbin{+\!\!+} T, \qquad K_1 = T \mat
 である。$`(u,w) \in R`$ であるから (hRgt) より $`v_0 \lt u`$ である。
 
 **(c-2) コピー $`1`$ の先頭から $`u \lt v_0 + d_0`$ と $`w \le w_0`$ を得る。**
-[T.copies_succ_cons](Cnf-3.md#t-copies_succ_cons) と
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) より
+[T.copies_succ_cons](Cnf-3-ja.md#t-copies_succ_cons) と
+[T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) より
 
 ```math
 \text{(SC)}\qquad \mathrm{copies}_{d_0}(\mathrm{blk}, m'+1)^{+d_0}
@@ -613,13 +613,13 @@ $`(v_0+d_0,\ w_0) = (u+e,\ w)`$、すなわち $`v_0 + d_0 = u + e`$ かつ $`w_
 $`(v_0+d_0,\ w_0) \in A_1`$ に (h1) を適用して $`u \lt v_0 + d_0`$ を得る。
 これと (c-1) の $`v_0 \lt u`$ から $`0 \lt d_0`$ である。
 (hRgt) と $`0 \lt d_0`$ と $`1 \le m'+1`$ に
-[T.copies_tl_gt](Cnf-3.md#t-copies_tl_gt) を適用すると
+[T.copies_tl_gt](Cnf-3-ja.md#t-copies_tl_gt) を適用すると
 
 ```math
 \forall y \in R \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m')^{+d_0},\ v_0 \lt y_1
 ```
 
-であり、[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、この列を $`d_0`$ だけシフトした列
+であり、[T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) より、この列を $`d_0`$ だけシフトした列
 （すなわち (rest) の左辺）の要素 $`y`$ はすべて $`v_0 + d_0 \lt y_1`$ をみたす。
 (rest) の右辺には $`(u+e,w)`$ と $`D'`$ の全要素が現れるから
 
@@ -644,7 +644,7 @@ $`\lvert M\rvert - 1 = \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert`$ である�
   \lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert
 ```
 
-と書ける。これに [T.spineOK_of_nextrel1_strict](ArgDom-3.md#t-spineOK_of_nextrel1_strict) を適用すると
+と書ける。これに [T.spineOK_of_nextrel1_strict](ArgDom-3-ja.md#t-spineOK_of_nextrel1_strict) を適用すると
 $`\mathrm{SpineOK}(R,\ v_0+d_0,\ w_0+1)`$ を得る。これを (Rdec) の分解
 $`R = T \mathbin{+\!\!+} (u,w) :: C`$、$`u \lt v_0+d_0`$（(c-2)）、および
 $`\forall y \in C,\ u \lt y_1`$（(D1) より $`C`$ の要素は $`A_1`$ の要素であり (h1) による）に

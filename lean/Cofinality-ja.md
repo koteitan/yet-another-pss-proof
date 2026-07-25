@@ -1,11 +1,11 @@
-[← README](README.md) | [English](Cofinality.md) | [Japanese](Cofinality-ja.md) | Cofinality **1** [2](Cofinality-2.md) [3](Cofinality-3.md)
+[← README](README-ja.md) | [English](Cofinality.md) | [Japanese](Cofinality-ja.md) | Cofinality **1** [2](Cofinality-2-ja.md) [3](Cofinality-3-ja.md)
 
 <a id="t-pairlt_trans"></a>
 ## 定理: 対の順序の推移律 (T.pairlt_trans)
 
 ### 定理
 
-$`p, q, r \in \mathbb{N}\times\mathbb{N}`$ とする。$`p \prec_{\mathrm{p}} q`$（[D.pairlt](Seqlex.md#d-pairlt)）かつ
+$`p, q, r \in \mathbb{N}\times\mathbb{N}`$ とする。$`p \prec_{\mathrm{p}} q`$（[D.pairlt](Seqlex-ja.md#d-pairlt)）かつ
 $`q \prec_{\mathrm{p}} r`$ ならば $`p \prec_{\mathrm{p}} r`$。
 
 ### 証明
@@ -46,8 +46,8 @@ x \prec_{\mathrm{p}} y \iff x_1 \lt y_1 \ \vee\ (x_1 = y_1 \wedge x_2 \lt y_2)
 
 ### 定理
 
-$`A, B, C \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とする。
-$`A \prec_{\mathrm{lex}} B`$（[D.seqlex](Seqlex.md#d-seqlex)）かつ $`B \prec_{\mathrm{lex}} C`$ ならば
+$`A, B, C \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）とする。
+$`A \prec_{\mathrm{lex}} B`$（[D.seqlex](Seqlex-ja.md#d-seqlex)）かつ $`B \prec_{\mathrm{lex}} C`$ ならば
 $`A \prec_{\mathrm{lex}} C`$。
 
 ### 証明
@@ -184,7 +184,7 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の選言で場合分けする。
 - $`A = B`$ のとき。$`C`$ の構成子で分ける。
   - $`C = ()`$ のとき。$`B \mathbin{+\!\!+} () = B = A`$ であるから、定義（D.sle）の第 1 選言が成り立つ。
   - $`C = c :: C'`$ のとき。$`C \ne ()`$ であるから
-    [T.seqlex_prefix](Seqlex.md#t-seqlex_prefix) を $`u := A`$、$`v := C`$ に適用して
+    [T.seqlex_prefix](Seqlex-ja.md#t-seqlex_prefix) を $`u := A`$、$`v := C`$ に適用して
     $`A \prec_{\mathrm{lex}} A \mathbin{+\!\!+} C = B \mathbin{+\!\!+} C`$ を得る。
     定義（D.sle）の第 2 選言が成り立つ。
 
@@ -266,7 +266,7 @@ $`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化した�
 \end{aligned}
 ```
 
-（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`M[n]`$ [D.oper](Pss.md#d-oper)）
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss-ja.md#d-ST_PS)、$`M[n]`$ [D.oper](Pss-ja.md#d-oper)）
 
 <a id="t-pss_cofinality_of_seqlex"></a>
 ## 定理: 列辞書式形からの共終性 (T.pss_cofinality_of_seqlex)
@@ -274,21 +274,21 @@ $`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化した�
 ### 定理
 
 $`\mathrm{SeqlexCofinality}`$ が成り立つとする。このとき $`M, N \in \mathrm{ST\_PS}`$ が
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（[D.translate](Term.md#d-translate)）をみたすならば
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（[D.translate](Term-ja.md#d-translate)）をみたすならば
 
 ```math
 \exists n,\ \bigl(1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])\bigr).
 ```
 
-（$`\prec`$ [D.olt](Term.md#d-olt)、$`\preceq`$ [D.ole](Term.md#d-ole)）
+（$`\prec`$ [D.olt](Term-ja.md#d-olt)、$`\preceq`$ [D.ole](Term-ja.md#d-ole)）
 
 ### 証明
 
 まず $`N \ne M`$ である。$`N = M`$ とすると仮定は $`\mathrm{tr}\,M \prec \mathrm{tr}\,M`$ となり、
-[T.olt_irrefl](Term.md#t-olt_irrefl) に反する。
+[T.olt_irrefl](Term-ja.md#t-olt_irrefl) に反する。
 
 $`N \ne M`$ と $`N, M \in \mathrm{ST\_PS}`$ により
-[T.olt_ST_iff_seqlex](Seqlex-2.md#t-olt_ST_iff_seqlex) が使えて、仮定から
+[T.olt_ST_iff_seqlex](Seqlex-2-ja.md#t-olt_ST_iff_seqlex) が使えて、仮定から
 $`N \prec_{\mathrm{lex}} M`$ を得る。これに $`\mathrm{SeqlexCofinality}`$ を適用して、
 $`1 \le n`$ かつ $`N \preceq_{\mathrm{lex}} M[n]`$ なる $`n`$ を取る。この $`n`$ について
 $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$ を示せばよい。
@@ -301,7 +301,7 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）で場合分けする。
   - $`N = M[n]`$ のとき。上と同じく $`\preceq`$ の定義（D.ole）の第 2 選言が成り立つ。
   - $`N \ne M[n]`$ のとき。$`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の規則 (oper) を
     $`M \in \mathrm{ST\_PS}`$ と $`1 \le n`$ に適用して $`M[n] \in \mathrm{ST\_PS}`$ を得る。
-    [T.olt_ST_iff_seqlex](Seqlex-2.md#t-olt_ST_iff_seqlex) を $`N`$ と $`M[n]`$ に適用して
+    [T.olt_ST_iff_seqlex](Seqlex-2-ja.md#t-olt_ST_iff_seqlex) を $`N`$ と $`M[n]`$ に適用して
     $`\mathrm{tr}\,N \prec \mathrm{tr}\,(M[n])`$ を得るから、$`\preceq`$ の定義（D.ole）の
     第 1 選言が成り立つ。∎
 
@@ -311,7 +311,7 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）で場合分けする。
 ### 定理
 
 任意の $`M \in \mathrm{PairSeq}`$, $`j \in \mathbb{N}`$ に対し
-$`M_{0,j} = \pi_1\bigl(M\langle j\rangle\bigr)`$（[D.entry](Pss.md#d-entry)）。
+$`M_{0,j} = \pi_1\bigl(M\langle j\rangle\bigr)`$（[D.entry](Pss-ja.md#d-entry)）。
 
 ### 証明
 
@@ -364,7 +364,7 @@ $`\lvert M\rvert - 1 = 0`$ かつ $`N \prec_{\mathrm{lex}} M`$ ならば
 ### 証明
 
 $`n := 1`$ と取る。$`1 \le 1`$ である。
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) を仮定
+[T.oper_eq_self_of_short](Decrease-ja.md#t-oper_eq_self_of_short) を仮定
 $`\lvert M\rvert - 1 = 0`$ と $`n := 1`$ に適用して $`M[1] = M`$ を得るから、
 示すべきことは $`N \preceq_{\mathrm{lex}} M`$ である。
 仮定 $`N \prec_{\mathrm{lex}} M`$ により $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の
@@ -393,8 +393,8 @@ $`\pi_1(M\langle j_1\rangle) = M_{0,j_1} = 0`$、$`\pi_2(M\langle j_1\rangle) = 
 対は両成分で決まるから $`M\langle j_1\rangle = (0,0)`$。
 
 **第 2 段：$`M[1] = \mathrm{dropLast}\,M`$。**
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) を $`j_1 \ne 0`$ と仮定の
-第 2 連言子に適用して $`M[1] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）を得る。
+[T.oper_eq_pred_of_zero](Decrease-ja.md#t-oper_eq_pred_of_zero) を $`j_1 \ne 0`$ と仮定の
+第 2 連言子に適用して $`M[1] = \mathrm{Pred}\,M`$（[D.Pred](Pss-ja.md#d-Pred)）を得る。
 $`1 \lt \lvert M\rvert`$ より $`\neg(\lvert M\rvert \le 1)`$ であるから、
 $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
 
@@ -425,16 +425,16 @@ $`\neg\bigl(M_{0,\lvert M\rvert - 1} = 0 \wedge M_{1,\lvert M\rvert - 1} = 0\big
 \mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, \lvert M\rvert - 1),\ \lvert M\rvert - 1\bigr) .
 ```
 
-（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)、$`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)）
+（$`\mathrm{hasParent}`$ [D.hasParent](Pss-ja.md#d-hasParent)、$`\mathrm{idx}_1`$ [D.idx1](Pss-ja.md#d-idx1)）
 
 ### 証明
 
-$`j_1 := \lvert M\rvert - 1`$ とおく。[T.hp_last](Column-4.md#t-hp_last) を適用する。
+$`j_1 := \lvert M\rvert - 1`$ とおく。[T.hp_last](Column-4-ja.md#t-hp_last) を適用する。
 その 4 つの仮定は次のように満たされる。
 
-- $`\mathrm{blockok}(0, M)`$（[D.blockok](Seqlex.md#d-blockok)）：
-  [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) による。
-- $`\mathrm{z0ok}(M)`$（[D.z0ok](Column-3.md#d-z0ok)）：[T.z0ok_ST_PS](Column-4.md#t-z0ok_ST_PS) による。
+- $`\mathrm{blockok}(0, M)`$（[D.blockok](Seqlex-ja.md#d-blockok)）：
+  [T.blockok_ST_PS](Seqlex-2-ja.md#t-blockok_ST_PS) による。
+- $`\mathrm{z0ok}(M)`$（[D.z0ok](Column-3-ja.md#d-z0ok)）：[T.z0ok_ST_PS](Column-4-ja.md#t-z0ok_ST_PS) による。
 - $`0 \lt \lvert M\rvert`$：仮定である。
 - $`\neg\bigl(M\langle j_1\rangle = (0,0)\bigr)`$：$`M\langle j_1\rangle = (0,0)`$ と仮定すると、
   [T.entry_zero](#t-entry_zero) より $`M_{0,j_1} = \pi_1((0,0)) = 0`$、
@@ -460,7 +460,7 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）より、左辺は
 A \mathbin{+\!\!+} u = A \mathbin{+\!\!+} v \ \vee\ A \mathbin{+\!\!+} u \prec_{\mathrm{lex}} A \mathbin{+\!\!+} v
 ```
 
-である。第 2 選言は [T.seqlex_append_cancel](Seqlex.md#t-seqlex_append_cancel) により
+である。第 2 選言は [T.seqlex_append_cancel](Seqlex-ja.md#t-seqlex_append_cancel) により
 $`u \prec_{\mathrm{lex}} v`$ と同値である。第 1 選言については、連結の左からの消去、すなわち
 
 ```math
@@ -525,7 +525,7 @@ $`\lvert D \mathbin{+\!\!+} (\ell)\rvert - 1 = \lvert D\rvert`$ である。
 
 ### 定理
 
-$`\mathrm{r1ok}(M)`$（[D.r1ok](Column-2.md#d-r1ok)）かつ $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば
+$`\mathrm{r1ok}(M)`$（[D.r1ok](Column-2-ja.md#d-r1ok)）かつ $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss-ja.md#d-nextrel1)）ならば
 
 ```math
 M_{1,j_1} = M_{1,j_0} + 1 .
@@ -546,11 +546,11 @@ $`\to^M_1`$ の定義（D.nextrel1）より、仮定は次の 6 つの連言で�
 \end{aligned}
 ```
 
-（$`\le^M_0`$ [D.le0](Pss.md#d-le0)）
+（$`\le^M_0`$ [D.le0](Pss-ja.md#d-le0)）
 
 **第 1 段：行 $`0`$ の鎖の第 1 歩 $`c`$ を取る。**
 (5) と $`\le^M_0`$ の定義（D.le0）の第 3 条件より
-$`j_0 \mathbin{(\to^M_0)^{*}} j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）である。
+$`j_0 \mathbin{(\to^M_0)^{*}} j_1`$（[D.nextrel0](Pss-ja.md#d-nextrel0)）である。
 反射推移閉包は「$`j_0 = j_1`$」か「ある $`c`$ について
 $`j_0 \to^M_0 c`$ かつ $`c \mathbin{(\to^M_0)^{*}} j_1`$」の
 いずれかであるが、前者は (3) の $`j_0 \lt j_1`$ に反する。よって後者の $`c`$ が取れる。
@@ -589,7 +589,7 @@ $`k \to^M_0 c`$ を示す。$`\to^M_0`$ の定義（D.nextrel0）の 5 条件を
   [T.entry_zero](#t-entry_zero) により (iii) そのものである。
 
 第 1 段で $`j_0 \to^M_0 c`$ も得ているから、
-[T.nextrel0_unique](Column-4.md#t-nextrel0_unique) より $`k = j_0`$ である。
+[T.nextrel0_unique](Column-4-ja.md#t-nextrel0_unique) より $`k = j_0`$ である。
 
 **第 5 段：結論。**
 (iv) に $`k = j_0`$ を代入し、[T.entry_one](#t-entry_one) で書き直すと
@@ -608,7 +608,7 @@ $`\le`$ の反対称性により $`M_{1,j_1} = M_{1,j_0} + 1`$。∎
 ### 定理
 
 $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$ とおく。
-$`1 \lt \lvert M\rvert`$、$`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）、$`\mathrm{r1ok}(M)`$、
+$`1 \lt \lvert M\rvert`$、$`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex-ja.md#d-steps1)）、$`\mathrm{r1ok}(M)`$、
 $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$、$`\mathrm{hasParent}(M, i_1, j_1)`$ を仮定する。
 このとき $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、
 $`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`B := (v_0,w_0) :: R`$ とおくと次の 5 つが成り立つ。
@@ -625,12 +625,12 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`B := (v_0,w_0) :: R`
 \end{aligned}
 ```
 
-（$`\mathrm{cp}_{d}(B,n)`$ [D.copies](Cnf-2.md#d-copies)）
+（$`\mathrm{cp}_{d}(B,n)`$ [D.copies](Cnf-2-ja.md#d-copies)）
 
 ### 証明
 
 **第 1 段：$`n = 1`$ でブロック分解を取る。**
-[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を $`n := 1`$ として適用する。
+[T.oper_bad_blocks](Decrease-ja.md#t-oper_bad_blocks) を $`n := 1`$ として適用する。
 その 4 つの仮定 $`1 \lt \lvert M\rvert`$、$`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$、
 $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ のうち初めの 3 つは本定理の仮定であり、
 最後のものは $`1 \le 1`$ である。こうして $`G, v_0, w_0, R, d_0, \ell`$ を得る。
@@ -645,7 +645,7 @@ $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ のうち初めの 3 つは本
 \end{aligned}
 ```
 
-である（$`\to^M_i`$ [D.nextR](Pss.md#d-nextR)）。
+である（$`\to^M_i`$ [D.nextR](Pss-ja.md#d-nextR)）。
 
 **第 2 段：位置の同定。**
 (1) と連結の結合則より $`M = G \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} (\ell)\bigr)`$ である。
@@ -681,10 +681,10 @@ $`\ell_2 = \pi_2(M\langle j_1\rangle) = M_{1,j_1} = 0`$。
 次に $`\ell_1 = v_0 + 1`$ を示す。次の 5 つを用意する。
 
 1. $`\lvert G\rvert \to^M_0 j_1`$。(6) に $`i_1 = 0`$ を代入し、
-   [T.nextR_zero_iff](Column-4.md#t-nextR_zero_iff) を使う。
+   [T.nextR_zero_iff](Column-4-ja.md#t-nextR_zero_iff) を使う。
 2. $`j_1 = \lvert G\rvert + 1 + \lvert R\rvert`$。第 2 段の長さの式と $`j_1 = \lvert M\rvert - 1`$ による。
 3. $`M_{0,\lvert G\rvert + 1} \le M_{0,\lvert G\rvert} + 1`$。
-   [T.steps1_iff](Seqlex.md#t-steps1_iff) を $`\mathrm{steps}_1(M)`$ と $`j := \lvert G\rvert`$ に
+   [T.steps1_iff](Seqlex-ja.md#t-steps1_iff) を $`\mathrm{steps}_1(M)`$ と $`j := \lvert G\rvert`$ に
    適用する（前件 $`\lvert G\rvert + 1 \lt \lvert M\rvert`$ は第 2 段の長さの式による）。
    得られる不等式を [T.entry_zero](#t-entry_zero) で書き直したものである。
 4. $`M_{0,\lvert G\rvert} = v_0`$。[T.entry_zero](#t-entry_zero) と第 2 段の
@@ -714,7 +714,7 @@ $`0 \lt d_0`$、$`\ell_1 = v_0 + d_0`$、$`\lvert G\rvert \to^M_1 j_1`$ はそ�
 (5) の第 2 選言が成り立つ。
 
 **第 4 段：(2) — 分解が $`n`$ によらないこと。**
-$`n`$ を取り $`1 \le n`$ とする。[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を
+$`n`$ を取り $`1 \le n`$ とする。[T.oper_bad_blocks](Decrease-ja.md#t-oper_bad_blocks) を
 この $`n`$ で適用し、$`G', v_0', w_0', R', d_0', \ell'`$ とその主張 $`(1_n)`$–$`(6_n)`$ を得る。
 $`B' := (v_0',w_0') :: R'`$ とおく。
 
@@ -763,7 +763,7 @@ M[n] = G \mathbin{+\!\!+} B^{+0\cdot d_0} \mathbin{+\!\!+} B^{+1\cdot d_0}
   \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}
 ```
 
-であり（$`L^{+e}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)は $`L`$ の各対の第 1 成分に $`e`$ を足した列である）、
+であり（$`L^{+e}`$ [D.shiftr0](Cnf-2-ja.md#d-shiftr0)は $`L`$ の各対の第 1 成分に $`e`$ を足した列である）、
 右辺の $`B^{+0\cdot d_0} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d_0}`$ は
 $`\mathrm{cp}`$ の定義（D.copies）そのものであるから
 $`\mathrm{cp}_{d_0}(B, n)`$ に等しい。よって (2) を得る。∎

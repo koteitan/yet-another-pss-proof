@@ -1,18 +1,18 @@
-[← README](README.md) | [English](Wset.md) | [Japanese](Wset-ja.md) | Wset **1** [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md)
+[← README](README-ja.md) | [English](Wset.md) | [Japanese](Wset-ja.md) | Wset **1** [2](Wset-2-ja.md) [3](Wset-3-ja.md) [4](Wset-4-ja.md)
 
 <a id="t-translate_eq_Z_iff"></a>
 ## 定理: 翻訳が $`\mathsf{Z}`$ になるのは空列に限る (T.translate_eq_Z_iff)
 
 ### 定理
 
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）に対し
 
 ```math
 \mathrm{tr}\,M = \mathsf{Z} \iff M = () .
 ```
 
-ここで $`\mathrm{tr}`$（[D.translate](Term.md#d-translate)）は翻訳であり、$`\mathsf{Z}`$ は
-$`\mathrm{Three}`$（[D.Three](Term.md#d-Three)）の第 1 の構成子である。
+ここで $`\mathrm{tr}`$（[D.translate](Term-ja.md#d-translate)）は翻訳であり、$`\mathsf{Z}`$ は
+$`\mathrm{Three}`$（[D.Three](Term-ja.md#d-Three)）の第 1 の構成子である。
 
 ### 証明
 
@@ -34,7 +34,7 @@ $`M`$ の構成子で場合分けする。
 
 ### 定理
 
-$`t \in \mathrm{Three}`$ が $`t \prec \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$（[D.olt](Term.md#d-olt)）を
+$`t \in \mathrm{Three}`$ が $`t \prec \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$（[D.olt](Term-ja.md#d-olt)）を
 みたすならば $`t = \mathsf{Z}`$。
 
 ### 証明
@@ -43,14 +43,14 @@ $`t`$ の構成子で場合分けする。
 
 - $`t = \mathsf{Z}`$ のとき。示すべき $`\mathsf{Z} = \mathsf{Z}`$ は $`=`$ の反射性による。
 
-- $`t = \mathsf{P}(a,b,c)`$ のとき。[T.olt_P_P](Term.md#t-olt_P_P) を
+- $`t = \mathsf{P}(a,b,c)`$ のとき。[T.olt_P_P](Term-ja.md#t-olt_P_P) を
   $`e := 0`$、$`f := \mathsf{Z}`$、$`g := \mathsf{Z}`$ として適用すると、仮定は次の 3 つの
   いずれかである。
   - $`a \lt 0`$。自然数に $`0`$ より小さいものはないから偽である。
-  - $`a = 0 \wedge b \prec \mathsf{Z}`$。[T.not_olt_Z](Term.md#t-not_olt_Z) より
+  - $`a = 0 \wedge b \prec \mathsf{Z}`$。[T.not_olt_Z](Term-ja.md#t-not_olt_Z) より
     $`b \prec \mathsf{Z}`$ は偽である。
   - $`a = 0 \wedge b = \mathsf{Z} \wedge c \prec \mathsf{Z}`$。同じく
-    [T.not_olt_Z](Term.md#t-not_olt_Z) より $`c \prec \mathsf{Z}`$ は偽である。
+    [T.not_olt_Z](Term-ja.md#t-not_olt_Z) より $`c \prec \mathsf{Z}`$ は偽である。
 
   3 つとも偽であるから、この場合は起こらない。∎
 
@@ -59,11 +59,11 @@ $`t`$ の構成子で場合分けする。
 
 ### 定理
 
-$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`M \ne ()`$。
+$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）ならば $`M \ne ()`$。
 
 ### 証明
 
-$`M = ()`$ と仮定する。[T.stps_len_pos](Column.md#t-stps_len_pos) より $`0 \lt \lvert M\rvert`$ で
+$`M = ()`$ と仮定する。[T.stps_len_pos](Column-ja.md#t-stps_len_pos) より $`0 \lt \lvert M\rvert`$ で
 あるが、仮定を代入すると $`\lvert()\rvert = 0`$ であるから $`0 \lt 0`$ となり、
 $`\lt`$ の非反射性に矛盾する。∎
 
@@ -77,7 +77,7 @@ $`M \in \mathrm{ST\_PS}`$ かつ $`\lvert M\rvert = 1`$ ならば $`M = \bigl((0
 ### 証明
 
 $`\lvert M\rvert = 1`$ であるから $`M = (p)`$ なる対 $`p`$ が取れる。
-[T.stps_head](Column.md#t-stps_head) は「$`M`$ の先頭要素（$`M`$ が空列のときは $`(0,0)`$）が
+[T.stps_head](Column-ja.md#t-stps_head) は「$`M`$ の先頭要素（$`M`$ が空列のときは $`(0,0)`$）が
 $`(0,0)`$ に等しい」ことを言う。$`M = (p)`$ の先頭要素は $`p`$ であるから $`p = (0,0)`$ であり、
 $`M = \bigl((0,0)\bigr)`$。∎
 
@@ -91,15 +91,15 @@ $`M \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}`$ に対し
 M_{1,\lvert M\rvert-1} = m+1 \ \wedge\ \neg\,\mathrm{hasParent}(M, 1, \lvert M\rvert-1)
 ```
 
-とおく。ここで $`M_{i,j}`$（[D.entry](Pss.md#d-entry)）は成分、
-$`\mathrm{hasParent}(M,i,j)`$（[D.hasParent](Pss.md#d-hasParent)）は親の存在であり、
+とおく。ここで $`M_{i,j}`$（[D.entry](Pss-ja.md#d-entry)）は成分、
+$`\mathrm{hasParent}(M,i,j)`$（[D.hasParent](Pss-ja.md#d-hasParent)）は親の存在であり、
 $`\lvert M\rvert - 1`$ の減法は切り捨て減法である（$`M = ()`$ のとき $`\lvert M\rvert - 1 = 0`$）。
 
 <a id="d-graft"></a>
 ## 定義: 接ぎ木 (D.graft)
 
 $`L \in \mathrm{PairSeq}`$、$`e \in \mathbb{N}`$ に対し、$`L`$ の各対の第 1 成分に $`e`$ を
-足した列を $`L^{+e}`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）と書く（[T.translate_shift](Term.md#t-translate_shift) の記法）。
+足した列を $`L^{+e}`$（[D.shiftr0](Cnf-2-ja.md#d-shiftr0)）と書く（[T.translate_shift](Term-ja.md#t-translate_shift) の記法）。
 また $`\mathrm{dropLast}\,M`$ を $`M`$ の末尾 1 要素を落とした列とする
 （$`M = ()`$ のときは $`()`$）。$`M, z \in \mathrm{PairSeq}`$ に対し
 
@@ -214,7 +214,7 @@ $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ を仮定して矛盾を導けばよい。
 ### 定理
 
 $`1 \lt \lvert M\rvert`$ かつ $`\mathrm{domT}(M,m)`$ ならば、任意の $`n \in \mathbb{N}`$ に対し
-$`M[n] = \mathrm{graft}(M,())`$（[D.oper](Pss.md#d-oper)）。
+$`M[n] = \mathrm{graft}(M,())`$（[D.oper](Pss-ja.md#d-oper)）。
 
 ### 証明
 
@@ -224,15 +224,15 @@ $`M_{1,j_1} = m+1`$ と $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ が成り立つ。
 1. $`j_1 \ne 0`$。$`1 \lt \lvert M\rvert`$ より $`j_1 = \lvert M\rvert - 1 \ge 1`$ である。
 
 2. $`\mathrm{idx}_1(M,j_1) = 1`$。$`M_{1,j_1} = m+1`$ であり自然数について $`0 \lt m+1`$ で
-   あるから、$`\mathrm{idx}_1`$（[D.idx1](Pss.md#d-idx1)）の定義（D.idx1）の第 1 の場合が選ばれる。
+   あるから、$`\mathrm{idx}_1`$（[D.idx1](Pss-ja.md#d-idx1)）の定義（D.idx1）の第 1 の場合が選ばれる。
 
 3. $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$。この連言が成り立つとすると
    第 2 連言子から $`m+1 = 0`$ となり、$`m+1 \ne 0`$ に矛盾する。
 
-4. $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）。2 により $`\mathrm{idx}_1(M,j_1) = 1`$ であるから、
+4. $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss-ja.md#d-Pred)）。2 により $`\mathrm{idx}_1(M,j_1) = 1`$ であるから、
    $`\neg\,\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M,j_1), j_1\bigr)`$ は仮定
    $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ そのものである。1, 3 とこれに
-   [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) を適用する。
+   [T.oper_eq_pred_of_noParent](Decrease-ja.md#t-oper_eq_pred_of_noParent) を適用する。
 
 5. $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$。$`\mathrm{Pred}`$ の
    定義（D.Pred）は $`\lvert M\rvert \le 1`$ かどうかで分岐する。仮定 $`1 \lt \lvert M\rvert`$ より
@@ -251,7 +251,7 @@ $`M \in \mathrm{PairSeq}`$、$`j_1, j_0 \in \mathbb{N}`$ に対し
 j_0 \lt j_1 \ \wedge\ j_0 \le^M_0 j_1 \ \wedge\ M_{1,j_0} \lt M_{1,j_1}
 ```
 
-とおく。ここで $`j_0 \le^M_0 j_1`$（[D.le0](Pss.md#d-le0)）は行 $`0`$ の祖先関係である。
+とおく。ここで $`j_0 \le^M_0 j_1`$（[D.le0](Pss-ja.md#d-le0)）は行 $`0`$ の祖先関係である。
 
 <a id="t-hasParent_one_iff"></a>
 ## 定理: 行 $`1`$ の親の存在条件 (T.hasParent_one_iff)
@@ -266,9 +266,9 @@ $`j_1 \lt \lvert M\rvert`$ ならば
 
 ### 証明
 
-$`\to^M_i`$（[D.nextR](Pss.md#d-nextR)）の定義（D.nextR）は $`i = 0`$ かどうかで分岐する。
+$`\to^M_i`$（[D.nextR](Pss-ja.md#d-nextR)）の定義（D.nextR）は $`i = 0`$ かどうかで分岐する。
 $`i = 1 \ne 0`$ であるから、任意の $`j_0`$ について $`j_0 \to^M_i j_1`$ は
-行 $`1`$ の親子関係 $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）そのものである。以下これを用いる。
+行 $`1`$ の親子関係 $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss-ja.md#d-nextrel1)）そのものである。以下これを用いる。
 
 **($`\Rightarrow`$)** $`\mathrm{hasParent}`$ の定義（D.hasParent）より、
 $`j_0 \to^M_1 j_1`$ をみたす $`j_0`$ が存在する。D.nextrel1 の条件 (3), (5), (4) は
@@ -301,8 +301,8 @@ P(g), \qquad \forall k,\ \bigl(k \le j_1 \wedge P(k)\bigr) \to k \le g .
 - (6) 任意の $`j`$ について $`g \lt j`$ かつ $`j \le^M_0 j_1`$ ならば
   $`M_{1,j_1} \le M_{1,j}`$：背理法で示す。$`M_{1,j} \lt M_{1,j_1}`$ と仮定する。
   $`\le^M_0`$ の定義（D.le0）の条件 (3) より
-  $`j \mathbin{(\to^M_0)^{*}} j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）であるから、
-  [T.nextrel0_rtrancl_index_le](Term.md#t-nextrel0_rtrancl_index_le) より $`j \le j_1`$。
+  $`j \mathbin{(\to^M_0)^{*}} j_1`$（[D.nextrel0](Pss-ja.md#d-nextrel0)）であるから、
+  [T.nextrel0_rtrancl_index_le](Term-ja.md#t-nextrel0_rtrancl_index_le) より $`j \le j_1`$。
   $`j = j_1`$ とすると $`M_{1,j_1} \lt M_{1,j_1}`$ となり $`\lt`$ の非反射性に矛盾する。
   $`j \lt j_1`$ のときは、$`j \lt j_1`$、$`j \le^M_0 j_1`$、$`M_{1,j} \lt M_{1,j_1}`$ の
   3 つがそろうから $`P(j)`$ が成り立ち、$`j \le j_1`$ と最大性から $`j \le g`$ となって、
@@ -830,7 +830,7 @@ $`b \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$ の連言で
   \exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])\bigr)
 ```
 
-ここで $`\preceq`$（[D.ole](Term.md#d-ole)）は広義順序である。このとき、$`c \in \mathrm{ST\_PS}`$ であり
+ここで $`\preceq`$（[D.ole](Term-ja.md#d-ole)）は広義順序である。このとき、$`c \in \mathrm{ST\_PS}`$ であり
 $`1 \le n`$ なるすべての $`n`$ について $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ が成り立つ
 ならば、$`\mathrm{Acc}(R_{\mathrm{st}},c)`$。
 
@@ -889,12 +889,12 @@ $`\mathrm{Acc}(R_{\mathrm{st}},c)`$ が成り立つ。
 $`\mathrm{Aop}(W,u,Y,c)`$ を $`\mathrm{Aop}`$ の定義（D.Aop）の 3 つの選言で場合分けする。
 
 **分岐 (1)：$`\lvert c\rvert \le 1`$ かつ $`c_{1,0} = 0`$ のとき。**
-[T.stps_len_pos](Column.md#t-stps_len_pos) より $`0 \lt \lvert c\rvert`$ であり、
+[T.stps_len_pos](Column-ja.md#t-stps_len_pos) より $`0 \lt \lvert c\rvert`$ であり、
 $`\lvert c\rvert \le 1`$ と合わせて $`\lvert c\rvert = 1`$ である。よって $`c = (p)`$ なる
 対 $`p = (p_1,p_2)`$ が取れる。$`M_{i,j}`$ の定義（D.entry）より
 $`c_{1,0} = p_2`$ であるから $`p_2 = 0`$ である。
 
-$`\mathrm{tr}\,c`$ を計算する。[T.translate_single_tree](Term.md#t-translate_single_tree) を
+$`\mathrm{tr}\,c`$ を計算する。[T.translate_single_tree](Term-ja.md#t-translate_single_tree) を
 $`p := p`$、$`R := ()`$ として適用する（その仮定「$`R`$ のすべての要素 $`x`$ が
 $`p_1 \lt x_1`$ をみたす」は $`R = ()`$ が要素をもたないから成り立つ）と
 
@@ -938,7 +938,7 @@ $`c[n] = \mathrm{graft}(c,())`$ を得る。合わせて $`c[n] \in Y`$、すな
 $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ である。
 
 **(3b) $`\neg\bigl(1 \lt \lvert c\rvert\bigr)`$ のとき。**
-[T.stps_len_pos](Column.md#t-stps_len_pos) より $`0 \lt \lvert c\rvert`$ であるから
+[T.stps_len_pos](Column-ja.md#t-stps_len_pos) より $`0 \lt \lvert c\rvert`$ であるから
 $`\lvert c\rvert = 1`$ である。[T.stps_len_one](#t-stps_len_one) より
 $`c = \bigl((0,0)\bigr)`$ である。$`\mathrm{domT}(c,m)`$ の第 1 連言子（D.domT）は
 $`c_{1,\lvert c\rvert-1} = m+1`$ であり、$`\lvert c\rvert - 1 = 0`$ と
@@ -985,8 +985,8 @@ $`\to^{\cdot}_i`$ の定義（D.nextR）は $`i = 0`$ か否かの場合分け�
 
 - $`i = 0`$ のとき。両辺はそれぞれ $`a \to^{S^{+d}}_0 b`$ と $`a \to^S_0 b`$ であり、
   仮定 $`b \lt \lvert S\rvert`$ のもとで
-  [T.nextrel0_shift_iff](Column-4.md#t-nextrel0_shift_iff) がこの同値を与える。
+  [T.nextrel0_shift_iff](Column-4-ja.md#t-nextrel0_shift_iff) がこの同値を与える。
 
 - $`i \ne 0`$ のとき。両辺はそれぞれ $`a \to^{S^{+d}}_1 b`$ と $`a \to^S_1 b`$ であり、
   仮定 $`b \lt \lvert S\rvert`$ のもとで
-  [T.nextrel1_shift_iff](Column-4.md#t-nextrel1_shift_iff) がこの同値を与える。∎
+  [T.nextrel1_shift_iff](Column-4-ja.md#t-nextrel1_shift_iff) がこの同値を与える。∎

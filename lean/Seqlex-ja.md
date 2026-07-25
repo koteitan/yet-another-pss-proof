@@ -1,4 +1,4 @@
-[← README](README.md) | [English](Seqlex.md) | [Japanese](Seqlex-ja.md) | Seqlex **1** [2](Seqlex-2.md)
+[← README](README-ja.md) | [English](Seqlex.md) | [Japanese](Seqlex-ja.md) | Seqlex **1** [2](Seqlex-2-ja.md)
 
 <a id="d-pairlt"></a>
 ## 定義: 対の辞書式順序 (D.pairlt)
@@ -15,7 +15,7 @@ p \prec_{\mathrm{p}} q :\iff p_1 \lt q_1 \ \vee\ \bigl(p_1 = q_1 \wedge p_2 \lt 
 <a id="d-seqlex"></a>
 ## 定義: 列の辞書式順序 (D.seqlex)
 
-$`M, N \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し、関係
+$`M, N \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）に対し、関係
 $`M \prec_{\mathrm{lex}} N`$ を両引数の構成子による場合分けで定める。
 以下 $`()`$ は空列、$`p :: M`$ は列 $`M`$ の先頭に対 $`p`$ を付けた列である。
 
@@ -246,7 +246,7 @@ $`\mathrm{blockok}(d, B)`$ が成り立つとき $`B`$ を**深さ $`d`$ のブ�
 ### 定理
 
 $`B \in \mathrm{PairSeq}`$、$`j \in \mathbb{N}`$ に対し
-$`B\langle j\rangle`$（[D.entry](Pss.md#d-entry)）を $`B`$ の第 $`j`$ 要素
+$`B\langle j\rangle`$（[D.entry](Pss-ja.md#d-entry)）を $`B`$ の第 $`j`$ 要素
 （$`j \ge \lvert B\rvert`$ のときは $`(0,0)`$）とする。このとき
 
 ```math
@@ -504,7 +504,7 @@ $`(\mathrm{head}\,B)_1 = d`$、すなわち $`x_1 = d`$ を得る。∎
 
 $`d, y \in \mathbb{N}`$、$`r \in \mathrm{PairSeq}`$ とする。
 $`\mathrm{blockok}\bigl(d, (d,y) :: r\bigr)`$ ならば
-$`\mathrm{blockok}\bigl(d+1,\ \mathrm{tw}_d r\bigr)`$（[D.translate](Term.md#d-translate)）。
+$`\mathrm{blockok}\bigl(d+1,\ \mathrm{tw}_d r\bigr)`$（[D.translate](Term-ja.md#d-translate)）。
 
 ### 証明
 

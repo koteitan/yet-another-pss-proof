@@ -1,19 +1,19 @@
-[← README](README.md) | [English](Column-2.md) | [Japanese](Column-2-ja.md) | Column [1](Column.md) **2** [3](Column-3.md) [4](Column-4.md)
+[← README](README-ja.md) | [English](Column-2.md) | [Japanese](Column-2-ja.md) | Column [1](Column-ja.md) **2** [3](Column-3-ja.md) [4](Column-4-ja.md)
 
 <a id="t-oper_append_right"></a>
 ## 定理: 展開は前置と可換 (T.oper_append_right)
 
 ### 定理
 
-$`A, T \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`n \in \mathbb{N}`$ とし、
-$`2 \le \lvert T\rvert`$ かつ $`T_{0,0} = 0`$（[D.entry](Pss.md#d-entry)）とする。
+$`A, T \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）、$`n \in \mathbb{N}`$ とし、
+$`2 \le \lvert T\rvert`$ かつ $`T_{0,0} = 0`$（[D.entry](Pss-ja.md#d-entry)）とする。
 このとき
 
 ```math
 (A \mathbin{+\!\!+} T)[n] = A \mathbin{+\!\!+} T[n] .
 ```
 
-（$`M[n]`$ [D.oper](Pss.md#d-oper)）
+（$`M[n]`$ [D.oper](Pss-ja.md#d-oper)）
 
 ### 証明
 
@@ -33,7 +33,7 @@ $`1 \le j_1`$ よりいずれも偽である。よって両辺とも分岐 (a) �
 **分岐 (b)。** 条件は左辺では
 $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} = 0 \wedge (A \mathbin{+\!\!+} T)_{1,\lvert A\rvert + j_1} = 0`$、
 右辺では $`T_{0,j_1} = 0 \wedge T_{1,j_1} = 0`$ である。
-[T.entry_append_right](Column.md#t-entry_append_right) より
+[T.entry_append_right](Column-ja.md#t-entry_append_right) より
 
 ```math
 (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} = T_{0,j_1},
@@ -42,28 +42,28 @@ $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} = 0 \wedge (A \mathbin{+\!\!+}
 ```
 
 であるから、2 つの条件は同一の命題である。これが成り立つ場合、両辺はそれぞれ
-$`\mathrm{Pred}\,(A \mathbin{+\!\!+} T)`$（[D.Pred](Pss.md#d-Pred)）と $`\mathrm{Pred}\,T`$ であり、
-[T.Pred_append_right](Column.md#t-Pred_append_right) により
+$`\mathrm{Pred}\,(A \mathbin{+\!\!+} T)`$（[D.Pred](Pss-ja.md#d-Pred)）と $`\mathrm{Pred}\,T`$ であり、
+[T.Pred_append_right](Column-ja.md#t-Pred_append_right) により
 $`\mathrm{Pred}\,(A \mathbin{+\!\!+} T) = A \mathbin{+\!\!+} \mathrm{Pred}\,T`$ である。
 以下、この条件は成り立たないとする。
 
-**探索行。** [T.idx1_append_right](Column.md#t-idx1_append_right) より
-$`\mathrm{idx}_1(A \mathbin{+\!\!+} T, \lvert A\rvert + j_1) = \mathrm{idx}_1(T, j_1)`$（[D.idx1](Pss.md#d-idx1)）
+**探索行。** [T.idx1_append_right](Column-ja.md#t-idx1_append_right) より
+$`\mathrm{idx}_1(A \mathbin{+\!\!+} T, \lvert A\rvert + j_1) = \mathrm{idx}_1(T, j_1)`$（[D.idx1](Pss-ja.md#d-idx1)）
 であるから、両辺の $`i_1`$ は共通の値である。これを $`i_1 := \mathrm{idx}_1(T, j_1)`$ と書く。
-$`\mathrm{hasParent}(T, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）が成り立つかどうかで場合分けする。
+$`\mathrm{hasParent}(T, i_1, j_1)`$（[D.hasParent](Pss-ja.md#d-hasParent)）が成り立つかどうかで場合分けする。
 
 **(A) $`\mathrm{hasParent}(T, i_1, j_1)`$ が成り立つとき。**
 まず $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ を示す。
 上の書き換えによりこれは $`0 \lt T_{0,j_1}`$ と同値である。
-$`T_{0,j_1} = 0`$ とすると [T.no_hasParent_of_row0_zero](Column.md#t-no_hasParent_of_row0_zero) を
+$`T_{0,j_1} = 0`$ とすると [T.no_hasParent_of_row0_zero](Column-ja.md#t-no_hasParent_of_row0_zero) を
 $`M := T`$、$`i := i_1`$、$`j_1 := j_1`$ に適用して矛盾する。
-よって [T.hasParent_append_right](Column.md#t-hasParent_append_right) の（$`\Leftarrow`$）が適用でき、
+よって [T.hasParent_append_right](Column-ja.md#t-hasParent_append_right) の（$`\Leftarrow`$）が適用でき、
 $`\mathrm{hasParent}(A \mathbin{+\!\!+} T, i_1, \lvert A\rvert + j_1)`$ が成り立つ。
 したがって分岐 (c) の条件は両辺で偽であり、両辺とも分岐 (d) を選ぶ。
 
-分岐 (d) の各構成要素を比べる。$`j_0 := \mathrm{par}^{T}_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）とおく。
+分岐 (d) の各構成要素を比べる。$`j_0 := \mathrm{par}^{T}_{i_1}(j_1)`$（[D.parent](Pss-ja.md#d-parent)）とおく。
 
-**親。** [T.parent_append_right](Column.md#t-parent_append_right) より
+**親。** [T.parent_append_right](Column-ja.md#t-parent_append_right) より
 $`\mathrm{par}^{A \mathbin{+\!\!+} T}_{i_1}(\lvert A\rvert + j_1) = \lvert A\rvert + j_0`$ である。
 
 **増分。** 左辺の $`d_0`$ と $`d_1`$ は D.oper の式により
@@ -80,11 +80,11 @@ d_1 = \begin{cases}
 \end{cases}
 ```
 
-である。[T.entry_append_right](Column.md#t-entry_append_right) を 4 つの成分に適用すると、
+である。[T.entry_append_right](Column-ja.md#t-entry_append_right) を 4 つの成分に適用すると、
 これらはそれぞれ $`0 \lt i_1`$ のとき $`T_{0,j_1} - T_{0,j_0}`$、$`1 \lt i_1`$ のとき
 $`T_{1,j_1} - T_{1,j_0}`$ に等しく、条件の部分も共通であるから、右辺の $`d_0`$、$`d_1`$ と一致する。
 
-**前部分列。** [T.take_append_right](Column.md#t-take_append_right) より
+**前部分列。** [T.take_append_right](Column-ja.md#t-take_append_right) より
 $`\mathrm{take}_{\lvert A\rvert + j_0}\,(A \mathbin{+\!\!+} T) = A \mathbin{+\!\!+} \mathrm{take}_{j_0}\,T`$ である。
 
 **コピーブロック。** 左辺の第 $`k`$ ブロックは、添字 $`j`$ を $`\lvert A\rvert + j_0`$ から
@@ -95,7 +95,7 @@ $`(\lvert A\rvert + j_1) - (\lvert A\rvert + j_0) = j_1 - j_0`$ の列
 \Bigl(\bigl((A \mathbin{+\!\!+} T)_{0,j} + k\,d_0,\ (A \mathbin{+\!\!+} T)_{1,j} + k\,d_1\bigr)\Bigr)_{j = \lvert A\rvert + j_0}^{\lvert A\rvert + j_1 - 1}
 ```
 
-である。[T.copyblock_append](Column.md#t-copyblock_append) を $`a := j_0`$、$`m := j_1 - j_0`$ に適用すると、
+である。[T.copyblock_append](Column-ja.md#t-copyblock_append) を $`a := j_0`$、$`m := j_1 - j_0`$ に適用すると、
 これは右辺の第 $`k`$ ブロック
 
 ```math
@@ -125,14 +125,14 @@ $`\mathrm{hasParent}(A \mathbin{+\!\!+} T, i_1, \lvert A\rvert + j_1)`$ が成�
 $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ で場合分けする。
 
 - $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ のとき。
-  [T.hasParent_append_right](Column.md#t-hasParent_append_right) の（$`\Rightarrow`$）より
+  [T.hasParent_append_right](Column-ja.md#t-hasParent_append_right) の（$`\Rightarrow`$）より
   $`\mathrm{hasParent}(T, i_1, j_1)`$ となり、この場合の仮定に矛盾する。
 - $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} = 0`$ のとき。
-  [T.no_hasParent_of_row0_zero](Column.md#t-no_hasParent_of_row0_zero) を
+  [T.no_hasParent_of_row0_zero](Column-ja.md#t-no_hasParent_of_row0_zero) を
   $`M := A \mathbin{+\!\!+} T`$、$`j_1 := \lvert A\rvert + j_1`$ に適用して矛盾する。
 
 よって両辺とも分岐 (c) を選び、それぞれ $`\mathrm{Pred}\,(A \mathbin{+\!\!+} T)`$ と $`\mathrm{Pred}\,T`$ である。
-[T.Pred_append_right](Column.md#t-Pred_append_right) により両者は $`A`$ の連結で結ばれる。∎
+[T.Pred_append_right](Column-ja.md#t-Pred_append_right) により両者は $`A`$ の連結で結ばれる。∎
 
 <a id="t-map_range_entry_eq_take"></a>
 ## 定理: 成分の列挙は前部分列 (T.map_range_entry_eq_take)
@@ -173,7 +173,7 @@ $`N \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とし、$`1 \lt \lvert N\rver
 
 ### 証明
 
-[T.oper_eq_dropLast_append](Cnf.md#t-oper_eq_dropLast_append) より、ある $`R \in \mathrm{PairSeq}`$ について
+[T.oper_eq_dropLast_append](Cnf-ja.md#t-oper_eq_dropLast_append) より、ある $`R \in \mathrm{PairSeq}`$ について
 $`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$ である。
 $`1 \lt \lvert N\rvert`$ より $`N`$ は少なくとも 2 要素をもち $`N = a :: b :: u`$ と書ける。
 このとき
@@ -195,7 +195,7 @@ N[n] = a :: \bigl(\mathrm{dropLast}\,(b :: u) \mathbin{+\!\!+} R\bigr)
 
 ### 定理
 
-$`\mathrm{tr}\,()`$（[D.translate](Term.md#d-translate)）は $`\mathsf{Z}`$（[D.Three](Term.md#d-Three)）に等しい。
+$`\mathrm{tr}\,()`$（[D.translate](Term-ja.md#d-translate)）は $`\mathsf{Z}`$（[D.Three](Term-ja.md#d-Three)）に等しい。
 
 ### 証明
 
@@ -254,7 +254,7 @@ $`M \in \mathrm{PairSeq}`$ に対し、命題 $`\mathrm{r1ok}(M)`$ を次のも�
 
 ### 定理
 
-任意の $`v \in \mathbb{N}`$ に対し $`\lvert \Delta_0^v\rvert = v + 1`$（[D.diagSeq](Pss.md#d-diagSeq)）。
+任意の $`v \in \mathbb{N}`$ に対し $`\lvert \Delta_0^v\rvert = v + 1`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）。
 
 ### 証明
 
@@ -541,7 +541,7 @@ $`\mathrm{map}(f_n,B)`$ の第 $`q`$ 要素は $`B`$ の第 $`q`$ 要素に $`f_
 ## 定義: 複製展開 (D.copyExp)
 
 $`L \in \mathrm{PairSeq}`$、$`e \in \mathbb{N}`$ に対し、$`L`$ の各対の第 1 成分に
-$`e`$ を足した列を $`L^{+e}`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）と書く。
+$`e`$ を足した列を $`L^{+e}`$（[D.shiftr0](Cnf-2-ja.md#d-shiftr0)）と書く。
 $`G, B \in \mathrm{PairSeq}`$、$`d_0, n \in \mathbb{N}`$ に対し
 
 ```math

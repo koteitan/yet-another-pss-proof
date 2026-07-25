@@ -1,11 +1,11 @@
-[← README](README.md) | [English](Column-4.md) | [Japanese](Column-4-ja.md) | Column [1](Column.md) [2](Column-2.md) [3](Column-3.md) **4**
+[← README](README-ja.md) | [English](Column-4.md) | [Japanese](Column-4-ja.md) | Column [1](Column-ja.md) [2](Column-2-ja.md) [3](Column-3-ja.md) **4**
 
 <a id="t-nextrel0_unique"></a>
 ## 定理: 行 0 の親の一意性 (T.nextrel0_unique)
 
 ### 定理
 
-$`k_1 \to^M_0 j`$（[D.nextrel0](Pss.md#d-nextrel0)）かつ $`k_2 \to^M_0 j`$ ならば $`k_1 = k_2`$。
+$`k_1 \to^M_0 j`$（[D.nextrel0](Pss-ja.md#d-nextrel0)）かつ $`k_2 \to^M_0 j`$ ならば $`k_1 = k_2`$。
 
 ### 証明
 
@@ -20,7 +20,7 @@ $`k_1 \lt k_2 \wedge k_2 \lt j`$ が成り立つから
 M_{0,j} \le M_{0,k_2}
 ```
 
-を得る（$`M_{i,j}`$ [D.entry](Pss.md#d-entry)）。一方 $`k_2 \to^M_0 j`$ の第 4 条件は
+を得る（$`M_{i,j}`$ [D.entry](Pss-ja.md#d-entry)）。一方 $`k_2 \to^M_0 j`$ の第 4 条件は
 $`M_{0,k_2} \lt M_{0,j}`$ である。
 両者から $`M_{0,j} \lt M_{0,j}`$ となり、$`\lt`$ の非反射性に矛盾する。
 
@@ -38,14 +38,14 @@ $`M_{0,k_1} \lt M_{0,j}`$ である。両者から $`M_{0,j} \lt M_{0,j}`$ と�
 
 ### 定理
 
-$`k_1 \to^M_1 j`$（[D.nextrel1](Pss.md#d-nextrel1)）かつ $`k_2 \to^M_1 j`$ ならば $`k_1 = k_2`$。
+$`k_1 \to^M_1 j`$（[D.nextrel1](Pss-ja.md#d-nextrel1)）かつ $`k_2 \to^M_1 j`$ ならば $`k_1 = k_2`$。
 
 ### 証明
 
 $`k_1`$ と $`k_2`$ の三分律で場合分けする。
 
 **(a) $`k_1 \lt k_2`$ のとき。**
-$`k_2 \to^M_1 j`$ の第 5 条件（D.nextrel1）より $`k_2 \le^M_0 j`$（[D.le0](Pss.md#d-le0)）である。
+$`k_2 \to^M_1 j`$ の第 5 条件（D.nextrel1）より $`k_2 \le^M_0 j`$（[D.le0](Pss-ja.md#d-le0)）である。
 $`k_1 \to^M_1 j`$ の第 6 条件の全称変数に $`k_2`$ を代入すると、その前件
 $`k_1 \lt k_2 \wedge k_2 \le^M_0 j`$ が成り立つから
 
@@ -70,7 +70,7 @@ $`M_{1,k_1} \lt M_{1,j}`$ である。両者から $`M_{1,j} \lt M_{1,j}`$ と�
 
 ### 定理
 
-$`\mathrm{blockok}(0, M)`$（[D.blockok](Seqlex.md#d-blockok)）かつ $`0 \lt \lvert M\rvert`$ ならば
+$`\mathrm{blockok}(0, M)`$（[D.blockok](Seqlex-ja.md#d-blockok)）かつ $`0 \lt \lvert M\rvert`$ ならば
 $`M_{0,0} = 0`$。
 
 ### 証明
@@ -190,7 +190,7 @@ $`r \mathbin{(\to^M_0)^{*}} j`$ であり、$`r \le k \lt j`$ より $`r \le j`$
 
 ### 定理
 
-$`\mathrm{blockok}(0, M)`$、$`\mathrm{z0ok}(M)`$（[D.z0ok](Column-3.md#d-z0ok)）、
+$`\mathrm{blockok}(0, M)`$、$`\mathrm{z0ok}(M)`$（[D.z0ok](Column-3-ja.md#d-z0ok)）、
 $`j \lt \lvert M\rvert`$、$`0 \lt M_{1,j}`$ ならば、ある $`k`$ が存在して $`k \to^M_1 j`$。
 
 ### 証明
@@ -248,7 +248,7 @@ S := \{\, k \mid k \le j - 1 \ \wedge\ P(k) \,\}
 - 第 5 条件 $`k \le^M_0 j`$：$`(\mathrm{ii})`$ の第 1 連言子である。
 - 第 6 条件 $`\forall j',\ (k \lt j' \wedge j' \le^M_0 j) \to M_{1,j} \le M_{1,j'}`$：
   $`j'`$ を取り $`k \lt j'`$、$`j' \le^M_0 j`$ とする。
-  [T.le0_le](Column-3.md#t-le0_le) より $`j' \le j`$ である。
+  [T.le0_le](Column-3-ja.md#t-le0_le) より $`j' \le j`$ である。
   - $`j' = j`$ のとき。示すべきは $`M_{1,j} \le M_{1,j}`$ であり、$`\le`$ の反射性による。
   - $`j' \lt j`$ のとき。$`M_{1,j} \le M_{1,j'}`$ を否定して $`M_{1,j'} \lt M_{1,j}`$ と
     仮定する。すると $`j' \le^M_0 j`$ と合わせて $`P(j')`$ が成り立つ。
@@ -260,7 +260,7 @@ S := \{\, k \mid k \le j - 1 \ \wedge\ P(k) \,\}
 
 ### 定理
 
-行つき親子関係 $`\to^M_i`$（[D.nextR](Pss.md#d-nextR)）に $`i := 1`$ を代入したものは、行 $`1`$ の親子関係
+行つき親子関係 $`\to^M_i`$（[D.nextR](Pss-ja.md#d-nextR)）に $`i := 1`$ を代入したものは、行 $`1`$ の親子関係
 $`\to^M_1`$ に一致する。すなわち $`i = 1`$ のとき $`k \to^M_i j`$ と $`k \to^M_1 j`$ は
 同値である。
 
@@ -294,7 +294,7 @@ $`0 \lt \lvert M\rvert`$、$`M\langle j_1\rangle \ne (0,0)`$ ならば
 \mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, j_1),\ j_1\bigr).
 ```
 
-（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)、$`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)）
+（$`\mathrm{hasParent}`$ [D.hasParent](Pss-ja.md#d-hasParent)、$`\mathrm{idx}_1`$ [D.idx1](Pss-ja.md#d-idx1)）
 
 ### 証明
 
@@ -342,7 +342,7 @@ $`\mathrm{hasParent}`$ の定義（D.hasParent）の 2 つを確かめる。
 
 ### 定理
 
-$`1 \le n`$ かつ $`\mathrm{z0ok}(M)`$ ならば $`\mathrm{z0ok}(M[n])`$（$`M[n]`$ [D.oper](Pss.md#d-oper)）。
+$`1 \le n`$ かつ $`\mathrm{z0ok}(M)`$ ならば $`\mathrm{z0ok}(M[n])`$（$`M[n]`$ [D.oper](Pss-ja.md#d-oper)）。
 
 ### 証明
 
@@ -350,24 +350,24 @@ $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$ とおき、
 $`M[n]`$ の定義（D.oper）の分岐に沿って場合分けする。
 
 **(a) $`j_1 = 0`$ のとき。**
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`M[n] = M`$ であり、
+[T.oper_eq_self_of_short](Decrease-ja.md#t-oper_eq_self_of_short) より $`M[n] = M`$ であり、
 結論は仮定 $`\mathrm{z0ok}(M)`$ そのものである。
 
 **(b) $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ のとき。**
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より
-$`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）であり、[T.z0ok_Pred](Column-3.md#t-z0ok_Pred) を適用する。
+[T.oper_eq_pred_of_zero](Decrease-ja.md#t-oper_eq_pred_of_zero) より
+$`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss-ja.md#d-Pred)）であり、[T.z0ok_Pred](Column-3-ja.md#t-z0ok_Pred) を適用する。
 
 **(c) $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
 $`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
-$`M[n] = \mathrm{Pred}\,M`$ であり、[T.z0ok_Pred](Column-3.md#t-z0ok_Pred) を適用する。
+[T.oper_eq_pred_of_noParent](Decrease-ja.md#t-oper_eq_pred_of_noParent) より
+$`M[n] = \mathrm{Pred}\,M`$ であり、[T.z0ok_Pred](Column-3-ja.md#t-z0ok_Pred) を適用する。
 
 **(d) $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
 $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
 $`1 \lt \lvert M\rvert`$ である。実際 $`\lvert M\rvert \le 1`$ とすると、自然数の減法は
 $`0`$ で切り捨てるから $`j_1 = \lvert M\rvert - 1 = 0`$ となり、この場合の仮定
 $`j_1 \ne 0`$ に反する。
-[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を
+[T.oper_bad_blocks](Decrease-ja.md#t-oper_bad_blocks) を
 $`1 \lt \lvert M\rvert`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、
 $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ に適用して
 $`G, v_0, w_0, R, d_0, \ell`$ を取る。その (1) と (2) は
@@ -380,7 +380,7 @@ M[n] = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr)^{+0\cdot d_0}
   \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr)^{+(n-1)d_0}
 ```
 
-である（$`L^{+e}`$ [D.copyExp](Column-2.md#d-copyExp)）。
+である（$`L^{+e}`$ [D.copyExp](Column-2-ja.md#d-copyExp)）。
 後者の右辺は $`\mathrm{copyExp}`$ の定義（D.copyExp）により
 
 ```math
@@ -389,14 +389,14 @@ M[n] = \mathrm{copyExp}\bigl(G,\ (v_0,w_0) :: R,\ d_0,\ n\bigr)
 
 と書ける。仮定 $`\mathrm{z0ok}(M)`$ を (1) で書き換えると
 $`\mathrm{z0ok}\bigl(G \mathbin{+\!\!+} ((v_0,w_0) :: R) \mathbin{+\!\!+} (\ell)\bigr)`$ であるから、
-[T.z0ok_copyExp](Column-3.md#t-z0ok_copyExp) を $`B := (v_0,w_0) :: R`$ に適用して結論を得る。∎
+[T.z0ok_copyExp](Column-3-ja.md#t-z0ok_copyExp) を $`B := (v_0,w_0) :: R`$ に適用して結論を得る。∎
 
 <a id="t-z0ok_ST_PS"></a>
 ## 定理: 標準形は $`\mathrm{z0ok}`$ をみたす (T.z0ok_ST_PS)
 
 ### 定理
 
-$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`\mathrm{z0ok}(M)`$。
+$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）ならば $`\mathrm{z0ok}(M)`$。
 
 ### 証明
 
@@ -406,8 +406,8 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 \Phi(M) :\equiv \mathrm{z0ok}(M).
 ```
 
-- **基底段**（規則 (diag)）：$`M = \Delta_0^v`$（[D.diagSeq](Pss.md#d-diagSeq)）である。
-  [T.z0ok_diagSeq](Column-3.md#t-z0ok_diagSeq) が $`\Phi(\Delta_0^v)`$ そのものである。
+- **基底段**（規則 (diag)）：$`M = \Delta_0^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）である。
+  [T.z0ok_diagSeq](Column-3-ja.md#t-z0ok_diagSeq) が $`\Phi(\Delta_0^v)`$ そのものである。
 
 - **帰納段**（規則 (oper)）：$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$ とし、帰納法の仮定は
   $`\Phi(N)`$、すなわち $`\mathrm{z0ok}(N)`$ である。
@@ -419,7 +419,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 
 ### 定理
 
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`\rho \in \mathbb{N}`$ とする。
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）、$`\rho \in \mathbb{N}`$ とする。
 任意の $`a, b \in \mathbb{N}`$ について、
 
 ```math
@@ -455,7 +455,7 @@ $`a \lt \rho`$、$`\rho \le z`$、および
 を仮定して $`\rho \mathbin{(\to^M_0)^{*}} z`$ を示す。$`\rho`$ と $`y`$ の大小で場合分けする。
 
 **(a) $`\rho \le y`$ のとき。**
-[T.nextrel0_lt](Column.md#t-nextrel0_lt) より $`y \lt z`$ である。したがって
+[T.nextrel0_lt](Column-ja.md#t-nextrel0_lt) より $`y \lt z`$ である。したがって
 $`\rho \lt y' \wedge y' \le y`$ なる $`y'`$ は $`y' \le y \le z`$ をみたすから、
 $`(\ast)`$ より $`M_{0,\rho} \lt M_{0,y'}`$ である。すなわち帰納法の仮定 $`\Phi(y)`$ の
 前件 3 つがすべて成り立つ。よって $`\rho \mathbin{(\to^M_0)^{*}} y`$ を得る。
@@ -519,7 +519,7 @@ $`S \in \mathrm{PairSeq}`$、$`d, j \in \mathbb{N}`$ とする。$`j \lt \lvert 
 $`L^{+e}`$ の定義（D.copyExp）より $`S^{+d}`$ は $`S`$ の各要素を写したものであるから
 $`\lvert S^{+d}\rvert = \lvert S\rvert`$ であり、仮定 $`j \lt \lvert S\rvert`$ より
 どちらの列でも第 $`j`$ 要素が存在する。
-[T.getD_eq_getElem'](Cnf.md#t-getD_eq_getElem') より
+[T.getD_eq_getElem'](Cnf-ja.md#t-getD_eq_getElem') より
 
 ```math
 S\langle j\rangle = S_j, \qquad S^{+d}\langle j\rangle = (S^{+d})_j = \bigl(\pi_1(S_j) + d,\ \pi_2(S_j)\bigr)
@@ -594,7 +594,7 @@ $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b`$ ならば $`a \mathbin{(\to^{S}_0)^{*}} b
 
 - **帰納段**（$`a \mathbin{(\to^{S^{+d}}_0)^{*}} c`$ と $`c \to^{S^{+d}}_0 e`$）：
   帰納法の仮定は $`\Phi(c)`$、すなわち $`a \mathbin{(\to^{S}_0)^{*}} c`$ である。
-  [T.nextrel0_bound](Column-3.md#t-nextrel0_bound) を $`c \to^{S^{+d}}_0 e`$ に適用して
+  [T.nextrel0_bound](Column-3-ja.md#t-nextrel0_bound) を $`c \to^{S^{+d}}_0 e`$ に適用して
   $`e \lt \lvert S^{+d}\rvert = \lvert S\rvert`$ を得る。
   よって [T.nextrel0_shift_iff](#t-nextrel0_shift_iff) が使えて $`c \to^{S}_0 e`$ である。
   帰納法の仮定の鎖の末尾にこの 1 歩を継ぎ足せば $`a \mathbin{(\to^{S}_0)^{*}} e`$、
@@ -620,7 +620,7 @@ $`a \mathbin{(\to^{S}_0)^{*}} b`$ ならば $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b
 
 - **帰納段**（$`a \mathbin{(\to^{S}_0)^{*}} c`$ と $`c \to^{S}_0 e`$）：
   帰納法の仮定は $`\Phi(c)`$、すなわち $`a \mathbin{(\to^{S^{+d}}_0)^{*}} c`$ である。
-  [T.nextrel0_bound](Column-3.md#t-nextrel0_bound) を $`c \to^{S}_0 e`$ に適用して
+  [T.nextrel0_bound](Column-3-ja.md#t-nextrel0_bound) を $`c \to^{S}_0 e`$ に適用して
   $`e \lt \lvert S\rvert`$ を得る。よって
   [T.nextrel0_shift_iff](#t-nextrel0_shift_iff) が使えて $`c \to^{S^{+d}}_0 e`$ である。
   帰納法の仮定の鎖の末尾にこの 1 歩を継ぎ足せば
@@ -694,7 +694,7 @@ $`\lvert S^{+d}\rvert = \lvert S\rvert`$ であるから、$`\to^M_1`$ の定義
   [T.le0_shift_iff](#t-le0_shift_iff) より $`l \le^{S^{+d}}_0 b`$ であるから、
   仮定の第 6 条件の全称変数に $`l`$ を代入して
   $`(S^{+d})_{1,b} \le (S^{+d})_{1,l}`$ を得る。
-  [T.le0_le](Column-3.md#t-le0_le) より $`l \le b \lt \lvert S\rvert`$ であるから、
+  [T.le0_le](Column-3-ja.md#t-le0_le) より $`l \le b \lt \lvert S\rvert`$ であるから、
   [T.entry_shift](#t-entry_shift) が $`j := l`$ と $`j := b`$ で使えて、
   この不等式は $`S_{1,b} \le S_{1,l}`$ に等しい。
 
@@ -706,7 +706,7 @@ $`\lvert S^{+d}\rvert = \lvert S\rvert`$ であるから、$`\to^M_1`$ の定義
 
 - 第 6 条件：$`l`$ を取り $`a \lt l`$、$`l \le^{S^{+d}}_0 b`$ とする。
   [T.le0_shift_iff](#t-le0_shift_iff) より $`l \le^{S}_0 b`$ であり、
-  [T.le0_le](Column-3.md#t-le0_le) より $`l \le b \lt \lvert S\rvert`$ である。
+  [T.le0_le](Column-3-ja.md#t-le0_le) より $`l \le b \lt \lvert S\rvert`$ である。
   仮定の第 6 条件の全称変数に $`l`$ を代入して $`S_{1,b} \le S_{1,l}`$ を得る。
   [T.entry_shift](#t-entry_shift) が $`j := l`$ と $`j := b`$ で使えて、
   この不等式は $`(S^{+d})_{1,b} \le (S^{+d})_{1,l}`$ に等しい。∎

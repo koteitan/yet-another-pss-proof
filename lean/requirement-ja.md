@@ -1,4 +1,4 @@
-[← README](README.md) | [English](requirement.md) | [Japanese](requirement-ja.md)
+[← README](README-ja.md) | [English](requirement.md) | [Japanese](requirement-ja.md)
 
 # `lean/*.md` 編集方針
 
@@ -11,16 +11,16 @@
 
 ### 1.1 冒頭
 
-1 行目は [`README.md`](README.md) へのバックリンクのみ。
+1 行目は [`README.md`](README-ja.md) へのバックリンクのみ。
 
 ```markdown
-[← README](README.md)
+[← README](README-ja.md)
 ```
 
 分割されたファイル（§1.4）では、続けて部の一覧を置く。現在の部は太字で、リンクにしない。
 
 ```markdown
-[← README](README.md) ｜ Wset **1** [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md)
+[← README](README-ja.md) ｜ Wset **1** [2](Wset-2-ja.md) [3](Wset-3-ja.md) [4](Wset-4-ja.md)
 ```
 
 **冒頭にはこれ以外を置かない。** 章の要約、記法の対応表、宣言数の勘定、
@@ -50,7 +50,7 @@ GitHub は 1 ページの数式の総量が一定の予算を超えると、**�
 
 超えたモジュールは宣言の境界で分割し、`Wset.md` / `Wset-2.md` / `Wset-3.md` … と名づける。
 分割しても Lean の宣言と節の 1 対 1 対応（§6.6）は保つ。部をまたぐ命題の引用は
-`[T.foo](Wset-3.md#t-foo)` のようにファイル名つきになる。他ファイルで定義された記号の
+`[T.foo](Wset-3-ja.md#t-foo)` のようにファイル名つきになる。他ファイルで定義された記号の
 リンク（§3.3）は**部ごとに**、その部での初出の 1 箇所に張る。
 
 分割と、それに伴うリンクの張り替えは `tools/split_md.py` が行う。
@@ -108,7 +108,7 @@ GitHub の自動生成アンカーは当てにならない。
 **必ず**ラベルで引用し、ハイパーリンクを張る。
 
 - 同一ファイル内 : `[T.olt_trans](#t-olt_trans) により、`
-- 他ファイル     : `[T.m_step_decreases](Decrease.md#t-m_step_decreases) により、`
+- 他ファイル     : `[T.m_step_decreases](Decrease-ja.md#t-m_step_decreases) により、`
 
 「先の補題より」「上で示したように」のような**リンクの無い参照は禁止**。
 
@@ -127,7 +127,7 @@ GitHub の自動生成アンカーは当てにならない。
 ### 3.3 他ファイルで定義された記号
 
 ファイル A の中で、ファイル B で定義された記号を使うときは、**そのまま使ってよい**。
-「$`\mathrm{ST\_PS}`$ は [D.ST_PS](Pss.md#d-ST_PS) で定義されている」のような
+「$`\mathrm{ST\_PS}`$ は [D.ST_PS](Pss-ja.md#d-ST_PS) で定義されている」のような
 断り書きは書かない。
 
 代わりに、**ファイル A の中でその記号が最初に現れる 1 箇所だけ**、
@@ -137,12 +137,12 @@ GitHub の自動生成アンカーは当てにならない。
 （§1.4）はそれぞれ独立に数える。読者はどの部からでも読み始めるので、
 第 3 部にしか現れない記号は第 3 部でリンクされていなければ辿れない。
 
-- ⭕️ `$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）`
-- ❌ `[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq)`
+- ⭕️ `$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）`
+- ❌ `[$`M \in \mathrm{PairSeq}`$](Pss-ja.md#d-PairSeq)`
 
 **数式そのものをリンクにしてはならない。** GitHub はリンクの中に数式を作らない（§5.1）。
 既に括弧の中にいるとき（`（…）` の内側）は括弧を重ねず、空白で区切る
-（`（$`\prec`$ [D.olt](Term.md#d-olt)）`）。
+（`（$`\prec`$ [D.olt](Term-ja.md#d-olt)）`）。
 
 2 回目以降はリンクも括弧書きも付けず、素の記号で書く。
 定義を根拠として引くときは §3.2 と同じく記号の名前で呼ぶ

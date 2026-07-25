@@ -1,27 +1,27 @@
-[← README](README.md) | [English](Final.md) | [Japanese](Final-ja.md)
+[← README](README-ja.md) | [English](Final.md) | [Japanese](Final-ja.md)
 
 <a id="t-acc_Rnf_of_acc_PS"></a>
 ## 定理: 到達可能性の項側への移送 (T.acc_Rnf_of_acc_PS)
 
 ### 定理
 
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）上の関係 $`R_{\mathrm{st}}`$（[D.Rst](Wset.md#d-Rst)）の定義（D.Rst）は
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）上の関係 $`R_{\mathrm{st}}`$（[D.Rst](Wset-ja.md#d-Rst)）の定義（D.Rst）は
 
 ```math
 a \mathbin{R_{\mathrm{st}}} b :\iff
   a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b
 ```
 
-である（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）。
+である（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss-ja.md#d-ST_PS)、$`\mathrm{tr}`$ [D.translate](Term-ja.md#d-translate)、$`\prec`$ [D.olt](Term-ja.md#d-olt)）。
 
 関係 $`R`$ に対する $`\mathrm{Acc}_R`$ の定義、その最小性（$`\mathrm{Acc}_R`$ の導出に関する帰納法）、
-および $`R`$ が整礎であることの定義は、[T.step_terminates_cond](Reduction.md#t-step_terminates_cond)
+および $`R`$ が整礎であることの定義は、[T.step_terminates_cond](Reduction-ja.md#t-step_terminates_cond)
 の定理文で与えたものをそのまま用いる。
 
 このとき、任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ かつ
 $`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ である。
 
-（$`R_{\mathrm{NF}}`$ [D.Rnf](Reduction.md#d-Rnf)）
+（$`R_{\mathrm{NF}}`$ [D.Rnf](Reduction-ja.md#d-Rnf)）
 
 ### 証明
 
@@ -48,7 +48,7 @@ $`\mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を示す。$`\mathrm{Ac
   v \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M_0 \to v \in \mathrm{Acc}_{R_{\mathrm{NF}}}
 ```
 
-を示せばよい（$`\mathrm{Three}`$ [D.Three](Term.md#d-Three)）。
+を示せばよい（$`\mathrm{Three}`$ [D.Three](Term-ja.md#d-Three)）。
 $`v \in \mathrm{Three}`$ を取り $`v \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M_0`$ とする。
 $`R_{\mathrm{NF}}`$ の定義（D.Rnf）より次の 3 つが成り立つ。
 
@@ -58,7 +58,7 @@ v \prec \mathrm{tr}\,M_0, \qquad
 v \in \mathrm{NF} .
 ```
 
-（$`\mathrm{NF}`$ [D.NF](Reduction.md#d-NF)）第 2 の連言子 $`\mathrm{tr}\,M_0 \in \mathrm{NF}`$ は以下で用いない。
+（$`\mathrm{NF}`$ [D.NF](Reduction-ja.md#d-NF)）第 2 の連言子 $`\mathrm{tr}\,M_0 \in \mathrm{NF}`$ は以下で用いない。
 
 第 3 の連言子 $`v \in \mathrm{NF}`$ に $`\mathrm{NF}`$ の定義（D.NF）を適用すると、
 $`N \in \mathrm{PairSeq}`$ が存在して
@@ -123,18 +123,18 @@ $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ ならば
 \exists n \in \mathbb{N},\ 1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n]) .
 ```
 
-（$`M[n]`$ [D.oper](Pss.md#d-oper)、$`\preceq`$ [D.ole](Term.md#d-ole)）
+（$`M[n]`$ [D.oper](Pss-ja.md#d-oper)、$`\preceq`$ [D.ole](Term-ja.md#d-ole)）
 
 ### 証明
 
-[T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) は、命題
-$`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom.md#d-ArgDomCore)）を仮定として、任意の $`M, N \in \mathrm{PairSeq}`$ について $`M \in \mathrm{ST\_PS}`$、
+[T.pss_cofinality_of_core](ArgDom-ja.md#t-pss_cofinality_of_core) は、命題
+$`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom-ja.md#d-ArgDomCore)）を仮定として、任意の $`M, N \in \mathrm{PairSeq}`$ について $`M \in \mathrm{ST\_PS}`$、
 $`N \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ の 3 つから本定理の結論を導く。
 
-その仮定 $`\mathrm{ArgDomCore}`$ は [T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds) であり、
+その仮定 $`\mathrm{ArgDomCore}`$ は [T.argDomCore_holds](ArgDom-5-ja.md#t-argDomCore_holds) であり、
 これは仮定を持たない。よって
-[T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) に
-[T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds) と本定理の 3 つの仮定を与えれば、
+[T.pss_cofinality_of_core](ArgDom-ja.md#t-pss_cofinality_of_core) に
+[T.argDomCore_holds](ArgDom-5-ja.md#t-argDomCore_holds) と本定理の 3 つの仮定を与えれば、
 求める $`n`$ が得られる。∎
 
 <a id="t-wf_olt_ST_PS_holds"></a>
@@ -146,7 +146,7 @@ $`R_{\mathrm{st}}`$ は整礎である。
 
 ### 証明
 
-[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality) は、仮定
+[T.wf_olt_ST_PS_of_cofinality](Wset-4-ja.md#t-wf_olt_ST_PS_of_cofinality) は、仮定
 
 ```math
 \forall M, N \in \mathrm{PairSeq},\
@@ -157,7 +157,7 @@ $`R_{\mathrm{st}}`$ は整礎である。
 から $`R_{\mathrm{st}}`$ の整礎性を導く。この仮定は
 [T.pss_cofinality_holds](#t-pss_cofinality_holds) を $`M`$ と $`N`$ について全称量化したもの
 そのものである。よってこれを
-[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality) に与えればよい。∎
+[T.wf_olt_ST_PS_of_cofinality](Wset-4-ja.md#t-wf_olt_ST_PS_of_cofinality) に与えればよい。∎
 
 <a id="t-wf_Rnf_holds"></a>
 ## 定理: 正規形上の順序の整礎性 (T.wf_Rnf_holds)
@@ -181,14 +181,14 @@ $`R_{\mathrm{NF}}`$ の整礎性を導く。その仮定は [T.wf_olt_ST_PS_hold
 
 $`R_{\mathrm{PS}}`$ は整礎である。
 
-（$`R_{\mathrm{PS}}`$ [D.stepRel](Reduction.md#d-stepRel)）
+（$`R_{\mathrm{PS}}`$ [D.stepRel](Reduction-ja.md#d-stepRel)）
 
 ### 証明
 
-[T.step_terminates](Reduction.md#t-step_terminates) は $`R_{\mathrm{NF}}`$ の整礎性を仮定として
+[T.step_terminates](Reduction-ja.md#t-step_terminates) は $`R_{\mathrm{NF}}`$ の整礎性を仮定として
 $`R_{\mathrm{PS}}`$ の整礎性を導く。その仮定は [T.wf_Rnf_holds](#t-wf_Rnf_holds) であり、
 これは仮定を持たない。よって [T.wf_Rnf_holds](#t-wf_Rnf_holds) を
-[T.step_terminates](Reduction.md#t-step_terminates) に与えればよい。∎
+[T.step_terminates](Reduction-ja.md#t-step_terminates) に与えればよい。∎
 
 <a id="t-no_infinite_expansion_holds"></a>
 ## 定理: 無限展開列の非存在 (T.no_infinite_expansion_holds)
@@ -203,12 +203,12 @@ $`R_{\mathrm{PS}}`$ の整礎性を導く。その仮定は [T.wf_Rnf_holds](#t-
 \forall i \in \mathbb{N},\ S_i \Rightarrow S_{i+1} .
 ```
 
-ここで $`S_i`$ は $`S`$ の $`i`$ における値である（$`M \Rightarrow N`$ [D.step](Pss.md#d-step)）。
+ここで $`S_i`$ は $`S`$ の $`i`$ における値である（$`M \Rightarrow N`$ [D.step](Pss-ja.md#d-step)）。
 
 ### 証明
 
-[T.no_infinite_expansion](Reduction.md#t-no_infinite_expansion) は $`R_{\mathrm{NF}}`$ の整礎性を
+[T.no_infinite_expansion](Reduction-ja.md#t-no_infinite_expansion) は $`R_{\mathrm{NF}}`$ の整礎性を
 仮定として、上の 2 条件をみたす $`S`$ が存在しないことを導く。その仮定は
 [T.wf_Rnf_holds](#t-wf_Rnf_holds) であり、これは仮定を持たない。よって
 [T.wf_Rnf_holds](#t-wf_Rnf_holds) を
-[T.no_infinite_expansion](Reduction.md#t-no_infinite_expansion) に与えればよい。∎
+[T.no_infinite_expansion](Reduction-ja.md#t-no_infinite_expansion) に与えればよい。∎

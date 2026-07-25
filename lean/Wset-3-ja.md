@@ -1,12 +1,12 @@
-[← README](README.md) | [English](Wset-3.md) | [Japanese](Wset-3-ja.md) | Wset [1](Wset.md) [2](Wset-2.md) **3** [4](Wset-4.md)
+[← README](README-ja.md) | [English](Wset-3.md) | [Japanese](Wset-3-ja.md) | Wset [1](Wset-ja.md) [2](Wset-2-ja.md) **3** [4](Wset-4-ja.md)
 
 <a id="t-XA_closed"></a>
 ## 定理: $`A_u\bigl(X^{(A)}\bigr) \subseteq X^{(A)}`$ (T.XA_closed)
 
 ### 定理
 
-$`X \subseteq \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）が
-$`\forall M,\ M \in A_u(X) \to M \in X`$（[D.Aop](Wset.md#d-Aop)）をみたし、
+$`X \subseteq \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）が
+$`\forall M,\ M \in A_u(X) \to M \in X`$（[D.Aop](Wset-ja.md#d-Aop)）をみたし、
 $`A \in X`$ とする。このとき
 
 ```math
@@ -15,8 +15,8 @@ $`A \in X`$ とする。このとき
 
 ### 証明
 
-$`B \in A_u(X^{(A)})`$（[D.XA](Wset-2.md#d-XA)）とする。$`X^{(A)}`$ の定義（D.XA）より、
-$`\mathrm{rsum}(A,B)`$（[D.rsum](Wset.md#d-rsum)）を仮定して
+$`B \in A_u(X^{(A)})`$（[D.XA](Wset-2-ja.md#d-XA)）とする。$`X^{(A)}`$ の定義（D.XA）より、
+$`\mathrm{rsum}(A,B)`$（[D.rsum](Wset-ja.md#d-rsum)）を仮定して
 $`A \mathbin{+\!\!+} B \in X`$ を示せばよい。
 
 $`B = ()`$ のときは $`A \mathbin{+\!\!+} () = A \in X`$ である。以下 $`B \ne ()`$、
@@ -30,7 +30,7 @@ $`B = ()`$ のときは $`A \mathbin{+\!\!+} () = A \in X`$ である。以下 $
 
 が成り立つ。$`A_u`$ の定義（D.Aop）の 3 分岐で場合分けする。
 
-**分岐 (1)：$`\lvert B\rvert \le 1 \wedge B_{1,0} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
+**分岐 (1)：$`\lvert B\rvert \le 1 \wedge B_{1,0} = 0`$（[D.entry](Pss-ja.md#d-entry)）のとき。**
 $`0 \lt \lvert B\rvert`$ と合わせて $`\lvert B\rvert = 1`$ である。$`A`$ が空か否かで分ける。
 
 **$`A = ()`$ のとき。** 仮定より $`B \in A_u(X)`$（分岐 (1) そのもの）であるから
@@ -44,26 +44,26 @@ $`\lvert A \mathbin{+\!\!+} B\rvert = \lvert A\rvert + 1`$ であるから
 ```
 
 まず、任意の $`i`$ について
-$`\neg\,\mathrm{hasParent}(A \mathbin{+\!\!+} B,\ i,\ \lvert A \mathbin{+\!\!+} B\rvert - 1)`$（[D.hasParent](Pss.md#d-hasParent)）
+$`\neg\,\mathrm{hasParent}(A \mathbin{+\!\!+} B,\ i,\ \lvert A \mathbin{+\!\!+} B\rvert - 1)`$（[D.hasParent](Pss-ja.md#d-hasParent)）
 である。実際これが成り立つとすると、$`0 \lt \lvert B\rvert`$ より
-[T.hasParent_append_gen](Wset-2.md#t-hasParent_append_gen) を $`j := 0`$ に適用して
+[T.hasParent_append_gen](Wset-2-ja.md#t-hasParent_append_gen) を $`j := 0`$ に適用して
 $`\mathrm{hasParent}(B, i, 0)`$ を得る。$`\mathrm{hasParent}`$ の定義（D.hasParent）より
-$`j_0 \to^B_i 0`$（[D.nextR](Pss.md#d-nextR)）なる $`j_0`$ が存在するが、
-[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より $`j_0 \lt 0`$ となり矛盾する。
+$`j_0 \to^B_i 0`$（[D.nextR](Pss-ja.md#d-nextR)）なる $`j_0`$ が存在するが、
+[T.nextR_index_lt](Decrease-ja.md#t-nextR_index_lt) より $`j_0 \lt 0`$ となり矛盾する。
 
-次に $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$（[D.natDom](Wset.md#d-natDom)）を示す。$`\lvert B\rvert - 1 = 0`$ であるから
-$`B_{1,\lvert B\rvert-1} = B_{1,0} = 0`$ であり、[T.natDom_iff](Wset.md#t-natDom_iff) の右辺の
+次に $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$（[D.natDom](Wset-ja.md#d-natDom)）を示す。$`\lvert B\rvert - 1 = 0`$ であるから
+$`B_{1,\lvert B\rvert-1} = B_{1,0} = 0`$ であり、[T.natDom_iff](Wset-ja.md#t-natDom_iff) の右辺の
 第 1 選言が成り立つので $`\mathrm{natDom}(B)`$ である。
-[T.natDom_append](Wset-2.md#t-natDom_append) より $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$ である。
+[T.natDom_append](Wset-2-ja.md#t-natDom_append) より $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$ である。
 
-最後に、任意の $`n \ge 1`$ に対し $`(A \mathbin{+\!\!+} B)[n] = A \in X`$（[D.oper](Pss.md#d-oper)）を示す。
+最後に、任意の $`n \ge 1`$ に対し $`(A \mathbin{+\!\!+} B)[n] = A \in X`$（[D.oper](Pss-ja.md#d-oper)）を示す。
 $`2 \le \lvert A \mathbin{+\!\!+} B\rvert`$ であるから $`\lvert A \mathbin{+\!\!+} B\rvert - 1 \ne 0`$ である。
 $`J := \lvert A \mathbin{+\!\!+} B\rvert - 1`$ と略記すると、
 $`(A \mathbin{+\!\!+} B)_{0,J} = 0 \wedge (A \mathbin{+\!\!+} B)_{1,J} = 0`$ が成り立つなら
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) により、成り立たないなら
+[T.oper_eq_pred_of_zero](Decrease-ja.md#t-oper_eq_pred_of_zero) により、成り立たないなら
 上で示した親の非存在と
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) により、
-いずれにせよ $`(A \mathbin{+\!\!+} B)[n] = \mathrm{Pred}(A \mathbin{+\!\!+} B)`$（[D.Pred](Pss.md#d-Pred)）である。
+[T.oper_eq_pred_of_noParent](Decrease-ja.md#t-oper_eq_pred_of_noParent) により、
+いずれにせよ $`(A \mathbin{+\!\!+} B)[n] = \mathrm{Pred}(A \mathbin{+\!\!+} B)`$（[D.Pred](Pss-ja.md#d-Pred)）である。
 $`2 \le \lvert A \mathbin{+\!\!+} B\rvert`$ より $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ、
 $`B \ne ()`$ より
 
@@ -81,9 +81,9 @@ $`(A \mathbin{+\!\!+} B)[n] = A \in X`$ である。
 **分岐 (2)：$`\mathrm{natDom}(B) \wedge \forall n \ge 1,\ B[n] \in X^{(A)}`$ のとき。**
 $`2 \le \lvert B\rvert`$ か否かで分ける。
 
-**$`2 \le \lvert B\rvert`$ のとき。** [T.natDom_append](Wset-2.md#t-natDom_append) より
+**$`2 \le \lvert B\rvert`$ のとき。** [T.natDom_append](Wset-2-ja.md#t-natDom_append) より
 $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$ である。$`n \ge 1`$ を取ると
-[T.oper_append_gen](Wset-2.md#t-oper_append_gen) より
+[T.oper_append_gen](Wset-2-ja.md#t-oper_append_gen) より
 
 ```math
 (A \mathbin{+\!\!+} B)[n] = A \mathbin{+\!\!+} B[n]
@@ -91,24 +91,24 @@ $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$ である。$`n \ge 1`$ を取ると
 
 である。$`B[n] \in X^{(A)}`$ であるから、$`A \mathbin{+\!\!+} B[n] \in X`$ を得るには
 $`\mathrm{rsum}(A,\ B[n])`$ を確かめればよい。
-[T.oper_head_eq](Wset-2.md#t-oper_head_eq) より $`(B[n])_{0,0} = B_{0,0}`$ である。
+[T.oper_head_eq](Wset-2-ja.md#t-oper_head_eq) より $`(B[n])_{0,0} = B_{0,0}`$ である。
 $`p \in A \mathbin{+\!\!+} B[n]`$ を取ると、$`p \in A`$ のときは $`(\ast\ast)`$ より
 $`B_{0,0} \le p_1`$、$`p \in B[n]`$ のときは $`(\ast)`$ と
-[T.oper_mem_ge](Wset-2.md#t-oper_mem_ge)（$`c := B_{0,0}`$）より $`B_{0,0} \le p_1`$ である。
+[T.oper_mem_ge](Wset-2-ja.md#t-oper_mem_ge)（$`c := B_{0,0}`$）より $`B_{0,0} \le p_1`$ である。
 よって $`\mathrm{rsum}(A, B[n])`$ が成り立ち、$`(A \mathbin{+\!\!+} B)[n] \in X`$ である。
 すなわち $`A \mathbin{+\!\!+} B`$ は分岐 (2) をみたすから、仮定より $`A \mathbin{+\!\!+} B \in X`$ である。
 
 **$`\neg(2 \le \lvert B\rvert)`$ のとき。** $`\lvert B\rvert \le 1`$ すなわち $`\lvert B\rvert - 1 = 0`$ であるから
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`B[1] = B`$ である。
+[T.oper_eq_self_of_short](Decrease-ja.md#t-oper_eq_self_of_short) より $`B[1] = B`$ である。
 分岐 (2) の第 2 連言子を $`n := 1`$ に適用すると $`B[1] \in X^{(A)}`$、すなわち
 $`B \in X^{(A)}`$ である。仮定 $`\mathrm{rsum}(A,B)`$ をこれに適用して
 $`A \mathbin{+\!\!+} B \in X`$ を得る。
 
-**分岐 (3)、すなわち $`m \lt u`$、$`\mathrm{domT}(B,m)`$（[D.domT](Wset.md#d-domT)）、
-$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(B,z) \in X^{(A)}`$（[D.W](Wset.md#d-W)、[D.based](Wset.md#d-based)、[D.graft](Wset.md#d-graft)）をみたす $`m`$ があるとき。**
-[T.domT_append](Wset-2.md#t-domT_append) より $`\mathrm{domT}(A \mathbin{+\!\!+} B,\ m)`$ である。
+**分岐 (3)、すなわち $`m \lt u`$、$`\mathrm{domT}(B,m)`$（[D.domT](Wset-ja.md#d-domT)）、
+$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(B,z) \in X^{(A)}`$（[D.W](Wset-ja.md#d-W)、[D.based](Wset-ja.md#d-based)、[D.graft](Wset-ja.md#d-graft)）をみたす $`m`$ があるとき。**
+[T.domT_append](Wset-2-ja.md#t-domT_append) より $`\mathrm{domT}(A \mathbin{+\!\!+} B,\ m)`$ である。
 $`z \in W_m`$ が $`\mathrm{based}(z)`$ をみたすとする。
-[T.graft_append](Wset-2.md#t-graft_append) より
+[T.graft_append](Wset-2-ja.md#t-graft_append) より
 
 ```math
 \mathrm{graft}(A \mathbin{+\!\!+} B,\ z) = A \mathbin{+\!\!+} \mathrm{graft}(B,z)
@@ -121,11 +121,11 @@ $`\mathrm{rsum}\bigl(A,\ \mathrm{graft}(B,z)\bigr)`$ を確かめればよい。
   $`\mathrm{rsum}`$ の定義（D.rsum）の要求は $`\forall p \in A \mathbin{+\!\!+} (),\ 0 \le p_1`$ であり、
   自然数について常に成り立つ。
 
-- $`\mathrm{graft}(B,z) \ne ()`$ のとき。[T.graft_head_eq](Wset-2.md#t-graft_head_eq) より
+- $`\mathrm{graft}(B,z) \ne ()`$ のとき。[T.graft_head_eq](Wset-2-ja.md#t-graft_head_eq) より
   $`\bigl(\mathrm{graft}(B,z)\bigr)_{0,0} = B_{0,0}`$ である。
   $`p \in A \mathbin{+\!\!+} \mathrm{graft}(B,z)`$ を取ると、$`p \in A`$ のときは $`(\ast\ast)`$ より
   $`B_{0,0} \le p_1`$、$`p \in \mathrm{graft}(B,z)`$ のときは $`(\ast)`$ と
-  [T.graft_mem_ge](Wset-2.md#t-graft_mem_ge)（$`c := B_{0,0}`$）より $`B_{0,0} \le p_1`$ である。
+  [T.graft_mem_ge](Wset-2-ja.md#t-graft_mem_ge)（$`c := B_{0,0}`$）より $`B_{0,0} \le p_1`$ である。
 
 よって $`A \mathbin{+\!\!+} B`$ は同じ $`m`$ で $`A_u`$ の分岐 (3) をみたし、
 仮定より $`A \mathbin{+\!\!+} B \in X`$ である。∎
@@ -139,14 +139,14 @@ $`A \in W_u`$、$`B \in W_u`$、$`\mathrm{rsum}(A,B)`$ ならば $`A \mathbin{+\
 
 ### 証明
 
-[T.A1_intro](Wset.md#t-A1_intro) は $`\forall M,\ M \in A_u(W_u) \to M \in W_u`$ である。
+[T.A1_intro](Wset-ja.md#t-A1_intro) は $`\forall M,\ M \in A_u(W_u) \to M \in W_u`$ である。
 これと $`A \in W_u`$ に [T.XA_closed](#t-XA_closed) を $`X := W_u`$ として適用すると
 
 ```math
 \forall M,\ M \in A_u\bigl((W_u)^{(A)}\bigr) \to M \in (W_u)^{(A)}
 ```
 
-を得る。これは [T.A2'](Wset.md#t-A2') の仮定であるから $`W_u \subseteq (W_u)^{(A)}`$ である。
+を得る。これは [T.A2'](Wset-ja.md#t-A2') の仮定であるから $`W_u \subseteq (W_u)^{(A)}`$ である。
 $`B \in W_u`$ よりとくに $`B \in (W_u)^{(A)}`$ であり、$`X^{(A)}`$ の定義（D.XA）に
 仮定 $`\mathrm{rsum}(A,B)`$ を与えて $`A \mathbin{+\!\!+} B \in W_u`$ を得る。∎
 
@@ -169,7 +169,7 @@ $`M_{i,j}`$ の定義（D.entry）より $`\bigl((0,v)\bigr)_{0,0} = 0`$ であ�
 \mathrm{graft}\bigl(\bigl((0,v)\bigr),\ z\bigr) = () \mathbin{+\!\!+} z^{+0} = z
 ```
 
-である（$`z^{+0}`$ [D.shiftr0](Cnf-2.md#d-shiftr0) は各対の第 1 成分に $`0`$ を足した列であり、
+である（$`z^{+0}`$ [D.shiftr0](Cnf-2-ja.md#d-shiftr0) は各対の第 1 成分に $`0`$ を足した列であり、
 $`z`$ に等しい）。∎
 
 <a id="t-domT_Om"></a>
@@ -188,7 +188,7 @@ $`\mathrm{domT}`$ の定義（D.domT）の 2 つの連言子を示す。
 
 第 2 連言子 $`\neg\,\mathrm{hasParent}(M, 1, 0)`$ を示す。
 $`\mathrm{hasParent}(M,1,0)`$ とすると、$`\mathrm{hasParent}`$ の定義（D.hasParent）より
-$`j_0 \to^M_1 0`$（[D.nextrel1](Pss.md#d-nextrel1)）なる $`j_0`$ が存在する。
+$`j_0 \to^M_1 0`$（[D.nextrel1](Pss-ja.md#d-nextrel1)）なる $`j_0`$ が存在する。
 $`\to^M_i`$ の定義（D.nextR）で $`i = 1 \ne 0`$ であるから
 これは $`j_0 \to^M_1 0`$（行 $`1`$ の親子関係）であり、その定義（D.nextrel1）の第 3 条件は
 $`j_0 \lt 0`$ である。自然数にこれをみたすものはないから矛盾する。∎
@@ -207,15 +207,15 @@ $`v`$ が $`0`$ か後続数かで場合分けする。
 **(a) $`v = 0`$ のとき。** $`\lvert \bigl((0,0)\bigr)\rvert = 1 \le 1`$ であり、
 $`M_{i,j}`$ の定義（D.entry）より $`\bigl((0,0)\bigr)_{1,0} = 0`$ である。
 よって $`A_0`$ の定義（D.Aop）の分岐 (1) が成り立ち、
-[T.A1_intro](Wset.md#t-A1_intro) より $`\bigl((0,0)\bigr) \in W_0`$ である。
+[T.A1_intro](Wset-ja.md#t-A1_intro) より $`\bigl((0,0)\bigr) \in W_0`$ である。
 
 **(b) $`v = w + 1`$ のとき。** $`A_{w+1}`$ の定義（D.Aop）の分岐 (3) を $`m := w`$ で示す。
 $`w \lt w+1`$ である。[T.domT_Om](#t-domT_Om) より
 $`\mathrm{domT}\bigl(\bigl((0,w+1)\bigr),\ w\bigr)`$ である。
 $`z \in W_w`$ を取ると（$`\mathrm{based}(z)`$ は使わない）、
 [T.graft_Om](#t-graft_Om) より $`\mathrm{graft}\bigl(\bigl((0,w+1)\bigr),\ z\bigr) = z`$ であり、
-[T.W_mono](Wset.md#t-W_mono) を $`w \le w+1`$ に適用して $`z \in W_{w+1}`$ を得る。
-よって分岐 (3) が成り立ち、[T.A1_intro](Wset.md#t-A1_intro) より
+[T.W_mono](Wset-ja.md#t-W_mono) を $`w \le w+1`$ に適用して $`z \in W_{w+1}`$ を得る。
+よって分岐 (3) が成り立ち、[T.A1_intro](Wset-ja.md#t-A1_intro) より
 $`\bigl((0,w+1)\bigr) \in W_{w+1}`$ である。∎
 
 <a id="d-Wstar"></a>
@@ -226,7 +226,7 @@ W^{*} := \bigl\{\, R \in \mathrm{PairSeq} \ \bigm|\
   \mathrm{argOK}(R) \to \forall v \in \mathbb{N},\ (0,v) :: R \in W_v \,\bigr\} .
 ```
 
-（$`\mathrm{argOK}`$ [D.argOK](Wset.md#d-argOK)）
+（$`\mathrm{argOK}`$ [D.argOK](Wset-ja.md#d-argOK)）
 
 <a id="d-tow"></a>
 ## 定義: 塔 (D.tow)
@@ -255,7 +255,7 @@ $`R \ne ()`$ ならば
 
 ### 証明
 
-[T.graft_append](Wset-2.md#t-graft_append) を $`A := \bigl((0,v)\bigr)`$、$`P := R`$ に適用すると
+[T.graft_append](Wset-2-ja.md#t-graft_append) を $`A := \bigl((0,v)\bigr)`$、$`P := R`$ に適用すると
 
 ```math
 \mathrm{graft}\bigl(\bigl((0,v)\bigr) \mathbin{+\!\!+} R,\ z\bigr)
@@ -279,7 +279,7 @@ $`\bigl((0,v)\bigr) \mathbin{+\!\!+} \mathrm{graft}(R,z) = (0,v) :: \mathrm{graf
 
 ### 証明
 
-[T.entry_append_right](Column.md#t-entry_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
+[T.entry_append_right](Column-ja.md#t-entry_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
 
 ```math
 \bigl((p) \mathbin{+\!\!+} R\bigr)_{i,\ \lvert (p)\rvert + j} = R_{i,j}
@@ -299,7 +299,7 @@ $`\mathbb{N}`$ の加法の可換律より $`1 + j = j + 1`$ である。∎
 
 ### 証明
 
-[T.nextR_append_right](Column.md#t-nextR_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
+[T.nextR_append_right](Column-ja.md#t-nextR_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
 
 ```math
 \bigl(\lvert (p)\rvert + j_0\bigr) \to^{(p) \mathbin{+\!\!+} R}_i \bigl(\lvert (p)\rvert + j_1\bigr)
@@ -318,11 +318,11 @@ $`1 + j_0 = j_0 + 1`$、$`1 + j_1 = j_1 + 1`$ である。∎
 (j_0 + 1) \le^{p :: R}_0 (j_1 + 1) \iff j_0 \le^{R}_0 j_1 .
 ```
 
-（$`\le^M_0`$ [D.le0](Pss.md#d-le0)）
+（$`\le^M_0`$ [D.le0](Pss-ja.md#d-le0)）
 
 ### 証明
 
-[T.le0_append_right](Column.md#t-le0_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
+[T.le0_append_right](Column-ja.md#t-le0_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
 
 ```math
 \bigl(\lvert (p)\rvert + j_0\bigr) \le^{(p) \mathbin{+\!\!+} R}_0 \bigl(\lvert (p)\rvert + j_1\bigr)
@@ -343,8 +343,8 @@ $`1 + j_0 = j_0 + 1`$、$`1 + j_1 = j_1 + 1`$ である。∎
 
 ### 証明
 
-[T.idx1_append_right](Column.md#t-idx1_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
-$`\mathrm{idx}_1\bigl((p) \mathbin{+\!\!+} R,\ \lvert (p)\rvert + j\bigr) = \mathrm{idx}_1(R,j)`$（[D.idx1](Pss.md#d-idx1)）
+[T.idx1_append_right](Column-ja.md#t-idx1_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
+$`\mathrm{idx}_1\bigl((p) \mathbin{+\!\!+} R,\ \lvert (p)\rvert + j\bigr) = \mathrm{idx}_1(R,j)`$（[D.idx1](Pss-ja.md#d-idx1)）
 を得る。
 $`(p) \mathbin{+\!\!+} R = p :: R`$、$`\lvert (p)\rvert = 1`$ であり、$`1 + j = j + 1`$ である。∎
 
@@ -362,7 +362,7 @@ $`b \lt \lvert M\rvert`$ ならば
 ### 証明
 
 $`\to^M_i`$ の定義（D.nextR）で $`i = 0`$ であるから、以下 $`j_0 \to^M_0 j_1`$ は
-行 $`0`$ の親子関係（[D.nextrel0](Pss.md#d-nextrel0)）である。
+行 $`0`$ の親子関係（[D.nextrel0](Pss-ja.md#d-nextrel0)）である。
 
 **（左から右）** $`\mathrm{hasParent}(M,0,b)`$ とすると、
 $`\mathrm{hasParent}`$ の定義（D.hasParent）より $`k \to^M_0 b`$ なる $`k`$ が存在する。
@@ -435,7 +435,7 @@ $`j + 1 \lt \lvert M\rvert`$ である。次の 2 つを用意する。
 
 1. $`M_{0,j+1} = R_{0,j}`$ であり、これは正である。実際
    [T.entry_cons](#t-entry_cons) より $`M_{0,j+1} = R_{0,j}`$ であり、
-   $`j \lt \lvert R\rvert`$ と [T.entry_pair_mem](Wset-2.md#t-entry_pair_mem) より
+   $`j \lt \lvert R\rvert`$ と [T.entry_pair_mem](Wset-2-ja.md#t-entry_pair_mem) より
    $`(R_{0,j}, R_{1,j}) \in R`$ であるから、$`\mathrm{argOK}`$ の定義（D.argOK）より
    $`0 \lt R_{0,j}`$ である。
 2. $`M_{0,0} = 0`$。$`M`$ の先頭は $`(0,v)`$ であるから
@@ -572,8 +572,8 @@ v \lt R_{1,\ \lvert R\rvert - 1}
 
 $`M := (0,v) :: R`$ とおく。$`R \ne ()`$ より $`0 \lt \lvert R\rvert`$ であり、
 [T.cons_len_lt](#t-cons_len_lt) より $`\lvert R\rvert \lt \lvert M\rvert`$ である。
-よって [T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) を $`j_1 := \lvert R\rvert`$ に適用でき、
-示すべきことは $`\mathrm{r1cand}(M,\ \lvert R\rvert,\ j_0)`$（[D.r1cand](Wset.md#d-r1cand)）をみたす $`j_0`$ の存在、
+よって [T.hasParent_one_iff](Wset-ja.md#t-hasParent_one_iff) を $`j_1 := \lvert R\rvert`$ に適用でき、
+示すべきことは $`\mathrm{r1cand}(M,\ \lvert R\rvert,\ j_0)`$（[D.r1cand](Wset-ja.md#d-r1cand)）をみたす $`j_0`$ の存在、
 すなわち $`\mathrm{r1cand}`$ の定義（D.r1cand）により
 
 ```math
@@ -594,7 +594,7 @@ M_{1,j_0} \lt M_{1,\lvert R\rvert}
 
 **(a) $`\mathrm{hasParent}(R, 1, \lvert R\rvert - 1)`$ のとき。**
 $`\lvert R\rvert - 1 \lt \lvert R\rvert`$ であるから
-[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) を $`R`$ と $`j_1 := \lvert R\rvert - 1`$ に適用して、
+[T.hasParent_one_iff](Wset-ja.md#t-hasParent_one_iff) を $`R`$ と $`j_1 := \lvert R\rvert - 1`$ に適用して、
 $`\mathrm{r1cand}(R,\ \lvert R\rvert - 1,\ j')`$ をみたす $`j'`$ を取る。すなわち
 
 ```math
@@ -624,7 +624,7 @@ R_{1,j'} \lt R_{1,\lvert R\rvert - 1}
   仮定と $`(\sharp)`$ より $`M_{1,0} = v \lt R_{1,\lvert R\rvert-1} = M_{1,\lvert R\rvert}`$ である。
 
 いずれの場合も条件をみたす $`j_0`$ が得られたので、
-[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) より
+[T.hasParent_one_iff](Wset-ja.md#t-hasParent_one_iff) より
 $`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ である。∎
 
 <a id="t-oper_root_tiling"></a>
@@ -660,9 +660,9 @@ M[n] = \bigl(\mathrm{dropLast}\,M\bigr)^{+0\cdot e} \mathbin{+\!\!+}
 
 ### 証明
 
-仮定 (1)(2)(3) により [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) が適用できる。
-$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）と書くと、仮定 (4) より $`j_0 = 0`$ であり、
-[T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) の $`d_0`$ は
+仮定 (1)(2)(3) により [T.oper_bad_unfold](Decrease-ja.md#t-oper_bad_unfold) が適用できる。
+$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss-ja.md#d-parent)）と書くと、仮定 (4) より $`j_0 = 0`$ であり、
+[T.oper_bad_unfold](Decrease-ja.md#t-oper_bad_unfold) の $`d_0`$ は
 
 ```math
 d_0 = \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 \lt i_1) \cr 0 & (i_1 = 0) \end{cases}
@@ -682,7 +682,7 @@ B_k = \bigl(\,(M_{0,j} + k\,e,\ M_{1,j})\,\bigr)_{j=0}^{j_1-1}
 
 $`\mathrm{dropLast}\,M = \mathrm{take}_{j_1} M`$ である（$`\mathrm{take}_a L`$ は $`L`$ の先頭 $`a`$ 要素からなる列、
 $`j_1 = \lvert M\rvert - 1`$）。$`j_1 \le \lvert M\rvert`$ であるから
-[T.map_range_entry_eq_take](Column-2.md#t-map_range_entry_eq_take) が使えて
+[T.map_range_entry_eq_take](Column-2-ja.md#t-map_range_entry_eq_take) が使えて
 
 ```math
 \bigl(\,(M_{0,j},\ M_{1,j})\,\bigr)_{j=0}^{j_1-1} = \mathrm{take}_{j_1} M = \mathrm{dropLast}\,M
@@ -715,11 +715,11 @@ $`\lvert M\rvert - 1 = \lvert R\rvert`$、すなわち $`M`$ の最終列の添�
 [T.entry_cons_last](#t-entry_cons_last) による。
 
 **(iii)** $`j_0 := \mathrm{par}^R_i(k_1)`$ とおくと $`j_0 \to^R_i k_1`$ であり
-（[T.parent_nextR](Decrease.md#t-parent_nextR)）、
-$`j_0 \lt k_1`$ である（[T.nextR_index_lt](Decrease.md#t-nextR_index_lt)）。とくに $`k_1 \ne 0`$。
+（[T.parent_nextR](Decrease-ja.md#t-parent_nextR)）、
+$`j_0 \lt k_1`$ である（[T.nextR_index_lt](Decrease-ja.md#t-nextR_index_lt)）。とくに $`k_1 \ne 0`$。
 
 **(iv)** $`0 \lt R_{0,k_1}`$。実際 $`k_1 \lt \lvert R\rvert`$ であるから
-[T.entry_pair_mem](Wset-2.md#t-entry_pair_mem) より対 $`(R_{0,k_1}, R_{1,k_1})`$ は $`R`$ の要素であり、
+[T.entry_pair_mem](Wset-2-ja.md#t-entry_pair_mem) より対 $`(R_{0,k_1}, R_{1,k_1})`$ は $`R`$ の要素であり、
 $`\mathrm{argOK}`$ の定義（D.argOK）よりその第 1 成分は正である。
 したがって $`\neg(R_{0,k_1} = 0 \wedge R_{1,k_1} = 0)`$ であり、(ii) より
 $`\neg(M_{0,\lvert R\rvert} = 0 \wedge M_{1,\lvert R\rvert} = 0)`$ でもある。
@@ -758,12 +758,12 @@ $`y = 0`$ は第 1 段により排除される。よって $`y = y' + 1`$ と書
 第 2 段よりそのような添字は $`j_0 + 1`$ に限る。よって
 $`\mathrm{hasParent}(M, i, \lvert R\rvert)`$ が成り立ち、(i)(v) と合わせて
 $`\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M,\lvert M\rvert-1), \lvert M\rvert-1\bigr)`$ である。
-また $`\mathrm{par}^M_i(\lvert R\rvert)`$ は [T.parent_nextR](Decrease.md#t-parent_nextR) より
+また $`\mathrm{par}^M_i(\lvert R\rvert)`$ は [T.parent_nextR](Decrease-ja.md#t-parent_nextR) より
 $`\to^M_i`$ で $`\lvert R\rvert`$ に至る添字であるから、第 2 段より
 $`\mathrm{par}^M_i(\lvert R\rvert) = j_0 + 1`$。
 
 **第 4 段：両辺を展開して比べる。**
-(i)(iv) と第 3 段により [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) が $`M`$ に適用でき、
+(i)(iv) と第 3 段により [T.oper_bad_unfold](Decrease-ja.md#t-oper_bad_unfold) が $`M`$ に適用でき、
 (iii)(iv) と仮定により $`R`$ にも適用できる。それぞれ
 
 ```math

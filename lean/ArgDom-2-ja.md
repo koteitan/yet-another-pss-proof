@@ -1,4 +1,4 @@
-[← README](README.md) | [English](ArgDom-2.md) | [Japanese](ArgDom-2-ja.md) | ArgDom [1](ArgDom.md) **2** [3](ArgDom-3.md) [4](ArgDom-4.md) [5](ArgDom-5.md)
+[← README](README-ja.md) | [English](ArgDom-2.md) | [Japanese](ArgDom-2-ja.md) | ArgDom [1](ArgDom-ja.md) **2** [3](ArgDom-3-ja.md) [4](ArgDom-4-ja.md) [5](ArgDom-5-ja.md)
 
 <a id="t-argdom_pos"></a>
 ## 定理: 印付き 2 列の位置 (T.argdom_pos)
@@ -14,7 +14,7 @@ N\bigl\langle \lvert X\rvert + (\lvert A_1\rvert + 1) \bigr\rangle = (u+e,\ w), 
 \lvert X\rvert + (\lvert A_1\rvert + 1) \lt \lvert N\rvert .
 ```
 
-（$`N\langle j\rangle`$ [D.entry](Pss.md#d-entry)）
+（$`N\langle j\rangle`$ [D.entry](Pss-ja.md#d-entry)）
 
 ### 証明
 
@@ -26,7 +26,7 @@ N = X \mathbin{+\!\!+} \Bigl((u,w) :: \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: ((B 
 
 と書ける。$`T := A_1 \mathbin{+\!\!+} (u+e,w) :: ((B \mathbin{+\!\!+} A_2) \mathbin{+\!\!+} Z)`$ とおく。
 
-**第 1 の主張。** [T.getD_append_right'](Cofinality.md#t-getD_append_right') を $`X`$ と $`(u,w) :: T`$、添字 $`0`$ に適用すると
+**第 1 の主張。** [T.getD_append_right'](Cofinality-ja.md#t-getD_append_right') を $`X`$ と $`(u,w) :: T`$、添字 $`0`$ に適用すると
 
 ```math
 N\bigl\langle \lvert X\rvert + 0 \bigr\rangle = \bigl((u,w) :: T\bigr)\langle 0\rangle = (u,w) .
@@ -59,7 +59,7 @@ $`\lvert X\rvert + (\lvert A_1\rvert + 1) \lt \lvert N\rvert`$ である。∎
 ### 定理
 
 任意の $`v \in \mathbb{N}`$ について
-$`\mathrm{ArgDomCoreOn}(\Delta_0^v)`$（$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn)、$`\Delta_0^v`$ [D.diagSeq](Pss.md#d-diagSeq)）。
+$`\mathrm{ArgDomCoreOn}(\Delta_0^v)`$（$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom-ja.md#d-ArgDomCoreOn)、$`\Delta_0^v`$ [D.diagSeq](Pss-ja.md#d-diagSeq)）。
 
 ### 証明
 
@@ -72,14 +72,14 @@ D.ArgDomCoreOn にしたがい $`X, A_1, B, A_2, Z`$ と $`u, w, e`$ を取り�
 \lvert X\rvert + (\lvert A_1\rvert + 1) \lt \bigl\lvert \Delta_0^v \bigr\rvert
 ```
 
-を得る。[T.diagSeq0_length](Column-2.md#t-diagSeq0_length) より
+を得る。[T.diagSeq0_length](Column-2-ja.md#t-diagSeq0_length) より
 $`\lvert \Delta_0^v\rvert = v + 1`$ であるから
 
 ```math
 \lvert X\rvert \le \lvert X\rvert + (\lvert A_1\rvert + 1) \lt v + 1
 ```
 
-であり、[T.diagSeq0_getD](Column-2.md#t-diagSeq0_getD) を添字 $`\lvert X\rvert`$ と
+であり、[T.diagSeq0_getD](Column-2-ja.md#t-diagSeq0_getD) を添字 $`\lvert X\rvert`$ と
 $`\lvert X\rvert + (\lvert A_1\rvert + 1)`$ に適用できて
 
 ```math
@@ -100,7 +100,7 @@ $`\lvert X\rvert + (\lvert A_1\rvert + 1)`$ に適用できて
 
 ### 定理
 
-$`N \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`p \in \mathbb{N}\times\mathbb{N}`$ とし
+$`N \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）、$`p \in \mathbb{N}\times\mathbb{N}`$ とし
 $`p_1 = 0`$ とする。
 $`\mathrm{ArgDomCoreOn}(N \mathbin{+\!\!+} (p))`$ ならば $`\mathrm{ArgDomCoreOn}(N)`$。
 
@@ -134,8 +134,8 @@ N \mathbin{+\!\!+} (p)
 B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 ```
 
-が得られる（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、
-$`L^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）。これは $`N`$ についての結論 (9) と同一である。∎
+が得られる（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality-ja.md#d-sle)、
+$`L^{+d}`$ [D.shiftr0](Cnf-2-ja.md#d-shiftr0)）。これは $`N`$ についての結論 (9) と同一である。∎
 
 <a id="t-argDomCoreOn_drop_left"></a>
 ## 定理: 左側の列は見えない (T.argDomCoreOn_drop_left)
@@ -244,7 +244,7 @@ $`X`$ の長さに関する帰納法。帰納法の述語は
   両辺は $`()`$ である。
 
 - **帰納段** $`X = p :: X'`$：帰納法の仮定は $`\Lambda(X')`$、すなわち
-  $`(X'^{+d})^{-d} = X'`$ である。[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) と
+  $`(X'^{+d})^{-d} = X'`$ である。[T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) と
   [T.shiftl0_cons](#t-shiftl0_cons) により
 
 ```math
@@ -282,7 +282,7 @@ $`L`$ の長さに関する帰納法。帰納法の述語は
   $`L'`$ の各要素を取って $`\forall x \in L',\ d \le x_1`$ が従う。
   後者に帰納法の仮定 $`\Upsilon(L')`$ を適用して
   $`(L'^{-d})^{+d} = L'`$ を得る。
-  [T.shiftl0_cons](#t-shiftl0_cons) と [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+  [T.shiftl0_cons](#t-shiftl0_cons) と [T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) により
 
 ```math
 \bigl((p :: L')^{-d}\bigr)^{+d}
@@ -333,11 +333,11 @@ W^{+d}
 
 であり、$`0 \lt e`$、$`\forall x \in A_1,\ u \lt x_1`$、$`\forall x \in B,\ u+e \lt x_1`$、
 $`\forall x \in A_2,\ u \lt x_1`$、$`A_2 = () \vee (\mathrm{head}\,A_2)_1 \le u+e`$、
-$`Z = () \vee (\mathrm{head}\,Z)_1 \le u`$、$`\mathrm{SpineOK}(A_1,\ u+e,\ w)`$（[D.SpineOK](ArgDom.md#d-SpineOK)）が
+$`Z = () \vee (\mathrm{head}\,Z)_1 \le u`$、$`\mathrm{SpineOK}(A_1,\ u+e,\ w)`$（[D.SpineOK](ArgDom-ja.md#d-SpineOK)）が
 成り立つ。
 
 **すべての列の行 0 は $`d`$ 以上である。** 条件 (1) の右辺の任意の要素 $`x`$ は
-$`W^{+d}`$ の要素であるから、[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) により
+$`W^{+d}`$ の要素であるから、[T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) により
 $`W`$ のある要素 $`q`$ について $`x = (q_1 + d,\ q_2)`$ であり、$`d \le x_1`$ である。
 $`X`$, $`A_1`$, $`B`$, $`A_2`$, $`Z`$ の各要素と列 $`(u,w)`$ はいずれも右辺の要素であるから、
 
@@ -422,7 +422,7 @@ A_1' = U' \mathbin{+\!\!+} x' :: V', \qquad x'_1 \lt u' + e, \qquad \forall y \i
 ```
 
 を仮定して $`w \le x'_2`$ を示す。この分解の両辺に $`(\cdot)^{+d}`$ を施すと、
-左辺は $`A_1'^{+d} = A_1`$ であり、右辺は [T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) と [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+左辺は $`A_1'^{+d} = A_1`$ であり、右辺は [T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append) と [T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) により
 
 ```math
 A_1 = U'^{+d} \mathbin{+\!\!+} (x'_1 + d,\ x'_2) :: V'^{+d}
@@ -434,7 +434,7 @@ $`U := U'^{+d}`$、$`V := V'^{+d}`$、$`x := (x'_1 + d,\ x'_2)`$ に適用する
 
 - 分解式は上で得たものである。
 - $`x'_1 + d \lt u + e`$：$`x'_1 \lt u' + e = u + e - d`$ と $`d \le u \le u + e`$ から従う。
-- $`\forall y \in V'^{+d},\ x'_1 + d \lt y_1`$：[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) により
+- $`\forall y \in V'^{+d},\ x'_1 + d \lt y_1`$：[T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) により
   $`V'`$ のある要素 $`q`$ について $`y = (q_1 + d,\ q_2)`$ であり、
   仮定より $`x'_1 \lt q_1`$ であるから $`x'_1 + d \lt q_1 + d = y_1`$ である。
 
@@ -473,7 +473,7 @@ B'^{+d} \preceq_{\mathrm{lex}}
   \Bigl(\bigl(A_1' \mathbin{+\!\!+} (u'+e,\ w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+e}\Bigr)^{+d}
 ```
 
-と同じ主張である。[T.sle_shiftr0](ArgDom.md#t-sle_shiftr0) の右から左により、
+と同じ主張である。[T.sle_shiftr0](ArgDom-ja.md#t-sle_shiftr0) の右から左により、
 これは上で得た結論 (9) から従う。∎
 
 <a id="t-split_prefix_left"></a>
@@ -575,12 +575,12 @@ $`\mathrm{blk} \ne ()`$ かつ $`1 \le n`$ ならば
 \mathrm{head}\bigl(\mathrm{copies}_d(\mathrm{blk}, n)\bigr) = \mathrm{head}\,\mathrm{blk} .
 ```
 
-（$`\mathrm{copies}_d`$ [D.copies](Cnf-2.md#d-copies)）
+（$`\mathrm{copies}_d`$ [D.copies](Cnf-2-ja.md#d-copies)）
 
 ### 証明
 
 $`1 \le n`$ より $`n = m + 1`$ なる $`m`$ が取れる。
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) より
+[T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) より
 
 ```math
 \mathrm{copies}_d(\mathrm{blk}, m+1)
@@ -610,9 +610,9 @@ $`e, u, w \in \mathbb{N}`$、$`A_1, B, A_2 \in \mathrm{PairSeq}`$ に対し
 ### 証明
 
 $`L^{+d}`$ は各要素 $`p`$ を $`(p_1 + d,\ p_2)`$ に置き換える写像であるから、
-[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) より連結を保ち
+[T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append) より連結を保ち
 $`(L \mathbin{+\!\!+} L')^{+d} = L^{+d} \mathbin{+\!\!+} L'^{+d}`$、
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) より
+[T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) より
 $`(p :: L)^{+d} = (p_1+d,\ p_2) :: L^{+d}`$ である。これを順に用いると
 
 ```math
@@ -649,7 +649,7 @@ $`e, u, w \in \mathbb{N}`$、$`A_1, B \in \mathrm{PairSeq}`$ に対し
 ### 証明
 
 連結と cons の長さの計算により、右辺は $`\lvert A_1^{+e}\rvert + 1 + \lvert B^{+e}\rvert`$ である。
-[T.shiftr0_length](Cofinality-2.md#t-shiftr0_length) より $`\lvert L^{+d}\rvert = \lvert L\rvert`$ であるから、
+[T.shiftr0_length](Cofinality-2-ja.md#t-shiftr0_length) より $`\lvert L^{+d}\rvert = \lvert L\rvert`$ であるから、
 これは $`\lvert A_1\rvert + 1 + \lvert B\rvert`$ に等しい。
 $`\mathbb{N}`$ において $`\lvert B\rvert \lt \lvert A_1\rvert + 1 + \lvert B\rvert`$ である。∎
 
@@ -678,7 +678,7 @@ $`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。次を仮定する。
 \end{aligned}
 ```
 
-（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)）
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss-ja.md#d-ST_PS)、$`\to^M_1`$ [D.nextrel1](Pss-ja.md#d-nextrel1)）
 
 さらに $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$、$`u, w, e \in \mathbb{N}`$ について次を仮定する。
 
@@ -708,7 +708,7 @@ B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!
 (hn) より $`n = m + 1`$ なる $`m`$ が取れる。以下 $`n`$ をこの形に書く。
 
 **第 1 段：コピー 0 を剥がす。**
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) と連結の結合律より
+[T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) と連結の結合律より
 
 ```math
 \begin{aligned}
@@ -757,9 +757,9 @@ $`X`$ を $`X'`$ に置き換えたほかは (heq) と同一である。とく�
 
 **第 3 段：$`m`$ で場合分けする。**
 
-**(a) $`m = 0`$ のとき。** [T.copies_zero](Cnf-2.md#t-copies_zero) より
+**(a) $`m = 0`$ のとき。** [T.copies_zero](Cnf-2-ja.md#t-copies_zero) より
 $`\mathrm{copies}_{d_0}(\mathrm{blk}, 0) = ()`$ であり、
-[T.shiftr0_nil](Cnf-2.md#t-shiftr0_nil) より $`()^{+d_0} = ()`$ である。
+[T.shiftr0_nil](Cnf-2-ja.md#t-shiftr0_nil) より $`()^{+d_0} = ()`$ である。
 よって $`(\ast)`$ の左辺の長さは $`0`$ である。一方その右辺の長さは
 
 ```math

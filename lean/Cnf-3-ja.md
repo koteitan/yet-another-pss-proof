@@ -1,17 +1,17 @@
-[← README](README.md) | [English](Cnf-3.md) | [Japanese](Cnf-3-ja.md) | Cnf [1](Cnf.md) [2](Cnf-2.md) **3**
+[← README](README-ja.md) | [English](Cnf-3.md) | [Japanese](Cnf-3-ja.md) | Cnf [1](Cnf-ja.md) [2](Cnf-2-ja.md) **3**
 
 <a id="t-copies_succ_front"></a>
 ## 定理: コピー列の先頭からの分解 (T.copies_succ_front)
 
 ### 定理
 
-$`d, n \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
+$`d, n \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）に対し
 
 ```math
 \mathrm{cp}_d(B, n+1) = B \mathbin{+\!\!+} \bigl(\mathrm{cp}_d(B, n)\bigr)^{+d} .
 ```
 
-（$`\mathrm{cp}`$ [D.copies](Cnf-2.md#d-copies)、$`B^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+（$`\mathrm{cp}`$ [D.copies](Cnf-2-ja.md#d-copies)、$`B^{+d}`$ [D.shiftr0](Cnf-2-ja.md#d-shiftr0)）
 
 ### 証明
 
@@ -32,7 +32,7 @@ $`\mathrm{range}(n+1) = (0, 1, \dots, n)`$ であり、先頭の $`0`$ を切り
 である。以下 2 点を示す。
 
 **第 1 点：$`B^{+0\cdot d} = B`$。**
-$`0 \cdot d = 0`$ であるから [T.shiftr0_zero](Cnf-2.md#t-shiftr0_zero) により $`B^{+0} = B`$。
+$`0 \cdot d = 0`$ であるから [T.shiftr0_zero](Cnf-2-ja.md#t-shiftr0_zero) により $`B^{+0} = B`$。
 
 **第 2 点：$`k \in \mathrm{range}(n)`$ にわたる $`B^{+(k+1)d}`$ の連結は
 $`\bigl(\mathrm{cp}_d(B,n)\bigr)^{+d}`$ に等しい。**
@@ -82,8 +82,8 @@ $`d \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$ に対し $`\mathrm{cp}_d(B, 1
 \mathrm{cp}_d(B, 1) = B \mathbin{+\!\!+} \bigl(\mathrm{cp}_d(B, 0)\bigr)^{+d}
 ```
 
-を得る。[T.copies_zero](Cnf-2.md#t-copies_zero) より $`\mathrm{cp}_d(B,0) = ()`$ であり、
-[T.shiftr0_nil](Cnf-2.md#t-shiftr0_nil) より $`()^{+d} = ()`$ である。
+を得る。[T.copies_zero](Cnf-2-ja.md#t-copies_zero) より $`\mathrm{cp}_d(B,0) = ()`$ であり、
+[T.shiftr0_nil](Cnf-2-ja.md#t-shiftr0_nil) より $`()^{+d} = ()`$ である。
 $`B \mathbin{+\!\!+} () = B`$ であるから結論を得る。∎
 
 <a id="t-copies_succ_cons"></a>
@@ -127,7 +127,7 @@ $`x \in \mathrm{cp}_d((v_0,w_0) :: R,\ n)`$ とする。$`\mathrm{cp}`$ の定�
 $`\mathrm{cp}_d((v_0,w_0)::R, n)`$ は $`k \in \mathrm{range}(n)`$ にわたる
 $`((v_0,w_0)::R)^{+kd}`$ の連結であるから、ある $`k \in \mathrm{range}(n)`$ が存在して
 $`x \in ((v_0,w_0)::R)^{+kd}`$ である。
-[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、ある $`p \in (v_0,w_0) :: R`$ が存在して
+[T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) より、ある $`p \in (v_0,w_0) :: R`$ が存在して
 $`x = (p_1 + kd,\ p_2)`$ である。
 
 $`p \in (v_0,w_0) :: R`$ を場合分けする。
@@ -157,7 +157,7 @@ $`x \in R \mathbin{+\!\!+} (\mathrm{cp}_d(B, n-1))^{+d}`$ とし、$`x`$ がど�
 
 - $`x \in R`$ のとき。仮定 $`\forall x \in R,\ v_0 \lt x_1`$ そのものである。
 
-- $`x \in (\mathrm{cp}_d(B, n-1))^{+d}`$ のとき。[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、
+- $`x \in (\mathrm{cp}_d(B, n-1))^{+d}`$ のとき。[T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) より、
   ある $`p \in \mathrm{cp}_d(B, n-1)`$ が存在して $`x = (p_1 + d,\ p_2)`$ である。
   仮定 $`\forall x \in R,\ v_0 \lt x_1`$ から $`\forall x \in R,\ v_0 \le x_1`$ が従うので、
   [T.copies_v0_le](#t-copies_v0_le) を $`n := n-1`$ に適用して $`v_0 \le p_1`$ を得る。
@@ -182,7 +182,7 @@ $`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 \end{aligned}
 ```
 
-（$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)、$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)）
+（$`\mathrm{cnf}`$ [D.cnf](Cnf-ja.md#d-cnf)、$`\mathrm{tr}`$ [D.translate](Term-ja.md#d-translate)）
 
 このとき任意の $`n \in \mathbb{N}`$ に対し
 
@@ -199,9 +199,9 @@ $`n`$ に関する自然数の帰納法。帰納法の述語は
 ```
 
 **基底段** $`n = 0`$。
-[T.copies_zero](Cnf-2.md#t-copies_zero) より $`\mathrm{cp}_{d_0}(B,0) = ()`$ であり、
-$`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$（[D.Three](Term.md#d-Three)）である。
-[T.cnf_Z](Cnf.md#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ。よって $`\Phi(0)`$。
+[T.copies_zero](Cnf-2-ja.md#t-copies_zero) より $`\mathrm{cp}_{d_0}(B,0) = ()`$ であり、
+$`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$（[D.Three](Term-ja.md#d-Three)）である。
+[T.cnf_Z](Cnf-ja.md#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ。よって $`\Phi(0)`$。
 
 **帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち
 $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B,n)))`$ である。$`n`$ で場合分けする。
@@ -211,7 +211,7 @@ $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B,n)))`$ である。$`n`$ で場�
 また $`B \mathbin{+\!\!+} (\ell)`$ の末尾 1 要素を落とすと $`B`$ に戻るから
 $`B = \mathrm{dropLast}\,(B \mathbin{+\!\!+} (\ell))`$ である。
 $`B \mathbin{+\!\!+} (\ell)`$ は $`\ell`$ を要素にもつので空列ではない。
-よって [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) を $`C := B \mathbin{+\!\!+} (\ell)`$ に適用し、
+よって [T.cnf_dropLast](Cnf-ja.md#t-cnf_dropLast) を $`C := B \mathbin{+\!\!+} (\ell)`$ に適用し、
 (cBlp) から $`\mathrm{cnf}(\mathrm{tr}(B))`$、すなわち $`\Phi(1)`$ を得る。
 
 **(ii) $`n = m + 1`$ のとき。** 示すべきは $`\Phi(m+2)`$ であり、帰納法の仮定は
@@ -225,7 +225,7 @@ $`\Phi(m+1)`$、すなわち $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1
 \text{(F)}\qquad \mathrm{cp}_{d_0}(B, m+1) = (v_0,w_0) :: S
 ```
 
-である。これに [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) を適用して
+である。これに [T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) を適用して
 
 ```math
 \text{(G)}\qquad \bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr)^{+d_0} = (v_0 + d_0,\ w_0) :: S^{+d_0}
@@ -241,14 +241,14 @@ $`n - 1 = m`$ であるから
 \text{(tlgt)}\qquad \forall x \in S,\ v_0 \lt x_1
 ```
 
-を得る。(F) と [T.translate_single_tree](Term.md#t-translate_single_tree) より
+を得る。(F) と [T.translate_single_tree](Term-ja.md#t-translate_single_tree) より
 
 ```math
 \text{(st1)}\qquad \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr)
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,S,\ \mathsf{Z}\bigr)
 ```
 
-である。また (G) と [T.translate_shiftr0](Cnf-2.md#t-translate_shiftr0) より
+である。また (G) と [T.translate_shiftr0](Cnf-2-ja.md#t-translate_shiftr0) より
 
 ```math
 \mathrm{tr}\bigl((v_0+d_0,\ w_0) :: S^{+d_0}\bigr) = \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr)
@@ -269,16 +269,16 @@ $`\mathrm{tw}_{\ell_1}() = ()`$、$`\mathrm{dw}_{\ell_1}() = ()`$ であるか�
 ```
 
 **第 3 段：狭義減少と先頭主要項の比較。**
-(tZ1), (tlp) と [T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 1 選言 $`w_0 \lt \ell_2`$（(w0lt)）より
+(tZ1), (tlp) と [T.olt_P_P](Term-ja.md#t-olt_P_P) の右辺の第 1 選言 $`w_0 \lt \ell_2`$（(w0lt)）より
 
 ```math
 \text{(decr)}\qquad \mathrm{tr}\bigl((v_0+d_0,\ w_0) :: S^{+d_0}\bigr) \prec \mathrm{tr}\,(\ell).
 ```
 
-（$`\prec`$ [D.olt](Term.md#d-olt)）
+（$`\prec`$ [D.olt](Term-ja.md#d-olt)）
 
 同じ第 1 選言により $`\mathsf{P}(w_0, \mathrm{tr}\,S, \mathsf{Z}) \prec \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$
-であるから、$`\preceq`$（[D.ole](Term.md#d-ole)）の定義（D.ole）の第 1 選言により
+であるから、$`\preceq`$（[D.ole](Term-ja.md#d-ole)）の定義（D.ole）の第 1 選言により
 
 ```math
 \text{(leadle)}\qquad
@@ -287,11 +287,11 @@ $`\mathrm{tw}_{\ell_1}() = ()`$、$`\mathrm{dw}_{\ell_1}() = ()`$ であるか�
 ```
 
 が成り立つ。(tZ1) の右辺の添字と引数は $`w_0`$, $`\mathrm{tr}\,S`$、(tlp) の右辺の添字と引数は
-$`\ell_2`$, $`\mathsf{Z}`$ であるから、(leadle) は [T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) の仮定
+$`\ell_2`$, $`\mathsf{Z}`$ であるから、(leadle) は [T.cnf_ctx_cong](Cnf-2-ja.md#t-cnf_ctx_cong) の仮定
 (leadle) の形をしている。
 
 **第 4 段：$`(v_0+d_0, w_0) :: S^{+d_0}`$ の CNF。**
-(G) と [T.translate_shiftr0](Cnf-2.md#t-translate_shiftr0) より
+(G) と [T.translate_shiftr0](Cnf-2-ja.md#t-translate_shiftr0) より
 $`\mathrm{tr}\bigl((v_0+d_0,w_0) :: S^{+d_0}\bigr) = \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B,m+1)\bigr)`$
 であるから、帰納法の仮定 $`\Phi(m+1)`$ がそのまま
 
@@ -302,7 +302,7 @@ $`\mathrm{tr}\bigl((v_0+d_0,w_0) :: S^{+d_0}\bigr) = \mathrm{tr}\bigl(\mathrm{cp
 を与える。
 
 **第 5 段：文脈による合同。**
-$`x \in S^{+d_0}`$ とすると、[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、ある $`p \in S`$ が存在して
+$`x \in S^{+d_0}`$ とすると、[T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) より、ある $`p \in S`$ が存在して
 $`x = (p_1 + d_0,\ p_2)`$ である。(tlgt) より $`v_0 \lt p_1`$、とくに $`v_0 \le p_1`$ であるから
 
 ```math
@@ -317,7 +317,7 @@ $`x = (p_1 + d_0,\ p_2)`$ である。(tlgt) より $`v_0 \lt p_1`$、とくに 
 
 また (lphd) より $`\bigl((v_0+d_0, w_0)\bigr)_1 = v_0 + d_0 = \ell_1`$ である。
 
-[T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) を
+[T.cnf_ctx_cong](Cnf-2-ja.md#t-cnf_ctx_cong) を
 
 ```math
 z_1 := (v_0+d_0,\ w_0),\quad T_1 := S^{+d_0},\quad
@@ -396,14 +396,14 @@ $`m`$ で場合分けする。
 
 **(i) $`m = 0`$ のとき。** [T.copies_one](#t-copies_one) より
 $`\mathrm{cp}_{d_0}(B,1) = B`$ であるから、
-[T.translate_snoc_increase](Decrease.md#t-translate_snoc_increase) を $`C := B`$、$`m := \ell`$ に
+[T.translate_snoc_increase](Decrease-ja.md#t-translate_snoc_increase) を $`C := B`$、$`m := \ell`$ に
 適用して $`\mathrm{tr}\,B \prec \mathrm{tr}(B \mathbin{+\!\!+} (\ell))`$ を得る。
 
 **(ii) $`m = m' + 1`$ のとき。**
 $`Q' := \mathrm{cp}_{d_0}(B, m')`$、$`S' := R \mathbin{+\!\!+} Q'^{+d_0}`$ とおく。
 [T.copies_succ_cons](#t-copies_succ_cons) より
 $`\mathrm{cp}_{d_0}(B, m'+1) = (v_0,w_0) :: S'`$ であり、
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) より
+[T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) より
 
 ```math
 \text{(G')}\qquad \bigl(\mathrm{cp}_{d_0}(B, m'+1)\bigr)^{+d_0} = (v_0+d_0,\ w_0) :: S'^{+d_0} .
@@ -415,14 +415,14 @@ $`\mathrm{cp}_{d_0}(B, m'+1) = (v_0,w_0) :: S'`$ であり、
 \text{(tlgt')}\qquad \forall x \in S',\ v_0 \lt x_1
 ```
 
-を得る。$`x \in S'^{+d_0}`$ とすると [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、ある $`p \in S'`$ が
+を得る。$`x \in S'^{+d_0}`$ とすると [T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) より、ある $`p \in S'`$ が
 存在して $`x = (p_1+d_0,\ p_2)`$ であり、(tlgt') から $`v_0 \le p_1`$、したがって
 
 ```math
 \text{(Cge)}\qquad \forall x \in S'^{+d_0},\ v_0 + d_0 \le x_1 .
 ```
 
-ここで [T.core_i1](Decrease.md#t-core_i1) を
+ここで [T.core_i1](Decrease-ja.md#t-core_i1) を
 
 ```math
 v_0 := v_0,\quad w_0 := w_0,\quad R := R,\quad
@@ -474,7 +474,7 @@ c := (v_0+d_0,\ w_0),\quad C' := S'^{+d_0},\quad \ell := \ell
 \text{(tlgt)}\qquad \forall x \in S,\ v_0 \lt x_1
 ```
 
-を得るから、[T.translate_single_tree](Term.md#t-translate_single_tree) より
+を得るから、[T.translate_single_tree](Term-ja.md#t-translate_single_tree) より
 
 ```math
 \text{(st1)}\qquad \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr)
@@ -482,7 +482,7 @@ c := (v_0+d_0,\ w_0),\quad C' := S'^{+d_0},\quad \ell := \ell
 ```
 
 また $`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ であり (Rlp) が成り立つから、
-ふたたび [T.translate_single_tree](Term.md#t-translate_single_tree) より
+ふたたび [T.translate_single_tree](Term-ja.md#t-translate_single_tree) より
 
 ```math
 \text{(st2)}\qquad \mathrm{tr}\bigl(B \mathbin{+\!\!+} (\ell)\bigr)
@@ -505,7 +505,7 @@ $`G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w
 \text{(rT)}\qquad \forall x \in R \mathbin{+\!\!+} (\ell),\ \bigl((v_0,w_0)\bigr)_1 \le x_1
 ```
 
-であるから、[T.cnf_tail](Cnf-2.md#t-cnf_tail) を $`t := (v_0,w_0)`$、$`T' := R \mathbin{+\!\!+} (\ell)`$、
+であるから、[T.cnf_tail](Cnf-2-ja.md#t-cnf_tail) を $`t := (v_0,w_0)`$、$`T' := R \mathbin{+\!\!+} (\ell)`$、
 $`G := G`$ として適用して
 
 ```math
@@ -531,13 +531,13 @@ $`G := G`$ として適用して
   \prec \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-である。[T.olt_P_P](Term.md#t-olt_P_P) により右辺の 3 つの選言のいずれかが成り立つ。
+である。[T.olt_P_P](Term-ja.md#t-olt_P_P) により右辺の 3 つの選言のいずれかが成り立つ。
 
 - 第 1 選言 $`w_0 \lt w_0`$：$`\lt`$ の非反射性に矛盾する。
 - 第 2 選言 $`w_0 = w_0 \wedge \mathrm{tr}\,S \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$：
   求める結論そのものである。
 - 第 3 選言 $`w_0 = w_0 \wedge \mathrm{tr}\,S = \mathrm{tr}(R \mathbin{+\!\!+} (\ell)) \wedge \mathsf{Z} \prec \mathsf{Z}`$：
-  最後の連言子は [T.not_olt_Z](Term.md#t-not_olt_Z) に矛盾する。
+  最後の連言子は [T.not_olt_Z](Term-ja.md#t-not_olt_Z) に矛盾する。
 
 よって第 2 選言のみが可能であり
 
@@ -546,7 +546,7 @@ $`G := G`$ として適用して
 ```
 
 **第 6 段：文脈による合同。**
-(argA) に [T.olt_P_b](Term.md#t-olt_P_b) を $`a := w_0`$、$`c_1 := \mathsf{Z}`$、$`c_2 := \mathsf{Z}`$
+(argA) に [T.olt_P_b](Term-ja.md#t-olt_P_b) を $`a := w_0`$、$`c_1 := \mathsf{Z}`$、$`c_2 := \mathsf{Z}`$
 として適用すると
 
 ```math
@@ -564,7 +564,7 @@ $`G := G`$ として適用して
 
 が成り立つ。(st1) を (cpcons) で書き換えたもの、および (st2) を
 $`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ で書き換えたものにより、
-(leadle) は [T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) の仮定 (leadle) の形をしている。
+(leadle) は [T.cnf_ctx_cong](Cnf-2-ja.md#t-cnf_ctx_cong) の仮定 (leadle) の形をしている。
 
 また (decr) を (cpcons) と $`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ で
 書き換えると
@@ -582,7 +582,7 @@ $`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ で書�
 
 も得られる。
 
-[T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) を
+[T.cnf_ctx_cong](Cnf-2-ja.md#t-cnf_ctx_cong) を
 
 ```math
 z_1 := (v_0,w_0),\quad T_1 := S,\quad
@@ -614,13 +614,13 @@ $`B \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ に対し
 \mathrm{cp}_0(B, n) = B^{\ast n}
 ```
 
-である。ここで $`B^{\ast n}`$ は [T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block) と同じく $`B`$ を
+である。ここで $`B^{\ast n}`$ は [T.cnf_replicate_block](Cnf-ja.md#t-cnf_replicate_block) と同じく $`B`$ を
 $`n`$ 個連結した列である。
 
 ### 証明
 
 任意の $`k \in \mathbb{N}`$ について $`k \cdot 0 = 0`$ であり、
-[T.shiftr0_zero](Cnf-2.md#t-shiftr0_zero) より $`B^{+k\cdot 0} = B^{+0} = B`$ である。
+[T.shiftr0_zero](Cnf-2-ja.md#t-shiftr0_zero) より $`B^{+k\cdot 0} = B^{+0} = B`$ である。
 すなわち $`\mathrm{cp}`$ の定義（D.copies）で $`\mathrm{range}(n)`$ の各要素 $`k`$ に対応させる列は
 $`k`$ に依らず $`B`$ である。
 
@@ -634,21 +634,21 @@ $`B`$ を $`n`$ 個並べたものであり、その連結は $`B^{\ast n}`$ で
 ### 定理
 
 $`M \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とし、$`1 \le n`$ かつ
-$`\mathrm{cnf}(\mathrm{tr}\,M)`$ を仮定する。このとき $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$（[D.oper](Pss.md#d-oper)）。
+$`\mathrm{cnf}(\mathrm{tr}\,M)`$ を仮定する。このとき $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$（[D.oper](Pss-ja.md#d-oper)）。
 
 ### 証明
 
-以下 $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）と書く
+以下 $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss-ja.md#d-idx1)）と書く
 （自然数の減法は切り捨て減法である）。$`j_1 = 0`$ か否かで場合分けする。
 
 **(a) $`j_1 = 0`$ のとき。**
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`M[n] = M`$ である。
+[T.oper_eq_self_of_short](Decrease-ja.md#t-oper_eq_self_of_short) より $`M[n] = M`$ である。
 よって示すべきことは仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ そのものである。
 
 以下 $`j_1 \ne 0`$ とする。このとき $`\lvert M\rvert - 1 \ne 0`$ であるから $`1 \lt \lvert M\rvert`$ で
 ある。とくに $`M \ne ()`$ である（$`M = ()`$ なら $`\lvert M\rvert = 0`$ となり
 $`1 \lt \lvert M\rvert`$ に反する）。また $`\neg(\lvert M\rvert \le 1)`$ であるから、
-$`\mathrm{Pred}`$（[D.Pred](Pss.md#d-Pred)）の定義（D.Pred）の第 2 の場合が選ばれ
+$`\mathrm{Pred}`$（[D.Pred](Pss-ja.md#d-Pred)）の定義（D.Pred）の第 2 の場合が選ばれ
 
 ```math
 \text{(hPred)}\qquad \mathrm{Pred}\,M = \mathrm{dropLast}\,M
@@ -656,25 +656,25 @@ $`\mathrm{Pred}`$（[D.Pred](Pss.md#d-Pred)）の定義（D.Pred）の第 2 の�
 
 である。
 
-**(b) $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より $`M[n] = \mathrm{Pred}\,M`$ で
+**(b) $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss-ja.md#d-entry)）のとき。**
+[T.oper_eq_pred_of_zero](Decrease-ja.md#t-oper_eq_pred_of_zero) より $`M[n] = \mathrm{Pred}\,M`$ で
 あり、(hPred) より $`M[n] = \mathrm{dropLast}\,M`$ である。
-$`M \ne ()`$ と仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ に [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) を適用して
+$`M \ne ()`$ と仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ に [T.cnf_dropLast](Cnf-ja.md#t-cnf_dropLast) を適用して
 $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,M)\bigr)`$ を得る。
 
 以下 $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$ とする。
-$`\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）が成り立つか否かでさらに分ける。
+$`\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss-ja.md#d-hasParent)）が成り立つか否かでさらに分ける。
 
 **(c) $`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
+[T.oper_eq_pred_of_noParent](Decrease-ja.md#t-oper_eq_pred_of_noParent) より
 $`M[n] = \mathrm{Pred}\,M`$ であり、(hPred) より $`M[n] = \mathrm{dropLast}\,M`$ である。
-$`M \ne ()`$ と仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ に [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) を適用して
+$`M \ne ()`$ と仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ に [T.cnf_dropLast](Cnf-ja.md#t-cnf_dropLast) を適用して
 $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,M)\bigr)`$ を得る。
 
 **(d) $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
 $`1 \lt \lvert M\rvert`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、
 $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ が揃っているので
-[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を適用する。
+[T.oper_bad_blocks](Decrease-ja.md#t-oper_bad_blocks) を適用する。
 $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$
 が得られ、$`B := (v_0,w_0) :: R`$ とおくと次が成り立つ（同定理の主張のうち、以下で
 用いるものだけを挙げる。$`(5)`$ の 2 つの選言子の末尾の連言子は用いない）。
@@ -707,7 +707,7 @@ $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \m
 **(d-1) 第 1 選言子、とくに $`d_0 = 0`$ のとき。**
 $`d_0 = 0`$ であるから [T.copies_replicate](#t-copies_replicate) により
 $`\mathrm{cp}_{d_0}(B,n) = \mathrm{cp}_0(B,n) = B^{\ast n}`$ である。
-[T.cnf_oper_i1eq0](Cnf-2.md#t-cnf_oper_i1eq0) を (3)（仮定 (hR)）、(4)（仮定 (lpv)）、
+[T.cnf_oper_i1eq0](Cnf-2-ja.md#t-cnf_oper_i1eq0) を (3)（仮定 (hR)）、(4)（仮定 (lpv)）、
 $`1 \le n`$（仮定 (n1)）、(cM')（仮定 (cM)）に適用して
 
 ```math
@@ -735,7 +735,7 @@ $`1 \le n`$（仮定 (n1)）、(cM')（仮定 (cM)）に適用して
 
 ### 定理
 
-$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`\mathrm{cnf}(\mathrm{tr}\,M)`$。
+$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）ならば $`\mathrm{cnf}(\mathrm{tr}\,M)`$。
 
 ### 証明
 
@@ -747,8 +747,8 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 
 $`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の 2 つの規則に対応して次を示せばよい。
 
-- **規則 (diag)**：$`\forall v \in \mathbb{N},\ \Phi(\Delta_0^v)`$（[D.diagSeq](Pss.md#d-diagSeq)）。
-  [T.cnf_diag](Cnf.md#t-cnf_diag) がこれそのものである。
+- **規則 (diag)**：$`\forall v \in \mathbb{N},\ \Phi(\Delta_0^v)`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）。
+  [T.cnf_diag](Cnf-ja.md#t-cnf_diag) がこれそのものである。
 
 - **規則 (oper)**：$`M \in \mathrm{ST\_PS}`$、$`1 \le n`$、および帰納法の仮定 $`\Phi(M)`$、
   すなわち $`\mathrm{cnf}(\mathrm{tr}\,M)`$ を仮定して $`\Phi(M[n])`$ を示す。

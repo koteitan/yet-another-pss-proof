@@ -1,11 +1,11 @@
-[← README](README.md) | [English](Column.md) | [Japanese](Column-ja.md) | Column **1** [2](Column-2.md) [3](Column-3.md) [4](Column-4.md)
+[← README](README-ja.md) | [English](Column.md) | [Japanese](Column-ja.md) | Column **1** [2](Column-2-ja.md) [3](Column-3-ja.md) [4](Column-4-ja.md)
 
 <a id="t-stps_len_pos"></a>
 ## 定理: 標準形は空でない (T.stps_len_pos)
 
 ### 定理
 
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）が $`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）が $`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）
 をみたすならば $`0 \lt \lvert M\rvert`$。
 
 ### 証明
@@ -16,18 +16,18 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 \Phi(M) :\equiv 0 \lt \lvert M\rvert .
 ```
 
-**基底段（規則 diag）$`M = \Delta_0^v`$（[D.diagSeq](Pss.md#d-diagSeq)）。**
-[T.diagSeq_cons](Cnf.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$ とし、
+**基底段（規則 diag）$`M = \Delta_0^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）。**
+[T.diagSeq_cons](Cnf-ja.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$ とし、
 仮定 $`0 \le v`$ のもとで適用すると
 $`\Delta_0^v = (0,0) :: \Delta_1^v`$ である。
 よって $`\lvert \Delta_0^v\rvert = 1 + \lvert \Delta_1^v\rvert`$ であり $`0 \lt \lvert \Delta_0^v\rvert`$。
 
-**帰納段（規則 oper）$`M = N[n]`$（[D.oper](Pss.md#d-oper)、$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
+**帰納段（規則 oper）$`M = N[n]`$（[D.oper](Pss-ja.md#d-oper)、$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
 帰納法の仮定は $`\Phi(N)`$、すなわち $`0 \lt \lvert N\rvert`$ である。
 $`\lvert N\rvert`$ で場合分けする。
 
 **(a) $`1 \lt \lvert N\rvert`$ のとき。**
-[T.oper_eq_dropLast_append](Cnf.md#t-oper_eq_dropLast_append) より、ある $`R \in \mathrm{PairSeq}`$ が存在して
+[T.oper_eq_dropLast_append](Cnf-ja.md#t-oper_eq_dropLast_append) より、ある $`R \in \mathrm{PairSeq}`$ が存在して
 $`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$ である。ここで $`\mathrm{dropLast}\,N`$ は
 $`N`$ の末尾 1 要素を落とした列であり $`\lvert \mathrm{dropLast}\,N\rvert = \lvert N\rvert - 1`$ である。よって
 
@@ -38,7 +38,7 @@ $`N`$ の末尾 1 要素を落とした列であり $`\lvert \mathrm{dropLast}\,
 であり $`0 \lt \lvert N[n]\rvert`$。
 
 **(b) $`\neg(1 \lt \lvert N\rvert)`$ のとき。**
-$`\lvert N\rvert \le 1`$ であるから [T.oper_eq_self_short](Decrease.md#t-oper_eq_self_short) より
+$`\lvert N\rvert \le 1`$ であるから [T.oper_eq_self_short](Decrease-ja.md#t-oper_eq_self_short) より
 $`N[n] = N`$ である。$`\Phi(N[n])`$ は帰納法の仮定 $`\Phi(N)`$ そのものである。∎
 
 <a id="t-stps_head"></a>
@@ -58,7 +58,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 ```
 
 **基底段（規則 diag）$`M = \Delta_0^v`$。**
-[T.diagSeq_cons](Cnf.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$、仮定 $`0 \le v`$ に適用して
+[T.diagSeq_cons](Cnf-ja.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$、仮定 $`0 \le v`$ に適用して
 $`\Delta_0^v = (0,0) :: \Delta_1^v`$ を得る。先頭要素は $`(0,0)`$ である。
 
 **帰納段（規則 oper）$`M = N[n]`$（$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
@@ -66,7 +66,7 @@ $`\Delta_0^v = (0,0) :: \Delta_1^v`$ を得る。先頭要素は $`(0,0)`$ で�
 $`\lvert N\rvert`$ で場合分けする。
 
 **(a) $`1 \lt \lvert N\rvert`$ のとき。**
-[T.oper_eq_dropLast_append](Cnf.md#t-oper_eq_dropLast_append) より、ある $`R`$ について
+[T.oper_eq_dropLast_append](Cnf-ja.md#t-oper_eq_dropLast_append) より、ある $`R`$ について
 $`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$ である。
 $`1 \lt \lvert N\rvert`$ であるから $`N`$ は少なくとも 2 要素をもち、
 $`N = a :: b :: u`$ と書ける。このとき
@@ -85,7 +85,7 @@ N[n] = a :: \bigl(\mathrm{dropLast}\,(b :: u) \mathbin{+\!\!+} R\bigr)
 帰納法の仮定より $`\mathrm{head}\,N = (0,0)`$。
 
 **(b) $`\neg(1 \lt \lvert N\rvert)`$ のとき。**
-$`\lvert N\rvert \le 1`$ であるから [T.oper_eq_self_short](Decrease.md#t-oper_eq_self_short) より
+$`\lvert N\rvert \le 1`$ であるから [T.oper_eq_self_short](Decrease-ja.md#t-oper_eq_self_short) より
 $`N[n] = N`$ であり、$`\Phi(N[n])`$ は帰納法の仮定そのものである。∎
 
 <a id="t-getD_app_right"></a>
@@ -99,7 +99,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`i \in \mathbb{N}`$ とし $`\lvert A\rvert \le
 (A \mathbin{+\!\!+} T)\langle i\rangle = T\langle i - \lvert A\rvert\rangle
 ```
 
-（$`M\langle j\rangle`$ [D.entry](Pss.md#d-entry)は範囲外で $`(0,0)`$ を返す読み出しである）。
+（$`M\langle j\rangle`$ [D.entry](Pss-ja.md#d-entry)は範囲外で $`(0,0)`$ を返す読み出しである）。
 
 ### 証明
 
@@ -154,7 +154,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \to^{T}_0 j_1
 ```
 
-（$`\to^M_0`$ [D.nextrel0](Pss.md#d-nextrel0)）。
+（$`\to^M_0`$ [D.nextrel0](Pss-ja.md#d-nextrel0)）。
 
 ### 証明
 
@@ -197,7 +197,7 @@ $`\to^M_0`$ の定義（D.nextrel0）の 5 条件を左右で対応させる。
 ### 定理
 
 $`A, T \in \mathrm{PairSeq}`$、$`j_0, c \in \mathbb{N}`$ とする。
-$`j_0 \mathbin{(\to^{T}_0)^{*}} c`$（[D.le0](Pss.md#d-le0)）ならば
+$`j_0 \mathbin{(\to^{T}_0)^{*}} c`$（[D.le0](Pss-ja.md#d-le0)）ならば
 
 ```math
 \lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + c .
@@ -466,7 +466,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \to^{T}_1 j_1
 ```
 
-（$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)）。
+（$`\to^M_1`$ [D.nextrel1](Pss-ja.md#d-nextrel1)）。
 
 ### 証明
 
@@ -523,7 +523,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`i, j_0, j_1 \in \mathbb{N}`$ に対し
 j_0 \to^{T}_i j_1
 ```
 
-（$`\to^M_i`$ [D.nextR](Pss.md#d-nextR)）。
+（$`\to^M_i`$ [D.nextR](Pss-ja.md#d-nextR)）。
 
 ### 証明
 
@@ -547,7 +547,7 @@ $`A, T \in \mathrm{PairSeq}`$、$`j \in \mathbb{N}`$ に対し
 \mathrm{idx}_1(A \mathbin{+\!\!+} T,\ \lvert A\rvert + j) = \mathrm{idx}_1(T, j)
 ```
 
-（$`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)）。
+（$`\mathrm{idx}_1`$ [D.idx1](Pss-ja.md#d-idx1)）。
 
 ### 証明
 
@@ -606,7 +606,7 @@ $`i, j_1 \in \mathbb{N}`$ が $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert +
 \mathrm{hasParent}(T,\ i,\ j_1)
 ```
 
-（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)）。
+（$`\mathrm{hasParent}`$ [D.hasParent](Pss-ja.md#d-hasParent)）。
 
 ### 証明
 
@@ -644,7 +644,7 @@ $`\mathrm{hasParent}(T, i, j_1)`$ をみたすとする。このとき
 \mathrm{par}^{A \mathbin{+\!\!+} T}_i(\lvert A\rvert + j_1) = \lvert A\rvert + \mathrm{par}^{T}_i(j_1)
 ```
 
-（$`\mathrm{par}^M_i`$ [D.parent](Pss.md#d-parent)）。
+（$`\mathrm{par}^M_i`$ [D.parent](Pss-ja.md#d-parent)）。
 
 ### 証明
 
@@ -654,10 +654,10 @@ $`\mathrm{hasParent}(A \mathbin{+\!\!+} T, i, \lvert A\rvert + j_1)`$ が成り�
 次の 2 つがともにこの条件をみたす。
 
 - $`x := \mathrm{par}^{A \mathbin{+\!\!+} T}_i(\lvert A\rvert + j_1)`$。
-  [T.parent_nextR](Decrease.md#t-parent_nextR) を
+  [T.parent_nextR](Decrease-ja.md#t-parent_nextR) を
   $`\mathrm{hasParent}(A \mathbin{+\!\!+} T, i, \lvert A\rvert + j_1)`$ に適用すればよい。
 - $`x := \lvert A\rvert + \mathrm{par}^{T}_i(j_1)`$。
-  [T.parent_nextR](Decrease.md#t-parent_nextR) を $`\mathrm{hasParent}(T, i, j_1)`$ に適用すると
+  [T.parent_nextR](Decrease-ja.md#t-parent_nextR) を $`\mathrm{hasParent}(T, i, j_1)`$ に適用すると
   $`\mathrm{par}^{T}_i(j_1) \to^{T}_i j_1`$ であり、
   [T.nextR_append_right](#t-nextR_append_right) の（$`\Leftarrow`$）を適用すればよい。
 
@@ -741,7 +741,7 @@ $`A, T \in \mathrm{PairSeq}`$ が $`2 \le \lvert T\rvert`$ をみたすならば
 \mathrm{Pred}\,(A \mathbin{+\!\!+} T) = A \mathbin{+\!\!+} \mathrm{Pred}\,T
 ```
 
-（$`\mathrm{Pred}`$ [D.Pred](Pss.md#d-Pred)）。
+（$`\mathrm{Pred}`$ [D.Pred](Pss-ja.md#d-Pred)）。
 
 ### 証明
 
@@ -773,4 +773,4 @@ $`\mathrm{hasParent}`$ の定義（D.hasParent）より $`j_0 \to^{M}_i j_1`$ �
 [T.nextR_le0](#t-nextR_le0) より $`j_0 \le^{M}_0 j_1`$ であり、その第 3 条件（D.le0）は
 $`j_0 \mathbin{(\to^{M}_0)^{*}} j_1`$ である。
 $`M_{0,j_1} = 0`$ であるから [T.rtg_to_root](#t-rtg_to_root) を適用して $`j_0 = j_1`$ を得る。
-一方 [T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より $`j_0 \lt j_1`$ であり、矛盾する。∎
+一方 [T.nextR_index_lt](Decrease-ja.md#t-nextR_index_lt) より $`j_0 \lt j_1`$ であり、矛盾する。∎

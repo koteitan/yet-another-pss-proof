@@ -1,12 +1,12 @@
-[← README](README.md) | [English](Reduction.md) | [Japanese](Reduction-ja.md)
+[← README](README-ja.md) | [English](Reduction.md) | [Japanese](Reduction-ja.md)
 
 <a id="d-NF"></a>
 ## 定義: 正規形の集合 (D.NF)
 
-$`\mathrm{Three}`$（[D.Three](Term.md#d-Three)）の部分集合 $`\mathrm{NF}`$ を、
-$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）なる
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）の
-$`\mathrm{tr}`$（[D.translate](Term.md#d-translate)）による像として定める。
+$`\mathrm{Three}`$（[D.Three](Term-ja.md#d-Three)）の部分集合 $`\mathrm{NF}`$ を、
+$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）なる
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）の
+$`\mathrm{tr}`$（[D.translate](Term-ja.md#d-translate)）による像として定める。
 
 ```math
 \mathrm{NF} := \{\, t \in \mathrm{Three} \mid \exists M,\ M \in \mathrm{ST\_PS} \wedge \mathrm{tr}\,M = t \,\} .
@@ -23,7 +23,7 @@ $`u, v \in \mathrm{Three}`$ に対し、関係 $`R_{\mathrm{NF}}`$ を次で定�
 v \mathbin{R_{\mathrm{NF}}} u :\iff v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\ v \in \mathrm{NF} .
 ```
 
-（$`\prec`$ [D.olt](Term.md#d-olt)）
+（$`\prec`$ [D.olt](Term-ja.md#d-olt)）
 
 <a id="d-stepRel"></a>
 ## 定義: 標準形上の 1 段展開関係 (D.stepRel)
@@ -34,7 +34,7 @@ $`T, M \in \mathrm{PairSeq}`$ に対し、関係 $`R_{\mathrm{PS}}`$ を次で�
 T \mathbin{R_{\mathrm{PS}}} M :\iff M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarrow T .
 ```
 
-（$`M \Rightarrow T`$ [D.step](Pss.md#d-step)）
+（$`M \Rightarrow T`$ [D.step](Pss-ja.md#d-step)）
 
 第 1 引数 $`T`$ が展開の結果、第 2 引数 $`M`$ が展開の元である。$`R_{\mathrm{NF}}`$ の定義（D.Rnf）で
 第 1 引数 $`v`$ が $`v \prec u`$ の左辺に置かれるのと同じ引数の順である。
@@ -75,7 +75,7 @@ $`M \in \mathrm{ST\_PS}`$ かつ $`1 \lt \lvert M\rvert`$ かつ $`1 \le n`$ な
 \mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M .
 ```
 
-（$`M[n]`$ [D.oper](Pss.md#d-oper)）
+（$`M[n]`$ [D.oper](Pss-ja.md#d-oper)）
 
 **(wfimg)** $`R_{\mathrm{NF}}`$ は整礎である。
 
@@ -246,7 +246,7 @@ $`R_{\mathrm{NF}}`$ が整礎ならば $`R_{\mathrm{PS}}`$ は整礎である。
 [T.step_terminates_cond](#t-step_terminates_cond) の仮定 (dec) を示す。
 $`M \in \mathrm{PairSeq}`$ と $`n \in \mathbb{N}`$ を取り、$`M \in \mathrm{ST\_PS}`$、
 $`1 \lt \lvert M\rvert`$、$`1 \le n`$ を仮定する。
-[T.m_step_decreases](Decrease.md#t-m_step_decreases) は $`1 \lt \lvert M\rvert`$ と $`1 \le n`$ の
+[T.m_step_decreases](Decrease-ja.md#t-m_step_decreases) は $`1 \lt \lvert M\rvert`$ と $`1 \le n`$ の
 2 つのみを前件とし、$`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$ を結論とする。よって仮定
 $`M \in \mathrm{ST\_PS}`$ を用いずに結論が得られ、(dec) が成り立つ。
 
@@ -272,7 +272,7 @@ $`R_{\mathrm{NF}}`$ が整礎ならば、次の 2 条件をみたす $`S : \math
 [T.no_infinite_expansion_cond](#t-no_infinite_expansion_cond) の仮定 (dec) を示す。
 $`M \in \mathrm{PairSeq}`$ と $`n \in \mathbb{N}`$ を取り、$`M \in \mathrm{ST\_PS}`$、
 $`1 \lt \lvert M\rvert`$、$`1 \le n`$ を仮定する。
-[T.m_step_decreases](Decrease.md#t-m_step_decreases) は $`1 \lt \lvert M\rvert`$ と $`1 \le n`$ の
+[T.m_step_decreases](Decrease-ja.md#t-m_step_decreases) は $`1 \lt \lvert M\rvert`$ と $`1 \le n`$ の
 2 つのみを前件とし、$`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$ を結論とする。よって仮定
 $`M \in \mathrm{ST\_PS}`$ を用いずに結論が得られ、(dec) が成り立つ。
 

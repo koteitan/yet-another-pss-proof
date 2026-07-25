@@ -1,11 +1,11 @@
-[← README](README.md) | [English](ArgDom-3.md) | [Japanese](ArgDom-3-ja.md) | ArgDom [1](ArgDom.md) [2](ArgDom-2.md) **3** [4](ArgDom-4.md) [5](ArgDom-5.md)
+[← README](README-ja.md) | [English](ArgDom-3.md) | [Japanese](ArgDom-3-ja.md) | ArgDom [1](ArgDom-ja.md) [2](ArgDom-2-ja.md) **3** [4](ArgDom-4-ja.md) [5](ArgDom-5-ja.md)
 
 <a id="t-seqlex_of_sle_snoc'"></a>
 ## 定理: 末尾列の差し替え、上界相対形 (T.seqlex_of_sle_snoc')
 
 ### 定理
 
-$`X, V, E \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`\ell, q \in \mathbb{N}\times\mathbb{N}`$ が
+$`X, V, E \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）、$`\ell, q \in \mathbb{N}\times\mathbb{N}`$ が
 
 ```math
 X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E,
@@ -13,7 +13,7 @@ X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E,
 \qquad \lvert X\rvert \lt \lvert V\rvert
 ```
 
-（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、$`\prec_{\mathrm{p}}`$ [D.pairlt](Seqlex.md#d-pairlt)）
+（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality-ja.md#d-sle)、$`\prec_{\mathrm{p}}`$ [D.pairlt](Seqlex-ja.md#d-pairlt)）
 
 をみたすならば、任意の $`S', E' \in \mathrm{PairSeq}`$ に対し
 
@@ -21,7 +21,7 @@ X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E,
 X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
 ```
 
-（$`\prec_{\mathrm{lex}}`$ [D.seqlex](Seqlex.md#d-seqlex)）
+（$`\prec_{\mathrm{lex}}`$ [D.seqlex](Seqlex-ja.md#d-seqlex)）
 
 ### 証明
 
@@ -51,7 +51,7 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）で場合分けする。
 - $`(\ell) \prec_{\mathrm{lex}} v :: (V' \mathbin{+\!\!+} E)`$ のとき。$`(\ell) = \ell :: ()`$ であるから
   D.seqlex の第 3 式より、$`\ell \prec_{\mathrm{p}} v`$ または
   $`\ell = v \wedge () \prec_{\mathrm{lex}} V' \mathbin{+\!\!+} E`$ である。
-  前者のときは [T.pairlt_trans](Cofinality.md#t-pairlt_trans) を
+  前者のときは [T.pairlt_trans](Cofinality-ja.md#t-pairlt_trans) を
   $`q \prec_{\mathrm{p}} \ell`$ と $`\ell \prec_{\mathrm{p}} v`$ に適用して $`q \prec_{\mathrm{p}} v`$。
   後者のときは $`\ell = v`$ を $`q \prec_{\mathrm{p}} \ell`$ に代入して $`q \prec_{\mathrm{p}} v`$。
 
@@ -103,7 +103,7 @@ x \prec_{\mathrm{p}} v
 
 $`M, G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0, n \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$、
 $`\mathrm{blk} := (v_0,w_0) :: R`$ とし、
-[T.argDomCoreOn_bad_A1](ArgDom-2.md#t-argDomCoreOn_bad_A1) の仮定
+[T.argDomCoreOn_bad_A1](ArgDom-2-ja.md#t-argDomCoreOn_bad_A1) の仮定
 (hM), (hMon), (hMeq), (hRgt), (hlp), (hdisj), (hSTn), (hIH), (hn) および
 $`X, A_1, B, A_2, Z, u, w, e`$ についての (heq), (he), (h1), (h2), (h3), (h4), (h5), (h6) を
 そのまま仮定する。さらに
@@ -119,7 +119,7 @@ $`X, A_1, B, A_2, Z, u, w, e`$ についての (heq), (he), (h1), (h2), (h3), (h
 B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e} .
 ```
 
-（$`L^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+（$`L^{+d}`$ [D.shiftr0](Cnf-2-ja.md#d-shiftr0)）
 
 ### 証明
 
@@ -131,13 +131,13 @@ T := \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0},
 C_p := X \mathbin{+\!\!+} (u,w) :: \bigl(A_1 \mathbin{+\!\!+} ((u+e,w))\bigr)
 ```
 
-（$`\mathrm{copies}_d(B, n)`$ [D.copies](Cnf-2.md#d-copies)）
+（$`\mathrm{copies}_d(B, n)`$ [D.copies](Cnf-2-ja.md#d-copies)）
 
 とおく。$`C_p`$ は分解の先頭から深い方の印付き列 $`(u+e,w)`$ までを含む部分であり、
 $`\lvert C_p\rvert = \lvert X\rvert + 1 + (\lvert A_1\rvert + 1)`$ である。
 
 **第 1 段：共通部分で切る。**
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) と連結の結合律より
+[T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) と連結の結合律より
 
 ```math
 G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1) = (G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} T
@@ -166,7 +166,7 @@ G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, m+1) = (G \mathbin{+\!\!+
 ```
 
 を与える。
-[T.split_prefix_left](ArgDom-2.md#t-split_prefix_left) を適用して
+[T.split_prefix_left](ArgDom-2-ja.md#t-split_prefix_left) を適用して
 $`D := \mathrm{drop}_{\lvert C_p\rvert}(G \mathbin{+\!\!+} \mathrm{blk})`$ とおくと
 
 ```math
@@ -212,22 +212,22 @@ $`C_p`$ の定義と結合律で並べ替えると
 M = \bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B' \mathbin{+\!\!+} A_2'))\bigr) \mathbin{+\!\!+} Z'
 ```
 
-である。これは [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn) が要求する分解の形であるから、(hMon) をこの分解と
+である。これは [D.ArgDomCoreOn](ArgDom-ja.md#d-ArgDomCoreOn) が要求する分解の形であるから、(hMon) をこの分解と
 (he)、(h1)、上に挙げた $`B'`$、$`A_2'`$、$`Z'`$ についての 4 条件、(h6) に適用して
 
 ```math
 B' \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B' \mathbin{+\!\!+} A_2')\bigr)^{+e}
 ```
 
-を得る。[T.argbound_split](ArgDom-2.md#t-argbound_split) により右辺は
+を得る。[T.argbound_split](ArgDom-2-ja.md#t-argbound_split) により右辺は
 
 ```math
 \bigl(A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: B'^{+e}\bigr) \mathbin{+\!\!+} A_2'^{+e}
 ```
 
-に等しく、[T.argbound_len](ArgDom-2.md#t-argbound_len) により
+に等しく、[T.argbound_len](ArgDom-2-ja.md#t-argbound_len) により
 $`\lvert B'\rvert \le \lvert A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B'^{+e}\rvert`$ である。
-[T.sle_take_of_short](ArgDom.md#t-sle_take_of_short) を適用して主張を得る。
+[T.sle_take_of_short](ArgDom-ja.md#t-sle_take_of_short) を適用して主張を得る。
 
 **第 3 段：結論を同じ形に直す。**
 
@@ -235,15 +235,15 @@ $`\lvert B'\rvert \le \lvert A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B'^{+e}\rver
 B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: B^{+e}
 ```
 
-が示せれば結論が従う。実際、[T.argbound_split](ArgDom-2.md#t-argbound_split) により結論の右辺は
+が示せれば結論が従う。実際、[T.argbound_split](ArgDom-2-ja.md#t-argbound_split) により結論の右辺は
 $`(A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B^{+e}) \mathbin{+\!\!+} A_2^{+e}`$ であり、
-[T.sle_append_mono](Cofinality.md#t-sle_append_mono) を
+[T.sle_append_mono](Cofinality-ja.md#t-sle_append_mono) を
 $`C := A_2^{+e}`$ として適用すればよい。以下この形を示す。
 
 **第 4 段：$`\lvert B\rvert`$ と $`\lvert D\rvert`$ で場合分けする。**
 
 **(a) $`\lvert B\rvert \lt \lvert D\rvert`$ のとき。**
-[T.split_prefix_right](ArgDom-2.md#t-split_prefix_right) を第 1 段の
+[T.split_prefix_right](ArgDom-2-ja.md#t-split_prefix_right) を第 1 段の
 $`B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z) = D \mathbin{+\!\!+} T`$ と $`\lvert B\rvert \le \lvert D\rvert`$ に適用し、
 $`D_r := \mathrm{drop}_{\lvert B\rvert} D`$ とおくと
 
@@ -258,7 +258,7 @@ A_2 \mathbin{+\!\!+} Z = D_r \mathbin{+\!\!+} T
 まず $`D_r \ne ()`$ である。$`D_r = ()`$ とすると $`D = B`$ となり
 $`\lvert B\rvert \lt \lvert D\rvert = \lvert B\rvert`$ となって矛盾する。
 したがって $`A_2 \mathbin{+\!\!+} Z = D_r \mathbin{+\!\!+} T \ne ()`$ であり、
-[T.headI_append_left](Seqlex-2.md#t-headI_append_left) より
+[T.headI_append_left](Seqlex-2-ja.md#t-headI_append_left) より
 $`\mathrm{head}(A_2 \mathbin{+\!\!+} Z) = \mathrm{head}\,D_r`$ である。
 
 次に $`(\mathrm{head}\,D_r)_1 \le u + e`$ を示す。$`A_2`$ が空かどうかで分ける。
@@ -268,11 +268,11 @@ $`\mathrm{head}(A_2 \mathbin{+\!\!+} Z) = \mathrm{head}\,D_r`$ である。
   $`(\mathrm{head}\,Z)_1 \le u \le u + e`$ であり、
   $`\mathrm{head}\,D_r = \mathrm{head}(A_2 \mathbin{+\!\!+} Z) = \mathrm{head}\,Z`$ である。
 
-- $`A_2 \ne ()`$ のとき。[T.headI_append_left](Seqlex-2.md#t-headI_append_left) より
+- $`A_2 \ne ()`$ のとき。[T.headI_append_left](Seqlex-2-ja.md#t-headI_append_left) より
   $`\mathrm{head}(A_2 \mathbin{+\!\!+} Z) = \mathrm{head}\,A_2`$ であり、(h4) の第 1 選言は偽であるから
   第 2 選言により $`(\mathrm{head}\,A_2)_1 \le u + e`$ である。
 
-[T.arg_split](ArgDom-2.md#t-arg_split) を $`L := u`$、$`E := D_r \mathbin{+\!\!+} (\ell)`$ に適用して
+[T.arg_split](ArgDom-2-ja.md#t-arg_split) を $`L := u`$、$`E := D_r \mathbin{+\!\!+} (\ell)`$ に適用して
 $`A_2', Z'`$ を取る。すなわち
 
 ```math
@@ -282,7 +282,7 @@ D_r \mathbin{+\!\!+} (\ell) = A_2' \mathbin{+\!\!+} Z',
 ```
 
 $`A_2' = () \vee (\mathrm{head}\,A_2')_1 \le u+e`$ を示す。$`A_2' = ()`$ なら第 1 選言。
-$`A_2' \ne ()`$ なら [T.headI_append_left](Seqlex-2.md#t-headI_append_left) より
+$`A_2' \ne ()`$ なら [T.headI_append_left](Seqlex-2-ja.md#t-headI_append_left) より
 $`\mathrm{head}(D_r \mathbin{+\!\!+} (\ell)) = \mathrm{head}\,A_2'`$ であり、
 $`D_r \ne ()`$ であるからふたたび同じ定理により
 $`\mathrm{head}(D_r \mathbin{+\!\!+} (\ell)) = \mathrm{head}\,D_r`$ である。
@@ -305,7 +305,7 @@ B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: B^{+e}
 を得る。第 3 段により結論が従う。
 
 **(b) $`\lvert D\rvert \le \lvert B\rvert`$ のとき。**
-[T.split_prefix_left](ArgDom-2.md#t-split_prefix_left) を
+[T.split_prefix_left](ArgDom-2-ja.md#t-split_prefix_left) を
 $`B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z) = D \mathbin{+\!\!+} T`$ に適用し、
 $`B_2 := \mathrm{drop}_{\lvert D\rvert} B`$ とおくと
 
@@ -321,17 +321,17 @@ $`\forall x \in D,\ u+e \lt x_1`$ である。
 **第 4 段 (b) の補助 1：$`B_2`$ が空でないときの先頭。**
 $`B_2 = q :: B_2'`$ と書けるとき $`q = (v_0+d_0,\ w_0)`$ である。
 まず $`m \ne 0`$ である。$`m = 0`$ とすると
-[T.copies_zero](Cnf-2.md#t-copies_zero) と [T.shiftr0_nil](Cnf-2.md#t-shiftr0_nil) より $`T = ()`$ となるが、
+[T.copies_zero](Cnf-2-ja.md#t-copies_zero) と [T.shiftr0_nil](Cnf-2-ja.md#t-shiftr0_nil) より $`T = ()`$ となるが、
 $`T = B_2 \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)`$ の右辺は $`B_2 = q :: B_2'`$ を含むので空でなく、矛盾する。
 よって $`m = m' + 1`$ と書ける。
-[T.copies_succ_cons](Cnf-3.md#t-copies_succ_cons) より
+[T.copies_succ_cons](Cnf-3-ja.md#t-copies_succ_cons) より
 
 ```math
 \mathrm{copies}_{d_0}(\mathrm{blk}, m'+1)
  = (v_0, w_0) :: \Bigl(R \mathbin{+\!\!+} \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m')\bigr)^{+d_0}\Bigr)
 ```
 
-であり、[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) より
+であり、[T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) より
 
 ```math
 T = (v_0 + d_0,\ w_0) :: \Bigl(R \mathbin{+\!\!+} \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m')\bigr)^{+d_0}\Bigr)^{+d_0}
@@ -366,7 +366,7 @@ D \mathbin{+\!\!+} (\ell)
  \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: \bigl(D \mathbin{+\!\!+} (\ell)\bigr)^{+e} .
 ```
 
-[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) と連結の結合律により、
+[T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append) と連結の結合律により、
 $`V := A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: D^{+e}`$ とおくと右辺は
 $`V \mathbin{+\!\!+} (\ell)^{+e}`$ に等しい。すなわち
 
@@ -374,14 +374,14 @@ $`V \mathbin{+\!\!+} (\ell)^{+e}`$ に等しい。すなわち
 (\dagger)\qquad D \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} (\ell)^{+e} .
 ```
 
-なお [T.shiftr0_length](Cofinality-2.md#t-shiftr0_length) より
+なお [T.shiftr0_length](Cofinality-2-ja.md#t-shiftr0_length) より
 $`\lvert V\rvert = \lvert A_1\rvert + 1 + \lvert D\rvert`$ である。$`B_2`$ で場合分けする。
 
 **$`B_2 = ()`$ のとき。** $`B = D \mathbin{+\!\!+} () = D`$ である。
-[T.sle_of_append_left](ArgDom.md#t-sle_of_append_left) を $`(\dagger)`$ に適用して
+[T.sle_of_append_left](ArgDom-ja.md#t-sle_of_append_left) を $`(\dagger)`$ に適用して
 $`D \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} (\ell)^{+e}`$ を得る。
 $`\lvert D\rvert \le \lvert A_1\rvert + 1 + \lvert D\rvert = \lvert V\rvert`$ であるから、
-[T.sle_take_of_short](ArgDom.md#t-sle_take_of_short) を適用して $`D \preceq_{\mathrm{lex}} V`$。
+[T.sle_take_of_short](ArgDom-ja.md#t-sle_take_of_short) を適用して $`D \preceq_{\mathrm{lex}} V`$。
 $`B = D`$ より、これは
 $`B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B^{+e}`$ そのものである。
 第 3 段により結論が従う。
@@ -398,8 +398,8 @@ D \mathbin{+\!\!+} q :: B_2'
 ```
 
 を得る。左辺は $`B = D \mathbin{+\!\!+} B_2 = D \mathbin{+\!\!+} q :: B_2'`$ である。
-右辺は [T.shiftr0_append](Cofinality-3.md#t-shiftr0_append)、
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) と結合律により
+右辺は [T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append)、
+[T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) と結合律により
 
 ```math
 \begin{aligned}
@@ -485,7 +485,7 @@ $`Y = X \mathbin{+\!\!+} t`$ なる $`t`$ を取り、$`t`$ の構成子で場�
   $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 1 選言が成り立つ。
 
 - $`t = a :: t'`$ のとき。$`t \ne ()`$ であるから
-  [T.seqlex_prefix](Seqlex.md#t-seqlex_prefix) を $`v := t`$、$`u := X`$ として適用して
+  [T.seqlex_prefix](Seqlex-ja.md#t-seqlex_prefix) を $`v := t`$、$`u := X`$ として適用して
   $`X \prec_{\mathrm{lex}} X \mathbin{+\!\!+} t = Y`$ を得る。D.sle の第 2 選言が成り立つ。∎
 
 <a id="t-shiftr0_prefix"></a>
@@ -499,7 +499,7 @@ $`X^{+d} \sqsubseteq Y^{+d}`$。
 ### 証明
 
 $`Y = X \mathbin{+\!\!+} t`$ なる $`t`$ を取る。
-[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) より
+[T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append) より
 
 ```math
 Y^{+d} = \bigl(X \mathbin{+\!\!+} t\bigr)^{+d} = X^{+d} \mathbin{+\!\!+} t^{+d}
@@ -544,13 +544,13 @@ $`n`$ に関する帰納法（$`d`$, $`\mathrm{blk}`$ は固定する）。帰�
 \Phi(n) :\equiv \bigl\lvert \mathrm{copies}_d(\mathrm{blk}, n)\bigr\rvert = n \cdot \lvert \mathrm{blk}\rvert .
 ```
 
-- **基底段** $`n = 0`$：[T.copies_zero](Cnf-2.md#t-copies_zero) より
+- **基底段** $`n = 0`$：[T.copies_zero](Cnf-2-ja.md#t-copies_zero) より
   $`\mathrm{copies}_d(\mathrm{blk}, 0) = ()`$ であり、その長さは $`0`$ である。
   一方 $`0 \cdot \lvert \mathrm{blk}\rvert = 0`$ である。
 
 **帰納段** $`n = k + 1`$。帰納法の仮定は $`\Phi(k)`$、すなわち
 $`\lvert \mathrm{copies}_d(\mathrm{blk}, k)\rvert = k \cdot \lvert \mathrm{blk}\rvert`$ である。
-[T.copies_succ_back](Cofinality-3.md#t-copies_succ_back) より
+[T.copies_succ_back](Cofinality-3-ja.md#t-copies_succ_back) より
 
 ```math
 \mathrm{copies}_d(\mathrm{blk}, k+1)
@@ -564,7 +564,7 @@ $`\lvert \mathrm{copies}_d(\mathrm{blk}, k)\rvert = k \cdot \lvert \mathrm{blk}\
  = \bigl\lvert \mathrm{copies}_d(\mathrm{blk}, k)\bigr\rvert + \bigl\lvert \mathrm{blk}^{+k d}\bigr\rvert .
 ```
 
-[T.shiftr0_length](Cofinality-2.md#t-shiftr0_length) より
+[T.shiftr0_length](Cofinality-2-ja.md#t-shiftr0_length) より
 $`\lvert \mathrm{blk}^{+k d}\rvert = \lvert \mathrm{blk}\rvert`$ であり、帰納法の仮定と合わせて
 
 ```math
@@ -589,7 +589,7 @@ C = E \mathbin{+\!\!+} K \qquad\text{かつ}\qquad F = K \mathbin{+\!\!+} D .
 ### 証明
 
 $`K := \mathrm{drop}_{\lvert E\rvert} C`$ と取る。
-[T.split_prefix_left](ArgDom-2.md#t-split_prefix_left) の 2 つの結論が求める 2 つの等式そのものである。∎
+[T.split_prefix_left](ArgDom-2-ja.md#t-split_prefix_left) の 2 つの結論が求める 2 つの等式そのものである。∎
 
 <a id="t-prefix_cons_append"></a>
 ## 定理: 共通の左因子と共通の列に続く前部分列 (T.prefix_cons_append)
@@ -629,13 +629,13 @@ M := \bigl(G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr) \mathbin{+\!\!+} (\ell),
 j_1 := \bigl\lvert G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr\rvert
 ```
 
-とおく。$`\lvert G\rvert \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば
+とおく。$`\lvert G\rvert \to^M_1 j_1`$（[D.nextrel1](Pss-ja.md#d-nextrel1)）ならば
 
 ```math
 \mathrm{SpineOK}\bigl(R,\ v_0 + d_0,\ w_0 + 1\bigr).
 ```
 
-（$`\mathrm{SpineOK}`$ [D.SpineOK](ArgDom.md#d-SpineOK)）
+（$`\mathrm{SpineOK}`$ [D.SpineOK](ArgDom-ja.md#d-SpineOK)）
 
 ### 証明
 
@@ -663,7 +663,7 @@ $`\to^M_1`$ の定義（D.nextrel1）により、仮定 $`\lvert G\rvert \to^M_1
 \forall j,\ \bigl(\lvert G\rvert \lt j \wedge j \le^M_0 j_1\bigr) \to M_{1,j_1} \le M_{1,j}
 ```
 
-が得られる（$`\le^M_0`$ [D.le0](Pss.md#d-le0)、$`M_{i,j}`$ [D.entry](Pss.md#d-entry)）。
+が得られる（$`\le^M_0`$ [D.le0](Pss-ja.md#d-le0)、$`M_{i,j}`$ [D.entry](Pss-ja.md#d-entry)）。
 $`A := G \mathbin{+\!\!+} ((v_0,w_0) :: U)`$ とおく。
 
 **第 1 段：位置の勘定。**
@@ -685,10 +685,10 @@ j_1 = \lvert G\rvert + 1 + \lvert R\rvert
 
 である。とくに $`\lvert G\rvert \lt \lvert A\rvert`$ かつ $`\lvert A\rvert \le j_1`$ である。
 
-[T.getD_append_right'](Cofinality.md#t-getD_append_right') を
+[T.getD_append_right'](Cofinality-ja.md#t-getD_append_right') を
 $`A`$、$`x :: (V \mathbin{+\!\!+} (\ell))`$、$`i := 0`$ に適用すると
 $`M\langle \lvert A\rvert\rangle = x`$ である。したがって
-[T.entry_zero](Cofinality.md#t-entry_zero) と [T.entry_one](Cofinality.md#t-entry_one) より
+[T.entry_zero](Cofinality-ja.md#t-entry_zero) と [T.entry_one](Cofinality-ja.md#t-entry_one) より
 
 ```math
 M_{0,\lvert A\rvert} = x_1, \qquad M_{1,\lvert A\rvert} = x_2 .
@@ -702,7 +702,7 @@ M_{0,\lvert A\rvert} = x_1, \qquad M_{1,\lvert A\rvert} = x_2 .
 ```
 
 を示す。$`\lvert A\rvert \lt y`$ より $`y = \lvert A\rvert + (t+1)`$ なる $`t`$ が取れる。
-第 1 段の分解と [T.getD_append_right'](Cofinality.md#t-getD_append_right') により
+第 1 段の分解と [T.getD_append_right'](Cofinality-ja.md#t-getD_append_right') により
 
 ```math
 M\bigl\langle \lvert A\rvert + (t+1)\bigr\rangle
@@ -719,12 +719,12 @@ $`t`$ で場合分けする。
   $`M_{0,\lvert A\rvert} \lt M_{0,y}`$ を得る。
 
 - $`t = \lvert V\rvert`$ のとき。ふたたび
-  [T.getD_append_right'](Cofinality.md#t-getD_append_right') を $`V`$、$`(\ell)`$、$`i := 0`$ に適用して
+  [T.getD_append_right'](Cofinality-ja.md#t-getD_append_right') を $`V`$、$`(\ell)`$、$`i := 0`$ に適用して
   $`(V \mathbin{+\!\!+} (\ell))\langle \lvert V\rvert\rangle = \ell`$ である。
   仮定 $`x_1 \lt v_0 + d_0 = \ell_1`$ より $`M_{0,\lvert A\rvert} \lt M_{0,y}`$ を得る。
 
 **第 3 段：$`x`$ は落とされる列の行 $`0`$ の祖先である。**
-[T.le0_through_pivot](Column-4.md#t-le0_through_pivot) を
+[T.le0_through_pivot](Column-4-ja.md#t-le0_through_pivot) を
 $`a := \lvert G\rvert`$、$`\rho := \lvert A\rvert`$、$`b := j_1`$ として適用する。
 仮定は条件 (5) の $`\lvert G\rvert \le^M_0 j_1`$、第 1 段の $`\lvert G\rvert \lt \lvert A\rvert`$ と
 $`\lvert A\rvert \le j_1`$、および第 2 段である。結論は
@@ -734,10 +734,10 @@ $`\lvert A\rvert \le j_1`$、および第 2 段である。結論は
 ```
 
 **第 4 段：最小性の条件を使う。**
-[T.getD_append_right'](Cofinality.md#t-getD_append_right') を
+[T.getD_append_right'](Cofinality-ja.md#t-getD_append_right') を
 $`G \mathbin{+\!\!+} ((v_0,w_0) :: R)`$、$`(\ell)`$、$`i := 0`$ に適用して
 $`M\langle j_1\rangle = \ell`$ である。よって
-[T.entry_one](Cofinality.md#t-entry_one) より $`M_{1,j_1} = \ell_2 = w_0 + 1`$ である。
+[T.entry_one](Cofinality-ja.md#t-entry_one) より $`M_{1,j_1} = \ell_2 = w_0 + 1`$ である。
 
 条件 (6) を $`j := \lvert A\rvert`$ に適用する。その前件は第 1 段の
 $`\lvert G\rvert \lt \lvert A\rvert`$ と第 3 段の $`\lvert A\rvert \le^M_0 j_1`$ である。

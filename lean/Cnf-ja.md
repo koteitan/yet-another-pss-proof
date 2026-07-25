@@ -1,4 +1,4 @@
-[← README](README.md) | [English](Cnf.md) | [Japanese](Cnf-ja.md) | Cnf **1** [2](Cnf-2.md) [3](Cnf-3.md)
+[← README](README-ja.md) | [English](Cnf.md) | [Japanese](Cnf-ja.md) | Cnf **1** [2](Cnf-2-ja.md) [3](Cnf-3-ja.md)
 
 <a id="t-getD_eq_getElem'"></a>
 ## 定理: 既定値つき添字づけの値 (T.getD_eq_getElem')
@@ -28,7 +28,7 @@ $`\lvert l\rvert \le i`$ のときは「見つからなかった」という結�
 
 ### 定理
 
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`n \in \mathbb{N}`$ とし、$`1 \lt \lvert M\rvert`$ と
+$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）、$`n \in \mathbb{N}`$ とし、$`1 \lt \lvert M\rvert`$ と
 $`1 \le n`$ を仮定する。このとき $`R \in \mathrm{PairSeq}`$ が存在して
 
 ```math
@@ -38,13 +38,13 @@ M[n] = \mathrm{dropLast}\,M \mathbin{+\!\!+} R
 ```
 
 が成り立つ。ここで $`\mathrm{dropLast}\,M`$ は $`M`$ の末尾 1 要素を落とした列である
-（$`M[n]`$ [D.oper](Pss.md#d-oper)、$`\mathrm{snd}`$ [D.sndSet](Term.md#d-sndSet)）。
+（$`M[n]`$ [D.oper](Pss-ja.md#d-oper)、$`\mathrm{snd}`$ [D.sndSet](Term-ja.md#d-sndSet)）。
 
 ### 証明
 
-$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）とおく。
+$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss-ja.md#d-idx1)）とおく。
 $`1 \lt \lvert M\rvert`$ より $`j_1 \ne 0`$ であり、また $`\neg(\lvert M\rvert \le 1)`$ であるから
-$`\mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）の定義（D.Pred）の第 2 の場合が選ばれて
+$`\mathrm{Pred}\,M`$（[D.Pred](Pss-ja.md#d-Pred)）の定義（D.Pred）の第 2 の場合が選ばれて
 
 ```math
 \mathrm{Pred}\,M = \mathrm{dropLast}\,M
@@ -52,23 +52,23 @@ $`\mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）の定義（D.Pred）の第 2 �
 
 である。次の 3 つの場合に分ける。
 
-**(a) $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より
+**(a) $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss-ja.md#d-entry)）のとき。**
+[T.oper_eq_pred_of_zero](Decrease-ja.md#t-oper_eq_pred_of_zero) より
 $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と取る。
 第 1 式は $`\mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M`$ により成り立つ。
-第 2 式は [T.sndSet_nil](Term.md#t-sndSet_nil) より $`\mathrm{snd}(()) = \emptyset`$ であり、
+第 2 式は [T.sndSet_nil](Term-ja.md#t-sndSet_nil) より $`\mathrm{snd}(()) = \emptyset`$ であり、
 空集合は任意の集合の部分集合であるから成り立つ。
 
 **(b) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ
-$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）のとき。**
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
+$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss-ja.md#d-hasParent)）のとき。**
+[T.oper_eq_pred_of_noParent](Decrease-ja.md#t-oper_eq_pred_of_noParent) より
 $`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と取る。
 第 1 式は $`\mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M`$ により成り立つ。
-第 2 式は [T.sndSet_nil](Term.md#t-sndSet_nil) より $`\mathrm{snd}(()) = \emptyset`$ であり、
+第 2 式は [T.sndSet_nil](Term-ja.md#t-sndSet_nil) より $`\mathrm{snd}(()) = \emptyset`$ であり、
 空集合は任意の集合の部分集合であるから成り立つ。
 
 **(c) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を適用して
+[T.oper_bad_blocks](Decrease-ja.md#t-oper_bad_blocks) を適用して
 $`G, R_0 \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ を取る。
 その (1) と (2) は
 
@@ -81,7 +81,7 @@ M[n] = G \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} B_1 \mathbin{+\!\!+} \cdots \math
 B_k := \bigl((v_0,w_0) :: R_0\bigr)^{+k\,d_0}
 ```
 
-である。ここで $`L^{+e}`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）は $`L`$ の各対の第 1 成分に
+である。ここで $`L^{+e}`$（[D.shiftr0](Cnf-2-ja.md#d-shiftr0)）は $`L`$ の各対の第 1 成分に
 $`e`$ を足した列である。
 
 まず $`M`$ の末尾 1 要素は $`\ell`$ であるから、(1) より
@@ -107,13 +107,13 @@ M[n] = \Bigl(G \mathbin{+\!\!+} \bigl((v_0,w_0) :: R_0\bigr)\Bigr) \mathbin{+\!\
 
 となり、第 1 式が成り立つ。
 
-第 2 式を示す。$`y \in \mathrm{snd}(R)`$ とすると、[T.mem_sndSet](Term.md#t-mem_sndSet) より
+第 2 式を示す。$`y \in \mathrm{snd}(R)`$ とすると、[T.mem_sndSet](Term-ja.md#t-mem_sndSet) より
 $`p \in R`$ で $`p_2 = y`$ なるものが存在する。$`R`$ は $`B_1, \dots, B_{n-1}`$ の連結であるから、
 ある $`k`$（$`1 \le k \le n-1`$）について $`p \in B_k`$ である。
 $`B_k = ((v_0,w_0) :: R_0)^{+k\,d_0}`$ の要素は、$`q \in (v_0,w_0) :: R_0`$ について
 $`(q_1 + k\,d_0,\ q_2)`$ の形であるから、$`p_2 = q_2`$、すなわち $`y = q_2`$ である。
 いま $`q \in (v_0,w_0) :: R_0`$ であり、$`\mathrm{dropLast}\,M = G \mathbin{+\!\!+} ((v_0,w_0) :: R_0)`$
-であるから $`q \in \mathrm{dropLast}\,M`$ である。ふたたび [T.mem_sndSet](Term.md#t-mem_sndSet) より
+であるから $`q \in \mathrm{dropLast}\,M`$ である。ふたたび [T.mem_sndSet](Term-ja.md#t-mem_sndSet) より
 $`y \in \mathrm{snd}(\mathrm{dropLast}\,M)`$ を得る。∎
 
 <a id="t-diagSeq_cons"></a>
@@ -121,7 +121,7 @@ $`y \in \mathrm{snd}(\mathrm{dropLast}\,M)`$ を得る。∎
 
 ### 定理
 
-$`u \le v`$ ならば $`\Delta_u^v = (u,u) :: \Delta_{u+1}^v`$（[D.diagSeq](Pss.md#d-diagSeq)）。
+$`u \le v`$ ならば $`\Delta_u^v = (u,u) :: \Delta_{u+1}^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）。
 
 ### 証明
 
@@ -158,12 +158,12 @@ $`u \le v`$ ならば
 \mathrm{tr}(\Delta_u^v) = \mathsf{P}\bigl(u,\ \mathrm{tr}(\Delta_{u+1}^v),\ \mathsf{Z}\bigr)
 ```
 
-（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\mathsf{Z}`$ と $`\mathsf{P}`$ [D.Three](Term.md#d-Three)）。
+（$`\mathrm{tr}`$ [D.translate](Term-ja.md#d-translate)、$`\mathsf{Z}`$ と $`\mathsf{P}`$ [D.Three](Term-ja.md#d-Three)）。
 
 ### 証明
 
 [T.diagSeq_cons](#t-diagSeq_cons) より $`\Delta_u^v = (u,u) :: \Delta_{u+1}^v`$ である。
-[T.translate_single_tree](Term.md#t-translate_single_tree) を $`p := (u,u)`$、
+[T.translate_single_tree](Term-ja.md#t-translate_single_tree) を $`p := (u,u)`$、
 $`R := \Delta_{u+1}^v`$ として適用する。その仮定「$`R`$ の全要素 $`x`$ が $`p_1 \lt x_1`$ をみたす」は
 次のように確かめられる。$`x \in \Delta_{u+1}^v`$ とすると
 [T.fst_in_diagSeq](#t-fst_in_diagSeq) より $`u + 1 \le x_1`$ であり、したがって $`u \lt x_1`$ である。
@@ -194,7 +194,7 @@ $`\mathrm{Three}`$ 上の述語 $`\mathrm{cnf}`$ を、項の構造に関する�
 いずれも与えられた項の真部分項であるから、この定義は整合的である。
 
 第 3 式の第 2 連言子
-$`\neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)`$（[D.olt](Term.md#d-olt)）は、
+$`\neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)`$（[D.olt](Term-ja.md#d-olt)）は、
 後続和の先頭の主要項から後続和を除いた $`\mathsf{P}(e,f,\mathsf{Z})`$ が、
 先頭の主要項から後続和を除いた $`\mathsf{P}(a,b,\mathsf{Z})`$ より真に大きくないことを述べている。
 
@@ -352,8 +352,8 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(L \mathbin{+\!\!+} (m))\bigr)`$ を得る。
 すなわち $`\mathrm{cnf}(\mathrm{tr}(p :: L))`$ が成り立つ。
 
 **$`\neg(p_1 \lt m_1)`$ のとき。**
-[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
-[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
+[T.takeWhile_append_all](Term-ja.md#t-takeWhile_append_all) と
+[T.dropWhile_append_all](Term-ja.md#t-dropWhile_append_all) より
 $`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L \mathbin{+\!\!+} \mathrm{tw}_{p_1}(m)`$、
 $`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{dw}_{p_1}(m)`$ であり、$`m`$ が述語を破るから
 $`\mathrm{tw}_{p_1}(m) = ()`$、$`\mathrm{dw}_{p_1}(m) = (m)`$ である。よって
@@ -371,8 +371,8 @@ $`\mathrm{cnf}(\mathrm{tr}\,L)`$ を得る。
 すなわち $`\mathrm{cnf}(\mathrm{tr}(p :: L))`$ が成り立つ。
 
 **(b) $`L`$ のある要素 $`x`$ が $`\neg(p_1 \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
-[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) より
+[T.takeWhile_append_not](Term-ja.md#t-takeWhile_append_not) と
+[T.dropWhile_append_not](Term-ja.md#t-dropWhile_append_not) より
 
 ```math
 \mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{tw}_{p_1} L,
@@ -396,8 +396,8 @@ $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすことになり、$`x`$ につ
 
 である（第 2 式では $`(q :: L_2) \mathbin{+\!\!+} (m) = q :: (L_2 \mathbin{+\!\!+} (m))`$ を使った）。
 以下 $`A := \mathrm{tr}(\mathrm{tw}_{q_1} L_2)`$、$`A' := \mathrm{tr}(\mathrm{tw}_{q_1}(L_2 \mathbin{+\!\!+} (m)))`$ と略記する。
-[T.translate_takeWhile_snoc_le](Decrease.md#t-translate_takeWhile_snoc_le) より
-$`A \preceq A'`$（[D.ole](Term.md#d-ole)）である。
+[T.translate_takeWhile_snoc_le](Decrease-ja.md#t-translate_takeWhile_snoc_le) より
+$`A \preceq A'`$（[D.ole](Term-ja.md#d-ole)）である。
 
 前件は、$`\mathrm{tr}`$ の定義（D.translate）と上の 2 式により
 
@@ -423,7 +423,7 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr)`$ を得る。
 ```
 
 を示す。$`A \preceq A'`$ は $`\preceq`$ の定義（D.ole）より $`A \prec A'`$ か $`A = A'`$ である。
-前者のときは [T.olt_P_b](Term.md#t-olt_P_b) より
+前者のときは [T.olt_P_b](Term-ja.md#t-olt_P_b) より
 $`\mathsf{P}(q_2, A, \mathsf{Z}) \prec \mathsf{P}(q_2, A', \mathsf{Z})`$ であり、$`\preceq`$ の定義の第 1 選言が成り立つ。
 後者のときは両辺が同一の項であり、第 2 選言が成り立つ。
 
@@ -434,7 +434,7 @@ $`\mathsf{P}(q_2, A, \mathsf{Z}) \prec \mathsf{P}(q_2, A', \mathsf{Z})`$ であ�
 ```
 
 を示す。左辺の内側が成り立つとすると、いま示した $`\preceq`$ と
-[T.olt_ole_trans](Term.md#t-olt_ole_trans) より
+[T.olt_ole_trans](Term-ja.md#t-olt_ole_trans) より
 $`\mathsf{P}(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathsf{Z}) \prec \mathsf{P}(q_2, A', \mathsf{Z})`$
 となり、2 に矛盾する。
 
@@ -545,7 +545,7 @@ L^{\ast 0} := (), \qquad L^{\ast(k+1)} := L \mathbin{+\!\!+} L^{\ast k} .
 $`k = k' + 1`$ のときは $`B^{\ast(k'+1)} = B \mathbin{+\!\!+} B^{\ast k'}`$ の先頭は $`B`$ の先頭 $`(v_0,w_0)`$ であり、
 $`\neg(v_0 \lt v_0)`$ であるから第 2 選言が成り立つ。
 
-したがって [T.translate_block_append](Term.md#t-translate_block_append) を
+したがって [T.translate_block_append](Term-ja.md#t-translate_block_append) を
 $`T := B^{\ast k}`$ として適用でき、任意の $`k`$ について
 
 ```math
@@ -590,7 +590,7 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast m})\bigr)`$ である。$`m`$ で場合�
 
 1. $`\mathrm{cnf}(\mathrm{tr}\,R)`$：仮定である。
 2. $`\neg\bigl(\mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z}) \prec \mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z})\bigr)`$：
-   [T.olt_irrefl](Term.md#t-olt_irrefl) である。
+   [T.olt_irrefl](Term-ja.md#t-olt_irrefl) である。
 3. $`\mathrm{cnf}\bigl(\mathsf{P}(w_0, \mathrm{tr}\,R, \mathrm{tr}(B^{\ast m'}))\bigr)`$：
    $`(\ast\ast)`$ を $`k := m'`$ として使うとこの項は $`\mathrm{tr}(B^{\ast(m'+1)}) = \mathrm{tr}(B^{\ast m})`$ であり、
    主張は帰納法の仮定 $`\Phi(m)`$ である。

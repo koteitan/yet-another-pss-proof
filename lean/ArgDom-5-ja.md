@@ -1,13 +1,13 @@
-[← README](README.md) | [English](ArgDom-5.md) | [Japanese](ArgDom-5-ja.md) | ArgDom [1](ArgDom.md) [2](ArgDom-2.md) [3](ArgDom-3.md) [4](ArgDom-4.md) **5**
+[← README](README-ja.md) | [English](ArgDom-5.md) | [Japanese](ArgDom-5-ja.md) | ArgDom [1](ArgDom-ja.md) [2](ArgDom-2-ja.md) [3](ArgDom-3-ja.md) [4](ArgDom-4-ja.md) **5**
 
 <a id="t-argDomCoreOn_bad"></a>
 ## 定理: 第 4 分岐での ArgDomCoreOn の保存 (T.argDomCoreOn_bad)
 
 ### 定理
 
-$`M, G, R \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`v_0, w_0, d_0, n \in \mathbb{N}`$、
+$`M, G, R \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）、$`v_0, w_0, d_0, n \in \mathbb{N}`$、
 $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。
-[T.argDomCoreOn_bad_A2](ArgDom-4.md#t-argDomCoreOn_bad_A2) の仮定 (hM) から (hSTn) までと (hn)、すなわち
+[T.argDomCoreOn_bad_A2](ArgDom-4-ja.md#t-argDomCoreOn_bad_A2) の仮定 (hM) から (hSTn) までと (hn)、すなわち
 
 ```math
 \begin{aligned}
@@ -24,8 +24,8 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: 
 \end{aligned}
 ```
 
-（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn)、
-$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)、$`\mathrm{copies}_{d_0}`$ [D.copies](Cnf-2.md#d-copies)）
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss-ja.md#d-ST_PS)、$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom-ja.md#d-ArgDomCoreOn)、
+$`\to^M_1`$ [D.nextrel1](Pss-ja.md#d-nextrel1)、$`\mathrm{copies}_{d_0}`$ [D.copies](Cnf-2-ja.md#d-copies)）
 
 を仮定する。このとき
 $`\mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n)\bigr)`$。
@@ -53,17 +53,17 @@ $`\Phi(0)`$ が成り立つ場合として含まれている。
 
 をおく。$`1 \le n`$ とし、$`\mathrm{ArgDomCoreOn}`$ の定義に従って
 $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$、$`u, w, e \in \mathbb{N}`$ と
-[T.argDomCoreOn_bad_A2](ArgDom-4.md#t-argDomCoreOn_bad_A2) の仮定 (heq) から (h6) までを与えられたとして
+[T.argDomCoreOn_bad_A2](ArgDom-4-ja.md#t-argDomCoreOn_bad_A2) の仮定 (heq) から (h6) までを与えられたとして
 
 ```math
 B \preceq_{\mathrm{lex}}
   \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 ```
 
-（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、$`L^{+e}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality-ja.md#d-sle)、$`L^{+e}`$ [D.shiftr0](Cnf-2-ja.md#d-shiftr0)）
 
 を示す。(IH) を書き直すと、これは
-[T.argDomCoreOn_bad_A2](ArgDom-4.md#t-argDomCoreOn_bad_A2) の仮定 (hIH)
+[T.argDomCoreOn_bad_A2](ArgDom-4-ja.md#t-argDomCoreOn_bad_A2) の仮定 (hIH)
 
 ```math
 \forall m,\ 1 \le m \to m \lt n \to
@@ -77,13 +77,13 @@ $`p := \lvert G\rvert + (\lvert R\rvert + 1)`$ とおく。自然数の全順序
 $`j \lt p`$ または $`p \le j`$ であり、後者の場合さらに $`i \lt p`$ または $`p \le i`$ である。
 この 3 通りは互いに排反で、かつすべての場合を尽くす。
 
-- $`j \lt p`$ のとき。[T.argDomCoreOn_bad_B](ArgDom-3.md#t-argDomCoreOn_bad_B) を
+- $`j \lt p`$ のとき。[T.argDomCoreOn_bad_B](ArgDom-3-ja.md#t-argDomCoreOn_bad_B) を
   (hM) から (hSTn) まで、(hIH)、(hn)、(heq) から (h6) まで、および
   その判別条件 (hcase) $`j \lt p`$ に適用する。
-- $`p \le j`$ かつ $`i \lt p`$ のとき。[T.argDomCoreOn_bad_A2](ArgDom-4.md#t-argDomCoreOn_bad_A2) を
+- $`p \le j`$ かつ $`i \lt p`$ のとき。[T.argDomCoreOn_bad_A2](ArgDom-4-ja.md#t-argDomCoreOn_bad_A2) を
   (hM) から (hSTn) まで、(hIH)、(hn)、(heq) から (h6) まで、および
   その判別条件 (hcaseL) $`i \lt p`$、(hcaseR) $`p \le j`$ に適用する。
-- $`p \le j`$ かつ $`p \le i`$ のとき。[T.argDomCoreOn_bad_A1](ArgDom-2.md#t-argDomCoreOn_bad_A1) を
+- $`p \le j`$ かつ $`p \le i`$ のとき。[T.argDomCoreOn_bad_A1](ArgDom-2-ja.md#t-argDomCoreOn_bad_A1) を
   (hM) から (hSTn) まで、(hIH)、(hn)、(heq) から (h6) まで、および
   その判別条件 (hcase) $`p \le i`$ に適用する。
 
@@ -95,19 +95,19 @@ $`j \lt p`$ または $`p \le j`$ であり、後者の場合さらに $`i \lt p
 ### 定理
 
 $`M \in \mathrm{ST\_PS}`$、$`\mathrm{ArgDomCoreOn}(M)`$、$`1 \le n`$ ならば
-$`\mathrm{ArgDomCoreOn}(M[n])`$（$`M[n]`$ [D.oper](Pss.md#d-oper)）。
+$`\mathrm{ArgDomCoreOn}(M[n])`$（$`M[n]`$ [D.oper](Pss-ja.md#d-oper)）。
 
 ### 証明
 
 $`j_1 := \lvert M\rvert - 1`$ と書く。$`M[n]`$ の定義（D.oper）の分岐に沿って場合分けする。
 
 **(a) $`j_1 = 0`$ のとき。**
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`M[n] = M`$ であるから、
+[T.oper_eq_self_of_short](Decrease-ja.md#t-oper_eq_self_of_short) より $`M[n] = M`$ であるから、
 仮定 $`\mathrm{ArgDomCoreOn}(M)`$ がそのまま結論である。
 
-**(b) $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より
-$`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）である。$`j_1 = \lvert M\rvert - 1 \ne 0`$ より
+**(b) $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss-ja.md#d-entry)）のとき。**
+[T.oper_eq_pred_of_zero](Decrease-ja.md#t-oper_eq_pred_of_zero) より
+$`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss-ja.md#d-Pred)）である。$`j_1 = \lvert M\rvert - 1 \ne 0`$ より
 $`2 \le \lvert M\rvert`$、すなわち $`\neg(\lvert M\rvert \le 1)`$ であるから、
 $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれて
 $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
@@ -116,7 +116,7 @@ $`M \ne ()`$ である（$`M = ()`$ なら $`\lvert M\rvert = 0`$ となり $`2 
 また $`M_{i,j}`$ の定義（D.entry）より仮定は
 $`(M\langle j_1\rangle)_1 = 0`$ かつ $`(M\langle j_1\rangle)_2 = 0`$、すなわち
 $`M\langle j_1\rangle = (0,0)`$ である。
-[T.dropLast_snoc_getD](Cofinality.md#t-dropLast_snoc_getD) より
+[T.dropLast_snoc_getD](Cofinality-ja.md#t-dropLast_snoc_getD) より
 
 ```math
 \mathrm{dropLast}\,M \mathbin{+\!\!+} \bigl((0,0)\bigr) = M
@@ -125,20 +125,20 @@ $`M\langle j_1\rangle = (0,0)`$ である。
 であるから、仮定 $`\mathrm{ArgDomCoreOn}(M)`$ は
 $`\mathrm{ArgDomCoreOn}\bigl(\mathrm{dropLast}\,M \mathbin{+\!\!+} ((0,0))\bigr)`$ に他ならない。
 $`(0,0)`$ の第 1 成分は $`0`$ であるから
-[T.argDomCoreOn_snoc_zero](ArgDom-2.md#t-argDomCoreOn_snoc_zero) が適用でき、
+[T.argDomCoreOn_snoc_zero](ArgDom-2-ja.md#t-argDomCoreOn_snoc_zero) が適用でき、
 $`\mathrm{ArgDomCoreOn}(\mathrm{dropLast}\,M) = \mathrm{ArgDomCoreOn}(M[n])`$ を得る。
 
 **(c) $`j_1 \ne 0`$ かつ $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ のとき。**
 $`2 \le \lvert M\rvert`$ より $`0 \lt \lvert M\rvert`$ であるから、
-[T.hasParent_last_ST_PS](Cofinality.md#t-hasParent_last_ST_PS) より、探索行
-$`\mathrm{idx}_1(M,j_1)`$（[D.idx1](Pss.md#d-idx1)）について
-$`\mathrm{hasParent}(M, \mathrm{idx}_1(M,j_1), j_1)`$（[D.hasParent](Pss.md#d-hasParent)）が成り立つ。
+[T.hasParent_last_ST_PS](Cofinality-ja.md#t-hasParent_last_ST_PS) より、探索行
+$`\mathrm{idx}_1(M,j_1)`$（[D.idx1](Pss-ja.md#d-idx1)）について
+$`\mathrm{hasParent}(M, \mathrm{idx}_1(M,j_1), j_1)`$（[D.hasParent](Pss-ja.md#d-hasParent)）が成り立つ。
 
-[T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) より $`\mathrm{blockok}(0, M)`$（[D.blockok](Seqlex.md#d-blockok)）であり、
-その第 3 連言子が $`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）である。
-また [T.r1ok_ST_PS](Column-3.md#t-r1ok_ST_PS) より
-$`\mathrm{r1ok}(M)`$（[D.r1ok](Column-2.md#d-r1ok)）である。$`1 \lt \lvert M\rvert`$ とこれらに
-[T.oper_bad_blocks_all](Cofinality.md#t-oper_bad_blocks_all) を適用して、
+[T.blockok_ST_PS](Seqlex-2-ja.md#t-blockok_ST_PS) より $`\mathrm{blockok}(0, M)`$（[D.blockok](Seqlex-ja.md#d-blockok)）であり、
+その第 3 連言子が $`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex-ja.md#d-steps1)）である。
+また [T.r1ok_ST_PS](Column-3-ja.md#t-r1ok_ST_PS) より
+$`\mathrm{r1ok}(M)`$（[D.r1ok](Column-2-ja.md#d-r1ok)）である。$`1 \lt \lvert M\rvert`$ とこれらに
+[T.oper_bad_blocks_all](Cofinality-ja.md#t-oper_bad_blocks_all) を適用して、
 $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$
 であって、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおくと
 
@@ -185,8 +185,8 @@ $`N \in \mathrm{ST\_PS}`$ の導出に関する帰納法による（$`\mathrm{ST
 
 である。構成子は 2 つであるから、次の 2 段を示せばよい。
 
-**基底段（構成子 $`\mathrm{diag}`$）。** $`N = \Delta_0^v`$（[D.diagSeq](Pss.md#d-diagSeq)）の場合である。
-[T.argDomCoreOn_diag](ArgDom-2.md#t-argDomCoreOn_diag) がそのまま
+**基底段（構成子 $`\mathrm{diag}`$）。** $`N = \Delta_0^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）の場合である。
+[T.argDomCoreOn_diag](ArgDom-2-ja.md#t-argDomCoreOn_diag) がそのまま
 $`\Phi(\Delta_0^v)`$ である。
 
 **帰納段（構成子 $`\mathrm{oper}`$）。** $`N = M[n]`$ であって、
@@ -201,11 +201,11 @@ $`\mathrm{ArgDomCoreOn}(M[n]) = \Phi(N)`$ を得る。∎
 
 ### 定理
 
-$`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom.md#d-ArgDomCore)）。
+$`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom-ja.md#d-ArgDomCore)）。
 
 ### 証明
 
-[T.argDomCore_of_on](ArgDom.md#t-argDomCore_of_on) は
+[T.argDomCore_of_on](ArgDom-ja.md#t-argDomCore_of_on) は
 $`\forall N,\ N \in \mathrm{ST\_PS} \to \mathrm{ArgDomCoreOn}(N)`$ から
 $`\mathrm{ArgDomCore}`$ を導く。その前提は
 [T.argDomCoreOn_ST_PS](#t-argDomCoreOn_ST_PS) そのものである。∎

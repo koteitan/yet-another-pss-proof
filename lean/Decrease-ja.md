@@ -1,14 +1,14 @@
-[← README](README.md) | [English](Decrease.md) | [Japanese](Decrease-ja.md)
+[← README](README-ja.md) | [English](Decrease.md) | [Japanese](Decrease-ja.md)
 
-以下、$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
-$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）と書く。
+以下、$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）に対し
+$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss-ja.md#d-idx1)）と書く。
 
 <a id="t-oper_eq_self_of_short"></a>
 ## 定理: 短い列では展開は恒等 (T.oper_eq_self_of_short)
 
 ### 定理
 
-$`j_1 = 0`$ ならば、任意の $`n`$ に対し $`M[n] = M`$（[D.oper](Pss.md#d-oper)）。
+$`j_1 = 0`$ ならば、任意の $`n`$ に対し $`M[n] = M`$（[D.oper](Pss-ja.md#d-oper)）。
 
 ### 証明
 
@@ -19,8 +19,8 @@ $`M[n]`$ の定義（D.oper）の分岐 (a) の条件が仮定そのものであ
 
 ### 定理
 
-$`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）ならば、
-任意の $`n`$ に対し $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）。
+$`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss-ja.md#d-entry)）ならば、
+任意の $`n`$ に対し $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss-ja.md#d-Pred)）。
 
 ### 証明
 
@@ -33,7 +33,7 @@ $`M[n]`$ の定義（D.oper）の分岐 (a) の条件は $`j_1 = 0`$ であり�
 ### 定理
 
 $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
-$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）ならば、
+$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss-ja.md#d-hasParent)）ならば、
 任意の $`n`$ に対し $`M[n] = \mathrm{Pred}\,M`$。
 
 ### 証明
@@ -48,7 +48,7 @@ $`M[n]`$ の定義（D.oper）の分岐 (a), (b) の条件はいずれも仮定�
 
 $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
 $`\mathrm{hasParent}(M, i_1, j_1)`$ とする。
-$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）、
+$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss-ja.md#d-parent)）、
 
 ```math
 d_0 := \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 \lt i_1) \cr 0 & (i_1 = 0) \end{cases}
@@ -73,7 +73,7 @@ $`M[n]`$ の定義（D.oper）の分岐 (a), (b), (c) の条件はいずれも�
 d_1 = \begin{cases} M_{1,j_1} - M_{1,j_0} & (1 \lt i_1) \cr 0 & (i_1 \le 1) \end{cases}
 ```
 
-であった。[T.idx1_le1](Term.md#t-idx1_le1) より $`i_1 \le 1`$ であるから条件 $`1 \lt i_1`$ は
+であった。[T.idx1_le1](Term-ja.md#t-idx1_le1) より $`i_1 \le 1`$ であるから条件 $`1 \lt i_1`$ は
 偽であり、$`d_1 = 0`$ である。したがって第 2 成分は $`M_{1,j} + k\cdot 0 = M_{1,j}`$ である。∎
 
 <a id="t-oper_eq_self_short"></a>
@@ -100,7 +100,7 @@ $`j_1 = \lvert M\rvert - 1 = 0`$ である。
 \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m)) .
 ```
 
-（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）
+（$`\mathrm{tr}`$ [D.translate](Term-ja.md#d-translate)、$`\prec`$ [D.olt](Term-ja.md#d-olt)）
 
 ### 証明
 
@@ -111,9 +111,9 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定しない：帰納�
 \Psi(C) :\equiv \forall m,\ \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m)) .
 ```
 
-- **基底段** $`C = ()`$：左辺は $`\mathsf{Z}`$（[D.Three](Term.md#d-Three)）、右辺は $`\mathrm{tr}\,(m)`$ である。
+- **基底段** $`C = ()`$：左辺は $`\mathsf{Z}`$（[D.Three](Term-ja.md#d-Three)）、右辺は $`\mathrm{tr}\,(m)`$ である。
   $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$
-  であるから、[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$。
+  であるから、[T.olt_Z_P](Term-ja.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$。
 
 **帰納段** $`C = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と
 $`\Psi(\mathrm{dw}_{p_1} L)`$ である。$`L`$ の全要素が $`p_1 \lt x_1`$ をみたすかどうかで
@@ -121,12 +121,12 @@ $`\Psi(\mathrm{dw}_{p_1} L)`$ である。$`L`$ の全要素が $`p_1 \lt x_1`$ 
 
 **(a) $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすとき。**
 このとき $`\mathrm{tw}_{p_1} L = L`$、$`\mathrm{dw}_{p_1} L = ()`$ であり、
-[T.translate_single_tree](Term.md#t-translate_single_tree) より
+[T.translate_single_tree](Term-ja.md#t-translate_single_tree) より
 $`\mathrm{tr}(p :: L) = \mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})`$ である。
 さらに $`m`$ が述語をみたすかどうかで分ける。
 
 **$`p_1 \lt m_1`$ のとき。** $`L \mathbin{+\!\!+} (m)`$ の全要素も $`p_1 \lt x_1`$ をみたすから、
-ふたたび [T.translate_single_tree](Term.md#t-translate_single_tree) より
+ふたたび [T.translate_single_tree](Term-ja.md#t-translate_single_tree) より
 
 ```math
 \mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
@@ -135,10 +135,10 @@ $`\mathrm{tr}(p :: L) = \mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})`$ である�
 
 帰納法の仮定 $`\Psi(\mathrm{tw}_{p_1} L) = \Psi(L)`$ を $`m`$ に適用して
 $`\mathrm{tr}\,L \prec \mathrm{tr}(L \mathbin{+\!\!+} (m))`$ を得る。
-これに [T.olt_P_b](Term.md#t-olt_P_b) を適用すればよい。
+これに [T.olt_P_b](Term-ja.md#t-olt_P_b) を適用すればよい。
 
-**$`\neg(p_1 \lt m_1)`$ のとき。**[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
-[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
+**$`\neg(p_1 \lt m_1)`$ のとき。**[T.takeWhile_append_all](Term-ja.md#t-takeWhile_append_all) と
+[T.dropWhile_append_all](Term-ja.md#t-dropWhile_append_all) より
 $`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$、$`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = (m)`$
 であるから、$`\mathrm{tr}`$ の定義（D.translate）より
 
@@ -148,12 +148,12 @@ $`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$、$`\mathrm{dw}_{p_1}(L \mathb
 ```
 
 左辺の後続和は $`\mathsf{Z}`$、右辺の後続和は $`\mathrm{tr}\,(m) = \mathsf{P}(m_2,\mathsf{Z},\mathsf{Z})`$
-であり、[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$ である。
-これに [T.olt_P_c](Term.md#t-olt_P_c) を適用すればよい。
+であり、[T.olt_Z_P](Term-ja.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$ である。
+これに [T.olt_P_c](Term-ja.md#t-olt_P_c) を適用すればよい。
 
 **(b) $`L`$ のある要素 $`x`$ が $`\neg(p_1 \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
-[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) より
+[T.takeWhile_append_not](Term-ja.md#t-takeWhile_append_not) と
+[T.dropWhile_append_not](Term-ja.md#t-dropWhile_append_not) より
 
 ```math
 \mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{tw}_{p_1} L,
@@ -173,7 +173,7 @@ $`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$、$`\mathrm{dw}_{p_1}(L \mathb
 
 であり、添字と引数が共通である。帰納法の仮定 $`\Psi(\mathrm{dw}_{p_1} L)`$ を $`m`$ に適用して
 $`\mathrm{tr}(\mathrm{dw}_{p_1} L) \prec \mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))`$ を得る。
-これに [T.olt_P_c](Term.md#t-olt_P_c) を適用すればよい。∎
+これに [T.olt_P_c](Term-ja.md#t-olt_P_c) を適用すればよい。∎
 
 <a id="t-translate_dropLast_decrease"></a>
 ## 定理: 末尾の 1 列を落とすと翻訳は真に減る (T.translate_dropLast_decrease)
@@ -210,7 +210,7 @@ $`a \in \mathbb{N}`$、$`C \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}\times\mat
 \mathrm{tr}\bigl(\mathrm{tw}_a C\bigr) \preceq \mathrm{tr}\bigl(\mathrm{tw}_a (C \mathbin{+\!\!+} (m))\bigr)
 ```
 
-（$`\preceq`$ [D.ole](Term.md#d-ole)）。
+（$`\preceq`$ [D.ole](Term-ja.md#d-ole)）。
 
 ### 証明
 
@@ -224,13 +224,13 @@ $`C`$ の全要素が $`a \lt x_1`$ をみたすかどうかで場合分けす�
   $`\mathrm{tr}\,C \prec \mathrm{tr}(C \mathbin{+\!\!+} (m))`$ であり、$`\preceq`$ の定義（D.ole）の
   第 1 選言が成り立つ。
 
-- $`\neg(a \lt m_1)`$ のとき。[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) より
+- $`\neg(a \lt m_1)`$ のとき。[T.takeWhile_append_all](Term-ja.md#t-takeWhile_append_all) より
   $`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = C \mathbin{+\!\!+} \mathrm{tw}_a\,(m) = C`$ である
   （$`m`$ が述語を破るので $`\mathrm{tw}_a\,(m) = ()`$）。よって両辺は同一の項であり、
   $`\preceq`$ の定義（D.ole）の第 2 選言が成り立つ。
 
 **(b) ある要素 $`x`$ が $`\neg(a \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) より
+[T.takeWhile_append_not](Term-ja.md#t-takeWhile_append_not) より
 $`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = \mathrm{tw}_a C`$ である。よって両辺は同一の項であり、
 $`\preceq`$ の定義（D.ole）の第 2 選言が成り立つ。∎
 
@@ -256,7 +256,7 @@ $`v_0, w_0 \in \mathbb{N}`$、$`R, T \in \mathrm{PairSeq}`$、$`\ell \in \mathbb
 
 ### 証明
 
-左辺は [T.translate_block_append](Term.md#t-translate_block_append) により
+左辺は [T.translate_block_append](Term-ja.md#t-translate_block_append) により
 
 ```math
 \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} T\bigr) = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,T\bigr)
@@ -264,7 +264,7 @@ $`v_0, w_0 \in \mathbb{N}`$、$`R, T \in \mathrm{PairSeq}`$、$`\ell \in \mathbb
 
 である。右辺については、$`R \mathbin{+\!\!+} (\ell)`$ の全要素が $`v_0 \lt x_1`$ をみたす
 （$`R`$ の要素は第 1 の仮定、$`\ell`$ は第 2 の仮定による）から、
-[T.translate_single_tree](Term.md#t-translate_single_tree) により
+[T.translate_single_tree](Term-ja.md#t-translate_single_tree) により
 
 ```math
 \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} (\ell)\bigr)
@@ -275,7 +275,7 @@ $`v_0, w_0 \in \mathbb{N}`$、$`R, T \in \mathrm{PairSeq}`$、$`\ell \in \mathbb
 である。両者は添字が共通の $`w_0`$ であり、引数は
 [T.translate_snoc_increase](#t-translate_snoc_increase) により
 $`\mathrm{tr}\,R \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$ をみたす。
-[T.olt_P_b](Term.md#t-olt_P_b) を適用すればよい。∎
+[T.olt_P_b](Term-ja.md#t-olt_P_b) を適用すればよい。∎
 
 <a id="t-core_i1"></a>
 ## 定理: 上昇コピーの核 (T.core_i1)
@@ -305,16 +305,16 @@ $`c, \ell \in \mathbb{N}\times\mathbb{N}`$ とし、
 3 段に分ける。
 
 **第 1 段：$`\mathrm{tr}(c :: C') \prec \mathrm{tr}\,(\ell)`$。**
-[T.lead_translate](Term.md#t-lead_translate) より
-$`\mathrm{lead}\,\mathrm{tr}(c :: C') = c_2`$（[D.lead](Term.md#d-lead)）であり、
+[T.lead_translate](Term-ja.md#t-lead_translate) より
+$`\mathrm{lead}\,\mathrm{tr}(c :: C') = c_2`$（[D.lead](Term-ja.md#d-lead)）であり、
 仮定より $`c_2 \lt \ell_2`$ である。
 一方 $`\mathrm{tr}`$ の定義（D.translate）より
 $`\mathrm{tr}\,(\ell) = \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$ である。
-[T.olt_P_of_lead_lt](Term.md#t-olt_P_of_lead_lt) を
+[T.olt_P_of_lead_lt](Term-ja.md#t-olt_P_of_lead_lt) を
 $`t := \mathrm{tr}(c :: C')`$、$`w := \ell_2`$ に適用して第 1 段を得る。
 
 **第 2 段：$`\mathrm{tr}(R \mathbin{+\!\!+} c :: C') \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$。**
-[T.translate_ctx_cong](Term.md#t-translate_ctx_cong) を
+[T.translate_ctx_cong](Term-ja.md#t-translate_ctx_cong) を
 $`z_1 := c`$、$`T_1 := C'`$、$`z_2 := \ell`$、$`T_2 := ()`$、$`G := R`$ として適用する。
 4 つの仮定は次のように満たされる。
 
@@ -329,7 +329,7 @@ $`x \in R`$ のときは仮定による。$`x = c`$ のときは $`c_1 = \ell_1`
 $`v_0 \lt c_1`$。$`x \in C'`$ のときは、いま示した $`v_0 \lt c_1`$ と仮定 $`c_1 \le x_1`$ から
 $`v_0 \lt x_1`$。同様に $`R \mathbin{+\!\!+} (\ell)`$ の全要素も $`v_0 \lt x_1`$ をみたす。
 
-したがって [T.translate_single_tree](Term.md#t-translate_single_tree) により
+したがって [T.translate_single_tree](Term-ja.md#t-translate_single_tree) により
 
 ```math
 \mathrm{tr}\bigl(((v_0,w_0) :: R) \mathbin{+\!\!+} (c :: C')\bigr)
@@ -340,7 +340,7 @@ $`v_0 \lt x_1`$。同様に $`R \mathbin{+\!\!+} (\ell)`$ の全要素も $`v_0 
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-である。第 2 段と [T.olt_P_b](Term.md#t-olt_P_b) から結論が従う。∎
+である。第 2 段と [T.olt_P_b](Term-ja.md#t-olt_P_b) から結論が従う。∎
 
 <a id="t-translate_oper_pred"></a>
 ## 定理: 前者分岐での減少 (T.translate_oper_pred)
@@ -382,7 +382,7 @@ $`1 \lt \lvert M\rvert`$ に反する）。よって
 ### 定理
 
 $`\mathrm{hasParent}(M, i, j_1)`$ ならば
-$`\mathrm{par}^M_i(j_1)`$ $`\to^M_i j_1`$（[D.nextR](Pss.md#d-nextR)）。
+$`\mathrm{par}^M_i(j_1)`$ $`\to^M_i j_1`$（[D.nextR](Pss-ja.md#d-nextR)）。
 
 ### 証明
 
@@ -400,9 +400,9 @@ $`j_0 \to^M_i j_1`$ ならば $`j_0 \lt j_1`$。
 ### 証明
 
 $`\to^M_i`$ の定義（D.nextR）の場合分けによる。$`i = 0`$ のときは
-$`j_0 \to^M_0 j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）であり、
+$`j_0 \to^M_0 j_1`$（[D.nextrel0](Pss-ja.md#d-nextrel0)）であり、
 $`\to^M_0`$ の定義（D.nextrel0）の第 3 条件が $`j_0 \lt j_1`$ である。
-$`i \ne 0`$ のときは $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）であり、
+$`i \ne 0`$ のときは $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss-ja.md#d-nextrel1)）であり、
 $`\to^M_1`$ の定義（D.nextrel1）の第 3 条件が $`j_0 \lt j_1`$ である。∎
 
 <a id="t-nextR_chain0"></a>
@@ -420,7 +420,7 @@ $`\to^M_i`$ の定義（D.nextR）の場合分けによる。
   $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ が成り立つ。
 
 - $`i \ne 0`$ のとき。$`j_0 \to^M_1 j_1`$ であり、$`\to^M_1`$ の定義（D.nextrel1）の
-  第 5 条件は $`j_0 \le^M_0 j_1`$（[D.le0](Pss.md#d-le0)）である。
+  第 5 条件は $`j_0 \le^M_0 j_1`$（[D.le0](Pss-ja.md#d-le0)）である。
   $`\le^M_0`$ の定義（D.le0）の第 3 条件が
   $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。∎
 
@@ -449,7 +449,7 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して次の 6 つが成り立�
 ```
 
 ここで $`L^{+e}`$ は $`L`$ の各対の第 1 成分に $`e`$ を足した列である
-（[T.translate_shift](Term.md#t-translate_shift) の記法）。
+（[T.translate_shift](Term-ja.md#t-translate_shift) の記法）。
 
 ### 証明
 
@@ -457,7 +457,7 @@ $`j_0 := \mathrm{par}^M_{i_1}(j_1)`$ とおく。
 [T.parent_nextR](#t-parent_nextR) より $`j_0 \to^M_{i_1} j_1`$ であり、
 [T.nextR_index_lt](#t-nextR_index_lt) より $`j_0 \lt j_1`$、
 [T.nextR_chain0](#t-nextR_chain0) より $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。
-最後の事実に [T.le0_interval_gt](Term.md#t-le0_interval_gt) を適用して
+最後の事実に [T.le0_interval_gt](Term-ja.md#t-le0_interval_gt) を適用して
 
 ```math
 (\ast)\qquad \forall k,\ \bigl(j_0 \lt k \wedge k \le j_1\bigr) \to M_{0,j_0} \lt M_{0,k}
@@ -480,7 +480,7 @@ $`\lvert G\rvert = j_0`$ である（$`j_0 \lt j_1 \lt \lvert M\rvert`$ なの�
 ちょうど取れる）。以下 6 つを順に示す。
 
 **(1)** $`M`$ を位置 $`j_0`$ で切ると $`M = G \mathbin{+\!\!+} \mathrm{drop}_{j_0} M`$ である。
-[T.drop_eq_map_getD](Term.md#t-drop_eq_map_getD) より
+[T.drop_eq_map_getD](Term-ja.md#t-drop_eq_map_getD) より
 
 ```math
 \mathrm{drop}_{j_0} M = \bigl(M\langle j_0\rangle,\ M\langle j_0+1\rangle,\ \dots,\ M\langle j_1\rangle\bigr)
@@ -601,7 +601,7 @@ C = (v_0 + d_0,\ w_0) :: \Bigl(R^{+d_0} \mathbin{+\!\!+}
   - $`c_2 \lt \ell_2`$：$`c_2 = w_0`$ であり、(5) の第 2 選言に $`w_0 \lt \ell_2`$ がある。
 
 **第 4 段：良い部分 $`G`$ を通して持ち上げる。**
-[T.translate_ctx_cong](Term.md#t-translate_ctx_cong) を
+[T.translate_ctx_cong](Term-ja.md#t-translate_ctx_cong) を
 $`z_1 := (v_0,w_0)`$、$`T_1 := R \mathbin{+\!\!+} C`$、
 $`z_2 := (v_0,w_0)`$、$`T_2 := R \mathbin{+\!\!+} (\ell)`$、$`G := G`$ として適用する。
 4 つの仮定は次のように満たされる。

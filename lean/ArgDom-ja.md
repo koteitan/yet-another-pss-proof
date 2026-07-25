@@ -1,15 +1,15 @@
-[← README](README.md) | [English](ArgDom.md) | [Japanese](ArgDom-ja.md) | ArgDom **1** [2](ArgDom-2.md) [3](ArgDom-3.md) [4](ArgDom-4.md) [5](ArgDom-5.md)
+[← README](README-ja.md) | [English](ArgDom.md) | [Japanese](ArgDom-ja.md) | ArgDom **1** [2](ArgDom-2-ja.md) [3](ArgDom-3-ja.md) [4](ArgDom-4-ja.md) [5](ArgDom-5-ja.md)
 
 <a id="t-seqlex_of_sle_not_prefix"></a>
 ## 定理: 前部分列でないときの狭義比較 (T.seqlex_of_sle_not_prefix)
 
 ### 定理
 
-$`W, X, Y \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とする。
-$`X \preceq_{\mathrm{lex}} W \mathbin{+\!\!+} Y`$（[D.sle](Cofinality.md#d-sle)）であり、かつ任意の
+$`W, X, Y \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）とする。
+$`X \preceq_{\mathrm{lex}} W \mathbin{+\!\!+} Y`$（[D.sle](Cofinality-ja.md#d-sle)）であり、かつ任意の
 $`X' \in \mathrm{PairSeq}`$ について $`X \ne W \mathbin{+\!\!+} X'`$ であるならば、任意の
 $`Y' \in \mathrm{PairSeq}`$ について
-$`X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y'`$（[D.seqlex](Seqlex.md#d-seqlex)）。
+$`X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y'`$（[D.seqlex](Seqlex-ja.md#d-seqlex)）。
 
 ### 証明
 
@@ -47,7 +47,7 @@ $`W`$ の長さに関する帰納法（$`X`$, $`Y`$, $`Y'`$ は全称量化し�
   $`x :: X'' \prec_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y)`$ の場合、
   $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式により次のいずれかが成り立つ。
 
-  - $`x \prec_{\mathrm{p}} w`$（[D.pairlt](Seqlex.md#d-pairlt)）のとき。
+  - $`x \prec_{\mathrm{p}} w`$（[D.pairlt](Seqlex-ja.md#d-pairlt)）のとき。
     示すべきは $`x :: X'' \prec_{\mathrm{lex}} w :: (W' \mathbin{+\!\!+} Y')`$ であり、
     D.seqlex の第 3 式の右辺の第 1 選言がいまの仮定そのものである。
   - $`x = w`$ かつ $`X'' \prec_{\mathrm{lex}} W' \mathbin{+\!\!+} Y`$ のとき。
@@ -67,9 +67,9 @@ $`W`$ の長さに関する帰納法（$`X`$, $`Y`$, $`Y'`$ は全称量化し�
 
 $`d, w, n, a \in \mathbb{N}`$、$`X, Q, A_2 \in \mathrm{PairSeq}`$ とする。
 $`\lvert X\rvert \le n`$ かつ
-$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）
+$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$（[D.shiftr0](Cnf-2-ja.md#d-shiftr0)）
 ならば、ある $`m \in \mathbb{N}`$ が存在して
-$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)`$（[D.copies](Cnf-2.md#d-copies)）。
+$`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)`$（[D.copies](Cnf-2-ja.md#d-copies)）。
 
 ### 証明
 
@@ -109,7 +109,7 @@ Q \mathbin{+\!\!+} (a,w) :: X'
 Q \mathbin{+\!\!+} (a,w) :: \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)^{+d}
 ```
 
-である。[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) を $`Q`$ について、
+である。[T.sle_append_cancel](Cofinality-ja.md#t-sle_append_cancel) を $`Q`$ について、
 続いて $`((a,w))`$ について適用すると
 
 ```math
@@ -118,8 +118,8 @@ X' \preceq_{\mathrm{lex}} \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+
 
 を得る。ここで結合則により
 $`(Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2 = Q \mathbin{+\!\!+} (a,w) :: (X' \mathbin{+\!\!+} A_2)`$
-であるから、[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) と
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+であるから、[T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append) と
+[T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) により
 
 ```math
 \bigl((Q \mathbin{+\!\!+} (a,w) :: X') \mathbin{+\!\!+} A_2\bigr)^{+d}
@@ -142,7 +142,7 @@ X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+}
 ```
 
 が成り立つ。求める $`m`$ として $`m+1`$ を取る。
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) により
+[T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) により
 
 ```math
 \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m+1\bigr)
@@ -150,7 +150,7 @@ X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+}
     \Bigl(\mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)\Bigr)^{+d}
 ```
 
-であり、[T.shiftr0_copies](Cofinality-2.md#t-shiftr0_copies) と [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+であり、[T.shiftr0_copies](Cofinality-2-ja.md#t-shiftr0_copies) と [T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) により
 
 ```math
 \Bigl(\mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)\Bigr)^{+d}
@@ -170,11 +170,11 @@ X' \preceq_{\mathrm{lex}} Q^{+d} \mathbin{+\!\!+}
 
 であり、また $`X = Q \mathbin{+\!\!+} (a,w) :: X' = (Q \mathbin{+\!\!+} ((a,w))) \mathbin{+\!\!+} X'`$ である。
 両辺が共通の前部分列 $`Q \mathbin{+\!\!+} ((a,w))`$ を持つから、
-[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) を逆向きに用いて、上で得た $`X'`$ についての比較から
+[T.sle_append_cancel](Cofinality-ja.md#t-sle_append_cancel) を逆向きに用いて、上で得た $`X'`$ についての比較から
 求める比較が従う。
 
 **(b) どの $`X'`$ についても $`X \ne Q \mathbin{+\!\!+} (a,w) :: X'`$ であるとき。**
-$`m := 1`$ を取る。[T.copies_one](Cnf-3.md#t-copies_one) より
+$`m := 1`$ を取る。[T.copies_one](Cnf-3-ja.md#t-copies_one) より
 $`\mathrm{copies}_d(B, 1) = B`$ であるから、示すべきは
 
 ```math
@@ -263,7 +263,7 @@ $`A = B`$ か $`A \prec_{\mathrm{lex}} B`$ である。
 
 - $`A = B`$ のとき。$`B`$ を $`A`$ に書き換えれば第 2 の仮定そのものである。
 - $`A \prec_{\mathrm{lex}} B`$ のとき。
-  [T.seqlex_sle_trans](Cofinality.md#t-seqlex_sle_trans) を
+  [T.seqlex_sle_trans](Cofinality-ja.md#t-seqlex_sle_trans) を
   $`A \prec_{\mathrm{lex}} B`$ と $`B \preceq_{\mathrm{lex}} C`$ に適用して
   $`A \prec_{\mathrm{lex}} C`$ を得る。D.sle の第 2 選言によりこれが結論である。∎
 
@@ -280,7 +280,7 @@ $`X \mathbin{+\!\!+} Y \preceq_{\mathrm{lex}} W`$ ならば $`X \preceq_{\mathrm
 
 - $`Y = ()`$ のとき。$`X \mathbin{+\!\!+} () = X`$ であるから D.sle の第 1 選言が成り立つ。
 - $`Y = y :: Y'`$ のとき。$`Y \ne ()`$ であるから
-  [T.seqlex_prefix](Seqlex.md#t-seqlex_prefix) より
+  [T.seqlex_prefix](Seqlex-ja.md#t-seqlex_prefix) より
   $`X \prec_{\mathrm{lex}} X \mathbin{+\!\!+} Y`$ であり、D.sle の第 2 選言が成り立つ。
 
 得られた $`X \preceq_{\mathrm{lex}} X \mathbin{+\!\!+} Y`$ と仮定
@@ -337,7 +337,7 @@ $`X`$ の長さに関する帰納法（$`Y`$ は全称量化したまま動か�
   $`X^{+d} = (x_1+d,\ x_2) :: X'^{+d}`$ であり、
   D.seqlex の第 2 式により両辺とも偽である。
 
-  **(b) $`Y = y :: Y'`$ のとき。** [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+  **(b) $`Y = y :: Y'`$ のとき。** [T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) により
 
 ```math
 X^{+d} = (x_1+d,\ x_2) :: X'^{+d}, \qquad
@@ -434,7 +434,7 @@ $`A \in \mathrm{PairSeq}`$、$`L, w \in \mathbb{N}`$ に対し
 $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$ と $`u, w, e \in \mathbb{N}`$ について、
 次の 8 条件がすべて成り立つならば結論 (9) が成り立つ、という命題である。
 
-1. $`\bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）
+1. $`\bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）
 2. $`0 \lt e`$
 3. $`\forall x \in A_1,\ u \lt x_1`$
 4. $`\forall x \in B,\ u + e \lt x_1`$
@@ -457,7 +457,7 @@ M := \bigl(G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr) \mathbin{+\!\!+} (\ell), \q
 j := \bigl\lvert G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr\rvert
 ```
 
-とおく。$`\lvert G\rvert \to^M_1 j`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば
+とおく。$`\lvert G\rvert \to^M_1 j`$（[D.nextrel1](Pss-ja.md#d-nextrel1)）ならば
 $`\mathrm{SpineOK}(R,\ v_0 + d_0,\ w_0)`$。
 
 ### 証明
@@ -474,7 +474,7 @@ $`\to^M_1`$ の定義（D.nextrel1）の 6 条件のうち、条件 (5)
 \forall j'\ \bigl(\lvert G\rvert \lt j' \ \wedge\ j' \le^M_0 j \ \to\ M_{1,j} \le M_{1,j'}\bigr)
 ```
 
-を用いる（$`\le^M_0`$ [D.le0](Pss.md#d-le0)、$`M_{i,j}`$ [D.entry](Pss.md#d-entry)）。
+を用いる（$`\le^M_0`$ [D.le0](Pss-ja.md#d-le0)、$`M_{i,j}`$ [D.entry](Pss-ja.md#d-entry)）。
 
 $`\mathrm{SpineOK}`$ の定義（D.SpineOK）にしたがい、$`U, V \in \mathrm{PairSeq}`$ と
 $`x \in \mathbb{N}\times\mathbb{N}`$ を取り
@@ -492,7 +492,7 @@ M = A \mathbin{+\!\!+} \bigl(x :: (V \mathbin{+\!\!+} (\ell))\bigr), \qquad
 j = \lvert A\rvert + 1 + \lvert V\rvert
 ```
 
-である。[T.getD_append_right'](Cofinality.md#t-getD_append_right') を
+である。[T.getD_append_right'](Cofinality-ja.md#t-getD_append_right') を
 $`A`$ と $`x :: (V \mathbin{+\!\!+} (\ell))`$、添字 $`0`$ に適用すると
 
 ```math
@@ -513,7 +513,7 @@ $`M\langle j\rangle = \ell`$ を得る。
 $`\lvert A\rvert \lt y`$ かつ $`y \le j`$ ならば $`M_{0,\lvert A\rvert} \lt M_{0,y}`$ であることを示す。
 $`\lvert A\rvert \lt y`$ より $`y = \lvert A\rvert + (t+1)`$ と書ける。
 $`y \le j = \lvert A\rvert + 1 + \lvert V\rvert`$ より $`t \le \lvert V\rvert`$ である。
-[T.entry_zero](Cofinality.md#t-entry_zero) より
+[T.entry_zero](Cofinality-ja.md#t-entry_zero) より
 $`M_{0,\lvert A\rvert} = x_1`$、$`M_{0,y} = \bigl((V \mathbin{+\!\!+} (\ell))\langle t\rangle\bigr)_1`$ である。
 
 - $`t \lt \lvert V\rvert`$ のとき。$`(V \mathbin{+\!\!+} (\ell))\langle t\rangle = V\langle t\rangle`$ であり、
@@ -524,7 +524,7 @@ $`M_{0,\lvert A\rvert} = x_1`$、$`M_{0,y} = \bigl((V \mathbin{+\!\!+} (\ell))\l
 
 **行 0 の祖先関係の持ち上げ。** $`\lvert G\rvert \lt \lvert A\rvert`$ かつ
 $`\lvert A\rvert \le j`$ であり、いま示した中間評価が成り立つので、
-条件 (5) に [T.le0_through_pivot](Column-4.md#t-le0_through_pivot) を適用して
+条件 (5) に [T.le0_through_pivot](Column-4-ja.md#t-le0_through_pivot) を適用して
 
 ```math
 \lvert A\rvert \le^M_0 j
@@ -532,7 +532,7 @@ $`\lvert A\rvert \le j`$ であり、いま示した中間評価が成り立つ�
 
 を得る。
 
-**行 1 の最小性からの結論。** [T.entry_one](Cofinality.md#t-entry_one) と
+**行 1 の最小性からの結論。** [T.entry_one](Cofinality-ja.md#t-entry_one) と
 $`M\langle j\rangle = \ell`$ より $`M_{1,j} = \ell_2 = w_0 + 1`$ であり、
 $`M\langle \lvert A\rvert\rangle = x`$ より $`M_{1,\lvert A\rvert} = x_2`$ である。
 条件 (6) を $`j' := \lvert A\rvert`$ に適用すると、
@@ -550,7 +550,7 @@ w_0 + 1 = M_{1,j} \le M_{1,\lvert A\rvert} = x_2
 ### 定理
 
 $`\mathrm{ArgDomCore}`$ が成り立つならば
-$`\mathrm{AscArgDom}`$（[D.AscArgDom](Cofinality-3.md#d-AscArgDom)）が成り立つ。
+$`\mathrm{AscArgDom}`$（[D.AscArgDom](Cofinality-3-ja.md#d-AscArgDom)）が成り立つ。
 
 ### 証明
 
@@ -644,7 +644,7 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
   \bigl(R \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: (S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)\bigr)^{+d_0}
 ```
 
-を得る。[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append) と [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により右辺は
+を得る。[T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append) と [T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) により右辺は
 
 ```math
 R^{+d_0} \mathbin{+\!\!+} (v_0+d_0+d_0,\ w_0) :: (S_{\mathrm{hi}} \mathbin{+\!\!+} A_2)^{+d_0}
@@ -665,8 +665,8 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
   \mathrm{copies}_{d_0}\bigl((v_0+d_0+d_0,\ w_0) :: (R^{+d_0})^{+d_0},\ m\bigr)
 ```
 
-が成り立つ。この $`m`$ が求めるものである。実際、[T.shiftr0_append](Cofinality-3.md#t-shiftr0_append)、[T.shiftr0_copies](Cofinality-2.md#t-shiftr0_copies)、
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) により
+が成り立つ。この $`m`$ が求めるものである。実際、[T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append)、[T.shiftr0_copies](Cofinality-2-ja.md#t-shiftr0_copies)、
+[T.shiftr0_cons](Cnf-2-ja.md#t-shiftr0_cons) により
 
 ```math
 \begin{aligned}
@@ -686,15 +686,15 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
 ### 定理
 
 $`\mathrm{ArgDomCore}`$ が成り立つとする。$`M, N \in \mathrm{ST\_PS}`$ であり
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）ならば、ある $`n`$ が存在して
-$`1 \le n`$ かつ $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$（$`M[n]`$ [D.oper](Pss.md#d-oper)、$`\preceq`$ [D.ole](Term.md#d-ole)）。
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（$`\mathrm{tr}`$ [D.translate](Term-ja.md#d-translate)、$`\prec`$ [D.olt](Term-ja.md#d-olt)）ならば、ある $`n`$ が存在して
+$`1 \le n`$ かつ $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$（$`M[n]`$ [D.oper](Pss-ja.md#d-oper)、$`\preceq`$ [D.ole](Term-ja.md#d-ole)）。
 
 ### 証明
 
 [T.ascArgDom_of_core](#t-ascArgDom_of_core) を仮定 $`\mathrm{ArgDomCore}`$ に適用して
 $`\mathrm{AscArgDom}`$ を得る。これと、仮定 $`M \in \mathrm{ST\_PS}`$、$`N \in \mathrm{ST\_PS}`$、
 $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ を
-[T.pss_cofinality_of_argdom](Cofinality-3.md#t-pss_cofinality_of_argdom) に与えると、
+[T.pss_cofinality_of_argdom](Cofinality-3-ja.md#t-pss_cofinality_of_argdom) に与えると、
 $`1 \le n`$ かつ $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$ をみたす $`n`$ が得られる。∎
 
 <a id="d-ArgDomCoreOn"></a>

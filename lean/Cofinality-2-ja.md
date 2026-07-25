@@ -1,12 +1,12 @@
-[← README](README.md) | [English](Cofinality-2.md) | [Japanese](Cofinality-2-ja.md) | Cofinality [1](Cofinality.md) **2** [3](Cofinality-3.md)
+[← README](README-ja.md) | [English](Cofinality-2.md) | [Japanese](Cofinality-2-ja.md) | Cofinality [1](Cofinality-ja.md) **2** [3](Cofinality-3-ja.md)
 
 <a id="t-seqlex_splice"></a>
 ## 定理: 接合 (T.seqlex_splice)
 
 ### 定理
 
-$`A \prec_{\mathrm{lex}} B`$（[D.seqlex](Seqlex.md#d-seqlex)）とし、
-$`U \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）が
+$`A \prec_{\mathrm{lex}} B`$（[D.seqlex](Seqlex-ja.md#d-seqlex)）とし、
+$`U \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）が
 
 ```math
 U = () \ \vee\ \forall x \in B,\ \mathrm{head}\,U \prec_{\mathrm{p}} x
@@ -19,7 +19,7 @@ A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C .
 ```
 
 ここで $`\mathrm{head}\,U`$ は $`U`$ の先頭要素である
-（$`\prec_{\mathrm{p}}`$ [D.pairlt](Seqlex.md#d-pairlt)）。
+（$`\prec_{\mathrm{p}}`$ [D.pairlt](Seqlex-ja.md#d-pairlt)）。
 
 ### 証明
 
@@ -84,7 +84,7 @@ Y = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,Y)_1\bigr)
 
 ここで $`\mathrm{tw}_a L`$ は $`L`$ の先頭から第 1 成分が $`a`$ より大きい要素が続く極大な
 前部分列、$`\mathrm{dw}_a L`$ は $`L`$ から $`\mathrm{tw}_a L`$ を取り除いた残りの列であり、
-どちらも $`\mathrm{tr}`$（[D.translate](Term.md#d-translate)）の定義（D.translate）の記法である。
+どちらも $`\mathrm{tr}`$（[D.translate](Term-ja.md#d-translate)）の定義（D.translate）の記法である。
 
 ### 証明
 
@@ -96,10 +96,10 @@ Y = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,Y)_1\bigr)
 
 - $`Y = y :: Y'`$ のとき。仮定の第 1 選言は偽であるから第 2 選言が成り立ち、
   $`\mathrm{head}\,Y = y`$ より $`\neg(v_0 \lt y_1)`$ である。
-  [T.takeWhile_append_all](Term.md#t-takeWhile_append_all) を $`xs := R`$、$`ys := Y`$ に
+  [T.takeWhile_append_all](Term-ja.md#t-takeWhile_append_all) を $`xs := R`$、$`ys := Y`$ に
   適用して $`\mathrm{tw}_{v_0}(R \mathbin{+\!\!+} Y) = R \mathbin{+\!\!+} \mathrm{tw}_{v_0} Y`$ を得る。
   $`Y`$ の先頭 $`y`$ が述語を破るから $`\mathrm{tw}_{v_0} Y = ()`$ であり、右辺は $`R`$ である。
-  [T.dropWhile_append_all](Term.md#t-dropWhile_append_all) を同じく $`xs := R`$、$`ys := Y`$ に
+  [T.dropWhile_append_all](Term-ja.md#t-dropWhile_append_all) を同じく $`xs := R`$、$`ys := Y`$ に
   適用して $`\mathrm{dw}_{v_0}(R \mathbin{+\!\!+} Y) = \mathrm{dw}_{v_0} Y`$ を得る。
   $`Y`$ の先頭 $`y`$ が述語を破るから $`\mathrm{dw}_{v_0} Y = Y`$ である。∎
 
@@ -121,7 +121,7 @@ $`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 \end{aligned}
 ```
 
-（$`\mathrm{blockok}`$ [D.blockok](Seqlex.md#d-blockok)、$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)）
+（$`\mathrm{blockok}`$ [D.blockok](Seqlex-ja.md#d-blockok)、$`\mathrm{cnf}`$ [D.cnf](Cnf-ja.md#d-cnf)）
 
 このとき
 
@@ -129,9 +129,9 @@ $`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)\bigr).
 ```
 
-（$`\mathrm{cp}_d(B,n)`$ [D.copies](Cnf-2.md#d-copies)、
-$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)。以下 $`\mathsf{Z}`$ と $`\mathsf{P}`$ は
-$`\mathrm{Three}`$ [D.Three](Term.md#d-Three)の構成子である。）
+（$`\mathrm{cp}_d(B,n)`$ [D.copies](Cnf-2-ja.md#d-copies)、
+$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality-ja.md#d-sle)。以下 $`\mathsf{Z}`$ と $`\mathsf{P}`$ は
+$`\mathrm{Three}`$ [D.Three](Term-ja.md#d-Three)の構成子である。）
 
 ### 証明
 
@@ -147,7 +147,7 @@ $`\mathrm{Three}`$ [D.Three](Term.md#d-Three)の構成子である。）
 $`\Phi(d)`$ の束縛変数である（$`B = (v_0,w_0) :: R`$ もそれに従って動く）。
 
 - **基底段** $`d = 0`$：(len) は $`\lvert Y\rvert \le 0`$、すなわち $`\lvert Y\rvert = 0`$ であるから
-  $`Y = ()`$ である。$`m := 1`$ と取る。[T.copies_one](Cnf-3.md#t-copies_one) より
+  $`Y = ()`$ である。$`m := 1`$ と取る。[T.copies_one](Cnf-3-ja.md#t-copies_one) より
   $`\mathrm{cp}_0(B, 1) = B = (v_0,w_0) :: R \ne ()`$ であるから、
   $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式より
   $`() \prec_{\mathrm{lex}} \mathrm{cp}_0(B,1)`$ であり、
@@ -183,7 +183,7 @@ $`R' \mathbin{+\!\!+} Y'' = Y'`$ である。また
 
 **第 3 段：2 つの翻訳の形。**
 第 1 段と第 2 段より $`\bigl((v_0,y_2) :: R'\bigr) \mathbin{+\!\!+} Y'' = (v_0,y_2) :: Y' = y :: Y'`$ である。
-[T.translate_block_append](Term.md#t-translate_block_append) を
+[T.translate_block_append](Term-ja.md#t-translate_block_append) を
 $`v_0 := v_0`$、$`w_0 := y_2`$、$`R := R'`$、$`T := Y''`$ として適用する。
 その 2 つの仮定「$`R'`$ の全要素 $`x`$ が $`v_0 \lt x_1`$」と
 「$`Y'' = ()`$ または $`\neg\bigl(v_0 \lt (\mathrm{head}\,Y'')_1\bigr)`$」は第 2 段で示した。
@@ -195,7 +195,7 @@ $`v_0 := v_0`$、$`w_0 := y_2`$、$`R := R'`$、$`T := Y''`$ として適用す�
 
 また $`Y = y :: Y'`$ により
 $`\bigl((v_0,w_0) :: R\bigr) \mathbin{+\!\!+} (y :: Y') = (v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ である。
-[T.translate_block_append](Term.md#t-translate_block_append) を
+[T.translate_block_append](Term-ja.md#t-translate_block_append) を
 $`v_0 := v_0`$、$`w_0 := w_0`$、$`R := R`$、$`T := y :: Y'`$ として適用する。
 その 2 つの仮定「$`R`$ の全要素 $`x`$ が $`v_0 \lt x_1`$」と
 「$`y :: Y' = ()`$ または $`\neg\bigl(v_0 \lt (\mathrm{head}\,(y :: Y'))_1\bigr)`$」は
@@ -214,7 +214,7 @@ $`v_0 := v_0`$、$`w_0 := w_0`$、$`R := R`$、$`T := y :: Y'`$ として適用�
   \mathsf{P}(y_2,\ \mathrm{tr}\,R',\ \mathrm{tr}\,Y'')\bigr)\Bigr)
 ```
 
-である。[T.cnf_P_P](Cnf.md#t-cnf_P_P) よりこれは次の 3 つの連言と同値である。
+である。[T.cnf_P_P](Cnf-ja.md#t-cnf_P_P) よりこれは次の 3 つの連言と同値である。
 
 ```math
 \begin{aligned}
@@ -225,15 +225,15 @@ $`v_0 := v_0`$、$`w_0 := w_0`$、$`R := R`$、$`T := y :: Y'`$ として適用�
 \end{aligned}
 ```
 
-（$`\prec`$ [D.olt](Term.md#d-olt)）
+（$`\prec`$ [D.olt](Term-ja.md#d-olt)）
 
 **第 5 段：$`y_2 \le w_0`$。**
-$`w_0 \lt y_2`$ と仮定すると、[T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 1 選言により
+$`w_0 \lt y_2`$ と仮定すると、[T.olt_P_P](Term-ja.md#t-olt_P_P) の右辺の第 1 選言により
 $`\mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z}) \prec \mathsf{P}(y_2, \mathrm{tr}\,R', \mathsf{Z})`$ となり
 (c2) に矛盾する。よって $`y_2 \le w_0`$ である。$`y_2 \lt w_0`$ か $`y_2 = w_0`$ で場合分けする。
 
 **第 6 段：$`y_2 \lt w_0`$ のとき。**
-$`m := 1`$ と取る。[T.copies_one](Cnf-3.md#t-copies_one) より
+$`m := 1`$ と取る。[T.copies_one](Cnf-3-ja.md#t-copies_one) より
 $`\mathrm{cp}_0(B, 1) = (v_0,w_0) :: R`$ である。第 1 段より $`y = (v_0,y_2)`$ であり、
 $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 2 選言（$`v_0 = v_0`$ かつ $`y_2 \lt w_0`$）により
 $`y \prec_{\mathrm{p}} (v_0,w_0)`$ である。$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の
@@ -244,20 +244,20 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言が成り立つ。
 第 1 段より $`y = (v_0,w_0)`$ である。次の 4 つを用意する。
 
 1. $`\neg\bigl(\mathrm{tr}\,R \prec \mathrm{tr}\,R'\bigr)`$。もし $`\mathrm{tr}\,R \prec \mathrm{tr}\,R'`$ なら、
-   $`w_0 = y_2`$ と合わせて [T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 2 選言が成り立ち
+   $`w_0 = y_2`$ と合わせて [T.olt_P_P](Term-ja.md#t-olt_P_P) の右辺の第 2 選言が成り立ち
    (c2) に矛盾する。
 2. $`\mathrm{blockok}(v_0,\ y :: Y')`$。[T.split_block](#t-split_block) を (R) と (hd) に適用して
    $`\mathrm{dw}_{v_0}(R \mathbin{+\!\!+} Y) = Y`$ を得る。
-   [T.blockok_tail](Seqlex.md#t-blockok_tail) を (blk) に適用すると
+   [T.blockok_tail](Seqlex-ja.md#t-blockok_tail) を (blk) に適用すると
    $`\mathrm{blockok}\bigl(v_0,\ \mathrm{dw}_{v_0}(R \mathbin{+\!\!+} Y)\bigr)`$ であり、これは
    $`\mathrm{blockok}(v_0, Y) = \mathrm{blockok}(v_0,\ y :: Y')`$ である。
 3. $`\mathrm{blockok}(v_0 + 1,\ R)`$。[T.split_block](#t-split_block) より
    $`\mathrm{tw}_{v_0}(R \mathbin{+\!\!+} Y) = R`$ であり、
-   [T.blockok_arg](Seqlex.md#t-blockok_arg) を (blk) に適用すると
+   [T.blockok_arg](Seqlex-ja.md#t-blockok_arg) を (blk) に適用すると
    $`\mathrm{blockok}\bigl(v_0+1,\ \mathrm{tw}_{v_0}(R \mathbin{+\!\!+} Y)\bigr) = \mathrm{blockok}(v_0+1,\ R)`$。
 4. $`\mathrm{blockok}(v_0 + 1,\ R')`$。2 と $`y = (v_0,w_0)`$ より
    $`\mathrm{blockok}\bigl(v_0,\ (v_0,w_0) :: Y'\bigr)`$ であり、
-   [T.blockok_arg](Seqlex.md#t-blockok_arg) を適用すると
+   [T.blockok_arg](Seqlex-ja.md#t-blockok_arg) を適用すると
    $`\mathrm{blockok}\bigl(v_0+1,\ \mathrm{tw}_{v_0} Y'\bigr) = \mathrm{blockok}(v_0+1,\ R')`$。
 
 $`R' = R`$ か否かでさらに場合分けする。
@@ -285,30 +285,30 @@ y :: Y' = (v_0,w_0) :: (R' \mathbin{+\!\!+} Y'') = \bigl((v_0,w_0) :: R\bigr) \m
 
 こうして $`1 \le m`$ かつ $`Y'' \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ なる $`m`$ が得られる。
 求める添字として $`m + 1`$ を取る。$`1 \le m + 1`$ である。
-[T.copies_succ_cons](Cnf-3.md#t-copies_succ_cons) と
-[T.shiftr0_zero](Cnf-2.md#t-shiftr0_zero) より
+[T.copies_succ_cons](Cnf-3-ja.md#t-copies_succ_cons) と
+[T.shiftr0_zero](Cnf-2-ja.md#t-shiftr0_zero) より
 
 ```math
 \mathrm{cp}_0(B, m+1) = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} \mathrm{cp}_0(B, m)^{+0}\bigr)
   = B \mathbin{+\!\!+} \mathrm{cp}_0(B, m)
 ```
 
-である（$`X^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）。したがって示すべきことは
+である（$`X^{+d}`$ [D.shiftr0](Cnf-2-ja.md#d-shiftr0)）。したがって示すべきことは
 $`B \mathbin{+\!\!+} Y'' \preceq_{\mathrm{lex}} B \mathbin{+\!\!+} \mathrm{cp}_0(B, m)`$ であり、
-[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) によりこれは
+[T.sle_append_cancel](Cofinality-ja.md#t-sle_append_cancel) によりこれは
 $`Y'' \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ と同値である。これは得られたものである。
 
 **第 9 段：$`R' \ne R`$ のとき。**
-まず $`R' \prec_{\mathrm{lex}} R`$ を示す。[T.seqlex_total](Seqlex-2.md#t-seqlex_total) より
+まず $`R' \prec_{\mathrm{lex}} R`$ を示す。[T.seqlex_total](Seqlex-2-ja.md#t-seqlex_total) より
 $`R' = R`$、$`R' \prec_{\mathrm{lex}} R`$、$`R \prec_{\mathrm{lex}} R'`$ のいずれかである。
 第 1 のものは仮定に反する。第 3 のものとすると、第 7 段の 3 と 4 を用いて
-[T.seqlex_imp_olt](Seqlex-2.md#t-seqlex_imp_olt) を $`d := v_0 + 1`$、$`M := R`$、$`N := R'`$ に
+[T.seqlex_imp_olt](Seqlex-2-ja.md#t-seqlex_imp_olt) を $`d := v_0 + 1`$、$`M := R`$、$`N := R'`$ に
 適用でき、$`\mathrm{tr}\,R \prec \mathrm{tr}\,R'`$ となって第 7 段の 1 に矛盾する。
 よって第 2 のもの、すなわち $`R' \prec_{\mathrm{lex}} R`$ である。
 
 $`m := 2`$ と取る。$`1 \le 2`$ である。
-[T.copies_succ_cons](Cnf-3.md#t-copies_succ_cons)、[T.shiftr0_zero](Cnf-2.md#t-shiftr0_zero)、
-[T.copies_one](Cnf-3.md#t-copies_one) より
+[T.copies_succ_cons](Cnf-3-ja.md#t-copies_succ_cons)、[T.shiftr0_zero](Cnf-2-ja.md#t-shiftr0_zero)、
+[T.copies_one](Cnf-3-ja.md#t-copies_one) より
 
 ```math
 \mathrm{cp}_0(B, 2) = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} \mathrm{cp}_0(B,1)^{+0}\bigr)
@@ -367,7 +367,7 @@ $`m`$ を付けたものであるから、連結は
 ```
 
 と分かれる。$`d := 0`$ とすると $`m \cdot 0 = 0`$ であり、
-[T.shiftr0_zero](Cnf-2.md#t-shiftr0_zero) より $`B^{+0} = B`$ である。∎
+[T.shiftr0_zero](Cnf-2-ja.md#t-shiftr0_zero) より $`B^{+0} = B`$ である。∎
 
 <a id="t-crux_zero"></a>
 ## 定理: 完全コピー分岐の核心 (T.crux_zero)
@@ -386,7 +386,7 @@ $`B := (v_0, w_0) :: R`$ とおく。次の 4 つを仮定する。
 \end{aligned}
 ```
 
-（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)）
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss-ja.md#d-ST_PS)）
 
 このとき $`1 \le m`$ なる $`m \in \mathbb{N}`$ が存在して
 
@@ -407,7 +407,7 @@ $`q_1 \lt \ell_1`$ または（$`q_1 = \ell_1`$ かつ $`q_2 \lt \ell_2`$）で�
 $`q_1 \lt v_0 + 1`$、すなわち $`q_1 \le v_0`$ である。
 
 **第 2 段：$`q_1 \lt v_0`$ の場合。**
-$`m := 1`$ と取る。[T.copies_one](Cnf-3.md#t-copies_one) より $`\mathrm{cp}_0(B, 1) = B = (v_0,w_0) :: R`$ である。
+$`m := 1`$ と取る。[T.copies_one](Cnf-3-ja.md#t-copies_one) より $`\mathrm{cp}_0(B, 1) = B = (v_0,w_0) :: R`$ である。
 $`q_1 \lt v_0`$ であるから $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
 $`q \prec_{\mathrm{p}} (v_0,w_0)`$ が成り立ち、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の
 第 3 式の第 1 選言により $`q :: S \prec_{\mathrm{lex}} B`$ を得る。
@@ -444,12 +444,12 @@ $`(\mathrm{head}\,Y)_1 = q_1 = v_0`$ である。
 
 である。この列を $`N`$ と書く。
 
-**第 5 段：$`\mathrm{steps}_1(B \mathbin{+\!\!+} Y)`$（[D.steps1](Seqlex.md#d-steps1)）。**
-仮定 (1) と [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) より $`\mathrm{blockok}(0, N)`$ が成り立ち、
+**第 5 段：$`\mathrm{steps}_1(B \mathbin{+\!\!+} Y)`$（[D.steps1](Seqlex-ja.md#d-steps1)）。**
+仮定 (1) と [T.blockok_ST_PS](Seqlex-2-ja.md#t-blockok_ST_PS) より $`\mathrm{blockok}(0, N)`$ が成り立ち、
 $`\mathrm{blockok}`$ の定義（D.blockok）の第 3 連言子より $`\mathrm{steps}_1(N)`$ である。
-第 4 段の分解に [T.steps1_append](Seqlex.md#t-steps1_append) を適用すると、その第 1 連言子として
+第 4 段の分解に [T.steps1_append](Seqlex-ja.md#t-steps1_append) を適用すると、その第 1 連言子として
 $`\mathrm{steps}_1\bigl(G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y)\bigr)`$ を得る。これにふたたび
-[T.steps1_append](Seqlex.md#t-steps1_append) を適用すると、その第 2 連言子として
+[T.steps1_append](Seqlex-ja.md#t-steps1_append) を適用すると、その第 2 連言子として
 $`\mathrm{steps}_1(B \mathbin{+\!\!+} Y)`$ を得る。
 
 **第 6 段：$`\mathrm{blockok}(v_0,\ B \mathbin{+\!\!+} Y)`$。**
@@ -460,10 +460,10 @@ $`x = (v_0,w_0)`$ なら $`x_1 = v_0`$、$`x \in R`$ なら仮定 (2) より $`v
 $`x \in Y`$ なら (iii) より $`v_0 \le x_1`$ である。第 3 連言子は第 5 段である。
 
 **第 7 段：$`(v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ の $`\mathrm{cnf}`$。**
-仮定 (1) と [T.cnf_ST_PS](Cnf-3.md#t-cnf_ST_PS) より $`\mathrm{cnf}(\mathrm{tr}\,N)`$ である。
+仮定 (1) と [T.cnf_ST_PS](Cnf-3-ja.md#t-cnf_ST_PS) より $`\mathrm{cnf}(\mathrm{tr}\,N)`$ である。
 第 4 段の分解によりこれは
 $`\mathrm{cnf}\bigl(\mathrm{tr}\bigl((G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y)) \mathbin{+\!\!+} V\bigr)\bigr)`$ である。
-[T.cnf_take](Cnf.md#t-cnf_take) を $`k := \lvert G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y)\rvert`$ に適用する。
+[T.cnf_take](Cnf-ja.md#t-cnf_take) を $`k := \lvert G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y)\rvert`$ に適用する。
 連結の左側の長さで切り取ると左側そのものが得られるから
 
 ```math
@@ -472,7 +472,7 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}\bigl((G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y))
 
 を得る。$`B \mathbin{+\!\!+} Y = (v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ であるから、これは
 $`\mathrm{cnf}\bigl(\mathrm{tr}\,(G \mathbin{+\!\!+} ((v_0,w_0) :: (R \mathbin{+\!\!+} Y)))\bigr)`$ と同じ命題である。
-[T.cnf_tail](Cnf-2.md#t-cnf_tail) を $`t := (v_0,w_0)`$、$`T' := R \mathbin{+\!\!+} Y`$、$`G := G`$ として
+[T.cnf_tail](Cnf-2-ja.md#t-cnf_tail) を $`t := (v_0,w_0)`$、$`T' := R \mathbin{+\!\!+} Y`$、$`G := G`$ として
 適用する。その仮定 $`\forall x \in R \mathbin{+\!\!+} Y,\ v_0 \le x_1`$ は第 6 段の第 2 連言子から
 （$`R \mathbin{+\!\!+} Y`$ の要素は $`B \mathbin{+\!\!+} Y`$ の要素でもあるから）従う。よって
 
@@ -509,7 +509,7 @@ Y \mathbin{+\!\!+} V \prec_{\mathrm{lex}} \mathrm{cp}_0(B, m) \mathbin{+\!\!+} B
 
 **(a) $`Y = \mathrm{cp}_0(B, m)`$ のとき。**
 示すべきは $`Y \mathbin{+\!\!+} V \prec_{\mathrm{lex}} Y \mathbin{+\!\!+} B`$ である。
-[T.seqlex_append_cancel](Seqlex.md#t-seqlex_append_cancel) により
+[T.seqlex_append_cancel](Seqlex-ja.md#t-seqlex_append_cancel) により
 $`V \prec_{\mathrm{lex}} B`$ を示せばよい。(iv) で場合分けする。
 
 - $`V = ()`$ のとき。$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式により
@@ -526,7 +526,7 @@ $`V \prec_{\mathrm{lex}} B`$ を示せばよい。(iv) で場合分けする。
 
 - $`V = ()`$ のとき。第 1 選言である。
 - $`V = z :: Z`$ かつ $`z_1 \lt v_0`$ のとき。仮定 (2) より $`R`$ の各要素 $`y`$ は
-  $`v_0 \le y_1`$ をみたすから、[T.copies_v0_le](Cnf-3.md#t-copies_v0_le) を $`d := 0`$、$`n := m`$ として
+  $`v_0 \le y_1`$ をみたすから、[T.copies_v0_le](Cnf-3-ja.md#t-copies_v0_le) を $`d := 0`$、$`n := m`$ として
   適用して $`\forall x \in \mathrm{cp}_0(B, m),\ v_0 \le x_1`$ を得る。
   $`\mathrm{head}\,V = z`$ であり $`z_1 \lt v_0 \le x_1`$ であるから、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の
   第 1 選言により $`z \prec_{\mathrm{p}} x`$ が成り立つ。
@@ -554,7 +554,7 @@ $`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)`$ と略記する（$`(\el
 \end{aligned}
 ```
 
-（$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)）
+（$`\to^M_1`$ [D.nextrel1](Pss-ja.md#d-nextrel1)）
 
 <a id="d-AscCrux1"></a>
 ## 定義: 頭を取った上昇コピーの核心 (D.AscCrux1)
@@ -596,7 +596,7 @@ $`\forall x \in X,\ d \le x_1`$ ならば $`\forall x \in X^{+e},\ d + e \le x_1
 
 ### 証明
 
-$`x \in X^{+e}`$ とする。[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、ある $`y \in X`$ が存在して
+$`x \in X^{+e}`$ とする。[T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) より、ある $`y \in X`$ が存在して
 $`x = (y_1 + e,\ y_2)`$ である。仮定より $`d \le y_1`$ であるから
 $`d + e \le y_1 + e = x_1`$ である。∎
 

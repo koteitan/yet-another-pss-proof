@@ -1,4 +1,4 @@
-[← README](README.md) | [English](Wset-2.md) | [Japanese](Wset-2-ja.md) | Wset [1](Wset.md) **2** [3](Wset-3.md) [4](Wset-4.md)
+[← README](README-ja.md) | [English](Wset-2.md) | [Japanese](Wset-2-ja.md) | Wset [1](Wset-ja.md) **2** [3](Wset-3-ja.md) [4](Wset-4-ja.md)
 
 <a id="t-hasParent_shift"></a>
 ## 定理: 親の存在は行 0 の平行移動で不変 (T.hasParent_shift)
@@ -7,26 +7,26 @@
 
 $`b \lt \lvert S\rvert`$ ならば
 $`\mathrm{hasParent}(S^{+d}, i, b) \iff \mathrm{hasParent}(S, i, b)`$
-（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)、$`S^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）。
+（$`\mathrm{hasParent}`$ [D.hasParent](Pss-ja.md#d-hasParent)、$`S^{+d}`$ [D.shiftr0](Cnf-2-ja.md#d-shiftr0)）。
 
 ### 証明
 
 $`\mathrm{hasParent}`$ の定義（D.hasParent）より、両辺はそれぞれ
-「$`j_0 \to^{S^{+d}}_i b`$（[D.nextR](Pss.md#d-nextR)）をみたす $`j_0`$ が存在し一意である」
+「$`j_0 \to^{S^{+d}}_i b`$（[D.nextR](Pss-ja.md#d-nextR)）をみたす $`j_0`$ が存在し一意である」
 「$`j_0 \to^{S}_i b`$ をみたす $`j_0`$ が存在し一意である」である。
 
 **（左から右）** $`j_0`$ を取り、$`j_0 \to^{S^{+d}}_i b`$ かつ
 「$`y \to^{S^{+d}}_i b`$ なる任意の $`y`$ について $`y = j_0`$」とする。
-[T.nextR_shift_iff](Wset.md#t-nextR_shift_iff) より $`j_0 \to^{S}_i b`$ である。
+[T.nextR_shift_iff](Wset-ja.md#t-nextR_shift_iff) より $`j_0 \to^{S}_i b`$ である。
 また $`y \to^{S}_i b`$ なる $`y`$ を取ると、ふたたび
-[T.nextR_shift_iff](Wset.md#t-nextR_shift_iff) より $`y \to^{S^{+d}}_i b`$ であるから
+[T.nextR_shift_iff](Wset-ja.md#t-nextR_shift_iff) より $`y \to^{S^{+d}}_i b`$ であるから
 $`y = j_0`$ である。よって $`S`$ の側でも存在と一意性が成り立つ。
 
 **（右から左）** $`j_0`$ を取り、$`j_0 \to^{S}_i b`$ かつ
 「$`y \to^{S}_i b`$ なる任意の $`y`$ について $`y = j_0`$」とする。
-[T.nextR_shift_iff](Wset.md#t-nextR_shift_iff) より $`j_0 \to^{S^{+d}}_i b`$ である。
+[T.nextR_shift_iff](Wset-ja.md#t-nextR_shift_iff) より $`j_0 \to^{S^{+d}}_i b`$ である。
 また $`y \to^{S^{+d}}_i b`$ なる $`y`$ を取ると、ふたたび
-[T.nextR_shift_iff](Wset.md#t-nextR_shift_iff) より $`y \to^{S}_i b`$ であるから
+[T.nextR_shift_iff](Wset-ja.md#t-nextR_shift_iff) より $`y \to^{S}_i b`$ であるから
 $`y = j_0`$ である。よって $`S^{+d}`$ の側でも存在と一意性が成り立つ。∎
 
 <a id="t-parent_shift"></a>
@@ -35,7 +35,7 @@ $`y = j_0`$ である。よって $`S^{+d}`$ の側でも存在と一意性が�
 ### 定理
 
 $`b \lt \lvert S\rvert`$ ならば
-$`\mathrm{par}^{S^{+d}}_i(b) = \mathrm{par}^{S}_i(b)`$（[D.parent](Pss.md#d-parent)）。
+$`\mathrm{par}^{S^{+d}}_i(b) = \mathrm{par}^{S}_i(b)`$（[D.parent](Pss-ja.md#d-parent)）。
 
 ### 証明
 
@@ -48,7 +48,7 @@ $`\mathrm{par}`$ の定義（D.parent）より、両辺はそれぞれ述語
 ```
 
 に $`\varepsilon`$ を適用した値である。$`b \lt \lvert S\rvert`$ のもとで
-[T.nextR_shift_iff](Wset.md#t-nextR_shift_iff) はすべての $`j_0`$ について
+[T.nextR_shift_iff](Wset-ja.md#t-nextR_shift_iff) はすべての $`j_0`$ について
 $`\varphi(j_0) \iff \psi(j_0)`$ を与えるから、命題の外延性により各 $`j_0`$ で
 $`\varphi(j_0)`$ と $`\psi(j_0)`$ は同一の命題であり、したがって $`\varphi = \psi`$ である。
 $`\varepsilon`$ の値は述語のみで決まるから両辺は等しい。∎
@@ -58,13 +58,13 @@ $`\varepsilon`$ の値は述語のみで決まるから両辺は等しい。∎
 
 ### 定理
 
-任意の $`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`d, n \in \mathbb{N}`$ に対し
+任意の $`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）、$`d, n \in \mathbb{N}`$ に対し
 
 ```math
 \bigl(M^{+d}\bigr)[n] = \bigl(M[n]\bigr)^{+d} .
 ```
 
-（$`M[n]`$ [D.oper](Pss.md#d-oper)）
+（$`M[n]`$ [D.oper](Pss-ja.md#d-oper)）
 
 ### 証明
 
@@ -72,32 +72,32 @@ $`\lvert M^{+d}\rvert = \lvert M\rvert`$ である（平行移動は各要素を
 以下 $`j_1 := \lvert M\rvert - 1`$ とおく。$`j_1 = 0`$ か否かで場合分けする。
 
 **(I) $`j_1 = 0`$ のとき。** $`\lvert M^{+d}\rvert - 1 = j_1 = 0`$ でもあるから、
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) を $`M^{+d}`$ と $`M`$ の
+[T.oper_eq_self_of_short](Decrease-ja.md#t-oper_eq_self_of_short) を $`M^{+d}`$ と $`M`$ の
 双方に適用して $`(M^{+d})[n] = M^{+d}`$ と $`M[n] = M`$ を得る。よって両辺とも $`M^{+d}`$ である。
 
 **(II) $`j_1 \ne 0`$ のとき。** このとき $`j_1 \lt \lvert M\rvert`$ である。
-$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）とおくと
-[T.idx1_shift](Column-4.md#t-idx1_shift) より $`\mathrm{idx}_1(M^{+d}, j_1) = i_1`$ である。
+$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss-ja.md#d-idx1)）とおくと
+[T.idx1_shift](Column-4-ja.md#t-idx1_shift) より $`\mathrm{idx}_1(M^{+d}, j_1) = i_1`$ である。
 $`\mathrm{hasParent}(M, i_1, j_1)`$ が成り立つか否かでさらに分ける。
 
 **(II-a) $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-まず $`0 \lt M_{0,j_1}`$（[D.entry](Pss.md#d-entry)）である。実際 $`M_{0,j_1} = 0`$ とすると
-[T.no_hasParent_of_row0_zero](Column.md#t-no_hasParent_of_row0_zero) により
+まず $`0 \lt M_{0,j_1}`$（[D.entry](Pss-ja.md#d-entry)）である。実際 $`M_{0,j_1} = 0`$ とすると
+[T.no_hasParent_of_row0_zero](Column-ja.md#t-no_hasParent_of_row0_zero) により
 $`\mathrm{hasParent}(M, i_1, j_1)`$ から矛盾が出る。したがって
 $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ である。
-[T.entry_shift](Column-4.md#t-entry_shift) より
+[T.entry_shift](Column-4-ja.md#t-entry_shift) より
 $`(M^{+d})_{0,j_1} = M_{0,j_1} + d`$、$`(M^{+d})_{1,j_1} = M_{1,j_1}`$ であるから、
 $`(M^{+d})_{0,j_1} \gt 0`$ で $`\neg\bigl((M^{+d})_{0,j_1} = 0 \wedge (M^{+d})_{1,j_1} = 0\bigr)`$ である。
 また [T.hasParent_shift](#t-hasParent_shift) より $`\mathrm{hasParent}(M^{+d}, i_1, j_1)`$ である。
 よって $`M`$ と $`M^{+d}`$ の双方で $`M[n]`$ の定義（D.oper）の分岐 (d) が選ばれ、
-[T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) が適用できる。
+[T.oper_bad_unfold](Decrease-ja.md#t-oper_bad_unfold) が適用できる。
 
 [T.parent_shift](#t-parent_shift) より
 $`j_0 := \mathrm{par}^{M}_{i_1}(j_1) = \mathrm{par}^{M^{+d}}_{i_1}(j_1)`$ であり、
-[T.parent_nextR](Decrease.md#t-parent_nextR) と
-[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より $`j_0 \lt j_1`$、とくに
+[T.parent_nextR](Decrease-ja.md#t-parent_nextR) と
+[T.nextR_index_lt](Decrease-ja.md#t-nextR_index_lt) より $`j_0 \lt j_1`$、とくに
 $`j_0 \lt \lvert M\rvert`$ である。したがってふたたび
-[T.entry_shift](Column-4.md#t-entry_shift) より $`(M^{+d})_{0,j_0} = M_{0,j_0} + d`$ であり、
+[T.entry_shift](Column-4-ja.md#t-entry_shift) より $`(M^{+d})_{0,j_0} = M_{0,j_0} + d`$ であり、
 $`d_0`$ の値は両者で一致する。すなわち $`0 \lt i_1`$ のとき
 
 ```math
@@ -107,7 +107,7 @@ $`d_0`$ の値は両者で一致する。すなわち $`0 \lt i_1`$ のとき
 であり（切り捨て減法でも右辺の $`d`$ は相殺する）、$`i_1 = 0`$ のときは両者とも $`0`$ である。
 この共通の値を $`d_0`$ と書く。
 
-[T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) の与える両辺は
+[T.oper_bad_unfold](Decrease-ja.md#t-oper_bad_unfold) の与える両辺は
 
 ```math
 M[n] = (M_0,\dots,M_{j_0-1}) \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1},
@@ -127,7 +127,7 @@ B'_k
 である。前部分については $`\bigl((M^{+d})_0,\dots,(M^{+d})_{j_0-1}\bigr) = (M_0,\dots,M_{j_0-1})^{+d}`$
 である（平行移動は各要素ごとの写像であり、先頭 $`j_0`$ 個を取る操作と交換する）。
 各ブロックについては、$`j_0 \le j \lt j_1 \lt \lvert M\rvert`$ の範囲で
-[T.entry_shift](Column-4.md#t-entry_shift) が使えて
+[T.entry_shift](Column-4-ja.md#t-entry_shift) が使えて
 
 ```math
 \bigl((M^{+d})_{0,j} + k\,d_0,\ (M^{+d})_{1,j}\bigr)
@@ -141,9 +141,9 @@ B'_k
 [T.hasParent_shift](#t-hasParent_shift) より
 $`\neg\,\mathrm{hasParent}(M^{+d}, i_1, j_1)`$ である。
 $`M`$ について、$`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ が成り立つなら
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) により、成り立たないなら
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) により、いずれにせよ
-$`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）である。同じ 2 つの定理を $`M^{+d}`$ に適用して
+[T.oper_eq_pred_of_zero](Decrease-ja.md#t-oper_eq_pred_of_zero) により、成り立たないなら
+[T.oper_eq_pred_of_noParent](Decrease-ja.md#t-oper_eq_pred_of_noParent) により、いずれにせよ
+$`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss-ja.md#d-Pred)）である。同じ 2 つの定理を $`M^{+d}`$ に適用して
 $`(M^{+d})[n] = \mathrm{Pred}(M^{+d})`$ を得る。
 
 $`j_1 = \lvert M\rvert - 1 \ne 0`$ より $`2 \le \lvert M\rvert = \lvert M^{+d}\rvert`$ であるから、
@@ -163,7 +163,7 @@ $`\mathrm{dropLast}(M^{+d}) = (\mathrm{dropLast}\,M)^{+d}`$ である。よっ�
 
 ### 定理
 
-$`\mathrm{domT}(M^{+d}, m) \iff \mathrm{domT}(M, m)`$（[D.domT](Wset.md#d-domT)）。
+$`\mathrm{domT}(M^{+d}, m) \iff \mathrm{domT}(M, m)`$（[D.domT](Wset-ja.md#d-domT)）。
 
 ### 証明
 
@@ -177,7 +177,7 @@ $`\mathrm{domT}`$ の定義（D.domT）の第 1 連言子 $`()_{1,0} = m+1`$ は
 **(b) $`M = p :: L`$ のとき。** $`\lvert M^{+d}\rvert = \lvert M\rvert`$ であるから、
 両辺で読む添字は同じ $`j_1 := \lvert M\rvert - 1`$ であり、$`j_1 \lt \lvert M\rvert`$ である。
 $`\mathrm{domT}`$ の定義（D.domT）の 2 つの連言子をそれぞれ比べる。
-第 1 連言子は [T.entry_shift](Column-4.md#t-entry_shift) より
+第 1 連言子は [T.entry_shift](Column-4-ja.md#t-entry_shift) より
 $`(M^{+d})_{1,j_1} = M_{1,j_1}`$ であるから同値であり、
 第 2 連言子は [T.hasParent_shift](#t-hasParent_shift) より
 $`\mathrm{hasParent}(M^{+d}, 1, j_1) \iff \mathrm{hasParent}(M, 1, j_1)`$ であるから同値である。∎
@@ -187,7 +187,7 @@ $`\mathrm{hasParent}(M^{+d}, 1, j_1) \iff \mathrm{hasParent}(M, 1, j_1)`$ であ
 
 ### 定理
 
-$`\mathrm{natDom}(M^{+d}) \iff \mathrm{natDom}(M)`$（[D.natDom](Wset.md#d-natDom)）。
+$`\mathrm{natDom}(M^{+d}) \iff \mathrm{natDom}(M)`$（[D.natDom](Wset-ja.md#d-natDom)）。
 
 ### 証明
 
@@ -213,7 +213,7 @@ $`M \ne ()`$ ならば、任意の $`z \in \mathrm{PairSeq}`$、$`d \in \mathbb{
 \mathrm{graft}\bigl(M^{+d},\ z\bigr) = \bigl(\mathrm{graft}(M, z)\bigr)^{+d} .
 ```
 
-（$`\mathrm{graft}`$ [D.graft](Wset.md#d-graft)）
+（$`\mathrm{graft}`$ [D.graft](Wset-ja.md#d-graft)）
 
 ### 証明
 
@@ -226,7 +226,7 @@ $`\mathrm{graft}`$ の定義（D.graft）より
   = \mathrm{dropLast}\bigl(M^{+d}\bigr) \mathbin{+\!\!+} z^{+(M^{+d})_{0,j_1}} .
 ```
 
-[T.entry_shift](Column-4.md#t-entry_shift) より $`(M^{+d})_{0,j_1} = M_{0,j_1} + d`$ であり、
+[T.entry_shift](Column-4-ja.md#t-entry_shift) より $`(M^{+d})_{0,j_1} = M_{0,j_1} + d`$ であり、
 平行移動は末尾 1 要素を落とす操作と交換するから
 $`\mathrm{dropLast}(M^{+d}) = (\mathrm{dropLast}\,M)^{+d}`$ である。よって
 
@@ -253,7 +253,7 @@ $`\bigl(q_1 + (M_{0,j_1} + d),\ q_2\bigr)`$ に写る。$`\mathbb{N}`$ の加法
 
 ### 定理
 
-$`M \in W_u`$（[D.W](Wset.md#d-W)）ならば、任意の $`d \in \mathbb{N}`$ に対し $`M^{+d} \in W_u`$。
+$`M \in W_u`$（[D.W](Wset-ja.md#d-W)）ならば、任意の $`d \in \mathbb{N}`$ に対し $`M^{+d} \in W_u`$。
 
 ### 証明
 
@@ -263,10 +263,10 @@ $`d`$ を固定し
 Y := \{\, N \in \mathrm{PairSeq} \mid N^{+d} \in W_u \,\}
 ```
 
-とおく。[T.A2'](Wset.md#t-A2') により $`W_u \subseteq Y`$ を示すには、
-任意の $`N`$ について $`N \in A_u(Y)`$（[D.Aop](Wset.md#d-Aop)）ならば $`N \in Y`$、すなわち
+とおく。[T.A2'](Wset-ja.md#t-A2') により $`W_u \subseteq Y`$ を示すには、
+任意の $`N`$ について $`N \in A_u(Y)`$（[D.Aop](Wset-ja.md#d-Aop)）ならば $`N \in Y`$、すなわち
 $`N^{+d} \in W_u`$ を示せばよい。
-[T.A1_intro](Wset.md#t-A1_intro) によりこれは $`N^{+d} \in A_u(W_u)`$ に帰着する。
+[T.A1_intro](Wset-ja.md#t-A1_intro) によりこれは $`N^{+d} \in A_u(W_u)`$ に帰着する。
 $`A_u`$ の定義（D.Aop）の 3 分岐で場合分けする。
 
 **分岐 (1)：$`\lvert N\rvert \le 1 \wedge N_{1,0} = 0`$ のとき。**
@@ -283,9 +283,9 @@ $`(N^{+d})[n] = (N[n])^{+d}`$ であり、$`N[n] \in Y`$ すなわち $`(N[n])^{
 
 **分岐 (3)、すなわち $`m \lt u`$、$`\mathrm{domT}(N,m)`$、
 $`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(N,z) \in Y`$
-（$`\mathrm{based}`$ [D.based](Wset.md#d-based)）をみたす $`m`$ があるとき。**
+（$`\mathrm{based}`$ [D.based](Wset-ja.md#d-based)）をみたす $`m`$ があるとき。**
 [T.domT_shift](#t-domT_shift) より $`\mathrm{domT}(N^{+d}, m)`$ である。
-また $`N \ne ()`$ である（$`N = ()`$ なら [T.not_domT_nil](Wset.md#t-not_domT_nil) が
+また $`N \ne ()`$ である（$`N = ()`$ なら [T.not_domT_nil](Wset-ja.md#t-not_domT_nil) が
 $`\mathrm{domT}(N,m)`$ に矛盾する）。$`z \in W_m`$ が $`\mathrm{based}(z)`$ をみたすとき、
 [T.graft_shift](#t-graft_shift) より
 
@@ -312,7 +312,7 @@ M = A \mathbin{+\!\!+} P,
 \qquad \forall p \in \mathrm{tail}\,P,\ P_{0,0} \lt p_1 .
 ```
 
-（$`\mathrm{rsum}`$ [D.rsum](Wset.md#d-rsum)）
+（$`\mathrm{rsum}`$ [D.rsum](Wset-ja.md#d-rsum)）
 
 ここで $`\mathrm{tail}\,P`$ は $`P`$ の先頭 1 要素を落とした列である。
 
@@ -382,7 +382,7 @@ $`c \in \mathbb{N}`$、$`X \in \mathrm{PairSeq}`$ とし、$`\forall p \in X,\ c
 \bigl(X^{-c}\bigr)^{+c} = X .
 ```
 
-ここで $`X^{-c}`$（[D.shiftl0](ArgDom-2.md#d-shiftl0)）は $`X`$ の各対の第 1 成分から一様に
+ここで $`X^{-c}`$（[D.shiftl0](ArgDom-2-ja.md#d-shiftl0)）は $`X`$ の各対の第 1 成分から一様に
 $`c`$ を切り捨て減法で引いた列である。
 
 ### 証明
@@ -477,7 +477,7 @@ $`2 \le \lvert P\rvert`$ より $`P \ne ()`$ であり、次の 5 つが成り�
 ```
 
 ここで (6) は [T.oper_shift](#t-oper_shift)（第 2 行では左から右へ、第 6 行では右から左へ）、
-(7) は [T.oper_append_right](Column-2.md#t-oper_append_right) であり、その 2 つの仮定
+(7) は [T.oper_append_right](Column-2-ja.md#t-oper_append_right) であり、その 2 つの仮定
 $`2 \le \lvert \hat P\rvert`$ と $`(\hat P)_{0,0} = 0`$ は (2) と (1) である。
 (8) は平行移動が連結と交換することによる。∎
 
@@ -500,7 +500,7 @@ $`P \ne ()`$ より $`0 \lt \lvert P\rvert`$ であるから
 \lvert A \mathbin{+\!\!+} P\rvert - 1 = \lvert A\rvert + \lvert P\rvert - 1 = \lvert A\rvert + (\lvert P\rvert - 1)
 ```
 
-である。[T.entry_append_right](Column.md#t-entry_append_right) を
+である。[T.entry_append_right](Column-ja.md#t-entry_append_right) を
 $`i := 0`$、$`j := \lvert P\rvert - 1`$ に適用して
 
 ```math
@@ -564,16 +564,16 @@ $`b := \lvert A\rvert + j`$ に適用すればよい（$`\lvert \hat A\rvert = \
 
 $`(\hat P)_{0,j}`$ が $`0`$ か否かで場合分けする。
 
-**$`(\hat P)_{0,j} = 0`$ のとき。** [T.entry_append_right](Column.md#t-entry_append_right) より
+**$`(\hat P)_{0,j} = 0`$ のとき。** [T.entry_append_right](Column-ja.md#t-entry_append_right) より
 $`(\hat A \mathbin{+\!\!+} \hat P)_{0,\lvert \hat A\rvert + j} = (\hat P)_{0,j} = 0`$ である。
-[T.no_hasParent_of_row0_zero](Column.md#t-no_hasParent_of_row0_zero) を
+[T.no_hasParent_of_row0_zero](Column-ja.md#t-no_hasParent_of_row0_zero) を
 $`\hat A \mathbin{+\!\!+} \hat P`$ に適用すると左辺は偽であり、同じ定理を $`\hat P`$ に適用すると
 右辺も偽である。よって同値である。
 
 **$`(\hat P)_{0,j} \ne 0`$ のとき。** 上と同じ等式より
 $`0 \lt (\hat A \mathbin{+\!\!+} \hat P)_{0,\lvert \hat A\rvert + j}`$ である。
 $`(\hat P)_{0,0} = 0`$ と合わせて
-[T.hasParent_append_right](Column.md#t-hasParent_append_right) が適用でき、同値を得る。
+[T.hasParent_append_right](Column-ja.md#t-hasParent_append_right) が適用でき、同値を得る。
 
 **第 3 段：$`\mathrm{hasParent}(\hat P, i, j) \iff \mathrm{hasParent}(P, i, j)`$。**
 $`j \lt \lvert P\rvert = \lvert \hat P\rvert`$ であり $`(\hat P)^{+c} = P`$ であるから、
@@ -602,7 +602,7 @@ $`P \ne ()`$ より $`0 \lt \lvert P\rvert`$ であるから
 
 である。$`\mathrm{domT}`$ の定義（D.domT）の 2 つの連言子をそれぞれ比べる。
 
-第 1 連言子について、[T.entry_append_right](Column.md#t-entry_append_right) を
+第 1 連言子について、[T.entry_append_right](Column-ja.md#t-entry_append_right) を
 $`i := 1`$、$`j := \lvert P\rvert - 1`$ に適用して
 
 ```math
@@ -685,11 +685,11 @@ $`1 \lt \lvert N\rvert`$ か否かで場合分けする。
 - $`1 \lt \lvert N\rvert`$ のとき。[T.entry_zero_headD](#t-entry_zero_headD) を
   $`X := N[n]`$ と $`X := N`$ に適用すると、示すべきことは
   $`\bigl(\mathrm{hd}(N[n])\bigr)_1 = (\mathrm{hd}\,N)_1`$ である。
-  [T.oper_headD](Column-2.md#t-oper_headD) が $`1 \lt \lvert N\rvert`$ と $`1 \le n`$ のもとで
+  [T.oper_headD](Column-2-ja.md#t-oper_headD) が $`1 \lt \lvert N\rvert`$ と $`1 \le n`$ のもとで
   $`\mathrm{hd}(N[n]) = \mathrm{hd}\,N`$ を与えるから、第 1 成分どうしも等しい。
 
 - $`\neg(1 \lt \lvert N\rvert)`$ のとき。$`\lvert N\rvert \le 1`$ すなわち $`\lvert N\rvert - 1 = 0`$
-  であるから、[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`N[n] = N`$ であり、
+  であるから、[T.oper_eq_self_of_short](Decrease-ja.md#t-oper_eq_self_of_short) より $`N[n] = N`$ であり、
   両辺は同一である。∎
 
 <a id="t-entry_pair_mem"></a>
@@ -723,7 +723,7 @@ $`\forall p \in N,\ c \le p_1`$ ならば、任意の $`n`$ に対し $`\forall 
 
 $`j_1 := \lvert N\rvert - 1`$ とおく。$`j_1 = 0`$ か否かで場合分けする。
 
-**(I) $`j_1 = 0`$ のとき。** [T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より
+**(I) $`j_1 = 0`$ のとき。** [T.oper_eq_self_of_short](Decrease-ja.md#t-oper_eq_self_of_short) より
 $`N[n] = N`$ であるから、仮定そのものである。
 
 **(II) $`j_1 \ne 0`$ のとき。** $`i_1 := \mathrm{idx}_1(N, j_1)`$ とおき、
@@ -731,9 +731,9 @@ $`\mathrm{hasParent}(N, i_1, j_1)`$ が成り立つか否かで分ける。
 
 **(II-a) $`\mathrm{hasParent}(N, i_1, j_1)`$ のとき。**
 $`N_{0,j_1} = 0`$ とすると
-[T.no_hasParent_of_row0_zero](Column.md#t-no_hasParent_of_row0_zero) により矛盾するから
+[T.no_hasParent_of_row0_zero](Column-ja.md#t-no_hasParent_of_row0_zero) により矛盾するから
 $`0 \lt N_{0,j_1}`$ であり、とくに $`\neg(N_{0,j_1} = 0 \wedge N_{1,j_1} = 0)`$ である。
-よって [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) が適用でき、
+よって [T.oper_bad_unfold](Decrease-ja.md#t-oper_bad_unfold) が適用でき、
 $`j_0 := \mathrm{par}^N_{i_1}(j_1)`$ として
 
 ```math
@@ -755,8 +755,8 @@ B_k = \bigl(\,(N_{0,j} + k\,d_0,\ N_{1,j})\,\bigr)_{j=j_0}^{j_1-1}
 
 **(II-b) $`\neg\,\mathrm{hasParent}(N, i_1, j_1)`$ のとき。**
 $`N_{0,j_1} = 0 \wedge N_{1,j_1} = 0`$ が成り立つなら
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) により、成り立たないなら
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) により、
+[T.oper_eq_pred_of_zero](Decrease-ja.md#t-oper_eq_pred_of_zero) により、成り立たないなら
+[T.oper_eq_pred_of_noParent](Decrease-ja.md#t-oper_eq_pred_of_noParent) により、
 いずれにせよ $`N[n] = \mathrm{Pred}\,N`$ である。
 $`\mathrm{Pred}`$ の定義（D.Pred）の場合分けにより $`\mathrm{Pred}\,N`$ は $`N`$ 自身か
 $`\mathrm{dropLast}\,N`$ である。前者なら仮定そのものであり、後者なら

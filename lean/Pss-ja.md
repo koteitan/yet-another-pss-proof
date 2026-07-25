@@ -1,4 +1,4 @@
-[← README](README.md) | [English](Pss.md) | [Japanese](Pss-ja.md)
+[← README](README-ja.md) | [English](Pss.md) | [Japanese](Pss-ja.md)
 
 <a id="d-PairSeq"></a>
 ## 定義: ペア数列 (D.PairSeq)
