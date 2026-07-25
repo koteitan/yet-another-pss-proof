@@ -284,7 +284,7 @@ $`\lvert M\rvert\ge 2`$ であるから $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`
 **証明** まず、[(D.nextR)](Def.md#d-nextR) の場合分けは `i = 0` か否かであり $`1\ne 0`$ であるから、
 任意の $`j_0`$ について
 ```math
-(\ast)\qquad j_0\to^M_1 j_1 \ \text{（$\mathrm{nextR}$ の意味）} \iff j_0\to^M_1 j_1\ \text{（$\mathrm{nextrel1}$ の意味）}
+(\ast)\qquad j_0\to^M_1 j_1 \ (\mathrm{nextR}\ \text{の意味}) \iff j_0\to^M_1 j_1\ (\mathrm{nextrel1}\ \text{の意味})
 ```
 であり、以下では両者を同一視する。
 
