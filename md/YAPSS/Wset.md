@@ -212,14 +212,6 @@ $`\ell_{[]}=0-1=0`$（切り捨て減法）であり、[(D.entry)](Def.md#d-entr
 \mathrm{natDom}(M)\ :\Longleftrightarrow\ \forall m\in\mathbb{N},\ \neg\bigl(\mathrm{dom}(M)=T_m\bigr).
 ```
 
-<a id="t-natDom_nil"></a>
-#### 定理 空列は $`\mathrm{natDom}`$ (T.natDom_nil)
-
-**主張** $`\mathrm{natDom}([])`$。
-
-**証明** [(D.natDom)](#d-natDom) の定義そのものが $`\forall m,\ \neg(\mathrm{dom}([])=T_m)`$ であり、
-これは [(T.not_domT_nil)](#t-not_domT_nil) である。∎
-
 <a id="t-natDom_iff"></a>
 #### 定理 $`\mathrm{natDom}`$ の言い換え (T.natDom_iff)
 

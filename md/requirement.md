@@ -95,7 +95,7 @@ Lean 側のファイルが大きい場合は**分割してよい**（例 `Nrmste
 停止性証明の依存順（下位が先）:
 
 ```
-Def → Mechanized → Proofs → Wf → Wfsum → Gterm → Seqlex → Nrm → Nrmstep
+Def → Mechanized → Proofs → Wf → Seqlex → Nrm → Nrmstep
     → Cofinality → AscArg → Wset → OrdinalFree → Final
 ```
 

@@ -230,7 +230,7 @@ Lean ソース `lean/YAPSS/OrdinalFree.lean` の同名の節は、その節が�
 である。この合成を実際に行うのは [`Final.md`](Final.md) である。
 
 なお Lean ソースの冒頭コメントは、この経路が順序数、順序数評価写像、Buchholz の
-OT 整合性述語による埋め込み、および係数優越の事実（[(D.Gterm)](Gterm.md#d-Gterm) を用いる形の命題）
+OT 整合性述語による埋め込み、および係数優越の事実
 のいずれも用いず、
 Bachmann 共終性（[`Cofinality.md`](Cofinality.md), [`AscArg.md`](AscArg.md)）と
 反復帰納的集合 $`W_u`$（[`Wset.md`](Wset.md)）でこれらを置き換えたものであることを記録している。

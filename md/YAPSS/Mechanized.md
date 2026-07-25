@@ -204,13 +204,6 @@ t = \mathsf{Z}\ \vee\ \mathrm{lead}\,t < w \ \Longrightarrow\ t \prec \mathsf{P}
 **証明** $`x`$ の構成子で場合分けする。$`x=\mathsf{Z}`$ のときは [(T.olt_Z_Z)](#t-olt_Z_Z)、
 $`x=\mathsf{P}(a,b,c)`$ のときは [(T.olt_P_Z)](#t-olt_P_Z) である。∎
 
-<a id="t-olt_Z_iff"></a>
-### 定理 上界は $`\mathsf{Z}`$ でない (T.olt_Z_iff)
-
-**主張** $`x\prec y`$ ならば $`y \ne \mathsf{Z}`$。
-
-**証明** $`y=\mathsf{Z}`$ と仮定すると $`x\prec\mathsf{Z}`$ となり、[(T.not_olt_Z)](#t-not_olt_Z) に矛盾する。∎
-
 <a id="t-olt_trans"></a>
 ### 定理 推移律 (T.olt_trans)
 
@@ -227,7 +220,7 @@ $`x=\mathsf{P}(a,b,c)`$ のときは [(T.olt_P_Z)](#t-olt_P_Z) である。∎
   $`x,y`$ を取り $`x\prec y`$, $`y\prec\mathsf{P}(c_1,c_2,c_3)`$ とする。
 
   $`x=\mathsf{Z}`$ のときは [(T.olt_Z_P)](#t-olt_Z_P) より $`x\prec\mathsf{P}(c_1,c_2,c_3)`$ である。
-  以下 $`x=\mathsf{P}(a_1,a_2,a_3)`$ とする。$`x\prec y`$ と [(T.olt_Z_iff)](#t-olt_Z_iff) より $`y\ne\mathsf{Z}`$、
+  以下 $`x=\mathsf{P}(a_1,a_2,a_3)`$ とする。$`x\prec y`$ と [(T.not_olt_Z)](#t-not_olt_Z) より $`y\ne\mathsf{Z}`$、
   よって $`y=\mathsf{P}(e_1,e_2,e_3)`$ と書ける。[(T.olt_P_P)](#t-olt_P_P) により、
   $`x\prec y`$ は次の 3 つのいずれかである。
 
@@ -254,33 +247,6 @@ $`x=\mathsf{P}(a,b,c)`$ のときは [(T.olt_P_Z)](#t-olt_P_Z) である。∎
   (2)(II) では帰納法の仮定 $`\Phi(c_2)`$ を $`x:=a_2`$, $`y:=e_2`$ に適用した。
   (3)(III) では帰納法の仮定 $`\Phi(c_3)`$ を $`x:=a_3`$, $`y:=e_3`$ に適用した。
   いずれの場合も $`x\prec z`$ が得られたので $`\Phi(\mathsf{P}(c_1,c_2,c_3))`$。∎
-
-<a id="t-olt_total"></a>
-### 定理 三分律 (T.olt_total)
-
-**主張** 任意の $`x,y\in\mathrm{Three}`$ に対し $`x\prec y \ \vee\ x=y \ \vee\ y\prec x`$。
-
-**証明** $`x`$ の構造に関する帰納法（$`y`$ は全称量化したまま動かす）。帰納法の述語は
-```math
-\Psi(x) :\equiv \forall y\in\mathrm{Three},\ x\prec y \vee x=y \vee y\prec x.
-```
-
-- 基底段 $`x=\mathsf{Z}`$：$`y=\mathsf{Z}`$ なら $`x=y`$（第 2 選言）、
-  $`y=\mathsf{P}(e_1,e_2,e_3)`$ なら [(T.olt_Z_P)](#t-olt_Z_P) より $`x\prec y`$（第 1 選言）。
-- 帰納段 $`x=\mathsf{P}(a_1,a_2,a_3)`$：帰納法の仮定は $`\Psi(a_2)`$ と $`\Psi(a_3)`$ である。
-  $`y=\mathsf{Z}`$ なら [(T.olt_Z_P)](#t-olt_Z_P) より $`y\prec x`$（第 3 選言）。
-  $`y=\mathsf{P}(e_1,e_2,e_3)`$ とし、$`\mathbb{N}`$ の三分律で $`a_1`$ と $`e_1`$ を比較する。
-  - $`a_1\lt e_1`$：[(T.olt_P_P)](#t-olt_P_P) 第 1 選言より $`x\prec y`$。
-  - $`e_1\lt a_1`$：[(T.olt_P_P)](#t-olt_P_P) 第 1 選言より $`y\prec x`$。
-  - $`a_1=e_1`$：帰納法の仮定 $`\Psi(a_2)`$ を $`y:=e_2`$ に適用して 3 つに分ける。
-    - $`a_2\prec e_2`$：[(T.olt_P_P)](#t-olt_P_P) 第 2 選言より $`x\prec y`$。
-    - $`e_2\prec a_2`$：[(T.olt_P_P)](#t-olt_P_P) 第 2 選言より $`y\prec x`$。
-    - $`a_2=e_2`$：帰納法の仮定 $`\Psi(a_3)`$ を $`y:=e_3`$ に適用して 3 つに分ける。
-      - $`a_3\prec e_3`$：[(T.olt_P_P)](#t-olt_P_P) 第 3 選言より $`x\prec y`$。
-      - $`e_3\prec a_3`$：[(T.olt_P_P)](#t-olt_P_P) 第 3 選言より $`y\prec x`$。
-      - $`a_3=e_3`$：$`a_1=e_1`$, $`a_2=e_2`$, $`a_3=e_3`$ より [(D.Three)](#d-Three) の構成子の単射性から $`x=y`$。
-
-  よって $`\Psi(\mathsf{P}(a_1,a_2,a_3))`$。∎
 
 <a id="t-olt_ole_trans"></a>
 ### 定理 $`\prec`$ と $`\preceq`$ の合成 (T.olt_ole_trans)
@@ -762,14 +728,6 @@ $`G`$ の形で分ける。
 **証明** 任意の $`y`$ について、[(T.mem_sndSet)](#t-mem_sndSet) より
 $`y\in\mathrm{sndSet}\,[]`$ は $`\exists p\in[],\ \pi_1 p=y`$ と同値であり、
 空列は要素をもたないのでこれは偽。よって外延性より $`\mathrm{sndSet}\,[]=\emptyset`$。∎
-
-<a id="t-sndSet_mono"></a>
-### 定理 $`\mathrm{sndSet}`$ の単調性 (T.sndSet_mono)
-
-**主張** $`\forall x\in M,\ x\in N`$ ならば $`\mathrm{sndSet}\,M \subseteq \mathrm{sndSet}\,N`$。
-
-**証明** $`y\in\mathrm{sndSet}\,M`$ とする。[(T.mem_sndSet)](#t-mem_sndSet) より $`p\in M`$ で $`\pi_1 p=y`$ なるものが取れる。
-仮定より $`p\in N`$ であり、再び [(T.mem_sndSet)](#t-mem_sndSet) より $`y\in\mathrm{sndSet}\,N`$。∎
 
 <a id="t-idx1_le1"></a>
 ### 定理 $`\mathrm{idx1}\le 1`$ (T.idx1_le1)

@@ -281,42 +281,6 @@ $`A \prec_{\mathrm{lex}} C`$、すなわち $`\preceq_{\mathrm{lex}}`$ の第 2 
 $`Y \ne []`$ なら [(T.seqlex_prefix)](Seqlex.md#t-seqlex_prefix) より $`X \prec_{\mathrm{lex}} X \mathbin{+\!\!+} Y`$。
 これと仮定に [(T.sle_trans)](#t-sle_trans) を適用する。∎
 
-<a id="t-seqlex_of_sle_snoc"></a>
-### 定理 落とされる列の差し替え (T.seqlex_of_sle_snoc)
-
-**主張** $`X, Y \in \mathrm{PairSeq}`$、$`\mathit{lp}, q \in \mathbb{N}\times\mathbb{N}`$ とする。
-```math
-X \mathbin{+\!\!+} [\mathit{lp}] \preceq_{\mathrm{lex}} Y \quad\wedge\quad q \prec_{\mathrm{c}} \mathit{lp}
-\quad\wedge\quad \lvert X\rvert < \lvert Y\rvert
-\ \Longrightarrow\ \forall S', E,\ X \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} Y \mathbin{+\!\!+} E .
-```
-
-長さの条件 $`\lvert X\rvert \lt \lvert Y\rvert`$ は「$`X`$ が尽きたから小さい」という判定を排除するためのものである。
-
-**証明** $`X`$ に関するリストの構造帰納法。帰納法の述語は
-```math
-\Theta(X) :\equiv \forall Y, \mathit{lp}, q,\
-X \mathbin{+\!\!+} [\mathit{lp}] \preceq_{\mathrm{lex}} Y \to q \prec_{\mathrm{c}} \mathit{lp} \to \lvert X\rvert < \lvert Y\rvert \to
-\forall S', E,\ X \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} Y \mathbin{+\!\!+} E .
-```
-
-- 基底段 $`X = []`$：$`0 \lt \lvert Y\rvert`$ より $`Y = y \mathbin{::} Y'`$。目標は
-  $`q \mathbin{::} S' \prec_{\mathrm{lex}} y \mathbin{::} (Y' \mathbin{+\!\!+} E)`$ であり、$`q \prec_{\mathrm{c}} y`$ を示せば十分である。
-  仮定 $`[\mathit{lp}] \preceq_{\mathrm{lex}} y \mathbin{::} Y'`$ の 2 選言で場合分けする。
-  - 等号 $`[\mathit{lp}] = y \mathbin{::} Y'`$：先頭を比べて $`\mathit{lp} = y`$ であるから、$`q \prec_{\mathrm{c}} \mathit{lp}`$ が $`q \prec_{\mathrm{c}} y`$。
-  - $`[\mathit{lp}] \prec_{\mathrm{lex}} y \mathbin{::} Y'`$：$`\mathit{lp} \prec_{\mathrm{c}} y`$ ならば
-    [(T.pairlt_trans)](Cofinality.md#t-pairlt_trans) より $`q \prec_{\mathrm{c}} y`$。
-    $`\mathit{lp} = y`$（かつ尾部の比較）ならば直ちに $`q \prec_{\mathrm{c}} y`$。
-- 帰納段 $`X = x \mathbin{::} X'`$：帰納法の仮定は $`\Theta(X')`$。$`\lvert x \mathbin{::} X'\rvert \lt \lvert Y\rvert`$ より $`Y = y \mathbin{::} Y'`$ で
-  $`\lvert X'\rvert \lt \lvert Y'\rvert`$。仮定は $`x \mathbin{::} (X' \mathbin{+\!\!+} [\mathit{lp}]) \preceq_{\mathrm{lex}} y \mathbin{::} Y'`$、
-  目標は $`x \mathbin{::} (X' \mathbin{+\!\!+} q \mathbin{::} S') \prec_{\mathrm{lex}} y \mathbin{::} (Y' \mathbin{+\!\!+} E)`$ である。
-  - 等号のとき：$`x = y`$ かつ $`X' \mathbin{+\!\!+} [\mathit{lp}] = Y'`$。後者は
-    $`X' \mathbin{+\!\!+} [\mathit{lp}] \preceq_{\mathrm{lex}} Y'`$（第 1 選言）を与えるから、$`\Theta(X')`$ より
-    $`X' \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} Y' \mathbin{+\!\!+} E`$。目標の第 2 選言が成り立つ。
-  - $`\prec_{\mathrm{lex}}`$ のとき：$`x \prec_{\mathrm{c}} y`$ ならば目標の第 1 選言。
-    $`x = y`$ かつ $`X' \mathbin{+\!\!+} [\mathit{lp}] \prec_{\mathrm{lex}} Y'`$ ならば、$`\Theta(X')`$（第 2 選言と $`\lvert X'\rvert \lt \lvert Y'\rvert`$）より
-    $`X' \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} Y' \mathbin{+\!\!+} E`$ であり、目標の第 2 選言が成り立つ。∎
-
 <a id="t-shiftr0_injective"></a>
 ### 定理 $`\mathrm{sh}_d`$ は単射 (T.shiftr0_injective)
 
@@ -1105,8 +1069,7 @@ X \mathbin{+\!\!+} [\mathit{lp}] \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E \qu
 \ \Longrightarrow\ \forall S', E',\ X \mathbin{+\!\!+} q \mathbin{::} S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
 ```
 
-[(T.seqlex_of_sle_snoc)](#t-seqlex_of_sle_snoc) の強化である（$`E := []`$ が元の形）。
-仮定は $`V`$ の**ある**継続についての上界でよく、結論は $`V`$ の**任意の**継続について成り立つ。
+仮定は $`V`$ の**ある**継続 $`E`$ についての上界でよく、結論は $`V`$ の**任意の**継続 $`E'`$ について成り立つ。
 
 **証明** $`X`$ に関するリストの構造帰納法。帰納法の述語は
 ```math
