@@ -231,7 +231,12 @@ The following five points are observed. All of them are results measured on the 
 ```sh
 node ~/.claude/skills/github-math-check/scripts/check-local.js lean    # before push
 node ~/.claude/skills/github-math-check/scripts/check-github.js <URL>  # after push; this is the final verdict
+python3 ~/.claude/skills/my-github-md-rule/scripts/check-link-lang.py --mode 4 .   # link language
 ```
+
+The last one catches a Japanese file linking to the English variant of a file that
+has a Japanese one, and the other way round; navigation and language-switch links
+are recognized and skipped.
 
 That something renders locally does not mean that it renders on GitHub. **Always measure on the real site after pushing.**
 

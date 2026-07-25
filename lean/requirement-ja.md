@@ -259,7 +259,11 @@ GitHub は数式を KaTeX で描画し、その手前で Markdown のエスケ�
 ```sh
 node ~/.claude/skills/github-math-check/scripts/check-local.js lean    # push 前
 node ~/.claude/skills/github-math-check/scripts/check-github.js <URL>  # push 後、これが最終判定
+python3 ~/.claude/skills/my-github-md-rule/scripts/check-link-lang.py --mode 4 .   # リンクの言語
 ```
+
+3 つめは、日本語のファイルから、日本語版のある文書の英語版へ張ったリンク（およびその逆）を
+検出する。ナビ行と言語切り替えのリンクは除外される。
 
 ローカルで描画できることは GitHub で描画できることを意味しない。**必ず push 後に実機で測る。**
 

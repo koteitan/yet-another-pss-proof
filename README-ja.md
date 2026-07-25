@@ -28,7 +28,7 @@ $p_a(b)$ の添字 $a$ を自然数に取ることに対応する。
 
 ## 証明
 
-[`lean/README.md`](lean/README.md)
+[`lean/README-ja.md`](lean/README-ja.md)
 
 ## ビルド
 
