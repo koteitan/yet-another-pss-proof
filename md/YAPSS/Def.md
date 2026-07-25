@@ -57,7 +57,9 @@ Lean 移植では原論文の $\mathrm{Lng}\,M$ を `M.length` として直接�
 <a id="d-PairSeq"></a>
 #### 定義 ペア数列 (D.PairSeq)
 
-$$\mathrm{PairSeq} := (\mathbb{N} \times \mathbb{N})^{<\omega}$$
+```math
+\mathrm{PairSeq} := (\mathbb{N} \times \mathbb{N})^{<\omega}
+```
 
 すなわち自然数のペアの有限列全体。Lean では `abbrev PairSeq := List (ℕ × ℕ)` であり、
 `List (ℕ × ℕ)` の略記にすぎない（新しい型を作らない）。
@@ -71,7 +73,8 @@ $M_j \in \mathbb{N}\times\mathbb{N}$ を $M$ の第 $j$ 要素（$0$ 起算）�
 
 $M \in \mathrm{PairSeq}$、$i, j \in \mathbb{N}$ に対し
 
-$$M_{i,j} := \begin{cases}
+```math
+M_{i,j} := \begin{cases}
 \pi_1(M_j) & (i = 0) \\
 \pi_2(M_j) & (i \ne 0)
 \end{cases}
@@ -79,7 +82,8 @@ $$M_{i,j} := \begin{cases}
 M_j := \begin{cases}
 M \text{ の第 } j \text{ 要素} & (j < \mathrm{Lng}\,M) \\
 (0,0) & (j \ge \mathrm{Lng}\,M)
-\end{cases}$$
+\end{cases}
+```
 
 ここで $\pi_1, \pi_2$ はペアの第 1・第 2 成分である。Lean の定義
 
@@ -93,7 +97,9 @@ def entry (M : PairSeq) (i j : ℕ) : ℕ :=
 
 この規約から直ちに次が従う。
 
-$$j \ge \mathrm{Lng}\,M \ \Longrightarrow\ M_{0,j} = 0 \ \wedge\ M_{1,j} = 0 .$$
+```math
+j \ge \mathrm{Lng}\,M \ \Longrightarrow\ M_{0,j} = 0 \ \wedge\ M_{1,j} = 0 .
+```
 
 実際、$j \ge \mathrm{Lng}\,M$ のとき $M_j = (0,0)$ であり、$\pi_1(0,0) = \pi_2(0,0) = 0$ である。
 以降、$M_{i,j}$ を用いる箇所では常に $j < \mathrm{Lng}\,M$ が保証されるので、この既定値が読まれることはない。
@@ -117,7 +123,9 @@ $M \in \mathrm{PairSeq}$、$j_0, j_1 \in \mathbb{N}$ に対し、$j_0 \to^M_0 j_
 
 **補足（条件 5 の意味）.** 条件 3, 4, 5 を合わせると
 
-$$M_{0,j_1} = \min\{\, M_{0,j} \mid j_0 < j \le j_1 \,\} \quad\text{かつ}\quad M_{0,j_0} < M_{0,j_1}$$
+```math
+M_{0,j_1} = \min\{\, M_{0,j} \mid j_0 < j \le j_1 \,\} \quad\text{かつ}\quad M_{0,j_0} < M_{0,j_1}
+```
 
 と同値である。実際、条件 3 より $j_1$ 自身が添字集合 $\{ j \mid j_0 < j \le j_1 \}$ に属する。
 条件 5 は「$j_0 < j < j_1$ なるすべての $j$ で $M_{0,j_1} \le M_{0,j}$」であり、
@@ -129,8 +137,10 @@ $j = j_1$ については $\le$ の反射性から $M_{0,j_1} \le M_{0,j_1}$ が
 <a id="d-le0"></a>
 #### 定義 行 0 の祖先関係 (D.le0)
 
-$$j_0 \le^M_0 j_1 \ :\Longleftrightarrow\
-j_0 < \mathrm{Lng}\,M \ \wedge\ j_1 < \mathrm{Lng}\,M \ \wedge\ \mathrm{ReflTransGen}\,(\to^M_0)\ j_0\ j_1 .$$
+```math
+j_0 \le^M_0 j_1 \ :\Longleftrightarrow\
+j_0 < \mathrm{Lng}\,M \ \wedge\ j_1 < \mathrm{Lng}\,M \ \wedge\ \mathrm{ReflTransGen}\,(\to^M_0)\ j_0\ j_1 .
+```
 
 すなわち、$j_0$ と $j_1$ がともに $M$ の添字範囲にあり、かつある $m \ge 0$ と列
 $j_0 = k_0, k_1, \dots, k_m = j_1$ が存在して $\forall t < m,\ k_t \to^M_0 k_{t+1}$
@@ -161,11 +171,13 @@ $\le$ の反射性から成り立つので、条件 6 の内容は $j \ne j_1$ �
 <a id="d-nextR"></a>
 #### 定義 行付き直接親子関係 (D.nextR)
 
-$$j_0 \to^M_i j_1 \ :\Longleftrightarrow\
+```math
+j_0 \to^M_i j_1 \ :\Longleftrightarrow\
 \begin{cases}
 j_0 \to^M_0 j_1 & (i = 0) \\
 j_0 \to^M_1 j_1 & (i \ne 0)
-\end{cases}$$
+\end{cases}
+```
 
 （[(D.nextrel0)](#d-nextrel0), [(D.nextrel1)](#d-nextrel1)）。
 [(D.entry)](#d-entry) と同じく、場合分けは `i = 0` か否かであるから、$i \ge 1$ のすべての $i$ で
@@ -174,7 +186,9 @@ $\mathrm{idx}_1(M, j_1)$（[(D.idx1)](#d-idx1)）の値、すなわち $0$ か $
 
 どちらの場合も定義の条件 1–3 から
 
-$$j_0 \to^M_i j_1 \ \Longrightarrow\ j_0 < j_1 < \mathrm{Lng}\,M$$
+```math
+j_0 \to^M_i j_1 \ \Longrightarrow\ j_0 < j_1 < \mathrm{Lng}\,M
+```
 
 が成り立つ。
 
@@ -185,17 +199,21 @@ $$j_0 \to^M_i j_1 \ \Longrightarrow\ j_0 < j_1 < \mathrm{Lng}\,M$$
 <a id="d-Pred"></a>
 #### 定義 前者 (D.Pred)
 
-$$\mathrm{Pred}\,M := \begin{cases}
+```math
+\mathrm{Pred}\,M := \begin{cases}
 M & (\mathrm{Lng}\,M \le 1) \\
 (M_0, \dots, M_{\mathrm{Lng}\,M - 2}) & (\mathrm{Lng}\,M \ge 2)
-\end{cases}$$
+\end{cases}
+```
 
 第 2 の場合は `M.dropLast`、すなわち末尾 1 要素を除いた列である。長さは
 
-$$\mathrm{Lng}(\mathrm{Pred}\,M) = \begin{cases}
+```math
+\mathrm{Lng}(\mathrm{Pred}\,M) = \begin{cases}
 \mathrm{Lng}\,M & (\mathrm{Lng}\,M \le 1) \\
 \mathrm{Lng}\,M - 1 & (\mathrm{Lng}\,M \ge 2)
-\end{cases}$$
+\end{cases}
+```
 
 である。空列 $M = ()$ と長さ 1 の列に対しては $\mathrm{Pred}\,M = M$ であり、長さは減らない。
 
@@ -206,28 +224,36 @@ $$\mathrm{Lng}(\mathrm{Pred}\,M) = \begin{cases}
 <a id="d-idx1"></a>
 #### 定義 親を探す行番号 (D.idx1)
 
-$$\mathrm{idx}_1(M, j_1) := \begin{cases}
+```math
+\mathrm{idx}_1(M, j_1) := \begin{cases}
 1 & (0 < M_{1,j_1}) \\
 0 & (M_{1,j_1} = 0)
-\end{cases}$$
+\end{cases}
+```
 
 （[(D.entry)](#d-entry)）。値域は $\{0, 1\}$ である。
 
 <a id="d-hasParent"></a>
 #### 定義 親の一意存在 (D.hasParent)
 
-$$\mathrm{hasParent}(M, i, j_1) \ :\Longleftrightarrow\ \exists!\, j_0,\ j_0 \to^M_i j_1 ,$$
+```math
+\mathrm{hasParent}(M, i, j_1) \ :\Longleftrightarrow\ \exists!\, j_0,\ j_0 \to^M_i j_1 ,
+```
 
 すなわち
 
-$$\exists j_0,\ \Bigl( j_0 \to^M_i j_1 \ \wedge\ \forall j,\ (j \to^M_i j_1) \to j = j_0 \Bigr)$$
+```math
+\exists j_0,\ \Bigl( j_0 \to^M_i j_1 \ \wedge\ \forall j,\ (j \to^M_i j_1) \to j = j_0 \Bigr)
+```
 
 （[(D.nextR)](#d-nextR)）。
 
 <a id="d-parent"></a>
 #### 定義 親 (D.parent)
 
-$$\mathrm{par}^M_i(j_1) := \varepsilon\, j_0.\ \bigl(j_0 \to^M_i j_1\bigr)$$
+```math
+\mathrm{par}^M_i(j_1) := \varepsilon\, j_0.\ \bigl(j_0 \to^M_i j_1\bigr)
+```
 
 （[(D.nextR)](#d-nextR)）。Hilbert の選択作用素 `Classical.epsilon` による定義であり、
 関数としては全域だが計算可能ではない（Lean 側でも `noncomputable`）。
@@ -235,9 +261,11 @@ $$\mathrm{par}^M_i(j_1) := \varepsilon\, j_0.\ \bigl(j_0 \to^M_i j_1\bigr)$$
 **性質（Isabelle の `THE` との一致）.**
 $\mathrm{hasParent}(M, i, j_1)$（[(D.hasParent)](#d-hasParent)）が成り立つならば、
 
-$$\mathrm{par}^M_i(j_1) \to^M_i j_1
+```math
+\mathrm{par}^M_i(j_1) \to^M_i j_1
 \qquad\text{かつ}\qquad
-\forall j,\ (j \to^M_i j_1) \to j = \mathrm{par}^M_i(j_1) .$$
+\forall j,\ (j \to^M_i j_1) \to j = \mathrm{par}^M_i(j_1) .
+```
 
 *証明.* $\mathrm{hasParent}(M,i,j_1)$ は、ある $a$ が存在して
 $a \to^M_i j_1$ かつ $\forall j,\ (j \to^M_i j_1) \to j = a$ を満たすことである。
@@ -259,32 +287,44 @@ $j_1 := \mathrm{Lng}\,M - 1$（切り捨て減法）とおく。
 
 **(a) $j_1 = 0$ のとき**（すなわち $\mathrm{Lng}\,M \le 1$）:
 
-$$M[n] := M .$$
+```math
+M[n] := M .
+```
 
 **(b) $j_1 \ne 0$ かつ $M_{0,j_1} = 0 \wedge M_{1,j_1} = 0$ のとき**（末尾のペアが $(0,0)$）:
 
-$$M[n] := \mathrm{Pred}\,M$$
+```math
+M[n] := \mathrm{Pred}\,M
+```
 
 （[(D.Pred)](#d-Pred)）。
 
 **(c) $j_1 \ne 0$、$\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)$、かつ
 $\neg\,\mathrm{hasParent}(M, i_1, j_1)$ のとき**（$i_1 := \mathrm{idx}_1(M, j_1)$、[(D.idx1)](#d-idx1)）:
 
-$$M[n] := \mathrm{Pred}\,M .$$
+```math
+M[n] := \mathrm{Pred}\,M .
+```
 
 **(d) それ以外のとき**、すなわち $j_1 \ne 0$、$\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)$、
 $\mathrm{hasParent}(M, i_1, j_1)$ のとき: $j_0 := \mathrm{par}^M_{i_1}(j_1)$（[(D.parent)](#d-parent)）、
 
-$$d_0 := \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 < i_1) \\ 0 & (i_1 = 0) \end{cases}
+```math
+d_0 := \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 < i_1) \\ 0 & (i_1 = 0) \end{cases}
 \qquad
-d_1 := \begin{cases} M_{1,j_1} - M_{1,j_0} & (1 < i_1) \\ 0 & (i_1 \le 1) \end{cases}$$
+d_1 := \begin{cases} M_{1,j_1} - M_{1,j_0} & (1 < i_1) \\ 0 & (i_1 \le 1) \end{cases}
+```
 
 とおき、
 
-$$M[n] := (M \upharpoonright j_0) \ \mathbin{+\!\!+} \ B_0 \mathbin{+\!\!+} B_1 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1},$$
+```math
+M[n] := (M \upharpoonright j_0) \ \mathbin{+\!\!+} \ B_0 \mathbin{+\!\!+} B_1 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1},
+```
 
-$$B_k := \bigl(\ (\,M_{0,j} + k\,d_0,\ M_{1,j} + k\,d_1\,)\ \bigr)_{j = j_0}^{j_1 - 1}
-\qquad (k = 0, 1, \dots, n-1) .$$
+```math
+B_k := \bigl(\ (\,M_{0,j} + k\,d_0,\ M_{1,j} + k\,d_1\,)\ \bigr)_{j = j_0}^{j_1 - 1}
+\qquad (k = 0, 1, \dots, n-1) .
+```
 
 ここで $M \upharpoonright j_0 = (M_0, \dots, M_{j_0-1})$ は先頭 $j_0$ 要素であり、
 $B_k$ は添字 $j = j_0, j_0+1, \dots, j_1-1$ を順に走る長さ $j_1 - j_0$ の列である
@@ -305,7 +345,9 @@ $j_0 \le^M_0 j_1$ が成り立つ。このとき $d_0 = M_{0,j_1} - M_{0,j_0}$ �
 $i_1 = 0$ のとき（すなわち $M_{1,j_1} = 0$ のとき）は $d_0 = 0$ であり、補足 1 と合わせて
 $d_0 = d_1 = 0$ だから、すべての $k$ について
 
-$$B_k = \bigl(\,(M_{0,j},\ M_{1,j})\,\bigr)_{j=j_0}^{j_1-1} = (M_{j_0}, M_{j_0+1}, \dots, M_{j_1-1})$$
+```math
+B_k = \bigl(\,(M_{0,j},\ M_{1,j})\,\bigr)_{j=j_0}^{j_1-1} = (M_{j_0}, M_{j_0+1}, \dots, M_{j_1-1})
+```
 
 である（最後の等号は、$j < \mathrm{Lng}\,M$ のとき [(D.entry)](#d-entry) より
 $(M_{0,j}, M_{1,j}) = (\pi_1(M_j), \pi_2(M_j)) = M_j$ であることによる。分岐 (d) では
@@ -314,7 +356,9 @@ $M \upharpoonright j_0$ の後ろに区間 $[j_0, j_1)$ の要素をそのまま
 
 **補足 3（長さ）.** 分岐 (d) において
 
-$$\mathrm{Lng}\,(M[n]) = j_0 + n\,(j_1 - j_0) .$$
+```math
+\mathrm{Lng}\,(M[n]) = j_0 + n\,(j_1 - j_0) .
+```
 
 *証明.* 分岐 (d) では $\mathrm{hasParent}(M, i_1, j_1)$ が成り立つから、[(D.parent)](#d-parent) の性質より
 $j_0 \to^M_{i_1} j_1$、したがって [(D.nextR)](#d-nextR) の後の注意により $j_0 < j_1 < \mathrm{Lng}\,M$ である。
@@ -335,17 +379,23 @@ $j_1 \ne 0$ より $\mathrm{Lng}\,M \ge 2$ だから $\mathrm{Lng}(M[n]) = \math
 
 $a, b \in \mathbb{N}$ に対し
 
-$$\Delta_a^b := \bigl(\,(j, j)\,\bigr)_{j=a}^{b}
-= \bigl((a,a),\ (a+1,a+1),\ \dots,\ (b,b)\bigr) .$$
+```math
+\Delta_a^b := \bigl(\,(j, j)\,\bigr)_{j=a}^{b}
+= \bigl((a,a),\ (a+1,a+1),\ \dots,\ (b,b)\bigr) .
+```
 
 Lean では `(List.range' a (b + 1 - a)).map (fun j => (j, j))` であり、長さは切り捨て減法で
 $b + 1 - a$ である。したがって
 
-$$\mathrm{Lng}\,\Delta_a^b = \begin{cases} b + 1 - a & (a \le b) \\ 0 & (a > b) \end{cases}$$
+```math
+\mathrm{Lng}\,\Delta_a^b = \begin{cases} b + 1 - a & (a \le b) \\ 0 & (a > b) \end{cases}
+```
 
 であり、$a > b$ のとき $\Delta_a^b$ は空列である。特に
 
-$$\Delta_0^v = \bigl((0,0), (1,1), \dots, (v,v)\bigr), \qquad \mathrm{Lng}\,\Delta_0^v = v + 1 .$$
+```math
+\Delta_0^v = \bigl((0,0), (1,1), \dots, (v,v)\bigr), \qquad \mathrm{Lng}\,\Delta_0^v = v + 1 .
+```
 
 成分は、$a \le j \le b$ のとき $(\Delta_a^b)_{0,\,j-a} = (\Delta_a^b)_{1,\,j-a} = j$ である
 （[(D.entry)](#d-entry)）。
@@ -355,9 +405,11 @@ $$\Delta_0^v = \bigl((0,0), (1,1), \dots, (v,v)\bigr), \qquad \mathrm{Lng}\,\Del
 
 $\mathrm{ST\_PS} \subseteq \mathrm{PairSeq}$ を、次の 2 つの導入規則で生成される**最小の**集合と定める。
 
-$$\frac{\ }{\ \Delta_0^v \in \mathrm{ST\_PS}\ }\ \text{(diag)}\quad (v \in \mathbb{N})
+```math
+\frac{\ }{\ \Delta_0^v \in \mathrm{ST\_PS}\ }\ \text{(diag)}\quad (v \in \mathbb{N})
 \qquad\qquad
-\frac{\ M \in \mathrm{ST\_PS} \qquad 1 \le n\ }{\ M[n] \in \mathrm{ST\_PS}\ }\ \text{(oper)}$$
+\frac{\ M \in \mathrm{ST\_PS} \qquad 1 \le n\ }{\ M[n] \in \mathrm{ST\_PS}\ }\ \text{(oper)}
+```
 
 （[(D.diagSeq)](#d-diagSeq), [(D.oper)](#d-oper)）。すなわち Lean の
 
@@ -370,7 +422,9 @@ inductive ST_PS : PairSeq → Prop where
 に対応する。言い換えると、$M \in \mathrm{ST\_PS}$ とは、ある $v \in \mathbb{N}$、ある $m \ge 0$、
 ある $n_1, \dots, n_m \ge 1$ が存在して
 
-$$M = \Delta_0^v[n_1][n_2]\cdots[n_m]$$
+```math
+M = \Delta_0^v[n_1][n_2]\cdots[n_m]
+```
 
 と書けることである。
 
@@ -397,13 +451,17 @@ $$M = \Delta_0^v[n_1][n_2]\cdots[n_m]$$
 関係 $\Rightarrow\ \subseteq \mathrm{PairSeq} \times \mathrm{PairSeq}$ を、次の 1 つの導入規則で生成される
 最小の関係と定める。
 
-$$\frac{\ 1 < \mathrm{Lng}\,M \qquad 1 \le n\ }{\ M \Rightarrow M[n]\ }\ \text{(step\_oper)}$$
+```math
+\frac{\ 1 < \mathrm{Lng}\,M \qquad 1 \le n\ }{\ M \Rightarrow M[n]\ }\ \text{(step\_oper)}
+```
 
 （[(D.oper)](#d-oper)）。
 
 **場合分け原理（逆向きの読み）.** 導入規則が 1 つしかないから、
 
-$$M \Rightarrow N \quad\Longleftrightarrow\quad \exists n,\ \bigl(1 < \mathrm{Lng}\,M \ \wedge\ 1 \le n \ \wedge\ N = M[n]\bigr) .$$
+```math
+M \Rightarrow N \quad\Longleftrightarrow\quad \exists n,\ \bigl(1 < \mathrm{Lng}\,M \ \wedge\ 1 \le n \ \wedge\ N = M[n]\bigr) .
+```
 
 $(\Leftarrow)$ は規則 (step\_oper) そのもの。$(\Rightarrow)$ は Lean の `step.rec`（唯一の構成子に対する場合分け）である。
 

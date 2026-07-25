@@ -59,10 +59,12 @@ Lean ファイル冒頭の移植規約（Isabelle の `ord/psi.thy` からの移
 
 $v\in\mathbb{N}$ に対し
 
-$$\Omega_v := \begin{cases}
+```math
+\Omega_v := \begin{cases}
 1 & (v = 0)\\
 \mathrm{ord}(\aleph_v) & (v \ne 0)
-\end{cases}$$
+\end{cases}
+```
 
 Lean では
 
@@ -118,9 +120,11 @@ Lean ファイルのこの節のコメントは、$C_v(\alpha)$ を
 
 $p : \mathrm{Ord}\to\mathbb{N}\to\mathrm{Ord}$、$\alpha\in\mathrm{Ord}$、$X\subseteq\mathrm{Ord}$ に対し
 
-$$\mathrm{Cstep}_{p,\alpha}(X) :=
+```math
+\mathrm{Cstep}_{p,\alpha}(X) :=
 X \ \cup\ \{\beta+\gamma \mid \beta\in X,\ \gamma\in X\}
-\ \cup\ \bigcup_{u\in\mathbb{N}}\ \{\, p(\xi,u) \mid \xi\in X\cap\mathrm{Iio}(\alpha) \,\}.$$
+\ \cup\ \bigcup_{u\in\mathbb{N}}\ \{\, p(\xi,u) \mid \xi\in X\cap\mathrm{Iio}(\alpha) \,\}.
+```
 
 Lean では
 
@@ -134,11 +138,13 @@ def Cstep (p : Ordinal.{u} → ℕ → Ordinal.{u}) (α : Ordinal.{u}) (X : Set 
 
 **補足 1（成分表示）.** 任意の $\delta\in\mathrm{Ord}$ について
 
-$$\delta\in\mathrm{Cstep}_{p,\alpha}(X)
+```math
+\delta\in\mathrm{Cstep}_{p,\alpha}(X)
 \iff
 \delta\in X
 \ \vee\ \bigl(\exists \beta\,\gamma,\ \beta\in X \wedge \gamma\in X \wedge \delta=\beta+\gamma\bigr)
-\ \vee\ \bigl(\exists u\in\mathbb{N},\ \exists\xi,\ \xi\in X \wedge \xi<\alpha \wedge \delta=p(\xi,u)\bigr).$$
+\ \vee\ \bigl(\exists u\in\mathbb{N},\ \exists\xi,\ \xi\in X \wedge \xi<\alpha \wedge \delta=p(\xi,u)\bigr).
+```
 
 *証明.* Mathlib の集合演算の定義を順に開く。
 $\delta\in A\cup B \iff \delta\in A \vee \delta\in B$、
@@ -179,7 +185,9 @@ $\forall \xi,\ \xi<\alpha \to \forall u\in\mathbb{N},\ p(\xi,u)=q(\xi,u)$ をみ
 
 $p$、$\alpha$、$v\in\mathbb{N}$、$n\in\mathbb{N}$ に対し
 
-$$C^{(n)}_{p,\alpha,v} := \bigl(\mathrm{Cstep}_{p,\alpha}\bigr)^{[n]}\bigl(\mathrm{Iio}(\Omega_v)\bigr).$$
+```math
+C^{(n)}_{p,\alpha,v} := \bigl(\mathrm{Cstep}_{p,\alpha}\bigr)^{[n]}\bigl(\mathrm{Iio}(\Omega_v)\bigr).
+```
 
 Lean では
 
@@ -194,14 +202,18 @@ $f^{[0]}(a) = a$、$f^{[k+1]}(a) = f^{[k]}(f(a))$ で定義される。
 
 **補足 1（漸化式）.** 次の 2 式が成り立つ。
 
-$$C^{(0)}_{p,\alpha,v} = \mathrm{Iio}(\Omega_v),
+```math
+C^{(0)}_{p,\alpha,v} = \mathrm{Iio}(\Omega_v),
 \qquad
-C^{(n+1)}_{p,\alpha,v} = \mathrm{Cstep}_{p,\alpha}\bigl(C^{(n)}_{p,\alpha,v}\bigr).$$
+C^{(n+1)}_{p,\alpha,v} = \mathrm{Cstep}_{p,\alpha}\bigl(C^{(n)}_{p,\alpha,v}\bigr).
+```
 
 *証明.* 第 1 式は $f^{[0]}(a)=a$ そのものである。第 2 式のために、任意の
 $f:\mathrm{Set}\,\mathrm{Ord}\to\mathrm{Set}\,\mathrm{Ord}$ と $a$ について
 
-$$\Phi(n) :\equiv \forall a,\ f^{[n+1]}(a) = f\bigl(f^{[n]}(a)\bigr)$$
+```math
+\Phi(n) :\equiv \forall a,\ f^{[n+1]}(a) = f\bigl(f^{[n]}(a)\bigr)
+```
 
 を $n$ に関する自然数の帰納法で示す。
 
@@ -209,7 +221,9 @@ $$\Phi(n) :\equiv \forall a,\ f^{[n+1]}(a) = f\bigl(f^{[n]}(a)\bigr)$$
   よって $\Phi(0)$。
 - 帰納段：帰納法の仮定を $\Phi(n)$、すなわち $\forall a,\ f^{[n+1]}(a)=f(f^{[n]}(a))$ とする。
   任意の $a$ について
-  $$f^{[n+2]}(a) = f^{[n+1]}(f(a)) \overset{\Phi(n)}{=} f\bigl(f^{[n]}(f(a))\bigr) = f\bigl(f^{[n+1]}(a)\bigr)$$
+  ```math
+  f^{[n+2]}(a) = f^{[n+1]}(f(a)) \overset{\Phi(n)}{=} f\bigl(f^{[n]}(f(a))\bigr) = f\bigl(f^{[n+1]}(a)\bigr)
+  ```
   である（第 1 と第 3 の等号は定義式 $f^{[k+1]}(a)=f^{[k]}(f(a))$）。よって $\Phi(n+1)$。
 
 $f := \mathrm{Cstep}_{p,\alpha}$、$a := \mathrm{Iio}(\Omega_v)$ とおけば第 2 式を得る。$\square$
@@ -251,17 +265,21 @@ $p,q$ が $\forall \xi,\ \xi<\alpha\to\forall u\in\mathbb{N},\ p(\xi,u)=q(\xi,u)
 - 基底段 $n=0$：補足 1 よりどちらも $\mathrm{Iio}(\Omega_v)$ であるから $\Xi(0)$。
 - 帰納段：帰納法の仮定を $\Xi(n)$ とする。補足 1 と
   [(D.Cstep)](#d-Cstep) の補足 4 により
-  $$C^{(n+1)}_{p,\alpha,v}
+  ```math
+  C^{(n+1)}_{p,\alpha,v}
   = \mathrm{Cstep}_{p,\alpha}\bigl(C^{(n)}_{p,\alpha,v}\bigr)
   = \mathrm{Cstep}_{q,\alpha}\bigl(C^{(n)}_{p,\alpha,v}\bigr)
   \overset{\Xi(n)}{=} \mathrm{Cstep}_{q,\alpha}\bigl(C^{(n)}_{q,\alpha,v}\bigr)
-  = C^{(n+1)}_{q,\alpha,v}$$
+  = C^{(n+1)}_{q,\alpha,v}
+  ```
   である。よって $\Xi(n+1)$。$\square$
 
 <a id="d-Cset"></a>
 ### 定義 生成集合 $C^p_v(\alpha)$ (D.Cset)
 
-$$C^p_v(\alpha) := \bigcup_{n\in\mathbb{N}} C^{(n)}_{p,\alpha,v}$$
+```math
+C^p_v(\alpha) := \bigcup_{n\in\mathbb{N}} C^{(n)}_{p,\alpha,v}
+```
 
 （[(D.Citer)](#d-Citer)）。Lean では
 
@@ -279,10 +297,12 @@ $\delta\in C^p_v(\alpha) \iff \exists n\in\mathbb{N},\ \delta\in C^{(n)}_{p,\alp
 
 **補足 2（生成条件）.** 集合 $Y\subseteq\mathrm{Ord}$ について、条件 $\mathrm{Cl}_{p,\alpha,v}(Y)$ を
 
-$$\mathrm{Cl}_{p,\alpha,v}(Y) :\iff
+```math
+\mathrm{Cl}_{p,\alpha,v}(Y) :\iff
 \mathrm{Iio}(\Omega_v)\subseteq Y
 \ \wedge\ \bigl(\forall \beta\,\gamma,\ \beta\in Y \to \gamma\in Y \to \beta+\gamma\in Y\bigr)
-\ \wedge\ \bigl(\forall u\in\mathbb{N},\ \forall\xi,\ \xi\in Y \to \xi<\alpha \to p(\xi,u)\in Y\bigr)$$
+\ \wedge\ \bigl(\forall u\in\mathbb{N},\ \forall\xi,\ \xi\in Y \to \xi<\alpha \to p(\xi,u)\in Y\bigr)
+```
 
 と定める。このとき $\mathrm{Cl}_{p,\alpha,v}\bigl(C^p_v(\alpha)\bigr)$ が成り立つ。
 
@@ -366,15 +386,19 @@ noncomputable def psi : Ordinal.{u} → ℕ → Ordinal.{u} :=
 $F : \forall x,\ (\forall y,\ r\,y\,x \to C(y)) \to C(x)$ から作る作用素であり、
 その唯一の性質は
 
-$$\mathrm{fix}\,F\,x = F\,x\,\bigl(\lambda y\,\_.\ \mathrm{fix}\,F\,y\bigr)$$
+```math
+\mathrm{fix}\,F\,x = F\,x\,\bigl(\lambda y\,\_.\ \mathrm{fix}\,F\,y\bigr)
+```
 
 （Lean の `WellFounded.fix_eq`）である。本定義では
 $r$ は $\mathrm{Ord}$ 上の $<$（整礎性は `Ordinal.lt_wf`）、$C(x)$ は $\mathbb{N}\to\mathrm{Ord}$、
 $F$ は
 
-$$F(\alpha)(g)(v) := \inf\ \bigl\{\gamma \ \bigm|\ \gamma\notin C^{\,p_{\alpha,g}}_v(\alpha)\bigr\},
+```math
+F(\alpha)(g)(v) := \inf\ \bigl\{\gamma \ \bigm|\ \gamma\notin C^{\,p_{\alpha,g}}_v(\alpha)\bigr\},
 \qquad
-p_{\alpha,g}(\xi,u) := \begin{cases} g(\xi)(u) & (\xi<\alpha)\\ 0 & (\xi\not<\alpha)\end{cases}$$
+p_{\alpha,g}(\xi,u) := \begin{cases} g(\xi)(u) & (\xi<\alpha)\\ 0 & (\xi\not<\alpha)\end{cases}
+```
 
 である（[(D.Cset)](#d-Cset)）。Lean の `if h : ξ < α then IH ξ h u else 0` は依存条件分岐であり、
 真の分岐では条件の証明 $h : \xi<\alpha$ が `IH` に渡される。これが「$\xi<\alpha$ でのみ再帰呼び出しをしてよい」
@@ -382,15 +406,19 @@ p_{\alpha,g}(\xi,u) := \begin{cases} g(\xi)(u) & (\xi<\alpha)\\ 0 & (\xi\not<\al
 
 **補足 1（不動点方程式）.** 任意の $\alpha\in\mathrm{Ord}$、$v\in\mathbb{N}$ について
 
-$$\psi_v(\alpha) = \inf\ \bigl\{\gamma \ \bigm|\ \gamma\notin C^{\,p_\alpha}_v(\alpha)\bigr\},
+```math
+\psi_v(\alpha) = \inf\ \bigl\{\gamma \ \bigm|\ \gamma\notin C^{\,p_\alpha}_v(\alpha)\bigr\},
 \qquad
-p_\alpha(\xi,u) = \begin{cases}\psi_u(\xi) & (\xi<\alpha)\\ 0 & (\xi\not<\alpha)\end{cases}$$
+p_\alpha(\xi,u) = \begin{cases}\psi_u(\xi) & (\xi<\alpha)\\ 0 & (\xi\not<\alpha)\end{cases}
+```
 
 が成り立つ。
 
 *証明.* $\psi = \mathrm{fix}\,F$ であるから、`fix_eq` を $x:=\alpha$ に適用して
 
-$$\psi(\alpha) = F(\alpha)\bigl(\lambda \xi\,\_.\ \psi(\xi)\bigr)$$
+```math
+\psi(\alpha) = F(\alpha)\bigl(\lambda \xi\,\_.\ \psi(\xi)\bigr)
+```
 
 を得る。両辺を $v$ に適用すると、$F$ の定義より右辺は
 $\inf\{\gamma\mid\gamma\notin C^{\,p_{\alpha,g}}_v(\alpha)\}$（ただし $g := \lambda\xi\,\_.\ \psi(\xi)$）である。
@@ -406,11 +434,15 @@ $C^{\,p_\alpha}_v(\alpha) = C^{\,\bar\psi}_v(\alpha)$ である。
 
 そこで
 
-$$C_v(\alpha) := C^{\,\bar\psi}_v(\alpha)$$
+```math
+C_v(\alpha) := C^{\,\bar\psi}_v(\alpha)
+```
 
 と書くと、補足 1 と補足 2 から
 
-$$\psi_v(\alpha) = \inf\ \bigl\{\gamma \ \bigm|\ \gamma\notin C_v(\alpha)\bigr\}$$
+```math
+\psi_v(\alpha) = \inf\ \bigl\{\gamma \ \bigm|\ \gamma\notin C_v(\alpha)\bigr\}
+```
 
 を得る。$C_v(\alpha)$ の定義に $\psi$ が現れるが、[(D.Cstep)](#d-Cstep) の補足 4 により
 $\psi$ が参照されるのは $\mathrm{Iio}(\alpha)$ 上の値のみであるから、この式は $\alpha$ に関する
@@ -420,14 +452,18 @@ $\psi$ が参照されるのは $\mathrm{Iio}(\alpha)$ 上の値のみである�
 `WellFoundedLT.conditionallyCompleteLinearOrderBot` による
 `ConditionallyCompleteLinearOrderBot` のインスタンスであり、そこでの `sInf` は
 
-$$\inf S = \begin{cases} S\ \text{の最小元} & (S\ne\emptyset)\\ 0 & (S=\emptyset)\end{cases}$$
+```math
+\inf S = \begin{cases} S\ \text{の最小元} & (S\ne\emptyset)\\ 0 & (S=\emptyset)\end{cases}
+```
 
 である（$S\ne\emptyset$ の場合は整礎性から最小元が存在し、`WellFounded.min` がそれを与える。
 $S=\emptyset$ の場合の値は $\bot$ であり、$\mathrm{Ord}$ では $\bot=0$）。したがって
 
-$$\bigl\{\gamma \mid \gamma\notin C_v(\alpha)\bigr\} \ne \emptyset
+```math
+\bigl\{\gamma \mid \gamma\notin C_v(\alpha)\bigr\} \ne \emptyset
 \ \Longrightarrow\
-\psi_v(\alpha)\notin C_v(\alpha)\ \wedge\ \forall\gamma\notin C_v(\alpha),\ \psi_v(\alpha)\le\gamma$$
+\psi_v(\alpha)\notin C_v(\alpha)\ \wedge\ \forall\gamma\notin C_v(\alpha),\ \psi_v(\alpha)\le\gamma
+```
 
 であり、この場合に限り $\psi_v(\alpha)$ は「$C_v(\alpha)$ に属さない最小の順序数」である。
 
@@ -447,7 +483,9 @@ $\mathrm{Iio}(\Omega_{v+1})\setminus C_v(\alpha)\ne\emptyset$ が従う。
 <a id="d-Psi"></a>
 ### 定義 引数順序を入れ替えた $\Psi$ (D.Psi)
 
-$$\Psi_v(\alpha) := \psi_v(\alpha) \qquad (v\in\mathbb{N},\ \alpha\in\mathrm{Ord})$$
+```math
+\Psi_v(\alpha) := \psi_v(\alpha) \qquad (v\in\mathbb{N},\ \alpha\in\mathrm{Ord})
+```
 
 （[(D.psi)](#d-psi)）。Lean では
 
@@ -508,8 +546,10 @@ $\mathrm{Iio}(\Omega_v)$ から $+$ と可算個の写像 $\psi_u$ で生成さ�
 
 $\delta\in\mathrm{Ord}$ に対し
 
-$$\mathrm{addprinc}(\delta) :\iff
-0<\delta \ \wedge\ \forall \beta\,\gamma,\ \beta<\delta \to \gamma<\delta \to \beta+\gamma<\delta .$$
+```math
+\mathrm{addprinc}(\delta) :\iff
+0<\delta \ \wedge\ \forall \beta\,\gamma,\ \beta<\delta \to \gamma<\delta \to \beta+\gamma<\delta .
+```
 
 Lean では
 

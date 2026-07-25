@@ -64,16 +64,20 @@ $\mathrm{r1ok}$（[(T.r1ok_ST_PS)](#t-r1ok_ST_PS)）と $\mathrm{z0ok}$（[(T.z0
 
 行 0 の値 $a$ を基準とする `takeWhile` / `dropWhile` は [`Mechanized.md`](Mechanized.md) と同じく
 
-$$\mathrm{tw}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a < \pi_0 q),\qquad
-  \mathrm{dw}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a < \pi_0 q)$$
+```math
+\mathrm{tw}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a < \pi_0 q),\qquad
+  \mathrm{dw}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a < \pi_0 q)
+```
 
 と書く。$\mathrm{tw}_a L \mathbin{+\!\!+} \mathrm{dw}_a L = L$ が成り立つ。
 
 本章を通じて、$u\in\mathbb{N}$、$b\in\mathrm{Three}$ に対し
 
-$$\mathrm{Bad}_u(b) := \mathrm{filter}\bigl(\lambda g.\ \neg(g\prec b)\bigr)\ \mathrm{Glist}_u(b),
+```math
+\mathrm{Bad}_u(b) := \mathrm{filter}\bigl(\lambda g.\ \neg(g\prec b)\bigr)\ \mathrm{Glist}_u(b),
 \qquad
-\mathrm{mx}_u(b) := \mathrm{maxo}\bigl(\mathrm{headI}\,\mathrm{Bad}_u(b),\ \mathrm{tail}\,\mathrm{Bad}_u(b)\bigr)$$
+\mathrm{mx}_u(b) := \mathrm{maxo}\bigl(\mathrm{headI}\,\mathrm{Bad}_u(b),\ \mathrm{tail}\,\mathrm{Bad}_u(b)\bigr)
+```
 
 と略記する（[(D.Glist)](Nrm.md#d-Glist), [(D.maxo)](Nrm.md#d-maxo)）。
 $\mathrm{Bad}_u(b)$ を **$b$ の水準 $u$ における違反者リスト**と呼ぶ。これは
@@ -98,11 +102,15 @@ $\mathrm{Glist}_u(b)$ の要素のうち $g\prec b$ が成り立たないもの�
 
 **主張** 任意の $x\in\mathrm{Three}$、$ys\in\mathrm{List}\,\mathrm{Three}$ に対し
 
-$$\forall y\in x\mathbin{::}ys,\quad y \preceq \mathrm{maxo}(x,ys).$$
+```math
+\forall y\in x\mathbin{::}ys,\quad y \preceq \mathrm{maxo}(x,ys).
+```
 
 **証明** リスト $ys$ の構造に関する帰納法（$x$ は全称量化したまま動かす）。帰納法の述語は
 
-$$\Phi(ys) :\equiv \forall x\in\mathrm{Three},\ \forall y\in x\mathbin{::}ys,\ y\preceq\mathrm{maxo}(x,ys).$$
+```math
+\Phi(ys) :\equiv \forall x\in\mathrm{Three},\ \forall y\in x\mathbin{::}ys,\ y\preceq\mathrm{maxo}(x,ys).
+```
 
 **基底段** $ys=[]$。$y\in[x]$ は $y=x$ を意味し、[(T.maxo_nil)](Nrm.md#t-maxo_nil) より
 $\mathrm{maxo}(x,[])=x$ であるから $y=\mathrm{maxo}(x,[])$、すなわち
@@ -112,7 +120,9 @@ $\mathrm{maxo}(x,[])=x$ であるから $y=\mathrm{maxo}(x,[])$、すなわち
 「任意の $x'$ と任意の $y\in x'\mathbin{::}zs$ について $y\preceq\mathrm{maxo}(x',zs)$」である。
 [(T.maxo_cons)](Nrm.md#t-maxo_cons) より
 
-$$\mathrm{maxo}(x,z\mathbin{::}zs)=\mathrm{maxo}\bigl(\ \text{if }x\prec z\text{ then }z\text{ else }x,\ zs\bigr).$$
+```math
+\mathrm{maxo}(x,z\mathbin{::}zs)=\mathrm{maxo}\bigl(\ \text{if }x\prec z\text{ then }z\text{ else }x,\ zs\bigr).
+```
 
 - **場合 1 : $x\prec z$。** このとき $\mathrm{maxo}(x,z\mathbin{::}zs)=\mathrm{maxo}(z,zs)$。
   $y\in x\mathbin{::}z\mathbin{::}zs$ を取る。
@@ -155,7 +165,9 @@ $gs=g\mathbin{::}gs'$ のときは $\mathrm{headI}\,gs=g$、$\mathrm{tail}\,gs=g
 **証明** 項 $t$ の構造に関する帰納法（$u$, $x$, $g$ と仮定 $x\in G_u(g)$ は固定）。
 帰納法の述語は
 
-$$\Phi(t) :\equiv \bigl(g\in G_u(t)\ \to\ x\in G_u(t)\bigr).$$
+```math
+\Phi(t) :\equiv \bigl(g\in G_u(t)\ \to\ x\in G_u(t)\bigr).
+```
 
 **基底段** $t=\mathsf Z$。$G_u(\mathsf Z)=\emptyset$ であるから前件 $g\in\emptyset$ は偽であり、
 $\Phi(\mathsf Z)$ が成り立つ。
@@ -163,7 +175,9 @@ $\Phi(\mathsf Z)$ が成り立つ。
 **帰納段** $t=\mathsf P(a,b,c)$。帰納法の仮定は $\Phi(b)$ と $\Phi(c)$ である。
 $g\in G_u(\mathsf P(a,b,c))$ を仮定する。[(T.mem_Gterm_P)](Otembed.md#t-mem_Gterm_P) より、これは
 
-$$\bigl(u\le a\ \wedge\ (g=b\ \vee\ g\in G_u(b))\bigr)\ \vee\ g\in G_u(c)$$
+```math
+\bigl(u\le a\ \wedge\ (g=b\ \vee\ g\in G_u(b))\bigr)\ \vee\ g\in G_u(c)
+```
 
 と同値である。
 
@@ -207,7 +221,9 @@ $\neg(g\prec b)$ が成り立つ。∎
 
 **証明** $n:=\lVert b\rVert$（[(D.tsize)](Wfsum.md#d-tsize)）に関する強帰納法。帰納法の述語は
 
-$$\Phi(n) :\equiv \forall b\in\mathrm{Three},\ \lVert b\rVert=n\ \to\ b\preceq\mathrm{proj}_u(b).$$
+```math
+\Phi(n) :\equiv \forall b\in\mathrm{Three},\ \lVert b\rVert=n\ \to\ b\preceq\mathrm{proj}_u(b).
+```
 
 $n$ を固定し、帰納法の仮定として $\forall m<n,\ \Phi(m)$ を仮定する。
 $\lVert b\rVert=n$ なる $b$ を取り、$\mathrm{Bad}_u(b)$ が空か否かで場合分けする。
@@ -224,12 +240,16 @@ $\lVert b\rVert=n$ なる $b$ を取り、$\mathrm{Bad}_u(b)$ が空か否かで
   $b\prec\mathrm{mx}_u(b)$、$b=\mathrm{mx}_u(b)$、$\mathrm{mx}_u(b)\prec b$ のいずれかであり、
   第 3 は上で否定したから
 
-  $$b\preceq\mathrm{mx}_u(b).$$
+  ```math
+  b\preceq\mathrm{mx}_u(b).
+  ```
 
   一方 [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) を $\mathrm{mx}_u(b)\in G_u(b)$ に適用して
   $\lVert\mathrm{mx}_u(b)\rVert<\lVert b\rVert=n$。帰納法の仮定 $\Phi(\lVert\mathrm{mx}_u(b)\rVert)$ より
 
-  $$\mathrm{mx}_u(b)\preceq\mathrm{proj}_u(\mathrm{mx}_u(b))=\mathrm{proj}_u(b).$$
+  ```math
+  \mathrm{mx}_u(b)\preceq\mathrm{proj}_u(\mathrm{mx}_u(b))=\mathrm{proj}_u(b).
+  ```
 
   [(T.ole_trans)](Wfsum.md#t-ole_trans) により $b\preceq\mathrm{proj}_u(b)$。∎
 
@@ -247,7 +267,9 @@ $\lVert b\rVert=n$ なる $b$ を取り、$\mathrm{Bad}_u(b)$ が空か否かで
 <a id="d-pfire"></a>
 ### 定義 発火述語 (D.pfire)
 
-$$\mathrm{fire}_u(b)\ :\iff\ \mathrm{Bad}_u(b)\ne[].$$
+```math
+\mathrm{fire}_u(b)\ :\iff\ \mathrm{Bad}_u(b)\ne[].
+```
 
 すなわち $b$ は水準 $u$ の臨界項のうち $b$ より真に小さくないものを少なくとも 1 つもつ。
 [(T.proj_id)](Nrm.md#t-proj_id) と [(T.proj_rec)](Nrm.md#t-proj_rec) の場合分けは、
@@ -302,8 +324,10 @@ $\prec$ と $\preceq$ を混ぜて推移させる箇所ではこのどちらか�
 
 **主張** $a,e,e'\in\mathbb{N}$、$b,f,f',g,g'\in\mathrm{Three}$ とする。
 
-$$\bigl(a<e\ \vee\ (a=e\wedge b\prec f)\bigr)\ \wedge\ \mathsf P(e,f,g)\prec\mathsf P(e',f',g')
-\ \Longrightarrow\ a<e'\ \vee\ (a=e'\wedge b\prec f').$$
+```math
+\bigl(a<e\ \vee\ (a=e\wedge b\prec f)\bigr)\ \wedge\ \mathsf P(e,f,g)\prec\mathsf P(e',f',g')
+\ \Longrightarrow\ a<e'\ \vee\ (a=e'\wedge b\prec f').
+```
 
 **証明** [(T.olt_P_P)](Mechanized.md#t-olt_P_P) により、第 2 の仮定は次の 3 つのいずれかである。
 
@@ -369,29 +393,35 @@ Lean の当該節は 4 つの帰納的関係を導入する。これらは
 
 関係 $\mathrm{lext}\subseteq\mathrm{Three}\times\mathrm{Three}$ を次の 3 規則で生成される最小の関係と定める。
 
-$$\frac{\ }{\ \mathrm{lext}\ \mathsf Z\ \mathsf P(w,\mathsf Z,\mathsf Z)\ }\ \text{(end\_)}\quad(w\in\mathbb{N})
+```math
+\frac{\ }{\ \mathrm{lext}\ \mathsf Z\ \mathsf P(w,\mathsf Z,\mathsf Z)\ }\ \text{(end\_)}\quad(w\in\mathbb{N})
 \qquad
 \frac{\ \mathrm{lext}\ c\ c'\ }{\ \mathrm{lext}\ \mathsf P(a,b,c)\ \mathsf P(a,b,c')\ }\ \text{(tail)}
 \qquad
-\frac{\ \mathrm{lext}\ b\ b'\ }{\ \mathrm{lext}\ \mathsf P(a,b,c)\ \mathsf P(a,b',c)\ }\ \text{(arg)}$$
+\frac{\ \mathrm{lext}\ b\ b'\ }{\ \mathrm{lext}\ \mathsf P(a,b,c)\ \mathsf P(a,b',c)\ }\ \text{(arg)}
+```
 
 <a id="d-lflip"></a>
 ### 定義 葉の添字増加 (D.lflip)
 
-$$\frac{\ w<w'\ }{\ \mathrm{lflip}\ \mathsf P(w,\mathsf Z,\mathsf Z)\ \mathsf P(w',\mathsf Z,\mathsf Z)\ }\ \text{(leaf)}
+```math
+\frac{\ w<w'\ }{\ \mathrm{lflip}\ \mathsf P(w,\mathsf Z,\mathsf Z)\ \mathsf P(w',\mathsf Z,\mathsf Z)\ }\ \text{(leaf)}
 \qquad
 \frac{\ \mathrm{lflip}\ c\ c'\ }{\ \mathrm{lflip}\ \mathsf P(a,b,c)\ \mathsf P(a,b,c')\ }\ \text{(tail)}
 \qquad
-\frac{\ \mathrm{lflip}\ b\ b'\ }{\ \mathrm{lflip}\ \mathsf P(a,b,c)\ \mathsf P(a,b',c)\ }\ \text{(arg)}$$
+\frac{\ \mathrm{lflip}\ b\ b'\ }{\ \mathrm{lflip}\ \mathsf P(a,b,c)\ \mathsf P(a,b',c)\ }\ \text{(arg)}
+```
 
 <a id="d-einc"></a>
 ### 定義 末端位置の葉追加 (D.einc)
 
-$$\frac{\ }{\ \mathrm{einc}\ \mathsf Z\ \mathsf P(w,\mathsf Z,\mathsf Z)\ }\ \text{(end\_)}\quad(w\in\mathbb{N})
+```math
+\frac{\ }{\ \mathrm{einc}\ \mathsf Z\ \mathsf P(w,\mathsf Z,\mathsf Z)\ }\ \text{(end\_)}\quad(w\in\mathbb{N})
 \qquad
 \frac{\ \mathrm{einc}\ c\ c'\ }{\ \mathrm{einc}\ \mathsf P(a,b,c)\ \mathsf P(a,b,c')\ }\ \text{(tail)}
 \qquad
-\frac{\ \mathrm{einc}\ b\ b'\ }{\ \mathrm{einc}\ \mathsf P(a,b,\mathsf Z)\ \mathsf P(a,b',\mathsf Z)\ }\ \text{(argZ)}$$
+\frac{\ \mathrm{einc}\ b\ b'\ }{\ \mathrm{einc}\ \mathsf P(a,b,\mathsf Z)\ \mathsf P(a,b',\mathsf Z)\ }\ \text{(argZ)}
+```
 
 $\mathrm{lext}$ との差は第 3 規則にある。$\mathrm{einc}$ の (argZ) は尾部が $\mathsf Z$ である
 主要項にのみ適用でき、$\mathrm{lext}$ の (arg) は任意の尾部 $c$ に適用できる。
@@ -399,18 +429,22 @@ $\mathrm{lext}$ との差は第 3 規則にある。$\mathrm{einc}$ の (argZ) �
 <a id="d-eflip"></a>
 ### 定義 末端位置の添字増加 (D.eflip)
 
-$$\frac{\ w<w'\ }{\ \mathrm{eflip}\ \mathsf P(w,\mathsf Z,\mathsf Z)\ \mathsf P(w',\mathsf Z,\mathsf Z)\ }\ \text{(leaf)}
+```math
+\frac{\ w<w'\ }{\ \mathrm{eflip}\ \mathsf P(w,\mathsf Z,\mathsf Z)\ \mathsf P(w',\mathsf Z,\mathsf Z)\ }\ \text{(leaf)}
 \qquad
 \frac{\ \mathrm{eflip}\ c\ c'\ }{\ \mathrm{eflip}\ \mathsf P(a,b,c)\ \mathsf P(a,b,c')\ }\ \text{(tail)}
 \qquad
-\frac{\ \mathrm{eflip}\ b\ b'\ }{\ \mathrm{eflip}\ \mathsf P(a,b,\mathsf Z)\ \mathsf P(a,b',\mathsf Z)\ }\ \text{(argZ)}$$
+\frac{\ \mathrm{eflip}\ b\ b'\ }{\ \mathrm{eflip}\ \mathsf P(a,b,\mathsf Z)\ \mathsf P(a,b',\mathsf Z)\ }\ \text{(argZ)}
+```
 
 **帰納法原理.** これら 4 つはいずれも帰納的関係である。
 $\mathcal R\in\{\mathrm{lext},\mathrm{lflip},\mathrm{einc},\mathrm{eflip}\}$ とし、
 述語 $Q:\mathrm{Three}\to\mathrm{Three}\to\mathrm{Prop}$ が $\mathcal R$ の 3 つの導入規則それぞれについて
 「前提の $\mathcal R$ の箇所を $Q$ に置き換えた仮定から結論の $Q$ が導ける」ならば
 
-$$\forall x\,y,\ \mathcal R\ x\ y\ \to\ Q\ x\ y$$
+```math
+\forall x\,y,\ \mathcal R\ x\ y\ \to\ Q\ x\ y
+```
 
 が成り立つ。たとえば $\mathcal R=\mathrm{lext}$ のとき、示すべき 3 条件は
 $\forall w,\ Q\ \mathsf Z\ \mathsf P(w,\mathsf Z,\mathsf Z)$、
@@ -433,8 +467,10 @@ $\forall a\,b\,b'\,c,\ Q\ b\ b'\to Q\ \mathsf P(a,b,c)\ \mathsf P(a,b',c)$ で�
 
 **主張** $p\in\mathbb{N}\times\mathbb{N}$、$\mathit{rest}\in\mathrm{PairSeq}$ に対し
 
-$$\mathrm{tr}\,(p\mathbin{::}\mathit{rest})
-=\mathsf P\bigl(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}\mathit{rest}),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 p}\mathit{rest})\bigr).$$
+```math
+\mathrm{tr}\,(p\mathbin{::}\mathit{rest})
+=\mathsf P\bigl(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}\mathit{rest}),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 p}\mathit{rest})\bigr).
+```
 
 **証明** [(D.translate)](Mechanized.md#d-translate) の第 2 式そのものである。∎
 
@@ -445,7 +481,9 @@ $$\mathrm{tr}\,(p\mathbin{::}\mathit{rest})
 
 **証明** [(T.translate_cons)](#t-translate_cons) を $p:=q$、$\mathit{rest}:=[]$ に適用すると
 
-$$\mathrm{tr}[q]=\mathsf P\bigl(\pi_1 q,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 q}[]),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 q}[])\bigr).$$
+```math
+\mathrm{tr}[q]=\mathsf P\bigl(\pi_1 q,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 q}[]),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 q}[])\bigr).
+```
 
 空列の `takeWhile` と `dropWhile` はどちらも空列であるから、
 [(T.translate_nil)](#t-translate_nil) より両引数は $\mathsf Z$ である。∎
@@ -467,8 +505,10 @@ $$\mathrm{tr}[q]=\mathsf P\bigl(\pi_1 q,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 q}[]),\
 
 **証明** [(T.nrm_P)](Nrm.md#t-nrm_P) より
 
-$$\mathrm{nrm}(\mathsf P(w,\mathsf Z,\mathsf Z))
-=\mathrm{ins}_w\bigl(\mathrm{proj}_w(\mathrm{nrm}\,\mathsf Z),\ \mathrm{nrm}\,\mathsf Z\bigr).$$
+```math
+\mathrm{nrm}(\mathsf P(w,\mathsf Z,\mathsf Z))
+=\mathrm{ins}_w\bigl(\mathrm{proj}_w(\mathrm{nrm}\,\mathsf Z),\ \mathrm{nrm}\,\mathsf Z\bigr).
+```
 
 [(T.nrm_Z)](Nrm.md#t-nrm_Z) より $\mathrm{nrm}\,\mathsf Z=\mathsf Z$、
 [(T.proj_Z)](#t-proj_Z) より $\mathrm{proj}_w(\mathsf Z)=\mathsf Z$、
@@ -484,9 +524,12 @@ $$\mathrm{nrm}(\mathsf P(w,\mathsf Z,\mathsf Z))
 $C\in\mathrm{PairSeq}$、$q\in\mathbb{N}\times\mathbb{N}$ に対し $\mathrm{snocok}(C,q)$ を
 $\lvert C\rvert$ に関する再帰で定める。
 
-$$\mathrm{snocok}([],q) := \bot,$$
+```math
+\mathrm{snocok}([],q) := \bot,
+```
 
-$$\mathrm{snocok}(p\mathbin{::}\mathit{rest},\,q) :=
+```math
+\mathrm{snocok}(p\mathbin{::}\mathit{rest},\,q) :=
 \begin{cases}
 \pi_0 p<\pi_0 q\ \to\
  \mathrm{proj}_{\pi_1 p}\bigl(\mathrm{nrm}(\mathrm{tr}\,\mathit{rest})\bigr)
@@ -494,7 +537,8 @@ $$\mathrm{snocok}(p\mathbin{::}\mathit{rest},\,q) :=
  \mathrm{proj}_{\pi_1 p}\bigl(\mathrm{nrm}(\mathrm{tr}(\mathit{rest}\mathbin{+\!\!+}[q]))\bigr)
  & (\mathrm{dw}_{\pi_0 p}\mathit{rest}=[])\\[2mm]
 \mathrm{snocok}(\mathrm{dw}_{\pi_0 p}\mathit{rest},\,q) & (\mathrm{dw}_{\pi_0 p}\mathit{rest}\ne[])
-\end{cases}$$
+\end{cases}
+```
 
 再帰が停止することは、`dropWhile` が長さを増やさないこと
 $\lvert\mathrm{dw}_{\pi_0 p}\mathit{rest}\rvert\le\lvert \mathit{rest}\rvert$ と
@@ -523,12 +567,16 @@ $\lvert \mathit{rest}\rvert<\lvert p\mathbin{::}\mathit{rest}\rvert$ から従�
 
 **主張** $\mathrm{snocok}(C,q)$ かつ $C\ne[]$ ならば
 
-$$\mathrm{nrm}(\mathrm{tr}\,C)\ \prec\ \mathrm{nrm}\bigl(\mathrm{tr}(C\mathbin{+\!\!+}[q])\bigr).$$
+```math
+\mathrm{nrm}(\mathrm{tr}\,C)\ \prec\ \mathrm{nrm}\bigl(\mathrm{tr}(C\mathbin{+\!\!+}[q])\bigr).
+```
 
 **証明** $\lvert C\rvert$ に関する整礎帰納法。帰納法の述語は
 
-$$\Psi(C) :\equiv \forall q,\ \mathrm{snocok}(C,q)\to C\ne[]\to
-\mathrm{nrm}(\mathrm{tr}\,C)\prec\mathrm{nrm}(\mathrm{tr}(C\mathbin{+\!\!+}[q])).$$
+```math
+\Psi(C) :\equiv \forall q,\ \mathrm{snocok}(C,q)\to C\ne[]\to
+\mathrm{nrm}(\mathrm{tr}\,C)\prec\mathrm{nrm}(\mathrm{tr}(C\mathbin{+\!\!+}[q])).
+```
 
 帰納法の仮定は「$\lvert C'\rvert<\lvert C\rvert$ なるすべての $C'$ について $\Psi(C')$」であり、
 以下では $C=p\mathbin{::}\mathit{rest}$、$C':=\mathrm{dw}_{\pi_0 p}\mathit{rest}$ の 1 箇所でのみ用いる。
@@ -544,23 +592,29 @@ $T$ が空か否かで場合分けする。
 **場合 I : $T=[]$。**
 `dropWhile` が空列であることは、$\mathit{rest}$ のすべての要素が述語を満たすことと同値であるから
 
-$$\forall x\in\mathit{rest},\quad a<\pi_0 x .$$
+```math
+\forall x\in\mathit{rest},\quad a<\pi_0 x .
+```
 
 したがって `takeWhile` は列全体を取り、$K=\mathit{rest}$ である。
 [(T.translate_cons)](#t-translate_cons)、[(T.translate_nil)](#t-translate_nil)、
 [(T.nrm_P)](Nrm.md#t-nrm_P)、[(T.nrm_Z)](Nrm.md#t-nrm_Z)、[(T.ins_Z)](Nrm.md#t-ins_Z) より
 
-$$\mathrm{nrm}(\mathrm{tr}(p\mathbin{::}\mathit{rest}))
+```math
+\mathrm{nrm}(\mathrm{tr}(p\mathbin{::}\mathit{rest}))
 =\mathrm{ins}_w\bigl(\mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}\,\mathit{rest})),\ \mathsf Z\bigr)
 =\mathsf P\bigl(w,\ \mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}\,\mathit{rest})),\ \mathsf Z\bigr).
-\tag{I.1}$$
+\tag{I.1}
+```
 
 また [(T.snocok_cons)](#t-snocok_cons) の第 1 分岐により、仮定 $\mathrm{snocok}(C,q)$ は
 
-$$a<\pi_0 q\ \to\
+```math
+a<\pi_0 q\ \to\
 \mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}\,\mathit{rest}))
 \prec\mathrm{proj}_w\bigl(\mathrm{nrm}(\mathrm{tr}(\mathit{rest}\mathbin{+\!\!+}[q]))\bigr)
-\tag{I.2}$$
+\tag{I.2}
+```
 
 である。$a<\pi_0 q$ か否かでさらに分ける。
 
@@ -570,13 +624,17 @@ $$a<\pi_0 q\ \to\
   $\mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=\mathit{rest}\mathbin{+\!\!+}\mathrm{tw}_a[q]$ であり、
   $a<\pi_0 q$ より $\mathrm{tw}_a[q]=[q]$、よって
 
-  $$\mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=\mathit{rest}\mathbin{+\!\!+}[q].$$
+  ```math
+  \mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=\mathit{rest}\mathbin{+\!\!+}[q].
+  ```
 
   同じく [(T.dropWhile_append_all)](Mechanized.md#t-dropWhile_append_all) より
   $\mathrm{dw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=\mathrm{dw}_a[q]=[]$。したがって
 
-  $$\mathrm{nrm}\bigl(\mathrm{tr}((p\mathbin{::}\mathit{rest})\mathbin{+\!\!+}[q])\bigr)
-  =\mathsf P\bigl(w,\ \mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}(\mathit{rest}\mathbin{+\!\!+}[q]))),\ \mathsf Z\bigr).$$
+  ```math
+  \mathrm{nrm}\bigl(\mathrm{tr}((p\mathbin{::}\mathit{rest})\mathbin{+\!\!+}[q])\bigr)
+  =\mathsf P\bigl(w,\ \mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}(\mathit{rest}\mathbin{+\!\!+}[q]))),\ \mathsf Z\bigr).
+  ```
 
   (I.1) と合わせ、[(T.olt_P_b)](Mechanized.md#t-olt_P_b) を (I.2) の結論に適用すれば主張を得る。
 - **場合 I-(A)（新しい和項）: $\neg(a<\pi_0 q)$。**
@@ -584,13 +642,17 @@ $$a<\pi_0 q\ \to\
   [(T.dropWhile_append_all)](Mechanized.md#t-dropWhile_append_all) を同じく適用する。
   今度は $\neg(a<\pi_0 q)$ より $\mathrm{tw}_a[q]=[]$、$\mathrm{dw}_a[q]=[q]$ であるから
 
-  $$\mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=\mathit{rest},\qquad
-  \mathrm{dw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=[q].$$
+  ```math
+  \mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=\mathit{rest},\qquad
+  \mathrm{dw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=[q].
+  ```
 
   よって [(T.translate_single)](#t-translate_single) と [(T.nrm_leaf)](#t-nrm_leaf) より
 
-  $$\mathrm{nrm}\bigl(\mathrm{tr}((p\mathbin{::}\mathit{rest})\mathbin{+\!\!+}[q])\bigr)
-  =\mathrm{ins}_w\bigl(\mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}\,\mathit{rest})),\ \mathsf P(\pi_1 q,\mathsf Z,\mathsf Z)\bigr).$$
+  ```math
+  \mathrm{nrm}\bigl(\mathrm{tr}((p\mathbin{::}\mathit{rest})\mathbin{+\!\!+}[q])\bigr)
+  =\mathrm{ins}_w\bigl(\mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}\,\mathit{rest})),\ \mathsf P(\pi_1 q,\mathsf Z,\mathsf Z)\bigr).
+  ```
 
   (I.1) の中辺と比べると、両者は $\mathrm{ins}_w(\cdot,-)$ の第 2 引数だけが
   $\mathsf Z$ と $\mathsf P(\pi_1 q,\mathsf Z,\mathsf Z)$ で異なる。
@@ -604,22 +666,30 @@ $T\ne[]$ より、$\mathit{rest}$ の要素で述語を満たさないものが�
 [(T.takeWhile_append_not)](Mechanized.md#t-takeWhile_append_not) と
 [(T.dropWhile_append_not)](Mechanized.md#t-dropWhile_append_not) より
 
-$$\mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=K,\qquad
-\mathrm{dw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=T\mathbin{+\!\!+}[q].$$
+```math
+\mathrm{tw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=K,\qquad
+\mathrm{dw}_a(\mathit{rest}\mathbin{+\!\!+}[q])=T\mathbin{+\!\!+}[q].
+```
 
 よって [(T.translate_cons)](#t-translate_cons) と [(T.nrm_P)](Nrm.md#t-nrm_P) より
 
-$$\mathrm{nrm}(\mathrm{tr}(p\mathbin{::}\mathit{rest}))
-=\mathrm{ins}_w\bigl(\mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}\,K)),\ \mathrm{nrm}(\mathrm{tr}\,T)\bigr),$$
+```math
+\mathrm{nrm}(\mathrm{tr}(p\mathbin{::}\mathit{rest}))
+=\mathrm{ins}_w\bigl(\mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}\,K)),\ \mathrm{nrm}(\mathrm{tr}\,T)\bigr),
+```
 
-$$\mathrm{nrm}\bigl(\mathrm{tr}((p\mathbin{::}\mathit{rest})\mathbin{+\!\!+}[q])\bigr)
-=\mathrm{ins}_w\bigl(\mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}\,K)),\ \mathrm{nrm}(\mathrm{tr}(T\mathbin{+\!\!+}[q]))\bigr).$$
+```math
+\mathrm{nrm}\bigl(\mathrm{tr}((p\mathbin{::}\mathit{rest})\mathbin{+\!\!+}[q])\bigr)
+=\mathrm{ins}_w\bigl(\mathrm{proj}_w(\mathrm{nrm}(\mathrm{tr}\,K)),\ \mathrm{nrm}(\mathrm{tr}(T\mathbin{+\!\!+}[q]))\bigr).
+```
 
 [(T.snocok_cons)](#t-snocok_cons) の第 2 分岐により、仮定 $\mathrm{snocok}(C,q)$ は
 $\mathrm{snocok}(T,q)$ である。帰納法の仮定 $\Psi(T)$ を $\mathrm{snocok}(T,q)$ と $T\ne[]$ に
 適用して
 
-$$\mathrm{nrm}(\mathrm{tr}\,T)\prec\mathrm{nrm}(\mathrm{tr}(T\mathbin{+\!\!+}[q])).$$
+```math
+\mathrm{nrm}(\mathrm{tr}\,T)\prec\mathrm{nrm}(\mathrm{tr}(T\mathbin{+\!\!+}[q])).
+```
 
 [(T.ins_olt_mono)](#t-ins_olt_mono) により主張を得る。∎
 
@@ -630,7 +700,9 @@ $$\mathrm{nrm}(\mathrm{tr}\,T)\prec\mathrm{nrm}(\mathrm{tr}(T\mathbin{+\!\!+}[q]
 <a id="d-maxr1"></a>
 ### 定義 行 1 の最大値 (D.maxr1)
 
-$$\mathrm{maxr1}\,S := \mathrm{foldr}\ \bigl(\lambda c\,m.\ \max(\pi_1 c,\ m)\bigr)\ 0\ S .$$
+```math
+\mathrm{maxr1}\,S := \mathrm{foldr}\ \bigl(\lambda c\,m.\ \max(\pi_1 c,\ m)\bigr)\ 0\ S .
+```
 
 すなわち $\mathrm{maxr1}[]=0$、$\mathrm{maxr1}(c\mathbin{::}S)=\max(\pi_1 c,\ \mathrm{maxr1}\,S)$。
 
@@ -655,7 +727,9 @@ $$\mathrm{maxr1}\,S := \mathrm{foldr}\ \bigl(\lambda c\,m.\ \max(\pi_1 c,\ m)\bi
 
 **証明** リスト $S$ の構造に関する帰納法。帰納法の述語は
 
-$$\Phi(S) :\equiv \forall c\in S,\ \pi_1 c\le\mathrm{maxr1}\,S.$$
+```math
+\Phi(S) :\equiv \forall c\in S,\ \pi_1 c\le\mathrm{maxr1}\,S.
+```
 
 **基底段** $S=[]$。$c\in[]$ は偽であるから $\Phi([])$。
 
@@ -675,14 +749,16 @@ $c\in d\mathbin{::}S'$ を取る。
 
 $M\in\mathrm{PairSeq}$ に対し
 
-$$\mathrm{r1ok}(M) :\iff
+```math
+\mathrm{r1ok}(M) :\iff
 \forall j<\lvert M\rvert,\quad 0<\pi_0(M\langle j\rangle)\ \to\ \exists k,\
 \begin{aligned}
 &k<j\\
 \wedge\ &\pi_0(M\langle k\rangle)+1=\pi_0(M\langle j\rangle)\\
 \wedge\ &\bigl(\forall l,\ k<l\to l<j\to \pi_0(M\langle j\rangle)\le\pi_0(M\langle l\rangle)\bigr)\\
 \wedge\ &\pi_1(M\langle j\rangle)\le\pi_1(M\langle k\rangle)+1 .
-\end{aligned}$$
+\end{aligned}
+```
 
 言い換えると、$\pi_0(M\langle j\rangle)>0$ なるすべての位置 $j$ に対して、
 次の 4 条件を満たす位置 $k$ が存在するということである。
@@ -812,12 +888,16 @@ $(G\mathbin{+\!\!+}X)$ の第 $i$ 要素（オプション値）は $X$ の第 $
 **主張** 任意の $B\in\mathrm{PairSeq}$、$f:\mathbb{N}\to(\mathbb{N}\times\mathbb{N})\to(\mathbb{N}\times\mathbb{N})$、
 $n\in\mathbb{N}$ に対し
 
-$$\Bigl\lvert\ \mathrm{flatMap}\bigl(k\mapsto\mathrm{map}\,(f\,k)\,B\bigr)\,(\mathrm{range}(n))\ \Bigr\rvert
-= n\,\lvert B\rvert .$$
+```math
+\Bigl\lvert\ \mathrm{flatMap}\bigl(k\mapsto\mathrm{map}\,(f\,k)\,B\bigr)\,(\mathrm{range}(n))\ \Bigr\rvert
+= n\,\lvert B\rvert .
+```
 
 **証明** $n$ に関する帰納法。帰納法の述語は
 
-$$\Phi(n):\equiv \bigl\lvert\mathrm{flatMap}(k\mapsto\mathrm{map}(f\,k)B)(\mathrm{range}(n))\bigr\rvert=n\lvert B\rvert.$$
+```math
+\Phi(n):\equiv \bigl\lvert\mathrm{flatMap}(k\mapsto\mathrm{map}(f\,k)B)(\mathrm{range}(n))\bigr\rvert=n\lvert B\rvert.
+```
 
 **基底段** $n=0$。$\mathrm{range}(0)=[]$、$\mathrm{flatMap}$ の値は $[]$、長さは $0=0\cdot\lvert B\rvert$。
 
@@ -825,12 +905,16 @@ $$\Phi(n):\equiv \bigl\lvert\mathrm{flatMap}(k\mapsto\mathrm{map}(f\,k)B)(\mathr
 $\mathrm{range}(n+1)=\mathrm{range}(n)\mathbin{+\!\!+}[n]$（`List.range_succ`）であり、
 $\mathrm{flatMap}$ は連結を連結に写すから
 
-$$\mathrm{flatMap}(\cdots)(\mathrm{range}(n+1))
-=\mathrm{flatMap}(\cdots)(\mathrm{range}(n))\mathbin{+\!\!+}\mathrm{map}(f\,n)\,B .$$
+```math
+\mathrm{flatMap}(\cdots)(\mathrm{range}(n+1))
+=\mathrm{flatMap}(\cdots)(\mathrm{range}(n))\mathbin{+\!\!+}\mathrm{map}(f\,n)\,B .
+```
 
 長さは和になるので、$\Phi(n)$ と $\lvert\mathrm{map}(f\,n)B\rvert=\lvert B\rvert$ より
 
-$$n\lvert B\rvert+\lvert B\rvert=(n+1)\lvert B\rvert .$$
+```math
+n\lvert B\rvert+\lvert B\rvert=(n+1)\lvert B\rvert .
+```
 
 ∎
 
@@ -839,13 +923,17 @@ $$n\lvert B\rvert+\lvert B\rvert=(n+1)\lvert B\rvert .$$
 
 **主張** $k<n$ かつ $q<\lvert B\rvert$ ならば
 
-$$\Bigl(\mathrm{flatMap}\bigl(k\mapsto\mathrm{map}(f\,k)B\bigr)(\mathrm{range}(n))\Bigr)\bigl\langle k\lvert B\rvert+q\bigr\rangle
-= f\,k\,(B\langle q\rangle).$$
+```math
+\Bigl(\mathrm{flatMap}\bigl(k\mapsto\mathrm{map}(f\,k)B\bigr)(\mathrm{range}(n))\Bigr)\bigl\langle k\lvert B\rvert+q\bigr\rangle
+= f\,k\,(B\langle q\rangle).
+```
 
 **証明** $n$ に関する帰納法（$k$ に関する仮定 $k<n$ ごと一般化する）。帰納法の述語は
 
-$$\Phi(n):\equiv \Bigl(k<n\ \to\
-\bigl(\mathrm{flatMap}(\cdots)(\mathrm{range}(n))\bigr)\langle k\lvert B\rvert+q\rangle=f\,k\,(B\langle q\rangle)\Bigr)$$
+```math
+\Phi(n):\equiv \Bigl(k<n\ \to\
+\bigl(\mathrm{flatMap}(\cdots)(\mathrm{range}(n))\bigr)\langle k\lvert B\rvert+q\rangle=f\,k\,(B\langle q\rangle)\Bigr)
+```
 
 （$q$ と $q<\lvert B\rvert$ は固定）。
 
@@ -856,14 +944,18 @@ $F_n:=\mathrm{flatMap}(\cdots)(\mathrm{range}(n))$ とおく。
 $\mathrm{range}(n+1)=\mathrm{range}(n)\mathbin{+\!\!+}[n]$（`List.range_succ`）と
 $\mathrm{flatMap}$ が連結を連結に写すことから
 
-$$\mathrm{flatMap}(\cdots)(\mathrm{range}(n+1))=F_n\mathbin{+\!\!+}\mathrm{map}(f\,n)B,$$
+```math
+\mathrm{flatMap}(\cdots)(\mathrm{range}(n+1))=F_n\mathbin{+\!\!+}\mathrm{map}(f\,n)B,
+```
 
 かつ [(T.copies_map_length)](#t-copies_map_length) より $\lvert F_n\rvert=n\lvert B\rvert$。
 $k<n+1$ を仮定し、$k<n$ か $k=n$ かで分ける。
 
 - **$k<n$ のとき。** 添字は左側に入る。実際
 
-  $$k\lvert B\rvert+q<k\lvert B\rvert+\lvert B\rvert=(k+1)\lvert B\rvert\le n\lvert B\rvert=\lvert F_n\rvert$$
+  ```math
+  k\lvert B\rvert+q<k\lvert B\rvert+\lvert B\rvert=(k+1)\lvert B\rvert\le n\lvert B\rvert=\lvert F_n\rvert
+  ```
 
   （最後の不等号は $k+1\le n$ による）。よって
   [(T.getD_append_left)](#t-getD_append_left) により値は $F_n\langle k\lvert B\rvert+q\rangle$ に
@@ -880,7 +972,9 @@ $k<n+1$ を仮定し、$k<n$ か $k=n$ かで分ける。
 <a id="d-copyExp"></a>
 ### 定義 コピー展開の形 (D.copyExp)
 
-$$\mathrm{cE}(G,B,d_0,n) := G\mathbin{+\!\!+}\mathrm{flatMap}\Bigl(k\mapsto\mathrm{map}\bigl(p\mapsto(\pi_0 p+k\,d_0,\ \pi_1 p)\bigr)B\Bigr)\bigl(\mathrm{range}(n)\bigr).$$
+```math
+\mathrm{cE}(G,B,d_0,n) := G\mathbin{+\!\!+}\mathrm{flatMap}\Bigl(k\mapsto\mathrm{map}\bigl(p\mapsto(\pi_0 p+k\,d_0,\ \pi_1 p)\bigr)B\Bigr)\bigl(\mathrm{range}(n)\bigr).
+```
 
 これは [(T.oper_bad_blocks)](Mechanized.md#t-oper_bad_blocks) が与える
 $M[n]$ の形（前置部 $G$ の後ろにブロック $B$ の $n$ 個のコピーが並び、
@@ -906,8 +1000,10 @@ $M[n]$ の形（前置部 $G$ の後ろにブロック $B$ の $n$ 個のコピ�
 
 **主張** $k<n$ かつ $q<\lvert B\rvert$ ならば
 
-$$\mathrm{cE}(G,B,d_0,n)\bigl\langle \lvert G\rvert+(k\lvert B\rvert+q)\bigr\rangle
-=\bigl(\pi_0(B\langle q\rangle)+k\,d_0,\ \pi_1(B\langle q\rangle)\bigr).$$
+```math
+\mathrm{cE}(G,B,d_0,n)\bigl\langle \lvert G\rvert+(k\lvert B\rvert+q)\bigr\rangle
+=\bigl(\pi_0(B\langle q\rangle)+k\,d_0,\ \pi_1(B\langle q\rangle)\bigr).
+```
 
 **証明** 添字は $\lvert G\rvert$ 以上であるから
 [(T.getD_append_right)](#t-getD_append_right) により、右側の列の第
@@ -957,13 +1053,15 @@ $B\langle\lvert G\rvert+q-\lvert G\rvert\rangle=B\langle q\rangle$。∎
    $\bigl(\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)\bigr)$、
    $0<\pi_0(B\langle q\rangle)+k\,d_0$ が成り立つならば、$p$ が存在して
 
-   $$\begin{aligned}
+   ```math
+   \begin{aligned}
    &p<\lvert G\rvert+(k\lvert B\rvert+q),\\
    &\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1=\pi_0(B\langle q\rangle)+k\,d_0,\\
    &\forall l,\ p<l\to l<\lvert G\rvert+(k\lvert B\rvert+q)\to
      \pi_0(B\langle q\rangle)+k\,d_0\le\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle l\rangle\bigr),\\
    &\pi_1(B\langle q\rangle)\le\pi_1\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1 .
-   \end{aligned}$$
+   \end{aligned}
+   ```
 
 このとき $\mathrm{r1ok}(\mathrm{cE}(G,B,d_0,n))$。
 
@@ -975,8 +1073,10 @@ $j<\lvert E\rvert$ かつ $0<\pi_0(E\langle j\rangle)$ を仮定し、$j<\lvert 
 
 まず次を示す。
 
-$$\forall i\le j,\qquad E\langle i\rangle=H\langle i\rangle .
-\tag{1.1}$$
+```math
+\forall i\le j,\qquad E\langle i\rangle=H\langle i\rangle .
+\tag{1.1}
+```
 
 $i\le j$ を取る。
 
@@ -988,8 +1088,10 @@ $i\le j$ を取る。
   $i=\lvert G\rvert+(0\cdot\lvert B\rvert+(i-\lvert G\rvert))$ と書き
   [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) を $k:=0$ に適用すると
 
-  $$E\langle i\rangle=\bigl(\pi_0(B\langle i-\lvert G\rvert\rangle)+0\cdot d_0,\ \pi_1(B\langle i-\lvert G\rvert\rangle)\bigr)
-  =B\langle i-\lvert G\rvert\rangle .$$
+  ```math
+  E\langle i\rangle=\bigl(\pi_0(B\langle i-\lvert G\rvert\rangle)+0\cdot d_0,\ \pi_1(B\langle i-\lvert G\rvert\rangle)\bigr)
+  =B\langle i-\lvert G\rvert\rangle .
+  ```
 
   一方 [(T.hostM_getD_blk)](#t-hostM_getD_blk) より $H\langle i\rangle=B\langle i-\lvert G\rvert\rangle$。
 
@@ -1010,7 +1112,9 @@ $k=0$ とすると $j-\lvert G\rvert=q<\lvert B\rvert$ より $j<\lvert G\rvert+
 場合 2 の仮定に反するから $0<k$。したがって $j=\lvert G\rvert+(k\lvert B\rvert+q)$ であり、
 [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
 
-$$E\langle j\rangle=\bigl(\pi_0(B\langle q\rangle)+k\,d_0,\ \pi_1(B\langle q\rangle)\bigr).$$
+```math
+E\langle j\rangle=\bigl(\pi_0(B\langle q\rangle)+k\,d_0,\ \pi_1(B\langle q\rangle)\bigr).
+```
 
 $\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)$ が成り立つか否かで分ける。
 
@@ -1024,9 +1128,13 @@ $\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)$ が成り立
   であるから $0<\pi_0(H\langle\lvert G\rvert+q\rangle)$。
   仮定 1 の $\mathrm{r1ok}(H)$ を位置 $\lvert G\rvert+q$ に適用して $p<\lvert G\rvert+q$ と
 
-  $$\pi_0(H\langle p\rangle)+1=\pi_0(B\langle q\rangle),\qquad
-  \forall l,\ p<l<\lvert G\rvert+q\to\pi_0(B\langle q\rangle)\le\pi_0(H\langle l\rangle),$$
-  $$\pi_1(B\langle q\rangle)\le\pi_1(H\langle p\rangle)+1$$
+  ```math
+  \pi_0(H\langle p\rangle)+1=\pi_0(B\langle q\rangle),\qquad
+  \forall l,\ p<l<\lvert G\rvert+q\to\pi_0(B\langle q\rangle)\le\pi_0(H\langle l\rangle),
+  ```
+  ```math
+  \pi_1(B\langle q\rangle)\le\pi_1(H\langle p\rangle)+1
+  ```
 
   を得る。ここで $\lvert G\rvert+r\le p$ である。実際 $p<\lvert G\rvert+r$ とすると、
   $\lvert G\rvert+r$ は $p$ と $\lvert G\rvert+q$ の間にあるから第 2 条項が適用でき、
@@ -1036,8 +1144,10 @@ $\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)$ が成り立
   $p<\lvert G\rvert+q$ より $r'<q<\lvert B\rvert$ であり、
   [(T.hostM_getD_blk)](#t-hostM_getD_blk) により上の 3 式は
 
-  $$\pi_0(B\langle r'\rangle)+1=\pi_0(B\langle q\rangle),\qquad
-  \pi_1(B\langle q\rangle)\le\pi_1(B\langle r'\rangle)+1$$
+  ```math
+  \pi_0(B\langle r'\rangle)+1=\pi_0(B\langle q\rangle),\qquad
+  \pi_1(B\langle q\rangle)\le\pi_1(B\langle r'\rangle)+1
+  ```
 
   と、区間 $(\lvert G\rvert+r',\ \lvert G\rvert+q)$ 上の条項に書き換わる。
   そこで証人を $p^\ast:=\lvert G\rvert+(k\lvert B\rvert+r')$ とする。
@@ -1087,7 +1197,9 @@ $q<\lvert B\rvert=\lvert R\rvert+1$ より $q'<\lvert R\rvert$ であるから�
 $\pi_0(B\langle q\rangle)\le\pi_0(B\langle 0\rangle)$ であり、
 $B\langle 0\rangle=(v_0,w_0)$、$B\langle q'+1\rangle=R\langle q'\rangle$ であるから
 
-$$\pi_0(R\langle q'\rangle)\le v_0 .$$
+```math
+\pi_0(R\langle q'\rangle)\le v_0 .
+```
 
 これは $v_0<\pi_0(R\langle q'\rangle)$ と矛盾する。∎
 
@@ -1102,13 +1214,15 @@ $0<\pi_0(B\langle q\rangle)+k\cdot0$ を仮定する。
 このとき [(T.r1ok_copyExp)](#t-r1ok_copyExp) の仮定 2 の結論（$d_0:=0$ とした形）が成り立つ。
 すなわち $p$ が存在して
 
-$$\begin{aligned}
+```math
+\begin{aligned}
 &p<\lvert G\rvert+(k\lvert B\rvert+q),\\
 &\pi_0\bigl(\mathrm{cE}(G,B,0,n)\langle p\rangle\bigr)+1=\pi_0(B\langle q\rangle)+k\cdot0,\\
 &\forall l,\ p<l\to l<\lvert G\rvert+(k\lvert B\rvert+q)\to
   \pi_0(B\langle q\rangle)+k\cdot0\le\pi_0\bigl(\mathrm{cE}(G,B,0,n)\langle l\rangle\bigr),\\
 &\pi_1(B\langle q\rangle)\le\pi_1\bigl(\mathrm{cE}(G,B,0,n)\langle p\rangle\bigr)+1 .
-\end{aligned}$$
+\end{aligned}
+```
 
 **証明** $E:=\mathrm{cE}(G,B,0,n)$、$H:=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp]$ とおく。
 [(T.dominated_PM_zero)](#t-dominated_PM_zero) より $q=0$。
@@ -1120,17 +1234,21 @@ $H\langle\lvert G\rvert\rangle=B\langle0\rangle=(v_0,w_0)$。
 かつ $0<\pi_0(H\langle\lvert G\rvert\rangle)=v_0$。
 $\mathrm{r1ok}(H)$ を位置 $\lvert G\rvert$ に適用して $p<\lvert G\rvert$ と
 
-$$\pi_0(H\langle p\rangle)+1=v_0,\qquad
+```math
+\pi_0(H\langle p\rangle)+1=v_0,\qquad
 \forall l,\ p<l<\lvert G\rvert\to v_0\le\pi_0(H\langle l\rangle),\qquad
-w_0\le\pi_1(H\langle p\rangle)+1$$
+w_0\le\pi_1(H\langle p\rangle)+1
+```
 
 を得る。$p<\lvert G\rvert$ であるから
 [(T.hostM_getD_pre)](#t-hostM_getD_pre) より $H\langle p\rangle=G\langle p\rangle$、
 [(T.copyExp_getD_pre)](#t-copyExp_getD_pre) より $E\langle p\rangle=G\langle p\rangle$。
 すなわち
 
-$$\pi_0(G\langle p\rangle)+1=v_0,\qquad w_0\le\pi_1(G\langle p\rangle)+1 .
-\tag{$\ast$}$$
+```math
+\pi_0(G\langle p\rangle)+1=v_0,\qquad w_0\le\pi_1(G\langle p\rangle)+1 .
+\tag{$\ast$}
+```
 
 この $p$ が求める証人である。
 
@@ -1170,13 +1288,15 @@ $$\pi_0(G\langle p\rangle)+1=v_0,\qquad w_0\le\pi_1(G\langle p\rangle)+1 .
 
 このとき [(T.r1ok_copyExp)](#t-r1ok_copyExp) の仮定 2 の結論が成り立つ。すなわち $p$ が存在して
 
-$$\begin{aligned}
+```math
+\begin{aligned}
 &p<\lvert G\rvert+(k\lvert B\rvert+q),\\
 &\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1=\pi_0(B\langle q\rangle)+k\,d_0,\\
 &\forall l,\ p<l\to l<\lvert G\rvert+(k\lvert B\rvert+q)\to
   \pi_0(B\langle q\rangle)+k\,d_0\le\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle l\rangle\bigr),\\
 &\pi_1(B\langle q\rangle)\le\pi_1\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1 .
-\end{aligned}$$
+\end{aligned}
+```
 
 **証明** $E:=\mathrm{cE}(G,B,d_0,n)$ とおく。
 [(T.dominated_PM_zero)](#t-dominated_PM_zero) より $q=0$。
@@ -1187,13 +1307,17 @@ $\pi_0(B\langle0\rangle)=v_0\le v_0+d_0-1$（$0<d_0$ による）であるから
 $r':=\mathrm{findGreatest}\,P\,(\lvert B\rvert-1)$ とおくと、$0\le\lvert B\rvert-1$ と $P(0)$ から
 $P(r')$、また $r'\le\lvert B\rvert-1$、さらに
 
-$$\forall rr,\ r'<rr\le\lvert B\rvert-1\ \Rightarrow\ \neg P(rr).$$
+```math
+\forall rr,\ r'<rr\le\lvert B\rvert-1\ \Rightarrow\ \neg P(rr).
+```
 
 $\neg P(rr)$ は $v_0+d_0-1<\pi_0(B\langle rr\rangle)$ であり、$0<d_0$ より
 $v_0+d_0-1+1=v_0+d_0$ であるから
 
-$$\forall rr,\ r'<rr<\lvert B\rvert\ \Rightarrow\ v_0+d_0\le\pi_0(B\langle rr\rangle).
-\tag{2.1}$$
+```math
+\forall rr,\ r'<rr<\lvert B\rvert\ \Rightarrow\ v_0+d_0\le\pi_0(B\langle rr\rangle).
+\tag{2.1}
+```
 
 **水準の一致.** $\pi_0(B\langle r'\rangle)=v_0+d_0-1$ を示す。$P(r')$ より
 $\pi_0(B\langle r'\rangle)\le v_0+d_0-1$ である。逆向きを示す。
@@ -1210,7 +1334,9 @@ $\pi_0(B\langle r'\rangle)\le v_0+d_0-1$ である。逆向きを示す。
 
 **乗算の整理.** $0<k$ であるから
 
-$$k\lvert B\rvert=(k-1)\lvert B\rvert+\lvert B\rvert,\qquad k\,d_0=(k-1)d_0+d_0,\qquad k-1<n .$$
+```math
+k\lvert B\rvert=(k-1)\lvert B\rvert+\lvert B\rvert,\qquad k\,d_0=(k-1)d_0+d_0,\qquad k-1<n .
+```
 
 （$k=m+1$ と書けば $(m+1)L=mL+L$ による。$k-1<k<n$。）
 また $r'\le\lvert B\rvert-1$ と $0<\lvert B\rvert$ より $r'<\lvert B\rvert$。
@@ -1221,8 +1347,10 @@ $$k\lvert B\rvert=(k-1)\lvert B\rvert+\lvert B\rvert,\qquad k\,d_0=(k-1)d_0+d_0,
   $(k-1)\lvert B\rvert+r'<(k-1)\lvert B\rvert+\lvert B\rvert=k\lvert B\rvert$。
 - [(T.copyExp_getD_copy)](#t-copyExp_getD_copy)（$k-1<n$、$r'<\lvert B\rvert$）と $(2.2)$ より
 
-  $$\pi_0(E\langle p^\ast\rangle)+1=\pi_0(B\langle r'\rangle)+(k-1)d_0+1
-  =(v_0+d_0-1)+(k-1)d_0+1=v_0+d_0+(k-1)d_0=v_0+k\,d_0,$$
+  ```math
+  \pi_0(E\langle p^\ast\rangle)+1=\pi_0(B\langle r'\rangle)+(k-1)d_0+1
+  =(v_0+d_0-1)+(k-1)d_0+1=v_0+d_0+(k-1)d_0=v_0+k\,d_0,
+  ```
 
   これは $\pi_0(B\langle 0\rangle)+k\,d_0$ に等しい（$0<d_0$ より $v_0+d_0-1+1=v_0+d_0$）。
 - 第 3 条項 : $p^\ast<l<\lvert G\rvert+k\lvert B\rvert$ とする。
@@ -1241,8 +1369,10 @@ $$k\lvert B\rvert=(k-1)\lvert B\rvert+\lvert B\rvert,\qquad k\,d_0=(k-1)d_0+d_0,
   $\pi_0(E\langle l\rangle)=\pi_0(B\langle rr\rangle)+(k-1)d_0$。
   $(2.1)$ を $rr$ に適用して $v_0+d_0\le\pi_0(B\langle rr\rangle)$、よって
 
-  $$\pi_0(B\langle0\rangle)+k\,d_0=v_0+k\,d_0=(v_0+d_0)+(k-1)d_0\le\pi_0(B\langle rr\rangle)+(k-1)d_0
-  =\pi_0(E\langle l\rangle).$$
+  ```math
+  \pi_0(B\langle0\rangle)+k\,d_0=v_0+k\,d_0=(v_0+d_0)+(k-1)d_0\le\pi_0(B\langle rr\rangle)+(k-1)d_0
+  =\pi_0(E\langle l\rangle).
+  ```
 - 第 4 条項 : [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
   $\pi_1(E\langle p^\ast\rangle)=\pi_1(B\langle r'\rangle)$、また $\pi_1(B\langle0\rangle)=w_0$。
   $\mathrm{hclimb}$ を $r'$（$r'<\lvert B\rvert$、$(2.2)$、$(2.1)$）に適用して
@@ -1295,9 +1425,11 @@ $j_1:=\lvert M\rvert-1=\lvert G\rvert+\lvert B\rvert$。
 [(D.entry)](Def.md#d-entry)、[(T.hostM_getD_blk)](#t-hostM_getD_blk)、
 [(T.hostM_getD_lp)](#t-hostM_getD_lp) より
 
-$$M_{0,\ \lvert G\rvert+r'}=\pi_0(B\langle r'\rangle)=v_0+d_0-1,\qquad
+```math
+M_{0,\ \lvert G\rvert+r'}=\pi_0(B\langle r'\rangle)=v_0+d_0-1,\qquad
 M_{0,\ j_1}=\pi_0\,lp=v_0+d_0 .
-\tag{3.1}$$
+\tag{3.1}
+```
 
 **主張 A : $(\lvert G\rvert+r')\to^M_0 j_1$**（[(D.nextrel0)](Def.md#d-nextrel0)）。
 5 つの条件を順に確かめる。
@@ -1319,13 +1451,17 @@ M_{0,\ j_1}=\pi_0\,lp=v_0+d_0 .
 最大性条項）を $j:=\lvert G\rvert+r'$ に適用する。その前提は
 $\lvert G\rvert<\lvert G\rvert+r'$（$0<r'$ による）と主張 B であり、結論は
 
-$$M_{1,j_1}\le M_{1,\ \lvert G\rvert+r'} .$$
+```math
+M_{1,j_1}\le M_{1,\ \lvert G\rvert+r'} .
+```
 
 [(D.entry)](Def.md#d-entry) と [(T.hostM_getD_lp)](#t-hostM_getD_lp),
 [(T.hostM_getD_blk)](#t-hostM_getD_blk) により
 $M_{1,j_1}=\pi_1\,lp$、$M_{1,\lvert G\rvert+r'}=\pi_1(B\langle r'\rangle)$ であるから
 
-$$\pi_1\,lp\le\pi_1(B\langle r'\rangle).$$
+```math
+\pi_1\,lp\le\pi_1(B\langle r'\rangle).
+```
 
 仮定 $w_0<\pi_1\,lp$ と合わせて $w_0<\pi_1(B\langle r'\rangle)$、
 したがって $w_0\le\pi_1(B\langle r'\rangle)+1$。∎
@@ -1351,14 +1487,20 @@ $\mathrm{r1ok}(M[n])$。
   [(T.oper_bad_blocks)](Mechanized.md#t-oper_bad_blocks) を適用して
   $G,v_0,w_0,R,d_0,lp$ を取る。$B:=(v_0,w_0)\mathbin{::}R$ とおくと
 
-  $$M=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp],\qquad M[n]=\mathrm{cE}(G,B,d_0,n),$$
+  ```math
+  M=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp],\qquad M[n]=\mathrm{cE}(G,B,d_0,n),
+  ```
 
-  $$\forall x\in R,\ v_0<\pi_0 x,\qquad v_0<\pi_0\,lp,$$
+  ```math
+  \forall x\in R,\ v_0<\pi_0 x,\qquad v_0<\pi_0\,lp,
+  ```
 
   かつ次の選言が成り立つ。
 
-  $$\bigl(d_0=0\ \wedge\ \mathrm{idx}_1(M,j_1)=0\bigr)\ \vee\
-  \bigl(0<d_0\ \wedge\ w_0<\pi_1\,lp\ \wedge\ \pi_0\,lp=v_0+d_0\ \wedge\ \lvert G\rvert\to^M_1 j_1\bigr).$$
+  ```math
+  \bigl(d_0=0\ \wedge\ \mathrm{idx}_1(M,j_1)=0\bigr)\ \vee\
+  \bigl(0<d_0\ \wedge\ w_0<\pi_1\,lp\ \wedge\ \pi_0\,lp=v_0+d_0\ \wedge\ \lvert G\rvert\to^M_1 j_1\bigr).
+  ```
 
   仮定 $\mathrm{r1ok}(M)$、$\mathrm{steps1}(M)$ を $M=G\mathbin{+\!\!+}B\mathbin{+\!\!+}[lp]$ の形に書き換える。
 
@@ -1368,7 +1510,9 @@ $\mathrm{r1ok}(M[n])$。
   結論は $\pi_0(M\langle\lvert G\rvert+r+1\rangle)\le\pi_0(M\langle\lvert G\rvert+r\rangle)+1$ であり、
   $\lvert G\rvert+r+1=\lvert G\rvert+(r+1)$ と [(T.hostM_getD_blk)](#t-hostM_getD_blk) により
 
-  $$\pi_0(B\langle r+1\rangle)\le\pi_0(B\langle r\rangle)+1 .$$
+  ```math
+  \pi_0(B\langle r+1\rangle)\le\pi_0(B\langle r\rangle)+1 .
+  ```
 
   **$\mathrm{hlpstep}$ の導出.** [(T.steps1_iff)](Seqlex.md#t-steps1_iff) を添字
   $\lvert G\rvert+(\lvert B\rvert-1)$ に適用する。$0<\lvert B\rvert$ であるから
@@ -1393,7 +1537,9 @@ $\mathrm{r1ok}(M[n])$。
 
 **証明** $\mathrm{ST\_PS}$ の導出に関する帰納法。帰納法の述語は
 
-$$\Phi(M):\equiv \mathrm{r1ok}(M).$$
+```math
+\Phi(M):\equiv \mathrm{r1ok}(M).
+```
 
 **基底段（規則 diag）** $M=\Delta_0^v$。[(T.r1ok_diagSeq)](#t-r1ok_diagSeq) により $\Phi(\Delta_0^v)$。
 
@@ -1416,7 +1562,9 @@ Lean の当該節見出しはこの節の意図（末尾付加が正規化像に
 <a id="d-hdarg"></a>
 ### 定義 先頭引数 (D.hdarg)
 
-$$\mathrm{hdarg}\,\mathsf Z := \mathsf Z,\qquad \mathrm{hdarg}\,\mathsf P(a,b,c) := b .$$
+```math
+\mathrm{hdarg}\,\mathsf Z := \mathsf Z,\qquad \mathrm{hdarg}\,\mathsf P(a,b,c) := b .
+```
 
 <a id="t-hdarg_Z"></a>
 ### 定理 $\mathrm{hdarg}\,\mathsf Z=\mathsf Z$ (T.hdarg_Z)
@@ -1435,8 +1583,10 @@ $$\mathrm{hdarg}\,\mathsf Z := \mathsf Z,\qquad \mathrm{hdarg}\,\mathsf P(a,b,c)
 <a id="d-noabsorb"></a>
 ### 定義 非吸収条件 (D.noabsorb)
 
-$$\mathrm{noabsorb}(a,b,t) :\iff
-\neg\bigl(a<\mathrm{lead}\,t\ \vee\ (a=\mathrm{lead}\,t\ \wedge\ b\prec\mathrm{hdarg}\,t)\bigr)$$
+```math
+\mathrm{noabsorb}(a,b,t) :\iff
+\neg\bigl(a<\mathrm{lead}\,t\ \vee\ (a=\mathrm{lead}\,t\ \wedge\ b\prec\mathrm{hdarg}\,t)\bigr)
+```
 
 （[(D.lead)](Mechanized.md#d-lead), [(D.hdarg)](#d-hdarg)）。
 $t=\mathsf P(e,f,g)$ のとき $\mathrm{lead}\,t=e$、$\mathrm{hdarg}\,t=f$ であるから、
@@ -1464,8 +1614,10 @@ $a<0$ も $b\prec\mathsf Z$ も成り立たず、$\mathrm{noabsorb}(a,b,\mathsf 
 [(T.olt_total)](Mechanized.md#t-olt_total) を $b$ と $m$ に適用すると
 $b\prec m$、$b=m$、$m\prec b$ のいずれかであり、第 3 は上で否定したから
 
-$$b\preceq m .
-\tag{4.1}$$
+```math
+b\preceq m .
+\tag{4.1}
+```
 
 [(T.pfire_iff)](#t-pfire_iff) により、示すべきは
 $\forall g\in G_u(m),\ g\prec m$ である。$g\in G_u(m)$ を取る。
@@ -1499,10 +1651,14 @@ $g\prec b$ か否かで分ける。
 <a id="d-descok"></a>
 ### 定義 連続添字降下述語 (D.descok)
 
-$$\mathrm{descok}(\mathsf Z) := \bot,$$
-$$\mathrm{descok}(\mathsf P(a,x,y)) :=
+```math
+\mathrm{descok}(\mathsf Z) := \bot,
+```
+```math
+\mathrm{descok}(\mathsf P(a,x,y)) :=
 \bigl(a=\mathrm{maxsub}(\mathsf P(a,x,y))\bigr)\ \vee\
-\bigl(\mathrm{lead}\,x=a+1\ \wedge\ \mathrm{maxsub}\,y<\mathrm{maxsub}\,x\ \wedge\ \mathrm{descok}(x)\bigr)$$
+\bigl(\mathrm{lead}\,x=a+1\ \wedge\ \mathrm{maxsub}\,y<\mathrm{maxsub}\,x\ \wedge\ \mathrm{descok}(x)\bigr)
+```
 
 （[(D.maxsub)](Wf.md#d-maxsub), [(D.lead)](Mechanized.md#d-lead)）。
 再帰呼び出しの引数 $x$ は $\mathsf P(a,x,y)$ の真部分項であるから、この定義は
@@ -1521,9 +1677,11 @@ $$\mathrm{descok}(\mathsf P(a,x,y)) :=
 ### 定理 $\mathrm{descok}$ の展開 (T.descok_P)
 
 **主張**
-$$\mathrm{descok}(\mathsf P(a,x,y))\iff
+```math
+\mathrm{descok}(\mathsf P(a,x,y))\iff
 \bigl(a=\mathrm{maxsub}(\mathsf P(a,x,y))\bigr)\vee
-\bigl(\mathrm{lead}\,x=a+1\wedge\mathrm{maxsub}\,y<\mathrm{maxsub}\,x\wedge\mathrm{descok}(x)\bigr).$$
+\bigl(\mathrm{lead}\,x=a+1\wedge\mathrm{maxsub}\,y<\mathrm{maxsub}\,x\wedge\mathrm{descok}(x)\bigr).
+```
 
 **証明** [(D.descok)](#d-descok) の第 2 式そのものであり、両辺は定義により同一の命題である。∎
 
@@ -1534,10 +1692,12 @@ $$\mathrm{descok}(\mathsf P(a,x,y))\iff
 <a id="d-mvstep"></a>
 ### 定義 射影の一段 (D.mvstep)
 
-$$\mathrm{mv}(b) := \begin{cases}
+```math
+\mathrm{mv}(b) := \begin{cases}
 b & (\mathrm{Bad}_0(b)=[])\\
 \mathrm{mx}_0(b) & (\mathrm{Bad}_0(b)\ne[])
-\end{cases}$$
+\end{cases}
+```
 
 すなわち水準 $0$ の違反者リストが空でなければその $\mathrm{maxo}$ を取り、空なら $b$ 自身を返す。
 
@@ -1589,8 +1749,10 @@ $\lVert\mathrm{mx}_0(b)\rVert<\lVert b\rVert$。∎
 
 **証明** $n:=\lVert x\rVert$ に関する強帰納法。帰納法の述語は
 
-$$\Phi(n):\equiv\forall x,\ \lVert x\rVert=n\ \to\ \forall y,\ R\,x\,y\to x\prec y\to
-\mathrm{proj}_0(x)\prec\mathrm{proj}_0(y).$$
+```math
+\Phi(n):\equiv\forall x,\ \lVert x\rVert=n\ \to\ \forall y,\ R\,x\,y\to x\prec y\to
+\mathrm{proj}_0(x)\prec\mathrm{proj}_0(y).
+```
 
 $n$ を固定し、帰納法の仮定として $\forall m<n,\ \Phi(m)$ を仮定する。
 $\lVert x\rVert=n$ なる $x$ と $y$ を取り、$R\,x\,y$、$x\prec y$ を仮定する。
@@ -1615,12 +1777,16 @@ $\mathrm{fire}_0(x)$ か否かで分ける。
 関係 $\mathrm{Rdesc}\subseteq\mathrm{Three}\times\mathrm{Three}$ を次の 2 規則で生成される最小の関係と定める
 （[(D.NF)](Proofs.md#d-NF)）。
 
-$$\frac{\ \mathsf P(0,b,c)\in\mathrm{NF}\quad \mathsf P(0,f,g)\in\mathrm{NF}\quad
+```math
+\frac{\ \mathsf P(0,b,c)\in\mathrm{NF}\quad \mathsf P(0,f,g)\in\mathrm{NF}\quad
  b\prec f\quad \mathrm{maxsub}\,b=\mathrm{maxsub}\,f\quad \mathrm{fire}_0(b)\quad \mathrm{fire}_0(f)\ }
-{\ \mathrm{Rdesc}\ b\ f\ }\ \text{(base)}$$
+{\ \mathrm{Rdesc}\ b\ f\ }\ \text{(base)}
+```
 
-$$\frac{\ \mathrm{Rdesc}\ x\ y\quad \mathrm{fire}_0(x)\quad \mathrm{fire}_0(y)\ }
-{\ \mathrm{Rdesc}\ (\mathrm{mv}(x))\ (\mathrm{mv}(y))\ }\ \text{(step)}$$
+```math
+\frac{\ \mathrm{Rdesc}\ x\ y\quad \mathrm{fire}_0(x)\quad \mathrm{fire}_0(y)\ }
+{\ \mathrm{Rdesc}\ (\mathrm{mv}(x))\ (\mathrm{mv}(y))\ }\ \text{(step)}
+```
 
 すなわち $\mathrm{Rdesc}$ は、頭部添字 $0$ の $\mathrm{NF}$ 項の引数対であって
 $\prec$ で比較され $\mathrm{maxsub}$ が一致し両者とも発火するものから出発して、
@@ -1642,13 +1808,19 @@ $\prec$ で比較され $\mathrm{maxsub}$ が一致し両者とも発火する�
 
 関係 $\mathrm{SubBlock}\subseteq\mathrm{PairSeq}\times\mathrm{PairSeq}$ を次の 3 規則で生成される最小の関係と定める。
 
-$$\frac{\ }{\ \mathrm{SubBlock}(M,M)\ }\ \text{(refl)}$$
+```math
+\frac{\ }{\ \mathrm{SubBlock}(M,M)\ }\ \text{(refl)}
+```
 
-$$\frac{\ M=p\mathbin{::}\mathit{rest}\qquad \mathrm{SubBlock}\bigl(\mathrm{tw}_{\pi_0 p}\mathit{rest},\ K\bigr)\ }
-{\ \mathrm{SubBlock}(M,K)\ }\ \text{(desc)}$$
+```math
+\frac{\ M=p\mathbin{::}\mathit{rest}\qquad \mathrm{SubBlock}\bigl(\mathrm{tw}_{\pi_0 p}\mathit{rest},\ K\bigr)\ }
+{\ \mathrm{SubBlock}(M,K)\ }\ \text{(desc)}
+```
 
-$$\frac{\ M=p\mathbin{::}\mathit{rest}\qquad \mathrm{SubBlock}\bigl(\mathrm{dw}_{\pi_0 p}\mathit{rest},\ K\bigr)\ }
-{\ \mathrm{SubBlock}(M,K)\ }\ \text{(sib)}$$
+```math
+\frac{\ M=p\mathbin{::}\mathit{rest}\qquad \mathrm{SubBlock}\bigl(\mathrm{dw}_{\pi_0 p}\mathit{rest},\ K\bigr)\ }
+{\ \mathrm{SubBlock}(M,K)\ }\ \text{(sib)}
+```
 
 すなわち $\mathrm{SubBlock}(M,K)$ は、[(D.translate)](Mechanized.md#d-translate) の再帰が辿る
 2 つの部分列（子ブロック $\mathrm{tw}$ と兄弟部分 $\mathrm{dw}$）を有限回たどって
@@ -1661,7 +1833,9 @@ $M$ から $K$ に到達できることを表す。本章の他の宣言はこ�
 <a id="d-repB"></a>
 ### 定義 ブロックの反復 (D.repB)
 
-$$\mathrm{repB}(B,0) := [],\qquad \mathrm{repB}(B,n+1) := B\mathbin{+\!\!+}\mathrm{repB}(B,n).$$
+```math
+\mathrm{repB}(B,0) := [],\qquad \mathrm{repB}(B,n+1) := B\mathbin{+\!\!+}\mathrm{repB}(B,n).
+```
 
 これは [(D.copyExp)](#d-copyExp) の $d_0=0$ の場合のコピー部（$B$ を $n$ 回そのまま並べた列）である。
 本章の他の宣言はこの関数を用いない。
@@ -1699,7 +1873,9 @@ $$\mathrm{repB}(B,0) := [],\qquad \mathrm{repB}(B,n+1) := B\mathbin{+\!\!+}\math
 **証明** [(D.le0)](Def.md#d-le0) より $\mathrm{ReflTransGen}(\to^M_0)\,a\,b$ が成り立つ。
 この導出に関する帰納法を行う。帰納法の述語は
 
-$$\Psi(b):\equiv a\le b$$
+```math
+\Psi(b):\equiv a\le b
+```
 
 （$a$ は固定、$b$ と導出が変数）。
 
@@ -1717,7 +1893,9 @@ $\mathrm{ReflTransGen}(\to^M_0)\,a\,z$ が導かれた場合。帰納法の仮�
 <a id="d-z0ok"></a>
 ### 定義 水準 0 規律 (D.z0ok)
 
-$$\mathrm{z0ok}(M) :\iff \forall j<\lvert M\rvert,\ \ \pi_0(M\langle j\rangle)=0\ \to\ \pi_1(M\langle j\rangle)=0 .$$
+```math
+\mathrm{z0ok}(M) :\iff \forall j<\lvert M\rvert,\ \ \pi_0(M\langle j\rangle)=0\ \to\ \pi_1(M\langle j\rangle)=0 .
+```
 
 <a id="t-z0ok_diagSeq"></a>
 ### 定理 対角列は $\mathrm{z0ok}$ (T.z0ok_diagSeq)
@@ -1768,7 +1946,9 @@ $j<\lvert E\rvert$、$\pi_0(E\langle j\rangle)=0$ とし、$\pi_1(E\langle j\ran
   $k<n$、$q<\lvert B\rvert$、$j=\lvert G\rvert+(k\lvert B\rvert+q)$ と書ける。
   [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
 
-  $$E\langle j\rangle=\bigl(\pi_0(B\langle q\rangle)+k\,d_0,\ \pi_1(B\langle q\rangle)\bigr).$$
+  ```math
+  E\langle j\rangle=\bigl(\pi_0(B\langle q\rangle)+k\,d_0,\ \pi_1(B\langle q\rangle)\bigr).
+  ```
 
   仮定 $\pi_0(E\langle j\rangle)=0$ は $\pi_0(B\langle q\rangle)+k\,d_0=0$ であり、
   自然数の和が $0$ であることから $\pi_0(B\langle q\rangle)=0$。
@@ -1854,12 +2034,16 @@ $k:=\mathrm{findGreatest}\,P\,(j-1)$ とおく。$0\le j-1$ と $P(0)$ から $P
 **主張** $\mathrm{blockok}\,0\,M$ ならば、任意の $lev,j$ について
 $M_{0,j}=lev$ かつ $j<\lvert M\rvert$ ならば
 
-$$\exists r,\ r\le j\ \wedge\ M_{0,r}=0\ \wedge\ \mathrm{ReflTransGen}(\to^M_0)\,r\,j .$$
+```math
+\exists r,\ r\le j\ \wedge\ M_{0,r}=0\ \wedge\ \mathrm{ReflTransGen}(\to^M_0)\,r\,j .
+```
 
 **証明** $lev$ に関する強帰納法。帰納法の述語は
 
-$$\Phi(lev):\equiv\forall j,\ M_{0,j}=lev\to j<\lvert M\rvert\to
-\exists r,\ r\le j\wedge M_{0,r}=0\wedge\mathrm{ReflTransGen}(\to^M_0)\,r\,j .$$
+```math
+\Phi(lev):\equiv\forall j,\ M_{0,j}=lev\to j<\lvert M\rvert\to
+\exists r,\ r\le j\wedge M_{0,r}=0\wedge\mathrm{ReflTransGen}(\to^M_0)\,r\,j .
+```
 
 $lev$ を固定し、帰納法の仮定として $\forall lev'<lev,\ \Phi(lev')$ を仮定する。
 $M_{0,j}=lev$、$j<\lvert M\rvert$ なる $j$ を取る。
@@ -1927,7 +2111,9 @@ $1\ne0$ であるから $\to^M_1$ の分岐が選ばれる。∎
 **主張** $\mathrm{blockok}\,0\,M$、$\mathrm{z0ok}(M)$、$0<\lvert M\rvert$、
 $M\langle\lvert M\rvert-1\rangle\ne(0,0)$ ならば
 
-$$\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M,\lvert M\rvert-1),\ \lvert M\rvert-1\bigr)$$
+```math
+\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M,\lvert M\rvert-1),\ \lvert M\rvert-1\bigr)
+```
 
 （[(D.hasParent)](Def.md#d-hasParent), [(D.idx1)](Def.md#d-idx1)）。
 
@@ -1986,7 +2172,9 @@ Lean の当該節見出しの直後に置かれているのは、$\mathrm{z0ok}$
 
 **証明** $\mathrm{ST\_PS}$ の導出に関する帰納法。帰納法の述語は
 
-$$\Phi(M):\equiv \mathrm{z0ok}(M).$$
+```math
+\Phi(M):\equiv \mathrm{z0ok}(M).
+```
 
 **基底段（規則 diag）** $M=\Delta_0^v$。[(T.z0ok_diagSeq)](#t-z0ok_diagSeq) による。
 
@@ -2001,7 +2189,8 @@ $$\Phi(M):\equiv \mathrm{z0ok}(M).$$
 <a id="d-sclimb"></a>
 ### 定義 単一登攀規律 (D.sclimb)
 
-$$\mathrm{sclimb}(M) :\iff \forall r',r,\quad
+```math
+\mathrm{sclimb}(M) :\iff \forall r',r,\quad
 \begin{aligned}
 &1<\lvert M\rvert\ \to\\
 &\mathrm{nextR}\bigl(M,\ \mathrm{idx}_1(M,\lvert M\rvert-1),\ 0,\ \lvert M\rvert-1\bigr)\ \to\\
@@ -2012,7 +2201,8 @@ $$\mathrm{sclimb}(M) :\iff \forall r',r,\quad
    \pi_0(M\langle\lvert M\rvert-1\rangle)\le\pi_0(M\langle l\rangle)\bigr)\ \to\\
 &0<r\ \to\ r<r'\ \to\\
 &\pi_0(M\langle r\rangle)+1<\pi_0(M\langle\lvert M\rvert-1\rangle).
-\end{aligned}$$
+\end{aligned}
+```
 
 すなわち、行 1 の親辺が先頭（位置 $0$）に固定された列において、
 先頭と最終列の行 0 の親 $r'$ の間にある位置 $r$（$0<r<r'$）の行 0 の値は、
@@ -2028,16 +2218,20 @@ $$\mathrm{sclimb}(M) :\iff \forall r',r,\quad
 **主張** $\rho\in\mathbb{N}$ とする。$\mathrm{ReflTransGen}(\to^M_0)\,a\,b$、$a<\rho$、$\rho\le b$、
 および
 
-$$\forall y,\ \rho<y\to y\le b\to M_{0,\rho}<M_{0,y}$$
+```math
+\forall y,\ \rho<y\to y\le b\to M_{0,\rho}<M_{0,y}
+```
 
 ならば $\mathrm{ReflTransGen}(\to^M_0)\,\rho\,b$。
 
 **証明** 連鎖 $\mathrm{ReflTransGen}(\to^M_0)\,a\,b$ の導出に関する帰納法（$a$ は固定、
 $b$ と 3 つの仮定は帰納法の述語の内側に置く）。帰納法の述語は
 
-$$\Psi(b):\equiv a<\rho\to\rho\le b\to
+```math
+\Psi(b):\equiv a<\rho\to\rho\le b\to
 \bigl(\forall y,\ \rho<y\to y\le b\to M_{0,\rho}<M_{0,y}\bigr)\to
-\mathrm{ReflTransGen}(\to^M_0)\,\rho\,b .$$
+\mathrm{ReflTransGen}(\to^M_0)\,\rho\,b .
+```
 
 **基底段（refl）** $b=a$。仮定 $a<\rho$ と $\rho\le b=a$ から $a<a$ となり、前提が偽である。
 よって $\Psi(a)$ が成り立つ。
@@ -2082,13 +2276,17 @@ $b<\lvert M\rvert$ はそのまま。連鎖は [(T.rtg_through_pivot)](#t-rtg_th
 
 **主張** $j<\lvert S\rvert$ ならば
 
-$$(S^{+d})_{0,j}=S_{0,j}+d\qquad\text{かつ}\qquad (S^{+d})_{1,j}=S_{1,j}.$$
+```math
+(S^{+d})_{0,j}=S_{0,j}+d\qquad\text{かつ}\qquad (S^{+d})_{1,j}=S_{1,j}.
+```
 
 **証明** $\lvert S^{+d}\rvert=\lvert S\rvert$ であるから $j<\lvert S^{+d}\rvert$ であり、
 [(T.getD_eq_getElem')](Wf.md#t-getD_eq_getElem') により $\mathrm{getD}$ は既定値を返さず
 第 $j$ 要素そのものである。`map` の第 $j$ 要素は写像の値であるから
 
-$$S^{+d}\langle j\rangle=\bigl(\pi_0(S\langle j\rangle)+d,\ \pi_1(S\langle j\rangle)\bigr).$$
+```math
+S^{+d}\langle j\rangle=\bigl(\pi_0(S\langle j\rangle)+d,\ \pi_1(S\langle j\rangle)\bigr).
+```
 
 [(D.entry)](Def.md#d-entry) により $(S^{+d})_{0,j}$ は第 0 成分、
 $(S^{+d})_{1,j}$ は第 1 成分であるから、主張の 2 式を得る。∎
@@ -2104,12 +2302,16 @@ $(S^{+d})_{1,j}$ は第 1 成分であるから、主張の 2 式を得る。∎
 第 4 条件。第 3 条件 $a<b$ と $b<\lvert S\rvert$ より $a<\lvert S\rvert$ であるから
 [(T.entry_shift)](#t-entry_shift) が $a$ と $b$ の双方に適用でき、
 
-$$(S^{+d})_{0,a}<(S^{+d})_{0,b}\iff S_{0,a}+d<S_{0,b}+d\iff S_{0,a}<S_{0,b}.$$
+```math
+(S^{+d})_{0,a}<(S^{+d})_{0,b}\iff S_{0,a}+d<S_{0,b}+d\iff S_{0,a}<S_{0,b}.
+```
 
 第 5 条件。$a<l<b$ なる $l$ は $l<b<\lvert S\rvert$ を満たすから
 [(T.entry_shift)](#t-entry_shift) が $l$ と $b$ に適用でき、
 
-$$(S^{+d})_{0,b}\le(S^{+d})_{0,l}\iff S_{0,b}+d\le S_{0,l}+d\iff S_{0,b}\le S_{0,l}.$$
+```math
+(S^{+d})_{0,b}\le(S^{+d})_{0,l}\iff S_{0,b}+d\le S_{0,l}+d\iff S_{0,b}\le S_{0,l}.
+```
 
 以上より両辺の 5 条件は同値であり、連言も同値である。∎
 
@@ -2120,7 +2322,9 @@ $$(S^{+d})_{0,b}\le(S^{+d})_{0,l}\iff S_{0,b}+d\le S_{0,l}+d\iff S_{0,b}\le S_{0
 
 **証明** 連鎖の導出に関する帰納法。帰納法の述語は
 
-$$\Psi(b):\equiv \mathrm{ReflTransGen}(\to^{S}_0)\,a\,b .$$
+```math
+\Psi(b):\equiv \mathrm{ReflTransGen}(\to^{S}_0)\,a\,b .
+```
 
 **基底段（refl）** $b=a$。反射性により $\mathrm{ReflTransGen}(\to^S_0)\,a\,a$。
 
@@ -2138,7 +2342,9 @@ $e<\lvert S^{+d}\rvert=\lvert S\rvert$。
 
 **証明** 連鎖の導出に関する帰納法。帰納法の述語は
 
-$$\Psi(b):\equiv \mathrm{ReflTransGen}(\to^{S^{+d}}_0)\,a\,b .$$
+```math
+\Psi(b):\equiv \mathrm{ReflTransGen}(\to^{S^{+d}}_0)\,a\,b .
+```
 
 **基底段（refl）** $b=a$。反射性による。
 
@@ -2194,9 +2400,11 @@ $(S^{+d})_{1,b}\le(S^{+d})_{1,l}\iff S_{1,b}\le S_{1,l}$。
 <a id="d-predGuard"></a>
 ### 定義 切り詰め条件 (D.predGuard)
 
-$$\mathrm{predGuard}(N) :\iff
+```math
+\mathrm{predGuard}(N) :\iff
 \bigl(N_{0,\lvert N\rvert-1}=0\ \wedge\ N_{1,\lvert N\rvert-1}=0\bigr)\ \vee\
-\neg\,\mathrm{hasParent}\bigl(N,\ \mathrm{idx}_1(N,\lvert N\rvert-1),\ \lvert N\rvert-1\bigr).$$
+\neg\,\mathrm{hasParent}\bigl(N,\ \mathrm{idx}_1(N,\lvert N\rvert-1),\ \lvert N\rvert-1\bigr).
+```
 
 これは [(D.oper)](Def.md#d-oper) の分岐 (b) と分岐 (c) の条件の選言、すなわち
 $\lvert N\rvert-1\ne0$ のもとで $N[n]=\mathrm{Pred}\,N$ となる条件である
@@ -2208,9 +2416,11 @@ $\lvert N\rvert-1\ne0$ のもとで $N[n]=\mathrm{Pred}\,N$ となる条件で�
 
 関係 $\mathrm{predImages}\subseteq\mathrm{PairSeq}\times\mathrm{PairSeq}$ を次の 2 規則で生成される最小の関係と定める。
 
-$$\frac{\ }{\ \mathrm{predImages}(M,M)\ }\ \text{(refl)}
+```math
+\frac{\ }{\ \mathrm{predImages}(M,M)\ }\ \text{(refl)}
 \qquad\qquad
-\frac{\ \mathrm{predImages}(M,N)\qquad \mathrm{predGuard}(N)\ }{\ \mathrm{predImages}(M,\ \mathrm{Pred}\,N)\ }\ \text{(step)}$$
+\frac{\ \mathrm{predImages}(M,N)\qquad \mathrm{predGuard}(N)\ }{\ \mathrm{predImages}(M,\ \mathrm{Pred}\,N)\ }\ \text{(step)}
+```
 
 すなわち $\mathrm{predImages}(M,N)$ は、$M$ から出発して
 「そのつど $\mathrm{predGuard}$ を満たす列に $\mathrm{Pred}$ を施す」操作を有限回反復して

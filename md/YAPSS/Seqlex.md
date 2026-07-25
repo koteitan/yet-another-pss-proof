@@ -46,8 +46,10 @@ $\mathrm{tr}\,M\prec\mathrm{tr}\,N \iff M\prec_{\mathrm{lex}}N$ を得る。
 
 [`Mechanized.md`](Mechanized.md) と同じく、行 0 の値 $a$ を基準とする `takeWhile` / `dropWhile` を
 
-$$\mathrm{tw}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a<\pi_0 q),\qquad
-  \mathrm{dw}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a<\pi_0 q)$$
+```math
+\mathrm{tw}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a<\pi_0 q),\qquad
+  \mathrm{dw}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a<\pi_0 q)
+```
 
 と略記する。$\mathrm{tw}_a L$ は $L$ の先頭から「行 0 の値が $a$ より真に大きい」対が続く極大な前部分列、
 $\mathrm{dw}_a L$ はその残りであり、$\mathrm{tw}_a L \mathbin{+\!\!+} \mathrm{dw}_a L = L$ が成り立つ。
@@ -95,7 +97,9 @@ $M_{0,j}=\pi_0(M\langle j\rangle)$、$M_{1,j}=\pi_1(M\langle j\rangle)$ であ�
 
 $p,q\in\mathbb{N}\times\mathbb{N}$ に対し
 
-$$p <_{\mathrm p} q \ :\iff\ \pi_0 p<\pi_0 q \ \vee\ \bigl(\pi_0 p=\pi_0 q \wedge \pi_1 p<\pi_1 q\bigr).$$
+```math
+p <_{\mathrm p} q \ :\iff\ \pi_0 p<\pi_0 q \ \vee\ \bigl(\pi_0 p=\pi_0 q \wedge \pi_1 p<\pi_1 q\bigr).
+```
 
 行 0 の成分を優先し、それが等しいときに行 1 の成分を比べる辞書式順序である。
 
@@ -104,13 +108,13 @@ $$p <_{\mathrm p} q \ :\iff\ \pi_0 p<\pi_0 q \ \vee\ \bigl(\pi_0 p=\pi_0 q \wedg
 
 ペア列 $M,N$ に対し $M\prec_{\mathrm{lex}}N$ を、$M$ の構造に関する再帰で定める。
 
-$$
+```math
 \begin{aligned}
 {}[\,] \prec_{\mathrm{lex}} N &\ :\iff\ N\ne[\,],\\
 (p\mathbin{::}M) \prec_{\mathrm{lex}} [\,] &\ :\iff\ \bot,\\
 (p\mathbin{::}M) \prec_{\mathrm{lex}} (q\mathbin{::}N) &\ :\iff\ p<_{\mathrm p}q \ \vee\ \bigl(p=q \wedge M\prec_{\mathrm{lex}}N\bigr).
 \end{aligned}
-$$
+```
 
 （[(D.pairlt)](#d-pairlt)。）第 3 式の再帰呼び出し $M\prec_{\mathrm{lex}}N$ の第 1 引数 $M$ は
 $p\mathbin{::}M$ の尾部、すなわち構成子 $\mathbin{::}$ の直下の引数であるから、
@@ -137,7 +141,9 @@ $v\ne[\,]$ のとき $u\prec_{\mathrm{lex}}(u\mathbin{+\!\!+}v)$ が成り立つ
 ### 定理 先頭付加どうしの比較 (T.seqlex_cons_cons)
 
 **主張**
-$$(p\mathbin{::}M)\prec_{\mathrm{lex}}(q\mathbin{::}N) \iff p<_{\mathrm p}q \ \vee\ \bigl(p=q \wedge M\prec_{\mathrm{lex}}N\bigr).$$
+```math
+(p\mathbin{::}M)\prec_{\mathrm{lex}}(q\mathbin{::}N) \iff p<_{\mathrm p}q \ \vee\ \bigl(p=q \wedge M\prec_{\mathrm{lex}}N\bigr).
+```
 
 **証明** [(D.seqlex)](#d-seqlex) の第 3 式そのものであり、両辺は定義により同一の命題である。∎
 
@@ -145,16 +151,22 @@ $$(p\mathbin{::}M)\prec_{\mathrm{lex}}(q\mathbin{::}N) \iff p<_{\mathrm p}q \ \v
 ### 定理 共通前部の消去 (T.seqlex_append_cancel)
 
 **主張** 任意のペア列 $A,u,v$ に対し
-$$(A\mathbin{+\!\!+}u)\prec_{\mathrm{lex}}(A\mathbin{+\!\!+}v) \iff u\prec_{\mathrm{lex}}v.$$
+```math
+(A\mathbin{+\!\!+}u)\prec_{\mathrm{lex}}(A\mathbin{+\!\!+}v) \iff u\prec_{\mathrm{lex}}v.
+```
 
 **証明** $u,v$ を固定し、$A$ の構造に関する帰納法。帰納法の述語は
-$$\Phi(A) :\equiv \Bigl((A\mathbin{+\!\!+}u)\prec_{\mathrm{lex}}(A\mathbin{+\!\!+}v) \iff u\prec_{\mathrm{lex}}v\Bigr).$$
+```math
+\Phi(A) :\equiv \Bigl((A\mathbin{+\!\!+}u)\prec_{\mathrm{lex}}(A\mathbin{+\!\!+}v) \iff u\prec_{\mathrm{lex}}v\Bigr).
+```
 
 - 基底段 $A=[\,]$：$[\,]\mathbin{+\!\!+}u = u$、$[\,]\mathbin{+\!\!+}v = v$ であるから、両辺は同一の命題である。
 - 帰納段 $A=a\mathbin{::}A'$：帰納法の仮定は $\Phi(A')$ である。
   $(a\mathbin{::}A')\mathbin{+\!\!+}u = a\mathbin{::}(A'\mathbin{+\!\!+}u)$、$(a\mathbin{::}A')\mathbin{+\!\!+}v = a\mathbin{::}(A'\mathbin{+\!\!+}v)$ であるから、
   [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) より左辺は
-  $$a<_{\mathrm p}a \ \vee\ \bigl(a=a \wedge (A'\mathbin{+\!\!+}u)\prec_{\mathrm{lex}}(A'\mathbin{+\!\!+}v)\bigr)$$
+  ```math
+  a<_{\mathrm p}a \ \vee\ \bigl(a=a \wedge (A'\mathbin{+\!\!+}u)\prec_{\mathrm{lex}}(A'\mathbin{+\!\!+}v)\bigr)
+  ```
   と同値である。
   - ($\Rightarrow$) 第 1 選言 $a<_{\mathrm p}a$ は、[(D.pairlt)](#d-pairlt) より
     $\pi_0 a<\pi_0 a$ または $(\pi_0 a=\pi_0 a \wedge \pi_1 a<\pi_1 a)$ であるが、
@@ -169,7 +181,9 @@ $$\Phi(A) :\equiv \Bigl((A\mathbin{+\!\!+}u)\prec_{\mathrm{lex}}(A\mathbin{+\!\!
 **主張** $v\ne[\,]$ ならば、任意のペア列 $u$ に対し $u\prec_{\mathrm{lex}}(u\mathbin{+\!\!+}v)$。
 
 **証明** $v$ とその仮定 $v\ne[\,]$ を固定し、$u$ の構造に関する帰納法。帰納法の述語は
-$$\Phi(u) :\equiv u\prec_{\mathrm{lex}}(u\mathbin{+\!\!+}v).$$
+```math
+\Phi(u) :\equiv u\prec_{\mathrm{lex}}(u\mathbin{+\!\!+}v).
+```
 
 - 基底段 $u=[\,]$：$[\,]\mathbin{+\!\!+}v = v$ であり、[(T.seqlex_nil_iff)](#t-seqlex_nil_iff) より
   $[\,]\prec_{\mathrm{lex}}v$ は $v\ne[\,]$ と同値、これは仮定である。
@@ -186,9 +200,11 @@ $$\Phi(u) :\equiv u\prec_{\mathrm{lex}}(u\mathbin{+\!\!+}v).$$
 
 ペア列 $B$ に対し $\mathrm{steps}_1(B)$ を、$B$ の構造に関する再帰で定める。
 
-$$\mathrm{steps}_1([\,]) := \top,\qquad
+```math
+\mathrm{steps}_1([\,]) := \top,\qquad
   \mathrm{steps}_1([p]) := \top,\qquad
-  \mathrm{steps}_1(p\mathbin{::}q\mathbin{::}r) := \bigl(\pi_0 q\le\pi_0 p+1\bigr) \wedge \mathrm{steps}_1(q\mathbin{::}r).$$
+  \mathrm{steps}_1(p\mathbin{::}q\mathbin{::}r) := \bigl(\pi_0 q\le\pi_0 p+1\bigr) \wedge \mathrm{steps}_1(q\mathbin{::}r).
+```
 
 すなわち、隣り合う 2 対のあいだで行 0 の値が高々 1 しか増えないという条件である
 （減る分には制限がない）。
@@ -211,7 +227,9 @@ $$\mathrm{steps}_1([\,]) := \top,\qquad
 ### 定理 2 元以上の場合の展開 (T.steps1_cons_cons)
 
 **主張**
-$$\mathrm{steps}_1(p\mathbin{::}q\mathbin{::}r) \iff \bigl(\pi_0 q\le\pi_0 p+1\bigr) \wedge \mathrm{steps}_1(q\mathbin{::}r).$$
+```math
+\mathrm{steps}_1(p\mathbin{::}q\mathbin{::}r) \iff \bigl(\pi_0 q\le\pi_0 p+1\bigr) \wedge \mathrm{steps}_1(q\mathbin{::}r).
+```
 
 **証明** [(D.steps1)](#d-steps1) の第 3 式そのものであり、両辺は定義により同一の命題である。∎
 
@@ -220,10 +238,12 @@ $$\mathrm{steps}_1(p\mathbin{::}q\mathbin{::}r) \iff \bigl(\pi_0 q\le\pi_0 p+1\b
 
 $d\in\mathbb{N}$、ペア列 $B$ に対し
 
-$$\mathrm{blockok}(d,B) \ :\iff\
+```math
+\mathrm{blockok}(d,B) \ :\iff\
 \bigl(B\ne[\,] \to \pi_0(\mathrm{headI}\,B)=d\bigr)
 \ \wedge\ \bigl(\forall p\in B,\ d\le\pi_0 p\bigr)
-\ \wedge\ \mathrm{steps}_1(B).$$
+\ \wedge\ \mathrm{steps}_1(B).
+```
 
 すなわち、$B$ が空でなければ先頭対の行 0 の値はちょうど $d$、$B$ のすべての対の行 0 の値は $d$ 以上、
 かつ隣接段の増分は高々 1（[(D.steps1)](#d-steps1)）である。
@@ -244,10 +264,14 @@ $$\mathrm{blockok}(d,B) \ :\iff\
 ### 定理 添字による特徴づけ (T.steps1_iff)
 
 **主張** 任意のペア列 $B$ に対し
-$$\mathrm{steps}_1(B) \iff \forall j,\ j+1<\lvert B\rvert \to \pi_0(B\langle j+1\rangle)\le\pi_0(B\langle j\rangle)+1.$$
+```math
+\mathrm{steps}_1(B) \iff \forall j,\ j+1<\lvert B\rvert \to \pi_0(B\langle j+1\rangle)\le\pi_0(B\langle j\rangle)+1.
+```
 
 **証明** $B$ の構造に関する帰納法。帰納法の述語は
-$$\Phi(B) :\equiv \Bigl(\mathrm{steps}_1(B) \iff \forall j,\ j+1<\lvert B\rvert \to \pi_0(B\langle j+1\rangle)\le\pi_0(B\langle j\rangle)+1\Bigr).$$
+```math
+\Phi(B) :\equiv \Bigl(\mathrm{steps}_1(B) \iff \forall j,\ j+1<\lvert B\rvert \to \pi_0(B\langle j+1\rangle)\le\pi_0(B\langle j\rangle)+1\Bigr).
+```
 
 - 基底段 $B=[\,]$：左辺は [(T.steps1_nil)](#t-steps1_nil) より真。
   右辺は、$\lvert[\,]\rvert=0$ より前件 $j+1<0$ がすべての $j$ で偽だから空虚に真。よって両辺とも真であり $\Phi([\,])$。
@@ -255,11 +279,17 @@ $$\Phi(B) :\equiv \Bigl(\mathrm{steps}_1(B) \iff \forall j,\ j+1<\lvert B\rvert 
   - $B'=[\,]$、すなわち $B=[p]$：左辺は [(T.steps1_single)](#t-steps1_single) より真。
     右辺は $\lvert[p]\rvert=1$ より前件 $j+1<1$ がすべての $j$ で偽（$j+1\ge1$）だから空虚に真。
   - $B'=q\mathbin{::}r$、すなわち $B=p\mathbin{::}q\mathbin{::}r$：このとき帰納法の仮定 $\Phi(q\mathbin{::}r)$ は
-    $$\mathrm{steps}_1(q\mathbin{::}r) \iff \forall j,\ j+1<\lvert r\rvert+1 \to \pi_0((q\mathbin{::}r)\langle j+1\rangle)\le\pi_0((q\mathbin{::}r)\langle j\rangle)+1$$
+    ```math
+    \mathrm{steps}_1(q\mathbin{::}r) \iff \forall j,\ j+1<\lvert r\rvert+1 \to \pi_0((q\mathbin{::}r)\langle j+1\rangle)\le\pi_0((q\mathbin{::}r)\langle j\rangle)+1
+    ```
     である。[(T.steps1_cons_cons)](#t-steps1_cons_cons) と $\Phi(q\mathbin{::}r)$ により、示すべきは
-    $$\Bigl(\pi_0 q\le\pi_0 p+1 \ \wedge\ \forall j,\ j+1<\lvert r\rvert+1 \to \pi_0((q\mathbin{::}r)\langle j+1\rangle)\le\pi_0((q\mathbin{::}r)\langle j\rangle)+1\Bigr)$$
+    ```math
+    \Bigl(\pi_0 q\le\pi_0 p+1 \ \wedge\ \forall j,\ j+1<\lvert r\rvert+1 \to \pi_0((q\mathbin{::}r)\langle j+1\rangle)\le\pi_0((q\mathbin{::}r)\langle j\rangle)+1\Bigr)
+    ```
     と
-    $$\Bigl(\forall j,\ j+1<\lvert r\rvert+2 \to \pi_0((p\mathbin{::}q\mathbin{::}r)\langle j+1\rangle)\le\pi_0((p\mathbin{::}q\mathbin{::}r)\langle j\rangle)+1\Bigr)$$
+    ```math
+    \Bigl(\forall j,\ j+1<\lvert r\rvert+2 \to \pi_0((p\mathbin{::}q\mathbin{::}r)\langle j+1\rangle)\le\pi_0((p\mathbin{::}q\mathbin{::}r)\langle j\rangle)+1\Bigr)
+    ```
     の同値である。ここで添字の対応 $(p\mathbin{::}L)\langle k+1\rangle = L\langle k\rangle$ および
     $(p\mathbin{::}L)\langle 0\rangle = p$ を用いる。
     - ($\Rightarrow$) 前者を $\langle h,\ h_{\mathrm{s}}\rangle$ とし、$j+1<\lvert r\rvert+2$ なる $j$ を取る。
@@ -292,15 +322,19 @@ $$\Phi(B) :\equiv \Bigl(\mathrm{steps}_1(B) \iff \forall j,\ j+1<\lvert B\rvert 
 ### 定理 連結の分解 (T.steps1_append)
 
 **主張** 任意のペア列 $A,B$ に対し
-$$\mathrm{steps}_1(A\mathbin{+\!\!+}B) \iff
+```math
+\mathrm{steps}_1(A\mathbin{+\!\!+}B) \iff
  \mathrm{steps}_1(A) \wedge \mathrm{steps}_1(B) \wedge
- \Bigl(A=[\,] \ \vee\ B=[\,] \ \vee\ \pi_0(\mathrm{headI}\,B)\le\pi_0(\mathrm{lastD}(A,(0,0)))+1\Bigr).$$
+ \Bigl(A=[\,] \ \vee\ B=[\,] \ \vee\ \pi_0(\mathrm{headI}\,B)\le\pi_0(\mathrm{lastD}(A,(0,0)))+1\Bigr).
+```
 
 すなわち、連結が増分条件をみたすことは、各片が増分条件をみたし、かつ両者が空でないときに**継ぎ目**
 （$A$ の末尾と $B$ の先頭）でも増分が高々 1 であることと同値である。
 
 **証明** $B$ を固定し、$A$ の構造に関する帰納法。帰納法の述語は
-$$\Phi(A) :\equiv \Bigl(\mathrm{steps}_1(A\mathbin{+\!\!+}B) \iff \mathrm{steps}_1(A)\wedge\mathrm{steps}_1(B)\wedge(A=[\,]\vee B=[\,]\vee \pi_0(\mathrm{headI}\,B)\le\pi_0(\mathrm{lastD}(A,(0,0)))+1)\Bigr).$$
+```math
+\Phi(A) :\equiv \Bigl(\mathrm{steps}_1(A\mathbin{+\!\!+}B) \iff \mathrm{steps}_1(A)\wedge\mathrm{steps}_1(B)\wedge(A=[\,]\vee B=[\,]\vee \pi_0(\mathrm{headI}\,B)\le\pi_0(\mathrm{lastD}(A,(0,0)))+1)\Bigr).
+```
 
 - 基底段 $A=[\,]$：左辺は $\mathrm{steps}_1([\,]\mathbin{+\!\!+}B)=\mathrm{steps}_1(B)$。
   右辺は、$\mathrm{steps}_1([\,])$ が [(T.steps1_nil)](#t-steps1_nil) より真、第 3 成分も第 1 選言 $[\,]=[\,]$ により真だから、
@@ -318,11 +352,15 @@ $$\Phi(A) :\equiv \Bigl(\mathrm{steps}_1(A\mathbin{+\!\!+}B) \iff \mathrm{steps}
   - $A_1=p'\mathbin{::}A_2$、すなわち $A=p\mathbin{::}p'\mathbin{::}A_2$：
     $A\mathbin{+\!\!+}B = p\mathbin{::}p'\mathbin{::}(A_2\mathbin{+\!\!+}B)$ であるから、
     [(T.steps1_cons_cons)](#t-steps1_cons_cons) より左辺は
-    $$\pi_0 p'\le\pi_0 p+1 \ \wedge\ \mathrm{steps}_1\bigl(p'\mathbin{::}(A_2\mathbin{+\!\!+}B)\bigr)$$
+    ```math
+    \pi_0 p'\le\pi_0 p+1 \ \wedge\ \mathrm{steps}_1\bigl(p'\mathbin{::}(A_2\mathbin{+\!\!+}B)\bigr)
+    ```
     と同値である。ここで $p'\mathbin{::}(A_2\mathbin{+\!\!+}B) = (p'\mathbin{::}A_2)\mathbin{+\!\!+}B = A_1\mathbin{+\!\!+}B$ である。
     また `List.getLastD_cons` を 2 回用いると
-    $$\mathrm{lastD}(p\mathbin{::}p'\mathbin{::}A_2,\ (0,0)) = \mathrm{lastD}(p'\mathbin{::}A_2,\ p) = \mathrm{lastD}(A_2,\ p'),\qquad
-      \mathrm{lastD}(p'\mathbin{::}A_2,\ (0,0)) = \mathrm{lastD}(A_2,\ p')$$
+    ```math
+    \mathrm{lastD}(p\mathbin{::}p'\mathbin{::}A_2,\ (0,0)) = \mathrm{lastD}(p'\mathbin{::}A_2,\ p) = \mathrm{lastD}(A_2,\ p'),\qquad
+      \mathrm{lastD}(p'\mathbin{::}A_2,\ (0,0)) = \mathrm{lastD}(A_2,\ p')
+    ```
     であるから、$A$ と $A_1$ の $\mathrm{lastD}$ は一致する。これを $(\ast)$ とおく。
     - ($\Rightarrow$) 左辺から $h_1 : \pi_0 p'\le\pi_0 p+1$ と $h_2 : \mathrm{steps}_1(A_1\mathbin{+\!\!+}B)$ を得る。
       $\Phi(A_1)$ の $(\Rightarrow)$ 方向を $h_2$ に適用して
@@ -368,7 +406,9 @@ $h_{\mathrm{s}}$（増分条件）に分ける。
   よって $B=x\mathbin{::}xs$ と書ける。さらに $xs\ne[\,]$ である。実際 $xs=[\,]$ なら
   $\mathrm{dropLast}\,[x]=[\,]$ となり仮定に反する。そこで $xs=y\mathbin{::}ys$ と書けば、
   $\mathrm{dropLast}$ の定義より
-  $$\mathrm{dropLast}(x\mathbin{::}y\mathbin{::}ys) = x\mathbin{::}\mathrm{dropLast}(y\mathbin{::}ys)$$
+  ```math
+  \mathrm{dropLast}(x\mathbin{::}y\mathbin{::}ys) = x\mathbin{::}\mathrm{dropLast}(y\mathbin{::}ys)
+  ```
   であるから $\mathrm{headI}(\mathrm{dropLast}\,B) = x = \mathrm{headI}\,B$。
   $B\ne[\,]$ に $h_{\mathrm{hd}}$ を適用して $\pi_0 x=d$ を得る。∎
 
@@ -436,9 +476,11 @@ $h_{\mathrm{s}}$（増分条件）に分ける。
 
 **主張** $d\in\mathbb{N}$、ペア列 $r,r'$ とし $r\prec_{\mathrm{lex}}r'$ とする。このとき
 
-$$\bigl(\mathrm{tw}_d r = \mathrm{tw}_d r' \ \wedge\ \mathrm{dw}_d r \prec_{\mathrm{lex}} \mathrm{dw}_d r'\bigr)
+```math
+\bigl(\mathrm{tw}_d r = \mathrm{tw}_d r' \ \wedge\ \mathrm{dw}_d r \prec_{\mathrm{lex}} \mathrm{dw}_d r'\bigr)
 \ \ \vee\ \
-\bigl(\mathrm{tw}_d r \ne \mathrm{tw}_d r' \ \wedge\ \mathrm{tw}_d r \prec_{\mathrm{lex}} \mathrm{tw}_d r'\bigr).$$
+\bigl(\mathrm{tw}_d r \ne \mathrm{tw}_d r' \ \wedge\ \mathrm{tw}_d r \prec_{\mathrm{lex}} \mathrm{tw}_d r'\bigr).
+```
 
 すなわち、$r\prec_{\mathrm{lex}}r'$ からは、$\mathrm{tw}_d r=\mathrm{tw}_d r'$ の場合には
 $\mathrm{dw}_d r\prec_{\mathrm{lex}}\mathrm{dw}_d r'$ が、$\mathrm{tw}_d r\ne\mathrm{tw}_d r'$ の場合には
@@ -446,9 +488,11 @@ $\mathrm{tw}_d r\prec_{\mathrm{lex}}\mathrm{tw}_d r'$ が得られる。
 
 **証明** $r'$ を全称量化したまま動かし、$r$ の構造に関する帰納法。帰納法の述語は
 
-$$\Phi(r) :\equiv \forall r',\ r\prec_{\mathrm{lex}}r' \to
+```math
+\Phi(r) :\equiv \forall r',\ r\prec_{\mathrm{lex}}r' \to
 \bigl(\mathrm{tw}_d r=\mathrm{tw}_d r' \wedge \mathrm{dw}_d r\prec_{\mathrm{lex}}\mathrm{dw}_d r'\bigr)
-\vee \bigl(\mathrm{tw}_d r\ne\mathrm{tw}_d r' \wedge \mathrm{tw}_d r\prec_{\mathrm{lex}}\mathrm{tw}_d r'\bigr).$$
+\vee \bigl(\mathrm{tw}_d r\ne\mathrm{tw}_d r' \wedge \mathrm{tw}_d r\prec_{\mathrm{lex}}\mathrm{tw}_d r'\bigr).
+```
 
 - **基底段 $r=[\,]$**：仮定 $[\,]\prec_{\mathrm{lex}}r'$ は [(T.seqlex_nil_iff)](#t-seqlex_nil_iff) より $r'\ne[\,]$ である。
   なお $\mathrm{tw}_d[\,]=[\,]$、$\mathrm{dw}_d[\,]=[\,]$ である。$\mathrm{tw}_d r'$ が空かどうかで分ける。
@@ -468,8 +512,10 @@ $$\Phi(r) :\equiv \forall r',\ r\prec_{\mathrm{lex}}r' \to
     前者は [(D.pairlt)](#d-pairlt) より $\pi_0 p<\pi_0 p$ または $(\pi_0 p=\pi_0 p \wedge \pi_1 p<\pi_1 p)$ であり、
     $\mathbb{N}$ の $<$ の非反射性によりどちらも偽。よって $rr\prec_{\mathrm{lex}}rr'$ が成り立つ。これを $sl_r$ とおく。
     - $d<\pi_0 p$ のとき：`List.takeWhile_cons_of_pos` と `List.dropWhile_cons_of_pos` より
-      $$\mathrm{tw}_d(p\mathbin{::}rr)=p\mathbin{::}\mathrm{tw}_d rr,\quad \mathrm{dw}_d(p\mathbin{::}rr)=\mathrm{dw}_d rr,\quad
-        \mathrm{tw}_d(p\mathbin{::}rr')=p\mathbin{::}\mathrm{tw}_d rr',\quad \mathrm{dw}_d(p\mathbin{::}rr')=\mathrm{dw}_d rr'.$$
+      ```math
+      \mathrm{tw}_d(p\mathbin{::}rr)=p\mathbin{::}\mathrm{tw}_d rr,\quad \mathrm{dw}_d(p\mathbin{::}rr)=\mathrm{dw}_d rr,\quad
+        \mathrm{tw}_d(p\mathbin{::}rr')=p\mathbin{::}\mathrm{tw}_d rr',\quad \mathrm{dw}_d(p\mathbin{::}rr')=\mathrm{dw}_d rr'.
+      ```
       帰納法の仮定 $\Phi(rr)$ を $rr'$ と $sl_r$ に適用して 2 つに分ける。
       - $\mathrm{tw}_d rr=\mathrm{tw}_d rr'$ かつ $\mathrm{dw}_d rr\prec_{\mathrm{lex}}\mathrm{dw}_d rr'$ のとき：
         第 1 選言を示す。第 1 成分は $p\mathbin{::}\mathrm{tw}_d rr = p\mathbin{::}\mathrm{tw}_d rr'$、
@@ -480,8 +526,10 @@ $$\Phi(r) :\equiv \forall r',\ r\prec_{\mathrm{lex}}r' \to
         第 2 成分は [(T.seqlex_cons_cons)](#t-seqlex_cons_cons) の右辺第 2 選言
         $p=p \wedge \mathrm{tw}_d rr\prec_{\mathrm{lex}}\mathrm{tw}_d rr'$ による。
     - $\neg(d<\pi_0 p)$ のとき：`List.takeWhile_cons_of_neg` と `List.dropWhile_cons_of_neg` より
-      $$\mathrm{tw}_d(p\mathbin{::}rr)=[\,],\quad \mathrm{tw}_d(p\mathbin{::}rr')=[\,],\quad
-        \mathrm{dw}_d(p\mathbin{::}rr)=p\mathbin{::}rr,\quad \mathrm{dw}_d(p\mathbin{::}rr')=p\mathbin{::}rr'.$$
+      ```math
+      \mathrm{tw}_d(p\mathbin{::}rr)=[\,],\quad \mathrm{tw}_d(p\mathbin{::}rr')=[\,],\quad
+        \mathrm{dw}_d(p\mathbin{::}rr)=p\mathbin{::}rr,\quad \mathrm{dw}_d(p\mathbin{::}rr')=p\mathbin{::}rr'.
+      ```
       第 1 選言を示す。第 1 成分は $[\,]=[\,]$、第 2 成分は仮定
       $(p\mathbin{::}rr)\prec_{\mathrm{lex}}(p\mathbin{::}rr')$ そのものである。
   - **$p\ne q$ のとき**：[(T.seqlex_cons_cons)](#t-seqlex_cons_cons) より仮定は
@@ -512,13 +560,17 @@ $$\Phi(r) :\equiv \forall r',\ r\prec_{\mathrm{lex}}r' \to
 
 **主張** $d\in\mathbb{N}$、ペア列 $M,N$ が
 $\mathrm{blockok}(d,M)$、$\mathrm{blockok}(d,N)$、$M\prec_{\mathrm{lex}}N$ をみたすならば
-$$\mathrm{tr}\,M \prec \mathrm{tr}\,N.$$
+```math
+\mathrm{tr}\,M \prec \mathrm{tr}\,N.
+```
 
 **証明** $\lvert M\rvert+\lvert N\rvert$ に関する整礎帰納法。帰納法の仮定は
 
-$$\mathrm{IH} :\equiv \forall d',M',N',\
+```math
+\mathrm{IH} :\equiv \forall d',M',N',\
  \lvert M'\rvert+\lvert N'\rvert<\lvert M\rvert+\lvert N\rvert \to
- \mathrm{blockok}(d',M') \to \mathrm{blockok}(d',N') \to M'\prec_{\mathrm{lex}}N' \to \mathrm{tr}\,M'\prec\mathrm{tr}\,N'$$
+ \mathrm{blockok}(d',M') \to \mathrm{blockok}(d',N') \to M'\prec_{\mathrm{lex}}N' \to \mathrm{tr}\,M'\prec\mathrm{tr}\,N'
+```
 
 である（$d$ も動かすことに注意する。実際、下の引数部の再帰では深さが $d$ から $d+1$ に変わる）。
 $M,N$ の形で 4 つに分ける。
@@ -541,15 +593,19 @@ $M,N$ の形で 4 つに分ける。
     $d<d$ または $(d=d \wedge y<y)$ であり、$\mathbb{N}$ の $<$ の非反射性によりどちらも偽。
     よって $r\prec_{\mathrm{lex}}r'$（これを $sl_r$ とおく）。
     [(D.translate)](Mechanized.md#d-translate) より
-    $$\mathrm{tr}((d,y)\mathbin{::}r) = \mathsf{P}\bigl(y,\ \mathrm{tr}(\mathrm{tw}_d r),\ \mathrm{tr}(\mathrm{dw}_d r)\bigr),\qquad
-      \mathrm{tr}((d,y)\mathbin{::}r') = \mathsf{P}\bigl(y,\ \mathrm{tr}(\mathrm{tw}_d r'),\ \mathrm{tr}(\mathrm{dw}_d r')\bigr).$$
+    ```math
+    \mathrm{tr}((d,y)\mathbin{::}r) = \mathsf{P}\bigl(y,\ \mathrm{tr}(\mathrm{tw}_d r),\ \mathrm{tr}(\mathrm{dw}_d r)\bigr),\qquad
+      \mathrm{tr}((d,y)\mathbin{::}r') = \mathsf{P}\bigl(y,\ \mathrm{tr}(\mathrm{tw}_d r'),\ \mathrm{tr}(\mathrm{dw}_d r')\bigr).
+    ```
     [(T.seqlex_arg_or_tail)](#t-seqlex_arg_or_tail) を $d$, $sl_r$ に適用して 2 つに分ける。
     - **後続部の場合**（第 1 選言）$\mathrm{tw}_d r=\mathrm{tw}_d r'$ かつ $\mathrm{dw}_d r\prec_{\mathrm{lex}}\mathrm{dw}_d r'$：
       [(T.blockok_tail)](#t-blockok_tail) より $\mathrm{blockok}(d,\mathrm{dw}_d r)$、$\mathrm{blockok}(d,\mathrm{dw}_d r')$。
       さらに `List.length_dropWhile_le` より
       $\lvert\mathrm{dw}_d r\rvert\le\lvert r\rvert$、$\lvert\mathrm{dw}_d r'\rvert\le\lvert r'\rvert$ であるから
-      $$\lvert\mathrm{dw}_d r\rvert+\lvert\mathrm{dw}_d r'\rvert \le \lvert r\rvert+\lvert r'\rvert
-        < (\lvert r\rvert+1)+(\lvert r'\rvert+1) = \lvert M\rvert+\lvert N\rvert$$
+      ```math
+      \lvert\mathrm{dw}_d r\rvert+\lvert\mathrm{dw}_d r'\rvert \le \lvert r\rvert+\lvert r'\rvert
+        < (\lvert r\rvert+1)+(\lvert r'\rvert+1) = \lvert M\rvert+\lvert N\rvert
+      ```
       であり、$\mathrm{IH}$ が $d':=d$, $M':=\mathrm{dw}_d r$, $N':=\mathrm{dw}_d r'$ に適用できて
       $\mathrm{tr}(\mathrm{dw}_d r)\prec\mathrm{tr}(\mathrm{dw}_d r')$ を得る。
       [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の右辺第 3 選言（添字は両辺とも $y$、
@@ -558,8 +614,10 @@ $M,N$ の形で 4 つに分ける。
       $\mathrm{tw}_d r\prec_{\mathrm{lex}}\mathrm{tw}_d r'$（以下では後半のみを使う）：
       [(T.blockok_arg)](#t-blockok_arg) より $\mathrm{blockok}(d+1,\mathrm{tw}_d r)$、$\mathrm{blockok}(d+1,\mathrm{tw}_d r')$。
       `List.takeWhile_sublist` より $\lvert\mathrm{tw}_d r\rvert\le\lvert r\rvert$、$\lvert\mathrm{tw}_d r'\rvert\le\lvert r'\rvert$ であるから
-      $$\lvert\mathrm{tw}_d r\rvert+\lvert\mathrm{tw}_d r'\rvert \le \lvert r\rvert+\lvert r'\rvert
-        < \lvert M\rvert+\lvert N\rvert$$
+      ```math
+      \lvert\mathrm{tw}_d r\rvert+\lvert\mathrm{tw}_d r'\rvert \le \lvert r\rvert+\lvert r'\rvert
+        < \lvert M\rvert+\lvert N\rvert
+      ```
       であり、$\mathrm{IH}$ が $d':=d+1$, $M':=\mathrm{tw}_d r$, $N':=\mathrm{tw}_d r'$ に適用できて
       $\mathrm{tr}(\mathrm{tw}_d r)\prec\mathrm{tr}(\mathrm{tw}_d r')$ を得る。
       [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の右辺第 2 選言（添字は両辺とも $y$）が成り立つので
@@ -577,10 +635,14 @@ $M,N$ の形で 4 つに分ける。
 ### 定理 列辞書式順序の三分律 (T.seqlex_total)
 
 **主張** 任意のペア列 $M,N$ に対し
-$$M=N \ \vee\ M\prec_{\mathrm{lex}}N \ \vee\ N\prec_{\mathrm{lex}}M.$$
+```math
+M=N \ \vee\ M\prec_{\mathrm{lex}}N \ \vee\ N\prec_{\mathrm{lex}}M.
+```
 
 **証明** $N$ を全称量化したまま動かし、$M$ の構造に関する帰納法。帰納法の述語は
-$$\Psi(M) :\equiv \forall N,\ M=N \vee M\prec_{\mathrm{lex}}N \vee N\prec_{\mathrm{lex}}M.$$
+```math
+\Psi(M) :\equiv \forall N,\ M=N \vee M\prec_{\mathrm{lex}}N \vee N\prec_{\mathrm{lex}}M.
+```
 
 - 基底段 $M=[\,]$：$N=[\,]$ なら第 1 選言 $M=N$。
   $N=q\mathbin{::}N'$ なら [(T.seqlex_nil_iff)](#t-seqlex_nil_iff) より
@@ -614,7 +676,9 @@ $$\Psi(M) :\equiv \forall N,\ M=N \vee M\prec_{\mathrm{lex}}N \vee N\prec_{\math
 ### 定理 ブロック上の順序同型 (T.olt_iff_seqlex)
 
 **主張** $\mathrm{blockok}(d,M)$、$\mathrm{blockok}(d,N)$、$M\ne N$ ならば
-$$\mathrm{tr}\,M\prec\mathrm{tr}\,N \iff M\prec_{\mathrm{lex}}N.$$
+```math
+\mathrm{tr}\,M\prec\mathrm{tr}\,N \iff M\prec_{\mathrm{lex}}N.
+```
 
 **証明** 両方向を示す。
 
@@ -637,7 +701,9 @@ $$\mathrm{tr}\,M\prec\mathrm{tr}\,N \iff M\prec_{\mathrm{lex}}N.$$
 ### 定理 末尾要素は添字 $\lvert l\rvert-1$ の要素 (T.getLastD_eq_getD)
 
 **主張** 任意の型 $\alpha$、リスト $l : \mathrm{List}\,\alpha$、既定値 $d:\alpha$ に対し
-$$\mathrm{lastD}(l,d) = \mathrm{getD}(l,\ \lvert l\rvert-1,\ d)$$
+```math
+\mathrm{lastD}(l,d) = \mathrm{getD}(l,\ \lvert l\rvert-1,\ d)
+```
 （$\lvert l\rvert-1$ は切り捨て減法。$l=[\,]$ のときは $0-1=0$）。
 
 **証明** 両辺をともに $\bigl(l[\lvert l\rvert-1]?\bigr).\mathrm{getD}\,d$ に等しいことを示す。
@@ -671,12 +737,16 @@ $A=a\mathbin{::}as$ のとき $(a\mathbin{::}as)\mathbin{+\!\!+}B = a\mathbin{::
 
 **証明** $B$ とその仮定 $B\ne[\,]$ を固定し、$d$ を全称量化したまま動かして $A$ の構造に関する帰納法。
 帰納法の述語は
-$$\Phi(A) :\equiv \forall d,\ \mathrm{lastD}(A\mathbin{+\!\!+}B,\ d) = \mathrm{lastD}(B,\ d).$$
+```math
+\Phi(A) :\equiv \forall d,\ \mathrm{lastD}(A\mathbin{+\!\!+}B,\ d) = \mathrm{lastD}(B,\ d).
+```
 
 - 基底段 $A=[\,]$：$[\,]\mathbin{+\!\!+}B=B$ であるから両辺は同一の項である。
 - 帰納段 $A=a\mathbin{::}A'$：帰納法の仮定は $\Phi(A')$ である。$d$ を取る。
   $(a\mathbin{::}A')\mathbin{+\!\!+}B = a\mathbin{::}(A'\mathbin{+\!\!+}B)$ であるから、`List.getLastD_cons` より
-  $$\mathrm{lastD}(A\mathbin{+\!\!+}B,\ d) = \mathrm{lastD}(A'\mathbin{+\!\!+}B,\ a).$$
+  ```math
+  \mathrm{lastD}(A\mathbin{+\!\!+}B,\ d) = \mathrm{lastD}(A'\mathbin{+\!\!+}B,\ a).
+  ```
   $\Phi(A')$ を既定値 $a$ に適用して $\mathrm{lastD}(A'\mathbin{+\!\!+}B,\ a) = \mathrm{lastD}(B,\ a)$。
   最後に $B\ne[\,]$ と [(T.getLastD_ne_nil_indep)](#t-getLastD_ne_nil_indep) より
   $\mathrm{lastD}(B,\ a)=\mathrm{lastD}(B,\ d)$。∎
@@ -692,14 +762,16 @@ $$\Phi(A) :\equiv \forall d,\ \mathrm{lastD}(A\mathbin{+\!\!+}B,\ d) = \mathrm{l
 
 をみたすとする。$C_n := \mathrm{flatMap}\,F\,\mathrm{range}(n)$ とおくと
 
-$$\mathrm{steps}_1(C_n)
+```math
+\mathrm{steps}_1(C_n)
 \quad\wedge\quad
 \Bigl(0<n \to C_n\ne[\,] \ \wedge\ \mathrm{headI}\,C_n = \mathrm{headI}\,F_0 \ \wedge\
- \mathrm{lastD}(C_n,(0,0)) = \mathrm{lastD}(F_{n-1},(0,0))\Bigr).$$
+ \mathrm{lastD}(C_n,(0,0)) = \mathrm{lastD}(F_{n-1},(0,0))\Bigr).
+```
 
 **証明** $n$ に関する自然数の帰納法。仮定 1–3 は $n$ に依存するので、帰納法の述語は仮定込みで
 
-$$
+```math
 \begin{aligned}
 \Phi(m) :\equiv\ &\bigl(\forall k<m,\ \mathrm{steps}_1(F_k)\bigr)
  \to \bigl(\forall k<m,\ F_k\ne[\,]\bigr)\\
@@ -707,14 +779,16 @@ $$
  &\to\ \mathrm{steps}_1(C_m) \wedge \bigl(0<m \to C_m\ne[\,] \wedge \mathrm{headI}\,C_m=\mathrm{headI}\,F_0
  \wedge \mathrm{lastD}(C_m,(0,0))=\mathrm{lastD}(F_{m-1},(0,0))\bigr)
 \end{aligned}
-$$
+```
 
 とする（$F$ は固定）。
 
 - **基底段 $m=0$**：$\mathrm{range}(0)=[\,]$ より $C_0=[\,]$。
   [(T.steps1_nil)](#t-steps1_nil) より第 1 成分が成り立ち、第 2 成分は前件 $0<0$ が偽だから空虚に成り立つ。
 - **帰納段 $m+1$**：帰納法の仮定は $\Phi(m)$ である。まず分解式
-  $$(\ast)\qquad C_{m+1} = C_m \mathbin{+\!\!+} F_m$$
+  ```math
+  (\ast)\qquad C_{m+1} = C_m \mathbin{+\!\!+} F_m
+  ```
   を得る。実際 `List.range_succ` より $\mathrm{range}(m+1)=\mathrm{range}(m)\mathbin{+\!\!+}[m]$ であり、
   `List.flatMap_append` より
   $C_{m+1} = C_m \mathbin{+\!\!+} \mathrm{flatMap}\,F\,[m] = C_m\mathbin{+\!\!+}(F_m\mathbin{+\!\!+}[\,]) = C_m\mathbin{+\!\!+}F_m$。
@@ -728,10 +802,14 @@ $$
     $k<m$ ならば $k<m+1$、また $k+1<m$ ならば $k+1<m+1$ であるから、
     仮定 1–3 は $m$ に対する仮定 1–3 を含意する。$\Phi(m)$ を適用して
     $h_{\mathrm{s}} : \mathrm{steps}_1(C_m)$ と第 2 成分を得、$0<m$ より
-    $$c_{\ne} : C_m\ne[\,],\qquad c_{\mathrm{hd}} : \mathrm{headI}\,C_m=\mathrm{headI}\,F_0,\qquad
-      c_{\mathrm{last}} : \mathrm{lastD}(C_m,(0,0))=\mathrm{lastD}(F_{m-1},(0,0))$$
+    ```math
+    c_{\ne} : C_m\ne[\,],\qquad c_{\mathrm{hd}} : \mathrm{headI}\,C_m=\mathrm{headI}\,F_0,\qquad
+      c_{\mathrm{last}} : \mathrm{lastD}(C_m,(0,0))=\mathrm{lastD}(F_{m-1},(0,0))
+    ```
     を得る。次に**継ぎ目**の評価
-    $$\pi_0(\mathrm{headI}\,F_m) \le \pi_0(\mathrm{lastD}(C_m,(0,0)))+1$$
+    ```math
+    \pi_0(\mathrm{headI}\,F_m) \le \pi_0(\mathrm{lastD}(C_m,(0,0)))+1
+    ```
     を示す。$c_{\mathrm{last}}$ により右辺は $\pi_0(\mathrm{lastD}(F_{m-1},(0,0)))+1$ に等しい。
     仮定 3 を $k:=m-1$ に適用する。前件は $(m-1)+1<m+1$ であり、$1\le m$ より $(m-1)+1=m$ だから $m<m+1$ で成立する。
     結論は $\pi_0(\mathrm{headI}\,F_{(m-1)+1})\le\pi_0(\mathrm{lastD}(F_{m-1},(0,0)))+1$ であり、
@@ -757,24 +835,34 @@ $$
 ### 定理 対角ブロックの増分条件 (T.steps1_diag_range)
 
 **主張** 任意の $m,s\in\mathbb{N}$ に対し
-$$\mathrm{steps}_1\bigl(\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s,m)\bigr).$$
+```math
+\mathrm{steps}_1\bigl(\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s,m)\bigr).
+```
 
 **証明** $s$ を全称量化したまま動かし、$m$ に関する自然数の帰納法。帰納法の述語は
-$$\Phi(m) :\equiv \forall s,\ \mathrm{steps}_1\bigl(\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s,m)\bigr).$$
+```math
+\Phi(m) :\equiv \forall s,\ \mathrm{steps}_1\bigl(\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s,m)\bigr).
+```
 
 - 基底段 $m=0$：$\mathrm{range}'(s,0)=[\,]$ より対象は空列であり、[(T.steps1_nil)](#t-steps1_nil) による。
 - 帰納段 $m+1$：帰納法の仮定は $\Phi(m)$ である。$s$ を取る。
   `List.range'_succ` より $\mathrm{range}'(s,m+1) = s\mathbin{::}\mathrm{range}'(s+1,m)$ であるから、
-  $$\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s,m+1)
-   = (s,s)\mathbin{::}\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s+1,m).$$
+  ```math
+  \mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s,m+1)
+   = (s,s)\mathbin{::}\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s+1,m).
+  ```
   $m$ の形でさらに分ける。
   - $m=0$：$\mathrm{range}'(s+1,0)=[\,]$ より対象は $[(s,s)]$ であり、[(T.steps1_single)](#t-steps1_single) による。
   - $m=m'+1$：再び `List.range'_succ` より
     $\mathrm{range}'(s+1,m'+1) = (s+1)\mathbin{::}\mathrm{range}'(s+2,m')$ であるから、対象は
-    $$(s,s)\mathbin{::}(s+1,s+1)\mathbin{::}\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s+2,m')$$
+    ```math
+    (s,s)\mathbin{::}(s+1,s+1)\mathbin{::}\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s+2,m')
+    ```
     である。[(T.steps1_cons_cons)](#t-steps1_cons_cons) より示すべきは
     $\pi_0(s+1,s+1)\le\pi_0(s,s)+1$、すなわち $s+1\le s+1$（$\le$ の反射性）と、
-    $$\mathrm{steps}_1\bigl((s+1,s+1)\mathbin{::}\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s+2,m')\bigr)$$
+    ```math
+    \mathrm{steps}_1\bigl((s+1,s+1)\mathbin{::}\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s+2,m')\bigr)
+    ```
     である。後者は、帰納法の仮定 $\Phi(m)$ を $s:=s+1$ に適用して得られる
     $\mathrm{steps}_1\bigl(\mathrm{map}\,(\lambda j.\ (j,j))\ \mathrm{range}'(s+1,m'+1)\bigr)$ を
     `List.range'_succ` で書き換えたものにほかならない。∎
@@ -824,19 +912,25 @@ $\mathrm{Pred}\,M=\mathrm{dropLast}\,M$。以下 $j_1:=\lvert M\rvert-1$、$i_1:
   これが本補題の主要部である。$j_0:=\mathrm{par}^M_{i_1}(j_1)$（[(D.parent)](Def.md#d-parent)）とおく。
   [(T.parent_nextR)](Mechanized.md#t-parent_nextR) より $j_0\to^M_{i_1}j_1$（[(D.nextR)](Def.md#d-nextR)）、
   よって [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $j_0<j_1$ である。さらに
-  $$D := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\\ 0 & (i_1=0)\end{cases}$$
+  ```math
+  D := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\\ 0 & (i_1=0)\end{cases}
+  ```
   とおく。
 
   **(1) $M$ の行 0 の隣接段.** $b$ の増分条件 $\mathrm{steps}_1(M)$ に
   [(T.steps1_iff)](#t-steps1_iff) の $(\Rightarrow)$ 方向を適用して
-  $$(\mathrm{e}0)\qquad \forall j,\ j+1<\lvert M\rvert \to M_{0,j+1}\le M_{0,j}+1$$
+  ```math
+  (\mathrm{e}0)\qquad \forall j,\ j+1<\lvert M\rvert \to M_{0,j+1}\le M_{0,j}+1
+  ```
   を得る（[(D.entry)](Def.md#d-entry) より $M_{0,j}=\pi_0(M\langle j\rangle)$）。
 
   **(2) 継ぎ目の評価** $M_{0,j_0}+D \le M_{0,j_1-1}+1$。
   まず $1<\lvert M\rvert$ より $j_1=\lvert M\rvert-1<\lvert M\rvert$、また $j_0<j_1$ より $1\le j_1$ である。
   よって $(j_1-1)+1=j_1<\lvert M\rvert$ であり、
   $(\mathrm{e}0)$ を $j:=j_1-1$ に適用して
-  $$(\mathrm{e}0')\qquad M_{0,j_1}\le M_{0,j_1-1}+1.$$
+  ```math
+  (\mathrm{e}0')\qquad M_{0,j_1}\le M_{0,j_1-1}+1.
+  ```
   $0<i_1$ かどうかで分ける。
   - $0<i_1$ のとき：$i_1\ne0$ だから [(D.nextR)](Def.md#d-nextR) より $j_0\to^M_{i_1}j_1$ は
     $j_0\to^M_1 j_1$（[(D.nextrel1)](Def.md#d-nextrel1)）である。その第 5 成分は $j_0\le^M_0 j_1$
@@ -850,14 +944,20 @@ $\mathrm{Pred}\,M=\mathrm{dropLast}\,M$。以下 $j_1:=\lvert M\rvert-1$、$i_1:
     このとき $D=0$ だから $M_{0,j_0}+D = M_{0,j_0} < M_{0,j_1} \le M_{0,j_1-1}+1$。
 
   **(3) 展開形.** [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) より
-  $$M[n] = \mathrm{take}\,j_0\,M \mathbin{+\!\!+} C_n,\qquad
+  ```math
+  M[n] = \mathrm{take}\,j_0\,M \mathbin{+\!\!+} C_n,\qquad
     C_n := \mathrm{flatMap}\,F\,\mathrm{range}(n),\qquad
-    F_k := \mathrm{map}\bigl(\lambda j.\ (M_{0,j}+kD,\ M_{1,j})\bigr)\ \mathrm{range}'(j_0,\ j_1-j_0).$$
+    F_k := \mathrm{map}\bigl(\lambda j.\ (M_{0,j}+kD,\ M_{1,j})\bigr)\ \mathrm{range}'(j_0,\ j_1-j_0).
+  ```
 
   **(4) 各ブロック $F_k$ の性質.** $j_0<j_1$ より $j_1-j_0\ge1$ であるから、`List.range'_succ` により
-  $$(\mathrm{sp})\qquad \mathrm{range}'(j_0,\ j_1-j_0) = j_0\mathbin{::}\mathrm{range}'(j_0+1,\ j_1-j_0-1).$$
+  ```math
+  (\mathrm{sp})\qquad \mathrm{range}'(j_0,\ j_1-j_0) = j_0\mathbin{::}\mathrm{range}'(j_0+1,\ j_1-j_0-1).
+  ```
   $(\mathrm{sp})$ に $\mathrm{map}$ を分配すると
-  $$F_k = (M_{0,j_0}+kD,\ M_{1,j_0})\mathbin{::}\mathrm{map}\bigl(\lambda j.\ (M_{0,j}+kD,\ M_{1,j})\bigr)\ \mathrm{range}'(j_0+1,\ j_1-j_0-1)$$
+  ```math
+  F_k = (M_{0,j_0}+kD,\ M_{1,j_0})\mathbin{::}\mathrm{map}\bigl(\lambda j.\ (M_{0,j}+kD,\ M_{1,j})\bigr)\ \mathrm{range}'(j_0+1,\ j_1-j_0-1)
+  ```
   であるから、次が従う。
   - $F_k\ne[\,]$：右辺は先頭付加の形であり、空列ではない。
   - $\mathrm{headI}\,F_k = (M_{0,j_0}+kD,\ M_{1,j_0})$：右辺の先頭要素である。
@@ -887,7 +987,9 @@ $\mathrm{Pred}\,M=\mathrm{dropLast}\,M$。以下 $j_1:=\lvert M\rvert-1$、$i_1:
   $\mathrm{steps}_1(C_n)$ を得る。また $1\le n$ より $0<n$ であるから、
   $C_n\ne[\,]$ と $\mathrm{headI}\,C_n=\mathrm{headI}\,F_0$ も得る。
   $\mathrm{headI}\,F_0 = (M_{0,j_0}+0\cdot D,\ M_{1,j_0}) = (M_{0,j_0},\ M_{1,j_0})$ だから
-  $$(\mathrm{hd})\qquad \mathrm{headI}\,C_n = (M_{0,j_0},\ M_{1,j_0}).$$
+  ```math
+  (\mathrm{hd})\qquad \mathrm{headI}\,C_n = (M_{0,j_0},\ M_{1,j_0}).
+  ```
 
   **(6) 前部 $\mathrm{take}\,j_0\,M$ の増分条件.**
   [(T.steps1_iff)](#t-steps1_iff) の $(\Leftarrow)$ 方向を使う。
@@ -901,8 +1003,10 @@ $\mathrm{Pred}\,M=\mathrm{dropLast}\,M$。以下 $j_1:=\lvert M\rvert-1$、$i_1:
   求める不等式は $(\mathrm{e}0)$ を $j$ に適用したものに一致する。
 
   **(7) 前部と連結部の継ぎ目.** 次を示す。
-  $$\mathrm{take}\,j_0\,M=[\,] \ \vee\ C_n=[\,] \ \vee\
-    \pi_0(\mathrm{headI}\,C_n)\le\pi_0(\mathrm{lastD}(\mathrm{take}\,j_0\,M,(0,0)))+1.$$
+  ```math
+  \mathrm{take}\,j_0\,M=[\,] \ \vee\ C_n=[\,] \ \vee\
+    \pi_0(\mathrm{headI}\,C_n)\le\pi_0(\mathrm{lastD}(\mathrm{take}\,j_0\,M,(0,0)))+1.
+  ```
   - $j_0=0$ のとき：$\mathrm{take}\,0\,M=[\,]$ より第 1 選言。
   - $j_0\ne0$ のとき：第 3 選言を示す。$j_0<j_1<\lvert M\rvert$ より
     $\lvert\mathrm{take}\,j_0\,M\rvert = \min(j_0,\lvert M\rvert) = j_0$ であるから、
@@ -942,7 +1046,9 @@ $\mathrm{Pred}\,M=\mathrm{dropLast}\,M$。以下 $j_1:=\lvert M\rvert-1$、$i_1:
 
 **証明** $\mathrm{ST\_PS}$ の導出に関する帰納法（[(D.ST_PS)](Def.md#d-ST_PS) の帰納法原理）。
 帰納法の述語は
-$$P(M) :\equiv \mathrm{blockok}(0,M).$$
+```math
+P(M) :\equiv \mathrm{blockok}(0,M).
+```
 
 - 基底段（規則 diag）：$M=\Delta_0^v$ の形。[(T.blockok_diagSeq)](#t-blockok_diagSeq) より $P(\Delta_0^v)$。
 - 帰納段（規則 oper）：$M\in\mathrm{ST\_PS}$、$1\le n$ とし、帰納法の仮定 $P(M)$、すなわち $\mathrm{blockok}(0,M)$ を仮定する。
@@ -952,7 +1058,9 @@ $$P(M) :\equiv \mathrm{blockok}(0,M).$$
 ### 定理 標準形上の順序同型 (T.olt_ST_iff_seqlex)
 
 **主張** $M,N\in\mathrm{ST\_PS}$ かつ $M\ne N$ ならば
-$$\mathrm{tr}\,M\prec\mathrm{tr}\,N \iff M\prec_{\mathrm{lex}}N.$$
+```math
+\mathrm{tr}\,M\prec\mathrm{tr}\,N \iff M\prec_{\mathrm{lex}}N.
+```
 
 **証明** [(T.blockok_ST_PS)](#t-blockok_ST_PS) より $\mathrm{blockok}(0,M)$ かつ $\mathrm{blockok}(0,N)$ である。
 これと $M\ne N$ に [(T.olt_iff_seqlex)](#t-olt_iff_seqlex) を $d:=0$ として適用すればよい。∎

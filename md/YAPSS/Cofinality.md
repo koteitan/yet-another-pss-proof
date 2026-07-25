@@ -44,29 +44,39 @@ $d_0>0$ の側は単一の残余命題 $\mathrm{AscArgDom}$ へ還元される�
 
 明示的に書き下すと
 
-$$p <_{\mathrm{p}} q \ :\iff\ \pi_0 p < \pi_0 q \ \vee\ (\pi_0 p = \pi_0 q \wedge \pi_1 p < \pi_1 q),$$
+```math
+p <_{\mathrm{p}} q \ :\iff\ \pi_0 p < \pi_0 q \ \vee\ (\pi_0 p = \pi_0 q \wedge \pi_1 p < \pi_1 q),
+```
 
-$$M \prec_{\mathrm{lex}} N \ :\iff\
+```math
+M \prec_{\mathrm{lex}} N \ :\iff\
 \begin{cases}
 N \ne [] & (M = []) \\
 \bot & (M \ne [],\ N = []) \\
 p <_{\mathrm{p}} q \ \vee\ (p = q \wedge M' \prec_{\mathrm{lex}} N')
  & (M = p \mathbin{::} M',\ N = q \mathbin{::} N')
-\end{cases}$$
+\end{cases}
+```
 
-$$\sigma_d X := \mathrm{map}\,(\lambda p.\ (\pi_0 p + d,\ \pi_1 p))\,X,
+```math
+\sigma_d X := \mathrm{map}\,(\lambda p.\ (\pi_0 p + d,\ \pi_1 p))\,X,
 \qquad
-\mathrm{cop}_d(B,n) := \mathrm{flatMap}\,(\lambda k.\ \sigma_{k\cdot d}B)\,\mathrm{range}(n).$$
+\mathrm{cop}_d(B,n) := \mathrm{flatMap}\,(\lambda k.\ \sigma_{k\cdot d}B)\,\mathrm{range}(n).
+```
 
 行 0 の値 $a$ を基準とする `takeWhile` / `dropWhile` を、[`Mechanized.md`](Mechanized.md) と同じく
 
-$$\mathrm{tw}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a < \pi_0 q),\qquad
-  \mathrm{dw}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a < \pi_0 q)$$
+```math
+\mathrm{tw}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a < \pi_0 q),\qquad
+  \mathrm{dw}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a < \pi_0 q)
+```
 
 と書く。さらに広義不等号版を
 
-$$\mathrm{tw}^{\ge}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a \le \pi_0 q),\qquad
-  \mathrm{dw}^{\ge}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a \le \pi_0 q)$$
+```math
+\mathrm{tw}^{\ge}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a \le \pi_0 q),\qquad
+  \mathrm{dw}^{\ge}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a \le \pi_0 q)
+```
 
 と書く。本文で用いる `takeWhile` / `dropWhile` の性質は次の 4 つに限る（$p$ は判定可能述語、$L$ はリスト）。
 
@@ -111,8 +121,10 @@ $\prec_{\mathrm{lex}}$ から $\prec$ への順序同型である。したがっ
 
 **証明** $A$ の構造（リストの構成子）に関する帰納法。$B, C$ は全称量化したまま動かす。帰納法の述語は
 
-$$\Phi(A) :\equiv \forall B\,C \in \mathrm{PairSeq},\
- \bigl(A \prec_{\mathrm{lex}} B \ \wedge\ B \prec_{\mathrm{lex}} C\bigr) \to A \prec_{\mathrm{lex}} C.$$
+```math
+\Phi(A) :\equiv \forall B\,C \in \mathrm{PairSeq},\
+ \bigl(A \prec_{\mathrm{lex}} B \ \wedge\ B \prec_{\mathrm{lex}} C\bigr) \to A \prec_{\mathrm{lex}} C.
+```
 
 - **基底段 $A = []$。** [(D.seqlex)](Seqlex.md#d-seqlex) の第 1 式より、示すべき $[] \prec_{\mathrm{lex}} C$ は
   $C \ne []$ と同値である。$C = []$ と仮定すると、仮定 $B \prec_{\mathrm{lex}} []$ は、
@@ -125,8 +137,12 @@ $$\Phi(A) :\equiv \forall B\,C \in \mathrm{PairSeq},\
   [(D.seqlex)](Seqlex.md#d-seqlex) 第 2 式より仮定 $B \prec_{\mathrm{lex}} []$ が $\bot$ となり矛盾。
   よって $C = c \mathbin{::} C'$。[(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) により
 
-  $$a \mathbin{::} A' \prec_{\mathrm{lex}} b \mathbin{::} B' \iff a <_{\mathrm{p}} b \ \vee\ (a = b \wedge A' \prec_{\mathrm{lex}} B'),$$
-  $$b \mathbin{::} B' \prec_{\mathrm{lex}} c \mathbin{::} C' \iff b <_{\mathrm{p}} c \ \vee\ (b = c \wedge B' \prec_{\mathrm{lex}} C').$$
+  ```math
+  a \mathbin{::} A' \prec_{\mathrm{lex}} b \mathbin{::} B' \iff a <_{\mathrm{p}} b \ \vee\ (a = b \wedge A' \prec_{\mathrm{lex}} B'),
+  ```
+  ```math
+  b \mathbin{::} B' \prec_{\mathrm{lex}} c \mathbin{::} C' \iff b <_{\mathrm{p}} c \ \vee\ (b = c \wedge B' \prec_{\mathrm{lex}} C').
+  ```
 
   4 通りに場合分けし、いずれも $a \mathbin{::} A' \prec_{\mathrm{lex}} c \mathbin{::} C'$ を示す。
 
@@ -141,7 +157,9 @@ $$\Phi(A) :\equiv \forall B\,C \in \mathrm{PairSeq},\
 <a id="d-sle"></a>
 ### 定義 広義桁優先辞書式順序 (D.sle)
 
-$$M \preceq_{\mathrm{lex}} N \ :\iff\ M = N \ \vee\ M \prec_{\mathrm{lex}} N .$$
+```math
+M \preceq_{\mathrm{lex}} N \ :\iff\ M = N \ \vee\ M \prec_{\mathrm{lex}} N .
+```
 
 <a id="t-sle_refl"></a>
 ### 定理 $\preceq_{\mathrm{lex}}$ の反射性 (T.sle_refl)
@@ -167,8 +185,10 @@ $A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C$。
 
 **証明** $A$ の構造に関する帰納法。帰納法の述語は
 
-$$\Phi(A) :\equiv \forall B \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \to
- \forall C \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C.$$
+```math
+\Phi(A) :\equiv \forall B \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \to
+ \forall C \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C.
+```
 
 - **基底段 $A = []$。** 仮定 $[] \prec_{\mathrm{lex}} B$ は $B \ne []$ を意味する
   （[(D.seqlex)](Seqlex.md#d-seqlex) 第 1 式）。$B = []$ は除かれるので $B = b \mathbin{::} B'$、
@@ -205,15 +225,19 @@ $$\Phi(A) :\equiv \forall B \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \to
 
 **主張** $N \prec_{\mathrm{lex}} D \mathbin{+\!\!+} [lp]$ ならば
 
-$$N \preceq_{\mathrm{lex}} D
+```math
+N \preceq_{\mathrm{lex}} D
 \qquad\text{または}\qquad
-\exists\, q,\ S,\ \bigl(N = D \mathbin{+\!\!+} q \mathbin{::} S \ \wedge\ q <_{\mathrm{p}} lp\bigr).$$
+\exists\, q,\ S,\ \bigl(N = D \mathbin{+\!\!+} q \mathbin{::} S \ \wedge\ q <_{\mathrm{p}} lp\bigr).
+```
 
 **証明** $D$ の構造に関する帰納法（$lp$, $N$ は全称量化したまま動かす）。帰納法の述語は
 
-$$\Phi(D) :\equiv \forall lp \in \mathbb{N}\times\mathbb{N},\ \forall N \in \mathrm{PairSeq},\
+```math
+\Phi(D) :\equiv \forall lp \in \mathbb{N}\times\mathbb{N},\ \forall N \in \mathrm{PairSeq},\
  N \prec_{\mathrm{lex}} D \mathbin{+\!\!+} [lp] \to
- \Bigl(N \preceq_{\mathrm{lex}} D \ \vee\ \exists q\,S,\ N = D \mathbin{+\!\!+} q\mathbin{::}S \wedge q <_{\mathrm{p}} lp\Bigr).$$
+ \Bigl(N \preceq_{\mathrm{lex}} D \ \vee\ \exists q\,S,\ N = D \mathbin{+\!\!+} q\mathbin{::}S \wedge q <_{\mathrm{p}} lp\Bigr).
+```
 
 - **基底段 $D = []$。** $D \mathbin{+\!\!+} [lp] = [lp]$ である。
   - $N = []$ のとき：[(T.sle_refl)](#t-sle_refl) より $[] \preceq_{\mathrm{lex}} []= D$、第 1 の場合。
@@ -246,9 +270,11 @@ $$\Phi(D) :\equiv \forall lp \in \mathbb{N}\times\mathbb{N},\ \forall N \in \mat
 <a id="d-SeqlexCofinality"></a>
 ### 定義 共終性の $\prec_{\mathrm{lex}}$ 版 (D.SeqlexCofinality)
 
-$$\mathrm{SeqCof} \ :\equiv\ \forall M, N \in \mathrm{PairSeq},\
+```math
+\mathrm{SeqCof} \ :\equiv\ \forall M, N \in \mathrm{PairSeq},\
  \bigl(M \in \mathrm{ST\_PS} \wedge N \in \mathrm{ST\_PS} \wedge N \prec_{\mathrm{lex}} M\bigr)
- \to \exists n,\ \bigl(1 \le n \ \wedge\ N \preceq_{\mathrm{lex}} M[n]\bigr)$$
+ \to \exists n,\ \bigl(1 \le n \ \wedge\ N \preceq_{\mathrm{lex}} M[n]\bigr)
+```
 
 （[(D.ST_PS)](Def.md#d-ST_PS), [(D.oper)](Def.md#d-oper)）。これは命題定数（`Prop` 型の定義）であり、
 以降「$\mathrm{SeqCof}$ を仮定すると」の形で用いる。
@@ -259,14 +285,18 @@ $$\mathrm{SeqCof} \ :\equiv\ \forall M, N \in \mathrm{PairSeq},\
 **主張** $\mathrm{SeqCof}$ が成り立つとする。$M, N \in \mathrm{ST\_PS}$ かつ
 $\mathrm{tr}\,N \prec \mathrm{tr}\,M$ ならば
 
-$$\exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr).$$
+```math
+\exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr).
+```
 
 **証明** まず $N \ne M$ である。実際 $N = M$ ならば $\mathrm{tr}\,N \prec \mathrm{tr}\,N$ となり
 [(T.olt_irrefl)](Mechanized.md#t-olt_irrefl) に矛盾する。
 $N, M \in \mathrm{ST\_PS}$ と $N \ne M$ に
 [(T.olt_ST_iff_seqlex)](Seqlex.md#t-olt_ST_iff_seqlex) を適用すると
 
-$$\mathrm{tr}\,N \prec \mathrm{tr}\,M \iff N \prec_{\mathrm{lex}} M$$
+```math
+\mathrm{tr}\,N \prec \mathrm{tr}\,M \iff N \prec_{\mathrm{lex}} M
+```
 
 であるから、仮定より $N \prec_{\mathrm{lex}} M$。
 $\mathrm{SeqCof}$（[(D.SeqlexCofinality)](#d-SeqlexCofinality)）を適用して
@@ -310,12 +340,16 @@ $1 \le n$ かつ $N \preceq_{\mathrm{lex}} M[n]$ なる $n$ を得る。この $
 ### 定理 末尾 1 列の切り出し (T.dropLast_snoc_getD)
 
 **主張** $M \ne []$ ならば
-$$\mathrm{dropLast}\,M \mathbin{+\!\!+} \bigl[\,M\langle \lvert M\rvert - 1\rangle\,\bigr] = M .$$
+```math
+\mathrm{dropLast}\,M \mathbin{+\!\!+} \bigl[\,M\langle \lvert M\rvert - 1\rangle\,\bigr] = M .
+```
 
 **証明** $M \ne []$ より $0 < \lvert M\rvert$、したがって $\lvert M\rvert - 1 < \lvert M\rvert$ である。
 `getD` の定義（添字が範囲内なら該当要素、範囲外なら既定値）より
 
-$$M\langle \lvert M\rvert - 1\rangle = M[\lvert M\rvert-1] = \mathrm{getLast}\,M$$
+```math
+M\langle \lvert M\rvert - 1\rangle = M[\lvert M\rvert-1] = \mathrm{getLast}\,M
+```
 
 である（最後の等号は $\mathrm{getLast}\,M = M[\lvert M\rvert - 1]$ という `getLast` の定義）。
 よって示すべき式は $\mathrm{dropLast}\,M \mathbin{+\!\!+} [\mathrm{getLast}\,M] = M$ であり、
@@ -366,7 +400,9 @@ $n := 1$ とする。3 により仮定は $N \prec_{\mathrm{lex}} \mathrm{dropLa
 **主張** $M \in \mathrm{ST\_PS}$、$0 < \lvert M\rvert$、
 $\neg\bigl(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0\bigr)$ ならば
 
-$$\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, \lvert M\rvert-1),\ \lvert M\rvert-1\bigr)$$
+```math
+\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, \lvert M\rvert-1),\ \lvert M\rvert-1\bigr)
+```
 
 （[(D.hasParent)](Def.md#d-hasParent), [(D.idx1)](Def.md#d-idx1)）。
 
@@ -393,8 +429,10 @@ $M\langle \lvert M\rvert-1\rangle \ne (0,0)$ の 4 つである。
 
 **証明** [(D.sle)](#d-sle) を両辺に展開すると、示すべきは
 
-$$\bigl(A \mathbin{+\!\!+} u = A \mathbin{+\!\!+} v \ \vee\ A \mathbin{+\!\!+} u \prec_{\mathrm{lex}} A \mathbin{+\!\!+} v\bigr)
-\iff \bigl(u = v \ \vee\ u \prec_{\mathrm{lex}} v\bigr).$$
+```math
+\bigl(A \mathbin{+\!\!+} u = A \mathbin{+\!\!+} v \ \vee\ A \mathbin{+\!\!+} u \prec_{\mathrm{lex}} A \mathbin{+\!\!+} v\bigr)
+\iff \bigl(u = v \ \vee\ u \prec_{\mathrm{lex}} v\bigr).
+```
 
 第 2 選言どうしは [(T.seqlex_append_cancel)](Seqlex.md#t-seqlex_append_cancel) により同値である。
 第 1 選言について、$\Rightarrow$ 向きは連結の左消去（$A\mathbin{+\!\!+}u = A\mathbin{+\!\!+}v \Rightarrow u = v$）、
@@ -408,7 +446,9 @@ $\Leftarrow$ 向きは $u = v$ から $A\mathbin{+\!\!+}u = A\mathbin{+\!\!+}v$ 
 **証明** `getD` は `getElem?` に既定値を与えたものである。
 $\lvert A\rvert \le \lvert A\rvert + i$ であるから、連結の添字取得の規則により
 
-$$(A \mathbin{+\!\!+} B)[\lvert A\rvert + i]^? = B[(\lvert A\rvert + i) - \lvert A\rvert]^? = B[i]^? .$$
+```math
+(A \mathbin{+\!\!+} B)[\lvert A\rvert + i]^? = B[(\lvert A\rvert + i) - \lvert A\rvert]^? = B[i]^? .
+```
 
 両辺に既定値 $(0,0)$ を与えれば主張を得る。∎
 
@@ -427,7 +467,9 @@ $(D \mathbin{+\!\!+} [lp])[\lvert D\rvert]^? = [lp][0]^? = lp$。∎
 
 **主張** $\mathrm{r1ok}\,M$ かつ $j_0 \to^M_1 j_1$（[(D.nextrel1)](Def.md#d-nextrel1)）ならば
 
-$$M_{1,j_1} = M_{1,j_0} + 1 .$$
+```math
+M_{1,j_1} = M_{1,j_0} + 1 .
+```
 
 **証明** [(D.nextrel1)](Def.md#d-nextrel1) の 6 条件を
 $h_{j_0} : j_0 < \lvert M\rvert$、$h_{j_1} : j_1 < \lvert M\rvert$、$h_{<} : j_0 < j_1$、
@@ -445,7 +487,9 @@ $j_0 = j_1$ は $h_{<}$（$j_0 < j_1$）に矛盾する。
 
 **(ii) 上からの評価。** $h_{\min}$ を $j := c$ に適用する（前提 $j_0 < c$ と $c \le^M_0 j_1$ は (i)）。
 
-$$M_{1,j_1} \le M_{1,c}. \tag{1}$$
+```math
+M_{1,j_1} \le M_{1,c}. \tag{1}
+```
 
 **(iii) $c$ の行 0 の値は正。** $j_0 \to^M_0 c$ の条件 4 は $M_{0,j_0} < M_{0,c}$ であり、
 [(T.entry_zero)](#t-entry_zero) によりこれは $\pi_0(M\langle j_0\rangle) < \pi_0(M\langle c\rangle)$。
@@ -453,10 +497,12 @@ $$M_{1,j_1} \le M_{1,c}. \tag{1}$$
 
 **(iv) $\mathrm{r1ok}$ を $c$ に適用する。** [(D.r1ok)](Nrmstep.md#d-r1ok) は
 
-$$\forall j < \lvert M\rvert,\ 0 < \pi_0(M\langle j\rangle) \to
+```math
+\forall j < \lvert M\rvert,\ 0 < \pi_0(M\langle j\rangle) \to
 \exists k,\ \Bigl(k < j \ \wedge\ \pi_0(M\langle k\rangle) + 1 = \pi_0(M\langle j\rangle)
  \ \wedge\ \bigl(\forall l,\ k < l < j \to \pi_0(M\langle j\rangle) \le \pi_0(M\langle l\rangle)\bigr)
- \ \wedge\ \pi_1(M\langle j\rangle) \le \pi_1(M\langle k\rangle) + 1\Bigr)$$
+ \ \wedge\ \pi_1(M\langle j\rangle) \le \pi_1(M\langle k\rangle) + 1\Bigr)
+```
 
 である。$j := c$（$c < \lvert M\rvert$ は (i)、$0 < \pi_0(M\langle c\rangle)$ は (iii)）に適用して
 $k$ を得る。
@@ -472,11 +518,15 @@ $M_{0,k} < M_{0,c}$（[(T.entry_zero)](#t-entry_zero)）、
 **(vi) 下からの評価。** $\mathrm{r1ok}$ の第 4 成分は $\pi_1(M\langle c\rangle) \le \pi_1(M\langle k\rangle)+1$
 であり、(v) と [(T.entry_one)](#t-entry_one) により
 
-$$M_{1,c} \le M_{1,j_0} + 1. \tag{2}$$
+```math
+M_{1,c} \le M_{1,j_0} + 1. \tag{2}
+```
 
 **(vii) 結論。** $h_{\mathrm{inc}}$、(1)、(2) を並べると
 
-$$M_{1,j_0} < M_{1,j_1} \le M_{1,c} \le M_{1,j_0} + 1 .$$
+```math
+M_{1,j_0} < M_{1,j_1} \le M_{1,c} \le M_{1,j_0} + 1 .
+```
 
 $\mathbb{N}$ において $a < b$ かつ $b \le a+1$ ならば $b = a+1$ であるから
 $M_{1,j_1} = M_{1,j_0}+1$。∎
@@ -515,13 +565,17 @@ $G, v_0, w_0, R, d_0, lp$ の存在であって
 **(b) 落とされる列は末尾列である。**
 主張 1 の右辺に [(T.getD_last_of_snoc)](#t-getD_last_of_snoc) を $D := G \mathbin{+\!\!+} \mathrm{blk}$ で適用して
 
-$$lp = M\langle j_1\rangle . \tag{$\ast$}$$
+```math
+lp = M\langle j_1\rangle . \tag{$\ast$}
+```
 
 **(c) ブロック根の位置。** 主張 1 と連結の結合律より $M = G \mathbin{+\!\!+} (\mathrm{blk} \mathbin{+\!\!+} [lp])$
 であるから、$\lvert M\rvert = \lvert G\rvert + (\lvert R\rvert + 2)$ であり、
 [(T.getD_append_right')](#t-getD_append_right') を $i := 0$ に適用して
 
-$$M\langle \lvert G\rvert\rangle = (\mathrm{blk} \mathbin{+\!\!+} [lp])\langle 0\rangle = (v_0,w_0). \tag{$\ast\ast$}$$
+```math
+M\langle \lvert G\rvert\rangle = (\mathrm{blk} \mathbin{+\!\!+} [lp])\langle 0\rangle = (v_0,w_0). \tag{$\ast\ast$}
+```
 
 **(d) 主張 5 の証明。** $\mathrm{disj}$ の 2 つの場合に分ける。
 
@@ -539,7 +593,9 @@ $h_{nR}$ は $\lvert G\rvert \to^M_0 j_1$ である。(c) より $j_1 = \lvert G
 
 - $\mathrm{steps}_1 M$ に [(T.steps1_iff)](Seqlex.md#t-steps1_iff) を適用し $j := \lvert G\rvert$
   （$\lvert G\rvert + 1 < \lvert M\rvert$ は $\lvert M\rvert = \lvert G\rvert+\lvert R\rvert+2$ による）とすると
-  $$M_{0,\lvert G\rvert+1} \le M_{0,\lvert G\rvert}+1 .$$
+  ```math
+  M_{0,\lvert G\rvert+1} \le M_{0,\lvert G\rvert}+1 .
+  ```
 - $(\ast\ast)$ と [(T.entry_zero)](#t-entry_zero) より $M_{0,\lvert G\rvert} = v_0$。
 - $M_{0,j_1} \le M_{0,\lvert G\rvert+1}$。実際 $\lvert G\rvert+1 = j_1$ ならば等号、
   $\lvert G\rvert+1 < j_1$ ならば $\lvert G\rvert \to^M_0 j_1$ の条件 5
@@ -547,7 +603,9 @@ $h_{nR}$ は $\lvert G\rvert \to^M_0 j_1$ である。(c) より $j_1 = \lvert G
 
 $(\ast)$ と [(T.entry_zero)](#t-entry_zero) より $\pi_0 lp = M_{0,j_1}$ であるから、上の 3 つより
 
-$$\pi_0 lp = M_{0,j_1} \le M_{0,\lvert G\rvert+1} \le M_{0,\lvert G\rvert}+1 = v_0+1 .$$
+```math
+\pi_0 lp = M_{0,j_1} \le M_{0,\lvert G\rvert+1} \le M_{0,\lvert G\rvert}+1 = v_0+1 .
+```
 
 一方、主張 4 より $v_0 < \pi_0 lp$。$\mathbb{N}$ において $v_0 < x \le v_0+1$ ならば $x = v_0+1$ であるから
 $\pi_0 lp = v_0+1$。これで主張 5 の第 1 の場合が成立する。
@@ -580,7 +638,9 @@ $\mathrm{blk}' = \mathrm{blk}$ の先頭要素を比べて $(v_0',w_0') = (v_0,w
 
 *$d_0' = d_0$。* まず補助事実として、任意の $e$ について
 
-$$e \to^M_1 j_1 \ \Longrightarrow\ i_1 \ne 0 \tag{$\dagger$}$$
+```math
+e \to^M_1 j_1 \ \Longrightarrow\ i_1 \ne 0 \tag{$\dagger$}
+```
 
 を示す。$e \to^M_1 j_1$ の条件 4 は $M_{1,e} < M_{1,j_1}$ であるから $0 < M_{1,j_1}$、
 よって [(D.idx1)](Def.md#d-idx1) の条件が真となり $i_1 = 1 \ne 0$。
@@ -596,14 +656,18 @@ $\mathrm{disj}$ と $\mathrm{disj}'$ の 4 通りを見る。
 
 *結論。* $n$ に対する分解の第 2 成分は
 
-$$M[n] = G \mathbin{+\!\!+} \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda p.\ (\pi_0 p + k d_0,\ \pi_1 p))\,\mathrm{blk}\bigr)\,\mathrm{range}(n)$$
+```math
+M[n] = G \mathbin{+\!\!+} \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda p.\ (\pi_0 p + k d_0,\ \pi_1 p))\,\mathrm{blk}\bigr)\,\mathrm{range}(n)
+```
 
 である（$G'=G$, $\mathrm{blk}'=\mathrm{blk}$, $d_0'=d_0$ を代入した）。
 一方 [(D.copies)](Wf.md#d-copies) と [(D.shiftr0)](Wf.md#d-shiftr0) より
 
-$$\mathrm{cop}_{d_0}(\mathrm{blk},n)
+```math
+\mathrm{cop}_{d_0}(\mathrm{blk},n)
  = \mathrm{flatMap}\bigl(\lambda k.\ \sigma_{k d_0}\mathrm{blk}\bigr)\,\mathrm{range}(n)
- = \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda p.\ (\pi_0 p + k d_0,\ \pi_1 p))\,\mathrm{blk}\bigr)\,\mathrm{range}(n)$$
+ = \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda p.\ (\pi_0 p + k d_0,\ \pi_1 p))\,\mathrm{blk}\bigr)\,\mathrm{range}(n)
+```
 
 であるから、両者は定義により同一の列である。よって主張 2 が成り立つ。∎
 
@@ -629,16 +693,20 @@ $\mathsf{P}(w_0, \mathrm{tr}\,R, \cdot)$ を超えない。
 
 **主張** $A \prec_{\mathrm{lex}} B$ とし、$U$ が
 
-$$U = [] \quad\text{または}\quad \forall x \in B,\ \mathrm{headI}\,U <_{\mathrm{p}} x$$
+```math
+U = [] \quad\text{または}\quad \forall x \in B,\ \mathrm{headI}\,U <_{\mathrm{p}} x
+```
 
 を満たすとする。このとき任意の $C$ に対し
 $A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C$。
 
 **証明** $A$ の構造に関する帰納法（$B, U, C$ は全称量化したまま動かす）。帰納法の述語は
 
-$$\Phi(A) :\equiv \forall B,\ A \prec_{\mathrm{lex}} B \to \forall U,\
+```math
+\Phi(A) :\equiv \forall B,\ A \prec_{\mathrm{lex}} B \to \forall U,\
  \bigl(U = [] \vee \forall x\in B,\ \mathrm{headI}\,U <_{\mathrm{p}} x\bigr) \to
- \forall C,\ A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C.$$
+ \forall C,\ A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C.
+```
 
 - **基底段 $A = []$。** $[] \prec_{\mathrm{lex}} B$ より $B \ne []$、$B = b_0 \mathbin{::} B'$ とおく。
   $B \mathbin{+\!\!+} C = b_0 \mathbin{::} (B' \mathbin{+\!\!+} C)$ である。
@@ -672,7 +740,9 @@ $$\Phi(A) :\equiv \forall B,\ A \prec_{\mathrm{lex}} B \to \forall U,\
 **主張** $\forall x \in R,\ v_0 < \pi_0 x$ かつ
 $\bigl(Y = [] \vee \neg\,(v_0 < \pi_0(\mathrm{headI}\,Y))\bigr)$ ならば
 
-$$\mathrm{tw}_{v_0}(R \mathbin{+\!\!+} Y) = R \qquad\text{かつ}\qquad \mathrm{dw}_{v_0}(R \mathbin{+\!\!+} Y) = Y .$$
+```math
+\mathrm{tw}_{v_0}(R \mathbin{+\!\!+} Y) = R \qquad\text{かつ}\qquad \mathrm{dw}_{v_0}(R \mathbin{+\!\!+} Y) = Y .
+```
 
 **証明** 述語 $p := (\lambda q.\ v_0 < \pi_0 q)$ とおく。第 1 仮定は $\forall x\in R,\ p\,x$ である。
 
@@ -702,8 +772,10 @@ $Y, R \in \mathrm{PairSeq}$、$v_0, w_0 \in \mathbb{N}$ が
 
 **証明** $d$ に関する自然数の帰納法。$Y, v_0, w_0, R$ は全称量化したまま動かす。帰納法の述語は
 
-$$\Phi(d) :\equiv \forall Y, v_0, w_0, R,\ \bigl(\text{上の 5 条件}\bigr) \to
- \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cop}_0((v_0,w_0)\mathbin{::}R, m)\bigr).$$
+```math
+\Phi(d) :\equiv \forall Y, v_0, w_0, R,\ \bigl(\text{上の 5 条件}\bigr) \to
+ \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cop}_0((v_0,w_0)\mathbin{::}R, m)\bigr).
+```
 
 以下 $\mathrm{blk} := (v_0,w_0)\mathbin{::}R$ と書く。
 
@@ -734,20 +806,28 @@ $\mathrm{tr}(((a,b)\mathbin{::}A)\mathbin{+\!\!+}T) = \mathsf{P}(b, \mathrm{tr}\
 
 - $((v_0,\pi_1 y)\mathbin{::}R')\mathbin{+\!\!+}Y'' = (v_0,\pi_1 y)\mathbin{::}(R'\mathbin{+\!\!+}Y'') = (v_0,\pi_1 y)\mathbin{::}Y' = y\mathbin{::}Y'$
   であるから（(i), (ii)）、
-  $$\mathrm{tr}(y\mathbin{::}Y') = \mathsf{P}\bigl(\pi_1 y,\ \mathrm{tr}\,R',\ \mathrm{tr}\,Y''\bigr).$$
+  ```math
+  \mathrm{tr}(y\mathbin{::}Y') = \mathsf{P}\bigl(\pi_1 y,\ \mathrm{tr}\,R',\ \mathrm{tr}\,Y''\bigr).
+  ```
 - $\mathrm{blk}\mathbin{+\!\!+}(y\mathbin{::}Y') = (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}(y\mathbin{::}Y'))$ であるから、
-  $$\mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}(y\mathbin{::}Y'))\bigr)
-   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}(y\mathbin{::}Y')\bigr).$$
+  ```math
+  \mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}(y\mathbin{::}Y'))\bigr)
+   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}(y\mathbin{::}Y')\bigr).
+  ```
 
 **(iv) $\mathrm{cnf}$ の展開。** 第 5 仮定は (iii) により
 
-$$\mathrm{cnf}\Bigl(\mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathsf{P}(\pi_1 y, \mathrm{tr}\,R', \mathrm{tr}\,Y'')\bigr)\Bigr)$$
+```math
+\mathrm{cnf}\Bigl(\mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathsf{P}(\pi_1 y, \mathrm{tr}\,R', \mathrm{tr}\,Y'')\bigr)\Bigr)
+```
 
 であり、[(T.cnf_P_P)](Wf.md#t-cnf_P_P) によりこれは次の 3 条件の連言と同値：
 
-$$\mathrm{cnf}(\mathrm{tr}\,R),\qquad
+```math
+\mathrm{cnf}(\mathrm{tr}\,R),\qquad
 h_{\mathrm{sib}} : \neg\bigl(\mathsf{P}(w_0,\mathrm{tr}\,R,\mathsf{Z}) \prec \mathsf{P}(\pi_1 y,\mathrm{tr}\,R',\mathsf{Z})\bigr),\qquad
-c_{\mathrm{tail}} : \mathrm{cnf}\bigl(\mathsf{P}(\pi_1 y,\mathrm{tr}\,R',\mathrm{tr}\,Y'')\bigr).$$
+c_{\mathrm{tail}} : \mathrm{cnf}\bigl(\mathsf{P}(\pi_1 y,\mathrm{tr}\,R',\mathrm{tr}\,Y'')\bigr).
+```
 
 **(v) $\pi_1 y \le w_0$。** $w_0 < \pi_1 y$ と仮定すると
 [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 1 選言により
@@ -766,7 +846,9 @@ $y\mathbin{::}Y' \prec_{\mathrm{lex}} \mathrm{blk}$。
 [(T.olt_P_P)](Mechanized.md#t-olt_P_P) の第 2 選言（$w_0 = \pi_1 y$ かつ $\mathrm{tr}\,R \prec \mathrm{tr}\,R'$）により
 $h_{\mathrm{sib}}$ に矛盾する。よって
 
-$$h_{\mathrm{nolt}} : \neg\bigl(\mathrm{tr}\,R \prec \mathrm{tr}\,R'\bigr). $$
+```math
+h_{\mathrm{nolt}} : \neg\bigl(\mathrm{tr}\,R \prec \mathrm{tr}\,R'\bigr). 
+```
 
 *ブロック条件の継承。* [(T.split_block)](#t-split_block) を $R$, $Y = y\mathbin{::}Y'$ に適用すると
 $\mathrm{tw}_{v_0}(R\mathbin{+\!\!+}Y) = R$、$\mathrm{dw}_{v_0}(R\mathbin{+\!\!+}Y) = Y$。したがって
@@ -781,8 +863,10 @@ $\mathrm{tw}_{v_0}(R\mathbin{+\!\!+}Y) = R$、$\mathrm{dw}_{v_0}(R\mathbin{+\!\!
 
 *場合 $R' = R$（ブロックの再現）。* このとき
 
-$$y\mathbin{::}Y' = (v_0,w_0)\mathbin{::}(R'\mathbin{+\!\!+}Y'') = (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y'')
- = \mathrm{blk}\mathbin{+\!\!+}Y'' .$$
+```math
+y\mathbin{::}Y' = (v_0,w_0)\mathbin{::}(R'\mathbin{+\!\!+}Y'') = (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y'')
+ = \mathrm{blk}\mathbin{+\!\!+}Y'' .
+```
 
 帰納法の仮定 $\Phi(d)$ を $Y := Y''$, $v_0, w_0, R$ に適用する。5 条件を確認する。
 
@@ -801,8 +885,10 @@ $$y\mathbin{::}Y' = (v_0,w_0)\mathbin{::}(R'\mathbin{+\!\!+}Y'') = (v_0,w_0)\mat
 [(T.copies_succ_cons)](Wf.md#t-copies_succ_cons) と
 [(T.shiftr0_zero)](Wf.md#t-shiftr0_zero)（$\sigma_0$ は恒等）より
 
-$$\mathrm{cop}_0(\mathrm{blk},m+1) = (v_0,w_0)\mathbin{::}\bigl(R \mathbin{+\!\!+} \mathrm{cop}_0(\mathrm{blk},m)\bigr)
- = \mathrm{blk} \mathbin{+\!\!+} \mathrm{cop}_0(\mathrm{blk},m).$$
+```math
+\mathrm{cop}_0(\mathrm{blk},m+1) = (v_0,w_0)\mathbin{::}\bigl(R \mathbin{+\!\!+} \mathrm{cop}_0(\mathrm{blk},m)\bigr)
+ = \mathrm{blk} \mathbin{+\!\!+} \mathrm{cop}_0(\mathrm{blk},m).
+```
 
 したがって示すべきは
 $\mathrm{blk}\mathbin{+\!\!+}Y'' \preceq_{\mathrm{lex}} \mathrm{blk}\mathbin{+\!\!+}\mathrm{cop}_0(\mathrm{blk},m)$
@@ -820,7 +906,9 @@ $\mathrm{blockok}(v_0+1,R')$ に適用して $\mathrm{tr}\,R \prec \mathrm{tr}\,
 [(T.copies_succ_cons)](Wf.md#t-copies_succ_cons)、[(T.shiftr0_zero)](Wf.md#t-shiftr0_zero)、
 [(T.copies_one)](Wf.md#t-copies_one) より
 
-$$\mathrm{cop}_0(\mathrm{blk},2) = (v_0,w_0)\mathbin{::}\bigl(R \mathbin{+\!\!+} \mathrm{blk}\bigr).$$
+```math
+\mathrm{cop}_0(\mathrm{blk},2) = (v_0,w_0)\mathbin{::}\bigl(R \mathbin{+\!\!+} \mathrm{blk}\bigr).
+```
 
 $y = (v_0,w_0)$ であるから、[(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 2 選言により
 $Y' \prec_{\mathrm{lex}} R \mathbin{+\!\!+} \mathrm{blk}$ を示せばよい。
@@ -848,9 +936,11 @@ $R'\mathbin{+\!\!+}Y'' \prec_{\mathrm{lex}} R\mathbin{+\!\!+}\mathrm{blk}$、こ
 $\mathrm{cop}_0(B,n) = \mathrm{flatMap}(\lambda k.\ \sigma_{k\cdot 0}B)\,\mathrm{range}(n)$。
 $\mathrm{range}(m+1) = \mathrm{range}(m) \mathbin{+\!\!+} [m]$ であり、$\mathrm{flatMap}$ は連結を連結に写すから
 
-$$\mathrm{cop}_0(B,m+1)
+```math
+\mathrm{cop}_0(B,m+1)
  = \mathrm{flatMap}(\lambda k.\ \sigma_{k\cdot 0}B)\,\mathrm{range}(m) \mathbin{+\!\!+} \sigma_{m\cdot 0}B
- = \mathrm{cop}_0(B,m) \mathbin{+\!\!+} \sigma_0 B .$$
+ = \mathrm{cop}_0(B,m) \mathbin{+\!\!+} \sigma_0 B .
+```
 
 $m \cdot 0 = 0$ であり [(T.shiftr0_zero)](Wf.md#t-shiftr0_zero) より $\sigma_0 B = B$。∎
 
@@ -860,7 +950,9 @@ $m \cdot 0 = 0$ であり [(T.shiftr0_zero)](Wf.md#t-shiftr0_zero) より $\sigm
 **主張** $\bigl(G \mathbin{+\!\!+} ((v_0,w_0)\mathbin{::}R)\bigr) \mathbin{+\!\!+} q\mathbin{::}S \in \mathrm{ST\_PS}$、
 $\forall x\in R,\ v_0<\pi_0 x$、$\pi_1 lp = 0$、$\pi_0 lp = v_0+1$、$q <_{\mathrm{p}} lp$ ならば
 
-$$\exists m,\ \bigl(1 \le m \ \wedge\ q\mathbin{::}S \preceq_{\mathrm{lex}} \mathrm{cop}_0((v_0,w_0)\mathbin{::}R,\ m)\bigr).$$
+```math
+\exists m,\ \bigl(1 \le m \ \wedge\ q\mathbin{::}S \preceq_{\mathrm{lex}} \mathrm{cop}_0((v_0,w_0)\mathbin{::}R,\ m)\bigr).
+```
 
 **証明** $\mathrm{blk} := (v_0,w_0)\mathbin{::}R$、$N := (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}q\mathbin{::}S$ と書く。
 
@@ -885,8 +977,10 @@ $Y = q \mathbin{::} \mathrm{tw}^{\ge}_{v_0}S$、特に $\pi_0(\mathrm{headI}\,Y)
 
 **(iv) $N$ の 2 通りの分解。** (iii) より
 
-$$N = (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}(Y\mathbin{+\!\!+}V)
- = \bigl(G\mathbin{+\!\!+}(\mathrm{blk}\mathbin{+\!\!+}Y)\bigr)\mathbin{+\!\!+}V .$$
+```math
+N = (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}(Y\mathbin{+\!\!+}V)
+ = \bigl(G\mathbin{+\!\!+}(\mathrm{blk}\mathbin{+\!\!+}Y)\bigr)\mathbin{+\!\!+}V .
+```
 
 **(v) $\mathrm{blockok}(v_0,\ \mathrm{blk}\mathbin{+\!\!+}Y)$。**
 [(D.blockok)](Seqlex.md#d-blockok) の 3 条件を確認する。
@@ -907,14 +1001,18 @@ $$N = (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}(Y\mathbin{+\!\!+}V)
 [(T.cnf_take)](Wf.md#t-cnf_take) を $k := \lvert G\mathbin{+\!\!+}(\mathrm{blk}\mathbin{+\!\!+}Y)\rvert$ に適用すると、
 $\mathrm{take}\,k$ はこの連結の左側そのものであるから
 
-$$\mathrm{cnf}\bigl(\mathrm{tr}(G\mathbin{+\!\!+}(\mathrm{blk}\mathbin{+\!\!+}Y))\bigr).$$
+```math
+\mathrm{cnf}\bigl(\mathrm{tr}(G\mathbin{+\!\!+}(\mathrm{blk}\mathbin{+\!\!+}Y))\bigr).
+```
 
 $\mathrm{blk}\mathbin{+\!\!+}Y = (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y)$ であるから、これは
 $\mathrm{cnf}\bigl(\mathrm{tr}(G\mathbin{+\!\!+}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y)))\bigr)$ である。
 [(T.cnf_tail)](Wf.md#t-cnf_tail) を $t := (v_0,w_0)$、$T' := R\mathbin{+\!\!+}Y$ に適用する
 （その仮定 $\forall x\in R\mathbin{+\!\!+}Y,\ v_0 \le \pi_0 x$ は (v) の下界条件から従う）と
 
-$$\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y))\bigr).$$
+```math
+\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y))\bigr).
+```
 
 **(vii) 完全一致コピー支配を適用する。**
 [(T.copy_dom_zero)](#t-copy_dom_zero) を $d := \lvert Y\rvert$、$Y$、$v_0$、$w_0$、$R$ に適用する。5 条件は
@@ -932,7 +1030,9 @@ $$\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}Y))\bigr)
 $\mathrm{cop}_0(\mathrm{blk},m+1) = \mathrm{cop}_0(\mathrm{blk},m)\mathbin{+\!\!+}\mathrm{blk}$。
 また $q\mathbin{::}S = Y\mathbin{+\!\!+}V$（(iii)）。よって示すべきは
 
-$$Y \mathbin{+\!\!+} V \ \prec_{\mathrm{lex}}\ \mathrm{cop}_0(\mathrm{blk},m) \mathbin{+\!\!+} \mathrm{blk} .$$
+```math
+Y \mathbin{+\!\!+} V \ \prec_{\mathrm{lex}}\ \mathrm{cop}_0(\mathrm{blk},m) \mathbin{+\!\!+} \mathrm{blk} .
+```
 
 (vii) の $\preceq_{\mathrm{lex}}$ を 2 つに分ける。
 
@@ -970,8 +1070,10 @@ $\mathrm{AscCrux}$ とは、これらすべてについて次が成り立つと�
 
 の下で
 
-$$\exists m,\ \Bigl(1\le m \ \wedge\ q\mathbin{::}S \preceq_{\mathrm{lex}}
- \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},\ m)\bigr)\Bigr).$$
+```math
+\exists m,\ \Bigl(1\le m \ \wedge\ q\mathbin{::}S \preceq_{\mathrm{lex}}
+ \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},\ m)\bigr)\Bigr).
+```
 
 条件 7 は [(D.nextrel1)](Def.md#d-nextrel1) を列 $H$ に対して
 $j_0 := \lvert G\rvert$、$j_1 := \lvert G\mathbin{+\!\!+}\mathrm{blk}\rvert$ で読んだものである。
@@ -994,8 +1096,10 @@ $\mathrm{AscCrux}_1$ とは、これらすべてについて次が成り立つ�
 
 の下で
 
-$$\exists m,\ \Bigl(1\le m \ \wedge\ (v_0+d_0,w_0)\mathbin{::}S \preceq_{\mathrm{lex}}
- \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},\ m)\bigr)\Bigr).$$
+```math
+\exists m,\ \Bigl(1\le m \ \wedge\ (v_0+d_0,w_0)\mathbin{::}S \preceq_{\mathrm{lex}}
+ \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},\ m)\bigr)\Bigr).
+```
 
 $\mathrm{AscCrux}$ との違いは、落とされる列 $lp$ が
 [(T.nextrel1_snd_succ)](#t-nextrel1_snd_succ) により $(v_0+d_0, w_0+1)$ に確定し、
@@ -1036,9 +1140,11 @@ $\pi_0 x = \pi_0 p + e \ge d + e$。∎
 **証明** [(D.copies)](Wf.md#d-copies), [(D.shiftr0)](Wf.md#d-shiftr0) を展開する。
 $\mathrm{map}$ は $\mathrm{flatMap}$ を通り抜ける（$\mathrm{map}\,f\,(\mathrm{flatMap}\,g\,L) = \mathrm{flatMap}\,(\mathrm{map}\,f\circ g)\,L$）から
 
-$$\sigma_d(\mathrm{cop}_d(B,n)) = \mathrm{flatMap}\bigl(\lambda k.\ \sigma_d(\sigma_{k d}B)\bigr)\,\mathrm{range}(n),
+```math
+\sigma_d(\mathrm{cop}_d(B,n)) = \mathrm{flatMap}\bigl(\lambda k.\ \sigma_d(\sigma_{k d}B)\bigr)\,\mathrm{range}(n),
 \qquad
-\mathrm{cop}_d(\sigma_d B,n) = \mathrm{flatMap}\bigl(\lambda k.\ \sigma_{k d}(\sigma_d B)\bigr)\,\mathrm{range}(n).$$
+\mathrm{cop}_d(\sigma_d B,n) = \mathrm{flatMap}\bigl(\lambda k.\ \sigma_{k d}(\sigma_d B)\bigr)\,\mathrm{range}(n).
+```
 
 各 $k$ について、$\mathrm{map}$ の合成則より両者の第 $k$ 成分はともに $B$ の各要素 $p$ を写した列であり、
 その第 0 成分はそれぞれ $(\pi_0 p + k d) + d$ と $(\pi_0 p + d) + k d$、第 1 成分はともに $\pi_1 p$ である。
@@ -1054,9 +1160,11 @@ $H_1 = (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}[(v_0+d_0,w_0+1)]$）。
 $\mathrm{AscArgDom}$ とは、これらすべてについて、
 [(D.AscCrux1)](#d-AscCrux1) と同じ 5 条件の下で
 
-$$\exists m,\quad
+```math
+\exists m,\quad
 \mathrm{tw}_{v_0+d_0} S \ \preceq_{\mathrm{lex}}\
-\sigma_{d_0}\Bigl(R \mathbin{+\!\!+} \mathrm{cop}_{d_0}\bigl(\sigma_{d_0}\mathrm{blk},\ m\bigr)\Bigr)$$
+\sigma_{d_0}\Bigl(R \mathbin{+\!\!+} \mathrm{cop}_{d_0}\bigl(\sigma_{d_0}\mathrm{blk},\ m\bigr)\Bigr)
+```
 
 が成り立つという命題である（$\mathrm{AscCrux}_1$ と違い $m \ge 1$ は要求しない）。
 
@@ -1097,13 +1205,17 @@ $\mathrm{AscCrux}_1$（[(D.AscCrux1)](#d-AscCrux1)）。
 $\mathrm{blk} := (v_0,w_0)\mathbin{::}R$、$\mathrm{blk}' := \sigma_{d_0}\mathrm{blk}$ とおく。
 [(T.shiftr0_cons)](Wf.md#t-shiftr0_cons) より
 
-$$\mathrm{blk}' = (v_0+d_0,\ w_0)\mathbin{::}\sigma_{d_0}R. \tag{1}$$
+```math
+\mathrm{blk}' = (v_0+d_0,\ w_0)\mathbin{::}\sigma_{d_0}R. \tag{1}
+```
 
 $\mathrm{AscArgDom}$ を同じ 5 条件に適用して $m$ を得る。すなわち
 $S_{\mathrm{hi}} := \mathrm{tw}_{v_0+d_0}S$、$S_{\mathrm{lo}} := \mathrm{dw}_{v_0+d_0}S$ とおくと
 (L1) より $S_{\mathrm{hi}}\mathbin{+\!\!+}S_{\mathrm{lo}} = S$ であり
 
-$$S_{\mathrm{hi}} \preceq_{\mathrm{lex}} \sigma_{d_0}\bigl(R \mathbin{+\!\!+} \mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr). \tag{2}$$
+```math
+S_{\mathrm{hi}} \preceq_{\mathrm{lex}} \sigma_{d_0}\bigl(R \mathbin{+\!\!+} \mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr). \tag{2}
+```
 
 **(i) 宿主側引数の各列は深さ $v_0$ より真に深い。**
 $x \in R \mathbin{+\!\!+} \mathrm{cop}_{d_0}(\mathrm{blk}',m)$ とする。
@@ -1124,7 +1236,7 @@ $E := \sigma_{d_0}\bigl(\sigma_{m d_0}\mathrm{blk}'\bigr)$ とおく。
 [(T.copies_succ_back)](#t-copies_succ_back)、[(T.shiftr0_append)](#t-shiftr0_append)、
 連結の結合律、(1) を順に使うと
 
-$$
+```math
 \begin{aligned}
 \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},m+2)\bigr)
 &= \mathrm{cop}_{d_0}(\mathrm{blk}',m+2)
@@ -1133,7 +1245,7 @@ $$
 &= (v_0+d_0,w_0)\mathbin{::}\Bigl(\sigma_{d_0}R \mathbin{+\!\!+} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr) \mathbin{+\!\!+} E\Bigr)\\
 &= (v_0+d_0,w_0)\mathbin{::}\Bigl(\sigma_{d_0}\bigl(R \mathbin{+\!\!+} \mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr) \mathbin{+\!\!+} E\Bigr).
 \end{aligned}
-$$
+```
 
 （第 2 行では [(T.copies_succ_back)](#t-copies_succ_back) を $n:=m$ に使って
 $\mathrm{cop}_{d_0}(\mathrm{blk}',m+1) = \mathrm{cop}_{d_0}(\mathrm{blk}',m)\mathbin{+\!\!+}\sigma_{m d_0}\mathrm{blk}'$ とし、
@@ -1143,17 +1255,23 @@ $\mathrm{cop}_{d_0}(\mathrm{blk}',m+1) = \mathrm{cop}_{d_0}(\mathrm{blk}',m)\mat
 $D := \sigma_{d_0}\bigl(R\mathbin{+\!\!+}\mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr)$ と書く。
 示すべきは
 
-$$(v_0+d_0,w_0)\mathbin{::}S \ \preceq_{\mathrm{lex}}\ (v_0+d_0,w_0)\mathbin{::}(D \mathbin{+\!\!+} E)$$
+```math
+(v_0+d_0,w_0)\mathbin{::}S \ \preceq_{\mathrm{lex}}\ (v_0+d_0,w_0)\mathbin{::}(D \mathbin{+\!\!+} E)
+```
 
 であり、両辺を $[(v_0+d_0,w_0)]\mathbin{+\!\!+}(\cdot)$ と見て
 [(T.sle_append_cancel)](#t-sle_append_cancel) を使うと、示すべきは
 
-$$S \ \preceq_{\mathrm{lex}}\ D \mathbin{+\!\!+} E. \tag{3}$$
+```math
+S \ \preceq_{\mathrm{lex}}\ D \mathbin{+\!\!+} E. \tag{3}
+```
 
 **(iv) $E$ の形。** (1) と [(T.shiftr0_cons)](Wf.md#t-shiftr0_cons) を 2 回使うと
 $E \ne []$ であり、その先頭列の第 0 成分は
 
-$$\pi_0(\mathrm{headI}\,E) = v_0 + d_0 + m\,d_0 + d_0. \tag{4}$$
+```math
+\pi_0(\mathrm{headI}\,E) = v_0 + d_0 + m\,d_0 + d_0. \tag{4}
+```
 
 **(v) (2) の 2 つの場合。**
 
@@ -1163,7 +1281,9 @@ $S_{\mathrm{lo}} \preceq_{\mathrm{lex}} E$ に帰着する。
 (ii) より $S_{\mathrm{lo}} = []$ ならば $E \ne []$ から $[] \prec_{\mathrm{lex}} E$。
 $S_{\mathrm{lo}} = z\mathbin{::}Z$、$E = b\mathbin{::}B$ のときは、(ii) と (4) と条件 4 より
 
-$$\pi_0 z \le v_0+d_0 < v_0+d_0+m\,d_0+d_0 = \pi_0 b$$
+```math
+\pi_0 z \le v_0+d_0 < v_0+d_0+m\,d_0+d_0 = \pi_0 b
+```
 
 （最後の狭義不等号は $0 < d_0$ による）。よって $z <_{\mathrm{p}} b$ であり
 [(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 1 選言により $S_{\mathrm{lo}} \prec_{\mathrm{lex}} E$。
@@ -1199,7 +1319,9 @@ $\mathrm{AscCrux}$（[(D.AscCrux)](#d-AscCrux)）。
 **証明** $\mathrm{AscCrux}$ の 8 条件を仮定する。
 条件 5, 6 より $\pi_0 lp = v_0+d_0$ かつ $\pi_1 lp = w_0+1$、対は成分で決まるから
 
-$$lp = (v_0+d_0,\ w_0+1). \tag{1}$$
+```math
+lp = (v_0+d_0,\ w_0+1). \tag{1}
+```
 
 $q = (v_0+d_0,w_0)$ か否かで分ける。
 
@@ -1209,14 +1331,18 @@ $q = (v_0+d_0,w_0)$ か否かで分ける。
 - $q \ne (v_0+d_0,w_0)$ のとき：$m := 1$ とする。
   [(T.copies_one)](Wf.md#t-copies_one) と [(T.shiftr0_cons)](Wf.md#t-shiftr0_cons) より
 
-  $$\sigma_{d_0}\bigl(\mathrm{cop}_{d_0}((v_0,w_0)\mathbin{::}R,1)\bigr)
-   = \sigma_{d_0}\bigl((v_0,w_0)\mathbin{::}R\bigr) = (v_0+d_0,w_0)\mathbin{::}\sigma_{d_0}R .$$
+  ```math
+  \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}((v_0,w_0)\mathbin{::}R,1)\bigr)
+   = \sigma_{d_0}\bigl((v_0,w_0)\mathbin{::}R\bigr) = (v_0+d_0,w_0)\mathbin{::}\sigma_{d_0}R .
+  ```
 
   [(T.seqlex_cons_cons)](Seqlex.md#t-seqlex_cons_cons) の第 1 選言により
   $q <_{\mathrm{p}} (v_0+d_0,w_0)$ を示せばよい。
   条件 8 と (1) より
 
-  $$\pi_0 q < v_0+d_0 \quad\text{または}\quad \bigl(\pi_0 q = v_0+d_0 \ \wedge\ \pi_1 q < w_0+1\bigr),$$
+  ```math
+  \pi_0 q < v_0+d_0 \quad\text{または}\quad \bigl(\pi_0 q = v_0+d_0 \ \wedge\ \pi_1 q < w_0+1\bigr),
+  ```
 
   また $q \ne (v_0+d_0,w_0)$ より $\neg\bigl(\pi_0 q = v_0+d_0 \wedge \pi_1 q = w_0\bigr)$ である。
   第 1 の場合はそのまま $q <_{\mathrm{p}} (v_0+d_0,w_0)$ の第 1 選言。
@@ -1252,7 +1378,9 @@ $M[1] = G\mathbin{+\!\!+}\mathrm{cop}_{d_0}(\mathrm{blk},1) = G\mathbin{+\!\!+}\
 **場合 2：$N = (G\mathbin{+\!\!+}\mathrm{blk})\mathbin{+\!\!+}q\mathbin{::}S$ かつ $q <_{\mathrm{p}} lp$。**
 まず
 
-$$\exists m,\ \Bigl(1\le m \wedge q\mathbin{::}S \preceq_{\mathrm{lex}} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},m)\bigr)\Bigr) \tag{$\sharp$}$$
+```math
+\exists m,\ \Bigl(1\le m \wedge q\mathbin{::}S \preceq_{\mathrm{lex}} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},m)\bigr)\Bigr) \tag{$\sharp$}
+```
 
 を示す。[(T.oper_bad_blocks_all)](#t-oper_bad_blocks_all) の結論 5 で分ける。
 
@@ -1271,8 +1399,10 @@ $$\exists m,\ \Bigl(1\le m \wedge q\mathbin{::}S \preceq_{\mathrm{lex}} \sigma_{
 $(\sharp)$ の $m$ に対し $n := m+1$ とする。結論 2 と
 [(T.copies_succ_front)](Wf.md#t-copies_succ_front) より
 
-$$M[m+1] = G \mathbin{+\!\!+} \mathrm{cop}_{d_0}(\mathrm{blk},m+1)
- = G \mathbin{+\!\!+} \Bigl(\mathrm{blk} \mathbin{+\!\!+} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},m)\bigr)\Bigr),$$
+```math
+M[m+1] = G \mathbin{+\!\!+} \mathrm{cop}_{d_0}(\mathrm{blk},m+1)
+ = G \mathbin{+\!\!+} \Bigl(\mathrm{blk} \mathbin{+\!\!+} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},m)\bigr)\Bigr),
+```
 
 また $N = G \mathbin{+\!\!+} (\mathrm{blk} \mathbin{+\!\!+} q\mathbin{::}S)$（連結の結合律）。
 [(T.sle_append_cancel)](#t-sle_append_cancel) を $A := G$ に適用し、続いて $A := \mathrm{blk}$ に適用すると、
@@ -1300,7 +1430,9 @@ $\lvert M\rvert - 1 = 0$ か否かで分ける。
 **主張** $\mathrm{AscCrux}_1$（[(D.AscCrux1)](#d-AscCrux1)）を仮定する。
 $M, N \in \mathrm{ST\_PS}$ かつ $\mathrm{tr}\,N \prec \mathrm{tr}\,M$ ならば
 
-$$\exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr).$$
+```math
+\exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr).
+```
 
 **証明** [(T.asc_head_step)](#t-asc_head_step) により $\mathrm{AscCrux}$ を得る。
 [(T.seqlex_cofinality_of_crux)](#t-seqlex_cofinality_of_crux) により $\mathrm{SeqCof}$ を得る。
@@ -1313,7 +1445,9 @@ $M, N \in \mathrm{ST\_PS}$、$\mathrm{tr}\,N \prec \mathrm{tr}\,M$ を与えて�
 **主張** $\mathrm{AscArgDom}$（[(D.AscArgDom)](#d-AscArgDom)）を仮定する。
 $M, N \in \mathrm{ST\_PS}$ かつ $\mathrm{tr}\,N \prec \mathrm{tr}\,M$ ならば
 
-$$\exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr).$$
+```math
+\exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr).
+```
 
 **証明** [(T.asc_crux1_of_argdom)](#t-asc_crux1_of_argdom) により $\mathrm{AscCrux}_1$ を得、
 [(T.pss_cofinality_of_crux)](#t-pss_cofinality_of_crux) を適用する。∎

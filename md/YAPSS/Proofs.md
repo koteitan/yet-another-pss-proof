@@ -54,12 +54,16 @@ Isabelle 版の $(y,x)\in r$ に対応する。したがって $\lhd$ と $\prec
 型 $\alpha$ 上の関係 $r : \alpha \to \alpha \to \mathrm{Prop}$ に対し、述語
 $\mathrm{Acc}(r,\cdot) : \alpha \to \mathrm{Prop}$ を、次の 1 つの導入規則で生成される**最小の**述語と定める。
 
-$$\frac{\ \forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\ }{\ \mathrm{Acc}(r,x)\ }\ \text{(intro)}$$
+```math
+\frac{\ \forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\ }{\ \mathrm{Acc}(r,x)\ }\ \text{(intro)}
+```
 
 最小性は次の形で使う（Lean の `Acc.rec`）。述語 $Q : \alpha \to \mathrm{Prop}$ が
 
-$$\forall x,\ \Bigl(\forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\Bigr) \to
-\Bigl(\forall y,\ r\,y\,x \to Q(y)\Bigr) \to Q(x)$$
+```math
+\forall x,\ \Bigl(\forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\Bigr) \to
+\Bigl(\forall y,\ r\,y\,x \to Q(y)\Bigr) \to Q(x)
+```
 
 をみたすならば、$\forall x,\ \mathrm{Acc}(r,x) \to Q(x)$ が成り立つ。
 以下で「$\mathrm{Acc}(r,x)$ の導出に関する帰納法」と書いたときはこの原理を指す。
@@ -69,7 +73,9 @@ $$\forall x,\ \Bigl(\forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\Bigr) \to
 **基底段と帰納段の区別.** 導入規則が 1 つしかないため、この帰納法の場合分けも 1 つである。
 その中で、$x$ が $r$ の極小元である場合、すなわち
 
-$$\neg\,\exists y,\ r\,y\,x$$
+```math
+\neg\,\exists y,\ r\,y\,x
+```
 
 の場合を**基底段**と呼ぶ。このとき帰納法の仮定 $\forall y,\ r\,y\,x \to Q(y)$ は前件が常に偽であり、
 内容を持たない。以下の各帰納法では、基底段が帰納段の特別な場合としてどう処理されるかを個別に書く。
@@ -77,7 +83,9 @@ $$\neg\,\exists y,\ r\,y\,x$$
 <a id="f-WellFounded"></a>
 ### 事実 整礎性 (F.WellFounded)
 
-$$\mathrm{WF}(r) \ :\iff\ \forall x,\ \mathrm{Acc}(r,x).$$
+```math
+\mathrm{WF}(r) \ :\iff\ \forall x,\ \mathrm{Acc}(r,x).
+```
 
 Lean では `WellFounded` は構成子 `intro : (∀ a, Acc r a) → WellFounded r` をもつ構造であり、
 逆向きの取り出しが `WellFounded.apply : WellFounded r → ∀ a, Acc r a` である。
@@ -97,7 +105,9 @@ Lean では `WellFounded` は構成子 `intro : (∀ a, Acc r a) → WellFounded
 
 $f : \alpha \to \beta$ と $r : \beta\to\beta\to\mathrm{Prop}$ に対し、$\alpha$ 上の関係 $r^{f}$ を
 
-$$r^{f}\,a\,b \ :\iff\ r\,(f\,a)\,(f\,b)$$
+```math
+r^{f}\,a\,b \ :\iff\ r\,(f\,a)\,(f\,b)
+```
 
 で定める（Lean の `InvImage r f`）。
 
@@ -105,14 +115,18 @@ $$r^{f}\,a\,b \ :\iff\ r\,(f\,a)\,(f\,b)$$
 
 **証明** 述語 $Q : \beta \to \mathrm{Prop}$ を
 
-$$Q(y) \ :\equiv\ \forall a \in \alpha,\ f\,a = y \to \mathrm{Acc}(r^{f}, a)$$
+```math
+Q(y) \ :\equiv\ \forall a \in \alpha,\ f\,a = y \to \mathrm{Acc}(r^{f}, a)
+```
 
 とおき、$\forall y,\ \mathrm{Acc}(r,y)\to Q(y)$ を $\mathrm{Acc}(r,y)$ の導出に関する帰納法
 （[(F.Acc)](#f-Acc)）で示す。
 
 帰納段は次の形である。$y \in \beta$ をとり、帰納法の仮定
 
-$$\mathrm{IH} :\ \forall z \in \beta,\ r\,z\,y \to Q(z)$$
+```math
+\mathrm{IH} :\ \forall z \in \beta,\ r\,z\,y \to Q(z)
+```
 
 を仮定して $Q(y)$ を示す。$a \in \alpha$ と $f\,a = y$ を仮定し、$\mathrm{Acc}(r^{f},a)$ を示す。
 [(F.Acc)](#f-Acc) の導入規則により、$\forall a',\ r^{f}\,a'\,a \to \mathrm{Acc}(r^{f},a')$ を示せばよい。
@@ -141,7 +155,9 @@ $\bigl(\forall x\,y,\ q\,x\,y \to r\,x\,y\bigr)$ かつ $\mathrm{WF}(r)$ なら�
 帰納法（[(F.Acc)](#f-Acc)、$Q(x) :\equiv \mathrm{Acc}(q,x)$）で示す。
 帰納段：$x$ をとり、帰納法の仮定
 
-$$\mathrm{IH} :\ \forall y,\ r\,y\,x \to \mathrm{Acc}(q,y)$$
+```math
+\mathrm{IH} :\ \forall y,\ r\,y\,x \to \mathrm{Acc}(q,y)
+```
 
 を仮定して $\mathrm{Acc}(q,x)$ を示す。[(F.Acc)](#f-Acc) の導入規則により
 $\forall y,\ q\,y\,x \to \mathrm{Acc}(q,y)$ を示せばよい。$y$ が $q\,y\,x$ をみたすとすると、
@@ -164,8 +180,10 @@ $x$ は任意だったから $\mathrm{WF}(q)$ である。∎
 
 $\mathrm{Three}$（[(D.Three)](Mechanized.md#d-Three)）の部分集合 $\mathrm{NF}$ を
 
-$$\mathrm{NF} := \bigl\{\, t \in \mathrm{Three} \ \bigm|\ \exists M \in \mathrm{PairSeq},\
- M \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,M = t \,\bigr\}$$
+```math
+\mathrm{NF} := \bigl\{\, t \in \mathrm{Three} \ \bigm|\ \exists M \in \mathrm{PairSeq},\
+ M \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,M = t \,\bigr\}
+```
 
 で定める（[(D.PairSeq)](Def.md#d-PairSeq), [(D.ST_PS)](Def.md#d-ST_PS),
 [(D.translate)](Mechanized.md#d-translate)）。すなわち $\mathrm{NF}$ は写像 $\mathrm{tr}$ による
@@ -182,7 +200,9 @@ $\mathrm{ST\_PS}$ の像である。
 
 $v, u \in \mathrm{Three}$ に対し
 
-$$v \prec_{\mathrm{NF}} u \ :\iff\ v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\ v \in \mathrm{NF}$$
+```math
+v \prec_{\mathrm{NF}} u \ :\iff\ v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\ v \in \mathrm{NF}
+```
 
 （[(D.olt)](Mechanized.md#d-olt), [(D.NF)](#d-NF)）。すなわち $\prec$ を $\mathrm{NF}$ の内部へ制限した関係である。
 第 1 引数 $v$ が小さい側であり、Isabelle 版の $(v,u)\in R_{\mathrm{NF}}$ に対応する。
@@ -198,7 +218,9 @@ $\mathrm{Acc}(\prec_{\mathrm{NF}}, u)$ が成り立つ。
 ### 定理 長さ 1 以下の列は展開で動かない (T.oper_eq_self_short)
 
 **主張** $M \in \mathrm{PairSeq}$、$n \in \mathbb{N}$ とする。
-$$\lvert M\rvert \le 1 \ \Longrightarrow\ M[n] = M .$$
+```math
+\lvert M\rvert \le 1 \ \Longrightarrow\ M[n] = M .
+```
 
 **証明** [(T.oper_eq_self_of_short)](Mechanized.md#t-oper_eq_self_of_short) は
 $\lvert M\rvert - 1 = 0$（切り捨て減法）から $M[n] = M$ を与える。よって
@@ -219,8 +241,10 @@ Lean 原文はこの位置に節見出しコメントを置き、整礎性義務
 
 **注（対角到達可能性 $\Rightarrow$ $\mathrm{wfimg}$）.**
 
-$$\Bigl(\forall v \in \mathbb{N},\ \mathrm{Acc}\bigl(\prec_{\mathrm{NF}},\ \mathrm{tr}\,\Delta_0^v\bigr)\Bigr)
-\ \Longrightarrow\ \mathrm{WF}(\prec_{\mathrm{NF}}).$$
+```math
+\Bigl(\forall v \in \mathbb{N},\ \mathrm{Acc}\bigl(\prec_{\mathrm{NF}},\ \mathrm{tr}\,\Delta_0^v\bigr)\Bigr)
+\ \Longrightarrow\ \mathrm{WF}(\prec_{\mathrm{NF}}).
+```
 
 *証明.* 左辺を仮定する。
 
@@ -259,7 +283,9 @@ $\mathrm{tr}\,\Delta_0^v$ の到達可能性のみである。
 
 $T, M \in \mathrm{PairSeq}$ に対し
 
-$$T \lhd M \ :\iff\ M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarrow T$$
+```math
+T \lhd M \ :\iff\ M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarrow T
+```
 
 （[(D.ST_PS)](Def.md#d-ST_PS), [(D.step)](Def.md#d-step)）。Isabelle 版の
 $\{(T,M) \mid M\in\mathrm{ST\_PS} \wedge M \Rightarrow T\}$ に対応する。
@@ -272,17 +298,23 @@ $\mathrm{WF}(\lhd)$ が本証明全体の目標である。
 
 **主張** 次の 2 つを仮定する。
 
-$$\text{(dec)}\quad \forall M\,n,\ M\in\mathrm{ST\_PS} \to 1 < \lvert M\rvert \to 1 \le n \to
- \mathrm{tr}(M[n]) \prec \mathrm{tr}\,M ,$$
+```math
+\text{(dec)}\quad \forall M\,n,\ M\in\mathrm{ST\_PS} \to 1 < \lvert M\rvert \to 1 \le n \to
+ \mathrm{tr}(M[n]) \prec \mathrm{tr}\,M ,
+```
 
-$$\text{(wfimg)}\quad \mathrm{WF}(\prec_{\mathrm{NF}}).$$
+```math
+\text{(wfimg)}\quad \mathrm{WF}(\prec_{\mathrm{NF}}).
+```
 
 このとき $\mathrm{WF}(\lhd)$ が成り立つ。
 
 **証明** 逆像関係 $(\prec_{\mathrm{NF}})^{\mathrm{tr}}$（[(F.InvImage)](#f-InvImage)、$f := \mathrm{tr}$）を考える。
 定義により
 
-$$(\prec_{\mathrm{NF}})^{\mathrm{tr}}\,T\,M \ \iff\ \mathrm{tr}\,T \prec_{\mathrm{NF}} \mathrm{tr}\,M .$$
+```math
+(\prec_{\mathrm{NF}})^{\mathrm{tr}}\,T\,M \ \iff\ \mathrm{tr}\,T \prec_{\mathrm{NF}} \mathrm{tr}\,M .
+```
 
 **第 1 段（$\lhd$ は $(\prec_{\mathrm{NF}})^{\mathrm{tr}}$ の部分関係）.**
 $T \lhd M$ を仮定して $\mathrm{tr}\,T \prec_{\mathrm{NF}} \mathrm{tr}\,M$ を示す。
@@ -290,7 +322,9 @@ $T \lhd M$ を仮定して $\mathrm{tr}\,T \prec_{\mathrm{NF}} \mathrm{tr}\,M$ �
 [(D.step)](Def.md#d-step) の導入規則は $\text{(step\_oper)}$ ただ一つであるから、
 その場合分け原理により、ある $n$ が存在して
 
-$$1 < \lvert M\rvert,\qquad 1 \le n,\qquad T = M[n]$$
+```math
+1 < \lvert M\rvert,\qquad 1 \le n,\qquad T = M[n]
+```
 
 が成り立つ。以下 $T$ を $M[n]$ で置き換える。[(D.Rnf)](#d-Rnf) の 3 条件を順に確かめる。
 
@@ -315,13 +349,17 @@ $\mathrm{WF}(\lhd)$ を得る。∎
 
 **主張** [(T.step_terminates_cond)](#t-step_terminates_cond) と同じ 2 つの仮定 (dec), (wfimg) の下で、
 
-$$\neg\ \exists S : \mathbb{N} \to \mathrm{PairSeq},\
- \bigl(\forall i,\ S_i \in \mathrm{ST\_PS}\bigr) \ \wedge\ \bigl(\forall i,\ S_i \Rightarrow S_{i+1}\bigr).$$
+```math
+\neg\ \exists S : \mathbb{N} \to \mathrm{PairSeq},\
+ \bigl(\forall i,\ S_i \in \mathrm{ST\_PS}\bigr) \ \wedge\ \bigl(\forall i,\ S_i \Rightarrow S_{i+1}\bigr).
+```
 
 **証明** そのような $S$ が存在したとして矛盾を導く。すなわち
 
-$$h_{\mathrm{S}} : \forall i,\ S_i \in \mathrm{ST\_PS},
-\qquad h_{\text{step}} : \forall i,\ S_i \Rightarrow S_{i+1}$$
+```math
+h_{\mathrm{S}} : \forall i,\ S_i \in \mathrm{ST\_PS},
+\qquad h_{\text{step}} : \forall i,\ S_i \Rightarrow S_{i+1}
+```
 
 を仮定する。
 
@@ -333,17 +371,23 @@ $h_{\mathrm{S}}(i) : S_i \in \mathrm{ST\_PS}$ と $h_{\text{step}}(i) : S_i \Rig
 
 **第 3 段（本体）.** 次を示す。
 
-$$\text{(key)}\qquad \forall x \in \mathrm{PairSeq},\ \mathrm{Acc}(\lhd, x) \to
- \forall i \in \mathbb{N},\ S_i = x \to \bot .$$
+```math
+\text{(key)}\qquad \forall x \in \mathrm{PairSeq},\ \mathrm{Acc}(\lhd, x) \to
+ \forall i \in \mathbb{N},\ S_i = x \to \bot .
+```
 
 $\mathrm{Acc}(\lhd,x)$ の導出に関する帰納法（[(F.Acc)](#f-Acc)）による。帰納法の述語は
 
-$$Q(x) \ :\equiv\ \forall i \in \mathbb{N},\ S_i = x \to \bot$$
+```math
+Q(x) \ :\equiv\ \forall i \in \mathbb{N},\ S_i = x \to \bot
+```
 
 である。帰納段：$x$ をとり、帰納法の仮定
 
-$$\mathrm{IH} :\ \forall y,\ y \lhd x \to Q(y),
-\quad\text{すなわち}\quad \forall y,\ y \lhd x \to \bigl(\forall i,\ S_i = y \to \bot\bigr)$$
+```math
+\mathrm{IH} :\ \forall y,\ y \lhd x \to Q(y),
+\quad\text{すなわち}\quad \forall y,\ y \lhd x \to \bigl(\forall i,\ S_i = y \to \bot\bigr)
+```
 
 を仮定して $Q(x)$ を示す。$i \in \mathbb{N}$ と $S_i = x$ を仮定する。
 第 2 段より $S_{i+1} \lhd S_i$ であり、$S_i = x$ で書き換えて $S_{i+1} \lhd x$。
@@ -373,8 +417,10 @@ Lean 原文はこの位置に節見出しコメントを置き、証明済みの
 
 **証明** [(T.step_terminates_cond)](#t-step_terminates_cond) を適用するために仮定 (dec)、すなわち
 
-$$\forall M\,n,\ M\in\mathrm{ST\_PS} \to 1 < \lvert M\rvert \to 1 \le n \to
- \mathrm{tr}(M[n]) \prec \mathrm{tr}\,M$$
+```math
+\forall M\,n,\ M\in\mathrm{ST\_PS} \to 1 < \lvert M\rvert \to 1 \le n \to
+ \mathrm{tr}(M[n]) \prec \mathrm{tr}\,M
+```
 
 を示す。$M$, $n$ をとり、$M\in\mathrm{ST\_PS}$、$1<\lvert M\rvert$、$1\le n$ を仮定する。
 [(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) は $1<\lvert M\rvert$ と $1\le n$ の 2 つのみから
@@ -388,13 +434,17 @@ $\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M$ を与えるから、これを適用す
 
 **主張** $\mathrm{WF}(\prec_{\mathrm{NF}})$ ならば
 
-$$\neg\ \exists S : \mathbb{N} \to \mathrm{PairSeq},\
- \bigl(\forall i,\ S_i \in \mathrm{ST\_PS}\bigr) \ \wedge\ \bigl(\forall i,\ S_i \Rightarrow S_{i+1}\bigr).$$
+```math
+\neg\ \exists S : \mathbb{N} \to \mathrm{PairSeq},\
+ \bigl(\forall i,\ S_i \in \mathrm{ST\_PS}\bigr) \ \wedge\ \bigl(\forall i,\ S_i \Rightarrow S_{i+1}\bigr).
+```
 
 **証明** [(T.no_infinite_expansion_cond)](#t-no_infinite_expansion_cond) を適用するために仮定 (dec)、すなわち
 
-$$\forall M\,n,\ M\in\mathrm{ST\_PS} \to 1 < \lvert M\rvert \to 1 \le n \to
- \mathrm{tr}(M[n]) \prec \mathrm{tr}\,M$$
+```math
+\forall M\,n,\ M\in\mathrm{ST\_PS} \to 1 < \lvert M\rvert \to 1 \le n \to
+ \mathrm{tr}(M[n]) \prec \mathrm{tr}\,M
+```
 
 を示す。$M$, $n$ をとり、$M\in\mathrm{ST\_PS}$、$1<\lvert M\rvert$、$1\le n$ を仮定する。
 [(T.m_step_decreases)](Mechanized.md#t-m_step_decreases) は $1<\lvert M\rvert$ と $1\le n$ の 2 つのみから

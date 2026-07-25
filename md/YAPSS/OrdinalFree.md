@@ -29,16 +29,22 @@
 
 以下、本章を通じて 2 つの関係を次の略記で書く。
 
-$$R_{\mathrm{PS}}(a,b) \ :\iff\ a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b
-\qquad (a,b \in \mathrm{PairSeq}),$$
+```math
+R_{\mathrm{PS}}(a,b) \ :\iff\ a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b
+\qquad (a,b \in \mathrm{PairSeq}),
+```
 
-$$R_{\mathrm{NF}}(v,u) \ :\iff\ v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\ v \in \mathrm{NF}
-\qquad (u,v \in \mathrm{Three}).$$
+```math
+R_{\mathrm{NF}}(v,u) \ :\iff\ v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\ v \in \mathrm{NF}
+\qquad (u,v \in \mathrm{Three}).
+```
 
 第 2 式は [(D.Rnf)](Proofs.md#d-Rnf) の定義そのものである。
 また [(D.NF)](Proofs.md#d-NF) は
 
-$$\mathrm{NF} = \{\,t \in \mathrm{Three} \mid \exists M \in \mathrm{PairSeq},\ M \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,M = t \,\}$$
+```math
+\mathrm{NF} = \{\,t \in \mathrm{Three} \mid \exists M \in \mathrm{PairSeq},\ M \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,M = t \,\}
+```
 
 である。
 
@@ -47,7 +53,9 @@ $$\mathrm{NF} = \{\,t \in \mathrm{Three} \mid \exists M \in \mathrm{PairSeq},\ M
 
 **到達可能性と整礎性.** $\mathrm{Acc}$ は次の 1 つの導入規則で生成される最小の述語である。
 
-$$\frac{\ \forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\ }{\ \mathrm{Acc}(r,x)\ }\ \text{(Acc.intro)}$$
+```math
+\frac{\ \forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\ }{\ \mathrm{Acc}(r,x)\ }\ \text{(Acc.intro)}
+```
 
 したがって $\mathrm{Acc}$ について次の 2 つが使える。
 
@@ -55,7 +63,9 @@ $$\frac{\ \forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\ }{\ \mathrm{Acc}(r,x)\ }\ \
    特に $x$ が $r$-前者をもたない（$\forall y,\ \neg\, r\,y\,x$）ならば前提は空虚に真であるから
    $\mathrm{Acc}(r,x)$ である。
 2. （$\mathrm{Acc}$ の導出に関する帰納法、Lean の `Acc.rec`）述語 $C$ が
-   $$\forall x,\ \Bigl(\bigl(\forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\bigr) \ \wedge\ \bigl(\forall y,\ r\,y\,x \to C(y)\bigr)\Bigr) \to C(x)$$
+   ```math
+   \forall x,\ \Bigl(\bigl(\forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\bigr) \ \wedge\ \bigl(\forall y,\ r\,y\,x \to C(y)\bigr)\Bigr) \to C(x)
+   ```
    をみたすならば、$\forall x,\ \mathrm{Acc}(r,x) \to C(x)$。
    導入規則が 1 つしかないから帰納段も 1 つであり、基底段に相当するのは
    $x$ が $r$-前者をもたない場合、すなわち帰納法の仮定 $\forall y,\ r\,y\,x \to C(y)$ が
@@ -63,7 +73,9 @@ $$\frac{\ \forall y,\ r\,y\,x \to \mathrm{Acc}(r,y)\ }{\ \mathrm{Acc}(r,x)\ }\ \
 
 $\mathrm{WF}$ も 1 つの導入規則で生成される。
 
-$$\frac{\ \forall a,\ \mathrm{Acc}(r,a)\ }{\ \mathrm{WF}(r)\ }\ \text{(WellFounded.intro)}$$
+```math
+\frac{\ \forall a,\ \mathrm{Acc}(r,a)\ }{\ \mathrm{WF}(r)\ }\ \text{(WellFounded.intro)}
+```
 
 その逆向きの読み（Lean の `WellFounded.apply`）は
 $\mathrm{WF}(r) \to \forall a,\ \mathrm{Acc}(r,a)$ である。
@@ -75,12 +87,16 @@ $\mathrm{WF}(r) \to \forall a,\ \mathrm{Acc}(r,a)$ である。
 
 **主張** 任意の $M \in \mathrm{PairSeq}$ について
 
-$$\mathrm{Acc}(R_{\mathrm{PS}}, M) \ \wedge\ M \in \mathrm{ST\_PS}
-\ \Longrightarrow\ \mathrm{Acc}(R_{\mathrm{NF}}, \mathrm{tr}\,M).$$
+```math
+\mathrm{Acc}(R_{\mathrm{PS}}, M) \ \wedge\ M \in \mathrm{ST\_PS}
+\ \Longrightarrow\ \mathrm{Acc}(R_{\mathrm{NF}}, \mathrm{tr}\,M).
+```
 
 **証明** $\mathrm{Acc}(R_{\mathrm{PS}}, M)$ の導出に関する帰納法を行う。帰納法の述語を
 
-$$\Phi(M) \ :\equiv\ \bigl(M \in \mathrm{ST\_PS} \to \mathrm{Acc}(R_{\mathrm{NF}}, \mathrm{tr}\,M)\bigr)$$
+```math
+\Phi(M) \ :\equiv\ \bigl(M \in \mathrm{ST\_PS} \to \mathrm{Acc}(R_{\mathrm{NF}}, \mathrm{tr}\,M)\bigr)
+```
 
 とする（$M$ は $\mathrm{Acc}(R_{\mathrm{PS}},\cdot)$ が成り立つペア列を走る）。
 上の $\mathrm{Acc}$ の帰納法原理により、$\forall M,\ \mathrm{Acc}(R_{\mathrm{PS}},M) \to \Phi(M)$ を示すには
@@ -90,24 +106,32 @@ $$\Phi(M) \ :\equiv\ \bigl(M \in \mathrm{ST\_PS} \to \mathrm{Acc}(R_{\mathrm{NF}
 
 - $\forall N,\ R_{\mathrm{PS}}(N, M_0) \to \mathrm{Acc}(R_{\mathrm{PS}}, N)$（本証明では使わない）、
 - 帰納法の仮定
-  $$\mathrm{IH} \ :\equiv\ \forall N,\ R_{\mathrm{PS}}(N, M_0) \to \bigl(N \in \mathrm{ST\_PS} \to \mathrm{Acc}(R_{\mathrm{NF}}, \mathrm{tr}\,N)\bigr)$$
+  ```math
+  \mathrm{IH} \ :\equiv\ \forall N,\ R_{\mathrm{PS}}(N, M_0) \to \bigl(N \in \mathrm{ST\_PS} \to \mathrm{Acc}(R_{\mathrm{NF}}, \mathrm{tr}\,N)\bigr)
+  ```
 
 が成り立つとき、$\Phi(M_0)$ を示す。
 
 $M_0 \in \mathrm{ST\_PS}$ を仮定する。示すべきは $\mathrm{Acc}(R_{\mathrm{NF}}, \mathrm{tr}\,M_0)$ である。
 $\mathrm{Acc}$ の構成規則（上の 1）により、
 
-$$\forall v \in \mathrm{Three},\ R_{\mathrm{NF}}(v, \mathrm{tr}\,M_0) \to \mathrm{Acc}(R_{\mathrm{NF}}, v)$$
+```math
+\forall v \in \mathrm{Three},\ R_{\mathrm{NF}}(v, \mathrm{tr}\,M_0) \to \mathrm{Acc}(R_{\mathrm{NF}}, v)
+```
 
 を示せば足りる。そこで $v \in \mathrm{Three}$ を取り $R_{\mathrm{NF}}(v, \mathrm{tr}\,M_0)$ を仮定する。
 [(D.Rnf)](Proofs.md#d-Rnf) よりこれは 3 つの連言
 
-$$v \prec \mathrm{tr}\,M_0, \qquad \mathrm{tr}\,M_0 \in \mathrm{NF}, \qquad v \in \mathrm{NF}$$
+```math
+v \prec \mathrm{tr}\,M_0, \qquad \mathrm{tr}\,M_0 \in \mathrm{NF}, \qquad v \in \mathrm{NF}
+```
 
 である。第 2 の連言は以下で用いない。第 3 の連言 $v \in \mathrm{NF}$ に
 [(D.NF)](Proofs.md#d-NF) を適用すると、ある $N \in \mathrm{PairSeq}$ が存在して
 
-$$N \in \mathrm{ST\_PS} \qquad\text{かつ}\qquad \mathrm{tr}\,N = v$$
+```math
+N \in \mathrm{ST\_PS} \qquad\text{かつ}\qquad \mathrm{tr}\,N = v
+```
 
 が成り立つ。$v$ を $\mathrm{tr}\,N$ で置き換えると、第 1 の連言は
 $\mathrm{tr}\,N \prec \mathrm{tr}\,M_0$ となり、示すべき目標は $\mathrm{Acc}(R_{\mathrm{NF}}, \mathrm{tr}\,N)$ となる。
@@ -131,14 +155,18 @@ $R_{\mathrm{NF}}(v, \mathrm{tr}\,M_0)$ をみたす $v$ が存在せず、$\math
 
 **主張**
 
-$$\mathrm{WF}(R_{\mathrm{PS}}) \ \Longrightarrow\ \mathrm{WF}(R_{\mathrm{NF}}).$$
+```math
+\mathrm{WF}(R_{\mathrm{PS}}) \ \Longrightarrow\ \mathrm{WF}(R_{\mathrm{NF}}).
+```
 
 すなわち、ペア列上の関係「$a$ と $b$ がともに標準形であって $\mathrm{tr}\,a \prec \mathrm{tr}\,b$」が整礎ならば、
 [(D.Rnf)](Proofs.md#d-Rnf) は整礎である。
 
 **証明** $\mathrm{WF}(R_{\mathrm{PS}})$ を仮定する。$\mathrm{WF}$ の導入規則により、
 
-$$\forall u \in \mathrm{Three},\ \mathrm{Acc}(R_{\mathrm{NF}}, u)$$
+```math
+\forall u \in \mathrm{Three},\ \mathrm{Acc}(R_{\mathrm{NF}}, u)
+```
 
 を示せばよい。$u \in \mathrm{Three}$ を固定し、排中律により $u \in \mathrm{NF}$ か $u \notin \mathrm{NF}$ かで場合分けする。
 
@@ -154,7 +182,9 @@ $\mathrm{Acc}(R_{\mathrm{NF}}, \mathrm{tr}\,M)$ が得られる。
 **場合 (ii): $u \notin \mathrm{NF}$.**
 $\mathrm{Acc}$ の構成規則により、
 
-$$\forall v \in \mathrm{Three},\ R_{\mathrm{NF}}(v, u) \to \mathrm{Acc}(R_{\mathrm{NF}}, v)$$
+```math
+\forall v \in \mathrm{Three},\ R_{\mathrm{NF}}(v, u) \to \mathrm{Acc}(R_{\mathrm{NF}}, v)
+```
 
 を示せばよい。$v$ を取り $R_{\mathrm{NF}}(v,u)$ を仮定する。
 [(D.Rnf)](Proofs.md#d-Rnf) の 3 つの連言のうち第 2 のものは $u \in \mathrm{NF}$ である。

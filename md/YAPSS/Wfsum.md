@@ -66,8 +66,10 @@ $\mathrm{sargs}$, $\mathrm{margs}$, $\mathrm{summands}$, [(T.summands_shape)](#t
 
 関数 $\mathrm{sargs}:\mathrm{Three}\to\mathrm{List}(\mathrm{Three})$ を、定義域の項の構造に関する再帰で定める。
 
-$$\mathrm{sargs}\,\mathsf{Z} := [],\qquad
-  \mathrm{sargs}\,\mathsf{P}(a,b,c) := b\mathbin{::}\mathrm{sargs}\,c .$$
+```math
+\mathrm{sargs}\,\mathsf{Z} := [],\qquad
+  \mathrm{sargs}\,\mathsf{P}(a,b,c) := b\mathbin{::}\mathrm{sargs}\,c .
+```
 
 第 2 式の右辺に現れる再帰呼び出しの引数 $c$ は $\mathsf{P}(a,b,c)$ の真部分項であるから、
 この定義は構造帰納として整合的である。第 2 式の右辺は添字 $a$ を用いていない（Lean のパターンも `| P _ b c` である）。
@@ -77,11 +79,15 @@ $$\mathrm{sargs}\,\mathsf{Z} := [],\qquad
 $k\in\mathbb{N}$、$a_1,\dots,a_k\in\mathbb{N}$、$b_1,\dots,b_k\in\mathrm{Three}$ に対し、項の列
 $S_k,S_{k-1},\dots,S_0$ を添字の降順に
 
-$$S_k := \mathsf{Z},\qquad S_i := \mathsf{P}(a_{i+1},b_{i+1},S_{i+1})\quad(0\le i<k)$$
+```math
+S_k := \mathsf{Z},\qquad S_i := \mathsf{P}(a_{i+1},b_{i+1},S_{i+1})\quad(0\le i<k)
+```
 
 で定める。すなわち
 
-$$S_0 = \mathsf{P}\bigl(a_1,b_1,\mathsf{P}(a_2,b_2,\cdots\mathsf{P}(a_k,b_k,\mathsf{Z})\cdots)\bigr)$$
+```math
+S_0 = \mathsf{P}\bigl(a_1,b_1,\mathsf{P}(a_2,b_2,\cdots\mathsf{P}(a_k,b_k,\mathsf{Z})\cdots)\bigr)
+```
 
 であり、$k=0$ のときは $S_0=\mathsf{Z}$ である。[(D.Three)](Mechanized.md#d-Three) の読み方に従えば
 $S_0$ は和 $p_{a_1}(b_1)+p_{a_2}(b_2)+\dots+p_{a_k}(b_k)$ を表す。これを $S_0$ の**和鎖表示**と呼ぶ。
@@ -91,7 +97,9 @@ $b_1,\dots,b_k\in\mathrm{Three}$ が存在して $x=S_0$ となる。ここで $
 $b_1,\dots,b_k$ から上の再帰で定まる項である（以下の $\Phi$ の中の $S_0$ も同じ意味である）。
 
 *証明.* $x$ の構造に関する帰納法。帰納法の述語は
-$$\Phi(x):\equiv \exists k\in\mathbb{N},\ \exists a_1,\dots,a_k\in\mathbb{N},\ \exists b_1,\dots,b_k\in\mathrm{Three},\ x=S_0 .$$
+```math
+\Phi(x):\equiv \exists k\in\mathbb{N},\ \exists a_1,\dots,a_k\in\mathbb{N},\ \exists b_1,\dots,b_k\in\mathrm{Three},\ x=S_0 .
+```
 
 - 基底段 $x=\mathsf{Z}$：$k=0$ と取れば $S_0=S_k=\mathsf{Z}=x$ であり $\Phi(\mathsf{Z})$。
 - 帰納段 $x=\mathsf{P}(a,b,c)$：帰納法の仮定は $\Phi(b)$ と $\Phi(c)$ である。ここでは $\Phi(c)$ のみを用いる。
@@ -104,15 +112,19 @@ $$\Phi(x):\equiv \exists k\in\mathbb{N},\ \exists a_1,\dots,a_k\in\mathbb{N},\ \
 $\mathrm{sargs}\,S_i=[b_{i+1},b_{i+2},\dots,b_k]$。特に $\mathrm{sargs}\,S_0=[b_1,\dots,b_k]$。
 
 *証明.* $k-i$ に関する帰納法（$i$ の降順の帰納法）。帰納法の述語は
-$$\Psi(m):\equiv \mathrm{sargs}\,S_{k-m}=[b_{k-m+1},\dots,b_k]\qquad(0\le m\le k).$$
+```math
+\Psi(m):\equiv \mathrm{sargs}\,S_{k-m}=[b_{k-m+1},\dots,b_k]\qquad(0\le m\le k).
+```
 
 - 基底段 $m=0$：$S_k=\mathsf{Z}$ であり、$\mathrm{sargs}\,\mathsf{Z}=[]$（[(T.sargs_Z)](#t-sargs_Z)）。
   右辺 $[b_{k+1},\dots,b_k]$ は要素を 1 つも持たない列、すなわち $[]$ である。よって $\Psi(0)$。
 - 帰納段 $m+1\le k$：帰納法の仮定は $\Psi(m)$、すなわち $\mathrm{sargs}\,S_{k-m}=[b_{k-m+1},\dots,b_k]$。
   $i:=k-(m+1)$ と置くと $0\le i<k$ かつ $i+1=k-m$ だから、定義より $S_i=\mathsf{P}(a_{i+1},b_{i+1},S_{i+1})$ であり、
   [(T.sargs_P)](#t-sargs_P) より
-  $$\mathrm{sargs}\,S_i=b_{i+1}\mathbin{::}\mathrm{sargs}\,S_{i+1}
-   =b_{i+1}\mathbin{::}[b_{i+2},\dots,b_k]=[b_{i+1},b_{i+2},\dots,b_k].$$
+  ```math
+  \mathrm{sargs}\,S_i=b_{i+1}\mathbin{::}\mathrm{sargs}\,S_{i+1}
+   =b_{i+1}\mathbin{::}[b_{i+2},\dots,b_k]=[b_{i+1},b_{i+2},\dots,b_k].
+  ```
   よって $\Psi(m+1)$。$\square$
 
 <a id="t-sargs_Z"></a>
@@ -134,7 +146,9 @@ $\mathrm{sargs}\,\mathsf{P}(a,b,c)=b\mathbin{::}\mathrm{sargs}\,c$。
 <a id="d-margs"></a>
 ### 定義 引数の多重集合 (D.margs)
 
-$$\mathrm{margs}\,x := \mathrm{ms}(\mathrm{sargs}\,x)\ \in\ \mathrm{Multiset}(\mathrm{Three})$$
+```math
+\mathrm{margs}\,x := \mathrm{ms}(\mathrm{sargs}\,x)\ \in\ \mathrm{Multiset}(\mathrm{Three})
+```
 
 （[(D.sargs)](#d-sargs)）。すなわち $\mathrm{sargs}\,x$ の要素を、出現回数を保ったまま、順序を忘れて集めた多重集合である。
 [(D.sargs)](#d-sargs) の補足の記号で $x=S_0$ と和鎖表示すれば、$\mathrm{margs}\,x$ は $b_1,\dots,b_k$ を
@@ -172,8 +186,10 @@ Lean の節注釈によれば、この節は「（添字が $0$ であるとい�
 
 関数 $\mathrm{summands}:\mathrm{Three}\to\mathrm{List}(\mathrm{Three})$ を、定義域の項の構造に関する再帰で定める。
 
-$$\mathrm{summands}\,\mathsf{Z} := [],\qquad
-  \mathrm{summands}\,\mathsf{P}(a,b,c) := \mathsf{P}(a,b,\mathsf{Z})\mathbin{::}\mathrm{summands}\,c .$$
+```math
+\mathrm{summands}\,\mathsf{Z} := [],\qquad
+  \mathrm{summands}\,\mathsf{P}(a,b,c) := \mathsf{P}(a,b,\mathsf{Z})\mathbin{::}\mathrm{summands}\,c .
+```
 
 第 2 式の右辺の再帰呼び出しの引数 $c$ は $\mathsf{P}(a,b,c)$ の真部分項であるから、この定義は構造帰納として整合的である。
 [(D.Three)](Mechanized.md#d-Three) の読み方では $\mathsf{P}(a,b,\mathsf{Z})$ は $p_a(b)+0$、すなわち単項の和 $p_a(b)$ を表す。
@@ -182,18 +198,24 @@ $$\mathrm{summands}\,\mathsf{Z} := [],\qquad
 [(D.sargs)](#d-sargs) の補足で定めた和鎖表示 $S_k=\mathsf{Z}$、$S_i=\mathsf{P}(a_{i+1},b_{i+1},S_{i+1})$（$0\le i<k$）
 のもとで、$0\le i\le k$ なるすべての $i$ について
 
-$$\mathrm{summands}\,S_i=[\ \mathsf{P}(a_{i+1},b_{i+1},\mathsf{Z}),\ \mathsf{P}(a_{i+2},b_{i+2},\mathsf{Z}),\ \dots,\ \mathsf{P}(a_k,b_k,\mathsf{Z})\ ].$$
+```math
+\mathrm{summands}\,S_i=[\ \mathsf{P}(a_{i+1},b_{i+1},\mathsf{Z}),\ \mathsf{P}(a_{i+2},b_{i+2},\mathsf{Z}),\ \dots,\ \mathsf{P}(a_k,b_k,\mathsf{Z})\ ].
+```
 
 *証明.* $k-i$ に関する帰納法（$i$ の降順の帰納法）。帰納法の述語は
-$$\Xi(m):\equiv \mathrm{summands}\,S_{k-m}=[\mathsf{P}(a_{k-m+1},b_{k-m+1},\mathsf{Z}),\dots,\mathsf{P}(a_k,b_k,\mathsf{Z})]
-\qquad(0\le m\le k).$$
+```math
+\Xi(m):\equiv \mathrm{summands}\,S_{k-m}=[\mathsf{P}(a_{k-m+1},b_{k-m+1},\mathsf{Z}),\dots,\mathsf{P}(a_k,b_k,\mathsf{Z})]
+\qquad(0\le m\le k).
+```
 
 - 基底段 $m=0$：$S_k=\mathsf{Z}$ であり $\mathrm{summands}\,\mathsf{Z}=[]$（[(T.summands_Z)](#t-summands_Z)）。
   右辺は要素を 1 つも持たない列 $[]$ である。よって $\Xi(0)$。
 - 帰納段 $m+1\le k$：帰納法の仮定は $\Xi(m)$。$i:=k-(m+1)$ と置くと $0\le i<k$ かつ $i+1=k-m$ であるから、
   $S_i=\mathsf{P}(a_{i+1},b_{i+1},S_{i+1})$ であり、[(T.summands_P)](#t-summands_P) より
-  $$\mathrm{summands}\,S_i=\mathsf{P}(a_{i+1},b_{i+1},\mathsf{Z})\mathbin{::}\mathrm{summands}\,S_{i+1}
-   =[\mathsf{P}(a_{i+1},b_{i+1},\mathsf{Z}),\dots,\mathsf{P}(a_k,b_k,\mathsf{Z})].$$
+  ```math
+  \mathrm{summands}\,S_i=\mathsf{P}(a_{i+1},b_{i+1},\mathsf{Z})\mathbin{::}\mathrm{summands}\,S_{i+1}
+   =[\mathsf{P}(a_{i+1},b_{i+1},\mathsf{Z}),\dots,\mathsf{P}(a_k,b_k,\mathsf{Z})].
+  ```
   よって $\Xi(m+1)$。$\square$
 
 $i=0$ と [(D.sargs)](#d-sargs) の主張 A を合わせると、任意の $x\in\mathrm{Three}$ について
@@ -226,16 +248,22 @@ $s=\mathsf{P}(e,f,\mathsf{Z})$。
 
 **証明** $s$ を固定し、$x$ の構造に関する帰納法。帰納法の述語は
 
-$$\Theta(x):\equiv \bigl(s\in\mathrm{summands}\,x\bigr)\ \to\ \exists e\in\mathbb{N},\ \exists f\in\mathrm{Three},\ s=\mathsf{P}(e,f,\mathsf{Z}).$$
+```math
+\Theta(x):\equiv \bigl(s\in\mathrm{summands}\,x\bigr)\ \to\ \exists e\in\mathbb{N},\ \exists f\in\mathrm{Three},\ s=\mathsf{P}(e,f,\mathsf{Z}).
+```
 
 - 基底段 $x=\mathsf{Z}$：[(T.summands_Z)](#t-summands_Z) より $\mathrm{summands}\,\mathsf{Z}=[]$ であるから、
   前件は $s\in[]$ である。空リストは要素を持たないから $s\in[]$ は偽であり、含意 $\Theta(\mathsf{Z})$ は成り立つ。
   （Lean 側の `simp at hs` はこの `List.not_mem_nil` による矛盾の導出である。）
 - 帰納段 $x=\mathsf{P}(a,b,c)$：帰納法の仮定は $\Theta(b)$ と $\Theta(c)$ である。以下では $\Theta(c)$ のみを用いる。
   前件 $s\in\mathrm{summands}\,\mathsf{P}(a,b,c)$ を仮定する。[(T.summands_P)](#t-summands_P) により、これは
-  $$s\in \mathsf{P}(a,b,\mathsf{Z})\mathbin{::}\mathrm{summands}\,c$$
+  ```math
+  s\in \mathsf{P}(a,b,\mathsf{Z})\mathbin{::}\mathrm{summands}\,c
+  ```
   と同じ命題である。先頭付加されたリストへの所属は
-  $$s\in (u\mathbin{::}L)\ \iff\ s=u\ \vee\ s\in L$$
+  ```math
+  s\in (u\mathbin{::}L)\ \iff\ s=u\ \vee\ s\in L
+  ```
   （Lean の `List.mem_cons`）であるから、次の 2 つの場合に分かれる。
   - $s=\mathsf{P}(a,b,\mathsf{Z})$ の場合：$e:=a$、$f:=b$ と取れば $s=\mathsf{P}(e,f,\mathsf{Z})$ であり、結論が成り立つ。
   - $s\in\mathrm{summands}\,c$ の場合：帰納法の仮定 $\Theta(c)$ をこの所属に適用して、
@@ -259,8 +287,10 @@ $\prec$ が整礎であることを扱う節である。その主張を述べる
 
 関数 $\mathrm{tsize}:\mathrm{Three}\to\mathbb{N}$ を、定義域の項の構造に関する再帰で定める。
 
-$$\mathrm{tsize}\,\mathsf{Z} := 1,\qquad
-  \mathrm{tsize}\,\mathsf{P}(a,b,c) := \mathrm{tsize}\,b+\mathrm{tsize}\,c+1 .$$
+```math
+\mathrm{tsize}\,\mathsf{Z} := 1,\qquad
+  \mathrm{tsize}\,\mathsf{P}(a,b,c) := \mathrm{tsize}\,b+\mathrm{tsize}\,c+1 .
+```
 
 第 2 式の右辺の再帰呼び出しの引数 $b$, $c$ はいずれも $\mathsf{P}(a,b,c)$ の真部分項であるから、
 この定義は構造帰納として整合的である。右辺は添字 $a$ を用いていない（Lean のパターンも `| P _ b c` である）から、

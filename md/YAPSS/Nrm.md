@@ -87,7 +87,9 @@ $x$ と $y$ の構造に関する同時再帰で定義する。
 - $(x,y) = (\mathsf{P}(a,b,c),\mathsf{P}(e,f,g))$：再帰呼び出しにより $b\prec f$ の決定手続きと
   $c\prec g$ の決定手続きを得る。$a<e$ と $a=e$ は自然数上で決定可能である。
   [(T.olt_P_P)](Mechanized.md#t-olt_P_P) より
-  $$\mathsf{P}(a,b,c)\prec\mathsf{P}(e,f,g)\iff a<e \vee (a=e \wedge b\prec f) \vee (a=e\wedge b=f\wedge c\prec g)$$
+  ```math
+  \mathsf{P}(a,b,c)\prec\mathsf{P}(e,f,g)\iff a<e \vee (a=e \wedge b\prec f) \vee (a=e\wedge b=f\wedge c\prec g)
+  ```
   であり、右辺は決定可能な命題の連言・選言と $b=f$（$\mathrm{Three}$ は等号決定可能）で
   構成されているから決定可能である。同値な命題は決定可能性を移す。
 
@@ -107,10 +109,12 @@ $x$ と $y$ の構造に関する同時再帰で定義する。
 $u \in \mathbb{N}$ に対し、$\mathrm{Three}$ の項に $\mathrm{Three}$ の有限列を対応させる写像
 $\mathrm{Glist}_u$ を、引数の構造に関する再帰で定める。
 
-$$\mathrm{Glist}_u(\mathsf{Z}) := (),\qquad
+```math
+\mathrm{Glist}_u(\mathsf{Z}) := (),\qquad
 \mathrm{Glist}_u(\mathsf{P}(a,b,c)) :=
 \Bigl(u\le a \text{ ならば } b \mathbin{::} \mathrm{Glist}_u(b),\ \text{さもなくば } ()\Bigr)
-\mathbin{+\!\!+} \mathrm{Glist}_u(c).$$
+\mathbin{+\!\!+} \mathrm{Glist}_u(c).
+```
 
 再帰呼び出しの引数 $b$, $c$ は $\mathsf{P}(a,b,c)$ の真部分項であるから、この定義は整合的である。
 これは集合値の $G_u$（[(D.Gterm)](Otembed.md#d-Gterm)）を列として計算するものであり、
@@ -127,9 +131,11 @@ $$\mathrm{Glist}_u(\mathsf{Z}) := (),\qquad
 ### 定理 $\mathrm{Glist}$ の $\mathsf{P}$ での値 (T.Glist_P)
 
 **主張** $u, a \in \mathbb{N}$、$b, c \in \mathrm{Three}$ に対し
-$$\mathrm{Glist}_u(\mathsf{P}(a,b,c)) =
+```math
+\mathrm{Glist}_u(\mathsf{P}(a,b,c)) =
 \Bigl(u\le a \text{ ならば } b \mathbin{::} \mathrm{Glist}_u(b),\ \text{さもなくば } ()\Bigr)
-\mathbin{+\!\!+} \mathrm{Glist}_u(c).$$
+\mathbin{+\!\!+} \mathrm{Glist}_u(c).
+```
 
 **証明** [(D.Glist)](#d-Glist) の第 2 式そのものであり、両辺は定義により同一である。∎
 
@@ -137,26 +143,38 @@ $$\mathrm{Glist}_u(\mathsf{P}(a,b,c)) =
 ### 定理 $\mathrm{Glist}$ と $G_u$ の要素の一致 (T.mem_Glist)
 
 **主張** $u \in \mathbb{N}$、$t, x \in \mathrm{Three}$ に対し
-$$x \in \mathrm{Glist}_u(t) \iff x \in G_u(t).$$
+```math
+x \in \mathrm{Glist}_u(t) \iff x \in G_u(t).
+```
 
 **証明** $x$ と $u$ を固定し、$t$ の構造に関する帰納法を行う。帰納法の述語は
-$$\Phi(t) :\equiv \bigl(x \in \mathrm{Glist}_u(t) \iff x \in G_u(t)\bigr).$$
+```math
+\Phi(t) :\equiv \bigl(x \in \mathrm{Glist}_u(t) \iff x \in G_u(t)\bigr).
+```
 
 - 基底段 $t=\mathsf{Z}$：[(T.Glist_Z)](#t-Glist_Z) より $\mathrm{Glist}_u(\mathsf{Z}) = ()$ であり、
   空列は要素をもたないから左辺は偽。[(T.Gterm_Z)](Otembed.md#t-Gterm_Z) より $G_u(\mathsf{Z}) = \emptyset$ であり、
   右辺も偽。偽どうしは同値であるから $\Phi(\mathsf{Z})$。
 - 帰納段 $t=\mathsf{P}(a,b,c)$：帰納法の仮定は
-  $$\Phi(b) :\equiv \bigl(x \in \mathrm{Glist}_u(b) \iff x \in G_u(b)\bigr),\qquad
-    \Phi(c) :\equiv \bigl(x \in \mathrm{Glist}_u(c) \iff x \in G_u(c)\bigr)$$
+  ```math
+  \Phi(b) :\equiv \bigl(x \in \mathrm{Glist}_u(b) \iff x \in G_u(b)\bigr),\qquad
+    \Phi(c) :\equiv \bigl(x \in \mathrm{Glist}_u(c) \iff x \in G_u(c)\bigr)
+  ```
   である。[(T.Glist_P)](#t-Glist_P) と [(T.mem_Gterm_P)](Otembed.md#t-mem_Gterm_P)
-  $$x \in G_u(\mathsf{P}(a,b,c)) \iff \bigl(u\le a \wedge (x=b \vee x\in G_u(b))\bigr) \vee x \in G_u(c)$$
+  ```math
+  x \in G_u(\mathsf{P}(a,b,c)) \iff \bigl(u\le a \wedge (x=b \vee x\in G_u(b))\bigr) \vee x \in G_u(c)
+  ```
   を用いて、$u \le a$ か否かで場合分けする。
 
   - $u\le a$ のとき：左辺は $x \in (b \mathbin{::} \mathrm{Glist}_u(b)) \mathbin{+\!\!+} \mathrm{Glist}_u(c)$、
     すなわち連結と先頭付加の要素判定より
-    $$x = b \ \vee\ x \in \mathrm{Glist}_u(b) \ \vee\ x \in \mathrm{Glist}_u(c)$$
+    ```math
+    x = b \ \vee\ x \in \mathrm{Glist}_u(b) \ \vee\ x \in \mathrm{Glist}_u(c)
+    ```
     と同値。右辺は $u\le a$ が真だから
-    $$\bigl(x=b \vee x\in G_u(b)\bigr) \vee x \in G_u(c)$$
+    ```math
+    \bigl(x=b \vee x\in G_u(b)\bigr) \vee x \in G_u(c)
+    ```
     と同値。$\Phi(b)$, $\Phi(c)$ で第 2・第 3 の選言肢を書き換え、$\vee$ の結合律で括りを直すと両者は一致する。
   - $\neg(u\le a)$ のとき：左辺は $x \in () \mathbin{+\!\!+} \mathrm{Glist}_u(c) = \mathrm{Glist}_u(c)$
     と同値。右辺の第 1 選言肢は $u\le a$ が偽だから偽であり、右辺は $x \in G_u(c)$ と同値。
@@ -170,8 +188,10 @@ $$\Phi(t) :\equiv \bigl(x \in \mathrm{Glist}_u(t) \iff x \in G_u(t)\bigr).$$
 $x \in \mathrm{Three}$ と $\mathrm{Three}$ の有限列 $L$ に対し、$\mathrm{maxo}(x,L)$ を
 $L$ の構造に関する再帰で定める。
 
-$$\mathrm{maxo}(x, ()) := x,\qquad
-  \mathrm{maxo}(x, y \mathbin{::} ys) := \mathrm{maxo}\bigl(x\prec y \text{ ならば } y \text{、さもなくば } x,\ ys\bigr).$$
+```math
+\mathrm{maxo}(x, ()) := x,\qquad
+  \mathrm{maxo}(x, y \mathbin{::} ys) := \mathrm{maxo}\bigl(x\prec y \text{ ならば } y \text{、さもなくば } x,\ ys\bigr).
+```
 
 すなわち $x$ を初期値として $L$ を左から走査し、現在値 $z$ に対し $z \prec y$ が成り立つときのみ
 $z$ を $y$ に置き換える。条件 $x \prec y$ の判定には [(D.oltDecidable)](#d-oltDecidable) を用いる。
@@ -197,12 +217,16 @@ $z$ を $y$ に置き換える。条件 $x \prec y$ の判定には [(D.oltDecid
 **主張** 任意の $x\in\mathrm{Three}$ と有限列 $ys$ に対し $\mathrm{maxo}(x,ys) \in x \mathbin{::} ys$。
 
 **証明** $ys$ の構造に関する帰納法（$x$ は全称量化したまま動かす）。帰納法の述語は
-$$\Phi(ys) :\equiv \forall x \in \mathrm{Three},\ \mathrm{maxo}(x,ys) \in x \mathbin{::} ys.$$
+```math
+\Phi(ys) :\equiv \forall x \in \mathrm{Three},\ \mathrm{maxo}(x,ys) \in x \mathbin{::} ys.
+```
 
 - 基底段 $ys=()$：[(T.maxo_nil)](#t-maxo_nil) より $\mathrm{maxo}(x,())=x$ であり、
   $x \in (x)$ が成り立つ。よって $\Phi(())$。
 - 帰納段 $ys = y \mathbin{::} ys'$：帰納法の仮定は
-  $$\Phi(ys') :\equiv \forall x\in\mathrm{Three},\ \mathrm{maxo}(x,ys') \in x \mathbin{::} ys'$$
+  ```math
+  \Phi(ys') :\equiv \forall x\in\mathrm{Three},\ \mathrm{maxo}(x,ys') \in x \mathbin{::} ys'
+  ```
   である。$x$ を任意に取る。[(T.maxo_cons)](#t-maxo_cons) より
   $\mathrm{maxo}(x,y\mathbin{::}ys') = \mathrm{maxo}(z,ys')$、ここで $z$ は $x\prec y$ ならば $y$、
   さもなくば $x$ である。$x \prec y$ の真偽で場合分けする。
@@ -237,10 +261,14 @@ $\mathrm{maxo}(\mathrm{headI}\,gs,\ \mathrm{tail}\,gs) \in gs$。
 ## 崩壊点における射影
 
 以下、$u\in\mathbb{N}$ と $b\in\mathrm{Three}$ に対して
-$$\mathrm{bad}_u(b) := \mathrm{filter}\,\bigl(\lambda g.\ \neg(g\prec b)\bigr)\ \mathrm{Glist}_u(b)$$
+```math
+\mathrm{bad}_u(b) := \mathrm{filter}\,\bigl(\lambda g.\ \neg(g\prec b)\bigr)\ \mathrm{Glist}_u(b)
+```
 と書く（$\mathrm{filter}$ の述語判定は [(D.oltDecidable)](#d-oltDecidable) による）。
 $\mathrm{filter}$ の要素判定より
-$$g \in \mathrm{bad}_u(b) \iff \bigl(g \in \mathrm{Glist}_u(b) \ \wedge\ \neg(g\prec b)\bigr) \tag{$\ast$}$$
+```math
+g \in \mathrm{bad}_u(b) \iff \bigl(g \in \mathrm{Glist}_u(b) \ \wedge\ \neg(g\prec b)\bigr) \tag{$\ast$}
+```
 が成り立つ。特に $\mathrm{bad}_u(b) = ()$ は
 「$\forall g\in\mathrm{Glist}_u(b),\ g\prec b$」と同値である。
 
@@ -250,18 +278,22 @@ $$g \in \mathrm{bad}_u(b) \iff \bigl(g \in \mathrm{Glist}_u(b) \ \wedge\ \neg(g\
 $u\in\mathbb{N}$ に対し $\mathrm{proj}_u : \mathrm{Three}\to\mathrm{Three}$ を
 $\mathrm{tsize}\,b$（[(D.tsize)](Wfsum.md#d-tsize)）に関する整礎再帰で定める。
 
-$$\mathrm{proj}_u b := \begin{cases}
+```math
+\mathrm{proj}_u b := \begin{cases}
 b & \bigl(\mathrm{bad}_u(b) = ()\bigr) \\[2pt]
 \mathrm{proj}_u\bigl(\mathrm{maxo}(\mathrm{headI}\,\mathrm{bad}_u(b),\ \mathrm{tail}\,\mathrm{bad}_u(b))\bigr)
  & \bigl(\mathrm{bad}_u(b) \ne ()\bigr)
-\end{cases}$$
+\end{cases}
+```
 
 **再帰の整合性（減少性）.** 第 2 の場合、
 $m := \mathrm{maxo}(\mathrm{headI}\,\mathrm{bad}_u(b),\ \mathrm{tail}\,\mathrm{bad}_u(b))$ とおくと、
 [(T.maxo_hdtl_in)](#t-maxo_hdtl_in)（$\mathrm{bad}_u(b)\ne()$ による）より $m \in \mathrm{bad}_u(b)$。
 $(\ast)$ より $m \in \mathrm{Glist}_u(b)$、[(T.mem_Glist)](#t-mem_Glist) より $m \in G_u(b)$、
 よって [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) より
-$$\mathrm{tsize}\,m < \mathrm{tsize}\,b .$$
+```math
+\mathrm{tsize}\,m < \mathrm{tsize}\,b .
+```
 したがって再帰は $\mathrm{tsize}$ を真に減少させ、$\mathbb{N}$ の $<$ が整礎であるからこの定義は整合的である。
 
 <a id="t-proj_id"></a>
@@ -276,7 +308,9 @@ $$\mathrm{tsize}\,m < \mathrm{tsize}\,b .$$
 ### 定理 $\mathrm{proj}$ の再帰段 (T.proj_rec)
 
 **主張** $\mathrm{bad}_u(b) \ne ()$ ならば
-$$\mathrm{proj}_u b = \mathrm{proj}_u\bigl(\mathrm{maxo}(\mathrm{headI}\,\mathrm{bad}_u(b),\ \mathrm{tail}\,\mathrm{bad}_u(b))\bigr).$$
+```math
+\mathrm{proj}_u b = \mathrm{proj}_u\bigl(\mathrm{maxo}(\mathrm{headI}\,\mathrm{bad}_u(b),\ \mathrm{tail}\,\mathrm{bad}_u(b))\bigr).
+```
 
 **証明** [(D.proj)](#d-proj) の定義方程式で条件 $\mathrm{bad}_u(b)=()$ が成り立たない場合であり、
 第 2 の場合の値がそのまま結果である。∎
@@ -285,11 +319,15 @@ $$\mathrm{proj}_u b = \mathrm{proj}_u\bigl(\mathrm{maxo}(\mathrm{headI}\,\mathrm
 ### 定理 射影は OT3 条件を満たす (T.proj_G)
 
 **主張** 任意の $u\in\mathbb{N}$、$b\in\mathrm{Three}$ に対し
-$$\forall g \in G_u(\mathrm{proj}_u b),\ g \prec \mathrm{proj}_u b .$$
+```math
+\forall g \in G_u(\mathrm{proj}_u b),\ g \prec \mathrm{proj}_u b .
+```
 
 **証明** $u$ を固定し、$n := \mathrm{tsize}\,b$ に関する $\mathbb{N}$ 上の強帰納法を行う。帰納法の述語は
-$$\Psi(n) :\equiv \forall b\in\mathrm{Three},\ \bigl(\mathrm{tsize}\,b = n \to
-  \forall g \in G_u(\mathrm{proj}_u b),\ g \prec \mathrm{proj}_u b\bigr),$$
+```math
+\Psi(n) :\equiv \forall b\in\mathrm{Three},\ \bigl(\mathrm{tsize}\,b = n \to
+  \forall g \in G_u(\mathrm{proj}_u b),\ g \prec \mathrm{proj}_u b\bigr),
+```
 帰納法の仮定は $\forall m<n,\ \Psi(m)$ である（強帰納法であるから基底段は $n=0$ の特別扱いを要さず、
 $n$ より真に小さいすべての $m$ について $\Psi(m)$ を仮定して $\Psi(n)$ を示す）。
 
@@ -308,7 +346,9 @@ $b$ を $\mathrm{tsize}\,b = n$ なるものとし、$\mathrm{bad}_u(b)$ が空�
   [(T.Gterm_tsize)](Otembed.md#t-Gterm_tsize) より $\mathrm{tsize}\,m < \mathrm{tsize}\,b = n$。
   $\mathrm{tsize}\,m < n$ であるから帰納法の仮定を自然数 $\mathrm{tsize}\,m$ に適用でき、
   得られた $\Psi(\mathrm{tsize}\,m)$ を項 $m$（$\mathrm{tsize}\,m = \mathrm{tsize}\,m$ による）に用いて
-  $$\forall g \in G_u(\mathrm{proj}_u m),\ g \prec \mathrm{proj}_u m$$
+  ```math
+  \forall g \in G_u(\mathrm{proj}_u m),\ g \prec \mathrm{proj}_u m
+  ```
   を得る。$\mathrm{proj}_u b = \mathrm{proj}_u m$ でこれを書き換えれば求める主張である。
 
 以上で $\Psi(n)$ が示され、すべての $n$ について $\Psi(n)$、すなわち主張が成り立つ。∎
@@ -323,11 +363,13 @@ $b$ を $\mathrm{tsize}\,b = n$ なるものとし、$\mathrm{bad}_u(b)$ が空�
 $a\in\mathbb{N}$、$b\in\mathrm{Three}$ に対し $\mathrm{ins}(a,b,\cdot) : \mathrm{Three}\to\mathrm{Three}$ を
 第 3 引数の構成子で場合分けして定める。
 
-$$\mathrm{ins}(a,b,\mathsf{Z}) := \mathsf{P}(a,b,\mathsf{Z}),\qquad
+```math
+\mathrm{ins}(a,b,\mathsf{Z}) := \mathsf{P}(a,b,\mathsf{Z}),\qquad
 \mathrm{ins}(a,b,\mathsf{P}(e,f,g)) := \begin{cases}
 \mathsf{P}(e,f,g) & \bigl(a<e \ \vee\ (a=e \wedge b\prec f)\bigr) \\
 \mathsf{P}(a,b,\mathsf{P}(e,f,g)) & \text{その他}
-\end{cases}$$
+\end{cases}
+```
 
 条件 $a<e \vee (a=e\wedge b\prec f)$ は、[(T.olt_P_P)](Mechanized.md#t-olt_P_P) の右辺の
 第 1・第 2 選言肢であり、主要項どうしの比較 $\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,g)$ を
@@ -345,10 +387,12 @@ $$\mathrm{ins}(a,b,\mathsf{Z}) := \mathsf{P}(a,b,\mathsf{Z}),\qquad
 ### 定理 $\mathrm{ins}$ の $\mathsf{P}$ での値 (T.ins_P)
 
 **主張** $a,e\in\mathbb{N}$、$b,f,g\in\mathrm{Three}$ に対し
-$$\mathrm{ins}(a,b,\mathsf{P}(e,f,g)) = \begin{cases}
+```math
+\mathrm{ins}(a,b,\mathsf{P}(e,f,g)) = \begin{cases}
 \mathsf{P}(e,f,g) & \bigl(a<e \vee (a=e \wedge b\prec f)\bigr) \\
 \mathsf{P}(a,b,\mathsf{P}(e,f,g)) & \text{その他.}
-\end{cases}$$
+\end{cases}
+```
 
 **証明** [(D.ins)](#d-ins) の第 2 式そのものである。∎
 
@@ -357,8 +401,10 @@ $$\mathrm{ins}(a,b,\mathsf{P}(e,f,g)) = \begin{cases}
 
 $\mathrm{nrm} : \mathrm{Three}\to\mathrm{Three}$ を構造に関する再帰で定める。
 
-$$\mathrm{nrm}\,\mathsf{Z} := \mathsf{Z},\qquad
-  \mathrm{nrm}\,\mathsf{P}(a,b,c) := \mathrm{ins}\bigl(a,\ \mathrm{proj}_a(\mathrm{nrm}\,b),\ \mathrm{nrm}\,c\bigr)$$
+```math
+\mathrm{nrm}\,\mathsf{Z} := \mathsf{Z},\qquad
+  \mathrm{nrm}\,\mathsf{P}(a,b,c) := \mathrm{ins}\bigl(a,\ \mathrm{proj}_a(\mathrm{nrm}\,b),\ \mathrm{nrm}\,c\bigr)
+```
 
 （[(D.ins)](#d-ins), [(D.proj)](#d-proj)）。再帰呼び出しの引数 $b$, $c$ は
 $\mathsf{P}(a,b,c)$ の真部分項であるから、この定義は整合的である。
@@ -408,11 +454,15 @@ Lean 側のソースには、この位置に 5 つの注記ブロック
 **主張** $M \in \mathrm{ST\_PS}$ ならば $0 < \lvert M\rvert$。
 
 **証明** [(D.ST_PS)](Def.md#d-ST_PS) の導出に関する帰納法。帰納法の述語は
-$$P(M) :\equiv 0 < \lvert M\rvert .$$
+```math
+P(M) :\equiv 0 < \lvert M\rvert .
+```
 
 - 基底段（規則 (diag)）：$M = \Delta_0^v$。$0\le v$ であるから
   [(T.diagSeq_cons)](Wf.md#t-diagSeq_cons) より $\Delta_0^v = (0,0)\mathbin{::}\Delta_1^v$ であり、
-  $$\lvert \Delta_0^v\rvert = 1 + \lvert\Delta_1^v\rvert \ge 1 > 0 .$$
+  ```math
+  \lvert \Delta_0^v\rvert = 1 + \lvert\Delta_1^v\rvert \ge 1 > 0 .
+  ```
   よって $P(\Delta_0^v)$。
 - 帰納段（規則 (oper)）：$N\in\mathrm{ST\_PS}$、$1\le n$ とし、帰納法の仮定
   $P(N) :\equiv 0<\lvert N\rvert$ の下で $P(N[n]) :\equiv 0<\lvert N[n]\rvert$ を示す。
@@ -420,8 +470,10 @@ $$P(M) :\equiv 0 < \lvert M\rvert .$$
 
   - $1 < \lvert N\rvert$ のとき：[(T.oper_eq_dropLast_append)](Wf.md#t-oper_eq_dropLast_append) より、
     ある $R$ が存在して $N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R$。よって
-    $$\lvert N[n]\rvert = \lvert \mathrm{dropLast}\,N\rvert + \lvert R\rvert
-      = (\lvert N\rvert - 1) + \lvert R\rvert .$$
+    ```math
+    \lvert N[n]\rvert = \lvert \mathrm{dropLast}\,N\rvert + \lvert R\rvert
+      = (\lvert N\rvert - 1) + \lvert R\rvert .
+    ```
     $1<\lvert N\rvert$ すなわち $\lvert N\rvert \ge 2$ より $\lvert N\rvert - 1 \ge 1$ であるから
     $\lvert N[n]\rvert \ge 1 > 0$。
   - $\neg(1<\lvert N\rvert)$ のとき：$\lvert N\rvert \le 1$ であるから
@@ -437,7 +489,9 @@ $$P(M) :\equiv 0 < \lvert M\rvert .$$
 Lean では `M.headD (0,0) = (0,0)`。
 
 **証明** [(D.ST_PS)](Def.md#d-ST_PS) の導出に関する帰納法。帰納法の述語は
-$$Q(M) :\equiv \bigl(M \text{ の先頭要素（既定値 }(0,0)\text{）} = (0,0)\bigr).$$
+```math
+Q(M) :\equiv \bigl(M \text{ の先頭要素（既定値 }(0,0)\text{）} = (0,0)\bigr).
+```
 
 - 基底段（規則 (diag)）：$M=\Delta_0^v$。$0\le v$ より
   [(T.diagSeq_cons)](Wf.md#t-diagSeq_cons) から $\Delta_0^v = (0,0)\mathbin{::}\Delta_1^v$ であり、
@@ -450,8 +504,10 @@ $$Q(M) :\equiv \bigl(M \text{ の先頭要素（既定値 }(0,0)\text{）} = (0,
     $\lvert N\rvert \ge 2$ であるから $N$ は $N = p \mathbin{::} q \mathbin{::} u$ の形に書ける。
     $\mathrm{dropLast}$ の定義（要素 2 個以上の列では
     $\mathrm{dropLast}(p\mathbin{::}q\mathbin{::}u) = p \mathbin{::} \mathrm{dropLast}(q\mathbin{::}u)$）より
-    $$N[n] = \bigl(p \mathbin{::} \mathrm{dropLast}(q\mathbin{::}u)\bigr) \mathbin{+\!\!+} R
-           = p \mathbin{::} \bigl(\mathrm{dropLast}(q\mathbin{::}u) \mathbin{+\!\!+} R\bigr)$$
+    ```math
+    N[n] = \bigl(p \mathbin{::} \mathrm{dropLast}(q\mathbin{::}u)\bigr) \mathbin{+\!\!+} R
+           = p \mathbin{::} \bigl(\mathrm{dropLast}(q\mathbin{::}u) \mathbin{+\!\!+} R\bigr)
+    ```
     であり、先頭要素は $p$。帰納法の仮定 $Q(N)$ は $N$ の先頭要素が $(0,0)$、すなわち $p=(0,0)$ を与える。
   - $\neg(1<\lvert N\rvert)$ のとき：$\lvert N\rvert\le 1$ より
     [(T.oper_eq_self_short)](Proofs.md#t-oper_eq_self_short) から $N[n]=N$ であり、
@@ -465,7 +521,9 @@ $$Q(M) :\equiv \bigl(M \text{ の先頭要素（既定値 }(0,0)\text{）} = (0,
 
 本節の目標は [(T.oper_append_right)](#t-oper_append_right)、すなわち
 $2\le\lvert T\rvert$ かつ $T_{0,0}=0$ のとき
-$$(A\mathbin{+\!\!+}T)[n] = A \mathbin{+\!\!+} T[n]$$
+```math
+(A\mathbin{+\!\!+}T)[n] = A \mathbin{+\!\!+} T[n]
+```
 である。[(D.oper)](Def.md#d-oper) は末尾の添字 $j_1$ とその親の探索、および
 $\mathrm{take}$・コピーブロックの構成から成るから、そこに現れる
 $M_{i,j}$, $\to^M_0$, $\le^M_0$, $\to^M_1$, $\to^M_i$, $\mathrm{idx}_1$,
@@ -476,11 +534,15 @@ $A\mathbin{+\!\!+}T$ における値が $T$ における値と一致すること
 ### 定理 連結の右側の読み出し (T.getD_app_right)
 
 **主張** $A, T \in \mathrm{PairSeq}$、$i\in\mathbb{N}$ が $\lvert A\rvert \le i$ を満たすならば
-$$(A\mathbin{+\!\!+}T)\langle i\rangle = T\langle i - \lvert A\rvert\rangle .$$
+```math
+(A\mathbin{+\!\!+}T)\langle i\rangle = T\langle i - \lvert A\rvert\rangle .
+```
 
 **証明** $M\langle j\rangle$ は、オプション値 $M[j]?$ が要素 $p$ をもつとき $p$、無しのとき $(0,0)$ に等しい。
 連結の要素検索は、$\lvert A\rvert \le i$ のとき
-$$(A\mathbin{+\!\!+}T)[i]? = T[i-\lvert A\rvert]?$$
+```math
+(A\mathbin{+\!\!+}T)[i]? = T[i-\lvert A\rvert]?
+```
 を満たす（$A\mathbin{+\!\!+}T$ の第 $i$ 位置は $A$ の範囲外であり、$T$ の第 $i-\lvert A\rvert$ 位置にあたる）。
 両辺のオプション値が一致するから、既定値 $(0,0)$ による読み出しも一致する。∎
 
@@ -488,14 +550,18 @@ $$(A\mathbin{+\!\!+}T)[i]? = T[i-\lvert A\rvert]?$$
 ### 定理 成分の接尾辞不変性 (T.entry_append_right)
 
 **主張** $A,T\in\mathrm{PairSeq}$、$i,j\in\mathbb{N}$ に対し
-$$(A\mathbin{+\!\!+}T)_{i,\ \lvert A\rvert + j} = T_{i,j} .$$
+```math
+(A\mathbin{+\!\!+}T)_{i,\ \lvert A\rvert + j} = T_{i,j} .
+```
 
 **証明** [(D.entry)](Def.md#d-entry) より、左辺は $i=0$ のとき
 $\pi_0\bigl((A\mathbin{+\!\!+}T)\langle \lvert A\rvert+j\rangle\bigr)$、$i\ne0$ のとき
 $\pi_1\bigl((A\mathbin{+\!\!+}T)\langle \lvert A\rvert+j\rangle\bigr)$ である。
 $\lvert A\rvert \le \lvert A\rvert + j$ であるから [(T.getD_app_right)](#t-getD_app_right) より
-$$(A\mathbin{+\!\!+}T)\langle \lvert A\rvert+j\rangle
- = T\langle (\lvert A\rvert+j) - \lvert A\rvert\rangle = T\langle j\rangle$$
+```math
+(A\mathbin{+\!\!+}T)\langle \lvert A\rvert+j\rangle
+ = T\langle (\lvert A\rvert+j) - \lvert A\rvert\rangle = T\langle j\rangle
+```
 （最後の等号は $(\lvert A\rvert+j)-\lvert A\rvert = j$）。よって $i=0$, $i\ne0$ の
 どちらの分岐でも右辺 $T_{i,j}$ と一致する。∎
 
@@ -503,7 +569,9 @@ $$(A\mathbin{+\!\!+}T)\langle \lvert A\rvert+j\rangle
 ### 定理 行 0 直接親子関係の接尾辞不変性 (T.nextrel0_append_right)
 
 **主張** $A,T\in\mathrm{PairSeq}$、$j_0,j_1\in\mathbb{N}$ に対し
-$$\lvert A\rvert+j_0 \to^{A+\!\!+T}_0 \lvert A\rvert+j_1 \iff j_0 \to^T_0 j_1 .$$
+```math
+\lvert A\rvert+j_0 \to^{A+\!\!+T}_0 \lvert A\rvert+j_1 \iff j_0 \to^T_0 j_1 .
+```
 
 **証明** [(D.nextrel0)](Def.md#d-nextrel0) の 5 条件を両側で比較する。
 $\lvert A\mathbin{+\!\!+}T\rvert = \lvert A\rvert + \lvert T\rvert$ である。
@@ -543,7 +611,9 @@ $(\Leftarrow)$ 右辺の 5 条件を $h_1,\dots,h_5$ とする。
 $\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+j_0)\,(\lvert A\rvert+c)$。
 
 **証明** 反射推移閉包の導出に関する帰納法。$j_0$ を固定し、帰納法の述語を
-$$\Phi(c) :\equiv \mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+j_0)\,(\lvert A\rvert+c)$$
+```math
+\Phi(c) :\equiv \mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+j_0)\,(\lvert A\rvert+c)
+```
 とする。$\mathrm{ReflTransGen}$ の構成子は反射 (refl) と末尾追加 (tail) の 2 つである。
 
 - 基底段 (refl)：$c=j_0$。$\Phi(j_0)$ は
@@ -581,10 +651,14 @@ $\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+j_0)\,(\lvert A\rvert+
 ### 定理 行 0 到達性の引き戻し (T.rtg_nextrel0_unlift)
 
 **主張** $\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,(\lvert A\rvert+a)\,c$ ならば、ある $c'$ が存在して
-$$c = \lvert A\rvert + c' \quad\text{かつ}\quad \mathrm{ReflTransGen}(\to^T_0)\,a\,c' .$$
+```math
+c = \lvert A\rvert + c' \quad\text{かつ}\quad \mathrm{ReflTransGen}(\to^T_0)\,a\,c' .
+```
 
 **証明** 反射推移閉包の導出に関する帰納法。$a$ を固定し、帰納法の述語を
-$$\Phi(c) :\equiv \exists c',\ \bigl(c=\lvert A\rvert+c' \ \wedge\ \mathrm{ReflTransGen}(\to^T_0)\,a\,c'\bigr)$$
+```math
+\Phi(c) :\equiv \exists c',\ \bigl(c=\lvert A\rvert+c' \ \wedge\ \mathrm{ReflTransGen}(\to^T_0)\,a\,c'\bigr)
+```
 とする。
 
 - 基底段 (refl)：$c=\lvert A\rvert+a$。$c' := a$ と取れば $c=\lvert A\rvert+a$ であり、
@@ -604,7 +678,9 @@ $$\Phi(c) :\equiv \exists c',\ \bigl(c=\lvert A\rvert+c' \ \wedge\ \mathrm{ReflT
 ### 定理 行 0 祖先関係の接尾辞不変性 (T.le0_append_right)
 
 **主張** $A,T\in\mathrm{PairSeq}$、$j_0,j_1\in\mathbb{N}$ に対し
-$$\lvert A\rvert+j_0 \le^{A+\!\!+T}_0 \lvert A\rvert+j_1 \iff j_0 \le^T_0 j_1 .$$
+```math
+\lvert A\rvert+j_0 \le^{A+\!\!+T}_0 \lvert A\rvert+j_1 \iff j_0 \le^T_0 j_1 .
+```
 
 **証明**
 $(\Rightarrow)$ [(D.le0)](Def.md#d-le0) より仮定は
@@ -630,7 +706,9 @@ $k \to^{A+\!\!+T}_0 j$ は成り立たない。
 まず境界の値を計算する。[(T.entry_append_right)](#t-entry_append_right) の行番号 $0$、
 ずらし幅 $0$ の場合を用いると
 $(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+0} = T_{0,0}$ であり、$\lvert A\rvert+0=\lvert A\rvert$ と仮定 $T_{0,0}=0$ から
-$$(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert} = 0 . \tag{1}$$
+```math
+(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert} = 0 . \tag{1}
+```
 
 次に $\lvert A\rvert < j$ を示す。$\lvert A\rvert \ge j$ と仮定すると、$\lvert A\rvert \le j$ と合わせて $j=\lvert A\rvert$ となり、
 $(1)$ より $(A\mathbin{+\!\!+}T)_{0,j}=0$ であるが、これは仮定 $0<(A\mathbin{+\!\!+}T)_{0,j}$ に矛盾する。
@@ -638,7 +716,9 @@ $(1)$ より $(A\mathbin{+\!\!+}T)_{0,j}=0$ であるが、これは仮定 $0<(A
 
 $k<\lvert A\rvert$ と $\lvert A\rvert<j$ より、添字 $\lvert A\rvert$ は $h_5$ の前提 $k<\lvert A\rvert \wedge \lvert A\rvert<j$ を満たす。
 $h_5$ を適用して
-$$(A\mathbin{+\!\!+}T)_{0,j} \le (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert} = 0$$
+```math
+(A\mathbin{+\!\!+}T)_{0,j} \le (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert} = 0
+```
 （最後の等号は $(1)$）。$\mathbb{N}$ において $x\le 0$ は $x=0$ を意味するから $(A\mathbin{+\!\!+}T)_{0,j}=0$ となり、
 仮定 $0<(A\mathbin{+\!\!+}T)_{0,j}$ に矛盾する。∎
 
@@ -672,14 +752,20 @@ $k<\lvert A\rvert$ かつ $0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}$ のと
 $k \le^{A+\!\!+T}_0 \lvert A\rvert+j_1$ は成り立たない。
 
 **証明** $k\le^{A+\!\!+T}_0 \lvert A\rvert+j_1$ を仮定すると、[(D.le0)](Def.md#d-le0) の第 3 条件から
-$$h : \mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,k\,(\lvert A\rvert+j_1)$$
+```math
+h : \mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,k\,(\lvert A\rvert+j_1)
+```
 が得られる。次の補助命題を示す。
 
-$$H :\equiv \forall e,\ \Bigl(\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,k\,e \ \to\
-   \lvert A\rvert\le e \ \to\ 0<(A\mathbin{+\!\!+}T)_{0,e} \ \to\ \lvert A\rvert\le k\Bigr).$$
+```math
+H :\equiv \forall e,\ \Bigl(\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,k\,e \ \to\
+   \lvert A\rvert\le e \ \to\ 0<(A\mathbin{+\!\!+}T)_{0,e} \ \to\ \lvert A\rvert\le k\Bigr).
+```
 
 $H$ を、$k$ を固定した反射推移閉包の導出に関する帰納法で示す。帰納法の述語は
-$$\Phi(e) :\equiv \bigl(\lvert A\rvert\le e \ \wedge\ 0<(A\mathbin{+\!\!+}T)_{0,e}\bigr) \to \lvert A\rvert\le k .$$
+```math
+\Phi(e) :\equiv \bigl(\lvert A\rvert\le e \ \wedge\ 0<(A\mathbin{+\!\!+}T)_{0,e}\bigr) \to \lvert A\rvert\le k .
+```
 
 - 基底段 (refl)：$e=k$。前提として $\lvert A\rvert\le e=k$ が与えられるから、結論 $\lvert A\rvert\le k$ が直ちに従う。
 - 帰納段 (tail)：$\mathrm{ReflTransGen}(\to^{A+\!\!+T}_0)\,k\,c$ と $c\to^{A+\!\!+T}_0 d$ が与えられ、
@@ -709,7 +795,9 @@ $H$ を $e:=\lvert A\rvert+j_1$、鎖 $h$、$\lvert A\rvert\le\lvert A\rvert+j_1
 ### 定理 行 1 直接親子関係の接尾辞不変性 (T.nextrel1_append_right)
 
 **主張** $A,T\in\mathrm{PairSeq}$、$j_0,j_1\in\mathbb{N}$ に対し
-$$\lvert A\rvert+j_0 \to^{A+\!\!+T}_1 \lvert A\rvert+j_1 \iff j_0 \to^T_1 j_1 .$$
+```math
+\lvert A\rvert+j_0 \to^{A+\!\!+T}_1 \lvert A\rvert+j_1 \iff j_0 \to^T_1 j_1 .
+```
 
 **証明** [(D.nextrel1)](Def.md#d-nextrel1) の 6 条件を両側で比較する。
 $\lvert A\mathbin{+\!\!+}T\rvert = \lvert A\rvert+\lvert T\rvert$ を用いる。
@@ -750,7 +838,9 @@ $(\Leftarrow)$ 右辺の 6 条件を $h_1,\dots,h_6$ とする。
 ### 定理 行付き直接親子関係の接尾辞不変性 (T.nextR_append_right)
 
 **主張** $A,T\in\mathrm{PairSeq}$、$i,j_0,j_1\in\mathbb{N}$ に対し
-$$\lvert A\rvert+j_0 \to^{A+\!\!+T}_i \lvert A\rvert+j_1 \iff j_0 \to^T_i j_1 .$$
+```math
+\lvert A\rvert+j_0 \to^{A+\!\!+T}_i \lvert A\rvert+j_1 \iff j_0 \to^T_i j_1 .
+```
 
 **証明** [(D.nextR)](Def.md#d-nextR) の場合分けは $i=0$ か否かである。
 
@@ -803,7 +893,9 @@ $0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}$）に矛盾する。∎
 
 **主張** $A,T\in\mathrm{PairSeq}$ が $T_{0,0}=0$ を満たし、
 $0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}$ とする。このとき
-$$\mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i,\ \lvert A\rvert+j_1) \iff \mathrm{hasParent}(T,i,j_1).$$
+```math
+\mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i,\ \lvert A\rvert+j_1) \iff \mathrm{hasParent}(T,i,j_1).
+```
 
 **証明** [(D.hasParent)](Def.md#d-hasParent) より、両辺はそれぞれ
 $\exists! j_0,\ j_0\to^{A+\!\!+T}_i \lvert A\rvert+j_1$ と $\exists! j_0,\ j_0\to^T_i j_1$ である。
@@ -832,7 +924,9 @@ $y' := y-\lvert A\rvert$ とおいて $y=\lvert A\rvert+y'$ と書ける。
 
 **主張** $A,T\in\mathrm{PairSeq}$ が $T_{0,0}=0$ を満たし、
 $0<(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}$ かつ $\mathrm{hasParent}(T,i,j_1)$ とする。このとき
-$$\mathrm{par}^{A+\!\!+T}_i(\lvert A\rvert+j_1) = \lvert A\rvert + \mathrm{par}^T_i(j_1).$$
+```math
+\mathrm{par}^{A+\!\!+T}_i(\lvert A\rvert+j_1) = \lvert A\rvert + \mathrm{par}^T_i(j_1).
+```
 
 **証明** [(T.hasParent_append_right)](#t-hasParent_append_right) の $(\Leftarrow)$ より
 $\mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i,\ \lvert A\rvert+j_1)$ が成り立つ。以下これを $h_M$ とおく。
@@ -854,7 +948,9 @@ $h_M$ の一意性により両者は等しい。∎
 **主張** $\mathrm{take}\,(\lvert A\rvert+j)\,(A\mathbin{+\!\!+}T) = A \mathbin{+\!\!+} \mathrm{take}\,j\,T$。
 
 **証明** 連結に対する $\mathrm{take}$ の一般則
-$$\mathrm{take}\,m\,(A\mathbin{+\!\!+}T) = \mathrm{take}\,m\,A \mathbin{+\!\!+} \mathrm{take}\,(m-\lvert A\rvert)\,T$$
+```math
+\mathrm{take}\,m\,(A\mathbin{+\!\!+}T) = \mathrm{take}\,m\,A \mathbin{+\!\!+} \mathrm{take}\,(m-\lvert A\rvert)\,T
+```
 （前半 $m$ 個のうち $A$ から取れるのは先頭 $\min(m,\lvert A\rvert)$ 個、残りは $T$ の先頭 $m-\lvert A\rvert$ 個）を
 $m := \lvert A\rvert+j$ に適用する。$\lvert A\rvert \le \lvert A\rvert+j$ であるから
 $\mathrm{take}\,(\lvert A\rvert+j)\,A = A$ であり、また $(\lvert A\rvert+j)-\lvert A\rvert = j$ である。
@@ -864,13 +960,17 @@ $\mathrm{take}\,(\lvert A\rvert+j)\,A = A$ であり、また $(\lvert A\rvert+j
 ### 定理 コピーブロックの接尾辞不変性 (T.copyblock_append)
 
 **主張** $A,T\in\mathrm{PairSeq}$、$a,m,k,d_0,d_1\in\mathbb{N}$ に対し
-$$\mathrm{map}\,\bigl(\lambda j.\ ((A\mathbin{+\!\!+}T)_{0,j}+k\,d_0,\ (A\mathbin{+\!\!+}T)_{1,j}+k\,d_1)\bigr)\,
+```math
+\mathrm{map}\,\bigl(\lambda j.\ ((A\mathbin{+\!\!+}T)_{0,j}+k\,d_0,\ (A\mathbin{+\!\!+}T)_{1,j}+k\,d_1)\bigr)\,
    \mathrm{range}'(\lvert A\rvert+a,\ m)
- = \mathrm{map}\,\bigl(\lambda j.\ (T_{0,j}+k\,d_0,\ T_{1,j}+k\,d_1)\bigr)\,\mathrm{range}'(a,m).$$
+ = \mathrm{map}\,\bigl(\lambda j.\ (T_{0,j}+k\,d_0,\ T_{1,j}+k\,d_1)\bigr)\,\mathrm{range}'(a,m).
+```
 
 **証明** まず添字列について
-$$\mathrm{range}'(\lvert A\rvert+a,\ m) = \mathrm{map}\,(\lambda x.\ \lvert A\rvert+x)\,\mathrm{range}'(a,m)
- \tag{2}$$
+```math
+\mathrm{range}'(\lvert A\rvert+a,\ m) = \mathrm{map}\,(\lambda x.\ \lvert A\rvert+x)\,\mathrm{range}'(a,m)
+ \tag{2}
+```
 を示す。$\mathrm{range}'(s,m) = \mathrm{map}\,(\lambda x.\ s+x)\,\mathrm{range}(m)$ であるから、
 $(2)$ の左辺は $\mathrm{map}\,(\lambda x.\ (\lvert A\rvert+a)+x)\,\mathrm{range}(m)$、
 右辺は $\mathrm{map}\,(\lambda x.\ \lvert A\rvert+(a+x))\,\mathrm{range}(m)$ である
@@ -878,8 +978,10 @@ $(2)$ の左辺は $\mathrm{map}\,(\lambda x.\ (\lvert A\rvert+a)+x)\,\mathrm{ra
 加法の結合律 $(\lvert A\rvert+a)+x = \lvert A\rvert+(a+x)$ により 2 つの写像は各点で等しく、$(2)$ が従う。
 
 $(2)$ と $\mathrm{map}$ の合成則より、主張の左辺は
-$$\mathrm{map}\,\bigl(\lambda j.\ ((A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j}+k\,d_0,\
-  (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j}+k\,d_1)\bigr)\,\mathrm{range}'(a,m)$$
+```math
+\mathrm{map}\,\bigl(\lambda j.\ ((A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j}+k\,d_0,\
+  (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j}+k\,d_1)\bigr)\,\mathrm{range}'(a,m)
+```
 に等しい。[(T.entry_append_right)](#t-entry_append_right) より各 $j$ について
 $(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j} = T_{0,j}$ かつ $(A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j} = T_{1,j}$
 であるから、写される関数は右辺のものと各点で等しい。よって両辺は等しい。∎
@@ -894,7 +996,9 @@ $\lvert A\mathbin{+\!\!+}T\rvert = \lvert A\rvert+\lvert T\rvert \ge \lvert T\rv
 $\neg(\lvert A\mathbin{+\!\!+}T\rvert\le1)$、また仮定より $\neg(\lvert T\rvert\le1)$。
 よって両辺はそれぞれ $\mathrm{dropLast}(A\mathbin{+\!\!+}T)$ と $A\mathbin{+\!\!+}\mathrm{dropLast}\,T$ である。
 $\lvert T\rvert\ge2>0$ より $T\ne()$ であり、$T\ne()$ のとき連結の末尾要素は $T$ の末尾要素であるから
-$$\mathrm{dropLast}(A\mathbin{+\!\!+}T) = A \mathbin{+\!\!+} \mathrm{dropLast}\,T$$
+```math
+\mathrm{dropLast}(A\mathbin{+\!\!+}T) = A \mathbin{+\!\!+} \mathrm{dropLast}\,T
+```
 が成り立つ。∎
 
 <a id="t-no_hasParent_of_row0_zero"></a>
@@ -914,11 +1018,15 @@ $j_0=j_1$ と $j_0<j_1$ は両立しない。矛盾である。∎
 ### 定理 展開の接頭辞可換性 (T.oper_append_right)
 
 **主張** $A,T\in\mathrm{PairSeq}$、$n\in\mathbb{N}$ とし、$2\le\lvert T\rvert$ かつ $T_{0,0}=0$ とする。このとき
-$$(A\mathbin{+\!\!+}T)[n] = A \mathbin{+\!\!+} T[n].$$
+```math
+(A\mathbin{+\!\!+}T)[n] = A \mathbin{+\!\!+} T[n].
+```
 
 **証明** $j_1 := \lvert T\rvert-1$ とおく。$2\le\lvert T\rvert$ より $j_1\ge1$、特に $j_1\ne0$ である。また
-$$\lvert A\mathbin{+\!\!+}T\rvert - 1 = (\lvert A\rvert+\lvert T\rvert)-1 = \lvert A\rvert + (\lvert T\rvert-1)
-  = \lvert A\rvert+j_1 \tag{3}$$
+```math
+\lvert A\mathbin{+\!\!+}T\rvert - 1 = (\lvert A\rvert+\lvert T\rvert)-1 = \lvert A\rvert + (\lvert T\rvert-1)
+  = \lvert A\rvert+j_1 \tag{3}
+```
 （$\lvert T\rvert\ge2\ge1$ であるから切り捨て減法の繰り上がりは起こらない）。
 すなわち $A\mathbin{+\!\!+}T$ の末尾添字は $\lvert A\rvert+j_1$ である。
 [(D.oper)](Def.md#d-oper) の分岐を両辺で順に照合する。
@@ -927,8 +1035,10 @@ $$\lvert A\mathbin{+\!\!+}T\rvert - 1 = (\lvert A\rvert+\lvert T\rvert)-1 = \lve
 $j_1\ge1$ よりどちらも偽であるから、両辺とも分岐 (a) には入らない。
 
 **末尾の成分.** [(T.entry_append_right)](#t-entry_append_right) より
-$$(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1} = T_{0,j_1},\qquad
-  (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1} = T_{1,j_1}. \tag{4}$$
+```math
+(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1} = T_{0,j_1},\qquad
+  (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1} = T_{1,j_1}. \tag{4}
+```
 
 **分岐 (b) の判定.** $A\mathbin{+\!\!+}T$ 側の条件
 $(A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}=0 \wedge (A\mathbin{+\!\!+}T)_{1,\lvert A\rvert+j_1}=0$ は、
@@ -948,13 +1058,17 @@ $\mathrm{idx}_1(A\mathbin{+\!\!+}T,\ \lvert A\rvert+j_1) = \mathrm{idx}_1(T,j_1)
 [(T.no_hasParent_of_row0_zero)](#t-no_hasParent_of_row0_zero)（$M:=T$）により
 $\mathrm{hasParent}(T,i_1,j_1)$ が成り立たず、仮定に矛盾する。よって $0<T_{0,j_1}$、
 $(4)$ により
-$$0 < (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}. \tag{5}$$
+```math
+0 < (A\mathbin{+\!\!+}T)_{0,\lvert A\rvert+j_1}. \tag{5}
+```
 $(5)$ と $T_{0,0}=0$ の下で [(T.hasParent_append_right)](#t-hasParent_append_right) の $(\Leftarrow)$ より
 $\mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i_1,\ \lvert A\rvert+j_1)$ が成り立つ。
 したがって両辺とも分岐 (c) には入らず、分岐 (d) に入る。
 
 $j_0 := \mathrm{par}^T_{i_1}(j_1)$ とおく。$(5)$ と [(T.parent_append_right)](#t-parent_append_right) より
-$$\mathrm{par}^{A+\!\!+T}_{i_1}(\lvert A\rvert+j_1) = \lvert A\rvert+j_0 . \tag{6}$$
+```math
+\mathrm{par}^{A+\!\!+T}_{i_1}(\lvert A\rvert+j_1) = \lvert A\rvert+j_0 . \tag{6}
+```
 
 分岐 (d) の 4 つの構成要素を照合する。
 
@@ -976,15 +1090,21 @@ $$\mathrm{par}^{A+\!\!+T}_{i_1}(\lvert A\rvert+j_1) = \lvert A\rvert+j_0 . \tag{
    $d_0$, $d_1$ と書く。添字区間の長さは
    $(\lvert A\rvert+j_1)-(\lvert A\rvert+j_0) = j_1-j_0$ である。各 $k\in\mathrm{range}(n)$ について
    [(T.copyblock_append)](#t-copyblock_append) を $a:=j_0$, $m:=j_1-j_0$ に適用すると
-   $$\mathrm{map}\,\bigl(\lambda j.\ ((A\mathbin{+\!\!+}T)_{0,j}+k\,d_0,\ (A\mathbin{+\!\!+}T)_{1,j}+k\,d_1)\bigr)\,
-     \mathrm{range}'(\lvert A\rvert+j_0,\ j_1-j_0)$$
-   $$= \mathrm{map}\,\bigl(\lambda j.\ (T_{0,j}+k\,d_0,\ T_{1,j}+k\,d_1)\bigr)\,\mathrm{range}'(j_0,\ j_1-j_0)$$
+   ```math
+   \mathrm{map}\,\bigl(\lambda j.\ ((A\mathbin{+\!\!+}T)_{0,j}+k\,d_0,\ (A\mathbin{+\!\!+}T)_{1,j}+k\,d_1)\bigr)\,
+     \mathrm{range}'(\lvert A\rvert+j_0,\ j_1-j_0)
+   ```
+   ```math
+   = \mathrm{map}\,\bigl(\lambda j.\ (T_{0,j}+k\,d_0,\ T_{1,j}+k\,d_1)\bigr)\,\mathrm{range}'(j_0,\ j_1-j_0)
+   ```
    である。$\mathrm{flatMap}$ は各 $k$ の像を連結するだけであるから、
    $\mathrm{range}(n)$ 上の $\mathrm{flatMap}$ どうしも等しい。
 
 以上より、$X := \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\ (T_{0,j}+k\,d_0,\ T_{1,j}+k\,d_1))\, \mathrm{range}'(j_0,j_1-j_0)\bigr)\,\mathrm{range}(n)$ とおくと
-$$(A\mathbin{+\!\!+}T)[n] = \bigl(A\mathbin{+\!\!+}\mathrm{take}\,j_0\,T\bigr)\mathbin{+\!\!+}X
- = A\mathbin{+\!\!+}\bigl(\mathrm{take}\,j_0\,T\mathbin{+\!\!+}X\bigr) = A\mathbin{+\!\!+}T[n]$$
+```math
+(A\mathbin{+\!\!+}T)[n] = \bigl(A\mathbin{+\!\!+}\mathrm{take}\,j_0\,T\bigr)\mathbin{+\!\!+}X
+ = A\mathbin{+\!\!+}\bigl(\mathrm{take}\,j_0\,T\mathbin{+\!\!+}X\bigr) = A\mathbin{+\!\!+}T[n]
+```
 （第 2 の等号は連結の結合律）。
 
 **(ii) $\mathrm{hasParent}(T,i_1,j_1)$ が成り立たない場合.**
@@ -1010,7 +1130,9 @@ $\mathrm{hasParent}(A\mathbin{+\!\!+}T,\ i_1,\ \lvert A\rvert+j_1)$ も成り立
 ### 定理 成分列は接頭部に等しい (T.map_range_entry_eq_take)
 
 **主張** $N\in\mathrm{PairSeq}$、$j_1\le\lvert N\rvert$ のとき
-$$\mathrm{map}\,\bigl(\lambda j.\ (N_{0,j},\ N_{1,j})\bigr)\,\mathrm{range}(j_1) = \mathrm{take}\,j_1\,N .$$
+```math
+\mathrm{map}\,\bigl(\lambda j.\ (N_{0,j},\ N_{1,j})\bigr)\,\mathrm{range}(j_1) = \mathrm{take}\,j_1\,N .
+```
 
 **証明** 2 つの列が等しいことを、長さの一致と各位置の要素の一致で示す。
 
@@ -1021,7 +1143,9 @@ $$\mathrm{map}\,\bigl(\lambda j.\ (N_{0,j},\ N_{1,j})\bigr)\,\mathrm{range}(j_1)
 $(N_{0,i},\ N_{1,i})$ である。また $i<j_1\le\lvert N\rvert$ より $i<\lvert N\rvert$ であるから
 $N\langle i\rangle$ は $N$ の第 $i$ 要素そのものであり、
 [(D.entry)](Def.md#d-entry) より
-$$N_{0,i} = \pi_0(N\langle i\rangle),\qquad N_{1,i} = \pi_1(N\langle i\rangle)$$
+```math
+N_{0,i} = \pi_0(N\langle i\rangle),\qquad N_{1,i} = \pi_1(N\langle i\rangle)
+```
 である。対 $p$ について $(\pi_0 p,\ \pi_1 p) = p$ であるから、左辺の第 $i$ 要素は $N$ の第 $i$ 要素に等しい。
 一方 $\mathrm{take}\,j_1\,N$ の第 $i$ 要素（$i<j_1$）も $N$ の第 $i$ 要素である。よって一致する。
 
@@ -1034,12 +1158,16 @@ $$N_{0,i} = \pi_0(N\langle i\rangle),\qquad N_{1,i} = \pi_1(N\langle i\rangle)$$
 等しい（いずれも既定値 $(0,0)$ の下で読む）。
 
 **証明** [(T.oper_eq_dropLast_append)](Wf.md#t-oper_eq_dropLast_append) より、ある $R$ が存在して
-$$N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R .$$
+```math
+N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R .
+```
 $1<\lvert N\rvert$ すなわち $\lvert N\rvert\ge2$ であるから $N$ は $N = p\mathbin{::}q\mathbin{::}u$ の形に書ける。
 要素 2 個以上の列に対する $\mathrm{dropLast}$ の計算則
 $\mathrm{dropLast}(p\mathbin{::}q\mathbin{::}u) = p\mathbin{::}\mathrm{dropLast}(q\mathbin{::}u)$ と、
 先頭付加と連結の関係 $(p\mathbin{::}L)\mathbin{+\!\!+}R = p\mathbin{::}(L\mathbin{+\!\!+}R)$ より
-$$N[n] = p \mathbin{::} \bigl(\mathrm{dropLast}(q\mathbin{::}u)\mathbin{+\!\!+}R\bigr).$$
+```math
+N[n] = p \mathbin{::} \bigl(\mathrm{dropLast}(q\mathbin{::}u)\mathbin{+\!\!+}R\bigr).
+```
 先頭付加された列の先頭要素は付加された要素であるから、$N[n]$ の先頭要素は $p$ であり、
 $N = p\mathbin{::}q\mathbin{::}u$ の先頭要素も $p$ である。∎
 

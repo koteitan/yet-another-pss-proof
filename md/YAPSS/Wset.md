@@ -65,7 +65,9 @@
 - `⋂₀ S` は $\{x \mid \forall Y\in S,\ x\in Y\}$（集合族の共通部分）。
 - `Monotone f` は $\forall X\,Y,\ X\subseteq Y \to f(X)\subseteq f(Y)$。
 - $\mathrm{Acc}\,R\,x$（`Acc`）は帰納的述語であり、唯一の導入規則は
-  $$\frac{\ \forall y,\ R\,y\,x \to \mathrm{Acc}\,R\,y\ }{\ \mathrm{Acc}\,R\,x\ }\ (\texttt{Acc.intro})$$
+  ```math
+  \frac{\ \forall y,\ R\,y\,x \to \mathrm{Acc}\,R\,y\ }{\ \mathrm{Acc}\,R\,x\ }\ (\texttt{Acc.intro})
+  ```
   である。除去規則として `Acc.inv` $:\ \mathrm{Acc}\,R\,x \to R\,y\,x \to \mathrm{Acc}\,R\,y$ を用いる。
 - `WellFounded R` は $\forall x,\ \mathrm{Acc}\,R\,x$（導入規則 `WellFounded.intro`）。
 
@@ -120,7 +122,9 @@ $\mathrm{fg}(P,0)=0$、$\mathrm{fg}(P,b+1)=\bigl(P(b+1) \text{ ならば } b+1 \
 
 **証明** $t$ の構成子で場合分けする。$t=\mathsf{Z}$ なら結論そのもの。
 $t=\mathsf{P}(a,b,c)$ とすると、[(T.olt_P_P)](Mechanized.md#t-olt_P_P) より仮定は
-$$a<0 \ \vee\ (a=0\wedge b\prec\mathsf{Z})\ \vee\ (a=0\wedge b=\mathsf{Z}\wedge c\prec\mathsf{Z})$$
+```math
+a<0 \ \vee\ (a=0\wedge b\prec\mathsf{Z})\ \vee\ (a=0\wedge b=\mathsf{Z}\wedge c\prec\mathsf{Z})
+```
 と同値である。第 1 選言は $\mathbb{N}$ において $a<0$ が偽であるから成立しない。
 第 2 選言の $b\prec\mathsf{Z}$ と第 3 選言の $c\prec\mathsf{Z}$ は
 [(T.not_olt_Z)](Mechanized.md#t-not_olt_Z) により成立しない。よって $t=\mathsf{P}(a,b,c)$ の場合は起こらない。∎
@@ -155,21 +159,27 @@ $$a<0 \ \vee\ (a=0\wedge b\prec\mathsf{Z})\ \vee\ (a=0\wedge b=\mathsf{Z}\wedge 
 #### 定義 $\mathrm{dom}(M)=T_m$ (D.domT)
 
 $M\in\mathrm{PairSeq}$、$m\in\mathbb{N}$ に対し
-$$\mathrm{dom}(M)=T_m \ :\Longleftrightarrow\ M_{1,\ell_M}=m+1 \ \wedge\ \neg\,\mathrm{hasParent}(M,1,\ell_M)$$
+```math
+\mathrm{dom}(M)=T_m \ :\Longleftrightarrow\ M_{1,\ell_M}=m+1 \ \wedge\ \neg\,\mathrm{hasParent}(M,1,\ell_M)
+```
 （$\ell_M=\lvert M\rvert-1$、[(D.entry)](Def.md#d-entry)、[(D.hasParent)](Def.md#d-hasParent)）。
 すなわち「$M$ の最終対は行 1 の値が $m+1$ であり、かつ行 1 の親をもたない」。
 
 <a id="d-graft"></a>
 #### 定義 $T_m$ 添字の基本列（graft） (D.graft)
 
-$$\mathrm{gr}(M,z) := \mathrm{dropLast}\,M \mathbin{+\!\!+} \mathrm{map}\,\bigl(\lambda p.\ (\pi_0 p + M_{0,\ell_M},\ \pi_1 p)\bigr)\,z .$$
+```math
+\mathrm{gr}(M,z) := \mathrm{dropLast}\,M \mathbin{+\!\!+} \mathrm{map}\,\bigl(\lambda p.\ (\pi_0 p + M_{0,\ell_M},\ \pi_1 p)\bigr)\,z .
+```
 
 すなわち $M$ の最終対を落とし、その最終対の行 0 の値 $M_{0,\ell_M}$ を $z$ のすべての対の行 0 の値に加えて連結する。
 
 <a id="d-based"></a>
 #### 定義 先頭の行 0 の値が $0$ のブロック (D.based)
 
-$$\mathrm{based}(z) \ :\Longleftrightarrow\ z_{0,0}=0 .$$
+```math
+\mathrm{based}(z) \ :\Longleftrightarrow\ z_{0,0}=0 .
+```
 
 <a id="t-based_nil"></a>
 #### 定理 空列は $\mathrm{based}$ (T.based_nil)
@@ -198,7 +208,9 @@ $\ell_{[]}=0-1=0$（切り捨て減法）であり、[(D.entry)](Def.md#d-entry)
 <a id="d-natDom"></a>
 #### 定義 $\mathrm{dom}$ が $T_m$ 型でない (D.natDom)
 
-$$\mathrm{natDom}(M)\ :\Longleftrightarrow\ \forall m\in\mathbb{N},\ \neg\bigl(\mathrm{dom}(M)=T_m\bigr).$$
+```math
+\mathrm{natDom}(M)\ :\Longleftrightarrow\ \forall m\in\mathbb{N},\ \neg\bigl(\mathrm{dom}(M)=T_m\bigr).
+```
 
 <a id="t-natDom_nil"></a>
 #### 定理 空列は $\mathrm{natDom}$ (T.natDom_nil)
@@ -212,7 +224,9 @@ $$\mathrm{natDom}(M)\ :\Longleftrightarrow\ \forall m\in\mathbb{N},\ \neg\bigl(\
 #### 定理 $\mathrm{natDom}$ の言い換え (T.natDom_iff)
 
 **主張**
-$$\mathrm{natDom}(M) \iff \bigl(M_{1,\ell_M}=0 \ \vee\ \mathrm{hasParent}(M,1,\ell_M)\bigr).$$
+```math
+\mathrm{natDom}(M) \iff \bigl(M_{1,\ell_M}=0 \ \vee\ \mathrm{hasParent}(M,1,\ell_M)\bigr).
+```
 
 **証明**
 
@@ -254,18 +268,24 @@ $\lvert M\rvert\ge 2$ であるから $\mathrm{Pred}\,M=\mathrm{dropLast}\,M$。
 <a id="d-r1cand"></a>
 #### 定義 行 1 親候補 (D.r1cand)
 
-$$\mathrm{r1cand}(M,j_1,j_0)\ :\Longleftrightarrow\ j_0<j_1 \ \wedge\ j_0\le^M_0 j_1 \ \wedge\ M_{1,j_0}<M_{1,j_1}$$
+```math
+\mathrm{r1cand}(M,j_1,j_0)\ :\Longleftrightarrow\ j_0<j_1 \ \wedge\ j_0\le^M_0 j_1 \ \wedge\ M_{1,j_0}<M_{1,j_1}
+```
 （[(D.le0)](Def.md#d-le0)）。すなわち「$j_0$ は $j_1$ の真の行 0 祖先であって行 1 の値が真に小さい」。
 
 <a id="t-hasParent_one_iff"></a>
 #### 定理 行 1 親の存在判定 (T.hasParent_one_iff)
 
 **主張** $j_1<\lvert M\rvert$ ならば
-$$\mathrm{hasParent}(M,1,j_1) \iff \exists j_0,\ \mathrm{r1cand}(M,j_1,j_0).$$
+```math
+\mathrm{hasParent}(M,1,j_1) \iff \exists j_0,\ \mathrm{r1cand}(M,j_1,j_0).
+```
 
 **証明** まず、[(D.nextR)](Def.md#d-nextR) の場合分けは `i = 0` か否かであり $1\ne 0$ であるから、
 任意の $j_0$ について
-$$(\ast)\qquad j_0\to^M_1 j_1 \ \text{（$\mathrm{nextR}$ の意味）} \iff j_0\to^M_1 j_1\ \text{（$\mathrm{nextrel1}$ の意味）}$$
+```math
+(\ast)\qquad j_0\to^M_1 j_1 \ \text{（$\mathrm{nextR}$ の意味）} \iff j_0\to^M_1 j_1\ \text{（$\mathrm{nextrel1}$ の意味）}
+```
 であり、以下では両者を同一視する。
 
 $(\Rightarrow)$ $\mathrm{hasParent}(M,1,j_1)$ は $\exists!\,j_0,\ j_0\to^M_1 j_1$ であるから、
@@ -273,13 +293,19 @@ $(\Rightarrow)$ $\mathrm{hasParent}(M,1,j_1)$ は $\exists!\,j_0,\ j_0\to^M_1 j_
 $j_0<j_1$、$j_0\le^M_0 j_1$、$M_{1,j_0}<M_{1,j_1}$ であるから、$\mathrm{r1cand}(M,j_1,j_0)$ が成り立つ。
 
 $(\Leftarrow)$ $\mathrm{r1cand}(M,j_1,j_0)$ なる $j_0$ を取る。述語
-$$P(k)\ :\equiv\ \mathrm{r1cand}(M,j_1,k)$$
+```math
+P(k)\ :\equiv\ \mathrm{r1cand}(M,j_1,k)
+```
 に対し $g:=\mathrm{fg}(P,j_1)$ とおく。$j_0<j_1$ より $j_0\le j_1$ であり $P(j_0)$ が成り立つから、
 `Nat.findGreatest_spec` より $P(g)$、すなわち
-$$g<j_1,\qquad g\le^M_0 j_1,\qquad M_{1,g}<M_{1,j_1}$$
+```math
+g<j_1,\qquad g\le^M_0 j_1,\qquad M_{1,g}<M_{1,j_1}
+```
 が成り立つ。また $P(k)$ をみたす任意の $k$ について $k<j_1$ すなわち $k\le j_1$ であるから、
 `Nat.le_findGreatest` より
-$$(\dagger)\qquad \forall k,\ P(k)\to k\le g .$$
+```math
+(\dagger)\qquad \forall k,\ P(k)\to k\le g .
+```
 
 $g$ が求める一意の親であることを示す。まず $g\to^M_1 j_1$、すなわち
 [(D.nextrel1)](Def.md#d-nextrel1) の 6 条件を確かめる。
@@ -307,12 +333,16 @@ $y$ についての条件 6 を $j:=g$ に適用できる（$y<g$ は仮定、$g
 #### 定理 $\mathrm{dom}=T_m$ の行 0 祖先条件による表示 (T.domT_iff)
 
 **主張** $M\ne[]$ ならば
-$$\mathrm{dom}(M)=T_m \iff \Bigl(M_{1,\ell_M}=m+1 \ \wedge\ \forall j_0,\ j_0<\ell_M \to j_0\le^M_0 \ell_M \to m+1\le M_{1,j_0}\Bigr).$$
+```math
+\mathrm{dom}(M)=T_m \iff \Bigl(M_{1,\ell_M}=m+1 \ \wedge\ \forall j_0,\ j_0<\ell_M \to j_0\le^M_0 \ell_M \to m+1\le M_{1,j_0}\Bigr).
+```
 
 **証明** $M\ne[]$ より $0<\lvert M\rvert$、よって $\ell_M=\lvert M\rvert-1<\lvert M\rvert$。
 したがって [(T.hasParent_one_iff)](#t-hasParent_one_iff) を $j_1:=\ell_M$ に適用でき、
 [(D.domT)](#d-domT) の第 2 条件は
-$$\neg\,\exists j_0,\ \bigl(j_0<\ell_M \wedge j_0\le^M_0\ell_M \wedge M_{1,j_0}<M_{1,\ell_M}\bigr)$$
+```math
+\neg\,\exists j_0,\ \bigl(j_0<\ell_M \wedge j_0\le^M_0\ell_M \wedge M_{1,j_0}<M_{1,\ell_M}\bigr)
+```
 と同値である。
 
 $(\Rightarrow)$ 第 1 条件 $M_{1,\ell_M}=m+1$ はそのまま。$j_0<\ell_M$ かつ $j_0\le^M_0\ell_M$ とし、
@@ -368,8 +398,10 @@ $M=[(0,3),(1,2),(1,1)]$ とする。
 #### 定義 最小不動点 (D.lfpS)
 
 $f$ をペア列の集合上の作用素とする。
-$$\mathrm{lfp}\,f := \bigcap\,\{\,Y \mid f(Y)\subseteq Y\,\}
-= \{\,x \mid \forall Y,\ f(Y)\subseteq Y \to x\in Y\,\}.$$
+```math
+\mathrm{lfp}\,f := \bigcap\,\{\,Y \mid f(Y)\subseteq Y\,\}
+= \{\,x \mid \forall Y,\ f(Y)\subseteq Y \to x\in Y\,\}.
+```
 
 すなわち $f$ のすべての前不動点（$f(Y)\subseteq Y$ なる $Y$）の共通部分である。
 
@@ -413,7 +445,7 @@ $\supseteq$ は [(T.lfpS_unfold_ge)](#t-lfpS_unfold_ge)。∎
 #### 定義 作用素 $A_u$ (D.Aop)
 
 族パラメータ $\mathcal F:\mathbb{N}\to$（ペア列の集合）、水準 $u\in\mathbb{N}$、集合 $X$、ペア列 $M$ に対し
-$$
+```math
 M\in A^{\mathcal F}_u(X)\ :\Longleftrightarrow\
 \begin{cases}
 \text{(枝 1)} & \lvert M\rvert\le 1 \ \wedge\ M_{1,0}=0\\
@@ -421,7 +453,7 @@ M\in A^{\mathcal F}_u(X)\ :\Longleftrightarrow\
 \text{(枝 3)} & \exists m,\ m<u \ \wedge\ \mathrm{dom}(M)=T_m \ \wedge\
  \bigl(\forall z\in\mathcal F(m),\ \mathrm{based}(z)\to \mathrm{gr}(M,z)\in X\bigr)
 \end{cases}
-$$
+```
 の 3 つの選言である（[(D.natDom)](#d-natDom), [(D.oper)](Def.md#d-oper), [(D.domT)](#d-domT),
 [(D.based)](#d-based), [(D.graft)](#d-graft)）。
 
@@ -431,7 +463,9 @@ $$
 <a id="d-Aset"></a>
 #### 定義 集合としての $A_u$ (D.Aset)
 
-$$A^{\mathcal F}_u(X) := \{\,M \mid M\in A^{\mathcal F}_u(X)\,\}$$
+```math
+A^{\mathcal F}_u(X) := \{\,M \mid M\in A^{\mathcal F}_u(X)\,\}
+```
 すなわち [(D.Aop)](#d-Aop) の述語をペア列の集合とみなしたものである。
 
 <a id="t-Aop_mono_X"></a>
@@ -468,7 +502,9 @@ $$A^{\mathcal F}_u(X) := \{\,M \mid M\in A^{\mathcal F}_u(X)\,\}$$
 #### 定理 $A_u$ は族の $u$ 未満の段階しか読まない (T.Aop_cong)
 
 **主張** $\forall m,\ m<u\to\mathcal F(m)=\mathcal G(m)$ ならば
-$$M\in A^{\mathcal F}_u(X) \iff M\in A^{\mathcal G}_u(X).$$
+```math
+M\in A^{\mathcal F}_u(X) \iff M\in A^{\mathcal G}_u(X).
+```
 
 **証明** 両方向とも [(D.Aop)](#d-Aop) の 3 選言で場合分けする。枝 1 と枝 2 には $\mathcal F$ が現れないから、
 そのまま移る。枝 3 の場合、証人 $m$ は $m<u$ をみたすから仮定より $\mathcal F(m)=\mathcal G(m)$ であり、
@@ -478,16 +514,20 @@ $$M\in A^{\mathcal F}_u(X) \iff M\in A^{\mathcal G}_u(X).$$
 #### 定義 段階族 (D.Wf)
 
 $\mathbb{N}$ に関する再帰で
-$$W^{(0)}_m := \emptyset,\qquad
+```math
+W^{(0)}_m := \emptyset,\qquad
 W^{(v+1)}_m := \begin{cases}\mathrm{lfp}\bigl(X\mapsto A^{W^{(v)}}_v(X)\bigr) & (m=v)\\[2pt]
-W^{(v)}_m & (m\ne v)\end{cases}$$
+W^{(v)}_m & (m\ne v)\end{cases}
+```
 と定める（[(D.lfpS)](#d-lfpS), [(D.Aset)](#d-Aset)）。ここで $W^{(v)}$ は第 1 添字を $v$ に固定した族
 $m\mapsto W^{(v)}_m$ である。
 
 <a id="d-W"></a>
 #### 定義 反復帰納的集合 $W_u$ (D.W)
 
-$$W_u := W^{(u+1)}_u .$$
+```math
+W_u := W^{(u+1)}_u .
+```
 
 <a id="t-Wf_coh"></a>
 #### 定理 段階族の整合性 (T.Wf_coh)
@@ -495,7 +535,9 @@ $$W_u := W^{(u+1)}_u .$$
 **主張** $m<n$ ならば $W^{(n)}_m = W^{(m+1)}_m$。
 
 **証明** $n$ に関する自然数の帰納法。帰納法の述語は
-$$\Phi(n) :\equiv \forall m,\ m<n \to W^{(n)}_m = W^{(m+1)}_m .$$
+```math
+\Phi(n) :\equiv \forall m,\ m<n \to W^{(n)}_m = W^{(m+1)}_m .
+```
 
 - 基底段 $n=0$：前提 $m<0$ は $\mathbb{N}$ において偽であるから $\Phi(0)$ は成立する。
 - 帰納段 $n=v+1$：帰納法の仮定は $\Phi(v)$、すなわち $\forall m,\ m<v\to W^{(v)}_m=W^{(m+1)}_m$ である。
@@ -583,7 +625,9 @@ $\lvert[]\rvert=0\le 1$ であり、[(D.entry)](Def.md#d-entry) より $[]_{1,0}
 
 **証明** [(T.A2')](#t-A2') を $Y:=W_v$ として用いる。これは $W_u$ に関する最小不動点帰納法であり、
 帰納法の述語は
-$$\Phi(M) :\equiv M\in W_v$$
+```math
+\Phi(M) :\equiv M\in W_v
+```
 である。示すべきことは $\forall M,\ M\in A^{W}_u(W_v)\to M\in W_v$。
 $M\in A^{W}_u(W_v)$ とすると、$u\le v$ と [(T.Aop_mono_level)](#t-Aop_mono_level) より $M\in A^{W}_v(W_v)$、
 よって [(T.A1_intro)](#t-A1_intro) より $M\in W_v$。∎
@@ -593,14 +637,18 @@ $M\in A^{W}_u(W_v)$ とすると、$u\le v$ と [(T.Aop_mono_level)](#t-Aop_mono
 ## 3. 橋：共終性のもとで $W_u$ の元はすべて可到達
 
 本節では共終性を明示の仮定
-$$\mathrm{hcof}:\quad \forall M,N,\ M\in\mathrm{ST\_PS}\to N\in\mathrm{ST\_PS}\to \mathrm{tr}\,N\prec\mathrm{tr}\,M
-\to \exists n,\ 1\le n \wedge \mathrm{tr}\,N\preceq\mathrm{tr}(M[n])$$
+```math
+\mathrm{hcof}:\quad \forall M,N,\ M\in\mathrm{ST\_PS}\to N\in\mathrm{ST\_PS}\to \mathrm{tr}\,N\prec\mathrm{tr}\,M
+\to \exists n,\ 1\le n \wedge \mathrm{tr}\,N\preceq\mathrm{tr}(M[n])
+```
 として受け取る（この仮定は [(T.pss_cofinality_holds)](Final.md#t-pss_cofinality_holds) が与える）。
 
 <a id="d-Rst"></a>
 #### 定義 目標関係 (D.Rst)
 
-$$a\mathrel{R}b \ :\Longleftrightarrow\ a\in\mathrm{ST\_PS} \ \wedge\ b\in\mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a\prec\mathrm{tr}\,b .$$
+```math
+a\mathrel{R}b \ :\Longleftrightarrow\ a\in\mathrm{ST\_PS} \ \wedge\ b\in\mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a\prec\mathrm{tr}\,b .
+```
 
 <a id="t-acc_of_translate_eq"></a>
 #### 定理 可到達性は $\mathrm{tr}$ の値のみに依る (T.acc_of_translate_eq)
@@ -638,9 +686,13 @@ $c[n]\in\mathrm{ST\_PS}$ である。[(D.ole)](Mechanized.md#d-ole) により $\
 **主張** $\mathrm{hcof}$ を仮定する。任意の $u$ と $M\in W_u$ について $\mathrm{Acc}\,R\,M$。
 
 **証明** [(T.A2')](#t-A2') による $W_u$ の最小不動点帰納法である。帰納法の述語は
-$$\Phi(M) :\equiv \mathrm{Acc}\,R\,M$$
+```math
+\Phi(M) :\equiv \mathrm{Acc}\,R\,M
+```
 であり、示すべきことは
-$$\forall c,\ c\in A^{W}_u\bigl(\{M\mid\mathrm{Acc}\,R\,M\}\bigr)\ \to\ \mathrm{Acc}\,R\,c .$$
+```math
+\forall c,\ c\in A^{W}_u\bigl(\{M\mid\mathrm{Acc}\,R\,M\}\bigr)\ \to\ \mathrm{Acc}\,R\,c .
+```
 
 $c$ を取り、$c\in A^W_u(\{M\mid \mathrm{Acc}\,R\,M\})$ とする。$c\in\mathrm{ST\_PS}$ か否かで場合分けする。
 
@@ -655,7 +707,9 @@ $c$ を取り、$c\in A^W_u(\{M\mid \mathrm{Acc}\,R\,M\})$ とする。$c\in\mat
   [(T.stps_len_pos)](Nrm.md#t-stps_len_pos) より $0<\lvert c\rvert$ であるから $\lvert c\rvert=1$、
   すなわち $c=[p]$ と書ける。$c_{1,0}=\pi_1 p$ であるから $\pi_1 p=0$。
   [(D.translate)](Mechanized.md#d-translate) より、残りの列が空であることから
-  $$\mathrm{tr}[p]=\mathsf{P}(\pi_1 p,\ \mathrm{tr}\,[],\ \mathrm{tr}\,[])=\mathsf{P}(0,\mathsf{Z},\mathsf{Z}).$$
+  ```math
+  \mathrm{tr}[p]=\mathsf{P}(\pi_1 p,\ \mathrm{tr}\,[],\ \mathrm{tr}\,[])=\mathsf{P}(0,\mathsf{Z},\mathsf{Z}).
+  ```
   `Acc.intro` を用いる。$y\mathrel{R}c$ なる $y$ を取ると $\mathrm{tr}\,y\prec\mathsf{P}(0,\mathsf{Z},\mathsf{Z})$、
   [(T.eq_Z_of_olt_one)](#t-eq_Z_of_olt_one) より $\mathrm{tr}\,y=\mathsf{Z}$、
   [(T.translate_eq_Z_iff)](#t-translate_eq_Z_iff) より $y=[]$。
@@ -685,14 +739,18 @@ $c$ を取り、$c\in A^W_u(\{M\mid \mathrm{Acc}\,R\,M\})$ とする。$c\in\mat
 <a id="d-argOK"></a>
 #### 定義 引数ブロック (D.argOK)
 
-$$\mathrm{argOK}(R)\ :\Longleftrightarrow\ \forall p\in R,\ 0<\pi_0 p .$$
+```math
+\mathrm{argOK}(R)\ :\Longleftrightarrow\ \forall p\in R,\ 0<\pi_0 p .
+```
 
 すなわち $R$ のすべての対の行 0 の値が $0$ より真に大きい。
 
 <a id="d-rsum"></a>
 #### 定義 最上位末尾ブロック (D.rsum)
 
-$$\mathrm{rsum}(A,P)\ :\Longleftrightarrow\ \forall p\in A\mathbin{+\!\!+}P,\ P_{0,0}\le \pi_0 p .$$
+```math
+\mathrm{rsum}(A,P)\ :\Longleftrightarrow\ \forall p\in A\mathbin{+\!\!+}P,\ P_{0,0}\le \pi_0 p .
+```
 
 すなわち $P$ の先頭対の行 0 の値が $A\mathbin{+\!\!+}P$ 全体の行 0 の最小値以下である。
 
@@ -701,13 +759,17 @@ $$\mathrm{rsum}(A,P)\ :\Longleftrightarrow\ \forall p\in A\mathbin{+\!\!+}P,\ P_
 以下 $\mathrm{sh}_d M := \mathrm{map}\,(\lambda p.\,(\pi_0 p+d,\ \pi_1 p))\,M$ と書く。
 $\mathrm{map}$ は長さを変えないから $\lvert\mathrm{sh}_d M\rvert=\lvert M\rvert$ である。
 また $j<\lvert S\rvert$ のとき [(T.entry_shift)](Nrmstep.md#t-entry_shift) より
-$$(\mathrm{sh}_d S)_{0,j}=S_{0,j}+d,\qquad (\mathrm{sh}_d S)_{1,j}=S_{1,j}.$$
+```math
+(\mathrm{sh}_d S)_{0,j}=S_{0,j}+d,\qquad (\mathrm{sh}_d S)_{1,j}=S_{1,j}.
+```
 
 <a id="t-nextR_shift_iff"></a>
 #### 定理 $\mathrm{nextR}$ の平行移動不変性 (T.nextR_shift_iff)
 
 **主張** $b<\lvert S\rvert$ ならば
-$$a\to^{\mathrm{sh}_d S}_i b \iff a\to^{S}_i b .$$
+```math
+a\to^{\mathrm{sh}_d S}_i b \iff a\to^{S}_i b .
+```
 
 **証明** [(D.nextR)](Def.md#d-nextR) は $i=0$ か否かの場合分けである。
 $i=0$ のときは両辺が $\mathrm{nextrel0}$ であり
@@ -774,20 +836,30 @@ $\mathrm{hasParent}(M,i_1,\ell_M)$ が成り立つか否かで再び場合分け
 また [(T.parent_nextR)](Mechanized.md#t-parent_nextR) と
 [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $j_0<\ell_M$、とくに $j_0<\lvert M\rvert$。
 コピー差分は
-$$(\mathrm{sh}_d M)_{0,\ell_M}-(\mathrm{sh}_d M)_{0,j_0}
-=(M_{0,\ell_M}+d)-(M_{0,j_0}+d)=M_{0,\ell_M}-M_{0,j_0}$$
+```math
+(\mathrm{sh}_d M)_{0,\ell_M}-(\mathrm{sh}_d M)_{0,j_0}
+=(M_{0,\ell_M}+d)-(M_{0,j_0}+d)=M_{0,\ell_M}-M_{0,j_0}
+```
 であり（被減数と減数の双方に同じ $d$ を加えても差は変わらない）、$i_1$ も一致するから、
 [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) の展開に現れる係数
-$$\delta=\begin{cases}M_{0,\ell_M}-M_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases}$$
+```math
+\delta=\begin{cases}M_{0,\ell_M}-M_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases}
+```
 は両辺で同一である。よって示すべきは
-$$\mathrm{take}\,j_0\,(\mathrm{sh}_d M)\mathbin{+\!\!+}
-\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda j.\,((\mathrm{sh}_d M)_{0,j}+k\delta,\ (\mathrm{sh}_d M)_{1,j}))\,\mathrm{range}'(j_0,\ell_M-j_0)\bigr)\,\mathrm{range}(n)$$
+```math
+\mathrm{take}\,j_0\,(\mathrm{sh}_d M)\mathbin{+\!\!+}
+\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda j.\,((\mathrm{sh}_d M)_{0,j}+k\delta,\ (\mathrm{sh}_d M)_{1,j}))\,\mathrm{range}'(j_0,\ell_M-j_0)\bigr)\,\mathrm{range}(n)
+```
 が
-$$\mathrm{sh}_d\Bigl(\mathrm{take}\,j_0\,M\mathbin{+\!\!+}
-\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda j.\,(M_{0,j}+k\delta,\ M_{1,j}))\,\mathrm{range}'(j_0,\ell_M-j_0)\bigr)\,\mathrm{range}(n)\Bigr)$$
+```math
+\mathrm{sh}_d\Bigl(\mathrm{take}\,j_0\,M\mathbin{+\!\!+}
+\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda j.\,(M_{0,j}+k\delta,\ M_{1,j}))\,\mathrm{range}'(j_0,\ell_M-j_0)\bigr)\,\mathrm{range}(n)\Bigr)
+```
 に等しいことである。右辺は `List.map_append`, `List.map_take`, `List.map_flatMap` により
-$$\mathrm{take}\,j_0\,(\mathrm{sh}_d M)\mathbin{+\!\!+}
-\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda j.\,(M_{0,j}+k\delta+d,\ M_{1,j}))\,\mathrm{range}'(j_0,\ell_M-j_0)\bigr)\,\mathrm{range}(n)$$
+```math
+\mathrm{take}\,j_0\,(\mathrm{sh}_d M)\mathbin{+\!\!+}
+\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda j.\,(M_{0,j}+k\delta+d,\ M_{1,j}))\,\mathrm{range}'(j_0,\ell_M-j_0)\bigr)\,\mathrm{range}(n)
+```
 に等しい。各 $k$、各 $j\in\mathrm{range}'(j_0,\ell_M-j_0)$ について $j<\lvert M\rvert$ であるから
 [(T.entry_shift)](Nrmstep.md#t-entry_shift) が使え、左辺の被写像は
 $((M_{0,j}+d)+k\delta,\ M_{1,j})$、右辺の被写像は $((M_{0,j}+k\delta)+d,\ M_{1,j})$ であり、
@@ -836,11 +908,15 @@ $(\Leftarrow)$：$\mathrm{dom}(\mathrm{sh}_d M)=T_m$ とすると同じ同値の
 **証明** $M\ne[]$ より $\ell_M<\lvert M\rvert$。[(D.graft)](#d-graft) を両辺で展開する。
 $\lvert\mathrm{sh}_d M\rvert=\lvert M\rvert$ と [(T.entry_shift)](Nrmstep.md#t-entry_shift) より
 $(\mathrm{sh}_d M)_{0,\ell_M}=M_{0,\ell_M}+d$ であるから、
-$$\mathrm{gr}(\mathrm{sh}_d M,z)=\mathrm{dropLast}(\mathrm{sh}_d M)\mathbin{+\!\!+}
-\mathrm{map}\,\bigl(\lambda p.\,(\pi_0 p+(M_{0,\ell_M}+d),\ \pi_1 p)\bigr)\,z .$$
+```math
+\mathrm{gr}(\mathrm{sh}_d M,z)=\mathrm{dropLast}(\mathrm{sh}_d M)\mathbin{+\!\!+}
+\mathrm{map}\,\bigl(\lambda p.\,(\pi_0 p+(M_{0,\ell_M}+d),\ \pi_1 p)\bigr)\,z .
+```
 他方、`List.map_append`, `List.map_dropLast`, `List.map_map` より
-$$\mathrm{sh}_d\bigl(\mathrm{gr}(M,z)\bigr)=\mathrm{dropLast}(\mathrm{sh}_d M)\mathbin{+\!\!+}
-\mathrm{map}\,\bigl(\lambda p.\,((\pi_0 p+M_{0,\ell_M})+d,\ \pi_1 p)\bigr)\,z .$$
+```math
+\mathrm{sh}_d\bigl(\mathrm{gr}(M,z)\bigr)=\mathrm{dropLast}(\mathrm{sh}_d M)\mathbin{+\!\!+}
+\mathrm{map}\,\bigl(\lambda p.\,((\pi_0 p+M_{0,\ell_M})+d,\ \pi_1 p)\bigr)\,z .
+```
 加法の結合律 $\pi_0 p+(M_{0,\ell_M}+d)=(\pi_0 p+M_{0,\ell_M})+d$ により
 2 つの写像は各要素で一致し、`List.map_congr_left` により 2 つの列は等しい。∎
 
@@ -850,7 +926,9 @@ $$\mathrm{sh}_d\bigl(\mathrm{gr}(M,z)\bigr)=\mathrm{dropLast}(\mathrm{sh}_d M)\m
 **主張** $M\in W_u$ ならば $\mathrm{sh}_d M\in W_u$。
 
 **証明** [(T.A2')](#t-A2') による $W_u$ の最小不動点帰納法。帰納法の述語は
-$$\Phi(N) :\equiv \mathrm{sh}_d N\in W_u$$
+```math
+\Phi(N) :\equiv \mathrm{sh}_d N\in W_u
+```
 であり、示すべきことは $\forall N,\ N\in A^{W}_u(\{N'\mid\mathrm{sh}_d N'\in W_u\})\to \mathrm{sh}_d N\in W_u$。
 [(T.A1_intro)](#t-A1_intro) により $\mathrm{sh}_d N\in A^{W}_u(W_u)$ を [(D.Aop)](#d-Aop) の枝ごとに示す。
 
@@ -872,11 +950,15 @@ $$\Phi(N) :\equiv \mathrm{sh}_d N\in W_u$$
 #### 定理 最上位の最後の木への分割 (T.split_lastMin)
 
 **主張** $M\ne[]$ ならば、次をみたす $A,P$ が存在する。
-$$M=A\mathbin{+\!\!+}P,\qquad P\ne[],\qquad \mathrm{rsum}(A,P),\qquad \forall p\in P.\mathrm{tail},\ P_{0,0}<\pi_0 p .$$
+```math
+M=A\mathbin{+\!\!+}P,\qquad P\ne[],\qquad \mathrm{rsum}(A,P),\qquad \forall p\in P.\mathrm{tail},\ P_{0,0}<\pi_0 p .
+```
 
 **証明** $M$ に関するリストの逆向き帰納法（`List.reverseRecOn`）。帰納法の述語は
-$$\Phi(M) :\equiv M\ne[] \to \exists A\,P,\ \bigl(M=A\mathbin{+\!\!+}P \wedge P\ne[] \wedge \mathrm{rsum}(A,P)
-\wedge \forall p\in P.\mathrm{tail},\ P_{0,0}<\pi_0 p\bigr).$$
+```math
+\Phi(M) :\equiv M\ne[] \to \exists A\,P,\ \bigl(M=A\mathbin{+\!\!+}P \wedge P\ne[] \wedge \mathrm{rsum}(A,P)
+\wedge \forall p\in P.\mathrm{tail},\ P_{0,0}<\pi_0 p\bigr).
+```
 
 - **基底段 $\Phi([])$**：前提 $[]\ne[]$ が偽であるから成立する。
 - **帰納段 $\Phi(M')\to\Phi(M'\mathbin{+\!\!+}[q])$**：帰納法の仮定を $\Phi(M')$ とし、$M:=M'\mathbin{+\!\!+}[q]$ とする。
@@ -896,7 +978,9 @@ $$\Phi(M) :\equiv M\ne[] \to \exists A\,P,\ \bigl(M=A\mathbin{+\!\!+}P \wedge P\
     - **$P'_{0,0}<\pi_0 q$ の場合**：$A:=A'$、$P:=P'\mathbin{+\!\!+}[q]$ とする。
       $M=A'\mathbin{+\!\!+}(P'\mathbin{+\!\!+}[q])$ は連結の結合律による。$P'\ne[]$ より $P\ne[]$。
       $P'=p_0\mathbin{::}P''$ と書けるから $P=p_0\mathbin{::}(P''\mathbin{+\!\!+}[q])$ であり、
-      $$P_{0,0}=\pi_0 p_0=P'_{0,0}.$$
+      ```math
+      P_{0,0}=\pi_0 p_0=P'_{0,0}.
+      ```
       $\mathrm{rsum}(A',P)$：$p\in A'\mathbin{+\!\!+}P'\mathbin{+\!\!+}[q]$ とする。$p\in A'$ または $p\in P'$ なら
       $\mathrm{rsum}(A',P')$ より $P'_{0,0}\le\pi_0 p$。$p=q$ なら場合分けの仮定 $P'_{0,0}<\pi_0 q$ より
       $P'_{0,0}\le\pi_0 q$。
@@ -920,7 +1004,9 @@ $((\pi_0 q-c)+c,\ \pi_1 q)=(\pi_0 q,\pi_1 q)=q$。よって `List.map_congr_left
 #### 定理 最上位分割の平行移動分解 (T.rsum_decomp)
 
 **主張** $c:=P_{0,0}$ とおく。$\mathrm{rsum}(A,P)$ ならば
-$$\mathrm{sh}_c\bigl(\mathrm{sh}^{-}_c A\mathbin{+\!\!+}\mathrm{sh}^{-}_c P\bigr)=A\mathbin{+\!\!+}P .$$
+```math
+\mathrm{sh}_c\bigl(\mathrm{sh}^{-}_c A\mathbin{+\!\!+}\mathrm{sh}^{-}_c P\bigr)=A\mathbin{+\!\!+}P .
+```
 
 **証明** `List.map_append` より左辺は $\mathrm{sh}_c(\mathrm{sh}^{-}_c A)\mathbin{+\!\!+}\mathrm{sh}_c(\mathrm{sh}^{-}_c P)$。
 [(D.rsum)](#d-rsum) より $p\in A$ でも $p\in P$ でも $c\le\pi_0 p$ であるから、
@@ -946,7 +1032,8 @@ $2\le\lvert P\rvert$ より $P\ne[]$、よって [(T.entry_sub_zero)](#t-entry_s
 [(T.rsum_decomp)](#t-rsum_decomp) より $\mathrm{sh}_c(A_0\mathbin{+\!\!+}P_0)=A\mathbin{+\!\!+}P$、
 [(T.map_sub_add)](#t-map_sub_add) より $\mathrm{sh}_c P_0=P$ および $\mathrm{sh}_c A_0=A$。次の 6 段で計算する。
 
-$$\begin{aligned}
+```math
+\begin{aligned}
 (A\mathbin{+\!\!+}P)[n]
 &\overset{(1)}{=} \bigl(\mathrm{sh}_c(A_0\mathbin{+\!\!+}P_0)\bigr)[n]
  \overset{(2)}{=} \mathrm{sh}_c\bigl((A_0\mathbin{+\!\!+}P_0)[n]\bigr)
@@ -954,7 +1041,8 @@ $$\begin{aligned}
 &\overset{(4)}{=} \mathrm{sh}_c A_0 \mathbin{+\!\!+} \mathrm{sh}_c (P_0[n])
  \overset{(5)}{=} A \mathbin{+\!\!+} (\mathrm{sh}_c P_0)[n]
  \overset{(6)}{=} A \mathbin{+\!\!+} P[n].
-\end{aligned}$$
+\end{aligned}
+```
 
 段の根拠は次のとおり。(1) [(T.rsum_decomp)](#t-rsum_decomp)。
 (2) [(T.oper_shift)](#t-oper_shift)。
@@ -970,21 +1058,27 @@ $\mathrm{sh}_c(P_0[n])=(\mathrm{sh}_c P_0)[n]$。
 **主張** $P\ne[]$ ならば $\mathrm{gr}(A\mathbin{+\!\!+}P,z)=A\mathbin{+\!\!+}\mathrm{gr}(P,z)$。
 
 **証明** $P\ne[]$ より $0<\lvert P\rvert$ であるから
-$$\ell_{A+\!\!+P}=\lvert A\rvert+\lvert P\rvert-1=\lvert A\rvert+(\lvert P\rvert-1)=\lvert A\rvert+\ell_P .$$
+```math
+\ell_{A+\!\!+P}=\lvert A\rvert+\lvert P\rvert-1=\lvert A\rvert+(\lvert P\rvert-1)=\lvert A\rvert+\ell_P .
+```
 よって [(T.entry_append_right)](Nrm.md#t-entry_append_right) より
 $(A\mathbin{+\!\!+}P)_{0,\ell_{A+\!\!+P}}=P_{0,\ell_P}$、すなわち graft の平行移動量は両辺で一致する。
 また `List.dropLast_append_of_ne_nil` より
 $\mathrm{dropLast}(A\mathbin{+\!\!+}P)=A\mathbin{+\!\!+}\mathrm{dropLast}\,P$。
 したがって [(D.graft)](#d-graft) より
-$$\mathrm{gr}(A\mathbin{+\!\!+}P,z)=\bigl(A\mathbin{+\!\!+}\mathrm{dropLast}\,P\bigr)\mathbin{+\!\!+}
-\mathrm{map}\,(\lambda p.\,(\pi_0 p+P_{0,\ell_P},\pi_1 p))\,z$$
+```math
+\mathrm{gr}(A\mathbin{+\!\!+}P,z)=\bigl(A\mathbin{+\!\!+}\mathrm{dropLast}\,P\bigr)\mathbin{+\!\!+}
+\mathrm{map}\,(\lambda p.\,(\pi_0 p+P_{0,\ell_P},\pi_1 p))\,z
+```
 であり、連結の結合律によりこれは $A\mathbin{+\!\!+}\mathrm{gr}(P,z)$ に等しい。∎
 
 <a id="t-hasParent_append_gen"></a>
 #### 定理 $\mathrm{hasParent}$ の前置不変性 (T.hasParent_append_gen)
 
 **主張** $j<\lvert P\rvert$ かつ $\mathrm{rsum}(A,P)$ ならば
-$$\mathrm{hasParent}(A\mathbin{+\!\!+}P,\ i,\ \lvert A\rvert+j) \iff \mathrm{hasParent}(P,i,j).$$
+```math
+\mathrm{hasParent}(A\mathbin{+\!\!+}P,\ i,\ \lvert A\rvert+j) \iff \mathrm{hasParent}(P,i,j).
+```
 
 **証明** $j<\lvert P\rvert$ より $P\ne[]$。$c:=P_{0,0}$、$A_0:=\mathrm{sh}^{-}_c A$、$P_0:=\mathrm{sh}^{-}_c P$ とおくと、
 $\lvert A_0\rvert=\lvert A\rvert$、$\lvert P_0\rvert=\lvert P\rvert$、
@@ -992,8 +1086,10 @@ $(P_0)_{0,0}=0$（[(T.entry_sub_zero)](#t-entry_sub_zero)）、
 $\mathrm{sh}_c(A_0\mathbin{+\!\!+}P_0)=A\mathbin{+\!\!+}P$、$\mathrm{sh}_c P_0=P$ である。3 段の同値を合成する。
 
 **第 1 段**
-$$\mathrm{hasParent}(A\mathbin{+\!\!+}P,i,\lvert A\rvert+j)
-\iff\mathrm{hasParent}(A_0\mathbin{+\!\!+}P_0,i,\lvert A_0\rvert+j).$$
+```math
+\mathrm{hasParent}(A\mathbin{+\!\!+}P,i,\lvert A\rvert+j)
+\iff\mathrm{hasParent}(A_0\mathbin{+\!\!+}P_0,i,\lvert A_0\rvert+j).
+```
 $A\mathbin{+\!\!+}P=\mathrm{sh}_c(A_0\mathbin{+\!\!+}P_0)$ であり、
 $\lvert A\rvert+j=\lvert A_0\rvert+j<\lvert A_0\mathbin{+\!\!+}P_0\rvert$ であるから
 [(T.hasParent_shift)](#t-hasParent_shift) が適用できる。
@@ -1041,7 +1137,9 @@ $(\Leftarrow)$：$\mathrm{dom}(A\mathbin{+\!\!+}P)=T_m$ とすると同じ同値
 <a id="d-XA"></a>
 #### 定義 前置ブロックによる引き戻し (D.XA)
 
-$$X^{(A)} := \{\,B \mid \mathrm{rsum}(A,B)\to A\mathbin{+\!\!+}B\in X\,\}$$
+```math
+X^{(A)} := \{\,B \mid \mathrm{rsum}(A,B)\to A\mathbin{+\!\!+}B\in X\,\}
+```
 （[(D.rsum)](#d-rsum)）。
 
 ### 行 0 の値の記録：$M[n]$ と graft は行 0 の値の下界を保つ
@@ -1090,8 +1188,10 @@ $B$ の第 $j$ 要素であり、リストの要素はリストに属する。�
     [(T.no_hasParent_of_row0_zero)](Nrm.md#t-no_hasParent_of_row0_zero) により矛盾）。
     よって $\neg(B_{0,\ell_B}=0\wedge B_{1,\ell_B}=0)$ であり、
     [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) が適用でき
-    $$B[n]=\mathrm{take}\,j_0\,B\mathbin{+\!\!+}
-    \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda j.\,(B_{0,j}+k\delta,\ B_{1,j}))\,\mathrm{range}'(j_0,\ell_B-j_0)\bigr)\,\mathrm{range}(n)$$
+    ```math
+    B[n]=\mathrm{take}\,j_0\,B\mathbin{+\!\!+}
+    \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}\,(\lambda j.\,(B_{0,j}+k\delta,\ B_{1,j}))\,\mathrm{range}'(j_0,\ell_B-j_0)\bigr)\,\mathrm{range}(n)
+    ```
     （$j_0$ は親、$\delta$ は係数）。$p\in B[n]$ を取り、連結のどちらに属するかで場合分けする。
     - $p\in\mathrm{take}\,j_0\,B$：前部の要素は $B$ の要素であるから仮定より $c\le\pi_0 p$。
     - $p$ が `flatMap` 側：ある $k$ と $j\in\mathrm{range}'(j_0,\ell_B-j_0)$ について
@@ -1126,7 +1226,9 @@ $\bigl(\mathrm{gr}(B,z)\bigr)_{0,0}=B_{0,0}$。
 **証明** $B$ の形で場合分けする。$B\ne[]$ より $B=b_0\mathbin{::}B'$ と書ける。
 
 - $B'=[]$ すなわち $B=[b_0]$ の場合：$\mathrm{dropLast}[b_0]=[]$、$\ell_B=0$、$B_{0,0}=\pi_0 b_0$ であるから
-  $$\mathrm{gr}([b_0],z)=\mathrm{map}\,(\lambda p.\,(\pi_0 p+\pi_0 b_0,\ \pi_1 p))\,z .$$
+  ```math
+  \mathrm{gr}([b_0],z)=\mathrm{map}\,(\lambda p.\,(\pi_0 p+\pi_0 b_0,\ \pi_1 p))\,z .
+  ```
   仮定 $\mathrm{gr}(B,z)\ne[]$ よりこの列は空でなく、$z=z_0\mathbin{::}z'$ と書ける。
   $\mathrm{based}(z)$ は $z_{0,0}=\pi_0 z_0=0$ であるから、$\mathrm{gr}(B,z)$ の先頭は
   $(\pi_0 z_0+\pi_0 b_0,\ \pi_1 z_0)=(\pi_0 b_0,\ \pi_1 z_0)$ であり、その行 0 の値は
@@ -1139,13 +1241,17 @@ $\bigl(\mathrm{gr}(B,z)\bigr)_{0,0}=B_{0,0}$。
 #### 定理 2.4(a) $X$ が前不動点なら $X^{(A)}$ も前不動点 (T.XA_closed)
 
 **主張** $\bigl(\forall M,\ M\in A^W_u(X)\to M\in X\bigr)$ かつ $A\in X$ ならば
-$$\forall M,\ M\in A^W_u\bigl(X^{(A)}\bigr)\to M\in X^{(A)} .$$
+```math
+\forall M,\ M\in A^W_u\bigl(X^{(A)}\bigr)\to M\in X^{(A)} .
+```
 
 **証明** $B$ を取り、$B\in A^W_u(X^{(A)})$ と $\mathrm{rsum}(A,B)$ を仮定して $A\mathbin{+\!\!+}B\in X$ を示す。
 
 $B=[]$ の場合、$A\mathbin{+\!\!+}[]=A\in X$ である。以下 $B\ne[]$、すなわち $0<\lvert B\rvert$ とする。
 [(D.rsum)](#d-rsum) より
-$$\forall p\in B,\ B_{0,0}\le\pi_0 p \qquad\text{および}\qquad \forall p\in A,\ B_{0,0}\le\pi_0 p$$
+```math
+\forall p\in B,\ B_{0,0}\le\pi_0 p \qquad\text{および}\qquad \forall p\in A,\ B_{0,0}\le\pi_0 p
+```
 が成り立つ。[(D.Aop)](#d-Aop) の 3 つの枝で場合分けする。
 
 **枝 1**：$\lvert B\rvert\le 1$ かつ $B_{1,0}=0$。$0<\lvert B\rvert$ と合わせて $\lvert B\rvert=1$。
@@ -1171,7 +1277,9 @@ $$\forall p\in B,\ B_{0,0}\le\pi_0 p \qquad\text{および}\qquad \forall p\in A
   $(A\mathbin{+\!\!+}B)[n]=\mathrm{Pred}(A\mathbin{+\!\!+}B)$。
   $\lvert A\mathbin{+\!\!+}B\rvert\ge 2$ より [(D.Pred)](Def.md#d-Pred) は $\mathrm{dropLast}$ の分岐であり、
   `List.dropLast_append_of_ne_nil` と $\lvert B\rvert=1$（よって $\mathrm{dropLast}\,B=[]$）から
-  $$\mathrm{Pred}(A\mathbin{+\!\!+}B)=A\mathbin{+\!\!+}\mathrm{dropLast}\,B=A\mathbin{+\!\!+}[]=A\in X .$$
+  ```math
+  \mathrm{Pred}(A\mathbin{+\!\!+}B)=A\mathbin{+\!\!+}\mathrm{dropLast}\,B=A\mathbin{+\!\!+}[]=A\in X .
+  ```
   よって枝 2 の条件がみたされ、仮定より $A\mathbin{+\!\!+}B\in X$。
 
 **枝 2**：$\mathrm{natDom}(B)$ かつ $\forall n\ge 1,\ B[n]\in X^{(A)}$。
@@ -1226,7 +1334,10 @@ $\mathrm{rsum}(A,M)\to A\mathbin{+\!\!+}M\in W_u$）が使えて $W_u\subseteq (
 
 **証明** [(D.graft)](#d-graft) より $\mathrm{dropLast}[(0,v)]=[]$、$\ell_{[(0,v)]}=1-1=0$、
 $[(0,v)]_{0,0}=0$ であるから
-$$\mathrm{gr}([(0,v)],z)=[]\mathbin{+\!\!+}\mathrm{map}\,(\lambda p.\,(\pi_0 p+0,\ \pi_1 p))\,z=z .$$∎
+```math
+\mathrm{gr}([(0,v)],z)=[]\mathbin{+\!\!+}\mathrm{map}\,(\lambda p.\,(\pi_0 p+0,\ \pi_1 p))\,z=z .
+```
+∎
 
 <a id="t-domT_Om"></a>
 #### 定理 $[(0,m+1)]$ は $\mathrm{dom}=T_m$ をみたす (T.domT_Om)
@@ -1255,7 +1366,9 @@ $\mathbb{N}$ では偽である。よって $\neg\,\mathrm{hasParent}([(0,m+1)],
 <a id="d-Wstar"></a>
 #### 定義 $W^{*}$ (D.Wstar)
 
-$$W^{*} := \{\,R \mid \mathrm{argOK}(R)\to\forall v\in\mathbb{N},\ (0,v)\mathbin{::}R\in W_v\,\}$$
+```math
+W^{*} := \{\,R \mid \mathrm{argOK}(R)\to\forall v\in\mathbb{N},\ (0,v)\mathbin{::}R\in W_v\,\}
+```
 （[(D.argOK)](#d-argOK)）。すなわち「引数ブロック $R$ に主要項の根 $(0,v)$ を付けたものが、
 どの $v$ についてもその水準の $W_v$ に属する」。
 
@@ -1263,7 +1376,9 @@ $$W^{*} := \{\,R \mid \mathrm{argOK}(R)\to\forall v\in\mathbb{N},\ (0,v)\mathbin
 #### 定義 塔 (D.tow)
 
 $v\in\mathbb{N}$、$R\in\mathrm{PairSeq}$ に対し、$k$ に関する再帰で
-$$t^{v,R}_0 := [],\qquad t^{v,R}_{k+1} := (0,v)\mathbin{::}\mathrm{gr}\bigl(R,\ t^{v,R}_k\bigr)$$
+```math
+t^{v,R}_0 := [],\qquad t^{v,R}_{k+1} := (0,v)\mathbin{::}\mathrm{gr}\bigl(R,\ t^{v,R}_k\bigr)
+```
 と定める（[(D.graft)](#d-graft)）。
 
 <a id="t-graft_cons"></a>
@@ -1333,7 +1448,9 @@ $[p]\mathbin{+\!\!+}R=p\mathbin{::}R$ と $1+j=j+1$ で書き換える。∎
 #### 定理 行 0 親の存在判定 (T.hasParent_zero_iff)
 
 **主張** $b<\lvert M\rvert$ ならば
-$$\mathrm{hasParent}(M,0,b) \iff \exists k,\ \bigl(k<b \ \wedge\ M_{0,k}<M_{0,b}\bigr).$$
+```math
+\mathrm{hasParent}(M,0,b) \iff \exists k,\ \bigl(k<b \ \wedge\ M_{0,k}<M_{0,b}\bigr).
+```
 
 **証明** [(D.nextR)](Def.md#d-nextR) の場合分けで $i=0$ の側が選ばれるから、
 $k\to^M_0 b$（$\mathrm{nextR}$ の意味）と $k\to^M_0 b$（$\mathrm{nextrel0}$ の意味）は同値であり、以下同一視する。
@@ -1342,11 +1459,15 @@ $(\Rightarrow)$ 親 $k$ を取ると、[(D.nextrel0)](Def.md#d-nextrel0) の条�
 $k<b$ と $M_{0,k}<M_{0,b}$。
 
 $(\Leftarrow)$ 条件をみたす $k$ を取る。述語
-$$P(t):\equiv\ t<b \ \wedge\ M_{0,t}<M_{0,b}$$
+```math
+P(t):\equiv\ t<b \ \wedge\ M_{0,t}<M_{0,b}
+```
 に対し $g:=\mathrm{fg}(P,b)$ とおく。$k<b$ より $k\le b$、$P(k)$ が成り立つから
 `Nat.findGreatest_spec` より $P(g)$、すなわち $g<b$ かつ $M_{0,g}<M_{0,b}$。
 また $P(t)$ をみたす $t$ は $t<b$ すなわち $t\le b$ をみたすから、`Nat.le_findGreatest` より
-$$(\dagger)\qquad\forall t,\ P(t)\to t\le g .$$
+```math
+(\dagger)\qquad\forall t,\ P(t)\to t\le g .
+```
 
 $g\to^M_0 b$、すなわち [(D.nextrel0)](Def.md#d-nextrel0) の 5 条件を確かめる。
 
@@ -1368,7 +1489,9 @@ $M_{0,b}\le M_{0,g}$ を得るが、これは $P(g)$ の第 2 成分 $M_{0,g}<M_
 $0\le^{(0,v)::R}_0 (j+1)$。
 
 **証明** $M:=(0,v)\mathbin{::}R$ とおく。まず補助命題
-$$\mathrm{key}(N):\equiv\ \forall j,\ j\le N \to j<\lvert R\rvert \to 0\le^{M}_0 (j+1)$$
+```math
+\mathrm{key}(N):\equiv\ \forall j,\ j\le N \to j<\lvert R\rvert \to 0\le^{M}_0 (j+1)
+```
 を $N$ に関する自然数の帰納法で示す。帰納法の述語は $\mathrm{key}(N)$ である。
 
 - **基底段 $N=0$**：$j\le 0$ より $j=0$。$j<\lvert R\rvert$ より $0<\lvert R\rvert$、
@@ -1384,7 +1507,9 @@ $$\mathrm{key}(N):\equiv\ \forall j,\ j\le N \to j<\lvert R\rvert \to 0\le^{M}_0
 - **帰納段 $N\to N+1$**：帰納法の仮定は $\mathrm{key}(N)$ である。$j\le N+1$、$j<\lvert R\rvert$ とする。
   $j+1<\lvert M\rvert$ である。[(T.entry_cons)](#t-entry_cons) と
   [(T.entry_pair_mem)](#t-entry_pair_mem)、$\mathrm{argOK}(R)$ より
-  $$M_{0,j+1}=R_{0,j}>0=M_{0,0},$$
+  ```math
+  M_{0,j+1}=R_{0,j}>0=M_{0,0},
+  ```
   よって $k:=0$ が $k<j+1$ かつ $M_{0,k}<M_{0,j+1}$ をみたす。
   [(T.hasParent_zero_iff)](#t-hasParent_zero_iff) より $\mathrm{hasParent}(M,0,j+1)$ であり、
   その親を $k$ とすると $k\to^M_0 (j+1)$。
@@ -1448,7 +1573,9 @@ $$\mathrm{key}(N):\equiv\ \forall j,\ j\le N \to j<\lvert R\rvert \to 0\le^{M}_0
 #### 定理 (C′)(D′) 根が行 1 の親になる場合 (T.hasParent_cons_one)
 
 **主張** $\mathrm{argOK}(R)$、$R\ne[]$、および
-$$\mathrm{hasParent}(R,1,\lvert R\rvert-1)\ \vee\ v<R_{1,\lvert R\rvert-1}$$
+```math
+\mathrm{hasParent}(R,1,\lvert R\rvert-1)\ \vee\ v<R_{1,\lvert R\rvert-1}
+```
 のいずれかが成り立つならば、$\mathrm{hasParent}((0,v)\mathbin{::}R,\ 1,\ \lvert R\rvert)$。
 
 **証明** $M:=(0,v)\mathbin{::}R$ とおく。$R\ne[]$ より $0<\lvert R\rvert$、また
@@ -1459,7 +1586,9 @@ $$\mathrm{hasParent}(R,1,\lvert R\rvert-1)\ \vee\ v<R_{1,\lvert R\rvert-1}$$
 
 - **$\mathrm{hasParent}(R,1,\lvert R\rvert-1)$ の場合**：$\lvert R\rvert-1<\lvert R\rvert$ であるから
   [(T.hasParent_one_iff)](#t-hasParent_one_iff) より $j'$ が取れて
-  $$j'<\lvert R\rvert-1,\qquad j'\le^R_0(\lvert R\rvert-1),\qquad R_{1,j'}<R_{1,\lvert R\rvert-1}.$$
+  ```math
+  j'<\lvert R\rvert-1,\qquad j'\le^R_0(\lvert R\rvert-1),\qquad R_{1,j'}<R_{1,\lvert R\rvert-1}.
+  ```
   $j_0:=j'+1$ とする。$j'<\lvert R\rvert-1$ より $j'+1<\lvert R\rvert$。
   [(T.le0_cons_last)](#t-le0_cons_last) より $(j'+1)\le^M_0\lvert R\rvert$。
   [(T.entry_cons)](#t-entry_cons) より $M_{1,j'+1}=R_{1,j'}$ であり、
@@ -1478,15 +1607,23 @@ $$\mathrm{hasParent}(R,1,\lvert R\rvert-1)\ \vee\ v<R_{1,\lvert R\rvert-1}$$
 **主張** $\ell_M\ne 0$、$\neg(M_{0,\ell_M}=0\wedge M_{1,\ell_M}=0)$、
 $\mathrm{hasParent}(M,\mathrm{idx}_1(M,\ell_M),\ell_M)$、かつ
 $\mathrm{par}^M_{\mathrm{idx}_1(M,\ell_M)}(\ell_M)=0$ ならば
-$$M[n]=\mathrm{flatMap}\Bigl(\lambda k.\ \mathrm{map}\bigl(\lambda p.\,(\pi_0 p+k\delta,\ \pi_1 p)\bigr)(\mathrm{dropLast}\,M)\Bigr)\,\mathrm{range}(n),$$
-$$\delta := \begin{cases} M_{0,\ell_M}-M_{0,0} & (0<\mathrm{idx}_1(M,\ell_M))\\ 0 & (\text{それ以外}).\end{cases}$$
+```math
+M[n]=\mathrm{flatMap}\Bigl(\lambda k.\ \mathrm{map}\bigl(\lambda p.\,(\pi_0 p+k\delta,\ \pi_1 p)\bigr)(\mathrm{dropLast}\,M)\Bigr)\,\mathrm{range}(n),
+```
+```math
+\delta := \begin{cases} M_{0,\ell_M}-M_{0,0} & (0<\mathrm{idx}_1(M,\ell_M))\\ 0 & (\text{それ以外}).\end{cases}
+```
 
 **証明** [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) を適用し、親を $0$ で置き換えると
 $\mathrm{take}\,0\,M=[]$、$\ell_M-0=\ell_M$ であるから
-$$M[n]=\mathrm{flatMap}\Bigl(\lambda k.\ \mathrm{map}\bigl(\lambda j.\,(M_{0,j}+k\delta,\ M_{1,j})\bigr)\,\mathrm{range}'(0,\ell_M)\Bigr)\,\mathrm{range}(n).$$
+```math
+M[n]=\mathrm{flatMap}\Bigl(\lambda k.\ \mathrm{map}\bigl(\lambda j.\,(M_{0,j}+k\delta,\ M_{1,j})\bigr)\,\mathrm{range}'(0,\ell_M)\Bigr)\,\mathrm{range}(n).
+```
 他方 `List.dropLast_eq_take` より $\mathrm{dropLast}\,M=\mathrm{take}\,\ell_M\,M$ であり、
 $\ell_M\le\lvert M\rvert$ であるから [(T.map_range_entry_eq_take)](Nrm.md#t-map_range_entry_eq_take) より
-$$\mathrm{dropLast}\,M=\mathrm{map}\,(\lambda j.\,(M_{0,j},M_{1,j}))\,\mathrm{range}(\ell_M).$$
+```math
+\mathrm{dropLast}\,M=\mathrm{map}\,(\lambda j.\,(M_{0,j},M_{1,j}))\,\mathrm{range}(\ell_M).
+```
 これに $\lambda p.(\pi_0 p+k\delta,\pi_1 p)$ を写すと、`List.map_map` により
 $\mathrm{map}\,(\lambda j.\,(M_{0,j}+k\delta,\ M_{1,j}))\,\mathrm{range}(\ell_M)$ である。
 `List.range_eq_range'` より $\mathrm{range}(\ell_M)=\mathrm{range}'(0,\ell_M)$ であるから、
@@ -1496,7 +1633,9 @@ $\mathrm{map}\,(\lambda j.\,(M_{0,j}+k\delta,\ M_{1,j}))\,\mathrm{range}(\ell_M)
 #### 定理 (B′)(C′) 崩壊しない主要ステップ (T.oper_cons_nat)
 
 **主張** $\mathrm{argOK}(R)$、$R\ne[]$、$\mathrm{hasParent}(R,\mathrm{idx}_1(R,\ell_R),\ell_R)$ ならば
-$$\bigl((0,v)\mathbin{::}R\bigr)[n]=(0,v)\mathbin{::}R[n].$$
+```math
+\bigl((0,v)\mathbin{::}R\bigr)[n]=(0,v)\mathbin{::}R[n].
+```
 
 **証明** $M:=(0,v)\mathbin{::}R$、$i_1:=\mathrm{idx}_1(R,\ell_R)$、
 $j_0:=\mathrm{par}^R_{i_1}(\ell_R)$ とおく。$R\ne[]$ より $0<\lvert R\rvert$、
@@ -1507,7 +1646,9 @@ $\lvert M\rvert=\lvert R\rvert+1$、$\ell_M=\lvert R\rvert$ である。
 $\mathrm{argOK}(R)$ と [(T.entry_pair_mem)](#t-entry_pair_mem) より $0<R_{0,\ell_R}$、
 よって $\neg(R_{0,\ell_R}=0\wedge R_{1,\ell_R}=0)$。
 [(T.entry_cons_last)](#t-entry_cons_last) より
-$$M_{0,\lvert R\rvert}=R_{0,\ell_R},\qquad M_{1,\lvert R\rvert}=R_{1,\ell_R},$$
+```math
+M_{0,\lvert R\rvert}=R_{0,\ell_R},\qquad M_{1,\lvert R\rvert}=R_{1,\ell_R},
+```
 したがって $\ell_M=\lvert R\rvert\ne 0$ かつ $\neg(M_{0,\ell_M}=0\wedge M_{1,\ell_M}=0)$。
 [(T.idx1_cons_last)](#t-idx1_cons_last) より $\mathrm{idx}_1(M,\ell_M)=i_1$。
 
@@ -1534,25 +1675,35 @@ $\mathrm{hasParent}(M,i_1,\lvert R\rvert)$ が成り立ち、
 
 **展開の比較.** 両辺に [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) を適用する。
 係数は
-$$M\ \text{側}:\ \begin{cases}M_{0,\lvert R\rvert}-M_{0,j_0+1}=R_{0,\ell_R}-R_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases}$$
+```math
+M\ \text{側}:\ \begin{cases}M_{0,\lvert R\rvert}-M_{0,j_0+1}=R_{0,\ell_R}-R_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases}
+```
 であり、$R$ 側の係数と一致する。これを $\delta$ とおく。また
-$$\lvert R\rvert-(j_0+1)=(\lvert R\rvert-1)-j_0=\ell_R-j_0 .$$
+```math
+\lvert R\rvert-(j_0+1)=(\lvert R\rvert-1)-j_0=\ell_R-j_0 .
+```
 `List.take_succ_cons` より $\mathrm{take}\,(j_0+1)\,M=(0,v)\mathbin{::}\mathrm{take}\,j_0\,R$。
 `List.range'_eq_map_range` を 2 回用いると
-$$\mathrm{range}'(j_0+1,\ \ell_R-j_0)=\mathrm{map}\,(\lambda j.\,j+1)\,\mathrm{range}'(j_0,\ \ell_R-j_0)$$
+```math
+\mathrm{range}'(j_0+1,\ \ell_R-j_0)=\mathrm{map}\,(\lambda j.\,j+1)\,\mathrm{range}'(j_0,\ \ell_R-j_0)
+```
 であり、これに $\lambda j.\,(M_{0,j}+k\delta,\ M_{1,j})$ を写すと、`List.map_map` と
 [(T.entry_cons)](#t-entry_cons) により $\lambda j.\,(R_{0,j}+k\delta,\ R_{1,j})$ を
 $\mathrm{range}'(j_0,\ell_R-j_0)$ に写したものに等しい。
 `List.flatMap_congr` と `List.map_congr_left` により
-$$M[n]=(0,v)\mathbin{::}\Bigl(\mathrm{take}\,j_0\,R\mathbin{+\!\!+}
-\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\,(R_{0,j}+k\delta,R_{1,j}))\,\mathrm{range}'(j_0,\ell_R-j_0)\bigr)\mathrm{range}(n)\Bigr)$$
+```math
+M[n]=(0,v)\mathbin{::}\Bigl(\mathrm{take}\,j_0\,R\mathbin{+\!\!+}
+\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\,(R_{0,j}+k\delta,R_{1,j}))\,\mathrm{range}'(j_0,\ell_R-j_0)\bigr)\mathrm{range}(n)\Bigr)
+```
 であり、括弧の中は $R[n]$ そのものである。∎
 
 <a id="t-oper_cons_succ"></a>
 #### 定理 (A′) 後続の場合 (T.oper_cons_succ)
 
 **主張** $\mathrm{argOK}(R)$、$R\ne[]$、$R_{1,\ell_R}=0$、$\neg\,\mathrm{hasParent}(R,0,\ell_R)$ ならば
-$$\bigl((0,v)\mathbin{::}R\bigr)[n]=\mathrm{flatMap}\bigl(\lambda \_.\ (0,v)\mathbin{::}\mathrm{dropLast}\,R\bigr)\,\mathrm{range}(n).$$
+```math
+\bigl((0,v)\mathbin{::}R\bigr)[n]=\mathrm{flatMap}\bigl(\lambda \_.\ (0,v)\mathbin{::}\mathrm{dropLast}\,R\bigr)\,\mathrm{range}(n).
+```
 
 **証明** $M:=(0,v)\mathbin{::}R$ とおく。$R\ne[]$ より $0<\lvert R\rvert$、$\ell_M=\lvert R\rvert$。
 
@@ -1563,7 +1714,9 @@ $\mathrm{argOK}(R)$ と [(T.entry_pair_mem)](#t-entry_pair_mem) より $0<R_{0,\
 $\mathrm{idx}_1(M,\ell_M)=\mathrm{idx}_1(R,\ell_R)=0$。
 
 **$R$ の最終列の行 0 の値は $R$ の中で最小.**
-$$(\ast)\qquad \forall k,\ k<\ell_R\to R_{0,\ell_R}\le R_{0,k}.$$
+```math
+(\ast)\qquad \forall k,\ k<\ell_R\to R_{0,\ell_R}\le R_{0,k}.
+```
 実際、ある $k<\ell_R$ で $R_{0,k}<R_{0,\ell_R}$ ならば
 [(T.hasParent_zero_iff)](#t-hasParent_zero_iff) より $\mathrm{hasParent}(R,0,\ell_R)$ となり仮定に反する。
 
@@ -1584,13 +1737,18 @@ $$(\ast)\qquad \forall k,\ k<\ell_R\to R_{0,\ell_R}\le R_{0,k}.$$
 $\mathrm{idx}_1(M,\ell_M)=0$ より係数は $\delta=0$、すなわち各 $k$ について
 $\lambda p.(\pi_0 p+k\cdot 0,\pi_1 p)$ は恒等写像である。
 $R\ne[]$ より $\mathrm{dropLast}\,M=(0,v)\mathbin{::}\mathrm{dropLast}\,R$ であるから、
-$$M[n]=\mathrm{flatMap}\bigl(\lambda\_. \ (0,v)\mathbin{::}\mathrm{dropLast}\,R\bigr)\,\mathrm{range}(n).$$∎
+```math
+M[n]=\mathrm{flatMap}\bigl(\lambda\_. \ (0,v)\mathbin{::}\mathrm{dropLast}\,R\bigr)\,\mathrm{range}(n).
+```
+∎
 
 <a id="t-oper_cons_tower"></a>
 #### 定理 (D′) 塔の恒等式 (T.oper_cons_tower)
 
 **主張** $\mathrm{argOK}(R)$、$\mathrm{dom}(R)=T_m$、$v\le m$ ならば
-$$\bigl((0,v)\mathbin{::}R\bigr)[n]=t^{v,R}_n .$$
+```math
+\bigl((0,v)\mathbin{::}R\bigr)[n]=t^{v,R}_n .
+```
 
 **証明** $M:=(0,v)\mathbin{::}R$、$x:=R_{0,\ell_R}$ とおく。
 [(T.not_domT_nil)](#t-not_domT_nil) より $R\ne[]$、よって $0<\lvert R\rvert$、$\ell_M=\lvert R\rvert$。
@@ -1615,10 +1773,14 @@ $\mathrm{par}^M_1(\lvert R\rvert)=0$。
 **展開形.** $M_{0,0}=0$ であるから、[(T.oper_root_tiling)](#t-oper_root_tiling) の係数は
 $\delta=M_{0,\ell_M}-M_{0,0}=x-0=x$（$0<\mathrm{idx}_1(M,\ell_M)=1$）。
 $R\ne[]$ より $\mathrm{dropLast}\,M=(0,v)\mathbin{::}\mathrm{dropLast}\,R=:D$ であるから
-$$M[n]=\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+kx,\ \pi_1 p))\,D\bigr)\,\mathrm{range}(n).$$
+```math
+M[n]=\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+kx,\ \pi_1 p))\,D\bigr)\,\mathrm{range}(n).
+```
 
 **塔との一致.** 残るのは
-$$\Psi(n):\equiv\quad \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+kx,\pi_1 p))\,D\bigr)\,\mathrm{range}(n)=t^{v,R}_n$$
+```math
+\Psi(n):\equiv\quad \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+kx,\pi_1 p))\,D\bigr)\,\mathrm{range}(n)=t^{v,R}_n
+```
 を示すことである。$n$ に関する自然数の帰納法を用いる。帰納法の述語は $\Psi(n)$ である。
 
 - **基底段 $n=0$**：$\mathrm{range}(0)=[]$ より左辺は $[]$、[(D.tow)](#d-tow) より $t^{v,R}_0=[]$。
@@ -1628,16 +1790,22 @@ $$\Psi(n):\equiv\quad \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\
   左辺は「$k=0$ のブロック」と「$k+1$（$k\in\mathrm{range}(n)$）のブロックの連結」の連結である。
   $k=0$ のブロックは $\mathrm{map}(\lambda p.(\pi_0 p+0,\pi_1 p))\,D=D$。
   後半については、$(k+1)x=kx+x$ と加法の結合律により
-  $$\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+(k+1)x,\pi_1 p))\,D\bigr)\,\mathrm{range}(n)
-  =\mathrm{sh}_x\Bigl(\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+kx,\pi_1 p))\,D\bigr)\,\mathrm{range}(n)\Bigr)$$
+  ```math
+  \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+(k+1)x,\pi_1 p))\,D\bigr)\,\mathrm{range}(n)
+  =\mathrm{sh}_x\Bigl(\mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\,(\pi_0 p+kx,\pi_1 p))\,D\bigr)\,\mathrm{range}(n)\Bigr)
+  ```
   （`List.map_flatMap`, `List.map_map`, `List.map_congr_left`, `List.flatMap_congr` による）。
   帰納法の仮定 $\Psi(n)$ よりこれは $\mathrm{sh}_x\bigl(t^{v,R}_n\bigr)$ に等しい。よって左辺は
-  $$D\mathbin{+\!\!+}\mathrm{sh}_x\bigl(t^{v,R}_n\bigr)
-  =(0,v)\mathbin{::}\Bigl(\mathrm{dropLast}\,R\mathbin{+\!\!+}\mathrm{sh}_x\bigl(t^{v,R}_n\bigr)\Bigr).$$
+  ```math
+  D\mathbin{+\!\!+}\mathrm{sh}_x\bigl(t^{v,R}_n\bigr)
+  =(0,v)\mathbin{::}\Bigl(\mathrm{dropLast}\,R\mathbin{+\!\!+}\mathrm{sh}_x\bigl(t^{v,R}_n\bigr)\Bigr).
+  ```
   他方 [(D.tow)](#d-tow) と [(D.graft)](#d-graft) より
-  $$t^{v,R}_{n+1}=(0,v)\mathbin{::}\mathrm{gr}\bigl(R,t^{v,R}_n\bigr)
+  ```math
+  t^{v,R}_{n+1}=(0,v)\mathbin{::}\mathrm{gr}\bigl(R,t^{v,R}_n\bigr)
   =(0,v)\mathbin{::}\Bigl(\mathrm{dropLast}\,R\mathbin{+\!\!+}
-  \mathrm{map}(\lambda p.\,(\pi_0 p+R_{0,\ell_R},\pi_1 p))\,t^{v,R}_n\Bigr)$$
+  \mathrm{map}(\lambda p.\,(\pi_0 p+R_{0,\ell_R},\pi_1 p))\,t^{v,R}_n\Bigr)
+  ```
   であり、$R_{0,\ell_R}=x$ であるから両者は一致する。∎
 
 <a id="t-domT_cons_of_lt"></a>
@@ -1710,16 +1878,22 @@ $\mathrm{r1cand}(M,\lvert R\rvert,j_0)$ なる $j_0$ が存在したとして矛
 #### 定理 同一の木の $n$ 個の複製は $W_u$ に留まる (T.W_flatMap_copies)
 
 **主張** $Q\in W_u$ かつ $\forall p\in Q,\ Q_{0,0}\le\pi_0 p$ ならば、任意の $n$ について
-$$\mathrm{flatMap}\,(\lambda\_. \ Q)\,\mathrm{range}(n)\in W_u .$$
+```math
+\mathrm{flatMap}\,(\lambda\_. \ Q)\,\mathrm{range}(n)\in W_u .
+```
 
 **証明** $n$ に関する自然数の帰納法。帰納法の述語は
-$$\Phi(n):\equiv \mathrm{flatMap}\,(\lambda\_. \ Q)\,\mathrm{range}(n)\in W_u .$$
+```math
+\Phi(n):\equiv \mathrm{flatMap}\,(\lambda\_. \ Q)\,\mathrm{range}(n)\in W_u .
+```
 
 - **基底段 $n=0$**：$\mathrm{range}(0)=[]$ より列は $[]$ であり、[(T.W_nil)](#t-W_nil) より $[]\in W_u$。
 - **帰納段 $n\to n+1$**：帰納法の仮定は $\Phi(n)$ である。
   `List.range_succ` より $\mathrm{range}(n+1)=\mathrm{range}(n)\mathbin{+\!\!+}[n]$ であるから
-  $$\mathrm{flatMap}\,(\lambda\_. Q)\,\mathrm{range}(n+1)
-  =\bigl(\mathrm{flatMap}\,(\lambda\_. Q)\,\mathrm{range}(n)\bigr)\mathbin{+\!\!+}Q .$$
+  ```math
+  \mathrm{flatMap}\,(\lambda\_. Q)\,\mathrm{range}(n+1)
+  =\bigl(\mathrm{flatMap}\,(\lambda\_. Q)\,\mathrm{range}(n)\bigr)\mathbin{+\!\!+}Q .
+  ```
   [(T.W_add)](#t-W_add) を $A:=\mathrm{flatMap}(\lambda\_.Q)\,\mathrm{range}(n)$、$B:=Q$ に適用する。
   $A\in W_u$ は帰納法の仮定、$Q\in W_u$ は仮定である。
   $\mathrm{rsum}(A,Q)$：$p\in A\mathbin{+\!\!+}Q$ とすると、$p\in A$ の場合はある $k$ について $p\in Q$ であり、
@@ -1749,8 +1923,10 @@ $\neg\,\mathrm{hasParent}(R,0,\ell_R)$：親 $j_0$ が存在すれば
 [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $j_0<\ell_R=0$ となり $\mathbb{N}$ では偽。
 [(T.A1_intro)](#t-A1_intro) の枝 2 を用いる。$\mathrm{natDom}(M)$ は $(\mathrm{n}_2)$ による。
 各 $n\ge 1$ について [(T.oper_cons_succ)](#t-oper_cons_succ) より
-$$M[n]=\mathrm{flatMap}\bigl(\lambda\_. \ (0,v)\mathbin{::}\mathrm{dropLast}\,R\bigr)\,\mathrm{range}(n)
-=\mathrm{flatMap}\bigl(\lambda\_. \ [(0,v)]\bigr)\,\mathrm{range}(n),$$
+```math
+M[n]=\mathrm{flatMap}\bigl(\lambda\_. \ (0,v)\mathbin{::}\mathrm{dropLast}\,R\bigr)\,\mathrm{range}(n)
+=\mathrm{flatMap}\bigl(\lambda\_. \ [(0,v)]\bigr)\,\mathrm{range}(n),
+```
 これは [(T.W_flatMap_copies)](#t-W_flatMap_copies)（$Q:=[(0,v)]$、$Q\in W_v$ は
 [(T.Om_mem_W)](#t-Om_mem_W)、最小性は [(T.rsum_self_cons)](#t-rsum_self_cons)）より $W_v$ に属する。
 
@@ -1791,7 +1967,9 @@ $\mathrm{hasParent}(R,\mathrm{idx}_1(R,\ell_R),\ell_R)$ が成り立つか否か
 $v\le m$ か否かで場合分けする。
 
 - **$v\le m$ の場合 (D′)**：まず
-  $$(\mathrm{t})\qquad \forall k,\ t^{v,R}_k\in W_v$$
+  ```math
+  (\mathrm{t})\qquad \forall k,\ t^{v,R}_k\in W_v
+  ```
   を $k$ に関する自然数の帰納法で示す。帰納法の述語は $\Theta(k):\equiv t^{v,R}_k\in W_v$。
   - 基底段 $k=0$：[(D.tow)](#d-tow) より $t^{v,R}_0=[]$、[(T.W_nil)](#t-W_nil) より $[]\in W_v$。
   - 帰納段 $k\to k+1$：帰納法の仮定は $\Theta(k)$ である。
@@ -1824,10 +2002,14 @@ $v\le m$ か否かで場合分けする。
 #### 定理 単一の木の平行移動表示 (T.tree_shift)
 
 **主張** $\forall q\in R,\ \pi_0 p_0\le\pi_0 q$ ならば
-$$\mathrm{sh}_{\pi_0 p_0}\Bigl((0,\pi_1 p_0)\mathbin{::}\mathrm{sh}^{-}_{\pi_0 p_0}R\Bigr)=p_0\mathbin{::}R .$$
+```math
+\mathrm{sh}_{\pi_0 p_0}\Bigl((0,\pi_1 p_0)\mathbin{::}\mathrm{sh}^{-}_{\pi_0 p_0}R\Bigr)=p_0\mathbin{::}R .
+```
 
 **証明** `List.map_cons` により左辺は
-$$\bigl(0+\pi_0 p_0,\ \pi_1 p_0\bigr)\mathbin{::}\mathrm{sh}_{\pi_0 p_0}\bigl(\mathrm{sh}^{-}_{\pi_0 p_0}R\bigr)$$
+```math
+\bigl(0+\pi_0 p_0,\ \pi_1 p_0\bigr)\mathbin{::}\mathrm{sh}_{\pi_0 p_0}\bigl(\mathrm{sh}^{-}_{\pi_0 p_0}R\bigr)
+```
 である。先頭は $(\pi_0 p_0,\pi_1 p_0)=p_0$ であり、
 残りは [(T.map_sub_add)](#t-map_sub_add)（$c:=\pi_0 p_0$、$X:=R$、仮定がその前提）より $R$ に等しい。∎
 
@@ -1835,12 +2017,16 @@ $$\bigl(0+\pi_0 p_0,\ \pi_1 p_0\bigr)\mathbin{::}\mathrm{sh}_{\pi_0 p_0}\bigl(\m
 #### 定理 2.7 の補助（長さの上界つき） (T.mem_of_Aclosed_aux)
 
 **主張** 任意の $N$ について、$\lvert M\rvert\le N$ なる任意の $M$ と、
-$$\bigl(\forall u,\ \forall M',\ M'\in A^{W}_u(X)\to M'\in X\bigr)$$
+```math
+\bigl(\forall u,\ \forall M',\ M'\in A^{W}_u(X)\to M'\in X\bigr)
+```
 をみたす任意の $X$ に対し $M\in X$。
 
 **証明** $N$ に関する自然数の帰納法。帰納法の述語は
-$$\Phi(N):\equiv\ \forall M,\ \lvert M\rvert\le N \to \forall X,\
-\bigl(\forall u\,M',\ M'\in A^W_u(X)\to M'\in X\bigr)\to M\in X .$$
+```math
+\Phi(N):\equiv\ \forall M,\ \lvert M\rvert\le N \to \forall X,\
+\bigl(\forall u\,M',\ M'\in A^W_u(X)\to M'\in X\bigr)\to M\in X .
+```
 
 - **基底段 $N=0$**：$\lvert M\rvert\le 0$ より $M=[]$。仮定 $\bigl(\forall u\,M',\ M'\in A^W_u(X)\to M'\in X\bigr)$ を $u:=0$、$M':=[]$、
   [(D.Aop)](#d-Aop) の枝 1（$\lvert[]\rvert=0\le 1$、$[]_{1,0}=0$）に適用して $[]\in X$。
@@ -1901,7 +2087,9 @@ $\lvert M\rvert\le\lvert M\rvert$ であるから前提はみたされる。∎
 **主張** 任意の $N$ について、$\lvert M\rvert\le N$ かつ $\forall p\in M,\ \pi_1 p\le u$ ならば $M\in W_u$。
 
 **証明** $N$ に関する自然数の帰納法。帰納法の述語は
-$$\Phi(N):\equiv\ \forall M,\ \lvert M\rvert\le N\to\forall u,\ \bigl(\forall p\in M,\ \pi_1 p\le u\bigr)\to M\in W_u .$$
+```math
+\Phi(N):\equiv\ \forall M,\ \lvert M\rvert\le N\to\forall u,\ \bigl(\forall p\in M,\ \pi_1 p\le u\bigr)\to M\in W_u .
+```
 
 - **基底段 $N=0$**：$\lvert M\rvert\le 0$ より $M=[]$ であり、[(T.W_nil)](#t-W_nil) より $[]\in W_u$。
 - **帰納段 $N\to N+1$**：帰納法の仮定は $\Phi(N)$ である。$\lvert M\rvert\le N+1$、
@@ -1942,7 +2130,9 @@ $$\Phi(N):\equiv\ \forall M,\ \lvert M\rvert\le N\to\forall u,\ \bigl(\forall p\
 （[(T.le_maxr1)](Nrmstep.md#t-le_maxr1) と同一の主張であり、本章の名前空間で再証明されている。）
 
 **証明** $S$ の構造に関するリストの帰納法。帰納法の述語は
-$$\Phi(S):\equiv\ \forall p\in S,\ \pi_1 p\le\mathrm{maxr1}\,S .$$
+```math
+\Phi(S):\equiv\ \forall p\in S,\ \pi_1 p\le\mathrm{maxr1}\,S .
+```
 
 - **基底段 $S=[]$**：$p\in[]$ をみたす $p$ は存在しないから成立する。
 - **帰納段 $S=q\mathbin{::}S'$**：帰納法の仮定は $\Phi(S')$ である。
@@ -1984,7 +2174,9 @@ Lean 側では節番号 5 がここで再び用いられている。本節はこ
 #### 定理 2 本の柱から整礎性へ (T.wf_of_cofinality_and_membership)
 
 **主張** $\mathrm{hcof}$（§3 の共終性仮定）と
-$$\mathrm{hmem}:\quad \forall M,\ M\in\mathrm{ST\_PS}\to\exists u,\ M\in W_u$$
+```math
+\mathrm{hmem}:\quad \forall M,\ M\in\mathrm{ST\_PS}\to\exists u,\ M\in W_u
+```
 を仮定すると、関係 $R$（[(D.Rst)](#d-Rst)）は整礎である。
 
 **証明** `WellFounded.intro` により、各 $M$ について $\mathrm{Acc}\,R\,M$ を示せばよい。
@@ -2000,7 +2192,9 @@ $M\in\mathrm{ST\_PS}$ か否かで場合分けする。
 #### 定理 共終性から $\mathrm{ST\_PS}$ 上の $\prec$ の整礎性へ (T.wf_olt_ST_PS_of_cofinality)
 
 **主張** $\mathrm{hcof}$ を仮定すると、関係
-$$(a,b)\ \mapsto\ a\in\mathrm{ST\_PS}\ \wedge\ b\in\mathrm{ST\_PS}\ \wedge\ \mathrm{tr}\,a\prec\mathrm{tr}\,b$$
+```math
+(a,b)\ \mapsto\ a\in\mathrm{ST\_PS}\ \wedge\ b\in\mathrm{ST\_PS}\ \wedge\ \mathrm{tr}\,a\prec\mathrm{tr}\,b
+```
 は整礎である。
 
 **証明** この関係は [(D.Rst)](#d-Rst) を展開したものである。

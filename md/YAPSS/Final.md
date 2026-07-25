@@ -46,20 +46,26 @@ $\mathrm{WF}(R_{\mathrm{step}})$ と、無限展開列の非存在を得る。
 
 **到達可能性 $\mathrm{Acc}(R,x)$.** 次の 1 つの導入規則で生成される最小の述語である。
 
-$$\frac{\ \forall y,\ R\,y\,x \to \mathrm{Acc}(R,y)\ }{\ \mathrm{Acc}(R,x)\ }$$
+```math
+\frac{\ \forall y,\ R\,y\,x \to \mathrm{Acc}(R,y)\ }{\ \mathrm{Acc}(R,x)\ }
+```
 
 最小性は次の除去規則（Lean の `Acc.rec`）として用いられる。任意の述語
 $P : \alpha \to \mathrm{Prop}$ について、
 
-$$\Bigl(\forall x,\ \bigl(\forall y,\ R\,y\,x \to \mathrm{Acc}(R,y)\bigr)
+```math
+\Bigl(\forall x,\ \bigl(\forall y,\ R\,y\,x \to \mathrm{Acc}(R,y)\bigr)
  \to \bigl(\forall y,\ R\,y\,x \to P(y)\bigr) \to P(x)\Bigr)
- \ \Longrightarrow\ \forall x,\ \mathrm{Acc}(R,x) \to P(x).$$
+ \ \Longrightarrow\ \forall x,\ \mathrm{Acc}(R,x) \to P(x).
+```
 
 **整礎性 $\mathrm{WF}(R)$.** Lean の `WellFounded R` は構成子
 `intro : (∀ x, Acc R x) → WellFounded R` を唯一持つ帰納型であり、逆向きの射影
 `WellFounded.apply : WellFounded R → ∀ x, Acc R x` を持つ。したがって
 
-$$\mathrm{WF}(R) \iff \forall x,\ \mathrm{Acc}(R,x)$$
+```math
+\mathrm{WF}(R) \iff \forall x,\ \mathrm{Acc}(R,x)
+```
 
 であり、本文ではこの同値を断りなく用いる。
 
@@ -134,18 +140,24 @@ $$\mathrm{WF}(R) \iff \forall x,\ \mathrm{Acc}(R,x)$$
 
 **主張** 任意の $M, N \in \mathrm{PairSeq}$ について、
 
-$$M \in \mathrm{ST\_PS},\quad N \in \mathrm{ST\_PS},\quad \mathrm{tr}\,N \prec \mathrm{tr}\,M$$
+```math
+M \in \mathrm{ST\_PS},\quad N \in \mathrm{ST\_PS},\quad \mathrm{tr}\,N \prec \mathrm{tr}\,M
+```
 
 ならば
 
-$$\exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr).$$
+```math
+\exists n,\ \bigl(1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr).
+```
 
 **証明** 引用する定理は
 [(T.pss_cofinality_of_core)](AscArg.md#t-pss_cofinality_of_core) であり、その形は
 
-$$\mathrm{ArgDomCore} \ \to\ \forall M, N,\
+```math
+\mathrm{ArgDomCore} \ \to\ \forall M, N,\
  M \in \mathrm{ST\_PS} \to N \in \mathrm{ST\_PS} \to \mathrm{tr}\,N \prec \mathrm{tr}\,M
- \to \exists n,\ \bigl(1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr)$$
+ \to \exists n,\ \bigl(1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr)
+```
 
 である（$\mathrm{ArgDomCore}$ は [(D.ArgDomCore)](AscArg.md#d-ArgDomCore)）。
 第 1 引数には [(T.argDomCore_holds)](AscArg.md#t-argDomCore_holds) を代入する。これは
@@ -167,8 +179,10 @@ $M \Rightarrow M[n]$ が成り立つ。
 
 **主張** 関係
 
-$$R_{\mathrm{ST}}\,a\,b \ :\Longleftrightarrow\
- a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b$$
+```math
+R_{\mathrm{ST}}\,a\,b \ :\Longleftrightarrow\
+ a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b
+```
 
 について $\mathrm{WF}(R_{\mathrm{ST}})$ が成り立つ。すなわち
 $\forall M \in \mathrm{PairSeq},\ \mathrm{Acc}(R_{\mathrm{ST}}, M)$。
@@ -177,10 +191,12 @@ $\forall M \in \mathrm{PairSeq},\ \mathrm{Acc}(R_{\mathrm{ST}}, M)$。
 [(T.wf_olt_ST_PS_of_cofinality)](Wset.md#t-wf_olt_ST_PS_of_cofinality)（Lean の完全名は
 `YAPSS.Wset.wf_olt_ST_PS_of_cofinality`）であり、その形は
 
-$$\Bigl(\forall M, N,\ M \in \mathrm{ST\_PS} \to N \in \mathrm{ST\_PS}
+```math
+\Bigl(\forall M, N,\ M \in \mathrm{ST\_PS} \to N \in \mathrm{ST\_PS}
  \to \mathrm{tr}\,N \prec \mathrm{tr}\,M
  \to \exists n,\ \bigl(1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}(M[n])\bigr)\Bigr)
- \ \to\ \mathrm{WF}(R_{\mathrm{ST}})$$
+ \ \to\ \mathrm{WF}(R_{\mathrm{ST}})
+```
 
 である。この仮定は [(T.pss_cofinality_holds)](#t-pss_cofinality_holds) の主張と
 一字一句同じ命題であるから、それを代入して結論を得る。∎
@@ -198,15 +214,19 @@ $$\Bigl(\forall M, N,\ M \in \mathrm{ST\_PS} \to N \in \mathrm{ST\_PS}
 **主張** $\mathrm{WF}(R_{\mathrm{nf}})$。ここで
 [(D.Rnf)](Proofs.md#d-Rnf), [(D.NF)](Proofs.md#d-NF) により
 
-$$R_{\mathrm{nf}}\,v\,u \ :\Longleftrightarrow\ v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\ v \in \mathrm{NF},
+```math
+R_{\mathrm{nf}}\,v\,u \ :\Longleftrightarrow\ v \prec u \ \wedge\ u \in \mathrm{NF} \ \wedge\ v \in \mathrm{NF},
 \qquad
-\mathrm{NF} = \{\, t \mid \exists M,\ M \in \mathrm{ST\_PS} \wedge \mathrm{tr}\,M = t \,\}$$
+\mathrm{NF} = \{\, t \mid \exists M,\ M \in \mathrm{ST\_PS} \wedge \mathrm{tr}\,M = t \,\}
+```
 
 である。
 
 **証明** 引用する定理は [(T.wf_Rnf_of_wf_PS)](OrdinalFree.md#t-wf_Rnf_of_wf_PS) であり、その形は
 
-$$\mathrm{WF}(R_{\mathrm{ST}}) \ \to\ \mathrm{WF}(R_{\mathrm{nf}})$$
+```math
+\mathrm{WF}(R_{\mathrm{ST}}) \ \to\ \mathrm{WF}(R_{\mathrm{nf}})
+```
 
 で、仮定に現れる関係は
 [(T.wf_olt_ST_PS_holds)](#t-wf_olt_ST_PS_holds) の結論に現れる関係と同じ式
@@ -218,19 +238,25 @@ $\lambda a\,b.\ a \in \mathrm{ST\_PS} \wedge b \in \mathrm{ST\_PS} \wedge \mathr
 
 **主張** $\mathrm{WF}(R_{\mathrm{step}})$。ここで [(D.stepRel)](Proofs.md#d-stepRel) により
 
-$$R_{\mathrm{step}}\,T\,M \ :\Longleftrightarrow\ M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarrow T$$
+```math
+R_{\mathrm{step}}\,T\,M \ :\Longleftrightarrow\ M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarrow T
+```
 
 である（$M \Rightarrow T$ は [(D.step)](Def.md#d-step)）。
 
 **証明** 引用する定理は [(T.step_terminates)](Proofs.md#t-step_terminates) であり、その形は
 
-$$\mathrm{WF}(R_{\mathrm{nf}}) \ \to\ \mathrm{WF}(R_{\mathrm{step}})$$
+```math
+\mathrm{WF}(R_{\mathrm{nf}}) \ \to\ \mathrm{WF}(R_{\mathrm{step}})
+```
 
 である。仮定に [(T.wf_Rnf_holds)](#t-wf_Rnf_holds) を代入して結論を得る。∎
 
 **注意（主張の内容）.** 上の「到達可能性と整礎性」の同値により、この主張は
 
-$$\forall M \in \mathrm{PairSeq},\ \mathrm{Acc}(R_{\mathrm{step}}, M)$$
+```math
+\forall M \in \mathrm{PairSeq},\ \mathrm{Acc}(R_{\mathrm{step}}, M)
+```
 
 と同じである。関係の向きの規約により $R_{\mathrm{step}}\,T\,M$ は「$T$ が $M$ の 1 ステップ下」を
 意味する。ここから「$R_{\mathrm{step}}$ に関する無限下降列が存在しない」を導くのが次の定理であり、
@@ -243,18 +269,22 @@ $P(x) :\equiv \forall i,\ S_i = x \to \bot$ に適用することで行われて
 
 **主張**
 
-$$\neg\ \exists S : \mathbb{N} \to \mathrm{PairSeq},\
+```math
+\neg\ \exists S : \mathbb{N} \to \mathrm{PairSeq},\
  \Bigl(\bigl(\forall i,\ S_i \in \mathrm{ST\_PS}\bigr) \ \wedge\
- \bigl(\forall i,\ S_i \Rightarrow S_{i+1}\bigr)\Bigr).$$
+ \bigl(\forall i,\ S_i \Rightarrow S_{i+1}\bigr)\Bigr).
+```
 
 すなわち、すべての項が標準形であり、かつ各項から次の項へ 1 ステップ展開
 [(D.step)](Def.md#d-step) で移るような無限列 $(S_i)_{i\in\mathbb{N}}$ は存在しない。
 
 **証明** 引用する定理は [(T.no_infinite_expansion)](Proofs.md#t-no_infinite_expansion) であり、その形は
 
-$$\mathrm{WF}(R_{\mathrm{nf}}) \ \to\
+```math
+\mathrm{WF}(R_{\mathrm{nf}}) \ \to\
  \neg\ \exists S : \mathbb{N} \to \mathrm{PairSeq},\
- \bigl((\forall i,\ S_i \in \mathrm{ST\_PS}) \wedge (\forall i,\ S_i \Rightarrow S_{i+1})\bigr)$$
+ \bigl((\forall i,\ S_i \in \mathrm{ST\_PS}) \wedge (\forall i,\ S_i \Rightarrow S_{i+1})\bigr)
+```
 
 である。仮定に [(T.wf_Rnf_holds)](#t-wf_Rnf_holds) を代入して結論を得る。∎
 

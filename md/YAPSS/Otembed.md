@@ -59,7 +59,9 @@ $\emptyset$ は空集合、$X\cup Y$ は和集合、$\{b\}\cup X$ は Lean の `
 $x\in\{b\}\cup X \iff x=b \vee x\in X$ を随時用いる。
 
 $\mathrm{Three}$ の項 $t$ に対し、$t$ の**スパイン**とは、$t$ を
-$$t = \mathsf{P}(a_1,b_1,\mathsf{P}(a_2,b_2,\dots \mathsf{P}(a_k,b_k,\mathsf{Z})\dots))$$
+```math
+t = \mathsf{P}(a_1,b_1,\mathsf{P}(a_2,b_2,\dots \mathsf{P}(a_k,b_k,\mathsf{Z})\dots))
+```
 と（第 3 引数について $\mathsf{Z}$ に至るまで）分解したときの添字の列 $(a_1,\dots,a_k)$ を指す
 （$t=\mathsf{Z}$ のときは $k=0$、空列）。この分解は [(D.Three)](Mechanized.md#d-Three) の
 構成子の単射性により一意である。
@@ -71,8 +73,10 @@ $$t = \mathsf{P}(a_1,b_1,\mathsf{P}(a_2,b_2,\dots \mathsf{P}(a_k,b_k,\mathsf{Z})
 
 $\mathrm{oV} : \mathrm{Three} \to \mathrm{Ord}$ を項の構造に関する再帰で定める。
 
-$$\mathrm{oV}\,\mathsf{Z} := 0, \qquad
-\mathrm{oV}\,\mathsf{P}(a,b,c) := \psi_a(\mathrm{oV}\,b) + \mathrm{oV}\,c .$$
+```math
+\mathrm{oV}\,\mathsf{Z} := 0, \qquad
+\mathrm{oV}\,\mathsf{P}(a,b,c) := \psi_a(\mathrm{oV}\,b) + \mathrm{oV}\,c .
+```
 
 右辺の再帰呼び出し $\mathrm{oV}\,b$, $\mathrm{oV}\,c$ の引数 $b, c$ は $\mathsf{P}(a,b,c)$ の真部分項
 であるから、この定義は構造帰納として整合的である。
@@ -94,7 +98,9 @@ $\psi$ の宇宙変数と同一に取られるだけであり、以下の主張�
 ### 定理 主要項の値 (T.oV_P)
 
 **主張** 任意の $a\in\mathbb{N}$, $b,c\in\mathrm{Three}$ に対し
-$$\mathrm{oV}\,\mathsf{P}(a,b,c) = \psi_a(\mathrm{oV}\,b) + \mathrm{oV}\,c .$$
+```math
+\mathrm{oV}\,\mathsf{P}(a,b,c) = \psi_a(\mathrm{oV}\,b) + \mathrm{oV}\,c .
+```
 
 **証明** [(D.oV)](#d-oV) の第 2 式そのものであり、両辺は定義により同一である。∎
 
@@ -102,7 +108,9 @@ $$\mathrm{oV}\,\mathsf{P}(a,b,c) = \psi_a(\mathrm{oV}\,b) + \mathrm{oV}\,c .$$
 ### 定理 主要項は値の下界 (T.psi_le_oV)
 
 **主張** 任意の $a\in\mathbb{N}$, $b,c\in\mathrm{Three}$ に対し
-$$\psi_a(\mathrm{oV}\,b) \ \le\ \mathrm{oV}\,\mathsf{P}(a,b,c) .$$
+```math
+\psi_a(\mathrm{oV}\,b) \ \le\ \mathrm{oV}\,\mathsf{P}(a,b,c) .
+```
 
 **証明** [(T.oV_P)](#t-oV_P) により右辺は $\psi_a(\mathrm{oV}\,b) + \mathrm{oV}\,c$ である。
 順序数の加法は第 2 引数について広義単調であり、かつ $\alpha + 0 = \alpha$ であるから、
@@ -120,15 +128,19 @@ Lean 側の節見出し *Additive-principal sums and the subscript bound* に対
 $d \in \mathrm{Ord}$ に対し、述語 $\mathrm{allprinc}_{<d} : \mathrm{Three}\to\mathrm{Prop}$ を
 項の構造に関する再帰で定める。
 
-$$\mathrm{allprinc}_{<d}(\mathsf{Z}) := \top, \qquad
-\mathrm{allprinc}_{<d}(\mathsf{P}(a,b,c)) := \bigl(\psi_a(\mathrm{oV}\,b) < d\bigr) \ \wedge\ \mathrm{allprinc}_{<d}(c) .$$
+```math
+\mathrm{allprinc}_{<d}(\mathsf{Z}) := \top, \qquad
+\mathrm{allprinc}_{<d}(\mathsf{P}(a,b,c)) := \bigl(\psi_a(\mathrm{oV}\,b) < d\bigr) \ \wedge\ \mathrm{allprinc}_{<d}(c) .
+```
 
 再帰呼び出しは第 3 引数 $c$ についてのみであり、第 2 引数 $b$ の内部には立ち入らない。
 したがって、$t$ のスパイン分解を
 $t = \mathsf{P}(a_1,b_1,\mathsf{P}(a_2,b_2,\dots\mathsf{P}(a_k,b_k,\mathsf{Z})\dots))$ とすると、
 定義を $k$ 回展開して
 
-$$\mathrm{allprinc}_{<d}(t) \iff \forall i\ (1\le i\le k),\ \psi_{a_i}(\mathrm{oV}\,b_i) < d$$
+```math
+\mathrm{allprinc}_{<d}(t) \iff \forall i\ (1\le i\le k),\ \psi_{a_i}(\mathrm{oV}\,b_i) < d
+```
 
 が成り立つ（$k=0$ すなわち $t=\mathsf{Z}$ のときは右辺は空の連言で $\top$）。
 
@@ -144,7 +156,9 @@ $\mathrm{allprinc}_{<d}(\mathsf{Z})$ は $\top$ と定義により同一であ�
 ### 定理 主要項の場合 (T.allprinc_lt_P)
 
 **主張** 任意の $d\in\mathrm{Ord}$, $a\in\mathbb{N}$, $b,c\in\mathrm{Three}$ に対し
-$$\mathrm{allprinc}_{<d}(\mathsf{P}(a,b,c)) \iff \bigl(\psi_a(\mathrm{oV}\,b)<d\bigr)\ \wedge\ \mathrm{allprinc}_{<d}(c) .$$
+```math
+\mathrm{allprinc}_{<d}(\mathsf{P}(a,b,c)) \iff \bigl(\psi_a(\mathrm{oV}\,b)<d\bigr)\ \wedge\ \mathrm{allprinc}_{<d}(c) .
+```
 
 **証明** [(D.allprinc_lt)](#d-allprinc_lt) の第 2 式そのものであり、両辺は定義により同一の命題である。∎
 
@@ -157,7 +171,9 @@ $\mathrm{allprinc}_{<d}(t)$ をみたすならば $\mathrm{oV}\,t < d$。
 **証明** $d$ と仮定 $\mathrm{addprinc}(d)$ を固定し、$t$ の構造に関する帰納法を行う。
 帰納法の述語は
 
-$$\Phi(t) :\equiv \mathrm{allprinc}_{<d}(t) \to \mathrm{oV}\,t < d .$$
+```math
+\Phi(t) :\equiv \mathrm{allprinc}_{<d}(t) \to \mathrm{oV}\,t < d .
+```
 
 - **基底段** $t=\mathsf{Z}$：[(T.oV_Z)](#t-oV_Z) より $\mathrm{oV}\,\mathsf{Z} = 0$ である。
   $\mathrm{addprinc}(d)$（[(D.addprinc)](Psi.md#d-addprinc)）の第 1 連言子は $0<d$ であるから
@@ -173,7 +189,9 @@ $$\Phi(t) :\equiv \mathrm{allprinc}_{<d}(t) \to \mathrm{oV}\,t < d .$$
   $\forall\beta\,\gamma,\ \beta<d\to\gamma<d\to\beta+\gamma<d$ を
   $\beta := \psi_a(\mathrm{oV}\,b)$, $\gamma := \mathrm{oV}\,c$ に適用し、
   $h$ と $\mathrm{oV}\,c<d$ を渡すと
-  $$\psi_a(\mathrm{oV}\,b) + \mathrm{oV}\,c < d$$
+  ```math
+  \psi_a(\mathrm{oV}\,b) + \mathrm{oV}\,c < d
+  ```
   を得る。[(T.oV_P)](#t-oV_P) により左辺は $\mathrm{oV}\,\mathsf{P}(a,b,c)$ に等しい。
   よって $\Phi(\mathsf{P}(a,b,c))$。∎
 
@@ -183,14 +201,18 @@ $$\Phi(t) :\equiv \mathrm{allprinc}_{<d}(t) \to \mathrm{oV}\,t < d .$$
 $m\in\mathbb{N}$ に対し、述語 $\mathrm{spinesub}_{\le m} : \mathrm{Three}\to\mathrm{Prop}$ を
 項の構造に関する再帰で定める。
 
-$$\mathrm{spinesub}_{\le m}(\mathsf{Z}) := \top, \qquad
-\mathrm{spinesub}_{\le m}(\mathsf{P}(a,b,c)) := (a\le m) \ \wedge\ \mathrm{spinesub}_{\le m}(c) .$$
+```math
+\mathrm{spinesub}_{\le m}(\mathsf{Z}) := \top, \qquad
+\mathrm{spinesub}_{\le m}(\mathsf{P}(a,b,c)) := (a\le m) \ \wedge\ \mathrm{spinesub}_{\le m}(c) .
+```
 
 [(D.allprinc_lt)](#d-allprinc_lt) と同じく再帰は第 3 引数についてのみであり、第 2 引数 $b$ は見ない。
 $t$ のスパイン分解を $t=\mathsf{P}(a_1,b_1,\dots\mathsf{P}(a_k,b_k,\mathsf{Z})\dots)$ とすると、
 定義を $k$ 回展開して
 
-$$\mathrm{spinesub}_{\le m}(t) \iff \forall i\ (1\le i\le k),\ a_i \le m$$
+```math
+\mathrm{spinesub}_{\le m}(t) \iff \forall i\ (1\le i\le k),\ a_i \le m
+```
 
 が成り立つ。
 
@@ -206,7 +228,9 @@ $\mathrm{spinesub}_{\le m}(\mathsf{Z})$ は $\top$ と定義により同一で�
 ### 定理 主要項の場合 (T.spinesub_le_P)
 
 **主張** 任意の $m,a\in\mathbb{N}$, $b,c\in\mathrm{Three}$ に対し
-$$\mathrm{spinesub}_{\le m}(\mathsf{P}(a,b,c)) \iff (a\le m)\ \wedge\ \mathrm{spinesub}_{\le m}(c) .$$
+```math
+\mathrm{spinesub}_{\le m}(\mathsf{P}(a,b,c)) \iff (a\le m)\ \wedge\ \mathrm{spinesub}_{\le m}(c) .
+```
 
 **証明** [(D.spinesub_le)](#d-spinesub_le) の第 2 式そのものであり、両辺は定義により同一の命題である。∎
 
@@ -219,7 +243,9 @@ $\mathrm{spinesub}_{\le m}(t)$ かつ $m\le m'$ ならば $\mathrm{spinesub}_{\l
 **証明** $m$, $m'$ と仮定 $m\le m'$ を固定し、$t$ の構造に関する帰納法を行う。
 帰納法の述語は
 
-$$\Phi(t) :\equiv \mathrm{spinesub}_{\le m}(t) \to \mathrm{spinesub}_{\le m'}(t) .$$
+```math
+\Phi(t) :\equiv \mathrm{spinesub}_{\le m}(t) \to \mathrm{spinesub}_{\le m'}(t) .
+```
 
 - **基底段** $t=\mathsf{Z}$：結論 $\mathrm{spinesub}_{\le m'}(\mathsf{Z})$ は
   [(T.spinesub_le_Z)](#t-spinesub_le_Z) により成り立つ。よって前提によらず $\Phi(\mathsf{Z})$。
@@ -247,15 +273,19 @@ Lean 側の節見出し *Buchholz coefficient sets `G_u` and the OT well-formedn
 $u\in\mathbb{N}$ に対し、写像 $G_u : \mathrm{Three}\to \mathrm{Set}\ \mathrm{Three}$ を
 項の構造に関する再帰で定める。
 
-$$G_u(\mathsf{Z}) := \emptyset, \qquad
-G_u(\mathsf{P}(a,b,c)) := \Bigl(\text{if } u\le a \text{ then } \{b\}\cup G_u(b) \text{ else } \emptyset\Bigr)\ \cup\ G_u(c) .$$
+```math
+G_u(\mathsf{Z}) := \emptyset, \qquad
+G_u(\mathsf{P}(a,b,c)) := \Bigl(\text{if } u\le a \text{ then } \{b\}\cup G_u(b) \text{ else } \emptyset\Bigr)\ \cup\ G_u(c) .
+```
 
 すなわち
 
-$$G_u(\mathsf{P}(a,b,c)) = \begin{cases}
+```math
+G_u(\mathsf{P}(a,b,c)) = \begin{cases}
 \{b\}\cup G_u(b)\cup G_u(c) & (u\le a) \\
 G_u(c) & (u>a)
-\end{cases}$$
+\end{cases}
+```
 
 である（$u>a$ の場合は $\emptyset\cup G_u(c)=G_u(c)$ による）。
 再帰呼び出しの引数 $b$, $c$ はいずれも $\mathsf{P}(a,b,c)$ の真部分項であるから、
@@ -274,7 +304,9 @@ G_u(c) & (u>a)
 ### 定理 主要項の係数集合 (T.Gterm_P)
 
 **主張** 任意の $u,a\in\mathbb{N}$, $b,c\in\mathrm{Three}$ に対し
-$$G_u(\mathsf{P}(a,b,c)) = \Bigl(\text{if } u\le a \text{ then } \{b\}\cup G_u(b) \text{ else } \emptyset\Bigr)\ \cup\ G_u(c) .$$
+```math
+G_u(\mathsf{P}(a,b,c)) = \Bigl(\text{if } u\le a \text{ then } \{b\}\cup G_u(b) \text{ else } \emptyset\Bigr)\ \cup\ G_u(c) .
+```
 
 **証明** [(D.Gterm)](#d-Gterm) の第 2 式そのものであり、両辺は定義により同一である。∎
 
@@ -282,13 +314,17 @@ $$G_u(\mathsf{P}(a,b,c)) = \Bigl(\text{if } u\le a \text{ then } \{b\}\cup G_u(b
 ### 定理 主要項の係数集合の要素判定 (T.mem_Gterm_P)
 
 **主張** 任意の $u,a\in\mathbb{N}$, $b,c,x\in\mathrm{Three}$ に対し
-$$x\in G_u(\mathsf{P}(a,b,c)) \iff \bigl(u\le a \ \wedge\ (x=b \ \vee\ x\in G_u(b))\bigr)\ \vee\ x\in G_u(c) .$$
+```math
+x\in G_u(\mathsf{P}(a,b,c)) \iff \bigl(u\le a \ \wedge\ (x=b \ \vee\ x\in G_u(b))\bigr)\ \vee\ x\in G_u(c) .
+```
 
 **証明** [(T.Gterm_P)](#t-Gterm_P) で左辺を書き換えたうえで、命題 $u\le a$ の真偽で場合分けする。
 
 - $u\le a$ が真のとき。条件式は $\{b\}\cup G_u(b)$ に簡約され、左辺は
   $x\in(\{b\}\cup G_u(b))\cup G_u(c)$ である。和集合の要素判定を 2 回用いて、これは
-  $$(x=b \ \vee\ x\in G_u(b))\ \vee\ x\in G_u(c)$$
+  ```math
+  (x=b \ \vee\ x\in G_u(b))\ \vee\ x\in G_u(c)
+  ```
   と同値である。他方、右辺の第 1 選言子 $u\le a \wedge (x=b\vee x\in G_u(b))$ において
   $u\le a$ は真であるから、右辺は $(x=b\vee x\in G_u(b))\vee x\in G_u(c)$ と同値である。
   両者は同一の命題であるから同値。
@@ -304,13 +340,13 @@ $$x\in G_u(\mathsf{P}(a,b,c)) \iff \bigl(u\le a \ \wedge\ (x=b \ \vee\ x\in G_u(
 関係 $\sqsubseteq\ \subseteq \mathrm{Three}\times\mathrm{Three}$ を、第 1 引数と第 2 引数の
 構成子による場合分けで定める。
 
-$$
+```math
 \begin{aligned}
 \mathsf{Z} &\sqsubseteq y &&:\iff \top &&(y\text{ は任意}),\\
 \mathsf{P}(a,b,c) &\sqsubseteq \mathsf{Z} &&:\iff \bot,\\
 \mathsf{P}(a,b,c) &\sqsubseteq \mathsf{P}(e,f,g) &&:\iff a<e \ \vee\ \bigl(a=e \ \wedge\ (b\prec f \ \vee\ b=f)\bigr).
 \end{aligned}
-$$
+```
 
 ここで $\prec$ は [(D.olt)](Mechanized.md#d-olt) である。
 第 3 式の右辺には第 3 引数 $c$, $g$ が現れない。すなわち $\sqsubseteq$ は
@@ -340,7 +376,9 @@ $\top$ は成り立つ。∎
 ### 定理 主要項どうしの頭部比較 (T.hdle_P_P)
 
 **主張** 任意の $a,e\in\mathbb{N}$, $b,c,f,g\in\mathrm{Three}$ に対し
-$$\mathsf{P}(a,b,c)\sqsubseteq\mathsf{P}(e,f,g) \iff a<e \ \vee\ \bigl(a=e\ \wedge\ (b\prec f \ \vee\ b=f)\bigr) .$$
+```math
+\mathsf{P}(a,b,c)\sqsubseteq\mathsf{P}(e,f,g) \iff a<e \ \vee\ \bigl(a=e\ \wedge\ (b\prec f \ \vee\ b=f)\bigr) .
+```
 
 **証明** [(D.hdle)](#d-hdle) の第 3 式そのものであり、両辺は定義により同一の命題である。∎
 
@@ -349,9 +387,13 @@ $$\mathsf{P}(a,b,c)\sqsubseteq\mathsf{P}(e,f,g) \iff a<e \ \vee\ \bigl(a=e\ \wed
 
 述語 $\mathrm{wf3} : \mathrm{Three}\to\mathrm{Prop}$ を項の構造に関する再帰で定める。
 
-$$\mathrm{wf3}(\mathsf{Z}) := \top,$$
-$$\mathrm{wf3}(\mathsf{P}(a,b,c)) := \mathrm{wf3}(b)\ \wedge\ \mathrm{wf3}(c)\ \wedge\
-\bigl(\forall x\in G_a(b),\ x\prec b\bigr)\ \wedge\ \bigl(c\sqsubseteq\mathsf{P}(a,b,\mathsf{Z})\bigr) .$$
+```math
+\mathrm{wf3}(\mathsf{Z}) := \top,
+```
+```math
+\mathrm{wf3}(\mathsf{P}(a,b,c)) := \mathrm{wf3}(b)\ \wedge\ \mathrm{wf3}(c)\ \wedge\
+\bigl(\forall x\in G_a(b),\ x\prec b\bigr)\ \wedge\ \bigl(c\sqsubseteq\mathsf{P}(a,b,\mathsf{Z})\bigr) .
+```
 
 （[(D.Gterm)](#d-Gterm), [(D.olt)](Mechanized.md#d-olt), [(D.hdle)](#d-hdle)。）
 4 つの連言子の役割は次の通りである。
@@ -379,8 +421,10 @@ $\top$ は成り立つ。∎
 ### 定理 主要項の整合性 (T.wf3_P)
 
 **主張** 任意の $a\in\mathbb{N}$, $b,c\in\mathrm{Three}$ に対し
-$$\mathrm{wf3}(\mathsf{P}(a,b,c)) \iff
-\mathrm{wf3}(b)\ \wedge\ \mathrm{wf3}(c)\ \wedge\ \bigl(\forall x\in G_a(b),\ x\prec b\bigr)\ \wedge\ \bigl(c\sqsubseteq\mathsf{P}(a,b,\mathsf{Z})\bigr) .$$
+```math
+\mathrm{wf3}(\mathsf{P}(a,b,c)) \iff
+\mathrm{wf3}(b)\ \wedge\ \mathrm{wf3}(c)\ \wedge\ \bigl(\forall x\in G_a(b),\ x\prec b\bigr)\ \wedge\ \bigl(c\sqsubseteq\mathsf{P}(a,b,\mathsf{Z})\bigr) .
+```
 
 **証明** [(D.wf3)](#d-wf3) の第 2 式そのものであり、両辺は定義により同一の命題である。∎
 
@@ -392,7 +436,9 @@ $\mathrm{spinesub}_{\le \mathrm{lead}\,t}(t)$。
 
 **証明** $t$ の構造に関する帰納法。帰納法の述語は
 
-$$\Phi(t) :\equiv \mathrm{wf3}(t) \to \mathrm{spinesub}_{\le \mathrm{lead}\,t}(t) .$$
+```math
+\Phi(t) :\equiv \mathrm{wf3}(t) \to \mathrm{spinesub}_{\le \mathrm{lead}\,t}(t) .
+```
 
 - **基底段** $t=\mathsf{Z}$：$\mathrm{lead}\,\mathsf{Z}=0$ である
   （[(T.lead_Z)](Mechanized.md#t-lead_Z)）から結論は $\mathrm{spinesub}_{\le 0}(\mathsf{Z})$ であり、
@@ -401,12 +447,16 @@ $$\Phi(t) :\equiv \mathrm{wf3}(t) \to \mathrm{spinesub}_{\le \mathrm{lead}\,t}(t
 - **帰納段** $t=\mathsf{P}(a,b,c)$：帰納法の仮定は $\Phi(b)$ と $\Phi(c)$ の 2 つである
   （以下で用いるのは $\Phi(c)$ のみ）。前提 $\mathrm{wf3}(\mathsf{P}(a,b,c))$ を仮定し、
   [(T.wf3_P)](#t-wf3_P) により
-  $$\mathrm{wf3}(b),\quad \mathrm{wf3}(c),\quad \forall x\in G_a(b),\ x\prec b,\quad c\sqsubseteq\mathsf{P}(a,b,\mathsf{Z})$$
+  ```math
+  \mathrm{wf3}(b),\quad \mathrm{wf3}(c),\quad \forall x\in G_a(b),\ x\prec b,\quad c\sqsubseteq\mathsf{P}(a,b,\mathsf{Z})
+  ```
   の 4 つに分解する（第 3 のものは以下で使わない）。
   $\mathrm{lead}\,\mathsf{P}(a,b,c)=a$（[(T.lead_P)](Mechanized.md#t-lead_P)）であるから、
   示すべきは $\mathrm{spinesub}_{\le a}(\mathsf{P}(a,b,c))$ であり、
   [(T.spinesub_le_P)](#t-spinesub_le_P) によりこれは
-  $$a\le a \quad\text{かつ}\quad \mathrm{spinesub}_{\le a}(c)$$
+  ```math
+  a\le a \quad\text{かつ}\quad \mathrm{spinesub}_{\le a}(c)
+  ```
   の連言である。
 
   第 1 の $a\le a$ は $\mathbb{N}$ の $\le$ の反射性による。
@@ -419,10 +469,14 @@ $$\Phi(t) :\equiv \mathrm{wf3}(t) \to \mathrm{spinesub}_{\le \mathrm{lead}\,t}(t
   - $c=\mathsf{P}(a',b',c')$ のとき：分解して得た第 4 の連言子は
     $\mathsf{P}(a',b',c')\sqsubseteq\mathsf{P}(a,b,\mathsf{Z})$ である。
     [(T.hdle_P_P)](#t-hdle_P_P) によりこれは
-    $$a'<a \ \vee\ \bigl(a'=a \ \wedge\ (b'\prec b \ \vee\ b'=b)\bigr)$$
+    ```math
+    a'<a \ \vee\ \bigl(a'=a \ \wedge\ (b'\prec b \ \vee\ b'=b)\bigr)
+    ```
     である。第 1 選言のときは $a'<a$ から $a'\le a$、第 2 選言のときは $a'=a$ から $a'\le a$
     が従う（Lean ではこの 2 通りの初等的な導出を `omega` が行う）。いずれにせよ
-    $$a' \le a .$$
+    ```math
+    a' \le a .
+    ```
     一方、帰納法の仮定 $\Phi(c)$ を $\mathrm{wf3}(c)$ に適用して
     $\mathrm{spinesub}_{\le \mathrm{lead}\,c}(c)$ を得る。
     $\mathrm{lead}\,c = \mathrm{lead}\,\mathsf{P}(a',b',c') = a'$
@@ -439,14 +493,18 @@ $$\Phi(t) :\equiv \mathrm{wf3}(t) \to \mathrm{spinesub}_{\le \mathrm{lead}\,t}(t
 $\mathrm{bnd}\in\mathrm{Three}$ に対し、述語
 $\mathrm{headle}_{\mathrm{bnd}} : \mathrm{Three}\to\mathrm{Prop}$ を項の構造に関する再帰で定める。
 
-$$\mathrm{headle}_{\mathrm{bnd}}(\mathsf{Z}) := \top, \qquad
-\mathrm{headle}_{\mathrm{bnd}}(\mathsf{P}(a,b,c)) := \bigl(\mathsf{P}(a,b,\mathsf{Z})\sqsubseteq\mathrm{bnd}\bigr)\ \wedge\ \mathrm{headle}_{\mathrm{bnd}}(c) .$$
+```math
+\mathrm{headle}_{\mathrm{bnd}}(\mathsf{Z}) := \top, \qquad
+\mathrm{headle}_{\mathrm{bnd}}(\mathsf{P}(a,b,c)) := \bigl(\mathsf{P}(a,b,\mathsf{Z})\sqsubseteq\mathrm{bnd}\bigr)\ \wedge\ \mathrm{headle}_{\mathrm{bnd}}(c) .
+```
 
 （[(D.hdle)](#d-hdle)。）再帰は第 3 引数についてのみである。
 $t$ のスパイン分解を $t=\mathsf{P}(a_1,b_1,\dots\mathsf{P}(a_k,b_k,\mathsf{Z})\dots)$ とすると、
 定義を $k$ 回展開して
 
-$$\mathrm{headle}_{\mathrm{bnd}}(t) \iff \forall i\ (1\le i\le k),\ \mathsf{P}(a_i,b_i,\mathsf{Z})\sqsubseteq\mathrm{bnd}$$
+```math
+\mathrm{headle}_{\mathrm{bnd}}(t) \iff \forall i\ (1\le i\le k),\ \mathsf{P}(a_i,b_i,\mathsf{Z})\sqsubseteq\mathrm{bnd}
+```
 
 が成り立つ。
 
@@ -462,8 +520,10 @@ $\mathrm{headle}_{\mathrm{bnd}}(\mathsf{Z})$ は $\top$ と定義により同一
 ### 定理 主要項の場合 (T.headle_all_P)
 
 **主張** 任意の $\mathrm{bnd}\in\mathrm{Three}$, $a\in\mathbb{N}$, $b,c\in\mathrm{Three}$ に対し
-$$\mathrm{headle}_{\mathrm{bnd}}(\mathsf{P}(a,b,c)) \iff
-\bigl(\mathsf{P}(a,b,\mathsf{Z})\sqsubseteq\mathrm{bnd}\bigr)\ \wedge\ \mathrm{headle}_{\mathrm{bnd}}(c) .$$
+```math
+\mathrm{headle}_{\mathrm{bnd}}(\mathsf{P}(a,b,c)) \iff
+\bigl(\mathsf{P}(a,b,\mathsf{Z})\sqsubseteq\mathrm{bnd}\bigr)\ \wedge\ \mathrm{headle}_{\mathrm{bnd}}(c) .
+```
 
 **証明** [(D.headle_all)](#d-headle_all) の第 2 式そのものであり、両辺は定義により同一の命題である。∎
 
@@ -471,7 +531,9 @@ $$\mathrm{headle}_{\mathrm{bnd}}(\mathsf{P}(a,b,c)) \iff
 ### 定理 頭部比較は後続和を見ない (T.hdle_head_ignores_tail)
 
 **主張** 任意の $a\in\mathbb{N}$, $b,c,z\in\mathrm{Three}$ に対し
-$$\mathsf{P}(a,b,c)\sqsubseteq z \iff \mathsf{P}(a,b,\mathsf{Z})\sqsubseteq z .$$
+```math
+\mathsf{P}(a,b,c)\sqsubseteq z \iff \mathsf{P}(a,b,\mathsf{Z})\sqsubseteq z .
+```
 
 **証明** $z$ の構成子で場合分けする。
 
@@ -480,7 +542,9 @@ $$\mathsf{P}(a,b,c)\sqsubseteq z \iff \mathsf{P}(a,b,\mathsf{Z})\sqsubseteq z .$
   よって両辺は同一の命題であり、同値。
 
 - $z=\mathsf{P}(e,f,g)$ のとき：[(D.hdle)](#d-hdle) の第 3 式により、左辺は
-  $$a<e \ \vee\ \bigl(a=e\ \wedge\ (b\prec f\ \vee\ b=f)\bigr)$$
+  ```math
+  a<e \ \vee\ \bigl(a=e\ \wedge\ (b\prec f\ \vee\ b=f)\bigr)
+  ```
   と定義により同一であり、右辺もまったく同じ式と定義により同一である
   （第 3 式の右辺には第 1 引数の第 3 成分が現れないので、$c$ を $\mathsf{Z}$ に替えても式は変わらない）。
   よって両辺は同一の命題であり、同値。∎
@@ -517,7 +581,9 @@ $\lVert\mathsf{Z}\rVert = 1$、$\lVert\mathsf{P}(a,b,c)\rVert = \lVert b\rVert+\
 
 **証明** $x$ と $v$ を固定し、$t$ の構造に関する帰納法を行う。帰納法の述語は
 
-$$\Phi(t) :\equiv x\in G_v(t) \to \lVert x\rVert < \lVert t\rVert .$$
+```math
+\Phi(t) :\equiv x\in G_v(t) \to \lVert x\rVert < \lVert t\rVert .
+```
 
 - **基底段** $t=\mathsf{Z}$：[(T.Gterm_Z)](#t-Gterm_Z) より $G_v(\mathsf{Z})=\emptyset$ であり、
   $\neg(x\in\emptyset)$ であるから前提が偽である。よって $\Phi(\mathsf{Z})$ が成り立つ。

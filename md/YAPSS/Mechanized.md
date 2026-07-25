@@ -50,8 +50,10 @@ $\mathrm{tr}$ の減少を証明する。
 さらに、行 0 の値 $a$ を基準とする `takeWhile` / `dropWhile` を次の記号で略記する
 （$L$ はペア列）。
 
-$$\mathrm{tw}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a < \pi_0 q),\qquad
-  \mathrm{dw}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a < \pi_0 q).$$
+```math
+\mathrm{tw}_a L := L.\mathrm{takeWhile}\,(\lambda q.\ a < \pi_0 q),\qquad
+  \mathrm{dw}_a L := L.\mathrm{dropWhile}\,(\lambda q.\ a < \pi_0 q).
+```
 
 すなわち $\mathrm{tw}_a L$ は $L$ の先頭から「行 0 の値が $a$ より真に大きい」要素が続く極大な前部分列、
 $\mathrm{dw}_a L$ はその残りであり、$\mathrm{tw}_a L \mathbin{+\!\!+} \mathrm{dw}_a L = L$ が成り立つ。
@@ -63,8 +65,10 @@ $\mathrm{dw}_a L$ はその残りであり、$\mathrm{tw}_a L \mathbin{+\!\!+} \
 
 $\mathrm{Three}$ を、次の 2 つの構成子をもつ帰納型として定義する。
 
-$$\mathsf{Z} : \mathrm{Three},\qquad
-  \mathsf{P} : \mathbb{N} \to \mathrm{Three} \to \mathrm{Three} \to \mathrm{Three}.$$
+```math
+\mathsf{Z} : \mathrm{Three},\qquad
+  \mathsf{P} : \mathbb{N} \to \mathrm{Three} \to \mathrm{Three} \to \mathrm{Three}.
+```
 
 $\mathsf{Z}$ は項 $0$ を、$\mathsf{P}(a,b,c)$ は項 $p_a(b)+c$ を表す。
 $a$ を主要項 $p_a(b)$ の**添字**、$b$ を**引数**、$c$ を**後続和**と呼ぶ。
@@ -76,7 +80,7 @@ $\mathsf{P}(a,b,c) = \mathsf{P}(a',b',c')$ は $a=a' \wedge b=b' \wedge c=c'$ �
 
 関係 $\prec\ \subseteq \mathrm{Three}\times\mathrm{Three}$ を、第 1 引数に関する構造帰納で定義する。
 
-$$
+```math
 \begin{aligned}
 \mathsf{Z} &\prec \mathsf{Z} &&:\iff \bot,\\
 \mathsf{Z} &\prec \mathsf{P}(e,f,g) &&:\iff \top,\\
@@ -84,7 +88,7 @@ $$
 \mathsf{P}(a,b,c) &\prec \mathsf{P}(e,f,g) &&:\iff
  a<e \ \vee\ (a=e \wedge b \prec f)\ \vee\ (a=e \wedge b=f \wedge c \prec g).
 \end{aligned}
-$$
+```
 
 第 4 式の右辺に現れる再帰呼び出し $b \prec f$、$c \prec g$ の第 1 引数 $b$, $c$ は
 $\mathsf{P}(a,b,c)$ の真部分項であるから、この定義は第 1 引数に関する構造帰納として整合的である。
@@ -94,7 +98,9 @@ $\mathsf{P}(a,b,c)$ の真部分項であるから、この定義は第 1 引数
 <a id="d-ole"></a>
 ### 定義 広義順序 (D.ole)
 
-$$x \preceq y \ :\iff\ x \prec y \ \vee\ x = y.$$
+```math
+x \preceq y \ :\iff\ x \prec y \ \vee\ x = y.
+```
 
 <a id="t-olt_Z_Z"></a>
 ### 定理 $\mathsf{Z}\not\prec\mathsf{Z}$ (T.olt_Z_Z)
@@ -122,15 +128,19 @@ $$x \preceq y \ :\iff\ x \prec y \ \vee\ x = y.$$
 ### 定理 主要項どうしの比較 (T.olt_P_P)
 
 **主張**
-$$\mathsf{P}(a,b,c)\prec\mathsf{P}(e,f,g)\ \iff\
- a<e \ \vee\ (a=e \wedge b \prec f)\ \vee\ (a=e \wedge b=f \wedge c \prec g).$$
+```math
+\mathsf{P}(a,b,c)\prec\mathsf{P}(e,f,g)\ \iff\
+ a<e \ \vee\ (a=e \wedge b \prec f)\ \vee\ (a=e \wedge b=f \wedge c \prec g).
+```
 
 **証明** [(D.olt)](#d-olt) の第 4 式そのものであり、両辺は定義により同一の命題である。∎
 
 <a id="d-lead"></a>
 ### 定義 先頭添字 (D.lead)
 
-$$\mathrm{lead}\,\mathsf{Z} := 0,\qquad \mathrm{lead}\,\mathsf{P}(a,b,c) := a.$$
+```math
+\mathrm{lead}\,\mathsf{Z} := 0,\qquad \mathrm{lead}\,\mathsf{P}(a,b,c) := a.
+```
 
 <a id="t-lead_Z"></a>
 ### 定理 $\mathrm{lead}\,\mathsf{Z}=0$ (T.lead_Z)
@@ -150,7 +160,9 @@ $$\mathrm{lead}\,\mathsf{Z} := 0,\qquad \mathrm{lead}\,\mathsf{P}(a,b,c) := a.$$
 ### 定理 添字優先支配 (T.olt_P_of_lead_lt)
 
 **主張** $t\in\mathrm{Three}$, $w\in\mathbb{N}$, $b,c\in\mathrm{Three}$ とする。
-$$t = \mathsf{Z}\ \vee\ \mathrm{lead}\,t < w \ \Longrightarrow\ t \prec \mathsf{P}(w,b,c).$$
+```math
+t = \mathsf{Z}\ \vee\ \mathrm{lead}\,t < w \ \Longrightarrow\ t \prec \mathsf{P}(w,b,c).
+```
 
 **証明** $t$ の構成子で場合分けする。
 
@@ -170,12 +182,16 @@ $$t = \mathsf{Z}\ \vee\ \mathrm{lead}\,t < w \ \Longrightarrow\ t \prec \mathsf{
 **主張** 任意の $x\in\mathrm{Three}$ に対し $\neg(x \prec x)$。
 
 **証明** $x$ の構造に関する帰納法。帰納法の述語は
-$$\Phi(x) :\equiv \neg(x\prec x).$$
+```math
+\Phi(x) :\equiv \neg(x\prec x).
+```
 
 - 基底段 $x=\mathsf{Z}$：[(T.olt_Z_Z)](#t-olt_Z_Z) より $\neg(\mathsf{Z}\prec\mathsf{Z})$、すなわち $\Phi(\mathsf{Z})$。
 - 帰納段 $x=\mathsf{P}(a,b,c)$：帰納法の仮定は $\Phi(b)$（$\neg(b\prec b)$）と $\Phi(c)$（$\neg(c\prec c)$）である。
   [(T.olt_P_P)](#t-olt_P_P) より $\mathsf{P}(a,b,c)\prec\mathsf{P}(a,b,c)$ は
-  $$a<a \ \vee\ (a=a \wedge b\prec b)\ \vee\ (a=a\wedge b=b\wedge c\prec c)$$
+  ```math
+  a<a \ \vee\ (a=a \wedge b\prec b)\ \vee\ (a=a\wedge b=b\wedge c\prec c)
+  ```
   と同値である。第 1 選言は $\mathbb{N}$ の $<$ の非反射性により偽、
   第 2 選言は $\Phi(b)$ により偽、第 3 選言は $\Phi(c)$ により偽。
   よって 3 つの選言すべてが偽であり $\Phi(\mathsf{P}(a,b,c))$。∎
@@ -201,7 +217,9 @@ $x=\mathsf{P}(a,b,c)$ のときは [(T.olt_P_Z)](#t-olt_P_Z) である。∎
 **主張** $x\prec y$ かつ $y\prec z$ ならば $x\prec z$。
 
 **証明** $z$ の構造に関する帰納法（$x,y$ は全称量化したまま動かす）。帰納法の述語は
-$$\Phi(z) :\equiv \forall x\,y\in\mathrm{Three},\ (x\prec y \wedge y\prec z) \to x\prec z.$$
+```math
+\Phi(z) :\equiv \forall x\,y\in\mathrm{Three},\ (x\prec y \wedge y\prec z) \to x\prec z.
+```
 
 - 基底段 $z=\mathsf{Z}$：仮定 $y\prec\mathsf{Z}$ は [(T.not_olt_Z)](#t-not_olt_Z) に反するので、
   前件が偽であり $\Phi(\mathsf{Z})$ が成り立つ。
@@ -243,7 +261,9 @@ $$\Phi(z) :\equiv \forall x\,y\in\mathrm{Three},\ (x\prec y \wedge y\prec z) \to
 **主張** 任意の $x,y\in\mathrm{Three}$ に対し $x\prec y \ \vee\ x=y \ \vee\ y\prec x$。
 
 **証明** $x$ の構造に関する帰納法（$y$ は全称量化したまま動かす）。帰納法の述語は
-$$\Psi(x) :\equiv \forall y\in\mathrm{Three},\ x\prec y \vee x=y \vee y\prec x.$$
+```math
+\Psi(x) :\equiv \forall y\in\mathrm{Three},\ x\prec y \vee x=y \vee y\prec x.
+```
 
 - 基底段 $x=\mathsf{Z}$：$y=\mathsf{Z}$ なら $x=y$（第 2 選言）、
   $y=\mathsf{P}(e_1,e_2,e_3)$ なら [(T.olt_Z_P)](#t-olt_Z_P) より $x\prec y$（第 1 選言）。
@@ -296,10 +316,10 @@ $\mathsf{P}(a,b,c_1)\prec\mathsf{P}(a,b,c_2)$。
 その引数は $\mathrm{tw}_{\pi_0 p}L$（$L$ の先頭から行 0 の値が $\pi_0 p$ より真に大きい対が続く極大な前部分列）の翻訳、
 後続和は $\mathrm{dw}_{\pi_0 p}L$（その残り）の翻訳である。
 
-$$
+```math
 \mathrm{tr}([]) := \mathsf{Z},\qquad
 \mathrm{tr}(p \mathbin{::} L) := \mathsf{P}\bigl(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p} L),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 p} L)\bigr).
-$$
+```
 
 この再帰は $\lvert M\rvert$ に関して整礎である。実際
 $\mathrm{tw}_{\pi_0 p} L$ は $L$ の部分列だから $\lvert \mathrm{tw}_{\pi_0 p} L\rvert \le \lvert L\rvert < \lvert p\mathbin{::}L\rvert$ であり、
@@ -323,7 +343,9 @@ Lean ではこの原理は `translate.induct` として自動生成される。
 ### 定理 翻訳の先頭添字 (T.lead_translate)
 
 **主張** 任意のペア列 $M$ に対し
-$$\mathrm{lead}(\mathrm{tr}\,M) = \begin{cases} 0 & (M=[])\\ \pi_1 p & (M = p\mathbin{::}L). \end{cases}$$
+```math
+\mathrm{lead}(\mathrm{tr}\,M) = \begin{cases} 0 & (M=[])\\ \pi_1 p & (M = p\mathbin{::}L). \end{cases}
+```
 
 **証明** $M$ の構成子で場合分けする。
 $M=[]$ のとき [(D.translate)](#d-translate) より $\mathrm{tr}\,M=\mathsf{Z}$ であり、
@@ -420,7 +442,9 @@ $x\in xs$ に適用して $p\,x$ を得るが、これは $\neg p\,x$ に矛盾�
 ### 定理 接尾列の添字表示 (T.drop_eq_map_getD)
 
 **主張** 任意のリスト $xs$、$a\in\mathbb{N}$、既定値 $d$ に対し
-$$\mathrm{drop}\,a\,xs = \mathrm{map}\ (\lambda i.\ xs.\mathrm{getD}\,i\,d)\ \mathrm{range}'(a,\ \lvert xs\rvert - a).$$
+```math
+\mathrm{drop}\,a\,xs = \mathrm{map}\ (\lambda i.\ xs.\mathrm{getD}\,i\,d)\ \mathrm{range}'(a,\ \lvert xs\rvert - a).
+```
 
 **証明** `List.ext_getElem` により、長さの一致と各添字での要素の一致を示す。
 
@@ -444,8 +468,10 @@ $$\mathrm{drop}\,a\,xs = \mathrm{map}\ (\lambda i.\ xs.\mathrm{getD}\,i\,d)\ \ma
 **主張** $\mathrm{nextrel0}\,M\,j_0\,j_1$（[(D.nextrel0)](Def.md#d-nextrel0)）ならば $M_{0,j_0} < M_{0,j_1}$。
 
 **証明** [(D.nextrel0)](Def.md#d-nextrel0) は 5 つの連言
-$$j_0<\lvert M\rvert,\quad j_1<\lvert M\rvert,\quad j_0<j_1,\quad M_{0,j_0}<M_{0,j_1},\quad
- \forall j,\ (j_0<j<j_1 \to M_{0,j_1}\le M_{0,j})$$
+```math
+j_0<\lvert M\rvert,\quad j_1<\lvert M\rvert,\quad j_0<j_1,\quad M_{0,j_0}<M_{0,j_1},\quad
+ \forall j,\ (j_0<j<j_1 \to M_{0,j_1}\le M_{0,j})
+```
 であり、その第 4 成分が主張そのものである。∎
 
 <a id="t-le0_entry0_mono"></a>
@@ -456,7 +482,9 @@ $$j_0<\lvert M\rvert,\quad j_1<\lvert M\rvert,\quad j_0<j_1,\quad M_{0,j_0}<M_{0
 **証明** [(D.le0)](Def.md#d-le0) の第 3 成分は反射推移閉包
 $\mathrm{ReflTransGen}(\mathrm{nextrel0}\,M)\,j_0\,j_1$ である。この導出に関する帰納法を行う。
 $j_0$ を固定し、帰納法の述語を
-$$\Phi(b) :\equiv M_{0,j_0} \le M_{0,b}$$
+```math
+\Phi(b) :\equiv M_{0,j_0} \le M_{0,b}
+```
 とする（$b$ は $j_0$ から到達可能な添字）。
 
 - 基底段（`refl`、$b=j_0$）：$M_{0,j_0}\le M_{0,j_0}$ であり $\Phi(j_0)$。
@@ -478,7 +506,9 @@ $$\Phi(b) :\equiv M_{0,j_0} \le M_{0,b}$$
 **主張** $\mathrm{ReflTransGen}(\mathrm{nextrel0}\,M)\,a\,b$ ならば $a\le b$。
 
 **証明** 反射推移閉包の導出に関する帰納法。$a$ を固定し、帰納法の述語を
-$$\Phi(b) :\equiv a \le b$$
+```math
+\Phi(b) :\equiv a \le b
+```
 とする。
 
 - 基底段（`refl`、$b=a$）：$a\le a$。
@@ -490,12 +520,16 @@ $$\Phi(b) :\equiv a \le b$$
 ### 定理 区間補題 (T.le0_interval_gt)
 
 **主張** $\mathrm{ReflTransGen}(\mathrm{nextrel0}\,M)\,j_0\,j_1$ ならば
-$$\forall k,\ (j_0<k \wedge k\le j_1)\ \to\ M_{0,j_0} < M_{0,k}.$$
+```math
+\forall k,\ (j_0<k \wedge k\le j_1)\ \to\ M_{0,j_0} < M_{0,k}.
+```
 
 すなわち、鎖の通過点だけでなく区間 $(j_0,j_1]$ のすべての添字で行 0 の値は $M_{0,j_0}$ より真に大きい。
 
 **証明** 反射推移閉包の導出に関する帰納法。$j_0$ を固定し、帰納法の述語を
-$$\Phi(b) :\equiv \forall k,\ (j_0<k \wedge k\le b)\ \to\ M_{0,j_0} < M_{0,k}$$
+```math
+\Phi(b) :\equiv \forall k,\ (j_0<k \wedge k\le b)\ \to\ M_{0,j_0} < M_{0,k}
+```
 とする。
 
 - 基底段（`refl`、$b=j_0$）：$j_0<k$ かつ $k\le j_0$ をみたす $k$ は存在しないので、前件が常に偽であり $\Phi(j_0)$ が成り立つ。
@@ -523,7 +557,9 @@ $$\Phi(b) :\equiv \forall k,\ (j_0<k \wedge k\le b)\ \to\ M_{0,j_0} < M_{0,k}$$
 ### 定理 単一木 (T.translate_single_tree)
 
 **主張** 対 $p$ とペア列 $R$ が $\forall x\in R,\ \pi_0 p < \pi_0 x$ をみたすならば
-$$\mathrm{tr}(p\mathbin{::}R) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}\,R,\ \mathsf{Z}).$$
+```math
+\mathrm{tr}(p\mathbin{::}R) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}\,R,\ \mathsf{Z}).
+```
 
 **証明** 仮定と `List.takeWhile_eq_self_iff` より $\mathrm{tw}_{\pi_0 p}R = R$、
 仮定と `List.dropWhile_eq_nil_iff` より $\mathrm{dw}_{\pi_0 p}R = []$。
@@ -533,14 +569,20 @@ $$\mathrm{tr}(p\mathbin{::}R) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}\,R,\ \mathsf{Z}
 ### 定理 ブロック連結の翻訳 (T.translate_block_append)
 
 **主張** $v_0,w_0\in\mathbb{N}$、ペア列 $R,T$ が
-$$\forall x\in R,\ v_0<\pi_0 x, \qquad T=[]\ \vee\ \neg\bigl(v_0 < \pi_0(\mathrm{headI}\,T)\bigr)$$
+```math
+\forall x\in R,\ v_0<\pi_0 x, \qquad T=[]\ \vee\ \neg\bigl(v_0 < \pi_0(\mathrm{headI}\,T)\bigr)
+```
 をみたすならば
-$$\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}T\bigr) = \mathsf{P}(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,T).$$
+```math
+\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}T\bigr) = \mathsf{P}(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,T).
+```
 
 **証明** $((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}T = (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}T)$ であるから、
 [(D.translate)](#d-translate) の第 2 式より
-$$\mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}T)\bigr)
- = \mathsf{P}\bigl(w_0,\ \mathrm{tr}(\mathrm{tw}_{v_0}(R\mathbin{+\!\!+}T)),\ \mathrm{tr}(\mathrm{dw}_{v_0}(R\mathbin{+\!\!+}T))\bigr).$$
+```math
+\mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}T)\bigr)
+ = \mathsf{P}\bigl(w_0,\ \mathrm{tr}(\mathrm{tw}_{v_0}(R\mathbin{+\!\!+}T)),\ \mathrm{tr}(\mathrm{dw}_{v_0}(R\mathbin{+\!\!+}T))\bigr).
+```
 よって $\mathrm{tw}_{v_0}(R\mathbin{+\!\!+}T)=R$ と $\mathrm{dw}_{v_0}(R\mathbin{+\!\!+}T)=T$ を示せばよい。$T$ の形で分ける。
 
 - $T=[]$ のとき：$R\mathbin{+\!\!+}[]=R$ であり、第 1 の仮定と `List.takeWhile_eq_self_iff` から
@@ -558,10 +600,14 @@ $$\mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}T)\bigr)
 ### 定理 行 0 平行移動不変性 (T.translate_shift)
 
 **主張** $d\in\mathbb{N}$ とし $\sigma_d(p) := (\pi_0 p + d,\ \pi_1 p)$ とおく。任意のペア列 $M$ に対し
-$$\mathrm{tr}(\mathrm{map}\,\sigma_d\,M) = \mathrm{tr}\,M.$$
+```math
+\mathrm{tr}(\mathrm{map}\,\sigma_d\,M) = \mathrm{tr}\,M.
+```
 
 **証明** $\mathrm{tr}$ の再帰に沿う帰納法（[(D.translate)](#d-translate) の注）。帰納法の述語は
-$$\Phi(M) :\equiv \mathrm{tr}(\mathrm{map}\,\sigma_d\,M) = \mathrm{tr}\,M.$$
+```math
+\Phi(M) :\equiv \mathrm{tr}(\mathrm{map}\,\sigma_d\,M) = \mathrm{tr}\,M.
+```
 
 - 基底段 $M=[]$：$\mathrm{map}\,\sigma_d\,[] = []$ であり、両辺とも $\mathsf{Z}$。
 - 帰納段 $M=p\mathbin{::}L$：帰納法の仮定は
@@ -569,22 +615,30 @@ $$\Phi(M) :\equiv \mathrm{tr}(\mathrm{map}\,\sigma_d\,M) = \mathrm{tr}\,M.$$
 
   まず $\mathrm{map}\,\sigma_d\,(p\mathbin{::}L) = \sigma_d p \mathbin{::} \mathrm{map}\,\sigma_d\,L$ であり、
   $\pi_0(\sigma_d p) = \pi_0 p + d$、$\pi_1(\sigma_d p) = \pi_1 p$。よって [(D.translate)](#d-translate) より
-  $$\mathrm{tr}(\mathrm{map}\,\sigma_d\,(p\mathbin{::}L))
+  ```math
+  \mathrm{tr}(\mathrm{map}\,\sigma_d\,(p\mathbin{::}L))
    = \mathsf{P}\bigl(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p+d}(\mathrm{map}\,\sigma_d L)),\
-      \mathrm{tr}(\mathrm{dw}_{\pi_0 p+d}(\mathrm{map}\,\sigma_d L))\bigr).$$
+      \mathrm{tr}(\mathrm{dw}_{\pi_0 p+d}(\mathrm{map}\,\sigma_d L))\bigr).
+  ```
 
   次に述語の対応を見る。任意の対 $r$ に対し
-  $$\bigl(\lambda q.\ \pi_0 p + d < \pi_0 q\bigr)(\sigma_d r)
-   \ \iff\ \pi_0 p + d < \pi_0 r + d \ \iff\ \pi_0 p < \pi_0 r$$
+  ```math
+  \bigl(\lambda q.\ \pi_0 p + d < \pi_0 q\bigr)(\sigma_d r)
+   \ \iff\ \pi_0 p + d < \pi_0 r + d \ \iff\ \pi_0 p < \pi_0 r
+  ```
   であるから、述語 $(\lambda q.\ \pi_0 p+d<\pi_0 q)\circ\sigma_d$ は $(\lambda r.\ \pi_0 p<\pi_0 r)$ に等しい。
   標準ライブラリの
   `List.takeWhile_map`（$(\mathrm{map}\,f\,l).\mathrm{takeWhile}\,q = \mathrm{map}\,f\,(l.\mathrm{takeWhile}(q\circ f))$）
   と `List.dropWhile_map`（$(\mathrm{map}\,f\,l).\mathrm{dropWhile}\,q = \mathrm{map}\,f\,(l.\mathrm{dropWhile}(q\circ f))$）より
-  $$\mathrm{tw}_{\pi_0 p+d}(\mathrm{map}\,\sigma_d L) = \mathrm{map}\,\sigma_d\,(\mathrm{tw}_{\pi_0 p}L),\qquad
-    \mathrm{dw}_{\pi_0 p+d}(\mathrm{map}\,\sigma_d L) = \mathrm{map}\,\sigma_d\,(\mathrm{dw}_{\pi_0 p}L).$$
+  ```math
+  \mathrm{tw}_{\pi_0 p+d}(\mathrm{map}\,\sigma_d L) = \mathrm{map}\,\sigma_d\,(\mathrm{tw}_{\pi_0 p}L),\qquad
+    \mathrm{dw}_{\pi_0 p+d}(\mathrm{map}\,\sigma_d L) = \mathrm{map}\,\sigma_d\,(\mathrm{dw}_{\pi_0 p}L).
+  ```
   ここで帰納法の仮定 $\Phi(\mathrm{tw}_{\pi_0 p}L)$、$\Phi(\mathrm{dw}_{\pi_0 p}L)$ を用いると
-  $$\mathrm{tr}(\mathrm{map}\,\sigma_d(\mathrm{tw}_{\pi_0 p}L)) = \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L),\qquad
-    \mathrm{tr}(\mathrm{map}\,\sigma_d(\mathrm{dw}_{\pi_0 p}L)) = \mathrm{tr}(\mathrm{dw}_{\pi_0 p}L).$$
+  ```math
+  \mathrm{tr}(\mathrm{map}\,\sigma_d(\mathrm{tw}_{\pi_0 p}L)) = \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L),\qquad
+    \mathrm{tr}(\mathrm{map}\,\sigma_d(\mathrm{dw}_{\pi_0 p}L)) = \mathrm{tr}(\mathrm{dw}_{\pi_0 p}L).
+  ```
   したがって
   $\mathrm{tr}(\mathrm{map}\,\sigma_d(p\mathbin{::}L)) = \mathsf{P}(\pi_1 p, \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L), \mathrm{tr}(\mathrm{dw}_{\pi_0 p}L)) = \mathrm{tr}(p\mathbin{::}L)$、すなわち $\Phi(p\mathbin{::}L)$。∎
 
@@ -606,10 +660,14 @@ $$\Phi(M) :\equiv \mathrm{tr}(\mathrm{map}\,\sigma_d\,M) = \mathrm{tr}\,M.$$
 - $r_2 : \forall x\in T_2,\ \pi_0 z_2 \le \pi_0 x$
 
 をみたすとする。このとき任意のペア列 $G$ に対し
-$$\mathrm{tr}(G\mathbin{+\!\!+}z_1\mathbin{::}T_1) \prec \mathrm{tr}(G\mathbin{+\!\!+}z_2\mathbin{::}T_2).$$
+```math
+\mathrm{tr}(G\mathbin{+\!\!+}z_1\mathbin{::}T_1) \prec \mathrm{tr}(G\mathbin{+\!\!+}z_2\mathbin{::}T_2).
+```
 
 **証明** $z_1,z_2,T_1,T_2$ と 4 つの仮定を固定し、$\lvert G\rvert$ に関する強帰納法を行う。帰納法の述語は
-$$\Phi(G) :\equiv \mathrm{tr}(G\mathbin{+\!\!+}z_1\mathbin{::}T_1) \prec \mathrm{tr}(G\mathbin{+\!\!+}z_2\mathbin{::}T_2)$$
+```math
+\Phi(G) :\equiv \mathrm{tr}(G\mathbin{+\!\!+}z_1\mathbin{::}T_1) \prec \mathrm{tr}(G\mathbin{+\!\!+}z_2\mathbin{::}T_2)
+```
 であり、$\lvert G'\rvert<\lvert G\rvert$ なるすべての $G'$ について $\Phi(G')$ を仮定して $\Phi(G)$ を示す。
 $G$ の形で分ける。
 
@@ -620,17 +678,23 @@ $G$ の形で分ける。
 - **場合 (a)** $\neg(\forall x\in G',\ \pi_0 g<\pi_0 x)$：$x\in G'$ で $\neg(\pi_0 g<\pi_0 x)$ なるものを取る。
   [(T.takeWhile_append_not)](#t-takeWhile_append_not) と [(T.dropWhile_append_not)](#t-dropWhile_append_not) を
   $xs:=G'$, $ys:=z_i\mathbin{::}T_i$ に適用して（$i=1,2$）
-  $$\mathrm{tw}_{\pi_0 g}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i) = \mathrm{tw}_{\pi_0 g}G',\qquad
-    \mathrm{dw}_{\pi_0 g}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i) = (\mathrm{dw}_{\pi_0 g}G')\mathbin{+\!\!+}z_i\mathbin{::}T_i.$$
+  ```math
+  \mathrm{tw}_{\pi_0 g}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i) = \mathrm{tw}_{\pi_0 g}G',\qquad
+    \mathrm{dw}_{\pi_0 g}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i) = (\mathrm{dw}_{\pi_0 g}G')\mathbin{+\!\!+}z_i\mathbin{::}T_i.
+  ```
   よって [(D.translate)](#d-translate) より
-  $$\mathrm{tr}(g\mathbin{::}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i))
+  ```math
+  \mathrm{tr}(g\mathbin{::}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i))
    = \mathsf{P}\bigl(\pi_1 g,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 g}G'),\
-     \mathrm{tr}((\mathrm{dw}_{\pi_0 g}G')\mathbin{+\!\!+}z_i\mathbin{::}T_i)\bigr)$$
+     \mathrm{tr}((\mathrm{dw}_{\pi_0 g}G')\mathbin{+\!\!+}z_i\mathbin{::}T_i)\bigr)
+  ```
   であり、$i=1,2$ で添字と引数が一致する。
   $\lvert \mathrm{dw}_{\pi_0 g}G'\rvert \le \lvert G'\rvert < \lvert g\mathbin{::}G'\rvert$ だから
   帰納法の仮定 $\Phi(\mathrm{dw}_{\pi_0 g}G')$ が使え、後続和どうしが
-  $$\mathrm{tr}((\mathrm{dw}_{\pi_0 g}G')\mathbin{+\!\!+}z_1\mathbin{::}T_1)
-   \prec \mathrm{tr}((\mathrm{dw}_{\pi_0 g}G')\mathbin{+\!\!+}z_2\mathbin{::}T_2)$$
+  ```math
+  \mathrm{tr}((\mathrm{dw}_{\pi_0 g}G')\mathbin{+\!\!+}z_1\mathbin{::}T_1)
+   \prec \mathrm{tr}((\mathrm{dw}_{\pi_0 g}G')\mathbin{+\!\!+}z_2\mathbin{::}T_2)
+  ```
   をみたす。[(T.olt_P_c)](#t-olt_P_c) より $\Phi(g\mathbin{::}G')$ を得る。
 - **場合 (b)** $\forall x\in G',\ \pi_0 g<\pi_0 x$ かつ $\pi_0 g<\pi_0 z_1$：
   このとき $G'\mathbin{+\!\!+}z_1\mathbin{::}T_1$ の全要素 $x$ が $\pi_0 g<\pi_0 x$ をみたす。実際、
@@ -641,21 +705,29 @@ $G$ の形で分ける。
   $x\in G'$ なら仮定より、$x=z_2$ なら $\pi_0 g<\pi_0 z_2$ より、$x\in T_2$ なら
   $r_2$ から $\pi_0 g<\pi_0 z_2\le\pi_0 x$ である。
   よって [(T.translate_single_tree)](#t-translate_single_tree) を $p:=g$ に適用して（$i=1,2$）
-  $$\mathrm{tr}(g\mathbin{::}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i))
-   = \mathsf{P}\bigl(\pi_1 g,\ \mathrm{tr}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i),\ \mathsf{Z}\bigr).$$
+  ```math
+  \mathrm{tr}(g\mathbin{::}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i))
+   = \mathsf{P}\bigl(\pi_1 g,\ \mathrm{tr}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i),\ \mathsf{Z}\bigr).
+  ```
   $\lvert G'\rvert<\lvert g\mathbin{::}G'\rvert$ だから帰納法の仮定 $\Phi(G')$ が使え、
   [(T.olt_P_b)](#t-olt_P_b) より $\Phi(g\mathbin{::}G')$ を得る。
 - **場合 (c)** $\forall x\in G',\ \pi_0 g<\pi_0 x$ かつ $\neg(\pi_0 g<\pi_0 z_1)$：
   root より $\neg(\pi_0 g<\pi_0 z_2)$ でもある。
   [(T.takeWhile_append_all)](#t-takeWhile_append_all) より（$i=1,2$）
-  $$\mathrm{tw}_{\pi_0 g}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i)
-   = G'\mathbin{+\!\!+}\mathrm{tw}_{\pi_0 g}(z_i\mathbin{::}T_i) = G'\mathbin{+\!\!+}[] = G'$$
+  ```math
+  \mathrm{tw}_{\pi_0 g}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i)
+   = G'\mathbin{+\!\!+}\mathrm{tw}_{\pi_0 g}(z_i\mathbin{::}T_i) = G'\mathbin{+\!\!+}[] = G'
+  ```
   （先頭 $z_i$ が述語 $\pi_0 g<\pi_0(\cdot)$ をみたさないので $\mathrm{tw}_{\pi_0 g}(z_i\mathbin{::}T_i)=[]$）、
   [(T.dropWhile_append_all)](#t-dropWhile_append_all) より
-  $$\mathrm{dw}_{\pi_0 g}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i) = \mathrm{dw}_{\pi_0 g}(z_i\mathbin{::}T_i) = z_i\mathbin{::}T_i.$$
+  ```math
+  \mathrm{dw}_{\pi_0 g}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i) = \mathrm{dw}_{\pi_0 g}(z_i\mathbin{::}T_i) = z_i\mathbin{::}T_i.
+  ```
   よって [(D.translate)](#d-translate) より
-  $$\mathrm{tr}(g\mathbin{::}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i))
-   = \mathsf{P}\bigl(\pi_1 g,\ \mathrm{tr}\,G',\ \mathrm{tr}(z_i\mathbin{::}T_i)\bigr)$$
+  ```math
+  \mathrm{tr}(g\mathbin{::}(G'\mathbin{+\!\!+}z_i\mathbin{::}T_i))
+   = \mathsf{P}\bigl(\pi_1 g,\ \mathrm{tr}\,G',\ \mathrm{tr}(z_i\mathbin{::}T_i)\bigr)
+  ```
   であり、添字と引数が $i=1,2$ で一致し、後続和どうしは base により
   $\mathrm{tr}(z_1\mathbin{::}T_1)\prec\mathrm{tr}(z_2\mathbin{::}T_2)$。
   [(T.olt_P_c)](#t-olt_P_c) より $\Phi(g\mathbin{::}G')$ を得る。
@@ -669,7 +741,9 @@ $G$ の形で分ける。
 <a id="d-sndSet"></a>
 ### 定義 行 1 の値の集合 (D.sndSet)
 
-$$\mathrm{sndSet}\,M := \pi_1[\,\{x \mid x\in M\}\,] \subseteq \mathbb{N},$$
+```math
+\mathrm{sndSet}\,M := \pi_1[\,\{x \mid x\in M\}\,] \subseteq \mathbb{N},
+```
 すなわち $M$ に現れる対の第 1 成分全体のなす集合。
 
 <a id="t-mem_sndSet"></a>
@@ -712,11 +786,15 @@ $1\le 1$ かつ $0\le 1$。∎
 以下、$j_1 := \lvert M\rvert-1$（最終対の添字）、$i_1 := \mathrm{idx1}\,M\,j_1$ と書く。
 $\mathrm{Pred}$ は [(D.Pred)](Def.md#d-Pred)、$\mathrm{hasParent}$ は [(D.hasParent)](Def.md#d-hasParent) である。
 [(D.oper)](Def.md#d-oper) の 4 つの枝のうち、$\mathrm{Pred}\,M$ を返す 2 つの枝、すなわち
-$$\lvert M\rvert-1\ne0 \ \wedge\ \bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr)
+```math
+\lvert M\rvert-1\ne0 \ \wedge\ \bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr)
  \qquad\text{および}\qquad
- \lvert M\rvert-1\ne0 \ \wedge\ \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr)\ \wedge\ \neg\,\mathrm{hasParent}\,M\,i_1\,j_1$$
+ \lvert M\rvert-1\ne0 \ \wedge\ \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr)\ \wedge\ \neg\,\mathrm{hasParent}\,M\,i_1\,j_1
+```
 の場合を**前者分岐**と呼び、最後の枝、すなわち
-$$\lvert M\rvert-1\ne0 \ \wedge\ \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr)\ \wedge\ \mathrm{hasParent}\,M\,i_1\,j_1$$
+```math
+\lvert M\rvert-1\ne0 \ \wedge\ \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr)\ \wedge\ \mathrm{hasParent}\,M\,i_1\,j_1
+```
 の場合を**悪い分岐**と呼ぶ。
 
 <a id="t-oper_eq_self_of_short"></a>
@@ -752,13 +830,17 @@ $M_{0,j_1}=0\wedge M_{1,j_1}=0$ は真であるから、その枝の値 $\mathrm
 かつ $\mathrm{hasParent}\,M\,i_1\,j_1$ ならば、$j_0 := \mathrm{parent}\,M\,i_1\,j_1$
 （[(D.parent)](Def.md#d-parent)）、
 $d_0 := \bigl(0<i_1 \text{ ならば } M_{0,j_1}-M_{0,j_0},\ \text{さもなくば } 0\bigr)$ として
-$$M[n] = \mathrm{take}\,j_0\,M \ \mathbin{+\!\!+}\
- \mathrm{flatMap}\Bigl(\lambda k.\ \mathrm{map}\bigl(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j})\bigr)\,\mathrm{range}'(j_0,\ j_1-j_0)\Bigr)\ \mathrm{range}(n).$$
+```math
+M[n] = \mathrm{take}\,j_0\,M \ \mathbin{+\!\!+}\
+ \mathrm{flatMap}\Bigl(\lambda k.\ \mathrm{map}\bigl(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j})\bigr)\,\mathrm{range}'(j_0,\ j_1-j_0)\Bigr)\ \mathrm{range}(n).
+```
 
 **証明** [(D.oper)](Def.md#d-oper) の 3 つの条件分岐はそれぞれ偽・偽・偽（3 番目は
 $\neg\,\mathrm{hasParent}$ が偽）であるから、最後の枝の値
-$$\mathrm{take}\,j_0\,M \mathbin{+\!\!+}
- \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}+k\,d_1))\,\mathrm{range}'(j_0,j_1-j_0)\bigr)\,\mathrm{range}(n)$$
+```math
+\mathrm{take}\,j_0\,M \mathbin{+\!\!+}
+ \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}+k\,d_1))\,\mathrm{range}'(j_0,j_1-j_0)\bigr)\,\mathrm{range}(n)
+```
 が得られる。ここで $d_1 = (1<i_1 \text{ ならば } M_{1,j_1}-M_{1,j_0},\ \text{さもなくば } 0)$ であるが、
 [(T.idx1_le1)](#t-idx1_le1) より $i_1\le 1$ なので $1<i_1$ は偽、したがって $d_1=0$ であり、
 各成分は $M_{1,j}+k\cdot 0 = M_{1,j}$ となる。∎
@@ -769,10 +851,14 @@ $$\mathrm{take}\,j_0\,M \mathbin{+\!\!+}
 ### 定理 末尾追加による増加 (T.translate_snoc_increase)
 
 **主張** 任意のペア列 $C$ と対 $m$ に対し
-$$\mathrm{tr}\,C \prec \mathrm{tr}(C\mathbin{+\!\!+}[m]).$$
+```math
+\mathrm{tr}\,C \prec \mathrm{tr}(C\mathbin{+\!\!+}[m]).
+```
 
 **証明** $m$ を固定し、$\mathrm{tr}$ の再帰に沿う帰納法（[(D.translate)](#d-translate) の注）を行う。帰納法の述語は
-$$\Phi(C) :\equiv \mathrm{tr}\,C \prec \mathrm{tr}(C\mathbin{+\!\!+}[m]).$$
+```math
+\Phi(C) :\equiv \mathrm{tr}\,C \prec \mathrm{tr}(C\mathbin{+\!\!+}[m]).
+```
 
 - 基底段 $C=[]$：$\mathrm{tr}\,[] = \mathsf{Z}$、
   $\mathrm{tr}([]\mathbin{+\!\!+}[m]) = \mathrm{tr}[m] = \mathsf{P}(\pi_1 m,\mathsf{Z},\mathsf{Z})$ であり、
@@ -786,16 +872,20 @@ $$\Phi(C) :\equiv \mathrm{tr}\,C \prec \mathrm{tr}(C\mathbin{+\!\!+}[m]).$$
     $\Phi(\mathrm{tw}_{\pi_0 p}L)$ は $\mathrm{tr}\,L \prec \mathrm{tr}(L\mathbin{+\!\!+}[m])$ と同じ命題である。
     $L\mathbin{+\!\!+}[m]$ の全要素 $x$ は $\pi_0 p<\pi_0 x$ をみたす（$x\in L$ なら仮定、$x=m$ なら $\pi_0 p<\pi_0 m$）ので、
     [(T.translate_single_tree)](#t-translate_single_tree) を 2 回用いて
-    $$\mathrm{tr}(p\mathbin{::}L) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}\,L,\ \mathsf{Z}),\qquad
-      \mathrm{tr}(p\mathbin{::}(L\mathbin{+\!\!+}[m])) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}(L\mathbin{+\!\!+}[m]),\ \mathsf{Z}).$$
+    ```math
+    \mathrm{tr}(p\mathbin{::}L) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}\,L,\ \mathsf{Z}),\qquad
+      \mathrm{tr}(p\mathbin{::}(L\mathbin{+\!\!+}[m])) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}(L\mathbin{+\!\!+}[m]),\ \mathsf{Z}).
+    ```
     [(T.olt_P_b)](#t-olt_P_b) より $\Phi(p\mathbin{::}L)$。
   - **場合 A2** $\forall x\in L,\ \pi_0 p<\pi_0 x$ かつ $\neg(\pi_0 p<\pi_0 m)$：
     [(T.translate_single_tree)](#t-translate_single_tree) より
     $\mathrm{tr}(p\mathbin{::}L)=\mathsf{P}(\pi_1 p,\mathrm{tr}\,L,\mathsf{Z})$。
     一方 [(T.takeWhile_append_all)](#t-takeWhile_append_all) と
     [(T.dropWhile_append_all)](#t-dropWhile_append_all)（$xs:=L$, $ys:=[m]$）より
-    $$\mathrm{tw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = L\mathbin{+\!\!+}\mathrm{tw}_{\pi_0 p}[m] = L,\qquad
-      \mathrm{dw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = \mathrm{dw}_{\pi_0 p}[m] = [m]$$
+    ```math
+    \mathrm{tw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = L\mathbin{+\!\!+}\mathrm{tw}_{\pi_0 p}[m] = L,\qquad
+      \mathrm{dw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = \mathrm{dw}_{\pi_0 p}[m] = [m]
+    ```
     （$\neg(\pi_0 p<\pi_0 m)$ による）。よって [(D.translate)](#d-translate) より
     $\mathrm{tr}(p\mathbin{::}(L\mathbin{+\!\!+}[m])) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}\,L,\ \mathrm{tr}[m])$。
     $\mathrm{tr}[m]=\mathsf{P}(\pi_1 m,\mathsf{Z},\mathsf{Z})$ と [(T.olt_Z_P)](#t-olt_Z_P) より
@@ -803,11 +893,17 @@ $$\Phi(C) :\equiv \mathrm{tr}\,C \prec \mathrm{tr}(C\mathbin{+\!\!+}[m]).$$
   - **場合 B** $\neg(\forall x\in L,\ \pi_0 p<\pi_0 x)$：
     $x\in L$ で $\neg(\pi_0 p<\pi_0 x)$ なるものを取ると、
     [(T.takeWhile_append_not)](#t-takeWhile_append_not) と [(T.dropWhile_append_not)](#t-dropWhile_append_not) より
-    $$\mathrm{tw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = \mathrm{tw}_{\pi_0 p}L,\qquad
-      \mathrm{dw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = (\mathrm{dw}_{\pi_0 p}L)\mathbin{+\!\!+}[m].$$
+    ```math
+    \mathrm{tw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = \mathrm{tw}_{\pi_0 p}L,\qquad
+      \mathrm{dw}_{\pi_0 p}(L\mathbin{+\!\!+}[m]) = (\mathrm{dw}_{\pi_0 p}L)\mathbin{+\!\!+}[m].
+    ```
     よって [(D.translate)](#d-translate) より
-    $$\mathrm{tr}(p\mathbin{::}L) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 p}L)),$$
-    $$\mathrm{tr}(p\mathbin{::}(L\mathbin{+\!\!+}[m])) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L),\ \mathrm{tr}((\mathrm{dw}_{\pi_0 p}L)\mathbin{+\!\!+}[m]))$$
+    ```math
+    \mathrm{tr}(p\mathbin{::}L) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 p}L)),
+    ```
+    ```math
+    \mathrm{tr}(p\mathbin{::}(L\mathbin{+\!\!+}[m])) = \mathsf{P}(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L),\ \mathrm{tr}((\mathrm{dw}_{\pi_0 p}L)\mathbin{+\!\!+}[m]))
+    ```
     となり、添字と引数が一致する。帰納法の仮定 $\Phi(\mathrm{dw}_{\pi_0 p}L)$ が後続和どうしの比較
     $\mathrm{tr}(\mathrm{dw}_{\pi_0 p}L)\prec\mathrm{tr}((\mathrm{dw}_{\pi_0 p}L)\mathbin{+\!\!+}[m])$ を与えるので、
     [(T.olt_P_c)](#t-olt_P_c) より $\Phi(p\mathbin{::}L)$。
@@ -828,7 +924,9 @@ $m:=\mathrm{getLast}\,C$ として適用すればよい。∎
 ### 定理 先頭ブロックの弱増加 (T.translate_takeWhile_snoc_le)
 
 **主張** 任意の $a\in\mathbb{N}$、ペア列 $C$、対 $m$ に対し
-$$\mathrm{tr}(\mathrm{tw}_a C) \preceq \mathrm{tr}(\mathrm{tw}_a (C\mathbin{+\!\!+}[m])).$$
+```math
+\mathrm{tr}(\mathrm{tw}_a C) \preceq \mathrm{tr}(\mathrm{tw}_a (C\mathbin{+\!\!+}[m])).
+```
 
 **証明** 場合分けする。
 
@@ -853,18 +951,26 @@ $$\mathrm{tr}(\mathrm{tw}_a C) \preceq \mathrm{tr}(\mathrm{tw}_a (C\mathbin{+\!\
 ### 定理 核 $i_1=0$（完全コピー） (T.core_i0)
 
 **主張** $v_0,w_0\in\mathbb{N}$、ペア列 $R,T$、対 $lp$ が
-$$\forall x\in R,\ v_0<\pi_0 x,\qquad v_0<\pi_0 lp,\qquad
-  T=[]\ \vee\ \neg\bigl(v_0<\pi_0(\mathrm{headI}\,T)\bigr)$$
+```math
+\forall x\in R,\ v_0<\pi_0 x,\qquad v_0<\pi_0 lp,\qquad
+  T=[]\ \vee\ \neg\bigl(v_0<\pi_0(\mathrm{headI}\,T)\bigr)
+```
 をみたすならば
-$$\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}T\bigr)
- \prec \mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]\bigr).$$
+```math
+\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}T\bigr)
+ \prec \mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]\bigr).
+```
 
 **証明** 左辺は [(T.translate_block_append)](#t-translate_block_append) より
-$$\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}T\bigr) = \mathsf{P}(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,T).$$
+```math
+\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}T\bigr) = \mathsf{P}(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,T).
+```
 右辺は $((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp] = (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}[lp])$ であり、
 $R\mathbin{+\!\!+}[lp]$ の全要素 $x$ が $v_0<\pi_0 x$ をみたす（$x\in R$ なら第 1 の仮定、$x=lp$ なら第 2 の仮定）ので、
 [(T.translate_single_tree)](#t-translate_single_tree) より
-$$\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]\bigr) = \mathsf{P}(w_0,\ \mathrm{tr}(R\mathbin{+\!\!+}[lp]),\ \mathsf{Z}).$$
+```math
+\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]\bigr) = \mathsf{P}(w_0,\ \mathrm{tr}(R\mathbin{+\!\!+}[lp]),\ \mathsf{Z}).
+```
 [(T.translate_snoc_increase)](#t-translate_snoc_increase) より $\mathrm{tr}\,R \prec \mathrm{tr}(R\mathbin{+\!\!+}[lp])$ であるから、
 [(T.olt_P_b)](#t-olt_P_b)（添字は両辺とも $w_0$）により主張を得る。
 比較は引数の段で決まるので、後続和 $\mathrm{tr}\,T$（コピーの個数）は結論に影響しない。∎
@@ -873,11 +979,15 @@ $$\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]\bigr) = \mathsf{
 ### 定理 核 $i_1=1$（昇順コピー） (T.core_i1)
 
 **主張** $v_0,w_0\in\mathbb{N}$、ペア列 $R,C'$、対 $c,lp$ が
-$$\forall x\in R,\ v_0<\pi_0 x,\quad \forall x\in C',\ \pi_0 c\le\pi_0 x,\quad
-  \pi_0 c=\pi_0 lp,\quad v_0<\pi_0 lp,\quad \pi_1 c<\pi_1 lp$$
+```math
+\forall x\in R,\ v_0<\pi_0 x,\quad \forall x\in C',\ \pi_0 c\le\pi_0 x,\quad
+  \pi_0 c=\pi_0 lp,\quad v_0<\pi_0 lp,\quad \pi_1 c<\pi_1 lp
+```
 をみたすならば
-$$\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}(c\mathbin{::}C')\bigr)
- \prec \mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]\bigr).$$
+```math
+\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}(c\mathbin{::}C')\bigr)
+ \prec \mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]\bigr).
+```
 
 **証明** 3 段に分ける。
 
@@ -899,10 +1009,14 @@ $$\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}(c\mathbin{::}C')\big
    また $R\mathbin{+\!\!+}[lp]$ の全要素 $x$ も $v_0<\pi_0 x$ をみたす：
    $x\in R$ なら第 1 の仮定、$x=lp$ なら仮定 $v_0<\pi_0 lp$ による。
    よって [(T.translate_single_tree)](#t-translate_single_tree) を 2 回用いて
-   $$\mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}c\mathbin{::}C')\bigr)
-     = \mathsf{P}(w_0,\ \mathrm{tr}(R\mathbin{+\!\!+}c\mathbin{::}C'),\ \mathsf{Z}),$$
-   $$\mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}[lp])\bigr)
-     = \mathsf{P}(w_0,\ \mathrm{tr}(R\mathbin{+\!\!+}[lp]),\ \mathsf{Z}).$$
+   ```math
+   \mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}c\mathbin{::}C')\bigr)
+     = \mathsf{P}(w_0,\ \mathrm{tr}(R\mathbin{+\!\!+}c\mathbin{::}C'),\ \mathsf{Z}),
+   ```
+   ```math
+   \mathrm{tr}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}[lp])\bigr)
+     = \mathsf{P}(w_0,\ \mathrm{tr}(R\mathbin{+\!\!+}[lp]),\ \mathsf{Z}).
+   ```
    2 と [(T.olt_P_b)](#t-olt_P_b) より主張を得る（$((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}X = (v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}X)$ による）。∎
 
 ## 展開一段の減少：前者分岐
@@ -911,7 +1025,9 @@ $$\mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}(c\mathbin{::}C')\big
 ### 定理 前者分岐の減少 (T.translate_oper_pred)
 
 **主張** $1<\lvert M\rvert$ とし、$j_1=\lvert M\rvert-1$ について
-$$\bigl(M_{0,j_1}=0 \wedge M_{1,j_1}=0\bigr)\ \vee\ \neg\,\mathrm{hasParent}\,M\,(\mathrm{idx1}\,M\,j_1)\,j_1$$
+```math
+\bigl(M_{0,j_1}=0 \wedge M_{1,j_1}=0\bigr)\ \vee\ \neg\,\mathrm{hasParent}\,M\,(\mathrm{idx1}\,M\,j_1)\,j_1
+```
 が成り立つとする。このとき $\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M$。
 
 **証明** $1<\lvert M\rvert$ より $\lvert M\rvert-1\ne 0$ である。まず $M[n]=\mathrm{Pred}\,M$ を示す。
@@ -966,8 +1082,10 @@ $i\ne 0$ のときは $\mathrm{nextrel1}\,M\,j_0\,j_1$ であり、
 ### 定理 悪い分岐のブロック分解 (T.oper_bad_blocks)
 
 **主張** $j_1:=\lvert M\rvert-1$、$i_1:=\mathrm{idx1}\,M\,j_1$ とし、
-$$1<\lvert M\rvert,\qquad \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr),\qquad
-  \mathrm{hasParent}\,M\,i_1\,j_1,\qquad 1\le n$$
+```math
+1<\lvert M\rvert,\qquad \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr),\qquad
+  \mathrm{hasParent}\,M\,i_1\,j_1,\qquad 1\le n
+```
 を仮定する。このときペア列 $G,R$、自然数 $v_0,w_0,d_0$、対 $lp$ が存在して次の 6 条件をみたす。
 
 1. $M = G \mathbin{+\!\!+} ((v_0,w_0)\mathbin{::}R) \mathbin{+\!\!+} [lp]$
@@ -980,10 +1098,14 @@ $$1<\lvert M\rvert,\qquad \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr),\qquad
 （仮定 $1\le n$ は以下の証明では使わない。Lean 側でも未使用引数として記されている。）
 
 **証明** $j_0 := \mathrm{parent}\,M\,i_1\,j_1$ とおき、次を証人とする。
-$$G := \mathrm{take}\,j_0\,M,\quad v_0 := M_{0,j_0},\quad w_0 := M_{1,j_0},\quad
-  R := \mathrm{map}\bigl(\lambda j.\ (M_{0,j},M_{1,j})\bigr)\,\mathrm{range}'(j_0+1,\ j_1-(j_0+1)),$$
-$$d_0 := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases},\qquad
-  lp := M\langle j_1\rangle .$$
+```math
+G := \mathrm{take}\,j_0\,M,\quad v_0 := M_{0,j_0},\quad w_0 := M_{1,j_0},\quad
+  R := \mathrm{map}\bigl(\lambda j.\ (M_{0,j},M_{1,j})\bigr)\,\mathrm{range}'(j_0+1,\ j_1-(j_0+1)),
+```
+```math
+d_0 := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases},\qquad
+  lp := M\langle j_1\rangle .
+```
 
 準備として次を用意する。
 
@@ -1003,32 +1125,48 @@ $$d_0 := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})
   対 $u$ は $(\pi_0 u,\pi_1 u)$ に等しい。
 
 **条件 1 の証明。** $M = \mathrm{take}\,j_0\,M \mathbin{+\!\!+} \mathrm{drop}\,j_0\,M$ であるから、
-$$\mathrm{drop}\,j_0\,M = \bigl((v_0,w_0)\mathbin{::}R\bigr)\mathbin{+\!\!+}[lp]$$
+```math
+\mathrm{drop}\,j_0\,M = \bigl((v_0,w_0)\mathbin{::}R\bigr)\mathbin{+\!\!+}[lp]
+```
 を示せばよい。[(T.drop_eq_map_getD)](#t-drop_eq_map_getD) より
-$$\mathrm{drop}\,j_0\,M = \mathrm{map}\,(\lambda i.\ M\langle i\rangle)\ \mathrm{range}'(j_0,\ \lvert M\rvert-j_0).$$
+```math
+\mathrm{drop}\,j_0\,M = \mathrm{map}\,(\lambda i.\ M\langle i\rangle)\ \mathrm{range}'(j_0,\ \lvert M\rvert-j_0).
+```
 $1<\lvert M\rvert$ より $\lvert M\rvert=j_1+1$ であり、(P2) より $j_0\le j_1$ だから
 $\lvert M\rvert-j_0 = (j_1-j_0)+1$。また `List.range'_append`（$a:=j_0$, $m:=j_1-j_0$, $k:=1$）より
-$$\mathrm{range}'(j_0,\ j_1-j_0)\mathbin{+\!\!+}\mathrm{range}'\bigl(j_0+(j_1-j_0),\ 1\bigr)
- = \mathrm{range}'\bigl(j_0,\ (j_1-j_0)+1\bigr)$$
+```math
+\mathrm{range}'(j_0,\ j_1-j_0)\mathbin{+\!\!+}\mathrm{range}'\bigl(j_0+(j_1-j_0),\ 1\bigr)
+ = \mathrm{range}'\bigl(j_0,\ (j_1-j_0)+1\bigr)
+```
 であり、$j_0\le j_1$ より $j_0+(j_1-j_0)=j_1$、かつ $\mathrm{range}'(j_1,1)=[j_1]$ であるから
-$$\mathrm{range}'\bigl(j_0,\ (j_1-j_0)+1\bigr) = \mathrm{range}'(j_0,\ j_1-j_0)\mathbin{+\!\!+}[j_1].$$
+```math
+\mathrm{range}'\bigl(j_0,\ (j_1-j_0)+1\bigr) = \mathrm{range}'(j_0,\ j_1-j_0)\mathbin{+\!\!+}[j_1].
+```
 $\mathrm{map}$ を連結に分配し、(P5) を使うと
-$$\mathrm{drop}\,j_0\,M
+```math
+\mathrm{drop}\,j_0\,M
  = \Bigl(M\langle j_0\rangle \mathbin{::} \mathrm{map}\,(\lambda i.\ M\langle i\rangle)\,\mathrm{range}'(j_0+1,\ j_1-(j_0+1))\Bigr)
-   \mathbin{+\!\!+}[\,M\langle j_1\rangle\,].$$
+   \mathbin{+\!\!+}[\,M\langle j_1\rangle\,].
+```
 (P7) より $M\langle j_0\rangle=(v_0,w_0)$、
 $\mathrm{map}\,(\lambda i.\ M\langle i\rangle)\,\mathrm{range}'(j_0+1,\cdot) = R$、
 $M\langle j_1\rangle = lp$ であるから、条件 1 を得る。
 
 **条件 2 の証明。** [(T.oper_bad_unfold)](#t-oper_bad_unfold) より
-$$M[n] = \mathrm{take}\,j_0\,M \mathbin{+\!\!+}
- \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}))\,\mathrm{range}'(j_0,\ j_1-j_0)\bigr)\,\mathrm{range}(n).$$
+```math
+M[n] = \mathrm{take}\,j_0\,M \mathbin{+\!\!+}
+ \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}))\,\mathrm{range}'(j_0,\ j_1-j_0)\bigr)\,\mathrm{range}(n).
+```
 各 $k$ について、(P5) と $\mathrm{map}$ の $\mathbin{::}$ への分配より
-$$\mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}))\,\mathrm{range}'(j_0,\ j_1-j_0)
- = (v_0+k\,d_0,\ w_0)\mathbin{::}\mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}))\,\mathrm{range}'(j_0+1,\ j_1-(j_0+1)).$$
+```math
+\mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}))\,\mathrm{range}'(j_0,\ j_1-j_0)
+ = (v_0+k\,d_0,\ w_0)\mathbin{::}\mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}))\,\mathrm{range}'(j_0+1,\ j_1-(j_0+1)).
+```
 一方、$R$ の定義と $\mathrm{map}\,f\,(\mathrm{map}\,g\,l) = \mathrm{map}\,(f\circ g)\,l$ より
-$$\mathrm{map}(\lambda p.\ (\pi_0 p + k\,d_0,\ \pi_1 p))\,\bigl((v_0,w_0)\mathbin{::}R\bigr)
- = (v_0+k\,d_0,\ w_0)\mathbin{::}\mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}))\,\mathrm{range}'(j_0+1,\ j_1-(j_0+1)).$$
+```math
+\mathrm{map}(\lambda p.\ (\pi_0 p + k\,d_0,\ \pi_1 p))\,\bigl((v_0,w_0)\mathbin{::}R\bigr)
+ = (v_0+k\,d_0,\ w_0)\mathbin{::}\mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}))\,\mathrm{range}'(j_0+1,\ j_1-(j_0+1)).
+```
 両者は一致するので、$\mathrm{flatMap}$ の中身を置き換えて条件 2 を得る。
 
 **条件 3 の証明。** $x\in R$ とする。$R$ の定義より $j\in\mathrm{range}'(j_0+1,\ j_1-(j_0+1))$ が存在して
@@ -1063,23 +1201,33 @@ $j = j_0+1+i < j_1$、とくに $j\le j_1$。
 ### 定理 悪い分岐の減少 (T.translate_oper_bad)
 
 **主張** $j_1=\lvert M\rvert-1$、$i_1=\mathrm{idx1}\,M\,j_1$ とし、
-$$1<\lvert M\rvert,\qquad \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr),\qquad
-  \mathrm{hasParent}\,M\,i_1\,j_1,\qquad 1\le n$$
+```math
+1<\lvert M\rvert,\qquad \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr),\qquad
+  \mathrm{hasParent}\,M\,i_1\,j_1,\qquad 1\le n
+```
 を仮定する。このとき $\mathrm{tr}(M[n]) \prec \mathrm{tr}\,M$。
 
 **証明** [(T.oper_bad_blocks)](#t-oper_bad_blocks) により
 $G,v_0,w_0,R,d_0,lp$ を取り、その条件 1〜5 を使う（条件 6 はここでは使わない）。
 
 **分解の整形。** $1\le n$ より $n=m+1$ と書ける。`List.range_eq_range'` と `List.range'_succ` より
-$$\mathrm{range}(n) = \mathrm{range}'(0,n) = 0\mathbin{::}\mathrm{range}'(1,\ n-1).$$
+```math
+\mathrm{range}(n) = \mathrm{range}'(0,n) = 0\mathbin{::}\mathrm{range}'(1,\ n-1).
+```
 また $k=0$ の項は
 $\mathrm{map}(\lambda p.\ (\pi_0 p+0\cdot d_0,\ \pi_1 p))\,((v_0,w_0)\mathbin{::}R) = (v_0,w_0)\mathbin{::}R$
 である（$0\cdot d_0=0$ かつ $(\pi_0 p+0,\pi_1 p)=p$）。そこで
-$$C := \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\ (\pi_0 p+k\,d_0,\ \pi_1 p))\,((v_0,w_0)\mathbin{::}R)\bigr)\,\mathrm{range}'(1,\ n-1)$$
+```math
+C := \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\ (\pi_0 p+k\,d_0,\ \pi_1 p))\,((v_0,w_0)\mathbin{::}R)\bigr)\,\mathrm{range}'(1,\ n-1)
+```
 とおくと、条件 2 は
-$$M[n] = G\mathbin{+\!\!+}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}C)\bigr)$$
+```math
+M[n] = G\mathbin{+\!\!+}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}C)\bigr)
+```
 となり、条件 1 は
-$$M = G\mathbin{+\!\!+}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}[lp])\bigr)$$
+```math
+M = G\mathbin{+\!\!+}\bigl((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}[lp])\bigr)
+```
 となる。
 
 **$C$ の要素の下界 (LB)。** $\forall x\in C,\ v_0\le\pi_0 x$。実際 $x\in C$ なら
@@ -1088,8 +1236,10 @@ $p=(v_0,w_0)$ なら $\pi_0 p=v_0$、$p\in R$ なら条件 3 より $v_0<\pi_0 p
 $\pi_0 p \le \pi_0 p + k\,d_0 = \pi_0 x$。
 
 **核の適用**
-$$\text{(core)}\qquad \mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}C\bigr)
- \prec \mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]\bigr).$$
+```math
+\text{(core)}\qquad \mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}C\bigr)
+ \prec \mathrm{tr}\bigl(((v_0,w_0)\mathbin{::}R)\mathbin{+\!\!+}[lp]\bigr).
+```
 $n$ の大きさで分ける。
 
 - $n<2$ のとき。$1\le n$ とあわせて $n=1$ であり、$\mathrm{range}'(1,0)=[]$ だから $C=[]$。
@@ -1097,8 +1247,10 @@ $n$ の大きさで分ける。
   第 1 仮定に条件 3、第 2 仮定に条件 4 を与えて適用する。
 - $2\le n$ のとき。$n-1=(n-2)+1$ と `List.range'_succ` より
   $\mathrm{range}'(1,\ n-1) = 1\mathbin{::}\mathrm{range}'(2,\ n-2)$ であり、$C$ の先頭を取り出すと
-  $$C = (v_0+1\cdot d_0,\ w_0)\mathbin{::}\Bigl(\mathrm{map}(\lambda p.\ (\pi_0 p+1\cdot d_0,\ \pi_1 p))\,R
-      \mathbin{+\!\!+} \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\ (\pi_0 p+k\,d_0,\ \pi_1 p))\,((v_0,w_0)\mathbin{::}R)\bigr)\,\mathrm{range}'(2,\ n-2)\Bigr).$$
+  ```math
+  C = (v_0+1\cdot d_0,\ w_0)\mathbin{::}\Bigl(\mathrm{map}(\lambda p.\ (\pi_0 p+1\cdot d_0,\ \pi_1 p))\,R
+      \mathbin{+\!\!+} \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\ (\pi_0 p+k\,d_0,\ \pi_1 p))\,((v_0,w_0)\mathbin{::}R)\bigr)\,\mathrm{range}'(2,\ n-2)\Bigr).
+  ```
   条件 5 の 2 つの選言で分ける。
   - **$d_0=0$ の場合（完全コピー）。** 上の表示より $C$ の先頭は $(v_0+1\cdot 0,\ w_0)=(v_0,w_0)$ であり、
     $\pi_0(\mathrm{headI}\,C)=v_0$、したがって $\neg(v_0<\pi_0(\mathrm{headI}\,C))$。
@@ -1128,8 +1280,10 @@ $z_1:=(v_0,w_0)$, $T_1:=R\mathbin{+\!\!+}C$, $z_2:=(v_0,w_0)$, $T_2:=R\mathbin{+
 - $r_2$：$x\in R\mathbin{+\!\!+}[lp]$ なら、$x\in R$ のとき条件 3、$x=lp$ のとき条件 4 より $v_0\le\pi_0 x$。
 
 したがって
-$$\mathrm{tr}\bigl(G\mathbin{+\!\!+}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}C))\bigr)
- \prec \mathrm{tr}\bigl(G\mathbin{+\!\!+}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}[lp]))\bigr)$$
+```math
+\mathrm{tr}\bigl(G\mathbin{+\!\!+}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}C))\bigr)
+ \prec \mathrm{tr}\bigl(G\mathbin{+\!\!+}((v_0,w_0)\mathbin{::}(R\mathbin{+\!\!+}[lp]))\bigr)
+```
 であり、整形した条件 2・条件 1 によりこれは $\mathrm{tr}(M[n])\prec\mathrm{tr}\,M$ に他ならない。∎
 
 ## 減少補題

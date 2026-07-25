@@ -67,11 +67,15 @@ $D' := \mathrm{dropLast}\,D$ に強帰納法の仮定 $\Psi(D')$ が使え、条
 ### 定理 連結による弱増加 (T.translate_append_ge)
 
 **主張** 任意のペア列 $C, D \in \mathrm{PairSeq}$ に対し
-$$\mathrm{tr}\,C \ \preceq\ \mathrm{tr}(C \mathbin{+\!\!+} D).$$
+```math
+\mathrm{tr}\,C \ \preceq\ \mathrm{tr}(C \mathbin{+\!\!+} D).
+```
 
 **証明** $C$ を固定し、$D$ に関する末尾帰納法（上の「記法」節に明示した `List.reverseRecOn`）を行う。
 帰納法の述語は
-$$\Psi(D) :\equiv \bigl(\mathrm{tr}\,C \preceq \mathrm{tr}(C \mathbin{+\!\!+} D)\bigr)$$
+```math
+\Psi(D) :\equiv \bigl(\mathrm{tr}\,C \preceq \mathrm{tr}(C \mathbin{+\!\!+} D)\bigr)
+```
 である（$C$ は固定されているので $\Psi$ は $D$ のみの述語である）。
 
 - **基底段** $D = []$：$C \mathbin{+\!\!+} [] = C$ であるから、示すべきは $\mathrm{tr}\,C \preceq \mathrm{tr}\,C$ である。
@@ -80,21 +84,31 @@ $$\Psi(D) :\equiv \bigl(\mathrm{tr}\,C \preceq \mathrm{tr}(C \mathbin{+\!\!+} D)
 
 - **帰納段** $D = D' \mathbin{+\!\!+} [m]$（$D' \in \mathrm{PairSeq}$、$m \in \mathbb{N}\times\mathbb{N}$）：
   帰納法の仮定は
-  $$\Psi(D') \equiv \bigl(\mathrm{tr}\,C \preceq \mathrm{tr}(C \mathbin{+\!\!+} D')\bigr)$$
+  ```math
+  \Psi(D') \equiv \bigl(\mathrm{tr}\,C \preceq \mathrm{tr}(C \mathbin{+\!\!+} D')\bigr)
+  ```
   である。示すべきは $\mathrm{tr}\,C \preceq \mathrm{tr}\bigl(C \mathbin{+\!\!+} (D' \mathbin{+\!\!+} [m])\bigr)$ であるが、
   `List.append_assoc` により
-  $$C \mathbin{+\!\!+} (D' \mathbin{+\!\!+} [m]) \ =\ (C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]$$
+  ```math
+  C \mathbin{+\!\!+} (D' \mathbin{+\!\!+} [m]) \ =\ (C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]
+  ```
   であるから、示すべき命題は
-  $$\mathrm{tr}\,C \ \preceq\ \mathrm{tr}\bigl((C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]\bigr)$$
+  ```math
+  \mathrm{tr}\,C \ \preceq\ \mathrm{tr}\bigl((C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]\bigr)
+  ```
   と同一である。ここで [(T.translate_snoc_increase)](Mechanized.md#t-translate_snoc_increase) を
   $C := C \mathbin{+\!\!+} D'$、$m := m$ として適用すると
-  $$\mathrm{tr}(C \mathbin{+\!\!+} D') \ \prec\ \mathrm{tr}\bigl((C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]\bigr)$$
+  ```math
+  \mathrm{tr}(C \mathbin{+\!\!+} D') \ \prec\ \mathrm{tr}\bigl((C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]\bigr)
+  ```
   を得る。[(D.ole)](Mechanized.md#d-ole) の第 1 選言により、これは
   $\mathrm{tr}(C \mathbin{+\!\!+} D') \preceq \mathrm{tr}\bigl((C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]\bigr)$ を与える。
   帰納法の仮定 $\Psi(D')$ とこれに [(T.ole_trans)](Wfsum.md#t-ole_trans) を
   $x := \mathrm{tr}\,C$、$y := \mathrm{tr}(C \mathbin{+\!\!+} D')$、$z := \mathrm{tr}\bigl((C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]\bigr)$
   として適用すれば
-  $$\mathrm{tr}\,C \ \preceq\ \mathrm{tr}\bigl((C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]\bigr),$$
+  ```math
+  \mathrm{tr}\,C \ \preceq\ \mathrm{tr}\bigl((C \mathbin{+\!\!+} D') \mathbin{+\!\!+} [m]\bigr),
+  ```
   すなわち $\Psi(D' \mathbin{+\!\!+} [m])$ を得る。
 
 末尾帰納法の 2 条件が示されたので、すべての $D$ について $\Psi(D)$ が成り立つ。∎
@@ -108,20 +122,28 @@ $\mathrm{tr}(C\mathbin{+\!\!+}D') \prec \mathrm{tr}\bigl((C\mathbin{+\!\!+}D')\m
 ### 定理 前部分列による弱減少 (T.translate_take_le)
 
 **主張** 任意の $m \in \mathbb{N}$ と任意のペア列 $L \in \mathrm{PairSeq}$ に対し
-$$\mathrm{tr}(\mathrm{take}\,m\,L) \ \preceq\ \mathrm{tr}\,L.$$
+```math
+\mathrm{tr}(\mathrm{take}\,m\,L) \ \preceq\ \mathrm{tr}\,L.
+```
 
 **証明** 標準ライブラリの `List.take_append_drop` より
-$$\mathrm{take}\,m\,L \mathbin{+\!\!+} \mathrm{drop}\,m\,L \ =\ L$$
+```math
+\mathrm{take}\,m\,L \mathbin{+\!\!+} \mathrm{drop}\,m\,L \ =\ L
+```
 である。主張の**右辺**に現れる $L$ をこの等式の左辺で置き換えると、示すべき命題は
-$$\mathrm{tr}(\mathrm{take}\,m\,L) \ \preceq\ \mathrm{tr}\bigl(\mathrm{take}\,m\,L \mathbin{+\!\!+} \mathrm{drop}\,m\,L\bigr)$$
+```math
+\mathrm{tr}(\mathrm{take}\,m\,L) \ \preceq\ \mathrm{tr}\bigl(\mathrm{take}\,m\,L \mathbin{+\!\!+} \mathrm{drop}\,m\,L\bigr)
+```
 と同一である。これは [(T.translate_append_ge)](#t-translate_append_ge) に
 $C := \mathrm{take}\,m\,L$、$D := \mathrm{drop}\,m\,L$ を代入したものである。∎
 
 **注（書き換えを右辺に限る理由）**
 Lean の証明では書き換えを右辺に限定している（`conv_rhs`）。
 左辺に現れる $L$ まで同時に書き換えると、示すべき命題が
-$$\mathrm{tr}\bigl(\mathrm{take}\,m\,(\mathrm{take}\,m\,L \mathbin{+\!\!+} \mathrm{drop}\,m\,L)\bigr)
- \ \preceq\ \mathrm{tr}\bigl(\mathrm{take}\,m\,L \mathbin{+\!\!+} \mathrm{drop}\,m\,L\bigr)$$
+```math
+\mathrm{tr}\bigl(\mathrm{take}\,m\,(\mathrm{take}\,m\,L \mathbin{+\!\!+} \mathrm{drop}\,m\,L)\bigr)
+ \ \preceq\ \mathrm{tr}\bigl(\mathrm{take}\,m\,L \mathbin{+\!\!+} \mathrm{drop}\,m\,L\bigr)
+```
 という形になり、[(T.translate_append_ge)](#t-translate_append_ge) の
 $\mathrm{tr}\,C \preceq \mathrm{tr}(C \mathbin{+\!\!+} D)$ という形に一致しないためである。
 
@@ -143,7 +165,9 @@ Lean ソースはこの節見出しの下に宣言を 1 つも持たない。し
 
 **注（述語 $Q$ に対する構造帰納法は成立しない）**
 項の述語
-$$Q(t) :\equiv \forall x \in \mathrm{Gterm}\,0\,t,\ x \prec t$$
+```math
+Q(t) :\equiv \forall x \in \mathrm{Gterm}\,0\,t,\ x \prec t
+```
 （$\mathrm{Gterm}$ は [(D.Gterm)](Otembed.md#d-Gterm)）について、
 「$t$ のすべての真部分項で $Q$ が成り立つ」ことから $Q(t)$ を導くことはできない。
 実際、$b := \mathsf{P}(1,\mathsf{Z},\mathsf{Z})$、$t := \mathsf{P}(0,b,\mathsf{Z})$ とおくと次が成り立つ。
@@ -163,7 +187,9 @@ $$Q(t) :\equiv \forall x \in \mathrm{Gterm}\,0\,t,\ x \prec t$$
    であるから $b \in \mathrm{Gterm}\,0\,t$ である。
    一方 [(T.olt_P_P)](Mechanized.md#t-olt_P_P) を
    $\mathsf{P}(1,\mathsf{Z},\mathsf{Z}) \prec \mathsf{P}(0,b,\mathsf{Z})$ に適用すると
-   $$b \prec t \iff 1 < 0 \ \vee\ (1 = 0 \wedge \mathsf{Z} \prec b) \ \vee\ (1 = 0 \wedge \mathsf{Z} = b \wedge \mathsf{Z} \prec \mathsf{Z})$$
+   ```math
+   b \prec t \iff 1 < 0 \ \vee\ (1 = 0 \wedge \mathsf{Z} \prec b) \ \vee\ (1 = 0 \wedge \mathsf{Z} = b \wedge \mathsf{Z} \prec \mathsf{Z})
+   ```
    であり、$1 < 0$ は偽、$1 = 0$ も偽であるから 3 つの選言肢すべてが偽、すなわち $\neg(b \prec t)$ である。
    よって $Q(t)$ は偽である。
 5. 項の大きさ $\mathrm{tsize}$（[(D.tsize)](Wfsum.md#d-tsize)）で測っても同じことが起こる。
