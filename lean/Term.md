@@ -292,7 +292,7 @@ $`=`$ の反射性と仮定により成り立つ。∎
 <a id="d-translate"></a>
 ## 定義: 翻訳 (D.translate)
 
-以下、$`a \in \mathbb{N}`$ と $`L \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
+以下、$`a \in \mathbb{N}`$ と [$`L \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) に対し
 
 ```math
 \mathrm{tw}_a L := \text{（}L\text{ の先頭から、第 1 成分が } a \text{ より大きい要素が続く極大な前部分列）},
@@ -466,23 +466,23 @@ $`a + i \lt \lvert xs\rvert`$ であるから、これは $`xs`$ の第 $`a+i`$ 
 
 ### 定理
 
-$`j_0 \to^M_0 j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）ならば
-$`M_{0,j_0} \lt M_{0,j_1}`$（[D.entry](Pss.md#d-entry)）。
+[$`j_0 \to^M_0 j_1`$](Pss.md#d-nextrel0) ならば
+[$`M_{0,j_0} \lt M_{0,j_1}`$](Pss.md#d-entry)。
 
 ### 証明
 
-[D.nextrel0](Pss.md#d-nextrel0) の第 4 条件そのものである。∎
+$`\to^M_0`$ の定義（D.nextrel0）の第 4 条件そのものである。∎
 
 <a id="t-le0_entry0_mono"></a>
 ## 定理: 行 0 の祖先では行 0 が広義に増える (T.le0_entry0_mono)
 
 ### 定理
 
-$`j_0 \le^M_0 j_1`$（[D.le0](Pss.md#d-le0)）ならば $`M_{0,j_0} \le M_{0,j_1}`$。
+[$`j_0 \le^M_0 j_1`$](Pss.md#d-le0) ならば $`M_{0,j_0} \le M_{0,j_1}`$。
 
 ### 証明
 
-[D.le0](Pss.md#d-le0) の第 3 条件により $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。
+$`\le^M_0`$ の定義（D.le0）の第 3 条件により $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。
 この反射推移閉包の構成に関する帰納法を行う。帰納法の述語は
 
 ```math
@@ -505,7 +505,7 @@ $`a \to^M_0 b`$ ならば $`a \lt b`$。
 
 ### 証明
 
-[D.nextrel0](Pss.md#d-nextrel0) の第 3 条件そのものである。∎
+$`\to^M_0`$ の定義（D.nextrel0）の第 3 条件そのものである。∎
 
 <a id="t-nextrel0_rtrancl_index_le"></a>
 ## 定理: 行 0 の祖先では添字が広義に増える (T.nextrel0_rtrancl_index_le)
@@ -563,7 +563,7 @@ $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ とする。このとき
 
   - $`y \lt k`$ のとき。さらに $`k`$ と $`z`$ で場合分けする。
     - $`k = z`$ のとき。3 と 1 から $`M_{0,j_0} \le M_{0,y} \lt M_{0,z} = M_{0,k}`$。
-    - $`k \lt z`$ のとき。$`y \to^M_0 z`$ の第 5 条件（[D.nextrel0](Pss.md#d-nextrel0)）を
+    - $`k \lt z`$ のとき。$`y \to^M_0 z`$ すなわち $`\to^M_0`$ の定義（D.nextrel0）の第 5 条件を
       $`j := k`$ に適用すると、$`y \lt k \wedge k \lt z`$ より $`M_{0,z} \le M_{0,k}`$ を得る。
       これと 3、1 を合わせて $`M_{0,j_0} \le M_{0,y} \lt M_{0,z} \le M_{0,k}`$。
 
@@ -839,9 +839,9 @@ $`p`$ が存在することになるが、空列は要素をもたない。よ�
 ### 定理
 
 任意の $`M \in \mathrm{PairSeq}`$, $`j \in \mathbb{N}`$ に対し
-$`\mathrm{idx}_1(M,j) \le 1`$（[D.idx1](Pss.md#d-idx1)）。
+[$`\mathrm{idx}_1(M,j) \le 1`$](Pss.md#d-idx1)。
 
 ### 証明
 
-[D.idx1](Pss.md#d-idx1) の場合分けにより $`\mathrm{idx}_1(M,j)`$ の値は $`1`$ か $`0`$ であり、
+$`\mathrm{idx}_1`$ の定義（D.idx1）の場合分けにより $`\mathrm{idx}_1(M,j)`$ の値は $`1`$ か $`0`$ であり、
 どちらも $`1`$ 以下である。∎

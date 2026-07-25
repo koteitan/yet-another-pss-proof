@@ -1,30 +1,30 @@
 [← README](README.md)
 
-以下、$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
-$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）と書く。
+以下、[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq) に対し
+$`j_1 := \lvert M\rvert - 1`$、[$`i_1 := \mathrm{idx}_1(M, j_1)`$](Pss.md#d-idx1) と書く。
 
 <a id="t-oper_eq_self_of_short"></a>
 ## 定理: 短い列では展開は恒等 (T.oper_eq_self_of_short)
 
 ### 定理
 
-$`j_1 = 0`$ ならば、任意の $`n`$ に対し $`M[n] = M`$（[D.oper](Pss.md#d-oper)）。
+$`j_1 = 0`$ ならば、任意の $`n`$ に対し [$`M[n] = M`$](Pss.md#d-oper)。
 
 ### 証明
 
-[D.oper](Pss.md#d-oper) の分岐 (a) の条件が仮定そのものである。∎
+$`M[n]`$ の定義（D.oper）の分岐 (a) の条件が仮定そのものである。∎
 
 <a id="t-oper_eq_pred_of_zero"></a>
 ## 定理: 末尾が $`(0,0)`$ のときの展開 (T.oper_eq_pred_of_zero)
 
 ### 定理
 
-$`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）ならば、
-任意の $`n`$ に対し $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）。
+$`j_1 \ne 0`$ かつ [$`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$](Pss.md#d-entry) ならば、
+任意の $`n`$ に対し [$`M[n] = \mathrm{Pred}\,M`$](Pss.md#d-Pred)。
 
 ### 証明
 
-[D.oper](Pss.md#d-oper) の分岐 (a) の条件は $`j_1 = 0`$ であり、仮定によりこれは偽である。
+$`M[n]`$ の定義（D.oper）の分岐 (a) の条件は $`j_1 = 0`$ であり、仮定によりこれは偽である。
 分岐 (b) の条件が仮定の第 2 の連言子そのものであるから、分岐 (b) が選ばれる。∎
 
 <a id="t-oper_eq_pred_of_noParent"></a>
@@ -33,12 +33,12 @@ $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d
 ### 定理
 
 $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
-$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）ならば、
+[$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$](Pss.md#d-hasParent) ならば、
 任意の $`n`$ に対し $`M[n] = \mathrm{Pred}\,M`$。
 
 ### 証明
 
-[D.oper](Pss.md#d-oper) の分岐 (a), (b) の条件はいずれも仮定により偽である。
+$`M[n]`$ の定義（D.oper）の分岐 (a), (b) の条件はいずれも仮定により偽である。
 分岐 (c) の条件が仮定の第 3 の連言子そのものであるから、分岐 (c) が選ばれる。∎
 
 <a id="t-oper_bad_unfold"></a>
@@ -48,7 +48,7 @@ $`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）
 
 $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
 $`\mathrm{hasParent}(M, i_1, j_1)`$ とする。
-$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）、
+[$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$](Pss.md#d-parent)、
 
 ```math
 d_0 := \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 \lt i_1) \cr 0 & (i_1 = 0) \end{cases}
@@ -66,7 +66,7 @@ B_k = \bigl(\,(M_{0,j} + k\,d_0,\ M_{1,j})\,\bigr)_{j=j_0}^{j_1-1} .
 
 ### 証明
 
-[D.oper](Pss.md#d-oper) の分岐 (a), (b), (c) の条件はいずれも仮定により偽であるから、
+$`M[n]`$ の定義（D.oper）の分岐 (a), (b), (c) の条件はいずれも仮定により偽であるから、
 分岐 (d) が選ばれる。その定義の $`B_k`$ は第 2 成分が $`M_{1,j} + k\,d_1`$ であり、
 
 ```math
@@ -100,8 +100,7 @@ $`j_1 = \lvert M\rvert - 1 = 0`$ である。
 \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m)) .
 ```
 
-ここで $`\mathrm{tr}`$ は [D.translate](Term.md#d-translate)、$`\prec`$ は
-[D.olt](Term.md#d-olt) である。
+（[$`\mathrm{tr}`$](Term.md#d-translate)、[$`\prec`$](Term.md#d-olt)）
 
 ### 証明
 
@@ -113,7 +112,7 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定しない：帰納�
 ```
 
 - **基底段** $`C = ()`$：左辺は $`\mathsf{Z}`$、右辺は $`\mathrm{tr}\,(m)`$ である。
-  [D.translate](Term.md#d-translate) より $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$
+  $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$
   であるから、[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$。
 
 - **帰納段** $`C = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と
@@ -141,7 +140,7 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定しない：帰納�
   - $`\neg(p_1 \lt m_1)`$ のとき。[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
     [T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
     $`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$、$`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = (m)`$
-    であるから、[D.translate](Term.md#d-translate) より
+    であるから、$`\mathrm{tr}`$ の定義（D.translate）より
 
     ```math
     \mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
@@ -162,7 +161,7 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定しない：帰納�
   \mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m)
   ```
 
-  であるから、[D.translate](Term.md#d-translate) より両辺は
+  であるから、$`\mathrm{tr}`$ の定義（D.translate）より両辺は
 
   ```math
   \mathrm{tr}(p :: L) = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\ \mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr),
@@ -211,7 +210,7 @@ $`a \in \mathbb{N}`$、$`C \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}\times\mat
 \mathrm{tr}\bigl(\mathrm{tw}_a C\bigr) \preceq \mathrm{tr}\bigl(\mathrm{tw}_a (C \mathbin{+\!\!+} (m))\bigr)
 ```
 
-（$`\preceq`$ は [D.ole](Term.md#d-ole)）。
+（[$`\preceq`$](Term.md#d-ole)）。
 
 ### 証明
 
@@ -222,18 +221,18 @@ $`C`$ の全要素が $`a \lt x_1`$ をみたすかどうかで場合分けす�
 - $`a \lt m_1`$ のとき。$`C \mathbin{+\!\!+} (m)`$ の全要素も述語をみたすから
   $`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = C \mathbin{+\!\!+} (m)`$ である。
   [T.translate_snoc_increase](#t-translate_snoc_increase) より
-  $`\mathrm{tr}\,C \prec \mathrm{tr}(C \mathbin{+\!\!+} (m))`$ であり、[D.ole](Term.md#d-ole) の
+  $`\mathrm{tr}\,C \prec \mathrm{tr}(C \mathbin{+\!\!+} (m))`$ であり、$`\preceq`$ の定義（D.ole）の
   第 1 選言が成り立つ。
 
 - $`\neg(a \lt m_1)`$ のとき。[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) より
   $`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = C \mathbin{+\!\!+} \mathrm{tw}_a\,(m) = C`$ である
   （$`m`$ が述語を破るので $`\mathrm{tw}_a\,(m) = ()`$）。よって両辺は同一の項であり、
-  [D.ole](Term.md#d-ole) の第 2 選言が成り立つ。
+  $`\preceq`$ の定義（D.ole）の第 2 選言が成り立つ。
 
 **(b) ある要素 $`x`$ が $`\neg(a \lt x_1)`$ をみたすとき。**
 [T.takeWhile_append_not](Term.md#t-takeWhile_append_not) より
 $`\mathrm{tw}_a(C \mathbin{+\!\!+} (m)) = \mathrm{tw}_a C`$ である。よって両辺は同一の項であり、
-[D.ole](Term.md#d-ole) の第 2 選言が成り立つ。∎
+$`\preceq`$ の定義（D.ole）の第 2 選言が成り立つ。∎
 
 <a id="t-core_i0"></a>
 ## 定理: 完全コピーの核 (T.core_i0)
@@ -308,7 +307,7 @@ $`c, \ell \in \mathbb{N}\times\mathbb{N}`$ とし、
 **第 1 段：$`\mathrm{tr}(c :: C') \prec \mathrm{tr}\,(\ell)`$。**
 [T.lead_translate](Term.md#t-lead_translate) より
 $`\mathrm{lead}\,\mathrm{tr}(c :: C') = c_2`$ であり、仮定より $`c_2 \lt \ell_2`$ である。
-一方 [D.translate](Term.md#d-translate) より
+一方 $`\mathrm{tr}`$ の定義（D.translate）より
 $`\mathrm{tr}\,(\ell) = \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$ である。
 [T.olt_P_of_lead_lt](Term.md#t-olt_P_of_lead_lt) を
 $`t := \mathrm{tr}(c :: C')`$、$`w := \ell_2`$ に適用して第 1 段を得る。
@@ -366,7 +365,7 @@ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ が成り立つかどうかでさらに�
 [T.oper_eq_pred_of_noParent](#t-oper_eq_pred_of_noParent) による。
 
 次に $`1 \lt \lvert M\rvert`$ より $`\neg(\lvert M\rvert \le 1)`$ であるから、
-[D.Pred](Pss.md#d-Pred) の第 2 の場合が選ばれ $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
+$`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
 
 最後に $`M \ne ()`$ である（$`M = ()`$ なら $`\lvert M\rvert = 0`$ となり
 $`1 \lt \lvert M\rvert`$ に反する）。よって
@@ -382,12 +381,12 @@ $`1 \lt \lvert M\rvert`$ に反する）。よって
 ### 定理
 
 $`\mathrm{hasParent}(M, i, j_1)`$ ならば
-$`\mathrm{par}^M_i(j_1) \to^M_i j_1`$（[D.nextR](Pss.md#d-nextR)）。
+$`\mathrm{par}^M_i(j_1)`$ [$`\to^M_i j_1`$](Pss.md#d-nextR)。
 
 ### 証明
 
-[D.hasParent](Pss.md#d-hasParent) より、$`j_0 \to^M_i j_1`$ をみたす $`j_0`$ が存在する。
-[D.parent](Pss.md#d-parent) の $`\varepsilon`$ は、その条件をみたす値が存在するとき
+$`\mathrm{hasParent}`$ の定義（D.hasParent）より、$`j_0 \to^M_i j_1`$ をみたす $`j_0`$ が存在する。
+$`\mathrm{par}`$ の定義（D.parent）の $`\varepsilon`$ は、その条件をみたす値が存在するとき
 条件をみたす値を返す。∎
 
 <a id="t-nextR_index_lt"></a>
@@ -399,9 +398,9 @@ $`j_0 \to^M_i j_1`$ ならば $`j_0 \lt j_1`$。
 
 ### 証明
 
-[D.nextR](Pss.md#d-nextR) の場合分けによる。$`i = 0`$ のときは $`j_0 \to^M_0 j_1`$ であり、
-[D.nextrel0](Pss.md#d-nextrel0) の第 3 条件が $`j_0 \lt j_1`$ である。
-$`i \ne 0`$ のときは $`j_0 \to^M_1 j_1`$ であり、[D.nextrel1](Pss.md#d-nextrel1) の
+$`\to^M_i`$ の定義（D.nextR）の場合分けによる。$`i = 0`$ のときは $`j_0 \to^M_0 j_1`$ であり、
+$`\to^M_0`$ の定義（D.nextrel0）の第 3 条件が $`j_0 \lt j_1`$ である。
+$`i \ne 0`$ のときは $`j_0 \to^M_1 j_1`$ であり、$`\to^M_1`$ の定義（D.nextrel1）の
 第 3 条件が $`j_0 \lt j_1`$ である。∎
 
 <a id="t-nextR_chain0"></a>
@@ -413,13 +412,13 @@ $`j_0 \to^M_i j_1`$ ならば $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$。
 
 ### 証明
 
-[D.nextR](Pss.md#d-nextR) の場合分けによる。
+$`\to^M_i`$ の定義（D.nextR）の場合分けによる。
 
 - $`i = 0`$ のとき。$`j_0 \to^M_0 j_1`$ であるから、長さ $`1`$ の鎖として
   $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ が成り立つ。
 
-- $`i \ne 0`$ のとき。$`j_0 \to^M_1 j_1`$ であり、[D.nextrel1](Pss.md#d-nextrel1) の
-  第 5 条件は $`j_0 \le^M_0 j_1`$ である。[D.le0](Pss.md#d-le0) の第 3 条件が
+- $`i \ne 0`$ のとき。$`j_0 \to^M_1 j_1`$ であり、$`\to^M_1`$ の定義（D.nextrel1）の
+  第 5 条件は $`j_0 \le^M_0 j_1`$ である。$`\le^M_0`$ の定義（D.le0）の第 3 条件が
   $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。∎
 
 <a id="t-oper_bad_blocks"></a>
@@ -486,7 +485,7 @@ $`\lvert G\rvert = j_0`$ である（$`j_0 \lt j_1 \lt \lvert M\rvert`$ なの�
 
 であり（$`\lvert M\rvert - j_0 = (j_1 - j_0) + 1`$ による）、
 $`j \le j_1 \lt \lvert M\rvert`$ の範囲では $`M\langle j\rangle = (M_{0,j}, M_{1,j})`$ である
-（[D.entry](Pss.md#d-entry)）。先頭を切り出し末尾を切り出せば
+（$`M_{i,j}`$ の定義 D.entry）。先頭を切り出し末尾を切り出せば
 
 ```math
 \mathrm{drop}_{j_0} M = \bigl((v_0,w_0) :: R\bigr) \mathbin{+\!\!+} (\ell)
@@ -517,11 +516,11 @@ $`\ell_1 = M_{0,j_1}`$ であるから $`v_0 \lt \ell_1`$。
 - $`i_1 = 0`$ のとき。$`d_0`$ の定義の条件 $`0 \lt i_1`$ が偽であるから $`d_0 = 0`$ であり、
   第 1 選言が成り立つ。
 
-- $`0 \lt i_1`$ のとき。[D.nextR](Pss.md#d-nextR) より $`j_0 \to^M_{i_1} j_1`$ は
+- $`0 \lt i_1`$ のとき。$`\to^M_i`$ の定義（D.nextR）より $`j_0 \to^M_{i_1} j_1`$ は
   $`j_0 \to^M_1 j_1`$ である。$`d_0 = M_{0,j_1} - M_{0,j_0}`$ であり、(4) の証明で得た
   $`M_{0,j_0} \lt M_{0,j_1}`$ から $`0 \lt d_0`$ および
   $`M_{0,j_1} = M_{0,j_0} + d_0`$、すなわち $`\ell_1 = v_0 + d_0`$ を得る。
-  また [D.nextrel1](Pss.md#d-nextrel1) の第 4 条件は $`M_{1,j_0} \lt M_{1,j_1}`$、
+  また $`\to^M_1`$ の定義（D.nextrel1）の第 4 条件は $`M_{1,j_0} \lt M_{1,j_1}`$、
   すなわち $`w_0 \lt \ell_2`$ である。$`\lvert G\rvert = j_0`$ であったから
   $`\lvert G\rvert \to^M_1 j_1`$ も成り立つ。よって第 2 選言が成り立つ。
 
@@ -622,7 +621,7 @@ $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$。
 
 ### 証明
 
-[D.oper](Pss.md#d-oper) の分岐に沿って場合分けする。$`1 \lt \lvert M\rvert`$ より
+$`M[n]`$ の定義（D.oper）の分岐に沿って場合分けする。$`1 \lt \lvert M\rvert`$ より
 $`j_1 \ne 0`$ であるから、分岐 (a) は起こらない。
 
 - $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ のとき。
