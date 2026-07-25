@@ -176,6 +176,14 @@ GitHub は数式を KaTeX で描画し、その手前で Markdown のエスケ�
 - **別行立ての数式は `$$ ... $$` ではなく ```` ```math ```` フェンスで書く。**
   `$$ ... $$` の中身はエスケープ処理を受け、`\{` が `{` に、`\,` が `,` に潰される。
   コードフェンスの中身は受けない。
+- **```` ```math ```` フェンスは必ず行頭から書く。インデントしてはならない。**
+  GitHub は行頭のフェンスだけを `<math-renderer>` に変換し、**箇条書きの中などに
+  インデントされたフェンスは `<pre lang="math">` のまま**残す。つまり数式として
+  描画されない（実機で測定：あるファイルで行頭 60 個は描画され、インデントされた
+  47 個は描画されなかった）。しかもクライアント側が本文中の `$$…$$` として拾い直す
+  ため、`\tag` が「display 数式でしか使えない」というエラーになることがある。
+  箇条書きの中に別行立ての数式を置きたくなったら、箇条書きをやめて
+  `**(a) … のとき。**` のような段落にし、フェンスを行頭へ出す。
 - **行区切りは `\\` ではなく `\cr` を使う。** GitHub はクライアントへ数式を渡すときに
   `\\` を `\\\` に変えてしまう（```` ```math ```` フェンスでも `$$` でも同じ）。
   その結果 `\begin{aligned}` の行区切りが失われ `Missing \end{aligned}` になる。
@@ -205,9 +213,87 @@ node ~/.claude/skills/github-math-check/scripts/check-github.js <URL>  # push �
 
 ---
 
-## 6. 検証
+## 6. 書くときに迷う点
+
+### 6.1 記法の導入
+
+冒頭に記法の対応表を置かない（§1.1）ので、**記号はそれを最初に必要とする定義の中で
+導入する**。たとえば `takeWhile` / `dropWhile` は `D.translate` の直前で
+
+> $`\mathrm{tw}_a L`$ := （$`L`$ の先頭から、第 1 成分が $`a`$ より大きい要素が続く極大な前部分列）
+
+と定めてから使う。一般の述語版が要る補題では、その補題の中で「ここでは
+$`\mathrm{tw}_p`$ を一般の述語 $`p`$ について書く」と断る。
+
+### 6.2 定義の節には定義だけを書く
+
+定義から従う帰結を定義の節に書かない。**使うなら定理として立てる**（Lean 側にも
+宣言があるはずである）。**使わないなら書かない**（§4.5）。
+
+これは機械では検出できない。`lean/tools/DeadCode.lean` は Lean の定数の証明項を辿る
+道具であり、md の地の文はそもそもグラフに存在しない。読んで見つけるしかない。
+
+### 6.3 定義の節に書いてよいもの
+
+再帰的な定義・帰納的な定義が**定義として成立するために要ること**は、定義の一部である。
+
+- `inductive` の構成子の単射性と像の非交差（Lean が `noConfusion` / `inj` を自動生成する）
+- `inductive` の最小性、すなわち帰納法の原理（Lean が `rec` を自動生成する）
+- 再帰の停止性（Lean が構造的再帰と認めるか、`termination_by` / `decreasing_by` が書かれている）
+
+これらは Lean に実在し、後続の証明が根拠として使う。
+
+### 6.4 無名の `example`
+
+Lean の無名 `example` はラベルを付けられないので md には書けない。検証に有用なら
+`lean/memo/*.lean` へ移す（§1.3）。
+
+### 6.5 場合分けは書き尽くす
+
+$`3 \times 3`$ の場合分けなら 9 通りすべてを書く。表にして各欄の根拠を 1 行ずつ
+書けばよい。「9 通りを尽くせばよい」で済ませない（§4.1）。
+
+### 6.6 検証
 
 - md に書いた命題は、対応する Lean の宣言と**同じ主張**でなければならない。
   仮定を落とす・強める書き換えをしない。
 - 証明の各段が Lean 側の証明と対応することを確認する。
 - `lean/*.lean` の宣言と `lean/*.md` の見出しが 1 対 1 であることを確認する。
+
+---
+
+## 7. 1 ファイルを md 化する手順
+
+1. `lean/Foo.lean` を**通読**する。
+2. 宣言を出現順に列挙する。
+
+   ```sh
+   cd lean && python3 -c "
+   import sys; sys.path.insert(0,'../tools')
+   from prune_lean import blocks
+   for k,a,b,n in blocks(open('Foo.lean').read().split('\n')):
+       if k=='decl' and n: print(a+1, n)"
+   ```
+
+3. その順に `lean/Foo.md` を書く。
+4. `lean/Foo.lean` に証明でない記述（設計判断・経緯・実装事情・モデル検査の数値）が
+   あれば、**Lean 側から削除する**（§1.3）。ビルドが通ることを確かめる。
+5. 検査する。
+
+   ```sh
+   node ~/.claude/skills/github-math-check/scripts/check-local.js lean/Foo.md
+   grep -n '^[ ]\+```math' lean/Foo.md          # 0 件であること（§5.1）
+   ```
+
+6. 宣言と見出しが 1 対 1 であることを確かめる。
+
+   ```sh
+   cd lean && python3 -c "
+   import re,sys; sys.path.insert(0,'../tools')
+   from prune_lean import blocks
+   d=[n for k,a,b,n in blocks(open('Foo.lean').read().split('\n')) if k=='decl' and n]
+   a=re.findall(r'<a id=\"[td]-([^\"]+)\"></a>', open('Foo.md').read())
+   print('欠落',[x for x in d if x not in a],'余分',[x for x in a if x not in d])"
+   ```
+
+7. push 後に `check-github.js` で実機描画を確かめる（§5.2）。

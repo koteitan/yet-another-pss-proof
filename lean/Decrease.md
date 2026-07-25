@@ -115,65 +115,65 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定しない：帰納�
   $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$
   であるから、[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$。
 
-- **帰納段** $`C = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と
-  $`\Psi(\mathrm{dw}_{p_1} L)`$ である。$`L`$ の全要素が $`p_1 \lt x_1`$ をみたすかどうかで
-  場合分けする。
+**帰納段** $`C = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と
+$`\Psi(\mathrm{dw}_{p_1} L)`$ である。$`L`$ の全要素が $`p_1 \lt x_1`$ をみたすかどうかで
+場合分けする。
 
-  **(a) $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすとき。**
-  このとき $`\mathrm{tw}_{p_1} L = L`$、$`\mathrm{dw}_{p_1} L = ()`$ であり、
-  [T.translate_single_tree](Term.md#t-translate_single_tree) より
-  $`\mathrm{tr}(p :: L) = \mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})`$ である。
-  さらに $`m`$ が述語をみたすかどうかで分ける。
+**(a) $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすとき。**
+このとき $`\mathrm{tw}_{p_1} L = L`$、$`\mathrm{dw}_{p_1} L = ()`$ であり、
+[T.translate_single_tree](Term.md#t-translate_single_tree) より
+$`\mathrm{tr}(p :: L) = \mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})`$ である。
+さらに $`m`$ が述語をみたすかどうかで分ける。
 
-  - $`p_1 \lt m_1`$ のとき。$`L \mathbin{+\!\!+} (m)`$ の全要素も $`p_1 \lt x_1`$ をみたすから、
-    ふたたび [T.translate_single_tree](Term.md#t-translate_single_tree) より
+**$`p_1 \lt m_1`$ のとき。** $`L \mathbin{+\!\!+} (m)`$ の全要素も $`p_1 \lt x_1`$ をみたすから、
+ふたたび [T.translate_single_tree](Term.md#t-translate_single_tree) より
 
-    ```math
-    \mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
-      = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(L \mathbin{+\!\!+} (m)),\ \mathsf{Z}\bigr).
-    ```
+```math
+\mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
+  = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(L \mathbin{+\!\!+} (m)),\ \mathsf{Z}\bigr).
+```
 
-    帰納法の仮定 $`\Psi(\mathrm{tw}_{p_1} L) = \Psi(L)`$ を $`m`$ に適用して
-    $`\mathrm{tr}\,L \prec \mathrm{tr}(L \mathbin{+\!\!+} (m))`$ を得る。
-    これに [T.olt_P_b](Term.md#t-olt_P_b) を適用すればよい。
+帰納法の仮定 $`\Psi(\mathrm{tw}_{p_1} L) = \Psi(L)`$ を $`m`$ に適用して
+$`\mathrm{tr}\,L \prec \mathrm{tr}(L \mathbin{+\!\!+} (m))`$ を得る。
+これに [T.olt_P_b](Term.md#t-olt_P_b) を適用すればよい。
 
-  - $`\neg(p_1 \lt m_1)`$ のとき。[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
-    [T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
-    $`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$、$`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = (m)`$
-    であるから、$`\mathrm{tr}`$ の定義（D.translate）より
+**$`\neg(p_1 \lt m_1)`$ のとき。**[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
+[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
+$`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L`$、$`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = (m)`$
+であるから、$`\mathrm{tr}`$ の定義（D.translate）より
 
-    ```math
-    \mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
-      = \mathsf{P}\bigl(p_2,\ \mathrm{tr}\,L,\ \mathrm{tr}\,(m)\bigr).
-    ```
+```math
+\mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
+  = \mathsf{P}\bigl(p_2,\ \mathrm{tr}\,L,\ \mathrm{tr}\,(m)\bigr).
+```
 
-    左辺の後続和は $`\mathsf{Z}`$、右辺の後続和は $`\mathrm{tr}\,(m) = \mathsf{P}(m_2,\mathsf{Z},\mathsf{Z})`$
-    であり、[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$ である。
-    これに [T.olt_P_c](Term.md#t-olt_P_c) を適用すればよい。
+左辺の後続和は $`\mathsf{Z}`$、右辺の後続和は $`\mathrm{tr}\,(m) = \mathsf{P}(m_2,\mathsf{Z},\mathsf{Z})`$
+であり、[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$ である。
+これに [T.olt_P_c](Term.md#t-olt_P_c) を適用すればよい。
 
-  **(b) $`L`$ のある要素 $`x`$ が $`\neg(p_1 \lt x_1)`$ をみたすとき。**
-  [T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
-  [T.dropWhile_append_not](Term.md#t-dropWhile_append_not) より
+**(b) $`L`$ のある要素 $`x`$ が $`\neg(p_1 \lt x_1)`$ をみたすとき。**
+[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
+[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) より
 
-  ```math
-  \mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{tw}_{p_1} L,
-  \qquad
-  \mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m)
-  ```
+```math
+\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{tw}_{p_1} L,
+\qquad
+\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m)
+```
 
-  であるから、$`\mathrm{tr}`$ の定義（D.translate）より両辺は
+であるから、$`\mathrm{tr}`$ の定義（D.translate）より両辺は
 
-  ```math
-  \mathrm{tr}(p :: L) = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\ \mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr),
-  ```
-  ```math
-  \mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
-    = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\ \mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))\bigr)
-  ```
+```math
+\mathrm{tr}(p :: L) = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\ \mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr),
+```
+```math
+\mathrm{tr}\bigl(p :: (L \mathbin{+\!\!+} (m))\bigr)
+  = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\ \mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))\bigr)
+```
 
-  であり、添字と引数が共通である。帰納法の仮定 $`\Psi(\mathrm{dw}_{p_1} L)`$ を $`m`$ に適用して
-  $`\mathrm{tr}(\mathrm{dw}_{p_1} L) \prec \mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))`$ を得る。
-  これに [T.olt_P_c](Term.md#t-olt_P_c) を適用すればよい。∎
+であり、添字と引数が共通である。帰納法の仮定 $`\Psi(\mathrm{dw}_{p_1} L)`$ を $`m`$ に適用して
+$`\mathrm{tr}(\mathrm{dw}_{p_1} L) \prec \mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))`$ を得る。
+これに [T.olt_P_c](Term.md#t-olt_P_c) を適用すればよい。∎
 
 <a id="t-translate_dropLast_decrease"></a>
 ## 定理: 末尾の 1 列を落とすと翻訳は真に減る (T.translate_dropLast_decrease)
@@ -571,31 +571,31 @@ $`n`$ で場合分けする。
 - **$`n = 1`$ のとき。** $`C`$ は空の連結であり $`C = ()`$ である。
   [T.core_i0](#t-core_i0) を $`T := ()`$ として適用する（第 3 の仮定の第 1 選言）。
 
-- **$`n \ge 2`$ のとき。** $`C`$ の先頭ブロックを取り出すと
+**$`n \ge 2`$ のとき。** $`C`$ の先頭ブロックを取り出すと
 
-  ```math
-  C = (v_0 + d_0,\ w_0) :: \Bigl(R^{+d_0} \mathbin{+\!\!+}
-        \bigl((v_0,w_0) :: R\bigr)^{+2 d_0} \mathbin{+\!\!+} \cdots
-        \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr)^{+(n-1)d_0}\Bigr)
-  ```
+```math
+C = (v_0 + d_0,\ w_0) :: \Bigl(R^{+d_0} \mathbin{+\!\!+}
+      \bigl((v_0,w_0) :: R\bigr)^{+2 d_0} \mathbin{+\!\!+} \cdots
+      \mathbin{+\!\!+} \bigl((v_0,w_0) :: R\bigr)^{+(n-1)d_0}\Bigr)
+```
 
-  である。(5) の選言で場合分けする。
+である。(5) の選言で場合分けする。
 
-  - **$`d_0 = 0`$（完全コピー）のとき。** $`C`$ の先頭は $`(v_0 + 0,\ w_0) = (v_0, w_0)`$ で
-    あるから $`\neg\bigl(v_0 \lt (\mathrm{head}\,C)_1\bigr)`$ である。
-    [T.core_i0](#t-core_i0) を $`T := C`$ として適用する（第 3 の仮定の第 2 選言）。
+- **$`d_0 = 0`$（完全コピー）のとき。** $`C`$ の先頭は $`(v_0 + 0,\ w_0) = (v_0, w_0)`$ で
+  あるから $`\neg\bigl(v_0 \lt (\mathrm{head}\,C)_1\bigr)`$ である。
+  [T.core_i0](#t-core_i0) を $`T := C`$ として適用する（第 3 の仮定の第 2 選言）。
 
-  - **$`0 \lt d_0`$（上昇コピー）のとき。**
-    [T.core_i1](#t-core_i1) を $`c := (v_0 + d_0,\ w_0)`$、$`C' := C`$ の残り、として適用する。
-    5 つの仮定を確認する。
-    - $`\forall x \in R,\ v_0 \lt x_1`$：(3) である。
-    - $`\forall x \in C',\ c_1 \le x_1`$：$`x`$ が $`R^{+d_0}`$ の要素なら、(3) より
-      $`v_0 \lt p_1`$ なる $`p`$ について $`x_1 = p_1 + d_0 \ge v_0 + d_0 = c_1`$。
-      $`x`$ が $`k \ge 2`$ のブロックの要素なら、第 2 段と同じ議論で $`v_0 \le p_1`$ であり、
-      $`d_0 \le k\,d_0`$ であるから $`x_1 = p_1 + k\,d_0 \ge v_0 + d_0 = c_1`$。
-    - $`c_1 = \ell_1`$：$`c_1 = v_0 + d_0`$ であり、(5) の第 2 選言に $`\ell_1 = v_0 + d_0`$ がある。
-    - $`v_0 \lt \ell_1`$：(4) である。
-    - $`c_2 \lt \ell_2`$：$`c_2 = w_0`$ であり、(5) の第 2 選言に $`w_0 \lt \ell_2`$ がある。
+- **$`0 \lt d_0`$（上昇コピー）のとき。**
+  [T.core_i1](#t-core_i1) を $`c := (v_0 + d_0,\ w_0)`$、$`C' := C`$ の残り、として適用する。
+  5 つの仮定を確認する。
+  - $`\forall x \in R,\ v_0 \lt x_1`$：(3) である。
+  - $`\forall x \in C',\ c_1 \le x_1`$：$`x`$ が $`R^{+d_0}`$ の要素なら、(3) より
+    $`v_0 \lt p_1`$ なる $`p`$ について $`x_1 = p_1 + d_0 \ge v_0 + d_0 = c_1`$。
+    $`x`$ が $`k \ge 2`$ のブロックの要素なら、第 2 段と同じ議論で $`v_0 \le p_1`$ であり、
+    $`d_0 \le k\,d_0`$ であるから $`x_1 = p_1 + k\,d_0 \ge v_0 + d_0 = c_1`$。
+  - $`c_1 = \ell_1`$：$`c_1 = v_0 + d_0`$ であり、(5) の第 2 選言に $`\ell_1 = v_0 + d_0`$ がある。
+  - $`v_0 \lt \ell_1`$：(4) である。
+  - $`c_2 \lt \ell_2`$：$`c_2 = w_0`$ であり、(5) の第 2 選言に $`w_0 \lt \ell_2`$ がある。
 
 **第 4 段：良い部分 $`G`$ を通して持ち上げる。**
 [T.translate_ctx_cong](Term.md#t-translate_ctx_cong) を

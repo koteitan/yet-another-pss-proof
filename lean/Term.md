@@ -623,17 +623,17 @@ $`\mathrm{tr}`$ の定義（D.translate）の第 2 式より示すべきこと�
 - $`T = ()`$ のとき。$`R \mathbin{+\!\!+} () = R`$ であり、仮定より $`R`$ の全要素が
   $`v_0 \lt x_1`$ をみたすから $`\mathrm{tw}_{v_0} R = R`$、$`\mathrm{dw}_{v_0} R = () = T`$。
 
-- $`T = t :: ts`$ のとき。仮定の第 2 選言より $`\neg(v_0 \lt t_1)`$ である。
-  $`R`$ の全要素が条件をみたすので [T.takeWhile_append_all](#t-takeWhile_append_all) が使えて
+**$`T = t :: ts`$ のとき。**仮定の第 2 選言より $`\neg(v_0 \lt t_1)`$ である。
+$`R`$ の全要素が条件をみたすので [T.takeWhile_append_all](#t-takeWhile_append_all) が使えて
 
-  ```math
-  \mathrm{tw}_{v_0}(R \mathbin{+\!\!+} T) = R \mathbin{+\!\!+} \mathrm{tw}_{v_0} T .
-  ```
+```math
+\mathrm{tw}_{v_0}(R \mathbin{+\!\!+} T) = R \mathbin{+\!\!+} \mathrm{tw}_{v_0} T .
+```
 
-  $`T`$ の先頭 $`t`$ が条件を破るから $`\mathrm{tw}_{v_0} T = ()`$ であり、右辺は $`R`$ である。
-  同様に [T.dropWhile_append_all](#t-dropWhile_append_all) より
-  $`\mathrm{dw}_{v_0}(R \mathbin{+\!\!+} T) = \mathrm{dw}_{v_0} T`$ であり、$`t`$ が条件を破るから
-  $`\mathrm{dw}_{v_0} T = T`$ である。∎
+$`T`$ の先頭 $`t`$ が条件を破るから $`\mathrm{tw}_{v_0} T = ()`$ であり、右辺は $`R`$ である。
+同様に [T.dropWhile_append_all](#t-dropWhile_append_all) より
+$`\mathrm{dw}_{v_0}(R \mathbin{+\!\!+} T) = \mathrm{dw}_{v_0} T`$ であり、$`t`$ が条件を破るから
+$`\mathrm{dw}_{v_0} T = T`$ である。∎
 
 <a id="t-translate_shift"></a>
 ## 定理: 行 0 の一様な平行移動は翻訳を変えない (T.translate_shift)
@@ -657,37 +657,37 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法。帰納法の述語は
 
 - **基底段** $`M = ()`$：$`()^{+d} = ()`$ であり、両辺とも $`\mathsf{Z}`$ である。
 
-- **帰納段** $`M = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と
-  $`\Psi(\mathrm{dw}_{p_1} L)`$ である。
+**帰納段** $`M = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と
+$`\Psi(\mathrm{dw}_{p_1} L)`$ である。
 
-  まず述語が平行移動で不変であることを見る。任意の対 $`r`$ について
+まず述語が平行移動で不変であることを見る。任意の対 $`r`$ について
 
-  ```math
-  p_1 + d \lt r_1 + d \iff p_1 \lt r_1
-  ```
+```math
+p_1 + d \lt r_1 + d \iff p_1 \lt r_1
+```
 
-  である（$`\mathbb{N}`$ の加法の狭義単調性）。したがって $`L^{+d}`$ の要素
-  $`r^{+d}`$ を述語 $`x \mapsto (p_1 + d) \lt x_1`$ で判定することは、$`L`$ の要素 $`r`$ を
-  述語 $`x \mapsto p_1 \lt x_1`$ で判定することと同値である。$`\mathrm{tw}`$, $`\mathrm{dw}`$ は
-  先頭から順に述語を判定するだけであるから
+である（$`\mathbb{N}`$ の加法の狭義単調性）。したがって $`L^{+d}`$ の要素
+$`r^{+d}`$ を述語 $`x \mapsto (p_1 + d) \lt x_1`$ で判定することは、$`L`$ の要素 $`r`$ を
+述語 $`x \mapsto p_1 \lt x_1`$ で判定することと同値である。$`\mathrm{tw}`$, $`\mathrm{dw}`$ は
+先頭から順に述語を判定するだけであるから
 
-  ```math
-  \mathrm{tw}_{p_1 + d}(L^{+d}) = (\mathrm{tw}_{p_1} L)^{+d},
-  \qquad
-  \mathrm{dw}_{p_1 + d}(L^{+d}) = (\mathrm{dw}_{p_1} L)^{+d} .
-  ```
+```math
+\mathrm{tw}_{p_1 + d}(L^{+d}) = (\mathrm{tw}_{p_1} L)^{+d},
+\qquad
+\mathrm{dw}_{p_1 + d}(L^{+d}) = (\mathrm{dw}_{p_1} L)^{+d} .
+```
 
-  $`(p :: L)^{+d} = (p_1 + d, p_2) :: L^{+d}`$ であるから、$`\mathrm{tr}`$ の定義（D.translate）より
+$`(p :: L)^{+d} = (p_1 + d, p_2) :: L^{+d}`$ であるから、$`\mathrm{tr}`$ の定義（D.translate）より
 
-  ```math
-  \mathrm{tr}\bigl((p :: L)^{+d}\bigr)
-    = \mathsf{P}\bigl(p_2,\ \mathrm{tr}((\mathrm{tw}_{p_1} L)^{+d}),\ \mathrm{tr}((\mathrm{dw}_{p_1} L)^{+d})\bigr).
-  ```
+```math
+\mathrm{tr}\bigl((p :: L)^{+d}\bigr)
+  = \mathsf{P}\bigl(p_2,\ \mathrm{tr}((\mathrm{tw}_{p_1} L)^{+d}),\ \mathrm{tr}((\mathrm{dw}_{p_1} L)^{+d})\bigr).
+```
 
-  ここに 2 つの帰納法の仮定を適用すると右辺は
-  $`\mathsf{P}(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathrm{tr}(\mathrm{dw}_{p_1} L))`$ となり、
-  これは $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}(p :: L)`$ に等しい。
-  第 2 成分 $`p_2`$ は平行移動で変わらないことに注意する。よって $`\Psi(p :: L)`$。∎
+ここに 2 つの帰納法の仮定を適用すると右辺は
+$`\mathsf{P}(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathrm{tr}(\mathrm{dw}_{p_1} L))`$ となり、
+これは $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}(p :: L)`$ に等しい。
+第 2 成分 $`p_2`$ は平行移動で変わらないことに注意する。よって $`\Psi(p :: L)`$。∎
 
 <a id="t-translate_ctx_cong"></a>
 ## 定理: 文脈による合同 (T.translate_ctx_cong)
@@ -724,81 +724,81 @@ $`\lvert G\rvert`$ に関する強帰納法。帰納法の述語は
 
 - **$`G = ()`$ のとき**：両辺は仮定 (base) そのものである。
 
-- **$`G = g :: G'`$ のとき**：$`G'`$ の全要素が $`g_1 \lt x_1`$ をみたすかどうかで場合分けする。
+**$`G = g :: G'`$ のとき。** $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたすかどうかで場合分けする。
 
-  **(a) $`G'`$ のある要素 $`x`$ が $`\neg(g_1 \lt x_1)`$ をみたすとき。**
-  [T.takeWhile_append_not](#t-takeWhile_append_not) と
-  [T.dropWhile_append_not](#t-dropWhile_append_not) を $`xs := G'`$、$`ys := z_i :: T_i`$ に
-  適用すると、$`i = 1, 2`$ のいずれでも
+**(a) $`G'`$ のある要素 $`x`$ が $`\neg(g_1 \lt x_1)`$ をみたすとき。**
+[T.takeWhile_append_not](#t-takeWhile_append_not) と
+[T.dropWhile_append_not](#t-dropWhile_append_not) を $`xs := G'`$、$`ys := z_i :: T_i`$ に
+適用すると、$`i = 1, 2`$ のいずれでも
 
-  ```math
-  \mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{tw}_{g_1} G',
-  \qquad
-  \mathrm{dw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_i :: T_i
-  ```
+```math
+\mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{tw}_{g_1} G',
+\qquad
+\mathrm{dw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_i :: T_i
+```
 
-  である。よって $`\mathrm{tr}`$ の定義（D.translate）より
+である。よって $`\mathrm{tr}`$ の定義（D.translate）より
 
-  ```math
-  \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
-    = \mathsf{P}\bigl(g_2,\ \mathrm{tr}(\mathrm{tw}_{g_1} G'),\
-        \mathrm{tr}(\mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
-  ```
+```math
+\mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
+  = \mathsf{P}\bigl(g_2,\ \mathrm{tr}(\mathrm{tw}_{g_1} G'),\
+      \mathrm{tr}(\mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
+```
 
-  であり、$`i = 1, 2`$ で添字と引数が共通である。
-  $`\mathrm{dw}_{g_1} G'`$ は $`G'`$ の部分列だから
-  $`\lvert \mathrm{dw}_{g_1} G'\rvert \le \lvert G'\rvert \lt \lvert g :: G'\rvert`$ であり、
-  帰納法の仮定を $`G' := \mathrm{dw}_{g_1} G'`$ に適用して
+であり、$`i = 1, 2`$ で添字と引数が共通である。
+$`\mathrm{dw}_{g_1} G'`$ は $`G'`$ の部分列だから
+$`\lvert \mathrm{dw}_{g_1} G'\rvert \le \lvert G'\rvert \lt \lvert g :: G'\rvert`$ であり、
+帰納法の仮定を $`G' := \mathrm{dw}_{g_1} G'`$ に適用して
 
-  ```math
-  \mathrm{tr}(\mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_1 :: T_1)
-    \prec \mathrm{tr}(\mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_2 :: T_2)
-  ```
+```math
+\mathrm{tr}(\mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_1 :: T_1)
+  \prec \mathrm{tr}(\mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_2 :: T_2)
+```
 
-  を得る。これに [T.olt_P_c](#t-olt_P_c) を適用すれば結論が従う。
+を得る。これに [T.olt_P_c](#t-olt_P_c) を適用すれば結論が従う。
 
-  **(b) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`g_1 \lt (z_1)_1`$ のとき。**
-  (root) より $`g_1 \lt (z_2)_1`$ でもある。(r1) と合わせると、$`T_1`$ の任意の要素 $`x`$ に
-  ついて $`g_1 \lt (z_1)_1 \le x_1`$ であるから、$`z_1 :: T_1`$ の全要素が $`g_1 \lt x_1`$ を
-  みたす。$`z_2 :: T_2`$ についても (r2) から同様である。したがって
-  $`G' \mathbin{+\!\!+} z_i :: T_i`$ の全要素が $`g_1 \lt x_1`$ をみたし、
-  [T.translate_single_tree](#t-translate_single_tree) より
+**(b) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`g_1 \lt (z_1)_1`$ のとき。**
+(root) より $`g_1 \lt (z_2)_1`$ でもある。(r1) と合わせると、$`T_1`$ の任意の要素 $`x`$ に
+ついて $`g_1 \lt (z_1)_1 \le x_1`$ であるから、$`z_1 :: T_1`$ の全要素が $`g_1 \lt x_1`$ を
+みたす。$`z_2 :: T_2`$ についても (r2) から同様である。したがって
+$`G' \mathbin{+\!\!+} z_i :: T_i`$ の全要素が $`g_1 \lt x_1`$ をみたし、
+[T.translate_single_tree](#t-translate_single_tree) より
 
-  ```math
-  \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
-    = \mathsf{P}\bigl(g_2,\ \mathrm{tr}(G' \mathbin{+\!\!+} z_i :: T_i),\ \mathsf{Z}\bigr)
-  ```
+```math
+\mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
+  = \mathsf{P}\bigl(g_2,\ \mathrm{tr}(G' \mathbin{+\!\!+} z_i :: T_i),\ \mathsf{Z}\bigr)
+```
 
-  である。$`\lvert G'\rvert \lt \lvert g :: G'\rvert`$ であるから帰納法の仮定を $`G'`$ に適用して
+である。$`\lvert G'\rvert \lt \lvert g :: G'\rvert`$ であるから帰納法の仮定を $`G'`$ に適用して
 
-  ```math
-  \mathrm{tr}(G' \mathbin{+\!\!+} z_1 :: T_1) \prec \mathrm{tr}(G' \mathbin{+\!\!+} z_2 :: T_2)
-  ```
+```math
+\mathrm{tr}(G' \mathbin{+\!\!+} z_1 :: T_1) \prec \mathrm{tr}(G' \mathbin{+\!\!+} z_2 :: T_2)
+```
 
-  を得る。これに [T.olt_P_b](#t-olt_P_b) を適用すれば結論が従う。
+を得る。これに [T.olt_P_b](#t-olt_P_b) を適用すれば結論が従う。
 
-  **(c) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`\neg\bigl(g_1 \lt (z_1)_1\bigr)`$ のとき。**
-  (root) より $`\neg\bigl(g_1 \lt (z_2)_1\bigr)`$ でもある。
-  [T.takeWhile_append_all](#t-takeWhile_append_all) と
-  [T.dropWhile_append_all](#t-dropWhile_append_all) より、$`i = 1, 2`$ のいずれでも
+**(c) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`\neg\bigl(g_1 \lt (z_1)_1\bigr)`$ のとき。**
+(root) より $`\neg\bigl(g_1 \lt (z_2)_1\bigr)`$ でもある。
+[T.takeWhile_append_all](#t-takeWhile_append_all) と
+[T.dropWhile_append_all](#t-dropWhile_append_all) より、$`i = 1, 2`$ のいずれでも
 
-  ```math
-  \mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = G' \mathbin{+\!\!+} \mathrm{tw}_{g_1}(z_i :: T_i),
-  \qquad
-  \mathrm{dw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{dw}_{g_1}(z_i :: T_i)
-  ```
+```math
+\mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = G' \mathbin{+\!\!+} \mathrm{tw}_{g_1}(z_i :: T_i),
+\qquad
+\mathrm{dw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{dw}_{g_1}(z_i :: T_i)
+```
 
-  であり、$`z_i :: T_i`$ の先頭 $`z_i`$ が述語を破るから
-  $`\mathrm{tw}_{g_1}(z_i :: T_i) = ()`$、$`\mathrm{dw}_{g_1}(z_i :: T_i) = z_i :: T_i`$ である。
-  よって
+であり、$`z_i :: T_i`$ の先頭 $`z_i`$ が述語を破るから
+$`\mathrm{tw}_{g_1}(z_i :: T_i) = ()`$、$`\mathrm{dw}_{g_1}(z_i :: T_i) = z_i :: T_i`$ である。
+よって
 
-  ```math
-  \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
-    = \mathsf{P}\bigl(g_2,\ \mathrm{tr}\,G',\ \mathrm{tr}(z_i :: T_i)\bigr)
-  ```
+```math
+\mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
+  = \mathsf{P}\bigl(g_2,\ \mathrm{tr}\,G',\ \mathrm{tr}(z_i :: T_i)\bigr)
+```
 
-  であり、$`i = 1, 2`$ で添字と引数が共通である。仮定 (base) に
-  [T.olt_P_c](#t-olt_P_c) を適用すれば結論が従う。∎
+であり、$`i = 1, 2`$ で添字と引数が共通である。仮定 (base) に
+[T.olt_P_c](#t-olt_P_c) を適用すれば結論が従う。∎
 
 <a id="d-sndSet"></a>
 ## 定義: 行 1 の値の集合 (D.sndSet)
