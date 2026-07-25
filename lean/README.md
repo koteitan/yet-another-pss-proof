@@ -48,3 +48,20 @@ Buchholz の記法系 $`\mathrm{OT}_B`$ の整礎性が、順序数への評価�
 
 証明の現状と経緯は [`PROOF-STATUS.md`](PROOF-STATUS.md)、本文の編集方針は
 [`requirement.md`](requirement.md)。
+
+## Lean との対応
+
+上の表の各節 `<module>.md` の**形式証明が同名の `<module>.lean` にある**。
+たとえば [Bachmann 共終性](Cofinality.md) の形式証明は
+[`Cofinality.lean`](Cofinality.lean) である。
+
+両者は 1 対 1 に対応する。`<module>.md` の見出し
+
+```
+## 定理: 標準形は空でない (T.stps_len_pos)
+## 定義: 正規形上の順序 (D.Rnf)
+```
+
+の括弧の中は `<module>.lean` の宣言名であり（名前空間 `YAPSS.` は省く）、
+節の並び順も `<module>.lean` の宣言の並び順と同じである。
+一方にあって他方に無い命題・定義は無い。
