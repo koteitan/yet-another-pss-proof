@@ -202,8 +202,7 @@ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) \mathbin{::} \mathrm{sh}_d(X \
   （もし $X = (Q \mathbin{+\!\!+} [(a,w)]) \mathbin{+\!\!+} X'$ ならば $X = Q \mathbin{+\!\!+} (a,w) \mathbin{::} X'$ となり (i) の場合になる）。
   [(T.seqlex_of_sle_not_prefix)](#t-seqlex_of_sle_not_prefix) を
   $W := Q \mathbin{+\!\!+} [(a,w)]$、$Y := \mathrm{sh}_d(X \mathbin{+\!\!+} A_2)$、$Y' := \mathrm{sh}_d Q$ として適用すると
-  $X \prec_{\mathrm{lex}} \bigl(Q \mathbin{+\!\!+} [(a,w)]\bigr) \mathbin{+\!\!+} \mathrm{sh}_d Q
-   = Q \mathbin{+\!\!+} (a,w) \mathbin{::} \mathrm{sh}_d Q$ を得る。∎
+  $X \prec_{\mathrm{lex}} \bigl(Q \mathbin{+\!\!+} [(a,w)]\bigr) \mathbin{+\!\!+} \mathrm{sh}_d Q = Q \mathbin{+\!\!+} (a,w) \mathbin{::} \mathrm{sh}_d Q$ を得る。∎
 
 **補足（再帰が停止する理由）.** (i) の各段で $X$ は $Q \mathbin{+\!\!+} [(a,w)]$ の分だけ短くなり、
 とくに列 $(a,w)$ を 1 個は消費するので、長さの上界 $n$ が真に減る。これが $\Psi$ を $n$ についての
@@ -620,9 +619,7 @@ $(P \mathbin{+\!\!+} Q)\langle \lvert P\rvert + t\rangle = Q\langle t\rangle$ �
 
 - $t = 0$ として $N\langle \lvert X\rvert\rangle = \bigl((u,w) \mathbin{::} \cdots\bigr)\langle 0\rangle = (u,w)$。
 - $t = \lvert A_1\rvert + 1$ として
-  $N\langle \lvert X\rvert + (\lvert A_1\rvert+1)\rangle
-   = \bigl((u,w) \mathbin{::} (A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} \cdots)\bigr)\langle \lvert A_1\rvert+1\rangle
-   = \bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} \cdots\bigr)\langle \lvert A_1\rvert\rangle$
+  $N\langle \lvert X\rvert + (\lvert A_1\rvert+1)\rangle = \bigl((u,w) \mathbin{::} (A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} \cdots)\bigr)\langle \lvert A_1\rvert+1\rangle = \bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} \cdots\bigr)\langle \lvert A_1\rvert\rangle$
   であり、再び同じ補題（$P := A_1$、$t := 0$）を使って $(u+e,w)$。
 - 長さ：$\lvert N\rvert = \lvert X\rvert + 1 + \bigl(\lvert A_1\rvert + 1 + (\lvert B\rvert + \lvert A_2\rvert + \lvert Z\rvert)\bigr)$
   であるから $\lvert X\rvert + \lvert A_1\rvert + 1 < \lvert N\rvert$。∎
@@ -655,9 +652,7 @@ $\mathrm{ArgDomCoreOn}(N)$。
 仮定 $\mathrm{ArgDomCoreOn}(N \mathbin{+\!\!+} [p])$ を、同じ $X, A_1, B, A_2, u, w, e$ と
 $Z' := Z \mathbin{+\!\!+} [p]$ に適用する。
 
-- 分解の等式：$N \mathbin{+\!\!+} [p]
-  = \Bigl(\bigl(X \mathbin{+\!\!+} (u,w) \mathbin{::} (A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z\Bigr) \mathbin{+\!\!+} [p]
-  = \bigl(X \mathbin{+\!\!+} \cdots\bigr) \mathbin{+\!\!+} (Z \mathbin{+\!\!+} [p])$（結合律）。
+- 分解の等式：$N \mathbin{+\!\!+} [p] = \Bigl(\bigl(X \mathbin{+\!\!+} (u,w) \mathbin{::} (A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2))\bigr) \mathbin{+\!\!+} Z\Bigr) \mathbin{+\!\!+} [p] = \bigl(X \mathbin{+\!\!+} \cdots\bigr) \mathbin{+\!\!+} (Z \mathbin{+\!\!+} [p])$（結合律）。
 - $Z'$ の先頭条件：$Z = []$ のとき $Z' = [p]$ で $\pi_0(\mathrm{headI}\,Z') = \pi_0 p = 0 \le u$。
   $Z = z \mathbin{::} Z''$ のとき $\mathrm{headI}\,Z' = z = \mathrm{headI}\,Z$ であり、
   与えられた条件 $Z = [] \vee \pi_0(\mathrm{headI}\,Z) \le u$ の第 1 選言は $Z \ne []$ に反するので
@@ -906,8 +901,7 @@ $i$ と $j$ の関係は一切使わないので、実例を取りこぼすこ�
 - $h_{Meq}$：$M = G \mathbin{+\!\!+} ((v_0,w_0) \mathbin{::} R) \mathbin{+\!\!+} [\mathit{lp}]$
 - $h_{Rgt}$：$\forall x \in R,\ v_0 < \pi_0 x$、$h_{lp}$：$v_0 < \pi_0 \mathit{lp}$
 - $h_{disj}$：$\bigl(d_0 = 0 \wedge \pi_1 \mathit{lp} = 0 \wedge \pi_0 \mathit{lp} = v_0+1\bigr)$ または
-  $\bigl(0 < d_0 \wedge \pi_1 \mathit{lp} = w_0+1 \wedge \pi_0 \mathit{lp} = v_0+d_0 \wedge
-  \lvert G\rvert \to^M_1 (\lvert M\rvert - 1)\bigr)$
+  $\bigl(0 < d_0 \wedge \pi_1 \mathit{lp} = w_0+1 \wedge \pi_0 \mathit{lp} = v_0+d_0 \wedge \lvert G\rvert \to^M_1 (\lvert M\rvert - 1)\bigr)$
 - $h_{STn}$：$\forall m \ge 1,\ G \mathbin{+\!\!+} \mathrm{cp}_{d_0}((v_0,w_0) \mathbin{::} R,\ m) \in \mathrm{ST\_PS}$
 - $h_{IH}$：$\forall m,\ 1 \le m < n \to \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}((v_0,w_0)\mathbin{::}R,\ m)\bigr)$
 - $h_n$：$1 \le n$
@@ -1291,8 +1285,7 @@ Step 1 の第 1 の等式は $X \mathbin{+\!\!+} [(u,w)] \sqsubseteq G \mathbin{
 [(T.prefix_append_left)](#t-prefix_append_left) と推移律により
 $X \mathbin{+\!\!+} [(u,w)] \sqsubseteq G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m)$、同様に
 $G \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} D \sqsubseteq G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m)$。
-長さは (a) の仮定より $\lvert X \mathbin{+\!\!+} [(u,w)]\rvert = i+1 \le \lvert G\rvert + \lvert D\rvert
-= \lvert G \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} D\rvert$ であるから、`List.prefix_of_prefix_length_le` により
+長さは (a) の仮定より $\lvert X \mathbin{+\!\!+} [(u,w)]\rvert = i+1 \le \lvert G\rvert + \lvert D\rvert = \lvert G \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} D\rvert$ であるから、`List.prefix_of_prefix_length_le` により
 $$X \mathbin{+\!\!+} [(u,w)] \sqsubseteq G \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} D,$$
 すなわち $A_1'$ が存在して $G \mathbin{+\!\!+} \mathrm{sh}^{-}_{d_0} D = (X \mathbin{+\!\!+} [(u,w)]) \mathbin{+\!\!+} A_1'$、
 $\lvert A_1'\rvert = \lvert G\rvert + \lvert D\rvert - (i+1)$。これと (S) から、1 つ小さい塔は
@@ -1302,8 +1295,7 @@ $$G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m)
 と書ける。
 
 *窓 $W_{tl}$ の取り出し.* [(T.copies_succ_back)](Cofinality.md#t-copies_succ_back) より
-$G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m+1)
-= \bigl(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m)\bigr) \mathbin{+\!\!+} \mathrm{sh}_{m \cdot d_0}\,\mathit{blk}$ である。
+$G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m+1) = \bigl(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(\mathit{blk},m)\bigr) \mathbin{+\!\!+} \mathrm{sh}_{m \cdot d_0}\,\mathit{blk}$ である。
 これと (N$'$)、および Step 1 の括り直しを合わせると、共通左因子 $X \mathbin{+\!\!+} [(u,w)]$ を消去して
 $$A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)
 = A_1' \mathbin{+\!\!+} (u+e-d_0,w) \mathbin{::}
@@ -1453,8 +1445,7 @@ $$\Bigl(\mathrm{sh}^{-}_{d_0} B \mathbin{+\!\!+} (\mathrm{sh}^{-}_{d_0} A_2 \mat
 = A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} \bigl(B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)$$
 であり、とくに
 $\mathrm{sh}^{-}_{d_0} B \sqsubseteq A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))$。
-一方 $A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2) \sqsubseteq
-A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))$ であり、
+一方 $A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2) \sqsubseteq A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z))$ であり、
 $\lvert \mathrm{sh}^{-}_{d_0} B\rvert = \lvert B\rvert \le \lvert A_1\rvert + 1 + \lvert B\rvert + \lvert A_2\rvert$
 であるから `List.prefix_of_prefix_length_le` により
 $$\mathrm{sh}^{-}_{d_0} B \sqsubseteq A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2) .$$

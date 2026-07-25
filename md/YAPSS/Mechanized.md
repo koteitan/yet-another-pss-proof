@@ -360,13 +360,9 @@ $\mathrm{tr}\,M = \mathsf{P}(\pi_1 p, \cdot, \cdot)$ であり、[(T.lead_P)](#t
 ここで用いる標準ライブラリの事実を挙げる（$p$ は要素上の述語、$l,l_1,l_2$ はリスト）。
 
 - `List.takeWhile_append`：
-  $(l_1\mathbin{+\!\!+}l_2).\mathrm{takeWhile}\,p =
-   \begin{cases} l_1 \mathbin{+\!\!+} l_2.\mathrm{takeWhile}\,p & (\lvert l_1.\mathrm{takeWhile}\,p\rvert = \lvert l_1\rvert)\\
-   l_1.\mathrm{takeWhile}\,p & (\text{それ以外}) \end{cases}$
+  $(l_1\mathbin{+\!\!+}l_2).\mathrm{takeWhile}\,p = \begin{cases} l_1 \mathbin{+\!\!+} l_2.\mathrm{takeWhile}\,p & (\lvert l_1.\mathrm{takeWhile}\,p\rvert = \lvert l_1\rvert)\\ l_1.\mathrm{takeWhile}\,p & (\text{それ以外}) \end{cases}$
 - `List.dropWhile_append`：
-  $(l_1\mathbin{+\!\!+}l_2).\mathrm{dropWhile}\,p =
-   \begin{cases} l_2.\mathrm{dropWhile}\,p & (l_1.\mathrm{dropWhile}\,p = [])\\
-   l_1.\mathrm{dropWhile}\,p \mathbin{+\!\!+} l_2 & (\text{それ以外}) \end{cases}$
+  $(l_1\mathbin{+\!\!+}l_2).\mathrm{dropWhile}\,p = \begin{cases} l_2.\mathrm{dropWhile}\,p & (l_1.\mathrm{dropWhile}\,p = [])\\ l_1.\mathrm{dropWhile}\,p \mathbin{+\!\!+} l_2 & (\text{それ以外}) \end{cases}$
 - `List.takeWhile_eq_self_iff`：$l.\mathrm{takeWhile}\,p = l \iff \forall x\in l,\ p\,x$
 - `List.dropWhile_eq_nil_iff`：$l.\mathrm{dropWhile}\,p = [] \iff \forall x\in l,\ p\,x$
 - `List.takeWhile_sublist`：$l.\mathrm{takeWhile}\,p$ は $l$ の部分列である
@@ -590,9 +586,7 @@ $$\Phi(M) :\equiv \mathrm{tr}(\mathrm{map}\,\sigma_d\,M) = \mathrm{tr}\,M.$$
   $$\mathrm{tr}(\mathrm{map}\,\sigma_d(\mathrm{tw}_{\pi_0 p}L)) = \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L),\qquad
     \mathrm{tr}(\mathrm{map}\,\sigma_d(\mathrm{dw}_{\pi_0 p}L)) = \mathrm{tr}(\mathrm{dw}_{\pi_0 p}L).$$
   したがって
-  $\mathrm{tr}(\mathrm{map}\,\sigma_d(p\mathbin{::}L))
-   = \mathsf{P}(\pi_1 p, \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L), \mathrm{tr}(\mathrm{dw}_{\pi_0 p}L))
-   = \mathrm{tr}(p\mathbin{::}L)$、すなわち $\Phi(p\mathbin{::}L)$。∎
+  $\mathrm{tr}(\mathrm{map}\,\sigma_d(p\mathbin{::}L)) = \mathsf{P}(\pi_1 p, \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L), \mathrm{tr}(\mathrm{dw}_{\pi_0 p}L)) = \mathrm{tr}(p\mathbin{::}L)$、すなわち $\Phi(p\mathbin{::}L)$。∎
 
 この不変性が成り立つのは、[(D.translate)](#d-translate) が行 0 の値を比較 $\pi_0 p<\pi_0 q$ の形でのみ用い
 （$\pi_0 p+d<\pi_0 q+d \iff \pi_0 p<\pi_0 q$ ゆえ平行移動で不変）、行 1 の値 $\pi_1 p$ を
@@ -757,7 +751,7 @@ $M_{0,j_1}=0\wedge M_{1,j_1}=0$ は真であるから、その枝の値 $\mathrm
 **主張** $\lvert M\rvert-1\ne 0$、$\neg(M_{0,j_1}=0\wedge M_{1,j_1}=0)$、
 かつ $\mathrm{hasParent}\,M\,i_1\,j_1$ ならば、$j_0 := \mathrm{parent}\,M\,i_1\,j_1$
 （[(D.parent)](Def.md#d-parent)）、
-$d_0 := \bigl(\text{$0<i_1$ ならば } M_{0,j_1}-M_{0,j_0},\ \text{さもなくば } 0\bigr)$ として
+$d_0 := \bigl(0<i_1 \text{ ならば } M_{0,j_1}-M_{0,j_0},\ \text{さもなくば } 0\bigr)$ として
 $$M[n] = \mathrm{take}\,j_0\,M \ \mathbin{+\!\!+}\
  \mathrm{flatMap}\Bigl(\lambda k.\ \mathrm{map}\bigl(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j})\bigr)\,\mathrm{range}'(j_0,\ j_1-j_0)\Bigr)\ \mathrm{range}(n).$$
 
@@ -765,7 +759,7 @@ $$M[n] = \mathrm{take}\,j_0\,M \ \mathbin{+\!\!+}\
 $\neg\,\mathrm{hasParent}$ が偽）であるから、最後の枝の値
 $$\mathrm{take}\,j_0\,M \mathbin{+\!\!+}
  \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\ (M_{0,j}+k\,d_0,\ M_{1,j}+k\,d_1))\,\mathrm{range}'(j_0,j_1-j_0)\bigr)\,\mathrm{range}(n)$$
-が得られる。ここで $d_1 = (\text{$1<i_1$ ならば } M_{1,j_1}-M_{1,j_0},\ \text{さもなくば } 0)$ であるが、
+が得られる。ここで $d_1 = (1<i_1 \text{ ならば } M_{1,j_1}-M_{1,j_0},\ \text{さもなくば } 0)$ であるが、
 [(T.idx1_le1)](#t-idx1_le1) より $i_1\le 1$ なので $1<i_1$ は偽、したがって $d_1=0$ であり、
 各成分は $M_{1,j}+k\cdot 0 = M_{1,j}$ となる。∎
 
@@ -977,12 +971,10 @@ $$1<\lvert M\rvert,\qquad \neg\bigl(M_{0,j_1}=0\wedge M_{1,j_1}=0\bigr),\qquad
 を仮定する。このときペア列 $G,R$、自然数 $v_0,w_0,d_0$、対 $lp$ が存在して次の 6 条件をみたす。
 
 1. $M = G \mathbin{+\!\!+} ((v_0,w_0)\mathbin{::}R) \mathbin{+\!\!+} [lp]$
-2. $M[n] = G \mathbin{+\!\!+}
-   \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\ (\pi_0 p + k\,d_0,\ \pi_1 p))\,((v_0,w_0)\mathbin{::}R)\bigr)\,\mathrm{range}(n)$
+2. $M[n] = G \mathbin{+\!\!+} \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda p.\ (\pi_0 p + k\,d_0,\ \pi_1 p))\,((v_0,w_0)\mathbin{::}R)\bigr)\,\mathrm{range}(n)$
 3. $\forall x\in R,\ v_0<\pi_0 x$
 4. $v_0<\pi_0 lp$
-5. $\bigl(d_0=0 \wedge i_1=0\bigr)\ \vee\
-   \bigl(0<d_0 \wedge w_0<\pi_1 lp \wedge \pi_0 lp=v_0+d_0 \wedge \mathrm{nextrel1}\,M\,\lvert G\rvert\,j_1\bigr)$
+5. $\bigl(d_0=0 \wedge i_1=0\bigr)\ \vee\ \bigl(0<d_0 \wedge w_0<\pi_1 lp \wedge \pi_0 lp=v_0+d_0 \wedge \mathrm{nextrel1}\,M\,\lvert G\rvert\,j_1\bigr)$
 6. $\mathrm{nextR}\,M\,i_1\,\lvert G\rvert\,j_1$
 
 （仮定 $1\le n$ は以下の証明では使わない。Lean 側でも未使用引数として記されている。）

@@ -281,8 +281,7 @@ Lean ファイル `lean/YAPSS/Final.lean` の末尾には、本章の 5 定理�
 - `Classical.choice` : 選択公理。$\forall \alpha,\ \mathrm{Nonempty}\,\alpha \to \alpha$。
   たとえば [(D.parent)](Def.md#d-parent) の $\varepsilon$ 作用素、および
   `by_cases` が用いる排中律が、この公理に依存する。
-- `Quot.sound` : 商の健全性。$\forall \alpha,\ \forall r : \alpha \to \alpha \to \mathrm{Prop},\
-  \forall a\, b : \alpha,\ r\,a\,b \to \mathrm{Quot.mk}\,r\,a = \mathrm{Quot.mk}\,r\,b$。
+- `Quot.sound` : 商の健全性。$\forall \alpha,\ \forall r : \alpha \to \alpha \to \mathrm{Prop},\ \forall a\, b : \alpha,\ r\,a\,b \to \mathrm{Quot.mk}\,r\,a = \mathrm{Quot.mk}\,r\,b$。
 
 一覧に `sorryAx` が現れないことが、未証明の穴が存在しないことの機械検査である。
 また、名前付きの仮定（`axiom` 宣言や `variable` として置かれた命題）も現れていない。

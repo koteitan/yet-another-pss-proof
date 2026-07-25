@@ -120,6 +120,19 @@ Def → Mechanized → Psi → Proofs → Wf → Wfsum → Otembed → Gterm0Olt
 
 ---
 
+## 4.1 MathJax / KaTeX で壊れない書き方
+
+GitHub は数式を KaTeX で描画する。次の 2 つは**描画が壊れる**ので禁止する。
+
+- **インライン数式 `$...$` を改行にまたがらせない。** GitHub は `$...$` の中の改行を認めず、
+  余った `$` が後続の `$$` ブロックを飲み込んで `Missing \end{aligned}` になる。長い式は
+  1 行に収めるか、`$$ ... $$` の別行ブロックにする。
+- **`\text{...}` の中に `$` を書かない。** 内側の `$` が外側の数式をそこで終わらせる。
+  `\text{$x \prec y$ ならば}` ではなく `x \prec y \text{ ならば}` と書く。
+
+検査は `node tools/check_md_math.js`（要 `npm install katex`）。全数式を実際に描画し、
+1 つでも失敗したら終了コード 1 を返す。
+
 ## 5. 検証
 
 - md に書いた命題は、対応する Lean の宣言と**同じ主張**でなければならない。

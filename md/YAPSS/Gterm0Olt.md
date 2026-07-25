@@ -152,17 +152,14 @@ $$Q(t) :\equiv \forall x \in \mathrm{Gterm}\,0\,t,\ x \prec t$$
    よって $Q(\mathsf{Z})$ は空な全称命題として真である。
 2. $\mathrm{Gterm}\,0\,b = \{\mathsf{Z}\}$。
    実際 [(T.Gterm_P)](Otembed.md#t-Gterm_P) より
-   $\mathrm{Gterm}\,0\,\mathsf{P}(1,\mathsf{Z},\mathsf{Z})
-    = \bigl(\text{if } 0 \le 1 \text{ then } \{\mathsf{Z}\} \cup \mathrm{Gterm}\,0\,\mathsf{Z} \text{ else } \emptyset\bigr)
-      \cup \mathrm{Gterm}\,0\,\mathsf{Z}$
+   $\mathrm{Gterm}\,0\,\mathsf{P}(1,\mathsf{Z},\mathsf{Z}) = \bigl(\text{if } 0 \le 1 \text{ then } \{\mathsf{Z}\} \cup \mathrm{Gterm}\,0\,\mathsf{Z} \text{ else } \emptyset\bigr) \cup \mathrm{Gterm}\,0\,\mathsf{Z}$
    であり、$0 \le 1$ は真、$\mathrm{Gterm}\,0\,\mathsf{Z} = \emptyset$ だから値は $\{\mathsf{Z}\}$ である。
    $\mathsf{Z} \prec \mathsf{P}(1,\mathsf{Z},\mathsf{Z})$ は [(T.olt_Z_P)](Mechanized.md#t-olt_Z_P) により成立するから、$Q(b)$ は真である。
 3. $t$ の真部分項は $b$ と $\mathsf{Z}$ のみである（$b$ の真部分項は $\mathsf{Z}$ のみ）。
    よって 1, 2 より $t$ のすべての真部分項で $Q$ が成り立つ。
 4. しかし $Q(t)$ は偽である。
    [(T.Gterm_P)](Otembed.md#t-Gterm_P) より
-   $\mathrm{Gterm}\,0\,t = \bigl(\text{if } 0 \le 0 \text{ then } \{b\} \cup \mathrm{Gterm}\,0\,b \text{ else } \emptyset\bigr) \cup \mathrm{Gterm}\,0\,\mathsf{Z}
-    = \{b, \mathsf{Z}\}$
+   $\mathrm{Gterm}\,0\,t = \bigl(\text{if } 0 \le 0 \text{ then } \{b\} \cup \mathrm{Gterm}\,0\,b \text{ else } \emptyset\bigr) \cup \mathrm{Gterm}\,0\,\mathsf{Z} = \{b, \mathsf{Z}\}$
    であるから $b \in \mathrm{Gterm}\,0\,t$ である。
    一方 [(T.olt_P_P)](Mechanized.md#t-olt_P_P) を
    $\mathsf{P}(1,\mathsf{Z},\mathsf{Z}) \prec \mathsf{P}(0,b,\mathsf{Z})$ に適用すると

@@ -71,7 +71,7 @@
 
 自然数についての次の 2 事実（Mathlib）を用いる。$P$ を $\mathbb{N}$ 上の述語とし、
 $\mathrm{fg}(P,b) := $ `Nat.findGreatest P b` と書く。これは
-$\mathrm{fg}(P,0)=0$、$\mathrm{fg}(P,b+1)=\bigl(\text{$P(b+1)$ ならば } b+1 \text{、さもなくば } \mathrm{fg}(P,b)\bigr)$
+$\mathrm{fg}(P,0)=0$、$\mathrm{fg}(P,b+1)=\bigl(P(b+1) \text{ ならば } b+1 \text{、さもなくば } \mathrm{fg}(P,b)\bigr)$
 で定まる。
 
 - `Nat.findGreatest_spec`：$m\le b$ かつ $P(m)$ ならば $P(\mathrm{fg}(P,b))$。
@@ -1534,7 +1534,7 @@ $\mathrm{hasParent}(M,i_1,\lvert R\rvert)$ が成り立ち、
 
 **展開の比較.** 両辺に [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) を適用する。
 係数は
-$$\text{$M$ 側}:\ \begin{cases}M_{0,\lvert R\rvert}-M_{0,j_0+1}=R_{0,\ell_R}-R_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases}$$
+$$M\ \text{側}:\ \begin{cases}M_{0,\lvert R\rvert}-M_{0,j_0+1}=R_{0,\ell_R}-R_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases}$$
 であり、$R$ 側の係数と一致する。これを $\delta$ とおく。また
 $$\lvert R\rvert-(j_0+1)=(\lvert R\rvert-1)-j_0=\ell_R-j_0 .$$
 `List.take_succ_cons` より $\mathrm{take}\,(j_0+1)\,M=(0,v)\mathbin{::}\mathrm{take}\,j_0\,R$。

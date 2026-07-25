@@ -344,8 +344,7 @@ $$\Phi(M) :\equiv \mathrm{sp}(\mathrm{tr}\,M) = \mathrm{map}\ \pi_1\ (\mathrm{in
   [(T.spine_Z)](#t-spine_Z) より左辺は $[]$。
   [(T.incpref_nil)](#t-incpref_nil) より $\mathrm{inc}\,[]=[]$ だから右辺も $[]$。
 - **場合 2** $M=[p]$：[(D.translate)](Mechanized.md#d-translate) より
-  $\mathrm{tr}[p] = \mathsf{P}(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}[]),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 p}[]))
-   = \mathsf{P}(\pi_1 p,\mathsf{Z},\mathsf{Z})$。
+  $\mathrm{tr}[p] = \mathsf{P}(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}[]),\ \mathrm{tr}(\mathrm{dw}_{\pi_0 p}[])) = \mathsf{P}(\pi_1 p,\mathsf{Z},\mathsf{Z})$。
   [(T.spine_P)](#t-spine_P) と [(T.spine_Z)](#t-spine_Z) より左辺は $[\pi_1 p]$。
   [(T.incpref_single)](#t-incpref_single) より $\mathrm{inc}[p]=[p]$ だから右辺も $[\pi_1 p]$。
 - **場合 3** $M = p\mathbin{::}q\mathbin{::}L$ かつ $\pi_0 p<\pi_0 q$：帰納法の仮定は $\Phi(q\mathbin{::}L)$、すなわち
@@ -377,8 +376,7 @@ $$\Phi(M) :\equiv \mathrm{sp}(\mathrm{tr}\,M) = \mathrm{map}\ \pi_1\ (\mathrm{in
   他方 [(T.incpref_cons_cons)](#t-incpref_cons_cons) と $\pi_0 p<\pi_0 q$ より
   $\mathrm{inc}(p\mathbin{::}q\mathbin{::}L) = p\mathbin{::}\mathrm{inc}(q\mathbin{::}L)$ であり、
   $\mathrm{map}$ は先頭付加と交換するから
-  $\mathrm{map}\ \pi_1\ (\mathrm{inc}(p\mathbin{::}q\mathbin{::}L))
-   = \pi_1 p\mathbin{::}\mathrm{map}\ \pi_1\ (\mathrm{inc}(q\mathbin{::}L))$。
+  $\mathrm{map}\ \pi_1\ (\mathrm{inc}(p\mathbin{::}q\mathbin{::}L)) = \pi_1 p\mathbin{::}\mathrm{map}\ \pi_1\ (\mathrm{inc}(q\mathbin{::}L))$。
   両辺が一致したので $\Phi(p\mathbin{::}q\mathbin{::}L)$。
 - **場合 4** $M = p\mathbin{::}q\mathbin{::}L$ かつ $\neg(\pi_0 p<\pi_0 q)$：
   先頭 $q$ が述語 $\pi_0 p<\pi_0(\cdot)$ をみたさないので $\mathrm{tw}_{\pi_0 p}(q\mathbin{::}L)=[]$。
@@ -651,8 +649,7 @@ $$\Phi(n) :\equiv \forall u\in\mathbb{N},\ \mathrm{cnf}\bigl(\mathrm{tr}(\Delta_
   [(T.translate_diagSeq)](#t-translate_diagSeq) より
   $\mathrm{tr}(\Delta_u^u) = \mathsf{P}(u,\ \mathrm{tr}(\Delta_{u+1}^{u}),\ \mathsf{Z})$。
   ここで [(D.diagSeq)](Def.md#d-diagSeq) より
-  $\Delta_{u+1}^{u} = \mathrm{map}\ (\lambda j.\ (j,j))\ \mathrm{range}'(u+1,\ u+1-(u+1))
-   = \mathrm{map}\ (\lambda j.\ (j,j))\ \mathrm{range}'(u+1,0) = []$
+  $\Delta_{u+1}^{u} = \mathrm{map}\ (\lambda j.\ (j,j))\ \mathrm{range}'(u+1,\ u+1-(u+1)) = \mathrm{map}\ (\lambda j.\ (j,j))\ \mathrm{range}'(u+1,0) = []$
   であり、[(D.translate)](Mechanized.md#d-translate) より $\mathrm{tr}\,[]=\mathsf{Z}$。
   よって $\mathrm{tr}(\Delta_u^u) = \mathsf{P}(u,\mathsf{Z},\mathsf{Z})$ であり、
   [(T.cnf_P_Z)](#t-cnf_P_Z) と [(T.cnf_Z)](#t-cnf_Z) より $\mathrm{cnf}\,\mathsf{P}(u,\mathsf{Z},\mathsf{Z})$。
@@ -745,8 +742,7 @@ $$\Phi(D) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(D\mathbin{+\!\!+}[m])\bigr) \to 
   であり、(td') を代入した形に [(T.cnf_P_P)](#t-cnf_P_P) を $h$ に適用して次の 3 つを得る。
 
   - $c_b : \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{tw}_{\pi_0 p}L)\bigr)$
-  - $s' : \neg\Bigl(\mathsf{P}\bigl(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L),\ \mathsf{Z}\bigr)
-      \prec \mathsf{P}\bigl(\pi_1 q,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 q}(L_2\mathbin{+\!\!+}[m])),\ \mathsf{Z}\bigr)\Bigr)$
+  - $s' : \neg\Bigl(\mathsf{P}\bigl(\pi_1 p,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 p}L),\ \mathsf{Z}\bigr) \prec \mathsf{P}\bigl(\pi_1 q,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 q}(L_2\mathbin{+\!\!+}[m])),\ \mathsf{Z}\bigr)\Bigr)$
   - $c' : \mathrm{cnf}\bigl(\mathrm{tr}((\mathrm{dw}_{\pi_0 p}L)\mathbin{+\!\!+}[m])\bigr)$（(td') により書き換えたもの）
 
   $c'$ に帰納法の仮定 $\Phi(\mathrm{dw}_{\pi_0 p}L)$ を適用して
@@ -867,10 +863,7 @@ $\neg(v_0<v_0)$（$<$ の非反射性）。
 - $cZ_1 : \mathrm{cnf}\bigl(\mathrm{tr}(z_1\mathbin{::}T_1)\bigr)$
 - $\text{decr} : \mathrm{tr}(z_1\mathbin{::}T_1) \prec \mathrm{tr}(z_2\mathbin{::}T_2)$
 - $\text{root} : \pi_0 z_1 = \pi_0 z_2$
-- $\text{leadle} : \exists a_1,b_1,c_1,a_2,b_2,c_2,\
-   \mathrm{tr}(z_1\mathbin{::}T_1)=\mathsf{P}(a_1,b_1,c_1)\ \wedge\
-   \mathrm{tr}(z_2\mathbin{::}T_2)=\mathsf{P}(a_2,b_2,c_2)\ \wedge\
-   \mathsf{P}(a_1,b_1,\mathsf{Z})\preceq\mathsf{P}(a_2,b_2,\mathsf{Z})$
+- $\text{leadle} : \exists a_1,b_1,c_1,a_2,b_2,c_2,\ \mathrm{tr}(z_1\mathbin{::}T_1)=\mathsf{P}(a_1,b_1,c_1)\ \wedge\ \mathrm{tr}(z_2\mathbin{::}T_2)=\mathsf{P}(a_2,b_2,c_2)\ \wedge\ \mathsf{P}(a_1,b_1,\mathsf{Z})\preceq\mathsf{P}(a_2,b_2,\mathsf{Z})$
 - $r_1 : \forall x\in T_1,\ \pi_0 z_1\le\pi_0 x$、$r_2 : \forall x\in T_2,\ \pi_0 z_2\le\pi_0 x$
 
 このとき、任意のペア列 $G$ について
@@ -965,8 +958,7 @@ $g\mathbin{::}G'\mathbin{+\!\!+}z_i\mathbin{::}T_i = g\mathbin{::}(G'\mathbin{+\
   $hG_2$ に [(T.cnf_P_P)](#t-cnf_P_P) を適用して
   $c_{tw} : \mathrm{cnf}(\mathrm{tr}(\mathrm{tw}_{\pi_0 g}G'))$、
   $b_2^{\ast} : \neg\bigl(\mathsf{P}(\pi_1 g,\ \mathrm{tr}(\mathrm{tw}_{\pi_0 g}G'),\ \mathsf{Z}) \prec \mathsf{P}(\pi_1 d,\ \mathrm{arg}_2,\ \mathsf{Z})\bigr)$、
-  $cD_2 : \mathrm{cnf}\bigl(\mathsf{P}(\pi_1 d,\mathrm{arg}_2,\mathrm{tl}_2)\bigr)
-   = \mathrm{cnf}\bigl(\mathrm{tr}((d\mathbin{::}D')\mathbin{+\!\!+}z_2\mathbin{::}T_2)\bigr)$ を得る。
+  $cD_2 : \mathrm{cnf}\bigl(\mathsf{P}(\pi_1 d,\mathrm{arg}_2,\mathrm{tl}_2)\bigr) = \mathrm{cnf}\bigl(\mathrm{tr}((d\mathbin{::}D')\mathbin{+\!\!+}z_2\mathbin{::}T_2)\bigr)$ を得る。
   $\lvert d\mathbin{::}D'\rvert = \lvert\mathrm{dw}_{\pi_0 g}G'\rvert \le \lvert G'\rvert < \lvert g\mathbin{::}G'\rvert$
   （`List.length_dropWhile_le`）だから帰納法の仮定 $\Phi(d\mathbin{::}D')$ が使え、$cD_2$ から
   $$cD_1 : \mathrm{cnf}\bigl(\mathrm{tr}((d\mathbin{::}D')\mathbin{+\!\!+}z_1\mathbin{::}T_1)\bigr)$$

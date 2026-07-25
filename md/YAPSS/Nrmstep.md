@@ -1044,8 +1044,7 @@ $\forall r<q,\ \pi_0(B\langle q\rangle)\le\pi_0(B\langle r\rangle)$ が成り立
 
   - $p^\ast<j$ : $r'<q$ による。
   - [(T.copyExp_getD_copy)](#t-copyExp_getD_copy) より
-    $\pi_0(E\langle p^\ast\rangle)+1=\pi_0(B\langle r'\rangle)+k\,d_0+1
-    =\pi_0(B\langle q\rangle)+k\,d_0=\pi_0(E\langle j\rangle)$。
+    $\pi_0(E\langle p^\ast\rangle)+1=\pi_0(B\langle r'\rangle)+k\,d_0+1 =\pi_0(B\langle q\rangle)+k\,d_0=\pi_0(E\langle j\rangle)$。
   - 第 3 条項 : $p^\ast<l<j$ とすると
     $\lvert G\rvert+k\lvert B\rvert+r'<l<\lvert G\rvert+k\lvert B\rvert+q$ であるから、
     $rr:=l-\lvert G\rvert-k\lvert B\rvert$ とおくと $r'<rr<q$ かつ

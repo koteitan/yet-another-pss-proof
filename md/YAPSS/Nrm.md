@@ -109,7 +109,7 @@ $\mathrm{Glist}_u$ を、引数の構造に関する再帰で定める。
 
 $$\mathrm{Glist}_u(\mathsf{Z}) := (),\qquad
 \mathrm{Glist}_u(\mathsf{P}(a,b,c)) :=
-\Bigl(\text{$u\le a$ ならば } b \mathbin{::} \mathrm{Glist}_u(b),\ \text{さもなくば } ()\Bigr)
+\Bigl(u\le a \text{ ならば } b \mathbin{::} \mathrm{Glist}_u(b),\ \text{さもなくば } ()\Bigr)
 \mathbin{+\!\!+} \mathrm{Glist}_u(c).$$
 
 再帰呼び出しの引数 $b$, $c$ は $\mathsf{P}(a,b,c)$ の真部分項であるから、この定義は整合的である。
@@ -128,7 +128,7 @@ $$\mathrm{Glist}_u(\mathsf{Z}) := (),\qquad
 
 **主張** $u, a \in \mathbb{N}$、$b, c \in \mathrm{Three}$ に対し
 $$\mathrm{Glist}_u(\mathsf{P}(a,b,c)) =
-\Bigl(\text{$u\le a$ ならば } b \mathbin{::} \mathrm{Glist}_u(b),\ \text{さもなくば } ()\Bigr)
+\Bigl(u\le a \text{ ならば } b \mathbin{::} \mathrm{Glist}_u(b),\ \text{さもなくば } ()\Bigr)
 \mathbin{+\!\!+} \mathrm{Glist}_u(c).$$
 
 **証明** [(D.Glist)](#d-Glist) の第 2 式そのものであり、両辺は定義により同一である。∎
@@ -171,7 +171,7 @@ $x \in \mathrm{Three}$ と $\mathrm{Three}$ の有限列 $L$ に対し、$\mathr
 $L$ の構造に関する再帰で定める。
 
 $$\mathrm{maxo}(x, ()) := x,\qquad
-  \mathrm{maxo}(x, y \mathbin{::} ys) := \mathrm{maxo}\bigl(\text{$x\prec y$ ならば $y$、さもなくば $x$},\ ys\bigr).$$
+  \mathrm{maxo}(x, y \mathbin{::} ys) := \mathrm{maxo}\bigl(x\prec y \text{ ならば } y \text{、さもなくば } x,\ ys\bigr).$$
 
 すなわち $x$ を初期値として $L$ を左から走査し、現在値 $z$ に対し $z \prec y$ が成り立つときのみ
 $z$ を $y$ に置き換える。条件 $x \prec y$ の判定には [(D.oltDecidable)](#d-oltDecidable) を用いる。
@@ -187,7 +187,7 @@ $z$ を $y$ に置き換える。条件 $x \prec y$ の判定には [(D.oltDecid
 <a id="t-maxo_cons"></a>
 ### 定理 先頭付加に対する $\mathrm{maxo}$ (T.maxo_cons)
 
-**主張** $\mathrm{maxo}(x, y\mathbin{::}ys) = \mathrm{maxo}\bigl(\text{$x\prec y$ ならば $y$、さもなくば $x$},\ ys\bigr)$。
+**主張** $\mathrm{maxo}(x, y\mathbin{::}ys) = \mathrm{maxo}\bigl(x\prec y \text{ ならば } y \text{、さもなくば } x,\ ys\bigr)$。
 
 **証明** [(D.maxo)](#d-maxo) の第 2 式そのものである。∎
 
@@ -982,8 +982,7 @@ $$\mathrm{par}^{A+\!\!+T}_{i_1}(\lvert A\rvert+j_1) = \lvert A\rvert+j_0 . \tag{
    である。$\mathrm{flatMap}$ は各 $k$ の像を連結するだけであるから、
    $\mathrm{range}(n)$ 上の $\mathrm{flatMap}$ どうしも等しい。
 
-以上より、$X := \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\ (T_{0,j}+k\,d_0,\ T_{1,j}+k\,d_1))\,
-\mathrm{range}'(j_0,j_1-j_0)\bigr)\,\mathrm{range}(n)$ とおくと
+以上より、$X := \mathrm{flatMap}\bigl(\lambda k.\ \mathrm{map}(\lambda j.\ (T_{0,j}+k\,d_0,\ T_{1,j}+k\,d_1))\, \mathrm{range}'(j_0,j_1-j_0)\bigr)\,\mathrm{range}(n)$ とおくと
 $$(A\mathbin{+\!\!+}T)[n] = \bigl(A\mathbin{+\!\!+}\mathrm{take}\,j_0\,T\bigr)\mathbin{+\!\!+}X
  = A\mathbin{+\!\!+}\bigl(\mathrm{take}\,j_0\,T\mathbin{+\!\!+}X\bigr) = A\mathbin{+\!\!+}T[n]$$
 （第 2 の等号は連結の結合律）。

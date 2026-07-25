@@ -235,8 +235,7 @@ $$\Phi(D) :\equiv \forall lp \in \mathbb{N}\times\mathbb{N},\ \forall N \in \mat
         $S \prec_{\mathrm{lex}} D'$ なら $d = d$ と第 2 選言により
         $d\mathbin{::}S \prec_{\mathrm{lex}} d\mathbin{::}D'$。いずれも $N \preceq_{\mathrm{lex}} D$。
       - $S = D' \mathbin{+\!\!+} q'\mathbin{::}S' \wedge q' <_{\mathrm{p}} lp$ が出た場合：
-        $N = d \mathbin{::} (D' \mathbin{+\!\!+} q'\mathbin{::}S') = (d\mathbin{::}D') \mathbin{+\!\!+} q'\mathbin{::}S'
-        = D \mathbin{+\!\!+} q'\mathbin{::}S'$ であり、第 2 の場合。
+        $N = d \mathbin{::} (D' \mathbin{+\!\!+} q'\mathbin{::}S') = (d\mathbin{::}D') \mathbin{+\!\!+} q'\mathbin{::}S' = D \mathbin{+\!\!+} q'\mathbin{::}S'$ であり、第 2 の場合。
 
   よって $\Phi(d \mathbin{::} D')$。∎
 
