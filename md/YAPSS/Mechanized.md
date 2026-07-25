@@ -82,9 +82,9 @@ $`\mathsf{P}(a,b,c) = \mathsf{P}(a',b',c')`$ は $`a=a' \wedge b=b' \wedge c=c'`
 
 ```math
 \begin{aligned}
-\mathsf{Z} &\prec \mathsf{Z} &&:\iff \bot,\\
-\mathsf{Z} &\prec \mathsf{P}(e,f,g) &&:\iff \top,\\
-\mathsf{P}(a,b,c) &\prec \mathsf{Z} &&:\iff \bot,\\
+\mathsf{Z} &\prec \mathsf{Z} &&:\iff \bot,\cr
+\mathsf{Z} &\prec \mathsf{P}(e,f,g) &&:\iff \top,\cr
+\mathsf{P}(a,b,c) &\prec \mathsf{Z} &&:\iff \bot,\cr
 \mathsf{P}(a,b,c) &\prec \mathsf{P}(e,f,g) &&:\iff
  a<e \ \vee\ (a=e \wedge b \prec f)\ \vee\ (a=e \wedge b=f \wedge c \prec g).
 \end{aligned}
@@ -344,7 +344,7 @@ Lean ではこの原理は `translate.induct` として自動生成される。
 
 **主張** 任意のペア列 $`M`$ に対し
 ```math
-\mathrm{lead}(\mathrm{tr}\,M) = \begin{cases} 0 & (M=[])\\ \pi_1 p & (M = p\mathbin{::}L). \end{cases}
+\mathrm{lead}(\mathrm{tr}\,M) = \begin{cases} 0 & (M=[])\cr \pi_1 p & (M = p\mathbin{::}L). \end{cases}
 ```
 
 **証明** $`M`$ の構成子で場合分けする。
@@ -382,9 +382,9 @@ $`\mathrm{tr}\,M = \mathsf{P}(\pi_1 p, \cdot, \cdot)`$ であり、[(T.lead_P)](
 ここで用いる標準ライブラリの事実を挙げる（$`p`$ は要素上の述語、$`l,l_1,l_2`$ はリスト）。
 
 - `List.takeWhile_append`：
-  $`(l_1\mathbin{+\!\!+}l_2).\mathrm{takeWhile}\,p = \begin{cases} l_1 \mathbin{+\!\!+} l_2.\mathrm{takeWhile}\,p & (\lvert l_1.\mathrm{takeWhile}\,p\rvert = \lvert l_1\rvert)\\ l_1.\mathrm{takeWhile}\,p & (\text{それ以外}) \end{cases}`$
+  $`(l_1\mathbin{+\!\!+}l_2).\mathrm{takeWhile}\,p = \begin{cases} l_1 \mathbin{+\!\!+} l_2.\mathrm{takeWhile}\,p & (\lvert l_1.\mathrm{takeWhile}\,p\rvert = \lvert l_1\rvert)\cr l_1.\mathrm{takeWhile}\,p & (\text{それ以外}) \end{cases}`$
 - `List.dropWhile_append`：
-  $`(l_1\mathbin{+\!\!+}l_2).\mathrm{dropWhile}\,p = \begin{cases} l_2.\mathrm{dropWhile}\,p & (l_1.\mathrm{dropWhile}\,p = [])\\ l_1.\mathrm{dropWhile}\,p \mathbin{+\!\!+} l_2 & (\text{それ以外}) \end{cases}`$
+  $`(l_1\mathbin{+\!\!+}l_2).\mathrm{dropWhile}\,p = \begin{cases} l_2.\mathrm{dropWhile}\,p & (l_1.\mathrm{dropWhile}\,p = [])\cr l_1.\mathrm{dropWhile}\,p \mathbin{+\!\!+} l_2 & (\text{それ以外}) \end{cases}`$
 - `List.takeWhile_eq_self_iff`：$`l.\mathrm{takeWhile}\,p = l \iff \forall x\in l,\ p\,x`$
 - `List.dropWhile_eq_nil_iff`：$`l.\mathrm{dropWhile}\,p = [] \iff \forall x\in l,\ p\,x`$
 - `List.takeWhile_sublist`：$`l.\mathrm{takeWhile}\,p`$ は $`l`$ の部分列である
@@ -1103,7 +1103,7 @@ G := \mathrm{take}\,j_0\,M,\quad v_0 := M_{0,j_0},\quad w_0 := M_{1,j_0},\quad
   R := \mathrm{map}\bigl(\lambda j.\ (M_{0,j},M_{1,j})\bigr)\,\mathrm{range}'(j_0+1,\ j_1-(j_0+1)),
 ```
 ```math
-d_0 := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases},\qquad
+d_0 := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\cr 0 & (\text{それ以外})\end{cases},\qquad
   lp := M\langle j_1\rangle .
 ```
 

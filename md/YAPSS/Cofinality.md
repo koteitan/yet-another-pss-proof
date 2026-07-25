@@ -51,8 +51,8 @@ p <_{\mathrm{p}} q \ :\iff\ \pi_0 p < \pi_0 q \ \vee\ (\pi_0 p = \pi_0 q \wedge 
 ```math
 M \prec_{\mathrm{lex}} N \ :\iff\
 \begin{cases}
-N \ne [] & (M = []) \\
-\bot & (M \ne [],\ N = []) \\
+N \ne [] & (M = []) \cr
+\bot & (M \ne [],\ N = []) \cr
 p <_{\mathrm{p}} q \ \vee\ (p = q \wedge M' \prec_{\mathrm{lex}} N')
  & (M = p \mathbin{::} M',\ N = q \mathbin{::} N')
 \end{cases}
@@ -1240,9 +1240,9 @@ $`E := \sigma_{d_0}\bigl(\sigma_{m d_0}\mathrm{blk}'\bigr)`$ とおく。
 \begin{aligned}
 \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk},m+2)\bigr)
 &= \mathrm{cop}_{d_0}(\mathrm{blk}',m+2)
-= \mathrm{blk}' \mathbin{+\!\!+} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk}',m+1)\bigr)\\
-&= \mathrm{blk}' \mathbin{+\!\!+} \Bigl(\sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr) \mathbin{+\!\!+} E\Bigr)\\
-&= (v_0+d_0,w_0)\mathbin{::}\Bigl(\sigma_{d_0}R \mathbin{+\!\!+} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr) \mathbin{+\!\!+} E\Bigr)\\
+= \mathrm{blk}' \mathbin{+\!\!+} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk}',m+1)\bigr)\cr
+&= \mathrm{blk}' \mathbin{+\!\!+} \Bigl(\sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr) \mathbin{+\!\!+} E\Bigr)\cr
+&= (v_0+d_0,w_0)\mathbin{::}\Bigl(\sigma_{d_0}R \mathbin{+\!\!+} \sigma_{d_0}\bigl(\mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr) \mathbin{+\!\!+} E\Bigr)\cr
 &= (v_0+d_0,w_0)\mathbin{::}\Bigl(\sigma_{d_0}\bigl(R \mathbin{+\!\!+} \mathrm{cop}_{d_0}(\mathrm{blk}',m)\bigr) \mathbin{+\!\!+} E\Bigr).
 \end{aligned}
 ```

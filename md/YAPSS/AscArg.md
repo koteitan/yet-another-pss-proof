@@ -63,8 +63,8 @@ p \prec_{\mathrm{c}} q \iff \pi_0 p < \pi_0 q \ \vee\ (\pi_0 p = \pi_0 q \wedge 
 ```math
 X \prec_{\mathrm{lex}} Y \iff
 \begin{cases}
-Y \ne [] & (X = [])\\
-\bot & (X \ne [],\ Y = [])\\
+Y \ne [] & (X = [])\cr
+\bot & (X \ne [],\ Y = [])\cr
 x \prec_{\mathrm{c}} y \ \vee\ (x = y \wedge X' \prec_{\mathrm{lex}} Y') & (X = x \mathbin{::} X',\ Y = y \mathbin{::} Y')
 \end{cases}
 ```
@@ -392,15 +392,15 @@ $`\mathrm{SpineOK}(A,L,w)`$ は「$`A`$ の右から見える列のうち行 0 �
 
 ```math
 \begin{aligned}
-\mathrm{ArgDomCore} :\iff\ &\forall X, A_1, B, A_2, Z \in \mathrm{PairSeq},\ \forall u, w, e \in \mathbb{N}, \\
-&\quad \Bigl(X \mathbin{+\!\!+} (u,w) \mathbin{::} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2)\bigr)\Bigr) \mathbin{+\!\!+} Z \in \mathrm{ST\_PS} \\
-&\quad \wedge\ 0 < e \\
-&\quad \wedge\ \bigl(\forall x \in A_1,\ u < \pi_0 x\bigr) \\
-&\quad \wedge\ \bigl(\forall x \in B,\ u + e < \pi_0 x\bigr) \\
-&\quad \wedge\ \bigl(\forall x \in A_2,\ u < \pi_0 x\bigr) \\
-&\quad \wedge\ \bigl(A_2 = [] \ \vee\ \pi_0(\mathrm{headI}\,A_2) \le u + e\bigr) \\
-&\quad \wedge\ \bigl(Z = [] \ \vee\ \pi_0(\mathrm{headI}\,Z) \le u\bigr) \\
-&\quad \wedge\ \mathrm{SpineOK}(A_1,\ u+e,\ w) \\
+\mathrm{ArgDomCore} :\iff\ &\forall X, A_1, B, A_2, Z \in \mathrm{PairSeq},\ \forall u, w, e \in \mathbb{N}, \cr
+&\quad \Bigl(X \mathbin{+\!\!+} (u,w) \mathbin{::} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2)\bigr)\Bigr) \mathbin{+\!\!+} Z \in \mathrm{ST\_PS} \cr
+&\quad \wedge\ 0 < e \cr
+&\quad \wedge\ \bigl(\forall x \in A_1,\ u < \pi_0 x\bigr) \cr
+&\quad \wedge\ \bigl(\forall x \in B,\ u + e < \pi_0 x\bigr) \cr
+&\quad \wedge\ \bigl(\forall x \in A_2,\ u < \pi_0 x\bigr) \cr
+&\quad \wedge\ \bigl(A_2 = [] \ \vee\ \pi_0(\mathrm{headI}\,A_2) \le u + e\bigr) \cr
+&\quad \wedge\ \bigl(Z = [] \ \vee\ \pi_0(\mathrm{headI}\,Z) \le u\bigr) \cr
+&\quad \wedge\ \mathrm{SpineOK}(A_1,\ u+e,\ w) \cr
 &\quad \longrightarrow\
  B \preceq_{\mathrm{lex}} \mathrm{sh}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2)\bigr)
 \end{aligned}
@@ -647,15 +647,15 @@ $`N \in \mathrm{PairSeq}`$ に対し、$`\mathrm{ArgDomCoreOn}(N)`$ を次で定
 
 ```math
 \begin{aligned}
-\mathrm{ArgDomCoreOn}(N) :\iff\ &\forall X, A_1, B, A_2, Z \in \mathrm{PairSeq},\ \forall u, w, e \in \mathbb{N}, \\
-&\quad N = \Bigl(X \mathbin{+\!\!+} (u,w) \mathbin{::} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2)\bigr)\Bigr) \mathbin{+\!\!+} Z \\
+\mathrm{ArgDomCoreOn}(N) :\iff\ &\forall X, A_1, B, A_2, Z \in \mathrm{PairSeq},\ \forall u, w, e \in \mathbb{N}, \cr
+&\quad N = \Bigl(X \mathbin{+\!\!+} (u,w) \mathbin{::} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2)\bigr)\Bigr) \mathbin{+\!\!+} Z \cr
 &\quad \wedge\ 0 < e
  \ \wedge\ \bigl(\forall x \in A_1,\ u < \pi_0 x\bigr)
  \ \wedge\ \bigl(\forall x \in B,\ u + e < \pi_0 x\bigr)
- \ \wedge\ \bigl(\forall x \in A_2,\ u < \pi_0 x\bigr) \\
+ \ \wedge\ \bigl(\forall x \in A_2,\ u < \pi_0 x\bigr) \cr
 &\quad \wedge\ \bigl(A_2 = [] \vee \pi_0(\mathrm{headI}\,A_2) \le u + e\bigr)
  \ \wedge\ \bigl(Z = [] \vee \pi_0(\mathrm{headI}\,Z) \le u\bigr)
- \ \wedge\ \mathrm{SpineOK}(A_1, u+e, w) \\
+ \ \wedge\ \mathrm{SpineOK}(A_1, u+e, w) \cr
 &\quad \longrightarrow\
  B \preceq_{\mathrm{lex}} \mathrm{sh}_e\bigl(A_1 \mathbin{+\!\!+} (u+e,w) \mathbin{::} (B \mathbin{+\!\!+} A_2)\bigr)
 \end{aligned}

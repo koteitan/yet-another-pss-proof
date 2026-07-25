@@ -280,7 +280,7 @@ $`\mathrm{tsize}\,b`$（[(D.tsize)](Wfsum.md#d-tsize)）に関する整礎再帰
 
 ```math
 \mathrm{proj}_u b := \begin{cases}
-b & \bigl(\mathrm{bad}_u(b) = ()\bigr) \\[2pt]
+b & \bigl(\mathrm{bad}_u(b) = ()\bigr) \cr[2pt]
 \mathrm{proj}_u\bigl(\mathrm{maxo}(\mathrm{headI}\,\mathrm{bad}_u(b),\ \mathrm{tail}\,\mathrm{bad}_u(b))\bigr)
  & \bigl(\mathrm{bad}_u(b) \ne ()\bigr)
 \end{cases}
@@ -366,7 +366,7 @@ $`a\in\mathbb{N}`$、$`b\in\mathrm{Three}`$ に対し $`\mathrm{ins}(a,b,\cdot) 
 ```math
 \mathrm{ins}(a,b,\mathsf{Z}) := \mathsf{P}(a,b,\mathsf{Z}),\qquad
 \mathrm{ins}(a,b,\mathsf{P}(e,f,g)) := \begin{cases}
-\mathsf{P}(e,f,g) & \bigl(a<e \ \vee\ (a=e \wedge b\prec f)\bigr) \\
+\mathsf{P}(e,f,g) & \bigl(a<e \ \vee\ (a=e \wedge b\prec f)\bigr) \cr
 \mathsf{P}(a,b,\mathsf{P}(e,f,g)) & \text{その他}
 \end{cases}
 ```
@@ -389,7 +389,7 @@ $`a\in\mathbb{N}`$、$`b\in\mathrm{Three}`$ に対し $`\mathrm{ins}(a,b,\cdot) 
 **主張** $`a,e\in\mathbb{N}`$、$`b,f,g\in\mathrm{Three}`$ に対し
 ```math
 \mathrm{ins}(a,b,\mathsf{P}(e,f,g)) = \begin{cases}
-\mathsf{P}(e,f,g) & \bigl(a<e \vee (a=e \wedge b\prec f)\bigr) \\
+\mathsf{P}(e,f,g) & \bigl(a<e \vee (a=e \wedge b\prec f)\bigr) \cr
 \mathsf{P}(a,b,\mathsf{P}(e,f,g)) & \text{その他.}
 \end{cases}
 ```

@@ -110,8 +110,8 @@ p <_{\mathrm p} q \ :\iff\ \pi_0 p<\pi_0 q \ \vee\ \bigl(\pi_0 p=\pi_0 q \wedge 
 
 ```math
 \begin{aligned}
-{}[\,] \prec_{\mathrm{lex}} N &\ :\iff\ N\ne[\,],\\
-(p\mathbin{::}M) \prec_{\mathrm{lex}} [\,] &\ :\iff\ \bot,\\
+{}[\,] \prec_{\mathrm{lex}} N &\ :\iff\ N\ne[\,],\cr
+(p\mathbin{::}M) \prec_{\mathrm{lex}} [\,] &\ :\iff\ \bot,\cr
 (p\mathbin{::}M) \prec_{\mathrm{lex}} (q\mathbin{::}N) &\ :\iff\ p<_{\mathrm p}q \ \vee\ \bigl(p=q \wedge M\prec_{\mathrm{lex}}N\bigr).
 \end{aligned}
 ```
@@ -774,8 +774,8 @@ $`A=a\mathbin{::}as`$ のとき $`(a\mathbin{::}as)\mathbin{+\!\!+}B = a\mathbin
 ```math
 \begin{aligned}
 \Phi(m) :\equiv\ &\bigl(\forall k<m,\ \mathrm{steps}_1(F_k)\bigr)
- \to \bigl(\forall k<m,\ F_k\ne[\,]\bigr)\\
- &\to \bigl(\forall k,\ k+1<m \to \pi_0(\mathrm{headI}\,F_{k+1})\le\pi_0(\mathrm{lastD}(F_k,(0,0)))+1\bigr)\\
+ \to \bigl(\forall k<m,\ F_k\ne[\,]\bigr)\cr
+ &\to \bigl(\forall k,\ k+1<m \to \pi_0(\mathrm{headI}\,F_{k+1})\le\pi_0(\mathrm{lastD}(F_k,(0,0)))+1\bigr)\cr
  &\to\ \mathrm{steps}_1(C_m) \wedge \bigl(0<m \to C_m\ne[\,] \wedge \mathrm{headI}\,C_m=\mathrm{headI}\,F_0
  \wedge \mathrm{lastD}(C_m,(0,0))=\mathrm{lastD}(F_{m-1},(0,0))\bigr)
 \end{aligned}
@@ -913,7 +913,7 @@ $`\mathrm{Pred}\,M=\mathrm{dropLast}\,M`$。以下 $`j_1:=\lvert M\rvert-1`$、$
   [(T.parent_nextR)](Mechanized.md#t-parent_nextR) より $`j_0\to^M_{i_1}j_1`$（[(D.nextR)](Def.md#d-nextR)）、
   よって [(T.nextR_index_lt)](Mechanized.md#t-nextR_index_lt) より $`j_0<j_1`$ である。さらに
   ```math
-  D := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\\ 0 & (i_1=0)\end{cases}
+  D := \begin{cases} M_{0,j_1}-M_{0,j_0} & (0<i_1)\cr 0 & (i_1=0)\end{cases}
   ```
   とおく。
 

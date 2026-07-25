@@ -5,6 +5,9 @@
 //   $ ... a \, b ... $      ->  becomes a , b   -> a stray comma is rendered
 // Neither happens inside a code span or a code fence, so this repository writes
 //   display math as a ```math fence, and inline math as $`...`$ .
+// Independently of that, GitHub turns \\ into \\\ on its way to the client renderer
+// (measured on a live page, in both ```math and $$), which breaks \begin{aligned}.
+// Row breaks are therefore written \cr, which passes through untouched.
 // This script renders every formula with KaTeX and also fails on any unprotected $.
 //   cd md/YAPSS && NODE_PATH=<dir containing katex> node ../../tools/check_md_math.js
 const katex=require('katex');
@@ -30,6 +33,8 @@ for(const f of fs.readdirSync('.').filter(x=>x.endsWith('.md')).sort()){
     catch(e){ bad++; errs.push([joined.slice(0,m.index).split('\n').length,'inline',e.message.slice(0,70)]); } }
   const un=joined.replace(/\$`[^`]+`\$/g,'').match(/\$/g);
   if(un){ errs.push([0,'unprotected','stray $ x'+un.length]); bad+=un.length; }
+  const bs=fs.readFileSync(f,'utf8').match(/\\\\(?!\\)/g);
+  if(bs){ errs.push([0,'row-break','use \\cr, not \\\\ x'+bs.length]); bad+=bs.length; }
   if(errs.length){ console.log(`\n=== ${f} ===`); errs.slice(0,4).forEach(e=>console.log(`  L${e[0]} ${e[1]}: ${e[2]}`)); }
 }
 console.log(`\nTOTAL: ${total}, errors: ${bad}`); process.exit(bad?1:0);

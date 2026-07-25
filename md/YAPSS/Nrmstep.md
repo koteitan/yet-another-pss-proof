@@ -535,7 +535,7 @@ $`\lvert C\rvert`$ に関する再帰で定める。
  \mathrm{proj}_{\pi_1 p}\bigl(\mathrm{nrm}(\mathrm{tr}\,\mathit{rest})\bigr)
  \prec
  \mathrm{proj}_{\pi_1 p}\bigl(\mathrm{nrm}(\mathrm{tr}(\mathit{rest}\mathbin{+\!\!+}[q]))\bigr)
- & (\mathrm{dw}_{\pi_0 p}\mathit{rest}=[])\\[2mm]
+ & (\mathrm{dw}_{\pi_0 p}\mathit{rest}=[])\cr[2mm]
 \mathrm{snocok}(\mathrm{dw}_{\pi_0 p}\mathit{rest},\,q) & (\mathrm{dw}_{\pi_0 p}\mathit{rest}\ne[])
 \end{cases}
 ```
@@ -753,9 +753,9 @@ $`M\in\mathrm{PairSeq}`$ に対し
 \mathrm{r1ok}(M) :\iff
 \forall j<\lvert M\rvert,\quad 0<\pi_0(M\langle j\rangle)\ \to\ \exists k,\
 \begin{aligned}
-&k<j\\
-\wedge\ &\pi_0(M\langle k\rangle)+1=\pi_0(M\langle j\rangle)\\
-\wedge\ &\bigl(\forall l,\ k<l\to l<j\to \pi_0(M\langle j\rangle)\le\pi_0(M\langle l\rangle)\bigr)\\
+&k<j\cr
+\wedge\ &\pi_0(M\langle k\rangle)+1=\pi_0(M\langle j\rangle)\cr
+\wedge\ &\bigl(\forall l,\ k<l\to l<j\to \pi_0(M\langle j\rangle)\le\pi_0(M\langle l\rangle)\bigr)\cr
 \wedge\ &\pi_1(M\langle j\rangle)\le\pi_1(M\langle k\rangle)+1 .
 \end{aligned}
 ```
@@ -1055,10 +1055,10 @@ $`B\langle\lvert G\rvert+q-\lvert G\rvert\rangle=B\langle q\rangle`$。∎
 
    ```math
    \begin{aligned}
-   &p<\lvert G\rvert+(k\lvert B\rvert+q),\\
-   &\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1=\pi_0(B\langle q\rangle)+k\,d_0,\\
+   &p<\lvert G\rvert+(k\lvert B\rvert+q),\cr
+   &\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1=\pi_0(B\langle q\rangle)+k\,d_0,\cr
    &\forall l,\ p<l\to l<\lvert G\rvert+(k\lvert B\rvert+q)\to
-     \pi_0(B\langle q\rangle)+k\,d_0\le\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle l\rangle\bigr),\\
+     \pi_0(B\langle q\rangle)+k\,d_0\le\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle l\rangle\bigr),\cr
    &\pi_1(B\langle q\rangle)\le\pi_1\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1 .
    \end{aligned}
    ```
@@ -1216,10 +1216,10 @@ $`0<\pi_0(B\langle q\rangle)+k\cdot0`$ を仮定する。
 
 ```math
 \begin{aligned}
-&p<\lvert G\rvert+(k\lvert B\rvert+q),\\
-&\pi_0\bigl(\mathrm{cE}(G,B,0,n)\langle p\rangle\bigr)+1=\pi_0(B\langle q\rangle)+k\cdot0,\\
+&p<\lvert G\rvert+(k\lvert B\rvert+q),\cr
+&\pi_0\bigl(\mathrm{cE}(G,B,0,n)\langle p\rangle\bigr)+1=\pi_0(B\langle q\rangle)+k\cdot0,\cr
 &\forall l,\ p<l\to l<\lvert G\rvert+(k\lvert B\rvert+q)\to
-  \pi_0(B\langle q\rangle)+k\cdot0\le\pi_0\bigl(\mathrm{cE}(G,B,0,n)\langle l\rangle\bigr),\\
+  \pi_0(B\langle q\rangle)+k\cdot0\le\pi_0\bigl(\mathrm{cE}(G,B,0,n)\langle l\rangle\bigr),\cr
 &\pi_1(B\langle q\rangle)\le\pi_1\bigl(\mathrm{cE}(G,B,0,n)\langle p\rangle\bigr)+1 .
 \end{aligned}
 ```
@@ -1290,10 +1290,10 @@ w_0\le\pi_1(H\langle p\rangle)+1
 
 ```math
 \begin{aligned}
-&p<\lvert G\rvert+(k\lvert B\rvert+q),\\
-&\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1=\pi_0(B\langle q\rangle)+k\,d_0,\\
+&p<\lvert G\rvert+(k\lvert B\rvert+q),\cr
+&\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1=\pi_0(B\langle q\rangle)+k\,d_0,\cr
 &\forall l,\ p<l\to l<\lvert G\rvert+(k\lvert B\rvert+q)\to
-  \pi_0(B\langle q\rangle)+k\,d_0\le\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle l\rangle\bigr),\\
+  \pi_0(B\langle q\rangle)+k\,d_0\le\pi_0\bigl(\mathrm{cE}(G,B,d_0,n)\langle l\rangle\bigr),\cr
 &\pi_1(B\langle q\rangle)\le\pi_1\bigl(\mathrm{cE}(G,B,d_0,n)\langle p\rangle\bigr)+1 .
 \end{aligned}
 ```
@@ -1694,7 +1694,7 @@ $`g\prec b`$ か否かで分ける。
 
 ```math
 \mathrm{mv}(b) := \begin{cases}
-b & (\mathrm{Bad}_0(b)=[])\\
+b & (\mathrm{Bad}_0(b)=[])\cr
 \mathrm{mx}_0(b) & (\mathrm{Bad}_0(b)\ne[])
 \end{cases}
 ```
@@ -2192,14 +2192,14 @@ Lean の当該節見出しの直後に置かれているのは、$`\mathrm{z0ok}
 ```math
 \mathrm{sclimb}(M) :\iff \forall r',r,\quad
 \begin{aligned}
-&1<\lvert M\rvert\ \to\\
-&\mathrm{nextR}\bigl(M,\ \mathrm{idx}_1(M,\lvert M\rvert-1),\ 0,\ \lvert M\rvert-1\bigr)\ \to\\
-&\mathrm{idx}_1(M,\lvert M\rvert-1)=1\ \to\\
-&0<r'\ \to\ r'+1<\lvert M\rvert\ \to\\
-&\pi_0(M\langle r'\rangle)+1=\pi_0(M\langle\lvert M\rvert-1\rangle)\ \to\\
+&1<\lvert M\rvert\ \to\cr
+&\mathrm{nextR}\bigl(M,\ \mathrm{idx}_1(M,\lvert M\rvert-1),\ 0,\ \lvert M\rvert-1\bigr)\ \to\cr
+&\mathrm{idx}_1(M,\lvert M\rvert-1)=1\ \to\cr
+&0<r'\ \to\ r'+1<\lvert M\rvert\ \to\cr
+&\pi_0(M\langle r'\rangle)+1=\pi_0(M\langle\lvert M\rvert-1\rangle)\ \to\cr
 &\bigl(\forall l,\ r'<l\to l+1<\lvert M\rvert\to
-   \pi_0(M\langle\lvert M\rvert-1\rangle)\le\pi_0(M\langle l\rangle)\bigr)\ \to\\
-&0<r\ \to\ r<r'\ \to\\
+   \pi_0(M\langle\lvert M\rvert-1\rangle)\le\pi_0(M\langle l\rangle)\bigr)\ \to\cr
+&0<r\ \to\ r<r'\ \to\cr
 &\pi_0(M\langle r\rangle)+1<\pi_0(M\langle\lvert M\rvert-1\rangle).
 \end{aligned}
 ```

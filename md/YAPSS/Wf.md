@@ -204,8 +204,8 @@ $`\mathrm{slex}\subseteq \mathbb{N}^{<\omega}\times\mathbb{N}^{<\omega}`$ を第
 
 ```math
 \begin{aligned}
-\mathrm{slex}([],\ ys) &:\iff \top,\\
-\mathrm{slex}(x\mathbin{::}xs,\ []) &:\iff \bot,\\
+\mathrm{slex}([],\ ys) &:\iff \top,\cr
+\mathrm{slex}(x\mathbin{::}xs,\ []) &:\iff \bot,\cr
 \mathrm{slex}(x\mathbin{::}xs,\ y\mathbin{::}ys) &:\iff x<y \ \vee\ \bigl(x=y \wedge \mathrm{slex}(xs,ys)\bigr).
 \end{aligned}
 ```
@@ -283,7 +283,7 @@ $`\mathrm{inc}:\mathrm{PairSeq}\to\mathrm{PairSeq}`$ を次で定める。
 \mathrm{inc}\,[] := [],\qquad
 \mathrm{inc}\,[p] := [p],\qquad
 \mathrm{inc}(p\mathbin{::}q\mathbin{::}L) := \begin{cases}
- p\mathbin{::}\mathrm{inc}(q\mathbin{::}L) & (\pi_0 p<\pi_0 q)\\
+ p\mathbin{::}\mathrm{inc}(q\mathbin{::}L) & (\pi_0 p<\pi_0 q)\cr
  [p] & (\neg(\pi_0 p<\pi_0 q)).
 \end{cases}
 ```
@@ -322,7 +322,7 @@ Lean ではこの原理は `incpref.induct` として自動生成される。
 **主張** 任意の対 $`p,q`$、ペア列 $`L`$ に対し
 ```math
 \mathrm{inc}(p\mathbin{::}q\mathbin{::}L) = \begin{cases}
- p\mathbin{::}\mathrm{inc}(q\mathbin{::}L) & (\pi_0 p<\pi_0 q)\\
+ p\mathbin{::}\mathrm{inc}(q\mathbin{::}L) & (\pi_0 p<\pi_0 q)\cr
  [p] & (\neg(\pi_0 p<\pi_0 q)).\end{cases}
 ```
 
@@ -681,8 +681,8 @@ Lean 側ではここに次の 2 つの節見出しが置かれている：
 
 ```math
 \begin{aligned}
-\mathrm{cnf}\,\mathsf{Z} &:\iff \top,\\
-\mathrm{cnf}\,\mathsf{P}(a,b,\mathsf{Z}) &:\iff \mathrm{cnf}\,b,\\
+\mathrm{cnf}\,\mathsf{Z} &:\iff \top,\cr
+\mathrm{cnf}\,\mathsf{P}(a,b,\mathsf{Z}) &:\iff \mathrm{cnf}\,b,\cr
 \mathrm{cnf}\,\mathsf{P}\bigl(a,b,\mathsf{P}(e,f,g)\bigr) &:\iff
  \mathrm{cnf}\,b \ \wedge\ \neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)
  \ \wedge\ \mathrm{cnf}\,\mathsf{P}(e,f,g).

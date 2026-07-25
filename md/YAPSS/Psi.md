@@ -61,7 +61,7 @@ $`v\in\mathbb{N}`$ に対し
 
 ```math
 \Omega_v := \begin{cases}
-1 & (v = 0)\\
+1 & (v = 0)\cr
 \mathrm{ord}(\aleph_v) & (v \ne 0)
 \end{cases}
 ```
@@ -397,7 +397,7 @@ $`F`$ は
 ```math
 F(\alpha)(g)(v) := \inf\ \bigl\{\gamma \ \bigm|\ \gamma\notin C^{\,p_{\alpha,g}}_v(\alpha)\bigr\},
 \qquad
-p_{\alpha,g}(\xi,u) := \begin{cases} g(\xi)(u) & (\xi<\alpha)\\ 0 & (\xi\not<\alpha)\end{cases}
+p_{\alpha,g}(\xi,u) := \begin{cases} g(\xi)(u) & (\xi<\alpha)\cr 0 & (\xi\not<\alpha)\end{cases}
 ```
 
 である（[(D.Cset)](#d-Cset)）。Lean の `if h : ξ < α then IH ξ h u else 0` は依存条件分岐であり、
@@ -409,7 +409,7 @@ p_{\alpha,g}(\xi,u) := \begin{cases} g(\xi)(u) & (\xi<\alpha)\\ 0 & (\xi\not<\al
 ```math
 \psi_v(\alpha) = \inf\ \bigl\{\gamma \ \bigm|\ \gamma\notin C^{\,p_\alpha}_v(\alpha)\bigr\},
 \qquad
-p_\alpha(\xi,u) = \begin{cases}\psi_u(\xi) & (\xi<\alpha)\\ 0 & (\xi\not<\alpha)\end{cases}
+p_\alpha(\xi,u) = \begin{cases}\psi_u(\xi) & (\xi<\alpha)\cr 0 & (\xi\not<\alpha)\end{cases}
 ```
 
 が成り立つ。
@@ -453,7 +453,7 @@ $`\psi`$ が参照されるのは $`\mathrm{Iio}(\alpha)`$ 上の値のみであ
 `ConditionallyCompleteLinearOrderBot` のインスタンスであり、そこでの `sInf` は
 
 ```math
-\inf S = \begin{cases} S\ \text{の最小元} & (S\ne\emptyset)\\ 0 & (S=\emptyset)\end{cases}
+\inf S = \begin{cases} S\ \text{の最小元} & (S\ne\emptyset)\cr 0 & (S=\emptyset)\end{cases}
 ```
 
 である（$`S\ne\emptyset`$ の場合は整礎性から最小元が存在し、`WellFounded.min` がそれを与える。

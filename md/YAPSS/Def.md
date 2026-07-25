@@ -75,12 +75,12 @@ $`M \in \mathrm{PairSeq}`$、$`i, j \in \mathbb{N}`$ に対し
 
 ```math
 M_{i,j} := \begin{cases}
-\pi_1(M_j) & (i = 0) \\
+\pi_1(M_j) & (i = 0) \cr
 \pi_2(M_j) & (i \ne 0)
 \end{cases}
 \qquad
 M_j := \begin{cases}
-M \text{ の第 } j \text{ 要素} & (j < \mathrm{Lng}\,M) \\
+M \text{ の第 } j \text{ 要素} & (j < \mathrm{Lng}\,M) \cr
 (0,0) & (j \ge \mathrm{Lng}\,M)
 \end{cases}
 ```
@@ -174,7 +174,7 @@ $`\le`$ の反射性から成り立つので、条件 6 の内容は $`j \ne j_1
 ```math
 j_0 \to^M_i j_1 \ :\Longleftrightarrow\
 \begin{cases}
-j_0 \to^M_0 j_1 & (i = 0) \\
+j_0 \to^M_0 j_1 & (i = 0) \cr
 j_0 \to^M_1 j_1 & (i \ne 0)
 \end{cases}
 ```
@@ -201,7 +201,7 @@ j_0 \to^M_i j_1 \ \Longrightarrow\ j_0 < j_1 < \mathrm{Lng}\,M
 
 ```math
 \mathrm{Pred}\,M := \begin{cases}
-M & (\mathrm{Lng}\,M \le 1) \\
+M & (\mathrm{Lng}\,M \le 1) \cr
 (M_0, \dots, M_{\mathrm{Lng}\,M - 2}) & (\mathrm{Lng}\,M \ge 2)
 \end{cases}
 ```
@@ -210,7 +210,7 @@ M & (\mathrm{Lng}\,M \le 1) \\
 
 ```math
 \mathrm{Lng}(\mathrm{Pred}\,M) = \begin{cases}
-\mathrm{Lng}\,M & (\mathrm{Lng}\,M \le 1) \\
+\mathrm{Lng}\,M & (\mathrm{Lng}\,M \le 1) \cr
 \mathrm{Lng}\,M - 1 & (\mathrm{Lng}\,M \ge 2)
 \end{cases}
 ```
@@ -226,7 +226,7 @@ M & (\mathrm{Lng}\,M \le 1) \\
 
 ```math
 \mathrm{idx}_1(M, j_1) := \begin{cases}
-1 & (0 < M_{1,j_1}) \\
+1 & (0 < M_{1,j_1}) \cr
 0 & (M_{1,j_1} = 0)
 \end{cases}
 ```
@@ -310,9 +310,9 @@ M[n] := \mathrm{Pred}\,M .
 $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき: $`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[(D.parent)](#d-parent)）、
 
 ```math
-d_0 := \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 < i_1) \\ 0 & (i_1 = 0) \end{cases}
+d_0 := \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 < i_1) \cr 0 & (i_1 = 0) \end{cases}
 \qquad
-d_1 := \begin{cases} M_{1,j_1} - M_{1,j_0} & (1 < i_1) \\ 0 & (i_1 \le 1) \end{cases}
+d_1 := \begin{cases} M_{1,j_1} - M_{1,j_0} & (1 < i_1) \cr 0 & (i_1 \le 1) \end{cases}
 ```
 
 とおき、
@@ -388,7 +388,7 @@ Lean では `(List.range' a (b + 1 - a)).map (fun j => (j, j))` であり、長�
 $`b + 1 - a`$ である。したがって
 
 ```math
-\mathrm{Lng}\,\Delta_a^b = \begin{cases} b + 1 - a & (a \le b) \\ 0 & (a > b) \end{cases}
+\mathrm{Lng}\,\Delta_a^b = \begin{cases} b + 1 - a & (a \le b) \cr 0 & (a > b) \end{cases}
 ```
 
 であり、$`a > b`$ のとき $`\Delta_a^b`$ は空列である。特に

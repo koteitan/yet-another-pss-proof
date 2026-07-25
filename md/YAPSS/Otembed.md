@@ -282,7 +282,7 @@ G_u(\mathsf{P}(a,b,c)) := \Bigl(\text{if } u\le a \text{ then } \{b\}\cup G_u(b)
 
 ```math
 G_u(\mathsf{P}(a,b,c)) = \begin{cases}
-\{b\}\cup G_u(b)\cup G_u(c) & (u\le a) \\
+\{b\}\cup G_u(b)\cup G_u(c) & (u\le a) \cr
 G_u(c) & (u>a)
 \end{cases}
 ```
@@ -342,8 +342,8 @@ x\in G_u(\mathsf{P}(a,b,c)) \iff \bigl(u\le a \ \wedge\ (x=b \ \vee\ x\in G_u(b)
 
 ```math
 \begin{aligned}
-\mathsf{Z} &\sqsubseteq y &&:\iff \top &&(y\text{ は任意}),\\
-\mathsf{P}(a,b,c) &\sqsubseteq \mathsf{Z} &&:\iff \bot,\\
+\mathsf{Z} &\sqsubseteq y &&:\iff \top &&(y\text{ は任意}),\cr
+\mathsf{P}(a,b,c) &\sqsubseteq \mathsf{Z} &&:\iff \bot,\cr
 \mathsf{P}(a,b,c) &\sqsubseteq \mathsf{P}(e,f,g) &&:\iff a<e \ \vee\ \bigl(a=e \ \wedge\ (b\prec f \ \vee\ b=f)\bigr).
 \end{aligned}
 ```

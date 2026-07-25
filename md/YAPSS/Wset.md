@@ -448,8 +448,8 @@ $`\supseteq`$ は [(T.lfpS_unfold_ge)](#t-lfpS_unfold_ge)。∎
 ```math
 M\in A^{\mathcal F}_u(X)\ :\Longleftrightarrow\
 \begin{cases}
-\text{(枝 1)} & \lvert M\rvert\le 1 \ \wedge\ M_{1,0}=0\\
-\text{(枝 2)} & \mathrm{natDom}(M)\ \wedge\ \forall n,\ 1\le n \to M[n]\in X\\
+\text{(枝 1)} & \lvert M\rvert\le 1 \ \wedge\ M_{1,0}=0\cr
+\text{(枝 2)} & \mathrm{natDom}(M)\ \wedge\ \forall n,\ 1\le n \to M[n]\in X\cr
 \text{(枝 3)} & \exists m,\ m<u \ \wedge\ \mathrm{dom}(M)=T_m \ \wedge\
  \bigl(\forall z\in\mathcal F(m),\ \mathrm{based}(z)\to \mathrm{gr}(M,z)\in X\bigr)
 \end{cases}
@@ -516,7 +516,7 @@ M\in A^{\mathcal F}_u(X) \iff M\in A^{\mathcal G}_u(X).
 $`\mathbb{N}`$ に関する再帰で
 ```math
 W^{(0)}_m := \emptyset,\qquad
-W^{(v+1)}_m := \begin{cases}\mathrm{lfp}\bigl(X\mapsto A^{W^{(v)}}_v(X)\bigr) & (m=v)\\[2pt]
+W^{(v+1)}_m := \begin{cases}\mathrm{lfp}\bigl(X\mapsto A^{W^{(v)}}_v(X)\bigr) & (m=v)\cr[2pt]
 W^{(v)}_m & (m\ne v)\end{cases}
 ```
 と定める（[(D.lfpS)](#d-lfpS), [(D.Aset)](#d-Aset)）。ここで $`W^{(v)}`$ は第 1 添字を $`v`$ に固定した族
@@ -843,7 +843,7 @@ $`\mathrm{hasParent}(M,i_1,\ell_M)`$ が成り立つか否かで再び場合分�
 であり（被減数と減数の双方に同じ $`d`$ を加えても差は変わらない）、$`i_1`$ も一致するから、
 [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) の展開に現れる係数
 ```math
-\delta=\begin{cases}M_{0,\ell_M}-M_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases}
+\delta=\begin{cases}M_{0,\ell_M}-M_{0,j_0} & (0<i_1)\cr 0 & (\text{それ以外})\end{cases}
 ```
 は両辺で同一である。よって示すべきは
 ```math
@@ -1037,7 +1037,7 @@ $`2\le\lvert P\rvert`$ より $`P\ne[]`$、よって [(T.entry_sub_zero)](#t-ent
 (A\mathbin{+\!\!+}P)[n]
 &\overset{(1)}{=} \bigl(\mathrm{sh}_c(A_0\mathbin{+\!\!+}P_0)\bigr)[n]
  \overset{(2)}{=} \mathrm{sh}_c\bigl((A_0\mathbin{+\!\!+}P_0)[n]\bigr)
- \overset{(3)}{=} \mathrm{sh}_c\bigl(A_0\mathbin{+\!\!+}P_0[n]\bigr)\\
+ \overset{(3)}{=} \mathrm{sh}_c\bigl(A_0\mathbin{+\!\!+}P_0[n]\bigr)\cr
 &\overset{(4)}{=} \mathrm{sh}_c A_0 \mathbin{+\!\!+} \mathrm{sh}_c (P_0[n])
  \overset{(5)}{=} A \mathbin{+\!\!+} (\mathrm{sh}_c P_0)[n]
  \overset{(6)}{=} A \mathbin{+\!\!+} P[n].
@@ -1611,7 +1611,7 @@ $`\mathrm{par}^M_{\mathrm{idx}_1(M,\ell_M)}(\ell_M)=0`$ ならば
 M[n]=\mathrm{flatMap}\Bigl(\lambda k.\ \mathrm{map}\bigl(\lambda p.\,(\pi_0 p+k\delta,\ \pi_1 p)\bigr)(\mathrm{dropLast}\,M)\Bigr)\,\mathrm{range}(n),
 ```
 ```math
-\delta := \begin{cases} M_{0,\ell_M}-M_{0,0} & (0<\mathrm{idx}_1(M,\ell_M))\\ 0 & (\text{それ以外}).\end{cases}
+\delta := \begin{cases} M_{0,\ell_M}-M_{0,0} & (0<\mathrm{idx}_1(M,\ell_M))\cr 0 & (\text{それ以外}).\end{cases}
 ```
 
 **証明** [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) を適用し、親を $`0`$ で置き換えると
@@ -1676,7 +1676,7 @@ $`\mathrm{hasParent}(M,i_1,\lvert R\rvert)`$ が成り立ち、
 **展開の比較.** 両辺に [(T.oper_bad_unfold)](Mechanized.md#t-oper_bad_unfold) を適用する。
 係数は
 ```math
-M\ \text{側}:\ \begin{cases}M_{0,\lvert R\rvert}-M_{0,j_0+1}=R_{0,\ell_R}-R_{0,j_0} & (0<i_1)\\ 0 & (\text{それ以外})\end{cases}
+M\ \text{側}:\ \begin{cases}M_{0,\lvert R\rvert}-M_{0,j_0+1}=R_{0,\ell_R}-R_{0,j_0} & (0<i_1)\cr 0 & (\text{それ以外})\end{cases}
 ```
 であり、$`R`$ 側の係数と一致する。これを $`\delta`$ とおく。また
 ```math
