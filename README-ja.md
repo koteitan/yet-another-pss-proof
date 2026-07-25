@@ -21,49 +21,7 @@ $p_a(b)$ の添字 $a$ を自然数に取ることに対応する。
 
 ## 証明
 
-**PSS の停止性は無条件・`sorry` なしで形式証明されている。**
-
-```lean
-theorem PSS_terminates_unconditional : WellFounded stepRel
-theorem no_infinite_expansion_holds :
-    ¬ ∃ S : ℕ → PairSeq, (∀ i, ST_PS (S i)) ∧ ∀ i, step (S i) (S (i + 1))
-```
-
-いずれも [`lean/Final.lean`](lean/Final.lean) にあり、
-
-```
-#print axioms YAPSS.PSS_terminates_unconditional
-  -- [propext, Classical.choice, Quot.sound]
-```
-
-すなわち `sorryAx` も名前付きの仮定も含まない。`lake build` はプロジェクト全体で通る。
-
-証明は 3 段からなる。
-
-1. ペア数列 $M$ を `translate` によって三分木記法 $p_a(b)+c$ の項へ写す。
-   項には添字優先の辞書式順序 $\prec$（`olt`）を入れる。
-2. 展開の 1 段はこの測度を真に減らす：
-   $\mathrm{translate}(M[n]) \prec \mathrm{translate}(M)$。
-3. $\prec$ は標準形の像の上で整礎である。ここを**順序数を使わず**、
-   Buchholz の記法系への翻訳も使わずに、次の 2 つで示す。
-   * **Bachmann 共終性** — $M$ より真に小さい標準形は、基本列の項 $M[n]$ のいずれかで
-     上から抑えられる（[`lean/Cofinality.lean`](lean/Cofinality.lean)、
-     [`lean/ArgDom.lean`](lean/ArgDom.lean)）
-   * **反復帰納的集合** $W_u$ とその最小不動点帰納法を、ペア数列に対して直接立てる
-     （[`lean/Wset.lean`](lean/Wset.lean)）
-
-   これは Buchholz (1987) §2 の方法である。そこでは Buchholz の記法系 $\mathrm{OT}_B$ の
-   整礎性が、順序数への評価ではなく、集合 $W_v$ と基本列から**構文的に**得られている。
-   上の経路はその方法をペア数列へ直接移したものである。
-
-順序数への評価写像も、Buchholz の $\mathrm{OT}$ への埋め込みも、係数優越条件も、
-この経路のどこにも現れない。これは主張ではなく機械的に確認できる。`import Final` した
-Lean の環境には定数 `Ordinal` がそもそも存在せず、Mathlib の順序数・濃度のモジュールは
-1 つも import 閉包に入らない。
-
-**証明の本文は [`lean/README.md`](lean/README.md) にある。** 11 モジュールの索引が
-依存順に並んでいる。`lean/<module>.lean` の隣に同名の `lean/<module>.md` を置き、
-同じ証明を人間向けに書いてある。両者は 1 対 1 に保つ。
+[`lean/README.md`](lean/README.md)
 
 ## ビルド
 

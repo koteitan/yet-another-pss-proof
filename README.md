@@ -18,52 +18,7 @@ range over the natural numbers.
 
 ## The proof
 
-**PSS termination is formally proved, with no hypotheses and no `sorry`.**
-
-```lean
-theorem PSS_terminates_unconditional : WellFounded stepRel
-theorem no_infinite_expansion_holds :
-    ¬ ∃ S : ℕ → PairSeq, (∀ i, ST_PS (S i)) ∧ ∀ i, step (S i) (S (i + 1))
-```
-
-Both are in [`lean/Final.lean`](lean/Final.lean), and
-
-```
-#print axioms YAPSS.PSS_terminates_unconditional
-  -- [propext, Classical.choice, Quot.sound]
-```
-
-i.e. no `sorryAx` and no named assumption; `lake build` is green over the whole project.
-
-It is proved in three steps.
-
-1. A pair sequence $M$ is mapped by `translate` to a term of the three-branch notation
-   $p_a(b)+c$, ordered by the subscript-first lexicographic order $\prec$ (`olt`).
-2. Every expansion step strictly decreases that measure:
-   $\mathrm{translate}(M[n]) \prec \mathrm{translate}(M)$.
-3. $\prec$ is well-founded on the image of the standard forms. This is established
-   **without ordinals** and without translating into Buchholz's notation system, by
-   * **Bachmann cofinality** — every standard form strictly below $M$ is bounded by some
-     member $M[n]$ of the fundamental sequence
-     ([`lean/Cofinality.lean`](lean/Cofinality.lean),
-     [`lean/ArgDom.lean`](lean/ArgDom.lean)), and
-   * the **iterated inductive set** $W_u$ and its least-fixpoint induction, transplanted
-     natively to pair sequences ([`lean/Wset.lean`](lean/Wset.lean)).
-
-   This is the method of Buchholz (1987) §2: the well-foundedness of Buchholz's notation
-   system $\mathrm{OT}_B$ is obtained there **syntactically**, from the sets $W_v$ and the
-   fundamental sequences, rather than from an evaluation into the ordinals. The route
-   above carries that method over to pair sequences directly.
-
-No ordinal evaluation map, no embedding into Buchholz's $\mathrm{OT}$, and no
-coefficient-domination condition occurs anywhere in this route. This is checked
-mechanically rather than asserted: after `import Final` the constant `Ordinal`
-does not exist in the Lean environment at all, and no Mathlib ordinal or cardinal
-module is in the import closure.
-
-**The proof itself is at [`lean/README.md`](lean/README.md)**, which indexes the eleven
-modules in dependency order. Each `lean/<module>.lean` has a `lean/<module>.md` beside it
-carrying the same proof for a human reader; the two are kept in one-to-one correspondence.
+[`lean/README.md`](lean/README.md)
 
 ## Build
 
