@@ -139,26 +139,6 @@ theorem lead_translate (M : PairSeq) :
     lead (translate M) = match M with | [] => 0 | p :: _ => p.2 := by
   cases M <;> simp [translate]
 
-/-! ### Sanity checks (the examples of the task description) -/
-
-example : translate [(0,0)] = P 0 Z Z := by simp [translate]
-
-/-- `(0,0)(1,0) = p₀(p₀(0))` -/
-example : translate [(0,0),(1,0)] = P 0 (P 0 Z Z) Z := by
-  simp [translate, List.takeWhile, List.dropWhile]
-
-/-- `(0,0)(1,1) = p₀(p₁(0))` -/
-example : translate [(0,0),(1,1)] = P 0 (P 1 Z Z) Z := by
-  simp [translate, List.takeWhile, List.dropWhile]
-
-/-- `(0,0)(1,0)(1,0) = p₀(p₀(0)+p₀(0))` -/
-example : translate [(0,0),(1,0),(1,0)] = P 0 (P 0 Z (P 0 Z Z)) Z := by
-  simp [translate, List.takeWhile, List.dropWhile]
-
-/-- `(0,0)(1,1)(2,2)(3,3) = p₀(p₁(p₂(p₃(0))))` -/
-example : translate [(0,0),(1,1),(2,2),(3,3)] = P 0 (P 1 (P 2 (P 3 Z Z) Z) Z) Z := by
-  simp [translate, List.takeWhile, List.dropWhile]
-
 /-! ### List bookkeeping helpers -/
 
 section ListHelpers

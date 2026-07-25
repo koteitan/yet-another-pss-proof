@@ -30,67 +30,20 @@ recursion step.  This is also why the explicit witness `m = |S_hi|` of
 `AscArgDomExplicit` works: each unfolding step consumes at least one column of
 `S_hi`.
 
-## Model evidence
+## 証明の構造
 
-* `ArgDomCore` itself (as stated here, with the right-visible side condition):
-  **0 violations** over 965 / 18358 / 190729 instances at closures
-  `(v ≤ 4, n ≤ 3, len ≤ 10, depth 5)`, `(v ≤ 5, n ≤ 5, len ≤ 11, depth 7)`,
-  `(v ≤ 3, n ≤ 5, len ≤ 14, depth 9)` (`tools/probe_k1c4.py`).
-* The side condition is **load-bearing**: dropping it gives 50 violations / 1460
-  already at the smallest closure — the minimal witness is
-  `N = (0,0)(1,1)(2,1)(3,0)(4,1)(5,1)` at the pair `(2,1) … (4,1)`, which is
-  exactly the counterexample recorded in `AscArgDomProof.lean`.
-* The right-visible condition and the `le0`-ancestor condition
-  ("every row-0 ancestor of `j` strictly between carries row-1 `≥ w`") select
-  **exactly** the same instances (0 mismatches over all three closures).
+`ArgDomCore` は `blockok` / `z0ok` / `r1ok` / `cnf` からは従わない
+（`argDomCore_needs_reachability`）。したがって証明は `ST_PS` の導出そのものに沿った
+帰納法になる。その分岐は次の通りである。
 
-## What remains, and what is ruled out
+* `diag`：`diagSeq 0 v` の列は `(t,t)` なので `row1 i = row1 j` から `i = j` となり、
+  インスタンスが存在しない。
+* `oper`, `|N₁| ≤ 1`：`N = N₁` は列が 1 本以下でインスタンスが無い。
+* `oper`, 末尾が `(0,0)`：`N = N₁.dropLast` で引数も `le0` も変わらない。
+* `oper`, 親なし：`hasParent_last_ST_PS` により `ST_PS` 上では空。
+* `oper`, コピー分岐：インスタンスの 2 本の印付き列とコピー分解との位置関係で
+  3 つに分かれる（`argDomCoreOn_bad_A1` / `_B` / `_A2`）。
 
-`ArgDomCore` is the whole residual.  Part E below proves — as a real theorem,
-`argDomCore_needs_reachability` — that it does **not** follow from
-`blockok / z0ok / r1ok / cnf`: the sequence `(0,0)(1,1)(2,1)(3,2)(2,1)(3,2)`
-satisfies all four and refutes the conclusion.  So any proof must descend the
-`ST_PS` derivation itself (the non-structural axis), i.e. induct on
-`ST_PS.diag / ST_PS.oper`:
-
-* `diag`: vacuous — in `diagSeq 0 v` a column is `(t,t)`, so `row1 i = row1 j`
-  forces `i = j`.
-* `oper`, `|N₁| ≤ 1`: `N = N₁` has `≤ 1` column, no instance.
-* `oper`, last column `(0,0)`: `N = N₁.dropLast`, and both arguments and `le0`
-  are unchanged (the `(0,0)` never enters a `takeWhile` at level `> 0`) — direct
-  IH.
-* `oper`, `noparent`: empty on `ST_PS` (`hasParent_last_ST_PS`).
-* `oper`, `bad`: `N = G₁ ++ copies d₁ blk₁ k` — the real case, needing positional
-  bookkeeping between the instance `(i,j)` and the copy decomposition.
-
-Measured shape of the residual comparison (`tools/probe_argcore_stats.py`, 96884
-non-degenerate instances): the *head* columns of `B` and `shiftr0 e A` always sit
-at the same level, and
-
-    S1 :  B.headI.2 ≤ (shiftr0 e A).headI.2   —   0 violations,
-
-so the comparison is decided at the head in 44% of instances, `B` is a prefix in
-20%, and the rest recurse (max observed depth 5).  `S1` is exactly what the
-local-invariant counterexample above violates, so `S1` also needs the derivation.
-
-## State of this file
-
-Green and `sorryAx`-free except for **three** named residuals (Part F), the three
-cases of the `bad` branch of the `ST_PS` derivation induction for `ArgDomCore`:
-
-    argDomCoreOn_bad_A1   -- both marked columns beyond copy 0        (`p ≤ i`)
-    argDomCoreOn_bad_B    -- both marked columns inside `G ++ blk`    (`j < p`)
-    argDomCoreOn_bad_A2   -- the cross case                           (`i < p ≤ j`)
-
-`argDomCoreOn_bad` itself is **proved** from them (inner strong induction on the
-copy count `n`, then the exhaustive dispatch); the section docstring above the
-three carries the coverage argument, the census, the three model-confirmed traps,
-and the shared hypothesis package.  Everything else — the reduction
-`ArgDomCore → AscArgDom → pss_cofinality`, the `diag`, `|M| ≤ 1`, `(0,0)`-last
-and `noparent` branches of that induction, and the negative result of Part E — is
-complete.  Tools built for the three cases: `sle_of_short`, `sle_shiftr0`,
-`peel_aux`, `seqlex_of_sle_not_prefix`, `argDomCoreOn_transfer`,
-`argDomCoreOn_drop_left` / `_extend_left` / `_shiftr0`.
 -/
 import Cofinality
 
@@ -297,7 +250,7 @@ column-lex dominated by the `e`-shift of `A`.
 The side condition `SpineOK A1 (u+e) w` says the row-0 ancestors of `(u+e,w)`
 strictly between the two columns all carry row-1 `≥ w` — equivalently, the two
 columns are **row-1 siblings**.  Without it the statement is false
-(`AscArgDomProof.lean`'s counterexample is the minimal instance). -/
+(the counterexample above is the minimal instance). -/
 def ArgDomCore : Prop :=
   ∀ {X A1 B A2 Z : PairSeq} {u w e : ℕ},
     ST_PS ((X ++ (u, w) :: (A1 ++ (u + e, w) :: (B ++ A2))) ++ Z) →
@@ -314,7 +267,7 @@ def ArgDomCore : Prop :=
 
 This is the *only* place the host `M` is used, and it is exactly where the
 `nextrel1` clause (whose absence made the older statement false, see
-`AscArgDomProof.lean`) pays for itself. -/
+the counterexample above) pays for itself. -/
 
 /-- **`SpineOK` from the `nextrel1` clause.**  A right-visible column `x` of `R`
 below level `v0+d0` has *every* later column of `M` strictly above it, so
@@ -464,23 +417,6 @@ theorem pss_cofinality_of_core (H : ArgDomCore) {M N : PairSeq}
     (hM : ST_PS M) (hN : ST_PS N) (h : translate N <o translate M) :
     ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧) :=
   pss_cofinality_of_argdom (ascArgDom_of_core H) hM hN h
-
-/-! ## Part E — the core genuinely needs reachability
-
-`ArgDomCore` is **not** a consequence of the local standard-form invariants.
-The sequence
-
-    L = (0,0)(1,1)(2,1)(3,2)(2,1)(3,2)
-
-satisfies `blockok 0`, `z0ok`, `r1ok` **and** `cnf (translate ·)` — every local
-invariant the file's machinery supplies — yet violates the conclusion of
-`ArgDomCore` at `(u,w) = (1,1)`, `e = 1` (where `SpineOK` is vacuous):
-
-    A = (2,1)(3,2)(2,1)(3,2),   B = (3,2),   shiftr0 1 A = (3,1)(4,2)(3,1)(4,2)
-
-and `(3,2) > (3,1)`.  `L ∉ ST_PS` (model-checked over three closures), so the
-proof of `ArgDomCore` **must** descend the `ST_PS` derivation; no argument from
-`blockok / z0ok / r1ok / cnf` alone can work. -/
 
 /-! ## Part F — the `ST_PS` derivation induction for `ArgDomCore`
 
@@ -758,7 +694,7 @@ theorem argbound_len (e u w : ℕ) (A1 B : PairSeq) :
   simp [shiftr0_length]
   omega
 
-/-! ### 🚨 THE RESIDUAL — the `bad` branch, split into its three cases
+/-! ### The `bad` branch, split into its three cases
 
 Fix the `oper_bad_blocks` data: `M = G ++ blk ++ [lp]` with `blk = (v0,w0) :: R`,
 so the expanded sequence is
@@ -783,13 +719,12 @@ marked columns sit at the positions
 and `i < j` holds by construction.  The case split is on where `i`, `j` fall
 relative to `p`, phrased purely in the decomposition data:
 
-| name | discriminator | position reading | census |
-|---|---|---|---|
-| **B**  | `X.length + (A1.length + 1) < G.length + (R.length + 1)` | `j < p` | 50237 |
-| **A2** | `X.length < G.length + (R.length + 1)` and `G.length + (R.length + 1) ≤ X.length + (A1.length + 1)` | `i < p ≤ j` | 26290 |
-| **A1** | `G.length + (R.length + 1) ≤ X.length` | `p ≤ i` | 9369 |
+| name | discriminator | position reading |
+|---|---|---|
+| **B**  | `X.length + (A1.length + 1) < G.length + (R.length + 1)` | `j < p` |
+| **A2** | `X.length < G.length + (R.length + 1)` and `G.length + (R.length + 1) ≤ X.length + (A1.length + 1)` | `i < p ≤ j` |
+| **A1** | `G.length + (R.length + 1) ≤ X.length` | `p ≤ i` |
 
-(census: `tools/probe_badbranch_cases2.py`).
 
 **Coverage** (the point of this split): the three are pairwise exclusive and
 exhaust every instance, by two applications of `Nat.lt_or_ge` and nothing else —
@@ -811,7 +746,7 @@ Three traps, all model-confirmed, that a coarser split walks into:
   `M = (0,0)(1,1)(2,0)(1,1)`, `blk = (0,0)(1,1)(2,0)`, `d0 = 1`, `n = 2`, so
   `M⟦2⟧ = (0,0)(1,1)(2,0)(1,0)(2,1)(3,0)` and the instance `i = 0`, `j = 5`
   pairs `blk`'s offset-0 column with `blk`'s offset-2 column (502 such instances
-  in the census).
+  ).
 
 **Shared context.**  Each of the three case lemmas repeats the *entire* context,
 so that it is self-contained and provable in isolation:
@@ -819,7 +754,7 @@ so that it is self-contained and provable in isolation:
 * `hM`, `hMon` — the host's derivation and its inherited `ArgDomCoreOn`;
 * `hMeq`, `hRgt`, `hlp`, `hdisj` — the full `oper_bad_blocks_all` package
   (`hdisj` carries the `nextrel1` clause, which is load-bearing: without it the
-  statement is FALSE, see `AscArgDomProof.lean`);
+  statement is false);
 * `hSTn : ∀ m, 1 ≤ m → ST_PS (G ++ copies d0 blk m)` — the expanded sequences are
   themselves standard forms, so `blockok_ST_PS / z0ok_ST_PS / r1ok_ST_PS / cnf`
   are available *on the tower*, not just on `M`;
@@ -832,11 +767,10 @@ so that it is self-contained and provable in isolation:
   Cases B and A2 receive it too, for free;
 * `hn : 1 ≤ n` and the eight side conditions `heq, he, h1 … h6` of the instance;
 * the case's own discriminator, last.
-
-A prover may ignore any hypothesis, but need invent none. -/
+ -/
 
 /-- **Case A1** — both marked columns lie beyond copy `0`: `p ≤ i` (hence
-`p ≤ j` as well, since `i < j`).  9369 census instances.
+`p ≤ j` as well, since `i < j`).
 
 Proof.  Write `n = m + 1`.  `copies_succ_front` peels copy `0`,
 
@@ -963,8 +897,7 @@ theorem seqlex_of_sle_snoc' : ∀ {X V E : PairSeq} {lp q : ℕ × ℕ}, sle (X 
         · exact Or.inl hp
         · exact Or.inr ⟨rfl, ih (Or.inr hs') hq (by omega) S' E'⟩
 
-/-- **Case B** — both marked columns lie inside `G ++ blk`, i.e. `j < p`.  50237
-census instances, the largest block.
+/-- **Case B** — both marked columns lie inside `G ++ blk`, i.e. `j < p`.
 
 `G ++ blk = M.take (M.length - 1)` is a common prefix of the host `M` (which
 continues with the dropped column `lp`) and of the tower `N = G ++ copies d0 blk n`
@@ -1298,8 +1231,8 @@ theorem spineOK_of_nextrel1_strict {G R : PairSeq} {v0 w0 d0 : ℕ}
   omega
 
 /-- **Case A2** — the cross case: the shallower marked column is inside
-`G ++ blk` and the deeper one is in a later copy, `i < p ≤ j`.  26290 census
-instances.  ⚠ Trap 2: this case is real and large — it is **not** vacuous.
+`G ++ blk` and the deeper one is in a later copy, `i < p ≤ j`.  This case is
+not vacuous.
 
 **The one-period descent.**  Write `L = |blk| = R.length + 1`.  For `n = 1` the
 case is empty (the tower stops at `p`, but `j ≥ p`), so `n ≥ 2` and the smaller

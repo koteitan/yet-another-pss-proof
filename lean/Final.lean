@@ -45,34 +45,8 @@ theorem wf_Rnf_of_wf_PS
     exact acc_Rnf_of_acc_PS (h.apply M) hM
   · exact Acc.intro _ (fun v hv => absurd hv.2.1 hu)
 
-/-! ## What is left
-
-Exactly one obligation, stated in full in `YAPSS/Cofinality.lean`:
-
-```
-def AscArgDomExplicit : Prop :=
-  ∀ {G R S : PairSeq} {v0 w0 d0 : ℕ},
-    ST_PS ((G ++ ((v0, w0) :: R)) ++ [(v0 + d0, w0 + 1)]) →
-    ST_PS ((G ++ ((v0, w0) :: R)) ++ (v0 + d0, w0) :: S) →
-    (∀ x ∈ R, v0 < x.1) → 0 < d0 →
-    sle (S.takeWhile fun p => v0 + d0 < p.1)
-      (shiftr0 d0 (R ++ copies d0 (shiftr0 d0 ((v0, w0) :: R))
-        (S.takeWhile fun p => v0 + d0 < p.1).length))
-```
-
-It is a `≤lex` comparison between two explicit pair-sequence expressions built
-from BMS copy/tiling (`shiftr0`, `copies`, `takeWhile`).  It mentions **no**
-ordinal, no `ψ`/`Ω`, no evaluation map, and no `olt`.
-
-Everything else on both pillars is proved.  In particular no
-coefficient-domination (`Gterm`) fact occurs anywhere on this
-route; `YAPSS/Wset.lean` §9 records why that is structural rather than
-accidental (the carrier of the `W_u` induction is *membership*, which is
-`A`-closed by construction, never an order-domination clause). -/
-
 #print axioms acc_Rnf_of_acc_PS
 #print axioms wf_Rnf_of_wf_PS
-
 
 /-- **PSS Bachmann cofinality**, unconditional: the fundamental sequence `M⟦·⟧` is
 cofinal below `M` among standard forms. -/
@@ -106,6 +80,5 @@ theorem no_infinite_expansion_holds :
 #print axioms wf_Rnf_holds
 #print axioms PSS_terminates_unconditional
 #print axioms no_infinite_expansion_holds
-
 
 end YAPSS

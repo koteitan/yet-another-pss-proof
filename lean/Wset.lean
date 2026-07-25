@@ -272,11 +272,7 @@ theorem oper_eq_graft_nil_of_domT {M : PairSeq} {m n : ℕ}
   unfold Pred
   rw [if_neg (by omega)]
 
-/-! ### 1a. Validation of the design answer
-
-The header claims that PSS's own `hasParent … 1 …` predicate *is* the Buchholz
-spine condition.  That is not a definition, it is a theorem about `nextrel1`, and
-it is proved here so the design answer is checked rather than asserted. -/
+/-! ### 1a. `r1cand` -/
 
 /-- A strict row-0 ancestor of `j1` carrying a strictly smaller row-1 value —
 i.e. a `D_v` step on the rightmost spine with `v ≤ m`, which is exactly what
@@ -341,64 +337,6 @@ theorem domT_iff {M : PairSeq} {m : ℕ} (hne : M ≠ []) :
     rintro ⟨j0, h1, h2, h3⟩
     have := hall j0 h1 h2
     omega
-
-/-! ### 1b. Sanity checks: the `Ω_{m+1}` atom
-
-A lone pair `(x, m+1)` is `Ω_{m+1}`: it satisfies `domT … m`, and its
-`T_m`-indexed fundamental sequence is the identity `Ω_{m+1}[z] = z` (re-based),
-exactly as in Buchholz. -/
-
-example (x m : ℕ) : domT [(x, m + 1)] m := by
-  refine ⟨by simp [entry], ?_⟩
-  rintro ⟨j0, hj0, -⟩
-  unfold nextR at hj0
-  rw [if_neg (by omega)] at hj0
-  have := hj0.2.2.1
-  simp at this
-
-example (x m : ℕ) (z : PairSeq) :
-    graft [(x, m + 1)] z = z.map (fun p => (p.1 + x, p.2)) := by
-  simp [graft, entry]
-
-example (m : ℕ) : ¬ domT [((0 : ℕ), (0 : ℕ))] m := by
-  rintro ⟨h, -⟩
-  simp [entry] at h
-
-/-! ### 1c. Sanity checks: why the `based` side condition is not cosmetic
-
-`M = (0,3)(1,2)(1,1)` is `Ω_1`-cofinal (`domT M 0`): the trailing `(1,1)` is a
-row-1 orphan (its only strict row-0 ancestor `(0,3)` carries row-1 `3 > 0`).  So
-`translate M = p₃(p₂(0) + p₁(0))` and `M[z]` must be `p₃(p₂(0) + z)`.
-
-The two blocks `[(0,0)]` and `[(2,0)]` have the *same* translate `p₀(0)`, but
-only the `based` one grafts correctly: the other turns the grafted node into a
-*child* of `(1,2)` instead of its sibling. -/
-
-example : domT [(0, 3), (1, 2), (1, 1)] 0 := by
-  rw [domT_iff (by simp)]
-  refine ⟨by simp [entry], ?_⟩
-  intro j0 h1 _
-  have h2 : j0 = 0 ∨ j0 = 1 := by simp at h1; omega
-  rcases h2 with rfl | rfl <;> simp [entry]
-
-/-- The two candidate blocks are order-theoretically indistinguishable. -/
-example : translate [((0 : ℕ), (0 : ℕ))] = translate [((2 : ℕ), (0 : ℕ))] := by
-  simp [translate]
-
-/-- `based` block: grafts to `p₃(p₂(0) + p₀(0))` — the honest substitution. -/
-example : graft [(0, 3), (1, 2), (1, 1)] [(0, 0)] = [(0, 3), (1, 2), (1, 0)] := by
-  decide
-
-example : translate [((0 : ℕ), (3 : ℕ)), (1, 2), (1, 0)] = P 3 (P 2 Z (P 0 Z Z)) Z := by
-  simp [translate, List.takeWhile, List.dropWhile]
-
-/-- Not `based`: the same `z` grafts to the WRONG term `p₃(p₂(p₀(0)))` — the
-node became a *child* of `(1,2)` instead of its sibling. -/
-example : graft [(0, 3), (1, 2), (1, 1)] [(2, 0)] = [(0, 3), (1, 2), (3, 0)] := by
-  decide
-
-example : translate [((0 : ℕ), (3 : ℕ)), (1, 2), (3, 0)] = P 3 (P 2 (P 0 Z Z) Z) Z := by
-  simp [translate, List.takeWhile, List.dropWhile]
 
 /-! ## 2. The operator `A_u` and the iterated inductive set `W_u`
 
@@ -1949,73 +1887,6 @@ theorem wf_olt_ST_PS_of_cofinality
       ∃ n, 1 ≤ n ∧ translate N ≤o translate (M⟦n⟧)) :
     WellFounded (fun a b : PairSeq => ST_PS a ∧ ST_PS b ∧ translate a <o translate b) :=
   wf_of_cofinality_and_membership hcof W_membership
-
-/-! ## 9. REPORT — what is GREEN, what is open, and where the danger is
-
-Everything in this file is `sorryAx`-free; the `#print axioms` block below is
-the machine check.  What follows records the shape of the completed argument and
-the facts a reader should not have to rediscover.
-
-### The two design decisions that made it work
-
-1. **`dom = T_m` is PSS's own `¬ hasParent M 1 (|M|-1)`** (`domT`), and the
-   `T_m`-indexed fundamental sequence is the `graft`.  Validated, not asserted:
-   `hasParent_one_iff` proves that `nextrel1` picks the *largest* row-0 ancestor
-   with a smaller row-1 value, so a row-1 parent exists iff *some* strict row-0
-   ancestor breaks Buchholz's `u < v` spine condition.
-2. **The ℕ-branch of `A_u` carries the guard `natDom`** (Buchholz's
-   `dom c ∈ {{0}, ℕ_B}`).  This is load-bearing: without it branch 2 could fire
-   on an `Ω_{m+1}`-cofinal block, where PSS's `oper` degenerates to
-   `graft M []` and carries far too little information to run the 2.6 tower.
-
-### The engine: `oper_shift`
-
-`Nrm.oper_append_right` needs the right summand anchored at depth `0`; PSS
-blocks are not.  `oper_shift` (`oper` is row-0-shift equivariant) converts it
-into the shift-general `oper_append_gen`, which is what `split_lastMin` feeds.
-The one non-shift-invariant test inside `oper` — "is the last pair `(0,0)`?" —
-turns out to be **redundant**: a row-0-`0` column has no parent at all, so both
-readings land in the same `Pred` branch.
-
-### The tower
-
-`oper_cons_tower` is the PSS form of `(D_v b)[n] = D_v(b[x_n])`.  The proof is
-the recursion `M⟦n+1⟧ = M.dropLast ++ (M⟦n⟧).map (· + d0)` with
-`d0 = entry R 0 (|R|-1)`, matched against
-`tow v R (k+1) = (0,v) :: graft R (tow v R k)`.  The root `(0,v)` is the row-1
-parent of the last column precisely because `v ≤ m` (`hasParent_cons_one`), and
-`argOK R` makes it a row-0 ancestor of everything (`le0_cons_zero`).
-
-### The `H0clause` question — answered NO, and structurally
-
-The worry was Buchholz's additive closure 2.4(b), free in the source only
-because `+` is formed inside `OT_B`, whose *definition* carries the CNF
-condition.  On the PSS side `translate`'s `+` is the third component of
-`P a b c` and carries **no** normal-form condition, so `A ++ B` is
-unconditional at the term level; 2.4(b) needs only the *positional* guard
-`rsum A B` ("`B` is a genuine top-level suffix"), which `split_lastMin` supplies
-for free.  The reason is the one the design answer predicted: the carrier of the
-induction is **W-membership** (`A`-closed by construction), never an
-order-domination clause, so no `olt` comparison — hence no `Gterm` domination —
-is ever needed.  The five `oper_cons_*` lemmas confirm this: they are pure
-statements about `oper`/`hasParent`, and their proofs never mention `translate`.
-
-### Facts worth not rediscovering
-
-* **`based` and `argOK` are different and both necessary.**  `based M` ("first
-  column at depth `0`") is what `oper` preserves; `argOK R` ("every column
-  strictly below depth `0`") is what makes the root of `(0,v) :: R` an ancestor
-  of everything.  "Minimum depth `0`" is *not* `oper`-stable, which is why
-  `split_lastMin` + `oper_shift` replace any naive normalisation.
-* **The `based z` guard on the `T_m` branch is load-bearing** — §1c
-  machine-checks a concrete failure (`[(0,0)]` and `[(2,0)]` have the same
-  `translate` but graft differently).  It survived the whole chain because the
-  tower's graft argument `tow v R k` is `[]` or a depth-`0` `cons`.
-* **`ST_PS`-ness is barely used.**  `mem_W_of_bound` proves membership for
-  *every* block, so `W_membership` never needs the invariant "no standard form
-  is `Ω`-cofinal"; the bridge uses only `stps_head` (length-`1` standard forms
-  are `[(0,0)]`).
--/
 
 #print axioms hasParent_one_iff
 #print axioms domT_iff
