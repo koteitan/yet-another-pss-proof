@@ -80,8 +80,8 @@ lean/                 the Lean 4 / Mathlib formalization
   Final.lean/.md      the main theorems
   PROOF-STATUS.md     status of the formalization (authoritative)
   lakefile.toml       the eleven modules as roots, in dependency order
+  memo/               verification code that is not part of the proof
   tools/              DeadCode.lean — declarations no proof term reaches
-md/                   the previous generation of the proof text (being replaced by lean/*.md)
 tools/                the executable PSS model and the probes that check a statement
                       against it before it is formalized
 task.md               progress tree
