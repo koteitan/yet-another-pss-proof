@@ -5,7 +5,8 @@
 
 ### 定理
 
-$`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}`$ とし、次の 6 つを仮定する。
+$`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とし、
+次の 6 つを仮定する。
 
 ```math
 \begin{aligned}
@@ -20,6 +21,10 @@ $`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}
 &\text{(r2)}\quad    &&\forall x \in T_2,\ (z_2)_1 \le x_1 .
 \end{aligned}
 ```
+
+（$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)、$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、
+$`\prec`$ [D.olt](Term.md#d-olt)、$`\mathsf{P}`$ と $`\mathsf{Z}`$ [D.Three](Term.md#d-Three)、
+$`\preceq`$ [D.ole](Term.md#d-ole)）
 
 このとき $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)\bigr)`$ ならば
 $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$。

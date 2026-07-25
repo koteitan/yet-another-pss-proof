@@ -5,12 +5,15 @@
 
 ### 定理
 
-$`d \in \mathbb{N}`$、$`M, N \in \mathrm{PairSeq}`$ とする。
-$`\mathrm{blockok}(d, M)`$、$`\mathrm{blockok}(d, N)`$、$`M \prec_{\mathrm{lex}} N`$ ならば
+$`d \in \mathbb{N}`$、$`M, N \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とする。
+$`\mathrm{blockok}(d, M)`$（[D.blockok](Seqlex.md#d-blockok)）、$`\mathrm{blockok}(d, N)`$、
+$`M \prec_{\mathrm{lex}} N`$（[D.seqlex](Seqlex.md#d-seqlex)）ならば
 
 ```math
 \mathrm{tr}\,M \prec \mathrm{tr}\,N .
 ```
+
+（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）
 
 ### 証明
 
@@ -61,7 +64,8 @@ $`\mathrm{tr}`$ の定義（D.translate）の第 2 式より
 
 **(4a) $`y = y'`$ のとき。**
 [T.seqlex_cons_cons](Seqlex.md#t-seqlex_cons_cons) より、仮定 $`(d,y) :: r \prec_{\mathrm{lex}} (d,y) :: r'`$ は
-$`(d,y) \prec_{\mathrm{p}} (d,y)`$ または $`\bigl((d,y) = (d,y) \wedge r \prec_{\mathrm{lex}} r'\bigr)`$ である。
+$`(d,y) \prec_{\mathrm{p}} (d,y)`$（[D.pairlt](Seqlex.md#d-pairlt)）または
+$`\bigl((d,y) = (d,y) \wedge r \prec_{\mathrm{lex}} r'\bigr)`$ である。
 第 1 の選言は $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より $`d \lt d`$ または
 $`(d = d \wedge y \lt y)`$ であり、$`\lt`$ の非反射性によりいずれも偽である。
 よって $`r \prec_{\mathrm{lex}} r'`$ が成り立つ。
@@ -246,7 +250,7 @@ l\langle i\rangle_d := \begin{cases} l_i & (i \lt \lvert l\rvert) \cr d & (i \ge
 ```
 
 であり、減法は自然数の切り捨て減法である。$`\alpha = \mathbb{N}\times\mathbb{N}`$ かつ $`d = (0,0)`$ のときの
-$`l\langle i\rangle_{(0,0)}`$ が、$`M_{i,j}`$ の定義（D.entry）の $`l\langle i\rangle`$ である。
+$`l\langle i\rangle_{(0,0)}`$ が、$`M_{i,j}`$（[D.entry](Pss.md#d-entry)）の定義の $`l\langle i\rangle`$ である。
 
 ### 証明
 
@@ -372,6 +376,8 @@ $`F : \mathbb{N} \to \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とし、
    \bigl(\mathrm{head}\,F(k+1)\bigr)_1 \le \bigl(\mathrm{last}_{(0,0)} F(k)\bigr)_1 + 1 .
 \end{aligned}
 ```
+
+（$`\mathrm{steps}_1`$ [D.steps1](Seqlex.md#d-steps1)）
 
 このとき $`\mathrm{steps}_1(\mathrm{cat}_n F)`$ が成り立ち、さらに $`0 \lt n`$ ならば
 
@@ -642,7 +648,7 @@ M_{0,j_1} \le M_{0,j_1 - 1} + 1
 
 **$`0 \lt i_1`$ のとき。** $`\to^M_{i}`$ の定義（D.nextR）の第 2 式より
 $`j_0 \to^M_{i_1} j_1`$ は $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）である。
-$`\to^M_1`$ の定義（D.nextrel1）の第 5 条件は $`j_0 \le^M_0 j_1`$ であり、
+$`\to^M_1`$ の定義（D.nextrel1）の第 5 条件は $`j_0 \le^M_0 j_1`$（[D.le0](Pss.md#d-le0)）であり、
 [T.le0_entry0_mono](Term.md#t-le0_entry0_mono) より $`M_{0,j_0} \le M_{0,j_1}`$ である。
 $`d_0`$ の定義の第 1 式より $`d_0 = M_{0,j_1} - M_{0,j_0}`$ であり、切り捨て減法は
 $`M_{0,j_0} \le M_{0,j_1}`$ のとき

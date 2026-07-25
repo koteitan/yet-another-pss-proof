@@ -5,7 +5,8 @@
 
 ### 定理
 
-$`A \prec_{\mathrm{lex}} B`$ とし、$`U \in \mathrm{PairSeq}`$ が
+$`A \prec_{\mathrm{lex}} B`$（[D.seqlex](Seqlex.md#d-seqlex)）とし、
+$`U \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）が
 
 ```math
 U = () \ \vee\ \forall x \in B,\ \mathrm{head}\,U \prec_{\mathrm{p}} x
@@ -17,7 +18,8 @@ U = () \ \vee\ \forall x \in B,\ \mathrm{head}\,U \prec_{\mathrm{p}} x
 A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C .
 ```
 
-ここで $`\mathrm{head}\,U`$ は $`U`$ の先頭要素である。
+ここで $`\mathrm{head}\,U`$ は $`U`$ の先頭要素である
+（$`\prec_{\mathrm{p}}`$ [D.pairlt](Seqlex.md#d-pairlt)）。
 
 ### 証明
 
@@ -82,7 +84,7 @@ Y = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,Y)_1\bigr)
 
 ここで $`\mathrm{tw}_a L`$ は $`L`$ の先頭から第 1 成分が $`a`$ より大きい要素が続く極大な
 前部分列、$`\mathrm{dw}_a L`$ は $`L`$ から $`\mathrm{tw}_a L`$ を取り除いた残りの列であり、
-どちらも $`\mathrm{tr}`$ の定義（D.translate）の記法である。
+どちらも $`\mathrm{tr}`$（[D.translate](Term.md#d-translate)）の定義（D.translate）の記法である。
 
 ### 証明
 
@@ -119,13 +121,16 @@ $`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 \end{aligned}
 ```
 
+（$`\mathrm{blockok}`$ [D.blockok](Seqlex.md#d-blockok)、$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)）
+
 このとき
 
 ```math
 \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)\bigr).
 ```
 
-（$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)。以下 $`\mathsf{Z}`$ と $`\mathsf{P}`$ は
+（$`\mathrm{cp}_d(B,n)`$ [D.copies](Cnf-2.md#d-copies)、
+$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)。以下 $`\mathsf{Z}`$ と $`\mathsf{P}`$ は
 $`\mathrm{Three}`$ [D.Three](Term.md#d-Three)の構成子である。）
 
 ### 証明
@@ -220,6 +225,8 @@ $`v_0 := v_0`$、$`w_0 := w_0`$、$`R := R`$、$`T := y :: Y'`$ として適用�
 \end{aligned}
 ```
 
+（$`\prec`$ [D.olt](Term.md#d-olt)）
+
 **第 5 段：$`y_2 \le w_0`$。**
 $`w_0 \lt y_2`$ と仮定すると、[T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 1 選言により
 $`\mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z}) \prec \mathsf{P}(y_2, \mathrm{tr}\,R', \mathsf{Z})`$ となり
@@ -286,7 +293,7 @@ y :: Y' = (v_0,w_0) :: (R' \mathbin{+\!\!+} Y'') = \bigl((v_0,w_0) :: R\bigr) \m
   = B \mathbin{+\!\!+} \mathrm{cp}_0(B, m)
 ```
 
-である。したがって示すべきことは
+である（$`X^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）。したがって示すべきことは
 $`B \mathbin{+\!\!+} Y'' \preceq_{\mathrm{lex}} B \mathbin{+\!\!+} \mathrm{cp}_0(B, m)`$ であり、
 [T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) によりこれは
 $`Y'' \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ と同値である。これは得られたものである。
@@ -379,6 +386,8 @@ $`B := (v_0, w_0) :: R`$ とおく。次の 4 つを仮定する。
 \end{aligned}
 ```
 
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)）
+
 このとき $`1 \le m`$ なる $`m \in \mathbb{N}`$ が存在して
 
 ```math
@@ -435,7 +444,7 @@ $`(\mathrm{head}\,Y)_1 = q_1 = v_0`$ である。
 
 である。この列を $`N`$ と書く。
 
-**第 5 段：$`\mathrm{steps}_1(B \mathbin{+\!\!+} Y)`$。**
+**第 5 段：$`\mathrm{steps}_1(B \mathbin{+\!\!+} Y)`$（[D.steps1](Seqlex.md#d-steps1)）。**
 仮定 (1) と [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) より $`\mathrm{blockok}(0, N)`$ が成り立ち、
 $`\mathrm{blockok}`$ の定義（D.blockok）の第 3 連言子より $`\mathrm{steps}_1(N)`$ である。
 第 4 段の分解に [T.steps1_append](Seqlex.md#t-steps1_append) を適用すると、その第 1 連言子として
@@ -544,6 +553,8 @@ $`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)`$ と略記する（$`(\el
    q :: S \preceq_{\mathrm{lex}} \bigl(\mathrm{cp}_{d_0}(B, m)\bigr)^{+d_0} .
 \end{aligned}
 ```
+
+（$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)）
 
 <a id="d-AscCrux1"></a>
 ## 定義: 頭を取った上昇コピーの核心 (D.AscCrux1)

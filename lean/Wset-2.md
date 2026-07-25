@@ -6,12 +6,13 @@
 ### 定理
 
 $`b \lt \lvert S\rvert`$ ならば
-$`\mathrm{hasParent}(S^{+d}, i, b) \iff \mathrm{hasParent}(S, i, b)`$。
+$`\mathrm{hasParent}(S^{+d}, i, b) \iff \mathrm{hasParent}(S, i, b)`$
+（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)、$`S^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）。
 
 ### 証明
 
 $`\mathrm{hasParent}`$ の定義（D.hasParent）より、両辺はそれぞれ
-「$`j_0 \to^{S^{+d}}_i b`$ をみたす $`j_0`$ が存在し一意である」
+「$`j_0 \to^{S^{+d}}_i b`$（[D.nextR](Pss.md#d-nextR)）をみたす $`j_0`$ が存在し一意である」
 「$`j_0 \to^{S}_i b`$ をみたす $`j_0`$ が存在し一意である」である。
 
 **（左から右）** $`j_0`$ を取り、$`j_0 \to^{S^{+d}}_i b`$ かつ
@@ -57,11 +58,13 @@ $`\varepsilon`$ の値は述語のみで決まるから両辺は等しい。∎
 
 ### 定理
 
-任意の $`M \in \mathrm{PairSeq}`$、$`d, n \in \mathbb{N}`$ に対し
+任意の $`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`d, n \in \mathbb{N}`$ に対し
 
 ```math
 \bigl(M^{+d}\bigr)[n] = \bigl(M[n]\bigr)^{+d} .
 ```
+
+（$`M[n]`$ [D.oper](Pss.md#d-oper)）
 
 ### 証明
 
@@ -73,12 +76,12 @@ $`\lvert M^{+d}\rvert = \lvert M\rvert`$ である（平行移動は各要素を
 双方に適用して $`(M^{+d})[n] = M^{+d}`$ と $`M[n] = M`$ を得る。よって両辺とも $`M^{+d}`$ である。
 
 **(II) $`j_1 \ne 0`$ のとき。** このとき $`j_1 \lt \lvert M\rvert`$ である。
-$`i_1 := \mathrm{idx}_1(M, j_1)`$ とおくと
+$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）とおくと
 [T.idx1_shift](Column-4.md#t-idx1_shift) より $`\mathrm{idx}_1(M^{+d}, j_1) = i_1`$ である。
 $`\mathrm{hasParent}(M, i_1, j_1)`$ が成り立つか否かでさらに分ける。
 
 **(II-a) $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-まず $`0 \lt M_{0,j_1}`$ である。実際 $`M_{0,j_1} = 0`$ とすると
+まず $`0 \lt M_{0,j_1}`$（[D.entry](Pss.md#d-entry)）である。実際 $`M_{0,j_1} = 0`$ とすると
 [T.no_hasParent_of_row0_zero](Column.md#t-no_hasParent_of_row0_zero) により
 $`\mathrm{hasParent}(M, i_1, j_1)`$ から矛盾が出る。したがって
 $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ である。
@@ -137,7 +140,7 @@ $`\neg\,\mathrm{hasParent}(M^{+d}, i_1, j_1)`$ である。
 $`M`$ について、$`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ が成り立つなら
 [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) により、成り立たないなら
 [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) により、いずれにせよ
-$`M[n] = \mathrm{Pred}\,M`$ である。同じ 2 つの定理を $`M^{+d}`$ に適用して
+$`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）である。同じ 2 つの定理を $`M^{+d}`$ に適用して
 $`(M^{+d})[n] = \mathrm{Pred}(M^{+d})`$ を得る。
 
 $`j_1 = \lvert M\rvert - 1 \ne 0`$ より $`2 \le \lvert M\rvert = \lvert M^{+d}\rvert`$ であるから、
@@ -157,7 +160,7 @@ $`\mathrm{dropLast}(M^{+d}) = (\mathrm{dropLast}\,M)^{+d}`$ である。よっ�
 
 ### 定理
 
-$`\mathrm{domT}(M^{+d}, m) \iff \mathrm{domT}(M, m)`$。
+$`\mathrm{domT}(M^{+d}, m) \iff \mathrm{domT}(M, m)`$（[D.domT](Wset.md#d-domT)）。
 
 ### 証明
 
@@ -181,7 +184,7 @@ $`\mathrm{hasParent}(M^{+d}, 1, j_1) \iff \mathrm{hasParent}(M, 1, j_1)`$ であ
 
 ### 定理
 
-$`\mathrm{natDom}(M^{+d}) \iff \mathrm{natDom}(M)`$。
+$`\mathrm{natDom}(M^{+d}) \iff \mathrm{natDom}(M)`$（[D.natDom](Wset.md#d-natDom)）。
 
 ### 証明
 
@@ -206,6 +209,8 @@ $`M \ne ()`$ ならば、任意の $`z \in \mathrm{PairSeq}`$、$`d \in \mathbb{
 ```math
 \mathrm{graft}\bigl(M^{+d},\ z\bigr) = \bigl(\mathrm{graft}(M, z)\bigr)^{+d} .
 ```
+
+（$`\mathrm{graft}`$ [D.graft](Wset.md#d-graft)）
 
 ### 証明
 
@@ -245,7 +250,7 @@ $`\bigl(q_1 + (M_{0,j_1} + d),\ q_2\bigr)`$ に写る。$`\mathbb{N}`$ の加法
 
 ### 定理
 
-$`M \in W_u`$ ならば、任意の $`d \in \mathbb{N}`$ に対し $`M^{+d} \in W_u`$。
+$`M \in W_u`$（[D.W](Wset.md#d-W)）ならば、任意の $`d \in \mathbb{N}`$ に対し $`M^{+d} \in W_u`$。
 
 ### 証明
 
@@ -256,7 +261,8 @@ Y := \{\, N \in \mathrm{PairSeq} \mid N^{+d} \in W_u \,\}
 ```
 
 とおく。[T.A2'](Wset.md#t-A2') により $`W_u \subseteq Y`$ を示すには、
-任意の $`N`$ について $`N \in A_u(Y)`$ ならば $`N \in Y`$、すなわち $`N^{+d} \in W_u`$ を示せばよい。
+任意の $`N`$ について $`N \in A_u(Y)`$（[D.Aop](Wset.md#d-Aop)）ならば $`N \in Y`$、すなわち
+$`N^{+d} \in W_u`$ を示せばよい。
 [T.A1_intro](Wset.md#t-A1_intro) によりこれは $`N^{+d} \in A_u(W_u)`$ に帰着する。
 $`A_u`$ の定義（D.Aop）の 3 分岐で場合分けする。
 
@@ -273,7 +279,8 @@ $`(N^{+d})[n] = (N[n])^{+d}`$ であり、$`N[n] \in Y`$ すなわち $`(N[n])^{
 よって $`N^{+d}`$ は分岐 (2) をみたす。
 
 **分岐 (3)、すなわち $`m \lt u`$、$`\mathrm{domT}(N,m)`$、
-$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(N,z) \in Y`$ をみたす $`m`$ があるとき。**
+$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(N,z) \in Y`$
+（$`\mathrm{based}`$ [D.based](Wset.md#d-based)）をみたす $`m`$ があるとき。**
 [T.domT_shift](#t-domT_shift) より $`\mathrm{domT}(N^{+d}, m)`$ である。
 また $`N \ne ()`$ である（$`N = ()`$ なら [T.not_domT_nil](Wset.md#t-not_domT_nil) が
 $`\mathrm{domT}(N,m)`$ に矛盾する）。$`z \in W_m`$ が $`\mathrm{based}(z)`$ をみたすとき、
@@ -301,6 +308,8 @@ M = A \mathbin{+\!\!+} P,
 \qquad \mathrm{rsum}(A, P),
 \qquad \forall p \in \mathrm{tail}\,P,\ P_{0,0} \lt p_1 .
 ```
+
+（$`\mathrm{rsum}`$ [D.rsum](Wset.md#d-rsum)）
 
 ここで $`\mathrm{tail}\,P`$ は $`P`$ の先頭 1 要素を落とした列である。
 
@@ -370,7 +379,8 @@ $`c \in \mathbb{N}`$、$`X \in \mathrm{PairSeq}`$ とし、$`\forall p \in X,\ c
 \bigl(X^{-c}\bigr)^{+c} = X .
 ```
 
-ここで $`X^{-c}`$ は $`X`$ の各対の第 1 成分から一様に $`c`$ を切り捨て減法で引いた列である。
+ここで $`X^{-c}`$（[D.shiftl0](ArgDom-2.md#d-shiftl0)）は $`X`$ の各対の第 1 成分から一様に
+$`c`$ を切り捨て減法で引いた列である。
 
 ### 証明
 

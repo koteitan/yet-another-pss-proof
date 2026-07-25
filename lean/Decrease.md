@@ -111,7 +111,7 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定しない：帰納�
 \Psi(C) :\equiv \forall m,\ \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m)) .
 ```
 
-- **基底段** $`C = ()`$：左辺は $`\mathsf{Z}`$、右辺は $`\mathrm{tr}\,(m)`$ である。
+- **基底段** $`C = ()`$：左辺は $`\mathsf{Z}`$（[D.Three](Term.md#d-Three)）、右辺は $`\mathrm{tr}\,(m)`$ である。
   $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$
   であるから、[T.olt_Z_P](Term.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$。
 
@@ -306,7 +306,8 @@ $`c, \ell \in \mathbb{N}\times\mathbb{N}`$ とし、
 
 **第 1 段：$`\mathrm{tr}(c :: C') \prec \mathrm{tr}\,(\ell)`$。**
 [T.lead_translate](Term.md#t-lead_translate) より
-$`\mathrm{lead}\,\mathrm{tr}(c :: C') = c_2`$ であり、仮定より $`c_2 \lt \ell_2`$ である。
+$`\mathrm{lead}\,\mathrm{tr}(c :: C') = c_2`$（[D.lead](Term.md#d-lead)）であり、
+仮定より $`c_2 \lt \ell_2`$ である。
 一方 $`\mathrm{tr}`$ の定義（D.translate）より
 $`\mathrm{tr}\,(\ell) = \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$ である。
 [T.olt_P_of_lead_lt](Term.md#t-olt_P_of_lead_lt) を
@@ -398,10 +399,11 @@ $`j_0 \to^M_i j_1`$ ならば $`j_0 \lt j_1`$。
 
 ### 証明
 
-$`\to^M_i`$ の定義（D.nextR）の場合分けによる。$`i = 0`$ のときは $`j_0 \to^M_0 j_1`$ であり、
+$`\to^M_i`$ の定義（D.nextR）の場合分けによる。$`i = 0`$ のときは
+$`j_0 \to^M_0 j_1`$（[D.nextrel0](Pss.md#d-nextrel0)）であり、
 $`\to^M_0`$ の定義（D.nextrel0）の第 3 条件が $`j_0 \lt j_1`$ である。
-$`i \ne 0`$ のときは $`j_0 \to^M_1 j_1`$ であり、$`\to^M_1`$ の定義（D.nextrel1）の
-第 3 条件が $`j_0 \lt j_1`$ である。∎
+$`i \ne 0`$ のときは $`j_0 \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）であり、
+$`\to^M_1`$ の定義（D.nextrel1）の第 3 条件が $`j_0 \lt j_1`$ である。∎
 
 <a id="t-nextR_chain0"></a>
 ## 定理: 親子は行 0 の祖先の鎖を与える (T.nextR_chain0)
@@ -418,7 +420,8 @@ $`\to^M_i`$ の定義（D.nextR）の場合分けによる。
   $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ が成り立つ。
 
 - $`i \ne 0`$ のとき。$`j_0 \to^M_1 j_1`$ であり、$`\to^M_1`$ の定義（D.nextrel1）の
-  第 5 条件は $`j_0 \le^M_0 j_1`$ である。$`\le^M_0`$ の定義（D.le0）の第 3 条件が
+  第 5 条件は $`j_0 \le^M_0 j_1`$（[D.le0](Pss.md#d-le0)）である。
+  $`\le^M_0`$ の定義（D.le0）の第 3 条件が
   $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。∎
 
 <a id="t-oper_bad_blocks"></a>

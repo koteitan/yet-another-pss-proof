@@ -5,7 +5,8 @@
 
 ### 定理
 
-$`X \subseteq \mathrm{PairSeq}`$ が $`\forall M,\ M \in A_u(X) \to M \in X`$ をみたし、
+$`X \subseteq \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）が
+$`\forall M,\ M \in A_u(X) \to M \in X`$（[D.Aop](Wset.md#d-Aop)）をみたし、
 $`A \in X`$ とする。このとき
 
 ```math
@@ -14,8 +15,9 @@ $`A \in X`$ とする。このとき
 
 ### 証明
 
-$`B \in A_u(X^{(A)})`$ とする。$`X^{(A)}`$ の定義（D.XA）より、
-$`\mathrm{rsum}(A,B)`$ を仮定して $`A \mathbin{+\!\!+} B \in X`$ を示せばよい。
+$`B \in A_u(X^{(A)})`$（[D.XA](Wset-2.md#d-XA)）とする。$`X^{(A)}`$ の定義（D.XA）より、
+$`\mathrm{rsum}(A,B)`$（[D.rsum](Wset.md#d-rsum)）を仮定して
+$`A \mathbin{+\!\!+} B \in X`$ を示せばよい。
 
 $`B = ()`$ のときは $`A \mathbin{+\!\!+} () = A \in X`$ である。以下 $`B \ne ()`$、
 すなわち $`0 \lt \lvert B\rvert`$ とする。$`\mathrm{rsum}(A,B)`$ の定義（D.rsum）より
@@ -28,7 +30,7 @@ $`B = ()`$ のときは $`A \mathbin{+\!\!+} () = A \in X`$ である。以下 $
 
 が成り立つ。$`A_u`$ の定義（D.Aop）の 3 分岐で場合分けする。
 
-**分岐 (1)：$`\lvert B\rvert \le 1 \wedge B_{1,0} = 0`$ のとき。**
+**分岐 (1)：$`\lvert B\rvert \le 1 \wedge B_{1,0} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
 $`0 \lt \lvert B\rvert`$ と合わせて $`\lvert B\rvert = 1`$ である。$`A`$ が空か否かで分ける。
 
 **$`A = ()`$ のとき。** 仮定より $`B \in A_u(X)`$（分岐 (1) そのもの）であるから
@@ -41,26 +43,27 @@ $`\lvert A \mathbin{+\!\!+} B\rvert = \lvert A\rvert + 1`$ であるから
 \lvert A \mathbin{+\!\!+} B\rvert - 1 = \lvert A\rvert + 0 .
 ```
 
-まず、任意の $`i`$ について $`\neg\,\mathrm{hasParent}(A \mathbin{+\!\!+} B,\ i,\ \lvert A \mathbin{+\!\!+} B\rvert - 1)`$
+まず、任意の $`i`$ について
+$`\neg\,\mathrm{hasParent}(A \mathbin{+\!\!+} B,\ i,\ \lvert A \mathbin{+\!\!+} B\rvert - 1)`$（[D.hasParent](Pss.md#d-hasParent)）
 である。実際これが成り立つとすると、$`0 \lt \lvert B\rvert`$ より
 [T.hasParent_append_gen](Wset-2.md#t-hasParent_append_gen) を $`j := 0`$ に適用して
 $`\mathrm{hasParent}(B, i, 0)`$ を得る。$`\mathrm{hasParent}`$ の定義（D.hasParent）より
-$`j_0 \to^B_i 0`$ なる $`j_0`$ が存在するが、
+$`j_0 \to^B_i 0`$（[D.nextR](Pss.md#d-nextR)）なる $`j_0`$ が存在するが、
 [T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より $`j_0 \lt 0`$ となり矛盾する。
 
-次に $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$ を示す。$`\lvert B\rvert - 1 = 0`$ であるから
+次に $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$（[D.natDom](Wset.md#d-natDom)）を示す。$`\lvert B\rvert - 1 = 0`$ であるから
 $`B_{1,\lvert B\rvert-1} = B_{1,0} = 0`$ であり、[T.natDom_iff](Wset.md#t-natDom_iff) の右辺の
 第 1 選言が成り立つので $`\mathrm{natDom}(B)`$ である。
 [T.natDom_append](Wset-2.md#t-natDom_append) より $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$ である。
 
-最後に、任意の $`n \ge 1`$ に対し $`(A \mathbin{+\!\!+} B)[n] = A \in X`$ を示す。
+最後に、任意の $`n \ge 1`$ に対し $`(A \mathbin{+\!\!+} B)[n] = A \in X`$（[D.oper](Pss.md#d-oper)）を示す。
 $`2 \le \lvert A \mathbin{+\!\!+} B\rvert`$ であるから $`\lvert A \mathbin{+\!\!+} B\rvert - 1 \ne 0`$ である。
 $`J := \lvert A \mathbin{+\!\!+} B\rvert - 1`$ と略記すると、
 $`(A \mathbin{+\!\!+} B)_{0,J} = 0 \wedge (A \mathbin{+\!\!+} B)_{1,J} = 0`$ が成り立つなら
 [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) により、成り立たないなら
 上で示した親の非存在と
 [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) により、
-いずれにせよ $`(A \mathbin{+\!\!+} B)[n] = \mathrm{Pred}(A \mathbin{+\!\!+} B)`$ である。
+いずれにせよ $`(A \mathbin{+\!\!+} B)[n] = \mathrm{Pred}(A \mathbin{+\!\!+} B)`$（[D.Pred](Pss.md#d-Pred)）である。
 $`2 \le \lvert A \mathbin{+\!\!+} B\rvert`$ より $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ、
 $`B \ne ()`$ より
 
@@ -101,8 +104,8 @@ $`B_{0,0} \le p_1`$、$`p \in B[n]`$ のときは $`(\ast)`$ と
 $`B \in X^{(A)}`$ である。仮定 $`\mathrm{rsum}(A,B)`$ をこれに適用して
 $`A \mathbin{+\!\!+} B \in X`$ を得る。
 
-**分岐 (3)、すなわち $`m \lt u`$、$`\mathrm{domT}(B,m)`$、
-$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(B,z) \in X^{(A)}`$ をみたす $`m`$ があるとき。**
+**分岐 (3)、すなわち $`m \lt u`$、$`\mathrm{domT}(B,m)`$（[D.domT](Wset.md#d-domT)）、
+$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(B,z) \in X^{(A)}`$（[D.W](Wset.md#d-W)、[D.based](Wset.md#d-based)、[D.graft](Wset.md#d-graft)）をみたす $`m`$ があるとき。**
 [T.domT_append](Wset-2.md#t-domT_append) より $`\mathrm{domT}(A \mathbin{+\!\!+} B,\ m)`$ である。
 $`z \in W_m`$ が $`\mathrm{based}(z)`$ をみたすとする。
 [T.graft_append](Wset-2.md#t-graft_append) より
@@ -166,7 +169,8 @@ $`M_{i,j}`$ の定義（D.entry）より $`\bigl((0,v)\bigr)_{0,0} = 0`$ であ�
 \mathrm{graft}\bigl(\bigl((0,v)\bigr),\ z\bigr) = () \mathbin{+\!\!+} z^{+0} = z
 ```
 
-である（各対の第 1 成分に $`0`$ を足しても列は変わらない）。∎
+である（$`z^{+0}`$ [D.shiftr0](Cnf-2.md#d-shiftr0) は各対の第 1 成分に $`0`$ を足した列であり、
+$`z`$ に等しい）。∎
 
 <a id="t-domT_Om"></a>
 ## 定理: 単一列の $`\mathrm{domT}`$ (T.domT_Om)
@@ -184,7 +188,8 @@ $`\mathrm{domT}`$ の定義（D.domT）の 2 つの連言子を示す。
 
 第 2 連言子 $`\neg\,\mathrm{hasParent}(M, 1, 0)`$ を示す。
 $`\mathrm{hasParent}(M,1,0)`$ とすると、$`\mathrm{hasParent}`$ の定義（D.hasParent）より
-$`j_0 \to^M_1 0`$ なる $`j_0`$ が存在する。$`\to^M_i`$ の定義（D.nextR）で $`i = 1 \ne 0`$ であるから
+$`j_0 \to^M_1 0`$（[D.nextrel1](Pss.md#d-nextrel1)）なる $`j_0`$ が存在する。
+$`\to^M_i`$ の定義（D.nextR）で $`i = 1 \ne 0`$ であるから
 これは $`j_0 \to^M_1 0`$（行 $`1`$ の親子関係）であり、その定義（D.nextrel1）の第 3 条件は
 $`j_0 \lt 0`$ である。自然数にこれをみたすものはないから矛盾する。∎
 
@@ -220,6 +225,8 @@ $`\bigl((0,w+1)\bigr) \in W_{w+1}`$ である。∎
 W^{*} := \bigl\{\, R \in \mathrm{PairSeq} \ \bigm|\
   \mathrm{argOK}(R) \to \forall v \in \mathbb{N},\ (0,v) :: R \in W_v \,\bigr\} .
 ```
+
+（$`\mathrm{argOK}`$ [D.argOK](Wset.md#d-argOK)）
 
 <a id="d-tow"></a>
 ## 定義: 塔 (D.tow)
@@ -311,6 +318,8 @@ $`1 + j_0 = j_0 + 1`$、$`1 + j_1 = j_1 + 1`$ である。∎
 (j_0 + 1) \le^{p :: R}_0 (j_1 + 1) \iff j_0 \le^{R}_0 j_1 .
 ```
 
+（$`\le^M_0`$ [D.le0](Pss.md#d-le0)）
+
 ### 証明
 
 [T.le0_append_right](Column.md#t-le0_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
@@ -335,7 +344,8 @@ $`1 + j_0 = j_0 + 1`$、$`1 + j_1 = j_1 + 1`$ である。∎
 ### 証明
 
 [T.idx1_append_right](Column.md#t-idx1_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
-$`\mathrm{idx}_1\bigl((p) \mathbin{+\!\!+} R,\ \lvert (p)\rvert + j\bigr) = \mathrm{idx}_1(R,j)`$ を得る。
+$`\mathrm{idx}_1\bigl((p) \mathbin{+\!\!+} R,\ \lvert (p)\rvert + j\bigr) = \mathrm{idx}_1(R,j)`$（[D.idx1](Pss.md#d-idx1)）
+を得る。
 $`(p) \mathbin{+\!\!+} R = p :: R`$、$`\lvert (p)\rvert = 1`$ であり、$`1 + j = j + 1`$ である。∎
 
 <a id="t-hasParent_zero_iff"></a>
@@ -352,7 +362,7 @@ $`b \lt \lvert M\rvert`$ ならば
 ### 証明
 
 $`\to^M_i`$ の定義（D.nextR）で $`i = 0`$ であるから、以下 $`j_0 \to^M_0 j_1`$ は
-行 $`0`$ の親子関係（D.nextrel0）である。
+行 $`0`$ の親子関係（[D.nextrel0](Pss.md#d-nextrel0)）である。
 
 **（左から右）** $`\mathrm{hasParent}(M,0,b)`$ とすると、
 $`\mathrm{hasParent}`$ の定義（D.hasParent）より $`k \to^M_0 b`$ なる $`k`$ が存在する。
@@ -563,7 +573,7 @@ v \lt R_{1,\ \lvert R\rvert - 1}
 $`M := (0,v) :: R`$ とおく。$`R \ne ()`$ より $`0 \lt \lvert R\rvert`$ であり、
 [T.cons_len_lt](#t-cons_len_lt) より $`\lvert R\rvert \lt \lvert M\rvert`$ である。
 よって [T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) を $`j_1 := \lvert R\rvert`$ に適用でき、
-示すべきことは $`\mathrm{r1cand}(M,\ \lvert R\rvert,\ j_0)`$ をみたす $`j_0`$ の存在、
+示すべきことは $`\mathrm{r1cand}(M,\ \lvert R\rvert,\ j_0)`$（[D.r1cand](Wset.md#d-r1cand)）をみたす $`j_0`$ の存在、
 すなわち $`\mathrm{r1cand}`$ の定義（D.r1cand）により
 
 ```math
@@ -651,7 +661,7 @@ M[n] = \bigl(\mathrm{dropLast}\,M\bigr)^{+0\cdot e} \mathbin{+\!\!+}
 ### 証明
 
 仮定 (1)(2)(3) により [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) が適用できる。
-$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$ と書くと、仮定 (4) より $`j_0 = 0`$ であり、
+$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）と書くと、仮定 (4) より $`j_0 = 0`$ であり、
 [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) の $`d_0`$ は
 
 ```math

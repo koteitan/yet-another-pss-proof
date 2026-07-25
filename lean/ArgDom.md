@@ -672,8 +672,8 @@ S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
 ### 定理
 
 $`\mathrm{ArgDomCore}`$ が成り立つとする。$`M, N \in \mathrm{ST\_PS}`$ であり
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（[D.translate](Term.md#d-translate)）ならば、ある $`n`$ が存在して
-$`1 \le n`$ かつ $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$（[D.oper](Pss.md#d-oper)）。
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）ならば、ある $`n`$ が存在して
+$`1 \le n`$ かつ $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$（$`M[n]`$ [D.oper](Pss.md#d-oper)、$`\preceq`$ [D.ole](Term.md#d-ole)）。
 
 ### 証明
 

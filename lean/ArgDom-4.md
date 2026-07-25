@@ -5,7 +5,8 @@
 
 ### 定理
 
-$`M, G, R, X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0, n, u, w, e \in \mathbb{N}`$、
+$`M, G, R, X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、
+$`v_0, w_0, d_0, n, u, w, e \in \mathbb{N}`$、
 $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。
 次を仮定する。
 
@@ -38,12 +39,18 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: 
 \end{aligned}
 ```
 
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn)、
+$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)、$`\mathrm{copies}_{d_0}`$ [D.copies](Cnf-2.md#d-copies)、
+$`\mathrm{SpineOK}`$ [D.SpineOK](ArgDom.md#d-SpineOK)）
+
 このとき
 
 ```math
 B \preceq_{\mathrm{lex}}
   \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e} .
 ```
+
+（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、$`L^{+e}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
 
 ### 証明
 
@@ -125,7 +132,7 @@ $`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e
 を得る。同じ理由で $`\forall y \in D,\ d_0 \le y_1`$ である。
 
 **第 2 段：逆シフトして小さい塔を書く。**
-(D2) の両辺に $`(\cdot)^{-d_0}`$ を施し、[T.shiftl0_shiftr0](ArgDom-2.md#t-shiftl0_shiftr0) と
+(D2) の両辺に $`(\cdot)^{-d_0}`$（[D.shiftl0](ArgDom-2.md#d-shiftl0)）を施し、[T.shiftl0_shiftr0](ArgDom-2.md#t-shiftl0_shiftr0) と
 [T.shiftl0_append](ArgDom-2.md#t-shiftl0_append)、[T.shiftl0_cons](ArgDom-2.md#t-shiftl0_cons) を使うと
 
 ```math

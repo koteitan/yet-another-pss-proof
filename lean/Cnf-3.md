@@ -5,11 +5,13 @@
 
 ### 定理
 
-$`d, n \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$ に対し
+$`d, n \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
 
 ```math
 \mathrm{cp}_d(B, n+1) = B \mathbin{+\!\!+} \bigl(\mathrm{cp}_d(B, n)\bigr)^{+d} .
 ```
+
+（$`\mathrm{cp}`$ [D.copies](Cnf-2.md#d-copies)、$`B^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
 
 ### 証明
 
@@ -180,6 +182,8 @@ $`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 \end{aligned}
 ```
 
+（$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)、$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)）
+
 このとき任意の $`n \in \mathbb{N}`$ に対し
 
 ```math
@@ -196,7 +200,7 @@ $`n`$ に関する自然数の帰納法。帰納法の述語は
 
 **基底段** $`n = 0`$。
 [T.copies_zero](Cnf-2.md#t-copies_zero) より $`\mathrm{cp}_{d_0}(B,0) = ()`$ であり、
-$`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$ である。
+$`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$（[D.Three](Term.md#d-Three)）である。
 [T.cnf_Z](Cnf.md#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ。よって $`\Phi(0)`$。
 
 **帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち
@@ -271,8 +275,10 @@ $`\mathrm{tw}_{\ell_1}() = ()`$、$`\mathrm{dw}_{\ell_1}() = ()`$ であるか�
 \text{(decr)}\qquad \mathrm{tr}\bigl((v_0+d_0,\ w_0) :: S^{+d_0}\bigr) \prec \mathrm{tr}\,(\ell).
 ```
 
+（$`\prec`$ [D.olt](Term.md#d-olt)）
+
 同じ第 1 選言により $`\mathsf{P}(w_0, \mathrm{tr}\,S, \mathsf{Z}) \prec \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$
-であるから、$`\preceq`$ の定義（D.ole）の第 1 選言により
+であるから、$`\preceq`$（[D.ole](Term.md#d-ole)）の定義（D.ole）の第 1 選言により
 
 ```math
 \text{(leadle)}\qquad
@@ -628,11 +634,11 @@ $`B`$ を $`n`$ 個並べたものであり、その連結は $`B^{\ast n}`$ で
 ### 定理
 
 $`M \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とし、$`1 \le n`$ かつ
-$`\mathrm{cnf}(\mathrm{tr}\,M)`$ を仮定する。このとき $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$。
+$`\mathrm{cnf}(\mathrm{tr}\,M)`$ を仮定する。このとき $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$（[D.oper](Pss.md#d-oper)）。
 
 ### 証明
 
-以下 $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$ と書く
+以下 $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）と書く
 （自然数の減法は切り捨て減法である）。$`j_1 = 0`$ か否かで場合分けする。
 
 **(a) $`j_1 = 0`$ のとき。**
@@ -642,7 +648,7 @@ $`\mathrm{cnf}(\mathrm{tr}\,M)`$ を仮定する。このとき $`\mathrm{cnf}\b
 以下 $`j_1 \ne 0`$ とする。このとき $`\lvert M\rvert - 1 \ne 0`$ であるから $`1 \lt \lvert M\rvert`$ で
 ある。とくに $`M \ne ()`$ である（$`M = ()`$ なら $`\lvert M\rvert = 0`$ となり
 $`1 \lt \lvert M\rvert`$ に反する）。また $`\neg(\lvert M\rvert \le 1)`$ であるから、
-$`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ
+$`\mathrm{Pred}`$（[D.Pred](Pss.md#d-Pred)）の定義（D.Pred）の第 2 の場合が選ばれ
 
 ```math
 \text{(hPred)}\qquad \mathrm{Pred}\,M = \mathrm{dropLast}\,M
@@ -650,14 +656,14 @@ $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ
 
 である。
 
-**(b) $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ のとき。**
+**(b) $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
 [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より $`M[n] = \mathrm{Pred}\,M`$ で
 あり、(hPred) より $`M[n] = \mathrm{dropLast}\,M`$ である。
 $`M \ne ()`$ と仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ に [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) を適用して
 $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,M)\bigr)`$ を得る。
 
 以下 $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$ とする。
-$`\mathrm{hasParent}(M, i_1, j_1)`$ が成り立つか否かでさらに分ける。
+$`\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）が成り立つか否かでさらに分ける。
 
 **(c) $`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
 [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
@@ -741,7 +747,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 
 $`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の 2 つの規則に対応して次を示せばよい。
 
-- **規則 (diag)**：$`\forall v \in \mathbb{N},\ \Phi(\Delta_0^v)`$。
+- **規則 (diag)**：$`\forall v \in \mathbb{N},\ \Phi(\Delta_0^v)`$（[D.diagSeq](Pss.md#d-diagSeq)）。
   [T.cnf_diag](Cnf.md#t-cnf_diag) がこれそのものである。
 
 - **規則 (oper)**：$`M \in \mathrm{ST\_PS}`$、$`1 \le n`$、および帰納法の仮定 $`\Phi(M)`$、

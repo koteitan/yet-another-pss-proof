@@ -5,7 +5,7 @@
 
 ### 定理
 
-$`M, G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0, n \in \mathbb{N}`$、
+$`M, G, R \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`v_0, w_0, d_0, n \in \mathbb{N}`$、
 $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。
 [T.argDomCoreOn_bad_A2](ArgDom-4.md#t-argDomCoreOn_bad_A2) の仮定 (hM) から (hSTn) までと (hn)、すなわち
 
@@ -23,6 +23,9 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`\mathrm{blk} := (v_0,w_0) :: 
 &\text{(hn)}\quad 1 \le n
 \end{aligned}
 ```
+
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn)、
+$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)、$`\mathrm{copies}_{d_0}`$ [D.copies](Cnf-2.md#d-copies)）
 
 を仮定する。このとき
 $`\mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n)\bigr)`$。
@@ -57,6 +60,8 @@ B \preceq_{\mathrm{lex}}
   \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 ```
 
+（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、$`L^{+e}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+
 を示す。(IH) を書き直すと、これは
 [T.argDomCoreOn_bad_A2](ArgDom-4.md#t-argDomCoreOn_bad_A2) の仮定 (hIH)
 
@@ -90,7 +95,7 @@ $`j \lt p`$ または $`p \le j`$ であり、後者の場合さらに $`i \lt p
 ### 定理
 
 $`M \in \mathrm{ST\_PS}`$、$`\mathrm{ArgDomCoreOn}(M)`$、$`1 \le n`$ ならば
-$`\mathrm{ArgDomCoreOn}(M[n])`$。
+$`\mathrm{ArgDomCoreOn}(M[n])`$（$`M[n]`$ [D.oper](Pss.md#d-oper)）。
 
 ### 証明
 
@@ -100,7 +105,7 @@ $`j_1 := \lvert M\rvert - 1`$ と書く。$`M[n]`$ の定義（D.oper）の分�
 [T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`M[n] = M`$ であるから、
 仮定 $`\mathrm{ArgDomCoreOn}(M)`$ がそのまま結論である。
 
-**(b) $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ のとき。**
+**(b) $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
 [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より
 $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）である。$`j_1 = \lvert M\rvert - 1 \ne 0`$ より
 $`2 \le \lvert M\rvert`$、すなわち $`\neg(\lvert M\rvert \le 1)`$ であるから、
@@ -180,7 +185,7 @@ $`N \in \mathrm{ST\_PS}`$ の導出に関する帰納法による（$`\mathrm{ST
 
 である。構成子は 2 つであるから、次の 2 段を示せばよい。
 
-**基底段（構成子 $`\mathrm{diag}`$）。** $`N = \Delta_0^v`$ の場合である。
+**基底段（構成子 $`\mathrm{diag}`$）。** $`N = \Delta_0^v`$（[D.diagSeq](Pss.md#d-diagSeq)）の場合である。
 [T.argDomCoreOn_diag](ArgDom-2.md#t-argDomCoreOn_diag) がそのまま
 $`\Phi(\Delta_0^v)`$ である。
 
@@ -196,7 +201,7 @@ $`\mathrm{ArgDomCoreOn}(M[n]) = \Phi(N)`$ を得る。∎
 
 ### 定理
 
-$`\mathrm{ArgDomCore}`$。
+$`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom.md#d-ArgDomCore)）。
 
 ### 証明
 

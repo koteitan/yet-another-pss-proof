@@ -5,13 +5,18 @@
 
 ### 定理
 
-$`v, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とし、$`k_1 := \lvert R\rvert - 1`$ とおく。
-$`\mathrm{argOK}(R)`$、$`R \ne ()`$、$`R_{1,k_1} = 0`$、$`\neg\,\mathrm{hasParent}(R, 0, k_1)`$
+$`v, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とし、
+$`k_1 := \lvert R\rvert - 1`$ とおく。
+$`\mathrm{argOK}(R)`$（[D.argOK](Wset.md#d-argOK)）、$`R \ne ()`$、
+$`R_{1,k_1} = 0`$（[D.entry](Pss.md#d-entry)）、
+$`\neg\,\mathrm{hasParent}(R, 0, k_1)`$（[D.hasParent](Pss.md#d-hasParent)）
 を仮定すると
 
 ```math
 \bigl((0,v) :: R\bigr)[n] = \bigl((0,v) :: \mathrm{dropLast}\,R\bigr)^{\frown n} .
 ```
+
+（$`M[n]`$ [D.oper](Pss.md#d-oper)）
 
 ここで列 $`Q`$ に対し $`Q^{\frown n}`$ を $`Q`$ を $`n`$ 個連結した列とする。すなわち
 
@@ -25,7 +30,7 @@ $`M := (0,v) :: R`$ と書く。$`R \ne ()`$ より $`0 \lt \lvert R\rvert`$ で
 $`\lvert M\rvert - 1 = \lvert R\rvert`$ である。
 [T.entry_cons_last](Wset-3.md#t-entry_cons_last) より $`M_{0,\lvert R\rvert} = R_{0,k_1}`$ である。
 
-**第 1 段：$`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 0`$。**
+**第 1 段：$`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 0`$（[D.idx1](Pss.md#d-idx1)）。**
 [T.idx1_cons_last](Wset-3.md#t-idx1_cons_last) より
 $`\mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1)`$ であり、
 仮定 $`R_{1,k_1} = 0`$ と $`\mathrm{idx}_1`$ の定義（D.idx1）の第 2 の場合により
@@ -36,7 +41,7 @@ $`k \lt k_1`$ かつ $`R_{0,k} \lt R_{0,k_1}`$ なる $`k`$ が存在したと�
 $`k_1 \lt \lvert R\rvert`$ であるから [T.hasParent_zero_iff](Wset-3.md#t-hasParent_zero_iff) より
 $`\mathrm{hasParent}(R, 0, k_1)`$ となり、仮定に反する。
 
-**第 3 段：$`0 \to^M_0 \lvert R\rvert`$。**
+**第 3 段：$`0 \to^M_0 \lvert R\rvert`$（[D.nextrel0](Pss.md#d-nextrel0)）。**
 $`\to^M_0`$ の定義（D.nextrel0）の 5 条件を確かめる。
 
 - (1) $`0 \lt \lvert M\rvert`$：$`\lvert M\rvert = \lvert R\rvert + 1 \ge 1`$。
@@ -61,14 +66,15 @@ $`R_{0,k_1} \le R_{0,y'}`$ を与えるから矛盾である。
 第 1 段と合わせて
 $`\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M, \lvert M\rvert-1), \lvert M\rvert-1\bigr)`$ である。
 また [T.parent_nextR](Decrease.md#t-parent_nextR) と第 4 段より
-$`\mathrm{par}^M_0(\lvert R\rvert) = 0`$ である。
+$`\mathrm{par}^M_0(\lvert R\rvert) = 0`$（[D.parent](Pss.md#d-parent)）である。
 $`\lvert M\rvert - 1 = \lvert R\rvert \ne 0`$ であり、
 $`M_{0,\lvert R\rvert} = R_{0,k_1} \gt 0`$ より
 $`\neg(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0)`$ である。
 よって [T.oper_root_tiling](Wset-3.md#t-oper_root_tiling) が適用できる。第 1 段により
 $`\mathrm{idx}_1(M, \lvert M\rvert-1) = 0`$ であるから、そこに現れる $`e`$ は
 $`0 \lt \mathrm{idx}_1(M,\lvert M\rvert-1)`$ が偽であることにより $`e = 0`$ であり、
-各ブロックは $`(\mathrm{dropLast}\,M)^{+k\cdot 0} = \mathrm{dropLast}\,M`$ である。したがって
+各ブロックは $`(\mathrm{dropLast}\,M)^{+k\cdot 0} = \mathrm{dropLast}\,M`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）である。
+したがって
 
 ```math
 M[n] = \bigl(\mathrm{dropLast}\,M\bigr)^{\frown n} .
@@ -88,11 +94,13 @@ M[n] = \bigl(\mathrm{dropLast}\,M\bigr)^{\frown n} .
 ### 定理
 
 $`v, m, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とする。
-$`\mathrm{argOK}(R)`$、$`\mathrm{domT}(R, m)`$、$`v \le m`$ ならば
+$`\mathrm{argOK}(R)`$、$`\mathrm{domT}(R, m)`$（[D.domT](Wset.md#d-domT)）、$`v \le m`$ ならば
 
 ```math
 \bigl((0,v) :: R\bigr)[n] = \mathrm{tow}_v(R,n) .
 ```
+
+（$`\mathrm{tow}_v(R,n)`$ [D.tow](Wset-3.md#d-tow)）
 
 ### 証明
 
@@ -114,11 +122,11 @@ $`\mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1)`$ であり、
 $`R_{1,k_1} = m + 1 \gt 0`$ と $`\mathrm{idx}_1`$ の定義（D.idx1）の第 1 の場合により
 その値は $`1`$ である。
 
-**第 2 段：$`y \to^M_1 \lvert R\rvert`$ ならば $`y = 0`$。**
+**第 2 段：$`y \to^M_1 \lvert R\rvert`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば $`y = 0`$。**
 $`y \ne 0`$ とすると $`y = y' + 1`$ と書け、[T.nextR_cons_last](Wset-3.md#t-nextR_cons_last) より
 $`y' \to^R_1 k_1`$ である。$`\to^R_1`$ の定義（D.nextrel1）の条件 (3)(4)(5) はそれぞれ
-$`y' \lt k_1`$、$`R_{1,y'} \lt R_{1,k_1}`$、$`y' \le^R_0 k_1`$ であり、これは
-$`\mathrm{r1cand}(R, k_1, y')`$ にほかならない。$`k_1 \lt \lvert R\rvert`$ であるから
+$`y' \lt k_1`$、$`R_{1,y'} \lt R_{1,k_1}`$、$`y' \le^R_0 k_1`$（[D.le0](Pss.md#d-le0)）であり、これは
+$`\mathrm{r1cand}(R, k_1, y')`$（[D.r1cand](Wset.md#d-r1cand)）にほかならない。$`k_1 \lt \lvert R\rvert`$ であるから
 [T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) より $`\mathrm{hasParent}(R, 1, k_1)`$ となり、
 上で見た $`\neg\,\mathrm{hasParent}(R,1,k_1)`$ に矛盾する。
 
@@ -176,7 +184,7 @@ D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+n x}
 ```
 
   を得る。一方 $`\mathrm{tow}`$ の定義（D.tow）の第 2 式と
-  $`\mathrm{graft}`$ の定義（D.graft）より
+  $`\mathrm{graft}`$ の定義（[D.graft](Wset.md#d-graft)）より
 
 ```math
 \mathrm{tow}_v(R,n+1) = (0,v) :: \mathrm{graft}\bigl(R, \mathrm{tow}_v(R,n)\bigr)
@@ -278,7 +286,8 @@ $`p \in R`$ であり、$`\mathrm{argOK}`$ の定義（D.argOK）より $`0 \lt 
 
 ### 定理
 
-任意の $`v \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ に対し $`\mathrm{based}\bigl((0,v) :: R\bigr)`$。
+任意の $`v \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ に対し
+$`\mathrm{based}\bigl((0,v) :: R\bigr)`$（[D.based](Wset.md#d-based)）。
 
 ### 証明
 
@@ -309,7 +318,8 @@ $`p_1`$ は自然数であるから $`0 \le p_1`$ である。∎
 
 ### 定理
 
-$`Q \in W_u`$ かつ $`\forall p \in Q,\ Q_{0,0} \le p_1`$ ならば、任意の $`n \in \mathbb{N}`$ に対し
+$`Q \in W_u`$（[D.W](Wset.md#d-W)）かつ $`\forall p \in Q,\ Q_{0,0} \le p_1`$ ならば、
+任意の $`n \in \mathbb{N}`$ に対し
 $`Q^{\frown n} \in W_u`$。
 
 ### 証明
@@ -326,7 +336,7 @@ $`n`$ に関する帰納法。帰納法の述語は
 - **帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち $`Q^{\frown n} \in W_u`$ である。
   $`Q^{\frown(n+1)} = Q^{\frown n} \mathbin{+\!\!+} Q`$ であるから、
   [T.W_add](Wset-3.md#t-W_add) を $`A := Q^{\frown n}`$、$`B := Q`$ として適用すればよい。
-  その仮定 $`\mathrm{rsum}(Q^{\frown n}, Q)`$、すなわち
+  その仮定 $`\mathrm{rsum}(Q^{\frown n}, Q)`$（[D.rsum](Wset.md#d-rsum)）、すなわち
 
 ```math
 \forall p \in Q^{\frown n} \mathbin{+\!\!+} Q,\ Q_{0,0} \le p_1
@@ -343,7 +353,8 @@ $`n`$ に関する帰納法。帰納法の述語は
 ### 定理
 
 任意の $`u \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ に対し、
-$`M \in A_u(W^{*})`$ ならば $`M \in W^{*}`$。
+$`M \in A_u(W^{*})`$（$`A_u`$ [D.Aop](Wset.md#d-Aop)、$`W^{*}`$ [D.Wstar](Wset-3.md#d-Wstar)）ならば
+$`M \in W^{*}`$。
 
 ### 証明
 
@@ -364,7 +375,8 @@ $`N := (0,v) :: R`$、$`k_1 := \lvert R\rvert - 1`$ と書く。
 $`N_{1,\lvert N\rvert-1} = N_{1,\lvert R\rvert} = R_{1,k_1}`$ である。
 次の 2 つを用意する。
 
-- **(D1)** $`\mathrm{hasParent}(N, 1, \lvert R\rvert)`$ ならば $`\mathrm{natDom}(N)`$。
+- **(D1)** $`\mathrm{hasParent}(N, 1, \lvert R\rvert)`$ ならば
+  $`\mathrm{natDom}(N)`$（[D.natDom](Wset.md#d-natDom)）。
   [T.natDom_iff](Wset.md#t-natDom_iff) の右辺の第 2 選言が
   $`\mathrm{hasParent}(N, 1, \lvert N\rvert - 1)`$ であり、
   $`\lvert N\rvert - 1 = \lvert R\rvert`$ だからである。
@@ -442,7 +454,8 @@ $`(0,v) :: \mathrm{dropLast}\,R \in W_v`$ を示せば十分である。$`\lvert
   [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero)、
   成り立たないときは
   [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) により
-  $`R[1] = \mathrm{Pred}\,R`$ である。さらに $`\neg(\lvert R\rvert \le 1)`$ であるから
+  $`R[1] = \mathrm{Pred}\,R`$（[D.Pred](Pss.md#d-Pred)）である。
+  さらに $`\neg(\lvert R\rvert \le 1)`$ であるから
   $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ
   $`R[1] = \mathrm{dropLast}\,R`$ である。
   分岐 (2) の仮定を $`n := 1`$ に適用して $`\mathrm{dropLast}\,R \in W^{*}`$ を得る。
@@ -520,6 +533,8 @@ $`\forall r \in R,\ x \le r_1`$ を仮定する。このとき
 ```math
 \Bigl((0,y) :: R^{-x}\Bigr)^{+x} = (x,y) :: R .
 ```
+
+（$`R^{-x}`$ [D.shiftl0](ArgDom-2.md#d-shiftl0)）
 
 ### 証明
 
@@ -623,7 +638,7 @@ $`A \in X`$ に適用すると、任意の $`u`$ について
 \forall M',\ M' \in A_u\bigl(X^{(A)}\bigr) \to M' \in X^{(A)}
 ```
 
-が成り立つ。すなわち $`X^{(A)}`$ も $`\mathrm{(Acl)}`$ をみたす。
+が成り立つ。すなわち $`X^{(A)}`$（[D.XA](Wset-2.md#d-XA)）も $`\mathrm{(Acl)}`$ をみたす。
 そこで帰納法の仮定 $`\Phi(N)`$ を $`M := P`$、$`X := X^{(A)}`$ に適用して
 $`P \in X^{(A)}`$ を得る。$`X^{(A)}`$ の定義（D.XA）より
 $`P \in X^{(A)}`$ は $`\mathrm{rsum}(A,P) \to A \mathbin{+\!\!+} P \in X`$ であり、
@@ -785,7 +800,7 @@ $`S`$ の構造に関する帰納法。帰納法の述語は
 
 ### 定理
 
-任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{ST\_PS}`$ ならば
+任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば
 $`M \in W_u`$ なる $`u \in \mathbb{N}`$ が存在する。
 
 ### 証明
@@ -810,7 +825,9 @@ $`M \in W_{\mathrm{maxr}_1(M)}`$ は [T.mem_W_maxr1](#t-mem_W_maxr1) である�
 \end{aligned}
 ```
 
-このとき関係 $`R_{\mathrm{st}}`$ は整礎である。
+（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)、$`\preceq`$ [D.ole](Term.md#d-ole)）
+
+このとき関係 $`R_{\mathrm{st}}`$（[D.Rst](Wset.md#d-Rst)）は整礎である。
 
 ### 証明
 

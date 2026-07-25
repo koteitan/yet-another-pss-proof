@@ -14,6 +14,8 @@ N\bigl\langle \lvert X\rvert + (\lvert A_1\rvert + 1) \bigr\rangle = (u+e,\ w), 
 \lvert X\rvert + (\lvert A_1\rvert + 1) \lt \lvert N\rvert .
 ```
 
+（$`N\langle j\rangle`$ [D.entry](Pss.md#d-entry)）
+
 ### 証明
 
 結合則により $`N`$ は
@@ -57,7 +59,7 @@ $`\lvert X\rvert + (\lvert A_1\rvert + 1) \lt \lvert N\rvert`$ である。∎
 ### 定理
 
 任意の $`v \in \mathbb{N}`$ について
-$`\mathrm{ArgDomCoreOn}(\Delta_0^v)`$（[D.diagSeq](Pss.md#d-diagSeq)）。
+$`\mathrm{ArgDomCoreOn}(\Delta_0^v)`$（$`\mathrm{ArgDomCoreOn}`$ [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn)、$`\Delta_0^v`$ [D.diagSeq](Pss.md#d-diagSeq)）。
 
 ### 証明
 
@@ -98,7 +100,8 @@ $`\lvert X\rvert + (\lvert A_1\rvert + 1)`$ に適用できて
 
 ### 定理
 
-$`N \in \mathrm{PairSeq}`$、$`p \in \mathbb{N}\times\mathbb{N}`$ とし $`p_1 = 0`$ とする。
+$`N \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`p \in \mathbb{N}\times\mathbb{N}`$ とし
+$`p_1 = 0`$ とする。
 $`\mathrm{ArgDomCoreOn}(N \mathbin{+\!\!+} (p))`$ ならば $`\mathrm{ArgDomCoreOn}(N)`$。
 
 ### 証明
@@ -131,7 +134,8 @@ N \mathbin{+\!\!+} (p)
 B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e}
 ```
 
-が得られる。これは $`N`$ についての結論 (9) と同一である。∎
+が得られる（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、
+$`L^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）。これは $`N`$ についての結論 (9) と同一である。∎
 
 <a id="t-argDomCoreOn_drop_left"></a>
 ## 定理: 左側の列は見えない (T.argDomCoreOn_drop_left)
@@ -329,7 +333,8 @@ W^{+d}
 
 であり、$`0 \lt e`$、$`\forall x \in A_1,\ u \lt x_1`$、$`\forall x \in B,\ u+e \lt x_1`$、
 $`\forall x \in A_2,\ u \lt x_1`$、$`A_2 = () \vee (\mathrm{head}\,A_2)_1 \le u+e`$、
-$`Z = () \vee (\mathrm{head}\,Z)_1 \le u`$、$`\mathrm{SpineOK}(A_1,\ u+e,\ w)`$ が成り立つ。
+$`Z = () \vee (\mathrm{head}\,Z)_1 \le u`$、$`\mathrm{SpineOK}(A_1,\ u+e,\ w)`$（[D.SpineOK](ArgDom.md#d-SpineOK)）が
+成り立つ。
 
 **すべての列の行 0 は $`d`$ 以上である。** 条件 (1) の右辺の任意の要素 $`x`$ は
 $`W^{+d}`$ の要素であるから、[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) により
@@ -570,6 +575,8 @@ $`\mathrm{blk} \ne ()`$ かつ $`1 \le n`$ ならば
 \mathrm{head}\bigl(\mathrm{copies}_d(\mathrm{blk}, n)\bigr) = \mathrm{head}\,\mathrm{blk} .
 ```
 
+（$`\mathrm{copies}_d`$ [D.copies](Cnf-2.md#d-copies)）
+
 ### 証明
 
 $`1 \le n`$ より $`n = m + 1`$ なる $`m`$ が取れる。
@@ -670,6 +677,8 @@ $`\mathrm{blk} := (v_0,w_0) :: R`$ とおく。次を仮定する。
 &\text{(hn)}\quad 1 \le n .
 \end{aligned}
 ```
+
+（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)）
 
 さらに $`X, A_1, B, A_2, Z \in \mathrm{PairSeq}`$、$`u, w, e \in \mathbb{N}`$ について次を仮定する。
 

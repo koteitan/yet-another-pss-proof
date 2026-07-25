@@ -19,6 +19,12 @@ $`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0+1)\bigr)`$ �
 \end{aligned}
 ```
 
+（$`\mathrm{PairSeq}`$ [D.PairSeq](Pss.md#d-PairSeq)、$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、
+$`j_0 \to^M_1 j_1`$ [D.nextrel1](Pss.md#d-nextrel1)、
+$`\mathrm{tw}_a L`$ と $`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、
+$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、
+$`\mathrm{cp}_d(B,n)`$ [D.copies](Cnf-2.md#d-copies)、$`L^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+
 <a id="t-shiftr0_append"></a>
 ## 定理: 平行移動は連結を保つ (T.shiftr0_append)
 
@@ -61,7 +67,7 @@ $`\mathrm{cp}_d`$ の定義（D.copies）は、添字 $`k`$ を $`0`$ から $`n
 
 ### 定理
 
-$`\mathrm{AscArgDom}`$ ならば $`\mathrm{AscCrux1}`$。
+$`\mathrm{AscArgDom}`$ ならば $`\mathrm{AscCrux1}`$（[D.AscCrux1](Cofinality-2.md#d-AscCrux1)）。
 
 ### 証明
 
@@ -174,12 +180,14 @@ S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}} \ \preceq_{\mathrm{lex}}\ S_{\m
 $`S_{\mathrm{lo}} \preceq_{\mathrm{lex}} E`$ を示せばよい。第 2 段で場合分けする。
 
 - $`S_{\mathrm{lo}} = ()`$ のとき。第 4 段より $`E \ne ()`$ であるから、
-  $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式により $`() \prec_{\mathrm{lex}} E`$ であり、
+  $`\prec_{\mathrm{lex}}`$ の定義（[D.seqlex](Seqlex.md#d-seqlex)）の第 1 式により
+  $`() \prec_{\mathrm{lex}} E`$ であり、
   $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言が成り立つ。
 - $`S_{\mathrm{lo}} = z :: Z`$ かつ $`z_1 \le v_0 + d_0`$ のとき。第 4 段より $`E \ne ()`$ だから
   $`E = e :: E'`$ と書け、$`e_1 = v_0 + d_0 + m d_0 + d_0`$ である。
   (4) の $`0 \lt d_0`$ より $`v_0 + d_0 \lt v_0 + d_0 + m d_0 + d_0`$ であるから
-  $`z_1 \le v_0 + d_0 \lt e_1`$ であり、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
+  $`z_1 \le v_0 + d_0 \lt e_1`$ であり、
+  $`\prec_{\mathrm{p}}`$ の定義（[D.pairlt](Seqlex.md#d-pairlt)）の第 1 選言により
   $`z \prec_{\mathrm{p}} e`$、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の第 1 選言により
   $`z :: Z \prec_{\mathrm{lex}} e :: E'`$ を得る。
 
@@ -222,7 +230,7 @@ S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}} \prec_{\mathrm{lex}}
 
 ### 定理
 
-$`\mathrm{AscCrux1}`$ ならば $`\mathrm{AscCrux}`$。
+$`\mathrm{AscCrux1}`$ ならば $`\mathrm{AscCrux}`$（[D.AscCrux](Cofinality-2.md#d-AscCrux)）。
 
 ### 証明
 
@@ -300,15 +308,20 @@ N \prec_{\mathrm{lex}} M
 
 ならば、$`1 \le n`$ なる $`n`$ が存在して $`N \preceq_{\mathrm{lex}} M[n]`$。
 
+（$`M_{i,j}`$ [D.entry](Pss.md#d-entry)、$`M[n]`$ [D.oper](Pss.md#d-oper)）
+
 ### 証明
 
 **第 1 段：ブロック分解。**
 $`1 \lt \lvert M\rvert`$ より $`0 \lt \lvert M\rvert`$ であるから、
 [T.hasParent_last_ST_PS](Cofinality.md#t-hasParent_last_ST_PS) により
-$`\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, j_1),\ j_1\bigr)`$ が成り立つ。
-また [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) と $`\mathrm{blockok}`$ の定義（D.blockok）の
-第 3 連言子より $`\mathrm{steps}_1(M)`$、[T.r1ok_ST_PS](Column-3.md#t-r1ok_ST_PS) より
-$`\mathrm{r1ok}(M)`$ である。これらに [T.oper_bad_blocks_all](Cofinality.md#t-oper_bad_blocks_all) を適用して
+$`\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, j_1),\ j_1\bigr)`$ が成り立つ
+（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)、$`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)）。
+また [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) と
+$`\mathrm{blockok}`$ の定義（[D.blockok](Seqlex.md#d-blockok)）の
+第 3 連言子より $`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）、
+[T.r1ok_ST_PS](Column-3.md#t-r1ok_ST_PS) より
+$`\mathrm{r1ok}(M)`$（[D.r1ok](Column-2.md#d-r1ok)）である。これらに [T.oper_bad_blocks_all](Cofinality.md#t-oper_bad_blocks_all) を適用して
 $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ を取り、
 $`B := (v_0,w_0) :: R`$ とおくと
 
@@ -391,7 +404,7 @@ $`N = G \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} q :: S\bigr)`$ である。
 
 ### 定理
 
-$`\mathrm{AscCrux}`$ ならば $`\mathrm{SeqlexCofinality}`$。
+$`\mathrm{AscCrux}`$ ならば $`\mathrm{SeqlexCofinality}`$（[D.SeqlexCofinality](Cofinality.md#d-SeqlexCofinality)）。
 
 ### 証明
 
@@ -422,6 +435,8 @@ $`\mathrm{AscCrux1}`$ を仮定する。$`M, N \in \mathrm{PairSeq}`$ が
 $`M \in \mathrm{ST\_PS}`$、$`N \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ を
 みたすならば、$`1 \le n`$ なる $`n`$ が存在して
 $`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$。
+
+（$`\prec`$ [D.olt](Term.md#d-olt)、$`\preceq`$ [D.ole](Term.md#d-ole)）
 
 ### 証明
 

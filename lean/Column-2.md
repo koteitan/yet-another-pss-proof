@@ -5,12 +5,15 @@
 
 ### 定理
 
-$`A, T \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とし、$`2 \le \lvert T\rvert`$ かつ $`T_{0,0} = 0`$ とする。
+$`A, T \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`n \in \mathbb{N}`$ とし、
+$`2 \le \lvert T\rvert`$ かつ $`T_{0,0} = 0`$（[D.entry](Pss.md#d-entry)）とする。
 このとき
 
 ```math
 (A \mathbin{+\!\!+} T)[n] = A \mathbin{+\!\!+} T[n] .
 ```
+
+（$`M[n]`$ [D.oper](Pss.md#d-oper)）
 
 ### 証明
 
@@ -39,15 +42,15 @@ $`(A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1} = 0 \wedge (A \mathbin{+\!\!+}
 ```
 
 であるから、2 つの条件は同一の命題である。これが成り立つ場合、両辺はそれぞれ
-$`\mathrm{Pred}\,(A \mathbin{+\!\!+} T)`$ と $`\mathrm{Pred}\,T`$ であり、
+$`\mathrm{Pred}\,(A \mathbin{+\!\!+} T)`$（[D.Pred](Pss.md#d-Pred)）と $`\mathrm{Pred}\,T`$ であり、
 [T.Pred_append_right](Column.md#t-Pred_append_right) により
 $`\mathrm{Pred}\,(A \mathbin{+\!\!+} T) = A \mathbin{+\!\!+} \mathrm{Pred}\,T`$ である。
 以下、この条件は成り立たないとする。
 
 **探索行。** [T.idx1_append_right](Column.md#t-idx1_append_right) より
-$`\mathrm{idx}_1(A \mathbin{+\!\!+} T, \lvert A\rvert + j_1) = \mathrm{idx}_1(T, j_1)`$ であるから、
-両辺の $`i_1`$ は共通の値である。これを $`i_1 := \mathrm{idx}_1(T, j_1)`$ と書く。
-$`\mathrm{hasParent}(T, i_1, j_1)`$ が成り立つかどうかで場合分けする。
+$`\mathrm{idx}_1(A \mathbin{+\!\!+} T, \lvert A\rvert + j_1) = \mathrm{idx}_1(T, j_1)`$（[D.idx1](Pss.md#d-idx1)）
+であるから、両辺の $`i_1`$ は共通の値である。これを $`i_1 := \mathrm{idx}_1(T, j_1)`$ と書く。
+$`\mathrm{hasParent}(T, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）が成り立つかどうかで場合分けする。
 
 **(A) $`\mathrm{hasParent}(T, i_1, j_1)`$ が成り立つとき。**
 まず $`0 \lt (A \mathbin{+\!\!+} T)_{0,\lvert A\rvert + j_1}`$ を示す。
@@ -58,7 +61,7 @@ $`M := T`$、$`i := i_1`$、$`j_1 := j_1`$ に適用して矛盾する。
 $`\mathrm{hasParent}(A \mathbin{+\!\!+} T, i_1, \lvert A\rvert + j_1)`$ が成り立つ。
 したがって分岐 (c) の条件は両辺で偽であり、両辺とも分岐 (d) を選ぶ。
 
-分岐 (d) の各構成要素を比べる。$`j_0 := \mathrm{par}^{T}_{i_1}(j_1)`$ とおく。
+分岐 (d) の各構成要素を比べる。$`j_0 := \mathrm{par}^{T}_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）とおく。
 
 **親。** [T.parent_append_right](Column.md#t-parent_append_right) より
 $`\mathrm{par}^{A \mathbin{+\!\!+} T}_{i_1}(\lvert A\rvert + j_1) = \lvert A\rvert + j_0`$ である。
@@ -247,7 +250,7 @@ $`M \in \mathrm{PairSeq}`$ に対し、命題 $`\mathrm{r1ok}(M)`$ を次のも�
 
 ### 定理
 
-任意の $`v \in \mathbb{N}`$ に対し $`\lvert \Delta_0^v\rvert = v + 1`$。
+任意の $`v \in \mathbb{N}`$ に対し $`\lvert \Delta_0^v\rvert = v + 1`$（[D.diagSeq](Pss.md#d-diagSeq)）。
 
 ### 証明
 
@@ -534,7 +537,8 @@ $`\mathrm{map}(f_n,B)`$ の第 $`q`$ 要素は $`B`$ の第 $`q`$ 要素に $`f_
 ## 定義: 複製展開 (D.copyExp)
 
 $`L \in \mathrm{PairSeq}`$、$`e \in \mathbb{N}`$ に対し、$`L`$ の各対の第 1 成分に
-$`e`$ を足した列を $`L^{+e}`$ と書く。$`G, B \in \mathrm{PairSeq}`$、$`d_0, n \in \mathbb{N}`$ に対し
+$`e`$ を足した列を $`L^{+e}`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）と書く。
+$`G, B \in \mathrm{PairSeq}`$、$`d_0, n \in \mathbb{N}`$ に対し
 
 ```math
 \mathrm{copyExp}(G,B,d_0,n) := G \mathbin{+\!\!+} \mathrm{cp}(B, f, n),

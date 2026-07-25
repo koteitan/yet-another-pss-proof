@@ -5,7 +5,7 @@
 
 ### 定理
 
-$`X, V, E \in \mathrm{PairSeq}`$、$`\ell, q \in \mathbb{N}\times\mathbb{N}`$ が
+$`X, V, E \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`\ell, q \in \mathbb{N}\times\mathbb{N}`$ が
 
 ```math
 X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E,
@@ -13,11 +13,15 @@ X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E,
 \qquad \lvert X\rvert \lt \lvert V\rvert
 ```
 
+（$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、$`\prec_{\mathrm{p}}`$ [D.pairlt](Seqlex.md#d-pairlt)）
+
 をみたすならば、任意の $`S', E' \in \mathrm{PairSeq}`$ に対し
 
 ```math
 X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
 ```
+
+（$`\prec_{\mathrm{lex}}`$ [D.seqlex](Seqlex.md#d-seqlex)）
 
 ### 証明
 
@@ -112,6 +116,8 @@ $`X, A_1, B, A_2, Z, u, w, e`$ についての (heq), (he), (h1), (h2), (h3), (h
 B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!+} A_2)\bigr)^{+e} .
 ```
 
+（$`L^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+
 ### 証明
 
 (hn) より $`n = m + 1`$ と書く。
@@ -121,6 +127,8 @@ T := \bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0},
 \qquad
 C_p := X \mathbin{+\!\!+} (u,w) :: \bigl(A_1 \mathbin{+\!\!+} ((u+e,w))\bigr)
 ```
+
+（$`\mathrm{copies}_d(B, n)`$ [D.copies](Cnf-2.md#d-copies)）
 
 とおく。$`C_p`$ は分解の先頭から深い方の印付き列 $`(u+e,w)`$ までを含む部分であり、
 $`\lvert C_p\rvert = \lvert X\rvert + 1 + (\lvert A_1\rvert + 1)`$ である。
@@ -201,7 +209,7 @@ $`C_p`$ の定義と結合律で並べ替えると
 M = \bigl(X \mathbin{+\!\!+} (u,w) :: (A_1 \mathbin{+\!\!+} (u+e,w) :: (B' \mathbin{+\!\!+} A_2'))\bigr) \mathbin{+\!\!+} Z'
 ```
 
-である。これは D.ArgDomCoreOn が要求する分解の形であるから、(hMon) をこの分解と
+である。これは [D.ArgDomCoreOn](ArgDom.md#d-ArgDomCoreOn) が要求する分解の形であるから、(hMon) をこの分解と
 (he)、(h1)、上に挙げた $`B'`$、$`A_2'`$、$`Z'`$ についての 4 条件、(h6) に適用して
 
 ```math
@@ -615,11 +623,13 @@ M := \bigl(G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr) \mathbin{+\!\!+} (\ell),
 j_1 := \bigl\lvert G \mathbin{+\!\!+} ((v_0,w_0) :: R)\bigr\rvert
 ```
 
-とおく。$`\lvert G\rvert \to^M_1 j_1`$ ならば
+とおく。$`\lvert G\rvert \to^M_1 j_1`$（[D.nextrel1](Pss.md#d-nextrel1)）ならば
 
 ```math
 \mathrm{SpineOK}\bigl(R,\ v_0 + d_0,\ w_0 + 1\bigr).
 ```
+
+（$`\mathrm{SpineOK}`$ [D.SpineOK](ArgDom.md#d-SpineOK)）
 
 ### 証明
 
@@ -647,7 +657,8 @@ $`\to^M_1`$ の定義（D.nextrel1）により、仮定 $`\lvert G\rvert \to^M_1
 \forall j,\ \bigl(\lvert G\rvert \lt j \wedge j \le^M_0 j_1\bigr) \to M_{1,j_1} \le M_{1,j}
 ```
 
-が得られる。$`A := G \mathbin{+\!\!+} ((v_0,w_0) :: U)`$ とおく。
+が得られる（$`\le^M_0`$ [D.le0](Pss.md#d-le0)、$`M_{i,j}`$ [D.entry](Pss.md#d-entry)）。
+$`A := G \mathbin{+\!\!+} ((v_0,w_0) :: U)`$ とおく。
 
 **第 1 段：位置の勘定。**
 $`R = U \mathbin{+\!\!+} x :: V`$ を $`M`$ の定義に代入し、連結の結合律で並べ替えると

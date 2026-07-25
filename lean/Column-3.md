@@ -5,7 +5,7 @@
 
 ### 定理
 
-$`L`$ を対の列、$`i \lt \lvert L\rvert`$ とすると $`L\langle i\rangle \in L`$。
+$`L`$ を対の列、$`i \lt \lvert L\rvert`$ とすると $`L\langle i\rangle \in L`$（[D.entry](Pss.md#d-entry)）。
 
 ### 証明
 
@@ -18,7 +18,7 @@ $`L\langle i\rangle`$ は $`L`$ の第 $`i`$ 要素である。列の第 $`i`$ �
 
 ### 定理
 
-$`v_0, w_0 \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$、$`q \in \mathbb{N}`$ とし、
+$`v_0, w_0 \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`q \in \mathbb{N}`$ とし、
 $`B := (v_0,w_0) :: R`$ とおく。次の 3 つを仮定する。
 
 ```math
@@ -52,7 +52,7 @@ $`B = (v_0,w_0) :: R`$ であるから $`B\langle 0\rangle = (v_0,w_0)`$、す�
 ### 定理
 
 $`G, R \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$、$`n, v_0, w_0 \in \mathbb{N}`$、
-$`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,0,n)`$ とおく。次を仮定する。
+$`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,0,n)`$（[D.copyExp](Column-2.md#d-copyExp)）とおく。次を仮定する。
 
 ```math
 \begin{aligned}
@@ -65,6 +65,8 @@ $`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,0,n)`$ とおく。次を�
 &\text{(hpos)}\quad 0 \lt B_{0,q} + k \cdot 0 .
 \end{aligned}
 ```
+
+（$`\mathrm{r1ok}`$ [D.r1ok](Column-2.md#d-r1ok)）
 
 このとき次をみたす $`p`$ が存在する。
 
@@ -328,7 +330,7 @@ $`\lvert G \mathbin{+\!\!+} B\rvert \le \lvert G\rvert + \lvert B\rvert`$ であ
 
 ### 定理
 
-$`\mathrm{r1ok}(M)`$ ならば $`\mathrm{r1ok}(\mathrm{Pred}\,M)`$。
+$`\mathrm{r1ok}(M)`$ ならば $`\mathrm{r1ok}(\mathrm{Pred}\,M)`$（[D.Pred](Pss.md#d-Pred)）。
 
 ### 証明
 
@@ -359,6 +361,8 @@ $`B := (v_0,w_0) :: R`$ とおく。次を仮定する。
    \to v_0 + d_0 \le B_{0,rr} .
 \end{aligned}
 ```
+
+（$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)）
 
 このとき $`w_0 \le B_{1,r'} + 1`$。
 
@@ -391,7 +395,7 @@ M_{0,\lvert G\rvert + r'} = B_{0,r'} = v_0 + d_0 - 1 ,
 M_{0,\lvert G\rvert + \lvert B\rvert} = \ell_1 = v_0 + d_0 .
 ```
 
-**行 0 の親子関係。** $`\lvert G\rvert + r' \to^M_0 \lvert G\rvert + \lvert B\rvert`$ を示す。
+**行 0 の親子関係。** $`\lvert G\rvert + r' \to^M_0 \lvert G\rvert + \lvert B\rvert`$（[D.nextrel0](Pss.md#d-nextrel0)）を示す。
 $`\to^M_0`$ の定義（D.nextrel0）の 5 条件を確かめる。
 
 **(1)** $`r' \lt \lvert B\rvert`$ より
@@ -410,7 +414,7 @@ $`rr := j - \lvert G\rvert`$ とおくと $`j = \lvert G\rvert + rr`$、$`r' \lt
 (hafter) より $`v_0 + d_0 \le B_{0,rr}`$、すなわち
 $`M_{0,\lvert G\rvert + \lvert B\rvert} \le M_{0,j}`$。
 
-**行 0 の祖先関係。** $`\le^M_0`$ の定義（D.le0）の 3 条件のうち (1), (2) は上の (1), (2) であり、
+**行 0 の祖先関係。** $`\le^M_0`$（[D.le0](Pss.md#d-le0)）の定義の 3 条件のうち (1), (2) は上の (1), (2) であり、
 (3) は 1 歩の $`\to^M_0`$ からなる鎖として得られる。よって
 
 ```math
@@ -441,11 +445,11 @@ w_0 \lt \ell_2 \le B_{1,r'} \le B_{1,r'} + 1 . \qquad \blacksquare
 ### 定理
 
 $`1 \le n`$、$`\mathrm{r1ok}(M)`$、$`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）ならば
-$`\mathrm{r1ok}(M[n])`$。
+$`\mathrm{r1ok}(M[n])`$（[D.oper](Pss.md#d-oper)）。
 
 ### 証明
 
-$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$ とおく。
+$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）とおく。
 $`M[n]`$ の定義（D.oper）の 4 つの分岐で場合分けする。
 
 **(a) $`j_1 = 0`$ のとき。**
@@ -458,7 +462,7 @@ $`M[n] = \mathrm{Pred}\,M`$ であり、
 [T.r1ok_Pred](#t-r1ok_Pred) を仮定 $`\mathrm{r1ok}(M)`$ に適用すればよい。
 
 **(c) $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
-$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
+$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）のとき。**
 [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
 $`M[n] = \mathrm{Pred}\,M`$ であり、[T.r1ok_Pred](#t-r1ok_Pred) を適用すればよい。
 
@@ -565,7 +569,7 @@ $`\mathrm{r1ok}(M[n])`$ である。∎
 
 ### 定理
 
-$`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{r1ok}(M)`$。
+$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`\mathrm{r1ok}(M)`$。
 
 ### 証明
 
@@ -575,7 +579,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 \Phi(M) :\equiv \mathrm{r1ok}(M).
 ```
 
-- **基底段**（規則 (diag)）：$`M = \Delta_0^v`$ である。
+- **基底段**（規則 (diag)）：$`M = \Delta_0^v`$（[D.diagSeq](Pss.md#d-diagSeq)）である。
   [T.r1ok_diagSeq](Column-2.md#t-r1ok_diagSeq) が $`\Phi(\Delta_0^v)`$ そのものである。
 
 - **帰納段**（規則 (oper)）：$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$ とする。帰納法の仮定は

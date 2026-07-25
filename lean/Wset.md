@@ -99,7 +99,7 @@ $`\lvert M\rvert - 1`$ の減法は切り捨て減法である（$`M = ()`$ の�
 ## 定義: 接ぎ木 (D.graft)
 
 $`L \in \mathrm{PairSeq}`$、$`e \in \mathbb{N}`$ に対し、$`L`$ の各対の第 1 成分に $`e`$ を
-足した列を $`L^{+e}`$ と書く（[T.translate_shift](Term.md#t-translate_shift) の記法）。
+足した列を $`L^{+e}`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）と書く（[T.translate_shift](Term.md#t-translate_shift) の記法）。
 また $`\mathrm{dropLast}\,M`$ を $`M`$ の末尾 1 要素を落とした列とする
 （$`M = ()`$ のときは $`()`$）。$`M, z \in \mathrm{PairSeq}`$ に対し
 
@@ -229,12 +229,12 @@ $`M_{1,j_1} = m+1`$ と $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ が成り立つ。
 3. $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$。この連言が成り立つとすると
    第 2 連言子から $`m+1 = 0`$ となり、$`m+1 \ne 0`$ に矛盾する。
 
-4. $`M[n] = \mathrm{Pred}\,M`$。2 により $`\mathrm{idx}_1(M,j_1) = 1`$ であるから、
+4. $`M[n] = \mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）。2 により $`\mathrm{idx}_1(M,j_1) = 1`$ であるから、
    $`\neg\,\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M,j_1), j_1\bigr)`$ は仮定
    $`\neg\,\mathrm{hasParent}(M,1,j_1)`$ そのものである。1, 3 とこれに
    [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) を適用する。
 
-5. $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$。$`\mathrm{Pred}`$（[D.Pred](Pss.md#d-Pred)）の
+5. $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$。$`\mathrm{Pred}`$ の
    定義（D.Pred）は $`\lvert M\rvert \le 1`$ かどうかで分岐する。仮定 $`1 \lt \lvert M\rvert`$ より
    $`\lvert M\rvert \le 1`$ は偽であるから第 2 の場合が選ばれ、末尾 1 列を落とした列になる。
 

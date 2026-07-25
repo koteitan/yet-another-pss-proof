@@ -16,19 +16,19 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 \Phi(M) :\equiv 0 \lt \lvert M\rvert .
 ```
 
-**基底段（規則 diag）$`M = \Delta_0^v`$。**
+**基底段（規則 diag）$`M = \Delta_0^v`$（[D.diagSeq](Pss.md#d-diagSeq)）。**
 [T.diagSeq_cons](Cnf.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$ とし、
 仮定 $`0 \le v`$ のもとで適用すると
-$`\Delta_0^v = (0,0) :: \Delta_1^v`$（[D.diagSeq](Pss.md#d-diagSeq)）である。
+$`\Delta_0^v = (0,0) :: \Delta_1^v`$ である。
 よって $`\lvert \Delta_0^v\rvert = 1 + \lvert \Delta_1^v\rvert`$ であり $`0 \lt \lvert \Delta_0^v\rvert`$。
 
-**帰納段（規則 oper）$`M = N[n]`$（$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
+**帰納段（規則 oper）$`M = N[n]`$（[D.oper](Pss.md#d-oper)、$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
 帰納法の仮定は $`\Phi(N)`$、すなわち $`0 \lt \lvert N\rvert`$ である。
 $`\lvert N\rvert`$ で場合分けする。
 
 **(a) $`1 \lt \lvert N\rvert`$ のとき。**
 [T.oper_eq_dropLast_append](Cnf.md#t-oper_eq_dropLast_append) より、ある $`R \in \mathrm{PairSeq}`$ が存在して
-$`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$（[D.oper](Pss.md#d-oper)）である。ここで $`\mathrm{dropLast}\,N`$ は
+$`N[n] = \mathrm{dropLast}\,N \mathbin{+\!\!+} R`$ である。ここで $`\mathrm{dropLast}\,N`$ は
 $`N`$ の末尾 1 要素を落とした列であり $`\lvert \mathrm{dropLast}\,N\rvert = \lvert N\rvert - 1`$ である。よって
 
 ```math
