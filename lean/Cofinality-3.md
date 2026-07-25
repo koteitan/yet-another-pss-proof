@@ -1,10 +1,10 @@
 [← README](README.md) | [English](Cofinality-3.md) | [Japanese](Cofinality-3-ja.md) | Cofinality [1](Cofinality.md) [2](Cofinality-2.md) **3**
 
 <a id="d-AscArgDom"></a>
-## 定義: 上昇コピーの引数支配 (D.AscArgDom)
+## Definition: argument domination for ascending copies (D.AscArgDom)
 
-命題 $`\mathrm{AscArgDom}`$ を次で定める。ここで $`B := (v_0,w_0) :: R`$、
-$`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0+1)\bigr)`$ と略記する。
+Define the proposition $`\mathrm{AscArgDom}`$ as follows, where $`B := (v_0,w_0) :: R`$ and
+$`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0+1)\bigr)`$ are abbreviations.
 
 ```math
 \begin{aligned}
@@ -19,60 +19,62 @@ $`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0+1)\bigr)`$ �
 \end{aligned}
 ```
 
-（$`\mathrm{PairSeq}`$ [D.PairSeq](Pss.md#d-PairSeq)、$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、
-$`j_0 \to^M_1 j_1`$ [D.nextrel1](Pss.md#d-nextrel1)、
-$`\mathrm{tw}_a L`$ と $`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、
-$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle)、
-$`\mathrm{cp}_d(B,n)`$ [D.copies](Cnf-2.md#d-copies)、$`L^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+($`\mathrm{PairSeq}`$ [D.PairSeq](Pss.md#d-PairSeq), $`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS),
+$`j_0 \to^M_1 j_1`$ [D.nextrel1](Pss.md#d-nextrel1),
+$`\mathrm{tw}_a L`$ and $`\mathrm{tr}`$ [D.translate](Term.md#d-translate),
+$`\preceq_{\mathrm{lex}}`$ [D.sle](Cofinality.md#d-sle),
+$`\mathrm{cp}_d(B,n)`$ [D.copies](Cnf-2.md#d-copies), $`L^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0))
 
 <a id="t-shiftr0_append"></a>
-## 定理: 平行移動は連結を保つ (T.shiftr0_append)
+## Theorem: the shift preserves concatenation (T.shiftr0_append)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$、$`A, B \in \mathrm{PairSeq}`$ に対し
-$`(A \mathbin{+\!\!+} B)^{+d} = A^{+d} \mathbin{+\!\!+} B^{+d}`$。
+For $`d \in \mathbb{N}`$ and $`A, B \in \mathrm{PairSeq}`$,
+$`(A \mathbin{+\!\!+} B)^{+d} = A^{+d} \mathbin{+\!\!+} B^{+d}`$.
 
-### 証明
+### Proof
 
-$`X^{+d}`$ の定義（D.shiftr0）より $`X^{+d}`$ は $`X`$ の各要素への写像 $`x \mapsto (x_1+d,\ x_2)`$ の
-適用であり、連結した列の各要素への写像の適用は、それぞれに適用してから連結したものに等しい。∎
+By the definition of $`X^{+d}`$ (D.shiftr0), $`X^{+d}`$ is the application of the map
+$`x \mapsto (x_1+d,\ x_2)`$ to each element of $`X`$, and applying a map to each element of a
+concatenation gives the same result as applying it to each part and then concatenating. ∎
 
 <a id="t-copies_succ_back"></a>
-## 定理: コピー塔の末尾の 1 個 (T.copies_succ_back)
+## Theorem: the last copy of the copy tower (T.copies_succ_back)
 
-### 定理
+### Theorem
 
-$`d, n \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$ に対し
+For $`d, n \in \mathbb{N}`$ and $`B \in \mathrm{PairSeq}`$,
 
 ```math
 \mathrm{cp}_d(B, n+1) = \mathrm{cp}_d(B, n) \mathbin{+\!\!+} B^{+nd} .
 ```
 
-### 証明
+### Proof
 
-$`\mathrm{cp}_d`$ の定義（D.copies）は、添字 $`k`$ を $`0`$ から $`n`$ まで（すなわち長さ $`n+1`$ の
-添字列にわたって）走らせた $`B^{+kd}`$ の連結である。添字列を先頭 $`n`$ 個と最後の 1 個 $`k = n`$ に
-分ければ
+By the definition of $`\mathrm{cp}_d`$ (D.copies), $`\mathrm{cp}_d(B, n+1)`$ is the concatenation of
+the $`B^{+kd}`$ as the index $`k`$ runs from $`0`$ to $`n`$, that is, over an index sequence of
+length $`n+1`$. Splitting that index sequence into its first $`n`$ indices and the last one
+$`k = n`$ gives
 
 ```math
 \mathrm{cp}_d(B, n+1)
  = \bigl(B^{+0\cdot d} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+(n-1)d}\bigr) \mathbin{+\!\!+} B^{+nd}
 ```
 
-であり、括弧の中は $`\mathrm{cp}_d(B, n)`$ そのものである。∎
+and the part inside the parentheses is $`\mathrm{cp}_d(B, n)`$ itself. ∎
 
 <a id="t-asc_crux1_of_argdom"></a>
-## 定理: 引数支配から頭を取った核心 (T.asc_crux1_of_argdom)
+## Theorem: the crux with the head removed, from argument domination (T.asc_crux1_of_argdom)
 
-### 定理
+### Theorem
 
-$`\mathrm{AscArgDom}`$ ならば $`\mathrm{AscCrux1}`$（[D.AscCrux1](Cofinality-2.md#d-AscCrux1)）。
+If $`\mathrm{AscArgDom}`$, then $`\mathrm{AscCrux1}`$ ([D.AscCrux1](Cofinality-2.md#d-AscCrux1)).
 
-### 証明
+### Proof
 
-$`G, R, S \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$ を取り、$`\mathrm{AscCrux1}`$ の
-5 つの仮定
+Let $`G, R, S \in \mathrm{PairSeq}`$ and $`v_0, w_0, d_0 \in \mathbb{N}`$, and assume the five
+hypotheses of $`\mathrm{AscCrux1}`$:
 
 ```math
 \begin{aligned}
@@ -85,7 +87,7 @@ $`G, R, S \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$ を取り、
 \end{aligned}
 ```
 
-を仮定する。$`\mathrm{AscArgDom}`$ をこの (1)〜(5) に適用して、$`m`$ と
+Applying $`\mathrm{AscArgDom}`$ to these (1)–(5) gives an $`m`$ together with
 
 ```math
 (\ast)\qquad S_{\mathrm{hi}} \preceq_{\mathrm{lex}}
@@ -94,32 +96,31 @@ $`G, R, S \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$ を取り、
 S_{\mathrm{hi}} := \mathrm{tw}_{v_0+d_0} S,\quad B' := B^{+d_0}
 ```
 
-を得る。さらに $`S_{\mathrm{lo}} := \mathrm{dw}_{v_0+d_0} S`$ とおくと
-$`S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}} = S`$ である。
-また $`X^{+d}`$ の定義（D.shiftr0）より
+Setting further $`S_{\mathrm{lo}} := \mathrm{dw}_{v_0+d_0} S`$, we have
+$`S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}} = S`$.
+Also, by the definition of $`X^{+d}`$ (D.shiftr0),
 
 ```math
 B' = B^{+d_0} = (v_0 + d_0,\ w_0) :: R^{+d_0}
 ```
 
-である。
+**Step 1: $`\forall x \in R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m),\ v_0 \lt x_1`$.**
+For $`x \in R`$ this is (3). For $`x \in \mathrm{cp}_{d_0}(B', m)`$ argue as follows.
+By (3) we have $`\forall y \in R,\ v_0 \le y_1`$, so applying
+[T.mem_shiftr0_le](Cofinality-2.md#t-mem_shiftr0_le) with $`d := v_0`$ and $`e := d_0`$ gives
+$`\forall y \in R^{+d_0},\ v_0 + d_0 \le y_1`$.
+Applying [T.copies_v0_le](Cnf-3.md#t-copies_v0_le) with base point $`v_0 + d_0`$, with value
+$`w_0`$ in row $`1`$, with tail $`R^{+d_0}`$ (that is, $`B' = (v_0+d_0,\ w_0) :: R^{+d_0}`$), and
+with $`d := d_0`$, $`n := m`$, gives $`v_0 + d_0 \le x_1`$. By (4), $`v_0 \lt v_0 + d_0 \le x_1`$.
 
-**第 1 段：$`\forall x \in R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m),\ v_0 \lt x_1`$。**
-$`x \in R`$ のときは (3) による。$`x \in \mathrm{cp}_{d_0}(B', m)`$ のときは次のようにする。
-(3) より $`\forall y \in R,\ v_0 \le y_1`$ であるから、
-[T.mem_shiftr0_le](Cofinality-2.md#t-mem_shiftr0_le) を $`d := v_0`$、$`e := d_0`$ として適用して
-$`\forall y \in R^{+d_0},\ v_0 + d_0 \le y_1`$ を得る。
-[T.copies_v0_le](Cnf-3.md#t-copies_v0_le) を、基点 $`v_0 + d_0`$、行 $`1`$ の値 $`w_0`$、
-尾部 $`R^{+d_0}`$（すなわち $`B' = (v_0+d_0,\ w_0) :: R^{+d_0}`$）、$`d := d_0`$、$`n := m`$ として
-適用すると $`v_0 + d_0 \le x_1`$ を得る。(4) より $`v_0 \lt v_0 + d_0 \le x_1`$ である。
+**Step 2: $`S_{\mathrm{lo}} = ()`$ or $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0`$.**
+If $`S_{\mathrm{lo}} = \mathrm{dw}_{v_0+d_0} S`$ is not the empty sequence, then its first element
+$`z`$ fails the predicate, that is, satisfies $`\neg(v_0 + d_0 \lt z_1)`$, so
+$`z_1 \le v_0 + d_0`$.
 
-**第 2 段：$`S_{\mathrm{lo}} = ()`$ または $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0`$。**
-$`S_{\mathrm{lo}} = \mathrm{dw}_{v_0+d_0} S`$ が空でなければ、その先頭要素 $`z`$ は述語を破る、
-すなわち $`\neg(v_0 + d_0 \lt z_1)`$ をみたすから $`z_1 \le v_0 + d_0`$ である。
-
-**第 3 段：目標の展開。**
-求める添字として $`m + 2`$ を取る（$`1 \le m+2`$）。
-$`E := \bigl((B')^{+m d_0}\bigr)^{+d_0}`$ とおく。
+**Step 3: unfolding the goal.**
+As the index sought we take $`m + 2`$ (indeed $`1 \le m+2`$).
+Put $`E := \bigl((B')^{+m d_0}\bigr)^{+d_0}`$.
 
 ```math
 \begin{aligned}
@@ -134,68 +135,70 @@ $`E := \bigl((B')^{+m d_0}\bigr)^{+d_0}`$ とおく。
 \end{aligned}
 ```
 
-第 1 の等号は [T.shiftr0_copies](Cofinality-2.md#t-shiftr0_copies)（$`B' = B^{+d_0}`$）、
-第 2 の等号は [T.copies_succ_front](Cnf-3.md#t-copies_succ_front)、
-第 3 の等号は [T.copies_succ_back](#t-copies_succ_back) と [T.shiftr0_append](#t-shiftr0_append)、
-第 4 の等号は $`B' = (v_0+d_0,\ w_0) :: R^{+d_0}`$ と結合律、
-第 5 の等号は [T.shiftr0_append](#t-shiftr0_append) による。
+The first equality is [T.shiftr0_copies](Cofinality-2.md#t-shiftr0_copies) (with $`B' = B^{+d_0}`$),
+the second is [T.copies_succ_front](Cnf-3.md#t-copies_succ_front),
+the third is [T.copies_succ_back](#t-copies_succ_back) with [T.shiftr0_append](#t-shiftr0_append),
+the fourth is $`B' = (v_0+d_0,\ w_0) :: R^{+d_0}`$ with associativity,
+and the fifth is [T.shiftr0_append](#t-shiftr0_append).
 
-**第 4 段：$`E`$ の形。**
-$`B' = (v_0+d_0,\ w_0) :: R^{+d_0} \ne ()`$ であり、
-[T.shiftr0_length](Cofinality-2.md#t-shiftr0_length) を 2 回使うと $`\lvert E\rvert = \lvert B'\rvert \gt 0`$、
-すなわち $`E \ne ()`$ である。また $`X^{+d}`$ の定義（D.shiftr0）は先頭要素を先頭要素に写すから、
-$`B'`$ の先頭 $`(v_0+d_0,\ w_0)`$ に対応する $`E`$ の先頭は
-$`\bigl(v_0 + d_0 + m d_0 + d_0,\ w_0\bigr)`$ であり、
+**Step 4: the shape of $`E`$.**
+We have $`B' = (v_0+d_0,\ w_0) :: R^{+d_0} \ne ()`$, and using
+[T.shiftr0_length](Cofinality-2.md#t-shiftr0_length) twice gives $`\lvert E\rvert = \lvert B'\rvert \gt 0`$,
+that is, $`E \ne ()`$. Moreover the definition of $`X^{+d}`$ (D.shiftr0) sends the first element to
+the first element, so the first element of $`E`$, the one corresponding to the first element
+$`(v_0+d_0,\ w_0)`$ of $`B'`$, is $`\bigl(v_0 + d_0 + m d_0 + d_0,\ w_0\bigr)`$, and
 
 ```math
 (\mathrm{head}\,E)_1 = v_0 + d_0 + m d_0 + d_0 .
 ```
 
-**第 5 段：頭の消去。**
-示すべきは第 3 段より
+**Step 5: cancelling the head.**
+By Step 3, what is to be shown is
 
 ```math
 (v_0+d_0,\ w_0) :: S \ \preceq_{\mathrm{lex}}\
  (v_0+d_0,\ w_0) :: \Bigl(\bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0} \mathbin{+\!\!+} E\Bigr)
 ```
 
-である。両辺は長さ $`1`$ の列 $`\bigl((v_0+d_0,\ w_0)\bigr)`$ を共通の左側にもつ連結であるから、
-[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) によりこれは
+Both sides are concatenations having the sequence $`\bigl((v_0+d_0,\ w_0)\bigr)`$ of length $`1`$ as
+their common left part, so by [T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) this is
+equivalent to
 
 ```math
 S \ \preceq_{\mathrm{lex}}\
  \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0} \mathbin{+\!\!+} E
 ```
 
-と同値である。$`(\ast)`$ を $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）に従って 2 つの場合に分ける。
+Distinguish two cases according to the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle) applied to
+$`(\ast)`$.
 
-**(a) $`S_{\mathrm{hi}} = \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0}`$ のとき。**
-$`S = S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}}`$ であるから、示すべきは
+**(a) The case $`S_{\mathrm{hi}} = \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0}`$.**
+Since $`S = S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}}`$, what is to be shown is
 
 ```math
 S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}} \ \preceq_{\mathrm{lex}}\ S_{\mathrm{hi}} \mathbin{+\!\!+} E
 ```
 
-であり、[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) により
-$`S_{\mathrm{lo}} \preceq_{\mathrm{lex}} E`$ を示せばよい。第 2 段で場合分けする。
+so by [T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) it suffices to show
+$`S_{\mathrm{lo}} \preceq_{\mathrm{lex}} E`$. Distinguish cases according to Step 2.
 
-- $`S_{\mathrm{lo}} = ()`$ のとき。第 4 段より $`E \ne ()`$ であるから、
-  $`\prec_{\mathrm{lex}}`$ の定義（[D.seqlex](Seqlex.md#d-seqlex)）の第 1 式により
-  $`() \prec_{\mathrm{lex}} E`$ であり、
-  $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言が成り立つ。
-- $`S_{\mathrm{lo}} = z :: Z`$ かつ $`z_1 \le v_0 + d_0`$ のとき。第 4 段より $`E \ne ()`$ だから
-  $`E = e :: E'`$ と書け、$`e_1 = v_0 + d_0 + m d_0 + d_0`$ である。
-  (4) の $`0 \lt d_0`$ より $`v_0 + d_0 \lt v_0 + d_0 + m d_0 + d_0`$ であるから
-  $`z_1 \le v_0 + d_0 \lt e_1`$ であり、
-  $`\prec_{\mathrm{p}}`$ の定義（[D.pairlt](Seqlex.md#d-pairlt)）の第 1 選言により
-  $`z \prec_{\mathrm{p}} e`$、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の第 1 選言により
-  $`z :: Z \prec_{\mathrm{lex}} e :: E'`$ を得る。
+- The case $`S_{\mathrm{lo}} = ()`$. By Step 4 we have $`E \ne ()`$, so the first clause of the
+  definition of $`\prec_{\mathrm{lex}}`$ ([D.seqlex](Seqlex.md#d-seqlex)) gives
+  $`() \prec_{\mathrm{lex}} E`$, and the second disjunct of the definition of
+  $`\preceq_{\mathrm{lex}}`$ (D.sle) holds.
+- The case $`S_{\mathrm{lo}} = z :: Z`$ with $`z_1 \le v_0 + d_0`$. By Step 4 we have $`E \ne ()`$,
+  so $`E = e :: E'`$ with $`e_1 = v_0 + d_0 + m d_0 + d_0`$.
+  From $`0 \lt d_0`$ in (4) we get $`v_0 + d_0 \lt v_0 + d_0 + m d_0 + d_0`$, hence
+  $`z_1 \le v_0 + d_0 \lt e_1`$; by the first disjunct of the definition of
+  $`\prec_{\mathrm{p}}`$ ([D.pairlt](Seqlex.md#d-pairlt)) we get $`z \prec_{\mathrm{p}} e`$, and by
+  the first disjunct of the third clause of the definition of $`\prec_{\mathrm{lex}}`$ (D.seqlex)
+  we get $`z :: Z \prec_{\mathrm{lex}} e :: E'`$.
 
-**(b) $`S_{\mathrm{hi}} \prec_{\mathrm{lex}} \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0}`$ のとき。**
-[T.seqlex_splice](Cofinality-2.md#t-seqlex_splice) を、小さい側の列を $`S_{\mathrm{hi}}`$、
-大きい側の列を $`\bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0}`$、
-小さい側に付ける列を $`S_{\mathrm{lo}}`$、大きい側に付ける列を $`E`$ として適用する。
-残る仮定は次の選言である。
+**(b) The case $`S_{\mathrm{hi}} \prec_{\mathrm{lex}} \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0}`$.**
+Apply [T.seqlex_splice](Cofinality-2.md#t-seqlex_splice) with $`S_{\mathrm{hi}}`$ as the smaller
+sequence, $`\bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0}`$ as the larger one,
+$`S_{\mathrm{lo}}`$ as the sequence appended to the smaller one, and $`E`$ as the sequence appended
+to the larger one. The hypothesis that remains is the following disjunction.
 
 ```math
 S_{\mathrm{lo}} = ()
@@ -204,39 +207,40 @@ S_{\mathrm{lo}} = ()
  \mathrm{head}\,S_{\mathrm{lo}} \prec_{\mathrm{p}} x
 ```
 
-第 2 段で場合分けする。
+Distinguish cases according to Step 2.
 
-- $`S_{\mathrm{lo}} = ()`$ のとき。第 1 選言である。
-- $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0`$ のとき。
-  $`x \in \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B',m)\bigr)^{+d_0}`$ とすると、
-  [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) よりある $`y \in R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B',m)`$ が
-  存在して $`x = (y_1 + d_0,\ y_2)`$ である。第 1 段より $`v_0 \lt y_1`$ であるから
-  $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0 \lt y_1 + d_0 = x_1`$ であり、
-  $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
-  $`\mathrm{head}\,S_{\mathrm{lo}} \prec_{\mathrm{p}} x`$ が成り立つ。
+- The case $`S_{\mathrm{lo}} = ()`$. This is the first disjunct.
+- The case $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0`$.
+  Let $`x \in \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B',m)\bigr)^{+d_0}`$. By
+  [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) there is $`y \in R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B',m)`$
+  with $`x = (y_1 + d_0,\ y_2)`$. By Step 1 we have $`v_0 \lt y_1`$, hence
+  $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0 \lt y_1 + d_0 = x_1`$, and the first disjunct
+  of the definition of $`\prec_{\mathrm{p}}`$ (D.pairlt) gives
+  $`\mathrm{head}\,S_{\mathrm{lo}} \prec_{\mathrm{p}} x`$.
 
-こうして
+This yields
 
 ```math
 S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}} \prec_{\mathrm{lex}}
  \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m)\bigr)^{+d_0} \mathbin{+\!\!+} E
 ```
 
-が得られ、$`S = S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}}`$ であるから、
-第 5 段の目標が $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言として得られた。∎
+and since $`S = S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}}`$, the goal of Step 5 is obtained as
+the second disjunct of the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle). ∎
 
 <a id="t-asc_head_step"></a>
-## 定理: 上昇コピーの核心の頭段 (T.asc_head_step)
+## Theorem: the head step of the ascending-copy crux (T.asc_head_step)
 
-### 定理
+### Theorem
 
-$`\mathrm{AscCrux1}`$ ならば $`\mathrm{AscCrux}`$（[D.AscCrux](Cofinality-2.md#d-AscCrux)）。
+If $`\mathrm{AscCrux1}`$, then $`\mathrm{AscCrux}`$ ([D.AscCrux](Cofinality-2.md#d-AscCrux)).
 
-### 証明
+### Proof
 
-$`G, R, S \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell, q \in \mathbb{N}\times\mathbb{N}`$ を
-取り、$`B := (v_0,w_0) :: R`$、$`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)`$ とおいて
-$`\mathrm{AscCrux}`$ の 8 つの仮定
+Let $`G, R, S \in \mathrm{PairSeq}`$, $`v_0, w_0, d_0 \in \mathbb{N}`$ and
+$`\ell, q \in \mathbb{N}\times\mathbb{N}`$, put $`B := (v_0,w_0) :: R`$ and
+$`H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)`$, and assume the eight hypotheses of
+$`\mathrm{AscCrux}`$:
 
 ```math
 \begin{aligned}
@@ -251,52 +255,55 @@ $`\mathrm{AscCrux}`$ の 8 つの仮定
 \end{aligned}
 ```
 
-を仮定する。(5)(6) より対 $`\ell`$ は両成分が定まり
-$`\ell = (v_0 + d_0,\ w_0 + 1)`$ である。$`q`$ で場合分けする。
+By (5) and (6) both entries of the pair $`\ell`$ are determined, so that
+$`\ell = (v_0 + d_0,\ w_0 + 1)`$. Distinguish cases on $`q`$.
 
-**(a) $`q = (v_0 + d_0,\ w_0)`$ のとき。**
-$`\ell = (v_0+d_0,\ w_0+1)`$ により (1) と (7) を書き換えると、それぞれ
-$`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0+1)\bigr) \in \mathrm{ST\_PS}`$ と
-$`\lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert`$（$`H`$ も同じく書き換わる）になる。
-また (2) は $`q = (v_0+d_0,\ w_0)`$ により
-$`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: S \in \mathrm{ST\_PS}`$ である。
-これらと (3)(4) に $`\mathrm{AscCrux1}`$ を適用すれば、求める $`m`$ と
-$`q :: S \preceq_{\mathrm{lex}} \bigl(\mathrm{cp}_{d_0}(B,m)\bigr)^{+d_0}`$ が得られる。
+**(a) The case $`q = (v_0 + d_0,\ w_0)`$.**
+Rewriting (1) and (7) by $`\ell = (v_0+d_0,\ w_0+1)`$ turns them into
+$`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0+1)\bigr) \in \mathrm{ST\_PS}`$ and
+$`\lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert`$ respectively (with $`H`$ rewritten in
+the same way). Likewise (2) becomes, by $`q = (v_0+d_0,\ w_0)`$,
+$`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: S \in \mathrm{ST\_PS}`$.
+Applying $`\mathrm{AscCrux1}`$ to these together with (3) and (4) gives the required $`m`$ and
+$`q :: S \preceq_{\mathrm{lex}} \bigl(\mathrm{cp}_{d_0}(B,m)\bigr)^{+d_0}`$.
 
-**(b) $`q \ne (v_0 + d_0,\ w_0)`$ のとき。**
-$`m := 1`$ と取る。[T.copies_one](Cnf-3.md#t-copies_one) より $`\mathrm{cp}_{d_0}(B, 1) = B`$ であり、
-$`X^{+d}`$ の定義（D.shiftr0）より
+**(b) The case $`q \ne (v_0 + d_0,\ w_0)`$.**
+Take $`m := 1`$. By [T.copies_one](Cnf-3.md#t-copies_one) we have
+$`\mathrm{cp}_{d_0}(B, 1) = B`$, and by the definition of $`X^{+d}`$ (D.shiftr0)
 
 ```math
 B^{+d_0} = (v_0 + d_0,\ w_0) :: R^{+d_0}
 ```
 
-である。よって $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の第 1 選言により
-$`q \prec_{\mathrm{p}} (v_0+d_0,\ w_0)`$ を示せばよい。
-$`\ell = (v_0+d_0,\ w_0+1)`$ を (8) に代入すると、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より
+Hence, by the first disjunct of the third clause of the definition of $`\prec_{\mathrm{lex}}`$
+(D.seqlex), it suffices to show $`q \prec_{\mathrm{p}} (v_0+d_0,\ w_0)`$.
+Substituting $`\ell = (v_0+d_0,\ w_0+1)`$ into (8), the definition of $`\prec_{\mathrm{p}}`$
+(D.pairlt) gives
 
 ```math
-q_1 \lt v_0 + d_0 \quad\text{または}\quad \bigl(q_1 = v_0 + d_0 \ \wedge\ q_2 \lt w_0 + 1\bigr)
+q_1 \lt v_0 + d_0 \quad\text{or}\quad \bigl(q_1 = v_0 + d_0 \ \wedge\ q_2 \lt w_0 + 1\bigr)
 ```
 
-である。また $`q \ne (v_0+d_0,\ w_0)`$ は、対の相等が成分ごとの相等であることから
-$`\neg\bigl(q_1 = v_0 + d_0 \ \wedge\ q_2 = w_0\bigr)`$ と同値である。場合分けする。
+Also, since equality of pairs is equality of the entries, $`q \ne (v_0+d_0,\ w_0)`$ is equivalent to
+$`\neg\bigl(q_1 = v_0 + d_0 \ \wedge\ q_2 = w_0\bigr)`$. Distinguish cases.
 
-- $`q_1 \lt v_0 + d_0`$ のとき。$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言が成り立つ。
-- $`q_1 = v_0 + d_0`$ かつ $`q_2 \lt w_0 + 1`$ のとき。$`q_2 \le w_0`$ である。
-  もし $`q_2 = w_0`$ なら $`q_1 = v_0 + d_0`$ と合わせて上の否定に反するから $`q_2 \ne w_0`$、
-  よって $`q_2 \lt w_0`$ である。$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 2 選言が成り立つ。
+- The case $`q_1 \lt v_0 + d_0`$. The first disjunct of the definition of $`\prec_{\mathrm{p}}`$
+  (D.pairlt) holds.
+- The case $`q_1 = v_0 + d_0`$ and $`q_2 \lt w_0 + 1`$. Then $`q_2 \le w_0`$.
+  If $`q_2 = w_0`$, then together with $`q_1 = v_0 + d_0`$ this contradicts the negation above, so
+  $`q_2 \ne w_0`$ and therefore $`q_2 \lt w_0`$. The second disjunct of the definition of
+  $`\prec_{\mathrm{p}}`$ (D.pairlt) holds.
 
-いずれの場合も $`q :: S \prec_{\mathrm{lex}} \bigl(\mathrm{cp}_{d_0}(B,1)\bigr)^{+d_0}`$ であり、
-$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言により結論を得る。∎
+In either case $`q :: S \prec_{\mathrm{lex}} \bigl(\mathrm{cp}_{d_0}(B,1)\bigr)^{+d_0}`$, and the
+second disjunct of the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle) gives the conclusion. ∎
 
 <a id="t-seqlex_cof_bad"></a>
-## 定理: 第 4 分岐の共終性 (T.seqlex_cof_bad)
+## Theorem: cofinality of the fourth branch (T.seqlex_cof_bad)
 
-### 定理
+### Theorem
 
-$`\mathrm{AscCrux}`$ を仮定する。$`M, N \in \mathrm{PairSeq}`$ とし
-$`j_1 := \lvert M\rvert - 1`$ とおく。
+Assume $`\mathrm{AscCrux}`$. Let $`M, N \in \mathrm{PairSeq}`$ and put
+$`j_1 := \lvert M\rvert - 1`$. If
 
 ```math
 M \in \mathrm{ST\_PS},\quad
@@ -306,24 +313,24 @@ N \in \mathrm{ST\_PS},\quad
 N \prec_{\mathrm{lex}} M
 ```
 
-ならば、$`1 \le n`$ なる $`n`$ が存在して $`N \preceq_{\mathrm{lex}} M[n]`$。
+then there is $`n`$ with $`1 \le n`$ such that $`N \preceq_{\mathrm{lex}} M[n]`$.
 
-（$`M_{i,j}`$ [D.entry](Pss.md#d-entry)、$`M[n]`$ [D.oper](Pss.md#d-oper)）
+($`M_{i,j}`$ [D.entry](Pss.md#d-entry), $`M[n]`$ [D.oper](Pss.md#d-oper))
 
-### 証明
+### Proof
 
-**第 1 段：ブロック分解。**
-$`1 \lt \lvert M\rvert`$ より $`0 \lt \lvert M\rvert`$ であるから、
-[T.hasParent_last_ST_PS](Cofinality.md#t-hasParent_last_ST_PS) により
-$`\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, j_1),\ j_1\bigr)`$ が成り立つ
-（$`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent)、$`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)）。
-また [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) と
-$`\mathrm{blockok}`$ の定義（[D.blockok](Seqlex.md#d-blockok)）の
-第 3 連言子より $`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）、
-[T.r1ok_ST_PS](Column-3.md#t-r1ok_ST_PS) より
-$`\mathrm{r1ok}(M)`$（[D.r1ok](Column-2.md#d-r1ok)）である。これらに [T.oper_bad_blocks_all](Cofinality.md#t-oper_bad_blocks_all) を適用して
-$`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ を取り、
-$`B := (v_0,w_0) :: R`$ とおくと
+**Step 1: block decomposition.**
+From $`1 \lt \lvert M\rvert`$ we get $`0 \lt \lvert M\rvert`$, so
+[T.hasParent_last_ST_PS](Cofinality.md#t-hasParent_last_ST_PS) gives
+$`\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, j_1),\ j_1\bigr)`$
+($`\mathrm{hasParent}`$ [D.hasParent](Pss.md#d-hasParent), $`\mathrm{idx}_1`$ [D.idx1](Pss.md#d-idx1)).
+Moreover [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) together with the third conjunct of the
+definition of $`\mathrm{blockok}`$ ([D.blockok](Seqlex.md#d-blockok)) gives
+$`\mathrm{steps}_1(M)`$ ([D.steps1](Seqlex.md#d-steps1)), and
+[T.r1ok_ST_PS](Column-3.md#t-r1ok_ST_PS) gives
+$`\mathrm{r1ok}(M)`$ ([D.r1ok](Column-2.md#d-r1ok)). Applying [T.oper_bad_blocks_all](Cofinality.md#t-oper_bad_blocks_all) to these
+yields $`G, R \in \mathrm{PairSeq}`$, $`v_0, w_0, d_0 \in \mathbb{N}`$ and
+$`\ell \in \mathbb{N}\times\mathbb{N}`$ such that, putting $`B := (v_0,w_0) :: R`$,
 
 ```math
 \begin{aligned}
@@ -337,129 +344,131 @@ $`B := (v_0,w_0) :: R`$ とおくと
 \end{aligned}
 ```
 
-が成り立つ。
+hold.
 
-**第 2 段：$`N`$ の場合分け。**
-(1) により仮定 $`N \prec_{\mathrm{lex}} M`$ は
-$`N \prec_{\mathrm{lex}} (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)`$ である。
-[T.seqlex_snoc_cases](Cofinality.md#t-seqlex_snoc_cases) を $`D := G \mathbin{+\!\!+} B`$ として適用すると、
-次の 2 つの場合に分かれる。
+**Step 2: case distinction on $`N`$.**
+By (1) the hypothesis $`N \prec_{\mathrm{lex}} M`$ reads
+$`N \prec_{\mathrm{lex}} (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)`$.
+Applying [T.seqlex_snoc_cases](Cofinality.md#t-seqlex_snoc_cases) with $`D := G \mathbin{+\!\!+} B`$
+splits the situation into the following two cases.
 
-**(a) $`N \preceq_{\mathrm{lex}} G \mathbin{+\!\!+} B`$ のとき。**
-$`n := 1`$ と取る。(2) と [T.copies_one](Cnf-3.md#t-copies_one) より
-$`M[1] = G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B,1) = G \mathbin{+\!\!+} B`$ であるから、
-仮定がそのまま結論である。
+**(a) The case $`N \preceq_{\mathrm{lex}} G \mathbin{+\!\!+} B`$.**
+Take $`n := 1`$. By (2) and [T.copies_one](Cnf-3.md#t-copies_one),
+$`M[1] = G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B,1) = G \mathbin{+\!\!+} B`$, so the hypothesis is
+exactly the conclusion.
 
-**(b) $`N = (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S`$ かつ $`q \prec_{\mathrm{p}} \ell`$ なる
-$`q, S`$ が存在するとき。**
-まず、$`1 \le m`$ なる $`m`$ で
+**(b) The case where there are $`q, S`$ with $`N = (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S`$ and
+$`q \prec_{\mathrm{p}} \ell`$.**
+We first construct an $`m`$ with $`1 \le m`$ satisfying
 
 ```math
 (\dagger)\qquad q :: S \preceq_{\mathrm{lex}} \bigl(\mathrm{cp}_{d_0}(B, m)\bigr)^{+d_0}
 ```
 
-をみたすものを構成する。(5) の選言で場合分けする。
+Distinguish cases according to the disjunction (5).
 
-**(b-1) $`d_0 = 0`$、$`\ell_2 = 0`$、$`\ell_1 = v_0 + 1`$ のとき。**
-$`X^{+0} = X`$（$`X^{+d}`$ の定義 D.shiftr0 で $`d = 0`$ とすると各要素が変わらない）であるから、
-$`(\dagger)`$ は $`q :: S \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ と同じ主張である。
-[T.crux_zero](Cofinality-2.md#t-crux_zero) を、その仮定 (1) として
-$`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S = N \in \mathrm{ST\_PS}`$、
-仮定 (2) として本証明の (3)、仮定 (3) として $`\ell_2 = 0 \wedge \ell_1 = v_0+1`$、
-仮定 (4) として $`q \prec_{\mathrm{p}} \ell`$ を与えて適用すればよい。
+**(b-1) The case $`d_0 = 0`$, $`\ell_2 = 0`$, $`\ell_1 = v_0 + 1`$.**
+Since $`X^{+0} = X`$ (taking $`d = 0`$ in the definition of $`X^{+d}`$, D.shiftr0, leaves every
+element unchanged), $`(\dagger)`$ is the same proposition as
+$`q :: S \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$.
+It suffices to apply [T.crux_zero](Cofinality-2.md#t-crux_zero), supplying
+$`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S = N \in \mathrm{ST\_PS}`$ as its hypothesis (1),
+(3) of the present proof as its hypothesis (2), $`\ell_2 = 0 \wedge \ell_1 = v_0+1`$ as its
+hypothesis (3), and $`q \prec_{\mathrm{p}} \ell`$ as its hypothesis (4).
 
-**(b-2) $`0 \lt d_0`$、$`\ell_2 = w_0 + 1`$、$`\ell_1 = v_0 + d_0`$、
-$`\lvert G\rvert \to^M_1 j_1`$ のとき。**
-(1) より $`\lvert M\rvert = \lvert G \mathbin{+\!\!+} B\rvert + 1`$ であるから
-$`j_1 = \lvert M\rvert - 1 = \lvert G \mathbin{+\!\!+} B\rvert`$ であり、(1) と合わせて
-$`\lvert G\rvert \to^M_1 j_1`$ は
+**(b-2) The case $`0 \lt d_0`$, $`\ell_2 = w_0 + 1`$, $`\ell_1 = v_0 + d_0`$,
+$`\lvert G\rvert \to^M_1 j_1`$.**
+By (1) we have $`\lvert M\rvert = \lvert G \mathbin{+\!\!+} B\rvert + 1`$, hence
+$`j_1 = \lvert M\rvert - 1 = \lvert G \mathbin{+\!\!+} B\rvert`$; together with (1) this makes
+$`\lvert G\rvert \to^M_1 j_1`$ the same proposition as
 
 ```math
 \lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert,
 \qquad H := (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)
 ```
 
-と同じ主張である。$`\mathrm{AscCrux}`$ を、その 8 つの仮定として
-$`H = M \in \mathrm{ST\_PS}`$、$`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S = N \in \mathrm{ST\_PS}`$、
-本証明の (3)、$`0 \lt d_0`$、$`\ell_2 = w_0+1`$、$`\ell_1 = v_0+d_0`$、
-いま書き換えた $`\lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert`$、$`q \prec_{\mathrm{p}} \ell`$ を
-与えて適用すると $`(\dagger)`$ を得る。
+Applying $`\mathrm{AscCrux}`$ with
+$`H = M \in \mathrm{ST\_PS}`$, $`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S = N \in \mathrm{ST\_PS}`$,
+(3) of the present proof, $`0 \lt d_0`$, $`\ell_2 = w_0+1`$, $`\ell_1 = v_0+d_0`$,
+the just rewritten $`\lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert`$ and
+$`q \prec_{\mathrm{p}} \ell`$ as its eight hypotheses gives $`(\dagger)`$.
 
-**第 3 段：結論。**
-$`n := m + 1`$ と取る（$`1 \le m + 1`$）。(2) と
-[T.copies_succ_front](Cnf-3.md#t-copies_succ_front) より
+**Step 3: conclusion.**
+Take $`n := m + 1`$ (indeed $`1 \le m + 1`$). By (2) and
+[T.copies_succ_front](Cnf-3.md#t-copies_succ_front),
 
 ```math
 M[m+1] = G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B, m+1)
  = G \mathbin{+\!\!+} \Bigl(B \mathbin{+\!\!+} \bigl(\mathrm{cp}_{d_0}(B,m)\bigr)^{+d_0}\Bigr)
 ```
 
-であり、他方 (b) の $`N`$ は結合律により
-$`N = G \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} q :: S\bigr)`$ である。
-[T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) を左側 $`G`$ について適用し、ついで左側 $`B`$ について
-適用すると、示すべき $`N \preceq_{\mathrm{lex}} M[m+1]`$ は $`(\dagger)`$ と同値になる。∎
+while the $`N`$ of (b) is, by associativity,
+$`N = G \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} q :: S\bigr)`$.
+Applying [T.sle_append_cancel](Cofinality.md#t-sle_append_cancel) with left part $`G`$, and then
+with left part $`B`$, makes the goal $`N \preceq_{\mathrm{lex}} M[m+1]`$ equivalent to
+$`(\dagger)`$. ∎
 
 <a id="t-seqlex_cofinality_of_crux"></a>
-## 定理: 核心からの列辞書式共終性 (T.seqlex_cofinality_of_crux)
+## Theorem: column-lex cofinality from the crux (T.seqlex_cofinality_of_crux)
 
-### 定理
+### Theorem
 
-$`\mathrm{AscCrux}`$ ならば $`\mathrm{SeqlexCofinality}`$（[D.SeqlexCofinality](Cofinality.md#d-SeqlexCofinality)）。
+If $`\mathrm{AscCrux}`$, then $`\mathrm{SeqlexCofinality}`$ ([D.SeqlexCofinality](Cofinality.md#d-SeqlexCofinality)).
 
-### 証明
+### Proof
 
-$`M, N \in \mathrm{PairSeq}`$ を取り、$`M \in \mathrm{ST\_PS}`$、$`N \in \mathrm{ST\_PS}`$、
-$`N \prec_{\mathrm{lex}} M`$ を仮定する。$`j_1 := \lvert M\rvert - 1`$ とおく。
-求めるのは $`1 \le n`$ なる $`n`$ で $`N \preceq_{\mathrm{lex}} M[n]`$ をみたすものである。
+Let $`M, N \in \mathrm{PairSeq}`$ and assume $`M \in \mathrm{ST\_PS}`$, $`N \in \mathrm{ST\_PS}`$ and
+$`N \prec_{\mathrm{lex}} M`$. Put $`j_1 := \lvert M\rvert - 1`$.
+What is sought is an $`n`$ with $`1 \le n`$ satisfying $`N \preceq_{\mathrm{lex}} M[n]`$.
 
-**(a) $`j_1 = 0`$ のとき。**
-[T.seqlex_cof_short](Cofinality.md#t-seqlex_cof_short) を適用する。
+**(a) The case $`j_1 = 0`$.**
+Apply [T.seqlex_cof_short](Cofinality.md#t-seqlex_cof_short).
 
-**(b) $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ のとき。**
-自然数の減法は切り捨て減法であるから、$`\lvert M\rvert - 1 \ne 0`$ は $`1 \lt \lvert M\rvert`$ と
-同値である。[T.seqlex_cof_zero](Cofinality.md#t-seqlex_cof_zero) を適用する。
+**(b) The case $`j_1 \ne 0`$ and $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$.**
+Since subtraction of natural numbers is truncated subtraction, $`\lvert M\rvert - 1 \ne 0`$ is
+equivalent to $`1 \lt \lvert M\rvert`$. Apply [T.seqlex_cof_zero](Cofinality.md#t-seqlex_cof_zero).
 
-**(c) $`j_1 \ne 0`$ かつ $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$ のとき。**
-(b) と同じく $`1 \lt \lvert M\rvert`$ である。
-[T.seqlex_cof_bad](#t-seqlex_cof_bad) を $`\mathrm{AscCrux}`$ の仮定のもとで適用する。
+**(c) The case $`j_1 \ne 0`$ and $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$.**
+As in (b), $`1 \lt \lvert M\rvert`$.
+Apply [T.seqlex_cof_bad](#t-seqlex_cof_bad) under the hypothesis $`\mathrm{AscCrux}`$.
 
-3 つの場合は $`j_1 = 0`$ か否か、および $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ か否かで
-尽くされている。∎
+The three cases exhaust all possibilities, according to whether $`j_1 = 0`$ or not and whether
+$`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ or not. ∎
 
 <a id="t-pss_cofinality_of_crux"></a>
-## 定理: 核心からの PSS 共終性 (T.pss_cofinality_of_crux)
+## Theorem: PSS cofinality from the crux (T.pss_cofinality_of_crux)
 
-### 定理
+### Theorem
 
-$`\mathrm{AscCrux1}`$ を仮定する。$`M, N \in \mathrm{PairSeq}`$ が
-$`M \in \mathrm{ST\_PS}`$、$`N \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ を
-みたすならば、$`1 \le n`$ なる $`n`$ が存在して
-$`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$。
+Assume $`\mathrm{AscCrux1}`$. If $`M, N \in \mathrm{PairSeq}`$ satisfy
+$`M \in \mathrm{ST\_PS}`$, $`N \in \mathrm{ST\_PS}`$ and $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$,
+then there is $`n`$ with $`1 \le n`$ such that
+$`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$.
 
-（$`\prec`$ [D.olt](Term.md#d-olt)、$`\preceq`$ [D.ole](Term.md#d-ole)）
+($`\prec`$ [D.olt](Term.md#d-olt), $`\preceq`$ [D.ole](Term.md#d-ole))
 
-### 証明
+### Proof
 
-[T.asc_head_step](#t-asc_head_step) を仮定 $`\mathrm{AscCrux1}`$ に適用して $`\mathrm{AscCrux}`$ を得る。
-これに [T.seqlex_cofinality_of_crux](#t-seqlex_cofinality_of_crux) を適用して
-$`\mathrm{SeqlexCofinality}`$ を得る。
-これに [T.pss_cofinality_of_seqlex](Cofinality.md#t-pss_cofinality_of_seqlex) を
-$`M`$、$`N`$、および 3 つの仮定 $`M \in \mathrm{ST\_PS}`$、$`N \in \mathrm{ST\_PS}`$、
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ とともに適用すれば結論を得る。∎
+Applying [T.asc_head_step](#t-asc_head_step) to the hypothesis $`\mathrm{AscCrux1}`$ gives $`\mathrm{AscCrux}`$.
+Applying [T.seqlex_cofinality_of_crux](#t-seqlex_cofinality_of_crux) to this gives
+$`\mathrm{SeqlexCofinality}`$.
+Applying [T.pss_cofinality_of_seqlex](Cofinality.md#t-pss_cofinality_of_seqlex) to this, together
+with $`M`$, $`N`$ and the three hypotheses $`M \in \mathrm{ST\_PS}`$, $`N \in \mathrm{ST\_PS}`$,
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$, gives the conclusion. ∎
 
 <a id="t-pss_cofinality_of_argdom"></a>
-## 定理: 引数支配からの PSS 共終性 (T.pss_cofinality_of_argdom)
+## Theorem: PSS cofinality from argument domination (T.pss_cofinality_of_argdom)
 
-### 定理
+### Theorem
 
-$`\mathrm{AscArgDom}`$ を仮定する。$`M, N \in \mathrm{PairSeq}`$ が
-$`M \in \mathrm{ST\_PS}`$、$`N \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ を
-みたすならば、$`1 \le n`$ なる $`n`$ が存在して
-$`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$。
+Assume $`\mathrm{AscArgDom}`$. If $`M, N \in \mathrm{PairSeq}`$ satisfy
+$`M \in \mathrm{ST\_PS}`$, $`N \in \mathrm{ST\_PS}`$ and $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$,
+then there is $`n`$ with $`1 \le n`$ such that
+$`\mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])`$.
 
-### 証明
+### Proof
 
-[T.asc_crux1_of_argdom](#t-asc_crux1_of_argdom) を仮定 $`\mathrm{AscArgDom}`$ に適用して
-$`\mathrm{AscCrux1}`$ を得る。これに [T.pss_cofinality_of_crux](#t-pss_cofinality_of_crux) を
-$`M`$、$`N`$、および 3 つの仮定 $`M \in \mathrm{ST\_PS}`$、$`N \in \mathrm{ST\_PS}`$、
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ とともに適用すれば結論を得る。∎
+Applying [T.asc_crux1_of_argdom](#t-asc_crux1_of_argdom) to the hypothesis $`\mathrm{AscArgDom}`$
+gives $`\mathrm{AscCrux1}`$. Applying [T.pss_cofinality_of_crux](#t-pss_cofinality_of_crux) to this,
+together with $`M`$, $`N`$ and the three hypotheses $`M \in \mathrm{ST\_PS}`$,
+$`N \in \mathrm{ST\_PS}`$, $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$, gives the conclusion. ∎

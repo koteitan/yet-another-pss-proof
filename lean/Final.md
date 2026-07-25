@@ -1,56 +1,57 @@
 [← README](README.md) | [English](Final.md) | [Japanese](Final-ja.md)
 
 <a id="t-acc_Rnf_of_acc_PS"></a>
-## 定理: 到達可能性の項側への移送 (T.acc_Rnf_of_acc_PS)
+## Theorem: transport of accessibility to the term side (T.acc_Rnf_of_acc_PS)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）上の関係 $`R_{\mathrm{st}}`$（[D.Rst](Wset.md#d-Rst)）の定義（D.Rst）は
+The relation $`R_{\mathrm{st}}`$ ([D.Rst](Wset.md#d-Rst)) on
+$`M \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) is defined (D.Rst) by
 
 ```math
 a \mathbin{R_{\mathrm{st}}} b :\iff
   a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b
 ```
 
-である（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS)、$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\prec`$ [D.olt](Term.md#d-olt)）。
+($`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS), $`\mathrm{tr}`$ [D.translate](Term.md#d-translate), $`\prec`$ [D.olt](Term.md#d-olt)).
 
-関係 $`R`$ に対する $`\mathrm{Acc}_R`$ の定義、その最小性（$`\mathrm{Acc}_R`$ の導出に関する帰納法）、
-および $`R`$ が整礎であることの定義は、[T.step_terminates_cond](Reduction.md#t-step_terminates_cond)
-の定理文で与えたものをそのまま用いる。
+The definition of $`\mathrm{Acc}_R`$ for a relation $`R`$, its minimality (induction on the derivation of
+$`\mathrm{Acc}_R`$), and the definition of $`R`$ being well-founded are used exactly as given in the
+statement of [T.step_terminates_cond](Reduction.md#t-step_terminates_cond).
 
-このとき、任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ かつ
-$`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ である。
+Then, for every $`M \in \mathrm{PairSeq}`$, if $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ and
+$`M \in \mathrm{ST\_PS}`$, then $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$.
 
-（$`R_{\mathrm{NF}}`$ [D.Rnf](Reduction.md#d-Rnf)）
+($`R_{\mathrm{NF}}`$ [D.Rnf](Reduction.md#d-Rnf))
 
-### 証明
+### Proof
 
-$`M \in \mathrm{PairSeq}`$ と $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を取り、
-$`\mathrm{Acc}_{R_{\mathrm{st}}}`$ の導出に関する帰納法を行う。帰納法の述語は
+Let $`M \in \mathrm{PairSeq}`$ with $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ be given, and argue by
+induction on the derivation of $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$. The induction predicate is
 
 ```math
 \Phi(M_0) :\equiv M_0 \in \mathrm{ST\_PS} \to \mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}} .
 ```
 
-**帰納段**：$`M_0 \in \mathrm{PairSeq}`$ を取り、帰納法の仮定
+**Inductive step.** Fix $`M_0 \in \mathrm{PairSeq}`$ and assume the induction hypothesis
 
 ```math
 \forall N \in \mathrm{PairSeq},\ N \mathbin{R_{\mathrm{st}}} M_0 \to \Phi(N)
 ```
 
-を仮定する（規則のもう一方の前提
-$`\forall N,\ N \mathbin{R_{\mathrm{st}}} M_0 \to N \in \mathrm{Acc}_{R_{\mathrm{st}}}`$
-も同時に使えるが、以下では用いない）。$`M_0 \in \mathrm{ST\_PS}`$ を仮定して
-$`\mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を示す。$`\mathrm{Acc}`$ の規則により、
+(the other premise of the rule,
+$`\forall N,\ N \mathbin{R_{\mathrm{st}}} M_0 \to N \in \mathrm{Acc}_{R_{\mathrm{st}}}`$,
+is available as well, but is not used below). Assume $`M_0 \in \mathrm{ST\_PS}`$; we must show
+$`\mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$. By the rule for $`\mathrm{Acc}`$, it suffices to show
 
 ```math
 \forall v \in \mathrm{Three},\
   v \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M_0 \to v \in \mathrm{Acc}_{R_{\mathrm{NF}}}
 ```
 
-を示せばよい（$`\mathrm{Three}`$ [D.Three](Term.md#d-Three)）。
-$`v \in \mathrm{Three}`$ を取り $`v \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M_0`$ とする。
-$`R_{\mathrm{NF}}`$ の定義（D.Rnf）より次の 3 つが成り立つ。
+($`\mathrm{Three}`$ [D.Three](Term.md#d-Three)).
+Let $`v \in \mathrm{Three}`$ with $`v \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M_0`$.
+By the definition of $`R_{\mathrm{NF}}`$ (D.Rnf) the following three statements hold.
 
 ```math
 v \prec \mathrm{tr}\,M_0, \qquad
@@ -58,95 +59,99 @@ v \prec \mathrm{tr}\,M_0, \qquad
 v \in \mathrm{NF} .
 ```
 
-（$`\mathrm{NF}`$ [D.NF](Reduction.md#d-NF)）第 2 の連言子 $`\mathrm{tr}\,M_0 \in \mathrm{NF}`$ は以下で用いない。
+($`\mathrm{NF}`$ [D.NF](Reduction.md#d-NF)) The second conjunct $`\mathrm{tr}\,M_0 \in \mathrm{NF}`$ is not used below.
 
-第 3 の連言子 $`v \in \mathrm{NF}`$ に $`\mathrm{NF}`$ の定義（D.NF）を適用すると、
-$`N \in \mathrm{PairSeq}`$ が存在して
+Applying the definition of $`\mathrm{NF}`$ (D.NF) to the third conjunct $`v \in \mathrm{NF}`$ yields an
+$`N \in \mathrm{PairSeq}`$ such that
 
 ```math
 N \in \mathrm{ST\_PS}, \qquad \mathrm{tr}\,N = v
 ```
 
-が成り立つ。以下 $`v`$ を $`\mathrm{tr}\,N`$ で置き換える。第 1 の連言子は
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M_0`$ となる。
+hold. From now on we replace $`v`$ by $`\mathrm{tr}\,N`$. The first conjunct becomes
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M_0`$.
 
-$`R_{\mathrm{st}}`$ の定義（D.Rst）の 3 つの連言子は、いま得た $`N \in \mathrm{ST\_PS}`$、
-帰納段の仮定 $`M_0 \in \mathrm{ST\_PS}`$、および $`\mathrm{tr}\,N \prec \mathrm{tr}\,M_0`$ であるから、
-$`N \mathbin{R_{\mathrm{st}}} M_0`$ が成り立つ。帰納法の仮定をこれに適用して $`\Phi(N)`$ を得、
-さらに $`\Phi(N)`$ を $`N \in \mathrm{ST\_PS}`$ に適用して
-$`\mathrm{tr}\,N \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を得る。これは $`v \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ である。
+The three conjuncts in the definition of $`R_{\mathrm{st}}`$ (D.Rst) are the $`N \in \mathrm{ST\_PS}`$
+just obtained, the assumption $`M_0 \in \mathrm{ST\_PS}`$ of the inductive step, and
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M_0`$, so $`N \mathbin{R_{\mathrm{st}}} M_0`$ holds.
+Applying the induction hypothesis to this gives $`\Phi(N)`$, and applying $`\Phi(N)`$ in turn to
+$`N \in \mathrm{ST\_PS}`$ gives $`\mathrm{tr}\,N \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$.
+This is $`v \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$.
 
-よって $`\Phi(M_0)`$ が成り立つ。帰納法により
-$`\forall M \in \mathrm{Acc}_{R_{\mathrm{st}}},\ \Phi(M)`$ である。∎
+Hence $`\Phi(M_0)`$ holds. By induction,
+$`\forall M \in \mathrm{Acc}_{R_{\mathrm{st}}},\ \Phi(M)`$. ∎
 
 <a id="t-wf_Rnf_of_wf_PS"></a>
-## 定理: 整礎性の項側への移送 (T.wf_Rnf_of_wf_PS)
+## Theorem: transport of well-foundedness to the term side (T.wf_Rnf_of_wf_PS)
 
-### 定理
+### Theorem
 
-$`R_{\mathrm{st}}`$ が整礎ならば $`R_{\mathrm{NF}}`$ は整礎である。
+If $`R_{\mathrm{st}}`$ is well-founded, then $`R_{\mathrm{NF}}`$ is well-founded.
 
-### 証明
+### Proof
 
-$`u \in \mathrm{Three}`$ を取り、$`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を示す。
-排中律により $`u \in \mathrm{NF}`$ と $`u \notin \mathrm{NF}`$ で場合分けする。
+Let $`u \in \mathrm{Three}`$; we show $`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$.
+By the law of excluded middle we distinguish the cases $`u \in \mathrm{NF}`$ and $`u \notin \mathrm{NF}`$.
 
-**(a) $`u \in \mathrm{NF}`$ のとき。** $`\mathrm{NF}`$ の定義（D.NF）より
-$`M \in \mathrm{PairSeq}`$ が存在して $`M \in \mathrm{ST\_PS}`$ かつ $`\mathrm{tr}\,M = u`$ である。
-以下 $`u`$ を $`\mathrm{tr}\,M`$ で置き換える。本定理の仮定「$`R_{\mathrm{st}}`$ は整礎」を
-$`M`$ に適用して $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を得る。これと $`M \in \mathrm{ST\_PS}`$ を
-[T.acc_Rnf_of_acc_PS](#t-acc_Rnf_of_acc_PS) に与えて
-$`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$、すなわち $`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を得る。
+**(a) The case $`u \in \mathrm{NF}`$.** By the definition of $`\mathrm{NF}`$ (D.NF) there is an
+$`M \in \mathrm{PairSeq}`$ with $`M \in \mathrm{ST\_PS}`$ and $`\mathrm{tr}\,M = u`$.
+From now on we replace $`u`$ by $`\mathrm{tr}\,M`$. Applying the hypothesis of the present theorem,
+that $`R_{\mathrm{st}}`$ is well-founded, to $`M`$ gives $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$.
+Feeding this and $`M \in \mathrm{ST\_PS}`$ into
+[T.acc_Rnf_of_acc_PS](#t-acc_Rnf_of_acc_PS) gives
+$`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$, that is, $`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$.
 
-**(b) $`u \notin \mathrm{NF}`$ のとき。** $`\mathrm{Acc}`$ の規則により
+**(b) The case $`u \notin \mathrm{NF}`$.** By the rule for $`\mathrm{Acc}`$ it suffices to show
 
 ```math
 \forall v \in \mathrm{Three},\ v \mathbin{R_{\mathrm{NF}}} u \to v \in \mathrm{Acc}_{R_{\mathrm{NF}}}
 ```
 
-を示せばよい。$`v \in \mathrm{Three}`$ を取り $`v \mathbin{R_{\mathrm{NF}}} u`$ とすると、
-$`R_{\mathrm{NF}}`$ の定義（D.Rnf）の第 2 の連言子より $`u \in \mathrm{NF}`$ である。これは
-場合分けの仮定 $`u \notin \mathrm{NF}`$ と矛盾する。よって前件が偽であり、結論
-$`v \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ が従う。
+Let $`v \in \mathrm{Three}`$ with $`v \mathbin{R_{\mathrm{NF}}} u`$. The second conjunct in the
+definition of $`R_{\mathrm{NF}}`$ (D.Rnf) gives $`u \in \mathrm{NF}`$, which contradicts
+the case assumption $`u \notin \mathrm{NF}`$. Hence the antecedent is false and the consequent
+$`v \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ follows.
 
-いずれの場合も $`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ であるから、$`R_{\mathrm{NF}}`$ は整礎である。∎
+In either case $`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$, so $`R_{\mathrm{NF}}`$ is well-founded. ∎
 
 <a id="t-pss_cofinality_holds"></a>
-## 定理: PSS の共終性 (T.pss_cofinality_holds)
+## Theorem: cofinality for PSS (T.pss_cofinality_holds)
 
-### 定理
+### Theorem
 
-$`M, N \in \mathrm{PairSeq}`$ とする。$`M \in \mathrm{ST\_PS}`$ かつ $`N \in \mathrm{ST\_PS}`$ かつ
-$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ ならば
+Let $`M, N \in \mathrm{PairSeq}`$. If $`M \in \mathrm{ST\_PS}`$, $`N \in \mathrm{ST\_PS}`$ and
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$, then
 
 ```math
 \exists n \in \mathbb{N},\ 1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n]) .
 ```
 
-（$`M[n]`$ [D.oper](Pss.md#d-oper)、$`\preceq`$ [D.ole](Term.md#d-ole)）
+($`M[n]`$ [D.oper](Pss.md#d-oper), $`\preceq`$ [D.ole](Term.md#d-ole))
 
-### 証明
+### Proof
 
-[T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) は、命題
-$`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom.md#d-ArgDomCore)）を仮定として、任意の $`M, N \in \mathrm{PairSeq}`$ について $`M \in \mathrm{ST\_PS}`$、
-$`N \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ の 3 つから本定理の結論を導く。
+[T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) derives, under the assumption of the
+proposition $`\mathrm{ArgDomCore}`$ ([D.ArgDomCore](ArgDom.md#d-ArgDomCore)), the conclusion of the present theorem
+for arbitrary $`M, N \in \mathrm{PairSeq}`$ from the three hypotheses $`M \in \mathrm{ST\_PS}`$,
+$`N \in \mathrm{ST\_PS}`$ and $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$.
 
-その仮定 $`\mathrm{ArgDomCore}`$ は [T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds) であり、
-これは仮定を持たない。よって
-[T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) に
-[T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds) と本定理の 3 つの仮定を与えれば、
-求める $`n`$ が得られる。∎
+That assumption $`\mathrm{ArgDomCore}`$ is [T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds), which
+has no hypotheses. Hence feeding
+[T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds) and the three hypotheses of the present theorem
+into [T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) yields
+the required $`n`$. ∎
 
 <a id="t-wf_olt_ST_PS_holds"></a>
-## 定理: 標準形上の順序の整礎性 (T.wf_olt_ST_PS_holds)
+## Theorem: well-foundedness of the order on standard forms (T.wf_olt_ST_PS_holds)
 
-### 定理
+### Theorem
 
-$`R_{\mathrm{st}}`$ は整礎である。
+$`R_{\mathrm{st}}`$ is well-founded.
 
-### 証明
+### Proof
 
-[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality) は、仮定
+[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality) derives the well-foundedness of
+$`R_{\mathrm{st}}`$ from the hypothesis
 
 ```math
 \forall M, N \in \mathrm{PairSeq},\
@@ -154,48 +159,48 @@ $`R_{\mathrm{st}}`$ は整礎である。
   \to \exists n,\ 1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])
 ```
 
-から $`R_{\mathrm{st}}`$ の整礎性を導く。この仮定は
-[T.pss_cofinality_holds](#t-pss_cofinality_holds) を $`M`$ と $`N`$ について全称量化したもの
-そのものである。よってこれを
-[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality) に与えればよい。∎
+This hypothesis is exactly [T.pss_cofinality_holds](#t-pss_cofinality_holds) universally quantified
+over $`M`$ and $`N`$. It therefore suffices to feed it into
+[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality). ∎
 
 <a id="t-wf_Rnf_holds"></a>
-## 定理: 正規形上の順序の整礎性 (T.wf_Rnf_holds)
+## Theorem: well-foundedness of the order on normal forms (T.wf_Rnf_holds)
 
-### 定理
+### Theorem
 
-$`R_{\mathrm{NF}}`$ は整礎である。
+$`R_{\mathrm{NF}}`$ is well-founded.
 
-### 証明
+### Proof
 
-[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) は $`R_{\mathrm{st}}`$ の整礎性を仮定として
-$`R_{\mathrm{NF}}`$ の整礎性を導く。その仮定は [T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds)
-であり、これは仮定を持たない。よって
-[T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds) を
-[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) に与えればよい。∎
+[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) derives the well-foundedness of $`R_{\mathrm{NF}}`$ from the
+well-foundedness of $`R_{\mathrm{st}}`$ as its hypothesis. That hypothesis is
+[T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds), which has no hypotheses. It therefore suffices to feed
+[T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds) into
+[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS). ∎
 
 <a id="t-PSS_terminates_unconditional"></a>
-## 定理: PSS の停止性 (T.PSS_terminates_unconditional)
+## Theorem: termination of PSS (T.PSS_terminates_unconditional)
 
-### 定理
+### Theorem
 
-$`R_{\mathrm{PS}}`$ は整礎である。
+$`R_{\mathrm{PS}}`$ is well-founded.
 
-（$`R_{\mathrm{PS}}`$ [D.stepRel](Reduction.md#d-stepRel)）
+($`R_{\mathrm{PS}}`$ [D.stepRel](Reduction.md#d-stepRel))
 
-### 証明
+### Proof
 
-[T.step_terminates](Reduction.md#t-step_terminates) は $`R_{\mathrm{NF}}`$ の整礎性を仮定として
-$`R_{\mathrm{PS}}`$ の整礎性を導く。その仮定は [T.wf_Rnf_holds](#t-wf_Rnf_holds) であり、
-これは仮定を持たない。よって [T.wf_Rnf_holds](#t-wf_Rnf_holds) を
-[T.step_terminates](Reduction.md#t-step_terminates) に与えればよい。∎
+[T.step_terminates](Reduction.md#t-step_terminates) derives the well-foundedness of
+$`R_{\mathrm{PS}}`$ from the well-foundedness of $`R_{\mathrm{NF}}`$ as its hypothesis.
+That hypothesis is [T.wf_Rnf_holds](#t-wf_Rnf_holds), which has no hypotheses.
+It therefore suffices to feed [T.wf_Rnf_holds](#t-wf_Rnf_holds) into
+[T.step_terminates](Reduction.md#t-step_terminates). ∎
 
 <a id="t-no_infinite_expansion_holds"></a>
-## 定理: 無限展開列の非存在 (T.no_infinite_expansion_holds)
+## Theorem: non-existence of infinite expansion sequences (T.no_infinite_expansion_holds)
 
-### 定理
+### Theorem
 
-次の 2 条件をみたす $`S : \mathbb{N} \to \mathrm{PairSeq}`$ は存在しない。
+There is no $`S : \mathbb{N} \to \mathrm{PairSeq}`$ satisfying the following two conditions.
 
 ```math
 \forall i \in \mathbb{N},\ S_i \in \mathrm{ST\_PS},
@@ -203,12 +208,12 @@ $`R_{\mathrm{PS}}`$ の整礎性を導く。その仮定は [T.wf_Rnf_holds](#t-
 \forall i \in \mathbb{N},\ S_i \Rightarrow S_{i+1} .
 ```
 
-ここで $`S_i`$ は $`S`$ の $`i`$ における値である（$`M \Rightarrow N`$ [D.step](Pss.md#d-step)）。
+Here $`S_i`$ is the value of $`S`$ at $`i`$ ($`M \Rightarrow N`$ [D.step](Pss.md#d-step)).
 
-### 証明
+### Proof
 
-[T.no_infinite_expansion](Reduction.md#t-no_infinite_expansion) は $`R_{\mathrm{NF}}`$ の整礎性を
-仮定として、上の 2 条件をみたす $`S`$ が存在しないことを導く。その仮定は
-[T.wf_Rnf_holds](#t-wf_Rnf_holds) であり、これは仮定を持たない。よって
-[T.wf_Rnf_holds](#t-wf_Rnf_holds) を
-[T.no_infinite_expansion](Reduction.md#t-no_infinite_expansion) に与えればよい。∎
+[T.no_infinite_expansion](Reduction.md#t-no_infinite_expansion) derives, from the well-foundedness of
+$`R_{\mathrm{NF}}`$ as its hypothesis, that no $`S`$ satisfying the above two conditions exists.
+That hypothesis is [T.wf_Rnf_holds](#t-wf_Rnf_holds), which has no hypotheses. It therefore suffices to feed
+[T.wf_Rnf_holds](#t-wf_Rnf_holds) into
+[T.no_infinite_expansion](Reduction.md#t-no_infinite_expansion). ∎

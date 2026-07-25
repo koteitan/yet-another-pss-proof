@@ -1,61 +1,62 @@
 [← README](README.md) | [English](Cnf-3.md) | [Japanese](Cnf-3-ja.md) | Cnf [1](Cnf.md) [2](Cnf-2.md) **3**
 
 <a id="t-copies_succ_front"></a>
-## 定理: コピー列の先頭からの分解 (T.copies_succ_front)
+## Theorem: decomposition of a copy sequence from the front (T.copies_succ_front)
 
-### 定理
+### Theorem
 
-$`d, n \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）に対し
+For $`d, n \in \mathbb{N}`$ and $`B \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)),
 
 ```math
 \mathrm{cp}_d(B, n+1) = B \mathbin{+\!\!+} \bigl(\mathrm{cp}_d(B, n)\bigr)^{+d} .
 ```
 
-（$`\mathrm{cp}`$ [D.copies](Cnf-2.md#d-copies)、$`B^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0)）
+($`\mathrm{cp}`$ [D.copies](Cnf-2.md#d-copies), $`B^{+d}`$ [D.shiftr0](Cnf-2.md#d-shiftr0))
 
-### 証明
+### Proof
 
-$`\mathrm{range}(n+1) = (0, 1, \dots, n)`$ であり、先頭の $`0`$ を切り出せば
+We have $`\mathrm{range}(n+1) = (0, 1, \dots, n)`$, and splitting off the leading $`0`$ gives
 
 ```math
 \mathrm{range}(n+1) = (0) \mathbin{+\!\!+} \bigl(\,k+1\,\bigr)_{k \in \mathrm{range}(n)}
 ```
 
-である。よって $`\mathrm{cp}`$ の定義（D.copies）より
+Hence, by the definition of $`\mathrm{cp}`$ (D.copies),
 
 ```math
 \mathrm{cp}_d(B, n+1)
   = B^{+0\cdot d} \mathbin{+\!\!+} \bigl(B^{+(k+1)d}\bigr)_{k \in \mathrm{range}(n)}
-    \text{ の連結}
+    \text{ concatenated}
 ```
 
-である。以下 2 点を示す。
+We show the following two points.
 
-**第 1 点：$`B^{+0\cdot d} = B`$。**
-$`0 \cdot d = 0`$ であるから [T.shiftr0_zero](Cnf-2.md#t-shiftr0_zero) により $`B^{+0} = B`$。
+**Point 1: $`B^{+0\cdot d} = B`$.**
+Since $`0 \cdot d = 0`$, [T.shiftr0_zero](Cnf-2.md#t-shiftr0_zero) gives $`B^{+0} = B`$.
 
-**第 2 点：$`k \in \mathrm{range}(n)`$ にわたる $`B^{+(k+1)d}`$ の連結は
-$`\bigl(\mathrm{cp}_d(B,n)\bigr)^{+d}`$ に等しい。**
-まず各 $`k`$ について
+**Point 2: the concatenation of $`B^{+(k+1)d}`$ over $`k \in \mathrm{range}(n)`$ equals
+$`\bigl(\mathrm{cp}_d(B,n)\bigr)^{+d}`$.**
+First, for each $`k`$,
 
 ```math
 \bigl(B^{+kd}\bigr)^{+d} = B^{+(k+1)d}
 ```
 
-である。実際、$`B`$ の要素 $`p`$ は左辺では $`((p_1 + kd) + d,\ p_2)`$ に写り、
-$`\mathbb{N}`$ の加法の結合則と $`kd + d = (k+1)d`$ から
-$`(p_1 + kd) + d = p_1 + (k+1)d`$ であるから、右辺の $`(p_1 + (k+1)d,\ p_2)`$ に一致する。
+Indeed, an element $`p`$ of $`B`$ is sent by the left-hand side to $`((p_1 + kd) + d,\ p_2)`$, and by
+associativity of addition on $`\mathbb{N}`$ together with $`kd + d = (k+1)d`$ we have
+$`(p_1 + kd) + d = p_1 + (k+1)d`$, so this agrees with $`(p_1 + (k+1)d,\ p_2)`$ on the right-hand side.
 
-次に $`(\cdot)^{+d}`$ は各要素を写す操作であるから、列の連結と交換する。すなわち列
-$`L_0, \dots, L_{n-1}`$ について
+Next, $`(\cdot)^{+d}`$ acts on each element separately, hence commutes with concatenation: for
+sequences $`L_0, \dots, L_{n-1}`$,
 
 ```math
 \bigl(L_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} L_{n-1}\bigr)^{+d}
   = L_0^{+d} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} L_{n-1}^{+d} .
 ```
 
-これを $`L_k := B^{+kd}`$ に適用すると、$`\mathrm{cp}`$ の定義（D.copies）より
-$`\mathrm{cp}_d(B,n) = L_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} L_{n-1}`$ であるから
+Applying this with $`L_k := B^{+kd}`$, and using
+$`\mathrm{cp}_d(B,n) = L_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} L_{n-1}`$ from the definition of
+$`\mathrm{cp}`$ (D.copies), we obtain
 
 ```math
 \bigl(\mathrm{cp}_d(B,n)\bigr)^{+d}
@@ -63,114 +64,115 @@ $`\mathrm{cp}_d(B,n) = L_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} L_{n-1}`$ �
   = B^{+1\cdot d} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^{+n\,d}
 ```
 
-となり、これが求める連結である。
+which is the required concatenation.
 
-第 1 点と第 2 点を合わせて $`\mathrm{cp}_d(B,n+1) = B \mathbin{+\!\!+} (\mathrm{cp}_d(B,n))^{+d}`$。∎
+Combining Points 1 and 2, $`\mathrm{cp}_d(B,n+1) = B \mathbin{+\!\!+} (\mathrm{cp}_d(B,n))^{+d}`$. ∎
 
 <a id="t-copies_one"></a>
-## 定理: コピー 1 個 (T.copies_one)
+## Theorem: a single copy (T.copies_one)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$ に対し $`\mathrm{cp}_d(B, 1) = B`$。
+For $`d \in \mathbb{N}`$ and $`B \in \mathrm{PairSeq}`$, $`\mathrm{cp}_d(B, 1) = B`$.
 
-### 証明
+### Proof
 
-[T.copies_succ_front](#t-copies_succ_front) を $`n := 0`$ に適用して
+Applying [T.copies_succ_front](#t-copies_succ_front) with $`n := 0`$ gives
 
 ```math
 \mathrm{cp}_d(B, 1) = B \mathbin{+\!\!+} \bigl(\mathrm{cp}_d(B, 0)\bigr)^{+d}
 ```
 
-を得る。[T.copies_zero](Cnf-2.md#t-copies_zero) より $`\mathrm{cp}_d(B,0) = ()`$ であり、
-[T.shiftr0_nil](Cnf-2.md#t-shiftr0_nil) より $`()^{+d} = ()`$ である。
-$`B \mathbin{+\!\!+} () = B`$ であるから結論を得る。∎
+By [T.copies_zero](Cnf-2.md#t-copies_zero) we have $`\mathrm{cp}_d(B,0) = ()`$, and by
+[T.shiftr0_nil](Cnf-2.md#t-shiftr0_nil) we have $`()^{+d} = ()`$.
+Since $`B \mathbin{+\!\!+} () = B`$, the conclusion follows. ∎
 
 <a id="t-copies_succ_cons"></a>
-## 定理: コピー列の先頭付き分解 (T.copies_succ_cons)
+## Theorem: decomposition of a copy sequence with its head (T.copies_succ_cons)
 
-### 定理
+### Theorem
 
-$`d, v_0, w_0, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ に対し、$`B := (v_0,w_0) :: R`$ とおくと
+For $`d, v_0, w_0, n \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$, putting $`B := (v_0,w_0) :: R`$,
 
 ```math
 \mathrm{cp}_d(B, n+1) = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} (\mathrm{cp}_d(B, n))^{+d}\bigr).
 ```
 
-### 証明
+### Proof
 
-[T.copies_succ_front](#t-copies_succ_front) より
-$`\mathrm{cp}_d(B, n+1) = B \mathbin{+\!\!+} (\mathrm{cp}_d(B,n))^{+d}`$ である。
-$`B = (v_0,w_0) :: R`$ であるから、連結の定義により
+By [T.copies_succ_front](#t-copies_succ_front),
+$`\mathrm{cp}_d(B, n+1) = B \mathbin{+\!\!+} (\mathrm{cp}_d(B,n))^{+d}`$.
+Since $`B = (v_0,w_0) :: R`$, the definition of concatenation gives
 
 ```math
 \bigl((v_0,w_0) :: R\bigr) \mathbin{+\!\!+} S = (v_0,w_0) :: (R \mathbin{+\!\!+} S)
 ```
 
-が任意の列 $`S`$ について成り立つ。$`S := (\mathrm{cp}_d(B,n))^{+d}`$ とすればよい。∎
+for every sequence $`S`$. Taking $`S := (\mathrm{cp}_d(B,n))^{+d}`$ gives the claim. ∎
 
 <a id="t-copies_v0_le"></a>
-## 定理: コピー列の行 0 の下界 (T.copies_v0_le)
+## Theorem: lower bound on row 0 of a copy sequence (T.copies_v0_le)
 
-### 定理
+### Theorem
 
-$`v_0, w_0, d, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とし、
-$`\forall x \in R,\ v_0 \le x_1`$ を仮定する。このとき
+Let $`v_0, w_0, d, n \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$, and assume
+$`\forall x \in R,\ v_0 \le x_1`$. Then
 
 ```math
 \forall x \in \mathrm{cp}_d\bigl((v_0,w_0) :: R,\ n\bigr),\ v_0 \le x_1 .
 ```
 
-### 証明
+### Proof
 
-$`x \in \mathrm{cp}_d((v_0,w_0) :: R,\ n)`$ とする。$`\mathrm{cp}`$ の定義（D.copies）より、
-$`\mathrm{cp}_d((v_0,w_0)::R, n)`$ は $`k \in \mathrm{range}(n)`$ にわたる
-$`((v_0,w_0)::R)^{+kd}`$ の連結であるから、ある $`k \in \mathrm{range}(n)`$ が存在して
-$`x \in ((v_0,w_0)::R)^{+kd}`$ である。
-[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、ある $`p \in (v_0,w_0) :: R`$ が存在して
-$`x = (p_1 + kd,\ p_2)`$ である。
+Let $`x \in \mathrm{cp}_d((v_0,w_0) :: R,\ n)`$. By the definition of $`\mathrm{cp}`$ (D.copies),
+$`\mathrm{cp}_d((v_0,w_0)::R, n)`$ is the concatenation of $`((v_0,w_0)::R)^{+kd}`$ over
+$`k \in \mathrm{range}(n)`$, so there is some $`k \in \mathrm{range}(n)`$ with
+$`x \in ((v_0,w_0)::R)^{+kd}`$.
+By [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) there is some $`p \in (v_0,w_0) :: R`$ with
+$`x = (p_1 + kd,\ p_2)`$.
 
-$`p \in (v_0,w_0) :: R`$ を場合分けする。
+We distinguish cases on $`p \in (v_0,w_0) :: R`$.
 
-- $`p = (v_0,w_0)`$ のとき。$`p_1 = v_0`$ であるから $`v_0 \le p_1`$。
-- $`p \in R`$ のとき。仮定より $`v_0 \le p_1`$。
+- Case $`p = (v_0,w_0)`$. Then $`p_1 = v_0`$, hence $`v_0 \le p_1`$.
+- Case $`p \in R`$. By hypothesis, $`v_0 \le p_1`$.
 
-いずれの場合も $`v_0 \le p_1`$ である。$`x_1 = p_1 + kd`$ であり、
-$`\mathbb{N}`$ において $`p_1 \le p_1 + kd`$ であるから、$`\le`$ の推移律より
-$`v_0 \le x_1`$。∎
+In either case $`v_0 \le p_1`$. Since $`x_1 = p_1 + kd`$ and $`p_1 \le p_1 + kd`$ in
+$`\mathbb{N}`$, transitivity of $`\le`$ gives $`v_0 \le x_1`$. ∎
 
 <a id="t-copies_tl_gt"></a>
-## 定理: コピー列の尾部の行 0 の狭義下界 (T.copies_tl_gt)
+## Theorem: strict lower bound on row 0 of the tail of a copy sequence (T.copies_tl_gt)
 
-### 定理
+### Theorem
 
-$`v_0, w_0, d, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とし、$`B := (v_0,w_0) :: R`$ とおく。
-$`\forall x \in R,\ v_0 \lt x_1`$、$`0 \lt d`$、$`1 \le n`$ を仮定する。このとき
+Let $`v_0, w_0, d, n \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$, and put $`B := (v_0,w_0) :: R`$.
+Assume $`\forall x \in R,\ v_0 \lt x_1`$, $`0 \lt d`$ and $`1 \le n`$. Then
 
 ```math
 \forall x \in R \mathbin{+\!\!+} \bigl(\mathrm{cp}_d(B,\ n-1)\bigr)^{+d},\ v_0 \lt x_1 .
 ```
 
-### 証明
+### Proof
 
-$`x \in R \mathbin{+\!\!+} (\mathrm{cp}_d(B, n-1))^{+d}`$ とし、$`x`$ がどちらの側の要素かで場合分けする。
+Let $`x \in R \mathbin{+\!\!+} (\mathrm{cp}_d(B, n-1))^{+d}`$, and distinguish cases according to which
+side $`x`$ belongs to.
 
-- $`x \in R`$ のとき。仮定 $`\forall x \in R,\ v_0 \lt x_1`$ そのものである。
+- Case $`x \in R`$. This is the hypothesis $`\forall x \in R,\ v_0 \lt x_1`$ itself.
 
-- $`x \in (\mathrm{cp}_d(B, n-1))^{+d}`$ のとき。[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、
-  ある $`p \in \mathrm{cp}_d(B, n-1)`$ が存在して $`x = (p_1 + d,\ p_2)`$ である。
-  仮定 $`\forall x \in R,\ v_0 \lt x_1`$ から $`\forall x \in R,\ v_0 \le x_1`$ が従うので、
-  [T.copies_v0_le](#t-copies_v0_le) を $`n := n-1`$ に適用して $`v_0 \le p_1`$ を得る。
-  $`0 \lt d`$ であるから $`p_1 \lt p_1 + d`$ であり、
-  $`v_0 \le p_1 \lt p_1 + d = x_1`$ より $`v_0 \lt x_1`$。∎
+- Case $`x \in (\mathrm{cp}_d(B, n-1))^{+d}`$. By [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) there is
+  some $`p \in \mathrm{cp}_d(B, n-1)`$ with $`x = (p_1 + d,\ p_2)`$.
+  The hypothesis $`\forall x \in R,\ v_0 \lt x_1`$ implies $`\forall x \in R,\ v_0 \le x_1`$, so
+  applying [T.copies_v0_le](#t-copies_v0_le) with $`n := n-1`$ gives $`v_0 \le p_1`$.
+  Since $`0 \lt d`$ we have $`p_1 \lt p_1 + d`$, and $`v_0 \le p_1 \lt p_1 + d = x_1`$ gives
+  $`v_0 \lt x_1`$. ∎
 
 <a id="t-cnf_copies"></a>
-## 定理: 上昇コピー列は CNF (T.cnf_copies)
+## Theorem: ascending copy sequences are CNF (T.cnf_copies)
 
-### 定理
+### Theorem
 
-$`v_0, w_0, d_0 \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、
-$`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
+Let $`v_0, w_0, d_0 \in \mathbb{N}`$, $`R \in \mathrm{PairSeq}`$ and
+$`\ell \in \mathbb{N}\times\mathbb{N}`$, and put $`B := (v_0,w_0) :: R`$. Assume the following five
+conditions.
 
 ```math
 \begin{aligned}
@@ -182,103 +184,102 @@ $`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 \end{aligned}
 ```
 
-（$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)、$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)）
+($`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf), $`\mathrm{tr}`$ [D.translate](Term.md#d-translate))
 
-このとき任意の $`n \in \mathbb{N}`$ に対し
+Then, for every $`n \in \mathbb{N}`$,
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{cp}_{d_0}(B, n))\bigr).
 ```
 
-### 証明
+### Proof
 
-$`n`$ に関する自然数の帰納法。帰納法の述語は
+Induction on the natural number $`n`$. The induction predicate is
 
 ```math
 \Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{cp}_{d_0}(B, n))\bigr).
 ```
 
-**基底段** $`n = 0`$。
-[T.copies_zero](Cnf-2.md#t-copies_zero) より $`\mathrm{cp}_{d_0}(B,0) = ()`$ であり、
-$`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$（[D.Three](Term.md#d-Three)）である。
-[T.cnf_Z](Cnf.md#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ。よって $`\Phi(0)`$。
+**Base case** $`n = 0`$.
+By [T.copies_zero](Cnf-2.md#t-copies_zero), $`\mathrm{cp}_{d_0}(B,0) = ()`$, and by the definition of
+$`\mathrm{tr}`$ (D.translate), $`\mathrm{tr}\,() = \mathsf{Z}`$ ([D.Three](Term.md#d-Three)).
+By [T.cnf_Z](Cnf.md#t-cnf_Z), $`\mathrm{cnf}(\mathsf{Z})`$ holds. Hence $`\Phi(0)`$.
 
-**帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち
-$`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B,n)))`$ である。$`n`$ で場合分けする。
+**Inductive step** $`n \to n+1`$: the induction hypothesis is $`\Phi(n)`$, that is,
+$`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B,n)))`$. We distinguish cases on $`n`$.
 
-**(i) $`n = 0`$ のとき。** 示すべきは $`\Phi(1)`$ である。
-[T.copies_one](#t-copies_one) より $`\mathrm{cp}_{d_0}(B,1) = B`$ である。
-また $`B \mathbin{+\!\!+} (\ell)`$ の末尾 1 要素を落とすと $`B`$ に戻るから
-$`B = \mathrm{dropLast}\,(B \mathbin{+\!\!+} (\ell))`$ である。
-$`B \mathbin{+\!\!+} (\ell)`$ は $`\ell`$ を要素にもつので空列ではない。
-よって [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) を $`C := B \mathbin{+\!\!+} (\ell)`$ に適用し、
-(cBlp) から $`\mathrm{cnf}(\mathrm{tr}(B))`$、すなわち $`\Phi(1)`$ を得る。
+**(i) Case $`n = 0`$.** What is to be shown is $`\Phi(1)`$.
+By [T.copies_one](#t-copies_one), $`\mathrm{cp}_{d_0}(B,1) = B`$.
+Moreover, dropping the last element of $`B \mathbin{+\!\!+} (\ell)`$ returns $`B`$, so
+$`B = \mathrm{dropLast}\,(B \mathbin{+\!\!+} (\ell))`$.
+Since $`\ell`$ is an element of $`B \mathbin{+\!\!+} (\ell)`$, that sequence is not the empty sequence.
+Applying [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) with $`C := B \mathbin{+\!\!+} (\ell)`$, hypothesis
+(cBlp) yields $`\mathrm{cnf}(\mathrm{tr}(B))`$, that is, $`\Phi(1)`$.
 
-**(ii) $`n = m + 1`$ のとき。** 示すべきは $`\Phi(m+2)`$ であり、帰納法の仮定は
-$`\Phi(m+1)`$、すなわち $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)))`$ である。
-以下 $`Q := \mathrm{cp}_{d_0}(B, m)`$、$`S := R \mathbin{+\!\!+} Q^{+d_0}`$ と略記する。
+**(ii) Case $`n = m + 1`$.** What is to be shown is $`\Phi(m+2)`$, and the induction hypothesis is
+$`\Phi(m+1)`$, that is, $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)))`$.
+In what follows we abbreviate $`Q := \mathrm{cp}_{d_0}(B, m)`$ and $`S := R \mathbin{+\!\!+} Q^{+d_0}`$.
 
-**第 1 段：$`\mathrm{cp}_{d_0}(B, m+1)`$ とその平行移動の形。**
-[T.copies_succ_cons](#t-copies_succ_cons) より
+**Step 1: the form of $`\mathrm{cp}_{d_0}(B, m+1)`$ and of its shift.**
+By [T.copies_succ_cons](#t-copies_succ_cons),
 
 ```math
 \text{(F)}\qquad \mathrm{cp}_{d_0}(B, m+1) = (v_0,w_0) :: S
 ```
 
-である。これに [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) を適用して
+Applying [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) to this gives
 
 ```math
 \text{(G)}\qquad \bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr)^{+d_0} = (v_0 + d_0,\ w_0) :: S^{+d_0}
 ```
 
-を得る。
-
-**第 2 段：翻訳の形。**
-[T.copies_tl_gt](#t-copies_tl_gt) を (hR)、(d0pos)、$`n := m+1`$（$`1 \le m+1`$）に適用すると
-$`n - 1 = m`$ であるから
+**Step 2: the form of the translations.**
+Applying [T.copies_tl_gt](#t-copies_tl_gt) with (hR), (d0pos) and $`n := m+1`$ (so that
+$`1 \le m+1`$), and noting $`n - 1 = m`$, we obtain
 
 ```math
 \text{(tlgt)}\qquad \forall x \in S,\ v_0 \lt x_1
 ```
 
-を得る。(F) と [T.translate_single_tree](Term.md#t-translate_single_tree) より
+By (F) and [T.translate_single_tree](Term.md#t-translate_single_tree),
 
 ```math
 \text{(st1)}\qquad \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr)
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,S,\ \mathsf{Z}\bigr)
 ```
 
-である。また (G) と [T.translate_shiftr0](Cnf-2.md#t-translate_shiftr0) より
+Also, by (G) and [T.translate_shiftr0](Cnf-2.md#t-translate_shiftr0),
 
 ```math
 \mathrm{tr}\bigl((v_0+d_0,\ w_0) :: S^{+d_0}\bigr) = \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr)
 ```
 
-であるから、(st1) と合わせて
+so together with (st1) we obtain
 
 ```math
 \text{(tZ1)}\qquad \mathrm{tr}\bigl((v_0+d_0,\ w_0) :: S^{+d_0}\bigr)
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,S,\ \mathsf{Z}\bigr)
 ```
 
-を得る。さらに $`\mathrm{tr}`$ の定義（D.translate）を $`p := \ell`$、$`L := ()`$ に適用すると
-$`\mathrm{tw}_{\ell_1}() = ()`$、$`\mathrm{dw}_{\ell_1}() = ()`$ であるから
+Furthermore, applying the definition of $`\mathrm{tr}`$ (D.translate) with $`p := \ell`$ and
+$`L := ()`$, and using $`\mathrm{tw}_{\ell_1}() = ()`$ and $`\mathrm{dw}_{\ell_1}() = ()`$,
 
 ```math
 \text{(tlp)}\qquad \mathrm{tr}\,(\ell) = \mathsf{P}(\ell_2,\ \mathsf{Z},\ \mathsf{Z}).
 ```
 
-**第 3 段：狭義減少と先頭主要項の比較。**
-(tZ1), (tlp) と [T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 1 選言 $`w_0 \lt \ell_2`$（(w0lt)）より
+**Step 3: strict decrease and comparison of the leading principal terms.**
+From (tZ1), (tlp) and the first disjunct $`w_0 \lt \ell_2`$ ((w0lt)) of the right-hand side of
+[T.olt_P_P](Term.md#t-olt_P_P),
 
 ```math
 \text{(decr)}\qquad \mathrm{tr}\bigl((v_0+d_0,\ w_0) :: S^{+d_0}\bigr) \prec \mathrm{tr}\,(\ell).
 ```
 
-（$`\prec`$ [D.olt](Term.md#d-olt)）
+($`\prec`$ [D.olt](Term.md#d-olt))
 
-同じ第 1 選言により $`\mathsf{P}(w_0, \mathrm{tr}\,S, \mathsf{Z}) \prec \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$
-であるから、$`\preceq`$（[D.ole](Term.md#d-ole)）の定義（D.ole）の第 1 選言により
+By the same first disjunct, $`\mathsf{P}(w_0, \mathrm{tr}\,S, \mathsf{Z}) \prec \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$,
+so the first disjunct of the definition of $`\preceq`$ ([D.ole](Term.md#d-ole)) gives
 
 ```math
 \text{(leadle)}\qquad
@@ -286,78 +287,78 @@ $`\mathrm{tw}_{\ell_1}() = ()`$、$`\mathrm{dw}_{\ell_1}() = ()`$ であるか�
   \preceq \mathsf{P}\bigl(\ell_2,\ \mathsf{Z},\ \mathsf{Z}\bigr)
 ```
 
-が成り立つ。(tZ1) の右辺の添字と引数は $`w_0`$, $`\mathrm{tr}\,S`$、(tlp) の右辺の添字と引数は
-$`\ell_2`$, $`\mathsf{Z}`$ であるから、(leadle) は [T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) の仮定
-(leadle) の形をしている。
+The subscript and the argument on the right-hand side of (tZ1) are $`w_0`$ and $`\mathrm{tr}\,S`$,
+and those on the right-hand side of (tlp) are $`\ell_2`$ and $`\mathsf{Z}`$; hence (leadle) has the
+shape of the hypothesis (leadle) of [T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong).
 
-**第 4 段：$`(v_0+d_0, w_0) :: S^{+d_0}`$ の CNF。**
-(G) と [T.translate_shiftr0](Cnf-2.md#t-translate_shiftr0) より
-$`\mathrm{tr}\bigl((v_0+d_0,w_0) :: S^{+d_0}\bigr) = \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B,m+1)\bigr)`$
-であるから、帰納法の仮定 $`\Phi(m+1)`$ がそのまま
+**Step 4: CNF of $`(v_0+d_0, w_0) :: S^{+d_0}`$.**
+By (G) and [T.translate_shiftr0](Cnf-2.md#t-translate_shiftr0),
+$`\mathrm{tr}\bigl((v_0+d_0,w_0) :: S^{+d_0}\bigr) = \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B,m+1)\bigr)`$,
+so the induction hypothesis $`\Phi(m+1)`$ directly yields
 
 ```math
 \text{(cZ1)}\qquad \mathrm{cnf}\bigl(\mathrm{tr}((v_0+d_0,\ w_0) :: S^{+d_0})\bigr)
 ```
 
-を与える。
-
-**第 5 段：文脈による合同。**
-$`x \in S^{+d_0}`$ とすると、[T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、ある $`p \in S`$ が存在して
-$`x = (p_1 + d_0,\ p_2)`$ である。(tlgt) より $`v_0 \lt p_1`$、とくに $`v_0 \le p_1`$ であるから
+**Step 5: congruence in a context.**
+Let $`x \in S^{+d_0}`$. By [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) there is some $`p \in S`$ with
+$`x = (p_1 + d_0,\ p_2)`$. By (tlgt) we have $`v_0 \lt p_1`$, in particular $`v_0 \le p_1`$, hence
 
 ```math
 \bigl((v_0+d_0,\ w_0)\bigr)_1 = v_0 + d_0 \le p_1 + d_0 = x_1 .
 ```
 
-すなわち
+That is,
 
 ```math
 \text{(r1)}\qquad \forall x \in S^{+d_0},\ \bigl((v_0+d_0,\ w_0)\bigr)_1 \le x_1 .
 ```
 
-また (lphd) より $`\bigl((v_0+d_0, w_0)\bigr)_1 = v_0 + d_0 = \ell_1`$ である。
+Also, by (lphd), $`\bigl((v_0+d_0, w_0)\bigr)_1 = v_0 + d_0 = \ell_1`$.
 
-[T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) を
+We apply [T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) with
 
 ```math
 z_1 := (v_0+d_0,\ w_0),\quad T_1 := S^{+d_0},\quad
 z_2 := \ell,\quad T_2 := (),\quad G := B
 ```
 
-として適用する。その 7 つの仮定は次のように満たされる。
+Its seven hypotheses are met as follows.
 
-- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$：第 4 段の (cZ1)。
-- $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$：$`z_2 :: T_2 = (\ell)`$ であり、
-  第 3 段の (decr)。
-- $`(z_1)_1 = (z_2)_1`$：(lphd) による $`v_0 + d_0 = \ell_1`$。
-- (leadle)：第 3 段の (leadle) を (tZ1), (tlp) と合わせたもの。
-- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$：第 5 段の (r1)。
-- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$：$`T_2 = ()`$ は要素をもたないから前件が偽であり成り立つ。
-- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$：$`G \mathbin{+\!\!+} z_2 :: T_2 = B \mathbin{+\!\!+} (\ell)`$
-  であり、仮定 (cBlp)。
+- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$: this is (cZ1) of Step 4.
+- $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$: here $`z_2 :: T_2 = (\ell)`$, and this is
+  (decr) of Step 3.
+- $`(z_1)_1 = (z_2)_1`$: this is $`v_0 + d_0 = \ell_1`$ by (lphd).
+- (leadle): this is (leadle) of Step 3 combined with (tZ1) and (tlp).
+- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$: this is (r1) of Step 5.
+- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$: since $`T_2 = ()`$ has no element, the antecedent is false
+  and the statement holds.
+- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$: here
+  $`G \mathbin{+\!\!+} z_2 :: T_2 = B \mathbin{+\!\!+} (\ell)`$, and this is hypothesis (cBlp).
 
-結論として
+We conclude
 
 ```math
 \mathrm{cnf}\Bigl(\mathrm{tr}\bigl(B \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: S^{+d_0}\bigr)\Bigr)
 ```
 
-を得る。一方 [T.copies_succ_front](#t-copies_succ_front) と (G) より
+On the other hand, [T.copies_succ_front](#t-copies_succ_front) and (G) give
 
 ```math
 \mathrm{cp}_{d_0}(B, m+2) = B \mathbin{+\!\!+} \bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr)^{+d_0}
   = B \mathbin{+\!\!+} (v_0+d_0,\ w_0) :: S^{+d_0}
 ```
 
-であるから、これは $`\Phi(m+2)`$ そのものである。∎
+so this is exactly $`\Phi(m+2)`$. ∎
 
 <a id="t-cnf_oper_i1eq1"></a>
-## 定理: 上昇コピー分岐での CNF 保存 (T.cnf_oper_i1eq1)
+## Theorem: preservation of CNF in the ascending-copy branch (T.cnf_oper_i1eq1)
 
-### 定理
+### Theorem
 
-$`v_0, w_0, d_0, n \in \mathbb{N}`$、$`R, G \in \mathrm{PairSeq}`$、
-$`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`B := (v_0,w_0) :: R`$ とおく。次の 6 つを仮定する。
+Let $`v_0, w_0, d_0, n \in \mathbb{N}`$, $`R, G \in \mathrm{PairSeq}`$ and
+$`\ell \in \mathbb{N}\times\mathbb{N}`$, and put $`B := (v_0,w_0) :: R`$. Assume the following six
+conditions.
 
 ```math
 \begin{aligned}
@@ -370,191 +371,191 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`B := (v_0,w_0) :: R`$ とお�
 \end{aligned}
 ```
 
-このとき
+Then
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B, n))\bigr).
 ```
 
-### 証明
+### Proof
 
-(n1) より $`n = m+1`$ をみたす $`m \in \mathbb{N}`$ が取れる。
-以下 $`Q := \mathrm{cp}_{d_0}(B, m)`$、$`S := R \mathbin{+\!\!+} Q^{+d_0}`$ と略記する。
+By (n1) we may take $`m \in \mathbb{N}`$ with $`n = m+1`$.
+In what follows we abbreviate $`Q := \mathrm{cp}_{d_0}(B, m)`$ and $`S := R \mathbin{+\!\!+} Q^{+d_0}`$.
 
-まず (lphd) と (d0pos) より $`\ell_1 = v_0 + d_0`$ かつ $`0 \lt d_0`$ であるから
+First, (lphd) and (d0pos) give $`\ell_1 = v_0 + d_0`$ and $`0 \lt d_0`$, hence
 
 ```math
 \text{(lpv)}\qquad v_0 \lt \ell_1 .
 ```
 
-また $`R \mathbin{+\!\!+} (\ell)`$ の全要素 $`x`$ は $`v_0 \lt x_1`$ をみたす
-（$`x \in R`$ なら (hR)、$`x = \ell`$ なら (lpv)）。これを (Rlp) とよぶ。
+Moreover every element $`x`$ of $`R \mathbin{+\!\!+} (\ell)`$ satisfies $`v_0 \lt x_1`$
+(by (hR) if $`x \in R`$, by (lpv) if $`x = \ell`$). We call this (Rlp).
 
-**第 1 段：狭義減少 $`\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)) \prec \mathrm{tr}(B \mathbin{+\!\!+} (\ell))`$。**
+**Step 1: the strict decrease $`\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)) \prec \mathrm{tr}(B \mathbin{+\!\!+} (\ell))`$.**
 
-$`m`$ で場合分けする。
+We distinguish cases on $`m`$.
 
-**(i) $`m = 0`$ のとき。** [T.copies_one](#t-copies_one) より
-$`\mathrm{cp}_{d_0}(B,1) = B`$ であるから、
-[T.translate_snoc_increase](Decrease.md#t-translate_snoc_increase) を $`C := B`$、$`m := \ell`$ に
-適用して $`\mathrm{tr}\,B \prec \mathrm{tr}(B \mathbin{+\!\!+} (\ell))`$ を得る。
+**(i) Case $`m = 0`$.** By [T.copies_one](#t-copies_one) we have
+$`\mathrm{cp}_{d_0}(B,1) = B`$, so applying
+[T.translate_snoc_increase](Decrease.md#t-translate_snoc_increase) with $`C := B`$ and
+$`m := \ell`$ gives $`\mathrm{tr}\,B \prec \mathrm{tr}(B \mathbin{+\!\!+} (\ell))`$.
 
-**(ii) $`m = m' + 1`$ のとき。**
-$`Q' := \mathrm{cp}_{d_0}(B, m')`$、$`S' := R \mathbin{+\!\!+} Q'^{+d_0}`$ とおく。
-[T.copies_succ_cons](#t-copies_succ_cons) より
-$`\mathrm{cp}_{d_0}(B, m'+1) = (v_0,w_0) :: S'`$ であり、
-[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) より
+**(ii) Case $`m = m' + 1`$.**
+Put $`Q' := \mathrm{cp}_{d_0}(B, m')`$ and $`S' := R \mathbin{+\!\!+} Q'^{+d_0}`$.
+By [T.copies_succ_cons](#t-copies_succ_cons),
+$`\mathrm{cp}_{d_0}(B, m'+1) = (v_0,w_0) :: S'`$, and by
+[T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons),
 
 ```math
 \text{(G')}\qquad \bigl(\mathrm{cp}_{d_0}(B, m'+1)\bigr)^{+d_0} = (v_0+d_0,\ w_0) :: S'^{+d_0} .
 ```
 
-[T.copies_tl_gt](#t-copies_tl_gt) を (hR)、(d0pos)、$`n := m'+1`$ に適用して
+Applying [T.copies_tl_gt](#t-copies_tl_gt) with (hR), (d0pos) and $`n := m'+1`$ gives
 
 ```math
 \text{(tlgt')}\qquad \forall x \in S',\ v_0 \lt x_1
 ```
 
-を得る。$`x \in S'^{+d_0}`$ とすると [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) より、ある $`p \in S'`$ が
-存在して $`x = (p_1+d_0,\ p_2)`$ であり、(tlgt') から $`v_0 \le p_1`$、したがって
+Let $`x \in S'^{+d_0}`$. By [T.mem_shiftr0](Cnf-2.md#t-mem_shiftr0) there is some $`p \in S'`$ with
+$`x = (p_1+d_0,\ p_2)`$, and (tlgt') gives $`v_0 \le p_1`$; therefore
 
 ```math
 \text{(Cge)}\qquad \forall x \in S'^{+d_0},\ v_0 + d_0 \le x_1 .
 ```
 
-ここで [T.core_i1](Decrease.md#t-core_i1) を
+We now apply [T.core_i1](Decrease.md#t-core_i1) with
 
 ```math
 v_0 := v_0,\quad w_0 := w_0,\quad R := R,\quad
 c := (v_0+d_0,\ w_0),\quad C' := S'^{+d_0},\quad \ell := \ell
 ```
 
-として適用する。その 5 つの仮定は次のように満たされる。
+Its five hypotheses are met as follows.
 
-- $`\forall x \in R,\ v_0 \lt x_1`$：(hR)。
-- $`\forall x \in C',\ c_1 \le x_1`$：(Cge)（$`c_1 = v_0 + d_0`$）。
-- $`c_1 = \ell_1`$：(lphd)。
-- $`v_0 \lt \ell_1`$：(lpv)。
-- $`c_2 \lt \ell_2`$：$`c_2 = w_0`$ であり (w0lt)。
+- $`\forall x \in R,\ v_0 \lt x_1`$: this is (hR).
+- $`\forall x \in C',\ c_1 \le x_1`$: this is (Cge) (here $`c_1 = v_0 + d_0`$).
+- $`c_1 = \ell_1`$: this is (lphd).
+- $`v_0 \lt \ell_1`$: this is (lpv).
+- $`c_2 \lt \ell_2`$: here $`c_2 = w_0`$, and this is (w0lt).
 
-結論として
+We conclude
 
 ```math
 \mathrm{tr}\bigl(B \mathbin{+\!\!+} ((v_0+d_0,\ w_0) :: S'^{+d_0})\bigr)
   \prec \mathrm{tr}\bigl(B \mathbin{+\!\!+} (\ell)\bigr)
 ```
 
-を得る。一方 [T.copies_succ_front](#t-copies_succ_front) と (G') より
+On the other hand, [T.copies_succ_front](#t-copies_succ_front) and (G') give
 
 ```math
 \mathrm{cp}_{d_0}(B, m'+2) = B \mathbin{+\!\!+} \bigl(\mathrm{cp}_{d_0}(B, m'+1)\bigr)^{+d_0}
   = B \mathbin{+\!\!+} \bigl((v_0+d_0,\ w_0) :: S'^{+d_0}\bigr)
 ```
 
-であるから、これは $`\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)) \prec \mathrm{tr}(B \mathbin{+\!\!+} (\ell))`$
-そのものである。
+so this is exactly $`\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)) \prec \mathrm{tr}(B \mathbin{+\!\!+} (\ell))`$.
 
-以上 (i), (ii) により
+By (i) and (ii) together,
 
 ```math
 \text{(decr)}\qquad
 \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr) \prec \mathrm{tr}\bigl(B \mathbin{+\!\!+} (\ell)\bigr).
 ```
 
-**第 2 段：両辺の翻訳の形。**
-[T.copies_succ_cons](#t-copies_succ_cons) より
+**Step 2: the form of the translations of both sides.**
+By [T.copies_succ_cons](#t-copies_succ_cons),
 
 ```math
 \text{(cpcons)}\qquad \mathrm{cp}_{d_0}(B, m+1) = (v_0,w_0) :: S
 ```
 
-である。[T.copies_tl_gt](#t-copies_tl_gt) を (hR)、(d0pos)、$`n := m+1`$ に適用して
+Applying [T.copies_tl_gt](#t-copies_tl_gt) with (hR), (d0pos) and $`n := m+1`$ gives
 
 ```math
 \text{(tlgt)}\qquad \forall x \in S,\ v_0 \lt x_1
 ```
 
-を得るから、[T.translate_single_tree](Term.md#t-translate_single_tree) より
+hence, by [T.translate_single_tree](Term.md#t-translate_single_tree),
 
 ```math
 \text{(st1)}\qquad \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr)
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,S,\ \mathsf{Z}\bigr).
 ```
 
-また $`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ であり (Rlp) が成り立つから、
-ふたたび [T.translate_single_tree](Term.md#t-translate_single_tree) より
+Moreover $`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ and (Rlp) holds, so
+[T.translate_single_tree](Term.md#t-translate_single_tree) gives once more
 
 ```math
 \text{(st2)}\qquad \mathrm{tr}\bigl(B \mathbin{+\!\!+} (\ell)\bigr)
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr).
 ```
 
-**第 3 段：ブロックの CNF。**
-$`\mathbin{+\!\!+}`$ の結合則より
-$`G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))\bigr)`$
-であるから、(cM) は
+**Step 3: CNF of the block.**
+By associativity of $`\mathbin{+\!\!+}`$ we have
+$`G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))\bigr)`$,
+so (cM) is the same proposition as
 
 ```math
 \text{(cM')}\qquad
 \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell)))\bigr)
 ```
 
-と同一の命題である。(Rlp) より
+By (Rlp),
 
 ```math
 \text{(rT)}\qquad \forall x \in R \mathbin{+\!\!+} (\ell),\ \bigl((v_0,w_0)\bigr)_1 \le x_1
 ```
 
-であるから、[T.cnf_tail](Cnf-2.md#t-cnf_tail) を $`t := (v_0,w_0)`$、$`T' := R \mathbin{+\!\!+} (\ell)`$、
-$`G := G`$ として適用して
+so applying [T.cnf_tail](Cnf-2.md#t-cnf_tail) with $`t := (v_0,w_0)`$,
+$`T' := R \mathbin{+\!\!+} (\ell)`$ and $`G := G`$ gives
 
 ```math
 \text{(cBlp)}\qquad \mathrm{cnf}\bigl(\mathrm{tr}(B \mathbin{+\!\!+} (\ell))\bigr)
 ```
 
-を得る（$`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ による）。
+(using $`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$).
 
-**第 4 段：コピー列そのものの CNF。**
-[T.cnf_copies](#t-cnf_copies) を (hR)、(d0pos)、(w0lt)、(lphd)、(cBlp)、$`n := m+1`$ に適用して
+**Step 4: CNF of the copy sequence itself.**
+Applying [T.cnf_copies](#t-cnf_copies) with (hR), (d0pos), (w0lt), (lphd), (cBlp) and $`n := m+1`$
+gives
 
 ```math
 \text{(cCopies)}\qquad \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1))\bigr)
 ```
 
-を得る。(cpcons) によりこれは $`\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0) :: S)\bigr)`$ と同一の命題である。
+By (cpcons) this is the same proposition as $`\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0) :: S)\bigr)`$.
 
-**第 5 段：引数どうしの狭義減少。**
-(decr) に (st1), (st2) を代入すると
+**Step 5: strict decrease between the arguments.**
+Substituting (st1) and (st2) into (decr) gives
 
 ```math
 \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,S,\ \mathsf{Z}\bigr)
   \prec \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-である。[T.olt_P_P](Term.md#t-olt_P_P) により右辺の 3 つの選言のいずれかが成り立つ。
+By [T.olt_P_P](Term.md#t-olt_P_P), one of the three disjuncts on the right-hand side holds.
 
-- 第 1 選言 $`w_0 \lt w_0`$：$`\lt`$ の非反射性に矛盾する。
-- 第 2 選言 $`w_0 = w_0 \wedge \mathrm{tr}\,S \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$：
-  求める結論そのものである。
-- 第 3 選言 $`w_0 = w_0 \wedge \mathrm{tr}\,S = \mathrm{tr}(R \mathbin{+\!\!+} (\ell)) \wedge \mathsf{Z} \prec \mathsf{Z}`$：
-  最後の連言子は [T.not_olt_Z](Term.md#t-not_olt_Z) に矛盾する。
+- First disjunct $`w_0 \lt w_0`$: this contradicts irreflexivity of $`\lt`$.
+- Second disjunct $`w_0 = w_0 \wedge \mathrm{tr}\,S \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$:
+  this is exactly the desired conclusion.
+- Third disjunct $`w_0 = w_0 \wedge \mathrm{tr}\,S = \mathrm{tr}(R \mathbin{+\!\!+} (\ell)) \wedge \mathsf{Z} \prec \mathsf{Z}`$:
+  the last conjunct contradicts [T.not_olt_Z](Term.md#t-not_olt_Z).
 
-よって第 2 選言のみが可能であり
+Hence only the second disjunct is possible, and
 
 ```math
 \text{(argA)}\qquad \mathrm{tr}\,S \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell)).
 ```
 
-**第 6 段：文脈による合同。**
-(argA) に [T.olt_P_b](Term.md#t-olt_P_b) を $`a := w_0`$、$`c_1 := \mathsf{Z}`$、$`c_2 := \mathsf{Z}`$
-として適用すると
+**Step 6: congruence in a context.**
+Applying [T.olt_P_b](Term.md#t-olt_P_b) to (argA) with $`a := w_0`$, $`c_1 := \mathsf{Z}`$ and
+$`c_2 := \mathsf{Z}`$ gives
 
 ```math
 \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,S,\ \mathsf{Z}\bigr)
   \prec \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-であるから、$`\preceq`$ の定義（D.ole）の第 1 選言により
+so the first disjunct of the definition of $`\preceq`$ (D.ole) gives
 
 ```math
 \text{(leadle)}\qquad
@@ -562,122 +563,121 @@ $`G := G`$ として適用して
   \preceq \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-が成り立つ。(st1) を (cpcons) で書き換えたもの、および (st2) を
-$`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ で書き換えたものにより、
-(leadle) は [T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) の仮定 (leadle) の形をしている。
+Rewriting (st1) by (cpcons), and (st2) by
+$`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$, we see that
+(leadle) has the shape of the hypothesis (leadle) of [T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong).
 
-また (decr) を (cpcons) と $`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ で
-書き換えると
+Also, rewriting (decr) by (cpcons) and by
+$`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ gives
 
 ```math
 \text{(decr')}\qquad
 \mathrm{tr}\bigl((v_0,w_0) :: S\bigr) \prec \mathrm{tr}\bigl((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))\bigr)
 ```
 
-である。(tlgt) から
+From (tlgt) we also obtain
 
 ```math
 \text{(r1)}\qquad \forall x \in S,\ \bigl((v_0,w_0)\bigr)_1 \le x_1
 ```
 
-も得られる。
-
-[T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) を
+We apply [T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) with
 
 ```math
 z_1 := (v_0,w_0),\quad T_1 := S,\quad
 z_2 := (v_0,w_0),\quad T_2 := R \mathbin{+\!\!+} (\ell),\quad G := G
 ```
 
-として適用する。その 7 つの仮定は次のように満たされる。
+Its seven hypotheses are met as follows.
 
-- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$：第 4 段の (cCopies)（(cpcons) による）。
-- $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$：(decr')。
-- $`(z_1)_1 = (z_2)_1`$：両辺とも $`v_0`$ であり $`=`$ の反射性による。
-- (leadle)：第 6 段の (leadle)。
-- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$：(r1)。
-- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$：第 3 段の (rT)。
-- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$：第 3 段の (cM')。
+- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$: this is (cCopies) of Step 4 (via (cpcons)).
+- $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$: this is (decr').
+- $`(z_1)_1 = (z_2)_1`$: both sides are $`v_0`$, so this holds by reflexivity of $`=`$.
+- (leadle): this is (leadle) of Step 6.
+- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$: this is (r1).
+- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$: this is (rT) of Step 3.
+- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$: this is (cM') of Step 3.
 
-結論として $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: S)\bigr)`$ を得る。
-(cpcons) より $`(v_0,w_0) :: S = \mathrm{cp}_{d_0}(B, m+1) = \mathrm{cp}_{d_0}(B, n)`$ であるから、
-これは求める $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B, n))\bigr)`$ である。∎
+We conclude $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: S)\bigr)`$.
+By (cpcons), $`(v_0,w_0) :: S = \mathrm{cp}_{d_0}(B, m+1) = \mathrm{cp}_{d_0}(B, n)`$, so this is the
+desired $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B, n))\bigr)`$. ∎
 
 <a id="t-copies_replicate"></a>
-## 定理: 平行移動量 0 のコピー列は完全コピー (T.copies_replicate)
+## Theorem: a copy sequence with shift 0 is a plain replication (T.copies_replicate)
 
-### 定理
+### Theorem
 
-$`B \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ に対し
+For $`B \in \mathrm{PairSeq}`$ and $`n \in \mathbb{N}`$,
 
 ```math
 \mathrm{cp}_0(B, n) = B^{\ast n}
 ```
 
-である。ここで $`B^{\ast n}`$ は [T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block) と同じく $`B`$ を
-$`n`$ 個連結した列である。
+Here $`B^{\ast n}`$ is, as in [T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block), the sequence
+obtained by concatenating $`n`$ copies of $`B`$.
 
-### 証明
+### Proof
 
-任意の $`k \in \mathbb{N}`$ について $`k \cdot 0 = 0`$ であり、
-[T.shiftr0_zero](Cnf-2.md#t-shiftr0_zero) より $`B^{+k\cdot 0} = B^{+0} = B`$ である。
-すなわち $`\mathrm{cp}`$ の定義（D.copies）で $`\mathrm{range}(n)`$ の各要素 $`k`$ に対応させる列は
-$`k`$ に依らず $`B`$ である。
+For every $`k \in \mathbb{N}`$ we have $`k \cdot 0 = 0`$, and
+[T.shiftr0_zero](Cnf-2.md#t-shiftr0_zero) gives $`B^{+k\cdot 0} = B^{+0} = B`$.
+That is, in the definition of $`\mathrm{cp}`$ (D.copies) the sequence assigned to an element $`k`$
+of $`\mathrm{range}(n)`$ is $`B`$, independently of $`k`$.
 
-したがって $`\mathrm{cp}_0(B,n)`$ は、$`\mathrm{range}(n)`$ の各要素を $`B`$ に写して得られる列の
-並びを連結したものである。$`\lvert \mathrm{range}(n)\rvert = n`$ であるから、その並びは
-$`B`$ を $`n`$ 個並べたものであり、その連結は $`B^{\ast n}`$ である。∎
+Therefore $`\mathrm{cp}_0(B,n)`$ is the concatenation of the list obtained by mapping each element
+of $`\mathrm{range}(n)`$ to $`B`$. Since $`\lvert \mathrm{range}(n)\rvert = n`$, that list consists
+of $`n`$ copies of $`B`$, and its concatenation is $`B^{\ast n}`$. ∎
 
 <a id="t-cnf_oper"></a>
-## 定理: 展開は CNF を保つ (T.cnf_oper)
+## Theorem: expansion preserves CNF (T.cnf_oper)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とし、$`1 \le n`$ かつ
-$`\mathrm{cnf}(\mathrm{tr}\,M)`$ を仮定する。このとき $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$（[D.oper](Pss.md#d-oper)）。
+Let $`M \in \mathrm{PairSeq}`$ and $`n \in \mathbb{N}`$, and assume $`1 \le n`$ and
+$`\mathrm{cnf}(\mathrm{tr}\,M)`$. Then $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$ ([D.oper](Pss.md#d-oper)).
 
-### 証明
+### Proof
 
-以下 $`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）と書く
-（自然数の減法は切り捨て減法である）。$`j_1 = 0`$ か否かで場合分けする。
+In what follows we write $`j_1 := \lvert M\rvert - 1`$ and $`i_1 := \mathrm{idx}_1(M, j_1)`$
+([D.idx1](Pss.md#d-idx1)) (subtraction of natural numbers is truncated subtraction).
+We distinguish cases according to whether $`j_1 = 0`$.
 
-**(a) $`j_1 = 0`$ のとき。**
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`M[n] = M`$ である。
-よって示すべきことは仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ そのものである。
+**(a) Case $`j_1 = 0`$.**
+By [T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short), $`M[n] = M`$.
+Hence what is to be shown is the hypothesis $`\mathrm{cnf}(\mathrm{tr}\,M)`$ itself.
 
-以下 $`j_1 \ne 0`$ とする。このとき $`\lvert M\rvert - 1 \ne 0`$ であるから $`1 \lt \lvert M\rvert`$ で
-ある。とくに $`M \ne ()`$ である（$`M = ()`$ なら $`\lvert M\rvert = 0`$ となり
-$`1 \lt \lvert M\rvert`$ に反する）。また $`\neg(\lvert M\rvert \le 1)`$ であるから、
-$`\mathrm{Pred}`$（[D.Pred](Pss.md#d-Pred)）の定義（D.Pred）の第 2 の場合が選ばれ
+From now on assume $`j_1 \ne 0`$. Then $`\lvert M\rvert - 1 \ne 0`$, hence
+$`1 \lt \lvert M\rvert`$. In particular $`M \ne ()`$ (if $`M = ()`$ then $`\lvert M\rvert = 0`$,
+contradicting $`1 \lt \lvert M\rvert`$). Moreover $`\neg(\lvert M\rvert \le 1)`$, so the second case
+in the definition of $`\mathrm{Pred}`$ ([D.Pred](Pss.md#d-Pred)) is selected, and
 
 ```math
 \text{(hPred)}\qquad \mathrm{Pred}\,M = \mathrm{dropLast}\,M
 ```
 
-である。
+**(b) Case $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ ([D.entry](Pss.md#d-entry)).**
+By [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) we have
+$`M[n] = \mathrm{Pred}\,M`$, and by (hPred), $`M[n] = \mathrm{dropLast}\,M`$.
+Applying [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) to $`M \ne ()`$ and the hypothesis
+$`\mathrm{cnf}(\mathrm{tr}\,M)`$ gives $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,M)\bigr)`$.
 
-**(b) $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より $`M[n] = \mathrm{Pred}\,M`$ で
-あり、(hPred) より $`M[n] = \mathrm{dropLast}\,M`$ である。
-$`M \ne ()`$ と仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ に [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) を適用して
-$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,M)\bigr)`$ を得る。
+From now on assume $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$.
+We divide further according to whether $`\mathrm{hasParent}(M, i_1, j_1)`$
+([D.hasParent](Pss.md#d-hasParent)) holds.
 
-以下 $`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$ とする。
-$`\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）が成り立つか否かでさらに分ける。
+**(c) Case $`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$.**
+By [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) we have
+$`M[n] = \mathrm{Pred}\,M`$, and by (hPred), $`M[n] = \mathrm{dropLast}\,M`$.
+Applying [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) to $`M \ne ()`$ and the hypothesis
+$`\mathrm{cnf}(\mathrm{tr}\,M)`$ gives $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,M)\bigr)`$.
 
-**(c) $`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
-$`M[n] = \mathrm{Pred}\,M`$ であり、(hPred) より $`M[n] = \mathrm{dropLast}\,M`$ である。
-$`M \ne ()`$ と仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ に [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) を適用して
-$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,M)\bigr)`$ を得る。
-
-**(d) $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-$`1 \lt \lvert M\rvert`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、
-$`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ が揃っているので
-[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を適用する。
-$`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$
-が得られ、$`B := (v_0,w_0) :: R`$ とおくと次が成り立つ（同定理の主張のうち、以下で
-用いるものだけを挙げる。$`(5)`$ の 2 つの選言子の末尾の連言子は用いない）。
+**(d) Case $`\mathrm{hasParent}(M, i_1, j_1)`$.**
+Since $`1 \lt \lvert M\rvert`$, $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$,
+$`\mathrm{hasParent}(M, i_1, j_1)`$ and $`1 \le n`$ are all available, we apply
+[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks).
+It yields $`G, R \in \mathrm{PairSeq}`$, $`v_0, w_0, d_0 \in \mathbb{N}`$ and
+$`\ell \in \mathbb{N}\times\mathbb{N}`$ such that, putting $`B := (v_0,w_0) :: R`$, the following
+hold (of the assertions of that theorem we list only those used below; the last conjunct of each of
+the two disjuncts of $`(5)`$ is not used).
 
 ```math
 \begin{aligned}
@@ -690,69 +690,72 @@ $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \m
 \end{aligned}
 ```
 
-(2) の右辺の $`G`$ より後ろの部分は、$`\mathrm{cp}`$ の定義（D.copies）そのものであるから
+The part of the right-hand side of (2) after $`G`$ is exactly the definition of $`\mathrm{cp}`$
+(D.copies), so
 
 ```math
 \text{(2')}\qquad M[n] = G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B, n)
 ```
 
-である。また (1) と仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ より
+Also, (1) and the hypothesis $`\mathrm{cnf}(\mathrm{tr}\,M)`$ give
 
 ```math
 \text{(cM')}\qquad \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))\bigr)
 ```
 
-である。(5) の選言で場合分けする。
+We distinguish cases on the disjunction (5).
 
-**(d-1) 第 1 選言子、とくに $`d_0 = 0`$ のとき。**
-$`d_0 = 0`$ であるから [T.copies_replicate](#t-copies_replicate) により
-$`\mathrm{cp}_{d_0}(B,n) = \mathrm{cp}_0(B,n) = B^{\ast n}`$ である。
-[T.cnf_oper_i1eq0](Cnf-2.md#t-cnf_oper_i1eq0) を (3)（仮定 (hR)）、(4)（仮定 (lpv)）、
-$`1 \le n`$（仮定 (n1)）、(cM')（仮定 (cM)）に適用して
+**(d-1) The first disjunct, in particular $`d_0 = 0`$.**
+Since $`d_0 = 0`$, [T.copies_replicate](#t-copies_replicate) gives
+$`\mathrm{cp}_{d_0}(B,n) = \mathrm{cp}_0(B,n) = B^{\ast n}`$.
+Applying [T.cnf_oper_i1eq0](Cnf-2.md#t-cnf_oper_i1eq0) to (3) (its hypothesis (hR)), (4) (its
+hypothesis (lpv)), $`1 \le n`$ (its hypothesis (n1)) and (cM') (its hypothesis (cM)) gives
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} B^{\ast n})\bigr)
 ```
 
-を得る。これは (2') により $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$ である。
+By (2') this is $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$.
 
-**(d-2) 第 2 選言子、とくに
-$`0 \lt d_0 \wedge w_0 \lt \ell_2 \wedge \ell_1 = v_0 + d_0`$ のとき。**
-[T.cnf_oper_i1eq1](#t-cnf_oper_i1eq1) を (3)（仮定 (hR)）、$`0 \lt d_0`$（仮定 (d0pos)）、
-$`w_0 \lt \ell_2`$（仮定 (w0lt)）、$`\ell_1 = v_0 + d_0`$（仮定 (lphd)）、
-$`1 \le n`$（仮定 (n1)）、(cM')（仮定 (cM)）に適用して
+**(d-2) The second disjunct, in particular
+$`0 \lt d_0 \wedge w_0 \lt \ell_2 \wedge \ell_1 = v_0 + d_0`$.**
+Applying [T.cnf_oper_i1eq1](#t-cnf_oper_i1eq1) to (3) (its hypothesis (hR)), $`0 \lt d_0`$ (its
+hypothesis (d0pos)), $`w_0 \lt \ell_2`$ (its hypothesis (w0lt)), $`\ell_1 = v_0 + d_0`$ (its
+hypothesis (lphd)), $`1 \le n`$ (its hypothesis (n1)) and (cM') (its hypothesis (cM)) gives
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B, n))\bigr)
 ```
 
-を得る。これは (2') により $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$ である。
+By (2') this is $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$.
 
-以上 (a)〜(d) で場合分けは尽きている。∎
+The cases (a) to (d) exhaust all possibilities. ∎
 
 <a id="t-cnf_ST_PS"></a>
-## 定理: 標準形の翻訳は CNF (T.cnf_ST_PS)
+## Theorem: the translation of a standard form is CNF (T.cnf_ST_PS)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`\mathrm{cnf}(\mathrm{tr}\,M)`$。
+If $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)), then $`\mathrm{cnf}(\mathrm{tr}\,M)`$.
 
-### 証明
+### Proof
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
+Induction on the derivation of $`\mathrm{ST\_PS}`$. The induction predicate is
 
 ```math
 \Phi(M) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}\,M\bigr).
 ```
 
-$`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の 2 つの規則に対応して次を示せばよい。
+Corresponding to the two rules in the definition of $`\mathrm{ST\_PS}`$ (D.ST_PS), it suffices to
+show the following.
 
-- **規則 (diag)**：$`\forall v \in \mathbb{N},\ \Phi(\Delta_0^v)`$（[D.diagSeq](Pss.md#d-diagSeq)）。
-  [T.cnf_diag](Cnf.md#t-cnf_diag) がこれそのものである。
+- **Rule (diag)**: $`\forall v \in \mathbb{N},\ \Phi(\Delta_0^v)`$ ([D.diagSeq](Pss.md#d-diagSeq)).
+  [T.cnf_diag](Cnf.md#t-cnf_diag) is exactly this.
 
-- **規則 (oper)**：$`M \in \mathrm{ST\_PS}`$、$`1 \le n`$、および帰納法の仮定 $`\Phi(M)`$、
-  すなわち $`\mathrm{cnf}(\mathrm{tr}\,M)`$ を仮定して $`\Phi(M[n])`$ を示す。
-  [T.cnf_oper](#t-cnf_oper) を $`1 \le n`$ と帰納法の仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ に
-  適用すると $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$、すなわち $`\Phi(M[n])`$ を得る。
+- **Rule (oper)**: assuming $`M \in \mathrm{ST\_PS}`$, $`1 \le n`$ and the induction hypothesis
+  $`\Phi(M)`$, that is $`\mathrm{cnf}(\mathrm{tr}\,M)`$, we show $`\Phi(M[n])`$.
+  Applying [T.cnf_oper](#t-cnf_oper) to $`1 \le n`$ and the induction hypothesis
+  $`\mathrm{cnf}(\mathrm{tr}\,M)`$ gives $`\mathrm{cnf}\bigl(\mathrm{tr}(M[n])\bigr)`$, that is
+  $`\Phi(M[n])`$.
 
-よって $`\forall M \in \mathrm{ST\_PS},\ \Phi(M)`$ が成り立つ。∎
+Hence $`\forall M \in \mathrm{ST\_PS},\ \Phi(M)`$ holds. ∎

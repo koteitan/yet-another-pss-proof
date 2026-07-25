@@ -1,199 +1,171 @@
 [← README](README.md) | [English](requirement.md) | [Japanese](requirement-ja.md)
 
-# `lean/*.md` 編集方針
+# Editing policy for `lean/*.md`
 
-`lean/*.lean` の形式証明に 1 対 1 で対応する、**人間が読むための証明本文**を
-`lean/*.md` に書く。`lean/Foo.lean` ↔ `lean/Foo.md`。Markdown + MathJax。言語は日本語。
+The **human-readable body of the proof**, in one-to-one correspondence with the formal proof
+in `lean/*.lean`, is written in `lean/*.md`. `lean/Foo.lean` ↔ `lean/Foo.md`. Markdown + MathJax. The language is English.
 
 ---
 
-## 1. ファイルの形
+## 1. Shape of a file
 
-### 1.1 冒頭
+### 1.1 The head of a file
 
-1 行目は [`README.md`](README.md) へのバックリンクのみ。
+The first line is nothing but a back link to [`README.md`](README.md).
 
 ```markdown
 [← README](README.md)
 ```
 
-分割されたファイル（§1.4）では、続けて部の一覧を置く。現在の部は太字で、リンクにしない。
+In a file that has been split (§1.4), a list of the parts follows. The current part is set in bold and is not a link.
 
 ```markdown
-[← README](README.md) ｜ Wset **1** [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md)
+[← README](README.md) | Wset **1** [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md)
 ```
 
-**冒頭にはこれ以外を置かない。** 章の要約、記法の対応表、宣言数の勘定、
-「本章は 3 つの内容からなる」のような見出しは書かない。読者は最初の命題から読み始める。
+**Nothing else is placed at the head of a file.** No summary of the chapter, no table of notation, no count of the declarations, no heading such as "this chapter consists of three parts". The reader starts from the first proposition.
 
-### 1.2 本文
+### 1.2 The body
 
-命題と定義を、`lean/Foo.lean` に現れる順に並べる。それ以外の地の文は置かない。
+Propositions and definitions are arranged in the order in which they occur in `lean/Foo.lean`. No other running text is placed there.
 
-### 1.3 証明でないものは書かない
+### 1.3 Write nothing that is not a proof
 
-設計上の判断、他の経路との関係、経緯、実装事情、モデル検査の数値は、
-**md にも `lean/*.lean` にも書かない**。証明ではないからである。
+Design decisions, relations to other routes, history, implementation circumstances and numbers from model checking are written **neither in the md nor in `lean/*.lean`**, because they are not proofs.
 
-検証のために残したい Lean コード（定義が意図どおりかを確かめる `example` など）は
-`lean/memo/*.lean` に置く。そこは証明の一部ではないので `lean/*.md` も作らない。
+Lean code that one wants to keep for verification (such as an `example` that confirms a definition is as intended) is placed in `lean/memo/*.lean`. That code is not part of the proof, so no `lean/*.md` is created for it.
 
-### 1.4 1 ファイルの数式の量
+### 1.4 Amount of math in one file
 
-**1 ファイルの数式ソースを 20000 文字以内に収める。**
+**Keep the math source of one file within 20000 characters.**
 
-GitHub は 1 ページの数式の総量が一定の予算を超えると、**それ以降の数式をすべて
-`Unable to render expression` にする**。実測では、小さい式 1200 個（計 6096 文字）は
-全部描画されたのに対し、140 文字の式は 181 個目（計 25956 文字）で、`Cnf.md` は
-804 個目（計 28588 文字）で打ち切られた。式の個数ではなく**描画コストの予算**であり、
-時間予算だとすれば読む人のマシンによって境界が動くので、安全域を取って 20000 とする。
+Once the total amount of math on one page exceeds a certain budget, GitHub turns **every formula after that point into `Unable to render expression`**. In measurements, 1200 small formulas (6096 characters in total) were all rendered, whereas formulas of 140 characters were cut off at the 181st (25956 characters in total), and `Cnf.md` at the 804th (28588 characters in total). This is a budget on **rendering cost** rather than on the number of formulas, and if it is a time budget then the boundary moves with the reader's machine, so we take 20000 with a margin of safety.
 
-超えたモジュールは宣言の境界で分割し、`Wset.md` / `Wset-2.md` / `Wset-3.md` … と名づける。
-分割しても Lean の宣言と節の 1 対 1 対応（§6.6）は保つ。部をまたぐ命題の引用は
-`[T.foo](Wset-3.md#t-foo)` のようにファイル名つきになる。他ファイルで定義された記号の
-リンク（§3.3）は**部ごとに**、その部での初出の 1 箇所に張る。
+A module that exceeds this is split at a declaration boundary, and the parts are named `Wset.md` / `Wset-2.md` / `Wset-3.md` … . The split preserves the one-to-one correspondence between the Lean declarations and the sections (§6.6). A citation of a proposition across parts carries the file name, as in `[T.foo](Wset-3.md#t-foo)`. The link for a symbol defined in another file (§3.3) is attached **per part**, at the one place where that symbol first occurs in that part.
 
-分割と、それに伴うリンクの張り替えは `tools/split_md.py` が行う。
+The split, and the rewriting of the links that comes with it, is carried out by `tools/split_md.py`.
 
 ```sh
-python3 tools/split_md.py --dry-run   # 分割案
-python3 tools/split_md.py             # 実行
+python3 tools/split_md.py --dry-run   # proposed split
+python3 tools/split_md.py             # run it
 ```
 
 ---
 
-## 2. 命題・定義の書式
+## 2. Format of propositions and definitions
 
-### 2.1 定理
+### 2.1 Theorems
 
 ```markdown
 <a id="t-stps_len_pos"></a>
-## 定理: 標準形は空でない (T.stps_len_pos)
+## Theorem: standard forms are non-empty (T.stps_len_pos)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{ST\_PS}`$ ならば $`0 \lt \lvert M\rvert`$。
+If $`M \in \mathrm{ST\_PS}`$ then $`0 \lt \lvert M\rvert`$.
 
-### 証明
+### Proof
 
-（証明の本文）
+(the body of the proof)
 ```
 
-### 2.2 定義
+### 2.2 Definitions
 
-定義に小見出しは付けない。
+A definition carries no subheadings.
 
 ```markdown
 <a id="d-Rnf"></a>
-## 定義: 正規形上の順序 (D.Rnf)
+## Definition: the order on normal forms (D.Rnf)
 
-$`v \mathbin{R_{\mathrm{NF}}} u :\iff v \prec u \wedge u \in \mathrm{NF} \wedge v \in \mathrm{NF}`$。
+$`v \mathbin{R_{\mathrm{NF}}} u :\iff v \prec u \wedge u \in \mathrm{NF} \wedge v \in \mathrm{NF}`$.
 ```
 
-### 2.3 識別子とアンカー
+### 2.3 Identifiers and anchors
 
-`<変数名>` は `lean/*.lean` 中の宣言名をそのまま用いる（`stps_len_pos`, `Rnf` など）。
-名前空間 `YAPSS.` は付けない。
+For `<name>`, the declaration name in `lean/*.lean` is used verbatim (`stps_len_pos`, `Rnf`, and so on). The namespace `YAPSS.` is not prefixed.
 
-見出しの直前に**不可視アンカー**を置く。名前は `t-<変数名>` / `d-<変数名>`
-（識別子はそのまま。大文字小文字も変えない）。見出しが日本語と括弧を含むため
-GitHub の自動生成アンカーは当てにならない。
+An **invisible anchor** is placed immediately before the heading. Its name is `t-<name>` / `d-<name>`
+(the identifier verbatim; the case is not changed either). Since a heading contains natural-language text and parentheses, the anchors that GitHub generates automatically cannot be relied upon.
 
 ---
 
-## 3. 引用の仕方
+## 3. How to cite
 
-### 3.1 命題を使うとき
+### 3.1 Using a proposition
 
-**必ず**ラベルで引用し、ハイパーリンクを張る。
+**Always** cite by the label, and attach a hyperlink.
 
-- 同一ファイル内 : `[T.olt_trans](#t-olt_trans) により、`
-- 他ファイル     : `[T.m_step_decreases](Decrease.md#t-m_step_decreases) により、`
+- Within the same file : `by [T.olt_trans](#t-olt_trans),`
+- In another file      : `by [T.m_step_decreases](Decrease.md#t-m_step_decreases),`
 
-「先の補題より」「上で示したように」のような**リンクの無い参照は禁止**。
+**A reference without a link is forbidden**, such as "by the preceding lemma" or "as shown above".
 
-### 3.2 同じファイルで定義された記号
+### 3.2 Symbols defined in the same file
 
-そのファイル自身が定義している記号には、ハイパーリンクを張らない。読者は同じ
-ファイルの中を探せばよく、リンクは雑音になる。定義を根拠として引くときは
-「$`\prec`$ の定義（D.olt）の第 1 式により」のように、記号の名前で呼ぶ。
+No hyperlink is attached to a symbol that the file itself defines. The reader has only to look inside the same file, and a link would be noise. When a definition is cited as a justification, it is called by the name of the symbol, as in "by the first clause of the definition of $`\prec`$ (D.olt)".
 
-**基準はファイルであってモジュールではない。** 同じモジュールでも、定義が別の部
-（§1.4）にあるならそれは他ファイルであり、§3.3 に従ってリンクを張る。
+**The unit is the file, not the module.** Even inside one module, if the definition lies in another part
+(§1.4) then that is another file, and a link is attached according to §3.3.
 
-命題（定理）の引用は同一ファイル内でもリンクを張る（§3.1）。**リンクを外すのは
-定義（記号）だけである。**
+A citation of a proposition (a theorem) carries a link even within the same file (§3.1). **It is only definitions (symbols) whose links are dropped.**
 
-### 3.3 他ファイルで定義された記号
+### 3.3 Symbols defined in another file
 
-ファイル A の中で、ファイル B で定義された記号を使うときは、**そのまま使ってよい**。
-「$`\mathrm{ST\_PS}`$ は [D.ST_PS](Pss.md#d-ST_PS) で定義されている」のような
-断り書きは書かない。
+Inside file A, a symbol defined in file B **may be used as it stands**. No remark such as
+"$`\mathrm{ST\_PS}`$ is defined in [D.ST_PS](Pss.md#d-ST_PS)" is written.
 
-代わりに、**ファイル A の中でその記号が最初に現れる 1 箇所だけ**、
-**その数式の直後に括弧書きでラベルのリンクを置く**。
+Instead, **at exactly the one place where that symbol first occurs in file A**,
+**a parenthesized link to its label is placed immediately after that formula**.
 
-「ファイル A の中で」であって「モジュールの中で」ではない。分割された部
-（§1.4）はそれぞれ独立に数える。読者はどの部からでも読み始めるので、
-第 3 部にしか現れない記号は第 3 部でリンクされていなければ辿れない。
+It is "in file A", not "in the module". The parts of a split (§1.4) are counted independently of one another. The reader may start from any part, so a symbol that occurs only in part 3 cannot be traced unless it is linked in part 3.
 
-- ⭕️ `$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）`
+- ⭕️ `$`M \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq))`
 - ❌ `[$`M \in \mathrm{PairSeq}`$](Pss.md#d-PairSeq)`
 
-**数式そのものをリンクにしてはならない。** GitHub はリンクの中に数式を作らない（§5.1）。
-既に括弧の中にいるとき（`（…）` の内側）は括弧を重ねず、空白で区切る
-（`（$`\prec`$ [D.olt](Term.md#d-olt)）`）。
+**A formula itself must never be made into a link.** GitHub does not create math inside a link (§5.1). When one is already inside parentheses (inside a `(…)`), parentheses are not nested; a space separates them instead (`($`\prec`$ [D.olt](Term.md#d-olt))`).
 
-2 回目以降はリンクも括弧書きも付けず、素の記号で書く。
-定義を根拠として引くときは §3.2 と同じく記号の名前で呼ぶ
-（「$`M[n]`$ の定義（D.oper）の分岐 (a) により」）。
+From the second occurrence on, neither a link nor parentheses are attached, and the bare symbol is written. When a definition is cited as a justification, it is called by the name of the symbol just as in §3.2
+("by branch (a) of the definition of $`M[n]`$ (D.oper)").
 
-読者は知らない記号に出会ったら、そのファイル内でのその記号の初出まで戻れば
-定義へジャンプできる。
+A reader who meets an unknown symbol can jump to its definition by going back to the first occurrence of that symbol inside the file.
 
 ---
 
-## 4. 証明の書き方
+## 4. How to write a proof
 
-### 4.1 要約しない
+### 4.1 Do not summarize
 
-**これは証明である。** 「ここは帰納法で示せる」「同様にして」「明らかに」で
-済ませてはならない。読者がその段の正しさを自分で検証できるだけの根拠を伴うこと。
+**This is a proof.** "This can be shown by induction", "similarly", "obviously" will not do. Each step comes with enough justification for the reader to verify it independently.
 
-例外は、そのまま書くと**かえって読みにくくなる**場合に限る。
+The only exception is when writing it out **makes the text harder to read instead**.
 
-### 4.2 帰納法は帰納法として書く
+### 4.2 Write induction as induction
 
-帰納法を使う箇所は、次の 4 つを**明示的に**書く。
+Wherever induction is used, the following four items are written **explicitly**.
 
-1. **帰納法の対象**（自然数か、リストの長さか、項の構造か、`ST_PS` の導出か、
-   整礎関係に関する整礎帰納か）
-2. **帰納法の述語**（$`\Phi(t) :\equiv \dots`$ と式で書く）
-3. **基底段**の証明
-4. **帰納段**の証明（**帰納法の仮定**を述語として明示し、それを使う箇所を示す）
+1. **What the induction is on** (a natural number, the length of a list, the structure of a term, a derivation of `ST_PS`, or well-founded induction on a well-founded relation)
+2. **The induction predicate** (written as a formula, $`\Phi(t) :\equiv \dots`$)
+3. The proof of the **base case**
+4. The proof of the **inductive step** (with the **induction hypothesis** stated explicitly as a predicate, and with the place where it is used indicated)
 
-### 4.3 自然言語の未定義語を使わない
+### 4.3 Do not use undefined natural-language words
 
-使ってよい自然言語は、**このリポジトリで定義済みの語**と、
-**数学の標準語彙**（「したがって」「矛盾」「場合分け」「一意」など）に限る。
+The natural language that may be used is limited to **words already defined in this repository** and **the standard vocabulary of mathematics** ("therefore", "contradiction", "case distinction", "unique", and the like).
 
-- ❌ 「この集合は展開について**閉じる**」
-- ⭕️ 「$`X`$ について $`\forall M \in X,\ \forall n \ge 1,\ M[n] \in X`$ が成り立つ」
+- ❌ "this set is **closed** under expansion"
+- ⭕️ "$`\forall M \in X,\ \forall n \ge 1,\ M[n] \in X`$ holds for $`X`$"
 
-意味が一意に定まらない語を使いそうになったら、**その場で数式に書き換える**。
-「ほぼ」「概ね」「うまく」「自然に」も同様に禁止。
+Whenever a word whose meaning is not uniquely determined is about to be used, **rewrite it as a formula on the spot**. "almost", "roughly", "nicely", "naturally" are forbidden in the same way.
 
-### 4.4 タクティクの名前を書かない
+### 4.4 Do not write the names of tactics
 
-Lean 側で `omega` / `simp` / `decide` に任せた計算は、md では**その計算を式で書く**。
-「`omega` による」とは書かない。
+A computation that is left to `omega` / `simp` / `decide` on the Lean side is **written out as a formula** in the md. Do not write "by `omega`".
 
-### 4.5 証明に使わないものは書かない
+### 4.5 Do not write what the proof does not use
 
-停止性証明に使われない命題・記号・ファイルは扱わない。そのようなものは
-`lean` 側からも削除する（履歴には残るので復旧可能）。md も作らない。
+Propositions, symbols and files that are not used in the termination proof are not treated. Such things are deleted from the `lean` side as well (they remain in the history, so they can be recovered). No md is created for them either.
 
-未使用宣言の検出は `lean/tools/DeadCode.lean`：
+Unused declarations are detected by `lean/tools/DeadCode.lean`:
 
 ```sh
 cd lean && lake env lean tools/DeadCode.lean
@@ -201,126 +173,121 @@ cd lean && lake env lean tools/DeadCode.lean
 
 ---
 
-## 5. 数式の書き方
+## 5. How to write formulas
 
-Lean の記法と数学記法が異なる場合、**md では数学記法**を用いる。
-`M⟦n⟧` は $`M[n]`$、`olt` は $`\prec`$、`sle` は $`\preceq_{\mathrm{lex}}`$。
-列は添字で書く（$`M = (M_0,\dots,M_{X-1})`$、$`X = \lvert M\rvert`$）。
+Where Lean notation differs from mathematical notation, **the md uses the mathematical notation**.
+`M⟦n⟧` is $`M[n]`$, `olt` is $`\prec`$, `sle` is $`\preceq_{\mathrm{lex}}`$.
+Sequences are written with indices ($`M = (M_0,\dots,M_{X-1})`$, $`X = \lvert M\rvert`$).
 
-### 5.1 GitHub で壊れない書き方
+### 5.1 How to write so that GitHub does not break it
 
-GitHub は数式を KaTeX で描画し、その手前で Markdown のエスケープ処理を通す。
-次の 5 つを守る。すべて実機で測定した結果である。
+GitHub renders math with KaTeX, and runs Markdown's escaping in front of it.
+The following five points are observed. All of them are results measured on the real site.
 
-- **別行立ての数式は `$$ ... $$` ではなく ```` ```math ```` フェンスで書く。**
-  `$$ ... $$` の中身はエスケープ処理を受け、`\{` が `{` に、`\,` が `,` に潰される。
-  コードフェンスの中身は受けない。
-- **```` ```math ```` フェンスは必ず行頭から書く。インデントしてはならない。**
-  GitHub は行頭のフェンスだけを `<math-renderer>` に変換し、**箇条書きの中などに
-  インデントされたフェンスは `<pre lang="math">` のまま**残す。つまり数式として
-  描画されない（実機で測定：あるファイルで行頭 60 個は描画され、インデントされた
-  47 個は描画されなかった）。しかもクライアント側が本文中の `$$…$$` として拾い直す
-  ため、`\tag` が「display 数式でしか使えない」というエラーになることがある。
-  箇条書きの中に別行立ての数式を置きたくなったら、箇条書きをやめて
-  `**(a) … のとき。**` のような段落にし、フェンスを行頭へ出す。
-- **行区切りは `\\` ではなく `\cr` を使う。** GitHub はクライアントへ数式を渡すときに
-  `\\` を `\\\` に変えてしまう（```` ```math ```` フェンスでも `$$` でも同じ）。
-  その結果 `\begin{aligned}` の行区切りが失われ `Missing \end{aligned}` になる。
-  `\cr` は素通しされ、`aligned` / `cases` / `array` のいずれでも行区切りとして解釈される。
-- **インライン数式は `` $`...`$ `` と書く（素の `$...$` を使わない）。**
-  素の `$...$` の中身もエスケープを受け、`\{x\}` は `{x}` に、`\,` は `,` になる。
-- **インライン数式の中で `<` `>` を直接書かず `\lt` `\gt` と書く。**
-  インライン数式では `<` が `&amp;lt;` と**二重に**エスケープされて届く。
-  ```` ```math ```` フェンス内は一重なので `<` のままでよい。
-- **数式の中に `$` を一切書かない**（`\text{...}` の中も `\tag{...}` の中も）。
-  GitHub はフェンスの中でも `$` を `\$` にエスケープするため、`\text{$x$}` は
-  `\text{\$x\$}` として届き、KaTeX が text mode で数式コマンドを拒否する。
-  数式は `\text{}` の外に出す。
-- **インライン数式を改行にまたがらせない。** 長い式は ```` ```math ```` にする。
-- **`\hphantom` / `\phantom` を使わない。** GitHub は KaTeX を独自の**マクロ許可リスト**の
-  後ろで動かしており、`The following macros are not allowed: hphantom` と言って式全体を
-  拒否する。素の KaTeX は通すので**ローカルの検査にも `check-github.js` にも映らない**
-  （拒否はブラウザの中で起きるので、配信される文字列は正常に見える）。
-  同族の `\vphantom` / `\smash`、定義系の `\def` / `\newcommand` / `\let` / `\gdef`、
-  `\htmlClass` などもこの類である。
-  桁を揃えたいときは `\begin{aligned}` の**第 2 の整列点** `&&` を使う。
+- **Display math is written in a ```` ```math ```` fence, not as `$$ ... $$`.**
+  The contents of `$$ ... $$` undergo the escaping, which collapses `\{` to `{` and `\,` to `,`.
+  The contents of a code fence do not.
+- **A ```` ```math ```` fence is always written from the beginning of a line. It must not be indented.**
+  GitHub converts only a fence at the beginning of a line into `<math-renderer>`, and **a fence that is
+  indented, for instance inside a bullet list, stays a `<pre lang="math">`**. That is, it is not
+  rendered as math (measured on the real site: in one file the 60 fences at the beginning of a line were
+  rendered, while the 47 indented ones were not). Moreover, since the client side picks it up again as
+  `$$…$$` in the body text, `\tag` can turn into an error saying that it can only be used in display math.
+  When display math is wanted inside a bullet list, abandon the list, make it a paragraph such as
+  `**(a) In the case … .**`, and move the fence out to the beginning of a line.
+- **The line separator is `\cr`, not `\\`.** When GitHub hands the math to the client it turns
+  `\\` into `\\\` (in a ```` ```math ```` fence as well as in `$$`).
+  As a result the line separators of `\begin{aligned}` are lost and one gets `Missing \end{aligned}`.
+  `\cr` is passed through untouched and is interpreted as a line separator in `aligned`, `cases` and `array` alike.
+- **Inline math is written as `` $`...`$ `` (a bare `$...$` is not used).**
+  The contents of a bare `$...$` are escaped too: `\{x\}` becomes `{x}` and `\,` becomes `,`.
+- **Inside inline math, `<` and `>` are not written directly; `\lt` and `\gt` are written instead.**
+  In inline math, `<` arrives **doubly** escaped as `&amp;lt;`.
+  Inside a ```` ```math ```` fence the escaping is single, so `<` may be left as it is.
+- **Never write `$` inside math** (not inside `\text{...}`, nor inside `\tag{...}`).
+  Since GitHub escapes `$` to `\$` even inside a fence, `\text{$x$}` arrives as
+  `\text{\$x\$}` and KaTeX rejects math commands in text mode.
+  The math is moved outside the `\text{}`.
+- **Do not let inline math straddle a line break.** A long formula is put into a ```` ```math ```` fence.
+- **Do not use `\hphantom` / `\phantom`.** GitHub runs KaTeX behind its own **macro allow-list**,
+  and rejects the whole formula, saying `The following macros are not allowed: hphantom`.
+  Plain KaTeX accepts them, so this shows up **neither in the local check nor in `check-github.js`**
+  (the rejection happens inside the browser, so the delivered string looks sound).
+  Their relatives `\vphantom` / `\smash`, the definition commands `\def` / `\newcommand` / `\let` / `\gdef`,
+  and `\htmlClass` are of the same kind.
+  To align columns, use the **second alignment point** `&&` of `\begin{aligned}`.
   ```` &\text{(cZ1)}\quad &&\ldots \cr &\text{(decr)}\quad &&\ldots ````
-  継続行は `& &&\qquad \ldots` と書けばよい。
-- **数式をリンクの中に入れない。** `[$`a+b`$](Foo.md#d-x)` と書くと、GitHub は
-  リンクの中に `<math-renderer>` を作らない。行に数式がそれ 1 つだけなら
-  `$<code>a+b</code>$` のまま出て**数式に見えない**。同じ段落に別の数式が続くと、
-  そちらの開き `$` と誤って対になり、`<a>` タグごと飲み込んだ壊れた式ができて
-  **`Unable to render expression`** になる。生の HTML で `<a href=...>` と書いても、
-  `$…$` で書いても同じである（実機で 7 通り測定した結果）。
-  リンクは数式の外に出す（§3.3）。
+  A continuation line can be written as `& &&\qquad \ldots`.
+- **Do not put math inside a link.** If one writes `[$`a+b`$](Foo.md#d-x)`, GitHub does not create a
+  `<math-renderer>` inside the link. If that is the only formula on the line, it comes out as
+  `$<code>a+b</code>$` and **does not look like math**. If another formula follows in the same paragraph,
+  the opening `$` of that one is wrongly paired with it, producing a broken formula that swallows the `<a>`
+  tag, hence **`Unable to render expression`**. Writing raw HTML `<a href=...>` and writing
+  `$…$` come to the same thing (the result of measuring seven variants on the real site).
+  The link is moved outside the math (§3.3).
 
-### 5.2 検査
+### 5.2 Checking
 
 ```sh
-node ~/.claude/skills/github-math-check/scripts/check-local.js lean    # push 前
-node ~/.claude/skills/github-math-check/scripts/check-github.js <URL>  # push 後、これが最終判定
+node ~/.claude/skills/github-math-check/scripts/check-local.js lean    # before push
+node ~/.claude/skills/github-math-check/scripts/check-github.js <URL>  # after push; this is the final verdict
 ```
 
-ローカルで描画できることは GitHub で描画できることを意味しない。**必ず push 後に実機で測る。**
+That something renders locally does not mean that it renders on GitHub. **Always measure on the real site after pushing.**
 
-なお、この GitHub 専用記法は標準の MathJax ビューアでは描画されない。
-ローカルで見るには patch 済みの markdown-viewer（`~/code/markdown-viewer`）を使う。
-
----
-
-## 6. 書くときに迷う点
-
-### 6.1 記法の導入
-
-冒頭に記法の対応表を置かない（§1.1）ので、**記号はそれを最初に必要とする定義の中で
-導入する**。たとえば `takeWhile` / `dropWhile` は `D.translate` の直前で
-
-> $`\mathrm{tw}_a L`$ := （$`L`$ の先頭から、第 1 成分が $`a`$ より大きい要素が続く極大な前部分列）
-
-と定めてから使う。一般の述語版が要る補題では、その補題の中で「ここでは
-$`\mathrm{tw}_p`$ を一般の述語 $`p`$ について書く」と断る。
-
-### 6.2 定義の節には定義だけを書く
-
-定義から従う帰結を定義の節に書かない。**使うなら定理として立てる**（Lean 側にも
-宣言があるはずである）。**使わないなら書かない**（§4.5）。
-
-これは機械では検出できない。`lean/tools/DeadCode.lean` は Lean の定数の証明項を辿る
-道具であり、md の地の文はそもそもグラフに存在しない。読んで見つけるしかない。
-
-### 6.3 定義の節に書いてよいもの
-
-再帰的な定義・帰納的な定義が**定義として成立するために要ること**は、定義の一部である。
-
-- `inductive` の構成子の単射性と像の非交差（Lean が `noConfusion` / `inj` を自動生成する）
-- `inductive` の最小性、すなわち帰納法の原理（Lean が `rec` を自動生成する）
-- 再帰の停止性（Lean が構造的再帰と認めるか、`termination_by` / `decreasing_by` が書かれている）
-
-これらは Lean に実在し、後続の証明が根拠として使う。
-
-### 6.4 無名の `example`
-
-Lean の無名 `example` はラベルを付けられないので md には書けない。検証に有用なら
-`lean/memo/*.lean` へ移す（§1.3）。
-
-### 6.5 場合分けは書き尽くす
-
-$`3 \times 3`$ の場合分けなら 9 通りすべてを書く。表にして各欄の根拠を 1 行ずつ
-書けばよい。「9 通りを尽くせばよい」で済ませない（§4.1）。
-
-### 6.6 検証
-
-- md に書いた命題は、対応する Lean の宣言と**同じ主張**でなければならない。
-  仮定を落とす・強める書き換えをしない。
-- 証明の各段が Lean 側の証明と対応することを確認する。
-- `lean/*.lean` の宣言と `lean/*.md` の見出しが 1 対 1 であることを確認する。
+Note that this GitHub-specific notation is not rendered by a standard MathJax viewer.
+To view it locally, use the patched markdown-viewer (`~/code/markdown-viewer`).
 
 ---
 
-## 7. 1 ファイルを md 化する手順
+## 6. Points of doubt when writing
 
-1. `lean/Foo.lean` を**通読**する。
-2. 宣言を出現順に列挙する。
+### 6.1 Introducing notation
+
+Since no table of notation is placed at the head of a file (§1.1), **a symbol is introduced inside the definition that first needs it**. For example `takeWhile` / `dropWhile` are fixed immediately before `D.translate` as
+
+> $`\mathrm{tw}_a L`$ := (the maximal prefix of $`L`$, taken from its head, along which the first entry stays greater than $`a`$)
+
+and used from there on. In a lemma that needs the version for a general predicate, that lemma states that
+"here $`\mathrm{tw}_p`$ is written for a general predicate $`p`$".
+
+### 6.2 Write nothing but the definition in a definition section
+
+A consequence that follows from a definition is not written in the definition section. **If it is used, state it as a theorem** (there should be a declaration on the Lean side as well). **If it is not used, do not write it** (§4.5).
+
+This cannot be detected mechanically. `lean/tools/DeadCode.lean` is a tool that traces the proof terms of Lean constants, and the running text of an md is not in that graph at all. It can only be found by reading.
+
+### 6.3 What may be written in a definition section
+
+What a recursive or an inductive definition **needs in order to be well defined** is part of the definition.
+
+- Injectivity of the constructors of an `inductive` and the fact that their images are pairwise disjoint (Lean generates `noConfusion` / `inj` automatically)
+- Minimality of an `inductive`, that is, its induction principle (Lean generates `rec` automatically)
+- Termination of the recursion (whether Lean accepts it as structural recursion, or a `termination_by` / `decreasing_by` is written)
+
+These exist in Lean, and the proofs that follow use them as justifications.
+
+### 6.4 Anonymous `example`s
+
+An anonymous `example` in Lean cannot be given a label, so it cannot be written in the md. If it is useful for verification, move it to `lean/memo/*.lean` (§1.3).
+
+### 6.5 Exhaust the case distinction
+
+For a $`3 \times 3`$ case distinction, write out all nine cases. It suffices to make a table and to give the justification of each entry in one line. Do not settle for "it suffices to exhaust the nine cases" (§4.1).
+
+### 6.6 Verification
+
+- A proposition written in the md must be **the same statement** as the corresponding Lean declaration.
+  Do not rewrite it so as to drop or to strengthen a hypothesis.
+- Check that each step of the proof corresponds to the proof on the Lean side.
+- Check that the declarations of `lean/*.lean` and the headings of `lean/*.md` are in one-to-one correspondence.
+
+---
+
+## 7. Procedure for turning one file into md
+
+1. **Read `lean/Foo.lean` through.**
+2. List the declarations in order of occurrence.
 
    ```sh
    cd lean && python3 -c "
@@ -330,17 +297,16 @@ $`3 \times 3`$ の場合分けなら 9 通りすべてを書く。表にして�
        if k=='decl' and n: print(a+1, n)"
    ```
 
-3. その順に `lean/Foo.md` を書く。
-4. `lean/Foo.lean` に証明でない記述（設計判断・経緯・実装事情・モデル検査の数値）が
-   あれば、**Lean 側から削除する**（§1.3）。ビルドが通ることを確かめる。
-5. 検査する。
+3. Write `lean/Foo.md` in that order.
+4. If `lean/Foo.lean` contains descriptions that are not proofs (design decisions, history, implementation circumstances, numbers from model checking), **delete them from the Lean side** (§1.3). Check that the build passes.
+5. Check it.
 
    ```sh
    node ~/.claude/skills/github-math-check/scripts/check-local.js lean/Foo.md
-   grep -n '^[ ]\+```math' lean/Foo.md          # 0 件であること（§5.1）
+   grep -n '^[ ]\+```math' lean/Foo.md          # must be 0 (§5.1)
    ```
 
-6. 宣言と見出しが 1 対 1 であることを確かめる。
+6. Check that the declarations and the headings are in one-to-one correspondence.
 
    ```sh
    cd lean && python3 -c "
@@ -348,7 +314,7 @@ $`3 \times 3`$ の場合分けなら 9 通りすべてを書く。表にして�
    from prune_lean import blocks
    d=[n for k,a,b,n in blocks(open('Foo.lean').read().split('\n')) if k=='decl' and n]
    a=re.findall(r'<a id=\"[td]-([^\"]+)\"></a>', open('Foo.md').read())
-   print('欠落',[x for x in d if x not in a],'余分',[x for x in a if x not in d])"
+   print('missing',[x for x in d if x not in a],'extra',[x for x in a if x not in d])"
    ```
 
-7. push 後に `check-github.js` で実機描画を確かめる（§5.2）。
+7. After pushing, check the rendering on the real site with `check-github.js` (§5.2).

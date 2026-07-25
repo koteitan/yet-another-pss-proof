@@ -1,70 +1,73 @@
 [← README](../README.md) | [English](README.md) | [Japanese](README-ja.md)
 
-# PSS 停止性の証明
+# Proof of PSS termination
 
-ペア数列に展開の操作 $`M \Rightarrow N`$ が定まっている。**この操作は必ず止まる**、
-すなわち標準形から始まる無限の展開列は存在しない、というのがここで示すことである。
+Pair sequences carry an expansion operation $`M \Rightarrow N`$. What is proved here is that
+**this operation always terminates**, that is, that no infinite expansion sequence starts from a
+standard form.
 
-証明は 3 段からなる。
+The proof has three stages.
 
-**第 1 段。** ペア数列 $`M`$ を $`p_a(b)+c`$ という三分木の記法の項 $`\mathrm{tr}(M)`$ へ
-写す。項には添字優先の辞書式順序 $`\prec`$ を入れる。
+**Stage 1.** A pair sequence $`M`$ is mapped to a term $`\mathrm{tr}(M)`$ of the ternary-tree
+notation $`p_a(b)+c`$. Terms are equipped with the subscript-first lexicographic order $`\prec`$.
 
-**第 2 段。** 展開の 1 段はこの測度を真に減らす：$`\mathrm{tr}(M[n]) \prec \mathrm{tr}(M)`$。
-したがって、$`\prec`$ が標準形の像の上で整礎でありさえすれば、展開は止まる。
+**Stage 2.** One expansion step strictly decreases this measure: $`\mathrm{tr}(M[n]) \prec \mathrm{tr}(M)`$.
+Hence expansion terminates as soon as $`\prec`$ is well-founded on the image of the standard forms.
 
-**第 3 段。** その整礎性を、**順序数を使わず**、Buchholz の記法系への翻訳も使わずに示す。
-使うのは次の 2 つである。
+**Stage 3.** That well-foundedness is proved **without ordinals**, and without any translation into
+Buchholz's notation system. Only the following two ingredients are used.
 
-- **Bachmann 共終性** — $`M`$ より真に小さい標準形は、基本列の項 $`M[n]`$ のいずれかで
-  上から抑えられる。
-- **反復帰納的集合** $`W_u`$ — 最小不動点として定め、その帰納法によって、標準形がすべて
-  $`W_u`$ に属することを示す。
+- **Bachmann cofinality** — every standard form strictly below $`M`$ is bounded above by some
+  term $`M[n]`$ of the fundamental sequence.
+- **The iterated inductive set** $`W_u`$ — defined as a least fixpoint; by its induction principle,
+  every standard form belongs to $`W_u`$.
 
-この 2 つを合わせると整礎性が出る。これは Buchholz (1987) §2 の方法である。そこでは
-Buchholz の記法系 $`\mathrm{OT}_B`$ の整礎性が、順序数への評価ではなく、集合 $`W_v`$ と
-基本列から**構文的に**得られている。上の経路はその方法をペア数列へ直接移したものである。
+Combining these two yields well-foundedness. This is the method of Buchholz (1987) §2, where the
+well-foundedness of Buchholz's notation system $`\mathrm{OT}_B`$ is obtained **syntactically** from
+the sets $`W_v`$ and the fundamental sequences, rather than from an evaluation into the ordinals.
+The route above transplants that method directly to pair sequences.
 
-順序数への評価写像も、Buchholz の $`\mathrm{OT}`$ への埋め込みも、係数優越条件も、
-この経路のどこにも現れない。
+Neither an evaluation map into the ordinals, nor an embedding into Buchholz's $`\mathrm{OT}`$, nor a
+coefficient domination condition occurs anywhere along this route.
 
-## 証明の構造
+## Structure of the proof
 
-| | 何を示すか | 本文 |
+| | What is proved | Text |
 |---|---|---|
-| 定義 | ペア数列 $`M`$、基本列 $`M[n]`$、標準形 $`\mathrm{ST\_PS}`$、展開 $`M \Rightarrow N`$ | [ペア数列システム](Pss.md) |
-| 第 1 段 | 記法 $`p_a(b)+c`$、順序 $`\prec`$、翻訳 $`\mathrm{tr}`$ | [三分岐記法](Term.md) |
-| 第 2 段 | 展開の分岐の分解と $`\mathrm{tr}(M[n]) \prec \mathrm{tr}(M)`$ | [測度の減少](Decrease.md) |
-| | $`\prec`$ が $`\mathrm{tr}`$ の像の上で整礎ならば展開は止まる | [停止性への還元](Reduction.md) |
-| 準備 | Cantor 標準形条件 $`\mathrm{cnf}`$ と、コピー分解 $`\mathrm{sh}_d`$ / $`\mathrm{cp}_d`$ | [Cantor 標準形条件](Cnf.md) [2](Cnf-2.md) [3](Cnf-3.md) |
-| | $`\mathrm{tr}`$ が標準形の上で列辞書式順序への順序同型であること | [列辞書式順序](Seqlex.md) [2](Seqlex-2.md) |
-| | 親子関係の接頭辞不変性と、位置的不変量 $`\mathrm{r1ok}`$ / $`\mathrm{z0ok}`$ | [列の不変量](Column.md) [2](Column-2.md) [3](Column-3.md) [4](Column-4.md) |
-| 第 3 段 | $`N \prec M`$ ならばある $`n`$ で $`N \preceq M[n]`$ | [Bachmann 共終性](Cofinality.md) [2](Cofinality-2.md) [3](Cofinality-3.md) |
-| | 共終性を宿主に依らない核 $`\mathrm{ArgDomCore}`$ に還元し、それを証明する | [共終性の核](ArgDom.md) [2](ArgDom-2.md) [3](ArgDom-3.md) [4](ArgDom-4.md) [5](ArgDom-5.md) |
-| | 最小不動点 $`W_u`$ とその帰納法、標準形が $`W_u`$ に属すること | [反復帰納的集合](Wset.md) [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md) |
-| 結論 | 展開関係の整礎性と、無限展開列の非存在 | [主定理](Final.md) |
+| Definitions | pair sequences $`M`$, fundamental sequences $`M[n]`$, standard forms $`\mathrm{ST\_PS}`$, expansion $`M \Rightarrow N`$ | [Pair sequence system](Pss.md) |
+| Stage 1 | the notation $`p_a(b)+c`$, the order $`\prec`$, the translation $`\mathrm{tr}`$ | [Three-branch notation](Term.md) |
+| Stage 2 | decomposition into the branches of expansion, and $`\mathrm{tr}(M[n]) \prec \mathrm{tr}(M)`$ | [Decrease of the measure](Decrease.md) |
+| | if $`\prec`$ is well-founded on the image of $`\mathrm{tr}`$, then expansion terminates | [Reduction to termination](Reduction.md) |
+| Preliminaries | the Cantor normal form condition $`\mathrm{cnf}`$, and the copy decomposition $`\mathrm{sh}_d`$ / $`\mathrm{cp}_d`$ | [Cantor normal form condition](Cnf.md) [2](Cnf-2.md) [3](Cnf-3.md) |
+| | that $`\mathrm{tr}`$ is an order isomorphism onto the column-lex order on the standard forms | [Column-lex order](Seqlex.md) [2](Seqlex-2.md) |
+| | prefix invariance of the parent relation, and the positional invariants $`\mathrm{r1ok}`$ / $`\mathrm{z0ok}`$ | [Column invariants](Column.md) [2](Column-2.md) [3](Column-3.md) [4](Column-4.md) |
+| Stage 3 | if $`N \prec M`$, then $`N \preceq M[n]`$ for some $`n`$ | [Bachmann cofinality](Cofinality.md) [2](Cofinality-2.md) [3](Cofinality-3.md) |
+| | reducing cofinality to the host-free core $`\mathrm{ArgDomCore}`$, and proving that core | [The core of cofinality](ArgDom.md) [2](ArgDom-2.md) [3](ArgDom-3.md) [4](ArgDom-4.md) [5](ArgDom-5.md) |
+| | the least fixpoint $`W_u`$ and its induction principle; that every standard form belongs to $`W_u`$ | [Iterated inductive set](Wset.md) [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md) |
+| Conclusion | well-foundedness of the expansion relation, and non-existence of infinite expansion sequences | [Main theorem](Final.md) |
 
-上から順に読める。各節は前の節までで示したことだけを使う。
+The table can be read from top to bottom. Each section uses only what the preceding sections prove.
 
-数式の多い節は 2 以降に続く。GitHub は 1 ページの数式が一定量を超えるとそれ以降を
-描画しないので、その手前で切ってある。
+Sections with many formulas continue in a part 2 and beyond. GitHub stops rendering the formulas of
+a page once their total exceeds a certain amount, so each file is cut before that point.
 
-証明の現状と経緯は [`PROOF-STATUS.md`](PROOF-STATUS.md)、本文の編集方針は
-[`requirement.md`](requirement.md)。
+For the current state and the history of the proof see [`PROOF-STATUS.md`](PROOF-STATUS.md); for the
+editorial policy of the text see [`requirement.md`](requirement.md).
 
-## Lean との対応
+## Correspondence with Lean
 
-上の表の各節 `<module>.md` の**形式証明が同名の `<module>.lean` にある**。
-たとえば [Bachmann 共終性](Cofinality.md) [2](Cofinality-2.md) [3](Cofinality-3.md) の形式証明は
-[`Cofinality.lean`](Cofinality.lean) である。
+For each section `<module>.md` of the table above, **the formal proof is in the `<module>.lean` of
+the same name**. For instance, the formal proof of [Bachmann cofinality](Cofinality.md) [2](Cofinality-2.md) [3](Cofinality-3.md) is
+[`Cofinality.lean`](Cofinality.lean).
 
-両者は 1 対 1 に対応する。`<module>.md` の見出し
+The two correspond one to one. In a heading of `<module>.md`
 
 ```
-## 定理: 標準形は空でない (T.stps_len_pos)
-## 定義: 正規形上の順序 (D.Rnf)
+## Theorem: standard forms are non-empty (T.stps_len_pos)
+## Definition: order on normal forms (D.Rnf)
 ```
 
-の括弧の中は `<module>.lean` の宣言名であり（名前空間 `YAPSS.` は省く）、
-節の並び順も `<module>.lean` の宣言の並び順と同じである。
-一方にあって他方に無い命題・定義は無い。
+what stands inside the parentheses is a declaration name of `<module>.lean` (the namespace
+`YAPSS.` is omitted), and the order of the sections is the same as the order of the declarations in
+`<module>.lean`. There is no proposition and no definition present on one side and absent on the
+other.

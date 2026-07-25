@@ -1,25 +1,25 @@
 [← README](README.md) | [English](Column-3.md) | [Japanese](Column-3-ja.md) | Column [1](Column.md) [2](Column-2.md) **3** [4](Column-4.md)
 
 <a id="t-getD_mem"></a>
-## 定理: 範囲内の成分は要素である (T.getD_mem)
+## Theorem: an entry within range is a member (T.getD_mem)
 
-### 定理
+### Theorem
 
-$`L`$ を対の列、$`i \lt \lvert L\rvert`$ とすると $`L\langle i\rangle \in L`$（[D.entry](Pss.md#d-entry)）。
+Let $`L`$ be a sequence of pairs and suppose $`i \lt \lvert L\rvert`$. Then $`L\langle i\rangle \in L`$ ([D.entry](Pss.md#d-entry)).
 
-### 証明
+### Proof
 
-$`i \lt \lvert L\rvert`$ であるから $`L\langle i\rangle`$ の定義（D.entry）の第 1 の場合が選ばれ、
-$`L\langle i\rangle`$ は $`L`$ の第 $`i`$ 要素である。列の第 $`i`$ 要素は
-（$`i`$ が範囲内である限り）その列の要素である。∎
+Since $`i \lt \lvert L\rvert`$, the first case of the definition of $`L\langle i\rangle`$ (D.entry) is selected,
+so $`L\langle i\rangle`$ is the $`i`$-th element of $`L`$. The $`i`$-th element of a sequence is
+a member of that sequence (as long as $`i`$ is within range). ∎
 
 <a id="t-dominated_PM_zero"></a>
-## 定理: 支配されたブロックで行 0 が最小になる位置は先頭に限る (T.dominated_PM_zero)
+## Theorem: in a dominated block, row 0 is minimal only at the head (T.dominated_PM_zero)
 
-### 定理
+### Theorem
 
-$`v_0, w_0 \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`q \in \mathbb{N}`$ とし、
-$`B := (v_0,w_0) :: R`$ とおく。次の 3 つを仮定する。
+Let $`v_0, w_0 \in \mathbb{N}`$, $`R \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) and $`q \in \mathbb{N}`$, and put
+$`B := (v_0,w_0) :: R`$. Assume the following three conditions.
 
 ```math
 \begin{aligned}
@@ -29,30 +29,30 @@ $`B := (v_0,w_0) :: R`$ とおく。次の 3 つを仮定する。
 \end{aligned}
 ```
 
-このとき $`q = 0`$。
+Then $`q = 0`$.
 
-### 証明
+### Proof
 
-$`q \ne 0`$ と仮定して矛盾を導く。$`q \ne 0`$ より $`q = q' + 1`$ と書ける。
-$`\lvert B\rvert = \lvert R\rvert + 1`$ であるから (hq) より $`q' \lt \lvert R\rvert`$ である。
-[T.getD_mem](#t-getD_mem) より $`R\langle q'\rangle \in R`$ であり、(hdom) より
+Suppose $`q \ne 0`$ and derive a contradiction. Since $`q \ne 0`$, we may write $`q = q' + 1`$.
+As $`\lvert B\rvert = \lvert R\rvert + 1`$, (hq) gives $`q' \lt \lvert R\rvert`$.
+By [T.getD_mem](#t-getD_mem) we have $`R\langle q'\rangle \in R`$, so (hdom) gives
 
 ```math
 v_0 \lt R_{0,q'} .
 ```
 
-他方 (hPM) を $`r := 0`$ に適用すると（$`0 \lt q`$ である）$`B_{0,q} \le B_{0,0}`$ を得る。
-$`B = (v_0,w_0) :: R`$ であるから $`B\langle 0\rangle = (v_0,w_0)`$、すなわち $`B_{0,0} = v_0`$ であり、
-また $`B\langle q' + 1\rangle = R\langle q'\rangle`$ であるから $`B_{0,q} = R_{0,q'}`$ である。
-よって $`R_{0,q'} \le v_0`$ となり、$`v_0 \lt R_{0,q'}`$ に矛盾する。∎
+On the other hand, applying (hPM) with $`r := 0`$ (note $`0 \lt q`$) yields $`B_{0,q} \le B_{0,0}`$.
+Since $`B = (v_0,w_0) :: R`$, we have $`B\langle 0\rangle = (v_0,w_0)`$, that is, $`B_{0,0} = v_0`$,
+and since $`B\langle q' + 1\rangle = R\langle q'\rangle`$, we have $`B_{0,q} = R_{0,q'}`$.
+Hence $`R_{0,q'} \le v_0`$, contradicting $`v_0 \lt R_{0,q'}`$. ∎
 
 <a id="t-r1ok_min_d0zero"></a>
-## 定理: 複製部の証人（$`d_0 = 0`$ の場合） (T.r1ok_min_d0zero)
+## Theorem: a witness in the copied part (the case $`d_0 = 0`$) (T.r1ok_min_d0zero)
 
-### 定理
+### Theorem
 
-$`G, R \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$、$`n, v_0, w_0 \in \mathbb{N}`$、
-$`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,0,n)`$（[D.copyExp](Column-2.md#d-copyExp)）とおく。次を仮定する。
+Let $`G, R \in \mathrm{PairSeq}`$, $`\ell \in \mathbb{N}\times\mathbb{N}`$, $`n, v_0, w_0 \in \mathbb{N}`$, and put
+$`B := (v_0,w_0) :: R`$ and $`E := \mathrm{copyExp}(G,B,0,n)`$ ([D.copyExp](Column-2.md#d-copyExp)). Assume the following.
 
 ```math
 \begin{aligned}
@@ -66,9 +66,9 @@ $`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,0,n)`$（[D.copyExp](Colum
 \end{aligned}
 ```
 
-（$`\mathrm{r1ok}`$ [D.r1ok](Column-2.md#d-r1ok)）
+($`\mathrm{r1ok}`$ [D.r1ok](Column-2.md#d-r1ok))
 
-このとき次をみたす $`p`$ が存在する。
+Then there exists $`p`$ satisfying the following.
 
 ```math
 \begin{aligned}
@@ -80,20 +80,20 @@ $`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,0,n)`$（[D.copyExp](Colum
 \end{aligned}
 ```
 
-### 証明
+### Proof
 
-$`H := G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$ とおく。
-[T.dominated_PM_zero](#t-dominated_PM_zero) を (hdom), (hq), (hPM) に適用して $`q = 0`$ を得る。
-以下 $`q = 0`$ とする。$`B\langle 0\rangle = (v_0,w_0)`$ であるから $`B_{0,0} = v_0`$、$`B_{1,0} = w_0`$ であり、
-$`k \cdot 0 = 0`$ であるから (hpos) は $`0 \lt v_0`$ を与える。
+Put $`H := G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$.
+Applying [T.dominated_PM_zero](#t-dominated_PM_zero) to (hdom), (hq), (hPM) gives $`q = 0`$.
+From now on let $`q = 0`$. Since $`B\langle 0\rangle = (v_0,w_0)`$, we have $`B_{0,0} = v_0`$ and $`B_{1,0} = w_0`$,
+and since $`k \cdot 0 = 0`$, (hpos) yields $`0 \lt v_0`$.
 
-$`0 \lt \lvert B\rvert`$ であるから [T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) を $`q := 0`$ に適用して
-$`H\langle \lvert G\rvert\rangle = B\langle 0\rangle = (v_0,w_0)`$ を得る。
-[T.hostM_length](Column-2.md#t-hostM_length) より
-$`\lvert G\rvert \lt \lvert G\rvert + \lvert B\rvert + 1 = \lvert H\rvert`$ であり、
-$`H_{0,\lvert G\rvert} = v_0 \gt 0`$ である。
-仮定 (hr) を添字 $`\lvert G\rvert`$ に適用して、$`H`$ における第 $`\lvert G\rvert`$ 列の証人 $`p`$ を得る。
-すなわち
+Since $`0 \lt \lvert B\rvert`$, applying [T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) with $`q := 0`$ gives
+$`H\langle \lvert G\rvert\rangle = B\langle 0\rangle = (v_0,w_0)`$.
+By [T.hostM_length](Column-2.md#t-hostM_length) we have
+$`\lvert G\rvert \lt \lvert G\rvert + \lvert B\rvert + 1 = \lvert H\rvert`$, and
+$`H_{0,\lvert G\rvert} = v_0 \gt 0`$.
+Applying the hypothesis (hr) at the index $`\lvert G\rvert`$ yields a witness $`p`$ for column $`\lvert G\rvert`$ of $`H`$;
+that is,
 
 ```math
 \begin{aligned}
@@ -104,53 +104,53 @@ $`H_{0,\lvert G\rvert} = v_0 \gt 0`$ である。
 \end{aligned}
 ```
 
-$`p \lt \lvert G\rvert`$ であるから [T.hostM_getD_pre](Column-2.md#t-hostM_getD_pre) より
-$`H\langle p\rangle = G\langle p\rangle`$ であり、上の 2 番目と 4 番目は
+Since $`p \lt \lvert G\rvert`$, [T.hostM_getD_pre](Column-2.md#t-hostM_getD_pre) gives
+$`H\langle p\rangle = G\langle p\rangle`$, so the second and the fourth of these become
 
 ```math
 G_{0,p} + 1 = v_0, \qquad w_0 \le G_{1,p} + 1
 ```
 
-となる。この $`p`$ が求めるものであることを示す。
-[T.copyExp_getD_pre](Column-2.md#t-copyExp_getD_pre) より $`E\langle p\rangle = G\langle p\rangle`$ である。
+We show that this $`p`$ is as required.
+By [T.copyExp_getD_pre](Column-2.md#t-copyExp_getD_pre) we have $`E\langle p\rangle = G\langle p\rangle`$.
 
-**第 1 の条件。** $`p \lt \lvert G\rvert \le \lvert G\rvert + (k\lvert B\rvert + 0)`$。
+**The first condition.** $`p \lt \lvert G\rvert \le \lvert G\rvert + (k\lvert B\rvert + 0)`$.
 
-**第 2 の条件。** $`E_{0,p} + 1 = G_{0,p} + 1 = v_0 = v_0 + k \cdot 0 = B_{0,0} + k \cdot 0`$。
+**The second condition.** $`E_{0,p} + 1 = G_{0,p} + 1 = v_0 = v_0 + k \cdot 0 = B_{0,0} + k \cdot 0`$.
 
-**第 3 の条件。** $`p \lt l`$ かつ $`l \lt \lvert G\rvert + (k\lvert B\rvert + 0)`$ をみたす $`l`$ を取る。
-示すべきは $`v_0 + k \cdot 0 \le E_{0,l}`$、すなわち $`v_0 \le E_{0,l}`$ である。$`l`$ の位置で場合分けする。
+**The third condition.** Take $`l`$ with $`p \lt l`$ and $`l \lt \lvert G\rvert + (k\lvert B\rvert + 0)`$.
+What has to be shown is $`v_0 + k \cdot 0 \le E_{0,l}`$, that is, $`v_0 \le E_{0,l}`$. Distinguish cases according to the position of $`l`$.
 
-**(a) $`l \lt \lvert G\rvert`$ のとき。**
-[T.copyExp_getD_pre](Column-2.md#t-copyExp_getD_pre) より $`E\langle l\rangle = G\langle l\rangle`$ であり、
-上の 3 番目の条件と [T.hostM_getD_pre](Column-2.md#t-hostM_getD_pre) より
-$`v_0 \le H_{0,l} = G_{0,l} = E_{0,l}`$。
+**(a) The case $`l \lt \lvert G\rvert`$.**
+By [T.copyExp_getD_pre](Column-2.md#t-copyExp_getD_pre) we have $`E\langle l\rangle = G\langle l\rangle`$, and
+the third condition above together with [T.hostM_getD_pre](Column-2.md#t-hostM_getD_pre) gives
+$`v_0 \le H_{0,l} = G_{0,l} = E_{0,l}`$.
 
-**(b) $`\lvert G\rvert \le l`$ のとき。**
-(hk) より $`k \le n`$ であるから $`k\lvert B\rvert \le n\lvert B\rvert`$ であり、
-$`l \lt \lvert G\rvert + k\lvert B\rvert`$ から $`l - \lvert G\rvert \lt n\lvert B\rvert`$ である。
-$`0 \lt \lvert B\rvert`$ であるから [T.index_decomp](Column-2.md#t-index_decomp) より
-$`k' \lt n`$、$`r \lt \lvert B\rvert`$、$`l - \lvert G\rvert = k'\lvert B\rvert + r`$ をみたす $`k', r`$ が
-存在し、$`l = \lvert G\rvert + (k'\lvert B\rvert + r)`$ である。
-[T.copyExp_getD_copy](Column-2.md#t-copyExp_getD_copy) より
-$`E_{0,l} = B_{0,r} + k' \cdot 0 = B_{0,r}`$ である。
-$`v_0 \le B_{0,r}`$ を $`r`$ で場合分けして示す。
+**(b) The case $`\lvert G\rvert \le l`$.**
+By (hk) we have $`k \le n`$, hence $`k\lvert B\rvert \le n\lvert B\rvert`$, and
+$`l \lt \lvert G\rvert + k\lvert B\rvert`$ gives $`l - \lvert G\rvert \lt n\lvert B\rvert`$.
+Since $`0 \lt \lvert B\rvert`$, [T.index_decomp](Column-2.md#t-index_decomp) yields $`k', r`$ with
+$`k' \lt n`$, $`r \lt \lvert B\rvert`$ and $`l - \lvert G\rvert = k'\lvert B\rvert + r`$,
+so that $`l = \lvert G\rvert + (k'\lvert B\rvert + r)`$.
+By [T.copyExp_getD_copy](Column-2.md#t-copyExp_getD_copy) we have
+$`E_{0,l} = B_{0,r} + k' \cdot 0 = B_{0,r}`$.
+We show $`v_0 \le B_{0,r}`$ by distinguishing cases on $`r`$.
 
-- $`r = 0`$ のとき。$`B_{0,0} = v_0`$ であるから $`v_0 \le v_0`$。
-- $`r = r' + 1`$ のとき。$`B\langle r' + 1\rangle = R\langle r'\rangle`$ であり、
-  $`r \lt \lvert B\rvert = \lvert R\rvert + 1`$ より $`r' \lt \lvert R\rvert`$ であるから
-  [T.getD_mem](#t-getD_mem) より $`R\langle r'\rangle \in R`$、
-  (hdom) より $`v_0 \lt R_{0,r'} = B_{0,r}`$。
+- The case $`r = 0`$. Since $`B_{0,0} = v_0`$, we have $`v_0 \le v_0`$.
+- The case $`r = r' + 1`$. Here $`B\langle r' + 1\rangle = R\langle r'\rangle`$, and
+  $`r \lt \lvert B\rvert = \lvert R\rvert + 1`$ gives $`r' \lt \lvert R\rvert`$, so
+  [T.getD_mem](#t-getD_mem) gives $`R\langle r'\rangle \in R`$, and
+  (hdom) gives $`v_0 \lt R_{0,r'} = B_{0,r}`$.
 
-**第 4 の条件。** $`B_{1,0} = w_0 \le G_{1,p} + 1 = E_{1,p} + 1`$。∎
+**The fourth condition.** $`B_{1,0} = w_0 \le G_{1,p} + 1 = E_{1,p} + 1`$. ∎
 
 <a id="t-r1ok_min_d0pos"></a>
-## 定理: 複製部の証人（$`0 \lt d_0`$ の場合） (T.r1ok_min_d0pos)
+## Theorem: a witness in the copied part (the case $`0 \lt d_0`$) (T.r1ok_min_d0pos)
 
-### 定理
+### Theorem
 
-$`G, R \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$、$`n, v_0, w_0, d_0 \in \mathbb{N}`$、
-$`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,d_0,n)`$ とおく。次を仮定する。
+Let $`G, R \in \mathrm{PairSeq}`$, $`\ell \in \mathbb{N}\times\mathbb{N}`$, $`n, v_0, w_0, d_0 \in \mathbb{N}`$, and put
+$`B := (v_0,w_0) :: R`$ and $`E := \mathrm{copyExp}(G,B,d_0,n)`$. Assume the following.
 
 ```math
 \begin{aligned}
@@ -172,7 +172,7 @@ $`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,d_0,n)`$ とおく。次�
 \end{aligned}
 ```
 
-このとき次をみたす $`p`$ が存在する。
+Then there exists $`p`$ satisfying the following.
 
 ```math
 \begin{aligned}
@@ -184,139 +184,139 @@ $`B := (v_0,w_0) :: R`$、$`E := \mathrm{copyExp}(G,B,d_0,n)`$ とおく。次�
 \end{aligned}
 ```
 
-### 証明
+### Proof
 
-[T.dominated_PM_zero](#t-dominated_PM_zero) を (hdom), (hq), (hPM) に適用して $`q = 0`$ を得る。
-以下 $`q = 0`$ とする。$`B = (v_0,w_0) :: R`$ であるから
-$`0 \lt \lvert B\rvert`$ であり $`B\langle 0\rangle = (v_0,w_0)`$、すなわち
-$`B_{0,0} = v_0`$、$`B_{1,0} = w_0`$ である。
+Applying [T.dominated_PM_zero](#t-dominated_PM_zero) to (hdom), (hq), (hPM) gives $`q = 0`$.
+From now on let $`q = 0`$. Since $`B = (v_0,w_0) :: R`$, we have
+$`0 \lt \lvert B\rvert`$ and $`B\langle 0\rangle = (v_0,w_0)`$, that is,
+$`B_{0,0} = v_0`$ and $`B_{1,0} = w_0`$.
 
-**証人の候補。** 述語 $`P`$ を
+**A candidate witness.** Define the predicate $`P`$ by
 
 ```math
 P(r) :\equiv B_{0,r} \le v_0 + d_0 - 1
 ```
 
-で定める。(hd0) より $`d_0 \ge 1`$ であるから $`v_0 \le v_0 + d_0 - 1`$ であり、
-$`B_{0,0} = v_0`$ であるから $`P(0)`$ が成り立つ。
-集合 $`\{\, r \le \lvert B\rvert - 1 \mid P(r)\,\}`$ は $`0`$ を含むので空でなく、
-$`\lvert B\rvert - 1`$ で上に有界であるから最大元をもつ。それを $`r'`$ とおく。すなわち
+By (hd0) we have $`d_0 \ge 1`$, hence $`v_0 \le v_0 + d_0 - 1`$, and since
+$`B_{0,0} = v_0`$, the statement $`P(0)`$ holds.
+The set $`\{\, r \le \lvert B\rvert - 1 \mid P(r)\,\}`$ contains $`0`$, hence is non-empty, and it is
+bounded above by $`\lvert B\rvert - 1`$, hence has a greatest element. Call it $`r'`$; that is,
 
 ```math
 P(r'), \qquad r' \le \lvert B\rvert - 1, \qquad
 \forall rr,\ \bigl(r' \lt rr \wedge rr \le \lvert B\rvert - 1\bigr) \to \neg P(rr) .
 ```
 
-$`0 \lt \lvert B\rvert`$ より $`r' \lt \lvert B\rvert`$ である。
-また $`0 \lt \lvert B\rvert`$ より $`rr \lt \lvert B\rvert`$ と $`rr \le \lvert B\rvert - 1`$ は同値である。
-$`\neg P(rr)`$ は $`v_0 + d_0 - 1 \lt B_{0,rr}`$ のことであり、$`d_0 \ge 1`$ より
-$`(v_0 + d_0 - 1) + 1 = v_0 + d_0`$ であるから、これは $`v_0 + d_0 \le B_{0,rr}`$ と同値である。したがって
+From $`0 \lt \lvert B\rvert`$ we get $`r' \lt \lvert B\rvert`$.
+Also, since $`0 \lt \lvert B\rvert`$, the conditions $`rr \lt \lvert B\rvert`$ and $`rr \le \lvert B\rvert - 1`$ are equivalent.
+Now $`\neg P(rr)`$ says $`v_0 + d_0 - 1 \lt B_{0,rr}`$, and since $`d_0 \ge 1`$ gives
+$`(v_0 + d_0 - 1) + 1 = v_0 + d_0`$, this is equivalent to $`v_0 + d_0 \le B_{0,rr}`$. Therefore
 
 ```math
 (\dagger)\qquad \forall rr,\ \bigl(r' \lt rr \wedge rr \lt \lvert B\rvert\bigr)
   \to v_0 + d_0 \le B_{0,rr} .
 ```
 
-**証人における行 0 の値。** $`B_{0,r'} = v_0 + d_0 - 1`$ を示す。
-$`P(r')`$ より $`B_{0,r'} \le v_0 + d_0 - 1`$ である。逆向きを $`r'`$ と $`\lvert B\rvert - 1`$ の
-大小で場合分けして示す。
+**The row 0 value at the witness.** We show $`B_{0,r'} = v_0 + d_0 - 1`$.
+From $`P(r')`$ we have $`B_{0,r'} \le v_0 + d_0 - 1`$. The reverse inequality is proved by
+distinguishing cases according to the comparison of $`r'`$ with $`\lvert B\rvert - 1`$.
 
-**(a) $`r' \lt \lvert B\rvert - 1`$ のとき。**
-$`r' \lt r' + 1 \le \lvert B\rvert - 1`$ であるから $`\neg P(r'+1)`$、すなわち
-$`v_0 + d_0 - 1 \lt B_{0,r'+1}`$ である。また $`r' + 1 \lt \lvert B\rvert`$ であるから
-(hstep) より $`B_{0,r'+1} \le B_{0,r'} + 1`$ である。よって
+**(a) The case $`r' \lt \lvert B\rvert - 1`$.**
+Since $`r' \lt r' + 1 \le \lvert B\rvert - 1`$, we have $`\neg P(r'+1)`$, that is,
+$`v_0 + d_0 - 1 \lt B_{0,r'+1}`$. Moreover $`r' + 1 \lt \lvert B\rvert`$, so
+(hstep) gives $`B_{0,r'+1} \le B_{0,r'} + 1`$. Hence
 
 ```math
 v_0 + d_0 - 1 \lt B_{0,r'} + 1,
 ```
 
-すなわち $`v_0 + d_0 - 1 \le B_{0,r'}`$。
+that is, $`v_0 + d_0 - 1 \le B_{0,r'}`$.
 
-**(b) $`r' = \lvert B\rvert - 1`$ のとき。**
-(hlp) と (hlpstep) より $`v_0 + d_0 = \ell_1 \le B_{0,\lvert B\rvert - 1} + 1 = B_{0,r'} + 1`$ であり、
-$`v_0 + d_0 - 1 \le B_{0,r'}`$。
+**(b) The case $`r' = \lvert B\rvert - 1`$.**
+By (hlp) and (hlpstep) we have $`v_0 + d_0 = \ell_1 \le B_{0,\lvert B\rvert - 1} + 1 = B_{0,r'} + 1`$, hence
+$`v_0 + d_0 - 1 \le B_{0,r'}`$.
 
-いずれの場合も $`v_0 + d_0 - 1 \le B_{0,r'}`$ であり、上界と合わせて
+In both cases $`v_0 + d_0 - 1 \le B_{0,r'}`$, and together with the upper bound
 
 ```math
 (\ddagger)\qquad B_{0,r'} = v_0 + d_0 - 1 .
 ```
 
-**乗法の書き換え。** (hk1) より $`k \ge 1`$ であるから $`k = (k-1) + 1`$ と書け、
+**Rewriting the products.** By (hk1) we have $`k \ge 1`$, so we may write $`k = (k-1) + 1`$, and
 
 ```math
 k\lvert B\rvert = (k-1)\lvert B\rvert + \lvert B\rvert, \qquad
 k d_0 = (k-1) d_0 + d_0
 ```
 
-である。また (hk) より $`k - 1 \lt n`$ である。
+Moreover (hk) gives $`k - 1 \lt n`$.
 
-**証人。** $`p^{*} := \lvert G\rvert + \bigl((k-1)\lvert B\rvert + r'\bigr)`$ を取る。
-$`k - 1 \lt n`$ と $`r' \lt \lvert B\rvert`$ により
-[T.copyExp_getD_copy](Column-2.md#t-copyExp_getD_copy) が使えて
+**The witness.** Take $`p^{*} := \lvert G\rvert + \bigl((k-1)\lvert B\rvert + r'\bigr)`$.
+By $`k - 1 \lt n`$ and $`r' \lt \lvert B\rvert`$,
+[T.copyExp_getD_copy](Column-2.md#t-copyExp_getD_copy) applies and gives
 
 ```math
 E\langle p^{*}\rangle = \bigl(B_{0,r'} + (k-1)d_0,\ B_{1,r'}\bigr)
 ```
 
-である。4 つの条件を確かめる。
+We check the four conditions.
 
-**第 1 の条件。** $`r' \lt \lvert B\rvert`$ より
-$`(k-1)\lvert B\rvert + r' \lt (k-1)\lvert B\rvert + \lvert B\rvert = k\lvert B\rvert`$ であるから
-$`p^{*} \lt \lvert G\rvert + (k\lvert B\rvert + 0)`$。
+**The first condition.** From $`r' \lt \lvert B\rvert`$ we get
+$`(k-1)\lvert B\rvert + r' \lt (k-1)\lvert B\rvert + \lvert B\rvert = k\lvert B\rvert`$, hence
+$`p^{*} \lt \lvert G\rvert + (k\lvert B\rvert + 0)`$.
 
-**第 2 の条件。** $`(\ddagger)`$ と $`d_0 \ge 1`$ より
+**The second condition.** By $`(\ddagger)`$ and $`d_0 \ge 1`$,
 
 ```math
 E_{0,p^{*}} + 1 = (v_0 + d_0 - 1) + (k-1)d_0 + 1 = v_0 + d_0 + (k-1)d_0 = v_0 + k d_0
   = B_{0,0} + k d_0 .
 ```
 
-**第 3 の条件。** $`p^{*} \lt l`$ かつ $`l \lt \lvert G\rvert + (k\lvert B\rvert + 0)`$ をみたす $`l`$ を取る。
-$`\lvert G\rvert \le p^{*} \lt l`$ である。(hk) より $`k\lvert B\rvert \le n\lvert B\rvert`$ であるから
-$`l - \lvert G\rvert \lt k\lvert B\rvert \le n\lvert B\rvert`$ であり、
-[T.index_decomp](Column-2.md#t-index_decomp) より $`k'' \lt n`$、$`rr \lt \lvert B\rvert`$、
-$`l - \lvert G\rvert = k''\lvert B\rvert + rr`$ をみたす $`k'', rr`$ が存在する。
-$`k'' = k - 1`$ であることを三分律で示す。
+**The third condition.** Take $`l`$ with $`p^{*} \lt l`$ and $`l \lt \lvert G\rvert + (k\lvert B\rvert + 0)`$.
+Then $`\lvert G\rvert \le p^{*} \lt l`$. By (hk) we have $`k\lvert B\rvert \le n\lvert B\rvert`$, hence
+$`l - \lvert G\rvert \lt k\lvert B\rvert \le n\lvert B\rvert`$, and
+[T.index_decomp](Column-2.md#t-index_decomp) yields $`k'', rr`$ with $`k'' \lt n`$, $`rr \lt \lvert B\rvert`$ and
+$`l - \lvert G\rvert = k''\lvert B\rvert + rr`$.
+We show $`k'' = k - 1`$ by trichotomy.
 
-- $`k'' \lt k - 1`$ とすると $`k'' + 1 \le k - 1`$ であるから
-  $`(k''+1)\lvert B\rvert \le (k-1)\lvert B\rvert`$、すなわち
-  $`k''\lvert B\rvert + \lvert B\rvert \le (k-1)\lvert B\rvert`$ である。
-  $`rr \lt \lvert B\rvert`$ より
-  $`l - \lvert G\rvert = k''\lvert B\rvert + rr \lt (k-1)\lvert B\rvert \le (k-1)\lvert B\rvert + r'`$
-  となり、$`p^{*} \lt l`$ に矛盾する。
-- $`k - 1 \lt k''`$ とすると $`k \le k''`$ であるから $`k\lvert B\rvert \le k''\lvert B\rvert`$ であり、
-  $`l - \lvert G\rvert = k''\lvert B\rvert + rr \ge k\lvert B\rvert`$ となって
-  $`l - \lvert G\rvert \lt k\lvert B\rvert`$ に矛盾する。
+- If $`k'' \lt k - 1`$, then $`k'' + 1 \le k - 1`$, hence
+  $`(k''+1)\lvert B\rvert \le (k-1)\lvert B\rvert`$, that is,
+  $`k''\lvert B\rvert + \lvert B\rvert \le (k-1)\lvert B\rvert`$.
+  Since $`rr \lt \lvert B\rvert`$, we get
+  $`l - \lvert G\rvert = k''\lvert B\rvert + rr \lt (k-1)\lvert B\rvert \le (k-1)\lvert B\rvert + r'`$,
+  contradicting $`p^{*} \lt l`$.
+- If $`k - 1 \lt k''`$, then $`k \le k''`$, hence $`k\lvert B\rvert \le k''\lvert B\rvert`$ and
+  $`l - \lvert G\rvert = k''\lvert B\rvert + rr \ge k\lvert B\rvert`$, contradicting
+  $`l - \lvert G\rvert \lt k\lvert B\rvert`$.
 
-よって $`k'' = k - 1`$ である。すると $`p^{*} \lt l`$ は
-$`(k-1)\lvert B\rvert + r' \lt (k-1)\lvert B\rvert + rr`$、すなわち $`r' \lt rr`$ を与える。
-[T.copyExp_getD_copy](Column-2.md#t-copyExp_getD_copy) より
-$`E_{0,l} = B_{0,rr} + (k-1)d_0`$ であり、$`(\dagger)`$ より $`v_0 + d_0 \le B_{0,rr}`$ であるから
+Hence $`k'' = k - 1`$. Then $`p^{*} \lt l`$ gives
+$`(k-1)\lvert B\rvert + r' \lt (k-1)\lvert B\rvert + rr`$, that is, $`r' \lt rr`$.
+By [T.copyExp_getD_copy](Column-2.md#t-copyExp_getD_copy) we have
+$`E_{0,l} = B_{0,rr} + (k-1)d_0`$, and $`(\dagger)`$ gives $`v_0 + d_0 \le B_{0,rr}`$, hence
 
 ```math
 B_{0,0} + k d_0 = v_0 + k d_0 = (v_0 + d_0) + (k-1)d_0 \le B_{0,rr} + (k-1)d_0 = E_{0,l} .
 ```
 
-**第 4 の条件。** $`E_{1,p^{*}} = B_{1,r'}`$ であるから、示すべきは
-$`B_{1,0} = w_0 \le B_{1,r'} + 1`$ である。これは (hclimb) を $`r'`$ に適用したものであり、
-その前提は $`r' \lt \lvert B\rvert`$、$`(\ddagger)`$、$`(\dagger)`$ で与えられている。∎
+**The fourth condition.** Since $`E_{1,p^{*}} = B_{1,r'}`$, what has to be shown is
+$`B_{1,0} = w_0 \le B_{1,r'} + 1`$. This is (hclimb) applied to $`r'`$, whose
+premises are given by $`r' \lt \lvert B\rvert`$, $`(\ddagger)`$ and $`(\dagger)`$. ∎
 
 <a id="t-hostM_getD_lp"></a>
-## 定理: 連結列 $`G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$ の末尾の成分 (T.hostM_getD_lp)
+## Theorem: the last entry of the concatenation $`G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$ (T.hostM_getD_lp)
 
-### 定理
+### Theorem
 
 ```math
 \bigl(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)\bigr)
   \bigl\langle \lvert G\rvert + \lvert B\rvert\bigr\rangle = \ell .
 ```
 
-### 証明
+### Proof
 
-$`\lvert G \mathbin{+\!\!+} B\rvert = \lvert G\rvert + \lvert B\rvert`$ であるから
-$`\lvert G \mathbin{+\!\!+} B\rvert \le \lvert G\rvert + \lvert B\rvert`$ であり、
-[T.getD_append_right](Column-2.md#t-getD_append_right) を $`G := G \mathbin{+\!\!+} B`$、$`X := (\ell)`$ に適用して
+Since $`\lvert G \mathbin{+\!\!+} B\rvert = \lvert G\rvert + \lvert B\rvert`$, we have
+$`\lvert G \mathbin{+\!\!+} B\rvert \le \lvert G\rvert + \lvert B\rvert`$, so applying
+[T.getD_append_right](Column-2.md#t-getD_append_right) with $`G := G \mathbin{+\!\!+} B`$ and $`X := (\ell)`$ gives
 
 ```math
 \bigl((G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)\bigr)\bigl\langle \lvert G\rvert + \lvert B\rvert\bigr\rangle
@@ -324,30 +324,30 @@ $`\lvert G \mathbin{+\!\!+} B\rvert \le \lvert G\rvert + \lvert B\rvert`$ であ
   = (\ell)\langle 0\rangle
 ```
 
-を得る。$`0 \lt 1 = \lvert (\ell)\rvert`$ であるから $`(\ell)\langle 0\rangle = \ell`$ である。∎
+Since $`0 \lt 1 = \lvert (\ell)\rvert`$, we have $`(\ell)\langle 0\rangle = \ell`$. ∎
 
 <a id="t-r1ok_Pred"></a>
-## 定理: 行 1 の規律は前者に遺伝する (T.r1ok_Pred)
+## Theorem: the row 1 discipline is inherited by the predecessor (T.r1ok_Pred)
 
-### 定理
+### Theorem
 
-$`\mathrm{r1ok}(M)`$ ならば $`\mathrm{r1ok}(\mathrm{Pred}\,M)`$（[D.Pred](Pss.md#d-Pred)）。
+If $`\mathrm{r1ok}(M)`$, then $`\mathrm{r1ok}(\mathrm{Pred}\,M)`$ ([D.Pred](Pss.md#d-Pred)).
 
-### 証明
+### Proof
 
-$`\mathrm{Pred}`$ の定義（D.Pred）の場合分けによる。
+By the case distinction in the definition of $`\mathrm{Pred}`$ (D.Pred).
 
-- $`\lvert M\rvert \le 1`$ のとき。$`\mathrm{Pred}\,M = M`$ であり、仮定そのものである。
-- $`\lvert M\rvert \ge 2`$ のとき。$`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ であり、
-  [T.r1ok_dropLast](Column-2.md#t-r1ok_dropLast) を適用すればよい。∎
+- The case $`\lvert M\rvert \le 1`$. Then $`\mathrm{Pred}\,M = M`$, and the claim is the hypothesis itself.
+- The case $`\lvert M\rvert \ge 2`$. Then $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$, and it suffices to apply
+  [T.r1ok_dropLast](Column-2.md#t-r1ok_dropLast). ∎
 
 <a id="t-climb_bound"></a>
-## 定理: ブロック先頭の行 1 の値の上界 (T.climb_bound)
+## Theorem: an upper bound on the row 1 value at the head of a block (T.climb_bound)
 
-### 定理
+### Theorem
 
-$`M, G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、
-$`B := (v_0,w_0) :: R`$ とおく。次を仮定する。
+Let $`M, G, R \in \mathrm{PairSeq}`$, $`v_0, w_0, d_0 \in \mathbb{N}`$ and $`\ell \in \mathbb{N}\times\mathbb{N}`$, and put
+$`B := (v_0,w_0) :: R`$. Assume the following.
 
 ```math
 \begin{aligned}
@@ -363,118 +363,118 @@ $`B := (v_0,w_0) :: R`$ とおく。次を仮定する。
 \end{aligned}
 ```
 
-（$`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1)）
+($`\to^M_1`$ [D.nextrel1](Pss.md#d-nextrel1))
 
-このとき $`w_0 \le B_{1,r'} + 1`$。
+Then $`w_0 \le B_{1,r'} + 1`$.
 
-### 証明
+### Proof
 
-$`r'`$ が $`0`$ かどうかで場合分けする。
+Distinguish cases according to whether $`r'`$ is $`0`$.
 
-**(a) $`r' = 0`$ のとき。** $`B = (v_0,w_0) :: R`$ より $`B\langle 0\rangle = (v_0,w_0)`$、
-すなわち $`B_{1,0} = w_0`$ である。よって示すべきは $`w_0 \le w_0 + 1`$ であり、これは成り立つ。
+**(a) The case $`r' = 0`$.** From $`B = (v_0,w_0) :: R`$ we have $`B\langle 0\rangle = (v_0,w_0)`$,
+that is, $`B_{1,0} = w_0`$. So what has to be shown is $`w_0 \le w_0 + 1`$, which holds.
 
-**(b) $`0 \lt r'`$ のとき。**
-以下 (hM) により $`M = G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$ と書く。
-[T.hostM_length](Column-2.md#t-hostM_length) より
-$`\lvert M\rvert = \lvert G\rvert + \lvert B\rvert + 1`$ であり、したがって
+**(b) The case $`0 \lt r'`$.**
+In what follows we write $`M = G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$, by (hM).
+By [T.hostM_length](Column-2.md#t-hostM_length) we have
+$`\lvert M\rvert = \lvert G\rvert + \lvert B\rvert + 1`$, hence
 
 ```math
 \lvert M\rvert - 1 = \lvert G\rvert + \lvert B\rvert .
 ```
 
-まず 2 つの成分を計算する。$`M_{0,j}`$ の定義（D.entry）と
-[T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk)（$`r' \lt \lvert B\rvert`$）より
+First we compute two entries. By the definition of $`M_{0,j}`$ (D.entry) and
+[T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) (using $`r' \lt \lvert B\rvert`$),
 
 ```math
 M_{0,\lvert G\rvert + r'} = B_{0,r'} = v_0 + d_0 - 1 ,
 ```
 
-[T.hostM_getD_lp](#t-hostM_getD_lp) と (hlp1) より
+and by [T.hostM_getD_lp](#t-hostM_getD_lp) and (hlp1),
 
 ```math
 M_{0,\lvert G\rvert + \lvert B\rvert} = \ell_1 = v_0 + d_0 .
 ```
 
-**行 0 の親子関係。** $`\lvert G\rvert + r' \to^M_0 \lvert G\rvert + \lvert B\rvert`$（[D.nextrel0](Pss.md#d-nextrel0)）を示す。
-$`\to^M_0`$ の定義（D.nextrel0）の 5 条件を確かめる。
+**The row 0 parent relation.** We show $`\lvert G\rvert + r' \to^M_0 \lvert G\rvert + \lvert B\rvert`$ ([D.nextrel0](Pss.md#d-nextrel0)).
+We check the five conditions of the definition of $`\to^M_0`$ (D.nextrel0).
 
-**(1)** $`r' \lt \lvert B\rvert`$ より
-$`\lvert G\rvert + r' \lt \lvert G\rvert + \lvert B\rvert \lt \lvert M\rvert`$。
+**(1)** From $`r' \lt \lvert B\rvert`$ we get
+$`\lvert G\rvert + r' \lt \lvert G\rvert + \lvert B\rvert \lt \lvert M\rvert`$.
 
-**(2)** $`\lvert G\rvert + \lvert B\rvert \lt \lvert G\rvert + \lvert B\rvert + 1 = \lvert M\rvert`$。
+**(2)** $`\lvert G\rvert + \lvert B\rvert \lt \lvert G\rvert + \lvert B\rvert + 1 = \lvert M\rvert`$.
 
-**(3)** $`r' \lt \lvert B\rvert`$ より $`\lvert G\rvert + r' \lt \lvert G\rvert + \lvert B\rvert`$。
+**(3)** From $`r' \lt \lvert B\rvert`$ we get $`\lvert G\rvert + r' \lt \lvert G\rvert + \lvert B\rvert`$.
 
-**(4)** (hd0) より $`d_0 \ge 1`$ であるから
-$`M_{0,\lvert G\rvert + r'} = v_0 + d_0 - 1 \lt v_0 + d_0 = M_{0,\lvert G\rvert + \lvert B\rvert}`$。
+**(4)** By (hd0) we have $`d_0 \ge 1`$, hence
+$`M_{0,\lvert G\rvert + r'} = v_0 + d_0 - 1 \lt v_0 + d_0 = M_{0,\lvert G\rvert + \lvert B\rvert}`$.
 
-**(5)** $`\lvert G\rvert + r' \lt j`$ かつ $`j \lt \lvert G\rvert + \lvert B\rvert`$ をみたす $`j`$ を取る。
-$`rr := j - \lvert G\rvert`$ とおくと $`j = \lvert G\rvert + rr`$、$`r' \lt rr`$、$`rr \lt \lvert B\rvert`$ である。
-[T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) より $`M_{0,j} = B_{0,rr}`$ であり、
-(hafter) より $`v_0 + d_0 \le B_{0,rr}`$、すなわち
-$`M_{0,\lvert G\rvert + \lvert B\rvert} \le M_{0,j}`$。
+**(5)** Take $`j`$ with $`\lvert G\rvert + r' \lt j`$ and $`j \lt \lvert G\rvert + \lvert B\rvert`$.
+Put $`rr := j - \lvert G\rvert`$; then $`j = \lvert G\rvert + rr`$, $`r' \lt rr`$ and $`rr \lt \lvert B\rvert`$.
+By [T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) we have $`M_{0,j} = B_{0,rr}`$, and
+(hafter) gives $`v_0 + d_0 \le B_{0,rr}`$, that is,
+$`M_{0,\lvert G\rvert + \lvert B\rvert} \le M_{0,j}`$.
 
-**行 0 の祖先関係。** $`\le^M_0`$（[D.le0](Pss.md#d-le0)）の定義の 3 条件のうち (1), (2) は上の (1), (2) であり、
-(3) は 1 歩の $`\to^M_0`$ からなる鎖として得られる。よって
+**The row 0 ancestor relation.** Of the three conditions of the definition of $`\le^M_0`$ ([D.le0](Pss.md#d-le0)), (1) and (2) are (1) and (2) above, and
+(3) is obtained as a chain consisting of a single $`\to^M_0`$ step. Hence
 
 ```math
 \lvert G\rvert + r' \le^M_0 \lvert G\rvert + \lvert B\rvert = \lvert M\rvert - 1 .
 ```
 
-**最大性の適用。** (hnl1) すなわち $`\lvert G\rvert \to^M_1 (\lvert M\rvert - 1)`$ の
-$`\to^M_1`$ の定義（D.nextrel1）の条件 (6) を $`j := \lvert G\rvert + r'`$ に適用する。
-その前提は $`\lvert G\rvert \lt \lvert G\rvert + r'`$（$`0 \lt r'`$ による）と、
-いま示した $`\lvert G\rvert + r' \le^M_0 \lvert M\rvert - 1`$ である。よって
+**Applying maximality.** We apply condition (6) of the definition of $`\to^M_1`$ (D.nextrel1) for
+(hnl1), that is, for $`\lvert G\rvert \to^M_1 (\lvert M\rvert - 1)`$, with $`j := \lvert G\rvert + r'`$.
+Its premises are $`\lvert G\rvert \lt \lvert G\rvert + r'`$ (by $`0 \lt r'`$) and
+$`\lvert G\rvert + r' \le^M_0 \lvert M\rvert - 1`$, just proved. Hence
 
 ```math
 M_{1,\lvert M\rvert - 1} \le M_{1,\lvert G\rvert + r'} .
 ```
 
-$`M_{1,j}`$ の定義（D.entry）と [T.hostM_getD_lp](#t-hostM_getD_lp) より
-$`M_{1,\lvert M\rvert - 1} = M_{1,\lvert G\rvert + \lvert B\rvert} = \ell_2`$ であり、
-[T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) より $`M_{1,\lvert G\rvert + r'} = B_{1,r'}`$ である。
-したがって $`\ell_2 \le B_{1,r'}`$ であり、(hwlt) の $`w_0 \lt \ell_2`$ と合わせて
+By the definition of $`M_{1,j}`$ (D.entry) and [T.hostM_getD_lp](#t-hostM_getD_lp) we have
+$`M_{1,\lvert M\rvert - 1} = M_{1,\lvert G\rvert + \lvert B\rvert} = \ell_2`$, and by
+[T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) we have $`M_{1,\lvert G\rvert + r'} = B_{1,r'}`$.
+Therefore $`\ell_2 \le B_{1,r'}`$, and together with $`w_0 \lt \ell_2`$ from (hwlt),
 
 ```math
 w_0 \lt \ell_2 \le B_{1,r'} \le B_{1,r'} + 1 . \qquad \blacksquare
 ```
 
 <a id="t-r1ok_oper"></a>
-## 定理: 行 1 の規律は展開で保たれる (T.r1ok_oper)
+## Theorem: the row 1 discipline is preserved by expansion (T.r1ok_oper)
 
-### 定理
+### Theorem
 
-$`1 \le n`$、$`\mathrm{r1ok}(M)`$、$`\mathrm{steps}_1(M)`$（[D.steps1](Seqlex.md#d-steps1)）ならば
-$`\mathrm{r1ok}(M[n])`$（[D.oper](Pss.md#d-oper)）。
+If $`1 \le n`$, $`\mathrm{r1ok}(M)`$ and $`\mathrm{steps}_1(M)`$ ([D.steps1](Seqlex.md#d-steps1)), then
+$`\mathrm{r1ok}(M[n])`$ ([D.oper](Pss.md#d-oper)).
 
-### 証明
+### Proof
 
-$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）とおく。
-$`M[n]`$ の定義（D.oper）の 4 つの分岐で場合分けする。
+Put $`j_1 := \lvert M\rvert - 1`$ and $`i_1 := \mathrm{idx}_1(M, j_1)`$ ([D.idx1](Pss.md#d-idx1)).
+Distinguish cases according to the four branches of the definition of $`M[n]`$ (D.oper).
 
-**(a) $`j_1 = 0`$ のとき。**
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`M[n] = M`$ であり、
-結論は仮定 $`\mathrm{r1ok}(M)`$ そのものである。
+**(a) The case $`j_1 = 0`$.**
+By [T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) we have $`M[n] = M`$, and
+the conclusion is the hypothesis $`\mathrm{r1ok}(M)`$ itself.
 
-**(b) $`j_1 \ne 0`$ かつ $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ のとき。**
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より
-$`M[n] = \mathrm{Pred}\,M`$ であり、
-[T.r1ok_Pred](#t-r1ok_Pred) を仮定 $`\mathrm{r1ok}(M)`$ に適用すればよい。
+**(b) The case $`j_1 \ne 0`$ and $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$.**
+By [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) we have
+$`M[n] = \mathrm{Pred}\,M`$, so it suffices to apply
+[T.r1ok_Pred](#t-r1ok_Pred) to the hypothesis $`\mathrm{r1ok}(M)`$.
 
-**(c) $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
-$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）のとき。**
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
-$`M[n] = \mathrm{Pred}\,M`$ であり、[T.r1ok_Pred](#t-r1ok_Pred) を適用すればよい。
+**(c) The case $`j_1 \ne 0`$, $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ and
+$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ ([D.hasParent](Pss.md#d-hasParent)).**
+By [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) we have
+$`M[n] = \mathrm{Pred}\,M`$, so it suffices to apply [T.r1ok_Pred](#t-r1ok_Pred).
 
-**(d) $`j_1 \ne 0`$、$`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$、かつ
-$`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-$`1 \lt \lvert M\rvert`$ である。実際 $`\lvert M\rvert \le 1`$ とすると、自然数の減法は
-$`0`$ で切り捨てるから $`j_1 = \lvert M\rvert - 1 = 0`$ となり、この場合の仮定
-$`j_1 \ne 0`$ に反する。
-[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を適用して、
-$`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ で
-次をみたすものを得る。$`B := (v_0,w_0) :: R`$ とおく。
+**(d) The case $`j_1 \ne 0`$, $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ and
+$`\mathrm{hasParent}(M, i_1, j_1)`$.**
+We have $`1 \lt \lvert M\rvert`$. Indeed, if $`\lvert M\rvert \le 1`$, then, since subtraction of natural numbers is
+truncated at $`0`$, we would have $`j_1 = \lvert M\rvert - 1 = 0`$, contradicting the hypothesis
+$`j_1 \ne 0`$ of this case.
+Applying [T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks), we obtain
+$`G, R \in \mathrm{PairSeq}`$, $`v_0, w_0, d_0 \in \mathbb{N}`$ and $`\ell \in \mathbb{N}\times\mathbb{N}`$
+satisfying the following. Put $`B := (v_0,w_0) :: R`$.
 
 ```math
 \begin{aligned}
@@ -487,270 +487,269 @@ $`G, R \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \m
 \end{aligned}
 ```
 
-（[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) の 6 つの主張のうち、
-以下で用いる 4 つを同じ番号で挙げた。また $`\mathrm{copyExp}`$ の定義（D.copyExp）により
-(2) の右辺は $`\mathrm{copyExp}(G,B,d_0,n)`$ である。）
-(1) より $`\mathrm{r1ok}(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$ と
-$`\mathrm{steps}_1(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$ が仮定から従う。
+(Of the six assertions of [T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks),
+the four used below are listed with the same numbering. Also, by the definition of $`\mathrm{copyExp}`$ (D.copyExp),
+the right-hand side of (2) is $`\mathrm{copyExp}(G,B,d_0,n)`$.)
+By (1), the hypotheses give $`\mathrm{r1ok}(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$ and
+$`\mathrm{steps}_1(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$.
 
-**段差条件。** $`r + 1 \lt \lvert B\rvert`$ をみたす $`r`$ に対し
-$`B_{0,r+1} \le B_{0,r} + 1`$ を示す。
-[T.hostM_length](Column-2.md#t-hostM_length) より
-$`\lvert G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)\rvert = \lvert G\rvert + \lvert B\rvert + 1`$ であり、
-$`r + 1 \lt \lvert B\rvert`$ より
-$`(\lvert G\rvert + r) + 1 \lt \lvert G\rvert + \lvert B\rvert + 1`$ である。
-[T.steps1_iff](Seqlex.md#t-steps1_iff) を
-$`G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$ の添字 $`\lvert G\rvert + r`$ に適用して
+**The step condition.** For $`r`$ with $`r + 1 \lt \lvert B\rvert`$ we show
+$`B_{0,r+1} \le B_{0,r} + 1`$.
+By [T.hostM_length](Column-2.md#t-hostM_length) we have
+$`\lvert G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)\rvert = \lvert G\rvert + \lvert B\rvert + 1`$, and
+$`r + 1 \lt \lvert B\rvert`$ gives
+$`(\lvert G\rvert + r) + 1 \lt \lvert G\rvert + \lvert B\rvert + 1`$.
+Applying [T.steps1_iff](Seqlex.md#t-steps1_iff) to
+$`G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$ at the index $`\lvert G\rvert + r`$ gives
 
 ```math
 \bigl(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)\bigr)_{0,\ \lvert G\rvert + (r+1)}
   \le \bigl(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)\bigr)_{0,\ \lvert G\rvert + r} + 1
 ```
 
-を得る。$`r + 1 \lt \lvert B\rvert`$ と $`r \lt \lvert B\rvert`$ に
-[T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) を適用すると、これは
-$`B_{0,r+1} \le B_{0,r} + 1`$ である。
+Applying [T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) to $`r + 1 \lt \lvert B\rvert`$ and
+$`r \lt \lvert B\rvert`$, this is
+$`B_{0,r+1} \le B_{0,r} + 1`$.
 
-**末尾の段差条件。** $`\ell_1 \le B_{0,\lvert B\rvert - 1} + 1`$ を示す。
-$`0 \lt \lvert B\rvert`$ であるから
+**The step condition at the end.** We show $`\ell_1 \le B_{0,\lvert B\rvert - 1} + 1`$.
+Since $`0 \lt \lvert B\rvert`$, we have
 
 ```math
 \bigl(\lvert G\rvert + (\lvert B\rvert - 1)\bigr) + 1 = \lvert G\rvert + \lvert B\rvert
   \lt \lvert G\rvert + \lvert B\rvert + 1
 ```
 
-である。
-[T.steps1_iff](Seqlex.md#t-steps1_iff) を添字 $`\lvert G\rvert + (\lvert B\rvert - 1)`$ に適用して
+Applying [T.steps1_iff](Seqlex.md#t-steps1_iff) at the index $`\lvert G\rvert + (\lvert B\rvert - 1)`$ gives
 
 ```math
 \bigl(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)\bigr)_{0,\ \lvert G\rvert + \lvert B\rvert}
   \le \bigl(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)\bigr)_{0,\ \lvert G\rvert + (\lvert B\rvert - 1)} + 1
 ```
 
-を得る。左辺は [T.hostM_getD_lp](#t-hostM_getD_lp) より $`\ell_1`$、
-右辺は [T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk)（$`\lvert B\rvert - 1 \lt \lvert B\rvert`$）より
-$`B_{0,\lvert B\rvert - 1} + 1`$ である。
+By [T.hostM_getD_lp](#t-hostM_getD_lp) the left-hand side is $`\ell_1`$, and by
+[T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) (using $`\lvert B\rvert - 1 \lt \lvert B\rvert`$) the right-hand side is
+$`B_{0,\lvert B\rvert - 1} + 1`$.
 
-**組み立て。** [T.r1ok_copyExp](Column-2.md#t-r1ok_copyExp) を
-$`G, B, \ell, n, d_0`$ に適用する。仮定 (hr) は
-$`\mathrm{r1ok}(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$ である。仮定 (hmin) を示すために
-$`0 \lt k`$、$`k \lt n`$、$`q \lt \lvert B\rvert`$、$`\forall r \lt q,\ B_{0,q} \le B_{0,r}`$、
-$`0 \lt B_{0,q} + k d_0`$ を取り、(5) の選言で場合分けする。
+**Assembling.** We apply [T.r1ok_copyExp](Column-2.md#t-r1ok_copyExp) to
+$`G, B, \ell, n, d_0`$. Its hypothesis (hr) is
+$`\mathrm{r1ok}(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$. To prove its hypothesis (hmin), take
+$`0 \lt k`$, $`k \lt n`$, $`q \lt \lvert B\rvert`$, $`\forall r \lt q,\ B_{0,q} \le B_{0,r}`$ and
+$`0 \lt B_{0,q} + k d_0`$, and distinguish cases according to the disjunction (5).
 
-**第 1 の選言 $`d_0 = 0 \wedge i_1 = 0`$ のとき。**
-[T.r1ok_min_d0zero](#t-r1ok_min_d0zero) を (3) と
-$`\mathrm{r1ok}(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$ に適用すればよい。
+**The case of the first disjunct $`d_0 = 0 \wedge i_1 = 0`$.**
+It suffices to apply [T.r1ok_min_d0zero](#t-r1ok_min_d0zero) to (3) and
+$`\mathrm{r1ok}(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell))`$.
 
-**第 2 の選言のとき。** すなわち
+**The case of the second disjunct.** That is, the case where
 
 ```math
 0 \lt d_0 \ \wedge\ w_0 \lt \ell_2 \ \wedge\ \ell_1 = v_0 + d_0
   \ \wedge\ \lvert G\rvert \to^M_1 j_1
 ```
 
-が成り立つとき。[T.r1ok_min_d0pos](#t-r1ok_min_d0pos) を適用する。その仮定 (hdom) は (3)、
-(hd0), (hlp) はこの選言の第 1・第 3 成分、(hstep), (hlpstep) は上で示した
-2 つの段差条件である。残る仮定 (hclimb) は、$`r' \lt \lvert B\rvert`$、
-$`B_{0,r'} = v_0 + d_0 - 1`$、および
+holds. We apply [T.r1ok_min_d0pos](#t-r1ok_min_d0pos). Its hypothesis (hdom) is (3);
+(hd0) and (hlp) are the first and third conjuncts of this disjunct; (hstep) and (hlpstep) are the
+two step conditions proved above. The remaining hypothesis (hclimb) is the statement that, assuming
+$`r' \lt \lvert B\rvert`$, $`B_{0,r'} = v_0 + d_0 - 1`$ and
 
 ```math
 \forall rr,\ \bigl(r' \lt rr \wedge rr \lt \lvert B\rvert\bigr) \to v_0 + d_0 \le B_{0,rr}
 ```
 
-を仮定して $`w_0 \le B_{1,r'} + 1`$ を導くものであり、
-[T.climb_bound](#t-climb_bound) を (1) と、この選言の第 1・第 2・第 3・第 4 成分に
-適用して得られる。
+one has $`w_0 \le B_{1,r'} + 1`$; it is obtained by applying
+[T.climb_bound](#t-climb_bound) to (1) and to the first, second, third and fourth conjuncts of
+this disjunct.
 
-以上より [T.r1ok_copyExp](Column-2.md#t-r1ok_copyExp) が使えて
-$`\mathrm{r1ok}(\mathrm{copyExp}(G,B,d_0,n))`$ を得る。(2) よりこれは
-$`\mathrm{r1ok}(M[n])`$ である。∎
+It follows that [T.r1ok_copyExp](Column-2.md#t-r1ok_copyExp) applies and gives
+$`\mathrm{r1ok}(\mathrm{copyExp}(G,B,d_0,n))`$. By (2) this is
+$`\mathrm{r1ok}(M[n])`$. ∎
 
 <a id="t-r1ok_ST_PS"></a>
-## 定理: 標準形は $`\mathrm{r1ok}`$ をみたす (T.r1ok_ST_PS)
+## Theorem: standard forms satisfy $`\mathrm{r1ok}`$ (T.r1ok_ST_PS)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss.md#d-ST_PS)）ならば $`\mathrm{r1ok}(M)`$。
+If $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)), then $`\mathrm{r1ok}(M)`$.
 
-### 証明
+### Proof
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
+Induction on the derivation of $`\mathrm{ST\_PS}`$. The induction predicate is
 
 ```math
 \Phi(M) :\equiv \mathrm{r1ok}(M).
 ```
 
-- **基底段**（規則 (diag)）：$`M = \Delta_0^v`$（[D.diagSeq](Pss.md#d-diagSeq)）である。
-  [T.r1ok_diagSeq](Column-2.md#t-r1ok_diagSeq) が $`\Phi(\Delta_0^v)`$ そのものである。
+- **Base case** (rule (diag)): $`M = \Delta_0^v`$ ([D.diagSeq](Pss.md#d-diagSeq)).
+  [T.r1ok_diagSeq](Column-2.md#t-r1ok_diagSeq) is exactly $`\Phi(\Delta_0^v)`$.
 
-- **帰納段**（規則 (oper)）：$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$ とする。帰納法の仮定は
-  $`\Phi(N)`$、すなわち $`\mathrm{r1ok}(N)`$ であり、示すべきは $`\mathrm{r1ok}(N[n])`$ である。
-  [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) を $`N \in \mathrm{ST\_PS}`$ に適用して
-  $`\mathrm{blockok}(0, N)`$（[D.blockok](Seqlex.md#d-blockok)）を得る。$`\mathrm{blockok}`$ の定義（D.blockok）は
-  3 つの連言であり、その第 3 連言子は $`\mathrm{steps}_1(N)`$ である。
-  [T.r1ok_oper](#t-r1ok_oper) を $`1 \le n`$、$`\mathrm{r1ok}(N)`$、$`\mathrm{steps}_1(N)`$ に
-  適用すれば $`\mathrm{r1ok}(N[n])`$ を得る。∎
+- **Inductive step** (rule (oper)): let $`N \in \mathrm{ST\_PS}`$ and $`1 \le n`$. The induction hypothesis is
+  $`\Phi(N)`$, that is, $`\mathrm{r1ok}(N)`$, and what has to be shown is $`\mathrm{r1ok}(N[n])`$.
+  Applying [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) to $`N \in \mathrm{ST\_PS}`$ gives
+  $`\mathrm{blockok}(0, N)`$ ([D.blockok](Seqlex.md#d-blockok)). The definition of $`\mathrm{blockok}`$ (D.blockok) is
+  a conjunction of three statements, whose third conjunct is $`\mathrm{steps}_1(N)`$.
+  Applying [T.r1ok_oper](#t-r1ok_oper) to $`1 \le n`$, $`\mathrm{r1ok}(N)`$ and $`\mathrm{steps}_1(N)`$
+  gives $`\mathrm{r1ok}(N[n])`$. ∎
 
 <a id="t-nextrel0_bound"></a>
-## 定理: 行 0 の親子の行き先は範囲内 (T.nextrel0_bound)
+## Theorem: the target of a row 0 parent step is within range (T.nextrel0_bound)
 
-### 定理
+### Theorem
 
-$`a \to^M_0 b`$ ならば $`b \lt \lvert M\rvert`$。
+If $`a \to^M_0 b`$, then $`b \lt \lvert M\rvert`$.
 
-### 証明
+### Proof
 
-$`\to^M_0`$ の定義（D.nextrel0）の第 2 条件そのものである。∎
+This is exactly the second condition of the definition of $`\to^M_0`$ (D.nextrel0). ∎
 
 <a id="t-le0_le"></a>
-## 定理: 行 0 の祖先関係は添字の大小を含む (T.le0_le)
+## Theorem: the row 0 ancestor relation is contained in the index order (T.le0_le)
 
-### 定理
+### Theorem
 
-$`a \le^M_0 b`$ ならば $`a \le b`$。
+If $`a \le^M_0 b`$, then $`a \le b`$.
 
-### 証明
+### Proof
 
-$`\le^M_0`$ の定義（D.le0）の第 3 条件により $`a \mathbin{(\to^M_0)^{*}} b`$ である。
-鎖 $`a \mathbin{(\to^M_0)^{*}} b`$ の構成に関する帰納法。帰納法の述語は
+By the third condition of the definition of $`\le^M_0`$ (D.le0) we have $`a \mathbin{(\to^M_0)^{*}} b`$.
+Induction on the construction of the chain $`a \mathbin{(\to^M_0)^{*}} b`$. The induction predicate is
 
 ```math
 \Phi(j) :\equiv a \le j .
 ```
 
-- **基底段**（$`j = a`$、鎖の長さ $`0`$）：$`a \le a`$ は $`\le`$ の反射性による。
+- **Base case** ($`j = a`$, chain of length $`0`$): $`a \le a`$ holds by reflexivity of $`\le`$.
 
-- **帰納段**（$`a \mathbin{(\to^M_0)^{*}} y`$ と $`y \to^M_0 z`$ から $`a \mathbin{(\to^M_0)^{*}} z`$）：
-  帰納法の仮定は $`\Phi(y)`$、すなわち $`a \le y`$ である。
-  [T.nextrel0_lt](Column.md#t-nextrel0_lt) より $`y \lt z`$ であるから $`a \le y \le z`$、
-  すなわち $`\Phi(z)`$。∎
+- **Inductive step** (from $`a \mathbin{(\to^M_0)^{*}} y`$ and $`y \to^M_0 z`$ to $`a \mathbin{(\to^M_0)^{*}} z`$):
+  the induction hypothesis is $`\Phi(y)`$, that is, $`a \le y`$.
+  By [T.nextrel0_lt](Column.md#t-nextrel0_lt) we have $`y \lt z`$, hence $`a \le y \le z`$,
+  that is, $`\Phi(z)`$. ∎
 
 <a id="d-z0ok"></a>
-## 定義: 行 0 が 0 の列の規律 (D.z0ok)
+## Definition: the discipline of columns whose row 0 is 0 (D.z0ok)
 
-$`M \in \mathrm{PairSeq}`$ に対し
+For $`M \in \mathrm{PairSeq}`$,
 
 ```math
 \mathrm{z0ok}(M) :\iff \forall j,\ j \lt \lvert M\rvert \to \bigl(M_{0,j} = 0 \to M_{1,j} = 0\bigr).
 ```
 
-すなわち行 $`0`$ の値が $`0`$ である列は行 $`1`$ の値も $`0`$ である、と読む。
+That is, it reads: a column whose value in row $`0`$ is $`0`$ has value $`0`$ in row $`1`$ as well.
 
 <a id="t-z0ok_diagSeq"></a>
-## 定理: 対角列は $`\mathrm{z0ok}`$ をみたす (T.z0ok_diagSeq)
+## Theorem: the diagonal sequence satisfies $`\mathrm{z0ok}`$ (T.z0ok_diagSeq)
 
-### 定理
+### Theorem
 
-任意の $`v \in \mathbb{N}`$ に対し $`\mathrm{z0ok}(\Delta_0^v)`$。
+For every $`v \in \mathbb{N}`$, $`\mathrm{z0ok}(\Delta_0^v)`$.
 
-### 証明
+### Proof
 
-$`j`$ を取り $`j \lt \lvert \Delta_0^v\rvert`$、$`(\Delta_0^v)_{0,j} = 0`$ とする。
-[T.diagSeq0_length](Column-2.md#t-diagSeq0_length) より $`\lvert \Delta_0^v\rvert = v + 1`$ であるから
-$`j \lt v + 1`$ であり、[T.diagSeq0_getD](Column-2.md#t-diagSeq0_getD) より
-$`\Delta_0^v\langle j\rangle = (j, j)`$ である。$`M_{i,j}`$ の定義（D.entry）により
+Take $`j`$ with $`j \lt \lvert \Delta_0^v\rvert`$ and $`(\Delta_0^v)_{0,j} = 0`$.
+By [T.diagSeq0_length](Column-2.md#t-diagSeq0_length) we have $`\lvert \Delta_0^v\rvert = v + 1`$, hence
+$`j \lt v + 1`$, and by [T.diagSeq0_getD](Column-2.md#t-diagSeq0_getD) we have
+$`\Delta_0^v\langle j\rangle = (j, j)`$. By the definition of $`M_{i,j}`$ (D.entry),
 
 ```math
 (\Delta_0^v)_{0,j} = j, \qquad (\Delta_0^v)_{1,j} = j
 ```
 
-である。仮定 $`(\Delta_0^v)_{0,j} = 0`$ は $`j = 0`$ を与えるから、
-$`(\Delta_0^v)_{1,j} = j = 0`$ である。∎
+The hypothesis $`(\Delta_0^v)_{0,j} = 0`$ gives $`j = 0`$, hence
+$`(\Delta_0^v)_{1,j} = j = 0`$. ∎
 
 <a id="t-z0ok_take"></a>
-## 定理: 前部分列は $`\mathrm{z0ok}`$ をみたす (T.z0ok_take)
+## Theorem: prefixes satisfy $`\mathrm{z0ok}`$ (T.z0ok_take)
 
-### 定理
+### Theorem
 
-$`\mathrm{z0ok}(M)`$ ならば、任意の $`m \in \mathbb{N}`$ に対し
-$`\mathrm{z0ok}(\mathrm{take}_m M)`$。
+If $`\mathrm{z0ok}(M)`$, then for every $`m \in \mathbb{N}`$ we have
+$`\mathrm{z0ok}(\mathrm{take}_m M)`$.
 
-### 証明
+### Proof
 
-$`j`$ を取り $`j \lt \lvert \mathrm{take}_m M\rvert`$、$`(\mathrm{take}_m M)_{0,j} = 0`$ とする。
-$`\lvert \mathrm{take}_m M\rvert = \min(m, \lvert M\rvert)`$ であるから
-$`j \lt m`$ かつ $`j \lt \lvert M\rvert`$ である。
+Take $`j`$ with $`j \lt \lvert \mathrm{take}_m M\rvert`$ and $`(\mathrm{take}_m M)_{0,j} = 0`$.
+Since $`\lvert \mathrm{take}_m M\rvert = \min(m, \lvert M\rvert)`$, we have
+$`j \lt m`$ and $`j \lt \lvert M\rvert`$.
 
-$`j \lt m`$ に [T.getD_take](Column-2.md#t-getD_take) を適用すると
-$`(\mathrm{take}_m M)\langle j\rangle = M\langle j\rangle`$ であり、したがって
+Applying [T.getD_take](Column-2.md#t-getD_take) to $`j \lt m`$ gives
+$`(\mathrm{take}_m M)\langle j\rangle = M\langle j\rangle`$, hence
 
 ```math
 (\mathrm{take}_m M)_{0,j} = M_{0,j}, \qquad (\mathrm{take}_m M)_{1,j} = M_{1,j}
 ```
 
-である。仮定より $`M_{0,j} = 0`$ であるから、$`\mathrm{z0ok}(M)`$ の定義（D.z0ok）を
-$`j \lt \lvert M\rvert`$ に適用して $`M_{1,j} = 0`$ を得る。
-これは $`(\mathrm{take}_m M)_{1,j} = 0`$ に等しい。∎
+By hypothesis $`M_{0,j} = 0`$, so applying the definition of $`\mathrm{z0ok}(M)`$ (D.z0ok) at
+$`j \lt \lvert M\rvert`$ gives $`M_{1,j} = 0`$.
+This is the same as $`(\mathrm{take}_m M)_{1,j} = 0`$. ∎
 
 <a id="t-z0ok_Pred"></a>
-## 定理: 前者は $`\mathrm{z0ok}`$ をみたす (T.z0ok_Pred)
+## Theorem: the predecessor satisfies $`\mathrm{z0ok}`$ (T.z0ok_Pred)
 
-### 定理
+### Theorem
 
-$`\mathrm{z0ok}(M)`$ ならば $`\mathrm{z0ok}(\mathrm{Pred}\,M)`$。
+If $`\mathrm{z0ok}(M)`$, then $`\mathrm{z0ok}(\mathrm{Pred}\,M)`$.
 
-### 証明
+### Proof
 
-$`\mathrm{Pred}`$ の定義（D.Pred）の場合分けによる。
+By the case distinction in the definition of $`\mathrm{Pred}`$ (D.Pred).
 
-- $`\lvert M\rvert \le 1`$ のとき。$`\mathrm{Pred}\,M = M`$ であり、仮定そのものである。
+- The case $`\lvert M\rvert \le 1`$. Then $`\mathrm{Pred}\,M = M`$, and the claim is the hypothesis itself.
 
-- $`\lvert M\rvert \ge 2`$ のとき。
-  $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M = \mathrm{take}_{\lvert M\rvert - 1} M`$ である
-  （どれも $`M`$ の先頭 $`\lvert M\rvert - 1`$ 要素からなる列である）。
-  よって [T.z0ok_take](#t-z0ok_take) を $`m := \lvert M\rvert - 1`$ に適用すればよい。∎
+- The case $`\lvert M\rvert \ge 2`$. Then
+  $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M = \mathrm{take}_{\lvert M\rvert - 1} M`$
+  (each of these is the sequence consisting of the first $`\lvert M\rvert - 1`$ elements of $`M`$).
+  Hence it suffices to apply [T.z0ok_take](#t-z0ok_take) with $`m := \lvert M\rvert - 1`$. ∎
 
 <a id="t-z0ok_copyExp"></a>
-## 定理: コピー展開は $`\mathrm{z0ok}`$ をみたす (T.z0ok_copyExp)
+## Theorem: the copy expansion satisfies $`\mathrm{z0ok}`$ (T.z0ok_copyExp)
 
-### 定理
+### Theorem
 
-$`G, B \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$、$`d_0, n \in \mathbb{N}`$ とする。
-$`\mathrm{z0ok}\bigl(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)\bigr)`$ ならば
-$`\mathrm{z0ok}\bigl(\mathrm{copyExp}(G, B, d_0, n)\bigr)`$。
+Let $`G, B \in \mathrm{PairSeq}`$, $`\ell \in \mathbb{N}\times\mathbb{N}`$ and $`d_0, n \in \mathbb{N}`$.
+If $`\mathrm{z0ok}\bigl(G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)\bigr)`$, then
+$`\mathrm{z0ok}\bigl(\mathrm{copyExp}(G, B, d_0, n)\bigr)`$.
 
-### 証明
+### Proof
 
-$`E := \mathrm{copyExp}(G, B, d_0, n)`$、$`H := G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$ とおく。
-[T.hostM_length](Column-2.md#t-hostM_length) より
-$`\lvert H\rvert = \lvert G\rvert + \lvert B\rvert + 1`$ である。
+Put $`E := \mathrm{copyExp}(G, B, d_0, n)`$ and $`H := G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell)`$.
+By [T.hostM_length](Column-2.md#t-hostM_length) we have
+$`\lvert H\rvert = \lvert G\rvert + \lvert B\rvert + 1`$.
 
-$`j`$ を取り $`j \lt \lvert E\rvert`$、$`E_{0,j} = 0`$ とする。
-[T.copyExp_length](Column-2.md#t-copyExp_length) より
-$`\lvert E\rvert = \lvert G\rvert + n \lvert B\rvert`$ であるから
-$`j \lt \lvert G\rvert + n \lvert B\rvert`$ である。$`j`$ と $`\lvert G\rvert`$ の大小で場合分けする。
+Take $`j`$ with $`j \lt \lvert E\rvert`$ and $`E_{0,j} = 0`$.
+By [T.copyExp_length](Column-2.md#t-copyExp_length) we have
+$`\lvert E\rvert = \lvert G\rvert + n \lvert B\rvert`$, hence
+$`j \lt \lvert G\rvert + n \lvert B\rvert`$. Distinguish cases according to the comparison of $`j`$ with $`\lvert G\rvert`$.
 
-**(a) $`j \lt \lvert G\rvert`$ のとき。**
-[T.copyExp_getD_pre](Column-2.md#t-copyExp_getD_pre) より $`E\langle j\rangle = G\langle j\rangle`$、
-[T.hostM_getD_pre](Column-2.md#t-hostM_getD_pre) より $`H\langle j\rangle = G\langle j\rangle`$ である。
-$`j \lt \lvert G\rvert \le \lvert G\rvert + \lvert B\rvert + 1 = \lvert H\rvert`$ であるから、
-$`\mathrm{z0ok}(H)`$ の定義（D.z0ok）を添字 $`j`$ に適用できる。その前件は
-$`H_{0,j} = G_{0,j} = E_{0,j} = 0`$ で成り立つから、$`H_{1,j} = 0`$、すなわち
-$`E_{1,j} = G_{1,j} = H_{1,j} = 0`$ を得る。
+**(a) The case $`j \lt \lvert G\rvert`$.**
+By [T.copyExp_getD_pre](Column-2.md#t-copyExp_getD_pre) we have $`E\langle j\rangle = G\langle j\rangle`$, and by
+[T.hostM_getD_pre](Column-2.md#t-hostM_getD_pre) we have $`H\langle j\rangle = G\langle j\rangle`$.
+Since $`j \lt \lvert G\rvert \le \lvert G\rvert + \lvert B\rvert + 1 = \lvert H\rvert`$,
+the definition of $`\mathrm{z0ok}(H)`$ (D.z0ok) can be applied at the index $`j`$. Its antecedent holds because
+$`H_{0,j} = G_{0,j} = E_{0,j} = 0`$, so we obtain $`H_{1,j} = 0`$, that is,
+$`E_{1,j} = G_{1,j} = H_{1,j} = 0`$.
 
-**(b) $`\lvert G\rvert \le j`$ のとき。**
-まず $`0 \lt \lvert B\rvert`$ を示す。$`\lvert B\rvert = 0`$ とすると
-$`n \lvert B\rvert = 0`$ となり $`j \lt \lvert G\rvert`$ となって、この場合の仮定に矛盾する。
+**(b) The case $`\lvert G\rvert \le j`$.**
+First we show $`0 \lt \lvert B\rvert`$. If $`\lvert B\rvert = 0`$, then
+$`n \lvert B\rvert = 0`$ and hence $`j \lt \lvert G\rvert`$, contradicting the hypothesis of this case.
 
-$`j - \lvert G\rvert \lt n \lvert B\rvert`$ であるから、
-[T.index_decomp](Column-2.md#t-index_decomp) を $`L := \lvert B\rvert`$ に適用して
-$`k \lt n`$、$`q \lt \lvert B\rvert`$、$`j - \lvert G\rvert = k \lvert B\rvert + q`$ なる
-$`k, q`$ を取る。$`\lvert G\rvert \le j`$ より
-$`j = \lvert G\rvert + (k \lvert B\rvert + q)`$ である。
+Since $`j - \lvert G\rvert \lt n \lvert B\rvert`$,
+applying [T.index_decomp](Column-2.md#t-index_decomp) with $`L := \lvert B\rvert`$ yields
+$`k, q`$ with $`k \lt n`$, $`q \lt \lvert B\rvert`$ and $`j - \lvert G\rvert = k \lvert B\rvert + q`$.
+From $`\lvert G\rvert \le j`$ we get
+$`j = \lvert G\rvert + (k \lvert B\rvert + q)`$.
 
-[T.copyExp_getD_copy](Column-2.md#t-copyExp_getD_copy) より
+By [T.copyExp_getD_copy](Column-2.md#t-copyExp_getD_copy),
 
 ```math
 E\langle j\rangle = \bigl(\pi_1(B\langle q\rangle) + k d_0,\ \pi_2(B\langle q\rangle)\bigr)
 ```
 
-であり、$`M_{i,j}`$ の定義（D.entry）により
-$`E_{0,j} = B_{0,q} + k d_0`$、$`E_{1,j} = B_{1,q}`$ である。
-仮定 $`E_{0,j} = 0`$ より $`B_{0,q} + k d_0 = 0`$、したがって $`B_{0,q} = 0`$ である。
+and by the definition of $`M_{i,j}`$ (D.entry) we have
+$`E_{0,j} = B_{0,q} + k d_0`$ and $`E_{1,j} = B_{1,q}`$.
+The hypothesis $`E_{0,j} = 0`$ gives $`B_{0,q} + k d_0 = 0`$, hence $`B_{0,q} = 0`$.
 
-$`q \lt \lvert B\rvert`$ に [T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) を適用すると
-$`H\langle \lvert G\rvert + q\rangle = B\langle q\rangle`$ である。
-$`\lvert G\rvert + q \lt \lvert G\rvert + \lvert B\rvert + 1 = \lvert H\rvert`$ であるから、
-$`\mathrm{z0ok}(H)`$ の定義（D.z0ok）を添字 $`\lvert G\rvert + q`$ に適用できる。その前件は
-$`H_{0,\lvert G\rvert + q} = B_{0,q} = 0`$ で成り立つから、
-$`B_{1,q} = H_{1,\lvert G\rvert + q} = 0`$、すなわち $`E_{1,j} = 0`$ を得る。∎
+Applying [T.hostM_getD_blk](Column-2.md#t-hostM_getD_blk) to $`q \lt \lvert B\rvert`$ gives
+$`H\langle \lvert G\rvert + q\rangle = B\langle q\rangle`$.
+Since $`\lvert G\rvert + q \lt \lvert G\rvert + \lvert B\rvert + 1 = \lvert H\rvert`$,
+the definition of $`\mathrm{z0ok}(H)`$ (D.z0ok) can be applied at the index $`\lvert G\rvert + q`$. Its antecedent holds because
+$`H_{0,\lvert G\rvert + q} = B_{0,q} = 0`$, so we obtain
+$`B_{1,q} = H_{1,\lvert G\rvert + q} = 0`$, that is, $`E_{1,j} = 0`$. ∎

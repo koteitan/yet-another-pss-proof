@@ -1,12 +1,12 @@
 [← README](README.md) | [English](Cnf-2.md) | [Japanese](Cnf-2-ja.md) | Cnf [1](Cnf.md) **2** [3](Cnf-3.md)
 
 <a id="t-cnf_ctx_cong"></a>
-## 定理: 条件の文脈による合同 (T.cnf_ctx_cong)
+## Theorem: congruence of the condition under a context (T.cnf_ctx_cong)
 
-### 定理
+### Theorem
 
-$`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）とし、
-次の 6 つを仮定する。
+Let $`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$ and $`T_1, T_2, G \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)),
+and assume the following six conditions.
 
 ```math
 \begin{aligned}
@@ -22,25 +22,25 @@ $`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}
 \end{aligned}
 ```
 
-（$`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf)、$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、
-$`\prec`$ [D.olt](Term.md#d-olt)、$`\mathsf{P}`$ と $`\mathsf{Z}`$ [D.Three](Term.md#d-Three)、
-$`\preceq`$ [D.ole](Term.md#d-ole)）
+($`\mathrm{cnf}`$ [D.cnf](Cnf.md#d-cnf), $`\mathrm{tr}`$ [D.translate](Term.md#d-translate),
+$`\prec`$ [D.olt](Term.md#d-olt), $`\mathsf{P}`$ and $`\mathsf{Z}`$ [D.Three](Term.md#d-Three),
+$`\preceq`$ [D.ole](Term.md#d-ole))
 
-このとき $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)\bigr)`$ ならば
-$`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$。
+Then $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)\bigr)`$ implies
+$`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$.
 
-### 証明
+### Proof
 
-$`z_1, z_2, T_1, T_2`$ と 6 つの仮定を固定し、$`\lvert G\rvert`$ に関する強帰納法を行う。
-帰納法の述語は
+Fix $`z_1, z_2, T_1, T_2`$ and the six hypotheses, and argue by strong induction on $`\lvert G\rvert`$.
+The induction predicate is
 
 ```math
 \Phi(G) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)\bigr)
   \to \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)
 ```
 
-であり、帰納法の仮定は「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$」である。
-以下、(leadle) の $`a_1, b_1, c_1, a_2, b_2, c_2`$ を取り、
+and the induction hypothesis is that $`\Phi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
+In what follows we take $`a_1, b_1, c_1, a_2, b_2, c_2`$ from (leadle), so that
 
 ```math
 \begin{aligned}
@@ -50,16 +50,16 @@ $`z_1, z_2, T_1, T_2`$ と 6 つの仮定を固定し、$`\lvert G\rvert`$ に�
 \end{aligned}
 ```
 
-と書く。
+hold.
 
-**$`G = ()`$ のとき。** $`() \mathbin{+\!\!+} z_1 :: T_1 = z_1 :: T_1`$ であるから、結論は (cZ1) そのものである。
+**Case $`G = ()`$.** Since $`() \mathbin{+\!\!+} z_1 :: T_1 = z_1 :: T_1`$, the conclusion is exactly (cZ1).
 
-**$`G = g :: G'`$ のとき。** $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたすかどうかで場合分けする。
+**Case $`G = g :: G'`$.** We distinguish cases according to whether all elements $`x`$ of $`G'`$ satisfy $`g_1 \lt x_1`$.
 
-**(a) $`G'`$ のある要素 $`x`$ が $`\neg(g_1 \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
-[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) を $`xs := G'`$、$`ys := z_i :: T_i`$ に
-適用すると、$`i = 1, 2`$ のいずれでも
+**(a) Some element $`x`$ of $`G'`$ satisfies $`\neg(g_1 \lt x_1)`$.**
+Applying [T.takeWhile_append_not](Term.md#t-takeWhile_append_not) and
+[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) with $`xs := G'`$ and $`ys := z_i :: T_i`$,
+we obtain, for both $`i = 1, 2`$,
 
 ```math
 \mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{tw}_{g_1} G',
@@ -67,10 +67,10 @@ $`z_1, z_2, T_1, T_2`$ と 6 つの仮定を固定し、$`\lvert G\rvert`$ に�
 \mathrm{dw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{dw}_{g_1} G' \mathbin{+\!\!+} z_i :: T_i
 ```
 
-である。また $`\mathrm{dw}_{g_1} G' \ne ()`$ である。実際 $`\mathrm{dw}_{g_1} G' = ()`$ とすると
-$`G'`$ の全要素が $`g_1 \lt x_1`$ をみたすことになり、$`x`$ について仮定に矛盾する。
-そこで $`\mathrm{dw}_{g_1} G' = d :: D'`$ と書く。$`\mathrm{tr}`$ の定義（D.translate）より
-$`i = 1, 2`$ のいずれでも
+Moreover $`\mathrm{dw}_{g_1} G' \ne ()`$. Indeed, if $`\mathrm{dw}_{g_1} G' = ()`$, then all elements of
+$`G'`$ satisfy $`g_1 \lt x_1`$, which contradicts the assumption on $`x`$.
+So write $`\mathrm{dw}_{g_1} G' = d :: D'`$. By the definition of $`\mathrm{tr}`$ (D.translate),
+for both $`i = 1, 2`$,
 
 ```math
 \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
@@ -78,8 +78,8 @@ $`i = 1, 2`$ のいずれでも
       \mathrm{tr}((d :: D') \mathbin{+\!\!+} z_i :: T_i)\bigr)
 ```
 
-であり、$`(d :: D') \mathbin{+\!\!+} z_i :: T_i = d :: (D' \mathbin{+\!\!+} z_i :: T_i)`$ であるから、
-ふたたび定義より
+and, since $`(d :: D') \mathbin{+\!\!+} z_i :: T_i = d :: (D' \mathbin{+\!\!+} z_i :: T_i)`$,
+the definition gives again
 
 ```math
 \begin{aligned}
@@ -90,71 +90,65 @@ A_i &:= \mathrm{tr}\bigl(\mathrm{tw}_{d_1}(D' \mathbin{+\!\!+} z_i :: T_i)\bigr)
 \end{aligned}
 ```
 
-である。
-
-[T.translate_ctx_cong](Term.md#t-translate_ctx_cong) を仮定 (decr), (root), (r1), (r2) と
-$`G := d :: D'`$ に適用すると
+Applying [T.translate_ctx_cong](Term.md#t-translate_ctx_cong) to the hypotheses (decr), (root), (r1), (r2)
+with $`G := d :: D'`$ yields
 
 ```math
 \mathrm{tr}\bigl((d :: D') \mathbin{+\!\!+} z_1 :: T_1\bigr)
   \prec \mathrm{tr}\bigl((d :: D') \mathbin{+\!\!+} z_2 :: T_2\bigr)
 ```
 
-を得る。両辺を上の形に書き換えて [T.olt_P_P](Term.md#t-olt_P_P) を使うと、
-次の 3 つのいずれかが成り立つ。
+Rewriting both sides in the form above and using [T.olt_P_P](Term.md#t-olt_P_P),
+one of the following three holds.
 
-- $`d_2 \lt d_2`$。$`\lt`$ の非反射性によりこれは起こらない。
-- $`d_2 = d_2 \wedge A_1 \prec A_2`$。
-- $`d_2 = d_2 \wedge A_1 = A_2 \wedge (\cdots)`$。
+- $`d_2 \lt d_2`$. This cannot happen, by the irreflexivity of $`\lt`$.
+- $`d_2 = d_2 \wedge A_1 \prec A_2`$.
+- $`d_2 = d_2 \wedge A_1 = A_2 \wedge (\cdots)`$.
 
-したがって
+Hence
 
 ```math
 (\ast)\qquad A_1 \prec A_2 \ \vee\ A_1 = A_2
 ```
 
-である。
+Next, rewriting the antecedent $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_2 :: T_2))\bigr)`$
+in the form above and using [T.cnf_P_P](Cnf.md#t-cnf_P_P), we obtain the following three statements.
 
-次に前件 $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_2 :: T_2))\bigr)`$ を上の形に書き換え、
-[T.cnf_P_P](Cnf.md#t-cnf_P_P) を使うと次の 3 つを得る。
+1. $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{tw}_{g_1} G')\bigr)`$.
+2. $`\neg\bigl(\mathsf{P}(g_2, \mathrm{tr}(\mathrm{tw}_{g_1} G'), \mathsf{Z}) \prec \mathsf{P}(d_2, A_2, \mathsf{Z})\bigr)`$.
+3. $`\mathrm{cnf}\bigl(\mathsf{P}(d_2, A_2, \mathrm{tr}(\mathrm{dw}_{d_1}(D' \mathbin{+\!\!+} z_2 :: T_2)))\bigr)`$,
+   that is, $`\mathrm{cnf}\bigl(\mathrm{tr}((d :: D') \mathbin{+\!\!+} z_2 :: T_2)\bigr)`$.
 
-1. $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{tw}_{g_1} G')\bigr)`$。
-2. $`\neg\bigl(\mathsf{P}(g_2, \mathrm{tr}(\mathrm{tw}_{g_1} G'), \mathsf{Z}) \prec \mathsf{P}(d_2, A_2, \mathsf{Z})\bigr)`$。
-3. $`\mathrm{cnf}\bigl(\mathsf{P}(d_2, A_2, \mathrm{tr}(\mathrm{dw}_{d_1}(D' \mathbin{+\!\!+} z_2 :: T_2)))\bigr)`$、
-   すなわち $`\mathrm{cnf}\bigl(\mathrm{tr}((d :: D') \mathbin{+\!\!+} z_2 :: T_2)\bigr)`$。
-
-$`d :: D' = \mathrm{dw}_{g_1} G'`$ は $`G'`$ の部分列であるから
-$`\lvert d :: D'\rvert \le \lvert G'\rvert \lt \lvert g :: G'\rvert`$ であり、帰納法の仮定を
-$`G' := d :: D'`$ に適用できる。3 とあわせて
+Since $`d :: D' = \mathrm{dw}_{g_1} G'`$ is a subsequence of $`G'`$, we have
+$`\lvert d :: D'\rvert \le \lvert G'\rvert \lt \lvert g :: G'\rvert`$, so the induction hypothesis
+applies with $`G' := d :: D'`$. Together with 3 it gives
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}((d :: D') \mathbin{+\!\!+} z_1 :: T_1)\bigr)
 ```
 
-を得る。
-
-次に
+Next we show
 
 ```math
 \neg\bigl(\mathsf{P}(g_2,\ \mathrm{tr}(\mathrm{tw}_{g_1} G'),\ \mathsf{Z})
   \prec \mathsf{P}(d_2,\ A_1,\ \mathsf{Z})\bigr)
 ```
 
-を示す。内側が成り立つとすると [T.olt_P_P](Term.md#t-olt_P_P) より次の 3 つのいずれかである。
+Suppose the inner relation holds. Then by [T.olt_P_P](Term.md#t-olt_P_P) one of the following three holds.
 
-- $`g_2 \lt d_2`$。このとき [T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 1 選言により
-  $`\mathsf{P}(g_2, \mathrm{tr}(\mathrm{tw}_{g_1} G'), \mathsf{Z}) \prec \mathsf{P}(d_2, A_2, \mathsf{Z})`$
-  であり、2 に矛盾する。
-- $`g_2 = d_2 \wedge \mathrm{tr}(\mathrm{tw}_{g_1} G') \prec A_1`$。$`(\ast)`$ で場合分けする。
-  $`A_1 \prec A_2`$ のときは [T.olt_trans](Term.md#t-olt_trans) より
-  $`\mathrm{tr}(\mathrm{tw}_{g_1} G') \prec A_2`$。$`A_1 = A_2`$ のときは書き換えて同じ結論を得る。
-  いずれの場合も [T.olt_P_P](Term.md#t-olt_P_P) の右辺の第 2 選言により
-  $`\mathsf{P}(g_2, \mathrm{tr}(\mathrm{tw}_{g_1} G'), \mathsf{Z}) \prec \mathsf{P}(d_2, A_2, \mathsf{Z})`$
-  であり、2 に矛盾する。
-- $`g_2 = d_2 \wedge \mathrm{tr}(\mathrm{tw}_{g_1} G') = A_1 \wedge \mathsf{Z} \prec \mathsf{Z}`$。
-  [T.not_olt_Z](Term.md#t-not_olt_Z) に矛盾する。
+- $`g_2 \lt d_2`$. In this case the first disjunct on the right-hand side of [T.olt_P_P](Term.md#t-olt_P_P) gives
+  $`\mathsf{P}(g_2, \mathrm{tr}(\mathrm{tw}_{g_1} G'), \mathsf{Z}) \prec \mathsf{P}(d_2, A_2, \mathsf{Z})`$,
+  which contradicts 2.
+- $`g_2 = d_2 \wedge \mathrm{tr}(\mathrm{tw}_{g_1} G') \prec A_1`$. Distinguish cases by $`(\ast)`$.
+  If $`A_1 \prec A_2`$, then [T.olt_trans](Term.md#t-olt_trans) gives
+  $`\mathrm{tr}(\mathrm{tw}_{g_1} G') \prec A_2`$. If $`A_1 = A_2`$, rewriting gives the same conclusion.
+  In either case the second disjunct on the right-hand side of [T.olt_P_P](Term.md#t-olt_P_P) gives
+  $`\mathsf{P}(g_2, \mathrm{tr}(\mathrm{tw}_{g_1} G'), \mathsf{Z}) \prec \mathsf{P}(d_2, A_2, \mathsf{Z})`$,
+  which contradicts 2.
+- $`g_2 = d_2 \wedge \mathrm{tr}(\mathrm{tw}_{g_1} G') = A_1 \wedge \mathsf{Z} \prec \mathsf{Z}`$.
+  This contradicts [T.not_olt_Z](Term.md#t-not_olt_Z).
 
-最後に、$`i = 1`$ についての上の 2 つの式より
+Finally, the two identities above with $`i = 1`$ give
 
 ```math
 \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_1 :: T_1)\bigr)
@@ -162,34 +156,34 @@ $`G' := d :: D'`$ に適用できる。3 とあわせて
       \mathsf{P}\bigl(d_2,\ A_1,\ \mathrm{tr}(\mathrm{dw}_{d_1}(D' \mathbin{+\!\!+} z_1 :: T_1))\bigr)\Bigr)
 ```
 
-であるから、[T.cnf_P_P](Cnf.md#t-cnf_P_P) に 1、いま示した否定、および帰納法の仮定から得た
-$`\mathrm{cnf}\bigl(\mathrm{tr}((d :: D') \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$ を与えると
-$`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$、すなわち $`\Phi(g :: G')`$ の結論を得る。
+Hence, feeding [T.cnf_P_P](Cnf.md#t-cnf_P_P) with 1, the negation just proved, and
+$`\mathrm{cnf}\bigl(\mathrm{tr}((d :: D') \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$ obtained from the induction hypothesis,
+we get $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$, that is, the conclusion of $`\Phi(g :: G')`$.
 
-**(b) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`g_1 \lt (z_1)_1`$ のとき。**
-(root) より $`g_1 \lt (z_2)_1`$ でもある。(r1) より $`T_1`$ の任意の要素 $`x`$ について
-$`g_1 \lt (z_1)_1 \le x_1`$ であるから、$`z_1 :: T_1`$ の全要素が $`g_1 \lt x_1`$ をみたす。
-また (r2) より $`T_2`$ の任意の要素 $`x`$ について $`g_1 \lt (z_2)_1 \le x_1`$ であるから、
-$`z_2 :: T_2`$ の全要素も $`g_1 \lt x_1`$ をみたす。よって $`G' \mathbin{+\!\!+} z_i :: T_i`$ の全要素が
-$`g_1 \lt x_1`$ をみたし、[T.translate_single_tree](Term.md#t-translate_single_tree) より
-$`i = 1, 2`$ のいずれでも
+**(b) All elements $`x`$ of $`G'`$ satisfy $`g_1 \lt x_1`$, and $`g_1 \lt (z_1)_1`$.**
+By (root), $`g_1 \lt (z_2)_1`$ as well. By (r1), every element $`x`$ of $`T_1`$ satisfies
+$`g_1 \lt (z_1)_1 \le x_1`$, so all elements of $`z_1 :: T_1`$ satisfy $`g_1 \lt x_1`$.
+Likewise, by (r2) every element $`x`$ of $`T_2`$ satisfies $`g_1 \lt (z_2)_1 \le x_1`$, so
+all elements of $`z_2 :: T_2`$ satisfy $`g_1 \lt x_1`$ too. Hence all elements of $`G' \mathbin{+\!\!+} z_i :: T_i`$
+satisfy $`g_1 \lt x_1`$, and [T.translate_single_tree](Term.md#t-translate_single_tree) gives,
+for both $`i = 1, 2`$,
 
 ```math
 \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
   = \mathsf{P}\bigl(g_2,\ \mathrm{tr}(G' \mathbin{+\!\!+} z_i :: T_i),\ \mathsf{Z}\bigr)
 ```
 
-である。前件をこの形に書き換え [T.cnf_P_Z](Cnf.md#t-cnf_P_Z) を使うと
-$`\mathrm{cnf}\bigl(\mathrm{tr}(G' \mathbin{+\!\!+} z_2 :: T_2)\bigr)`$ を得る。
-$`\lvert G'\rvert \lt \lvert g :: G'\rvert`$ であるから帰納法の仮定を $`G'`$ に適用して
-$`\mathrm{cnf}\bigl(\mathrm{tr}(G' \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$ を得る。
-ふたたび [T.cnf_P_Z](Cnf.md#t-cnf_P_Z) より
-$`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$ が成り立つ。
+Rewriting the antecedent in this form and using [T.cnf_P_Z](Cnf.md#t-cnf_P_Z), we obtain
+$`\mathrm{cnf}\bigl(\mathrm{tr}(G' \mathbin{+\!\!+} z_2 :: T_2)\bigr)`$.
+Since $`\lvert G'\rvert \lt \lvert g :: G'\rvert`$, applying the induction hypothesis to $`G'`$ gives
+$`\mathrm{cnf}\bigl(\mathrm{tr}(G' \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$.
+By [T.cnf_P_Z](Cnf.md#t-cnf_P_Z) again,
+$`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$ holds.
 
-**(c) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`\neg\bigl(g_1 \lt (z_1)_1\bigr)`$ のとき。**
-(root) より $`\neg\bigl(g_1 \lt (z_2)_1\bigr)`$ でもある。
-[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
-[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より、$`i = 1, 2`$ のいずれでも
+**(c) All elements $`x`$ of $`G'`$ satisfy $`g_1 \lt x_1`$, and $`\neg\bigl(g_1 \lt (z_1)_1\bigr)`$.**
+By (root), $`\neg\bigl(g_1 \lt (z_2)_1\bigr)`$ as well.
+By [T.takeWhile_append_all](Term.md#t-takeWhile_append_all) and
+[T.dropWhile_append_all](Term.md#t-dropWhile_append_all), for both $`i = 1, 2`$,
 
 ```math
 \mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = G' \mathbin{+\!\!+} \mathrm{tw}_{g_1}(z_i :: T_i),
@@ -197,69 +191,70 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$ �
 \mathrm{dw}_{g_1}(G' \mathbin{+\!\!+} z_i :: T_i) = \mathrm{dw}_{g_1}(z_i :: T_i)
 ```
 
-であり、先頭の $`z_i`$ が述語を破るから $`\mathrm{tw}_{g_1}(z_i :: T_i) = ()`$、
-$`\mathrm{dw}_{g_1}(z_i :: T_i) = z_i :: T_i`$ である。よって $`\mathrm{tr}`$ の定義（D.translate）と
-(leadle) の 2 つの等式より
+and, since the leading $`z_i`$ violates the predicate, $`\mathrm{tw}_{g_1}(z_i :: T_i) = ()`$ and
+$`\mathrm{dw}_{g_1}(z_i :: T_i) = z_i :: T_i`$. Hence the definition of $`\mathrm{tr}`$ (D.translate)
+together with the two equalities in (leadle) gives
 
 ```math
 \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} z_i :: T_i)\bigr)
   = \mathsf{P}\bigl(g_2,\ \mathrm{tr}\,G',\ \mathsf{P}(a_i,b_i,c_i)\bigr)
 ```
 
-である。前件をこの形（$`i = 2`$）に書き換え [T.cnf_P_P](Cnf.md#t-cnf_P_P) を使うと次の 3 つを得る。
+Rewriting the antecedent in this form (with $`i = 2`$) and using [T.cnf_P_P](Cnf.md#t-cnf_P_P),
+we obtain the following three statements.
 
-1. $`\mathrm{cnf}(\mathrm{tr}\,G')`$。
-2. $`\neg\bigl(\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{Z}) \prec \mathsf{P}(a_2,b_2,\mathsf{Z})\bigr)`$。
-3. $`\mathrm{cnf}\bigl(\mathsf{P}(a_2,b_2,c_2)\bigr)`$（これは使わない）。
+1. $`\mathrm{cnf}(\mathrm{tr}\,G')`$.
+2. $`\neg\bigl(\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{Z}) \prec \mathsf{P}(a_2,b_2,\mathsf{Z})\bigr)`$.
+3. $`\mathrm{cnf}\bigl(\mathsf{P}(a_2,b_2,c_2)\bigr)`$ (which is not used).
 
-ここで
+We now show
 
 ```math
 \neg\bigl(\mathsf{P}(g_2,\ \mathrm{tr}\,G',\ \mathsf{Z}) \prec \mathsf{P}(a_1,b_1,\mathsf{Z})\bigr)
 ```
 
-を示す。内側が成り立つとすると、(leadle) の
-$`\mathsf{P}(a_1,b_1,\mathsf{Z}) \preceq \mathsf{P}(a_2,b_2,\mathsf{Z})`$ と
-[T.olt_ole_trans](Term.md#t-olt_ole_trans) より
-$`\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{Z}) \prec \mathsf{P}(a_2,b_2,\mathsf{Z})`$ となり、2 に矛盾する。
+Suppose the inner relation holds. Then
+$`\mathsf{P}(a_1,b_1,\mathsf{Z}) \preceq \mathsf{P}(a_2,b_2,\mathsf{Z})`$ from (leadle) and
+[T.olt_ole_trans](Term.md#t-olt_ole_trans) give
+$`\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{Z}) \prec \mathsf{P}(a_2,b_2,\mathsf{Z})`$, which contradicts 2.
 
-また (cZ1) と $`\mathrm{tr}(z_1 :: T_1) = \mathsf{P}(a_1,b_1,c_1)`$ より
-$`\mathrm{cnf}\bigl(\mathsf{P}(a_1,b_1,c_1)\bigr)`$ である。
-[T.cnf_P_P](Cnf.md#t-cnf_P_P) に 1、いま示した否定、およびこれを与えると
-$`\mathrm{cnf}\bigl(\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{P}(a_1,b_1,c_1))\bigr)`$、
-すなわち $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$ を得る。
+Moreover, (cZ1) and $`\mathrm{tr}(z_1 :: T_1) = \mathsf{P}(a_1,b_1,c_1)`$ give
+$`\mathrm{cnf}\bigl(\mathsf{P}(a_1,b_1,c_1)\bigr)`$.
+Feeding [T.cnf_P_P](Cnf.md#t-cnf_P_P) with 1, the negation just proved, and this, we get
+$`\mathrm{cnf}\bigl(\mathsf{P}(g_2, \mathrm{tr}\,G', \mathsf{P}(a_1,b_1,c_1))\bigr)`$,
+that is, $`\mathrm{cnf}\bigl(\mathrm{tr}(g :: (G' \mathbin{+\!\!+} z_1 :: T_1))\bigr)`$.
 
-以上 3 つの場合すべてで $`\Phi(g :: G')`$ が示された。∎
+In all three cases $`\Phi(g :: G')`$ is proved. ∎
 
 <a id="t-cnf_tail"></a>
-## 定理: 再開する後部分列は条件をみたす (T.cnf_tail)
+## Theorem: a re-opening suffix satisfies the condition (T.cnf_tail)
 
-### 定理
+### Theorem
 
-$`t \in \mathbb{N}\times\mathbb{N}`$、$`T', G \in \mathrm{PairSeq}`$ とし、
-$`\forall x \in T',\ t_1 \le x_1`$ を仮定する。
-$`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} t :: T')\bigr)`$ ならば $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$。
+Let $`t \in \mathbb{N}\times\mathbb{N}`$ and $`T', G \in \mathrm{PairSeq}`$, and assume
+$`\forall x \in T',\ t_1 \le x_1`$.
+Then $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} t :: T')\bigr)`$ implies $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$.
 
-### 証明
+### Proof
 
-$`t, T'`$ と仮定 $`\forall x \in T',\ t_1 \le x_1`$ を固定し、$`\lvert G\rvert`$ に関する強帰納法を行う。
-帰納法の述語は
+Fix $`t, T'`$ and the hypothesis $`\forall x \in T',\ t_1 \le x_1`$, and argue by strong induction on $`\lvert G\rvert`$.
+The induction predicate is
 
 ```math
 \Psi(G) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} t :: T')\bigr)
   \to \mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)
 ```
 
-であり、帰納法の仮定は「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Psi(G')`$」である。
+and the induction hypothesis is that $`\Psi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
 
-**$`G = ()`$ のとき。** $`() \mathbin{+\!\!+} t :: T' = t :: T'`$ であるから、結論は前件そのものである。
+**Case $`G = ()`$.** Since $`() \mathbin{+\!\!+} t :: T' = t :: T'`$, the conclusion is exactly the antecedent.
 
-**$`G = g :: G'`$ のとき。** $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたすかどうかで場合分けする。
+**Case $`G = g :: G'`$.** We distinguish cases according to whether all elements $`x`$ of $`G'`$ satisfy $`g_1 \lt x_1`$.
 
-**(a) $`G'`$ のある要素 $`x`$ が $`\neg(g_1 \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
-[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) を $`xs := G'`$、$`ys := t :: T'`$ に
-適用して
+**(a) Some element $`x`$ of $`G'`$ satisfies $`\neg(g_1 \lt x_1)`$.**
+Applying [T.takeWhile_append_not](Term.md#t-takeWhile_append_not) and
+[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) with $`xs := G'`$ and $`ys := t :: T'`$,
+we obtain
 
 ```math
 \mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} t :: T') = \mathrm{tw}_{g_1} G',
@@ -267,9 +262,9 @@ $`t, T'`$ と仮定 $`\forall x \in T',\ t_1 \le x_1`$ を固定し、$`\lvert G
 \mathrm{dw}_{g_1}(G' \mathbin{+\!\!+} t :: T') = \mathrm{dw}_{g_1} G' \mathbin{+\!\!+} t :: T'
 ```
 
-を得る。また $`\mathrm{dw}_{g_1} G' \ne ()`$ である（$`\mathrm{dw}_{g_1} G' = ()`$ とすると $`G'`$ の
-全要素が $`g_1 \lt x_1`$ をみたすことになり、$`x`$ について仮定に矛盾する）。
-そこで $`\mathrm{dw}_{g_1} G' = d :: D'`$ と書くと、$`\mathrm{tr}`$ の定義（D.translate）より
+Moreover $`\mathrm{dw}_{g_1} G' \ne ()`$ (if $`\mathrm{dw}_{g_1} G' = ()`$, then all elements of
+$`G'`$ satisfy $`g_1 \lt x_1`$, which contradicts the assumption on $`x`$).
+So write $`\mathrm{dw}_{g_1} G' = d :: D'`$; then the definition of $`\mathrm{tr}`$ (D.translate) gives
 
 ```math
 \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} t :: T')\bigr)
@@ -282,32 +277,32 @@ $`t, T'`$ と仮定 $`\forall x \in T',\ t_1 \le x_1`$ を固定し、$`\lvert G
       \mathrm{tr}(\mathrm{dw}_{d_1}(D' \mathbin{+\!\!+} t :: T'))\bigr)
 ```
 
-である（第 2 式では $`(d :: D') \mathbin{+\!\!+} t :: T' = d :: (D' \mathbin{+\!\!+} t :: T')`$ を使った）。
-前件をこの形に書き換え [T.cnf_P_P](Cnf.md#t-cnf_P_P) を使うと、その右辺の第 3 連言子として
-$`\mathrm{cnf}\bigl(\mathrm{tr}((d :: D') \mathbin{+\!\!+} t :: T')\bigr)`$ を得る。
-$`d :: D' = \mathrm{dw}_{g_1} G'`$ は $`G'`$ の部分列であるから
-$`\lvert d :: D'\rvert \le \lvert G'\rvert \lt \lvert g :: G'\rvert`$ であり、帰納法の仮定を
-$`G' := d :: D'`$ に適用して $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$ を得る。
+(in the second identity we used $`(d :: D') \mathbin{+\!\!+} t :: T' = d :: (D' \mathbin{+\!\!+} t :: T')`$).
+Rewriting the antecedent in this form and using [T.cnf_P_P](Cnf.md#t-cnf_P_P), we obtain
+$`\mathrm{cnf}\bigl(\mathrm{tr}((d :: D') \mathbin{+\!\!+} t :: T')\bigr)`$ as the third conjunct on its right-hand side.
+Since $`d :: D' = \mathrm{dw}_{g_1} G'`$ is a subsequence of $`G'`$, we have
+$`\lvert d :: D'\rvert \le \lvert G'\rvert \lt \lvert g :: G'\rvert`$, and applying the induction hypothesis
+with $`G' := d :: D'`$ gives $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$.
 
-**(b) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`g_1 \lt t_1`$ のとき。**
-仮定 $`\forall x \in T',\ t_1 \le x_1`$ より、$`T'`$ の任意の要素 $`x`$ について
-$`g_1 \lt t_1 \le x_1`$ であるから、$`t :: T'`$ の全要素が $`g_1 \lt x_1`$ をみたす。
-よって $`G' \mathbin{+\!\!+} t :: T'`$ の全要素が $`g_1 \lt x_1`$ をみたし、
-[T.translate_single_tree](Term.md#t-translate_single_tree) より
+**(b) All elements $`x`$ of $`G'`$ satisfy $`g_1 \lt x_1`$, and $`g_1 \lt t_1`$.**
+By the hypothesis $`\forall x \in T',\ t_1 \le x_1`$, every element $`x`$ of $`T'`$ satisfies
+$`g_1 \lt t_1 \le x_1`$, so all elements of $`t :: T'`$ satisfy $`g_1 \lt x_1`$.
+Hence all elements of $`G' \mathbin{+\!\!+} t :: T'`$ satisfy $`g_1 \lt x_1`$, and
+[T.translate_single_tree](Term.md#t-translate_single_tree) gives
 
 ```math
 \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} t :: T')\bigr)
   = \mathsf{P}\bigl(g_2,\ \mathrm{tr}(G' \mathbin{+\!\!+} t :: T'),\ \mathsf{Z}\bigr)
 ```
 
-である。前件をこの形に書き換え [T.cnf_P_Z](Cnf.md#t-cnf_P_Z) を使うと
-$`\mathrm{cnf}\bigl(\mathrm{tr}(G' \mathbin{+\!\!+} t :: T')\bigr)`$ を得る。
-$`\lvert G'\rvert \lt \lvert g :: G'\rvert`$ であるから帰納法の仮定を $`G'`$ に適用して
-$`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$ を得る。
+Rewriting the antecedent in this form and using [T.cnf_P_Z](Cnf.md#t-cnf_P_Z), we obtain
+$`\mathrm{cnf}\bigl(\mathrm{tr}(G' \mathbin{+\!\!+} t :: T')\bigr)`$.
+Since $`\lvert G'\rvert \lt \lvert g :: G'\rvert`$, applying the induction hypothesis to $`G'`$ gives
+$`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$.
 
-**(c) $`G'`$ の全要素が $`g_1 \lt x_1`$ をみたし、かつ $`\neg(g_1 \lt t_1)`$ のとき。**
-[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
-[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
+**(c) All elements $`x`$ of $`G'`$ satisfy $`g_1 \lt x_1`$, and $`\neg(g_1 \lt t_1)`$.**
+By [T.takeWhile_append_all](Term.md#t-takeWhile_append_all) and
+[T.dropWhile_append_all](Term.md#t-dropWhile_append_all),
 
 ```math
 \mathrm{tw}_{g_1}(G' \mathbin{+\!\!+} t :: T') = G' \mathbin{+\!\!+} \mathrm{tw}_{g_1}(t :: T'),
@@ -315,8 +310,8 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$ を得る。
 \mathrm{dw}_{g_1}(G' \mathbin{+\!\!+} t :: T') = \mathrm{dw}_{g_1}(t :: T')
 ```
 
-であり、先頭の $`t`$ が述語を破るから $`\mathrm{tw}_{g_1}(t :: T') = ()`$、
-$`\mathrm{dw}_{g_1}(t :: T') = t :: T'`$ である。よって $`\mathrm{tr}`$ の定義（D.translate）より
+and, since the leading $`t`$ violates the predicate, $`\mathrm{tw}_{g_1}(t :: T') = ()`$ and
+$`\mathrm{dw}_{g_1}(t :: T') = t :: T'`$. Hence the definition of $`\mathrm{tr}`$ (D.translate) gives
 
 ```math
 \mathrm{tr}\bigl(g :: (G' \mathbin{+\!\!+} t :: T')\bigr)
@@ -327,21 +322,22 @@ $`\mathrm{dw}_{g_1}(t :: T') = t :: T'`$ である。よって $`\mathrm{tr}`$ �
   = \mathsf{P}\bigl(t_2,\ \mathrm{tr}(\mathrm{tw}_{t_1} T'),\ \mathrm{tr}(\mathrm{dw}_{t_1} T')\bigr)
 ```
 
-である。前件をこの形に書き換え [T.cnf_P_P](Cnf.md#t-cnf_P_P) を使うと、その右辺の第 3 連言子が
-$`\mathrm{cnf}\bigl(\mathsf{P}(t_2, \mathrm{tr}(\mathrm{tw}_{t_1} T'), \mathrm{tr}(\mathrm{dw}_{t_1} T'))\bigr)`$、
-すなわち $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$ である。
+Rewriting the antecedent in this form and using [T.cnf_P_P](Cnf.md#t-cnf_P_P), the third conjunct on its
+right-hand side is
+$`\mathrm{cnf}\bigl(\mathsf{P}(t_2, \mathrm{tr}(\mathrm{tw}_{t_1} T'), \mathrm{tr}(\mathrm{dw}_{t_1} T'))\bigr)`$,
+that is, $`\mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)`$.
 
-以上 3 つの場合すべてで $`\Psi(g :: G')`$ が示された。∎
+In all three cases $`\Psi(g :: G')`$ is proved. ∎
 
 <a id="t-cnf_oper_i1eq0"></a>
-## 定理: 完全コピー分岐での CNF 保存 (T.cnf_oper_i1eq0)
+## Theorem: preservation of CNF in the exact-copy branch (T.cnf_oper_i1eq0)
 
-### 定理
+### Theorem
 
-$`v_0, w_0 \in \mathbb{N}`$、$`R, G \in \mathrm{PairSeq}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$、
-$`n \in \mathbb{N}`$ とする。以下 $`B := (v_0,w_0) :: R`$ とおき、列を $`k`$ 個連結する記法
-$`L^{\ast k}`$ は [T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block) のものを用いる。
-次の 4 つを仮定する。
+Let $`v_0, w_0 \in \mathbb{N}`$, $`R, G \in \mathrm{PairSeq}`$, $`\ell \in \mathbb{N}\times\mathbb{N}`$ and
+$`n \in \mathbb{N}`$. Put $`B := (v_0,w_0) :: R`$, and use the notation $`L^{\ast k}`$ for the
+concatenation of $`k`$ copies of a sequence as in [T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block).
+Assume the following four conditions.
 
 ```math
 \begin{aligned}
@@ -352,23 +348,23 @@ $`L^{\ast k}`$ は [T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block) のも�
 \end{aligned}
 ```
 
-このとき
+Then
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} B^{\ast n})\bigr).
 ```
 
-### 証明
+### Proof
 
-(n1) より $`n = m + 1`$ をみたす $`m \in \mathbb{N}`$ が取れる（$`m := n - 1`$ とおけばよい）。
-以下 $`T := B^{\ast m}`$ と略記する。
+By (n1) there is $`m \in \mathbb{N}`$ with $`n = m + 1`$ (take $`m := n - 1`$).
+In what follows we abbreviate $`T := B^{\ast m}`$.
 
-**第 1 段：2 つの列の翻訳の形。**
+**Step 1: the shape of the translations of the two sequences.**
 
-まず $`R \mathbin{+\!\!+} (\ell)`$ の全要素 $`x`$ が $`v_0 \lt x_1`$ をみたす。実際、
-$`x \in R`$ のときは (hR)、$`x = \ell`$ のときは (lpv) による。よって
-[T.translate_single_tree](Term.md#t-translate_single_tree) を $`p := (v_0,w_0)`$、
-$`R := R \mathbin{+\!\!+} (\ell)`$ に適用して
+First, every element $`x`$ of $`R \mathbin{+\!\!+} (\ell)`$ satisfies $`v_0 \lt x_1`$. Indeed, this is
+(hR) when $`x \in R`$, and (lpv) when $`x = \ell`$. Hence applying
+[T.translate_single_tree](Term.md#t-translate_single_tree) with $`p := (v_0,w_0)`$ and
+$`R := R \mathbin{+\!\!+} (\ell)`$ gives
 
 ```math
 \text{(A)}\qquad
@@ -376,27 +372,25 @@ $`R := R \mathbin{+\!\!+} (\ell)`$ に適用して
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-を得る。
-
-次に $`L^{\ast k}`$ の定義と $`B = (v_0,w_0) :: R`$ から
+Next, the definition of $`L^{\ast k}`$ and $`B = (v_0,w_0) :: R`$ give
 
 ```math
 \text{(B)}\qquad
 B^{\ast(m+1)} = B \mathbin{+\!\!+} T = (v_0,w_0) :: (R \mathbin{+\!\!+} T)
 ```
 
-である。さらに $`T`$ について次が成り立つ。
+Furthermore, the following holds for $`T`$.
 
 ```math
 \text{(C)}\qquad T = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,T)_1\bigr).
 ```
 
-実際、$`m = 0`$ のときは $`T = B^{\ast 0} = ()`$ であり第 1 選言が成り立つ。
-$`m = m' + 1`$ のときは $`T = B \mathbin{+\!\!+} B^{\ast m'}`$ であってその先頭要素は
-$`B`$ の先頭要素 $`(v_0,w_0)`$ であるから $`(\mathrm{head}\,T)_1 = v_0`$ であり、
-$`\lt`$ の非反射性より $`\neg(v_0 \lt v_0)`$、すなわち第 2 選言が成り立つ。
+Indeed, if $`m = 0`$ then $`T = B^{\ast 0} = ()`$ and the first disjunct holds.
+If $`m = m' + 1`$ then $`T = B \mathbin{+\!\!+} B^{\ast m'}`$, whose head is the head
+$`(v_0,w_0)`$ of $`B`$, so $`(\mathrm{head}\,T)_1 = v_0`$, and the irreflexivity of
+$`\lt`$ gives $`\neg(v_0 \lt v_0)`$, that is, the second disjunct holds.
 
-(hR) と (C) に [T.translate_block_append](Term.md#t-translate_block_append) を適用して
+Applying [T.translate_block_append](Term.md#t-translate_block_append) to (hR) and (C) gives
 
 ```math
 \text{(D)}\qquad
@@ -404,76 +398,72 @@ $`\lt`$ の非反射性より $`\neg(v_0 \lt v_0)`$、すなわち第 2 選言�
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,T\bigr)
 ```
 
-を得る。
+**Step 2: CNF of the block body.**
 
-**第 2 段：ブロック本体の CNF。**
-
-$`\mathbin{+\!\!+}`$ の結合則と $`B = (v_0,w_0) :: R`$ より
+By the associativity of $`\mathbin{+\!\!+}`$ and $`B = (v_0,w_0) :: R`$,
 
 ```math
 G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))\bigr)
 ```
 
-であるから、(cM) は $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell)))\bigr)`$
-と同一の命題である。これを (cM') とよぶ。
+so (cM) is the same proposition as $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell)))\bigr)`$.
+We call it (cM').
 
-第 1 段で示したとおり $`R \mathbin{+\!\!+} (\ell)`$ の全要素 $`x`$ は $`v_0 \lt x_1`$ をみたすから、
-とくに
+As shown in Step 1, every element $`x`$ of $`R \mathbin{+\!\!+} (\ell)`$ satisfies $`v_0 \lt x_1`$;
+in particular
 
 ```math
 \text{(rT)}\qquad \forall x \in R \mathbin{+\!\!+} (\ell),\ \bigl((v_0,w_0)\bigr)_1 \le x_1
 ```
 
-である。[T.cnf_tail](#t-cnf_tail) を $`t := (v_0,w_0)`$、$`T' := R \mathbin{+\!\!+} (\ell)`$、$`G := G`$
-として (rT) と (cM') に適用して
+Applying [T.cnf_tail](#t-cnf_tail) with $`t := (v_0,w_0)`$, $`T' := R \mathbin{+\!\!+} (\ell)`$ and $`G := G`$
+to (rT) and (cM') gives
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell)))\bigr)
 ```
 
-を得る。ここに (A) を代入すると $`\mathrm{cnf}\bigl(\mathsf{P}(w_0, \mathrm{tr}(R \mathbin{+\!\!+} (\ell)), \mathsf{Z})\bigr)`$
-であり、[T.cnf_P_Z](Cnf.md#t-cnf_P_Z) より
+Substituting (A) here yields $`\mathrm{cnf}\bigl(\mathsf{P}(w_0, \mathrm{tr}(R \mathbin{+\!\!+} (\ell)), \mathsf{Z})\bigr)`$,
+and [T.cnf_P_Z](Cnf.md#t-cnf_P_Z) gives
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}(R \mathbin{+\!\!+} (\ell))\bigr)
 ```
 
-を得る。これに [T.cnf_snoc](Cnf.md#t-cnf_snoc) を $`D := R`$、$`m := \ell`$ として適用して
+Applying [T.cnf_snoc](Cnf.md#t-cnf_snoc) to this with $`D := R`$ and $`m := \ell`$ gives
 
 ```math
 \text{(cR)}\qquad \mathrm{cnf}\bigl(\mathrm{tr}\,R\bigr)
 ```
 
-を得る。
+**Step 3: CNF of the copy sequence itself.**
 
-**第 3 段：コピー列そのものの CNF。**
-
-[T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block) を (hR)、(cR)、$`n := m+1`$ に適用して
+Applying [T.cnf_replicate_block](Cnf.md#t-cnf_replicate_block) to (hR), (cR) and $`n := m+1`$ gives
 
 ```math
 \text{(cZ1)}\qquad \mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast(m+1)})\bigr)
 ```
 
-を得る。(B) によりこれは $`\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0) :: (R \mathbin{+\!\!+} T))\bigr)`$ と同一の命題である。
+By (B) this is the same proposition as $`\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0) :: (R \mathbin{+\!\!+} T))\bigr)`$.
 
-**第 4 段：狭義減少と先頭主要項の比較。**
+**Step 4: the strict decrease and the comparison of the leading principal terms.**
 
-[T.translate_snoc_increase](Decrease.md#t-translate_snoc_increase) を $`C := R`$、$`m := \ell`$ に
-適用して
+Applying [T.translate_snoc_increase](Decrease.md#t-translate_snoc_increase) with $`C := R`$ and
+$`m := \ell`$ gives
 
 ```math
 \text{(E)}\qquad \mathrm{tr}\,R \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))
 ```
 
-を得る。(E) に [T.olt_P_b](Term.md#t-olt_P_b) を $`a := w_0`$、$`c_1 := \mathrm{tr}\,T`$、
-$`c_2 := \mathsf{Z}`$ として適用すると
+Applying [T.olt_P_b](Term.md#t-olt_P_b) to (E) with $`a := w_0`$, $`c_1 := \mathrm{tr}\,T`$ and
+$`c_2 := \mathsf{Z}`$ gives
 
 ```math
 \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,T\bigr)
   \prec \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-であり、(D) と (A) を代入して
+and substituting (D) and (A) gives
 
 ```math
 \text{(decr)}\qquad
@@ -481,15 +471,15 @@ $`c_2 := \mathsf{Z}`$ として適用すると
   \prec \mathrm{tr}\bigl((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))\bigr)
 ```
 
-を得る。同じく (E) に [T.olt_P_b](Term.md#t-olt_P_b) を $`c_1 := \mathsf{Z}`$、$`c_2 := \mathsf{Z}`$
-として適用すると
+Applying [T.olt_P_b](Term.md#t-olt_P_b) to (E) likewise with $`c_1 := \mathsf{Z}`$ and $`c_2 := \mathsf{Z}`$
+gives
 
 ```math
 \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathsf{Z}\bigr)
   \prec \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-であるから、$`\preceq`$ の定義（D.ole）の第 1 選言により
+so the first disjunct of the definition of $`\preceq`$ (D.ole) yields
 
 ```math
 \text{(leadle)}\qquad
@@ -497,164 +487,165 @@ $`c_2 := \mathsf{Z}`$ として適用すると
   \preceq \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-が成り立つ。(D) の右辺の添字と引数はそれぞれ $`w_0`$, $`\mathrm{tr}\,R`$、(A) の右辺の添字と引数は
-それぞれ $`w_0`$, $`\mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$ であるから、(leadle) は
-[T.cnf_ctx_cong](#t-cnf_ctx_cong) の仮定 (leadle) の形をしている。
+The subscript and the argument on the right-hand side of (D) are $`w_0`$ and $`\mathrm{tr}\,R`$, and those
+on the right-hand side of (A) are $`w_0`$ and $`\mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$; hence (leadle) has the
+form of the hypothesis (leadle) of [T.cnf_ctx_cong](#t-cnf_ctx_cong).
 
-**第 5 段：文脈による合同。**
+**Step 5: congruence under the context.**
 
-$`T = B^{\ast m}`$ の各要素は $`B`$ の要素である。実際、$`T`$ は $`B`$ を $`m`$ 個連結した列だから、
-$`x \in T`$ ならば $`x`$ はそのいずれかの $`B`$ の要素であり、$`B`$ は共通である。
-$`B = (v_0,w_0) :: R`$ であるから $`x = (v_0,w_0)`$ または $`x \in R`$ であり、
-前者では $`x_1 = v_0`$、後者では (hR) より $`v_0 \lt x_1`$ である。いずれの場合も $`v_0 \le x_1`$。
-これと (hR) を合わせて
+Every element of $`T = B^{\ast m}`$ is an element of $`B`$. Indeed, $`T`$ is the concatenation of $`m`$
+copies of $`B`$, so if $`x \in T`$ then $`x`$ is an element of one of those copies, and that copy is $`B`$
+in each case. Since $`B = (v_0,w_0) :: R`$, either $`x = (v_0,w_0)`$ or $`x \in R`$; in the former case
+$`x_1 = v_0`$, and in the latter case (hR) gives $`v_0 \lt x_1`$. In both cases $`v_0 \le x_1`$.
+Combining this with (hR) gives
 
 ```math
 \text{(r1)}\qquad \forall x \in R \mathbin{+\!\!+} T,\ \bigl((v_0,w_0)\bigr)_1 \le x_1
 ```
 
-を得る。
-
-[T.cnf_ctx_cong](#t-cnf_ctx_cong) を
+We apply [T.cnf_ctx_cong](#t-cnf_ctx_cong) with
 
 ```math
 z_1 := (v_0,w_0),\quad T_1 := R \mathbin{+\!\!+} T,\quad
 z_2 := (v_0,w_0),\quad T_2 := R \mathbin{+\!\!+} (\ell),\quad G := G
 ```
 
-として適用する。その 7 つの仮定は次のように満たされる。
+Its seven hypotheses are satisfied as follows.
 
-- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$：第 3 段の (cZ1)（(B) による）。
-- $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$：第 4 段の (decr)。
-- $`(z_1)_1 = (z_2)_1`$：両辺とも $`v_0`$ であり $`=`$ の反射性による。
-- (leadle)：第 4 段の (leadle) を (D), (A) と合わせたもの。
-- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$：第 5 段の (r1)。
-- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$：第 2 段の (rT)。
-- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$：第 2 段の (cM')。
+- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$: (cZ1) of Step 3 (via (B)).
+- $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$: (decr) of Step 4.
+- $`(z_1)_1 = (z_2)_1`$: both sides are $`v_0`$, so this is the reflexivity of $`=`$.
+- (leadle): the (leadle) of Step 4 combined with (D) and (A).
+- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$: (r1) of Step 5.
+- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$: (rT) of Step 2.
+- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$: (cM') of Step 2.
 
-結論として $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: (R \mathbin{+\!\!+} T))\bigr)`$ を得る。
-(B) より $`(v_0,w_0) :: (R \mathbin{+\!\!+} T) = B^{\ast(m+1)} = B^{\ast n}`$ であるから、
-これは求める $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} B^{\ast n})\bigr)`$ である。∎
+The conclusion is $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: (R \mathbin{+\!\!+} T))\bigr)`$.
+By (B) we have $`(v_0,w_0) :: (R \mathbin{+\!\!+} T) = B^{\ast(m+1)} = B^{\ast n}`$, so this is the required
+$`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} B^{\ast n})\bigr)`$. ∎
 
 <a id="d-shiftr0"></a>
-## 定義: 行 0 の平行移動 (D.shiftr0)
+## Definition: shift of row 0 (D.shiftr0)
 
-$`d \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ に対し、$`M`$ の各対の第 1 成分に一様に $`d`$ を
-足した列を $`M^{+d}`$ と書く。すなわち $`M = (M_0, \dots, M_{X-1})`$、$`X = \lvert M\rvert`$ のとき
+For $`d \in \mathbb{N}`$ and $`M \in \mathrm{PairSeq}`$, write $`M^{+d}`$ for the sequence obtained by
+adding $`d`$ uniformly to the first entry of every pair of $`M`$. That is, for
+$`M = (M_0, \dots, M_{X-1})`$ with $`X = \lvert M\rvert`$,
 
 ```math
 M^{+d} := \bigl(\,(M_{0,0} + d,\ M_{1,0}),\ \dots,\ (M_{0,X-1} + d,\ M_{1,X-1})\,\bigr).
 ```
 
 <a id="d-copies"></a>
-## 定義: 上昇コピー列 (D.copies)
+## Definition: ascending copy sequence (D.copies)
 
-$`d, n \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$ に対し
+For $`d, n \in \mathbb{N}`$ and $`B \in \mathrm{PairSeq}`$ put
 
 ```math
 \mathrm{cp}_d(B, n) := B^{+0\cdot d} \mathbin{+\!\!+} B^{+1\cdot d} \mathbin{+\!\!+} \cdots
   \mathbin{+\!\!+} B^{+(n-1)d}
 ```
 
-とおく。正確には、$`\mathrm{range}(n) := (0, 1, \dots, n-1)`$ の各要素 $`k`$ を列 $`B^{+kd}`$ に
-写し、得られた $`n`$ 個の列を左から順に連結した列である。$`n = 0`$ のとき $`\mathrm{range}(0) = ()`$
-であるから $`\mathrm{cp}_d(B,0) = ()`$ である。
+Precisely, this is the sequence obtained by mapping each element $`k`$ of
+$`\mathrm{range}(n) := (0, 1, \dots, n-1)`$ to the sequence $`B^{+kd}`$ and concatenating the resulting
+$`n`$ sequences from left to right. For $`n = 0`$ we have $`\mathrm{range}(0) = ()`$,
+so $`\mathrm{cp}_d(B,0) = ()`$.
 
 <a id="t-shiftr0_zero"></a>
-## 定理: 平行移動量 0 は恒等 (T.shiftr0_zero)
+## Theorem: a shift by 0 is the identity (T.shiftr0_zero)
 
-### 定理
+### Theorem
 
-任意の $`M \in \mathrm{PairSeq}`$ に対し $`M^{+0} = M`$。
+For every $`M \in \mathrm{PairSeq}`$, $`M^{+0} = M`$.
 
-### 証明
+### Proof
 
-$`M^{+d}`$ の定義（D.shiftr0）より $`M^{+0}`$ の第 $`i`$ 要素は $`(M_{0,i} + 0,\ M_{1,i})`$ である。
-$`\mathbb{N}`$ において $`M_{0,i} + 0 = M_{0,i}`$ であるから、これは $`(M_{0,i},\ M_{1,i}) = M_i`$、
-すなわち $`M`$ の第 $`i`$ 要素に等しい。長さも $`\lvert M^{+0}\rvert = \lvert M\rvert`$ で一致する。∎
+By the definition of $`M^{+d}`$ (D.shiftr0), the $`i`$-th element of $`M^{+0}`$ is $`(M_{0,i} + 0,\ M_{1,i})`$.
+In $`\mathbb{N}`$ we have $`M_{0,i} + 0 = M_{0,i}`$, so this equals $`(M_{0,i},\ M_{1,i}) = M_i`$,
+the $`i`$-th element of $`M`$. The lengths agree as well, $`\lvert M^{+0}\rvert = \lvert M\rvert`$. ∎
 
 <a id="t-shiftr0_nil"></a>
-## 定理: 空列の平行移動 (T.shiftr0_nil)
+## Theorem: shift of the empty sequence (T.shiftr0_nil)
 
-### 定理
+### Theorem
 
-任意の $`d \in \mathbb{N}`$ に対し $`()^{+d} = ()`$。
+For every $`d \in \mathbb{N}`$, $`()^{+d} = ()`$.
 
-### 証明
+### Proof
 
-$`M^{+d}`$ の定義（D.shiftr0）は $`M`$ の各要素を写す操作であり、$`M = ()`$ は要素をもたないから
-結果も要素をもたない。∎
+The definition of $`M^{+d}`$ (D.shiftr0) maps each element of $`M`$, and $`M = ()`$ has no elements,
+so the result has no elements either. ∎
 
 <a id="t-shiftr0_eq_nil"></a>
-## 定理: 平行移動が空列になる条件 (T.shiftr0_eq_nil)
+## Theorem: when a shift is the empty sequence (T.shiftr0_eq_nil)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ に対し
-$`M^{+d} = () \iff M = ()`$。
+For $`d \in \mathbb{N}`$ and $`M \in \mathrm{PairSeq}`$,
+$`M^{+d} = () \iff M = ()`$.
 
-### 証明
+### Proof
 
-$`M^{+d}`$ の定義（D.shiftr0）より $`\lvert M^{+d}\rvert = \lvert M\rvert`$ である。
-列が空であることと長さが $`0`$ であることは同値であるから
+By the definition of $`M^{+d}`$ (D.shiftr0), $`\lvert M^{+d}\rvert = \lvert M\rvert`$.
+A sequence is empty if and only if its length is $`0`$, hence
 
 ```math
 M^{+d} = () \iff \lvert M^{+d}\rvert = 0 \iff \lvert M\rvert = 0 \iff M = () . \qquad \blacksquare
 ```
 
 <a id="t-translate_shiftr0"></a>
-## 定理: 平行移動は翻訳を変えない (T.translate_shiftr0)
+## Theorem: a shift does not change the translation (T.translate_shiftr0)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ に対し
-$`\mathrm{tr}\,(M^{+d}) = \mathrm{tr}\,M`$。
+For $`d \in \mathbb{N}`$ and $`M \in \mathrm{PairSeq}`$,
+$`\mathrm{tr}\,(M^{+d}) = \mathrm{tr}\,M`$.
 
-### 証明
+### Proof
 
-[T.translate_shift](Term.md#t-translate_shift) そのものである。∎
+This is exactly [T.translate_shift](Term.md#t-translate_shift). ∎
 
 <a id="t-shiftr0_cons"></a>
-## 定理: 先頭付き列の平行移動 (T.shiftr0_cons)
+## Theorem: shift of a sequence with a head element (T.shiftr0_cons)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$、$`p \in \mathbb{N}\times\mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ に対し
+For $`d \in \mathbb{N}`$, $`p \in \mathbb{N}\times\mathbb{N}`$ and $`M \in \mathrm{PairSeq}`$,
 
 ```math
 (p :: M)^{+d} = (p_1 + d,\ p_2) :: M^{+d} .
 ```
 
-### 証明
+### Proof
 
-$`M^{+d}`$ の定義（D.shiftr0）は各要素を $`q \mapsto (q_1 + d, q_2)`$ で写す操作であり、
-この操作を $`p :: M`$ に施すと、先頭要素 $`p`$ が $`(p_1 + d, p_2)`$ に写り、残りの列 $`M`$ が
-$`M^{+d}`$ に写る。∎
+The definition of $`M^{+d}`$ (D.shiftr0) maps each element by $`q \mapsto (q_1 + d, q_2)`$.
+Applying this operation to $`p :: M`$ maps the head $`p`$ to $`(p_1 + d, p_2)`$ and the remaining
+sequence $`M`$ to $`M^{+d}`$. ∎
 
 <a id="t-mem_shiftr0"></a>
-## 定理: 平行移動列の要素判定 (T.mem_shiftr0)
+## Theorem: membership in a shifted sequence (T.mem_shiftr0)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$、$`x \in \mathbb{N}\times\mathbb{N}`$ に対し
+For $`d \in \mathbb{N}`$, $`M \in \mathrm{PairSeq}`$ and $`x \in \mathbb{N}\times\mathbb{N}`$,
 
 ```math
 x \in M^{+d} \iff \exists p \in M,\ (p_1 + d,\ p_2) = x .
 ```
 
-### 証明
+### Proof
 
-$`M^{+d}`$ の定義（D.shiftr0）より $`M^{+d}`$ は $`M`$ の各要素 $`p`$ を $`(p_1+d, p_2)`$ に
-写した列である。写した列の要素であることは、写す前の列にその原像が存在することと同値である。∎
+By the definition of $`M^{+d}`$ (D.shiftr0), $`M^{+d}`$ is the sequence obtained by mapping each element
+$`p`$ of $`M`$ to $`(p_1+d, p_2)`$. Being an element of the mapped sequence is equivalent to the existence
+of a preimage in the sequence before the mapping. ∎
 
 <a id="t-copies_zero"></a>
-## 定理: コピー 0 個 (T.copies_zero)
+## Theorem: zero copies (T.copies_zero)
 
-### 定理
+### Theorem
 
-$`d \in \mathbb{N}`$、$`B \in \mathrm{PairSeq}`$ に対し $`\mathrm{cp}_d(B, 0) = ()`$。
+For $`d \in \mathbb{N}`$ and $`B \in \mathrm{PairSeq}`$, $`\mathrm{cp}_d(B, 0) = ()`$.
 
-### 証明
+### Proof
 
-$`\mathrm{cp}`$ の定義（D.copies）において $`\mathrm{range}(0) = ()`$ であり、
-空列の各要素を写して連結した列は空列である。∎
+In the definition of $`\mathrm{cp}`$ (D.copies) we have $`\mathrm{range}(0) = ()`$, and the sequence obtained
+by mapping the elements of the empty sequence and concatenating the results is the empty sequence. ∎

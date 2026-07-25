@@ -1,26 +1,25 @@
 [← README](README.md) | [English](Wset-3.md) | [Japanese](Wset-3-ja.md) | Wset [1](Wset.md) [2](Wset-2.md) **3** [4](Wset-4.md)
 
 <a id="t-XA_closed"></a>
-## 定理: $`A_u\bigl(X^{(A)}\bigr) \subseteq X^{(A)}`$ (T.XA_closed)
+## Theorem: $`A_u\bigl(X^{(A)}\bigr) \subseteq X^{(A)}`$ (T.XA_closed)
 
-### 定理
+### Theorem
 
-$`X \subseteq \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）が
-$`\forall M,\ M \in A_u(X) \to M \in X`$（[D.Aop](Wset.md#d-Aop)）をみたし、
-$`A \in X`$ とする。このとき
+Let $`X \subseteq \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) satisfy
+$`\forall M,\ M \in A_u(X) \to M \in X`$ ([D.Aop](Wset.md#d-Aop)), and let $`A \in X`$. Then
 
 ```math
 \forall M,\ M \in A_u\bigl(X^{(A)}\bigr) \to M \in X^{(A)} .
 ```
 
-### 証明
+### Proof
 
-$`B \in A_u(X^{(A)})`$（[D.XA](Wset-2.md#d-XA)）とする。$`X^{(A)}`$ の定義（D.XA）より、
-$`\mathrm{rsum}(A,B)`$（[D.rsum](Wset.md#d-rsum)）を仮定して
-$`A \mathbin{+\!\!+} B \in X`$ を示せばよい。
+Let $`B \in A_u(X^{(A)})`$ ([D.XA](Wset-2.md#d-XA)). By the definition of $`X^{(A)}`$ (D.XA), it
+suffices to assume $`\mathrm{rsum}(A,B)`$ ([D.rsum](Wset.md#d-rsum)) and to show
+$`A \mathbin{+\!\!+} B \in X`$.
 
-$`B = ()`$ のときは $`A \mathbin{+\!\!+} () = A \in X`$ である。以下 $`B \ne ()`$、
-すなわち $`0 \lt \lvert B\rvert`$ とする。$`\mathrm{rsum}(A,B)`$ の定義（D.rsum）より
+If $`B = ()`$ then $`A \mathbin{+\!\!+} () = A \in X`$. So assume from now on $`B \ne ()`$,
+that is, $`0 \lt \lvert B\rvert`$. By the definition of $`\mathrm{rsum}(A,B)`$ (D.rsum),
 
 ```math
 (\ast)\qquad \forall p \in B,\ B_{0,0} \le p_1,
@@ -28,211 +27,215 @@ $`B = ()`$ のときは $`A \mathbin{+\!\!+} () = A \in X`$ である。以下 $
 (\ast\ast)\qquad \forall p \in A,\ B_{0,0} \le p_1
 ```
 
-が成り立つ。$`A_u`$ の定義（D.Aop）の 3 分岐で場合分けする。
+hold. We distinguish cases according to the three branches of the definition of $`A_u`$ (D.Aop).
 
-**分岐 (1)：$`\lvert B\rvert \le 1 \wedge B_{1,0} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
-$`0 \lt \lvert B\rvert`$ と合わせて $`\lvert B\rvert = 1`$ である。$`A`$ が空か否かで分ける。
+**Branch (1): the case $`\lvert B\rvert \le 1 \wedge B_{1,0} = 0`$ ([D.entry](Pss.md#d-entry)).**
+Together with $`0 \lt \lvert B\rvert`$ this gives $`\lvert B\rvert = 1`$. We distinguish according to
+whether $`A`$ is empty.
 
-**$`A = ()`$ のとき。** 仮定より $`B \in A_u(X)`$（分岐 (1) そのもの）であるから
-$`B \in X`$ であり、$`A \mathbin{+\!\!+} B = B \in X`$ である。
+**The case $`A = ()`$.** The hypothesis of the present case is branch (1) itself, so
+$`B \in A_u(X)`$, and the hypothesis on $`X`$ gives $`B \in X`$; hence
+$`A \mathbin{+\!\!+} B = B \in X`$.
 
-**$`A \ne ()`$ のとき。** $`0 \lt \lvert A\rvert`$ である。
-$`\lvert A \mathbin{+\!\!+} B\rvert = \lvert A\rvert + 1`$ であるから
+**The case $`A \ne ()`$.** Then $`0 \lt \lvert A\rvert`$. Since
+$`\lvert A \mathbin{+\!\!+} B\rvert = \lvert A\rvert + 1`$,
 
 ```math
 \lvert A \mathbin{+\!\!+} B\rvert - 1 = \lvert A\rvert + 0 .
 ```
 
-まず、任意の $`i`$ について
-$`\neg\,\mathrm{hasParent}(A \mathbin{+\!\!+} B,\ i,\ \lvert A \mathbin{+\!\!+} B\rvert - 1)`$（[D.hasParent](Pss.md#d-hasParent)）
-である。実際これが成り立つとすると、$`0 \lt \lvert B\rvert`$ より
-[T.hasParent_append_gen](Wset-2.md#t-hasParent_append_gen) を $`j := 0`$ に適用して
-$`\mathrm{hasParent}(B, i, 0)`$ を得る。$`\mathrm{hasParent}`$ の定義（D.hasParent）より
-$`j_0 \to^B_i 0`$（[D.nextR](Pss.md#d-nextR)）なる $`j_0`$ が存在するが、
-[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) より $`j_0 \lt 0`$ となり矛盾する。
+First, for every $`i`$ we have
+$`\neg\,\mathrm{hasParent}(A \mathbin{+\!\!+} B,\ i,\ \lvert A \mathbin{+\!\!+} B\rvert - 1)`$ ([D.hasParent](Pss.md#d-hasParent)).
+Indeed, if this were to hold then, since $`0 \lt \lvert B\rvert`$, applying
+[T.hasParent_append_gen](Wset-2.md#t-hasParent_append_gen) with $`j := 0`$ gives
+$`\mathrm{hasParent}(B, i, 0)`$. By the definition of $`\mathrm{hasParent}`$ (D.hasParent) there is
+$`j_0`$ with $`j_0 \to^B_i 0`$ ([D.nextR](Pss.md#d-nextR)), but
+[T.nextR_index_lt](Decrease.md#t-nextR_index_lt) gives $`j_0 \lt 0`$, a contradiction.
 
-次に $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$（[D.natDom](Wset.md#d-natDom)）を示す。$`\lvert B\rvert - 1 = 0`$ であるから
-$`B_{1,\lvert B\rvert-1} = B_{1,0} = 0`$ であり、[T.natDom_iff](Wset.md#t-natDom_iff) の右辺の
-第 1 選言が成り立つので $`\mathrm{natDom}(B)`$ である。
-[T.natDom_append](Wset-2.md#t-natDom_append) より $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$ である。
+Next we show $`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$ ([D.natDom](Wset.md#d-natDom)). Since
+$`\lvert B\rvert - 1 = 0`$ we have $`B_{1,\lvert B\rvert-1} = B_{1,0} = 0`$, so the first disjunct on
+the right-hand side of [T.natDom_iff](Wset.md#t-natDom_iff) holds and therefore
+$`\mathrm{natDom}(B)`$. By [T.natDom_append](Wset-2.md#t-natDom_append) we get
+$`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$.
 
-最後に、任意の $`n \ge 1`$ に対し $`(A \mathbin{+\!\!+} B)[n] = A \in X`$（[D.oper](Pss.md#d-oper)）を示す。
-$`2 \le \lvert A \mathbin{+\!\!+} B\rvert`$ であるから $`\lvert A \mathbin{+\!\!+} B\rvert - 1 \ne 0`$ である。
-$`J := \lvert A \mathbin{+\!\!+} B\rvert - 1`$ と略記すると、
-$`(A \mathbin{+\!\!+} B)_{0,J} = 0 \wedge (A \mathbin{+\!\!+} B)_{1,J} = 0`$ が成り立つなら
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) により、成り立たないなら
-上で示した親の非存在と
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) により、
-いずれにせよ $`(A \mathbin{+\!\!+} B)[n] = \mathrm{Pred}(A \mathbin{+\!\!+} B)`$（[D.Pred](Pss.md#d-Pred)）である。
-$`2 \le \lvert A \mathbin{+\!\!+} B\rvert`$ より $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ、
-$`B \ne ()`$ より
+Finally we show $`(A \mathbin{+\!\!+} B)[n] = A \in X`$ ([D.oper](Pss.md#d-oper)) for every $`n \ge 1`$.
+Since $`2 \le \lvert A \mathbin{+\!\!+} B\rvert`$ we have $`\lvert A \mathbin{+\!\!+} B\rvert - 1 \ne 0`$.
+Abbreviate $`J := \lvert A \mathbin{+\!\!+} B\rvert - 1`$. If
+$`(A \mathbin{+\!\!+} B)_{0,J} = 0 \wedge (A \mathbin{+\!\!+} B)_{1,J} = 0`$ holds, then
+[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) applies; if it does not, then the
+absence of a parent shown above together with
+[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) applies; in either case
+$`(A \mathbin{+\!\!+} B)[n] = \mathrm{Pred}(A \mathbin{+\!\!+} B)`$ ([D.Pred](Pss.md#d-Pred)).
+From $`2 \le \lvert A \mathbin{+\!\!+} B\rvert`$ the second case of the definition of $`\mathrm{Pred}`$
+(D.Pred) is selected, and since $`B \ne ()`$
 
 ```math
 \mathrm{Pred}(A \mathbin{+\!\!+} B) = \mathrm{dropLast}(A \mathbin{+\!\!+} B)
   = A \mathbin{+\!\!+} \mathrm{dropLast}\,B = A \mathbin{+\!\!+} () = A
 ```
 
-である（$`\lvert B\rvert = 1`$ より $`\mathrm{dropLast}\,B = ()`$）。よって
-$`(A \mathbin{+\!\!+} B)[n] = A \in X`$ である。
+(because $`\lvert B\rvert = 1`$ gives $`\mathrm{dropLast}\,B = ()`$). Hence
+$`(A \mathbin{+\!\!+} B)[n] = A \in X`$.
 
-以上により $`A \mathbin{+\!\!+} B`$ は $`A_u`$ の定義（D.Aop）の分岐 (2) をみたす。
-すなわち $`A \mathbin{+\!\!+} B \in A_u(X)`$ であり、仮定より $`A \mathbin{+\!\!+} B \in X`$ である。
+Therefore $`A \mathbin{+\!\!+} B`$ satisfies branch (2) of the definition of $`A_u`$ (D.Aop); that is,
+$`A \mathbin{+\!\!+} B \in A_u(X)`$, and the hypothesis gives $`A \mathbin{+\!\!+} B \in X`$.
 
-**分岐 (2)：$`\mathrm{natDom}(B) \wedge \forall n \ge 1,\ B[n] \in X^{(A)}`$ のとき。**
-$`2 \le \lvert B\rvert`$ か否かで分ける。
+**Branch (2): the case $`\mathrm{natDom}(B) \wedge \forall n \ge 1,\ B[n] \in X^{(A)}`$.**
+We distinguish according to whether $`2 \le \lvert B\rvert`$.
 
-**$`2 \le \lvert B\rvert`$ のとき。** [T.natDom_append](Wset-2.md#t-natDom_append) より
-$`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$ である。$`n \ge 1`$ を取ると
-[T.oper_append_gen](Wset-2.md#t-oper_append_gen) より
+**The case $`2 \le \lvert B\rvert`$.** By [T.natDom_append](Wset-2.md#t-natDom_append) we have
+$`\mathrm{natDom}(A \mathbin{+\!\!+} B)`$. Take $`n \ge 1`$; then
+[T.oper_append_gen](Wset-2.md#t-oper_append_gen) gives
 
 ```math
 (A \mathbin{+\!\!+} B)[n] = A \mathbin{+\!\!+} B[n]
 ```
 
-である。$`B[n] \in X^{(A)}`$ であるから、$`A \mathbin{+\!\!+} B[n] \in X`$ を得るには
-$`\mathrm{rsum}(A,\ B[n])`$ を確かめればよい。
-[T.oper_head_eq](Wset-2.md#t-oper_head_eq) より $`(B[n])_{0,0} = B_{0,0}`$ である。
-$`p \in A \mathbin{+\!\!+} B[n]`$ を取ると、$`p \in A`$ のときは $`(\ast\ast)`$ より
-$`B_{0,0} \le p_1`$、$`p \in B[n]`$ のときは $`(\ast)`$ と
-[T.oper_mem_ge](Wset-2.md#t-oper_mem_ge)（$`c := B_{0,0}`$）より $`B_{0,0} \le p_1`$ である。
-よって $`\mathrm{rsum}(A, B[n])`$ が成り立ち、$`(A \mathbin{+\!\!+} B)[n] \in X`$ である。
-すなわち $`A \mathbin{+\!\!+} B`$ は分岐 (2) をみたすから、仮定より $`A \mathbin{+\!\!+} B \in X`$ である。
+Since $`B[n] \in X^{(A)}`$, in order to obtain $`A \mathbin{+\!\!+} B[n] \in X`$ it suffices to check
+$`\mathrm{rsum}(A,\ B[n])`$. By [T.oper_head_eq](Wset-2.md#t-oper_head_eq) we have
+$`(B[n])_{0,0} = B_{0,0}`$. Take $`p \in A \mathbin{+\!\!+} B[n]`$: if $`p \in A`$ then
+$`B_{0,0} \le p_1`$ by $`(\ast\ast)`$, and if $`p \in B[n]`$ then $`B_{0,0} \le p_1`$ by
+$`(\ast)`$ and [T.oper_mem_ge](Wset-2.md#t-oper_mem_ge) (with $`c := B_{0,0}`$).
+Hence $`\mathrm{rsum}(A, B[n])`$ holds and $`(A \mathbin{+\!\!+} B)[n] \in X`$.
+That is, $`A \mathbin{+\!\!+} B`$ satisfies branch (2), so the hypothesis gives
+$`A \mathbin{+\!\!+} B \in X`$.
 
-**$`\neg(2 \le \lvert B\rvert)`$ のとき。** $`\lvert B\rvert \le 1`$ すなわち $`\lvert B\rvert - 1 = 0`$ であるから
-[T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) より $`B[1] = B`$ である。
-分岐 (2) の第 2 連言子を $`n := 1`$ に適用すると $`B[1] \in X^{(A)}`$、すなわち
-$`B \in X^{(A)}`$ である。仮定 $`\mathrm{rsum}(A,B)`$ をこれに適用して
-$`A \mathbin{+\!\!+} B \in X`$ を得る。
+**The case $`\neg(2 \le \lvert B\rvert)`$.** Then $`\lvert B\rvert \le 1`$, that is
+$`\lvert B\rvert - 1 = 0`$, so [T.oper_eq_self_of_short](Decrease.md#t-oper_eq_self_of_short) gives
+$`B[1] = B`$. Applying the second conjunct of branch (2) with $`n := 1`$ yields
+$`B[1] \in X^{(A)}`$, that is $`B \in X^{(A)}`$. Feeding the hypothesis $`\mathrm{rsum}(A,B)`$ to
+this gives $`A \mathbin{+\!\!+} B \in X`$.
 
-**分岐 (3)、すなわち $`m \lt u`$、$`\mathrm{domT}(B,m)`$（[D.domT](Wset.md#d-domT)）、
-$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(B,z) \in X^{(A)}`$（[D.W](Wset.md#d-W)、[D.based](Wset.md#d-based)、[D.graft](Wset.md#d-graft)）をみたす $`m`$ があるとき。**
-[T.domT_append](Wset-2.md#t-domT_append) より $`\mathrm{domT}(A \mathbin{+\!\!+} B,\ m)`$ である。
-$`z \in W_m`$ が $`\mathrm{based}(z)`$ をみたすとする。
-[T.graft_append](Wset-2.md#t-graft_append) より
+**Branch (3), that is, the case where there is $`m`$ with $`m \lt u`$, $`\mathrm{domT}(B,m)`$ ([D.domT](Wset.md#d-domT)) and
+$`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(B,z) \in X^{(A)}`$ ([D.W](Wset.md#d-W), [D.based](Wset.md#d-based), [D.graft](Wset.md#d-graft)).**
+By [T.domT_append](Wset-2.md#t-domT_append) we have $`\mathrm{domT}(A \mathbin{+\!\!+} B,\ m)`$.
+Let $`z \in W_m`$ satisfy $`\mathrm{based}(z)`$. By
+[T.graft_append](Wset-2.md#t-graft_append),
 
 ```math
 \mathrm{graft}(A \mathbin{+\!\!+} B,\ z) = A \mathbin{+\!\!+} \mathrm{graft}(B,z)
 ```
 
-である。$`\mathrm{graft}(B,z) \in X^{(A)}`$ であるから、これが $`X`$ に属することを示すには
-$`\mathrm{rsum}\bigl(A,\ \mathrm{graft}(B,z)\bigr)`$ を確かめればよい。
+Since $`\mathrm{graft}(B,z) \in X^{(A)}`$, in order to show that this belongs to $`X`$ it suffices to
+check $`\mathrm{rsum}\bigl(A,\ \mathrm{graft}(B,z)\bigr)`$.
 
-- $`\mathrm{graft}(B,z) = ()`$ のとき。D.entry より $`()_{0,0} = 0`$ であるから、
-  $`\mathrm{rsum}`$ の定義（D.rsum）の要求は $`\forall p \in A \mathbin{+\!\!+} (),\ 0 \le p_1`$ であり、
-  自然数について常に成り立つ。
+- The case $`\mathrm{graft}(B,z) = ()`$. By D.entry we have $`()_{0,0} = 0`$, so the requirement of
+  the definition of $`\mathrm{rsum}`$ (D.rsum) is $`\forall p \in A \mathbin{+\!\!+} (),\ 0 \le p_1`$,
+  which always holds for natural numbers.
 
-- $`\mathrm{graft}(B,z) \ne ()`$ のとき。[T.graft_head_eq](Wset-2.md#t-graft_head_eq) より
-  $`\bigl(\mathrm{graft}(B,z)\bigr)_{0,0} = B_{0,0}`$ である。
-  $`p \in A \mathbin{+\!\!+} \mathrm{graft}(B,z)`$ を取ると、$`p \in A`$ のときは $`(\ast\ast)`$ より
-  $`B_{0,0} \le p_1`$、$`p \in \mathrm{graft}(B,z)`$ のときは $`(\ast)`$ と
-  [T.graft_mem_ge](Wset-2.md#t-graft_mem_ge)（$`c := B_{0,0}`$）より $`B_{0,0} \le p_1`$ である。
+- The case $`\mathrm{graft}(B,z) \ne ()`$. By [T.graft_head_eq](Wset-2.md#t-graft_head_eq) we have
+  $`\bigl(\mathrm{graft}(B,z)\bigr)_{0,0} = B_{0,0}`$. Take
+  $`p \in A \mathbin{+\!\!+} \mathrm{graft}(B,z)`$: if $`p \in A`$ then $`B_{0,0} \le p_1`$ by
+  $`(\ast\ast)`$, and if $`p \in \mathrm{graft}(B,z)`$ then $`B_{0,0} \le p_1`$ by $`(\ast)`$ and
+  [T.graft_mem_ge](Wset-2.md#t-graft_mem_ge) (with $`c := B_{0,0}`$).
 
-よって $`A \mathbin{+\!\!+} B`$ は同じ $`m`$ で $`A_u`$ の分岐 (3) をみたし、
-仮定より $`A \mathbin{+\!\!+} B \in X`$ である。∎
+Hence $`A \mathbin{+\!\!+} B`$ satisfies branch (3) of $`A_u`$ with the same $`m`$, and the hypothesis
+gives $`A \mathbin{+\!\!+} B \in X`$. ∎
 
 <a id="t-W_add"></a>
-## 定理: $`W_u`$ の連結による加法性 (T.W_add)
+## Theorem: additivity of $`W_u`$ under concatenation (T.W_add)
 
-### 定理
+### Theorem
 
-$`A \in W_u`$、$`B \in W_u`$、$`\mathrm{rsum}(A,B)`$ ならば $`A \mathbin{+\!\!+} B \in W_u`$。
+If $`A \in W_u`$, $`B \in W_u`$ and $`\mathrm{rsum}(A,B)`$, then $`A \mathbin{+\!\!+} B \in W_u`$.
 
-### 証明
+### Proof
 
-[T.A1_intro](Wset.md#t-A1_intro) は $`\forall M,\ M \in A_u(W_u) \to M \in W_u`$ である。
-これと $`A \in W_u`$ に [T.XA_closed](#t-XA_closed) を $`X := W_u`$ として適用すると
+[T.A1_intro](Wset.md#t-A1_intro) states $`\forall M,\ M \in A_u(W_u) \to M \in W_u`$. Applying
+[T.XA_closed](#t-XA_closed) with $`X := W_u`$ to this and to $`A \in W_u`$ gives
 
 ```math
 \forall M,\ M \in A_u\bigl((W_u)^{(A)}\bigr) \to M \in (W_u)^{(A)}
 ```
 
-を得る。これは [T.A2'](Wset.md#t-A2') の仮定であるから $`W_u \subseteq (W_u)^{(A)}`$ である。
-$`B \in W_u`$ よりとくに $`B \in (W_u)^{(A)}`$ であり、$`X^{(A)}`$ の定義（D.XA）に
-仮定 $`\mathrm{rsum}(A,B)`$ を与えて $`A \mathbin{+\!\!+} B \in W_u`$ を得る。∎
+This is the hypothesis of [T.A2'](Wset.md#t-A2'), so $`W_u \subseteq (W_u)^{(A)}`$. From
+$`B \in W_u`$ we get in particular $`B \in (W_u)^{(A)}`$, and feeding the hypothesis
+$`\mathrm{rsum}(A,B)`$ to the definition of $`X^{(A)}`$ (D.XA) yields
+$`A \mathbin{+\!\!+} B \in W_u`$. ∎
 
 <a id="t-graft_Om"></a>
-## 定理: 単一列への接ぎ木 (T.graft_Om)
+## Theorem: grafting onto a single-column sequence (T.graft_Om)
 
-### 定理
+### Theorem
 
-任意の $`v \in \mathbb{N}`$、$`z \in \mathrm{PairSeq}`$ に対し
-$`\mathrm{graft}\bigl(\bigl((0,v)\bigr),\ z\bigr) = z`$。
+For all $`v \in \mathbb{N}`$ and $`z \in \mathrm{PairSeq}`$,
+$`\mathrm{graft}\bigl(\bigl((0,v)\bigr),\ z\bigr) = z`$.
 
-### 証明
+### Proof
 
-$`\bigl((0,v)\bigr)`$ は長さ $`1`$ の列であるから $`\lvert \bigl((0,v)\bigr)\rvert - 1 = 0`$ であり、
-$`M_{i,j}`$ の定義（D.entry）より $`\bigl((0,v)\bigr)_{0,0} = 0`$ である。
-また $`\mathrm{dropLast}\,\bigl((0,v)\bigr) = ()`$ である。
-よって $`\mathrm{graft}`$ の定義（D.graft）より
+$`\bigl((0,v)\bigr)`$ is a sequence of length $`1`$, so $`\lvert \bigl((0,v)\bigr)\rvert - 1 = 0`$,
+and by the definition of $`M_{i,j}`$ (D.entry) we have $`\bigl((0,v)\bigr)_{0,0} = 0`$.
+Moreover $`\mathrm{dropLast}\,\bigl((0,v)\bigr) = ()`$. Hence the definition of $`\mathrm{graft}`$
+(D.graft) gives
 
 ```math
 \mathrm{graft}\bigl(\bigl((0,v)\bigr),\ z\bigr) = () \mathbin{+\!\!+} z^{+0} = z
 ```
 
-である（$`z^{+0}`$ [D.shiftr0](Cnf-2.md#d-shiftr0) は各対の第 1 成分に $`0`$ を足した列であり、
-$`z`$ に等しい）。∎
+(here $`z^{+0}`$ [D.shiftr0](Cnf-2.md#d-shiftr0) is the sequence obtained by adding $`0`$ to the
+first entry of each pair, which equals $`z`$). ∎
 
 <a id="t-domT_Om"></a>
-## 定理: 単一列の $`\mathrm{domT}`$ (T.domT_Om)
+## Theorem: $`\mathrm{domT}`$ of a single-column sequence (T.domT_Om)
 
-### 定理
+### Theorem
 
-任意の $`m \in \mathbb{N}`$ に対し $`\mathrm{domT}\bigl(\bigl((0,m+1)\bigr),\ m\bigr)`$。
+For every $`m \in \mathbb{N}`$, $`\mathrm{domT}\bigl(\bigl((0,m+1)\bigr),\ m\bigr)`$.
 
-### 証明
+### Proof
 
-$`M := \bigl((0,m+1)\bigr)`$ とおく。$`\lvert M\rvert - 1 = 0`$ である。
-$`\mathrm{domT}`$ の定義（D.domT）の 2 つの連言子を示す。
+Put $`M := \bigl((0,m+1)\bigr)`$. Then $`\lvert M\rvert - 1 = 0`$. We prove the two conjuncts of the
+definition of $`\mathrm{domT}`$ (D.domT).
 
-第 1 連言子は $`M_{1,0} = m+1`$ であり、$`M_{i,j}`$ の定義（D.entry）よりこれは成り立つ。
+The first conjunct is $`M_{1,0} = m+1`$, and this holds by the definition of $`M_{i,j}`$ (D.entry).
 
-第 2 連言子 $`\neg\,\mathrm{hasParent}(M, 1, 0)`$ を示す。
-$`\mathrm{hasParent}(M,1,0)`$ とすると、$`\mathrm{hasParent}`$ の定義（D.hasParent）より
-$`j_0 \to^M_1 0`$（[D.nextrel1](Pss.md#d-nextrel1)）なる $`j_0`$ が存在する。
-$`\to^M_i`$ の定義（D.nextR）で $`i = 1 \ne 0`$ であるから
-これは $`j_0 \to^M_1 0`$（行 $`1`$ の親子関係）であり、その定義（D.nextrel1）の第 3 条件は
-$`j_0 \lt 0`$ である。自然数にこれをみたすものはないから矛盾する。∎
+We show the second conjunct $`\neg\,\mathrm{hasParent}(M, 1, 0)`$.
+Suppose $`\mathrm{hasParent}(M,1,0)`$. By the definition of $`\mathrm{hasParent}`$ (D.hasParent)
+there is $`j_0`$ with $`j_0 \to^M_1 0`$ ([D.nextrel1](Pss.md#d-nextrel1)).
+In the definition of $`\to^M_i`$ (D.nextR) we have $`i = 1 \ne 0`$, so this is
+$`j_0 \to^M_1 0`$ (the parent relation in row $`1`$), and the third condition of its definition
+(D.nextrel1) is $`j_0 \lt 0`$. No natural number satisfies this, a contradiction. ∎
 
 <a id="t-Om_mem_W"></a>
-## 定理: $`\bigl((0,v)\bigr) \in W_v`$ (T.Om_mem_W)
+## Theorem: $`\bigl((0,v)\bigr) \in W_v`$ (T.Om_mem_W)
 
-### 定理
+### Theorem
 
-任意の $`v \in \mathbb{N}`$ に対し $`\bigl((0,v)\bigr) \in W_v`$。
+For every $`v \in \mathbb{N}`$, $`\bigl((0,v)\bigr) \in W_v`$.
 
-### 証明
+### Proof
 
-$`v`$ が $`0`$ か後続数かで場合分けする。
+We distinguish cases according to whether $`v`$ is $`0`$ or a successor.
 
-**(a) $`v = 0`$ のとき。** $`\lvert \bigl((0,0)\bigr)\rvert = 1 \le 1`$ であり、
-$`M_{i,j}`$ の定義（D.entry）より $`\bigl((0,0)\bigr)_{1,0} = 0`$ である。
-よって $`A_0`$ の定義（D.Aop）の分岐 (1) が成り立ち、
-[T.A1_intro](Wset.md#t-A1_intro) より $`\bigl((0,0)\bigr) \in W_0`$ である。
+**(a) The case $`v = 0`$.** We have $`\lvert \bigl((0,0)\bigr)\rvert = 1 \le 1`$, and
+by the definition of $`M_{i,j}`$ (D.entry) we have $`\bigl((0,0)\bigr)_{1,0} = 0`$.
+Hence branch (1) of the definition of $`A_0`$ (D.Aop) holds, and
+[T.A1_intro](Wset.md#t-A1_intro) gives $`\bigl((0,0)\bigr) \in W_0`$.
 
-**(b) $`v = w + 1`$ のとき。** $`A_{w+1}`$ の定義（D.Aop）の分岐 (3) を $`m := w`$ で示す。
-$`w \lt w+1`$ である。[T.domT_Om](#t-domT_Om) より
-$`\mathrm{domT}\bigl(\bigl((0,w+1)\bigr),\ w\bigr)`$ である。
-$`z \in W_w`$ を取ると（$`\mathrm{based}(z)`$ は使わない）、
-[T.graft_Om](#t-graft_Om) より $`\mathrm{graft}\bigl(\bigl((0,w+1)\bigr),\ z\bigr) = z`$ であり、
-[T.W_mono](Wset.md#t-W_mono) を $`w \le w+1`$ に適用して $`z \in W_{w+1}`$ を得る。
-よって分岐 (3) が成り立ち、[T.A1_intro](Wset.md#t-A1_intro) より
-$`\bigl((0,w+1)\bigr) \in W_{w+1}`$ である。∎
+**(b) The case $`v = w + 1`$.** We verify branch (3) of the definition of $`A_{w+1}`$ (D.Aop) with
+$`m := w`$. We have $`w \lt w+1`$. By [T.domT_Om](#t-domT_Om),
+$`\mathrm{domT}\bigl(\bigl((0,w+1)\bigr),\ w\bigr)`$ holds.
+Take $`z \in W_w`$ (the hypothesis $`\mathrm{based}(z)`$ is not used); by
+[T.graft_Om](#t-graft_Om) we have $`\mathrm{graft}\bigl(\bigl((0,w+1)\bigr),\ z\bigr) = z`$, and
+applying [T.W_mono](Wset.md#t-W_mono) to $`w \le w+1`$ gives $`z \in W_{w+1}`$.
+Hence branch (3) holds, and [T.A1_intro](Wset.md#t-A1_intro) gives
+$`\bigl((0,w+1)\bigr) \in W_{w+1}`$. ∎
 
 <a id="d-Wstar"></a>
-## 定義: $`W^{*}`$ (D.Wstar)
+## Definition: $`W^{*}`$ (D.Wstar)
 
 ```math
 W^{*} := \bigl\{\, R \in \mathrm{PairSeq} \ \bigm|\
   \mathrm{argOK}(R) \to \forall v \in \mathbb{N},\ (0,v) :: R \in W_v \,\bigr\} .
 ```
 
-（$`\mathrm{argOK}`$ [D.argOK](Wset.md#d-argOK)）
+($`\mathrm{argOK}`$ [D.argOK](Wset.md#d-argOK))
 
 <a id="d-tow"></a>
-## 定義: 塔 (D.tow)
+## Definition: tower (D.tow)
 
-$`v \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ に対し、列 $`\mathrm{tow}_v(R,k)`$ を
-$`k`$ に関する再帰で定める。
+For $`v \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$, the sequence $`\mathrm{tow}_v(R,k)`$ is
+defined by recursion on $`k`$.
 
 ```math
 \mathrm{tow}_v(R, 0) := (),
@@ -240,144 +243,147 @@ $`k`$ に関する再帰で定める。
 \mathrm{tow}_v(R, k+1) := (0,v) :: \mathrm{graft}\bigl(R,\ \mathrm{tow}_v(R,k)\bigr).
 ```
 
-再帰呼び出しの引数は $`k`$ であり $`k+1`$ より真に小さいから、この定義は整合的である。
+The argument of the recursive call is $`k`$, which is strictly smaller than $`k+1`$, so this
+definition is well defined.
 
 <a id="t-graft_cons"></a>
-## 定理: 根を越える接ぎ木 (T.graft_cons)
+## Theorem: grafting past the root (T.graft_cons)
 
-### 定理
+### Theorem
 
-$`R \ne ()`$ ならば
+If $`R \ne ()`$ then
 
 ```math
 \mathrm{graft}\bigl((0,v) :: R,\ z\bigr) = (0,v) :: \mathrm{graft}(R, z).
 ```
 
-### 証明
+### Proof
 
-[T.graft_append](Wset-2.md#t-graft_append) を $`A := \bigl((0,v)\bigr)`$、$`P := R`$ に適用すると
+Applying [T.graft_append](Wset-2.md#t-graft_append) with $`A := \bigl((0,v)\bigr)`$ and $`P := R`$
+gives
 
 ```math
 \mathrm{graft}\bigl(\bigl((0,v)\bigr) \mathbin{+\!\!+} R,\ z\bigr)
   = \bigl((0,v)\bigr) \mathbin{+\!\!+} \mathrm{graft}(R,z)
 ```
 
-を得る。長さ $`1`$ の列との連結は先頭への付加であるから
-$`\bigl((0,v)\bigr) \mathbin{+\!\!+} R = (0,v) :: R`$ であり、
-$`\bigl((0,v)\bigr) \mathbin{+\!\!+} \mathrm{graft}(R,z) = (0,v) :: \mathrm{graft}(R,z)`$ である。∎
+Concatenation with a sequence of length $`1`$ on the left is prepending, so
+$`\bigl((0,v)\bigr) \mathbin{+\!\!+} R = (0,v) :: R`$ and
+$`\bigl((0,v)\bigr) \mathbin{+\!\!+} \mathrm{graft}(R,z) = (0,v) :: \mathrm{graft}(R,z)`$. ∎
 
 <a id="t-entry_cons"></a>
-## 定理: 先頭付加による添字のずれ (T.entry_cons)
+## Theorem: shift of the index under prepending (T.entry_cons)
 
-### 定理
+### Theorem
 
-任意の $`p \in \mathbb{N}\times\mathbb{N}`$、$`R \in \mathrm{PairSeq}`$、$`i, j \in \mathbb{N}`$ に対し
+For all $`p \in \mathbb{N}\times\mathbb{N}`$, $`R \in \mathrm{PairSeq}`$ and $`i, j \in \mathbb{N}`$,
 
 ```math
 (p :: R)_{i,\ j+1} = R_{i,j} .
 ```
 
-### 証明
+### Proof
 
-[T.entry_append_right](Column.md#t-entry_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
+Applying [T.entry_append_right](Column.md#t-entry_append_right) with $`A := (p)`$ and $`T := R`$
+gives
 
 ```math
 \bigl((p) \mathbin{+\!\!+} R\bigr)_{i,\ \lvert (p)\rvert + j} = R_{i,j}
 ```
 
-を得る。$`(p) \mathbin{+\!\!+} R = p :: R`$、$`\lvert (p)\rvert = 1`$ であり、
-$`\mathbb{N}`$ の加法の可換律より $`1 + j = j + 1`$ である。∎
+Here $`(p) \mathbin{+\!\!+} R = p :: R`$ and $`\lvert (p)\rvert = 1`$, and by commutativity of
+addition on $`\mathbb{N}`$ we have $`1 + j = j + 1`$. ∎
 
 <a id="t-nextR_cons"></a>
-## 定理: 先頭付加による親子関係のずれ (T.nextR_cons)
+## Theorem: shift of the parent relation under prepending (T.nextR_cons)
 
-### 定理
+### Theorem
 
 ```math
 (j_0 + 1) \to^{p :: R}_i (j_1 + 1) \iff j_0 \to^{R}_i j_1 .
 ```
 
-### 証明
+### Proof
 
-[T.nextR_append_right](Column.md#t-nextR_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
+Applying [T.nextR_append_right](Column.md#t-nextR_append_right) with $`A := (p)`$ and $`T := R`$
+gives
 
 ```math
 \bigl(\lvert (p)\rvert + j_0\bigr) \to^{(p) \mathbin{+\!\!+} R}_i \bigl(\lvert (p)\rvert + j_1\bigr)
   \iff j_0 \to^R_i j_1
 ```
 
-を得る。$`(p) \mathbin{+\!\!+} R = p :: R`$、$`\lvert (p)\rvert = 1`$ であり、
-$`1 + j_0 = j_0 + 1`$、$`1 + j_1 = j_1 + 1`$ である。∎
+Here $`(p) \mathbin{+\!\!+} R = p :: R`$ and $`\lvert (p)\rvert = 1`$, and
+$`1 + j_0 = j_0 + 1`$, $`1 + j_1 = j_1 + 1`$. ∎
 
 <a id="t-le0_cons"></a>
-## 定理: 先頭付加による祖先関係のずれ (T.le0_cons)
+## Theorem: shift of the ancestor relation under prepending (T.le0_cons)
 
-### 定理
+### Theorem
 
 ```math
 (j_0 + 1) \le^{p :: R}_0 (j_1 + 1) \iff j_0 \le^{R}_0 j_1 .
 ```
 
-（$`\le^M_0`$ [D.le0](Pss.md#d-le0)）
+($`\le^M_0`$ [D.le0](Pss.md#d-le0))
 
-### 証明
+### Proof
 
-[T.le0_append_right](Column.md#t-le0_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
+Applying [T.le0_append_right](Column.md#t-le0_append_right) with $`A := (p)`$ and $`T := R`$ gives
 
 ```math
 \bigl(\lvert (p)\rvert + j_0\bigr) \le^{(p) \mathbin{+\!\!+} R}_0 \bigl(\lvert (p)\rvert + j_1\bigr)
   \iff j_0 \le^R_0 j_1
 ```
 
-を得る。$`(p) \mathbin{+\!\!+} R = p :: R`$、$`\lvert (p)\rvert = 1`$ であり、
-$`1 + j_0 = j_0 + 1`$、$`1 + j_1 = j_1 + 1`$ である。∎
+Here $`(p) \mathbin{+\!\!+} R = p :: R`$ and $`\lvert (p)\rvert = 1`$, and
+$`1 + j_0 = j_0 + 1`$, $`1 + j_1 = j_1 + 1`$. ∎
 
 <a id="t-idx1_cons"></a>
-## 定理: 先頭付加による探索行のずれ (T.idx1_cons)
+## Theorem: shift of the search row under prepending (T.idx1_cons)
 
-### 定理
+### Theorem
 
 ```math
 \mathrm{idx}_1(p :: R,\ j+1) = \mathrm{idx}_1(R,\ j) .
 ```
 
-### 証明
+### Proof
 
-[T.idx1_append_right](Column.md#t-idx1_append_right) を $`A := (p)`$、$`T := R`$ に適用すると
-$`\mathrm{idx}_1\bigl((p) \mathbin{+\!\!+} R,\ \lvert (p)\rvert + j\bigr) = \mathrm{idx}_1(R,j)`$（[D.idx1](Pss.md#d-idx1)）
-を得る。
-$`(p) \mathbin{+\!\!+} R = p :: R`$、$`\lvert (p)\rvert = 1`$ であり、$`1 + j = j + 1`$ である。∎
+Applying [T.idx1_append_right](Column.md#t-idx1_append_right) with $`A := (p)`$ and $`T := R`$ gives
+$`\mathrm{idx}_1\bigl((p) \mathbin{+\!\!+} R,\ \lvert (p)\rvert + j\bigr) = \mathrm{idx}_1(R,j)`$ ([D.idx1](Pss.md#d-idx1)).
+Here $`(p) \mathbin{+\!\!+} R = p :: R`$ and $`\lvert (p)\rvert = 1`$, and $`1 + j = j + 1`$. ∎
 
 <a id="t-hasParent_zero_iff"></a>
-## 定理: 行 0 の親の存在判定 (T.hasParent_zero_iff)
+## Theorem: criterion for the existence of a parent in row 0 (T.hasParent_zero_iff)
 
-### 定理
+### Theorem
 
-$`b \lt \lvert M\rvert`$ ならば
+If $`b \lt \lvert M\rvert`$ then
 
 ```math
 \mathrm{hasParent}(M, 0, b) \iff \exists k,\ \bigl(k \lt b \wedge M_{0,k} \lt M_{0,b}\bigr).
 ```
 
-### 証明
+### Proof
 
-$`\to^M_i`$ の定義（D.nextR）で $`i = 0`$ であるから、以下 $`j_0 \to^M_0 j_1`$ は
-行 $`0`$ の親子関係（[D.nextrel0](Pss.md#d-nextrel0)）である。
+In the definition of $`\to^M_i`$ (D.nextR) we have $`i = 0`$, so from now on $`j_0 \to^M_0 j_1`$ is
+the parent relation in row $`0`$ ([D.nextrel0](Pss.md#d-nextrel0)).
 
-**（左から右）** $`\mathrm{hasParent}(M,0,b)`$ とすると、
-$`\mathrm{hasParent}`$ の定義（D.hasParent）より $`k \to^M_0 b`$ なる $`k`$ が存在する。
-$`\to^M_0`$ の定義（D.nextrel0）の第 3 条件が $`k \lt b`$、第 4 条件が
-$`M_{0,k} \lt M_{0,b}`$ であるから、この $`k`$ が求めるものである。
+**(Left to right)** Suppose $`\mathrm{hasParent}(M,0,b)`$. By the definition of
+$`\mathrm{hasParent}`$ (D.hasParent) there is $`k`$ with $`k \to^M_0 b`$.
+The third condition of the definition of $`\to^M_0`$ (D.nextrel0) is $`k \lt b`$ and the fourth is
+$`M_{0,k} \lt M_{0,b}`$, so this $`k`$ is the one required.
 
-**（右から左）** 述語
+**(Right to left)** Suppose we are given $`k`$ satisfying the predicate
 
 ```math
 P(t) :\equiv \bigl(t \lt b \wedge M_{0,t} \lt M_{0,b}\bigr)
 ```
 
-をみたす $`k`$ が与えられたとする。集合 $`\{\, t \mid t \le b \wedge P(t)\,\}`$ は
-$`k`$ を含む（$`P(k)`$ より $`k \lt b`$、とくに $`k \le b`$）ので空でなく、$`b`$ で上に有界であるから
-最大値をもつ。それを $`g`$ とおく。このとき
+The set $`\{\, t \mid t \le b \wedge P(t)\,\}`$ contains $`k`$ (from $`P(k)`$ we get $`k \lt b`$,
+in particular $`k \le b`$), hence is not empty, and it is bounded above by $`b`$, so it has a
+greatest element. Call it $`g`$. Then
 
 ```math
 (\dagger)\qquad P(g),
@@ -385,180 +391,180 @@ $`k`$ を含む（$`P(k)`$ より $`k \lt b`$、とくに $`k \le b`$）ので�
 (\ddagger)\qquad \forall t,\ P(t) \to t \le g
 ```
 
-が成り立つ（$`(\ddagger)`$ は、$`P(t)`$ から $`t \lt b`$ すなわち $`t \le b`$ が従い、
-$`g`$ が最大値であることによる）。
+hold ($`(\ddagger)`$ because $`P(t)`$ implies $`t \lt b`$, in particular $`t \le b`$, and $`g`$ is
+the greatest element).
 
-まず $`g \to^M_0 b`$ を示す。$`\to^M_0`$ の定義（D.nextrel0）の 5 条件を順に確かめる。
+First we show $`g \to^M_0 b`$. We verify the five conditions of the definition of $`\to^M_0`$
+(D.nextrel0) in turn.
 
-- (1) $`g \lt \lvert M\rvert`$：$`(\dagger)`$ より $`g \lt b`$ であり、仮定より $`b \lt \lvert M\rvert`$ である。
-- (2) $`b \lt \lvert M\rvert`$：仮定である。
-- (3) $`g \lt b`$：$`(\dagger)`$ の第 1 連言子である。
-- (4) $`M_{0,g} \lt M_{0,b}`$：$`(\dagger)`$ の第 2 連言子である。
-- (5) $`\forall l,\ (g \lt l \wedge l \lt b) \to M_{0,b} \le M_{0,l}`$：
-  $`g \lt l`$、$`l \lt b`$ なる $`l`$ を取り、$`M_{0,b} \le M_{0,l}`$ が成り立たないとすると
-  $`M_{0,l} \lt M_{0,b}`$ であり、$`l \lt b`$ と合わせて $`P(l)`$ である。
-  $`(\ddagger)`$ より $`l \le g`$ となり $`g \lt l`$ に矛盾する。
+- (1) $`g \lt \lvert M\rvert`$: by $`(\dagger)`$ we have $`g \lt b`$, and $`b \lt \lvert M\rvert`$ by hypothesis.
+- (2) $`b \lt \lvert M\rvert`$: this is the hypothesis.
+- (3) $`g \lt b`$: this is the first conjunct of $`(\dagger)`$.
+- (4) $`M_{0,g} \lt M_{0,b}`$: this is the second conjunct of $`(\dagger)`$.
+- (5) $`\forall l,\ (g \lt l \wedge l \lt b) \to M_{0,b} \le M_{0,l}`$:
+  take $`l`$ with $`g \lt l`$ and $`l \lt b`$, and suppose that $`M_{0,b} \le M_{0,l}`$ fails.
+  Then $`M_{0,l} \lt M_{0,b}`$, which together with $`l \lt b`$ gives $`P(l)`$.
+  By $`(\ddagger)`$ we get $`l \le g`$, contradicting $`g \lt l`$.
 
-次に一意性を示す。$`y \to^M_0 b`$ とする。D.nextrel0 の第 3・第 4 条件より
-$`y \lt b`$ かつ $`M_{0,y} \lt M_{0,b}`$、すなわち $`P(y)`$ であるから、
-$`(\ddagger)`$ より $`y \le g`$ である。$`y \lt g`$ と仮定すると、
-$`y \to^M_0 b`$ の第 5 条件を $`j := g`$ に適用できて（$`y \lt g`$ かつ $`g \lt b`$）
-$`M_{0,b} \le M_{0,g}`$ を得るが、これは $`(\dagger)`$ の $`M_{0,g} \lt M_{0,b}`$ に矛盾する。
-よって $`y = g`$ である。
+Next we show uniqueness. Suppose $`y \to^M_0 b`$. By the third and fourth conditions of D.nextrel0
+we have $`y \lt b`$ and $`M_{0,y} \lt M_{0,b}`$, that is $`P(y)`$, so $`(\ddagger)`$ gives
+$`y \le g`$. Suppose $`y \lt g`$. Then the fifth condition of $`y \to^M_0 b`$ can be applied with
+$`j := g`$ (since $`y \lt g`$ and $`g \lt b`$), which gives $`M_{0,b} \le M_{0,g}`$; this
+contradicts $`M_{0,g} \lt M_{0,b}`$ from $`(\dagger)`$. Hence $`y = g`$.
 
-以上により $`g`$ は $`j_0 \to^M_0 b`$ をみたす一意の $`j_0`$ であり、
-$`\mathrm{hasParent}(M,0,b)`$ が成り立つ。∎
+Therefore $`g`$ is the unique $`j_0`$ with $`j_0 \to^M_0 b`$, and $`\mathrm{hasParent}(M,0,b)`$
+holds. ∎
 
 <a id="t-le0_cons_zero"></a>
-## 定理: 主要ブロックの根はすべての列の祖先 (T.le0_cons_zero)
+## Theorem: the root of the principal block is an ancestor of every column (T.le0_cons_zero)
 
-### 定理
+### Theorem
 
-$`\mathrm{argOK}(R)`$ ならば、任意の $`v \in \mathbb{N}`$ と $`j \lt \lvert R\rvert`$ に対し
+If $`\mathrm{argOK}(R)`$ then, for every $`v \in \mathbb{N}`$ and every $`j \lt \lvert R\rvert`$,
 
 ```math
 0 \le^{(0,v) :: R}_0 (j+1).
 ```
 
-### 証明
+### Proof
 
-$`M := (0,v) :: R`$ とおく。$`j`$ に関する強帰納法を行う。帰納法の述語は
+Put $`M := (0,v) :: R`$. We argue by strong induction on $`j`$. The induction predicate is
 
 ```math
 \Phi(j) :\equiv \bigl(j \lt \lvert R\rvert \to 0 \le^{M}_0 (j+1)\bigr)
 ```
 
-であり、帰納法の仮定は「$`j' \lt j`$ なるすべての $`j'`$ について $`\Phi(j')`$」である。
+and the induction hypothesis is "$`\Phi(j')`$ for every $`j' \lt j`$".
 
-$`j \lt \lvert R\rvert`$ とする。$`\lvert M\rvert = \lvert R\rvert + 1`$ であるから
-$`j + 1 \lt \lvert M\rvert`$ である。次の 2 つを用意する。
+Assume $`j \lt \lvert R\rvert`$. Since $`\lvert M\rvert = \lvert R\rvert + 1`$ we have
+$`j + 1 \lt \lvert M\rvert`$. We prepare two facts.
 
-1. $`M_{0,j+1} = R_{0,j}`$ であり、これは正である。実際
-   [T.entry_cons](#t-entry_cons) より $`M_{0,j+1} = R_{0,j}`$ であり、
-   $`j \lt \lvert R\rvert`$ と [T.entry_pair_mem](Wset-2.md#t-entry_pair_mem) より
-   $`(R_{0,j}, R_{1,j}) \in R`$ であるから、$`\mathrm{argOK}`$ の定義（D.argOK）より
-   $`0 \lt R_{0,j}`$ である。
-2. $`M_{0,0} = 0`$。$`M`$ の先頭は $`(0,v)`$ であるから
-   $`M_{i,j}`$ の定義（D.entry）による。
+1. $`M_{0,j+1} = R_{0,j}`$, and this is positive. Indeed, [T.entry_cons](#t-entry_cons) gives
+   $`M_{0,j+1} = R_{0,j}`$, and from $`j \lt \lvert R\rvert`$ and
+   [T.entry_pair_mem](Wset-2.md#t-entry_pair_mem) we get $`(R_{0,j}, R_{1,j}) \in R`$, so the
+   definition of $`\mathrm{argOK}`$ (D.argOK) gives $`0 \lt R_{0,j}`$.
+2. $`M_{0,0} = 0`$. The head of $`M`$ is $`(0,v)`$, so this holds by the definition of $`M_{i,j}`$
+   (D.entry).
 
-1 と 2 より $`M_{0,0} \lt M_{0,j+1}`$ であり、$`0 \lt j+1`$ であるから、
-$`k := 0`$ が [T.hasParent_zero_iff](#t-hasParent_zero_iff) の右辺の存在条件をみたす。
-よって $`\mathrm{hasParent}(M, 0, j+1)`$ が成り立ち、
-$`\mathrm{hasParent}`$ の定義（D.hasParent）より $`k \to^M_0 (j+1)`$ なる $`k`$ が存在する。
-$`k`$ が $`0`$ か否かで場合分けする。
+By 1 and 2 we have $`M_{0,0} \lt M_{0,j+1}`$, and $`0 \lt j+1`$, so $`k := 0`$ satisfies the
+existence condition on the right-hand side of [T.hasParent_zero_iff](#t-hasParent_zero_iff).
+Hence $`\mathrm{hasParent}(M, 0, j+1)`$ holds, and by the definition of $`\mathrm{hasParent}`$
+(D.hasParent) there is $`k`$ with $`k \to^M_0 (j+1)`$. We distinguish cases according to whether
+$`k`$ is $`0`$.
 
-**(a) $`k = 0`$ のとき。** $`0 \to^M_0 (j+1)`$ であるから、長さ $`1`$ の鎖として
-$`0 \mathbin{(\to^M_0)^{*}} (j+1)`$ が成り立つ。$`0 \lt \lvert M\rvert`$、
-$`j+1 \lt \lvert M\rvert`$ と合わせ、$`\le^M_0`$ の定義（D.le0）の 3 条件がすべて成り立つから
-$`0 \le^M_0 (j+1)`$ である。
+**(a) The case $`k = 0`$.** Since $`0 \to^M_0 (j+1)`$, we have
+$`0 \mathbin{(\to^M_0)^{*}} (j+1)`$ as a chain of length $`1`$. Together with $`0 \lt \lvert M\rvert`$
+and $`j+1 \lt \lvert M\rvert`$, all three conditions of the definition of $`\le^M_0`$ (D.le0) hold,
+so $`0 \le^M_0 (j+1)`$.
 
-**(b) $`k \ne 0`$ のとき。** $`k = k' + 1`$ と書ける。
-$`\to^M_0`$ の定義（D.nextrel0）の第 3 条件より $`k'+1 \lt j+1`$、すなわち $`k' \lt j`$ である。
-また $`k' \lt j \lt \lvert R\rvert`$ である。帰納法の仮定 $`\Phi(k')`$ を適用して
-$`0 \le^M_0 (k'+1)`$ を得る。$`\le^M_0`$ の定義（D.le0）の第 3 条件より
-$`0 \mathbin{(\to^M_0)^{*}} (k'+1)`$ であり、この鎖の末尾に
-$`k'+1 = k \to^M_0 (j+1)`$ を継ぎ足すと $`0 \mathbin{(\to^M_0)^{*}} (j+1)`$ を得る。
-$`0 \lt \lvert M\rvert`$、$`j+1 \lt \lvert M\rvert`$ と合わせて $`0 \le^M_0 (j+1)`$ である。∎
+**(b) The case $`k \ne 0`$.** Write $`k = k' + 1`$.
+The third condition of the definition of $`\to^M_0`$ (D.nextrel0) gives $`k'+1 \lt j+1`$, that is
+$`k' \lt j`$. Moreover $`k' \lt j \lt \lvert R\rvert`$. Applying the induction hypothesis
+$`\Phi(k')`$ gives $`0 \le^M_0 (k'+1)`$. By the third condition of the definition of $`\le^M_0`$
+(D.le0) we have $`0 \mathbin{(\to^M_0)^{*}} (k'+1)`$, and appending
+$`k'+1 = k \to^M_0 (j+1)`$ to the end of this chain gives $`0 \mathbin{(\to^M_0)^{*}} (j+1)`$.
+Together with $`0 \lt \lvert M\rvert`$ and $`j+1 \lt \lvert M\rvert`$ this gives
+$`0 \le^M_0 (j+1)`$. ∎
 
 <a id="t-len_succ"></a>
-## 定理: 空でない列の長さ (T.len_succ)
+## Theorem: the length of a non-empty sequence (T.len_succ)
 
-### 定理
+### Theorem
 
-$`R \ne ()`$ ならば $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$。
+If $`R \ne ()`$ then $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$.
 
-### 証明
+### Proof
 
-$`R \ne ()`$ より $`0 \lt \lvert R\rvert`$ である。自然数 $`x`$ が $`0 \lt x`$ をみたすとき、
-切り捨て減法について $`(x - 1) + 1 = x`$ である。∎
+From $`R \ne ()`$ we get $`0 \lt \lvert R\rvert`$. For a natural number $`x`$ with $`0 \lt x`$,
+truncated subtraction satisfies $`(x - 1) + 1 = x`$. ∎
 
 <a id="t-entry_cons_last"></a>
-## 定理: 先頭付加後の末尾成分 (T.entry_cons_last)
+## Theorem: the last entry after prepending (T.entry_cons_last)
 
-### 定理
+### Theorem
 
-$`R \ne ()`$ ならば、任意の $`p`$、$`i`$ に対し
+If $`R \ne ()`$ then, for all $`p`$ and $`i`$,
 
 ```math
 (p :: R)_{i,\ \lvert R\rvert} = R_{i,\ \lvert R\rvert - 1} .
 ```
 
-### 証明
+### Proof
 
-[T.len_succ](#t-len_succ) より $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$ であるから、
-左辺は $`(p :: R)_{i,\ (\lvert R\rvert - 1) + 1}`$ に書き換えられる。
-これに [T.entry_cons](#t-entry_cons) を $`j := \lvert R\rvert - 1`$ として適用すればよい。∎
+By [T.len_succ](#t-len_succ) we have $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$, so the
+left-hand side can be rewritten as $`(p :: R)_{i,\ (\lvert R\rvert - 1) + 1}`$.
+It remains to apply [T.entry_cons](#t-entry_cons) to it with $`j := \lvert R\rvert - 1`$. ∎
 
 <a id="t-le0_cons_last"></a>
-## 定理: 先頭付加後の末尾への祖先関係 (T.le0_cons_last)
+## Theorem: the ancestor relation to the last column after prepending (T.le0_cons_last)
 
-### 定理
+### Theorem
 
-$`R \ne ()`$ ならば、任意の $`p`$、$`j`$ に対し
+If $`R \ne ()`$ then, for all $`p`$ and $`j`$,
 
 ```math
 (j+1) \le^{p :: R}_0 \lvert R\rvert \iff j \le^{R}_0 (\lvert R\rvert - 1).
 ```
 
-### 証明
+### Proof
 
-[T.len_succ](#t-len_succ) より $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$ であるから、
-左辺は $`(j+1) \le^{p :: R}_0 \bigl((\lvert R\rvert - 1) + 1\bigr)`$ に書き換えられる。
-これに [T.le0_cons](#t-le0_cons) を $`j_0 := j`$、$`j_1 := \lvert R\rvert - 1`$ として
-適用すればよい。∎
+By [T.len_succ](#t-len_succ) we have $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$, so the
+left-hand side can be rewritten as $`(j+1) \le^{p :: R}_0 \bigl((\lvert R\rvert - 1) + 1\bigr)`$.
+It remains to apply [T.le0_cons](#t-le0_cons) to it with $`j_0 := j`$ and
+$`j_1 := \lvert R\rvert - 1`$. ∎
 
 <a id="t-nextR_cons_last"></a>
-## 定理: 先頭付加後の末尾への親子関係 (T.nextR_cons_last)
+## Theorem: the parent relation to the last column after prepending (T.nextR_cons_last)
 
-### 定理
+### Theorem
 
-$`R \ne ()`$ ならば、任意の $`p`$、$`i`$、$`j`$ に対し
+If $`R \ne ()`$ then, for all $`p`$, $`i`$ and $`j`$,
 
 ```math
 (j+1) \to^{p :: R}_i \lvert R\rvert \iff j \to^{R}_i (\lvert R\rvert - 1).
 ```
 
-### 証明
+### Proof
 
-[T.len_succ](#t-len_succ) より $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$ であるから、
-左辺は $`(j+1) \to^{p :: R}_i \bigl((\lvert R\rvert - 1) + 1\bigr)`$ に書き換えられる。
-これに [T.nextR_cons](#t-nextR_cons) を $`j_0 := j`$、$`j_1 := \lvert R\rvert - 1`$ として
-適用すればよい。∎
+By [T.len_succ](#t-len_succ) we have $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$, so the
+left-hand side can be rewritten as $`(j+1) \to^{p :: R}_i \bigl((\lvert R\rvert - 1) + 1\bigr)`$.
+It remains to apply [T.nextR_cons](#t-nextR_cons) to it with $`j_0 := j`$ and
+$`j_1 := \lvert R\rvert - 1`$. ∎
 
 <a id="t-idx1_cons_last"></a>
-## 定理: 先頭付加後の末尾の探索行 (T.idx1_cons_last)
+## Theorem: the search row of the last column after prepending (T.idx1_cons_last)
 
-### 定理
+### Theorem
 
-$`R \ne ()`$ ならば、任意の $`p`$ に対し
+If $`R \ne ()`$ then, for every $`p`$,
 
 ```math
 \mathrm{idx}_1\bigl(p :: R,\ \lvert R\rvert\bigr) = \mathrm{idx}_1\bigl(R,\ \lvert R\rvert - 1\bigr).
 ```
 
-### 証明
+### Proof
 
-[T.len_succ](#t-len_succ) より $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$ であるから、
-左辺は $`\mathrm{idx}_1\bigl(p :: R,\ (\lvert R\rvert - 1) + 1\bigr)`$ に書き換えられる。
-これに [T.idx1_cons](#t-idx1_cons) を $`j := \lvert R\rvert - 1`$ として適用すればよい。∎
+By [T.len_succ](#t-len_succ) we have $`\lvert R\rvert = (\lvert R\rvert - 1) + 1`$, so the
+left-hand side can be rewritten as $`\mathrm{idx}_1\bigl(p :: R,\ (\lvert R\rvert - 1) + 1\bigr)`$.
+It remains to apply [T.idx1_cons](#t-idx1_cons) to it with $`j := \lvert R\rvert - 1`$. ∎
 
 <a id="t-cons_len_lt"></a>
-## 定理: 先頭付加は長さを増やす (T.cons_len_lt)
+## Theorem: prepending increases the length (T.cons_len_lt)
 
-### 定理
+### Theorem
 
-任意の $`p`$、$`R`$ に対し $`\lvert R\rvert \lt \lvert p :: R\rvert`$。
+For all $`p`$ and $`R`$, $`\lvert R\rvert \lt \lvert p :: R\rvert`$.
 
-### 証明
+### Proof
 
-$`\lvert p :: R\rvert = \lvert R\rvert + 1`$ であり、$`\lvert R\rvert \lt \lvert R\rvert + 1`$ である。∎
+We have $`\lvert p :: R\rvert = \lvert R\rvert + 1`$, and $`\lvert R\rvert \lt \lvert R\rvert + 1`$. ∎
 
 <a id="t-hasParent_cons_one"></a>
-## 定理: 根は行 1 の親になる (T.hasParent_cons_one)
+## Theorem: the root becomes a parent in row 1 (T.hasParent_cons_one)
 
-### 定理
+### Theorem
 
-$`\mathrm{argOK}(R)`$、$`R \ne ()`$、かつ
+Assume $`\mathrm{argOK}(R)`$, $`R \ne ()`$ and
 
 ```math
 \mathrm{hasParent}\bigl(R,\ 1,\ \lvert R\rvert - 1\bigr)
@@ -566,15 +572,16 @@ $`\mathrm{argOK}(R)`$、$`R \ne ()`$、かつ
 v \lt R_{1,\ \lvert R\rvert - 1}
 ```
 
-とする。このとき $`\mathrm{hasParent}\bigl((0,v) :: R,\ 1,\ \lvert R\rvert\bigr)`$。
+Then $`\mathrm{hasParent}\bigl((0,v) :: R,\ 1,\ \lvert R\rvert\bigr)`$.
 
-### 証明
+### Proof
 
-$`M := (0,v) :: R`$ とおく。$`R \ne ()`$ より $`0 \lt \lvert R\rvert`$ であり、
-[T.cons_len_lt](#t-cons_len_lt) より $`\lvert R\rvert \lt \lvert M\rvert`$ である。
-よって [T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) を $`j_1 := \lvert R\rvert`$ に適用でき、
-示すべきことは $`\mathrm{r1cand}(M,\ \lvert R\rvert,\ j_0)`$（[D.r1cand](Wset.md#d-r1cand)）をみたす $`j_0`$ の存在、
-すなわち $`\mathrm{r1cand}`$ の定義（D.r1cand）により
+Put $`M := (0,v) :: R`$. From $`R \ne ()`$ we get $`0 \lt \lvert R\rvert`$, and
+[T.cons_len_lt](#t-cons_len_lt) gives $`\lvert R\rvert \lt \lvert M\rvert`$.
+Hence [T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) can be applied with
+$`j_1 := \lvert R\rvert`$, and what is to be shown reduces to the existence of $`j_0`$ satisfying
+$`\mathrm{r1cand}(M,\ \lvert R\rvert,\ j_0)`$ ([D.r1cand](Wset.md#d-r1cand)), that is, by the
+definition of $`\mathrm{r1cand}`$ (D.r1cand), to the existence of $`j_0`$ satisfying
 
 ```math
 j_0 \lt \lvert R\rvert,
@@ -584,18 +591,18 @@ j_0 \le^{M}_0 \lvert R\rvert,
 M_{1,j_0} \lt M_{1,\lvert R\rvert}
 ```
 
-をみたす $`j_0`$ の存在に帰着する。[T.entry_cons_last](#t-entry_cons_last) より
+By [T.entry_cons_last](#t-entry_cons_last) we have
 
 ```math
 (\sharp)\qquad M_{1,\lvert R\rvert} = R_{1,\lvert R\rvert - 1}
 ```
 
-である。仮定の選言で場合分けする。
+We distinguish cases according to the disjunction in the hypothesis.
 
-**(a) $`\mathrm{hasParent}(R, 1, \lvert R\rvert - 1)`$ のとき。**
-$`\lvert R\rvert - 1 \lt \lvert R\rvert`$ であるから
-[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) を $`R`$ と $`j_1 := \lvert R\rvert - 1`$ に適用して、
-$`\mathrm{r1cand}(R,\ \lvert R\rvert - 1,\ j')`$ をみたす $`j'`$ を取る。すなわち
+**(a) The case $`\mathrm{hasParent}(R, 1, \lvert R\rvert - 1)`$.**
+Since $`\lvert R\rvert - 1 \lt \lvert R\rvert`$, we may apply
+[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) to $`R`$ with $`j_1 := \lvert R\rvert - 1`$ and
+take $`j'`$ satisfying $`\mathrm{r1cand}(R,\ \lvert R\rvert - 1,\ j')`$, that is,
 
 ```math
 j' \lt \lvert R\rvert - 1,
@@ -605,35 +612,36 @@ j' \le^{R}_0 (\lvert R\rvert - 1),
 R_{1,j'} \lt R_{1,\lvert R\rvert - 1}
 ```
 
-である。$`j_0 := j' + 1`$ と取る。3 条件を確かめる。
+Take $`j_0 := j' + 1`$. We verify the three conditions.
 
-- $`j' \lt \lvert R\rvert - 1`$ より $`j' + 1 \lt \lvert R\rvert`$ である。
-- [T.le0_cons_last](#t-le0_cons_last) を $`j := j'`$ に適用して、
-  $`j' \le^R_0 (\lvert R\rvert - 1)`$ から $`(j'+1) \le^M_0 \lvert R\rvert`$ を得る。
-- [T.entry_cons](#t-entry_cons) より $`M_{1,j'+1} = R_{1,j'}`$ であり、
-  $`(\sharp)`$ と合わせて $`M_{1,j'+1} = R_{1,j'} \lt R_{1,\lvert R\rvert-1} = M_{1,\lvert R\rvert}`$ である。
+- From $`j' \lt \lvert R\rvert - 1`$ we get $`j' + 1 \lt \lvert R\rvert`$.
+- Applying [T.le0_cons_last](#t-le0_cons_last) with $`j := j'`$ turns
+  $`j' \le^R_0 (\lvert R\rvert - 1)`$ into $`(j'+1) \le^M_0 \lvert R\rvert`$.
+- By [T.entry_cons](#t-entry_cons) we have $`M_{1,j'+1} = R_{1,j'}`$, so together with
+  $`(\sharp)`$ we get $`M_{1,j'+1} = R_{1,j'} \lt R_{1,\lvert R\rvert-1} = M_{1,\lvert R\rvert}`$.
 
-**(b) $`v \lt R_{1,\lvert R\rvert - 1}`$ のとき。** $`j_0 := 0`$ と取る。3 条件を確かめる。
+**(b) The case $`v \lt R_{1,\lvert R\rvert - 1}`$.** Take $`j_0 := 0`$. We verify the three conditions.
 
-- $`0 \lt \lvert R\rvert`$ である。
-- [T.le0_cons_zero](#t-le0_cons_zero) を $`j := \lvert R\rvert - 1`$（これは $`\lvert R\rvert`$ より
-  真に小さい）に適用して $`0 \le^M_0 \bigl((\lvert R\rvert - 1) + 1\bigr)`$ を得る。
-  [T.len_succ](#t-len_succ) より $`(\lvert R\rvert - 1) + 1 = \lvert R\rvert`$ であるから
-  $`0 \le^M_0 \lvert R\rvert`$ である。
-- $`M`$ の先頭は $`(0,v)`$ であるから $`M_{i,j}`$ の定義（D.entry）より $`M_{1,0} = v`$ であり、
-  仮定と $`(\sharp)`$ より $`M_{1,0} = v \lt R_{1,\lvert R\rvert-1} = M_{1,\lvert R\rvert}`$ である。
+- $`0 \lt \lvert R\rvert`$.
+- Applying [T.le0_cons_zero](#t-le0_cons_zero) with $`j := \lvert R\rvert - 1`$ (which is strictly
+  smaller than $`\lvert R\rvert`$) gives $`0 \le^M_0 \bigl((\lvert R\rvert - 1) + 1\bigr)`$.
+  By [T.len_succ](#t-len_succ) we have $`(\lvert R\rvert - 1) + 1 = \lvert R\rvert`$, hence
+  $`0 \le^M_0 \lvert R\rvert`$.
+- The head of $`M`$ is $`(0,v)`$, so the definition of $`M_{i,j}`$ (D.entry) gives $`M_{1,0} = v`$,
+  and the hypothesis together with $`(\sharp)`$ gives
+  $`M_{1,0} = v \lt R_{1,\lvert R\rvert-1} = M_{1,\lvert R\rvert}`$.
 
-いずれの場合も条件をみたす $`j_0`$ が得られたので、
-[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) より
-$`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ である。∎
+In either case we have obtained $`j_0`$ satisfying the conditions, so
+[T.hasParent_one_iff](Wset.md#t-hasParent_one_iff) gives
+$`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$. ∎
 
 <a id="t-oper_root_tiling"></a>
-## 定理: 親が根のときの展開は先頭ブロックの敷き詰め (T.oper_root_tiling)
+## Theorem: when the parent is the root, the expansion is a tiling of the leading block (T.oper_root_tiling)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とし、$`j_1 := \lvert M\rvert - 1`$、
-$`i_1 := \mathrm{idx}_1(M, j_1)`$ とおく。次の 4 つを仮定する。
+Let $`M \in \mathrm{PairSeq}`$ and $`n \in \mathbb{N}`$, and put $`j_1 := \lvert M\rvert - 1`$ and
+$`i_1 := \mathrm{idx}_1(M, j_1)`$. Assume the following four statements.
 
 ```math
 \begin{aligned}
@@ -644,13 +652,13 @@ $`i_1 := \mathrm{idx}_1(M, j_1)`$ とおく。次の 4 つを仮定する。
 \end{aligned}
 ```
 
-さらに
+Furthermore put
 
 ```math
 e := \begin{cases} M_{0,j_1} - M_{0,0} & (0 \lt i_1) \cr 0 & (i_1 = 0) \end{cases}
 ```
 
-とおく。このとき
+Then
 
 ```math
 M[n] = \bigl(\mathrm{dropLast}\,M\bigr)^{+0\cdot e} \mathbin{+\!\!+}
@@ -658,19 +666,19 @@ M[n] = \bigl(\mathrm{dropLast}\,M\bigr)^{+0\cdot e} \mathbin{+\!\!+}
        \bigl(\mathrm{dropLast}\,M\bigr)^{+(n-1)e} .
 ```
 
-### 証明
+### Proof
 
-仮定 (1)(2)(3) により [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) が適用できる。
-$`j_0 := \mathrm{par}^M_{i_1}(j_1)`$（[D.parent](Pss.md#d-parent)）と書くと、仮定 (4) より $`j_0 = 0`$ であり、
-[T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) の $`d_0`$ は
+By hypotheses (1), (2), (3), [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) applies.
+Writing $`j_0 := \mathrm{par}^M_{i_1}(j_1)`$ ([D.parent](Pss.md#d-parent)), hypothesis (4) gives
+$`j_0 = 0`$, and the $`d_0`$ of [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) is
 
 ```math
 d_0 = \begin{cases} M_{0,j_1} - M_{0,j_0} & (0 \lt i_1) \cr 0 & (i_1 = 0) \end{cases}
 = e
 ```
 
-である。同じ定理の結論で前置部分は $`(M_0,\dots,M_{j_0-1})`$ すなわち $`j_0 = 0`$ より
-空列 $`()`$ であるから
+In the conclusion of that same theorem the prefix part is $`(M_0,\dots,M_{j_0-1})`$, which by
+$`j_0 = 0`$ is the empty sequence $`()`$, so
 
 ```math
 M[n] = B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1},
@@ -678,93 +686,100 @@ M[n] = B_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1},
 B_k = \bigl(\,(M_{0,j} + k\,e,\ M_{1,j})\,\bigr)_{j=0}^{j_1-1}
 ```
 
-を得る。あとは各 $`k`$ について $`B_k = (\mathrm{dropLast}\,M)^{+k\,e}`$ を示せばよい。
+It remains to show $`B_k = (\mathrm{dropLast}\,M)^{+k\,e}`$ for each $`k`$.
 
-$`\mathrm{dropLast}\,M = \mathrm{take}_{j_1} M`$ である（$`\mathrm{take}_a L`$ は $`L`$ の先頭 $`a`$ 要素からなる列、
-$`j_1 = \lvert M\rvert - 1`$）。$`j_1 \le \lvert M\rvert`$ であるから
-[T.map_range_entry_eq_take](Column-2.md#t-map_range_entry_eq_take) が使えて
+We have $`\mathrm{dropLast}\,M = \mathrm{take}_{j_1} M`$ (here $`\mathrm{take}_a L`$ is the sequence
+consisting of the first $`a`$ elements of $`L`$, and $`j_1 = \lvert M\rvert - 1`$).
+Since $`j_1 \le \lvert M\rvert`$, [T.map_range_entry_eq_take](Column-2.md#t-map_range_entry_eq_take)
+applies and gives
 
 ```math
 \bigl(\,(M_{0,j},\ M_{1,j})\,\bigr)_{j=0}^{j_1-1} = \mathrm{take}_{j_1} M = \mathrm{dropLast}\,M
 ```
 
-である。$`B_k`$ はこの列の各要素の第 1 成分に $`k\,e`$ を足した列にほかならないから、
-$`B_k = (\mathrm{dropLast}\,M)^{+k\,e}`$ である。∎
+Now $`B_k`$ is nothing but the sequence obtained from this one by adding $`k\,e`$ to the first entry
+of each of its elements, hence $`B_k = (\mathrm{dropLast}\,M)^{+k\,e}`$. ∎
 
 <a id="t-oper_cons_nat"></a>
-## 定理: 非崩壊の主要ステップ (T.oper_cons_nat)
+## Theorem: the principal non-collapsing step (T.oper_cons_nat)
 
-### 定理
+### Theorem
 
-$`v, n \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とし、$`k_1 := \lvert R\rvert - 1`$、
-$`i := \mathrm{idx}_1(R, k_1)`$ とおく。
-$`\mathrm{argOK}(R)`$、$`R \ne ()`$、$`\mathrm{hasParent}(R, i, k_1)`$ を仮定すると
+Let $`v, n \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$, and put $`k_1 := \lvert R\rvert - 1`$ and
+$`i := \mathrm{idx}_1(R, k_1)`$.
+Assuming $`\mathrm{argOK}(R)`$, $`R \ne ()`$ and $`\mathrm{hasParent}(R, i, k_1)`$, we have
 
 ```math
 \bigl((0,v) :: R\bigr)[n] = (0,v) :: R[n] .
 ```
 
-### 証明
+### Proof
 
-$`M := (0,v) :: R`$ と書く。まず次の事実を用意する。
+Write $`M := (0,v) :: R`$. We first prepare the following facts.
 
-**(i)** $`R \ne ()`$ より $`0 \lt \lvert R\rvert`$。また $`\lvert M\rvert = \lvert R\rvert + 1`$ であるから
-$`\lvert M\rvert - 1 = \lvert R\rvert`$、すなわち $`M`$ の最終列の添字は $`\lvert R\rvert`$ である。
+**(i)** From $`R \ne ()`$ we get $`0 \lt \lvert R\rvert`$. Moreover
+$`\lvert M\rvert = \lvert R\rvert + 1`$, so $`\lvert M\rvert - 1 = \lvert R\rvert`$; that is, the
+index of the last column of $`M`$ is $`\lvert R\rvert`$.
 
-**(ii)** $`M_{0,\lvert R\rvert} = R_{0,k_1}`$ かつ $`M_{1,\lvert R\rvert} = R_{1,k_1}`$。
-[T.entry_cons_last](#t-entry_cons_last) による。
+**(ii)** $`M_{0,\lvert R\rvert} = R_{0,k_1}`$ and $`M_{1,\lvert R\rvert} = R_{1,k_1}`$.
+This is [T.entry_cons_last](#t-entry_cons_last).
 
-**(iii)** $`j_0 := \mathrm{par}^R_i(k_1)`$ とおくと $`j_0 \to^R_i k_1`$ であり
-（[T.parent_nextR](Decrease.md#t-parent_nextR)）、
-$`j_0 \lt k_1`$ である（[T.nextR_index_lt](Decrease.md#t-nextR_index_lt)）。とくに $`k_1 \ne 0`$。
+**(iii)** Putting $`j_0 := \mathrm{par}^R_i(k_1)`$ we have $`j_0 \to^R_i k_1`$
+([T.parent_nextR](Decrease.md#t-parent_nextR)) and
+$`j_0 \lt k_1`$ ([T.nextR_index_lt](Decrease.md#t-nextR_index_lt)). In particular $`k_1 \ne 0`$.
 
-**(iv)** $`0 \lt R_{0,k_1}`$。実際 $`k_1 \lt \lvert R\rvert`$ であるから
-[T.entry_pair_mem](Wset-2.md#t-entry_pair_mem) より対 $`(R_{0,k_1}, R_{1,k_1})`$ は $`R`$ の要素であり、
-$`\mathrm{argOK}`$ の定義（D.argOK）よりその第 1 成分は正である。
-したがって $`\neg(R_{0,k_1} = 0 \wedge R_{1,k_1} = 0)`$ であり、(ii) より
-$`\neg(M_{0,\lvert R\rvert} = 0 \wedge M_{1,\lvert R\rvert} = 0)`$ でもある。
+**(iv)** $`0 \lt R_{0,k_1}`$. Indeed $`k_1 \lt \lvert R\rvert`$, so
+[T.entry_pair_mem](Wset-2.md#t-entry_pair_mem) shows that the pair $`(R_{0,k_1}, R_{1,k_1})`$ is an
+element of $`R`$, and by the definition of $`\mathrm{argOK}`$ (D.argOK) its first entry is positive.
+Hence $`\neg(R_{0,k_1} = 0 \wedge R_{1,k_1} = 0)`$, and by (ii) also
+$`\neg(M_{0,\lvert R\rvert} = 0 \wedge M_{1,\lvert R\rvert} = 0)`$.
 
-**(v)** $`\mathrm{idx}_1(M, \lvert M\rvert - 1) = \mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1) = i`$。
-(i) と [T.idx1_cons_last](#t-idx1_cons_last) による。
+**(v)** $`\mathrm{idx}_1(M, \lvert M\rvert - 1) = \mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1) = i`$.
+This is (i) together with [T.idx1_cons_last](#t-idx1_cons_last).
 
-**第 1 段：根 $`0`$ は $`M`$ の最終列の親ではない、すなわち $`\neg\bigl(0 \to^M_i \lvert R\rvert\bigr)`$。**
-$`0 \to^M_i \lvert R\rvert`$ を仮定して矛盾を導く。$`i`$ で場合分けする。
+**Step 1: the root $`0`$ is not the parent of the last column of $`M`$, that is, $`\neg\bigl(0 \to^M_i \lvert R\rvert\bigr)`$.**
+Assume $`0 \to^M_i \lvert R\rvert`$ and derive a contradiction. We distinguish cases on $`i`$.
 
-**(a) $`i = 0`$ のとき。** $`\to^M_i`$ の定義（D.nextR）より $`0 \to^M_0 \lvert R\rvert`$ である。
-その定義（D.nextrel0）の条件 (5) を $`j := j_0 + 1`$ に適用する。前件の第 1 連言子
-$`0 \lt j_0 + 1`$ は自然数の後者が正であることによる。第 2 連言子は、(iii) の
-$`j_0 \lt k_1 = \lvert R\rvert - 1`$ から $`j_0 + 1 \lt \lvert R\rvert`$ として得られる。よって
-$`M_{0,\lvert R\rvert} \le M_{0,j_0+1}`$ を得る。
-(ii) と [T.entry_cons](#t-entry_cons) によりこれは $`R_{0,k_1} \le R_{0,j_0}`$ である。
-一方 (iii) の $`j_0 \to^R_0 k_1`$ の条件 (4) は $`R_{0,j_0} \lt R_{0,k_1}`$ であり、矛盾する。
+**(a) The case $`i = 0`$.** By the definition of $`\to^M_i`$ (D.nextR) we have
+$`0 \to^M_0 \lvert R\rvert`$. Apply condition (5) of its definition (D.nextrel0) with
+$`j := j_0 + 1`$. The first conjunct of the antecedent, $`0 \lt j_0 + 1`$, holds because the
+successor of a natural number is positive. The second conjunct is obtained from
+$`j_0 \lt k_1 = \lvert R\rvert - 1`$ in (iii) as $`j_0 + 1 \lt \lvert R\rvert`$. Hence
+$`M_{0,\lvert R\rvert} \le M_{0,j_0+1}`$.
+By (ii) and [T.entry_cons](#t-entry_cons) this is $`R_{0,k_1} \le R_{0,j_0}`$.
+On the other hand condition (4) of $`j_0 \to^R_0 k_1`$ from (iii) is $`R_{0,j_0} \lt R_{0,k_1}`$,
+a contradiction.
 
-**(b) $`i \ne 0`$ のとき。** $`\to^M_i`$ の定義（D.nextR）より $`0 \to^M_1 \lvert R\rvert`$ である。
-その定義（D.nextrel1）の条件 (6) を $`j := j_0 + 1`$ に適用する。前件の第 1 連言子
-$`0 \lt j_0 + 1`$ は自然数の後者が正であることによる。第 2 連言子 $`j_0 + 1 \le^M_0 \lvert R\rvert`$ は、
-(iii) の $`j_0 \to^R_1 k_1`$ の条件 (5) が $`j_0 \le^R_0 k_1`$ であることと
-[T.le0_cons_last](#t-le0_cons_last) から従う。よって
-$`M_{1,\lvert R\rvert} \le M_{1,j_0+1}`$、すなわち (ii) と [T.entry_cons](#t-entry_cons) より
-$`R_{1,k_1} \le R_{1,j_0}`$ を得る。
-一方 $`j_0 \to^R_1 k_1`$ の条件 (4) は $`R_{1,j_0} \lt R_{1,k_1}`$ であり、矛盾する。
+**(b) The case $`i \ne 0`$.** By the definition of $`\to^M_i`$ (D.nextR) we have
+$`0 \to^M_1 \lvert R\rvert`$. Apply condition (6) of its definition (D.nextrel1) with
+$`j := j_0 + 1`$. The first conjunct of the antecedent, $`0 \lt j_0 + 1`$, holds because the
+successor of a natural number is positive. The second conjunct $`j_0 + 1 \le^M_0 \lvert R\rvert`$
+follows from condition (5) of $`j_0 \to^R_1 k_1`$ in (iii), which is $`j_0 \le^R_0 k_1`$, together
+with [T.le0_cons_last](#t-le0_cons_last). Hence
+$`M_{1,\lvert R\rvert} \le M_{1,j_0+1}`$, that is, by (ii) and [T.entry_cons](#t-entry_cons),
+$`R_{1,k_1} \le R_{1,j_0}`$.
+On the other hand condition (4) of $`j_0 \to^R_1 k_1`$ is $`R_{1,j_0} \lt R_{1,k_1}`$,
+a contradiction.
 
-**第 2 段：$`y \to^M_i \lvert R\rvert`$ ならば $`y = j_0 + 1`$。**
-$`y = 0`$ は第 1 段により排除される。よって $`y = y' + 1`$ と書ける。
-[T.nextR_cons_last](#t-nextR_cons_last) より $`y' \to^R_i k_1`$ である。
-仮定 $`\mathrm{hasParent}(R, i, k_1)`$ の一意性（$`\mathrm{hasParent}`$ の定義 D.hasParent）と
-(iii) の $`j_0 \to^R_i k_1`$ から $`y' = j_0`$、すなわち $`y = j_0 + 1`$。
+**Step 2: if $`y \to^M_i \lvert R\rvert`$ then $`y = j_0 + 1`$.**
+The value $`y = 0`$ is excluded by Step 1, so we can write $`y = y' + 1`$.
+By [T.nextR_cons_last](#t-nextR_cons_last) we have $`y' \to^R_i k_1`$.
+The uniqueness in the hypothesis $`\mathrm{hasParent}(R, i, k_1)`$ (the definition D.hasParent of
+$`\mathrm{hasParent}`$) together with $`j_0 \to^R_i k_1`$ from (iii) gives $`y' = j_0`$, that is
+$`y = j_0 + 1`$.
 
-**第 3 段：$`M`$ の側の親。**
-(iii) と [T.nextR_cons_last](#t-nextR_cons_last) より $`j_0 + 1 \to^M_i \lvert R\rvert`$ であり、
-第 2 段よりそのような添字は $`j_0 + 1`$ に限る。よって
-$`\mathrm{hasParent}(M, i, \lvert R\rvert)`$ が成り立ち、(i)(v) と合わせて
-$`\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M,\lvert M\rvert-1), \lvert M\rvert-1\bigr)`$ である。
-また $`\mathrm{par}^M_i(\lvert R\rvert)`$ は [T.parent_nextR](Decrease.md#t-parent_nextR) より
-$`\to^M_i`$ で $`\lvert R\rvert`$ に至る添字であるから、第 2 段より
-$`\mathrm{par}^M_i(\lvert R\rvert) = j_0 + 1`$。
+**Step 3: the parent on the side of $`M`$.**
+By (iii) and [T.nextR_cons_last](#t-nextR_cons_last) we have $`j_0 + 1 \to^M_i \lvert R\rvert`$, and
+by Step 2 the only such index is $`j_0 + 1`$. Hence $`\mathrm{hasParent}(M, i, \lvert R\rvert)`$
+holds, and together with (i) and (v) we get
+$`\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M,\lvert M\rvert-1), \lvert M\rvert-1\bigr)`$.
+Moreover $`\mathrm{par}^M_i(\lvert R\rvert)`$ is, by
+[T.parent_nextR](Decrease.md#t-parent_nextR), an index reaching $`\lvert R\rvert`$ along
+$`\to^M_i`$, so Step 2 gives $`\mathrm{par}^M_i(\lvert R\rvert) = j_0 + 1`$.
 
-**第 4 段：両辺を展開して比べる。**
-(i)(iv) と第 3 段により [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) が $`M`$ に適用でき、
-(iii)(iv) と仮定により $`R`$ にも適用できる。それぞれ
+**Step 4: unfold both sides and compare.**
+By (i), (iv) and Step 3, [T.oper_bad_unfold](Decrease.md#t-oper_bad_unfold) applies to $`M`$, and by
+(iii), (iv) and the hypothesis it applies to $`R`$ as well. They give respectively
 
 ```math
 M[n] = (M_0,\dots,M_{j_0}) \mathbin{+\!\!+} B^M_0 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B^M_{n-1},
@@ -777,7 +792,7 @@ R[n] = (R_0,\dots,R_{j_0-1}) \mathbin{+\!\!+} B^R_0 \mathbin{+\!\!+} \cdots \mat
 B^R_k = \bigl(\,(R_{0,j} + k\,d',\ R_{1,j})\,\bigr)_{j=j_0}^{k_1 - 1}
 ```
 
-である。ここで
+where
 
 ```math
 d = \begin{cases} M_{0,\lvert R\rvert} - M_{0,j_0+1} & (0 \lt i) \cr 0 & (i = 0) \end{cases},
@@ -785,19 +800,19 @@ d = \begin{cases} M_{0,\lvert R\rvert} - M_{0,j_0+1} & (0 \lt i) \cr 0 & (i = 0)
 d' = \begin{cases} R_{0,k_1} - R_{0,j_0} & (0 \lt i) \cr 0 & (i = 0) \end{cases}
 ```
 
-である。3 点を確かめる。
+We check three points.
 
-- $`d = d'`$：(ii) より $`M_{0,\lvert R\rvert} = R_{0,k_1}`$、
-  [T.entry_cons](#t-entry_cons) より $`M_{0,j_0+1} = R_{0,j_0}`$ である。
-- 前置部分：$`M = (0,v) :: R`$ であるから
-  $`(M_0,\dots,M_{j_0}) = (0,v) :: (R_0,\dots,R_{j_0-1})`$。
-- ブロック：$`B^M_k`$ の添字 $`j`$ は $`j_0+1`$ から $`\lvert R\rvert - 1`$ まで、
-  $`B^R_k`$ の添字 $`j`$ は $`j_0`$ から $`k_1 - 1 = \lvert R\rvert - 2`$ までを走り、
-  どちらも長さは $`\lvert R\rvert - 1 - j_0`$ である。$`j = j' + 1`$ と置き換えれば
-  [T.entry_cons](#t-entry_cons) より $`M_{0,j'+1} = R_{0,j'}`$、$`M_{1,j'+1} = R_{1,j'}`$
-  であるから、第 $`j'`$ 成分どうしが一致する。よって $`B^M_k = B^R_k`$。
+- $`d = d'`$: by (ii) we have $`M_{0,\lvert R\rvert} = R_{0,k_1}`$, and by
+  [T.entry_cons](#t-entry_cons) we have $`M_{0,j_0+1} = R_{0,j_0}`$.
+- The prefix part: since $`M = (0,v) :: R`$, we have
+  $`(M_0,\dots,M_{j_0}) = (0,v) :: (R_0,\dots,R_{j_0-1})`$.
+- The blocks: the index $`j`$ of $`B^M_k`$ runs from $`j_0+1`$ to $`\lvert R\rvert - 1`$, and the
+  index $`j`$ of $`B^R_k`$ runs from $`j_0`$ to $`k_1 - 1 = \lvert R\rvert - 2`$, so both have
+  length $`\lvert R\rvert - 1 - j_0`$. Substituting $`j = j' + 1`$,
+  [T.entry_cons](#t-entry_cons) gives $`M_{0,j'+1} = R_{0,j'}`$ and $`M_{1,j'+1} = R_{1,j'}`$,
+  so the $`j'`$-th entries of the two agree. Hence $`B^M_k = B^R_k`$.
 
-以上より
+Therefore
 
 ```math
 M[n] = (0,v) :: \Bigl((R_0,\dots,R_{j_0-1}) \mathbin{+\!\!+} B^R_0 \mathbin{+\!\!+} \cdots

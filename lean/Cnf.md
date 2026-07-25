@@ -1,76 +1,77 @@
 [← README](README.md) | [English](Cnf.md) | [Japanese](Cnf-ja.md) | Cnf **1** [2](Cnf-2.md) [3](Cnf-3.md)
 
 <a id="t-getD_eq_getElem'"></a>
-## 定理: 既定値つき添字づけの値 (T.getD_eq_getElem')
+## Theorem: value of indexing with a default (T.getD_eq_getElem')
 
-### 定理
+### Theorem
 
-$`l`$ を列、$`d`$ を既定値、$`i \in \mathbb{N}`$ とする。$`i \lt \lvert l\rvert`$ ならば
+Let $`l`$ be a sequence, $`d`$ a default value and $`i \in \mathbb{N}`$. If $`i \lt \lvert l\rvert`$ then
 
 ```math
 l\langle i\rangle = l_i .
 ```
 
-ここで $`l\langle i\rangle`$ は、$`i \lt \lvert l\rvert`$ のとき $`l`$ の第 $`i`$ 要素、そうでないとき $`d`$ を返す
-操作であり、$`l_i`$ は $`i \lt \lvert l\rvert`$ の証拠を伴う第 $`i`$ 要素である。
+Here $`l\langle i\rangle`$ is the operation returning the $`i`$-th element of $`l`$ when $`i \lt \lvert l\rvert`$
+and $`d`$ otherwise, and $`l_i`$ is the $`i`$-th element taken together with a proof of $`i \lt \lvert l\rvert`$.
 
-### 証明
+### Proof
 
-$`l\langle i\rangle`$ は次の 2 段の合成として定義されている。第 1 段は $`l`$ の第 $`i`$ 要素の探索であり、
-$`i \lt \lvert l\rvert`$ のときは「第 $`i`$ 要素 $`l_i`$ が見つかった」という結果を、
-$`\lvert l\rvert \le i`$ のときは「見つからなかった」という結果を返す。第 2 段はその結果に対し、
-見つかったときはその値を、見つからなかったときは $`d`$ を返す。
+$`l\langle i\rangle`$ is defined as the composition of two stages. The first stage searches for the
+$`i`$-th element of $`l`$: when $`i \lt \lvert l\rvert`$ it returns the result that the $`i`$-th element
+$`l_i`$ has been found, and when $`\lvert l\rvert \le i`$ it returns the result that nothing has been
+found. The second stage returns that value when something has been found, and $`d`$ when nothing has.
 
-仮定 $`i \lt \lvert l\rvert`$ より第 1 段は「$`l_i`$ が見つかった」を返すから、第 2 段の値は $`l_i`$ である。∎
+By the hypothesis $`i \lt \lvert l\rvert`$ the first stage returns the result that $`l_i`$ has been
+found, so the value of the second stage is $`l_i`$. ∎
 
 <a id="t-oper_eq_dropLast_append"></a>
-## 定理: 展開は末尾を落とした列への後続の連結 (T.oper_eq_dropLast_append)
+## Theorem: an expansion is a concatenation onto the sequence with its last column dropped (T.oper_eq_dropLast_append)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss.md#d-PairSeq)）、$`n \in \mathbb{N}`$ とし、$`1 \lt \lvert M\rvert`$ と
-$`1 \le n`$ を仮定する。このとき $`R \in \mathrm{PairSeq}`$ が存在して
+Let $`M \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) and $`n \in \mathbb{N}`$, and suppose
+$`1 \lt \lvert M\rvert`$ and $`1 \le n`$. Then there is $`R \in \mathrm{PairSeq}`$ such that
 
 ```math
 M[n] = \mathrm{dropLast}\,M \mathbin{+\!\!+} R
-\qquad\text{かつ}\qquad
+\qquad\text{and}\qquad
 \mathrm{snd}(R) \subseteq \mathrm{snd}(\mathrm{dropLast}\,M)
 ```
 
-が成り立つ。ここで $`\mathrm{dropLast}\,M`$ は $`M`$ の末尾 1 要素を落とした列である
-（$`M[n]`$ [D.oper](Pss.md#d-oper)、$`\mathrm{snd}`$ [D.sndSet](Term.md#d-sndSet)）。
+holds. Here $`\mathrm{dropLast}\,M`$ is the sequence obtained from $`M`$ by dropping its last element
+($`M[n]`$ [D.oper](Pss.md#d-oper), $`\mathrm{snd}`$ [D.sndSet](Term.md#d-sndSet)).
 
-### 証明
+### Proof
 
-$`j_1 := \lvert M\rvert - 1`$、$`i_1 := \mathrm{idx}_1(M, j_1)`$（[D.idx1](Pss.md#d-idx1)）とおく。
-$`1 \lt \lvert M\rvert`$ より $`j_1 \ne 0`$ であり、また $`\neg(\lvert M\rvert \le 1)`$ であるから
-$`\mathrm{Pred}\,M`$（[D.Pred](Pss.md#d-Pred)）の定義（D.Pred）の第 2 の場合が選ばれて
+Put $`j_1 := \lvert M\rvert - 1`$ and $`i_1 := \mathrm{idx}_1(M, j_1)`$ ([D.idx1](Pss.md#d-idx1)).
+From $`1 \lt \lvert M\rvert`$ we get $`j_1 \ne 0`$, and since $`\neg(\lvert M\rvert \le 1)`$, the second
+case in the definition of $`\mathrm{Pred}\,M`$ ([D.Pred](Pss.md#d-Pred)) is the one selected, so
 
 ```math
 \mathrm{Pred}\,M = \mathrm{dropLast}\,M
 ```
 
-である。次の 3 つの場合に分ける。
+We distinguish the following three cases.
 
-**(a) $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$（[D.entry](Pss.md#d-entry)）のとき。**
-[T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) より
-$`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と取る。
-第 1 式は $`\mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M`$ により成り立つ。
-第 2 式は [T.sndSet_nil](Term.md#t-sndSet_nil) より $`\mathrm{snd}(()) = \emptyset`$ であり、
-空集合は任意の集合の部分集合であるから成り立つ。
+**(a) The case $`M_{0,j_1} = 0 \wedge M_{1,j_1} = 0`$ ([D.entry](Pss.md#d-entry)).**
+By [T.oper_eq_pred_of_zero](Decrease.md#t-oper_eq_pred_of_zero) we have
+$`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$. Take $`R := ()`$.
+The first formula holds because $`\mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M`$.
+The second holds because $`\mathrm{snd}(()) = \emptyset`$ by [T.sndSet_nil](Term.md#t-sndSet_nil)
+and the empty set is a subset of every set.
 
-**(b) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ
-$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$（[D.hasParent](Pss.md#d-hasParent)）のとき。**
-[T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) より
-$`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。$`R := ()`$ と取る。
-第 1 式は $`\mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M`$ により成り立つ。
-第 2 式は [T.sndSet_nil](Term.md#t-sndSet_nil) より $`\mathrm{snd}(()) = \emptyset`$ であり、
-空集合は任意の集合の部分集合であるから成り立つ。
+**(b) The case $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ and
+$`\neg\,\mathrm{hasParent}(M, i_1, j_1)`$ ([D.hasParent](Pss.md#d-hasParent)).**
+By [T.oper_eq_pred_of_noParent](Decrease.md#t-oper_eq_pred_of_noParent) we have
+$`M[n] = \mathrm{Pred}\,M = \mathrm{dropLast}\,M`$. Take $`R := ()`$.
+The first formula holds because $`\mathrm{dropLast}\,M \mathbin{+\!\!+} () = \mathrm{dropLast}\,M`$.
+The second holds because $`\mathrm{snd}(()) = \emptyset`$ by [T.sndSet_nil](Term.md#t-sndSet_nil)
+and the empty set is a subset of every set.
 
-**(c) $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ かつ $`\mathrm{hasParent}(M, i_1, j_1)`$ のとき。**
-[T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) を適用して
-$`G, R_0 \in \mathrm{PairSeq}`$、$`v_0, w_0, d_0 \in \mathbb{N}`$、$`\ell \in \mathbb{N}\times\mathbb{N}`$ を取る。
-その (1) と (2) は
+**(c) The case $`\neg(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0)`$ and $`\mathrm{hasParent}(M, i_1, j_1)`$.**
+Apply [T.oper_bad_blocks](Decrease.md#t-oper_bad_blocks) and take
+$`G, R_0 \in \mathrm{PairSeq}`$, $`v_0, w_0, d_0 \in \mathbb{N}`$ and $`\ell \in \mathbb{N}\times\mathbb{N}`$
+as provided by it. Its (1) and (2) read
 
 ```math
 M = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: R_0\bigr) \mathbin{+\!\!+} (\ell),
@@ -81,101 +82,102 @@ M[n] = G \mathbin{+\!\!+} B_0 \mathbin{+\!\!+} B_1 \mathbin{+\!\!+} \cdots \math
 B_k := \bigl((v_0,w_0) :: R_0\bigr)^{+k\,d_0}
 ```
 
-である。ここで $`L^{+e}`$（[D.shiftr0](Cnf-2.md#d-shiftr0)）は $`L`$ の各対の第 1 成分に
-$`e`$ を足した列である。
+Here $`L^{+e}`$ ([D.shiftr0](Cnf-2.md#d-shiftr0)) is the sequence obtained from $`L`$ by adding
+$`e`$ to the first entry of each pair.
 
-まず $`M`$ の末尾 1 要素は $`\ell`$ であるから、(1) より
+First, the last element of $`M`$ is $`\ell`$, so by (1)
 
 ```math
 \mathrm{dropLast}\,M = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: R_0\bigr)
 ```
 
-である。次に $`1 \le n`$ であるから (2) の連結には $`B_0`$ が現れる。
-$`B_0 = ((v_0,w_0) :: R_0)^{+0\cdot d_0}`$ は各対の第 1 成分に $`0`$ を足したものだから
-$`B_0 = (v_0,w_0) :: R_0`$ である。そこで
+Next, since $`1 \le n`$, the factor $`B_0`$ occurs in the concatenation (2).
+As $`B_0 = ((v_0,w_0) :: R_0)^{+0\cdot d_0}`$ adds $`0`$ to the first entry of each pair, we have
+$`B_0 = (v_0,w_0) :: R_0`$. So put
 
 ```math
 R := B_1 \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} B_{n-1}
 ```
 
-と取ると（$`n = 1`$ のときは $`R = ()`$）、(2) は
+(with $`R = ()`$ when $`n = 1`$); then (2) becomes
 
 ```math
 M[n] = \Bigl(G \mathbin{+\!\!+} \bigl((v_0,w_0) :: R_0\bigr)\Bigr) \mathbin{+\!\!+} R
   = \mathrm{dropLast}\,M \mathbin{+\!\!+} R
 ```
 
-となり、第 1 式が成り立つ。
+and the first formula holds.
 
-第 2 式を示す。$`y \in \mathrm{snd}(R)`$ とすると、[T.mem_sndSet](Term.md#t-mem_sndSet) より
-$`p \in R`$ で $`p_2 = y`$ なるものが存在する。$`R`$ は $`B_1, \dots, B_{n-1}`$ の連結であるから、
-ある $`k`$（$`1 \le k \le n-1`$）について $`p \in B_k`$ である。
-$`B_k = ((v_0,w_0) :: R_0)^{+k\,d_0}`$ の要素は、$`q \in (v_0,w_0) :: R_0`$ について
-$`(q_1 + k\,d_0,\ q_2)`$ の形であるから、$`p_2 = q_2`$、すなわち $`y = q_2`$ である。
-いま $`q \in (v_0,w_0) :: R_0`$ であり、$`\mathrm{dropLast}\,M = G \mathbin{+\!\!+} ((v_0,w_0) :: R_0)`$
-であるから $`q \in \mathrm{dropLast}\,M`$ である。ふたたび [T.mem_sndSet](Term.md#t-mem_sndSet) より
-$`y \in \mathrm{snd}(\mathrm{dropLast}\,M)`$ を得る。∎
+We prove the second formula. Let $`y \in \mathrm{snd}(R)`$. By [T.mem_sndSet](Term.md#t-mem_sndSet)
+there is $`p \in R`$ with $`p_2 = y`$. Since $`R`$ is the concatenation of $`B_1, \dots, B_{n-1}`$,
+we have $`p \in B_k`$ for some $`k`$ with $`1 \le k \le n-1`$.
+The elements of $`B_k = ((v_0,w_0) :: R_0)^{+k\,d_0}`$ are of the form
+$`(q_1 + k\,d_0,\ q_2)`$ for $`q \in (v_0,w_0) :: R_0`$, hence $`p_2 = q_2`$, that is, $`y = q_2`$.
+Now $`q \in (v_0,w_0) :: R_0`$ and $`\mathrm{dropLast}\,M = G \mathbin{+\!\!+} ((v_0,w_0) :: R_0)`$,
+so $`q \in \mathrm{dropLast}\,M`$. By [T.mem_sndSet](Term.md#t-mem_sndSet) again,
+$`y \in \mathrm{snd}(\mathrm{dropLast}\,M)`$. ∎
 
 <a id="t-diagSeq_cons"></a>
-## 定理: 対角列の先頭の切り出し (T.diagSeq_cons)
+## Theorem: splitting off the head of a diagonal sequence (T.diagSeq_cons)
 
-### 定理
+### Theorem
 
-$`u \le v`$ ならば $`\Delta_u^v = (u,u) :: \Delta_{u+1}^v`$（[D.diagSeq](Pss.md#d-diagSeq)）。
+If $`u \le v`$ then $`\Delta_u^v = (u,u) :: \Delta_{u+1}^v`$ ([D.diagSeq](Pss.md#d-diagSeq)).
 
-### 証明
+### Proof
 
-$`\Delta_a^b`$ の定義（D.diagSeq）より、$`\Delta_u^v`$ は $`u`$ から始まる長さ $`v + 1 - u`$ の
-連続整数列 $`(u,\ u+1,\ \dots)`$ の各項 $`j`$ を対 $`(j,j)`$ に写した列である。
+By the definition of $`\Delta_a^b`$ (D.diagSeq), $`\Delta_u^v`$ is obtained from the sequence
+$`(u,\ u+1,\ \dots)`$ of consecutive integers of length $`v + 1 - u`$ starting at $`u`$ by sending
+each of its terms $`j`$ to the pair $`(j,j)`$.
 
-仮定 $`u \le v`$ より $`v + 1 - u = \bigl(v + 1 - (u+1)\bigr) + 1`$ である。
-長さ $`m + 1`$ の、$`u`$ から始まる連続整数列は、先頭の項 $`u`$ と、$`u+1`$ から始まる長さ $`m`$ の
-連続整数列に分かれる。各項に $`j \mapsto (j,j)`$ を施すと、先頭は $`(u,u)`$ となり、
-残りは $`u+1`$ から始まる長さ $`v + 1 - (u+1)`$ の連続整数列を写した列、
-すなわち $`\Delta_{u+1}^v`$ である。∎
+From the hypothesis $`u \le v`$ we get $`v + 1 - u = \bigl(v + 1 - (u+1)\bigr) + 1`$.
+A sequence of $`m + 1`$ consecutive integers starting at $`u`$ splits into its head term $`u`$ and the
+sequence of $`m`$ consecutive integers starting at $`u+1`$. Applying $`j \mapsto (j,j)`$ to each term,
+the head becomes $`(u,u)`$ and the rest is the image of the sequence of $`v + 1 - (u+1)`$ consecutive
+integers starting at $`u+1`$, that is, $`\Delta_{u+1}^v`$. ∎
 
 <a id="t-fst_in_diagSeq"></a>
-## 定理: 対角列の要素の行 0 の下界 (T.fst_in_diagSeq)
+## Theorem: lower bound for row 0 of an element of a diagonal sequence (T.fst_in_diagSeq)
 
-### 定理
+### Theorem
 
-$`q \in \Delta_a^b`$ ならば $`a \le q_1`$。
+If $`q \in \Delta_a^b`$ then $`a \le q_1`$.
 
-### 証明
+### Proof
 
-$`\Delta_a^b`$ の定義（D.diagSeq）より、$`q`$ はある $`j`$ について $`(j,j)`$ の形であり、
-その $`j`$ は $`a`$ から始まる長さ $`b + 1 - a`$ の連続整数列の要素、すなわちある
-$`i \lt b + 1 - a`$ について $`j = a + i`$ である。よって $`q_1 = a + i`$ であり、$`a \le a + i`$ である。∎
+By the definition of $`\Delta_a^b`$ (D.diagSeq), $`q`$ is of the form $`(j,j)`$ for some $`j`$, and this
+$`j`$ is an element of the sequence of consecutive integers of length $`b + 1 - a`$ starting at $`a`$,
+that is, $`j = a + i`$ for some $`i \lt b + 1 - a`$. Hence $`q_1 = a + i`$, and $`a \le a + i`$. ∎
 
 <a id="t-translate_diagSeq"></a>
-## 定理: 対角列の翻訳 (T.translate_diagSeq)
+## Theorem: the translation of a diagonal sequence (T.translate_diagSeq)
 
-### 定理
+### Theorem
 
-$`u \le v`$ ならば
+If $`u \le v`$ then
 
 ```math
 \mathrm{tr}(\Delta_u^v) = \mathsf{P}\bigl(u,\ \mathrm{tr}(\Delta_{u+1}^v),\ \mathsf{Z}\bigr)
 ```
 
-（$`\mathrm{tr}`$ [D.translate](Term.md#d-translate)、$`\mathsf{Z}`$ と $`\mathsf{P}`$ [D.Three](Term.md#d-Three)）。
+($`\mathrm{tr}`$ [D.translate](Term.md#d-translate), $`\mathsf{Z}`$ and $`\mathsf{P}`$ [D.Three](Term.md#d-Three)).
 
-### 証明
+### Proof
 
-[T.diagSeq_cons](#t-diagSeq_cons) より $`\Delta_u^v = (u,u) :: \Delta_{u+1}^v`$ である。
-[T.translate_single_tree](Term.md#t-translate_single_tree) を $`p := (u,u)`$、
-$`R := \Delta_{u+1}^v`$ として適用する。その仮定「$`R`$ の全要素 $`x`$ が $`p_1 \lt x_1`$ をみたす」は
-次のように確かめられる。$`x \in \Delta_{u+1}^v`$ とすると
-[T.fst_in_diagSeq](#t-fst_in_diagSeq) より $`u + 1 \le x_1`$ であり、したがって $`u \lt x_1`$ である。
-$`p_1 = u`$ であるからこれが求める条件である。
+By [T.diagSeq_cons](#t-diagSeq_cons) we have $`\Delta_u^v = (u,u) :: \Delta_{u+1}^v`$.
+Apply [T.translate_single_tree](Term.md#t-translate_single_tree) with $`p := (u,u)`$ and
+$`R := \Delta_{u+1}^v`$. Its hypothesis, that every element $`x`$ of $`R`$ satisfies $`p_1 \lt x_1`$,
+is checked as follows. Let $`x \in \Delta_{u+1}^v`$; then
+[T.fst_in_diagSeq](#t-fst_in_diagSeq) gives $`u + 1 \le x_1`$, hence $`u \lt x_1`$.
+Since $`p_1 = u`$, this is the required condition.
 
-結論は $`\mathrm{tr}((u,u) :: \Delta_{u+1}^v) = \mathsf{P}(p_2, \mathrm{tr}(\Delta_{u+1}^v), \mathsf{Z})`$
-であり、$`p_2 = u`$ である。∎
+The conclusion reads $`\mathrm{tr}((u,u) :: \Delta_{u+1}^v) = \mathsf{P}(p_2, \mathrm{tr}(\Delta_{u+1}^v), \mathsf{Z})`$,
+and $`p_2 = u`$. ∎
 
 <a id="d-cnf"></a>
-## 定義: Cantor 標準形条件 (D.cnf)
+## Definition: Cantor normal form condition (D.cnf)
 
-$`\mathrm{Three}`$ 上の述語 $`\mathrm{cnf}`$ を、項の構造に関する再帰で定める。
+We define a predicate $`\mathrm{cnf}`$ on $`\mathrm{Three}`$ by recursion on the structure of terms.
 
 ```math
 \begin{aligned}
@@ -188,49 +190,52 @@ $`\mathrm{Three}`$ 上の述語 $`\mathrm{cnf}`$ を、項の構造に関する�
 \end{aligned}
 ```
 
-第 1 引数の構成子と、それが $`\mathsf{P}`$ のときの第 3 引数の構成子で場合分けしており、
-3 つの式は $`\mathrm{Three}`$ のすべての元を尽くし、互いに重ならない。
-再帰呼び出しは第 2 式では $`b`$、第 3 式では $`b`$ と $`\mathsf{P}(e,f,g)`$ であり、
-いずれも与えられた項の真部分項であるから、この定義は整合的である。
+The case distinction is on the constructor of the first argument and, when that constructor is
+$`\mathsf{P}`$, on the constructor of its third argument; the three clauses exhaust all elements of
+$`\mathrm{Three}`$ and are pairwise disjoint. The recursive calls are on $`b`$ in the second clause and
+on $`b`$ and $`\mathsf{P}(e,f,g)`$ in the third, all of which are proper subterms of the given term,
+so this definition is well defined.
 
-第 3 式の第 2 連言子
-$`\neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)`$（[D.olt](Term.md#d-olt)）は、
-後続和の先頭の主要項から後続和を除いた $`\mathsf{P}(e,f,\mathsf{Z})`$ が、
-先頭の主要項から後続和を除いた $`\mathsf{P}(a,b,\mathsf{Z})`$ より真に大きくないことを述べている。
+The second conjunct of the third clause,
+$`\neg\bigl(\mathsf{P}(a,b,\mathsf{Z}) \prec \mathsf{P}(e,f,\mathsf{Z})\bigr)`$ ([D.olt](Term.md#d-olt)),
+states that $`\mathsf{P}(e,f,\mathsf{Z})`$, obtained from the leading principal term of the successor sum
+by deleting its successor sum, is not strictly greater than $`\mathsf{P}(a,b,\mathsf{Z})`$, obtained from
+the leading principal term by deleting its successor sum.
 
 <a id="t-cnf_Z"></a>
-## 定理: $`\mathsf{Z}`$ は条件をみたす (T.cnf_Z)
+## Theorem: $`\mathsf{Z}`$ satisfies the condition (T.cnf_Z)
 
-### 定理
+### Theorem
 
-$`\mathrm{cnf}(\mathsf{Z})`$。
+$`\mathrm{cnf}(\mathsf{Z})`$.
 
-### 証明
+### Proof
 
-$`\mathrm{cnf}`$ の定義（D.cnf）の第 1 式により $`\mathrm{cnf}(\mathsf{Z})`$ は $`\top`$ と定義により
-同一の命題であり、$`\top`$ は成り立つ。∎
+By the first clause of the definition of $`\mathrm{cnf}`$ (D.cnf), $`\mathrm{cnf}(\mathsf{Z})`$ is the
+same proposition as $`\top`$ by definition, and $`\top`$ holds. ∎
 
 <a id="t-cnf_P_Z"></a>
-## 定理: 後続和が $`\mathsf{Z}`$ のときの判定 (T.cnf_P_Z)
+## Theorem: the criterion when the successor sum is $`\mathsf{Z}`$ (T.cnf_P_Z)
 
-### 定理
+### Theorem
 
-任意の $`a \in \mathbb{N}`$, $`b \in \mathrm{Three}`$ に対し
+For all $`a \in \mathbb{N}`$ and $`b \in \mathrm{Three}`$,
 
 ```math
 \mathrm{cnf}\bigl(\mathsf{P}(a,b,\mathsf{Z})\bigr) \iff \mathrm{cnf}(b).
 ```
 
-### 証明
+### Proof
 
-$`\mathrm{cnf}`$ の定義（D.cnf）の第 2 式そのものであり、両辺は定義により同一の命題である。∎
+This is exactly the second clause of the definition of $`\mathrm{cnf}`$ (D.cnf); the two sides are the
+same proposition by definition. ∎
 
 <a id="t-cnf_P_P"></a>
-## 定理: 後続和が主要項のときの判定 (T.cnf_P_P)
+## Theorem: the criterion when the successor sum is a principal term (T.cnf_P_P)
 
-### 定理
+### Theorem
 
-任意の $`a, e \in \mathbb{N}`$, $`b, f, g \in \mathrm{Three}`$ に対し
+For all $`a, e \in \mathbb{N}`$ and $`b, f, g \in \mathrm{Three}`$,
 
 ```math
 \begin{aligned}
@@ -241,138 +246,143 @@ $`\mathrm{cnf}`$ の定義（D.cnf）の第 2 式そのものであり、両辺�
 \end{aligned}
 ```
 
-### 証明
+### Proof
 
-$`\mathrm{cnf}`$ の定義（D.cnf）の第 3 式そのものであり、両辺は定義により同一の命題である。∎
+This is exactly the third clause of the definition of $`\mathrm{cnf}`$ (D.cnf); the two sides are the
+same proposition by definition. ∎
 
 <a id="t-cnf_translate_diagSeq_aux"></a>
-## 定理: 対角列の翻訳は条件をみたす（一般の始点） (T.cnf_translate_diagSeq_aux)
+## Theorem: the translation of a diagonal sequence satisfies the condition (general starting point) (T.cnf_translate_diagSeq_aux)
 
-### 定理
+### Theorem
 
-任意の $`n, u \in \mathbb{N}`$ に対し $`\mathrm{cnf}\bigl(\mathrm{tr}(\Delta_u^{u+n})\bigr)`$。
+For all $`n, u \in \mathbb{N}`$ we have $`\mathrm{cnf}\bigl(\mathrm{tr}(\Delta_u^{u+n})\bigr)`$.
 
-### 証明
+### Proof
 
-$`n`$ に関する帰納法を行う（$`u`$ は全称量化したまま動かす）。帰納法の述語は
+We argue by induction on $`n`$, keeping $`u`$ universally quantified. The induction predicate is
 
 ```math
 \Phi(n) :\equiv \forall u \in \mathbb{N},\ \mathrm{cnf}\bigl(\mathrm{tr}(\Delta_u^{u+n})\bigr).
 ```
 
-**基底段** $`n = 0`$：$`u`$ を取る。$`u + 0 = u`$ である。
-[T.translate_diagSeq](#t-translate_diagSeq) を $`u \le u`$ に適用して
+**Base case** $`n = 0`$. Let $`u`$ be given. We have $`u + 0 = u`$.
+Applying [T.translate_diagSeq](#t-translate_diagSeq) with $`u \le u`$ gives
 
 ```math
 \mathrm{tr}(\Delta_u^u) = \mathsf{P}\bigl(u,\ \mathrm{tr}(\Delta_{u+1}^u),\ \mathsf{Z}\bigr)
 ```
 
-を得る。$`\Delta_{u+1}^u`$ は $`\Delta_a^b`$ の定義（D.diagSeq）より長さ
-$`u + 1 - (u + 1) = 0`$ の列、すなわち $`()`$ である。$`\mathrm{tr}`$ の定義（D.translate）より
-$`\mathrm{tr}\,() = \mathsf{Z}`$ であるから $`\mathrm{tr}(\Delta_u^u) = \mathsf{P}(u, \mathsf{Z}, \mathsf{Z})`$
-である。[T.cnf_P_Z](#t-cnf_P_Z) よりこれが条件をみたすことは $`\mathrm{cnf}(\mathsf{Z})`$ と同値であり、
-それは [T.cnf_Z](#t-cnf_Z) である。よって $`\Phi(0)`$。
+By the definition of $`\Delta_a^b`$ (D.diagSeq), $`\Delta_{u+1}^u`$ is a sequence of length
+$`u + 1 - (u + 1) = 0`$, that is, $`()`$. By the definition of $`\mathrm{tr}`$ (D.translate) we have
+$`\mathrm{tr}\,() = \mathsf{Z}`$, hence $`\mathrm{tr}(\Delta_u^u) = \mathsf{P}(u, \mathsf{Z}, \mathsf{Z})`$.
+By [T.cnf_P_Z](#t-cnf_P_Z) this term satisfies the condition if and only if $`\mathrm{cnf}(\mathsf{Z})`$,
+which is [T.cnf_Z](#t-cnf_Z). Hence $`\Phi(0)`$.
 
-**帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち
-$`\forall u,\ \mathrm{cnf}(\mathrm{tr}(\Delta_u^{u+n}))`$ である。$`u`$ を取る。
-$`u \le u + (n+1)`$ であるから [T.translate_diagSeq](#t-translate_diagSeq) より
+**Inductive step** $`n \to n+1`$. The induction hypothesis is $`\Phi(n)`$, that is,
+$`\forall u,\ \mathrm{cnf}(\mathrm{tr}(\Delta_u^{u+n}))`$. Let $`u`$ be given.
+Since $`u \le u + (n+1)`$, [T.translate_diagSeq](#t-translate_diagSeq) gives
 
 ```math
 \mathrm{tr}\bigl(\Delta_u^{u+(n+1)}\bigr)
   = \mathsf{P}\bigl(u,\ \mathrm{tr}\bigl(\Delta_{u+1}^{u+(n+1)}\bigr),\ \mathsf{Z}\bigr)
 ```
 
-である。$`u + (n+1) = (u+1) + n`$ であるから
-$`\Delta_{u+1}^{u+(n+1)} = \Delta_{u+1}^{(u+1)+n}`$ であり、帰納法の仮定 $`\Phi(n)`$ を
-$`u := u + 1`$ に適用して $`\mathrm{cnf}\bigl(\mathrm{tr}(\Delta_{u+1}^{(u+1)+n})\bigr)`$ を得る。
-[T.cnf_P_Z](#t-cnf_P_Z) よりこれは
-$`\mathrm{cnf}\bigl(\mathsf{P}(u, \mathrm{tr}(\Delta_{u+1}^{u+(n+1)}), \mathsf{Z})\bigr)`$ と同値であるから、
-$`\Phi(n+1)`$ が成り立つ。∎
+As $`u + (n+1) = (u+1) + n`$, we have $`\Delta_{u+1}^{u+(n+1)} = \Delta_{u+1}^{(u+1)+n}`$, and applying
+the induction hypothesis $`\Phi(n)`$ with $`u := u + 1`$ gives
+$`\mathrm{cnf}\bigl(\mathrm{tr}(\Delta_{u+1}^{(u+1)+n})\bigr)`$.
+By [T.cnf_P_Z](#t-cnf_P_Z) this is equivalent to
+$`\mathrm{cnf}\bigl(\mathsf{P}(u, \mathrm{tr}(\Delta_{u+1}^{u+(n+1)}), \mathsf{Z})\bigr)`$, so
+$`\Phi(n+1)`$ holds. ∎
 
 <a id="t-cnf_diag"></a>
-## 定理: 対角列の翻訳は条件をみたす (T.cnf_diag)
+## Theorem: the translation of a diagonal sequence satisfies the condition (T.cnf_diag)
 
-### 定理
+### Theorem
 
-任意の $`v \in \mathbb{N}`$ に対し $`\mathrm{cnf}\bigl(\mathrm{tr}(\Delta_0^v)\bigr)`$。
+For every $`v \in \mathbb{N}`$ we have $`\mathrm{cnf}\bigl(\mathrm{tr}(\Delta_0^v)\bigr)`$.
 
-### 証明
+### Proof
 
-[T.cnf_translate_diagSeq_aux](#t-cnf_translate_diagSeq_aux) を $`n := v`$、$`u := 0`$ に適用すると
-$`\mathrm{cnf}\bigl(\mathrm{tr}(\Delta_0^{0+v})\bigr)`$ を得る。$`0 + v = v`$ であるから、
-これが求める主張である。∎
+Applying [T.cnf_translate_diagSeq_aux](#t-cnf_translate_diagSeq_aux) with $`n := v`$ and $`u := 0`$
+gives $`\mathrm{cnf}\bigl(\mathrm{tr}(\Delta_0^{0+v})\bigr)`$. Since $`0 + v = v`$, this is the
+required statement. ∎
 
 <a id="t-cnf_snoc"></a>
-## 定理: 末尾に 1 列を付けた列が条件をみたせばもとの列もみたす (T.cnf_snoc)
+## Theorem: if the sequence with one column appended satisfies the condition, so does the original (T.cnf_snoc)
 
-### 定理
+### Theorem
 
-$`D \in \mathrm{PairSeq}`$、$`m \in \mathbb{N}\times\mathbb{N}`$ とする。
-$`\mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr)`$ ならば $`\mathrm{cnf}(\mathrm{tr}\,D)`$。
+Let $`D \in \mathrm{PairSeq}`$ and $`m \in \mathbb{N}\times\mathbb{N}`$.
+If $`\mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr)`$ then $`\mathrm{cnf}(\mathrm{tr}\,D)`$.
 
-### 証明
+### Proof
 
-$`m`$ を固定し、$`\mathrm{tr}`$ の再帰に沿う帰納法を行う。帰納法の述語は
+Fix $`m`$ and argue by induction along the recursion of $`\mathrm{tr}`$. The induction predicate is
 
 ```math
 \Psi(D) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr) \to \mathrm{cnf}(\mathrm{tr}\,D).
 ```
 
-**基底段** $`D = ()`$：結論は $`\mathrm{cnf}(\mathrm{tr}\,())`$ である。
-$`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$ であり、
-[T.cnf_Z](#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ（前件は使わない）。
+**Base case** $`D = ()`$. The conclusion is $`\mathrm{cnf}(\mathrm{tr}\,())`$.
+By the definition of $`\mathrm{tr}`$ (D.translate) we have $`\mathrm{tr}\,() = \mathsf{Z}`$, and
+$`\mathrm{cnf}(\mathsf{Z})`$ holds by [T.cnf_Z](#t-cnf_Z) (the antecedent is not used).
 
-**帰納段** $`D = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と $`\Psi(\mathrm{dw}_{p_1} L)`$ である。
-前件 $`\mathrm{cnf}\bigl(\mathrm{tr}((p :: L) \mathbin{+\!\!+} (m))\bigr)`$ を仮定する。
-$`L`$ の全要素が $`p_1 \lt x_1`$ をみたすかどうかで場合分けする。
+**Inductive step** $`D = p :: L`$. The induction hypotheses are $`\Psi(\mathrm{tw}_{p_1} L)`$ and
+$`\Psi(\mathrm{dw}_{p_1} L)`$. Assume the antecedent
+$`\mathrm{cnf}\bigl(\mathrm{tr}((p :: L) \mathbin{+\!\!+} (m))\bigr)`$.
+We distinguish cases according to whether every element $`x`$ of $`L`$ satisfies $`p_1 \lt x_1`$.
 
-**(a) $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすとき。**
-このとき $`\mathrm{tw}_{p_1} L = L`$、$`\mathrm{dw}_{p_1} L = ()`$ であり、$`\mathrm{tr}`$ の定義（D.translate）より
+**(a) The case where every element $`x`$ of $`L`$ satisfies $`p_1 \lt x_1`$.**
+Then $`\mathrm{tw}_{p_1} L = L`$ and $`\mathrm{dw}_{p_1} L = ()`$, so by the definition of
+$`\mathrm{tr}`$ (D.translate)
 
 ```math
 \mathrm{tr}(p :: L) = \mathsf{P}\bigl(p_2,\ \mathrm{tr}\,L,\ \mathsf{Z}\bigr)
 ```
 
-である。$`m`$ が述語をみたすかどうかでさらに分ける。
+We distinguish further according to whether $`m`$ satisfies the predicate.
 
-**$`p_1 \lt m_1`$ のとき。** $`L \mathbin{+\!\!+} (m)`$ の全要素も $`p_1 \lt x_1`$ をみたすから
-$`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L \mathbin{+\!\!+} (m)`$、$`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = ()`$ であり、
-$`(p :: L) \mathbin{+\!\!+} (m) = p :: (L \mathbin{+\!\!+} (m))`$ とあわせて $`\mathrm{tr}`$ の定義（D.translate）より
+**The case $`p_1 \lt m_1`$.** Every element of $`L \mathbin{+\!\!+} (m)`$ satisfies $`p_1 \lt x_1`$ as well,
+so $`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L \mathbin{+\!\!+} (m)`$ and
+$`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = ()`$; together with
+$`(p :: L) \mathbin{+\!\!+} (m) = p :: (L \mathbin{+\!\!+} (m))`$, the definition of $`\mathrm{tr}`$
+(D.translate) gives
 
 ```math
 \mathrm{tr}\bigl((p :: L) \mathbin{+\!\!+} (m)\bigr)
   = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(L \mathbin{+\!\!+} (m)),\ \mathsf{Z}\bigr)
 ```
 
-である。前件にこれを代入し [T.cnf_P_Z](#t-cnf_P_Z) を使うと
-$`\mathrm{cnf}\bigl(\mathrm{tr}(L \mathbin{+\!\!+} (m))\bigr)`$ を得る。
-帰納法の仮定 $`\Psi(\mathrm{tw}_{p_1} L)`$ は $`\mathrm{tw}_{p_1} L = L`$ より $`\Psi(L)`$ であるから、
-これを適用して $`\mathrm{cnf}(\mathrm{tr}\,L)`$ を得る。
-ふたたび [T.cnf_P_Z](#t-cnf_P_Z) より $`\mathrm{cnf}\bigl(\mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})\bigr)`$、
-すなわち $`\mathrm{cnf}(\mathrm{tr}(p :: L))`$ が成り立つ。
+Substituting this into the antecedent and using [T.cnf_P_Z](#t-cnf_P_Z) yields
+$`\mathrm{cnf}\bigl(\mathrm{tr}(L \mathbin{+\!\!+} (m))\bigr)`$.
+Since $`\mathrm{tw}_{p_1} L = L`$, the induction hypothesis $`\Psi(\mathrm{tw}_{p_1} L)`$ is $`\Psi(L)`$,
+and applying it yields $`\mathrm{cnf}(\mathrm{tr}\,L)`$.
+By [T.cnf_P_Z](#t-cnf_P_Z) again, $`\mathrm{cnf}\bigl(\mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})\bigr)`$
+holds, that is, $`\mathrm{cnf}(\mathrm{tr}(p :: L))`$.
 
-**$`\neg(p_1 \lt m_1)`$ のとき。**
-[T.takeWhile_append_all](Term.md#t-takeWhile_append_all) と
-[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) より
-$`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L \mathbin{+\!\!+} \mathrm{tw}_{p_1}(m)`$、
-$`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{dw}_{p_1}(m)`$ であり、$`m`$ が述語を破るから
-$`\mathrm{tw}_{p_1}(m) = ()`$、$`\mathrm{dw}_{p_1}(m) = (m)`$ である。よって
+**The case $`\neg(p_1 \lt m_1)`$.**
+By [T.takeWhile_append_all](Term.md#t-takeWhile_append_all) and
+[T.dropWhile_append_all](Term.md#t-dropWhile_append_all) we have
+$`\mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = L \mathbin{+\!\!+} \mathrm{tw}_{p_1}(m)`$ and
+$`\mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{dw}_{p_1}(m)`$, and since $`m`$ violates the
+predicate, $`\mathrm{tw}_{p_1}(m) = ()`$ and $`\mathrm{dw}_{p_1}(m) = (m)`$. Hence
 
 ```math
 \mathrm{tr}\bigl((p :: L) \mathbin{+\!\!+} (m)\bigr)
   = \mathsf{P}\bigl(p_2,\ \mathrm{tr}\,L,\ \mathrm{tr}\,(m)\bigr)
 ```
 
-である。さらに $`\mathrm{tr}`$ の定義（D.translate）より
-$`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$ である。
-前件にこれらを代入し [T.cnf_P_P](#t-cnf_P_P) を使うと、その右辺の第 1 連言子として
-$`\mathrm{cnf}(\mathrm{tr}\,L)`$ を得る。
-[T.cnf_P_Z](#t-cnf_P_Z) より $`\mathrm{cnf}\bigl(\mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})\bigr)`$、
-すなわち $`\mathrm{cnf}(\mathrm{tr}(p :: L))`$ が成り立つ。
+Moreover, by the definition of $`\mathrm{tr}`$ (D.translate) we have
+$`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$.
+Substituting these into the antecedent and using [T.cnf_P_P](#t-cnf_P_P), we obtain
+$`\mathrm{cnf}(\mathrm{tr}\,L)`$ as the first conjunct of its right-hand side.
+By [T.cnf_P_Z](#t-cnf_P_Z) we get $`\mathrm{cnf}\bigl(\mathsf{P}(p_2, \mathrm{tr}\,L, \mathsf{Z})\bigr)`$,
+that is, $`\mathrm{cnf}(\mathrm{tr}(p :: L))`$.
 
-**(b) $`L`$ のある要素 $`x`$ が $`\neg(p_1 \lt x_1)`$ をみたすとき。**
-[T.takeWhile_append_not](Term.md#t-takeWhile_append_not) と
-[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) より
+**(b) The case where some element $`x`$ of $`L`$ satisfies $`\neg(p_1 \lt x_1)`$.**
+By [T.takeWhile_append_not](Term.md#t-takeWhile_append_not) and
+[T.dropWhile_append_not](Term.md#t-dropWhile_append_not) we have
 
 ```math
 \mathrm{tw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{tw}_{p_1} L,
@@ -380,9 +390,9 @@ $`\mathrm{cnf}(\mathrm{tr}\,L)`$ を得る。
 \mathrm{dw}_{p_1}(L \mathbin{+\!\!+} (m)) = \mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m)
 ```
 
-である。また $`\mathrm{dw}_{p_1} L \ne ()`$ である。実際 $`\mathrm{dw}_{p_1} L = ()`$ とすると
-$`L`$ の全要素が $`p_1 \lt x_1`$ をみたすことになり、$`x`$ について仮定に矛盾する。
-そこで $`\mathrm{dw}_{p_1} L = q :: L_2`$ と書く。$`\mathrm{tr}`$ の定義（D.translate）より
+Also $`\mathrm{dw}_{p_1} L \ne ()`$. Indeed, if $`\mathrm{dw}_{p_1} L = ()`$ then every element of
+$`L`$ would satisfy $`p_1 \lt x_1`$, contradicting the assumption on $`x`$.
+So write $`\mathrm{dw}_{p_1} L = q :: L_2`$. By the definition of $`\mathrm{tr}`$ (D.translate)
 
 ```math
 \mathrm{tr}(\mathrm{dw}_{p_1} L)
@@ -394,191 +404,194 @@ $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすことになり、$`x`$ につ
       \mathrm{tr}(\mathrm{dw}_{q_1}(L_2 \mathbin{+\!\!+} (m)))\bigr)
 ```
 
-である（第 2 式では $`(q :: L_2) \mathbin{+\!\!+} (m) = q :: (L_2 \mathbin{+\!\!+} (m))`$ を使った）。
-以下 $`A := \mathrm{tr}(\mathrm{tw}_{q_1} L_2)`$、$`A' := \mathrm{tr}(\mathrm{tw}_{q_1}(L_2 \mathbin{+\!\!+} (m)))`$ と略記する。
-[T.translate_takeWhile_snoc_le](Decrease.md#t-translate_takeWhile_snoc_le) より
-$`A \preceq A'`$（[D.ole](Term.md#d-ole)）である。
+(in the second formula we used $`(q :: L_2) \mathbin{+\!\!+} (m) = q :: (L_2 \mathbin{+\!\!+} (m))`$).
+In what follows we abbreviate $`A := \mathrm{tr}(\mathrm{tw}_{q_1} L_2)`$ and
+$`A' := \mathrm{tr}(\mathrm{tw}_{q_1}(L_2 \mathbin{+\!\!+} (m)))`$.
+By [T.translate_takeWhile_snoc_le](Decrease.md#t-translate_takeWhile_snoc_le) we have
+$`A \preceq A'`$ ([D.ole](Term.md#d-ole)).
 
-前件は、$`\mathrm{tr}`$ の定義（D.translate）と上の 2 式により
+By the definition of $`\mathrm{tr}`$ (D.translate) and the two formulas above, the antecedent can be
+written as
 
 ```math
 \mathrm{cnf}\Bigl(\mathsf{P}\bigl(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\
   \mathsf{P}(q_2,\ A',\ \mathrm{tr}(\mathrm{dw}_{q_1}(L_2 \mathbin{+\!\!+} (m))))\bigr)\Bigr)
 ```
 
-と書ける。[T.cnf_P_P](#t-cnf_P_P) より次の 3 つが成り立つ。
+By [T.cnf_P_P](#t-cnf_P_P) the following three statements hold.
 
-1. $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{tw}_{p_1} L)\bigr)`$。
-2. $`\neg\bigl(\mathsf{P}(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathsf{Z}) \prec \mathsf{P}(q_2, A', \mathsf{Z})\bigr)`$。
-3. $`\mathrm{cnf}\bigl(\mathsf{P}(q_2, A', \mathrm{tr}(\mathrm{dw}_{q_1}(L_2 \mathbin{+\!\!+} (m))))\bigr)`$、
-   すなわち $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))\bigr)`$。
+1. $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{tw}_{p_1} L)\bigr)`$.
+2. $`\neg\bigl(\mathsf{P}(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathsf{Z}) \prec \mathsf{P}(q_2, A', \mathsf{Z})\bigr)`$.
+3. $`\mathrm{cnf}\bigl(\mathsf{P}(q_2, A', \mathrm{tr}(\mathrm{dw}_{q_1}(L_2 \mathbin{+\!\!+} (m))))\bigr)`$,
+   that is, $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dw}_{p_1} L \mathbin{+\!\!+} (m))\bigr)`$.
 
-3 に帰納法の仮定 $`\Psi(\mathrm{dw}_{p_1} L)`$ を適用して
-$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr)`$ を得る。
+Applying the induction hypothesis $`\Psi(\mathrm{dw}_{p_1} L)`$ to 3 yields
+$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr)`$.
 
-次に
+Next we prove
 
 ```math
 \mathsf{P}(q_2,\ A,\ \mathsf{Z}) \preceq \mathsf{P}(q_2,\ A',\ \mathsf{Z})
 ```
 
-を示す。$`A \preceq A'`$ は $`\preceq`$ の定義（D.ole）より $`A \prec A'`$ か $`A = A'`$ である。
-前者のときは [T.olt_P_b](Term.md#t-olt_P_b) より
-$`\mathsf{P}(q_2, A, \mathsf{Z}) \prec \mathsf{P}(q_2, A', \mathsf{Z})`$ であり、$`\preceq`$ の定義の第 1 選言が成り立つ。
-後者のときは両辺が同一の項であり、第 2 選言が成り立つ。
+By the definition of $`\preceq`$ (D.ole), $`A \preceq A'`$ says that $`A \prec A'`$ or $`A = A'`$.
+In the former case [T.olt_P_b](Term.md#t-olt_P_b) gives
+$`\mathsf{P}(q_2, A, \mathsf{Z}) \prec \mathsf{P}(q_2, A', \mathsf{Z})`$, so the first disjunct in the
+definition of $`\preceq`$ holds. In the latter case the two sides are the same term, so the second
+disjunct holds.
 
-これを用いて
+Using this, we prove
 
 ```math
 \neg\bigl(\mathsf{P}(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\ \mathsf{Z}) \prec \mathsf{P}(q_2,\ A,\ \mathsf{Z})\bigr)
 ```
 
-を示す。左辺の内側が成り立つとすると、いま示した $`\preceq`$ と
-[T.olt_ole_trans](Term.md#t-olt_ole_trans) より
-$`\mathsf{P}(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathsf{Z}) \prec \mathsf{P}(q_2, A', \mathsf{Z})`$
-となり、2 に矛盾する。
+Suppose the formula inside the negation held. Then the relation $`\preceq`$ just proved and
+[T.olt_ole_trans](Term.md#t-olt_ole_trans) would give
+$`\mathsf{P}(p_2, \mathrm{tr}(\mathrm{tw}_{p_1} L), \mathsf{Z}) \prec \mathsf{P}(q_2, A', \mathsf{Z})`$,
+contradicting 2.
 
-最後に $`\mathrm{tr}`$ の定義（D.translate）より
+Finally, by the definition of $`\mathrm{tr}`$ (D.translate)
 
 ```math
 \mathrm{tr}(p :: L) = \mathsf{P}\bigl(p_2,\ \mathrm{tr}(\mathrm{tw}_{p_1} L),\
   \mathsf{P}(q_2,\ A,\ \mathrm{tr}(\mathrm{dw}_{q_1} L_2))\bigr)
 ```
 
-であり、[T.cnf_P_P](#t-cnf_P_P) に 1、いま示した否定、および
-$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr)`$（これは
-$`\mathrm{cnf}\bigl(\mathsf{P}(q_2, A, \mathrm{tr}(\mathrm{dw}_{q_1} L_2))\bigr)`$ に他ならない）を与えると
-$`\mathrm{cnf}(\mathrm{tr}(p :: L))`$ を得る。∎
+and feeding [T.cnf_P_P](#t-cnf_P_P) with 1, with the negation just proved, and with
+$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dw}_{p_1} L)\bigr)`$ (which is nothing but
+$`\mathrm{cnf}\bigl(\mathsf{P}(q_2, A, \mathrm{tr}(\mathrm{dw}_{q_1} L_2))\bigr)`$) yields
+$`\mathrm{cnf}(\mathrm{tr}(p :: L))`$. ∎
 
 <a id="t-cnf_dropLast"></a>
-## 定理: 末尾の 1 列を落としても条件は保たれる (T.cnf_dropLast)
+## Theorem: the condition is preserved when the last column is dropped (T.cnf_dropLast)
 
-### 定理
+### Theorem
 
-$`C \in \mathrm{PairSeq}`$、$`C \ne ()`$ とする。$`\mathrm{cnf}(\mathrm{tr}\,C)`$ ならば
-$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,C)\bigr)`$。
+Let $`C \in \mathrm{PairSeq}`$ with $`C \ne ()`$. If $`\mathrm{cnf}(\mathrm{tr}\,C)`$ then
+$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,C)\bigr)`$.
 
-### 証明
+### Proof
 
-$`C \ne ()`$ であるから $`C`$ の最後の要素 $`\ell`$ が取れて
+Since $`C \ne ()`$, the last element $`\ell`$ of $`C`$ exists and
 
 ```math
 C = \mathrm{dropLast}\,C \mathbin{+\!\!+} (\ell)
 ```
 
-である。仮定 $`\mathrm{cnf}(\mathrm{tr}\,C)`$ はこれにより
-$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,C \mathbin{+\!\!+} (\ell))\bigr)`$ と書ける。
-[T.cnf_snoc](#t-cnf_snoc) を $`D := \mathrm{dropLast}\,C`$、$`m := \ell`$ として適用すればよい。∎
+By this, the hypothesis $`\mathrm{cnf}(\mathrm{tr}\,C)`$ can be written as
+$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{dropLast}\,C \mathbin{+\!\!+} (\ell))\bigr)`$.
+It remains to apply [T.cnf_snoc](#t-cnf_snoc) with $`D := \mathrm{dropLast}\,C`$ and $`m := \ell`$. ∎
 
 <a id="t-cnf_take"></a>
-## 定理: 前部分列でも条件は保たれる (T.cnf_take)
+## Theorem: the condition is preserved on prefixes (T.cnf_take)
 
-### 定理
+### Theorem
 
-$`M \in \mathrm{PairSeq}`$ とし $`\mathrm{cnf}(\mathrm{tr}\,M)`$ を仮定する。
-このとき任意の $`k \in \mathbb{N}`$ に対し $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr)`$。
-ここで $`\mathrm{take}_k M`$ は $`M`$ の先頭 $`k`$ 要素からなる列であり、
-$`\lvert M\rvert \le k`$ のときは $`M`$ 自身である。
+Let $`M \in \mathrm{PairSeq}`$ and assume $`\mathrm{cnf}(\mathrm{tr}\,M)`$.
+Then $`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr)`$ for every $`k \in \mathbb{N}`$.
+Here $`\mathrm{take}_k M`$ is the sequence consisting of the first $`k`$ elements of $`M`$,
+and equals $`M`$ itself when $`\lvert M\rvert \le k`$.
 
-### 証明
+### Proof
 
-次の主張を示せば、$`d := \lvert M\rvert - k`$ として結論が得られる。
+It suffices to prove the following statement, from which the conclusion follows by taking
+$`d := \lvert M\rvert - k`$.
 
 ```math
 \forall d,\ \forall k,\ \bigl(\lvert M\rvert - k = d\bigr) \to \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr).
 ```
 
-$`d`$ に関する帰納法を行う（$`k`$ は全称量化したまま動かす）。帰納法の述語は
+We argue by induction on $`d`$, keeping $`k`$ universally quantified. The induction predicate is
 
 ```math
 \Xi(d) :\equiv \forall k,\ \bigl(\lvert M\rvert - k = d\bigr)
   \to \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr).
 ```
 
-**基底段** $`d = 0`$：$`k`$ を取り $`\lvert M\rvert - k = 0`$ とする。自然数の減法は切り捨て減法であるから
-これは $`\lvert M\rvert \le k`$ を意味し、$`\mathrm{take}_k M = M`$ である。
-結論は仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ そのものである。
+**Base case** $`d = 0`$. Let $`k`$ be given with $`\lvert M\rvert - k = 0`$. Subtraction of natural
+numbers is truncated subtraction, so this means $`\lvert M\rvert \le k`$, and $`\mathrm{take}_k M = M`$.
+The conclusion is then the hypothesis $`\mathrm{cnf}(\mathrm{tr}\,M)`$ itself.
 
-**帰納段** $`d \to d+1`$：帰納法の仮定は $`\Xi(d)`$ である。$`k`$ を取り
-$`\lvert M\rvert - k = d + 1`$ とする。$`\lvert M\rvert - k \ne 0`$ であるから $`k \lt \lvert M\rvert`$、
-すなわち $`k + 1 \le \lvert M\rvert`$ である。また $`\lvert M\rvert - (k+1) = d`$ であるから、
-帰納法の仮定 $`\Xi(d)`$ を $`k + 1`$ に適用して
-$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_{k+1} M)\bigr)`$ を得る。
+**Inductive step** $`d \to d+1`$. The induction hypothesis is $`\Xi(d)`$. Let $`k`$ be given with
+$`\lvert M\rvert - k = d + 1`$. Since $`\lvert M\rvert - k \ne 0`$ we have $`k \lt \lvert M\rvert`$,
+that is, $`k + 1 \le \lvert M\rvert`$. Moreover $`\lvert M\rvert - (k+1) = d`$, so applying the
+induction hypothesis $`\Xi(d)`$ with $`k + 1`$ yields
+$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_{k+1} M)\bigr)`$.
 
-$`k + 1 \le \lvert M\rvert`$ より $`\lvert \mathrm{take}_{k+1} M\rvert = k + 1`$ であり、
-$`k + 1 \ne 0`$ であるから $`\mathrm{take}_{k+1} M \ne ()`$ である。
-さらに、長さ $`k+1`$ の列の末尾 1 要素を落とすとその先頭 $`k`$ 要素になるから
+From $`k + 1 \le \lvert M\rvert`$ we get $`\lvert \mathrm{take}_{k+1} M\rvert = k + 1`$, and since
+$`k + 1 \ne 0`$ we have $`\mathrm{take}_{k+1} M \ne ()`$.
+Moreover, dropping the last element of a sequence of length $`k+1`$ leaves its first $`k`$ elements, so
 
 ```math
 \mathrm{dropLast}\bigl(\mathrm{take}_{k+1} M\bigr) = \mathrm{take}_k\bigl(\mathrm{take}_{k+1} M\bigr) = \mathrm{take}_k M
 ```
 
-である（第 2 の等号は $`k \le k+1`$ による）。
-[T.cnf_dropLast](#t-cnf_dropLast) を $`C := \mathrm{take}_{k+1} M`$ に適用して
-$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr)`$ を得る。よって $`\Xi(d+1)`$。∎
+(the second equality holds because $`k \le k+1`$).
+Applying [T.cnf_dropLast](#t-cnf_dropLast) with $`C := \mathrm{take}_{k+1} M`$ yields
+$`\mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr)`$. Hence $`\Xi(d+1)`$. ∎
 
 <a id="t-cnf_replicate_block"></a>
-## 定理: 同一ブロックの反復は条件をみたす (T.cnf_replicate_block)
+## Theorem: a repetition of the same block satisfies the condition (T.cnf_replicate_block)
 
-### 定理
+### Theorem
 
-$`v_0, w_0 \in \mathbb{N}`$、$`R \in \mathrm{PairSeq}`$ とし、
-$`\forall x \in R,\ v_0 \lt x_1`$ と $`\mathrm{cnf}(\mathrm{tr}\,R)`$ を仮定する。
-$`B := (v_0,w_0) :: R`$ とおく。また列 $`L`$ と $`k \in \mathbb{N}`$ に対し、$`L`$ を $`k`$ 個連結した
-列を $`L^{\ast k}`$ と書く。すなわち
+Let $`v_0, w_0 \in \mathbb{N}`$ and $`R \in \mathrm{PairSeq}`$, and assume
+$`\forall x \in R,\ v_0 \lt x_1`$ and $`\mathrm{cnf}(\mathrm{tr}\,R)`$.
+Put $`B := (v_0,w_0) :: R`$. Moreover, for a sequence $`L`$ and $`k \in \mathbb{N}`$, write
+$`L^{\ast k}`$ for the concatenation of $`k`$ copies of $`L`$, that is,
 
 ```math
 L^{\ast 0} := (), \qquad L^{\ast(k+1)} := L \mathbin{+\!\!+} L^{\ast k} .
 ```
 
-このとき任意の $`n \in \mathbb{N}`$ に対し $`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast n})\bigr)`$。
+Then $`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast n})\bigr)`$ for every $`n \in \mathbb{N}`$.
 
-### 証明
+### Proof
 
-はじめに、任意の $`k \in \mathbb{N}`$ について
+We first check that
 
 ```math
 (\ast)\qquad B^{\ast k} = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,B^{\ast k})_1\bigr)
 ```
 
-が成り立つことを見る。$`k = 0`$ のときは $`B^{\ast 0} = ()`$ であり第 1 選言が成り立つ。
-$`k = k' + 1`$ のときは $`B^{\ast(k'+1)} = B \mathbin{+\!\!+} B^{\ast k'}`$ の先頭は $`B`$ の先頭 $`(v_0,w_0)`$ であり、
-$`\neg(v_0 \lt v_0)`$ であるから第 2 選言が成り立つ。
+holds for every $`k \in \mathbb{N}`$. For $`k = 0`$ we have $`B^{\ast 0} = ()`$, so the first disjunct
+holds. For $`k = k' + 1`$, the head of $`B^{\ast(k'+1)} = B \mathbin{+\!\!+} B^{\ast k'}`$ is the head
+$`(v_0,w_0)`$ of $`B`$, and $`\neg(v_0 \lt v_0)`$, so the second disjunct holds.
 
-したがって [T.translate_block_append](Term.md#t-translate_block_append) を
-$`T := B^{\ast k}`$ として適用でき、任意の $`k`$ について
+Hence [T.translate_block_append](Term.md#t-translate_block_append) can be applied with
+$`T := B^{\ast k}`$, and
 
 ```math
 (\ast\ast)\qquad \mathrm{tr}\bigl(B^{\ast(k+1)}\bigr)
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}(B^{\ast k})\bigr)
 ```
 
-が成り立つ（第 1 の仮定が $`\forall x \in R,\ v_0 \lt x_1`$ である）。
+holds for every $`k`$ (its first hypothesis is $`\forall x \in R,\ v_0 \lt x_1`$).
 
-$`n`$ に関する帰納法を行う。帰納法の述語は
+We argue by induction on $`n`$. The induction predicate is
 
 ```math
 \Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast n})\bigr).
 ```
 
-**基底段** $`n = 0`$：$`B^{\ast 0} = ()`$ であり、$`\mathrm{tr}`$ の定義（D.translate）より
-$`\mathrm{tr}\,() = \mathsf{Z}`$ である。[T.cnf_Z](#t-cnf_Z) より $`\Phi(0)`$。
+**Base case** $`n = 0`$. We have $`B^{\ast 0} = ()`$, and by the definition of $`\mathrm{tr}`$
+(D.translate) $`\mathrm{tr}\,() = \mathsf{Z}`$. By [T.cnf_Z](#t-cnf_Z) we get $`\Phi(0)`$.
 
-**帰納段** $`n = m + 1`$：帰納法の仮定は $`\Phi(m)`$、すなわち
-$`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast m})\bigr)`$ である。$`m`$ で場合分けする。
+**Inductive step** $`n = m + 1`$. The induction hypothesis is $`\Phi(m)`$, that is,
+$`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast m})\bigr)`$. We distinguish cases on $`m`$.
 
-**$`m = 0`$ のとき。** $`(\ast\ast)`$ を $`k := 0`$ として使うと
+**The case $`m = 0`$.** Using $`(\ast\ast)`$ with $`k := 0`$ gives
 
 ```math
 \mathrm{tr}(B^{\ast 1}) = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}\,()\bigr)
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathsf{Z}\bigr)
 ```
 
-である。
-[T.cnf_P_Z](#t-cnf_P_Z) よりこれが条件をみたすことは $`\mathrm{cnf}(\mathrm{tr}\,R)`$ と同値であり、
-それは仮定である。よって $`\Phi(1)`$。
+By [T.cnf_P_Z](#t-cnf_P_Z) this term satisfies the condition if and only if
+$`\mathrm{cnf}(\mathrm{tr}\,R)`$, which is one of the hypotheses. Hence $`\Phi(1)`$.
 
-**$`m = m' + 1`$ のとき。** $`(\ast\ast)`$ を $`k := m`$ と $`k := m'`$ として使うと
+**The case $`m = m' + 1`$.** Using $`(\ast\ast)`$ with $`k := m`$ and with $`k := m'`$ gives
 
 ```math
 \mathrm{tr}\bigl(B^{\ast(m+1)}\bigr)
@@ -586,13 +599,14 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast m})\bigr)`$ である。$`m`$ で場合�
       \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}(B^{\ast m'})\bigr)\Bigr)
 ```
 
-である。[T.cnf_P_P](#t-cnf_P_P) により、これが条件をみたすためには次の 3 つを示せばよい。
+By [T.cnf_P_P](#t-cnf_P_P), for this term to satisfy the condition it suffices to prove the following
+three statements.
 
-1. $`\mathrm{cnf}(\mathrm{tr}\,R)`$：仮定である。
-2. $`\neg\bigl(\mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z}) \prec \mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z})\bigr)`$：
-   [T.olt_irrefl](Term.md#t-olt_irrefl) である。
-3. $`\mathrm{cnf}\bigl(\mathsf{P}(w_0, \mathrm{tr}\,R, \mathrm{tr}(B^{\ast m'}))\bigr)`$：
-   $`(\ast\ast)`$ を $`k := m'`$ として使うとこの項は $`\mathrm{tr}(B^{\ast(m'+1)}) = \mathrm{tr}(B^{\ast m})`$ であり、
-   主張は帰納法の仮定 $`\Phi(m)`$ である。
+1. $`\mathrm{cnf}(\mathrm{tr}\,R)`$: this is a hypothesis.
+2. $`\neg\bigl(\mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z}) \prec \mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z})\bigr)`$:
+   this is [T.olt_irrefl](Term.md#t-olt_irrefl).
+3. $`\mathrm{cnf}\bigl(\mathsf{P}(w_0, \mathrm{tr}\,R, \mathrm{tr}(B^{\ast m'}))\bigr)`$:
+   using $`(\ast\ast)`$ with $`k := m'`$, this term is $`\mathrm{tr}(B^{\ast(m'+1)}) = \mathrm{tr}(B^{\ast m})`$,
+   so the statement is the induction hypothesis $`\Phi(m)`$.
 
-よって $`\Phi(m+1)`$。∎
+Hence $`\Phi(m+1)`$. ∎
