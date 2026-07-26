@@ -25,7 +25,7 @@ $`M \in \mathrm{ST\_PS}`$, then $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF
 ### Proof
 
 Let $`M \in \mathrm{PairSeq}`$ with $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ be given, and argue by
-induction on the derivation of $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$. The induction predicate is
+induction on the derivation of $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ ([T.Acc.rec](Reduction.md#t-Acc.rec)). The induction predicate is
 
 ```math
 \Phi(M_0) :\equiv M_0 \in \mathrm{ST\_PS} \to \mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}} .
@@ -40,7 +40,7 @@ induction on the derivation of $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$. The ind
 (the other premise of the rule,
 $`\forall N,\ N \mathbin{R_{\mathrm{st}}} M_0 \to N \in \mathrm{Acc}_{R_{\mathrm{st}}}`$,
 is available as well, but is not used below). Assume $`M_0 \in \mathrm{ST\_PS}`$; we must show
-$`\mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$. By the rule for $`\mathrm{Acc}`$, it suffices to show
+$`\mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$. By [T.Acc.intro](Reduction.md#t-Acc.intro), it suffices to show
 
 ```math
 \forall v \in \mathrm{Three},\
@@ -99,7 +99,7 @@ Feeding this and $`M \in \mathrm{ST\_PS}`$ into
 [T.acc_Rnf_of_acc_PS](#t-acc_Rnf_of_acc_PS) gives
 $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$, that is, $`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$.
 
-**(b) The case $`u \notin \mathrm{NF}`$.** By the rule for $`\mathrm{Acc}`$ it suffices to show
+**(b) The case $`u \notin \mathrm{NF}`$.** By [T.Acc.intro](Reduction.md#t-Acc.intro) it suffices to show
 
 ```math
 \forall v \in \mathrm{Three},\ v \mathbin{R_{\mathrm{NF}}} u \to v \in \mathrm{Acc}_{R_{\mathrm{NF}}}

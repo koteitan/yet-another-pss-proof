@@ -3,16 +3,47 @@
 <a id="d-Acc"></a>
 ## Definition: the set of accessible elements (D.Acc)
 
-For a relation $`R \subseteq A \times A`$ on a set $`A`$, define $`\mathrm{Acc}_R \subseteq A`$ to be
-the least set closed under the following single rule.
+For a relation $`R \subseteq A \times A`$ on a set $`A`$ and $`Y \subseteq A`$, define $`Y`$ to be
+**closed** under $`R`$ if
 
 ```math
-\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
-\ \Longrightarrow\ x \in \mathrm{Acc}_R .
+\forall x \in A,\ \bigl(\forall y \in A,\ y \mathbin{R} x \to y \in Y\bigr) \to x \in Y
 ```
 
-Minimality is used in the form of the following induction principle. If a predicate $`\Phi`$ on
-$`A`$ satisfies
+holds. Then define $`\mathrm{Acc}_R \subseteq A`$ by
+
+```math
+\mathrm{Acc}_R := \bigcap\, \bigl\{\, Y \subseteq A \ \bigm|\ Y \text{ is closed under } R \,\bigr\} .
+```
+
+That is, $`x \in \mathrm{Acc}_R`$ says that $`x \in Y`$ for every $`Y \subseteq A`$ that is closed
+under $`R`$.
+
+<a id="t-Acc.intro"></a>
+## Theorem: the set of accessible elements is closed (T.Acc.intro)
+
+### Theorem
+
+Let $`x \in A`$. If $`\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R`$, then
+$`x \in \mathrm{Acc}_R`$.
+
+### Proof
+
+Let $`Y \subseteq A`$ be an arbitrary set closed under $`R`$. It suffices to show $`x \in Y`$, for
+then, $`Y`$ being arbitrary, the definition of $`\mathrm{Acc}_R`$ (D.Acc) gives
+$`x \in \mathrm{Acc}_R`$.
+
+Let $`y \in A`$ satisfy $`y \mathbin{R} x`$. By hypothesis $`y \in \mathrm{Acc}_R`$, and by the
+definition of $`\mathrm{Acc}_R`$ (D.Acc) $`y`$ belongs to every closed set, in particular
+$`y \in Y`$. Hence $`\forall y \in A,\ y \mathbin{R} x \to y \in Y`$ holds. Since $`Y`$ is closed,
+$`x \in Y`$. ∎
+
+<a id="t-Acc.rec"></a>
+## Theorem: induction on the derivation of the set of accessible elements (T.Acc.rec)
+
+### Theorem
+
+If a predicate $`\Phi`$ on $`A`$ satisfies
 
 ```math
 \forall x \in A,\
@@ -21,8 +52,31 @@ $`A`$ satisfies
   \to \Phi(x)
 ```
 
-then $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ holds. Below we call this the induction on the
-derivation of $`\mathrm{Acc}_R`$. Since there is only one rule, this induction has no base case.
+then $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ holds.
+
+### Proof
+
+Put
+
+```math
+Y := \{\, x \in A \mid x \in \mathrm{Acc}_R \wedge \Phi(x) \,\} .
+```
+
+We show that $`Y`$ is closed under $`R`$. Let $`x \in A`$ and assume
+$`\forall y \in A,\ y \mathbin{R} x \to y \in Y`$. By the definition of $`Y`$ this is
+
+```math
+\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
+\ \wedge\
+\bigl(\forall y \in A,\ y \mathbin{R} x \to \Phi(y)\bigr) .
+```
+
+From the first conjunct and [T.Acc.intro](#t-Acc.intro) we get $`x \in \mathrm{Acc}_R`$. The two
+conjuncts are exactly the antecedent of the hypothesis of this theorem, so applying that hypothesis
+to $`x`$ gives $`\Phi(x)`$. Hence $`x \in Y`$, and $`Y`$ is closed.
+
+By the definition of $`\mathrm{Acc}_R`$ (D.Acc), $`\mathrm{Acc}_R \subseteq Y`$. Taking
+$`x \in \mathrm{Acc}_R`$ gives $`x \in Y`$, that is, $`\Phi(x)`$. ∎
 
 <a id="d-WellFounded"></a>
 ## Definition: well-founded (D.WellFounded)
@@ -127,7 +181,7 @@ that is, $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$.
 
 **Step 2: $`R^{\mathrm{tr}}_{\mathrm{NF}}`$ is well-founded.**
 
-We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$. The induction predicate is
+We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ ([T.Acc.rec](#t-Acc.rec)). The induction predicate is
 
 ```math
 \Phi(t) :\equiv \forall M \in \mathrm{PairSeq},\
@@ -142,7 +196,7 @@ We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$. T
 
 (the premise of the rule, $`\forall s \in \mathrm{Three},\ s \mathbin{R_{\mathrm{NF}}} t \to s \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$,
 is available at the same time, but it is not used below). Let $`M \in \mathrm{PairSeq}`$ be a sequence with $`\mathrm{tr}\,M = t`$.
-To show $`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ it suffices, by the rule for $`\mathrm{Acc}`$, to show
+To show $`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ it suffices, by [T.Acc.intro](#t-Acc.intro), to show
 
 ```math
 \forall N \in \mathrm{PairSeq},\ N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M \to N \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}
@@ -162,7 +216,7 @@ That is, $`R^{\mathrm{tr}}_{\mathrm{NF}}`$ is well-founded.
 
 **Step 3: $`R_{\mathrm{PS}}`$ is well-founded.**
 
-We argue by induction on the derivation of $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$. The induction predicate is
+We argue by induction on the derivation of $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ ([T.Acc.rec](#t-Acc.rec)). The induction predicate is
 
 ```math
 \Psi(M) :\equiv M \in \mathrm{Acc}_{R_{\mathrm{PS}}} .
@@ -182,7 +236,7 @@ $`T \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$. Hence
 \forall T \in \mathrm{PairSeq},\ T \mathbin{R_{\mathrm{PS}}} M \to T \in \mathrm{Acc}_{R_{\mathrm{PS}}}
 ```
 
-holds, and the rule for $`\mathrm{Acc}`$ gives $`M \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$, that is, $`\Psi(M)`$.
+holds, and [T.Acc.intro](#t-Acc.intro) gives $`M \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$, that is, $`\Psi(M)`$.
 
 Therefore $`\forall M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}},\ \Psi(M)`$. By Step 2 every
 $`M \in \mathrm{PairSeq}`$ belongs to $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$, so
@@ -221,7 +275,7 @@ holds. Indeed, the two conjuncts of the definition of $`R_{\mathrm{PS}}`$ (D.ste
 $`S_i \in \mathrm{ST\_PS}`$, the first condition on $`S`$ applied to $`i`$, and
 $`S_i \Rightarrow S_{i+1}`$, the second condition on $`S`$ applied to $`i`$.
 
-We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{PS}}}`$. The induction predicate is
+We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{PS}}}`$ ([T.Acc.rec](#t-Acc.rec)). The induction predicate is
 
 ```math
 \Theta(x) :\equiv \forall i \in \mathbb{N},\ S_i = x \to \bot .

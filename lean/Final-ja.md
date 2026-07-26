@@ -24,7 +24,7 @@ $`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathr
 ### 証明
 
 $`M \in \mathrm{PairSeq}`$ と $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を取り、
-$`\mathrm{Acc}_{R_{\mathrm{st}}}`$ の導出に関する帰納法を行う。帰納法の述語は
+$`\mathrm{Acc}_{R_{\mathrm{st}}}`$ の導出に関する帰納法（[T.Acc.rec](Reduction-ja.md#t-Acc.rec)）を行う。帰納法の述語は
 
 ```math
 \Phi(M_0) :\equiv M_0 \in \mathrm{ST\_PS} \to \mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}} .
@@ -39,7 +39,7 @@ $`\mathrm{Acc}_{R_{\mathrm{st}}}`$ の導出に関する帰納法を行う。帰
 を仮定する（規則のもう一方の前提
 $`\forall N,\ N \mathbin{R_{\mathrm{st}}} M_0 \to N \in \mathrm{Acc}_{R_{\mathrm{st}}}`$
 も同時に使えるが、以下では用いない）。$`M_0 \in \mathrm{ST\_PS}`$ を仮定して
-$`\mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を示す。$`\mathrm{Acc}`$ の規則により、
+$`\mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を示す。[T.Acc.intro](Reduction-ja.md#t-Acc.intro)により、
 
 ```math
 \forall v \in \mathrm{Three},\
@@ -96,7 +96,7 @@ $`M`$ に適用して $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を得る。こ�
 [T.acc_Rnf_of_acc_PS](#t-acc_Rnf_of_acc_PS) に与えて
 $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$、すなわち $`u \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ を得る。
 
-**(b) $`u \notin \mathrm{NF}`$ のとき。** $`\mathrm{Acc}`$ の規則により
+**(b) $`u \notin \mathrm{NF}`$ のとき。** [T.Acc.intro](Reduction-ja.md#t-Acc.intro)により
 
 ```math
 \forall v \in \mathrm{Three},\ v \mathbin{R_{\mathrm{NF}}} u \to v \in \mathrm{Acc}_{R_{\mathrm{NF}}}

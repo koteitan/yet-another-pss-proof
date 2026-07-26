@@ -3,15 +3,46 @@
 <a id="d-Acc"></a>
 ## 定義: 到達可能な元の集合 (D.Acc)
 
-集合 $`A`$ 上の関係 $`R \subseteq A \times A`$ に対し、$`\mathrm{Acc}_R \subseteq A`$ を、
-次の 1 つの規則で閉じた最小の集合と定義する。
+集合 $`A`$ 上の関係 $`R \subseteq A \times A`$ と $`Y \subseteq A`$ に対し、$`Y`$ が
+$`R`$ について**閉じている**ことを
 
 ```math
-\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
-\ \Longrightarrow\ x \in \mathrm{Acc}_R .
+\forall x \in A,\ \bigl(\forall y \in A,\ y \mathbin{R} x \to y \in Y\bigr) \to x \in Y
 ```
 
-最小性は次の帰納法の原理として使う。$`A`$ 上の述語 $`\Phi`$ が
+が成り立つことと定義する。そのうえで $`\mathrm{Acc}_R \subseteq A`$ を
+
+```math
+\mathrm{Acc}_R := \bigcap\, \bigl\{\, Y \subseteq A \ \bigm|\ Y \text{ は } R \text{ について閉じている} \,\bigr\}
+```
+
+と定義する。すなわち $`x \in \mathrm{Acc}_R`$ とは、$`R`$ について閉じているすべての
+$`Y \subseteq A`$ に対し $`x \in Y`$ が成り立つことである。
+
+<a id="t-Acc.intro"></a>
+## 定理: 到達可能な元の集合は閉じている (T.Acc.intro)
+
+### 定理
+
+$`x \in A`$ とする。$`\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R`$ ならば
+$`x \in \mathrm{Acc}_R`$。
+
+### 証明
+
+$`Y \subseteq A`$ を $`R`$ について閉じている任意の集合とする。$`x \in Y`$ を示せば、
+$`Y`$ が任意だったから $`\mathrm{Acc}_R`$ の定義（D.Acc）より $`x \in \mathrm{Acc}_R`$ が従う。
+
+$`y \in A`$ が $`y \mathbin{R} x`$ をみたすとする。仮定より $`y \in \mathrm{Acc}_R`$ であり、
+$`\mathrm{Acc}_R`$ の定義（D.Acc）より $`y`$ は閉じているすべての集合に属するから、とくに
+$`y \in Y`$ である。よって $`\forall y \in A,\ y \mathbin{R} x \to y \in Y`$ が成り立つ。
+$`Y`$ は閉じているから $`x \in Y`$。∎
+
+<a id="t-Acc.rec"></a>
+## 定理: 到達可能な元の集合の導出に関する帰納法 (T.Acc.rec)
+
+### 定理
+
+$`A`$ 上の述語 $`\Phi`$ が
 
 ```math
 \forall x \in A,\
@@ -20,9 +51,29 @@
   \to \Phi(x)
 ```
 
-をみたすならば $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ が成り立つ。以下ではこれを
-「$`\mathrm{Acc}_R`$ の導出に関する帰納法」と呼ぶ。規則が 1 つしかないので、この帰納法に
-基底段はない。
+をみたすならば、$`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ が成り立つ。
+
+### 証明
+
+```math
+Y := \{\, x \in A \mid x \in \mathrm{Acc}_R \wedge \Phi(x) \,\}
+```
+
+とおく。$`Y`$ が $`R`$ について閉じていることを示す。$`x \in A`$ を取り
+$`\forall y \in A,\ y \mathbin{R} x \to y \in Y`$ を仮定する。$`Y`$ の定義より、これは
+
+```math
+\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
+\ \wedge\
+\bigl(\forall y \in A,\ y \mathbin{R} x \to \Phi(y)\bigr)
+```
+
+に等しい。第 1 連言子と [T.Acc.intro](#t-Acc.intro) より $`x \in \mathrm{Acc}_R`$ である。
+また 2 つの連言子は本定理の仮定の前件そのものであるから、その仮定を $`x`$ に適用して
+$`\Phi(x)`$ を得る。よって $`x \in Y`$ であり、$`Y`$ は閉じている。
+
+$`\mathrm{Acc}_R`$ の定義（D.Acc）より $`\mathrm{Acc}_R \subseteq Y`$ である。
+$`x \in \mathrm{Acc}_R`$ を取ると $`x \in Y`$、すなわち $`\Phi(x)`$ が成り立つ。∎
 
 <a id="d-WellFounded"></a>
 ## 定義: 整礎 (D.WellFounded)
@@ -126,7 +177,7 @@ $`T = M[n]`$ であるから、これは $`\mathrm{tr}\,T \mathbin{R_{\mathrm{NF
 
 **第 2 段：$`R^{\mathrm{tr}}_{\mathrm{NF}}`$ は整礎である。**
 
-$`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ の導出に関する帰納法を行う。帰納法の述語は
+$`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。帰納法の述語は
 
 ```math
 \Phi(t) :\equiv \forall M \in \mathrm{PairSeq},\
@@ -141,7 +192,7 @@ $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ の導出に関する帰納法を行う。帰
 
 を仮定する（規則の前提 $`\forall s \in \mathrm{Three},\ s \mathbin{R_{\mathrm{NF}}} t \to s \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$
 も同時に使えるが、以下では用いない）。$`M \in \mathrm{PairSeq}`$ を $`\mathrm{tr}\,M = t`$ なる列とする。
-$`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ を示すには、$`\mathrm{Acc}`$ の規則により
+$`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ を示すには、[T.Acc.intro](#t-Acc.intro)により
 
 ```math
 \forall N \in \mathrm{PairSeq},\ N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M \to N \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}
@@ -161,7 +212,7 @@ $`\mathrm{tr}\,M = \mathrm{tr}\,M`$ に適用して $`M \in \mathrm{Acc}_{R^{\ma
 
 **第 3 段：$`R_{\mathrm{PS}}`$ は整礎である。**
 
-$`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ の導出に関する帰納法を行う。帰納法の述語は
+$`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。帰納法の述語は
 
 ```math
 \Psi(M) :\equiv M \in \mathrm{Acc}_{R_{\mathrm{PS}}} .
@@ -181,7 +232,7 @@ $`T \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$ である。よって
 \forall T \in \mathrm{PairSeq},\ T \mathbin{R_{\mathrm{PS}}} M \to T \in \mathrm{Acc}_{R_{\mathrm{PS}}}
 ```
 
-が成り立ち、$`\mathrm{Acc}`$ の規則より $`M \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$、すなわち $`\Psi(M)`$。
+が成り立ち、[T.Acc.intro](#t-Acc.intro)より $`M \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$、すなわち $`\Psi(M)`$。
 
 以上より $`\forall M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}},\ \Psi(M)`$ である。第 2 段より
 任意の $`M \in \mathrm{PairSeq}`$ が $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ に属するから、
@@ -220,7 +271,7 @@ $`R_{\mathrm{PS}}`$ が整礎であることを得る。
 $`i`$ に適用した $`S_i \in \mathrm{ST\_PS}`$ と、第 2 の条件を $`i`$ に適用した
 $`S_i \Rightarrow S_{i+1}`$ そのものである。
 
-$`\mathrm{Acc}_{R_{\mathrm{PS}}}`$ の導出に関する帰納法を行う。帰納法の述語は
+$`\mathrm{Acc}_{R_{\mathrm{PS}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。帰納法の述語は
 
 ```math
 \Theta(x) :\equiv \forall i \in \mathbb{N},\ S_i = x \to \bot .
