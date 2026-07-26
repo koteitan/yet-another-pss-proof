@@ -466,7 +466,7 @@ $`\lvert xs\rvert - a`$ 個並べたものだから、長さは $`\lvert xs\rver
 $`a + i \lt \lvert xs\rvert`$ であるから、これは $`xs`$ の第 $`a+i`$ 要素に等しい。∎
 
 <a id="t-nextrel0_entry0_less"></a>
-## 定理: 行 0 の親子では行 0 が真に増える (T.nextrel0_entry0_less)
+## 定理: 行 0 で子は親より大きい (T.nextrel0_entry0_less)
 
 ### 定理
 
@@ -501,7 +501,7 @@ $`\le^M_0`$ の定義（D.le0）の第 3 条件により $`j_0 \mathbin{(\to^M_0
   $`\le`$ の推移律により $`M_{0,j_0} \le M_{0,z}`$。よって $`\Phi(z)`$。∎
 
 <a id="t-nextrel0_index_less"></a>
-## 定理: 行 0 の親子では添字が増える (T.nextrel0_index_less)
+## 定理: 行 0 で子は親より右にある (T.nextrel0_index_less)
 
 ### 定理
 

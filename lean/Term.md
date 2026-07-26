@@ -469,7 +469,7 @@ $`xs`$ at index $`a + i`$. The $`i`$-th entry of the right-hand side is $`xs\lan
 $`i \lt \lvert xs\rvert - a`$ gives $`a + i \lt \lvert xs\rvert`$, so this equals the element of $`xs`$ at index $`a+i`$. ∎
 
 <a id="t-nextrel0_entry0_less"></a>
-## Theorem: row 0 strictly increases from a row 0 parent to its child (T.nextrel0_entry0_less)
+## Theorem: in row 0 a child is greater than its parent (T.nextrel0_entry0_less)
 
 ### Theorem
 
@@ -504,7 +504,7 @@ We argue by induction on the construction of this reflexive transitive closure. 
   transitivity of $`\le`$ gives $`M_{0,j_0} \le M_{0,z}`$. Hence $`\Phi(z)`$. ∎
 
 <a id="t-nextrel0_index_less"></a>
-## Theorem: the index increases from a row 0 parent to its child (T.nextrel0_index_less)
+## Theorem: in row 0 a child lies to the right of its parent (T.nextrel0_index_less)
 
 ### Theorem
 
