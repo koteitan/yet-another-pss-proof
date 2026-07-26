@@ -396,9 +396,6 @@ q :: S \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m) .
 
 ### 証明
 
-以下、$`\mathrm{tw}_p`$、$`\mathrm{dw}_p`$ を一般の述語 $`p`$ について書く（$`\mathrm{tw}_p L`$ は
-$`L`$ の先頭から $`p`$ をみたす要素が続く極大な前部分列、$`\mathrm{dw}_p L`$ はその残りである）。
-
 **第 1 段：$`q_1 \le v_0`$。**
 $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より、仮定 (4) は
 $`q_1 \lt \ell_1`$ または（$`q_1 = \ell_1`$ かつ $`q_2 \lt \ell_2`$）である。

@@ -413,10 +413,6 @@ q :: S \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m) .
 
 ### Proof
 
-In what follows we write $`\mathrm{tw}_p`$ and $`\mathrm{dw}_p`$ for a general predicate $`p`$
-($`\mathrm{tw}_p L`$ is the maximal prefix of $`L`$ along which every element satisfies $`p`$,
-and $`\mathrm{dw}_p L`$ is the remainder).
-
 **Step 1: $`q_1 \le v_0`$.**
 By the definition of $`\prec_{\mathrm{p}}`$ (D.pairlt), hypothesis (4) says
 $`q_1 \lt \ell_1`$, or else $`q_1 = \ell_1`$ and $`q_2 \lt \ell_2`$.

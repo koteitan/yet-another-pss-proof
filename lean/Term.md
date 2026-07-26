@@ -293,17 +293,25 @@ The third disjunct $`a = a \wedge b = b \wedge c_1 \prec c_2`$ on the right-hand
 <a id="d-translate"></a>
 ## Definition: translation (D.translate)
 
-In what follows, for $`a \in \mathbb{N}`$ and $`L \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) we write
+In what follows, for a predicate $`p`$ on the elements of a type $`\alpha`$ and a finite sequence
+$`L`$ of elements of $`\alpha`$, we write
 
 ```math
-\mathrm{tw}_a L := \text{(the maximal prefix of } L \text{ along which the first entry stays greater than } a \text{)},
+\mathrm{tw}_p L := \text{(the maximal prefix of } L \text{ along which every element satisfies } p \text{)},
 ```
 ```math
-\mathrm{dw}_a L := \text{(the sequence that remains after removing } \mathrm{tw}_a L \text{ from } L \text{)}
+\mathrm{dw}_p L := \text{(the sequence that remains after removing } \mathrm{tw}_p L \text{ from } L \text{)}
 ```
 
-By definition $`\mathrm{tw}_a L \mathbin{+\!\!+} \mathrm{dw}_a L = L`$, and if $`\mathrm{dw}_a L`$ is not empty,
-then its first element $`x`$ satisfies $`\neg(a \lt x_1)`$.
+By definition $`\mathrm{tw}_p L \mathbin{+\!\!+} \mathrm{dw}_p L = L`$, and if $`\mathrm{dw}_p L`$ is not
+empty, then its first element $`x`$ satisfies $`\neg p(x)`$.
+
+For $`a \in \mathbb{N}`$ and $`L \in \mathrm{PairSeq}`$ ([D.PairSeq](Pss.md#d-PairSeq)) we write
+$`\mathrm{tw}_a L`$ and $`\mathrm{dw}_a L`$ for the case of the predicate
+$`p(x) :\equiv a \lt x_1`$. That is, $`\mathrm{tw}_a L`$ is the maximal prefix of $`L`$ along which the
+first entry stays greater than $`a`$, and if $`\mathrm{dw}_a L`$ is not empty, then its first element
+$`x`$ satisfies $`\neg(a \lt x_1)`$. A predicate in the subscript means the general version, a natural
+number means this one.
 
 We define the map $`\mathrm{tr} : \mathrm{PairSeq} \to \mathrm{Three}`$ by recursion on the length of the sequence.
 
@@ -367,8 +375,6 @@ Let $`p`$ be a predicate on elements and let $`xs, ys`$ be sequences. If every e
 \mathrm{tw}_p(xs \mathbin{+\!\!+} ys) = xs \mathbin{+\!\!+} \mathrm{tw}_p\,ys .
 ```
 
-(Here we write $`\mathrm{tw}_p`$ for a general predicate $`p`$. The $`\mathrm{tw}_a`$ of the definition of
-$`\mathrm{tr}`$ (D.translate) is the case $`p(x) :\equiv a \lt x_1`$.)
 
 ### Proof
 

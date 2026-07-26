@@ -292,17 +292,23 @@ $`=`$ の反射性と仮定により成り立つ。∎
 <a id="d-translate"></a>
 ## 定義: 翻訳 (D.translate)
 
-以下、$`a \in \mathbb{N}`$ と $`L \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）に対し
+以下、型 $`\alpha`$ の要素上の述語 $`p`$ と $`\alpha`$ の有限列 $`L`$ に対し
 
 ```math
-\mathrm{tw}_a L := \text{（}L\text{ の先頭から、第 1 成分が } a \text{ より大きい要素が続く極大な前部分列）},
+\mathrm{tw}_p L := \text{（}L\text{ の先頭から、}p\text{ をみたす要素が続く極大な前部分列）},
 ```
 ```math
-\mathrm{dw}_a L := \text{（}L\text{ から } \mathrm{tw}_a L \text{ を取り除いた残りの列）}
+\mathrm{dw}_p L := \text{（}L\text{ から } \mathrm{tw}_p L \text{ を取り除いた残りの列）}
 ```
 
-と書く。定義から $`\mathrm{tw}_a L \mathbin{+\!\!+} \mathrm{dw}_a L = L`$ であり、
-$`\mathrm{dw}_a L`$ が空でなければその先頭要素 $`x`$ は $`\neg(a \lt x_1)`$ をみたす。
+と書く。定義から $`\mathrm{tw}_p L \mathbin{+\!\!+} \mathrm{dw}_p L = L`$ であり、
+$`\mathrm{dw}_p L`$ が空でなければその先頭要素 $`x`$ は $`\neg p(x)`$ をみたす。
+
+$`a \in \mathbb{N}`$ と $`L \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）に対しては、
+述語を $`p(x) :\equiv a \lt x_1`$ と取ったものを $`\mathrm{tw}_a L`$、$`\mathrm{dw}_a L`$ と書く。
+すなわち $`\mathrm{tw}_a L`$ は $`L`$ の先頭から第 1 成分が $`a`$ より大きい要素が続く極大な
+前部分列であり、$`\mathrm{dw}_a L`$ が空でなければその先頭要素 $`x`$ は $`\neg(a \lt x_1)`$ を
+みたす。下付きが述語なら一般の版、自然数ならこの版である。
 
 写像 $`\mathrm{tr} : \mathrm{PairSeq} \to \mathrm{Three}`$ を、列の長さに関する再帰で定める。
 
@@ -364,8 +370,6 @@ $`p`$ を要素上の述語、$`xs, ys`$ を列とする。$`xs`$ のすべて�
 \mathrm{tw}_p(xs \mathbin{+\!\!+} ys) = xs \mathbin{+\!\!+} \mathrm{tw}_p\,ys .
 ```
 
-（ここでは $`\mathrm{tw}_p`$ を一般の述語 $`p`$ について書く。$`\mathrm{tr}`$ の定義（D.translate）の
-$`\mathrm{tw}_a`$ は $`p(x) :\equiv a \lt x_1`$ の場合である。）
 
 ### 証明
 

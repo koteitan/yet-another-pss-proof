@@ -251,10 +251,9 @@ To view it locally, use the patched markdown-viewer (`~/code/markdown-viewer`).
 
 Since no table of notation is placed at the head of a file (§1.1), **a symbol is introduced inside the definition that first needs it**. For example `takeWhile` / `dropWhile` are fixed immediately before `D.translate` as
 
-> $`\mathrm{tw}_a L`$ := (the maximal prefix of $`L`$, taken from its head, along which the first entry stays greater than $`a`$)
+> $`\mathrm{tw}_p L`$ := (the maximal prefix of $`L`$, taken from its head, along which every element satisfies $`p`$)
 
-and used from there on. In a lemma that needs the version for a general predicate, that lemma states that
-"here $`\mathrm{tw}_p`$ is written for a general predicate $`p`$".
+and used from there on. **When both a general version and a specialization are needed, define the general one first and write the specialization by supplying the predicate.** Stating that "here we write the general $`p`$" without defining the general version leaves an undefined symbol (§4.3).
 
 ### 6.2 Write nothing but the definition in a definition section
 
