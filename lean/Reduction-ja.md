@@ -79,7 +79,7 @@ $`M \in \mathrm{ST\_PS}`$ かつ $`1 \lt \lvert M\rvert`$ かつ $`1 \le n`$ な
 
 **(wfimg)** $`R_{\mathrm{NF}}`$ は整礎である。
 
-このとき $`R_{\mathrm{PS}}`$ は整礎である。
+(dec) と (wfimg) の下で、$`R_{\mathrm{PS}}`$ は整礎である。
 
 ### 証明
 

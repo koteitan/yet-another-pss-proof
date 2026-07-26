@@ -80,7 +80,7 @@ $`M \in \mathrm{ST\_PS}`$, $`1 \lt \lvert M\rvert`$ and $`1 \le n`$, then
 
 **(wfimg)** $`R_{\mathrm{NF}}`$ is well-founded.
 
-Then $`R_{\mathrm{PS}}`$ is well-founded.
+Under (dec) and (wfimg), $`R_{\mathrm{PS}}`$ is well-founded.
 
 ### Proof
 
