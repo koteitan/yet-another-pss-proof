@@ -785,25 +785,13 @@ a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \
 
 ### 定理
 
-以下、$`\mathrm{PairSeq}`$ 上の二項関係 $`R`$ と $`a \in \mathrm{PairSeq}`$ に対し、
-$`\mathrm{Acc}(R,a)`$ を次の 1 つの規則で生成される最小の述語とする。
-
-```math
-\bigl(\forall y,\ y \mathbin{R} a \to \mathrm{Acc}(R,y)\bigr)
-\ \Longrightarrow\ \mathrm{Acc}(R,a).
-```
-
-規則がこの 1 つだけであるから、逆に $`\mathrm{Acc}(R,a)`$ が成り立つときはその前提が
-取り出せる。すなわち $`\mathrm{Acc}(R,a)`$ かつ $`y \mathbin{R} a`$ ならば
-$`\mathrm{Acc}(R,y)`$ である。以下ではこれを**取り出し**と呼ぶ。
-
-主張は次である。$`a \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,b = \mathrm{tr}\,a`$、
-$`\mathrm{Acc}(R_{\mathrm{st}},a)`$ ならば $`\mathrm{Acc}(R_{\mathrm{st}},b)`$。
+$`a \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,b = \mathrm{tr}\,a`$、
+$`a \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ ならば $`b \in \mathrm{Acc}_{R_{\mathrm{st}}}`$。
 
 ### 証明
 
-$`\mathrm{Acc}`$ の生成規則により、$`y \mathbin{R_{\mathrm{st}}} b`$ なる任意の $`y`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を示せばよい。$`R_{\mathrm{st}}`$ の
+[T.Acc.intro](Reduction-ja.md#t-Acc.intro) により、$`y \mathbin{R_{\mathrm{st}}} b`$ なる任意の $`y`$ に
+ついて $`y \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を示せばよい。$`R_{\mathrm{st}}`$ の
 定義（D.Rst）より、$`y \mathbin{R_{\mathrm{st}}} b`$ は $`y \in \mathrm{ST\_PS}`$、
 $`b \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$ の連言である。
 
@@ -814,8 +802,8 @@ $`b \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$ の連言で
 - $`\mathrm{tr}\,y \prec \mathrm{tr}\,a`$：仮定の等式 $`\mathrm{tr}\,b = \mathrm{tr}\,a`$ を
   $`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$ に代入したものである。
 
-仮定 $`\mathrm{Acc}(R_{\mathrm{st}},a)`$ と $`y \mathbin{R_{\mathrm{st}}} a`$ に取り出しを
-適用して $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を得る。∎
+仮定 $`a \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ と $`y \mathbin{R_{\mathrm{st}}} a`$ に[T.Acc.inv](Reduction-ja.md#t-Acc.inv) を
+適用して $`y \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を得る。∎
 
 <a id="t-acc_of_nat_branch"></a>
 ## 定理: $`\mathbb{N}`$ 分岐の橋渡し (T.acc_of_nat_branch)
@@ -831,20 +819,20 @@ $`b \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,y \prec \mathrm{tr}\,b`$ の連言で
 ```
 
 ここで $`\preceq`$（[D.ole](Term-ja.md#d-ole)）は広義順序である。このとき、$`c \in \mathrm{ST\_PS}`$ であり
-$`1 \le n`$ なるすべての $`n`$ について $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ が成り立つ
-ならば、$`\mathrm{Acc}(R_{\mathrm{st}},c)`$。
+$`1 \le n`$ なるすべての $`n`$ について $`c[n] \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ が成り立つ
+ならば、$`c \in \mathrm{Acc}_{R_{\mathrm{st}}}`$。
 
 ### 証明
 
-$`\mathrm{Acc}`$ の生成規則により、$`b \mathbin{R_{\mathrm{st}}} c`$ なる任意の $`b`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},b)`$ を示せばよい。$`R_{\mathrm{st}}`$ の
+[T.Acc.intro](Reduction-ja.md#t-Acc.intro) により、$`b \mathbin{R_{\mathrm{st}}} c`$ なる任意の $`b`$ に
+ついて $`b \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を示せばよい。$`R_{\mathrm{st}}`$ の
 定義（D.Rst）より $`b \in \mathrm{ST\_PS}`$、$`c \in \mathrm{ST\_PS}`$、
 $`\mathrm{tr}\,b \prec \mathrm{tr}\,c`$ である。
 
 (hcof) を $`M := c`$、$`N := b`$ に適用して、$`1 \le n`$ かつ
 $`\mathrm{tr}\,b \preceq \mathrm{tr}\,(c[n])`$ なる $`n`$ を取る。次の 2 つを用意する。
 
-- $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$：仮定を $`n`$ に適用したものである。
+- $`c[n] \in \mathrm{Acc}_{R_{\mathrm{st}}}`$：仮定を $`n`$ に適用したものである。
 - $`c[n] \in \mathrm{ST\_PS}`$：$`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の規則 (oper) を
   $`c \in \mathrm{ST\_PS}`$ と $`1 \le n`$ に適用したものである。
 
@@ -853,14 +841,14 @@ $`\preceq`$ の定義（D.ole）により $`\mathrm{tr}\,b \preceq \mathrm{tr}\,
 
 - $`\mathrm{tr}\,b \prec \mathrm{tr}\,(c[n])`$ のとき。$`b \mathbin{R_{\mathrm{st}}} c[n]`$ が
   成り立つ（3 つの連言子は $`b \in \mathrm{ST\_PS}`$、$`c[n] \in \mathrm{ST\_PS}`$、
-  いまの狭義不等式である）。$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ に取り出しを適用して
-  $`\mathrm{Acc}(R_{\mathrm{st}},b)`$。
+  いまの狭義不等式である）。$`c[n] \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ に[T.Acc.inv](Reduction-ja.md#t-Acc.inv) を適用して
+  $`b \in \mathrm{Acc}_{R_{\mathrm{st}}}`$。
 
 - $`\mathrm{tr}\,b = \mathrm{tr}\,(c[n])`$ のとき。
   [T.acc_of_translate_eq](#t-acc_of_translate_eq) を $`a := c[n]`$、$`b := b`$ として
   適用する。その 3 つの仮定 $`c[n] \in \mathrm{ST\_PS}`$、
-  $`\mathrm{tr}\,b = \mathrm{tr}\,(c[n])`$、$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ は
-  いずれもいま得ている。結論が $`\mathrm{Acc}(R_{\mathrm{st}},b)`$ である。∎
+  $`\mathrm{tr}\,b = \mathrm{tr}\,(c[n])`$、$`c[n] \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ は
+  いずれもいま得ている。結論が $`b \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ である。∎
 
 <a id="t-acc_of_W"></a>
 ## 定理: 橋渡し（$`W_u`$ の元は到達可能） (T.acc_of_W)
@@ -868,22 +856,22 @@ $`\preceq`$ の定義（D.ole）により $`\mathrm{tr}\,b \preceq \mathrm{tr}\,
 ### 定理
 
 (hcof) を仮定する。このとき任意の $`u \in \mathbb{N}`$ と任意の $`M \in W_u`$ について
-$`\mathrm{Acc}(R_{\mathrm{st}},M)`$。
+$`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$。
 
 ### 証明
 
-$`Y := \{\, M \in \mathrm{PairSeq} \mid \mathrm{Acc}(R_{\mathrm{st}},M) \,\}`$ とおくと、
+$`Y := \{\, M \in \mathrm{PairSeq} \mid M \in \mathrm{Acc}_{R_{\mathrm{st}}} \,\}`$ とおくと、
 示すべきことは $`W_u \subseteq Y`$ である。[T.A2'](#t-A2') を適用するので、
 $`c \in \mathrm{PairSeq}`$ を取り $`\mathrm{Aop}(W,u,Y,c)`$ を仮定して
-$`\mathrm{Acc}(R_{\mathrm{st}},c)`$ を示せばよい。$`c \in \mathrm{ST\_PS}`$ かどうかで
+$`c \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を示せばよい。$`c \in \mathrm{ST\_PS}`$ かどうかで
 場合分けする。
 
 **(I) $`c \notin \mathrm{ST\_PS}`$ のとき。**
-$`\mathrm{Acc}`$ の生成規則により、$`y \mathbin{R_{\mathrm{st}}} c`$ なる任意の $`y`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を示せばよい。ところが $`R_{\mathrm{st}}`$ の
+[T.Acc.intro](Reduction-ja.md#t-Acc.intro) により、$`y \mathbin{R_{\mathrm{st}}} c`$ なる任意の $`y`$ に
+ついて $`y \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を示せばよい。ところが $`R_{\mathrm{st}}`$ の
 定義（D.Rst）の第 2 連言子は $`c \in \mathrm{ST\_PS}`$ であり、いまの場合の仮定に
 反する。よってそのような $`y`$ は存在せず、前件が偽であるから
-$`\mathrm{Acc}(R_{\mathrm{st}},c)`$ が成り立つ。
+$`c \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ が成り立つ。
 
 **(II) $`c \in \mathrm{ST\_PS}`$ のとき。**
 $`\mathrm{Aop}(W,u,Y,c)`$ を $`\mathrm{Aop}`$ の定義（D.Aop）の 3 つの選言で場合分けする。
@@ -906,21 +894,21 @@ $`p_1 \lt x_1`$ をみたす」は $`R = ()`$ が要素をもたないから成�
 である（$`\mathrm{tr}\,() = \mathsf{Z}`$ は $`\mathrm{tr}`$ の定義（D.translate）の
 第 1 式、$`p_2 = 0`$ は上で示した）。
 
-$`\mathrm{Acc}`$ の生成規則により、$`y \mathbin{R_{\mathrm{st}}} c`$ なる任意の $`y`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を示せばよい。$`R_{\mathrm{st}}`$ の
+[T.Acc.intro](Reduction-ja.md#t-Acc.intro) により、$`y \mathbin{R_{\mathrm{st}}} c`$ なる任意の $`y`$ に
+ついて $`y \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を示せばよい。$`R_{\mathrm{st}}`$ の
 定義（D.Rst）より $`y \in \mathrm{ST\_PS}`$ と
 $`\mathrm{tr}\,y \prec \mathrm{tr}\,c = \mathsf{P}(0,\mathsf{Z},\mathsf{Z})`$ が得られる。
 [T.eq_Z_of_olt_one](#t-eq_Z_of_olt_one) より $`\mathrm{tr}\,y = \mathsf{Z}`$ であり、
 [T.translate_eq_Z_iff](#t-translate_eq_Z_iff) より $`y = ()`$ である。一方
 [T.stps_ne_nil](#t-stps_ne_nil) を $`y \in \mathrm{ST\_PS}`$ に適用すると $`y \ne ()`$ で
 あり、矛盾する。よってそのような $`y`$ は存在せず、前件が偽であるから
-$`\mathrm{Acc}(R_{\mathrm{st}},c)`$ が成り立つ。
+$`c \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ が成り立つ。
 
 **分岐 (2)：$`\mathrm{natDom}(c)`$ かつ $`\forall n \ge 1,\ c[n] \in Y`$ のとき。**
 $`Y`$ の定義より第 2 連言子は「$`1 \le n`$ なるすべての $`n`$ について
-$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$」である。これと $`c \in \mathrm{ST\_PS}`$ に
+$`c[n] \in \mathrm{Acc}_{R_{\mathrm{st}}}`$」である。これと $`c \in \mathrm{ST\_PS}`$ に
 [T.acc_of_nat_branch](#t-acc_of_nat_branch) を適用して
-$`\mathrm{Acc}(R_{\mathrm{st}},c)`$ を得る。
+$`c \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を得る。
 
 **分岐 (3)：ある $`m \lt u`$ について $`\mathrm{domT}(c,m)`$ かつ
 $`\forall z \in W_m,\ \mathrm{based}(z) \to \mathrm{graft}(c,z) \in Y`$ のとき。**
@@ -928,14 +916,14 @@ $`1 \lt \lvert c\rvert`$ かどうかでさらに場合分けする。
 
 **(3a) $`1 \lt \lvert c\rvert`$ のとき。**
 [T.acc_of_nat_branch](#t-acc_of_nat_branch) を適用するので、$`1 \le n`$ なる各 $`n`$ に
-ついて $`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ を示せばよい。
+ついて $`c[n] \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を示せばよい。
 [T.W_nil](#t-W_nil) より $`() \in W_m`$ であり、[T.based_nil](#t-based_nil) より
 $`\mathrm{based}(())`$ であるから、分岐 (3) の第 3 連言子を $`z := ()`$ に適用して
 $`\mathrm{graft}(c,()) \in Y`$ を得る。また
 [T.oper_eq_graft_nil_of_domT](#t-oper_eq_graft_nil_of_domT) を
 $`1 \lt \lvert c\rvert`$ と $`\mathrm{domT}(c,m)`$ に適用して
 $`c[n] = \mathrm{graft}(c,())`$ を得る。合わせて $`c[n] \in Y`$、すなわち
-$`\mathrm{Acc}(R_{\mathrm{st}},c[n])`$ である。
+$`c[n] \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ である。
 
 **(3b) $`\neg\bigl(1 \lt \lvert c\rvert\bigr)`$ のとき。**
 [T.stps_len_pos](Column-ja.md#t-stps_len_pos) より $`0 \lt \lvert c\rvert`$ であるから

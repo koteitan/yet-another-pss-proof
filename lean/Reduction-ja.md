@@ -75,6 +75,28 @@ $`\Phi(x)`$ を得る。よって $`x \in Y`$ であり、$`Y`$ は閉じてい�
 $`\mathrm{Acc}_R`$ の定義（D.Acc）より $`\mathrm{Acc}_R \subseteq Y`$ である。
 $`x \in \mathrm{Acc}_R`$ を取ると $`x \in Y`$、すなわち $`\Phi(x)`$ が成り立つ。∎
 
+<a id="t-Acc.inv"></a>
+## 定理: 到達可能な元より下の元は到達可能 (T.Acc.inv)
+
+### 定理
+
+$`x \in \mathrm{Acc}_R`$ かつ $`y \mathbin{R} x`$ ならば $`y \in \mathrm{Acc}_R`$。
+
+### 証明
+
+[T.Acc.rec](#t-Acc.rec) を述語
+
+```math
+\Phi(x) :\equiv \forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R
+```
+
+に適用する。その仮定を確かめる。$`x \in A`$ を取り、
+$`\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R`$ と
+$`\forall y \in A,\ y \mathbin{R} x \to \Phi(y)`$ をともに仮定する。前者は $`\Phi(x)`$ そのもので
+あり、これが示すべきことである。
+
+よって $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ が成り立ち、これが主張である。∎
+
 <a id="d-WellFounded"></a>
 ## 定義: 整礎 (D.WellFounded)
 

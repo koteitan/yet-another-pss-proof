@@ -840,21 +840,19 @@ a \mathbin{R_{\mathrm{st}}} b :\iff a \in \mathrm{ST\_PS} \wedge b \in \mathrm{S
   \wedge \mathrm{tr}\,a \prec \mathrm{tr}\,b
 ```
 
-Well-foundedness is equivalent to $`\forall M,\ \mathrm{Acc}(R_{\mathrm{st}},M)`$, so we
-take an arbitrary $`M`$ and show $`\mathrm{Acc}(R_{\mathrm{st}},M)`$.
+By [D.WellFounded](Reduction.md#d-WellFounded), well-foundedness is $`\forall M,\ M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$, so we
+take an arbitrary $`M`$ and show $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$.
 We distinguish cases according to whether $`M \in \mathrm{ST\_PS}`$.
 
 - **The case $`M \in \mathrm{ST\_PS}`$.** By hypothesis (mem) take $`u`$ with $`M \in W_u`$.
   Applying [T.acc_of_W](Wset.md#t-acc_of_W) to hypothesis (cof), to $`u`$ and to $`M`$ gives
-  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$.
+  $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$.
 
-- **The case $`M \notin \mathrm{ST\_PS}`$.** By the generating rule of $`\mathrm{Acc}`$,
-  namely $`\bigl(\forall y,\ y \mathbin{R} a \to \mathrm{Acc}(R,y)\bigr) \to \mathrm{Acc}(R,a)`$,
-  it suffices to show $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ for every $`y`$ with
+- **The case $`M \notin \mathrm{ST\_PS}`$.** By [T.Acc.intro](Reduction.md#t-Acc.intro) it suffices to show $`y \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ for every $`y`$ with
   $`y \mathbin{R_{\mathrm{st}}} M`$. But
   the second conjunct of $`y \mathbin{R_{\mathrm{st}}} M`$ is $`M \in \mathrm{ST\_PS}`$, which
   contradicts the hypothesis of the present case. Hence no $`y`$ satisfies the antecedent, and
-  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ holds. ∎
+  $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ holds. ∎
 
 <a id="t-wf_olt_ST_PS_of_cofinality"></a>
 ## Theorem: from cofinality to well-foundedness of the order on standard forms (T.wf_olt_ST_PS_of_cofinality)

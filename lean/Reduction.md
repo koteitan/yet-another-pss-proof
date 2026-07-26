@@ -78,6 +78,28 @@ to $`x`$ gives $`\Phi(x)`$. Hence $`x \in Y`$, and $`Y`$ is closed.
 By the definition of $`\mathrm{Acc}_R`$ (D.Acc), $`\mathrm{Acc}_R \subseteq Y`$. Taking
 $`x \in \mathrm{Acc}_R`$ gives $`x \in Y`$, that is, $`\Phi(x)`$. ∎
 
+<a id="t-Acc.inv"></a>
+## Theorem: an element below an accessible element is accessible (T.Acc.inv)
+
+### Theorem
+
+If $`x \in \mathrm{Acc}_R`$ and $`y \mathbin{R} x`$, then $`y \in \mathrm{Acc}_R`$.
+
+### Proof
+
+Apply [T.Acc.rec](#t-Acc.rec) to the predicate
+
+```math
+\Phi(x) :\equiv \forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R .
+```
+
+Its hypothesis is to be checked: let $`x \in A`$ and assume both
+$`\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R`$ and
+$`\forall y \in A,\ y \mathbin{R} x \to \Phi(y)`$. The first of these is $`\Phi(x)`$ itself, which
+is what has to be shown.
+
+Hence $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$, which is the claim. ∎
+
 <a id="d-WellFounded"></a>
 ## Definition: well-founded (D.WellFounded)
 

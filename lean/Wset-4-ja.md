@@ -842,21 +842,21 @@ a \mathbin{R_{\mathrm{st}}} b :\iff a \in \mathrm{ST\_PS} \wedge b \in \mathrm{S
   \wedge \mathrm{tr}\,a \prec \mathrm{tr}\,b
 ```
 
-である。整礎性は $`\forall M,\ \mathrm{Acc}(R_{\mathrm{st}},M)`$ と同値であるから、
-$`M`$ を任意に取り $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ を示す。
+である。整礎性は $`\forall M,\ M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ と同値であるから、
+$`M`$ を任意に取り $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を示す。
 $`M \in \mathrm{ST\_PS}`$ か否かで場合分けする。
 
 - **$`M \in \mathrm{ST\_PS}`$ のとき。** 仮定 (mem) により $`M \in W_u`$ なる $`u`$ を取る。
   [T.acc_of_W](Wset-ja.md#t-acc_of_W) を仮定 (cof) と $`u`$、$`M`$ に適用して
-  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ を得る。
+  $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を得る。
 
-- **$`M \notin \mathrm{ST\_PS}`$ のとき。** $`\mathrm{Acc}`$ の生成規則
-  $`\bigl(\forall y,\ y \mathbin{R} a \to \mathrm{Acc}(R,y)\bigr) \to \mathrm{Acc}(R,a)`$ により、
+- **$`M \notin \mathrm{ST\_PS}`$ のとき。** [T.Acc.intro](Reduction-ja.md#t-Acc.intro)
+  $`\bigl(\forall y,\ y \mathbin{R} a \to y \in \mathrm{Acc}_{R}\bigr) \to a \in \mathrm{Acc}_{R}`$ により、
   $`y \mathbin{R_{\mathrm{st}}} M`$ なるすべての $`y`$ について
-  $`\mathrm{Acc}(R_{\mathrm{st}},y)`$ を示せばよい。ところが
+  $`y \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を示せばよい。ところが
   $`y \mathbin{R_{\mathrm{st}}} M`$ の第 2 連言子は $`M \in \mathrm{ST\_PS}`$ であり、
   いまの場合分けの仮定に矛盾する。よって前件をみたす $`y`$ は存在せず、
-  $`\mathrm{Acc}(R_{\mathrm{st}},M)`$ が成り立つ。∎
+  $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ が成り立つ。∎
 
 <a id="t-wf_olt_ST_PS_of_cofinality"></a>
 ## 定理: 共終性から標準形上の順序の整礎性へ (T.wf_olt_ST_PS_of_cofinality)
