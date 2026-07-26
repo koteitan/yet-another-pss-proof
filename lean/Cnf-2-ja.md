@@ -39,7 +39,9 @@ $`z_1, z_2, T_1, T_2`$ と 6 つの仮定を固定し、$`\lvert G\rvert`$ に�
   \to \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)
 ```
 
-であり、帰納法の仮定は「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$」である。
+である。
+
+「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$」を仮定する。
 以下、(leadle) の $`a_1, b_1, c_1, a_2, b_2, c_2`$ を取り、
 
 ```math
@@ -250,7 +252,9 @@ $`t, T'`$ と仮定 $`\forall x \in T',\ t_1 \le x_1`$ を固定し、$`\lvert G
   \to \mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)
 ```
 
-であり、帰納法の仮定は「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Psi(G')`$」である。
+である。
+
+「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Psi(G')`$」を仮定する。
 
 **$`G = ()`$ のとき。** $`() \mathbin{+\!\!+} t :: T' = t :: T'`$ であるから、結論は前件そのものである。
 

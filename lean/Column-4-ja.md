@@ -158,8 +158,8 @@ $`\mathrm{lev}`$ に関する強帰納法。帰納法の述語は
   \to \exists r,\ \bigl(r \le j \wedge M_{0,r} = 0 \wedge r \mathbin{(\to^M_0)^{*}} j\bigr),
 ```
 
-帰納法の仮定は「$`\mathrm{lev}' \lt \mathrm{lev}`$ なるすべての $`\mathrm{lev}'`$ について
-$`\Phi(\mathrm{lev}')`$」である。$`j`$ を取り $`M_{0,j} = \mathrm{lev}`$、$`j \lt \lvert M\rvert`$ とし、
+「$`\mathrm{lev}' \lt \mathrm{lev}`$ なるすべての $`\mathrm{lev}'`$ について
+$`\Phi(\mathrm{lev}')`$」を仮定する。$`j`$ を取り $`M_{0,j} = \mathrm{lev}`$、$`j \lt \lvert M\rvert`$ とし、
 $`M_{0,j}`$ が $`0`$ かどうかで場合分けする。
 
 **(a) $`M_{0,j} = 0`$ のとき。** $`r := j`$ と取る。$`j \le j`$、$`M_{0,j} = 0`$ であり、
@@ -409,8 +409,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 - **基底段**（規則 (diag)）：$`M = \Delta_0^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）である。
   [T.z0ok_diagSeq](Column-3-ja.md#t-z0ok_diagSeq) が $`\Phi(\Delta_0^v)`$ そのものである。
 
-- **帰納段**（規則 (oper)）：$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$ とし、帰納法の仮定は
-  $`\Phi(N)`$、すなわち $`\mathrm{z0ok}(N)`$ である。
+- **帰納段**（規則 (oper)）：$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$ とし、$`\Phi(N)`$、すなわち $`\mathrm{z0ok}(N)`$ を仮定する。
   [T.z0ok_oper](#t-z0ok_oper) を $`1 \le n`$ と $`\mathrm{z0ok}(N)`$ に適用して
   $`\mathrm{z0ok}(N[n])`$、すなわち $`\Phi(N[n])`$ を得る。∎
 
@@ -445,7 +444,7 @@ $`a`$ を固定し、鎖 $`a \mathbin{(\to^M_0)^{*}} b`$ の構成に関する�
   非反射性に反する。よって前件が偽であり $`\Phi(a)`$ が成り立つ。
 
 **帰納段**（$`a \mathbin{(\to^M_0)^{*}} y`$ と $`y \to^M_0 z`$ から
-$`a \mathbin{(\to^M_0)^{*}} z`$）：帰納法の仮定は $`\Phi(y)`$ である。
+$`a \mathbin{(\to^M_0)^{*}} z`$）：$`\Phi(y)`$ を仮定する。
 $`a \lt \rho`$、$`\rho \le z`$、および
 
 ```math
@@ -593,7 +592,7 @@ $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b`$ ならば $`a \mathbin{(\to^{S}_0)^{*}} b
   長さ $`0`$ の鎖である。
 
 - **帰納段**（$`a \mathbin{(\to^{S^{+d}}_0)^{*}} c`$ と $`c \to^{S^{+d}}_0 e`$）：
-  帰納法の仮定は $`\Phi(c)`$、すなわち $`a \mathbin{(\to^{S}_0)^{*}} c`$ である。
+  $`\Phi(c)`$、すなわち $`a \mathbin{(\to^{S}_0)^{*}} c`$ を仮定する。
   [T.nextrel0_bound](Column-3-ja.md#t-nextrel0_bound) を $`c \to^{S^{+d}}_0 e`$ に適用して
   $`e \lt \lvert S^{+d}\rvert = \lvert S\rvert`$ を得る。
   よって [T.nextrel0_shift_iff](#t-nextrel0_shift_iff) が使えて $`c \to^{S}_0 e`$ である。
@@ -619,7 +618,7 @@ $`a \mathbin{(\to^{S}_0)^{*}} b`$ ならば $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b
   長さ $`0`$ の鎖である。
 
 - **帰納段**（$`a \mathbin{(\to^{S}_0)^{*}} c`$ と $`c \to^{S}_0 e`$）：
-  帰納法の仮定は $`\Phi(c)`$、すなわち $`a \mathbin{(\to^{S^{+d}}_0)^{*}} c`$ である。
+  $`\Phi(c)`$、すなわち $`a \mathbin{(\to^{S^{+d}}_0)^{*}} c`$ を仮定する。
   [T.nextrel0_bound](Column-3-ja.md#t-nextrel0_bound) を $`c \to^{S}_0 e`$ に適用して
   $`e \lt \lvert S\rvert`$ を得る。よって
   [T.nextrel0_shift_iff](#t-nextrel0_shift_iff) が使えて $`c \to^{S^{+d}}_0 e`$ である。

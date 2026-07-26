@@ -203,8 +203,8 @@ $`n`$ に関する自然数の帰納法。帰納法の述語は
 $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$（[D.Three](Term-ja.md#d-Three)）である。
 [T.cnf_Z](Cnf-ja.md#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ。よって $`\Phi(0)`$。
 
-**帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち
-$`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B,n)))`$ である。$`n`$ で場合分けする。
+**帰納段** $`n \to n+1`$：$`\Phi(n)`$、すなわち
+$`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B,n)))`$ を仮定する。$`n`$ で場合分けする。
 
 **(i) $`n = 0`$ のとき。** 示すべきは $`\Phi(1)`$ である。
 [T.copies_one](#t-copies_one) より $`\mathrm{cp}_{d_0}(B,1) = B`$ である。
@@ -214,8 +214,7 @@ $`B \mathbin{+\!\!+} (\ell)`$ は $`\ell`$ を要素にもつので空列では�
 よって [T.cnf_dropLast](Cnf-ja.md#t-cnf_dropLast) を $`C := B \mathbin{+\!\!+} (\ell)`$ に適用し、
 (cBlp) から $`\mathrm{cnf}(\mathrm{tr}(B))`$、すなわち $`\Phi(1)`$ を得る。
 
-**(ii) $`n = m + 1`$ のとき。** 示すべきは $`\Phi(m+2)`$ であり、帰納法の仮定は
-$`\Phi(m+1)`$、すなわち $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)))`$ である。
+**(ii) $`n = m + 1`$ のとき。** 示すべきは $`\Phi(m+2)`$ である。$`\Phi(m+1)`$、すなわち $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)))`$ を仮定する。
 以下 $`Q := \mathrm{cp}_{d_0}(B, m)`$、$`S := R \mathbin{+\!\!+} Q^{+d_0}`$ と略記する。
 
 **第 1 段：$`\mathrm{cp}_{d_0}(B, m+1)`$ とその平行移動の形。**

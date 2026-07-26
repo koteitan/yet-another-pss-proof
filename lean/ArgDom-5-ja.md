@@ -191,7 +191,7 @@ $`\Phi(\Delta_0^v)`$ である。
 
 **帰納段（構成子 $`\mathrm{oper}`$）。** $`N = M[n]`$ であって、
 $`M \in \mathrm{ST\_PS}`$ と $`1 \le n`$ からこの構成子で導出された場合である。
-帰納法の仮定は $`\Phi(M) = \mathrm{ArgDomCoreOn}(M)`$ である。
+$`\Phi(M) = \mathrm{ArgDomCoreOn}(M)`$ を仮定する。
 [T.argDomCoreOn_oper](#t-argDomCoreOn_oper) を $`M \in \mathrm{ST\_PS}`$、
 帰納法の仮定 $`\mathrm{ArgDomCoreOn}(M)`$、$`1 \le n`$ に適用して
 $`\mathrm{ArgDomCoreOn}(M[n]) = \Phi(N)`$ を得る。∎

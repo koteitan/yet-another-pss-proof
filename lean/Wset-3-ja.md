@@ -428,7 +428,9 @@ $`M := (0,v) :: R`$ とおく。$`j`$ に関する強帰納法を行う。帰納
 \Phi(j) :\equiv \bigl(j \lt \lvert R\rvert \to 0 \le^{M}_0 (j+1)\bigr)
 ```
 
-であり、帰納法の仮定は「$`j' \lt j`$ なるすべての $`j'`$ について $`\Phi(j')`$」である。
+である。
+
+「$`j' \lt j`$ なるすべての $`j'`$ について $`\Phi(j')`$」を仮定する。
 
 $`j \lt \lvert R\rvert`$ とする。$`\lvert M\rvert = \lvert R\rvert + 1`$ であるから
 $`j + 1 \lt \lvert M\rvert`$ である。次の 2 つを用意する。

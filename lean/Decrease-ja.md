@@ -115,8 +115,8 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定しない：帰納�
   $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$
   であるから、[T.olt_Z_P](Term-ja.md#t-olt_Z_P) より $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$。
 
-**帰納段** $`C = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と
-$`\Psi(\mathrm{dw}_{p_1} L)`$ である。$`L`$ の全要素が $`p_1 \lt x_1`$ をみたすかどうかで
+**帰納段** $`C = p :: L`$：$`\Psi(\mathrm{tw}_{p_1} L)`$ と
+$`\Psi(\mathrm{dw}_{p_1} L)`$ を仮定する。$`L`$ の全要素が $`p_1 \lt x_1`$ をみたすかどうかで
 場合分けする。
 
 **(a) $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすとき。**

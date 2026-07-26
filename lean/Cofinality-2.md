@@ -46,7 +46,7 @@ The induction predicate is
     Since $`A \mathbin{+\!\!+} U = u :: U'`$ and $`B \mathbin{+\!\!+} C = b_0 :: (B' \mathbin{+\!\!+} C)`$,
     the first disjunct on the right-hand side of the third clause of the definition (D.seqlex) holds.
 
-- **Inductive step** $`A = a :: A'`$: the induction hypothesis is $`\Phi(A')`$.
+- **Inductive step** $`A = a :: A'`$: assume $`\Phi(A')`$.
   If $`B = ()`$, then by the second clause of the definition (D.seqlex) the hypothesis
   $`A \prec_{\mathrm{lex}} B`$ becomes $`\bot`$, so $`B = b_0 :: B'`$. By the third clause of the
   definition (D.seqlex) the hypothesis is one of the following.
@@ -162,7 +162,7 @@ with them).
   $`() \prec_{\mathrm{lex}} \mathrm{cp}_0(B,1)`$, and the second disjunct of the definition of
   $`\preceq_{\mathrm{lex}}`$ (D.sle) holds.
 
-**Inductive step** $`d + 1`$: the induction hypothesis is $`\Phi(d)`$. Distinguish cases on the
+**Inductive step** $`d + 1`$: assume $`\Phi(d)`$. Distinguish cases on the
 constructor of $`Y`$.
 
 **(a) The case $`Y = ()`$.** As in the base case, it suffices to take $`m := 1`$.

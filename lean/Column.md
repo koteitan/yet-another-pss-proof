@@ -23,7 +23,7 @@ $`\Delta_0^v = (0,0) :: \Delta_1^v`$.
 Hence $`\lvert \Delta_0^v\rvert = 1 + \lvert \Delta_1^v\rvert`$, so $`0 \lt \lvert \Delta_0^v\rvert`$.
 
 **Inductive step (rule oper), $`M = N[n]`$ ([D.oper](Pss.md#d-oper), $`N \in \mathrm{ST\_PS}`$, $`1 \le n`$).**
-The induction hypothesis is $`\Phi(N)`$, that is, $`0 \lt \lvert N\rvert`$.
+Assume $`\Phi(N)`$, that is, $`0 \lt \lvert N\rvert`$.
 Distinguish cases on $`\lvert N\rvert`$.
 
 **(a) $`1 \lt \lvert N\rvert`$.**
@@ -62,7 +62,7 @@ Applying [T.diagSeq_cons](Cnf.md#t-diagSeq_cons) with $`u := 0`$, $`v := v`$ and
 $`\Delta_0^v = (0,0) :: \Delta_1^v`$. Its first element is $`(0,0)`$.
 
 **Inductive step (rule oper), $`M = N[n]`$ ($`N \in \mathrm{ST\_PS}`$, $`1 \le n`$).**
-The induction hypothesis is $`\Phi(N)`$, that is, $`\mathrm{head}\,N = (0,0)`$.
+Assume $`\Phi(N)`$, that is, $`\mathrm{head}\,N = (0,0)`$.
 Distinguish cases on $`\lvert N\rvert`$.
 
 **(a) $`1 \lt \lvert N\rvert`$.**
@@ -217,7 +217,7 @@ The chain of length $`0`$ from $`\lvert A\rvert + j_0`$ to $`\lvert A\rvert + j_
 
 **Inductive step (chain of length $`k+1`$).**
 The chain splits into a chain $`j_0 \mathbin{(\to^{T}_0)^{*}} b`$ of length $`k`$ and a final step $`b \to^{T}_0 c`$.
-The induction hypothesis is $`\Phi(b)`$, that is,
+Assume $`\Phi(b)`$, that is,
 $`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + b`$.
 Applying the ($`\Leftarrow`$) direction of [T.nextrel0_append_right](#t-nextrel0_append_right) to
 $`b \to^{T}_0 c`$ gives
@@ -284,7 +284,7 @@ Take $`c' := a`$; then $`c = \lvert A\rvert + a`$, and there is a chain of lengt
 **Inductive step (chain of length $`k+1`$).**
 The chain splits into a chain $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} d`$ of length $`k`$ and
 a final step $`d \to^{A \mathbin{+\!\!+} T}_0 e`$ (with $`c = e`$).
-The induction hypothesis is $`\Phi(d)`$; take $`d'`$ with $`d = \lvert A\rvert + d'`$ and
+Assume $`\Phi(d)`$; take $`d'`$ with $`d = \lvert A\rvert + d'`$ and
 $`a \mathbin{(\to^{T}_0)^{*}} d'`$.
 Applying [T.nextrel0_lt](#t-nextrel0_lt) to the final step gives $`d \lt e`$, that is,
 $`\lvert A\rvert + d' \lt e`$. In particular $`\lvert A\rvert \le e`$, so setting
@@ -436,7 +436,7 @@ The first conjunct of the antecedent is exactly $`\lvert A\rvert \le k`$, which 
 **Inductive step (chain of length $`m+1`$).**
 The chain splits into a chain $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ of length $`m`$ and
 a final step $`c \to^{A \mathbin{+\!\!+} T}_0 d`$ (with $`e = d`$).
-The induction hypothesis is $`\Phi(c)`$.
+Assume $`\Phi(c)`$.
 Assume the antecedent $`\lvert A\rvert \le d`$ and $`0 \lt (A \mathbin{+\!\!+} T)_{0,d}`$.
 
 First we show $`\lvert A\rvert \le c`$. Suppose $`c \lt \lvert A\rvert`$. Then

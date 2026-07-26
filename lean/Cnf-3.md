@@ -205,7 +205,7 @@ By [T.copies_zero](Cnf-2.md#t-copies_zero), $`\mathrm{cp}_{d_0}(B,0) = ()`$, and
 $`\mathrm{tr}`$ (D.translate), $`\mathrm{tr}\,() = \mathsf{Z}`$ ([D.Three](Term.md#d-Three)).
 By [T.cnf_Z](Cnf.md#t-cnf_Z), $`\mathrm{cnf}(\mathsf{Z})`$ holds. Hence $`\Phi(0)`$.
 
-**Inductive step** $`n \to n+1`$: the induction hypothesis is $`\Phi(n)`$, that is,
+**Inductive step** $`n \to n+1`$: assume $`\Phi(n)`$, that is,
 $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B,n)))`$. We distinguish cases on $`n`$.
 
 **(i) Case $`n = 0`$.** What is to be shown is $`\Phi(1)`$.
@@ -216,7 +216,7 @@ Since $`\ell`$ is an element of $`B \mathbin{+\!\!+} (\ell)`$, that sequence is 
 Applying [T.cnf_dropLast](Cnf.md#t-cnf_dropLast) with $`C := B \mathbin{+\!\!+} (\ell)`$, hypothesis
 (cBlp) yields $`\mathrm{cnf}(\mathrm{tr}(B))`$, that is, $`\Phi(1)`$.
 
-**(ii) Case $`n = m + 1`$.** What is to be shown is $`\Phi(m+2)`$, and the induction hypothesis is
+**(ii) Case $`n = m + 1`$.** What is to be shown is $`\Phi(m+2)`$, and we assume
 $`\Phi(m+1)`$, that is, $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)))`$.
 In what follows we abbreviate $`Q := \mathrm{cp}_{d_0}(B, m)`$ and $`S := R \mathbin{+\!\!+} Q^{+d_0}`$.
 

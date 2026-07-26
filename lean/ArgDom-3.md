@@ -55,7 +55,7 @@ the definition of $`\preceq_{\mathrm{lex}}`$ (D.sle).
   $`q \prec_{\mathrm{p}} \ell`$ and $`\ell \prec_{\mathrm{p}} v`$ yields $`q \prec_{\mathrm{p}} v`$.
   In the latter case, substituting $`\ell = v`$ into $`q \prec_{\mathrm{p}} \ell`$ yields $`q \prec_{\mathrm{p}} v`$.
 
-**Inductive step** $`X = x :: X'`$. The induction hypothesis is $`\Phi(X')`$.
+**Inductive step** $`X = x :: X'`$. Assume $`\Phi(X')`$.
 From $`\lvert x :: X'\rvert \lt \lvert V\rvert`$ we get $`V \ne ()`$, so $`V = v :: V'`$,
 and then $`\lvert X'\rvert + 1 \lt \lvert V'\rvert + 1`$, that is, $`\lvert X'\rvert \lt \lvert V'\rvert`$.
 The hypothesis reads
@@ -548,7 +548,7 @@ Induction on $`n`$ (with $`d`$ and $`\mathrm{blk}`$ fixed). The induction predic
   $`\mathrm{copies}_d(\mathrm{blk}, 0) = ()`$, whose length is $`0`$;
   and $`0 \cdot \lvert \mathrm{blk}\rvert = 0`$.
 
-**Inductive step** $`n = k + 1`$. The induction hypothesis is $`\Phi(k)`$, that is,
+**Inductive step** $`n = k + 1`$. Assume $`\Phi(k)`$, that is,
 $`\lvert \mathrm{copies}_d(\mathrm{blk}, k)\rvert = k \cdot \lvert \mathrm{blk}\rvert`$.
 By [T.copies_succ_back](Cofinality-3.md#t-copies_succ_back),
 

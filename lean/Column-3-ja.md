@@ -583,8 +583,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 - **基底段**（規則 (diag)）：$`M = \Delta_0^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）である。
   [T.r1ok_diagSeq](Column-2-ja.md#t-r1ok_diagSeq) が $`\Phi(\Delta_0^v)`$ そのものである。
 
-- **帰納段**（規則 (oper)）：$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$ とする。帰納法の仮定は
-  $`\Phi(N)`$、すなわち $`\mathrm{r1ok}(N)`$ であり、示すべきは $`\mathrm{r1ok}(N[n])`$ である。
+- **帰納段**（規則 (oper)）：$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$ とする。$`\Phi(N)`$、すなわち $`\mathrm{r1ok}(N)`$ を仮定する。示すべきは $`\mathrm{r1ok}(N[n])`$ である。
   [T.blockok_ST_PS](Seqlex-2-ja.md#t-blockok_ST_PS) を $`N \in \mathrm{ST\_PS}`$ に適用して
   $`\mathrm{blockok}(0, N)`$（[D.blockok](Seqlex-ja.md#d-blockok)）を得る。$`\mathrm{blockok}`$ の定義（D.blockok）は
   3 つの連言であり、その第 3 連言子は $`\mathrm{steps}_1(N)`$ である。
@@ -621,7 +620,7 @@ $`\le^M_0`$ の定義（D.le0）の第 3 条件により $`a \mathbin{(\to^M_0)^
 - **基底段**（$`j = a`$、鎖の長さ $`0`$）：$`a \le a`$ は $`\le`$ の反射性による。
 
 - **帰納段**（$`a \mathbin{(\to^M_0)^{*}} y`$ と $`y \to^M_0 z`$ から $`a \mathbin{(\to^M_0)^{*}} z`$）：
-  帰納法の仮定は $`\Phi(y)`$、すなわち $`a \le y`$ である。
+  $`\Phi(y)`$、すなわち $`a \le y`$ を仮定する。
   [T.nextrel0_lt](Column-ja.md#t-nextrel0_lt) より $`y \lt z`$ であるから $`a \le y \le z`$、
   すなわち $`\Phi(z)`$。∎
 

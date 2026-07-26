@@ -469,7 +469,7 @@ Induction on $`n`$. The induction predicate is
 - **Base case** $`n = 0`$: we have $`\mathrm{cp}(B,f,0) = ()`$ and
   $`\lvert ()\rvert = 0 = 0 \cdot \lvert B\rvert`$.
 
-**Inductive step** $`n \to n+1`$. The induction hypothesis is
+**Inductive step** $`n \to n+1`$. Assume
 $`\Phi(n)`$, that is, $`\lvert \mathrm{cp}(B,f,n)\rvert = n\lvert B\rvert`$.
 By the decomposition stated above, the fact that the length of a concatenation is the sum of the lengths,
 and $`\lvert \mathrm{map}(f_n, B)\rvert = \lvert B\rvert`$, we get
@@ -503,7 +503,7 @@ Induction on $`n`$. The induction predicate is
 - **Base case** $`n = 0`$: there is no natural number $`k`$ with $`k \lt 0`$, so the antecedent is false
   and $`\Phi(0)`$ holds.
 
-**Inductive step** $`n \to n+1`$. The induction hypothesis is $`\Phi(n)`$.
+**Inductive step** $`n \to n+1`$. Assume $`\Phi(n)`$.
 Let $`k \lt n+1`$ and $`q \lt \lvert B\rvert`$, and use the decomposition
 $`\mathrm{cp}(B,f,n+1) = \mathrm{cp}(B,f,n) \mathbin{+\!\!+} \mathrm{map}(f_n, B)`$ of
 [T.copies_map_length](#t-copies_map_length).

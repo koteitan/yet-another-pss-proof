@@ -55,7 +55,7 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）で場合分けする。
   $`q \prec_{\mathrm{p}} \ell`$ と $`\ell \prec_{\mathrm{p}} v`$ に適用して $`q \prec_{\mathrm{p}} v`$。
   後者のときは $`\ell = v`$ を $`q \prec_{\mathrm{p}} \ell`$ に代入して $`q \prec_{\mathrm{p}} v`$。
 
-**帰納段** $`X = x :: X'`$。帰納法の仮定は $`\Phi(X')`$ である。
+**帰納段** $`X = x :: X'`$。$`\Phi(X')`$ を仮定する。
 $`\lvert x :: X'\rvert \lt \lvert V\rvert`$ より $`V \ne ()`$ であるから $`V = v :: V'`$ と書け、
 このとき $`\lvert X'\rvert + 1 \lt \lvert V'\rvert + 1`$、すなわち $`\lvert X'\rvert \lt \lvert V'\rvert`$ である。
 仮定は
@@ -548,8 +548,8 @@ $`n`$ に関する帰納法（$`d`$, $`\mathrm{blk}`$ は固定する）。帰�
   $`\mathrm{copies}_d(\mathrm{blk}, 0) = ()`$ であり、その長さは $`0`$ である。
   一方 $`0 \cdot \lvert \mathrm{blk}\rvert = 0`$ である。
 
-**帰納段** $`n = k + 1`$。帰納法の仮定は $`\Phi(k)`$、すなわち
-$`\lvert \mathrm{copies}_d(\mathrm{blk}, k)\rvert = k \cdot \lvert \mathrm{blk}\rvert`$ である。
+**帰納段** $`n = k + 1`$。$`\Phi(k)`$、すなわち
+$`\lvert \mathrm{copies}_d(\mathrm{blk}, k)\rvert = k \cdot \lvert \mathrm{blk}\rvert`$ を仮定する。
 [T.copies_succ_back](Cofinality-3-ja.md#t-copies_succ_back) より
 
 ```math

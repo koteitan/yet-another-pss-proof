@@ -434,7 +434,7 @@ Put $`M := (0,v) :: R`$. We argue by strong induction on $`j`$. The induction pr
 \Phi(j) :\equiv \bigl(j \lt \lvert R\rvert \to 0 \le^{M}_0 (j+1)\bigr)
 ```
 
-and the induction hypothesis is "$`\Phi(j')`$ for every $`j' \lt j`$".
+and assume "$`\Phi(j')`$ for every $`j' \lt j`$".
 
 Assume $`j \lt \lvert R\rvert`$. Since $`\lvert M\rvert = \lvert R\rvert + 1`$ we have
 $`j + 1 \lt \lvert M\rvert`$. We prepare two facts.

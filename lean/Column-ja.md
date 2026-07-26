@@ -23,7 +23,7 @@ $`\Delta_0^v = (0,0) :: \Delta_1^v`$ である。
 よって $`\lvert \Delta_0^v\rvert = 1 + \lvert \Delta_1^v\rvert`$ であり $`0 \lt \lvert \Delta_0^v\rvert`$。
 
 **帰納段（規則 oper）$`M = N[n]`$（[D.oper](Pss-ja.md#d-oper)、$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
-帰納法の仮定は $`\Phi(N)`$、すなわち $`0 \lt \lvert N\rvert`$ である。
+$`\Phi(N)`$、すなわち $`0 \lt \lvert N\rvert`$ を仮定する。
 $`\lvert N\rvert`$ で場合分けする。
 
 **(a) $`1 \lt \lvert N\rvert`$ のとき。**
@@ -62,7 +62,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
 $`\Delta_0^v = (0,0) :: \Delta_1^v`$ を得る。先頭要素は $`(0,0)`$ である。
 
 **帰納段（規則 oper）$`M = N[n]`$（$`N \in \mathrm{ST\_PS}`$、$`1 \le n`$）。**
-帰納法の仮定は $`\Phi(N)`$、すなわち $`\mathrm{head}\,N = (0,0)`$ である。
+$`\Phi(N)`$、すなわち $`\mathrm{head}\,N = (0,0)`$ を仮定する。
 $`\lvert N\rvert`$ で場合分けする。
 
 **(a) $`1 \lt \lvert N\rvert`$ のとき。**
@@ -217,8 +217,8 @@ $`\lvert A\rvert + j_0`$ から $`\lvert A\rvert + j_0`$ への長さ $`0`$ の�
 
 **帰納段（長さ $`k+1`$ の鎖）。**
 鎖は長さ $`k`$ の鎖 $`j_0 \mathbin{(\to^{T}_0)^{*}} b`$ と最後の 1 段 $`b \to^{T}_0 c`$ に分かれる。
-帰納法の仮定は $`\Phi(b)`$、すなわち
-$`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + b`$ である。
+$`\Phi(b)`$、すなわち
+$`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + b`$ を仮定する。
 [T.nextrel0_append_right](#t-nextrel0_append_right) の（$`\Leftarrow`$）を
 $`b \to^{T}_0 c`$ に適用して
 $`\lvert A\rvert + b \to^{A \mathbin{+\!\!+} T}_0 \lvert A\rvert + c`$ を得る。
@@ -283,7 +283,7 @@ $`c' := a`$ とおけば $`c = \lvert A\rvert + a`$ であり、$`a`$ から $`a
 **帰納段（長さ $`k+1`$ の鎖）。**
 鎖は長さ $`k`$ の鎖 $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} d`$ と
 最後の 1 段 $`d \to^{A \mathbin{+\!\!+} T}_0 e`$ に分かれる（$`c = e`$）。
-帰納法の仮定は $`\Phi(d)`$ であり、$`d = \lvert A\rvert + d'`$ かつ
+$`\Phi(d)`$ を仮定し、$`d = \lvert A\rvert + d'`$ かつ
 $`a \mathbin{(\to^{T}_0)^{*}} d'`$ なる $`d'`$ をとる。
 [T.nextrel0_lt](#t-nextrel0_lt) を最後の 1 段に適用して $`d \lt e`$、すなわち
 $`\lvert A\rvert + d' \lt e`$ を得る。とくに $`\lvert A\rvert \le e`$ であるから
@@ -435,7 +435,7 @@ $`A`$、$`T`$、$`k`$ は固定し、帰納法の述語は
 **帰納段（長さ $`m+1`$ の鎖）。**
 鎖は長さ $`m`$ の鎖 $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ と
 最後の 1 段 $`c \to^{A \mathbin{+\!\!+} T}_0 d`$ に分かれる（$`e = d`$）。
-帰納法の仮定は $`\Phi(c)`$ である。
+$`\Phi(c)`$ を仮定する。
 前件 $`\lvert A\rvert \le d`$ と $`0 \lt (A \mathbin{+\!\!+} T)_{0,d}`$ を仮定する。
 
 まず $`\lvert A\rvert \le c`$ を示す。$`c \lt \lvert A\rvert`$ とすると、

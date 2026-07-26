@@ -26,8 +26,7 @@ $`d`$ から $`d+1`$ へ動くので、帰納法の述語では $`d`$ を全称�
   \to \mathrm{tr}\,M \prec \mathrm{tr}\,N
 ```
 
-とおき、帰納法の仮定は
-「$`\lvert M'\rvert + \lvert N'\rvert \lt \lvert M\rvert + \lvert N\rvert`$ なるすべての $`M', N'`$ について $`\Phi(M', N')`$」である。
+とおき、「$`\lvert M'\rvert + \lvert N'\rvert \lt \lvert M\rvert + \lvert N\rvert`$ なるすべての $`M', N'`$ について $`\Phi(M', N')`$」を仮定する。
 
 $`M`$ と $`N`$ の構成子で 4 通りに場合分けする。
 
@@ -160,8 +159,8 @@ $`M`$ のリスト構造に関する帰納法を行う（$`N`$ は全称量化�
   $`() \prec_{\mathrm{lex}} (q :: N')`$ は $`q :: N' \ne ()`$ と同値であり、列の構成子の像が交わらない
   ことからこれは成り立つ（第 2 選言）。
 
-**帰納段 $`M = p :: M'`$。** 帰納法の仮定は $`\Phi(M')`$、すなわち
-$`\forall N,\ (M' = N \vee M' \prec_{\mathrm{lex}} N \vee N \prec_{\mathrm{lex}} M')`$ である。
+**帰納段 $`M = p :: M'`$。** $`\Phi(M')`$、すなわち
+$`\forall N,\ (M' = N \vee M' \prec_{\mathrm{lex}} N \vee N \prec_{\mathrm{lex}} M')`$ を仮定する。
 $`N`$ の構成子で場合分けする。
 
 - $`N = ()`$ のとき。[T.seqlex_nil_iff](Seqlex-ja.md#t-seqlex_nil_iff) より
@@ -325,8 +324,8 @@ $`A`$ のリスト構造に関する帰納法を行う（$`d`$ は全称量化�
 
 - **基底段** $`A = ()`$：$`() \mathbin{+\!\!+} B = B`$ であるから両辺は同一である。
 
-**帰納段 $`A = a :: A'`$。** 帰納法の仮定は $`\Phi(A')`$、すなわち
-$`\forall d,\ \mathrm{last}_d(A' \mathbin{+\!\!+} B) = \mathrm{last}_d\,B`$ である。
+**帰納段 $`A = a :: A'`$。** $`\Phi(A')`$、すなわち
+$`\forall d,\ \mathrm{last}_d(A' \mathbin{+\!\!+} B) = \mathrm{last}_d\,B`$ を仮定する。
 まず、任意の $`b \in \alpha`$ と型 $`\alpha`$ の有限列 $`bs`$ に対し
 
 ```math
@@ -413,7 +412,7 @@ $`n`$ に関する自然数の帰納法。$`F`$ は固定する。帰納法の�
 [T.steps1_nil](Seqlex-ja.md#t-steps1_nil) より $`\mathrm{steps}_1(())`$ が成り立つ。
 第 2 の連言子の前件 $`0 \lt 0`$ は偽であるから、その含意は成り立つ。
 
-**帰納段 $`n = m + 1`$。** 帰納法の仮定は $`\Phi(m)`$ である。
+**帰納段 $`n = m + 1`$。** $`\Phi(m)`$ を仮定する。
 $`\mathrm{cat}`$ の定義と連結の結合性より
 
 ```math
@@ -519,8 +518,8 @@ $`m`$ に関する自然数の帰納法（$`s`$ は全称量化したまま動�
 
 - **基底段** $`m = 0`$：列は空列であり、[T.steps1_nil](Seqlex-ja.md#t-steps1_nil) による。
 
-**帰納段 $`m + 1`$。** 帰納法の仮定は $`\Phi(m)`$、すなわち
-$`\forall s,\ \mathrm{steps}_1\bigl((\,(s+i,s+i)\,)_{i=0}^{m-1}\bigr)`$ である。
+**帰納段 $`m + 1`$。** $`\Phi(m)`$、すなわち
+$`\forall s,\ \mathrm{steps}_1\bigl((\,(s+i,s+i)\,)_{i=0}^{m-1}\bigr)`$ を仮定する。
 $`s`$ を取る。長さ $`m+1`$ の列は先頭を分離して
 
 ```math
@@ -844,7 +843,7 @@ $`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
   $`\Phi(\Delta_0^v)`$ そのものである。
 
 - **帰納段**（規則 (oper)、$`M \in \mathrm{ST\_PS}`$ と $`1 \le n`$ から $`M[n]`$）：
-  帰納法の仮定は $`\Phi(M)`$、すなわち $`\mathrm{blockok}(0, M)`$ である。
+  $`\Phi(M)`$、すなわち $`\mathrm{blockok}(0, M)`$ を仮定する。
   [T.blockok_oper](#t-blockok_oper) をこれと $`1 \le n`$ に適用して
   $`\mathrm{blockok}(0, M[n])`$、すなわち $`\Phi(M[n])`$ を得る。∎
 

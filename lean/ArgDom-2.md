@@ -248,7 +248,7 @@ Induction on the length of $`X`$. The induction predicate is
 - **Base case** $`X = ()`$: since $`()^{+d} = ()`$ and $`()^{-d} = ()`$, both sides
   are $`()`$.
 
-- **Inductive step** $`X = p :: X'`$: the induction hypothesis is $`\Lambda(X')`$, that is,
+- **Inductive step** $`X = p :: X'`$: assume $`\Lambda(X')`$, that is,
   $`(X'^{+d})^{-d} = X'`$. By [T.shiftr0_cons](Cnf-2.md#t-shiftr0_cons) and
   [T.shiftl0_cons](#t-shiftl0_cons),
 
@@ -282,7 +282,7 @@ Induction on the length of $`L`$. The induction predicate is
 - **Base case** $`L = ()`$: since $`()^{-d} = ()`$ and $`()^{+d} = ()`$, both sides
   are $`()`$.
 
-- **Inductive step** $`L = p :: L'`$: the induction hypothesis is $`\Upsilon(L')`$.
+- **Inductive step** $`L = p :: L'`$: assume $`\Upsilon(L')`$.
   From the assumption $`\forall x \in p :: L',\ d \le x_1`$, taking $`p`$ gives $`d \le p_1`$, and
   taking each element of $`L'`$ gives $`\forall x \in L',\ d \le x_1`$.
   Applying the induction hypothesis $`\Upsilon(L')`$ to the latter yields
@@ -824,7 +824,7 @@ Induction on the constructors of $`E`$ (with $`L`$ fixed). The induction predica
   Then $`() = () \mathbin{+\!\!+} ()`$. Since $`B_p = ()`$ has no elements, the second conjunct holds because its antecedent is false.
   In the third conjunct the first disjunct $`R_p = ()`$ holds.
 
-- **Inductive step** $`E = a :: E'`$: the induction hypothesis is $`\Phi(E')`$. We distinguish cases according to whether $`L \lt a_1`$.
+- **Inductive step** $`E = a :: E'`$: assume $`\Phi(E')`$. We distinguish cases according to whether $`L \lt a_1`$.
 
   - Case $`L \lt a_1`$. Take $`B_p', R_p'`$ from $`\Phi(E')`$ and set
     $`B_p := a :: B_p'`$ and $`R_p := R_p'`$.

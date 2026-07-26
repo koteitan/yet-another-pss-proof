@@ -189,7 +189,7 @@ $`\Phi(\Delta_0^v)`$.
 
 **Inductive step (constructor $`\mathrm{oper}`$).** This is the case $`N = M[n]`$,
 derived by this constructor from $`M \in \mathrm{ST\_PS}`$ and $`1 \le n`$.
-The induction hypothesis is $`\Phi(M) = \mathrm{ArgDomCoreOn}(M)`$.
+Assume $`\Phi(M) = \mathrm{ArgDomCoreOn}(M)`$.
 Applying [T.argDomCoreOn_oper](#t-argDomCoreOn_oper) to $`M \in \mathrm{ST\_PS}`$, to the
 induction hypothesis $`\mathrm{ArgDomCoreOn}(M)`$ and to $`1 \le n`$ yields
 $`\mathrm{ArgDomCoreOn}(M[n]) = \Phi(N)`$. ∎

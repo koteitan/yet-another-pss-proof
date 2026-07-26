@@ -273,8 +273,8 @@ $`\mathrm{tr}\,() = \mathsf{Z}`$ であるから $`\mathrm{tr}(\Delta_u^u) = \ma
 である。[T.cnf_P_Z](#t-cnf_P_Z) よりこれが条件をみたすことは $`\mathrm{cnf}(\mathsf{Z})`$ と同値であり、
 それは [T.cnf_Z](#t-cnf_Z) である。よって $`\Phi(0)`$。
 
-**帰納段** $`n \to n+1`$：帰納法の仮定は $`\Phi(n)`$、すなわち
-$`\forall u,\ \mathrm{cnf}(\mathrm{tr}(\Delta_u^{u+n}))`$ である。$`u`$ を取る。
+**帰納段** $`n \to n+1`$：$`\Phi(n)`$、すなわち
+$`\forall u,\ \mathrm{cnf}(\mathrm{tr}(\Delta_u^{u+n}))`$ を仮定する。$`u`$ を取る。
 $`u \le u + (n+1)`$ であるから [T.translate_diagSeq](#t-translate_diagSeq) より
 
 ```math
@@ -322,7 +322,7 @@ $`m`$ を固定し、$`\mathrm{tr}`$ の再帰に沿う帰納法を行う。帰�
 $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$ であり、
 [T.cnf_Z](#t-cnf_Z) より $`\mathrm{cnf}(\mathsf{Z})`$ が成り立つ（前件は使わない）。
 
-**帰納段** $`D = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と $`\Psi(\mathrm{dw}_{p_1} L)`$ である。
+**帰納段** $`D = p :: L`$：$`\Psi(\mathrm{tw}_{p_1} L)`$ と $`\Psi(\mathrm{dw}_{p_1} L)`$ を仮定する。
 前件 $`\mathrm{cnf}\bigl(\mathrm{tr}((p :: L) \mathbin{+\!\!+} (m))\bigr)`$ を仮定する。
 $`L`$ の全要素が $`p_1 \lt x_1`$ をみたすかどうかで場合分けする。
 
@@ -499,7 +499,7 @@ $`d`$ に関する帰納法を行う（$`k`$ は全称量化したまま動か�
 これは $`\lvert M\rvert \le k`$ を意味し、$`\mathrm{take}_k M = M`$ である。
 結論は仮定 $`\mathrm{cnf}(\mathrm{tr}\,M)`$ そのものである。
 
-**帰納段** $`d \to d+1`$：帰納法の仮定は $`\Xi(d)`$ である。$`k`$ を取り
+**帰納段** $`d \to d+1`$：$`\Xi(d)`$ を仮定する。$`k`$ を取り
 $`\lvert M\rvert - k = d + 1`$ とする。$`\lvert M\rvert - k \ne 0`$ であるから $`k \lt \lvert M\rvert`$、
 すなわち $`k + 1 \le \lvert M\rvert`$ である。また $`\lvert M\rvert - (k+1) = d`$ であるから、
 帰納法の仮定 $`\Xi(d)`$ を $`k + 1`$ に適用して
@@ -564,8 +564,8 @@ $`n`$ に関する帰納法を行う。帰納法の述語は
 **基底段** $`n = 0`$：$`B^{\ast 0} = ()`$ であり、$`\mathrm{tr}`$ の定義（D.translate）より
 $`\mathrm{tr}\,() = \mathsf{Z}`$ である。[T.cnf_Z](#t-cnf_Z) より $`\Phi(0)`$。
 
-**帰納段** $`n = m + 1`$：帰納法の仮定は $`\Phi(m)`$、すなわち
-$`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast m})\bigr)`$ である。$`m`$ で場合分けする。
+**帰納段** $`n = m + 1`$：$`\Phi(m)`$、すなわち
+$`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast m})\bigr)`$ を仮定する。$`m`$ で場合分けする。
 
 **$`m = 0`$ のとき。** $`(\ast\ast)`$ を $`k := 0`$ として使うと
 

@@ -169,8 +169,8 @@ $`x`$ の構造に関する帰納法。帰納法の述語は
 
 - **基底段** $`x = \mathsf{Z}`$：[T.olt_Z_Z](#t-olt_Z_Z) が $`\Phi(\mathsf{Z})`$ そのものである。
 
-- **帰納段** $`x = \mathsf{P}(a,b,c)`$：帰納法の仮定は $`\Phi(b)`$ と $`\Phi(c)`$、すなわち
-  $`\neg(b \prec b)`$ と $`\neg(c \prec c)`$ である。
+- **帰納段** $`x = \mathsf{P}(a,b,c)`$：$`\Phi(b)`$ と $`\Phi(c)`$、すなわち
+  $`\neg(b \prec b)`$ と $`\neg(c \prec c)`$ を仮定する。
   $`\mathsf{P}(a,b,c) \prec \mathsf{P}(a,b,c)`$ を仮定すると、[T.olt_P_P](#t-olt_P_P) より
   次の 3 つのいずれかが成り立つ。
   - $`a \lt a`$：$`\mathbb{N}`$ の $`\lt`$ の非反射性に矛盾。
@@ -492,7 +492,7 @@ $`\le^M_0`$ の定義（D.le0）の第 3 条件により $`j_0 \mathbin{(\to^M_0
 - **基底段**（$`j = j_0`$、鎖の長さ $`0`$）：$`M_{0,j_0} \le M_{0,j_0}`$ は $`\le`$ の反射性による。
 
 - **帰納段**（$`j_0 \mathbin{(\to^M_0)^{*}} y`$ と $`y \to^M_0 z`$ から $`j_0 \mathbin{(\to^M_0)^{*}} z`$）：
-  帰納法の仮定は $`\Phi(y)`$、すなわち $`M_{0,j_0} \le M_{0,y}`$ である。
+  $`\Phi(y)`$、すなわち $`M_{0,j_0} \le M_{0,y}`$ を仮定する。
   [T.nextrel0_entry0_less](#t-nextrel0_entry0_less) より $`M_{0,y} \lt M_{0,z}`$ であるから、
   $`\le`$ の推移律により $`M_{0,j_0} \le M_{0,z}`$。よって $`\Phi(z)`$。∎
 
@@ -548,7 +548,7 @@ $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ とする。このとき
 - **基底段**（$`j = j_0`$）：前件は $`j_0 \lt k \wedge k \le j_0`$ であり、これをみたす $`k`$ は
   存在しない。よって $`\Phi(j_0)`$ が成り立つ。
 
-- **帰納段**（$`j_0 \mathbin{(\to^M_0)^{*}} y`$ と $`y \to^M_0 z`$）：帰納法の仮定は $`\Phi(y)`$ である。
+- **帰納段**（$`j_0 \mathbin{(\to^M_0)^{*}} y`$ と $`y \to^M_0 z`$）：$`\Phi(y)`$ を仮定する。
   次の 3 つを用意する。
 
   1. $`M_{0,y} \lt M_{0,z}`$。[T.nextrel0_entry0_less](#t-nextrel0_entry0_less) による。
@@ -657,8 +657,8 @@ $`\mathrm{tr}`$ の再帰に沿う帰納法。帰納法の述語は
 
 - **基底段** $`M = ()`$：$`()^{+d} = ()`$ であり、両辺とも $`\mathsf{Z}`$ である。
 
-**帰納段** $`M = p :: L`$：帰納法の仮定は $`\Psi(\mathrm{tw}_{p_1} L)`$ と
-$`\Psi(\mathrm{dw}_{p_1} L)`$ である。
+**帰納段** $`M = p :: L`$：$`\Psi(\mathrm{tw}_{p_1} L)`$ と
+$`\Psi(\mathrm{dw}_{p_1} L)`$ を仮定する。
 
 まず述語が平行移動で不変であることを見る。任意の対 $`r`$ について
 
@@ -720,7 +720,9 @@ $`\lvert G\rvert`$ に関する強帰納法。帰納法の述語は
 \Phi(G) :\equiv \mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1) \prec \mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)
 ```
 
-であり、帰納法の仮定は「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$」である。
+である。
+
+「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$」を仮定する。
 
 - **$`G = ()`$ のとき**：両辺は仮定 (base) そのものである。
 

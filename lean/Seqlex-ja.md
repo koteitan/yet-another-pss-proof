@@ -101,13 +101,13 @@ $`A`$ のリスト構造に関する帰納法（$`u`$, $`v`$ は固定する）�
 - **基底段** $`A = ()`$：$`() \mathbin{+\!\!+} u = u`$、$`() \mathbin{+\!\!+} v = v`$ であるから、
   両辺は同一の命題である。
 
-**帰納段** $`A = a :: A'`$：帰納法の仮定は $`\Phi(A')`$、すなわち
+**帰納段** $`A = a :: A'`$：$`\Phi(A')`$、すなわち
 
 ```math
 (A' \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A' \mathbin{+\!\!+} v) \iff u \prec_{\mathrm{lex}} v
 ```
 
-である。$`(a :: A') \mathbin{+\!\!+} u = a :: (A' \mathbin{+\!\!+} u)`$、
+を仮定する。$`(a :: A') \mathbin{+\!\!+} u = a :: (A' \mathbin{+\!\!+} u)`$、
 $`(a :: A') \mathbin{+\!\!+} v = a :: (A' \mathbin{+\!\!+} v)`$ であるから、
 [T.seqlex_cons_cons](#t-seqlex_cons_cons) により示すべき左辺は
 
@@ -153,8 +153,8 @@ $`u`$ のリスト構造に関する帰納法（$`v`$ と仮定 $`v \ne ()`$ は
   [T.seqlex_nil_iff](#t-seqlex_nil_iff) より $`() \prec_{\mathrm{lex}} v`$ は
   $`v \ne ()`$ と同値である。これは仮定である。
 
-- **帰納段** $`u = a :: u'`$：帰納法の仮定は $`\Phi(u')`$、すなわち
-  $`u' \prec_{\mathrm{lex}} (u' \mathbin{+\!\!+} v)`$ である。
+- **帰納段** $`u = a :: u'`$：$`\Phi(u')`$、すなわち
+  $`u' \prec_{\mathrm{lex}} (u' \mathbin{+\!\!+} v)`$ を仮定する。
   $`(a :: u') \mathbin{+\!\!+} v = a :: (u' \mathbin{+\!\!+} v)`$ であるから、
   [T.seqlex_cons_cons](#t-seqlex_cons_cons) の右辺の第 2 選言
   $`a = a \wedge u' \prec_{\mathrm{lex}} (u' \mathbin{+\!\!+} v)`$ が、$`=`$ の反射性と
@@ -269,7 +269,7 @@ $`B`$ のリスト構造に関する帰納法。帰納法の述語は
   右辺は $`\lvert B\rvert = 0`$ であるから前件 $`j + 1 \lt 0`$ をみたす $`j`$ が存在せず、
   成り立つ。両辺とも成り立つので同値である。
 
-**帰納段** $`B = p :: B'`$：帰納法の仮定は $`\Phi(B')`$ である。$`B'`$ で場合分けする。
+**帰納段** $`B = p :: B'`$：$`\Phi(B')`$ を仮定する。$`B'`$ で場合分けする。
 
 **(a) $`B' = ()`$ のとき。** 左辺 $`\mathrm{steps}_1((p))`$ は
 [T.steps1_single](#t-steps1_single) により成り立つ。右辺は $`\lvert B\rvert = 1`$ であるから
@@ -378,7 +378,7 @@ $`A`$ のリスト構造に関する帰納法（$`B`$ は固定する）。帰�
   ある。右辺の第 1 の連言子は [T.steps1_nil](#t-steps1_nil) により成り立ち、第 3 の連言子は
   その第 1 選言 $`A = ()`$ により成り立つから、右辺も $`\mathrm{steps}_1(B)`$ と同値である。
 
-**帰納段** $`A = p :: A'`$：帰納法の仮定は $`\Phi(A')`$ である。$`A'`$ で場合分けする。
+**帰納段** $`A = p :: A'`$：$`\Phi(A')`$ を仮定する。$`A'`$ で場合分けする。
 
 **(a) $`A' = ()`$ のとき。** $`A = (p)`$、$`A \mathbin{+\!\!+} B = p :: B`$ であり、
 $`\mathrm{last}_{(0,0)} A = p`$、$`A = ()`$ は偽である。さらに $`B`$ で場合分けする。
@@ -635,7 +635,7 @@ $`\mathrm{tw}_d\,() = ()`$ と仮定 $`\mathrm{tw}_d r' \ne ()`$ から得られ
 第 2 の連言子 $`() \prec_{\mathrm{lex}} \mathrm{tw}_d r'`$ は
 [T.seqlex_nil_iff](#t-seqlex_nil_iff) と仮定 $`\mathrm{tw}_d r' \ne ()`$ による。
 
-**帰納段** $`r = p :: rr`$：帰納法の仮定は $`\Phi(rr)`$、すなわち
+**帰納段** $`r = p :: rr`$：$`\Phi(rr)`$、すなわち
 
 ```math
 \begin{aligned}
@@ -647,7 +647,7 @@ $`\mathrm{tw}_d\,() = ()`$ と仮定 $`\mathrm{tw}_d r' \ne ()`$ から得られ
 \end{aligned}
 ```
 
-である。$`r'`$ を取り $`(p :: rr) \prec_{\mathrm{lex}} r'`$ とする。
+を仮定する。$`r'`$ を取り $`(p :: rr) \prec_{\mathrm{lex}} r'`$ とする。
 $`r' = ()`$ とすると [T.not_seqlex_nil](#t-not_seqlex_nil) に反するから
 $`r' = q :: rr'`$ と書ける。$`p = q`$ かどうかで場合分けする。
 

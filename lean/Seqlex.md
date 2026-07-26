@@ -104,7 +104,7 @@ By induction on the list structure of $`A`$ (with $`u`$, $`v`$ fixed). The induc
 - **Base case** $`A = ()`$: since $`() \mathbin{+\!\!+} u = u`$ and $`() \mathbin{+\!\!+} v = v`$,
   the two sides are the same proposition.
 
-**Inductive step** $`A = a :: A'`$: the induction hypothesis is $`\Phi(A')`$, that is,
+**Inductive step** $`A = a :: A'`$: assume $`\Phi(A')`$, that is,
 
 ```math
 (A' \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A' \mathbin{+\!\!+} v) \iff u \prec_{\mathrm{lex}} v
@@ -156,7 +156,7 @@ The induction predicate is
   [T.seqlex_nil_iff](#t-seqlex_nil_iff) the statement $`() \prec_{\mathrm{lex}} v`$ is equivalent
   to $`v \ne ()`$, which is the hypothesis.
 
-- **Inductive step** $`u = a :: u'`$: the induction hypothesis is $`\Phi(u')`$, that is,
+- **Inductive step** $`u = a :: u'`$: assume $`\Phi(u')`$, that is,
   $`u' \prec_{\mathrm{lex}} (u' \mathbin{+\!\!+} v)`$.
   Since $`(a :: u') \mathbin{+\!\!+} v = a :: (u' \mathbin{+\!\!+} v)`$, the second disjunct
   $`a = a \wedge u' \prec_{\mathrm{lex}} (u' \mathbin{+\!\!+} v)`$ on the right-hand side of
@@ -273,7 +273,7 @@ By induction on the list structure of $`B`$. The induction predicate is
   As for the right-hand side, $`\lvert B\rvert = 0`$, so no $`j`$ satisfies the antecedent
   $`j + 1 \lt 0`$ and it holds. Both sides hold, hence they are equivalent.
 
-**Inductive step** $`B = p :: B'`$: the induction hypothesis is $`\Phi(B')`$. We distinguish
+**Inductive step** $`B = p :: B'`$: assume $`\Phi(B')`$. We distinguish
 cases on $`B'`$.
 
 **(a) $`B' = ()`$.** The left-hand side $`\mathrm{steps}_1((p))`$ holds by
@@ -386,7 +386,7 @@ By induction on the list structure of $`A`$ (with $`B`$ fixed). The induction pr
   [T.steps1_nil](#t-steps1_nil) and the third conjunct holds by its first disjunct $`A = ()`$,
   so the right-hand side is also equivalent to $`\mathrm{steps}_1(B)`$.
 
-**Inductive step** $`A = p :: A'`$: the induction hypothesis is $`\Phi(A')`$. We distinguish
+**Inductive step** $`A = p :: A'`$: assume $`\Phi(A')`$. We distinguish
 cases on $`A'`$.
 
 **(a) $`A' = ()`$.** Then $`A = (p)`$ and $`A \mathbin{+\!\!+} B = p :: B`$, and
@@ -645,7 +645,7 @@ $`\mathrm{tw}_d\,() = ()`$ and the assumption $`\mathrm{tw}_d r' \ne ()`$.
 The second conjunct $`() \prec_{\mathrm{lex}} \mathrm{tw}_d r'`$ follows from
 [T.seqlex_nil_iff](#t-seqlex_nil_iff) and the assumption $`\mathrm{tw}_d r' \ne ()`$.
 
-**Inductive step** $`r = p :: rr`$: the induction hypothesis is $`\Phi(rr)`$, that is,
+**Inductive step** $`r = p :: rr`$: assume $`\Phi(rr)`$, that is,
 
 ```math
 \begin{aligned}

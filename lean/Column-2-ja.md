@@ -467,8 +467,7 @@ $`n`$ に関する帰納法。帰納法の述語は
 - **基底段** $`n = 0`$：$`\mathrm{cp}(B,f,0) = ()`$ であり
   $`\lvert ()\rvert = 0 = 0 \cdot \lvert B\rvert`$。
 
-**帰納段** $`n \to n+1`$。帰納法の仮定は
-$`\Phi(n)`$、すなわち $`\lvert \mathrm{cp}(B,f,n)\rvert = n\lvert B\rvert`$ である。
+**帰納段** $`n \to n+1`$。$`\Phi(n)`$、すなわち $`\lvert \mathrm{cp}(B,f,n)\rvert = n\lvert B\rvert`$ を仮定する。
 上に述べた分解と、連結列の長さが長さの和であること、および
 $`\lvert \mathrm{map}(f_n, B)\rvert = \lvert B\rvert`$ より
 
@@ -501,7 +500,7 @@ $`n`$ に関する帰納法。帰納法の述語は
 - **基底段** $`n = 0`$：$`k \lt 0`$ をみたす自然数 $`k`$ は存在しないから前件が偽であり、
   $`\Phi(0)`$ が成り立つ。
 
-**帰納段** $`n \to n+1`$。帰納法の仮定は $`\Phi(n)`$ である。
+**帰納段** $`n \to n+1`$。$`\Phi(n)`$ を仮定する。
 $`k \lt n+1`$、$`q \lt \lvert B\rvert`$ とし、[T.copies_map_length](#t-copies_map_length) の
 分解 $`\mathrm{cp}(B,f,n+1) = \mathrm{cp}(B,f,n) \mathbin{+\!\!+} \mathrm{map}(f_n, B)`$ を使う。
 [T.copies_map_length](#t-copies_map_length) より

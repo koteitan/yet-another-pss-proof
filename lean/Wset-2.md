@@ -334,7 +334,7 @@ and in the latter case $`\lvert M'\rvert \lt \lvert M' \mathbin{+\!\!+} (q)\rver
 
 - **Base case** $`M = ()`$: the antecedent $`M \ne ()`$ is false, so $`\Phi(())`$ holds.
 
-**Inductive step** $`M = M' \mathbin{+\!\!+} (q)`$: the induction hypothesis is $`\Phi(M')`$.
+**Inductive step** $`M = M' \mathbin{+\!\!+} (q)`$: assume $`\Phi(M')`$.
 Distinguish cases according to whether $`M'`$ is empty.
 
 **(a) The case $`M' = ()`$.** Take $`A := ()`$ and $`P := (q)`$.

@@ -118,7 +118,7 @@ universally quantified over $`m`$). The induction predicate is
   By the definition of $`\mathrm{tr}`$ (D.translate) we have $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$,
   so [T.olt_Z_P](Term.md#t-olt_Z_P) gives $`\mathsf{Z} \prec \mathrm{tr}\,(m)`$.
 
-**Inductive step** $`C = p :: L`$: the induction hypotheses are $`\Psi(\mathrm{tw}_{p_1} L)`$ and
+**Inductive step** $`C = p :: L`$: assume $`\Psi(\mathrm{tw}_{p_1} L)`$ and
 $`\Psi(\mathrm{dw}_{p_1} L)`$. We distinguish cases according to whether every element of $`L`$
 satisfies $`p_1 \lt x_1`$.
 

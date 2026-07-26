@@ -582,8 +582,8 @@ Induction on the derivation of $`\mathrm{ST\_PS}`$. The induction predicate is
 - **Base case** (rule (diag)): $`M = \Delta_0^v`$ ([D.diagSeq](Pss.md#d-diagSeq)).
   [T.r1ok_diagSeq](Column-2.md#t-r1ok_diagSeq) is exactly $`\Phi(\Delta_0^v)`$.
 
-- **Inductive step** (rule (oper)): let $`N \in \mathrm{ST\_PS}`$ and $`1 \le n`$. The induction hypothesis is
-  $`\Phi(N)`$, that is, $`\mathrm{r1ok}(N)`$, and what has to be shown is $`\mathrm{r1ok}(N[n])`$.
+- **Inductive step** (rule (oper)): let $`N \in \mathrm{ST\_PS}`$ and $`1 \le n`$. Assume
+  $`\Phi(N)`$, that is, $`\mathrm{r1ok}(N)`$; what has to be shown is $`\mathrm{r1ok}(N[n])`$.
   Applying [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS) to $`N \in \mathrm{ST\_PS}`$ gives
   $`\mathrm{blockok}(0, N)`$ ([D.blockok](Seqlex.md#d-blockok)). The definition of $`\mathrm{blockok}`$ (D.blockok) is
   a conjunction of three statements, whose third conjunct is $`\mathrm{steps}_1(N)`$.
@@ -620,7 +620,7 @@ Induction on the construction of the chain $`a \mathbin{(\to^M_0)^{*}} b`$. The 
 - **Base case** ($`j = a`$, chain of length $`0`$): $`a \le a`$ holds by reflexivity of $`\le`$.
 
 - **Inductive step** (from $`a \mathbin{(\to^M_0)^{*}} y`$ and $`y \to^M_0 z`$ to $`a \mathbin{(\to^M_0)^{*}} z`$):
-  the induction hypothesis is $`\Phi(y)`$, that is, $`a \le y`$.
+  assume $`\Phi(y)`$, that is, $`a \le y`$.
   By [T.nextrel0_lt](Column.md#t-nextrel0_lt) we have $`y \lt z`$, hence $`a \le y \le z`$,
   that is, $`\Phi(z)`$. ∎
 

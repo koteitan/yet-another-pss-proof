@@ -159,7 +159,7 @@ Strong induction on $`\mathrm{lev}`$. The induction predicate is
   \to \exists r,\ \bigl(r \le j \wedge M_{0,r} = 0 \wedge r \mathbin{(\to^M_0)^{*}} j\bigr),
 ```
 
-and the induction hypothesis is that $`\Phi(\mathrm{lev}')`$ holds for every $`\mathrm{lev}'`$ with
+and assume that $`\Phi(\mathrm{lev}')`$ holds for every $`\mathrm{lev}'`$ with
 $`\mathrm{lev}' \lt \mathrm{lev}`$. Take $`j`$ with $`M_{0,j} = \mathrm{lev}`$ and $`j \lt \lvert M\rvert`$,
 and distinguish cases according to whether $`M_{0,j}`$ is $`0`$.
 
@@ -446,7 +446,7 @@ The induction predicate is
   contradicts the irreflexivity of $`\lt`$. Hence the antecedent is false and $`\Phi(a)`$ holds.
 
 **Inductive step** (from $`a \mathbin{(\to^M_0)^{*}} y`$ and $`y \to^M_0 z`$ to
-$`a \mathbin{(\to^M_0)^{*}} z`$): the induction hypothesis is $`\Phi(y)`$.
+$`a \mathbin{(\to^M_0)^{*}} z`$): assume $`\Phi(y)`$.
 Assume $`a \lt \rho`$, $`\rho \le z`$ and
 
 ```math
@@ -596,7 +596,7 @@ The induction predicate is
   chain of length $`0`$.
 
 - **Inductive step** (from $`a \mathbin{(\to^{S^{+d}}_0)^{*}} c`$ and $`c \to^{S^{+d}}_0 e`$):
-  the induction hypothesis is $`\Phi(c)`$, that is, $`a \mathbin{(\to^{S}_0)^{*}} c`$.
+  assume $`\Phi(c)`$, that is, $`a \mathbin{(\to^{S}_0)^{*}} c`$.
   Applying [T.nextrel0_bound](Column-3.md#t-nextrel0_bound) to $`c \to^{S^{+d}}_0 e`$ gives
   $`e \lt \lvert S^{+d}\rvert = \lvert S\rvert`$.
   Hence [T.nextrel0_shift_iff](#t-nextrel0_shift_iff) applies and yields $`c \to^{S}_0 e`$.
@@ -622,7 +622,7 @@ Induction on the construction of the chain $`a \mathbin{(\to^{S}_0)^{*}} b`$. Th
   chain of length $`0`$.
 
 - **Inductive step** (from $`a \mathbin{(\to^{S}_0)^{*}} c`$ and $`c \to^{S}_0 e`$):
-  the induction hypothesis is $`\Phi(c)`$, that is, $`a \mathbin{(\to^{S^{+d}}_0)^{*}} c`$.
+  assume $`\Phi(c)`$, that is, $`a \mathbin{(\to^{S^{+d}}_0)^{*}} c`$.
   Applying [T.nextrel0_bound](Column-3.md#t-nextrel0_bound) to $`c \to^{S}_0 e`$ gives
   $`e \lt \lvert S\rvert`$. Hence
   [T.nextrel0_shift_iff](#t-nextrel0_shift_iff) applies and yields $`c \to^{S^{+d}}_0 e`$.

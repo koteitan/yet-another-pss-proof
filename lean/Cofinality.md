@@ -68,7 +68,7 @@ The induction predicate is
   the second clause of the definition (D.seqlex) the statement $`B \prec_{\mathrm{lex}} ()`$ is $`\bot`$.
   Both cases are contradictory, hence $`C \ne ()`$.
 
-- **Inductive step** $`A = a :: A'`$: the induction hypothesis is $`\Phi(A')`$.
+- **Inductive step** $`A = a :: A'`$: assume $`\Phi(A')`$.
   Take $`B`$ and $`C`$ with $`a :: A' \prec_{\mathrm{lex}} B`$ and $`B \prec_{\mathrm{lex}} C`$.
   If $`B = ()`$, the second clause of the definition (D.seqlex) turns the first hypothesis into $`\bot`$,
   so $`B = b :: B'`$. If $`C = ()`$, the second clause of the definition (D.seqlex) likewise turns
@@ -159,7 +159,7 @@ Induction on the constructor of $`A`$. The induction predicate is
   $`B \mathbin{+\!\!+} C = b :: (B' \mathbin{+\!\!+} C) \ne ()`$.
   By the first clause of the definition (D.seqlex) again, $`() \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$.
 
-- **Inductive step** $`A = a :: A'`$: the induction hypothesis is $`\Phi(A')`$.
+- **Inductive step** $`A = a :: A'`$: assume $`\Phi(A')`$.
   If $`B = ()`$, the second clause of the definition (D.seqlex) turns the hypothesis into $`\bot`$,
   so $`B = b :: B'`$. By the third clause of the definition (D.seqlex), the hypothesis is one of the following.
 
@@ -229,7 +229,7 @@ Induction on the constructor of $`D`$, keeping $`\ell`$ and $`N`$ universally qu
     Hence $`q \prec_{\mathrm{p}} \ell`$, and since $`N = () \mathbin{+\!\!+} q :: S`$,
     the second disjunct holds.
 
-- **Inductive step** $`D = d :: D'`$: the induction hypothesis is $`\Phi(D')`$.
+- **Inductive step** $`D = d :: D'`$: assume $`\Phi(D')`$.
   Here $`(d :: D') \mathbin{+\!\!+} (\ell) = d :: (D' \mathbin{+\!\!+} (\ell))`$. Distinguish cases on the constructor of $`N`$.
 
   - Case $`N = ()`$. Since $`d :: D' \ne ()`$, the first clause of the definition (D.seqlex) gives

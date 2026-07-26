@@ -26,7 +26,7 @@ Induction on the length of $`W`$ (with $`X`$, $`Y`$, $`Y'`$ left universally qua
   $`X \ne () \mathbin{+\!\!+} X`$, that is $`X \ne X`$, which contradicts reflexivity of $`=`$.
   Hence the antecedent is false and $`\Phi(())`$ holds.
 
-- **Inductive step** $`W = w :: W'`$: the induction hypothesis is $`\Phi(W')`$.
+- **Inductive step** $`W = w :: W'`$: assume $`\Phi(W')`$.
   Take $`X`$, $`Y`$, assume $`X \preceq_{\mathrm{lex}} (w :: W') \mathbin{+\!\!+} Y`$ and
   $`\forall X',\ X \ne (w :: W') \mathbin{+\!\!+} X'`$, and take $`Y'`$.
   Distinguish cases on the shape of $`X`$.
@@ -94,7 +94,7 @@ The induction predicate is
   $`Q \ne ()`$, so the first clause of D.seqlex gives $`() \prec_{\mathrm{lex}} Q`$,
   that is, the second disjunct of D.sle holds.
 
-- **Inductive step** $`n \to n+1`$: the induction hypothesis is $`\Psi(n)`$.
+- **Inductive step** $`n \to n+1`$: assume $`\Psi(n)`$.
   Take $`X`$, $`Q`$, $`A_2`$, $`a`$ and assume $`\lvert X\rvert \le n+1`$ and
   $`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d}`$.
   Distinguish cases according to whether $`X`$ has $`Q \mathbin{+\!\!+} ((a,w))`$ as a prefix
@@ -218,7 +218,7 @@ Induction on the length of $`P`$ (with $`X`$, $`Y`$ left universally quantified)
 - **Base case** $`P = ()`$: from $`\lvert X\rvert \le 0`$ we get $`X = ()`$, hence
   $`X = P`$ and the first disjunct of D.sle holds.
 
-- **Inductive step** $`P = p :: P'`$: the induction hypothesis is $`\Xi(P')`$.
+- **Inductive step** $`P = p :: P'`$: assume $`\Xi(P')`$.
   Take $`X`$, $`Y`$ and assume $`X \preceq_{\mathrm{lex}} p :: (P' \mathbin{+\!\!+} Y)`$ and
   $`\lvert X\rvert \le \lvert P'\rvert + 1`$. Distinguish cases on the shape of $`X`$.
 
@@ -332,7 +332,7 @@ Induction on the length of $`X`$ (with $`Y`$ left universally quantified). The i
   If $`Y = y :: Y'`$ then $`Y^{+d} = (y_1+d,\ y_2) :: Y'^{+d}`$, and by
   the first clause of D.seqlex both sides are conditions on sequences that are not empty, so both are true.
 
-- **Inductive step** $`X = x :: X'`$: the induction hypothesis is $`\Theta(X')`$. Distinguish cases on the shape of $`Y`$.
+- **Inductive step** $`X = x :: X'`$: assume $`\Theta(X')`$. Distinguish cases on the shape of $`Y`$.
 
   **(a) The case $`Y = ()`$.** Here $`Y^{+d} = ()`$ and
   $`X^{+d} = (x_1+d,\ x_2) :: X'^{+d}`$, so by

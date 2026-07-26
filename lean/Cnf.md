@@ -279,7 +279,7 @@ $`\mathrm{tr}\,() = \mathsf{Z}`$, hence $`\mathrm{tr}(\Delta_u^u) = \mathsf{P}(u
 By [T.cnf_P_Z](#t-cnf_P_Z) this term satisfies the condition if and only if $`\mathrm{cnf}(\mathsf{Z})`$,
 which is [T.cnf_Z](#t-cnf_Z). Hence $`\Phi(0)`$.
 
-**Inductive step** $`n \to n+1`$. The induction hypothesis is $`\Phi(n)`$, that is,
+**Inductive step** $`n \to n+1`$. Assume $`\Phi(n)`$, that is,
 $`\forall u,\ \mathrm{cnf}(\mathrm{tr}(\Delta_u^{u+n}))`$. Let $`u`$ be given.
 Since $`u \le u + (n+1)`$, [T.translate_diagSeq](#t-translate_diagSeq) gives
 
@@ -328,7 +328,7 @@ Fix $`m`$ and argue by induction along the recursion of $`\mathrm{tr}`$. The ind
 By the definition of $`\mathrm{tr}`$ (D.translate) we have $`\mathrm{tr}\,() = \mathsf{Z}`$, and
 $`\mathrm{cnf}(\mathsf{Z})`$ holds by [T.cnf_Z](#t-cnf_Z) (the antecedent is not used).
 
-**Inductive step** $`D = p :: L`$. The induction hypotheses are $`\Psi(\mathrm{tw}_{p_1} L)`$ and
+**Inductive step** $`D = p :: L`$. Assume $`\Psi(\mathrm{tw}_{p_1} L)`$ and
 $`\Psi(\mathrm{dw}_{p_1} L)`$. Assume the antecedent
 $`\mathrm{cnf}\bigl(\mathrm{tr}((p :: L) \mathbin{+\!\!+} (m))\bigr)`$.
 We distinguish cases according to whether every element $`x`$ of $`L`$ satisfies $`p_1 \lt x_1`$.
@@ -513,7 +513,7 @@ We argue by induction on $`d`$, keeping $`k`$ universally quantified. The induct
 numbers is truncated subtraction, so this means $`\lvert M\rvert \le k`$, and $`\mathrm{take}_k M = M`$.
 The conclusion is then the hypothesis $`\mathrm{cnf}(\mathrm{tr}\,M)`$ itself.
 
-**Inductive step** $`d \to d+1`$. The induction hypothesis is $`\Xi(d)`$. Let $`k`$ be given with
+**Inductive step** $`d \to d+1`$. Assume $`\Xi(d)`$. Let $`k`$ be given with
 $`\lvert M\rvert - k = d + 1`$. Since $`\lvert M\rvert - k \ne 0`$ we have $`k \lt \lvert M\rvert`$,
 that is, $`k + 1 \le \lvert M\rvert`$. Moreover $`\lvert M\rvert - (k+1) = d`$, so applying the
 induction hypothesis $`\Xi(d)`$ with $`k + 1`$ yields
@@ -578,7 +578,7 @@ We argue by induction on $`n`$. The induction predicate is
 **Base case** $`n = 0`$. We have $`B^{\ast 0} = ()`$, and by the definition of $`\mathrm{tr}`$
 (D.translate) $`\mathrm{tr}\,() = \mathsf{Z}`$. By [T.cnf_Z](#t-cnf_Z) we get $`\Phi(0)`$.
 
-**Inductive step** $`n = m + 1`$. The induction hypothesis is $`\Phi(m)`$, that is,
+**Inductive step** $`n = m + 1`$. Assume $`\Phi(m)`$, that is,
 $`\mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast m})\bigr)`$. We distinguish cases on $`m`$.
 
 **The case $`m = 0`$.** Using $`(\ast\ast)`$ with $`k := 0`$ gives

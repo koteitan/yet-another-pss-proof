@@ -166,7 +166,7 @@ By induction on $`n`$. The induction predicate is
 - **Base case** $`n = 0`$: the left-hand side is the empty concatenation, that is $`()`$, and
   the first clause of the definition of $`\mathrm{tow}`$ (D.tow) gives $`\mathrm{tow}_v(R,0) = ()`$.
 
-- **Inductive step** $`n \to n+1`$: the induction hypothesis is $`\Phi(n)`$.
+- **Inductive step** $`n \to n+1`$: assume $`\Phi(n)`$.
   Splitting off the first block of the left-hand side, we have $`D^{+0\cdot x} = D`$, and
   the remaining blocks are those of the left-hand side with each index shifted by one, so
 
@@ -336,7 +336,7 @@ By induction on $`n`$. The induction predicate is
 - **Base case** $`n = 0`$: $`Q^{\frown 0} = ()`$, and
   [T.W_nil](Wset.md#t-W_nil) gives $`() \in W_u`$.
 
-- **Inductive step** $`n \to n+1`$: the induction hypothesis is $`\Phi(n)`$, that is $`Q^{\frown n} \in W_u`$.
+- **Inductive step** $`n \to n+1`$: assume $`\Phi(n)`$, that is $`Q^{\frown n} \in W_u`$.
   Since $`Q^{\frown(n+1)} = Q^{\frown n} \mathbin{+\!\!+} Q`$, it suffices to apply
   [T.W_add](Wset-3.md#t-W_add) with $`A := Q^{\frown n}`$ and $`B := Q`$.
   We verify its hypothesis $`\mathrm{rsum}(Q^{\frown n}, Q)`$ ([D.rsum](Wset.md#d-rsum)), that is
@@ -481,7 +481,7 @@ The induction predicate is $`\Psi(k) :\equiv \mathrm{tow}_v(R,k) \in W_v`$.
 - **Base case** $`k = 0`$: the first clause of the definition of $`\mathrm{tow}`$ (D.tow) gives
   $`\mathrm{tow}_v(R,0) = ()`$, and [T.W_nil](Wset.md#t-W_nil) gives $`() \in W_v`$.
 
-- **Inductive step** $`k \to k+1`$: the induction hypothesis is $`\Psi(k)`$.
+- **Inductive step** $`k \to k+1`$: assume $`\Psi(k)`$.
   First we show $`\mathrm{based}(\mathrm{tow}_v(R,k))`$. For $`k = 0`$ we have
   $`\mathrm{tow}_v(R,0) = ()`$, and this is [T.based_nil](Wset.md#t-based_nil).
   For $`k = k' + 1`$, the second clause of the definition of $`\mathrm{tow}`$ (D.tow) gives
@@ -581,7 +581,7 @@ By induction on $`N`$. The induction predicate is
   Hence $`() \in A_0(X)`$, and applying $`\mathrm{(Acl)}`$ with $`u := 0`$ and $`M' := ()`$ gives
   $`() \in X`$.
 
-**Inductive step** $`N \to N+1`$: the induction hypothesis is $`\Phi(N)`$.
+**Inductive step** $`N \to N+1`$: assume $`\Phi(N)`$.
 Take $`M`$ with $`\lvert M\rvert \le N+1`$ and $`X`$ satisfying $`\mathrm{(Acl)}`$.
 
 If $`M = ()`$, then as seen in the base case $`() \in A_0(X)`$, so applying
@@ -696,7 +696,7 @@ By induction on $`N`$. The induction predicate is
 - **Base case** $`N = 0`$: from $`\lvert M\rvert \le 0`$ we get $`M = ()`$, and
   [T.W_nil](Wset.md#t-W_nil) gives $`() \in W_u`$.
 
-**Inductive step** $`N \to N+1`$: the induction hypothesis is $`\Phi(N)`$.
+**Inductive step** $`N \to N+1`$: assume $`\Phi(N)`$.
 Take $`M`$ with $`\lvert M\rvert \le N+1`$, take $`u`$, and take
 $`\forall p \in M,\ p_2 \le u`$.
 
@@ -772,7 +772,7 @@ By induction on the structure of $`S`$. The induction predicate is
 
 - **Base case** $`S = ()`$: the empty sequence has no elements, so the antecedent is false and $`\Phi(())`$ holds.
 
-- **Inductive step** $`S = q :: S'`$: the induction hypothesis is $`\Phi(S')`$.
+- **Inductive step** $`S = q :: S'`$: assume $`\Phi(S')`$.
   By [T.maxr1_cons](Column-2.md#t-maxr1_cons) we have
   $`\mathrm{maxr}_1(q :: S') = \max\bigl(q_2,\ \mathrm{maxr}_1(S')\bigr)`$.
   For $`\max`$ on natural numbers, $`a \le \max(a,b)`$ and $`b \le \max(a,b)`$ hold.

@@ -160,7 +160,7 @@ By induction on the list structure of $`M`$ (with $`N`$ left universally quantif
   $`() \prec_{\mathrm{lex}} (q :: N')`$ is equivalent to $`q :: N' \ne ()`$, and this holds because the images of
   the constructors of sequences are pairwise disjoint (second disjunct).
 
-**Inductive step $`M = p :: M'`$.** The induction hypothesis is $`\Phi(M')`$, that is,
+**Inductive step $`M = p :: M'`$.** Assume $`\Phi(M')`$, that is,
 $`\forall N,\ (M' = N \vee M' \prec_{\mathrm{lex}} N \vee N \prec_{\mathrm{lex}} M')`$.
 We distinguish cases on the constructor of $`N`$.
 
@@ -325,7 +325,7 @@ By induction on the list structure of $`A`$ (with $`d`$ left universally quantif
 
 - **Base case** $`A = ()`$: since $`() \mathbin{+\!\!+} B = B`$, the two sides are identical.
 
-**Inductive step $`A = a :: A'`$.** The induction hypothesis is $`\Phi(A')`$, that is,
+**Inductive step $`A = a :: A'`$.** Assume $`\Phi(A')`$, that is,
 $`\forall d,\ \mathrm{last}_d(A' \mathbin{+\!\!+} B) = \mathrm{last}_d\,B`$.
 First we show that for every $`b \in \alpha`$ and every finite sequence $`bs`$ of type $`\alpha`$,
 
@@ -412,7 +412,7 @@ Induction on the natural number $`n`$, with $`F`$ fixed. The induction predicate
 By [T.steps1_nil](Seqlex.md#t-steps1_nil), $`\mathrm{steps}_1(())`$ holds.
 The antecedent $`0 \lt 0`$ of the second conjunct is false, so that implication holds.
 
-**Inductive step $`n = m + 1`$.** The induction hypothesis is $`\Phi(m)`$.
+**Inductive step $`n = m + 1`$.** Assume $`\Phi(m)`$.
 By the definition of $`\mathrm{cat}`$ and associativity of concatenation,
 
 ```math
@@ -517,7 +517,7 @@ Induction on the natural number $`m`$ (with $`s`$ left universally quantified). 
 
 - **Base case** $`m = 0`$: the sequence is the empty sequence, and the claim is [T.steps1_nil](Seqlex.md#t-steps1_nil).
 
-**Inductive step $`m + 1`$.** The induction hypothesis is $`\Phi(m)`$, that is,
+**Inductive step $`m + 1`$.** Assume $`\Phi(m)`$, that is,
 $`\forall s,\ \mathrm{steps}_1\bigl((\,(s+i,s+i)\,)_{i=0}^{m-1}\bigr)`$.
 Take $`s`$. Splitting off the head, the sequence of length $`m+1`$ can be written as
 
@@ -840,7 +840,7 @@ Induction on the derivation of $`\mathrm{ST\_PS}`$. The induction predicate is
   exactly $`\Phi(\Delta_0^v)`$.
 
 - **Inductive step** (rule (oper), from $`M \in \mathrm{ST\_PS}`$ and $`1 \le n`$ to $`M[n]`$):
-  the induction hypothesis is $`\Phi(M)`$, that is, $`\mathrm{blockok}(0, M)`$.
+  assume $`\Phi(M)`$, that is, $`\mathrm{blockok}(0, M)`$.
   Applying [T.blockok_oper](#t-blockok_oper) to this and $`1 \le n`$ gives
   $`\mathrm{blockok}(0, M[n])`$, that is, $`\Phi(M[n])`$. ∎
 

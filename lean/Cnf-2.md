@@ -39,7 +39,7 @@ The induction predicate is
   \to \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)
 ```
 
-and the induction hypothesis is that $`\Phi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
+and assume that $`\Phi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
 In what follows we take $`a_1, b_1, c_1, a_2, b_2, c_2`$ from (leadle), so that
 
 ```math
@@ -245,7 +245,7 @@ The induction predicate is
   \to \mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)
 ```
 
-and the induction hypothesis is that $`\Psi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
+and assume that $`\Psi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
 
 **Case $`G = ()`$.** Since $`() \mathbin{+\!\!+} t :: T' = t :: T'`$, the conclusion is exactly the antecedent.
 

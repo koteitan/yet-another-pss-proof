@@ -619,7 +619,7 @@ Induction on the natural number $`n`$ (with $`m`$ fixed). The induction predicat
 
 - **Base case** $`n = 0`$: the antecedent $`m \lt 0`$ is false, so $`\Phi(0)`$ holds.
 
-- **Inductive step** $`n = v+1`$: the induction hypothesis is $`\Phi(v)`$, that is,
+- **Inductive step** $`n = v+1`$: assume $`\Phi(v)`$, that is,
   $`m \lt v \to \mathrm{Wf}(v,m) = \mathrm{Wf}(m+1,m)`$. Assume $`m \lt v+1`$ and distinguish cases
   according to whether $`m = v`$.
 

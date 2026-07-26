@@ -170,7 +170,7 @@ By induction on the structure of $`x`$. The induction predicate is
 
 - **Base case** $`x = \mathsf{Z}`$: [T.olt_Z_Z](#t-olt_Z_Z) is exactly $`\Phi(\mathsf{Z})`$.
 
-- **Inductive step** $`x = \mathsf{P}(a,b,c)`$: the induction hypotheses are $`\Phi(b)`$ and $`\Phi(c)`$, that is,
+- **Inductive step** $`x = \mathsf{P}(a,b,c)`$: assume $`\Phi(b)`$ and $`\Phi(c)`$, that is,
   $`\neg(b \prec b)`$ and $`\neg(c \prec c)`$.
   Suppose $`\mathsf{P}(a,b,c) \prec \mathsf{P}(a,b,c)`$. By [T.olt_P_P](#t-olt_P_P), one of the
   following three holds.
@@ -493,7 +493,7 @@ We argue by induction on the construction of this reflexive transitive closure. 
 - **Base case** ($`j = j_0`$, chain of length $`0`$): $`M_{0,j_0} \le M_{0,j_0}`$ holds by reflexivity of $`\le`$.
 
 - **Inductive step** (from $`j_0 \mathbin{(\to^M_0)^{*}} y`$ and $`y \to^M_0 z`$ to $`j_0 \mathbin{(\to^M_0)^{*}} z`$):
-  the induction hypothesis is $`\Phi(y)`$, that is, $`M_{0,j_0} \le M_{0,y}`$.
+  assume $`\Phi(y)`$, that is, $`M_{0,j_0} \le M_{0,y}`$.
   By [T.nextrel0_entry0_less](#t-nextrel0_entry0_less) we have $`M_{0,y} \lt M_{0,z}`$, so
   transitivity of $`\le`$ gives $`M_{0,j_0} \le M_{0,z}`$. Hence $`\Phi(z)`$. ∎
 
@@ -549,7 +549,7 @@ By induction on the construction of the reflexive transitive closure. The induct
 - **Base case** ($`j = j_0`$): the antecedent is $`j_0 \lt k \wedge k \le j_0`$, and no $`k`$
   satisfies it. Hence $`\Phi(j_0)`$ holds.
 
-- **Inductive step** (from $`j_0 \mathbin{(\to^M_0)^{*}} y`$ and $`y \to^M_0 z`$): the induction hypothesis is $`\Phi(y)`$.
+- **Inductive step** (from $`j_0 \mathbin{(\to^M_0)^{*}} y`$ and $`y \to^M_0 z`$): assume $`\Phi(y)`$.
   We prepare the following three facts.
 
   1. $`M_{0,y} \lt M_{0,z}`$. By [T.nextrel0_entry0_less](#t-nextrel0_entry0_less).
@@ -658,7 +658,7 @@ By induction along the recursion of $`\mathrm{tr}`$. The induction predicate is
 
 - **Base case** $`M = ()`$: $`()^{+d} = ()`$, and both sides are $`\mathsf{Z}`$.
 
-**Inductive step** $`M = p :: L`$: the induction hypotheses are $`\Psi(\mathrm{tw}_{p_1} L)`$ and
+**Inductive step** $`M = p :: L`$: assume $`\Psi(\mathrm{tw}_{p_1} L)`$ and
 $`\Psi(\mathrm{dw}_{p_1} L)`$.
 
 First we observe that the predicate is invariant under the shift. For every pair $`r`$,
@@ -721,7 +721,7 @@ By strong induction on $`\lvert G\rvert`$. The induction predicate is
 \Phi(G) :\equiv \mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1) \prec \mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)
 ```
 
-and the induction hypothesis is that $`\Phi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
+and assume that $`\Phi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
 
 - **Case $`G = ()`$**: the two sides are those of hypothesis (base), so the claim is exactly (base).
 
