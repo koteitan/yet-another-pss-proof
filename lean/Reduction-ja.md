@@ -1,14 +1,17 @@
 [← README](README-ja.md) | [English](Reduction.md) | [Japanese](Reduction-ja.md)
 
-集合 $`A`$ 上の関係 $`R \subseteq A \times A`$ に対し、$`\mathrm{Acc}_R \subseteq A`$ とは、
-次の 1 つの規則で閉じた最小の集合である。
+<a id="d-Acc"></a>
+## 定義: 到達可能な元の集合 (D.Acc)
+
+集合 $`A`$ 上の関係 $`R \subseteq A \times A`$ に対し、$`\mathrm{Acc}_R \subseteq A`$ を、
+次の 1 つの規則で閉じた最小の集合と定義する。
 
 ```math
 \bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
 \ \Longrightarrow\ x \in \mathrm{Acc}_R .
 ```
 
-その最小性は次の帰納法の原理である。$`A`$ 上の述語 $`\Phi`$ が
+最小性は次の帰納法の原理として使う。$`A`$ 上の述語 $`\Phi`$ が
 
 ```math
 \forall x \in A,\
@@ -17,11 +20,15 @@
   \to \Phi(x)
 ```
 
-をみたすならば $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$。これを
+をみたすならば $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ が成り立つ。以下ではこれを
 「$`\mathrm{Acc}_R`$ の導出に関する帰納法」と呼ぶ。規則が 1 つしかないので、この帰納法に
 基底段はない。
 
-$`R`$ が**整礎**であるとは、$`\forall x \in A,\ x \in \mathrm{Acc}_R`$ が成り立つことをいう。
+<a id="d-WellFounded"></a>
+## 定義: 整礎 (D.WellFounded)
+
+関係 $`R \subseteq A \times A`$ が**整礎**であることを、
+$`\forall x \in A,\ x \in \mathrm{Acc}_R`$ が成り立つことと定義する。
 
 <a id="d-NF"></a>
 ## 定義: 正規形の集合 (D.NF)

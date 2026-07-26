@@ -14,8 +14,7 @@ a \mathbin{R_{\mathrm{st}}} b :\iff
 
 である（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss-ja.md#d-ST_PS)、$`\mathrm{tr}`$ [D.translate](Term-ja.md#d-translate)、$`\prec`$ [D.olt](Term-ja.md#d-olt)）。
 
-$`\mathrm{Acc}_R`$、その最小性（$`\mathrm{Acc}_R`$ の導出に関する帰納法）、および整礎性は、
-[`Reduction-ja.md`](Reduction-ja.md) の冒頭で定めたものをそのまま用いる。
+（$`\mathrm{Acc}_R`$ [D.Acc](Reduction-ja.md#d-Acc)、整礎 [D.WellFounded](Reduction-ja.md#d-WellFounded)）
 
 このとき、任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ かつ
 $`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ である。

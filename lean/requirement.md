@@ -23,16 +23,13 @@ In a file that has been split (§1.4), a list of the parts follows. The current 
 [← README](README.md) | Wset **1** [2](Wset-2.md) [3](Wset-3.md) [4](Wset-4.md)
 ```
 
-**One exception.** A symbol that comes from Mathlib has no declaration of ours, hence no section of its
-own (§1.2). The file that first needs such a symbol fixes it at the head, right after the nav line;
-`Reduction.md` does this for $`\mathrm{Acc}_R`$ and well-foundedness. Such a definition is not put
-inside the statement of a theorem, where it would be read as part of the claim.
-
 **Nothing else is placed at the head of a file.** No summary of the chapter, no table of notation, no count of the declarations, no heading such as "this chapter consists of three parts". The reader starts from the first proposition.
 
 ### 1.2 The body
 
 Propositions and definitions are arranged in the order in which they occur in `lean/Foo.lean`. No other running text is placed there.
+
+**A symbol that comes from Mathlib** has no declaration of ours, but without a section there is nowhere to define it. The file that first needs it opens a section at its head, identified by the Mathlib declaration name (D.Acc and D.WellFounded in `Reduction.md`). These are outside the one-to-one correspondence of §6.6. Such a definition is not written inside the statement of a theorem, where it would be read as part of the claim.
 
 ### 1.3 Write nothing that is not a proof
 
