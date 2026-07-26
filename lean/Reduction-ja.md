@@ -1,8 +1,5 @@
 [← README](README-ja.md) | [English](Reduction.md) | [Japanese](Reduction-ja.md)
 
-$`\mathrm{Acc}_R`$ と整礎性は Mathlib のもので、このリポジトリに宣言が無く節を立てられない。
-そこでここで定める。
-
 集合 $`A`$ 上の関係 $`R \subseteq A \times A`$ に対し、$`\mathrm{Acc}_R \subseteq A`$ とは、
 次の 1 つの規則で閉じた最小の集合である。
 

@@ -1,8 +1,5 @@
 [← README](README.md) | [English](Reduction.md) | [Japanese](Reduction-ja.md)
 
-$`\mathrm{Acc}_R`$ and well-foundedness come from Mathlib and have no section of their own, so they
-are fixed here.
-
 For a relation $`R \subseteq A \times A`$ on a set $`A`$, $`\mathrm{Acc}_R \subseteq A`$ is the least
 set closed under the following single rule.
 
