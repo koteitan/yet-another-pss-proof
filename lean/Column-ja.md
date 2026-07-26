@@ -10,7 +10,7 @@ $`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）が $`M \in \mat
 
 ### 証明
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
+$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。帰納法の述語は
 
 ```math
 \Phi(M) :\equiv 0 \lt \lvert M\rvert .
@@ -51,7 +51,7 @@ $`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{head}\,M = (0,0)`$。
 
 ### 証明
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
+$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。帰納法の述語は
 
 ```math
 \Phi(M) :\equiv \mathrm{head}\,M = (0,0) .

@@ -174,8 +174,7 @@ If $`N \in \mathrm{ST\_PS}`$, then $`\mathrm{ArgDomCoreOn}(N)`$.
 
 ### Proof
 
-By induction on the derivation of $`N \in \mathrm{ST\_PS}`$ (the definition of $`\mathrm{ST\_PS}`$, D.ST_PS, is an
-inductive definition, and its minimality supplies the induction principle). The induction predicate is
+By [T.ST_PS.rec](Pss.md#t-ST_PS.rec). The induction predicate is
 
 ```math
 \Phi(N) :\equiv \mathrm{ArgDomCoreOn}(N)

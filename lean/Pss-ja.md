@@ -227,16 +227,57 @@ $`a, b \in \mathbb{N}`$ に対し
 <a id="d-ST_PS"></a>
 ## 定義: 標準形 (D.ST_PS)
 
-$`\mathrm{ST\_PS} \subseteq \mathrm{PairSeq}`$ を、次の 2 つの規則で閉じた**最小**の集合として定める。
+$`Y \subseteq \mathrm{PairSeq}`$ が**閉じている**ことを、次の 2 つがともに成り立つことと定義する。
 
 ```math
 \begin{aligned}
-&\text{(diag)}\quad \forall v \in \mathbb{N},\ \Delta_0^v \in \mathrm{ST\_PS}, \cr
-&\text{(oper)}\quad \forall M,\ \forall n \ge 1,\ M \in \mathrm{ST\_PS} \to M[n] \in \mathrm{ST\_PS} .
+&\text{(diag)}\quad \forall v \in \mathbb{N},\ \Delta_0^v \in Y, \cr
+&\text{(oper)}\quad \forall M,\ \forall n \ge 1,\ M \in Y \to M[n] \in Y .
 \end{aligned}
 ```
 
-最小性は次の帰納法の原理として使う。$`\mathrm{PairSeq}`$ 上の述語 $`\Phi`$ が
+そのうえで $`\mathrm{ST\_PS} \subseteq \mathrm{PairSeq}`$ を
+
+```math
+\mathrm{ST\_PS} := \bigcap\, \bigl\{\, Y \subseteq \mathrm{PairSeq} \ \bigm|\ Y \text{ は閉じている} \,\bigr\}
+```
+
+と定義する。すなわち $`M \in \mathrm{ST\_PS}`$ とは、閉じているすべての
+$`Y \subseteq \mathrm{PairSeq}`$ に対し $`M \in Y`$ が成り立つことである。
+
+<a id="t-ST_PS.diag"></a>
+## 定理: 対角列は標準形 (T.ST_PS.diag)
+
+### 定理
+
+任意の $`v \in \mathbb{N}`$ に対し $`\Delta_0^v \in \mathrm{ST\_PS}`$。
+
+### 証明
+
+$`Y`$ を閉じている任意の集合とする。(diag) より $`\Delta_0^v \in Y`$ である。
+$`Y`$ は任意だったから、$`\mathrm{ST\_PS}`$ の定義（D.ST_PS）より
+$`\Delta_0^v \in \mathrm{ST\_PS}`$。∎
+
+<a id="t-ST_PS.oper"></a>
+## 定理: 標準形の展開は標準形 (T.ST_PS.oper)
+
+### 定理
+
+$`M \in \mathrm{ST\_PS}`$ かつ $`n \ge 1`$ ならば $`M[n] \in \mathrm{ST\_PS}`$。
+
+### 証明
+
+$`Y`$ を閉じている任意の集合とする。$`\mathrm{ST\_PS}`$ の定義（D.ST_PS）より
+$`M`$ は閉じているすべての集合に属するから、とくに $`M \in Y`$ である。
+(oper) を $`M`$ と $`n`$ に適用して $`M[n] \in Y`$ を得る。$`Y`$ は任意だったから
+$`M[n] \in \mathrm{ST\_PS}`$。∎
+
+<a id="t-ST_PS.rec"></a>
+## 定理: 標準形の導出に関する帰納法 (T.ST_PS.rec)
+
+### 定理
+
+$`\mathrm{PairSeq}`$ 上の述語 $`\Phi`$ が
 
 ```math
 \forall v,\ \Phi(\Delta_0^v)
@@ -245,18 +286,72 @@ $`\mathrm{ST\_PS} \subseteq \mathrm{PairSeq}`$ を、次の 2 つの規則で閉
 ```
 
 をみたすならば、$`\forall M \in \mathrm{ST\_PS},\ \Phi(M)`$ が成り立つ。
-以下ではこれを「$`\mathrm{ST\_PS}`$ の導出に関する帰納法」と呼ぶ。
+
+### 証明
+
+```math
+Y := \{\, M \in \mathrm{PairSeq} \mid M \in \mathrm{ST\_PS} \wedge \Phi(M) \,\}
+```
+
+とおき、$`Y`$ が閉じていることを示す。
+
+(diag) について。[T.ST_PS.diag](#t-ST_PS.diag) より $`\Delta_0^v \in \mathrm{ST\_PS}`$ であり、
+本定理の第 1 の仮定より $`\Phi(\Delta_0^v)`$ である。よって $`\Delta_0^v \in Y`$。
+
+(oper) について。$`M \in Y`$ と $`n \ge 1`$ を仮定する。$`Y`$ の定義より
+$`M \in \mathrm{ST\_PS}`$ かつ $`\Phi(M)`$ である。前者と
+[T.ST_PS.oper](#t-ST_PS.oper) より $`M[n] \in \mathrm{ST\_PS}`$ を得る。また 2 つを
+本定理の第 2 の仮定に与えて $`\Phi(M[n])`$ を得る。よって $`M[n] \in Y`$。
+
+以上より $`Y`$ は閉じているから、$`\mathrm{ST\_PS}`$ の定義（D.ST_PS）より
+$`\mathrm{ST\_PS} \subseteq Y`$ である。$`M \in \mathrm{ST\_PS}`$ を取ると $`M \in Y`$、
+すなわち $`\Phi(M)`$ が成り立つ。∎
 
 <a id="d-step"></a>
 ## 定義: 展開 (D.step)
 
-$`M \Rightarrow N`$ を、次の 1 つの規則で生成される最小の関係として定める。
+$`\mathrm{PairSeq}`$ 上の関係 $`S`$ が**閉じている**ことを
 
 ```math
 \text{(step\_oper)}\quad
-1 \lt \lvert M\rvert \ \wedge\ 1 \le n
-\ \Longrightarrow\ M \Rightarrow M[n] .
+\forall M,\ \forall n,\ \bigl(1 \lt \lvert M\rvert \wedge 1 \le n\bigr) \to M \mathbin{S} M[n]
 ```
 
-すなわち $`M \Rightarrow N`$ は、$`1 \lt \lvert M\rvert`$ であり、かつ $`N = M[n]`$ となる
+が成り立つことと定義する。そのうえで $`\Rightarrow`$ を、閉じているすべての関係の交わりと
+定義する。すなわち $`M \Rightarrow N`$ とは、閉じているすべての $`S`$ に対し
+$`M \mathbin{S} N`$ が成り立つことである。
+
+<a id="t-step.step_oper"></a>
+## 定理: 展開を生成する規則 (T.step.step_oper)
+
+### 定理
+
+$`1 \lt \lvert M\rvert`$ かつ $`1 \le n`$ ならば $`M \Rightarrow M[n]`$。
+
+### 証明
+
+$`S`$ を閉じている任意の関係とする。(step_oper) を $`M`$ と $`n`$ に適用して
+$`M \mathbin{S} M[n]`$ を得る。$`S`$ は任意だったから、$`\Rightarrow`$ の定義（D.step）より
+$`M \Rightarrow M[n]`$。∎
+
+<a id="t-step.iff"></a>
+## 定理: 展開の形 (T.step.iff)
+
+### 定理
+
+$`M \Rightarrow N`$ が成り立つことは、$`1 \lt \lvert M\rvert`$ であり、かつ $`N = M[n]`$ となる
 $`n \ge 1`$ が存在することと同値である。
+
+### 証明
+
+（$`\Leftarrow`$）[T.step.step_oper](#t-step.step_oper) そのものである。
+
+（$`\Rightarrow`$）
+
+```math
+S := \{\, (M,N) \mid 1 \lt \lvert M\rvert \wedge \exists n \ge 1,\ N = M[n] \,\}
+```
+
+とおく。$`S`$ は閉じている。実際、$`1 \lt \lvert M\rvert`$ かつ $`1 \le n`$ ならば、$`n`$ 自身が
+存在量化子の証人であるから $`M \mathbin{S} M[n]`$ である。よって $`\Rightarrow`$ の定義（D.step）
+より、$`M \Rightarrow N`$ から $`M \mathbin{S} N`$ が従い、これが求める主張である。∎

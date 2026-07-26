@@ -29,7 +29,11 @@ In a file that has been split (§1.4), a list of the parts follows. The current 
 
 Propositions and definitions are arranged in the order in which they occur in `lean/Foo.lean`. No other running text is placed there.
 
-**A symbol that comes from Mathlib** has no declaration of ours, but without a section there is nowhere to define it. The file that first needs it opens a section at its head, identified by the Mathlib declaration name (D.Acc and D.WellFounded in `Reduction.md`). These are outside the one-to-one correspondence of §6.6. Such a definition is not written inside the statement of a theorem, where it would be read as part of the claim.
+**Every section is either a definition or a theorem.** A section that introduces a symbol is a definition; a section that claims that a proposition built from already-defined symbols is true is a theorem, and a theorem carries a proof. An editorial declaration that is neither, such as "minimality is used in the form of the following principle", is not written.
+
+An inductively defined set is given by defining what it is for a set to be **closed** under the rules, and then taking the intersection of all closed sets. Each rule (constructor) and the induction principle then become **theorems** with proofs (D.ST_PS with T.ST_PS.diag / T.ST_PS.oper / T.ST_PS.rec is of this shape).
+
+**Symbols that come from Mathlib**, and **the constructors and recursors that `inductive` generates**, are not `decl`s of `lean/Foo.lean`. Their sections are outside the one-to-one correspondence of §6.6, and their identifiers are the Lean names as they stand (`T.ST_PS.rec`, `D.Acc`, ...).
 
 ### 1.3 Write nothing that is not a proof
 

@@ -10,7 +10,7 @@ then $`0 \lt \lvert M\rvert`$.
 
 ### Proof
 
-Induction on the derivation of $`\mathrm{ST\_PS}`$. The induction predicate is
+Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). The induction predicate is
 
 ```math
 \Phi(M) :\equiv 0 \lt \lvert M\rvert .
@@ -51,7 +51,7 @@ Here $`\mathrm{head}\,M`$ is the first element of $`M`$, read as $`(0,0)`$ when 
 
 ### Proof
 
-Induction on the derivation of $`\mathrm{ST\_PS}`$. The induction predicate is
+Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). The induction predicate is
 
 ```math
 \Phi(M) :\equiv \mathrm{head}\,M = (0,0) .

@@ -176,8 +176,7 @@ $`N \in \mathrm{ST\_PS}`$ ならば $`\mathrm{ArgDomCoreOn}(N)`$。
 
 ### 証明
 
-$`N \in \mathrm{ST\_PS}`$ の導出に関する帰納法による（$`\mathrm{ST\_PS}`$ の定義 D.ST_PS が
-帰納的定義であり、その最小性が帰納法の原理を与える）。帰納法の述語は
+[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec) による。帰納法の述語は
 
 ```math
 \Phi(N) :\equiv \mathrm{ArgDomCoreOn}(N)

@@ -740,7 +740,7 @@ If $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)), then $`\mathrm{cnf}(\m
 
 ### Proof
 
-Induction on the derivation of $`\mathrm{ST\_PS}`$. The induction predicate is
+Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). The induction predicate is
 
 ```math
 \Phi(M) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}\,M\bigr).

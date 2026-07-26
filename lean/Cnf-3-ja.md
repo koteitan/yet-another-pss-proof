@@ -738,7 +738,7 @@ $`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）ならば $`\mathrm{c
 
 ### 証明
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法。帰納法の述語は
+$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。帰納法の述語は
 
 ```math
 \Phi(M) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}\,M\bigr).
