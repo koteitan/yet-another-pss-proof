@@ -209,7 +209,7 @@ $`z`$ の構造に関する帰納法を行う（$`x`$, $`y`$ は全称量化し�
 - **基底段** $`z = \mathsf{Z}`$：仮定 $`y \prec \mathsf{Z}`$ は [T.not_olt_Z](#t-not_olt_Z) に反する。
   よって前件が偽であり $`\Phi(\mathsf{Z})`$ が成り立つ。
 
-- **帰納段** $`z = \mathsf{P}(c_1,c_2,c_3)`$：帰納法の仮定は $`\Phi(c_2)`$ と $`\Phi(c_3)`$ である。
+- **帰納段** $`z = \mathsf{P}(c_1,c_2,c_3)`$：$`\Phi(c_2)`$ と $`\Phi(c_3)`$ を仮定する。
   $`x, y`$ を取り $`x \prec y`$、$`y \prec \mathsf{P}(c_1,c_2,c_3)`$ とする。
 
   $`x = \mathsf{Z}`$ のときは [T.olt_Z_P](#t-olt_Z_P) より結論が成り立つ。

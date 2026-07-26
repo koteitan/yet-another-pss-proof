@@ -210,7 +210,7 @@ We argue by induction on the structure of $`z`$ (with $`x`$ and $`y`$ left unive
 - **Base case** $`z = \mathsf{Z}`$: the hypothesis $`y \prec \mathsf{Z}`$ contradicts [T.not_olt_Z](#t-not_olt_Z).
   Hence the antecedent is false and $`\Phi(\mathsf{Z})`$ holds.
 
-- **Inductive step** $`z = \mathsf{P}(c_1,c_2,c_3)`$: the induction hypotheses are $`\Phi(c_2)`$ and $`\Phi(c_3)`$.
+- **Inductive step** $`z = \mathsf{P}(c_1,c_2,c_3)`$: assume $`\Phi(c_2)`$ and $`\Phi(c_3)`$.
   Take $`x, y`$ with $`x \prec y`$ and $`y \prec \mathsf{P}(c_1,c_2,c_3)`$.
 
   If $`x = \mathsf{Z}`$, the conclusion holds by [T.olt_Z_P](#t-olt_Z_P).
