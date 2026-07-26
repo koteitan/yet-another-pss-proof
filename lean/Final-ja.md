@@ -14,9 +14,8 @@ a \mathbin{R_{\mathrm{st}}} b :\iff
 
 である（$`\mathrm{ST\_PS}`$ [D.ST_PS](Pss-ja.md#d-ST_PS)、$`\mathrm{tr}`$ [D.translate](Term-ja.md#d-translate)、$`\prec`$ [D.olt](Term-ja.md#d-olt)）。
 
-関係 $`R`$ に対する $`\mathrm{Acc}_R`$ の定義、その最小性（$`\mathrm{Acc}_R`$ の導出に関する帰納法）、
-および $`R`$ が整礎であることの定義は、[T.step_terminates_cond](Reduction-ja.md#t-step_terminates_cond)
-の定理文で与えたものをそのまま用いる。
+$`\mathrm{Acc}_R`$、その最小性（$`\mathrm{Acc}_R`$ の導出に関する帰納法）、および整礎性は、
+[`Reduction-ja.md`](Reduction-ja.md) の冒頭で定めたものをそのまま用いる。
 
 このとき、任意の $`M \in \mathrm{PairSeq}`$ に対し、$`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ かつ
 $`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$ である。

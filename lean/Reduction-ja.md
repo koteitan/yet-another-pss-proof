@@ -1,5 +1,31 @@
 [← README](README-ja.md) | [English](Reduction.md) | [Japanese](Reduction-ja.md)
 
+$`\mathrm{Acc}_R`$ と整礎性は Mathlib のもので、このリポジトリに宣言が無く節を立てられない。
+そこでここで定める。
+
+集合 $`A`$ 上の関係 $`R \subseteq A \times A`$ に対し、$`\mathrm{Acc}_R \subseteq A`$ とは、
+次の 1 つの規則で閉じた最小の集合である。
+
+```math
+\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
+\ \Longrightarrow\ x \in \mathrm{Acc}_R .
+```
+
+その最小性は次の帰納法の原理である。$`A`$ 上の述語 $`\Phi`$ が
+
+```math
+\forall x \in A,\
+  \Bigl(\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
+  \wedge \bigl(\forall y \in A,\ y \mathbin{R} x \to \Phi(y)\bigr)\Bigr)
+  \to \Phi(x)
+```
+
+をみたすならば $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$。これを
+「$`\mathrm{Acc}_R`$ の導出に関する帰納法」と呼ぶ。規則が 1 つしかないので、この帰納法に
+基底段はない。
+
+$`R`$ が**整礎**であるとは、$`\forall x \in A,\ x \in \mathrm{Acc}_R`$ が成り立つことをいう。
+
 <a id="d-NF"></a>
 ## 定義: 正規形の集合 (D.NF)
 
@@ -44,29 +70,7 @@ T \mathbin{R_{\mathrm{PS}}} M :\iff M \in \mathrm{ST\_PS} \ \wedge\ M \Rightarro
 
 ### 定理
 
-集合 $`A`$ 上の関係 $`R \subseteq A \times A`$ に対し、$`\mathrm{Acc}_R \subseteq A`$ を
-次の 1 つの規則で閉じた最小の集合として定める。
-
-```math
-\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
-\ \Longrightarrow\ x \in \mathrm{Acc}_R .
-```
-
-最小性は次の帰納法の原理として使う。$`A`$ 上の述語 $`\Phi`$ が
-
-```math
-\forall x \in A,\
-  \Bigl(\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
-  \wedge \bigl(\forall y \in A,\ y \mathbin{R} x \to \Phi(y)\bigr)\Bigr)
-  \to \Phi(x)
-```
-
-をみたすならば $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ が成り立つ。以下ではこれを
-「$`\mathrm{Acc}_R`$ の導出に関する帰納法」と呼ぶ。規則が 1 つしかないので、この帰納法に
-基底段はない。$`R`$ が**整礎**であるとは $`\forall x \in A,\ x \in \mathrm{Acc}_R`$ が
-成り立つことをいう。
-
-さて、次の 2 つを仮定する。
+次の 2 つを仮定する。
 
 **(dec)** 任意の $`M \in \mathrm{PairSeq}`$ と $`n \in \mathbb{N}`$ に対し、
 $`M \in \mathrm{ST\_PS}`$ かつ $`1 \lt \lvert M\rvert`$ かつ $`1 \le n`$ ならば

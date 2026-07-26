@@ -1,5 +1,30 @@
 [← README](README.md) | [English](Reduction.md) | [Japanese](Reduction-ja.md)
 
+$`\mathrm{Acc}_R`$ and well-foundedness come from Mathlib and have no section of their own, so they
+are fixed here.
+
+For a relation $`R \subseteq A \times A`$ on a set $`A`$, $`\mathrm{Acc}_R \subseteq A`$ is the least
+set closed under the following single rule.
+
+```math
+\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
+\ \Longrightarrow\ x \in \mathrm{Acc}_R .
+```
+
+Its minimality is the following induction principle. If a predicate $`\Phi`$ on $`A`$ satisfies
+
+```math
+\forall x \in A,\
+  \Bigl(\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
+  \wedge \bigl(\forall y \in A,\ y \mathbin{R} x \to \Phi(y)\bigr)\Bigr)
+  \to \Phi(x)
+```
+
+then $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$. This is called the induction on the derivation of
+$`\mathrm{Acc}_R`$; since there is only one rule, it has no base case.
+
+The relation $`R`$ is **well-founded** if $`\forall x \in A,\ x \in \mathrm{Acc}_R`$.
+
 <a id="d-NF"></a>
 ## Definition: the set of normal forms (D.NF)
 
@@ -45,29 +70,7 @@ where the first argument $`v`$ is placed on the left-hand side of $`v \prec u`$.
 
 ### Theorem
 
-For a relation $`R \subseteq A \times A`$ on a set $`A`$, define $`\mathrm{Acc}_R \subseteq A`$ as the
-least set closed under the following single rule.
-
-```math
-\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
-\ \Longrightarrow\ x \in \mathrm{Acc}_R .
-```
-
-Minimality is used in the form of the following induction principle. If a predicate $`\Phi`$ on
-$`A`$ satisfies
-
-```math
-\forall x \in A,\
-  \Bigl(\bigl(\forall y \in A,\ y \mathbin{R} x \to y \in \mathrm{Acc}_R\bigr)
-  \wedge \bigl(\forall y \in A,\ y \mathbin{R} x \to \Phi(y)\bigr)\Bigr)
-  \to \Phi(x)
-```
-
-then $`\forall x \in \mathrm{Acc}_R,\ \Phi(x)`$ holds. Below we call this the induction on the
-derivation of $`\mathrm{Acc}_R`$. Since there is only one rule, this induction has no base case.
-The relation $`R`$ is **well-founded** if $`\forall x \in A,\ x \in \mathrm{Acc}_R`$ holds.
-
-Now assume the following two hypotheses.
+Assume the following two hypotheses.
 
 **(dec)** For all $`M \in \mathrm{PairSeq}`$ and $`n \in \mathbb{N}`$, if
 $`M \in \mathrm{ST\_PS}`$, $`1 \lt \lvert M\rvert`$ and $`1 \le n`$, then

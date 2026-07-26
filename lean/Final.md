@@ -15,9 +15,8 @@ a \mathbin{R_{\mathrm{st}}} b :\iff
 
 ($`\mathrm{ST\_PS}`$ [D.ST_PS](Pss.md#d-ST_PS), $`\mathrm{tr}`$ [D.translate](Term.md#d-translate), $`\prec`$ [D.olt](Term.md#d-olt)).
 
-The definition of $`\mathrm{Acc}_R`$ for a relation $`R`$, its minimality (induction on the derivation of
-$`\mathrm{Acc}_R`$), and the definition of $`R`$ being well-founded are used exactly as given in the
-statement of [T.step_terminates_cond](Reduction.md#t-step_terminates_cond).
+$`\mathrm{Acc}_R`$, its minimality (the induction on the derivation of $`\mathrm{Acc}_R`$) and
+well-foundedness are used exactly as fixed at the head of [`Reduction.md`](Reduction.md).
 
 Then, for every $`M \in \mathrm{PairSeq}`$, if $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ and
 $`M \in \mathrm{ST\_PS}`$, then $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF}}}`$.
