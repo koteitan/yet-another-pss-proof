@@ -478,7 +478,7 @@ $`M_{0,j_0} \lt M_{0,j_1}`$（[D.entry](Pss-ja.md#d-entry)）。
 $`\to^M_0`$ の定義（D.nextrel0）の第 4 条件そのものである。∎
 
 <a id="t-le0_entry0_mono"></a>
-## 定理: 行 0 の祖先では行 0 が広義に増える (T.le0_entry0_mono)
+## 定理: 行 0 で子孫は祖先以上 (T.le0_entry0_mono)
 
 ### 定理
 
@@ -512,7 +512,7 @@ $`a \to^M_0 b`$ ならば $`a \lt b`$。
 $`\to^M_0`$ の定義（D.nextrel0）の第 3 条件そのものである。∎
 
 <a id="t-nextrel0_rtrancl_index_le"></a>
-## 定理: 行 0 の祖先では添字が広義に増える (T.nextrel0_rtrancl_index_le)
+## 定理: 行 0 で子孫は祖先と同じか右にある (T.nextrel0_rtrancl_index_le)
 
 ### 定理
 

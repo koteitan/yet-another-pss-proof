@@ -481,7 +481,7 @@ $`M_{0,j_0} \lt M_{0,j_1}`$ ([D.entry](Pss.md#d-entry)).
 This is exactly the fourth condition of the definition of $`\to^M_0`$ (D.nextrel0). ∎
 
 <a id="t-le0_entry0_mono"></a>
-## Theorem: row 0 increases weakly from a row 0 ancestor (T.le0_entry0_mono)
+## Theorem: in row 0 a descendant is at least its ancestor (T.le0_entry0_mono)
 
 ### Theorem
 
@@ -515,7 +515,7 @@ If $`a \to^M_0 b`$, then $`a \lt b`$.
 This is exactly the third condition of the definition of $`\to^M_0`$ (D.nextrel0). ∎
 
 <a id="t-nextrel0_rtrancl_index_le"></a>
-## Theorem: the index increases weakly from a row 0 ancestor (T.nextrel0_rtrancl_index_le)
+## Theorem: in row 0 a descendant lies at or to the right of its ancestor (T.nextrel0_rtrancl_index_le)
 
 ### Theorem
 
