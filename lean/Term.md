@@ -531,7 +531,7 @@ By induction on the construction of the reflexive transitive closure. The induct
   $`a \le z`$. ∎
 
 <a id="t-le0_interval_gt"></a>
-## Theorem: row 0 is greater everywhere in the ancestor interval (T.le0_interval_gt)
+## Theorem: every column from a row 0 ancestor to its descendant is greater than the ancestor (T.le0_interval_gt)
 
 ### Theorem
 

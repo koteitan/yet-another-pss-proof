@@ -528,7 +528,7 @@ $`a \mathbin{(\to^M_0)^{*}} b`$ ならば $`a \le b`$。
   $`a \le z`$。∎
 
 <a id="t-le0_interval_gt"></a>
-## 定理: 祖先の区間はすべて行 0 が上 (T.le0_interval_gt)
+## 定理: 行 0 の祖先から子孫までの区間はすべて祖先より大きい (T.le0_interval_gt)
 
 ### 定理
 
