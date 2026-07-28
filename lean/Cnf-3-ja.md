@@ -217,7 +217,7 @@ $`B \mathbin{+\!\!+} (\ell)`$ は $`\ell`$ を要素にもつので空列では�
 **(ii) $`n = m + 1`$ のとき。** 示すべきは $`\Phi(m+2)`$ である。$`\Phi(m+1)`$、すなわち $`\mathrm{cnf}(\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)))`$ を仮定する。
 以下 $`Q := \mathrm{cp}_{d_0}(B, m)`$、$`S := R \mathbin{+\!\!+} Q^{+d_0}`$ と略記する。
 
-**第 1 段：$`\mathrm{cp}_{d_0}(B, m+1)`$ とその平行移動の形。**
+**ステップ 1：$`\mathrm{cp}_{d_0}(B, m+1)`$ とその平行移動の形。**
 [T.copies_succ_cons](#t-copies_succ_cons) より
 
 ```math
@@ -232,7 +232,7 @@ $`B \mathbin{+\!\!+} (\ell)`$ は $`\ell`$ を要素にもつので空列では�
 
 を得る。
 
-**第 2 段：翻訳の形。**
+**ステップ 2：翻訳の形。**
 [T.copies_tl_gt](#t-copies_tl_gt) を (hR)、(d0pos)、$`n := m+1`$（$`1 \le m+1`$）に適用すると
 $`n - 1 = m`$ であるから
 
@@ -267,7 +267,7 @@ $`\mathrm{tw}_{\ell_1}() = ()`$、$`\mathrm{dw}_{\ell_1}() = ()`$ であるか�
 \text{(tlp)}\qquad \mathrm{tr}\,(\ell) = \mathsf{P}(\ell_2,\ \mathsf{Z},\ \mathsf{Z}).
 ```
 
-**第 3 段：狭義減少と先頭主要項の比較。**
+**ステップ 3：狭義減少と先頭主要項の比較。**
 (tZ1), (tlp) と [T.olt_P_P](Term-ja.md#t-olt_P_P) の右辺の第 1 選言 $`w_0 \lt \ell_2`$（(w0lt)）より
 
 ```math
@@ -289,7 +289,7 @@ $`\mathrm{tw}_{\ell_1}() = ()`$、$`\mathrm{dw}_{\ell_1}() = ()`$ であるか�
 $`\ell_2`$, $`\mathsf{Z}`$ であるから、(leadle) は [T.cnf_ctx_cong](Cnf-2-ja.md#t-cnf_ctx_cong) の仮定
 (leadle) の形をしている。
 
-**第 4 段：$`(v_0+d_0, w_0) :: S^{+d_0}`$ の CNF。**
+**ステップ 4：$`(v_0+d_0, w_0) :: S^{+d_0}`$ の CNF。**
 (G) と [T.translate_shiftr0](Cnf-2-ja.md#t-translate_shiftr0) より
 $`\mathrm{tr}\bigl((v_0+d_0,w_0) :: S^{+d_0}\bigr) = \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B,m+1)\bigr)`$
 であるから、帰納法の仮定 $`\Phi(m+1)`$ がそのまま
@@ -300,7 +300,7 @@ $`\mathrm{tr}\bigl((v_0+d_0,w_0) :: S^{+d_0}\bigr) = \mathrm{tr}\bigl(\mathrm{cp
 
 を与える。
 
-**第 5 段：文脈による合同。**
+**ステップ 5：文脈による合同。**
 $`x \in S^{+d_0}`$ とすると、[T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) より、ある $`p \in S`$ が存在して
 $`x = (p_1 + d_0,\ p_2)`$ である。(tlgt) より $`v_0 \lt p_1`$、とくに $`v_0 \le p_1`$ であるから
 
@@ -325,12 +325,12 @@ z_2 := \ell,\quad T_2 := (),\quad G := B
 
 として適用する。その 7 つの仮定は次のように満たされる。
 
-- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$：第 4 段の (cZ1)。
+- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$：ステップ 4 の (cZ1)。
 - $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$：$`z_2 :: T_2 = (\ell)`$ であり、
-  第 3 段の (decr)。
+  ステップ 3 の (decr)。
 - $`(z_1)_1 = (z_2)_1`$：(lphd) による $`v_0 + d_0 = \ell_1`$。
-- (leadle)：第 3 段の (leadle) を (tZ1), (tlp) と合わせたもの。
-- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$：第 5 段の (r1)。
+- (leadle)：ステップ 3 の (leadle) を (tZ1), (tlp) と合わせたもの。
+- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$：ステップ 5 の (r1)。
 - $`\forall x \in T_2,\ (z_2)_1 \le x_1`$：$`T_2 = ()`$ は要素をもたないから前件が偽であり成り立つ。
 - $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$：$`G \mathbin{+\!\!+} z_2 :: T_2 = B \mathbin{+\!\!+} (\ell)`$
   であり、仮定 (cBlp)。
@@ -389,7 +389,7 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ とし、$`B := (v_0,w_0) :: R`$ とお�
 また $`R \mathbin{+\!\!+} (\ell)`$ の全要素 $`x`$ は $`v_0 \lt x_1`$ をみたす
 （$`x \in R`$ なら (hR)、$`x = \ell`$ なら (lpv)）。これを (Rlp) とよぶ。
 
-**第 1 段：狭義減少 $`\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)) \prec \mathrm{tr}(B \mathbin{+\!\!+} (\ell))`$。**
+**ステップ 1：狭義減少 $`\mathrm{tr}(\mathrm{cp}_{d_0}(B, m+1)) \prec \mathrm{tr}(B \mathbin{+\!\!+} (\ell))`$。**
 
 $`m`$ で場合分けする。
 
@@ -460,7 +460,7 @@ c := (v_0+d_0,\ w_0),\quad C' := S'^{+d_0},\quad \ell := \ell
 \mathrm{tr}\bigl(\mathrm{cp}_{d_0}(B, m+1)\bigr) \prec \mathrm{tr}\bigl(B \mathbin{+\!\!+} (\ell)\bigr).
 ```
 
-**第 2 段：両辺の翻訳の形。**
+**ステップ 2：両辺の翻訳の形。**
 [T.copies_succ_cons](#t-copies_succ_cons) より
 
 ```math
@@ -488,7 +488,7 @@ c := (v_0+d_0,\ w_0),\quad C' := S'^{+d_0},\quad \ell := \ell
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr).
 ```
 
-**第 3 段：ブロックの CNF。**
+**ステップ 3：ブロックの CNF。**
 $`\mathbin{+\!\!+}`$ の結合則より
 $`G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))\bigr)`$
 であるから、(cM) は
@@ -513,7 +513,7 @@ $`G := G`$ として適用して
 
 を得る（$`B \mathbin{+\!\!+} (\ell) = (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))`$ による）。
 
-**第 4 段：コピー列そのものの CNF。**
+**ステップ 4：コピー列そのものの CNF。**
 [T.cnf_copies](#t-cnf_copies) を (hR)、(d0pos)、(w0lt)、(lphd)、(cBlp)、$`n := m+1`$ に適用して
 
 ```math
@@ -522,7 +522,7 @@ $`G := G`$ として適用して
 
 を得る。(cpcons) によりこれは $`\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0) :: S)\bigr)`$ と同一の命題である。
 
-**第 5 段：引数どうしの狭義減少。**
+**ステップ 5：引数どうしの狭義減少。**
 (decr) に (st1), (st2) を代入すると
 
 ```math
@@ -544,7 +544,7 @@ $`G := G`$ として適用して
 \text{(argA)}\qquad \mathrm{tr}\,S \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell)).
 ```
 
-**第 6 段：文脈による合同。**
+**ステップ 6：文脈による合同。**
 (argA) に [T.olt_P_b](Term-ja.md#t-olt_P_b) を $`a := w_0`$、$`c_1 := \mathsf{Z}`$、$`c_2 := \mathsf{Z}`$
 として適用すると
 
@@ -590,13 +590,13 @@ z_2 := (v_0,w_0),\quad T_2 := R \mathbin{+\!\!+} (\ell),\quad G := G
 
 として適用する。その 7 つの仮定は次のように満たされる。
 
-- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$：第 4 段の (cCopies)（(cpcons) による）。
+- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$：ステップ 4 の (cCopies)（(cpcons) による）。
 - $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$：(decr')。
 - $`(z_1)_1 = (z_2)_1`$：両辺とも $`v_0`$ であり $`=`$ の反射性による。
-- (leadle)：第 6 段の (leadle)。
+- (leadle)：ステップ 6 の (leadle)。
 - $`\forall x \in T_1,\ (z_1)_1 \le x_1`$：(r1)。
-- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$：第 3 段の (rT)。
-- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$：第 3 段の (cM')。
+- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$：ステップ 3 の (rT)。
+- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$：ステップ 3 の (cM')。
 
 結論として $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: S)\bigr)`$ を得る。
 (cpcons) より $`(v_0,w_0) :: S = \mathrm{cp}_{d_0}(B, m+1) = \mathrm{cp}_{d_0}(B, n)`$ であるから、

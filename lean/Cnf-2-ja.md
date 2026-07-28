@@ -367,7 +367,7 @@ $`L^{\ast k}`$ は [T.cnf_replicate_block](Cnf-ja.md#t-cnf_replicate_block) の�
 (n1) より $`n = m + 1`$ をみたす $`m \in \mathbb{N}`$ が取れる（$`m := n - 1`$ とおけばよい）。
 以下 $`T := B^{\ast m}`$ と略記する。
 
-**第 1 段：2 つの列の翻訳の形。**
+**ステップ 1：2 つの列の翻訳の形。**
 
 まず $`R \mathbin{+\!\!+} (\ell)`$ の全要素 $`x`$ が $`v_0 \lt x_1`$ をみたす。実際、
 $`x \in R`$ のときは (hR)、$`x = \ell`$ のときは (lpv) による。よって
@@ -410,7 +410,7 @@ $`\lt`$ の非反射性より $`\neg(v_0 \lt v_0)`$、すなわち第 2 選言�
 
 を得る。
 
-**第 2 段：ブロック本体の CNF。**
+**ステップ 2：ブロック本体の CNF。**
 
 $`\mathbin{+\!\!+}`$ の結合則と $`B = (v_0,w_0) :: R`$ より
 
@@ -421,7 +421,7 @@ G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0
 であるから、(cM) は $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: (R \mathbin{+\!\!+} (\ell)))\bigr)`$
 と同一の命題である。これを (cM') とよぶ。
 
-第 1 段で示したとおり $`R \mathbin{+\!\!+} (\ell)`$ の全要素 $`x`$ は $`v_0 \lt x_1`$ をみたすから、
+ステップ 1 で示したとおり $`R \mathbin{+\!\!+} (\ell)`$ の全要素 $`x`$ は $`v_0 \lt x_1`$ をみたすから、
 とくに
 
 ```math
@@ -450,7 +450,7 @@ G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0
 
 を得る。
 
-**第 3 段：コピー列そのものの CNF。**
+**ステップ 3：コピー列そのものの CNF。**
 
 [T.cnf_replicate_block](Cnf-ja.md#t-cnf_replicate_block) を (hR)、(cR)、$`n := m+1`$ に適用して
 
@@ -460,7 +460,7 @@ G \mathbin{+\!\!+} B \mathbin{+\!\!+} (\ell) = G \mathbin{+\!\!+} \bigl((v_0,w_0
 
 を得る。(B) によりこれは $`\mathrm{cnf}\bigl(\mathrm{tr}((v_0,w_0) :: (R \mathbin{+\!\!+} T))\bigr)`$ と同一の命題である。
 
-**第 4 段：狭義減少と先頭主要項の比較。**
+**ステップ 4：狭義減少と先頭主要項の比較。**
 
 [T.translate_snoc_increase](Decrease-ja.md#t-translate_snoc_increase) を $`C := R`$、$`m := \ell`$ に
 適用して
@@ -505,7 +505,7 @@ $`c_2 := \mathsf{Z}`$ として適用すると
 それぞれ $`w_0`$, $`\mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$ であるから、(leadle) は
 [T.cnf_ctx_cong](#t-cnf_ctx_cong) の仮定 (leadle) の形をしている。
 
-**第 5 段：文脈による合同。**
+**ステップ 5：文脈による合同。**
 
 $`T = B^{\ast m}`$ の各要素は $`B`$ の要素である。実際、$`T`$ は $`B`$ を $`m`$ 個連結した列だから、
 $`x \in T`$ ならば $`x`$ はそのいずれかの $`B`$ の要素であり、$`B`$ は共通である。
@@ -528,13 +528,13 @@ z_2 := (v_0,w_0),\quad T_2 := R \mathbin{+\!\!+} (\ell),\quad G := G
 
 として適用する。その 7 つの仮定は次のように満たされる。
 
-- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$：第 3 段の (cZ1)（(B) による）。
-- $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$：第 4 段の (decr)。
+- $`\mathrm{cnf}(\mathrm{tr}(z_1 :: T_1))`$：ステップ 3 の (cZ1)（(B) による）。
+- $`\mathrm{tr}(z_1 :: T_1) \prec \mathrm{tr}(z_2 :: T_2)`$：ステップ 4 の (decr)。
 - $`(z_1)_1 = (z_2)_1`$：両辺とも $`v_0`$ であり $`=`$ の反射性による。
-- (leadle)：第 4 段の (leadle) を (D), (A) と合わせたもの。
-- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$：第 5 段の (r1)。
-- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$：第 2 段の (rT)。
-- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$：第 2 段の (cM')。
+- (leadle)：ステップ 4 の (leadle) を (D), (A) と合わせたもの。
+- $`\forall x \in T_1,\ (z_1)_1 \le x_1`$：ステップ 5 の (r1)。
+- $`\forall x \in T_2,\ (z_2)_1 \le x_1`$：ステップ 2 の (rT)。
+- $`\mathrm{cnf}(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2))`$：ステップ 2 の (cM')。
 
 結論として $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} (v_0,w_0) :: (R \mathbin{+\!\!+} T))\bigr)`$ を得る。
 (B) より $`(v_0,w_0) :: (R \mathbin{+\!\!+} T) = B^{\ast(m+1)} = B^{\ast n}`$ であるから、

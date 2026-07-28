@@ -104,7 +104,7 @@ B' = B^{+d_0} = (v_0 + d_0,\ w_0) :: R^{+d_0}
 
 である。
 
-**第 1 段：$`\forall x \in R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m),\ v_0 \lt x_1`$。**
+**ステップ 1：$`\forall x \in R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B', m),\ v_0 \lt x_1`$。**
 $`x \in R`$ のときは (3) による。$`x \in \mathrm{cp}_{d_0}(B', m)`$ のときは次のようにする。
 (3) より $`\forall y \in R,\ v_0 \le y_1`$ であるから、
 [T.mem_shiftr0_le](Cofinality-2-ja.md#t-mem_shiftr0_le) を $`d := v_0`$、$`e := d_0`$ として適用して
@@ -113,11 +113,11 @@ $`\forall y \in R^{+d_0},\ v_0 + d_0 \le y_1`$ を得る。
 尾部 $`R^{+d_0}`$（すなわち $`B' = (v_0+d_0,\ w_0) :: R^{+d_0}`$）、$`d := d_0`$、$`n := m`$ として
 適用すると $`v_0 + d_0 \le x_1`$ を得る。(4) より $`v_0 \lt v_0 + d_0 \le x_1`$ である。
 
-**第 2 段：$`S_{\mathrm{lo}} = ()`$ または $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0`$。**
+**ステップ 2：$`S_{\mathrm{lo}} = ()`$ または $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0`$。**
 $`S_{\mathrm{lo}} = \mathrm{dw}_{v_0+d_0} S`$ が空でなければ、その先頭要素 $`z`$ は述語を破る、
 すなわち $`\neg(v_0 + d_0 \lt z_1)`$ をみたすから $`z_1 \le v_0 + d_0`$ である。
 
-**第 3 段：目標の展開。**
+**ステップ 3：目標の展開。**
 求める添字として $`m + 2`$ を取る（$`1 \le m+2`$）。
 $`E := \bigl((B')^{+m d_0}\bigr)^{+d_0}`$ とおく。
 
@@ -140,7 +140,7 @@ $`E := \bigl((B')^{+m d_0}\bigr)^{+d_0}`$ とおく。
 第 4 の等号は $`B' = (v_0+d_0,\ w_0) :: R^{+d_0}`$ と結合律、
 第 5 の等号は [T.shiftr0_append](#t-shiftr0_append) による。
 
-**第 4 段：$`E`$ の形。**
+**ステップ 4：$`E`$ の形。**
 $`B' = (v_0+d_0,\ w_0) :: R^{+d_0} \ne ()`$ であり、
 [T.shiftr0_length](Cofinality-2-ja.md#t-shiftr0_length) を 2 回使うと $`\lvert E\rvert = \lvert B'\rvert \gt 0`$、
 すなわち $`E \ne ()`$ である。また $`X^{+d}`$ の定義（D.shiftr0）は先頭要素を先頭要素に写すから、
@@ -151,8 +151,8 @@ $`\bigl(v_0 + d_0 + m d_0 + d_0,\ w_0\bigr)`$ であり、
 (\mathrm{head}\,E)_1 = v_0 + d_0 + m d_0 + d_0 .
 ```
 
-**第 5 段：頭の消去。**
-示すべきは第 3 段より
+**ステップ 5：頭の消去。**
+示すべきはステップ 3 より
 
 ```math
 (v_0+d_0,\ w_0) :: S \ \preceq_{\mathrm{lex}}\
@@ -177,13 +177,13 @@ S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}} \ \preceq_{\mathrm{lex}}\ S_{\m
 ```
 
 であり、[T.sle_append_cancel](Cofinality-ja.md#t-sle_append_cancel) により
-$`S_{\mathrm{lo}} \preceq_{\mathrm{lex}} E`$ を示せばよい。第 2 段で場合分けする。
+$`S_{\mathrm{lo}} \preceq_{\mathrm{lex}} E`$ を示せばよい。ステップ 2 で場合分けする。
 
-- $`S_{\mathrm{lo}} = ()`$ のとき。第 4 段より $`E \ne ()`$ であるから、
+- $`S_{\mathrm{lo}} = ()`$ のとき。ステップ 4 より $`E \ne ()`$ であるから、
   $`\prec_{\mathrm{lex}}`$ の定義（[D.seqlex](Seqlex-ja.md#d-seqlex)）の第 1 式により
   $`() \prec_{\mathrm{lex}} E`$ であり、
   $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言が成り立つ。
-- $`S_{\mathrm{lo}} = z :: Z`$ かつ $`z_1 \le v_0 + d_0`$ のとき。第 4 段より $`E \ne ()`$ だから
+- $`S_{\mathrm{lo}} = z :: Z`$ かつ $`z_1 \le v_0 + d_0`$ のとき。ステップ 4 より $`E \ne ()`$ だから
   $`E = e :: E'`$ と書け、$`e_1 = v_0 + d_0 + m d_0 + d_0`$ である。
   (4) の $`0 \lt d_0`$ より $`v_0 + d_0 \lt v_0 + d_0 + m d_0 + d_0`$ であるから
   $`z_1 \le v_0 + d_0 \lt e_1`$ であり、
@@ -204,13 +204,13 @@ S_{\mathrm{lo}} = ()
  \mathrm{head}\,S_{\mathrm{lo}} \prec_{\mathrm{p}} x
 ```
 
-第 2 段で場合分けする。
+ステップ 2 で場合分けする。
 
 - $`S_{\mathrm{lo}} = ()`$ のとき。第 1 選言である。
 - $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0`$ のとき。
   $`x \in \bigl(R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B',m)\bigr)^{+d_0}`$ とすると、
   [T.mem_shiftr0](Cnf-2-ja.md#t-mem_shiftr0) よりある $`y \in R \mathbin{+\!\!+} \mathrm{cp}_{d_0}(B',m)`$ が
-  存在して $`x = (y_1 + d_0,\ y_2)`$ である。第 1 段より $`v_0 \lt y_1`$ であるから
+  存在して $`x = (y_1 + d_0,\ y_2)`$ である。ステップ 1 より $`v_0 \lt y_1`$ であるから
   $`(\mathrm{head}\,S_{\mathrm{lo}})_1 \le v_0 + d_0 \lt y_1 + d_0 = x_1`$ であり、
   $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
   $`\mathrm{head}\,S_{\mathrm{lo}} \prec_{\mathrm{p}} x`$ が成り立つ。
@@ -223,10 +223,10 @@ S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}} \prec_{\mathrm{lex}}
 ```
 
 が得られ、$`S = S_{\mathrm{hi}} \mathbin{+\!\!+} S_{\mathrm{lo}}`$ であるから、
-第 5 段の目標が $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言として得られた。∎
+ステップ 5 の目標が $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言として得られた。∎
 
 <a id="t-asc_head_step"></a>
-## 定理: 上昇コピーの核心の頭段 (T.asc_head_step)
+## 定理: 上昇コピーの核心の先頭の 1 歩 (T.asc_head_step)
 
 ### 定理
 
@@ -312,7 +312,7 @@ N \prec_{\mathrm{lex}} M
 
 ### 証明
 
-**第 1 段：ブロック分解。**
+**ステップ 1：ブロック分解。**
 $`1 \lt \lvert M\rvert`$ より $`0 \lt \lvert M\rvert`$ であるから、
 [T.hasParent_last_ST_PS](Cofinality-ja.md#t-hasParent_last_ST_PS) により
 $`\mathrm{hasParent}\bigl(M,\ \mathrm{idx}_1(M, j_1),\ j_1\bigr)`$ が成り立つ
@@ -339,7 +339,7 @@ $`B := (v_0,w_0) :: R`$ とおくと
 
 が成り立つ。
 
-**第 2 段：$`N`$ の場合分け。**
+**ステップ 2：$`N`$ の場合分け。**
 (1) により仮定 $`N \prec_{\mathrm{lex}} M`$ は
 $`N \prec_{\mathrm{lex}} (G \mathbin{+\!\!+} B) \mathbin{+\!\!+} (\ell)`$ である。
 [T.seqlex_snoc_cases](Cofinality-ja.md#t-seqlex_snoc_cases) を $`D := G \mathbin{+\!\!+} B`$ として適用すると、
@@ -385,7 +385,7 @@ $`H = M \in \mathrm{ST\_PS}`$、$`(G \mathbin{+\!\!+} B) \mathbin{+\!\!+} q :: S
 いま書き換えた $`\lvert G\rvert \to^{H}_1 \lvert G \mathbin{+\!\!+} B\rvert`$、$`q \prec_{\mathrm{p}} \ell`$ を
 与えて適用すると $`(\dagger)`$ を得る。
 
-**第 3 段：結論。**
+**ステップ 3：結論。**
 $`n := m + 1`$ と取る（$`1 \le m + 1`$）。(2) と
 [T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) より
 

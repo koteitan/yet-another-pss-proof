@@ -159,7 +159,7 @@ $`\Phi(d)`$ の束縛変数である（$`B = (v_0,w_0) :: R`$ もそれに従っ
 
 **(b) $`Y = y :: Y'`$ のとき。** 以下このときを扱う。
 
-**第 1 段：$`y = (v_0, y_2)`$。**
+**ステップ 1：$`y = (v_0, y_2)`$。**
 $`y`$ は $`(v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ の要素であるから、(blk) すなわち
 $`\mathrm{blockok}`$ の定義（D.blockok）の第 2 連言子
 $`\forall p \in (v_0,w_0) :: (R \mathbin{+\!\!+} Y),\ v_0 \le p_1`$ より $`v_0 \le y_1`$ である。
@@ -167,7 +167,7 @@ $`\forall p \in (v_0,w_0) :: (R \mathbin{+\!\!+} Y),\ v_0 \le p_1`$ より $`v_0
 $`\mathrm{head}\,Y = y`$ より $`\neg(v_0 \lt y_1)`$、すなわち $`y_1 \le v_0`$ である。
 よって $`y_1 = v_0`$ であり、対は両成分で決まるから $`y = (v_0, y_2)`$。
 
-**第 2 段：$`Y'`$ の分割。**
+**ステップ 2：$`Y'`$ の分割。**
 
 ```math
 R' := \mathrm{tw}_{v_0} Y', \qquad Y'' := \mathrm{dw}_{v_0} Y'
@@ -181,12 +181,12 @@ $`R' \mathbin{+\!\!+} Y'' = Y'`$ である。また
 - $`Y'' = () \vee \neg\bigl(v_0 \lt (\mathrm{head}\,Y'')_1\bigr)`$：$`\mathrm{dw}_{v_0} Y'`$ が空でなければ
   その先頭要素は述語を破る。
 
-**第 3 段：2 つの翻訳の形。**
-第 1 段と第 2 段より $`\bigl((v_0,y_2) :: R'\bigr) \mathbin{+\!\!+} Y'' = (v_0,y_2) :: Y' = y :: Y'`$ である。
+**ステップ 3：2 つの翻訳の形。**
+ステップ 1 とステップ 2 より $`\bigl((v_0,y_2) :: R'\bigr) \mathbin{+\!\!+} Y'' = (v_0,y_2) :: Y' = y :: Y'`$ である。
 [T.translate_block_append](Term-ja.md#t-translate_block_append) を
 $`v_0 := v_0`$、$`w_0 := y_2`$、$`R := R'`$、$`T := Y''`$ として適用する。
 その 2 つの仮定「$`R'`$ の全要素 $`x`$ が $`v_0 \lt x_1`$」と
-「$`Y'' = ()`$ または $`\neg\bigl(v_0 \lt (\mathrm{head}\,Y'')_1\bigr)`$」は第 2 段で示した。
+「$`Y'' = ()`$ または $`\neg\bigl(v_0 \lt (\mathrm{head}\,Y'')_1\bigr)`$」はステップ 2 で示した。
 こうして
 
 ```math
@@ -206,8 +206,8 @@ $`v_0 := v_0`$、$`w_0 := w_0`$、$`R := R`$、$`T := y :: Y'`$ として適用�
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\ \mathrm{tr}(y :: Y')\bigr) .
 ```
 
-**第 4 段：CNF の分解。**
-第 3 段の 2 式を (cnf) に代入すると
+**ステップ 4：CNF の分解。**
+ステップ 3 の 2 式を (cnf) に代入すると
 
 ```math
 \mathrm{cnf}\Bigl(\mathsf{P}\bigl(w_0,\ \mathrm{tr}\,R,\
@@ -227,21 +227,21 @@ $`v_0 := v_0`$、$`w_0 := w_0`$、$`R := R`$、$`T := y :: Y'`$ として適用�
 
 （$`\prec`$ [D.olt](Term-ja.md#d-olt)）
 
-**第 5 段：$`y_2 \le w_0`$。**
+**ステップ 5：$`y_2 \le w_0`$。**
 $`w_0 \lt y_2`$ と仮定すると、[T.olt_P_P](Term-ja.md#t-olt_P_P) の右辺の第 1 選言により
 $`\mathsf{P}(w_0, \mathrm{tr}\,R, \mathsf{Z}) \prec \mathsf{P}(y_2, \mathrm{tr}\,R', \mathsf{Z})`$ となり
 (c2) に矛盾する。よって $`y_2 \le w_0`$ である。$`y_2 \lt w_0`$ か $`y_2 = w_0`$ で場合分けする。
 
-**第 6 段：$`y_2 \lt w_0`$ のとき。**
+**ステップ 6：$`y_2 \lt w_0`$ のとき。**
 $`m := 1`$ と取る。[T.copies_one](Cnf-3-ja.md#t-copies_one) より
-$`\mathrm{cp}_0(B, 1) = (v_0,w_0) :: R`$ である。第 1 段より $`y = (v_0,y_2)`$ であり、
+$`\mathrm{cp}_0(B, 1) = (v_0,w_0) :: R`$ である。ステップ 1 より $`y = (v_0,y_2)`$ であり、
 $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 2 選言（$`v_0 = v_0`$ かつ $`y_2 \lt w_0`$）により
 $`y \prec_{\mathrm{p}} (v_0,w_0)`$ である。$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の
 第 1 選言により $`y :: Y' \prec_{\mathrm{lex}} (v_0,w_0) :: R`$ であり、
 $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言が成り立つ。
 
-**第 7 段：$`y_2 = w_0`$ のとき（準備）。**
-第 1 段より $`y = (v_0,w_0)`$ である。次の 4 つを用意する。
+**ステップ 7：$`y_2 = w_0`$ のとき（準備）。**
+ステップ 1 より $`y = (v_0,w_0)`$ である。次の 4 つを用意する。
 
 1. $`\neg\bigl(\mathrm{tr}\,R \prec \mathrm{tr}\,R'\bigr)`$。もし $`\mathrm{tr}\,R \prec \mathrm{tr}\,R'`$ なら、
    $`w_0 = y_2`$ と合わせて [T.olt_P_P](Term-ja.md#t-olt_P_P) の右辺の第 2 選言が成り立ち
@@ -262,8 +262,8 @@ $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言が成り立つ。
 
 $`R' = R`$ か否かでさらに場合分けする。
 
-**第 8 段：$`R' = R`$ のとき。**
-第 1 段、第 2 段と $`R' = R`$ より
+**ステップ 8：$`R' = R`$ のとき。**
+ステップ 1、ステップ 2 と $`R' = R`$ より
 
 ```math
 y :: Y' = (v_0,w_0) :: (R' \mathbin{+\!\!+} Y'') = \bigl((v_0,w_0) :: R\bigr) \mathbin{+\!\!+} Y''
@@ -277,11 +277,11 @@ y :: Y' = (v_0,w_0) :: (R' \mathbin{+\!\!+} Y'') = \bigl((v_0,w_0) :: R\bigr) \m
   $`\lvert y :: Y'\rvert = \lvert Y'\rvert + 1 \le d + 1`$、すなわち $`\lvert Y'\rvert \le d`$ である。
   よって $`\lvert Y''\rvert \le \lvert Y'\rvert \le d`$。
 - (blk)：$`(v_0,w_0) :: (R \mathbin{+\!\!+} Y'') = B \mathbin{+\!\!+} Y'' = y :: Y'`$ であるから、
-  第 7 段の 2 そのものである。
+  ステップ 7 の 2 そのものである。
 - (R)：いまの (R) そのものである。
-- (hd)：第 2 段で示した $`Y''`$ についての選言である。
+- (hd)：ステップ 2 で示した $`Y''`$ についての選言である。
 - (cnf)：$`\mathrm{tr}\bigl((v_0,w_0) :: (R \mathbin{+\!\!+} Y'')\bigr) = \mathrm{tr}(y :: Y')`$ であり、
-  第 3 段よりこれは $`\mathsf{P}(y_2, \mathrm{tr}\,R', \mathrm{tr}\,Y'')`$ であるから (c3) である。
+  ステップ 3 よりこれは $`\mathsf{P}(y_2, \mathrm{tr}\,R', \mathrm{tr}\,Y'')`$ であるから (c3) である。
 
 こうして $`1 \le m`$ かつ $`Y'' \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ なる $`m`$ が得られる。
 求める添字として $`m + 1`$ を取る。$`1 \le m + 1`$ である。
@@ -298,12 +298,12 @@ $`B \mathbin{+\!\!+} Y'' \preceq_{\mathrm{lex}} B \mathbin{+\!\!+} \mathrm{cp}_0
 [T.sle_append_cancel](Cofinality-ja.md#t-sle_append_cancel) によりこれは
 $`Y'' \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ と同値である。これは得られたものである。
 
-**第 9 段：$`R' \ne R`$ のとき。**
+**ステップ 9：$`R' \ne R`$ のとき。**
 まず $`R' \prec_{\mathrm{lex}} R`$ を示す。[T.seqlex_total](Seqlex-2-ja.md#t-seqlex_total) より
 $`R' = R`$、$`R' \prec_{\mathrm{lex}} R`$、$`R \prec_{\mathrm{lex}} R'`$ のいずれかである。
-第 1 のものは仮定に反する。第 3 のものとすると、第 7 段の 3 と 4 を用いて
+第 1 のものは仮定に反する。第 3 のものとすると、ステップ 7 の 3 と 4 を用いて
 [T.seqlex_imp_olt](Seqlex-2-ja.md#t-seqlex_imp_olt) を $`d := v_0 + 1`$、$`M := R`$、$`N := R'`$ に
-適用でき、$`\mathrm{tr}\,R \prec \mathrm{tr}\,R'`$ となって第 7 段の 1 に矛盾する。
+適用でき、$`\mathrm{tr}\,R \prec \mathrm{tr}\,R'`$ となってステップ 7 の 1 に矛盾する。
 よって第 2 のもの、すなわち $`R' \prec_{\mathrm{lex}} R`$ である。
 
 $`m := 2`$ と取る。$`1 \le 2`$ である。
@@ -315,7 +315,7 @@ $`m := 2`$ と取る。$`1 \le 2`$ である。
   = (v_0,w_0) :: \bigl(R \mathbin{+\!\!+} B\bigr)
 ```
 
-である。第 1 段と $`y_2 = w_0`$ より $`y :: Y' = (v_0,w_0) :: Y'`$ であるから、
+である。ステップ 1 と $`y_2 = w_0`$ より $`y :: Y' = (v_0,w_0) :: Y'`$ であるから、
 $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 3 式の第 2 選言により、示すべきことは
 
 ```math
@@ -329,7 +329,7 @@ Y' \prec_{\mathrm{lex}} R \mathbin{+\!\!+} B
 
 - $`R' \prec_{\mathrm{lex}} R`$：いま示した。
 - $`Y'' = () \vee \forall x \in R,\ \mathrm{head}\,Y'' \prec_{\mathrm{p}} x`$：
-  第 2 段の $`Y''`$ についての選言で分ける。$`Y'' = ()`$ ならそのまま第 1 選言である。
+  ステップ 2 の $`Y''`$ についての選言で分ける。$`Y'' = ()`$ ならそのまま第 1 選言である。
   そうでなければ $`\neg\bigl(v_0 \lt (\mathrm{head}\,Y'')_1\bigr)`$、すなわち
   $`(\mathrm{head}\,Y'')_1 \le v_0`$ である。$`x \in R`$ に対し (R) より $`v_0 \lt x_1`$ であるから
   $`(\mathrm{head}\,Y'')_1 \lt x_1`$ であり、$`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の
@@ -396,22 +396,22 @@ q :: S \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m) .
 
 ### 証明
 
-**第 1 段：$`q_1 \le v_0`$。**
+**ステップ 1：$`q_1 \le v_0`$。**
 $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）より、仮定 (4) は
 $`q_1 \lt \ell_1`$ または（$`q_1 = \ell_1`$ かつ $`q_2 \lt \ell_2`$）である。
 後者のとき、仮定 (3) の $`\ell_2 = 0`$ より $`q_2 \lt 0`$ となるが、自然数に $`0`$ より小さいものは
 ないから矛盾であり、この場合は起こらない。前者のとき、仮定 (3) の $`\ell_1 = v_0 + 1`$ より
 $`q_1 \lt v_0 + 1`$、すなわち $`q_1 \le v_0`$ である。
 
-**第 2 段：$`q_1 \lt v_0`$ の場合。**
+**ステップ 2：$`q_1 \lt v_0`$ の場合。**
 $`m := 1`$ と取る。[T.copies_one](Cnf-3-ja.md#t-copies_one) より $`\mathrm{cp}_0(B, 1) = B = (v_0,w_0) :: R`$ である。
 $`q_1 \lt v_0`$ であるから $`\prec_{\mathrm{p}}`$ の定義（D.pairlt）の第 1 選言により
 $`q \prec_{\mathrm{p}} (v_0,w_0)`$ が成り立ち、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の
 第 3 式の第 1 選言により $`q :: S \prec_{\mathrm{lex}} B`$ を得る。
 $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言により結論を得る。
 
-**第 3 段：以下 $`q_1 = v_0`$ とする。**
-第 1 段と $`\neg(q_1 \lt v_0)`$ から $`q_1 = v_0`$ である。述語 $`p`$ を
+**ステップ 3：以下 $`q_1 = v_0`$ とする。**
+ステップ 1 と $`\neg(q_1 \lt v_0)`$ から $`q_1 = v_0`$ である。述語 $`p`$ を
 $`p(x) :\equiv v_0 \le x_1`$ で定め、
 
 ```math
@@ -432,7 +432,7 @@ $`(\mathrm{head}\,Y)_1 = q_1 = v_0`$ である。
 実際 $`V \ne ()`$ ならばその先頭要素 $`z`$ は $`\neg p(z)`$、すなわち $`\neg(v_0 \le z_1)`$ を
 みたすから $`z_1 \lt v_0`$ である。
 
-**第 4 段：$`B \mathbin{+\!\!+} Y`$ を用いた分解。**
+**ステップ 4：$`B \mathbin{+\!\!+} Y`$ を用いた分解。**
 (i) と結合律により
 
 ```math
@@ -441,24 +441,24 @@ $`(\mathrm{head}\,Y)_1 = q_1 = v_0`$ である。
 
 である。この列を $`N`$ と書く。
 
-**第 5 段：$`\mathrm{steps}_1(B \mathbin{+\!\!+} Y)`$（[D.steps1](Seqlex-ja.md#d-steps1)）。**
+**ステップ 5：$`\mathrm{steps}_1(B \mathbin{+\!\!+} Y)`$（[D.steps1](Seqlex-ja.md#d-steps1)）。**
 仮定 (1) と [T.blockok_ST_PS](Seqlex-2-ja.md#t-blockok_ST_PS) より $`\mathrm{blockok}(0, N)`$ が成り立ち、
 $`\mathrm{blockok}`$ の定義（D.blockok）の第 3 連言子より $`\mathrm{steps}_1(N)`$ である。
-第 4 段の分解に [T.steps1_append](Seqlex-ja.md#t-steps1_append) を適用すると、その第 1 連言子として
+ステップ 4 の分解に [T.steps1_append](Seqlex-ja.md#t-steps1_append) を適用すると、その第 1 連言子として
 $`\mathrm{steps}_1\bigl(G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y)\bigr)`$ を得る。これにふたたび
 [T.steps1_append](Seqlex-ja.md#t-steps1_append) を適用すると、その第 2 連言子として
 $`\mathrm{steps}_1(B \mathbin{+\!\!+} Y)`$ を得る。
 
-**第 6 段：$`\mathrm{blockok}(v_0,\ B \mathbin{+\!\!+} Y)`$。**
+**ステップ 6：$`\mathrm{blockok}(v_0,\ B \mathbin{+\!\!+} Y)`$。**
 $`\mathrm{blockok}`$ の定義（D.blockok）の 3 つの連言子を確かめる。
 第 1 連言子は「空でなければ先頭の第 1 成分が $`v_0`$」であり、先頭は $`(v_0,w_0)`$ だから成り立つ。
 第 2 連言子は $`\forall x \in B \mathbin{+\!\!+} Y,\ v_0 \le x_1`$ である。
 $`x = (v_0,w_0)`$ なら $`x_1 = v_0`$、$`x \in R`$ なら仮定 (2) より $`v_0 \lt x_1`$、
-$`x \in Y`$ なら (iii) より $`v_0 \le x_1`$ である。第 3 連言子は第 5 段である。
+$`x \in Y`$ なら (iii) より $`v_0 \le x_1`$ である。第 3 連言子はステップ 5 である。
 
-**第 7 段：$`(v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ の $`\mathrm{cnf}`$。**
+**ステップ 7：$`(v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ の $`\mathrm{cnf}`$。**
 仮定 (1) と [T.cnf_ST_PS](Cnf-3-ja.md#t-cnf_ST_PS) より $`\mathrm{cnf}(\mathrm{tr}\,N)`$ である。
-第 4 段の分解によりこれは
+ステップ 4 の分解によりこれは
 $`\mathrm{cnf}\bigl(\mathrm{tr}\bigl((G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y)) \mathbin{+\!\!+} V\bigr)\bigr)`$ である。
 [T.cnf_take](Cnf-ja.md#t-cnf_take) を $`k := \lvert G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y)\rvert`$ に適用する。
 連結の左側の長さで切り取ると左側そのものが得られるから
@@ -470,28 +470,28 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}\bigl((G \mathbin{+\!\!+} (B \mathbin{+\!\!+} Y))
 を得る。$`B \mathbin{+\!\!+} Y = (v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ であるから、これは
 $`\mathrm{cnf}\bigl(\mathrm{tr}\,(G \mathbin{+\!\!+} ((v_0,w_0) :: (R \mathbin{+\!\!+} Y)))\bigr)`$ と同じ命題である。
 [T.cnf_tail](Cnf-2-ja.md#t-cnf_tail) を $`t := (v_0,w_0)`$、$`T' := R \mathbin{+\!\!+} Y`$、$`G := G`$ として
-適用する。その仮定 $`\forall x \in R \mathbin{+\!\!+} Y,\ v_0 \le x_1`$ は第 6 段の第 2 連言子から
+適用する。その仮定 $`\forall x \in R \mathbin{+\!\!+} Y,\ v_0 \le x_1`$ はステップ 6 の第 2 連言子から
 （$`R \mathbin{+\!\!+} Y`$ の要素は $`B \mathbin{+\!\!+} Y`$ の要素でもあるから）従う。よって
 
 ```math
 \mathrm{cnf}\bigl(\mathrm{tr}\,((v_0,w_0) :: (R \mathbin{+\!\!+} Y))\bigr) .
 ```
 
-**第 8 段：完全コピーによる支配。**
+**ステップ 8：完全コピーによる支配。**
 [T.copy_dom_zero](#t-copy_dom_zero) を $`d := \lvert Y\rvert`$、$`Y := Y`$、$`v_0`$、$`w_0`$、$`R`$ として
 適用する。5 つの仮定は次のように満たされる。
 
 - $`\lvert Y\rvert \le \lvert Y\rvert`$：等号による。
-- $`\mathrm{blockok}\bigl(v_0,\ (v_0,w_0) :: (R \mathbin{+\!\!+} Y)\bigr)`$：第 6 段を
+- $`\mathrm{blockok}\bigl(v_0,\ (v_0,w_0) :: (R \mathbin{+\!\!+} Y)\bigr)`$：ステップ 6 を
   $`B \mathbin{+\!\!+} Y = (v_0,w_0) :: (R \mathbin{+\!\!+} Y)`$ と書き換えたものである。
 - $`\forall x \in R,\ v_0 \lt x_1`$：仮定 (2) である。
 - $`Y = () \ \vee\ \neg\bigl(v_0 \lt (\mathrm{head}\,Y)_1\bigr)`$：(ii) より
   $`(\mathrm{head}\,Y)_1 = v_0`$ であるから第 2 選言が成り立つ。
-- $`\mathrm{cnf}\bigl(\mathrm{tr}\,((v_0,w_0) :: (R \mathbin{+\!\!+} Y))\bigr)`$：第 7 段である。
+- $`\mathrm{cnf}\bigl(\mathrm{tr}\,((v_0,w_0) :: (R \mathbin{+\!\!+} Y))\bigr)`$：ステップ 7 である。
 
 こうして $`1 \le m`$ なる $`m`$ と $`Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)`$ を得る。
 
-**第 9 段：結論。**
+**ステップ 9：結論。**
 求める添字として $`m + 1`$ を取る（$`1 \le m + 1`$）。
 [T.copies_zero_succ](#t-copies_zero_succ) より
 $`\mathrm{cp}_0(B, m+1) = \mathrm{cp}_0(B, m) \mathbin{+\!\!+} B`$ であり、(i) より $`q :: S = Y \mathbin{+\!\!+} V`$
@@ -502,7 +502,7 @@ Y \mathbin{+\!\!+} V \prec_{\mathrm{lex}} \mathrm{cp}_0(B, m) \mathbin{+\!\!+} B
 ```
 
 である（これが言えれば $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言により結論を得る）。
-第 8 段の $`\preceq_{\mathrm{lex}}`$ を、$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）に従って 2 つの場合に分ける。
+ステップ 8 の $`\preceq_{\mathrm{lex}}`$ を、$`\preceq_{\mathrm{lex}}`$ の定義（D.sle）に従って 2 つの場合に分ける。
 
 **(a) $`Y = \mathrm{cp}_0(B, m)`$ のとき。**
 示すべきは $`Y \mathbin{+\!\!+} V \prec_{\mathrm{lex}} Y \mathbin{+\!\!+} B`$ である。

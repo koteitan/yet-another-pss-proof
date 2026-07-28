@@ -30,18 +30,18 @@ $`M := (0,v) :: R`$ と書く。$`R \ne ()`$ より $`0 \lt \lvert R\rvert`$ で
 $`\lvert M\rvert - 1 = \lvert R\rvert`$ である。
 [T.entry_cons_last](Wset-3-ja.md#t-entry_cons_last) より $`M_{0,\lvert R\rvert} = R_{0,k_1}`$ である。
 
-**第 1 段：$`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 0`$（[D.idx1](Pss-ja.md#d-idx1)）。**
+**ステップ 1：$`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 0`$（[D.idx1](Pss-ja.md#d-idx1)）。**
 [T.idx1_cons_last](Wset-3-ja.md#t-idx1_cons_last) より
 $`\mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1)`$ であり、
 仮定 $`R_{1,k_1} = 0`$ と $`\mathrm{idx}_1`$ の定義（D.idx1）の第 2 の場合により
 $`\mathrm{idx}_1(R, k_1) = 0`$ である。
 
-**第 2 段：$`\forall k \lt k_1,\ R_{0,k_1} \le R_{0,k}`$。**
+**ステップ 2：$`\forall k \lt k_1,\ R_{0,k_1} \le R_{0,k}`$。**
 $`k \lt k_1`$ かつ $`R_{0,k} \lt R_{0,k_1}`$ なる $`k`$ が存在したとすると、
 $`k_1 \lt \lvert R\rvert`$ であるから [T.hasParent_zero_iff](Wset-3-ja.md#t-hasParent_zero_iff) より
 $`\mathrm{hasParent}(R, 0, k_1)`$ となり、仮定に反する。
 
-**第 3 段：$`0 \to^M_0 \lvert R\rvert`$（[D.nextrel0](Pss-ja.md#d-nextrel0)）。**
+**ステップ 3：$`0 \to^M_0 \lvert R\rvert`$（[D.nextrel0](Pss-ja.md#d-nextrel0)）。**
 $`\to^M_0`$ の定義（D.nextrel0）の 5 条件を確かめる。
 
 - (1) $`0 \lt \lvert M\rvert`$：$`\lvert M\rvert = \lvert R\rvert + 1 \ge 1`$。
@@ -53,24 +53,24 @@ $`\to^M_0`$ の定義（D.nextrel0）の 5 条件を確かめる。
   $`\mathrm{argOK}`$ の定義（D.argOK）より $`M_{0,\lvert R\rvert} = R_{0,k_1} \gt 0`$ である。
 - (5) $`\forall l,\ (0 \lt l \wedge l \lt \lvert R\rvert) \to M_{0,\lvert R\rvert} \le M_{0,l}`$：
   $`l = l' + 1`$ と書けて $`l' \lt k_1`$ である。[T.entry_cons](Wset-3-ja.md#t-entry_cons) より
-  $`M_{0,l'+1} = R_{0,l'}`$ であり、第 2 段が $`R_{0,k_1} \le R_{0,l'}`$ を与える。
+  $`M_{0,l'+1} = R_{0,l'}`$ であり、ステップ 2 が $`R_{0,k_1} \le R_{0,l'}`$ を与える。
 
-**第 4 段：$`y \to^M_0 \lvert R\rvert`$ ならば $`y = 0`$。**
+**ステップ 4：$`y \to^M_0 \lvert R\rvert`$ ならば $`y = 0`$。**
 $`y \ne 0`$ とすると $`y = y' + 1`$ と書け、[T.nextR_cons_last](Wset-3-ja.md#t-nextR_cons_last) より
 $`y' \to^R_0 k_1`$ である。その定義（D.nextrel0）の条件 (3) より $`y' \lt k_1`$、
-条件 (4) より $`R_{0,y'} \lt R_{0,k_1}`$ である。ところが第 2 段は
+条件 (4) より $`R_{0,y'} \lt R_{0,k_1}`$ である。ところがステップ 2 は
 $`R_{0,k_1} \le R_{0,y'}`$ を与えるから矛盾である。
 
-**第 5 段：展開の適用。**
-第 3 段と第 4 段より $`\mathrm{hasParent}(M, 0, \lvert R\rvert)`$ が成り立ち、
-第 1 段と合わせて
+**ステップ 5：展開の適用。**
+ステップ 3 とステップ 4 より $`\mathrm{hasParent}(M, 0, \lvert R\rvert)`$ が成り立ち、
+ステップ 1 と合わせて
 $`\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M, \lvert M\rvert-1), \lvert M\rvert-1\bigr)`$ である。
-また [T.parent_nextR](Decrease-ja.md#t-parent_nextR) と第 4 段より
+また [T.parent_nextR](Decrease-ja.md#t-parent_nextR) とステップ 4 より
 $`\mathrm{par}^M_0(\lvert R\rvert) = 0`$（[D.parent](Pss-ja.md#d-parent)）である。
 $`\lvert M\rvert - 1 = \lvert R\rvert \ne 0`$ であり、
 $`M_{0,\lvert R\rvert} = R_{0,k_1} \gt 0`$ より
 $`\neg(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0)`$ である。
-よって [T.oper_root_tiling](Wset-3-ja.md#t-oper_root_tiling) が適用できる。第 1 段により
+よって [T.oper_root_tiling](Wset-3-ja.md#t-oper_root_tiling) が適用できる。ステップ 1 により
 $`\mathrm{idx}_1(M, \lvert M\rvert-1) = 0`$ であるから、そこに現れる $`e`$ は
 $`0 \lt \mathrm{idx}_1(M,\lvert M\rvert-1)`$ が偽であることにより $`e = 0`$ であり、
 各ブロックは $`(\mathrm{dropLast}\,M)^{+k\cdot 0} = \mathrm{dropLast}\,M`$（[D.shiftr0](Cnf-2-ja.md#d-shiftr0)）である。
@@ -116,13 +116,13 @@ $`\mathrm{domT}`$ の定義（D.domT）の第 1 連言子より $`R_{1,k_1} = m 
 また $`k_1 \lt \lvert R\rvert`$ と [T.entry_pair_mem](Wset-2-ja.md#t-entry_pair_mem)、
 $`\mathrm{argOK}`$ の定義（D.argOK）より $`0 \lt x`$ である。
 
-**第 1 段：$`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 1`$。**
+**ステップ 1：$`\mathrm{idx}_1(M, \lvert M\rvert - 1) = 1`$。**
 [T.idx1_cons_last](Wset-3-ja.md#t-idx1_cons_last) より
 $`\mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1)`$ であり、
 $`R_{1,k_1} = m + 1 \gt 0`$ と $`\mathrm{idx}_1`$ の定義（D.idx1）の第 1 の場合により
 その値は $`1`$ である。
 
-**第 2 段：$`y \to^M_1 \lvert R\rvert`$（[D.nextrel1](Pss-ja.md#d-nextrel1)）ならば $`y = 0`$。**
+**ステップ 2：$`y \to^M_1 \lvert R\rvert`$（[D.nextrel1](Pss-ja.md#d-nextrel1)）ならば $`y = 0`$。**
 $`y \ne 0`$ とすると $`y = y' + 1`$ と書け、[T.nextR_cons_last](Wset-3-ja.md#t-nextR_cons_last) より
 $`y' \to^R_1 k_1`$ である。$`\to^R_1`$ の定義（D.nextrel1）の条件 (3)(4)(5) はそれぞれ
 $`y' \lt k_1`$、$`R_{1,y'} \lt R_{1,k_1}`$、$`y' \le^R_0 k_1`$（[D.le0](Pss-ja.md#d-le0)）であり、これは
@@ -130,19 +130,19 @@ $`\mathrm{r1cand}(R, k_1, y')`$（[D.r1cand](Wset-ja.md#d-r1cand)）にほかな
 [T.hasParent_one_iff](Wset-ja.md#t-hasParent_one_iff) より $`\mathrm{hasParent}(R, 1, k_1)`$ となり、
 上で見た $`\neg\,\mathrm{hasParent}(R,1,k_1)`$ に矛盾する。
 
-**第 3 段：$`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ と $`\mathrm{par}^M_1(\lvert R\rvert) = 0`$。**
+**ステップ 3：$`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ と $`\mathrm{par}^M_1(\lvert R\rvert) = 0`$。**
 $`v \le m \lt m + 1 = R_{1,k_1}`$ であるから、
 [T.hasParent_cons_one](Wset-3-ja.md#t-hasParent_cons_one) を第 2 選言で適用して
 $`\mathrm{hasParent}(M, 1, \lvert R\rvert)`$ を得る。
 [T.parent_nextR](Decrease-ja.md#t-parent_nextR) より
-$`\mathrm{par}^M_1(\lvert R\rvert) \to^M_1 \lvert R\rvert`$ であるから、第 2 段より
+$`\mathrm{par}^M_1(\lvert R\rvert) \to^M_1 \lvert R\rvert`$ であるから、ステップ 2 より
 $`\mathrm{par}^M_1(\lvert R\rvert) = 0`$ である。
 
-**第 4 段：敷き詰めの形。**
+**ステップ 4：敷き詰めの形。**
 $`\lvert M\rvert - 1 = \lvert R\rvert \ne 0`$ であり、$`M_{0,\lvert R\rvert} = x \gt 0`$ より
 $`\neg(M_{0,\lvert M\rvert-1} = 0 \wedge M_{1,\lvert M\rvert-1} = 0)`$ である。
-第 1 段・第 3 段と合わせて [T.oper_root_tiling](Wset-3-ja.md#t-oper_root_tiling) が適用できる。
-第 1 段より $`\mathrm{idx}_1(M,\lvert M\rvert-1) = 1 \gt 0`$ であるから、そこに現れる $`e`$ は
+ステップ 1・ステップ 3 と合わせて [T.oper_root_tiling](Wset-3-ja.md#t-oper_root_tiling) が適用できる。
+ステップ 1 より $`\mathrm{idx}_1(M,\lvert M\rvert-1) = 1 \gt 0`$ であるから、そこに現れる $`e`$ は
 
 ```math
 e = M_{0,\lvert M\rvert-1} - M_{0,0} = x - 0 = x
@@ -156,7 +156,7 @@ $`D := (0,v) :: \mathrm{dropLast}\,R`$ とおくと
 M[n] = D^{+0\cdot x} \mathbin{+\!\!+} D^{+1\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} .
 ```
 
-**第 5 段：右辺が $`\mathrm{tow}_v(R,n)`$ に等しいこと。**
+**ステップ 5：右辺が $`\mathrm{tow}_v(R,n)`$ に等しいこと。**
 $`n`$ に関する帰納法。帰納法の述語は
 
 ```math
@@ -787,7 +787,7 @@ $`S`$ の構造に関する帰納法。帰納法の述語は
   いずれの場合も $`p_2 \le \mathrm{maxr}_1(q :: S')`$ であるから $`\Phi(q :: S')`$。∎
 
 <a id="t-mem_W_maxr1"></a>
-## 定理: 行 1 の最大値の段での所属 (T.mem_W_maxr1)
+## 定理: 行 1 の最大値のレベルでの所属 (T.mem_W_maxr1)
 
 ### 定理
 
@@ -800,7 +800,7 @@ $`S`$ の構造に関する帰納法。帰納法の述語は
 [T.le_maxr1](#t-le_maxr1) である。∎
 
 <a id="t-W_membership"></a>
-## 定理: 標準形は或る段に属する (T.W_membership)
+## 定理: 標準形は或るレベルに属する (T.W_membership)
 
 ### 定理
 

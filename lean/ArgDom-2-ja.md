@@ -502,7 +502,7 @@ $`L`$ の先頭 $`k`$ 要素からなる列である（$`k \ge \lvert L\rvert`$ 
 
 $`K := \mathrm{drop}_{\lvert E\rvert} C`$、$`P := \mathrm{take}_{\lvert E\rvert} C`$ とおく。
 
-**第 1 段：仮定を $`P`$ を左因子とする形に書き直す。**
+**ステップ 1：仮定を $`P`$ を左因子とする形に書き直す。**
 任意の列 $`L`$ と任意の $`k`$ について $`L = \mathrm{take}_k L \mathbin{+\!\!+} \mathrm{drop}_k L`$ が成り立つ。
 これを $`L := C`$、$`k := \lvert E\rvert`$ に用いると $`C = P \mathbin{+\!\!+} K`$ である。よって仮定の左辺は
 $`(P \mathbin{+\!\!+} K) \mathbin{+\!\!+} D`$ であり、連結の結合律より $`P \mathbin{+\!\!+} (K \mathbin{+\!\!+} D)`$ に等しい。すなわち
@@ -511,23 +511,23 @@ $`(P \mathbin{+\!\!+} K) \mathbin{+\!\!+} D`$ であり、連結の結合律よ�
 P \mathbin{+\!\!+} (K \mathbin{+\!\!+} D) = E \mathbin{+\!\!+} F .
 ```
 
-**第 2 段：左因子の長さを合わせる。**
+**ステップ 2：左因子の長さを合わせる。**
 $`\lvert \mathrm{take}_k L\rvert = \min(k, \lvert L\rvert)`$ であり、仮定 $`\lvert E\rvert \le \lvert C\rvert`$ より
 $`\lvert P\rvert = \min(\lvert E\rvert, \lvert C\rvert) = \lvert E\rvert`$ である。
 
-**第 3 段：連結の分解の一意性。**
+**ステップ 3：連結の分解の一意性。**
 2 つの連結 $`s_1 \mathbin{+\!\!+} t_1 = s_2 \mathbin{+\!\!+} t_2`$ が等しく $`\lvert s_1\rvert = \lvert s_2\rvert`$ ならば
 $`s_1 = s_2`$ かつ $`t_1 = t_2`$ である。実際、$`i \lt \lvert s_1\rvert`$ なる各 $`i`$ について両辺の
 第 $`i`$ 要素はそれぞれ $`s_1`$ の第 $`i`$ 要素と $`s_2`$ の第 $`i`$ 要素であるから
 $`s_1 = s_2`$ が従い、次にその共通の左因子を両辺の先頭から取り除けば $`t_1 = t_2`$ が従う。
 
-第 1 段の等式に第 2 段の長さの一致とともにこれを適用して
+ステップ 1 の等式にステップ 2 の長さの一致とともにこれを適用して
 
 ```math
 P = E, \qquad K \mathbin{+\!\!+} D = F
 ```
 
-を得る。第 1 の等式を第 1 段の $`C = P \mathbin{+\!\!+} K`$ に代入すれば $`C = E \mathbin{+\!\!+} K`$ であり、
+を得る。第 1 の等式をステップ 1 の $`C = P \mathbin{+\!\!+} K`$ に代入すれば $`C = E \mathbin{+\!\!+} K`$ であり、
 第 2 の等式が結論の後半である。∎
 
 <a id="t-split_prefix_right"></a>
@@ -707,7 +707,7 @@ B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!
 
 (hn) より $`n = m + 1`$ なる $`m`$ が取れる。以下 $`n`$ をこの形に書く。
 
-**第 1 段：コピー 0 を剥がす。**
+**ステップ 1：コピー 0 を剥がす。**
 [T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) と連結の結合律より
 
 ```math
@@ -729,10 +729,10 @@ B \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B \mathbin{+\!\!
 
 が成り立つ。
 
-**第 2 段：境界で切る。**
+**ステップ 2：境界で切る。**
 $`\lvert G \mathbin{+\!\!+} \mathrm{blk}\rvert = \lvert G\rvert + (\lvert R\rvert + 1)`$ であり、(hcase) は
 これが $`\lvert X\rvert`$ 以下であることを言う。よって
-[T.split_prefix_right](#t-split_prefix_right) を第 1 段の等式に適用できて、
+[T.split_prefix_right](#t-split_prefix_right) をステップ 1 の等式に適用できて、
 $`X' := \mathrm{drop}_{\lvert G\rvert + (\lvert R\rvert + 1)} X`$ とおくと
 
 ```math
@@ -755,7 +755,7 @@ X = (G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} X',
 $`X`$ を $`X'`$ に置き換えたほかは (heq) と同一である。とくに $`A_1, B, A_2, Z, u, w, e`$ は
 変わらないから、(he)、(h1)〜(h6) はそのまま使える。
 
-**第 3 段：$`m`$ で場合分けする。**
+**ステップ 3：$`m`$ で場合分けする。**
 
 **(a) $`m = 0`$ のとき。** [T.copies_zero](Cnf-2-ja.md#t-copies_zero) より
 $`\mathrm{copies}_{d_0}(\mathrm{blk}, 0) = ()`$ であり、
@@ -784,7 +784,7 @@ $`\mathrm{ArgDomCoreOn}(\mathrm{copies}_{d_0}(\mathrm{blk}, m))`$ が得られ�
 \mathrm{ArgDomCoreOn}\Bigl(\bigl(\mathrm{copies}_{d_0}(\mathrm{blk}, m)\bigr)^{+d_0}\Bigr)
 ```
 
-が得られる。これを第 2 段の分解 $`(\ast)`$ と (he)、(h1)、(h2)、(h3)、(h4)、(h5)、(h6) に
+が得られる。これをステップ 2 の分解 $`(\ast)`$ と (he)、(h1)、(h2)、(h3)、(h4)、(h5)、(h6) に
 適用すれば、D.ArgDomCoreOn の結論そのものとして
 
 ```math

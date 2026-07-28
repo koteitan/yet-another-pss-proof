@@ -540,9 +540,9 @@ $`c := P_{0,0}`$、$`\hat A := A^{-c}`$、$`\hat P := P^{-c}`$ とおく。
 平行移動は長さを変えないから $`\lvert \hat A\rvert = \lvert A\rvert`$、$`\lvert \hat P\rvert = \lvert P\rvert`$ である。
 [T.entry_sub_zero](#t-entry_sub_zero) より $`(\hat P)_{0,0} = 0`$、
 [T.rsum_decomp](#t-rsum_decomp) より $`(\hat A \mathbin{+\!\!+} \hat P)^{+c} = A \mathbin{+\!\!+} P`$、
-[T.map_sub_add](#t-map_sub_add) より $`(\hat P)^{+c} = P`$ である。3 段に分ける。
+[T.map_sub_add](#t-map_sub_add) より $`(\hat P)^{+c} = P`$ である。3 ステップに分ける。
 
-**第 1 段。** 次を示す。
+**ステップ 1。** 次を示す。
 
 ```math
 \mathrm{hasParent}(A \mathbin{+\!\!+} P,\ i,\ \lvert A\rvert + j)
@@ -555,7 +555,7 @@ $`(\hat A \mathbin{+\!\!+} \hat P)^{+c} = A \mathbin{+\!\!+} P`$ であるから
 [T.hasParent_shift](#t-hasParent_shift) を $`S := \hat A \mathbin{+\!\!+} \hat P`$、$`d := c`$、
 $`b := \lvert A\rvert + j`$ に適用すればよい（$`\lvert \hat A\rvert = \lvert A\rvert`$）。
 
-**第 2 段。** 次を示す。
+**ステップ 2。** 次を示す。
 
 ```math
 \mathrm{hasParent}(\hat A \mathbin{+\!\!+} \hat P,\ i,\ \lvert \hat A\rvert + j)
@@ -575,11 +575,11 @@ $`0 \lt (\hat A \mathbin{+\!\!+} \hat P)_{0,\lvert \hat A\rvert + j}`$ である
 $`(\hat P)_{0,0} = 0`$ と合わせて
 [T.hasParent_append_right](Column-ja.md#t-hasParent_append_right) が適用でき、同値を得る。
 
-**第 3 段：$`\mathrm{hasParent}(\hat P, i, j) \iff \mathrm{hasParent}(P, i, j)`$。**
+**ステップ 3：$`\mathrm{hasParent}(\hat P, i, j) \iff \mathrm{hasParent}(P, i, j)`$。**
 $`j \lt \lvert P\rvert = \lvert \hat P\rvert`$ であり $`(\hat P)^{+c} = P`$ であるから、
 [T.hasParent_shift](#t-hasParent_shift) を $`S := \hat P`$、$`d := c`$、$`b := j`$ に適用すればよい。
 
-3 段をつなげば結論を得る。∎
+3 ステップをつなげば結論を得る。∎
 
 <a id="t-domT_append"></a>
 ## 定理: $`\mathrm{domT}`$ の前置不変性 (T.domT_append)

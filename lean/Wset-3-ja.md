@@ -729,7 +729,7 @@ $`\neg(M_{0,\lvert R\rvert} = 0 \wedge M_{1,\lvert R\rvert} = 0)`$ でもある�
 **(v)** $`\mathrm{idx}_1(M, \lvert M\rvert - 1) = \mathrm{idx}_1(M, \lvert R\rvert) = \mathrm{idx}_1(R, k_1) = i`$。
 (i) と [T.idx1_cons_last](#t-idx1_cons_last) による。
 
-**第 1 段：根 $`0`$ は $`M`$ の最終列の親ではない、すなわち $`\neg\bigl(0 \to^M_i \lvert R\rvert\bigr)`$。**
+**ステップ 1：根 $`0`$ は $`M`$ の最終列の親ではない、すなわち $`\neg\bigl(0 \to^M_i \lvert R\rvert\bigr)`$。**
 $`0 \to^M_i \lvert R\rvert`$ を仮定して矛盾を導く。$`i`$ で場合分けする。
 
 **(a) $`i = 0`$ のとき。** $`\to^M_i`$ の定義（D.nextR）より $`0 \to^M_0 \lvert R\rvert`$ である。
@@ -749,23 +749,23 @@ $`M_{1,\lvert R\rvert} \le M_{1,j_0+1}`$、すなわち (ii) と [T.entry_cons](
 $`R_{1,k_1} \le R_{1,j_0}`$ を得る。
 一方 $`j_0 \to^R_1 k_1`$ の条件 (4) は $`R_{1,j_0} \lt R_{1,k_1}`$ であり、矛盾する。
 
-**第 2 段：$`y \to^M_i \lvert R\rvert`$ ならば $`y = j_0 + 1`$。**
-$`y = 0`$ は第 1 段により排除される。よって $`y = y' + 1`$ と書ける。
+**ステップ 2：$`y \to^M_i \lvert R\rvert`$ ならば $`y = j_0 + 1`$。**
+$`y = 0`$ はステップ 1 により排除される。よって $`y = y' + 1`$ と書ける。
 [T.nextR_cons_last](#t-nextR_cons_last) より $`y' \to^R_i k_1`$ である。
 仮定 $`\mathrm{hasParent}(R, i, k_1)`$ の一意性（$`\mathrm{hasParent}`$ の定義 D.hasParent）と
 (iii) の $`j_0 \to^R_i k_1`$ から $`y' = j_0`$、すなわち $`y = j_0 + 1`$。
 
-**第 3 段：$`M`$ の側の親。**
+**ステップ 3：$`M`$ の側の親。**
 (iii) と [T.nextR_cons_last](#t-nextR_cons_last) より $`j_0 + 1 \to^M_i \lvert R\rvert`$ であり、
-第 2 段よりそのような添字は $`j_0 + 1`$ に限る。よって
+ステップ 2 よりそのような添字は $`j_0 + 1`$ に限る。よって
 $`\mathrm{hasParent}(M, i, \lvert R\rvert)`$ が成り立ち、(i)(v) と合わせて
 $`\mathrm{hasParent}\bigl(M, \mathrm{idx}_1(M,\lvert M\rvert-1), \lvert M\rvert-1\bigr)`$ である。
 また $`\mathrm{par}^M_i(\lvert R\rvert)`$ は [T.parent_nextR](Decrease-ja.md#t-parent_nextR) より
-$`\to^M_i`$ で $`\lvert R\rvert`$ に至る添字であるから、第 2 段より
+$`\to^M_i`$ で $`\lvert R\rvert`$ に至る添字であるから、ステップ 2 より
 $`\mathrm{par}^M_i(\lvert R\rvert) = j_0 + 1`$。
 
-**第 4 段：両辺を展開して比べる。**
-(i)(iv) と第 3 段により [T.oper_bad_unfold](Decrease-ja.md#t-oper_bad_unfold) が $`M`$ に適用でき、
+**ステップ 4：両辺を展開して比べる。**
+(i)(iv) とステップ 3 により [T.oper_bad_unfold](Decrease-ja.md#t-oper_bad_unfold) が $`M`$ に適用でき、
 (iii)(iv) と仮定により $`R`$ にも適用できる。それぞれ
 
 ```math

@@ -290,7 +290,7 @@ $`j_0`$ を元にもち空でない。その最大元を $`g`$ とおく。す�
 P(g), \qquad \forall k,\ \bigl(k \le j_1 \wedge P(k)\bigr) \to k \le g .
 ```
 
-**第 1 段：$`g \to^M_1 j_1`$。** D.nextrel1 の 6 条件を順に確かめる。
+**ステップ 1：$`g \to^M_1 j_1`$。** D.nextrel1 の 6 条件を順に確かめる。
 
 - (1) $`g \lt \lvert M\rvert`$：$`P(g)`$ の第 1 連言子より $`g \lt j_1`$ であり、仮定
   $`j_1 \lt \lvert M\rvert`$ と $`\lt`$ の推移律による。
@@ -308,15 +308,15 @@ P(g), \qquad \forall k,\ \bigl(k \le j_1 \wedge P(k)\bigr) \to k \le g .
   3 つがそろうから $`P(j)`$ が成り立ち、$`j \le j_1`$ と最大性から $`j \le g`$ となって、
   いま仮定した $`g \lt j`$ に矛盾する。
 
-**第 2 段：一意性。** $`y \to^M_1 j_1`$ とする。D.nextrel1 の条件 (3), (5), (4) より
+**ステップ 2：一意性。** $`y \to^M_1 j_1`$ とする。D.nextrel1 の条件 (3), (5), (4) より
 $`P(y)`$ が成り立ち、条件 (3) より $`y \lt j_1`$ すなわち $`y \le j_1`$ であるから、
 最大性より $`y \le g`$ である。$`y = g`$ でないとすると $`y \lt g`$ である。
 $`y \to^M_1 j_1`$ の条件 (6) を $`j := g`$ に適用する。その前件 $`y \lt g`$ は
-いまの仮定であり、$`g \le^M_0 j_1`$ は第 1 段の (5) であるから、
-$`M_{1,j_1} \le M_{1,g}`$ を得る。一方、第 1 段の (4) は $`M_{1,g} \lt M_{1,j_1}`$ で
+いまの仮定であり、$`g \le^M_0 j_1`$ はステップ 1 の (5) であるから、
+$`M_{1,j_1} \le M_{1,g}`$ を得る。一方、ステップ 1 の (4) は $`M_{1,g} \lt M_{1,j_1}`$ で
 あるから $`M_{1,j_1} \lt M_{1,j_1}`$ となり、$`\lt`$ の非反射性に矛盾する。よって $`y = g`$。
 
-第 1 段と第 2 段により、$`j_0 \to^M_1 j_1`$ をみたす $`j_0`$ は存在し一意である。
+ステップ 1 とステップ 2 により、$`j_0 \to^M_1 j_1`$ をみたす $`j_0`$ は存在し一意である。
 $`\mathrm{hasParent}`$ の定義（D.hasParent）よりこれが $`\mathrm{hasParent}(M,1,j_1)`$ である。∎
 
 <a id="t-domT_iff"></a>
@@ -506,7 +506,7 @@ $`\mathrm{Aset}`$ の定義（D.Aset）よりこれは $`\mathrm{Aop}(\mathcal{W
 ふたたび D.Aset より $`M \in \mathrm{Aset}(\mathcal{W},u,Y)`$。∎
 
 <a id="t-Aop_mono_level"></a>
-## 定理: $`A_u`$ の段についての単調性 (T.Aop_mono_level)
+## 定理: $`A_u`$ のレベルについての単調性 (T.Aop_mono_level)
 
 ### 定理
 
@@ -525,7 +525,7 @@ $`\mathrm{Aop}`$ の定義（D.Aop）の 3 つの選言で場合分けする。
   $`u`$ にも $`v`$ にも依らないからそのまま成り立つ。∎
 
 <a id="t-Aop_cong"></a>
-## 定理: $`A_u`$ は $`u`$ 未満の段しか読まない (T.Aop_cong)
+## 定理: $`A_u`$ は $`u`$ 未満のレベルしか読まない (T.Aop_cong)
 
 ### 定理
 
@@ -567,7 +567,7 @@ $`\mathcal{W}`$, $`\mathcal{V}`$ を族とし、$`\forall m \lt u,\ \mathcal{W}(
   $`\mathrm{graft}(M,z) \in X`$。∎
 
 <a id="d-Wf"></a>
-## 定義: 段の族 (D.Wf)
+## 定義: レベルの族 (D.Wf)
 
 $`\mathrm{Wf}`$ を、2 つの自然数 $`v, m`$ に $`\mathrm{PairSeq}`$ の部分集合
 $`\mathrm{Wf}(v,m)`$ を与える写像として、第 1 引数についての再帰で定める。
@@ -600,7 +600,7 @@ $`A_u(X) := \mathrm{Aset}(W,u,X)`$ と略記する。$`\mathrm{Aset}`$ の定義
 $`M \in A_u(X)`$ は $`\mathrm{Aop}(W,u,X,M)`$ を表す。
 
 <a id="t-Wf_coh"></a>
-## 定理: 段の族の整合性 (T.Wf_coh)
+## 定理: レベルの族の整合性 (T.Wf_coh)
 
 ### 定理
 
@@ -631,7 +631,7 @@ $`n`$ に関する自然数の帰納法（$`m`$ は固定する）。帰納法�
     $`\mathrm{Wf}(v+1,m) = \mathrm{Wf}(m+1,m)`$。∎
 
 <a id="t-Wf_eq_W"></a>
-## 定理: 段の族と $`W`$ の一致 (T.Wf_eq_W)
+## 定理: レベルの族と $`W`$ の一致 (T.Wf_eq_W)
 
 ### 定理
 
@@ -655,28 +655,28 @@ W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(W,u)\bigr).
 
 ### 証明
 
-3 段に分ける。
+3 ステップに分ける。
 
-**第 1 段：$`W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(\mathrm{Wf}(u,-),u)\bigr)`$。**
+**ステップ 1：$`W_u = \mathrm{lfp}\bigl(\mathrm{Aset}(\mathrm{Wf}(u,-),u)\bigr)`$。**
 $`W`$ の定義（D.W）より $`W_u = \mathrm{Wf}(u+1,u)`$ である。$`\mathrm{Wf}`$ の
 定義（D.Wf）の第 2 式を $`v := u`$、$`m := u`$ で読むと、条件 $`m = v`$ が
 $`u = u`$ として成り立つから第 1 の場合が選ばれ、値は
 $`\mathrm{lfp}\bigl(\mathrm{Aset}(\mathrm{Wf}(u,-),u)\bigr)`$ である。
 
-**第 2 段：$`\forall m \lt u,\ \mathrm{Wf}(u,m) = W_m`$。**
+**ステップ 2：$`\forall m \lt u,\ \mathrm{Wf}(u,m) = W_m`$。**
 [T.Wf_eq_W](#t-Wf_eq_W) を $`n := u`$ として適用する。
 
-**第 3 段：2 つの写像が等しい。** 任意の $`X \subseteq \mathrm{PairSeq}`$ について
+**ステップ 3：2 つの写像が等しい。** 任意の $`X \subseteq \mathrm{PairSeq}`$ について
 $`\mathrm{Aset}(\mathrm{Wf}(u,-),u,X) = \mathrm{Aset}(W,u,X)`$ を示す。
 $`\mathrm{Aset}`$ の定義（D.Aset）より、左辺の元は
 $`\mathrm{Aop}(\mathrm{Wf}(u,-),u,X,M)`$ をみたす $`M`$、右辺の元は
-$`\mathrm{Aop}(W,u,X,M)`$ をみたす $`M`$ である。第 2 段と
+$`\mathrm{Aop}(W,u,X,M)`$ をみたす $`M`$ である。ステップ 2 と
 [T.Aop_cong](#t-Aop_cong)（$`\mathcal{W} := \mathrm{Wf}(u,-)`$、$`\mathcal{V} := W`$）より
 この 2 つの命題は同値であるから、両辺は同じ元をもち等しい。よって写像
 $`X \mapsto \mathrm{Aset}(\mathrm{Wf}(u,-),u,X)`$ と $`X \mapsto \mathrm{Aset}(W,u,X)`$ は
 各点で等しく、写像として等しい。
 
-第 3 段の等式を第 1 段の右辺に代入して結論を得る。∎
+ステップ 3 の等式をステップ 1 の右辺に代入して結論を得る。∎
 
 <a id="t-A1"></a>
 ## 定理: 不動点方程式 (A1) (T.A1)
@@ -757,7 +757,7 @@ $`\mathrm{Aop}(W,u,W_u,())`$ を示す。$`\mathrm{Aop}`$ の定義（D.Aop）�
   あるから $`()\langle 0\rangle = (0,0)`$ であり、その第 2 成分は $`0`$ である。∎
 
 <a id="t-W_mono"></a>
-## 定理: $`W_u`$ の段についての単調性 (T.W_mono)
+## 定理: $`W_u`$ のレベルについての単調性 (T.W_mono)
 
 ### 定理
 

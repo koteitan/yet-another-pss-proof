@@ -93,11 +93,11 @@ $`\mathrm{blockok}(0, M)`$、$`j \lt \lvert M\rvert`$、$`0 \lt M_{0,j}`$ なら
 
 ### 証明
 
-**第 1 段：$`0 \lt j`$。**
+**ステップ 1：$`0 \lt j`$。**
 $`j = 0`$ とすると、[T.blockok_head_zero](#t-blockok_head_zero) より $`M_{0,0} = 0`$ であり、
 これは仮定 $`0 \lt M_{0,j} = M_{0,0}`$ に矛盾する。
 
-**第 2 段：候補の最大元を取る。** 述語 $`P`$ を
+**ステップ 2：候補の最大元を取る。** 述語 $`P`$ を
 
 ```math
 P(k) :\equiv M_{0,k} \lt M_{0,j}
@@ -111,7 +111,7 @@ P(k) :\equiv M_{0,k} \lt M_{0,j}
 S := \{\, k \mid k \le j - 1 \ \wedge\ P(k) \,\}
 ```
 
-は $`0`$ を要素にもち（第 1 段より $`0 \le j - 1`$）、$`\{0, 1, \dots, j-1\}`$ に含まれる
+は $`0`$ を要素にもち（ステップ 1 より $`0 \le j - 1`$）、$`\{0, 1, \dots, j-1\}`$ に含まれる
 有限集合であるから最大元をもつ。それを $`k`$ とおく。$`k`$ について次の 3 つが成り立つ。
 
 ```math
@@ -125,12 +125,12 @@ S := \{\, k \mid k \le j - 1 \ \wedge\ P(k) \,\}
 $`(\mathrm{i})`$ と $`(\mathrm{ii})`$ は $`k \in S`$ から、$`(\mathrm{iii})`$ は $`k`$ が
 $`S`$ の最大元であることから従う。
 
-**第 3 段：$`k \to^M_0 j`$ の 5 条件を確かめる。**
+**ステップ 3：$`k \to^M_0 j`$ の 5 条件を確かめる。**
 
-- 第 1 条件 $`k \lt \lvert M\rvert`$：$`(\mathrm{i})`$ と第 1 段より $`k \le j - 1 \lt j`$ であり、
+- 第 1 条件 $`k \lt \lvert M\rvert`$：$`(\mathrm{i})`$ とステップ 1 より $`k \le j - 1 \lt j`$ であり、
   仮定 $`j \lt \lvert M\rvert`$ と合わせて $`k \lt \lvert M\rvert`$。
 - 第 2 条件 $`j \lt \lvert M\rvert`$：仮定である。
-- 第 3 条件 $`k \lt j`$：$`(\mathrm{i})`$ と第 1 段より $`k \le j - 1 \lt j`$。
+- 第 3 条件 $`k \lt j`$：$`(\mathrm{i})`$ とステップ 1 より $`k \le j - 1 \lt j`$。
 - 第 4 条件 $`M_{0,k} \lt M_{0,j}`$：$`(\mathrm{ii})`$ である。
 - 第 5 条件 $`\forall l,\ (k \lt l \wedge l \lt j) \to M_{0,j} \le M_{0,l}`$：
   $`l`$ を取り $`k \lt l`$、$`l \lt j`$ とする。$`l \lt j`$ より $`l \le j - 1`$ であるから
@@ -195,7 +195,7 @@ $`j \lt \lvert M\rvert`$、$`0 \lt M_{1,j}`$ ならば、ある $`k`$ が存在�
 
 ### 証明
 
-**第 1 段：行 0 の根までの鎖を取る。**
+**ステップ 1：行 0 の根までの鎖を取る。**
 [T.chain_to_zero](#t-chain_to_zero) を $`\mathrm{lev} := M_{0,j}`$ に適用して、
 
 ```math
@@ -205,11 +205,11 @@ r \le j, \qquad M_{0,r} = 0, \qquad r \mathbin{(\to^M_0)^{*}} j
 なる $`r`$ を取る。$`r \le j \lt \lvert M\rvert`$ である。
 $`M_{0,r} = 0`$ に $`\mathrm{z0ok}(M)`$ の定義（D.z0ok）を適用して $`M_{1,r} = 0`$ を得る。
 
-**第 2 段：$`r \lt j`$。**
+**ステップ 2：$`r \lt j`$。**
 $`r \le j`$ である。$`r = j`$ とすると $`M_{1,j} = M_{1,r} = 0`$ となり、
 仮定 $`0 \lt M_{1,j}`$ に矛盾する。よって $`r \lt j`$。
 
-**第 3 段：候補の最大元を取る。** 述語 $`P`$ を
+**ステップ 3：候補の最大元を取る。** 述語 $`P`$ を
 
 ```math
 P(k) :\equiv k \le^M_0 j \ \wedge\ M_{1,k} \lt M_{1,j}
@@ -217,7 +217,7 @@ P(k) :\equiv k \le^M_0 j \ \wedge\ M_{1,k} \lt M_{1,j}
 
 で定める。$`P(r)`$ が成り立つ。実際、$`\le^M_0`$ の定義（D.le0）の 3 条件は
 $`r \lt \lvert M\rvert`$、$`j \lt \lvert M\rvert`$、$`r \mathbin{(\to^M_0)^{*}} j`$ で
-いずれも第 1 段で得ており、また $`M_{1,r} = 0 \lt M_{1,j}`$ である。
+いずれもステップ 1 で得ており、また $`M_{1,r} = 0 \lt M_{1,j}`$ である。
 
 集合
 
@@ -225,7 +225,7 @@ $`r \lt \lvert M\rvert`$、$`j \lt \lvert M\rvert`$、$`r \mathbin{(\to^M_0)^{*}
 S := \{\, k \mid k \le j - 1 \ \wedge\ P(k) \,\}
 ```
 
-は $`r`$ を要素にもち（第 2 段より $`r \le j - 1`$）、$`\{0,1,\dots,j-1\}`$ に含まれる
+は $`r`$ を要素にもち（ステップ 2 より $`r \le j - 1`$）、$`\{0,1,\dots,j-1\}`$ に含まれる
 有限集合であるから最大元をもつ。それを $`k`$ とおく。$`k`$ について
 
 ```math
@@ -238,12 +238,12 @@ S := \{\, k \mid k \le j - 1 \ \wedge\ P(k) \,\}
 
 が成り立つ。
 
-**第 4 段：$`k \to^M_1 j`$ の 6 条件を確かめる。**
+**ステップ 4：$`k \to^M_1 j`$ の 6 条件を確かめる。**
 
-- 第 1 条件 $`k \lt \lvert M\rvert`$：$`(\mathrm{i})`$ と第 2 段より $`k \le j - 1 \lt j`$ であり、
+- 第 1 条件 $`k \lt \lvert M\rvert`$：$`(\mathrm{i})`$ とステップ 2 より $`k \le j - 1 \lt j`$ であり、
   $`j \lt \lvert M\rvert`$ と合わせてよい。
 - 第 2 条件 $`j \lt \lvert M\rvert`$：仮定である。
-- 第 3 条件 $`k \lt j`$：$`(\mathrm{i})`$ と第 2 段による。
+- 第 3 条件 $`k \lt j`$：$`(\mathrm{i})`$ とステップ 2 による。
 - 第 4 条件 $`M_{1,k} \lt M_{1,j}`$：$`(\mathrm{ii})`$ の第 2 連言子である。
 - 第 5 条件 $`k \le^M_0 j`$：$`(\mathrm{ii})`$ の第 1 連言子である。
 - 第 6 条件 $`\forall j',\ (k \lt j' \wedge j' \le^M_0 j) \to M_{1,j} \le M_{1,j'}`$：

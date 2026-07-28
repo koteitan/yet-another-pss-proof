@@ -387,18 +387,18 @@ $`1 \lt \lvert M\rvert`$、$`M_{0,\lvert M\rvert - 1} = 0 \wedge M_{1,\lvert M\r
 $`j_1 := \lvert M\rvert - 1`$ とおく。$`1 \lt \lvert M\rvert`$ より $`M \ne ()`$ であり、
 $`j_1 \ne 0`$ である。
 
-**第 1 段：$`M\langle j_1\rangle = (0,0)`$。**
+**ステップ 1：$`M\langle j_1\rangle = (0,0)`$。**
 [T.entry_zero](#t-entry_zero) と [T.entry_one](#t-entry_one) より
 $`\pi_1(M\langle j_1\rangle) = M_{0,j_1} = 0`$、$`\pi_2(M\langle j_1\rangle) = M_{1,j_1} = 0`$ である。
 対は両成分で決まるから $`M\langle j_1\rangle = (0,0)`$。
 
-**第 2 段：$`M[1] = \mathrm{dropLast}\,M`$。**
+**ステップ 2：$`M[1] = \mathrm{dropLast}\,M`$。**
 [T.oper_eq_pred_of_zero](Decrease-ja.md#t-oper_eq_pred_of_zero) を $`j_1 \ne 0`$ と仮定の
 第 2 連言子に適用して $`M[1] = \mathrm{Pred}\,M`$（[D.Pred](Pss-ja.md#d-Pred)）を得る。
 $`1 \lt \lvert M\rvert`$ より $`\neg(\lvert M\rvert \le 1)`$ であるから、
 $`\mathrm{Pred}`$ の定義（D.Pred）の第 2 の場合が選ばれ $`\mathrm{Pred}\,M = \mathrm{dropLast}\,M`$ である。
 
-**第 3 段：$`N \preceq_{\mathrm{lex}} \mathrm{dropLast}\,M`$。**
+**ステップ 3：$`N \preceq_{\mathrm{lex}} \mathrm{dropLast}\,M`$。**
 [T.dropLast_snoc_getD](#t-dropLast_snoc_getD) より
 $`\mathrm{dropLast}\,M \mathbin{+\!\!+} (M\langle j_1\rangle) = M`$ であるから、仮定
 $`N \prec_{\mathrm{lex}} M`$ は $`N \prec_{\mathrm{lex}} \mathrm{dropLast}\,M \mathbin{+\!\!+} (M\langle j_1\rangle)`$
@@ -411,7 +411,7 @@ $`D := \mathrm{dropLast}\,M`$、$`\ell := M\langle j_1\rangle`$ として適用�
   $`q_1 \lt 0`$ または $`(q_1 = 0 \wedge q_2 \lt 0)`$ であり、$`\mathbb{N}`$ には $`0`$ より小さい元が
   ないからどちらも偽である。よってこの場合は起こらない。
 
-$`n := 1`$ と取れば、第 2 段と第 3 段により $`N \preceq_{\mathrm{lex}} M[1]`$ である。∎
+$`n := 1`$ と取れば、ステップ 2 とステップ 3 により $`N \preceq_{\mathrm{lex}} M[1]`$ である。∎
 
 <a id="t-hasParent_last_ST_PS"></a>
 ## 定理: 標準形の末尾列は必ず親をもつ (T.hasParent_last_ST_PS)
@@ -548,7 +548,7 @@ $`\to^M_1`$ の定義（D.nextrel1）より、仮定は次の 6 つの連言で�
 
 （$`\le^M_0`$ [D.le0](Pss-ja.md#d-le0)）
 
-**第 1 段：行 $`0`$ の鎖の第 1 歩 $`c`$ を取る。**
+**ステップ 1：行 $`0`$ の鎖の第 1 歩 $`c`$ を取る。**
 (5) と $`\le^M_0`$ の定義（D.le0）の第 3 条件より
 $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$（[D.nextrel0](Pss-ja.md#d-nextrel0)）である。
 反射推移閉包は「$`j_0 = j_1`$」か「ある $`c`$ について
@@ -559,10 +559,10 @@ $`\to^M_0`$ の定義（D.nextrel0）の第 3 条件より $`j_0 \lt c`$、第 2
 これと (2)、および $`c \mathbin{(\to^M_0)^{*}} j_1`$ から、$`\le^M_0`$ の定義（D.le0）の 3 条件が
 そろって $`c \le^M_0 j_1`$ を得る。
 
-**第 2 段：$`M_{1,j_1} \le M_{1,c}`$。**
-(6) を $`j := c`$ に適用する。前件は第 1 段の $`j_0 \lt c`$ と $`c \le^M_0 j_1`$ である。
+**ステップ 2：$`M_{1,j_1} \le M_{1,c}`$。**
+(6) を $`j := c`$ に適用する。前件はステップ 1 の $`j_0 \lt c`$ と $`c \le^M_0 j_1`$ である。
 
-**第 3 段：$`\mathrm{r1ok}(M)`$ を $`c`$ に適用する。**
+**ステップ 3：$`\mathrm{r1ok}(M)`$ を $`c`$ に適用する。**
 $`\to^M_0`$ の定義（D.nextrel0）の第 4 条件より $`M_{0,j_0} \lt M_{0,c}`$ であり、
 [T.entry_zero](#t-entry_zero) によりこれは $`\pi_1(M\langle j_0\rangle) \lt \pi_1(M\langle c\rangle)`$ である。
 とくに $`0 \lt \pi_1(M\langle c\rangle)`$ である。$`c \lt \lvert M\rvert`$ と合わせて
@@ -577,28 +577,28 @@ $`\mathrm{r1ok}(M)`$ を $`j := c`$ に適用すると、次の 4 つをみた�
 \end{aligned}
 ```
 
-**第 4 段：$`k = j_0`$。**
+**ステップ 4：$`k = j_0`$。**
 $`k \to^M_0 c`$ を示す。$`\to^M_0`$ の定義（D.nextrel0）の 5 条件を順に確かめる。
 
 - (1) $`k \lt \lvert M\rvert`$：(i) の $`k \lt c`$ と $`c \lt \lvert M\rvert`$ による。
-- (2) $`c \lt \lvert M\rvert`$：第 1 段で得た。
+- (2) $`c \lt \lvert M\rvert`$：ステップ 1 で得た。
 - (3) $`k \lt c`$：(i) である。
 - (4) $`M_{0,k} \lt M_{0,c}`$：[T.entry_zero](#t-entry_zero) によりこれは
   $`\pi_1(M\langle k\rangle) \lt \pi_1(M\langle c\rangle)`$ であり、(ii) から従う。
 - (5) $`\forall l\ (k \lt l \wedge l \lt c \to M_{0,c} \le M_{0,l})`$：
   [T.entry_zero](#t-entry_zero) により (iii) そのものである。
 
-第 1 段で $`j_0 \to^M_0 c`$ も得ているから、
+ステップ 1 で $`j_0 \to^M_0 c`$ も得ているから、
 [T.nextrel0_unique](Column-4-ja.md#t-nextrel0_unique) より $`k = j_0`$ である。
 
-**第 5 段：結論。**
+**ステップ 5：結論。**
 (iv) に $`k = j_0`$ を代入し、[T.entry_one](#t-entry_one) で書き直すと
 
 ```math
 M_{1,c} \le M_{1,j_0} + 1
 ```
 
-である。第 2 段と合わせて $`M_{1,j_1} \le M_{1,c} \le M_{1,j_0} + 1`$ を得る。
+である。ステップ 2 と合わせて $`M_{1,j_1} \le M_{1,c} \le M_{1,j_0} + 1`$ を得る。
 一方 (4) より $`M_{1,j_0} \lt M_{1,j_1}`$、すなわち $`M_{1,j_0} + 1 \le M_{1,j_1}`$ である。
 $`\le`$ の反対称性により $`M_{1,j_1} = M_{1,j_0} + 1`$。∎
 
@@ -629,7 +629,7 @@ $`\ell \in \mathbb{N}\times\mathbb{N}`$ が存在して、$`B := (v_0,w_0) :: R`
 
 ### 証明
 
-**第 1 段：$`n = 1`$ でブロック分解を取る。**
+**ステップ 1：$`n = 1`$ でブロック分解を取る。**
 [T.oper_bad_blocks](Decrease-ja.md#t-oper_bad_blocks) を $`n := 1`$ として適用する。
 その 4 つの仮定 $`1 \lt \lvert M\rvert`$、$`\neg\bigl(M_{0,j_1} = 0 \wedge M_{1,j_1} = 0\bigr)`$、
 $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ のうち初めの 3 つは本定理の仮定であり、
@@ -647,7 +647,7 @@ $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ のうち初めの 3 つは本
 
 である（$`\to^M_i`$ [D.nextR](Pss-ja.md#d-nextR)）。
 
-**第 2 段：位置の同定。**
+**ステップ 2：位置の同定。**
 (1) と連結の結合則より $`M = G \mathbin{+\!\!+} \bigl(B \mathbin{+\!\!+} (\ell)\bigr)`$ である。
 したがって
 
@@ -668,28 +668,28 @@ $`\mathrm{hasParent}(M, i_1, j_1)`$、$`1 \le n`$ のうち初めの 3 つは本
   [T.getD_last_of_snoc](#t-getD_last_of_snoc) を $`D := G \mathbin{+\!\!+} B`$ に適用すると
   $`M\langle \lvert M\rvert - 1\rangle = \ell`$、すなわち $`M\langle j_1\rangle = \ell`$ である。
 
-**第 3 段：$`(5')`$ から (5) を導く。**
+**ステップ 3：$`(5')`$ から (5) を導く。**
 $`(5')`$ の選言で場合分けする。
 
 **(a) $`d_0 = 0 \wedge i_1 = 0`$ のとき。**
 まず $`\ell_2 = 0`$ を示す。$`\mathrm{idx}_1`$ の定義（D.idx1）は $`0 \lt M_{1,j_1}`$ のとき $`1`$、
 $`M_{1,j_1} = 0`$ のとき $`0`$ である。いま $`i_1 = 0`$ であり $`1 \ne 0`$ であるから
 第 1 の場合ではない。よって $`M_{1,j_1} = 0`$ であり、
-[T.entry_one](#t-entry_one) と第 2 段の $`\ell = M\langle j_1\rangle`$ より
+[T.entry_one](#t-entry_one) とステップ 2 の $`\ell = M\langle j_1\rangle`$ より
 $`\ell_2 = \pi_2(M\langle j_1\rangle) = M_{1,j_1} = 0`$。
 
 次に $`\ell_1 = v_0 + 1`$ を示す。次の 5 つを用意する。
 
 1. $`\lvert G\rvert \to^M_0 j_1`$。(6) に $`i_1 = 0`$ を代入し、
    [T.nextR_zero_iff](Column-4-ja.md#t-nextR_zero_iff) を使う。
-2. $`j_1 = \lvert G\rvert + 1 + \lvert R\rvert`$。第 2 段の長さの式と $`j_1 = \lvert M\rvert - 1`$ による。
+2. $`j_1 = \lvert G\rvert + 1 + \lvert R\rvert`$。ステップ 2 の長さの式と $`j_1 = \lvert M\rvert - 1`$ による。
 3. $`M_{0,\lvert G\rvert + 1} \le M_{0,\lvert G\rvert} + 1`$。
    [T.steps1_iff](Seqlex-ja.md#t-steps1_iff) を $`\mathrm{steps}_1(M)`$ と $`j := \lvert G\rvert`$ に
-   適用する（前件 $`\lvert G\rvert + 1 \lt \lvert M\rvert`$ は第 2 段の長さの式による）。
+   適用する（前件 $`\lvert G\rvert + 1 \lt \lvert M\rvert`$ はステップ 2 の長さの式による）。
    得られる不等式を [T.entry_zero](#t-entry_zero) で書き直したものである。
-4. $`M_{0,\lvert G\rvert} = v_0`$。[T.entry_zero](#t-entry_zero) と第 2 段の
+4. $`M_{0,\lvert G\rvert} = v_0`$。[T.entry_zero](#t-entry_zero) とステップ 2 の
    $`M\langle \lvert G\rvert\rangle = (v_0,w_0)`$ による。
-5. $`\ell_1 = M_{0,j_1}`$。[T.entry_zero](#t-entry_zero) と第 2 段の $`\ell = M\langle j_1\rangle`$ による。
+5. $`\ell_1 = M_{0,j_1}`$。[T.entry_zero](#t-entry_zero) とステップ 2 の $`\ell = M\langle j_1\rangle`$ による。
 
 さらに $`M_{0,j_1} \le M_{0,\lvert G\rvert + 1}`$ を示す。2 より $`\lvert G\rvert + 1 \le j_1`$ であるから、
 $`\lvert G\rvert + 1 = j_1`$ か $`\lvert G\rvert + 1 \lt j_1`$ である。前者なら両辺は同一である。
@@ -708,12 +708,12 @@ $`\ell_1 = v_0 + 1`$。よって (5) の第 1 選言が成り立つ。
 **(b) $`0 \lt d_0 \wedge w_0 \lt \ell_2 \wedge \ell_1 = v_0 + d_0 \wedge \lvert G\rvert \to^M_1 j_1`$ のとき。**
 [T.nextrel1_snd_succ](#t-nextrel1_snd_succ) を $`\mathrm{r1ok}(M)`$ と
 $`\lvert G\rvert \to^M_1 j_1`$ に適用して $`M_{1,j_1} = M_{1,\lvert G\rvert} + 1`$ を得る。
-[T.entry_one](#t-entry_one) で両辺を書き直し、第 2 段の $`M\langle j_1\rangle = \ell`$ と
+[T.entry_one](#t-entry_one) で両辺を書き直し、ステップ 2 の $`M\langle j_1\rangle = \ell`$ と
 $`M\langle \lvert G\rvert\rangle = (v_0,w_0)`$ を代入すると $`\ell_2 = w_0 + 1`$ である。
 $`0 \lt d_0`$、$`\ell_1 = v_0 + d_0`$、$`\lvert G\rvert \to^M_1 j_1`$ はそのままであるから、
 (5) の第 2 選言が成り立つ。
 
-**第 4 段：(2) — 分解が $`n`$ によらないこと。**
+**ステップ 4：(2) — 分解が $`n`$ によらないこと。**
 $`n`$ を取り $`1 \le n`$ とする。[T.oper_bad_blocks](Decrease-ja.md#t-oper_bad_blocks) を
 この $`n`$ で適用し、$`G', v_0', w_0', R', d_0', \ell'`$ とその主張 $`(1_n)`$–$`(6_n)`$ を得る。
 $`B' := (v_0',w_0') :: R'`$ とおく。

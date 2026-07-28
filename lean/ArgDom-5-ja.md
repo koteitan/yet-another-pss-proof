@@ -182,7 +182,7 @@ $`N \in \mathrm{ST\_PS}`$ ならば $`\mathrm{ArgDomCoreOn}(N)`$。
 \Phi(N) :\equiv \mathrm{ArgDomCoreOn}(N)
 ```
 
-である。構成子は 2 つであるから、次の 2 段を示せばよい。
+である。構成子は 2 つであるから、次の 2 ステップを示せばよい。
 
 **基底段（構成子 $`\mathrm{diag}`$）。** $`N = \Delta_0^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）の場合である。
 [T.argDomCoreOn_diag](ArgDom-2-ja.md#t-argDomCoreOn_diag) がそのまま

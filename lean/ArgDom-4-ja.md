@@ -66,7 +66,7 @@ j := \lvert X\rvert + (\lvert A_1\rvert + 1)
 
 と書く。仮定 (hcaseL) は $`i \lt p`$、仮定 (hcaseR) は $`p \le j`$ である。
 
-**第 0 段：$`2 \le n`$。**
+**ステップ 0：$`2 \le n`$。**
 [T.argdom_pos](ArgDom-2-ja.md#t-argdom_pos) を (heq) に適用すると $`j \lt \lvert N\rvert`$ を得る。
 一方 [T.copies_length](ArgDom-3-ja.md#t-copies_length) より
 $`\lvert \mathrm{copies}_{d_0}(\mathrm{blk}, n)\rvert = n \cdot L`$ であるから
@@ -79,7 +79,7 @@ $`\lvert \mathrm{copies}_{d_0}(\mathrm{blk}, n)\rvert = n \cdot L`$ であるか
 (hcaseR) の $`p \le j`$ に反する。(hn) より $`1 \le n`$ であったから $`2 \le n`$ である。
 以下 $`n = m + 1`$、$`1 \le m`$ と書く。
 
-**第 1 段：コピー $`0`$ を剥がし、境界 $`p`$ で切る。**
+**ステップ 1：コピー $`0`$ を剥がし、境界 $`p`$ で切る。**
 [T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) より
 
 ```math
@@ -135,7 +135,7 @@ $`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e
 
 を得る。同じ理由で $`\forall y \in D,\ d_0 \le y_1`$ である。
 
-**第 2 段：逆シフトして小さい塔を書く。**
+**ステップ 2：逆シフトして小さい塔を書く。**
 (D2) の両辺に $`(\cdot)^{-d_0}`$（[D.shiftl0](ArgDom-2-ja.md#d-shiftl0)）を施し、[T.shiftl0_shiftr0](ArgDom-2-ja.md#t-shiftl0_shiftr0) と
 [T.shiftl0_append](ArgDom-2-ja.md#t-shiftl0_append)、[T.shiftl0_cons](ArgDom-2-ja.md#t-shiftl0_cons) を使うと
 
@@ -147,7 +147,7 @@ $`d_0 \le z_1 + d_0 = y_1`$ である。これを (D2) の右辺の要素 $`(u+e
 
 を得る。
 
-**第 3 段：$`\lvert X\rvert`$ と $`\lvert G\rvert + \lvert D\rvert`$ の三分律。**
+**ステップ 3：$`\lvert X\rvert`$ と $`\lvert G\rvert + \lvert D\rvert`$ の三分律。**
 自然数の三分律により、次の 3 つのいずれかがちょうど 1 つ成り立つ。
 
 **(a) $`\lvert X\rvert \lt \lvert G\rvert + \lvert D\rvert`$ のとき。**
@@ -361,7 +361,7 @@ $`\mathrm{head}\,\mathrm{copies}_{d_0}(\mathrm{blk}, m) = \mathrm{head}\,\mathrm
 Y = G \mathbin{+\!\!+} U_2, \qquad D^{-d_0} = U_2 \mathbin{+\!\!+} x :: V .
 ```
 
-$`\forall y \in D,\ d_0 \le y_1`$ は第 1 段で示したから、
+$`\forall y \in D,\ d_0 \le y_1`$ はステップ 1 で示したから、
 [T.shiftr0_shiftl0](ArgDom-2-ja.md#t-shiftr0_shiftl0) より $`(D^{-d_0})^{+d_0} = D`$ である。
 第 2 式の両辺に $`(\cdot)^{+d_0}`$ を施し、
 [T.shiftr0_append](Cofinality-3-ja.md#t-shiftr0_append) と

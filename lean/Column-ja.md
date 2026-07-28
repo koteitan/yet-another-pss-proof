@@ -216,7 +216,7 @@ $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$（[D.le0](Pss-ja.md#d-le0)）ならば
 $`\lvert A\rvert + j_0`$ から $`\lvert A\rvert + j_0`$ への長さ $`0`$ の鎖が $`\Phi(j_0)`$ を与える。
 
 **帰納段（長さ $`k+1`$ の鎖）。**
-鎖は長さ $`k`$ の鎖 $`j_0 \mathbin{(\to^{T}_0)^{*}} b`$ と最後の 1 段 $`b \to^{T}_0 c`$ に分かれる。
+鎖は長さ $`k`$ の鎖 $`j_0 \mathbin{(\to^{T}_0)^{*}} b`$ と最後の 1 歩 $`b \to^{T}_0 c`$ に分かれる。
 $`\Phi(b)`$、すなわち
 $`\lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + b`$ を仮定する。
 [T.nextrel0_append_right](#t-nextrel0_append_right) の（$`\Leftarrow`$）を
@@ -282,10 +282,10 @@ $`c' := a`$ とおけば $`c = \lvert A\rvert + a`$ であり、$`a`$ から $`a
 
 **帰納段（長さ $`k+1`$ の鎖）。**
 鎖は長さ $`k`$ の鎖 $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} d`$ と
-最後の 1 段 $`d \to^{A \mathbin{+\!\!+} T}_0 e`$ に分かれる（$`c = e`$）。
+最後の 1 歩 $`d \to^{A \mathbin{+\!\!+} T}_0 e`$ に分かれる（$`c = e`$）。
 $`\Phi(d)`$ を仮定し、$`d = \lvert A\rvert + d'`$ かつ
 $`a \mathbin{(\to^{T}_0)^{*}} d'`$ なる $`d'`$ をとる。
-[T.nextrel0_lt](#t-nextrel0_lt) を最後の 1 段に適用して $`d \lt e`$、すなわち
+[T.nextrel0_lt](#t-nextrel0_lt) を最後の 1 歩に適用して $`d \lt e`$、すなわち
 $`\lvert A\rvert + d' \lt e`$ を得る。とくに $`\lvert A\rvert \le e`$ であるから
 $`e' := e - \lvert A\rvert`$ とおけば $`e = \lvert A\rvert + e'`$ である。
 [T.nextrel0_append_right](#t-nextrel0_append_right) の（$`\Rightarrow`$）を
@@ -383,7 +383,7 @@ $`M_{0,b} = 0`$ かつ $`k \mathbin{(\to^{M}_0)^{*}} b`$ ならば $`k = b`$。
 鎖の長さで場合分けする。
 
 - **長さ $`0`$ のとき。** 鎖の両端は同一であり $`k = b`$ である。
-- **長さが $`1`$ 以上のとき。** 鎖は $`k \mathbin{(\to^{M}_0)^{*}} c`$ と最後の 1 段
+- **長さが $`1`$ 以上のとき。** 鎖は $`k \mathbin{(\to^{M}_0)^{*}} c`$ と最後の 1 歩
   $`c \to^{M}_0 b`$ に分かれる。$`M_{0,b} = 0`$ であるから
   [T.nextrel0_no_pred_zero](#t-nextrel0_no_pred_zero) により矛盾する。
   よってこの場合は起こらない。∎
@@ -434,7 +434,7 @@ $`A`$、$`T`$、$`k`$ は固定し、帰納法の述語は
 
 **帰納段（長さ $`m+1`$ の鎖）。**
 鎖は長さ $`m`$ の鎖 $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ と
-最後の 1 段 $`c \to^{A \mathbin{+\!\!+} T}_0 d`$ に分かれる（$`e = d`$）。
+最後の 1 歩 $`c \to^{A \mathbin{+\!\!+} T}_0 d`$ に分かれる（$`e = d`$）。
 $`\Phi(c)`$ を仮定する。
 前件 $`\lvert A\rvert \le d`$ と $`0 \lt (A \mathbin{+\!\!+} T)_{0,d}`$ を仮定する。
 
@@ -571,7 +571,7 @@ $`\to^M_i`$ の定義（D.nextR）の場合分けによる。
 
 - $`i = 0`$ のとき。$`k \to^{M}_0 b`$ である。$`\le^M_0`$ の定義（D.le0）の 3 条件のうち、
   (1) $`k \lt \lvert M\rvert`$ と (2) $`b \lt \lvert M\rvert`$ は $`\to^M_0`$ の定義（D.nextrel0）の
-  第 1・第 2 条件そのものであり、(3) は $`k \to^{M}_0 b`$ を 1 段だけもつ鎖である。
+  第 1・第 2 条件そのものであり、(3) は $`k \to^{M}_0 b`$ を 1 歩だけもつ鎖である。
 - $`i \ne 0`$ のとき。$`k \to^{M}_1 b`$ であり、$`\to^M_1`$ の定義（D.nextrel1）の
   第 5 条件が $`k \le^{M}_0 b`$ そのものである。∎
 

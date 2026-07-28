@@ -129,7 +129,7 @@ v \mathbin{R_{\mathrm{NF}}} u :\iff v \prec u \ \wedge\ u \in \mathrm{NF} \ \wed
 （$`\prec`$ [D.olt](Term-ja.md#d-olt)）
 
 <a id="d-stepRel"></a>
-## 定義: 標準形上の 1 段展開関係 (D.stepRel)
+## 定義: 標準形上の 1 歩展開関係 (D.stepRel)
 
 $`T, M \in \mathrm{PairSeq}`$ に対し、関係 $`R_{\mathrm{PS}}`$ を次で定める。
 
@@ -170,9 +170,9 @@ $`\mathrm{tr}`$ による $`R_{\mathrm{NF}}`$ の逆像を
 T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M :\iff \mathrm{tr}\,T \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M
 ```
 
-と書く。3 段に分ける。
+と書く。3 ステップに分ける。
 
-**第 1 段：$`T \mathbin{R_{\mathrm{PS}}} M`$ ならば $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$。**
+**ステップ 1：$`T \mathbin{R_{\mathrm{PS}}} M`$ ならば $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$。**
 
 $`T \mathbin{R_{\mathrm{PS}}} M`$ とする。$`R_{\mathrm{PS}}`$ の定義（D.stepRel）より
 $`M \in \mathrm{ST\_PS}`$ かつ $`M \Rightarrow T`$ である。$`\Rightarrow`$ の定義（D.step）は
@@ -197,7 +197,7 @@ $`M \in \mathrm{ST\_PS}`$ かつ $`M \Rightarrow T`$ である。$`\Rightarrow`$
 $`T = M[n]`$ であるから、これは $`\mathrm{tr}\,T \mathbin{R_{\mathrm{NF}}} \mathrm{tr}\,M`$、
 すなわち $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$ である。
 
-**第 2 段：$`R^{\mathrm{tr}}_{\mathrm{NF}}`$ は整礎である。**
+**ステップ 2：$`R^{\mathrm{tr}}_{\mathrm{NF}}`$ は整礎である。**
 
 $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。帰納法の述語は
 
@@ -232,7 +232,7 @@ $`M \in \mathrm{PairSeq}`$ について $`\Phi(\mathrm{tr}\,M)`$ が成り立ち
 $`\mathrm{tr}\,M = \mathrm{tr}\,M`$ に適用して $`M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ を得る。
 すなわち $`R^{\mathrm{tr}}_{\mathrm{NF}}`$ は整礎である。
 
-**第 3 段：$`R_{\mathrm{PS}}`$ は整礎である。**
+**ステップ 3：$`R_{\mathrm{PS}}`$ は整礎である。**
 
 $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。帰納法の述語は
 
@@ -246,7 +246,7 @@ $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ の導出に関する帰納法�
 \forall N \in \mathrm{PairSeq},\ N \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M \to \Psi(N)
 ```
 
-を仮定する。$`T \mathbin{R_{\mathrm{PS}}} M`$ なる任意の $`T`$ について、第 1 段より
+を仮定する。$`T \mathbin{R_{\mathrm{PS}}} M`$ なる任意の $`T`$ について、ステップ 1 より
 $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$ であるから、帰納法の仮定より $`\Psi(T)`$、すなわち
 $`T \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$ である。よって
 
@@ -256,7 +256,7 @@ $`T \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$ である。よって
 
 が成り立ち、[T.Acc.intro](#t-Acc.intro)より $`M \in \mathrm{Acc}_{R_{\mathrm{PS}}}`$、すなわち $`\Psi(M)`$。
 
-以上より $`\forall M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}},\ \Psi(M)`$ である。第 2 段より
+以上より $`\forall M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}},\ \Psi(M)`$ である。ステップ 2 より
 任意の $`M \in \mathrm{PairSeq}`$ が $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ に属するから、
 $`\forall M \in \mathrm{PairSeq},\ \Psi(M)`$、すなわち $`R_{\mathrm{PS}}`$ は整礎である。∎
 

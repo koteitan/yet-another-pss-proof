@@ -136,7 +136,7 @@ C_p := X \mathbin{+\!\!+} (u,w) :: \bigl(A_1 \mathbin{+\!\!+} ((u+e,w))\bigr)
 とおく。$`C_p`$ は分解の先頭から深い方の印付き列 $`(u+e,w)`$ までを含む部分であり、
 $`\lvert C_p\rvert = \lvert X\rvert + 1 + (\lvert A_1\rvert + 1)`$ である。
 
-**第 1 段：共通部分で切る。**
+**ステップ 1：共通部分で切る。**
 [T.copies_succ_front](Cnf-3-ja.md#t-copies_succ_front) と連結の結合律より
 
 ```math
@@ -185,7 +185,7 @@ M = (G \mathbin{+\!\!+} \mathrm{blk}) \mathbin{+\!\!+} (\ell)
 
 を得る。すなわち $`M`$ は $`C_p`$ の右に $`D \mathbin{+\!\!+} (\ell)`$ を続けたものである。
 
-**第 2 段：$`M`$ の分解に (hMon) を適用する。**
+**ステップ 2：$`M`$ の分解に (hMon) を適用する。**
 次を示す。$`B', A_2', Z' \in \mathrm{PairSeq}`$ が
 
 ```math
@@ -205,7 +205,7 @@ Z' = () \ \vee\ (\mathrm{head}\,Z')_1 \le u
 B' \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: B'^{+e} .
 ```
 
-実際、第 1 段の $`M = C_p \mathbin{+\!\!+} (D \mathbin{+\!\!+} (\ell))`$ に分解の仮定を代入し、
+実際、ステップ 1 の $`M = C_p \mathbin{+\!\!+} (D \mathbin{+\!\!+} (\ell))`$ に分解の仮定を代入し、
 $`C_p`$ の定義と結合律で並べ替えると
 
 ```math
@@ -229,7 +229,7 @@ B' \preceq_{\mathrm{lex}} \bigl(A_1 \mathbin{+\!\!+} (u+e,w) :: (B' \mathbin{+\!
 $`\lvert B'\rvert \le \lvert A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B'^{+e}\rvert`$ である。
 [T.sle_take_of_short](ArgDom-ja.md#t-sle_take_of_short) を適用して主張を得る。
 
-**第 3 段：結論を同じ形に直す。**
+**ステップ 3：結論を同じ形に直す。**
 
 ```math
 B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: B^{+e}
@@ -240,10 +240,10 @@ $`(A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B^{+e}) \mathbin{+\!\!+} A_2^{+e}`$ �
 [T.sle_append_mono](Cofinality-ja.md#t-sle_append_mono) を
 $`C := A_2^{+e}`$ として適用すればよい。以下この形を示す。
 
-**第 4 段：$`\lvert B\rvert`$ と $`\lvert D\rvert`$ で場合分けする。**
+**ステップ 4：$`\lvert B\rvert`$ と $`\lvert D\rvert`$ で場合分けする。**
 
 **(a) $`\lvert B\rvert \lt \lvert D\rvert`$ のとき。**
-[T.split_prefix_right](ArgDom-2-ja.md#t-split_prefix_right) を第 1 段の
+[T.split_prefix_right](ArgDom-2-ja.md#t-split_prefix_right) をステップ 1 の
 $`B \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z) = D \mathbin{+\!\!+} T`$ と $`\lvert B\rvert \le \lvert D\rvert`$ に適用し、
 $`D_r := \mathrm{drop}_{\lvert B\rvert} D`$ とおくと
 
@@ -288,7 +288,7 @@ $`D_r \ne ()`$ であるからふたたび同じ定理により
 $`\mathrm{head}(D_r \mathbin{+\!\!+} (\ell)) = \mathrm{head}\,D_r`$ である。
 よって $`(\mathrm{head}\,A_2')_1 = (\mathrm{head}\,D_r)_1 \le u+e`$。
 
-第 2 段の主張を $`B' := B`$、$`A_2'`$、$`Z'`$ に適用する。分解の条件は
+ステップ 2 の主張を $`B' := B`$、$`A_2'`$、$`Z'`$ に適用する。分解の条件は
 
 ```math
 D \mathbin{+\!\!+} (\ell) = (B \mathbin{+\!\!+} D_r) \mathbin{+\!\!+} (\ell)
@@ -302,7 +302,7 @@ D \mathbin{+\!\!+} (\ell) = (B \mathbin{+\!\!+} D_r) \mathbin{+\!\!+} (\ell)
 B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,\,w) :: B^{+e}
 ```
 
-を得る。第 3 段により結論が従う。
+を得る。ステップ 3 により結論が従う。
 
 **(b) $`\lvert D\rvert \le \lvert B\rvert`$ のとき。**
 [T.split_prefix_left](ArgDom-2-ja.md#t-split_prefix_left) を
@@ -318,7 +318,7 @@ T = B_2 \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)
 である。$`D`$ の要素は $`B`$ の要素であるから (h2) より
 $`\forall x \in D,\ u+e \lt x_1`$ である。
 
-**第 4 段 (b) の補助 1：$`B_2`$ が空でないときの先頭。**
+**ステップ 4 (b) の補助 1：$`B_2`$ が空でないときの先頭。**
 $`B_2 = q :: B_2'`$ と書けるとき $`q = (v_0+d_0,\ w_0)`$ である。
 まず $`m \ne 0`$ である。$`m = 0`$ とすると
 [T.copies_zero](Cnf-2-ja.md#t-copies_zero) と [T.shiftr0_nil](Cnf-2-ja.md#t-shiftr0_nil) より $`T = ()`$ となるが、
@@ -340,7 +340,7 @@ T = (v_0 + d_0,\ w_0) :: \Bigl(R \mathbin{+\!\!+} \bigl(\mathrm{copies}_{d_0}(\m
 である。一方 $`T = B_2 \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z) = q :: \bigl(B_2' \mathbin{+\!\!+} (A_2 \mathbin{+\!\!+} Z)\bigr)`$
 であるから、cons の単射性により $`q = (v_0+d_0,\ w_0)`$ である。
 
-**第 4 段 (b) の補助 2：$`q`$ と $`\ell`$ の比較。**
+**ステップ 4 (b) の補助 2：$`q`$ と $`\ell`$ の比較。**
 $`B_2 = q :: B_2'`$ のとき、次の 2 つが成り立つ。
 
 - $`q_1 \le \ell_1`$。(hdisj) の第 1 選言のときは $`d_0 = 0`$ かつ $`\ell_1 = v_0 + 1`$ であり、
@@ -357,7 +357,7 @@ $`u+e`$ と $`\ell_1`$ で場合分けする。
 **(b-1) $`u + e \lt \ell_1`$ のとき。**
 $`\forall x \in D \mathbin{+\!\!+} (\ell),\ u+e \lt x_1`$ である
 （$`x \in D`$ なら上で示したこと、$`x = \ell`$ なら本場合の仮定による）。
-第 2 段の主張を $`B' := D \mathbin{+\!\!+} (\ell)`$、$`A_2' := ()`$、$`Z' := ()`$ に適用する。
+ステップ 2 の主張を $`B' := D \mathbin{+\!\!+} (\ell)`$、$`A_2' := ()`$、$`Z' := ()`$ に適用する。
 分解の条件は $`D \mathbin{+\!\!+} (\ell) = (D \mathbin{+\!\!+} (\ell)) \mathbin{+\!\!+} (() \mathbin{+\!\!+} ())`$、
 $`A_2' = ()`$ は要素をもたず頭の条件は第 1 選言、$`Z' = ()`$ も同様である。よって
 
@@ -384,7 +384,7 @@ $`\lvert D\rvert \le \lvert A_1\rvert + 1 + \lvert D\rvert = \lvert V\rvert`$ �
 [T.sle_take_of_short](ArgDom-ja.md#t-sle_take_of_short) を適用して $`D \preceq_{\mathrm{lex}} V`$。
 $`B = D`$ より、これは
 $`B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B^{+e}`$ そのものである。
-第 3 段により結論が従う。
+ステップ 3 により結論が従う。
 
 **$`B_2 = q :: B_2'`$ のとき。** $`\lvert D\rvert \lt \lvert A_1\rvert + 1 + \lvert D\rvert = \lvert V\rvert`$ である。
 [T.seqlex_of_sle_snoc'](#t-seqlex_of_sle_snoc') を、その主張に現れる列と対に
@@ -412,7 +412,7 @@ D \mathbin{+\!\!+} q :: B_2'
 
 に等しい。よって $`\preceq_{\mathrm{lex}}`$ の定義（D.sle）の第 2 選言により
 $`B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B^{+e}`$ であり、
-第 3 段により結論が従う。
+ステップ 3 により結論が従う。
 
 **(b-2) $`\neg(u + e \lt \ell_1)`$ のとき。**
 まず $`B_2 = ()`$ である。$`B_2 = q :: B_2'`$ とすると、$`q`$ は $`B = D \mathbin{+\!\!+} B_2`$ の要素であるから
@@ -421,7 +421,7 @@ $`\ell_1 \le u+e`$ であるから $`u+e \lt q_1 \le \ell_1 \le u+e`$ となっ�
 よって $`B = D`$ であり、$`D \mathbin{+\!\!+} (\ell) = B \mathbin{+\!\!+} (\ell)`$ である。
 $`u`$ と $`\ell_1`$ でさらに場合分けする。
 
-- $`u \lt \ell_1`$ のとき。第 2 段の主張を $`B' := B`$、$`A_2' := (\ell)`$、$`Z' := ()`$ に適用する。
+- $`u \lt \ell_1`$ のとき。ステップ 2 の主張を $`B' := B`$、$`A_2' := (\ell)`$、$`Z' := ()`$ に適用する。
   分解の条件は $`B \mathbin{+\!\!+} (\ell) = B \mathbin{+\!\!+} ((\ell) \mathbin{+\!\!+} ())`$、
   $`\forall x \in B,\ u+e \lt x_1`$ は (h2)、
   $`\forall x \in (\ell),\ u \lt x_1`$ は本場合の仮定 $`u \lt \ell_1`$、
@@ -429,14 +429,14 @@ $`u`$ と $`\ell_1`$ でさらに場合分けする。
   $`Z' = ()`$ は第 1 選言である。
 
 - $`\neg(u \lt \ell_1)`$、すなわち $`\ell_1 \le u`$ のとき。
-  第 2 段の主張を $`B' := B`$、$`A_2' := ()`$、$`Z' := (\ell)`$ に適用する。
+  ステップ 2 の主張を $`B' := B`$、$`A_2' := ()`$、$`Z' := (\ell)`$ に適用する。
   分解の条件は $`B \mathbin{+\!\!+} (\ell) = B \mathbin{+\!\!+} (() \mathbin{+\!\!+} (\ell))`$、
   $`A_2' = ()`$ は要素をもたず頭の条件は第 1 選言、
   $`(\mathrm{head}(\ell))_1 = \ell_1 \le u`$ である。
 
 いずれの場合も
 $`B \preceq_{\mathrm{lex}} A_1^{+e} \mathbin{+\!\!+} (u+e+e,w) :: B^{+e}`$ が得られ、
-第 3 段により結論が従う。∎
+ステップ 3 により結論が従う。∎
 
 <a id="t-shiftr0_add"></a>
 ## 定理: 平行移動の合成 (T.shiftr0_add)
@@ -666,7 +666,7 @@ $`\to^M_1`$ の定義（D.nextrel1）により、仮定 $`\lvert G\rvert \to^M_1
 が得られる（$`\le^M_0`$ [D.le0](Pss-ja.md#d-le0)、$`M_{i,j}`$ [D.entry](Pss-ja.md#d-entry)）。
 $`A := G \mathbin{+\!\!+} ((v_0,w_0) :: U)`$ とおく。
 
-**第 1 段：位置の勘定。**
+**ステップ 1：位置の勘定。**
 $`R = U \mathbin{+\!\!+} x :: V`$ を $`M`$ の定義に代入し、連結の結合律で並べ替えると
 
 ```math
@@ -694,7 +694,7 @@ $`M\langle \lvert A\rvert\rangle = x`$ である。したがって
 M_{0,\lvert A\rvert} = x_1, \qquad M_{1,\lvert A\rvert} = x_2 .
 ```
 
-**第 2 段：位置 $`\lvert A\rvert`$ より右、$`j_1`$ までのすべての列は行 $`0`$ が上。**
+**ステップ 2：位置 $`\lvert A\rvert`$ より右、$`j_1`$ までのすべての列は行 $`0`$ が上。**
 すなわち
 
 ```math
@@ -702,7 +702,7 @@ M_{0,\lvert A\rvert} = x_1, \qquad M_{1,\lvert A\rvert} = x_2 .
 ```
 
 を示す。$`\lvert A\rvert \lt y`$ より $`y = \lvert A\rvert + (t+1)`$ なる $`t`$ が取れる。
-第 1 段の分解と [T.getD_append_right'](Cofinality-ja.md#t-getD_append_right') により
+ステップ 1 の分解と [T.getD_append_right'](Cofinality-ja.md#t-getD_append_right') により
 
 ```math
 M\bigl\langle \lvert A\rvert + (t+1)\bigr\rangle
@@ -723,24 +723,24 @@ $`t`$ で場合分けする。
   $`(V \mathbin{+\!\!+} (\ell))\langle \lvert V\rvert\rangle = \ell`$ である。
   仮定 $`x_1 \lt v_0 + d_0 = \ell_1`$ より $`M_{0,\lvert A\rvert} \lt M_{0,y}`$ を得る。
 
-**第 3 段：$`x`$ は落とされる列の行 $`0`$ の祖先である。**
+**ステップ 3：$`x`$ は落とされる列の行 $`0`$ の祖先である。**
 [T.le0_through_pivot](Column-4-ja.md#t-le0_through_pivot) を
 $`a := \lvert G\rvert`$、$`\rho := \lvert A\rvert`$、$`b := j_1`$ として適用する。
-仮定は条件 (5) の $`\lvert G\rvert \le^M_0 j_1`$、第 1 段の $`\lvert G\rvert \lt \lvert A\rvert`$ と
-$`\lvert A\rvert \le j_1`$、および第 2 段である。結論は
+仮定は条件 (5) の $`\lvert G\rvert \le^M_0 j_1`$、ステップ 1 の $`\lvert G\rvert \lt \lvert A\rvert`$ と
+$`\lvert A\rvert \le j_1`$、およびステップ 2 である。結論は
 
 ```math
 \lvert A\rvert \le^M_0 j_1 .
 ```
 
-**第 4 段：最小性の条件を使う。**
+**ステップ 4：最小性の条件を使う。**
 [T.getD_append_right'](Cofinality-ja.md#t-getD_append_right') を
 $`G \mathbin{+\!\!+} ((v_0,w_0) :: R)`$、$`(\ell)`$、$`i := 0`$ に適用して
 $`M\langle j_1\rangle = \ell`$ である。よって
 [T.entry_one](Cofinality-ja.md#t-entry_one) より $`M_{1,j_1} = \ell_2 = w_0 + 1`$ である。
 
-条件 (6) を $`j := \lvert A\rvert`$ に適用する。その前件は第 1 段の
-$`\lvert G\rvert \lt \lvert A\rvert`$ と第 3 段の $`\lvert A\rvert \le^M_0 j_1`$ である。
+条件 (6) を $`j := \lvert A\rvert`$ に適用する。その前件はステップ 1 の
+$`\lvert G\rvert \lt \lvert A\rvert`$ とステップ 3 の $`\lvert A\rvert \le^M_0 j_1`$ である。
 したがって
 
 ```math

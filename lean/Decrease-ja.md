@@ -302,28 +302,28 @@ $`c, \ell \in \mathbb{N}\times\mathbb{N}`$ とし、
 
 ### 証明
 
-3 段に分ける。
+3 ステップに分ける。
 
-**第 1 段：$`\mathrm{tr}(c :: C') \prec \mathrm{tr}\,(\ell)`$。**
+**ステップ 1：$`\mathrm{tr}(c :: C') \prec \mathrm{tr}\,(\ell)`$。**
 [T.lead_translate](Term-ja.md#t-lead_translate) より
 $`\mathrm{lead}\,\mathrm{tr}(c :: C') = c_2`$（[D.lead](Term-ja.md#d-lead)）であり、
 仮定より $`c_2 \lt \ell_2`$ である。
 一方 $`\mathrm{tr}`$ の定義（D.translate）より
 $`\mathrm{tr}\,(\ell) = \mathsf{P}(\ell_2, \mathsf{Z}, \mathsf{Z})`$ である。
 [T.olt_P_of_lead_lt](Term-ja.md#t-olt_P_of_lead_lt) を
-$`t := \mathrm{tr}(c :: C')`$、$`w := \ell_2`$ に適用して第 1 段を得る。
+$`t := \mathrm{tr}(c :: C')`$、$`w := \ell_2`$ に適用してステップ 1 を得る。
 
-**第 2 段：$`\mathrm{tr}(R \mathbin{+\!\!+} c :: C') \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$。**
+**ステップ 2：$`\mathrm{tr}(R \mathbin{+\!\!+} c :: C') \prec \mathrm{tr}(R \mathbin{+\!\!+} (\ell))`$。**
 [T.translate_ctx_cong](Term-ja.md#t-translate_ctx_cong) を
 $`z_1 := c`$、$`T_1 := C'`$、$`z_2 := \ell`$、$`T_2 := ()`$、$`G := R`$ として適用する。
 4 つの仮定は次のように満たされる。
 
-- (base)：第 1 段。
+- (base)：ステップ 1。
 - (root)：$`c_1 = \ell_1`$ は仮定である。
 - (r1)：$`\forall x \in C',\ c_1 \le x_1`$ は仮定である。
 - (r2)：$`T_2 = ()`$ は要素をもたないから前件が偽であり、成り立つ。
 
-**第 3 段：根 $`(v_0,w_0)`$ を被せる。**
+**ステップ 3：根 $`(v_0,w_0)`$ を被せる。**
 $`R \mathbin{+\!\!+} c :: C'`$ の全要素 $`x`$ が $`v_0 \lt x_1`$ をみたすことを示す。
 $`x \in R`$ のときは仮定による。$`x = c`$ のときは $`c_1 = \ell_1`$ と $`v_0 \lt \ell_1`$ から
 $`v_0 \lt c_1`$。$`x \in C'`$ のときは、いま示した $`v_0 \lt c_1`$ と仮定 $`c_1 \le x_1`$ から
@@ -340,7 +340,7 @@ $`v_0 \lt x_1`$。同様に $`R \mathbin{+\!\!+} (\ell)`$ の全要素も $`v_0 
   = \mathsf{P}\bigl(w_0,\ \mathrm{tr}(R \mathbin{+\!\!+} (\ell)),\ \mathsf{Z}\bigr)
 ```
 
-である。第 2 段と [T.olt_P_b](Term-ja.md#t-olt_P_b) から結論が従う。∎
+である。ステップ 2 と [T.olt_P_b](Term-ja.md#t-olt_P_b) から結論が従う。∎
 
 <a id="t-translate_oper_pred"></a>
 ## 定理: 前者分岐での減少 (T.translate_oper_pred)
@@ -543,7 +543,7 @@ $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$。
 [T.oper_bad_blocks](#t-oper_bad_blocks) により $`G, v_0, w_0, R, d_0, \ell`$ を取る。
 $`(v_0,w_0) :: R`$ を **基本ブロック**と呼ぶ。
 
-**第 1 段：両辺を同じ形に整える。**
+**ステップ 1：両辺を同じ形に整える。**
 (2) の $`k = 0`$ の項は $`((v_0,w_0) :: R)^{+0} = (v_0,w_0) :: R`$ であるから、
 $`k \ge 1`$ の項をまとめて
 
@@ -562,13 +562,13 @@ M = G \mathbin{+\!\!+} \bigl((v_0,w_0) :: (R \mathbin{+\!\!+} (\ell))\bigr)
 
 と書ける。
 
-**第 2 段：$`C`$ の要素はすべて行 0 が $`v_0`$ 以上。**
+**ステップ 2：$`C`$ の要素はすべて行 0 が $`v_0`$ 以上。**
 $`x \in C`$ とすると、ある $`k \ge 1`$ と基本ブロックの要素 $`p`$ について
 $`x = (p_1 + k\,d_0,\ p_2)`$ である。$`p = (v_0,w_0)`$ なら $`p_1 = v_0`$、
 $`p \in R`$ なら (3) より $`v_0 \lt p_1`$ であるから、いずれにせよ $`v_0 \le p_1`$。
 したがって $`v_0 \le p_1 \le p_1 + k\,d_0 = x_1`$。
 
-**第 3 段（核）：$`\mathrm{tr}(((v_0,w_0) :: R) \mathbin{+\!\!+} C) \prec \mathrm{tr}(((v_0,w_0) :: R) \mathbin{+\!\!+} (\ell))`$。**
+**ステップ 3（核）：$`\mathrm{tr}(((v_0,w_0) :: R) \mathbin{+\!\!+} C) \prec \mathrm{tr}(((v_0,w_0) :: R) \mathbin{+\!\!+} (\ell))`$。**
 $`n`$ で場合分けする。
 
 - **$`n = 1`$ のとき。** $`C`$ は空の連結であり $`C = ()`$ である。
@@ -594,25 +594,25 @@ C = (v_0 + d_0,\ w_0) :: \Bigl(R^{+d_0} \mathbin{+\!\!+}
   - $`\forall x \in R,\ v_0 \lt x_1`$：(3) である。
   - $`\forall x \in C',\ c_1 \le x_1`$：$`x`$ が $`R^{+d_0}`$ の要素なら、(3) より
     $`v_0 \lt p_1`$ なる $`p`$ について $`x_1 = p_1 + d_0 \ge v_0 + d_0 = c_1`$。
-    $`x`$ が $`k \ge 2`$ のブロックの要素なら、第 2 段と同じ議論で $`v_0 \le p_1`$ であり、
+    $`x`$ が $`k \ge 2`$ のブロックの要素なら、ステップ 2 と同じ議論で $`v_0 \le p_1`$ であり、
     $`d_0 \le k\,d_0`$ であるから $`x_1 = p_1 + k\,d_0 \ge v_0 + d_0 = c_1`$。
   - $`c_1 = \ell_1`$：$`c_1 = v_0 + d_0`$ であり、(5) の第 2 選言に $`\ell_1 = v_0 + d_0`$ がある。
   - $`v_0 \lt \ell_1`$：(4) である。
   - $`c_2 \lt \ell_2`$：$`c_2 = w_0`$ であり、(5) の第 2 選言に $`w_0 \lt \ell_2`$ がある。
 
-**第 4 段：良い部分 $`G`$ を通して持ち上げる。**
+**ステップ 4：良い部分 $`G`$ を通して持ち上げる。**
 [T.translate_ctx_cong](Term-ja.md#t-translate_ctx_cong) を
 $`z_1 := (v_0,w_0)`$、$`T_1 := R \mathbin{+\!\!+} C`$、
 $`z_2 := (v_0,w_0)`$、$`T_2 := R \mathbin{+\!\!+} (\ell)`$、$`G := G`$ として適用する。
 4 つの仮定は次のように満たされる。
 
-- (base)：第 3 段の結論を、$`((v_0,w_0) :: R) \mathbin{+\!\!+} X = (v_0,w_0) :: (R \mathbin{+\!\!+} X)`$
+- (base)：ステップ 3 の結論を、$`((v_0,w_0) :: R) \mathbin{+\!\!+} X = (v_0,w_0) :: (R \mathbin{+\!\!+} X)`$
   と書き換えたものである。
 - (root)：両辺の根は同一の $`(v_0,w_0)`$ であるから $`v_0 = v_0`$。
-- (r1)：$`x \in R`$ なら (3) より $`v_0 \lt x_1`$、$`x \in C`$ なら第 2 段より $`v_0 \le x_1`$。
+- (r1)：$`x \in R`$ なら (3) より $`v_0 \lt x_1`$、$`x \in C`$ ならステップ 2 より $`v_0 \le x_1`$。
 - (r2)：$`x \in R`$ なら同上、$`x = \ell`$ なら (4) より $`v_0 \lt \ell_1`$。
 
-得られる結論は第 1 段の書き換えにより $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$ である。∎
+得られる結論はステップ 1 の書き換えにより $`\mathrm{tr}\,(M[n]) \prec \mathrm{tr}\,M`$ である。∎
 
 <a id="t-m_step_decreases"></a>
 ## 定理: 展開は測度を真に減らす (T.m_step_decreases)
