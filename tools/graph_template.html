@@ -20,6 +20,9 @@ html, body { height:100%; margin:0; background:var(--bg); color:var(--fg);
 header, footer { display:flex; align-items:center; gap:1rem; padding:.6rem 1rem;
   background:var(--panel); border-bottom:1px solid var(--line); backdrop-filter:blur(6px); z-index:2; }
 footer { border-bottom:none; border-top:1px solid var(--line); justify-content:space-between; font-size:.85rem; }
+#cutbox { display:flex; align-items:center; gap:.5rem; color:var(--mut); white-space:nowrap; }
+#cutbox b { color:var(--fg); font-variant-numeric:tabular-nums; min-width:2.4rem; }
+#cut { width:min(38vw,260px); accent-color:var(--acc); }
 h1 { font-size:1rem; margin:0; font-weight:600; letter-spacing:.01em; }
 h1 small { color:var(--mut); font-weight:400; margin-left:.5rem; }
 .spacer { flex:1; }
@@ -55,6 +58,7 @@ canvas.drag { cursor:grabbing; }
   </div>
   <footer>
     <span id="stat"></span>
+    <label id="cutbox">cited &le; <input id="cut" type="range" min="1" value="1"><b id="cutval"></b></label>
     <a href="https://github.com/koteitan/yet-another-pss-proof" target="_blank" rel="noopener">github.com/koteitan/yet-another-pss-proof</a>
   </footer>
 </div>
@@ -81,12 +85,24 @@ for (let i = 0; i < N; i++) {           // 決定的な初期配置（円環に�
 }
 const E = DATA.edges.map(([a, b]) => [idx.get(a), idx.get(b)]).filter(e => e[0] != null && e[1] != null);
 
+const MAXDEG = Math.max(1, ...DATA.nodes.map(n => n.indeg));
+const vis = new Uint8Array(N);                // 表示するノード
+let Ev = [], nvis = 0, cut = MAXDEG;
+function setCut(c) {                          // 被参照数が閾値を超えるノードを外す
+  cut = c; nvis = 0;
+  for (let i = 0; i < N; i++) { vis[i] = DATA.nodes[i].indeg <= cut ? 1 : 0; nvis += vis[i]; }
+  Ev = E.filter(([a, b]) => vis[a] && vis[b]);
+  for (let i = 0; i < N; i++) if (!vis[i]) { vx[i] = 0; vy[i] = 0; }
+}
+
 const MIN2 = 14 * 14, VMAX = 18;              // 近距離の特異点と暴走を止める
 const P = { rep: 5200, spring: 0.0075, rest: 46, damp: 0.88, dt: 0.55, target: 430 };
 
 function step() {
   for (let i = 0; i < N; i++) {                      // ノードどうしは遠ざかる
+    if (!vis[i]) continue;
     for (let j = i + 1; j < N; j++) {
+      if (!vis[j]) continue;
       let dx = x[i] - x[j], dy = y[i] - y[j];
       let d2 = dx * dx + dy * dy;
       if (d2 < MIN2) {
@@ -99,7 +115,7 @@ function step() {
       vx[j] -= dx * f; vy[j] -= dy * f;
     }
   }
-  for (const [a, b] of E) {                          // 参照は近づく
+  for (const [a, b] of Ev) {                         // 参照は近づく
     const dx = x[b] - x[a], dy = y[b] - y[a];
     const d = Math.hypot(dx, dy) || 1;
     const f = P.spring * (d - P.rest);
@@ -107,18 +123,22 @@ function step() {
     vx[b] -= dx / d * f; vy[b] -= dy / d * f;
   }
   for (let i = 0; i < N; i++) {                      // 減衰して位置を更新
-    if (i === held) { vx[i] = vy[i] = 0; continue; }
+    if (!vis[i] || i === held) { vx[i] = vy[i] = 0; continue; }
     vx[i] *= P.damp; vy[i] *= P.damp;
     const sp = Math.hypot(vx[i], vy[i]);
     if (sp > VMAX) { vx[i] *= VMAX / sp; vy[i] *= VMAX / sp; }
     x[i] += vx[i] * P.dt; y[i] += vy[i] * P.dt;
   }
-  let mx = 0, my = 0;                                // 平均を原点へ
-  for (let i = 0; i < N; i++) { mx += x[i]; my += y[i]; }
-  mx /= N; my /= N;
+  if (!nvis) return;
+  let mx = 0, my = 0;                                // 表示ノードの平均を原点へ
+  for (let i = 0; i < N; i++) if (vis[i]) { mx += x[i]; my += y[i]; }
+  mx /= nvis; my /= nvis;
   let s2 = 0;
-  for (let i = 0; i < N; i++) { x[i] -= mx; y[i] -= my; s2 += x[i] * x[i] + y[i] * y[i]; }
-  const rms = Math.sqrt(s2 / N) || 1;                // 広がりを一定に保つ
+  for (let i = 0; i < N; i++) {
+    x[i] -= mx; y[i] -= my;
+    if (vis[i]) s2 += x[i] * x[i] + y[i] * y[i];
+  }
+  const rms = Math.sqrt(s2 / nvis) || 1;             // 広がりを一定に保つ
   const k = Math.max(0.97, Math.min(1.03, 1 + (P.target / rms - 1) * 0.05));
   for (let i = 0; i < N; i++) { x[i] *= k; y[i] *= k; }
 }
@@ -146,7 +166,7 @@ function draw() {
   ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--edge');
   ctx.lineWidth = 1;
   ctx.beginPath();
-  for (const [a, b] of E) {
+  for (const [a, b] of Ev) {
     const ax = sx(a), ay = sy(a), bx = sx(b), by = sy(b);
     if (Math.max(ax, bx) < -50 || Math.min(ax, bx) > W + 50) continue;
     if (Math.max(ay, by) < -50 || Math.min(ay, by) > H + 50) continue;
@@ -163,6 +183,7 @@ function draw() {
   ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
   ctx.textBaseline = 'middle';
   for (let i = 0; i < N; i++) {
+    if (!vis[i]) continue;
     const px = sx(i), py = sy(i);
     if (px < -60 || px > W + 200 || py < -30 || py > H + 30) continue;
     const n = DATA.nodes[i], r = 4 + Math.min(5, n.indeg * 0.5);
@@ -184,6 +205,7 @@ let hover = -1, held = -1;
 function pick(px, py) {
   let best = -1, bd = 15 * 15;
   for (let i = 0; i < N; i++) {
+    if (!vis[i]) continue;
     const dx = px - sx(i), dy = py - sy(i), d = dx * dx + dy * dy;
     if (d < bd) { bd = d; best = i; }
   }
@@ -280,17 +302,25 @@ btn.onclick = () => setTheme(document.documentElement.getAttribute('data-theme')
 document.getElementById('legend').innerHTML =
   '<b>module &nbsp;/&nbsp; ● theorem &nbsp; ■ definition</b>' +
   DATA.modules.map(m => `<span style="background:${colour(m, true)}"></span>${m}`).join('<br>');
-document.getElementById('stat').textContent =
-  `${DATA.nodes.length} nodes, ${DATA.edges.length} references`;
+const cutEl = document.getElementById('cut'), cutVal = document.getElementById('cutval');
+const stat = document.getElementById('stat');
+cutEl.max = MAXDEG; cutEl.value = MAXDEG;
+function applyCut() {
+  setCut(+cutEl.value);
+  cutVal.textContent = cut >= MAXDEG ? 'all' : cut;
+  stat.textContent = `${nvis} / ${N} nodes, ${Ev.length} / ${E.length} references`;
+}
+cutEl.addEventListener('input', applyCut);
 
 function fit() {
   let r = 1;
-  for (let i = 0; i < N; i++) r = Math.max(r, Math.hypot(x[i], y[i]));
+  for (let i = 0; i < N; i++) if (vis[i]) r = Math.max(r, Math.hypot(x[i], y[i]));
   cam.x = cam.y = 0;
   cam.z = Math.max(0.12, Math.min(6, 0.42 * Math.min(W, H) / r));
 }
 
 resize();
+applyCut();
 for (let i = 0; i < 240; i++) step();     // 開いた瞬間に落ち着いた形にする
 fit();
 loop();
