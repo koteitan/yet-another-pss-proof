@@ -2,7 +2,7 @@
 
 # yet-another-pss-proof
 
-Version: **v1.2.1**
+Version: **v1.2.2**
 
 An independent proof that the **pair sequence system** (PSS, the 2-rowed Bashicu matrix
 system) terminates, together with its formalization in Lean 4 / Mathlib.
@@ -27,6 +27,12 @@ range over the natural numbers.
 ## The proof
 
 [`lean/README.md`](lean/README.md)
+
+## The graph
+
+[`lean/graph/index.html`](lean/graph/index.html) — the 440 definitions and theorems as nodes,
+the 2360 citations as arrows. GitHub serves an `.html` file as source, so open it from a
+local copy of the repository.
 
 ## Build
 
@@ -54,6 +60,7 @@ lean/                 the Lean 4 / Mathlib formalization
   Wset.lean/.md       the iterated inductive set W_u
   Final.lean/.md      the main theorems
   lakefile.toml       the eleven modules as roots, in dependency order
+  graph/              index.html — the reference graph, and what builds it
   memo/               verification code that is not part of the proof
   tools/              DeadCode.lean — declarations no proof term reaches
 tools/                the executable PSS model and the probes that check a statement

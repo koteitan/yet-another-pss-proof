@@ -2,7 +2,7 @@
 
 # yet-another-pss-proof
 
-Version: **v1.2.1**
+Version: **v1.2.2**
 
 **ペア数列システム**（Pair Sequence System, PSS。2 行のバシク行列システム）の停止性の
 独立な証明と、その Lean 4 / Mathlib による形式証明。
@@ -29,6 +29,11 @@ $p_a(b)$ の添字 $a$ を自然数に取ることに対応する。
 ## 証明
 
 [`lean/README-ja.md`](lean/README-ja.md)
+
+## グラフ
+
+[`lean/graph/index.html`](lean/graph/index.html) — 440 の定義・定理をノード、2360 の参照を
+矢印にしたもの。GitHub は `.html` をソースとして表示するので、リポジトリを手元に持ってきて開く。
 
 ## ビルド
 
@@ -59,6 +64,7 @@ lean/                 Lean 4 / Mathlib による形式証明
   Wset.lean/.md       反復帰納的集合 W_u
   Final.lean/.md      主定理
   lakefile.toml       11 モジュールを依存順に roots として列挙
+  graph/              index.html — 参照グラフと、それを作る一式
   memo/               証明の一部ではない検査用コード
   tools/              DeadCode.lean — 証明項が到達しない宣言の検出
 tools/                実行可能な PSS モデルと、形式化前に主張を反例探索で確かめる probe
