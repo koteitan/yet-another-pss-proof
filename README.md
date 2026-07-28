@@ -2,7 +2,7 @@
 
 # yet-another-pss-proof
 
-Version: **v1.2.2**
+Version: **v1.2.3**
 
 An independent proof that the **pair sequence system** (PSS, the 2-rowed Bashicu matrix
 system) terminates, together with its formalization in Lean 4 / Mathlib.
