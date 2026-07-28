@@ -1,24 +1,29 @@
 #!/usr/bin/env python3
-"""lean/*.md から定義・定理の参照グラフを取り出し、lean/graph-data.json に書く。
+"""参照グラフを lean/graph-data.json に書く。
 
-ノードは 1 つの節（`<a id="t-foo">` / `<a id="d-foo">`）、辺はその節の本文から
-別の節へのリンクである。英語版だけを見る（日本語版は同じ構造を持つ）。
+ノードと辺は **`lean/*.lean` のカーネルの証明項**から取る。抽出は Lean 側の
+`lean/tools/GraphData.lean` が行い、その出力 `lean/tools/graph-deps.json` を
+ここで読む（記法・`@[simp]` の暗黙の使用・`omega` が生成した補題も辺に入る）。
 
+    cd lean && lake env lean tools/GraphData.lean > tools/graph-deps.json
     python3 tools/graph_data.py
+
+見出しの説明文だけは `lean/*.md` から取って添える（Lean 側には無いため）。
 """
-import json, os, re, sys
+import json, os, re
 
 LEAN = 'lean'
-SKIP = {'README.md', 'requirement.md', 'graph.html'}
+DEPS = os.path.join(LEAN, 'tools', 'graph-deps.json')
+OUT = os.path.join(LEAN, 'graph-data.json')
 MODULES = ['Pss', 'Term', 'Decrease', 'Reduction', 'Cnf', 'Seqlex',
            'Column', 'Cofinality', 'ArgDom', 'Wset', 'Final']
 
-SEC = re.compile(r'<a id="([td]-[^"]+)"></a>\s*\n##\s*(.+)')
-LINK = re.compile(r'\]\((?:([\w\-]+)\.md)?#([td]-[^)]+)\)')
+SEC = re.compile(r'<a id="([td])-([^"]+)"></a>\s*\n##\s*(.+)')
 
 
-def files():
-    out = []
+def md_info():
+    """短縮名 -> (説明, md ファイル名)。英語版の見出しから取る。"""
+    info = {}
     for m in MODULES:
         k = 0
         while True:
@@ -26,42 +31,37 @@ def files():
             p = os.path.join(LEAN, name + '.md')
             if not os.path.exists(p):
                 break
-            out.append((m, name, p))
+            for kind, ident, title in SEC.findall(open(p).read()):
+                desc = re.sub(r'^\s*(Theorem|Definition):\s*', '', title.strip())
+                desc = re.sub(r'\s*\(([TD]\.[^)]+)\)\s*$', '', desc)
+                info[ident] = (desc, name + '.md')
             k += 1
-    return out
+    return info
 
 
 def main():
-    nodes, edges, order = [], [], {}
-    seen = set()
-    for mod, name, path in files():
-        text = open(path).read()
-        marks = [(m.start(), m.group(1), m.group(2).strip()) for m in SEC.finditer(text)]
-        for i, (pos, ident, title) in enumerate(marks):
-            end = marks[i + 1][0] if i + 1 < len(marks) else len(text)
-            body = text[pos:end]
-            if ident in seen:            # 同じ節が 2 度出ることはない
-                continue
-            seen.add(ident)
-            order[ident] = len(nodes)
-            # 見出しの "Theorem: 説明 (T.foo)" から説明部分を取る
-            desc = re.sub(r'^\s*(Theorem|Definition):\s*', '', title)
-            desc = re.sub(r'\s*\(([TD]\.[^)]+)\)\s*$', '', desc)
-            nodes.append({
-                'id': ident,
-                'kind': ident[0],                       # 't' か 'd'
-                'name': ident[2:],
-                'desc': desc,
-                'module': mod,
-                'file': name + '.md',
-            })
-            for _, tgt in LINK.findall(body):
-                if tgt != ident:
-                    edges.append([ident, tgt])
+    deps = json.load(open(DEPS))
+    info = md_info()
+
+    nodes = []
+    for n in deps['nodes']:
+        short = n['name'].split('.')[-1]
+        kind = 't' if n['kind'] == 'thm' else 'd'
+        desc, file = info.get(short, ('', ''))
+        nodes.append({
+            'id': n['name'],
+            'kind': kind,
+            'name': short,
+            'desc': desc,
+            'module': n['module'],
+            'file': file or '%s.lean:%d' % (n['module'], n['line']),
+            'line': n['line'],
+        })
+    nodes.sort(key=lambda n: (MODULES.index(n['module']), n['line']))
+
     ids = {n['id'] for n in nodes}
-    edges = [e for e in edges if e[1] in ids]
-    # 同じ辺の重複を落とす
-    edges = [list(t) for t in dict.fromkeys(map(tuple, edges))]
+    edges = [list(t) for t in dict.fromkeys(
+        (a, b) for a, b in deps['edges'] if a in ids and b in ids and a != b)]
 
     indeg = {n['id']: 0 for n in nodes}
     for _, b in edges:
@@ -69,17 +69,12 @@ def main():
     for n in nodes:
         n['indeg'] = indeg[n['id']]
 
-    data = {'modules': MODULES, 'nodes': nodes, 'edges': edges}
-    with open(os.path.join(LEAN, 'graph-data.json'), 'w') as f:
-        json.dump(data, f, ensure_ascii=False, separators=(',', ':'))
+    json.dump({'modules': MODULES, 'nodes': nodes, 'edges': edges},
+              open(OUT, 'w'), ensure_ascii=False, separators=(',', ':'))
+    miss = [n['name'] for n in nodes if not n['desc']]
     print('ノード %d  辺 %d' % (len(nodes), len(edges)))
-
-    if '--stat' in sys.argv:
-        for k, label in ((0, '参照元なし'), (1, '参照元 1 つ')):
-            xs = [n for n in nodes if n['indeg'] == k and n['kind'] == 't']
-            print('\n%s の定理 %d 件' % (label, len(xs)))
-            for n in xs:
-                print('  %-14s %s' % (n['file'][:-3], n['name']))
+    if miss:
+        print('md に見出しが無い宣言 %d 件: %s' % (len(miss), ' '.join(miss[:8])))
 
 
 if __name__ == '__main__':

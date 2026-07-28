@@ -58,7 +58,7 @@ canvas.drag { cursor:grabbing; }
   </div>
   <footer>
     <span id="stat"></span>
-    <label id="cutbox">cited &le; <input id="cut" type="range" min="1" value="1"><b id="cutval"></b></label>
+    <label id="cutbox">cited &le; <input id="cut" type="range"><b id="cutval"></b></label>
     <a href="https://github.com/koteitan/yet-another-pss-proof" target="_blank" rel="noopener">github.com/koteitan/yet-another-pss-proof</a>
   </footer>
 </div>
@@ -85,7 +85,9 @@ for (let i = 0; i < N; i++) {           // 決定的な初期配置（円環に�
 }
 const E = DATA.edges.map(([a, b]) => [idx.get(a), idx.get(b)]).filter(e => e[0] != null && e[1] != null);
 
-const MAXDEG = Math.max(1, ...DATA.nodes.map(n => n.indeg));
+// 被参照数は 0..389 と偏るので、実在する値だけをスライダーの刻みにする
+const STEPS = [...new Set(DATA.nodes.map(n => n.indeg))].sort((a, b) => a - b);
+const MAXDEG = STEPS[STEPS.length - 1];
 const vis = new Uint8Array(N);                // 表示するノード
 let Ev = [], nvis = 0, cut = MAXDEG;
 function setCut(c) {                          // 被参照数が閾値を超えるノードを外す
@@ -304,9 +306,9 @@ document.getElementById('legend').innerHTML =
   DATA.modules.map(m => `<span style="background:${colour(m, true)}"></span>${m}`).join('<br>');
 const cutEl = document.getElementById('cut'), cutVal = document.getElementById('cutval');
 const stat = document.getElementById('stat');
-cutEl.max = MAXDEG; cutEl.value = MAXDEG;
+cutEl.min = 0; cutEl.max = STEPS.length - 1; cutEl.value = STEPS.length - 1;
 function applyCut() {
-  setCut(+cutEl.value);
+  setCut(STEPS[+cutEl.value]);
   cutVal.textContent = cut >= MAXDEG ? 'all' : cut;
   stat.textContent = `${nvis} / ${N} nodes, ${Ev.length} / ${E.length} references`;
 }

@@ -50,8 +50,11 @@ def isGenerated (n : Name) : Bool :=
       || s == "ndrec" || s == "ndrecOn" || s == "induct" || s == "ibelow"
       || s == "binductionOn" || s == "injEq" || s == "inj" || s == "sizeOf_spec"
       || s == "elim" || s == "ctorElim" || s == "ctorElimType"
-      || s.startsWith "eq_" || s.startsWith "match_" || s.startsWith "proof_"
+      || s == "ctorIdx" || s.startsWith "match_" || s.startsWith "proof_"
       || s == "eq_def" || s == "sunfold"
+      -- `eq_1`, `eq_2`, … は方程式補題。`eq_Z_of_olt_one` のような本物の定理を
+      -- 巻き込まないよう、`eq_` の後ろが数字のときだけ除外する。
+      || (s.startsWith "eq_" && (s.drop 3).all Char.isDigit && s.length > 3)
 
 end DeadCode
 
