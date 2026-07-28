@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>PSS termination — reference graph</title>
+<style>
+:root {
+  --bg:#ffffff; --fg:#1f2328; --mut:#59636e; --line:#d1d9e0; --acc:#0969da;
+  --edge:rgba(90,100,110,.28); --panel:rgba(255,255,255,.86);
+}
+html[data-theme="dark"] {
+  --bg:#0d1117; --fg:#f0f6fc; --mut:#9198a1; --line:#3d444d; --acc:#4493f8;
+  --edge:rgba(160,175,190,.30); --panel:rgba(13,17,23,.86);
+}
+* { box-sizing:border-box; }
+html, body { height:100%; margin:0; background:var(--bg); color:var(--fg);
+  font-family:-apple-system,"Hiragino Kaku Gothic ProN","Noto Sans JP",Meiryo,sans-serif;
+  overflow:hidden; }
+#app { position:fixed; inset:0; display:grid; grid-template-rows:auto 1fr auto; }
+header, footer { display:flex; align-items:center; gap:1rem; padding:.6rem 1rem;
+  background:var(--panel); border-bottom:1px solid var(--line); backdrop-filter:blur(6px); z-index:2; }
+footer { border-bottom:none; border-top:1px solid var(--line); justify-content:space-between; font-size:.85rem; }
+h1 { font-size:1rem; margin:0; font-weight:600; letter-spacing:.01em; }
+h1 small { color:var(--mut); font-weight:400; margin-left:.5rem; }
+.spacer { flex:1; }
+button { font:inherit; color:var(--fg); background:transparent; border:1px solid var(--line);
+  border-radius:6px; padding:.25rem .7rem; cursor:pointer; }
+button:hover { border-color:var(--acc); color:var(--acc); }
+a { color:var(--acc); text-decoration:none; }
+a:hover { text-decoration:underline; }
+#wrap { position:relative; overflow:hidden; }
+canvas { display:block; width:100%; height:100%; touch-action:none; cursor:grab; }
+canvas.drag { cursor:grabbing; }
+#legend { position:absolute; left:.75rem; bottom:.75rem; background:var(--panel);
+  border:1px solid var(--line); border-radius:8px; padding:.5rem .7rem; font-size:.75rem;
+  line-height:1.6; max-height:60%; overflow:auto; backdrop-filter:blur(6px); }
+#legend b { display:block; font-weight:600; margin-bottom:.25rem; color:var(--mut); }
+#legend span { display:inline-block; width:.7rem; height:.7rem; border-radius:2px;
+  margin-right:.4rem; vertical-align:-1px; }
+#tip { position:absolute; pointer-events:none; background:var(--panel); border:1px solid var(--line);
+  border-radius:6px; padding:.35rem .6rem; font-size:.78rem; white-space:nowrap; opacity:0;
+  transition:opacity .12s; backdrop-filter:blur(6px); }
+</style>
+
+<div id="app">
+  <header>
+    <h1>PSS termination<small>definitions and theorems, and what cites what</small></h1>
+    <div class="spacer"></div>
+    <button id="theme">dark</button>
+  </header>
+  <div id="wrap">
+    <canvas id="cv"></canvas>
+    <div id="legend"></div>
+    <div id="tip"></div>
+  </div>
+  <footer>
+    <span id="stat"></span>
+    <a href="https://github.com/koteitan/yet-another-pss-proof" target="_blank" rel="noopener">github.com/koteitan/yet-another-pss-proof</a>
+  </footer>
+</div>
+
+<script id="graph-data" type="application/json">/*__DATA__*/</script>
+<script>
+const DATA = JSON.parse(document.getElementById('graph-data').textContent);
+const cv = document.getElementById('cv'), ctx = cv.getContext('2d');
+const tip = document.getElementById('tip');
+
+/* ---- colours: one hue per module ------------------------------------ */
+const HUE = {};
+DATA.modules.forEach((m, i) => HUE[m] = Math.round(360 * i / DATA.modules.length));
+const colour = (m, light) => `hsl(${HUE[m]} 62% ${light ? 42 : 62}%)`;
+
+/* ---- model ---------------------------------------------------------- */
+const N = DATA.nodes.length;
+const idx = new Map(DATA.nodes.map((n, i) => [n.id, i]));
+const x = new Float64Array(N), y = new Float64Array(N);
+const vx = new Float64Array(N), vy = new Float64Array(N);
+for (let i = 0; i < N; i++) {           // 決定的な初期配置（円環にモジュール順で）
+  const a = 2 * Math.PI * i / N, r = 260 + 120 * ((i * 7919) % 97) / 97;
+  x[i] = r * Math.cos(a); y[i] = r * Math.sin(a);
+}
+const E = DATA.edges.map(([a, b]) => [idx.get(a), idx.get(b)]).filter(e => e[0] != null && e[1] != null);
+
+const MIN2 = 14 * 14, VMAX = 18;              // 近距離の特異点と暴走を止める
+const P = { rep: 5200, spring: 0.0075, rest: 46, damp: 0.88, dt: 0.55, target: 430 };
+
+function step() {
+  for (let i = 0; i < N; i++) {                      // ノードどうしは遠ざかる
+    for (let j = i + 1; j < N; j++) {
+      let dx = x[i] - x[j], dy = y[i] - y[j];
+      let d2 = dx * dx + dy * dy;
+      if (d2 < MIN2) {
+        if (d2 < 1e-6) { dx = ((i * 31 + j * 17) % 7) - 3 + .5; dy = ((i * 13 + j * 29) % 7) - 3 + .5; }
+        d2 = MIN2;
+      }
+      if (d2 > 360000) continue;
+      const f = P.rep / (d2 * Math.sqrt(d2));
+      vx[i] += dx * f; vy[i] += dy * f;
+      vx[j] -= dx * f; vy[j] -= dy * f;
+    }
+  }
+  for (const [a, b] of E) {                          // 参照は近づく
+    const dx = x[b] - x[a], dy = y[b] - y[a];
+    const d = Math.hypot(dx, dy) || 1;
+    const f = P.spring * (d - P.rest);
+    vx[a] += dx / d * f; vy[a] += dy / d * f;
+    vx[b] -= dx / d * f; vy[b] -= dy / d * f;
+  }
+  for (let i = 0; i < N; i++) {                      // 減衰して位置を更新
+    if (i === held) { vx[i] = vy[i] = 0; continue; }
+    vx[i] *= P.damp; vy[i] *= P.damp;
+    const sp = Math.hypot(vx[i], vy[i]);
+    if (sp > VMAX) { vx[i] *= VMAX / sp; vy[i] *= VMAX / sp; }
+    x[i] += vx[i] * P.dt; y[i] += vy[i] * P.dt;
+  }
+  let mx = 0, my = 0;                                // 平均を原点へ
+  for (let i = 0; i < N; i++) { mx += x[i]; my += y[i]; }
+  mx /= N; my /= N;
+  let s2 = 0;
+  for (let i = 0; i < N; i++) { x[i] -= mx; y[i] -= my; s2 += x[i] * x[i] + y[i] * y[i]; }
+  const rms = Math.sqrt(s2 / N) || 1;                // 広がりを一定に保つ
+  const k = Math.max(0.97, Math.min(1.03, 1 + (P.target / rms - 1) * 0.05));
+  for (let i = 0; i < N; i++) { x[i] *= k; y[i] *= k; }
+}
+
+/* ---- camera --------------------------------------------------------- */
+const cam = { x: 0, y: 0, z: 1 };
+let W = 0, H = 0, dpr = 1;
+function resize() {
+  dpr = Math.min(2, window.devicePixelRatio || 1);
+  W = cv.clientWidth; H = cv.clientHeight;
+  cv.width = W * dpr; cv.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+new ResizeObserver(resize).observe(cv);
+
+const sx = i => (x[i] - cam.x) * cam.z + W / 2;
+const sy = i => (y[i] - cam.y) * cam.z + H / 2;
+const world = (px, py) => [(px - W / 2) / cam.z + cam.x, (py - H / 2) / cam.z + cam.y];
+
+/* ---- drawing -------------------------------------------------------- */
+function draw() {
+  const light = document.documentElement.getAttribute('data-theme') !== 'dark';
+  ctx.clearRect(0, 0, W, H);
+
+  ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--edge');
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (const [a, b] of E) {
+    const ax = sx(a), ay = sy(a), bx = sx(b), by = sy(b);
+    if (Math.max(ax, bx) < -50 || Math.min(ax, bx) > W + 50) continue;
+    if (Math.max(ay, by) < -50 || Math.min(ay, by) > H + 50) continue;
+    ctx.moveTo(ax, ay); ctx.lineTo(bx, by);
+    const d = Math.hypot(bx - ax, by - ay) || 1;     // 矢じり
+    const ux = (bx - ax) / d, uy = (by - ay) / d, h = 7;
+    const tx = bx - ux * 7, ty = by - uy * 7;
+    ctx.moveTo(tx, ty); ctx.lineTo(tx - ux * h + uy * h * .5, ty - uy * h - ux * h * .5);
+    ctx.moveTo(tx, ty); ctx.lineTo(tx - ux * h - uy * h * .5, ty - uy * h + ux * h * .5);
+  }
+  ctx.stroke();
+
+  const showText = cam.z > 0.55;
+  ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, monospace';
+  ctx.textBaseline = 'middle';
+  for (let i = 0; i < N; i++) {
+    const px = sx(i), py = sy(i);
+    if (px < -60 || px > W + 200 || py < -30 || py > H + 30) continue;
+    const n = DATA.nodes[i], r = 4 + Math.min(5, n.indeg * 0.5);
+    ctx.fillStyle = colour(n.module, light);
+    if (n.kind === 't') { ctx.beginPath(); ctx.arc(px, py, r, 0, 7); ctx.fill(); }
+    else ctx.fillRect(px - r, py - r, 2 * r, 2 * r);
+    if (i === hover) { ctx.strokeStyle = light ? '#111' : '#fff'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.arc(px, py, r + 3.5, 0, 7); ctx.stroke(); }
+    if (showText) {
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+      ctx.globalAlpha = i === hover ? 1 : 0.72;
+      ctx.fillText(n.name, px + r + 4, py);
+      ctx.globalAlpha = 1;
+    }
+  }
+}
+
+let hover = -1, held = -1;
+function pick(px, py) {
+  let best = -1, bd = 15 * 15;
+  for (let i = 0; i < N; i++) {
+    const dx = px - sx(i), dy = py - sy(i), d = dx * dx + dy * dy;
+    if (d < bd) { bd = d; best = i; }
+  }
+  return best;
+}
+
+function loop() { step(); draw(); requestAnimationFrame(loop); }
+
+/* ---- interaction ---------------------------------------------------- */
+const pointers = new Map();
+let panning = false, last = null, pinch = 0;
+
+cv.addEventListener('pointerdown', e => {
+  cv.setPointerCapture(e.pointerId);
+  pointers.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
+  if (pointers.size === 2) { pinch = spread(); panning = false; held = -1; return; }
+  const i = pick(e.offsetX, e.offsetY);
+  if (i >= 0) { held = i; } else { panning = true; cv.classList.add('drag'); }
+  last = { x: e.offsetX, y: e.offsetY };
+});
+cv.addEventListener('pointermove', e => {
+  if (pointers.has(e.pointerId)) pointers.set(e.pointerId, { x: e.offsetX, y: e.offsetY });
+  if (pointers.size === 2) {
+    const s = spread();
+    if (pinch) zoomAt(centre(), s / pinch);
+    pinch = s; return;
+  }
+  if (held >= 0) {
+    const [wx, wy] = world(e.offsetX, e.offsetY);
+    x[held] = wx; y[held] = wy; vx[held] = vy[held] = 0;
+  } else if (panning && last) {
+    cam.x -= (e.offsetX - last.x) / cam.z;
+    cam.y -= (e.offsetY - last.y) / cam.z;
+  } else {
+    const i = pick(e.offsetX, e.offsetY);
+    if (i !== hover) {
+      hover = i;
+      if (i >= 0) {
+        const n = DATA.nodes[i];
+        tip.textContent = `${n.kind === 't' ? 'T' : 'D'}.${n.name} — ${n.desc} (${n.file}, cited ${n.indeg})`;
+        tip.style.left = Math.min(W - tip.offsetWidth - 8, e.offsetX + 14) + 'px';
+        tip.style.top = (e.offsetY + 16) + 'px';
+        tip.style.opacity = 1;
+      } else tip.style.opacity = 0;
+    } else if (i >= 0) {
+      tip.style.left = Math.min(W - tip.offsetWidth - 8, e.offsetX + 14) + 'px';
+      tip.style.top = (e.offsetY + 16) + 'px';
+    }
+  }
+  last = { x: e.offsetX, y: e.offsetY };
+});
+function release(e) {
+  pointers.delete(e.pointerId);
+  if (pointers.size < 2) pinch = 0;
+  if (pointers.size === 0) { held = -1; panning = false; last = null; cv.classList.remove('drag'); }
+}
+cv.addEventListener('pointerup', release);
+cv.addEventListener('pointercancel', release);
+cv.addEventListener('pointerleave', () => { tip.style.opacity = 0; hover = -1; });
+
+function spread() {
+  const p = [...pointers.values()];
+  return Math.hypot(p[0].x - p[1].x, p[0].y - p[1].y);
+}
+function centre() {
+  const p = [...pointers.values()];
+  return { x: (p[0].x + p[1].x) / 2, y: (p[0].y + p[1].y) / 2 };
+}
+function zoomAt(pt, k) {
+  const [wx, wy] = world(pt.x, pt.y);
+  cam.z = Math.max(0.12, Math.min(6, cam.z * k));
+  const [ax, ay] = world(pt.x, pt.y);
+  cam.x += wx - ax; cam.y += wy - ay;
+}
+cv.addEventListener('wheel', e => {
+  e.preventDefault();
+  zoomAt({ x: e.offsetX, y: e.offsetY }, Math.exp(-e.deltaY * 0.0015));
+}, { passive: false });
+
+/* ---- theme ---------------------------------------------------------- */
+const btn = document.getElementById('theme');
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  btn.textContent = t === 'dark' ? 'light' : 'dark';
+  try { localStorage.setItem('pss-graph-theme', t); } catch (_) {}
+}
+setTheme((() => {
+  try { const t = localStorage.getItem('pss-graph-theme'); if (t) return t; } catch (_) {}
+  return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+})());
+btn.onclick = () => setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+
+/* ---- chrome --------------------------------------------------------- */
+document.getElementById('legend').innerHTML =
+  '<b>module &nbsp;/&nbsp; ● theorem &nbsp; ■ definition</b>' +
+  DATA.modules.map(m => `<span style="background:${colour(m, true)}"></span>${m}`).join('<br>');
+document.getElementById('stat').textContent =
+  `${DATA.nodes.length} nodes, ${DATA.edges.length} references`;
+
+function fit() {
+  let r = 1;
+  for (let i = 0; i < N; i++) r = Math.max(r, Math.hypot(x[i], y[i]));
+  cam.x = cam.y = 0;
+  cam.z = Math.max(0.12, Math.min(6, 0.42 * Math.min(W, H) / r));
+}
+
+resize();
+for (let i = 0; i < 240; i++) step();     // 開いた瞬間に落ち着いた形にする
+fit();
+loop();
+</script>
+</html>
