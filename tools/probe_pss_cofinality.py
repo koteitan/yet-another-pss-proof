@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """PSS BACHMANN COFINALITY probe — the load-bearing statement of the W_u transplant.
 
-The pss-proof syntactic OT_B WF proof runs on
+The syntactic well-foundedness proof of Buchholz 1987 §2 runs on
     Bachmann cofinality  +  W_u least-fixpoint induction.
 Transplanted to PSS (no Buchholz translation, no ordinals), the cofinality
 statement is, for standard forms M, N and PSS's own fundamental sequence

@@ -27,7 +27,7 @@
       - 同核: H0clause_oper_step / CollapseResidueMaxo / wf_ArgsA / diag_acc / Towsner 3.11 cross-stratum / Buchholz 1.9-term
       - 3 door + 全 lever（rank / critSub / WQO / gap-embed / §1 / fixpoint）収束、shortcut なし確定
       - ❌ Buchholz distinguished-set 再 foundation（external-param C^α(X)、Arai §3.1）= 3 gate de-risk で REFUTED（bypass #13、§22）: olt は syntactic、WF certificate は wf_olt_wf3(oV/wf3) のみ ⟹ 壁を wf3_of_cnf=H0clause に relocate するだけ。door1 が faithful な term-level 法、壁は intrinsic。core triply-confirmed
-    - ★★ 順序数なし W_u ルート（pss-proof の構文的 OT_B 整礎性を PSS ネイティブ移植）＝ H0clause 壁を迂回、残り1命題
+    - ★★ 順序数なし W_u ルート（Buchholz 1987 §2 の構文的整礎性証明を PSS ネイティブ移植）＝ H0clause 壁を迂回、残り1命題
       - ✅ end-to-end 配線（OrdinalFree.lean）: PSS_terminates_ordinal_free / no_infinite_expansion / stepR 版、全て sorryAx-free
       - ✅ 第2の柱 W-membership 完全証明（Wset.lean 全体 sorryAx-free、塔恒等式 oper_cons_tower 含む）
       - ✅ 共終性の全分岐（seqlex 還元 / degenerate / bad 分解 / d0=0 crux）
