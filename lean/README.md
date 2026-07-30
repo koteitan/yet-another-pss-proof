@@ -79,3 +79,7 @@ what stands inside the parentheses is a declaration name of `<module>.lean` (the
 `YAPSS.` is omitted), and the order of the sections is the same as the order of the declarations in
 `<module>.lean`. There is no proposition and no definition present on one side and absent on the
 other.
+
+The same eleven modules are formalized a second time in Isabelle/HOL, as
+`../isabelle/<module>.thy`, again with the same declarations in the same order. That development
+carries no text of its own; this one serves both.

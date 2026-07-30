@@ -2,10 +2,10 @@
 
 # yet-another-pss-proof
 
-Version: **v1.2.3**
+Version: **v1.3.0**
 
 **ペア数列システム**（Pair Sequence System, PSS。2 行のバシク行列システム）の停止性の
-独立な証明と、その Lean 4 / Mathlib による形式証明。
+独立な証明と、その Lean 4 / Mathlib および Isabelle/HOL による形式証明。
 
 PSS は Bashicu 氏が考案し、その停止性は P進大好きbot 氏が Buchholz の崩壊関数 $\psi$ を
 用いて最初に証明した。本リポジトリはそれとは**別の証明**を与える。ペア数列を
@@ -22,6 +22,9 @@ $p_a(b)+c$ という独自の三分木記法へ翻訳し、その記法の上で
 原始数列システム（Primitive Sequence System, PrSS）の停止証明
 （[`prss-proof`](https://github.com/koteitan/prss-proof)）と同じである。
 本証明で新しいのは、その記法の整礎性を順序数を使わずに示す部分である。
+
+同じ証明を Isabelle/HOL でもう一度形式化したものが `isabelle/` にある。同じ 11 モジュール、
+同じ定義と定理を同じ順序で、素の `HOL` の上で `sorry` なしに証明したものである。
 
 PSS の強さは $\psi_0(\psi_\omega(0))$（Buchholz ordinal）と考えられており、
 $p_a(b)$ の添字 $a$ を自然数に取ることに対応する。
@@ -43,7 +46,13 @@ cd lean && lake build
 
 Lean 4 と Mathlib `v4.30.0`。
 
-（Isabelle 版は v1.0.1 で撤去した。今後 `lean/` から改めて翻訳する予定。旧 Isabelle 開発は
+```sh
+cd isabelle && isabelle build -d . YAPSS
+```
+
+Isabelle2025-2。
+
+（旧 Isabelle 版は v1.0.1 で撤去し、v1.3.0 で `lean/` から改めて翻訳した。撤去した方の開発は
 タグ `ya-pss-isabelle-archive` に保存されている。）
 
 ## ディレクトリ構造
@@ -67,6 +76,9 @@ lean/                 Lean 4 / Mathlib による形式証明
   graph/              index.html — 参照グラフと、それを作る一式
   memo/               証明の一部ではない検査用コード
   tools/              DeadCode.lean — 証明項が到達しない宣言の検出
+isabelle/             同じ証明の Isabelle/HOL による形式証明
+  ROOT                セッション YAPSS。11 個の理論を依存順に列挙
+  Pss.thy … Final.thy lean/ の各モジュールに 1 対 1 対応。同名・同じ宣言順
 tools/                実行可能な PSS モデルと、形式化前に主張を反例探索で確かめる probe
 task.md               作業ツリー
 ```

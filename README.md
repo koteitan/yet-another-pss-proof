@@ -2,10 +2,11 @@
 
 # yet-another-pss-proof
 
-Version: **v1.2.3**
+Version: **v1.3.0**
 
 An independent proof that the **pair sequence system** (PSS, the 2-rowed Bashicu matrix
-system) terminates, together with its formalization in Lean 4 / Mathlib.
+system) terminates, together with its formalization in Lean 4 / Mathlib and in
+Isabelle/HOL.
 
 PSS was devised by Bashicu, and its termination was first proved by P進大好きbot using
 Buchholz's collapsing functions $\psi$. This repository gives a **different proof**: pair
@@ -19,6 +20,10 @@ project. No ordinals occur anywhere in the route, and this is checked mechanical
 rather than asserted: after `import Final` the constant `Ordinal` does not exist in
 the Lean environment at all, and no Mathlib ordinal or cardinal module is in the
 import closure.
+
+The same proof is formalized a second time in Isabelle/HOL, in `isabelle/`: the same
+eleven modules, the same definitions and theorems in the same order, proved again over
+plain `HOL` with no `sorry`.
 
 The proof-theoretic strength of PSS is believed to be $\psi_0(\psi_\omega(0))$
 (the Buchholz ordinal), which corresponds to taking the subscript $a$ of $p_a(b)$ to
@@ -42,6 +47,12 @@ cd lean && lake build
 
 Lean 4 with Mathlib `v4.30.0`.
 
+```sh
+cd isabelle && isabelle build -d . YAPSS
+```
+
+Isabelle2025-2.
+
 ## Repository layout
 
 ```
@@ -63,6 +74,9 @@ lean/                 the Lean 4 / Mathlib formalization
   graph/              index.html — the reference graph, and what builds it
   memo/               verification code that is not part of the proof
   tools/              DeadCode.lean — declarations no proof term reaches
+isabelle/             the Isabelle/HOL formalization of the same proof
+  ROOT                the session YAPSS, the eleven theories in dependency order
+  Pss.thy … Final.thy one theory per lean/ module, same name, same declaration order
 tools/                the executable PSS model and the probes that check a statement
                       against it before it is formalized
 task.md               progress tree
