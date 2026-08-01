@@ -2,10 +2,13 @@
 
 # A plan for the video explanation (chapters 4 and 5)
 
-This file is **the design of a script for a video** explaining chapters 4 and 5 of the PSS
-termination proof. It is not the proof text. The statements and their proofs live in the `.md`
-of each module; what is written here is how they are arranged, which parts are hard, and what
-should be drawn.
+This file collects **what has to be explained** about chapters 4 and 5 of the PSS termination
+proof. It is not the proof text: the statements and their proofs live in the `.md` of each
+module, and what is written here is how they are arranged and which parts are hard.
+
+**It says nothing about how to draw.** The conventions for the hydra pictures belong to the
+existing series (`googology-manim`) and are owned there. What this file supplies is the
+mathematics to be told, not the way to show it.
 
 `Cnf.md` comes in three parts and `ArgDom.md` in five because GitHub stops rendering the
 formulas of a page beyond a certain amount. That split is **a matter of display**, not a
@@ -23,94 +26,49 @@ Where to look in the proof text:
 
 ---
 
-## 0. How the pictures are drawn (the UBI model)
+## 0. The dictionary
 
-**The way hydras are drawn is already fixed by the existing series**, and this document follows
-it. Do not invent another way of drawing.
+The existing series and the proof text call the same things by different names. Here is as much
+of the dictionary as is needed to match them up.
 
-- implementation: `tools/pair_hydra.py` (`PairHydra`, `Tier`) in `googology-manim`
-- definitions: `tools/pair.py` there (`p0`, `p1`, `expand`)
-- the wording already recorded: `transcripts/pss.md` there
-
-### 0.1 A pair sequence is a two-tier hydra
-
-**One hydra is drawn per row, so a pair sequence gets two tiers.** The height of a node is the
-value of that row itself, and **a larger value is drawn higher**. The value is written inside
-the dot.
-
-- **upper tier (the row-0 hydra)** — height is the row-0 value; the parent is $`P_0`$. This is
-  exactly the hydra of the primitive sequence system
-- **lower tier (the row-1 hydra)** — height is the row-1 value; the parent is $`P_1`$
+### 0.1 The two parent relations
 
 ```
 P0(x) = the rightmost column left of x whose row-0 value is smaller than x's
-P1(x) = the rightmost column among the ancestors of x in the upper tier
+P1(x) = the rightmost column among the ancestors of x in the P0 tree
         whose row-1 value is smaller than x's
 ```
 
-That $`P_1`$ **looks only at ancestors** is the heart of the model: a column that is not an
-ancestor is skipped even when its row-1 value is smaller. That is where the name
-Upper-Branch-Ignoring comes from.
+That $`P_1`$ **looks only at ancestors** is the heart of the system: a column that is not an
+ancestor is skipped even when its row-1 value is smaller. In the proof text these are
+$`P_0`$ = [D.nextrel0](Pss.md#d-nextrel0) and $`P_1`$ = [D.nextrel1](Pss.md#d-nextrel1). They
+are the same thing.
 
-Example: $`(0,0)(1,1)(2,0)(1,1)`$
+For instance in $`(0,0)(1,1)(2,0)(1,1)`$ the $`P_1`$ of column 3 is column 0, not column 2.
+Column 2 has row-1 value $`0`$, smaller than $`1`$, but following the ancestors of column 3
+jumps to column 0, so column 2 sits on another branch and is not a candidate.
 
-```
-           column 0   column 1   column 2   column 3
-upper         0          1          2          1      <- height = row-0 value
-lower         0          1          0          1      <- height = row-1 value
+### 0.2 What the translation tr reads
 
-upper parent   1 -> 0     2 -> 1     3 -> 0
-lower parent   1 -> 0     2 -> none  3 -> 0
-```
-
-Look at the lower-tier parent of column 3. Column 2, immediately to its left, has row-1 value
-$`0`$, which is smaller than $`1`$, and yet **it cannot be the parent**: following the ancestors
-of column 3 in the upper tier jumps straight to column 0, and column 2 sits on a different
-branch.
-
-In the proof text these are $`P_0`$ = [D.nextrel0](Pss.md#d-nextrel0) and
-$`P_1`$ = [D.nextrel1](Pss.md#d-nextrel1). They are the same thing.
-
-### 0.2 The upper tier is a forest, the lower tier gives the subscripts
-
-Read from the left, the height in the upper tier goes up by at most one
-([D.steps1](Seqlex.md#d-steps1), [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS)), so the upper
-tier is **the preorder listing of a forest**. The **subtree** of a column is the run of columns
-to its right that stay higher than it.
-
-The translation $`\mathrm{tr}`$ carries this structure straight over to a term.
+Read from the left, the row-0 value goes up by at most one
+([D.steps1](Seqlex.md#d-steps1), [T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS)), so row 0 is
+**the preorder listing of a forest**. The **subtree** of a column is the run of columns to its
+right whose row-0 values stay above it.
 
 ```
 tr(())           = Z
-tr(p :: rest)    = P( the lower-tier height of p,
-                      tr(the subtree of p in the upper tier),
+tr(p :: rest)    = P( the row-1 value of p,
+                      tr(the subtree of p),
                       tr(the rest) )
 ```
 
 In $`p_a(b) + c`$,
 
-- $`a`$ = **the lower-tier height of that column** (its row-1 value)
-- $`b`$ = **the subtree of that column in the upper tier**
+- $`a`$ = **the row-1 value of that column**
+- $`b`$ = **the subtree of that column** (as seen in row 0)
 - $`c`$ = the forest remaining to the right
 
-**Draw: circle one mountain in the upper tier and drop a vertical line from its root to the same
-column in the lower tier, pointing at the three things — inside the circle is $`b`$, outside is
-$`c`$, and this lower-tier height is the subscript $`a`$.**
-
-### 0.3 The expansion cuts a head and lays down copies of the bad part
-
-Use the words the existing series already uses.
-
-1. **Cut** the rightmost column (both tiers together)
-2. If the row-1 value of the cut column is $`0`$, look for its parent in the upper tier;
-   otherwise in the lower tier. That parent is the **bad root**
-3. Everything left of the bad root is the **good part**; from the bad root up to just before the
-   cut column is the **bad part**
-4. Lay down copies of the bad part. When the row-1 value was not $`0`$, each copy is raised in
-   the upper tier by the **lift** (the row-0 value of the cut column minus the row-0 value of
-   the bad root), so the copies form a **staircase**. **The lower tier does not rise**
-
-The dictionary with the proof text:
+### 0.3 The words for the expansion
 
 | the existing series | the proof text |
 |---|---|
@@ -124,12 +82,8 @@ The dictionary with the proof text:
 
 **Only the way copies are counted differs.** The existing series uses the activation function
 $`f(n) = n^2`$ and lays down $`f(n)+1`$ copies. The $`M[n]`$ of the proof text is $`n`$ copies
-($`n \ge 1`$); it fixes no $`f`$ and handles all $`n \ge 1`$ at once. Mind this when matching a
-picture against the text.
-
-**Draw: the column being cut in red, the bad root in another colour, the bad part circled in
-blue, and animate the copies appearing to the right. For ascending copies, show the staircase
-climbing while the lower tier keeps its heights.**
+($`n \ge 1`$); it fixes no $`f`$ and handles all $`n \ge 1`$ at once. Mind this when matching
+numbers up.
 
 ---
 
@@ -176,20 +130,15 @@ seqlex(M, N)  :<=>  M is empty and N is not, or
 
 ### Why this is what matters most in chapter 4
 
-From here on **the term $`p_a(b)+c`$ never appears again**. One does not have to look at the
-hydra: reading the two sequences from the left and comparing the first column where they differ
-decides the order. Everything in chapter 5 happens on lists, so this isomorphism is what sets
-the stage.
-
-**Draw: show the same two pair sequences both as two-tier hydras and as sequences (the matrix
-form with the pair stacked vertically), and say "either way the comparison is the same". An
-animation drawing a vertical line at the first differing column works well.**
+From here on **the term $`p_a(b)+c`$ never appears again**. One does not have to look at trees:
+reading the two sequences from the left and comparing the first column where they differ decides
+the order. Everything in chapter 5 happens on lists, so this isomorphism is what sets the stage.
 
 ### The line of the proof
 
 1. A standard form is a block ([T.blockok_ST_PS](Seqlex-2.md#t-blockok_ST_PS)). A block is
-   "the head sits at height $`d`$, every column is at height at least $`d`$, and adjacent steps
-   are at most one"
+   "the head has row-0 value $`d`$, every column has row-0 value at least $`d`$, and adjacent
+   steps are at most one"
 2. For a block $`B`$, the subtree of the head column and the remainder correspond exactly to the
    two arguments of the recursion of $`\mathrm{tr}`$
    ([T.blockok_arg](Seqlex.md#t-blockok_arg), [T.blockok_tail](Seqlex.md#t-blockok_tail))
@@ -203,9 +152,9 @@ animation drawing a vertical line at the first differing column works well.**
 - **[T.blockok_oper](Seqlex-2.md#t-blockok_oper) (expansion preserves being a block)** — 179
   lines in Lean and 365 in Isabelle, the largest in this part. The difficulty is showing that
   when $`n`$ copies of the bad part are laid side by side, **the "adjacent step at most one"
-  condition does not break at the seams**. At a seam the height jumps from the end of one copy
-  to the head of the next, and that jump has to be bounded by one, in terms of the lift $`d_0`$.
-  **Zooming in on a single seam of the staircase is the picture to show**
+  condition does not break at the seams**. At a seam the row-0 value jumps from the end of one
+  copy to the head of the next, and that jump has to be bounded by one, in terms of the lift
+  $`d_0`$
 
 ---
 
@@ -227,11 +176,8 @@ cnf(P(a,b,P(e,f,g)))   :<=> cnf(b) and not P(a,b,Z) < P(e,f,Z) and cnf(P(e,f,g))
 
 The condition says the sum of principal terms is weakly decreasing, which is the decreasing
 condition on the exponents of the Cantor normal form
-$`\omega^{a_1} + \dots + \omega^{a_k}`$ ($`a_1 \ge \dots \ge a_k`$) of an ordinal.
-
-**Draw: several mountains standing side by side in the upper tier, and reading the roots from
-left to right they never grow. Since the comparison is decided by the lower-tier height (the
-subscript), point at the lower tier of each root while comparing.**
+$`\omega^{a_1} + \dots + \omega^{a_k}`$ ($`a_1 \ge \dots \ge a_k`$) of an ordinal. In terms of
+the forest: reading the trees from the left, the roots never grow.
 
 The proof is by induction on $`\mathrm{ST\_PS}`$: the diagonal (base case) and the expansion
 (inductive step). The step is the body, and it divides into the complete-copy branch and the
@@ -244,13 +190,9 @@ ascending-copy branch.
 > [T.parent_append_right](Column.md#t-parent_append_right))
 
 The parent relation, the ancestor relation, the existence of a parent, the search row and the
-expansion are all invariant under prepending, and moreover **an upper-tier parent edge never
-crosses the boundary** between the prefix and the second half
+expansion are all invariant under prepending, and moreover **a row-0 parent edge never crosses
+the boundary** between the prefix and the second half
 ([T.nextrel0_no_cross](Column.md#t-nextrel0_no_cross)).
-
-**Draw: prepend another hydra on the left and show that the mountains on the right keep their
-shape and their edges. For "never crosses", draw an edge spanning the boundary and put a cross
-on it.**
 
 Because of this, Part III can say "it is enough to look at the bad part we are interested in".
 The proof of cofinality gets away with local arguments entirely thanks to this part.
@@ -261,15 +203,11 @@ The proof of cofinality gets away with local arguments entirely thanks to this p
 > ([T.r1ok_ST_PS](Column-3.md#t-r1ok_ST_PS), [T.z0ok_ST_PS](Column-4.md#t-z0ok_ST_PS))
 
 ```
-r1ok(M) :<=> a column whose upper-tier height is positive always has a parent (the nearest
-             preceding column whose upper-tier height is exactly one smaller), and its
-             lower-tier height exceeds the parent's lower-tier height by at most one
-z0ok(M) :<=> a column whose upper-tier height is 0 has lower-tier height 0 as well
+r1ok(M) :<=> a column with positive row 0 always has a parent (the nearest preceding column
+             whose row-0 value is exactly one smaller), and its row-1 value exceeds the
+             parent's row-1 value by at most one
+z0ok(M) :<=> a column whose row-0 value is 0 has row-1 value 0 as well
 ```
-
-**Draw: join a parent and its child in the upper tier with an edge, connect the same two columns
-down to the lower tier with vertical lines, and show that the lower-tier difference is at most
-one. For z0ok: "a column standing on the ground upstairs stands on the ground downstairs too".**
 
 From these two follow **the existence and the uniqueness of the parent**
 ([T.parent0_exists](Column-4.md#t-parent0_exists),
@@ -289,12 +227,11 @@ branch be discharged and the fourth branch be the only one left to handle.
   cnf(tr(G ++ X))   and   cnf(tr G) and cnf(tr X)
   ```
 
-  are not equivalent: the very shape of the mountains of the prefix $`G`$ depends on $`X`$. To
-  say "replacing the second half keeps the condition", one has to write down everything that
-  stays invariant across the replacement, and that takes six hypotheses.
-  **To draw it, show the same $`G`$ forming different mountains depending on what is appended: a
-  lower column arriving cuts the mountain there, a higher one is swallowed into it**
-- **[T.r1ok_copyExp](Column-2.md#t-r1ok_copyExp) (the lower-tier discipline of a replicated
+  are not equivalent: for one and the same $`G`$, a following column with a smaller row-0 value
+  cuts the tree there, while a larger one is swallowed into it. To say "replacing the second
+  half keeps the condition", one has to write down everything that stays invariant across the
+  replacement, and that takes six hypotheses
+- **[T.r1ok_copyExp](Column-2.md#t-r1ok_copyExp) (the row-1 discipline of a replicated
   expansion)** — 118 lines in Lean, 452 in Isabelle. With $`n`$ copies laid down, the parent of
   a column inside the $`k`$-th copy may sit in the same copy or in the previous one, and in the
   latter case every index calculation is offset by the lift $`d_0`$. The proof is built around
@@ -304,8 +241,8 @@ branch be discharged and the fourth branch be the only one left to handle.
   ([T.cnf_oper_i1eq1](Cnf-3.md#t-cnf_oper_i1eq1), [T.cnf_copies](Cnf-3.md#t-cnf_copies)) — the
   concept is not hard but the work is long. The nested tower of lifts
   $`\mathrm{cp}_d(B, n+1) = B \mathbin{+\!\!+} \mathrm{sh}_d(\mathrm{cp}_d(B,n))`$ is peeled one
-  layer at a time, and at each layer both "this whole list is a single mountain" and "the lower
-  bound on the height of the tail" have to be rebuilt
+  layer at a time, and at each layer both "this whole list is a single tree" and "the lower
+  bound on the row-0 values of the tail" have to be rebuilt
 
 ---
 
@@ -320,13 +257,12 @@ branch be discharged and the fourth branch be the only one left to handle.
 > ([T.pss_cofinality_holds](Final.md), whose core is
 > [T.pss_cofinality_of_argdom](Cofinality-3.md#t-pss_cofinality_of_argdom))
 
-**Draw: countless standard forms hanging below $`M`$, and show that whichever one is picked, one
-of $`M[1], M[2], M[3], \dots`$ covers it from above — animate the covered region growing with
-$`n`$. This is the intuition for pillar 1.**
+There are endlessly many standard forms below $`M`$, and the claim is that whichever one is
+taken, one of $`M[1], M[2], M[3], \dots`$ covers it from above.
 
 ### The staircase of reductions
 
-The proof is five reductions stacked up. The staircase itself is worth one slide.
+The proof is five reductions stacked up.
 
 ```
 (1) cofinality for the order on terms
@@ -356,25 +292,21 @@ $`M`$ or where it drops below.
 
 ### The host-free core ArgDomCore
 
-> **Inside a single standard form, let two columns with the same lower-tier height $`w`$ stand as
-> ancestor and descendant in the upper tier, at heights $`u`$ and $`u+e`$. Then the subtree
-> $`B`$ of the higher one is covered, in the column-lex order, by the copy of the subtree $`A`$
-> of the lower one raised by $`e`$.**
+> **Inside a single standard form, let two columns with the same row-1 value $`w`$ stand as
+> ancestor and descendant in row 0, with row-0 values $`u`$ and $`u+e`$. Then the subtree $`B`$
+> of the descendant is covered, in the column-lex order, by the copy of the subtree $`A`$ of the
+> ancestor lifted by $`e`$.**
 > ([D.ArgDomCore](ArgDom.md#d-ArgDomCore); it holds by
 > [T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds))
 
 ```
-upper height u+e   (u+e, w)  <- the higher one; its subtree B
-                      |         (ancestor and descendant upstairs, same height w downstairs)
-upper height u     (u, w)    <- the lower one; its subtree A = A1 ++ (u+e,w) :: (B ++ A2)
+row 0 = u+e   (u+e, w)  <- the descendant; its subtree B
+                 |         (ancestor and descendant in row 0, both with row 1 equal to w)
+row 0 = u     (u, w)    <- the ancestor; its subtree A = A1 ++ (u+e,w) :: (B ++ A2)
 ```
 
-The side condition SpineOK says "every right-visible column between the two has lower-tier height
-at least $`w`$", that is, **the two are siblings with respect to the lower tier**.
-
-**Draw: light up the two columns that have the same lower-tier height, and trace the edges
-upstairs showing that they are ancestor and descendant. Then raise the lower mountain by $`e`$
-and superimpose it on the higher one, showing that it fits. This is the showpiece of chapter 5.**
+The side condition SpineOK says "every right-visible column between the two has row-1 value at
+least $`w`$", that is, **the two are siblings with respect to row 1**.
 
 Being "host-free" matters because in this form **the surrounding lists $`X`$ and $`Z`$
 disappear**. The prefix invariance of Part II is what makes that erasure possible.
@@ -396,15 +328,13 @@ expansion, and it splits once more into three cases.
 - **[T.argDomCoreOn_bad_A2](ArgDom-4.md#t-argDomCoreOn_bad_A2)** — **the largest single lemma in
   the whole development**, 461 lines in Lean and 1519 in Isabelle. In the proof text it takes a
   page of its own. The difficulty is that when the two marked columns straddle a copy boundary,
-  one belongs to the $`k`$-th copy and the other to the $`k'`$-th, so **the two sit on different
+  one belongs to the $`k`$-th copy and the other to the $`k'`$-th, so **they sit on different
   steps of the staircase and are lifted by different amounts**. The conclusion of ArgDomCore is
-  a uniform shift "raise by $`e`$", so two fragments carrying different lifts have to be put
-  back on a common host before they can be compared. That is done by splitting the list at a
-  level ([T.arg_split](ArgDom-2.md#t-arg_split)) and using composition and inversion of lifts
-  ([T.shiftl0_shiftr0](ArgDom-2.md#t-shiftl0_shiftr0),
-  [T.shiftr0_comm](ArgDom-2.md#t-shiftr0_comm)) over and over.
-  **In the video, putting a mark on two different steps of the staircase and showing that no
-  single $`e`$ lines both of them up already conveys why this is hard**
+  a uniform shift "lift by $`e`$", and no single $`e`$ lines both of them up. The list is
+  therefore split at a level ([T.arg_split](ArgDom-2.md#t-arg_split)), and composition and
+  inversion of lifts ([T.shiftl0_shiftr0](ArgDom-2.md#t-shiftl0_shiftr0),
+  [T.shiftr0_comm](ArgDom-2.md#t-shiftr0_comm)) put the two fragments with their different lifts
+  back on a common host, where they can be compared
 - **[T.copy_dom_zero](Cofinality-2.md#t-copy_dom_zero)** — 124 lines in Lean. The crux on the
   complete-copy side: taking $`n`$ large enough covers, proved over a block decomposition that
   is uniform in $`n`$ ([T.oper_bad_blocks_all](Cofinality.md#t-oper_bad_blocks_all))
@@ -418,7 +348,7 @@ expansion, and it splits once more into three cases.
 > **Every standard form lies in $`W_u`$ for some $`u`$**
 > ([T.W_membership](Wset-4.md#t-W_membership))
 
-And $`u`$ can be named explicitly: **the maximum lower-tier height** will do
+And $`u`$ can be named explicitly: **the maximum row-1 value** will do
 ([T.mem_W_maxr1](Wset-4.md#t-mem_W_maxr1)).
 
 ### What $`W_u`$ is
@@ -427,22 +357,17 @@ The least fixpoint of an operator $`A_u`$ ([D.Aop](Wset.md#d-Aop), [D.W](Wset.md
 belongs to $`A_u(X)`$ in one of three ways.
 
 ```
-(1) length at most 1 and lower-tier height 0             -- the bottom
+(1) length at most 1 and row-1 value 0                   -- the bottom
 (2) the list is not an orphan, and M[n] is in X for all n -- cutting always lands on
                                                             something already known
-(3) for some m < u the list is a "lower-tier orphan", and
-    graft(M, z) is in X for every z in W_m that starts from the ground
+(3) for some m < u the list is a "row-1 orphan", and
+    graft(M, z) is in X for every z in W_m whose row 0 starts at 0
                                                          -- one can graft from a lower level
 ```
 
-A "lower-tier orphan" means that the last column has lower-tier height $`m+1`$ and has no parent
-in the lower tier ([D.domT](Wset.md#d-domT)). The graft removes that last column and rebuilds
-$`z`$ starting from the height it occupied ([D.graft](Wset.md#d-graft)).
-
-**Draw: (1) is "just standing on the ground", (2) is "cutting a head always lands on something
-already known", (3) is "grafting a hydra from a lower level onto an end that has no parent
-downstairs lands on something already known". Three boxes. For (3), show the last column
-vanishing and another hydra growing out of that spot.**
+A "row-1 orphan" means that the last column has row-1 value $`m+1`$ and has no parent in row 1
+([D.domT](Wset.md#d-domT)). The graft removes that last column and rebuilds $`z`$ from the row-0
+value it occupied ([D.graft](Wset.md#d-graft)).
 
 Being a least fixpoint gives two principles.
 
@@ -457,10 +382,10 @@ least fixpoint at each level are nested. That is what "iterated inductive" means
 ### The line of the proof
 
 1. Every list belongs to $`W^{*}`$ ([T.mem_Wstar](Wset-4.md#t-mem_Wstar)), where
-   $`W^{*} = \{R \mid \text{if every column of } R \text{ has positive upper-tier height, then } (0,v) :: R \in W_v \text{ for every } v\}`$
+   $`W^{*} = \{R \mid \text{if every column of } R \text{ has positive row 0, then } (0,v) :: R \in W_v \text{ for every } v\}`$
 2. For that, prove $`A_u(W^{*}) \subseteq W^{*}`$ ([T.Wstar_closed](Wset-4.md#t-Wstar_closed))
    and apply (A2)
-3. Taking the level from a bound on the lower-tier height gives the membership
+3. Taking the level from a bound on the row-1 values gives the membership
    ([T.mem_W_of_bound](Wset-4.md#t-mem_W_of_bound))
 
 ### The hard parts
@@ -471,15 +396,13 @@ least fixpoint at each level are nested. That is what "iterated inductive" means
   result of cutting the original list with the root put back on
 - **[T.oper_cons_nat](Wset-3.md#t-oper_cons_nat)** — 94 lines in Lean, 497 in Isabelle. This is
   the lemma that says "adding a root commutes with the expansion". One extra column shifts every
-  index by one, so the upper-tier parent and ancestor relations, the lower-tier parent and the
-  search row all have to be tracked through that shift (the group from
+  index by one, so the row-0 parent and ancestor relations, the row-1 parent and the search row
+  all have to be tracked through that shift (the group from
   [T.entry_cons](Wset-3.md#t-entry_cons) to [T.nextR_cons_last](Wset-3.md#t-nextR_cons_last) is
   the toolkit for exactly that)
 - **The tower $`\mathrm{tow}`$** ([D.tow](Wset-3.md#d-tow)) — the list obtained by grafting $`k`$
-  times: $`t_0 = ()`$ and $`t_{k+1} = (0,v) :: \mathrm{graft}(R, t_k)`$.
-  **This is a hydra grafted into itself over and over, so it is the easiest thing in the whole
-  proof to animate: hydras of the lower level sprouting one after another at the place of the
-  lower-tier orphan**
+  times: $`t_0 = ()`$ and $`t_{k+1} = (0,v) :: \mathrm{graft}(R, t_k)`$. It feeds the lists of
+  the lower level, one after another, into the place of the row-1 orphan
 
 ---
 
@@ -500,7 +423,7 @@ the expansion relation step is well-founded; no infinite expansion sequence exis
 
 Branch (2) of the induction for $`W_u`$ is "cutting lands on something already known", and
 cofinality says "anything smaller is covered once you cut". The two mesh exactly.
-**This is the keystone of the whole proof and the closing scene of the video.**
+**This is the keystone of the whole proof.**
 
 ---
 
@@ -526,28 +449,25 @@ The difficulties are of two kinds.
 
 - **Conceptual** — [T.cnf_ctx_cong](Cnf-2.md#t-cnf_ctx_cong) (the translation is not
   compositional) and [T.argDomCoreOn_bad_A2](ArgDom-4.md#t-argDomCoreOn_bad_A2) (the lift is not
-  uniform). The obstacle can be put into words, so it is worth explaining in the video
-- **Sheer length** — the index calculations. Following one column through the picture is enough;
-  there is no need to follow them all
+  uniform). The obstacle can be put into words, so it is worth explaining
+- **Sheer length** — the index calculations. Following a single column through is enough; there
+  is no need to follow them all
 
 ---
 
-## A suggested order for the video
+## Where the weight belongs
 
-1. **Recall how the pictures work** (section 0) — the two tiers, height, that $`P_1`$ looks only
-   at ancestors, and cut / bad root / good part / bad part / lift / staircase. For someone who
-   has seen the earlier series this is a recap; for anyone else it is the way in
-2. **The overall design** — the goal and the two pillars, on one slide
-3. **Part I** — comparing hydras and comparing sequences give the same answer; the stage moves
-   to lists
-4. **Part II** — the shape of a standard form. Emphasize prefix invariance (adding on the left
-   changes nothing on the right). Do not enumerate the small lemmas
-5. **Part III** — cofinality. Show the staircase of reductions on one slide, then spend the time
-   on the picture for ArgDomCore (the ancestor and descendant with the same lower-tier height,
-   and the raised subtree)
-6. **Part IV** — the three branches of $`W_u`$, and the tower. The grafting animation
-7. **Part V** — the two pillars mesh and well-foundedness comes out
+A rough guide to where the content deserves time.
 
-Part II has many lemmas, but **in the video only its three main propositions (cnf, prefix
-invariance, r1ok and z0ok) need to be shown; the proofs can be skipped**. The time is better
-spent on the order isomorphism of Part I, ArgDomCore in Part III, and the tower in Part IV.
+1. **The overall design** — the goal and the two pillars
+2. **Part I** — the order isomorphism. The turning point at which the stage becomes lists, so
+   give it room
+3. **Part II** — only the three main propositions (cnf, prefix invariance, r1ok and z0ok).
+   **The proofs can be skipped.** There are many lemmas, but each is a tool
+4. **Part III** — run through the staircase of reductions, then spend the time on ArgDomCore.
+   This is the summit
+5. **Part IV** — the three branches of $`W_u`$, and the tower
+6. **Part V** — the two pillars mesh and well-foundedness comes out
+
+The three that deserve the time are the order isomorphism of Part I, ArgDomCore in Part III, and
+the tower in Part IV.
