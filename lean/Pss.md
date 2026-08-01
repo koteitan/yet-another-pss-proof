@@ -313,15 +313,27 @@ $`\Phi(M)`$. ∎
 <a id="d-step"></a>
 ## Definition: expansion (D.step)
 
-Define a relation $`S`$ on $`\mathrm{PairSeq}`$ to be **closed** if
+Define a relation on $`\mathrm{PairSeq}`$, that is a
+$`S \subseteq \mathrm{PairSeq} \times \mathrm{PairSeq}`$, to be **closed** if
 
 ```math
 \text{(step\_oper)}\quad
 \forall M,\ \forall n,\ \bigl(1 \lt \lvert M\rvert \wedge 1 \le n\bigr) \to M \mathbin{S} M[n]
 ```
 
-holds. Then define $`\Rightarrow`$ to be the intersection of all closed relations, that is,
-$`M \Rightarrow N`$ says that $`M \mathbin{S} N`$ for every closed $`S`$.
+holds. Then define $`\Rightarrow`$ by
+
+```math
+{\Rightarrow} := \bigcap\, \bigl\{\, S \subseteq \mathrm{PairSeq} \times \mathrm{PairSeq} \ \bigm|\ S \text{ is closed} \,\bigr\} .
+```
+
+That is,
+
+```math
+M \Rightarrow N \iff
+\forall S \subseteq \mathrm{PairSeq} \times \mathrm{PairSeq},\
+\bigl(S \text{ is closed} \to M \mathbin{S} N\bigr) .
+```
 
 <a id="t-step.step_oper"></a>
 ## Theorem: the rule generating expansion (T.step.step_oper)

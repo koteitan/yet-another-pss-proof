@@ -310,16 +310,27 @@ $`\mathrm{ST\_PS} \subseteq Y`$ である。$`M \in \mathrm{ST\_PS}`$ を取る�
 <a id="d-step"></a>
 ## 定義: 展開 (D.step)
 
-$`\mathrm{PairSeq}`$ 上の関係 $`S`$ が**閉じている**ことを
+$`\mathrm{PairSeq}`$ 上の関係、すなわち $`S \subseteq \mathrm{PairSeq} \times \mathrm{PairSeq}`$ が
+**閉じている**ことを
 
 ```math
 \text{(step\_oper)}\quad
 \forall M,\ \forall n,\ \bigl(1 \lt \lvert M\rvert \wedge 1 \le n\bigr) \to M \mathbin{S} M[n]
 ```
 
-が成り立つことと定義する。そのうえで $`\Rightarrow`$ を、閉じているすべての関係の交わりと
-定義する。すなわち $`M \Rightarrow N`$ とは、閉じているすべての $`S`$ に対し
-$`M \mathbin{S} N`$ が成り立つことである。
+が成り立つことと定義する。そのうえで $`\Rightarrow`$ を
+
+```math
+{\Rightarrow} := \bigcap\, \bigl\{\, S \subseteq \mathrm{PairSeq} \times \mathrm{PairSeq} \ \bigm|\ S \text{ は閉じている} \,\bigr\}
+```
+
+と定義する。すなわち
+
+```math
+M \Rightarrow N \iff
+\forall S \subseteq \mathrm{PairSeq} \times \mathrm{PairSeq},\
+\bigl(S \text{ は閉じている} \to M \mathbin{S} N\bigr) .
+```
 
 <a id="t-step.step_oper"></a>
 ## 定理: 展開を生成する規則 (T.step.step_oper)
