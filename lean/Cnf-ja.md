@@ -254,11 +254,13 @@ $`\mathrm{cnf}`$ の定義（D.cnf）の第 3 式そのものであり、両辺�
 
 ### 証明
 
-$`n`$ に関する帰納法を行う（$`u`$ は全称量化したまま動かす）。帰納法の述語は
+$`n`$ に関する帰納法を行う（$`u`$ は全称量化したまま動かす）。
 
 ```math
-\Phi(n) :\equiv \forall u \in \mathbb{N},\ \mathrm{cnf}\bigl(\mathrm{tr}(\Delta_u^{u+n})\bigr).
+\Phi(n) :\equiv \forall u \in \mathbb{N},\ \mathrm{cnf}\bigl(\mathrm{tr}(\Delta_u^{u+n})\bigr)
 ```
+
+を $`n`$ について示す。
 
 **基底段** $`n = 0`$：$`u`$ を取る。$`u + 0 = u`$ である。
 [T.translate_diagSeq](#t-translate_diagSeq) を $`u \le u`$ に適用して
@@ -312,11 +314,13 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr)`$ ならば $`\mat
 
 ### 証明
 
-$`m`$ を固定し、$`\mathrm{tr}`$ の再帰に沿う帰納法を行う。帰納法の述語は
+$`m`$ を固定し、$`\mathrm{tr}`$ の再帰に沿う帰納法を行う。
 
 ```math
-\Psi(D) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr) \to \mathrm{cnf}(\mathrm{tr}\,D).
+\Psi(D) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr) \to \mathrm{cnf}(\mathrm{tr}\,D)
 ```
+
+を $`D`$ について示す。
 
 **基底段** $`D = ()`$：結論は $`\mathrm{cnf}(\mathrm{tr}\,())`$ である。
 $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,() = \mathsf{Z}`$ であり、
@@ -488,12 +492,14 @@ $`\lvert M\rvert \le k`$ のときは $`M`$ 自身である。
 \forall d,\ \forall k,\ \bigl(\lvert M\rvert - k = d\bigr) \to \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr).
 ```
 
-$`d`$ に関する帰納法を行う（$`k`$ は全称量化したまま動かす）。帰納法の述語は
+$`d`$ に関する帰納法を行う（$`k`$ は全称量化したまま動かす）。
 
 ```math
 \Xi(d) :\equiv \forall k,\ \bigl(\lvert M\rvert - k = d\bigr)
-  \to \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr).
+  \to \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr)
 ```
+
+を $`d`$ について示す。
 
 **基底段** $`d = 0`$：$`k`$ を取り $`\lvert M\rvert - k = 0`$ とする。自然数の減法は切り捨て減法であるから
 これは $`\lvert M\rvert \le k`$ を意味し、$`\mathrm{take}_k M = M`$ である。
@@ -555,11 +561,13 @@ $`T := B^{\ast k}`$ として適用でき、任意の $`k`$ について
 
 が成り立つ（第 1 の仮定が $`\forall x \in R,\ v_0 \lt x_1`$ である）。
 
-$`n`$ に関する帰納法を行う。帰納法の述語は
+$`n`$ に関する帰納法を行う。
 
 ```math
-\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast n})\bigr).
+\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast n})\bigr)
 ```
+
+を $`n`$ について示す。
 
 **基底段** $`n = 0`$：$`B^{\ast 0} = ()`$ であり、$`\mathrm{tr}`$ の定義（D.translate）より
 $`\mathrm{tr}\,() = \mathsf{Z}`$ である。[T.cnf_Z](#t-cnf_Z) より $`\Phi(0)`$。

@@ -24,11 +24,13 @@ $`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathr
 ### 証明
 
 $`M \in \mathrm{PairSeq}`$ と $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ を取り、
-$`\mathrm{Acc}_{R_{\mathrm{st}}}`$ の導出に関する帰納法（[T.Acc.rec](Reduction-ja.md#t-Acc.rec)）を行う。帰納法の述語は
+$`\mathrm{Acc}_{R_{\mathrm{st}}}`$ の導出に関する帰納法（[T.Acc.rec](Reduction-ja.md#t-Acc.rec)）を行う。
 
 ```math
-\Phi(M_0) :\equiv M_0 \in \mathrm{ST\_PS} \to \mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}} .
+\Phi(M_0) :\equiv M_0 \in \mathrm{ST\_PS} \to \mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}
 ```
+
+を $`M_0`$ について示す。
 
 **帰納段**：$`M_0 \in \mathrm{PairSeq}`$ を取り、帰納法の仮定
 

@@ -53,12 +53,13 @@ $`A \prec_{\mathrm{lex}} C`$。
 ### 証明
 
 $`A`$ の構成子（$`()`$ か $`::`$ か）に関する帰納法を行う（$`B`$, $`C`$ は全称量化したまま動かす）。
-帰納法の述語は
 
 ```math
 \Phi(A) :\equiv \forall B, C \in \mathrm{PairSeq},\
-  \bigl(A \prec_{\mathrm{lex}} B \wedge B \prec_{\mathrm{lex}} C\bigr) \to A \prec_{\mathrm{lex}} C .
+  \bigl(A \prec_{\mathrm{lex}} B \wedge B \prec_{\mathrm{lex}} C\bigr) \to A \prec_{\mathrm{lex}} C
 ```
+
+を $`A`$ について示す。
 
 - **基底段** $`A = ()`$：$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式より、示すべきことは
   $`C \ne ()`$ である。$`C = ()`$ と仮定して矛盾を導く。仮定 $`B \prec_{\mathrm{lex}} ()`$ について
@@ -144,12 +145,14 @@ $`A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C`$。
 
 ### 証明
 
-$`A`$ の構成子に関する帰納法。帰納法の述語は
+$`A`$ の構成子に関する帰納法。
 
 ```math
 \Phi(A) :\equiv \forall B \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \to
-  \forall C \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C .
+  \forall C \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C
 ```
+
+を $`A`$ について示す。
 
 - **基底段** $`A = ()`$：$`B = ()`$ とすると、$`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式より
   仮定 $`() \prec_{\mathrm{lex}} ()`$ は $`() \ne ()`$ であり偽である。よって $`B = b :: B'`$ と書け、
@@ -207,13 +210,15 @@ N \preceq_{\mathrm{lex}} D
 
 ### 証明
 
-$`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化したまま動かす）。帰納法の述語は
+$`D`$ の構成子に関する帰納法（$`\ell`$, $`N`$ は全称量化したまま動かす）。
 
 ```math
 \Phi(D) :\equiv \forall \ell, N,\ N \prec_{\mathrm{lex}} D \mathbin{+\!\!+} (\ell) \to
   \Bigl(N \preceq_{\mathrm{lex}} D \ \vee\
-    \exists q, S,\ \bigl(N = D \mathbin{+\!\!+} q :: S \wedge q \prec_{\mathrm{p}} \ell\bigr)\Bigr).
+    \exists q, S,\ \bigl(N = D \mathbin{+\!\!+} q :: S \wedge q \prec_{\mathrm{p}} \ell\bigr)\Bigr)
 ```
+
+を $`D`$ について示す。
 
 - **基底段** $`D = ()`$：$`D \mathbin{+\!\!+} (\ell) = (\ell)`$ である。$`N`$ の構成子で分ける。
   - $`N = ()`$ のとき。[T.sle_refl](#t-sle_refl) より $`() \preceq_{\mathrm{lex}} ()`$ であり、

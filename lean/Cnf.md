@@ -260,11 +260,13 @@ For all $`n, u \in \mathbb{N}`$ we have $`\mathrm{cnf}\bigl(\mathrm{tr}(\Delta_u
 
 ### Proof
 
-We argue by induction on $`n`$, keeping $`u`$ universally quantified. The induction predicate is
+We argue by induction on $`n`$, keeping $`u`$ universally quantified. Show
 
 ```math
-\Phi(n) :\equiv \forall u \in \mathbb{N},\ \mathrm{cnf}\bigl(\mathrm{tr}(\Delta_u^{u+n})\bigr).
+\Phi(n) :\equiv \forall u \in \mathbb{N},\ \mathrm{cnf}\bigl(\mathrm{tr}(\Delta_u^{u+n})\bigr)
 ```
+
+for every $`n`$.
 
 **Base case** $`n = 0`$. Let $`u`$ be given. We have $`u + 0 = u`$.
 Applying [T.translate_diagSeq](#t-translate_diagSeq) with $`u \le u`$ gives
@@ -318,11 +320,13 @@ If $`\mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr)`$ then $`\mathr
 
 ### Proof
 
-Fix $`m`$ and argue by induction along the recursion of $`\mathrm{tr}`$. The induction predicate is
+Fix $`m`$ and argue by induction along the recursion of $`\mathrm{tr}`$. Show
 
 ```math
-\Psi(D) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr) \to \mathrm{cnf}(\mathrm{tr}\,D).
+\Psi(D) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(D \mathbin{+\!\!+} (m))\bigr) \to \mathrm{cnf}(\mathrm{tr}\,D)
 ```
+
+for every $`D`$.
 
 **Base case** $`D = ()`$. The conclusion is $`\mathrm{cnf}(\mathrm{tr}\,())`$.
 By the definition of $`\mathrm{tr}`$ (D.translate) we have $`\mathrm{tr}\,() = \mathsf{Z}`$, and
@@ -502,12 +506,14 @@ $`d := \lvert M\rvert - k`$.
 \forall d,\ \forall k,\ \bigl(\lvert M\rvert - k = d\bigr) \to \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr).
 ```
 
-We argue by induction on $`d`$, keeping $`k`$ universally quantified. The induction predicate is
+We argue by induction on $`d`$, keeping $`k`$ universally quantified. Show
 
 ```math
 \Xi(d) :\equiv \forall k,\ \bigl(\lvert M\rvert - k = d\bigr)
-  \to \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr).
+  \to \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{take}_k M)\bigr)
 ```
+
+for every $`d`$.
 
 **Base case** $`d = 0`$. Let $`k`$ be given with $`\lvert M\rvert - k = 0`$. Subtraction of natural
 numbers is truncated subtraction, so this means $`\lvert M\rvert \le k`$, and $`\mathrm{take}_k M = M`$.
@@ -569,11 +575,13 @@ $`T := B^{\ast k}`$, and
 
 holds for every $`k`$ (its first hypothesis is $`\forall x \in R,\ v_0 \lt x_1`$).
 
-We argue by induction on $`n`$. The induction predicate is
+We argue by induction on $`n`$. Show
 
 ```math
-\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast n})\bigr).
+\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(B^{\ast n})\bigr)
 ```
+
+for every $`n`$.
 
 **Base case** $`n = 0`$. We have $`B^{\ast 0} = ()`$, and by the definition of $`\mathrm{tr}`$
 (D.translate) $`\mathrm{tr}\,() = \mathsf{Z}`$. By [T.cnf_Z](#t-cnf_Z) we get $`\Phi(0)`$.

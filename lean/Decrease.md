@@ -107,12 +107,14 @@ For all $`C \in \mathrm{PairSeq}`$ and $`m \in \mathbb{N}\times\mathbb{N}`$,
 
 ### Proof
 
-Induction along the recursion of $`\mathrm{tr}`$ ($`m`$ is not fixed: the induction predicate is
-universally quantified over $`m`$). The induction predicate is
+Induction along the recursion of $`\mathrm{tr}`$ ($`m`$ is not fixed; it stays universally
+quantified). Show
 
 ```math
-\Psi(C) :\equiv \forall m,\ \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m)) .
+\Psi(C) :\equiv \forall m,\ \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m))
 ```
+
+for every $`C`$.
 
 - **Base case** $`C = ()`$: the left-hand side is $`\mathsf{Z}`$ ([D.Three](Term.md#d-Three)) and the right-hand side is $`\mathrm{tr}\,(m)`$.
   By the definition of $`\mathrm{tr}`$ (D.translate) we have $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$,

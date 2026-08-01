@@ -324,13 +324,15 @@ Here $`\mathrm{tail}\,P`$ is the sequence obtained from $`P`$ by dropping its fi
 
 We argue by induction on the construction of sequences from the end. That is, every element of
 $`\mathrm{PairSeq}`$ is either $`()`$ or can be written as $`M' \mathbin{+\!\!+} (q)`$ for some $`M'`$ and some pair $`q`$,
-and in the latter case $`\lvert M'\rvert \lt \lvert M' \mathbin{+\!\!+} (q)\rvert`$. The induction predicate is
+and in the latter case $`\lvert M'\rvert \lt \lvert M' \mathbin{+\!\!+} (q)\rvert`$. Show
 
 ```math
 \Phi(M) :\equiv M \ne () \to \exists A, P,\
   \bigl(M = A \mathbin{+\!\!+} P \wedge P \ne () \wedge \mathrm{rsum}(A,P)
-    \wedge \forall p \in \mathrm{tail}\,P,\ P_{0,0} \lt p_1\bigr).
+    \wedge \forall p \in \mathrm{tail}\,P,\ P_{0,0} \lt p_1\bigr)
 ```
+
+for every $`M`$.
 
 - **Base case** $`M = ()`$: the antecedent $`M \ne ()`$ is false, so $`\Phi(())`$ holds.
 

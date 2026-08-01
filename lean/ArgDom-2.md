@@ -239,11 +239,13 @@ $`(X^{+d})^{-d} = X`$.
 
 ### Proof
 
-Induction on the length of $`X`$. The induction predicate is
+Induction on the length of $`X`$. Show
 
 ```math
-\Lambda(X) :\equiv (X^{+d})^{-d} = X .
+\Lambda(X) :\equiv (X^{+d})^{-d} = X
 ```
+
+for every $`X`$.
 
 - **Base case** $`X = ()`$: since $`()^{+d} = ()`$ and $`()^{-d} = ()`$, both sides
   are $`()`$.
@@ -272,12 +274,14 @@ Then $`(L^{-d})^{+d} = L`$.
 
 ### Proof
 
-Induction on the length of $`L`$. The induction predicate is
+Induction on the length of $`L`$. Show
 
 ```math
 \Upsilon(L) :\equiv
-  \bigl(\forall x \in L,\ d \le x_1\bigr) \to (L^{-d})^{+d} = L .
+  \bigl(\forall x \in L,\ d \le x_1\bigr) \to (L^{-d})^{+d} = L
 ```
+
+for every $`L`$.
 
 - **Base case** $`L = ()`$: since $`()^{-d} = ()`$ and $`()^{+d} = ()`$, both sides
   are $`()`$.
@@ -812,13 +816,15 @@ R_p = () \ \vee\ (\mathrm{head}\,R_p)_1 \le L .
 
 ### Proof
 
-Induction on the constructors of $`E`$ (with $`L`$ fixed). The induction predicate is
+Induction on the constructors of $`E`$ (with $`L`$ fixed). Show
 
 ```math
 \Phi(E) :\equiv \exists B_p, R_p \in \mathrm{PairSeq},\
   \Bigl(E = B_p \mathbin{+\!\!+} R_p \wedge (\forall x \in B_p,\ L \lt x_1)
-   \wedge \bigl(R_p = () \vee (\mathrm{head}\,R_p)_1 \le L\bigr)\Bigr).
+   \wedge \bigl(R_p = () \vee (\mathrm{head}\,R_p)_1 \le L\bigr)\Bigr)
 ```
+
+for every $`E`$.
 
 - **Base case** $`E = ()`$: take $`B_p := ()`$ and $`R_p := ()`$.
   Then $`() = () \mathbin{+\!\!+} ()`$. Since $`B_p = ()`$ has no elements, the second conjunct holds because its antecedent is false.

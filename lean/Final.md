@@ -25,11 +25,13 @@ $`M \in \mathrm{ST\_PS}`$, then $`\mathrm{tr}\,M \in \mathrm{Acc}_{R_{\mathrm{NF
 ### Proof
 
 Let $`M \in \mathrm{PairSeq}`$ with $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ be given, and argue by
-induction on the derivation of $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ ([T.Acc.rec](Reduction.md#t-Acc.rec)). The induction predicate is
+induction on the derivation of $`M \in \mathrm{Acc}_{R_{\mathrm{st}}}`$ ([T.Acc.rec](Reduction.md#t-Acc.rec)). Show
 
 ```math
-\Phi(M_0) :\equiv M_0 \in \mathrm{ST\_PS} \to \mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}} .
+\Phi(M_0) :\equiv M_0 \in \mathrm{ST\_PS} \to \mathrm{tr}\,M_0 \in \mathrm{Acc}_{R_{\mathrm{NF}}}
 ```
+
+for every $`M_0`$.
 
 **Inductive step.** Fix $`M_0 \in \mathrm{PairSeq}`$ and assume the induction hypothesis
 

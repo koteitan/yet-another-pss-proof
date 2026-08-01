@@ -13,14 +13,16 @@ $`X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y'`$（[D.seqlex](Seqlex-ja.md#d-seq
 
 ### 証明
 
-$`W`$ の長さに関する帰納法（$`X`$, $`Y`$, $`Y'`$ は全称量化したまま動かす）。帰納法の述語は
+$`W`$ の長さに関する帰納法（$`X`$, $`Y`$, $`Y'`$ は全称量化したまま動かす）。
 
 ```math
 \Phi(W) :\equiv \forall X, Y \in \mathrm{PairSeq},\
   X \preceq_{\mathrm{lex}} W \mathbin{+\!\!+} Y
   \ \to\ \bigl(\forall X',\ X \ne W \mathbin{+\!\!+} X'\bigr)
-  \ \to\ \forall Y',\ X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y' .
+  \ \to\ \forall Y',\ X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y'
 ```
+
+を $`W`$ について示す。
 
 - **基底段** $`W = ()`$：第 2 の仮定を $`X' := X`$ に適用すると
   $`X \ne () \mathbin{+\!\!+} X`$、すなわち $`X \ne X`$ が得られ、$`=`$ の反射性に矛盾する。
@@ -74,7 +76,6 @@ $`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^
 ### 証明
 
 $`n`$ に関する自然数の帰納法（$`X`$, $`Q`$, $`A_2`$, $`a`$ は全称量化したまま動かす）。
-帰納法の述語は
 
 ```math
 \begin{aligned}
@@ -82,9 +83,11 @@ $`n`$ に関する自然数の帰納法（$`X`$, $`Q`$, $`A_2`$, $`a`$ は全称
   \lvert X\rvert \le n \cr
 &\qquad \ \to\ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d} \cr
 &\qquad \ \to\ \exists m,\ X \preceq_{\mathrm{lex}}
-  Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr) .
+  Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)
 \end{aligned}
 ```
+
+を $`n`$ について示す。
 
 - **基底段** $`n = 0`$：$`\lvert X\rvert \le 0`$ より $`X = ()`$ である。
   $`m := 0`$ とすると、$`\mathrm{copies}`$ の定義（D.copies）より
@@ -207,13 +210,15 @@ $`\lvert X\rvert \le \lvert P\rvert`$ ならば $`X \preceq_{\mathrm{lex}} P`$�
 
 ### 証明
 
-$`P`$ の長さに関する帰納法（$`X`$, $`Y`$ は全称量化したまま動かす）。帰納法の述語は
+$`P`$ の長さに関する帰納法（$`X`$, $`Y`$ は全称量化したまま動かす）。
 
 ```math
 \Xi(P) :\equiv \forall X, Y \in \mathrm{PairSeq},\
   X \preceq_{\mathrm{lex}} P \mathbin{+\!\!+} Y \to \lvert X\rvert \le \lvert P\rvert
-  \to X \preceq_{\mathrm{lex}} P .
+  \to X \preceq_{\mathrm{lex}} P
 ```
+
+を $`P`$ について示す。
 
 - **基底段** $`P = ()`$：$`\lvert X\rvert \le 0`$ より $`X = ()`$ であり、
   $`X = P`$ であるから D.sle の第 1 選言が成り立つ。
@@ -318,12 +323,14 @@ X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y .
 
 ### 証明
 
-$`X`$ の長さに関する帰納法（$`Y`$ は全称量化したまま動かす）。帰納法の述語は
+$`X`$ の長さに関する帰納法（$`Y`$ は全称量化したまま動かす）。
 
 ```math
 \Theta(X) :\equiv \forall Y \in \mathrm{PairSeq},\
-  \bigl(X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y\bigr).
+  \bigl(X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y\bigr)
 ```
+
+を $`X`$ について示す。
 
 - **基底段** $`X = ()`$：$`()^{+d} = ()`$ である。$`Y`$ の形で場合分けする。
   $`Y = ()`$ のときは $`Y^{+d} = ()`$ であり、D.seqlex の第 1 式により

@@ -10,11 +10,13 @@ $`M \in \mathrm{PairSeq}`$（[D.PairSeq](Pss-ja.md#d-PairSeq)）が $`M \in \mat
 
 ### 証明
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。帰納法の述語は
+$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。
 
 ```math
-\Phi(M) :\equiv 0 \lt \lvert M\rvert .
+\Phi(M) :\equiv 0 \lt \lvert M\rvert
 ```
+
+を $`M`$ について示す。
 
 **基底段（規則 diag）$`M = \Delta_0^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）。**
 [T.diagSeq_cons](Cnf-ja.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$ とし、
@@ -51,11 +53,13 @@ $`M \in \mathrm{ST\_PS}`$ ならば $`\mathrm{head}\,M = (0,0)`$。
 
 ### 証明
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。帰納法の述語は
+$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。
 
 ```math
-\Phi(M) :\equiv \mathrm{head}\,M = (0,0) .
+\Phi(M) :\equiv \mathrm{head}\,M = (0,0)
 ```
+
+を $`M`$ について示す。
 
 **基底段（規則 diag）$`M = \Delta_0^v`$。**
 [T.diagSeq_cons](Cnf-ja.md#t-diagSeq_cons) を $`u := 0`$、$`v := v`$、仮定 $`0 \le v`$ に適用して
@@ -206,11 +210,12 @@ $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$（[D.le0](Pss-ja.md#d-le0)）ならば
 ### 証明
 
 鎖 $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$ の構成に関する帰納法。$`A`$、$`T`$、$`j_0`$ は固定し、
-帰納法の述語は
 
 ```math
-\Phi(c) :\equiv \lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + c .
+\Phi(c) :\equiv \lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + c
 ```
+
+を $`c`$ について示す。
 
 **基底段（長さ $`0`$ の鎖、$`c = j_0`$）。**
 $`\lvert A\rvert + j_0`$ から $`\lvert A\rvert + j_0`$ への長さ $`0`$ の鎖が $`\Phi(j_0)`$ を与える。
@@ -271,11 +276,13 @@ c = \lvert A\rvert + c' \qquad\text{かつ}\qquad a \mathbin{(\to^{T}_0)^{*}} c'
 ### 証明
 
 鎖 $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$ の構成に関する帰納法。
-$`A`$、$`T`$、$`a`$ は固定し、帰納法の述語は
+$`A`$、$`T`$、$`a`$ は固定し、
 
 ```math
-\Phi(c) :\equiv \exists c',\ c = \lvert A\rvert + c' \wedge a \mathbin{(\to^{T}_0)^{*}} c' .
+\Phi(c) :\equiv \exists c',\ c = \lvert A\rvert + c' \wedge a \mathbin{(\to^{T}_0)^{*}} c'
 ```
+
+を $`c`$ について示す。
 
 **基底段（長さ $`0`$ の鎖、$`c = \lvert A\rvert + a`$）。**
 $`c' := a`$ とおけば $`c = \lvert A\rvert + a`$ であり、$`a`$ から $`a`$ への長さ $`0`$ の鎖がある。
@@ -422,12 +429,14 @@ $`e := \lvert A\rvert + j_1`$ に適用して $`\lvert A\rvert \le k`$ を得る
 これは仮定 $`k \lt \lvert A\rvert`$ に矛盾する。
 
 (H) を鎖 $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} e`$ の構成に関する帰納法で示す。
-$`A`$、$`T`$、$`k`$ は固定し、帰納法の述語は
+$`A`$、$`T`$、$`k`$ は固定し、
 
 ```math
 \Phi(e) :\equiv \bigl(\lvert A\rvert \le e \wedge 0 \lt (A \mathbin{+\!\!+} T)_{0,e}\bigr)
- \to \lvert A\rvert \le k .
+ \to \lvert A\rvert \le k
 ```
+
+を $`e`$ について示す。
 
 **基底段（長さ $`0`$ の鎖、$`e = k`$）。**
 前件の第 1 連言子が $`\lvert A\rvert \le k`$ そのものであるから結論が得られる。

@@ -152,13 +152,14 @@ r \le j, \qquad M_{0,r} = 0, \qquad r \mathbin{(\to^M_0)^{*}} j .
 
 ### Proof
 
-Strong induction on $`\mathrm{lev}`$. The induction predicate is
+Strong induction on $`\mathrm{lev}`$. Show
 
 ```math
 \Phi(\mathrm{lev}) :\equiv \forall j,\ \bigl(M_{0,j} = \mathrm{lev} \wedge j \lt \lvert M\rvert\bigr)
   \to \exists r,\ \bigl(r \le j \wedge M_{0,r} = 0 \wedge r \mathbin{(\to^M_0)^{*}} j\bigr),
 ```
 
+for every $`\mathrm{lev}`$,
 and assume that $`\Phi(\mathrm{lev}')`$ holds for every $`\mathrm{lev}'`$ with
 $`\mathrm{lev}' \lt \mathrm{lev}`$. Take $`j`$ with $`M_{0,j} = \mathrm{lev}`$ and $`j \lt \lvert M\rvert`$,
 and distinguish cases according to whether $`M_{0,j}`$ is $`0`$.
@@ -401,11 +402,13 @@ If $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)), then $`\mathrm{z0ok}(M
 
 ### Proof
 
-Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). The induction predicate is
+Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). Show
 
 ```math
-\Phi(M) :\equiv \mathrm{z0ok}(M).
+\Phi(M) :\equiv \mathrm{z0ok}(M)
 ```
+
+for every $`M`$.
 
 - **Base case** (rule (diag)): here $`M = \Delta_0^v`$ ([D.diagSeq](Pss.md#d-diagSeq)).
   [T.z0ok_diagSeq](Column-3.md#t-z0ok_diagSeq) is exactly $`\Phi(\Delta_0^v)`$.
@@ -433,13 +436,15 @@ then $`\rho \mathbin{(\to^M_0)^{*}} b`$.
 ### Proof
 
 Fix $`a`$ and argue by induction on the construction of the chain $`a \mathbin{(\to^M_0)^{*}} b`$.
-The induction predicate is
+Show
 
 ```math
 \Phi(b) :\equiv \Bigl(a \lt \rho \wedge \rho \le b \wedge
   \forall y,\ (\rho \lt y \wedge y \le b) \to M_{0,\rho} \lt M_{0,y}\Bigr)
-  \to \rho \mathbin{(\to^M_0)^{*}} b .
+  \to \rho \mathbin{(\to^M_0)^{*}} b
 ```
+
+for every $`b`$.
 
 - **Base case** ($`b = a`$, chain of length $`0`$): the first conjunct of the antecedent is
   $`a \lt \rho`$ and the second is $`\rho \le a`$; together they give $`a \lt a`$, which
@@ -586,11 +591,13 @@ If $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b`$, then $`a \mathbin{(\to^{S}_0)^{*}} b`
 ### Proof
 
 Induction on the construction of the chain $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b`$.
-The induction predicate is
+Show
 
 ```math
-\Phi(b) :\equiv a \mathbin{(\to^{S}_0)^{*}} b .
+\Phi(b) :\equiv a \mathbin{(\to^{S}_0)^{*}} b
 ```
+
+for every $`b`$.
 
 - **Base case** ($`b = a`$, chain of length $`0`$): $`a \mathbin{(\to^{S}_0)^{*}} a`$ is the
   chain of length $`0`$.
@@ -612,11 +619,13 @@ If $`a \mathbin{(\to^{S}_0)^{*}} b`$, then $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b`
 
 ### Proof
 
-Induction on the construction of the chain $`a \mathbin{(\to^{S}_0)^{*}} b`$. The induction predicate is
+Induction on the construction of the chain $`a \mathbin{(\to^{S}_0)^{*}} b`$. Show
 
 ```math
-\Phi(b) :\equiv a \mathbin{(\to^{S^{+d}}_0)^{*}} b .
+\Phi(b) :\equiv a \mathbin{(\to^{S^{+d}}_0)^{*}} b
 ```
+
+for every $`b`$.
 
 - **Base case** ($`b = a`$, chain of length $`0`$): $`a \mathbin{(\to^{S^{+d}}_0)^{*}} a`$ is the
   chain of length $`0`$.

@@ -31,12 +31,14 @@ Then $`\mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\math
 
 ### Proof
 
-By strong induction on $`n`$. The induction predicate is
+By strong induction on $`n`$. Show
 
 ```math
 \Phi(n) :\equiv \Bigl(1 \le n \to
   \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n)\bigr)\Bigr)
 ```
+
+for every $`n`$.
 
 (the hypothesis $`1 \le n`$ is put back into the antecedent of the conclusion before quantifying).
 The inductive step of strong induction reads: for an arbitrary $`n`$, assuming $`\forall m \lt n,\ \Phi(m)`$, prove $`\Phi(n)`$.
@@ -174,11 +176,13 @@ If $`N \in \mathrm{ST\_PS}`$, then $`\mathrm{ArgDomCoreOn}(N)`$.
 
 ### Proof
 
-By [T.ST_PS.rec](Pss.md#t-ST_PS.rec). The induction predicate is
+By [T.ST_PS.rec](Pss.md#t-ST_PS.rec). Show
 
 ```math
 \Phi(N) :\equiv \mathrm{ArgDomCoreOn}(N)
 ```
+
+for every $`N`$.
 
 There are two constructors, so it suffices to prove the following two cases.
 

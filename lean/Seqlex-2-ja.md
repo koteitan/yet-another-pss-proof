@@ -18,7 +18,7 @@ $`M \prec_{\mathrm{lex}} N`$（[D.seqlex](Seqlex-ja.md#d-seqlex)）ならば
 ### 証明
 
 $`\lvert M\rvert + \lvert N\rvert`$ に関する強帰納法を行う。深さ $`d`$ は再帰の途中で
-$`d`$ から $`d+1`$ へ動くので、帰納法の述語では $`d`$ を全称量化しておく。すなわち
+$`d`$ から $`d+1`$ へ動くので、$`d`$ は全称量化したまま動かす。すなわち
 
 ```math
 \Phi(M, N) :\equiv \forall d \in \mathbb{N},\
@@ -145,12 +145,14 @@ M = N \ \vee\ M \prec_{\mathrm{lex}} N \ \vee\ N \prec_{\mathrm{lex}} M .
 
 ### 証明
 
-$`M`$ のリスト構造に関する帰納法を行う（$`N`$ は全称量化したまま動かす）。帰納法の述語は
+$`M`$ のリスト構造に関する帰納法を行う（$`N`$ は全称量化したまま動かす）。
 
 ```math
 \Phi(M) :\equiv \forall N \in \mathrm{PairSeq},\
-  \bigl(M = N \vee M \prec_{\mathrm{lex}} N \vee N \prec_{\mathrm{lex}} M\bigr).
+  \bigl(M = N \vee M \prec_{\mathrm{lex}} N \vee N \prec_{\mathrm{lex}} M\bigr)
 ```
+
+を $`M`$ について示す。
 
 **基底段 $`M = ()`$。** $`N`$ の構成子で場合分けする。
 
@@ -316,11 +318,13 @@ $`A`$ の構成子で場合分けする。
 
 ### 証明
 
-$`A`$ のリスト構造に関する帰納法を行う（$`d`$ は全称量化したまま動かす）。帰納法の述語は
+$`A`$ のリスト構造に関する帰納法を行う（$`d`$ は全称量化したまま動かす）。
 
 ```math
-\Phi(A) :\equiv \forall d \in \alpha,\ \mathrm{last}_d(A \mathbin{+\!\!+} B) = \mathrm{last}_d\,B .
+\Phi(A) :\equiv \forall d \in \alpha,\ \mathrm{last}_d(A \mathbin{+\!\!+} B) = \mathrm{last}_d\,B
 ```
+
+を $`A`$ について示す。
 
 - **基底段** $`A = ()`$：$`() \mathbin{+\!\!+} B = B`$ であるから両辺は同一である。
 
@@ -392,7 +396,7 @@ $`F : \mathbb{N} \to \mathrm{PairSeq}`$、$`n \in \mathbb{N}`$ とし、
 
 ### 証明
 
-$`n`$ に関する自然数の帰納法。$`F`$ は固定する。帰納法の述語は
+$`n`$ に関する自然数の帰納法。$`F`$ は固定する。
 
 ```math
 \begin{aligned}
@@ -404,9 +408,11 @@ $`n`$ に関する自然数の帰納法。$`F`$ は固定する。帰納法の�
    \bigl(\mathrm{cat}_n F \ne ()
    \wedge \mathrm{head}(\mathrm{cat}_n F) = \mathrm{head}\,F(0) \cr
 &\qquad\qquad\qquad
-   \wedge \mathrm{last}_{(0,0)}(\mathrm{cat}_n F) = \mathrm{last}_{(0,0)} F(n-1)\bigr)\Bigr) .
+   \wedge \mathrm{last}_{(0,0)}(\mathrm{cat}_n F) = \mathrm{last}_{(0,0)} F(n-1)\bigr)\Bigr)
 \end{aligned}
 ```
+
+を $`n`$ について示す。
 
 **基底段 $`n = 0`$。** $`\mathrm{cat}_0 F = ()`$ である。
 [T.steps1_nil](Seqlex-ja.md#t-steps1_nil) より $`\mathrm{steps}_1(())`$ が成り立つ。
@@ -509,12 +515,14 @@ $`(\mathrm{head}\,F(m))_1 \le (\mathrm{last}_{(0,0)}(\mathrm{cat}_m F))_1 + 1`$�
 
 ### 証明
 
-$`m`$ に関する自然数の帰納法（$`s`$ は全称量化したまま動かす）。帰納法の述語は
+$`m`$ に関する自然数の帰納法（$`s`$ は全称量化したまま動かす）。
 
 ```math
 \Phi(m) :\equiv \forall s \in \mathbb{N},\
-  \mathrm{steps}_1\bigl(\,\bigl((s+i,\,s+i)\bigr)_{i=0}^{m-1}\,\bigr).
+  \mathrm{steps}_1\bigl(\,\bigl((s+i,\,s+i)\bigr)_{i=0}^{m-1}\,\bigr)
 ```
+
+を $`m`$ について示す。
 
 - **基底段** $`m = 0`$：列は空列であり、[T.steps1_nil](Seqlex-ja.md#t-steps1_nil) による。
 
@@ -833,11 +841,13 @@ $`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）ならば $`\mathrm{b
 
 ### 証明
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。帰納法の述語は
+$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。
 
 ```math
-\Phi(M) :\equiv \mathrm{blockok}(0, M).
+\Phi(M) :\equiv \mathrm{blockok}(0, M)
 ```
+
+を $`M`$ について示す。
 
 - **基底段**（規則 (diag)、$`M = \Delta_0^v`$）：[T.blockok_diagSeq](#t-blockok_diagSeq) が
   $`\Phi(\Delta_0^v)`$ そのものである。

@@ -32,14 +32,13 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$。
 ### 証明
 
 $`z_1, z_2, T_1, T_2`$ と 6 つの仮定を固定し、$`\lvert G\rvert`$ に関する強帰納法を行う。
-帰納法の述語は
 
 ```math
 \Phi(G) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)\bigr)
   \to \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)
 ```
 
-である。
+を $`G`$ について示す。
 
 「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$」を仮定する。
 以下、(leadle) の $`a_1, b_1, c_1, a_2, b_2, c_2`$ を取り、
@@ -245,14 +244,13 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} t :: T')\bigr)`$ ならば $`
 ### 証明
 
 $`t, T'`$ と仮定 $`\forall x \in T',\ t_1 \le x_1`$ を固定し、$`\lvert G\rvert`$ に関する強帰納法を行う。
-帰納法の述語は
 
 ```math
 \Psi(G) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} t :: T')\bigr)
   \to \mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)
 ```
 
-である。
+を $`G`$ について示す。
 
 「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Psi(G')`$」を仮定する。
 

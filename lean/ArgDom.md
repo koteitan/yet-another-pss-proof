@@ -13,14 +13,16 @@ for every $`Y' \in \mathrm{PairSeq}`$.
 
 ### Proof
 
-Induction on the length of $`W`$ (with $`X`$, $`Y`$, $`Y'`$ left universally quantified). The induction predicate is
+Induction on the length of $`W`$ (with $`X`$, $`Y`$, $`Y'`$ left universally quantified). Show
 
 ```math
 \Phi(W) :\equiv \forall X, Y \in \mathrm{PairSeq},\
   X \preceq_{\mathrm{lex}} W \mathbin{+\!\!+} Y
   \ \to\ \bigl(\forall X',\ X \ne W \mathbin{+\!\!+} X'\bigr)
-  \ \to\ \forall Y',\ X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y' .
+  \ \to\ \forall Y',\ X \prec_{\mathrm{lex}} W \mathbin{+\!\!+} Y'
 ```
+
+for every $`W`$.
 
 - **Base case** $`W = ()`$: applying the second hypothesis with $`X' := X`$ yields
   $`X \ne () \mathbin{+\!\!+} X`$, that is $`X \ne X`$, which contradicts reflexivity of $`=`$.
@@ -74,7 +76,7 @@ $`X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^
 ### Proof
 
 Induction on the natural number $`n`$ (with $`X`$, $`Q`$, $`A_2`$, $`a`$ left universally quantified).
-The induction predicate is
+Show
 
 ```math
 \begin{aligned}
@@ -82,9 +84,11 @@ The induction predicate is
   \lvert X\rvert \le n \cr
 &\qquad \ \to\ X \preceq_{\mathrm{lex}} Q \mathbin{+\!\!+} (a,w) :: (X \mathbin{+\!\!+} A_2)^{+d} \cr
 &\qquad \ \to\ \exists m,\ X \preceq_{\mathrm{lex}}
-  Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr) .
+  Q \mathbin{+\!\!+} \mathrm{copies}_d\bigl((a,w) :: Q^{+d},\ m\bigr)
 \end{aligned}
 ```
+
+for every $`n`$.
 
 - **Base case** $`n = 0`$: from $`\lvert X\rvert \le 0`$ we get $`X = ()`$.
   Take $`m := 0`$; by the definition of $`\mathrm{copies}`$ (D.copies) we have
@@ -207,13 +211,15 @@ $`\lvert X\rvert \le \lvert P\rvert`$, then $`X \preceq_{\mathrm{lex}} P`$.
 
 ### Proof
 
-Induction on the length of $`P`$ (with $`X`$, $`Y`$ left universally quantified). The induction predicate is
+Induction on the length of $`P`$ (with $`X`$, $`Y`$ left universally quantified). Show
 
 ```math
 \Xi(P) :\equiv \forall X, Y \in \mathrm{PairSeq},\
   X \preceq_{\mathrm{lex}} P \mathbin{+\!\!+} Y \to \lvert X\rvert \le \lvert P\rvert
-  \to X \preceq_{\mathrm{lex}} P .
+  \to X \preceq_{\mathrm{lex}} P
 ```
+
+for every $`P`$.
 
 - **Base case** $`P = ()`$: from $`\lvert X\rvert \le 0`$ we get $`X = ()`$, hence
   $`X = P`$ and the first disjunct of D.sle holds.
@@ -319,12 +325,14 @@ X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y .
 
 ### Proof
 
-Induction on the length of $`X`$ (with $`Y`$ left universally quantified). The induction predicate is
+Induction on the length of $`X`$ (with $`Y`$ left universally quantified). Show
 
 ```math
 \Theta(X) :\equiv \forall Y \in \mathrm{PairSeq},\
-  \bigl(X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y\bigr).
+  \bigl(X^{+d} \prec_{\mathrm{lex}} Y^{+d} \iff X \prec_{\mathrm{lex}} Y\bigr)
 ```
+
+for every $`X`$.
 
 - **Base case** $`X = ()`$: here $`()^{+d} = ()`$. Distinguish cases on the shape of $`Y`$.
   If $`Y = ()`$ then $`Y^{+d} = ()`$, and by the first clause of D.seqlex

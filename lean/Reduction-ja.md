@@ -199,12 +199,14 @@ $`T = M[n]`$ であるから、これは $`\mathrm{tr}\,T \mathbin{R_{\mathrm{NF
 
 **ステップ 2：$`R^{\mathrm{tr}}_{\mathrm{NF}}`$ は整礎である。**
 
-$`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。帰納法の述語は
+$`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。
 
 ```math
 \Phi(t) :\equiv \forall M \in \mathrm{PairSeq},\
-  \mathrm{tr}\,M = t \to M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}} .
+  \mathrm{tr}\,M = t \to M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}
 ```
+
+を $`t`$ について示す。
 
 **帰納段**：$`t \in \mathrm{Three}`$ を取り、帰納法の仮定
 
@@ -234,11 +236,13 @@ $`\mathrm{tr}\,M = \mathrm{tr}\,M`$ に適用して $`M \in \mathrm{Acc}_{R^{\ma
 
 **ステップ 3：$`R_{\mathrm{PS}}`$ は整礎である。**
 
-$`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。帰納法の述語は
+$`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。
 
 ```math
-\Psi(M) :\equiv M \in \mathrm{Acc}_{R_{\mathrm{PS}}} .
+\Psi(M) :\equiv M \in \mathrm{Acc}_{R_{\mathrm{PS}}}
 ```
+
+を $`M`$ について示す。
 
 **帰納段**：$`M \in \mathrm{PairSeq}`$ を取り、帰納法の仮定
 
@@ -293,11 +297,13 @@ $`R_{\mathrm{PS}}`$ が整礎であることを得る。
 $`i`$ に適用した $`S_i \in \mathrm{ST\_PS}`$ と、第 2 の条件を $`i`$ に適用した
 $`S_i \Rightarrow S_{i+1}`$ そのものである。
 
-$`\mathrm{Acc}_{R_{\mathrm{PS}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。帰納法の述語は
+$`\mathrm{Acc}_{R_{\mathrm{PS}}}`$ の導出に関する帰納法（[T.Acc.rec](#t-Acc.rec)）を行う。
 
 ```math
-\Theta(x) :\equiv \forall i \in \mathbb{N},\ S_i = x \to \bot .
+\Theta(x) :\equiv \forall i \in \mathbb{N},\ S_i = x \to \bot
 ```
+
+を $`x`$ について示す。
 
 **帰納段**：$`x \in \mathrm{PairSeq}`$ を取り、帰納法の仮定
 

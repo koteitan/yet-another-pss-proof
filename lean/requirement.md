@@ -150,7 +150,8 @@ The only exception is when writing it out **makes the text harder to read instea
 Wherever induction is used, the following four items are written **explicitly**.
 
 1. **What the induction is on** (a natural number, the length of a list, the structure of a term, a derivation of `ST_PS`, or well-founded induction on a well-founded relation)
-2. **The induction predicate** (written as a formula, $`\Phi(t) :\equiv \dots`$)
+2. **What is to be shown** (written as a formula, $`\Phi(t) :\equiv \dots`$, and closed with
+   "Show $`\Phi(t) :\equiv \dots`$ for every $`t`$." — not "The induction predicate is $`\Phi(t)`$.")
 3. The proof of the **base case**
 4. The proof of the **inductive step** (with the **induction hypothesis** stated explicitly as a predicate, and with the place where it is used indicated)
 

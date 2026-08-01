@@ -320,13 +320,15 @@ M = A \mathbin{+\!\!+} P,
 
 列の末尾からの構成に関する帰納法を行う。すなわち、$`\mathrm{PairSeq}`$ の各元は
 $`()`$ であるか、ある $`M'`$ と対 $`q`$ によって $`M' \mathbin{+\!\!+} (q)`$ と書けるかのいずれかであり、
-後者では $`\lvert M'\rvert \lt \lvert M' \mathbin{+\!\!+} (q)\rvert`$ である。帰納法の述語は
+後者では $`\lvert M'\rvert \lt \lvert M' \mathbin{+\!\!+} (q)\rvert`$ である。
 
 ```math
 \Phi(M) :\equiv M \ne () \to \exists A, P,\
   \bigl(M = A \mathbin{+\!\!+} P \wedge P \ne () \wedge \mathrm{rsum}(A,P)
-    \wedge \forall p \in \mathrm{tail}\,P,\ P_{0,0} \lt p_1\bigr).
+    \wedge \forall p \in \mathrm{tail}\,P,\ P_{0,0} \lt p_1\bigr)
 ```
+
+を $`M`$ について示す。
 
 - **基底段** $`M = ()`$：前件 $`M \ne ()`$ が偽であるから $`\Phi(())`$ が成り立つ。
 

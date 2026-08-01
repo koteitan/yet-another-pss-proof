@@ -608,11 +608,13 @@ $`m \lt n`$ ならば $`\mathrm{Wf}(n,m) = \mathrm{Wf}(m+1,m)`$。
 
 ### 証明
 
-$`n`$ に関する自然数の帰納法（$`m`$ は固定する）。帰納法の述語は
+$`n`$ に関する自然数の帰納法（$`m`$ は固定する）。
 
 ```math
-\Phi(n) :\equiv m \lt n \to \mathrm{Wf}(n,m) = \mathrm{Wf}(m+1,m).
+\Phi(n) :\equiv m \lt n \to \mathrm{Wf}(n,m) = \mathrm{Wf}(m+1,m)
 ```
+
+を $`n`$ について示す。
 
 - **基底段** $`n = 0`$：前件 $`m \lt 0`$ は偽であるから $`\Phi(0)`$ が成り立つ。
 

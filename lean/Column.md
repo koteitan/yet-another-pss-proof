@@ -10,11 +10,13 @@ then $`0 \lt \lvert M\rvert`$.
 
 ### Proof
 
-Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). The induction predicate is
+Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). Show
 
 ```math
-\Phi(M) :\equiv 0 \lt \lvert M\rvert .
+\Phi(M) :\equiv 0 \lt \lvert M\rvert
 ```
+
+for every $`M`$.
 
 **Base case (rule diag), $`M = \Delta_0^v`$ ([D.diagSeq](Pss.md#d-diagSeq)).**
 Applying [T.diagSeq_cons](Cnf.md#t-diagSeq_cons) with $`u := 0`$ and $`v := v`$
@@ -51,11 +53,13 @@ Here $`\mathrm{head}\,M`$ is the first element of $`M`$, read as $`(0,0)`$ when 
 
 ### Proof
 
-Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). The induction predicate is
+Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). Show
 
 ```math
-\Phi(M) :\equiv \mathrm{head}\,M = (0,0) .
+\Phi(M) :\equiv \mathrm{head}\,M = (0,0)
 ```
+
+for every $`M`$.
 
 **Base case (rule diag), $`M = \Delta_0^v`$.**
 Applying [T.diagSeq_cons](Cnf.md#t-diagSeq_cons) with $`u := 0`$, $`v := v`$ and the hypothesis $`0 \le v`$ yields
@@ -206,11 +210,13 @@ If $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$ ([D.le0](Pss.md#d-le0)), then
 ### Proof
 
 Induction on the construction of the chain $`j_0 \mathbin{(\to^{T}_0)^{*}} c`$. Fix $`A`$, $`T`$ and $`j_0`$;
-the induction predicate is
+show
 
 ```math
-\Phi(c) :\equiv \lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + c .
+\Phi(c) :\equiv \lvert A\rvert + j_0 \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} \lvert A\rvert + c
 ```
+
+for every $`c`$.
 
 **Base case (chain of length $`0`$, $`c = j_0`$).**
 The chain of length $`0`$ from $`\lvert A\rvert + j_0`$ to $`\lvert A\rvert + j_0`$ gives $`\Phi(j_0)`$.
@@ -272,11 +278,13 @@ c = \lvert A\rvert + c' \qquad\text{and}\qquad a \mathbin{(\to^{T}_0)^{*}} c' .
 ### Proof
 
 Induction on the construction of the chain $`\lvert A\rvert + a \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} c`$.
-Fix $`A`$, $`T`$ and $`a`$; the induction predicate is
+Fix $`A`$, $`T`$ and $`a`$; show
 
 ```math
-\Phi(c) :\equiv \exists c',\ c = \lvert A\rvert + c' \wedge a \mathbin{(\to^{T}_0)^{*}} c' .
+\Phi(c) :\equiv \exists c',\ c = \lvert A\rvert + c' \wedge a \mathbin{(\to^{T}_0)^{*}} c'
 ```
+
+for every $`c`$.
 
 **Base case (chain of length $`0`$, $`c = \lvert A\rvert + a`$).**
 Take $`c' := a`$; then $`c = \lvert A\rvert + a`$, and there is a chain of length $`0`$ from $`a`$ to $`a`$.
@@ -423,12 +431,14 @@ $`e := \lvert A\rvert + j_1`$ gives $`\lvert A\rvert \le k`$.
 This contradicts the hypothesis $`k \lt \lvert A\rvert`$.
 
 We prove (H) by induction on the construction of the chain $`k \mathbin{(\to^{A \mathbin{+\!\!+} T}_0)^{*}} e`$.
-Fix $`A`$, $`T`$ and $`k`$; the induction predicate is
+Fix $`A`$, $`T`$ and $`k`$; show
 
 ```math
 \Phi(e) :\equiv \bigl(\lvert A\rvert \le e \wedge 0 \lt (A \mathbin{+\!\!+} T)_{0,e}\bigr)
- \to \lvert A\rvert \le k .
+ \to \lvert A\rvert \le k
 ```
+
+for every $`e`$.
 
 **Base case (chain of length $`0`$, $`e = k`$).**
 The first conjunct of the antecedent is exactly $`\lvert A\rvert \le k`$, which is the conclusion.

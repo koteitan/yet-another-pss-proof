@@ -194,11 +194,13 @@ Then, for every $`n \in \mathbb{N}`$,
 
 ### Proof
 
-Induction on the natural number $`n`$. The induction predicate is
+Induction on the natural number $`n`$. Show
 
 ```math
-\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{cp}_{d_0}(B, n))\bigr).
+\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{cp}_{d_0}(B, n))\bigr)
 ```
+
+for every $`n`$.
 
 **Base case** $`n = 0`$.
 By [T.copies_zero](Cnf-2.md#t-copies_zero), $`\mathrm{cp}_{d_0}(B,0) = ()`$, and by the definition of
@@ -740,11 +742,13 @@ If $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)), then $`\mathrm{cnf}(\m
 
 ### Proof
 
-Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). The induction predicate is
+Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). Show
 
 ```math
-\Phi(M) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}\,M\bigr).
+\Phi(M) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}\,M\bigr)
 ```
+
+for every $`M`$.
 
 Corresponding to the two rules in the definition of $`\mathrm{ST\_PS}`$ (D.ST_PS), it suffices to
 show the following.

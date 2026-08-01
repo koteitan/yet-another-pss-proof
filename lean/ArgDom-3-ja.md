@@ -26,7 +26,6 @@ X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
 ### 証明
 
 $`X`$ の構成子に関する帰納法（$`V, E, \ell, q, S', E'`$ は全称量化したまま動かす）。
-帰納法の述語は
 
 ```math
 \begin{aligned}
@@ -34,9 +33,11 @@ $`X`$ の構成子に関する帰納法（$`V, E, \ell, q, S', E'`$ は全称量
   \bigl(X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E \cr
 &\qquad \wedge q \prec_{\mathrm{p}} \ell \wedge \lvert X\rvert \lt \lvert V\rvert\bigr) \cr
 &\qquad \to \forall S', E',\
-  X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
+  X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E'
 \end{aligned}
 ```
+
+を $`X`$ について示す。
 
 **基底段** $`X = ()`$。$`\lvert V\rvert \gt 0`$ であるから $`V = v :: V'`$ と書ける
 （$`V = ()`$ なら $`\lvert V\rvert = 0`$ となり $`0 \lt \lvert V\rvert`$ に反する）。
@@ -538,11 +539,13 @@ $`d \in \mathbb{N}`$、$`\mathrm{blk} \in \mathrm{PairSeq}`$、$`n \in \mathbb{N
 
 ### 証明
 
-$`n`$ に関する帰納法（$`d`$, $`\mathrm{blk}`$ は固定する）。帰納法の述語は
+$`n`$ に関する帰納法（$`d`$, $`\mathrm{blk}`$ は固定する）。
 
 ```math
-\Phi(n) :\equiv \bigl\lvert \mathrm{copies}_d(\mathrm{blk}, n)\bigr\rvert = n \cdot \lvert \mathrm{blk}\rvert .
+\Phi(n) :\equiv \bigl\lvert \mathrm{copies}_d(\mathrm{blk}, n)\bigr\rvert = n \cdot \lvert \mathrm{blk}\rvert
 ```
+
+を $`n`$ について示す。
 
 - **基底段** $`n = 0`$：[T.copies_zero](Cnf-2-ja.md#t-copies_zero) より
   $`\mathrm{copies}_d(\mathrm{blk}, 0) = ()`$ であり、その長さは $`0`$ である。

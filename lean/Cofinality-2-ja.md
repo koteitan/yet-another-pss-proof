@@ -23,13 +23,15 @@ A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C .
 
 ### 証明
 
-$`A`$ の構成子に関する帰納法（$`B`$, $`U`$, $`C`$ は全称量化したまま動かす）。帰納法の述語は
+$`A`$ の構成子に関する帰納法（$`B`$, $`U`$, $`C`$ は全称量化したまま動かす）。
 
 ```math
 \Phi(A) :\equiv \forall B,\ A \prec_{\mathrm{lex}} B \to \forall U,\
   \bigl(U = () \vee \forall x \in B,\ \mathrm{head}\,U \prec_{\mathrm{p}} x\bigr) \to
-  \forall C,\ A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C .
+  \forall C,\ A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C
 ```
+
+を $`A`$ について示す。
 
 - **基底段** $`A = ()`$：$`B = ()`$ とすると $`\prec_{\mathrm{lex}}`$ の定義（D.seqlex）の第 1 式より
   仮定が $`() \ne ()`$ となり偽である。よって $`B = b_0 :: B'`$ と書ける。$`U`$ の構成子で分ける。
@@ -135,13 +137,15 @@ $`\mathrm{Three}`$ [D.Three](Term-ja.md#d-Three)の構成子である。）
 
 ### 証明
 
-自然数 $`d`$ に関する帰納法。帰納法の述語は
+自然数 $`d`$ に関する帰納法。
 
 ```math
 \Phi(d) :\equiv \forall Y, v_0, w_0, R,\
   \bigl(\text{(len)} \wedge \text{(blk)} \wedge \text{(R)} \wedge \text{(hd)} \wedge \text{(cnf)}\bigr)
-  \to \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)\bigr).
+  \to \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)\bigr)
 ```
+
+を $`d`$ について示す。
 
 ここで (len), (blk), (R), (hd), (cnf) は定理の 5 つの仮定であり、$`Y, v_0, w_0, R`$ は
 $`\Phi(d)`$ の束縛変数である（$`B = (v_0,w_0) :: R`$ もそれに従って動く）。

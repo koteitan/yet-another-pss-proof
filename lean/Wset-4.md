@@ -157,11 +157,13 @@ M[n] = D^{+0\cdot x} \mathbin{+\!\!+} D^{+1\cdot x} \mathbin{+\!\!+} \cdots \mat
 ```
 
 **Step 5: the right-hand side equals $`\mathrm{tow}_v(R,n)`$.**
-By induction on $`n`$. The induction predicate is
+By induction on $`n`$. Show
 
 ```math
-\Phi(n) :\equiv D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} = \mathrm{tow}_v(R,n) .
+\Phi(n) :\equiv D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} = \mathrm{tow}_v(R,n)
 ```
+
+for every $`n`$.
 
 - **Base case** $`n = 0`$: the left-hand side is the empty concatenation, that is $`()`$, and
   the first clause of the definition of $`\mathrm{tow}`$ (D.tow) gives $`\mathrm{tow}_v(R,0) = ()`$.
@@ -327,11 +329,13 @@ $`Q^{\frown n} \in W_u`$ for every $`n \in \mathbb{N}`$.
 
 ### Proof
 
-By induction on $`n`$. The induction predicate is
+By induction on $`n`$. Show
 
 ```math
-\Phi(n) :\equiv Q^{\frown n} \in W_u .
+\Phi(n) :\equiv Q^{\frown n} \in W_u
 ```
+
+for every $`n`$.
 
 - **Base case** $`n = 0`$: $`Q^{\frown 0} = ()`$, and
   [T.W_nil](Wset.md#t-W_nil) gives $`() \in W_u`$.
@@ -476,7 +480,7 @@ We distinguish cases according to whether $`v \le m`$ or not.
 
 **(3a) The case $`v \le m`$.**
 First we show $`\forall k \in \mathbb{N},\ \mathrm{tow}_v(R,k) \in W_v`$ by induction on $`k`$.
-The induction predicate is $`\Psi(k) :\equiv \mathrm{tow}_v(R,k) \in W_v`$.
+Show $`\Psi(k) :\equiv \mathrm{tow}_v(R,k) \in W_v`$ for every $`k`$.
 
 - **Base case** $`k = 0`$: the first clause of the definition of $`\mathrm{tow}`$ (D.tow) gives
   $`\mathrm{tow}_v(R,0) = ()`$, and [T.W_nil](Wset.md#t-W_nil) gives $`() \in W_v`$.
@@ -567,12 +571,14 @@ we have $`M \in X`$.
 
 ### Proof
 
-By induction on $`N`$. The induction predicate is
+By induction on $`N`$. Show
 
 ```math
 \Phi(N) :\equiv \forall M,\ \lvert M\rvert \le N \to
-  \forall X,\ \mathrm{(Acl)} \to M \in X .
+  \forall X,\ \mathrm{(Acl)} \to M \in X
 ```
+
+for every $`N`$.
 
 - **Base case** $`N = 0`$: from $`\lvert M\rvert \le 0`$ we get $`M = ()`$.
   Branch (1) of the definition of $`A_0`$ (D.Aop), namely $`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$, holds:
@@ -686,12 +692,14 @@ $`\lvert M\rvert \le N`$ and $`\forall p \in M,\ p_2 \le u`$, then $`M \in W_u`$
 
 ### Proof
 
-By induction on $`N`$. The induction predicate is
+By induction on $`N`$. Show
 
 ```math
 \Phi(N) :\equiv \forall M,\ \lvert M\rvert \le N \to
-  \forall u,\ \bigl(\forall p \in M,\ p_2 \le u\bigr) \to M \in W_u .
+  \forall u,\ \bigl(\forall p \in M,\ p_2 \le u\bigr) \to M \in W_u
 ```
+
+for every $`N`$.
 
 - **Base case** $`N = 0`$: from $`\lvert M\rvert \le 0`$ we get $`M = ()`$, and
   [T.W_nil](Wset.md#t-W_nil) gives $`() \in W_u`$.
@@ -764,11 +772,13 @@ For every $`S \in \mathrm{PairSeq}`$ and every $`p \in S`$ we have $`p_2 \le \ma
 
 ### Proof
 
-By induction on the structure of $`S`$. The induction predicate is
+By induction on the structure of $`S`$. Show
 
 ```math
-\Phi(S) :\equiv \forall p \in S,\ p_2 \le \mathrm{maxr}_1(S) .
+\Phi(S) :\equiv \forall p \in S,\ p_2 \le \mathrm{maxr}_1(S)
 ```
+
+for every $`S`$.
 
 - **Base case** $`S = ()`$: the empty sequence has no elements, so the antecedent is false and $`\Phi(())`$ holds.
 

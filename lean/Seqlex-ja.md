@@ -91,12 +91,14 @@ $`A, u, v \in \mathrm{PairSeq}`$ に対し
 
 ### 証明
 
-$`A`$ のリスト構造に関する帰納法（$`u`$, $`v`$ は固定する）。帰納法の述語は
+$`A`$ のリスト構造に関する帰納法（$`u`$, $`v`$ は固定する）。
 
 ```math
 \Phi(A) :\equiv \Bigl((A \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A \mathbin{+\!\!+} v)
-  \iff u \prec_{\mathrm{lex}} v\Bigr).
+  \iff u \prec_{\mathrm{lex}} v\Bigr)
 ```
+
+を $`A`$ について示す。
 
 - **基底段** $`A = ()`$：$`() \mathbin{+\!\!+} u = u`$、$`() \mathbin{+\!\!+} v = v`$ であるから、
   両辺は同一の命題である。
@@ -143,11 +145,13 @@ $`u \prec_{\mathrm{lex}} (u \mathbin{+\!\!+} v)`$。
 
 ### 証明
 
-$`u`$ のリスト構造に関する帰納法（$`v`$ と仮定 $`v \ne ()`$ は固定する）。帰納法の述語は
+$`u`$ のリスト構造に関する帰納法（$`v`$ と仮定 $`v \ne ()`$ は固定する）。
 
 ```math
-\Phi(u) :\equiv u \prec_{\mathrm{lex}} (u \mathbin{+\!\!+} v).
+\Phi(u) :\equiv u \prec_{\mathrm{lex}} (u \mathbin{+\!\!+} v)
 ```
+
+を $`u`$ について示す。
 
 - **基底段** $`u = ()`$：$`() \mathbin{+\!\!+} v = v`$ であり、
   [T.seqlex_nil_iff](#t-seqlex_nil_iff) より $`() \prec_{\mathrm{lex}} v`$ は
@@ -257,13 +261,15 @@ $`B\langle j\rangle`$（[D.entry](Pss-ja.md#d-entry)）を $`B`$ の第 $`j`$ �
 
 ### 証明
 
-$`B`$ のリスト構造に関する帰納法。帰納法の述語は
+$`B`$ のリスト構造に関する帰納法。
 
 ```math
 \Phi(B) :\equiv \Bigl(\mathrm{steps}_1(B) \iff
   \forall j,\ \bigl(j + 1 \lt \lvert B\rvert \to
-    (B\langle j+1\rangle)_1 \le (B\langle j\rangle)_1 + 1\bigr)\Bigr).
+    (B\langle j+1\rangle)_1 \le (B\langle j\rangle)_1 + 1\bigr)\Bigr)
 ```
+
+を $`B`$ について示す。
 
 - **基底段** $`B = ()`$：左辺は [T.steps1_nil](#t-steps1_nil) により成り立つ。
   右辺は $`\lvert B\rvert = 0`$ であるから前件 $`j + 1 \lt 0`$ をみたす $`j`$ が存在せず、
@@ -362,7 +368,7 @@ $`r`$ の構成子で場合分けする。
 
 ### 証明
 
-$`A`$ のリスト構造に関する帰納法（$`B`$ は固定する）。帰納法の述語は
+$`A`$ のリスト構造に関する帰納法（$`B`$ は固定する）。
 
 ```math
 \begin{aligned}
@@ -370,9 +376,11 @@ $`A`$ のリスト構造に関する帰納法（$`B`$ は固定する）。帰�
   &\mathrm{steps}_1(A \mathbin{+\!\!+} B) \iff
     \mathrm{steps}_1(A) \wedge \mathrm{steps}_1(B) \cr
   &\qquad \wedge \bigl(A = () \vee B = () \vee
-    (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A)_1 + 1\bigr)\Bigr).
+    (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A)_1 + 1\bigr)\Bigr)
 \end{aligned}
 ```
+
+を $`A`$ について示す。
 
 - **基底段** $`A = ()`$：$`() \mathbin{+\!\!+} B = B`$ であるから左辺は $`\mathrm{steps}_1(B)`$ で
   ある。右辺の第 1 の連言子は [T.steps1_nil](#t-steps1_nil) により成り立ち、第 3 の連言子は
@@ -592,12 +600,14 @@ $`r \prec_{\mathrm{lex}} r'`$ ならば、次の 2 つのいずれかが成り�
 
 ### 証明
 
-$`r`$ のリスト構造に関する帰納法（$`r'`$ は全称量化したまま動かす）。帰納法の述語は
+$`r`$ のリスト構造に関する帰納法（$`r'`$ は全称量化したまま動かす）。
 
 ```math
 \Phi(r) :\equiv \forall r' \in \mathrm{PairSeq},\
-  r \prec_{\mathrm{lex}} r' \to \bigl(\text{(T)} \vee \text{(A)}\bigr).
+  r \prec_{\mathrm{lex}} r' \to \bigl(\text{(T)} \vee \text{(A)}\bigr)
 ```
+
+を $`r`$ について示す。
 
 以下、$`\mathrm{tw}`$ と $`\mathrm{dw}`$ の定義（D.translate）から従う次の 4 つの等式を用いる。
 $`d \lt p_1`$ のとき

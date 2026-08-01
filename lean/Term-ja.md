@@ -161,11 +161,13 @@ $`t`$ の構成子で場合分けする。
 
 ### 証明
 
-$`x`$ の構造に関する帰納法。帰納法の述語は
+$`x`$ の構造に関する帰納法。
 
 ```math
-\Phi(x) :\equiv \neg(x \prec x).
+\Phi(x) :\equiv \neg(x \prec x)
 ```
+
+を $`x`$ について示す。
 
 - **基底段** $`x = \mathsf{Z}`$：[T.olt_Z_Z](#t-olt_Z_Z) が $`\Phi(\mathsf{Z})`$ そのものである。
 
@@ -200,11 +202,13 @@ $`x \prec y`$ かつ $`y \prec z`$ ならば $`x \prec z`$。
 
 ### 証明
 
-$`z`$ の構造に関する帰納法を行う（$`x`$, $`y`$ は全称量化したまま動かす）。帰納法の述語は
+$`z`$ の構造に関する帰納法を行う（$`x`$, $`y`$ は全称量化したまま動かす）。
 
 ```math
-\Phi(z) :\equiv \forall x, y \in \mathrm{Three},\ (x \prec y \wedge y \prec z) \to x \prec z .
+\Phi(z) :\equiv \forall x, y \in \mathrm{Three},\ (x \prec y \wedge y \prec z) \to x \prec z
 ```
+
+を $`z`$ について示す。
 
 - **基底段** $`z = \mathsf{Z}`$：仮定 $`y \prec \mathsf{Z}`$ は [T.not_olt_Z](#t-not_olt_Z) に反する。
   よって前件が偽であり $`\Phi(\mathsf{Z})`$ が成り立つ。
@@ -487,11 +491,13 @@ $`j_0 \le^M_0 j_1`$（[D.le0](Pss-ja.md#d-le0)）ならば $`M_{0,j_0} \le M_{0,
 ### 証明
 
 $`\le^M_0`$ の定義（D.le0）の第 3 条件により $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ である。
-この反射推移閉包の構成に関する帰納法を行う。帰納法の述語は
+この反射推移閉包の構成に関する帰納法を行う。
 
 ```math
-\Phi(j) :\equiv M_{0,j_0} \le M_{0,j} .
+\Phi(j) :\equiv M_{0,j_0} \le M_{0,j}
 ```
+
+を $`j`$ について示す。
 
 - **基底段**（$`j = j_0`$、鎖の長さ $`0`$）：$`M_{0,j_0} \le M_{0,j_0}`$ は $`\le`$ の反射性による。
 
@@ -520,7 +526,7 @@ $`a \mathbin{(\to^M_0)^{*}} b`$ ならば $`a \le b`$。
 
 ### 証明
 
-反射推移閉包の構成に関する帰納法。帰納法の述語は $`\Phi(j) :\equiv a \le j`$。
+反射推移閉包の構成に関する帰納法。$`\Phi(j) :\equiv a \le j`$ を $`j`$ について示す。
 
 - **基底段**（$`j = a`$）：$`\le`$ の反射性による。
 - **帰納段**（$`a \mathbin{(\to^M_0)^{*}} y`$ と $`y \to^M_0 z`$）：帰納法の仮定 $`\Phi(y)`$ は
@@ -543,11 +549,13 @@ $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$ とする。このとき
 
 ### 証明
 
-反射推移閉包の構成に関する帰納法。帰納法の述語は
+反射推移閉包の構成に関する帰納法。
 
 ```math
-\Phi(j) :\equiv \forall k,\ \bigl(j_0 \lt k \wedge k \le j\bigr) \to M_{0,j_0} \lt M_{0,k} .
+\Phi(j) :\equiv \forall k,\ \bigl(j_0 \lt k \wedge k \le j\bigr) \to M_{0,j_0} \lt M_{0,k}
 ```
+
+を $`j`$ について示す。
 
 - **基底段**（$`j = j_0`$）：前件は $`j_0 \lt k \wedge k \le j_0`$ であり、これをみたす $`k`$ は
   存在しない。よって $`\Phi(j_0)`$ が成り立つ。
@@ -653,11 +661,13 @@ $`d \in \mathbb{N}`$、$`M \in \mathrm{PairSeq}`$ とする。$`M`$ の各対の
 
 ### 証明
 
-$`\mathrm{tr}`$ の再帰に沿う帰納法。帰納法の述語は
+$`\mathrm{tr}`$ の再帰に沿う帰納法。
 
 ```math
-\Psi(M) :\equiv \mathrm{tr}\,(M^{+d}) = \mathrm{tr}\,M .
+\Psi(M) :\equiv \mathrm{tr}\,(M^{+d}) = \mathrm{tr}\,M
 ```
+
+を $`M`$ について示す。
 
 - **基底段** $`M = ()`$：$`()^{+d} = ()`$ であり、両辺とも $`\mathsf{Z}`$ である。
 
@@ -718,13 +728,13 @@ $`z_1, z_2 \in \mathbb{N}\times\mathbb{N}`$、$`T_1, T_2, G \in \mathrm{PairSeq}
 
 ### 証明
 
-$`\lvert G\rvert`$ に関する強帰納法。帰納法の述語は
+$`\lvert G\rvert`$ に関する強帰納法。
 
 ```math
 \Phi(G) :\equiv \mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1) \prec \mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)
 ```
 
-である。
+を $`G`$ について示す。
 
 「$`\lvert G'\rvert \lt \lvert G\rvert`$ なるすべての $`G'`$ について $`\Phi(G')`$」を仮定する。
 

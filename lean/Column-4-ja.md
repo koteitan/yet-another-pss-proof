@@ -151,12 +151,14 @@ r \le j, \qquad M_{0,r} = 0, \qquad r \mathbin{(\to^M_0)^{*}} j .
 
 ### 証明
 
-$`\mathrm{lev}`$ に関する強帰納法。帰納法の述語は
+$`\mathrm{lev}`$ に関する強帰納法。
 
 ```math
 \Phi(\mathrm{lev}) :\equiv \forall j,\ \bigl(M_{0,j} = \mathrm{lev} \wedge j \lt \lvert M\rvert\bigr)
   \to \exists r,\ \bigl(r \le j \wedge M_{0,r} = 0 \wedge r \mathbin{(\to^M_0)^{*}} j\bigr),
 ```
+
+を $`\mathrm{lev}`$ について示す。
 
 「$`\mathrm{lev}' \lt \mathrm{lev}`$ なるすべての $`\mathrm{lev}'`$ について
 $`\Phi(\mathrm{lev}')`$」を仮定する。$`j`$ を取り $`M_{0,j} = \mathrm{lev}`$、$`j \lt \lvert M\rvert`$ とし、
@@ -400,11 +402,13 @@ $`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）ならば $`\mathrm{z
 
 ### 証明
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。帰納法の述語は
+$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。
 
 ```math
-\Phi(M) :\equiv \mathrm{z0ok}(M).
+\Phi(M) :\equiv \mathrm{z0ok}(M)
 ```
+
+を $`M`$ について示す。
 
 - **基底段**（規則 (diag)）：$`M = \Delta_0^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）である。
   [T.z0ok_diagSeq](Column-3-ja.md#t-z0ok_diagSeq) が $`\Phi(\Delta_0^v)`$ そのものである。
@@ -431,13 +435,14 @@ a \mathbin{(\to^M_0)^{*}} b, \qquad a \lt \rho, \qquad \rho \le b, \qquad
 ### 証明
 
 $`a`$ を固定し、鎖 $`a \mathbin{(\to^M_0)^{*}} b`$ の構成に関する帰納法。
-帰納法の述語は
 
 ```math
 \Phi(b) :\equiv \Bigl(a \lt \rho \wedge \rho \le b \wedge
   \forall y,\ (\rho \lt y \wedge y \le b) \to M_{0,\rho} \lt M_{0,y}\Bigr)
-  \to \rho \mathbin{(\to^M_0)^{*}} b .
+  \to \rho \mathbin{(\to^M_0)^{*}} b
 ```
+
+を $`b`$ について示す。
 
 - **基底段**（$`b = a`$、鎖の長さ $`0`$）：前件の第 1 連言子は $`a \lt \rho`$、
   第 2 連言子は $`\rho \le a`$ であり、両者から $`a \lt a`$ となって $`\lt`$ の
@@ -582,11 +587,13 @@ $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b`$ ならば $`a \mathbin{(\to^{S}_0)^{*}} b
 
 ### 証明
 
-鎖 $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b`$ の構成に関する帰納法。帰納法の述語は
+鎖 $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b`$ の構成に関する帰納法。
 
 ```math
-\Phi(b) :\equiv a \mathbin{(\to^{S}_0)^{*}} b .
+\Phi(b) :\equiv a \mathbin{(\to^{S}_0)^{*}} b
 ```
+
+を $`b`$ について示す。
 
 - **基底段**（$`b = a`$、鎖の長さ $`0`$）：$`a \mathbin{(\to^{S}_0)^{*}} a`$ は
   長さ $`0`$ の鎖である。
@@ -608,11 +615,13 @@ $`a \mathbin{(\to^{S}_0)^{*}} b`$ ならば $`a \mathbin{(\to^{S^{+d}}_0)^{*}} b
 
 ### 証明
 
-鎖 $`a \mathbin{(\to^{S}_0)^{*}} b`$ の構成に関する帰納法。帰納法の述語は
+鎖 $`a \mathbin{(\to^{S}_0)^{*}} b`$ の構成に関する帰納法。
 
 ```math
-\Phi(b) :\equiv a \mathbin{(\to^{S^{+d}}_0)^{*}} b .
+\Phi(b) :\equiv a \mathbin{(\to^{S^{+d}}_0)^{*}} b
 ```
+
+を $`b`$ について示す。
 
 - **基底段**（$`b = a`$、鎖の長さ $`0`$）：$`a \mathbin{(\to^{S^{+d}}_0)^{*}} a`$ は
   長さ $`0`$ の鎖である。

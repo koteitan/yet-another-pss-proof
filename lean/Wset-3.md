@@ -428,12 +428,13 @@ If $`\mathrm{argOK}(R)`$ then, for every $`v \in \mathbb{N}`$ and every $`j \lt 
 
 ### Proof
 
-Put $`M := (0,v) :: R`$. We argue by strong induction on $`j`$. The induction predicate is
+Put $`M := (0,v) :: R`$. We argue by strong induction on $`j`$. Show
 
 ```math
 \Phi(j) :\equiv \bigl(j \lt \lvert R\rvert \to 0 \le^{M}_0 (j+1)\bigr)
 ```
 
+for every $`j`$,
 and assume "$`\Phi(j')`$ for every $`j' \lt j`$".
 
 Assume $`j \lt \lvert R\rvert`$. Since $`\lvert M\rvert = \lvert R\rvert + 1`$ we have

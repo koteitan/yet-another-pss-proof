@@ -611,11 +611,13 @@ If $`m \lt n`$ then $`\mathrm{Wf}(n,m) = \mathrm{Wf}(m+1,m)`$.
 
 ### Proof
 
-Induction on the natural number $`n`$ (with $`m`$ fixed). The induction predicate is
+Induction on the natural number $`n`$ (with $`m`$ fixed). Show
 
 ```math
-\Phi(n) :\equiv m \lt n \to \mathrm{Wf}(n,m) = \mathrm{Wf}(m+1,m).
+\Phi(n) :\equiv m \lt n \to \mathrm{Wf}(n,m) = \mathrm{Wf}(m+1,m)
 ```
+
+for every $`n`$.
 
 - **Base case** $`n = 0`$: the antecedent $`m \lt 0`$ is false, so $`\Phi(0)`$ holds.
 

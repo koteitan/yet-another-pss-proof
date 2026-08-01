@@ -18,7 +18,7 @@ $`M \prec_{\mathrm{lex}} N`$ ([D.seqlex](Seqlex.md#d-seqlex)), then
 ### Proof
 
 By strong induction on $`\lvert M\rvert + \lvert N\rvert`$. The depth $`d`$ moves from $`d`$ to $`d+1`$
-in the course of the recursion, so $`d`$ is universally quantified in the induction predicate. That is, put
+in the course of the recursion, so $`d`$ stays universally quantified. That is, put
 
 ```math
 \Phi(M, N) :\equiv \forall d \in \mathbb{N},\
@@ -146,12 +146,14 @@ M = N \ \vee\ M \prec_{\mathrm{lex}} N \ \vee\ N \prec_{\mathrm{lex}} M .
 
 ### Proof
 
-By induction on the list structure of $`M`$ (with $`N`$ left universally quantified). The induction predicate is
+By induction on the list structure of $`M`$ (with $`N`$ left universally quantified). Show
 
 ```math
 \Phi(M) :\equiv \forall N \in \mathrm{PairSeq},\
-  \bigl(M = N \vee M \prec_{\mathrm{lex}} N \vee N \prec_{\mathrm{lex}} M\bigr).
+  \bigl(M = N \vee M \prec_{\mathrm{lex}} N \vee N \prec_{\mathrm{lex}} M\bigr)
 ```
+
+for every $`M`$.
 
 **Base case $`M = ()`$.** We distinguish cases on the constructor of $`N`$.
 
@@ -317,11 +319,13 @@ For finite sequences $`A, B`$ of type $`\alpha`$, if $`B \ne ()`$ then for every
 
 ### Proof
 
-By induction on the list structure of $`A`$ (with $`d`$ left universally quantified). The induction predicate is
+By induction on the list structure of $`A`$ (with $`d`$ left universally quantified). Show
 
 ```math
-\Phi(A) :\equiv \forall d \in \alpha,\ \mathrm{last}_d(A \mathbin{+\!\!+} B) = \mathrm{last}_d\,B .
+\Phi(A) :\equiv \forall d \in \alpha,\ \mathrm{last}_d(A \mathbin{+\!\!+} B) = \mathrm{last}_d\,B
 ```
+
+for every $`A`$.
 
 - **Base case** $`A = ()`$: since $`() \mathbin{+\!\!+} B = B`$, the two sides are identical.
 
@@ -392,7 +396,7 @@ hold.
 
 ### Proof
 
-Induction on the natural number $`n`$, with $`F`$ fixed. The induction predicate is
+Induction on the natural number $`n`$, with $`F`$ fixed. Show
 
 ```math
 \begin{aligned}
@@ -404,9 +408,11 @@ Induction on the natural number $`n`$, with $`F`$ fixed. The induction predicate
    \bigl(\mathrm{cat}_n F \ne ()
    \wedge \mathrm{head}(\mathrm{cat}_n F) = \mathrm{head}\,F(0) \cr
 &\qquad\qquad\qquad
-   \wedge \mathrm{last}_{(0,0)}(\mathrm{cat}_n F) = \mathrm{last}_{(0,0)} F(n-1)\bigr)\Bigr) .
+   \wedge \mathrm{last}_{(0,0)}(\mathrm{cat}_n F) = \mathrm{last}_{(0,0)} F(n-1)\bigr)\Bigr)
 \end{aligned}
 ```
+
+for every $`n`$.
 
 **Base case $`n = 0`$.** We have $`\mathrm{cat}_0 F = ()`$.
 By [T.steps1_nil](Seqlex.md#t-steps1_nil), $`\mathrm{steps}_1(())`$ holds.
@@ -508,12 +514,14 @@ starting at $`s`$ to $`(j,j)`$ satisfies the step-1 condition.
 
 ### Proof
 
-Induction on the natural number $`m`$ (with $`s`$ left universally quantified). The induction predicate is
+Induction on the natural number $`m`$ (with $`s`$ left universally quantified). Show
 
 ```math
 \Phi(m) :\equiv \forall s \in \mathbb{N},\
-  \mathrm{steps}_1\bigl(\,\bigl((s+i,\,s+i)\bigr)_{i=0}^{m-1}\,\bigr).
+  \mathrm{steps}_1\bigl(\,\bigl((s+i,\,s+i)\bigr)_{i=0}^{m-1}\,\bigr)
 ```
+
+for every $`m`$.
 
 - **Base case** $`m = 0`$: the sequence is the empty sequence, and the claim is [T.steps1_nil](Seqlex.md#t-steps1_nil).
 
@@ -830,11 +838,13 @@ If $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)) then $`\mathrm{blockok}
 
 ### Proof
 
-Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). The induction predicate is
+Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). Show
 
 ```math
-\Phi(M) :\equiv \mathrm{blockok}(0, M).
+\Phi(M) :\equiv \mathrm{blockok}(0, M)
 ```
+
+for every $`M`$.
 
 - **Base case** (rule (diag), $`M = \Delta_0^v`$): [T.blockok_diagSeq](#t-blockok_diagSeq) is
   exactly $`\Phi(\Delta_0^v)`$.

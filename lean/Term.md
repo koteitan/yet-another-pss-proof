@@ -162,11 +162,13 @@ For all $`x \in \mathrm{Three}`$, $`\neg(x \prec x)`$.
 
 ### Proof
 
-By induction on the structure of $`x`$. The induction predicate is
+By induction on the structure of $`x`$. Show
 
 ```math
-\Phi(x) :\equiv \neg(x \prec x).
+\Phi(x) :\equiv \neg(x \prec x)
 ```
+
+for every $`x`$.
 
 - **Base case** $`x = \mathsf{Z}`$: [T.olt_Z_Z](#t-olt_Z_Z) is exactly $`\Phi(\mathsf{Z})`$.
 
@@ -201,11 +203,13 @@ If $`x \prec y`$ and $`y \prec z`$, then $`x \prec z`$.
 
 ### Proof
 
-We argue by induction on the structure of $`z`$ (with $`x`$ and $`y`$ left universally quantified). The induction predicate is
+We argue by induction on the structure of $`z`$ (with $`x`$ and $`y`$ left universally quantified). Show
 
 ```math
-\Phi(z) :\equiv \forall x, y \in \mathrm{Three},\ (x \prec y \wedge y \prec z) \to x \prec z .
+\Phi(z) :\equiv \forall x, y \in \mathrm{Three},\ (x \prec y \wedge y \prec z) \to x \prec z
 ```
+
+for every $`z`$.
 
 - **Base case** $`z = \mathsf{Z}`$: the hypothesis $`y \prec \mathsf{Z}`$ contradicts [T.not_olt_Z](#t-not_olt_Z).
   Hence the antecedent is false and $`\Phi(\mathsf{Z})`$ holds.
@@ -490,11 +494,13 @@ If $`j_0 \le^M_0 j_1`$ ([D.le0](Pss.md#d-le0)), then $`M_{0,j_0} \le M_{0,j_1}`$
 ### Proof
 
 By the third condition of the definition of $`\le^M_0`$ (D.le0) we have $`j_0 \mathbin{(\to^M_0)^{*}} j_1`$.
-We argue by induction on the construction of this reflexive transitive closure. The induction predicate is
+We argue by induction on the construction of this reflexive transitive closure. Show
 
 ```math
-\Phi(j) :\equiv M_{0,j_0} \le M_{0,j} .
+\Phi(j) :\equiv M_{0,j_0} \le M_{0,j}
 ```
+
+for every $`j`$.
 
 - **Base case** ($`j = j_0`$, chain of length $`0`$): $`M_{0,j_0} \le M_{0,j_0}`$ holds by reflexivity of $`\le`$.
 
@@ -523,7 +529,7 @@ If $`a \mathbin{(\to^M_0)^{*}} b`$, then $`a \le b`$.
 
 ### Proof
 
-By induction on the construction of the reflexive transitive closure. The induction predicate is $`\Phi(j) :\equiv a \le j`$.
+By induction on the construction of the reflexive transitive closure. Show $`\Phi(j) :\equiv a \le j`$ for every $`j`$.
 
 - **Base case** ($`j = a`$): by reflexivity of $`\le`$.
 - **Inductive step** (from $`a \mathbin{(\to^M_0)^{*}} y`$ and $`y \to^M_0 z`$): the induction hypothesis $`\Phi(y)`$ is
@@ -546,11 +552,13 @@ in the valleys between them) the row $`0`$ value is strictly greater than $`M_{0
 
 ### Proof
 
-By induction on the construction of the reflexive transitive closure. The induction predicate is
+By induction on the construction of the reflexive transitive closure. Show
 
 ```math
-\Phi(j) :\equiv \forall k,\ \bigl(j_0 \lt k \wedge k \le j\bigr) \to M_{0,j_0} \lt M_{0,k} .
+\Phi(j) :\equiv \forall k,\ \bigl(j_0 \lt k \wedge k \le j\bigr) \to M_{0,j_0} \lt M_{0,k}
 ```
+
+for every $`j`$.
 
 - **Base case** ($`j = j_0`$): the antecedent is $`j_0 \lt k \wedge k \le j_0`$, and no $`k`$
   satisfies it. Hence $`\Phi(j_0)`$ holds.
@@ -656,11 +664,13 @@ adding $`d`$ uniformly to the first entry of every pair of $`M`$,
 
 ### Proof
 
-By induction along the recursion of $`\mathrm{tr}`$. The induction predicate is
+By induction along the recursion of $`\mathrm{tr}`$. Show
 
 ```math
-\Psi(M) :\equiv \mathrm{tr}\,(M^{+d}) = \mathrm{tr}\,M .
+\Psi(M) :\equiv \mathrm{tr}\,(M^{+d}) = \mathrm{tr}\,M
 ```
+
+for every $`M`$.
 
 - **Base case** $`M = ()`$: $`()^{+d} = ()`$, and both sides are $`\mathsf{Z}`$.
 
@@ -721,12 +731,13 @@ Then
 
 ### Proof
 
-By strong induction on $`\lvert G\rvert`$. The induction predicate is
+By strong induction on $`\lvert G\rvert`$. Show
 
 ```math
 \Phi(G) :\equiv \mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1) \prec \mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)
 ```
 
+for every $`G`$,
 and assume that $`\Phi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
 
 - **Case $`G = ()`$**: the two sides are those of hypothesis (base), so the claim is exactly (base).

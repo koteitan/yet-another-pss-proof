@@ -26,7 +26,7 @@ X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
 ### Proof
 
 Induction on the constructors of $`X`$ (the variables $`V, E, \ell, q, S', E'`$ stay universally quantified).
-The induction predicate is
+Show
 
 ```math
 \begin{aligned}
@@ -34,9 +34,11 @@ The induction predicate is
   \bigl(X \mathbin{+\!\!+} (\ell) \preceq_{\mathrm{lex}} V \mathbin{+\!\!+} E \cr
 &\qquad \wedge q \prec_{\mathrm{p}} \ell \wedge \lvert X\rvert \lt \lvert V\rvert\bigr) \cr
 &\qquad \to \forall S', E',\
-  X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E' .
+  X \mathbin{+\!\!+} q :: S' \prec_{\mathrm{lex}} V \mathbin{+\!\!+} E'
 \end{aligned}
 ```
+
+for every $`X`$.
 
 **Base case** $`X = ()`$. Since $`\lvert V\rvert \gt 0`$, we may write $`V = v :: V'`$
 (if $`V = ()`$ then $`\lvert V\rvert = 0`$, contradicting $`0 \lt \lvert V\rvert`$).
@@ -538,11 +540,13 @@ For $`d \in \mathbb{N}`$, $`\mathrm{blk} \in \mathrm{PairSeq}`$ and $`n \in \mat
 
 ### Proof
 
-Induction on $`n`$ (with $`d`$ and $`\mathrm{blk}`$ fixed). The induction predicate is
+Induction on $`n`$ (with $`d`$ and $`\mathrm{blk}`$ fixed). Show
 
 ```math
-\Phi(n) :\equiv \bigl\lvert \mathrm{copies}_d(\mathrm{blk}, n)\bigr\rvert = n \cdot \lvert \mathrm{blk}\rvert .
+\Phi(n) :\equiv \bigl\lvert \mathrm{copies}_d(\mathrm{blk}, n)\bigr\rvert = n \cdot \lvert \mathrm{blk}\rvert
 ```
+
+for every $`n`$.
 
 - **Base case** $`n = 0`$: [T.copies_zero](Cnf-2.md#t-copies_zero) gives
   $`\mathrm{copies}_d(\mathrm{blk}, 0) = ()`$, whose length is $`0`$;

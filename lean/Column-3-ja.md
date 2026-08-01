@@ -574,11 +574,13 @@ $`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）ならば $`\mathrm{r
 
 ### 証明
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。帰納法の述語は
+$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。
 
 ```math
-\Phi(M) :\equiv \mathrm{r1ok}(M).
+\Phi(M) :\equiv \mathrm{r1ok}(M)
 ```
+
+を $`M`$ について示す。
 
 - **基底段**（規則 (diag)）：$`M = \Delta_0^v`$（[D.diagSeq](Pss-ja.md#d-diagSeq)）である。
   [T.r1ok_diagSeq](Column-2-ja.md#t-r1ok_diagSeq) が $`\Phi(\Delta_0^v)`$ そのものである。
@@ -611,11 +613,13 @@ $`a \le^M_0 b`$ ならば $`a \le b`$。
 ### 証明
 
 $`\le^M_0`$ の定義（D.le0）の第 3 条件により $`a \mathbin{(\to^M_0)^{*}} b`$ である。
-鎖 $`a \mathbin{(\to^M_0)^{*}} b`$ の構成に関する帰納法。帰納法の述語は
+鎖 $`a \mathbin{(\to^M_0)^{*}} b`$ の構成に関する帰納法。
 
 ```math
-\Phi(j) :\equiv a \le j .
+\Phi(j) :\equiv a \le j
 ```
+
+を $`j`$ について示す。
 
 - **基底段**（$`j = a`$、鎖の長さ $`0`$）：$`a \le a`$ は $`\le`$ の反射性による。
 

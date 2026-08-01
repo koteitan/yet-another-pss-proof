@@ -192,11 +192,13 @@ $`B := (v_0,w_0) :: R`$ とおく。次の 5 つを仮定する。
 
 ### 証明
 
-$`n`$ に関する自然数の帰納法。帰納法の述語は
+$`n`$ に関する自然数の帰納法。
 
 ```math
-\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{cp}_{d_0}(B, n))\bigr).
+\Phi(n) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(\mathrm{cp}_{d_0}(B, n))\bigr)
 ```
+
+を $`n`$ について示す。
 
 **基底段** $`n = 0`$。
 [T.copies_zero](Cnf-2-ja.md#t-copies_zero) より $`\mathrm{cp}_{d_0}(B,0) = ()`$ であり、
@@ -738,11 +740,13 @@ $`M \in \mathrm{ST\_PS}`$（[D.ST_PS](Pss-ja.md#d-ST_PS)）ならば $`\mathrm{c
 
 ### 証明
 
-$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。帰納法の述語は
+$`\mathrm{ST\_PS}`$ の導出に関する帰納法（[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec)）。
 
 ```math
-\Phi(M) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}\,M\bigr).
+\Phi(M) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}\,M\bigr)
 ```
+
+を $`M`$ について示す。
 
 $`\mathrm{ST\_PS}`$ の定義（D.ST_PS）の 2 つの規則に対応して次を示せばよい。
 

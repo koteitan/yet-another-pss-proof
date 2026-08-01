@@ -157,11 +157,13 @@ M[n] = D^{+0\cdot x} \mathbin{+\!\!+} D^{+1\cdot x} \mathbin{+\!\!+} \cdots \mat
 ```
 
 **ステップ 5：右辺が $`\mathrm{tow}_v(R,n)`$ に等しいこと。**
-$`n`$ に関する帰納法。帰納法の述語は
+$`n`$ に関する帰納法。
 
 ```math
-\Phi(n) :\equiv D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} = \mathrm{tow}_v(R,n) .
+\Phi(n) :\equiv D^{+0\cdot x} \mathbin{+\!\!+} \cdots \mathbin{+\!\!+} D^{+(n-1)x} = \mathrm{tow}_v(R,n)
 ```
+
+を $`n`$ について示す。
 
 - **基底段** $`n = 0`$：左辺は空の連結すなわち $`()`$ であり、
   $`\mathrm{tow}`$ の定義（D.tow）の第 1 式より $`\mathrm{tow}_v(R,0) = ()`$ である。
@@ -328,11 +330,13 @@ $`Q^{\frown n} \in W_u`$。
 
 ### 証明
 
-$`n`$ に関する帰納法。帰納法の述語は
+$`n`$ に関する帰納法。
 
 ```math
-\Phi(n) :\equiv Q^{\frown n} \in W_u .
+\Phi(n) :\equiv Q^{\frown n} \in W_u
 ```
+
+を $`n`$ について示す。
 
 - **基底段** $`n = 0`$：$`Q^{\frown 0} = ()`$ であり、
   [T.W_nil](Wset-ja.md#t-W_nil) より $`() \in W_u`$ である。
@@ -478,7 +482,7 @@ $`v \le m`$ か否かで場合分けする。
 
 **(3a) $`v \le m`$ のとき。**
 まず $`\forall k \in \mathbb{N},\ \mathrm{tow}_v(R,k) \in W_v`$ を $`k`$ に関する帰納法で示す。
-帰納法の述語は $`\Psi(k) :\equiv \mathrm{tow}_v(R,k) \in W_v`$ である。
+$`\Psi(k) :\equiv \mathrm{tow}_v(R,k) \in W_v`$ を $`k`$ について示す。
 
 - **基底段** $`k = 0`$：$`\mathrm{tow}`$ の定義（D.tow）の第 1 式より
   $`\mathrm{tow}_v(R,0) = ()`$ であり、[T.W_nil](Wset-ja.md#t-W_nil) より $`() \in W_v`$。
@@ -569,12 +573,14 @@ $`\lvert M\rvert \le N`$ ならば、条件
 
 ### 証明
 
-$`N`$ に関する帰納法。帰納法の述語は
+$`N`$ に関する帰納法。
 
 ```math
 \Phi(N) :\equiv \forall M,\ \lvert M\rvert \le N \to
-  \forall X,\ \mathrm{(Acl)} \to M \in X .
+  \forall X,\ \mathrm{(Acl)} \to M \in X
 ```
+
+を $`N`$ について示す。
 
 - **基底段** $`N = 0`$：$`\lvert M\rvert \le 0`$ より $`M = ()`$ である。
   $`A_0`$ の定義（D.Aop）の分岐 (1) $`\lvert M\rvert \le 1 \wedge M_{1,0} = 0`$ は、
@@ -688,12 +694,14 @@ $`\lvert M\rvert \le N`$ かつ $`\forall p \in M,\ p_2 \le u`$ ならば $`M \i
 
 ### 証明
 
-$`N`$ に関する帰納法。帰納法の述語は
+$`N`$ に関する帰納法。
 
 ```math
 \Phi(N) :\equiv \forall M,\ \lvert M\rvert \le N \to
-  \forall u,\ \bigl(\forall p \in M,\ p_2 \le u\bigr) \to M \in W_u .
+  \forall u,\ \bigl(\forall p \in M,\ p_2 \le u\bigr) \to M \in W_u
 ```
+
+を $`N`$ について示す。
 
 - **基底段** $`N = 0`$：$`\lvert M\rvert \le 0`$ より $`M = ()`$ であり、
   [T.W_nil](Wset-ja.md#t-W_nil) より $`() \in W_u`$。
@@ -766,11 +774,13 @@ $`\forall p \in M,\ p_2 \le u`$ を仮定すると $`M \in W_u`$。
 
 ### 証明
 
-$`S`$ の構造に関する帰納法。帰納法の述語は
+$`S`$ の構造に関する帰納法。
 
 ```math
-\Phi(S) :\equiv \forall p \in S,\ p_2 \le \mathrm{maxr}_1(S) .
+\Phi(S) :\equiv \forall p \in S,\ p_2 \le \mathrm{maxr}_1(S)
 ```
+
+を $`S`$ について示す。
 
 - **基底段** $`S = ()`$：空列は要素をもたないから前件が偽であり、$`\Phi(())`$ が成り立つ。
 

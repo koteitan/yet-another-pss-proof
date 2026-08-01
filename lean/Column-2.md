@@ -460,11 +460,13 @@ Then
 
 ### Proof
 
-Induction on $`n`$. The induction predicate is
+Induction on $`n`$. Show
 
 ```math
-\Phi(n) :\equiv \lvert \mathrm{cp}(B,f,n)\rvert = n\,\lvert B\rvert .
+\Phi(n) :\equiv \lvert \mathrm{cp}(B,f,n)\rvert = n\,\lvert B\rvert
 ```
+
+for every $`n`$.
 
 - **Base case** $`n = 0`$: we have $`\mathrm{cp}(B,f,0) = ()`$ and
   $`\lvert ()\rvert = 0 = 0 \cdot \lvert B\rvert`$.
@@ -493,12 +495,14 @@ If $`k \lt n`$ and $`q \lt \lvert B\rvert`$ then
 
 ### Proof
 
-Induction on $`n`$. The induction predicate is
+Induction on $`n`$. Show
 
 ```math
 \Phi(n) :\equiv \forall k, q,\ \bigl(k \lt n \wedge q \lt \lvert B\rvert\bigr)
-  \to \mathrm{cp}(B,f,n)\bigl\langle k\lvert B\rvert + q\bigr\rangle = f_k\bigl(B\langle q\rangle\bigr).
+  \to \mathrm{cp}(B,f,n)\bigl\langle k\lvert B\rvert + q\bigr\rangle = f_k\bigl(B\langle q\rangle\bigr)
 ```
+
+for every $`n`$.
 
 - **Base case** $`n = 0`$: there is no natural number $`k`$ with $`k \lt 0`$, so the antecedent is false
   and $`\Phi(0)`$ holds.

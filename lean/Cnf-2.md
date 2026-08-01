@@ -32,13 +32,14 @@ $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)`$.
 ### Proof
 
 Fix $`z_1, z_2, T_1, T_2`$ and the six hypotheses, and argue by strong induction on $`\lvert G\rvert`$.
-The induction predicate is
+Show
 
 ```math
 \Phi(G) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_2 :: T_2)\bigr)
   \to \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} z_1 :: T_1)\bigr)
 ```
 
+for every $`G`$,
 and assume that $`\Phi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
 In what follows we take $`a_1, b_1, c_1, a_2, b_2, c_2`$ from (leadle), so that
 
@@ -238,13 +239,14 @@ Then $`\mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} t :: T')\bigr)`$ implies
 ### Proof
 
 Fix $`t, T'`$ and the hypothesis $`\forall x \in T',\ t_1 \le x_1`$, and argue by strong induction on $`\lvert G\rvert`$.
-The induction predicate is
+Show
 
 ```math
 \Psi(G) :\equiv \mathrm{cnf}\bigl(\mathrm{tr}(G \mathbin{+\!\!+} t :: T')\bigr)
   \to \mathrm{cnf}\bigl(\mathrm{tr}(t :: T')\bigr)
 ```
 
+for every $`G`$,
 and assume that $`\Psi(G')`$ holds for every $`G'`$ with $`\lvert G'\rvert \lt \lvert G\rvert`$.
 
 **Case $`G = ()`$.** Since $`() \mathbin{+\!\!+} t :: T' = t :: T'`$, the conclusion is exactly the antecedent.

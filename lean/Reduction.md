@@ -203,12 +203,14 @@ that is, $`T \mathbin{R^{\mathrm{tr}}_{\mathrm{NF}}} M`$.
 
 **Step 2: $`R^{\mathrm{tr}}_{\mathrm{NF}}`$ is well-founded.**
 
-We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ ([T.Acc.rec](#t-Acc.rec)). The induction predicate is
+We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{NF}}}`$ ([T.Acc.rec](#t-Acc.rec)). Show
 
 ```math
 \Phi(t) :\equiv \forall M \in \mathrm{PairSeq},\
-  \mathrm{tr}\,M = t \to M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}} .
+  \mathrm{tr}\,M = t \to M \in \mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}
 ```
+
+for every $`t`$.
 
 **Inductive step.** Let $`t \in \mathrm{Three}`$ and assume the induction hypothesis
 
@@ -238,11 +240,13 @@ That is, $`R^{\mathrm{tr}}_{\mathrm{NF}}`$ is well-founded.
 
 **Step 3: $`R_{\mathrm{PS}}`$ is well-founded.**
 
-We argue by induction on the derivation of $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ ([T.Acc.rec](#t-Acc.rec)). The induction predicate is
+We argue by induction on the derivation of $`\mathrm{Acc}_{R^{\mathrm{tr}}_{\mathrm{NF}}}`$ ([T.Acc.rec](#t-Acc.rec)). Show
 
 ```math
-\Psi(M) :\equiv M \in \mathrm{Acc}_{R_{\mathrm{PS}}} .
+\Psi(M) :\equiv M \in \mathrm{Acc}_{R_{\mathrm{PS}}}
 ```
+
+for every $`M`$.
 
 **Inductive step.** Let $`M \in \mathrm{PairSeq}`$ and assume the induction hypothesis
 
@@ -297,11 +301,13 @@ holds. Indeed, the two conjuncts of the definition of $`R_{\mathrm{PS}}`$ (D.ste
 $`S_i \in \mathrm{ST\_PS}`$, the first condition on $`S`$ applied to $`i`$, and
 $`S_i \Rightarrow S_{i+1}`$, the second condition on $`S`$ applied to $`i`$.
 
-We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{PS}}}`$ ([T.Acc.rec](#t-Acc.rec)). The induction predicate is
+We argue by induction on the derivation of $`\mathrm{Acc}_{R_{\mathrm{PS}}}`$ ([T.Acc.rec](#t-Acc.rec)). Show
 
 ```math
-\Theta(x) :\equiv \forall i \in \mathbb{N},\ S_i = x \to \bot .
+\Theta(x) :\equiv \forall i \in \mathbb{N},\ S_i = x \to \bot
 ```
+
+for every $`x`$.
 
 **Inductive step.** Let $`x \in \mathrm{PairSeq}`$ and assume the induction hypothesis
 

@@ -573,11 +573,13 @@ If $`M \in \mathrm{ST\_PS}`$ ([D.ST_PS](Pss.md#d-ST_PS)), then $`\mathrm{r1ok}(M
 
 ### Proof
 
-Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). The induction predicate is
+Induction on the derivation of $`\mathrm{ST\_PS}`$ ([T.ST_PS.rec](Pss.md#t-ST_PS.rec)). Show
 
 ```math
-\Phi(M) :\equiv \mathrm{r1ok}(M).
+\Phi(M) :\equiv \mathrm{r1ok}(M)
 ```
+
+for every $`M`$.
 
 - **Base case** (rule (diag)): $`M = \Delta_0^v`$ ([D.diagSeq](Pss.md#d-diagSeq)).
   [T.r1ok_diagSeq](Column-2.md#t-r1ok_diagSeq) is exactly $`\Phi(\Delta_0^v)`$.
@@ -611,11 +613,13 @@ If $`a \le^M_0 b`$, then $`a \le b`$.
 ### Proof
 
 By the third condition of the definition of $`\le^M_0`$ (D.le0) we have $`a \mathbin{(\to^M_0)^{*}} b`$.
-Induction on the construction of the chain $`a \mathbin{(\to^M_0)^{*}} b`$. The induction predicate is
+Induction on the construction of the chain $`a \mathbin{(\to^M_0)^{*}} b`$. Show
 
 ```math
-\Phi(j) :\equiv a \le j .
+\Phi(j) :\equiv a \le j
 ```
+
+for every $`j`$.
 
 - **Base case** ($`j = a`$, chain of length $`0`$): $`a \le a`$ holds by reflexivity of $`\le`$.
 

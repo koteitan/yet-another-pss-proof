@@ -458,11 +458,13 @@ $`\mathrm{cp}(B,f,n+1)`$ は $`k = 0, 1, \dots, n`$ の各 $`k`$ に対する $`
 
 ### 証明
 
-$`n`$ に関する帰納法。帰納法の述語は
+$`n`$ に関する帰納法。
 
 ```math
-\Phi(n) :\equiv \lvert \mathrm{cp}(B,f,n)\rvert = n\,\lvert B\rvert .
+\Phi(n) :\equiv \lvert \mathrm{cp}(B,f,n)\rvert = n\,\lvert B\rvert
 ```
+
+を $`n`$ について示す。
 
 - **基底段** $`n = 0`$：$`\mathrm{cp}(B,f,0) = ()`$ であり
   $`\lvert ()\rvert = 0 = 0 \cdot \lvert B\rvert`$。
@@ -490,12 +492,14 @@ $`k \lt n`$ かつ $`q \lt \lvert B\rvert`$ ならば
 
 ### 証明
 
-$`n`$ に関する帰納法。帰納法の述語は
+$`n`$ に関する帰納法。
 
 ```math
 \Phi(n) :\equiv \forall k, q,\ \bigl(k \lt n \wedge q \lt \lvert B\rvert\bigr)
-  \to \mathrm{cp}(B,f,n)\bigl\langle k\lvert B\rvert + q\bigr\rangle = f_k\bigl(B\langle q\rangle\bigr).
+  \to \mathrm{cp}(B,f,n)\bigl\langle k\lvert B\rvert + q\bigr\rangle = f_k\bigl(B\langle q\rangle\bigr)
 ```
+
+を $`n`$ について示す。
 
 - **基底段** $`n = 0`$：$`k \lt 0`$ をみたす自然数 $`k`$ は存在しないから前件が偽であり、
   $`\Phi(0)`$ が成り立つ。

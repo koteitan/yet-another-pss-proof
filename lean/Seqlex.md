@@ -94,12 +94,14 @@ For $`A, u, v \in \mathrm{PairSeq}`$,
 
 ### Proof
 
-By induction on the list structure of $`A`$ (with $`u`$, $`v`$ fixed). The induction predicate is
+By induction on the list structure of $`A`$ (with $`u`$, $`v`$ fixed). Show
 
 ```math
 \Phi(A) :\equiv \Bigl((A \mathbin{+\!\!+} u) \prec_{\mathrm{lex}} (A \mathbin{+\!\!+} v)
-  \iff u \prec_{\mathrm{lex}} v\Bigr).
+  \iff u \prec_{\mathrm{lex}} v\Bigr)
 ```
+
+for every $`A`$.
 
 - **Base case** $`A = ()`$: since $`() \mathbin{+\!\!+} u = u`$ and $`() \mathbin{+\!\!+} v = v`$,
   the two sides are the same proposition.
@@ -146,11 +148,13 @@ $`u \prec_{\mathrm{lex}} (u \mathbin{+\!\!+} v)`$.
 ### Proof
 
 By induction on the list structure of $`u`$ (with $`v`$ and the hypothesis $`v \ne ()`$ fixed).
-The induction predicate is
+Show
 
 ```math
-\Phi(u) :\equiv u \prec_{\mathrm{lex}} (u \mathbin{+\!\!+} v).
+\Phi(u) :\equiv u \prec_{\mathrm{lex}} (u \mathbin{+\!\!+} v)
 ```
+
+for every $`u`$.
 
 - **Base case** $`u = ()`$: we have $`() \mathbin{+\!\!+} v = v`$, and by
   [T.seqlex_nil_iff](#t-seqlex_nil_iff) the statement $`() \prec_{\mathrm{lex}} v`$ is equivalent
@@ -261,13 +265,15 @@ $`B\langle j\rangle`$ ([D.entry](Pss.md#d-entry)) be the $`j`$-th element of $`B
 
 ### Proof
 
-By induction on the list structure of $`B`$. The induction predicate is
+By induction on the list structure of $`B`$. Show
 
 ```math
 \Phi(B) :\equiv \Bigl(\mathrm{steps}_1(B) \iff
   \forall j,\ \bigl(j + 1 \lt \lvert B\rvert \to
-    (B\langle j+1\rangle)_1 \le (B\langle j\rangle)_1 + 1\bigr)\Bigr).
+    (B\langle j+1\rangle)_1 \le (B\langle j\rangle)_1 + 1\bigr)\Bigr)
 ```
+
+for every $`B`$.
 
 - **Base case** $`B = ()`$: the left-hand side holds by [T.steps1_nil](#t-steps1_nil).
   As for the right-hand side, $`\lvert B\rvert = 0`$, so no $`j`$ satisfies the antecedent
@@ -369,7 +375,7 @@ $`A, B \in \mathrm{PairSeq}`$,
 
 ### Proof
 
-By induction on the list structure of $`A`$ (with $`B`$ fixed). The induction predicate is
+By induction on the list structure of $`A`$ (with $`B`$ fixed). Show
 
 ```math
 \begin{aligned}
@@ -377,9 +383,11 @@ By induction on the list structure of $`A`$ (with $`B`$ fixed). The induction pr
   &\mathrm{steps}_1(A \mathbin{+\!\!+} B) \iff
     \mathrm{steps}_1(A) \wedge \mathrm{steps}_1(B) \cr
   &\qquad \wedge \bigl(A = () \vee B = () \vee
-    (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A)_1 + 1\bigr)\Bigr).
+    (\mathrm{head}\,B)_1 \le (\mathrm{last}_{(0,0)} A)_1 + 1\bigr)\Bigr)
 \end{aligned}
 ```
+
+for every $`A`$.
 
 - **Base case** $`A = ()`$: since $`() \mathbin{+\!\!+} B = B`$, the left-hand side is
   $`\mathrm{steps}_1(B)`$. On the right-hand side the first conjunct holds by
@@ -604,12 +612,14 @@ If $`r \prec_{\mathrm{lex}} r'`$ then one of the following two statements holds.
 ### Proof
 
 By induction on the list structure of $`r`$ (with $`r'`$ kept universally quantified).
-The induction predicate is
+Show
 
 ```math
 \Phi(r) :\equiv \forall r' \in \mathrm{PairSeq},\
-  r \prec_{\mathrm{lex}} r' \to \bigl(\text{(T)} \vee \text{(A)}\bigr).
+  r \prec_{\mathrm{lex}} r' \to \bigl(\text{(T)} \vee \text{(A)}\bigr)
 ```
+
+for every $`r`$.
 
 In what follows we use the following four equalities, which follow from the definitions of
 $`\mathrm{tw}`$ and $`\mathrm{dw}`$ (D.translate). If $`d \lt p_1`$ then

@@ -24,13 +24,15 @@ Here $`\mathrm{head}\,U`$ is the first element of $`U`$
 ### Proof
 
 Induction on the constructors of $`A`$ (with $`B`$, $`U`$, $`C`$ left universally quantified).
-The induction predicate is
+Show
 
 ```math
 \Phi(A) :\equiv \forall B,\ A \prec_{\mathrm{lex}} B \to \forall U,\
   \bigl(U = () \vee \forall x \in B,\ \mathrm{head}\,U \prec_{\mathrm{p}} x\bigr) \to
-  \forall C,\ A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C .
+  \forall C,\ A \mathbin{+\!\!+} U \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C
 ```
+
+for every $`A`$.
 
 - **Base case** $`A = ()`$: if $`B = ()`$, then by the first clause of the definition of
   $`\prec_{\mathrm{lex}}`$ (D.seqlex) the hypothesis becomes $`() \ne ()`$, which is false.
@@ -143,13 +145,15 @@ are the constructors of $`\mathrm{Three}`$ [D.Three](Term.md#d-Three).)
 
 ### Proof
 
-Induction on the natural number $`d`$. The induction predicate is
+Induction on the natural number $`d`$. Show
 
 ```math
 \Phi(d) :\equiv \forall Y, v_0, w_0, R,\
   \bigl(\text{(len)} \wedge \text{(blk)} \wedge \text{(R)} \wedge \text{(hd)} \wedge \text{(cnf)}\bigr)
-  \to \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)\bigr).
+  \to \exists m,\ \bigl(1 \le m \wedge Y \preceq_{\mathrm{lex}} \mathrm{cp}_0(B, m)\bigr)
 ```
+
+for every $`d`$.
 
 Here (len), (blk), (R), (hd), (cnf) are the five hypotheses of the theorem, and
 $`Y, v_0, w_0, R`$ are the bound variables of $`\Phi(d)`$ (so $`B = (v_0,w_0) :: R`$ varies

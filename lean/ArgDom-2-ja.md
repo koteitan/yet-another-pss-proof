@@ -234,11 +234,13 @@ $`(X^{+d})^{-d} = X`$。
 
 ### 証明
 
-$`X`$ の長さに関する帰納法。帰納法の述語は
+$`X`$ の長さに関する帰納法。
 
 ```math
-\Lambda(X) :\equiv (X^{+d})^{-d} = X .
+\Lambda(X) :\equiv (X^{+d})^{-d} = X
 ```
+
+を $`X`$ について示す。
 
 - **基底段** $`X = ()`$：$`()^{+d} = ()`$、$`()^{-d} = ()`$ であるから
   両辺は $`()`$ である。
@@ -267,12 +269,14 @@ $`d \in \mathbb{N}`$、$`L \in \mathrm{PairSeq}`$ とし、$`\forall x \in L,\ d
 
 ### 証明
 
-$`L`$ の長さに関する帰納法。帰納法の述語は
+$`L`$ の長さに関する帰納法。
 
 ```math
 \Upsilon(L) :\equiv
-  \bigl(\forall x \in L,\ d \le x_1\bigr) \to (L^{-d})^{+d} = L .
+  \bigl(\forall x \in L,\ d \le x_1\bigr) \to (L^{-d})^{+d} = L
 ```
+
+を $`L`$ について示す。
 
 - **基底段** $`L = ()`$：$`()^{-d} = ()`$、$`()^{+d} = ()`$ であるから
   両辺は $`()`$ である。
@@ -808,13 +812,15 @@ R_p = () \ \vee\ (\mathrm{head}\,R_p)_1 \le L .
 
 ### 証明
 
-$`E`$ の構成子に関する帰納法（$`L`$ は固定する）。帰納法の述語は
+$`E`$ の構成子に関する帰納法（$`L`$ は固定する）。
 
 ```math
 \Phi(E) :\equiv \exists B_p, R_p \in \mathrm{PairSeq},\
   \Bigl(E = B_p \mathbin{+\!\!+} R_p \wedge (\forall x \in B_p,\ L \lt x_1)
-   \wedge \bigl(R_p = () \vee (\mathrm{head}\,R_p)_1 \le L\bigr)\Bigr).
+   \wedge \bigl(R_p = () \vee (\mathrm{head}\,R_p)_1 \le L\bigr)\Bigr)
 ```
+
+を $`E`$ について示す。
 
 - **基底段** $`E = ()`$：$`B_p := ()`$、$`R_p := ()`$ と取る。
   $`() = () \mathbin{+\!\!+} ()`$ である。$`B_p = ()`$ は要素をもたないから第 2 連言子の前件が偽で成り立つ。

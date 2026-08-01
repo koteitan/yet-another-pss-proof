@@ -104,12 +104,13 @@ $`j_1 = \lvert M\rvert - 1 = 0`$ である。
 
 ### 証明
 
-$`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定しない：帰納法の述語を $`m`$ について
-全称量化しておく）。帰納法の述語は
+$`\mathrm{tr}`$ の再帰に沿う帰納法（$`m`$ は固定せず、全称量化したまま動かす）。
 
 ```math
-\Psi(C) :\equiv \forall m,\ \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m)) .
+\Psi(C) :\equiv \forall m,\ \mathrm{tr}\,C \prec \mathrm{tr}\,(C \mathbin{+\!\!+} (m))
 ```
+
+を $`C`$ について示す。
 
 - **基底段** $`C = ()`$：左辺は $`\mathsf{Z}`$（[D.Three](Term-ja.md#d-Three)）、右辺は $`\mathrm{tr}\,(m)`$ である。
   $`\mathrm{tr}`$ の定義（D.translate）より $`\mathrm{tr}\,(m) = \mathsf{P}(m_2, \mathsf{Z}, \mathsf{Z})`$

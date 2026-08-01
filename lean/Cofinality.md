@@ -53,12 +53,14 @@ $`A \prec_{\mathrm{lex}} C`$.
 ### Proof
 
 We argue by induction on the constructor of $`A`$ ($`()`$ or $`::`$), keeping $`B`$ and $`C`$ universally quantified.
-The induction predicate is
+Show
 
 ```math
 \Phi(A) :\equiv \forall B, C \in \mathrm{PairSeq},\
-  \bigl(A \prec_{\mathrm{lex}} B \wedge B \prec_{\mathrm{lex}} C\bigr) \to A \prec_{\mathrm{lex}} C .
+  \bigl(A \prec_{\mathrm{lex}} B \wedge B \prec_{\mathrm{lex}} C\bigr) \to A \prec_{\mathrm{lex}} C
 ```
+
+for every $`A`$.
 
 - **Base case** $`A = ()`$: by the first clause of the definition of $`\prec_{\mathrm{lex}}`$ (D.seqlex),
   what has to be shown is $`C \ne ()`$. Suppose $`C = ()`$ and derive a contradiction.
@@ -146,12 +148,14 @@ $`C \in \mathrm{PairSeq}`$.
 
 ### Proof
 
-Induction on the constructor of $`A`$. The induction predicate is
+Induction on the constructor of $`A`$. Show
 
 ```math
 \Phi(A) :\equiv \forall B \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \to
-  \forall C \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C .
+  \forall C \in \mathrm{PairSeq},\ A \prec_{\mathrm{lex}} B \mathbin{+\!\!+} C
 ```
+
+for every $`A`$.
 
 - **Base case** $`A = ()`$: if $`B = ()`$, then by the first clause of the definition of
   $`\prec_{\mathrm{lex}}`$ (D.seqlex) the hypothesis $`() \prec_{\mathrm{lex}} ()`$ is $`() \ne ()`$,
@@ -211,13 +215,15 @@ N \preceq_{\mathrm{lex}} D
 
 ### Proof
 
-Induction on the constructor of $`D`$, keeping $`\ell`$ and $`N`$ universally quantified. The induction predicate is
+Induction on the constructor of $`D`$, keeping $`\ell`$ and $`N`$ universally quantified. Show
 
 ```math
 \Phi(D) :\equiv \forall \ell, N,\ N \prec_{\mathrm{lex}} D \mathbin{+\!\!+} (\ell) \to
   \Bigl(N \preceq_{\mathrm{lex}} D \ \vee\
-    \exists q, S,\ \bigl(N = D \mathbin{+\!\!+} q :: S \wedge q \prec_{\mathrm{p}} \ell\bigr)\Bigr).
+    \exists q, S,\ \bigl(N = D \mathbin{+\!\!+} q :: S \wedge q \prec_{\mathrm{p}} \ell\bigr)\Bigr)
 ```
+
+for every $`D`$.
 
 - **Base case** $`D = ()`$: here $`D \mathbin{+\!\!+} (\ell) = (\ell)`$. Distinguish cases on the constructor of $`N`$.
   - Case $`N = ()`$. By [T.sle_refl](#t-sle_refl) we have $`() \preceq_{\mathrm{lex}} ()`$, so

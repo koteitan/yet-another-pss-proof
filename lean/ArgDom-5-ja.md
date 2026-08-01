@@ -32,12 +32,14 @@ $`\mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{bl
 
 ### 証明
 
-$`n`$ に関する完全帰納法による。帰納法の述語は
+$`n`$ に関する完全帰納法による。
 
 ```math
 \Phi(n) :\equiv \Bigl(1 \le n \to
   \mathrm{ArgDomCoreOn}\bigl(G \mathbin{+\!\!+} \mathrm{copies}_{d_0}(\mathrm{blk}, n)\bigr)\Bigr)
 ```
+
+を $`n`$ について示す。
 
 である（結論の $`1 \le n`$ を前件に戻して量化する）。完全帰納法の帰納段は
 「任意の $`n`$ について、$`\forall m \lt n,\ \Phi(m)`$ を仮定して $`\Phi(n)`$ を示す」であり、
@@ -176,11 +178,13 @@ $`N \in \mathrm{ST\_PS}`$ ならば $`\mathrm{ArgDomCoreOn}(N)`$。
 
 ### 証明
 
-[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec) による。帰納法の述語は
+[T.ST_PS.rec](Pss-ja.md#t-ST_PS.rec) による。
 
 ```math
 \Phi(N) :\equiv \mathrm{ArgDomCoreOn}(N)
 ```
+
+を $`N`$ について示す。
 
 である。構成子は 2 つであるから、次の 2 ステップを示せばよい。
 
