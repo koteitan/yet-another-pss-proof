@@ -127,15 +127,51 @@ $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ ならば
 
 ### 証明
 
-[T.pss_cofinality_of_core](ArgDom-ja.md#t-pss_cofinality_of_core) は、命題
-$`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom-ja.md#d-ArgDomCore)）を仮定として、任意の $`M, N \in \mathrm{PairSeq}`$ について $`M \in \mathrm{ST\_PS}`$、
-$`N \in \mathrm{ST\_PS}`$、$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ の 3 つから本定理の結論を導く。
+$`M, N \in \mathrm{PairSeq}`$ を取り、本定理の 3 つの仮定に名前を付ける。
 
-その仮定 $`\mathrm{ArgDomCore}`$ は [T.argDomCore_holds](ArgDom-5-ja.md#t-argDomCore_holds) であり、
-これは仮定を持たない。よって
-[T.pss_cofinality_of_core](ArgDom-ja.md#t-pss_cofinality_of_core) に
-[T.argDomCore_holds](ArgDom-5-ja.md#t-argDomCore_holds) と本定理の 3 つの仮定を与えれば、
-求める $`n`$ が得られる。∎
+```math
+(\mathrm{h}_1)\ M \in \mathrm{ST\_PS}, \qquad
+(\mathrm{h}_2)\ N \in \mathrm{ST\_PS}, \qquad
+(\mathrm{h}_3)\ \mathrm{tr}\,N \prec \mathrm{tr}\,M
+```
+
+**第 1 段（中核の調達）.** [T.argDomCore_holds](ArgDom-5-ja.md#t-argDomCore_holds) は前件を
+持たない定理であり、その結論は命題
+$`\mathrm{ArgDomCore}`$（[D.ArgDomCore](ArgDom-ja.md#d-ArgDomCore)）そのものである。
+よって $`\mathrm{ArgDomCore}`$ が成り立つ。これを $`(\mathrm{H})`$ とおく。
+
+**第 2 段（共終性定理の具体化）.** [T.pss_cofinality_of_core](ArgDom-ja.md#t-pss_cofinality_of_core)
+の主張は次の形をしている。
+
+```math
+\begin{aligned}
+&\mathrm{ArgDomCore} \ \longrightarrow\
+  \forall M', N' \in \mathrm{PairSeq}, \cr
+&\qquad M' \in \mathrm{ST\_PS} \ \to\ N' \in \mathrm{ST\_PS}
+  \ \to\ \mathrm{tr}\,N' \prec \mathrm{tr}\,M' \cr
+&\qquad\qquad \to\ \exists n \in \mathbb{N},\ 1 \le n \ \wedge\
+  \mathrm{tr}\,N' \preceq \mathrm{tr}\,(M'[n])
+\end{aligned}
+```
+
+全称量化された $`M'`$、$`N'`$ を本定理の $`M`$、$`N`$ でそれぞれ具体化する。すると前件は
+
+```math
+\mathrm{ArgDomCore}, \qquad M \in \mathrm{ST\_PS}, \qquad N \in \mathrm{ST\_PS},
+\qquad \mathrm{tr}\,N \prec \mathrm{tr}\,M
+```
+
+の 4 つ、後件は
+
+```math
+\exists n \in \mathbb{N},\ 1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])
+```
+
+となる。
+
+**第 3 段（適用）.** 第 2 段の 4 つの前件は、順に $`(\mathrm{H})`$、$`(\mathrm{h}_1)`$、
+$`(\mathrm{h}_2)`$、$`(\mathrm{h}_3)`$ である。これらを与えると後件が得られる。後件は
+本定理の結論と同一の命題であるから、求める $`n`$ が存在する。∎
 
 <a id="t-wf_olt_ST_PS_holds"></a>
 ## 定理: 標準形上の順序の整礎性 (T.wf_olt_ST_PS_holds)
@@ -168,11 +204,26 @@ $`R_{\mathrm{NF}}`$ は整礎である。
 
 ### 証明
 
-[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) は $`R_{\mathrm{st}}`$ の整礎性を仮定として
-$`R_{\mathrm{NF}}`$ の整礎性を導く。その仮定は [T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds)
-であり、これは仮定を持たない。よって
-[T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds) を
-[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) に与えればよい。∎
+**第 1 段（前件の調達）.** [T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds) は前件を持たない
+定理であり、その結論は「$`R_{\mathrm{st}}`$ は整礎である」（整礎
+[D.WellFounded](Reduction-ja.md#d-WellFounded)）である。よってこれが成り立つ。これを
+$`(\mathrm{h})`$ とおく。
+
+```math
+(\mathrm{h})\ \ \mathrm{WellFounded}(R_{\mathrm{st}})
+```
+
+**第 2 段（移送定理の形）.** [T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) の主張は次の形をしている。
+
+```math
+\mathrm{WellFounded}(R_{\mathrm{st}}) \ \longrightarrow\ \mathrm{WellFounded}(R_{\mathrm{NF}})
+```
+
+全称量化された変数はないので、具体化は不要である。
+
+**第 3 段（適用）.** 第 2 段の前件は第 1 段の $`(\mathrm{h})`$ そのものである。これを与えると
+後件 $`\mathrm{WellFounded}(R_{\mathrm{NF}})`$、すなわち「$`R_{\mathrm{NF}}`$ は整礎である」を
+得る。これは本定理の結論と同一の命題である。∎
 
 <a id="t-PSS_terminates_unconditional"></a>
 ## 定理: PSS の停止性 (T.PSS_terminates_unconditional)
@@ -185,10 +236,26 @@ $`R_{\mathrm{PS}}`$ は整礎である。
 
 ### 証明
 
-[T.step_terminates](Reduction-ja.md#t-step_terminates) は $`R_{\mathrm{NF}}`$ の整礎性を仮定として
-$`R_{\mathrm{PS}}`$ の整礎性を導く。その仮定は [T.wf_Rnf_holds](#t-wf_Rnf_holds) であり、
-これは仮定を持たない。よって [T.wf_Rnf_holds](#t-wf_Rnf_holds) を
-[T.step_terminates](Reduction-ja.md#t-step_terminates) に与えればよい。∎
+**第 1 段（前件の調達）.** [T.wf_Rnf_holds](#t-wf_Rnf_holds) は前件を持たない定理であり、
+その結論は「$`R_{\mathrm{NF}}`$ は整礎である」である。よってこれが成り立つ。これを
+$`(\mathrm{h})`$ とおく。
+
+```math
+(\mathrm{h})\ \ \mathrm{WellFounded}(R_{\mathrm{NF}})
+```
+
+**第 2 段（停止性定理の形）.** [T.step_terminates](Reduction-ja.md#t-step_terminates) の主張は
+次の形をしている。
+
+```math
+\mathrm{WellFounded}(R_{\mathrm{NF}}) \ \longrightarrow\ \mathrm{WellFounded}(R_{\mathrm{PS}})
+```
+
+全称量化された変数はないので、具体化は不要である。
+
+**第 3 段（適用）.** 第 2 段の前件は第 1 段の $`(\mathrm{h})`$ そのものである。これを与えると
+後件 $`\mathrm{WellFounded}(R_{\mathrm{PS}})`$、すなわち「$`R_{\mathrm{PS}}`$ は整礎である」を
+得る。これは本定理の結論と同一の命題である。∎
 
 <a id="t-no_infinite_expansion_holds"></a>
 ## 定理: 無限展開列の非存在 (T.no_infinite_expansion_holds)
@@ -207,8 +274,28 @@ $`R_{\mathrm{PS}}`$ の整礎性を導く。その仮定は [T.wf_Rnf_holds](#t-
 
 ### 証明
 
-[T.no_infinite_expansion](Reduction-ja.md#t-no_infinite_expansion) は $`R_{\mathrm{NF}}`$ の整礎性を
-仮定として、上の 2 条件をみたす $`S`$ が存在しないことを導く。その仮定は
-[T.wf_Rnf_holds](#t-wf_Rnf_holds) であり、これは仮定を持たない。よって
-[T.wf_Rnf_holds](#t-wf_Rnf_holds) を
-[T.no_infinite_expansion](Reduction-ja.md#t-no_infinite_expansion) に与えればよい。∎
+**第 1 段（前件の調達）.** [T.wf_Rnf_holds](#t-wf_Rnf_holds) は前件を持たない定理であり、
+その結論は「$`R_{\mathrm{NF}}`$ は整礎である」である。よってこれが成り立つ。これを
+$`(\mathrm{h})`$ とおく。
+
+```math
+(\mathrm{h})\ \ \mathrm{WellFounded}(R_{\mathrm{NF}})
+```
+
+**第 2 段（非存在定理の形）.** [T.no_infinite_expansion](Reduction-ja.md#t-no_infinite_expansion)
+の主張は次の形をしている。
+
+```math
+\begin{aligned}
+&\mathrm{WellFounded}(R_{\mathrm{NF}}) \ \longrightarrow\ \cr
+&\qquad \neg\ \exists S : \mathbb{N} \to \mathrm{PairSeq},\
+  \bigl(\forall i \in \mathbb{N},\ S_i \in \mathrm{ST\_PS}\bigr)
+  \ \wedge\ \bigl(\forall i \in \mathbb{N},\ S_i \Rightarrow S_{i+1}\bigr)
+\end{aligned}
+```
+
+全称量化された変数はないので、具体化は不要である。
+
+**第 3 段（適用）.** 第 2 段の前件は第 1 段の $`(\mathrm{h})`$ そのものである。これを与えると
+後件が得られる。後件は本定理の結論と同一の命題であるから、上の 2 条件をみたす
+$`S : \mathbb{N} \to \mathrm{PairSeq}`$ は存在しない。∎

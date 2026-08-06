@@ -2,7 +2,7 @@
 
 # yet-another-pss-proof
 
-Version: **v1.3.5**
+Version: **v1.3.6**
 
 **ペア数列システム**（Pair Sequence System, PSS。2 行のバシク行列システム）の停止性の
 独立な証明と、その Lean 4 / Mathlib および Isabelle/HOL による形式証明。

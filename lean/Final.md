@@ -130,16 +130,50 @@ $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$, then
 
 ### Proof
 
-[T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) derives, under the assumption of the
-proposition $`\mathrm{ArgDomCore}`$ ([D.ArgDomCore](ArgDom.md#d-ArgDomCore)), the conclusion of the present theorem
-for arbitrary $`M, N \in \mathrm{PairSeq}`$ from the three hypotheses $`M \in \mathrm{ST\_PS}`$,
-$`N \in \mathrm{ST\_PS}`$ and $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$.
+Take $`M, N \in \mathrm{PairSeq}`$ and name the three hypotheses of the present theorem.
 
-That assumption $`\mathrm{ArgDomCore}`$ is [T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds), which
-has no hypotheses. Hence feeding
-[T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds) and the three hypotheses of the present theorem
-into [T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) yields
-the required $`n`$. ∎
+```math
+(\mathrm{h}_1)\ M \in \mathrm{ST\_PS}, \qquad
+(\mathrm{h}_2)\ N \in \mathrm{ST\_PS}, \qquad
+(\mathrm{h}_3)\ \mathrm{tr}\,N \prec \mathrm{tr}\,M
+```
+
+**Step 1 (obtain the core).** [T.argDomCore_holds](ArgDom-5.md#t-argDomCore_holds) is a theorem with
+no antecedent, and its conclusion is the proposition
+$`\mathrm{ArgDomCore}`$ ([D.ArgDomCore](ArgDom.md#d-ArgDomCore)) itself. Hence
+$`\mathrm{ArgDomCore}`$ holds; call it $`(\mathrm{H})`$.
+
+**Step 2 (instantiate the cofinality theorem).**
+[T.pss_cofinality_of_core](ArgDom.md#t-pss_cofinality_of_core) has the following shape.
+
+```math
+\begin{aligned}
+&\mathrm{ArgDomCore} \ \longrightarrow\
+  \forall M', N' \in \mathrm{PairSeq}, \cr
+&\qquad M' \in \mathrm{ST\_PS} \ \to\ N' \in \mathrm{ST\_PS}
+  \ \to\ \mathrm{tr}\,N' \prec \mathrm{tr}\,M' \cr
+&\qquad\qquad \to\ \exists n \in \mathbb{N},\ 1 \le n \ \wedge\
+  \mathrm{tr}\,N' \preceq \mathrm{tr}\,(M'[n])
+\end{aligned}
+```
+
+Instantiate the universally quantified $`M'`$ and $`N'`$ with the $`M`$ and $`N`$ of the present
+theorem. The antecedents then read
+
+```math
+\mathrm{ArgDomCore}, \qquad M \in \mathrm{ST\_PS}, \qquad N \in \mathrm{ST\_PS},
+\qquad \mathrm{tr}\,N \prec \mathrm{tr}\,M
+```
+
+and the consequent reads
+
+```math
+\exists n \in \mathbb{N},\ 1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n]) .
+```
+
+**Step 3 (apply).** The four antecedents of Step 2 are exactly $`(\mathrm{H})`$, $`(\mathrm{h}_1)`$,
+$`(\mathrm{h}_2)`$ and $`(\mathrm{h}_3)`$. Supplying them yields the consequent, which is the same
+proposition as the conclusion of the present theorem, so the required $`n`$ exists. ∎
 
 <a id="t-wf_olt_ST_PS_holds"></a>
 ## Theorem: well-foundedness of the order on standard forms (T.wf_olt_ST_PS_holds)
@@ -172,11 +206,26 @@ $`R_{\mathrm{NF}}`$ is well-founded.
 
 ### Proof
 
-[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) derives the well-foundedness of $`R_{\mathrm{NF}}`$ from the
-well-foundedness of $`R_{\mathrm{st}}`$ as its hypothesis. That hypothesis is
-[T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds), which has no hypotheses. It therefore suffices to feed
-[T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds) into
-[T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS). ∎
+**Step 1 (obtain the antecedent).** [T.wf_olt_ST_PS_holds](#t-wf_olt_ST_PS_holds) is a theorem with
+no antecedent, and its conclusion is "$`R_{\mathrm{st}}`$ is well-founded" (well-founded
+[D.WellFounded](Reduction.md#d-WellFounded)). Hence it holds; call it $`(\mathrm{h})`$.
+
+```math
+(\mathrm{h})\ \ \mathrm{WellFounded}(R_{\mathrm{st}})
+```
+
+**Step 2 (shape of the transport theorem).** [T.wf_Rnf_of_wf_PS](#t-wf_Rnf_of_wf_PS) has the
+following shape.
+
+```math
+\mathrm{WellFounded}(R_{\mathrm{st}}) \ \longrightarrow\ \mathrm{WellFounded}(R_{\mathrm{NF}})
+```
+
+It has no universally quantified variable, so no instantiation is needed.
+
+**Step 3 (apply).** The antecedent of Step 2 is exactly $`(\mathrm{h})`$ of Step 1. Supplying it
+yields the consequent $`\mathrm{WellFounded}(R_{\mathrm{NF}})`$, that is, "$`R_{\mathrm{NF}}`$ is
+well-founded", which is the same proposition as the conclusion of the present theorem. ∎
 
 <a id="t-PSS_terminates_unconditional"></a>
 ## Theorem: termination of PSS (T.PSS_terminates_unconditional)
@@ -189,11 +238,26 @@ $`R_{\mathrm{PS}}`$ is well-founded.
 
 ### Proof
 
-[T.step_terminates](Reduction.md#t-step_terminates) derives the well-foundedness of
-$`R_{\mathrm{PS}}`$ from the well-foundedness of $`R_{\mathrm{NF}}`$ as its hypothesis.
-That hypothesis is [T.wf_Rnf_holds](#t-wf_Rnf_holds), which has no hypotheses.
-It therefore suffices to feed [T.wf_Rnf_holds](#t-wf_Rnf_holds) into
-[T.step_terminates](Reduction.md#t-step_terminates). ∎
+**Step 1 (obtain the antecedent).** [T.wf_Rnf_holds](#t-wf_Rnf_holds) is a theorem with no
+antecedent, and its conclusion is "$`R_{\mathrm{NF}}`$ is well-founded". Hence it holds; call it
+$`(\mathrm{h})`$.
+
+```math
+(\mathrm{h})\ \ \mathrm{WellFounded}(R_{\mathrm{NF}})
+```
+
+**Step 2 (shape of the termination theorem).** [T.step_terminates](Reduction.md#t-step_terminates)
+has the following shape.
+
+```math
+\mathrm{WellFounded}(R_{\mathrm{NF}}) \ \longrightarrow\ \mathrm{WellFounded}(R_{\mathrm{PS}})
+```
+
+It has no universally quantified variable, so no instantiation is needed.
+
+**Step 3 (apply).** The antecedent of Step 2 is exactly $`(\mathrm{h})`$ of Step 1. Supplying it
+yields the consequent $`\mathrm{WellFounded}(R_{\mathrm{PS}})`$, that is, "$`R_{\mathrm{PS}}`$ is
+well-founded", which is the same proposition as the conclusion of the present theorem. ∎
 
 <a id="t-no_infinite_expansion_holds"></a>
 ## Theorem: non-existence of infinite expansion sequences (T.no_infinite_expansion_holds)
@@ -212,8 +276,28 @@ Here $`S_i`$ is the value of $`S`$ at $`i`$ ($`M \Rightarrow N`$ [D.step](Pss.md
 
 ### Proof
 
-[T.no_infinite_expansion](Reduction.md#t-no_infinite_expansion) derives, from the well-foundedness of
-$`R_{\mathrm{NF}}`$ as its hypothesis, that no $`S`$ satisfying the above two conditions exists.
-That hypothesis is [T.wf_Rnf_holds](#t-wf_Rnf_holds), which has no hypotheses. It therefore suffices to feed
-[T.wf_Rnf_holds](#t-wf_Rnf_holds) into
-[T.no_infinite_expansion](Reduction.md#t-no_infinite_expansion). ∎
+**Step 1 (obtain the antecedent).** [T.wf_Rnf_holds](#t-wf_Rnf_holds) is a theorem with no
+antecedent, and its conclusion is "$`R_{\mathrm{NF}}`$ is well-founded". Hence it holds; call it
+$`(\mathrm{h})`$.
+
+```math
+(\mathrm{h})\ \ \mathrm{WellFounded}(R_{\mathrm{NF}})
+```
+
+**Step 2 (shape of the non-existence theorem).**
+[T.no_infinite_expansion](Reduction.md#t-no_infinite_expansion) has the following shape.
+
+```math
+\begin{aligned}
+&\mathrm{WellFounded}(R_{\mathrm{NF}}) \ \longrightarrow\ \cr
+&\qquad \neg\ \exists S : \mathbb{N} \to \mathrm{PairSeq},\
+  \bigl(\forall i \in \mathbb{N},\ S_i \in \mathrm{ST\_PS}\bigr)
+  \ \wedge\ \bigl(\forall i \in \mathbb{N},\ S_i \Rightarrow S_{i+1}\bigr)
+\end{aligned}
+```
+
+It has no universally quantified variable, so no instantiation is needed.
+
+**Step 3 (apply).** The antecedent of Step 2 is exactly $`(\mathrm{h})`$ of Step 1. Supplying it
+yields the consequent, which is the same proposition as the conclusion of the present theorem;
+hence no $`S : \mathbb{N} \to \mathrm{PairSeq}`$ satisfying the two conditions above exists. ∎

@@ -68,6 +68,14 @@ def nav(stem, lang):
 
 def main():
     dry = '--dry-run' in sys.argv
+    extra = [a for a in sys.argv[1:] if a != '--dry-run']
+    if extra:                                # 引数を黙って無視すると全 -ja.md を潰す
+        sys.stderr.write(
+            'bilingual.py はファイル引数を取らない。'
+            'lean/*.md すべてを英日 2 系統に分け直す（-ja.md は英語側から再生成される）。\n'
+            '未知の引数: %s\n'
+            '使い方: python3 tools/bilingual.py [--dry-run]\n' % ' '.join(extra))
+        return 1
     names = set(targets())
     for name in sorted(names):
         stem = name[:-3]
@@ -82,7 +90,8 @@ def main():
         open(os.path.join(LEAN, name), 'w').write(en)
         open(os.path.join(LEAN, ja(name)), 'w').write(jp)
     print('%d ファイルを 2 系統に分けた' % len(names))
+    return 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main())
