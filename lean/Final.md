@@ -184,18 +184,48 @@ $`R_{\mathrm{st}}`$ is well-founded.
 
 ### Proof
 
-[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality) derives the well-foundedness of
-$`R_{\mathrm{st}}`$ from the hypothesis
+**Step 1 (obtain the antecedent).** We first prove $`(\mathrm{cof})`$ below.
 
 ```math
-\forall M, N \in \mathrm{PairSeq},\
-  \bigl(M \in \mathrm{ST\_PS} \wedge N \in \mathrm{ST\_PS} \wedge \mathrm{tr}\,N \prec \mathrm{tr}\,M\bigr)
-  \to \exists n,\ 1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])
+\begin{aligned}
+(\mathrm{cof})\ \ &\forall M, N \in \mathrm{PairSeq}, \cr
+&\quad M \in \mathrm{ST\_PS} \ \to\ N \in \mathrm{ST\_PS}
+  \ \to\ \mathrm{tr}\,N \prec \mathrm{tr}\,M \cr
+&\qquad \to\ \exists n \in \mathbb{N},\ 1 \le n \ \wedge\
+  \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])
+\end{aligned}
 ```
 
-This hypothesis is exactly [T.pss_cofinality_holds](#t-pss_cofinality_holds) universally quantified
-over $`M`$ and $`N`$. It therefore suffices to feed it into
-[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality). ∎
+Take $`M, N \in \mathrm{PairSeq}`$ and assume $`M \in \mathrm{ST\_PS}`$,
+$`N \in \mathrm{ST\_PS}`$ and $`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$.
+[T.pss_cofinality_holds](#t-pss_cofinality_holds) is the theorem whose antecedents are exactly these
+three and whose conclusion is
+
+```math
+\exists n \in \mathbb{N},\ 1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n]) ,
+```
+
+so supplying the three yields that conclusion. Since $`M`$, $`N`$ and the three hypotheses were
+arbitrary, $`(\mathrm{cof})`$ holds.
+
+**Step 2 (shape of the cited theorem).**
+[T.wf_olt_ST_PS_of_cofinality](Wset-4.md#t-wf_olt_ST_PS_of_cofinality) has the following shape.
+
+```math
+(\mathrm{cof}) \ \longrightarrow\ \mathrm{WellFounded}(\rho),
+\qquad
+a \mathbin{\rho} b :\iff
+  a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b
+```
+
+Its universally quantified variables occur only inside $`(\mathrm{cof})`$, so the statement itself
+needs no instantiation. Moreover $`\rho`$ is the right-hand side of the definition of
+$`R_{\mathrm{st}}`$ ([D.Rst](Wset.md#d-Rst)) written out, so $`\rho`$ and $`R_{\mathrm{st}}`$ are
+by definition the same relation.
+
+**Step 3 (apply).** The antecedent of Step 2 is exactly the $`(\mathrm{cof})`$ proved in Step 1.
+Supplying it yields the consequent $`\mathrm{WellFounded}(\rho)`$, that is, "$`R_{\mathrm{st}}`$ is
+well-founded", which is the same proposition as the conclusion of the present theorem. ∎
 
 <a id="t-wf_Rnf_holds"></a>
 ## Theorem: well-foundedness of the order on normal forms (T.wf_Rnf_holds)

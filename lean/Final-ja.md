@@ -182,18 +182,46 @@ $`R_{\mathrm{st}}`$ は整礎である。
 
 ### 証明
 
-[T.wf_olt_ST_PS_of_cofinality](Wset-4-ja.md#t-wf_olt_ST_PS_of_cofinality) は、仮定
+**第 1 段（前件の調達）.** まず次の $`(\mathrm{cof})`$ を示す。
 
 ```math
-\forall M, N \in \mathrm{PairSeq},\
-  \bigl(M \in \mathrm{ST\_PS} \wedge N \in \mathrm{ST\_PS} \wedge \mathrm{tr}\,N \prec \mathrm{tr}\,M\bigr)
-  \to \exists n,\ 1 \le n \wedge \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])
+\begin{aligned}
+(\mathrm{cof})\ \ &\forall M, N \in \mathrm{PairSeq}, \cr
+&\quad M \in \mathrm{ST\_PS} \ \to\ N \in \mathrm{ST\_PS}
+  \ \to\ \mathrm{tr}\,N \prec \mathrm{tr}\,M \cr
+&\qquad \to\ \exists n \in \mathbb{N},\ 1 \le n \ \wedge\
+  \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])
+\end{aligned}
 ```
 
-から $`R_{\mathrm{st}}`$ の整礎性を導く。この仮定は
-[T.pss_cofinality_holds](#t-pss_cofinality_holds) を $`M`$ と $`N`$ について全称量化したもの
-そのものである。よってこれを
-[T.wf_olt_ST_PS_of_cofinality](Wset-4-ja.md#t-wf_olt_ST_PS_of_cofinality) に与えればよい。∎
+$`M, N \in \mathrm{PairSeq}`$ を取り、$`M \in \mathrm{ST\_PS}`$、$`N \in \mathrm{ST\_PS}`$、
+$`\mathrm{tr}\,N \prec \mathrm{tr}\,M`$ を仮定する。
+[T.pss_cofinality_holds](#t-pss_cofinality_holds) はこの 3 つを前件とし
+
+```math
+\exists n \in \mathbb{N},\ 1 \le n \ \wedge\ \mathrm{tr}\,N \preceq \mathrm{tr}\,(M[n])
+```
+
+を結論とする定理であるから、3 つを与えて結論を得る。$`M`$、$`N`$ と 3 つの仮定は
+任意に取ったものであったから、$`(\mathrm{cof})`$ が成り立つ。
+
+**第 2 段（引用定理の形）.** [T.wf_olt_ST_PS_of_cofinality](Wset-4-ja.md#t-wf_olt_ST_PS_of_cofinality)
+の主張は次の形をしている。
+
+```math
+(\mathrm{cof}) \ \longrightarrow\ \mathrm{WellFounded}(\rho),
+\qquad
+a \mathbin{\rho} b :\iff
+  a \in \mathrm{ST\_PS} \ \wedge\ b \in \mathrm{ST\_PS} \ \wedge\ \mathrm{tr}\,a \prec \mathrm{tr}\,b
+```
+
+全称量化された変数は $`(\mathrm{cof})`$ の内部にあるだけなので、主張そのものへの具体化は
+不要である。また $`\rho`$ は $`R_{\mathrm{st}}`$ の定義（[D.Rst](Wset-ja.md#d-Rst)）の右辺を
+書き下したものであるから、$`\rho`$ と $`R_{\mathrm{st}}`$ は定義により同一の関係である。
+
+**第 3 段（適用）.** 第 2 段の前件は第 1 段で示した $`(\mathrm{cof})`$ そのものである。これを
+与えると後件 $`\mathrm{WellFounded}(\rho)`$、すなわち「$`R_{\mathrm{st}}`$ は整礎である」を
+得る。これは本定理の結論と同一の命題である。∎
 
 <a id="t-wf_Rnf_holds"></a>
 ## 定理: 正規形上の順序の整礎性 (T.wf_Rnf_holds)
